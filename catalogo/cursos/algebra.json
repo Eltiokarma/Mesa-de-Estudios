@@ -180,7 +180,7 @@
       "universidades": {"uni": {"semanas": [8, 9, 10]}, "unmsm": {"temas": [13]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": ["grafica-perillas"],
+      "plantillas": ["grafica-perillas", "funciones-dominio-rango"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {
@@ -196,7 +196,7 @@
       "universidades": {"uni": {"semanas": [8, 10]}, "unmsm": {"temas": [14]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": ["grafica-perillas", "exponenciales-logaritmos"],
+      "plantillas": ["grafica-perillas", "exponenciales-logaritmos", "funciones-dominio-rango"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {
@@ -213,7 +213,7 @@
       "universidades": {"uni": {"semanas": [11]}, "unmsm": {"temas": [15]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": ["exponenciales-logaritmos"],
+      "plantillas": ["exponenciales-logaritmos", "funciones-dominio-rango"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {

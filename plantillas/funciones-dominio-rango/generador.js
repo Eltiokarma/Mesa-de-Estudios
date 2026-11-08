@@ -175,7 +175,7 @@
     if (d.sub === 'evaluar') {
       const h0 = d.h0, c0 = fc(h0), correcta = fG(c0);
       return { variables, enunciado, unidad: 'soles', correcta,
-        pregunta: ['¿Cuánto vale ', v('G', `(${Gn}∘${c})(${h0})`), `, es decir, ${ch ? 'la ganancia del día' : 'el ingreso neto'} si ${ch ? 'la máquina trabaja' : 'vende durante'} `, v('h', `${h0} horas`), '?'],
+        pregunta: ['¿Cuánto vale ', v('G', `(${Gn}∘${c})(`), v('h', String(h0)), v('G', ')'), '?'],
         errores: [
           en('compone-saltando-eslabon', p * h0 - Fj, `Pusiste ${h0} directamente en ${Gn}, como si fueran ${ch ? 'chompas' : 'kilos'}. Primero hay que pasar las horas a ${ch ? 'chompas' : 'kilos'} con ${c}(${h}); recién eso entra en ${Gn}.`),
           en('responde-el-eslabon-intermedio', c0, `Ese es ${c}(${h0}) = ${c0}, ${ch ? 'las chompas' : 'los kilos'}. Falta el segundo paso: meter ese número en ${Gn}.`),
@@ -193,13 +193,13 @@
     return { variables, enunciado, unidad: 'horas', correcta,
       pregunta: ['¿Cuántas ', v('h', 'horas'), ` debe ${ch ? 'trabajar la máquina' : 'vender'} para que `, v('G', `(${Gn}∘${c})(${h}) = ${F(G0)}`), ' soles?'],
       errores: [
-        en('deshace-solo-un-eslabon', c0, `Ese número son ${ch ? 'las chompas' : 'los kilos'} que dan ${G0} soles. Falta deshacer ${c}(${h}) para llegar a las horas.`),
+        en('deshace-solo-un-eslabon', c0, `Ese número son ${ch ? 'las chompas' : 'los kilos'} que dan ${F(G0)} soles. Falta deshacer ${c}(${h}) para llegar a las horas.`),
         en('deshace-en-orden-equivocado', ((G0 - b) / a + Fj) / p, `Deshiciste las funciones en el orden equivocado. Se empieza por la última que actuó (${Gn}) y se termina con la primera (${c}).`),
-        en('olvida-el-costo-fijo', (G0 / p - b) / a, `Te olvidaste de los ${Fj} soles fijos: ${p}${c} − ${Fj} = ${G0} da ${c} = (${G0} + ${Fj})/${p}.`),
+        en('olvida-el-costo-fijo', (G0 / p - b) / a, `Te olvidaste de los ${Fj} soles fijos: hiciste ${c} = ${F(G0)}/${p}. Con el costo, ${p}${c} − ${Fj} = ${F(G0)} da ${c} = (${F(G0)} + ${Fj})/${p} = ${F(c0)}.`),
         en('suma-en-vez-de-restar', (c0 + b) / a, `Al despejar ${a}${h} + ${b} = ${F(c0)}, sumaste ${b} en vez de restarlo.`),
       ],
       solucion: [
-        ['Se deshace primero ', v('G', Gn), ': ', v('G', `${p}${c} − ${Fj} = ${G0}`), ' → ', v('c', `${c} = ${F(c0)}`), '.'],
+        ['Se deshace primero ', v('G', Gn), ': ', v('G', `${p}${c} − ${Fj} = ${F(G0)}`), ' → ', v('c', `${c} = ${F(c0)}`), '.'],
         ['Luego ', v('c', c), ': ', v('c', `${a}${h} + ${b} = ${F(c0)}`), ' → ', v('h', `${h} = ${F(correcta)} horas`), '.'],
       ] };
   };
@@ -238,18 +238,19 @@
   ARMAR['costo-recipiente'] = d => {
     const { k, x, a, b } = d, V = k * x * x * d.h;
     const forma = k === 1 ? 'base cuadrada' : `base rectangular cuyo largo es ${k === 2 ? 'el doble' : 'el triple'} del ancho`;
-    const variables = { x: { nombre: 'ancho de la base', color: 'o' }, h: { nombre: 'altura', color: 'i' }, V: { nombre: 'volumen', color: 'd' }, C: { nombre: 'costo', color: 'h' } };
+    const cuad = k === 1, anchoT = cuad ? 'lado' : 'ancho';
+    const variables = { x: { nombre: cuad ? 'lado de la base' : 'ancho de la base', color: 'o' }, h: { nombre: 'altura', color: 'i' }, V: { nombre: 'volumen', color: 'd' }, C: { nombre: 'costo', color: 'h' } };
     const enunciado = ['Se construirá un tanque de concreto para riego, sin tapa, de ', forma, ' y ', v('V', `${V} m³`), ' de capacidad. El metro cuadrado de la base cuesta ', `${a} soles`, ' y el de las paredes, ', `${b} soles`, '.'];
-    const paso1 = ['Con ancho ', v('x', 'x'), ` y largo ${k === 1 ? '' : k}x, la `, v('h', 'altura'), ' sale del volumen: ', v('h', `h = ${V}/(${k === 1 ? '' : k + '·'}x²)`), '.'];
+    const paso1 = [cuad ? 'Con lado ' : 'Con ancho ', v('x', 'x'), cuad ? ', la ' : ` y largo ${k}x, la `, v('h', 'altura'), ' sale del volumen: ', v('h', `h = ${V}/(${k === 1 ? '' : k + '·'}x²)`), '.'];
     if (d.sub === 'evaluar') {
       const h = d.h, base = k * x * x, par = 2 * (1 + k) * x * h;
       const correcta = a * base + b * par;
       return { variables, enunciado, unidad: 'soles', correcta,
-        pregunta: ['Si el ', v('x', `ancho es ${x} m`), ', ¿cuánto ', v('C', 'cuesta'), ' construirlo?'],
+        pregunta: ['Si el ', v('x', `${anchoT} de la base es ${x} m`), ', ¿cuánto ', v('C', 'cuesta'), ' construirlo?'],
         errores: [
-          en('incluye-tapa', correcta + a * base, 'Le pusiste tapa: sumaste dos veces el rectángulo de la base. El tanque no tiene tapa.'),
+          en('incluye-tapa', correcta + a * base, `Le pusiste tapa: sumaste dos veces ${cuad ? 'la base' : 'el rectángulo de la base'}. El tanque no tiene tapa.`),
           en('cuatro-paredes-iguales', a * base + b * 4 * k * x * h, `Contaste cuatro paredes iguales a la más larga. Hay dos de ${x} m × ${h} m y dos de ${k * x} m × ${h} m.`),
-          en('dos-paredes', a * base + b * par / 2, 'Contaste solo dos paredes (una de cada medida). Un tanque tiene cuatro: dos de cada medida.'),
+          en('dos-paredes', a * base + b * par / 2, cuad ? 'Contaste solo dos paredes. Un tanque tiene cuatro.' : 'Contaste solo dos paredes (una de cada medida). Un tanque tiene cuatro: dos de cada medida.'),
           en('altura-sin-largo', a * base + b * 2 * (1 + k) * x * (V / (x * x)), `Hallaste la altura con V/x², como si la base fuera de ${x} × ${x}. La base mide ${x} × ${k * x}: h = V/(${k}x²).`),
           en('precios-cambiados', b * base + a * par, 'Cambiaste los precios: el de la base va con la base y el de las paredes con las paredes.'),
         ].filter(e => k > 1 || e.id !== 'altura-sin-largo'),
@@ -263,11 +264,11 @@
     const A = a * k, B = 2 * (1 + k) * b * V / k;
     const cx = (p, q) => ({ clave: `cx:${p}:${q}`, texto: `C(x) = ${p}x² + ${q}/x` });
     return { variables, enunciado, texto: true, correcta: cx(A, B),
-      pregunta: ['¿Cuál es el ', v('C', 'costo'), ' en función del ', v('x', 'ancho x'), ' (en metros)?'],
+      pregunta: ['¿Cuál es el ', v('C', 'costo'), ' en función del ', v('x', `${anchoT} x`), ' (en metros)?'],
       errores: [
         et('incluye-tapa', cx(2 * A, B), 'Le pusiste tapa: el término de la base salió doble. El tanque no tiene tapa.'),
         et('cuatro-paredes-iguales', cx(A, 4 * b * V), 'Contaste cuatro paredes iguales a la más larga. Hay dos de x por h y dos de largo por h.'),
-        et('dos-paredes', cx(A, B / 2), 'Contaste solo dos paredes. Un tanque tiene cuatro: dos de cada medida.'),
+        et('dos-paredes', cx(A, B / 2), cuad ? 'Contaste solo dos paredes. Un tanque tiene cuatro.' : 'Contaste solo dos paredes. Un tanque tiene cuatro: dos de cada medida.'),
         k > 1 ? et('altura-sin-largo', cx(A, B * k), `Hallaste la altura con V/x², como si la base fuera cuadrada. La base mide x por ${k}x: h = V/(${k}x²).`) : null,
         et('precios-cambiados', cx(b * k, 2 * (1 + k) * a * V / k), 'Cambiaste los precios: el de la base va con la base y el de las paredes con las paredes.'),
       ],
@@ -293,6 +294,7 @@
     const ft = `${bt === '1/2' ? '(1/2)' : bt}^(|${xm(a)}|)${mas(c)}`;
     const f = x => B ** Math.abs(x - a) + c;
     const variables = { f: { nombre: 'la función f', color: 'o' }, u: { nombre: `|${xm(a)}|`, color: 'i' }, Rg: { nombre: 'rango', color: 'h' } };
+    const sumaC = c < 0 ? `restaste ${-c}` : `sumaste ${c}`, sumarC = c < 0 ? `restar ${-c}` : `sumar ${c}`;
     if (d.sub === 'sobre') {
       const { p, q } = d, m = 1 + c, n = B ** Math.max(a - p, q - a) + c, correcta = m + n;
       const g = x => B ** Math.abs(x + a) + c, du = [Math.abs(p + a), Math.abs(q + a)];
@@ -300,19 +302,19 @@
       const errores = [
         en('extremos-en-los-bordes', f(p) + f(q), `Evaluaste solo en los bordes: f(${tn(p)}) y f(${tn(q)}). El mínimo está adentro, en x = ${tn(a)}, donde |${xm(a)}| = 0.`),
         en('AL22', B ** (p - a) + B ** (q - a) + 2 * c, `Trataste |${xm(a)}| como ${xm(a)}, sin el valor absoluto. Con las barras el exponente nunca es negativo: el menor valor de f es ${bt}⁰${mas(c)} = ${tn(m)}.`, 'parcial', INFORME),
-        en('olvida-sumar-c', correcta - 2 * c, `Hallaste los extremos de ${bt}^(|${xm(a)}|) pero no les sumaste ${tn(c)}.`),
+        en('olvida-sumar-c', correcta - 2 * c, `Hallaste los extremos de ${bt}^(|${xm(a)}|) pero no les ${sumaC}.`),
         en('exponente-cero-da-cero', c + n, `Tomaste ${bt}⁰ = 0. Toda base elevada a 0 da 1: el mínimo de f es 1${mas(c)} = ${tn(m)}.`),
       ];
       const gm = B ** minR + c, gM = B ** Math.max(...du) + c;
-      if (gM < 1e4) errores.push(en('AL28', gm + gM, `Pusiste el vértice en x = ${tn(-a)}: |${xm(a)}| vale 0 en x = ${tn(a)}, no en x = ${tn(-a)}.`, 'parcial', INFORME));
-      return { variables, unidad: '', negativos: true, correcta, errores,
+      if (gm + gM <= 10 * correcta) errores.push(en('AL28', gm + gM, `Tomaste que |${xm(a)}| vale 0 en x = ${tn(-a)}. Vale 0 en x = ${tn(a)}: ahí está el mínimo.`, 'parcial', INFORME));
+      return { variables: { ...variables, S: { nombre: 'm + n', color: 'd' } }, unidad: '', negativos: true, correcta, errores,
         enunciado: ['La función ', v('f', `f: [${tn(p)}; ${tn(q)}] → [m; n]`), ', ', v('f', `f(x) = ${ft}`), ', es sobreyectiva.'],
-        pregunta: ['¿Cuánto vale m + n?'],
+        pregunta: ['¿Cuánto vale ', v('S', 'm + n'), '?'],
         solucion: [
           ['Sobreyectiva quiere decir que [m; n] es el ', v('Rg', 'rango'), ' de f en ', `[${tn(p)}; ${tn(q)}]`, '.'],
           ['El exponente ', v('u', `|${xm(a)}|`), ` vale 0 en x = ${tn(a)} (que está en el intervalo) y crece al alejarse: llega a ${Math.max(a - p, q - a)} en x = ${tn(a - p > q - a ? p : q)}, el borde más lejano.`],
           [`Como la base es mayor que 1, f es mínima donde el exponente es mínimo: m = ${bt}⁰${mas(c)} = ${tn(m)}; y máxima en el borde más lejano: n = ${bt}${sup(Math.max(a - p, q - a))}${mas(c)} = ${tn(n)}.`],
-          ['m + n = ', v('Rg', tn(correcta)), '.'],
+          [v('S', `m + n = ${tn(correcta)}`), '.'],
         ] };
     }
     const crece = B > 1;
@@ -320,14 +322,14 @@
     const errores = crece ? [
       et('rango-de-la-exponencial', conj([pz(c, INF, false)]), `Ese es el rango de ${bt}ˣ${mas(c)}, sin las barras. Con |${xm(a)}| ≥ 0 el exponente nunca baja de 0, y ${bt}⁰ = 1.`),
       et('excluye-el-minimo', conj([pz(1 + c, INF, false)]), `El valor ${tn(1 + c)} sí se alcanza: en x = ${tn(a)} el exponente es 0 y f = 1${mas(c)}.`),
-      et('olvida-sumar-c', conj([pz(1, INF, true)]), `Ese es el rango de ${bt}^(|${xm(a)}|); falta sumar ${tn(c)} a todo.`),
+      et('olvida-sumar-c', conj([pz(1, INF, true)]), `Ese es el rango de ${bt}^(|${xm(a)}|); falta ${sumarC} a todo.`),
       et('exponente-cero-da-cero', conj([pz(c, INF, true)]), `Tomaste ${bt}⁰ = 0. Toda base elevada a 0 da 1.`),
       et('base-mayor-decrece', conj([pz(c, 1 + c, false, true)]), `Con base ${bt} > 1, la función crece cuando crece el exponente: f no tiene tope por arriba.`),
     ] : [
-      et('base-menor-crece', conj([pz(1 + c, INF, true)]), 'Con base 1/2, al crecer el exponente la potencia se achica: f no crece sin límite, se acerca a c por arriba.'),
+      et('base-menor-crece', conj([pz(1 + c, INF, true)]), `Con base 1/2, al crecer el exponente la potencia se achica: f no crece sin límite, se acerca a ${tn(c)} por arriba.`),
       et('rango-de-la-exponencial', conj([pz(c, INF, false)]), `Ese es el rango de (1/2)ˣ${mas(c)}, sin las barras. Con |${xm(a)}| ≥ 0, (1/2)^(|${xm(a)}|) ≤ 1.`),
       et('asintota-cerrada', conj([pz(c, 1 + c, true, true)]), `El valor ${tn(c)} nunca se alcanza: (1/2)^(|${xm(a)}|) se acerca a 0 sin llegar.`),
-      et('olvida-sumar-c', conj([pz(0, 1, false, true)]), `Ese es el rango de (1/2)^(|${xm(a)}|); falta sumar ${tn(c)} a todo.`),
+      et('olvida-sumar-c', conj([pz(0, 1, false, true)]), `Ese es el rango de (1/2)^(|${xm(a)}|); falta ${sumarC} a todo.`),
     ];
     return { variables, texto: true, correcta: corr, errores,
       enunciado: ['Sea ', v('f', `f(x) = ${ft}`), ', con x ∈ ℝ.'],
@@ -336,7 +338,7 @@
         ['El exponente ', v('u', `|${xm(a)}|`), ` toma todos los valores de [0; +∞⟩ (vale 0 en x = ${tn(a)}).`],
         crece ? [`Con base ${bt} > 1, ${bt}^u va de ${bt}⁰ = 1 hacia arriba sin tope: [1; +∞⟩.`]
           : ['Con base 1/2 < 1, (1/2)^u va de (1/2)⁰ = 1 hacia abajo, acercándose a 0 sin llegar: ⟨0; 1].'],
-        [`Se suma ${tn(c)} a todo: `, v('Rg', corr.texto), '.'],
+        [`Se ${c < 0 ? 'resta ' + -c : 'suma ' + c} a todo: `, v('Rg', corr.texto), '.'],
       ] };
   };
 
@@ -359,7 +361,7 @@
           enunciado: ['Sea ', v('ext', `f(x) = √(${c} − `), v('int', `√(${xm(a)})`), v('ext', ')'), '.'],
           errores: [
             et('olvida-radical-interior', conj([pz(-INF, a + c2, false, true)]), `Olvidaste que el radical interior también pide ${xm(a)} ≥ 0. Sin eso entran valores donde √(${xm(a)}) no existe.`),
-            et('no-eleva-al-cuadrado', conj([pz(a, a + c, true, true)]), `De √(${xm(a)}) ≤ ${c} sale ${xm(a)} ≤ ${c2}: se elevan al cuadrado los dos lados (son positivos).`),
+            et('no-eleva-al-cuadrado', conj([pz(a, a + c, true, true)]), `Pasaste de √(${xm(a)}) ≤ ${c} a ${xm(a)} ≤ ${c}, sin elevar al cuadrado. Los dos lados son positivos: se elevan al cuadrado y queda ${xm(a)} ≤ ${c2}.`),
             et('solo-radical-interior', conj([pz(a, INF, true)]), `Pusiste solo la condición del radical interior. El exterior pide además ${c} − √(${xm(a)}) ≥ 0.`),
             et('excluye-donde-vale-cero', conj([pz(a, a + c2, true, false)]), `En x = ${tn(a + c2)}, f vale √0 = 0, que sí existe: el extremo va cerrado.`),
           ],
@@ -374,7 +376,7 @@
       return { variables, texto: true, correcta: corr, pregunta,
         enunciado: ['Sea ', v('ext', 'f(x) = √('), v('int', `√(${xm(a)})`), v('ext', ` − ${c})`), '.'],
         errores: [
-          et('no-eleva-al-cuadrado', conj([pz(a + c, INF, true)]), `De √(${xm(a)}) ≥ ${c} sale ${xm(a)} ≥ ${c2}: se elevan al cuadrado los dos lados.`),
+          et('no-eleva-al-cuadrado', conj([pz(a + c, INF, true)]), `Pasaste de √(${xm(a)}) ≥ ${c} a ${xm(a)} ≥ ${c}, sin elevar al cuadrado. Los dos lados son positivos: se elevan al cuadrado y queda ${xm(a)} ≥ ${c2}.`),
           et('solo-radical-interior', conj([pz(a, INF, true)]), `Pusiste solo la condición del radical interior. El exterior pide además √(${xm(a)}) − ${c} ≥ 0.`),
           et('inecuacion-al-reves', conj([pz(a, a + c2, true, true)]), `Pediste √(${xm(a)}) ≤ ${c}, al revés: lo de adentro del radical exterior es √(${xm(a)}) − ${c} y debe ser ≥ 0.`),
           et('excluye-donde-vale-cero', conj([pz(a + c2, INF, false)]), `En x = ${tn(a + c2)}, f vale √0 = 0, que sí existe: el extremo va cerrado.`),
@@ -394,7 +396,7 @@
         et('no-interseca', conj([pz(s - k, s + r2, true, true), pz(s + r, INF, true)]), `Elevaste al cuadrado sin pedir antes ${xm(s)} ≥ 0. Si ${xm(s)} es negativo no puede ser mayor o igual que una raíz: el trozo [${tn(s - k)}; ${tn(s + r2)}] no sirve.`),
         et('olvida-radical-interior', conj([pz(-INF, s + r2, false, true), pz(s + r, INF, true)]), `Te faltó la condición del radical interior, ${xm(s - k)} ≥ 0, y la de que ${xm(s)} ≥ 0 antes de elevar al cuadrado.`),
         et('solo-radical-interior', conj([pz(s - k, INF, true)]), `Pusiste solo la condición del radical interior. El exterior pide además ${xm(s)} ≥ √(${xm(s - k)}).`),
-        et('signo-de-la-cuadratica-al-reves', conj([pz(Math.max(s, s + r2), s + r, true, true)]), `Tomaste el trozo entre las raíces de la cuadrática. Se pide u² − u − ${k} ≥ 0, que se cumple fuera de las raíces.`),
+        et('signo-de-la-cuadratica-al-reves', conj([pz(Math.max(s, s + r2), s + r, true, true)]), `Tomaste el trozo entre las raíces. Al elevar al cuadrado queda (${xm(s)})² ≥ ${xm(s - k)}, es decir, ${poli([1, -(2 * s + 1), s * s + s - k])} ≥ 0, que se cumple fuera de las raíces ${tn(s + r2)} y ${tn(s + r)}, no entre ellas.`),
       ],
       solucion: [
         ['Llama u = ', xm(s), '. Radical interior: ', v('int', `u + ${k} ≥ 0`), '.'],
@@ -412,9 +414,9 @@
     const { a, b } = d, s = Math.round(Math.sqrt(a - b));
     const num = poli([1, -(a + b), a * b]);
     const variables = { num: { nombre: 'numerador', color: 'o' }, den: { nombre: 'denominador', color: 'i' }, X: { nombre: 'lo que se pide', color: 'h' } };
-    const enunciado = ['Sea ', 'f(x) = √[(', v('num', num), ')/(', v('den', xm(a)), ')].'];
+    const enunciado = ['Sea ', 'f(x) = √[(', v('num', num), ')/', v('den', a === 0 ? 'x' : `(${xm(a)})`), '].'];
     const pasos = [
-      ['Se factoriza el numerador: ', v('num', `${num} = (${xm(a)})(${xm(b)})`), '.'],
+      ['Se factoriza el numerador: ', v('num', `${num} = ${b === 0 ? `x(${xm(a)})` : a === 0 ? `x(${xm(b)})` : `(${xm(a)})(${xm(b)})`}`), '.'],
       ['Si x ≠ ', tn(a), ' se simplifica: f(x) = √(', xm(b), '). Pero ', v('den', `x = ${tn(a)}`), ' sigue fuera: ahí el cociente original no existe.'],
     ];
     if (d.sub === 'dominio') {
@@ -422,7 +424,7 @@
       return { variables, enunciado, texto: true, correcta: corr,
         pregunta: ['¿Cuál es el ', v('X', 'dominio'), ' de f?'],
         errores: [
-          et('AL21', conj([pz(b, INF, true)]), `Simplificaste (${xm(a)}) y te olvidaste de que en x = ${tn(a)} el denominador original vale 0: ese valor no entra.`, 'parcial', INFORME),
+          et('AL21', conj([pz(b, INF, true)]), `Simplificaste el factor ${a === 0 ? 'x' : `(${xm(a)})`} y te olvidaste de que en x = ${tn(a)} el denominador original vale 0: ese valor no entra.`, 'parcial', INFORME),
           et('excluye-donde-vale-cero', conj(sinPunto([pz(b, INF, false)], a)), `En x = ${tn(b)} el cociente vale 0 y √0 = 0 existe: ese extremo va cerrado.`),
           et('ignora-el-denominador', conj([pz(-INF, b, false, true), pz(a, INF, true)]), 'Estudiaste el signo del numerador solo. El signo del cociente depende también del denominador.'),
           et('solo-denominador', conj(sinPunto(R, a)), 'Solo quitaste donde el denominador vale 0. La raíz cuadrada pide además que el cociente no sea negativo.'),
@@ -467,7 +469,7 @@
         errores: [
           et('todo-el-dominio', conj([pz(h - r, h + r, true, true)]), `Ese es todo el dominio. Ahí f no es inyectiva: f(${tn(h - 1)}) = f(${tn(h + 1)}), porque la gráfica es una semicircunferencia que sube y baja.`),
           et('otra-rama', conj([der ? izqI : derI]), `En ese tramo f sí es inyectiva, pero no contiene a x = ${tn(q)}.`),
-          et('vertice-signo-cambiado', conj([der ? pz(-h, -h + r, true, true) : pz(-h - r, -h, true, true)]), `Pusiste el vértice en x = ${tn(-h)}. Al completar cuadrados, ${poli([-1, 2 * h, c])} = ${r * r} − (${xm(h)})²: el vértice está en x = ${h}.`),
+          (q >= -h - r && q <= -h + r) && et('vertice-signo-cambiado', conj([q >= -h ? pz(-h, -h + r, true, true) : pz(-h - r, -h, true, true)]), `Pusiste el vértice en x = ${tn(-h)}. Al completar cuadrados, ${poli([-1, 2 * h, c])} = ${r * r} − (${xm(h)})²: el vértice está en x = ${h}.`),
           et('excluye-extremos', conj([der ? pz(h, h + r, false, false) : pz(h - r, h, false, false)]), 'Los extremos también entran: en ellos f existe y sigue sin repetir valores.'),
         ],
         solucion: [
@@ -482,9 +484,9 @@
       enunciado: ['La función ', v('f', `g(x) = ${poli([1, B, C])}`), ', con dominio ', dom, ', es inyectiva.'],
       pregunta: [`¿Cuál es el ${der ? 'menor' : 'mayor'} valor posible de `, v('X', 'a'), '?'],
       errores: [
-        en(der ? 'raiz-como-extremo' : 'raiz-como-extremo', der ? w : u, `${tn(der ? w : u)} es una raíz de g, no el vértice. g es inyectiva desde el vértice, x = ${tn(hv)}, aunque ahí no corte al eje.`),
-        en('raiz-como-extremo', der ? u : w, `${tn(der ? u : w)} es una raíz de g. Lo que separa la parte que baja de la que sube es el vértice.`),
-        en('vertice-signo-cambiado', -hv, `El vértice de x² + bx + c está en x = −b/2. Tomaste b/2 y te salió con el signo cambiado.`),
+        en('raiz-como-extremo', der ? w : u, `${tn(der ? w : u)} es una raíz de g, no el vértice. g es inyectiva ${der ? 'desde' : 'hasta'} el vértice, x = ${tn(hv)}, aunque ahí no corte al eje.`),
+        en('raiz-como-extremo', der ? u : w, `${tn(der ? u : w)} es una raíz de g. g es inyectiva ${der ? 'desde' : 'hasta'} el vértice, x = ${tn(hv)}: es lo que separa la parte que baja de la que sube.`),
+        en('vertice-signo-cambiado', -hv, `Tomaste x = b/2 = ${tn(-hv)}; el vértice está en x = −b/2 = ${tn(hv)}.`),
         en('coeficiente-como-vertice', B, `Ese es el coeficiente de x. El vértice está en x = −b/2 = ${tn(hv)}.`),
         en('desde-cero', 0, 'La parábola no tiene por qué cambiar de sentido en x = 0. Cambia en su vértice.'),
       ],
@@ -523,7 +525,7 @@
     if (t.s === 'combi') return `En una combi de ${t.m} asientos viajan ${t.n} pasajeros, cada uno en un asiento distinto. La función ${nom} asigna a cada pasajero su asiento (conjunto de llegada: los ${t.m} asientos).`;
     if (t.s === 'cumple') return t.todos
       ? `En un aula de ${t.n} alumnos, en cada uno de los 12 meses cumple años al menos un alumno. La función ${nom} asigna a cada alumno el mes de su cumpleaños (llegada: los 12 meses).`
-      : `En un taller de ${t.n} alumnos, todos cumplen años en marzo, abril o mayo. La función ${nom} asigna a cada alumno el mes de su cumpleaños (llegada: los 12 meses).`;
+      : `En un club de ${t.n} alumnos nacidos todos en el primer trimestre (enero, febrero o marzo). La función ${nom} asigna a cada alumno el mes de su cumpleaños (llegada: los 12 meses).`;
     if (t.s === 'cuadrado') {
       const A = []; for (let x = -t.k; x <= t.k; x++) A.push(tn(x));
       const B = t.exacta ? Array.from({ length: t.k + 1 }, (_, i) => i * i) : Array.from({ length: t.k * t.k + 1 }, (_, i) => i);
@@ -548,7 +550,7 @@
     const corr = cvf(verdad);
     const razon = (t, q, nom) => {
       const iny = q.iny ? `dos elementos distintos nunca comparten imagen` : (t.s === 'cumple' ? `son ${t.n} alumnos y solo hay 12 meses: al menos dos comparten mes` : t.s === 'cuadrado' ? `${nom}(−1) = ${nom}(1) = 1` : `las páginas 1 y 2 están en la hoja 1`);
-      const sob = q.sob ? 'todo elemento de la llegada es imagen de alguno' : (t.s === 'combi' ? `quedan ${t.m - t.n} asientos vacíos` : t.s === 'cumple' ? 'hay meses en que nadie cumple años' : t.s === 'cuadrado' ? 'el 2 de B no es cuadrado de ningún elemento de A' : 'los impares de la llegada no son el doble de nadie');
+      const sob = q.sob ? 'todo elemento de la llegada es imagen de alguno' : (t.s === 'combi' ? (t.m - t.n === 1 ? 'queda 1 asiento vacío' : `quedan ${t.m - t.n} asientos vacíos`) : t.s === 'cumple' ? 'hay meses en que nadie cumple años' : t.s === 'cuadrado' ? 'el 2 de B no es cuadrado de ningún elemento de A' : 'los impares de la llegada no son el doble de nadie');
       return `${q.iny ? 'es inyectiva' : 'no es inyectiva'} (${iny}) y ${q.sob ? 'es sobreyectiva' : 'no es sobreyectiva'} (${sob})`;
     };
     return { variables, enunciado, texto: true, correcta: corr,
@@ -599,13 +601,13 @@
     return { variables, enunciado, texto: true, correcta: corr,
       pregunta: ['Indica la secuencia correcta de verdad (V) o falsedad (F).'],
       errores: [
-        V1 ? et('cuadratica-nunca-inyectiva', flip(0), `Una cuadrática sí puede ser inyectiva si el intervalo queda a un solo lado del vértice. Aquí el vértice está en x = ${tn(hv)}, fuera de ⟨${tn(d.p)}; ${tn(d.q)}⟩.`)
+        V1 ? et('cuadratica-nunca-inyectiva', flip(0), `Una cuadrática sí puede ser inyectiva si el intervalo queda a un solo lado del vértice. Aquí el vértice está en x = ${tn(hv)}, que no queda dentro de ⟨${tn(d.p)}; ${tn(d.q)}⟩ (a lo más es un extremo): en [${tn(d.p)}; ${tn(d.q)}] g solo sube o solo baja.`)
           : et('intervalo-con-el-vertice', flip(0), `El intervalo contiene al vértice, x = ${tn(hv)}: g baja y luego sube, así que repite valores (g(${tn(hv - 1)}) = g(${tn(hv + 1)})). Restringir no basta si el vértice queda adentro.`),
         et('rango-excluye-el-valor-del-dominio', flip(1), `Del rango de r se excluye el valor al que se acerca r cuando x crece mucho (1, el cociente de los coeficientes de x), no el ${tn(d.d)} que se quita del dominio. Despejando x de y = r(x) se ve que y = 1 es el único valor imposible.`),
         et('base-mayor-que-uno-crece', flip(2), `La base es 2 > 1, pero el exponente es ${d.k} − x: cuando x crece, el exponente baja. t es decreciente, con su máximo en x = ${tn(d.p3)} y su mínimo en x = ${tn(d.q3)}.`),
       ],
       solucion: [
-        [v('I', 'I.'), ` El vértice de g está en x = ${tn(hv)}. ${V1 ? 'Queda fuera del intervalo abierto, así que g solo sube o solo baja ahí: inyectiva. V.' : `Está dentro del intervalo: g(${tn(hv - 1)}) = g(${tn(hv + 1)}). No es inyectiva. F.`}`],
+        [v('I', 'I.'), ` El vértice de g está en x = ${tn(hv)}${V1 ? ', ' : '. '}${V1 ? `que no queda dentro de ⟨${tn(d.p)}; ${tn(d.q)}⟩ (a lo más es un extremo): en [${tn(d.p)}; ${tn(d.q)}] g solo sube o solo baja. Es inyectiva. V.` : `Está dentro del intervalo: g(${tn(hv - 1)}) = g(${tn(hv + 1)}). No es inyectiva. F.`}`],
         [v('II', 'II.'), ` Con y = r(x): y(${xm(d.d)}) = ${xm(-d.e)} → x(y − 1) = ${poli([d.d, d.e]).replace('x', 'y')} → x = (${poli([d.d, d.e]).replace('x', 'y')})/(y − 1). Solo y = 1 no tiene x: rango ℝ − {1}. ${V2 ? 'V.' : 'F.'}`],
         [v('III', 'III.'), ` El exponente ${d.k} − x baja cuando x sube, así que t decrece: máximo t(${tn(d.p3)}) = ${tn(tp)} y mínimo t(${tn(d.q3)}) = ${tn(tq)}. ${V3 ? 'V.' : 'F.'}`],
         ['Secuencia: ', v('X', corr.texto), '.'],
@@ -684,7 +686,8 @@
   ARMAR.logistico = d => {
     const { A, c, b, t1 } = d, dd = d.d, Pf = t => A / (c + dd * b ** (-t));
     const P0 = Pf(0), P1 = Math.round(Pf(t1)), lim = A / c;
-    const ctx = { truchas: ['El número de truchas de una piscigranja en Puno', 'años', 'truchas'], noticia: ['El número de vecinos de un distrito que ya conocen una noticia', 'días', 'vecinos'], cuyes: ['El número de cuyes de una granja en Cusco', 'años', 'cuyes'] }[d.ctx];
+    const ctx = { truchas: ['El número de truchas de una piscigranja en Puno', 'años', 'truchas', 'la población', 'año'], noticia: ['El número de vecinos de un distrito que ya conocen una noticia', 'días', 'vecinos', 'el número de vecinos que la conocen', 'día'], cuyes: ['El número de cuyes de una granja en Cusco', 'años', 'cuyes', 'la población', 'año'] }[d.ctx];
+    const lapso = t1 === 1 ? `1 ${ctx[4]}` : `${t1} ${ctx[1]}`, alCabo = t1 === 1 ? `al cabo de 1 ${ctx[4]}` : `a los ${t1} ${ctx[1]}`;
     const variables = { t: { nombre: 'tiempo', color: 'o' }, P: { nombre: 'población', color: 'i' }, X: { nombre: 'lo que se pide', color: 'h' } };
     const den = `${c === 1 ? '1' : c} + ${dd}·${b}⁻ᵗ`;
     const enunciado = [`${ctx[0]} se modela con `, v('P', `P(t) = ${A}/(${den})`), ', donde ', v('t', 't'), ` se mide en ${ctx[1]} desde hoy.`];
@@ -692,27 +695,27 @@
     if (d.sub === 'incremento') {
       const correcta = P1 - P0;
       return { variables, enunciado, unidad: ctx[2], correcta,
-        pregunta: ['¿En cuánto ', v('X', 'aumenta'), ' la población durante los primeros ', v('t', `${t1} ${t1 === 1 ? ctx[1].replace(/s$/, '') : ctx[1]}`), '?'],
+        pregunta: ['¿En cuánto ', v('X', 'aumenta'), ` ${ctx[3]} `, t1 === 1 ? 'al cabo de ' : 'durante los primeros ', v('t', lapso), '?'],
         errores: [
-          en('responde-el-final', P1, `Esa es la población a los ${t1} ${ctx[1]}, P(${t1}). Se pide cuánto aumentó: P(${t1}) − P(0).`),
-          en('responde-el-inicio', P0, 'Esa es la población de hoy, P(0). Falta calcular P en el otro tiempo y restar.'),
-          en('usa-el-limite', lim - P0, `Usaste el valor límite (${F(lim)}), al que la población se acerca después de mucho tiempo, no la de los ${t1} ${ctx[1]}.`),
-          en('potencia-negativa-como-positiva', P0 - Pf(-t1), `Tomaste ${b}⁻ᵗ como ${b}ᵗ: la población te salió menor que la de hoy y restaste al revés. El exponente negativo da un número pequeño: ${b}${sup('−' + t1)} = 1/${b ** t1}.`),
-        ],
+          en('responde-el-final', P1, `Ese es el valor ${alCabo}, P(${t1}). Se pide cuánto aumentó: P(${t1}) − P(0).`),
+          en('responde-el-inicio', P0, 'Ese es el valor de hoy, P(0). Falta calcular P en el otro tiempo y restar.'),
+          en('usa-el-limite', lim - P0, `Usaste el valor límite (${F(lim)}), al que la población se acerca después de mucho tiempo, no el valor ${alCabo}.`),
+          en('potencia-negativa-como-positiva', P0 - Pf(-t1), `Tomaste ${b}⁻ᵗ como ${b}ᵗ: te salió un valor menor que el de hoy y restaste al revés. El exponente negativo da un número pequeño: ${b}${sup('−' + t1)} = 1/${b ** t1}.`),
+        ].filter(e => Number.isInteger(e.valor)),
         solucion: [
           pasoP0,
-          ['A los ', v('t', `${t1} ${ctx[1]}`), `: ${b}${sup('−' + t1)} = 1/${b ** t1} y `, v('P', `P(${t1}) = ${F(A)}/(${c} + ${dd}/${b ** t1}) = ${F(A)} · ${b ** t1}/${c * b ** t1 + dd} = ${F(P1)}`), '.'],
+          [t1 === 1 ? 'Al cabo de ' : 'A los ', v('t', lapso), `: ${b}${sup('−' + t1)} = 1/${b ** t1} y `, v('P', `P(${t1}) = ${F(A)}/(${c} + ${dd}/${b ** t1}) = ${F(A)} · ${b ** t1}/${c * b ** t1 + dd} = ${F(P1)}`), '.'],
           [v('X', 'Aumento'), ` = ${F(P1)} − ${F(P0)} = `, v('X', `${F(correcta)} ${ctx[2]}`), '.'],
         ] };
     }
     return { variables, enunciado, unidad: ctx[2], correcta: lim,
-      pregunta: ['¿A qué valor ', v('X', 'se acerca'), ' la población cuando pasa mucho tiempo?'],
+      pregunta: ['¿A qué valor ', v('X', 'se acerca'), ` ${ctx[3]} cuando pasa mucho tiempo?`],
       errores: [
-        en('limite-como-inicio', P0, `Ese es P(0), la población de hoy. Con t muy grande, ${b}⁻ᵗ se acerca a 0, no a 1.`),
+        en('limite-como-inicio', P0, `Ese es P(0), el valor de hoy. Con t muy grande, ${b}⁻ᵗ se acerca a 0, no a 1.`),
         en('olvida-el-termino-constante', A, `Si ${b}⁻ᵗ → 0, el denominador se acerca a ${c}, no a 1: hay que dividir ${F(A)} entre ${c}.`),
         en('confunde-coeficientes', A / dd, `Dividiste entre ${dd}, el coeficiente de la potencia, que es justo el término que se apaga.`),
         en('evalua-en-un-tiempo', P1, `Ese es P(${t1}). Mucho tiempo quiere decir que t crece sin parar, y entonces ${b}⁻ᵗ → 0.`),
-      ].filter(e => !(e.id === 'olvida-el-termino-constante' && c === 1)),
+      ].filter(e => Number.isInteger(e.valor) && !(e.id === 'olvida-el-termino-constante' && c === 1)),
       solucion: [
         ['Cuando ', v('t', 't'), ` crece mucho, ${b}⁻ᵗ = 1/${b}ᵗ se hace muy pequeño: ${dd}·${b}⁻ᵗ → 0.`],
         ['El denominador se acerca a ', String(c), ': ', v('P', `P(t) → ${F(A)}/${c}`), ' = ', v('X', `${F(lim)} ${ctx[2]}`), '.'],

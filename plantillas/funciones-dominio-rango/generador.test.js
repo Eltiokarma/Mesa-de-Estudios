@@ -258,3 +258,15 @@ test('papel.json: entre 5 y 10 problemas completos, con la respuesta que da el c
     assert.ok(indep === r.valor || Math.abs(indep - r.valor) < 1e-7, `${q.id}: el recálculo independiente da ${indep}`);
   }
 });
+
+test('600 semillas: cada segmento de enunciado, pregunta y solución es texto o {v, t} con t texto y v en variables', () => {
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s);
+    const segs = [...p.enunciado, ...p.pregunta, ...p.solucion.flatMap(paso => (assert.ok(Array.isArray(paso), `semilla ${s}: paso no es lista`), paso))];
+    for (const x of segs) {
+      if (typeof x === 'string') continue;
+      assert.ok(x && typeof x === 'object' && typeof x.t === 'string' && typeof x.v === 'string', `semilla ${s}: segmento inválido ${JSON.stringify(x)}`);
+      assert.ok(Object.prototype.hasOwnProperty.call(p.variables, x.v), `semilla ${s}: ${x.v} no está en variables`);
+    }
+  }
+});
