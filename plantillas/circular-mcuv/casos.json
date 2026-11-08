@@ -1,0 +1,187 @@
+{
+  "plantilla": "circular-mcuv",
+  "tolerancia": 0.000001,
+  "nota": "Rapideces en rad/s, rpm o múltiplos de π rad/s, según el problema; lo girado en rad o en vueltas, como lo pide la pregunta. El freno no hace retroceder.",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver el generador: resolvió las 12 semillas como áreas bajo la gráfica ω-t, comprobando antes el instante en que se detiene en los frenados. Coinciden los 12; además revisó a mano 30 semillas más (200 a 229) sin hallar correctas erradas ni distractores defendibles.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "alfa",
+        "sub": "intervalo",
+        "w1": 25,
+        "w2": 29,
+        "t1": 4,
+        "t2": 8,
+        "R": null
+      },
+      "esperado": {
+        "respuesta": 1,
+        "exacta": "1 rad/s²"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "angulo",
+        "modo": "pi",
+        "w1": 2,
+        "w2": 1,
+        "t1": 0,
+        "t2": 6,
+        "R": null
+      },
+      "esperado": {
+        "respuesta": 4.5,
+        "exacta": "4,5 vueltas"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "frenado",
+        "modo": "pi",
+        "w0": 8,
+        "alfa": 2,
+        "t": 7
+      },
+      "esperado": {
+        "respuesta": 8,
+        "exacta": "8 vueltas"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "alfa",
+        "sub": "theta",
+        "w1": 8,
+        "w2": 14,
+        "theta": 75,
+        "R": null
+      },
+      "esperado": {
+        "respuesta": 0.88,
+        "exacta": "0,88 rad/s²"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "tiempo",
+        "modo": "rpm",
+        "w1": 960,
+        "w2": 0,
+        "theta": 144
+      },
+      "esperado": {
+        "respuesta": 18,
+        "exacta": "18 s"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "angulo",
+        "modo": "rad",
+        "w1": 21,
+        "w2": 25,
+        "t1": 5,
+        "t2": 7,
+        "R": null
+      },
+      "esperado": {
+        "respuesta": 46,
+        "exacta": "46 rad"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "tiempo",
+        "modo": "rad",
+        "w1": 14,
+        "w2": 28,
+        "theta": 105
+      },
+      "esperado": {
+        "respuesta": 5,
+        "exacta": "5 s"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "tramos",
+        "modo": "rad",
+        "alfa": 3,
+        "t1": 5,
+        "t2": 15,
+        "t3": 8
+      },
+      "esperado": {
+        "respuesta": 322.5,
+        "exacta": "322,5 rad"
+      }
+    },
+    {
+      "semilla": 17,
+      "entrada": {
+        "tipo": "frenado",
+        "modo": "rad",
+        "w0": 35,
+        "alfa": 5,
+        "t": 10
+      },
+      "esperado": {
+        "respuesta": 122.5,
+        "exacta": "122,5 rad"
+      }
+    },
+    {
+      "semilla": 18,
+      "entrada": {
+        "tipo": "tiempo",
+        "modo": "pi",
+        "w1": 4,
+        "w2": 3,
+        "theta": 24.5
+      },
+      "esperado": {
+        "respuesta": 14,
+        "exacta": "14 s"
+      }
+    },
+    {
+      "semilla": 24,
+      "entrada": {
+        "tipo": "angulo",
+        "modo": "rpm",
+        "w1": 240,
+        "w2": 900,
+        "t1": 0,
+        "t2": 9,
+        "R": null
+      },
+      "esperado": {
+        "respuesta": 85.5,
+        "exacta": "85,5 vueltas"
+      }
+    },
+    {
+      "semilla": 33,
+      "entrada": {
+        "tipo": "tramos",
+        "modo": "pi",
+        "alfa": 3,
+        "t1": 5,
+        "t2": 11,
+        "t3": 9
+      },
+      "esperado": {
+        "respuesta": 135,
+        "exacta": "135 vueltas"
+      }
+    }
+  ]
+}

@@ -1,0 +1,254 @@
+{
+  "plantilla": "circular-transmision",
+  "tolerancia": 0.000001,
+  "nota": "Radios en cm y rapideces en m/s. En «sentido», el valor es positivo si la última rueda gira en sentido horario. Con rpm pedidas en rad/s, la respuesta lleva π indicado.",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver el generador: resolvió las 10 semillas con fracciones exactas (rapidez lineal común en borde y faja, ω común en eje, sentido contando inversiones; polea móvil como promedio con signo). Coinciden los 10; además revisó a mano 30 semillas más (200 a 229) sin hallar correctas erradas ni distractores defendibles.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "contacto",
+        "modo": "rpm",
+        "w1": 600,
+        "ruedas": [
+          {
+            "r": 40,
+            "union": null
+          },
+          {
+            "r": 30,
+            "union": "engranaje"
+          },
+          {
+            "r": 25,
+            "union": "engranaje"
+          },
+          {
+            "r": 10,
+            "union": "engranaje"
+          }
+        ],
+        "sentidoA": null
+      },
+      "esperado": {
+        "respuesta": 2400,
+        "exacta": "2 400 rpm"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "movil",
+        "r1": 30,
+        "r2": 30,
+        "w1": 12,
+        "w2": 5,
+        "suelta": true
+      },
+      "esperado": {
+        "respuesta": 1.05,
+        "exacta": "1,05 m/s"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "tren",
+        "modo": "rad",
+        "w1": 48,
+        "ruedas": [
+          {
+            "r": 10,
+            "union": null
+          },
+          {
+            "r": 5,
+            "union": "cruzada"
+          }
+        ],
+        "sentidoA": null
+      },
+      "esperado": {
+        "respuesta": 96,
+        "exacta": "96 rad/s"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "tren",
+        "modo": "rpm-rad",
+        "w1": 600,
+        "ruedas": [
+          {
+            "r": 10,
+            "union": null
+          },
+          {
+            "r": 40,
+            "union": "engranaje"
+          },
+          {
+            "r": 25,
+            "union": "eje"
+          }
+        ],
+        "sentidoA": null
+      },
+      "esperado": {
+        "respuesta": 15.707963267948966,
+        "exacta": "5π rad/s"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "bloque",
+        "modo": "rad",
+        "w1": 40,
+        "rA": 60,
+        "R": 25,
+        "r": 5,
+        "fajaEnMayor": true,
+        "diametros": false
+      },
+      "esperado": {
+        "respuesta": 4.8,
+        "exacta": "4,8 m/s"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "tren",
+        "modo": "rpm",
+        "w1": 600,
+        "ruedas": [
+          {
+            "r": 15,
+            "union": null
+          },
+          {
+            "r": 20,
+            "union": "cruzada"
+          },
+          {
+            "r": 40,
+            "union": "faja"
+          }
+        ],
+        "sentidoA": null
+      },
+      "esperado": {
+        "respuesta": 225,
+        "exacta": "225 rpm"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "sentido",
+        "modo": "rad",
+        "w1": 20,
+        "ruedas": [
+          {
+            "r": 60,
+            "union": null
+          },
+          {
+            "r": 25,
+            "union": "engranaje"
+          },
+          {
+            "r": 5,
+            "union": "cruzada"
+          },
+          {
+            "r": 40,
+            "union": "cruzada"
+          }
+        ],
+        "sentidoA": "antihorario"
+      },
+      "esperado": {
+        "respuesta": 30,
+        "exacta": "30 rad/s, en sentido horario"
+      }
+    },
+    {
+      "semilla": 17,
+      "entrada": {
+        "tipo": "alfa",
+        "modo": "rad",
+        "w1": 4,
+        "ruedas": [
+          {
+            "r": 10,
+            "union": null
+          },
+          {
+            "r": 50,
+            "union": "faja"
+          },
+          {
+            "r": 10,
+            "union": "eje"
+          }
+        ],
+        "sentidoA": null
+      },
+      "esperado": {
+        "respuesta": 0.8,
+        "exacta": "0,8 rad/s²"
+      }
+    },
+    {
+      "semilla": 20,
+      "entrada": {
+        "tipo": "contacto",
+        "modo": "rad",
+        "w1": 30,
+        "ruedas": [
+          {
+            "r": 20,
+            "union": null
+          },
+          {
+            "r": 15,
+            "union": "engranaje"
+          },
+          {
+            "r": 30,
+            "union": "engranaje"
+          },
+          {
+            "r": 5,
+            "union": "engranaje"
+          }
+        ],
+        "sentidoA": null
+      },
+      "esperado": {
+        "respuesta": 120,
+        "exacta": "120 rad/s"
+      }
+    },
+    {
+      "semilla": 21,
+      "entrada": {
+        "tipo": "bloque",
+        "modo": "rpm",
+        "w1": 45,
+        "rA": 50,
+        "R": 15,
+        "r": 10,
+        "fajaEnMayor": true,
+        "diametros": true
+      },
+      "esperado": {
+        "respuesta": 1.5707963267948966,
+        "exacta": "π/2 m/s"
+      }
+    }
+  ]
+}

@@ -53,7 +53,7 @@
       "universidades": {"uni": {"semanas": [3]}, "unmsm": {"temas": [4]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": ["tiro-parabolico"],
+      "plantillas": ["tiro-parabolico", "circular-transmision", "circular-mcuv", "circular-enesimo-segundo", "circular-encuentros"],
       "investigacion": "docs/investigacion/cinematica-ideas-erroneas.md"
     },
     {

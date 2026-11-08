@@ -111,7 +111,11 @@
      "potencial_visual": "alto",
      "grado": 4,
      "plantillas": [
-      "tiro-parabolico"
+      "tiro-parabolico",
+      "circular-transmision",
+      "circular-mcuv",
+      "circular-enesimo-segundo",
+      "circular-encuentros"
      ]
     },
     {
@@ -4549,6 +4553,66 @@
     "/plantillas/circuitos-cc/index.html",
     "/plantillas/circuitos-cc/motor.js",
     "/plantillas/circuitos-cc/papel.json"
+   ]
+  },
+  "circular-encuentros": {
+   "id": "circular-encuentros",
+   "titulo": "Dos móviles en la misma circunferencia",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.movimiento-parabolico-y-circular"
+   ],
+   "url": "#/practica/circular-encuentros",
+   "papel": null,
+   "archivos": [
+    "/plantillas/circular-encuentros/generador.js"
+   ]
+  },
+  "circular-enesimo-segundo": {
+   "id": "circular-enesimo-segundo",
+   "titulo": "Segundo a segundo: lo que gira cada segundo",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.movimiento-parabolico-y-circular"
+   ],
+   "url": "#/practica/circular-enesimo-segundo",
+   "papel": null,
+   "archivos": [
+    "/plantillas/circular-enesimo-segundo/generador.js"
+   ]
+  },
+  "circular-mcuv": {
+   "id": "circular-mcuv",
+   "titulo": "El giro que acelera: tres datos y lo que falta",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.movimiento-parabolico-y-circular"
+   ],
+   "url": "#/practica/circular-mcuv",
+   "papel": null,
+   "archivos": [
+    "/plantillas/circular-mcuv/generador.js"
+   ]
+  },
+  "circular-transmision": {
+   "id": "circular-transmision",
+   "titulo": "Ruedas, fajas y poleas",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.movimiento-parabolico-y-circular"
+   ],
+   "url": "#/practica/circular-transmision",
+   "papel": null,
+   "archivos": [
+    "/plantillas/circular-transmision/generador.js"
    ]
   },
   "circunferencia-trig": {

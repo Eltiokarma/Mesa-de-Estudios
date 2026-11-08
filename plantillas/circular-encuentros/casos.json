@@ -1,0 +1,236 @@
+{
+  "plantilla": "circular-encuentros",
+  "tolerancia": 0.000001,
+  "nota": "Rapideces en múltiplos de π rad/s, periodos en s o rpm. La separación inicial se mide desde A, en el sentido en que gira A.",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver el generador: resolvió las 12 semillas con posiciones angulares θ(t) en vueltas (encuentro cuando θA − θB es entero; juntos en P con el mcm de los períodos), con fracciones exactas. Coinciden los 12; además revisó a mano 30 semillas más (200 a 229) sin hallar correctas erradas ni distractores defendibles.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "salida",
+        "modo": "periodo",
+        "A": 10,
+        "B": 9,
+        "mismo": true,
+        "pide": "vueltas"
+      },
+      "esperado": {
+        "respuesta": 9,
+        "exacta": "9 vueltas"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "separacion",
+        "modo": "pi",
+        "A": [
+          1,
+          3
+        ],
+        "B": [
+          1,
+          2
+        ],
+        "mismo": false,
+        "grados": 0,
+        "phi": 90
+      },
+      "esperado": {
+        "respuesta": 0.6000000000000001,
+        "exacta": "0,6 s"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "salida",
+        "modo": "pi",
+        "A": [
+          1,
+          2
+        ],
+        "B": [
+          1,
+          3
+        ],
+        "mismo": false,
+        "pide": "tiempo"
+      },
+      "esperado": {
+        "respuesta": 12,
+        "exacta": "12 s"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "vueltas",
+        "modo": "pi",
+        "A": [
+          1,
+          1
+        ],
+        "B": [
+          2,
+          3
+        ],
+        "mismo": true,
+        "grados": 180,
+        "n": 3
+      },
+      "esperado": {
+        "respuesta": 7.499999999999999,
+        "exacta": "7,5 vueltas"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "mcuv",
+        "sub": "alcance",
+        "w": [
+          1,
+          2
+        ],
+        "alfaB": [
+          4,
+          9
+        ]
+      },
+      "esperado": {
+        "respuesta": 2.25,
+        "exacta": "2,25 s"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "salida",
+        "modo": "pi",
+        "A": [
+          1,
+          6
+        ],
+        "B": [
+          1,
+          4
+        ],
+        "mismo": true,
+        "pide": "tiempo"
+      },
+      "esperado": {
+        "respuesta": 24,
+        "exacta": "24 s"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "vueltas",
+        "modo": "periodo",
+        "A": 4,
+        "B": 6,
+        "mismo": false,
+        "grados": 150,
+        "n": 1
+      },
+      "esperado": {
+        "respuesta": 0.25000000000000006,
+        "exacta": "0,25 vueltas"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "mcuv",
+        "sub": "ventaja",
+        "alfaA": [
+          25,
+          36
+        ],
+        "alfaB": [
+          1,
+          4
+        ]
+      },
+      "esperado": {
+        "respuesta": 3,
+        "exacta": "3 s"
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "tipo": "encuentro",
+        "modo": "rpm",
+        "A": 2,
+        "B": 8,
+        "mismo": true,
+        "grados": 45,
+        "n": 3
+      },
+      "esperado": {
+        "respuesta": 28.75,
+        "exacta": "28,75 s"
+      }
+    },
+    {
+      "semilla": 22,
+      "entrada": {
+        "tipo": "encuentro",
+        "modo": "pi",
+        "A": [
+          1,
+          2
+        ],
+        "B": [
+          1,
+          3
+        ],
+        "mismo": false,
+        "grados": 90,
+        "n": 3
+      },
+      "esperado": {
+        "respuesta": 5.4,
+        "exacta": "5,4 s"
+      }
+    },
+    {
+      "semilla": 52,
+      "entrada": {
+        "tipo": "separacion",
+        "modo": "periodo",
+        "A": 10,
+        "B": 9,
+        "mismo": true,
+        "grados": 0,
+        "phi": 30
+      },
+      "esperado": {
+        "respuesta": 7.500000000000007,
+        "exacta": "7,5 s"
+      }
+    },
+    {
+      "semilla": 139,
+      "entrada": {
+        "tipo": "mcuv",
+        "sub": "contrario",
+        "alfaA": [
+          1,
+          9
+        ],
+        "alfaB": [
+          5,
+          36
+        ]
+      },
+      "esperado": {
+        "respuesta": 4,
+        "exacta": "4 s"
+      }
+    }
+  ]
+}

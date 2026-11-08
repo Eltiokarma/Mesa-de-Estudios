@@ -1,0 +1,14 @@
+{
+  "id": "circular-mcuv",
+  "titulo": "El giro que acelera: tres datos y lo que falta",
+  "formato": "predicciones",
+  "unidades": [
+    "fisica.movimiento-parabolico-y-circular"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": null
+}

@@ -1,0 +1,164 @@
+{
+  "plantilla": "circular-enesimo-segundo",
+  "tolerancia": 0.000001,
+  "nota": "El «segundo m» va de t = m − 1 a t = m. Ángulos en rad o en vueltas, con α en rad/s² o vueltas/s².",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver el generador: resolvió las 12 semillas con θₙ = ω₀ + α(2n−1)/2 (proporción de impares desde el reposo), con fracciones exactas. Coinciden los 12; además revisó a mano 30 semillas más (200 a 229) sin hallar correctas erradas ni distractores defendibles.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "desde-k",
+        "k": 5,
+        "m": 10,
+        "thetaK": 13.5,
+        "vueltas": false
+      },
+      "esperado": {
+        "respuesta": 28.5,
+        "exacta": "28,5 rad"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "con-omega0",
+        "w0": 16,
+        "alfa": 10,
+        "m": 6,
+        "vueltas": false
+      },
+      "esperado": {
+        "respuesta": 71,
+        "exacta": "71 rad"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "desde-k",
+        "k": 3,
+        "m": 9,
+        "thetaK": 2.5,
+        "vueltas": false
+      },
+      "esperado": {
+        "respuesta": 8.5,
+        "exacta": "8,5 rad"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "desde-k",
+        "k": 2,
+        "m": 10,
+        "thetaK": 15,
+        "vueltas": false
+      },
+      "esperado": {
+        "respuesta": 95,
+        "exacta": "95 rad"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "con-omega0",
+        "w0": 14,
+        "alfa": 1,
+        "m": 4,
+        "vueltas": true
+      },
+      "esperado": {
+        "respuesta": 17.5,
+        "exacta": "17,5 vueltas"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "alfa",
+        "k": 3,
+        "thetaK": 7.5,
+        "vueltas": true
+      },
+      "esperado": {
+        "respuesta": 3,
+        "exacta": "3 vueltas/s²"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "con-omega0",
+        "w0": 17,
+        "alfa": 5,
+        "m": 3,
+        "vueltas": true
+      },
+      "esperado": {
+        "respuesta": 29.5,
+        "exacta": "29,5 vueltas"
+      }
+    },
+    {
+      "semilla": 22,
+      "entrada": {
+        "tipo": "alfa",
+        "k": 5,
+        "thetaK": 27,
+        "vueltas": true
+      },
+      "esperado": {
+        "respuesta": 6,
+        "exacta": "6 vueltas/s²"
+      }
+    },
+    {
+      "semilla": 23,
+      "entrada": {
+        "tipo": "impares",
+        "m": 4
+      },
+      "esperado": {
+        "respuesta": 7,
+        "exacta": "7 veces"
+      }
+    },
+    {
+      "semilla": 24,
+      "entrada": {
+        "tipo": "alfa",
+        "k": 2,
+        "thetaK": 1.5,
+        "vueltas": true
+      },
+      "esperado": {
+        "respuesta": 1,
+        "exacta": "1 vuelta/s²"
+      }
+    },
+    {
+      "semilla": 29,
+      "entrada": {
+        "tipo": "impares",
+        "m": 8
+      },
+      "esperado": {
+        "respuesta": 15,
+        "exacta": "15 veces"
+      }
+    },
+    {
+      "semilla": 30,
+      "entrada": {
+        "tipo": "impares",
+        "m": 7
+      },
+      "esperado": {
+        "respuesta": 13,
+        "exacta": "13 veces"
+      }
+    }
+  ]
+}

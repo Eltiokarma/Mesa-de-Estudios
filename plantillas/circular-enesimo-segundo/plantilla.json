@@ -1,0 +1,14 @@
+{
+  "id": "circular-enesimo-segundo",
+  "titulo": "Segundo a segundo: lo que gira cada segundo",
+  "formato": "predicciones",
+  "unidades": [
+    "fisica.movimiento-parabolico-y-circular"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": null
+}
