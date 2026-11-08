@@ -1,0 +1,95 @@
+{
+  "plantilla": "vectores-combinacion",
+  "tolerancia": 0.000001,
+  "nota": "Respuesta tal como la escribió el verificador; el generador la escribe igual.",
+  "verificacion": "Verificado aparte (subagente, 8 nov 2026) sin ver el generador ni el núcleo: paralelismo por determinante nulo, A = (S + D)/2 desde la suma y la diferencia, y C = mA + nB por Cramer. Los 5 casos coinciden.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "paralelo",
+        "a": 3,
+        "b": 2,
+        "c": 5
+      },
+      "esperado": {
+        "respuesta": "15/2"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "suma-diferencia",
+        "S": [
+          1,
+          0
+        ],
+        "D": [
+          1,
+          12
+        ],
+        "pideA": true
+      },
+      "esperado": {
+        "respuesta": "(1; 6)"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "en-funcion",
+        "A": [
+          1,
+          -3
+        ],
+        "B": [
+          2,
+          -3
+        ],
+        "C": [
+          4,
+          -9
+        ]
+      },
+      "esperado": {
+        "respuesta": "2A + B"
+      }
+    },
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "suma-diferencia",
+        "S": [
+          3,
+          11
+        ],
+        "D": [
+          7,
+          1
+        ],
+        "pideA": true
+      },
+      "esperado": {
+        "respuesta": "(5; 6)"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "suma-diferencia",
+        "S": [
+          1,
+          -6
+        ],
+        "D": [
+          -11,
+          -2
+        ],
+        "pideA": true
+      },
+      "esperado": {
+        "respuesta": "(−5; −4)"
+      }
+    }
+  ]
+}

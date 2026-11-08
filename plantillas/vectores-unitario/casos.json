@@ -1,0 +1,106 @@
+{
+  "plantilla": "vectores-unitario",
+  "tolerancia": 0.000001,
+  "nota": "Respuesta tal como la escribió el verificador; el generador la escribe igual.",
+  "verificacion": "Verificado aparte (subagente, 8 nov 2026) sin ver el generador ni el núcleo, desde el enunciado y con fracciones exactas: módulos por cuadrados perfectos, unitario = vector/módulo, sentido según x creciente y antiparalelo con |B|² comprobado. Los 7 casos coinciden.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "recta",
+        "p": 3,
+        "q": 4,
+        "b": 2
+      },
+      "esperado": {
+        "respuesta": "(4/5; 3/5)"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "unitario",
+        "c": [
+          -6,
+          -8
+        ]
+      },
+      "esperado": {
+        "respuesta": "(−3/5; −4/5)"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "constante",
+        "c": [
+          -4,
+          8,
+          -1
+        ]
+      },
+      "esperado": {
+        "respuesta": "1/9"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "unitario-suma",
+        "a": [
+          3,
+          4
+        ],
+        "b": [
+          0,
+          -4
+        ]
+      },
+      "esperado": {
+        "respuesta": "(1; 0)"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "con-modulo",
+        "c": [
+          4,
+          -8,
+          1
+        ],
+        "k": 36,
+        "anti": true
+      },
+      "esperado": {
+        "respuesta": "(−16; 32; −4)"
+      }
+    },
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "constante",
+        "c": [
+          3,
+          6,
+          2
+        ]
+      },
+      "esperado": {
+        "respuesta": "1/7"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "recta",
+        "p": -12,
+        "q": 5,
+        "b": -4
+      },
+      "esperado": {
+        "respuesta": "(5/13; −12/13)"
+      }
+    }
+  ]
+}

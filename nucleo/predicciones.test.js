@@ -71,3 +71,53 @@ test('formatear con 0 decimales no borra los ceros de los enteros', () => {
   assert.equal(P.formatear(2.5, 0), '3');
   assert.equal(P.formatear(2.50), '2,5');
 });
+
+test('frac y textoFraccion: reducidas, con el signo arriba', () => {
+  assert.deepEqual(P.frac(4, -6), { n: -2, d: 3 });
+  assert.deepEqual(P.frac([0, 5]), { n: 0, d: 1 });
+  assert.equal(P.textoFraccion([-3, 6]), '−1/2');
+  assert.equal(P.textoFraccion(5), '5');
+  assert.throws(() => P.frac(1.5, 2));
+});
+
+test('combinacion: forma de academia y clave canónica', () => {
+  assert.equal(P.combinacion([[2, 3], [1, 3]], ['A', 'B']).texto, '(2A + B)/3');
+  assert.equal(P.combinacion([2, -1], ['A', 'B']).texto, '2A − B');
+  assert.equal(P.combinacion([[1, 2], [-1, 2]], ['a', 'b']).texto, '(a − b)/2');
+  assert.equal(P.combinacion([0, [3, 4]], ['A', 'B']).texto, '3B/4');
+  assert.equal(P.combinacion([-1, 0], ['A', 'B']).texto, '−A');
+  assert.equal(P.combinacion([[-1, 2], 1], ['a', 'b']).texto, '(2b − a)/2');
+  assert.equal(P.combinacion([-2, 3], ['A', 'B']).texto, '3B − 2A');
+  assert.equal(P.combinacion([[-1, 6], [-1, 6]], ['u', 'w']).texto, '−(u + w)/6');
+  assert.equal(P.combinacion([0, 0], ['A', 'B']).texto, '0');
+  assert.equal(P.combinacion([[2, 4], 1], ['A', 'B']).clave, P.combinacion([[1, 2], [3, 3]], ['A', 'B']).clave);
+  assert.notEqual(P.combinacion([1, 2], ['A', 'B']).clave, P.combinacion([2, 1], ['A', 'B']).clave);
+});
+
+test('vector: punto y coma y fracciones', () => {
+  assert.equal(P.vector([3, -4]).texto, '(3; −4)');
+  assert.equal(P.vector([[1, 2], 0, -2]).texto, '(1/2; 0; −2)');
+  assert.equal(P.vector([[2, 4], 1]).clave, P.vector([[1, 2], 1]).clave);
+});
+
+test('armarTexto: compara por clave, descarta equivalentes y no deja dos textos iguales', () => {
+  const C = P.combinacion([[2, 3], [1, 3]], ['A', 'B']);
+  const err = (id, c) => ({ id, ...c, explicacion: 'x', respaldo: 'hipotesis' });
+  const alt = P.armarTexto({ correcta: C, rng: Azar.crear(3), errores: [
+    err('derechos', P.combinacion([[1, 3], [2, 3]], ['A', 'B'])),
+    err('equivalente', P.combinacion([[4, 6], [2, 6]], ['A', 'B'])), // es la correcta escrita de otra forma
+    err('mitades', P.combinacion([[1, 2], [1, 2]], ['A', 'B'])),
+    err('sin-dividir', P.combinacion([2, 1], ['A', 'B'])),
+  ] });
+  assert.equal(alt.length, 4);
+  assert.equal(alt.filter(a => a.correcta).length, 1);
+  assert.equal(alt.find(a => a.correcta).valor, C.clave);
+  assert.ok(!alt.some(a => a.error && a.error.id === 'equivalente'));
+  assert.deepEqual(alt.map(a => a.letra), ['A', 'B', 'C', 'D']);
+  assert.throws(() => P.armarTexto({ correcta: C, rng: Azar.crear(1), errores: [{ id: 'x', clave: 'otra', texto: C.texto, explicacion: 'x', respaldo: 'hipotesis' }] }));
+});
+
+test('armar sigue igual que antes sin opciones nuevas', () => {
+  const alt = P.armar({ correcta: 10, rng: Azar.crear(9), errores: [{ id: 'a', valor: 20, explicacion: 'x', respaldo: 'hipotesis' }, { id: 'b', valor: 10.001, explicacion: 'x', respaldo: 'hipotesis' }] });
+  assert.deepEqual(alt.map(a => a.texto).sort(), ['10', '20']);
+});

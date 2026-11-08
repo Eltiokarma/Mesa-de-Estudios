@@ -8,7 +8,11 @@ const path = require('node:path');
 const RESPALDOS = ['documentado', 'parcial', 'hipotesis'];
 const raiz = path.join(__dirname, '..');
 
-function probarGenerador(gen, { semillas = 400, recalcular } = {}) {
+// igual(esperado, valor): cómo comparar el recálculo independiente con la respuesta. Por defecto,
+// números con tolerancia 1e-9; para respuestas de armarTexto, igualdad de claves (===).
+const igualNumero = (a, b) => Math.abs(a - b) < 1e-9;
+
+function probarGenerador(gen, { semillas = 400, recalcular, igual = igualNumero } = {}) {
   test(`${gen.id}: la misma semilla da el mismo problema`, () => {
     for (const s of [0, 1, 'entrada-1', 'salida-3']) assert.deepEqual(gen.generar(s), gen.generar(s));
   });
@@ -30,7 +34,7 @@ function probarGenerador(gen, { semillas = 400, recalcular } = {}) {
       assert.equal(correcta.valor, p.respuesta.valor, `semilla ${s}: la correcta no es la respuesta`);
       if (recalcular) {
         const esperado = recalcular(p);
-        assert.ok(Math.abs(esperado - p.respuesta.valor) < 1e-9, `semilla ${s}: el cálculo independiente da ${esperado}, el generador ${p.respuesta.valor}`);
+        assert.ok(igual(esperado, p.respuesta.valor), `semilla ${s}: el cálculo independiente da ${esperado}, el generador ${p.respuesta.valor}`);
       }
       for (const campo of ['enunciado', 'pregunta', 'solucion']) assert.ok(Array.isArray(p[campo]) && p[campo].length, `semilla ${s}: falta ${campo}`);
     }
