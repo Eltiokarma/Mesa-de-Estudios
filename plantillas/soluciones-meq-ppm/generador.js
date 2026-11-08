@@ -39,8 +39,8 @@
  *                de AgNO₃ c M (Ag⁺ + Cl⁻ → AgCl). precipitado: mg de AgCl; cloruro: mg/L de Cl⁻ en la muestra
  *   ppmMasa      { sub:'masa'|'ppm', ppm | m, V, unidad:'g'|'kg' }      → V en m³. masa: masa del
  *                contaminante en la unidad pedida; ppm: ppm con m en gramos
- *   ppmGas       { gas, X, t, P, unidad:'mol/m³'|'mmol/m³' }           → X ppm en volumen a t °C y P atm:
- *                cantidad del gas por m³ de aire
+ *   ppmGas       { lugar, gas, X, t, P, unidad:'mol/m³'|'mmol/m³'|'µmol/m³' } → X ppm en volumen a t °C y
+ *                P atm: cantidad del gas por m³ de aire (lugar: 'avenida', 'ciudad' o 'chimenea'; solo contexto)
  *   volumen-pct  { sub:'agua'|'mezcla', V, a } | { V1, a1, V2, a2 }     → agua: mL de agua en V mL de alcohol
  *                de a % v/v; mezcla: % v/v de alcohol al mezclar
  *   jarabe       { azucar, p }                                          → mol/L de un jarabe de p % m/v
@@ -154,7 +154,10 @@
     const S = SALES[sal], I = ionDe(sal, ion), k = kDe(sal, ion);
     const n = dado === 'M' ? M * V : CALC.mmolDePct(sal, pct, V);
     const correcta = CALC.meq(sal, ion, n);
-    const ctx = rng.elegir(['En el laboratorio se tiene', 'Una bolsa de suero contiene', 'Una bebida rehidratante de prueba contiene']);
+    const ctxs = ['En el laboratorio se tienen'];
+    if (['NaCl', 'KCl', 'NaHCO3', 'MgSO4'].includes(sal) && (dado === 'M' ? M <= 0.2 : pct <= 1)) ctxs.push('Una bolsa de suero contiene');
+    if (['NaCl', 'KCl'].includes(sal) && (dado === 'M' ? M <= 0.1 : pct <= 0.5)) ctxs.push('Una bebida rehidratante de prueba contiene');
+    const ctx = rng.elegir(ctxs);
     const errores = [
       ...(I.z > 1 ? [e('SO15', 'parcial', FS, n * I.nu, `Contaste los milimoles de ${I.f} pero no multiplicaste por su carga. Cada mmol de ${I.f} son ${I.z} mEq, porque el equivalente cuenta cargas.`),
         hip('QA-carga-al-reves', n * I.nu / I.z, `Dividiste entre la carga de ${I.f} en vez de multiplicar. Un ion con carga ${I.z} aporta ${I.z} mEq por cada mmol: más equivalentes que milimoles, no menos.`)] : []),
@@ -192,7 +195,7 @@
     const correcta = CALC.volumenConMeq(sal, ion, M, Nmeq);
     const errores = [
       ...(I.z > 1 ? [e('SO15', 'parcial', FS, Nmeq / (M * I.nu), `Despejaste como si cada mmol de ${I.f} fuera 1 mEq. Su carga es ${I.z}: cada mL de la solución trae ${I.z} veces más mEq que mmol, así que basta menos volumen.`),
-        hip('QA-carga-al-reves', Nmeq * I.z / (M * I.nu), `Usaste la carga al revés: dividiste los mEq entre algo que debía multiplicarlos. mEq por mL = M × subíndice × carga.`)] : []),
+        hip('QA-carga-al-reves', Nmeq * I.z / (M * I.nu), `Multiplicaste por la carga en vez de dividir: mmol del ion = mEq ÷ carga.`)] : []),
       ...(I.nu > 1 ? [hip('QA-sin-subindice', Nmeq / (M * I.z), `Olvidaste que cada ${S.f} trae ${I.nu} ${I.f}. Por eso cada mL tiene el doble de ${I.f} del que contaste.`)] : []),
       hip('QA-eq-por-meq', correcta * 1000, `Tomaste los ${N(Nmeq)} mEq como si fueran ${N(Nmeq)} Eq: te salió mil veces más volumen. Con mol/L y mEq, el volumen sale directo en mL.`),
       hip('QA-litros-como-mL', correcta / 1000, `Ese número son litros, no mililitros, o dividiste entre 1000 de más. M = mmol/mL: mEq ÷ (mEq por mL) da mL.`),
@@ -202,7 +205,7 @@
     const ctx = rng.elegir(['Una enfermera necesita', 'Para un ensayo de laboratorio se necesitan', 'Un técnico debe medir']);
     return {
       variables, correcta, errores, unidad: 'mL',
-      enunciado: [`${ctx} `, v('q', `${N(Nmeq)} mEq de ${I.f}`), ` y tiene una solución de ${S.f} `, v('c', `${N(M)} mol/L`), '.'],
+      enunciado: [`${ctx} `, v('q', `${N(Nmeq)} mEq de ${I.f}`), ` y se tiene una solución de ${S.f} `, v('c', `${N(M)} mol/L`), '.'],
       pregunta: ['¿Qué ', v('x', 'volumen'), ' de esa solución, en mL, contiene esa cantidad?'],
       solucion: [
         [v('c', `${N(M)} mol/L`), ` son ${N(M)} mmol de ${S.f} por mL; con ${I.nu} ${I.f} de carga ${I.z} por fórmula, son `, v('k', `${F(M * k)} mEq de ${I.f} por mL`), '.'],
@@ -269,7 +272,7 @@
     const y = VB * 2 * MB * 1000 / Vf, w = y + VA * MA * 1000 / Vf;
     if ([y, w].some(x => Math.abs(x * 10 - Math.round(x * 10)) > 1e-9)) return null;
     const r = CALC.preparar(sA, MA, sB, MB, Vf, y, w);
-    const A = SALES[sA].f, B = SALES[sB].f, C = ionDe(sB, 'cat'), Ca = ionDe(sA, 'cat');
+    const A = SALES[sA].f, B = SALES[sB].f, C = ionDe(sB, 'cat');
     const correcta = sub === 'A' ? r.VA : r.VB;
     const errores = sub === 'A' ? [
       hip('QA-ion-comun-una-sal', w * Vf / 1000 / MA, `Pusiste todo el Cl⁻ con la madre de ${A}. Pero el ${B} también trae Cl⁻: la parte que falta es ${N(w)} − ${N(y)} mEq/L.`),
@@ -278,22 +281,22 @@
       hip('QA-eq-por-meq', r.VA * 1000, `Tomaste mEq como si fueran Eq: te salió mil veces más volumen.`),
     ] : [
       e('SO15', 'parcial', FS, 2 * r.VB, `Pasaste mEq de ${C.f} a mmol sin dividir entre su carga (2). Cada mmol de ${B} aporta 2 mEq de ${C.f}: basta la mitad de volumen.`),
-      hip('QA-carga-al-reves', r.VB / 2, `Usaste la carga dos veces: dividiste entre 2 al pasar a mmol y otra vez después. Un ${C.f} por fórmula, con carga 2.`),
+      hip('QA-carga-dos-veces', r.VB / 2, `Usaste la carga dos veces: dividiste entre 2 al pasar a mmol y otra vez después. Un ${C.f} por fórmula, con carga 2.`),
       hip('QA-volumen-final', Vf - r.VA, `Supusiste que las dos madres llenan el volumen final. No: se miden los milimoles que hacen falta y el resto se completa con agua.`),
-      hip('QA-ion-comun-una-sal', w * Vf / 1000 / (2 * MB), `Usaste los mEq/L de Cl⁻ para calcular el ${B}. El ${B} se calcula con su catión, ${C.f}, que solo sale de esa madre.`),
+      hip('QA-otro-ion', w * Vf / 1000 / (2 * MB), `Usaste los mEq/L de Cl⁻ para calcular el ${B}. El ${B} se calcula con su catión, ${C.f}, que solo sale de esa madre.`),
       hip('QA-eq-por-meq', r.VB * 1000, `Tomaste mEq como si fueran Eq: te salió mil veces más volumen.`),
     ];
-    const variables = { A: { nombre: `madre de ${A}`, color: 'o' }, B: { nombre: `madre de ${B}`, color: 'i' }, f: { nombre: 'volumen final y concentraciones', color: 'h' }, x: { nombre: 'volumen pedido', color: 'd' } };
+    const variables = { f: { nombre: 'volumen final', color: 'o' }, y: { nombre: `mEq/L de ${C.f}`, color: 'i' }, w: { nombre: 'mEq/L de Cl⁻', color: 'h' }, x: { nombre: 'volumen pedido', color: 'd' } };
     const sol = [
-      ['mEq que debe haber al final: ', v('f', `${N(y)} mEq/L × ${N(Vf / 1000)} L`), ` = ${F(y * Vf / 1000)} mEq de ${C.f} y `, v('f', `${N(w)} × ${N(Vf / 1000)}`), ` = ${F(w * Vf / 1000)} mEq de Cl⁻.`],
-      [`El ${C.f} solo sale del ${B}: ${F(y * Vf / 1000)} mEq ÷ 2 = ${F(y * Vf / 2000)} mmol de ${B}; ÷ `, v('B', `${N(MB)} mmol/mL`), ' = ', sub === 'B' ? v('x', `${F(r.VB)} mL`) : `${F(r.VB)} mL`, '.'],
+      ['mEq que debe haber al final: ', v('y', `${N(y)} mEq/L`), ' × ', v('f', `${N(Vf / 1000)} L`), ` = ${F(y * Vf / 1000)} mEq de ${C.f} y `, v('w', `${N(w)} mEq/L`), ' × ', v('f', `${N(Vf / 1000)} L`), ` = ${F(w * Vf / 1000)} mEq de Cl⁻.`],
+      [`El ${C.f} solo sale del ${B}: ${F(y * Vf / 1000)} mEq ÷ 2 = ${F(y * Vf / 2000)} mmol de ${B}; ÷ ${N(MB)} mmol/mL = `, sub === 'B' ? v('x', `${F(r.VB)} mL`) : `${F(r.VB)} mL`, '.'],
     ];
-    if (sub === 'A') sol.push([`Ese ${B} trae también ${F(y * Vf / 1000)} mEq de Cl⁻. Al ${A} le toca el resto: ${F(w * Vf / 1000)} − ${F(y * Vf / 1000)} = ${F((w - y) * Vf / 1000)} mEq = ${F((w - y) * Vf / 1000)} mmol; ÷ `, v('A', `${N(MA)} mmol/mL`), ' = ', v('x', `${F(r.VA)} mL`), '.']);
-    sol.push([`Se completa con agua hasta ${N(Vf)} mL (${F(r.agua)} mL de agua). El volumen final decide cuántos mEq hacen falta, no cuánto se mide de cada madre.`]);
+    if (sub === 'A') sol.push([`Ese ${B} trae también ${F(y * Vf / 1000)} mEq de Cl⁻. Al ${A} le toca el resto: ${F(w * Vf / 1000)} − ${F(y * Vf / 1000)} = ${F((w - y) * Vf / 1000)} mEq = ${F((w - y) * Vf / 1000)} mmol; ÷ ${N(MA)} mmol/mL = `, v('x', `${F(r.VA)} mL`), '.']);
+    sol.push([`Se completa con agua hasta `, v('f', `${N(Vf)} mL`), ` (${F(r.agua)} mL de agua). El volumen final decide cuántos mEq hacen falta, no cuánto se mide de cada madre.`]);
     return {
       variables, correcta, errores, unidad: 'mL',
-      enunciado: ['Se tienen dos soluciones madre: ', v('A', `${A} ${N(MA)} mol/L`), ' y ', v('B', `${B} ${N(MB)} mol/L`), '. Con ellas y agua se quiere preparar ',
-        v('f', `${N(Vf)} mL`), ' de una solución con ', v('f', `${N(y)} mEq/L de ${C.f}`), ' y ', v('f', `${N(w)} mEq/L de Cl⁻`), ` (el ${Ca.f} viene solo del ${A}).`],
+      enunciado: [`Se tienen dos soluciones madre: ${A} ${N(MA)} mol/L y ${B} ${N(MB)} mol/L. Con ellas y agua se quiere preparar `,
+        v('f', `${N(Vf)} mL`), ' de una solución con ', v('y', `${N(y)} mEq/L de ${C.f}`), ' y ', v('w', `${N(w)} mEq/L de Cl⁻`), ` (el ${C.f} viene solo de su cloruro, el ${B}).`],
       pregunta: ['¿Qué ', v('x', 'volumen'), ` de la madre de ${sub === 'A' ? A : B} hay que medir, en mL?`],
       solucion: sol,
       d: { tipo: 'preparar', sub, sA, MA, sB, MB, Vf, y, w },
@@ -311,7 +314,7 @@
       e('SO15', 'parcial', FS, X * V / 1000 * S.M, `Tomaste los mEq de ${C.f} como milimoles. Su carga es 2: cada mmol de ${S.f} da 2 mEq, así que hace falta la mitad de sal.`),
       hip('QA-carga-al-reves', X * V / 1000 * 2 * S.M, `Multiplicaste por la carga al pasar de mEq a mmol; había que dividir. mmol = mEq ÷ carga.`),
       hip('QA-masa-del-ion', X * V / 1000 / 2 * C.M, `Calculaste la masa del ${C.f} solo, no de la sal. Lo que se pesa en la balanza es ${S.f}: hay que usar ${N(S.M)} g/mol.`),
-      hip('QA-eq-por-meq', correcta / 1000, `Te salieron gramos y los escribiste como miligramos. mEq × (mg/mmol) da mg directamente.`),
+      hip('QA-g-como-mg', correcta / 1000, `Te salieron gramos y los escribiste como miligramos. mEq × (mg/mmol) da mg directamente.`),
       hip('QA-otro-ion', Xotra * V / 1000 / 2 * S.M, `Usaste los ${N(Xotra)} mEq/L del ${O.f}, que es el catión de la otra sal. El ${S.f} se calcula con su propio catión, ${C.f}.`),
     ];
     const variables = { X: { nombre: `mEq/L de ${C.f}`, color: 'o' }, V: { nombre: 'volumen', color: 'i' }, n: { nombre: 'milimoles de sal', color: 'h' }, x: { nombre: 'masa de sal', color: 'd' } };
@@ -333,8 +336,9 @@
   // ---------- 6. Igualar mEq con un suero de % m/v ----------
   const SUEROS = [
     { sal: 'NaCl', X: [135, 140, 145, 150], p: [0.9, 0.45, 1.17, 2.34, 3] },
-    { sal: 'KCl', X: [4, 5, 20, 40], p: [0.745, 1.49, 7.45, 0.3] },
-    { sal: 'CaCl2', X: [4, 5, 10], p: [1.11, 0.555, 2.22, 10] },
+    { sal: 'KCl', X: [3.5, 4, 4.5, 5], p: [0.745, 1.49, 7.45, 0.3] },
+    { sal: 'KCl', X: [20, 40], p: [0.745, 1.49, 7.45], mantenimiento: true },
+    { sal: 'CaCl2', X: [4, 4.5, 5], p: [1.11, 0.555, 2.22, 10] },
   ];
   function igualar(rng) {
     const s = rng.elegir(SUEROS), sal = s.sal, X = rng.elegir(s.X), p = rng.elegir(s.p);
@@ -349,12 +353,12 @@
       ...(C.z > 1 ? [e('SO15', 'parcial', FS, correcta * 2, `No multiplicaste por la carga del ${C.f}. Cada mmol de ${C.f} son 2 mEq.`)] : []),
       hip('QA-eq-por-meq', correcta / 1000, `Mezclaste Eq con mEq en algún paso: te salió mil veces menos volumen.`),
     ];
-    const fluido = rng.elegir(['sangre', 'plasma', 'líquido extracelular']);
+    const fluido = s.mantenimiento ? 'Una solución de mantenimiento con KCl' : rng.elegir(['Un modelo de plasma', 'Un modelo de suero sanguíneo']);
     const variables = { X: { nombre: `mEq/L de ${C.f} del fluido`, color: 'o' }, V: { nombre: 'volumen del fluido', color: 'i' }, p: { nombre: 'concentración del suero', color: 'h' }, x: { nombre: 'volumen de suero', color: 'd' } };
     return {
       variables, correcta, errores, unidad: 'mL',
-      enunciado: ['Un modelo de ', fluido, ' tiene ', v('X', `${N(X)} mEq/L de ${C.f}`), '. Se quiere un volumen de suero de ', v('p', `${S.f} al ${N(p)} % m/v`),
-        ' que tenga los mismos miliequivalentes de ', C.f, ' que ', v('V', `${N(Vs)} mL`), ' de ese fluido.'],
+      enunciado: [fluido, ' tiene ', v('X', `${N(X)} mEq/L de ${C.f}`), '. Se quiere un volumen de suero de ', v('p', `${S.f} al ${N(p)} % m/v`),
+        ' que tenga los mismos miliequivalentes de ', C.f, ' que ', v('V', `${N(Vs)} mL`), s.mantenimiento ? ' de esa solución.' : ' de ese fluido.'],
       pregunta: ['¿Qué ', v('x', 'volumen de suero'), ' hace falta, en mL?'],
       datos: masasDe([mSal(sal)]),
       solucion: [
@@ -369,9 +373,13 @@
   // ---------- 7. Valoración de cloruros con Ag⁺ ----------
   function precipitacion(rng) {
     const sub = rng.elegir(['precipitado', 'cloruro']);
-    const Vm = rng.elegir([10, 20, 25, 50, 100]), c = rng.elegir([0.01, 0.02, 0.05, 0.1]), Vt = rng.elegir([4, 5, 8, 10, 12, 15, 20, 25]);
-    const r = CALC.precipitacion(Vm, c, Vt), n = r.mmol;
+    // Rangos realistas por muestra: agua de mesa o de pozo con poco cloruro; suero con unos 100 a 150 mEq/L.
     const muestra = rng.elegir(['del agua de un pozo', 'de un suero', 'de un agua de mesa', 'de una salmuera diluida']);
+    const [lVm, lc, lVt] = muestra === 'de un suero' ? [[10], [0.1], [10, 11, 12, 13, 14, 15]]
+      : muestra === 'de una salmuera diluida' ? [[10, 20, 25, 50, 100], [0.01, 0.02, 0.05, 0.1], [4, 5, 8, 10, 12, 15, 20, 25]]
+      : [[50, 100], [0.01, 0.02], [4, 5, 6, 8, 10, 12, 15, 20]];
+    const Vm = rng.elegir(lVm), c = rng.elegir(lc), Vt = rng.elegir(lVt);
+    const r = CALC.precipitacion(Vm, c, Vt), n = r.mmol;
     let correcta, errores, unidad;
     if (sub === 'precipitado') {
       correcta = r.mgAgCl; unidad = 'mg';
@@ -379,7 +387,7 @@
         hip('QA-cl2-molecular', n * (108 + 71), `Escribiste el cloro como Cl₂ (y el precipitado como «AgCl₂»). En la solución hay iones cloruro, Cl⁻: Ag⁺ + Cl⁻ → AgCl, con 143,5 g/mol.`),
         hip('QA-masa-reactivo', n * M_AGNO3, `Calculaste la masa de AgNO₃ gastado, no la del precipitado. Lo que cae al fondo es AgCl.`),
         hip('QA-solo-plata', n * 108, `Contaste solo la plata del precipitado. El AgCl lleva también el cloruro: 108 + 35,5 = 143,5 g/mol.`),
-        hip('QA-eq-por-meq', correcta / 1000, `Te salieron gramos y los escribiste como miligramos. mmol × (mg/mmol) da mg.`),
+        hip('QA-g-como-mg', correcta / 1000, `Te salieron gramos y los escribiste como miligramos. mmol × (mg/mmol) da mg.`),
       ];
     } else {
       correcta = r.mgL; unidad = 'mg/L';
@@ -413,7 +421,7 @@
     const sub = rng.elegir(['masa', 'masa', 'ppm']);
     const [cont, lista] = rng.elegir(CONTAM);
     const ppm = rng.elegir(lista), V = rng.elegir([50, 200, 500, 1000, 2500, 5000, 20000]);
-    const lugar = rng.elegir(['un reservorio', 'un tanque elevado', 'una piscina', 'un pozo', 'una laguna']);
+    const lugar = rng.elegir(cont === 'cloro libre' ? ['un reservorio', 'un tanque elevado', 'una piscina'] : ['un reservorio', 'un tanque elevado', 'un pozo', 'una laguna']);
     const r = CALC.ppmMasa(ppm, V);
     const variables = { c: { nombre: 'concentración en ppm', color: 'o' }, V: { nombre: 'volumen de agua', color: 'i' }, L: { nombre: 'volumen en litros', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
     if (sub === 'masa') {
@@ -438,6 +446,7 @@
       };
     }
     const m = r.g, correcta = ppm;
+    variables.c.nombre = 'masa del contaminante';
     const errores = [
       hip('QA-m3-litros', correcta * 1000, `Tomaste los m³ como si fueran litros. 1 m³ = 1000 L: el soluto está repartido en mil veces más agua.`),
       hip('QA-mg-g', correcta / 1000, `Dejaste la masa en gramos. Las ppm en agua son mg por litro: primero pasa los gramos a miligramos.`),
@@ -456,35 +465,42 @@
   }
 
   // ---------- 9. ppm de un gas en el aire → cantidad por m³ ----------
-  const CIUDADES = [['Lima', 1], ['Arequipa', 0.75], ['Cusco', 0.68], ['Puno', 0.64]];
+  const CIUDADES = [['Lima', 1, [15, 20, 25, 30]], ['Arequipa', 0.75, [12, 17, 22, 27]], ['Cusco', 0.68, [7, 12, 17, 22]], ['Puno', 0.64, [2, 7, 12, 17]]];
+  const FACTOR = { 'mol/m³': 1, 'mmol/m³': 1e3, 'µmol/m³': 1e6 };
   function ppmGas(rng) {
-    const gas = rng.elegir(Object.keys(GAS)), G = GAS[gas];
-    const X = rng.elegir([5, 10, 20, 25, 40, 50, 80, 100, 150, 200]);
-    const t = rng.elegir([7, 12, 17, 22, 27, 32, 37]);
-    const [ciudad, Pr] = rng.elegir(CIUDADES);
-    const unidad = rng.elegir(['mol/m³', 'mmol/m³']);
+    // Concentraciones realistas: CO de tránsito en una avenida; NO₂, SO₂ y O₃ en el aire de la ciudad
+    // (décimas de ppm, en µmol/m³); SO₂ a la salida de la chimenea de una fundición (mmol/m³).
+    const lugar = rng.elegir(['avenida', 'avenida', 'ciudad', 'chimenea']);
+    const gas = lugar === 'avenida' ? 'CO' : lugar === 'chimenea' ? 'SO2' : rng.elegir(['NO2', 'SO2', 'O3']), G = GAS[gas];
+    const X = rng.elegir(lugar === 'avenida' ? [5, 10, 15, 20, 35, 50] : lugar === 'chimenea' ? [5, 10, 20, 25, 40, 50]
+      : gas === 'O3' ? [0.04, 0.06, 0.08, 0.12] : [0.05, 0.1, 0.2, 0.5]);
+    const [ciudad, Pr, temps] = rng.elegir(CIUDADES);
+    const t = rng.elegir(temps);
+    const unidad = lugar === 'avenida' ? rng.elegir(['mol/m³', 'mmol/m³']) : lugar === 'chimenea' ? 'mmol/m³' : 'µmol/m³';
     const r = CALC.ppmGas(X, t, Pr), T = t + 273;
-    const correcta = unidad === 'mol/m³' ? r.molm3 : r.mmolm3;
+    const correcta = r.molm3 * FACTOR[unidad];
+    const menor = { 'mol/m³': 'mmol', 'mmol/m³': 'µmol', 'µmol/m³': 'nmol' }[unidad];
     const errores = [
       hip('QA-celsius', correcta * T / t, `Usaste la temperatura en °C. En PV = nRT la temperatura va en kelvin: ${t} + 273 = ${T} K.`),
       hip('QA-m3-litros', correcta / 1000, `Te salió la cantidad por litro, no por m³. 1 m³ = 1000 L: hay que multiplicar por 1000.`),
-      hip('QA-mili-dos-veces', correcta * 1000, `Multiplicaste por 1000 de más al pasar de litros a m³, o te quedaste en ${unidad === 'mol/m³' ? 'mmol' : 'µmol'}.`),
-      hip('QA-ppm-masa-gas', (X / G.M) * (unidad === 'mol/m³' ? 1e-3 : 1), `Tomaste las ppm como masa (${X} mg por m³) y dividiste entre la masa molar. En un gas, las ppm son por volumen: ${X} L de ${G.f} por cada millón de litros de aire, y eso se cuenta con PV = nRT.`),
+      hip('QA-mili-dos-veces', correcta * 1000, `Multiplicaste por 1000 de más al pasar de litros a m³, o te quedaste en ${menor}.`),
+      hip('QA-ppm-masa-gas', (X / G.M) * 1e-3 * FACTOR[unidad], `Tomaste las ppm como masa (${N(X)} mg por m³) y dividiste entre la masa molar. En un gas, las ppm son por volumen: ${N(X)} L de ${G.f} por cada millón de litros de aire, y eso se cuenta con PV = nRT.`),
       hip('QA-R-julios', correcta * R / 8.314, `Usaste R = 8,314, que va con pascales y m³. Con la presión en atm y el volumen en litros, R = 0,082 atm·L/(mol·K).`),
     ];
     const variables = { X: { nombre: 'ppm del gas', color: 'o' }, T: { nombre: 'temperatura', color: 'i' }, P: { nombre: 'presión', color: 'h' }, x: { nombre: 'cantidad por m³', color: 'd' } };
     const naire = Pr / (R * T);
+    const donde = lugar === 'avenida' ? `En una avenida de ${ciudad}, el aire tiene ` : lugar === 'chimenea' ? `Cerca de ${ciudad}, a la salida de la chimenea de una fundición, el aire tiene ` : `Un día de mucho tránsito, el aire de ${ciudad} tiene `;
     return {
       variables, correcta, errores, unidad,
-      enunciado: [`En una avenida de ${ciudad}, el aire tiene `, v('X', `${N(X)} ppm (en volumen) de ${G.nombre}`), ` (${G.f}). La temperatura es `, v('T', `${N(t)} °C`), ' y la presión, ', v('P', `${N(Pr)} atm`), '.'],
+      enunciado: [donde, v('X', `${N(X)} ppm (en volumen) de ${G.nombre}`), ` (${G.f}). La temperatura es `, v('T', `${N(t)} °C`), ' y la presión, ', v('P', `${N(Pr)} atm`), '.'],
       pregunta: ['¿Cuánto ', G.f, ' hay por metro cúbico de aire, en ', v('x', unidad), '?'],
       datos: `R = 0,082 atm·L/(mol·K). ${G.f} = ${G.M} g/mol.`,
       solucion: [
         ['T = ', v('T', `${N(t)} + 273 = ${T} K`), '. Moles de aire por litro: n/V = P/(RT) = ', v('P', `${N(Pr)}`), ` ÷ (0,082 × ${T}) = ${F(naire)} mol/L.`],
         [v('X', `${N(X)} ppm`), ` en volumen es una fracción molar de ${N(X)} × 10⁻⁶: ${F(naire)} × ${N(X)} × 10⁻⁶ = ${F(naire * X * 1e-6)} mol de ${G.f} por litro.`],
-        [`Por m³ (1000 L): ${F(r.molm3)} mol/m³`, unidad === 'mmol/m³' ? ` = ${F(r.mmolm3)} mmol/m³` : '', '. Respuesta: ', v('x', `${F(correcta)} ${unidad}`), '.'],
+        [`Por m³ (1000 L): ${F(r.molm3)} mol/m³`, unidad !== 'mol/m³' ? ` = ${F(correcta)} ${unidad}` : '', '. Respuesta: ', v('x', `${F(correcta)} ${unidad}`), '.'],
       ],
-      d: { tipo: 'ppmGas', gas, X, t, P: Pr, unidad },
+      d: { tipo: 'ppmGas', lugar, gas, X, t, P: Pr, unidad },
     };
   }
 
@@ -537,7 +553,7 @@
   // ---------- 11. Jarabe: de % m/v a mol/L ----------
   function jarabe(rng) {
     const azucar = rng.elegir(['sacarosa', 'sacarosa', 'maltosa', 'lactosa', 'glucosa']), A = AZUCAR[azucar];
-    const Mobj = rng.elegir([0.1, 0.2, 0.25, 0.5, 0.75, 1, 1.5, 2]);
+    const Mobj = rng.elegir(azucar === 'lactosa' ? [0.1, 0.2, 0.25, 0.5] : [0.1, 0.2, 0.25, 0.5, 0.75, 1, 1.5, 2]);
     const p = Math.round(Mobj * A.M / 10 * 1000) / 1000;
     if (A.disacarido && p > 70) return null;
     const correcta = CALC.jarabe(A.M, p);
@@ -549,7 +565,8 @@
       e('ES18', 'parcial', FE, 10 * p / 29, `Sumaste C + H + O una sola vez (12 + 1 + 16 = 29). Cada masa atómica se multiplica por su subíndice en ${A.f}.`),
     ];
     const variables = { p: { nombre: 'porcentaje masa-volumen', color: 'o' }, g: { nombre: 'gramos por litro', color: 'i' }, M: { nombre: 'masa molar', color: 'h' }, x: { nombre: 'molaridad', color: 'd' } };
-    const ctx = rng.elegir(['Un jarabe de farmacia', 'Un jarabe para preparar refrescos', 'Una solución para un cultivo de levaduras', 'Un jarabe de laboratorio']);
+    const ctx = rng.elegir(azucar === 'lactosa' ? ['Una solución que imita el azúcar de la leche', 'Una solución de laboratorio']
+      : ['Un jarabe de farmacia', 'Un jarabe para preparar refrescos', 'Un jarabe de laboratorio', ...(p <= 20 ? ['Una solución para un cultivo de levaduras'] : [])]);
     return {
       variables, correcta, errores, unidad: 'mol/L',
       enunciado: [`${ctx} tiene `, v('p', `${N(p)} % m/v de ${azucar}`), ` (${A.f}).`],
@@ -565,14 +582,18 @@
   }
 
   // ---------- 12. Ácido de % m/v para un carbonato ----------
+  const SAL_CARB = { CaCO3: { HCl: 'CaCl₂' }, Na2CO3: { HCl: '2 NaCl', H2SO4: 'Na₂SO₄' }, MgCO3: { HCl: 'MgCl₂', H2SO4: 'MgSO₄' }, K2CO3: { HCl: '2 KCl', H2SO4: 'K₂SO₄' } };
   const P_ACIDO = { HCl: [3.65, 7.3, 10, 14.6, 20], H2SO4: [4.9, 9.8, 10, 19.6, 20] };
   function carbonato(rng) {
-    const carb = rng.elegir(Object.keys(CARB)), acido = rng.elegir(['HCl', 'HCl', 'H2SO4']);
-    const n = rng.elegir([0.02, 0.05, 0.1, 0.2, 0.25]), p = rng.elegir(P_ACIDO[acido]);
-    const Cb = CARB[carb], Ac = ACIDO[acido], mC = n * Cb.M;
+    const carb = rng.elegir(Object.keys(CARB)), acido = carb === 'CaCO3' ? 'HCl' : rng.elegir(['HCl', 'HCl', 'H2SO4']);
+    const Cb = CARB[carb], Ac = ACIDO[acido];
+    const ctx = Cb.f === 'CaCO₃' ? rng.elegir(['Para quitar el sarro (CaCO₃) de una tetera', 'Para disolver un trozo de mármol (CaCO₃)']) : `En el laboratorio, para disolver una muestra de ${Cb.f}`;
+    const tetera = ctx.includes('tetera');
+    const n = rng.elegir([0.02, 0.05, 0.1, 0.2, 0.25]), p = rng.elegir(tetera ? [3.65, 7.3] : P_ACIDO[acido]);
+    const mC = n * Cb.M;
     const correcta = CALC.carbonato(Cb.M, acido, n, p);
     const mAc = Ac.r * n * Ac.M;
-    const ec = acido === 'HCl' ? `${Cb.f} + 2 HCl → sal + H₂O + CO₂` : `${Cb.f} + H₂SO₄ → sal + H₂O + CO₂`;
+    const ec = `${Cb.f} + ${acido === 'HCl' ? '2 HCl' : 'H₂SO₄'} → ${SAL_CARB[carb][acido]} + H₂O + CO₂`;
     const errores = [
       acido === 'HCl'
         ? e('ES12', 'parcial', FE, correcta / 2, `Usaste la ecuación sin balancear, 1 a 1. El carbonato necesita dos H⁺ y el HCl da uno: van 2 HCl por cada ${Cb.f}.`)
@@ -583,7 +604,6 @@
       ...(acido === 'H2SO4' ? [hip('QA-eq-por-mol', correcta / 2, `Dividiste entre 2 porque el H₂SO₄ es diprótico, pero eso ya está en la ecuación 1 a 1. Contar dos veces los H⁺ deja la mitad del ácido.`)] : []),
     ];
     const variables = { m: { nombre: `masa de ${Cb.f}`, color: 'o' }, p: { nombre: 'concentración del ácido', color: 'i' }, a: { nombre: 'masa de ácido', color: 'h' }, x: { nombre: 'volumen de ácido', color: 'd' } };
-    const ctx = Cb.f === 'CaCO₃' ? rng.elegir(['Para quitar el sarro (CaCO₃) de una tetera', 'Para disolver un trozo de mármol (CaCO₃)']) : `En el laboratorio, para disolver una muestra de ${Cb.f}`;
     return {
       variables, correcta, errores, unidad: 'mL',
       enunciado: [`${ctx} se usa ${Ac.f} al `, v('p', `${N(p)} % m/v`), '. Se quiere que reaccionen por completo ', v('m', `${N(mC)} g de ${Cb.f}`), '.'],

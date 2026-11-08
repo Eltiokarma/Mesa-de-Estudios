@@ -1,0 +1,102 @@
+{
+  "titulo": "Minerales, calor y átomos: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin ayuda, con unos 3 minutos por problema, como en el examen. Escribe las unidades en cada paso y revisa al final si el número tiene sentido. Masas atómicas: H 1, C 12, O 16, S 32, K 39, Cr 52, Fe 56, Cu 63,5, Zn 65, Pb 207. En condiciones normales, 1 mol de gas ocupa 22,4 L.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Una concentradora procesa 600 t de mena de cobre. La flotación entrega 45 t de concentrado con 26 % de Cu, y en el relave quedan 1,8 t de Cu. ¿Cuál era la ley de cobre de la mena?",
+      "respuesta": "2,25 % de Cu.",
+      "pasos": [
+        "Cobre del concentrado: 45 t × 0,26 = 11,7 t.",
+        "Cobre total de la mena: 11,7 t + 1,8 t del relave = 13,5 t.",
+        "Ley = 13,5 ÷ 600 × 100 = 2,25 %. El 26 % es la ley del concentrado, no la de la mena."
+      ],
+      "verificar": [ { "fn": "flotacion", "args": [{ "mena": 600, "conc": 45, "leyConc": 26, "relave": 1.8, "M": 63.5 }], "espera": { "metalConc": 11.7, "metalTotal": 13.5, "leyMena": 2.25 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "intermedio",
+      "enunciado": "Se procesan 300 t de mena con 4 % de Zn y se obtienen 40 t de concentrado con 27 % de Zn. ¿Cuántos kilomoles de zinc se quedan en el relave? ¿Qué porcentaje del zinc se recuperó?",
+      "respuesta": "Unos 18,46 kmol de Zn; se recupera el 90 %.",
+      "pasos": [
+        "Zinc de la mena: 300 t × 0,04 = 12 t. Zinc del concentrado: 40 t × 0,27 = 10,8 t.",
+        "En el relave: 12 − 10,8 = 1,2 t = 1200 kg.",
+        "1200 kg ÷ 65 kg/kmol ≈ 18,46 kmol. Recuperación: 10,8 ÷ 12 × 100 = 90 %."
+      ],
+      "verificar": [ { "fn": "flotacion", "args": [{ "mena": 300, "conc": 40, "leyConc": 27, "leyMena": 4, "M": 65 }], "espera": { "metalRelave": 1.2, "kmolRelave": 18.4615, "recuperacion": 90 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Una mena de 40 t contiene 15 % de galena (PbS). Si el proceso recupera el 80 % del plomo, ¿cuántos kilogramos de plomo se obtienen?",
+      "respuesta": "Unos 4157,3 kg de Pb.",
+      "pasos": [
+        "Galena: 40 000 kg × 0,15 = 6000 kg de PbS.",
+        "M(PbS) = 207 + 32 = 239: el plomo es 207/239 de la masa. 6000 × 207 ÷ 239 ≈ 5196,7 kg de Pb.",
+        "Con el rendimiento: 5196,7 × 0,80 ≈ 4157,3 kg."
+      ],
+      "verificar": [ { "fn": "metalDeMineral", "args": [{ "mena": 40, "pct": 15, "mineral": "galena", "rendimiento": 80 }], "espera": { "mineral": 6000, "metal": 4157.32 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "básico",
+      "enunciado": "Se tuestan 300 g de un mineral que tiene 80 % de pirita (FeS₂). Todo el azufre sale como SO₂. ¿Qué volumen de SO₂ se forma en condiciones normales? No necesitas la ecuación.",
+      "respuesta": "89,6 L de SO₂.",
+      "pasos": [
+        "Pirita pura: 300 × 0,80 = 240 g; M(FeS₂) = 56 + 64 = 120 g/mol, así que hay 2 mol.",
+        "Cada FeS₂ tiene 2 átomos de S y cada SO₂ lleva uno: 2 × 2 = 4 mol de SO₂.",
+        "4 mol × 22,4 L/mol = 89,6 L."
+      ],
+      "verificar": [ { "fn": "gasPorAtomos", "args": [{ "masa": 300, "pureza": 80, "fuente": "pirita" }], "espera": { "n": 2, "nGas": 4, "volumen": 89.6 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "avanzado",
+      "enunciado": "C₃H₈ + 5 O₂ → 3 CO₂ + 4 H₂O, con ΔH = −2220 kJ. Se mezclan 22 g de propano con 64 g de oxígeno y la reacción es completa. ¿Qué reactivo se acaba primero y cuánta energía se intercambia? ¿Se libera o se absorbe?",
+      "respuesta": "Se acaba el O₂; se liberan 888 kJ.",
+      "pasos": [
+        "Moles: 22 ÷ 44 = 0,5 mol de C₃H₈; 64 ÷ 32 = 2 mol de O₂.",
+        "Entre los coeficientes: 0,5 ÷ 1 = 0,5 y 2 ÷ 5 = 0,4. Se acaba el O₂, aunque haya más moles de O₂.",
+        "La ecuación ocurre 0,4 veces: 0,4 × 2220 = 888 kJ. ΔH es negativo: la energía sale, se libera."
+      ],
+      "verificar": [ { "fn": "calorReaccion", "args": [{ "reaccion": "propano", "mA": 22, "mB": 64 }], "espera": { "veces": 0.4, "limitante": "O₂", "Q": 888 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "avanzado",
+      "enunciado": "Una muestra de etanol se oxida con dicromato de potasio en exceso: 2 K₂Cr₂O₇ + 3 C₂H₅OH + 8 H₂SO₄ → 2 Cr₂(SO₄)₃ + 3 CH₃COOH + 2 K₂SO₄ + 11 H₂O. Al final, 250 mL de solución tienen [Cr³⁺] = 0,16 mol/L. ¿Qué masa de etanol había?",
+      "respuesta": "1,38 g de etanol.",
+      "pasos": [
+        "Cr³⁺: 0,16 mol/L × 0,250 L = 0,04 mol.",
+        "Cada Cr₂(SO₄)₃ trae 2 Cr³⁺: 2 Cr₂(SO₄)₃ son 4 Cr³⁺. Por 3 mol de etanol se forman 4 mol de Cr³⁺.",
+        "Etanol: 0,04 × 3/4 = 0,03 mol × 46 g/mol = 1,38 g."
+      ],
+      "verificar": [ { "fn": "alcoholPorCromo", "args": [{ "reaccion": "etanol-acido", "c": 0.16, "V": 250 }], "espera": { "nCr": 0.04, "nAlcohol": 0.03, "masa": 1.38 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Se echan 18,8 g de K₂O en agua y todo se convierte en KOH, que se disocia por completo. ¿Cuántos moles de KOH se forman, qué masa de agua reacciona y cuántos moles de iones quedan disueltos?",
+      "respuesta": "0,4 mol de KOH; 3,6 g de agua; 0,8 mol de iones.",
+      "pasos": [
+        "M(K₂O) = 2 × 39 + 16 = 94: 18,8 ÷ 94 = 0,2 mol.",
+        "K₂O + H₂O → 2 KOH: 0,4 mol de KOH y 0,2 mol de agua, es decir 0,2 × 18 = 3,6 g.",
+        "KOH → K⁺ + OH⁻: 0,4 mol de K⁺ y 0,4 mol de OH⁻, en total 0,8 mol de iones."
+      ],
+      "verificar": [ { "fn": "hidroxido", "args": [{ "oxido": "K2O", "masa": 18.8 }], "espera": { "nHidroxido": 0.4, "masaAgua": 3.6, "molesIones": 0.8 } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Al hidrolizar trioleína (C₅₇H₁₀₄O₆, 884 g/mol) se obtienen glicerol (C₃H₈O₃) y ácido oleico. ¿Qué masa de trioleína hace falta para obtener 92 mL de glicerol, cuya densidad es 1,26 g/mL?",
+      "respuesta": "1113,84 g de trioleína.",
+      "pasos": [
+        "Masa de glicerol: 92 mL × 1,26 g/mL = 115,92 g; ÷ 92 g/mol = 1,26 mol.",
+        "Cada triglicérido tiene un solo glicerol (y tres cadenas de ácido): 1,26 mol de trioleína.",
+        "1,26 × 884 = 1113,84 g."
+      ],
+      "verificar": [ { "fn": "trigliceridoPorGlicerol", "args": [{ "grasa": "trioleina", "V": 92 }], "espera": { "masaGlicerol": 115.92, "nGlicerol": 1.26, "masaGrasa": 1113.84 } } ]
+    }
+  ]
+}

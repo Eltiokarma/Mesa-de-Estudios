@@ -67,7 +67,7 @@ function recalcular(p) {
     case 'ppmGas': {
       const nAire = d.P * 1000 / (0.082 * (d.t + 273));   // mol de aire en 1 m³ = 1000 L
       const mol = nAire * d.X / 1e6;
-      return d.unidad === 'mol/m³' ? mol : mol * 1000;
+      return mol * { 'mol/m³': 1, 'mmol/m³': 1e3, 'µmol/m³': 1e6 }[d.unidad];
     }
     case 'volumen-pct': {
       if (d.sub === 'agua') return d.V - d.V * d.a / 100;

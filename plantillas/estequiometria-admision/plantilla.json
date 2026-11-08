@@ -1,0 +1,16 @@
+{
+  "id": "estequiometria-admision",
+  "titulo": "Estequiometría de examen: minerales, calor y átomos",
+  "formato": "predicciones",
+  "unidades": [
+    "quimica.estequiometria",
+    "quimica.recursos-naturales",
+    "quimica.nomenclatura-inorganica"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

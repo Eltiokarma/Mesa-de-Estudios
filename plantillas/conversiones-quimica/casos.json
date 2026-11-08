@@ -1,0 +1,335 @@
+{
+  "plantilla": "conversiones-quimica",
+  "tolerancia": 0.000001,
+  "nota": "Tolerancia relativa. Temperaturas: K = °C + 273 y °F = 1,8 °C + 32 para lecturas; en variaciones, Δ°F = 1,8 Δ°C y ΔK = Δ°C (respuesta en valor absoluto). Masas en g o kg y volúmenes en la unidad pedida (ver la cabecera); calor en kJ; vida media en mg o en la unidad de tiempo del enunciado. exacta es el texto de la alternativa correcta.",
+  "verificacion": "",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "delta",
+        "sub": "tabla",
+        "tiempos": [
+          0,
+          4,
+          7,
+          12
+        ],
+        "temps": [
+          15,
+          45,
+          60,
+          90
+        ],
+        "i": 0,
+        "j": 2,
+        "a": "F"
+      },
+      "esperado": {
+        "respuesta": 81,
+        "exacta": "81 °F"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "latente",
+        "sub": "vaporizar",
+        "masa": 270,
+        "litros": false
+      },
+      "esperado": {
+        "respuesta": 610.5,
+        "exacta": "610,5 kJ"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "delta",
+        "sub": "f-c",
+        "dF": 72
+      },
+      "esperado": {
+        "respuesta": 40,
+        "exacta": "40 °C"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "delta",
+        "sub": "c-f",
+        "T1": 40,
+        "T2": 120
+      },
+      "esperado": {
+        "respuesta": 144,
+        "exacta": "144 °F"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "latente",
+        "sub": "fundir",
+        "masa": 180,
+        "litros": true
+      },
+      "esperado": {
+        "respuesta": 60.099999999999994,
+        "exacta": "60,1 kJ"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "vida",
+        "sub": "queda",
+        "m0": 120,
+        "tMedia": 14,
+        "t": 42
+      },
+      "esperado": {
+        "respuesta": 15,
+        "exacta": "15 mg"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "densidad",
+        "sub": "volumen",
+        "metal": "Pb",
+        "masa": 2260,
+        "unidad": "cm3"
+      },
+      "esperado": {
+        "respuesta": 200,
+        "exacta": "200 cm³"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "densidad",
+        "sub": "volumen",
+        "metal": "Au",
+        "masa": 48250,
+        "unidad": "L"
+      },
+      "esperado": {
+        "respuesta": 2.5,
+        "exacta": "2,5 L"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "delta",
+        "sub": "c-k",
+        "T1": -15,
+        "T2": -85
+      },
+      "esperado": {
+        "respuesta": 70,
+        "exacta": "70 K"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "lectura",
+        "sub": "f-c",
+        "valor": 185
+      },
+      "esperado": {
+        "respuesta": 85,
+        "exacta": "85 °C"
+      }
+    },
+    {
+      "semilla": 17,
+      "entrada": {
+        "tipo": "vida",
+        "sub": "deducir",
+        "m0": 100,
+        "T1": 24,
+        "a": 2,
+        "T2": 60
+      },
+      "esperado": {
+        "respuesta": 3.125,
+        "exacta": "3,13 mg"
+      }
+    },
+    {
+      "semilla": 24,
+      "entrada": {
+        "tipo": "lectura",
+        "sub": "c-f",
+        "valor": 75
+      },
+      "esperado": {
+        "respuesta": 167,
+        "exacta": "167 °F"
+      }
+    },
+    {
+      "semilla": 25,
+      "entrada": {
+        "tipo": "densidad",
+        "sub": "longitud",
+        "valor": 0.144,
+        "de": "nm",
+        "a": "A"
+      },
+      "esperado": {
+        "respuesta": 1.44,
+        "exacta": "1,44 Å"
+      }
+    },
+    {
+      "semilla": 27,
+      "entrada": {
+        "tipo": "latente",
+        "sub": "inversa",
+        "Q": 162.8
+      },
+      "esperado": {
+        "respuesta": 72,
+        "exacta": "72 mL"
+      }
+    },
+    {
+      "semilla": 39,
+      "entrada": {
+        "tipo": "latente",
+        "sub": "vaporizar",
+        "masa": 1800,
+        "litros": true
+      },
+      "esperado": {
+        "respuesta": 4070.0000000000005,
+        "exacta": "4 070 kJ"
+      }
+    },
+    {
+      "semilla": 41,
+      "entrada": {
+        "tipo": "lectura",
+        "sub": "k-c",
+        "valor": 333
+      },
+      "esperado": {
+        "respuesta": 60,
+        "exacta": "60 °C"
+      }
+    },
+    {
+      "semilla": 46,
+      "entrada": {
+        "tipo": "densidad",
+        "sub": "longitud",
+        "valor": 1.28,
+        "de": "A",
+        "a": "pm"
+      },
+      "esperado": {
+        "respuesta": 128,
+        "exacta": "128 pm"
+      }
+    },
+    {
+      "semilla": 51,
+      "entrada": {
+        "tipo": "densidad",
+        "sub": "masa",
+        "metal": "Fe",
+        "volumen": 0.0004,
+        "unidad": "m3"
+      },
+      "esperado": {
+        "respuesta": 3.12,
+        "exacta": "3,12 kg"
+      }
+    },
+    {
+      "semilla": 52,
+      "entrada": {
+        "tipo": "vida",
+        "sub": "tiempo",
+        "tMedia": 30,
+        "n": 4
+      },
+      "esperado": {
+        "respuesta": 120,
+        "exacta": "120 años"
+      }
+    },
+    {
+      "semilla": 58,
+      "entrada": {
+        "tipo": "lectura",
+        "sub": "f-k",
+        "valor": 149
+      },
+      "esperado": {
+        "respuesta": 338,
+        "exacta": "338 K"
+      }
+    },
+    {
+      "semilla": 62,
+      "entrada": {
+        "tipo": "densidad",
+        "sub": "volumen",
+        "metal": "Cu",
+        "masa": 3560,
+        "unidad": "m3"
+      },
+      "esperado": {
+        "respuesta": 0.0004,
+        "exacta": "4 × 10⁻⁴ m³"
+      }
+    },
+    {
+      "semilla": 69,
+      "entrada": {
+        "tipo": "lectura",
+        "sub": "c-k",
+        "valor": 105
+      },
+      "esperado": {
+        "respuesta": 378,
+        "exacta": "378 K"
+      }
+    },
+    {
+      "semilla": 108,
+      "entrada": {
+        "tipo": "delta",
+        "sub": "tabla",
+        "tiempos": [
+          0,
+          2,
+          5,
+          8
+        ],
+        "temps": [
+          12,
+          32,
+          52,
+          62
+        ],
+        "i": 0,
+        "j": 2,
+        "a": "K"
+      },
+      "esperado": {
+        "respuesta": 40,
+        "exacta": "40 K"
+      }
+    }
+  ]
+}

@@ -12,8 +12,30 @@
         "Mg²⁺: 10 mmol × carga 2 = 20 mEq.",
         "Cl⁻: hay 2 por fórmula, 20 mmol × carga 1 = 20 mEq. Catión y anión siempre tienen los mismos mEq: la sal es neutra."
       ],
-      "verificar": [ { "fn": "meq", "args": ["MgCl2", "cat", 10], "espera": { "valor": 20 } },
-                     { "fn": "meq", "args": ["MgCl2", "an", 10], "espera": { "valor": 20 } } ]
+      "verificar": [
+        {
+          "fn": "meq",
+          "args": [
+            "MgCl2",
+            "cat",
+            10
+          ],
+          "espera": {
+            "valor": 20
+          }
+        },
+        {
+          "fn": "meq",
+          "args": [
+            "MgCl2",
+            "an",
+            10
+          ],
+          "espera": {
+            "valor": 20
+          }
+        }
+      ]
     },
     {
       "id": "p2",
@@ -25,7 +47,20 @@
         "Volumen: 30 mEq ÷ 0,5 mEq/mL = 60 mL.",
         "Control: si te salió 120 mL olvidaste el subíndice 2; si te salió 0,06, son litros."
       ],
-      "verificar": [ { "fn": "volumenConMeq", "args": ["K2SO4", "cat", 0.25, 30], "espera": { "valor": 60 } } ]
+      "verificar": [
+        {
+          "fn": "volumenConMeq",
+          "args": [
+            "K2SO4",
+            "cat",
+            0.25,
+            30
+          ],
+          "espera": {
+            "valor": 60
+          }
+        }
+      ]
     },
     {
       "id": "p3",
@@ -38,7 +73,24 @@
         "Total: 120 mEq en 500 mL = 0,5 L: 120 ÷ 0,5 = 240 mEq/L.",
         "Ojo: promediar 200 y 300 mEq/L da 250, que está mal porque los volúmenes no son iguales."
       ],
-      "verificar": [ { "fn": "mezcla", "args": ["KCl", 0.2, 300, "CaCl2", 0.15, 200, "an"], "espera": { "meq": 120, "meqL": 240 } } ]
+      "verificar": [
+        {
+          "fn": "mezcla",
+          "args": [
+            "KCl",
+            0.2,
+            300,
+            "CaCl2",
+            0.15,
+            200,
+            "an"
+          ],
+          "espera": {
+            "meq": 120,
+            "meqL": 240
+          }
+        }
+      ]
     },
     {
       "id": "p4",
@@ -51,7 +103,25 @@
         "Ese MgCl₂ trae 3 mmol de Cl⁻ (3 mEq). Al NaCl le tocan 53 − 3 = 50 mEq = 50 mmol; ÷ 1 mmol/mL = 50 mL.",
         "Agua: 500 − 3 − 50 = 447 mL. Las madres no llenan el volumen final: se completa con agua."
       ],
-      "verificar": [ { "fn": "preparar", "args": ["NaCl", 1, "MgCl2", 0.5, 500, 6, 106], "espera": { "VA": 50, "VB": 3, "agua": 447 } } ]
+      "verificar": [
+        {
+          "fn": "preparar",
+          "args": [
+            "NaCl",
+            1,
+            "MgCl2",
+            0.5,
+            500,
+            6,
+            106
+          ],
+          "espera": {
+            "VA": 50,
+            "VB": 3,
+            "agua": 447
+          }
+        }
+      ]
     },
     {
       "id": "p5",
@@ -63,7 +133,20 @@
         "Suero: 2,22 % m/v = 22,2 g/L; ÷ 111 g/mol = 0,2 mol/L; × carga 2 = 400 mEq/L = 0,4 mEq por mL.",
         "Volumen: 10 ÷ 0,4 = 25 mL. Si tomaste 2,22 % como 2,22 mol/L, te sale mucho menos: el % m/v no es molaridad."
       ],
-      "verificar": [ { "fn": "igualar", "args": ["CaCl2", 2.22, 5, 2000], "espera": { "valor": 25 } } ]
+      "verificar": [
+        {
+          "fn": "igualar",
+          "args": [
+            "CaCl2",
+            2.22,
+            5,
+            2000
+          ],
+          "espera": {
+            "valor": 25
+          }
+        }
+      ]
     },
     {
       "id": "p6",
@@ -76,36 +159,118 @@
         "AgCl: 0,25 mmol × 143,5 mg/mmol = 35,875 mg.",
         "Cl⁻: 0,25 × 35,5 = 8,875 mg en 0,05 L: 177,5 mg/L."
       ],
-      "verificar": [ { "fn": "precipitacion", "args": [50, 0.02, 12.5], "espera": { "mmol": 0.25, "mgAgCl": 35.875, "mgL": 177.5, "meqL": 5 } } ]
+      "verificar": [
+        {
+          "fn": "precipitacion",
+          "args": [
+            50,
+            0.02,
+            12.5
+          ],
+          "espera": {
+            "mmol": 0.25,
+            "mgAgCl": 35.875,
+            "mgL": 177.5,
+            "meqL": 5
+          }
+        }
+      ]
     },
     {
       "id": "p7",
       "nivel": "intermedio",
-      "enunciado": "El aire de una ciudad a 27 °C y 0,82 atm tiene 30 ppm (en volumen) de CO. ¿Cuántos moles de CO hay por metro cúbico de aire? (R = 0,082 atm·L/(mol·K).) Y otro dato: un reservorio de 800 m³ tiene 0,05 ppm de plomo; ¿cuántos gramos de plomo hay?",
-      "respuesta": "0,001 mol/m³ de CO (1 mmol/m³); 40 g de plomo.",
+      "enunciado": "El aire de una avenida a 27 °C y 0,82 atm tiene 30 ppm (en volumen) de CO. ¿Cuántos moles de CO hay por metro cúbico de aire? Usa R = 0,082 atm·L/(mol·K).",
+      "respuesta": "0,001 mol/m³ de CO (1 mmol/m³).",
       "pasos": [
         "T = 27 + 273 = 300 K. Moles de aire por litro: 0,82 ÷ (0,082 × 300) = 1/30 mol/L.",
         "En 1 m³ = 1000 L hay 1000/30 mol de aire; el CO es 30 × 10⁻⁶ de eso: 0,001 mol.",
-        "Plomo: 800 m³ = 800 000 L; 0,05 mg/L × 800 000 L = 40 000 mg = 40 g.",
-        "Atajo: en agua, 1 ppm = 1 g/m³, así que 0,05 × 800 = 40 g."
+        "Si usaste 27 °C sin pasar a kelvin, te sale más de diez veces más."
       ],
-      "verificar": [ { "fn": "ppmGas", "args": [30, 27, 0.82], "espera": { "molm3": 0.001, "mmolm3": 1 } },
-                     { "fn": "ppmMasa", "args": [0.05, 800], "espera": { "g": 40 } } ]
+      "verificar": [
+        {
+          "fn": "ppmGas",
+          "args": [
+            30,
+            27,
+            0.82
+          ],
+          "espera": {
+            "molm3": 0.001,
+            "mmolm3": 1
+          }
+        }
+      ]
     },
     {
       "id": "p8",
-      "nivel": "avanzado",
-      "enunciado": "Un jarabe tiene 25,65 % m/v de sacarosa (C₁₂H₂₂O₁₁). ¿Cuál es su molaridad? Luego: ¿cuántos mL de HCl al 7,3 % m/v disuelven 7,5 g de CaCO₃? Y por último: ¿cuántos mL de agua hay en 400 mL de alcohol al 70 % v/v (volúmenes aditivos)?",
-      "respuesta": "0,75 mol/L; 75 mL de HCl; 120 mL de agua.",
+      "nivel": "básico",
+      "enunciado": "Un reservorio de 800 m³ tiene 0,05 ppm de plomo. ¿Cuántos gramos de plomo hay disueltos?",
+      "respuesta": "40 g de plomo.",
       "pasos": [
-        "Jarabe: 25,65 g en 100 mL = 256,5 g/L; masa molar 12·12 + 22 + 11·16 = 342; 256,5 ÷ 342 = 0,75 mol/L.",
-        "CaCO₃ + 2 HCl → CaCl₂ + H₂O + CO₂. 7,5 g ÷ 100 = 0,075 mol de CaCO₃ → 0,15 mol de HCl × 36,5 = 5,475 g.",
-        "Volumen de HCl: 5,475 g ÷ 7,3 g por 100 mL = 75 mL. Sin balancear (1:1) te sale la mitad.",
-        "Alcohol: 70 % de 400 mL = 280 mL de alcohol; agua = 400 − 280 = 120 mL. El 70 % es del soluto, no del agua."
+        "800 m³ = 800 000 L.",
+        "0,05 mg/L × 800 000 L = 40 000 mg = 40 g.",
+        "Atajo: en agua, 1 ppm = 1 g/m³, así que 0,05 × 800 = 40 g."
       ],
-      "verificar": [ { "fn": "jarabe", "args": [342, 25.65], "espera": { "valor": 0.75 } },
-                     { "fn": "carbonato", "args": [100, "HCl", 0.075, 7.3], "espera": { "valor": 75 } },
-                     { "fn": "aguaEnAlcohol", "args": [400, 70], "espera": { "valor": 120 } } ]
+      "verificar": [
+        {
+          "fn": "ppmMasa",
+          "args": [
+            0.05,
+            800
+          ],
+          "espera": {
+            "g": 40
+          }
+        }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "intermedio",
+      "enunciado": "Un jarabe tiene 25,65 % m/v de sacarosa (C₁₂H₂₂O₁₁). ¿Cuál es su molaridad?",
+      "respuesta": "0,75 mol/L.",
+      "pasos": [
+        "25,65 g en 100 mL = 256,5 g/L.",
+        "Masa molar: 12·12 + 22·1 + 11·16 = 342 g/mol (dos monosacáridos de 180 menos un agua de 18).",
+        "256,5 ÷ 342 = 0,75 mol/L."
+      ],
+      "verificar": [
+        {
+          "fn": "jarabe",
+          "args": [
+            342,
+            25.65
+          ],
+          "espera": {
+            "valor": 0.75
+          }
+        }
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "intermedio",
+      "enunciado": "¿Cuántos mL de HCl al 7,3 % m/v disuelven por completo 7,5 g de CaCO₃?",
+      "respuesta": "75 mL de HCl.",
+      "pasos": [
+        "CaCO₃ + 2 HCl → CaCl₂ + H₂O + CO₂. 7,5 g ÷ 100 = 0,075 mol de CaCO₃ → 0,15 mol de HCl × 36,5 = 5,475 g.",
+        "Volumen de HCl: 5,475 g ÷ 7,3 g por 100 mL = 75 mL.",
+        "Control: si usaste la ecuación sin balancear (1 a 1), te sale la mitad, 37,5 mL."
+      ],
+      "verificar": [
+        {
+          "fn": "carbonato",
+          "args": [
+            100,
+            "HCl",
+            0.075,
+            7.3
+          ],
+          "espera": {
+            "valor": 75
+          }
+        }
+      ]
     }
   ]
 }
