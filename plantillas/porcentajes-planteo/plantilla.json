@@ -1,0 +1,18 @@
+{
+  "id": "porcentajes-planteo",
+  "titulo": "Tanto por ciento, razones y conjuntos en problemas de planteo",
+  "formato": "predicciones",
+  "unidades": [
+    "aritmetica.porcentajes",
+    "aritmetica.razones-y-proporciones",
+    "aritmetica.magnitudes-proporcionales",
+    "aritmetica.mezclas-y-aleaciones",
+    "aritmetica.conjuntos"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

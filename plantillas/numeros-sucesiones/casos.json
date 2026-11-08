@@ -1,0 +1,345 @@
+{
+  "plantilla": "numeros-sucesiones",
+  "tolerancia": 0.000001,
+  "nota": "Respuestas enteras, salvo en fracciones (clave frac:n/d) y grifos (clave h:n/d, en horas). En grifos, a y n son cifras desconocidas; las bases van en los numerales. En divisores, los divisores propios son todos menos el mismo N, y los compuestos excluyen el 1 y los primos.",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver el generador: resolvió los 19 casos con aritmética exacta en Python (Fraction), enumerando las bases válidas y los divisores, intersectando los conjuntos de las progresiones, armando las sucesiones intercaladas término a término y sumando término a término. Coinciden los 19; no se halló ninguna alternativa defendible distinta de la clave. Tras la revisión cambió un caso (semilla 0, grifos: 42 h), recalculado aparte por la conversación principal.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "grifos",
+        "numerales": [
+          {
+            "cifras": [
+              "n",
+              5
+            ],
+            "base": 6
+          },
+          {
+            "cifras": [
+              3,
+              3
+            ],
+            "base": "a"
+          },
+          {
+            "cifras": [
+              2,
+              "a"
+            ],
+            "base": "n"
+          }
+        ]
+      },
+      "esperado": {
+        "respuesta": "h:42/1",
+        "exacta": "42 h"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "fracciones",
+        "a": 4,
+        "r": 6,
+        "b": 5,
+        "s": 7,
+        "k": 26
+      },
+      "esperado": {
+        "respuesta": "frac:77/90",
+        "exacta": "77/90"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "pa-pg",
+        "S": 42,
+        "sumandos": [
+          4,
+          4,
+          28
+        ]
+      },
+      "esperado": {
+        "respuesta": 26,
+        "exacta": "26"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "primos-pa",
+        "m": 5,
+        "r": 12,
+        "L": 71
+      },
+      "esperado": {
+        "respuesta": 53,
+        "exacta": "53"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "cifras",
+        "sub": "fraccion",
+        "F": [
+          22,
+          333
+        ]
+      },
+      "esperado": {
+        "respuesta": 69,
+        "exacta": "69"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "divisores",
+        "sub": "cuenta",
+        "forma": "directa",
+        "b1": null,
+        "p": null,
+        "b2": null,
+        "q": null,
+        "ex": [
+          4,
+          3,
+          2
+        ],
+        "pide": "impares",
+        "m": 10
+      },
+      "esperado": {
+        "respuesta": 12,
+        "exacta": "12"
+      }
+    },
+    {
+      "semilla": 16,
+      "entrada": {
+        "tipo": "intercalada",
+        "sub": "pa-pa",
+        "a1": 7,
+        "r1": 9,
+        "b1": 1,
+        "r2": 10,
+        "q": null,
+        "k": 34
+      },
+      "esperado": {
+        "respuesta": 161,
+        "exacta": "161"
+      }
+    },
+    {
+      "semilla": 19,
+      "entrada": {
+        "tipo": "divisores",
+        "sub": "afirmaciones",
+        "forma": "potencias",
+        "b1": 18,
+        "p": 3,
+        "b2": 75,
+        "q": 3,
+        "ex": [
+          3,
+          9,
+          6
+        ],
+        "m": 15,
+        "afirmaciones": [
+          [
+            "mult",
+            216
+          ],
+          [
+            "total",
+            280
+          ],
+          [
+            "compuestos",
+            276
+          ],
+          [
+            "cuadrados",
+            12
+          ]
+        ]
+      },
+      "esperado": {
+        "respuesta": 3,
+        "exacta": "3"
+      }
+    },
+    {
+      "semilla": 20,
+      "entrada": {
+        "tipo": "comunes",
+        "a1": 7,
+        "r1": 6,
+        "LA": 439,
+        "b1": 17,
+        "r2": 4,
+        "LB": 277
+      },
+      "esperado": {
+        "respuesta": 22,
+        "exacta": "22"
+      }
+    },
+    {
+      "semilla": 22,
+      "entrada": {
+        "tipo": "cifras",
+        "sub": "suma-invertida",
+        "N": 55
+      },
+      "esperado": {
+        "respuesta": 4,
+        "exacta": "4"
+      }
+    },
+    {
+      "semilla": 29,
+      "entrada": {
+        "tipo": "cubos",
+        "sub": "suma",
+        "b": 5,
+        "k": 4
+      },
+      "esperado": {
+        "respuesta": 26,
+        "exacta": "26"
+      }
+    },
+    {
+      "semilla": 34,
+      "entrada": {
+        "tipo": "grupos",
+        "grupos": [
+          12,
+          27,
+          20,
+          24,
+          45
+        ],
+        "varones": 4,
+        "mujeres": 5
+      },
+      "esperado": {
+        "respuesta": 20,
+        "exacta": "20"
+      }
+    },
+    {
+      "semilla": 37,
+      "entrada": {
+        "tipo": "sumatoria",
+        "sub": "cubos",
+        "m": 9,
+        "n": 23
+      },
+      "esperado": {
+        "respuesta": 74880,
+        "exacta": "74 880"
+      }
+    },
+    {
+      "semilla": 39,
+      "entrada": {
+        "tipo": "sumatoria",
+        "sub": "producto",
+        "p": 2,
+        "n": 13
+      },
+      "esperado": {
+        "respuesta": 1001,
+        "exacta": "1 001"
+      }
+    },
+    {
+      "semilla": 40,
+      "entrada": {
+        "tipo": "sumatoria",
+        "sub": "cuadratica",
+        "p": 3,
+        "q": 6,
+        "c": 6,
+        "n": 28
+      },
+      "esperado": {
+        "respuesta": 25746,
+        "exacta": "25 746"
+      }
+    },
+    {
+      "semilla": 45,
+      "entrada": {
+        "tipo": "intercalada",
+        "sub": "pa-pg",
+        "a1": 8,
+        "r1": 7,
+        "b1": 4,
+        "r2": null,
+        "q": 2,
+        "k": 57
+      },
+      "esperado": {
+        "respuesta": 204,
+        "exacta": "204"
+      }
+    },
+    {
+      "semilla": 57,
+      "entrada": {
+        "tipo": "cubos",
+        "sub": "cuenta",
+        "b": 8,
+        "k": 4
+      },
+      "esperado": {
+        "respuesta": 8,
+        "exacta": "8"
+      }
+    },
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "intercalada",
+        "sub": "pa-pg",
+        "a1": 10,
+        "r1": 3,
+        "b1": 4,
+        "r2": null,
+        "q": 2,
+        "k": 35
+      },
+      "esperado": {
+        "respuesta": 61,
+        "exacta": "61"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "intercalada",
+        "sub": "pa-pa",
+        "a1": 1,
+        "r1": 6,
+        "b1": 25,
+        "r2": 8,
+        "q": null,
+        "k": 34
+      },
+      "esperado": {
+        "respuesta": 153,
+        "exacta": "153"
+      }
+    }
+  ]
+}
