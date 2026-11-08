@@ -9,6 +9,8 @@
 //    - tres pirámides llenan la caja, también con el vértice corrido;
 //    - cubitos: los visibles más los ocultos son el total; las caras pintadas suman 6 por cubito en la cuenta total;
 //    - Euler: C + V = A + 2, y las aristas contadas en el dibujo coinciden con la fórmula;
+//    - 0.2.0: el vaso lleno = agua + lo de arriba y = cono grande − chico; el agua que sube = la pieza; Pappus en la región
+//      que gira; la esfera inscrita equidista de la base y la generatriz; el casquete = π·cuerda² y su volumen por integración;
 //    - NINGÚN ERROR TÍPICO COINCIDE CON LA RESPUESTA CORRECTA (los que coinciden van en 'coinciden' y sí dan lo mismo).
 // 3. Errores de entrada.
 // 4. Cada problema de papel.json coincide con el motor.
@@ -44,7 +46,9 @@ function comprobar(fn, args, espera, que) {
 // 1. casos.json
 test('casos.json: formato', () => {
   assert.equal(datos.plantilla, 'solidos');
-  assert.ok(datos.casos.length >= 15 && datos.casos.length <= 20);
+  assert.ok(datos.casos.length >= 15 && datos.casos.length <= 30);
+  // los casos de la 0.2.0 traen su propio campo de verificación (vacío hasta que otro agente los verifique)
+  for (const c of datos.casos.filter(x => x.version === '0.2.0')) assert.ok('verificacion' in c, c.nombre.slice(0, 60));
   for (const c of datos.casos) assert.ok(c.nombre && c.fn && Array.isArray(c.args) && c.espera, JSON.stringify(c).slice(0, 80));
 });
 for (const c of datos.casos) test(c.nombre, () => {
@@ -242,6 +246,86 @@ test('ningún error típico coincide con la respuesta correcta; los que coincide
   }
 });
 
+// 2b. Troncos y esferas (0.2.0)
+test('vaso a una fracción de la altura: agua + resto = vaso, agua = cono hasta el nivel − punta, crece con k; en un vaso angosto abajo, menos que k', () => {
+  for (let i = 0; i < N; i++) {
+    const r = ent(0, 6), R = r + ent(1, 7), h = ent(1, 12), k = ent(1, 10)/10;
+    const T = motor.troncoLlenado({ R, r, h, k });
+    cerca(T.pi.agua + T.pi.arriba, T.pi.vaso, 'agua + resto');
+    cerca(T.pi.vaso, T.conoCompleto.piGrande - T.conoCompleto.piChico, 'vaso = cono grande − chico', 1e-8);
+    const H = T.conoCompleto.H, hc = T.conoCompleto.hChico, zc = hc + k*h;   // altura del nivel medida desde la punta
+    cerca(T.rNivel, R*zc/H, 'radio por semejanza', 1e-9);
+    cerca(T.pi.agua, T.rNivel*T.rNivel*zc/3 - T.conoCompleto.piChico, 'agua = cono hasta el nivel − punta', 1e-8);
+    if (k < 1) assert.ok(T.fraccion < k, 'el vaso se abre hacia arriba: abajo guarda menos');
+    if (k < 1 && r > 0) assert.ok(T.fraccion > k*k*k, 'y más que k³ (no tiene punta en el fondo)');
+    const N1 = motor.nivelTronco({ R, r, h, z:k*h }); cerca(N1.piAgua, T.pi.agua, 'nivelTronco'); cerca(N1.fraccion, T.fraccion, 'fracción');
+    const T2 = motor.troncoLlenado({ R, r, h, k:Math.min(1, k + .1) }); assert.ok(T2.pi.agua >= T.pi.agua - 1e-9, 'crece con el nivel');
+    sinChoques(T, 'vaso');
+  }
+  // un cono con la punta abajo (r = 0): ahí sí vale k³
+  const C = motor.troncoLlenado({ R:6, r:0, h:9, k:1/3 }); cerca(C.fraccion, 1/27, 'cono: k³');
+});
+test('el agua que sube ocupa lo que la pieza; al revés da el volumen; mientras la bola baja, el nivel sube sin pasarse', () => {
+  for (let i = 0; i < N; i++) {
+    const R = ent(2, 10), r = ent(1, R), h0 = ent(2*r, 2*r + 6);
+    const D = motor.desplazamiento({ R, pieza:{ tipo:'esfera', r }, h0 });
+    cerca(R*R*D.dh, 4*r*r*r/3, 'πR²·Δh = 4πr³/3');
+    assert.ok(D.cubierta, 'la bola queda cubierta');
+    const I = motor.desplazamiento({ R, dh:D.dh }); cerca(I.piVolumen, D.piVolumen, 'al revés');
+    sinChoques(D, 'desplazamiento'); sinChoques(I, 'desplazamiento al revés');
+    let antes = h0;
+    for (let c = h0 + r + 1; c >= r - 1e-12; c -= (h0 + 1)/9) {
+      const L = motor.nivelConEsfera({ R, r, h0, c:Math.max(r, c) });
+      assert.ok(L.nivel >= antes - 1e-9 && L.nivel <= h0 + D.dh + 1e-9, 'el nivel sube parejo y no pasa de h0 + Δh');
+      cerca(R*R*L.sube, L.piSumergido, 'lo sumergido es lo que sube', 1e-9);
+      antes = L.nivel;
+    }
+    cerca(motor.nivelConEsfera({ R, r, h0, c:r }).nivel, h0 + D.dh, 'en el fondo, del todo cubierta', 1e-9);
+    const a = ent(1, Math.floor(R*Math.SQRT2)), Cb = motor.desplazamiento({ R, pieza:{ tipo:'cubo', a } });
+    cerca(Math.PI*R*R*Cb.dh, a*a*a, 'el cubo');
+  }
+});
+test('la región que gira: Pappus (V = 2π · distancia del centroide al eje · área) y las piezas suman el sólido', () => {
+  const centroide = pol => { let A = 0, cx = 0; for (let i = 0; i < pol.length; i++) { const [x0, y0] = pol[i], [x1, y1] = pol[(i + 1) % pol.length], c = x0*y1 - x1*y0; A += c; cx += (x0 + x1)*c; } return { A:Math.abs(A/2), x:cx/(3*A) }; };
+  for (let i = 0; i < N; i++) {
+    const b = ent(1, 9), B = b + ent(1, 8), h = ent(1, 9);
+    for (const eje of ['perpendicular', 'mayor', 'menor']) {
+      const T = motor.revolucionTrapecio({ B, b, h, eje }), G = centroide(T.trapecio);
+      cerca(G.A, (B + b)*h/2, `${eje}: área del trapecio`);
+      cerca(T.pi.volumen, 2*G.x*G.A, `${eje}: Pappus`, 1e-9);
+      cerca(T.piezas.reduce((s, p) => s + p.piVolumen, 0), T.pi.volumen, `${eje}: piezas`, 1e-9);
+      sinChoques(T, `trapecio ${eje}`);
+      const phi = rnd()*6.3; motor.girarPerfil(T.perfil, phi).forEach((p, j) => { cerca(Math.hypot(p[0], p[1]), T.perfil[j][0], 'girar no cambia la distancia al eje'); cerca(p[2], T.perfil[j][1], 'ni la altura'); });
+    }
+  }
+});
+test('la esfera inscrita en el cono: equidista de la base y de la generatriz, toca en la generatriz y V/V = A/A', () => {
+  for (let i = 0; i < N; i++) {
+    const r = ent(1, 12), h = ent(1, 15), S = motor.esferaInscritaCono({ r, h });
+    // distancia del centro (0, ρ) a la recta que une (r, 0) con (0, h): |h·0 + r·ρ − r·h| / g
+    cerca(Math.abs(r*S.rho - r*h)/S.g, S.rho, 'equidista de la generatriz');
+    const [tx, tz] = S.tangencia;
+    cerca(tx/r + tz/h, 1, 'el punto de contacto está en la generatriz');
+    cerca(Math.hypot(tx, tz - S.rho), S.rho, 'y a ρ del centro');
+    cerca(Math.hypot(tx - r, tz), r, 'tangentes iguales desde la esquina de la base');
+    cerca(S.razonVolumen, S.razonArea, 'V/V = A/A');
+    assert.ok(2*S.rho < h && S.rho < r, 'cabe en el cono');
+    sinChoques(S, 'esfera inscrita');
+  }
+});
+test('el casquete: A = 2πrh = π·cuerda², el volumen por rodajas, y casquete + resto = esfera', () => {
+  for (let i = 0; i < N; i++) {
+    const r = ent(1, 12), h = ent(1, 2*r*4)/4, Q = motor.casquete({ r, h });
+    cerca(Q.pi.area, Q.cuerda*Q.cuerda, 'π · cuerda²');
+    if (h < 2*r) cerca(Q.pi.area + motor.casquete({ r, h:2*r - h }).pi.area, 4*r*r, 'los dos casquetes suman la esfera');
+    // volumen con 4000 rodajas: π ∫ (r² − (z − r)²) dz de 2r − h a 2r
+    let v = 0; const n = 4000, z0 = 2*r - h; for (let j = 0; j < n; j++) { const z = z0 + h*(j + .5)/n; v += (r*r - (z - r)*(z - r))*h/n; }
+    cerca(Q.pi.volumen, v, 'volumen por rodajas', 1e-6);
+    for (const [rho, z] of Q.rayos) cerca(rho*rho + (z - r)*(z - r), r*r, 'los rayos salen de la esfera');
+    sinChoques(Q, 'casquete');
+  }
+});
+
 // 3. Errores de entrada
 test('entradas inválidas', () => {
   assert.throws(() => motor.prisma({ base: { tipo: 'cuadrado', lado: 2 } }), /altura/);
@@ -267,6 +351,18 @@ test('entradas inválidas', () => {
   assert.throws(() => motor.conoDeSector({ g: 5, angulo: 400 }), /menor que 360/);
   assert.throws(() => motor.conoDeSector({ g: 5, angulo: 0 }), /mayor que cero/);
   assert.throws(() => motor.bloque(0, 2, 2), /al menos 1/);
+  // 0.2.0
+  assert.throws(() => motor.troncoLlenado({ R:2, r:3, h:4 }), /no puede ser mayor/);
+  assert.throws(() => motor.troncoLlenado({ R:6, r:2, h:4, k:0 }), /de 0 a 1/);
+  assert.throws(() => motor.troncoLlenado({ R:6, r:2, h:4, k:1.5 }), /de 0 a 1/);
+  assert.throws(() => motor.desplazamiento({ R:3, pieza:{ tipo:'esfera', r:4 } }), /no cabe/);
+  assert.throws(() => motor.desplazamiento({ R:3, pieza:{ tipo:'cubo', a:5 } }), /no cabe/);
+  assert.throws(() => motor.desplazamiento({ R:3 }), /falta la pieza/);
+  assert.throws(() => motor.nivelConEsfera({ R:6, r:3, h0:7, c:1 }), /fondo/);
+  assert.throws(() => motor.revolucionTrapecio({ B:4, b:4, h:3 }), /mayor que la menor/);
+  assert.throws(() => motor.revolucionTrapecio({ B:6, b:4, h:3, eje:'diagonal' }), /eje desconocido/);
+  assert.throws(() => motor.esferaInscritaCono({ r:0, h:3 }), /mayor que cero/);
+  assert.throws(() => motor.casquete({ r:3, h:7 }), /diámetro/);
 });
 test('bordes: cubo de 2 sin cubitos sin pintura (0, nunca negativo); bloques con una dimensión 1 tienen cubitos con 4 o 5 caras pintadas', () => {
   const C2 = motor.cuboPintado(2);

@@ -22,6 +22,13 @@
  *   tresPiramides({ a, h, sep, punta })      una caja a × a × h partida en tres pirámides de igual volumen
  *   aristasUnicas(caras)                     las aristas distintas de un poliedro, para contarlas
  *
+ * 0.2.0, pestaña «Troncos y esferas»:
+ *   troncoLlenado({ R, r, h, k }), nivelTronco({ R, r, h, z })   el vaso (fondo r, boca R) lleno hasta k·h; el radio a cada altura
+ *   desplazamiento({ R, pieza, h0, H } o { R, dh }), nivelConEsfera({ R, r, h0, c })   el agua que sube al hundir una pieza
+ *   revolucionTrapecio({ B, b, h, eje }), girarPerfil(perfil, φ)  el trapecio rectángulo que gira sobre un lado
+ *   esferaInscritaCono({ r, h })            la esfera dentro del cono: ρ = r·h/(r + g) y las razones de volumen y área
+ *   casquete({ r, h })                       el casquete 2πrh (Arquímedes) y el segmento esférico πh²(3r − h)/3
+ *
  * Base de un prisma o pirámide: { tipo: 'cuadrado', lado }, { tipo: 'rectangulo', largo, ancho },
  * { tipo: 'triangulo', lado } (equilátero), { tipo: 'hexagono', lado } o { tipo: 'regular', n, lado }.
  *
@@ -510,7 +517,210 @@
     return { a, h, caja: a * a * h, piezas, volumenCadaUna: a * a * h / 3, suma: piezas.reduce((s, p) => s + p.volumen, 0) };
   }
 
+  // =====================================================================================================
+  // 0.2.0 · «Troncos y esferas»: el vaso a media altura, el agua que sube, la región que gira, la esfera
+  // dentro del cono y el casquete. Volúmenes y áreas en coeficientes de π (campo 'pi' y 'respuestas').
+  // =====================================================================================================
+
+  // ---------- El vaso llenado hasta una fracción k de su altura ----------
+  // Vaso con forma de tronco de cono: fondo de radio r (abajo), boca de radio R (arriba), altura h. El agua llega
+  // a la altura k·h. Por semejanza, el radio crece parejo con la altura: a la altura z mide r + (R − r)·z/h (a media
+  // altura, el promedio de los dos radios). El agua es otro tronco, de radios r y rNivel y altura k·h.
+  // Errores (agua y fracción): GE2, la mitad de la altura llena la mitad del volumen (fracción k); GE22, la escala
+  // k³ del cono aplicada al tronco (fracción k³, como si el vértice estuviera en el fondo); GE22, el radio a esa
+  // altura como k·R (Thales con el vértice en el fondo); hipótesis, un cilindro con el radio promedio del agua.
+  function volTronco(R, r, h) { return h * (R * R + r * r + R * r) / 3; }
+  function troncoLlenado(d) {
+    d = d || {};
+    const R = numero(d.R, 'el radio de la boca', { positivo: true }), r = numero(d.r, 'el radio del fondo'), h = numero(d.h, 'la altura', { positivo: true });
+    const k = d.k === undefined ? 0.5 : numero(d.k, 'la fracción de la altura');
+    if (r > R) throw new Error('el radio del fondo no puede ser mayor que el de la boca (el vaso se abre hacia arriba)');
+    if (!(k > 0) || k > 1 + EPS) throw new Error('la fracción de la altura va de 0 a 1 (sin el 0)');
+    const hn = k * h, rn = r + (R - r) * k;
+    const vaso = volTronco(R, r, h), agua = volTronco(rn, r, hn);
+    const out = { tipo: 'troncoLlenado', R, r, h, k, hNivel: limpio(hn), rNivel: limpio(rn),
+      pi: limpiar({ vaso, agua, arriba: vaso - agua }), fraccion: limpio(agua / vaso), porcentaje: limpio(100 * agua / vaso) };
+    if (R > r) {
+      const H = h * R / (R - r);   // el cono completo, con el vértice debajo del fondo
+      out.conoCompleto = { H: limpio(H), hChico: limpio(H - h), piGrande: limpio(R * R * H / 3), piChico: limpio(r * r * (H - h) / 3) };
+    }
+    const rMal = k * R, rProm = (r + rn) / 2;
+    const errAgua = { mitadDeVolumen: k * vaso, k3AlTronco: k * k * k * vaso, radioComoParte: volTronco(rMal, r, hn), radioPromedio: rProm * rProm * hn };
+    const errFr = {}; for (const [e, v] of Object.entries(errAgua)) errFr[e] = v / vaso;
+    return Object.assign(out, separar({ agua, fraccion: agua / vaso, rNivel: rn }, { agua: errAgua, fraccion: errFr, rNivel: { comoParte: rMal, mitadDeR: R / 2 } }));
+  }
+  // El radio del vaso y el agua que hay cuando el nivel está a la altura z (para animar el llenado).
+  function nivelTronco(d) {
+    d = d || {};
+    const R = numero(d.R, 'el radio de la boca', { positivo: true }), r = numero(d.r, 'el radio del fondo'), h = numero(d.h, 'la altura', { positivo: true });
+    const z = Math.min(h, numero(d.z, 'el nivel'));
+    const rz = r + (R - r) * z / h;
+    const agua = volTronco(rz, r, z);
+    return { z, radio: limpio(rz), piAgua: limpio(agua), fraccion: limpio(agua / volTronco(R, r, h)), fraccionAltura: limpio(z / h) };
+  }
+
+  // ---------- El agua que sube ----------
+  // Vaso cilíndrico de radio R con agua hasta h0. Se hunde una pieza entera (esfera de radio r o cubo de arista a,
+  // o un volumen V dado): el agua sube como un cilindro de radio R y alto Δh con el mismo volumen que la pieza,
+  // V = πR²·Δh. Al revés, con { R, dh } se halla el volumen de la pieza. Los volúmenes van en coeficientes de π
+  // (la esfera, 4r³/3; el cubo, a³/π). Errores de la subida (hipótesis): sube lo que mide la pieza; la esfera sin el
+  // 1/3 (4πr³); GE19, el diámetro del vaso en lugar del radio; GE19, la circunferencia 2πR en lugar del área πR².
+  function desplazamiento(d) {
+    d = d || {};
+    const R = numero(d.R, 'el radio del vaso', { positivo: true });
+    const out = { tipo: 'desplazamiento', R, areaBasePi: R * R };
+    if (d.dh !== undefined) {   // al revés: de la subida al volumen de la pieza
+      const dh = numero(d.dh, 'la subida', { positivo: true }), V = R * R * dh;
+      return Object.assign(out, { dh, piVolumen: limpio(V), volumen: PI * V },
+        separar({ piVolumen: V }, { piVolumen: { conDiametro: 4 * R * R * dh, conCircunferencia: 2 * R * dh, sinCuadrado: R * dh } }));
+    }
+    const p = d.pieza || {};
+    let V, alto, err;
+    if (p.tipo === 'esfera') {
+      const r = numero(p.r, 'el radio de la esfera', { positivo: true });
+      if (!(r <= R + EPS)) throw new Error('la esfera no cabe en el vaso');
+      V = 4 * r * r * r / 3; alto = 2 * r; out.pieza = { tipo: 'esfera', r };
+      err = { sinTercio: 4 * r * r * r / (R * R) };
+    } else if (p.tipo === 'cubo') {
+      const a = numero(p.a, 'la arista del cubo', { positivo: true });
+      if (!(a * Math.SQRT2 <= 2 * R + EPS)) throw new Error('el cubo no cabe en el vaso');
+      V = a * a * a / PI; alto = a; out.pieza = { tipo: 'cubo', a };
+      err = {};
+    } else if (p.V !== undefined) {
+      V = numero(p.V, 'el volumen de la pieza', { positivo: true }) / PI; alto = null; out.pieza = { tipo: 'volumen', V: p.V }; err = {};
+    } else throw new Error('falta la pieza: { tipo: "esfera", r }, { tipo: "cubo", a } o { V }');
+    const dh = V / (R * R);
+    Object.assign(out, { piVolumen: limpio(V), volumen: limpio(PI * V), dh: limpio(dh), altoPieza: alto });
+    if (d.h0 !== undefined) {
+      const h0 = numero(d.h0, 'el nivel inicial');
+      out.h0 = h0; out.nivelFinal = limpio(h0 + dh);
+      if (alto !== null) out.cubierta = h0 + dh >= alto - EPS;
+      if (d.H !== undefined) out.rebalsa = h0 + dh > numero(d.H, 'la altura del vaso', { positivo: true }) + EPS;
+    }
+    const grupos = Object.assign({}, err, { conDiametro: V / (4 * R * R), conCircunferencia: V / (2 * R) });
+    if (alto !== null) grupos.subeLoQueMide = alto;
+    return Object.assign(out, separar({ dh }, { dh: grupos }));
+  }
+  // Volumen (coeficiente de π) de la parte de una esfera de radio r y centro a la altura c que queda debajo del nivel L.
+  function esferaBajo(r, c, L) {
+    const t = Math.max(0, Math.min(2 * r, L - (c - r)));   // altura de la parte sumergida
+    return t * t * (3 * r - t) / 3;
+  }
+  // El nivel del agua mientras la esfera baja: el centro está a la altura c (de c ≥ h0 + r, fuera del agua, a c = r,
+  // en el fondo). Se resuelve πR²(L − h0) = volumen de la esfera bajo L por bisección (el lado izquierdo crece más
+  // rápido que el derecho, así que hay un solo nivel).
+  function nivelConEsfera(d) {
+    d = d || {};
+    const R = numero(d.R, 'el radio del vaso', { positivo: true }), r = numero(d.r, 'el radio de la esfera', { positivo: true });
+    const h0 = numero(d.h0, 'el nivel inicial'), c = numero(d.c, 'la altura del centro');
+    if (r > R + EPS) throw new Error('la esfera no cabe en el vaso');
+    if (c < r - EPS) throw new Error('la esfera no puede atravesar el fondo');
+    const f = L => R * R * (L - h0) - esferaBajo(r, c, L);
+    let a = h0, b = h0 + 4 * r * r * r / (3 * R * R) + 1e-12;
+    for (let i = 0; i < 200; i++) { const m = (a + b) / 2; if (f(m) > 0) b = m; else a = m; }
+    const L = (a + b) / 2;
+    return { nivel: limpio(L), sube: limpio(L - h0), piSumergido: limpio(esferaBajo(r, c, L)) };
+  }
+
+  // ---------- La región que gira ----------
+  // Trapecio rectángulo de bases B (mayor) y b (menor) y lado perpendicular h; el lado oblicuo mide g = √(h² + (B − b)²).
+  // Gira una vuelta alrededor de un eje:
+  //   'perpendicular': el lado h  → tronco de cono de radios B y b y altura h;
+  //   'mayor':         la base B  → cilindro (radio h, alto b) + cono (radio h, alto B − b);
+  //   'menor':         la base b  → cilindro (radio h, alto B) con un hueco cónico (radio h, alto B − b).
+  // perfil: el borde de la región en el semiplano (ρ, z), con el eje en ρ = 0, desde abajo, para dibujar el sólido;
+  // trapecio: los cuatro vértices de la región en ese semiplano. Errores del volumen (hipótesis salvo GE20): girar sobre
+  // otro lado; el rectángulo completo (o el cono sin el 1/3, que da lo mismo); restar el cono en lugar de sumarlo.
+  function revolucionTrapecio(d) {
+    d = d || {};
+    const B = numero(d.B, 'la base mayor', { positivo: true }), b = numero(d.b, 'la base menor', { positivo: true }), h = numero(d.h, 'el lado perpendicular', { positivo: true });
+    if (!(B > b + EPS)) throw new Error('la base mayor debe ser mayor que la menor');
+    const eje = d.eje || 'mayor';
+    const c = B - b, g = Math.hypot(h, c);
+    const tronco = volTronco(B, b, h), cilMayor = h * h * b, conoV = h * h * c / 3, rect = h * h * B;
+    const vol = { perpendicular: tronco, mayor: cilMayor + conoV, menor: rect - conoV };
+    if (!(eje in vol)) throw new Error(`eje desconocido: ${eje} (perpendicular, mayor o menor)`);
+    let perfil, trapecio, piezas, area;
+    if (eje === 'perpendicular') {
+      trapecio = [[0, 0], [B, 0], [b, h], [0, h]];
+      perfil = [[0, 0], [B, 0], [b, h], [0, h]];
+      piezas = [{ tipo: 'tronco', R: B, r: b, h, piVolumen: limpio(tronco) }];
+      area = B * B + b * b + (B + b) * g;
+    } else if (eje === 'mayor') {
+      trapecio = [[0, 0], [h, 0], [h, b], [0, B]];
+      perfil = [[0, 0], [h, 0], [h, b], [0, B]];
+      piezas = [{ tipo: 'cilindro', r: h, h: b, piVolumen: limpio(cilMayor) }, { tipo: 'cono', r: h, h: c, g: limpio(g), piVolumen: limpio(conoV) }];
+      area = h * h + 2 * h * b + h * g;
+    } else {
+      trapecio = [[0, 0], [h, 0], [h, B], [0, b]];
+      perfil = [[0, 0], [h, 0], [h, B], [0, b]];   // el hueco: el cono invertido de vértice (0, b) y boca en z = B
+      piezas = [{ tipo: 'cilindro', r: h, h: B, piVolumen: limpio(rect) }, { tipo: 'hueco', r: h, h: c, g: limpio(g), piVolumen: limpio(-conoV) }];
+      area = h * h + 2 * h * B + h * g;
+    }
+    const grupos = { volumen: {} };
+    for (const e of Object.keys(vol)) if (e !== eje) grupos.volumen['eje' + e[0].toUpperCase() + e.slice(1)] = vol[e];
+    grupos.volumen.rectangulo = rect;
+    if (eje === 'mayor') grupos.volumen.restaCono = rect - conoV;
+    if (eje === 'menor') grupos.volumen.sumaCono = cilMayor + conoV;
+    if (eje === 'perpendicular') grupos.volumen.sinTercio = 3 * tronco;
+    else grupos.volumen.conoSinTercio = eje === 'mayor' ? cilMayor + 3 * conoV : rect - 3 * conoV;
+    return Object.assign({ tipo: 'revolucionTrapecio', eje, B, b, h, g: limpio(g), alturaCono: c, trapecio, perfil, piezas,
+      areaTrapecio: limpio((B + b) * h / 2), pi: limpiar({ volumen: vol[eje], area }) }, separar({ volumen: vol[eje] }, grupos));
+  }
+  // Un perfil (ρ, z) girado un ángulo φ (radianes) alrededor del eje z: puntos en 3D, para dibujar el giro.
+  function girarPerfil(perfil, phi) {
+    phi = numero(phi, 'el ángulo');
+    return perfil.map(([rho, z]) => [limpio(rho * Math.cos(phi)), limpio(rho * Math.sin(phi)), z]);
+  }
+
+  // ---------- La esfera dentro del cono ----------
+  // Cono de radio r y altura h (generatriz g). Su corte axial es un triángulo isósceles de base 2r y lados g; la esfera
+  // inscrita se corta en la circunferencia inscrita en ese triángulo: ρ = área / semiperímetro = r·h/(r + g). Su centro
+  // está en el eje a la altura ρ. Como todas las caras del cono tocan la esfera, V_cono = A_cono·ρ/3 y V_esfera = A_esfera·ρ/3:
+  // la razón de volúmenes es igual a la razón de áreas. Errores del radio: GE8 (vecino), el centro en el baricentro (h/3);
+  // hipótesis, Poncelet (r + h − g)/2 en la mitad rectángula del corte; hipótesis, área entre el perímetro entero;
+  // GE22, semejanza con los lados mal emparejados (r·h/g); hipótesis, la mitad de la altura.
+  function esferaInscritaCono(d) {
+    d = d || {};
+    const r = numero(d.r, 'el radio del cono', { positivo: true }), h = numero(d.h, 'la altura del cono', { positivo: true });
+    const g = Math.hypot(r, h), rho = r * h / (r + g);
+    const areaCorte = r * h, semiper = r + g;
+    // punto de tangencia en la generatriz derecha, en el corte (x, z): pie de la perpendicular desde (0, ρ)
+    const u = [-r / g, h / g], t = (0 - r) * u[0] + (rho - 0) * u[1];
+    const tang = [r + t * u[0], t * u[1]];
+    const pi = { volEsfera: 4 * rho * rho * rho / 3, volCono: r * r * h / 3, areaEsfera: 4 * rho * rho, areaCono: r * g + r * r };
+    return Object.assign({ tipo: 'esferaInscritaCono', r, h, g: limpio(g), rho: limpio(rho), centro: limpio(rho), areaCorte: limpio(areaCorte), semiperimetro: limpio(semiper),
+      tangencia: tang.map(limpio), distTangVertice: limpio(g - r), pi: limpiar(pi),
+      razonVolumen: limpio(pi.volEsfera / pi.volCono), razonArea: limpio(pi.areaEsfera / pi.areaCono) },
+      separar({ rho, razonVolumen: pi.volEsfera / pi.volCono },
+        { rho: { baricentro: h / 3, poncelet: (r + h - g) / 2, perimetroEntero: rho / 2, semejanzaMal: r * h / g, mitadAltura: h / 2 },
+          razonVolumen: { conRadios: Math.pow(rho / r, 3), conCuadrado: Math.pow(rho / r, 2), sinTercioCono: pi.volEsfera / (r * r * h) } }));
+  }
+
+  // ---------- El casquete y el segmento esférico ----------
+  // Esfera de radio r cortada por un plano: el casquete es la parte de la superficie de altura h (0 < h ≤ 2r) y el
+  // segmento esférico de una base, el sólido que encierra. Arquímedes: el casquete mide lo mismo que la franja de
+  // igual altura del cilindro que envuelve la esfera, A = 2πr·h. El corte es un círculo de radio a = √(h(2r − h)).
+  // V = πh²(3r − h)/3. Errores del área (hipótesis salvo GE19): el disco del corte πa²; la escala k² con k = h/2r;
+  // GE19, el diámetro en la franja (4πrh); la franja sin el 2 (πrh). Del volumen: el cilindro πa²h y el cono πa²h/3.
+  // 'rayos': puntos de la esfera (ρ, z) en la franja, para dibujar la proyección horizontal sobre el cilindro.
+  function casquete(d) {
+    d = d || {};
+    const r = numero(d.r, 'el radio de la esfera', { positivo: true }), h = numero(d.h, 'la altura del casquete', { positivo: true });
+    if (h > 2 * r + EPS) throw new Error('la altura del casquete no puede ser mayor que el diámetro');
+    const a2 = h * (2 * r - h), zc = 2 * r - h;   // el plano de corte, con la esfera apoyada en z = 0
+    const pi = { area: 2 * r * h, franja: 2 * r * h, esfera: 4 * r * r, disco: a2, volumen: h * h * (3 * r - h) / 3, volEsfera: 4 * r * r * r / 3 };
+    const rayos = [];
+    for (let i = 0; i <= 6; i++) { const z = zc + h * i / 6; rayos.push([limpio(Math.sqrt(Math.max(0, r * r - (z - r) * (z - r)))), limpio(z)]); }
+    return Object.assign({ tipo: 'casquete', r, h, a: limpio(Math.sqrt(a2)), zCorte: limpio(zc), cuerda: limpio(Math.sqrt(a2 + h * h)), pi: limpiar(pi),
+      fraccionArea: limpio(h / (2 * r)), fraccionVolumen: limpio(pi.volumen / pi.volEsfera), rayos },
+      separar({ area: pi.area, volumen: pi.volumen },
+        { area: { disco: a2, escalaK2: 4 * r * r * Math.pow(h / (2 * r), 2), conDiametro: 4 * r * h, sinDos: r * h },
+          volumen: { cilindro: a2 * h, cono: a2 * h / 3, comoArea: pi.area } }));
+  }
+
   return { base, prisma, piramide, cilindro, cono, conoDeSector, esfera, troncoCono, troncoPiramide, bloque, cuboPintado,
     poliedro, aristasUnicas, hojaEnrollada, solido, desarrollo, tresPiramides,
+    troncoLlenado, nivelTronco, desplazamiento, nivelConEsfera, revolucionTrapecio, girarPerfil, esferaInscritaCono, casquete,
     util: { aplicar, normal, areaPoligono3, dot, cross, sub, add, mul, norma, unit } };
 });

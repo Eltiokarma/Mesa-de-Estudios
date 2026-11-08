@@ -11,7 +11,10 @@
    (las caras de las bases), área lateral A_L azul (las caras laterales y la superficie curva) y volumen V fucsia
    (los cubitos, las pirámides de la caja y el agua). El radio mayor R del vaso va en mostaza: solo sale en el vaso,
    a ΔE00 ≥ 32 de lo que sale con él (V, r, h, tinta, gris) y AA (5,0:1 claro, 9,9:1 oscuro); queda a ΔE00 ≈ 11 de la g
-   oliva, que nunca sale junto a él. Los lados de la base, los ángulos, los conteos y los largos que
+   oliva, que nunca sale junto a él. El radio ρ de la esfera dentro del cono (pestaña «Troncos y esferas», 0.2.0) va
+   en marrón (claro) y naranja vivo (oscuro): ΔE00 ≥ 25,9 de r, h, g, V, A_L, R, tinta, gris, ok y aviso en claro y ≥ 25,4 en
+   oscuro; AA 9,7:1 y 5,5:1 (también sobre el chip y la tarjeta). Queda cerca del naranja de A_B (19 y 7), que no sale en
+   esa pestaña. Los lados de la base, los ángulos, los conteos y los largos que
    son 2πr (la etiqueta, el arco) van en tinta; la pintura del cubo, en gris, y los cubitos sin pintura, en tinta.
    Elegidos con CIEDE2000: ΔE00 ≥ 21,1 entre los siete, en claro y en oscuro, y ≥ 25,9 entre los que salen
    en el mismo dibujo; contraste AA (≥ 5:1) sobre el papel y la tarjeta en los dos temas. La h roja está a ΔE00 ≈ 5
@@ -21,7 +24,7 @@
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
   --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
-  --c-h:#c0364a; --c-r:#0f766e; --c-ap:#17451e; --c-g:#5f6f00; --c-AB:#a05200; --c-AL:#1f5fbf; --c-V:#a10fbf; --c-R:#7d6a00; --gris:#716579;
+  --c-h:#c0364a; --c-r:#0f766e; --c-ap:#17451e; --c-g:#5f6f00; --c-AB:#a05200; --c-AL:#1f5fbf; --c-V:#a10fbf; --c-R:#7d6a00; --c-rho:#572c0f; --gris:#716579;
   --relleno:.24;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
@@ -31,13 +34,13 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-h:#f17384; --c-r:#5ed9c8; --c-ap:#40bf59; --c-g:#c8dc3c; --c-AB:#f0a04a; --c-AL:#7cb0ff; --c-V:#cf6bfa; --c-R:#e3c84a; --gris:#a99cb8;
+  --c-h:#f17384; --c-r:#5ed9c8; --c-ap:#40bf59; --c-g:#c8dc3c; --c-AB:#f0a04a; --c-AL:#7cb0ff; --c-V:#cf6bfa; --c-R:#e3c84a; --c-rho:#f98806; --gris:#a99cb8;
   --relleno:.28; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-h:#f17384; --c-r:#5ed9c8; --c-ap:#40bf59; --c-g:#c8dc3c; --c-AB:#f0a04a; --c-AL:#7cb0ff; --c-V:#cf6bfa; --c-R:#e3c84a; --gris:#a99cb8;
+  --c-h:#f17384; --c-r:#5ed9c8; --c-ap:#40bf59; --c-g:#c8dc3c; --c-AB:#f0a04a; --c-AL:#7cb0ff; --c-V:#cf6bfa; --c-R:#e3c84a; --c-rho:#f98806; --gris:#a99cb8;
   --relleno:.28; color-scheme:dark }
 
 *{box-sizing:border-box}
@@ -52,6 +55,11 @@ h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; let
 
 .tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
 .tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+/* Tres pestañas: en el celular pasan a dos filas (en una sola desbordan). */
+@media (max-width:559px){
+  .tabs{flex-wrap:wrap; justify-self:stretch; border-radius:22px}
+  .tabs a{flex:1 1 auto; text-align:center; padding:9px 10px}
+}
 .tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
 .tabs a:hover:not([aria-current]){color:var(--ink)}
 
@@ -106,6 +114,7 @@ canvas:active{cursor:grabbing}
 .v-AL{color:var(--c-AL); background:color-mix(in srgb, var(--c-AL) 8%, transparent)}
 .v-V{color:var(--c-V); background:color-mix(in srgb, var(--c-V) 8%, transparent)}
 .v-R{color:var(--c-R); background:color-mix(in srgb, var(--c-R) 8%, transparent)}
+.v-rho{color:var(--c-rho); background:color-mix(in srgb, var(--c-rho) 8%, transparent)}
 .v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
 sub{font-size:.7em}
 
@@ -185,6 +194,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible, input:focus-visible{out
     <nav class="tabs" aria-label="Modo de la escena">
       <a href="#paso-a-paso" id="tab1">Paso a paso</a>
       <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+      <a href="#troncos-y-esferas" id="tab3">Troncos y esferas</a>
     </nav>
   </div>
 
@@ -236,6 +246,34 @@ button:focus-visible, .v:focus-visible, a:focus-visible, input:focus-visible{out
     </section>
   </div>
 
+  <!-- ===== MODO 3: troncos y esferas (0.2.0) ===== -->
+  <div id="m3" class="mode" hidden>
+    <section class="bench" aria-label="Dibujo del sólido">
+      <div class="lienzo"><canvas id="cv3" role="img" aria-label="Dibujo del sólido"></canvas></div>
+      <div class="abrir" id="nivel3" hidden>
+        <label for="f3">Nivel</label>
+        <input type="range" id="f3" min="0" max="100" step="1" value="50" aria-describedby="fo3">
+        <output id="fo3" for="f3"></output>
+      </div>
+      <p class="giro" id="giro3">Arrastra el dibujo hacia los lados para girarlo (con teclado: tócalo y usa ← →).</p>
+      <p class="sr" id="desc3" aria-live="polite"></p>
+      <div class="lecturas" id="lect3"></div>
+      <div class="legend" id="leyenda3"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots3"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK3"></p>
+        <h2 class="step-t" id="stepT3"></h2>
+      </div>
+      <div id="stepBody3" class="body"></div>
+      <div class="nav">
+        <button id="prev3" type="button" class="btn">Anterior</button>
+        <button id="next3" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
   <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/solidos">Problemas para lápiz y papel</a></p>
 </main>
 
@@ -252,12 +290,15 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="../../nucleo/celular.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
-const PLANTILLA = { id: 'solidos', unidad: 'geometria.prisma-y-piramide', version: '0.1.0' };
+const PLANTILLA = { id: 'solidos', unidad: 'geometria.prisma-y-piramide', version: '0.2.0' };
 // Cada predicción se registra con la unidad del catálogo a la que pertenece.
 const UNIDAD_DE = { 'solidos-lata': 'geometria.solidos-de-revolucion', 'solidos-cono': 'geometria.solidos-de-revolucion',
   'solidos-esfera': 'geometria.solidos-de-revolucion', 'que-pasa-si-hoja': 'geometria.solidos-de-revolucion',
   'que-pasa-si-semicirculo': 'geometria.solidos-de-revolucion', 'que-pasa-si-vaso': 'geometria.solidos-de-revolucion',
-  'que-pasa-si-aristas': 'geometria.poliedros' };
+  'que-pasa-si-aristas': 'geometria.poliedros',
+  'solidos-vaso-mitad': 'geometria.solidos-de-revolucion', 'solidos-bola-agua': 'geometria.solidos-de-revolucion',
+  'solidos-trapecio-gira': 'geometria.solidos-de-revolucion', 'solidos-globo-cono': 'geometria.solidos-de-revolucion',
+  'solidos-casquete': 'geometria.solidos-de-revolucion' };
 function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
   if (!window.Medicion) return;
   Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: UNIDAD_DE[problema] || PLANTILLA.unidad, problema, opcion, correcta,
@@ -290,7 +331,7 @@ const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `
 function colores(){
   const g = n => css(n);
   return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'), warn:g('--warn'),
-    h:g('--c-h'), r:g('--c-r'), ap:g('--c-ap'), g:g('--c-g'), AB:g('--c-AB'), AL:g('--c-AL'), V:g('--c-V'), R:g('--c-R'), gris:g('--gris'),
+    h:g('--c-h'), r:g('--c-r'), ap:g('--c-ap'), g:g('--c-g'), AB:g('--c-AB'), AL:g('--c-AL'), V:g('--c-V'), R:g('--c-R'), rho:g('--c-rho'), gris:g('--gris'),
     relleno:Number(g('--relleno')) || .24, mono:g('--mono'), font:g('--font') };
 }
 // Mezcla dos colores #rrggbb: t del primero y 1 − t del segundo (rellenos opacos para los cubitos).
@@ -450,6 +491,9 @@ function crearEscena(cv, idDesc, idLect, idLey){
       out.push([P, vista(0, E.el)]);
     } else if (m === 'euler'){
       out.push([MS.desarrollo('prisma', c.d, 0).caras.flatMap(x => x.puntos), vista(E.az, E.el)]);
+    } else if (c.caja){
+      // pestaña «Troncos y esferas»: la caja de todos los estados del dibujo (para que no salte al animar)
+      out.push([c.caja, m === 'giro' ? vista(E.az, E.el) : vista(0, E.el)]);
     }
     return out;
   }
@@ -562,6 +606,66 @@ function medida(ctx, c, P, p, q, col, txt, o){
     ctx.save(); ctx.globalAlpha = o.alfa === undefined ? 1 : o.alfa; rotulo(ctx, c, mx, my, txt, col, o.align || 'center', 800, o.tam || 13); ctx.restore();
   }
 }
+
+/* ----- sólidos de revolución (pestaña «Troncos y esferas») -----
+   Un perfil [[ρ, z], …] con el eje vertical en x = 0 (o en cx). Los perfiles que se dibujan son convexos, así que el
+   contorno del sólido es el contorno convexo de sus circunferencias proyectadas; cada circunferencia de un vértice
+   del perfil se dibuja con la mitad de adelante entera y la de atrás a trazos (entera si es la boca o una tapa de arriba). */
+function contornoConvexo(pts){
+  const p = pts.slice().sort((a, b) => a[0] - b[0] || a[1] - b[1]); if (p.length < 3) return p;
+  const cr = (o, a, b) => (a[0] - o[0])*(b[1] - o[1]) - (a[1] - o[1])*(b[0] - o[0]), lo = [], up = [];
+  for (const q of p){ while (lo.length >= 2 && cr(lo[lo.length - 2], lo[lo.length - 1], q) <= 0) lo.pop(); lo.push(q); }
+  for (let i = p.length - 1; i >= 0; i--){ const q = p[i]; while (up.length >= 2 && cr(up[up.length - 2], up[up.length - 1], q) <= 0) up.pop(); up.push(q); }
+  up.pop(); lo.pop(); return lo.concat(up);
+}
+const NV = 72;
+function circ3(rho, z, cx){ const o = []; for (let j = 0; j <= NV; j++){ const t = 2*Math.PI*j/NV; o.push([(cx || 0) + rho*Math.cos(t), rho*Math.sin(t), z]); } return o; }
+function trazar(ctx, P, pts, cerrar){ ctx.beginPath(); pts.forEach((p, j) => { const q = P(p); j ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1]); }); if (cerrar) ctx.closePath(); }
+// Circunferencia horizontal: la mitad que mira al alumno entera, la de atrás a trazos (o entera, si 'entera').
+function aro(ctx, c, P, V, rho, z, o){
+  o = o || {}; const cx = o.cx || 0, col = o.col || c.ink, alfa = o.alfa === undefined ? 1 : o.alfa;
+  const pts = circ3(rho, z, cx);
+  for (const frente of [false, true]){
+    if (!frente && o.sinAtras) continue;
+    ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = o.ancho || 1.6;
+    if (!frente && !o.entera){ ctx.setLineDash([4, 4]); ctx.globalAlpha = .45*alfa; } else ctx.globalAlpha = .9*alfa;
+    if (o.punteado) ctx.setLineDash([3, 4]);
+    ctx.beginPath(); let dentro = false;
+    for (let j = 0; j < NV; j++){
+      const t = 2*Math.PI*(j + .5)/NV, mira = Math.cos(t)*V.v[0] + Math.sin(t)*V.v[1] > 0;
+      if (mira === frente || o.entera){ const a = P(pts[j]), b = P(pts[j + 1]); if (!dentro) ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); dentro = true; } else dentro = false;
+    }
+    ctx.stroke(); ctx.restore();
+    if (o.entera) break;
+  }
+}
+function revolucion(ctx, c, P, V, perfil, o){
+  o = o || {}; const cx = o.cx || 0;
+  const pts = []; for (const [rho, z] of perfil){ if (rho > 1e-9) circ3(rho, z, cx).forEach(p => pts.push(P(p))); else pts.push(P([cx, 0, z])); }
+  const H = contornoConvexo(pts);
+  ctx.save(); ctx.beginPath(); H.forEach((q, j) => j ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1])); ctx.closePath();
+  if (o.col){ ctx.globalAlpha = o.alfa === undefined ? .2 : o.alfa; ctx.fillStyle = o.col; ctx.fill(); }
+  if (o.borde !== 0){ ctx.globalAlpha = .9*(o.borde === undefined ? 1 : o.borde); ctx.strokeStyle = o.trazo || c.ink; ctx.lineWidth = o.ancho || 1.6; if (o.trazos) ctx.setLineDash([5, 4]); ctx.stroke(); }
+  ctx.restore();
+  if (o.sinAros) return;
+  const zs = perfil.map(p => p[1]), zmax = Math.max(...zs);
+  perfil.forEach(([rho, z]) => {
+    if (rho <= 1e-9) return;
+    const arriba = Math.abs(z - zmax) < 1e-9;
+    const tapa = arriba && (o.abierto || perfil.some(([r2, z2]) => r2 <= 1e-9 && Math.abs(z2 - z) < 1e-9));
+    aro(ctx, c, P, V, rho, z, { cx, entera:tapa && V.v[2] > 0, alfa:o.borde === undefined ? 1 : o.borde, col:o.trazo, sinAtras:o.trazos });
+  });
+}
+// Una superficie de agua (o un corte): la elipse llena.
+function disco(ctx, P, rho, z, col, alfa, cx){ ctx.save(); ctx.globalAlpha = alfa; ctx.fillStyle = col; trazar(ctx, P, circ3(rho, z, cx), true); ctx.fill(); ctx.restore(); }
+// Una esfera: el círculo del contorno, su relleno y el ecuador.
+function bola(ctx, c, E, P, V, centro, rho, col, o){
+  o = o || {}; const q = P(centro), s = E.escala();
+  ctx.save(); ctx.globalAlpha = o.alfa === undefined ? .3 : o.alfa; ctx.fillStyle = col; ctx.beginPath(); ctx.arc(q[0], q[1], rho*s, 0, 2*Math.PI); ctx.fill();
+  ctx.globalAlpha = .95; ctx.strokeStyle = o.trazo || col; ctx.lineWidth = 2; ctx.stroke(); ctx.restore();
+  if (!o.sinEcuador) aro(ctx, c, P, V, rho, centro[2], { cx:centro[0], col:o.trazo || col, ancho:1.1, alfa:.8 });
+}
+function punto(ctx, P, p, col, r){ const q = P(p); ctx.save(); ctx.fillStyle = col; ctx.beginPath(); ctx.arc(q[0], q[1], r || 3.5, 0, 2*Math.PI); ctx.fill(); ctx.restore(); }
 
 /* ----- los dibujos de cada modo ----- */
 const DIBUJOS = {
@@ -745,6 +849,124 @@ const DIBUJOS = {
     medida(ctx, c, P, [0, 0, hc], [rc, 0, hc], c.r, `r = ${fmt(rc)}`, { dy:-11, grosor:2.4 });
     medida(ctx, c, P, [-R - .5, 0, 0], [-R - .5, 0, hc], c.h, `h = ${fmt(hc)}`, { dx:-8, align:'right', grosor:2.4 });
     if (E.prog.lift > .5){ const q = P([rc*.4, 0, hc + lift + (H - hc)*.35]); ctx.save(); ctx.globalAlpha = (E.prog.lift - .5)*2; rotulo(ctx, c, q[0] + 26, q[1], cf.etChico, c.gris, 'left', 800, 12); ctx.restore(); }
+  },
+
+  /* ----- pestaña «Troncos y esferas» ----- */
+  vaso(ctx, c, E){
+    const cf = E.cfg, V = vista(0, E.el), P = E.proyector(V), pr = E.prog, fuerte = E.hl === 'V' ? 1.5 : 1;
+    const zN = cf.h*cf.kNivel*pr.nivel, N = MS.nivelTronco({ R:cf.R, r:cf.r, h:cf.h, z:zN });
+    // la punta que le falta al vaso: el cono completo, con el vértice debajo del fondo
+    if (pr.cono > 0){
+      const zA = -cf.hChico;
+      for (const sg of [-1, 1]) medida(ctx, c, P, [sg*cf.r, 0, 0], [0, 0, zA], c.gris, '', { trazos:true, grosor:1.4, alfa:.85*pr.cono });
+      ctx.save(); ctx.globalAlpha = .12*pr.cono; ctx.fillStyle = c.gris; trazar(ctx, P, [[-cf.r, 0, 0], [cf.r, 0, 0], [0, 0, zA]], true); ctx.fill(); ctx.restore();
+      if (pr.cono > .6){ const q = P([0, 0, zA]); ctx.save(); ctx.globalAlpha = (pr.cono - .6)/.4; rotulo(ctx, c, q[0] + 12, q[1] + 2, cf.etPunta, c.gris, 'left', 800, 12); ctx.restore(); }
+    }
+    // el agua
+    if (zN > .01){
+      revolucion(ctx, c, P, V, [[0, 0], [cf.r, 0], [N.radio, zN], [0, zN]], { col:c.V, alfa:.26*fuerte, borde:0, sinAros:true });
+      disco(ctx, P, N.radio, zN, c.V, .2*fuerte); aro(ctx, c, P, V, N.radio, zN, { col:c.V, entera:true, ancho:1.5 });
+    }
+    // el vaso, abierto arriba
+    revolucion(ctx, c, P, V, [[0, 0], [cf.r, 0], [cf.R, cf.h], [0, cf.h]], { abierto:true });
+    // la marca hasta donde se echa el agua (el enunciado)
+    if (cf.marca && pr.nivel < .02){
+      const rm = MS.nivelTronco({ R:cf.R, r:cf.r, h:cf.h, z:cf.h/2 }).radio;
+      aro(ctx, c, P, V, rm, cf.h/2, { col:c.ink, entera:true, punteado:true, ancho:1.3, alfa:.8 });
+      const q = P([rm, 0, cf.h/2]); rotulo(ctx, c, q[0] + 8, q[1], 'mitad de la altura', c.ink, 'left', 800, 12);
+    }
+    medida(ctx, c, P, [0, 0, cf.h], [cf.R, 0, cf.h], c.R, `R = ${fmt(cf.R)}`, { dy:-12, grosor:2.4 });
+    medida(ctx, c, P, [0, 0, 0], [cf.r, 0, 0], c.r, `r = ${fmt(cf.r)}`, { dy:14, grosor:2.4 });
+    medida(ctx, c, P, [-cf.R - .7, 0, 0], [-cf.R - .7, 0, cf.h], c.h, `h = ${fmt(cf.h)}`, { dx:-8, align:'right', grosor:2.4 });
+    if (pr.marcas > 0 && zN > .01){
+      medida(ctx, c, P, [0, 0, zN], [N.radio, 0, zN], c.ink, `${fmt(N.radio)}`, { dy:-11, grosor:1.8, alfa:pr.marcas });
+      const q = P([-N.radio, 0, zN]); ctx.save(); ctx.globalAlpha = pr.marcas; rotulo(ctx, c, q[0] - 8, q[1], `${fmt(zN)} cm`, c.ink, 'right', 800, 12); ctx.restore();
+    }
+  },
+  hunde(ctx, c, E){
+    const cf = E.cfg, V = vista(0, E.el), P = E.proyector(V), pr = E.prog, fuerte = E.hl === 'V' ? 1.5 : 1;
+    const cz = cf.cArriba + (cf.r - cf.cArriba)*pr.baja;
+    const N = MS.nivelConEsfera({ R:cf.R, r:cf.r, h0:cf.h0, c:cz }), L = N.nivel;
+    revolucion(ctx, c, P, V, [[0, 0], [cf.R, 0], [cf.R, cf.h0], [0, cf.h0]], { col:c.gris, alfa:.13, borde:0, sinAros:true });
+    if (L > cf.h0 + 1e-3) revolucion(ctx, c, P, V, [[0, cf.h0], [cf.R, cf.h0], [cf.R, L], [0, L]], { col:c.V, alfa:.3*fuerte, borde:0, sinAros:true });
+    bola(ctx, c, E, P, V, [0, 0, cz], cf.r, c.V, { alfa:.34*fuerte });
+    disco(ctx, P, cf.R, L, c.gris, .1); aro(ctx, c, P, V, cf.R, L, { col:c.muted, entera:true, ancho:1.3 });
+    if (pr.baja > 0 && L > cf.h0 + 1e-3) aro(ctx, c, P, V, cf.R, cf.h0, { col:c.V, entera:true, punteado:true, ancho:1.2 });
+    revolucion(ctx, c, P, V, [[0, 0], [cf.R, 0], [cf.R, cf.H], [0, cf.H]], { abierto:true });
+    medida(ctx, c, P, [0, 0, 0], [cf.R, 0, 0], c.R, `R = ${fmt(cf.R)}`, { dy:14, grosor:2.4 });
+    medida(ctx, c, P, [0, 0, cz], [cf.r, 0, cz], c.r, `r = ${fmt(cf.r)}`, { dy:-11, grosor:2.2 });
+    const q = P([-cf.R, 0, cf.h0]); rotulo(ctx, c, q[0] - 8, q[1], `${fmt(cf.h0)} cm`, c.ink, 'right', 800, 12);
+    if (pr.baja >= .999) medida(ctx, c, P, [cf.R + .9, 0, cf.h0], [cf.R + .9, 0, L], c.h, `Δh = ${fmt(N.sube)}`, { dx:8, align:'left', grosor:3.2 });
+  },
+  giro(ctx, c, E){
+    const cf = E.cfg, V = vista(E.az, E.el), P = E.proyector(V), pr = E.prog, T = cf.eje === 'mayor' ? cf.TM : cf.TP, fuerte = E.hl === 'V' ? 1.5 : 1;
+    const phi = 2*Math.PI*pr.giro, top = Math.max(...T.perfil.map(p => p[1]));
+    medida(ctx, c, P, [0, 0, -.9], [0, 0, top + .9], c.ink, '', { trazos:true, grosor:1.3, alfa:.8 });
+    { const q = P([0, 0, top + .9]); rotulo(ctx, c, q[0] + 6, q[1] - 2, 'eje', c.ink, 'left', 800, 12); }
+    if (pr.giro > 0) revolucion(ctx, c, P, V, T.perfil, { col:c.V, alfa:.22*Math.min(1, pr.giro*1.3)*fuerte, borde:Math.min(1, pr.giro*1.3) });
+    if (pr.giro > 0 && pr.giro < 1){
+      for (const [rho, z] of T.trapecio){
+        if (rho <= 1e-9) continue;
+        const n = Math.max(2, Math.ceil(NV*pr.giro)), pts = [];
+        for (let j = 0; j <= n; j++) pts.push(MS.girarPerfil([[rho, z]], phi*j/n)[0]);
+        ctx.save(); ctx.strokeStyle = c.ink; ctx.globalAlpha = .6; ctx.lineWidth = 1.3; trazar(ctx, P, pts, false); ctx.stroke(); ctx.restore();
+      }
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.globalAlpha = .45; ctx.setLineDash([4, 4]); ctx.lineWidth = 1.2; trazar(ctx, P, MS.girarPerfil(T.trapecio, 0), true); ctx.stroke(); ctx.restore();
+    }
+    if (pr.giro < 1){
+      const Q = MS.girarPerfil(T.trapecio, phi);
+      ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = .13; trazar(ctx, P, Q, true); ctx.fill(); ctx.globalAlpha = .95; ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.stroke(); ctx.restore();
+    }
+    const et = pr.giro >= .999 ? cf.etiquetas[cf.eje].despues : pr.giro <= .001 ? cf.etiquetas[cf.eje].antes : [];
+    for (const e of et){
+      const p = [e.p[0], 0, e.p[1]], q = [e.q[0], 0, e.q[1]];
+      medida(ctx, c, P, p, q, e.k === 'ink' ? c.ink : c[e.k], e.t, { grosor:e.k === 'ink' ? 1.6 : 3, dx:e.dx || 0, dy:e.dy || 0, align:e.align || 'center', trazos:!!e.trazos });
+    }
+  },
+  globo(ctx, c, E){
+    const cf = E.cfg, G = cf.G, V = vista(0, E.el), P = E.proyector(V), pr = E.prog, fuerte = E.hl === 'V' ? 1.5 : 1;
+    const rho = cf.rho0 + (G.rho - cf.rho0)*pr.infla;
+    revolucion(ctx, c, P, V, [[0, 0], [G.r, 0], [0, G.h]], { col:c.AL, alfa:.1 });
+    bola(ctx, c, E, P, V, [0, 0, rho], rho, c.V, { alfa:.3*fuerte });
+    medida(ctx, c, P, [0, 0, 0], [0, 0, G.h], c.h, '', { trazos:true, grosor:1.6, alfa:.75 });
+    medida(ctx, c, P, [-G.r - .8, 0, 0], [-G.r - .8, 0, G.h], c.h, `h = ${fmt(G.h)}`, { dx:-8, align:'right', grosor:2.4 });
+    medida(ctx, c, P, [0, 0, 0], [G.r, 0, 0], c.r, `r = ${fmt(G.r)}`, { dy:14, grosor:2.4 });
+    if (pr.marcas > 0){
+      const T1 = [G.tangencia[0], 0, G.tangencia[1]], T2 = [-G.tangencia[0], 0, G.tangencia[1]], O = [0, 0, G.rho];
+      medida(ctx, c, P, [G.r, 0, 0], [0, 0, G.h], c.g, `g = ${fmt(G.g)}`, { grosor:2.6, dx:16, dy:-4, align:'left', alfa:pr.marcas });
+      ctx.save(); ctx.globalAlpha = pr.marcas;
+      medida(ctx, c, P, O, T1, c.rho, '', { grosor:2.8 });
+      medida(ctx, c, P, O, [0, 0, 0], c.rho, '', { grosor:2.8 });
+      for (const t of [T1, T2, [0, 0, 0]]) punto(ctx, P, t, c.ink, 3.5);
+      punto(ctx, P, O, c.rho, 4);
+      const q = P(O); rotulo(ctx, c, q[0] - 10, q[1] + 2, `ρ = ${fmt(G.rho)}`, c.rho, 'right', 800, 13);
+      ctx.restore();
+    }
+  },
+  casquete(ctx, c, E){
+    const cf = E.cfg, Q = cf.Q, V = vista(0, E.el), P = E.proyector(V), s = E.escala(), pr = E.prog, r = Q.r, fuerte = E.hl === 'AL' ? 1.6 : 1;
+    const o = P([0, 0, r]), ce = P([0, 0, Q.zCorte]);
+    ctx.save(); ctx.globalAlpha = .07; ctx.fillStyle = c.gris; ctx.beginPath(); ctx.arc(o[0], o[1], r*s, 0, 2*Math.PI); ctx.fill();
+    ctx.globalAlpha = .9; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.8; ctx.stroke(); ctx.restore();
+    aro(ctx, c, P, V, r, r, { col:c.ink, ancho:1, alfa:.5 });
+    // el casquete: el arco de arriba del contorno y la mitad de adelante del círculo del corte
+    const aR = Math.atan2(ce[1] - o[1], Q.a*s), aL = Math.atan2(ce[1] - o[1], -Q.a*s);
+    ctx.save(); ctx.beginPath(); ctx.arc(o[0], o[1], r*s, aR, aL, true); ctx.ellipse(ce[0], ce[1], Q.a*s, Q.a*s*Math.sin(V.el), 0, Math.PI, 0, true); ctx.closePath();
+    ctx.globalAlpha = .3*fuerte; ctx.fillStyle = c.AL; ctx.fill(); ctx.restore();
+    aro(ctx, c, P, V, Q.a, Q.zCorte, { col:c.ink, ancho:1.5 });
+    if (pr.cil > 0){
+      revolucion(ctx, c, P, V, [[0, 0], [r, 0], [r, 2*r], [0, 2*r]], { trazos:true, borde:.7*pr.cil });
+      revolucion(ctx, c, P, V, [[0, Q.zCorte], [r, Q.zCorte], [r, 2*r], [0, 2*r]], { col:c.AL, alfa:.12*pr.cil*fuerte, borde:0, sinAros:true });
+      aro(ctx, c, P, V, r, Q.zCorte, { col:c.AL, ancho:1.6, alfa:pr.cil, entera:true });
+    }
+    if (pr.rayos > 0) for (const [rho, z] of Q.rayos.filter(q => q[0] > .3*r)) for (const sg of [-1, 1]){
+      const a = P([sg*rho, 0, z]), b = P([sg*(rho + (r - rho)*pr.rayos), 0, z]);
+      if (Math.abs(b[0] - a[0]) < 2) continue;
+      ctx.save(); ctx.strokeStyle = c.AL; ctx.fillStyle = c.AL; ctx.lineWidth = 1.6; ctx.globalAlpha = .9; ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(b[0], b[1]); ctx.lineTo(b[0] - sg*6, b[1] - 3.5); ctx.lineTo(b[0] - sg*6, b[1] + 3.5); ctx.closePath(); ctx.fill(); ctx.restore();
+    }
+    medida(ctx, c, P, [0, 0, r], [r, 0, r], c.r, `r = ${fmt(r)}`, { dy:13, grosor:2.4 });
+    medida(ctx, c, P, [r + 1, 0, Q.zCorte], [r + 1, 0, 2*r], c.h, `h = ${fmt(Q.h)}`, { dx:8, align:'left', grosor:2.8 });
   },
 
   euler(ctx, c, E){
@@ -1288,9 +1510,288 @@ ir(0);
 </script>
 
 <script>
+/* ================= MODO 3: troncos y esferas (0.2.0) =================
+   Lo que la admisión de San Marcos pregunta de los sólidos de revolución y los otros dos modos no muestran: el vaso
+   llenado a media altura, el agua que sube al hundir una bola, la región que gira, la esfera dentro del cono y el
+   casquete. Cinco predicciones; las opciones incorrectas salen de docs/investigacion/geometria-ideas-erroneas.md
+   (GE2, GE8, GE19, GE20, GE22) y de hipótesis nuestras. Todos los números salen de MotorSolidos. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv3'), 'desc3', 'lect3', 'leyenda3');
+const R_ = t => V_('R', t), rho_ = t => V_('rho', t);
+const VA = MS.troncoLlenado({ R:6, r:2, h:6 });
+const BO = MS.desplazamiento({ R:6, pieza:{ tipo:'esfera', r:3 }, h0:7, H:12 }), PIEDRA = MS.desplazamiento({ R:6, dh:2 });
+const TM = MS.revolucionTrapecio({ B:10, b:6, h:3, eje:'mayor' }), TP = MS.revolucionTrapecio({ B:10, b:6, h:3, eje:'perpendicular' });
+const GL = MS.esferaInscritaCono({ r:6, h:8 });
+const CQ = MS.casquete({ r:6, h:3 });
+const S = { step:0, max:0, pred:{}, ocupado:false, eje:'mayor' };
+const pct = x => `${fmt(100*x, 0)} %`;
+// la caja de un sólido de revolución: x e y en ±ρ, z de z0 a z1
+const caja = (rho, z0, z1) => { const o = []; for (const x of [-rho, rho]) for (const y of [-rho, rho]) for (const z of [z0, z1]) o.push([x, y, z]); return o; };
+const hip = que => `<p class="fuente">${que} No encontramos estudios con datos: son hipótesis nuestras, inferidas de las alternativas de exámenes de admisión (sin datos de alumnos). El lanzamiento en el colegio dirá cuáles aparecen.</p>`;
+
+const Q1 = { id:'solidos-vaso-mitad', ok:'c', opts:[
+  ['a', `${piT(VA.errores.agua.mitadDeVolumen)} cm³`, 'GE2-mitad-de-altura-mitad-de-volumen', 'parcial'],
+  ['b', `${piT(VA.errores.agua.radioComoParte)} cm³`, 'GE22-radio-a-media-altura-como-mitad-de-R', 'hipotesis'],
+  ['c', `${piT(VA.pi.agua)} cm³`],
+  ['d', `${piT(VA.errores.agua.k3AlTronco)} cm³`, 'GE22-k3-aplicado-al-tronco', 'hipotesis']],
+  fb:{ c:`¡Bien! A media altura el radio es ${fmt(VA.rNivel)} (el promedio de 2 y 6). El agua es un tronco de radios 2 y ${fmt(VA.rNivel)} y altura 3: ${piT(VA.pi.agua)}, poco más de la cuarta parte del vaso.`,
+    a:`Elegiste la A. ${piT(VA.errores.agua.mitadDeVolumen)} es la mitad de ${piT(VA.pi.vaso)}: valdría si el vaso fuera un cilindro. Este se abre hacia arriba: la mitad de abajo es la angosta y guarda mucho menos que la de arriba. La correcta está marcada.`,
+    b:`Elegiste la B. ${piT(VA.errores.agua.radioComoParte)} usa radio 3 a media altura (la mitad de 6), como si el vaso terminara en punta en el fondo. El fondo mide 2: a media altura el radio es (2 + 6)/2 = 4. La correcta está marcada.`,
+    d:`Elegiste la D. ${piT(VA.errores.agua.k3AlTronco)} es ${piT(VA.pi.vaso)}/8: la regla del cubo vale entre conos que comparten la punta, y este vaso no tiene punta en el fondo. El agua no es un vaso más chico semejante al lleno. La correcta está marcada.` } };
+const Q2 = { id:'solidos-bola-agua', ok:'b', opts:[
+  ['a', `${fmt(BO.errores.dh.subeLoQueMide)} cm`, 'sube-lo-que-mide-la-pieza', 'hipotesis'],
+  ['b', `${fmt(BO.dh)} cm`],
+  ['c', `${fmt(BO.errores.dh.conDiametro)} cm`, 'GE19-diametro-como-radio', 'hipotesis'],
+  ['d', `${fmt(BO.errores.dh.sinTercio)} cm`, 'esfera-sin-tercio', 'hipotesis']],
+  fb:{ b:`¡Bien! El agua que sube forma un cilindro de radio 6 y alto Δh con el mismo volumen que la bola: 36π · Δh = 36π, así que Δh = ${fmt(BO.dh)} cm.`,
+    a:`Elegiste la A. ${fmt(BO.errores.dh.subeLoQueMide)} cm es lo que mide la bola de alto (su diámetro). El agua no sube lo que mide la pieza: sube lo justo para que el agua de más, πR² · Δh, ocupe lo mismo que la bola. El vaso es ancho, así que sube poco. La correcta está marcada.`,
+    c:`Elegiste la C. ${fmt(BO.errores.dh.conDiametro)} cm usa el diámetro del vaso (12) en πR². El área del fondo es π · 6² = 36π. La correcta está marcada.`,
+    d:`Elegiste la D. ${fmt(BO.errores.dh.sinTercio)} cm sale de usar 4πr³ sin el 1/3 (o de dividir entre la circunferencia 2πR en lugar del área πR²). La bola mide 4π · 27/3 = 36π. La correcta está marcada.` } };
+const Q3 = { id:'solidos-trapecio-gira', ok:'b', opts:[
+  ['a', `${piT(TM.errores.volumen.rectangulo)} cm³`, 'GE20-cono-sin-tercio-o-rectangulo-completo', 'hipotesis'],
+  ['b', `${piT(TM.pi.volumen)} cm³`],
+  ['c', `${piT(TM.errores.volumen.ejePerpendicular)} cm³`, 'revolucion-gira-sobre-otro-lado', 'hipotesis'],
+  ['d', `${piT(TM.errores.volumen.restaCono)} cm³`, 'revolucion-resta-el-cono', 'hipotesis']],
+  fb:{ b:`¡Bien! El lado de 3 da la vuelta como radio: la parte de 6 de alto barre un cilindro (π · 9 · 6 = ${piT(TM.piezas[0].piVolumen)}) y la punta, un cono de alto 10 − 6 = 4 (π · 9 · 4/3 = ${piT(TM.piezas[1].piVolumen)}). Juntos, ${piT(TM.pi.volumen)}.`,
+    a:`Elegiste la A. ${piT(TM.errores.volumen.rectangulo)} es π · 3² · 10: un cilindro de todo el largo, como si la región fuera un rectángulo (o el cono sin su 1/3, que da lo mismo). La punta es un cono y lleva el tercio. La correcta está marcada.`,
+    c:`Elegiste la C. ${piT(TM.errores.volumen.ejePerpendicular)} es el tronco de cono que sale al girar sobre el lado de 3. Aquí el eje es la base mayor: el lado de 3 hace de radio, no de altura. La correcta está marcada.`,
+    d:`Elegiste la D. ${piT(TM.errores.volumen.restaCono)} resta el cono (90π − 12π): eso sale al girar sobre la base menor, que deja un hueco con forma de cono. Girando sobre la mayor, la punta llena un cono que se suma. La correcta está marcada.` } };
+const Q4 = { id:'solidos-globo-cono', ok:'d', opts:[
+  ['a', '8/3 cm', 'GE8-incentro-como-baricentro', 'hipotesis'],
+  ['b', `${fmt(GL.errores.rho.poncelet)} cm`, 'inradio-de-la-mitad-rectangula', 'hipotesis'],
+  ['c', '3/2 cm', 'inradio-con-perimetro-entero', 'hipotesis'],
+  ['d', `${fmt(GL.rho)} cm`]],
+  fb:{ d:`¡Bien! En el corte por el eje, el globo es la circunferencia inscrita en un triángulo de lados 10, 10 y 12: ρ = área / semiperímetro = 48/16 = ${fmt(GL.rho)} cm.`,
+    a:`Elegiste la A. 8/3 es un tercio de la altura: ahí está el baricentro, donde se cruzan las medianas. El centro del globo es el incentro, donde se cruzan las bisectrices, y en este triángulo no coinciden. La correcta está marcada.`,
+    b:`Elegiste la B. ${fmt(GL.errores.rho.poncelet)} sale de la fórmula del triángulo rectángulo, (6 + 8 − 10)/2, aplicada a la mitad del corte. Esa circunferencia cabe en la mitad y no llega al otro lado: el globo toca todo el triángulo isósceles. La correcta está marcada.`,
+    c:`Elegiste la C. 3/2 divide el área (48) entre el perímetro entero (32). El área del triángulo es semiperímetro por inradio, S = p · ρ, con p = 16. La correcta está marcada.` } };
+const Q5 = { id:'solidos-casquete', ok:'c', opts:[
+  ['a', `${piT(CQ.errores.area.disco)} cm²`, 'casquete-como-disco-del-corte', 'hipotesis'],
+  ['b', `${piT(CQ.errores.area.escalaK2)} cm²`, 'casquete-con-escala-k2', 'hipotesis'],
+  ['c', `${piT(CQ.pi.area)} cm²`],
+  ['d', `${piT(CQ.errores.area.conDiametro)} cm²`, 'GE19-diametro-como-radio', 'hipotesis']],
+  fb:{ c:`¡Bien! El casquete mide lo mismo que la franja de igual altura del cilindro que envuelve a la esfera: 2π · 6 · 3 = ${piT(CQ.pi.area)} cm², la cuarta parte de la esfera (3 de sus 12 cm de alto).`,
+    a:`Elegiste la A. ${piT(CQ.errores.area.disco)} es el área del círculo del corte, la tapa plana (su radio al cuadrado es 3 · 9 = 27). El casquete es la parte curva, que se abomba encima y mide más. La correcta está marcada.`,
+    b:`Elegiste la B. ${piT(CQ.errores.area.escalaK2)} usa la regla de semejanza k² con k = 3/12. Pero el casquete no es una esfera chica semejante a la grande: su área crece parejo con su altura, no con su cuadrado. La correcta está marcada.`,
+    d:`Elegiste la D. ${piT(CQ.errores.area.conDiametro)} usa el diámetro (12) en la franja: 2π · 12 · 3. La franja del cilindro tiene radio r = 6. La correcta está marcada.` } };
+
+// ----- configuraciones -----
+const cfgVaso = r => ({ modo:'vaso', R:VA.R, r:VA.r, h:VA.h, hChico:VA.conoCompleto.hChico, kNivel:VA.k, marca:true, etPunta:'la punta que le falta', el:20,
+  caja:caja(VA.R + .9, -VA.conoCompleto.hChico - .3, VA.h + .5), pad:{ l:64, r:30, t:26, b:26 }, prog:{ nivel:r ? 1 : 0, cono:r ? 1 : 0, marcas:r ? 1 : 0 },
+  ley: r ? [['V', 'el agua'], ['gris', 'el cono que completa el vaso', 'trazos'], ['R', 'radio de la boca R', 'linea'], ['r', 'radio del fondo r', 'linea'], ['h', 'altura h', 'linea']]
+         : [['R', 'radio de la boca R', 'linea'], ['r', 'radio del fondo r', 'linea'], ['h', 'altura h', 'linea']],
+  lect: r ? lectVaso : [], desc:'Un vaso con forma de tronco de cono, angosto abajo: fondo de radio 2, boca de radio 6 y altura 6, con una marca a la mitad de la altura.' });
+const lectVaso = [E => { const N = MS.nivelTronco({ R:VA.R, r:VA.r, h:VA.h, z:VA.h*E.cfg.kNivel }); return ['V', `agua hasta ${fmt(N.z)} cm`, `${piT(N.piAgua)} cm³`]; },
+  ['ink', 'vaso lleno', `${piT(VA.pi.vaso)} cm³`],
+  E => { const N = MS.nivelTronco({ R:VA.R, r:VA.r, h:VA.h, z:VA.h*E.cfg.kNivel }); return ['ink', 'parte llena', pct(N.fraccion)]; }];
+const cfgBola = r => ({ modo:'hunde', R:BO.R, H:12, h0:BO.h0, r:BO.pieza.r, cArriba:12 + BO.pieza.r + .9, el:16,
+  caja:caja(BO.R + 1.6, -.4, 12 + 2*BO.pieza.r + 1.1), pad:{ l:56, r:56, t:20, b:28 }, prog:{ baja:r ? 1 : 0 },
+  ley: r ? [['V', 'la bola y el agua que subió'], ['gris', 'el agua'], ['R', 'radio del vaso R', 'linea'], ['r', 'radio de la bola r', 'linea'], ['h', 'lo que sube Δh', 'linea']]
+         : [['V', 'la bola'], ['gris', 'el agua'], ['R', 'radio del vaso R', 'linea'], ['r', 'radio de la bola r', 'linea']],
+  lect: r ? [['V', 'bola: 4πr³/3', `${piT(BO.piVolumen)} cm³`], ['V', 'agua de más: πR² · Δh', `${piT(BO.areaBasePi)} · Δh`], ['h', 'sube Δh', `${fmt(BO.dh)} cm`]] : [],
+  desc:'Un vaso cilíndrico de radio 6 con agua hasta 7 cm y, encima, una bola de radio 3.' });
+const eti = {
+  mayor:{ antes:[{ p:[0, 0], q:[3, 0], t:'3', k:'ink', dy:14 }, { p:[3, 0], q:[3, 6], t:'6', k:'ink', dx:12, align:'left' }, { p:[3, 6], q:[0, 10], t:'5', k:'ink', dx:12, dy:-4, align:'left' }, { p:[0, 10], q:[0, 0], t:'10', k:'ink', dx:-10, align:'right' }],
+    despues:[{ p:[0, 0], q:[3, 0], t:'r = 3', k:'r', dy:14 }, { p:[3, 0], q:[3, 6], t:'h = 6', k:'h', dx:12, align:'left' }, { p:[3, 6], q:[0, 10], t:'g = 5', k:'g', dx:14, dy:-6, align:'left' }, { p:[0, 6], q:[0, 10], t:'4', k:'ink', dx:-10, align:'right' }] },
+  perpendicular:{ antes:[],
+    despues:[{ p:[0, 0], q:[10, 0], t:'R = 10', k:'R', dy:14 }, { p:[0, 3], q:[6, 3], t:'r = 6', k:'r', dy:-12 }, { p:[6, 3], q:[10, 0], t:'5', k:'ink', dx:14, dy:-6, align:'left' }, { p:[0, 0], q:[0, 3], t:'h = 3', k:'h', dx:-10, align:'right' }] } };
+// las medidas del trapecio salen del motor
+eti.mayor.antes[0].t = fmt(TM.h); eti.mayor.antes[1].t = fmt(TM.b); eti.mayor.antes[2].t = fmt(TM.g); eti.mayor.antes[3].t = fmt(TM.B);
+const lectGiro = eje => eje === 'mayor'
+  ? [['V', 'cilindro: π · 3² · 6', `${piT(TM.piezas[0].piVolumen)} cm³`], ['V', 'cono: π · 3² · 4/3', `${piT(TM.piezas[1].piVolumen)} cm³`], ['V', 'el sólido', `${piT(TM.pi.volumen)} cm³`]]
+  : [['V', 'tronco: π · 3 · (100 + 36 + 60)/3', `${piT(TP.pi.volumen)} cm³`], ['ink', 'área del trapecio', `${fmt(TP.areaTrapecio)} cm²`]];
+const leyGiro = (eje, r) => !r ? [['ink', 'la región y el eje', 'trazos']]
+  : eje === 'mayor' ? [['V', 'el sólido que barre'], ['r', 'radio r', 'linea'], ['h', 'altura del cilindro h', 'linea'], ['g', 'generatriz del cono g', 'linea']]
+  : [['V', 'el sólido que barre'], ['R', 'radio mayor R', 'linea'], ['r', 'radio menor r', 'linea'], ['h', 'altura h', 'linea']];
+const cfgGiro = r => ({ modo:'giro', eje:S.eje, TM, TP, etiquetas:eti, el:18, az:24,
+  caja: S.eje === 'mayor' ? caja(4.2, -1.2, 11.2) : caja(10.6, -1.4, 4.6), pad:{ l:30, r:40, t:24, b:28 }, prog:{ giro:r ? 1 : 0 },
+  ley:leyGiro(S.eje, r), lect: r ? lectGiro(S.eje) : [],
+  desc:'Un trapecio rectángulo de bases 10 y 6, lado perpendicular 3 y lado oblicuo 5, parado con su base mayor sobre el eje (la recta a trazos).' });
+const cfgGlobo = r => ({ modo:'globo', G:GL, rho0:.9, el:10, caja:caja(GL.r + 1, -.4, GL.h + .4), pad:{ l:64, r:64, t:20, b:28 },
+  prog:{ infla:r ? 1 : 0, marcas:r ? 1 : 0 },
+  ley: r ? [['V', 'el globo (esfera)'], ['AL', 'el cono'], ['rho', 'radio del globo ρ', 'linea'], ['r', 'radio del cono r', 'linea'], ['h', 'altura h', 'linea'], ['g', 'generatriz g', 'linea']]
+         : [['V', 'el globo'], ['AL', 'el cono'], ['r', 'radio del cono r', 'linea'], ['h', 'altura h', 'linea']],
+  lect: r ? [['rho', 'radio del globo ρ', `${fmt(GL.rho)} cm`], ['V', 'globo / cono (volumen)', `${piT(GL.pi.volEsfera)} / ${piT(GL.pi.volCono)} = 3/8`], ['AL', 'globo / cono (área)', `${piT(GL.pi.areaEsfera)} / ${piT(GL.pi.areaCono)} = 3/8`]] : [],
+  desc:'Un cono de radio 6 y altura 8 con un globo pequeño adentro, apoyado en la base.' });
+const cfgCasq = r => ({ modo:'casquete', Q:CQ, el:14, caja:caja(CQ.r + 1.4, -.3, 2*CQ.r + .3), pad:{ l:30, r:60, t:20, b:22 },
+  prog:{ cil:r ? 1 : 0, rayos:r ? 1 : 0 },
+  ley: r ? [['AL', 'el casquete y la franja del cilindro'], ['ink', 'el cilindro que envuelve a la esfera', 'trazos'], ['r', 'radio r', 'linea'], ['h', 'altura del casquete h', 'linea']]
+         : [['AL', 'el casquete'], ['r', 'radio r', 'linea'], ['h', 'altura del casquete h', 'linea']],
+  lect: r ? [['AL', 'casquete: 2πr · h', `${piT(CQ.pi.area)} cm²`], ['AL', 'franja del cilindro', `${piT(CQ.pi.franja)} cm²`], ['V', 'segmento esférico', `${piT(CQ.pi.volumen)} cm³`]] : [],
+  desc:'Una esfera de radio 6 cortada por un plano horizontal: el casquete de arriba tiene altura 3.' });
+
+// control del nivel del agua (paso 1, después de responder)
+function nivelControl(on){
+  $('nivel3').hidden = !on; if (!on) return;
+  const r = $('f3'), pinta = () => { const z = VA.h*E.cfg.kNivel; r.value = Math.round(E.cfg.kNivel*100); $('fo3').textContent = `${fmt(z, 1)} cm`; r.setAttribute('aria-valuetext', `agua hasta ${fmt(z, 1)} cm`); };
+  pinta();
+  r.oninput = () => { if (S.ocupado) return; E.cfg.kNivel = Number(r.value)/100; E.prog.nivel = 1; E.prog.marcas = 1; E.dibujar(); E.lecturas(); pinta(); };
+}
+function botonEje(){
+  const b = $('eje3'); if (!b) return;
+  const pinta = () => { b.textContent = S.eje === 'mayor' ? 'Girarlo sobre el lado de 3' : 'Girarlo sobre la base mayor'; b.disabled = S.ocupado; };
+  pinta();
+  b.onclick = () => {
+    if (S.ocupado) return;
+    S.eje = S.eje === 'mayor' ? 'perpendicular' : 'mayor'; S.ocupado = true; nav(); pinta();
+    E.config(cfgGiro(false)); E.ley = leyGiro(S.eje, true); E.leyenda();
+    E.animar('giro', 1, 2600, () => { E.lect = lectGiro(S.eje); E.lecturas(); S.ocupado = false; nav(); pinta();
+      E.avisar(S.eje === 'mayor' ? 'Girando sobre la base mayor: un cilindro de radio 3 y alto 6 con un cono de alto 4 encima.' : 'Girando sobre el lado de 3: un tronco de cono de radios 10 y 6 y altura 3.'); });
+  };
+}
+
+const steps = [
+ { k:'Paso 1', t:'Predice: el vaso a media altura', gate:Q1,
+   prep:() => { const r = !!S.pred[Q1.id]; E.config(cfgVaso(r)); nivelControl(r); },
+   anima:fin => { E.ley = cfgVaso(true).ley; E.leyenda();
+     E.cadena([n => E.animar('nivel', 1, 1800, n), n => E.animar('marcas', 1, 500, n), n => esperar(300, n), n => E.animar('cono', 1, 1200, n)], () => {
+       E.lect = lectVaso; E.lecturas(); nivelControl(true);
+       E.avisar(`El agua llega a la mitad de la altura con ${piT(VA.pi.agua)} cm³, cerca del ${pct(VA.fraccion)} del vaso. Las paredes prolongadas se juntan ${fmt(VA.conoCompleto.hChico)} cm debajo del fondo.`); fin(); }); },
+   body:() => `<p class="problem">Un vaso tiene forma de tronco de cono, angosto abajo: fondo de radio ${r_('r = 2 cm')}, boca de radio ${R_('R = 6 cm')} y altura ${h_('h = 6 cm')}. Lleno, le caben ${VV_(piT(VA.pi.vaso) + ' cm³')}. Se echa agua hasta la <b>mitad de su altura</b>. ¿Cuánta agua hay?</p>${opcionesHTML(Q1.opts, 'fb3')}
+   <div id="tras3" class="body" hidden>
+   <div class="eqs"><div class="eq">radio a media altura = (${r_('r')} + ${R_('R')})/2 = (2 + 6)/2 = ${fmt(VA.rNivel)}<span class="note">por semejanza, el radio crece parejo con la altura</span></div>
+   <div class="eq">${VV_('V')}<sub>agua</sub> = π · 3 · (2² + 4² + 2 · 4)/3 = ${VV_(piT(VA.pi.agua) + ' cm³')}</div>
+   <div class="eq">${VV_('V')}<sub>vaso</sub> = π · ${h_('6')} · (${R_('6')}² + ${r_('2')}² + ${R_('6')} · ${r_('2')})/3 = ${piT(VA.pi.vaso)} cm³</div>
+   <div class="eq">${piT(VA.pi.agua)} / ${piT(VA.pi.vaso)} = 7/26 ≈ ${pct(VA.fraccion)}<span class="note">la mitad de arriba guarda ${piT(VA.pi.arriba)}</span></div>
+   <div class="eq">con conos: ${piT(VA.conoCompleto.piGrande)} − ${piT(VA.conoCompleto.piChico)} = ${piT(VA.pi.vaso)}<span class="note">el cono completo mide ${fmt(VA.conoCompleto.H)} de alto; la punta que falta, ${fmt(VA.conoCompleto.hChico)}</span></div></div>
+   <p>Si se prolongan las paredes hacia abajo, se juntan ${fmt(VA.conoCompleto.hChico)} cm debajo del fondo: el vaso es un cono grande sin la punta. La regla del cubo (k³) vale entre conos que comparten esa punta. El agua no es un vaso semejante al lleno: su fondo es el mismo, solo su boca es más chica. Por eso hay que calcularla como otro tronco, con el radio que da la semejanza a media altura.</p>
+   <p class="hint">Mueve el control del nivel: ¿a qué altura llega el agua cuando el vaso está medio lleno?</p>
+   <p class="fuente">Usar la regla lineal en volúmenes (la mitad de la altura, la mitad del volumen) es GE2 del informe: en la línea de De Bock y otros (2002–2007) se describe a una gran mayoría de alumnos de 12 a 16 años con esta creencia en áreas y volúmenes, sin el porcentaje para volumen. Las opciones B y D (el radio a media altura como mitad de R y el k³ aplicado al tronco, vecinas de GE22) son hipótesis nuestras, inferidas de las alternativas de exámenes de admisión.</p></div>` },
+ { k:'Paso 2', t:'Predice: la bola en el agua', gate:Q2,
+   prep:() => { const r = !!S.pred[Q2.id]; nivelControl(false); E.config(cfgBola(r)); },
+   anima:fin => { E.ley = cfgBola(true).ley; E.leyenda();
+     E.animar('baja', 1, 2600, () => { E.lect = cfgBola(true).lect; E.lecturas();
+       E.avisar(`La bola se hunde hasta el fondo y el agua sube de ${fmt(BO.h0)} a ${fmt(BO.nivelFinal)} cm: ${fmt(BO.dh)} cm.`); fin(); }); },
+   body:() => `<p class="problem">Un vaso cilíndrico de radio ${R_('R = 6 cm')} tiene agua hasta 7 cm de altura. Se hunde una bola maciza de radio ${r_('r = 3 cm')}, que queda cubierta por el agua. ¿Cuánto sube el nivel del agua?</p>${opcionesHTML(Q2.opts, 'fb3')}
+   <div id="tras3" class="body" hidden>
+   <div class="eqs"><div class="eq">${VV_('V')}<sub>bola</sub> = 4π${r_('r')}³/3 = 4π · 27/3 = ${VV_(piT(BO.piVolumen) + ' cm³')}</div>
+   <div class="eq">${VV_('V')}<sub>agua de más</sub> = π${R_('R')}² · ${h_('Δh')} = ${piT(BO.areaBasePi)} · ${h_('Δh')}</div>
+   <div class="eq">${piT(BO.areaBasePi)} · ${h_('Δh')} = ${piT(BO.piVolumen)} → ${h_('Δh = ' + fmt(BO.dh) + ' cm')}</div>
+   <div class="eq">al revés: si una piedra hace subir el agua ${h_('2 cm')}, mide π · 6² · 2 = ${piT(PIEDRA.piVolumen)} cm³ ≈ ${fmt(PIEDRA.volumen, 0)} cm³</div></div>
+   <p>El agua no se comprime: la bola le quita su lugar y el agua sube. Lo que sube es un cilindro de agua con el radio del vaso y alto ${h_('Δh')}, y ocupa justo lo mismo que la bola. En un vaso ancho sube poco; en uno angosto, mucho. Al revés, midiendo cuánto sube el agua se halla el volumen de una pieza que no tiene fórmula, como una piedra.</p>
+   ${hip('Creer que el agua sube lo que mide la pieza, olvidar el 1/3 de la esfera o usar el diámetro del vaso (GE19).')}</div>` },
+ { k:'Paso 3', t:'Predice: el trapecio que gira', gate:Q3, girable:true,
+   prep:() => { const r = !!S.pred[Q3.id]; if (!r) S.eje = 'mayor'; E.config(cfgGiro(r)); if (r) botonEje(); },
+   anima:fin => { E.ley = leyGiro('mayor', true); E.leyenda();
+     E.animar('giro', 1, 3000, () => { E.lect = lectGiro('mayor'); E.lecturas(); botonEje();
+       E.avisar('El trapecio da una vuelta sobre su base mayor y barre un cilindro de radio 3 y alto 6 con un cono de alto 4 encima.'); fin(); }); },
+   body:() => `<p class="problem">Un trapecio rectángulo tiene bases de 10 cm y 6 cm; el lado perpendicular a las bases mide 3 cm y el lado oblicuo, 5 cm. Da una vuelta completa alrededor de su <b>base mayor</b> (la recta a trazos es el eje). ¿Cuál es el volumen del sólido que genera?</p>${opcionesHTML(Q3.opts, 'fb3')}
+   <div id="tras3" class="body" hidden>
+   <div class="eqs"><div class="eq">cilindro: π${r_('r')}²${h_('h')} = π · ${r_('3')}² · ${h_('6')} = ${VV_(piT(TM.piezas[0].piVolumen))}</div>
+   <div class="eq">cono: π${r_('r')}² · 4/3 = π · ${r_('3')}² · 4/3 = ${VV_(piT(TM.piezas[1].piVolumen))}<span class="note">alto 10 − 6 = 4; generatriz ${g_('g = 5')}</span></div>
+   <div class="eq">${VV_('V')} = ${piT(TM.piezas[0].piVolumen)} + ${piT(TM.piezas[1].piVolumen)} = ${VV_(piT(TM.pi.volumen) + ' cm³')}</div>
+   <div class="eq">sobre el lado de 3: tronco π · ${h_('3')} · (${R_('10')}² + ${r_('6')}² + 10 · 6)/3 = ${piT(TP.pi.volumen)} cm³</div></div>
+   <p>Cada punto de la región da una vuelta alrededor del eje. El lado pegado al eje no se mueve; el lado paralelo al eje barre la pared de un cilindro, y el oblicuo, la de un cono. Lo que es radio o altura depende del eje: aquí el lado de 3 es el radio. Gíralo sobre el otro lado para comparar.</p>
+   <button type="button" class="btn" id="eje3"></button>
+   ${hip('Girar sobre otro lado, tomar el rectángulo completo (o el cono sin su 1/3, GE20) o restar el cono.')}</div>` },
+ { k:'Paso 4', t:'Predice: el globo dentro del cono', gate:Q4,
+   prep:() => { const r = !!S.pred[Q4.id]; E.config(cfgGlobo(r)); },
+   anima:fin => { E.ley = cfgGlobo(true).ley; E.leyenda();
+     E.cadena([n => E.animar('infla', 1, 2200, n), n => E.animar('marcas', 1, 600, n)], () => { E.lect = cfgGlobo(true).lect; E.lecturas();
+       E.avisar(`El globo se infla hasta tocar la base y la superficie lateral: su radio es ${fmt(GL.rho)} cm y su centro está en el eje, a ${fmt(GL.rho)} cm de la base.`); fin(); }); },
+   body:() => `<p class="problem">Un globo se infla dentro de un cono de radio ${r_('r = 6 cm')} y altura ${h_('h = 8 cm')} hasta que toca la base y toda la superficie lateral: queda una esfera inscrita en el cono. ¿Cuánto mide el radio ${rho_('ρ')} del globo?</p>${opcionesHTML(Q4.opts, 'fb3')}
+   <div id="tras3" class="body" hidden>
+   <div class="eqs"><div class="eq">${g_('g')} = √(${r_('6')}² + ${h_('8')}²) = ${g_(fmt(GL.g))}<span class="note">el corte por el eje: un triángulo de lados 10, 10 y 12</span></div>
+   <div class="eq">área = 12 · ${h_('8')}/2 = ${fmt(GL.areaCorte)}; semiperímetro p = (10 + 10 + 12)/2 = ${fmt(GL.semiperimetro)}</div>
+   <div class="eq">${rho_('ρ')} = área / p = ${fmt(GL.areaCorte)}/${fmt(GL.semiperimetro)} = ${rho_(fmt(GL.rho) + ' cm')}<span class="note">también ${rho_('ρ')} = ${r_('r')}${h_('h')}/(${r_('r')} + ${g_('g')})</span></div>
+   <div class="eq">${VV_('V')}<sub>globo</sub> / ${VV_('V')}<sub>cono</sub> = ${piT(GL.pi.volEsfera)} / ${piT(GL.pi.volCono)} = 3/8</div>
+   <div class="eq">${AL_('A')}<sub>globo</sub> / ${AL_('A')}<sub>cono</sub> = ${piT(GL.pi.areaEsfera)} / (${piT(GL.r*GL.g)} + ${piT(GL.r*GL.r)}) = 3/8</div></div>
+   <p>El centro del globo está en el eje y a la misma distancia de la base que de las paredes: en el corte, es el <b>incentro</b> del triángulo isósceles, donde se cruzan las bisectrices. Desde la esquina de la base, el globo se toca a ${fmt(GL.r)} cm por la base y a ${fmt(GL.r)} cm por la generatriz (tangentes iguales); por eso el punto de contacto queda a ${fmt(GL.distTangVertice)} cm del vértice.</p>
+   <p>Las razones de volumen y de área salen iguales porque el globo toca todas las paredes del cono: los dos volúmenes son área · ${rho_('ρ')}/3.</p>
+   <p class="fuente">Tomar el baricentro por el incentro se parece a GE8 del informe (creer que la altura, la mediana y la bisectriz son la misma línea; descrito sin porcentaje). Las otras dos opciones son hipótesis nuestras, inferidas de errores frecuentes en problemas de academia.</p></div>` },
+ { k:'Paso 5', t:'Predice: el casquete de la esfera', gate:Q5,
+   prep:() => { const r = !!S.pred[Q5.id]; E.config(cfgCasq(r)); },
+   anima:fin => { E.ley = cfgCasq(true).ley; E.leyenda();
+     E.cadena([n => E.animar('cil', 1, 900, n), n => esperar(250, n), n => E.animar('rayos', 1, 1600, n)], () => { E.lect = cfgCasq(true).lect; E.lecturas();
+       E.avisar('Aparece el cilindro que envuelve a la esfera. Las flechas llevan cada punto del casquete, en horizontal, a la franja del cilindro de la misma altura: las dos miden 36π.'); fin(); }); },
+   body:() => `<p class="problem">Una esfera de radio ${r_('r = 6 cm')} se corta con un plano horizontal. El <b>casquete</b> de arriba (la parte curva de la superficie, sobre el plano) tiene altura ${h_('h = 3 cm')}. ¿Cuánto mide el área del casquete?</p>${opcionesHTML(Q5.opts, 'fb3')}
+   <div id="tras3" class="body" hidden>
+   <div class="eqs"><div class="eq">${AL_('A')}<sub>casquete</sub> = 2π${r_('r')} · ${h_('h')} = 2π · ${r_('6')} · ${h_('3')} = ${AL_(piT(CQ.pi.area) + ' cm²')}<span class="note">la franja del cilindro de igual altura</span></div>
+   <div class="eq">4π${r_('r')}² = ${piT(CQ.pi.esfera)}; ${piT(CQ.pi.area)} / ${piT(CQ.pi.esfera)} = ${h_('h')}/(2${r_('r')}) = 1/4</div>
+   <div class="eq">corte: a² = ${h_('h')}(2${r_('r')} − ${h_('h')}) = 3 · 9 = ${fmt(CQ.pi.disco)}<span class="note">el disco plano mide ${piT(CQ.pi.disco)}, menos que el casquete</span></div>
+   <div class="eq">${VV_('V')}<sub>segmento</sub> = π${h_('h')}²(3${r_('r')} − ${h_('h')})/3 = π · 9 · 15/3 = ${VV_(piT(CQ.pi.volumen) + ' cm³')}</div></div>
+   <p>Arquímedes: cada franja horizontal de la esfera mide lo mismo que la franja del cilindro a la misma altura. Arriba la esfera se inclina y su franja es más ancha, pero da una vuelta más corta; las dos cosas se compensan. Por eso el área del casquete depende solo de su altura, no de dónde se corte.</p>
+   <p>El volumen no se reparte así: el segmento esférico de una base (el sólido bajo el casquete) mide ${piT(CQ.pi.volumen)}, solo 5/32 de la esfera, aunque su casquete es 1/4 de la superficie.</p>
+   ${hip('Tomar el disco del corte por el casquete, usar la escala k² o usar el diámetro en la franja (GE19).')}</div>` },
+];
+
+/* ----- navegación (como en el paso a paso) ----- */
+const dots = $('dots3');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; li.appendChild(b); dots.appendChild(li);
+  b.addEventListener('click', () => go(k));
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  $('stepK3').textContent = `${s.k} de ${steps.length}`;
+  $('stepT3').textContent = s.t;
+  $('stepBody3').innerHTML = s.body();
+  $('giro3').hidden = !s.girable;
+  if (s.prep) s.prep();
+  pintarDots();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.gate) prediccion(s);
+  if (!s.gate) E.avisar();
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev3').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next3').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next3').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  const b = $('eje3'); if (b) b.disabled = S.ocupado;
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    if (k > S.max){ b.setAttribute('aria-disabled', 'true'); b.setAttribute('aria-label', `Paso ${k + 1}, bloqueado`); }
+    else { b.removeAttribute('aria-disabled'); b.setAttribute('aria-label', `Ir al paso ${k + 1}: ${steps[k].t}`); }
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){
+  const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return;
+  if (k > S.max) S.max = Math.min(k, steps.length - 1);
+}
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody3').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb3'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras3').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); E.compactar(false); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    S.ocupado = true; nav();
+    $('next3').focus({ preventScroll:true });
+    const paso = S.step, chico = innerWidth < 900;
+    if (chico) $('cv3').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    esperar(chico ? 380 : 0, () => {
+      if (S.step !== paso) { S.ocupado = false; nav(); return; }
+      s.anima(() => { S.ocupado = false; if (S.step === paso) nav(); });
+    });
+  }));
+  pintar();
+}
+$('next3').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev3').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+
+<script>
 /* ================= Pestañas ================= */
 (function(){
-  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2'], ['#troncos-y-esferas', 'm3', 'tab3']];
   function route(){
     const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
     modos.forEach(([, m, t], j) => {
