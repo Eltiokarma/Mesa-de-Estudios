@@ -255,8 +255,9 @@ details[open] summary{margin-bottom:8px}
 .lec-cuerpo{font-size:var(--lec-texto);line-height:1.6;max-width:65ch}
 .lec-par{margin:0 0 14px}
 .lec-np{color:var(--muted);font-weight:700;margin-right:2px}
-.lec-autor{margin:18px 0 8px;font-size:15px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink);border-bottom:2px solid var(--brand-2);padding-bottom:4px}
+.lec-autor{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px;margin:18px 0 8px;font-size:15px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink);border-bottom:2px solid var(--brand-2);padding-bottom:4px}
 .lec-autor:first-child{margin-top:0}
+.lec-autor span{white-space:nowrap}
 .lec-autor small{text-transform:none;letter-spacing:0;color:var(--muted);font-weight:400;font-size:14px}
 .lec-cuerpo .n,.cita .n{font-size:11px;color:var(--muted);font-weight:700;margin-right:3px;vertical-align:super;line-height:0}
 .lec-hoja-barra{display:none}
