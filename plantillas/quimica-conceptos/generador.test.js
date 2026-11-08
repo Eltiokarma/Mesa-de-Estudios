@@ -145,18 +145,89 @@ test('600 problemas: los textos coinciden con el banco y aparecen todos los tipo
   for (const c of gen.PARES) assert.ok(conjuntos.has(c.id), `el conjunto ${c.id} no salió`);
 });
 
-test('en vf, invertir una falsa lleva el error de esa proposición', () => {
-  let n = 0;
+test('en vf, D0 lleva el código de su F y cada vecino el de la inversión que lo distingue de D0', () => {
+  const codigo = q => (q.verdad ? (q.negar || 'QA-negar-verdadera') : q.error);
   for (let s = 0; s < 600; s++) {
     const p = gen.generar(s), d = p._datos;
     if (d.tipo !== 'vf') continue;
-    for (const a of p.alternativas.filter(x => !x.correcta)) {
-      const dif = [...a.texto].map((c, k) => (c !== p.respuesta.texto[k] ? k : -1)).filter(k => k >= 0);
-      if (dif.length !== 1) continue;
-      const q = banco[d.ids[dif[0]]];
-      assert.equal(a.error.id, q.verdad ? (q.negar || 'QA-negar-verdadera') : q.error, `semilla ${s}`);
-      n++;
+    const dif = x => [...x].map((c, k) => (c !== p.respuesta.texto[k] ? k : -1)).filter(k => k >= 0);
+    const malas = p.alternativas.filter(x => !x.correcta);
+    const d0 = malas.find(a => dif(a.texto).length === 1);
+    assert.ok(d0 && malas.filter(a => dif(a.texto).length === 1).length === 1, `semilla ${s}: un solo D0`);
+    const f0 = dif(d0.texto)[0];
+    assert.equal(banco[d.ids[f0]].verdad, false, `semilla ${s}: D0 invierte una F`);
+    assert.equal(d0.error.id, codigo(banco[d.ids[f0]]), `semilla ${s}: código de D0`);
+    for (const a of malas.filter(x => x !== d0)) {
+      const ks = dif(a.texto);
+      assert.ok(ks.length === 2 && ks.includes(f0), `semilla ${s}: ${a.texto} no es vecino de D0`);
+      assert.equal(a.error.id, codigo(banco[d.ids[ks.find(k => k !== f0)]]), `semilla ${s}: código del vecino`);
     }
   }
-  assert.ok(n > 300);
+});
+
+// Votación por posición: el valor más repetido en cada posición entre las alternativas.
+function votacion(listas) {
+  return listas[0].map((_, k) => {
+    const c = {};
+    for (const l of listas) c[l[k]] = (c[l[k]] || 0) + 1;
+    const m = Math.max(...Object.values(c)), w = Object.keys(c).filter(x => c[x] === m);
+    return w.length === 1 ? w[0] : null;
+  });
+}
+test('2000 problemas: la votación por posición no da la respuesta (≤ 30 % en vf y en relacionar)', () => {
+  const n = { vf: 0, relacionar: 0 }, ok = { vf: 0, relacionar: 0 };
+  for (let s = 0; s < 2000; s++) {
+    const p = gen.generar(s), t = p._datos.tipo;
+    if (!(t in n)) continue;
+    const partes = x => (t === 'vf' ? [...x] : x.split(', ').map(y => y.replace(/^[IV]+/, '')));
+    const voto = votacion(p.alternativas.map(a => partes(a.texto)));
+    n[t]++; if (voto.join('|') === partes(p.respuesta.texto).join('|')) ok[t]++;
+    if (t === 'relacionar') {
+      const id = p._datos.ids.map((_, k) => ['I', 'II', 'III', 'IV'][k] + 'abcd'[k]).join(', ');
+      assert.ok(p.alternativas.every(a => a.texto !== id), `semilla ${s}: sale el orden idéntico`);
+    }
+  }
+  for (const t of Object.keys(n)) assert.ok(ok[t] / n[t] <= 0.3, `${t}: la votación acierta ${ok[t]} de ${n[t]}`);
+});
+
+test('excluye: las proposiciones espejo no salen juntas (2000 problemas) y la relación es simétrica', () => {
+  for (const p of gen.BANCO) for (const id of p.excluye) {
+    assert.ok(banco[id], `${p.id}: excluye ${id}, que no existe`);
+    assert.ok(banco[id].excluye.includes(p.id), `${p.id} ↔ ${id} no es simétrica`);
+    assert.equal(banco[id].tema, p.tema, `${p.id} y ${id} son de temas distintos`);
+  }
+  for (let s = 0; s < 2000; s++) {
+    const d = gen.generar(s)._datos;
+    if (d.tipo === 'relacionar') continue;
+    for (const a of d.ids) for (const b of d.ids) assert.ok(!banco[a].excluye.includes(b), `semilla ${s}: ${a} con ${b}`);
+  }
+  for (const id of ['esf8', 'pro10', 'ts10', 'met8', 'con8', 'ten7', 'dal9']) assert.ok(banco[id].excluye.length > 0, id);
+});
+
+test('delatores de forma (2000 problemas): la correcta no es la más larga ni la única con «porque»', () => {
+  let nC = 0, larga = 0, nI = 0, porque = 0;
+  for (let s = 0; s < 2000; s++) {
+    const p = gen.generar(s), t = p._datos.tipo;
+    const resp = p.alternativas.find(a => a.correcta);
+    const otras = p.alternativas.filter(a => !a.correcta);
+    if (t === 'correcta') { nC++; if (otras.every(a => a.texto.length < resp.texto.length)) larga++; }
+    if (t === 'incorrecta') { nI++; if (/porque/.test(resp.texto) && otras.every(a => !/porque/.test(a.texto))) porque++; }
+  }
+  assert.ok(larga / nC <= 0.3, `en «correcta», la respuesta es la más larga en ${larga} de ${nC}`);
+  assert.ok(porque / nI <= 0.1, `en «incorrecta», la respuesta es la única con «porque» en ${porque} de ${nI}`);
+  for (const id of ['dal6', 'dal7', 'dal8']) assert.match(banco[id].texto, /^Según Dalton,/);
+});
+
+test('respaldo: cada código de informe está en su fuente; documentado solo en una F con código de informe', () => {
+  const fs = require('node:fs'), path = require('node:path');
+  for (const [k, e] of Object.entries(gen.ERRORES)) {
+    if (k.startsWith('QA-')) { assert.equal(e.fuente, null, k); continue; }
+    const texto = fs.readFileSync(path.join(__dirname, '../..', e.fuente), 'utf8');
+    assert.ok(texto.includes(`| ${k} |`), `${k} no aparece como «| ${k} |» en ${e.fuente}`);
+  }
+  for (const p of gen.BANCO) if (p.respaldo) {
+    assert.ok(!p.verdad && !p.error.startsWith('QA-'), `${p.id}: respaldo propio en una V o en un código nuevo`);
+    assert.equal(p.respaldo, 'documentado');
+  }
+  assert.ok(!gen.ERRORES.BM8, 'BM8 ya no se usa');
 });

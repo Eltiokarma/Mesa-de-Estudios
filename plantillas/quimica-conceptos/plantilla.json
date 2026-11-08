@@ -8,13 +8,13 @@
     "quimica.estructura-atomica",
     "quimica.ambiente-y-quimica-aplicada",
     "quimica.recursos-naturales",
-    "quimica.liquidos-y-solidos",
     "quimica.materia-y-energia",
     "quimica.nomenclatura-inorganica",
+    "quimica.liquidos-y-solidos",
+    "quimica.tabla-periodica",
     "quimica.electroquimica",
     "quimica.equilibrio-quimico",
-    "quimica.acidos-y-bases",
-    "quimica.tabla-periodica"
+    "quimica.acidos-y-bases"
   ],
   "estado": "borrador",
   "version": "0.1.0",

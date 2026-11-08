@@ -5,41 +5,53 @@
  * Node (require). No usa ningún motor: la química vive en el banco de proposiciones de abajo.
  *
  * BANCO (exportado como gen.BANCO): proposiciones propias, una idea cada una:
- *   { id, unidad, tema, texto, verdad: true|false, error, explicacion, corregida, negar }
+ *   { id, unidad, tema, texto, verdad: true|false, error, explicacion, corregida, negar, excluye, respaldo }
  *   - verdad: el valor de verdad a nivel de secundaria y academia.
  *   - error (solo las falsas): código de la trampa que la hace parecer verdadera.
  *   - corregida (solo las falsas): la versión verdadera.
  *   - negar (opcional, solo las verdaderas): código del error que lleva a creerla falsa;
  *     si falta, se usa 'QA-negar-verdadera'.
- * TEMAS (gen.TEMAS): grupos del banco con { id, unidad, nombre, contexto? }. El tema «tendencia» trae
- *   un contexto (datos de un glaciar inventado) que se muestra en el enunciado.
- * PARES (gen.PARES): conjuntos para relacionar { id, unidad, izqNombre, derNombre, codigo, familia?,
- *   codigoFamilia?, choques?, pares: [{ id, izq, der }] }.
+ *   - excluye: ids que no pueden salir en el mismo problema (su espejo: una V que dice lo contrario
+ *     o casi lo mismo). La relación vale en los dos sentidos.
+ *   - respaldo (opcional): pisa el respaldo del código solo en esa proposición.
+ * TEMAS (gen.TEMAS): grupos del banco con { id, unidad, nombre, contexto?, ids }. El tema «tendencia»
+ *   trae un contexto (datos de un glaciar inventado) que se muestra en el enunciado.
+ * PARES (gen.PARES): conjuntos para relacionar { id, unidad, izqNombre, izqVar, derNombre, codigo,
+ *   familia?, codigoFamilia?, choques?, pares: [{ id, izq, izqCorto?, der }] }.
  * ERRORES (gen.ERRORES): código → { respaldo, fuente, nombre }. Respaldo según docs/metodo/LEEME.md:
- *   los códigos de los informes con cifra se usan como «parcial» (las proposiciones son ítems
- *   propios, no los del estudio); los QA-… nuevos son «hipotesis».
+ *   un código de informe va como «parcial» (el informe tiene un dato para ese error, pero medido con
+ *   otro ítem); sube a «documentado» solo en la proposición que pregunta lo mismo que el ítem con
+ *   cifra del informe (campo respaldo de la proposición); los QA-… nuevos son «hipotesis».
  *
  * Tipos de problema (_datos.tipo):
- *   vf          3 o 4 proposiciones de un mismo tema, al menos una V y una F. Respuesta: la secuencia
- *               («VFV»), clave 'vf:VFV'. Distractores: invertir una proposición (primero las falsas,
- *               con su código error; luego las verdaderas, con su código negar) y después invertir
- *               dos (código de la primera falsa invertida, o el negar de la primera si las dos son V).
+ *   vf          3 o 4 proposiciones de un mismo tema (al menos una V y una F, ninguna excluida por
+ *               otra). Respuesta: la secuencia («VFV»), clave 'vf:VFV'. Distractores alrededor de un
+ *               pivote D0 = la correcta con una F invertida (la trampa principal), más las secuencias
+ *               a distancia 1 de D0 (a distancia 2 de la correcta). Código: en D0, el error de su F; en
+ *               cada vecino, el de su segunda inversión (la que lo distingue de D0): el error si es
+ *               una F, el negar si es una V.
  *   incorrecta  4 o 5 proposiciones de un tema, una sola falsa. Respuesta: la falsa, clave 'p:<id>'.
  *               Distractores: las verdaderas, cada una con su código negar.
  *   correcta    4 o 5 proposiciones de un tema, una sola verdadera. Respuesta: la verdadera, clave
  *               'p:<id>'. Distractores: las falsas, cada una con su código error.
  *   relacionar  3 o 4 pares de un conjunto (sin dos pares con el mismo lado derecho ni pares en
  *               «choques»). Columna izquierda I, II, III, IV en el orden de _datos.ids; columna
- *               derecha a, b, c, d en el orden de _datos.derecha (nunca el mismo orden que la izquierda). Respuesta: «Ib, IIa, IIIc», clave
- *               'rel:Ib, IIa, IIIc'. Distractores: intercambiar las letras de dos pares (código
- *               codigoFamilia si los dos están en familia; si no, codigo) y después ciclos de tres.
+ *               derecha a, b, c, d en el orden de _datos.derecha. Respuesta: «Ib, IIa, IIIc», clave
+ *               'rel:Ib, IIa, IIIc'. Ni la respuesta ni un distractor es el orden idéntico
+ *               («Ia, IIb, IIIc»). Distractores alrededor de un pivote D0 = la correcta con dos letras
+ *               intercambiadas, más los intercambios de dos letras de D0. Código: codigoFamilia si
+ *               todos los pares cambiados están en familia; si no, codigo.
+ *   En incorrecta y correcta, si la respuesta es la más larga, se vuelve a sortear con probabilidad
+ *   0,8, para que el largo no la delate.
+ *   En vf y relacionar se vuelve a sortear si la «votación por posición» (la letra o el valor más
+ *   repetido en cada posición entre las alternativas) da la respuesta correcta.
  * _datos: { tipo, tema | conjunto, ids: ids en el orden en que se muestran (I, II, … o como se
  *   eligieron), derecha (solo relacionar) }. respuesta: { valor: clave, texto }.
  * Pesos de tipo: vf 4, incorrecta 2, correcta 2, relacionar 2 (de 10). Tema y conjunto: al azar
  *   uniforme. Al menos 4 alternativas distintas, hasta 5.
- * Colores (regla 4): las proposiciones o los pares I, II, III, IV van en naranja (o), turquesa (i),
- *   rojo (h) y verde (d), en el enunciado y en la solución; en «incorrecta» la palabra y la
- *   respuesta van en rojo (h) y en «correcta», en verde (d).
+ * Colores (regla 4): los números romanos van sin color. En relacionar, cada elemento de la columna
+ *   izquierda va en naranja (o), turquesa (i), rojo (h) o verde (d), en el enunciado y en la
+ *   solución; en «incorrecta» la palabra y la respuesta van en rojo (h) y en «correcta», en verde (d).
  * Fin de la cabecera.
  */
 (function (root, fabrica) {
@@ -60,7 +72,6 @@
   // ---------- Errores: código → respaldo y fuente ----------
   const ERRORES = {
     // De los informes (parcial: dato para el mismo error con otro ítem, o estudio sin cifra).
-    AT4: { respaldo: 'parcial', fuente: fA, nombre: 'Todos los átomos de un elemento son iguales; los isótopos son aparte' },
     AT5: { respaldo: 'parcial', fuente: fA, nombre: 'Mezclar los aportes de los modelos atómicos (el átomo es el de Bohr)' },
     AT6: { respaldo: 'parcial', fuente: fA, nombre: 'Orbital = órbita' },
     MA9: { respaldo: 'parcial', fuente: fM, nombre: 'Elemento, compuesto y mezcla confundidos' },
@@ -71,6 +82,8 @@
     EN5: { respaldo: 'parcial', fuente: fA, nombre: 'Clasificar el enlace al revés' },
     EN13: { respaldo: 'parcial', fuente: fA, nombre: 'Al fundir o hervir se rompen los enlaces covalentes' },
     EN17: { respaldo: 'parcial', fuente: fA, nombre: 'El grafito conduce por átomos sueltos' },
+    QA8: { respaldo: 'parcial', fuente: fQ, nombre: 'No saber de dónde sale el ozono de la ciudad (smog fotoquímico)' },
+    TP4: { respaldo: 'parcial', fuente: fA, nombre: 'La atracción del núcleo se «reparte» entre los electrones' },
     QA4: { respaldo: 'parcial', fuente: fQ, nombre: 'El CO₂ causa la lluvia ácida' },
     QA14: { respaldo: 'hipotesis', fuente: fQ, nombre: 'Todos los polímeros son sintéticos' },
     NO2: { respaldo: 'parcial', fuente: fM, nombre: 'Sufijos y reglas de nomenclatura aplicados mal' },
@@ -83,7 +96,6 @@
     AB3: { respaldo: 'parcial', fuente: fE, nombre: 'Confundir qué ácidos y bases son fuertes' },
     AB9: { respaldo: 'parcial', fuente: fE, nombre: 'Toda sal (o neutralización) da una solución neutra' },
     BM1: { respaldo: 'parcial', fuente: fB, nombre: 'Las vitaminas dan energía' },
-    BM8: { respaldo: 'parcial', fuente: fB, nombre: 'Una proteína desnaturalizada vuelve sola a su forma' },
     BMH1: { respaldo: 'hipotesis', fuente: fB, nombre: 'La desnaturalización rompe los enlaces peptídicos' },
     BMH4: { respaldo: 'hipotesis', fuente: fB, nombre: 'Grasa, lípido y colesterol confundidos' },
     BMH13: { respaldo: 'hipotesis', fuente: fB, nombre: 'Desnaturalizada = sin valor nutritivo' },
@@ -127,7 +139,6 @@
     'QA-adicion-condensacion': { nombre: 'Confundir polimerización de adición con condensación' },
     'QA-combustion-incompleta': { nombre: 'La combustión incompleta da solo CO₂ y agua' },
     'QA-acido-descarga': { nombre: 'El ácido de la batería se concentra al descargarse' },
-    'QA-fem-negativa': { nombre: 'Una celda espontánea tiene fem negativa' },
     'QA-buffer-infinito': { nombre: 'Una solución reguladora aguanta cualquier cantidad de ácido' },
     'QA-base-debil-acida': { nombre: 'Una base débil da pH menor que 7' },
     'QA-lewis-invertido': { nombre: 'Ácido y base de Lewis al revés' },
@@ -147,6 +158,7 @@
     'QA-ruta-vitamina-d': { nombre: 'Orden equivocado de la activación de la vitamina D' },
     'QA-vitamina-coenzima': { nombre: 'Cruzar una vitamina con la coenzima de otra' },
     'QA-vitamina-funcion': { nombre: 'Cruzar una vitamina con la función de otra' },
+    'QA-desnaturalizacion-reversible': { nombre: 'La desnaturalización por calor se revierte al enfriar' },
     'QA-punto-isoelectrico': { nombre: 'En el punto isoeléctrico la carga no es cero' },
     'QA-peptidico-exclusivo': { nombre: 'El enlace peptídico es propio de una sola fuente de proteínas' },
     'QA-reductor-dulce': { nombre: 'Azúcar reductor = azúcar dulce' },
@@ -160,22 +172,22 @@
   }
 
   // ---------- Banco ----------
-  const V = (id, texto, explicacion, negar = null) => ({ id, texto, verdad: true, error: null, explicacion, corregida: null, negar });
-  const F = (id, texto, error, explicacion, corregida) => ({ id, texto, verdad: false, error, explicacion, corregida, negar: null });
+  const V = (id, texto, explicacion, negar = null) => ({ id, texto, verdad: true, error: null, explicacion, corregida: null, negar, excluye: [], respaldo: null });
+  const F = (id, texto, error, explicacion, corregida) => ({ id, texto, verdad: false, error, explicacion, corregida, negar: null, excluye: [], respaldo: null });
 
   const TEMAS = [
     // ===== Estructura atómica =====
     { id: 'dalton', unidad: 'quimica.estructura-atomica', nombre: 'la teoría atómica de Dalton', props: [
       V('dal1', 'Según Dalton, la materia está formada por átomos que no se pueden dividir.', 'Es su primer postulado: el átomo como esfera maciza e indivisible.'),
-      V('dal2', 'Según Dalton, todos los átomos de un mismo elemento son iguales en masa y en propiedades.', 'Así lo postuló; después los isótopos mostraron que la masa puede variar.', 'AT4'),
+      V('dal2', 'Según Dalton, todos los átomos de un mismo elemento son iguales en masa y en propiedades.', 'Así lo postuló; después los isótopos mostraron que la masa puede variar.', 'QA-aporte-adelantado'),
       V('dal3', 'Según Dalton, en una reacción química los átomos solo se reordenan: no se crean ni se destruyen.', 'Ese postulado explica la conservación de la masa.'),
       V('dal4', 'Según Dalton, los átomos de elementos distintos se combinan en proporciones de números enteros sencillos.', 'Con eso explicó las proporciones fijas y múltiples de los compuestos.'),
-      F('dal6', 'Dalton propuso que el átomo tiene electrones incrustados en una masa de carga positiva.', 'AT5', 'Ese es el modelo de Thomson (1904). Para Dalton el átomo no tenía partes.', 'Thomson propuso los electrones incrustados en una masa positiva; para Dalton, el átomo era una esfera maciza sin partes.'),
-      F('dal7', 'Hoy se acepta que todos los átomos de un mismo elemento tienen la misma masa.', 'AT4', 'Un elemento tiene isótopos: átomos con el mismo número de protones y distinto número de neutrones, y por eso distinta masa.', 'Los átomos de un mismo elemento pueden tener masas distintas (isótopos); ese postulado de Dalton se corrigió.'),
-      F('dal8', 'La teoría de Dalton ya incluía al electrón, al protón y al neutrón.', 'QA-aporte-adelantado', 'La teoría es de 1808; el electrón se descubrió en 1897 y el neutrón en 1932.', 'La teoría de Dalton no incluía partículas subatómicas: para él, el átomo era indivisible.'),
+      F('dal6', 'Según Dalton, el átomo tiene electrones incrustados en una masa de carga positiva.', 'AT5', 'Ese es el modelo de Thomson (1904). Para Dalton el átomo no tenía partes.', 'Thomson propuso los electrones incrustados en una masa positiva; para Dalton, el átomo era una esfera maciza sin partes.'),
+      F('dal7', 'Según Dalton, los átomos de un mismo elemento pueden tener masas distintas.', 'QA-aporte-adelantado', 'Dalton postuló que todos los átomos de un elemento tienen la misma masa; los isótopos, de masas distintas, se conocieron un siglo después.', 'Según Dalton, todos los átomos de un mismo elemento tienen la misma masa.'),
+      F('dal8', 'Según Dalton, el átomo está formado por electrones, protones y neutrones.', 'QA-aporte-adelantado', 'La teoría es de 1808; el electrón se descubrió en 1897 y el neutrón en 1932.', 'Según Dalton, el átomo es indivisible: no tiene partículas más pequeñas.'),
       F('dal9', 'Según Dalton, el átomo se puede dividir en partículas más pequeñas.', 'QA-aporte-adelantado', 'Que el átomo tiene partes se supo después; Dalton lo consideraba indivisible.', 'Según Dalton, el átomo no se puede dividir.'),
     ] },
-    { id: 'modelos', unidad: 'quimica.estructura-atomica', nombre: 'los modelos atómicos', props: [
+    { id: 'modelos', unidad: 'quimica.estructura-atomica', nombre: 'los modelos de Thomson, Rutherford y Bohr, y el modelo actual', props: [
       V('mod1', 'En el modelo de Thomson, los electrones están incrustados en una esfera de carga positiva repartida en todo el átomo.', 'Es el modelo del «budín con pasas».', 'AT5'),
       V('mod2', 'Rutherford propuso que casi toda la masa del átomo y toda su carga positiva están en un núcleo muy pequeño.', 'Lo dedujo del rebote de unas pocas partículas alfa en la lámina de oro.', 'AT5'),
       V('mod3', 'En el modelo de Bohr, el electrón del hidrógeno solo puede estar en ciertas órbitas, cada una con una energía fija.', 'Las energías están cuantizadas: solo se permiten ciertos niveles.', 'QA-bohr-continuo'),
@@ -194,7 +206,7 @@
       V('rut4', 'Del experimento se concluyó que la mayor parte del volumen del átomo es espacio casi vacío.', 'Lo indica que la mayoría de las partículas pasó sin desviarse.'),
       F('rut6', 'Las partículas alfa tienen carga negativa; por eso el núcleo las atrajo.', 'QA-alfa-negativa', 'Las partículas alfa son núcleos de helio, con carga 2+: el núcleo positivo las repele.', 'Las partículas alfa tienen carga positiva; las que se desviaron fueron repelidas por el núcleo positivo.'),
       F('rut7', 'El experimento de la lámina de oro mostró que los electrones giran en órbitas de energía fija.', 'AT5', 'Las órbitas de energía fija las propuso Bohr en 1913, después. El experimento mostró el núcleo.', 'El experimento de la lámina de oro mostró que el átomo tiene un núcleo pequeño, denso y positivo.'),
-      F('rut8', 'La mayoría de las partículas alfa rebotó, porque el átomo es una esfera maciza.', 'QA-rebote-mayoria', 'Solo una fracción muy pequeña rebotó; la mayoría pasó sin desviarse.', 'La mayoría de las partículas alfa atravesó la lámina; solo unas pocas rebotaron.'),
+      F('rut8', 'La mayoría de las partículas alfa rebotó en la lámina de oro.', 'QA-rebote-mayoria', 'Solo una fracción muy pequeña rebotó; la mayoría pasó sin desviarse.', 'La mayoría de las partículas alfa atravesó la lámina; solo unas pocas rebotaron.'),
       F('rut10', 'Del experimento de la lámina de oro se dedujo que el núcleo contiene neutrones.', 'QA-aporte-adelantado', 'El neutrón lo descubrió Chadwick en 1932, más de veinte años después.', 'Del experimento se dedujo que existe un núcleo positivo; los neutrones se descubrieron después.'),
     ] },
     // ===== Materia y energía =====
@@ -211,36 +223,39 @@
     { id: 'sustancias', unidad: 'quimica.materia-y-energia', nombre: 'los elementos, los compuestos y las mezclas', props: [
       V('sus1', 'El oxígeno gaseoso (O₂) es una sustancia simple: sus moléculas tienen un solo tipo de átomo.', 'Una molécula con dos átomos del mismo elemento sigue siendo un elemento.', 'MA9'),
       V('sus2', 'El ozono (O₃) y el oxígeno (O₂) son formas distintas de un mismo elemento.', 'Son alótropos del oxígeno.', 'MA9'),
-      V('sus3', 'El agua pura es un compuesto: tiene dos elementos unidos en una proporción fija.', 'Siempre 2 átomos de H por cada átomo de O.'),
+      V('sus3', 'El agua pura es un compuesto, porque tiene dos elementos unidos en una proporción fija.', 'Siempre 2 átomos de H por cada átomo de O.'),
       V('sus4', 'El aire seco y limpio es una mezcla homogénea de gases.', 'N₂, O₂, Ar y otros gases repartidos de modo uniforme y en proporción variable.'),
       V('sus5', 'Un compuesto se puede descomponer en sus elementos por medios químicos.', 'Por ejemplo, el agua por electrólisis da H₂ y O₂.'),
       F('sus7', 'El O₂ es un compuesto, porque cada molécula tiene dos átomos.', 'MA9', 'Un compuesto tiene átomos de elementos distintos. En el O₂ los dos átomos son de oxígeno.', 'El O₂ es una sustancia simple (un elemento): sus dos átomos son del mismo elemento.'),
-      F('sus8', 'El agua de mar es una sustancia pura porque se ve uniforme.', 'MA10', 'Que se vea uniforme solo dice que es homogénea; tiene sales disueltas en proporción variable.', 'El agua de mar es una mezcla homogénea.'),
-      F('sus9', 'Un globo lleno de H₂ y O₂ sin reaccionar contiene un compuesto, porque hay dos elementos.', 'MA9', 'Si los dos gases no reaccionaron, las moléculas de H₂ y de O₂ solo están mezcladas.', 'Un globo con H₂ y O₂ sin reaccionar contiene una mezcla de dos elementos.'),
+      F('sus8', 'El agua de mar, que se ve uniforme, es una sustancia pura.', 'MA10', 'Que se vea uniforme solo dice que es homogénea; tiene sales disueltas en proporción variable.', 'El agua de mar es una mezcla homogénea.'),
+      F('sus9', 'Un globo lleno de H₂ y O₂ sin reaccionar contiene un compuesto de dos elementos.', 'MA9', 'Si los dos gases no reaccionaron, las moléculas de H₂ y de O₂ solo están mezcladas.', 'Un globo con H₂ y O₂ sin reaccionar contiene una mezcla de dos elementos.'),
       F('sus10', 'El ozono es un compuesto formado por tres elementos distintos.', 'MA9', 'El O₃ tiene tres átomos de un solo elemento, el oxígeno.', 'El ozono es una sustancia simple: tres átomos de oxígeno.'),
       F('sus11', 'Un compuesto tiene las mismas propiedades que los elementos que lo forman.', 'QA-compuesto-suma', 'El sodio es un metal que reacciona con el agua y el cloro un gas tóxico; el cloruro de sodio es la sal de mesa.', 'Un compuesto tiene propiedades propias, distintas de las de sus elementos.'),
+      F('oxi12', 'El agua gasificada (agua con CO₂ disuelto) es un compuesto.', 'MA9', 'Es CO₂ disuelto en agua: dos sustancias mezcladas, que se separan al destapar la botella.', 'El agua gasificada es una mezcla homogénea.'),
     ] },
     // ===== Tabla periódica =====
-    { id: 'ion-sodio', unidad: 'quimica.tabla-periodica', nombre: 'el sodio y el ion sodio', props: [
+    { id: 'ion-sodio', unidad: 'quimica.tabla-periodica', nombre: 'los átomos y sus iones', props: [
       V('sod1', 'El átomo de sodio (Z = 11) tiene un solo electrón en su último nivel: 3s¹.', 'Su configuración es 1s² 2s² 2p⁶ 3s¹.'),
       V('sod2', 'El ion Na⁺ tiene 10 electrones y la misma configuración electrónica que el neón.', 'Perdió el electrón 3s: queda 1s² 2s² 2p⁶.', 'QA-atomo-por-ion'),
       V('sod3', 'El ion Na⁺ y el átomo de sodio tienen el mismo número de protones.', 'Al formar un ion solo cambian los electrones; los 11 protones siguen.', 'QA-ion-cambia-protones'),
       V('sod4', 'En el cuerpo humano, el sodio está como ion Na⁺ disuelto, no como sodio metálico.', 'El sodio metálico reaccionaría con el agua; en los líquidos del cuerpo hay iones Na⁺.', 'QA-atomo-por-ion'),
-      V('sod5', 'El radio del ion Na⁺ es menor que el del átomo de sodio.', 'Al perder el nivel 3, el ion queda con dos niveles y los mismos 11 protones.', 'QA-radio-ion'),
+      V('sod5', 'El radio del ion Na⁺ es menor que el del átomo de sodio, porque el ion perdió su último nivel.', 'Queda con dos niveles y los mismos 11 protones.', 'QA-radio-ion'),
       F('sod7', 'El ion Na⁺ tiene 12 electrones, porque ganó un electrón.', 'QA-atomo-por-ion', 'La carga positiva indica que perdió un electrón: 11 − 1 = 10.', 'El ion Na⁺ tiene 10 electrones: el átomo perdió uno.'),
       F('sod8', 'El ion Na⁺ tiene la configuración 1s² 2s² 2p⁶ 3s¹.', 'QA-atomo-por-ion', 'Esa es la configuración del átomo neutro. El ion perdió el electrón 3s.', 'El ion Na⁺ tiene la configuración 1s² 2s² 2p⁶.'),
       F('sod9', 'El sodio de la sal de mesa reacciona con el agua igual que el sodio metálico.', 'QA-atomo-por-ion', 'En la sal el sodio está como Na⁺, que ya perdió su electrón: no reacciona con el agua como el metal.', 'El ion Na⁺ de la sal no reacciona con el agua como el sodio metálico; solo se disuelve.'),
       F('sod10', 'Al formar el ion Na⁺, el átomo de sodio pierde un protón.', 'QA-ion-cambia-protones', 'Si perdiera un protón dejaría de ser sodio. Lo que pierde es un electrón.', 'Al formar el ion Na⁺, el átomo de sodio pierde un electrón.'),
-      F('sod12', 'El sodio está en el periodo 2, porque su ion Na⁺ tiene la configuración del neón.', 'QA-periodo-del-ion', 'El periodo se lee en el átomo neutro: su último nivel es el 3.', 'El sodio está en el periodo 3: el átomo neutro tiene electrones en el nivel 3.'),
+      F('sod12', 'El sodio está en el mismo periodo que el neón.', 'QA-periodo-del-ion', 'El neón está en el periodo 2 y el sodio en el 3. Lo que comparten es la configuración del ion Na⁺ con la del neón.', 'El sodio está en el periodo 3: el átomo neutro tiene electrones en el nivel 3.'),
+      V('sol6', 'El ion cloruro (Cl⁻) es más grande que el átomo de cloro, porque tiene un electrón más con la misma carga nuclear.', 'Aumenta la repulsión entre electrones y la nube electrónica se expande.', 'QA-radio-ion'),
+      F('sol9', 'El ion cloruro se forma cuando el átomo de cloro pierde un electrón.', 'QA-anion-pierde', 'Un anión tiene carga negativa: el cloro gana un electrón.', 'El ion cloruro se forma cuando el átomo de cloro gana un electrón.'),
+      F('sol10', 'El ion Cl⁻ es más pequeño que el átomo de cloro, porque tiene carga.', 'TP4', 'Con un electrón más y la misma carga nuclear, la repulsión entre electrones aumenta y la nube se expande.', 'El ion Cl⁻ es más grande que el átomo de cloro.'),
     ] },
     // ===== Líquidos y sólidos =====
-    { id: 'liquidos', unidad: 'quimica.liquidos-y-solidos', nombre: 'las propiedades de los líquidos', props: [
+    { id: 'liquidos', unidad: 'quimica.liquidos-y-solidos', nombre: 'la viscosidad, la tensión superficial y la presión de vapor', props: [
       V('liq1', 'Un líquido de moléculas largas y flexibles, que se enredan entre sí, suele ser muy viscoso.', 'Las moléculas enredadas no se deslizan con facilidad unas sobre otras.', 'QA-viscosidad-esferica'),
       V('liq2', 'La glicerina es más viscosa que el agua: sus moléculas son más grandes y tienen tres grupos OH que forman puentes de hidrógeno.', 'Moléculas más grandes y con más puntos de atracción se deslizan peor unas sobre otras.'),
-      V('liq3', 'Al calentar un líquido, en general su viscosidad disminuye.', 'Las moléculas se mueven más rápido y vencen mejor las atracciones: la miel caliente fluye mejor.'),
       V('liq4', 'En general, cuanto más fuertes son las fuerzas intermoleculares de un líquido, mayor es su tensión superficial.', 'Las moléculas de la superficie son jaladas con más fuerza hacia el interior.'),
       V('liq5', 'A una misma temperatura, el líquido más volátil tiene la mayor presión de vapor.', 'Más moléculas escapan al vapor cuando las fuerzas entre ellas son débiles.', 'QA-pvapor-volatil'),
-      V('liq6', 'El agua tiene mayor tensión superficial que el etanol.', 'El agua forma más puentes de hidrógeno por molécula.'),
+      V('liq6', 'El agua tiene mayor tensión superficial que el etanol, porque forma más puentes de hidrógeno por molécula.', 'Las moléculas de la superficie son jaladas con más fuerza hacia el interior.'),
       F('liq9', 'Los líquidos de moléculas pequeñas y casi esféricas son los más viscosos.', 'QA-viscosidad-esferica', 'Las moléculas pequeñas y redondeadas ruedan con facilidad unas sobre otras: dan líquidos poco viscosos.', 'Los líquidos de moléculas largas que se enredan, o con muchas fuerzas entre ellas, son los más viscosos.'),
       F('liq10', 'Un líquido con mayor presión de vapor es menos volátil.', 'QA-pvapor-volatil', 'Mayor presión de vapor significa que más moléculas pasan al vapor: es más volátil.', 'Un líquido con mayor presión de vapor es más volátil.'),
       F('liq11', 'La presión de vapor de un líquido depende del tamaño del recipiente que lo contiene.', 'GQ18', 'A una temperatura dada, la presión de vapor de un líquido puro es fija.', 'La presión de vapor depende de la temperatura y del líquido, no del recipiente.'),
@@ -251,13 +266,11 @@
       V('sol1', 'En un sólido cristalino, las partículas se ordenan en un patrón que se repite en el espacio.', 'Ese orden de largo alcance es lo que define al cristal.', 'QA-amorfo-cristalino'),
       V('sol2', 'El cloruro de sodio sólido es cristalino: sus iones forman una red ordenada.', 'Cada Na⁺ queda rodeado de seis Cl⁻ y cada Cl⁻ de seis Na⁺.', 'QA-ionico-amorfo'),
       V('sol3', 'El vidrio común es un sólido amorfo.', 'Sus partículas no tienen un orden que se repita; se ablanda en un intervalo de temperaturas.', 'QA-amorfo-cristalino'),
-      V('sol5', 'La celda unitaria es la porción más pequeña de la red que, repetida en el espacio, reproduce todo el cristal.', 'Es como el ladrillo con que se arma el cristal.'),
-      V('sol6', 'El ion cloruro (Cl⁻) es más grande que el átomo de cloro.', 'Con un electrón más y los mismos protones, la nube electrónica se expande.', 'QA-radio-ion'),
+      V('sol5', 'La celda unitaria es la unidad de la red que, repetida en el espacio, reproduce todo el cristal.', 'Es como el ladrillo con que se arma el cristal.'),
       F('sol8', 'La sal común es un sólido amorfo, porque sus granos tienen formas distintas.', 'QA-ionico-amorfo', 'Cada grano es un cristal (o varios): por dentro, los iones siguen una red ordenada.', 'La sal común es un sólido cristalino.'),
-      F('sol9', 'El ion cloruro se forma cuando el átomo de cloro pierde un electrón.', 'QA-anion-pierde', 'Un anión tiene carga negativa: el cloro gana un electrón.', 'El ion cloruro se forma cuando el átomo de cloro gana un electrón.'),
-      F('sol10', 'El ion Cl⁻ es más pequeño que el átomo de cloro, porque tiene carga.', 'QA-radio-ion', 'Con un electrón más y la misma carga nuclear, la repulsión entre electrones aumenta y la nube se expande.', 'El ion Cl⁻ es más grande que el átomo de cloro.'),
-      F('sol11', 'El vidrio es un sólido cristalino, porque es duro y transparente.', 'QA-amorfo-cristalino', 'La dureza y la transparencia no dicen nada del orden interno: el vidrio no tiene red ordenada.', 'El vidrio es un sólido amorfo.'),
+      F('sol11', 'El vidrio es un sólido cristalino.', 'QA-amorfo-cristalino', 'La dureza y la transparencia no dicen nada del orden interno: el vidrio no tiene red ordenada.', 'El vidrio es un sólido amorfo.'),
       F('sol13', 'El cloruro de sodio sólido está formado por moléculas de NaCl separadas.', 'EN1', 'Es una red de iones: cada ion atrae a todos sus vecinos de carga opuesta, sin moléculas sueltas.', 'El cloruro de sodio sólido es una red de iones Na⁺ y Cl⁻.'),
+      F('sol14', 'En un sólido amorfo, las partículas forman una red ordenada que se repite en todo el sólido.', 'QA-amorfo-cristalino', 'Ese orden que se repite es el de los sólidos cristalinos. En un amorfo, como el vidrio, no hay un patrón repetido.', 'En un sólido amorfo, las partículas no siguen un patrón que se repita.'),
     ] },
     // ===== Ambiente =====
     { id: 'esferas', unidad: 'quimica.ambiente-y-quimica-aplicada', nombre: 'la atmósfera, la hidrósfera y la litósfera', props: [
@@ -271,19 +284,19 @@
       F('esf10', 'La capa de ozono está en la tropósfera, donde se forman las nubes.', 'QA-ozono-troposfera', 'La tropósfera es la capa más baja; la capa de ozono está más arriba, en la estratósfera.', 'La capa de ozono está en la estratósfera.'),
       F('esf12', 'La hidrósfera solo incluye el agua líquida; el hielo de los glaciares es parte de la litósfera.', 'QA-hielo-fuera', 'La hidrósfera incluye el agua en todos sus estados, también el hielo.', 'El hielo de los glaciares es parte de la hidrósfera.'),
     ] },
-    { id: 'contaminantes', unidad: 'quimica.ambiente-y-quimica-aplicada', nombre: 'los contaminantes del aire', props: [
+    { id: 'contaminantes', unidad: 'quimica.ambiente-y-quimica-aplicada', nombre: 'los contaminantes del aire y la lluvia ácida', props: [
       V('con1', 'Un contaminante primario es el que se emite directamente desde su fuente, como el CO del escape de un auto.', 'Sale tal cual de la fuente; no se forma después en el aire.', 'QA-secundario-primario'),
-      V('con2', 'El ozono cercano al suelo es un contaminante secundario: se forma en el aire a partir de otros contaminantes y la luz solar.', 'Se forma con los NOₓ y los hidrocarburos del tráfico, con luz solar (smog fotoquímico).', 'QA-secundario-primario'),
+      V('con2', 'El ozono cercano al suelo es un contaminante secundario: se forma en el aire a partir de otros contaminantes y la luz solar.', 'Se forma con los NOₓ y los hidrocarburos del tráfico, con luz solar (smog fotoquímico).', 'QA8'),
       V('con3', 'El SO₂ que sale al quemar carbón o petróleo con azufre es un contaminante primario.', 'Sale directamente de la combustión.'),
-      V('con4', 'El ácido sulfúrico de la lluvia ácida es un contaminante secundario.', 'Se forma en el aire cuando el SO₂ se oxida y se disuelve en las gotas de agua.', 'QA-secundario-primario'),
+      V('con4', 'El ácido sulfúrico de la lluvia ácida es un contaminante secundario, porque se forma en el aire a partir del SO₂.', 'El SO₂ se oxida y se disuelve en las gotas de agua.', 'QA-secundario-primario'),
       V('con6', 'Un volcán puede emitir SO₂: también hay contaminantes de origen natural.', 'Los volcanes, los incendios forestales y el polvo también aportan contaminantes.', 'QA-solo-humano'),
-      F('con8', 'El ozono cercano al suelo es un contaminante primario, porque lo emiten directamente los autos.', 'QA-secundario-primario', 'Los autos emiten NOₓ e hidrocarburos; el ozono se forma después en el aire, con la luz solar.', 'El ozono cercano al suelo es un contaminante secundario.'),
+      F('con8', 'El ozono cercano al suelo es un contaminante primario, porque lo emiten directamente los autos.', 'QA8', 'Los autos emiten NOₓ e hidrocarburos; el ozono se forma después en el aire, con la luz solar.', 'El ozono cercano al suelo es un contaminante secundario.'),
       F('con9', 'La lluvia ácida se debe sobre todo al CO₂.', 'QA4', 'El CO₂ forma ácido carbónico, que es débil: la lluvia normal ya tiene pH cerca de 5,6. La lluvia ácida viene del SO₂ y de los NOₓ.', 'La lluvia ácida se debe sobre todo al SO₂ y a los NOₓ.'),
       F('con10', 'Todos los contaminantes del aire provienen de la actividad humana.', 'QA-solo-humano', 'Los volcanes emiten SO₂ y ceniza, y los incendios forestales emiten humo y CO.', 'Hay contaminantes del aire de origen humano y de origen natural.'),
-      F('con12', 'El monóxido de carbono es un contaminante secundario porque se forma en la atmósfera.', 'QA-secundario-primario', 'El CO sale directamente de una combustión incompleta: es primario.', 'El monóxido de carbono es un contaminante primario.'),
+      F('con12', 'El monóxido de carbono es un contaminante secundario.', 'QA-secundario-primario', 'El CO sale directamente de una combustión incompleta: es primario.', 'El monóxido de carbono es un contaminante primario.'),
       F('con13', 'La lluvia ácida sube el pH de los lagos y los suelos.', 'QA-lluvia-ph', 'Lo ácido baja el pH: los lagos y los suelos se acidifican.', 'La lluvia ácida baja el pH de los lagos y los suelos.'),
     ] },
-    { id: 'tendencia', unidad: 'quimica.ambiente-y-quimica-aplicada', nombre: 'lo que dicen esos datos',
+    { id: 'tendencia', unidad: 'quimica.ambiente-y-quimica-aplicada', nombre: 'lo que dicen esos datos del glaciar',
       contexto: 'Un informe dice que el glaciar de un nevado andino tenía 30 km² en 1980, 24 km² en 1995, 20 km² en 2005 y 12 km² en 2020.', props: [
       V('ten1', 'Entre 1980 y 2020, el glaciar perdió 18 km².', '30 − 12 = 18 km².', 'QA-intervalo-mal-leido'),
       V('ten2', 'Entre 1980 y 2020, el glaciar perdió el 60 % del área que tenía en 1980.', '18 ÷ 30 = 0,6, es decir, el 60 %.', 'QA-absoluto-por-porcentaje'),
@@ -297,19 +310,27 @@
       F('ten11', 'Entre 2005 y 2020, el área del glaciar se redujo a la mitad.', 'QA-intervalo-mal-leido', 'De 20 km² a 12 km² perdió 8 km², el 40 %: quedó el 60 %.', 'Entre 2005 y 2020, el glaciar perdió el 40 % de su área.'),
     ] },
     // ===== Nomenclatura inorgánica =====
-    { id: 'oxidos', unidad: 'quimica.nomenclatura-inorganica', nombre: 'los óxidos y sus nombres', props: [
-      V('oxi1', 'El CO₂ es un óxido ácido: con agua forma ácido carbónico.', 'CO₂ + H₂O → H₂CO₃.', 'QA-caracter-oxido'),
+    { id: 'oxidos', unidad: 'quimica.nomenclatura-inorganica', nombre: 'los óxidos, los ácidos y sus nombres tradicionales', props: [
+      V('oxi1', 'El CO₂ es un óxido ácido, porque con agua forma ácido carbónico.', 'CO₂ + H₂O → H₂CO₃.', 'QA-caracter-oxido'),
       V('oxi2', 'El CaO es un óxido básico: con agua forma hidróxido de calcio.', 'CaO + H₂O → Ca(OH)₂.', 'QA-caracter-oxido'),
       V('oxi3', 'En general, los óxidos de los no metales son ácidos y los de los metales activos son básicos.', 'Los de no metales dan ácidos con agua; los de metales activos, hidróxidos.', 'QA-caracter-oxido'),
       V('oxi4', 'En la nomenclatura tradicional, el sufijo -ico indica el mayor de dos estados de oxidación.', 'Y el sufijo -oso, el menor: férrico (+3) y ferroso (+2).', 'NO2'),
       V('oxi5', 'El FeCl₃ se llama cloruro férrico en la nomenclatura tradicional.', 'El hierro actúa con +3, su mayor estado de oxidación común.', 'NO2'),
-      V('oxi7', 'El CuO se llama óxido cúprico y el Cu₂O, óxido cuproso.', 'En el CuO el cobre tiene +2 (-ico); en el Cu₂O, +1 (-oso).', 'NO2'),
-      F('oxi8', 'El SO₂ es un óxido básico porque contiene oxígeno.', 'QA-caracter-oxido', 'Todo óxido contiene oxígeno. El SO₂ es óxido de un no metal: con agua forma ácido sulfuroso.', 'El SO₂ es un óxido ácido (anhídrido sulfuroso).'),
+      F('oxi8', 'El SO₂ es un óxido básico.', 'QA-caracter-oxido', 'Todo óxido contiene oxígeno. El SO₂ es óxido de un no metal: con agua forma ácido sulfuroso.', 'El SO₂ es un óxido ácido (anhídrido sulfuroso).'),
       F('oxi9', 'El sufijo -oso indica el mayor estado de oxidación del metal.', 'NO2', 'Es al revés: -oso para el menor, -ico para el mayor.', 'El sufijo -oso indica el menor estado de oxidación del metal.'),
       F('oxi10', 'El FeO se llama óxido férrico.', 'NO2', 'En el FeO el hierro tiene +2, su menor estado común: lleva -oso.', 'El FeO se llama óxido ferroso.'),
       F('oxi11', 'El Na₂O forma un ácido al reaccionar con agua.', 'QA-caracter-oxido', 'Es el óxido de un metal activo: con agua forma NaOH, una base.', 'El Na₂O forma hidróxido de sodio al reaccionar con agua: es un óxido básico.'),
-      F('oxi12', 'El agua gasificada (agua con CO₂ disuelto) es un compuesto.', 'MA9', 'Es CO₂ disuelto en agua: dos sustancias mezcladas, que se separan al destapar la botella.', 'El agua gasificada es una mezcla homogénea.'),
       F('oxi13', 'El ácido sulfúrico tiene la fórmula H₂SO₃.', 'NO2', 'El H₂SO₃ es el ácido sulfuroso (S con +4); el sulfúrico es H₂SO₄ (S con +6).', 'El ácido sulfúrico tiene la fórmula H₂SO₄.'),
+    ] },
+    { id: 'sales-acidas', unidad: 'quimica.nomenclatura-inorganica', nombre: 'las sales ácidas', props: [
+      V('hid4', 'El NaHCO₃ es una sal ácida, porque su anión conserva un hidrógeno del ácido carbónico.', 'El H₂CO₃ cambió solo uno de sus dos hidrógenos por sodio.', 'QA-sal-acida-basica'),
+      V('hid5', 'Una sal ácida se forma cuando solo una parte de los hidrógenos ácidos de un ácido es reemplazada por un metal.', 'Por eso solo la forman los ácidos con dos o más hidrógenos ácidos.', 'QA-sal-acida-basica'),
+      F('hid9', 'El NaHCO₃ es una sal básica, porque contiene grupos OH⁻.', 'QA-sal-acida-basica', 'El NaHCO₃ no tiene OH⁻; tiene un H del ácido que no fue reemplazado.', 'El NaHCO₃ es una sal ácida.'),
+      F('hid13', 'El NaHSO₄ es una sal neutra.', 'QA-sal-acida-basica', 'El anión HSO₄⁻ conserva un hidrógeno del ácido sulfúrico: es una sal ácida.', 'El NaHSO₄ es una sal ácida.'),
+      V('hid7', 'El KHSO₄ es una sal ácida.', 'Su anión, HSO₄⁻, conserva uno de los dos hidrógenos del ácido sulfúrico.', 'QA-sal-acida-basica'),
+      V('hid16', 'El NaH₂PO₄ es una sal ácida: su anión conserva dos hidrógenos del ácido fosfórico.', 'El H₃PO₄ tiene tres hidrógenos ácidos y solo uno fue reemplazado por sodio.', 'QA-sal-acida-basica'),
+      F('hid12', 'Una sal ácida es la que se obtiene de un ácido fuerte.', 'QA-sal-acida-basica', 'Lo que hace ácida a la sal es que conserve hidrógenos ácidos del ácido, fuerte o débil: el NaHCO₃ viene del ácido carbónico, que es débil.', 'Una sal ácida conserva en su anión algún hidrógeno ácido del ácido del que proviene.'),
+      F('hid17', 'El ácido clorhídrico (HCl) puede formar sales ácidas.', 'QA-sal-acida-basica', 'El HCl tiene un solo hidrógeno ácido: al reemplazarlo no queda ninguno. Solo los ácidos con dos o más hidrógenos ácidos forman sales ácidas.', 'El HCl no forma sales ácidas, porque tiene un solo hidrógeno ácido.'),
     ] },
     // ===== Recursos naturales =====
     { id: 'metalurgia', unidad: 'quimica.recursos-naturales', nombre: 'los procesos metalúrgicos', props: [
@@ -317,7 +338,6 @@
       V('met2', 'En la flotación, la mena se separa de la ganga porque sus partículas se pegan a burbujas y suben con la espuma.', 'Es un método para concentrar el mineral; no cambia su composición química.', 'QA-proceso-metalurgico'),
       V('met3', 'En la lixiviación, el metal pasa a una solución acuosa al tratar el mineral con un reactivo, como el ácido sulfúrico en el cobre.', 'Después el metal se recupera de la solución.', 'QA-proceso-metalurgico'),
       V('met4', 'En el alto horno, el monóxido de carbono reduce el óxido de hierro a hierro metálico.', 'Fe₂O₃ + 3 CO → 2 Fe + 3 CO₂; el CO sale del coque.', 'QA-reductor-alto-horno'),
-      V('met5', 'La cianuración se usa para extraer oro de sus minerales.', 'Una solución de cianuro disuelve el oro; después se recupera.'),
       V('met7', 'En la electrorrefinación del cobre, el cobre puro se deposita en el cátodo.', 'El cobre impuro es el ánodo: se oxida y pasa a la solución; en el cátodo se reduce Cu²⁺ a cobre puro.', 'QA-proceso-metalurgico'),
       F('met8', 'La tostación consiste en disolver el metal del mineral en un ácido.', 'QA-proceso-metalurgico', 'Disolver el metal con un reactivo es la lixiviación. La tostación calienta el mineral con aire.', 'La tostación calienta un sulfuro con aire y lo convierte en óxido.'),
       F('met9', 'El gas que se libera en la tostación de los sulfuros es el anhídrido sulfúrico (SO₃).', 'QA-so2-so3', 'Sale SO₂, el dióxido de azufre o anhídrido sulfuroso. El SO₃ es el anhídrido sulfúrico.', 'El gas que se libera en la tostación de los sulfuros es el SO₂ (anhídrido sulfuroso).'),
@@ -325,38 +345,36 @@
       F('met11', 'La flotación es un proceso químico que convierte el sulfuro en metal puro.', 'QA-proceso-metalurgico', 'La flotación solo separa la mena de la ganga; el sulfuro sigue siendo sulfuro.', 'La flotación concentra el mineral: separa la mena de la ganga sin convertirla en metal.'),
       F('met12', 'En la electrorrefinación del cobre, el cobre puro se obtiene en el ánodo.', 'QA-proceso-metalurgico', 'En el ánodo el cobre impuro se oxida y se disuelve; el cobre puro se deposita en el cátodo.', 'En la electrorrefinación del cobre, el cobre puro se obtiene en el cátodo.'),
     ] },
-    { id: 'polimeros', unidad: 'quimica.recursos-naturales', nombre: 'los derivados del petróleo y los polímeros', props: [
+    { id: 'polimeros', unidad: 'quimica.recursos-naturales', nombre: 'los polímeros, los aromáticos y la combustión', props: [
       V('pol1', 'El polietileno se obtiene por polimerización de adición del eteno (etileno).', 'n CH₂=CH₂ → (–CH₂–CH₂–)ₙ.', 'QA-adicion-condensacion'),
       V('pol2', 'En la polimerización por adición de un alqueno, el doble enlace C=C se abre para que los monómeros se unan en cadena.', 'Cada monómero se suma entero a la cadena.', 'QA-adicion-condensacion'),
-      V('pol3', 'En la polimerización por adición no se libera ninguna molécula pequeña, como el agua.', 'Eso la distingue de la polimerización por condensación.', 'QA-adicion-condensacion'),
+      V('pol3', 'La polimerización por adición no libera agua, porque cada monómero se suma entero a la cadena.', 'Eso la distingue de la polimerización por condensación.', 'QA-adicion-condensacion'),
       V('pol4', 'El naftaleno, con dos anillos bencénicos fusionados, es un hidrocarburo aromático policíclico.', 'Comparte electrones π deslocalizados en sus dos anillos.', 'QA-anillos-aromatico'),
       V('pol5', 'La combustión incompleta de un hidrocarburo puede producir monóxido de carbono y hollín.', 'Ocurre cuando falta oxígeno.', 'QA-combustion-incompleta'),
-      V('pol6', 'La hidratación del eteno, la adición de una molécula de agua, produce etanol.', 'CH₂=CH₂ + H₂O → CH₃CH₂OH.'),
       F('pol8', 'Todo compuesto con varios anillos de carbono es aromático.', 'QA-anillos-aromatico', 'Para ser aromático, el anillo debe tener electrones π deslocalizados, como el benceno. Los esteroides tienen varios anillos y no son aromáticos.', 'Un compuesto con varios anillos es aromático solo si sus anillos tienen electrones π deslocalizados, como los del benceno.'),
       F('pol9', 'En la polimerización por adición del eteno se libera una molécula de agua por cada unión.', 'QA-adicion-condensacion', 'Soltar agua en cada unión es propio de la condensación (como en el nailon o el poliéster).', 'En la polimerización por adición del eteno no se libera ninguna molécula.'),
       F('pol11', 'La combustión incompleta del metano produce solo CO₂ y agua.', 'QA-combustion-incompleta', 'CO₂ y agua son los productos de la combustión completa. Con poco oxígeno se forma también CO o carbono (hollín).', 'La combustión incompleta del metano produce también CO o hollín.'),
-      F('pol12', 'El ciclohexano es un hidrocarburo aromático porque tiene un anillo de seis carbonos.', 'QA-anillos-aromatico', 'El ciclohexano solo tiene enlaces simples: es un hidrocarburo saturado, no aromático.', 'El ciclohexano es un cicloalcano: no es aromático.'),
+      F('pol12', 'El ciclohexano es un hidrocarburo aromático.', 'QA-anillos-aromatico', 'El ciclohexano solo tiene enlaces simples: es un hidrocarburo saturado, no aromático.', 'El ciclohexano es un cicloalcano: no es aromático.'),
       F('pol13', 'Todos los polímeros son sintéticos: en la naturaleza no hay polímeros.', 'QA14', 'Las proteínas, el almidón, la celulosa y el caucho natural son polímeros naturales.', 'Hay polímeros sintéticos, como el polietileno, y naturales, como la celulosa.'),
     ] },
     // ===== Electroquímica =====
     { id: 'pilas', unidad: 'quimica.electroquimica', nombre: 'la batería de plomo y las celdas de combustible', props: [
       V('pil1', 'En la batería de plomo, al descargarse, el plomo metálico (Pb) se oxida en el ánodo.', 'Pb pasa de 0 a +2 y forma PbSO₄.', 'EC9'),
-      V('pil2', 'En la batería de plomo, el PbO₂ se reduce durante la descarga.', 'El plomo pasa de +4 a +2: gana electrones.', 'EC9'),
+      V('pil2', 'En la batería de plomo, el PbO₂ se reduce durante la descarga, porque el plomo pasa de +4 a +2.', 'Bajar el estado de oxidación es ganar electrones.', 'EC9'),
       V('pil3', 'El electrolito de la batería de plomo es una solución de ácido sulfúrico.', 'Sus iones llevan la carga entre las placas.'),
       V('pil5', 'La batería de plomo es recargable: al cargarla, una corriente externa invierte la reacción.', 'Al cargar funciona como celda electrolítica.', 'EC8'),
       V('pil6', 'En una celda de combustible de hidrógeno y oxígeno, el hidrógeno se oxida en el ánodo.', 'H₂ → 2 H⁺ + 2 e⁻ (en medio ácido).', 'EC9'),
-      V('pil7', 'En una celda de combustible de hidrógeno y oxígeno, el producto de la reacción es agua.', '2 H₂ + O₂ → 2 H₂O.'),
       V('pil9', 'En una celda de combustible, el oxígeno acepta electrones: se reduce en el cátodo.', 'Aceptar electrones es reducirse.', 'EC9'),
       F('pil10', 'En la batería de plomo, el PbO₂ se oxida porque acepta electrones.', 'EC9', 'Aceptar electrones es reducirse, no oxidarse.', 'En la batería de plomo, el PbO₂ acepta electrones: se reduce.'),
       F('pil11', 'Durante la descarga de la batería de plomo, la concentración del ácido sulfúrico aumenta.', 'QA-acido-descarga', 'Los dos electrodos consumen iones sulfato para formar PbSO₄: el ácido se diluye.', 'Durante la descarga, la concentración del ácido sulfúrico disminuye.'),
       F('pil12', 'Una celda de combustible necesita una fuente de corriente externa para funcionar.', 'EC8', 'Es una celda galvánica: produce corriente con una reacción espontánea mientras recibe combustible.', 'Una celda de combustible produce corriente; no necesita una fuente externa.'),
-      F('pil13', 'Una celda de combustible que funciona de modo espontáneo tiene fem negativa.', 'QA-fem-negativa', 'Una celda galvánica espontánea tiene fem positiva.', 'Una celda que funciona de modo espontáneo tiene fem positiva.'),
+      F('pil13', 'Una celda de combustible que funciona de modo espontáneo tiene fem negativa.', 'EC8', 'Una celda galvánica espontánea tiene fem positiva.', 'Una celda que funciona de modo espontáneo tiene fem positiva.'),
       F('pil15', 'En la batería de plomo, los electrones viajan por el ácido sulfúrico de un electrodo al otro.', 'EC2', 'Los electrones van por el circuito externo; dentro de la solución se mueven iones.', 'Los electrones van por el circuito externo; en el ácido sulfúrico se mueven iones.'),
     ] },
     // ===== Equilibrio químico =====
-    { id: 'equilibrio-sangre', unidad: 'quimica.equilibrio-quimico', nombre: 'los equilibrios heterogéneos y el equilibrio del ácido carbónico', props: [
+    { id: 'equilibrio-sangre', unidad: 'quimica.equilibrio-quimico', nombre: 'los equilibrios heterogéneos y la solución reguladora del ácido carbónico', props: [
       V('eqs1', 'CaCO₃(s) ⇌ CaO(s) + CO₂(g) es un equilibrio heterogéneo: hay sustancias en más de una fase.', 'Hay dos sólidos y un gas.', 'EQ13'),
-      V('eqs2', 'En la constante de equilibrio de CaCO₃(s) ⇌ CaO(s) + CO₂(g) solo aparece el CO₂.', 'Los sólidos puros no entran en la expresión de K: Kc = [CO₂].', 'EQ13'),
+      V('eqs2', 'En la constante de equilibrio de CaCO₃(s) ⇌ CaO(s) + CO₂(g) solo aparece el CO₂, porque los sólidos puros no entran en K.', 'Kc = [CO₂].', 'EQ13'),
       V('eqs3', 'El ácido carbónico es un ácido débil: en agua se disocia solo en parte.', 'H₂CO₃ ⇌ H⁺ + HCO₃⁻ queda muy desplazado a la izquierda.', 'QA-negar-verdadera'),
       V('eqs4', 'En la sangre, el par H₂CO₃ / HCO₃⁻ forma una solución reguladora que limita los cambios de pH.', 'Es el principal sistema regulador de la sangre.'),
       V('eqs5', 'Si a una solución reguladora de H₂CO₃ y HCO₃⁻ se le agrega un poco de ácido, el HCO₃⁻ reacciona con los H⁺ añadidos.', 'HCO₃⁻ + H⁺ → H₂CO₃: el pH casi no cambia.'),
@@ -372,8 +390,7 @@
       V('lb1', 'Según Lewis, una base es una especie que dona un par de electrones.', 'Y un ácido de Lewis es el que acepta ese par.', 'QA-lewis-invertido'),
       V('lb2', 'El amoníaco (NH₃) es una base de Lewis, porque el nitrógeno tiene un par de electrones libre.', 'Ese par puede formar un enlace con un H⁺ o con otra especie que lo acepte.', 'AB1'),
       V('lb3', 'Según Brønsted y Lowry, una base es una especie que acepta un protón (H⁺).', 'Y un ácido es el que lo cede.'),
-      V('lb4', 'A 25 °C, una solución acuosa de una base débil, como el amoníaco, tiene pH mayor que 7.', 'Débil quiere decir que acepta pocos protones del agua, pero igual produce OH⁻: el pH pasa de 7.', 'QA-base-debil-acida'),
-      V('lb7', 'El BF₃ puede actuar como ácido de Lewis, porque acepta un par de electrones.', 'Al boro le faltan electrones para completar el octeto.', 'AB1'),
+      V('lb4', 'A 25 °C, una solución acuosa de amoníaco tiene pH mayor que 7, porque el amoníaco produce iones OH⁻ al reaccionar con el agua.', 'Aunque es una base débil, el NH₃ toma protones del agua: NH₃ + H₂O ⇌ NH₄⁺ + OH⁻.', 'QA-base-debil-acida'),
       V('lb8', 'Una sal formada por una base débil y un ácido fuerte, como el NH₄Cl, da una solución ácida.', 'El NH₄⁺ cede protones al agua.', 'AB9'),
       F('lb9', 'Una base débil en agua da una solución de pH menor que 7, porque es débil.', 'QA-base-debil-acida', 'Débil no es ácida: la base produce OH⁻, aunque poco, y el pH queda mayor que 7.', 'Una base débil en agua da una solución de pH mayor que 7.'),
       F('lb10', 'Una sustancia sin el grupo OH en su fórmula no puede ser una base.', 'AB1', 'El NH₃ y las aminas no tienen OH y son bases: aceptan protones.', 'Una sustancia puede ser base sin tener OH, como el amoníaco.'),
@@ -383,18 +400,18 @@
     ] },
     // ===== Enlace químico =====
     { id: 'tipo-solido', unidad: 'quimica.enlace-quimico', nombre: 'los tipos de sólidos y sus propiedades', props: [
-      V('ts1', 'Un sólido iónico no conduce la corriente en estado sólido, pero sí fundido o disuelto en agua.', 'En el sólido los iones están fijos; fundido o disuelto, se mueven.', 'QA-ionico-conduce'),
+      V('ts1', 'Un sólido iónico no conduce la corriente en estado sólido, porque sus iones están fijos en la red.', 'Fundido o disuelto en agua, sus iones se mueven y sí conduce.', 'QA-ionico-conduce'),
       V('ts2', 'Los metales conducen la corriente en estado sólido gracias a sus electrones deslocalizados.', 'Los electrones de valencia se mueven por toda la red.'),
       V('ts3', 'El diamante, un sólido covalente de red, es muy duro y tiene una temperatura de fusión muy alta.', 'Para fundirlo hay que romper enlaces covalentes en toda la red.', 'QA-covalente-bajo'),
       V('ts4', 'Los sólidos moleculares, como el hielo o el yodo, suelen tener temperaturas de fusión bajas.', 'Al fundirlos solo se vencen las fuerzas entre moléculas.', 'EN13'),
       V('ts7', 'El grafito conduce la corriente porque tiene electrones deslocalizados en sus capas.', 'Cada carbono usa tres electrones en enlaces y el cuarto queda deslocalizado.', 'EN17'),
       F('ts8', 'Todo sólido que conduce la corriente en estado sólido es iónico.', 'QA-ionico-conduce', 'Los sólidos iónicos no conducen en estado sólido; conducen los metales (y el grafito).', 'Un sólido que conduce la corriente en estado sólido suele ser metálico; los iónicos no conducen en estado sólido.'),
       F('ts9', 'El NaCl sólido conduce la corriente porque está formado por iones.', 'QA-ionico-conduce', 'Sus iones están fijos en la red: no pueden llevar carga hasta que se funde o se disuelve.', 'El NaCl conduce la corriente fundido o disuelto, no en estado sólido.'),
-      F('ts10', 'Los sólidos covalentes de red, como el diamante, funden a temperaturas bajas porque sus enlaces son covalentes.', 'QA-covalente-bajo', 'Funden bajo los sólidos moleculares, donde solo se vencen fuerzas entre moléculas. En una red hay que romper enlaces covalentes.', 'Los sólidos covalentes de red funden a temperaturas muy altas.'),
+      F('ts10', 'Los sólidos covalentes de red, como el diamante, funden a temperaturas bajas.', 'QA-covalente-bajo', 'Funden bajo los sólidos moleculares, donde solo se vencen fuerzas entre moléculas. En una red hay que romper enlaces covalentes.', 'Los sólidos covalentes de red funden a temperaturas muy altas.'),
       F('ts11', 'Todos los sólidos moleculares son solubles en agua.', 'QA-molecular-soluble', 'El yodo y la naftalina son moleculares y casi no se disuelven en agua.', 'Algunos sólidos moleculares se disuelven en agua, como el azúcar, y otros no, como el yodo.'),
       F('ts12', 'El grafito conduce la corriente porque sus átomos de carbono se mueven sueltos.', 'EN17', 'Los átomos están fijos en las capas; lo que se mueve son electrones deslocalizados.', 'El grafito conduce porque tiene electrones deslocalizados en sus capas.'),
     ] },
-    { id: 'ionicos', unidad: 'quimica.enlace-quimico', nombre: 'los compuestos iónicos y sus iones', props: [
+    { id: 'ionicos', unidad: 'quimica.enlace-quimico', nombre: 'los sólidos iónicos y sus iones', props: [
       V('ion1', 'En un sólido iónico, cada ion está rodeado de varios iones de carga opuesta.', 'La atracción es en todas las direcciones de la red.', 'EN1'),
       V('ion3', 'El ion bicarbonato (HCO₃⁻) tiene carga 1−.', 'Es el carbonato (2−) con un H⁺: 2− + 1 = 1−.', 'QA-carga-oxoanion'),
       V('ion4', 'El ion sulfato (SO₄²⁻) es un anión poliatómico.', 'Tiene cinco átomos con una carga total de 2−.', 'QA-anion-monoatomico'),
@@ -412,51 +429,48 @@
       V('rad2', 'En el radical hidroxilo (·OH) hay 7 electrones de valencia y el oxígeno no completa el octeto.', '6 del oxígeno y 1 del hidrógeno: un número impar.', 'EN3'),
       V('rad3', 'El monóxido de nitrógeno (NO) tiene un número impar de electrones de valencia: es un radical.', '5 del nitrógeno y 6 del oxígeno suman 11.', 'EN3'),
       V('rad4', 'El ion superóxido (O₂⁻) tiene un electrón desapareado.', '6 + 6 + 1 = 13 electrones de valencia: un número impar.', 'QA-peroxido-radical'),
-      V('rad6', 'El ion hidróxido (OH⁻) no es un radical: todos sus electrones están apareados.', '6 + 1 + 1 = 8 electrones de valencia, en cuatro pares.', 'QA-ion-radical'),
+      V('rad6', 'El ion hidróxido (OH⁻) no es un radical, porque todos sus electrones están apareados.', '6 + 1 + 1 = 8 electrones de valencia, en cuatro pares.', 'QA-ion-radical'),
       F('rad7', 'El ion peróxido (O₂²⁻) es un radical libre porque tiene carga.', 'QA-ion-radical', 'Tener carga no hace a un radical. El O₂²⁻ tiene 14 electrones de valencia, todos apareados.', 'El ion peróxido no es un radical: todos sus electrones están apareados.'),
       F('rad8', 'El radical hidroxilo (·OH) cumple el octeto, igual que el ion hidróxido.', 'EN3', 'Con 7 electrones de valencia el oxígeno queda con 7 a su alrededor; el OH⁻, con uno más, sí completa 8.', 'En el radical hidroxilo el oxígeno no completa el octeto: tiene un electrón desapareado.'),
       F('rad9', 'El peróxido de hidrógeno (H₂O₂) es un radical libre porque tiene un enlace O–O.', 'QA-peroxido-radical', 'El H₂O₂ tiene 14 electrones de valencia, todos apareados. Al romperse el enlace O–O sí se forman dos radicales ·OH.', 'El H₂O₂ no es un radical; al romperse su enlace O–O forma dos radicales ·OH.'),
       F('rad11', 'Una molécula con un número impar de electrones puede tener todos sus electrones apareados.', 'EN3', 'Con un número impar, al menos uno queda sin pareja.', 'Una molécula con un número impar de electrones tiene al menos un electrón desapareado.'),
       F('rad12', 'El ion hidroperóxido (HO₂⁻) es un radical libre.', 'QA-peroxido-radical', '1 + 6 + 6 + 1 = 14 electrones de valencia: todos apareados.', 'El ion hidroperóxido no es un radical; el radical es el hidroperoxilo neutro (HO₂·).'),
     ] },
-    { id: 'hidruros-sales', unidad: 'quimica.enlace-quimico', nombre: 'los hidruros no metálicos y las sales ácidas', props: [
+    { id: 'hidruros', unidad: 'quimica.enlace-quimico', nombre: 'los pares libres y los enlaces de los hidruros no metálicos', props: [
       V('hid1', 'En el amoníaco (NH₃), el nitrógeno tiene un par de electrones libre.', 'De sus 5 electrones de valencia, 3 forman enlaces con los H y 2 quedan como par libre.', 'QA-hidruro-sin-pares'),
-      V('hid2', 'El H₂S es un hidruro no metálico: sus enlaces S–H son covalentes.', 'Une dos no metales, que comparten electrones.', 'EN5'),
-      V('hid3', 'En la molécula de agua, el oxígeno tiene dos pares de electrones libres.', 'De sus 6 electrones de valencia, 2 forman enlaces con los H y 4 quedan en dos pares.', 'QA-hidruro-sin-pares'),
-      V('hid4', 'El NaHCO₃ es una sal ácida: su anión conserva un hidrógeno del ácido carbónico.', 'El H₂CO₃ cambió solo uno de sus dos hidrógenos por sodio.', 'QA-sal-acida-basica'),
-      V('hid5', 'Una sal ácida se forma cuando solo una parte de los hidrógenos ácidos de un ácido es reemplazada por un metal.', 'Por eso solo la forman los ácidos con dos o más hidrógenos ácidos.', 'QA-sal-acida-basica'),
+      V('hid2', 'El H₂S (sulfuro de hidrógeno) es un compuesto binario de hidrógeno y un no metal: sus enlaces S–H son covalentes.', 'El hidrógeno y el azufre son no metales y comparten electrones.', 'EN5'),
+      V('hid3', 'En la molécula de agua, el oxígeno tiene dos pares de electrones libres, porque usa solo dos de sus seis electrones de valencia en enlaces.', 'De sus 6 electrones de valencia, 2 forman enlaces con los H y 4 quedan en dos pares.', 'QA-hidruro-sin-pares'),
       F('hid8', 'El amoníaco no tiene pares de electrones libres, porque todos los electrones del nitrógeno forman enlaces.', 'QA-hidruro-sin-pares', 'El nitrógeno tiene 5 electrones de valencia y solo 3 enlaces: le queda un par libre.', 'En el amoníaco, el nitrógeno tiene un par de electrones libre.'),
-      F('hid9', 'El NaHCO₃ es una sal básica, porque contiene grupos OH⁻.', 'QA-sal-acida-basica', 'El NaHCO₃ no tiene OH⁻; tiene un H del ácido que no fue reemplazado.', 'El NaHCO₃ es una sal ácida.'),
-      F('hid10', 'El H₂S es un compuesto iónico porque contiene hidrógeno.', 'EN5', 'El H y el S son no metales: comparten electrones.', 'El H₂S es un compuesto covalente.'),
+      F('hid10', 'El H₂S es un compuesto iónico, como el NaCl.', 'EN5', 'El H y el S son no metales: comparten electrones.', 'El H₂S es un compuesto covalente.'),
       F('hid11', 'En el agua, el oxígeno no tiene pares libres: sus seis electrones de valencia forman enlaces.', 'QA-hidruro-sin-pares', 'Solo forma dos enlaces (con 2 electrones suyos); los otros 4 quedan como dos pares libres.', 'En el agua, el oxígeno tiene dos pares de electrones libres.'),
-      F('hid13', 'El NaHSO₄ es una sal neutra porque proviene de una base fuerte.', 'QA-sal-acida-basica', 'El anión HSO₄⁻ conserva un hidrógeno del ácido sulfúrico: es una sal ácida.', 'El NaHSO₄ es una sal ácida.'),
+      V('hid6', 'El HCl gaseoso es un compuesto covalente; en agua se ioniza.', 'Las moléculas de HCl comparten electrones; al disolverse, ceden H⁺ al agua.', 'EN5'),
+      V('hid14', 'En el H₂S, el azufre tiene dos pares de electrones libres.', 'De sus 6 electrones de valencia, 2 forman enlaces con los H y 4 quedan en dos pares, como en el agua.', 'QA-hidruro-sin-pares'),
+      F('hid15', 'El amoníaco es un compuesto iónico: el nitrógeno les quita los electrones a los hidrógenos.', 'EN5', 'El nitrógeno y el hidrógeno son no metales: comparten pares de electrones en enlaces covalentes polares.', 'El amoníaco es un compuesto covalente.'),
     ] },
     // ===== Biomoléculas =====
     { id: 'vitaminas', unidad: 'quimica.biomoleculas-y-productos-naturales', nombre: 'las vitaminas', props: [
       V('vit1', 'La vitamina C y las vitaminas del complejo B son hidrosolubles.', 'Se disuelven en agua y el exceso sale por la orina.', 'QA-vitamina-solubilidad'),
       V('vit2', 'Las vitaminas A, D, E y K son liposolubles.', 'Se disuelven en grasas y se pueden acumular en el cuerpo.', 'QA-vitamina-solubilidad'),
-      V('vit4', 'Muchas vitaminas del complejo B forman parte de coenzimas.', 'Por ejemplo, la niacina del NAD⁺ y la riboflavina del FAD.', 'BM1'),
+      V('vit4', 'Muchas vitaminas del complejo B forman parte de coenzimas.', 'Por ejemplo, la niacina del NAD⁺ y la riboflavina del FAD.', 'QA-vitamina-coenzima'),
       V('vit5', 'La niacina (vitamina B3) forma parte de la coenzima NAD⁺.', 'El NAD⁺ transporta electrones en la respiración celular.', 'QA-vitamina-coenzima'),
       V('vit6', 'La riboflavina (vitamina B2) forma parte del FAD.', 'El FAD también transporta electrones.', 'QA-vitamina-coenzima'),
       V('vit7', 'La vitamina D se forma en la piel por la acción de la luz ultravioleta sobre un derivado del colesterol.', 'El 7-deshidrocolesterol de la piel se convierte en vitamina D₃.', 'QA-ruta-vitamina-d'),
       V('vit8', 'La forma activa de la vitamina D se obtiene tras dos hidroxilaciones: primero en el hígado y después en el riñón.', 'Ruta: piel → hígado → riñón.', 'QA-ruta-vitamina-d'),
-      V('vit9', 'La vitamina K participa en la coagulación de la sangre.', 'Se necesita para formar varios factores de la coagulación.'),
       F('vit12', 'Las vitaminas aportan energía al organismo, como los carbohidratos.', 'BM1', 'Las vitaminas no se «queman» para dar energía; muchas ayudan como coenzimas a las reacciones que la liberan.', 'Las vitaminas no aportan energía; muchas forman parte de coenzimas.'),
       F('vit13', 'La vitamina C es liposoluble y se almacena en el tejido graso.', 'QA-vitamina-solubilidad', 'La vitamina C es hidrosoluble: no se acumula en la grasa y el exceso se elimina.', 'La vitamina C es hidrosoluble.'),
       F('vit14', 'La vitamina D se activa primero en el riñón y después en el hígado.', 'QA-ruta-vitamina-d', 'El orden es el contrario: la primera hidroxilación es en el hígado y la segunda en el riñón.', 'La vitamina D se activa primero en el hígado y después en el riñón.'),
       F('vit15', 'La vitamina D que se forma en la piel ya es la forma activa: no necesita pasar por el hígado ni por el riñón.', 'QA-ruta-vitamina-d', 'La de la piel es inactiva; se activa con una hidroxilación en el hígado y otra en el riñón.', 'La vitamina D de la piel se activa después en el hígado y en el riñón.'),
-      F('vit16', 'La vitamina K es hidrosoluble.', 'QA-vitamina-solubilidad', 'La vitamina K es una de las liposolubles: A, D, E y K.', 'La vitamina K es liposoluble.'),
       F('vit17', 'La niacina forma parte del FAD.', 'QA-vitamina-coenzima', 'La niacina forma parte del NAD⁺; el FAD viene de la riboflavina.', 'La niacina forma parte del NAD⁺, y la riboflavina, del FAD.'),
     ] },
     { id: 'proteinas', unidad: 'quimica.biomoleculas-y-productos-naturales', nombre: 'las proteínas y su desnaturalización', props: [
       V('pro1', 'En el punto isoeléctrico, la carga neta de una proteína o de un aminoácido es cero.', 'Las cargas positivas y negativas se compensan.', 'QA-punto-isoelectrico'),
-      V('pro2', 'Una proteína suele ser menos soluble en agua cuando el pH es igual a su punto isoeléctrico.', 'Sin carga neta, las moléculas no se repelen y tienden a juntarse y precipitar.', 'QA-punto-isoelectrico'),
+      V('pro2', 'Una proteína suele ser menos soluble en su punto isoeléctrico, porque sin carga neta sus moléculas no se repelen.', 'Las moléculas tienden a juntarse y precipitar.', 'QA-punto-isoelectrico'),
       V('pro3', 'El enlace peptídico une el carboxilo de un aminoácido con el grupo amino de otro y libera una molécula de agua.', '–COOH + H₂N– → –CO–NH– + H₂O.'),
       V('pro4', 'La desnaturalización cambia la forma de la proteína sin romper sus enlaces peptídicos.', 'Rompe interacciones débiles (puentes de hidrógeno, puentes salinos); la cadena de aminoácidos sigue entera.', 'BMH1'),
-      V('pro6', 'Al cocinar un huevo, la clara se desnaturaliza y no vuelve a su forma original al enfriarse.', 'La desnaturalización por calor de la clara es irreversible.', 'BM8'),
+      V('pro6', 'Al cocinar un huevo, la clara se desnaturaliza y no vuelve a su forma original al enfriarse.', 'La desnaturalización por calor de la clara es irreversible.', 'QA-desnaturalizacion-reversible'),
       V('pro7', 'A pH cercano a 7, el grupo amino y el grupo carboxilo de un aminoácido están ionizados: NH₃⁺ y COO⁻.', 'El aminoácido está como ion dipolar.'),
       F('pro8', 'La desnaturalización rompe los enlaces peptídicos y separa la proteína en aminoácidos.', 'BMH1', 'Separar en aminoácidos es la hidrólisis (la digestión). La desnaturalización solo cambia la forma.', 'La desnaturalización cambia la forma de la proteína; sus enlaces peptídicos siguen enteros.'),
-      F('pro9', 'La clara de un huevo cocido vuelve a ser líquida y transparente si se deja enfriar.', 'BM8', 'La desnaturalización de la clara por calor no se revierte al enfriar.', 'La clara cocida sigue sólida y blanca al enfriarse: su desnaturalización es irreversible.'),
+      F('pro9', 'La clara de un huevo cocido vuelve a ser líquida y transparente si se deja enfriar.', 'QA-desnaturalizacion-reversible', 'La desnaturalización de la clara por calor no se revierte al enfriar.', 'La clara cocida sigue sólida y blanca al enfriarse: su desnaturalización es irreversible.'),
       F('pro10', 'En el punto isoeléctrico, la proteína tiene carga neta positiva.', 'QA-punto-isoelectrico', 'En el punto isoeléctrico la carga neta es cero; a pH menor es positiva y a pH mayor, negativa.', 'En el punto isoeléctrico, la carga neta de la proteína es cero.'),
       F('pro11', 'El enlace peptídico solo existe en las proteínas de origen animal.', 'QA-peptidico-exclusivo', 'Las proteínas de las menestras, los cereales o la quinua también son cadenas de aminoácidos unidas por enlaces peptídicos.', 'Toda proteína, animal o vegetal, tiene enlaces peptídicos.'),
       F('pro12', 'Una proteína desnaturalizada pierde sus aminoácidos y ya no aporta nutrientes.', 'BMH13', 'Un huevo cocido tiene los mismos aminoácidos que uno crudo; la digestión los separa después.', 'Una proteína desnaturalizada conserva sus aminoácidos y sigue aportándolos como nutriente.'),
@@ -466,24 +480,70 @@
       V('ali2', 'La leche contiene colesterol, porque es un alimento de origen animal.', 'El colesterol se encuentra en los alimentos de origen animal.'),
       V('ali3', 'La lactosa de la leche es un azúcar reductor.', 'Uno de sus extremos puede abrirse y dar un grupo aldehído.', 'QA-disacarido-no-reductor'),
       V('ali4', 'La glucosa es un azúcar reductor: en su forma abierta tiene un grupo aldehído que puede oxidarse.', 'Por eso da positiva la prueba de Fehling o de Benedict.'),
-      V('ali5', 'La sacarosa no es un azúcar reductor.', 'Sus dos monosacáridos se unen por los carbonos que darían el grupo reductor.', 'QA-reductor-dulce'),
+      V('ali5', 'La sacarosa no es un azúcar reductor, porque no tiene un extremo que pueda abrirse y dar un grupo aldehído.', 'Sus dos monosacáridos se unen justo por los carbonos que darían el grupo reductor.', 'QA-reductor-dulce'),
       V('ali6', 'La cafeína es un alcaloide: un compuesto nitrogenado de origen vegetal.', 'Tiene cuatro átomos de nitrógeno en sus anillos.', 'QA-alcaloide-clase'),
       F('ali9', 'La sacarosa es un azúcar reductor porque es dulce.', 'QA-reductor-dulce', 'Ser reductor depende de tener un grupo que se oxida (aldehído libre), no del sabor.', 'La sacarosa es dulce, pero no es un azúcar reductor.'),
-      F('ali10', 'El colesterol es una proteína de la sangre.', 'BMH4', 'El colesterol es un lípido (un esterol). En la sangre viaja unido a proteínas, en lipoproteínas.', 'El colesterol es un lípido de la familia de los esteroides.'),
+      F('ali10', 'El colesterol es una grasa como el aceite: un triglicérido.', 'BMH4', 'Los dos son lípidos, pero el colesterol es un esterol, con cuatro anillos; los aceites y las grasas son triglicéridos: glicerol con tres ácidos grasos.', 'El colesterol es un lípido de la familia de los esteroides, no un triglicérido.'),
       F('ali11', 'La cafeína no tiene nitrógeno: es un carbohidrato del grano de café.', 'QA-alcaloide-clase', 'La cafeína es un alcaloide, con cuatro nitrógenos; no es un carbohidrato.', 'La cafeína es un alcaloide: un compuesto nitrogenado.'),
       F('ali12', 'Los esteroles se disuelven bien en agua porque tienen un grupo OH.', 'QA-oh-soluble', 'Un solo OH no compensa el gran esqueleto de carbonos: el colesterol casi no se disuelve en agua.', 'Los esteroles son lípidos: casi no se disuelven en agua, aunque tengan un grupo OH.'),
-      F('ali13', 'La lactosa no es un azúcar reductor, porque es un disacárido.', 'QA-disacarido-no-reductor', 'Algunos disacáridos son reductores (lactosa, maltosa) y otros no (sacarosa).', 'La lactosa es un disacárido reductor.'),
-      F('ali14', 'Los alcaloides se llaman así porque tienen carácter ácido.', 'QA-alcaloide-clase', '«Alcaloide» quiere decir «parecido a un álcali»: por su nitrógeno, suelen tener carácter básico.', 'Los alcaloides suelen tener carácter básico, por su nitrógeno.'),
+      F('ali13', 'La lactosa no es un azúcar reductor.', 'QA-disacarido-no-reductor', 'Algunos disacáridos son reductores (lactosa, maltosa) y otros no (sacarosa).', 'La lactosa es un disacárido reductor.'),
+      F('ali14', 'Los alcaloides tienen, en general, carácter ácido.', 'QA-alcaloide-clase', '«Alcaloide» quiere decir «parecido a un álcali»: por su nitrógeno, suelen tener carácter básico.', 'Los alcaloides suelen tener carácter básico, por su nitrógeno.'),
     ] },
   ];
+
+
+  // Espejos: una F y la V que dice lo contrario o casi lo mismo no salen juntas (vale en los dos sentidos).
+  const EXCLUYE = {
+    dal7: ['dal2'], dal9: ['dal1'], dal8: ['dal1'],
+    mod8: ['mod2'], mod9: ['mod3'], mod10: ['mod5'], mod11: ['mod5'],
+    rut6: ['rut3'], rut8: ['rut1', 'rut4'],
+    ram6: ['ram2'], ram8: ['ram1'], ram9: ['ram3'],
+    sus7: ['sus1'], sus10: ['sus2'],
+    sod7: ['sod2'], sod8: ['sod1', 'sod2'], sod9: ['sod4'], sod10: ['sod3'], sod12: ['sod1'], sol10: ['sol6', 'sod5'],
+    liq9: ['liq1'], liq10: ['liq5'], liq15: ['liq5', 'liq6'], liq12: ['liq4'],
+    sol8: ['sol2'], sol11: ['sol3'], sol13: ['sol2'], sol14: ['sol1', 'sol3'],
+    esf8: ['esf4'], esf10: ['esf5'], esf12: ['esf1'], esf9: ['esf2'],
+    con8: ['con2'], con12: ['con1'], con10: ['con6'], con9: ['con4'],
+    ten6: ['ten3'], ten7: ['ten1', 'ten2'], ten8: ['ten10'], ten9: ['ten5'], ten11: ['ten10'],
+    oxi8: ['oxi1', 'oxi3'], oxi9: ['oxi4'], oxi10: ['oxi4'], oxi11: ['oxi2', 'oxi3'],
+    met8: ['met1', 'met3'], met9: ['met1'], met10: ['met4'], met11: ['met2'], met12: ['met7'],
+    pol8: ['pol4'], pol9: ['pol2', 'pol3'], pol11: ['pol5'], pol12: ['pol4'],
+    pil10: ['pil2'], pil12: ['pil5'], pil15: ['pil3'],
+    eqs8: ['eqs2'], eqs9: ['eqs1'], eqs10: ['eqs3'], eqs11: ['eqs5', 'eqs7'],
+    lb9: ['lb4'], lb10: ['lb2'], lb11: ['lb1'], lb13: ['lb2', 'lb4'], lb14: ['lb8'],
+    ts8: ['ts1', 'ts2'], ts9: ['ts1'], ts10: ['ts3'], ts11: ['ts4'], ts12: ['ts7'],
+    ion9: ['ion4'], ion10: ['ion3'], ion11: ['ion5'], ion12: ['ion6'], ion13: ['ion1'], ion14: ['ion4'],
+    rad7: ['rad6'], rad8: ['rad2'], rad11: ['rad1', 'rad3'], rad12: ['rad4'],
+    hid8: ['hid1'], hid10: ['hid2'], hid11: ['hid3', 'hid14'], hid15: ['hid1'],
+    hid9: ['hid4'], hid12: ['hid5'], hid13: ['hid7'], hid17: ['hid5'],
+    vit12: ['vit4'], vit13: ['vit1'], vit14: ['vit8'], vit15: ['vit7', 'vit8'], vit17: ['vit5', 'vit6'],
+    pro8: ['pro4'], pro9: ['pro6'], pro10: ['pro1', 'pro2'], pro11: ['pro3'], pro12: ['pro4'],
+    ali9: ['ali5'], ali10: ['ali1'], ali11: ['ali6'], ali13: ['ali3'], ali14: ['ali6'],
+  };
+  // Proposiciones que preguntan lo mismo que el ítem con cifra del informe: documentado.
+  const RESPALDO = {
+    lb10: 'documentado',  // AB1: «un ácido debe tener H y una base, OH», 45 % de 24 (Çetingül y Geban 2011)
+    pil15: 'documentado', // EC2: electrones «a través de la disolución», 56 % de 306 (Tagle Barrios 2024)
+    eqs9: 'documentado',  // EQ13: «solo hay equilibrio si todo está en el mismo estado», 10 % y 44 % (Riddle y Lo-Fan-Hin 2023)
+    ion13: 'documentado', // EN1: par iónico, 39,2 % de 102 (Kumpha y otros 2014)
+    sol13: 'documentado', // EN1: el NaCl existe como moléculas, 92,2 % de 102 (Kumpha y otros 2014)
+    eqs12: 'documentado', // EQ3: «en equilibrio la reacción terminó», 6 % y 13 % (Riddle y Lo-Fan-Hin 2023)
+    mod11: 'documentado', // AT6: orbitales dibujados como órbitas, 17,2 % de 192 (Zarkadis y otros 2024)
+  };
 
   const BANCO = [];
   for (const t of TEMAS) for (const p of t.props) BANCO.push({ ...p, unidad: t.unidad, tema: t.id });
   const POR_ID = new Map(BANCO.map(p => [p.id, p]));
+  for (const [a, lista] of Object.entries(EXCLUYE)) for (const b of lista) {
+    POR_ID.get(a).excluye.push(b);
+    POR_ID.get(b).excluye.push(a);
+  }
+  for (const [id, r] of Object.entries(RESPALDO)) POR_ID.get(id).respaldo = r;
+  for (const t of TEMAS) t.props = t.props.map(p => POR_ID.get(p.id));
 
   // ---------- Pares para relacionar ----------
   const PARES = [
-    { id: 'cientificos', unidad: 'quimica.estructura-atomica', izqNombre: 'cada científico', derNombre: 'su aporte al conocimiento del átomo',
+    { id: 'cientificos', unidad: 'quimica.estructura-atomica', izqNombre: 'cada científico', izqVar: 'científico', derNombre: 'su aporte al conocimiento del átomo',
       codigo: 'QA-aporte-cruzado', familia: ['c-dalton', 'c-thomson', 'c-rutherford', 'c-bohr', 'c-schrodinger'], codigoFamilia: 'AT5',
       choques: [['c-schrodinger', 'c-debroglie']], pares: [
         { id: 'c-dalton', izq: 'Dalton', der: 'átomos indivisibles, iguales dentro de cada elemento' },
@@ -496,16 +556,16 @@
         { id: 'c-debroglie', izq: 'De Broglie', der: 'propuso que el electrón también se comporta como una onda' },
         { id: 'c-heisenberg', izq: 'Heisenberg', der: 'no se pueden conocer a la vez con exactitud la posición y la velocidad del electrón' },
       ] },
-    { id: 'coenzimas', unidad: 'quimica.biomoleculas-y-productos-naturales', izqNombre: 'cada vitamina', derNombre: 'la coenzima de la que forma parte',
+    { id: 'coenzimas', unidad: 'quimica.biomoleculas-y-productos-naturales', izqNombre: 'cada vitamina', izqVar: 'vitamina', derNombre: 'la coenzima de la que forma parte',
       codigo: 'QA-vitamina-coenzima', pares: [
-        { id: 'z-b1', izq: 'tiamina (B1)', der: 'pirofosfato de tiamina' },
+        { id: 'z-b1', izq: 'tiamina (B1)', der: 'TPP' },
         { id: 'z-b2', izq: 'riboflavina (B2)', der: 'FAD y FMN' },
         { id: 'z-b3', izq: 'niacina (B3)', der: 'NAD⁺ y NADP⁺' },
         { id: 'z-b5', izq: 'ácido pantoténico (B5)', der: 'coenzima A' },
-        { id: 'z-b6', izq: 'piridoxina (B6)', der: 'fosfato de piridoxal' },
-        { id: 'z-b9', izq: 'ácido fólico (B9)', der: 'tetrahidrofolato' },
+        { id: 'z-b6', izq: 'piridoxina (B6)', der: 'PLP' },
+        { id: 'z-b9', izq: 'ácido fólico (B9)', der: 'THF' },
       ] },
-    { id: 'funciones', unidad: 'quimica.biomoleculas-y-productos-naturales', izqNombre: 'cada vitamina', derNombre: 'una de sus funciones principales',
+    { id: 'funciones', unidad: 'quimica.biomoleculas-y-productos-naturales', izqNombre: 'cada vitamina', izqVar: 'vitamina', derNombre: 'una de sus funciones principales',
       codigo: 'QA-vitamina-funcion', pares: [
         { id: 'f-a', izq: 'vitamina A', der: 'la visión: forma parte del pigmento de la retina' },
         { id: 'f-d', izq: 'vitamina D', der: 'la absorción del calcio y la formación de los huesos' },
@@ -513,16 +573,16 @@
         { id: 'f-c', izq: 'vitamina C', der: 'la formación del colágeno' },
         { id: 'f-b12', izq: 'vitamina B12', der: 'la formación de glóbulos rojos; tiene cobalto' },
       ] },
-    { id: 'metalurgia', unidad: 'quimica.recursos-naturales', izqNombre: 'cada proceso metalúrgico', derNombre: 'lo que se hace en él',
+    { id: 'metalurgia', unidad: 'quimica.recursos-naturales', izqNombre: 'cada proceso metalúrgico', izqVar: 'proceso metalúrgico', derNombre: 'lo que se hace en él',
       codigo: 'QA-proceso-metalurgico', choques: [['m-lixiviacion', 'm-cianuracion']], pares: [
         { id: 'm-tostacion', izq: 'tostación', der: 'calentar un sulfuro con aire para pasarlo a óxido' },
-        { id: 'm-flotacion', izq: 'flotación', der: 'concentrar la mena con burbujas y espuma' },
+        { id: 'm-flotacion', izq: 'flotación', der: 'separar la mena de la ganga sin cambiarla químicamente, con un espumante' },
         { id: 'm-lixiviacion', izq: 'lixiviación', der: 'disolver el metal del mineral con una solución acuosa' },
-        { id: 'm-cianuracion', izq: 'cianuración', der: 'disolver el oro con una solución de cianuro' },
+        { id: 'm-cianuracion', izq: 'cianuración', der: 'disolver el oro con una sal que forma un complejo soluble' },
         { id: 'm-altohorno', izq: 'alto horno', der: 'reducir el óxido de hierro con monóxido de carbono' },
         { id: 'm-electro', izq: 'electrorrefinación', der: 'purificar el cobre depositándolo en el cátodo' },
       ] },
-    { id: 'solido-ejemplo', unidad: 'quimica.enlace-quimico', izqNombre: 'cada sólido', derNombre: 'su tipo de sólido',
+    { id: 'solido-ejemplo', unidad: 'quimica.enlace-quimico', izqNombre: 'cada sólido', izqVar: 'sólido', derNombre: 'su tipo de sólido',
       codigo: 'QA-tipo-solido', pares: [
         { id: 'se-nacl', izq: 'cloruro de sodio (NaCl)', der: 'iónico' },
         { id: 'se-mgo', izq: 'óxido de magnesio (MgO)', der: 'iónico' },
@@ -534,12 +594,12 @@
         { id: 'se-yodo', izq: 'yodo (I₂)', der: 'molecular' },
         { id: 'se-sacarosa', izq: 'sacarosa (C₁₂H₂₂O₁₁)', der: 'molecular' },
       ] },
-    { id: 'solido-propiedad', unidad: 'quimica.enlace-quimico', izqNombre: 'cada sólido descrito', derNombre: 'su tipo de sólido',
+    { id: 'solido-propiedad', unidad: 'quimica.enlace-quimico', izqNombre: 'cada sólido descrito', izqVar: 'sólido descrito', derNombre: 'su tipo de sólido',
       codigo: 'QA-tipo-solido', familia: ['sp-ionico', 'sp-metalico'], codigoFamilia: 'QA-ionico-conduce', pares: [
-        { id: 'sp-ionico', izq: 'funde a unos 800 °C; no conduce sólido, pero sí fundido o disuelto en agua', der: 'iónico' },
-        { id: 'sp-metalico', izq: 'conduce la corriente en estado sólido y se puede estirar en hilos', der: 'metálico' },
-        { id: 'sp-red', izq: 'funde a más de 1500 °C, es insoluble en agua y no conduce ni sólido ni fundido', der: 'covalente de red' },
-        { id: 'sp-molecular', izq: 'funde por debajo de 150 °C y no conduce ni sólido ni fundido', der: 'molecular' },
+        { id: 'sp-ionico', izq: 'funde a unos 800 °C; no conduce sólido, pero sí fundido o disuelto en agua', izqCorto: 'el que conduce solo fundido o disuelto', der: 'iónico' },
+        { id: 'sp-metalico', izq: 'conduce la corriente en estado sólido y se puede estirar en hilos', izqCorto: 'el que conduce en estado sólido', der: 'metálico' },
+        { id: 'sp-red', izq: 'funde a más de 1500 °C, es insoluble en agua y no conduce ni sólido ni fundido', izqCorto: 'el que funde a más de 1500 °C', der: 'covalente de red' },
+        { id: 'sp-molecular', izq: 'funde por debajo de 150 °C y no conduce ni sólido ni fundido', izqCorto: 'el que funde por debajo de 150 °C', der: 'molecular' },
       ] },
   ];
 
@@ -549,15 +609,42 @@
   const COLOR = ['o', 'i', 'h', 'd'];
   const v = P.v;
   const NEGAR = 'QA-negar-verdadera';
-  const err = (id, clave, texto, explicacion) => ({ id, clave, texto, explicacion, respaldo: ERRORES[id].respaldo, fuente: ERRORES[id].fuente });
-  const vars = n => Object.fromEntries(ROM.slice(0, n).map((r, k) => [r, { nombre: `proposición ${r}`, color: COLOR[k] }]));
+  const err = (id, clave, texto, explicacion, respaldo = null) => ({ id, clave, texto, explicacion,
+    respaldo: respaldo || ERRORES[id].respaldo, fuente: ERRORES[id].fuente });
   const vf = p => (p.verdad ? 'V' : 'F');
-  const temasCon = (nV, nF) => TEMAS.filter(t => t.props.filter(p => p.verdad).length >= nV && t.props.filter(p => !p.verdad).length >= nF);
+  // Minúscula después de dos puntos, salvo nombres propios y símbolos químicos («Pb pasa…»).
+  const PROPIOS = new Set(['Thomson', 'Rutherford', 'Bohr', 'Dalton', 'Chadwick', 'Schrödinger', 'Lewis', 'Brønsted', 'Millikan', 'Heisenberg', 'Kc', 'Ruta']);
+  const CORTAS = new Set(['El', 'La', 'Lo', 'Es', 'Se', 'Su', 'En', 'Al', 'Un', 'Y', 'Ya', 'Si', 'No', 'De', 'A']);
+  function minus(t) {
+    const pal = t.split(/[\s,.:;]/)[0];
+    if (!/^[A-ZÁÉÍÓÚÑ][a-záéíóúñü]/.test(pal) || PROPIOS.has(pal)) return t;
+    if (pal.length <= 2 && !CORTAS.has(pal)) return t; // símbolo químico
+    return t[0].toLowerCase() + t.slice(1);
+  }
+  const corregir = p => `Lo correcto: ${minus(p.corregida)}`;
+  const compatibles = (lista, p) => lista.every(q => !q.excluye.includes(p.id) && !p.excluye.includes(q.id));
+  function tomar(rng, candidatos, n, base = []) {
+    const out = base.slice();
+    for (const p of rng.barajar(candidatos)) {
+      if (out.length === n + base.length) break;
+      if (!out.includes(p) && compatibles(out, p)) out.push(p);
+    }
+    return out.slice(base.length);
+  }
+  // Votación por posición: el valor más repetido en cada posición (null si hay empate).
+  function votacion(listas) {
+    return listas[0].map((_, k) => {
+      const c = {};
+      for (const l of listas) c[l[k]] = (c[l[k]] || 0) + 1;
+      const m = Math.max(...Object.values(c)), w = Object.keys(c).filter(x => c[x] === m);
+      return w.length === 1 ? w[0] : null;
+    });
+  }
 
   function generar(semilla) {
     const rng = Azar.crear('quimica-conceptos|' + semilla);
     const tipo = rng.elegir(['vf', 'vf', 'vf', 'vf', 'incorrecta', 'incorrecta', 'correcta', 'correcta', 'relacionar', 'relacionar']);
-    for (let intento = 0; intento < 200; intento++) {
+    for (let intento = 0; intento < 500; intento++) {
       const pr = tipo === 'vf' ? secuencia(rng) : tipo === 'relacionar' ? relacionar(rng) : unaSola(rng, tipo);
       if (pr && pr.alternativas.length >= 4) {
         pr.id = `quimica-conceptos#${semilla}`;
@@ -576,53 +663,54 @@
   function secuencia(rng) {
     const tema = rng.elegir(TEMAS);
     const n = rng.elegir([3, 4]);
-    const props = rng.barajar(tema.props).slice(0, n);
-    if (!props.some(p => p.verdad) || !props.some(p => !p.verdad)) return null;
-    const sec = props.map(vf).join('');
+    const props = tomar(rng, tema.props, n);
+    if (props.length < n || !props.some(p => p.verdad) || !props.some(p => !p.verdad)) return null;
+    const buena = props.map(vf);
+    const sec = buena.join('');
     const correcta = { clave: 'vf:' + sec, texto: sec };
-    const invertir = ks => props.map((p, k) => (ks.includes(k) ? (p.verdad ? 'F' : 'V') : vf(p))).join('');
-    const uno = k => {
-      const p = props[k];
-      return p.verdad
-        ? { id: p.negar || NEGAR, txt: `Tomaste la ${ROM[k]} como falsa, pero es verdadera: ${p.explicacion}` }
-        : { id: p.error, txt: `Tomaste la ${ROM[k]} como verdadera, pero es falsa: ${p.explicacion}` };
+    const invertir = ks => buena.map((c, k) => (ks.includes(k) ? (c === 'V' ? 'F' : 'V') : c)).join('');
+    const motivo = k => (props[k].verdad
+      ? `Tomaste la ${ROM[k]} como falsa, pero es verdadera: ${minus(props[k].explicacion)}`
+      : `Tomaste la ${ROM[k]} como verdadera, pero es falsa: ${minus(props[k].explicacion)}`);
+    // El código es el de la inversión que distingue al distractor: en D0, su F; en un vecino, la segunda.
+    const distractor = ks => {
+      const p = props[ks[ks.length - 1]];
+      const id = p.verdad ? (p.negar || NEGAR) : p.error;
+      const s = invertir(ks);
+      return err(id, 'vf:' + s, s, ks.slice().reverse().map(motivo).join(' '), p.verdad ? null : p.respaldo);
     };
-    const simples = k => { const u = uno(k), s = invertir([k]); return err(u.id, 'vf:' + s, s, u.txt); };
-    const ks = props.map((p, k) => k);
-    const errores = [
-      ...rng.barajar(ks.filter(k => !props[k].verdad)).map(simples),
-      ...rng.barajar(ks.filter(k => props[k].verdad)).map(simples),
-    ];
-    const dobles = [];
-    for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) {
-      const a = uno(i), b = uno(j), s = invertir([i, j]);
-      const id = !props[i].verdad ? a.id : !props[j].verdad ? b.id : a.id;
-      dobles.push(err(id, 'vf:' + s, s, `${a.txt} ${b.txt}`));
-    }
-    errores.push(...rng.barajar(dobles));
+    const falsas = props.map((p, k) => k).filter(k => !props[k].verdad);
+    const f0 = rng.elegir(falsas);
+    const vecinos = rng.barajar(props.map((p, k) => k).filter(k => k !== f0)).map(k => distractor([f0, k]));
+    const errores = [distractor([f0]), ...vecinos];
     const alternativas = P.armarTexto({ correcta, errores, rng, total: 5 });
+    const voto = votacion(alternativas.map(a => [...a.texto]));
+    if (voto.every((c, k) => c === buena[k])) return null;
     const enunciado = [...(tema.contexto ? [tema.contexto + ' '] : []),
       `Sobre ${tema.nombre}, indica si cada proposición es verdadera (V) o falsa (F).`];
-    props.forEach((p, k) => enunciado.push(' ', v(ROM[k], ROM[k] + '.'), ' ' + p.texto));
-    const solucion = props.map((p, k) => [v(ROM[k], ROM[k]), p.verdad ? ` es V. ${p.explicacion}` : ` es F. ${p.explicacion} Lo correcto: ${p.corregida}`]);
-    solucion.push(['La secuencia es ', ...props.map((p, k) => v(ROM[k], vf(p))), '.']);
-    return cierre({ variables: vars(n), enunciado, pregunta: ['¿Cuál es la secuencia correcta?'], alternativas, solucion, correcta,
+    props.forEach((p, k) => enunciado.push(` ${ROM[k]}. ${p.texto}`));
+    const solucion = props.map((p, k) => [p.verdad ? `${ROM[k]} es V. ${p.explicacion}` : `${ROM[k]} es F. ${p.explicacion} ${corregir(p)}`]);
+    solucion.push([`La secuencia es ${sec}.`]);
+    return cierre({ variables: {}, enunciado, pregunta: ['¿Cuál es la secuencia correcta?'], alternativas, solucion, correcta,
       datos: { tipo: 'vf', tema: tema.id, ids: props.map(p => p.id) } });
   }
 
   // ---- incorrecta / correcta: una sola falsa (o una sola verdadera) entre 4 o 5 ----
   function unaSola(rng, tipo) {
     const buscada = tipo === 'correcta'; // valor de verdad de la que se busca
-    const n = rng.elegir([4, 5]);
-    const posibles = buscada ? temasCon(1, n - 1) : temasCon(n - 1, 1);
-    const tema = rng.elegir(posibles);
+    let n = rng.elegir([4, 5]);
+    const tema = rng.elegir(TEMAS);
     const meta = rng.elegir(tema.props.filter(p => p.verdad === buscada));
-    const otras = rng.barajar(tema.props.filter(p => p.verdad !== buscada)).slice(0, n - 1);
+    let otras = tomar(rng, tema.props.filter(p => p.verdad !== buscada), n - 1, [meta]);
+    if (otras.length < n - 1) { n = 4; otras = otras.slice(0, 3); }
+    if (otras.length < 3) return null;
+    // Delator de forma: la respuesta que es la más larga se vuelve a sortear casi siempre.
+    if (otras.every(p => p.texto.length < meta.texto.length) && rng.sig() > 0.2) return null;
     const props = rng.barajar([meta, ...otras]);
     const correcta = { clave: 'p:' + meta.id, texto: meta.texto };
     const errores = otras.map(p => (buscada
-      ? err(p.error, 'p:' + p.id, p.texto, `Esta proposición es falsa: ${p.explicacion} Lo correcto: ${p.corregida}`)
-      : err(p.negar || NEGAR, 'p:' + p.id, p.texto, `Esta proposición es verdadera: ${p.explicacion}`)));
+      ? err(p.error, 'p:' + p.id, p.texto, `Esta proposición es falsa: ${minus(p.explicacion)} ${corregir(p)}`, p.respaldo)
+      : err(p.negar || NEGAR, 'p:' + p.id, p.texto, `Esta proposición es verdadera: ${minus(p.explicacion)}`)));
     const alternativas = P.armarTexto({ correcta, errores, rng, total: 5 });
     const palabra = buscada ? 'correcta' : 'incorrecta';
     const color = buscada ? 'd' : 'h';
@@ -630,7 +718,7 @@
       `Las alternativas son proposiciones sobre ${tema.nombre}. Solo una es `, v('q', palabra), '.'];
     const solucion = alternativas.map(a => {
       const p = POR_ID.get(a.valor.slice(2));
-      const cola = p.verdad ? ` V. ${p.explicacion}` : ` F. ${p.explicacion} Lo correcto: ${p.corregida}`;
+      const cola = p.verdad ? ` V. ${p.explicacion}` : ` F. ${p.explicacion} ${corregir(p)}`;
       return a.correcta ? [v('q', `${a.letra})`), cola] : [`${a.letra})`, cola];
     });
     const m = alternativas.find(a => a.correcta);
@@ -653,38 +741,46 @@
     }
     if (elegidos.length < 3) return null;
     const m = elegidos.length;
-    let derecha = rng.barajar(elegidos);
-    // Sin la relación «Ia, IIb, IIIc»: regalaría la respuesta.
-    while (derecha.every((p, k) => p === elegidos[k])) derecha = rng.barajar(elegidos);
-    const letraDe = p => LET[derecha.indexOf(p)];
+    const derecha = rng.barajar(elegidos);
+    const buenas = elegidos.map(p => LET[derecha.indexOf(p)]);
+    const identidad = LET.slice(0, m);
+    const igual = (a, b) => a.every((x, k) => x === b[k]);
+    if (igual(buenas, identidad)) return null;
     const texto = letras => letras.map((l, k) => ROM[k] + l).join(', ');
-    const buenas = elegidos.map(letraDe);
     const correcta = { clave: 'rel:' + texto(buenas), texto: texto(buenas) };
     const fam = conj.familia || [];
-    const cambios = [];
-    for (let i = 0; i < m; i++) for (let j = i + 1; j < m; j++) {
-      const l = buenas.slice(); [l[i], l[j]] = [l[j], l[i]];
-      const a = elegidos[i], b = elegidos[j];
-      const id = fam.includes(a.id) && fam.includes(b.id) ? conj.codigoFamilia : conj.codigo;
-      cambios.push(err(id, 'rel:' + texto(l), texto(l), `Cruzaste ${a.izq} y ${b.izq}. Lo correcto: ${a.izq}, ${a.der}; ${b.izq}, ${b.der}.`));
-    }
-    const ciclos = [];
-    for (let i = 0; i < m; i++) for (let j = i + 1; j < m; j++) for (let k = j + 1; k < m; k++) for (const sentido of [0, 1]) {
-      const l = buenas.slice();
-      if (sentido === 0) [l[i], l[j], l[k]] = [buenas[j], buenas[k], buenas[i]];
-      else [l[i], l[j], l[k]] = [buenas[k], buenas[i], buenas[j]];
-      const [a, b, c] = [elegidos[i], elegidos[j], elegidos[k]];
-      ciclos.push(err(conj.codigo, 'rel:' + texto(l), texto(l), `Cruzaste tres pares. Lo correcto: ${a.izq}, ${a.der}; ${b.izq}, ${b.der}; ${c.izq}, ${c.der}.`));
-    }
-    const errores = [...rng.barajar(cambios), ...rng.barajar(ciclos)];
+    const corto = p => p.izqCorto || p.izq;
+    const distractor = l => {
+      const cambiados = elegidos.filter((p, k) => l[k] !== buenas[k]);
+      const id = conj.codigoFamilia && cambiados.every(p => fam.includes(p.id)) ? conj.codigoFamilia : conj.codigo;
+      const lista = cambiados.map(p => `${corto(p)}, ${p.der}`).join('; ');
+      const nombres = cambiados.map(corto);
+      const unidos = nombres.slice(0, -1).join(', ') + ' y ' + nombres[nombres.length - 1];
+      return err(id, 'rel:' + texto(l), texto(l), `Cruzaste ${unidos}. Lo correcto: ${lista}.`);
+    };
+    const swap = (l, i, j) => { const c = l.slice(); [c[i], c[j]] = [c[j], c[i]]; return c; };
+    const parejas = [];
+    for (let i = 0; i < m; i++) for (let j = i + 1; j < m; j++) parejas.push([i, j]);
+    // Pivote: la correcta con dos letras intercambiadas (que no sea el orden idéntico).
+    const pivotes = rng.barajar(parejas).map(([i, j]) => swap(buenas, i, j)).filter(l => !igual(l, identidad));
+    if (!pivotes.length) return null;
+    const d0 = pivotes[0];
+    const vecinos = rng.barajar(parejas.map(([i, j]) => swap(d0, i, j)))
+      .filter(l => !igual(l, buenas) && !igual(l, identidad));
+    const otros = rng.barajar(pivotes.slice(1));
+    const errores = [d0, ...vecinos, ...otros].map(distractor);
     const alternativas = P.armarTexto({ correcta, errores, rng, total: 5 });
+    if (alternativas.some(a => a.texto === texto(identidad))) return null;
+    const voto = votacion(alternativas.map(a => a.texto.split(', ').map(x => x.replace(/^[IV]+/, ''))));
+    if (igual(voto, buenas)) return null;
+    const variables = Object.fromEntries(elegidos.map((p, k) => [ROM[k], { nombre: conj.izqVar, color: COLOR[k] }]));
     const enunciado = [`Relaciona ${conj.izqNombre} con ${conj.derNombre}.`];
-    elegidos.forEach((p, k) => enunciado.push(' ', v(ROM[k], ROM[k] + '.'), ' ' + p.izq));
+    elegidos.forEach((p, k) => enunciado.push(` ${ROM[k]}. `, v(ROM[k], p.izq)));
     enunciado.push(' —');
     derecha.forEach((p, k) => enunciado.push(` ${LET[k]}) ${p.der}`));
-    const solucion = elegidos.map((p, k) => [v(ROM[k], `${ROM[k]}. ${p.izq}`), ` → ${letraDe(p)}) ${p.der}.`]);
-    solucion.push(['La relación es ', ...elegidos.map((p, k) => [v(ROM[k], ROM[k] + letraDe(p)), k < m - 1 ? ', ' : '']).flat(), '.']);
-    return cierre({ variables: vars(m), enunciado, pregunta: ['¿Cuál es la relación correcta?'], alternativas, solucion, correcta,
+    const solucion = elegidos.map((p, k) => [`${ROM[k]}. `, v(ROM[k], p.izq), ` → ${buenas[k]}) ${p.der}.`]);
+    solucion.push([`La relación es ${texto(buenas)}.`]);
+    return cierre({ variables, enunciado, pregunta: ['¿Cuál es la relación correcta?'], alternativas, solucion, correcta,
       datos: { tipo: 'relacionar', conjunto: conj.id, ids: elegidos.map(p => p.id), derecha: derecha.map(p => p.id) } });
   }
 

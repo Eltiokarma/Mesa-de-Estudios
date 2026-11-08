@@ -1,24 +1,24 @@
 {
   "plantilla": "quimica-conceptos",
   "nota": "Cada caso da la semilla, el tipo, el tema o conjunto y los ids que se muestran (en el orden I, II, III… o en el orden en que se eligieron), y la respuesta. vf: la secuencia de los valores de verdad de gen.BANCO en el orden de ids. incorrecta y correcta: el único id falso (o verdadero) entre los ids. relacionar: la letra de cada id de la izquierda es su posición (a, b, c, d) en derecha. Lo que se verifica a ciegas es el valor de verdad de cada proposición del banco y cada par de gen.PARES.",
-  "verificacion": "",
+  "verificacion": "Verificado a ciegas (8 nov 2026): un verificador independiente decidió V o F en las 250 proposiciones sin ver la clave y coincidió en las 250, y en los 6 conjuntos de pares; las 124 «corregida» son verdaderas. Las proposiciones nuevas o reescritas tras la revisión las revisó la conversación principal.",
   "casos": [
     {
       "semilla": "entrada-1",
       "entrada": {
         "tipo": "correcta",
-        "tema": "solidos",
+        "tema": "proteinas",
         "ids": [
-          "sol11",
-          "sol13",
-          "sol9",
-          "sol10",
-          "sol5"
+          "pro11",
+          "pro12",
+          "pro8",
+          "pro9",
+          "pro1"
         ]
       },
       "esperado": {
-        "respuesta": "p:sol5",
-        "texto": "La celda unitaria es la porción más pequeña de la red que, repetida en el espacio, reproduce todo el cristal."
+        "respuesta": "p:pro1",
+        "texto": "En el punto isoeléctrico, la carga neta de una proteína o de un aminoácido es cero."
       }
     },
     {
@@ -27,9 +27,9 @@
         "tipo": "vf",
         "tema": "polimeros",
         "ids": [
-          "pol2",
           "pol1",
-          "pol11"
+          "pol2",
+          "pol13"
         ]
       },
       "esperado": {
@@ -43,11 +43,10 @@
         "tipo": "correcta",
         "tema": "modelos",
         "ids": [
-          "mod11",
-          "mod7",
+          "mod8",
           "mod5",
-          "mod10",
-          "mod8"
+          "mod7",
+          "mod9"
         ]
       },
       "esperado": {
@@ -59,34 +58,51 @@
       "semilla": "salida-1",
       "entrada": {
         "tipo": "correcta",
-        "tema": "vitaminas",
+        "tema": "hidruros",
         "ids": [
-          "vit13",
-          "vit7",
-          "vit15",
-          "vit17"
+          "hid10",
+          "hid11",
+          "hid15",
+          "hid6"
         ]
       },
       "esperado": {
-        "respuesta": "p:vit7",
-        "texto": "La vitamina D se forma en la piel por la acción de la luz ultravioleta sobre un derivado del colesterol."
+        "respuesta": "p:hid6",
+        "texto": "El HCl gaseoso es un compuesto covalente; en agua se ioniza."
       }
     },
     {
       "semilla": "salida-2",
       "entrada": {
         "tipo": "incorrecta",
-        "tema": "equilibrio-sangre",
+        "tema": "pilas",
         "ids": [
-          "eqs8",
-          "eqs2",
-          "eqs4",
-          "eqs1"
+          "pil10",
+          "pil5",
+          "pil1",
+          "pil9"
         ]
       },
       "esperado": {
-        "respuesta": "p:eqs8",
-        "texto": "En un equilibrio heterogéneo, los sólidos puros sí aparecen en la expresión de K."
+        "respuesta": "p:pil10",
+        "texto": "En la batería de plomo, el PbO₂ se oxida porque acepta electrones."
+      }
+    },
+    {
+      "semilla": "salida-3",
+      "entrada": {
+        "tipo": "vf",
+        "tema": "ramas",
+        "ids": [
+          "ram8",
+          "ram4",
+          "ram2",
+          "ram3"
+        ]
+      },
+      "esperado": {
+        "respuesta": "vf:FVVV",
+        "texto": "FVVV"
       }
     },
     {
@@ -110,56 +126,57 @@
       "semilla": 1,
       "entrada": {
         "tipo": "relacionar",
-        "conjunto": "funciones",
+        "conjunto": "solido-propiedad",
         "ids": [
-          "f-d",
-          "f-k",
-          "f-b12",
-          "f-a"
+          "sp-metalico",
+          "sp-red",
+          "sp-molecular",
+          "sp-ionico"
         ],
         "derecha": [
-          "f-k",
-          "f-d",
-          "f-b12",
-          "f-a"
+          "sp-ionico",
+          "sp-red",
+          "sp-metalico",
+          "sp-molecular"
         ]
       },
       "esperado": {
-        "respuesta": "rel:Ib, IIa, IIIc, IVd",
-        "texto": "Ib, IIa, IIIc, IVd"
+        "respuesta": "rel:Ic, IIb, IIId, IVa",
+        "texto": "Ic, IIb, IIId, IVa"
       }
     },
     {
-      "semilla": 2,
+      "semilla": 3,
       "entrada": {
         "tipo": "vf",
-        "tema": "proteinas",
+        "tema": "vitaminas",
         "ids": [
-          "pro1",
-          "pro7",
-          "pro10"
+          "vit14",
+          "vit13",
+          "vit4",
+          "vit6"
         ]
       },
       "esperado": {
-        "respuesta": "vf:VVF",
-        "texto": "VVF"
+        "respuesta": "vf:FFVV",
+        "texto": "FFVV"
       }
     },
     {
       "semilla": 4,
       "entrada": {
         "tipo": "incorrecta",
-        "tema": "esferas",
+        "tema": "contaminantes",
         "ids": [
-          "esf1",
-          "esf4",
-          "esf8",
-          "esf5"
+          "con1",
+          "con4",
+          "con8",
+          "con6"
         ]
       },
       "esperado": {
-        "respuesta": "p:esf8",
-        "texto": "El oxígeno (O₂) es el gas más abundante de la atmósfera."
+        "respuesta": "p:con8",
+        "texto": "El ozono cercano al suelo es un contaminante primario, porque lo emiten directamente los autos."
       }
     },
     {
@@ -182,51 +199,51 @@
       "semilla": 6,
       "entrada": {
         "tipo": "vf",
-        "tema": "ion-sodio",
+        "tema": "tipo-solido",
         "ids": [
-          "sod4",
-          "sod1",
-          "sod2",
-          "sod12"
+          "ts9",
+          "ts12",
+          "ts3",
+          "ts2"
         ]
       },
       "esperado": {
-        "respuesta": "vf:VVVF",
-        "texto": "VVVF"
+        "respuesta": "vf:FFVV",
+        "texto": "FFVV"
       }
     },
     {
       "semilla": 7,
       "entrada": {
         "tipo": "incorrecta",
-        "tema": "sustancias",
+        "tema": "ion-sodio",
         "ids": [
-          "sus5",
-          "sus10",
-          "sus2",
-          "sus4"
+          "sod12",
+          "sod3",
+          "sod2",
+          "sod5"
         ]
       },
       "esperado": {
-        "respuesta": "p:sus10",
-        "texto": "El ozono es un compuesto formado por tres elementos distintos."
+        "respuesta": "p:sod12",
+        "texto": "El sodio está en el mismo periodo que el neón."
       }
     },
     {
-      "semilla": 9,
+      "semilla": 8,
       "entrada": {
-        "tipo": "vf",
-        "tema": "oxidos",
+        "tipo": "incorrecta",
+        "tema": "liquidos",
         "ids": [
-          "oxi3",
-          "oxi4",
-          "oxi5",
-          "oxi11"
+          "liq15",
+          "liq2",
+          "liq4",
+          "liq1"
         ]
       },
       "esperado": {
-        "respuesta": "vf:VVVF",
-        "texto": "VVVF"
+        "respuesta": "p:liq15",
+        "texto": "A 25 °C, el etanol tiene menor presión de vapor que el agua."
       }
     },
     {
@@ -253,23 +270,6 @@
       }
     },
     {
-      "semilla": 14,
-      "entrada": {
-        "tipo": "correcta",
-        "tema": "pilas",
-        "ids": [
-          "pil3",
-          "pil15",
-          "pil10",
-          "pil13"
-        ]
-      },
-      "esperado": {
-        "respuesta": "p:pil3",
-        "texto": "El electrolito de la batería de plomo es una solución de ácido sulfúrico."
-      }
-    },
-    {
       "semilla": 15,
       "entrada": {
         "tipo": "relacionar",
@@ -291,43 +291,44 @@
       }
     },
     {
-      "semilla": 18,
+      "semilla": 19,
       "entrada": {
         "tipo": "relacionar",
-        "conjunto": "solido-propiedad",
+        "conjunto": "funciones",
         "ids": [
-          "sp-molecular",
-          "sp-metalico",
-          "sp-red",
-          "sp-ionico"
+          "f-b12",
+          "f-c",
+          "f-a",
+          "f-d"
         ],
         "derecha": [
-          "sp-molecular",
-          "sp-red",
-          "sp-ionico",
-          "sp-metalico"
+          "f-d",
+          "f-a",
+          "f-b12",
+          "f-c"
         ]
       },
       "esperado": {
-        "respuesta": "rel:Ia, IId, IIIb, IVc",
-        "texto": "Ia, IId, IIIb, IVc"
+        "respuesta": "rel:Ic, IId, IIIb, IVa",
+        "texto": "Ic, IId, IIIb, IVa"
       }
     },
     {
-      "semilla": 27,
+      "semilla": 31,
       "entrada": {
-        "tipo": "incorrecta",
-        "tema": "lewis-bronsted",
+        "tipo": "correcta",
+        "tema": "radicales",
         "ids": [
-          "lb13",
-          "lb4",
-          "lb2",
-          "lb8"
+          "rad7",
+          "rad11",
+          "rad8",
+          "rad4",
+          "rad9"
         ]
       },
       "esperado": {
-        "respuesta": "p:lb13",
-        "texto": "El amoníaco es una base fuerte porque acepta protones."
+        "respuesta": "p:rad4",
+        "texto": "El ion superóxido (O₂⁻) tiene un electrón desapareado."
       }
     }
   ]

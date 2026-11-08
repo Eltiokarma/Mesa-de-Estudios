@@ -91,6 +91,28 @@
         "III es F: la desnaturalización solo cambia la forma de la proteína; sus aminoácidos siguen unidos, y una proteína no tiene glucosa.",
         "IV es F: las vitaminas A, D, E y K son liposolubles."
       ]
+    },
+    {
+      "id": "p9",
+      "nivel": "intermedio",
+      "enunciado": "Sobre las soluciones reguladoras: I. Una mezcla de ácido acético y acetato de sodio es una solución reguladora. II. Una solución reguladora mantiene el mismo pH aunque se le agregue mucho ácido. III. Una solución de HCl y NaCl es una solución reguladora.",
+      "respuesta": "VFF",
+      "pasos": [
+        "I es V: es un ácido débil con su base conjugada (el ion acetato); cada uno neutraliza lo que se agrega del otro tipo.",
+        "II es F: solo amortigua cantidades pequeñas; si el ácido agregado gasta todo el acetato, el pH cae.",
+        "III es F: el HCl es un ácido fuerte y el Cl⁻ casi no acepta protones; hace falta un ácido débil con su base conjugada."
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "intermedio",
+      "enunciado": "Sobre la obtención de metales: I. En la flotación, el mineral cambia de composición química. II. La tostación de un sulfuro produce un óxido metálico y SO₂. III. En el alto horno, el coque aporta el monóxido de carbono que reduce el óxido de hierro.",
+      "respuesta": "FVV",
+      "pasos": [
+        "I es F: la flotación solo separa la mena de la ganga; el sulfuro sigue siendo el mismo sulfuro.",
+        "II es V: el azufre del sulfuro se une al oxígeno del aire y sale como dióxido de azufre; el metal queda como óxido.",
+        "III es V: el carbono del coque se quema y forma CO, que le quita el oxígeno al óxido de hierro y deja hierro metálico."
+      ]
     }
   ]
 }
