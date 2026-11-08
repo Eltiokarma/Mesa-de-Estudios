@@ -194,7 +194,7 @@
       "universidades": {"uni": {"semanas": [12]}, "unmsm": {"temas": [2, 12, 14]}},
       "potencial_visual": "bajo",
       "grado": 3,
-      "plantillas": ["lectura-verbal"],
+      "plantillas": ["lectura-verbal", "textos-dialecticos"],
       "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
     {

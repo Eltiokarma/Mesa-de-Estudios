@@ -85,8 +85,8 @@
           "explicacion": "Está al revés: los octógonos más visibles los pide el texto A (oración 5) y la educación alimentaria, el texto B (oración 9)." },
         { "t": "A defiende que se mantengan los octógonos; B pide que se retiren de los envases.", "codigo": "RV62", "origen": "o10",
           "explicacion": "La primera mitad es cierta, pero la segunda no: el texto B llama al octógono «un buen primer paso» (oración 10)." },
-        { "t": "A escribe sobre las galletas; B escribe sobre la tienda de un colegio.", "codigo": "RV1", "origen": "o8",
-          "explicacion": "La galleta y la tienda son ejemplos; los dos textos tratan de las advertencias de los alimentos procesados." }
+        { "t": "A cree que la advertencia sirve a quien no lee etiquetas; B, que solo sirve a quien ya sabe de nutrición.", "codigo": "RV33", "origen": "o6",
+          "explicacion": "El texto B no dice eso: «cualquiera entiende» qué producto tiene demasiada azúcar (oración 6). Su duda es si la advertencia, sola, cambia lo que se come." }
       ]
     },
     {
@@ -163,5 +163,10 @@
       "fuente": "Ley 30021, Ley de Promoción de la Alimentación Saludable para Niños, Niñas y Adolescentes, y su Manual de Advertencias Publicitarias (Decreto Supremo 012-2018-SA)."
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (revisor a ciegas)",
+    "fecha": "2026-11-08",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidió en 8 de 8. Se reforzó un distractor trivial de p2 (RV33). Hecho de la Ley 30021 y el D. S. 012-2018-SA revisado."
+  }
 }

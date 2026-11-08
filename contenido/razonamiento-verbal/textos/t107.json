@@ -54,8 +54,8 @@
           "explicacion": "Es un detalle de la oración 3, que sirve para mostrar lo útil que es la totora; no es lo que la autora defiende." },
         { "t": "Que nadie debería cortar totora en ningún caso.", "codigo": "RV11", "origen": "o5",
           "explicacion": "El texto A no prohíbe cortar: pide «cortar solo lo necesario» (oración 5). Lo que dice que no se haga nunca es quemarla." },
-        { "t": "Que el lago necesita la ayuda de todos.", "codigo": "RV2",
-          "explicacion": "Es demasiado general: no dice qué propone la autora, que es proteger los totorales." }
+        { "t": "Que hay que cuidar el lago Titicaca.", "codigo": "RV2",
+          "explicacion": "Es demasiado general: no dice qué propone la autora para cuidarlo, que es proteger los totorales." }
       ]
     },
     {
@@ -101,8 +101,8 @@
           "explicacion": "En eso no se diferencian: el texto B dice que la totora «ayuda a limpiar el agua» (oración 6)." },
         { "t": "A pide tratar los desagües; B, cuidar la totora.", "codigo": "RV59",
           "explicacion": "Está al revés: cuidar la totora es lo que pide el texto A, y tratar los desagües, lo que pide el texto B." },
-        { "t": "A pide no quemar la totora; B pide cortarla toda.", "codigo": "RV62", "origen": "o5",
-          "explicacion": "La primera mitad es cierta (oración 5), pero la segunda no: el texto B no pide cortar la totora, dice que debe cuidarse (oración 6)." },
+        { "t": "A pide no quemar la totora; B, prohibir que se corte.", "codigo": "RV62", "origen": "o5",
+          "explicacion": "La primera mitad es cierta (oración 5), pero la segunda no: el texto B no habla de cortar la totora; pide tratar primero los desagües (oración 10)." },
         { "t": "A cree que la totora lo resuelve todo; B, que no sirve para nada.", "codigo": "RV11",
           "explicacion": "Las dos mitades exageran. El texto A no dice que la totora lo resuelva todo, y el texto B dice que sí ayuda, aunque no baste." }
       ]
@@ -119,10 +119,10 @@
           "explicacion": "El corte sin cuidado es lo que preocupa al texto A (oración 4). El texto B dice que se pudren por la suciedad que reciben (oración 7)." },
         { "t": "piensa que ya es inútil proteger la totora.", "codigo": "RV33", "origen": "o9",
           "explicacion": "El autor no dice que sea inútil: dice que debe cuidarse (oración 6) y que, con las aguas tratadas, la totora hará bien su parte (oración 10)." },
-        { "t": "sabe que la totora solo crece en el lago Titicaca.", "codigo": "RV8",
-          "explicacion": "El texto no dice dónde más crece la totora; esa idea no sale de la lectura." },
-        { "t": "vive en una ciudad que no tiene ningún desagüe.", "codigo": "RV7", "origen": "o8",
-          "explicacion": "El texto no dice dónde vive el autor, y habla de desagües que sí llegan al lago (oración 8). La deducción no tiene apoyo." }
+        { "t": "cree que todo el daño de los totorales viene de los desagües.", "codigo": "RV11", "origen": "o7",
+          "explicacion": "El autor habla de «totorales que se pudren» por la suciedad (oración 7), no de todo el daño: no niega el corte ni la quema de los que habla el texto A." },
+        { "t": "piensa que la suciedad del lago viene sobre todo de los botes de totora.", "codigo": "RV7", "origen": "o3",
+          "explicacion": "El texto B pone la suciedad en los desagües de las ciudades (oración 8); de los botes no dice nada." }
       ]
     },
     {
@@ -135,8 +135,8 @@
           "explicacion": "Los totorales atrapan la suciedad entre sus tallos y raíces; cuando llega demasiada, ya no pueden con ella." },
         { "t": "recordar.", "codigo": "RV18",
           "explicacion": "«Retener» a veces significa guardar en la memoria, pero una planta no recuerda: aquí se trata de la suciedad que se queda en ella." },
-        { "t": "detener.", "codigo": "RV20",
-          "explicacion": "Se parece en la forma, pero «detener» es parar algo que se mueve; aquí la planta no frena la suciedad, la guarda." },
+        { "t": "retornar.", "codigo": "RV20",
+          "explicacion": "Se parece en la forma, pero no en el sentido: la suciedad no vuelve a ninguna parte; se queda en la planta." },
         { "t": "limpiar.", "codigo": "RV19", "origen": "o6",
           "explicacion": "Es una palabra del mismo tema del texto, pero no significa lo mismo: retener la suciedad no es limpiarla." }
       ]
@@ -158,5 +158,10 @@
       "fuente": "Autoridad Nacional del Agua (ANA), informes sobre la calidad del agua del lago Titicaca."
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (revisor a ciegas)",
+    "fecha": "2026-11-08",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidió en 9 de 9, pero dudó en p5 entre «atrapar» y «detener»: se cambió «detener» por «retornar». Se reforzaron distractores débiles de p1, p3 y p4 (RV2, RV62, RV7, RV11)."
+  }
 }

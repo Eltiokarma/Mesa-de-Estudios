@@ -68,7 +68,7 @@
           "explicacion": "Es la objeción de la oración 7: una prohibición general trata igual a cultivos que no tienen el mismo riesgo." },
         { "t": "no distingue riesgos y, además, desprecia las variedades nativas.", "codigo": "RV62", "origen": "o6",
           "explicacion": "La primera mitad es cierta, pero la segunda no: el texto B dice que las variedades nativas son una riqueza (oración 6)." },
-        { "t": "los transgénicos ya demostraron que son seguros.", "codigo": "RV8",
+        { "t": "los transgénicos ya demostraron que son seguros.", "codigo": "RV33",
           "explicacion": "El texto B no dice eso. Pide evaluar cada cultivo según sus riesgos, lo que supone que algunos podrían rechazarse." },
         { "t": "impide por completo toda investigación científica en el país.", "codigo": "RV11", "origen": "o8",
           "explicacion": "El texto B dice que los grupos de investigación «tienen pocas razones» para desarrollar variedades propias, no que toda la investigación esté prohibida." },
@@ -150,5 +150,10 @@
       "fuente": "Ley 29811 (2011) y Ley 31111 (2021), Congreso de la República del Perú."
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (revisor a ciegas)",
+    "fecha": "2026-11-08",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidió en 7 de 7. Se cambió a RV33 el código de un distractor de p2 (atribuye al autor una postura que no toma). Leyes 29811 (2011) y 31111 (2021) confirmadas."
+  }
 }

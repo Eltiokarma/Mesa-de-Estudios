@@ -1,0 +1,2063 @@
+{
+  "titulo": "Dos autores, dos posturas: lectura para lápiz y papel",
+  "indicacion": "Lee cada texto con calma y resuelve en tu hoja, sin la app. Haz lo que te pide «Antes de mirar las alternativas» tapando las alternativas con una hoja: así ves qué pensabas tú y no lo que te sugieren. Las oraciones llevan número para que puedas citarlas al revisar.",
+  "origen": "Generado por herramientas/papel-lectura.js desde el banco; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "t101",
+      "nivel": "intermedio",
+      "enunciado": "Lee el texto «¿Tarea en casa o práctica en el aula?» y responde las 5 preguntas.",
+      "texto": {
+        "titulo": "¿Tarea en casa o práctica en el aula?",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Las tareas para la casa tienen mala fama, pero cumplen una función que el aula no puede cumplir."
+            },
+            {
+              "n": 2,
+              "t": "En clase, el alumno sigue el ritmo del profesor y de sus compañeros; en casa, frente a un problema que no sale, tiene que decidir solo qué intentar."
+            },
+            {
+              "n": 3,
+              "t": "Esa práctica a solas es la que fija lo aprendido: un procedimiento que solo se vio en la pizarra se olvida en pocos días."
+            },
+            {
+              "n": 4,
+              "t": "Además, la tarea le muestra al profesor quién entendió y quién no, antes de que llegue el examen."
+            },
+            {
+              "n": 5,
+              "t": "Por eso, eliminarlas no aliviaría a los alumnos: solo les quitaría la ocasión de equivocarse cuando todavía no cuenta."
+            },
+            {
+              "n": 6,
+              "t": "Lo que sí conviene es que sean cortas y que el profesor las revise."
+            }
+          ],
+          [
+            {
+              "n": 7,
+              "t": "Cada tarde, muchos escolares llegan a casa y encuentran que la tarea supone algo que no tienen: un adulto que explique, una computadora o una mesa tranquila."
+            },
+            {
+              "n": 8,
+              "t": "Para ellos, la tarea no es práctica a solas, sino una prueba de lo que hay en su casa."
+            },
+            {
+              "n": 9,
+              "t": "El que tiene ayuda la entrega completa; el que no la tiene, la copia en la mañana o no la hace, y el profesor anota una diferencia que no salió del aula."
+            },
+            {
+              "n": 10,
+              "t": "No niego que practicar sea necesario para aprender."
+            },
+            {
+              "n": 11,
+              "t": "Sostengo que esa práctica debe hacerse en el colegio, con el profesor cerca, en horas destinadas a ello."
+            },
+            {
+              "n": 12,
+              "t": "Así, el esfuerzo de cada alumno dependería de él y no de las condiciones de su hogar."
+            }
+          ]
+        ],
+        "autores": [
+          {
+            "titulo": "Texto A",
+            "desde": 0
+          },
+          {
+            "titulo": "Texto B",
+            "desde": 1
+          }
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "enunciado": "¿Cuál es el tema en controversia entre los dos textos?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Si muchos escolares tienen en casa la ayuda que la tarea necesita."
+            },
+            {
+              "letra": "B",
+              "t": "Si practicar lo que se vio en clase es necesario para aprender."
+            },
+            {
+              "letra": "C",
+              "t": "Si la escuela debe preocuparse por lo que aprenden sus alumnos."
+            },
+            {
+              "letra": "D",
+              "t": "Si la práctica de lo aprendido en clase debe hacerse en casa, como tarea, o en el colegio."
+            },
+            {
+              "letra": "E",
+              "t": "Si la práctica a solas fija un procedimiento que solo se vio en la pizarra."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "previo": "Antes de mirar las alternativas: ¿quién sostiene esta idea? «La tarea para la casa mide, en parte, lo que cada alumno tiene en su hogar.» Elige: «El autor del texto A», «El autor del texto B», «Los dos autores», «Ninguno de los dos».",
+          "enunciado": "¿Qué sostiene el autor del texto B?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Los profesores dejan tareas para no tener que enseñar en clase."
+            },
+            {
+              "letra": "B",
+              "t": "Practicar es innecesario, y por eso la tarea debe hacerse en el colegio."
+            },
+            {
+              "letra": "C",
+              "t": "Las tareas para la casa perjudican a todos los escolares por igual."
+            },
+            {
+              "letra": "D",
+              "t": "Practicar a solas en casa es lo que fija un procedimiento visto en la pizarra."
+            },
+            {
+              "letra": "E",
+              "t": "La práctica escolar debería hacerse en el colegio, para que no dependa de lo que cada alumno tiene en casa."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "previo": "Antes de mirar las alternativas: ¿quién sostiene esta idea? «Para aprender hace falta practicar lo que se vio en clase.» Elige: «El autor del texto A», «El autor del texto B», «Los dos autores», «Ninguno de los dos».",
+          "enunciado": "¿En qué coinciden los autores de los dos textos?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "En que la tarea muestra lo que cada alumno tiene en su casa."
+            },
+            {
+              "letra": "B",
+              "t": "En que practicar es necesario y debe hacerse en casa."
+            },
+            {
+              "letra": "C",
+              "t": "En que aprender exige practicar lo que se vio en clase."
+            },
+            {
+              "letra": "D",
+              "t": "En que las tareas deben ser cortas y revisadas por el profesor."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "Ante la propuesta del texto B, el autor del texto A probablemente objetaría que",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "con el profesor cerca, el alumno ya no tiene que decidir solo qué intentar ante un problema que no sale."
+            },
+            {
+              "letra": "B",
+              "t": "sería mejor dejar tareas largas, para que todos practiquen más."
+            },
+            {
+              "letra": "C",
+              "t": "las condiciones de cada hogar no influyen en cómo se hace la tarea."
+            },
+            {
+              "letra": "D",
+              "t": "el profesor termina anotando una diferencia que no salió del aula."
+            },
+            {
+              "letra": "E",
+              "t": "no es verdad que practicar sea necesario para aprender."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "enunciado": "En el texto B, el verbo SUPONER (la tarea «supone algo que no tienen») significa",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "propone."
+            },
+            {
+              "letra": "B",
+              "t": "pone a prueba."
+            },
+            {
+              "letra": "C",
+              "t": "requiere, da por sentado."
+            },
+            {
+              "letra": "D",
+              "t": "imagina."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: D · 2: E · 3: C · 4: A · 5: C.",
+      "pasos": [
+        "Pregunta 1. Clave D. El texto A defiende las tareas para la casa y el texto B pide que esa práctica se haga en el colegio: discuten dónde practicar.",
+        "Pregunta 2. Antes de las alternativas: El autor del texto B. Lo dice el texto B en las oraciones 8 y 9: la tarea se vuelve «una prueba de lo que hay en su casa». El texto A no lo menciona.",
+        "Pregunta 2. Clave E. Es su tesis (oración 11) con su razón (oración 12): que el esfuerzo dependa del alumno y no de su hogar.",
+        "Pregunta 3. Antes de las alternativas: Los dos autores. Los dos lo sostienen: el texto A dice que la práctica «fija lo aprendido» (oración 3) y el texto B, «no niego que practicar sea necesario para aprender» (oración 10).",
+        "Pregunta 3. Clave C. El texto A lo dice al defender la práctica a solas, y el B lo concede en la oración 10 antes de proponer que se practique en el colegio.",
+        "Pregunta 4. Clave A. Para el texto A, el valor de la tarea está en que el alumno decide solo (oración 2). Practicar en el colegio con el profesor al lado le quita eso.",
+        "Pregunta 5. Clave C. La tarea cuenta con que en la casa hay un adulto, una computadora o una mesa tranquila, y los necesita aunque no los haya."
+      ]
+    },
+    {
+      "id": "t109",
+      "nivel": "intermedio",
+      "enunciado": "Lee el texto «Los octógonos en los envases» y responde las 5 preguntas.",
+      "texto": {
+        "titulo": "Los octógonos en los envases",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Los octógonos negros de los alimentos procesados son una de las mejores herramientas que tenemos para comer mejor."
+            },
+            {
+              "n": 2,
+              "t": "Antes, saber cuánta azúcar o cuánta sal tenía una galleta exigía leer una tabla en letra pequeña y hacer cuentas."
+            },
+            {
+              "n": 3,
+              "t": "Ahora basta una mirada: «Alto en azúcar», «Alto en sodio»."
+            },
+            {
+              "n": 4,
+              "t": "Esa advertencia llega también a quien no tiene tiempo ni costumbre de leer etiquetas, y le permite comparar dos productos en el mismo estante."
+            },
+            {
+              "n": 5,
+              "t": "Por eso, los octógonos ayudan a elegir mejor, y deberían mantenerse y hacerse todavía más visibles."
+            }
+          ],
+          [
+            {
+              "n": 6,
+              "t": "Es cierto que los octógonos informan con claridad: cualquiera entiende qué producto tiene demasiada azúcar."
+            },
+            {
+              "n": 7,
+              "t": "Pero informar no es lo mismo que cambiar lo que se come."
+            },
+            {
+              "n": 8,
+              "t": "En la tienda del colegio, mis alumnos reconocen el octógono y compran igual la gaseosa, porque cuesta menos que una fruta y porque nadie les enseñó a armar una lonchera."
+            },
+            {
+              "n": 9,
+              "t": "Sin educación alimentaria en las escuelas y sin alimentos saludables a precios accesibles, la advertencia se queda en el envase."
+            },
+            {
+              "n": 10,
+              "t": "El octógono es un buen primer paso, no el camino entero."
+            }
+          ]
+        ],
+        "autores": [
+          {
+            "titulo": "Texto A",
+            "firma": "Una nutricionista de un centro de salud",
+            "desde": 0
+          },
+          {
+            "titulo": "Texto B",
+            "firma": "Un profesor de secundaria",
+            "desde": 1
+          }
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas: ¿quién sostiene esta idea? «Los octógonos tendrían que verse todavía más en los envases.» Elige: «El autor del texto A», «El autor del texto B», «Los dos autores», «Ninguno de los dos».",
+          "enunciado": "¿Qué sostiene la autora del texto A?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Que las advertencias ayudan a elegir mejor y conviene mantenerlas."
+            },
+            {
+              "letra": "B",
+              "t": "Que antes la tabla de los envases tenía letra pequeña."
+            },
+            {
+              "letra": "C",
+              "t": "Que los alimentos procesados deberían prohibirse."
+            },
+            {
+              "letra": "D",
+              "t": "Que sin educación alimentaria las advertencias no cambian lo que se come."
+            },
+            {
+              "letra": "E",
+              "t": "Que los octógonos bastan para que todos coman sano."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "previo": "Antes de mirar las alternativas: ¿quién sostiene esta idea? «Con los octógonos, cualquiera puede darse cuenta rápido de qué producto tiene demasiada azúcar.» Elige: «El autor del texto A», «El autor del texto B», «Los dos autores», «Ninguno de los dos».",
+          "enunciado": "¿En qué discrepan los autores de los dos textos?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "A cree que los octógonos informan con claridad; B piensa que confunden a los compradores en la tienda."
+            },
+            {
+              "letra": "B",
+              "t": "A cree que la advertencia sirve a quien no lee etiquetas; B, que solo sirve a quien ya sabe de nutrición."
+            },
+            {
+              "letra": "C",
+              "t": "A defiende que se mantengan los octógonos; B pide que se retiren de los envases."
+            },
+            {
+              "letra": "D",
+              "t": "A confía en que la advertencia lleva a elegir mejor; B duda de que, sola, cambie lo que se come."
+            },
+            {
+              "letra": "E",
+              "t": "A pide educación alimentaria en las escuelas; B, octógonos más visibles en cada envase."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "¿Cuál de estas ideas integra mejor lo que dicen los dos textos?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Los octógonos sirven para reconocer lo poco saludable, pero cambiar la dieta exige también educación y precios justos."
+            },
+            {
+              "letra": "B",
+              "t": "Lo importante es que los octógonos negros sean más grandes y se vean bien en todos los estantes de las tiendas."
+            },
+            {
+              "letra": "C",
+              "t": "Ni los octógonos ni las clases de alimentación sirven de algo mientras las gaseosas sigan siendo baratas."
+            },
+            {
+              "letra": "D",
+              "t": "Como en las escuelas ya se enseña a comer bien, las advertencias de los envases han dejado de ser necesarias para nadie."
+            },
+            {
+              "letra": "E",
+              "t": "Los octógonos de los envases informan con claridad cuánta azúcar o sal tiene cada producto que se compra."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "Del ejemplo de la tienda del colegio (texto B) se deduce que",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "saber que un producto no es sano no siempre basta para dejar de comprarlo."
+            },
+            {
+              "letra": "B",
+              "t": "los alumnos no entienden lo que advierte el octógono."
+            },
+            {
+              "letra": "C",
+              "t": "la gaseosa tiene más azúcar que cualquier fruta."
+            },
+            {
+              "letra": "D",
+              "t": "la tienda del colegio debería cerrarse para que los alumnos no compren gaseosas."
+            },
+            {
+              "letra": "E",
+              "t": "ningún escolar elige una fruta en la tienda."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "previo": "Antes de mirar las alternativas: ¿qué relación tiene esta afirmación con el texto B? «Para el autor del texto B, los octógonos no sirven para nada.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
+          "enunciado": "¿Cuál de estas propuestas es compatible con lo que sostiene el autor del texto B?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Retirar los octógonos, porque los alumnos compran igual la gaseosa."
+            },
+            {
+              "letra": "B",
+              "t": "Mantener los octógonos y enseñar en las escuelas a armar una lonchera."
+            },
+            {
+              "letra": "C",
+              "t": "Confiar solo en la advertencia del envase para que se coma mejor."
+            },
+            {
+              "letra": "D",
+              "t": "Dejar las clases de alimentación para cuando los precios bajen solos."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: A · 2: D · 3: A · 4: A · 5: B.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: El autor del texto A. Lo pide el texto A en la oración 5. El texto B no habla de hacerlos más visibles: pide educación y precios accesibles.",
+        "Pregunta 1. Clave A. Es su tesis, anunciada en la oración 1 y cerrada en la 5: los octógonos ayudan a elegir mejor y deberían mantenerse.",
+        "Pregunta 2. Antes de las alternativas: Los dos autores. Los dos lo sostienen: el texto A dice que «basta una mirada» (oración 3) y el texto B, que «cualquiera entiende qué producto tiene demasiada azúcar» (oración 6).",
+        "Pregunta 2. Clave D. El texto A dice que los octógonos ayudan a elegir mejor (oración 5); el texto B responde que informar no es cambiar lo que se come (oración 7) y pone condiciones (oración 9).",
+        "Pregunta 3. Clave A. Recoge lo que acepta cada texto: el valor de la advertencia (texto A y oración 6) y lo que le falta según el texto B (oraciones 9 y 10).",
+        "Pregunta 4. Clave A. Los alumnos reconocen el octógono y aun así compran la gaseosa (oración 8): la información está, pero no cambia la compra.",
+        "Pregunta 5. Antes de las alternativas: Lo contradice. Lo contradice: el autor dice que los octógonos informan con claridad (oración 6) y que son «un buen primer paso» (oración 10).",
+        "Pregunta 5. Clave B. Conserva el «primer paso» (oración 10) y le suma la educación alimentaria que el autor echa de menos (oración 9)."
+      ]
+    },
+    {
+      "id": "t105",
+      "nivel": "avanzado (tipo UNI)",
+      "enunciado": "Lee el texto «El oro de los ríos» y responde las 5 preguntas.",
+      "texto": {
+        "titulo": "El oro de los ríos",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "En los ríos de la Amazonía sur, muchas familias viven de sacar oro con dragas y motobombas, y el mercurio con que separan el metal termina en el agua y en los peces."
+            },
+            {
+              "n": 2,
+              "t": "Tratar a todas como delincuentes no detiene la extracción: solo la empuja a lugares más alejados, donde nadie la ve."
+            },
+            {
+              "n": 3,
+              "t": "La salida es formalizar a los pequeños mineros: darles derechos claros sobre una zona permitida a cambio de que cumplan reglas ambientales y laborales."
+            },
+            {
+              "n": 4,
+              "t": "Con apoyo técnico del Estado, un minero formal puede cambiar el mercurio por métodos más limpios y reforestar lo que excava."
+            },
+            {
+              "n": 5,
+              "t": "Quien tiene algo que perder, como un permiso o una inversión, tiene también razones para cuidarlo."
+            }
+          ],
+          [
+            {
+              "n": 6,
+              "t": "Coincido en que el mercurio envenena los ríos y en que perseguir solo a quien trabaja en la draga no resuelve nada."
+            },
+            {
+              "n": 7,
+              "t": "Pero, en la práctica, la formalización se ha vuelto muchas veces una cubierta: quien figura como minero en trámite sigue trabajando donde no debe, y el papel le sirve para vender el oro sin preguntas."
+            },
+            {
+              "n": 8,
+              "t": "Ningún plan de apoyo técnico funciona si nadie controla de dónde sale el oro ni quién vende el mercurio."
+            },
+            {
+              "n": 9,
+              "t": "Antes de ofrecer permisos, el Estado tiene que controlar el comercio del oro y cerrar de verdad las zonas donde la extracción está prohibida, como las áreas protegidas."
+            },
+            {
+              "n": 10,
+              "t": "Solo después tiene sentido formalizar a quien acepte las reglas."
+            }
+          ]
+        ],
+        "autores": [
+          {
+            "titulo": "Texto A",
+            "firma": "Un ingeniero de minas",
+            "desde": 0
+          },
+          {
+            "titulo": "Texto B",
+            "firma": "Una bióloga que trabaja en la Amazonía",
+            "desde": 1
+          }
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "enunciado": "El eje de la controversia entre los dos textos es",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "si el mercurio que se usa para separar el oro daña los ríos y los peces de la Amazonía."
+            },
+            {
+              "letra": "B",
+              "t": "si la extracción de oro debe prohibirse en todo el país."
+            },
+            {
+              "letra": "C",
+              "t": "cuál es el futuro económico de la Amazonía peruana."
+            },
+            {
+              "letra": "D",
+              "t": "si el apoyo técnico permite cambiar el mercurio por métodos más limpios."
+            },
+            {
+              "letra": "E",
+              "t": "qué debe hacer primero el Estado ante la minería informal: formalizar o controlar."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "previo": "Antes de mirar las alternativas: ¿quién sostiene esta idea? «Estar inscrito como minero en proceso de formalización puede servir para seguir extrayendo en un lugar no permitido.» Elige: «El autor del texto A», «El autor del texto B», «Los dos autores», «Ninguno de los dos».",
+          "enunciado": "Según el texto B, la formalización de los mineros",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "es un trámite que el Estado cobra demasiado caro a los mineros."
+            },
+            {
+              "letra": "B",
+              "t": "tiene sentido solo después de controlar el comercio del oro y cerrar las zonas prohibidas."
+            },
+            {
+              "letra": "C",
+              "t": "es la salida, porque un minero que tiene un permiso o una inversión que perder tiene también razones para cuidarlos."
+            },
+            {
+              "letra": "D",
+              "t": "debe descartarse para siempre, porque solo ha servido de cubierta."
+            },
+            {
+              "letra": "E",
+              "t": "ha servido de cubierta y por eso debe acelerarse con más apoyo técnico."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "previo": "Antes de mirar las alternativas: ¿quién sostiene esta idea? «Castigar únicamente a los que trabajan en las dragas no acaba con el problema.» Elige: «El autor del texto A», «El autor del texto B», «Los dos autores», «Ninguno de los dos».",
+          "enunciado": "Los dos autores coincidirían en que",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "el mercurio daña los ríos y la formalización se ha vuelto una cubierta."
+            },
+            {
+              "letra": "B",
+              "t": "el Estado debe dar derechos claros sobre una zona permitida a los pequeños mineros."
+            },
+            {
+              "letra": "C",
+              "t": "todos los que sacan oro en la Amazonía usan mercurio."
+            },
+            {
+              "letra": "D",
+              "t": "los mineros informales ganan más dinero que los formales."
+            },
+            {
+              "letra": "E",
+              "t": "perseguir solo a quien trabaja en la draga no detiene la extracción."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "Del texto A se infiere que, para su autor, perseguir a los mineros sin ofrecerles otra salida",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "es necesario mientras el Estado no controle el comercio del oro."
+            },
+            {
+              "letra": "B",
+              "t": "volvería la extracción más difícil de controlar."
+            },
+            {
+              "letra": "C",
+              "t": "obligaría a los mineros a trabajar más cerca de las ciudades y de los controles."
+            },
+            {
+              "letra": "D",
+              "t": "acabaría con la minería de oro en toda la Amazonía."
+            },
+            {
+              "letra": "E",
+              "t": "les daría derechos claros sobre una zona permitida."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "enunciado": "En el texto B, la palabra CUBIERTA («la formalización se ha vuelto muchas veces una cubierta») significa",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "requisito para vender el oro."
+            },
+            {
+              "letra": "B",
+              "t": "permiso que otorga el Estado."
+            },
+            {
+              "letra": "C",
+              "t": "techo que protege de la lluvia."
+            },
+            {
+              "letra": "D",
+              "t": "fachada que oculta otra cosa."
+            },
+            {
+              "letra": "E",
+              "t": "papel del minero en trámite."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: E · 2: B · 3: E · 4: B · 5: D.",
+      "pasos": [
+        "Pregunta 1. Clave E. El texto A propone formalizar como salida (oración 3) y el B, controlar y cerrar zonas «antes de ofrecer permisos» (oración 9): discuten qué va primero.",
+        "Pregunta 2. Antes de las alternativas: El autor del texto B. Lo sostiene el texto B en la oración 7: quien figura como minero en trámite «sigue trabajando donde no debe». El texto A ve la formalización como la salida.",
+        "Pregunta 2. Clave B. Las oraciones 9 y 10 fijan el orden: primero control y cierre; «solo después» formalizar a quien acepte las reglas.",
+        "Pregunta 3. Antes de las alternativas: Los dos autores. Los dos lo sostienen: el texto A dice que tratarlos a todos como delincuentes no detiene la extracción (oración 2) y el B, que perseguir solo a quien trabaja en la draga «no resuelve nada» (oración 6).",
+        "Pregunta 3. Clave E. El texto A lo dice en la oración 2 y el B lo acepta en la oración 6 con un «Coincido».",
+        "Pregunta 4. Clave B. La oración 2 dice que esa persecución empuja la extracción a lugares alejados, «donde nadie la ve»: así se controla menos.",
+        "Pregunta 5. Clave D. La oración 7 explica que el trámite deja seguir trabajando «donde no debe»: sirve para disimular la extracción en zonas no permitidas."
+      ]
+    },
+    {
+      "id": "t106",
+      "nivel": "avanzado (tipo UNI)",
+      "enunciado": "Lee el texto «Más horas de colegio» y responde las 5 preguntas.",
+      "texto": {
+        "titulo": "Más horas de colegio",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Cuando termina la jornada a mediodía, unos alumnos se van a clases particulares o a una casa con libros y un adulto que pregunta por la tarea; otros, a cuidar a sus hermanos o a ayudar en el negocio familiar."
+            },
+            {
+              "n": 2,
+              "t": "Para los segundos, lo que no se aprendió en la mañana ya no se aprende."
+            },
+            {
+              "n": 3,
+              "t": "Por eso, alargar la jornada escolar es una forma de justicia: da a quienes no tienen apoyo en casa las horas de estudio guiado que otros ya reciben fuera del colegio."
+            },
+            {
+              "n": 4,
+              "t": "En esas horas caben la tutoría, el refuerzo de lo que quedó flojo y actividades como el deporte o el arte, que muchas familias no pueden pagar."
+            },
+            {
+              "n": 5,
+              "t": "No es poco: es tiempo con un adulto que sabe y un espacio para trabajar."
+            }
+          ],
+          [
+            {
+              "n": 6,
+              "t": "Estoy de acuerdo en que el colegio es, para muchos alumnos, el único lugar donde alguien les explica lo que no entendieron."
+            },
+            {
+              "n": 7,
+              "t": "Pero una hora más de lo mismo no es una oportunidad, sino más cansancio."
+            },
+            {
+              "n": 8,
+              "t": "Si en la mañana el alumno copia de la pizarra sin entender, alargar la tarde con la misma rutina solo prolonga el problema."
+            },
+            {
+              "n": 9,
+              "t": "Lo que mejora el aprendizaje es cómo se usa el tiempo, no cuánto se pasa en el aula: clases donde el alumno practica, se equivoca y recibe una respuesta."
+            },
+            {
+              "n": 10,
+              "t": "Sin profesores preparados para eso y sin materiales, la jornada larga cambia el horario y deja intacta la enseñanza."
+            }
+          ]
+        ],
+        "autores": [
+          {
+            "titulo": "Texto A",
+            "firma": "Una docente de secundaria",
+            "desde": 0
+          },
+          {
+            "titulo": "Texto B",
+            "firma": "Un especialista en evaluación educativa",
+            "desde": 1
+          }
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "enunciado": "¿Cuál es el tema en controversia entre los dos textos?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Si las clases deben ser espacios donde el alumno practica, se equivoca y recibe una respuesta."
+            },
+            {
+              "letra": "B",
+              "t": "Cómo debe organizarse el sistema educativo del país."
+            },
+            {
+              "letra": "C",
+              "t": "Si los alumnos deben ir a clases particulares por la tarde."
+            },
+            {
+              "letra": "D",
+              "t": "Si el colegio es, para muchos alumnos, el único lugar donde alguien les explica lo que no entendieron."
+            },
+            {
+              "letra": "E",
+              "t": "Si alargar la jornada escolar ayuda a aprender a quienes no tienen apoyo en casa."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "previo": "Antes de mirar las alternativas: ¿quién sostiene esta idea? «Pasar más tiempo en el aula no sirve de nada si las clases siguen siendo iguales.» Elige: «El autor del texto A», «El autor del texto B», «Los dos autores», «Ninguno de los dos».",
+          "enunciado": "¿En qué discrepan los autores?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "A ve las horas extra como una oportunidad; B, que solo lo son si cambia la enseñanza."
+            },
+            {
+              "letra": "B",
+              "t": "A sostiene que importa cómo se usa el tiempo; B, que la jornada larga es una forma de justicia."
+            },
+            {
+              "letra": "C",
+              "t": "A defiende los colegios públicos; B, los colegios privados."
+            },
+            {
+              "letra": "D",
+              "t": "A cree que el colegio ayuda a los alumnos sin apoyo en casa; B, que no los ayuda en nada."
+            },
+            {
+              "letra": "E",
+              "t": "A ve las horas extra como una oportunidad; B propone quitarle horas a la jornada escolar."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "previo": "Antes de mirar las alternativas: ¿quién sostiene esta idea? «Hay alumnos que solo en el colegio encuentran a alguien que los ayude a aprender.» Elige: «El autor del texto A», «El autor del texto B», «Los dos autores», «Ninguno de los dos».",
+          "enunciado": "Los dos autores aceptarían que",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "la jornada larga debe aplicarse en todos los colegios del país."
+            },
+            {
+              "letra": "B",
+              "t": "ningún alumno puede aprender fuera del colegio."
+            },
+            {
+              "letra": "C",
+              "t": "la tutoría, el refuerzo, el deporte y el arte deben ocupar las horas de la tarde."
+            },
+            {
+              "letra": "D",
+              "t": "los alumnos rinden menos en la tarde por el calor y el hambre."
+            },
+            {
+              "letra": "E",
+              "t": "muchos alumnos solo encuentran ayuda para estudiar en el colegio."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "Si un colegio alargara su jornada y, además, preparara a sus profesores para dar clases donde el alumno practica y recibe respuesta, el autor del texto B probablemente",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "aceptaría que esas horas pueden mejorar el aprendizaje."
+            },
+            {
+              "letra": "B",
+              "t": "diría que, ante todo, alargar la jornada es una forma de justicia social."
+            },
+            {
+              "letra": "C",
+              "t": "pediría que el colegio abriera también los sábados y los domingos."
+            },
+            {
+              "letra": "D",
+              "t": "exigiría que se prohibieran las clases particulares por la tarde."
+            },
+            {
+              "letra": "E",
+              "t": "seguiría diciendo que la jornada larga solo cambia el horario y deja la enseñanza igual."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "enunciado": "En el texto A, la palabra FLOJO («el refuerzo de lo que quedó flojo») significa",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "mal aprendido."
+            },
+            {
+              "letra": "B",
+              "t": "pendiente de entrega."
+            },
+            {
+              "letra": "C",
+              "t": "perezoso."
+            },
+            {
+              "letra": "D",
+              "t": "fluido, que sale con facilidad."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: E · 2: A · 3: E · 4: A · 5: A.",
+      "pasos": [
+        "Pregunta 1. Clave E. El texto A ve en las horas extra una oportunidad para esos alumnos (oración 3) y el B responde que más horas de lo mismo no lo son (oraciones 7 y 9).",
+        "Pregunta 2. Antes de las alternativas: El autor del texto B. Lo sostiene el texto B en las oraciones 7, 8 y 10: una hora más de lo mismo solo trae cansancio y deja intacta la enseñanza. El texto A ve las horas extra como una oportunidad.",
+        "Pregunta 2. Clave A. Las dos mitades son correctas: el texto A ve justicia en alargar la jornada (oración 3) y el B pone la condición de cambiar cómo se enseña (oraciones 9 y 10).",
+        "Pregunta 3. Antes de las alternativas: Los dos autores. Los dos lo sostienen: el texto A, al decir que para algunos lo que no se aprendió en el colegio ya no se aprende (oraciones 1 y 2), y el B, que lo acepta en la oración 6.",
+        "Pregunta 3. Clave E. El texto A lo muestra con los alumnos que salen a cuidar hermanos o a trabajar (oraciones 1 y 2), y el B lo acepta en la oración 6.",
+        "Pregunta 4. Clave A. Para el texto B, lo que falla es la enseñanza que no cambia (oración 10). Si cambia como pide la oración 9, desaparece su objeción.",
+        "Pregunta 5. Clave A. Se habla de reforzar lo que en la mañana no se aprendió bien (oración 2): lo que quedó débil."
+      ]
+    },
+    {
+      "id": "t110",
+      "nivel": "avanzado (tipo UNI)",
+      "enunciado": "Lee el texto «La moratoria a los transgénicos» y responde las 5 preguntas.",
+      "texto": {
+        "titulo": "La moratoria a los transgénicos",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "El Perú es uno de los centros de origen de la papa y guarda una gran diversidad de maíces nativos, cuidados durante siglos por comunidades campesinas."
+            },
+            {
+              "n": 2,
+              "t": "Esa diversidad no está guardada en un depósito: vive en chacras abiertas, donde el polen viaja con el viento y las semillas se intercambian en las ferias."
+            },
+            {
+              "n": 3,
+              "t": "Si se sembraran variedades transgénicas cerca, sus genes podrían pasar a las nativas, y ese cambio no tendría marcha atrás."
+            },
+            {
+              "n": 4,
+              "t": "Por eso la moratoria al cultivo de transgénicos es una medida de prudencia: protege un patrimonio que no se puede reconstruir."
+            },
+            {
+              "n": 5,
+              "t": "Prohibir que se siembren no es rechazar la ciencia; es reconocer que hay riesgos que, una vez corridos, ya no se pueden deshacer."
+            }
+          ],
+          [
+            {
+              "n": 6,
+              "t": "Comparto la preocupación por las papas y los maíces nativos: son una riqueza que ningún laboratorio podría reemplazar."
+            },
+            {
+              "n": 7,
+              "t": "Lo que no comparto es que la respuesta sea una prohibición general, que trata igual a una planta que no tiene parientes silvestres en el país y a un maíz que podría cruzarse con los nativos."
+            },
+            {
+              "n": 8,
+              "t": "Mientras dure la moratoria, los grupos de investigación del país tienen pocas razones para desarrollar variedades propias, y muchos jóvenes científicos buscan su oportunidad fuera."
+            },
+            {
+              "n": 9,
+              "t": "La moratoria debería reemplazarse por una evaluación caso por caso, en la que cada cultivo se apruebe o se rechace según sus riesgos para el lugar donde se sembraría."
+            },
+            {
+              "n": 10,
+              "t": "Prudencia no es cerrar la puerta: es abrirla solo cuando se sabe qué entra."
+            }
+          ]
+        ],
+        "autores": [
+          {
+            "titulo": "Texto A",
+            "firma": "Una agrónoma que trabaja con comunidades andinas",
+            "desde": 0
+          },
+          {
+            "titulo": "Texto B",
+            "firma": "Un investigador en biotecnología de una universidad pública",
+            "desde": 1
+          }
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "enunciado": "¿Cuál es el eje del debate entre los dos textos?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Si la ciencia moderna es buena o mala para el país."
+            },
+            {
+              "letra": "B",
+              "t": "Si las papas y los maíces nativos son una riqueza que merece protegerse."
+            },
+            {
+              "letra": "C",
+              "t": "Si el cultivo de transgénicos debe seguir prohibido en general o evaluarse caso por caso."
+            },
+            {
+              "letra": "D",
+              "t": "Si los alimentos transgénicos hacen daño a quienes los comen."
+            },
+            {
+              "letra": "E",
+              "t": "Si la diversidad nativa se conserva mejor en chacras abiertas, donde el polen viaja, que en depósitos."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "previo": "Antes de mirar las alternativas: ¿quién sostiene esta idea? «Una misma regla para todos los transgénicos pasa por alto que no todos tienen el mismo riesgo.» Elige: «El autor del texto A», «El autor del texto B», «Los dos autores», «Ninguno de los dos».",
+          "enunciado": "Según el texto B, la moratoria es criticable porque",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "deja que el polen viaje con el viento por las chacras abiertas."
+            },
+            {
+              "letra": "B",
+              "t": "impide por completo toda investigación científica en el país."
+            },
+            {
+              "letra": "C",
+              "t": "no distingue riesgos y, además, desprecia las variedades nativas."
+            },
+            {
+              "letra": "D",
+              "t": "los transgénicos ya demostraron que son seguros."
+            },
+            {
+              "letra": "E",
+              "t": "no distingue entre cultivos que tienen riesgos distintos."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "Ante la propuesta del texto B, la autora del texto A probablemente replicaría que",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "en chacras abiertas, un solo error de evaluación ya no se puede corregir."
+            },
+            {
+              "letra": "B",
+              "t": "la ciencia no debería estudiar nunca los transgénicos."
+            },
+            {
+              "letra": "C",
+              "t": "las papas y los maíces nativos no valen tanto como se cree."
+            },
+            {
+              "letra": "D",
+              "t": "una prohibición general aleja del país a los jóvenes científicos que buscan oportunidades."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "previo": "Antes de mirar las alternativas: ¿quién sostiene esta idea? «Si se perdieran las papas y los maíces nativos, no habría cómo reponerlos.» Elige: «El autor del texto A», «El autor del texto B», «Los dos autores», «Ninguno de los dos».",
+          "enunciado": "¿Cuál de estas afirmaciones es incompatible con lo que sostienen los dos autores?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "La moratoria debería dar paso a una evaluación de cada cultivo."
+            },
+            {
+              "letra": "B",
+              "t": "Un laboratorio podría reponer sin pérdida las variedades nativas."
+            },
+            {
+              "letra": "C",
+              "t": "Los transgénicos podrían afectar la salud de las personas que los comen todos los días."
+            },
+            {
+              "letra": "D",
+              "t": "Las semillas nativas se intercambian en las ferias del campo."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "enunciado": "En el texto B, la expresión CERRAR LA PUERTA («Prudencia no es cerrar la puerta») significa",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "descartar toda posibilidad de antemano."
+            },
+            {
+              "letra": "B",
+              "t": "impedir el paso a un local."
+            },
+            {
+              "letra": "C",
+              "t": "ocultar información."
+            },
+            {
+              "letra": "D",
+              "t": "actuar con prudencia."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: C · 2: E · 3: A · 4: B · 5: A.",
+      "pasos": [
+        "Pregunta 1. Clave C. El texto A defiende la moratoria (oración 4) y el texto B propone reemplazarla por una evaluación caso por caso (oración 9).",
+        "Pregunta 2. Antes de las alternativas: El autor del texto B. Lo sostiene el texto B en la oración 7: la prohibición general trata igual a cultivos con riesgos distintos.",
+        "Pregunta 2. Clave E. Es la objeción de la oración 7: una prohibición general trata igual a cultivos que no tienen el mismo riesgo.",
+        "Pregunta 3. Clave A. Para el texto A, el polen viaja libre (oración 2) y el cambio no tiene marcha atrás (oraciones 3 y 5): si una evaluación caso por caso se equivoca una vez, el daño queda.",
+        "Pregunta 4. Antes de las alternativas: Los dos autores. Los dos lo sostienen: el texto A habla de un patrimonio «que no se puede reconstruir» (oración 4) y el texto B, de una riqueza que «ningún laboratorio podría reemplazar» (oración 6).",
+        "Pregunta 4. Clave B. Los dos lo niegan: para el texto A, ese patrimonio no se puede reconstruir (oración 4); para el texto B, ningún laboratorio podría reemplazarlo (oración 6).",
+        "Pregunta 5. Clave A. El autor opone «cerrar la puerta», la prohibición general, a «abrirla solo cuando se sabe qué entra», que es evaluar cada caso (oración 9)."
+      ]
+    },
+    {
+      "id": "t111",
+      "nivel": "avanzado (tipo UNI)",
+      "enunciado": "Lee el texto «¿Quién decide la cuota de anchoveta?» y responde las 5 preguntas.",
+      "texto": {
+        "titulo": "¿Quién decide la cuota de anchoveta?",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "La anchoveta es la base de la vida en el mar peruano y de una industria que convierte casi toda su captura en harina y aceite de pescado."
+            },
+            {
+              "n": 2,
+              "t": "Su población sube y baja con la temperatura del agua: un mar más cálido, como en los años de El Niño, puede dispersarla o reducirla en pocos meses."
+            },
+            {
+              "n": 3,
+              "t": "Por eso, antes de cada temporada, el Instituto del Mar del Perú hace cruceros de evaluación para estimar cuánta anchoveta hay y qué parte son peces juveniles."
+            },
+            {
+              "n": 4,
+              "t": "La cuota debería decidirse solo con esos datos: si el cálculo dice que no se puede pescar más, ninguna presión económica justifica hacerlo."
+            },
+            {
+              "n": 5,
+              "t": "Un año de captura excesiva puede costar varios de recuperación, y entonces pierden todos: el mar, la industria y los trabajadores."
+            }
+          ],
+          [
+            {
+              "n": 6,
+              "t": "Sin los cruceros, la cuota sería una apuesta a ciegas; en eso no hay discusión."
+            },
+            {
+              "n": 7,
+              "t": "Pero los datos dicen cuánta anchoveta hay, no cómo repartir lo que se puede pescar ni qué hacer con quienes se quedan sin trabajo cuando una temporada se suspende."
+            },
+            {
+              "n": 8,
+              "t": "Esas son decisiones públicas, y en ellas tienen que pesar también el empleo en los puertos y la pesca artesanal, de la que viven muchas familias de la costa."
+            },
+            {
+              "n": 9,
+              "t": "La ciencia debe fijar el límite que no se cruza; dentro de ese límite, la cuota y su reparto tienen que tomar en cuenta a la gente que vive del mar."
+            }
+          ]
+        ],
+        "autores": [
+          {
+            "titulo": "Texto A",
+            "firma": "Una investigadora de ciencias del mar",
+            "desde": 0
+          },
+          {
+            "titulo": "Texto B",
+            "firma": "Un dirigente de pescadores de un puerto del norte",
+            "desde": 1
+          }
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "enunciado": "¿Cuál es el tema en controversia entre los dos textos?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Si la cuota de anchoveta debe fijarse solo con datos científicos o pesar también el empleo."
+            },
+            {
+              "letra": "B",
+              "t": "Si la industria convierte casi toda su captura en harina y aceite."
+            },
+            {
+              "letra": "C",
+              "t": "Si un mar más cálido, como el de los años de El Niño, puede dispersar o reducir la población de anchoveta."
+            },
+            {
+              "letra": "D",
+              "t": "Si hacen falta los cruceros de evaluación para fijar la cuota de pesca."
+            },
+            {
+              "letra": "E",
+              "t": "Si el Perú es el país que más harina de pescado produce en el mundo."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "previo": "Antes de mirar las alternativas: ¿quién sostiene esta idea? «No se debe pescar más anchoveta de la que la evaluación científica considera posible.» Elige: «El autor del texto A», «El autor del texto B», «Los dos autores», «Ninguno de los dos».",
+          "enunciado": "Los dos autores estarían de acuerdo en que",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "la temporada de pesca no debería suspenderse jamás."
+            },
+            {
+              "letra": "B",
+              "t": "la captura no debe pasar del límite que indican los cruceros."
+            },
+            {
+              "letra": "C",
+              "t": "el reparto de la cuota debe tomar en cuenta a la pesca artesanal."
+            },
+            {
+              "letra": "D",
+              "t": "los cruceros son indispensables y bastan para decidir la cuota."
+            },
+            {
+              "letra": "E",
+              "t": "El Niño es la causa principal de la pérdida de empleos en los puertos."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "previo": "Antes de mirar las alternativas: ¿quién sostiene esta idea? «Cómo repartir lo que se pesca y cómo ayudar a quien se queda sin trabajo son asuntos que los datos no resuelven.» Elige: «El autor del texto A», «El autor del texto B», «Los dos autores», «Ninguno de los dos».",
+          "enunciado": "A diferencia de la autora del texto A, el autor del texto B sostiene que",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "un año de captura excesiva puede costar varios de recuperación."
+            },
+            {
+              "letra": "B",
+              "t": "la presión económica puede justificar pescar sobre el límite."
+            },
+            {
+              "letra": "C",
+              "t": "sin los cruceros de evaluación, la cuota sería una apuesta."
+            },
+            {
+              "letra": "D",
+              "t": "fijar la cuota exige decisiones que los datos no resuelven."
+            },
+            {
+              "letra": "E",
+              "t": "el empleo debe fijar el límite y la ciencia, solo el reparto."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "Si un crucero mostrara que casi toda la anchoveta de una zona es juvenil y por eso se suspendiera la pesca allí, el autor del texto B probablemente pediría",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "apoyar a quienes se quedan sin ingreso, sin abrir la pesca."
+            },
+            {
+              "letra": "B",
+              "t": "abrir la pesca de todos modos para salvar los empleos."
+            },
+            {
+              "letra": "C",
+              "t": "repetir el crucero hasta que dé una cifra mayor."
+            },
+            {
+              "letra": "D",
+              "t": "aplicar los datos sin pensar en el empleo."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "enunciado": "En el texto B, el verbo PESAR («tienen que pesar también el empleo en los puertos») significa",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "influir."
+            },
+            {
+              "letra": "B",
+              "t": "medir el peso."
+            },
+            {
+              "letra": "C",
+              "t": "costar."
+            },
+            {
+              "letra": "D",
+              "t": "pensar."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: A · 2: B · 3: D · 4: A · 5: A.",
+      "pasos": [
+        "Pregunta 1. Clave A. El texto A quiere que la cuota se decida «solo con esos datos» (oración 4); el texto B pide que también pesen el empleo y la pesca artesanal (oraciones 8 y 9).",
+        "Pregunta 2. Antes de las alternativas: Los dos autores. Los dos lo sostienen: el texto A dice que ninguna presión económica justifica pescar más de lo que indica el cálculo (oración 4) y el texto B, que la ciencia fija «el límite que no se cruza» (oración 9).",
+        "Pregunta 2. Clave B. El texto A no acepta presiones para pescar más de lo calculado (oración 4); el texto B dice que la ciencia fija el límite que no se cruza (oración 9).",
+        "Pregunta 3. Antes de las alternativas: El autor del texto B. Lo sostiene el texto B en las oraciones 7 y 8. El texto A no distingue esas decisiones: quiere que la cuota se decida solo con los datos.",
+        "Pregunta 3. Clave D. Para el texto B, los datos dicen cuánta anchoveta hay, pero no cómo repartirla ni qué hacer con los que pierden su trabajo (oración 7): eso es una decisión pública (oración 8).",
+        "Pregunta 4. Clave A. El texto B acepta el límite de la ciencia (oración 9) y pregunta qué hacer con quienes se quedan sin trabajo cuando se suspende una temporada (oración 7).",
+        "Pregunta 5. Clave A. El autor pide que el empleo y la pesca artesanal cuenten en la decisión, que influyan en ella."
+      ]
+    },
+    {
+      "id": "t115",
+      "nivel": "avanzado (tipo UNI)",
+      "enunciado": "Lee el texto «Después de la pantalla» y responde las 5 preguntas.",
+      "texto": {
+        "titulo": "Después de la pantalla",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "La universidad no se reduce a transmitir contenidos, y por eso volver a las aulas después de la pandemia no fue un capricho."
+            },
+            {
+              "n": 2,
+              "t": "Lo que un estudiante aprende en un laboratorio, en una discusión que se alarga después de la clase o en la charla casual con alguien de otra carrera no cabe en una grabación."
+            },
+            {
+              "n": 3,
+              "t": "Frente a la pantalla, la cámara apagada permite estar sin estar, y el profesor le habla a una cuadrícula de nombres sin saber si alguien lo sigue."
+            },
+            {
+              "n": 4,
+              "t": "En el aula, en cambio, la duda se nota en un gesto antes de que alguien la formule."
+            },
+            {
+              "n": 5,
+              "t": "La presencialidad forma, además de un profesional, a alguien que aprende a pensar con otros, y eso ninguna plataforma lo reemplaza."
+            }
+          ],
+          [
+            {
+              "n": 6,
+              "t": "Coincido en que una clase con cámaras apagadas y un profesor que lee diapositivas no forma a nadie."
+            },
+            {
+              "n": 7,
+              "t": "Pero de ahí no se sigue que la virtualidad deba desaparecer: lo que fracasó fue una virtualidad improvisada, que llevó a la pantalla la clase expositiva sin cambiar nada más."
+            },
+            {
+              "n": 8,
+              "t": "Para quien trabaja de día o vive a horas de la ciudad universitaria, una buena clase virtual, con grupos pequeños, tareas que exigen participar y tutores que responden, es la única puerta abierta."
+            },
+            {
+              "n": 9,
+              "t": "Cerrar esa puerta en nombre de la experiencia del campus es defender una universidad pensada solo para quienes pueden estar en él."
+            }
+          ]
+        ],
+        "autores": [
+          {
+            "titulo": "Texto A",
+            "firma": "Un profesor universitario",
+            "desde": 0
+          },
+          {
+            "titulo": "Texto B",
+            "firma": "Una egresada que estudió mientras trabajaba",
+            "desde": 1
+          }
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "enunciado": "¿Cuál es el eje de la controversia entre los dos textos?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Si la charla con alguien de otra carrera cabe en una grabación."
+            },
+            {
+              "letra": "B",
+              "t": "Si una clase con las cámaras apagadas logra formar a los estudiantes."
+            },
+            {
+              "letra": "C",
+              "t": "Qué lugar debe tener la enseñanza virtual en la universidad."
+            },
+            {
+              "letra": "D",
+              "t": "Si la pandemia cambió para siempre la manera en que vive y trabaja la sociedad peruana."
+            },
+            {
+              "letra": "E",
+              "t": "Si los tutores de los cursos virtuales responden a tiempo."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "previo": "Antes de mirar las alternativas: ¿quién sostiene esta idea? «Una clase a distancia en la que nadie participa no logra formar a los estudiantes.» Elige: «El autor del texto A», «El autor del texto B», «Los dos autores», «Ninguno de los dos».",
+          "enunciado": "¿En qué coinciden los dos autores?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "En que ninguna clase a distancia ha servido nunca para aprender."
+            },
+            {
+              "letra": "B",
+              "t": "En que las clases sin participación no forman y en que la presencialidad es insustituible."
+            },
+            {
+              "letra": "C",
+              "t": "En que la clase virtual sin participación real no forma a los estudiantes."
+            },
+            {
+              "letra": "D",
+              "t": "En que las universidades peruanas no tenían plataformas antes de la pandemia."
+            },
+            {
+              "letra": "E",
+              "t": "En que lo que fracasó fue una virtualidad improvisada."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "previo": "Antes de mirar las alternativas: ¿quién sostiene esta idea? «Si se elimina lo virtual, quedan fuera quienes no pueden asistir al campus.» Elige: «El autor del texto A», «El autor del texto B», «Los dos autores», «Ninguno de los dos».",
+          "enunciado": "¿Qué le objetaría la autora del texto B al autor del texto A?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Que una clase con cámaras apagadas sí puede formar a los estudiantes."
+            },
+            {
+              "letra": "B",
+              "t": "Que juzga la virtualidad por su peor versión, la improvisada."
+            },
+            {
+              "letra": "C",
+              "t": "Que la duda del estudiante se nota en un gesto antes de formularse."
+            },
+            {
+              "letra": "D",
+              "t": "Que el laboratorio y la discusión después de clase no sirven para aprender."
+            },
+            {
+              "letra": "E",
+              "t": "Que la universidad debería cerrar sus aulas y dictar todas sus clases por internet."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "En el texto A, la expresión «estar sin estar» alude a",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "hablarle a una cuadrícula de nombres."
+            },
+            {
+              "letra": "B",
+              "t": "estar en la ciudad universitaria, cerca de la facultad, sin llegar a entrar al aula."
+            },
+            {
+              "letra": "C",
+              "t": "figurar en la clase sin participar en ella."
+            },
+            {
+              "letra": "D",
+              "t": "faltar a clase sin justificación."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "enunciado": "Del texto B se infiere que, para su autora, lo que separa una buena clase virtual de una mala es",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "que la buena lleva a la pantalla la clase expositiva sin cambiar nada más."
+            },
+            {
+              "letra": "B",
+              "t": "que la buena cuesta menos a la universidad que la mala."
+            },
+            {
+              "letra": "C",
+              "t": "que nunca podrá reemplazar lo que se aprende en un laboratorio."
+            },
+            {
+              "letra": "D",
+              "t": "su diseño, y no el hecho de ser a distancia."
+            },
+            {
+              "letra": "E",
+              "t": "que la buena sirve por igual a todos los estudiantes, trabajen o no y vivan cerca o lejos."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: C · 2: C · 3: B · 4: C · 5: D.",
+      "pasos": [
+        "Pregunta 1. Clave C. El texto A dice que ninguna plataforma reemplaza la presencialidad; el B, que la virtualidad no debe desaparecer porque es la única puerta para algunos.",
+        "Pregunta 2. Antes de las alternativas: Los dos autores. Los dos lo sostienen: el texto A describe la cámara apagada y al profesor que no sabe si alguien lo sigue (oración 3), y el B dice que esa clase «no forma a nadie» (oración 6).",
+        "Pregunta 2. Clave C. El texto A la critica en la oración 3 y el B lo concede en la oración 6, antes de separar la mala virtualidad de la buena.",
+        "Pregunta 3. Antes de las alternativas: El autor del texto B. Lo sostiene el texto B en las oraciones 8 y 9: para quien trabaja o vive lejos, la clase virtual es la única puerta abierta.",
+        "Pregunta 3. Clave B. El texto B acepta la crítica a la clase con cámaras apagadas, pero dice que eso fue la virtualidad improvisada, no toda la virtualidad (oración 7).",
+        "Pregunta 4. Clave C. Con la cámara apagada, el nombre aparece en la cuadrícula, pero nadie sabe si el estudiante sigue la clase.",
+        "Pregunta 5. Clave D. La mala llevó la clase expositiva a la pantalla sin cambiar nada (oración 7); la buena tiene grupos pequeños, participación y tutores (oración 8). Las dos son a distancia."
+      ]
+    },
+    {
+      "id": "t116",
+      "nivel": "avanzado (tipo UNI)",
+      "enunciado": "Lee el texto «La huaca: ¿reconstruir o conservar?» y responde las 5 preguntas.",
+      "texto": {
+        "titulo": "La huaca: ¿reconstruir o conservar?",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Quien visita una huaca sin preparación suele ver solo un cerro de tierra, y es difícil cuidar lo que no se entiende."
+            },
+            {
+              "n": 2,
+              "t": "Por eso defiendo que, en algunas zonas del sitio, se reconstruyan muros, rampas o relieves a partir de lo que los arqueólogos ya conocen."
+            },
+            {
+              "n": 3,
+              "t": "Ver un muro con su altura y su color permite imaginar cómo se vivía allí, y esa imagen convierte al visitante en alguien que defiende el lugar."
+            },
+            {
+              "n": 4,
+              "t": "Cuando los vecinos sienten que la huaca es suya, la protegen de invasiones y de basurales mejor que cualquier cerco."
+            },
+            {
+              "n": 5,
+              "t": "Basta con que lo reconstruido se distinga a simple vista de lo original, para que nadie confunda una cosa con la otra."
+            }
+          ],
+          [
+            {
+              "n": 6,
+              "t": "Comparto la meta: una huaca que nadie entiende está más expuesta al abandono."
+            },
+            {
+              "n": 7,
+              "t": "Pero reconstruir obliga a decidir cosas que nadie sabe: qué altura tenía un muro derrumbado o qué color tenía un relieve del que quedan unos trazos."
+            },
+            {
+              "n": 8,
+              "t": "Además, lo que se agrega sobre el muro antiguo cubre las huellas que otro investigador, con mejores técnicas, podría estudiar mañana."
+            },
+            {
+              "n": 9,
+              "t": "La Carta de Venecia, que orienta la conservación de monumentos desde 1964, ya pedía detener la restauración allí donde empieza la conjetura."
+            },
+            {
+              "n": 10,
+              "t": "Lo prudente es conservar lo que hay tal como está y explicarlo con maquetas, dibujos y recorridos guiados, que ayudan a imaginar sin tocar la evidencia."
+            }
+          ]
+        ],
+        "autores": [
+          {
+            "titulo": "Texto A",
+            "firma": "Una educadora de un museo de sitio",
+            "desde": 0
+          },
+          {
+            "titulo": "Texto B",
+            "firma": "Un arqueólogo",
+            "desde": 1
+          }
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas: ¿quién sostiene esta idea? «Una reconstrucción es aceptable si lo nuevo se distingue a simple vista de lo antiguo.» Elige: «El autor del texto A», «El autor del texto B», «Los dos autores», «Ninguno de los dos».",
+          "enunciado": "¿Qué sostiene la autora del texto A?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Que los vecinos protegen la huaca de invasiones y de basurales."
+            },
+            {
+              "letra": "B",
+              "t": "Que hay que reconstruir zonas de la huaca, aunque lo nuevo no se distinga de lo original."
+            },
+            {
+              "letra": "C",
+              "t": "Que todas las huacas del Perú deben reconstruirse por completo."
+            },
+            {
+              "letra": "D",
+              "t": "Que reconstruir partes de una huaca ayuda a que la gente la entienda y la proteja."
+            },
+            {
+              "letra": "E",
+              "t": "Que lo agregado sobre un muro antiguo cubre huellas que podrían estudiarse luego."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "¿En qué discrepan los autores?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "A propone reconstruir partes del sitio; B, conservarlo como está y explicarlo."
+            },
+            {
+              "letra": "B",
+              "t": "A propone reconstruir partes del sitio; B, dejarlo sin ninguna explicación para no alterar la evidencia."
+            },
+            {
+              "letra": "C",
+              "t": "A quiere que la gente entienda las huacas; B considera que eso no importa."
+            },
+            {
+              "letra": "D",
+              "t": "A defiende el turismo masivo; B, cerrar las huacas al público."
+            },
+            {
+              "letra": "E",
+              "t": "A propone explicar el sitio con maquetas; B, reconstruir sus muros."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "En el texto B, la palabra HUELLAS («cubre las huellas que otro investigador… podría estudiar») significa",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "dibujos."
+            },
+            {
+              "letra": "B",
+              "t": "vestigios."
+            },
+            {
+              "letra": "C",
+              "t": "cimientos."
+            },
+            {
+              "letra": "D",
+              "t": "pisadas."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "previo": "Antes de mirar las alternativas: ¿quién sostiene esta idea? «Si la gente no entiende una huaca, es más fácil que la descuide.» Elige: «El autor del texto A», «El autor del texto B», «Los dos autores», «Ninguno de los dos».",
+          "enunciado": "Ante la oración 5 del texto A, el autor del texto B probablemente respondería que",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "aunque lo nuevo se distinga, igual cubre la evidencia original."
+            },
+            {
+              "letra": "B",
+              "t": "las técnicas modernas permiten saber con exactitud la altura de los muros derrumbados."
+            },
+            {
+              "letra": "C",
+              "t": "así se evita que el visitante confunda lo reconstruido con lo original."
+            },
+            {
+              "letra": "D",
+              "t": "no hace falta que el visitante entienda lo que ve."
+            },
+            {
+              "letra": "E",
+              "t": "habría que demoler todo lo que ya se reconstruyó en las huacas."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "enunciado": "Si se supiera con certeza cómo era un muro derrumbado, el autor del texto B",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "aceptaría reconstruir todas las huacas sin excepción."
+            },
+            {
+              "letra": "B",
+              "t": "aún objetaría que lo agregado cubriría las huellas del muro antiguo."
+            },
+            {
+              "letra": "C",
+              "t": "dejaría de recomendar las maquetas y los dibujos."
+            },
+            {
+              "letra": "D",
+              "t": "seguiría rechazando la reconstrucción porque obliga a decidir lo que nadie sabe sobre ese muro."
+            },
+            {
+              "letra": "E",
+              "t": "lo reconstruiría para que los vecinos sientan que la huaca es suya."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: D · 2: A · 3: B · 4: A · 5: B.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: El autor del texto A. Lo sostiene el texto A en la oración 5: basta con que lo reconstruido se distinga de lo original.",
+        "Pregunta 1. Clave D. Es su tesis (oración 2) con su razón (oración 3): ver cómo era el lugar convierte al visitante en alguien que lo defiende.",
+        "Pregunta 2. Clave A. Cada mitad es la tesis de su autor: la oración 2 del texto A y la oración 10 del B.",
+        "Pregunta 3. Clave B. Son los restos que quedan del muro antiguo y que todavía pueden estudiarse.",
+        "Pregunta 4. Antes de las alternativas: Los dos autores. Los dos lo sostienen: el texto A dice que es difícil cuidar lo que no se entiende (oración 1) y el B, que una huaca que nadie entiende está más expuesta al abandono (oración 6).",
+        "Pregunta 4. Clave A. Que se distinga resuelve la confusión, pero no su segunda objeción: lo agregado cubre las huellas que otro podría estudiar (oración 8).",
+        "Pregunta 5. Clave B. La certeza elimina su primera objeción (oración 7), pero no la segunda: «además», lo agregado cubre la evidencia (oración 8). Y su propuesta sigue siendo conservar sin tocar (oración 10)."
+      ]
+    },
+    {
+      "id": "t120",
+      "nivel": "avanzado (tipo UNI)",
+      "enunciado": "Lee el texto «El litio de Puno: ¿ahora o después?» y responde las 5 preguntas.",
+      "texto": {
+        "titulo": "El litio de Puno: ¿ahora o después?",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "El litio de Carabaya es una oportunidad que Puno no debería dejar pasar."
+            },
+            {
+              "n": 2,
+              "t": "Es un metal que piden las fábricas de baterías de todo el mundo, y esa demanda no esperará indefinidamente: otros países ya lo extraen y lo venden."
+            },
+            {
+              "n": 3,
+              "t": "Si el Perú se demora una década en discusiones, el precio puede caer o puede aparecer otra tecnología, y el yacimiento quedaría como una promesa enterrada."
+            },
+            {
+              "n": 4,
+              "t": "Lo sensato es empezar pronto, con una empresa que cumpla reglas claras: que una parte de lo que se gane se quede en la región, que contrate y capacite a trabajadores de la zona y que procese el mineral aquí, en vez de exportarlo como piedra."
+            },
+            {
+              "n": 5,
+              "t": "Explotar con reglas no es lo mismo que explotar a cualquier costo."
+            }
+          ],
+          [
+            {
+              "n": 6,
+              "t": "Comparto que el litio podría dejar beneficios en la región y que no basta con exportar el mineral sin procesarlo."
+            },
+            {
+              "n": 7,
+              "t": "Lo que no comparto es la prisa."
+            },
+            {
+              "n": 8,
+              "t": "Antes de abrir una mina hay que saber cuánta agua necesitará y de dónde la tomará, en una zona donde los ríos y los bofedales sostienen la crianza de alpacas."
+            },
+            {
+              "n": 9,
+              "t": "También hay que consultar a las comunidades, que tienen derecho a ser escuchadas antes de que se decida sobre sus territorios."
+            },
+            {
+              "n": 10,
+              "t": "El país conoce bien la historia de minas que empezaron rápido y dejaron conflictos, ríos dañados y promesas incumplidas."
+            },
+            {
+              "n": 11,
+              "t": "Los estudios, la consulta y las reglas deben llegar antes que las máquinas, no mientras la mina ya avanza: ese tiempo no es una pérdida, sino el precio de no repetir esa historia."
+            }
+          ]
+        ],
+        "autores": [
+          {
+            "titulo": "Texto A",
+            "firma": "Un economista de Juliaca",
+            "desde": 0
+          },
+          {
+            "titulo": "Texto B",
+            "firma": "Una ingeniera ambiental de Puno",
+            "desde": 1
+          }
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "enunciado": "El eje de la discrepancia entre los dos textos es",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "cuándo debería empezar la explotación del litio de Carabaya."
+            },
+            {
+              "letra": "B",
+              "t": "si el litio puede dejar beneficios económicos en la región de Puno."
+            },
+            {
+              "letra": "C",
+              "t": "si el Perú debe prohibir para siempre la minería en el sur andino."
+            },
+            {
+              "letra": "D",
+              "t": "el futuro de la minería en América Latina."
+            },
+            {
+              "letra": "E",
+              "t": "si los ríos y los bofedales de la zona alcanzan para la crianza de alpacas."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "previo": "Antes de mirar las alternativas: ¿quién sostiene esta idea? «Los estudios del agua y la consulta deben hacerse antes de abrir la mina, aunque eso retrase el proyecto.» Elige: «El autor del texto A», «El autor del texto B», «Los dos autores», «Ninguno de los dos».",
+          "enunciado": "La autora del texto B sostiene que",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "cualquier mina, sin excepción, termina dañando los ríos."
+            },
+            {
+              "letra": "B",
+              "t": "el litio no le traerá beneficio alguno a la región."
+            },
+            {
+              "letra": "C",
+              "t": "conviene estudiar primero el agua, pero sin consultar a las comunidades para no perder más tiempo."
+            },
+            {
+              "letra": "D",
+              "t": "estudios, consulta y reglas deben preceder a la explotación."
+            },
+            {
+              "letra": "E",
+              "t": "una demora larga puede hacer que el yacimiento termine valiendo poco."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "previo": "Antes de mirar las alternativas: ¿quién sostiene esta idea? «Sería un error vender el mineral tal como sale, sin procesarlo en el país.» Elige: «El autor del texto A», «El autor del texto B», «Los dos autores», «Ninguno de los dos».",
+          "enunciado": "Los dos autores estarían de acuerdo en que",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "la crianza de alpacas es la principal actividad de Carabaya."
+            },
+            {
+              "letra": "B",
+              "t": "la explotación del litio debería empezar cuanto antes."
+            },
+            {
+              "letra": "C",
+              "t": "el litio es más rentable para el país que el cobre o el oro."
+            },
+            {
+              "letra": "D",
+              "t": "el mineral debería procesarse en el país y no venderse en bruto."
+            },
+            {
+              "letra": "E",
+              "t": "el litio puede beneficiar a Puno, siempre que se explote sin demoras ni estudios previos."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "Es incompatible con lo que sostiene el autor del texto A afirmar que",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "el yacimiento conservará su valor aunque el país tarde muchos años en explotarlo."
+            },
+            {
+              "letra": "B",
+              "t": "en la zona de Carabaya hay familias que crían alpacas."
+            },
+            {
+              "letra": "C",
+              "t": "un yacimiento que no se explota a tiempo puede terminar valiendo poco."
+            },
+            {
+              "letra": "D",
+              "t": "no conviene exportar el litio como piedra, sin procesarlo."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "enunciado": "En el texto A, la palabra ENTERRADA («una promesa enterrada») significa",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "sepultada por un derrumbe."
+            },
+            {
+              "letra": "B",
+              "t": "sin aprovechar."
+            },
+            {
+              "letra": "C",
+              "t": "que ya todos conocen."
+            },
+            {
+              "letra": "D",
+              "t": "puesta bajo tierra."
+            },
+            {
+              "letra": "E",
+              "t": "exportada como piedra."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: A · 2: D · 3: D · 4: A · 5: B.",
+      "pasos": [
+        "Pregunta 1. Clave A. El texto A pide «empezar pronto» (oración 4) y el B dice «lo que no comparto es la prisa» (oración 7): la discrepancia es el momento de empezar.",
+        "Pregunta 2. Antes de las alternativas: El autor del texto B. Lo sostiene el texto B en las oraciones 8, 9 y 11: los estudios y la consulta deben llegar «antes que las máquinas», y ese tiempo no es una pérdida.",
+        "Pregunta 2. Clave D. Es su tesis, en la oración 11, con lo que pide antes de abrir la mina en las oraciones 8 y 9.",
+        "Pregunta 3. Antes de las alternativas: Los dos autores. Los dos lo sostienen: el texto A pide procesar el mineral aquí, «en vez de exportarlo como piedra» (oración 4), y el B dice que «no basta con exportar el mineral sin procesarlo» (oración 6).",
+        "Pregunta 3. Clave D. El texto A lo pone entre sus reglas (oración 4) y el B lo comparte expresamente (oración 6).",
+        "Pregunta 4. Clave A. La oración 3 dice que, con una demora larga, el precio puede caer o aparecer otra tecnología, y el yacimiento quedaría como una promesa enterrada: esta afirmación choca con eso.",
+        "Pregunta 5. Clave B. Si el precio cae o aparece otra tecnología, la riqueza del yacimiento quedaría como algo que prometía y que nunca se aprovechó."
+      ]
+    },
+    {
+      "id": "t121",
+      "nivel": "avanzado (tipo UNI)",
+      "enunciado": "Lee el texto «¿Quién prueba el saber del campo?» y responde las 5 preguntas.",
+      "texto": {
+        "titulo": "¿Quién prueba el saber del campo?",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Que una práctica agrícola tenga siglos no prueba que funcione; prueba, a lo sumo, que no ha fracasado de un modo visible."
+            },
+            {
+              "n": 2,
+              "t": "Sembrar según las fases de la luna o anunciar cómo será el año por la floración de ciertas plantas son prácticas que se transmiten de padres a hijos en muchas comunidades andinas."
+            },
+            {
+              "n": 3,
+              "t": "Algunas pueden tener una razón sólida; otras pueden haberse conservado solo porque nadie las comparó con otra manera de hacer las cosas."
+            },
+            {
+              "n": 4,
+              "t": "Para distinguirlas no basta la confianza: hay que sembrar parcelas con la práctica y sin ella, en las mismas condiciones, y medir la cosecha."
+            },
+            {
+              "n": 5,
+              "t": "Solo así el saber tradicional que funciona podrá defenderse con pruebas, y el que no funciona dejará de costarles esfuerzo a los agricultores."
+            }
+          ],
+          [
+            {
+              "n": 6,
+              "t": "No me opongo a que se hagan ensayos en parcelas."
+            },
+            {
+              "n": 7,
+              "t": "Pero llamar «no probado» a un saber que generaciones de agricultores han puesto a prueba en cada campaña, con su propia cosecha en juego, es olvidar que también ellos observan, comparan y corrigen."
+            },
+            {
+              "n": 8,
+              "t": "Ese saber, además, no es una suma de recetas sueltas: la rotación, el descanso de la tierra y la lectura del clima forman un sistema pensado para un lugar, y una parcela de prueba puede medir una pieza y perder el conjunto."
+            },
+            {
+              "n": 9,
+              "t": "La ciencia debería dialogar con los agricultores, y no solo examinar sus prácticas: preguntarles por qué hacen lo que hacen, diseñar con ellos los estudios y aceptar que también puede aprender de ellos."
+            },
+            {
+              "n": 10,
+              "t": "Examinar sin escuchar es tratar al campesino como un objeto de estudio y no como alguien que también sabe."
+            }
+          ]
+        ],
+        "autores": [
+          {
+            "titulo": "Texto A",
+            "firma": "Un investigador agrícola",
+            "desde": 0
+          },
+          {
+            "titulo": "Texto B",
+            "firma": "Una antropóloga cusqueña",
+            "desde": 1
+          }
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "enunciado": "El tema en controversia entre los dos textos es",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "cómo ha avanzado el conocimiento humano a lo largo de la historia."
+            },
+            {
+              "letra": "B",
+              "t": "qué vale como prueba de que una práctica agrícola tradicional funciona."
+            },
+            {
+              "letra": "C",
+              "t": "si conviene hacer ensayos con parcelas de prueba."
+            },
+            {
+              "letra": "D",
+              "t": "si la rotación, el descanso y la lectura del clima forman un sistema propio de cada lugar."
+            },
+            {
+              "letra": "E",
+              "t": "si sembrar según las fases de la luna mejora la cosecha."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "previo": "Antes de mirar las alternativas: ¿quién sostiene esta idea? «Que una costumbre se haya mantenido mucho tiempo no basta para saber si da resultado.» Elige: «El autor del texto A», «El autor del texto B», «Los dos autores», «Ninguno de los dos».",
+          "enunciado": "El autor del texto A sostiene que",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "conviene medir las prácticas en parcelas de prueba, con estudios diseñados junto con los propios agricultores de la comunidad."
+            },
+            {
+              "letra": "B",
+              "t": "las prácticas tradicionales deben compararse en ensayos controlados para saber cuáles funcionan."
+            },
+            {
+              "letra": "C",
+              "t": "todas las prácticas tradicionales carecen de fundamento."
+            },
+            {
+              "letra": "D",
+              "t": "el Estado debería prohibir las costumbres agrícolas de las comunidades."
+            },
+            {
+              "letra": "E",
+              "t": "los agricultores ya ponen a prueba sus prácticas en cada campaña."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "Ante el método que propone el texto A, la autora del texto B probablemente objetaría que",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "una parcela de prueba puede juzgar una práctica suelta y perder el sistema al que pertenece."
+            },
+            {
+              "letra": "B",
+              "t": "la luna no influye en el crecimiento de las plantas."
+            },
+            {
+              "letra": "C",
+              "t": "los ensayos en parcelas no deberían hacerse."
+            },
+            {
+              "letra": "D",
+              "t": "una costumbre pudo conservarse solo porque nadie la comparó con otra."
+            },
+            {
+              "letra": "E",
+              "t": "solo los agricultores pueden juzgar si sus prácticas funcionan."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "previo": "Antes de mirar las alternativas: ¿quién sostiene esta idea? «Las prácticas tradicionales deberían reemplazarse por técnicas modernas.» Elige: «El autor del texto A», «El autor del texto B», «Los dos autores», «Ninguno de los dos».",
+          "enunciado": "¿En qué coinciden los dos autores?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "En que la ciencia siempre ha despreciado a los campesinos."
+            },
+            {
+              "letra": "B",
+              "t": "En que conviene estudiar las prácticas, aunque su larga historia ya demuestra que funcionan."
+            },
+            {
+              "letra": "C",
+              "t": "En que las prácticas tradicionales deben reemplazarse por técnicas modernas."
+            },
+            {
+              "letra": "D",
+              "t": "En aceptar que las prácticas tradicionales se estudien en parcelas."
+            },
+            {
+              "letra": "E",
+              "t": "En que la ciencia debe diseñar los estudios junto con los agricultores."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "enunciado": "En el texto B, el verbo EXAMINAR («no solo examinar sus prácticas») significa",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "eximir de una obligación."
+            },
+            {
+              "letra": "B",
+              "t": "preguntar por qué se hace algo."
+            },
+            {
+              "letra": "C",
+              "t": "tomar una prueba escrita."
+            },
+            {
+              "letra": "D",
+              "t": "observar con una lupa."
+            },
+            {
+              "letra": "E",
+              "t": "evaluar desde fuera."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: B · 2: B · 3: A · 4: D · 5: E.",
+      "pasos": [
+        "Pregunta 1. Clave B. Para el texto A, los siglos de uso no prueban nada y hace falta el ensayo controlado (oraciones 1 y 4); para el B, los agricultores ya pusieron a prueba su saber en cada campaña (oración 7).",
+        "Pregunta 2. Antes de las alternativas: El autor del texto A. Lo sostiene el texto A en las oraciones 1 y 3: que una práctica tenga siglos solo prueba que no fracasó de un modo visible, y pudo conservarse sin que nadie la comparara.",
+        "Pregunta 2. Clave B. Es su propuesta: parcelas con la práctica y sin ella, en las mismas condiciones (oración 4), para separar lo que funciona de lo que no (oración 5).",
+        "Pregunta 3. Clave A. El texto A propone comparar cada práctica en parcelas (oración 4); el B advierte que esas prácticas forman un sistema y que la parcela «puede medir una pieza y perder el conjunto» (oración 8).",
+        "Pregunta 4. Antes de las alternativas: Ninguno de los dos. Ninguno lo sostiene. El texto A quiere comprobar cuáles funcionan para defenderlas con pruebas (oración 5), no reemplazarlas todas; el texto B defiende ese saber y pide dialogar con él (oración 9).",
+        "Pregunta 4. Clave D. El texto A propone los ensayos en parcelas (oración 4) y el B dice que no se opone a ellos (oración 6).",
+        "Pregunta 5. Clave E. La autora lo opone a dialogar: examinar es juzgar las prácticas sin escuchar a quienes las usan (oración 10)."
+      ]
+    }
+  ]
+}

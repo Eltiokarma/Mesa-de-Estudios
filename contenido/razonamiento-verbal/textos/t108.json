@@ -104,8 +104,8 @@
           "explicacion": "Los dos quieren cuidar el sitio, pero aceptar la pérdida de ingresos es solo del texto A; el texto B la rechaza (oraciones 7 y 11)." },
         { "t": "Machu Picchu es una de las maravillas del mundo moderno.", "codigo": "RV8",
           "explicacion": "Ninguno de los textos lo menciona; es un dato que se conoce por fuera de la lectura." },
-        { "t": "todos los turistas maltratan los muros.", "codigo": "RV11", "origen": "o2",
-          "explicacion": "Nadie dice «todos»: el texto A habla de manos que se apoyan en los muros como un desgaste pequeño, que solo se nota al sumarse." }
+        { "t": "cada visitante, por sí solo, deja en la piedra un daño que se nota.", "codigo": "RV10", "origen": "o3",
+          "explicacion": "El texto A dice lo contrario: «uno solo no se nota» (oración 3); el daño aparece al sumarse miles de visitas." }
       ]
     },
     {
@@ -134,8 +134,8 @@
       "alternativas": [
         { "t": "que no perjudica a nadie.", "correcta": true, "evidencia": ["o7"],
           "explicacion": "El autor muestra enseguida a quiénes perjudica la medida: al que sirve el almuerzo, al dueño del cuarto y al guía." },
-        { "t": "imparcial.", "codigo": "RV18",
-          "explicacion": "Es el sentido más frecuente de «neutral» (que no toma partido), pero aquí no se habla de tomar partido, sino de que la medida tiene costos." },
+        { "t": "ni ácida ni básica.", "codigo": "RV18",
+          "explicacion": "Es el sentido de «neutral» en química, pero aquí no se habla de sustancias, sino de que la medida tiene costos para alguien." },
         { "t": "natural.", "codigo": "RV20",
           "explicacion": "Se parece en la forma, pero no en el sentido." },
         { "t": "barata.", "codigo": "RV19", "origen": "o7",
@@ -155,5 +155,10 @@
       "fuente": "Ministerio de Cultura del Perú, normas sobre el aforo y los circuitos de visita de la Llaqta de Machu Picchu."
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (revisor a ciegas)",
+    "fecha": "2026-11-08",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidió en 7 de 7, pero en p5 «imparcial» era defendible: se cambió por el sentido químico de «neutral». Se reforzó un distractor de p3 (RV10); el hecho del aforo y los circuitos del Ministerio de Cultura va sin cifras."
+  }
 }

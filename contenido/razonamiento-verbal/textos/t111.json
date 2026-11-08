@@ -151,5 +151,10 @@
       "fuente": "IMARPE; FAO, perfil de pesca y acuicultura del Perú."
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (revisor a ciegas)",
+    "fecha": "2026-11-08",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidió en 7 de 7. Códigos y hechos revisados, sin cambios."
+  }
 }
