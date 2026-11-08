@@ -102,7 +102,7 @@ function recalcular(p) {
         const g = rho => distRecta([0, rho], [d.B / 2, 0], [d.b / 2, 2 * rho]) - rho;
         return raiz(g, 1e-6, 1000);
       }
-      const c = d.ang === 53 ? 0.6 : 0.8, s = d.ang === 53 ? 0.8 : 0.6;
+      const [s, c] = { 53: [0.8, 0.6], 37: [0.6, 0.8], 74: [0.96, 0.28], 16: [0.28, 0.96] }[d.ang];
       const O = [d.r, d.r];
       // D = (x, 0); el lado DC sube hacia la izquierda con el ángulo ADC.
       return raiz(x => distRecta(O, [x, 0], [x - c, s]) - d.r, 2 * d.r, 1000);

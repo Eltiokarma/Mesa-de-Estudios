@@ -71,7 +71,7 @@
       },
       "esperado": {
         "respuesta": 16.24807680927192,
-        "exacta": "2√66 m"
+        "exacta": "2√66 cm"
       }
     },
     {
@@ -92,11 +92,11 @@
       "entrada": {
         "tipo": "figuras-compuestas",
         "sub": "equilatero",
-        "s": 6
+        "s": 8
       },
       "esperado": {
-        "respuesta": 15.874507866387544,
-        "exacta": "6√7 m"
+        "respuesta": 21.166010488516726,
+        "exacta": "8√7 m"
       }
     },
     {
@@ -104,13 +104,13 @@
       "entrada": {
         "tipo": "altura-hipotenusa",
         "sub": "h-catetos",
-        "a": 45,
-        "b": 60,
+        "a": 65,
+        "b": 156,
         "pide": "AH"
       },
       "esperado": {
-        "respuesta": 27,
-        "exacta": "27 cm"
+        "respuesta": 25,
+        "exacta": "25 cm"
       }
     },
     {
@@ -258,11 +258,11 @@
       "entrada": {
         "tipo": "ptolomeo",
         "sub": "heptagono",
-        "k": 12
+        "k": 14
       },
       "esperado": {
-        "respuesta": 84,
-        "exacta": "84 cm"
+        "respuesta": 98,
+        "exacta": "98 cm"
       }
     },
     {

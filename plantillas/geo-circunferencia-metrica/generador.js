@@ -83,6 +83,8 @@
   const grados = x => Number.isInteger(x) ? `${x}°` : `${Math.round(2 * x)}°/2`;
   const esAngulo = x => Number.isFinite(x) && x > 0 && x < 180 && Number.isInteger(Math.round(2 * x * 1e6) / 1e6);
 
+  // Seno y coseno de academia de los ángulos del trapecio rectángulo (37°/53° y 16°/74°).
+  const SENCOS = { 53: [4 / 5, 3 / 5], 37: [3 / 5, 4 / 5], 74: [24 / 25, 7 / 25], 16: [7 / 25, 24 / 25] };
   // ---------- Cálculos puros (los usa papel.json) ----------
   const calc = {
     tangente: (pa_, ab) => sq(pa_ * (pa_ + ab)),                 // PT con PA y AB
@@ -96,7 +98,7 @@
     esquinaCuadrado: (l, am) => { const p = l - am; return (p * p + am * am) / (2 * p); },
     pitot: (ab, bc, cd) => ab + cd - bc,
     radioTrapecioIsosceles: (B, b) => sq(B * b) / 2,
-    baseMayorTrapecioRectangulo: (r, ang) => { const [s, c] = ang === 53 ? [0.8, 0.6] : [0.6, 0.8]; const lado = 2 * r / s, dif = 2 * r * c / s; return (2 * r + lado + dif) / 2; },
+    baseMayorTrapecioRectangulo: (r, ang) => { const [s, c] = SENCOS[ang]; const lado = 2 * r / s, dif = 2 * r * c / s; return (2 * r + lado + dif) / 2; },
     poncelet: (a, b) => (a + b - Math.hypot(a, b)) / 2,
     perimetroPoncelet: (c, r) => 2 * c + 2 * r,
     cuerdaArcoMitad: (r, ac) => sq(2 * r * (r - sq(r * r - ac * ac / 4))),
@@ -105,6 +107,9 @@
     anguloInscriptible: (l, m) => { const t = (l - m) / m; const T = { 1: 45, 2: 63.5, 0.5: 26.5, 3: 71.5 }; for (const [k, a] of Object.entries(T)) if (Math.abs(t - k) < 1e-9) return a; if (Math.abs(t - 1 / 3) < 1e-9) return 18.5; if (Math.abs(t - 4 / 3) < 1e-9) return 53; if (Math.abs(t - 0.75) < 1e-9) return 37; return NaN; },
   };
 
+  // Tangente → ángulo de academia (tan 53°/2 = 1/2, tan 37°/2 = 1/3, tan 37° = 3/4); NaN si no es notable.
+  const TAN_NOTABLE = [[1, 45], [1 / 2, 26.5], [2, 63.5], [1 / 3, 18.5], [3, 71.5], [3 / 4, 37], [4 / 3, 53]];
+  const anguloDeTan = t => { for (const [v0, a] of TAN_NOTABLE) if (Math.abs(t - v0) < 1e-9) return a; return NaN; };
   const TRIPLES = [[3, 4, 5], [5, 12, 13], [8, 15, 17], [7, 24, 25], [20, 21, 29], [6, 8, 10], [9, 12, 15], [12, 16, 20]];
 
   function generar(semilla) {
@@ -229,7 +234,7 @@
       if (sub === 'centro') {
         let t, a, r;
         for (;;) { t = rng.entero(4, 20); a = rng.entero(1, t - 1); r = (t * t - a * a) / (2 * a); if (Number.isInteger(r) && r >= 2 && r <= 40) break; }
-        const variables = { t: { nombre: 'tangente PT', color: 'o' }, a: { nombre: 'PA', color: 'i' }, b: { nombre: 'PB', color: 'h' }, x: { nombre: 'radio', color: 'd' } };
+        const variables = { t: { nombre: 'tangente PT', color: 'o' }, a: { nombre: 'PA', color: 'i' }, x: { nombre: 'radio', color: 'd' } };
         const ctx = rng.moneda();
         return {
           variables, unidad: u, correcta: r, datos: { sub, t, a },
@@ -252,8 +257,10 @@
         };
       }
       // semicirculo: rectángulo 8k × 6k; diagonal 10k; r = 3k.
-      const k = rng.elegir([1, 2, 3, 4]);
-      const w = 8 * k, hh = 6 * k, dg = 10 * k, r = 3 * k;
+      // [AB, BC, AC, r] con r = (AB² − (AC − BC)²)/(2·AB) entero y la semicircunferencia dentro del rectángulo.
+      const [w0, h0, d0, r0] = rng.elegir([[8, 6, 10, 3], [9, 12, 15, 4], [36, 15, 39, 10], [25, 60, 65, 12], [32, 60, 68, 15], [75, 40, 85, 24], [96, 28, 100, 21]]);
+      const k = w0 <= 9 ? rng.elegir([1, 2, 3]) : 1;
+      const w = w0 * k, hh = h0 * k, dg = d0 * k, r = r0 * k;
       const variables = { w: { nombre: 'base AB', color: 'o' }, hh: { nombre: 'lado BC', color: 'i' }, t: { nombre: 'tangente AT', color: 'h' }, x: { nombre: 'arco de la semicircunferencia', color: 'd' } };
       const rMal = (w * w - hh * hh) / (2 * w);
       const pide = rng.elegir(['arco', 'perimetro']);
@@ -271,10 +278,10 @@
           pregunta: ['¿Cuál es el perímetro de la región semicircular?'],
           errores: [
             conPiMas('GE19-circunferencia-entera', 2 * r, 2 * r, u, `Usaste 2πr para el arco, la circunferencia entera. El arco de una semicircunferencia mide πr.`),
-            conPiMas('CM-perimetro-un-radio', r, r, u, `Sumaste un solo radio. El borde recto de la región es el diámetro entero: 2r.`),
+            conPiMas('CM-radio-es-AT', dg - hh, 2 * (dg - hh), u, `Tomaste el radio igual a AT. AT es la tangente desde A; el radio sale de AT² = AE·AB.`),
             conPiMas('CM-semicirculo-mitad-de-AB', w / 4, w / 2, u, `Supusiste que el diámetro es la mitad de AB. El radio sale de las tangentes: desde C, CT = CB; desde A, AT² = AE·AB.`),
             conPiMas('CM-tangentes-mal-tomadas', rMal, 2 * rMal, u, `Tomaste AT = BC. La tangente igual a CB es CT, la que sale de C; desde A queda AT = AC − CB.`),
-            conPiMas('CM-perimetro-con-radios-dobles', r, 4 * r, u, `Sumaste dos diámetros. La región tiene un solo borde recto, el diámetro: 2r.`),
+            conPiMas('CM-radio-es-BC', hh, 2 * hh, u, `Tomaste el radio igual a BC. BC es una tangente (desde C); el radio sale de AT² = AE·AB.`),
           ],
           solucion: [...pasos, [`${w} − 2r = ${(dg - hh) ** 2 / w}, así que r = ${r}. Perímetro = arco + diámetro = πr + 2r = `, v('x', corr.texto), '.']],
         };
@@ -337,6 +344,7 @@
         for (;;) { AE = rng.entero(2, 15); EB = rng.entero(2, 15); CE = rng.entero(2, 15); ED = AE * EB / CE; if (Number.isInteger(ED) && CE !== AE && CE !== EB && ED <= 40) break; }
         const variables = { AE: { nombre: 'AE', color: 'o' }, EB: { nombre: 'EB', color: 'i' }, CE: { nombre: 'CE', color: 'h' }, x: { nombre: 'ED', color: 'd' } };
         const ctx = rng.moneda();
+        if (ctx) u = 'cm';
         return {
           variables, unidad: u, correcta: ED, datos: { sub, AE, EB, CE },
           enunciado: ctx
@@ -417,7 +425,7 @@
           ],
         };
       }
-      const [p0, q0, r0] = rng.elegir([[3, 4, 5], [5, 12, 13], [8, 15, 17]]);
+      const [p0, q0, r0] = rng.elegir([[3, 4, 5], [5, 12, 13], [8, 15, 17], [7, 24, 25], [20, 21, 29], [12, 35, 37]]);
       const k = p0 === 3 ? rng.elegir([1, 2, 3]) : 1;
       let [AM, AN] = [p0 * k, q0 * k];
       if (rng.moneda()) [AM, AN] = [AN, AM];
@@ -466,10 +474,12 @@
             : ['El cuadrilátero ABCD (vértices en ese orden) está circunscrito a una circunferencia. AB = ', v('AB', L(AB, u)), ', BC = ', v('BC', L(BC, u)), ' y CD = ', v('CD', L(CD, u)), '.'],
           pregunta: ['¿Cuánto mide DA?'],
           errores: [
-            h('CM-pitot-vecinos', AB + BC - CD, `Sumaste lados vecinos (AB + BC = CD + DA). El teorema de Pitot junta los lados opuestos: AB + CD = BC + DA.`),
+            h('CM-pitot-suma-opuestos', AB + CD, `Esa es la suma AB + CD. Por Pitot también es BC + DA: falta restar BC.`),
+            h('CM-pitot-resta-opuestos', Math.abs(AB - CD), `Restaste los lados opuestos AB y CD. Pitot iguala sumas: AB + CD = BC + DA.`),
+            h('CM-pitot-vecinos-AB-BC', AB + BC - CD, `Sumaste lados vecinos (AB + BC = CD + DA). El teorema de Pitot junta los lados opuestos: AB + CD = BC + DA.`),
             h('CM-pitot-opuestos-iguales', BC, `Supusiste que los lados opuestos son iguales, como en un paralelogramo. Lo que es igual es la suma de cada par de opuestos.`),
             h('CM-pitot-promedio', (AB + BC + CD) / 3, `Promediaste los tres lados. DA sale de AB + CD = BC + DA.`),
-            h('CM-pitot-vecinos', BC + CD - AB, `Sumaste lados vecinos. El teorema de Pitot junta los lados opuestos: AB + CD = BC + DA.`),
+            h('CM-pitot-vecinos-BC-CD', BC + CD - AB, `Sumaste lados vecinos. El teorema de Pitot junta los lados opuestos: AB + CD = BC + DA.`),
           ],
           solucion: [
             ['Desde cada vértice, las dos tangentes a la circunferencia miden lo mismo. Cada lado es la suma de dos tangentes, y los lados opuestos usan las cuatro una vez: AB + CD = BC + DA (teorema de Pitot).'],
@@ -489,6 +499,7 @@
             h('GE19-diametro-por-radio', 2 * r, `Ese es el diámetro, igual a la altura del trapecio. El radio es la mitad.`),
             h('CM-pitot-promedio-bases', (B + b) / 4, `Tomaste como altura el promedio de las bases. La altura sale de Pitágoras con el lado no paralelo: h² = B·b.`),
             h('CM-pitot-lado-como-altura', (B + b) / 2, `Ese es el lado no paralelo, (B + b)/2. La altura es más corta: es el cateto, no la hipotenusa.`),
+            h('CM-pitot-diametro-base-menor', b / 2, `Tomaste el diámetro igual a la base menor. El diámetro es la altura del trapecio, h² = B·b.`),
             h('CM-pitot-diferencia-bases', (B - b) / 2, `Usaste (B − b)/2: ese es el cateto horizontal del triángulo rectángulo, no la altura.`),
           ],
           solucion: [
@@ -499,9 +510,9 @@
           ],
         };
       }
-      const ang = rng.elegir([53, 37]);
-      const r = ang === 53 ? rng.elegir([2, 4, 6, 8]) : rng.elegir([3, 6, 9]);
-      const [sn, cs] = ang === 53 ? [4 / 5, 3 / 5] : [3 / 5, 4 / 5];
+      const ang = rng.elegir([53, 37, 74, 16]);
+      const r = { 53: rng.elegir([2, 4, 6, 8]), 37: rng.elegir([3, 6, 9]), 74: 12, 16: 7 }[ang];
+      const [sn, cs] = SENCOS[ang];
       const CD = 2 * r / sn, dif = 2 * r * cs / sn, suma = 2 * r + CD, AD = (suma + dif) / 2, BC = (suma - dif) / 2;
       const variables = { r: { nombre: 'radio', color: 'o' }, CD: { nombre: 'lado oblicuo CD', color: 'i' }, s: { nombre: 'suma de bases', color: 'h' }, x: { nombre: 'base mayor AD', color: 'd' } };
       return {
@@ -517,7 +528,7 @@
         ],
         solucion: [
           ['La circunferencia toca AD y BC, que son paralelas: la altura AB es el diámetro, ', `2·`, v('r', `${r}`), ` = ${2 * r}.`],
-          [`Desde C se baja CH ⊥ AD: CH = ${2 * r} y el triángulo CHD es el notable de ${ang}° (3-4-5): `, v('CD', `CD = ${f(CD)}`), ` y HD = ${f(dif)} = AD − BC.`],
+          [`Desde C se baja CH ⊥ AD: CH = ${2 * r} y el triángulo CHD es el notable de ${ang}° (${ang === 53 || ang === 37 ? '3-4-5' : '7-24-25'}): `, v('CD', `CD = ${f(CD)}`), ` y HD = ${f(dif)} = AD − BC.`],
           ['Pitot: AD + BC = AB + CD = ', `${2 * r} + ${f(CD)} = `, v('s', `${f(suma)}`), '.'],
           [`AD = (${f(suma)} + ${f(dif)})/2 = `, v('x', L(AD, u)), ` (y BC = ${f(BC)}).`],
         ],
@@ -527,7 +538,7 @@
     poncelet(rng, u) {
       const sub = rng.elegir(['radio', 'perimetro']);
       let [a, b, c] = rng.elegir(TRIPLES);
-      const k = c <= 13 ? rng.elegir([1, 2, 3]) : 1;
+      const k = c <= 17 ? rng.elegir([1, 2, 3, 4]) : rng.elegir([1, 2]);
       a *= k; b *= k; c *= k;
       if (rng.moneda()) [a, b] = [b, a];
       const r = (a + b - c) / 2;
@@ -542,6 +553,7 @@
           pregunta: [ctx ? '¿Cuánto mide el radio de ese círculo?' : '¿Cuánto mide el radio de la circunferencia inscrita?'],
           errores: [
             h('CM-poncelet-sin-mitad', 2 * r, `Ese es AB + BC − AC, el diámetro. El teorema de Poncelet dice AB + BC = AC + 2r: falta dividir entre 2.`),
+            h('CM-poncelet-area-perimetro', r / 2, `Usaste r = área/perímetro. El radio inscrito es área/semiperímetro (o, con Poncelet, (AB + BC − AC)/2).`),
             h('CM-inscrita-circunscrita', c / 2, `Ese es el radio de la circunferencia circunscrita (la mitad de la hipotenusa). Se pide la inscrita, que toca los tres lados por dentro.`),
             h('CM-poncelet-semiperimetro', (a + b + c) / 2, `Ese es el semiperímetro. El radio inscrito es p − AC.`),
             h('CM-poncelet-signo', (a + c - b) / 2, `Pusiste la hipotenusa con el signo cambiado. Poncelet: catetos = hipotenusa + 2r.`),
@@ -562,6 +574,7 @@
           h('CM-poncelet-da-catetos', c + 2 * r, `Esa es la suma de los catetos. Falta sumar la hipotenusa.`),
           h('CM-poncelet-sin-doble-r', 2 * c + r, `Pusiste catetos = hipotenusa + r. Poncelet suma el diámetro: + 2r.`),
           h('CM-poncelet-signo', 2 * c - 2 * r, `Restaste 2r. Los catetos juntos son más largos que la hipotenusa: catetos = hipotenusa + 2r.`),
+          h('CM-poncelet-doble-diametro', 2 * c + 4 * r, `Sumaste el diámetro dos veces. Solo los catetos llevan el + 2r: perímetro = (hipotenusa + 2r) + hipotenusa.`),
           h('CM-poncelet-r-por-hipotenusa', c + r, `Sumaste solo hipotenusa y radio. Perímetro = catetos + hipotenusa = (hipotenusa + 2r) + hipotenusa.`),
         ],
         solucion: [
@@ -606,7 +619,7 @@
       const variables = { R: { nombre: 'radio', color: 'o' }, ac: { nombre: 'cuerda AC', color: 'i' }, bm: { nombre: 'flecha BM', color: 'h' }, ab: { nombre: 'cuerda AB', color: 'd' } };
       const ctx = rng.moneda();
       const intro = ctx
-        ? ['Un arco de puerta tiene forma de arco de circunferencia de radio ', v('R', L(Rr, u)), '. Sus extremos A y C están en el piso y B es el punto más alto del arco (el punto medio del arco AC).']
+        ? ['Un arco de puerta tiene forma de arco de circunferencia de radio ', v('R', L(Rr, u)), '. Sus extremos A y C están en el piso y B es el punto más alto del arco (el punto medio del arco AC; el arco es menor que media circunferencia).']
         : ['En una circunferencia de radio ', v('R', L(Rr, u)), ', B es el punto medio del arco menor AC.'];
       if (sub === 'cuerda') {
         return {
@@ -654,6 +667,8 @@
       const ang = pide === 'MPC' ? aMNC : 90 - aMNC;
       const variables = { L: { nombre: 'lado del cuadrado', color: 'o' }, m: { nombre: 'BM = CN', color: 'i' }, mc: { nombre: 'MC', color: 'h' }, x: { nombre: `ángulo ${pide}`, color: 'd' } };
       const ctx = rng.moneda();
+      if (ctx) u = 'cm';
+      const bam = anguloDeTan(m / Ld); // ∠BAM = ∠CBN
       const inscr = pide === 'MPC' ? ['MNC', 'MC', 'CN', 'MC/CN'] : ['NMC', 'NC', 'MC', 'CN/MC'];
       return {
         variables, unidad: '°', angular: true, correcta: ang, datos: { L: Ld, m, pide },
@@ -664,8 +679,9 @@
         errores: [
           h('CM-inscriptible-complemento', 90 - ang, `Ese es el ángulo ${pide === 'MPC' ? 'NPC' : 'MPC'}, su complemento. Los dos juntos forman el ángulo recto MPN.`),
           h('CM-inscriptible-45', 45, `Supusiste que PC parte el ángulo recto en dos mitades iguales. Solo pasa si M y N son puntos medios.`),
-          h('CM-inscriptible-recto', 90, `90° es el ángulo MPN (AM ⊥ BN). El ángulo ${pide} es solo una parte.`),
-          h('GE15-inscrito-por-arco', 2 * ang, `Ese es el arco ${inscr[1]} de la circunferencia que pasa por P, M, C y N. El ángulo inscrito mide la mitad.`),
+          h('CM-inscriptible-BAM', bam, `Ese es el ángulo BAM (en el triángulo ABM, con tan = BM/AB). El ángulo ${pide} es otro: se halla con el cuadrilátero inscriptible PMCN.`),
+          h('CM-inscriptible-AMB', 90 - bam, `Ese es el ángulo AMB (en el triángulo ABM). El ángulo ${pide} es otro: se halla con el cuadrilátero inscriptible PMCN.`),
+          h('CM-inscriptible-mitad', ang / 2, `Dividiste entre 2 otra vez. ∠${pide} = ∠${inscr[0]} ya es un ángulo inscrito; no hay que partirlo.`),
           h('CM-inscriptible-suplemento', 180 - ang, `Tomaste el suplemento. En un cuadrilátero inscriptible, los ángulos que suman 180° son los opuestos, no estos.`),
         ],
         solucion: [

@@ -233,13 +233,13 @@
     {
       "id": "p8",
       "nivel": "avanzado",
-      "enunciado": "En el cuadrado ABCD de 4 m de lado, M está en BC y N en CD, con BM = CN = 1 m. AM y BN se cortan en P. ¿Cuánto mide el ángulo MPC? (Usa que el ángulo cuya tangente es 3 es 143°/2.)",
+      "enunciado": "En el cuadrado ABCD de 4 m de lado, M está en BC y N en CD, con BM = CN = 1 m. AM y BN se cortan en P. ¿Cuánto mide el ángulo MPC? (Usa tan(37°/2) = 1/3.)",
       "respuesta": "143°/2.",
       "pasos": [
         "Los triángulos ABM y BCN son congruentes, así que AM y BN son perpendiculares: el ángulo MPN mide 90°.",
         "En PMCN, los ángulos en P y en C miden 90° y suman 180°: el cuadrilátero es inscriptible.",
         "Los ángulos MPC y MNC abarcan el mismo arco MC, así que son iguales.",
-        "En el triángulo MCN: MC = 3 y CN = 1, tan ∠MNC = 3. Entonces ∠MPC = 143°/2 (no 45°: PC no parte en dos el ángulo recto)."
+        "En el triángulo rectángulo MCN: MC = 3 y CN = 1. El ángulo MNC tiene tangente 3, así que su complemento, el ángulo NMC, tiene tangente 1/3 y mide 37°/2. Entonces ∠MPC = ∠MNC = 90° − 37°/2 = 143°/2 (no 45°: PC no parte en dos el ángulo recto)."
       ],
       "verificar": [
         {

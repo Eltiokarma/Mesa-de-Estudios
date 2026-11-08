@@ -35,12 +35,12 @@
       "entrada": {
         "tipo": "poncelet",
         "sub": "perimetro",
-        "c": 10,
-        "r": 2
+        "c": 20,
+        "r": 4
       },
       "esperado": {
-        "respuesta": 24,
-        "exacta": "24 cm"
+        "respuesta": 48,
+        "exacta": "48 cm"
       }
     },
     {
@@ -93,7 +93,7 @@
       },
       "esperado": {
         "respuesta": 24,
-        "exacta": "24 m"
+        "exacta": "24 cm"
       }
     },
     {
@@ -183,12 +183,12 @@
       "entrada": {
         "tipo": "poncelet",
         "sub": "perimetro",
-        "c": 39,
-        "r": 6
+        "c": 52,
+        "r": 8
       },
       "esperado": {
-        "respuesta": 90,
-        "exacta": "90 m"
+        "respuesta": 120,
+        "exacta": "120 m"
       }
     },
     {
@@ -209,12 +209,12 @@
       "entrada": {
         "tipo": "tangentes-iguales",
         "sub": "esquina",
-        "L": 30,
-        "AM": 12
+        "L": 40,
+        "AM": 15
       },
       "esperado": {
-        "respuesta": 13,
-        "exacta": "13 m"
+        "respuesta": 17,
+        "exacta": "17 m"
       }
     },
     {
@@ -222,12 +222,12 @@
       "entrada": {
         "tipo": "poncelet",
         "sub": "radio",
-        "a": 20,
-        "b": 21
+        "a": 42,
+        "b": 40
       },
       "esperado": {
-        "respuesta": 6,
-        "exacta": "6 cm"
+        "respuesta": 12,
+        "exacta": "12 cm"
       }
     },
     {
@@ -248,13 +248,13 @@
       "entrada": {
         "tipo": "tangente",
         "sub": "semicirculo",
-        "w": 24,
-        "h": 18,
+        "w": 25,
+        "h": 60,
         "pide": "perimetro"
       },
       "esperado": {
-        "respuesta": "pq:9.000000|18.000000",
-        "exacta": "(9π + 18) cm"
+        "respuesta": "pq:12.000000|24.000000",
+        "exacta": "(12π + 24) cm"
       }
     },
     {
@@ -276,13 +276,13 @@
       "entrada": {
         "tipo": "tangente",
         "sub": "semicirculo",
-        "w": 32,
-        "h": 24,
+        "w": 75,
+        "h": 40,
         "pide": "arco"
       },
       "esperado": {
-        "respuesta": 37.69911184307752,
-        "exacta": "12π cm"
+        "respuesta": 75.39822368615503,
+        "exacta": "24π cm"
       }
     },
     {
