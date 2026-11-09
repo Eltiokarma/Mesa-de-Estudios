@@ -1,12 +1,12 @@
 {
-  "generado_utc": "2026-11-09T10:48:23.434916+00:00",
+  "generado_utc": "2026-11-09T11:16:00.474685+00:00",
   "alcance": "Cotejo visual por página. No certifica libros completos ni exactitud matemática.",
   "prioridad_solicitada": "Páginas de baja confianza, primero sin cotejo previo",
-  "paginas_con_algun_cotejo": 121,
+  "paginas_con_algun_cotejo": 125,
   "paginas_pendientes_baja_confianza": 13722,
   "paginas_excluidas_sin_texto_principal": 6,
   "paginas_texto_completo_cotejado": 6,
-  "paginas_cotejo_parcial": 109,
+  "paginas_cotejo_parcial": 113,
   "copias_corregidas_locales": 19,
   "reconstrucciones_visuales": 17,
   "reemplazos_puntuales": 9,
@@ -1505,7 +1505,61 @@
       "estado": "parcial",
       "hallazgos": [
         "Soluciones propias, gráficos vectoriales y comprobaciones matemáticas guardados.",
-        "Se conservan por ficha las condiciones, unidades, correcciones y aproximaciones."
+        "Se conservan por ficha las condiciones, unidades, correcciones y aproximaciones.",
+        "Soluciones propias, construcciones vectoriales y comprobaciones matemáticas guardadas.",
+        "Las condiciones y discrepancias se conservan en cada ficha; fin de la sección en el propuesto 100."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 94,
+      "estado": "parcial",
+      "hallazgos": [
+        "Soluciones propias, construcciones vectoriales y comprobaciones matemáticas guardadas.",
+        "Las condiciones y discrepancias se conservan en cada ficha; fin de la sección en el propuesto 100."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 95,
+      "estado": "parcial",
+      "hallazgos": [
+        "Soluciones propias, construcciones vectoriales y comprobaciones matemáticas guardadas.",
+        "Las condiciones y discrepancias se conservan en cada ficha; fin de la sección en el propuesto 100."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 96,
+      "estado": "parcial",
+      "hallazgos": [
+        "Soluciones propias, construcciones vectoriales y comprobaciones matemáticas guardadas.",
+        "Las condiciones y discrepancias se conservan en cada ficha; fin de la sección en el propuesto 100."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 97,
+      "estado": "parcial",
+      "hallazgos": [
+        "Soluciones propias, construcciones vectoriales y comprobaciones matemáticas guardadas.",
+        "Las condiciones y discrepancias se conservan en cada ficha; fin de la sección en el propuesto 100."
       ],
       "copia_corregida_local": false,
       "reemplazos_puntuales": 0,

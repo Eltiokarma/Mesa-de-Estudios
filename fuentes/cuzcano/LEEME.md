@@ -23,7 +23,7 @@ No se identifica un título de razonamiento verbal en este catálogo.
 - 198 entradas descargadas y procesadas; 197 contenidos PDF distintos.
 - 21 522 páginas: 21 462 con OCR nuevo en español y 60 con capa textual previa aprovechable.
 - Cero libros con fallo de procesamiento. La auditoría de integridad pasó y las trece pruebas de herramientas están aprobadas.
-- 121 páginas con algún cotejo visual: seis con texto completo cotejado, seis sin texto principal y 109 parcialmente revisadas. Ningún libro completo certificado.
+- 125 páginas con algún cotejo visual: seis con texto completo cotejado, seis sin texto principal y 113 parcialmente revisadas. Ningún libro completo certificado.
 - 19 copias corregidas locales: 17 reconstrucciones visuales y dos páginas con nueve reemplazos puntuales en total.
 - 13 722 páginas siguen en la cola de baja confianza. El nuevo lote examinó 24 páginas de confianza cero y resolvió diez entradas de la cola: seis transcripciones completas y cuatro páginas sin texto principal.
 
@@ -156,7 +156,7 @@ La entrega está en `fuentes/ocr-local/cuzcano/piloto-complejos/index.html`. Inc
 
 ### Archivo reutilizable y lote de cuatro polinomios
 
-`archivo-ejercicios.json` registra ciento ochenta y siete fichas localizables por libro, tipo y número. El índice local está en `fuentes/ocr-local/cuzcano/archivo-ejercicios/index.html`. Sus 732 archivos de consulta tienen un manifiesto de integridad. El ZIP conjunto conserva lectores, fichas, recortes, dibujos y comprobadores; se probó su extracción sin los PDF ni el OCR originales. Es un respaldo local, no una copia remota en GitHub.
+`archivo-ejercicios.json` registra doscientas catorce fichas localizables por libro, tipo y número. El índice local está en `fuentes/ocr-local/cuzcano/archivo-ejercicios/index.html`. Sus 827 archivos de consulta tienen un manifiesto de integridad. El ZIP conjunto conserva lectores, fichas, recortes, dibujos y comprobadores; se probó su extracción sin los PDF ni el OCR originales. Es un respaldo local, no una copia remota en GitHub.
 
 Antes de seleccionar un ejercicio, buscar su libro, tipo y número en el índice: reutilizar la ficha si ya existe; volver a la fuente sólo para resolver una duda o corregirla. Para comprobar lo guardado sin modificar el registro: `python herramientas/indexar_ejercicios_locales.py`. Después de incorporar o corregir fichas deliberadamente: `python herramientas/indexar_ejercicios_locales.py --actualizar --zip`. La actualización informa archivos nuevos, modificados y retirados. El ZIP contiene `archivo-ejercicios/comprobar_archivo.py` para comprobar una restauración. Los hashes detectan cambios, no certifican las matemáticas.
 
@@ -220,4 +220,13 @@ Las treinta comprobaciones matemáticas pasaron; incluyen áreas y volúmenes po
 Treinta fichas nuevas con soluciones propias, SVG ampliables y evidencia original. Veinte verificadas; diez con observaciones: cuatro condicionadas (61, 67, 72, 73), cuatro claves corregidas (52, 53, 69, 70), una unidad corregida (58) y una aproximación angular (62). Los casos 69 y 70 también separan el modelo notable del valor literal.
 
 Se recuperaron datos esenciales de los dibujos y se comprobaron tangencias, pies de perpendicular, áreas y volúmenes. El área curva del caso 53 se contrastó mediante integral convergente y malla independiente. Las treinta comprobaciones pasaron; los treinta gráficos fueron inspeccionados visualmente y el lector se comprobó en móvil. El respaldo de 187 fichas y 732 archivos fue restaurado y los treinta controles se ejecutaron sin PDF ni OCR originales. Hay 121 páginas con algún cotejo, 109 parciales; la cola conserva 13 722 páginas. Siguiente: propuesto 74, página PDF 93. Ningún libro completo certificado.
+
+
+### Propuestos de geometría 74–100: cierre de la sección
+
+La sección termina en el propuesto 100: se incorporaron los 27 restantes, con soluciones propias por pasos, gráficos SVG ampliables y recortes de evidencia. Trece fichas quedan sin discrepancias; catorce conservan observaciones: ocho condiciones pendientes (79, 80, 81, 82, 90, 94, 96, 99), cuatro claves corregidas (74, 76, 84, 87) y dos aproximaciones (77, 78). El 74 también distingue el modelo angular notable y el 76 requiere unificar unidades.
+
+Las 27 comprobaciones matemáticas pasaron, incluidos controles por coordenadas, áreas, volúmenes, integración y contraejemplos. Se inspeccionaron los 27 dibujos y el lector móvil. El respaldo de 214 fichas y 827 archivos fue restaurado; los 27 controles se ejecutaron desde esa copia sin PDF ni OCR originales. El OCR original permanece intacto.
+
+Este cuaderno tiene ahora fichas para sus 100 resueltos y 100 propuestos, manteniendo ambos tipos separados. Esto acredita cobertura de ejercicios, no corrección incondicional de todos ellos ni revisión integral de teoría y páginas. Hay 125 páginas con algún cotejo, 113 parciales; la cola conserva 13 722 páginas. Antes de certificar el cuaderno deben resolverse las observaciones y revisarse el contenido restante.
 
