@@ -23,7 +23,7 @@ No se identifica un título de razonamiento verbal en este catálogo.
 - 198 entradas descargadas y procesadas; 197 contenidos PDF distintos.
 - 21 522 páginas: 21 462 con OCR nuevo en español y 60 con capa textual previa aprovechable.
 - Cero libros con fallo de procesamiento. La auditoría de integridad pasó y las trece pruebas de herramientas están aprobadas.
-- 125 páginas con algún cotejo visual: seis con texto completo cotejado, seis sin texto principal y 113 parcialmente revisadas. Ningún libro completo certificado.
+- 142 páginas con algún cotejo visual: seis con texto completo cotejado, seis sin texto principal y 130 parcialmente revisadas. Ningún libro completo certificado.
 - 19 copias corregidas locales: 17 reconstrucciones visuales y dos páginas con nueve reemplazos puntuales en total.
 - 13 722 páginas siguen en la cola de baja confianza. El nuevo lote examinó 24 páginas de confianza cero y resolvió diez entradas de la cola: seis transcripciones completas y cuatro páginas sin texto principal.
 
@@ -156,7 +156,7 @@ La entrega está en `fuentes/ocr-local/cuzcano/piloto-complejos/index.html`. Inc
 
 ### Archivo reutilizable y lote de cuatro polinomios
 
-`archivo-ejercicios.json` registra doscientas catorce fichas localizables por libro, tipo y número. El índice local está en `fuentes/ocr-local/cuzcano/archivo-ejercicios/index.html`. Sus 827 archivos de consulta tienen un manifiesto de integridad. El ZIP conjunto conserva lectores, fichas, recortes, dibujos y comprobadores; se probó su extracción sin los PDF ni el OCR originales. Es un respaldo local, no una copia remota en GitHub.
+`archivo-ejercicios.json` registra doscientas catorce fichas localizables por libro, tipo y número. El índice local está en `fuentes/ocr-local/cuzcano/archivo-ejercicios/index.html`. Sus 873 archivos de consulta tienen un manifiesto de integridad. El ZIP conjunto conserva lectores, fichas, recortes, dibujos y comprobadores; se probó su extracción sin los PDF ni el OCR originales. Es un respaldo local, no una copia remota en GitHub.
 
 Antes de seleccionar un ejercicio, buscar su libro, tipo y número en el índice: reutilizar la ficha si ya existe; volver a la fuente sólo para resolver una duda o corregirla. Para comprobar lo guardado sin modificar el registro: `python herramientas/indexar_ejercicios_locales.py`. Después de incorporar o corregir fichas deliberadamente: `python herramientas/indexar_ejercicios_locales.py --actualizar --zip`. La actualización informa archivos nuevos, modificados y retirados. El ZIP contiene `archivo-ejercicios/comprobar_archivo.py` para comprobar una restauración. Los hashes detectan cambios, no certifican las matemáticas.
 
@@ -229,4 +229,15 @@ La sección termina en el propuesto 100: se incorporaron los 27 restantes, con s
 Las 27 comprobaciones matemáticas pasaron, incluidos controles por coordenadas, áreas, volúmenes, integración y contraejemplos. Se inspeccionaron los 27 dibujos y el lector móvil. El respaldo de 214 fichas y 827 archivos fue restaurado; los 27 controles se ejecutaron desde esa copia sin PDF ni OCR originales. El OCR original permanece intacto.
 
 Este cuaderno tiene ahora fichas para sus 100 resueltos y 100 propuestos, manteniendo ambos tipos separados. Esto acredita cobertura de ejercicios, no corrección incondicional de todos ellos ni revisión integral de teoría y páginas. Hay 125 páginas con algún cotejo, 113 parciales; la cola conserva 13 722 páginas. Antes de certificar el cuaderno deben resolverse las observaciones y revisarse el contenido restante.
+
+
+### Cierre de contenido: Prisma y cilindro
+
+`cierre-prisma-cilindro.json` registra el cierre de la revisión de contenido matemático. Se cotejaron las 16 páginas de teoría (PDF 8–23) y el índice (PDF 7); una guía propia reúne 14 unidades, ocho gráficos y doce correcciones o precisiones. Entre ellas están el área lateral de prismas oblicuos, un factor omitido en volumen triangular, el dominio de la fórmula de tres áreas de un tetraedro, el perímetro elíptico y la forma curva de los desarrollos de cortes cilíndricos.
+
+Las 67 observaciones históricas tienen dictamen individual, conservando sus claves y estados originales: cinco enunciados rechazados por incompatibilidad; catorce con valores exactos y aproximados separados; diecinueve correcciones documentadas; veintiséis con condiciones explícitas; una unidad reparada en una variante; una interpretación aclarada por la teoría y una corrección con unificación de unidades. Los cinco rechazos son resueltos 2 y 71, y propuestos 12, 25 y 26. Cerrar su revisión no significa fabricar una solución para datos imposibles.
+
+La cobertura del cuaderno es de 100 resueltos y 100 propuestos. Se ejecutaron los 16 comprobadores de sus grupos y 15 controles nuevos de teoría, también desde el respaldo restaurado. El archivo acumulado conserva 214 fichas y 873 archivos. La herramienta de respaldo incluye ahora guías con inventario explícito sin contarlas como ejercicios; ocho pruebas comprueban inclusión, faltantes y límites de rutas.
+
+La guía local está en `fuentes/ocr-local/cuzcano/cierre-prisma-cilindro/index.html`, enlazada desde el archivo y los lectores anteriores. El OCR original permanece intacto. El cierre es de contenido matemático con erratas y variantes documentadas: no es una transcripción literal certificada de todas las páginas ni habilita los originales automáticamente para producto. Hay 142 páginas con algún cotejo, 130 parciales, y la cola general conserva 13 722 páginas.
 

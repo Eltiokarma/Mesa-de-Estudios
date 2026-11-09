@@ -1,12 +1,12 @@
 {
-  "generado_utc": "2026-11-09T11:16:00.474685+00:00",
+  "generado_utc": "2026-11-09T11:35:29.132689+00:00",
   "alcance": "Cotejo visual por página. No certifica libros completos ni exactitud matemática.",
   "prioridad_solicitada": "Páginas de baja confianza, primero sin cotejo previo",
-  "paginas_con_algun_cotejo": 125,
+  "paginas_con_algun_cotejo": 142,
   "paginas_pendientes_baja_confianza": 13722,
   "paginas_excluidas_sin_texto_principal": 6,
   "paginas_texto_completo_cotejado": 6,
-  "paginas_cotejo_parcial": 113,
+  "paginas_cotejo_parcial": 130,
   "copias_corregidas_locales": 19,
   "reconstrucciones_visuales": 17,
   "reemplazos_puntuales": 9,
@@ -625,6 +625,210 @@
       "hallazgos": [
         "Tramado y bajo contraste en ambas páginas",
         "Figuras y fórmulas no recuperadas íntegramente"
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 7,
+      "estado": "parcial",
+      "hallazgos": [
+        "Índice de contenido y cobertura de revisión guardados."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 8,
+      "estado": "parcial",
+      "hallazgos": [
+        "Contenido matemático de teoría cotejado visualmente; guía propia corregida y dominios de fórmulas guardados."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 9,
+      "estado": "parcial",
+      "hallazgos": [
+        "Contenido matemático de teoría cotejado visualmente; guía propia corregida y dominios de fórmulas guardados."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 10,
+      "estado": "parcial",
+      "hallazgos": [
+        "Contenido matemático de teoría cotejado visualmente; guía propia corregida y dominios de fórmulas guardados."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 11,
+      "estado": "parcial",
+      "hallazgos": [
+        "Contenido matemático de teoría cotejado visualmente; guía propia corregida y dominios de fórmulas guardados."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 12,
+      "estado": "parcial",
+      "hallazgos": [
+        "Contenido matemático de teoría cotejado visualmente; guía propia corregida y dominios de fórmulas guardados."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 13,
+      "estado": "parcial",
+      "hallazgos": [
+        "Contenido matemático de teoría cotejado visualmente; guía propia corregida y dominios de fórmulas guardados."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 14,
+      "estado": "parcial",
+      "hallazgos": [
+        "Contenido matemático de teoría cotejado visualmente; guía propia corregida y dominios de fórmulas guardados."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 15,
+      "estado": "parcial",
+      "hallazgos": [
+        "Contenido matemático de teoría cotejado visualmente; guía propia corregida y dominios de fórmulas guardados."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 16,
+      "estado": "parcial",
+      "hallazgos": [
+        "Contenido matemático de teoría cotejado visualmente; guía propia corregida y dominios de fórmulas guardados."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 17,
+      "estado": "parcial",
+      "hallazgos": [
+        "Contenido matemático de teoría cotejado visualmente; guía propia corregida y dominios de fórmulas guardados."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 18,
+      "estado": "parcial",
+      "hallazgos": [
+        "Contenido matemático de teoría cotejado visualmente; guía propia corregida y dominios de fórmulas guardados."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 19,
+      "estado": "parcial",
+      "hallazgos": [
+        "Contenido matemático de teoría cotejado visualmente; guía propia corregida y dominios de fórmulas guardados."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 20,
+      "estado": "parcial",
+      "hallazgos": [
+        "Contenido matemático de teoría cotejado visualmente; guía propia corregida y dominios de fórmulas guardados."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 21,
+      "estado": "parcial",
+      "hallazgos": [
+        "Contenido matemático de teoría cotejado visualmente; guía propia corregida y dominios de fórmulas guardados."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 22,
+      "estado": "parcial",
+      "hallazgos": [
+        "Contenido matemático de teoría cotejado visualmente; guía propia corregida y dominios de fórmulas guardados."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 23,
+      "estado": "parcial",
+      "hallazgos": [
+        "Contenido matemático de teoría cotejado visualmente; guía propia corregida y dominios de fórmulas guardados."
       ],
       "copia_corregida_local": false,
       "reemplazos_puntuales": 0,

@@ -47,8 +47,12 @@
   "libro_completo_validado": false,
   "pagina_completa_validada": false,
   "siguiente": {
-    "accion": "Revisar las observaciones pendientes y la cobertura de teoría antes de certificar el libro; elegir después el siguiente cuaderno."
+    "accion": "Revisión de contenido cerrada con erratas documentadas; siguiente cuaderno por seleccionar."
   },
-  "fuentes_y_fichas": "Solo locales; el repositorio recibe metadatos."
+  "fuentes_y_fichas": "Solo locales; el repositorio recibe metadatos.",
+  "revision_posterior": {
+    "registro": "cierre-prisma-cilindro.json",
+    "estado": "Teoría y observaciones con dictamen; se conservan condiciones y rechazos."
+  }
 }
 

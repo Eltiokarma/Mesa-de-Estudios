@@ -44,7 +44,7 @@ class References(HTMLParser):
 
 def build(local):
     local=local.resolve();archive=local/'archivo-ejercicios';archive.mkdir(exist_ok=True)
-    entries=[];files=set();seen=set()
+    entries=[];files=set();seen=set();dossiers=[]
     for folder in sorted(local.iterdir()):
         if not folder.is_dir() or not folder.name.startswith(('piloto-','polinomios-lote-')):continue
         found=[]
@@ -90,11 +90,32 @@ def build(local):
             files.add(target)
         for name in ['verificacion.json','fichas.json']:
             if (folder/name).is_file():files.add(folder/name)
+    # Supporting guides are not exercises. Their explicit inventories travel in
+    # the same backup without changing exercise identities or counts.
+    for inventory in sorted(local.glob('*/dossier.json')):
+        data=json.loads(inventory.read_text(encoding='utf-8'));folder=inventory.parent
+        reader=inside(local,folder/data['lector'])
+        declared={inside(local,folder/name) for name in data['archivos']}
+        if reader not in declared:raise ValueError('Lector no declarado en dossier: '+str(reader))
+        for path in declared:
+            if not path.is_file():raise FileNotFoundError(path)
+        files.update(declared);files.add(inventory)
+        dossiers.append({'titulo':data['titulo'],'lector':reader.relative_to(local).as_posix(),
+            'inventario':inventory.relative_to(local).as_posix(),'archivos':len(declared)+1})
+    for dossier in dossiers:
+        reader=local/dossier['lector'];parser=References();parser.feed(reader.read_text(encoding='utf-8'))
+        for link in parser.links:
+            target=inside(local,reader.parent/link)
+            if not target.is_file():raise FileNotFoundError(target)
+            if target not in files:raise ValueError('Enlace de dossier no incluido en respaldo: '+str(target))
     entries.sort(key=lambda x:(x['libro_id'],x['tipo'],x['numero']))
-    index={'schema_version':1,'alcance':'Ejercicios revisados; no inventario completo de libros ni certificación de páginas.','ejercicios':entries}
+    index={'schema_version':1,'alcance':'Ejercicios revisados; no inventario completo de libros ni certificación de páginas.','ejercicios':entries,'dossiers':dossiers}
     write(archive/'indice.json',index)
     rows=''.join('<tr><td>'+html.escape(e['tema'])+'</td><td>'+html.escape(e['tipo'])+' '+str(e['numero'])+'</td><td>'+html.escape(e['estado'])+'</td><td><a href="../'+html.escape(e['lector'])+'">Abrir lector</a> · <a href="../'+html.escape(e['ficha'])+'">Ficha</a></td></tr>' for e in entries)
     doc='<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Archivo de ejercicios revisados</title><style>body{font:16px/1.6 system-ui;background:#f0f4f7;color:#20384c;margin:0}main{max-width:1150px;margin:auto;padding:28px}table{background:white;border-collapse:collapse;width:100%}th,td{text-align:left;padding:13px;border-bottom:1px solid #d5e0e7}a{color:#006c82}h1{line-height:1.2}.table{overflow:auto}small{color:#536c80}</style><main><h1>Archivo de ejercicios revisados</h1><p>'+str(len(entries))+' fichas localizables por libro y ejercicio. Cada ficha conserva su lector y sus condiciones de revisión. No es necesario repetir el OCR para consultarlas.</p><p><strong>Conservación:</strong> este archivo y el ZIP son locales. GitHub sólo recibe herramientas y metadatos; conviene guardar el ZIP en una ubicación de respaldo propia.</p><p><a href="indice.json">Índice estructurado</a> · <a href="manifiesto.json">Control de integridad</a></p><div class="table"><table><thead><tr><th>Tema</th><th>Ejercicio</th><th>Estado</th><th>Acceso</th></tr></thead><tbody>'+rows+'</tbody></table></div><p><small>Un hash detecta cambios de archivos; no certifica la corrección matemática. Las fichas con discrepancias o condiciones conservan su estado.</small></p></main></html>'
+    if dossiers:
+        links='<h2>Guías y cierres de revisión</h2><ul>'+''.join('<li><a href="../'+html.escape(d['lector'])+'">'+html.escape(d['titulo'])+'</a></li>' for d in dossiers)+'</ul>'
+        doc=doc.replace('<div class="table">',links+'<div class="table">',1)
     (archive/'index.html').write_text(doc,encoding='utf-8')
     checker='''"""Verifica el archivo extraído, sin PDF, OCR ni servicios externos."""
 import hashlib,json
@@ -149,3 +170,4 @@ def main():
     if args.zip:print(str(package(LOCAL)))
     print(json.dumps({'ejercicios':len(index['ejercicios']),'archivos_verificados':len(manifest['archivos'])},ensure_ascii=False))
 if __name__=='__main__':main()
+

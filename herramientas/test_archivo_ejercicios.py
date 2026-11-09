@@ -42,4 +42,30 @@ class ArchiveTest(unittest.TestCase):
         _,changes=build(self.root)
         self.assertEqual(changes,{'nuevos':[],'modificados':[],'retirados':[]})
 
+    def dossier(self,files=None):
+        folder=self.root/'cierre-test';folder.mkdir()
+        (folder/'index.html').write_text('<img src="figura.svg">',encoding='utf-8')
+        (folder/'figura.svg').write_text('<svg/>',encoding='utf-8')
+        (folder/'dossier.json').write_text(json.dumps({'titulo':'Guía','lector':'index.html','archivos':files or ['index.html','figura.svg']}),encoding='utf-8')
+        return folder
+
+    def test_dossier_se_respalda_sin_contar_como_ejercicio(self):
+        self.dossier();index,_=build(self.root);_,manifest=verify(self.root)
+        self.assertEqual(len(index['ejercicios']),1)
+        self.assertEqual(len(index['dossiers']),1)
+        self.assertIn('cierre-test/figura.svg',manifest['archivos'])
+        import zipfile
+        with zipfile.ZipFile(package(self.root)) as z:self.assertIn('cierre-test/figura.svg',z.namelist())
+
+    def test_dossier_rechaza_enlace_omitido_y_ruta_externa(self):
+        folder=self.dossier(['index.html'])
+        with self.assertRaisesRegex(ValueError,'no incluido'):build(self.root)
+        (folder/'dossier.json').write_text(json.dumps({'titulo':'Guía','lector':'index.html','archivos':['index.html','../../fuera.txt']}),encoding='utf-8')
+        with self.assertRaisesRegex(ValueError,'fuera'):build(self.root)
+
+    def test_dossier_rechaza_archivo_faltante(self):
+        self.dossier(['index.html','ausente.svg'])
+        with self.assertRaises(FileNotFoundError):build(self.root)
+
 if __name__=='__main__':unittest.main()
+
