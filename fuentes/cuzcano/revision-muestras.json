@@ -1,12 +1,12 @@
 {
-  "generado_utc": "2026-11-09T03:54:46.142051+00:00",
+  "generado_utc": "2026-11-09T04:14:11.182769+00:00",
   "alcance": "Cotejo visual por página. No certifica libros completos ni exactitud matemática.",
   "prioridad_solicitada": "Páginas de baja confianza, primero sin cotejo previo",
-  "paginas_con_algun_cotejo": 64,
+  "paginas_con_algun_cotejo": 82,
   "paginas_pendientes_baja_confianza": 13722,
   "paginas_excluidas_sin_texto_principal": 6,
   "paginas_texto_completo_cotejado": 6,
-  "paginas_cotejo_parcial": 52,
+  "paginas_cotejo_parcial": 70,
   "copias_corregidas_locales": 19,
   "reconstrucciones_visuales": 17,
   "reemplazos_puntuales": 9,
@@ -784,7 +784,224 @@
       "pagina_pdf": 39,
       "estado": "parcial",
       "hallazgos": [
-        "Enunciado, resolución y figuras cotejados; SVG reconstruidos y cálculos independientes."
+        "Enunciado, resolución y figuras cotejados; SVG reconstruidos y cálculos independientes.",
+        "Ejercicios cotejados con el original, redibujados y comprobados con Python; condiciones conservadas en las fichas."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 40,
+      "estado": "parcial",
+      "hallazgos": [
+        "Ejercicios cotejados con el original, redibujados y comprobados con Python; condiciones conservadas en las fichas."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 41,
+      "estado": "parcial",
+      "hallazgos": [
+        "Ejercicios cotejados con el original, redibujados y comprobados con Python; condiciones conservadas en las fichas."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 42,
+      "estado": "parcial",
+      "hallazgos": [
+        "Ejercicios cotejados con el original, redibujados y comprobados con Python; condiciones conservadas en las fichas."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 43,
+      "estado": "parcial",
+      "hallazgos": [
+        "Ejercicios cotejados con el original, redibujados y comprobados con Python; condiciones conservadas en las fichas."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 44,
+      "estado": "parcial",
+      "hallazgos": [
+        "Ejercicios cotejados con el original, redibujados y comprobados con Python; condiciones conservadas en las fichas."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 45,
+      "estado": "parcial",
+      "hallazgos": [
+        "Ejercicios cotejados con el original, redibujados y comprobados con Python; condiciones conservadas en las fichas."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 46,
+      "estado": "parcial",
+      "hallazgos": [
+        "Ejercicios cotejados con el original, redibujados y comprobados con Python; condiciones conservadas en las fichas."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 47,
+      "estado": "parcial",
+      "hallazgos": [
+        "Ejercicios cotejados con el original, redibujados y comprobados con Python; condiciones conservadas en las fichas."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 48,
+      "estado": "parcial",
+      "hallazgos": [
+        "Ejercicios cotejados con el original, redibujados y comprobados con Python; condiciones conservadas en las fichas."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 49,
+      "estado": "parcial",
+      "hallazgos": [
+        "Ejercicios cotejados con el original, redibujados y comprobados con Python; condiciones conservadas en las fichas."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 50,
+      "estado": "parcial",
+      "hallazgos": [
+        "Ejercicios cotejados con el original, redibujados y comprobados con Python; condiciones conservadas en las fichas."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 51,
+      "estado": "parcial",
+      "hallazgos": [
+        "Ejercicios cotejados con el original, redibujados y comprobados con Python; condiciones conservadas en las fichas."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 52,
+      "estado": "parcial",
+      "hallazgos": [
+        "Ejercicios cotejados con el original, redibujados y comprobados con Python; condiciones conservadas en las fichas."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 53,
+      "estado": "parcial",
+      "hallazgos": [
+        "Ejercicios cotejados con el original, redibujados y comprobados con Python; condiciones conservadas en las fichas."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 54,
+      "estado": "parcial",
+      "hallazgos": [
+        "Ejercicios cotejados con el original, redibujados y comprobados con Python; condiciones conservadas en las fichas."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 55,
+      "estado": "parcial",
+      "hallazgos": [
+        "Ejercicios cotejados con el original, redibujados y comprobados con Python; condiciones conservadas en las fichas."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 56,
+      "estado": "parcial",
+      "hallazgos": [
+        "Ejercicios cotejados con el original, redibujados y comprobados con Python; condiciones conservadas en las fichas."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 57,
+      "estado": "parcial",
+      "hallazgos": [
+        "Ejercicios cotejados con el original, redibujados y comprobados con Python; condiciones conservadas en las fichas."
       ],
       "copia_corregida_local": false,
       "reemplazos_puntuales": 0,
