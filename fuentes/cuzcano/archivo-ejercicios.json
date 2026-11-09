@@ -1,16 +1,17 @@
 {
-  "generado_utc": "2026-11-09T05:25:11.072010+00:00",
-  "ejercicios_indexados": 157,
-  "archivos_controlados": 626,
+  "generado_utc": "2026-11-09T10:49:52.451593+00:00",
+  "ejercicios_indexados": 187,
+  "archivos_controlados": 732,
   "indice_local": "fuentes/ocr-local/cuzcano/archivo-ejercicios/index.html",
   "respaldo_local": "fuentes/ocr-local/cuzcano/archivo-ejercicios/archivo-ejercicios.zip",
-  "sha256_zip": "1d8ec6113f9394487d696bd2d24305f6c2b2319dfee6a61e7d6e08d3945fc5b2",
-  "bytes_zip": 64765471,
+  "sha256_zip": "444407620335d5a7a01f2c686a16e98edd6a7258511533d0793c219c7af574cc",
+  "bytes_zip": 69856578,
   "verificacion": [
-    "626 archivos restaurados y verificados sin PDF ni OCR originales.",
-    "Treinta comprobaciones de propuestos 14–43 aprobadas desde el respaldo restaurado.",
+    "732 archivos restaurados y verificados sin PDF ni OCR originales.",
+    "Treinta comprobaciones de propuestos 44–73 aprobadas desde el respaldo restaurado.",
     "Treinta SVG inspeccionados visualmente y lector móvil completo comprobado.",
-    "Se preservan tres casos condicionados, dos incompatibles, dos claves corregidas y dos aproximaciones."
+    "Se preservan cuatro casos condicionados, cuatro claves corregidas, una unidad corregida y una aproximación angular.",
+    "El control del área curva contrasta integral convergente y malla independiente."
   ],
   "limites": [
     "Los hashes verifican integridad, no exactitud matemática.",
@@ -2472,6 +2473,465 @@
       "sha256_ocr_por_pagina": {
         "88": "0df4190c5cf0d49b531d4c04feae357a6a3d8f02f1b053d70f649ec467ae622b"
       }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:44",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 44,
+      "paginas_pdf": [
+        88
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-propuestos-44-73/propuesto-44.json",
+      "sha256_ficha": "ec3eec30691da4a5691e630620b9c1758d03795990721f33b434338864f53665",
+      "sha256_ocr_por_pagina": {
+        "88": "0df4190c5cf0d49b531d4c04feae357a6a3d8f02f1b053d70f649ec467ae622b"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:45",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 45,
+      "paginas_pdf": [
+        88
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-propuestos-44-73/propuesto-45.json",
+      "sha256_ficha": "c4896c82798d109a9920ab720b507afe67b245b57b3e3deccff4303e193ca73c",
+      "sha256_ocr_por_pagina": {
+        "88": "0df4190c5cf0d49b531d4c04feae357a6a3d8f02f1b053d70f649ec467ae622b"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:46",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 46,
+      "paginas_pdf": [
+        88
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-propuestos-44-73/propuesto-46.json",
+      "sha256_ficha": "2feeaea33a6e05389b3b4975adf53fff120f52a0f1652c4335ff7ebeb7eccc77",
+      "sha256_ocr_por_pagina": {
+        "88": "0df4190c5cf0d49b531d4c04feae357a6a3d8f02f1b053d70f649ec467ae622b"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:47",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 47,
+      "paginas_pdf": [
+        88,
+        89
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-propuestos-44-73/propuesto-47.json",
+      "sha256_ficha": "6332bd322de5ea91c49d4d50fefb54797eab0ce31a85d83ddaac30d42cca1e7f",
+      "sha256_ocr_por_pagina": {
+        "88": "0df4190c5cf0d49b531d4c04feae357a6a3d8f02f1b053d70f649ec467ae622b",
+        "89": "dd277ec00ab039c49fcd8dbc7c55b5f84ed9fc2cf10797fb8223dae5d4931f52"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:48",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 48,
+      "paginas_pdf": [
+        89
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-propuestos-44-73/propuesto-48.json",
+      "sha256_ficha": "c7416b288652edcea714b9f67c9605450e3c0698440f1b169f5b9b284f04218d",
+      "sha256_ocr_por_pagina": {
+        "89": "dd277ec00ab039c49fcd8dbc7c55b5f84ed9fc2cf10797fb8223dae5d4931f52"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:49",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 49,
+      "paginas_pdf": [
+        89
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-propuestos-44-73/propuesto-49.json",
+      "sha256_ficha": "f4719073678196d2760faf8414e5a66fee6f32e3aa8c0413383af1ff82f23dcc",
+      "sha256_ocr_por_pagina": {
+        "89": "dd277ec00ab039c49fcd8dbc7c55b5f84ed9fc2cf10797fb8223dae5d4931f52"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:50",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 50,
+      "paginas_pdf": [
+        89
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-propuestos-44-73/propuesto-50.json",
+      "sha256_ficha": "267876a1cbfbd21a8df51d6c65b4b66b2c596e8679ec7ffc059a4607e4c8fcf9",
+      "sha256_ocr_por_pagina": {
+        "89": "dd277ec00ab039c49fcd8dbc7c55b5f84ed9fc2cf10797fb8223dae5d4931f52"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:51",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 51,
+      "paginas_pdf": [
+        89
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-propuestos-44-73/propuesto-51.json",
+      "sha256_ficha": "01ada8f702b19ddb9d33fb3d4f16f0bcd23c1fc55f15cfe6da88f976d607691c",
+      "sha256_ocr_por_pagina": {
+        "89": "dd277ec00ab039c49fcd8dbc7c55b5f84ed9fc2cf10797fb8223dae5d4931f52"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:52",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 52,
+      "paginas_pdf": [
+        89
+      ],
+      "estado": "correccion_clave",
+      "ficha": "piloto-geometria-propuestos-44-73/propuesto-52.json",
+      "sha256_ficha": "def86173e874af504790c7561fbff736fbf070aeed127c35a0966e8ac243569e",
+      "sha256_ocr_por_pagina": {
+        "89": "dd277ec00ab039c49fcd8dbc7c55b5f84ed9fc2cf10797fb8223dae5d4931f52"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:53",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 53,
+      "paginas_pdf": [
+        89,
+        90
+      ],
+      "estado": "correccion_clave",
+      "ficha": "piloto-geometria-propuestos-44-73/propuesto-53.json",
+      "sha256_ficha": "5607e50d7f4cc1ffac1228d5f9c312e1c0bb090bf8afe9c13a5fbed275ae5b2b",
+      "sha256_ocr_por_pagina": {
+        "89": "dd277ec00ab039c49fcd8dbc7c55b5f84ed9fc2cf10797fb8223dae5d4931f52",
+        "90": "1d46dd28811755a9c90091a6c124e0c471ead583d2422be0862be0625e9fcfab"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:54",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 54,
+      "paginas_pdf": [
+        90
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-propuestos-44-73/propuesto-54.json",
+      "sha256_ficha": "7c35888b72a6bbd8dd0d6ba00b3b0100b47c6842632455a70b27dff7eb90e8d2",
+      "sha256_ocr_por_pagina": {
+        "90": "1d46dd28811755a9c90091a6c124e0c471ead583d2422be0862be0625e9fcfab"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:55",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 55,
+      "paginas_pdf": [
+        90
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-propuestos-44-73/propuesto-55.json",
+      "sha256_ficha": "2a2300d3fb5cb725aff4c9de5a2de9741b878c546aed3b86471c8bce0e19f8e1",
+      "sha256_ocr_por_pagina": {
+        "90": "1d46dd28811755a9c90091a6c124e0c471ead583d2422be0862be0625e9fcfab"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:56",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 56,
+      "paginas_pdf": [
+        90
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-propuestos-44-73/propuesto-56.json",
+      "sha256_ficha": "535010b6d1b694248d2df5b85757a16acf05a056290d8d0ede6f0686409d4e34",
+      "sha256_ocr_por_pagina": {
+        "90": "1d46dd28811755a9c90091a6c124e0c471ead583d2422be0862be0625e9fcfab"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:57",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 57,
+      "paginas_pdf": [
+        90
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-propuestos-44-73/propuesto-57.json",
+      "sha256_ficha": "7c9248aebba21fcd4208e835b2f29c67fdc25e2b3245f274147feb9078702caf",
+      "sha256_ocr_por_pagina": {
+        "90": "1d46dd28811755a9c90091a6c124e0c471ead583d2422be0862be0625e9fcfab"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:58",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 58,
+      "paginas_pdf": [
+        90
+      ],
+      "estado": "correccion_unidad",
+      "ficha": "piloto-geometria-propuestos-44-73/propuesto-58.json",
+      "sha256_ficha": "bc7dbda83caa8a1464ef8906745d5d0825e36a170c084b71e406dc60cf2e6f29",
+      "sha256_ocr_por_pagina": {
+        "90": "1d46dd28811755a9c90091a6c124e0c471ead583d2422be0862be0625e9fcfab"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:59",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 59,
+      "paginas_pdf": [
+        90
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-propuestos-44-73/propuesto-59.json",
+      "sha256_ficha": "2a101c159d9ce442306babc616ce29849278daae986d2f5f51679fa4eca6932e",
+      "sha256_ocr_por_pagina": {
+        "90": "1d46dd28811755a9c90091a6c124e0c471ead583d2422be0862be0625e9fcfab"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:60",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 60,
+      "paginas_pdf": [
+        90,
+        91
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-propuestos-44-73/propuesto-60.json",
+      "sha256_ficha": "3c9c4694e2bf5f10e6f027a8d56832aaaac773a159892328b1ed2d25c663a239",
+      "sha256_ocr_por_pagina": {
+        "90": "1d46dd28811755a9c90091a6c124e0c471ead583d2422be0862be0625e9fcfab",
+        "91": "fb4dfc34bc688859db1381a55d5215abf9e55838a0b3aa1aefce8dd1816e0a7e"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:61",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 61,
+      "paginas_pdf": [
+        91
+      ],
+      "estado": "condicionado_configuracion_cuna",
+      "ficha": "piloto-geometria-propuestos-44-73/propuesto-61.json",
+      "sha256_ficha": "8ae2ec0440a74836df66baa61b22576dc67aa4e7aa6531a2a4ff28c5eeb03e2a",
+      "sha256_ocr_por_pagina": {
+        "91": "fb4dfc34bc688859db1381a55d5215abf9e55838a0b3aa1aefce8dd1816e0a7e"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:62",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 62,
+      "paginas_pdf": [
+        91
+      ],
+      "estado": "aproximacion_editorial",
+      "ficha": "piloto-geometria-propuestos-44-73/propuesto-62.json",
+      "sha256_ficha": "2c327c1323f4312f79f95d589c20a19fdff3e025bec5eaf0fc2078c168e374dd",
+      "sha256_ocr_por_pagina": {
+        "91": "fb4dfc34bc688859db1381a55d5215abf9e55838a0b3aa1aefce8dd1816e0a7e"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:63",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 63,
+      "paginas_pdf": [
+        91
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-propuestos-44-73/propuesto-63.json",
+      "sha256_ficha": "795bdee8c73a0df374e3c559d75b9795b1af2c4cd884449e396605ef714c281d",
+      "sha256_ocr_por_pagina": {
+        "91": "fb4dfc34bc688859db1381a55d5215abf9e55838a0b3aa1aefce8dd1816e0a7e"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:64",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 64,
+      "paginas_pdf": [
+        91
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-propuestos-44-73/propuesto-64.json",
+      "sha256_ficha": "e3f061a6fe2bae69ffcffc530d9de19b4bd59745f1df17d1e0391e0d121ba966",
+      "sha256_ocr_por_pagina": {
+        "91": "fb4dfc34bc688859db1381a55d5215abf9e55838a0b3aa1aefce8dd1816e0a7e"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:65",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 65,
+      "paginas_pdf": [
+        91
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-propuestos-44-73/propuesto-65.json",
+      "sha256_ficha": "e767774ede069083c0c3da25fb194bd62b3e354e0b4addb38ca383c6567ae2aa",
+      "sha256_ocr_por_pagina": {
+        "91": "fb4dfc34bc688859db1381a55d5215abf9e55838a0b3aa1aefce8dd1816e0a7e"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:66",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 66,
+      "paginas_pdf": [
+        91
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-propuestos-44-73/propuesto-66.json",
+      "sha256_ficha": "4a2de1e14c3522d0936d9adb6b7b344c0f23e3b2ef09bb15e1564b975b361d00",
+      "sha256_ocr_por_pagina": {
+        "91": "fb4dfc34bc688859db1381a55d5215abf9e55838a0b3aa1aefce8dd1816e0a7e"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:67",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 67,
+      "paginas_pdf": [
+        91
+      ],
+      "estado": "condicionado_correspondencia_desarrollos",
+      "ficha": "piloto-geometria-propuestos-44-73/propuesto-67.json",
+      "sha256_ficha": "11c7d2d5c9452dffd5ba9b2ccc5636ce4ae39f4fddfb2d71a9482dd473b08332",
+      "sha256_ocr_por_pagina": {
+        "91": "fb4dfc34bc688859db1381a55d5215abf9e55838a0b3aa1aefce8dd1816e0a7e"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:68",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 68,
+      "paginas_pdf": [
+        92
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-propuestos-44-73/propuesto-68.json",
+      "sha256_ficha": "10fedc60d52b907f24b6d754f220818acc1ea1db3697473daa8982cb6d114ff4",
+      "sha256_ocr_por_pagina": {
+        "92": "bac9566fd7966a2d9d41d5f8994f4f19e7d9bc930ffca00cf3c6ae85ec76e140"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:69",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 69,
+      "paginas_pdf": [
+        92
+      ],
+      "estado": "correccion_clave_y_aproximacion",
+      "ficha": "piloto-geometria-propuestos-44-73/propuesto-69.json",
+      "sha256_ficha": "db7f71cb6d49f1d8c9a116316200db1570559d38dd9b135c8ffad2fa88f04a0e",
+      "sha256_ocr_por_pagina": {
+        "92": "bac9566fd7966a2d9d41d5f8994f4f19e7d9bc930ffca00cf3c6ae85ec76e140"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:70",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 70,
+      "paginas_pdf": [
+        92
+      ],
+      "estado": "correccion_clave_y_aproximacion",
+      "ficha": "piloto-geometria-propuestos-44-73/propuesto-70.json",
+      "sha256_ficha": "9a69c2b387774ae3406c7f7afd189d34da8696f4c6ce55e213fd843755301f87",
+      "sha256_ocr_por_pagina": {
+        "92": "bac9566fd7966a2d9d41d5f8994f4f19e7d9bc930ffca00cf3c6ae85ec76e140"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:71",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 71,
+      "paginas_pdf": [
+        92
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-propuestos-44-73/propuesto-71.json",
+      "sha256_ficha": "9ee576a0bd1cdac848ac95190262e5d196f8c9917f7717921d27d13895b4df86",
+      "sha256_ocr_por_pagina": {
+        "92": "bac9566fd7966a2d9d41d5f8994f4f19e7d9bc930ffca00cf3c6ae85ec76e140"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:72",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 72,
+      "paginas_pdf": [
+        92
+      ],
+      "estado": "condicionado_inclinaciones_coplanares",
+      "ficha": "piloto-geometria-propuestos-44-73/propuesto-72.json",
+      "sha256_ficha": "fe6482fac38ef1f0bc7c6f599714a90984f9579fa28db695420779c9b20453fb",
+      "sha256_ocr_por_pagina": {
+        "92": "bac9566fd7966a2d9d41d5f8994f4f19e7d9bc930ffca00cf3c6ae85ec76e140"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:73",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 73,
+      "paginas_pdf": [
+        92,
+        93
+      ],
+      "estado": "condicionado_tangencias",
+      "ficha": "piloto-geometria-propuestos-44-73/propuesto-73.json",
+      "sha256_ficha": "867627e3f27955b17090786f091c2de109b95a833ba3bb512cce55c5bede9ccb",
+      "sha256_ocr_por_pagina": {
+        "92": "bac9566fd7966a2d9d41d5f8994f4f19e7d9bc930ffca00cf3c6ae85ec76e140",
+        "93": "89ab2b1b546345e21584d0243d9c6de6dbfde6e93eb96aaf80a7f62ee76be102"
+      }
     }
   ]
 }
+

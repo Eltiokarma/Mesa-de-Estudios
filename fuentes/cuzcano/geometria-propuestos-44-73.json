@@ -1,0 +1,50 @@
+{
+  "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+  "seccion": "Problemas propuestos",
+  "tipo": "propuesto",
+  "rango": [
+    44,
+    73
+  ],
+  "paginas_pdf": [
+    88,
+    89,
+    90,
+    91,
+    92,
+    93
+  ],
+  "ejercicios_nuevos": 30,
+  "verificados": 20,
+  "condicionados": [
+    61,
+    67,
+    72,
+    73
+  ],
+  "claves_corregidas": [
+    52,
+    53,
+    69,
+    70
+  ],
+  "unidades_corregidas": [
+    58
+  ],
+  "aproximaciones": [
+    62
+  ],
+  "nota_aproximaciones": "Las correcciones 69 y 70 conservan también el modelo notable por separado.",
+  "soluciones": "Desarrollos propios por pasos; claves y discrepancias conservadas por separado.",
+  "graficos": "Treinta SVG ampliables con modelos geométricos locales reutilizables.",
+  "validacion": "Comprobaciones por coordenadas, productos escalares, áreas, volúmenes, integral y malla; contraejemplos, inspección visual y restauración aprobados.",
+  "libro_completo_validado": false,
+  "pagina_completa_validada": false,
+  "siguiente": {
+    "tipo": "propuesto",
+    "numero": 74,
+    "pagina_pdf": 93
+  },
+  "fuentes_y_fichas": "Solo locales; el repositorio recibe metadatos."
+}
+
