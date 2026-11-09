@@ -1,0 +1,255 @@
+{
+  "generado_utc": "2026-11-09T01:05:37.603020+00:00",
+  "ejercicios_indexados": 15,
+  "archivos_controlados": 60,
+  "indice_local": "fuentes/ocr-local/cuzcano/archivo-ejercicios/index.html",
+  "respaldo_local": "fuentes/ocr-local/cuzcano/archivo-ejercicios/archivo-ejercicios.zip",
+  "sha256_zip": "98fa9e7af524b8a44d3bd26d4d79bfc45b0bd45e5079a3d29d6b50baadfee5cb",
+  "bytes_zip": 17503918,
+  "verificacion": [
+    "Cinco pruebas del indexador aprobadas: cambio, pérdida, duplicado, identidad, rutas y reuso sin origen.",
+    "ZIP extraído y comprobado sin PDF ni OCR originales.",
+    "Referencias HTML de todos los lectores restaurados comprobadas.",
+    "Lote nuevo recalculado desde el respaldo aislado."
+  ],
+  "limites": [
+    "Los hashes verifican integridad, no exactitud matemática.",
+    "El respaldo es local: no está subido a una nube ni contiene los PDF completos.",
+    "Las fichas conservan sus estados de discrepancia o condiciones pendientes."
+  ],
+  "ejercicios": [
+    {
+      "uid": "12szkZ06QNc_u_XotXmwArWpVIqTbNmoN:ejemplo:6",
+      "libro_id": "12szkZ06QNc_u_XotXmwArWpVIqTbNmoN",
+      "tipo": "ejemplo",
+      "numero": 6,
+      "paginas_pdf": [
+        8,
+        9
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-rm-polinomios/razonamiento.json",
+      "sha256_ficha": "7ded2bb887d694993d8777e567001744d7e8f9f370c34acd763b0d056ffe1628",
+      "sha256_ocr_por_pagina": {
+        "8": "7b9f7fc48e0f47cd8288036dc4968b9d9735b3a84cca485bf8dc40f3adc65821",
+        "9": "48612de02d2ff180aa761bdb20f1735c66cecbcb6961d05527fe2e7fe8df45ca"
+      }
+    },
+    {
+      "uid": "12szkZ06QNc_u_XotXmwArWpVIqTbNmoN:problema:35",
+      "libro_id": "12szkZ06QNc_u_XotXmwArWpVIqTbNmoN",
+      "tipo": "problema",
+      "numero": 35,
+      "paginas_pdf": [
+        22,
+        42
+      ],
+      "estado": "discrepancia_editorial_documentada",
+      "ficha": "piloto-complejos/razonamiento.json",
+      "sha256_ficha": "1ed784d71b5404c51c584a6187304adde6545e2ce9062692e52cfd48fe3887a7",
+      "sha256_ocr_por_pagina": {
+        "22": "3a22714789571406907e1c9a0db4dd9e70c0ec19caddeeb2ae08a25a4a0c70ed",
+        "42": "a0dd380d2ef0ad6d7b1e697201928ee2b34836735a1e41b498f16be57012efb1"
+      }
+    },
+    {
+      "uid": "1D8_YP2Q25FmZpVBgX6Qip_GBPa2Ue3Db:problema:4",
+      "libro_id": "1D8_YP2Q25FmZpVBgX6Qip_GBPa2Ue3Db",
+      "tipo": "problema",
+      "numero": 4,
+      "paginas_pdf": [
+        62,
+        107
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-graficos/geometria.json",
+      "sha256_ficha": "22829d34c4cc7e07b6d862feb4fe5c8b7dd400add2d8816c05d04d90bce38f1b",
+      "sha256_ocr_por_pagina": {
+        "62": "b2274a88d5618f08419da86ab6c63336233d2749e7f815b8ab9535945a1a004d",
+        "107": "6793ce69f1e18e0a3179d58e27a9b7a95c6eabd3525f6349925adc3144adc4d8"
+      }
+    },
+    {
+      "uid": "1EN0I_nCIO_ELsQ2nY_CKaKYCTbGDCRpl:ejercicio:65",
+      "libro_id": "1EN0I_nCIO_ELsQ2nY_CKaKYCTbGDCRpl",
+      "tipo": "ejercicio",
+      "numero": 65,
+      "paginas_pdf": [
+        22
+      ],
+      "estado": "ejercicio_cotejado_y_calculo_verificado",
+      "ficha": "piloto-interpretacion-5/ejercicio-p0022.json",
+      "sha256_ficha": "e56dca0e4b3c18be19c7086c80f7767ed618ad8c3072edcdf8806be56d019e5a",
+      "sha256_ocr_por_pagina": {
+        "22": "0fb29faa37a2161b3fbe85d057f7ab0622dba5c83ccdbf97b4d7821c0d078623"
+      }
+    },
+    {
+      "uid": "1EN0I_nCIO_ELsQ2nY_CKaKYCTbGDCRpl:ejercicio:86",
+      "libro_id": "1EN0I_nCIO_ELsQ2nY_CKaKYCTbGDCRpl",
+      "tipo": "ejercicio",
+      "numero": 86,
+      "paginas_pdf": [
+        9
+      ],
+      "estado": "ejercicio_cotejado_y_calculo_verificado",
+      "ficha": "piloto-interpretacion-5/ejercicio-p0009.json",
+      "sha256_ficha": "19fe5ec8463c9bd7dedc38f184659306e4f6e7e3f1a09b132263b3dc1dadaeaf",
+      "sha256_ocr_por_pagina": {
+        "9": "aad47865f995db8a7e80706b564b9b7051fdc8c9a18eeaf81e020abf0b8cf469"
+      }
+    },
+    {
+      "uid": "1EN0I_nCIO_ELsQ2nY_CKaKYCTbGDCRpl:ejercicio:127",
+      "libro_id": "1EN0I_nCIO_ELsQ2nY_CKaKYCTbGDCRpl",
+      "tipo": "ejercicio",
+      "numero": 127,
+      "paginas_pdf": [
+        12
+      ],
+      "estado": "ejercicio_cotejado_y_calculo_verificado",
+      "ficha": "piloto-interpretacion-5/ejercicio-p0012.json",
+      "sha256_ficha": "93a3cad3fd6b1c11d29805576f76fc88e29dca7cf10de767552b26e9747827a5",
+      "sha256_ocr_por_pagina": {
+        "12": "559fc19fcc50538042ff448bc39374fe1396b649b663de1c52b6f55af6179a3d"
+      }
+    },
+    {
+      "uid": "1EN0I_nCIO_ELsQ2nY_CKaKYCTbGDCRpl:ejercicio:142",
+      "libro_id": "1EN0I_nCIO_ELsQ2nY_CKaKYCTbGDCRpl",
+      "tipo": "ejercicio",
+      "numero": 142,
+      "paginas_pdf": [
+        13
+      ],
+      "estado": "ejercicio_cotejado_y_calculo_verificado",
+      "ficha": "piloto-interpretacion-5/ejercicio-p0013.json",
+      "sha256_ficha": "6383b0d9b865eae4bd5217c560fc2af715cab13eee5102b60cdca2e1f36bbbbe",
+      "sha256_ocr_por_pagina": {
+        "13": "4199dad2edfd3ad6e6e46be307597060cdbe18e6f7841ead9f50d61d928ca6fb"
+      }
+    },
+    {
+      "uid": "1EN0I_nCIO_ELsQ2nY_CKaKYCTbGDCRpl:ejercicio:148",
+      "libro_id": "1EN0I_nCIO_ELsQ2nY_CKaKYCTbGDCRpl",
+      "tipo": "ejercicio",
+      "numero": 148,
+      "paginas_pdf": [
+        14
+      ],
+      "estado": "ejercicio_cotejado_y_calculo_verificado",
+      "ficha": "piloto-interpretacion-5/ejercicio-p0014.json",
+      "sha256_ficha": "f5a70e824af93eee75a9c8059e89126ec5e48e1ab1a3e76bfba0c2aba466e79b",
+      "sha256_ocr_por_pagina": {
+        "14": "62ea4253266143e5e919bd75316e353fd7245e13a3948e3d0eb4d329a5303318"
+      }
+    },
+    {
+      "uid": "1GQxXnXKRDrb8SFKemkA-ggcOGep1KE44:problema:240",
+      "libro_id": "1GQxXnXKRDrb8SFKemkA-ggcOGep1KE44",
+      "tipo": "problema",
+      "numero": 240,
+      "paginas_pdf": [
+        44
+      ],
+      "estado": "enunciado_cotejado_y_calculo_verificado",
+      "ficha": "polinomios-lote-4/ejercicio-240.json",
+      "sha256_ficha": "8fd0b71c6572c92864f75f23b939f1e7c60e53053d59ab3cbb1ebfa352dcc5f0",
+      "sha256_ocr_por_pagina": {
+        "44": "e39be805c9a2d5013fd19d6ff700050336ef5b2b31c44d9e38749b2664aeea70"
+      }
+    },
+    {
+      "uid": "1GQxXnXKRDrb8SFKemkA-ggcOGep1KE44:problema:241",
+      "libro_id": "1GQxXnXKRDrb8SFKemkA-ggcOGep1KE44",
+      "tipo": "problema",
+      "numero": 241,
+      "paginas_pdf": [
+        44
+      ],
+      "estado": "enunciado_cotejado_y_calculo_verificado",
+      "ficha": "polinomios-lote-4/ejercicio-241.json",
+      "sha256_ficha": "6ce45a81694d3e9f8943a5d5c3f940cd90ab6b49a888387eb49ab52e36a03d0f",
+      "sha256_ocr_por_pagina": {
+        "44": "e39be805c9a2d5013fd19d6ff700050336ef5b2b31c44d9e38749b2664aeea70"
+      }
+    },
+    {
+      "uid": "1GQxXnXKRDrb8SFKemkA-ggcOGep1KE44:problema:246",
+      "libro_id": "1GQxXnXKRDrb8SFKemkA-ggcOGep1KE44",
+      "tipo": "problema",
+      "numero": 246,
+      "paginas_pdf": [
+        44
+      ],
+      "estado": "verificado_por_calculo_independiente",
+      "ficha": "piloto-rm-polinomios/polinomios.json",
+      "sha256_ficha": "3a7e9a8563260d85da4370d8227bad4d9761e8c5e86bd7c30e55c9b2f7ab6ab1",
+      "sha256_ocr_por_pagina": {
+        "44": "e39be805c9a2d5013fd19d6ff700050336ef5b2b31c44d9e38749b2664aeea70"
+      }
+    },
+    {
+      "uid": "1GQxXnXKRDrb8SFKemkA-ggcOGep1KE44:problema:248",
+      "libro_id": "1GQxXnXKRDrb8SFKemkA-ggcOGep1KE44",
+      "tipo": "problema",
+      "numero": 248,
+      "paginas_pdf": [
+        45
+      ],
+      "estado": "enunciado_cotejado_y_calculo_verificado",
+      "ficha": "polinomios-lote-4/ejercicio-248.json",
+      "sha256_ficha": "21f4499f34f67a101e00461655a89528ad98f26b19c4f7d746fc7885980113f3",
+      "sha256_ocr_por_pagina": {
+        "45": "e1c48321c199b6586ab59cfd645fa811307ba1ace4c87b3f18f8412d61d805ab"
+      }
+    },
+    {
+      "uid": "1GQxXnXKRDrb8SFKemkA-ggcOGep1KE44:problema:249",
+      "libro_id": "1GQxXnXKRDrb8SFKemkA-ggcOGep1KE44",
+      "tipo": "problema",
+      "numero": 249,
+      "paginas_pdf": [
+        45
+      ],
+      "estado": "enunciado_cotejado_y_calculo_verificado",
+      "ficha": "polinomios-lote-4/ejercicio-249.json",
+      "sha256_ficha": "d4396bea68616ee854988ee4eaf126107a9c248a21aaf413a7cecb179735c4e9",
+      "sha256_ocr_por_pagina": {
+        "45": "e1c48321c199b6586ab59cfd645fa811307ba1ace4c87b3f18f8412d61d805ab"
+      }
+    },
+    {
+      "uid": "1XZHi26mc_VB0Ko8UGFbjq08u8OCH8UKm:aplicacion:1",
+      "libro_id": "1XZHi26mc_VB0Ko8UGFbjq08u8OCH8UKm",
+      "tipo": "aplicacion",
+      "numero": 1,
+      "paginas_pdf": [
+        24,
+        25
+      ],
+      "estado": "requiere_aclaracion_geometrica",
+      "ficha": "piloto-graficos/estatica.json",
+      "sha256_ficha": "83c1e53202d3d39d0f1193b461163b6e2cc50f385f2a76c5d915bfa7ab58af86",
+      "sha256_ocr_por_pagina": {
+        "24": "7a6b57e28a38ce1d7309ee9d23ec66a9f46e04ba273754e1efe1703945d6c794",
+        "25": "0247cc3f72378117f6cdf123a26479a71d2f5247a0e8c6fe08ab281d11ea5521"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:problema:7",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "problema",
+      "numero": 7,
+      "paginas_pdf": [
+        27
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-complejos/espacial.json",
+      "sha256_ficha": "3e4d5730c390e56b04c3ad06e65895462b36dbffba927fb991c9129865289655",
+      "sha256_ocr_por_pagina": {
+        "27": "d945edfe07cd9012793e18206c19b3723ba80eae8c6a680194dd573babf25aea"
+      }
+    }
+  ]
+}

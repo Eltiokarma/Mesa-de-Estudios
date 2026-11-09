@@ -1,12 +1,12 @@
 {
-  "generado_utc": "2026-11-09T00:42:25.046187+00:00",
+  "generado_utc": "2026-11-09T01:05:00.498655+00:00",
   "alcance": "Cotejo visual por página. No certifica libros completos ni exactitud matemática.",
   "prioridad_solicitada": "Páginas de baja confianza, primero sin cotejo previo",
-  "paginas_con_algun_cotejo": 51,
+  "paginas_con_algun_cotejo": 52,
   "paginas_pendientes_baja_confianza": 13722,
   "paginas_excluidas_sin_texto_principal": 6,
   "paginas_texto_completo_cotejado": 6,
-  "paginas_cotejo_parcial": 39,
+  "paginas_cotejo_parcial": 40,
   "copias_corregidas_locales": 19,
   "reconstrucciones_visuales": 17,
   "reemplazos_puntuales": 9,
@@ -363,8 +363,23 @@
       "pagina_pdf": 44,
       "estado": "parcial",
       "hallazgos": [
+        "Exponentes, signos, condiciones y alternativas cotejados con recortes del escaneo.",
+        "Resolución propia identificada como tal y comprobación exacta guardada.",
         "Exponentes fraccionarios y restas recuperados visualmente del original.",
         "Solución propia diferenciada de la fuente; comprobación exhaustiva con fracciones exactas."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1GQxXnXKRDrb8SFKemkA-ggcOGep1KE44",
+      "pagina_pdf": 45,
+      "estado": "parcial",
+      "hallazgos": [
+        "Exponentes, signos, condiciones y alternativas cotejados con recortes del escaneo.",
+        "Resolución propia identificada como tal y comprobación exacta guardada."
       ],
       "copia_corregida_local": false,
       "reemplazos_puntuales": 0,

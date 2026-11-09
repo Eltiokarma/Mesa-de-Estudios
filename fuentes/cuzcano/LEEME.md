@@ -23,7 +23,7 @@ No se identifica un título de razonamiento verbal en este catálogo.
 - 198 entradas descargadas y procesadas; 197 contenidos PDF distintos.
 - 21 522 páginas: 21 462 con OCR nuevo en español y 60 con capa textual previa aprovechable.
 - Cero libros con fallo de procesamiento. La auditoría de integridad pasó y las trece pruebas de herramientas están aprobadas.
-- 51 páginas con algún cotejo visual: seis con texto completo cotejado, seis sin texto principal y 39 parcialmente revisadas. Ningún libro completo certificado.
+- 52 páginas con algún cotejo visual: seis con texto completo cotejado, seis sin texto principal y 40 parcialmente revisadas. Ningún libro completo certificado.
 - 19 copias corregidas locales: 17 reconstrucciones visuales y dos páginas con nueve reemplazos puntuales en total.
 - 13 722 páginas siguen en la cola de baja confianza. El nuevo lote examinó 24 páginas de confianza cero y resolvió diez entradas de la cola: seis transcripciones completas y cuatro páginas sin texto principal.
 
@@ -153,3 +153,11 @@ La entrega local está en `fuentes/ocr-local/cuzcano/piloto-rm-polinomios/index.
 `piloto-complejos.json` registra dos ejercicios y tres páginas parcialmente revisadas. El conteo plano reconstruye los cruces de doce segmentos y documenta una discrepancia con la clave editorial: dos triángulos compuestos adicionales se muestran explícitamente. Dos enumeraciones exactas coinciden. En geometría espacial se conservan las letras de la fuente y sus proyecciones; se comprueban diagonal, ángulos con planos y volumen.
 
 La entrega está en `fuentes/ocr-local/cuzcano/piloto-complejos/index.html`. Incluye selección individual de triángulos planos y espaciales, resolución editorial separada del cotejo independiente, fichas JSON, dibujos SVG, evidencia y un ZIP de doce archivos. Se inspeccionaron los recortes y figuras rasterizadas, se comprobaron controles y enlaces, y se ejecutó el comprobador desde una copia aislada. No se retiró ninguna página de la cola.
+
+### Archivo reutilizable y lote de cuatro polinomios
+
+`archivo-ejercicios.json` registra quince fichas localizables por libro, tipo y número. El índice local está en `fuentes/ocr-local/cuzcano/archivo-ejercicios/index.html`. Sus sesenta archivos de consulta tienen un manifiesto de integridad. El ZIP conjunto conserva lectores, fichas, recortes, dibujos y comprobadores; se probó su extracción sin los PDF ni el OCR originales. Es un respaldo local, no una copia remota en GitHub.
+
+Antes de seleccionar un ejercicio, buscar su libro, tipo y número en el índice: reutilizar la ficha si ya existe; volver a la fuente sólo para resolver una duda o corregirla. Para comprobar lo guardado sin modificar el registro: `python herramientas/indexar_ejercicios_locales.py`. Después de incorporar o corregir fichas deliberadamente: `python herramientas/indexar_ejercicios_locales.py --actualizar --zip`. La actualización informa archivos nuevos, modificados y retirados. El ZIP contiene `archivo-ejercicios/comprobar_archivo.py` para comprobar una restauración. Los hashes detectan cambios, no certifican las matemáticas.
+
+`polinomios-lote-4.json` describe cuatro ejercicios nuevos de homogeneidad, grados relativos, completitud y grado mínimo. Se cotejaron dos páginas parcialmente; una ya tenía revisión. Las fichas incluyen datos estructurados y soluciones propias, diferenciadas de una solución editorial no cotejada. El lector está en `fuentes/ocr-local/cuzcano/polinomios-lote-4/index.html`. Los cálculos exactos se repitieron desde el respaldo aislado. Cinco pruebas del indexador pasan; no se vuelve a procesar la colección ni se retiran páginas de la cola.
