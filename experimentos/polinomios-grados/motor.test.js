@@ -34,3 +34,18 @@ for (const p of papel) test(p.id, () => {
   if (p.terminos) assert.equal(M.analizar(p.terminos).grado, p.grado);
   else assert.deepEqual(M.explorar(p.familia, p.desde, p.hasta).valores, p.valores);
 });
+test('seis actividades: respuestas calculadas y selecciones', () => {
+  assert.deepEqual(ejercicios.map(e => M.resolverActividad(e).respuesta), [6, 4, 5, 4, 2, 5]);
+  assert.deepEqual(M.resolverActividad(ejercicios[3]).seleccionados, [4]);
+  assert.deepEqual(M.resolverActividad(ejercicios[4]).faltantes, [1, 3]);
+  assert.deepEqual(M.resolverActividad(ejercicios[5]).seleccionados, [4]);
+  assert.equal(new Set(ejercicios.map(e => e.id)).size, 6);
+});
+test('preguntas sin solución única o sin valores se rechazan', () => {
+  assert.throws(() => M.resolverActividad({...ejercicios[3], desde: 0, hasta: 3}), /único/);
+  const constante = [{c:1,x:{a:0,b:1,d:1},y:{a:0,b:0,d:1}}];
+  assert.throws(() => M.resolverActividad({...ejercicios[3],familia:constante}), /único/);
+  assert.throws(() => M.resolverActividad({...ejercicios[5],desde:0,hasta:2}), /No hay/);
+  assert.throws(() => M.resolverActividad({tipo:'otro'}), /no admitida/);
+  assert.throws(() => M.resolverActividad({tipo:'faltantes',terminos:[]}), /no nulo/);
+});

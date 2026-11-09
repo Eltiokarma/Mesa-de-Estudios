@@ -17,8 +17,7 @@
     }).join(' ');
   }
   function resolver(e) {
-    if (e.tipo === 'grados') { const r = M.analizar(e.terminos); return { respuesta: r.grado, analisis: r }; }
-    const r = M.explorar(e.familia, e.desde, e.hasta); return { respuesta: r.valores.length, exploracion: r };
+    return M.resolverActividad(e);
   }
   function exponenteAfin(e) {
     if (e.a === 0) return e.b / e.d;
@@ -41,10 +40,11 @@
     const e = ejercicios[indice], r = resolver(e);
     $('feedback').textContent = valor === r.respuesta ? `Tu predicción coincide: ${r.respuesta}. Veamos por qué.` : `Predijiste ${valor}; el resultado es ${r.respuesta}. Revisemos el procedimiento.`;
     $('explicacion').textContent = e.explicacion;
-    if (r.analisis) $('resultado').innerHTML = mostrarAnalisis(r.analisis);
+    if (r.analisis) $('resultado').innerHTML = (e.tipo === 'faltantes' ? `<p class="resumen">Exponentes de x que faltan: <strong>${r.faltantes.join(', ')}</strong>. Faltan ${r.respuesta} potencias.</p>` : '') + mostrarAnalisis(r.analisis);
     else {
-      const filas = r.exploracion.filas.map(f => `<tr><td>${f.n}</td><td class="${f.admisible ? 'ok' : 'no'}">${f.admisible ? 'Sí' : 'No'}</td><td>${f.admisible ? `Grado ${f.analisis.grado}` : f.motivos.join(' ')}</td></tr>`).join('');
-      $('resultado').innerHTML = `<p class="resumen">Valores admisibles: <strong>${r.exploracion.valores.join(', ')}</strong>. Son ${r.respuesta} valores.</p><div class="tabla"><table><thead><tr><th>n</th><th>¿Admisible?</th><th>Comprobación</th></tr></thead><tbody>${filas}</tbody></table></div>`;
+      const filas = r.exploracion.filas.map(f => `<tr><td>${f.n}</td><td class="${f.admisible ? 'ok' : 'no'}">${f.admisible ? 'Sí' : 'No'}</td><td>${f.admisible ? `Grado ${f.analisis.grado}${e.tipo === 'homogeneidad' ? '; homogéneo: ' + (f.analisis.homogeneo ? 'sí' : 'no') : ''}` : f.motivos.join(' ')}</td></tr>`).join('');
+      const resumen = e.tipo === 'homogeneidad' ? `Valor que lo hace homogéneo: <strong>n = ${r.respuesta}</strong>.` : e.tipo === 'minimo' ? `Grado mínimo: <strong>${r.respuesta}</strong>, para n = ${r.seleccionados.join(', ')}.` : `Son ${r.respuesta} valores.`;
+      $('resultado').innerHTML = `<p class="resumen">Valores admisibles: <strong>${r.exploracion.valores.join(', ')}</strong>. ${resumen}</p><div class="tabla"><table><thead><tr><th>n</th><th>¿Admisible?</th><th>Comprobación</th></tr></thead><tbody>${filas}</tbody></table></div>`;
     }
     $('solucion').hidden = false;
     $('siguiente').disabled = indice === ejercicios.length - 1;
@@ -55,7 +55,7 @@
     $('progreso').textContent = `ACTIVIDAD ${indice + 1} DE ${ejercicios.length}`;
     $('titulo').textContent = e.titulo; $('contexto').textContent = e.contexto;
     $('pregunta').textContent = e.pregunta;
-    $('expresion').innerHTML = e.tipo === 'grados' ? formula(e.terminos) : formulaFamilia(e.familia);
+    $('expresion').innerHTML = e.terminos ? formula(e.terminos) : formulaFamilia(e.familia);
     $('respuesta').value = respuestas.has(e.id) ? respuestas.get(e.id) : '';
     $('feedback').textContent = ''; $('resultado').replaceChildren(); $('solucion').hidden = true;
     $('anterior').disabled = indice === 0; $('siguiente').disabled = true;

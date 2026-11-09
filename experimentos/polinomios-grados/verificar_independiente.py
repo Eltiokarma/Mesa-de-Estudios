@@ -3,7 +3,7 @@ El grado se obtiene por diferencias finitas de evaluaciones, no por máximos de 
 """
 from pathlib import Path
 from fractions import Fraction
-import json,html
+import json,html,subprocess
 
 HERE=Path(__file__).resolve().parent
 
@@ -39,6 +39,27 @@ def main():
         result=degrees(c['entrada']);want=c['esperado']
         assert result=={'grado':want['grado'],**want['gradosRelativos']},(c['id'],result)
     f=cases['familia'];assert admissible(f['entrada'],f['desde'],f['hasta'])==f['valores']
+    # Node sólo serializa los datos del banco; no se carga el motor JavaScript.
+    bank=json.loads(subprocess.check_output(['node','-e',"process.stdout.write(JSON.stringify(require('./ejercicios.js')))"],cwd=HERE,text=True,encoding='utf-8'))
+    answers=[]
+    for e in bank:
+        if e['tipo']=='grados':answer=degrees(e['terminos'])['grado']
+        elif e['tipo']=='faltantes':
+            support={}
+            for t in e['terminos']:support[(t['x'],t['y'])]=support.get((t['x'],t['y']),0)+t['c']
+            powers={x for (x,y),c in support.items() if c}
+            answer=len(set(range(max(powers)+1))-powers)
+        else:
+            valid=admissible(e['familia'],e['desde'],e['hasta'])
+            materialized={n:[{'c':t['c'],**{axis:int(Fraction(t[axis]['a']*n+t[axis]['b'],t[axis]['d'])) for axis in ['x','y']}} for t in e['familia']] for n in valid}
+            if e['tipo']=='parametro':answer=len(valid)
+            elif e['tipo']=='homogeneidad':
+                candidates=[n for n,terms in materialized.items() if len({t['x']+t['y'] for t in terms})==1]
+                assert len(candidates)==1
+                answer=candidates[0]
+            else:answer=min(degrees(terms)['grado'] for terms in materialized.values())
+        answers.append(answer)
+    assert answers==[6,4,5,4,2,5],answers
     paper=json.loads((HERE/'papel.json').read_text(encoding='utf-8'))['ejercicios']
     for p in paper:
         if 'terminos' in p:assert degrees(p['terminos'])['grado']==p['grado'],p['id']
@@ -47,6 +68,6 @@ def main():
     for i,p in enumerate(paper,1):doc+=f'<article><h2>Ejercicio {i}</h2><p>{html.escape(p["enunciado"])}</p><details><summary>Ver solución</summary><p>{html.escape(p["solucion"])}</p></details></article>'
     doc+='<a href="index.html">Volver a la prueba</a></main></html>'
     (HERE/'papel.html').write_text(doc,encoding='utf-8')
-    print('Contraste independiente aprobado: 7 polinomios, 1 familia y 5 ejercicios de papel.')
+    print('Contraste independiente aprobado: 6 actividades, 7 polinomios, 1 familia y 5 ejercicios de papel.')
 
 if __name__=='__main__':main()

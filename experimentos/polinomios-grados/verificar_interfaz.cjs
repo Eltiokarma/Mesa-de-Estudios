@@ -31,15 +31,28 @@ const fs = require('node:fs');
     await page.locator('#respuesta').fill('5'); await page.locator('button[type=submit]').click();
     assert.match(await page.locator('#feedback').textContent(), /coincide: 5/);
     assert.equal(await page.locator('#resultado tbody tr').count(), 13);
+    assert.equal(await page.locator('#siguiente').isDisabled(), false);
+    for (const [answer, expected] of [[4,'Valor que lo hace homogéneo'],[2,'Exponentes de x que faltan'],[5,'Grado mínimo']]) {
+      await page.locator('#siguiente').click();
+      assert.equal(await page.locator('#solucion').isVisible(), false);
+      assert.equal(await page.locator('#siguiente').isDisabled(), true);
+      await page.locator('#respuesta').fill(String(answer));
+      await page.locator('button[type=submit]').click();
+      assert.match(await page.locator('#feedback').textContent(), new RegExp('coincide: '+answer));
+      assert.ok((await page.locator('#resultado').textContent()).includes(expected));
+    }
     assert.equal(await page.locator('#siguiente').isDisabled(), true);
+    assert.equal(await page.locator('#resultado tbody tr').count(), 15);
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.screenshot({ path: path.join(qa,'minimo-celular.png'), fullPage: true });
     await page.locator('#anterior').click();
-    assert.match(await page.locator('#feedback').textContent(), /Predijiste 5/);
+    assert.match(await page.locator('#feedback').textContent(), /coincide: 2/);
     await page.setViewportSize({ width: 390, height: 844 });
     await page.screenshot({ path: path.join(qa,'celular.png'), fullPage: true });
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
     await page.goto(pathToFileURL(path.join(__dirname, 'papel.html')).href);
     assert.equal(await page.locator('article').count(), 5);
     assert.deepEqual(errors, []);
-    console.log('Interfaz aprobada: bloqueo, tres actividades, persistencia de sesión, papel y ancho móvil.');
+    console.log('Interfaz aprobada: bloqueo, seis actividades, persistencia de sesión, papel y ancho móvil.');
   } finally { await browser.close(); }
 })().catch(e => { console.error(e.message); process.exitCode = 1; });

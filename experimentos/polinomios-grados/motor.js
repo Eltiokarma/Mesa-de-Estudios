@@ -73,5 +73,25 @@
     }
     return { desde, hasta, filas, valores: filas.filter(f => f.admisible).map(f => f.n) };
   }
-  return { analizar, explorar };
+  function resolverActividad(e) {
+    if (e.tipo === 'grados' || e.tipo === 'faltantes') {
+      const r = analizar(e.terminos);
+      if (r.esCero) throw new RangeError('Esta actividad necesita un polinomio no nulo.');
+      const presentes = new Set(r.terminos.map(t => t.x));
+      const faltantes = Array.from({ length: r.gradosRelativos.x + 1 }, (_, i) => i).filter(i => !presentes.has(i));
+      return { respuesta: e.tipo === 'grados' ? r.grado : faltantes.length, analisis: r, faltantes };
+    }
+    if (!['parametro', 'homogeneidad', 'minimo'].includes(e.tipo)) throw new TypeError('Actividad no admitida.');
+    const r = explorar(e.familia, e.desde, e.hasta), validas = r.filas.filter(f => f.admisible);
+    if (e.tipo === 'parametro') return { respuesta: r.valores.length, exploracion: r, seleccionados: r.valores };
+    if (!validas.length) throw new RangeError('No hay valores admisibles en el intervalo.');
+    if (e.tipo === 'homogeneidad') {
+      const candidatas = validas.filter(f => f.analisis.homogeneo);
+      if (candidatas.length !== 1) throw new RangeError('La pregunta requiere un único valor para la homogeneidad.');
+      return { respuesta: candidatas[0].n, exploracion: r, seleccionados: [candidatas[0].n] };
+    }
+    const minimo = Math.min(...validas.map(f => f.analisis.grado));
+    return { respuesta: minimo, exploracion: r, seleccionados: validas.filter(f => f.analisis.grado === minimo).map(f => f.n) };
+  }
+  return { analizar, explorar, resolverActividad };
 });

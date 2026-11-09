@@ -1,6 +1,6 @@
 # Prueba pequeña: polinomios y grados
 
-Tres actividades propias prueban el recorrido predicción → cálculo → explicación. El motor reduce términos semejantes antes de calcular grados y permite explorar exponentes dependientes de un entero en un intervalo explícito. Hay cinco ejercicios propios para papel. Es un experimento separado del catálogo, no un módulo publicado ni una calculadora algebraica general.
+Seis actividades propias prueban el recorrido predicción → cálculo → explicación. El motor reduce términos semejantes antes de calcular grados y permite explorar exponentes dependientes de un entero en un intervalo explícito. Hay cinco ejercicios propios para papel. Es un experimento separado del catálogo, no un módulo publicado ni una calculadora algebraica general.
 
 Abrir `index.html` directamente: no requiere servidor, conexión ni API. Las respuestas permanecen sólo en memoria mientras la página está abierta. No hay medición ni persistencia entre sesiones todavía.
 
@@ -29,12 +29,16 @@ npm --prefix experimentos/polinomios-grados test
 python experimentos/polinomios-grados/verificar_independiente.py
 ```
 
-Quince pruebas de Node aprobadas. El contraste de Python usa diferencias finitas de evaluaciones enteras para obtener los grados, en vez de repetir el algoritmo del motor; verifica además las familias con fracciones exactas. El script regenera `papel.html` a partir de `papel.json`.
+Diecisiete pruebas de Node aprobadas. El contraste de Python usa diferencias finitas de evaluaciones enteras para obtener los grados, en vez de repetir el algoritmo del motor; verifica además las familias con fracciones exactas. El script regenera `papel.html` a partir de `papel.json`.
 
-`verificar_interfaz.cjs` comprueba con Playwright que no se revele la solución antes de responder, los resultados de las tres actividades, la navegación y la conservación de respuestas dentro de la sesión. También revisa el ancho móvil y el acceso a papel. Requiere Playwright ya disponible; no instala ni descarga nada. Puede indicarse el navegador mediante `POLINOMIOS_BROWSER`.
+`verificar_interfaz.cjs` comprueba con Playwright que no se revele la solución antes de responder, los resultados de las seis actividades, la navegación y la conservación de respuestas dentro de la sesión. También revisa el ancho móvil y el acceso a papel. Requiere Playwright ya disponible; no instala ni descarga nada. Puede indicarse el navegador mediante `POLINOMIOS_BROWSER`.
 
 Se comprobó en Chrome local, en escritorio y a 390 px de ancho, y se inspeccionaron las capturas. No se ejecutó la suite completa de la app: este checkout local es parcial y la prueba no modifica plantillas, catálogo, servicio offline ni código de la app existente. Su propio `npm test` pasa.
 
 ## Antes de integrar
 
 Evaluar esta prueba con Gerson. Después decidir si el alcance justifica una plantilla del catálogo, añadir medición con el sistema existente y verificar la suite completa del repo. No se ha creado un generador ilimitado de preguntas ni se ha ampliado el OCR. No se atribuyen errores pedagógicos a evidencia no investigada: se pide respuesta numérica libre, sin distractores presentados como documentados.
+
+## Segunda tanda: tres actividades adicionales
+
+Se incorporan homogeneidad con parámetro, potencias ausentes respecto de x y grado mínimo dentro de un intervalo entero explícito. `resolverActividad` concentra el cálculo de las respuestas en el motor; la interfaz sólo presenta el resultado. Para homogeneidad se exige solución única y, para el mínimo, al menos un valor admisible. El contraste independiente lee el banco de datos mediante Node, sin cargar el motor, y comprueba las seis respuestas en Python. Se mantienen los cinco ejercicios de papel y los identificadores de las primeras actividades.
