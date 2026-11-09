@@ -1,12 +1,12 @@
 {
-  "generado_utc": "2026-11-08T16:27:38.526203+00:00",
+  "generado_utc": "2026-11-08T23:58:19.962208+00:00",
   "alcance": "Cotejo visual por página. No certifica libros completos ni exactitud matemática.",
   "prioridad_solicitada": "Páginas de baja confianza, primero sin cotejo previo",
-  "paginas_con_algun_cotejo": 36,
+  "paginas_con_algun_cotejo": 41,
   "paginas_pendientes_baja_confianza": 13722,
   "paginas_excluidas_sin_texto_principal": 6,
   "paginas_texto_completo_cotejado": 6,
-  "paginas_cotejo_parcial": 24,
+  "paginas_cotejo_parcial": 29,
   "copias_corregidas_locales": 19,
   "reconstrucciones_visuales": 17,
   "reemplazos_puntuales": 9,
@@ -188,6 +188,71 @@
       ],
       "copia_corregida_local": true,
       "reemplazos_puntuales": 2,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1EN0I_nCIO_ELsQ2nY_CKaKYCTbGDCRpl",
+      "pagina_pdf": 9,
+      "estado": "parcial",
+      "hallazgos": [
+        "Reacción ilegible y pérdida de subíndices.",
+        "El nombre de la especie con concentración 0,45 M estaba omitido."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1EN0I_nCIO_ELsQ2nY_CKaKYCTbGDCRpl",
+      "pagina_pdf": 12,
+      "estado": "parcial",
+      "hallazgos": [
+        "Confusión de COOH con GOH.",
+        "Subíndices del fosfato y cargas del sulfato perdidos."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1EN0I_nCIO_ELsQ2nY_CKaKYCTbGDCRpl",
+      "pagina_pdf": 13,
+      "estado": "parcial",
+      "hallazgos": [
+        "Exponente -2 de Ka ilegible.",
+        "Alternativas numéricas y potencias destruidas."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1EN0I_nCIO_ELsQ2nY_CKaKYCTbGDCRpl",
+      "pagina_pdf": 14,
+      "estado": "parcial",
+      "hallazgos": [
+        "Fórmula ClCH2COOH con Cl confundido.",
+        "Potencias de las alternativas sin lectura fiable."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1EN0I_nCIO_ELsQ2nY_CKaKYCTbGDCRpl",
+      "pagina_pdf": 22,
+      "estado": "parcial",
+      "hallazgos": [
+        "Ecuación con números y unidades mezclados.",
+        "Orden de columnas interfería con la lectura de la resolución."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
       "reconstruccion_visual": false,
       "validacion_matematica": "no_certificada"
     },

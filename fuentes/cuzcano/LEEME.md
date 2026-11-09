@@ -23,7 +23,7 @@ No se identifica un título de razonamiento verbal en este catálogo.
 - 198 entradas descargadas y procesadas; 197 contenidos PDF distintos.
 - 21 522 páginas: 21 462 con OCR nuevo en español y 60 con capa textual previa aprovechable.
 - Cero libros con fallo de procesamiento. La auditoría de integridad pasó y las trece pruebas de herramientas están aprobadas.
-- 36 páginas con algún cotejo visual: seis con texto completo cotejado, seis sin texto principal y 24 parcialmente revisadas. Ningún libro completo certificado.
+- 41 páginas con algún cotejo visual: seis con texto completo cotejado, seis sin texto principal y 29 parcialmente revisadas. Ningún libro completo certificado.
 - 19 copias corregidas locales: 17 reconstrucciones visuales y dos páginas con nueve reemplazos puntuales en total.
 - 13 722 páginas siguen en la cola de baja confianza. El nuevo lote examinó 24 páginas de confianza cero y resolvió diez entradas de la cola: seis transcripciones completas y cuatro páginas sin texto principal.
 
@@ -113,6 +113,14 @@ Sin `--paginas` se eligen hasta cinco páginas de menor confianza sin cotejo pre
 El primer piloto procesó las páginas PDF 13, 14, 22, 12 y 9. Sólo una de cinco tuvo una alternativa con mayor confianza media por palabra; las otras cuatro no mejoraron esa métrica. El cotejo de un fragmento de la página 13 confirmó que siguen fallando cargas y subíndices. Esto no mide la exactitud real de las cinco páginas ni justifica reprocesar toda la colección con estos ajustes. `piloto-ocr-local.json` conserva las métricas, sin texto de los libros.
 
 ## Formatos para consulta y producto
+
+### Ensayo de interpretación a partir del OCR
+
+Se leyeron las páginas PDF 9, 12, 13, 14 y 22 del material de química y se seleccionó un ejercicio representativo por página. Los datos críticos se cotejaron en cinco recortes. El resultado son cinco fichas locales estructuradas con datos, fórmulas LaTeX, resultado, supuestos, referencia al recorte y pendientes. No se marcaron como completas las cinco páginas ni se alteró el texto crudo.
+
+Las verificaciones abarcaron comparación de Qc con Kc mediante fracciones, transferencia de protón y carga, raíz analítica frente a bisección, constante a partir de la fracción disociada y balances de una mezcla. Son comprobaciones de esos casos bajo sus supuestos, no motores generales implementados ni validación de todos los ejercicios del libro.
+
+El lector está en `fuentes/ocr-local/cuzcano/piloto-interpretacion-5/index.html`; `fichas.json` contiene los registros y `interpretar.py` reproduce las comprobaciones sin servicios externos. `piloto-interpretacion.json` guarda sólo el resumen versionado. El método produjo cinco fichas utilizables para orientar diseño, pero las cinco necesitaron visión: no hay medición comparable de tokens para afirmar un porcentaje de ahorro.
 
 La entrega local está en `fuentes/ocr-local/cuzcano/entrega/`: `index.html` permite leer y comparar, `paginas-corregidas.jsonl` guarda un registro por página y `revision-cuzcano.zip` reúne ambos con un manifiesto de hashes. El paquete es un avance, no toda la colección corregida. No contiene los PDF. Cada registro incluye referencia al libro y página, OCR original, texto corregido, estado del cotejo, pendientes y validación matemática pendiente. `formulas_latex` contiene únicamente las expresiones ya normalizadas; no se promete cobertura total.
 
