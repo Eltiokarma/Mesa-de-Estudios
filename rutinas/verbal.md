@@ -486,3 +486,9 @@ No empecé nada nuevo. La lista de la rutina está cerrada, y Gerson ya pidió y
 **Para Gerson:**
 1. Más textos de dificultad 3 en las unidades de la rutina original.
 2. Apagar la rutina diaria hasta que haya algo nuevo que pedirle.
+
+---
+
+## 9 nov 2026 · Sin pieza pendiente
+
+Hice fetch y merge, pero la principal no trae nada nuevo. `npm test` da 5134 de 5134. No hay pieza ni pedido nuevo, así que no hice nada más. Sigue en pie la recomendación de la entrada anterior: apagar la rutina diaria hasta que Gerson le asigne algo.
