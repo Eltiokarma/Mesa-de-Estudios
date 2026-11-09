@@ -1,12 +1,12 @@
 {
-  "generado_utc": "2026-11-09T03:28:03.861139+00:00",
+  "generado_utc": "2026-11-09T03:54:46.142051+00:00",
   "alcance": "Cotejo visual por página. No certifica libros completos ni exactitud matemática.",
   "prioridad_solicitada": "Páginas de baja confianza, primero sin cotejo previo",
-  "paginas_con_algun_cotejo": 58,
+  "paginas_con_algun_cotejo": 64,
   "paginas_pendientes_baja_confianza": 13722,
   "paginas_excluidas_sin_texto_principal": 6,
   "paginas_texto_completo_cotejado": 6,
-  "paginas_cotejo_parcial": 46,
+  "paginas_cotejo_parcial": 52,
   "copias_corregidas_locales": 19,
   "reconstrucciones_visuales": 17,
   "reemplazos_puntuales": 9,
@@ -709,7 +709,82 @@
       "pagina_pdf": 33,
       "estado": "parcial",
       "hallazgos": [
-        "Normalización de exponentes, radicales y unidades; relaciones geométricas y letras cotejadas."
+        "Normalización de exponentes, radicales y unidades; relaciones geométricas y letras cotejadas.",
+        "Enunciado, resolución y figuras cotejados; SVG reconstruidos y cálculos independientes."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 34,
+      "estado": "parcial",
+      "hallazgos": [
+        "Enunciado, resolución y figuras cotejados; SVG reconstruidos y cálculos independientes."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 35,
+      "estado": "parcial",
+      "hallazgos": [
+        "Enunciado, resolución y figuras cotejados; SVG reconstruidos y cálculos independientes.",
+        "Aproximación editorial de 37 grados distinguida del ángulo exacto."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 36,
+      "estado": "parcial",
+      "hallazgos": [
+        "Enunciado, resolución y figuras cotejados; SVG reconstruidos y cálculos independientes."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 37,
+      "estado": "parcial",
+      "hallazgos": [
+        "Enunciado, resolución y figuras cotejados; SVG reconstruidos y cálculos independientes."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 38,
+      "estado": "parcial",
+      "hallazgos": [
+        "Enunciado, resolución y figuras cotejados; SVG reconstruidos y cálculos independientes.",
+        "Aproximación editorial de 37 grados distinguida del ángulo exacto."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 39,
+      "estado": "parcial",
+      "hallazgos": [
+        "Enunciado, resolución y figuras cotejados; SVG reconstruidos y cálculos independientes."
       ],
       "copia_corregida_local": false,
       "reemplazos_puntuales": 0,

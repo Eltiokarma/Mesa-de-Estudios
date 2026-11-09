@@ -1,16 +1,16 @@
 {
-  "generado_utc": "2026-11-09T03:44:49.609141+00:00",
-  "ejercicios_indexados": 25,
-  "archivos_controlados": 100,
+  "generado_utc": "2026-11-09T03:55:28.652268+00:00",
+  "ejercicios_indexados": 35,
+  "archivos_controlados": 141,
   "indice_local": "fuentes/ocr-local/cuzcano/archivo-ejercicios/index.html",
   "respaldo_local": "fuentes/ocr-local/cuzcano/archivo-ejercicios/archivo-ejercicios.zip",
-  "sha256_zip": "b60604111a4d791a0cf86ffc2a459d713aead884236fa0d1c5ffcda1068d66eb",
-  "bytes_zip": 21612162,
+  "sha256_zip": "fd52743454bb31b2aead9f21037d8e1b6b8f322a4daf1b5b4deb31ca4bc25141",
+  "bytes_zip": 26310607,
   "verificacion": [
-    "100 archivos del respaldo extraídos y comprobados sin PDF ni OCR originales.",
-    "10 gráficos SVG reconstruidos, inspeccionados visualmente y visibles en el lector.",
-    "10 ejercicios de geometría comprobados con Python; problema 17 contrastado en 12 configuraciones 3D.",
-    "Lector con diez figuras visibles y sin desbordamiento móvil."
+    "141 archivos del respaldo extraídos y verificados sin PDF ni OCR originales.",
+    "Lote 18–27: diez gráficos SVG inspeccionados; diez ejercicios comprobados con Python desde la copia restaurada.",
+    "Problemas 21 y 26 distinguen aproximación editorial y ángulo literal.",
+    "Lector con diez redibujos visibles y sin desbordamiento móvil."
   ],
   "limites": [
     "Los hashes verifican integridad, no exactitud matemática.",
@@ -409,6 +409,166 @@
       "sha256_ocr_por_pagina": {
         "32": "2b5408bc8fd6780ade969781fa365eec0bd21101711b6c5349eb23dba47738ab",
         "33": "d781e4813b69b09aafe69412159ec67fb6207b88153d65e6691ba9cee67bf241"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:problema:18",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "problema",
+      "numero": 18,
+      "paginas_pdf": [
+        33
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-18-27/problema-18.json",
+      "sha256_ficha": "da0f4d7077ea7df434383e8ef45307952de93c8b252903b9bf0f0f180246b42c",
+      "sha256_ocr_por_pagina": {
+        "33": "d781e4813b69b09aafe69412159ec67fb6207b88153d65e6691ba9cee67bf241"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:problema:19",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "problema",
+      "numero": 19,
+      "paginas_pdf": [
+        33,
+        34
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-18-27/problema-19.json",
+      "sha256_ficha": "d9ccabe663ce55e24ee2e997ba50621e33e3a88f6155330680825dd634275dfe",
+      "sha256_ocr_por_pagina": {
+        "33": "d781e4813b69b09aafe69412159ec67fb6207b88153d65e6691ba9cee67bf241",
+        "34": "0c12aa6dabcbaf19479c3188a124d528dd40ea3f3e6c0f9ad82dfa56d248346f"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:problema:20",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "problema",
+      "numero": 20,
+      "paginas_pdf": [
+        34,
+        35
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-18-27/problema-20.json",
+      "sha256_ficha": "d11159c1b47793c0a36543fb3ac79aea766ef392784ea67d5e4622f29a41f2ce",
+      "sha256_ocr_por_pagina": {
+        "34": "0c12aa6dabcbaf19479c3188a124d528dd40ea3f3e6c0f9ad82dfa56d248346f",
+        "35": "d1847b46b1915ab35ddf73dffdd789251f889f99ec6933e382c79fbdbdfaa462"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:problema:21",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "problema",
+      "numero": 21,
+      "paginas_pdf": [
+        35
+      ],
+      "estado": "verificado_con_aproximacion_editorial",
+      "ficha": "piloto-geometria-18-27/problema-21.json",
+      "sha256_ficha": "251480e49b0e754da77c27b63011449b85a5744feb3803a97df1d4b493eed38e",
+      "sha256_ocr_por_pagina": {
+        "35": "d1847b46b1915ab35ddf73dffdd789251f889f99ec6933e382c79fbdbdfaa462"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:problema:22",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "problema",
+      "numero": 22,
+      "paginas_pdf": [
+        35,
+        36
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-18-27/problema-22.json",
+      "sha256_ficha": "fd45cc3646b192dbf918088a55cad44cc17557c7bc810c7f81e12580828d7690",
+      "sha256_ocr_por_pagina": {
+        "35": "d1847b46b1915ab35ddf73dffdd789251f889f99ec6933e382c79fbdbdfaa462",
+        "36": "c481712512df38b602b29d8740fa8981f8cf996a210f239f25a4767a7fff6a6e"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:problema:23",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "problema",
+      "numero": 23,
+      "paginas_pdf": [
+        36
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-18-27/problema-23.json",
+      "sha256_ficha": "251cb810aa8df4bfc328bc0ec463b85f8d113c99c969e7a039a54e4bd4f90bff",
+      "sha256_ocr_por_pagina": {
+        "36": "c481712512df38b602b29d8740fa8981f8cf996a210f239f25a4767a7fff6a6e"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:problema:24",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "problema",
+      "numero": 24,
+      "paginas_pdf": [
+        37
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-18-27/problema-24.json",
+      "sha256_ficha": "196757a1e0324739b5c0030692f97e65ece88a2e6530bb77ff75aa6e5b74a3c0",
+      "sha256_ocr_por_pagina": {
+        "37": "f4ba68f772ad8279dcfc54e0ed4d0482b7a9c14803449581759204aa7bbea8d6"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:problema:25",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "problema",
+      "numero": 25,
+      "paginas_pdf": [
+        37,
+        38
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-18-27/problema-25.json",
+      "sha256_ficha": "3918c34c2eb4218828870437b9046d138f11842ffd8f7800c6911e4cf162bff7",
+      "sha256_ocr_por_pagina": {
+        "37": "f4ba68f772ad8279dcfc54e0ed4d0482b7a9c14803449581759204aa7bbea8d6",
+        "38": "d56890b2d655c6caf155a3ee64363f189c8f57f9cf9d3dc82482bc4d21d16415"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:problema:26",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "problema",
+      "numero": 26,
+      "paginas_pdf": [
+        38
+      ],
+      "estado": "verificado_con_aproximacion_editorial",
+      "ficha": "piloto-geometria-18-27/problema-26.json",
+      "sha256_ficha": "39f0a9de1924a210264c1cbf4303834f54892b664ce0d03a03e48e796fa549ed",
+      "sha256_ocr_por_pagina": {
+        "38": "d56890b2d655c6caf155a3ee64363f189c8f57f9cf9d3dc82482bc4d21d16415"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:problema:27",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "problema",
+      "numero": 27,
+      "paginas_pdf": [
+        38,
+        39
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-18-27/problema-27.json",
+      "sha256_ficha": "9b216585222d4d90a85951695de6ed5656a17176225e8773d938c7744713d310",
+      "sha256_ocr_por_pagina": {
+        "38": "d56890b2d655c6caf155a3ee64363f189c8f57f9cf9d3dc82482bc4d21d16415",
+        "39": "7d67f3c92755c4605f5fe4d1fc1a2c8c7cb5c39fc00eeb2bb7f66100da24a654"
       }
     }
   ]

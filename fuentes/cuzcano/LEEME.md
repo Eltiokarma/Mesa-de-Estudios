@@ -23,7 +23,7 @@ No se identifica un título de razonamiento verbal en este catálogo.
 - 198 entradas descargadas y procesadas; 197 contenidos PDF distintos.
 - 21 522 páginas: 21 462 con OCR nuevo en español y 60 con capa textual previa aprovechable.
 - Cero libros con fallo de procesamiento. La auditoría de integridad pasó y las trece pruebas de herramientas están aprobadas.
-- 58 páginas con algún cotejo visual: seis con texto completo cotejado, seis sin texto principal y 46 parcialmente revisadas. Ningún libro completo certificado.
+- 64 páginas con algún cotejo visual: seis con texto completo cotejado, seis sin texto principal y 52 parcialmente revisadas. Ningún libro completo certificado.
 - 19 copias corregidas locales: 17 reconstrucciones visuales y dos páginas con nueve reemplazos puntuales en total.
 - 13 722 páginas siguen en la cola de baja confianza. El nuevo lote examinó 24 páginas de confianza cero y resolvió diez entradas de la cola: seis transcripciones completas y cuatro páginas sin texto principal.
 
@@ -156,7 +156,7 @@ La entrega está en `fuentes/ocr-local/cuzcano/piloto-complejos/index.html`. Inc
 
 ### Archivo reutilizable y lote de cuatro polinomios
 
-`archivo-ejercicios.json` registra veinticinco fichas localizables por libro, tipo y número. El índice local está en `fuentes/ocr-local/cuzcano/archivo-ejercicios/index.html`. Sus cien archivos de consulta tienen un manifiesto de integridad. El ZIP conjunto conserva lectores, fichas, recortes, dibujos y comprobadores; se probó su extracción sin los PDF ni el OCR originales. Es un respaldo local, no una copia remota en GitHub.
+`archivo-ejercicios.json` registra treinta y cinco fichas localizables por libro, tipo y número. El índice local está en `fuentes/ocr-local/cuzcano/archivo-ejercicios/index.html`. Sus ciento cuarenta y un archivos de consulta tienen un manifiesto de integridad. El ZIP conjunto conserva lectores, fichas, recortes, dibujos y comprobadores; se probó su extracción sin los PDF ni el OCR originales. Es un respaldo local, no una copia remota en GitHub.
 
 Antes de seleccionar un ejercicio, buscar su libro, tipo y número en el índice: reutilizar la ficha si ya existe; volver a la fuente sólo para resolver una duda o corregirla. Para comprobar lo guardado sin modificar el registro: `python herramientas/indexar_ejercicios_locales.py`. Después de incorporar o corregir fichas deliberadamente: `python herramientas/indexar_ejercicios_locales.py --actualizar --zip`. La actualización informa archivos nuevos, modificados y retirados. El ZIP contiene `archivo-ejercicios/comprobar_archivo.py` para comprobar una restauración. Los hashes detectan cambios, no certifican las matemáticas.
 
@@ -168,3 +168,8 @@ Antes de seleccionar un ejercicio, buscar su libro, tipo y número en el índice
 Se cotejaron los problemas 8–17 de Prisma y cilindro, PDF 28–33. Las diez fichas locales conservan enunciado normalizado, recortes originales con letras, relaciones geométricas y resolución explicada. Todos los resultados coinciden con la edición; el problema 17 incorpora además el dominio no degenerado, comprobado con doce configuraciones tridimensionales. Python comprueba el lote y el lector funciona sin conexión. Son seis páginas parcialmente cotejadas; ninguna se retira de la cola. El siguiente ejercicio es el 18. El respaldo conjunto contiene 25 fichas y 100 archivos verificados, y fue restaurado sin PDF ni OCR.
 
 Los diez ejercicios de este lote tienen ahora dibujos SVG reconstruidos, con letras y cotas, visibles directamente en el lector. Las secciones auxiliares aclaran la geometría usada en la resolución. Los originales quedan disponibles para contraste. Los redibujos permanecen en el archivo local y su respaldo.
+
+
+### Geometría: problemas 18–27
+
+Diez ejercicios adicionales cotejados en las páginas PDF 33–39, con diez SVG reconstruidos y soluciones por pasos. Ocho resultados coinciden exactamente bajo los supuestos de las figuras; en los problemas 21 y 26 se conserva la aproximación editorial de 37 grados y también el resultado literal. Las comprobaciones independientes usan coordenadas, productos escalares, determinantes y tetraedros. El archivo acumulado contiene 35 fichas y 141 archivos; se restauró y comprobó sin PDF ni OCR. El lector pasó las comprobaciones de imágenes y ancho móvil. Siguiente problema: 28. No se certificaron páginas completas ni se repitió OCR.
