@@ -1,17 +1,17 @@
 {
-  "generado_utc": "2026-11-09T12:03:37.762598+00:00",
-  "ejercicios_indexados": 234,
-  "archivos_controlados": 970,
+  "generado_utc": "2026-11-09T12:41:29.094429+00:00",
+  "ejercicios_indexados": 244,
+  "archivos_controlados": 1010,
   "indice_local": "fuentes/ocr-local/cuzcano/archivo-ejercicios/index.html",
   "respaldo_local": "fuentes/ocr-local/cuzcano/archivo-ejercicios/archivo-ejercicios.zip",
-  "sha256_zip": "268d078ff6b0e88e701df6d2683b491d0b843de5b15861997e1d8cf343b8aeaa",
-  "bytes_zip": 141421034,
+  "sha256_zip": "2e749d774c03f2a1a82961a024ca6333e18281f9ad55d042eec999dbddd0f6b7",
+  "bytes_zip": 149772719,
   "verificacion": [
-    "970 archivos restaurados y verificados sin PDF ni OCR originales.",
-    "Pirámide y cono: 20 ejercicios con 20 gráficos y una guía de 15 unidades con 8 esquemas; 9 observaciones de teoría.",
-    "20 controles de ejercicios y 15 controles de teoría aprobados desde la copia restaurada.",
-    "28 gráficos nuevos inspeccionados visualmente y dos lectores móviles comprobados sin desbordamiento.",
-    "Se conserva el cierre anterior de Prisma y cilindro: 100 resueltos, 100 propuestos y 67 dictámenes."
+    "1010 archivos restaurados y verificados sin PDF ni OCR originales.",
+    "Pirámide y cono: resueltos 21–30, diez gráficos y diez controles geométricos aprobados también desde la copia restaurada.",
+    "Diez gráficos inspeccionados y lector móvil sin desbordamiento.",
+    "El archivo conserva los bloques anteriores y sus dos guías.",
+    "La extracción temporal de esta prueba se retira después de verificar; el ZIP y los archivos de consulta permanecen en D."
   ],
   "limites": [
     "Los hashes verifican integridad, no exactitud matemática.",
@@ -457,6 +457,160 @@
       "sha256_ficha": "64be5a16464ee548384bf3bedfe4879c30cfbd09527271edb4f6c48befb1cf15",
       "sha256_ocr_por_pagina": {
         "35": "6ba4d8e713360d9022b142470c1d69fa3c35aa52f0893fd77e92714643dc6f97"
+      }
+    },
+    {
+      "uid": "1F0RSVnmX30eTsDbWsJwNeirOGdSpy55l:problema:21",
+      "libro_id": "1F0RSVnmX30eTsDbWsJwNeirOGdSpy55l",
+      "tipo": "problema",
+      "numero": 21,
+      "paginas_pdf": [
+        35,
+        36
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-piramide-cono-21-30/problema-21.json",
+      "sha256_ficha": "cbca3a2ecb462ec0b8ca90795f12401e0f5aacbe1b35f76040d90d96232bafe7",
+      "sha256_ocr_por_pagina": {
+        "35": "6ba4d8e713360d9022b142470c1d69fa3c35aa52f0893fd77e92714643dc6f97",
+        "36": "2510317e38e4dec587fb84ef166ed433108f9e757ce19522352644fb76b50472"
+      }
+    },
+    {
+      "uid": "1F0RSVnmX30eTsDbWsJwNeirOGdSpy55l:problema:22",
+      "libro_id": "1F0RSVnmX30eTsDbWsJwNeirOGdSpy55l",
+      "tipo": "problema",
+      "numero": 22,
+      "paginas_pdf": [
+        36
+      ],
+      "estado": "correccion_geometrica",
+      "ficha": "piloto-piramide-cono-21-30/problema-22.json",
+      "sha256_ficha": "f9f937aa17c7a609746f1e3ecbba097d61b5a9e5493d4275f1a5c16cef4cc6b2",
+      "sha256_ocr_por_pagina": {
+        "36": "2510317e38e4dec587fb84ef166ed433108f9e757ce19522352644fb76b50472"
+      }
+    },
+    {
+      "uid": "1F0RSVnmX30eTsDbWsJwNeirOGdSpy55l:problema:23",
+      "libro_id": "1F0RSVnmX30eTsDbWsJwNeirOGdSpy55l",
+      "tipo": "problema",
+      "numero": 23,
+      "paginas_pdf": [
+        37
+      ],
+      "estado": "correccion_altura",
+      "ficha": "piloto-piramide-cono-21-30/problema-23.json",
+      "sha256_ficha": "09cfcea56b606c6e16a25b8f5e6067812dba7a8810b47cba1fb1d2d032f942df",
+      "sha256_ocr_por_pagina": {
+        "37": "e7483748182571bea2fbbee31122728e19faca80d0b2eb935139548d1f2b0114"
+      }
+    },
+    {
+      "uid": "1F0RSVnmX30eTsDbWsJwNeirOGdSpy55l:problema:24",
+      "libro_id": "1F0RSVnmX30eTsDbWsJwNeirOGdSpy55l",
+      "tipo": "problema",
+      "numero": 24,
+      "paginas_pdf": [
+        37
+      ],
+      "estado": "correccion_factor",
+      "ficha": "piloto-piramide-cono-21-30/problema-24.json",
+      "sha256_ficha": "2b09dff3981875f60a7e5a650a01c272fe7439e60163ff89bb36ca23914d9599",
+      "sha256_ocr_por_pagina": {
+        "37": "e7483748182571bea2fbbee31122728e19faca80d0b2eb935139548d1f2b0114"
+      }
+    },
+    {
+      "uid": "1F0RSVnmX30eTsDbWsJwNeirOGdSpy55l:problema:25",
+      "libro_id": "1F0RSVnmX30eTsDbWsJwNeirOGdSpy55l",
+      "tipo": "problema",
+      "numero": 25,
+      "paginas_pdf": [
+        38
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-piramide-cono-21-30/problema-25.json",
+      "sha256_ficha": "3cc5b2b24a574088a554eb3b232cd8e9777ed7dd57118b7f450dea18e2914387",
+      "sha256_ocr_por_pagina": {
+        "38": "4cd0e358877d69d4886d22f826e551663236f4bd9bb3a214a1dccb963fcd698b"
+      }
+    },
+    {
+      "uid": "1F0RSVnmX30eTsDbWsJwNeirOGdSpy55l:problema:26",
+      "libro_id": "1F0RSVnmX30eTsDbWsJwNeirOGdSpy55l",
+      "tipo": "problema",
+      "numero": 26,
+      "paginas_pdf": [
+        38
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-piramide-cono-21-30/problema-26.json",
+      "sha256_ficha": "2b7445efaa8b893092cf0a47abbdada17ef12286bb2ddecb0f8cb49e1ae51b03",
+      "sha256_ocr_por_pagina": {
+        "38": "4cd0e358877d69d4886d22f826e551663236f4bd9bb3a214a1dccb963fcd698b"
+      }
+    },
+    {
+      "uid": "1F0RSVnmX30eTsDbWsJwNeirOGdSpy55l:problema:27",
+      "libro_id": "1F0RSVnmX30eTsDbWsJwNeirOGdSpy55l",
+      "tipo": "problema",
+      "numero": 27,
+      "paginas_pdf": [
+        39
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-piramide-cono-21-30/problema-27.json",
+      "sha256_ficha": "337bd5dde62cc69786b609b892d18877230ea9a0c04dfb9ec953076448b519c5",
+      "sha256_ocr_por_pagina": {
+        "39": "bdc74fce5db3272ef614b778728dd6eccfae7b6d0a2f6abf7d22d4c0a19ce3c5"
+      }
+    },
+    {
+      "uid": "1F0RSVnmX30eTsDbWsJwNeirOGdSpy55l:problema:28",
+      "libro_id": "1F0RSVnmX30eTsDbWsJwNeirOGdSpy55l",
+      "tipo": "problema",
+      "numero": 28,
+      "paginas_pdf": [
+        39
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-piramide-cono-21-30/problema-28.json",
+      "sha256_ficha": "0256a8f13f3f4e593fe4779a4459ebf600aa76a9c6104b39576fc63af38c18ff",
+      "sha256_ocr_por_pagina": {
+        "39": "bdc74fce5db3272ef614b778728dd6eccfae7b6d0a2f6abf7d22d4c0a19ce3c5"
+      }
+    },
+    {
+      "uid": "1F0RSVnmX30eTsDbWsJwNeirOGdSpy55l:problema:29",
+      "libro_id": "1F0RSVnmX30eTsDbWsJwNeirOGdSpy55l",
+      "tipo": "problema",
+      "numero": 29,
+      "paginas_pdf": [
+        40
+      ],
+      "estado": "precision_diedro",
+      "ficha": "piloto-piramide-cono-21-30/problema-29.json",
+      "sha256_ficha": "1e7ca54f830977287cbb1053c69ce943f708c0a661326121c8b542de2b39a3ce",
+      "sha256_ocr_por_pagina": {
+        "40": "4bdc26c392b5b85556a578d0e37bdea323ddd75e3db561c9b87d0d203bfb5e2f"
+      }
+    },
+    {
+      "uid": "1F0RSVnmX30eTsDbWsJwNeirOGdSpy55l:problema:30",
+      "libro_id": "1F0RSVnmX30eTsDbWsJwNeirOGdSpy55l",
+      "tipo": "problema",
+      "numero": 30,
+      "paginas_pdf": [
+        40,
+        41
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-piramide-cono-21-30/problema-30.json",
+      "sha256_ficha": "1284ae78b1b331a6f8a258c6523baf624d34673ad9ef96fd89ddf83566fd7351",
+      "sha256_ocr_por_pagina": {
+        "40": "4bdc26c392b5b85556a578d0e37bdea323ddd75e3db561c9b87d0d203bfb5e2f",
+        "41": "0898d6fc304395fdcb815549bf4ada3272c5557cf03b75313f3ef23d597dbb39"
       }
     },
     {

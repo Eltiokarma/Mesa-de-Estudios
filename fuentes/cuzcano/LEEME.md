@@ -23,7 +23,7 @@ No se identifica un título de razonamiento verbal en este catálogo.
 - 198 entradas descargadas y procesadas; 197 contenidos PDF distintos.
 - 21 522 páginas: 21 462 con OCR nuevo en español y 60 con capa textual previa aprovechable.
 - Cero libros con fallo de procesamiento. La auditoría de integridad pasó y las trece pruebas de herramientas están aprobadas.
-- 170 páginas con algún cotejo visual: seis con texto completo cotejado, seis sin texto principal y 158 parcialmente revisadas. Ningún libro completo certificado.
+- 176 páginas con algún cotejo visual: seis con texto completo cotejado, seis sin texto principal y 164 parcialmente revisadas. Ningún libro completo certificado.
 - 19 copias corregidas locales: 17 reconstrucciones visuales y dos páginas con nueve reemplazos puntuales en total.
 - 13 722 páginas siguen en la cola de baja confianza. El nuevo lote examinó 24 páginas de confianza cero y resolvió diez entradas de la cola: seis transcripciones completas y cuatro páginas sin texto principal.
 
@@ -156,7 +156,7 @@ La entrega está en `fuentes/ocr-local/cuzcano/piloto-complejos/index.html`. Inc
 
 ### Archivo reutilizable y lote de cuatro polinomios
 
-`archivo-ejercicios.json` registra doscientas treinta y cuatro fichas localizables por libro, tipo y número. El índice local está en `fuentes/ocr-local/cuzcano/archivo-ejercicios/index.html`. Sus 970 archivos de consulta tienen un manifiesto de integridad. El ZIP conjunto conserva lectores, fichas, recortes, dibujos y comprobadores; se probó su extracción sin los PDF ni el OCR originales. Es un respaldo local, no una copia remota en GitHub.
+`archivo-ejercicios.json` registra doscientas cuarenta y cuatro fichas localizables por libro, tipo y número. El índice local está en `fuentes/ocr-local/cuzcano/archivo-ejercicios/index.html`. Sus 1010 archivos de consulta tienen un manifiesto de integridad. El ZIP conjunto conserva lectores, fichas, recortes, dibujos y comprobadores; se probó su extracción sin los PDF ni el OCR originales. Es un respaldo local, no una copia remota en GitHub.
 
 Antes de seleccionar un ejercicio, buscar su libro, tipo y número en el índice: reutilizar la ficha si ya existe; volver a la fuente sólo para resolver una duda o corregirla. Para comprobar lo guardado sin modificar el registro: `python herramientas/indexar_ejercicios_locales.py`. Después de incorporar o corregir fichas deliberadamente: `python herramientas/indexar_ejercicios_locales.py --actualizar --zip`. La actualización informa archivos nuevos, modificados y retirados. El ZIP contiene `archivo-ejercicios/comprobar_archivo.py` para comprobar una restauración. Los hashes detectan cambios, no certifican las matemáticas.
 
@@ -249,4 +249,11 @@ Se eligió este cuaderno como continuación de Prisma y cilindro. `piramide-cono
 El lector local `fuentes/ocr-local/cuzcano/piloto-piramide-cono-1-20/index.html` reúne 20 soluciones propias por pasos, 20 SVG y fichas JSON con evidencias. Catorce ejercicios quedan sin observaciones; los casos 5 y 18 explicitan condiciones del dibujo, 13 y 17 separan ángulos literales del modelo notable, 14 corrige una fórmula intermedia y 16 corrige una alternativa. La guía enlazada reúne 15 unidades, 8 esquemas y 9 correcciones o precisiones de teoría.
 
 Pasaron 20 controles de ejercicios y 15 de teoría; se inspeccionaron los 28 gráficos y dos lectores móviles. El archivo acumulado contiene 234 fichas, dos guías y 970 archivos controlados. Se restauró el ZIP y se repitieron los controles nuevos sin PDF ni OCR originales. El OCR de origen está intacto. Hay 170 páginas con algún cotejo, 158 parciales; la cola general conserva 13 722 páginas. Siguiente: resuelto 21, que empieza en PDF 35.
+
+
+### Pirámide y cono: resueltos 21–30
+
+Diez fichas nuevas con gráficos redibujados y soluciones por pasos, cotejadas en PDF 35–41. Se corrigen la perpendicularidad falsa del 22, la altura del tronco del 23 y el factor V omitido en el 24; el 29 explicita que se pide el diedro menor. Los otros seis no presentan discrepancias. Diez controles geométricos aprobados, diez gráficos inspeccionados y lector móvil comprobado.
+
+El proyecto está físicamente en D:\ChatGPT\Fanservice Historica Económica; el acceso anterior de C es un enlace. El archivo acumula 244 fichas y 1010 archivos controlados. El ZIP se restauró y los controles nuevos pasaron sin PDF ni OCR originales; la extracción temporal se retiró después de comprobarla. Hay 176 páginas con algún cotejo (164 parciales); la cola mantiene 13 722. Siguiente: resuelto 31, PDF 41.
 

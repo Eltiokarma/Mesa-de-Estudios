@@ -1,12 +1,12 @@
 {
-  "generado_utc": "2026-11-09T12:00:54.211213+00:00",
+  "generado_utc": "2026-11-09T12:40:30.110040+00:00",
   "alcance": "Cotejo visual por página. No certifica libros completos ni exactitud matemática.",
   "prioridad_solicitada": "Páginas de baja confianza, primero sin cotejo previo",
-  "paginas_con_algun_cotejo": 170,
+  "paginas_con_algun_cotejo": 176,
   "paginas_pendientes_baja_confianza": 13722,
   "paginas_excluidas_sin_texto_principal": 6,
   "paginas_texto_completo_cotejado": 6,
-  "paginas_cotejo_parcial": 158,
+  "paginas_cotejo_parcial": 164,
   "copias_corregidas_locales": 19,
   "reconstrucciones_visuales": 17,
   "reemplazos_puntuales": 9,
@@ -687,7 +687,80 @@
       "pagina_pdf": 35,
       "estado": "parcial",
       "hallazgos": [
-        "Cotejo visual y revisión matemática del primer bloque de Pirámide y cono; OCR original conservado."
+        "Cotejo visual y revisión matemática del primer bloque de Pirámide y cono; OCR original conservado.",
+        "Revisión de ejercicios; correcciones en 22,23,24 y precisión del diedro en 29."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1F0RSVnmX30eTsDbWsJwNeirOGdSpy55l",
+      "pagina_pdf": 36,
+      "estado": "parcial",
+      "hallazgos": [
+        "Revisión de ejercicios; correcciones en 22,23,24 y precisión del diedro en 29."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1F0RSVnmX30eTsDbWsJwNeirOGdSpy55l",
+      "pagina_pdf": 37,
+      "estado": "parcial",
+      "hallazgos": [
+        "Revisión de ejercicios; correcciones en 22,23,24 y precisión del diedro en 29."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1F0RSVnmX30eTsDbWsJwNeirOGdSpy55l",
+      "pagina_pdf": 38,
+      "estado": "parcial",
+      "hallazgos": [
+        "Revisión de ejercicios; correcciones en 22,23,24 y precisión del diedro en 29."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1F0RSVnmX30eTsDbWsJwNeirOGdSpy55l",
+      "pagina_pdf": 39,
+      "estado": "parcial",
+      "hallazgos": [
+        "Revisión de ejercicios; correcciones en 22,23,24 y precisión del diedro en 29."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1F0RSVnmX30eTsDbWsJwNeirOGdSpy55l",
+      "pagina_pdf": 40,
+      "estado": "parcial",
+      "hallazgos": [
+        "Revisión de ejercicios; correcciones en 22,23,24 y precisión del diedro en 29."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1F0RSVnmX30eTsDbWsJwNeirOGdSpy55l",
+      "pagina_pdf": 41,
+      "estado": "parcial",
+      "hallazgos": [
+        "Revisión de ejercicios; correcciones en 22,23,24 y precisión del diedro en 29."
       ],
       "copia_corregida_local": false,
       "reemplazos_puntuales": 0,

@@ -1,0 +1,40 @@
+{
+  "libro_id": "1F0RSVnmX30eTsDbWsJwNeirOGdSpy55l",
+  "resueltos": [
+    21,
+    30
+  ],
+  "paginas_pdf": [
+    35,
+    41
+  ],
+  "ejercicios": 10,
+  "graficos": 10,
+  "estados": {
+    "verificado": 6,
+    "correccion_geometrica": 1,
+    "correccion_altura": 1,
+    "correccion_factor": 1,
+    "precision_diedro": 1
+  },
+  "verificacion": {
+    "controles_geometricos": 10,
+    "graficos_inspeccionados": 10,
+    "lector_movil": "390 px, sin desbordamiento; imágenes cargadas",
+    "ocr_original_intacto": true,
+    "restauracion_sin_pdf_ni_ocr": true
+  },
+  "lector_local": "fuentes/ocr-local/cuzcano/piloto-piramide-cono-21-30/index.html",
+  "almacenamiento_fisico": "D:/ChatGPT/Fanservice Historica Económica",
+  "siguiente": {
+    "resuelto": 31,
+    "pagina_pdf": 41
+  },
+  "limite": "Revisión de ejercicios; páginas completas no certificadas.",
+  "respaldo_acumulado": {
+    "fichas": 244,
+    "archivos": 1010,
+    "sha256_zip": "2e749d774c03f2a1a82961a024ca6333e18281f9ad55d042eec999dbddd0f6b7"
+  }
+}
+
