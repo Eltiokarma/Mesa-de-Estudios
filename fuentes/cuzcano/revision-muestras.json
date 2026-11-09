@@ -1,12 +1,12 @@
 {
-  "generado_utc": "2026-11-09T04:37:52.285530+00:00",
+  "generado_utc": "2026-11-09T04:52:53.275643+00:00",
   "alcance": "Cotejo visual por página. No certifica libros completos ni exactitud matemática.",
   "prioridad_solicitada": "Páginas de baja confianza, primero sin cotejo previo",
-  "paginas_con_algun_cotejo": 99,
+  "paginas_con_algun_cotejo": 110,
   "paginas_pendientes_baja_confianza": 13722,
   "paginas_excluidas_sin_texto_principal": 6,
   "paginas_texto_completo_cotejado": 6,
-  "paginas_cotejo_parcial": 87,
+  "paginas_cotejo_parcial": 98,
   "copias_corregidas_locales": 19,
   "reconstrucciones_visuales": 17,
   "reemplazos_puntuales": 9,
@@ -633,11 +633,48 @@
     },
     {
       "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 24,
+      "estado": "parcial",
+      "hallazgos": [
+        "Enunciados, figuras y desarrollos cotejados; redibujos y comprobaciones independientes guardados."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 25,
+      "estado": "parcial",
+      "hallazgos": [
+        "Enunciados, figuras y desarrollos cotejados; redibujos y comprobaciones independientes guardados."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 26,
+      "estado": "parcial",
+      "hallazgos": [
+        "Enunciados, figuras y desarrollos cotejados; redibujos y comprobaciones independientes guardados."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
       "pagina_pdf": 27,
       "estado": "parcial",
       "hallazgos": [
         "Letras originales y proyecciones sobre base y cara lateral vinculadas con cada paso.",
-        "Diagonal, ángulos con planos y volumen comprobados en coordenadas tridimensionales."
+        "Diagonal, ángulos con planos y volumen comprobados en coordenadas tridimensionales.",
+        "Enunciados, figuras y desarrollos cotejados; redibujos y comprobaciones independientes guardados."
       ],
       "copia_corregida_local": false,
       "reemplazos_puntuales": 0,
@@ -1224,7 +1261,104 @@
       "pagina_pdf": 74,
       "estado": "parcial",
       "hallazgos": [
+        "Enunciados, figuras y desarrollos cotejados; redibujos y comprobaciones independientes guardados.",
         "Cotejo de fragmentos, redibujo y comprobaciones independientes; sin certificación de página completa."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 75,
+      "estado": "parcial",
+      "hallazgos": [
+        "Enunciados, figuras y desarrollos cotejados; redibujos y comprobaciones independientes guardados."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 76,
+      "estado": "parcial",
+      "hallazgos": [
+        "Enunciados, figuras y desarrollos cotejados; redibujos y comprobaciones independientes guardados."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 77,
+      "estado": "parcial",
+      "hallazgos": [
+        "Enunciados, figuras y desarrollos cotejados; redibujos y comprobaciones independientes guardados."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 78,
+      "estado": "parcial",
+      "hallazgos": [
+        "Enunciados, figuras y desarrollos cotejados; redibujos y comprobaciones independientes guardados."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 79,
+      "estado": "parcial",
+      "hallazgos": [
+        "Enunciados, figuras y desarrollos cotejados; redibujos y comprobaciones independientes guardados."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 80,
+      "estado": "parcial",
+      "hallazgos": [
+        "Enunciados, figuras y desarrollos cotejados; redibujos y comprobaciones independientes guardados."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 81,
+      "estado": "parcial",
+      "hallazgos": [
+        "Enunciados, figuras y desarrollos cotejados; redibujos y comprobaciones independientes guardados."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 82,
+      "estado": "parcial",
+      "hallazgos": [
+        "Enunciados, figuras y desarrollos cotejados; redibujos y comprobaciones independientes guardados."
       ],
       "copia_corregida_local": false,
       "reemplazos_puntuales": 0,

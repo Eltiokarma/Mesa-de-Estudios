@@ -1,0 +1,35 @@
+{
+  "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+  "ejercicios_nuevos": 19,
+  "rangos": [
+    [
+      1,
+      6
+    ],
+    [
+      88,
+      100
+    ]
+  ],
+  "verificados": 14,
+  "con_observaciones": 5,
+  "requieren_aclaracion": [
+    2,
+    96
+  ],
+  "resueltos_indexados": 100,
+  "resueltos_totales": 100,
+  "faltantes": [],
+  "libro_completo_validado": false,
+  "pendientes": [
+    "Teoría",
+    "Problemas propuestos"
+  ],
+  "siguiente": {
+    "tipo": "propuesto",
+    "numero": 1,
+    "pagina_pdf": 83
+  },
+  "fuentes_y_fichas": "Solo locales; no se incorporan enunciados ni figuras al producto.",
+  "validacion": "Comprobaciones matemáticas, inspección de 19 SVG, lectores móviles y restauración del respaldo aprobadas."
+}
