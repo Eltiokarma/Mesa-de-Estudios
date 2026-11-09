@@ -1,0 +1,41 @@
+{
+  "generado_utc": "2026-11-09T00:42:23.318216+00:00",
+  "alcance": "Dos ejercicios más exigentes; tres páginas revisadas parcialmente.",
+  "fuentes": [
+    {
+      "id": "12szkZ06QNc_u_XotXmwArWpVIqTbNmoN",
+      "paginas_pdf": [
+        22,
+        42
+      ],
+      "ficha": "razonamiento"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "paginas_pdf": [
+        27
+      ],
+      "ficha": "espacial"
+    }
+  ],
+  "resultados": {
+    "razonamiento": "Discrepancia editorial documentada: dos triángulos compuestos adicionales se muestran explícitamente; dos enumeraciones exactas coinciden.",
+    "espacial": "Resolución editorial cotejada y verificación tridimensional satisfactoria; letras y proyecciones conservadas."
+  },
+  "validacion": [
+    "Tres hashes de OCR de origen conservados.",
+    "Recortes originales y figuras SVG rasterizadas inspeccionados visualmente.",
+    "Referencias locales del HTML válidas.",
+    "44 selecciones de triángulos planos, tres espaciales y reinicios comprobados con Node.",
+    "ZIP de doce archivos íntegro; ejecución desde copia aislada satisfactoria."
+  ],
+  "limitaciones": [
+    "Revisión parcial de páginas, sin certificar libros.",
+    "La inspección visual corresponde a recortes y figuras; no se hizo captura completa del HTML."
+  ],
+  "entrega_local": "fuentes/ocr-local/cuzcano/piloto-complejos/",
+  "cola_pendiente": 13722,
+  "entradas_cola_actualizadas": 1,
+  "entradas_retiradas": 0,
+  "uso_en_producto": "Metadatos versionables; enunciados, figuras y recortes sólo locales."
+}

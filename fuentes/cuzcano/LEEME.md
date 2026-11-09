@@ -23,7 +23,7 @@ No se identifica un título de razonamiento verbal en este catálogo.
 - 198 entradas descargadas y procesadas; 197 contenidos PDF distintos.
 - 21 522 páginas: 21 462 con OCR nuevo en español y 60 con capa textual previa aprovechable.
 - Cero libros con fallo de procesamiento. La auditoría de integridad pasó y las trece pruebas de herramientas están aprobadas.
-- 48 páginas con algún cotejo visual: seis con texto completo cotejado, seis sin texto principal y 36 parcialmente revisadas. Ningún libro completo certificado.
+- 51 páginas con algún cotejo visual: seis con texto completo cotejado, seis sin texto principal y 39 parcialmente revisadas. Ningún libro completo certificado.
 - 19 copias corregidas locales: 17 reconstrucciones visuales y dos páginas con nueve reemplazos puntuales en total.
 - 13 722 páginas siguen en la cola de baja confianza. El nuevo lote examinó 24 páginas de confianza cero y resolvió diez entradas de la cola: seis transcripciones completas y cuatro páginas sin texto principal.
 
@@ -147,3 +147,9 @@ La prueba inicial con el Solucionario 1 de Química CEPREUNI 2015-2 mostró mezc
 `piloto-rm-polinomios.json` registra dos ejercicios y tres páginas parcialmente cotejadas. Se reconstruyó un gráfico de conteo conservando qué rayos llegan a cada base; un enumerador geométrico independiente confirmó la resolución editorial. El lector local permite resaltar cada triángulo. En álgebra se recuperaron exponentes fraccionarios y se elaboró una solución propia, diferenciada de la fuente y comprobada con fracciones exactas.
 
 La entrega local está en `fuentes/ocr-local/cuzcano/piloto-rm-polinomios/index.html`, con JSON, SVG, recortes y ZIP. Se comprobaron los enlaces locales, las 31 selecciones y el reinicio del selector, y el comprobador Python desde una copia aislada del ZIP. Se inspeccionaron visualmente los recortes y el SVG; no se obtuvo captura del lector HTML completo. Ninguna página sale de la cola.
+
+### Piloto de gráficos complejos y geometría espacial
+
+`piloto-complejos.json` registra dos ejercicios y tres páginas parcialmente revisadas. El conteo plano reconstruye los cruces de doce segmentos y documenta una discrepancia con la clave editorial: dos triángulos compuestos adicionales se muestran explícitamente. Dos enumeraciones exactas coinciden. En geometría espacial se conservan las letras de la fuente y sus proyecciones; se comprueban diagonal, ángulos con planos y volumen.
+
+La entrega está en `fuentes/ocr-local/cuzcano/piloto-complejos/index.html`. Incluye selección individual de triángulos planos y espaciales, resolución editorial separada del cotejo independiente, fichas JSON, dibujos SVG, evidencia y un ZIP de doce archivos. Se inspeccionaron los recortes y figuras rasterizadas, se comprobaron controles y enlaces, y se ejecutó el comprobador desde una copia aislada. No se retiró ninguna página de la cola.
