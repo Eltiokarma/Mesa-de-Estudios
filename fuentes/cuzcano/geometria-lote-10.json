@@ -35,5 +35,7 @@
     "No certifica el libro completo.",
     "Enunciados y figuras permanecen locales; no forman parte de la aplicación.",
     "No se repitió el reconocimiento OCR."
-  ]
+  ],
+  "graficos_vectoriales_reconstruidos": 10,
+  "graficos": "SVG locales con letras, cotas y secciones auxiliares; escaneos disponibles para contraste."
 }

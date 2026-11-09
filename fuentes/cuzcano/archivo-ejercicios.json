@@ -1,15 +1,16 @@
 {
-  "generado_utc": "2026-11-09T03:28:21.416144+00:00",
+  "generado_utc": "2026-11-09T03:44:49.609141+00:00",
   "ejercicios_indexados": 25,
-  "archivos_controlados": 89,
+  "archivos_controlados": 100,
   "indice_local": "fuentes/ocr-local/cuzcano/archivo-ejercicios/index.html",
   "respaldo_local": "fuentes/ocr-local/cuzcano/archivo-ejercicios/archivo-ejercicios.zip",
-  "sha256_zip": "4568bfa2b7c403e3947b6f91f847d69dded0397ce89e9cb8fe0b42abb7f1b307",
-  "bytes_zip": 21590606,
+  "sha256_zip": "b60604111a4d791a0cf86ffc2a459d713aead884236fa0d1c5ffcda1068d66eb",
+  "bytes_zip": 21612162,
   "verificacion": [
-    "89 archivos del respaldo extraídos y comprobados sin PDF ni OCR originales.",
-    "Lote de geometría: 10 ejercicios comprobados con Python; problema 17 contrastado en 12 configuraciones 3D.",
-    "Lector: 10 fichas, imágenes cargadas y vista móvil sin desbordamiento."
+    "100 archivos del respaldo extraídos y comprobados sin PDF ni OCR originales.",
+    "10 gráficos SVG reconstruidos, inspeccionados visualmente y visibles en el lector.",
+    "10 ejercicios de geometría comprobados con Python; problema 17 contrastado en 12 configuraciones 3D.",
+    "Lector con diez figuras visibles y sin desbordamiento móvil."
   ],
   "limites": [
     "Los hashes verifican integridad, no exactitud matemática.",
@@ -260,7 +261,7 @@
       ],
       "estado": "verificado",
       "ficha": "piloto-geometria-lote-10/problema-8.json",
-      "sha256_ficha": "960e9529346cdf1db438b278244d8632b11f6ae427903e62a6b3d0e9c451e848",
+      "sha256_ficha": "32c140d2551db1112e40bd963597737356cb685caee253e47df84d5f6f5bc2b6",
       "sha256_ocr_por_pagina": {
         "28": "3eaedb787262bec8adc86cd2cfc0d271773207448449ea7ea4c8c1857f7f37b2"
       }
@@ -275,7 +276,7 @@
       ],
       "estado": "verificado",
       "ficha": "piloto-geometria-lote-10/problema-9.json",
-      "sha256_ficha": "77df66b5b3f61ff52ce52b4b6db8048662d2f2c1d5b9e045fb642d8b0a9482ed",
+      "sha256_ficha": "d3050f5d23017f1a75bb23745890306f7108d3d8c98774c70fa67c90277d4b22",
       "sha256_ocr_por_pagina": {
         "28": "3eaedb787262bec8adc86cd2cfc0d271773207448449ea7ea4c8c1857f7f37b2"
       }
@@ -291,7 +292,7 @@
       ],
       "estado": "verificado",
       "ficha": "piloto-geometria-lote-10/problema-10.json",
-      "sha256_ficha": "005a488786834e8181b498a81ad551851c2298dd51d4fd02ec76a3db087aa250",
+      "sha256_ficha": "0dfcf944428c729f5765353760f4180e7b2e308f61b29f969e2003b5d9746d95",
       "sha256_ocr_por_pagina": {
         "28": "3eaedb787262bec8adc86cd2cfc0d271773207448449ea7ea4c8c1857f7f37b2",
         "29": "ea3c996bfb8d0932882ff9552288f630c4be461d8666217383fcb04a844a24b7"
@@ -307,7 +308,7 @@
       ],
       "estado": "verificado",
       "ficha": "piloto-geometria-lote-10/problema-11.json",
-      "sha256_ficha": "333dab2689961f61071382ed1c91234bcc401fe51b188a5138ff6875ef47d236",
+      "sha256_ficha": "1fcd42e1e18f8d16912bf124e33ae411b029de748391b7f895a014378ca41cc6",
       "sha256_ocr_por_pagina": {
         "29": "ea3c996bfb8d0932882ff9552288f630c4be461d8666217383fcb04a844a24b7"
       }
@@ -323,7 +324,7 @@
       ],
       "estado": "verificado",
       "ficha": "piloto-geometria-lote-10/problema-12.json",
-      "sha256_ficha": "53923ec7259b6bc560016e5bf5855307958a4d5252b45866fc0efc27b850ae78",
+      "sha256_ficha": "3e3f0dadc8d6a65cc2899680d0e515a29f2b268614be7f50f7486f8a8069525a",
       "sha256_ocr_por_pagina": {
         "29": "ea3c996bfb8d0932882ff9552288f630c4be461d8666217383fcb04a844a24b7",
         "30": "71c28d6892d67f4dfba5961c9c417e63cd6b5df6889e2384c65e07edc0b5424f"
@@ -339,7 +340,7 @@
       ],
       "estado": "verificado",
       "ficha": "piloto-geometria-lote-10/problema-13.json",
-      "sha256_ficha": "a150bdd0f62fadc91945b2f343b9cda31905fe9f52274abbef2599210d9fce46",
+      "sha256_ficha": "9f9f66be3207cd5d618fc70c8b450424f0ed3fc907eabf69087bf93298a9dda3",
       "sha256_ocr_por_pagina": {
         "30": "71c28d6892d67f4dfba5961c9c417e63cd6b5df6889e2384c65e07edc0b5424f"
       }
@@ -355,7 +356,7 @@
       ],
       "estado": "verificado",
       "ficha": "piloto-geometria-lote-10/problema-14.json",
-      "sha256_ficha": "5168d5e3210d1d5f502088dc0f7794978401ebb22c1a4a34e38737f3a1cd8725",
+      "sha256_ficha": "93fd11ad81474075bed8c7ef815f6cc02b848770f80a80726522e4805137bbcf",
       "sha256_ocr_por_pagina": {
         "30": "71c28d6892d67f4dfba5961c9c417e63cd6b5df6889e2384c65e07edc0b5424f",
         "31": "e2fdde1ab43c9d25b90bc46648793612fdeb2b8ec94cdc13a1534616e9d1468c"
@@ -372,7 +373,7 @@
       ],
       "estado": "verificado",
       "ficha": "piloto-geometria-lote-10/problema-15.json",
-      "sha256_ficha": "0367ff49b0a5b69ab916bf17557575a405773d29b76e3302ef6df7dae2912e44",
+      "sha256_ficha": "5f137d314fc78f64ffb9398d4609154922bf9525df3685fbfb1597216aeff6a7",
       "sha256_ocr_por_pagina": {
         "31": "e2fdde1ab43c9d25b90bc46648793612fdeb2b8ec94cdc13a1534616e9d1468c",
         "32": "2b5408bc8fd6780ade969781fa365eec0bd21101711b6c5349eb23dba47738ab"
@@ -388,7 +389,7 @@
       ],
       "estado": "verificado",
       "ficha": "piloto-geometria-lote-10/problema-16.json",
-      "sha256_ficha": "7a46d049354628751bd419bc3c049c4d486bebd662496af6d158775e1c2c5299",
+      "sha256_ficha": "c233e25da6b53fc35e2824f02cb3c324c4f0a8589ad57c1fbf785b6ac9f0de10",
       "sha256_ocr_por_pagina": {
         "32": "2b5408bc8fd6780ade969781fa365eec0bd21101711b6c5349eb23dba47738ab"
       }
@@ -404,7 +405,7 @@
       ],
       "estado": "verificado",
       "ficha": "piloto-geometria-lote-10/problema-17.json",
-      "sha256_ficha": "2960cb40c5b8f9396a7bdf4b07733bc031eec8bdb42868e0c4b7b5703b1d51af",
+      "sha256_ficha": "2e133514a6014cd42fee8a99d99cf2089f084c030a4855cc726d168835ea764f",
       "sha256_ocr_por_pagina": {
         "32": "2b5408bc8fd6780ade969781fa365eec0bd21101711b6c5349eb23dba47738ab",
         "33": "d781e4813b69b09aafe69412159ec67fb6207b88153d65e6691ba9cee67bf241"
