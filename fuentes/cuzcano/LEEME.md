@@ -23,7 +23,7 @@ No se identifica un título de razonamiento verbal en este catálogo.
 - 198 entradas descargadas y procesadas; 197 contenidos PDF distintos.
 - 21 522 páginas: 21 462 con OCR nuevo en español y 60 con capa textual previa aprovechable.
 - Cero libros con fallo de procesamiento. La auditoría de integridad pasó y las trece pruebas de herramientas están aprobadas.
-- 45 páginas con algún cotejo visual: seis con texto completo cotejado, seis sin texto principal y 33 parcialmente revisadas. Ningún libro completo certificado.
+- 48 páginas con algún cotejo visual: seis con texto completo cotejado, seis sin texto principal y 36 parcialmente revisadas. Ningún libro completo certificado.
 - 19 copias corregidas locales: 17 reconstrucciones visuales y dos páginas con nueve reemplazos puntuales en total.
 - 13 722 páginas siguen en la cola de baja confianza. El nuevo lote examinó 24 páginas de confianza cero y resolvió diez entradas de la cola: seis transcripciones completas y cuatro páginas sin texto principal.
 
@@ -141,3 +141,9 @@ Los cotejos detectaron posibles errores de la fuente y convenciones particulares
 Cuando el cotejo confirme columnas de igual anchura, `python herramientas/reordenar_columnas_ocr.py <pagina.json> --columnas 2` genera una lectura alternativa sin repetir el OCR. El número indicado corresponde a cada región reconocida: dos columnas por cada mitad de una doble página producen cuatro columnas. Conserva palabras y coordenadas; no corrige fórmulas ni garantiza el orden de títulos que ocupan varias columnas.
 
 La prueba inicial con el Solucionario 1 de Química CEPREUNI 2015-2 mostró mezcla de columnas y confusiones en letras de alternativas y fórmulas. Motivó la lectura separada de páginas enfrentadas. Una segunda muestra (Ondas electromagnéticas, página PDF 10) omitió un recuadro sombreado y rótulos de una figura aunque tenía confianza 95. La colección no debe considerarse un corpus validado mientras quede revisión pendiente.
+
+### Piloto de razonamiento matemático y polinomios
+
+`piloto-rm-polinomios.json` registra dos ejercicios y tres páginas parcialmente cotejadas. Se reconstruyó un gráfico de conteo conservando qué rayos llegan a cada base; un enumerador geométrico independiente confirmó la resolución editorial. El lector local permite resaltar cada triángulo. En álgebra se recuperaron exponentes fraccionarios y se elaboró una solución propia, diferenciada de la fuente y comprobada con fracciones exactas.
+
+La entrega local está en `fuentes/ocr-local/cuzcano/piloto-rm-polinomios/index.html`, con JSON, SVG, recortes y ZIP. Se comprobaron los enlaces locales, las 31 selecciones y el reinicio del selector, y el comprobador Python desde una copia aislada del ZIP. Se inspeccionaron visualmente los recortes y el SVG; no se obtuvo captura del lector HTML completo. Ninguna página sale de la cola.

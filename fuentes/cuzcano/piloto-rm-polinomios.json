@@ -1,0 +1,42 @@
+{
+  "generado_utc": "2026-11-09T00:33:47.169432+00:00",
+  "alcance": "Dos ejercicios; tres páginas parcialmente revisadas.",
+  "fuentes": [
+    {
+      "id": "12szkZ06QNc_u_XotXmwArWpVIqTbNmoN",
+      "paginas_pdf": [
+        8,
+        9
+      ],
+      "ficha": "razonamiento"
+    },
+    {
+      "id": "1GQxXnXKRDrb8SFKemkA-ggcOGep1KE44",
+      "paginas_pdf": [
+        44
+      ],
+      "ficha": "polinomios"
+    }
+  ],
+  "resultado": {
+    "razonamiento": "Resolución editorial cotejada y conteo geométrico independiente satisfactorio.",
+    "polinomios": "Notación cotejada; resolución propia y aritmética racional exacta satisfactorias."
+  },
+  "artefactos_locales": "fuentes/ocr-local/cuzcano/piloto-rm-polinomios/",
+  "validacion": [
+    "Tres hashes OCR conservados.",
+    "Recortes originales y SVG inspeccionados visualmente.",
+    "Referencias HTML locales verificadas.",
+    "Selector: 31 opciones y reinicio verificados con Node.",
+    "ZIP íntegro; comprobador Python ejecutado desde copia aislada."
+  ],
+  "limitaciones": [
+    "No se cotejó una solución editorial del ejercicio de álgebra.",
+    "No certifica páginas completas ni libros.",
+    "Captura del lector HTML no obtenida; se revisó el SVG rasterizado y la estructura del documento."
+  ],
+  "cola_pendiente": 13722,
+  "entradas_cola_actualizadas": 1,
+  "entradas_retiradas": 0,
+  "uso_en_producto": "Sólo metadatos versionables; enunciados, recortes y figuras de consulta locales."
+}
