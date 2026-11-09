@@ -1,0 +1,32 @@
+{
+  "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+  "seccion": "Problemas propuestos",
+  "tipo": "propuesto",
+  "rango": [
+    9,
+    13
+  ],
+  "paginas_pdf": [
+    83,
+    84
+  ],
+  "ejercicios_nuevos": 5,
+  "verificados": 4,
+  "datos_incompatibles": [
+    12
+  ],
+  "requieren_aclaracion": [
+    12
+  ],
+  "soluciones": "Desarrollos propios, clave original preservada y reparación del caso incompatible separada.",
+  "graficos": "Cinco SVG ampliables y coordenadas reutilizables conservados localmente.",
+  "validacion": "Comprobaciones geométricas, inspección visual, lector móvil y restauración aprobados.",
+  "libro_completo_validado": false,
+  "pagina_completa_validada": false,
+  "siguiente": {
+    "tipo": "propuesto",
+    "numero": 14,
+    "pagina_pdf": 84
+  },
+  "fuentes_y_fichas": "Solo locales; el repositorio recibe metadatos."
+}

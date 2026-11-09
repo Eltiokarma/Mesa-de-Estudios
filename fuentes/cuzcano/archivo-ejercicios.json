@@ -1,16 +1,16 @@
 {
-  "generado_utc": "2026-11-09T05:03:07.414330+00:00",
-  "ejercicios_indexados": 122,
-  "archivos_controlados": 499,
+  "generado_utc": "2026-11-09T05:10:04.724939+00:00",
+  "ejercicios_indexados": 127,
+  "archivos_controlados": 522,
   "indice_local": "fuentes/ocr-local/cuzcano/archivo-ejercicios/index.html",
   "respaldo_local": "fuentes/ocr-local/cuzcano/archivo-ejercicios/archivo-ejercicios.zip",
-  "sha256_zip": "220949678fba78af62815bde373d3ef0e2ed0064f16405420bacad79f4cea2da",
-  "bytes_zip": 59681931,
+  "sha256_zip": "2fd9e55e4206aaff53e3783620a6f3596ed3abeb415725fe3d19c83f30e9b27f",
+  "bytes_zip": 60399495,
   "verificacion": [
-    "499 archivos restaurados y verificados sin PDF ni OCR originales.",
-    "Ocho comprobaciones geométricas de propuestos 1–8 aprobadas desde el respaldo restaurado.",
-    "Ocho SVG inspeccionados visualmente; lector de ocho fichas sin desbordamiento móvil.",
-    "Dos enunciados condicionados y una clave corregida conservan sus observaciones."
+    "522 archivos restaurados y verificados sin PDF ni OCR originales.",
+    "Cinco comprobaciones geométricas de propuestos 9–13 aprobadas desde el respaldo restaurado.",
+    "Cinco SVG inspeccionados visualmente; lector de cinco fichas sin desbordamiento móvil.",
+    "La incompatibilidad del propuesto 12 se conserva y demuestra mediante productos escalares."
   ],
   "limites": [
     "Los hashes verifican integridad, no exactitud matemática.",
@@ -1938,6 +1938,83 @@
       "sha256_ficha": "99b6a7a7e89e5eff4c6acbeaade9fd36281ab2ac97fc8de7c0449d8061ca9a78",
       "sha256_ocr_por_pagina": {
         "83": "9836e510128c757432effe09d9bed84784a1c1e2009f988cb8b4dee5214f5eea"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:9",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 9,
+      "paginas_pdf": [
+        83,
+        84
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-propuestos-9-13/propuesto-9.json",
+      "sha256_ficha": "93303d4f6610592c29c2768c037153f2cb0301d6029ef2cd092421bf8230b8f6",
+      "sha256_ocr_por_pagina": {
+        "83": "9836e510128c757432effe09d9bed84784a1c1e2009f988cb8b4dee5214f5eea",
+        "84": "6a4135cb8c13af62ca796df910c617c6e57f66a34687820bf7528f154cf6516a"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:10",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 10,
+      "paginas_pdf": [
+        84
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-propuestos-9-13/propuesto-10.json",
+      "sha256_ficha": "2bdc0230baa03f661dbd7a41a70048f83bc45f923d7d7f73c853515b09890688",
+      "sha256_ocr_por_pagina": {
+        "84": "6a4135cb8c13af62ca796df910c617c6e57f66a34687820bf7528f154cf6516a"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:11",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 11,
+      "paginas_pdf": [
+        84
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-propuestos-9-13/propuesto-11.json",
+      "sha256_ficha": "4c2f0f44a6cc090546bf8b1d450c24a498d5165aa3f85dcb6da76f70a5db9de3",
+      "sha256_ocr_por_pagina": {
+        "84": "6a4135cb8c13af62ca796df910c617c6e57f66a34687820bf7528f154cf6516a"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:12",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 12,
+      "paginas_pdf": [
+        84
+      ],
+      "estado": "datos_incompatibles",
+      "ficha": "piloto-geometria-propuestos-9-13/propuesto-12.json",
+      "sha256_ficha": "334d12b53c77215f25b94c493cce4ca52e2dd914fee702428fe796a1dacbd11a",
+      "sha256_ocr_por_pagina": {
+        "84": "6a4135cb8c13af62ca796df910c617c6e57f66a34687820bf7528f154cf6516a"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:13",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 13,
+      "paginas_pdf": [
+        84
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-propuestos-9-13/propuesto-13.json",
+      "sha256_ficha": "7175734dfb206fe3c76bb549048071d77a8d63efb06270d80add8e676bbd8319",
+      "sha256_ocr_por_pagina": {
+        "84": "6a4135cb8c13af62ca796df910c617c6e57f66a34687820bf7528f154cf6516a"
       }
     }
   ]
