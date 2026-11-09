@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "generado_utc": "2026-11-09T12:00:52.972726+00:00",
+  "libro_id": "1F0RSVnmX30eTsDbWsJwNeirOGdSpy55l",
+  "titulo": "Pirámide y cono",
+  "motivo_eleccion": "Continuidad con Prisma y cilindro: volúmenes, secciones paralelas, semejanza y desarrollos.",
+  "paginas_pdf_totales": 100,
+  "alcance": {
+    "teoria_pdf": [
+      8,
+      23
+    ],
+    "resueltos": [
+      1,
+      20
+    ],
+    "resueltos_pdf": [
+      24,
+      35
+    ],
+    "paginas_con_referencia_visual": 28,
+    "criterio_tercio": "Bloque inicial hasta PDF 35, aproximadamente un tercio por páginas; incluye preliminares previos no contabilizados como contenido revisado. No representa un tercio de los 200 ejercicios.",
+    "porcentaje_ejercicios_del_cuaderno": 10,
+    "pagina_completa_validada": false
+  },
+  "entregables": {
+    "ejercicios": 20,
+    "graficos_ejercicios": 20,
+    "unidades_teoria": 15,
+    "graficos_teoria": 8,
+    "observaciones_teoria": 9,
+    "ejercicios_con_condiciones": [
+      5,
+      18
+    ],
+    "estados": {
+      "verificado": 14,
+      "condicionado_relacion_grafica": 1,
+      "precision_angular": 2,
+      "correccion_formula_intermedia": 1,
+      "correccion_alternativa": 1,
+      "condicionado_configuracion": 1
+    }
+  },
+  "verificacion": {
+    "controles_ejercicios": 20,
+    "controles_teoria": 15,
+    "graficos_inspeccionados": 28,
+    "lectores_moviles_sin_desbordamiento": 2,
+    "ocr_original_intacto": true,
+    "cola_baja_confianza_sin_reducir": true,
+    "restauracion_sin_pdf_ni_ocr": true
+  },
+  "lectores_locales": [
+    "fuentes/ocr-local/cuzcano/piloto-piramide-cono-1-20/index.html",
+    "fuentes/ocr-local/cuzcano/teoria-piramide-cono-primer-tercio/index.html"
+  ],
+  "siguiente": {
+    "tipo": "problema_resuelto",
+    "numero": 21,
+    "pagina_pdf_inicio": 35
+  },
+  "conservacion": "HTML, JSON, SVG y evidencias locales en el archivo verificable; GitHub sólo metadatos y herramientas.",
+  "respaldo_acumulado": {
+    "fichas": 234,
+    "archivos": 970,
+    "guias": 2,
+    "sha256_zip": "268d078ff6b0e88e701df6d2683b491d0b843de5b15861997e1d8cf343b8aeaa"
+  }
+}
+
