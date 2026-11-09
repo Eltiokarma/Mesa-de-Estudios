@@ -1,12 +1,12 @@
 {
-  "generado_utc": "2026-11-08T23:58:19.962208+00:00",
+  "generado_utc": "2026-11-09T00:18:37.267994+00:00",
   "alcance": "Cotejo visual por página. No certifica libros completos ni exactitud matemática.",
   "prioridad_solicitada": "Páginas de baja confianza, primero sin cotejo previo",
-  "paginas_con_algun_cotejo": 41,
+  "paginas_con_algun_cotejo": 45,
   "paginas_pendientes_baja_confianza": 13722,
   "paginas_excluidas_sin_texto_principal": 6,
   "paginas_texto_completo_cotejado": 6,
-  "paginas_cotejo_parcial": 29,
+  "paginas_cotejo_parcial": 33,
   "copias_corregidas_locales": 19,
   "reconstrucciones_visuales": 17,
   "reemplazos_puntuales": 9,
@@ -173,6 +173,32 @@
       "hallazgos": [
         "Manuscrito y franja tramada",
         "Confusión de subíndices, radicales y signos"
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1D8_YP2Q25FmZpVBgX6Qip_GBPa2Ue3Db",
+      "pagina_pdf": 62,
+      "estado": "parcial",
+      "hallazgos": [
+        "Enunciado y resolución vinculados en páginas distintas.",
+        "Reconstrucción de incidencias, paralelismo y bisectrices; demostración cotejada y ocho comprobaciones numéricas."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1D8_YP2Q25FmZpVBgX6Qip_GBPa2Ue3Db",
+      "pagina_pdf": 107,
+      "estado": "parcial",
+      "hallazgos": [
+        "Enunciado y resolución vinculados en páginas distintas.",
+        "Reconstrucción de incidencias, paralelismo y bisectrices; demostración cotejada y ocho comprobaciones numéricas."
       ],
       "copia_corregida_local": false,
       "reemplazos_puntuales": 0,
@@ -422,6 +448,34 @@
       "copia_corregida_local": true,
       "reemplazos_puntuales": 0,
       "reconstruccion_visual": true,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1XZHi26mc_VB0Ko8UGFbjq08u8OCH8UKm",
+      "pagina_pdf": 24,
+      "estado": "parcial",
+      "hallazgos": [
+        "Enunciado, figura, diagrama de cuerpo libre y continuación de resolución vinculados.",
+        "La respuesta editorial usa una aproximación de triángulo notable.",
+        "La geometría literal permite compensar fuerzas, pero deja un residuo de momento; ejercicio no validado para producto."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1XZHi26mc_VB0Ko8UGFbjq08u8OCH8UKm",
+      "pagina_pdf": 25,
+      "estado": "parcial",
+      "hallazgos": [
+        "Enunciado, figura, diagrama de cuerpo libre y continuación de resolución vinculados.",
+        "La respuesta editorial usa una aproximación de triángulo notable.",
+        "La geometría literal permite compensar fuerzas, pero deja un residuo de momento; ejercicio no validado para producto."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
       "validacion_matematica": "no_certificada"
     },
     {

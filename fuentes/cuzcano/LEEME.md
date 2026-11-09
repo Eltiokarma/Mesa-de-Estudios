@@ -23,11 +23,19 @@ No se identifica un título de razonamiento verbal en este catálogo.
 - 198 entradas descargadas y procesadas; 197 contenidos PDF distintos.
 - 21 522 páginas: 21 462 con OCR nuevo en español y 60 con capa textual previa aprovechable.
 - Cero libros con fallo de procesamiento. La auditoría de integridad pasó y las trece pruebas de herramientas están aprobadas.
-- 41 páginas con algún cotejo visual: seis con texto completo cotejado, seis sin texto principal y 29 parcialmente revisadas. Ningún libro completo certificado.
+- 45 páginas con algún cotejo visual: seis con texto completo cotejado, seis sin texto principal y 33 parcialmente revisadas. Ningún libro completo certificado.
 - 19 copias corregidas locales: 17 reconstrucciones visuales y dos páginas con nueve reemplazos puntuales en total.
 - 13 722 páginas siguen en la cola de baja confianza. El nuevo lote examinó 24 páginas de confianza cero y resolvió diez entradas de la cola: seis transcripciones completas y cuatro páginas sin texto principal.
 
-`auditoria.json` conserva las comprobaciones y recuentos; `entorno-ocr.json`, las versiones de Python, bibliotecas y motor, y el hash del modelo de español. La integridad del lote no equivale a exactitud del OCR: la revisión visual del resto está pendiente.
+`auditoria.json` conserva las comprobaciones y recuentos de su ejecución histórica; no se ha repetido para los pilotos puntuales posteriores. `revision-muestras.json` contiene los recuentos actuales de revisión. `entorno-ocr.json` registra las versiones de Python, bibliotecas y motor, y el hash del modelo de español. La integridad del lote no equivale a exactitud del OCR: la revisión visual del resto está pendiente.
+
+### Piloto de ejercicios con figuras
+
+`piloto-graficos.json` registra dos ejercicios locales, uno de geometría y otro de estática, vinculando enunciado, figura y resolución por pasos. Sus cuatro páginas sólo tienen cotejo parcial: no se retira ninguna de la cola.
+
+La demostración de geometría se cotejó y se complementó con ocho construcciones numéricas que verifican pertenencias, paralelismo, bisectrices e igualdades. En estática, la respuesta editorial se reproduce mediante su aproximación de triángulo notable; con los ángulos literales se compensan las fuerzas, pero queda un residuo de momento. Este segundo ejercicio requiere aclaración geométrica y no queda validado para la app.
+
+La entrega de consulta está en `fuentes/ocr-local/cuzcano/piloto-graficos/index.html`, con fichas JSON, dibujos SVG, recortes de evidencia, comprobación Python y ZIP. Se inspeccionaron los dibujos rasterizados y se verificaron las referencias locales y la integridad de los once archivos del ZIP. Los materiales fuente permanecen fuera de Git. Esta prueba no constituye un motor reutilizable ni amplía el procesamiento masivo.
 
 Los PDF y las transcripciones son material local de consulta. Siguiendo `CLAUDE.md`, no se incorporan sus enunciados, textos ni figuras al producto. Git guarda el inventario, las herramientas y los registros de procesamiento; los originales y el OCR quedan excluidos.
 
