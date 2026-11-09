@@ -23,7 +23,7 @@ No se identifica un título de razonamiento verbal en este catálogo.
 - 198 entradas descargadas y procesadas; 197 contenidos PDF distintos.
 - 21 522 páginas: 21 462 con OCR nuevo en español y 60 con capa textual previa aprovechable.
 - Cero libros con fallo de procesamiento. La auditoría de integridad pasó y las trece pruebas de herramientas están aprobadas.
-- 112 páginas con algún cotejo visual: seis con texto completo cotejado, seis sin texto principal y 100 parcialmente revisadas. Ningún libro completo certificado.
+- 116 páginas con algún cotejo visual: seis con texto completo cotejado, seis sin texto principal y 104 parcialmente revisadas. Ningún libro completo certificado.
 - 19 copias corregidas locales: 17 reconstrucciones visuales y dos páginas con nueve reemplazos puntuales en total.
 - 13 722 páginas siguen en la cola de baja confianza. El nuevo lote examinó 24 páginas de confianza cero y resolvió diez entradas de la cola: seis transcripciones completas y cuatro páginas sin texto principal.
 
@@ -156,7 +156,7 @@ La entrega está en `fuentes/ocr-local/cuzcano/piloto-complejos/index.html`. Inc
 
 ### Archivo reutilizable y lote de cuatro polinomios
 
-`archivo-ejercicios.json` registra ciento veintisiete fichas localizables por libro, tipo y número. El índice local está en `fuentes/ocr-local/cuzcano/archivo-ejercicios/index.html`. Sus 522 archivos de consulta tienen un manifiesto de integridad. El ZIP conjunto conserva lectores, fichas, recortes, dibujos y comprobadores; se probó su extracción sin los PDF ni el OCR originales. Es un respaldo local, no una copia remota en GitHub.
+`archivo-ejercicios.json` registra ciento cincuenta y siete fichas localizables por libro, tipo y número. El índice local está en `fuentes/ocr-local/cuzcano/archivo-ejercicios/index.html`. Sus 626 archivos de consulta tienen un manifiesto de integridad. El ZIP conjunto conserva lectores, fichas, recortes, dibujos y comprobadores; se probó su extracción sin los PDF ni el OCR originales. Es un respaldo local, no una copia remota en GitHub.
 
 Antes de seleccionar un ejercicio, buscar su libro, tipo y número en el índice: reutilizar la ficha si ya existe; volver a la fuente sólo para resolver una duda o corregirla. Para comprobar lo guardado sin modificar el registro: `python herramientas/indexar_ejercicios_locales.py`. Después de incorporar o corregir fichas deliberadamente: `python herramientas/indexar_ejercicios_locales.py --actualizar --zip`. La actualización informa archivos nuevos, modificados y retirados. El ZIP contiene `archivo-ejercicios/comprobar_archivo.py` para comprobar una restauración. Los hashes detectan cambios, no certifican las matemáticas.
 
@@ -206,3 +206,10 @@ Las ocho comprobaciones geométricas y el lector móvil pasaron. El respaldo acu
 Cinco nuevas fichas guardadas con soluciones propias por pasos, SVG ampliables y evidencia original. Cuatro resultados coinciden con sus claves. El propuesto 12 tiene datos incompatibles bajo proyección ortogonal: se conserva la clave formal, se demuestra el fallo y se separa una variante reparada.
 
 Las cinco comprobaciones geométricas pasaron, incluidos los controles de incompatibilidad. Gráficos inspeccionados visualmente y lector móvil comprobado. El respaldo de 127 fichas y 522 archivos fue restaurado; los cinco controles se ejecutaron desde él sin PDF ni OCR originales. Hay 112 páginas con algún cotejo, 100 parciales; la cola conserva 13 722 páginas. Siguiente: propuesto 14, página PDF 84. Ningún libro completo certificado.
+
+
+### Propuestos de geometría 14–43: tanda de treinta
+
+Treinta fichas nuevas con soluciones propias por pasos, SVG ampliables y evidencia original. Veintiuna verificadas sin discrepancias; nueve con observaciones: tres condicionadas (16, 18, 38), dos incompatibles (25, 26), dos claves corregidas (29, 30) y dos aproximaciones angulares (28, 42). Las variantes ilustrativas y contraejemplos se identifican expresamente.
+
+Las treinta comprobaciones matemáticas pasaron; incluyen áreas y volúmenes por coordenadas y descomposición en tetraedros, coplanaridad, perpendicularidad y contraejemplos. Treinta gráficos inspeccionados visualmente y lector completo comprobado en móvil. El respaldo acumulado contiene 157 fichas y 626 archivos; fue restaurado y los treinta controles se ejecutaron desde esa copia sin PDF ni OCR originales. Hay 116 páginas con algún cotejo, 104 parciales; la cola conserva 13 722 páginas. Siguiente: propuesto 44, página PDF 88. Ningún libro completo certificado.
