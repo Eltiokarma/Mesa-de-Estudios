@@ -1,16 +1,16 @@
 {
-  "generado_utc": "2026-11-09T04:53:41.157288+00:00",
-  "ejercicios_indexados": 114,
-  "archivos_controlados": 469,
+  "generado_utc": "2026-11-09T05:03:07.414330+00:00",
+  "ejercicios_indexados": 122,
+  "archivos_controlados": 499,
   "indice_local": "fuentes/ocr-local/cuzcano/archivo-ejercicios/index.html",
   "respaldo_local": "fuentes/ocr-local/cuzcano/archivo-ejercicios/archivo-ejercicios.zip",
-  "sha256_zip": "55028c2c9bd0075b108b861a6b0a6fa25e6c11d915b9a765209588c626d27193",
-  "bytes_zip": 58730639,
+  "sha256_zip": "220949678fba78af62815bde373d3ef0e2ed0064f16405420bacad79f4cea2da",
+  "bytes_zip": 59681931,
   "verificacion": [
-    "469 archivos restaurados y verificados sin PDF ni OCR originales.",
-    "19 comprobaciones independientes aprobadas desde la copia restaurada.",
-    "19 SVG inspeccionados visualmente; dos lectores sin desbordamiento móvil.",
-    "Cinco fichas nuevas conservan errores, condiciones o aproximaciones editoriales."
+    "499 archivos restaurados y verificados sin PDF ni OCR originales.",
+    "Ocho comprobaciones geométricas de propuestos 1–8 aprobadas desde el respaldo restaurado.",
+    "Ocho SVG inspeccionados visualmente; lector de ocho fichas sin desbordamiento móvil.",
+    "Dos enunciados condicionados y una clave corregida conservan sus observaciones."
   ],
   "limites": [
     "Los hashes verifican integridad, no exactitud matemática.",
@@ -1818,6 +1818,126 @@
       "sha256_ocr_por_pagina": {
         "81": "5f155be33574b25ab9d089a533d592bf76fb99819df46d761d3e477faac646fc",
         "82": "302dbb05af4a8160ace7373180f93078202e10297e9be6e248ec1f3476980ad1"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:1",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 1,
+      "paginas_pdf": [
+        83
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-propuestos-1-8/propuesto-1.json",
+      "sha256_ficha": "86a4fd9c7168ed289d4846edb870b1ffdc93a7fa235b418b1b98246735fe5cdb",
+      "sha256_ocr_por_pagina": {
+        "83": "9836e510128c757432effe09d9bed84784a1c1e2009f988cb8b4dee5214f5eea"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:2",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 2,
+      "paginas_pdf": [
+        83
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-propuestos-1-8/propuesto-2.json",
+      "sha256_ficha": "7ccf6d5a9bd4ffdab545768757cc1c3cdbe4327127448e4ca87fcda0fb74da5b",
+      "sha256_ocr_por_pagina": {
+        "83": "9836e510128c757432effe09d9bed84784a1c1e2009f988cb8b4dee5214f5eea"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:3",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 3,
+      "paginas_pdf": [
+        83
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-propuestos-1-8/propuesto-3.json",
+      "sha256_ficha": "e8a08bdcab058d2869a2e759ec51a1ff6b89d13a44613fdaa058cc93d95ad46c",
+      "sha256_ocr_por_pagina": {
+        "83": "9836e510128c757432effe09d9bed84784a1c1e2009f988cb8b4dee5214f5eea"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:4",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 4,
+      "paginas_pdf": [
+        83
+      ],
+      "estado": "condicionado_puntos_medios_y_aproximacion",
+      "ficha": "piloto-geometria-propuestos-1-8/propuesto-4.json",
+      "sha256_ficha": "c07cfc1f3b55933b7f4f05796b74ee62f97f285883b113e045f5fc794daaaca4",
+      "sha256_ocr_por_pagina": {
+        "83": "9836e510128c757432effe09d9bed84784a1c1e2009f988cb8b4dee5214f5eea"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:5",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 5,
+      "paginas_pdf": [
+        83
+      ],
+      "estado": "correccion_factor_raiz",
+      "ficha": "piloto-geometria-propuestos-1-8/propuesto-5.json",
+      "sha256_ficha": "23bb90d784ea8c5cb38a34906f0f8430cebcc7e425a1d4dfb73aa63fdcaf1a6c",
+      "sha256_ocr_por_pagina": {
+        "83": "9836e510128c757432effe09d9bed84784a1c1e2009f988cb8b4dee5214f5eea"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:6",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 6,
+      "paginas_pdf": [
+        83
+      ],
+      "estado": "condicionado_base_cuadrada",
+      "ficha": "piloto-geometria-propuestos-1-8/propuesto-6.json",
+      "sha256_ficha": "1d883a99663445095af2c34416ac9645ea406138b0b244d7912d1161f2183749",
+      "sha256_ocr_por_pagina": {
+        "83": "9836e510128c757432effe09d9bed84784a1c1e2009f988cb8b4dee5214f5eea"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:7",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 7,
+      "paginas_pdf": [
+        83
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-propuestos-1-8/propuesto-7.json",
+      "sha256_ficha": "99a2c7ae523b9af3ed0dd5c8d018157afd402def54e184847989f23e8333d68a",
+      "sha256_ocr_por_pagina": {
+        "83": "9836e510128c757432effe09d9bed84784a1c1e2009f988cb8b4dee5214f5eea"
+      }
+    },
+    {
+      "uid": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj:propuesto:8",
+      "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "tipo": "propuesto",
+      "numero": 8,
+      "paginas_pdf": [
+        83
+      ],
+      "estado": "verificado",
+      "ficha": "piloto-geometria-propuestos-1-8/propuesto-8.json",
+      "sha256_ficha": "99b6a7a7e89e5eff4c6acbeaade9fd36281ab2ac97fc8de7c0449d8061ca9a78",
+      "sha256_ocr_por_pagina": {
+        "83": "9836e510128c757432effe09d9bed84784a1c1e2009f988cb8b4dee5214f5eea"
       }
     }
   ]

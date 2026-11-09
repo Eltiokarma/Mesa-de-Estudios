@@ -1,12 +1,12 @@
 {
-  "generado_utc": "2026-11-09T04:52:53.275643+00:00",
+  "generado_utc": "2026-11-09T05:02:14.375245+00:00",
   "alcance": "Cotejo visual por página. No certifica libros completos ni exactitud matemática.",
   "prioridad_solicitada": "Páginas de baja confianza, primero sin cotejo previo",
-  "paginas_con_algun_cotejo": 110,
+  "paginas_con_algun_cotejo": 111,
   "paginas_pendientes_baja_confianza": 13722,
   "paginas_excluidas_sin_texto_principal": 6,
   "paginas_texto_completo_cotejado": 6,
-  "paginas_cotejo_parcial": 98,
+  "paginas_cotejo_parcial": 99,
   "copias_corregidas_locales": 19,
   "reconstrucciones_visuales": 17,
   "reemplazos_puntuales": 9,
@@ -1359,6 +1359,19 @@
       "estado": "parcial",
       "hallazgos": [
         "Enunciados, figuras y desarrollos cotejados; redibujos y comprobaciones independientes guardados."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "pagina_pdf": 83,
+      "estado": "parcial",
+      "hallazgos": [
+        "Ocho fichas con soluciones propias, gráficos vectoriales y comprobaciones independientes.",
+        "Dos enunciados requieren condiciones adicionales; una clave pierde un factor radical."
       ],
       "copia_corregida_local": false,
       "reemplazos_puntuales": 0,
