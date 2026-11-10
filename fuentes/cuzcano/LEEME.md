@@ -18,18 +18,26 @@ La comparación de SHA-256 encontró 197 contenidos PDF distintos: dos entradas 
 
 No se identifica un título de razonamiento verbal en este catálogo.
 
-## Resultado de la ejecución del 8 de noviembre de 2026
+## Resultado del OCR del 8 de noviembre y revisión al 9 de noviembre de 2026
 
 - 198 entradas descargadas y procesadas; 197 contenidos PDF distintos.
 - 21 522 páginas: 21 462 con OCR nuevo en español y 60 con capa textual previa aprovechable.
 - Cero libros con fallo de procesamiento. La auditoría de integridad pasó y las trece pruebas de herramientas están aprobadas.
-- 176 páginas con algún cotejo visual: seis con texto completo cotejado, seis sin texto principal y 164 parcialmente revisadas. Ningún libro completo certificado.
+- 299 páginas con algún cotejo visual: seis con texto completo cotejado, seis sin texto principal y 287 parcialmente revisadas. Ningún libro completo certificado.
 - 19 copias corregidas locales: 17 reconstrucciones visuales y dos páginas con nueve reemplazos puntuales en total.
 - 13 722 páginas siguen en la cola de baja confianza. El nuevo lote examinó 24 páginas de confianza cero y resolvió diez entradas de la cola: seis transcripciones completas y cuatro páginas sin texto principal.
 
 `auditoria.json` conserva las comprobaciones y recuentos de su ejecución histórica; no se ha repetido para los pilotos puntuales posteriores. `revision-muestras.json` contiene los recuentos actuales de revisión. `entorno-ocr.json` registra las versiones de Python, bibliotecas y motor, y el hash del modelo de español. La integridad del lote no equivale a exactitud del OCR: la revisión visual del resto está pendiente.
 
 ### Piloto de ejercicios con figuras
+
+La tanda de Física PREUNI incorpora los problemas originales 1–300 en diez bloques de treinta. Conserva enunciados normalizados, soluciones propias por pasos, gráficos SVG o tarjetas conceptuales, fichas JSON y evidencias locales. Los 300 controles pasaron y los lectores se comprobaron a 390 píxeles de ancho. Hay 26 fichas con condiciones o ambigüedades pendientes para producto, detalladas en el lector; no se certifican como contenido listo para la app. No se repitió el OCR ni se certificaron páginas completas adicionales.
+
+`fisica-preuni-300.json` guarda el resumen sin enunciados ni figuras. El lector consolidado está en `fuentes/ocr-local/cuzcano/coleccion-fisica-preuni-300/index.html`; su `ejercicios.json` permite recuperar las 300 fichas sin volver a interpretarlas. Al cerrar esa tanda el archivo acumulaba 574 fichas y tres guías, con respaldo ZIP local y comprobador de integridad. Las observaciones y los límites de cada ficha se conservan en el respaldo.
+
+La continuación incorpora los problemas 301–500 de Física: 200 fichas más, seis bloques de treinta y uno de veinte. Incluye soluciones propias por pasos, SVG, redes equivalentes, proyecciones y diagramas de rayos, distinguidos de las evidencias originales. Hay 170 fichas sin observaciones detectadas y 30 con condiciones o ambigüedades para producto. Se documentan figuras ausentes, alternativas múltiples o incompatibles, referencias de coeficientes térmicos, fases y factores de potencia omitidos, convenciones de flujo y una coma no visible en una ecuación de onda. No se fuerzan respuestas de las alternativas.
+
+`fisica-preuni-301-500.json` conserva el resumen de la tanda. Su lector está en `fuentes/ocr-local/cuzcano/coleccion-fisica-preuni-301-500/index.html`, con búsqueda, filtro de casos condicionados y las 200 fichas en JSON. Los siete lectores se comprobaron a 390 píxeles, sin imágenes faltantes ni desbordamiento. No se repitió el OCR ni se certificaron páginas completas. El siguiente problema de Física es el 501.
 
 `piloto-graficos.json` registra dos ejercicios locales, uno de geometría y otro de estática, vinculando enunciado, figura y resolución por pasos. Sus cuatro páginas sólo tienen cotejo parcial: no se retira ninguna de la cola.
 
@@ -156,7 +164,7 @@ La entrega está en `fuentes/ocr-local/cuzcano/piloto-complejos/index.html`. Inc
 
 ### Archivo reutilizable y lote de cuatro polinomios
 
-`archivo-ejercicios.json` registra doscientas cuarenta y cuatro fichas localizables por libro, tipo y número. El índice local está en `fuentes/ocr-local/cuzcano/archivo-ejercicios/index.html`. Sus 1010 archivos de consulta tienen un manifiesto de integridad. El ZIP conjunto conserva lectores, fichas, recortes, dibujos y comprobadores; se probó su extracción sin los PDF ni el OCR originales. Es un respaldo local, no una copia remota en GitHub.
+`archivo-ejercicios.json` registra 774 fichas localizables por libro, tipo y número: incluye los 500 problemas de Física y conserva los avances anteriores. El índice local está en `fuentes/ocr-local/cuzcano/archivo-ejercicios/index.html`. Sus 2357 archivos de consulta tienen un manifiesto de integridad. El ZIP conjunto conserva lectores, fichas, recortes, dibujos y comprobadores. Es un respaldo local, no una copia remota en GitHub; su prueba de restauración queda registrada aparte. La construcción del ZIP sustituye el respaldo anterior sólo después de verificar el paquete nuevo.
 
 Antes de seleccionar un ejercicio, buscar su libro, tipo y número en el índice: reutilizar la ficha si ya existe; volver a la fuente sólo para resolver una duda o corregirla. Para comprobar lo guardado sin modificar el registro: `python herramientas/indexar_ejercicios_locales.py`. Después de incorporar o corregir fichas deliberadamente: `python herramientas/indexar_ejercicios_locales.py --actualizar --zip`. La actualización informa archivos nuevos, modificados y retirados. El ZIP contiene `archivo-ejercicios/comprobar_archivo.py` para comprobar una restauración. Los hashes detectan cambios, no certifican las matemáticas.
 
@@ -257,3 +265,106 @@ Diez fichas nuevas con gráficos redibujados y soluciones por pasos, cotejadas e
 
 El proyecto está físicamente en D:\ChatGPT\Fanservice Historica Económica; el acceso anterior de C es un enlace. El archivo acumula 244 fichas y 1010 archivos controlados. El ZIP se restauró y los controles nuevos pasaron sin PDF ni OCR originales; la extracción temporal se retiró después de comprobarla. Hay 176 páginas con algún cotejo (164 parciales); la cola mantiene 13 722. Siguiente: resuelto 31, PDF 41.
 
+
+### Pirámide y cono: resueltos 31–60
+
+Treinta fichas nuevas, treinta SVG y soluciones por pasos, cotejadas en PDF 41–58. Veintiuna verificadas; nueve conservan observaciones: condiciones en 33,38,39,55; corrección de unidad en 40 y de región en 42; valores angulares literales separados en 50,54,58. El 38 también documenta un factor π omitido. Treinta controles matemáticos aprobados, treinta gráficos inspeccionados y lector móvil comprobado.
+
+El archivo acumula 274 fichas y 1101 archivos controlados. El ZIP se restauró y los treinta controles pasaron sin PDF ni OCR originales; después se retiró la extracción temporal. Hay 193 páginas con algún cotejo (181 parciales); la cola conserva 13 722. Siguiente: resuelto 61, PDF 58.
+
+
+### Física: tanda adicional de 300 ejercicios
+
+Se conservaron seis bloques nuevos: PREUNI 501–527 (27), Análisis dimensional propuestos 1–50 (50), Cinemática I propuestos 1–60 (60), Dinámica propuestos 1–60 (60), Cinemática II propuestos 1–60 (60) y Análisis vectorial propuestos 1–43 (43). Se completa exactamente la tanda de 300 sin repetir ejercicios. PREUNI termina sus enunciados en el 527; las páginas siguientes de soluciones no se cuentan como ejercicios nuevos. Dinámica 45 identifica el segundo rótulo 44 del original, con ambos datos conservados en su ficha.
+
+El lector conjunto está en `fuentes/ocr-local/cuzcano/coleccion-fisica-tanda-300-extra/index.html`, con búsqueda por libro y número, soluciones propias por pasos, redibujos SVG editables, JSON y evidencias locales. Los ejercicios conceptuales o sin dibujo usan tarjetas de relaciones. Las 65 fichas condicionadas están reunidas en `condiciones.json`: cinco PREUNI, seis dimensionales, diecisiete de Cinemática I, dieciséis de Dinámica, quince de Cinemática II y seis vectoriales. Conservan datos ausentes, ambigüedades, aproximaciones o discrepancias con claves; no se presentan como contenido listo para la app.
+
+Pasaron los 300 controles nuevos y la revisión manual de todas las figuras y tarjetas; los seis lectores y la consulta conjunta se comprobaron en móvil. El respaldo acumulado conserva 1074 fichas, 3063 archivos controlados y cinco guías, con 800 fichas de Física. Se restauró el ZIP de 474210568 bytes y desde esa copia pasaron los 800 controles de Física en 23 bloques, sin PDF ni OCR originales. La extracción temporal se retiró. También pasaron las ocho pruebas del indexador; éste ahora reutiliza la lectura de registros por libro para evitar releerlos por cada ficha.
+
+La prueba y el hash del ZIP están en `fuentes/ocr-local/cuzcano/archivo-ejercicios/prueba-restauracion-extra-300.json`. Los originales se mantienen intactos y no se repitió OCR. Hay 356 páginas con algún cotejo: 344 parciales, seis completas y seis sin texto principal; la cola conserva 13722 páginas. No se certifican libros completos.
+
+Siguiente: Análisis vectorial, propuesto 44, página PDF 126. Se debe continuar desde esa posición y consultar los índices para no repetir lo guardado. La documentación y los materiales permanecen en D; GitHub recibe dos resúmenes de avance y restauración en esta tanda.
+
+
+### Física: tanda de1000 completada (10 de noviembre de2026)
+
+Se añadieron1000 fichas originales identificadas por libro,tipo y número,distribuidas en40 bloques de15 cuadernos. El archivo acumulado contiene2074 fichas,de las cuales1800 son de Física. La tanda incluye mecánica,gravitación,calor,ondas,termodinámica,fluidos,electrostática y electrodinámica. En electrostática se cubrieron los88 propuestos y los resueltos1–2; en electrodinámica los107 propuestos y los resueltos1–3. Los últimos resueltos conservan su tipo para no confundirse con la numeración repetida de propuestos.
+
+El lector conjunto está en `fuentes/ocr-local/cuzcano/coleccion-fisica-1000/index.html`. Cada ficha tiene solución propia por pasos,JSON,SVG editable o tarjeta de relaciones y evidencia de origen. Las206 fichas con condiciones o ambigüedades se filtran en el lector y se reúnen en `condiciones.json`; las794 restantes no tienen condiciones pendientes registradas,pero no se declaran automáticamente listas para producto. Se corrigieron claves,signos,unidades,modelos físicos y conexiones; también se conservaron datos incompatibles como observaciones en vez de forzar respuestas.
+
+Pasaron los1000 controles nuevos,la inspección de sus1000 gráficos o tarjetas y la comprobación móvil de los40 lectores. El lector conjunto verificó1000 enlaces,el filtro de206 observaciones y la búsqueda de110 fichas de electrodinámica. Se cotejaron fragmentos en215 páginas de origen de esta tanda; eso no certifica páginas ni libros completos. No se repitió OCR. Ocho incidencias de enunciados incompletos o ausentes de trabajo y energía se documentan y no se cuentan entre los1000.
+
+El ZIP acumulado tiene1159913045 bytes y SHA256 `4e9620ec17724edab1683f488d51df6c0ff3eadbd1504615d893e72022d71c1d`. Se restauraron y verificaron5580 archivos; desde la copia pasaron1800 controles de Física en63 bloques,sin PDF ni OCR originales. La extracción temporal fue retirada. Prueba: `fuentes/ocr-local/cuzcano/archivo-ejercicios/prueba-restauracion-fisica-1000.json`; resumen público: `fuentes/cuzcano/respaldo-fisica-1000.json`. Materiales y respaldo permanecen físicamente en D.
+
+Siguiente sugerido: Electromagnetismo,propuesto1,PDF240. Su enunciado fue visto para inventario,pero aún no se convirtió en ficha. Consultar el índice de identidades antes de continuar; aún no hay un conteo validado de ejercicios de toda la colección.
+
+
+### Álgebra: primer punto de control de la tanda de 1000 (10 de noviembre de 2026)
+
+Se añadieron 100 fichas nuevas de los propuestos 207–306 de Álgebra PREUNI, cotejando fragmentos en las páginas PDF 269–290. Son 100 de los 1000 nuevos solicitados: quedan 900 y el estado continúa `en_curso`. No se presenta la tanda como completada. El acumulado de Álgebra pasa de 5 a 105 fichas; el archivo general tiene 2174.
+
+Las fichas conservan soluciones propias por pasos, JSON, evidencias y controles simbólicos locales. Se inspeccionaron 4 gráficas, 3 tablas y 93 tarjetas de relaciones; los dos gráficos originales de funciones se reconstruyeron. La curva del propuesto 304 declara su transformación vertical para conservar ceros y signos. Hay 84 fichas sin condiciones señaladas y 16 con observaciones para producto. Se documentan parámetros no restringidos, dominios, dos términos centrales, datos incompatibles en R y etiquetas MCD/MCM intercambiadas; no se fuerzan respuestas sin aclararlas.
+
+Lector: `fuentes/ocr-local/cuzcano/coleccion-algebra-1000/index.html`. El objetivo y los pendientes están en `qa-algebra-1000/avance-1000.json`; el plan de volumen por curso está en `fuentes/cuzcano/plan-cobertura-cursos.json`. El conteo por curso sigue la clasificación del catálogo: Física incluye una ficha piloto adicional a los 1800 controles de los lotes de Física. Mil fichas por curso es una meta de volumen y no una certificación de cobertura temática ni de funcionamiento de la app.
+
+Pasaron los 100 controles nuevos y la consulta móvil de los cinco bloques y el lector conjunto. Se restauraron y verificaron 5850 archivos; aprobaron 1800 controles previos de Física y 100 nuevos de Álgebra en 68 bloques, sin PDF ni OCR originales. Las dependencias simbólicas y sus licencias viajan en el respaldo. Se retiró la extracción temporal. No se repitió OCR ni se alteraron las 2074 fichas anteriores.
+
+El ZIP tiene 1171902727 bytes y SHA256 `20770fa5b8d4f14e8aeb8e82369f3e2ac2d61f67f92c5929f078ca59e70cd17c`. Prueba: `fuentes/ocr-local/cuzcano/archivo-ejercicios/prueba-restauracion-algebra-1000.json`; resumen público: `fuentes/cuzcano/respaldo-algebra-1000.json`. Materiales en D; GitHub recibe metadatos de avance, cobertura y restauración.
+
+Siguiente fuente en orden: propuesto 307, PDF 290–291. No está contabilizado. Para ampliar la cobertura posterior se inventariaron los 18 documentos de Álgebra disponibles, con 1554 páginas reales; ese inventario no cuenta ejercicios ni valida los libros.
+
+
+### Criterio vigente: al menos 100 por tema (10 de noviembre de 2026)
+
+Se sustituyó la prioridad de volumen por curso por un mínimo de 100 ejercicios revisados por tema. El mapa inicial inventaría 123 temas y asigna 1742 de las 2274 fichas a un único tema principal; 532 fichas de cuadernos mixtos siguen pendientes de clasificación individual. El mapa aún necesita desglosar los volúmenes generales, por lo que no se publica un porcentaje global de toda la colección. Cinco temas alcanzan el mínimo de revisión: Logaritmos (100), Calor (139), Electrodinámica (110), Hidrostática (100) y Prisma y cilindro (200). La clasificación de fichas anteriores reutiliza su revisión existente; no declara un nuevo cotejo visual de todo el archivo.
+
+Se añadieron 100 fichas de Logaritmos: 75 problemas de la sección de resueltos y 25 ejemplos trabajados, con numeración independiente. La selección combina propiedades, ecuaciones, sistemas, dominio, inecuaciones y logaritmos decimales. Se cotejaron fragmentos en 33 páginas PDF; no se declara cerrado el cuaderno. No se inventó el ejemplo 33, ausente en la numeración impresa, y los siete resueltos omitidos en la selección siguen pendientes.
+
+Cada ficha conserva solución propia por pasos, dominio real, JSON, evidencia y un SVG editable. Se inspeccionaron 80 tarjetas de relaciones, 12 rectas de intervalos y 8 gráficas o tablas. Hay 89 fichas sin observaciones registradas y 11 con aclaraciones para producto: raíces omitidas, parámetros, agrupaciones distintas y una premisa incompatible. El ejemplo 45 corrige el extremo editorial 2/5 por 5/2. Los controles y lectores móviles pasaron; los casos observados no se presentan como aprobados para la app.
+
+Lector nuevo: `fuentes/ocr-local/cuzcano/cobertura-temas/logaritmos.html`. Mapa: `fuentes/ocr-local/cuzcano/cobertura-temas/index.html`. Las 105 fichas anteriores de Álgebra se distribuyeron entre temas, sin contarlas cien veces en cada uno ni alterar sus archivos. Álgebra acumula 205 fichas.
+
+El respaldo acumula 2274 fichas y 6123 archivos controlados. La restauración ejecutó 2000 controles en 72 bloques, sin los PDF ni el OCR originales, y comprobó que las 2174 fichas previas conservaran sus hashes. La extracción temporal se retiró. El ZIP tiene 1284944950 bytes y SHA256 `fd7c0fdf34b9d95f3096e0494f569cd5d8c75238fda54928c4e53435c6afe18a`. Prueba: `fuentes/ocr-local/cuzcano/archivo-ejercicios/prueba-restauracion-100-por-tema.json`. El nombre anterior de la prueba y el lector de Álgebra se conservan por compatibilidad.
+
+No se repitió OCR ni se usaron servicios externos de cálculo. GitHub recibe resúmenes de avance, cobertura y respaldo; libros, enunciados, imágenes, soluciones y ZIP permanecen en D. Siguiente prioridad: completar los diez que faltan para el mínimo de Electrostática; después, los quince de Termodinámica, consultando primero las identidades existentes.
+
+
+### Electrostática y Termodinámica: mínimo de 100 por tema (10 de noviembre de 2026)
+
+Se añadieron exactamente 25 fichas nuevas sin repetir identidades: los resueltos 3–12 de Electrostática (10, PDF 124–131) y 1–15 de Termodinámica (15, PDF 15–23). Con las 90 y 85 anteriores, ambos temas alcanzan 100 ejercicios revisados. Se conservan 25 gráficos o esquemas SVG redibujados, soluciones propias de tres pasos, JSON, modelos físicos cuando corresponde, evidencias y controles locales. El cotejo abarca fragmentos en 17 páginas, sin certificar páginas ni cuadernos completos.
+
+Veinte nuevos no tienen observaciones registradas y cinco conservan aclaraciones para producto. Electrostática 10 requiere declarar la neutralidad inicial de la pelotita; Termodinámica 1 tiene opciones duplicadas, 2 produce un exponente adiabático formal superior a 5/3, 7 explicita la aproximación editorial de atmósfera y 15 conserva la aproximación de R implícita en su solución. También se documentan el orden de desconexión a tierra del resuelto 9, el signo del flujo de electrones, las cargas interior y exterior del conductor hueco y la diferencia entre la carga positiva total del agua y su carga neta. No se fuerzan respuestas fuera de las condiciones del modelo.
+
+El lector conjunto está en `fuentes/ocr-local/cuzcano/cierre-fisica-temas-100/index.html`. Los lectores `electrostatica.html` y `termodinamica.html` reúnen cien fichas cada uno y permiten filtrar las nuevas y las observaciones. En el acumulado del tema hay ocho fichas de Electrostática y 28 de Termodinámica con observaciones registradas; se incluyen las heredadas. Las 2274 fichas anteriores mantienen sus archivos. El mapa inicial conserva 123 temas, de los que siete alcanzan el mínimo; 1767 fichas tienen asignación principal y 532 de cuadernos mixtos siguen pendientes de clasificación individual.
+
+El archivo general contiene 2299 fichas, con 1826 de Física (1825 controles de los lotes y una ficha piloto independiente), 205 de Álgebra y diez guías o paquetes auxiliares. Pasaron los 25 controles nuevos, la inspección de los 25 dibujos, los dos lectores de bloques y las consultas conjuntas en móvil. También pasaron los filtros, los enlaces y las ocho pruebas del indexador. Desde una copia restaurada se verificaron 6214 archivos y 2025 controles en 74 bloques sin PDF ni OCR originales, y se comprobó que las 2274 fichas anteriores conservaran sus hashes. La extracción temporal se retiró.
+
+El ZIP tiene 1329127436 bytes y SHA256 `b05c1958866aa6e0a7e0a21a259bd1c930dc1c0dd3c89eaf7614c6bcfaf22f4b`. Prueba: `fuentes/ocr-local/cuzcano/archivo-ejercicios/prueba-restauracion-100-por-tema.json`. No se repitió OCR ni se usaron servicios externos de cálculo. Los materiales completos permanecen en D y GitHub recibe los resúmenes.
+
+Siguiente prioridad temática: Cantidad de movimiento, impulso y choques, con 66 fichas asignadas y 34 pendientes para el mínimo. Para continuar estos cuadernos completos, las posiciones siguientes son Electrostática resuelto 13, PDF 131, y Termodinámica resuelto 16, PDF 23. Esas posiciones aún no se cuentan como fichas nuevas.
+
+
+### Nueva tanda de100 de Física y tabla acumulada (10 de noviembre de2026)
+
+Se guardaron34 aplicaciones de cantidad de movimiento e impulso (1–6 y9–36),40 de Cinemática I (1–40) y26 de Cinemática II (1–26). Los ejercicios7 y8 de impulso permanecen pendientes: el escaneo compuesto cubre sus enunciados. Los dos primeros temas alcanzan100 revisados; Cinemática II queda en86. Hay84 nuevos sin condiciones registradas y16 con aclaraciones para producto. Se corrigieron unidades, ángulos, rapidez frente a velocidad y resultados editoriales incompatibles con los datos, incluida una posición final energéticamente inaccesible.
+
+Lector y tabla por curso: `fuentes/ocr-local/cuzcano/cierre-fisica-bulk-100/index.html`. El mapa de123 temas está en `fuentes/ocr-local/cuzcano/cobertura-temas/index.html`. Acumulado:2399 fichas (Física1926, Álgebra205, Geometría261, Química5 y RM2); Aritmética y Trigonometría aún no tienen fichas revisadas.1867 están asignadas a tema principal y532 fichas mixtas esperan clasificación. Nueve temas alcanzan el mínimo; no se certifican cuadernos completos ni la app.
+
+La copia restaurada verificó6512 archivos y2125 controles en77 bloques sin PDF ni OCR originales. Las2299 fichas anteriores conservaron sus hashes; se retiró la extracción temporal. El ZIP tiene1496803425 bytes y SHA256 `a1a9f555971aca2580b71e62fc305ba1519812e6dca5a0de62fd40250b252fe9`. Prueba: `fuentes/ocr-local/cuzcano/archivo-ejercicios/prueba-restauracion-100-por-tema.json`. No se repitió OCR. Material completo en D; los resúmenes se publican en GitHub.
+
+Siguiente prioridad:14 aplicaciones de Cinemática II desde la27, PDF30. No están contabilizadas aún.
+
+
+### Tanda multicurso: 814 nuevos y 3213 acumulados (10 de noviembre de 2026)
+
+Se completó la tanda de 814 ejercicios nuevos: 14 aplicaciones de Cinemática II (27–40) y 100 en cada uno de los dos primeros temas monográficos de Aritmética, Química, Razonamiento matemático y Trigonometría. Los temas son conjuntos, numeración, unidades químicas de masa, gases, razonamiento lógico, inductivo y deductivo, medición angular y arcos, y razones trigonométricas agudas. Cada uno reúne 100 revisados; Cinemática II pasó de 86 a 100.
+
+El archivo local acumula 3213 fichas: Física 1940, Álgebra 205, Geometría 261, Aritmética 200, Química 205, RM 202 y Trigonometría 200. Hay 18 temas con mínimo de revisión en un mapa inicial de 123; 532 fichas de cuadernos mixtos siguen pendientes de clasificación temática individual. Las 2399 fichas anteriores conservaron sus archivos.
+
+Las 814 nuevas incluyen soluciones propias por pasos, controles locales, redibujos SVG y referencias a las páginas originales. 679 no tienen condiciones registradas; 135 conservan condiciones, aproximaciones o datos incompatibles. Se distinguen aproximaciones escolares de identidades exactas y se documentan errores de claves y soluciones editoriales. El mínimo de revisión no certifica cuadernos completos ni la app. No se repitió OCR ni se usó un servicio externo para el cálculo.
+
+Lector privado: `fuentes/ocr-local/cuzcano/cierre-multicurso-814/index.html`; contiene tabla por curso, nueve consultas por tema, búsqueda, filtros y JSON de las 814. Formatos: JSON, HTML y SVG editable. El material completo sigue en D. Los metadatos vigentes están en [avance-multicurso-814.json](avance-multicurso-814.json), [cobertura-100-por-tema.json](cobertura-100-por-tema.json), [plan-cobertura-cursos.json](plan-cobertura-cursos.json) y [respaldo-100-por-tema.json](respaldo-100-por-tema.json). Las secciones anteriores de este documento son hitos históricos.
+
+GitHub recibe herramientas generales y estos resúmenes. El índice público detallado `archivo-ejercicios.json` corresponde a una publicación anterior; el índice completo actualizado de 3213 fichas está en el respaldo local.
+
+Restauración de la tanda multicurso: 8455 archivos íntegros y 2939 controles en 92 bloques, ejecutados desde la copia extraída sin PDF ni OCR originales. Las 2399 fichas anteriores conservaron sus hashes. La extracción temporal se retiró. ZIP: 2150318114 bytes; SHA256 `9e28c96184870f68c4b6817d77a93df2c52eebd998a90431687707ceada5e022`. Las ocho pruebas del indexador y los lectores móviles pasaron. Prueba local: `fuentes/ocr-local/cuzcano/archivo-ejercicios/prueba-restauracion-multicurso-814.json`.

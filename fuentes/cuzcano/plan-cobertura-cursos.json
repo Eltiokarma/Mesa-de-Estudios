@@ -2,7 +2,7 @@
   "criterio_activo": "100_por_tema",
   "objetivo_minimo_por_tema": 100,
   "objetivo_volumen_por_curso_anterior": 1000,
-  "total_fichas": 2399,
+  "total_fichas": 3213,
   "catalogo_temas_exhaustivo": false,
   "detalle_temas": "cobertura-100-por-tema.json",
   "criterio": "Conteo por tema principal con observaciones separadas. Los cuadernos mixtos requieren clasificación; no certifica la app.",
@@ -16,16 +16,16 @@
     },
     {
       "curso": "aritmetica",
-      "fichas_registradas": 0,
+      "fichas_registradas": 200,
       "temas_inventariados": 19,
-      "temas_con_minimo_revision": 0,
+      "temas_con_minimo_revision": 2,
       "cobertura_tematica_total_validada": false
     },
     {
       "curso": "fisica",
-      "fichas_registradas": 1926,
+      "fichas_registradas": 1940,
       "temas_inventariados": 24,
-      "temas_con_minimo_revision": 7,
+      "temas_con_minimo_revision": 8,
       "cobertura_tematica_total_validada": false
     },
     {
@@ -37,23 +37,23 @@
     },
     {
       "curso": "quimica",
-      "fichas_registradas": 5,
+      "fichas_registradas": 205,
       "temas_inventariados": 13,
-      "temas_con_minimo_revision": 0,
+      "temas_con_minimo_revision": 2,
       "cobertura_tematica_total_validada": false
     },
     {
       "curso": "razonamiento-matematico",
-      "fichas_registradas": 2,
+      "fichas_registradas": 202,
       "temas_inventariados": 15,
-      "temas_con_minimo_revision": 0,
+      "temas_con_minimo_revision": 2,
       "cobertura_tematica_total_validada": false
     },
     {
       "curso": "trigonometria",
-      "fichas_registradas": 0,
+      "fichas_registradas": 200,
       "temas_inventariados": 13,
-      "temas_con_minimo_revision": 0,
+      "temas_con_minimo_revision": 2,
       "cobertura_tematica_total_validada": false
     }
   ]

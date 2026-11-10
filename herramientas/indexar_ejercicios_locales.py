@@ -17,7 +17,11 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 LOCAL=ROOT/'fuentes/ocr-local/cuzcano'
 
-def digest(path):return hashlib.sha256(path.read_bytes()).hexdigest()
+def digest(path):
+    h=hashlib.sha256()
+    with path.open('rb') as f:
+        for chunk in iter(lambda:f.read(1024*1024),b''):h.update(chunk)
+    return h.hexdigest()
 def write(path,data):path.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
 def inside(root,path):
     path=path.resolve()
@@ -44,7 +48,7 @@ class References(HTMLParser):
 
 def build(local):
     local=local.resolve();archive=local/'archivo-ejercicios';archive.mkdir(exist_ok=True)
-    entries=[];files=set();seen=set();dossiers=[]
+    entries=[];files=set();seen=set();dossiers=[];revisions={}
     for folder in sorted(local.iterdir()):
         if not folder.is_dir() or not folder.name.startswith(('piloto-','polinomios-lote-')):continue
         found=[]
@@ -65,8 +69,10 @@ def build(local):
                 for page in pages:
                     key=f'{book}/p-{page:04d}.json'
                     if key in known:hashes[str(page)]=known[key]
-            for sidecar in (local/book).glob('revision-*.json'):
-                rev=json.loads(sidecar.read_text(encoding='utf-8'))
+            if book not in revisions:
+                revisions[book]=[(sidecar,json.loads(sidecar.read_text(encoding='utf-8')))
+                    for sidecar in (local/book).glob('revision-*.json')]
+            for sidecar,rev in revisions[book]:
                 ref=rev.get('ficha_local')
                 if ref and (sidecar.parent/ref).resolve()==path.resolve() and rev.get('sha256_ocr_original'):
                     hashes[str(rev['pagina_pdf'])]=rev['sha256_ocr_original']
@@ -153,13 +159,15 @@ def verify(local):
 
 def package(local):
     index,manifest=verify(local);target=local/'archivo-ejercicios/archivo-ejercicios.zip'
-    with zipfile.ZipFile(target,'w',zipfile.ZIP_DEFLATED) as z:
+    pending=target.with_name(target.name+'.part')
+    with zipfile.ZipFile(pending,'w',zipfile.ZIP_DEFLATED) as z:
         for name in manifest['archivos']:z.write(inside(local,local/name),name)
         z.write(local/'archivo-ejercicios/manifiesto.json','archivo-ejercicios/manifiesto.json')
-    with zipfile.ZipFile(target) as z:
+    with zipfile.ZipFile(pending) as z:
         if z.testzip() is not None:raise ValueError('ZIP dañado')
         for name,expected in manifest['archivos'].items():
             if hashlib.sha256(z.read(name)).hexdigest()!=expected:raise ValueError(f'Contenido de ZIP distinto: {name}')
+    pending.replace(target)
     return target
 
 def main():
@@ -170,4 +178,3 @@ def main():
     if args.zip:print(str(package(LOCAL)))
     print(json.dumps({'ejercicios':len(index['ejercicios']),'archivos_verificados':len(manifest['archivos'])},ensure_ascii=False))
 if __name__=='__main__':main()
-

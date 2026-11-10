@@ -1,25 +1,70 @@
 {
-  "fecha_utc": "2026-11-10T14:06:51.802882+00:00",
+  "fecha_utc": "2026-11-10T19:04:26.373048+00:00",
   "criterio_activo": "100_por_tema",
   "minimo_por_tema": 100,
-  "logaritmos_revisados": 100,
-  "logaritmos_con_observaciones": 11,
-  "temas_con_minimo_revision": 9,
+  "nuevos_tanda_actual": 814,
+  "fichas_previas_sin_cambios": 2399,
+  "ejercicios_indexados": 3213,
+  "controles_totales": 2939,
+  "bloques_comprobados": 92,
+  "archivos_controlados": 8455,
+  "temas_con_minimo_revision": 18,
+  "cursos": [
+    {
+      "curso": "algebra",
+      "fichas_registradas": 205,
+      "temas_inventariados": 17,
+      "temas_con_minimo_revision": 1,
+      "cobertura_tematica_total_validada": false
+    },
+    {
+      "curso": "aritmetica",
+      "fichas_registradas": 200,
+      "temas_inventariados": 19,
+      "temas_con_minimo_revision": 2,
+      "cobertura_tematica_total_validada": false
+    },
+    {
+      "curso": "fisica",
+      "fichas_registradas": 1940,
+      "temas_inventariados": 24,
+      "temas_con_minimo_revision": 8,
+      "cobertura_tematica_total_validada": false
+    },
+    {
+      "curso": "geometria",
+      "fichas_registradas": 261,
+      "temas_inventariados": 22,
+      "temas_con_minimo_revision": 1,
+      "cobertura_tematica_total_validada": false
+    },
+    {
+      "curso": "quimica",
+      "fichas_registradas": 205,
+      "temas_inventariados": 13,
+      "temas_con_minimo_revision": 2,
+      "cobertura_tematica_total_validada": false
+    },
+    {
+      "curso": "razonamiento-matematico",
+      "fichas_registradas": 202,
+      "temas_inventariados": 15,
+      "temas_con_minimo_revision": 2,
+      "cobertura_tematica_total_validada": false
+    },
+    {
+      "curso": "trigonometria",
+      "fichas_registradas": 200,
+      "temas_inventariados": 13,
+      "temas_con_minimo_revision": 2,
+      "cobertura_tematica_total_validada": false
+    }
+  ],
+  "con_observaciones_nuevos": 135,
   "todos_los_temas_completados": false,
-  "fichas_previas_sin_cambios": 2299,
-  "nuevos_fisica_por_tema": 125,
-  "nuevos_fisica_tanda_actual": 100,
-  "fichas_fisica_acumuladas": 1926,
-  "controles_totales": 2125,
-  "controles_algebra_desde_base_2074": 200,
-  "ejercicios_indexados": 2399,
-  "archivos_controlados": 6512,
-  "controles_fisica_previos": 1800,
-  "controles_fisica_adicionales": 125,
-  "controles_algebra_nuevos": 200,
-  "bloques_comprobados": 77,
-  "sha256_zip": "a1a9f555971aca2580b71e62fc305ba1519812e6dca5a0de62fd40250b252fe9",
-  "bytes_zip": 1496803425,
+  "sha256_zip": "9e28c96184870f68c4b6817d77a93df2c52eebd998a90431687707ceada5e022",
+  "bytes_zip": 2150318114,
   "sin_pdf_ni_ocr_originales": true,
+  "ocr_repetido": false,
   "extraccion_temporal_retirada": true
 }
