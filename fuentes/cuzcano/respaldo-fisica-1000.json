@@ -1,0 +1,15 @@
+{
+  "fecha_utc": "2026-11-10T05:29:16.054916+00:00",
+  "objetivo": 1000,
+  "nuevos_comprobados": 1000,
+  "pendientes_del_objetivo": 0,
+  "objetivo_completado": true,
+  "ejercicios_indexados": 2074,
+  "archivos_controlados": 5580,
+  "controles_fisica": 1800,
+  "bloques_fisica": 63,
+  "sha256_zip": "4e9620ec17724edab1683f488d51df6c0ff3eadbd1504615d893e72022d71c1d",
+  "bytes_zip": 1159913045,
+  "sin_pdf_ni_ocr_originales": true,
+  "extraccion_temporal_retirada": true
+}
