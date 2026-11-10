@@ -1,0 +1,228 @@
+{
+  "curso": "algebra",
+  "objetivo_adicional": 1000,
+  "nuevos_revisados": 100,
+  "pendientes": 900,
+  "estado": "en_curso",
+  "con_condiciones_para_producto": 16,
+  "sin_condiciones_senaladas": 84,
+  "algebra_acumulado": 105,
+  "archivo_acumulado": 2174,
+  "libros_en_esta_tanda": 1,
+  "paginas_con_fragmentos_cotejados": 22,
+  "recursos_visuales": {
+    "grafica_cartesiana_propia": 4,
+    "tarjeta_relaciones_propias": 93,
+    "tabla_propia": 3
+  },
+  "ocr_repetido": false,
+  "servicio_externo_para_calculo": false,
+  "bibliotecas_control": [
+    "SymPy 1.14.0",
+    "mpmath"
+  ],
+  "pagina_completa_validada": false,
+  "app_certificada": false,
+  "siguiente": {
+    "libro_id": "1GQxXnXKRDrb8SFKemkA-ggcOGep1KE44",
+    "tipo": "propuesto",
+    "numero": 307,
+    "paginas_pdf": [
+      290,
+      291
+    ]
+  },
+  "cobertura_por_ampliar": [
+    "Ecuaciones",
+    "Inecuaciones",
+    "Funciones",
+    "Logaritmos",
+    "Matrices y sistemas",
+    "Sucesiones y series"
+  ],
+  "lotes": [
+    {
+      "carpeta": "piloto-algebra-preuni-propuestos-207-226",
+      "libro_id": "1GQxXnXKRDrb8SFKemkA-ggcOGep1KE44",
+      "libro": "Álgebra PREUNI · problemas propuestos",
+      "tipo": "propuesto",
+      "numeros": [
+        207,
+        208,
+        209,
+        210,
+        211,
+        212,
+        213,
+        214,
+        215,
+        216,
+        217,
+        218,
+        219,
+        220,
+        221,
+        222,
+        223,
+        224,
+        225,
+        226
+      ],
+      "cantidad": 20,
+      "paginas_pdf": [
+        269,
+        270,
+        271,
+        272,
+        273
+      ],
+      "estado": "revisado_y_comprobado"
+    },
+    {
+      "carpeta": "piloto-algebra-preuni-propuestos-227-246",
+      "libro_id": "1GQxXnXKRDrb8SFKemkA-ggcOGep1KE44",
+      "libro": "Álgebra PREUNI · problemas propuestos",
+      "tipo": "propuesto",
+      "numeros": [
+        227,
+        228,
+        229,
+        230,
+        231,
+        232,
+        233,
+        234,
+        235,
+        236,
+        237,
+        238,
+        239,
+        240,
+        241,
+        242,
+        243,
+        244,
+        245,
+        246
+      ],
+      "cantidad": 20,
+      "paginas_pdf": [
+        274,
+        275,
+        276,
+        277,
+        278
+      ],
+      "estado": "revisado_y_comprobado"
+    },
+    {
+      "carpeta": "piloto-algebra-preuni-propuestos-247-271",
+      "libro_id": "1GQxXnXKRDrb8SFKemkA-ggcOGep1KE44",
+      "libro": "Álgebra PREUNI · problemas propuestos",
+      "tipo": "propuesto",
+      "numeros": [
+        247,
+        248,
+        249,
+        250,
+        251,
+        252,
+        253,
+        254,
+        255,
+        256,
+        257,
+        258,
+        259,
+        260,
+        261,
+        262,
+        263,
+        264,
+        265,
+        266,
+        267,
+        268,
+        269,
+        270,
+        271
+      ],
+      "cantidad": 25,
+      "paginas_pdf": [
+        278,
+        279,
+        280,
+        281,
+        282
+      ],
+      "estado": "revisado_y_comprobado"
+    },
+    {
+      "carpeta": "piloto-algebra-preuni-propuestos-272-297",
+      "libro_id": "1GQxXnXKRDrb8SFKemkA-ggcOGep1KE44",
+      "libro": "Álgebra PREUNI · problemas propuestos",
+      "tipo": "propuesto",
+      "numeros": [
+        272,
+        273,
+        274,
+        275,
+        276,
+        277,
+        278,
+        279,
+        280,
+        281,
+        282,
+        283,
+        284,
+        285,
+        286,
+        287,
+        288,
+        289,
+        290,
+        291,
+        292,
+        293,
+        294,
+        295,
+        296,
+        297
+      ],
+      "cantidad": 26,
+      "paginas_pdf": [
+        283,
+        284,
+        285,
+        286,
+        287
+      ],
+      "estado": "revisado_y_comprobado"
+    },
+    {
+      "carpeta": "piloto-algebra-preuni-propuestos-298-306",
+      "libro_id": "1GQxXnXKRDrb8SFKemkA-ggcOGep1KE44",
+      "libro": "Álgebra PREUNI · problemas propuestos",
+      "tipo": "propuesto",
+      "numeros": [
+        298,
+        299,
+        300,
+        301,
+        302,
+        303,
+        304,
+        305,
+        306
+      ],
+      "cantidad": 9,
+      "paginas_pdf": [
+        288,
+        289,
+        290
+      ],
+      "estado": "revisado_y_comprobado"
+    }
+  ]
+}

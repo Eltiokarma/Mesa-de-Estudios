@@ -1,0 +1,16 @@
+{
+  "fecha_utc": "2026-11-10T10:56:10.705896+00:00",
+  "objetivo": 1000,
+  "nuevos_comprobados": 100,
+  "pendientes_del_objetivo": 900,
+  "objetivo_completado": false,
+  "ejercicios_indexados": 2174,
+  "archivos_controlados": 5850,
+  "controles_fisica_previos": 1800,
+  "controles_algebra_nuevos": 100,
+  "bloques_comprobados": 68,
+  "sha256_zip": "20770fa5b8d4f14e8aeb8e82369f3e2ac2d61f67f92c5929f078ca59e70cd17c",
+  "bytes_zip": 1171902727,
+  "sin_pdf_ni_ocr_originales": true,
+  "extraccion_temporal_retirada": true
+}
