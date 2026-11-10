@@ -2,7 +2,7 @@
   "criterio_activo": "100_por_tema",
   "objetivo_minimo_por_tema": 100,
   "objetivo_volumen_por_curso_anterior": 1000,
-  "total_fichas": 2299,
+  "total_fichas": 2399,
   "catalogo_temas_exhaustivo": false,
   "detalle_temas": "cobertura-100-por-tema.json",
   "criterio": "Conteo por tema principal con observaciones separadas. Los cuadernos mixtos requieren clasificación; no certifica la app.",
@@ -23,9 +23,9 @@
     },
     {
       "curso": "fisica",
-      "fichas_registradas": 1826,
+      "fichas_registradas": 1926,
       "temas_inventariados": 24,
-      "temas_con_minimo_revision": 5,
+      "temas_con_minimo_revision": 7,
       "cobertura_tematica_total_validada": false
     },
     {
