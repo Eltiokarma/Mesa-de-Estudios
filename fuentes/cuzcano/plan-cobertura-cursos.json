@@ -1,63 +1,60 @@
 {
-  "objetivo_volumen_por_curso": 1000,
-  "criterio": "Cantidad de fichas registradas según clasificación del catálogo; no equivale a cobertura temática ni certificación para producto.",
-  "total_fichas": 2174,
+  "criterio_activo": "100_por_tema",
+  "objetivo_minimo_por_tema": 100,
+  "objetivo_volumen_por_curso_anterior": 1000,
+  "total_fichas": 2274,
+  "catalogo_temas_exhaustivo": false,
+  "detalle_temas": "cobertura-100-por-tema.json",
+  "criterio": "Conteo por tema principal con observaciones separadas. Los cuadernos mixtos requieren clasificación; no certifica la app.",
   "cursos": [
     {
       "curso": "algebra",
-      "nombre": "Álgebra",
-      "fichas_registradas": 105,
-      "faltan_para_1000": 895,
-      "porcentaje_volumen_hasta_1000": 10.5,
-      "cobertura_tematica_validada": false
+      "fichas_registradas": 205,
+      "temas_inventariados": 17,
+      "temas_con_minimo_revision": 1,
+      "cobertura_tematica_total_validada": false
     },
     {
       "curso": "aritmetica",
-      "nombre": "Aritmética",
       "fichas_registradas": 0,
-      "faltan_para_1000": 1000,
-      "porcentaje_volumen_hasta_1000": 0.0,
-      "cobertura_tematica_validada": false
+      "temas_inventariados": 19,
+      "temas_con_minimo_revision": 0,
+      "cobertura_tematica_total_validada": false
     },
     {
       "curso": "fisica",
-      "nombre": "Física",
       "fichas_registradas": 1801,
-      "faltan_para_1000": 0,
-      "porcentaje_volumen_hasta_1000": 100,
-      "cobertura_tematica_validada": false
+      "temas_inventariados": 24,
+      "temas_con_minimo_revision": 3,
+      "cobertura_tematica_total_validada": false
     },
     {
       "curso": "geometria",
-      "nombre": "Geometría",
       "fichas_registradas": 261,
-      "faltan_para_1000": 739,
-      "porcentaje_volumen_hasta_1000": 26.1,
-      "cobertura_tematica_validada": false
+      "temas_inventariados": 22,
+      "temas_con_minimo_revision": 1,
+      "cobertura_tematica_total_validada": false
     },
     {
       "curso": "quimica",
-      "nombre": "Química",
       "fichas_registradas": 5,
-      "faltan_para_1000": 995,
-      "porcentaje_volumen_hasta_1000": 0.5,
-      "cobertura_tematica_validada": false
+      "temas_inventariados": 13,
+      "temas_con_minimo_revision": 0,
+      "cobertura_tematica_total_validada": false
     },
     {
       "curso": "razonamiento-matematico",
-      "nombre": "Razonamiento matemático",
       "fichas_registradas": 2,
-      "faltan_para_1000": 998,
-      "porcentaje_volumen_hasta_1000": 0.2,
-      "cobertura_tematica_validada": false
+      "temas_inventariados": 15,
+      "temas_con_minimo_revision": 0,
+      "cobertura_tematica_total_validada": false
     },
     {
       "curso": "trigonometria",
-      "nombre": "Trigonometría",
       "fichas_registradas": 0,
-      "faltan_para_1000": 1000,
-      "porcentaje_volumen_hasta_1000": 0.0,
-      "cobertura_tematica_validada": false
+      "temas_inventariados": 13,
+      "temas_con_minimo_revision": 0,
+      "cobertura_tematica_total_validada": false
     }
   ]
 }
