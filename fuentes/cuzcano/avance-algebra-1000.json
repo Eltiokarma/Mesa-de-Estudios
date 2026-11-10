@@ -5,7 +5,7 @@
   "con_condiciones_para_producto": 27,
   "sin_condiciones_senaladas": 173,
   "algebra_acumulado": 205,
-  "archivo_acumulado": 2274,
+  "archivo_acumulado": 2299,
   "libros_en_esta_tanda": 2,
   "paginas_con_fragmentos_cotejados": 55,
   "ocr_repetido": false,
@@ -18,9 +18,9 @@
   "app_certificada": false,
   "siguiente": {
     "curso": "fisica",
-    "tema": "Electrostática",
-    "revisados_asignados": 90,
-    "faltan_para_minimo": 10
+    "tema": "Cantidad de movimiento, impulso y choques",
+    "revisados_asignados": 66,
+    "faltan_para_minimo": 34
   },
   "cobertura_por_ampliar": [
     "Consultar cobertura-100-por-tema.json; los 100 previos de Álgebra se distribuyen entre temas distintos."
