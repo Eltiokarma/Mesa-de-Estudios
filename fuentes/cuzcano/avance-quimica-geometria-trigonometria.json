@@ -1,33 +1,33 @@
 {
   "schema_version": 1,
-  "fecha_utc": "2026-11-11T14:36:33.574514+00:00",
+  "fecha_utc": "2026-11-11T16:32:01.991313+00:00",
   "estado": "en_curso",
   "objetivo_nuevas": 3000,
   "objetivo_temas": 36,
   "fichas_anteriores_verificadas_por_sha256": 6213,
-  "fichas_nuevas": 252,
-  "fichas_acumuladas": 6465,
-  "fichas_pendientes": 2748,
-  "temas_con_cuota_cumplida": 3,
-  "paginas_pdf_distintas_cotejadas_por_fragmentos": 89,
-  "nuevas_con_observaciones": 55,
-  "fichas_con_diagrama": 138,
+  "fichas_nuevas": 454,
+  "fichas_acumuladas": 6667,
+  "fichas_pendientes": 2546,
+  "temas_con_cuota_cumplida": 5,
+  "paginas_pdf_distintas_cotejadas_por_fragmentos": 127,
+  "nuevas_con_observaciones": 75,
+  "fichas_con_diagrama": 184,
   "ocr_repetido": false,
   "app_certificada": false,
   "sha256_de_los_indices_locales": {
-    "quimica": "1245f79d3ecaa442f3ec703aa6728f3be0096cd7ec4b9799fb926d89cf4723c3",
-    "geometria": "56792e53b3497e029901fc06b33ce1851120072dccf7c29c8034f3613848937d",
-    "trigonometria": "72d883410f0cf1f8d54a2f40ba44a4836c6ce5d3fe544d93052fd36ba579ed98"
+    "quimica": "cef43be27589419bddf177f46b83efd69b15b3ea1a6e003ab25b0935f281f2b9",
+    "geometria": "21482773cf76f91eac7da7eac8072d60183723863ac0dc0715a84adac61325af",
+    "trigonometria": "344b2195aa2fb614e2d473ad3bd58f13794f364bf0e8fc787e1c2c6587440942"
   },
   "tandas": [
     {
       "curso": "quimica",
       "objetivo": 1000,
-      "nuevas": 84,
-      "pendientes": 916,
-      "lotes": 3,
-      "con_observaciones": 26,
-      "fichas_con_diagrama": 1,
+      "nuevas": 168,
+      "pendientes": 832,
+      "lotes": 6,
+      "con_observaciones": 38,
+      "fichas_con_diagrama": 5,
       "temas": [
         {
           "id": "quimica.acidos-y-bases",
@@ -72,11 +72,24 @@
         {
           "id": "quimica.estructura-atomica",
           "nombre": "Estructura atómica",
-          "nuevos": 0,
+          "nuevos": 84,
           "objetivo": 84,
-          "pendientes": 84,
-          "observaciones": 0,
-          "subtemas_nuevos": {}
+          "pendientes": 0,
+          "observaciones": 12,
+          "subtemas_nuevos": {
+            "Configuración electrónica": 6,
+            "Espectros atómicos": 10,
+            "Iones": 10,
+            "Isótopos": 4,
+            "Magnetismo atómico": 2,
+            "Masas atómicas": 3,
+            "Mecánica cuántica": 6,
+            "Modelo de Bohr": 10,
+            "Modelos atómicos": 11,
+            "Núcleo y nucleidos": 6,
+            "Números cuánticos": 7,
+            "Radiación electromagnética": 9
+          }
         },
         {
           "id": "quimica.enlace-quimico",
@@ -173,11 +186,11 @@
     {
       "curso": "geometria",
       "objetivo": 1000,
-      "nuevas": 84,
-      "pendientes": 916,
-      "lotes": 7,
-      "con_observaciones": 23,
-      "fichas_con_diagrama": 84,
+      "nuevas": 118,
+      "pendientes": 882,
+      "lotes": 9,
+      "con_observaciones": 24,
+      "fichas_con_diagrama": 118,
       "temas": [
         {
           "id": "geometria.la-linea-recta",
@@ -248,11 +261,31 @@
         {
           "id": "geometria.triangulos",
           "nombre": "Triángulos",
-          "nuevos": 0,
+          "nuevos": 34,
           "objetivo": 84,
-          "pendientes": 84,
-          "observaciones": 0,
-          "subtemas_nuevos": {}
+          "pendientes": 50,
+          "observaciones": 1,
+          "subtemas_nuevos": {
+            "Altura y bisectriz": 1,
+            "Bisectrices y mediatrices": 1,
+            "Bisectrices y puntos medios": 1,
+            "Bisectrices y reflexión": 1,
+            "Bisectrices y trisectrices": 1,
+            "Bisectrices y triángulo isósceles": 1,
+            "Congruencia": 1,
+            "Desigualdad triangular": 3,
+            "Distancia a rectas": 1,
+            "Incentro y paralelismo": 1,
+            "Mediana": 1,
+            "Paralelismo": 2,
+            "Segmentos medios": 1,
+            "Trisectrices": 2,
+            "Triángulo equilátero": 2,
+            "Triángulo isósceles": 7,
+            "Triángulo rectángulo": 2,
+            "Triángulo rectángulo isósceles": 1,
+            "Ángulos exteriores": 4
+          }
         },
         {
           "id": "geometria.cuadrilateros",
@@ -349,11 +382,11 @@
     {
       "curso": "trigonometria",
       "objetivo": 1000,
-      "nuevas": 84,
-      "pendientes": 916,
-      "lotes": 5,
-      "con_observaciones": 6,
-      "fichas_con_diagrama": 53,
+      "nuevas": 168,
+      "pendientes": 832,
+      "lotes": 8,
+      "con_observaciones": 13,
+      "fichas_con_diagrama": 61,
       "temas": [
         {
           "id": "trigonometria.circunferencia-trigonometrica",
@@ -413,11 +446,19 @@
         {
           "id": "trigonometria.funciones-trigonometricas-directas",
           "nombre": "Funciones trigonométricas directas",
-          "nuevos": 0,
+          "nuevos": 84,
           "objetivo": 84,
-          "pendientes": 84,
-          "observaciones": 0,
-          "subtemas_nuevos": {}
+          "pendientes": 0,
+          "observaciones": 7,
+          "subtemas_nuevos": {
+            "Asíntotas": 2,
+            "Dominio": 18,
+            "Dominio y rango": 6,
+            "Extremos": 14,
+            "Rango": 41,
+            "Rango y período": 1,
+            "Signo": 2
+          }
         },
         {
           "id": "trigonometria.identidades-trigonometricas-fundamentales",
