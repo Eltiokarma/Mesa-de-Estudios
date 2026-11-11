@@ -1,33 +1,33 @@
 {
   "schema_version": 1,
-  "fecha_utc": "2026-11-11T19:00:02.338960+00:00",
+  "fecha_utc": "2026-11-11T19:56:36.657345+00:00",
   "estado": "en_curso",
   "objetivo_nuevas": 3000,
   "objetivo_temas": 36,
   "fichas_anteriores_verificadas_por_sha256": 6213,
-  "fichas_nuevas": 762,
-  "fichas_acumuladas": 6975,
-  "fichas_pendientes": 2238,
-  "temas_con_cuota_cumplida": 8,
-  "paginas_pdf_distintas_cotejadas_por_fragmentos": 191,
-  "nuevas_con_observaciones": 139,
-  "fichas_con_diagrama": 310,
+  "fichas_nuevas": 874,
+  "fichas_acumuladas": 7087,
+  "fichas_pendientes": 2126,
+  "temas_con_cuota_cumplida": 9,
+  "paginas_pdf_distintas_cotejadas_por_fragmentos": 228,
+  "nuevas_con_observaciones": 168,
+  "fichas_con_diagrama": 365,
   "ocr_repetido": false,
   "app_certificada": false,
   "sha256_de_los_indices_locales": {
-    "quimica": "c4b9b3f7783e9781288a315dff8d815a168450a25702550f745313d96679bc47",
-    "geometria": "5b054538a5ecac5dc56ba079d76a1c1df1ab2f65a2e5150571274d3119c3122d",
-    "trigonometria": "9831294a958c75afa9c849cac520378dece0bed8237ab4bee0b968fb121fdb01"
+    "quimica": "4ecf121b3234c4b8a23280431840508e76158801a51e915c8673968c28d3226b",
+    "geometria": "8e97155e9075ee9acdabcd554b0064646e1b3bf4bc24ac5c2bcb9b1308fda12d",
+    "trigonometria": "e21a695f382720114d6bca98e2a1465492ae48091bcb43d0c4e41dc4d3cbe464"
   },
   "tandas": [
     {
       "curso": "quimica",
       "objetivo": 1000,
-      "nuevas": 252,
-      "pendientes": 748,
-      "lotes": 9,
-      "con_observaciones": 54,
-      "fichas_con_diagrama": 38,
+      "nuevas": 281,
+      "pendientes": 719,
+      "lotes": 11,
+      "con_observaciones": 68,
+      "fichas_con_diagrama": 51,
       "temas": [
         {
           "id": "quimica.acidos-y-bases",
@@ -127,11 +127,32 @@
         {
           "id": "quimica.estequiometria",
           "nombre": "Estequiometría",
-          "nuevos": 0,
+          "nuevos": 29,
           "objetivo": 84,
-          "pendientes": 84,
-          "observaciones": 0,
-          "subtemas_nuevos": {}
+          "pendientes": 55,
+          "observaciones": 14,
+          "subtemas_nuevos": {
+            "Combustión y volúmenes": 1,
+            "Composición en masa": 2,
+            "Gases en reacciones químicas": 1,
+            "Leyes ponderales": 1,
+            "Neutralización estequiométrica": 2,
+            "Peso equivalente": 1,
+            "Precipitación": 2,
+            "Precipitación y calcinación": 1,
+            "Pureza y composición de la disolución": 1,
+            "Pureza y composición de mezclas": 3,
+            "Pureza y reactivo limitante": 1,
+            "Pureza y rendimiento": 1,
+            "Reactivo limitante": 1,
+            "Reactivo limitante y en exceso": 3,
+            "Reactivo limitante y rendimiento": 1,
+            "Reactivo limitante y volumen gaseoso": 1,
+            "Relaciones masa a masa": 1,
+            "Relaciones molares y de masa": 1,
+            "Rendimiento de reacción": 3,
+            "Rendimientos sucesivos": 1
+          }
         },
         {
           "id": "quimica.tabla-periodica",
@@ -210,11 +231,11 @@
     {
       "curso": "geometria",
       "objetivo": 1000,
-      "nuevas": 199,
-      "pendientes": 801,
-      "lotes": 15,
-      "con_observaciones": 43,
-      "fichas_con_diagrama": 199,
+      "nuevas": 231,
+      "pendientes": 769,
+      "lotes": 17,
+      "con_observaciones": 54,
+      "fichas_con_diagrama": 231,
       "temas": [
         {
           "id": "geometria.la-linea-recta",
@@ -350,32 +371,44 @@
         {
           "id": "geometria.cuadrilateros",
           "nombre": "Cuadriláteros",
-          "nuevos": 31,
+          "nuevos": 63,
           "objetivo": 84,
-          "pendientes": 53,
-          "observaciones": 6,
+          "pendientes": 21,
+          "observaciones": 17,
           "subtemas_nuevos": {
             "Cuadrados y congruencia": 1,
-            "Cuadrados y giros": 1,
-            "Cuadrados y perpendicularidad": 2,
+            "Cuadrados y giros": 2,
+            "Cuadrados y perpendicularidad": 3,
+            "Cuadrados y proporciones": 1,
+            "Cuadrados y proyecciones": 2,
             "Cuadrados y triángulos equiláteros": 2,
             "Cuadriláteros inscritos": 1,
+            "Cuadriláteros y proyecciones": 1,
             "Giros y proyecciones": 1,
-            "Paralelogramos y bisectrices": 2,
+            "Paralelogramos": 6,
+            "Paralelogramos y bisectrices": 3,
+            "Paralelogramos y proyecciones": 1,
             "Paralelogramos y puntos medios": 1,
             "Proyecciones y puntos medios": 2,
-            "Rectángulos y perpendicularidad": 1,
+            "Rectángulos y cuadrados": 5,
+            "Rectángulos y perpendicularidad": 2,
+            "Rectángulos y proyecciones": 1,
             "Rectángulos y puntos medios": 3,
             "Rectángulos y ángulos": 1,
             "Rombos y alturas": 1,
             "Rombos y cuadrados": 2,
             "Rombos y diagonales": 1,
+            "Trapecios": 4,
             "Trapecios isósceles": 1,
+            "Trapecios rectángulos": 2,
             "Trapecios y bases medias": 4,
-            "Trapecios y bisectrices": 1,
+            "Trapecios y bisectrices": 2,
+            "Trapecios y diagonales": 2,
             "Trapecios y proyecciones": 1,
+            "Trapecios y semejanza": 1,
             "Trapecios y ángulos": 1,
-            "Ángulos y desigualdades": 1
+            "Ángulos y desigualdades": 1,
+            "Ángulos y diagonales": 1
           }
         },
         {
@@ -464,11 +497,11 @@
     {
       "curso": "trigonometria",
       "objetivo": 1000,
-      "nuevas": 311,
-      "pendientes": 689,
-      "lotes": 15,
-      "con_observaciones": 42,
-      "fichas_con_diagrama": 73,
+      "nuevas": 362,
+      "pendientes": 638,
+      "lotes": 17,
+      "con_observaciones": 46,
+      "fichas_con_diagrama": 83,
       "temas": [
         {
           "id": "trigonometria.circunferencia-trigonometrica",
@@ -570,35 +603,45 @@
         {
           "id": "trigonometria.ecuaciones-e-inecuaciones-trigonometricas",
           "nombre": "Ecuaciones e inecuaciones trigonométricas",
-          "nuevos": 59,
+          "nuevos": 84,
           "objetivo": 84,
-          "pendientes": 25,
-          "observaciones": 13,
+          "pendientes": 0,
+          "observaciones": 15,
           "subtemas_nuevos": {
-            "Ecuaciones con funciones inversas": 10,
-            "Ecuaciones elementales": 3,
+            "Conteo de raíces": 1,
+            "Dominio de potencias": 1,
+            "Ecuaciones con funciones inversas": 11,
+            "Ecuaciones elementales": 4,
             "Ecuaciones racionales": 5,
-            "Inecuaciones trigonométricas": 13,
+            "Inecuaciones trigonométricas": 17,
             "Periodicidad y cotangente": 1,
-            "Periodicidad y dominio": 1,
+            "Periodicidad y dominio": 2,
             "Radicales y signos": 1,
-            "Sistemas con parámetro": 4,
-            "Sistemas de ecuaciones": 8,
-            "Suma a producto": 3,
-            "Sustitución polinómica": 4,
-            "Valores absolutos": 1,
-            "Ángulos dobles": 3,
+            "Sistemas con parámetro": 6,
+            "Sistemas de ecuaciones": 13,
+            "Suma a producto": 4,
+            "Sustitución polinómica": 7,
+            "Valores absolutos": 3,
+            "Ángulos dobles": 6,
             "Ángulos múltiples": 2
           }
         },
         {
           "id": "trigonometria.funciones-trigonometricas-inversas",
           "nombre": "Funciones trigonométricas inversas",
-          "nuevos": 0,
+          "nuevos": 26,
           "objetivo": 83,
-          "pendientes": 83,
-          "observaciones": 0,
-          "subtemas_nuevos": {}
+          "pendientes": 57,
+          "observaciones": 2,
+          "subtemas_nuevos": {
+            "Composición y reducción": 4,
+            "Dominio y rango": 6,
+            "Gráficas y transformaciones": 4,
+            "Identidades y restricciones de rama": 2,
+            "Inyectividad y ramas principales": 4,
+            "Monotonía y comparación": 4,
+            "Suma y diferencia de arcos tangentes": 2
+          }
         },
         {
           "id": "trigonometria.identidades-de-arcos-compuestos",
@@ -665,5 +708,74 @@
         }
       ]
     }
-  ]
+  ],
+  "lote_1500": {
+    "meta": 1500,
+    "fichas_registradas": 405,
+    "pendientes": 1095,
+    "cursos": [
+      {
+        "id": "quimica",
+        "curso": "Química",
+        "meta": 500,
+        "fichas": 113,
+        "pendientes": 387,
+        "temas": [
+          {
+            "id": "quimica.enlace-quimico",
+            "tema": "Enlace químico",
+            "fichas": 84
+          },
+          {
+            "id": "quimica.estequiometria",
+            "tema": "Estequiometría",
+            "fichas": 29
+          }
+        ]
+      },
+      {
+        "id": "geometria",
+        "curso": "Geometría",
+        "meta": 500,
+        "fichas": 98,
+        "pendientes": 402,
+        "temas": [
+          {
+            "id": "geometria.triangulos",
+            "tema": "Triángulos",
+            "fichas": 35
+          },
+          {
+            "id": "geometria.cuadrilateros",
+            "tema": "Cuadriláteros",
+            "fichas": 63
+          }
+        ]
+      },
+      {
+        "id": "trigonometria",
+        "curso": "Trigonometría",
+        "meta": 500,
+        "fichas": 194,
+        "pendientes": 306,
+        "temas": [
+          {
+            "id": "trigonometria.identidades-trigonometricas-fundamentales",
+            "tema": "Identidades trigonométricas fundamentales",
+            "fichas": 84
+          },
+          {
+            "id": "trigonometria.ecuaciones-e-inecuaciones-trigonometricas",
+            "tema": "Ecuaciones e inecuaciones trigonométricas",
+            "fichas": 84
+          },
+          {
+            "id": "trigonometria.funciones-trigonometricas-inversas",
+            "tema": "Funciones trigonométricas inversas",
+            "fichas": 26
+          }
+        ]
+      }
+    ]
+  }
 }
