@@ -1,33 +1,33 @@
 {
   "schema_version": 1,
-  "fecha_utc": "2026-11-11T19:56:36.657345+00:00",
+  "fecha_utc": "2026-11-11T21:17:55.971875+00:00",
   "estado": "en_curso",
   "objetivo_nuevas": 3000,
   "objetivo_temas": 36,
   "fichas_anteriores_verificadas_por_sha256": 6213,
-  "fichas_nuevas": 874,
-  "fichas_acumuladas": 7087,
-  "fichas_pendientes": 2126,
-  "temas_con_cuota_cumplida": 9,
-  "paginas_pdf_distintas_cotejadas_por_fragmentos": 228,
-  "nuevas_con_observaciones": 168,
-  "fichas_con_diagrama": 365,
+  "fichas_nuevas": 1074,
+  "fichas_acumuladas": 7287,
+  "fichas_pendientes": 1926,
+  "temas_con_cuota_cumplida": 11,
+  "paginas_pdf_distintas_cotejadas_por_fragmentos": 284,
+  "nuevas_con_observaciones": 203,
+  "fichas_con_diagrama": 437,
   "ocr_repetido": false,
   "app_certificada": false,
   "sha256_de_los_indices_locales": {
-    "quimica": "4ecf121b3234c4b8a23280431840508e76158801a51e915c8673968c28d3226b",
-    "geometria": "8e97155e9075ee9acdabcd554b0064646e1b3bf4bc24ac5c2bcb9b1308fda12d",
-    "trigonometria": "e21a695f382720114d6bca98e2a1465492ae48091bcb43d0c4e41dc4d3cbe464"
+    "quimica": "883eba0d00e32640bd15060bee904d4b09f9cb00ea919c43641c78f9c3382b9b",
+    "geometria": "462ab53d69548696a430c6a4f77ad384aab35ae2f254f4b45758cb5551968dfd",
+    "trigonometria": "6d8a8a948a3de17ad3875215e44f0480aeda4e9c049651017e3e817895a5e8e1"
   },
   "tandas": [
     {
       "curso": "quimica",
       "objetivo": 1000,
-      "nuevas": 281,
-      "pendientes": 719,
-      "lotes": 11,
-      "con_observaciones": 68,
-      "fichas_con_diagrama": 51,
+      "nuevas": 354,
+      "pendientes": 646,
+      "lotes": 16,
+      "con_observaciones": 83,
+      "fichas_con_diagrama": 69,
       "temas": [
         {
           "id": "quimica.acidos-y-bases",
@@ -127,30 +127,31 @@
         {
           "id": "quimica.estequiometria",
           "nombre": "Estequiometría",
-          "nuevos": 29,
+          "nuevos": 39,
           "objetivo": 84,
-          "pendientes": 55,
-          "observaciones": 14,
+          "pendientes": 45,
+          "observaciones": 15,
           "subtemas_nuevos": {
             "Combustión y volúmenes": 1,
             "Composición en masa": 2,
-            "Gases en reacciones químicas": 1,
+            "Gases en reacciones químicas": 2,
             "Leyes ponderales": 1,
             "Neutralización estequiométrica": 2,
+            "Neutralización y titulación": 2,
             "Peso equivalente": 1,
             "Precipitación": 2,
             "Precipitación y calcinación": 1,
             "Pureza y composición de la disolución": 1,
-            "Pureza y composición de mezclas": 3,
+            "Pureza y composición de mezclas": 4,
             "Pureza y reactivo limitante": 1,
             "Pureza y rendimiento": 1,
             "Reactivo limitante": 1,
-            "Reactivo limitante y en exceso": 3,
+            "Reactivo limitante y en exceso": 5,
             "Reactivo limitante y rendimiento": 1,
             "Reactivo limitante y volumen gaseoso": 1,
             "Relaciones masa a masa": 1,
-            "Relaciones molares y de masa": 1,
-            "Rendimiento de reacción": 3,
+            "Relaciones molares y de masa": 3,
+            "Rendimiento de reacción": 5,
             "Rendimientos sucesivos": 1
           }
         },
@@ -184,20 +185,33 @@
         {
           "id": "quimica.soluciones",
           "nombre": "Soluciones",
-          "nuevos": 0,
+          "nuevos": 33,
           "objetivo": 83,
-          "pendientes": 83,
-          "observaciones": 0,
-          "subtemas_nuevos": {}
+          "pendientes": 50,
+          "observaciones": 7,
+          "subtemas_nuevos": {
+            "Clasificación de soluciones": 2,
+            "Concentraciones y conversiones": 13,
+            "Mezclas y diluciones": 11,
+            "Solubilidad y cristalización": 7
+          }
         },
         {
           "id": "quimica.equilibrio-quimico",
           "nombre": "Equilibrio químico",
-          "nuevos": 0,
+          "nuevos": 30,
           "objetivo": 83,
-          "pendientes": 83,
-          "observaciones": 0,
-          "subtemas_nuevos": {}
+          "pendientes": 53,
+          "observaciones": 7,
+          "subtemas_nuevos": {
+            "Constante de equilibrio y composición": 7,
+            "Conversión entre Kc y Kp": 8,
+            "Desplazamiento del equilibrio": 4,
+            "Disociación en fase gaseosa": 2,
+            "Equilibrio dinámico": 2,
+            "Equilibrio heterogéneo": 5,
+            "Lectura de perfiles y gráficos": 2
+          }
         },
         {
           "id": "quimica.electroquimica",
@@ -231,11 +245,11 @@
     {
       "curso": "geometria",
       "objetivo": 1000,
-      "nuevas": 231,
-      "pendientes": 769,
-      "lotes": 17,
-      "con_observaciones": 54,
-      "fichas_con_diagrama": 231,
+      "nuevas": 267,
+      "pendientes": 733,
+      "lotes": 19,
+      "con_observaciones": 60,
+      "fichas_con_diagrama": 267,
       "temas": [
         {
           "id": "geometria.la-linea-recta",
@@ -371,10 +385,10 @@
         {
           "id": "geometria.cuadrilateros",
           "nombre": "Cuadriláteros",
-          "nuevos": 63,
+          "nuevos": 84,
           "objetivo": 84,
-          "pendientes": 21,
-          "observaciones": 17,
+          "pendientes": 0,
+          "observaciones": 23,
           "subtemas_nuevos": {
             "Cuadrados y congruencia": 1,
             "Cuadrados y giros": 2,
@@ -385,12 +399,12 @@
             "Cuadriláteros inscritos": 1,
             "Cuadriláteros y proyecciones": 1,
             "Giros y proyecciones": 1,
-            "Paralelogramos": 6,
+            "Paralelogramos": 11,
             "Paralelogramos y bisectrices": 3,
             "Paralelogramos y proyecciones": 1,
             "Paralelogramos y puntos medios": 1,
             "Proyecciones y puntos medios": 2,
-            "Rectángulos y cuadrados": 5,
+            "Rectángulos y cuadrados": 14,
             "Rectángulos y perpendicularidad": 2,
             "Rectángulos y proyecciones": 1,
             "Rectángulos y puntos medios": 3,
@@ -398,7 +412,7 @@
             "Rombos y alturas": 1,
             "Rombos y cuadrados": 2,
             "Rombos y diagonales": 1,
-            "Trapecios": 4,
+            "Trapecios": 7,
             "Trapecios isósceles": 1,
             "Trapecios rectángulos": 2,
             "Trapecios y bases medias": 4,
@@ -408,17 +422,33 @@
             "Trapecios y semejanza": 1,
             "Trapecios y ángulos": 1,
             "Ángulos y desigualdades": 1,
-            "Ángulos y diagonales": 1
+            "Ángulos y diagonales": 5
           }
         },
         {
           "id": "geometria.circunferencia",
           "nombre": "Circunferencia",
-          "nuevos": 0,
+          "nuevos": 15,
           "objetivo": 84,
-          "pendientes": 84,
+          "pendientes": 69,
           "observaciones": 0,
-          "subtemas_nuevos": {}
+          "subtemas_nuevos": {
+            "Cuadrilátero inscribible": 1,
+            "Cuadriláteros inscritos": 1,
+            "Cuerdas comunes y ángulo exterior": 1,
+            "Cuerdas perpendiculares": 1,
+            "Diámetro y cuadrilátero inscrito": 1,
+            "Dos circunferencias secantes": 1,
+            "Intersección de cuerdas": 1,
+            "Radios de tangencia": 1,
+            "Secantes y circunferencias congruentes": 1,
+            "Tangente y cuadrilátero cíclico": 1,
+            "Tangente y cuerda": 1,
+            "Ángulo de diámetro": 1,
+            "Ángulo interior e inscrito": 1,
+            "Ángulos exteriores de vértice inscrito": 1,
+            "Ángulos inscritos y opuestos": 1
+          }
         },
         {
           "id": "geometria.congruencia-de-triangulos",
@@ -497,11 +527,11 @@
     {
       "curso": "trigonometria",
       "objetivo": 1000,
-      "nuevas": 362,
-      "pendientes": 638,
-      "lotes": 17,
-      "con_observaciones": 46,
-      "fichas_con_diagrama": 83,
+      "nuevas": 453,
+      "pendientes": 547,
+      "lotes": 20,
+      "con_observaciones": 60,
+      "fichas_con_diagrama": 101,
       "temas": [
         {
           "id": "trigonometria.circunferencia-trigonometrica",
@@ -629,28 +659,49 @@
         {
           "id": "trigonometria.funciones-trigonometricas-inversas",
           "nombre": "Funciones trigonométricas inversas",
-          "nuevos": 26,
+          "nuevos": 83,
           "objetivo": 83,
-          "pendientes": 57,
-          "observaciones": 2,
+          "pendientes": 0,
+          "observaciones": 12,
           "subtemas_nuevos": {
-            "Composición y reducción": 4,
-            "Dominio y rango": 6,
-            "Gráficas y transformaciones": 4,
-            "Identidades y restricciones de rama": 2,
+            "Composición y reducción": 6,
+            "Dominio y rango": 16,
+            "Ecuaciones con funciones inversas": 18,
+            "Gráficas y transformaciones": 14,
+            "Identidades y restricciones de rama": 9,
             "Inyectividad y ramas principales": 4,
             "Monotonía y comparación": 4,
-            "Suma y diferencia de arcos tangentes": 2
+            "Suma y diferencia de arcos tangentes": 7,
+            "Áreas entre curvas": 5
           }
         },
         {
           "id": "trigonometria.identidades-de-arcos-compuestos",
           "nombre": "Identidades de arcos compuestos",
-          "nuevos": 0,
+          "nuevos": 34,
           "objetivo": 83,
-          "pendientes": 83,
-          "observaciones": 0,
-          "subtemas_nuevos": {}
+          "pendientes": 49,
+          "observaciones": 4,
+          "subtemas_nuevos": {
+            "Amplitud de una sinusoidal": 1,
+            "Aplicación a circunferencias": 1,
+            "Coseno de arcos simétricos": 2,
+            "Coseno de una diferencia": 3,
+            "Coseno de una suma": 2,
+            "Factorización trigonométrica": 1,
+            "Identidades de ángulo mitad": 1,
+            "Identidades en triángulos": 2,
+            "Pendientes y diferencia angular": 1,
+            "Producto a suma": 3,
+            "Rotación de coordenadas": 1,
+            "Seno de arcos simétricos": 1,
+            "Seno de una diferencia": 4,
+            "Seno de una suma": 3,
+            "Seno y coseno compuestos": 1,
+            "Tangente de una diferencia": 3,
+            "Tangente de una suma": 3,
+            "Tangente y cotangente de una suma": 1
+          }
         },
         {
           "id": "trigonometria.identidades-de-arcos-multiples",
@@ -711,15 +762,15 @@
   ],
   "lote_1500": {
     "meta": 1500,
-    "fichas_registradas": 405,
-    "pendientes": 1095,
+    "fichas_registradas": 605,
+    "pendientes": 895,
     "cursos": [
       {
         "id": "quimica",
         "curso": "Química",
         "meta": 500,
-        "fichas": 113,
-        "pendientes": 387,
+        "fichas": 186,
+        "pendientes": 314,
         "temas": [
           {
             "id": "quimica.enlace-quimico",
@@ -729,7 +780,17 @@
           {
             "id": "quimica.estequiometria",
             "tema": "Estequiometría",
-            "fichas": 29
+            "fichas": 39
+          },
+          {
+            "id": "quimica.soluciones",
+            "tema": "Soluciones",
+            "fichas": 33
+          },
+          {
+            "id": "quimica.equilibrio-quimico",
+            "tema": "Equilibrio químico",
+            "fichas": 30
           }
         ]
       },
@@ -737,8 +798,8 @@
         "id": "geometria",
         "curso": "Geometría",
         "meta": 500,
-        "fichas": 98,
-        "pendientes": 402,
+        "fichas": 134,
+        "pendientes": 366,
         "temas": [
           {
             "id": "geometria.triangulos",
@@ -748,7 +809,12 @@
           {
             "id": "geometria.cuadrilateros",
             "tema": "Cuadriláteros",
-            "fichas": 63
+            "fichas": 84
+          },
+          {
+            "id": "geometria.circunferencia",
+            "tema": "Circunferencia",
+            "fichas": 15
           }
         ]
       },
@@ -756,8 +822,8 @@
         "id": "trigonometria",
         "curso": "Trigonometría",
         "meta": 500,
-        "fichas": 194,
-        "pendientes": 306,
+        "fichas": 285,
+        "pendientes": 215,
         "temas": [
           {
             "id": "trigonometria.identidades-trigonometricas-fundamentales",
@@ -772,7 +838,12 @@
           {
             "id": "trigonometria.funciones-trigonometricas-inversas",
             "tema": "Funciones trigonométricas inversas",
-            "fichas": 26
+            "fichas": 83
+          },
+          {
+            "id": "trigonometria.identidades-de-arcos-compuestos",
+            "tema": "Identidades de arcos compuestos",
+            "fichas": 34
           }
         ]
       }
