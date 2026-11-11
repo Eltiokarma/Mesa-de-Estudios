@@ -1,22 +1,22 @@
 {
   "schema_version": 1,
-  "fecha_utc": "2026-11-11T18:09:57.872336+00:00",
+  "fecha_utc": "2026-11-11T18:16:21.755148+00:00",
   "estado": "en_curso",
   "objetivo_nuevas": 3000,
   "objetivo_temas": 36,
   "fichas_anteriores_verificadas_por_sha256": 6213,
-  "fichas_nuevas": 653,
-  "fichas_acumuladas": 6866,
-  "fichas_pendientes": 2347,
+  "fichas_nuevas": 660,
+  "fichas_acumuladas": 6873,
+  "fichas_pendientes": 2340,
   "temas_con_cuota_cumplida": 7,
-  "paginas_pdf_distintas_cotejadas_por_fragmentos": 162,
+  "paginas_pdf_distintas_cotejadas_por_fragmentos": 166,
   "nuevas_con_observaciones": 114,
-  "fichas_con_diagrama": 255,
+  "fichas_con_diagrama": 262,
   "ocr_repetido": false,
   "app_certificada": false,
   "sha256_de_los_indices_locales": {
     "quimica": "06ea66fc84dec53fc64daaa4e23437f72cbe26d4bc7bbf475551089ecf9ce77a",
-    "geometria": "192ccb075a38305f7328b2cb6f431aa104916952967a08b45e84d17307751997",
+    "geometria": "74936a8865406cbb875bc9e9888f130aeae1f13ba549c21648f03534fefaf548",
     "trigonometria": "647052a5ea04e81d49b41d0c78fa13d08b3eebd018dd7da184e0633eb273d886"
   },
   "tandas": [
@@ -207,11 +207,11 @@
     {
       "curso": "geometria",
       "objetivo": 1000,
-      "nuevas": 176,
-      "pendientes": 824,
-      "lotes": 13,
+      "nuevas": 183,
+      "pendientes": 817,
+      "lotes": 14,
       "con_observaciones": 38,
-      "fichas_con_diagrama": 176,
+      "fichas_con_diagrama": 183,
       "temas": [
         {
           "id": "geometria.la-linea-recta",
@@ -347,17 +347,22 @@
         {
           "id": "geometria.cuadrilateros",
           "nombre": "Cuadriláteros",
-          "nuevos": 8,
+          "nuevos": 15,
           "objetivo": 84,
-          "pendientes": 76,
+          "pendientes": 69,
           "observaciones": 1,
           "subtemas_nuevos": {
             "Cuadrados y perpendicularidad": 1,
+            "Cuadriláteros inscritos": 1,
             "Paralelogramos y bisectrices": 1,
+            "Paralelogramos y puntos medios": 1,
+            "Proyecciones y puntos medios": 1,
             "Rectángulos y perpendicularidad": 1,
             "Rectángulos y ángulos": 1,
-            "Rombos y cuadrados": 1,
-            "Trapecios y bases medias": 2,
+            "Rombos y cuadrados": 2,
+            "Trapecios y bases medias": 3,
+            "Trapecios y bisectrices": 1,
+            "Trapecios y proyecciones": 1,
             "Trapecios y ángulos": 1
           }
         },
