@@ -83,10 +83,12 @@ def build(folder,exercises):
    if not plot.get('red') and not plot.get('sin_ejes'):
     line(65,zy,421,zy,'#20364b',1.7);line(zx,105,zx,441,'#20364b',1.7)
     text(407,466,plot['ejes'][0],15,anchor='end');text(50,86,plot['ejes'][1],15)
+   emphasis=plot.get('resaltar_relleno',False)
    for polygon in plot.get('rellenos',[]):
     pp=[xy(p) for p in polygon]
-    parts.append('<polygon points="'+' '.join(f'{x:.2f},{y:.2f}' for x,y in pp)+'" fill="#f4c581" fill-opacity="0.45"/>')
-   colors=['#1766b0','#d37618','#008674','#b0467a']
+    shade,opacity=('#e3a647','0.9') if emphasis else ('#f4c581','0.45')
+    parts.append('<polygon points="'+' '.join(f'{x:.2f},{y:.2f}' for x,y in pp)+f'" fill="{shade}" fill-opacity="{opacity}"/>')
+   colors=['#304558']*4 if emphasis else ['#1766b0','#d37618','#008674','#b0467a']
    for i,(label,points) in enumerate(plot['series']):
     pp=[xy(p) for p in points]
     if plot.get('red'):

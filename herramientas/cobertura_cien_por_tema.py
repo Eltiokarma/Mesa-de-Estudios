@@ -54,6 +54,12 @@ if multicourse.exists():
    p=L/lot['carpeta']/f'problema-{n}.json';f=read(p);src=f['fuente'];uid=f"{src['libro_id']}:{src['tipo']}:{n}"
    entries[uid]={'uid':uid,'libro_id':src['libro_id'],'tipo':src['tipo'],'numero':n,'tema':f['tema'],'ficha':p.relative_to(L).as_posix(),'lector':f"{lot['carpeta']}/index.html"}
 assert len(entries)>=2274
+rm_progress=L/'qa-rm-1000/avance.json'
+if rm_progress.exists():
+ for lot in read(rm_progress)['lotes']:
+  for n in lot['numeros']:
+   p=L/lot['carpeta']/f'problema-{n}.json';f=read(p);src=f['fuente'];uid=f"{src['libro_id']}:{src['tipo']}:{n}"
+   entries[uid]={'uid':uid,'libro_id':src['libro_id'],'tipo':src['tipo'],'numero':n,'tema':f['tema'],'ficha':p.relative_to(L).as_posix(),'lector':f"{lot['carpeta']}/index.html"}
 assign=[];unassigned=[]
 oldbook='1GQxXnXKRDrb8SFKemkA-ggcOGep1KE44'
 ranges=[(207,208,'Relaciones y funciones I'),(209,226,'Polinomios y grados'),(227,236,'Productos notables e identidades'),(237,259,'División polinómica y restos'),(260,267,'Cocientes notables'),(268,276,'Factorización'),(277,285,'MCD y MCM de polinomios'),(286,296,'Radicales y racionalización'),(297,306,'Teoría de las ecuaciones')]
@@ -109,6 +115,9 @@ doc=head+'<title>Cobertura: 100 por tema</title>'+style+'<main><h1>Objetivo: 100
 if multicourse.exists():
  doc=doc.replace('<p>Siguiente prioridad: Cinemática II, con 86 guardados y 14 pendientes para el mínimo. Consultar primero el índice para evitar repeticiones.</p>','<p><a href="../cierre-multicurso-814/index.html">Última tanda:814 nuevos de cinco cursos</a>. Cinemática II alcanza100;Aritmética,Química,RM y Trigonometría suman100 en cada uno de sus dos primeros temas monográficos. Siguiente prioridad:los temas con déficit de esta tabla.</p>')
 (D/'index.html').write_text(doc,encoding='utf8')
+if rm_progress.exists() and read(rm_progress)['completados']==1000:
+ doc=doc.replace('<p><a href="../cierre-multicurso-814/index.html">Última tanda:814 nuevos de cinco cursos</a>. Cinemática II alcanza100;Aritmética,Química,RM y Trigonometría suman100 en cada uno de sus dos primeros temas monográficos. Siguiente prioridad:los temas con déficit de esta tabla.</p>','<p><a href="../cierre-rm-1000/index.html">Última tanda: 1000 nuevos de Razonamiento Matemático</a>, cien por cada uno de diez temas. Siguiente prioridad: los temas con déficit de esta tabla.</p>')
+ (D/'index.html').write_text(doc,encoding='utf8')
 doc=head+'<title>Logaritmos · 100 revisados</title>'+style+'<main><h1>Logaritmos · 100 ejercicios revisados</h1><p>75 problemas de la sección de resueltos y 25 ejemplos trabajados. Cada ficha conserva tres pasos de resolución propia, dominio real, evidencia, control matemático y SVG editable. Los ejemplos y resueltos tienen numeración independiente.</p><p><strong>'+str(newreport['sin_observaciones_registradas'])+' sin observaciones registradas; '+str(newreport['con_observaciones_para_producto'])+' con condiciones o discrepancias.</strong> Se separan raíces extráneas, raíces omitidas, parámetros y premisas incompatibles. El ejemplo 45 corrige el extremo editorial 2/5 por 5/2.</p><p>La selección cubre propiedades, ecuaciones, sistemas, dominio e inecuaciones; no certifica el cuaderno completo.</p><p><a href="avance-logaritmos.json">Avance JSON</a> · <a href="incidencias-seleccion.json">Observaciones y pendientes</a> · <a href="index.html">Todos los temas</a></p><p><input id="q" type="search" aria-label="Buscar ejercicio" placeholder="Buscar número o subtema"> <label><input id="c" type="checkbox"> Sólo con observaciones</label></p><div class="tabla"><table><thead><tr><th>Ejercicio</th><th>Título</th><th>Subtema</th><th>Estado</th></tr></thead><tbody>'+''.join(logrows)+'</tbody></table></div></main>'+filterjs
 (D/'logaritmos.html').write_text(doc,encoding='utf8')
 write(D/'dossier.json',{'titulo':'Cobertura: al menos 100 ejercicios por tema','lector':'index.html','archivos':['index.html','logaritmos.html','cobertura.json','asignaciones.json','sin-clasificar.json','cuadernos-generales-pendientes.json','avance-logaritmos.json','incidencias-seleccion.json','base-pre-logaritmos.json']+(['qa-lectores.json'] if (D/'qa-lectores.json').exists() else [])})
@@ -118,6 +127,7 @@ course_counts=Counter(courses[e['libro_id']] for e in entries.values());plan={'c
 write(ROOT/'fuentes/cuzcano/plan-cobertura-cursos.json',plan);write(L/'coleccion-algebra-1000/plan-cursos.json',plan)
 public=read(ROOT/'fuentes/cuzcano/avance-algebra-1000.json');public.update(criterio_activo='100_por_tema',objetivo_adicional_anterior=public.pop('objetivo_adicional',1000),nuevos_revisados=200,pendientes_del_objetivo_anterior=800,estado='en_curso',con_condiciones_para_producto=27,sin_condiciones_senaladas=173,algebra_acumulado=205,archivo_acumulado=len(entries),libros_en_esta_tanda=2,lotes=progress['lotes'],tema_nuevo=newreport,siguiente={'curso':'fisica','tema':'Cinemática II (MVCL y MPCL)','revisados_asignados':86,'faltan_para_minimo':14})
 if multicourse.exists():public['siguiente']={'criterio':'Elegir temas con déficit en cobertura-100-por-tema.json;Cinemática II ya tiene100.','avance_multicurso':'avance-multicurso-814.json'}
+if rm_progress.exists() and read(rm_progress)['completados']==1000:public['siguiente']={'criterio':'Consultar cobertura-100-por-tema.json. RM añade diez temas con cien nuevos cada uno.','avance_rm':'avance-rm-1000.json'}
 public.pop('pendientes',None);public['cobertura_por_ampliar']=['Consultar cobertura-100-por-tema.json; los 100 previos de Álgebra se distribuyen entre temas distintos.'];public.pop('recursos_visuales',None);public['paginas_con_fragmentos_cotejados']=len({(lot['libro_id'],p) for lot in progress['lotes'] for p in lot['paginas_pdf']})
 write(ROOT/'fuentes/cuzcano/avance-algebra-1000.json',public);write(L/'coleccion-algebra-1000/avance-publico.json',public)
 print(json.dumps({'fichas':len(entries),'clasificadas':len(assign),'sin_clasificar':len(unassigned),'temas':len(topics),'minimos_alcanzados':coverage['temas_con_minimo_de_revision'],'logaritmos':newreport},ensure_ascii=False))

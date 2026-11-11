@@ -2,7 +2,7 @@
   "criterio_activo": "100_por_tema",
   "objetivo_minimo_por_tema": 100,
   "objetivo_volumen_por_curso_anterior": 1000,
-  "total_fichas": 3213,
+  "total_fichas": 4213,
   "catalogo_temas_exhaustivo": false,
   "detalle_temas": "cobertura-100-por-tema.json",
   "criterio": "Conteo por tema principal con observaciones separadas. Los cuadernos mixtos requieren clasificación; no certifica la app.",
@@ -44,9 +44,9 @@
     },
     {
       "curso": "razonamiento-matematico",
-      "fichas_registradas": 202,
+      "fichas_registradas": 1202,
       "temas_inventariados": 15,
-      "temas_con_minimo_revision": 2,
+      "temas_con_minimo_revision": 12,
       "cobertura_tematica_total_validada": false
     },
     {

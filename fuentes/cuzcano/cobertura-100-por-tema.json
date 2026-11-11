@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
-  "fecha_utc": "2026-11-10T18:47:35.147851+00:00",
+  "fecha_utc": "2026-11-11T01:22:21.360323+00:00",
   "criterio_activo": "100_por_tema",
   "minimo_por_tema": 100,
-  "total_fichas": 3213,
-  "asignadas_a_un_tema_principal": 2681,
+  "total_fichas": 4213,
+  "asignadas_a_un_tema_principal": 3681,
   "sin_clasificacion_tematica_individual": 532,
   "temas_inventariados": 123,
-  "temas_con_minimo_de_revision": 18,
+  "temas_con_minimo_de_revision": 28,
   "catalogo_temas_exhaustivo": false,
   "todos_los_temas_completados": false,
   "porcentaje_global": null,
@@ -1539,12 +1539,12 @@
       "libros_ids": [
         "1hg5FzCpcHnGkrNKqRbly__5tB09MFJla"
       ],
-      "revisados": 0,
-      "con_observaciones": 0,
-      "sin_observaciones_registradas": 0,
-      "faltan_para_minimo": 100,
-      "porcentaje_minimo": 0,
-      "minimo_revision_alcanzado": false,
+      "revisados": 100,
+      "con_observaciones": 19,
+      "sin_observaciones_registradas": 81,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
       "certificado_para_app": false
     },
     {
@@ -1555,12 +1555,12 @@
       "libros_ids": [
         "1R90ciBfEv2Ag6iOzw7HFS1RISV89TltS"
       ],
-      "revisados": 0,
-      "con_observaciones": 0,
-      "sin_observaciones_registradas": 0,
-      "faltan_para_minimo": 100,
-      "porcentaje_minimo": 0,
-      "minimo_revision_alcanzado": false,
+      "revisados": 100,
+      "con_observaciones": 29,
+      "sin_observaciones_registradas": 71,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
       "certificado_para_app": false
     },
     {
@@ -1603,12 +1603,12 @@
       "libros_ids": [
         "1Kyc79hnxzn-VdnfogG95wMkwpEBa6z80"
       ],
-      "revisados": 0,
-      "con_observaciones": 0,
-      "sin_observaciones_registradas": 0,
-      "faltan_para_minimo": 100,
-      "porcentaje_minimo": 0,
-      "minimo_revision_alcanzado": false,
+      "revisados": 100,
+      "con_observaciones": 31,
+      "sin_observaciones_registradas": 69,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
       "certificado_para_app": false
     },
     {
@@ -1619,12 +1619,12 @@
       "libros_ids": [
         "1uYzQAAUkPJGBRly-aL8emOp4QDvraEG9"
       ],
-      "revisados": 0,
-      "con_observaciones": 0,
-      "sin_observaciones_registradas": 0,
-      "faltan_para_minimo": 100,
-      "porcentaje_minimo": 0,
-      "minimo_revision_alcanzado": false,
+      "revisados": 100,
+      "con_observaciones": 25,
+      "sin_observaciones_registradas": 75,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
       "certificado_para_app": false
     },
     {
@@ -1635,12 +1635,12 @@
       "libros_ids": [
         "1LiZP_28QThiIWhGjzMdpnF3UlHhDnR1S"
       ],
-      "revisados": 0,
-      "con_observaciones": 0,
-      "sin_observaciones_registradas": 0,
-      "faltan_para_minimo": 100,
-      "porcentaje_minimo": 0,
-      "minimo_revision_alcanzado": false,
+      "revisados": 100,
+      "con_observaciones": 8,
+      "sin_observaciones_registradas": 92,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
       "certificado_para_app": false
     },
     {
@@ -1667,12 +1667,12 @@
       "libros_ids": [
         "156CP-4oWOzMFLDN6nbxGP5-Jfl9p5X_z"
       ],
-      "revisados": 0,
-      "con_observaciones": 0,
-      "sin_observaciones_registradas": 0,
-      "faltan_para_minimo": 100,
-      "porcentaje_minimo": 0,
-      "minimo_revision_alcanzado": false,
+      "revisados": 100,
+      "con_observaciones": 21,
+      "sin_observaciones_registradas": 79,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
       "certificado_para_app": false
     },
     {
@@ -1683,12 +1683,12 @@
       "libros_ids": [
         "1fuIgQ721-InyMUxqcM2NQrU7KtYxtBfF"
       ],
-      "revisados": 0,
-      "con_observaciones": 0,
-      "sin_observaciones_registradas": 0,
-      "faltan_para_minimo": 100,
-      "porcentaje_minimo": 0,
-      "minimo_revision_alcanzado": false,
+      "revisados": 100,
+      "con_observaciones": 30,
+      "sin_observaciones_registradas": 70,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
       "certificado_para_app": false
     },
     {
@@ -1731,12 +1731,12 @@
       "libros_ids": [
         "1XddMtDov7rABYep7dkio8rNdWXCiR794"
       ],
-      "revisados": 0,
-      "con_observaciones": 0,
-      "sin_observaciones_registradas": 0,
-      "faltan_para_minimo": 100,
-      "porcentaje_minimo": 0,
-      "minimo_revision_alcanzado": false,
+      "revisados": 100,
+      "con_observaciones": 14,
+      "sin_observaciones_registradas": 86,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
       "certificado_para_app": false
     },
     {
@@ -1747,12 +1747,12 @@
       "libros_ids": [
         "1wleTpPn7ZB9L4iyAUDVMokTlKYurGt60"
       ],
-      "revisados": 0,
-      "con_observaciones": 0,
-      "sin_observaciones_registradas": 0,
-      "faltan_para_minimo": 100,
-      "porcentaje_minimo": 0,
-      "minimo_revision_alcanzado": false,
+      "revisados": 100,
+      "con_observaciones": 17,
+      "sin_observaciones_registradas": 83,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
       "certificado_para_app": false
     },
     {
@@ -1763,12 +1763,12 @@
       "libros_ids": [
         "17ISMXQ_vK6R4IjOy_NoaxlKrCq5_QUA6"
       ],
-      "revisados": 0,
-      "con_observaciones": 0,
-      "sin_observaciones_registradas": 0,
-      "faltan_para_minimo": 100,
-      "porcentaje_minimo": 0,
-      "minimo_revision_alcanzado": false,
+      "revisados": 100,
+      "con_observaciones": 9,
+      "sin_observaciones_registradas": 91,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
       "certificado_para_app": false
     },
     {

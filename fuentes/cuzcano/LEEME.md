@@ -1,5 +1,15 @@
 # Cuzcano: fuentes de consulta
 
+Avance vigente: **4213 fichas locales**, incluidas **1000 nuevas de Razonamiento Matemático** (1202 acumuladas en ese curso). Se añadieron cien por cada uno de diez temas; el mapa inicial de 123 temas tiene ahora 28 con mínimo de cien revisados. Las 3213 fichas anteriores se conservaron sin cambios. Consultar [avance-rm-1000.json](avance-rm-1000.json), [cobertura-100-por-tema.json](cobertura-100-por-tema.json) y [plan-cobertura-cursos.json](plan-cobertura-cursos.json). Las secciones siguientes conservan los hitos históricos y sus cifras de cada momento.
+
+La tanda comprende planteo de ecuaciones, edades y móviles, operaciones matemáticas, comparación de magnitudes, fracciones, tanto por ciento, sucesiones, series, análisis combinatorio y cálculo de probabilidades. Son ejercicios del material original con soluciones propias en tres pasos, controles locales y referencias a páginas; las figuras se reconstruyen en SVG y los ejercicios sin figura tienen tarjetas de relaciones. 797 nuevas no tienen condiciones registradas y 203 conservan aclaraciones para producto. Se documentan claves incompatibles, parámetros, dominios, reglas no únicas y supuestos probabilísticos. No se certifican libros completos ni cien ejercicios por cada subtema.
+
+El lector privado actualizado está en `fuentes/ocr-local/cuzcano/cierre-rm-1000/index.html`, con consultas por tema, búsqueda, filtro de condiciones, JSON completo y distribución por subtema. Los materiales permanecen físicamente en D. GitHub recibe herramientas generales y resúmenes; los autores de fichas, enunciados, soluciones, evidencias y respaldos completos permanecen locales. No se repitió OCR ni se usaron servicios externos para el cálculo.
+
+Se restauraron y verificaron 10685 archivos; desde la copia pasaron 3939 controles en 105 bloques. El ZIP tiene 2551476736 bytes y SHA-256 `cb382ebe60ac303d24ce177e499cb4fdd5c5ab8d544e20e67866dce50025afc0`. Las 3213 fichas previas conservaron sus archivos. La extracción temporal se retiró. Prueba local: `fuentes/ocr-local/cuzcano/archivo-ejercicios/prueba-restauracion-rm-1000.json`; resumen: [respaldo-100-por-tema.json](respaldo-100-por-tema.json).
+
+La biblioteca original y los hitos históricos se documentan a continuación.
+
 Inventario de los 198 documentos publicados en [UNIverse to Study](https://universetostudy.com/biblioteca/cuzcano/), consultado el 8 de noviembre de 2026. Alcance solicitado: toda la colección.
 
 La comparación de SHA-256 encontró 197 contenidos PDF distintos: dos entradas apuntan a copias idénticas de un documento de 23 páginas. `duplicados.json` conserva esa relación; no se eliminan referencias del inventario. El total de 21 522 páginas corresponde a las 198 entradas, incluidas ambas copias.

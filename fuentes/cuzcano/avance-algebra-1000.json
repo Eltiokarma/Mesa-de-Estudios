@@ -5,7 +5,7 @@
   "con_condiciones_para_producto": 27,
   "sin_condiciones_senaladas": 173,
   "algebra_acumulado": 205,
-  "archivo_acumulado": 3213,
+  "archivo_acumulado": 4213,
   "libros_en_esta_tanda": 2,
   "paginas_con_fragmentos_cotejados": 55,
   "ocr_repetido": false,
@@ -17,8 +17,8 @@
   "pagina_completa_validada": false,
   "app_certificada": false,
   "siguiente": {
-    "criterio": "Elegir temas con déficit en cobertura-100-por-tema.json;Cinemática II ya tiene100.",
-    "avance_multicurso": "avance-multicurso-814.json"
+    "criterio": "Consultar cobertura-100-por-tema.json. RM añade diez temas con cien nuevos cada uno.",
+    "avance_rm": "avance-rm-1000.json"
   },
   "cobertura_por_ampliar": [
     "Consultar cobertura-100-por-tema.json; los 100 previos de Álgebra se distribuyen entre temas distintos."

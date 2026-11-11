@@ -1,14 +1,14 @@
 {
-  "fecha_utc": "2026-11-10T19:04:26.373048+00:00",
+  "fecha_utc": "2026-11-11T01:40:09.793203+00:00",
   "criterio_activo": "100_por_tema",
   "minimo_por_tema": 100,
-  "nuevos_tanda_actual": 814,
-  "fichas_previas_sin_cambios": 2399,
-  "ejercicios_indexados": 3213,
-  "controles_totales": 2939,
-  "bloques_comprobados": 92,
-  "archivos_controlados": 8455,
-  "temas_con_minimo_revision": 18,
+  "nuevos_tanda_actual": 1000,
+  "fichas_previas_sin_cambios": 3213,
+  "ejercicios_indexados": 4213,
+  "controles_totales": 3939,
+  "bloques_comprobados": 105,
+  "archivos_controlados": 10685,
+  "temas_con_minimo_revision": 28,
   "cursos": [
     {
       "curso": "algebra",
@@ -47,9 +47,9 @@
     },
     {
       "curso": "razonamiento-matematico",
-      "fichas_registradas": 202,
+      "fichas_registradas": 1202,
       "temas_inventariados": 15,
-      "temas_con_minimo_revision": 2,
+      "temas_con_minimo_revision": 12,
       "cobertura_tematica_total_validada": false
     },
     {
@@ -60,10 +60,10 @@
       "cobertura_tematica_total_validada": false
     }
   ],
-  "con_observaciones_nuevos": 135,
+  "con_observaciones_nuevos": 203,
   "todos_los_temas_completados": false,
-  "sha256_zip": "9e28c96184870f68c4b6817d77a93df2c52eebd998a90431687707ceada5e022",
-  "bytes_zip": 2150318114,
+  "sha256_zip": "cb382ebe60ac303d24ce177e499cb4fdd5c5ab8d544e20e67866dce50025afc0",
+  "bytes_zip": 2551476736,
   "sin_pdf_ni_ocr_originales": true,
   "ocr_repetido": false,
   "extraccion_temporal_retirada": true
