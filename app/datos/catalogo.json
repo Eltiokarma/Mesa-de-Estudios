@@ -2456,7 +2456,8 @@
      "potencial_visual": "alto",
      "grado": 3,
      "plantillas": [
-      "triangulo-estira"
+      "triangulo-estira",
+      "geo-triangulos-notables"
      ]
     },
     {
@@ -2514,7 +2515,8 @@
      "potencial_visual": "alto",
      "grado": 3,
      "plantillas": [
-      "poligonos"
+      "poligonos",
+      "geo-poligonos"
      ]
     },
     {
@@ -2544,7 +2546,8 @@
      "potencial_visual": "alto",
      "grado": 3,
      "plantillas": [
-      "angulo-inscrito"
+      "angulo-inscrito",
+      "geo-circunferencia-metrica"
      ]
     },
     {
@@ -2572,7 +2575,8 @@
      "potencial_visual": "alto",
      "grado": 4,
      "plantillas": [
-      "ampliadora"
+      "ampliadora",
+      "geo-proporcionalidad"
      ]
     },
     {
@@ -2599,7 +2603,8 @@
      "potencial_visual": "alto",
      "grado": 4,
      "plantillas": [
-      "triangulo-estira"
+      "triangulo-estira",
+      "geo-triangulos-notables"
      ]
     },
     {
@@ -2630,7 +2635,9 @@
      "potencial_visual": "alto",
      "grado": 4,
      "plantillas": [
-      "triangulo-estira"
+      "triangulo-estira",
+      "geo-circunferencia-metrica",
+      "geo-relaciones-metricas"
      ]
     },
     {
@@ -2658,7 +2665,8 @@
      "potencial_visual": "alto",
      "grado": 4,
      "plantillas": [
-      "poligonos"
+      "poligonos",
+      "geo-poligonos"
      ]
     },
     {
@@ -2711,7 +2719,8 @@
      "grado": 4,
      "plantillas": [
       "ampliadora",
-      "triangulo-estira"
+      "triangulo-estira",
+      "geo-areas-triangulares"
      ]
     },
     {
@@ -2741,7 +2750,8 @@
      "grado": 4,
      "plantillas": [
       "ampliadora",
-      "angulo-inscrito"
+      "angulo-inscrito",
+      "geo-areas-circulares"
      ]
     },
     {
@@ -2773,7 +2783,8 @@
      "potencial_visual": "alto",
      "grado": 5,
      "plantillas": [
-      "geometria-espacio"
+      "geometria-espacio",
+      "geo-proporcionalidad"
      ]
     },
     {
@@ -2833,7 +2844,8 @@
      "grado": 5,
      "plantillas": [
       "ampliadora",
-      "solidos"
+      "solidos",
+      "geo-troncos-prismas"
      ]
     },
     {
@@ -2866,7 +2878,8 @@
      "grado": 5,
      "plantillas": [
       "ampliadora",
-      "solidos"
+      "solidos",
+      "geo-revolucion"
      ]
     },
     {
@@ -2893,7 +2906,8 @@
      "grado": 5,
      "plantillas": [
       "geometria-analitica",
-      "conicas"
+      "conicas",
+      "geo-analitica"
      ]
     },
     {
@@ -2980,7 +2994,8 @@
      "potencial_visual": "alto",
      "grado": 3,
      "plantillas": [
-      "cinta-radio"
+      "cinta-radio",
+      "geo-areas-circulares"
      ]
     },
     {
@@ -3035,7 +3050,8 @@
      "potencial_visual": "alto",
      "grado": 3,
      "plantillas": [
-      "circunferencia-trig"
+      "circunferencia-trig",
+      "trig-angulos-verticales"
      ]
     },
     {
@@ -3114,7 +3130,8 @@
      "potencial_visual": "alto",
      "grado": 4,
      "plantillas": [
-      "circunferencia-trig"
+      "circunferencia-trig",
+      "trig-oblicuangulos"
      ]
     },
     {
@@ -3145,7 +3162,8 @@
      "potencial_visual": "alto",
      "grado": 4,
      "plantillas": [
-      "circunferencia-trig"
+      "circunferencia-trig",
+      "trig-extremos"
      ]
     },
     {
@@ -3172,7 +3190,9 @@
      "potencial_visual": "medio",
      "grado": 4,
      "plantillas": [
-      "identidades-trig"
+      "identidades-trig",
+      "trig-extremos",
+      "trig-identidades"
      ]
     },
     {
@@ -3198,7 +3218,9 @@
      "potencial_visual": "medio",
      "grado": 5,
      "plantillas": [
-      "identidades-trig"
+      "identidades-trig",
+      "trig-angulos-verticales",
+      "trig-identidades"
      ]
     },
     {
@@ -3226,7 +3248,8 @@
      "potencial_visual": "medio",
      "grado": 5,
      "plantillas": [
-      "identidades-trig"
+      "identidades-trig",
+      "trig-identidades"
      ]
     },
     {
@@ -3285,7 +3308,8 @@
      "potencial_visual": "alto",
      "grado": 5,
      "plantillas": [
-      "circunferencia-trig"
+      "circunferencia-trig",
+      "trig-extremos"
      ]
     },
     {
@@ -3314,7 +3338,8 @@
      "potencial_visual": "alto",
      "grado": 5,
      "plantillas": [
-      "funciones-trig-inversas"
+      "funciones-trig-inversas",
+      "trig-inversas"
      ]
     },
     {
@@ -3341,7 +3366,8 @@
      "potencial_visual": "alto",
      "grado": 5,
      "plantillas": [
-      "circunferencia-trig"
+      "circunferencia-trig",
+      "trig-ecuaciones"
      ]
     },
     {
@@ -3368,7 +3394,8 @@
      "potencial_visual": "alto",
      "grado": 5,
      "plantillas": [
-      "caso-ambiguo"
+      "caso-ambiguo",
+      "trig-oblicuangulos"
      ]
     },
     {
@@ -3397,7 +3424,8 @@
      "potencial_visual": "alto",
      "grado": 5,
      "plantillas": [
-      "caso-ambiguo"
+      "caso-ambiguo",
+      "trig-oblicuangulos"
      ]
     },
     {
@@ -3446,7 +3474,8 @@
      "potencial_visual": "medio",
      "grado": 5,
      "plantillas": [
-      "coordenadas-polares"
+      "coordenadas-polares",
+      "trig-polares"
      ]
     }
    ]
@@ -5223,6 +5252,171 @@
     "/plantillas/gases/papel.json"
    ]
   },
+  "geo-analitica": {
+   "id": "geo-analitica",
+   "titulo": "Geometría analítica: baricentro, rectas, elipse y parábolas",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.geometria-analitica"
+   ],
+   "url": "#/practica/geo-analitica",
+   "papel": "/plantillas/geo-analitica/papel.json",
+   "archivos": [
+    "/plantillas/geo-analitica/generador.js",
+    "/plantillas/geo-analitica/papel.json"
+   ]
+  },
+  "geo-areas-circulares": {
+   "id": "geo-areas-circulares",
+   "titulo": "Coronas, sectores y regiones con arcos",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.longitud-y-areas-circulares",
+    "trigonometria.longitud-de-arco-y-sector"
+   ],
+   "url": "#/practica/geo-areas-circulares",
+   "papel": "/plantillas/geo-areas-circulares/papel.json",
+   "archivos": [
+    "/plantillas/geo-areas-circulares/generador.js",
+    "/plantillas/geo-areas-circulares/papel.json"
+   ]
+  },
+  "geo-areas-triangulares": {
+   "id": "geo-areas-triangulares",
+   "titulo": "Áreas de triángulos y polígonos por partes",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.areas-poligonales"
+   ],
+   "url": "#/practica/geo-areas-triangulares",
+   "papel": "/plantillas/geo-areas-triangulares/papel.json",
+   "archivos": [
+    "/plantillas/geo-areas-triangulares/generador.js",
+    "/plantillas/geo-areas-triangulares/papel.json"
+   ]
+  },
+  "geo-circunferencia-metrica": {
+   "id": "geo-circunferencia-metrica",
+   "titulo": "Relaciones métricas en la circunferencia",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.circunferencia",
+    "geometria.relaciones-metricas"
+   ],
+   "url": "#/practica/geo-circunferencia-metrica",
+   "papel": "/plantillas/geo-circunferencia-metrica/papel.json",
+   "archivos": [
+    "/plantillas/geo-circunferencia-metrica/generador.js",
+    "/plantillas/geo-circunferencia-metrica/papel.json"
+   ]
+  },
+  "geo-poligonos": {
+   "id": "geo-poligonos",
+   "titulo": "Polígonos regulares, trapecios y cuadriláteros",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.poligonos-y-cuadrilateros",
+    "geometria.poligonos-regulares"
+   ],
+   "url": "#/practica/geo-poligonos",
+   "papel": "/plantillas/geo-poligonos/papel.json",
+   "archivos": [
+    "/plantillas/geo-poligonos/generador.js",
+    "/plantillas/geo-poligonos/papel.json"
+   ]
+  },
+  "geo-proporcionalidad": {
+   "id": "geo-proporcionalidad",
+   "titulo": "Paralelas, bisectrices y semejanza",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.proporcionalidad-y-semejanza",
+    "geometria.geometria-del-espacio"
+   ],
+   "url": "#/practica/geo-proporcionalidad",
+   "papel": "/plantillas/geo-proporcionalidad/papel.json",
+   "archivos": [
+    "/plantillas/geo-proporcionalidad/generador.js",
+    "/plantillas/geo-proporcionalidad/papel.json"
+   ]
+  },
+  "geo-relaciones-metricas": {
+   "id": "geo-relaciones-metricas",
+   "titulo": "Relaciones métricas en triángulos y cuadriláteros",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.relaciones-metricas"
+   ],
+   "url": "#/practica/geo-relaciones-metricas",
+   "papel": "/plantillas/geo-relaciones-metricas/papel.json",
+   "archivos": [
+    "/plantillas/geo-relaciones-metricas/generador.js",
+    "/plantillas/geo-relaciones-metricas/papel.json"
+   ]
+  },
+  "geo-revolucion": {
+   "id": "geo-revolucion",
+   "titulo": "Sólidos de revolución: troncos, regiones que giran y esferas",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.solidos-de-revolucion"
+   ],
+   "url": "#/practica/geo-revolucion",
+   "papel": "/plantillas/geo-revolucion/papel.json",
+   "archivos": [
+    "/plantillas/geo-revolucion/generador.js",
+    "/plantillas/geo-revolucion/papel.json"
+   ]
+  },
+  "geo-triangulos-notables": {
+   "id": "geo-triangulos-notables",
+   "titulo": "Lados posibles y ángulos en los puntos notables",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.triangulos",
+    "geometria.puntos-notables"
+   ],
+   "url": "#/practica/geo-triangulos-notables",
+   "papel": "/plantillas/geo-triangulos-notables/papel.json",
+   "archivos": [
+    "/plantillas/geo-triangulos-notables/generador.js",
+    "/plantillas/geo-triangulos-notables/papel.json"
+   ]
+  },
+  "geo-troncos-prismas": {
+   "id": "geo-troncos-prismas",
+   "titulo": "Troncos de pirámide, prismas oblicuos y troncos de prisma",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.prisma-y-piramide"
+   ],
+   "url": "#/practica/geo-troncos-prismas",
+   "papel": "/plantillas/geo-troncos-prismas/papel.json",
+   "archivos": [
+    "/plantillas/geo-troncos-prismas/generador.js",
+    "/plantillas/geo-troncos-prismas/papel.json"
+   ]
+  },
   "geometria-analitica": {
    "id": "geometria-analitica",
    "titulo": "El plano con imán: distancia, pendiente y ecuación de la recta",
@@ -6218,7 +6412,7 @@
    "titulo": "El sólido que se abre: prisma, pirámide, cilindro, cono y esfera",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "geometria.prisma-y-piramide",
     "geometria.solidos-de-revolucion",
@@ -6555,6 +6749,125 @@
     "/plantillas/triangulo-estira/index.html",
     "/plantillas/triangulo-estira/motor.js",
     "/plantillas/triangulo-estira/papel.json"
+   ]
+  },
+  "trig-angulos-verticales": {
+   "id": "trig-angulos-verticales",
+   "titulo": "Ángulos verticales: dos visuales a la vez",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "trigonometria.triangulos-rectangulos",
+    "trigonometria.arcos-compuestos"
+   ],
+   "url": "#/practica/trig-angulos-verticales",
+   "papel": "/plantillas/trig-angulos-verticales/papel.json",
+   "archivos": [
+    "/plantillas/trig-angulos-verticales/generador.js",
+    "/plantillas/trig-angulos-verticales/papel.json"
+   ]
+  },
+  "trig-ecuaciones": {
+   "id": "trig-ecuaciones",
+   "titulo": "Ecuaciones trigonométricas en un intervalo",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "trigonometria.ecuaciones-trigonometricas"
+   ],
+   "url": "#/practica/trig-ecuaciones",
+   "papel": "/plantillas/trig-ecuaciones/papel.json",
+   "archivos": [
+    "/plantillas/trig-ecuaciones/generador.js",
+    "/plantillas/trig-ecuaciones/papel.json"
+   ]
+  },
+  "trig-extremos": {
+   "id": "trig-extremos",
+   "titulo": "Máximos, mínimos y rangos trigonométricos",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "trigonometria.funciones-trigonometricas",
+    "trigonometria.circunferencia-trigonometrica",
+    "trigonometria.identidades-fundamentales"
+   ],
+   "url": "#/practica/trig-extremos",
+   "papel": "/plantillas/trig-extremos/papel.json",
+   "archivos": [
+    "/plantillas/trig-extremos/generador.js",
+    "/plantillas/trig-extremos/papel.json"
+   ]
+  },
+  "trig-identidades": {
+   "id": "trig-identidades",
+   "titulo": "Ángulo doble, triple y condiciones entre ángulos",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "trigonometria.arcos-multiples",
+    "trigonometria.arcos-compuestos",
+    "trigonometria.identidades-fundamentales"
+   ],
+   "url": "#/practica/trig-identidades",
+   "papel": "/plantillas/trig-identidades/papel.json",
+   "archivos": [
+    "/plantillas/trig-identidades/generador.js",
+    "/plantillas/trig-identidades/papel.json"
+   ]
+  },
+  "trig-inversas": {
+   "id": "trig-inversas",
+   "titulo": "Funciones trigonométricas inversas: rangos, sumas y gráficas",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "trigonometria.funciones-trigonometricas-inversas"
+   ],
+   "url": "#/practica/trig-inversas",
+   "papel": "/plantillas/trig-inversas/papel.json",
+   "archivos": [
+    "/plantillas/trig-inversas/generador.js",
+    "/plantillas/trig-inversas/papel.json"
+   ]
+  },
+  "trig-oblicuangulos": {
+   "id": "trig-oblicuangulos",
+   "titulo": "Triángulos oblicuángulos: cosenos, senos, tangentes y áreas",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "trigonometria.triangulos-oblicuangulos",
+    "trigonometria.areas-y-lineas-notables",
+    "trigonometria.reduccion-al-primer-cuadrante"
+   ],
+   "url": "#/practica/trig-oblicuangulos",
+   "papel": "/plantillas/trig-oblicuangulos/papel.json",
+   "archivos": [
+    "/plantillas/trig-oblicuangulos/generador.js",
+    "/plantillas/trig-oblicuangulos/papel.json"
+   ]
+  },
+  "trig-polares": {
+   "id": "trig-polares",
+   "titulo": "De cartesianas a polares y al revés",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "trigonometria.coordenadas-polares-y-complejos"
+   ],
+   "url": "#/practica/trig-polares",
+   "papel": "/plantillas/trig-polares/papel.json",
+   "archivos": [
+    "/plantillas/trig-polares/generador.js",
+    "/plantillas/trig-polares/papel.json"
    ]
   },
   "vectores": {
