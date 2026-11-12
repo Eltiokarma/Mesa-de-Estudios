@@ -1,0 +1,150 @@
+{
+  "id": "t140",
+  "version": 1,
+  "titulo": "¿Inglés desde el nivel inicial?",
+  "tema": "Educación · inglés en la escuela pública",
+  "grado": 4,
+  "dificultad": 1,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    { "id": "A", "desde": 0, "firma": "Una profesora de inglés" },
+    { "id": "B", "desde": 1, "firma": "Un director de un colegio público" }
+  ],
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "principal", "t": "Los colegios públicos deberían enseñar inglés desde el nivel inicial." },
+      { "id": "o2", "rol": "apoyo", "t": "Los niños pequeños aprenden los sonidos de otra lengua con facilidad, jugando y cantando, sin miedo a equivocarse." },
+      { "id": "o3", "rol": "apoyo", "t": "Hoy muchos colegios privados ya lo hacen, y sus alumnos llegan a la secundaria con años de ventaja." },
+      { "id": "o4", "rol": "apoyo", "t": "Si la escuela pública espera, la diferencia entre unos niños y otros se hará cada vez más grande." },
+      { "id": "o5", "rol": "principal", "t": "Aprender inglés temprano es una manera de dar a todos las mismas oportunidades." }
+    ],
+    [
+      { "id": "o6", "rol": "principal", "t": "Empezar con inglés en el nivel inicial sería una distracción para los colegios públicos." },
+      { "id": "o7", "rol": "apoyo", "t": "Las evaluaciones nacionales muestran que muchos alumnos terminan la primaria sin entender bien lo que leen en castellano." },
+      { "id": "o8", "rol": "apoyo", "t": "Si un niño no comprende un texto en castellano, tampoco lo comprenderá en inglés." },
+      { "id": "o9", "rol": "apoyo", "t": "Además, faltan profesores de inglés incluso para la secundaria, y las horas de clase no alcanzan para todo." },
+      { "id": "o10", "rol": "principal", "t": "Primero hay que asegurar que cada niño lea y entienda en castellano; el inglés puede venir después." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "controversia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "¿Sobre qué discuten los dos autores?",
+      "alternativas": [
+        { "t": "Si los colegios públicos deben enseñar inglés desde el nivel inicial.", "correcta": true, "evidencia": ["o1", "o6"],
+          "explicacion": "El texto A dice que sí (oración 1); el B, que sería una distracción (oración 6)." },
+        { "t": "Si los alumnos de primaria entienden bien lo que leen en castellano en las pruebas.", "codigo": "RV60", "origen": "o7",
+          "explicacion": "Solo el texto B habla de las evaluaciones de lectura (oración 7), como argumento. El A no toca el tema." },
+        { "t": "Si los niños pequeños aprenden mejor cantando que leyendo en un salón.", "codigo": "RV1", "origen": "o2",
+          "explicacion": "Que los niños aprenden jugando y cantando es un detalle del texto A (oración 2), no lo que se discute." },
+        { "t": "Si la educación del Perú es mejor o peor que la de otros países del mundo.", "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos discuten cuándo empezar con el inglés en los colegios públicos." },
+        { "t": "Si los colegios privados deberían dejar de enseñar inglés a los niños pequeños.", "codigo": "RV33", "origen": "o3",
+          "explicacion": "Ninguno lo propone: el texto A menciona a los colegios privados como ejemplo, y el B no habla de ellos." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "postura",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Si la escuela pública demora en empezar con el inglés, crecerá la distancia con los alumnos de colegios privados.",
+        "aceptada": "A",
+        "codigos": { "B": "RV59", "ambos": "RV60", "ninguno": null },
+        "explicacion": "Lo dice el texto A en las oraciones 3 y 4: los alumnos de colegios privados llegan con ventaja, y si la escuela pública espera, la diferencia crecerá.",
+        "explicaciones": {
+          "B": "El texto B no habla de los colegios privados ni de esa diferencia. La idea es del texto A (oraciones 3 y 4).",
+          "ambos": "Solo el texto A lo sostiene. El B, al contrario, propone que el inglés venga después.",
+          "ninguno": "Sí lo sostiene alguien: el texto A, en las oraciones 3 y 4."
+        }
+      },
+      "enunciado": "La profesora del texto A sostiene que",
+      "alternativas": [
+        { "t": "esperar para enseñar inglés agrandaría la diferencia entre los niños.", "correcta": true, "evidencia": ["o4"],
+          "explicacion": "Es lo que dice la oración 4: si la escuela pública espera, la diferencia se hará más grande." },
+        { "t": "el inglés debe venir después de que el niño lea bien en castellano.", "codigo": "RV59", "origen": "o10",
+          "explicacion": "Esa es la propuesta del texto B (oración 10), no la del A." },
+        { "t": "todos los alumnos de colegios privados hablan inglés perfectamente al terminar.", "codigo": "RV11", "origen": "o3",
+          "explicacion": "Exagera: la oración 3 dice que «muchos» colegios privados enseñan inglés y que sus alumnos llegan con ventaja, no que todos lo hablen perfecto." },
+        { "t": "los niños deben aprender inglés en lugar de castellano desde pequeños.", "codigo": "RV33",
+          "explicacion": "La autora pide sumar el inglés, no reemplazar el castellano." },
+        { "t": "los niños pequeños tienen miedo de equivocarse al cantar en otra lengua.", "codigo": "RV5", "origen": "o2",
+          "explicacion": "Usa palabras de la oración 2, pero dice lo contrario: los niños aprenden «sin miedo a equivocarse»." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sintesis",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "¿Cuál de estas ideas integra mejor lo que plantean los dos textos?",
+      "alternativas": [
+        { "t": "Para uno, el inglés temprano da iguales oportunidades; para el otro, quita tiempo a la lectura en castellano.", "correcta": true, "evidencia": ["o5", "o6", "o10"],
+          "explicacion": "Recoge la razón del texto A (oración 5) y la del B (oraciones 6 y 10), cada una con su autor." },
+        { "t": "Para uno, el inglés temprano quita tiempo a la lectura en castellano; para el otro, da iguales oportunidades a todos.", "codigo": "RV59",
+          "explicacion": "Cambia de lugar las posturas: la igualdad de oportunidades es el argumento del texto A (oración 5), y la lectura en castellano, el del B (oración 10)." },
+        { "t": "Para uno, el inglés temprano da iguales oportunidades; para el otro, el inglés debe salir del colegio público.", "codigo": "RV62", "origen": "o10",
+          "explicacion": "La primera mitad está bien, pero el texto B no pide sacar el inglés: dice que «puede venir después» (oración 10)." },
+        { "t": "Como muchos niños no leen bien en castellano, los colegios privados enseñan inglés desde el nivel inicial.", "codigo": "RV44", "origen": "o7",
+          "explicacion": "Une dos ideas de los textos con una relación de causa que ninguno plantea." },
+        { "t": "Los dos textos tratan sobre la importancia de la educación en el Perú.", "codigo": "RV2",
+          "explicacion": "Es tan general que no dice qué discuten ni qué piensa cada uno." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Lo mejor sería que los niños dejaran el castellano para aprender solo en inglés.",
+        "aceptada": "ninguno",
+        "codigos": { "A": "RV7", "B": "RV33", "ambos": null },
+        "explicacion": "Ninguno lo sostiene: el texto A quiere sumar el inglés desde pequeños, y el B pone primero la lectura en castellano.",
+        "explicaciones": {
+          "A": "El texto A pide empezar el inglés temprano, pero en ningún momento dice que se deje el castellano. Eso va más allá de lo que plantea.",
+          "B": "El texto B dice lo contrario: primero hay que asegurar que cada niño lea y entienda en castellano (oración 10).",
+          "ambos": "Ninguno de los dos lo dice: el A suma el inglés y el B prioriza el castellano."
+        }
+      },
+      "enunciado": "Es incompatible con lo que sostiene el director del texto B afirmar que",
+      "alternativas": [
+        { "t": "un niño puede entender en inglés un texto que no entiende en castellano.", "correcta": true, "evidencia": ["o8"],
+          "explicacion": "Choca con la oración 8: si un niño no comprende un texto en castellano, tampoco lo comprenderá en inglés." },
+        { "t": "los colegios públicos necesitan más libros de cuentos en las bibliotecas de sus aulas.", "codigo": "RV36",
+          "explicacion": "El texto B no habla de bibliotecas, pero tampoco dice nada en contra: que algo no esté dicho no lo vuelve incompatible." },
+        { "t": "no hay suficientes profesores de inglés ni siquiera para los alumnos de secundaria.", "codigo": "RV10", "origen": "o9",
+          "explicacion": "Tiene un «no», pero es compatible: el director lo dice en la oración 9." },
+        { "t": "el inglés puede enseñarse más adelante, cuando el niño ya lea bien en castellano.", "codigo": "RV5", "origen": "o10",
+          "explicacion": "No choca con el texto B: es casi lo mismo que dice la oración 10." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto B, el verbo VENIR («el inglés puede venir después») significa",
+      "alternativas": [
+        { "t": "enseñarse.", "correcta": true, "evidencia": ["o10"],
+          "explicacion": "El director habla del orden de lo que se enseña: primero la lectura en castellano y luego el inglés." },
+        { "t": "trasladarse hasta aquí.", "codigo": "RV18",
+          "explicacion": "Es el sentido más común de «venir», pero el inglés no se mueve de un lugar a otro." },
+        { "t": "regresar.", "codigo": "RV19",
+          "explicacion": "Está cerca de «venir», pero el texto no dice que el inglés vuelva: dice cuándo empezar con él." },
+        { "t": "entender.", "codigo": "RV5", "origen": "o10",
+          "explicacion": "Sale de la misma oración («lea y entienda»), pero entender es lo que debe lograr el niño en castellano, no lo que significa «venir»." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-12",
+  "hechos": [
+    { "afirmacion": "Las evaluaciones nacionales de aprendizaje del Perú muestran que una parte grande de los alumnos de primaria no alcanza el nivel satisfactorio en lectura.", "fuente": "Ministerio de Educación del Perú, Oficina de Medición de la Calidad de los Aprendizajes (UMC), resultados de la Evaluación Nacional de Logros de Aprendizaje" },
+    { "afirmacion": "El Estado peruano reconoce la falta de docentes de inglés en la educación pública.", "fuente": "Ministerio de Educación del Perú, Política Nacional de Enseñanza, Aprendizaje y Uso del Idioma Inglés (D. S. N.º 007-2015-MINEDU)" }
+  ],
+  "revision": null
+}

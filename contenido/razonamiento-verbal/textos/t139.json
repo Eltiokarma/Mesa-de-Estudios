@@ -1,0 +1,152 @@
+{
+  "id": "t139",
+  "version": 1,
+  "titulo": "El agua de Lima: ¿del mar o de la red?",
+  "tema": "Ambiente · agua potable en Lima",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    { "id": "A", "desde": 0, "firma": "Un ingeniero sanitario" },
+    { "id": "B", "desde": 1, "firma": "Una economista que estudia los servicios públicos" }
+  ],
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "principal", "t": "Lima necesita empezar ya a sacar agua del mar, porque sus ríos no alcanzarán por mucho tiempo para una ciudad que no deja de crecer." },
+      { "id": "o2", "rol": "apoyo", "t": "La capital está en un desierto donde casi no llueve, y el agua del Rímac, del Chillón y del Lurín depende de las lluvias y de los glaciares de la sierra." },
+      { "id": "o3", "rol": "apoyo", "t": "Esos glaciares se han reducido en las últimas décadas, y un año seco en los Andes se siente en los caños de toda la ciudad." },
+      { "id": "o4", "rol": "apoyo", "t": "El mar, en cambio, está al lado y no se acaba; otras ciudades del desierto, en Chile y en Medio Oriente, ya beben agua de mar desalinizada." },
+      { "id": "o5", "rol": "principal", "t": "Esperar a que falte el agua para recién construir plantas sería llegar tarde, porque una planta grande demora años en estar lista." }
+    ],
+    [
+      { "id": "o6", "rol": "apoyo", "t": "Acepto que el mar puede ser una fuente para el futuro y que una planta no se levanta de un día para otro." },
+      { "id": "o7", "rol": "contraste", "t": "Pero antes de pagar por un agua bastante más cara, conviene dejar de perder la que ya se tiene." },
+      { "id": "o8", "rol": "apoyo", "t": "Una parte importante del agua que se potabiliza en Lima nunca se factura: se escapa por tuberías viejas, se va por conexiones clandestinas o no se mide." },
+      { "id": "o9", "rol": "apoyo", "t": "Desalinizar, además, consume mucha energía, y ese costo terminaría en el recibo de cada familia." },
+      { "id": "o10", "rol": "apoyo", "t": "Cambiar tuberías, instalar medidores y cobrar más a quien más gasta suele costar menos que una planta y da agua más pronto." },
+      { "id": "o11", "rol": "principal", "t": "Primero hay que cerrar las fugas de la red y del consumo; si después el agua no alcanza, recién se justifica mirar al mar." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "controversia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "¿Cuál es el eje de la discrepancia entre los dos textos?",
+      "alternativas": [
+        { "t": "Si Lima debe desalinizar agua de mar cuanto antes o reducir primero sus pérdidas.", "correcta": true, "evidencia": ["o1", "o11"],
+          "explicacion": "El texto A pide empezar ya con el mar (oración 1); el B, cerrar primero las fugas y dejar el mar para después (oración 11)." },
+        { "t": "Si el agua del mar puede llegar a ser, algún día, una fuente de agua para la ciudad de Lima.", "codigo": "RV61", "origen": "o6",
+          "explicacion": "En eso coinciden: el texto A lo propone y el B lo acepta en la oración 6. Discrepan en qué hacer primero." },
+        { "t": "Si los glaciares de la sierra se han reducido en las últimas décadas.", "codigo": "RV60", "origen": "o3",
+          "explicacion": "Lo menciona solo el texto A (oración 3), como argumento; el B no lo discute. El eje tiene que ser algo en que los dos toman posición." },
+        { "t": "Si las conexiones clandestinas deberían castigarse con multas a quienes las hacen.", "codigo": "RV1", "origen": "o8",
+          "explicacion": "Las conexiones clandestinas son un detalle del texto B (oración 8), y ninguno habla de multas." },
+        { "t": "Si el Perú tiene agua suficiente para todos sus habitantes y para sus cultivos.", "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos tratan del agua de Lima y de qué hacer primero para que alcance." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "compatibilidad",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Cobrar más a quien consume más agua ayudaría a que el agua alcance.",
+        "aceptada": "B",
+        "codigos": { "A": "RV59", "ambos": "RV60", "ninguno": null },
+        "explicacion": "Lo propone el texto B en la oración 10, entre las medidas para dejar de perder agua.",
+        "explicaciones": {
+          "A": "El texto A no habla de tarifas ni de consumo: propone sacar agua del mar. La idea es del texto B (oración 10).",
+          "ambos": "Solo el texto B lo plantea (oración 10). El A no dice nada sobre cobrar según el consumo.",
+          "ninguno": "Sí lo sostiene alguien: el texto B, en la oración 10."
+        }
+      },
+      "enunciado": "Es compatible con lo que sostiene la autora del texto B afirmar que",
+      "alternativas": [
+        { "t": "una tarifa que suba con el consumo puede ayudar a ahorrar agua.", "correcta": true, "evidencia": ["o10", "o11"],
+          "explicacion": "La oración 10 incluye «cobrar más a quien más gasta» entre las medidas, y la 11 habla de cerrar las fugas «del consumo»." },
+        { "t": "la red de tuberías de Lima ya no necesita cambios ni reparaciones.", "codigo": "RV9", "origen": "o8",
+          "explicacion": "Choca con las oraciones 8 y 10: el agua se escapa por tuberías viejas y hay que cambiarlas." },
+        { "t": "conviene construir ya las plantas desalinizadoras, antes de que el agua falte en la ciudad.", "codigo": "RV59", "origen": "o5",
+          "explicacion": "Esa es la postura del texto A (oraciones 1 y 5). La autora del B dice que el mar se justifica recién después de cerrar las fugas (oración 11)." },
+        { "t": "el agua del mar nunca debería usarse en Lima, aunque llegue a faltar en el futuro.", "codigo": "RV11", "origen": "o11",
+          "explicacion": "Exagera: la autora no descarta el mar; dice que, si después el agua no alcanza, se justifica mirar al mar (oración 11)." },
+        { "t": "las conexiones clandestinas son la principal causa de la falta de agua en Lima.", "codigo": "RV7", "origen": "o8",
+          "explicacion": "La oración 8 las nombra como una de tres formas de perder agua, sin decir que sean la principal." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "coincidencia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Una planta para potabilizar agua de mar no se construye en poco tiempo.",
+        "aceptada": "ambos",
+        "codigos": { "A": "RV61", "B": "RV61", "ninguno": null },
+        "explicacion": "Los dos lo sostienen: el texto A dice que una planta grande demora años (oración 5) y el B lo acepta (oración 6).",
+        "explicaciones": {
+          "A": "El texto A lo dice en la oración 5, pero el B también lo acepta: una planta «no se levanta de un día para otro» (oración 6).",
+          "B": "El texto B lo concede en la oración 6, pero el A lo dice antes, en la oración 5.",
+          "ninguno": "Los dos lo sostienen: el texto A en la oración 5 y el B en la oración 6."
+        }
+      },
+      "enunciado": "Los dos autores estarían de acuerdo en que",
+      "alternativas": [
+        { "t": "construir una planta desalinizadora toma bastante tiempo.", "correcta": true, "evidencia": ["o5", "o6"],
+          "explicacion": "El texto A dice que una planta grande demora años (oración 5), y el B acepta que no se levanta de un día para otro (oración 6)." },
+        { "t": "Lima debe empezar ya a sacar agua del mar para no llegar tarde.", "codigo": "RV60", "origen": "o1",
+          "explicacion": "Es la tesis del texto A (oraciones 1 y 5). El B no la comparte: primero quiere cerrar las fugas." },
+        { "t": "el mar es una fuente para el futuro y su agua resulta barata para las familias.", "codigo": "RV62", "origen": "o9",
+          "explicacion": "La primera mitad es común, pero la segunda la niega el texto B: el agua del mar es más cara y su costo iría al recibo (oraciones 7 y 9)." },
+        { "t": "el río Rímac está más contaminado que el Chillón y que el Lurín.", "codigo": "RV8", "origen": "o2",
+          "explicacion": "El texto A nombra los tres ríos, pero ninguno de los textos compara cuán contaminados están." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto B, el verbo MIRAR («recién se justifica mirar al mar») significa",
+      "alternativas": [
+        { "t": "considerar como opción.", "correcta": true, "evidencia": ["o11"],
+          "explicacion": "La autora habla de cuándo tiene sentido pensar en el mar como fuente de agua, no de verlo." },
+        { "t": "dirigir la vista hacia algo.", "codigo": "RV18",
+          "explicacion": "Es el sentido más común de «mirar», pero aquí nadie va a ver el mar: se trata de tomarlo en cuenta como fuente." },
+        { "t": "vigilar con atención.", "codigo": "RV19",
+          "explicacion": "Está cerca de «mirar», pero la autora no habla de cuidar ni de vigilar el mar." },
+        { "t": "cerrar las fugas.", "codigo": "RV5", "origen": "o11",
+          "explicacion": "Repite palabras de la misma oración, pero eso es lo que hay que hacer antes de mirar al mar, no lo que significa." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Si se comprobara que la red de Lima casi no pierde agua y que el consumo de las familias ya es bajo, la autora del texto B probablemente",
+      "alternativas": [
+        { "t": "aceptaría que se justifica pensar en desalinizar el agua de mar.", "correcta": true, "evidencia": ["o11"],
+          "explicacion": "La oración 11 pone una condición: si, cerradas las fugas, el agua no alcanza, recién se justifica el mar. El supuesto cumple esa condición." },
+        { "t": "insistiría en que primero hay que cambiar tuberías e instalar medidores.", "codigo": "RV63", "origen": "o10",
+          "explicacion": "Repite la propuesta que el supuesto deja sin objeto: si casi no hay pérdidas ni derroche, ya no queda qué cerrar." },
+        { "t": "pediría que toda el agua de Lima salga del mar a partir del año siguiente.", "codigo": "RV11",
+          "explicacion": "Exagera: aceptar pensar en el mar no es pedir que toda el agua venga de él, y menos en un año." },
+        { "t": "propondría traer agua de la Amazonía por un túnel que cruce la cordillera.", "codigo": "RV8",
+          "explicacion": "Ninguno de los textos habla de traer agua de otra cuenca; esa idea no sale de lo que se leyó." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-12",
+  "hechos": [
+    { "afirmacion": "Lima está en la costa desértica del Perú, donde las lluvias son muy escasas.", "fuente": "SENAMHI (Servicio Nacional de Meteorología e Hidrología del Perú), información climática de Lima" },
+    { "afirmacion": "Lima y Callao se abastecen sobre todo de los ríos Rímac, Chillón y Lurín, que nacen en los Andes.", "fuente": "SEDAPAL, información institucional sobre las fuentes de agua de Lima" },
+    { "afirmacion": "Los glaciares del Perú han perdido una parte importante de su superficie en las últimas décadas.", "fuente": "INAIGEM (Instituto Nacional de Investigación en Glaciares y Ecosistemas de Montaña), Inventario Nacional de Glaciares" },
+    { "afirmacion": "Chile y los países de Medio Oriente usan plantas desalinizadoras, y la desalinización consume mucha energía.", "fuente": "Banco Mundial (2019), The Role of Desalination in an Increasingly Water-Scarce World" },
+    { "afirmacion": "Las empresas de agua del Perú, Sedapal entre ellas, tienen una proporción importante de agua no facturada.", "fuente": "SUNASS, Benchmarking regulatorio de las empresas prestadoras de servicios de saneamiento" }
+  ],
+  "revision": null
+}

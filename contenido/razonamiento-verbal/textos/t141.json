@@ -1,0 +1,147 @@
+{
+  "id": "t141",
+  "version": 1,
+  "titulo": "El kiosco del colegio: ¿prohibir o enseñar a elegir?",
+  "tema": "Salud · alimentación en la escuela",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    { "id": "A", "desde": 0, "firma": "Un nutricionista" },
+    { "id": "B", "desde": 1, "firma": "Una profesora de tutoría de secundaria" }
+  ],
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "principal", "t": "Los kioscos de los colegios no deberían vender comida chatarra, y esa regla tendría que cumplirse sin excepciones." },
+      { "id": "o2", "rol": "apoyo", "t": "Un niño de diez años no compara etiquetas en el recreo: compra lo que tiene a la mano, lo que es barato y lo que ve anunciado en la televisión." },
+      { "id": "o3", "rol": "apoyo", "t": "Si en el kiosco hay galletas rellenas y gaseosas, eso es lo que comerá casi todos los días." },
+      { "id": "o4", "rol": "apoyo", "t": "La ley de alimentación saludable ya pide que los colegios ofrezcan alimentos sanos; el problema es que muchas veces nadie lo controla." },
+      { "id": "o5", "rol": "principal", "t": "Retirar esos productos no es quitarle libertad al alumno, sino quitarle una trampa de su camino." }
+    ],
+    [
+      { "id": "o6", "rol": "apoyo", "t": "Estoy de acuerdo en que lo que se vende dentro del colegio influye en lo que comen los alumnos." },
+      { "id": "o7", "rol": "contraste", "t": "Pero prohibir no enseña a elegir." },
+      { "id": "o8", "rol": "apoyo", "t": "Apenas sale por la puerta, el alumno encuentra la misma golosina en la bodega de la esquina, y la compra con más ganas porque se la negaron." },
+      { "id": "o9", "rol": "apoyo", "t": "Lo que dura es aprender a leer una etiqueta, a reconocer cuánta azúcar trae una bebida y a preparar una lonchera que llene sin costar mucho." },
+      { "id": "o10", "rol": "principal", "t": "El colegio debería dedicar horas a esa educación y hacer del kiosco un lugar donde se practique lo aprendido, no un muro que se levanta sin explicar por qué." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "controversia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "El tema en controversia entre los dos textos es",
+      "alternativas": [
+        { "t": "si el colegio debe prohibir la comida chatarra en su kiosco o enseñar a elegir.", "correcta": true, "evidencia": ["o1", "o7", "o10"],
+          "explicacion": "El texto A pide retirar esos productos sin excepciones (oración 1); el B dice que prohibir no enseña a elegir y propone educar (oraciones 7 y 10)." },
+        { "t": "si lo que se vende dentro del colegio influye en lo que comen los alumnos cada día.", "codigo": "RV61", "origen": "o6",
+          "explicacion": "En eso coinciden: el texto A lo muestra en la oración 3 y el B lo acepta en la oración 6." },
+        { "t": "si la ley de alimentación saludable se cumple y se controla en los colegios del país.", "codigo": "RV60", "origen": "o4",
+          "explicacion": "Solo el texto A habla del control de la ley (oración 4); el B no lo discute." },
+        { "t": "si la alimentación de los peruanos ha empeorado en los últimos años.", "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos tratan del kiosco del colegio y de qué hacer con lo que vende." },
+        { "t": "si las bodegas cercanas a los colegios venden las mismas golosinas que el kiosco.", "codigo": "RV1", "origen": "o8",
+          "explicacion": "Es un detalle del ejemplo del texto B (oración 8), no lo que se discute." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "coincidencia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Lo que ofrece el kiosco del colegio pesa en la dieta de los escolares.",
+        "aceptada": "ambos",
+        "codigos": { "A": "RV61", "B": "RV61", "ninguno": null },
+        "explicacion": "Los dos lo sostienen: el texto A dice que el niño come lo que hay en el kiosco (oración 3) y el B lo acepta (oración 6).",
+        "explicaciones": {
+          "A": "El texto A lo dice en la oración 3, pero el B también lo acepta en la oración 6, antes de su objeción.",
+          "B": "El texto B lo concede en la oración 6, pero el A lo sostiene primero, en la oración 3.",
+          "ninguno": "Los dos lo sostienen: el texto A en la oración 3 y el B en la oración 6."
+        }
+      },
+      "enunciado": "Los dos autores coinciden en que",
+      "alternativas": [
+        { "t": "lo que vende el colegio influye en lo que comen los alumnos.", "correcta": true, "evidencia": ["o3", "o6"],
+          "explicacion": "El texto A lo dice en la oración 3 y el B lo acepta en la oración 6." },
+        { "t": "prohibir la comida chatarra en el kiosco es la mejor forma de cuidar a los alumnos.", "codigo": "RV60", "origen": "o1",
+          "explicacion": "Es la tesis del texto A. El B la discute: prohibir no enseña a elegir (oración 7)." },
+        { "t": "el kiosco influye en lo que comen y debe retirar las golosinas sin dar explicaciones.", "codigo": "RV62", "origen": "o10",
+          "explicacion": "La primera mitad es común, pero la segunda la rechaza el texto B, que no quiere «un muro que se levanta sin explicar por qué» (oración 10)." },
+        { "t": "las gaseosas son la principal causa de la obesidad de los niños en el Perú.", "codigo": "RV8",
+          "explicacion": "Ninguno de los textos habla de obesidad ni de su causa principal; puede ser un tema cercano, pero no sale de lo leído." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "compatibilidad",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Negarle algo a un alumno puede hacer que lo desee todavía más.",
+        "aceptada": "B",
+        "codigos": { "A": "RV59", "ambos": "RV60", "ninguno": null },
+        "explicacion": "Lo dice el texto B en la oración 8: el alumno compra la golosina con más ganas porque se la negaron.",
+        "explicaciones": {
+          "A": "El texto A dice que retirar esos productos no quita libertad; no habla de que lo prohibido se desee más. La idea es del texto B (oración 8).",
+          "ambos": "Solo el texto B lo sostiene (oración 8). El A defiende justamente retirar esos productos.",
+          "ninguno": "Sí lo sostiene alguien: el texto B, en la oración 8."
+        }
+      },
+      "enunciado": "¿Cuál de estas medidas es compatible con lo que propone la autora del texto B?",
+      "alternativas": [
+        { "t": "Un taller en que los alumnos comparen etiquetas y después elijan su refrigerio en el kiosco.", "correcta": true, "evidencia": ["o9", "o10"],
+          "explicacion": "Une lo que pide la autora: aprender a leer etiquetas (oración 9) y usar el kiosco para practicar lo aprendido (oración 10)." },
+        { "t": "Retirar del kiosco y de los alrededores del colegio todo producto con mucha azúcar, sin excepciones.", "codigo": "RV59", "origen": "o1",
+          "explicacion": "Se acerca a la postura del texto A (oración 1), y la autora del B dice que prohibir no enseña a elegir (oración 7)." },
+        { "t": "Dejar que el kiosco venda lo que quiera, ya que la educación sobre alimentos se aprende en casa.", "codigo": "RV9", "origen": "o10",
+          "explicacion": "Choca con la oración 10: la autora quiere que el colegio dedique horas a esa educación." },
+        { "t": "Cerrar el kiosco y obligar a cada alumno a traer su lonchera de la casa todos los días.", "codigo": "RV7", "origen": "o9",
+          "explicacion": "La autora menciona preparar una lonchera como algo que se aprende (oración 9), pero no propone cerrar el kiosco: quiere usarlo para practicar." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto A, la palabra TRAMPA («quitarle una trampa de su camino») significa",
+      "alternativas": [
+        { "t": "una tentación que hace daño.", "correcta": true, "evidencia": ["o2", "o3", "o5"],
+          "explicacion": "El autor habla de los productos que el niño compra porque están a la mano y baratos (oraciones 2 y 3), aunque le hacen mal." },
+        { "t": "un aparato para cazar animales.", "codigo": "RV18",
+          "explicacion": "Es el sentido más concreto de «trampa», pero en el texto no hay animales ni cazadores." },
+        { "t": "una falta a las reglas de un juego.", "codigo": "RV19",
+          "explicacion": "Es otro sentido cercano («hacer trampa»), pero el alumno no engaña a nadie: es el producto el que lo atrapa." },
+        { "t": "una libertad del alumno.", "codigo": "RV5", "origen": "o5",
+          "explicacion": "Repite una palabra de la misma oración, pero el autor dice que retirar los productos no es quitar libertad, sino quitar la trampa." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Si se comprobara que, en un colegio que retiró la comida chatarra de su kiosco, los alumnos la compran igual en la bodega de enfrente, ese hecho",
+      "alternativas": [
+        { "t": "daría la razón a la objeción que plantea el texto B.", "correcta": true, "evidencia": ["o7", "o8"],
+          "explicacion": "Es justo lo que anuncia la oración 8: apenas sale por la puerta, el alumno compra la misma golosina en la bodega." },
+        { "t": "confirmaría que retirar esos productos del kiosco basta para cambiar lo que comen.", "codigo": "RV63", "origen": "o1",
+          "explicacion": "El supuesto muestra lo contrario: los alumnos siguen comiendo lo mismo. No puede confirmar que la prohibición baste." },
+        { "t": "probaría que ninguna medida del colegio puede cambiar lo que comen los alumnos.", "codigo": "RV7",
+          "explicacion": "Va más allá: el hecho muestra los límites de prohibir, no de toda medida. El texto B confía en la educación (oración 9)." },
+        { "t": "demostraría que las bodegas venden más barato que los kioscos de los colegios.", "codigo": "RV8", "origen": "o8",
+          "explicacion": "Los textos no comparan precios entre la bodega y el kiosco; el supuesto tampoco dice nada de precios." },
+        { "t": "sería algo en lo que los dos autores ya estaban de acuerdo desde el principio.", "codigo": "RV60",
+          "explicacion": "Solo el texto B lo anticipa (oración 8). El A no habla de la bodega y propone justamente prohibir." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-12",
+  "hechos": [
+    { "afirmacion": "En el Perú, la ley de alimentación saludable promueve que las instituciones educativas ofrezcan en sus kioscos y comedores alimentos saludables.", "fuente": "Ley N.º 30021, Ley de Promoción de la Alimentación Saludable para Niños, Niñas y Adolescentes (2013), y su reglamento (D. S. N.º 017-2017-SA)" }
+  ],
+  "revision": null
+}
