@@ -44,7 +44,7 @@ test('casos.json cubre los cuatro tipos', () => {
 });
 
 test('banco: ids únicos, textos sin repetir y campos completos', () => {
-  assert.ok(gen.BANCO.length >= 150 && gen.BANCO.length <= 250, `${gen.BANCO.length} proposiciones`);
+  assert.ok(gen.BANCO.length >= 150 && gen.BANCO.length <= 360, `${gen.BANCO.length} proposiciones`);
   const ids = new Set(), textos = new Set();
   const unidades = new Set(catalogo.unidades.map(u => u.id));
   const norm = t => t.toLowerCase().replace(/[^a-záéíóúñü0-9]/g, '');

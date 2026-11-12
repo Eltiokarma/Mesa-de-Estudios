@@ -333,7 +333,7 @@
       },
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": ["soluciones", "soluciones-meq-ppm"],
+      "plantillas": ["soluciones", "soluciones-meq-ppm", "quimica-conceptos"],
       "investigacion": "docs/investigacion/gases-soluciones-ideas-erroneas.md"
     },
     {
@@ -473,7 +473,7 @@
       },
       "potencial_visual": "bajo",
       "grado": 4,
-      "plantillas": ["hidrocarburos", "molecula-grande"],
+      "plantillas": ["hidrocarburos", "molecula-grande", "quimica-conceptos"],
       "investigacion": "docs/investigacion/quimica-materia-nomenclatura-organica-ideas-erroneas.md"
     },
     {
@@ -504,7 +504,7 @@
       },
       "potencial_visual": "bajo",
       "grado": 4,
-      "plantillas": ["funciones-organicas", "molecula-grande"],
+      "plantillas": ["funciones-organicas", "molecula-grande", "quimica-conceptos"],
       "investigacion": "docs/investigacion/quimica-materia-nomenclatura-organica-ideas-erroneas.md"
     },
     {

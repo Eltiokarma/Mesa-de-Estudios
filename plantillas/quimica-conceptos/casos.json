@@ -1,35 +1,34 @@
 {
   "plantilla": "quimica-conceptos",
   "nota": "Cada caso da la semilla, el tipo, el tema o conjunto y los ids que se muestran (en el orden I, II, III… o en el orden en que se eligieron), y la respuesta. vf: la secuencia de los valores de verdad de gen.BANCO en el orden de ids. incorrecta y correcta: el único id falso (o verdadero) entre los ids. relacionar: la letra de cada id de la izquierda es su posición (a, b, c, d) en derecha. Lo que se verifica a ciegas es el valor de verdad de cada proposición del banco y cada par de gen.PARES.",
-  "verificacion": "Verificado a ciegas (8 nov 2026): un verificador independiente decidió V o F en las 250 proposiciones sin ver la clave y coincidió en las 250, y en los 6 conjuntos de pares; las 124 «corregida» son verdaderas. Las proposiciones nuevas o reescritas tras la revisión las revisó la conversación principal.",
+  "verificacion": "Verificado a ciegas (8 nov 2026): un verificador independiente decidió V o F en las 250 proposiciones sin ver la clave y coincidió en las 250, y en los 6 conjuntos de pares; las 124 «corregida» son verdaderas. Las proposiciones nuevas o reescritas tras la revisión las revisó la conversación principal. Las proposiciones de los temas agregados el 12 nov 2026 las verificó aparte otro subagente.",
   "casos": [
     {
       "semilla": "entrada-1",
       "entrada": {
         "tipo": "correcta",
-        "tema": "proteinas",
+        "tema": "oxidos",
         "ids": [
-          "pro11",
-          "pro12",
-          "pro8",
-          "pro9",
-          "pro1"
+          "oxi13",
+          "oxi8",
+          "oxi4",
+          "oxi11"
         ]
       },
       "esperado": {
-        "respuesta": "p:pro1",
-        "texto": "En el punto isoeléctrico, la carga neta de una proteína o de un aminoácido es cero."
+        "respuesta": "p:oxi4",
+        "texto": "En la nomenclatura tradicional, el sufijo -ico indica el mayor de dos estados de oxidación."
       }
     },
     {
       "semilla": "entrada-2",
       "entrada": {
         "tipo": "vf",
-        "tema": "polimeros",
+        "tema": "radicales",
         "ids": [
-          "pol1",
-          "pol2",
-          "pol13"
+          "rad1",
+          "rad2",
+          "rad12"
         ]
       },
       "esperado": {
@@ -41,80 +40,80 @@
       "semilla": "entrada-3",
       "entrada": {
         "tipo": "correcta",
-        "tema": "modelos",
+        "tema": "rutherford",
         "ids": [
-          "mod8",
-          "mod5",
-          "mod7",
-          "mod9"
+          "rut3",
+          "rut10",
+          "rut8",
+          "rut7"
         ]
       },
       "esperado": {
-        "respuesta": "p:mod5",
-        "texto": "En el modelo actual, un orbital es la región del espacio donde es más probable encontrar al electrón."
+        "respuesta": "p:rut3",
+        "texto": "Las partículas alfa usadas en el experimento tienen carga positiva."
       }
     },
     {
       "semilla": "salida-1",
       "entrada": {
         "tipo": "correcta",
-        "tema": "hidruros",
+        "tema": "gases-sangre",
         "ids": [
-          "hid10",
-          "hid11",
-          "hid15",
-          "hid6"
+          "gas6",
+          "gas7",
+          "gas9",
+          "gas4"
         ]
       },
       "esperado": {
-        "respuesta": "p:hid6",
-        "texto": "El HCl gaseoso es un compuesto covalente; en agua se ioniza."
+        "respuesta": "p:gas4",
+        "texto": "El HCO₃⁻ que lleva el CO₂ en la sangre es un anión de carga 1−."
       }
     },
     {
       "semilla": "salida-2",
       "entrada": {
         "tipo": "incorrecta",
-        "tema": "pilas",
+        "tema": "equilibrio-sangre",
         "ids": [
-          "pil10",
-          "pil5",
-          "pil1",
-          "pil9"
+          "eqs12",
+          "eqs2",
+          "eqs3",
+          "eqs4",
+          "eqs1"
         ]
       },
       "esperado": {
-        "respuesta": "p:pil10",
-        "texto": "En la batería de plomo, el PbO₂ se oxida porque acepta electrones."
+        "respuesta": "p:eqs12",
+        "texto": "Cuando el ácido carbónico llega al equilibrio, su disociación se detiene."
       }
     },
     {
       "semilla": "salida-3",
       "entrada": {
         "tipo": "vf",
-        "tema": "ramas",
+        "tema": "tendencia",
         "ids": [
-          "ram8",
-          "ram4",
-          "ram2",
-          "ram3"
+          "ten7",
+          "ten10",
+          "ten5"
         ]
       },
       "esperado": {
-        "respuesta": "vf:FVVV",
-        "texto": "FVVV"
+        "respuesta": "vf:FVV",
+        "texto": "FVV"
       }
     },
     {
       "semilla": 0,
       "entrada": {
         "tipo": "vf",
-        "tema": "dalton",
+        "tema": "modelos",
         "ids": [
-          "dal8",
-          "dal6",
-          "dal3",
-          "dal2"
+          "mod8",
+          "mod10",
+          "mod6",
+          "mod3"
         ]
       },
       "esperado": {
@@ -126,68 +125,83 @@
       "semilla": 1,
       "entrada": {
         "tipo": "relacionar",
-        "conjunto": "solido-propiedad",
+        "conjunto": "solido-ejemplo",
         "ids": [
-          "sp-metalico",
-          "sp-red",
-          "sp-molecular",
-          "sp-ionico"
+          "se-hielo",
+          "se-cu",
+          "se-mgo"
         ],
         "derecha": [
-          "sp-ionico",
-          "sp-red",
-          "sp-metalico",
-          "sp-molecular"
+          "se-mgo",
+          "se-hielo",
+          "se-cu"
         ]
       },
       "esperado": {
-        "respuesta": "rel:Ic, IIb, IIId, IVa",
-        "texto": "Ic, IIb, IIId, IVa"
+        "respuesta": "rel:Ib, IIc, IIIa",
+        "texto": "Ib, IIc, IIIa"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "vf",
+        "tema": "hidrogenacion",
+        "ids": [
+          "hgn2",
+          "hgn6",
+          "hgn4",
+          "hgn5"
+        ]
+      },
+      "esperado": {
+        "respuesta": "vf:VFVV",
+        "texto": "VFVV"
       }
     },
     {
       "semilla": 3,
       "entrada": {
         "tipo": "vf",
-        "tema": "vitaminas",
+        "tema": "dativo-oxisales",
         "ids": [
-          "vit14",
-          "vit13",
-          "vit4",
-          "vit6"
+          "dat2",
+          "dat7",
+          "dat6",
+          "dat8"
         ]
       },
       "esperado": {
-        "respuesta": "vf:FFVV",
-        "texto": "FFVV"
+        "respuesta": "vf:VFFF",
+        "texto": "VFFF"
       }
     },
     {
       "semilla": 4,
       "entrada": {
         "tipo": "incorrecta",
-        "tema": "contaminantes",
+        "tema": "sales-acidas",
         "ids": [
-          "con1",
-          "con4",
-          "con8",
-          "con6"
+          "hid7",
+          "hid9",
+          "hid5",
+          "hid16"
         ]
       },
       "esperado": {
-        "respuesta": "p:con8",
-        "texto": "El ozono cercano al suelo es un contaminante primario, porque lo emiten directamente los autos."
+        "respuesta": "p:hid9",
+        "texto": "El NaHCO₃ es una sal básica, porque contiene grupos OH⁻."
       }
     },
     {
       "semilla": 5,
       "entrada": {
         "tipo": "vf",
-        "tema": "tendencia",
+        "tema": "polimeros",
         "ids": [
-          "ten11",
-          "ten1",
-          "ten2"
+          "pol13",
+          "pol1",
+          "pol2"
         ]
       },
       "esperado": {
@@ -201,72 +215,50 @@
         "tipo": "vf",
         "tema": "tipo-solido",
         "ids": [
-          "ts9",
           "ts12",
-          "ts3",
-          "ts2"
+          "ts1",
+          "ts2",
+          "ts3"
         ]
       },
       "esperado": {
-        "respuesta": "vf:FFVV",
-        "texto": "FFVV"
+        "respuesta": "vf:FVVV",
+        "texto": "FVVV"
       }
     },
     {
       "semilla": 7,
       "entrada": {
         "tipo": "incorrecta",
-        "tema": "ion-sodio",
+        "tema": "solidos",
         "ids": [
-          "sod12",
-          "sod3",
-          "sod2",
-          "sod5"
+          "sol1",
+          "sol13",
+          "sol5",
+          "sol3"
         ]
       },
       "esperado": {
-        "respuesta": "p:sod12",
-        "texto": "El sodio está en el mismo periodo que el neón."
+        "respuesta": "p:sol13",
+        "texto": "El cloruro de sodio sólido está formado por moléculas de NaCl separadas."
       }
     },
     {
-      "semilla": 8,
+      "semilla": 14,
       "entrada": {
-        "tipo": "incorrecta",
-        "tema": "liquidos",
+        "tipo": "correcta",
+        "tema": "aldosas-cetosas",
         "ids": [
-          "liq15",
-          "liq2",
-          "liq4",
-          "liq1"
+          "ald10",
+          "ald1",
+          "ald9",
+          "ald7",
+          "ald8"
         ]
       },
       "esperado": {
-        "respuesta": "p:liq15",
-        "texto": "A 25 °C, el etanol tiene menor presión de vapor que el agua."
-      }
-    },
-    {
-      "semilla": 13,
-      "entrada": {
-        "tipo": "relacionar",
-        "conjunto": "solido-ejemplo",
-        "ids": [
-          "se-yodo",
-          "se-nacl",
-          "se-cuarzo",
-          "se-cu"
-        ],
-        "derecha": [
-          "se-cuarzo",
-          "se-yodo",
-          "se-cu",
-          "se-nacl"
-        ]
-      },
-      "esperado": {
-        "respuesta": "rel:Ib, IId, IIIa, IVc",
-        "texto": "Ib, IId, IIIa, IVc"
+        "respuesta": "p:ald1",
+        "texto": "La glucosa es una aldosa: su grupo carbonilo es un aldehído."
       }
     },
     {
@@ -291,44 +283,84 @@
       }
     },
     {
-      "semilla": 19,
+      "semilla": 18,
       "entrada": {
         "tipo": "relacionar",
-        "conjunto": "funciones",
+        "conjunto": "solido-propiedad",
         "ids": [
-          "f-b12",
-          "f-c",
-          "f-a",
-          "f-d"
+          "sp-molecular",
+          "sp-metalico",
+          "sp-red",
+          "sp-ionico"
         ],
         "derecha": [
-          "f-d",
-          "f-a",
-          "f-b12",
-          "f-c"
+          "sp-molecular",
+          "sp-red",
+          "sp-ionico",
+          "sp-metalico"
         ]
       },
       "esperado": {
-        "respuesta": "rel:Ic, IId, IIIb, IVa",
-        "texto": "Ic, IId, IIIb, IVa"
+        "respuesta": "rel:Ia, IId, IIIb, IVc",
+        "texto": "Ia, IId, IIIb, IVc"
       }
     },
     {
-      "semilla": 31,
+      "semilla": 19,
       "entrada": {
-        "tipo": "correcta",
-        "tema": "radicales",
+        "tipo": "relacionar",
+        "conjunto": "metalurgia",
         "ids": [
-          "rad7",
-          "rad11",
-          "rad8",
-          "rad4",
-          "rad9"
+          "m-altohorno",
+          "m-cianuracion",
+          "m-electro",
+          "m-tostacion"
+        ],
+        "derecha": [
+          "m-electro",
+          "m-cianuracion",
+          "m-tostacion",
+          "m-altohorno"
         ]
       },
       "esperado": {
-        "respuesta": "p:rad4",
-        "texto": "El ion superóxido (O₂⁻) tiene un electrón desapareado."
+        "respuesta": "rel:Id, IIb, IIIa, IVc",
+        "texto": "Id, IIb, IIIa, IVc"
+      }
+    },
+    {
+      "semilla": 22,
+      "entrada": {
+        "tipo": "incorrecta",
+        "tema": "ionicos",
+        "ids": [
+          "ion6",
+          "ion5",
+          "ion3",
+          "ion1",
+          "ion14"
+        ]
+      },
+      "esperado": {
+        "respuesta": "p:ion14",
+        "texto": "El ion sulfato tiene la fórmula SO₃²⁻."
+      }
+    },
+    {
+      "semilla": 27,
+      "entrada": {
+        "tipo": "incorrecta",
+        "tema": "proteinas",
+        "ids": [
+          "pro11",
+          "pro4",
+          "pro2",
+          "pro7"
+        ]
+      },
+      "esperado": {
+        "respuesta": "p:pro11",
+        "texto": "El enlace peptídico solo existe en las proteínas de origen animal."
       }
     }
   ]
