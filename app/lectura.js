@@ -338,12 +338,14 @@ async function vista(ctx, id, unidad) {
       `<button type="button" class="alt" data-letra="${a.letra}"><span class="letra">${a.letra}</span><span>${esc(a.t)}</span></button>`).join('')}${conNose
       ? '<button type="button" class="alt nose" data-nose="1" lang="es">No sé</button>' : ''}</div>
     <p class="solo-teclado">Con teclado: <kbd>A</kbd>–<kbd>${q.alternativas[q.alternativas.length - 1].letra}</kbd> o <kbd>1</kbd>–<kbd>${q.alternativas.length}</kbd> para elegir${conNose ? ', <kbd>0</kbd> o <kbd>N</kbd> para «No sé»' : ''}, <kbd>Enter</kbd> para seguir.</p>`;
+  const ESPERA_TOQUE = 450;
   function esperarAlternativa(q) {
     return new Promise(listo => {
       const t0 = Date.now();
       const bts = [...document.querySelectorAll('.lec-alts .alt')];
       // «No sé» (solo en las pruebas): letra null y nose true.
-      const elegir = (letra, bt) => { if (bts[0].disabled) return; bts.forEach(x => { x.disabled = true; }); if (bt) bt.classList.add('elegida'); actual = null; listo({ letra, nose: !letra, ms: Date.now() - t0 }); };
+      // Un doble toque no debe contestar también la pregunta siguiente: se ignora lo que llega en los primeros 450 ms.
+      const elegir = (letra, bt) => { if (bts[0].disabled || Date.now() - t0 < ESPERA_TOQUE) return; bts.forEach(x => { x.disabled = true; }); if (bt) bt.classList.add('elegida'); actual = null; listo({ letra, nose: !letra, ms: Date.now() - t0 }); };
       bts.forEach(bt => bt.onclick = () => elegir(bt.dataset.nose ? null : bt.dataset.letra, bt.dataset.nose ? bt : null));
       const bn = bts.find(x => x.dataset.nose);
       actual = { tipo: 'alternativas', letra: l => { if (bts.some(x => x.dataset.letra === l)) elegir(l); }, nose: bn ? () => elegir(null, bn) : null };

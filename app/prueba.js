@@ -119,7 +119,7 @@ function vista(ctx, curso, fase) {
         <p class="solo-teclado">Con teclado: <kbd>A</kbd>–<kbd>${ops[ops.length - 1].letra}</kbd> o <kbd>1</kbd>–<kbd>${ops.length}</kbd> para elegir, <kbd>0</kbd> o <kbd>N</kbd> para «No sé».</p>
       </article>`;
     $app.querySelectorAll('.alt').forEach(btn => btn.onclick = () => {
-      if (btn.disabled) return;
+      if (btn.disabled || Date.now() - t0 < 450) return; // un doble toque no contesta también la siguiente
       $app.querySelectorAll('.alt').forEach(x => { x.disabled = true; });
       btn.classList.add('elegida'); // solo marca la elegida: no dice si está bien
       // «No sé»: sin opción, ni acierto ni error de un código (nucleo/pruebas.js).
@@ -129,7 +129,8 @@ function vista(ctx, curso, fase) {
       ec.ms += ms; guardar();
       registrar({ tipo: 'item', fase, curso, forma: ec.forma, orden: st.orden, banco: b.version, item: it.id, par: it.par,
         plantilla: it.plantilla, unidad: it.unidad, opcion: r.opcion, correcta: r.correcta, error: r.error, ...(r.nose ? { nose: true } : {}), ms });
-      setTimeout(pregunta, 180);
+      // Si el alumno se fue de la pantalla en esos 180 ms, no se pinta la pregunta encima de otra.
+      setTimeout(() => { if (btn.isConnected && st.enCurso === ec) pregunta(); }, 180);
     });
     window.scrollTo(0, 0);
   }

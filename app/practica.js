@@ -54,7 +54,8 @@ async function vista(ctx, id) {
   let gen;
   try { gen = await cargarGenerador(pl); } catch (e) { $app.innerHTML = `<p class="vacio">${esc(e.message)}</p>`; return; }
   est.practica = est.practica || {};
-  const st = est.practica[id] = est.practica[id] || { hechos: 0, aciertos: 0, entrada: null, salida: null };
+  // Con valores por defecto: «Borrar mi avance» deja solo { entrada, salida } y sin esto hechos quedaba en NaN.
+  const st = est.practica[id] = Object.assign({ hechos: 0, aciertos: 0, entrada: null, salida: null }, est.practica[id] || {});
   const volver = `<a class="volver" href="#/curso/${esc(curso ? curso.id : '')}" aria-label="Volver">‹</a>`;
   const cabecera = sub => `${volver}<p class="sub">${esc(curso ? curso.nombre : '')}</p><h1>${esc(pl.titulo)}</h1><p class="sub">${sub}</p>`;
 
@@ -86,7 +87,9 @@ async function vista(ctx, id) {
       $app.innerHTML = cabecera(fase === 'entrada'
         ? 'Antes de empezar: 3 preguntas rápidas para saber de dónde partes. No cuentan para nada. Si no lo sabes, marca «No sé»: nos ayuda más que adivinar.'
         : 'Prueba final: 3 preguntas parecidas a las del inicio, para ver cuánto avanzaste.') + problemaHTML(p, i + 1, N_PRUEBA, fase === 'entrada' ? 'Prueba de entrada' : 'Prueba de salida');
+      const pintada = Date.now();
       $app.querySelectorAll('.alt').forEach(b => b.onclick = () => {
+        if (Date.now() - pintada < 450) return; // un doble toque no contesta también la siguiente
         if (b.dataset.nose) { respuestas.push('0'); nose++; i++; return sig(); } // «No sé»: 0 en la cadena
         const a = p.alternativas.find(x => x.letra === b.dataset.letra);
         respuestas.push(a.letra); if (a.correcta) aciertos++; i++; sig();
@@ -107,6 +110,7 @@ async function vista(ctx, id) {
       problemaHTML(p, 0, 0, 'Predice antes de ver la solución');
     const ir = document.getElementById('irSalida'); if (ir) ir.onclick = e => { e.preventDefault(); prueba('salida'); };
     $app.querySelectorAll('.alt').forEach(b => b.onclick = () => {
+      if (b.disabled || Date.now() - t0 < 450) return; // doble toque desde «Otro problema»
       // «No sé»: se muestra la respuesta y su solución sin marcar error, y se registra nose: true.
       const nose = !!b.dataset.nose;
       const a = nose ? null : p.alternativas.find(x => x.letra === b.dataset.letra);
