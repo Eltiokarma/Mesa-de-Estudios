@@ -26,6 +26,21 @@ El id de cada alternativa es `<código>-<detalle>` (por ejemplo `RMP20-una-vuelt
 | RMP78 | Creer que no se deduce nada cuando sí se deduce algo | nueva |
 | RMP79 | Tomar la primera parte de un contrafáctico («si X fuera…») como un dato | hueco de admisión 2021 |
 
+## Trasvases y movimientos (`rm-trasvases`, `rm-movimientos`)
+
+| Código | Error | Trampa de origen |
+| --- | --- | --- |
+| RMP10 | Contar llenar y vaciar cuando no cuentan como trasvase, o no contarlos cuando sí | trasvases |
+| RMP11 | Dar por lograda la meta a medias: la cantidad repartida entre dos recipientes, en otro recipiente o con huecos | trasvases |
+| RMP12 | Quedarse con un barril que cumple la divisibilidad pero con el que no se arman los pedidos | rm-b sueltas («no comprobar que los barriles formen las parejas») |
+| RMP13 | Dividir entre k y no entre k + 1, o aplicar la divisibilidad al barril que queda | barriles |
+| RMP14 | Olvidar los viajes de regreso de la canoa, o contar uno de más al final | rm-a #19 |
+| RMP15 | Pasar por alto una restricción: quien no rema cruza solo, los que se atacan quedan juntos, la casilla bloqueada, la boca cerrada | rm-a #19 |
+| RMP16 | Dividir la distancia entre lo que avanza un salto, o mover el caballo como el rey | movimientos en tablero |
+| RMP17 | Ir directo sin pasar por la casilla intermedia | caballo con casilla intermedia |
+| RMP18 | Contar mal qué es un movimiento: las fichas, sacar y meter como uno, ida y vuelta | traslado de fichas |
+| RMP19 | Olvidar los bordes del tablero o de la fila | movimientos en tablero |
+
 ## Diagramas de flujo y ciclos (`rm-diagramas-flujo`, `rm-ciclos`)
 
 | Código | Error | Trampa de origen |
