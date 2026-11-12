@@ -1,16 +1,16 @@
 {
   "schema_version": 1,
-  "fecha_utc": "2026-11-12T22:36:13.253742+00:00",
+  "fecha_utc": "2026-11-12T22:55:50.917213+00:00",
   "estado": "en_curso",
   "origen": "Escaneos de Cuzcano",
   "objetivo_nuevas": 2000,
   "objetivo_temas": 20,
-  "fichas_nuevas": 490,
-  "fichas_pendientes": 1510,
-  "porcentaje_del_lote": 24.5,
-  "fichas_acumuladas_banco": 9872,
-  "temas_banco_con_100_acumuladas": 63,
-  "paginas_pdf_distintas_cotejadas": 106,
+  "fichas_nuevas": 559,
+  "fichas_pendientes": 1441,
+  "porcentaje_del_lote": 27.95,
+  "fichas_acumuladas_banco": 9941,
+  "temas_banco_con_100_acumuladas": 66,
+  "paginas_pdf_distintas_cotejadas": 117,
   "ocr_repetido": false,
   "lectura_local": "fuentes/ocr-local/cuzcano/cobertura-temas/avance-detallado.html",
   "cursos": [
@@ -18,19 +18,20 @@
       "id": "quimica",
       "curso": "Química",
       "meta": 1000,
-      "nuevas": 67,
-      "pendientes": 933,
-      "porcentaje_del_lote": 6.7,
+      "nuevas": 136,
+      "pendientes": 864,
+      "porcentaje_del_lote": 13.6,
       "temas_con_fichas_nuevas": 10,
-      "nuevas_con_observaciones": 19,
-      "acumuladas": 1244,
+      "nuevas_con_observaciones": 38,
+      "acumuladas": 1313,
       "temas_del_curso": 13,
-      "temas_del_curso_con_100_acumuladas": 3,
+      "temas_del_curso_con_100_acumuladas": 6,
       "indice_local": "fuentes/ocr-local/cuzcano/lote-quimica-1000-cuzcano/fichas.json",
-      "sha256_indice_local": "8930cdd2ea9c0e7d27dbe8e5df152d320c3ccf8eb805e5fc333a44d506a24189",
+      "sha256_indice_local": "6d7e1766654edb53e2bfef1576861c23a603044af71effacdfbdc467b973541d",
       "recursos_visuales": {
-        "tabla_propia": 56,
-        "grafica_cartesiana_propia": 11
+        "tabla_propia": 60,
+        "grafica_cartesiana_propia": 19,
+        "tarjeta_relaciones_propias": 57
       },
       "temas": [
         {
@@ -45,11 +46,11 @@
         {
           "id": "quimica.nomenclatura-inorganica",
           "tema": "Nomenclatura inorgánica",
-          "nuevas": 3,
+          "nuevas": 5,
           "meta": 100,
-          "pendientes": 97,
-          "porcentaje_del_lote": 3,
-          "acumuladas": 75
+          "pendientes": 95,
+          "porcentaje_del_lote": 5,
+          "acumuladas": 77
         },
         {
           "id": "quimica.electroquimica",
@@ -63,20 +64,20 @@
         {
           "id": "quimica.equilibrio-quimico",
           "tema": "Equilibrio químico",
-          "nuevas": 1,
+          "nuevas": 29,
           "meta": 100,
-          "pendientes": 99,
-          "porcentaje_del_lote": 1,
-          "acumuladas": 84
+          "pendientes": 71,
+          "porcentaje_del_lote": 29,
+          "acumuladas": 112
         },
         {
           "id": "quimica.quimica-organica",
           "tema": "Química orgánica",
-          "nuevas": 3,
+          "nuevas": 19,
           "meta": 100,
-          "pendientes": 97,
-          "porcentaje_del_lote": 3,
-          "acumuladas": 86
+          "pendientes": 81,
+          "porcentaje_del_lote": 19,
+          "acumuladas": 102
         },
         {
           "id": "quimica.soluciones",
@@ -90,11 +91,11 @@
         {
           "id": "quimica.tabla-periodica",
           "tema": "Tabla periódica",
-          "nuevas": 1,
+          "nuevas": 24,
           "meta": 100,
-          "pendientes": 99,
-          "porcentaje_del_lote": 1,
-          "acumuladas": 84
+          "pendientes": 76,
+          "porcentaje_del_lote": 24,
+          "acumuladas": 107
         },
         {
           "id": "quimica.acidos-y-bases",
@@ -238,9 +239,36 @@
       ]
     }
   ],
-  "primera_tanda": {
-    "meta": 400,
-    "nuevas": 333,
-    "pendientes": 67
-  }
+  "tandas_de_esta_continuacion": [
+    {
+      "numero": 1,
+      "meta": 400,
+      "nuevas": 400,
+      "pendientes": 0
+    },
+    {
+      "numero": 2,
+      "meta": 400,
+      "nuevas": 2,
+      "pendientes": 398
+    },
+    {
+      "numero": 3,
+      "meta": 400,
+      "nuevas": 0,
+      "pendientes": 400
+    },
+    {
+      "numero": 4,
+      "meta": 400,
+      "nuevas": 0,
+      "pendientes": 400
+    },
+    {
+      "numero": 5,
+      "meta": 243,
+      "nuevas": 0,
+      "pendientes": 243
+    }
+  ]
 }
