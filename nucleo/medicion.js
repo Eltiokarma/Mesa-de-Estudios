@@ -236,7 +236,12 @@
       perfil = perfil || JSON.parse(almacen.getItem(CLAVE_PERFIL)) || {};
       if (!perfil.alumno) return false;
       const l = eventosGuardados(almacen);
-      l.push({ t: new Date().toISOString(), alumno: perfil.alumno, grado: perfil.grado || '', colegio: perfil.colegio || '', version, ...ev });
+      // t es único y creciente en el dispositivo (con cuenta, el servidor no duplica por alumno + t, y la sesión
+      // sube desde el último t): si dos eventos caen en el mismo milisegundo, el segundo va 1 ms después.
+      let t = Date.now();
+      const ultimo = l.length ? Date.parse(l[l.length - 1].t) : NaN;
+      if (ultimo >= t) t = ultimo + 1;
+      l.push({ t: new Date(t).toISOString(), alumno: perfil.alumno, grado: perfil.grado || '', colegio: perfil.colegio || '', version, ...ev });
       almacen.setItem(CLAVE_EVENTOS, JSON.stringify(l.slice(-MAX_EVENTOS)));
       return true;
     } catch { return false; } // sin almacenamiento o sin espacio: se pierde este evento, la app sigue
