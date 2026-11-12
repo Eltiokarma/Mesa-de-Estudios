@@ -121,6 +121,45 @@ test('en el problema de rapidez, la separación da una sola rapidez positiva (á
   }
 });
 
+test('el 3-4-5 se puede usar: con 37° y 53° de verdad el resultado cambia a lo más 2 % (1500 semillas)', () => {
+  const G = Math.PI / 180;
+  const lit = angulo;                                    // 37° y 53° del 3-4-5 (atan 3/4, atan 4/3)
+  const real = r => { const t = r.toLowerCase(), pu = { norte: 0, este: 90, sur: 180, oeste: 270 }; if (t in pu) return pu[t];
+    const m = /^([ns]) (\d+)° ([eo])$/.exec(t), th = Number(m[2]); return m[1] === 'n' ? (m[3] === 'e' ? th : 360 - th) : (m[3] === 'e' ? 180 - th : 180 + th); };
+  const v = (f, r, L) => [L * Math.sin(f(r) * G), L * Math.cos(f(r) * G)];
+  for (let s = 0; s < 1500; s++) {
+    const p = gen.generar(s), d = p._datos;
+    let A, R;
+    if (d.tipo === 'distancia' || d.tipo === 'regreso') [A, R] = [lit, real].map(f => d.tramos.reduce((q, t) => { const [x, y] = v(f, t.rumbo, t.largo); return [q[0] + x, q[1] + y]; }, [0, 0]));
+    else if (d.tipo === 'moviles') [A, R] = [lit, real].map(f => { const [a, b] = d.moviles.map(m => v(f, m.rumbo, m.rapidez * d.t)); return [a[0] - b[0], a[1] - b[1]]; });
+    else if (d.tipo === 'relativo') [A, R] = [lit, real].map(f => { const [a, b] = d.lugares.map(l => v(f, l.rumbo, l.largo)); return [b[0] - a[0], b[1] - a[1]]; });
+    else if (d.tipo === 'rapidez') {
+      const a = d.v1 * d.t, D = (real(d.rumbos[0]) - real(d.rumbos[1])) * G, c = Math.cos(D);
+      const b = a * c + Math.sqrt(a * a * c * c - a * a + d.d2);
+      assert.ok(Math.abs(b / d.t - p.respuesta.valor) / p.respuesta.valor <= 0.02, `semilla ${s}: rapidez real ${b / d.t}`);
+      continue;
+    } else continue;
+    const n = Math.hypot(A[0], A[1]);
+    assert.ok(Math.hypot(R[0] - A[0], R[1] - A[1]) <= 0.02 * n + 1e-9, `semilla ${s}: con 37° de verdad cambia más de 2 %`);
+  }
+});
+
+test('la nota del rumbo nombra el triángulo notable que hace falta; rapidez y tiempo no comparten color', () => {
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s), d = p._datos, txt = p.enunciado.map(x => (typeof x === 'string' ? x : x.t)).join('');
+    const rumbos = d.tramos ? d.tramos.map(t => t.rumbo) : d.moviles ? d.moviles.map(m => m.rumbo) : d.lugares ? d.lugares.map(l => l.rumbo) : d.rumbos || [];
+    if (rumbos.some(r => /\b(37|53)°/.test(r)) || d.forma === 'rectangulo') assert.match(txt, /3-4-5 para 37° y 53°/, `semilla ${s}`);
+    if (rumbos.some(r => /\b45°/.test(r)) || d.forma === 'cuadrado') assert.match(txt, /1-1-√2 para 45°/, `semilla ${s}`);
+    if (rumbos.some(r => /\b(30|60)°/.test(r))) assert.match(txt, /1-√3-2 para 30° y 60°/, `semilla ${s}`);
+    const usadas = new Set();
+    for (const parte of [p.enunciado, p.pregunta, ...p.solucion]) for (const x of parte) if (x && x.v) usadas.add(x.v);
+    const colores = [...usadas].map(k => { assert.ok(p.variables[k], `semilla ${s}: ${k} sin variable`); return p.variables[k].color; });
+    assert.equal(new Set(colores).size, colores.length, `semilla ${s}: dos variables con el mismo color`);
+    assert.ok(colores.length <= 4);
+    if (d.tipo === 'moviles') assert.notEqual(p.variables.t.color, p.variables.v.color);
+  }
+});
+
 for (const c of casos.casos) {
   test(`casos.json: semilla ${c.semilla}`, () => {
     const p = gen.generar(c.semilla);

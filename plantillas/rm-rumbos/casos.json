@@ -1,8 +1,8 @@
 {
   "plantilla": "rm-rumbos",
-  "tolerancia": 1e-9,
+  "tolerancia": 1e-09,
   "nota": "Rumbos desde el norte o el sur hacia el este o el oeste (N 37° E). Triángulos de academia: 37° y 53° con 3-4-5, 45° con √2, 30° y 60° con 1-√3-2. Las respuestas de rumbo son claves 'az:<azimut>' (más '|d2:<distancia²>' si piden la distancia); texto es la alternativa correcta tal como la ve el alumno. Entrada-k y salida-k son del mismo tipo (formas paralelas).",
-  "verificacion": "",
+  "verificacion": "Verificación ciega (subagente, 12 nov 2026): los 22 casos resueltos aparte sumando componentes (37°/53° con 3-4-5, el resto con trigonometría real; canchas como vectores con el poste en (B+D)/2; rapidez por la cuadrática de la ley de cosenos). 22/22 coinciden. Tras la revisión, el enunciado nombra el triángulo notable y se descartan los problemas en que 3-4-5 y la trigonometría real difieren en más del 2 %; ninguna respuesta de casos.json cambió.",
   "casos": [
     {
       "semilla": 1,

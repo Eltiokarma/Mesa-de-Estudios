@@ -23,6 +23,8 @@
  *   relativo   desde un punto P se dan dos lugares con su rumbo y distancia; rumbo de uno visto desde el
  *              otro, o la distancia entre ellos. { tipo, lugares: [{ rumbo, largo }], pide: 'rumbo'|'distancia' }
  *   (rumbo: texto como 'N 37° E' o 'norte'; largo: número, el de k√2 ya como decimal.)
+ * La nota del rumbo dice qué triángulo notable usar (3-4-5, 1-1-√2, 1-√3-2). Se descartan los problemas cuyo
+ * resultado cambia más de 2 % si 37° y 53° se toman como ángulos de verdad (desvioReal).
  *
  * Respuesta: distancias y rapideces como número (texto con P.radical); rumbos con P.armarTexto y clave
  * 'az:<grados desde el norte, en sentido horario>' (más '|d2:<distancia al cuadrado>' si va con la distancia).
@@ -177,9 +179,26 @@
       const dash = tr.punteado ? ' stroke-dasharray="5 4"' : '';
       s += `<line x1="${X(tr.a.x)}" y1="${Y(tr.a.y)}" x2="${X(tr.b.x)}" y2="${Y(tr.b.y)}" stroke="${tr.color || 'currentColor'}" stroke-width="${tr.grueso ? 3 : 2}"${dash}/>`;
     }
+    // Cada rótulo va hacia afuera, lejos del centro de la figura, para que no lo tapen las líneas.
+    const cX = puntos.reduce((a, p) => a + Number(X(p.x)), 0) / puntos.length, cY = puntos.reduce((a, p) => a + Number(Y(p.y)), 0) / puntos.length;
     for (const p of puntos) {
-      s += `<circle cx="${X(p.x)}" cy="${Y(p.y)}" r="4" fill="${p.color || 'currentColor'}"/>`;
-      if (p.rotulo) s += `<text x="${(Number(X(p.x)) + 7).toFixed(1)}" y="${(Number(Y(p.y)) - 7).toFixed(1)}" font-size="14" fill="currentColor">${P.xml(p.rotulo)}</text>`;
+      const px = Number(X(p.x)), py = Number(Y(p.y));
+      s += `<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="4" fill="${p.color || 'currentColor'}"/>`;
+      if (!p.rotulo) continue;
+      let ux = px - cX, uy = py - cY;
+      const n = Math.hypot(ux, uy);
+      if (n < 8) {
+        // En el centro: hacia el lado contrario de las líneas que salen del punto.
+        ux = 0; uy = 0;
+        for (const tr of trazos) for (const [p1, p2] of [[tr.a, tr.b], [tr.b, tr.a]]) {
+          if (Math.abs(p1.x - p.x) < 1e-9 && Math.abs(p1.y - p.y) < 1e-9) { ux -= Number(X(p2.x)) - px; uy -= Number(Y(p2.y)) - py; }
+        }
+        const m = Math.hypot(ux, uy);
+        if (m < 1e-9) { ux = 0.7; uy = -0.7; } else { ux /= m; uy /= m; }
+      } else { ux /= n; uy /= n; }
+      const tx = Math.min(W - 4, Math.max(4, px + 12 * ux)), ty = Math.min(H - 22, Math.max(14, py + 12 * uy + 5));
+      const anc = ux > 0.35 ? 'start' : ux < -0.35 ? 'end' : 'middle';
+      s += `<text x="${tx.toFixed(1)}" y="${ty.toFixed(1)}" font-size="14" text-anchor="${anc}" fill="currentColor">${P.xml(p.rotulo)}</text>`;
     }
     if (nota) s += `<text x="12" y="${H - 10}" font-size="14" fill="var(--muted)">${P.xml(nota)}</text>`;
     return s + '</svg>';
@@ -209,8 +228,21 @@
   const distExacta = ({ e, n }) => (puro(e) && puro(n) ? Math.sqrt(cuad(e) + cuad(n)) : NaN);
   const d2De = ({ e, n }) => cuad(e) + cuad(n);
 
-  const variables = { L: { nombre: 'longitudes', color: 'o' }, r: { nombre: 'rumbos', color: 'i' }, t: { nombre: 'tiempo y rapideces', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
-  const CONVENCION = ' (Un rumbo como N 20° E se mide desde el norte, girando 20° hacia el este.)';
+  // Colores por tipo (regla 4: un color por variable, máximo 4). En los móviles, la rapidez y el tiempo
+  // van con colores distintos y los recorridos quedan sin color; en «rapidez», el tiempo queda sin color.
+  const variables = { L: { nombre: 'longitudes', color: 'o' }, r: { nombre: 'rumbos', color: 'i' }, x: { nombre: 'lo que se pide', color: 'd' } };
+  const VAR_MOV = { t: { nombre: 'tiempo', color: 'o' }, r: { nombre: 'rumbos', color: 'i' }, v: { nombre: 'rapideces', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
+  const VAR_RAP = { L: { nombre: 'separación', color: 'o' }, r: { nombre: 'rumbos', color: 'i' }, v: { nombre: 'rapidez de A', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
+  // Nota del rumbo, con los triángulos notables que hacen falta (ths: ángulos con el eje que aparecen).
+  function convencion(ths) {
+    const l = [];
+    if (ths.some(x => x === 37 || x === 53)) l.push(['3-4-5', 'para 37° y 53°']);
+    if (ths.some(x => x === 45)) l.push(['1-1-√2', 'para 45°']);
+    if (ths.some(x => x === 30 || x === 60)) l.push(['1-√3-2', 'para 30° y 60°']);
+    const nota = !l.length ? '' : l.length === 1 ? ` Usa el triángulo notable ${l[0][0]} ${l[0][1]}.`
+      : ` Usa los triángulos notables ${l.slice(0, -1).map(x => x.join(' ')).join(', ')} y ${l[l.length - 1].join(' ')}.`;
+    return ` (Un rumbo como N 20° E se mide desde el norte, girando 20° hacia el este.${nota})`;
+  }
   const SUJETOS = [
     { quien: 'Una lancha', sale: 'sale del muelle de Puno', lugar: 'el muelle', u: 'km' },
     { quien: 'Una avioneta', sale: 'despega del aeródromo', lugar: 'el aeródromo', u: 'km' },
@@ -273,9 +305,27 @@
     const tipo = m ? FIJO[m[2]] : rng.elegir(['distancia', 'distancia', 'regreso', 'regreso', 'moviles', 'rapidez', 'cuadrado', 'cuadrado', 'relativo']);
     for (let intento = 0; intento < 4000; intento++) {
       const pr = construir(rng, semilla, tipo);
-      if (pr && pr.alternativas.length >= 4) return pr;
+      if (pr && pr.alternativas.length >= 4 && desvioReal(pr._datos) <= 0.02) return pr;
     }
     throw new Error('No se pudo generar un problema con 4 alternativas distintas');
+  }
+  // Qué tanto cambia el resultado si 37° y 53° se toman como ángulos de verdad (y no con el 3-4-5):
+  // diferencia relativa del vector resultado (o de la rapidez). Se descartan los problemas con más de 2 %.
+  function desvioReal(d) {
+    const pv = (r, L) => { const z = azimut(r) * Math.PI / 180; return [L * Math.sin(z), L * Math.cos(z)]; };
+    const pa = (r, L) => vecRumbo(r, L);
+    const dif = f => { const A = f(pa), R = f(pv), n = Math.hypot(A[0], A[1]); return n < 1e-9 ? 0 : Math.hypot(R[0] - A[0], R[1] - A[1]) / n; };
+    if (d.tipo === 'distancia' || d.tipo === 'regreso') return dif(g => d.tramos.reduce((s, t) => { const [x, y] = g(t.rumbo, t.largo); return [s[0] + x, s[1] + y]; }, [0, 0]));
+    if (d.tipo === 'moviles') return dif(g => { const [A, B] = d.moviles.map(m => g(m.rumbo, m.rapidez * d.t)); return [A[0] - B[0], A[1] - B[1]]; });
+    if (d.tipo === 'relativo') return dif(g => { const [A, B] = d.lugares.map(l => g(l.rumbo, l.largo)); return [B[0] - A[0], B[1] - A[1]]; });
+    if (d.tipo === 'rapidez') {
+      const a = d.v1 * d.t, Dg = Math.abs(azimut(d.rumbos[0]) - azimut(d.rumbos[1])), D = Math.min(Dg, 360 - Dg);
+      const bOf = c => a * c + Math.sqrt(a * a * c * c - a * a + d.d2);
+      const ca = COS[D] ? COS[D][0] / COS[D][1] : Math.cos(D * Math.PI / 180);
+      const A = bOf(ca), R = bOf(Math.cos(D * Math.PI / 180));
+      return Math.abs(R - A) / A;
+    }
+    return 0;
   }
   function construir(rng, semilla, tipo) {
     if (tipo === 'distancia' || tipo === 'regreso') return recorridoP(rng, semilla, tipo);
@@ -292,7 +342,7 @@
     for (const f of [o.figura, o.figuraSolucion]) if (f) f.alt = contraer(f.alt);
     o.alternativas = o.alternativas.map(a => (a.error ? { ...a, error: { ...a.error, explicacion: contraer(a.error.explicacion) } } : a));
     return {
-      id: `${ID}#${semilla}`, variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
+      id: `${ID}#${semilla}`, variables: o.variables || variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
       figura: o.figura, figuraSolucion: o.figuraSolucion,
       alternativas: o.alternativas, solucion: o.solucion, respuesta: { valor: o.valor, unidad: o.unidad || '' }, _datos: o.datos,
     };
@@ -311,8 +361,10 @@
     const d = distExacta(S);
     if (!limpio(d)) return null;
     const suj = rng.elegir(SUJETOS), u = suj.u;
-    const enunciado = [`${suj.quien} ${suj.sale}.`, ...enunTramos(tramos, u), CONVENCION];
     const E = S.e, N = S.n;
+    const azFin0 = rumboDe(E, N);
+    const ths = tramos.map(t => t.th).concat(tipo === 'regreso' && azFin0 !== null ? [partes(azFin0).th] : []);
+    const enunciado = [`${suj.quien} ${suj.sale}.`, ...enunTramos(tramos, u), convencion(ths)];
     const pasos = pasosTramos(tramos, u);
     pasos.push(['Suma con signo (este y norte positivos; oeste y sur, negativos): este-oeste ', `${sumaTxt(tramos.map(t => comp(t).e).filter(x => val(x) !== 0), u)} = ${signo(E, 'este', 'oeste', u)}; norte-sur `,
       `${sumaTxt(tramos.map(t => comp(t).n).filter(x => val(x) !== 0), u)} = ${signo(N, 'norte', 'sur', u)}.`]);
@@ -403,7 +455,7 @@
     if (!limpio(d)) return null;
     const La = largoDe(a), Lb = largoDe(b);
     const qq = rng.elegir(QUIENES);
-    const enunciado = [`${qq.par}, A y B, ${qq.sale}. A va con rumbo `, v('r', rumboTexto(a.az)), ' a ', v('t', `${a.vtxt} km/h`), ' y B con rumbo ', v('r', rumboTexto(b.az)), ' a ', v('t', `${b.vtxt} km/h`), ', los dos en línea recta.', CONVENCION];
+    const enunciado = [`${qq.par}, A y B, ${qq.sale}. A va con rumbo `, v('r', rumboTexto(a.az)), ' a ', v('v', `${a.vtxt} km/h`), ' y B con rumbo ', v('r', rumboTexto(b.az)), ' a ', v('v', `${b.vtxt} km/h`), ', los dos en línea recta.', convencion([a.th, b.th])];
     const pregunta = ['¿Qué distancia los separa al cabo de ', v('t', `${t} horas`), '?'];
     const D345 = (() => { const x = comp(intercambio(a)), y = comp(intercambio(b)); return { e: mas(x.e, por(-1, y.e)), n: mas(x.n, por(-1, y.n)) }; })();
     const errores = [
@@ -415,7 +467,7 @@
     ].filter(Boolean);
     const alternativas = armarNum(rng, d, errores, 'km');
     const pasos = [
-      ['Lo que recorre cada uno en ', v('t', `${t} h`), ': A, ', v('t', a.vtxt), ` · ${t} = `, v('L', `${largoTxt(a)} km`), '; B, ', v('t', b.vtxt), ` · ${t} = `, v('L', `${largoTxt(b)} km`), '.'],
+      ['Lo que recorre cada uno en ', v('t', `${t} h`), ': A, ', v('v', a.vtxt), ' · ', v('t', `${t}`), ` = ${largoTxt(a)} km; B, `, v('v', b.vtxt), ' · ', v('t', `${t}`), ` = ${largoTxt(b)} km.`],
       ['A queda a ', `${pos(ca.e, ca.n, 'km')}`, ' del punto de partida; B, a ', `${pos(cb.e, cb.n, 'km')}.`],
       ['Diferencia de posiciones: ', `${pos(D.e, D.n, 'km')}`, ' (de B hacia A).'],
       ['Separación: √(', `${sq(D.e)} + ${sq(D.n)}`, ') = ', v('x', `${rad(d)} km`), '.'],
@@ -425,7 +477,7 @@
       enunciado, pregunta, figura: { svg: rosa(qq.lugar), alt: altRosa(`el punto de salida (${qq.lugar})`) },
       figuraSolucion: { svg: lamina([{ x: 0, y: 0, rotulo: 'salida' }, { ...pa, rotulo: 'A' }, { ...pb, rotulo: 'B' }], [{ a: { x: 0, y: 0 }, b: pa, color: 'var(--c-o)' }, { a: { x: 0, y: 0 }, b: pb, color: 'var(--c-o)' }, { a: pa, b: pb, color: 'var(--c-d)', grueso: true }]),
         alt: `Desde la salida, A recorre ${largoTxt(a)} km al ${rumboTexto(a.az)} y B recorre ${largoTxt(b)} km al ${rumboTexto(b.az)}; entre sus rumbos hay ${ang}°. La línea gruesa une A con B y mide ${rad(d)} km.` },
-      alternativas, solucion: pasos, valor: d, unidad: 'km',
+      alternativas, solucion: pasos, valor: d, unidad: 'km', variables: VAR_MOV,
       datos: { tipo: 'moviles', moviles: [a, b].map(m => ({ rumbo: rumboTexto(m.az), rapidez: m.vel, rapidezTexto: m.vtxt })), t },
     });
   }
@@ -449,6 +501,19 @@
     }
     return l;
   })();
+  // Ley de cosenos despejada: b² + (2|p|a/q)·b + (a² − d²) = 0, factorizada con la raíz b y la negativa.
+  function despeje(D, p, q, a, b, d, d2) {
+    const c = 2 * -p * a, K = a * a - d2;            // q·b² + c·b + q·K = 0
+    const cosT = `cos ${D}° = −${-p}/${q}`;
+    const ini = ['Ley de cosenos (', cosT, '): ', v('L', `(${rad(d)})²`), ` = ${a}² + b² − 2·${a}·b·(−${-p}/${q}) = ${a * a} + b² + ${c % q === 0 ? `${c / q}b` : `${c}b/${q}`}`];
+    const sgK = K < 0 ? `− ${-K}` : `+ ${K}`;
+    if (c % q === 0) {
+      const R = c / q + b;                             // la otra raíz es −R
+      return [...ini, ` → b² + ${c / q}b ${sgK} = 0 → (b − ${b})(b + ${R}) = 0 → b = ${b} km (la otra raíz es negativa).`];
+    }
+    const qR = c + q * b;
+    return [...ini, `. Por ${q}: ${q}b² + ${c}b ${q * K < 0 ? `− ${-q * K}` : `+ ${q * K}`} = 0 → (b − ${b})(${q}b + ${qR}) = 0 → b = ${b} km (la otra raíz es negativa).`];
+  }
   function rapidez(rng, semilla) {
     const pr = rng.elegir(PARES);
     const t = rng.elegir([2, 3, 4, 5]);
@@ -458,7 +523,8 @@
     const az2 = rng.elegir(cands);
     const a = pr.v1 * t, b = pr.v2 * t, d2 = pr.Q * t * t, d = Math.sqrt(d2);
     const qq = rng.elegir(QUIENES);
-    const enunciado = [`${qq.par}, A y B, ${qq.sale}. A va con rumbo `, v('r', rumboTexto(az1)), ' a ', v('t', `${pr.v1} km/h`), ' y B con rumbo ', v('r', rumboTexto(az2)), ', los dos en línea recta y con rapidez constante. Al cabo de ', v('t', `${t} horas`), ' están a ', v('L', `${rad(d)} km`), ' uno del otro.', CONVENCION];
+    const enunciado = [`${qq.par}, A y B, ${qq.sale}. A va con rumbo `, v('r', rumboTexto(az1)), ' a ', v('v', `${pr.v1} km/h`), ' y B con rumbo ', v('r', rumboTexto(az2)), `, los dos en línea recta y con rapidez constante. Al cabo de ${t} horas están a `, v('L', `${rad(d)} km`), ' uno del otro.',
+      convencion([partes(az1).th, partes(az2).th, ...(pr.D === 127 || pr.D === 143 ? [37] : pr.D === 120 ? [60] : [])])];
     const errores = [
       pr.D !== 90 && d > a ? h('RMP43-angulo-recto', Math.sqrt(d2 - a * a) / t, `Usaste Pitágoras, pero entre los rumbos hay ${pr.D}°, no 90°. Con ese ángulo va la ley de cosenos (o las componentes).`) : null,
       d > a ? h('RMP42-en-linea', (d - a) / t, 'Restaste el recorrido de A de la separación, como si se alejaran en sentidos opuestos sobre una recta. Sus rumbos forman otro ángulo.') : null,
@@ -470,9 +536,9 @@
     const [p, q] = COS[pr.D];
     const pasos = [
       ['Entre los rumbos ', v('r', rumboTexto(az1)), ' y ', v('r', rumboTexto(az2)), ` hay ${pr.D}°.`],
-      ['A recorre ', v('t', `${pr.v1}`), ' · ', v('t', `${t}`), ` = ${a} km. Si B recorre b km, la separación es el tercer lado del triángulo con esos dos lados y ${pr.D}° entre ellos.`],
+      ['A recorre ', v('v', `${pr.v1}`), ` · ${t} = ${a} km. Si B recorre b km, la separación es el tercer lado del triángulo con esos dos lados y ${pr.D}° entre ellos.`],
       pr.D === 90 ? ['Pitágoras: ', v('L', `(${rad(d)})²`), ` = ${a}² + b², así que b² = ${d2} − ${a * a} = ${b * b} y b = ${b} km.`]
-        : ['Ley de cosenos (cos ', `${pr.D}° = −${-p}/${q}`, '): ', v('L', `(${rad(d)})²`), ` = ${a}² + b² + ${2 * -p}·${a}·b/${q}. Con b = ${b}: ${a * a} + ${b * b} + ${2 * -p * a * b / q} = ${d2}. ✓ (la otra raíz es negativa).`],
+        : despeje(pr.D, p, q, a, b, d, d2),
       ['Rapidez de B: ', `${b} ÷ ${t} = `, v('x', `${pr.v2} km/h`), '.'],
     ];
     const ua = { x: Math.sin(az1 * Math.PI / 180) * a, y: Math.cos(az1 * Math.PI / 180) * a };
@@ -481,7 +547,7 @@
       enunciado, pregunta: ['¿Cuál es la rapidez de B?'], figura: { svg: rosa(qq.lugar), alt: altRosa(`el punto de salida (${qq.lugar})`) },
       figuraSolucion: { svg: lamina([{ x: 0, y: 0, rotulo: 'salida' }, { ...ua, rotulo: 'A' }, { ...ub, rotulo: 'B' }], [{ a: { x: 0, y: 0 }, b: ua, color: 'var(--c-o)' }, { a: { x: 0, y: 0 }, b: ub, color: 'var(--c-o)' }, { a: ua, b: ub, color: 'var(--c-d)', grueso: true }]),
         alt: `Desde la salida, A recorre ${a} km al ${rumboTexto(az1)} y B recorre ${b} km al ${rumboTexto(az2)}; entre los dos rumbos hay ${pr.D}°. La línea gruesa une A con B y mide ${rad(d)} km.` },
-      alternativas, solucion: pasos, valor: pr.v2, unidad: 'km/h',
+      alternativas, solucion: pasos, valor: pr.v2, unidad: 'km/h', variables: VAR_RAP,
       datos: { tipo: 'rapidez', rumbos: [rumboTexto(az1), rumboTexto(az2)], v1: pr.v1, t, d2 },
     });
   }
@@ -527,7 +593,7 @@
     const nom = x => PERSONAS[x];
     const lugar = forma === 'cuadrado' ? `una cancha cuadrada de ${AB} m de lado` : `una cancha rectangular, con ${AB} m de ${nom('A')} a ${nom('B')} y ${AD} m de ${nom('A')} a ${nom('D')}`;
     const enunciado = [`${nom('A')}, ${nom('B')}, ${nom('C')} y ${nom('D')} están parados en las esquinas de ${lugar}, en ese orden (${nom('A')} y ${nom('C')} están en esquinas opuestas). Vistos desde ${nom('A')}, ${nom('B')} está al `,
-      v('r', rumboTexto(phi)), ` y ${nom('D')} está al `, v('r', rumboTexto(psi)), '.', ...(desde === 'O' || hacia === 'O' ? [' En el centro de la cancha hay un poste.'] : []), CONVENCION];
+      v('r', rumboTexto(phi)), ` y ${nom('D')} está al `, v('r', rumboTexto(psi)), '.', ...(desde === 'O' || hacia === 'O' ? [' En el centro de la cancha hay un poste.'] : []), convencion([forma === 'cuadrado' ? 45 : 37])];
     const pregunta = [`¿Qué rumbo debe seguir ${desde === 'O' ? 'alguien que está junto al poste' : nom(desde)} para ir en línea recta hacia ${hacia === 'O' ? 'el poste' : nom(hacia)}?`];
     const intercambiado = forma === 'rectangulo' ? anguloMarco(dx * AD / AB, dy * AB / AD) : null;
     const errores = [
@@ -542,8 +608,8 @@
     const pasos = [
       [`Desde ${nom('A')}, ${nom('B')} está al `, v('r', rumboTexto(phi)), ` y ${nom('D')} al `, v('r', rumboTexto(psi)), `: para pasar de la dirección de ${nom('B')} a la de ${nom('D')} se gira 90° ${s > 0 ? 'en sentido horario' : 'en sentido antihorario'}.`],
       [`Dentro de la cancha, el segmento de ${desde === 'O' ? 'el poste' : nom(desde)} a ${hacia === 'O' ? 'el poste' : nom(hacia)} avanza ${f2(Math.abs(dx))} m en la dirección de ${nom('A')} a ${nom('B')} ${dx < 0 ? '(hacia atrás)' : ''} y ${f2(Math.abs(dy))} m en la de ${nom('A')} a ${nom('D')} ${dy < 0 ? '(hacia atrás)' : ''}.`.replace(/ {2,}/g, ' ').replace(/ \./, '.'),
-        forma === 'cuadrado' ? ' En un cuadrado, la diagonal forma 45° con los lados.' : ' Con lados 4 y 3, la diagonal forma 37° con el lado mayor y 53° con el menor.'],
-      [`Así, su dirección está ${alR}° girada desde la de ${nom('A')} a ${nom('B')}`, al === alR ? `, hacia el lado de ${nom('D')}` : `, hacia el lado contrario a ${nom('D')}`, `: ${rumboTexto(phi)} girado ${alR}° → `, v('x', rumboTexto(azAns)), '.'],
+        forma === 'cuadrado' ? ' En un cuadrado, la diagonal forma 45° con los lados.' : ' Con lados 4 y 3 (triángulo 3-4-5), la diagonal forma 37° con el lado mayor y 53° con el menor.'],
+      [`Así, su dirección está girada ${alR}° desde la de ${nom('A')} a ${nom('B')}${alR > 90 ? ` (180° − ${180 - alR}°, porque se sale de ${desde === 'O' ? 'el poste' : nom(desde)} hacia atrás por el lado de ${nom('A')} a ${nom('B')})` : ''}`, al === alR ? `, hacia el lado de ${nom('D')}` : `, hacia el lado contrario a ${nom('D')}`, `: ${rumboTexto(phi)} girado ${alR}° → `, v('x', rumboTexto(azAns)), '.'],
     ];
     const az2v = (az, L) => ({ x: Math.sin(az * Math.PI / 180) * L, y: Math.cos(az * Math.PI / 180) * L });
     const pB = az2v(phi, AB), pD = az2v(psi, AD), pC = { x: pB.x + pD.x, y: pB.y + pD.y }, pO = { x: pC.x / 2, y: pC.y / 2 };
@@ -578,7 +644,7 @@
     const pide = rng.elegir(['rumbo', 'rumbo', 'distancia']);
     const L = rng.elegir(LUGARES);
     const u = 'km';
-    const enunciado = [`Desde ${L.P}, ${L.a} está a `, v('L', `${largoTxt(a)} ${u}`), ' al ', v('r', rumboTexto(a.az)), ` y ${L.b} está a `, v('L', `${largoTxt(b)} ${u}`), ' al ', v('r', rumboTexto(b.az)), '.', CONVENCION];
+    const enunciado = [`Desde ${L.P}, ${L.a} está a `, v('L', `${largoTxt(a)} ${u}`), ' al ', v('r', rumboTexto(a.az)), ` y ${L.b} está a `, v('L', `${largoTxt(b)} ${u}`), ' al ', v('r', rumboTexto(b.az)), '.', null];
     const La = largoDe(a), Lb = largoDe(b);
     const pasos = [
       [`Posición de ${L.a}: `, `${pos(ca.e, ca.n, u)} de ${L.P}.`],
@@ -591,6 +657,8 @@
     const Ssum = { e: mas(ca.e, cb.e), n: mas(ca.n, cb.n) };
     const D345 = (() => { const x = comp(intercambio(a)), y = comp(intercambio(b)); return { e: mas(y.e, por(-1, x.e)), n: mas(y.n, por(-1, x.n)) }; })();
     const hay345 = [30, 37, 53, 60].includes(a.th) || [30, 37, 53, 60].includes(b.th);
+    const azD = rumboDe(D.e, D.n);
+    enunciado[enunciado.length - 1] = convencion([a.th, b.th, ...(pide === 'rumbo' && azD !== null ? [partes(azD).th] : [])]);
     if (pide === 'distancia') {
       const d = distExacta(D);
       if (!limpio(d)) return null;
