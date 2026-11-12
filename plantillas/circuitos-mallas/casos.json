@@ -2,7 +2,7 @@
   "plantilla": "circuitos-mallas",
   "tolerancia": 1e-06,
   "nota": "Corrientes en A, voltajes en V, resistencias en Ω, potencias en W; respuestas en magnitud, salvo ddp (V_A − V_B con signo) y estado (texto: si la pila 3 entrega o se carga, y con qué corriente). En kirchhoff, e[k] es la fem de la rama k con signo (+ si el borne positivo mira hacia A), en serie con R[k]; en «fem», I1 e I2 son las corrientes que suben hacia A por la rama 1 y por la rama 2. En puente, R = [R1 (A-C), R2 (C-B), R3 (A-D), R4 (D-B)].",
-  "verificacion": "Verificado a ciegas (8 nov 2026) por un subagente que no vio el generador: 45 problemas resueltos con potencial de nodo y Kirchhoff propios, en fracciones exactas; 45/45 coinciden en letra y valor. Tras la revisión se agregaron puentes no equilibrados con R5 y la pregunta de si la pila entrega o se carga, y los 16 casos regenerados se volvieron a resolver a ciegas (12 nov 2026): 16/16.",
+  "verificacion": "Verificado a ciegas (8 nov 2026) por un subagente que no vio el generador: 45 problemas (15 de casos.json y 30 semillas nuevas) resueltos con potencial de nodo y Kirchhoff propios, en fracciones exactas. 45/45 coinciden en letra y valor, incluidos los signos con pilas en oposición, la pila que se carga y el puente no equilibrado con amperímetro. Tras la revisión se agregaron puentes no equilibrados con R5 y la pregunta de si la pila entrega o se carga; sus casos los recalculó el constructor aparte. Tras la regla de escala y redondez (12 nov) cambiaron algunos casos; los recalculó el constructor aparte.",
   "casos": [
     {
       "semilla": 0,
@@ -10,19 +10,19 @@
         "tipo": "kirchhoff",
         "sub": "potencia",
         "e": [
-          18,
+          30,
           0,
-          13
+          8
         ],
         "R": [
-          8,
-          4,
-          2
+          6,
+          6,
+          4
         ]
       },
       "esperado": {
-        "respuesta": 18.0,
-        "exacta": "18 W"
+        "respuesta": 90.0,
+        "exacta": "90 W"
       }
     },
     {
@@ -31,19 +31,19 @@
         "tipo": "kirchhoff",
         "sub": "tres",
         "e": [
-          2,
-          -9,
-          2
+          6,
+          -4,
+          -6.5
         ],
         "R": [
-          3,
-          2,
-          1
+          4,
+          4,
+          3
         ]
       },
       "esperado": {
-        "respuesta": 4.0,
-        "exacta": "4 A"
+        "respuesta": 0.5,
+        "exacta": "0,5 A"
       }
     },
     {
@@ -75,19 +75,19 @@
         "tipo": "kirchhoff",
         "sub": "rama",
         "e": [
-          3,
+          9,
           0,
-          9.5
+          -9
         ],
         "R": [
           2,
-          1,
-          5
+          2,
+          8
         ]
       },
       "esperado": {
-        "respuesta": 2.0,
-        "exacta": "2 A"
+        "respuesta": 1.5,
+        "exacta": "1,5 A"
       }
     },
     {
@@ -116,18 +116,18 @@
         "pide": "r",
         "puntos": [
           [
-            3,
+            0.5,
             4.5
           ],
           [
-            7,
-            2.25
+            4.5,
+            1.5
           ]
         ]
       },
       "esperado": {
-        "respuesta": 1.0,
-        "exacta": "1 Ω"
+        "respuesta": 1.5,
+        "exacta": "1,5 Ω"
       }
     },
     {
@@ -136,17 +136,17 @@
         "tipo": "puente",
         "sub": "corriente",
         "R": [
-          1,
+          3,
+          15,
           5,
-          20,
-          1
+          5
         ],
-        "R5": 10,
-        "E": 18
+        "R5": 20,
+        "E": 48
       },
       "esperado": {
-        "respuesta": 4.8,
-        "exacta": "4,8 A"
+        "respuesta": 7.68,
+        "exacta": "7,68 A"
       }
     },
     {
@@ -197,16 +197,16 @@
         "tipo": "puente",
         "sub": "req",
         "R": [
-          5,
-          15,
-          20,
-          6
+          10,
+          1,
+          10,
+          10
         ],
-        "R5": 15
+        "R5": 5
       },
       "esperado": {
-        "respuesta": 10.0,
-        "exacta": "10 Ω"
+        "respuesta": 6.4,
+        "exacta": "6,4 Ω"
       }
     },
     {
@@ -265,16 +265,16 @@
         "sub": "corriente",
         "R": [
           2,
-          1,
-          6,
-          3
+          8,
+          2,
+          8
         ],
-        "R5": 6,
-        "E": 36
+        "R5": 2,
+        "E": 48
       },
       "esperado": {
-        "respuesta": 16.0,
-        "exacta": "16 A"
+        "respuesta": 9.6,
+        "exacta": "9,6 A"
       }
     },
     {
@@ -285,15 +285,15 @@
         "R": [
           4,
           4,
-          4,
-          10
+          10,
+          4
         ],
         "R5": 8,
-        "E": 48
+        "E": 9
       },
       "esperado": {
-        "respuesta": 0.8,
-        "exacta": "0,8 A"
+        "respuesta": 0.15,
+        "exacta": "0,15 A"
       }
     },
     {

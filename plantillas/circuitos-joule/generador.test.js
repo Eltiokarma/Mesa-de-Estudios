@@ -108,14 +108,19 @@ test('las trampas de unidades aparecen: mA, minutos, diámetro, calorías y el c
     const p = gen.generar(s), c = p.respuesta.valor;
     for (const a of p.alternativas) {
       if (a.error) ids.add(a.error.id);
-      assert.ok(a.valor >= c / 60 - 1e-12 && a.valor <= c * 60 + 1e-12, `semilla ${s}: ${a.texto} fuera de escala`);
     }
+    const vals = p.alternativas.map(a => a.valor);
+    assert.ok(Math.max(...vals) / Math.min(...vals) < 60, `semilla ${s}: alternativas fuera de escala (${p.alternativas.map(a => a.texto)})`);
     const sci = p.alternativas.map(a => / × 10/.test(a.texto));
     assert.ok(sci.every(x => x === sci[0]), `semilla ${s}: notaciones mezcladas`);
     for (const a of p.alternativas) assert.ok(!/^0,0?\d? /.test(a.texto) || a.valor >= 0.01, `semilla ${s}: ${a.texto} redondeado de más`);
   }
-  for (const id of ['U2-mA', 'U6-min', 'U6-s', 'U5-al-reves', 'PR6-diametro', 'U5-sin-convertir', 'CAB-un-tramo', 'PR1-cuadrado', 'PR4-seccion', 'PI-no-suma-fem', 'JO-voltaje-fijo'])
+  for (const id of ['U2-mA', 'U6-min', 'U6-cien', 'U5-al-reves', 'PR6-diametro', 'U5-sin-convertir', 'CAB-un-tramo', 'PR1-cuadrado', 'PR4-seccion', 'PI-no-suma-fem', 'JO-voltaje-fijo'])
     assert.ok(ids.has(id), `no sale ${id}`);
+});
+
+test('ninguna semilla de 0 a 2000 (ni «alternativas-N») deja de generar', () => {
+  for (const pre of ['', 'alternativas-']) for (let s = 0; s <= 2000; s++) assert.doesNotThrow(() => gen.generar(pre + s), `semilla ${pre}${s}`);
 });
 
 test('hay variedad: muchos enunciados distintos', () => {

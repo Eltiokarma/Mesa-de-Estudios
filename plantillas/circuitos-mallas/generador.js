@@ -63,14 +63,17 @@
   function generar(semilla) {
     const rng = Azar.crear('circuitos-mallas|' + semilla);
     const equilibrado = rng.moneda(); // en puente/req y puente/corriente: mitad y mitad
-    const [tipo, sub] = rng.elegir([
-      ['kirchhoff', 'rama'], ['kirchhoff', 'rama'], ['kirchhoff', 'fuente'], ['kirchhoff', 'tres'], ['kirchhoff', 'tres'],
-      ['kirchhoff', 'potencia'], ['kirchhoff', 'ddp'], ['kirchhoff', 'fem'], ['kirchhoff', 'fem'], ['kirchhoff', 'estado'], ['kirchhoff', 'estado'],
-      ['puente', 'req'], ['puente', 'req'], ['puente', 'corriente'], ['puente', 'corriente'], ['puente', 'r5'], ['puente', 'amperimetro'], ['puente', 'amperimetro'], ['puente', 'corto'],
-      ['pilas', 'serie'], ['pilas', 'serie'], ['pilas', 'paralelo'], ['pilas', 'paralelo'], ['pilas', 'grafica'], ['pilas', 'grafica']]);
-    for (let intento = 0; intento < 5000; intento++) {
-      const pr = tipo === 'kirchhoff' ? kirchhoff(rng, semilla, sub) : tipo === 'puente' ? puente(rng, semilla, sub, equilibrado) : pilas(rng, semilla, sub);
-      if (pr && pr.alternativas.length >= 4) return pr;
+    // Si un subtipo no logra 4 alternativas limpias con estos datos, se sortea otro (red de seguridad).
+    for (let ronda = 0; ronda < 10; ronda++) {
+      const [tipo, sub] = rng.elegir([
+        ['kirchhoff', 'rama'], ['kirchhoff', 'rama'], ['kirchhoff', 'fuente'], ['kirchhoff', 'tres'], ['kirchhoff', 'tres'],
+        ['kirchhoff', 'potencia'], ['kirchhoff', 'ddp'], ['kirchhoff', 'fem'], ['kirchhoff', 'fem'], ['kirchhoff', 'estado'], ['kirchhoff', 'estado'],
+        ['puente', 'req'], ['puente', 'req'], ['puente', 'corriente'], ['puente', 'corriente'], ['puente', 'r5'], ['puente', 'amperimetro'], ['puente', 'amperimetro'], ['puente', 'corto'],
+        ['pilas', 'serie'], ['pilas', 'serie'], ['pilas', 'paralelo'], ['pilas', 'paralelo'], ['pilas', 'grafica'], ['pilas', 'grafica']]);
+      for (let intento = 0; intento < 5000; intento++) {
+        const pr = tipo === 'kirchhoff' ? kirchhoff(rng, semilla, sub) : tipo === 'puente' ? puente(rng, semilla, sub, equilibrado) : pilas(rng, semilla, sub);
+        if (pr && pr.alternativas.length >= 4) return pr;
+      }
     }
     throw new Error('No se pudo generar un problema con 4 alternativas distintas');
   }
@@ -79,7 +82,11 @@
     let alternativas;
     if (o.textual) alternativas = P.armarTexto({ correcta: o.correcta, errores: o.errores, rng });
     else {
-      const errores = o.errores.filter(e => Number.isFinite(e.valor) && Math.abs(e.valor) >= 0.01 && Math.abs(e.valor) < 1e5 && (o.negativos || e.valor > 0));
+      // Redondez pareja: ninguna incorrecta con más decimales que la correcta (si no, la correcta
+      // se delata por ser la única «limpia»).
+      const decs = x => { const t = f(x), i = t.indexOf(','); return i < 0 ? 0 : t.length - i - 1; };
+      const dc = decs(o.correcta);
+      const errores = o.errores.filter(e => Number.isFinite(e.valor) && Math.abs(e.valor) >= 0.01 && Math.abs(e.valor) < 1e5 && (o.negativos || e.valor > 0) && decs(e.valor) <= dc);
       alternativas = P.armar({ correcta: o.correcta, errores, rng, unidad: o.unidad, negativos: !!o.negativos });
     }
     if (o.textual) o.correcta = o.correcta.clave;

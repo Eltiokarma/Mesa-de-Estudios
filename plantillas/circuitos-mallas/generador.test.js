@@ -146,6 +146,20 @@ test('«req» y «corriente» salen equilibrados y no equilibrados; «amperimetr
   assert.ok(cuenta.si > 20 && cuenta.no > 20, JSON.stringify(cuenta));
 });
 
+test('ninguna semilla de 0 a 2000 (ni «alternativas-N») deja de generar, y la correcta casi nunca es la única más redonda', () => {
+  const decs = t => { const m = t.match(/,(\d+)/); return m ? m[1].length : 0; };
+  let unica = 0, n = 0;
+  for (const pre of ['', 'alternativas-']) for (let s = 0; s <= 2000; s++) {
+    let p;
+    assert.doesNotThrow(() => { p = gen.generar(pre + s); }, `semilla ${pre}${s}`);
+    if (typeof p.respuesta.valor !== 'number') continue;
+    n++;
+    const dc = decs(p.alternativas.find(a => a.correcta).texto);
+    if (p.alternativas.filter(a => !a.correcta).every(a => decs(a.texto) > dc)) unica++;
+  }
+  assert.ok(unica / n < 0.05, `la correcta es la única más redonda en el ${(100 * unica / n).toFixed(1)} %`);
+});
+
 test('los textos no dicen «de el» ni «a el»', () => {
   const plano = seg => seg.map(x => (typeof x === 'string' ? x : x.t)).join('');
   for (let s = 0; s < 1000; s++) {

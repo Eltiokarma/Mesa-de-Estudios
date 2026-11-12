@@ -69,24 +69,34 @@
 
   function generar(semilla) {
     const rng = Azar.crear('circuitos-joule|' + semilla);
-    const [tipo, sub] = rng.elegir([
-      ['joule', 'energia'], ['joule', 'energia'], ['joule', 'corriente'], ['joule', 'corriente'], ['joule', 'escala'], ['joule', 'kwh'], ['joule', 'calorias'],
-      ['agua', 'agua'], ['agua', 'agua'],
-      ['resistividad', 'diametro'], ['resistividad', 'diametro'], ['resistividad', 'comparar'], ['resistividad', 'rho'], ['resistividad', 'rho'], ['resistividad', 'estirado'], ['resistividad', 'doblado'],
-      ['cables', 'calentador'], ['cables', 'calentador'], ['cables', 'perdida'],
-      ['carga', 'carga'], ['carga', 'tiempo'], ['carga', 'duracion'], ['carga', 'duracion']]);
-    const fn = { joule, agua, resistividad, cables, carga }[tipo];
-    for (let intento = 0; intento < 5000; intento++) {
-      const pr = fn(rng, semilla, sub);
-      if (pr && pr.alternativas.length >= 4) return pr;
+    // Si un subtipo no logra 4 alternativas limpias con estos datos, se sortea otro (red de seguridad).
+    for (let ronda = 0; ronda < 10; ronda++) {
+      const [tipo, sub] = rng.elegir([
+        ['joule', 'energia'], ['joule', 'energia'], ['joule', 'corriente'], ['joule', 'corriente'], ['joule', 'escala'], ['joule', 'kwh'], ['joule', 'calorias'],
+        ['agua', 'agua'], ['agua', 'agua'],
+        ['resistividad', 'diametro'], ['resistividad', 'diametro'], ['resistividad', 'comparar'], ['resistividad', 'rho'], ['resistividad', 'rho'], ['resistividad', 'estirado'], ['resistividad', 'doblado'],
+        ['cables', 'calentador'], ['cables', 'calentador'], ['cables', 'perdida'],
+        ['carga', 'carga'], ['carga', 'tiempo'], ['carga', 'duracion'], ['carga', 'duracion']]);
+      const fn = { joule, agua, resistividad, cables, carga }[tipo];
+      for (let intento = 0; intento < 5000; intento++) {
+        const pr = fn(rng, semilla, sub);
+        if (pr && pr.alternativas.length >= 4) return pr;
+      }
     }
     throw new Error('No se pudo generar un problema con 4 alternativas distintas');
   }
 
   function cerrar(rng, semilla, o) {
-    // Nada fuera de escala: cada distractor entre 1/60 y 60 veces la correcta (60 deja pasar el
-    // olvido de minutos a segundos, que es la trampa de examen; mata los 10⁸ J y las 27 000 h).
-    const errores = o.errores.filter(e => Number.isFinite(e.valor) && e.valor > 0 && e.valor >= o.correcta / 60 - 1e-12 && e.valor <= o.correcta * 60 + 1e-12);
+    // Nada fuera de escala: entre todas las alternativas (correcta incluida), la mayor no llega a
+    // 60 veces la menor. Se aceptan los errores en orden mientras el conjunto cumpla la regla.
+    const errores = [];
+    let lo = o.correcta, hi = o.correcta;
+    for (const e of o.errores) {
+      if (!Number.isFinite(e.valor) || e.valor <= 0) continue;
+      const nlo = Math.min(lo, e.valor), nhi = Math.max(hi, e.valor);
+      if (nhi / nlo >= 60 * (1 - 1e-12)) continue;
+      errores.push(e); lo = nlo; hi = nhi;
+    }
     // Una sola notación por problema: todas normales o todas en notación científica.
     const todas = [o.correcta, ...errores.map(e => e.valor)];
     const cientifica = o.cientifica || todas.some(x => x < 0.001 || x >= 1e7);
@@ -176,13 +186,14 @@
       const enunciado = [`${ap} de `, v('i', `${f(Pw)} W`), ' se usa ', v('t', `${f(hd)} h al día`), ` durante ${dias} días.`];
       const pregunta = ['¿Cuánta ', v('x', 'energía'), ' consume en ese tiempo, en kW·h?'];
       const errores = [
-        tr('U2-kilo', Pw * hd * dias, 'Te quedó en W·h: falta dividir entre 1000 para pasar a kW·h.'),
-        tr('U6-s', Pw * hd * 3600 * dias / 1000, 'Pasaste las horas a segundos. El kW·h ya trae la hora: la potencia en kW por el tiempo en horas.'),
+        h('JO-sin-horas', Pw * dias / 1000, `Multiplicaste por los días pero no por las ${f(hd)} h de cada día. El tiempo total es horas por día × días.`),
+        h('JO-suma-tiempos', Pw * (hd + dias) / 1000, `Sumaste las horas y los días (${f(hd)} + ${dias}). El tiempo total es horas por día × días: ${f(hd * dias)} h.`),
+        tr('U2-kilo', Pw * hd * dias / 100, 'Pasaste los watts a kilowatts dividiendo entre 100. Un kilowatt son 1000 W.'),
         h('JO-un-dia', Pw * hd / 1000, `Calculaste el consumo de un solo día. Son ${dias} días.`),
         tr('U6-min', Pw * hd * 60 * dias / 1000, 'Pasaste las horas a minutos. Para el kW·h el tiempo va en horas.'),
-        h('JO-sin-horas', Pw * dias / 1000, `Multiplicaste por los días pero no por las ${f(hd)} h de cada día. El tiempo total es horas por día × días.`),
-        tr('U2-kilo', Pw * hd * dias / 100, 'Pasaste los watts a kilowatts dividiendo entre 100. Un kilowatt son 1000 W.'),
+        tr('U2-kilo', Pw * hd * dias, 'Te quedó en W·h: falta dividir entre 1000 para pasar a kW·h.'),
       ];
+
       const solucion = [
         ['Potencia en kW: ', v('i', `${f(Pw / 1000)} kW`), '. Tiempo total: ', v('t', `${f(hd)} · ${dias} = ${f(hd * dias)} h`), '.'],
         [v('x', 'E'), ` = ${f(Pw / 1000)} · ${f(hd * dias)} = `, v('x', `${f(correcta)} kW·h`), '.'],
@@ -385,6 +396,7 @@
         h('PI-no-suma-fem', th * n, `No sumaste las fem. En serie, el voltaje total es ${n} · ${f(E)} = ${f(n * E)} V, y con más voltaje pasa más corriente.`),
         tr('U6-min', th * 60, 'Ese es el tiempo en minutos. Para horas, divide entre 60.'),
         tr('U6-s', th * 3600, 'Ese es el tiempo en segundos. Para horas, divide entre 3600.'),
+        h('PI-carga-repartida', th / n, `Repartiste la carga entre las ${n} pilas. En serie, la misma carga pasa por todas: los ${f(Q)} C son los que recorren el circuito.`),
         h('PI-voltaje-como-corriente', Q / (n * E) / 3600, 'Dividiste la carga entre el voltaje, como si fuera la corriente. Primero halla la corriente con Ohm: I = V/R.'),
       ];
       const solucion = [
@@ -405,6 +417,7 @@
       const errores = [
         tr('U2-mA', Q * 10, `Pasaste de mA a A dividiendo entre 100. Un amperio tiene 1000 mA: ${f(ImA)} mA = ${f(I)} A.`),
         tr('U6-min', I * tmin, `Usaste el tiempo en minutos. Va en segundos: ${f(tmin)} min = ${f(60 * tmin)} s.`),
+        tr('U6-cien', I * 100 * tmin, `Pasaste los minutos a segundos multiplicando por 100. Un minuto tiene 60 s: ${f(tmin)} min = ${f(60 * tmin)} s.`),
         tr('U2-mA', ImA * tmin, 'No convertiste ni la corriente a amperios ni el tiempo a segundos. Q = I·t con I en A y t en s.'),
         tr('PR4-carga', I / (60 * tmin), 'Dividiste la corriente entre el tiempo. La corriente es carga por segundo, así que la carga es corriente por tiempo: Q = I·t.'),
       ];
@@ -423,6 +436,7 @@
       tr('PR4-carga', Q * I / 60, 'Multiplicaste la carga por la corriente. De Q = I·t, el tiempo es t = Q/I.'),
       tr('U2-mA', tmin / 10, `Pasaste de mA a A dividiendo entre 100. Un amperio tiene 1000 mA: ${f(ImA)} mA = ${f(I)} A.`),
       tr('U6-h', tmin / 60, 'Pasaste los segundos a horas (entre 3600). Para minutos se divide entre 60.'),
+      tr('U6-cien', 0.6 * tmin, 'Pasaste los segundos a minutos dividiendo entre 100. Un minuto tiene 60 s: se divide entre 60.'),
     ];
     const solucion = [
       ['En el SI: ', v('i', `I = ${f(I)} A`), '. De Q = I·t: t = ', v('q', 'Q'), `/I = ${f(Q)}/${f(I)} = ${f(60 * tmin)} s.`],
