@@ -128,3 +128,62 @@ Con el DNI pesa más el deber de seguridad. Además del cifrado del campo:
 - copias de respaldo cifradas;
 - acceso al panel del administrador con contraseña fuerte;
 - un registro de quién descargó qué.
+
+## Contrato de la API (fase C1 y C2)
+
+Así el servidor (`servidor/`) y la app (`nucleo/sesion.js`) se pueden construir por separado. Todo es JSON con prefijo `/api`. El token de acceso va en `Authorization: Bearer <token>`. Los errores responden `{ "error": "<código>", "mensaje": "<texto en español para el alumno>" }`.
+
+**Sesión**
+
+- `POST /api/login`
+  - Envía `{ usuario, contrasena }`.
+  - Si sale bien, responde **200** `{ acceso, renovacion, expira_en, usuario: { rol, nombre, debe_cambiar, alumno?, seccion?, colegio } }`.
+  - Si falla, responde **401** `credenciales`, o **429** `demasiados-intentos` cuando hubo 5 fallos en 10 minutos por usuario o por IP.
+- `POST /api/renovar`
+  - Envía `{ renovacion }` y responde con el mismo cuerpo que el login.
+  - La renovación rota: la anterior queda revocada. Si se reusa una renovación ya revocada, se revocan todas las de ese usuario.
+- `POST /api/salir`: envía `{ renovacion }` y la revoca.
+- `PUT /api/contrasena`
+  - Envía `{ actual, nueva }`. La nueva tiene 6 caracteres o más y no puede ser igual a la actual.
+  - Apaga `debe_cambiar`.
+
+El acceso dura 15 minutos. La renovación dura 30 días y en el servidor se guarda solo su hash.
+
+**Alumno**
+
+- `GET /api/estado` responde `{ est, actualizado, habilitaciones: { salida: [cursos], soluciones: [cursos] } }`. Las habilitaciones son las de su sección y la app las copia en `est.salidaHabilitada` y `est.solucionesHabilitadas`.
+- `PUT /api/estado` envía `{ est }` y responde `{ est }` ya unido, con estas reglas:
+  - En `practica[id]`, los contadores (`hechos`, `aciertos`, `nose`, `textos`, `preguntas`, `previos`, `previosBien`) se quedan con el máximo de los dos lados, y `hechos` de lectura (un objeto) se une.
+  - En `practica[id]` y en `pruebas[curso]`, las pruebas `entrada` y `salida` no se pisan: gana la que ya estaba en el servidor. Lo mismo vale para `pruebas[curso].orden`.
+  - Si `enCurso` existe de un solo lado, se toma ese; si existe en los dos, el que tenga más respuestas.
+  - `vistas` se une quedándose con la fecha más antigua de cada unidad; `dias` se une sin repetir.
+  - `uni`, `grado`, `tema` y `nombre`: gana el cliente.
+  - El campo `alumno` lo pone siempre el servidor, con el id seudónimo de la cuenta.
+- `POST /api/eventos`
+  - Envía `{ eventos: [...] }`, con hasta 500 eventos por vez.
+  - Es idempotente por (`alumno`, `t`). El servidor reemplaza `alumno` por el de la cuenta y descarta cualquier campo con datos personales.
+  - Responde `{ recibidos, nuevos }`.
+
+**Profesor**
+
+- `GET /api/secciones` responde `[{ id, grado, letra, alumnos }]`.
+- `GET /api/secciones/{id}/avance` responde, por alumno: nombre, usuario, días activos, módulos vistos, y por curso la entrada y la salida (aciertos/total y fecha). No incluye el DNI.
+- `POST /api/secciones/{id}/habilitar` envía `{ curso | "todas", que: "salida"|"soluciones", abierto: bool }`.
+- `POST /api/alumnos/{usuario}/reiniciar` responde `{ usuario, contrasena }` y deja `debe_cambiar` en verdadero.
+
+**Administrador del colegio**
+
+- `POST /api/colegio/alumnos`
+  - Envía un archivo CSV con las columnas `apellidos,nombres,dni,grado,seccion`.
+  - Crea las secciones que falten, y crea o actualiza a cada alumno. El DNI se usa para no duplicar.
+  - Responde `{ creados: [{ usuario, contrasena, nombre, grado, seccion }], actualizados, errores: [{ fila, motivo }] }`.
+  - Con `?formato=pdf`, responde en cambio el PDF de tarjetas de los creados. Las contraseñas iniciales solo existen en esta respuesta.
+- `POST /api/colegio/profesores` envía `{ nombre, usuario?, secciones: [id] }` y responde `{ usuario, contrasena }`.
+- `GET /api/colegio/eventos` responde los eventos del colegio con el id seudónimo, sin nombre ni DNI. Es la entrada de `herramientas/analizar-medicion.js`.
+- `GET /api/colegio/alumnos` responde la lista con nombre, usuario, sección y los últimos 3 dígitos del DNI. El DNI completo no se lista.
+
+**La app (C2)**
+
+- Si `window.MESA_API` (en `app/config.js`) está vacío, no hay servidor y la app queda en **modo demostración**, como hoy.
+- Si hay servidor, se pide el ingreso. La pantalla ofrece también «Probar sin cuenta», que entra en demostración.
+- La cola de eventos se sube cada 30 segundos con conexión, al volver la señal, antes de cerrar sesión y al pasar la app a segundo plano.
