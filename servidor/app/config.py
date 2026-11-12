@@ -1,5 +1,6 @@
 """Configuración desde variables de entorno (ver LEEME.md)."""
 import os
+import re
 from dataclasses import dataclass, field
 
 # Claves de desarrollo: solo sirven en local y en las pruebas. En producción se exigen las reales.
@@ -44,18 +45,30 @@ class Config:
         if not self.produccion:
             return
         faltan = []
-        if self.jwt_secreto == _DEV_JWT or len(self.jwt_secreto) < 32:
-            faltan.append("JWT_SECRETO (32 caracteres o más)")
-        if self.dni_clave_fernet == _DEV_FERNET:
-            faltan.append("DNI_CLAVE_FERNET")
-        if self.dni_hmac_clave == _DEV_HMAC or len(self.dni_hmac_clave) < 32:
-            faltan.append("DNI_HMAC_CLAVE (32 caracteres o más)")
+        # Distingue «no llega al contenedor» de «llega pero es corta», para que el log diga qué arreglar.
+        def secreta(nombre, valor, dev, minimo=32):
+            if valor == dev:
+                faltan.append(f"{nombre} (no llega al servidor: revisa el nombre exacto y que esté en las variables de este servicio)")
+            elif len(valor) < minimo:
+                faltan.append(f"{nombre} (llega con {len(valor)} caracteres; necesita {minimo} o más)")
+        secreta("JWT_SECRETO", self.jwt_secreto, _DEV_JWT)
+        secreta("DNI_CLAVE_FERNET", self.dni_clave_fernet, _DEV_FERNET, 1)
+        secreta("DNI_HMAC_CLAVE", self.dni_hmac_clave, _DEV_HMAC)
+        if self.dni_clave_fernet != _DEV_FERNET:
+            try:
+                from cryptography.fernet import Fernet
+                Fernet(self.dni_clave_fernet.encode())
+            except Exception:
+                faltan.append("DNI_CLAVE_FERNET (llega, pero no es una clave Fernet: 44 caracteres en base64 que terminan en «=»)")
         if self.database_url.startswith("sqlite"):
             faltan.append("DATABASE_URL (PostgreSQL)")
         if not self.cors_origenes or "*" in self.cors_origenes:
             faltan.append("CORS_ORIGENES (orígenes exactos, sin *)")
         if faltan:
-            raise RuntimeError("Faltan variables de entorno para producción: " + ", ".join(faltan))
+            # Solo los NOMBRES de variables parecidas que sí llegan (nunca los valores), para detectar errores de tipeo.
+            parecidas = sorted(k for k in os.environ if re.search(r"JWT|DNI|FERNET|HMAC|SECRET|CLAVE", k, re.I))
+            pista = f" Variables parecidas que sí llegan: {', '.join(parecidas)}." if parecidas else " No llega ninguna variable con JWT, DNI, CLAVE ni SECRET en el nombre."
+            raise RuntimeError("Faltan variables de entorno para producción: " + "; ".join(faltan) + "." + pista)
 
 
 def desde_entorno() -> Config:

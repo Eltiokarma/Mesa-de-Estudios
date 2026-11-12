@@ -26,8 +26,18 @@ def test_produccion_exige_claves():
     with pytest.raises(RuntimeError):
         Config(entorno="produccion", jwt_secreto="x" * 40, dni_clave_fernet="otra", dni_hmac_clave="y" * 40,
                database_url="postgresql+psycopg://h/db", cors_origenes=["*"]).validar()
-    Config(entorno="produccion", jwt_secreto="x" * 40, dni_clave_fernet="otra", dni_hmac_clave="y" * 40,
+    from cryptography.fernet import Fernet
+    buena = Fernet.generate_key().decode()
+    Config(entorno="produccion", jwt_secreto="x" * 40, dni_clave_fernet=buena, dni_hmac_clave="y" * 40,
            database_url="postgresql+psycopg://h/db", cors_origenes=["https://mesa.example"]).validar()
+    # Una clave Fernet mal formada (p. ej. salida de un generador de contraseñas) se detecta al arrancar.
+    with pytest.raises(RuntimeError, match="no es una clave Fernet"):
+        Config(entorno="produccion", jwt_secreto="x" * 40, dni_clave_fernet="otra", dni_hmac_clave="y" * 40,
+               database_url="postgresql+psycopg://h/db", cors_origenes=["https://mesa.example"]).validar()
+    # Una variable corta dice cuántos caracteres llegaron.
+    with pytest.raises(RuntimeError, match="llega con 5 caracteres"):
+        Config(entorno="produccion", jwt_secreto="corto", dni_clave_fernet=buena, dni_hmac_clave="y" * 40,
+               database_url="postgresql+psycopg://h/db", cors_origenes=["https://mesa.example"]).validar()
 
 
 def test_url_de_railway():
