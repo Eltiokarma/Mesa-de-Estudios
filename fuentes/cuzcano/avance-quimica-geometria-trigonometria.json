@@ -1,31 +1,31 @@
 {
   "schema_version": 1,
-  "fecha_utc": "2026-11-12T10:05:51.400228+00:00",
+  "fecha_utc": "2026-11-12T10:18:22.090625+00:00",
   "estado": "en_curso",
   "objetivo_nuevas": 3000,
   "objetivo_temas": 36,
   "fichas_anteriores_verificadas_por_sha256": 6213,
-  "fichas_nuevas": 2169,
-  "fichas_acumuladas": 8382,
-  "fichas_pendientes": 831,
+  "fichas_nuevas": 2184,
+  "fichas_acumuladas": 8397,
+  "fichas_pendientes": 816,
   "temas_con_cuota_cumplida": 21,
-  "paginas_pdf_distintas_cotejadas_por_fragmentos": 555,
-  "nuevas_con_observaciones": 373,
-  "fichas_con_diagrama": 792,
+  "paginas_pdf_distintas_cotejadas_por_fragmentos": 557,
+  "nuevas_con_observaciones": 376,
+  "fichas_con_diagrama": 799,
   "ocr_repetido": false,
   "app_certificada": false,
   "sha256_de_los_indices_locales": {
-    "quimica": "f44cfd2ac365a9d6e8beb24d514253f3eb1459e49edaec74d37f1f5a60f62503",
+    "quimica": "827865de5aa983633e18df360c8823df1d1360123efa0789f10b0983a405b5d3",
     "geometria": "c758df7720c9d45f72434270e84f0e493b4f2d19e61198c444abc64e36cd2221",
-    "trigonometria": "7cc78f452ba58fb759b0f9945272bd4ff873e384ec79c2218cb0e224014c50f9"
+    "trigonometria": "61402436a4a68bd96c52c0a708f849ba63449379e2886bb84a2a0b08bb9f151f"
   },
   "tandas": [
     {
       "curso": "quimica",
       "objetivo": 1000,
-      "nuevas": 756,
-      "pendientes": 244,
-      "lotes": 34,
+      "nuevas": 761,
+      "pendientes": 239,
+      "lotes": 35,
       "con_observaciones": 187,
       "fichas_con_diagrama": 121,
       "temas": [
@@ -214,9 +214,9 @@
         {
           "id": "quimica.nomenclatura-inorganica",
           "nombre": "Nomenclatura inorgánica",
-          "nuevos": 28,
+          "nuevos": 33,
           "objetivo": 83,
-          "pendientes": 55,
+          "pendientes": 50,
           "observaciones": 9,
           "subtemas_nuevos": {
             "Conteo de átomos": 2,
@@ -232,6 +232,10 @@
             "Peróxidos": 1,
             "Sales ácidas": 1,
             "Sistemas de nomenclatura": 4,
+            "estados-de-oxidacion": 1,
+            "hidroxidos": 1,
+            "iones": 2,
+            "oxacidos": 1,
             "Óxidos": 4
           }
         },
@@ -919,11 +923,11 @@
     {
       "curso": "trigonometria",
       "objetivo": 1000,
-      "nuevas": 780,
-      "pendientes": 220,
-      "lotes": 34,
-      "con_observaciones": 97,
-      "fichas_con_diagrama": 185,
+      "nuevas": 790,
+      "pendientes": 210,
+      "lotes": 35,
+      "con_observaciones": 100,
+      "fichas_con_diagrama": 192,
       "temas": [
         {
           "id": "trigonometria.circunferencia-trigonometrica",
@@ -1180,16 +1184,16 @@
         {
           "id": "trigonometria.numeros-complejos",
           "nombre": "Números complejos",
-          "nuevos": 29,
+          "nuevos": 39,
           "objetivo": 83,
-          "pendientes": 54,
-          "observaciones": 7,
+          "pendientes": 44,
+          "observaciones": 10,
           "subtemas_nuevos": {
-            "argumentos": 1,
-            "conjugado": 1,
+            "argumentos": 2,
+            "conjugado": 2,
             "de-moivre": 1,
             "ecuacion-cuadratica": 1,
-            "ecuacion-exponencial": 2,
+            "ecuacion-exponencial": 3,
             "ecuacion-polar": 1,
             "forma-polar": 1,
             "funciones-complejas": 4,
@@ -1200,7 +1204,10 @@
             "potencias-complejas": 1,
             "raices-cuartas": 1,
             "raices-cubicas": 1,
-            "serie-geometrica": 3
+            "regiones": 3,
+            "sectores": 3,
+            "serie-geometrica": 3,
+            "transformacion": 1
           }
         },
         {
@@ -1458,12 +1465,12 @@
   },
   "lote_600_2026_11_12": {
     "meta": 600,
-    "fichas_registradas": 200,
-    "pendientes": 400,
+    "fichas_registradas": 215,
+    "pendientes": 385,
     "cursos": [
       {
         "curso": "quimica",
-        "nuevas": 88,
+        "nuevas": 93,
         "observaciones": 15,
         "graficos": 13,
         "temas": [
@@ -1471,6 +1478,11 @@
             "id": "quimica.electroquimica",
             "tema": "Electroquímica",
             "fichas": 21
+          },
+          {
+            "id": "quimica.nomenclatura-inorganica",
+            "tema": "Nomenclatura inorgánica",
+            "fichas": 5
           },
           {
             "id": "quimica.quimica-organica",
@@ -1486,14 +1498,14 @@
       },
       {
         "curso": "trigonometria",
-        "nuevas": 112,
-        "observaciones": 10,
-        "graficos": 56,
+        "nuevas": 122,
+        "observaciones": 13,
+        "graficos": 63,
         "temas": [
           {
             "id": "trigonometria.numeros-complejos",
             "tema": "Números complejos",
-            "fichas": 29
+            "fichas": 39
           },
           {
             "id": "trigonometria.razones-trigonometricas-de-un-angulo-en-posicion-normal",
