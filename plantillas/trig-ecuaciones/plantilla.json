@@ -1,0 +1,14 @@
+{
+  "id": "trig-ecuaciones",
+  "titulo": "Ecuaciones trigonométricas en un intervalo",
+  "formato": "predicciones",
+  "unidades": [
+    "trigonometria.ecuaciones-trigonometricas"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

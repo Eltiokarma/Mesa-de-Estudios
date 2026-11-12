@@ -1,0 +1,16 @@
+{
+  "id": "dinamica-fuerzas",
+  "titulo": "La plataforma que gira",
+  "formato": "predicciones",
+  "unidades": [
+    "fisica.dinamica",
+    "fisica.estatica",
+    "fisica.gravitacion"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

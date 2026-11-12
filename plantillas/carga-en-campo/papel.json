@@ -1,0 +1,103 @@
+{
+  "titulo": "La carga que gira en el imán: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema. Usa: protón, masa 1,6 × 10⁻²⁷ kg y carga 1,6 × 10⁻¹⁹ C; deuterón, masa 3,2 × 10⁻²⁷ kg y la misma carga; partícula alfa, masa 6,4 × 10⁻²⁷ kg y carga 3,2 × 10⁻¹⁹ C; µ0 = 4π × 10⁻⁷ T·m/A; sen 37° = 3/5 y sen 53° = 4/5. Antes de reemplazar, pasa todo a unidades del SI (mT a T, cm a m).",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Un protón entra con una rapidez de 3 × 10⁵ m/s a un campo magnético uniforme de 0,15 T, perpendicular a su velocidad. ¿Cuál es el radio de su trayectoria, en cm?",
+      "respuesta": "2 cm",
+      "pasos": [
+        "La fuerza magnética hace de fuerza centrípeta: |q|·v·B = m·v²/r, así que r = m·v/(|q|·B).",
+        "r = 1,6 × 10⁻²⁷ · 3 × 10⁵ / (1,6 × 10⁻¹⁹ · 0,15) = 0,02 m = 2 cm."
+      ],
+      "verificar": [ { "tipo": "radio", "args": [1.6e-27, 1.6e-19, 300000, 0.15], "espera": 0.02 } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Una partícula alfa gira en un campo magnético uniforme de 0,5 T. ¿Cuál es su periodo? Si entrara con el doble de rapidez, ¿cuál sería?",
+      "respuesta": "8π × 10⁻⁸ s en los dos casos",
+      "pasos": [
+        "T = 2π·r/v = 2π·m/(|q|·B): la rapidez se simplifica.",
+        "T = 2π · 6,4 × 10⁻²⁷ / (3,2 × 10⁻¹⁹ · 0,5) = 8π × 10⁻⁸ s.",
+        "Con el doble de rapidez, el radio se duplica y la vuelta dura lo mismo: 8π × 10⁻⁸ s."
+      ],
+      "verificar": [ { "tipo": "periodo", "args": [6.4e-27, 3.2e-19, 0.5], "espera": 2.5132741228718345e-7 } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Dos iones iguales entran al mismo campo magnético, perpendiculares a él, uno a 2 × 10⁵ m/s y el otro a 6 × 10⁵ m/s. ¿Cuántas veces es mayor el radio del segundo que el del primero?",
+      "respuesta": "3 veces",
+      "pasos": [
+        "Con la misma masa, carga y campo, r = m·v/(|q|·B) es proporcional a v.",
+        "r₂/r₁ = 6 × 10⁵ / 2 × 10⁵ = 3. El más rápido gira en una circunferencia más grande, no más chica."
+      ],
+      "verificar": [ { "tipo": "razon", "args": [200000, 600000], "espera": 3 } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Un deuterón parte del reposo, se acelera con una diferencia de potencial y luego entra perpendicular a un campo magnético de 0,2 T, donde describe una circunferencia de 4 cm de radio. ¿Qué diferencia de potencial lo aceleró?",
+      "respuesta": "1 600 V",
+      "pasos": [
+        "En el campo magnético: v = |q|·B·r/m = 1,6 × 10⁻¹⁹ · 0,2 · 0,04 / 3,2 × 10⁻²⁷ = 4 × 10⁵ m/s.",
+        "La energía que gana es |q|·V = ½·m·v² (no olvides el ½).",
+        "V = m·v²/(2|q|) = 3,2 × 10⁻²⁷ · (4 × 10⁵)² / (2 · 1,6 × 10⁻¹⁹) = 1 600 V."
+      ],
+      "verificar": [ { "tipo": "voltaje", "args": [3.2e-27, 1.6e-19, 0.04, 0.2], "espera": 1600 } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Un protón entra con una rapidez de 5 × 10⁵ m/s a un campo magnético uniforme de 0,1 T, con su velocidad a 37° del campo. ¿Qué trayectoria describe? Halla su radio y su paso, en cm.",
+      "respuesta": "Una hélice de 3 cm de radio y 8π cm (unos 25 cm) de paso",
+      "pasos": [
+        "Se descompone la velocidad: perpendicular al campo, v·sen 37° = 3 × 10⁵ m/s; paralela, v·cos 37° = 4 × 10⁵ m/s.",
+        "La parte paralela no siente fuerza: avanza mientras gira, así que es una hélice.",
+        "Radio con la perpendicular: r = 1,6 × 10⁻²⁷ · 3 × 10⁵ / (1,6 × 10⁻¹⁹ · 0,1) = 0,03 m = 3 cm.",
+        "Periodo: T = 2π · 1,6 × 10⁻²⁷ / (1,6 × 10⁻¹⁹ · 0,1) = 2π × 10⁻⁷ s.",
+        "Paso con la paralela: 4 × 10⁵ · 2π × 10⁻⁷ = 0,08π m = 8π cm."
+      ],
+      "verificar": [ { "tipo": "helice", "args": [1.6e-27, 1.6e-19, 500000, 0.6, 0.8, 0.1], "espera": { "r": 0.03, "paso": 0.25132741228718347 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Entre dos placas paralelas separadas 2 cm hay un campo magnético de 20 mT. ¿Qué voltaje hay que poner entre las placas para que los iones que entran a 3 × 10⁵ m/s, perpendiculares a los dos campos, pasen sin desviarse?",
+      "respuesta": "120 V",
+      "pasos": [
+        "Sin desviarse, la fuerza eléctrica y la magnética se anulan: |q|·E = |q|·v·B, y E = v·B, sin importar la carga.",
+        "Con B = 20 mT = 0,02 T: E = 3 × 10⁵ · 0,02 = 6 000 V/m.",
+        "Entre placas, ΔV = E·d = 6 000 · 0,02 = 120 V."
+      ],
+      "verificar": [ { "tipo": "cruzados", "args": [300000, 0.02, 0.02], "espera": { "E": 6000, "dV": 120 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "básico",
+      "enunciado": "Una barra metálica descansa sobre dos rieles horizontales separados 50 cm, unidos por una batería de 12 V. La resistencia total del circuito es 3 Ω y hay un campo magnético vertical de 0,4 T. ¿Qué fuerza hay que hacer para que la barra no se mueva?",
+      "respuesta": "0,8 N",
+      "pasos": [
+        "Primero la corriente, con la ley de Ohm: I = 12/3 = 4 A (no se usa el voltaje directamente).",
+        "Fuerza sobre la barra: F = B·I·L = 0,4 · 4 · 0,5 = 0,8 N.",
+        "Hay que empujarla con 0,8 N en sentido contrario."
+      ],
+      "verificar": [ { "tipo": "riel", "args": [12, 3, 0.5, 0.4], "espera": 0.8 } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Una espira circular de 10 cm de radio está hecha con un alambre de 2 Ω. ¿Qué voltaje hay que aplicarle para que el campo en su centro sea 2π × 10⁻⁵ T? ¿Qué saldría si usaras, por error, la fórmula del hilo recto?",
+      "respuesta": "20 V; con la fórmula del hilo saldría 20π V, unos 63 V",
+      "pasos": [
+        "En el centro de una espira, B = µ0·I/(2R), sin π en el denominador.",
+        "I = 2R·B/µ0 = 2 · 0,1 · 2π × 10⁻⁵ / (4π × 10⁻⁷) = 10 A.",
+        "V = I·R = 10 · 2 = 20 V.",
+        "Con la del hilo, µ0·I/(2π·R), la corriente saldría π veces mayor: 20π V. Esa fórmula es para un hilo recto largo."
+      ],
+      "verificar": [ { "tipo": "espira", "args": [0.1, 2, 6.283185307179586e-5], "espera": 20 } ]
+    }
+  ]
+}

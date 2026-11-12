@@ -34,7 +34,7 @@
       "universidades": {"uni": {"semanas": [1]}, "unmsm": {"temas": [2, 3]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": ["triangulo-estira"],
+      "plantillas": ["triangulo-estira", "geo-triangulos-notables"],
       "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
@@ -66,7 +66,7 @@
       "universidades": {"uni": {"semanas": [3]}, "unmsm": {"temas": [4, 5]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": ["poligonos"],
+      "plantillas": ["poligonos", "geo-poligonos"],
       "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
@@ -82,7 +82,7 @@
       "universidades": {"uni": {"semanas": [4, 5]}, "unmsm": {"temas": [6, 7]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": ["angulo-inscrito"],
+      "plantillas": ["angulo-inscrito", "geo-circunferencia-metrica"],
       "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
@@ -97,7 +97,7 @@
       "universidades": {"uni": {"semanas": [5, 6]}, "unmsm": {"temas": [8]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": ["ampliadora"],
+      "plantillas": ["ampliadora", "geo-proporcionalidad"],
       "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
@@ -111,7 +111,7 @@
       "universidades": {"uni": {"semanas": [6, 7]}, "unmsm": {"temas": [7]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": ["triangulo-estira"],
+      "plantillas": ["triangulo-estira", "geo-triangulos-notables"],
       "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
@@ -129,7 +129,7 @@
       "universidades": {"uni": {"semanas": [7, 8]}, "unmsm": {"temas": [9]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": ["triangulo-estira"],
+      "plantillas": ["triangulo-estira", "geo-circunferencia-metrica", "geo-relaciones-metricas"],
       "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
@@ -144,7 +144,7 @@
       "universidades": {"uni": {"semanas": [8, 9]}, "unmsm": {"temas": [4]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": ["poligonos"],
+      "plantillas": ["poligonos", "geo-poligonos"],
       "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
@@ -170,7 +170,7 @@
       "universidades": {"uni": {"semanas": [10, 11]}, "unmsm": {"temas": [10, 11]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": ["ampliadora", "triangulo-estira"],
+      "plantillas": ["ampliadora", "triangulo-estira", "geo-areas-triangulares"],
       "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
@@ -186,7 +186,7 @@
       "universidades": {"uni": {"semanas": [10, 12]}, "unmsm": {"temas": [11]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": ["ampliadora", "angulo-inscrito"],
+      "plantillas": ["ampliadora", "angulo-inscrito", "geo-areas-circulares"],
       "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
@@ -204,7 +204,7 @@
       "universidades": {"uni": {"semanas": [12, 13, 14]}, "unmsm": {"temas": [12]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": ["geometria-espacio"],
+      "plantillas": ["geometria-espacio", "geo-proporcionalidad"],
       "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
@@ -232,7 +232,7 @@
       "universidades": {"uni": {"semanas": [16, 17]}, "unmsm": {"temas": [13, 14]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": ["ampliadora", "solidos"],
+      "plantillas": ["ampliadora", "solidos", "geo-troncos-prismas"],
       "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
@@ -249,7 +249,7 @@
       "universidades": {"uni": {"semanas": [18, 19, 20]}, "unmsm": {"temas": [14, 15]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": ["ampliadora", "solidos"],
+      "plantillas": ["ampliadora", "solidos", "geo-revolucion"],
       "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
@@ -266,7 +266,7 @@
       "universidades": {"unmsm": {"temas": [16, 17, 18]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": ["geometria-analitica", "conicas"],
+      "plantillas": ["geometria-analitica", "conicas", "geo-analitica"],
       "investigacion": null
     },
     {

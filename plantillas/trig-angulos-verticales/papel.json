@@ -1,0 +1,105 @@
+{
+  "titulo": "Dos visuales a la vez: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 3 minutos por problema. Dibuja siempre el triángulo rectángulo de cada visual: la altura es el cateto opuesto al ángulo y la distancia por el suelo es el adyacente, así que distancia = altura · cot del ángulo. El ángulo de depresión se mide desde la horizontal y es igual al de elevación desde el suelo (alternos internos). Si dos puntos están del mismo lado, las distancias se restan; si la base queda entre ellos, se suman. Tangente de una diferencia: tan(β − α) = (tan β − tan α)/(1 + tan β · tan α). Ángulos de academia: tan 37° = 3/4, tan 53° = 4/3, tan 30° = √3/3, tan 60° = √3.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Desde un punto del suelo horizontal se ve la punta de un poste con un ángulo de elevación de 37°. Al acercarse 7 m en línea recta hacia el poste, la punta se ve con 45°. ¿Cuánto mide el poste?",
+      "respuesta": "21 m.",
+      "pasos": [
+        "Sea H la altura. Desde el punto cercano la distancia a la base es H · cot 45° = H; desde el lejano, H · cot 37° = 4H/3.",
+        "Los dos puntos están del mismo lado: 4H/3 − H = 7, es decir, H/3 = 7.",
+        "H = 21 m. Control: si se suman las cotangentes, sale 3 m; eso sería con el poste entre los dos puntos, y aquí están del mismo lado."
+      ],
+      "verificar": [ { "fn": "mismoLado", "args": [{ "d": 7, "tA": [3, 4], "tB": [1, 1] }], "espera": 21 } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Dos niñas están en el suelo, a ambos lados de un árbol, y el árbol queda entre ellas; están separadas 50 m. Una ve la copa con un ángulo de elevación de 37° y la otra con uno de 53°. ¿Cuánto mide el árbol?",
+      "respuesta": "24 m.",
+      "pasos": [
+        "Distancias a la base: H · cot 37° = 4H/3 y H · cot 53° = 3H/4.",
+        "El árbol queda entre ellas, así que las distancias se suman: 4H/3 + 3H/4 = 25H/12 = 50.",
+        "H = 50 · 12/25 = 24 m."
+      ],
+      "verificar": [ { "fn": "ambosLados", "args": [{ "d": 50, "tA": [3, 4], "tB": [4, 3] }], "espera": 24 } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Un ciclista va a 18 km/h por una pista recta y horizontal, directo hacia una antena. Ve la punta con un ángulo de elevación de 30° y, 12 s después, con uno de 60°. ¿Cuánto mide la antena?",
+      "respuesta": "30√3 m.",
+      "pasos": [
+        "18 km/h = 18 · 1000/3600 = 5 m/s; en 12 s avanza 60 m.",
+        "Mismo lado: 60 = H(cot 30° − cot 60°) = H(√3 − √3/3) = H · 2√3/3.",
+        "H = 60 · 3/(2√3) = 90/√3 = 30√3 m. Si se usa 18 · 12 = 216 sin convertir, la altura sale 3,6 veces mayor."
+      ],
+      "verificar": [
+        { "fn": "velocidad", "args": [18], "espera": 5 },
+        { "fn": "mismoLado", "args": [{ "d": 60, "tA": 0.5773502691896257, "tB": 1.7320508075688772 }], "espera": 51.96152422706632 }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Desde la azotea de un edificio de 24 m se ve la base de otro edificio, más bajo, con un ángulo de depresión de 53°, y su azotea con un ángulo de depresión α tal que tan α = 1/3. Los dos están sobre el mismo suelo horizontal. ¿Cuánto mide el edificio bajo?",
+      "respuesta": "18 m.",
+      "pasos": [
+        "Con la base: separación = 24 · cot 53° = 24 · 3/4 = 18 m.",
+        "Con la azotea baja: desnivel = 18 · tan α = 18 · 1/3 = 6 m.",
+        "Altura del edificio bajo: 24 − 6 = 18 m (el desnivel, 6 m, no es la respuesta)."
+      ],
+      "verificar": [ { "fn": "otroEdificio", "args": [{ "H": 24, "tA": [1, 3], "tB": [4, 3] }], "espera": 18 } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Desde un punto del suelo, a 9 m de la base de una torre de 12 m, se ve el punto medio de la torre con un ángulo de elevación α y la punta con un ángulo de elevación β. ¿Cuánto vale tan(β − α)?",
+      "respuesta": "6/17.",
+      "pasos": [
+        "tan α = 6/9 = 2/3 y tan β = 12/9 = 4/3.",
+        "tan(β − α) = (4/3 − 2/3)/(1 + 4/3 · 2/3) = (2/3)/(17/9).",
+        "= 2/3 · 9/17 = 6/17. Ojo: tan β − tan α = 2/3 no es la respuesta; falta dividir entre 1 + tan β · tan α."
+      ],
+      "verificar": [ { "fn": "tanVisto", "args": [{ "h1": 6, "h2": 12, "D": 9 }], "espera": 0.35294117647058826 } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "avanzado",
+      "enunciado": "Sobre un edificio de 8 m hay una antena vertical. Desde un punto del suelo, a 12 m de la base del edificio, la antena se ve bajo un ángulo θ (entre las visuales a su pie y a su punta) con tan θ = 1/2. ¿Cuánto mide la antena?",
+      "respuesta": "13 m.",
+      "pasos": [
+        "Elevación al pie de la antena: tan α = 8/12 = 2/3. La elevación a la punta es α + θ.",
+        "tan(α + θ) = (2/3 + 1/2)/(1 − 2/3 · 1/2) = (7/6)/(2/3) = 7/4.",
+        "Altura de la punta: 12 · 7/4 = 21 m. Antena: 21 − 8 = 13 m."
+      ],
+      "verificar": [ { "fn": "alturaAntena", "args": [{ "b": 8, "D": 12, "t": [1, 2] }], "espera": 13 } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Una antena de 10 m está sobre un edificio de 6 m. ¿A qué distancias de la base del edificio hay que pararse en el suelo para ver la antena bajo un ángulo θ con tan θ = 1/2? ¿Cuál es la más cercana?",
+      "respuesta": "A 8 m o a 12 m; la más cercana es 8 m.",
+      "pasos": [
+        "A x m: tan α = 6/x (pie de la antena) y tan β = 16/x (punta).",
+        "tan θ = (16/x − 6/x)/(1 + 96/x²) = 10x/(x² + 96) = 1/2.",
+        "x² − 20x + 96 = 0, con raíces x = 8 y x = 12. Las dos sirven: desde las dos se ve la antena bajo el mismo ángulo. La más cercana es 8 m."
+      ],
+      "verificar": [ { "fn": "distanciasAntena", "args": [{ "a": 10, "b": 6, "t": [1, 2] }], "espera": { "0": 8, "1": 12 } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Desde un punto del suelo, a 15 m de la base de una torre, se ve su punta con un ángulo de elevación θ, mayor que 45°, tal que sen θ + cos θ = 7/5. ¿Cuánto mide la torre?",
+      "respuesta": "20 m.",
+      "pasos": [
+        "(sen θ + cos θ)² = 1 + 2 sen θ cos θ = 49/25, así que sen θ cos θ = 12/25.",
+        "sen θ y cos θ suman 7/5 y multiplican 12/25: son 4/5 y 3/5. Como θ > 45°, sen θ = 4/5 y cos θ = 3/5, y tan θ = 4/3.",
+        "Altura: 15 · 4/3 = 20 m. Con el ángulo menor que 45° saldría 15 · 3/4, que no corresponde."
+      ],
+      "verificar": [ { "fn": "porCondicion", "args": [{ "cond": "suma", "valor": [7, 5], "mayor45": true }], "espera": { "tan": 1.3333333333333333, "cos": 0.6, "sen": 0.8 } } ]
+    }
+  ]
+}

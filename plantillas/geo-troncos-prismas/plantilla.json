@@ -1,0 +1,14 @@
+{
+  "id": "geo-troncos-prismas",
+  "titulo": "Troncos de pirámide, prismas oblicuos y troncos de prisma",
+  "formato": "predicciones",
+  "unidades": [
+    "geometria.prisma-y-piramide"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

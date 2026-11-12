@@ -1,0 +1,16 @@
+{
+  "id": "trig-oblicuangulos",
+  "titulo": "Triángulos oblicuángulos: cosenos, senos, tangentes y áreas",
+  "formato": "predicciones",
+  "unidades": [
+    "trigonometria.triangulos-oblicuangulos",
+    "trigonometria.areas-y-lineas-notables",
+    "trigonometria.reduccion-al-primer-cuadrante"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

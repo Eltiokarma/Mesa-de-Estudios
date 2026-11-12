@@ -1,0 +1,376 @@
+{
+  "plantilla": "trig-oblicuangulos",
+  "tolerancia": 0.000001,
+  "nota": "Razones de academia (sen 37° = 3/5, sen 16° = 7/25, tan(53°/2) = 1/2). Ángulos en grados; en ceviana, b2 es CA²; en faro con depresión, tA y tB son las tangentes como número.",
+  "verificacion": "Verificado a ciegas el 12 nov 2026 por un subagente verificador: los 25 casos resueltos desde el enunciado con coordenadas (faros, bisectriz, doblez, ceviana como intersección de circunferencias), barridos numéricos (lado mínimo, ley de tangentes) y Herón; las fórmulas en función de θ y las constantes k, comprobadas con triángulos concretos. Los 25 coinciden con esperado.",
+  "casos": [
+    {
+      "semilla": 3000,
+      "entrada": {
+        "tipo": "lado-minimo",
+        "sub": "lados",
+        "A": 106,
+        "k": 5,
+        "S": 12
+      },
+      "esperado": {
+        "respuesta": 5,
+        "exacta": "5 m"
+      }
+    },
+    {
+      "semilla": 3002,
+      "entrada": {
+        "tipo": "lado-minimo",
+        "sub": "valor",
+        "A": 106,
+        "k": 5,
+        "S": 12
+      },
+      "esperado": {
+        "respuesta": 8,
+        "exacta": "8 m"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "faro",
+        "sub": "directo",
+        "theta": 120,
+        "p": 2,
+        "q": 7,
+        "h": null,
+        "tA": null,
+        "tB": null,
+        "L1": null,
+        "L2": null
+      },
+      "esperado": {
+        "respuesta": 8.18535277187245,
+        "exacta": "√67 km"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "circunradio",
+        "sub": "lado-R",
+        "a": 8,
+        "A": 135
+      },
+      "esperado": {
+        "respuesta": 5.65685424949238,
+        "exacta": "4√2 m"
+      }
+    },
+    {
+      "semilla": 3014,
+      "entrada": {
+        "tipo": "ley-tangentes",
+        "sub": "rectangulo",
+        "s": 56,
+        "k": [
+          1,
+          7
+        ],
+        "pide": "area"
+      },
+      "esperado": {
+        "respuesta": 384,
+        "exacta": "384 m²"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "areas",
+        "sub": "area",
+        "b": 10,
+        "c": 16,
+        "A": 60
+      },
+      "esperado": {
+        "respuesta": 69.28203230275508,
+        "exacta": "40√3 m²"
+      }
+    },
+    {
+      "semilla": 3039,
+      "entrada": {
+        "tipo": "doblez",
+        "sub": "coseno",
+        "L": 18,
+        "W": 3
+      },
+      "esperado": {
+        "respuesta": -0.9459459459459459,
+        "exacta": "−35/37"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "ley-tangentes",
+        "sub": "semidiferencia",
+        "a": 11,
+        "b": 9,
+        "C": 74
+      },
+      "esperado": {
+        "respuesta": 0.13333333333333336,
+        "exacta": "2/15"
+      }
+    },
+    {
+      "semilla": 3005,
+      "entrada": {
+        "tipo": "ceviana",
+        "a": 26,
+        "b2": 1369,
+        "c": 15,
+        "d": 20,
+        "pide": "BD"
+      },
+      "esperado": {
+        "respuesta": 7,
+        "exacta": "7 m"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "faro",
+        "sub": "visuales",
+        "theta": 127,
+        "p": 20,
+        "q": 36,
+        "h": 15,
+        "tA": null,
+        "tB": null,
+        "L1": 25,
+        "L2": 39
+      },
+      "esperado": {
+        "respuesta": 50.59644256269407,
+        "exacta": "16√10 m"
+      }
+    },
+    {
+      "semilla": 24,
+      "entrada": {
+        "tipo": "areas",
+        "sub": "bisectriz",
+        "b": 35,
+        "c": 14,
+        "A": 60
+      },
+      "esperado": {
+        "respuesta": 17.32050807568877,
+        "exacta": "10√3 cm"
+      }
+    },
+    {
+      "semilla": 26,
+      "entrada": {
+        "tipo": "circunradio",
+        "sub": "area-R",
+        "R": 20,
+        "A": 45,
+        "B": 90
+      },
+      "esperado": {
+        "respuesta": 400.00000000000006,
+        "exacta": "400 m²"
+      }
+    },
+    {
+      "semilla": 3038,
+      "entrada": {
+        "tipo": "circunradio",
+        "sub": "perimetro",
+        "p": 128,
+        "A": 53,
+        "B": 53
+      },
+      "esperado": {
+        "respuesta": 768,
+        "exacta": "768 m²"
+      }
+    },
+    {
+      "semilla": 3036,
+      "entrada": {
+        "tipo": "faro",
+        "sub": "depresion",
+        "theta": 37,
+        "p": 144,
+        "q": 45,
+        "h": 60,
+        "tA": 0.4166666666666667,
+        "tB": 1.3333333333333333,
+        "L1": null,
+        "L2": null
+      },
+      "esperado": {
+        "respuesta": 111.32385189167684,
+        "exacta": "27√17 m"
+      }
+    },
+    {
+      "semilla": 39,
+      "entrada": {
+        "tipo": "ceviana",
+        "a": 48,
+        "b2": 3249,
+        "c": 15,
+        "d": 35,
+        "pide": "DC"
+      },
+      "esperado": {
+        "respuesta": 23,
+        "exacta": "23 m"
+      }
+    },
+    {
+      "semilla": 3025,
+      "entrada": {
+        "tipo": "doblez",
+        "sub": "longitud",
+        "L": 216,
+        "W": 36
+      },
+      "esperado": {
+        "respuesta": 111,
+        "exacta": "111 cm"
+      }
+    },
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "doblez",
+        "sub": "coseno",
+        "L": 18,
+        "W": 3
+      },
+      "esperado": {
+        "respuesta": -0.9459459459459459,
+        "exacta": "−35/37"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "circunradio",
+        "sub": "en-funcion",
+        "recto": "B",
+        "dato": "circunradio",
+        "pide": "perimetro"
+      },
+      "esperado": {
+        "respuesta": "2R·(1 + senθ + cosθ)",
+        "exacta": "2R·(1 + senθ + cosθ)"
+      }
+    },
+    {
+      "semilla": 3133,
+      "entrada": {
+        "tipo": "circunradio",
+        "sub": "en-funcion",
+        "recto": "B",
+        "dato": "perimetro",
+        "pide": "area"
+      },
+      "esperado": {
+        "respuesta": "p²·senθ·cosθ/((1 + senθ)·(1 + cosθ))",
+        "exacta": "p²·senθ·cosθ/((1 + senθ)·(1 + cosθ))"
+      }
+    },
+    {
+      "semilla": 3057,
+      "entrada": {
+        "tipo": "circunradio",
+        "sub": "en-funcion",
+        "recto": "C",
+        "dato": "perimetro",
+        "pide": "radio"
+      },
+      "esperado": {
+        "respuesta": "p/(1 + senθ + cosθ)",
+        "exacta": "p/(1 + senθ + cosθ)"
+      }
+    },
+    {
+      "semilla": 3700,
+      "entrada": {
+        "tipo": "ley-tangentes",
+        "sub": "constante",
+        "molde": 1,
+        "letras": "abABC",
+        "forma": "(a − b)/(a + b) = k·tan((A − B)/2)"
+      },
+      "esperado": {
+        "respuesta": "tan(C/2)",
+        "exacta": "tan(C/2)"
+      }
+    },
+    {
+      "semilla": 3928,
+      "entrada": {
+        "tipo": "ley-tangentes",
+        "sub": "constante",
+        "molde": 3,
+        "letras": "abABC",
+        "forma": "(a + b)·tan((A − B)/2) = k·(a − b)"
+      },
+      "esperado": {
+        "respuesta": "cot(C/2)",
+        "exacta": "cot(C/2)"
+      }
+    },
+    {
+      "semilla": 3153,
+      "entrada": {
+        "tipo": "circunradio",
+        "sub": "en-funcion",
+        "recto": "B",
+        "dato": "perimetro",
+        "pide": "inradio"
+      },
+      "esperado": {
+        "respuesta": "p·(senθ + cosθ − 1)/(1 + senθ + cosθ)",
+        "exacta": "p·(senθ + cosθ − 1)/(1 + senθ + cosθ)"
+      }
+    },
+    {
+      "semilla": 3051,
+      "entrada": {
+        "tipo": "ley-tangentes",
+        "sub": "rectangulo",
+        "s": 20,
+        "k": [
+          2,
+          5
+        ],
+        "pide": "hipotenusa"
+      },
+      "esperado": {
+        "respuesta": 15.231546211727817,
+        "exacta": "2√58 m"
+      }
+    },
+    {
+      "semilla": 3062,
+      "entrada": {
+        "tipo": "doblez",
+        "sub": "pliegue",
+        "L": 98,
+        "W": 70
+      },
+      "esperado": {
+        "respuesta": 86.02325267042627,
+        "exacta": "10√74 cm"
+      }
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "titulo": "La antena y el arcoíris: problemas para lápiz y papel",
-  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Usa c = 3 × 10⁸ m/s, hc = 1240 eV·nm, 1 eV = 1,6 × 10⁻¹⁹ J y ε₀ = 8,85 × 10⁻¹² C²/(N·m²). Onda: c = λ·f; en la expresión sen(k·x − ω·t), k = 2π/λ y ω = 2π·f. Fotón: E = h·f = hc/λ. Recorrido: d = v·t. En un medio: v = c/n y λ' = λ/n. Campos de la onda: (campo eléctrico) = c·B. Intensidad media: I = c·ε₀·(campo eléctrico máximo)²/2. En los libros y en el examen verás E₀ = c·B₀, con E el campo eléctrico; aquí lo escribimos con palabras porque E ya es la energía del fotón.",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Usa c = 3 × 10⁸ m/s, hc = 1240 eV·nm, 1 eV = 1,6 × 10⁻¹⁹ J y ε₀ = 8,85 × 10⁻¹² C²/(N·m²). Onda: c = λ·f; en la expresión sen(k·x − ω·t), k = 2π/λ y ω = 2π·f. Fotón: E = h·f = hc/λ. Recorrido: d = v·t. En un medio: v = c/n y λ' = λ/n. Refracción: n₁·sen i = n₂·sen r, con los ángulos medidos desde la normal; ángulo límite: sen L = n₂/n₁. Campos de la onda: (campo eléctrico) = c·B. Intensidad media: I = c·ε₀·(campo eléctrico máximo)²/2. En los libros y en el examen verás E₀ = c·B₀, con E el campo eléctrico; aquí lo escribimos con palabras porque E ya es la energía del fotón.",
   "problemas": [
     {
       "id": "p1",
@@ -31,30 +31,6 @@
           ],
           "espera": {
             "lambda": 3.33333333333
-          }
-        }
-      ]
-    },
-    {
-      "id": "p2",
-      "nivel": "básico",
-      "enunciado": "Un horno de microondas trabaja con ondas de 12 cm de longitud de onda. Con c = 3 × 10⁸ m/s, ¿cuál es su frecuencia, en GHz?",
-      "respuesta": "f = 2,5 × 10⁹ Hz = 2,5 GHz.",
-      "pasos": [
-        "12 cm = 0,12 m.",
-        "f = c/λ = 3 × 10⁸ / 0,12 = 2,5 × 10⁹ Hz.",
-        "1 GHz = 10⁹ Hz: f = 2,5 GHz."
-      ],
-      "verificar": [
-        {
-          "fn": "ondaDeLambda",
-          "args": [
-            12,
-            "cm"
-          ],
-          "espera": {
-            "f": 2500000000.0,
-            "region": "microondas"
           }
         }
       ]
@@ -112,29 +88,6 @@
           ],
           "espera": {
             "B0": 3.33333333333e-07
-          }
-        }
-      ]
-    },
-    {
-      "id": "p5",
-      "nivel": "básico",
-      "enunciado": "La luz del Sol recorre 1,5 × 10¹¹ m hasta la Tierra a 3 × 10⁸ m/s. ¿Cuánto tarda, en minutos y segundos?",
-      "respuesta": "500 s = 8 min 20 s.",
-      "pasos": [
-        "t = d/c = 1,5 × 10¹¹ / (3 × 10⁸) = 500 s.",
-        "500 s = 8 · 60 s + 20 s = 8 min 20 s."
-      ],
-      "verificar": [
-        {
-          "fn": "viaje",
-          "args": [
-            150000000000.0
-          ],
-          "espera": {
-            "t": 500,
-            "min": 8,
-            "s": 20
           }
         }
       ]
@@ -298,6 +251,82 @@
           "espera": {
             "ioniza": false,
             "lambdaBordeNm": 124
+          }
+        }
+      ]
+    },
+    {
+      "id": "p11",
+      "nivel": "intermedio",
+      "enunciado": "Un rayo de luz sale del agua (n = 4/3) hacia el aire con 37° respecto a la normal. Con sen 37° = 3/5, ¿qué ángulo forma con la normal el rayo que sale al aire? ¿Se acerca o se aleja de la normal?",
+      "respuesta": "53°: se aleja de la normal.",
+      "pasos": [
+        "Ley de Snell, con los ángulos medidos desde la normal: (4/3) · sen 37° = 1 · sen r.",
+        "sen r = (4/3) · (3/5) = 4/5, así que r = 53°.",
+        "Pasa a un medio de menor índice: se aleja de la normal. Si te salió 37°, supusiste que no se desvía; si te salió menos de 37°, pusiste los índices al revés."
+      ],
+      "verificar": [
+        {
+          "fn": "snell",
+          "args": [
+            1.3333333333333333,
+            1,
+            36.8698976458
+          ],
+          "espera": {
+            "senR": 0.8,
+            "r": 53.1301023542,
+            "seAcerca": false,
+            "total": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "p12",
+      "nivel": "avanzado",
+      "enunciado": "Un bloque de vidrio de índice 5/3 está rodeado de aire. ¿Cuál es su ángulo límite? Dentro del vidrio, un rayo llega a la superficie con 30° respecto a la normal y otro con 53°. ¿Cuál de los dos sale al aire? (sen 37° = 3/5, sen 53° = 4/5)",
+      "respuesta": "L = 37°. El de 30° sale (sen r = 5/6); el de 53° no sale: se refleja todo (reflexión total).",
+      "pasos": [
+        "En el ángulo límite el rayo sale rozando (r = 90°): (5/3) · sen L = 1, así que sen L = 3/5 y L = 37°.",
+        "Con 30°, menos que el límite: sen r = (5/3) · (1/2) = 5/6, menor que 1. Sale y se aleja de la normal.",
+        "Con 53°, más que el límite: sen r valdría (5/3) · (4/5) = 4/3, mayor que 1. No hay rayo refractado: se refleja todo dentro del vidrio."
+      ],
+      "verificar": [
+        {
+          "fn": "anguloLimite",
+          "args": [
+            1.6666666666666667,
+            1
+          ],
+          "espera": {
+            "existe": true,
+            "senL": 0.6,
+            "L": 36.8698976458
+          }
+        },
+        {
+          "fn": "snell",
+          "args": [
+            1.6666666666666667,
+            1,
+            30
+          ],
+          "espera": {
+            "senR": 0.833333333333,
+            "total": false
+          }
+        },
+        {
+          "fn": "snell",
+          "args": [
+            1.6666666666666667,
+            1,
+            53.1301023542
+          ],
+          "espera": {
+            "total": true,
+            "r": null
           }
         }
       ]

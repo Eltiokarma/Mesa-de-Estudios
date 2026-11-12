@@ -1,0 +1,256 @@
+{
+  "titulo": "Tangentes, secantes y cuerdas: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la práctica, con 2 a 3 minutos por problema. Dibuja la circunferencia y marca los puntos de tangencia. Antes de multiplicar, fíjate si el punto está fuera (parte exterior por secante entera) o dentro (trozo por trozo). Y recuerda: desde un punto exterior, las dos tangentes miden lo mismo.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Desde un punto P exterior a una circunferencia se trazan la tangente PT y una secante que la corta en A y en B (A entre P y B), con PA = 4 cm y AB = 5 cm. (a) ¿Cuánto mide PT? (b) En otra circunferencia, la tangente desde P mide 12 cm y la recta que va de P al centro corta primero la circunferencia a 8 cm de P. ¿Cuánto mide el radio?",
+      "respuesta": "(a) PT = 6 cm. (b) r = 5 cm.",
+      "pasos": [
+        "(a) Teorema de la tangente: PT² = PA·PB = 4·(4 + 5) = 36, así que PT = 6 cm. No vale PA·AB = 20: va la secante entera.",
+        "(b) Esa secante pasa por el centro: PB = 8 + 2r. Entonces 12² = 8·(8 + 2r), o sea 144 = 64 + 16r, y r = 5 cm.",
+        "Comprobación de (b): PO = 13 y 12² + 5² = 13²."
+      ],
+      "verificar": [
+        {
+          "fn": "tangente",
+          "args": [
+            4,
+            5
+          ],
+          "espera": 6
+        },
+        {
+          "fn": "radioDesdeTangente",
+          "args": [
+            12,
+            8
+          ],
+          "espera": 5
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "En una rueda de bicicleta, dos rayos de alambre tensados de borde a borde (dos cuerdas AB y CD) se cruzan en E. AE = 6 cm, EB = 4 cm y CE = 3 cm. ¿Cuánto mide ED? Luego, en otra circunferencia, la cuerda AB mide 11 cm y la corta otra cuerda en E con CE = 2 cm y ED = 9 cm; si AE es el trozo mayor, ¿cuánto mide AE?",
+      "respuesta": "ED = 8 cm. En el segundo caso, AE = 9 cm.",
+      "pasos": [
+        "Teorema de las cuerdas: AE·EB = CE·ED, así que 6·4 = 3·ED y ED = 8 cm.",
+        "Segundo caso: con AE = x, x(11 − x) = 2·9 = 18, o sea x² − 11x + 18 = 0.",
+        "(x − 9)(x − 2) = 0: los trozos son 9 y 2. El mayor es AE = 9 cm. No sirve partir AB por la mitad."
+      ],
+      "verificar": [
+        {
+          "fn": "cuerdas",
+          "args": [
+            6,
+            4,
+            3
+          ],
+          "espera": 8
+        },
+        {
+          "fn": "parteMayor",
+          "args": [
+            11,
+            2,
+            9
+          ],
+          "espera": 9
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Desde un punto P fuera de una circunferencia salen dos secantes. Una la corta en A y B, con PA = 3 m y AB = 9 m. La otra la corta en C y D, con PC = 4 m (A y C son los cortes más cercanos a P). ¿Cuánto mide CD?",
+      "respuesta": "5 m.",
+      "pasos": [
+        "Teorema de las secantes: PA·PB = PC·PD, con las secantes enteras.",
+        "PB = 3 + 9 = 12, así que 3·12 = 4·PD y PD = 9 m.",
+        "CD = PD − PC = 9 − 4 = 5 m. Si multiplicas las partes interiores (3·9 = 4·CD) sale 27/4, que no es."
+      ],
+      "verificar": [
+        {
+          "fn": "secantes",
+          "args": [
+            3,
+            9,
+            4
+          ],
+          "espera": 5
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "(a) Un cuadrilátero ABCD está circunscrito a una circunferencia. AB = 8 cm, BC = 11 cm y CD = 13 cm. ¿Cuánto mide DA? (b) En un triángulo ABC con BC = 8 cm, CA = 9 cm y AB = 7 cm, la circunferencia inscrita toca BC en D. ¿Cuánto mide BD?",
+      "respuesta": "(a) DA = 10 cm. (b) BD = 3 cm.",
+      "pasos": [
+        "Desde cada vértice, las dos tangentes miden lo mismo.",
+        "(a) Pitot: los lados opuestos suman igual. AB + CD = BC + DA → 8 + 13 = 11 + DA → DA = 10 cm.",
+        "(b) El semiperímetro es p = (8 + 9 + 7)/2 = 12. Las tangentes desde B miden p − CA = 12 − 9 = 3 cm. D no es el punto medio de BC."
+      ],
+      "verificar": [
+        {
+          "fn": "pitot",
+          "args": [
+            8,
+            11,
+            13
+          ],
+          "espera": 10
+        },
+        {
+          "fn": "tangenciaIncirculo",
+          "args": [
+            8,
+            9,
+            7
+          ],
+          "espera": 3
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "(a) Los catetos de un triángulo rectángulo miden 9 m y 40 m. ¿Cuánto mide el radio de su circunferencia inscrita? (b) Otro triángulo rectángulo tiene hipotenusa 25 m y radio inscrito 3 m. ¿Cuál es su perímetro? (c) Un trapecio isósceles de bases 18 m y 8 m está circunscrito a una circunferencia. ¿Cuánto mide el radio?",
+      "respuesta": "(a) 4 m. (b) 56 m. (c) 6 m.",
+      "pasos": [
+        "(a) La hipotenusa es √(81 + 1600) = 41. Poncelet: 9 + 40 = 41 + 2r, así que r = 4 m (no 41/2, que es el radio de la circunscrita).",
+        "(b) Poncelet: catetos = 25 + 2·3 = 31. Perímetro = 31 + 25 = 56 m.",
+        "(c) Pitot: los lados no paralelos suman 18 + 8 = 26, y cada uno mide 13. Con el cateto horizontal (18 − 8)/2 = 5, la altura es √(169 − 25) = 12. La altura es el diámetro: r = 6 m."
+      ],
+      "verificar": [
+        {
+          "fn": "poncelet",
+          "args": [
+            9,
+            40
+          ],
+          "espera": 4
+        },
+        {
+          "fn": "perimetroPoncelet",
+          "args": [
+            25,
+            3
+          ],
+          "espera": 56
+        },
+        {
+          "fn": "radioTrapecioIsosceles",
+          "args": [
+            18,
+            8
+          ],
+          "espera": 6
+        }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "avanzado",
+      "enunciado": "(a) Un cuadrado ABCD de 24 cm de lado tiene su circunferencia inscrita. Una recta tangente a la circunferencia corta la esquina A: corta AB en M y AD en N, con AM = 6 cm. ¿Cuánto mide MN? (b) En un rectángulo ABCD con AB = 16 cm y BC = 12 cm, una semicircunferencia con el diámetro sobre AB es tangente al lado BC en B y a la diagonal AC. ¿Cuánto mide su radio? (c) En la figura de (b), ¿cuál es el perímetro de la región semicircular (arco más diámetro)?",
+      "respuesta": "(a) MN = 10 cm. (b) r = 6 cm. (c) (6π + 12) cm.",
+      "pasos": [
+        "(a) Las tangentes desde A miden 12 (la mitad del lado), y las de M y N se reparten MN: el perímetro de AMN es igual al lado, 24.",
+        "(a) AN = 24 − 6 − MN = 18 − MN; Pitágoras: 6² + (18 − MN)² = MN², así que 360 = 36·MN y MN = 10 cm (con AN = 8).",
+        "(b) La diagonal mide 20. Desde C, las tangentes CB y CT son iguales: CT = 12 y AT = 8.",
+        "(b) Desde A, la recta AB pasa por el centro: AT² = AE·AB, con AE = 16 − 2r. 64 = (16 − 2r)·16, así que 16 − 2r = 4 y r = 6 cm.",
+        "(c) Arco = πr = 6π y diámetro = 2r = 12: el perímetro es (6π + 12) cm. No es 12π + 12: el arco es media circunferencia."
+      ],
+      "verificar": [
+        {
+          "fn": "esquinaCuadrado",
+          "args": [
+            24,
+            6
+          ],
+          "espera": 10
+        },
+        {
+          "fn": "radioSemicirculo",
+          "args": [
+            16,
+            12
+          ],
+          "espera": 6
+        },
+        {
+          "fn": "perimetroSemicirculo",
+          "args": [
+            16,
+            12
+          ],
+          "espera": 30.84955592153876
+        }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "En una circunferencia de radio 13 dm, la cuerda AC mide 24 dm y B es el punto medio del arco menor AC. ¿Cuánto mide la cuerda AB? Luego: un trapecio rectángulo ABCD (BC ∥ AD, rectos en A y B) está circunscrito a una circunferencia de radio 6 dm y su ángulo ADC mide 37°. ¿Cuánto mide la base mayor AD? Por último: A, B, C y D están en una circunferencia, en ese orden, con arco AB = arco CD. Las cuerdas AC y BD se cortan en E, con AE = 5 dm, BE = 7 dm y el ángulo AED recto. ¿Cuánto mide la cuerda AD?",
+      "respuesta": "AB = 4√13 dm. AD = 24 dm. AD = 5√2 dm.",
+      "pasos": [
+        "Arcos iguales dan cuerdas iguales (AB = BC), pero AB no es la mitad de AC. OB corta a AC en su punto medio M: AM = 12 y OM = √(169 − 144) = 5.",
+        "La flecha es BM = 13 − 5 = 8, y AB² = 12² + 8² = 208, así que AB = 4√13 dm (cuerda² = diámetro × proyección: 26·8 = 208).",
+        "Trapecio: la altura AB es el diámetro, 12. Con el notable de 37°: CD = 20 y AD − BC = 16.",
+        "Pitot: AD + BC = 12 + 20 = 32. Entonces AD = (32 + 16)/2 = 24 dm y BC = 8 dm.",
+        "Arcos iguales dan ángulos inscritos iguales: ∠ADB = ∠DAC, así que el triángulo AED es isósceles con ED = EA = 5 (y, del mismo modo, EC = EB = 7: los triángulos ABE y DCE son congruentes). Con el ángulo recto en E, AD = 5√2 dm."
+      ],
+      "verificar": [
+        {
+          "fn": "cuerdaArcoMitad",
+          "args": [
+            13,
+            24
+          ],
+          "espera": 14.422205101855956
+        },
+        {
+          "fn": "baseMayorTrapecioRectangulo",
+          "args": [
+            6,
+            37
+          ],
+          "espera": 24
+        },
+        {
+          "fn": "cuerdaCongruencia",
+          "args": [
+            5,
+            90
+          ],
+          "espera": 7.0710678118654755
+        }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "En el cuadrado ABCD de 4 m de lado, M está en BC y N en CD, con BM = CN = 1 m. AM y BN se cortan en P. ¿Cuánto mide el ángulo MPC? (Usa tan(37°/2) = 1/3.)",
+      "respuesta": "143°/2.",
+      "pasos": [
+        "Los triángulos ABM y BCN son congruentes, así que AM y BN son perpendiculares: el ángulo MPN mide 90°.",
+        "En PMCN, los ángulos en P y en C miden 90° y suman 180°: el cuadrilátero es inscriptible.",
+        "Los ángulos MPC y MNC abarcan el mismo arco MC, así que son iguales.",
+        "En el triángulo rectángulo MCN: MC = 3 y CN = 1. El ángulo MNC tiene tangente 3, así que su complemento, el ángulo NMC, tiene tangente 1/3 y mide 37°/2. Entonces ∠MPC = ∠MNC = 90° − 37°/2 = 143°/2 (no 45°: PC no parte en dos el ángulo recto)."
+      ],
+      "verificar": [
+        {
+          "fn": "anguloInscriptible",
+          "args": [
+            4,
+            1
+          ],
+          "espera": 71.5
+        }
+      ]
+    }
+  ]
+}

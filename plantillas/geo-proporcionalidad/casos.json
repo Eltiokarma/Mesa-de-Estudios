@@ -1,0 +1,338 @@
+{
+  "plantilla": "geo-proporcionalidad",
+  "tolerancia": 0.000001,
+  "nota": "Longitudes en cm, m o km; las respuestas son enteros, fracciones p/q (q ≤ 8) o a√b. Los _datos traen todos los datos del enunciado (u es la unidad).",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026; rehecho el 12 nov tras la revisión): los 22 casos resueltos desde el enunciado con coordenadas (bisectrices como suma de unitarios, intersecciones de rectas, incentro por pesos, cuerdas y potencia en una circunferencia construida) y Fraction donde hay fórmula cerrada. Coinciden los 22 en respuesta y exacta.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "bisectriz",
+        "sub": "exterior",
+        "a": 10,
+        "b": 4,
+        "c": 8,
+        "u": "cm"
+      },
+      "esperado": {
+        "respuesta": 10,
+        "exacta": "10 cm"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "bis-semejanza",
+        "sub": "cuadrado",
+        "pide": "AF",
+        "L": 20,
+        "p": 15,
+        "u": "m"
+      },
+      "esperado": {
+        "respuesta": 14.285714285714286,
+        "exacta": "100/7 m"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "thales",
+        "sub": "total",
+        "a": 12,
+        "b": 5,
+        "d": 204,
+        "u": "km"
+      },
+      "esperado": {
+        "respuesta": 60,
+        "exacta": "60 km"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "cuerdas",
+        "sub": "diametro-altura",
+        "b": 39,
+        "c": 60,
+        "h": 36,
+        "u": "cm"
+      },
+      "esperado": {
+        "respuesta": 32.5,
+        "exacta": "65/2 cm"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "cuerdas",
+        "sub": "producto",
+        "PA": 6,
+        "PB": 10,
+        "PC": 4,
+        "u": "m"
+      },
+      "esperado": {
+        "respuesta": 15,
+        "exacta": "15 m"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "raices-areas",
+        "sub": "total",
+        "S1": 4,
+        "S2": 4,
+        "S3": 1,
+        "u": "cm"
+      },
+      "esperado": {
+        "respuesta": 25,
+        "exacta": "25 cm²"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "mastil",
+        "a": 18,
+        "b": 4,
+        "c": 20,
+        "H": 10,
+        "u": "m"
+      },
+      "esperado": {
+        "respuesta": 18.027756377319946,
+        "exacta": "5√13 m"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "thales",
+        "sub": "cometa",
+        "a": 4,
+        "b": 7,
+        "L": 33,
+        "u": "cm"
+      },
+      "esperado": {
+        "respuesta": 21,
+        "exacta": "21 cm"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "incentro",
+        "sub": "razon",
+        "a": 9,
+        "b": 13,
+        "c": 8,
+        "u": "cm"
+      },
+      "esperado": {
+        "respuesta": 2.3333333333333335,
+        "exacta": "7/3"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "raices-areas",
+        "sub": "tercera",
+        "S": 100,
+        "S1": 1,
+        "S2": 9,
+        "u": "cm"
+      },
+      "esperado": {
+        "respuesta": 36,
+        "exacta": "36 cm²"
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "tipo": "bis-semejanza",
+        "sub": "cuadrado",
+        "pide": "razon",
+        "L": 11,
+        "p": 7,
+        "u": "m"
+      },
+      "esperado": {
+        "respuesta": 1.5714285714285714,
+        "exacta": "11/7"
+      }
+    },
+    {
+      "semilla": 16,
+      "entrada": {
+        "tipo": "bisectriz",
+        "sub": "segmento",
+        "a": 5,
+        "b": 4,
+        "c": 6,
+        "u": "m"
+      },
+      "esperado": {
+        "respuesta": 3,
+        "exacta": "3 m"
+      }
+    },
+    {
+      "semilla": 20,
+      "entrada": {
+        "tipo": "incentro",
+        "sub": "paralela",
+        "pide": "MN",
+        "a": 10,
+        "b": 7,
+        "c": 13,
+        "u": "cm"
+      },
+      "esperado": {
+        "respuesta": 6.666666666666667,
+        "exacta": "20/3 cm"
+      }
+    },
+    {
+      "semilla": 21,
+      "entrada": {
+        "tipo": "thales",
+        "sub": "tres",
+        "a": 10,
+        "b": 14,
+        "c": 15,
+        "u": "cm"
+      },
+      "esperado": {
+        "respuesta": 21,
+        "exacta": "21 cm"
+      }
+    },
+    {
+      "semilla": 22,
+      "entrada": {
+        "tipo": "bisectriz",
+        "sub": "perimetro",
+        "m": 4,
+        "n": 5,
+        "c": 12,
+        "u": "m"
+      },
+      "esperado": {
+        "respuesta": 36,
+        "exacta": "36 m"
+      }
+    },
+    {
+      "semilla": 23,
+      "entrada": {
+        "tipo": "incentro",
+        "sub": "paralela",
+        "pide": "perimetro",
+        "a": 5,
+        "b": 15,
+        "c": 17,
+        "u": "m"
+      },
+      "esperado": {
+        "respuesta": 32,
+        "exacta": "32 m"
+      }
+    },
+    {
+      "semilla": 41,
+      "entrada": {
+        "tipo": "incentro",
+        "sub": "rombo",
+        "a": 13,
+        "b": 17,
+        "c": 9,
+        "u": "cm"
+      },
+      "esperado": {
+        "respuesta": 12,
+        "exacta": "12 cm"
+      }
+    },
+    {
+      "semilla": 58,
+      "entrada": {
+        "tipo": "thales",
+        "sub": "triangulo",
+        "a": 6,
+        "b": 5,
+        "L": 22,
+        "u": "m"
+      },
+      "esperado": {
+        "respuesta": 12,
+        "exacta": "12 m"
+      }
+    },
+    {
+      "semilla": 72,
+      "entrada": {
+        "tipo": "cuerdas",
+        "sub": "iguales",
+        "s": 12,
+        "e": 4,
+        "u": "m"
+      },
+      "esperado": {
+        "respuesta": 32,
+        "exacta": "32 m"
+      }
+    },
+    {
+      "semilla": 98,
+      "entrada": {
+        "tipo": "bis-semejanza",
+        "sub": "paralela-vertice",
+        "b": 12,
+        "c": 6,
+        "u": "cm"
+      },
+      "esperado": {
+        "respuesta": 4,
+        "exacta": "4 cm"
+      }
+    },
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "thales",
+        "sub": "tres",
+        "a": 3,
+        "b": 13,
+        "c": 9,
+        "u": "m"
+      },
+      "esperado": {
+        "respuesta": 39,
+        "exacta": "39 m"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "mastil",
+        "a": 12,
+        "b": 9,
+        "c": 18,
+        "H": 4,
+        "u": "m"
+      },
+      "esperado": {
+        "respuesta": 8.94427190999916,
+        "exacta": "4√5 m"
+      }
+    }
+  ]
+}

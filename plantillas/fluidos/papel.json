@@ -1,6 +1,6 @@
 {
   "titulo": "Fluidos: problemas para lápiz y papel",
-  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. En un líquido en reposo, la presión solo depende de la profundidad h, medida en vertical desde la superficie libre: P = P₀ + ρ·g·h, sea cual sea la forma del recipiente. Compara presiones solo dentro de un mismo líquido conectado. El empuje es E = ρ del líquido · g · volumen sumergido: no depende de la masa del cuerpo. Dibuja las fuerzas de cada cuerpo con quién las ejerce (la Tierra, el hilo, el agua, el piso). Toma g = 10 m/s², agua 1000 kg/m³ y P₀ = 100 000 Pa.",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. En un líquido en reposo, la presión solo depende de la profundidad h, medida en vertical desde la superficie libre: P = P₀ + ρ·g·h, sea cual sea la forma del recipiente. Compara presiones solo dentro de un mismo líquido conectado. El empuje es E = ρ del líquido · g · volumen sumergido: no depende de la masa del cuerpo. Dibuja las fuerzas de cada cuerpo con quién las ejerce (la Tierra, el hilo, el agua, el piso). Si el líquido corre, el caudal A·v es el mismo en todo el tubo, y en un tubo horizontal la presión es menor donde va más rápido. Toma g = 10 m/s², agua 1000 kg/m³ y P₀ = 100 000 Pa.",
   "problemas": [
     {
       "id": "p1",
@@ -130,18 +130,32 @@
     {
       "id": "p9",
       "nivel": "avanzado",
-      "enunciado": "Por una manguera horizontal de 2 cm de diámetro corre agua a 1 m/s, con una presión absoluta de 130 000 Pa. En la boquilla, el diámetro baja a 1 cm. ¿Con qué rapidez sale el agua de la boquilla y cuál es la presión justo antes de salir, dentro de la parte angosta?",
-      "respuesta": "Sale a 4 m/s; la presión en la parte angosta es 122 500 Pa.",
+      "enunciado": "Un tubo horizontal de 2 cm de radio lleva agua a 0,5 m/s y luego se angosta a 1 cm de radio. Sobre cada tramo hay un tubito vertical abierto arriba. En el tubito del tramo ancho, el agua sube 60 cm sobre el eje del tubo. ¿Con qué rapidez pasa el agua por el tramo angosto? ¿Hasta qué altura sube el agua en el otro tubito?",
+      "respuesta": "Pasa a 2 m/s; en el tubito del tramo angosto el agua sube 41,25 cm.",
       "pasos": [
-        "Continuidad: el caudal es el mismo, A₁·v₁ = A₂·v₂. El área va con el diámetro al cuadrado: A₁/A₂ = (2/1)² = 4.",
-        "v₂ = 1 · 4 = 4 m/s. Con la razón de diámetros sin elevar al cuadrado saldría 2 m/s, y es un error.",
-        "Bernoulli en un tubo horizontal: P₁ + ½ρv₁² = P₂ + ½ρv₂².",
-        "P₂ = 130 000 + ½ · 1000 · (1² − 4²) = 130 000 − 7500 = 122 500 Pa.",
-        "Donde el agua va más rápido, la presión es menor."
+        "Continuidad: el caudal es el mismo, π · r₁² · v₁ = π · r₂² · v₂. Con la mitad del radio, el área es la cuarta parte: v₂ = 0,5 · 4 = 2 m/s.",
+        "El tubito del tramo ancho dice la presión ahí (sobre la atmosférica): P₁ = 1000 · 10 · 0,6 = 6000 Pa.",
+        "Bernoulli en un tubo horizontal: P₂ = P₁ − ½ · ρ · (v₂² − v₁²) = 6000 − 500 · (4 − 0,25) = 6000 − 1875 = 4125 Pa.",
+        "Altura en el otro tubito: h₂ = 4125 / (1000 · 10) = 0,4125 m = 41,25 cm.",
+        "El agua sube menos donde el tubo es angosto: ahí va más rápido y la presión es menor. Si pensaras «más rapidez, más presión», te saldría más alto, y es un error."
       ],
       "verificar": [
-        { "fn": "continuidad", "args": [{ "D1": 0.02, "D2": 0.01, "v1": 1 }], "espera": { "v2": 4, "errores.razonDiametros": 2 } },
-        { "fn": "bernoulli", "args": [{ "P1": 130000, "v1": 1, "D1": 0.02, "D2": 0.01 }], "espera": { "P2": 122500 } }
+        { "fn": "estrechamiento", "args": [{ "r1": 0.02, "r2": 0.01, "v1": 0.5, "P1": 6000 }], "espera": { "v2": 2, "P2": 4125, "h1": 0.6, "h2": 0.4125 } }
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "intermedio",
+      "enunciado": "Un tanque elevado tiene su superficie de agua a 2,05 m del piso. Por un orificio pequeño de su pared, a 1,25 m del piso, sale un chorro horizontal. ¿Con qué rapidez sale el agua y a qué distancia de la pared cae al piso?",
+      "respuesta": "Sale a 4 m/s y cae a 2 m de la pared.",
+      "pasos": [
+        "La profundidad del orificio bajo la superficie es 2,05 − 1,25 = 0,8 m. No se usa toda la altura del agua sobre el piso.",
+        "Torricelli: el agua sale como si cayera libre desde la superficie, v = √(2 · 10 · 0,8) = 4 m/s.",
+        "El chorro sale horizontal y cae 1,25 m: 1,25 = ½ · 10 · t², así que t = 0,5 s.",
+        "Distancia: x = 4 · 0,5 = 2 m."
+      ],
+      "verificar": [
+        { "fn": "torricelli", "args": [{ "H": 2.05, "y": 1.25 }], "espera": { "h": 0.8, "v": 4, "t": 0.5, "x": 2 } }
       ]
     }
   ]

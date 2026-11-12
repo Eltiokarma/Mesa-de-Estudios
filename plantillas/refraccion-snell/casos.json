@@ -1,0 +1,233 @@
+{
+  "plantilla": "refraccion-snell",
+  "tolerancia": 1e-06,
+  "nota": "Ángulos en grados desde la normal, con sen 37° = 3/5 y sen 53° = 4/5. La respuesta numérica es el seno del ángulo de refracción o límite (tipos angulo, ensayos, rapidez/angulo, limite), el índice (indice) o la longitud en m (fondo); «total» es reflexión total, un seno 1 es el rayo que sale rozando y la clave f=1;l=… dice que f no cambia y λ en nm. En «angulo/superficie» e «indice/superficie», i y r de entrada son los ángulos con la normal; el enunciado da sus complementos.",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026), a ciegas sin leer generador.js ni casos.json: resolvió en Python con su propia ley de Snell (sen 37° = 3/5), ángulo límite, h·tan L y h/n, 44 problemas (14 casos y 30 semillas). Coinciden 44/44 en letra y valor. Tras la revisión, la correcta puede ser un arcsen y los índices son reales; esos casos los recalculó el constructor aparte.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "indice",
+        "sub": "normal",
+        "i": 53,
+        "r": 30,
+        "a1": 53,
+        "a2": 30
+      },
+      "esperado": {
+        "respuesta": 1.6,
+        "exacta": "8/5"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "fondo",
+        "sub": "circulo",
+        "n": 1.6666666666666667,
+        "h": 3.6
+      },
+      "esperado": {
+        "respuesta": 2.7,
+        "exacta": "2,7 m"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "angulo",
+        "sub": "superficie",
+        "n1": 1.4142135623730951,
+        "n2": 1,
+        "i": 30
+      },
+      "esperado": {
+        "respuesta": 0.7071067811865476,
+        "exacta": "45°"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "angulo",
+        "sub": "entra",
+        "n1": 1.5,
+        "n2": 1.7320508075688772,
+        "i": 60
+      },
+      "esperado": {
+        "respuesta": 0.7500000000000001,
+        "exacta": "arcsen(3/4)"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "fondo",
+        "sub": "aparente",
+        "n": 1.25,
+        "h": 3.2
+      },
+      "esperado": {
+        "respuesta": 2.56,
+        "exacta": "2,56 m"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "indice",
+        "sub": "superficie",
+        "i": 53,
+        "r": 30,
+        "a1": 37,
+        "a2": 60
+      },
+      "esperado": {
+        "respuesta": 1.6,
+        "exacta": "8/5"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "limite",
+        "sub": "angulo",
+        "n1": 1.2,
+        "n2": 1
+      },
+      "esperado": {
+        "respuesta": 0.8333333333333334,
+        "exacta": "arcsen(5/6)"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "angulo",
+        "sub": "sale",
+        "n1": 1.4142135623730951,
+        "n2": 1.25,
+        "i": 45
+      },
+      "esperado": {
+        "respuesta": 0.8000000000000002,
+        "exacta": "53°"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "ensayos",
+        "i1": 60,
+        "r1": 30,
+        "n1": 1.4142135623730951,
+        "n2": 1.7320508075688772,
+        "i": 60,
+        "desde": false
+      },
+      "esperado": {
+        "respuesta": 0.7071067811865477,
+        "exacta": "45°"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "limite",
+        "sub": "sale",
+        "n1": 1.6666666666666667,
+        "n2": 1,
+        "i": 37
+      },
+      "esperado": {
+        "respuesta": 1,
+        "exacta": "Sale rozando la superficie (90° de la normal)"
+      }
+    },
+    {
+      "semilla": 19,
+      "entrada": {
+        "tipo": "rapidez",
+        "sub": "lambda",
+        "n": 1.3333333333333333,
+        "l0": 600
+      },
+      "esperado": {
+        "respuesta": "f=1;l=450",
+        "exacta": "f = 5 × 10¹⁴ Hz y λ = 450 nm"
+      }
+    },
+    {
+      "semilla": 26,
+      "entrada": {
+        "tipo": "limite",
+        "sub": "angulo",
+        "n1": 2,
+        "n2": 1.6
+      },
+      "esperado": {
+        "respuesta": 0.8,
+        "exacta": "53°"
+      }
+    },
+    {
+      "semilla": 38,
+      "entrada": {
+        "tipo": "limite",
+        "sub": "sale",
+        "n1": 1.5,
+        "n2": 1.2,
+        "i": 60
+      },
+      "esperado": {
+        "respuesta": "total",
+        "exacta": "No pasa al otro medio (reflexión total)"
+      }
+    },
+    {
+      "semilla": 45,
+      "entrada": {
+        "tipo": "limite",
+        "sub": "sale",
+        "n1": 1.5,
+        "n2": 1.2,
+        "i": 30
+      },
+      "esperado": {
+        "respuesta": 0.625,
+        "exacta": "Sale y se aleja de la normal (arcsen(5/8))"
+      }
+    },
+    {
+      "semilla": 53,
+      "entrada": {
+        "tipo": "ensayos",
+        "i1": 60,
+        "r1": 30,
+        "n1": 1.7320508075688772,
+        "n2": 1.3333333333333333,
+        "i": 30,
+        "desde": true
+      },
+      "esperado": {
+        "respuesta": 0.649519052838329,
+        "exacta": "arcsen(3√3/8)"
+      }
+    },
+    {
+      "semilla": 128,
+      "entrada": {
+        "tipo": "rapidez",
+        "sub": "angulo",
+        "v1": 2.5,
+        "v2": 2,
+        "i": 37
+      },
+      "esperado": {
+        "respuesta": 0.48,
+        "exacta": "arcsen(12/25)"
+      }
+    }
+  ]
+}

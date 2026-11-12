@@ -54,7 +54,9 @@
       "vectores-unitario",
       "vectores-combinacion",
       "vectores-division",
-      "vectores-poligono"
+      "vectores-poligono",
+      "velocidad-relativa",
+      "analisis-dimensional"
      ]
     },
     {
@@ -86,7 +88,9 @@
      "potencial_visual": "alto",
      "grado": 3,
      "plantillas": [
-      "mruv"
+      "mruv",
+      "cinematica-medias",
+      "velocidad-relativa"
      ]
     },
     {
@@ -125,7 +129,8 @@
       "circular-horaria",
       "circular-grafica",
       "circular-aceleracion-total",
-      "circular-giro-combinado"
+      "circular-giro-combinado",
+      "cinematica-medias"
      ]
     },
     {
@@ -156,7 +161,8 @@
      "potencial_visual": "alto",
      "grado": 4,
      "plantillas": [
-      "estatica"
+      "estatica",
+      "dinamica-fuerzas"
      ]
     },
     {
@@ -185,7 +191,8 @@
      "potencial_visual": "alto",
      "grado": 4,
      "plantillas": [
-      "dinamica"
+      "dinamica",
+      "dinamica-fuerzas"
      ]
     },
     {
@@ -212,7 +219,8 @@
      "potencial_visual": "medio",
      "grado": 4,
      "plantillas": [
-      "gravitacion"
+      "gravitacion",
+      "dinamica-fuerzas"
      ]
     },
     {
@@ -240,7 +248,8 @@
      "potencial_visual": "alto",
      "grado": 4,
      "plantillas": [
-      "energia"
+      "energia",
+      "energia-potencia"
      ]
     },
     {
@@ -269,7 +278,9 @@
      "potencial_visual": "alto",
      "grado": 4,
      "plantillas": [
-      "choques"
+      "choques",
+      "velocidad-relativa",
+      "impulso-grafica"
      ]
     },
     {
@@ -297,7 +308,8 @@
      "potencial_visual": "alto",
      "grado": 5,
      "plantillas": [
-      "mas"
+      "mas",
+      "mas-horaria"
      ]
     },
     {
@@ -326,7 +338,8 @@
      "potencial_visual": "alto",
      "grado": 5,
      "plantillas": [
-      "ondas"
+      "ondas",
+      "ondas-llegadas"
      ]
     },
     {
@@ -356,7 +369,8 @@
      "potencial_visual": "alto",
      "grado": 4,
      "plantillas": [
-      "fluidos"
+      "fluidos",
+      "fluidos-hidrodinamica"
      ]
     },
     {
@@ -386,7 +400,8 @@
      "potencial_visual": "alto",
      "grado": 4,
      "plantillas": [
-      "calorimetria"
+      "calorimetria",
+      "calor-escalas"
      ]
     },
     {
@@ -446,7 +461,9 @@
      "potencial_visual": "alto",
      "grado": 5,
      "plantillas": [
-      "electrostatica"
+      "electrostatica",
+      "condensadores",
+      "cargas-sistema"
      ]
     },
     {
@@ -478,7 +495,9 @@
      "potencial_visual": "alto",
      "grado": 5,
      "plantillas": [
-      "circuitos-cc"
+      "circuitos-cc",
+      "circuitos-mallas",
+      "circuitos-joule"
      ]
     },
     {
@@ -506,7 +525,8 @@
      "potencial_visual": "alto",
      "grado": 5,
      "plantillas": [
-      "magnetismo"
+      "magnetismo",
+      "carga-en-campo"
      ]
     },
     {
@@ -535,7 +555,8 @@
      "potencial_visual": "alto",
      "grado": 5,
      "plantillas": [
-      "induccion"
+      "induccion",
+      "induccion-flujo"
      ]
     },
     {
@@ -562,7 +583,8 @@
      "potencial_visual": "bajo",
      "grado": 5,
      "plantillas": [
-      "ondas-electromagneticas"
+      "ondas-electromagneticas",
+      "refraccion-snell"
      ]
     },
     {
@@ -592,7 +614,9 @@
      "grado": 5,
      "plantillas": [
       "optica-lente-delgada",
-      "optica-espejo-esferico"
+      "optica-espejo-esferico",
+      "refraccion-snell",
+      "ondas-electromagneticas"
      ]
     },
     {
@@ -622,7 +646,8 @@
      "potencial_visual": "medio",
      "grado": 5,
      "plantillas": [
-      "fisica-moderna"
+      "fisica-moderna",
+      "relatividad"
      ]
     }
    ]
@@ -2456,7 +2481,8 @@
      "potencial_visual": "alto",
      "grado": 3,
      "plantillas": [
-      "triangulo-estira"
+      "triangulo-estira",
+      "geo-triangulos-notables"
      ]
     },
     {
@@ -2514,7 +2540,8 @@
      "potencial_visual": "alto",
      "grado": 3,
      "plantillas": [
-      "poligonos"
+      "poligonos",
+      "geo-poligonos"
      ]
     },
     {
@@ -2544,7 +2571,8 @@
      "potencial_visual": "alto",
      "grado": 3,
      "plantillas": [
-      "angulo-inscrito"
+      "angulo-inscrito",
+      "geo-circunferencia-metrica"
      ]
     },
     {
@@ -2572,7 +2600,8 @@
      "potencial_visual": "alto",
      "grado": 4,
      "plantillas": [
-      "ampliadora"
+      "ampliadora",
+      "geo-proporcionalidad"
      ]
     },
     {
@@ -2599,7 +2628,8 @@
      "potencial_visual": "alto",
      "grado": 4,
      "plantillas": [
-      "triangulo-estira"
+      "triangulo-estira",
+      "geo-triangulos-notables"
      ]
     },
     {
@@ -2630,7 +2660,9 @@
      "potencial_visual": "alto",
      "grado": 4,
      "plantillas": [
-      "triangulo-estira"
+      "triangulo-estira",
+      "geo-circunferencia-metrica",
+      "geo-relaciones-metricas"
      ]
     },
     {
@@ -2658,7 +2690,8 @@
      "potencial_visual": "alto",
      "grado": 4,
      "plantillas": [
-      "poligonos"
+      "poligonos",
+      "geo-poligonos"
      ]
     },
     {
@@ -2711,7 +2744,8 @@
      "grado": 4,
      "plantillas": [
       "ampliadora",
-      "triangulo-estira"
+      "triangulo-estira",
+      "geo-areas-triangulares"
      ]
     },
     {
@@ -2741,7 +2775,8 @@
      "grado": 4,
      "plantillas": [
       "ampliadora",
-      "angulo-inscrito"
+      "angulo-inscrito",
+      "geo-areas-circulares"
      ]
     },
     {
@@ -2773,7 +2808,8 @@
      "potencial_visual": "alto",
      "grado": 5,
      "plantillas": [
-      "geometria-espacio"
+      "geometria-espacio",
+      "geo-proporcionalidad"
      ]
     },
     {
@@ -2833,7 +2869,8 @@
      "grado": 5,
      "plantillas": [
       "ampliadora",
-      "solidos"
+      "solidos",
+      "geo-troncos-prismas"
      ]
     },
     {
@@ -2866,7 +2903,8 @@
      "grado": 5,
      "plantillas": [
       "ampliadora",
-      "solidos"
+      "solidos",
+      "geo-revolucion"
      ]
     },
     {
@@ -2893,7 +2931,8 @@
      "grado": 5,
      "plantillas": [
       "geometria-analitica",
-      "conicas"
+      "conicas",
+      "geo-analitica"
      ]
     },
     {
@@ -2980,7 +3019,8 @@
      "potencial_visual": "alto",
      "grado": 3,
      "plantillas": [
-      "cinta-radio"
+      "cinta-radio",
+      "geo-areas-circulares"
      ]
     },
     {
@@ -3035,7 +3075,8 @@
      "potencial_visual": "alto",
      "grado": 3,
      "plantillas": [
-      "circunferencia-trig"
+      "circunferencia-trig",
+      "trig-angulos-verticales"
      ]
     },
     {
@@ -3114,7 +3155,8 @@
      "potencial_visual": "alto",
      "grado": 4,
      "plantillas": [
-      "circunferencia-trig"
+      "circunferencia-trig",
+      "trig-oblicuangulos"
      ]
     },
     {
@@ -3145,7 +3187,8 @@
      "potencial_visual": "alto",
      "grado": 4,
      "plantillas": [
-      "circunferencia-trig"
+      "circunferencia-trig",
+      "trig-extremos"
      ]
     },
     {
@@ -3172,7 +3215,9 @@
      "potencial_visual": "medio",
      "grado": 4,
      "plantillas": [
-      "identidades-trig"
+      "identidades-trig",
+      "trig-extremos",
+      "trig-identidades"
      ]
     },
     {
@@ -3198,7 +3243,9 @@
      "potencial_visual": "medio",
      "grado": 5,
      "plantillas": [
-      "identidades-trig"
+      "identidades-trig",
+      "trig-angulos-verticales",
+      "trig-identidades"
      ]
     },
     {
@@ -3226,7 +3273,8 @@
      "potencial_visual": "medio",
      "grado": 5,
      "plantillas": [
-      "identidades-trig"
+      "identidades-trig",
+      "trig-identidades"
      ]
     },
     {
@@ -3285,7 +3333,8 @@
      "potencial_visual": "alto",
      "grado": 5,
      "plantillas": [
-      "circunferencia-trig"
+      "circunferencia-trig",
+      "trig-extremos"
      ]
     },
     {
@@ -3314,7 +3363,8 @@
      "potencial_visual": "alto",
      "grado": 5,
      "plantillas": [
-      "funciones-trig-inversas"
+      "funciones-trig-inversas",
+      "trig-inversas"
      ]
     },
     {
@@ -3341,7 +3391,8 @@
      "potencial_visual": "alto",
      "grado": 5,
      "plantillas": [
-      "circunferencia-trig"
+      "circunferencia-trig",
+      "trig-ecuaciones"
      ]
     },
     {
@@ -3368,7 +3419,8 @@
      "potencial_visual": "alto",
      "grado": 5,
      "plantillas": [
-      "caso-ambiguo"
+      "caso-ambiguo",
+      "trig-oblicuangulos"
      ]
     },
     {
@@ -3397,7 +3449,8 @@
      "potencial_visual": "alto",
      "grado": 5,
      "plantillas": [
-      "caso-ambiguo"
+      "caso-ambiguo",
+      "trig-oblicuangulos"
      ]
     },
     {
@@ -3446,7 +3499,8 @@
      "potencial_visual": "medio",
      "grado": 5,
      "plantillas": [
-      "coordenadas-polares"
+      "coordenadas-polares",
+      "trig-polares"
      ]
     }
    ]
@@ -4373,6 +4427,22 @@
     "/plantillas/ampliadora/papel.json"
    ]
   },
+  "analisis-dimensional": {
+   "id": "analisis-dimensional",
+   "titulo": "La balanza de dimensiones",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.magnitudes-y-vectores"
+   ],
+   "url": "#/practica/analisis-dimensional",
+   "papel": "/plantillas/analisis-dimensional/papel.json",
+   "archivos": [
+    "/plantillas/analisis-dimensional/generador.js",
+    "/plantillas/analisis-dimensional/papel.json"
+   ]
+  },
   "angulo-inscrito": {
    "id": "angulo-inscrito",
    "titulo": "¿Cambia el ángulo? ángulos en la circunferencia",
@@ -4478,6 +4548,22 @@
     "/plantillas/biomoleculas/papel.json"
    ]
   },
+  "calor-escalas": {
+   "id": "calor-escalas",
+   "titulo": "El termómetro de la chacra",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.temperatura-y-calor"
+   ],
+   "url": "#/practica/calor-escalas",
+   "papel": "/plantillas/calor-escalas/papel.json",
+   "archivos": [
+    "/plantillas/calor-escalas/generador.js",
+    "/plantillas/calor-escalas/papel.json"
+   ]
+  },
   "calorimetria": {
    "id": "calorimetria",
    "titulo": "Temperatura y calor",
@@ -4493,6 +4579,38 @@
     "/plantillas/calorimetria/index.html",
     "/plantillas/calorimetria/motor.js",
     "/plantillas/calorimetria/papel.json"
+   ]
+  },
+  "carga-en-campo": {
+   "id": "carga-en-campo",
+   "titulo": "La carga que gira en el imán",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.magnetismo"
+   ],
+   "url": "#/practica/carga-en-campo",
+   "papel": "/plantillas/carga-en-campo/papel.json",
+   "archivos": [
+    "/plantillas/carga-en-campo/generador.js",
+    "/plantillas/carga-en-campo/papel.json"
+   ]
+  },
+  "cargas-sistema": {
+   "id": "cargas-sistema",
+   "titulo": "Tres cargas en el plano",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.electrostatica"
+   ],
+   "url": "#/practica/cargas-sistema",
+   "papel": "/plantillas/cargas-sistema/papel.json",
+   "archivos": [
+    "/plantillas/cargas-sistema/generador.js",
+    "/plantillas/cargas-sistema/papel.json"
    ]
   },
   "caso-ambiguo": {
@@ -4547,6 +4665,23 @@
     "/plantillas/choques/papel.json"
    ]
   },
+  "cinematica-medias": {
+   "id": "cinematica-medias",
+   "titulo": "El viaje en tramos",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.movimiento-rectilineo",
+    "fisica.movimiento-parabolico-y-circular"
+   ],
+   "url": "#/practica/cinematica-medias",
+   "papel": "/plantillas/cinematica-medias/papel.json",
+   "archivos": [
+    "/plantillas/cinematica-medias/generador.js",
+    "/plantillas/cinematica-medias/papel.json"
+   ]
+  },
   "cinetica": {
    "id": "cinetica",
    "titulo": "Cinética química",
@@ -4597,6 +4732,38 @@
     "/plantillas/circuitos-cc/index.html",
     "/plantillas/circuitos-cc/motor.js",
     "/plantillas/circuitos-cc/papel.json"
+   ]
+  },
+  "circuitos-joule": {
+   "id": "circuitos-joule",
+   "titulo": "El foco que calienta",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.corriente-y-circuitos"
+   ],
+   "url": "#/practica/circuitos-joule",
+   "papel": "/plantillas/circuitos-joule/papel.json",
+   "archivos": [
+    "/plantillas/circuitos-joule/generador.js",
+    "/plantillas/circuitos-joule/papel.json"
+   ]
+  },
+  "circuitos-mallas": {
+   "id": "circuitos-mallas",
+   "titulo": "Dos pilas y una malla",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.corriente-y-circuitos"
+   ],
+   "url": "#/practica/circuitos-mallas",
+   "papel": "/plantillas/circuitos-mallas/papel.json",
+   "archivos": [
+    "/plantillas/circuitos-mallas/generador.js",
+    "/plantillas/circuitos-mallas/papel.json"
    ]
   },
   "circular-aceleracion-total": {
@@ -4757,6 +4924,22 @@
     "/plantillas/circunferencia-trig/papel.json"
    ]
   },
+  "condensadores": {
+   "id": "condensadores",
+   "titulo": "Condensadores en fila y en paralelo",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.electrostatica"
+   ],
+   "url": "#/practica/condensadores",
+   "papel": "/plantillas/condensadores/papel.json",
+   "archivos": [
+    "/plantillas/condensadores/generador.js",
+    "/plantillas/condensadores/papel.json"
+   ]
+  },
   "congruencia": {
    "id": "congruencia",
    "titulo": "El armador de triángulos: congruencia",
@@ -4896,6 +5079,24 @@
     "/plantillas/dinamica/papel.json"
    ]
   },
+  "dinamica-fuerzas": {
+   "id": "dinamica-fuerzas",
+   "titulo": "La plataforma que gira",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.dinamica",
+    "fisica.estatica",
+    "fisica.gravitacion"
+   ],
+   "url": "#/practica/dinamica-fuerzas",
+   "papel": "/plantillas/dinamica-fuerzas/papel.json",
+   "archivos": [
+    "/plantillas/dinamica-fuerzas/generador.js",
+    "/plantillas/dinamica-fuerzas/papel.json"
+   ]
+  },
   "division-polinomios": {
    "id": "division-polinomios",
    "titulo": "División de polinomios, cocientes notables, MCD y MCM",
@@ -4981,6 +5182,22 @@
     "/plantillas/energia/index.html",
     "/plantillas/energia/motor.js",
     "/plantillas/energia/papel.json"
+   ]
+  },
+  "energia-potencia": {
+   "id": "energia-potencia",
+   "titulo": "La bomba y el ascensor",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.trabajo-y-energia"
+   ],
+   "url": "#/practica/energia-potencia",
+   "papel": "/plantillas/energia-potencia/papel.json",
+   "archivos": [
+    "/plantillas/energia-potencia/generador.js",
+    "/plantillas/energia-potencia/papel.json"
    ]
   },
   "enlace": {
@@ -5103,10 +5320,10 @@
   },
   "fluidos": {
    "id": "fluidos",
-   "titulo": "Fluidos: presión, Pascal y Arquímedes",
+   "titulo": "Fluidos: presión, Pascal, Arquímedes y el tubo que se angosta",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "fisica.fluidos"
    ],
@@ -5116,6 +5333,22 @@
     "/plantillas/fluidos/index.html",
     "/plantillas/fluidos/motor.js",
     "/plantillas/fluidos/papel.json"
+   ]
+  },
+  "fluidos-hidrodinamica": {
+   "id": "fluidos-hidrodinamica",
+   "titulo": "La manguera y el caño",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.fluidos"
+   ],
+   "url": "#/practica/fluidos-hidrodinamica",
+   "papel": "/plantillas/fluidos-hidrodinamica/papel.json",
+   "archivos": [
+    "/plantillas/fluidos-hidrodinamica/generador.js",
+    "/plantillas/fluidos-hidrodinamica/papel.json"
    ]
   },
   "fracciones": {
@@ -5221,6 +5454,171 @@
     "/plantillas/gases/index.html",
     "/plantillas/gases/motor.js",
     "/plantillas/gases/papel.json"
+   ]
+  },
+  "geo-analitica": {
+   "id": "geo-analitica",
+   "titulo": "Geometría analítica: baricentro, rectas, elipse y parábolas",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.geometria-analitica"
+   ],
+   "url": "#/practica/geo-analitica",
+   "papel": "/plantillas/geo-analitica/papel.json",
+   "archivos": [
+    "/plantillas/geo-analitica/generador.js",
+    "/plantillas/geo-analitica/papel.json"
+   ]
+  },
+  "geo-areas-circulares": {
+   "id": "geo-areas-circulares",
+   "titulo": "Coronas, sectores y regiones con arcos",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.longitud-y-areas-circulares",
+    "trigonometria.longitud-de-arco-y-sector"
+   ],
+   "url": "#/practica/geo-areas-circulares",
+   "papel": "/plantillas/geo-areas-circulares/papel.json",
+   "archivos": [
+    "/plantillas/geo-areas-circulares/generador.js",
+    "/plantillas/geo-areas-circulares/papel.json"
+   ]
+  },
+  "geo-areas-triangulares": {
+   "id": "geo-areas-triangulares",
+   "titulo": "Áreas de triángulos y polígonos por partes",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.areas-poligonales"
+   ],
+   "url": "#/practica/geo-areas-triangulares",
+   "papel": "/plantillas/geo-areas-triangulares/papel.json",
+   "archivos": [
+    "/plantillas/geo-areas-triangulares/generador.js",
+    "/plantillas/geo-areas-triangulares/papel.json"
+   ]
+  },
+  "geo-circunferencia-metrica": {
+   "id": "geo-circunferencia-metrica",
+   "titulo": "Relaciones métricas en la circunferencia",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.circunferencia",
+    "geometria.relaciones-metricas"
+   ],
+   "url": "#/practica/geo-circunferencia-metrica",
+   "papel": "/plantillas/geo-circunferencia-metrica/papel.json",
+   "archivos": [
+    "/plantillas/geo-circunferencia-metrica/generador.js",
+    "/plantillas/geo-circunferencia-metrica/papel.json"
+   ]
+  },
+  "geo-poligonos": {
+   "id": "geo-poligonos",
+   "titulo": "Polígonos regulares, trapecios y cuadriláteros",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.poligonos-y-cuadrilateros",
+    "geometria.poligonos-regulares"
+   ],
+   "url": "#/practica/geo-poligonos",
+   "papel": "/plantillas/geo-poligonos/papel.json",
+   "archivos": [
+    "/plantillas/geo-poligonos/generador.js",
+    "/plantillas/geo-poligonos/papel.json"
+   ]
+  },
+  "geo-proporcionalidad": {
+   "id": "geo-proporcionalidad",
+   "titulo": "Paralelas, bisectrices y semejanza",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.proporcionalidad-y-semejanza",
+    "geometria.geometria-del-espacio"
+   ],
+   "url": "#/practica/geo-proporcionalidad",
+   "papel": "/plantillas/geo-proporcionalidad/papel.json",
+   "archivos": [
+    "/plantillas/geo-proporcionalidad/generador.js",
+    "/plantillas/geo-proporcionalidad/papel.json"
+   ]
+  },
+  "geo-relaciones-metricas": {
+   "id": "geo-relaciones-metricas",
+   "titulo": "Relaciones métricas en triángulos y cuadriláteros",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.relaciones-metricas"
+   ],
+   "url": "#/practica/geo-relaciones-metricas",
+   "papel": "/plantillas/geo-relaciones-metricas/papel.json",
+   "archivos": [
+    "/plantillas/geo-relaciones-metricas/generador.js",
+    "/plantillas/geo-relaciones-metricas/papel.json"
+   ]
+  },
+  "geo-revolucion": {
+   "id": "geo-revolucion",
+   "titulo": "Sólidos de revolución: troncos, regiones que giran y esferas",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.solidos-de-revolucion"
+   ],
+   "url": "#/practica/geo-revolucion",
+   "papel": "/plantillas/geo-revolucion/papel.json",
+   "archivos": [
+    "/plantillas/geo-revolucion/generador.js",
+    "/plantillas/geo-revolucion/papel.json"
+   ]
+  },
+  "geo-triangulos-notables": {
+   "id": "geo-triangulos-notables",
+   "titulo": "Lados posibles y ángulos en los puntos notables",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.triangulos",
+    "geometria.puntos-notables"
+   ],
+   "url": "#/practica/geo-triangulos-notables",
+   "papel": "/plantillas/geo-triangulos-notables/papel.json",
+   "archivos": [
+    "/plantillas/geo-triangulos-notables/generador.js",
+    "/plantillas/geo-triangulos-notables/papel.json"
+   ]
+  },
+  "geo-troncos-prismas": {
+   "id": "geo-troncos-prismas",
+   "titulo": "Troncos de pirámide, prismas oblicuos y troncos de prisma",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.prisma-y-piramide"
+   ],
+   "url": "#/practica/geo-troncos-prismas",
+   "papel": "/plantillas/geo-troncos-prismas/papel.json",
+   "archivos": [
+    "/plantillas/geo-troncos-prismas/generador.js",
+    "/plantillas/geo-troncos-prismas/papel.json"
    ]
   },
   "geometria-analitica": {
@@ -5331,6 +5729,22 @@
     "/plantillas/identidades-trig/papel.json"
    ]
   },
+  "impulso-grafica": {
+   "id": "impulso-grafica",
+   "titulo": "La patada en la gráfica",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.impulso-y-choques"
+   ],
+   "url": "#/practica/impulso-grafica",
+   "papel": "/plantillas/impulso-grafica/papel.json",
+   "archivos": [
+    "/plantillas/impulso-grafica/generador.js",
+    "/plantillas/impulso-grafica/papel.json"
+   ]
+  },
   "induccion": {
    "id": "induccion",
    "titulo": "El imán, la espira y el foquito: inducción electromagnética",
@@ -5346,6 +5760,22 @@
     "/plantillas/induccion/index.html",
     "/plantillas/induccion/motor.js",
     "/plantillas/induccion/papel.json"
+   ]
+  },
+  "induccion-flujo": {
+   "id": "induccion-flujo",
+   "titulo": "El flujo que va y vuelve",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.induccion-electromagnetica"
+   ],
+   "url": "#/practica/induccion-flujo",
+   "papel": "/plantillas/induccion-flujo/papel.json",
+   "archivos": [
+    "/plantillas/induccion-flujo/generador.js",
+    "/plantillas/induccion-flujo/papel.json"
    ]
   },
   "inecuaciones-planteo": {
@@ -5590,6 +6020,22 @@
     "/plantillas/mas/papel.json"
    ]
   },
+  "mas-horaria": {
+   "id": "mas-horaria",
+   "titulo": "La ecuación del resorte",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.oscilaciones"
+   ],
+   "url": "#/practica/mas-horaria",
+   "papel": "/plantillas/mas-horaria/papel.json",
+   "archivos": [
+    "/plantillas/mas-horaria/generador.js",
+    "/plantillas/mas-horaria/papel.json"
+   ]
+  },
   "materia-energia": {
    "id": "materia-energia",
    "titulo": "La lupa y la balanza: materia y energía",
@@ -5820,9 +6266,10 @@
    "titulo": "La antena y el arcoíris: ondas electromagnéticas",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
-    "fisica.ondas-electromagneticas"
+    "fisica.ondas-electromagneticas",
+    "fisica.optica-geometrica"
    ],
    "url": "/plantillas/ondas-electromagneticas/index.html",
    "papel": "/plantillas/ondas-electromagneticas/papel.json",
@@ -5830,6 +6277,22 @@
     "/plantillas/ondas-electromagneticas/index.html",
     "/plantillas/ondas-electromagneticas/motor.js",
     "/plantillas/ondas-electromagneticas/papel.json"
+   ]
+  },
+  "ondas-llegadas": {
+   "id": "ondas-llegadas",
+   "titulo": "El temblor y el trueno",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.ondas-mecanicas"
+   ],
+   "url": "#/practica/ondas-llegadas",
+   "papel": "/plantillas/ondas-llegadas/papel.json",
+   "archivos": [
+    "/plantillas/ondas-llegadas/generador.js",
+    "/plantillas/ondas-llegadas/papel.json"
    ]
   },
   "optica-espejo-esferico": {
@@ -6080,6 +6543,23 @@
     "/plantillas/razonamiento-numerico/papel.json"
    ]
   },
+  "refraccion-snell": {
+   "id": "refraccion-snell",
+   "titulo": "El rayo que cambia de medio",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.optica-geometrica",
+    "fisica.ondas-electromagneticas"
+   ],
+   "url": "#/practica/refraccion-snell",
+   "papel": "/plantillas/refraccion-snell/papel.json",
+   "archivos": [
+    "/plantillas/refraccion-snell/generador.js",
+    "/plantillas/refraccion-snell/papel.json"
+   ]
+  },
   "regla-de-tres": {
    "id": "regla-de-tres",
    "titulo": "El taller y la pared: proporcionalidad directa e inversa",
@@ -6097,6 +6577,22 @@
     "/plantillas/regla-de-tres/index.html",
     "/plantillas/regla-de-tres/motor.js",
     "/plantillas/regla-de-tres/papel.json"
+   ]
+  },
+  "relatividad": {
+   "id": "relatividad",
+   "titulo": "El reloj que viaja",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.fisica-moderna"
+   ],
+   "url": "#/practica/relatividad",
+   "papel": "/plantillas/relatividad/papel.json",
+   "archivos": [
+    "/plantillas/relatividad/generador.js",
+    "/plantillas/relatividad/papel.json"
    ]
   },
   "relojes-calendarios": {
@@ -6218,7 +6714,7 @@
    "titulo": "El sólido que se abre: prisma, pirámide, cilindro, cono y esfera",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "geometria.prisma-y-piramide",
     "geometria.solidos-de-revolucion",
@@ -6557,6 +7053,125 @@
     "/plantillas/triangulo-estira/papel.json"
    ]
   },
+  "trig-angulos-verticales": {
+   "id": "trig-angulos-verticales",
+   "titulo": "Ángulos verticales: dos visuales a la vez",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "trigonometria.triangulos-rectangulos",
+    "trigonometria.arcos-compuestos"
+   ],
+   "url": "#/practica/trig-angulos-verticales",
+   "papel": "/plantillas/trig-angulos-verticales/papel.json",
+   "archivos": [
+    "/plantillas/trig-angulos-verticales/generador.js",
+    "/plantillas/trig-angulos-verticales/papel.json"
+   ]
+  },
+  "trig-ecuaciones": {
+   "id": "trig-ecuaciones",
+   "titulo": "Ecuaciones trigonométricas en un intervalo",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "trigonometria.ecuaciones-trigonometricas"
+   ],
+   "url": "#/practica/trig-ecuaciones",
+   "papel": "/plantillas/trig-ecuaciones/papel.json",
+   "archivos": [
+    "/plantillas/trig-ecuaciones/generador.js",
+    "/plantillas/trig-ecuaciones/papel.json"
+   ]
+  },
+  "trig-extremos": {
+   "id": "trig-extremos",
+   "titulo": "Máximos, mínimos y rangos trigonométricos",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "trigonometria.funciones-trigonometricas",
+    "trigonometria.circunferencia-trigonometrica",
+    "trigonometria.identidades-fundamentales"
+   ],
+   "url": "#/practica/trig-extremos",
+   "papel": "/plantillas/trig-extremos/papel.json",
+   "archivos": [
+    "/plantillas/trig-extremos/generador.js",
+    "/plantillas/trig-extremos/papel.json"
+   ]
+  },
+  "trig-identidades": {
+   "id": "trig-identidades",
+   "titulo": "Ángulo doble, triple y condiciones entre ángulos",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "trigonometria.arcos-multiples",
+    "trigonometria.arcos-compuestos",
+    "trigonometria.identidades-fundamentales"
+   ],
+   "url": "#/practica/trig-identidades",
+   "papel": "/plantillas/trig-identidades/papel.json",
+   "archivos": [
+    "/plantillas/trig-identidades/generador.js",
+    "/plantillas/trig-identidades/papel.json"
+   ]
+  },
+  "trig-inversas": {
+   "id": "trig-inversas",
+   "titulo": "Funciones trigonométricas inversas: rangos, sumas y gráficas",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "trigonometria.funciones-trigonometricas-inversas"
+   ],
+   "url": "#/practica/trig-inversas",
+   "papel": "/plantillas/trig-inversas/papel.json",
+   "archivos": [
+    "/plantillas/trig-inversas/generador.js",
+    "/plantillas/trig-inversas/papel.json"
+   ]
+  },
+  "trig-oblicuangulos": {
+   "id": "trig-oblicuangulos",
+   "titulo": "Triángulos oblicuángulos: cosenos, senos, tangentes y áreas",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "trigonometria.triangulos-oblicuangulos",
+    "trigonometria.areas-y-lineas-notables",
+    "trigonometria.reduccion-al-primer-cuadrante"
+   ],
+   "url": "#/practica/trig-oblicuangulos",
+   "papel": "/plantillas/trig-oblicuangulos/papel.json",
+   "archivos": [
+    "/plantillas/trig-oblicuangulos/generador.js",
+    "/plantillas/trig-oblicuangulos/papel.json"
+   ]
+  },
+  "trig-polares": {
+   "id": "trig-polares",
+   "titulo": "De cartesianas a polares y al revés",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "trigonometria.coordenadas-polares-y-complejos"
+   ],
+   "url": "#/practica/trig-polares",
+   "papel": "/plantillas/trig-polares/papel.json",
+   "archivos": [
+    "/plantillas/trig-polares/generador.js",
+    "/plantillas/trig-polares/papel.json"
+   ]
+  },
   "vectores": {
    "id": "vectores",
    "titulo": "Flechas que se suman: vectores y análisis dimensional",
@@ -6677,6 +7292,24 @@
    "papel": null,
    "archivos": [
     "/plantillas/vectores-unitario/generador.js"
+   ]
+  },
+  "velocidad-relativa": {
+   "id": "velocidad-relativa",
+   "titulo": "La combi y el río",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.movimiento-rectilineo",
+    "fisica.magnitudes-y-vectores",
+    "fisica.impulso-y-choques"
+   ],
+   "url": "#/practica/velocidad-relativa",
+   "papel": "/plantillas/velocidad-relativa/papel.json",
+   "archivos": [
+    "/plantillas/velocidad-relativa/generador.js",
+    "/plantillas/velocidad-relativa/papel.json"
    ]
   }
  }

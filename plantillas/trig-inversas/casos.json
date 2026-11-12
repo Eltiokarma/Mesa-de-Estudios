@@ -1,0 +1,429 @@
+{
+  "plantilla": "trig-inversas",
+  "tolerancia": 0.000001,
+  "nota": "Rangos principales de la cabecera de generador.js. Fracciones de _datos como [n, d] = n/d; en interseccion, m = [n, d, r] = (n/d)·√r. En lugar-recta y transformacion la respuesta es una clave de texto (y = m·x + n; rango en cuartos de π y sentido).",
+  "verificacion": "Verificado a ciegas por un subagente verificador el 8 nov 2026 (segunda vuelta tras la revisión): los 25 casos se resolvieron desde el enunciado con rangos principales (arccot en ⟨0; π⟩) y se comprobaron numéricamente (raíces con solución única, intersecciones en [−1; 1], límites en ±∞ para el rango, muestreo del lugar geométrico y del dominio). Coinciden los 25 en respuesta, clave de texto y forma exacta.",
+  "casos": [
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "transformacion",
+        "a": 4,
+        "B": 3,
+        "C": 2,
+        "D": -3,
+        "expresion": "π + 3·arctan(2x − 3)"
+      },
+      "esperado": {
+        "respuesta": "-2|10|creciente|abierto",
+        "exacta": "rango ⟨−π/2; 5π/2⟩, creciente"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "transformacion",
+        "a": -2,
+        "B": 2,
+        "C": -1,
+        "D": -1,
+        "expresion": "−π/2 + 2·arctan(−x − 1)"
+      },
+      "esperado": {
+        "respuesta": "-6|2|decreciente|abierto",
+        "exacta": "rango ⟨−3π/2; π/2⟩, decreciente"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "lugar",
+        "forma": "circunferencia",
+        "a": 3,
+        "b": 3,
+        "c": -8
+      },
+      "esperado": {
+        "respuesta": 5.0990195135927845,
+        "exacta": "√26"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "complementaria",
+        "par": "sec-csc",
+        "forma": "triple",
+        "c": [
+          1,
+          2
+        ]
+      },
+      "esperado": {
+        "respuesta": 1.9999999999999996,
+        "exacta": "2"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "lugar",
+        "forma": "recta",
+        "a": -1,
+        "b": 2,
+        "c": -2
+      },
+      "esperado": {
+        "respuesta": "recta:1,-2",
+        "exacta": "y = x − 2"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "transformacion",
+        "a": 0,
+        "B": -3,
+        "C": -1,
+        "D": 2,
+        "expresion": "−3arctan(−x + 2)"
+      },
+      "esperado": {
+        "respuesta": "-6|6|creciente|abierto",
+        "exacta": "rango ⟨−3π/2; 3π/2⟩, creciente"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "sector",
+        "terminos": [
+          {
+            "f": "arccos",
+            "k": -0.8660254037844386,
+            "s": 1,
+            "texto": "−√3/2"
+          },
+          {
+            "f": "arccos",
+            "k": -0.5,
+            "s": -1,
+            "texto": "−1/2"
+          }
+        ],
+        "R": 2,
+        "pide": "area"
+      },
+      "esperado": {
+        "respuesta": 1.0471975511965974,
+        "exacta": "π/3 m²"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "transformacion",
+        "a": -2,
+        "B": -2,
+        "C": -2,
+        "D": 3,
+        "expresion": "−π/2 − 2·arctan(−2x + 3)"
+      },
+      "esperado": {
+        "respuesta": "-6|2|creciente|abierto",
+        "exacta": "rango ⟨−3π/2; π/2⟩, creciente"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "interseccion",
+        "par": "cot-sen",
+        "m": [
+          1,
+          3,
+          1
+        ],
+        "pide": "x2"
+      },
+      "esperado": {
+        "respuesta": 0.908326913195984,
+        "exacta": "(3√13 − 9)/2"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "transformacion",
+        "a": 2,
+        "B": -3,
+        "C": 1,
+        "D": 3,
+        "expresion": "π/2 − 3·arctan(x + 3)"
+      },
+      "esperado": {
+        "respuesta": "-4|8|decreciente|abierto",
+        "exacta": "rango ⟨−π; 2π⟩, decreciente"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "complementaria",
+        "par": "tan-cot",
+        "forma": "multiplo",
+        "m": 1,
+        "n": 2
+      },
+      "esperado": {
+        "respuesta": 1.7320508075688767,
+        "exacta": "√3"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "complementaria",
+        "par": "sen-cos",
+        "forma": "multiplo",
+        "m": 1,
+        "n": 1
+      },
+      "esperado": {
+        "respuesta": 0.7071067811865475,
+        "exacta": "√2/2"
+      }
+    },
+    {
+      "semilla": 16,
+      "entrada": {
+        "tipo": "sector",
+        "terminos": [
+          {
+            "f": "arctan",
+            "k": 1.7320508075688772,
+            "s": 1,
+            "texto": "√3"
+          },
+          {
+            "f": "arctan",
+            "k": 0.5773502691896257,
+            "s": 1,
+            "texto": "√3/3"
+          }
+        ],
+        "R": 10,
+        "pide": "area"
+      },
+      "esperado": {
+        "respuesta": 78.53981633974483,
+        "exacta": "25π m²"
+      }
+    },
+    {
+      "semilla": 18,
+      "entrada": {
+        "tipo": "complementaria",
+        "par": "tan-cot",
+        "forma": "triple",
+        "c": [
+          1,
+          2
+        ]
+      },
+      "esperado": {
+        "respuesta": 1.7320508075688767,
+        "exacta": "√3"
+      }
+    },
+    {
+      "semilla": 20,
+      "entrada": {
+        "tipo": "sector",
+        "terminos": [
+          {
+            "f": "arccos",
+            "k": -0.8660254037844386,
+            "s": 1,
+            "texto": "−√3/2"
+          },
+          {
+            "f": "arccos",
+            "k": -0.7071067811865476,
+            "s": -1,
+            "texto": "−√2/2"
+          }
+        ],
+        "R": 6,
+        "pide": "arco"
+      },
+      "esperado": {
+        "respuesta": 1.5707963267948974,
+        "exacta": "π/2 m"
+      }
+    },
+    {
+      "semilla": 23,
+      "entrada": {
+        "tipo": "complementaria",
+        "par": "sen-cos",
+        "forma": "diferencia",
+        "d": [
+          0,
+          1
+        ]
+      },
+      "esperado": {
+        "respuesta": 0.7071067811865475,
+        "exacta": "√2/2"
+      }
+    },
+    {
+      "semilla": 26,
+      "entrada": {
+        "tipo": "dominio-puntos",
+        "p": 3,
+        "F": "arcsen",
+        "q": 1,
+        "G": "arccsc",
+        "h": 1,
+        "k": 3
+      },
+      "esperado": {
+        "respuesta": 0,
+        "exacta": "0"
+      }
+    },
+    {
+      "semilla": 29,
+      "entrada": {
+        "tipo": "interseccion",
+        "par": "tan-cos",
+        "m": [
+          15,
+          16,
+          1
+        ],
+        "pide": "x"
+      },
+      "esperado": {
+        "respuesta": 0.8,
+        "exacta": "4/5"
+      }
+    },
+    {
+      "semilla": 30,
+      "entrada": {
+        "tipo": "interseccion",
+        "par": "tan-cos",
+        "m": [
+          1,
+          1,
+          2
+        ],
+        "pide": "x"
+      },
+      "esperado": {
+        "respuesta": 0.7071067811865476,
+        "exacta": "√2/2"
+      }
+    },
+    {
+      "semilla": 32,
+      "entrada": {
+        "tipo": "interseccion",
+        "par": "tan-cos",
+        "m": [
+          1,
+          1,
+          3
+        ],
+        "pide": "x2"
+      },
+      "esperado": {
+        "respuesta": 0.43425854591066493,
+        "exacta": "(√13 − 1)/6"
+      }
+    },
+    {
+      "semilla": 81,
+      "entrada": {
+        "tipo": "transformacion",
+        "a": 4,
+        "B": 2,
+        "C": -2,
+        "D": 0,
+        "expresion": "π + 2·arctan(−2x)"
+      },
+      "esperado": {
+        "respuesta": "0|8|decreciente|abierto",
+        "exacta": "rango ⟨0; 2π⟩, decreciente"
+      }
+    },
+    {
+      "semilla": 90,
+      "entrada": {
+        "tipo": "complementaria",
+        "par": "sen-cos",
+        "forma": "suma",
+        "c": [
+          2,
+          3
+        ]
+      },
+      "esperado": {
+        "respuesta": 0.8660254037844387,
+        "exacta": "√3/2"
+      }
+    },
+    {
+      "semilla": 122,
+      "entrada": {
+        "tipo": "complementaria",
+        "par": "sec-csc",
+        "forma": "diferencia",
+        "d": [
+          0,
+          1
+        ]
+      },
+      "esperado": {
+        "respuesta": 1.414213562373095,
+        "exacta": "√2"
+      }
+    },
+    {
+      "semilla": 137,
+      "entrada": {
+        "tipo": "complementaria",
+        "par": "sec-csc",
+        "forma": "suma",
+        "c": [
+          2,
+          3
+        ]
+      },
+      "esperado": {
+        "respuesta": 2.0000000000000004,
+        "exacta": "2"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "interseccion",
+        "par": "cot-sen",
+        "m": [
+          2,
+          3,
+          1
+        ],
+        "pide": "ordenada"
+      },
+      "esperado": {
+        "respuesta": 1.0471975511965979,
+        "exacta": "π/3"
+      }
+    }
+  ]
+}

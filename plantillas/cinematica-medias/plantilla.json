@@ -1,0 +1,15 @@
+{
+  "id": "cinematica-medias",
+  "titulo": "El viaje en tramos",
+  "formato": "predicciones",
+  "unidades": [
+    "fisica.movimiento-rectilineo",
+    "fisica.movimiento-parabolico-y-circular"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

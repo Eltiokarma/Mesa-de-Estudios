@@ -1,0 +1,256 @@
+{
+  "plantilla": "condensadores",
+  "tolerancia": 1e-06,
+  "nota": "Capacidades en µF (pF en el condensador plano), voltajes en V, cargas en µC, energías en mJ; ε0 = 8,85 × 10⁻¹² C²/(N·m²). En equivalente/incognita, conocidos son las capacidades sin la incógnita, en orden, y pos el índice de la incógnita (0 = C1). En plano/cambio, kd es el factor de la separación. La razón de n-iguales/veces es U(paralelo)/U(serie).",
+  "verificacion": "Verificación a ciegas (subagente verificador, 12 nov 2026): 46 problemas (16 de casos + 30 semillas 300-329) resueltos aparte con fracciones (serie, paralelo, ε0·A/d, ½CV²), sin ver generador ni claves: 46/46 coinciden. Barrido de 4000 semillas sin alternativas repetidas. Tras la revisión se corrigió la explicación de PR4-area y los códigos.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "equivalente",
+        "sub": "iguales",
+        "arreglo": "A3b",
+        "cp": 27
+      },
+      "esperado": {
+        "respuesta": 6.0,
+        "exacta": "6 µF"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "energia",
+        "sub": "serie-paralelo",
+        "c": [
+          5,
+          45
+        ],
+        "v1": 60
+      },
+      "esperado": {
+        "respuesta": 18.0,
+        "exacta": "18 V"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "plano",
+        "sub": "capacidad",
+        "a": 120,
+        "d": 0.5
+      },
+      "esperado": {
+        "respuesta": 212.4,
+        "exacta": "212,4 pF"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "n-iguales",
+        "sub": "veces",
+        "n": 2,
+        "c": 3,
+        "v": 24
+      },
+      "esperado": {
+        "respuesta": 4,
+        "exacta": "4"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "equivalente",
+        "sub": "mixta",
+        "forma": "T2",
+        "c": [
+          6,
+          9,
+          30
+        ]
+      },
+      "esperado": {
+        "respuesta": 10.0,
+        "exacta": "10 µF"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "carga-voltaje",
+        "sub": "mixta-carga",
+        "c": [
+          8,
+          30,
+          2
+        ],
+        "v": 20
+      },
+      "esperado": {
+        "respuesta": 8.0,
+        "exacta": "8 µC"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "equivalente",
+        "sub": "iguales",
+        "arreglo": "A4c",
+        "cp": 60
+      },
+      "esperado": {
+        "respuesta": 25.0,
+        "exacta": "25 µF"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "energia",
+        "sub": "eficiencia",
+        "luz": 0.72,
+        "eta": 80,
+        "v": 150
+      },
+      "esperado": {
+        "respuesta": 80.0,
+        "exacta": "80 µF"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "equivalente",
+        "sub": "incognita",
+        "forma": "T1",
+        "pos": 2,
+        "conocidos": [
+          1,
+          4
+        ],
+        "ceq": 9.8
+      },
+      "esperado": {
+        "respuesta": 9.0,
+        "exacta": "9 µF"
+      }
+    },
+    {
+      "semilla": 23,
+      "entrada": {
+        "tipo": "plano",
+        "sub": "cambio",
+        "c0": 36,
+        "fA": 3,
+        "kd": 0.5
+      },
+      "esperado": {
+        "respuesta": 216.0,
+        "exacta": "216 pF"
+      }
+    },
+    {
+      "semilla": 24,
+      "entrada": {
+        "tipo": "equivalente",
+        "sub": "incognita",
+        "forma": "T1",
+        "pos": 2,
+        "conocidos": [
+          1,
+          1
+        ],
+        "ceq": 6.5
+      },
+      "esperado": {
+        "respuesta": 6.0,
+        "exacta": "6 µF"
+      }
+    },
+    {
+      "semilla": 26,
+      "entrada": {
+        "tipo": "n-iguales",
+        "sub": "serie-eq",
+        "razon": 4,
+        "c": 72
+      },
+      "esperado": {
+        "respuesta": 36.0,
+        "exacta": "36 µF"
+      }
+    },
+    {
+      "semilla": 28,
+      "entrada": {
+        "tipo": "equivalente",
+        "sub": "mixta",
+        "forma": "T5",
+        "c": [
+          12,
+          24,
+          4,
+          3
+        ]
+      },
+      "esperado": {
+        "respuesta": 2.4,
+        "exacta": "2,4 µF"
+      }
+    },
+    {
+      "semilla": 57,
+      "entrada": {
+        "tipo": "energia",
+        "sub": "basica",
+        "c": 5,
+        "v1": 10,
+        "v2": 30,
+        "unidad": "mJ"
+      },
+      "esperado": {
+        "respuesta": 2.0,
+        "exacta": "2 mJ"
+      }
+    },
+    {
+      "semilla": 75,
+      "entrada": {
+        "tipo": "carga-voltaje",
+        "sub": "serie-voltaje",
+        "c": [
+          12,
+          24
+        ],
+        "v": 24,
+        "i": 1
+      },
+      "esperado": {
+        "respuesta": 8.0,
+        "exacta": "8 V"
+      }
+    },
+    {
+      "semilla": 115,
+      "entrada": {
+        "tipo": "equivalente",
+        "sub": "incognita",
+        "forma": "T1",
+        "pos": 1,
+        "conocidos": [
+          24,
+          2
+        ],
+        "ceq": 8
+      },
+      "esperado": {
+        "respuesta": 8.0,
+        "exacta": "8 µF"
+      }
+    }
+  ]
+}

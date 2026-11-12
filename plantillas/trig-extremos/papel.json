@@ -1,0 +1,111 @@
+{
+  "titulo": "Máximos, mínimos y rangos trigonométricos: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 3 minutos por problema. Antes de buscar un extremo, escribe entre qué valores se mueve la razón trigonométrica en el dominio que te dan (si x está restringido, no uses −1 y 1 sin pensar). Recuerda: a·sen x + b·cos x va de −√(a² + b²) a √(a² + b²); al multiplicar una desigualdad por un número negativo, los extremos se invierten; y en la circunferencia trigonométrica, sen θ y cos θ son coordenadas con signo, mientras que un área siempre es positiva.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Calcula el valor máximo y el valor mínimo de y = 5 sen x − 12 cos x + 3, con x real.",
+      "respuesta": "Máximo 16 y mínimo −10.",
+      "pasos": [
+        "5 sen x − 12 cos x va de −√(25 + 144) a √(25 + 144), es decir, de −13 a 13.",
+        "Sumando 3: y va de −10 a 16.",
+        "Ojo: 5 + 12 + 3 = 20 no es el máximo; sen x y cos x no llegan a su tope en el mismo ángulo."
+      ],
+      "verificar": [{ "fn": "asenbcos", "args": [5, -12, 3], "espera": { "R": 13, "max": 16, "min": -10 } }]
+    },
+    {
+      "id": "p2",
+      "nivel": "intermedio",
+      "enunciado": "El perfil de un arco de jardín es y = 1 + 4 cos²(πx/12), en metros, con −6 ≤ x ≤ 6 (el piso es y = 0). Debajo se pone un letrero rectangular centrado, apoyado en el piso, de 4 m de alto, con sus esquinas de arriba tocando el arco. ¿Cuál es el área del letrero?",
+      "respuesta": "16 m².",
+      "pasos": [
+        "Degrada: 4 cos²(πx/12) = 2(1 + cos(πx/6)), así que y = 3 + 2 cos(πx/6).",
+        "A 4 m de altura: 3 + 2 cos(πx/6) = 4 ⇒ cos(πx/6) = 1/2 ⇒ πx/6 = π/3 ⇒ x = 2.",
+        "El letrero va de x = −2 a x = 2: mide 4 m de ancho.",
+        "Área: 4 · 4 = 16 m²."
+      ],
+      "verificar": [{ "fn": "puerta", "args": [1, 2, 6, 4], "espera": { "mitadAncho": 2, "area": 16 } }]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Halla el máximo y el mínimo de y = 2 sen² x − 2 sen x + 1 si π/6 ≤ x ≤ 5π/6.",
+      "respuesta": "Máximo 1 y mínimo 1/2.",
+      "pasos": [
+        "En [π/6; 5π/6], sen x va de 1/2 (en los extremos) a 1 (en π/2). Llama s = sen x, con 1/2 ≤ s ≤ 1.",
+        "Completa cuadrados: y = 2(s − 1/2)² + 1/2.",
+        "El vértice s = 1/2 está en el borde del rango: ahí y = 1/2 es el mínimo.",
+        "En s = 1, y = 2 − 2 + 1 = 1: es el máximo. Si hubieras usado −1 ≤ s ≤ 1, habrías dado 5 como máximo."
+      ],
+      "verificar": [
+        { "fn": "rangoSeno", "args": [30, 150], "espera": { "min": 0.5, "max": 1 } },
+        { "fn": "cuadraticaSeno", "args": [2, -2, 1, 30, 150], "espera": { "max": 1, "min": 0.5 } }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "¿Entre qué valores varía y = (2 cos x + 1)/(cos x + 3), con x real?",
+      "respuesta": "Entre −1/2 y 3/4.",
+      "pasos": [
+        "El denominador va de 2 a 4: nunca se anula.",
+        "Despeja: cos x = (1 − 3y)/(y − 2). Al crecer cos x, y crece; sus extremos salen de cos x = 1 y cos x = −1.",
+        "cos x = 1: y = 3/4. cos x = −1: y = −1/2.",
+        "No sirve dividir 3 (el mayor numerador) entre 2 (el menor denominador): ocurren en ángulos distintos."
+      ],
+      "verificar": [{ "fn": "racional", "args": [2, 1, 3], "espera": { "max": 0.75, "min": -0.5 } }]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Halla el rango de y = 3 sen² x/(1 + cos x) − 1.",
+      "respuesta": "[−1; 5⟩.",
+      "pasos": [
+        "Hace falta 1 + cos x ≠ 0, o sea cos x ≠ −1.",
+        "sen² x = (1 − cos x)(1 + cos x), así que y = 3(1 − cos x) − 1.",
+        "cos x = 1 da y = −1 (se alcanza). cos x = −1 daría y = 5, pero está prohibido.",
+        "El rango es [−1; 5⟩: el 5 queda abierto."
+      ],
+      "verificar": [{ "fn": "simplifica", "args": [3, 1, -1], "espera": { "rango": "[−1; 5⟩", "excluido": 5 } }]
+    },
+    {
+      "id": "p6",
+      "nivel": "avanzado",
+      "enunciado": "En el intervalo [2π/3; 4π/3], sec x alcanza su máximo en x₀. Calcula 3 cos x₀ + tan² x₀.",
+      "respuesta": "−3.",
+      "pasos": [
+        "En [2π/3; 4π/3], cos x va de −1 a −1/2: sec x va de −2 a −1, siempre negativa.",
+        "La mayor es −1 (la de menor valor absoluto), en x₀ = π. El valor −2, en 2π/3 y 4π/3, es el mínimo.",
+        "3 cos π + tan² π = 3·(−1) + 0 = −3."
+      ],
+      "verificar": [{ "fn": "secante", "args": [120, 240], "espera": { "max": -1, "puntoMax": 180, "min": -2 } }]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "El precio de un pasaje (en soles), t meses después de enero, se modela con P(t) = a + b·cos(πt/6). En enero (t = 0) cuesta S/ 36 y a los 6 meses llega a su mínimo, S/ 24. ¿En qué dos instantes del primer año cuesta S/ 27?",
+      "respuesta": "A los 4 meses y a los 8 meses.",
+      "pasos": [
+        "a + b = 36 y a − b = 24 ⇒ a = 30 (valor medio) y b = 6 (amplitud).",
+        "30 + 6 cos(πt/6) = 27 ⇒ cos(πt/6) = −1/2.",
+        "πt/6 = 2π/3 o 4π/3 ⇒ t = 4 o t = 8.",
+        "Si tomas 36 como amplitud, sin valor medio, el modelo no da el mínimo de 24."
+      ],
+      "verificar": [{ "fn": "senoide", "args": [36, 24, 6, 27], "espera": { "a": 30, "b": 6, "primera": 4, "segunda": 8 } }]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "En la circunferencia trigonométrica (centro O, radio 1), B = (0; 1) y P es el extremo del arco θ, con θ en el III cuadrante. Expresa el área del triángulo OBP en función de θ.",
+      "respuesta": "−(1/2) cos θ.",
+      "pasos": [
+        "P = (cos θ; sen θ). La base OB mide 1 y está sobre el eje Y.",
+        "La altura es la distancia de P al eje Y: |cos θ|.",
+        "En el III cuadrante, cos θ < 0, así que |cos θ| = −cos θ.",
+        "Área = (1/2)·1·(−cos θ) = −(1/2) cos θ, que es positiva."
+      ],
+      "verificar": [{ "fn": "areaCT", "args": [["O", "B", "P"], "III"], "espera": { "area": "−(1/2) cos θ" } }]
+    }
+  ]
+}

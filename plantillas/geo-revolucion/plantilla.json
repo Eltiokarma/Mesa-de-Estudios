@@ -1,0 +1,14 @@
+{
+  "id": "geo-revolucion",
+  "titulo": "Sólidos de revolución: troncos, regiones que giran y esferas",
+  "formato": "predicciones",
+  "unidades": [
+    "geometria.solidos-de-revolucion"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

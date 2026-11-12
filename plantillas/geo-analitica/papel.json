@@ -1,0 +1,106 @@
+{
+  "titulo": "Geometría analítica: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 3 minutos por problema. Ubica siempre los puntos en un plano a mano alzada: así ves si un ángulo es agudo u obtuso, si una recta sube o baja y hacia dónde está el eje mayor de una elipse. Al completar cuadrados, revisa el signo del centro dos veces.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Un banderín con forma de triángulo isósceles tiene su base sobre el eje Y, entre (0; 1) y (0; 7), y su punta a 6 unidades a la derecha del eje. Halla su baricentro.",
+      "respuesta": "(2; 4).",
+      "pasos": [
+        "Por ser isósceles, la punta está a la altura del punto medio de la base: (6; 4).",
+        "G = ((0 + 0 + 6)/3; (1 + 7 + 4)/3) = (2; 4).",
+        "Si te salió (3; 6), dividiste entre 2: el baricentro es el promedio de tres puntos."
+      ],
+      "verificar": [
+        { "fn": "baricentro", "args": [[0, 1], [0, 7], [6, 4]], "espera": [2, 4] }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Halla el baricentro del triángulo de vértices A(−4; 2), B(5; −1) y C(2; 8).",
+      "respuesta": "(1; 3).",
+      "pasos": [
+        "x: (−4 + 5 + 2)/3 = 3/3 = 1.",
+        "y: (2 − 1 + 8)/3 = 9/3 = 3.",
+        "G = (1; 3)."
+      ],
+      "verificar": [
+        { "fn": "baricentro", "args": [[-4, 2], [5, -1], [2, 8]], "espera": [1, 3] }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "θ es el ángulo medido desde L₁: x − 2y + 4 = 0 hasta L₂: 3x − y − 2 = 0, en sentido antihorario. Halla tan θ.",
+      "respuesta": "1.",
+      "pasos": [
+        "Pendientes: m₁ = −1/(−2) = 1/2 y m₂ = −3/(−1) = 3.",
+        "tan θ = (m₂ − m₁)/(1 + m₁·m₂) = (3 − 1/2)/(1 + 3/2) = (5/2)/(5/2) = 1: θ = 45°.",
+        "Si restas al revés, sale −1: ese es el ángulo medido de L₂ a L₁."
+      ],
+      "verificar": [
+        { "fn": "tanEntreRectas", "args": [0.5, 3], "espera": 1 }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "El rectángulo ABCD tiene vértices A(1; 1), B(7; 1), C(7; 4) y D(1; 4). Sus diagonales se cortan en O. Halla tan del ángulo AOB.",
+      "respuesta": "−4/3.",
+      "pasos": [
+        "O = (4; 2,5). AB = 6 (el lado largo) y BC = 3.",
+        "Con α = AOB/2: tan α = (AB/2)/(BC/2) = 3/1,5 = 2.",
+        "tan AOB = 2·2/(1 − 2²) = 4/(−3) = −4/3. Es negativa porque AOB abarca el lado largo y es obtuso; el agudo entre las diagonales tiene tangente 4/3."
+      ],
+      "verificar": [
+        { "fn": "tanAOB", "args": [[1, 1], [7, 1], [7, 4], [1, 4]], "espera": -1.3333333333333333 }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Halla el centro, los semiejes y los focos de la elipse 9x² + 25y² − 36x + 50y − 164 = 0.",
+      "respuesta": "Centro (2; −1); a = 5, b = 3; focos (6; −1) y (−2; −1).",
+      "pasos": [
+        "9(x² − 4x) + 25(y² + 2y) = 164 → 9(x − 2)² + 25(y + 1)² = 164 + 36 + 25 = 225.",
+        "(x − 2)²/25 + (y + 1)²/9 = 1: centro (2; −1). Ojo: «y + 1» da k = −1.",
+        "El denominador mayor (25) está bajo x: eje mayor horizontal, a = 5, b = 3.",
+        "c² = 25 − 9 = 16 → c = 4. Focos: (2 ± 4; −1), es decir (6; −1) y (−2; −1)."
+      ],
+      "verificar": [
+        { "fn": "elipse", "args": [[9, 25, -36, 50, -164]], "espera": { "h": 2, "k": -1, "a": 5, "b": 3, "c": 4, "eje": "x" } }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "avanzado",
+      "enunciado": "Para la elipse del problema anterior, sea V₁ el vértice de mayor abscisa, F₂ el foco de menor abscisa y B₁ el extremo del eje menor de mayor ordenada. Halla la recta que pasa por V₁ y es perpendicular a F₂B₁.",
+      "respuesta": "4x + 3y − 25 = 0.",
+      "pasos": [
+        "V₁ = (7; −1), F₂ = (−2; −1) y B₁ = (2; 2).",
+        "Pendiente de F₂B₁: (2 − (−1))/(2 − (−2)) = 3/4. La perpendicular tiene pendiente −4/3 (invertida y con el signo cambiado).",
+        "y + 1 = −(4/3)(x − 7) → 3y + 3 = −4x + 28 → 4x + 3y − 25 = 0."
+      ],
+      "verificar": [
+        { "fn": "rectaPorPunto", "args": [7, -1, -4, 3], "espera": "4x + 3y − 25 = 0" }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Las parábolas y = x² + 2 y y = 14 − 2x² están en el plano XY y se cortan en dos puntos. Un cilindro recto tiene su eje sobre el eje Y y su base inferior en el plano y = 0; la circunferencia de su base superior pasa por los dos puntos de corte. Halla su volumen.",
+      "respuesta": "24π u³.",
+      "pasos": [
+        "x² + 2 = 14 − 2x² → 3x² = 12 → x = ±2; y = 6.",
+        "El radio es la distancia al eje Y: 2 (no 4, que es la distancia entre los dos puntos). La altura es 6.",
+        "V = π·2²·6 = 24π u³."
+      ],
+      "verificar": [
+        { "fn": "corteParabolas", "args": [1, 2, 2, 14], "espera": { "x": 2, "y": 6 } },
+        { "fn": "volumenCilindro", "args": [2, 6], "espera": 75.39822368615503 }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,179 @@
+{
+  "plantilla": "relatividad",
+  "tolerancia": 1e-06,
+  "nota": "Tolerancia relativa. beta = v/c; tiempo/hora en minutos desde las 0:00 (inicio y dt0 en min); dt en años; l en m; m en kg; energías en J; v en m/s y pct la incertidumbre de la rapidez en % y dx en m; esfera: E y phi en eV, r en m, carga en C (se muestra en pC) y potencial en V. En energia/igual, k es la razón K/E₀.",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026), a ciegas sin leer generador.js ni casos.json: recalculó en Python 43 problemas (13 casos y 30 semillas) con Δx = h/(4π·m·Δv), γ, K = (γ − 1)mc², E = γmc², L₀/γ, γ·Δt₀ y la esfera con Q = R(E − φ)/k. Coinciden 43/43 en letra y valor. Tras la revisión se excluyó γ = 2 en la cinética y las masas son físicas.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "incertidumbre",
+        "sub": "posicion",
+        "m": 0.04,
+        "v": 400,
+        "pct": 25
+      },
+      "esperado": {
+        "respuesta": 1.3189965908740823e-35,
+        "exacta": "1,3 × 10⁻³⁵ m"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "energia",
+        "sub": "cinetica",
+        "beta": 0.6,
+        "m": 1e-28
+      },
+      "esperado": {
+        "respuesta": 2.25e-12,
+        "exacta": "2,25 × 10⁻¹² J"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "tiempo",
+        "sub": "propio",
+        "beta": 0.96,
+        "dt": 26
+      },
+      "esperado": {
+        "respuesta": 7.28,
+        "exacta": "7,28 años"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "tiempo",
+        "sub": "rapidez",
+        "gamma": 3,
+        "tau": 2
+      },
+      "esperado": {
+        "respuesta": 0.9428090415820634,
+        "exacta": "(2√2/3)c"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "energia",
+        "sub": "igual",
+        "k": 2
+      },
+      "esperado": {
+        "respuesta": 0.9428090415820634,
+        "exacta": "(2√2/3)c"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "esfera",
+        "sub": "carga",
+        "E": 5,
+        "phi": 4.3,
+        "r": 0.045,
+        "diametro": true
+      },
+      "esperado": {
+        "respuesta": 3.500000000000001e-12,
+        "exacta": "3,5 pC"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "energia",
+        "sub": "razon",
+        "beta": 0.8
+      },
+      "esperado": {
+        "respuesta": 0.47999999999999987,
+        "exacta": "12/25"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "longitud",
+        "sub": "propia",
+        "beta": 0.9230769230769231,
+        "l": 48
+      },
+      "esperado": {
+        "respuesta": 124.80000000000004,
+        "exacta": "124,8 m"
+      }
+    },
+    {
+      "semilla": 16,
+      "entrada": {
+        "tipo": "incertidumbre",
+        "sub": "momento",
+        "dx": 1.6000000000000003e-09
+      },
+      "esperado": {
+        "respuesta": 3.297491477185206e-26,
+        "exacta": "3,3 × 10⁻²⁶ kg·m/s"
+      }
+    },
+    {
+      "semilla": 26,
+      "entrada": {
+        "tipo": "esfera",
+        "sub": "potencial",
+        "E": 4,
+        "phi": 2.3,
+        "r": 0.018000000000000002
+      },
+      "esperado": {
+        "respuesta": 1.7000000000000002,
+        "exacta": "1,7 V"
+      }
+    },
+    {
+      "semilla": 27,
+      "entrada": {
+        "tipo": "tiempo",
+        "sub": "hora",
+        "beta": 0.6,
+        "inicio": 360,
+        "dt0": 60
+      },
+      "esperado": {
+        "respuesta": 435.0,
+        "exacta": "7:15 h"
+      }
+    },
+    {
+      "semilla": 48,
+      "entrada": {
+        "tipo": "energia",
+        "sub": "total",
+        "beta": 0.9230769230769231,
+        "m": 2e-27
+      },
+      "esperado": {
+        "respuesta": 4.680000000000002e-10,
+        "exacta": "4,68 × 10⁻¹⁰ J"
+      }
+    },
+    {
+      "semilla": 57,
+      "entrada": {
+        "tipo": "longitud",
+        "sub": "observada",
+        "beta": 0.8,
+        "l": 25
+      },
+      "esperado": {
+        "respuesta": 14.999999999999998,
+        "exacta": "15 m"
+      }
+    }
+  ]
+}

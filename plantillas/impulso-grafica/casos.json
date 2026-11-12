@@ -1,0 +1,323 @@
+{
+  "plantilla": "impulso-grafica",
+  "tolerancia": 1e-06,
+  "nota": "puntos: vértices [t en s, F en N] de la gráfica F-t (unidadT dice cómo se muestran los tiempos). En «trabajo», v0 es la rapidez con que rodaba la pelota; en «contra» venía en sentido opuesto a la patada. Rebote: H en m, e, p y q en % de energía que quita el aire en la bajada y en la subida; g = 10 m/s².",
+  "verificacion": "Verificador a ciegas (subagente, 12 nov 2026): resolvió 43 problemas con fracciones exactas en Python, sin leer el generador: impulso como suma de trapecios entre vértices, vf = v0 + J/m con signo, W = ½m(vf² − v0²) y h' = e²·H·(1 − p)(1 − q). 43/43 de letra y los 13 casos en valor. Sin discrepancias; los distractores reproducen el número que explican.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "rebote",
+        "sub": "ambas",
+        "H": 2.5,
+        "e": 0.4,
+        "p": 25,
+        "q": 10
+      },
+      "esperado": {
+        "respuesta": 0.27,
+        "exacta": "0,27 m"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "rebote",
+        "sub": "ambas",
+        "H": 8,
+        "e": 0.5,
+        "p": 10,
+        "q": 20
+      },
+      "esperado": {
+        "respuesta": 1.44,
+        "exacta": "1,44 m"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "rapidez",
+        "sub": "reposo",
+        "puntos": [
+          [
+            0,
+            0
+          ],
+          [
+            2,
+            80
+          ],
+          [
+            6,
+            0
+          ]
+        ],
+        "unidadT": "s",
+        "m": 20,
+        "v0": 0
+      },
+      "esperado": {
+        "respuesta": 12,
+        "exacta": "12 m/s"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "trabajo",
+        "sub": "contra",
+        "puntos": [
+          [
+            0,
+            0
+          ],
+          [
+            0.003,
+            800
+          ],
+          [
+            0.006,
+            800
+          ],
+          [
+            0.009,
+            0
+          ]
+        ],
+        "unidadT": "ms",
+        "m": 0.6,
+        "v0": 2
+      },
+      "esperado": {
+        "respuesta": 9.6,
+        "exacta": "9,6 J"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "trabajo",
+        "sub": "contra",
+        "puntos": [
+          [
+            0,
+            0
+          ],
+          [
+            0.004,
+            1000
+          ],
+          [
+            0.008,
+            0
+          ]
+        ],
+        "unidadT": "ms",
+        "m": 0.4,
+        "v0": 3
+      },
+      "esperado": {
+        "respuesta": 8,
+        "exacta": "8 J"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "trabajo",
+        "sub": "mismo",
+        "puntos": [
+          [
+            0,
+            0
+          ],
+          [
+            0.001,
+            1200
+          ],
+          [
+            0.004,
+            0
+          ]
+        ],
+        "unidadT": "ms",
+        "m": 0.5,
+        "v0": 6
+      },
+      "esperado": {
+        "respuesta": 20.16,
+        "exacta": "20,16 J"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "rebote",
+        "sub": "solo-e",
+        "H": 2.5,
+        "e": 0.4,
+        "p": 0,
+        "q": 0
+      },
+      "esperado": {
+        "respuesta": 0.4,
+        "exacta": "0,4 m"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "rapidez",
+        "sub": "inicial",
+        "puntos": [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            40
+          ],
+          [
+            2,
+            40
+          ],
+          [
+            2,
+            0
+          ]
+        ],
+        "unidadT": "s",
+        "m": 5,
+        "v0": 5
+      },
+      "esperado": {
+        "respuesta": 17,
+        "exacta": "17 m/s"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "trabajo",
+        "sub": "mismo",
+        "puntos": [
+          [
+            0,
+            0
+          ],
+          [
+            0.004,
+            1200
+          ],
+          [
+            0.007,
+            0
+          ]
+        ],
+        "unidadT": "ms",
+        "m": 0.4,
+        "v0": 4
+      },
+      "esperado": {
+        "respuesta": 38.85,
+        "exacta": "38,85 J"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "rebote",
+        "sub": "bajada",
+        "H": 12.5,
+        "e": 0.7,
+        "p": 36,
+        "q": 0
+      },
+      "esperado": {
+        "respuesta": 3.92,
+        "exacta": "3,92 m"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "rapidez",
+        "sub": "inicial",
+        "puntos": [
+          [
+            0,
+            30
+          ],
+          [
+            4,
+            30
+          ],
+          [
+            4,
+            7.5
+          ],
+          [
+            7,
+            7.5
+          ]
+        ],
+        "unidadT": "s",
+        "m": 10,
+        "v0": 1
+      },
+      "esperado": {
+        "respuesta": 15.25,
+        "exacta": "15,25 m/s"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "rebote",
+        "sub": "bajada",
+        "H": 20,
+        "e": 0.6,
+        "p": 25,
+        "q": 0
+      },
+      "esperado": {
+        "respuesta": 5.4,
+        "exacta": "5,4 m"
+      }
+    },
+    {
+      "semilla": 43,
+      "entrada": {
+        "tipo": "rapidez",
+        "sub": "reposo",
+        "puntos": [
+          [
+            0,
+            0
+          ],
+          [
+            3,
+            20
+          ],
+          [
+            6,
+            20
+          ],
+          [
+            6,
+            0
+          ]
+        ],
+        "unidadT": "s",
+        "m": 10,
+        "v0": 0
+      },
+      "esperado": {
+        "respuesta": 9,
+        "exacta": "9 m/s"
+      }
+    }
+  ]
+}

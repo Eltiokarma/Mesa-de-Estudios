@@ -1,0 +1,14 @@
+{
+  "id": "energia-potencia",
+  "titulo": "La bomba y el ascensor",
+  "formato": "predicciones",
+  "unidades": [
+    "fisica.trabajo-y-energia"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

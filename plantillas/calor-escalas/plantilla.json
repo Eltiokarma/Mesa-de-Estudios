@@ -1,0 +1,14 @@
+{
+  "id": "calor-escalas",
+  "titulo": "El termómetro de la chacra",
+  "formato": "predicciones",
+  "unidades": [
+    "fisica.temperatura-y-calor"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

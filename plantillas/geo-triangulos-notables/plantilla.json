@@ -1,0 +1,15 @@
+{
+  "id": "geo-triangulos-notables",
+  "titulo": "Lados posibles y ángulos en los puntos notables",
+  "formato": "predicciones",
+  "unidades": [
+    "geometria.triangulos",
+    "geometria.puntos-notables"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

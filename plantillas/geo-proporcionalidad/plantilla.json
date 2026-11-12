@@ -1,0 +1,15 @@
+{
+  "id": "geo-proporcionalidad",
+  "titulo": "Paralelas, bisectrices y semejanza",
+  "formato": "predicciones",
+  "unidades": [
+    "geometria.proporcionalidad-y-semejanza",
+    "geometria.geometria-del-espacio"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

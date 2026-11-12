@@ -1,0 +1,16 @@
+{
+  "id": "trig-identidades",
+  "titulo": "Ángulo doble, triple y condiciones entre ángulos",
+  "formato": "predicciones",
+  "unidades": [
+    "trigonometria.arcos-multiples",
+    "trigonometria.arcos-compuestos",
+    "trigonometria.identidades-fundamentales"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

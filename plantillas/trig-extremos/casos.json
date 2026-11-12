@@ -1,0 +1,414 @@
+{
+  "plantilla": "trig-extremos",
+  "tolerancia": 0.000001,
+  "nota": "Ángulos en grados en entrada. respuesta es un número, salvo en racional/simplifica (clave del intervalo int:inf:sup:cerradoIzq:cerradoDer) y en area-ct (clave area:c0|cs|cc|csc|ct).",
+  "verificacion": "Verificado a ciegas el 12 nov 2026 por un subagente verificador: los 25 casos resueltos desde el enunciado por barrido numérico denso (máximos, mínimos, rangos con sus extremos abiertos o cerrados razonados aparte, senoides y horas por cruces) y las áreas en la C.T. por coordenadas en todo el cuadrante. Los 25 coinciden con esperado.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "cuadratica",
+        "sub": "seno",
+        "A": -2,
+        "k": null,
+        "B": -4,
+        "C": 1,
+        "desde": -30,
+        "hasta": 30,
+        "pide": "min"
+      },
+      "esperado": {
+        "respuesta": -1.5,
+        "exacta": "−3/2"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "asenbcos",
+        "sub": "doble",
+        "A": -6,
+        "B": -8,
+        "d": 0,
+        "pide": "min"
+      },
+      "esperado": {
+        "respuesta": -18,
+        "exacta": "−18"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "cuadratica",
+        "sub": "coseno-doble",
+        "A": null,
+        "k": 1,
+        "B": 4,
+        "C": 4,
+        "desde": 0,
+        "hasta": 30,
+        "pide": "max"
+      },
+      "esperado": {
+        "respuesta": 6.5,
+        "exacta": "13/2"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "secante",
+        "sub": "otra",
+        "p": 6,
+        "q": 2,
+        "desde": 210,
+        "hasta": 240,
+        "pide": "valor"
+      },
+      "esperado": {
+        "respuesta": 3.6666666666666665,
+        "exacta": "11/3"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "racional",
+        "sub": "mobius",
+        "a": 3,
+        "b": 0,
+        "d": 3,
+        "pide": "min"
+      },
+      "esperado": {
+        "respuesta": -1.5,
+        "exacta": "−3/2"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "cuadratica",
+        "sub": "coseno-doble",
+        "A": null,
+        "k": 1,
+        "B": 1,
+        "C": -1,
+        "desde": null,
+        "hasta": null,
+        "pide": "max"
+      },
+      "esperado": {
+        "respuesta": 0.125,
+        "exacta": "1/8"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "asenbcos",
+        "sub": "directa",
+        "a": 4,
+        "b": 3,
+        "c": 5,
+        "pide": "diferencia"
+      },
+      "esperado": {
+        "respuesta": 10,
+        "exacta": "10"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "puerta",
+        "d": 3,
+        "A": 2,
+        "L": 3,
+        "h": 6
+      },
+      "esperado": {
+        "respuesta": 12,
+        "exacta": "12 m²"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "senoide",
+        "L": 6,
+        "P0": 40,
+        "dato2": "medio",
+        "P2": 30,
+        "V": 35,
+        "pide": "primera"
+      },
+      "esperado": {
+        "respuesta": 2,
+        "exacta": "2 meses"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "racional",
+        "sub": "simplifica",
+        "m": -1,
+        "s": -1,
+        "n": 3,
+        "pide": "rango"
+      },
+      "esperado": {
+        "respuesta": "int:1:3:0:1",
+        "exacta": "⟨1; 3]"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "asenbcos",
+        "sub": "doble",
+        "A": 6,
+        "B": -8,
+        "d": 6,
+        "pide": "max"
+      },
+      "esperado": {
+        "respuesta": 8,
+        "exacta": "8"
+      }
+    },
+    {
+      "semilla": 18,
+      "entrada": {
+        "tipo": "cuadratica",
+        "sub": "hora",
+        "base": "sen",
+        "per": 12,
+        "ini": 0,
+        "K": 3,
+        "B": 6,
+        "C": 15,
+        "pide": "hora"
+      },
+      "esperado": {
+        "respuesta": 2,
+        "exacta": "2 h"
+      }
+    },
+    {
+      "semilla": 19,
+      "entrada": {
+        "tipo": "cuadratica",
+        "sub": "coseno-doble",
+        "A": null,
+        "k": 2,
+        "B": 2,
+        "C": 1,
+        "desde": -30,
+        "hasta": 30,
+        "pide": "diferencia"
+      },
+      "esperado": {
+        "respuesta": 2.25,
+        "exacta": "9/4"
+      }
+    },
+    {
+      "semilla": 20,
+      "entrada": {
+        "tipo": "cuadratica",
+        "sub": "seno",
+        "A": 2,
+        "k": null,
+        "B": -4,
+        "C": -2,
+        "desde": -30,
+        "hasta": 30,
+        "pide": "max"
+      },
+      "esperado": {
+        "respuesta": 0.5,
+        "exacta": "1/2"
+      }
+    },
+    {
+      "semilla": 21,
+      "entrada": {
+        "tipo": "senoide",
+        "L": 6,
+        "P0": 68,
+        "dato2": "min",
+        "P2": 52,
+        "V": 56,
+        "pide": "segunda"
+      },
+      "esperado": {
+        "respuesta": 8,
+        "exacta": "8 meses"
+      }
+    },
+    {
+      "semilla": 22,
+      "entrada": {
+        "tipo": "area-ct",
+        "vertices": [
+          "O",
+          "A",
+          "T"
+        ],
+        "cuadrante": "IV"
+      },
+      "esperado": {
+        "respuesta": "area:0/1|0/1|0/1|0/1|-1/2",
+        "exacta": "−(1/2) tan θ"
+      }
+    },
+    {
+      "semilla": 23,
+      "entrada": {
+        "tipo": "cuadratica",
+        "sub": "hora",
+        "base": "cos",
+        "per": 12,
+        "ini": 6,
+        "K": -1,
+        "B": 2,
+        "C": 20,
+        "pide": "hora"
+      },
+      "esperado": {
+        "respuesta": 10,
+        "exacta": "10 h"
+      }
+    },
+    {
+      "semilla": 28,
+      "entrada": {
+        "tipo": "asenbcos",
+        "sub": "directa",
+        "a": -4,
+        "b": -3,
+        "c": -3,
+        "pide": "max"
+      },
+      "esperado": {
+        "respuesta": 2,
+        "exacta": "2"
+      }
+    },
+    {
+      "semilla": 29,
+      "entrada": {
+        "tipo": "cuadratica",
+        "sub": "seno",
+        "A": -2,
+        "k": null,
+        "B": 1,
+        "C": 4,
+        "desde": 0,
+        "hasta": 90,
+        "pide": "diferencia"
+      },
+      "esperado": {
+        "respuesta": 1.125,
+        "exacta": "9/8"
+      }
+    },
+    {
+      "semilla": 32,
+      "entrada": {
+        "tipo": "area-ct",
+        "vertices": [
+          "A'",
+          "B",
+          "P"
+        ],
+        "cuadrante": "II"
+      },
+      "esperado": {
+        "respuesta": "area:-1/2|1/2|-1/2|0/1|0/1",
+        "exacta": "(1/2)(sen θ − cos θ − 1)"
+      }
+    },
+    {
+      "semilla": 51,
+      "entrada": {
+        "tipo": "racional",
+        "sub": "mobius",
+        "a": -2,
+        "b": 0,
+        "d": 2,
+        "pide": "suma"
+      },
+      "esperado": {
+        "respuesta": 1.3333333333333335,
+        "exacta": "4/3"
+      }
+    },
+    {
+      "semilla": 72,
+      "entrada": {
+        "tipo": "area-ct",
+        "vertices": [
+          "A",
+          "P",
+          "A'"
+        ],
+        "cuadrante": "I"
+      },
+      "esperado": {
+        "respuesta": "area:0/1|1/1|0/1|0/1|0/1",
+        "exacta": "sen θ"
+      }
+    },
+    {
+      "semilla": 60,
+      "entrada": {
+        "tipo": "secante",
+        "sub": "max-f",
+        "a": -2,
+        "b": 1,
+        "desde": 180,
+        "hasta": 240,
+        "pide": "max"
+      },
+      "esperado": {
+        "respuesta": 5,
+        "exacta": "5"
+      }
+    },
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "secante",
+        "sub": "otra",
+        "p": -2,
+        "q": -1,
+        "desde": 210,
+        "hasta": 225,
+        "pide": "valor"
+      },
+      "esperado": {
+        "respuesta": -1.3333333333333333,
+        "exacta": "−4/3"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "racional",
+        "sub": "simplifica",
+        "m": 2,
+        "s": -1,
+        "n": -3,
+        "pide": "rango"
+      },
+      "esperado": {
+        "respuesta": "int:−3:1:1:0",
+        "exacta": "[−3; 1⟩"
+      }
+    }
+  ]
+}

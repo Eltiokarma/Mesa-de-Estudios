@@ -18,7 +18,7 @@
       "universidades": {"uni": {"semanas": [0]}, "unmsm": {"temas": [1, 2]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": ["vectores", "vectores-ley-cosenos", "vectores-componentes", "vectores-productos", "vectores-unitario", "vectores-combinacion", "vectores-division", "vectores-poligono"],
+      "plantillas": ["vectores", "vectores-ley-cosenos", "vectores-componentes", "vectores-productos", "vectores-unitario", "vectores-combinacion", "vectores-division", "vectores-poligono", "velocidad-relativa", "analisis-dimensional"],
       "investigacion": null
     },
     {
@@ -36,7 +36,7 @@
       "universidades": {"uni": {"semanas": [1, 2]}, "unmsm": {"temas": [2, 3]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": ["mruv"],
+      "plantillas": ["mruv", "cinematica-medias", "velocidad-relativa"],
       "investigacion": "docs/investigacion/cinematica-ideas-erroneas.md"
     },
     {
@@ -53,7 +53,7 @@
       "universidades": {"uni": {"semanas": [3]}, "unmsm": {"temas": [4]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": ["tiro-parabolico", "movimiento-circular", "circular-transmision", "circular-mcuv", "circular-enesimo-segundo", "circular-encuentros", "circular-mcu", "circular-horaria", "circular-grafica", "circular-aceleracion-total", "circular-giro-combinado"],
+      "plantillas": ["tiro-parabolico", "movimiento-circular", "circular-transmision", "circular-mcuv", "circular-enesimo-segundo", "circular-encuentros", "circular-mcu", "circular-horaria", "circular-grafica", "circular-aceleracion-total", "circular-giro-combinado", "cinematica-medias"],
       "investigacion": "docs/investigacion/cinematica-ideas-erroneas.md"
     },
     {
@@ -72,7 +72,7 @@
       "universidades": {"uni": {"semanas": [4]}, "unmsm": {"temas": [6]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": ["estatica"],
+      "plantillas": ["estatica", "dinamica-fuerzas"],
       "investigacion": "docs/investigacion/estatica-energia-ideas-erroneas.md"
     },
     {
@@ -89,7 +89,7 @@
       "universidades": {"uni": {"semanas": [5]}, "unmsm": {"temas": [5]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": ["dinamica"],
+      "plantillas": ["dinamica", "dinamica-fuerzas"],
       "investigacion": "docs/investigacion/dinamica-ideas-erroneas.md"
     },
     {
@@ -104,7 +104,7 @@
       "universidades": {"uni": {"semanas": [6]}, "unmsm": {"temas": [8]}},
       "potencial_visual": "medio",
       "grado": 4,
-      "plantillas": ["gravitacion"],
+      "plantillas": ["gravitacion", "dinamica-fuerzas"],
       "investigacion": "docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md"
     },
     {
@@ -120,7 +120,7 @@
       "universidades": {"uni": {"semanas": [6]}, "unmsm": {"temas": [7]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": ["energia"],
+      "plantillas": ["energia", "energia-potencia"],
       "investigacion": "docs/investigacion/estatica-energia-ideas-erroneas.md"
     },
     {
@@ -137,7 +137,7 @@
       "universidades": {"uni": {"semanas": [7]}, "unmsm": {"temas": [8]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": ["choques"],
+      "plantillas": ["choques", "velocidad-relativa", "impulso-grafica"],
       "investigacion": "docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md"
     },
     {
@@ -153,7 +153,7 @@
       "universidades": {"uni": {"semanas": [8]}, "unmsm": {"temas": [16]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": ["mas"],
+      "plantillas": ["mas", "mas-horaria"],
       "investigacion": "docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md"
     },
     {
@@ -170,7 +170,7 @@
       "universidades": {"uni": {"semanas": [9]}, "unmsm": {"temas": [16]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": ["ondas"],
+      "plantillas": ["ondas", "ondas-llegadas"],
       "investigacion": "docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md"
     },
     {
@@ -188,7 +188,7 @@
       "universidades": {"uni": {"semanas": [10]}, "unmsm": {"temas": [9]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": ["fluidos"],
+      "plantillas": ["fluidos", "fluidos-hidrodinamica"],
       "investigacion": "docs/investigacion/fluidos-calor-termodinamica-ideas-erroneas.md"
     },
     {
@@ -206,7 +206,7 @@
       "universidades": {"uni": {"semanas": [11]}, "unmsm": {"temas": [10]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": ["calorimetria"],
+      "plantillas": ["calorimetria", "calor-escalas"],
       "investigacion": "docs/investigacion/fluidos-calor-termodinamica-ideas-erroneas.md"
     },
     {
@@ -243,7 +243,7 @@
       "universidades": {"uni": {"semanas": [13, 14, 15]}, "unmsm": {"temas": [11, 12]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": ["electrostatica"],
+      "plantillas": ["electrostatica", "condensadores", "cargas-sistema"],
       "investigacion": "docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md"
     },
     {
@@ -262,7 +262,7 @@
       "universidades": {"uni": {"semanas": [15, 16]}, "unmsm": {"temas": [13]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": ["circuitos-cc"],
+      "plantillas": ["circuitos-cc", "circuitos-mallas", "circuitos-joule"],
       "investigacion": "docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md"
     },
     {
@@ -278,7 +278,7 @@
       "universidades": {"uni": {"semanas": [17]}, "unmsm": {"temas": [14]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": ["magnetismo"],
+      "plantillas": ["magnetismo", "carga-en-campo"],
       "investigacion": "docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md"
     },
     {
@@ -295,7 +295,7 @@
       "universidades": {"uni": {"semanas": [18]}, "unmsm": {"temas": [15]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": ["induccion"],
+      "plantillas": ["induccion", "induccion-flujo"],
       "investigacion": "docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md"
     },
     {
@@ -310,7 +310,7 @@
       "universidades": {"uni": {"semanas": [18]}, "unmsm": {"temas": [17]}},
       "potencial_visual": "bajo",
       "grado": 5,
-      "plantillas": ["ondas-electromagneticas"],
+      "plantillas": ["ondas-electromagneticas", "refraccion-snell"],
       "investigacion": "docs/investigacion/ondas-electromagneticas-ideas-erroneas.md"
     },
     {
@@ -327,7 +327,7 @@
       "universidades": {"uni": {"semanas": [19]}, "unmsm": {"temas": [17]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": ["optica-lente-delgada", "optica-espejo-esferico"],
+      "plantillas": ["optica-lente-delgada", "optica-espejo-esferico", "refraccion-snell", "ondas-electromagneticas"],
       "investigacion": "docs/investigacion/optica-ideas-erroneas.md"
     },
     {
@@ -345,7 +345,7 @@
       "universidades": {"uni": {"semanas": [20]}, "unmsm": {"temas": [18]}},
       "potencial_visual": "medio",
       "grado": 5,
-      "plantillas": ["fisica-moderna"],
+      "plantillas": ["fisica-moderna", "relatividad"],
       "investigacion": "docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md"
     }
   ]

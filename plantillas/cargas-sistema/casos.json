@@ -1,0 +1,301 @@
+{
+  "plantilla": "cargas-sistema",
+  "tolerancia": 1e-06,
+  "nota": "k = 9 × 10⁹ N·m²/C². Energía en mJ con signo (q en µC; las distancias de pares en cm). En razon-nula, q en A, Q en B y m·q en C, con AB = a y BC = b en unidades de 10, 20 o 30 cm; la respuesta es Q/q. En grafica, r1 y r2 en m, v1 en V; la carga en nC. En campo, q en µC y a en m; la respuesta va en unidades de 10⁵ N/C; signo = +1 o −1 multiplica todas las cargas (el módulo no cambia).",
+  "verificacion": "Verificación a ciegas (subagente verificador, 12 nov 2026): 44 problemas (14 de casos + 30 semillas 300-329) recalculados con suma de pares k·qi·qj/r y superposición vectorial en 3D, sin ver generador ni claves: 44/44 coinciden, incluidos los radicales del cubo y Q/q de la energía nula. Barrido de 4000 semillas limpio.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "campo",
+        "sub": "cuadrado",
+        "config": "cuad-tres",
+        "q": 8,
+        "a": 0.6,
+        "signo": 1
+      },
+      "esperado": {
+        "respuesta": 8,
+        "exacta": "8 × 10⁵ N/C"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "grafica",
+        "sub": "e-otra",
+        "r1": 0.5,
+        "v1": 18,
+        "r2": 1.5
+      },
+      "esperado": {
+        "respuesta": 4.0,
+        "exacta": "4 N/C"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "energia",
+        "sub": "rectangulo",
+        "q": [
+          -1,
+          6,
+          3,
+          3
+        ],
+        "pares": [
+          [
+            0,
+            1,
+            30
+          ],
+          [
+            1,
+            2,
+            40
+          ],
+          [
+            2,
+            3,
+            30
+          ],
+          [
+            3,
+            0,
+            40
+          ],
+          [
+            0,
+            2,
+            50
+          ],
+          [
+            1,
+            3,
+            50
+          ]
+        ]
+      },
+      "esperado": {
+        "respuesta": 697.5,
+        "exacta": "697,5 mJ"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "campo",
+        "sub": "triangulo",
+        "config": "tri-iguales",
+        "q": 2,
+        "a": 0.1,
+        "signo": -1
+      },
+      "esperado": {
+        "respuesta": 31.176914536,
+        "exacta": "18√3 × 10⁵ N/C"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "campo",
+        "sub": "cubo",
+        "config": "cubo-mixtas",
+        "q": 8,
+        "a": 0.3,
+        "signo": 1
+      },
+      "esperado": {
+        "respuesta": 8.709296863,
+        "exacta": "32√6/9 × 10⁵ N/C"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "energia",
+        "sub": "razon-nula",
+        "a": 2,
+        "b": 4,
+        "m": 5
+      },
+      "esperado": {
+        "respuesta": -0.476190476,
+        "exacta": "−10/21"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "energia",
+        "sub": "linea",
+        "q": [
+          4,
+          -3,
+          -2
+        ],
+        "pares": [
+          [
+            0,
+            1,
+            20
+          ],
+          [
+            1,
+            2,
+            30
+          ],
+          [
+            0,
+            2,
+            50
+          ]
+        ]
+      },
+      "esperado": {
+        "respuesta": -504.0,
+        "exacta": "−504 mJ"
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "tipo": "grafica",
+        "sub": "carga",
+        "r1": 0.25,
+        "v1": 72
+      },
+      "esperado": {
+        "respuesta": 2.0,
+        "exacta": "2 nC"
+      }
+    },
+    {
+      "semilla": 18,
+      "entrada": {
+        "tipo": "campo",
+        "sub": "cubo",
+        "config": "cubo-iguales",
+        "q": 8,
+        "a": 0.6,
+        "signo": 1
+      },
+      "esperado": {
+        "respuesta": 4.354648432,
+        "exacta": "16√6/9 × 10⁵ N/C"
+      }
+    },
+    {
+      "semilla": 20,
+      "entrada": {
+        "tipo": "grafica",
+        "sub": "v-otra",
+        "r1": 0.6,
+        "v1": 180,
+        "r2": 2.4
+      },
+      "esperado": {
+        "respuesta": 45.0,
+        "exacta": "45 V"
+      }
+    },
+    {
+      "semilla": 25,
+      "entrada": {
+        "tipo": "campo",
+        "sub": "cuadrado",
+        "config": "cuad-adyacentes",
+        "q": 4,
+        "a": 0.3,
+        "signo": 1
+      },
+      "esperado": {
+        "respuesta": 22.627416998,
+        "exacta": "16√2 × 10⁵ N/C"
+      }
+    },
+    {
+      "semilla": 28,
+      "entrada": {
+        "tipo": "energia",
+        "sub": "triangulo",
+        "q": [
+          -3,
+          1,
+          -1
+        ],
+        "pares": [
+          [
+            0,
+            1,
+            30
+          ],
+          [
+            1,
+            2,
+            40
+          ],
+          [
+            0,
+            2,
+            50
+          ]
+        ]
+      },
+      "esperado": {
+        "respuesta": -58.5,
+        "exacta": "−58,5 mJ"
+      }
+    },
+    {
+      "semilla": 39,
+      "entrada": {
+        "tipo": "campo",
+        "sub": "triangulo",
+        "config": "tri-opuestas",
+        "q": 6,
+        "a": 0.3,
+        "signo": -1
+      },
+      "esperado": {
+        "respuesta": 6,
+        "exacta": "6 × 10⁵ N/C"
+      }
+    },
+    {
+      "semilla": 89,
+      "entrada": {
+        "tipo": "energia",
+        "sub": "triangulo",
+        "q": [
+          5,
+          -5,
+          2
+        ],
+        "pares": [
+          [
+            0,
+            1,
+            10
+          ],
+          [
+            1,
+            2,
+            10
+          ],
+          [
+            0,
+            2,
+            10
+          ]
+        ]
+      },
+      "esperado": {
+        "respuesta": -2250.0,
+        "exacta": "−2 250 mJ"
+      }
+    }
+  ]
+}

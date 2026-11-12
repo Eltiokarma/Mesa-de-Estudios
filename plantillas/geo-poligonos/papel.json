@@ -1,0 +1,122 @@
+{
+  "titulo": "Polígonos y cuadriláteros: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 3 minutos por problema. Dibuja la figura a mano alzada y marca en ella los lados iguales y los ángulos que ya conoces antes de calcular. En polígonos regulares, empieza siempre por el ángulo interior y el ángulo central.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Un hexágono ABCDEF tiene sus seis ángulos interiores de 120°. Si AB = 5, BC = 4, CD = 6 y DE = 3, halla EF, FA y el perímetro.",
+      "respuesta": "EF = 6, FA = 4 y el perímetro es 28.",
+      "pasos": [
+        "Al prolongar BC, DE y FA se forma un triángulo equilátero; en sus esquinas quedan triángulos equiláteros de lados AB, CD y EF.",
+        "Lado del triángulo grande: AB + BC + CD = 5 + 4 + 6 = 15.",
+        "CD + DE + EF = 15 → EF = 15 − 6 − 3 = 6.",
+        "EF + FA + AB = 15 → FA = 15 − 6 − 5 = 4.",
+        "Perímetro: 5 + 4 + 6 + 3 + 6 + 4 = 28. Ojo: EF no es igual a su opuesto BC (6 ≠ 4); en el equiángulo los lados opuestos no tienen por qué ser iguales."
+      ],
+      "verificar": [
+        { "fn": "equiangulo", "args": [5, 4, 6, 3], "espera": { "e": 6, "f": 4, "perimetro": 28, "ladoTriangulo": 15 } }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Una pileta tiene forma de dodecágono regular inscrito en una circunferencia de 6 m de radio. ¿Cuál es su área?",
+      "respuesta": "108 m².",
+      "pasos": [
+        "El dodecágono se parte en 12 triángulos con dos lados de 6 m y ángulo central de 360°/12 = 30°.",
+        "Cada triángulo: (1/2)·6·6·sen 30° = 9 m².",
+        "Área: 12 · 9 = 108 m² (es 3R²)."
+      ],
+      "verificar": [
+        { "fn": "areaDodecagonoR", "args": [6], "espera": 108 }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "La apotema de un hexágono regular mide 5√3 cm. Halla su lado y su área.",
+      "respuesta": "Lado 10 cm; área 150√3 cm².",
+      "pasos": [
+        "La apotema es la altura de uno de los seis triángulos equiláteros centrales: (√3/2)·lado = 5√3 → lado = 10 cm.",
+        "Semiperímetro: 6 · 10 / 2 = 30 cm.",
+        "Área = semiperímetro × apotema = 30 · 5√3 = 150√3 cm². Si usaste la apotema como lado, te salió otra cosa: la apotema no es el lado."
+      ],
+      "verificar": [
+        { "fn": "areaHexagonoApotema", "args": [8.660254037844386], "espera": 259.8076211353316 }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "En un octógono regular de vértices consecutivos A, B, C, D, ... se marca F dentro del polígono de modo que ABF es equilátero. Halla el ángulo BFC.",
+      "respuesta": "52,5° (52°30′).",
+      "pasos": [
+        "Ángulo interior: 180°(8 − 2)/8 = 135°.",
+        "Ángulo FBC = 135° − 60° = 75°.",
+        "BF = BA = BC: el triángulo FBC es isósceles, con ángulos de la base de (180° − 75°)/2 = 52,5°."
+      ],
+      "verificar": [
+        { "fn": "soporte", "args": [8], "espera": { "interior": 135, "apice": 75, "BFC": 52.5 } }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "En un hexágono regular ABCDEF, las diagonales AC y BD se cortan en P. Si PD = 8 cm, ¿cuánto mide el radio de la circunferencia circunscrita?",
+      "respuesta": "4√3 cm.",
+      "pasos": [
+        "El triángulo BPC tiene ángulos de 30° en B y en C: BP = PC = lado/√3.",
+        "BD es diagonal menor: BD = lado·√3. Entonces PD = lado·√3 − lado/√3 = 2·lado/√3.",
+        "2·lado/√3 = 8 → lado = 4√3 cm, y en el hexágono regular el radio es igual al lado: R = 4√3 cm."
+      ],
+      "verificar": [
+        { "fn": "hexagonoRadio", "args": ["PD", 8], "espera": 6.928203230275509 }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Un trapecio tiene bases de 9 m y 23 m. Halla su mediana y el segmento que une los puntos medios de sus diagonales.",
+      "respuesta": "Mediana 16 m; segmento 7 m.",
+      "pasos": [
+        "Mediana = semisuma de las bases: (23 + 9)/2 = 16 m.",
+        "El segmento entre los puntos medios de las diagonales está sobre la mediana y mide la semidiferencia: (23 − 9)/2 = 7 m.",
+        "Comprobación: 9/2 + 7 + 9/2 = 16, la mediana completa."
+      ],
+      "verificar": [
+        { "fn": "trapecioSegmentos", "args": [23, 9], "espera": { "mediana": 16, "segmento": 7 } }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Un puente peatonal cruza un canal de orillas paralelas. En una orilla, los pilares A y D están a 30 m; en la otra, B y C están a 9 m. Los tirantes miden AB = 17 m y CD = 10 m, y ABCD es un trapecio con BC ∥ AD. ¿Cuál es el ancho del canal?",
+      "respuesta": "8 m.",
+      "pasos": [
+        "Se traslada CD hasta B: queda un triángulo de lados 17, 10 y 30 − 9 = 21.",
+        "Si el pie de la altura parte el lado de 21 en p y q: 17² − p² = 10² − q² y p + q = 21.",
+        "q² − p² = 100 − 289 = −189 → q − p = −9; así p = 15 y q = 6.",
+        "h² = 17² − 15² = 64 → h = 8 m."
+      ],
+      "verificar": [
+        { "fn": "trapecioAltura", "args": [30, 9, 17, 10], "espera": 8 }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "En un rombo ABCD el ángulo ABC mide 96°. Dentro del rombo se ubica E con BEC equilátero. Halla los ángulos BAE, EAD y AED.",
+      "respuesta": "BAE = 72°, EAD = 12° y AED = 150°.",
+      "pasos": [
+        "BE = BC = BA. Ángulo ABE = 96° − 60° = 36°; el triángulo ABE es isósceles: BAE = (180° − 36°)/2 = 72°.",
+        "Ángulo BAD = 180° − 96° = 84°, así que EAD = 84° − 72° = 12°.",
+        "En C: ECD = 84° − 60° = 24° y CED = (180° − 24°)/2 = 78°.",
+        "Alrededor de E: AED = 360° − 72° − 60° − 78° = 150°. ¡Sale 150° para cualquier rombo con ángulo B entre 60° y 120°!"
+      ],
+      "verificar": [
+        { "fn": "rombo", "args": [96], "espera": { "BAE": 72, "EAD": 12, "AED": 150, "CED": 78 } }
+      ]
+    }
+  ]
+}

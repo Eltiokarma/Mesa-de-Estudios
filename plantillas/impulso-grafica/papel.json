@@ -1,0 +1,98 @@
+{
+  "titulo": "La patada en la gráfica: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema. El impulso es el área bajo la gráfica F-t: pártela en triángulos y rectángulos, y pasa los milisegundos a segundos. El impulso cambia la cantidad de movimiento (J = m·Δv, con signo); el trabajo cambia la energía cinética (W = ½·m·vf² − ½·m·v0²). En un bote, e compara rapideces: la altura se multiplica por e².",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Un bloque de 4 kg está en reposo sobre hielo sin roce. Recibe una fuerza horizontal cuya gráfica F-t es un triángulo que une los puntos (0 s; 0 N), (2 s; 30 N) y (4 s; 0 N). ¿Qué impulso recibe y con qué rapidez queda?",
+      "respuesta": "J = 60 N·s; queda a 15 m/s.",
+      "pasos": [
+        "Área del triángulo: base por altura entre dos, 4 · 30/2 = 60 N·s.",
+        "J = m·(vf − 0): vf = 60/4 = 15 m/s.",
+        "Si multiplicaste 30 N por 4 s (120 N·s), supusiste que la fuerza valía 30 N todo el rato: solo vale eso en t = 2 s."
+      ],
+      "verificar": [
+        { "tipo": "area", "args": [[[0, 0], [2, 30], [4, 0]]], "espera": 60 },
+        { "tipo": "rapidez", "args": [[[0, 0], [2, 30], [4, 0]], 4, 0], "espera": 15 }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "intermedio",
+      "enunciado": "Un carrito de 5 kg avanza a 2 m/s por un riel sin roce. Desde t = 0 recibe, en el sentido de su movimiento, una fuerza cuya gráfica F-t une los puntos (0 s; 0 N), (1 s; 20 N), (3 s; 20 N) y (5 s; 0 N). ¿Con qué rapidez queda?",
+      "respuesta": "16 m/s.",
+      "pasos": [
+        "El área es un trapecio: triángulo de subida 1 · 20/2 = 10, rectángulo 2 · 20 = 40 y triángulo de bajada 2 · 20/2 = 20. Total: 70 N·s.",
+        "vf = v0 + J/m = 2 + 70/5 = 16 m/s.",
+        "Si respondiste 14 m/s, olvidaste que ya iba a 2 m/s."
+      ],
+      "verificar": [ { "tipo": "rapidez", "args": [[[0, 0], [1, 20], [3, 20], [5, 0]], 5, 2], "espera": 16 } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Una caja de 8 kg en reposo sobre un piso muy liso recibe una fuerza horizontal de 50 N durante 2 s, que luego baja de golpe a 20 N y se mantiene hasta t = 5 s. ¿Con qué rapidez queda?",
+      "respuesta": "20 m/s.",
+      "pasos": [
+        "El área tiene dos rectángulos: 50 · 2 = 100 N·s y 20 · 3 = 60 N·s. J = 160 N·s.",
+        "vf = 160/8 = 20 m/s.",
+        "Con la fuerza máxima por el tiempo total (50 · 5 = 250 N·s) saldría 31,25 m/s: el área no es un solo rectángulo."
+      ],
+      "verificar": [ { "tipo": "rapidez", "args": [[[0, 50], [2, 50], [2, 20], [5, 20]], 8, 0], "espera": 20 } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "avanzado",
+      "enunciado": "Una pelota de 0,5 kg rueda a 4 m/s. Un niño la alcanza y la patea en el mismo sentido; la fuerza de la patada sube de 0 a 1500 N en 2 ms y baja a 0 en los 4 ms siguientes. ¿Qué trabajo hace el pie sobre la pelota?",
+      "respuesta": "38,25 J.",
+      "pasos": [
+        "Impulso: área del triángulo, 0,006 s · 1500 N/2 = 4,5 N·s.",
+        "vf = 4 + 4,5/0,5 = 13 m/s.",
+        "W = ½ · 0,5 · (13² − 4²) = 0,25 · 153 = 38,25 J.",
+        "Si respondiste 20,25 J, calculaste como si la pelota partiera del reposo (vf = 9 m/s). Si respondiste 42,25 J, no restaste la energía cinética inicial."
+      ],
+      "verificar": [ { "tipo": "trabajo", "args": [[[0, 0], [0.002, 1500], [0.006, 0]], 0.5, 4], "espera": 38.25 } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "avanzado",
+      "enunciado": "Una pelota de 0,4 kg llega rodando hacia un jugador a 5 m/s. La patada le da un impulso de 6 N·s en sentido contrario al de su llegada. ¿Con qué rapidez sale y qué trabajo hace el pie?",
+      "respuesta": "Sale a 10 m/s; el trabajo es 15 J.",
+      "pasos": [
+        "Toma positivo el sentido de la patada: v0 = −5 m/s.",
+        "vf = −5 + 6/0,4 = −5 + 15 = 10 m/s.",
+        "W = ½ · 0,4 · (10² − 5²) = 0,2 · 75 = 15 J.",
+        "Si sumaste 5 + 15 = 20 m/s, trataste la cantidad de movimiento como un número sin sentido: la pelota venía en contra."
+      ],
+      "verificar": [ { "tipo": "trabajo", "args": [[[0, 6000], [0.001, 6000]], 0.4, -5], "espera": 15 } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Una pelota se suelta desde 5 m de altura. El coeficiente de restitución con el piso es 0,8. ¿Hasta qué altura sube tras el primer bote si se desprecia el aire? ¿Y si el aire le quita el 20 % de la energía durante la caída (y nada en la subida)?",
+      "respuesta": "3,2 m sin aire; 2,56 m con el aire.",
+      "pasos": [
+        "La rapidez de salida es e veces la de llegada, y la altura va con el cuadrado de la rapidez: h' = e²·H = 0,64 · 5 = 3,2 m.",
+        "Con aire llega con el 80 % de la energía: h' = 0,64 · 5 · 0,8 = 2,56 m.",
+        "Si hiciste 0,8 · 5 = 4 m, aplicaste e a la altura y no a la rapidez."
+      ],
+      "verificar": [
+        { "tipo": "rebote", "args": [5, 0.8, 0, 0], "espera": 3.2 },
+        { "tipo": "rebote", "args": [5, 0.8, 20, 0], "espera": 2.56 }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "básico",
+      "enunciado": "Una canica soltada desde 3,2 m sube hasta 0,8 m después de botar (sin aire). ¿Cuál es el coeficiente de restitución?",
+      "respuesta": "e = 0,5.",
+      "pasos": [
+        "Llega con v = √(2·10·3,2) = 8 m/s y sale con v' = √(2·10·0,8) = 4 m/s.",
+        "e = v'/v = 4/8 = 0,5. Atajo: e = √(h'/H) = √(0,25).",
+        "Si dividiste las alturas (0,25), te faltó la raíz: e compara rapideces."
+      ],
+      "verificar": [ { "tipo": "e-alturas", "args": [3.2, 0.8], "espera": 0.5 } ]
+    }
+  ]
+}

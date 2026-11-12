@@ -1,0 +1,267 @@
+{
+  "plantilla": "carga-en-campo",
+  "tolerancia": 1e-9,
+  "nota": "SI. La tolerancia es relativa. radio, paso y radio de la hélice en cm; periodos en s (ns en «cambio»); masa en kg; voltajes en V; E en V/m; fuerza en N; aceleración en m/s²; campo en T. En la hélice la respuesta es «forma:radio en cm». Esperados calculados a mano con r = mv/(|q|B), T = 2πm/(|q|B), |q|V = ½mv², E = vB, F = B(ε/R)L y B = µ0I/(2R), sin mirar la salida del generador.",
+  "verificacion": "Verificado a ciegas (12 nov 2026) por un subagente que no vio el generador: 46 problemas (16 de casos.json y 30 semillas nuevas) resueltos con r = mv⊥/(|q|B), T = 2πm/(|q|B), paso v∥·T, |q|V = ½mv², E = vB, F = BIL con I = ε/R y B = µ0I/(2R). 46/46 coinciden en letra y valor; tras la revisión se ajustaron ayudas, formato y respaldos.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "helice",
+        "sub": "radio",
+        "particula": "proton",
+        "m": 1.6e-27,
+        "q": 1.6e-19,
+        "v": 800000,
+        "B": 0.1,
+        "mT": true,
+        "angulo": 30
+      },
+      "esperado": {
+        "respuesta": "helice:4",
+        "exacta": "Hélice de 4 cm de radio"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "radio",
+        "sub": "cociente",
+        "modo": "v",
+        "v1": 1000000,
+        "v2": 3000000
+      },
+      "esperado": {
+        "respuesta": 3,
+        "exacta": "3"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "potencial",
+        "sub": "radio",
+        "particula": "proton",
+        "m": 1.6e-27,
+        "q": 1.6e-19,
+        "V": 3200,
+        "B": 0.05,
+        "mT": true
+      },
+      "esperado": {
+        "respuesta": 16,
+        "exacta": "16 cm"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "helice",
+        "sub": "paso",
+        "particula": "alfa",
+        "m": 6.4e-27,
+        "q": 3.2e-19,
+        "v": 1500000,
+        "B": 0.1,
+        "mT": false,
+        "angulo": 53
+      },
+      "esperado": {
+        "respuesta": 113.09733552923255,
+        "exacta": "36π cm"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "potencial",
+        "sub": "voltaje",
+        "particula": "alfa",
+        "m": 6.4e-27,
+        "q": 3.2e-19,
+        "r": 0.1,
+        "diametro": true,
+        "B": 0.02,
+        "mT": true
+      },
+      "esperado": {
+        "respuesta": 100,
+        "exacta": "100 V"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "periodo",
+        "sub": "masa",
+        "q": 1.6e-19,
+        "B": 0.2,
+        "mT": false,
+        "n": 20,
+        "t": 0.00003141592653589793
+      },
+      "esperado": {
+        "respuesta": 8e-27,
+        "exacta": "8 × 10⁻²⁷ kg"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "periodo",
+        "sub": "periodo",
+        "particula": "deuteron",
+        "m": 3.2e-27,
+        "q": 1.6e-19,
+        "v": 1500000,
+        "B": 0.04,
+        "mT": true
+      },
+      "esperado": {
+        "respuesta": 0.000003141592653589793,
+        "exacta": "3,14 × 10⁻⁶ s"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "espira",
+        "sub": "voltaje",
+        "R": 0.5,
+        "diametro": true,
+        "Ral": 0.2,
+        "B": 0.000006283185307179586
+      },
+      "esperado": {
+        "respuesta": 1,
+        "exacta": "1 V"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "cruzados",
+        "sub": "campo",
+        "pide": "E",
+        "particula": "proton",
+        "v": 200000,
+        "d": 0.05,
+        "B": 0.025,
+        "mT": true
+      },
+      "esperado": {
+        "respuesta": 5000,
+        "exacta": "5 000 V/m"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "espira",
+        "sub": "campo",
+        "R": 0.05,
+        "diametro": false,
+        "Ral": 4,
+        "V": 9
+      },
+      "esperado": {
+        "respuesta": 0.000028274333882308137,
+        "exacta": "2,83 × 10⁻⁵ T"
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "tipo": "cruzados",
+        "sub": "rapidez",
+        "dV": 400,
+        "d": 0.1,
+        "B": 0.002,
+        "mT": true
+      },
+      "esperado": {
+        "respuesta": 2000000,
+        "exacta": "2 × 10⁶ m/s"
+      }
+    },
+    {
+      "semilla": 18,
+      "entrada": {
+        "tipo": "radio",
+        "sub": "radio",
+        "particula": "proton",
+        "m": 1.6e-27,
+        "q": 1.6e-19,
+        "v": 100000,
+        "B": 0.01,
+        "mT": true
+      },
+      "esperado": {
+        "respuesta": 10,
+        "exacta": "10 cm"
+      }
+    },
+    {
+      "semilla": 23,
+      "entrada": {
+        "tipo": "radio",
+        "sub": "cociente",
+        "modo": "K",
+        "K1": 8,
+        "K2": 2
+      },
+      "esperado": {
+        "respuesta": 0.5,
+        "exacta": "1/2"
+      }
+    },
+    {
+      "semilla": 28,
+      "entrada": {
+        "tipo": "riel",
+        "sub": "aceleracion",
+        "eps": 12,
+        "R": 4,
+        "L": 0.8,
+        "B": 0.6,
+        "mT": false,
+        "m": 0.2
+      },
+      "esperado": {
+        "respuesta": 7.2,
+        "exacta": "7,2 m/s²"
+      }
+    },
+    {
+      "semilla": 36,
+      "entrada": {
+        "tipo": "riel",
+        "sub": "fuerza",
+        "eps": 3,
+        "R": 6,
+        "L": 0.2,
+        "B": 0.4,
+        "mT": false
+      },
+      "esperado": {
+        "respuesta": 0.04,
+        "exacta": "0,04 N"
+      }
+    },
+    {
+      "semilla": 57,
+      "entrada": {
+        "tipo": "periodo",
+        "sub": "cambio",
+        "modo": "v",
+        "particula": "proton",
+        "T0": 120,
+        "k": 2
+      },
+      "esperado": {
+        "respuesta": 120,
+        "exacta": "120 ns"
+      }
+    }
+  ]
+}

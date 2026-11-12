@@ -1,0 +1,103 @@
+{
+  "titulo": "La balanza de dimensiones: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema. Escribe la dimensión de cada magnitud con M, L y T. En una suma, cada término pesa lo mismo que el miembro izquierdo; lo que va dentro de un seno, una exponencial o un logaritmo no tiene dimensión; los números (2π, ½) no pesan nada. Para hallar exponentes, iguala M, L y T a cada lado.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Se sospecha que la rapidez v del sonido en un gas depende de la presión p y de la densidad ρ del gas según v = k·p^x·ρ^y, con k un número. Halla x e y.",
+      "respuesta": "x = 1/2 e y = −1/2, es decir, v = k·√(p/ρ).",
+      "pasos": [
+        "[v] = LT⁻¹, [p] = ML⁻¹T⁻² y [ρ] = ML⁻³.",
+        "M: x + y = 0. L: −x − 3y = 1. T: −2x = −1.",
+        "De T sale x = 1/2; de M, y = −1/2. Comprueba L: −1/2 + 3/2 = 1."
+      ],
+      "verificar": [
+        { "tipo": "exponente", "args": ["v", ["p", "rho"], 0], "espera": 0.5 },
+        { "tipo": "exponente", "args": ["v", ["p", "rho"], 1], "espera": -0.5 }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "intermedio",
+      "enunciado": "El caudal Q de agua que sale por un orificio de área S en el fondo de un balde, cuando el agua tiene una altura h, se propone como Q = k·S^x·g^y·h^z. Halla x + y + z.",
+      "respuesta": "x = 1, y = 1/2, z = 1/2; la suma es 2.",
+      "pasos": [
+        "[Q] = L³T⁻¹, [S] = L², [g] = LT⁻² y [h] = L.",
+        "T: −2y = −1, así que y = 1/2.",
+        "L: 2x + y + z = 3. Falta otra condición: no hay M. Con la idea de que el caudal es área por rapidez y la rapidez es √(g·h), x = 1 y z = 1/2.",
+        "Ojo: aquí el análisis dimensional solo no basta (hay más incógnitas que ecuaciones útiles); hace falta saber que el caudal es proporcional al área del orificio."
+      ],
+      "verificar": [ { "tipo": "suma-exponentes", "args": ["Q", ["S", "g", "h"], [1, 0.5, 0.5]], "espera": 2 } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "La fuerza del aire sobre un ciclista se ajusta con F = A·v² + B·t, donde v es la rapidez y t el tiempo. La ecuación es dimensionalmente correcta. Halla las dimensiones de A y de B.",
+      "respuesta": "[A] = ML⁻¹ y [B] = MLT⁻³.",
+      "pasos": [
+        "Cada término pesa lo mismo que F: MLT⁻².",
+        "[A]·L²T⁻² = MLT⁻², así que [A] = ML⁻¹.",
+        "[B]·T = MLT⁻², así que [B] = MLT⁻³.",
+        "Si dijiste [A] = MLT⁻², le diste a la constante la dimensión de todo el término."
+      ],
+      "verificar": [
+        { "tipo": "constante", "args": ["F", [["v", 2]]], "espera": [1, -1, 0, 0] },
+        { "tipo": "constante", "args": ["F", [["t", 1]]], "espera": [1, 1, -3, 0] }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "La posición de una boya que sube y baja es y = A·sen(B·t + C), con y en metros y t en segundos. Halla las dimensiones de A, B y C.",
+      "respuesta": "[A] = L, [B] = T⁻¹ y C no tiene dimensión.",
+      "pasos": [
+        "El seno no tiene dimensión: [A] = [y] = L.",
+        "Lo de dentro es un ángulo, sin dimensión: [B]·T = 1, así que [B] = T⁻¹; y C, que se suma a B·t, tampoco tiene dimensión.",
+        "Si dijiste que C tiene dimensión de tiempo, olvidaste que se suma a B·t, que es un número."
+      ],
+      "verificar": [ { "tipo": "argumento", "args": ["t", 1], "espera": [0, 0, -1, 0] } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "En la ecuación p = A·v² + B·h, p es una presión, v una rapidez y h una altura. Halla la dimensión de A/B.",
+      "respuesta": "[A/B] = L⁻¹T².",
+      "pasos": [
+        "[A]·L²T⁻² = ML⁻¹T⁻², así que [A] = ML⁻³ (una densidad).",
+        "[B]·L = ML⁻¹T⁻², así que [B] = ML⁻²T⁻².",
+        "[A/B] = ML⁻³ / ML⁻²T⁻² = L⁻¹T².",
+        "A y B no pesan lo mismo aunque estén en la misma ecuación: lo que pesa igual son los términos completos."
+      ],
+      "verificar": [ { "tipo": "cociente", "args": ["p", [["v", 2]], [["h", 1]]], "espera": [0, -1, 2, 0] } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "básico",
+      "enunciado": "Un compañero escribió en su cuaderno que el periodo de un péndulo es T = 2π·√(g/L). Sin hacer ningún experimento, ¿puedes saber si está mal?",
+      "respuesta": "Sí: √(g/L) tiene dimensión T⁻¹, no T. La fórmula no es homogénea, así que está mal (la correcta es T = 2π·√(L/g)).",
+      "pasos": [
+        "[g/L] = LT⁻²/L = T⁻², y su raíz es T⁻¹.",
+        "El miembro izquierdo es un tiempo, T. Como T⁻¹ ≠ T, la ecuación no es homogénea.",
+        "La homogeneidad sí detecta errores. Lo que no detecta es un número mal puesto: T = π·√(L/g) también sería homogénea y está mal."
+      ],
+      "verificar": [ { "tipo": "homogenea", "args": [[["Per", 1]], [["g", 0.5], ["L", -0.5]]], "espera": false } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "básico",
+      "enunciado": "Indica cuáles de estas ecuaciones son dimensionalmente homogéneas (d distancia, v rapidez, a aceleración, t tiempo, m masa, h altura, g gravedad, E energía): (I) d = v·t + ½·a·t²; (II) E = m·v + m·g·h; (III) v² = 2·a·d.",
+      "respuesta": "I y III son homogéneas; II no (m·v es una cantidad de movimiento, no una energía).",
+      "pasos": [
+        "I: v·t = L y a·t² = L; todos los términos pesan L.",
+        "II: [m·v] = MLT⁻¹ y [m·g·h] = ML²T⁻²: no se pueden sumar.",
+        "III: [v²] = L²T⁻² y [a·d] = L²T⁻². Homogénea (el 2 no pesa nada)."
+      ],
+      "verificar": [
+        { "tipo": "homogenea", "args": [[["v", 1], ["t", 1]], [["a", 1], ["t", 2]]], "espera": true },
+        { "tipo": "homogenea", "args": [[["m", 1], ["v", 1]], [["m", 1], ["g", 1], ["h", 1]]], "espera": false },
+        { "tipo": "homogenea", "args": [[["v", 2]], [["a", 1], ["h", 1]]], "espera": true }
+      ]
+    }
+  ]
+}

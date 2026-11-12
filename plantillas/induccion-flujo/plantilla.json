@@ -1,0 +1,14 @@
+{
+  "id": "induccion-flujo",
+  "titulo": "El flujo que va y vuelve",
+  "formato": "predicciones",
+  "unidades": [
+    "fisica.induccion-electromagnetica"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

@@ -1,0 +1,113 @@
+{
+  "titulo": "El termómetro de la chacra: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la pantalla, con unos 2 a 3 minutos por problema. Antes de calcular, pregúntate si te piden una lectura (una temperatura) o una variación (cuánto cambió): en una variación, el 32 y el 273 se cancelan. Usa °F = 1,8·°C + 32, K = °C + 273, 1 cal = 4,2 J y g = 10 m/s².",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "El nitrógeno líquido que usan en un laboratorio de Lima hierve a 77 K. ¿A cuántos grados Celsius es eso?",
+      "respuesta": "−196 °C.",
+      "pasos": [
+        "El kelvin y el grado Celsius tienen el mismo tamaño; solo cambia el cero.",
+        "°C = K − 273 = 77 − 273 = −196 °C. Como 77 K está por debajo de 273 K, la temperatura es bajo cero: sumar 273 sería un error."
+      ],
+      "verificar": [{ "tipo": "conv", "args": { "x": 77, "de": "K", "a": "C" }, "espera": -196 }]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Una receta de un libro de Estados Unidos pide el horno a 104 °F para que suba la masa. ¿Cuántos grados Celsius son?",
+      "respuesta": "40 °C.",
+      "pasos": [
+        "Primero se quita el cero de la escala Fahrenheit: 104 − 32 = 72.",
+        "Después se cambia el tamaño del grado: 72 / 1,8 = 40 °C."
+      ],
+      "verificar": [{ "tipo": "conv", "args": { "x": 104, "de": "F", "a": "C" }, "espera": 40 }]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "El abuelo hizo un termómetro para la chacra: en el hielo que se derrite marca 10 °Ch y en el agua que hierve a nivel del mar, 210 °Ch. ¿Cuánto marca cuando la temperatura es 30 °C? Y si la temperatura sube 15 °C, ¿cuánto sube su lectura?",
+      "respuesta": "Marca 70 °Ch; si la temperatura sube 15 °C, la lectura sube 30 °Ch.",
+      "pasos": [
+        "Entre los dos puntos fijos hay 100 °C y 210 − 10 = 200 °Ch: un grado Celsius vale 2 °Ch.",
+        "Lectura: 10 + 2 · 30 = 70 °Ch (se suma el cero de su escala).",
+        "Variación: 2 · 15 = 30 °Ch. En una variación el cero (10) se cancela."
+      ],
+      "verificar": [{ "tipo": "conv", "args": { "x": 30, "de": "C", "a": "X", "fusion": 10, "ebullicion": 210 }, "espera": 70 }]
+    },
+    {
+      "id": "p4",
+      "nivel": "avanzado",
+      "enunciado": "¿A qué temperatura un termómetro en kelvin y otro en grados Fahrenheit marcan el mismo número?",
+      "respuesta": "574,25 K (que también es 574,25 °F).",
+      "pasos": [
+        "En kelvin: °F = 1,8·(K − 273) + 32.",
+        "Si marcan igual: 1,8·(K − 273) + 32 = K, así que 0,8·K = 491,4 − 32 = 459,4.",
+        "K = 574,25. Ojo: −40 es donde coinciden Celsius y Fahrenheit, no Kelvin y Fahrenheit."
+      ],
+      "verificar": [{ "tipo": "cruce-k-f", "args": { "delta": 0 }, "espera": 574.25 }]
+    },
+    {
+      "id": "p5",
+      "nivel": "básico",
+      "enunciado": "La temperatura de una niña con fiebre sube de 98,6 °F a 102,2 °F. ¿Cuántos grados Celsius subió?",
+      "respuesta": "2 °C.",
+      "pasos": [
+        "Variación en °F: 102,2 − 98,6 = 3,6 °F.",
+        "Es una variación: el 32 se cancela al restar dos lecturas. Solo se divide entre 1,8: 3,6 / 1,8 = 2 °C."
+      ],
+      "verificar": [{ "tipo": "variacion", "args": { "T1": 98.6, "T2": 102.2, "de": "F", "a": "C" }, "espera": 2 }]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "El agua de un río llega al borde de una catarata con una rapidez de 20 m/s y cae. Al pie, el agua está 0,3 °C más caliente. Si toda su energía mecánica se volvió calor del agua, ¿qué altura tiene la catarata? (Calor específico del agua: 1 cal/(g·°C).)",
+      "respuesta": "106 m.",
+      "pasos": [
+        "c = 1 cal/(g·°C) = 4,2 J por cada 0,001 kg y °C = 4200 J/(kg·°C).",
+        "Por kilogramo: g·h + ½·v0² = c·ΔT, es decir, 10·h + 200 = 4200 · 0,3 = 1260.",
+        "h = (1260 − 200)/10 = 106 m. Si te olvidas de la energía cinética del borde, te sale 126 m."
+      ],
+      "verificar": [{ "tipo": "joule-h", "args": { "dT": 0.3, "v0": 20 }, "espera": 106 }]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Un matraz de vidrio está lleno hasta la marca con 200 cm³ de mercurio a 20 °C. Se calientan juntos hasta 120 °C. El coeficiente volumétrico del mercurio es 1,8 × 10⁻⁴ °C⁻¹ y el lineal del vidrio, 1 × 10⁻⁵ °C⁻¹. ¿Cuánto mercurio rebasa la marca?",
+      "respuesta": "3 cm³.",
+      "pasos": [
+        "El mercurio crece 200 · 1,8 × 10⁻⁴ · 100 = 3,6 cm³.",
+        "El matraz también crece, como un volumen: 3α = 3 × 10⁻⁵ °C⁻¹. Su capacidad aumenta 200 · 3 × 10⁻⁵ · 100 = 0,6 cm³.",
+        "Rebasa la diferencia: 3,6 − 0,6 = 3 cm³."
+      ],
+      "verificar": [{ "tipo": "aparente", "args": { "V0": 200, "gamma": 0.00018, "alfa": 0.00001, "dT": 100 }, "espera": 3 }]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Un tanque de acero vacío de 2000 L se calienta 25 °C al sol (α del acero: 1,2 × 10⁻⁵ °C⁻¹). Aparte, un aceite de 931,5 kg/m³ a 20 °C se calienta 50 °C (γ del aceite: 7 × 10⁻⁴ °C⁻¹). ¿Cuánto aumenta la capacidad del tanque y cuál es la nueva densidad del aceite?",
+      "respuesta": "La capacidad aumenta 1,8 L; la densidad del aceite baja a 900 kg/m³.",
+      "pasos": [
+        "El hueco del tanque se dilata en las tres dimensiones: ΔV = 3α·V0·ΔT = 3,6 × 10⁻⁵ · 2000 · 25 = 1,8 L.",
+        "El aceite no gana masa al calentarse: solo ocupa más. ρ = ρ0/(1 + γ·ΔT) = 931,5 / 1,035 = 900 kg/m³."
+      ],
+      "verificar": [
+        { "tipo": "capacidad", "args": { "V0": 2000, "alfa": 0.000012, "dT": 25 }, "espera": 1.8 },
+        { "tipo": "densidad", "args": { "rho0": 931.5, "gamma": 0.0007, "dT": 50 }, "espera": 900 }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Una persona de 70 kg tiene 1 °C de más después de correr. Si solo se enfría evaporando sudor, ¿cuántos mililitros de sudor deben evaporarse? (Calor específico del cuerpo: 3500 J/(kg·°C); calor latente de vaporización del agua a 37 °C: 2450 kJ/kg; 1 g de sudor ocupa 1 mL.)",
+      "respuesta": "100 mL.",
+      "pasos": [
+        "Calor que debe perder: Q = 70 · 3500 · 1 = 245 000 J. Una variación de 1 °C es una variación de 1 K: no se suma 273.",
+        "El sudor se lleva ese calor al evaporarse, sin cambiar de temperatura: Q = m·L.",
+        "m = 245 000 / 2 450 000 = 0,1 kg = 100 g, es decir, 100 mL."
+      ],
+      "verificar": [{ "tipo": "sudor", "args": { "M": 70, "dT": 1 }, "espera": 100 }]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "geo-poligonos",
+  "titulo": "Polígonos regulares, trapecios y cuadriláteros",
+  "formato": "predicciones",
+  "unidades": [
+    "geometria.poligonos-y-cuadrilateros",
+    "geometria.poligonos-regulares"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

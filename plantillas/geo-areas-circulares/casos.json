@@ -1,0 +1,347 @@
+{
+  "plantilla": "geo-areas-circulares",
+  "tolerancia": 0.000001,
+  "nota": "Respuestas exactas q + p·π; «respuesta» es su valor numérico. Ver la cabecera de generador.js para el significado de cada campo de «entrada».",
+  "verificacion": "Verificador independiente (subagente, 12 nov 2026, tercera vuelta tras la revisión): los 24 casos resueltos desde el enunciado con q + pπ exactos (fracciones), áreas sombreadas comprobadas por conteo en rejilla, cicloides por integración numérica y cuadrantes y hexágono por fuerza bruta sobre R. Coinciden los 24 en respuesta y en la clave exacta (también las de factor común); ningún enunciado ambiguo.",
+  "casos": [
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "sector",
+        "sub": "perimetro",
+        "u": "cm",
+        "r": 3,
+        "t": 120
+      },
+      "esperado": {
+        "respuesta": 12.283185307179586,
+        "exacta": "(6 + 2π) cm"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "cuadrantes",
+        "u": "m",
+        "Spi": 6,
+        "d": 4,
+        "R": 5,
+        "r": 1
+      },
+      "esperado": {
+        "respuesta": 5,
+        "exacta": "5 m"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "sector",
+        "sub": "trapecio",
+        "u": "dm",
+        "R": 12,
+        "r": 6,
+        "t": 90
+      },
+      "esperado": {
+        "respuesta": 84.82300164692441,
+        "exacta": "27π dm²"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "concentricas",
+        "sub": "suma",
+        "u": "cm",
+        "radios": [
+          4,
+          6,
+          9
+        ],
+        "n": 8,
+        "piezas": [
+          3,
+          2,
+          1
+        ]
+      },
+      "esperado": {
+        "respuesta": 52.22897786593031,
+        "exacta": "133π/8 cm²"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "corona",
+        "sub": "diametros",
+        "u": "m",
+        "D": 20,
+        "d": 14
+      },
+      "esperado": {
+        "respuesta": 160.22122533307945,
+        "exacta": "51π m²"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "lunulas",
+        "sub": "flor",
+        "u": "cm",
+        "l": 2
+      },
+      "esperado": {
+        "respuesta": 2.2831853071795862,
+        "exacta": "2(π − 2) cm²"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "corona",
+        "sub": "cuerda",
+        "u": "m",
+        "c": 24
+      },
+      "esperado": {
+        "respuesta": 452.3893421169302,
+        "exacta": "144π m²"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "corona",
+        "sub": "radios",
+        "u": "m",
+        "R": 7,
+        "r": 6
+      },
+      "esperado": {
+        "respuesta": 40.840704496667314,
+        "exacta": "13π m²"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "sombreada",
+        "sub": "cuadrado-cuatro",
+        "u": "cm",
+        "r": 5
+      },
+      "esperado": {
+        "respuesta": 85.84073464102067,
+        "exacta": "100(4 − π) cm²"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "corona",
+        "sub": "razon-suma",
+        "u": "m",
+        "a": 1,
+        "b": 3,
+        "S": 16
+      },
+      "esperado": {
+        "respuesta": 402.1238596594935,
+        "exacta": "128π m²"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "lunulas",
+        "sub": "hipocrates",
+        "u": "m",
+        "a": 6,
+        "b": 8,
+        "c": 10
+      },
+      "esperado": {
+        "respuesta": 24,
+        "exacta": "24 m²"
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "tipo": "lunulas",
+        "sub": "cuadrante-dos-semis",
+        "u": "m",
+        "R": 8
+      },
+      "esperado": {
+        "respuesta": 9.132741228718345,
+        "exacta": "8(π − 2) m²"
+      }
+    },
+    {
+      "semilla": 17,
+      "entrada": {
+        "tipo": "rueda",
+        "u": "cm",
+        "r": 5,
+        "Dpi": 10,
+        "conCentro": true
+      },
+      "esperado": {
+        "respuesta": 40,
+        "exacta": "40 cm"
+      }
+    },
+    {
+      "semilla": 20,
+      "entrada": {
+        "tipo": "lunulas",
+        "sub": "hex-segmentos",
+        "u": "cm",
+        "n": 3,
+        "Spi": 18,
+        "Sr3": -27
+      },
+      "esperado": {
+        "respuesta": 37.69911184307752,
+        "exacta": "12π cm"
+      }
+    },
+    {
+      "semilla": 23,
+      "entrada": {
+        "tipo": "concentricas",
+        "sub": "razon",
+        "m": 7,
+        "n": 4
+      },
+      "esperado": {
+        "respuesta": 13,
+        "exacta": "13"
+      }
+    },
+    {
+      "semilla": 31,
+      "entrada": {
+        "tipo": "rueda",
+        "u": "m",
+        "r": 2,
+        "n": 1,
+        "conCentro": false
+      },
+      "esperado": {
+        "respuesta": 16,
+        "exacta": "16 m"
+      }
+    },
+    {
+      "semilla": 41,
+      "entrada": {
+        "tipo": "sector",
+        "sub": "semicorona",
+        "u": "dm",
+        "D": 16,
+        "d": 4
+      },
+      "esperado": {
+        "respuesta": 94.24777960769379,
+        "exacta": "30π dm²"
+      }
+    },
+    {
+      "semilla": 46,
+      "entrada": {
+        "tipo": "sombreada",
+        "sub": "logo-tangente",
+        "u": "dm",
+        "r": 6
+      },
+      "esperado": {
+        "respuesta": 236.70799341230236,
+        "exacta": "(576 − 108π) dm²"
+      }
+    },
+    {
+      "semilla": 51,
+      "entrada": {
+        "tipo": "lunulas",
+        "sub": "cuadrante-semi",
+        "u": "cm",
+        "R": 8
+      },
+      "esperado": {
+        "respuesta": 25.132741228718345,
+        "exacta": "8π cm²"
+      }
+    },
+    {
+      "semilla": 60,
+      "entrada": {
+        "tipo": "sombreada",
+        "sub": "rect-tres",
+        "u": "cm",
+        "r": 1
+      },
+      "esperado": {
+        "respuesta": 1.7168146928204138,
+        "exacta": "2(4 − π) cm²"
+      }
+    },
+    {
+      "semilla": 71,
+      "entrada": {
+        "tipo": "lunulas",
+        "sub": "hex-sector",
+        "u": "cm",
+        "n": 2,
+        "Spi": 12
+      },
+      "esperado": {
+        "respuesta": 37.69911184307752,
+        "exacta": "12π cm"
+      }
+    },
+    {
+      "semilla": 137,
+      "entrada": {
+        "tipo": "lunulas",
+        "sub": "dos-cuadrantes",
+        "u": "m",
+        "l": 10
+      },
+      "esperado": {
+        "respuesta": 57.07963267948966,
+        "exacta": "(50π − 100) m²"
+      }
+    },
+    {
+      "semilla": 101,
+      "entrada": {
+        "tipo": "sombreada",
+        "sub": "cuadrado-esquinas",
+        "u": "dm",
+        "l": 20
+      },
+      "esperado": {
+        "respuesta": 85.84073464102067,
+        "exacta": "(400 − 100π) dm²"
+      }
+    },
+    {
+      "semilla": 102,
+      "entrada": {
+        "tipo": "lunulas",
+        "sub": "cuadricula",
+        "u": "m",
+        "a": 8
+      },
+      "esperado": {
+        "respuesta": 128,
+        "exacta": "128 m²"
+      }
+    }
+  ]
+}

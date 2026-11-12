@@ -1,6 +1,6 @@
 {
   "titulo": "El sólido que se abre: problemas para lápiz y papel",
-  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Antes de usar una fórmula, dibuja el desarrollo: el área lateral es lo que se ve al abrir el sólido, y su volumen se mide en cubitos de adentro. En la pirámide y el cono, la altura h va por dentro; para el área lateral se usa la apotema ap o la generatriz g, que van por la cara.",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Antes de usar una fórmula, dibuja el desarrollo: el área lateral es lo que se ve al abrir el sólido, y su volumen se mide en cubitos de adentro. En la pirámide y el cono, la altura h va por dentro; para el área lateral se usa la apotema ap o la generatriz g, que van por la cara. En los sólidos de revolución, dibuja el corte por el eje: ahí se ven los radios por semejanza, la circunferencia inscrita y la altura del casquete.",
   "problemas": [
     {
       "id": "p1",
@@ -100,38 +100,42 @@
     },
     {
       "id": "p4",
-      "nivel": "básico",
-      "enunciado": "Una lata cilíndrica tiene 7 cm de diámetro y 10 cm de altura. ¿Cuánto mide de largo su etiqueta (que la rodea una vez, sin solaparse) y cuál es su área?",
-      "respuesta": "El largo es 7π cm (unos 22 cm) y el área, 70π cm².",
+      "nivel": "intermedio",
+      "enunciado": "Un recipiente cilíndrico de 10 cm de diámetro tiene agua. Al hundir por completo una piedra, el nivel sube 1,2 cm. ¿Cuál es el volumen de la piedra? Se saca la piedra y se hunde un cubo de 4 cm de arista, que queda cubierto: ¿cuánto sube ahora el agua?",
+      "respuesta": "La piedra mide 30π cm³ (unos 94 cm³). Con el cubo, el agua sube 64/(25π) cm, unos 0,81 cm.",
       "pasos": [
-        "Ojo: 7 cm es el diámetro; el radio es 3,5 cm.",
-        "La etiqueta abierta es un rectángulo. Su largo es la circunferencia de la base: 2π · 3,5 = 7π cm.",
-        "Su área es la lateral del cilindro: 7π · 10 = 70π cm². Si usas 7 como radio, te sale el doble: 140π cm²."
+        "El radio del recipiente es 5 cm (la mitad del diámetro). El agua que sube es un cilindro de radio 5 y alto 1,2: π · 5² · 1,2 = 30π cm³. Eso ocupa la piedra. Con el diámetro en lugar del radio saldría 120π, cuatro veces más.",
+        "El cubo mide 4³ = 64 cm³ y cabe en el recipiente (su diagonal de cara, 4√2 ≈ 5,7 cm, es menor que 10 cm).",
+        "El agua sube lo que haga falta para ocupar esos 64 cm³ con base π · 5² = 25π cm²: Δh = 64/(25π) ≈ 0,81 cm. No sube 4 cm, lo que mide el cubo: el recipiente es más ancho que él."
       ],
       "verificar": [
         {
-          "fn": "cilindro",
+          "fn": "desplazamiento",
           "args": [
             {
-              "r": 3.5,
-              "h": 10
+              "R": 5,
+              "dh": 1.2
             }
           ],
           "espera": {
-            "pi.largo": 7,
-            "pi.lateral": 70
+            "piVolumen": 30,
+            "errores.piVolumen.conDiametro": 120
           }
         },
         {
-          "fn": "cilindro",
+          "fn": "desplazamiento",
           "args": [
             {
-              "r": 7,
-              "h": 10
+              "R": 5,
+              "pieza": {
+                "tipo": "cubo",
+                "a": 4
+              }
             }
           ],
           "espera": {
-            "pi.lateral": 140
+            "dh": 0.8148733086305042,
+            "errores.dh.subeLoQueMide": 4
           }
         }
       ]
@@ -165,57 +169,59 @@
     },
     {
       "id": "p6",
-      "nivel": "intermedio",
-      "enunciado": "Una esfera está inscrita en un cilindro de 20 cm de altura (toca las dos bases y la superficie lateral). Calcula el volumen de la esfera, el del cilindro y compara el área de la esfera con el área lateral del cilindro.",
-      "respuesta": "V_esfera = 4000π/3 cm³ y V_cilindro = 2000π cm³ (la esfera es 2/3 del cilindro). El área de la esfera, 400π cm², es igual al área lateral del cilindro.",
+      "nivel": "avanzado",
+      "enunciado": "Una esfera de 10 cm de radio se corta con un plano y queda un casquete de 4 cm de altura. Calcula el área del casquete, el radio del círculo de corte y el volumen del segmento esférico que encierra. ¿Qué mide más: el casquete o el círculo de corte?",
+      "respuesta": "El casquete mide 80π cm²; el círculo de corte tiene radio 8 cm y área 64π cm², así que el casquete mide más. El segmento esférico mide 416π/3 cm³ (unos 436 cm³).",
       "pasos": [
-        "Si la esfera toca las dos bases, su diámetro es la altura: r = 10 cm, y el cilindro tiene radio 10 cm.",
-        "V_esfera = 4π · 10³/3 = 4000π/3 cm³. V_cilindro = π · 10² · 20 = 2000π cm³. La razón es (4000/3)/2000 = 2/3.",
-        "Área de la esfera: 4π · 10² = 400π cm². Área lateral del cilindro: 2π · 10 · 20 = 400π cm². Son iguales (Arquímedes)."
+        "Arquímedes: el casquete mide lo mismo que la franja de igual altura del cilindro que envuelve a la esfera: A = 2πr · h = 2π · 10 · 4 = 80π cm². Es 4/20 de la esfera (4 de sus 20 cm de alto): 400π/5 = 80π.",
+        "El centro de la esfera está a 10 − 4 = 6 cm del plano. Con Pitágoras, el radio del corte es √(10² − 6²) = 8 cm (también a² = h(2r − h) = 4 · 16 = 64). Su área es 64π cm², menos que el casquete, que se abomba encima.",
+        "V = πh²(3r − h)/3 = π · 16 · (30 − 4)/3 = 416π/3 cm³."
       ],
       "verificar": [
         {
-          "fn": "esfera",
+          "fn": "casquete",
           "args": [
             {
-              "r": 10
+              "r": 10,
+              "h": 4
             }
           ],
           "espera": {
-            "pi.volumen": 1333.3333333333333,
-            "pi.cilVolumen": 2000,
-            "fraccion": 0.6666666666666666,
-            "pi.area": 400,
-            "pi.cilLateral": 400
+            "pi.area": 80,
+            "a": 8,
+            "pi.disco": 64,
+            "pi.volumen": 138.66666666666666,
+            "fraccionArea": 0.2
           }
         }
       ]
     },
     {
       "id": "p7",
-      "nivel": "intermedio",
-      "enunciado": "Un bloque de madera de 5 cm × 4 cm × 3 cm se pinta por fuera y luego se corta en cubitos de 1 cm. ¿Cuántos cubitos tienen exactamente dos caras pintadas? ¿Cuántos no tienen ninguna?",
-      "respuesta": "24 cubitos con dos caras pintadas y 6 sin pintura.",
+      "nivel": "avanzado",
+      "enunciado": "Una maceta tiene forma de tronco de cono: el fondo tiene 4 cm de radio, la boca 10 cm y la altura es de 12 cm. Se llena de tierra hasta la mitad de su altura. ¿Qué volumen de tierra tiene y qué fracción de la maceta ocupa?",
+      "respuesta": "186π cm³ (unos 584 cm³), que es 31/104 de la maceta: cerca del 30 %, no la mitad.",
       "pasos": [
-        "Los de dos caras están en las aristas, sin contar las esquinas. El bloque tiene 4 aristas de cada largo (5, 4 y 3); sin las esquinas quedan 3, 2 y 1 cubitos: 4 · (3 + 2 + 1) = 24.",
-        "Los que no tienen pintura forman el bloque de adentro, de (5 − 2) × (4 − 2) × (3 − 2) = 3 × 2 × 1 = 6.",
-        "Los de una sola cara están en el centro de cada cara: 2 · (3 · 2 + 3 · 1 + 2 · 1) = 22.",
-        "Comprobación: 8 esquinas + 24 + 22 + 6 = 60 = 5 · 4 · 3."
+        "Por semejanza, el radio crece parejo con la altura: a media altura mide (4 + 10)/2 = 7 cm. Si tomaras la mitad de 10 (5 cm), estarías suponiendo que la maceta termina en punta en el fondo.",
+        "La tierra es un tronco de radios 4 y 7 y altura 6: V = π · 6 · (4² + 7² + 4 · 7)/3 = 2π · 93 = 186π cm³.",
+        "La maceta llena: V = π · 12 · (10² + 4² + 10 · 4)/3 = 4π · 156 = 624π cm³. La tierra es 186/624 = 31/104 ≈ 0,30. La mitad del volumen sería 312π: la mitad de abajo es la angosta y guarda menos."
       ],
       "verificar": [
         {
-          "fn": "bloque",
+          "fn": "troncoLlenado",
           "args": [
-            5,
-            4,
-            3
+            {
+              "R": 10,
+              "r": 4,
+              "h": 12
+            }
           ],
           "espera": {
-            "pintadas.2": 24,
-            "pintadas.0": 6,
-            "pintadas.1": 22,
-            "pintadas.3": 8,
-            "total": 60
+            "rNivel": 7,
+            "pi.agua": 186,
+            "pi.vaso": 624,
+            "fraccion": 0.2980769230769231,
+            "errores.agua.mitadDeVolumen": 312
           }
         }
       ]

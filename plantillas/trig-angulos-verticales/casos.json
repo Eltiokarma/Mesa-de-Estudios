@@ -1,0 +1,417 @@
+{
+  "plantilla": "trig-angulos-verticales",
+  "tolerancia": 0.000001,
+  "nota": "Tangentes de academia (tan 37° = 3/4, tan 16° = 7/24, tan 8° = 1/7). En entrada, tA y tB son tangentes como número (0.333… es 1/3); angA y angB, cómo se nombró el ángulo (null: solo se dio la tangente).",
+  "verificacion": "Verificado a ciegas el 12 nov 2026 por un subagente verificador: los 25 casos resueltos desde el enunciado, con coordenadas y bisección numérica sobre la geometría (no con la fórmula de cotangentes) y las expresiones simbólicas comprobadas con valores concretos. Los 25 coinciden con esperado.",
+  "casos": [
+    {
+      "semilla": 3000,
+      "entrada": {
+        "tipo": "ambos-lados",
+        "d": 124,
+        "tA": 1.7320508075688772,
+        "tB": 0.5773502691896257,
+        "angA": "60°",
+        "angB": "30°",
+        "pide": "distancia"
+      },
+      "esperado": {
+        "respuesta": 30.999999999999996,
+        "exacta": "31 m"
+      }
+    },
+    {
+      "semilla": 3076,
+      "entrada": {
+        "tipo": "movimiento",
+        "sub": "dron",
+        "v": 3,
+        "unidadV": "m/s",
+        "t": 4,
+        "tA": 0.5773502691896257,
+        "tB": 1.7320508075688772,
+        "angA": "30°",
+        "angB": "60°",
+        "complementarios": false,
+        "v2": null,
+        "sentido": null
+      },
+      "esperado": {
+        "respuesta": 10.392304845413264,
+        "exacta": "6√3 m"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "mismo-lado",
+        "d": 225,
+        "tA": 0.14285714285714285,
+        "tB": 1.3333333333333333,
+        "angA": "8°",
+        "angB": "53°",
+        "h0": 1,
+        "pide": "altura"
+      },
+      "esperado": {
+        "respuesta": 37,
+        "exacta": "37 m"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "dron-camino",
+        "p": 28,
+        "L": 34,
+        "t": 0.13333333333333333,
+        "X": 122
+      },
+      "esperado": {
+        "respuesta": 248,
+        "exacta": "248 m"
+      }
+    },
+    {
+      "semilla": 3010,
+      "entrada": {
+        "tipo": "mitad-cima",
+        "sub": "mitad",
+        "h1": 18,
+        "h2": 36,
+        "D": 48,
+        "pide": "tan"
+      },
+      "esperado": {
+        "respuesta": 0.2926829268292683,
+        "exacta": "12/41"
+      }
+    },
+    {
+      "semilla": 3024,
+      "entrada": {
+        "tipo": "entre-edificios",
+        "sub": "muro",
+        "H": 120,
+        "tA": 0.25,
+        "tB": 0.75,
+        "angA": null,
+        "angB": "37°"
+      },
+      "esperado": {
+        "respuesta": 320.00000000000006,
+        "exacta": "320 m"
+      }
+    },
+    {
+      "semilla": 3020,
+      "entrada": {
+        "tipo": "mismo-lado",
+        "d": 228,
+        "tA": 1,
+        "tB": 2,
+        "angA": "45°",
+        "angB": null,
+        "h0": 0,
+        "pide": "distancia"
+      },
+      "esperado": {
+        "respuesta": 228,
+        "exacta": "228 m"
+      }
+    },
+    {
+      "semilla": 3004,
+      "entrada": {
+        "tipo": "condicion-angulo",
+        "cond": "suma",
+        "valor": [
+          7,
+          5
+        ],
+        "mayor45": true,
+        "d": 12,
+        "pide": "altura"
+      },
+      "esperado": {
+        "respuesta": 16,
+        "exacta": "16 m"
+      }
+    },
+    {
+      "semilla": 3027,
+      "entrada": {
+        "tipo": "condicion-angulo",
+        "cond": "doble",
+        "valor": [
+          120,
+          169
+        ],
+        "mayor45": false,
+        "d": 60,
+        "pide": "visual"
+      },
+      "esperado": {
+        "respuesta": 65,
+        "exacta": "65 m"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "movimiento",
+        "sub": "auto",
+        "v": 72,
+        "unidadV": "km/h",
+        "t": 15,
+        "tA": 0.5773502691896257,
+        "tB": 1.7320508075688772,
+        "angA": "30°",
+        "angB": null,
+        "complementarios": true,
+        "v2": null,
+        "sentido": null
+      },
+      "esperado": {
+        "respuesta": 259.8076211353316,
+        "exacta": "150√3 m"
+      }
+    },
+    {
+      "semilla": 3082,
+      "entrada": {
+        "tipo": "objeto-elevado",
+        "sub": "altura",
+        "b": 21,
+        "D": 27,
+        "t": 0.5294117647058824
+      },
+      "esperado": {
+        "respuesta": 39.000000000000014,
+        "exacta": "39 m"
+      }
+    },
+    {
+      "semilla": 3025,
+      "entrada": {
+        "tipo": "objeto-elevado",
+        "sub": "tan",
+        "a": 3,
+        "b": 3,
+        "D": 4
+      },
+      "esperado": {
+        "respuesta": 0.35294117647058826,
+        "exacta": "6/17"
+      }
+    },
+    {
+      "semilla": 3144,
+      "entrada": {
+        "tipo": "objeto-elevado",
+        "sub": "pura",
+        "b": 8,
+        "D": 16,
+        "t": 0.18181818181818182
+      },
+      "esperado": {
+        "respuesta": 4.000000000000002,
+        "exacta": "4 cm"
+      }
+    },
+    {
+      "semilla": 3009,
+      "entrada": {
+        "tipo": "ambos-lados",
+        "d": 120,
+        "tA": 0.3333333333333333,
+        "tB": 1.3333333333333333,
+        "angA": null,
+        "angB": "53°",
+        "pide": "altura"
+      },
+      "esperado": {
+        "respuesta": 32,
+        "exacta": "32 m"
+      }
+    },
+    {
+      "semilla": 33,
+      "entrada": {
+        "tipo": "movimiento",
+        "sub": "avioneta",
+        "v": 252,
+        "unidadV": "km/h",
+        "t": 5,
+        "tA": 0.5773502691896257,
+        "tB": 1.7320508075688772,
+        "angA": "30°",
+        "angB": "60°",
+        "complementarios": false,
+        "v2": 72,
+        "sentido": "opuesto"
+      },
+      "esperado": {
+        "respuesta": 389.7114317029974,
+        "exacta": "225√3 m"
+      }
+    },
+    {
+      "semilla": 58,
+      "entrada": {
+        "tipo": "objeto-elevado",
+        "sub": "distancia",
+        "a": 22,
+        "b": 18,
+        "t": 0.4074074074074074,
+        "D0": null,
+        "pide": "menor"
+      },
+      "esperado": {
+        "respuesta": 24,
+        "exacta": "24 m"
+      }
+    },
+    {
+      "semilla": 3014,
+      "entrada": {
+        "tipo": "movimiento",
+        "sub": "camara",
+        "v": 18,
+        "unidadV": "km/h",
+        "t": 6,
+        "tA": 0.5773502691896257,
+        "tB": 1.7320508075688772,
+        "angA": "30°",
+        "angB": null,
+        "complementarios": true,
+        "v2": null,
+        "sentido": null
+      },
+      "esperado": {
+        "respuesta": 25.98076211353316,
+        "exacta": "15√3 m"
+      }
+    },
+    {
+      "semilla": 115,
+      "entrada": {
+        "tipo": "objeto-elevado",
+        "sub": "distancia",
+        "a": 22,
+        "b": 22,
+        "t": 0.2222222222222222,
+        "D0": null,
+        "pide": "mayor"
+      },
+      "esperado": {
+        "respuesta": 88,
+        "exacta": "88 m"
+      }
+    },
+    {
+      "semilla": 212,
+      "entrada": {
+        "tipo": "objeto-elevado",
+        "sub": "distancia",
+        "a": 18,
+        "b": 18,
+        "t": 0.15789473684210525,
+        "D0": 121,
+        "pide": "traslado"
+      },
+      "esperado": {
+        "respuesta": 13,
+        "exacta": "13 m"
+      }
+    },
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "mitad-cima",
+        "sub": "ventana",
+        "h1": 23,
+        "h2": 57,
+        "D": 19,
+        "pide": "tan"
+      },
+      "esperado": {
+        "respuesta": 0.38636363636363635,
+        "exacta": "17/44"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "entre-edificios",
+        "sub": "otro",
+        "H": 72,
+        "tA": 0.2916666666666667,
+        "tB": 1.5,
+        "angA": "16°",
+        "angB": null
+      },
+      "esperado": {
+        "respuesta": 58,
+        "exacta": "58 m"
+      }
+    },
+    {
+      "semilla": 3136,
+      "entrada": {
+        "tipo": "puente-simbolico",
+        "sub": "suma",
+        "angulo": "α",
+        "altura": "k",
+        "contexto": "puente"
+      },
+      "esperado": {
+        "respuesta": "k·cot(α/2)",
+        "exacta": "k·cot(α/2)"
+      }
+    },
+    {
+      "semilla": 3143,
+      "entrada": {
+        "tipo": "puente-simbolico",
+        "sub": "resta",
+        "angulo": "2θ",
+        "altura": "h",
+        "contexto": "poste"
+      },
+      "esperado": {
+        "respuesta": "h·tan θ",
+        "exacta": "h·tan θ"
+      }
+    },
+    {
+      "semilla": 3074,
+      "entrada": {
+        "tipo": "puente-simbolico",
+        "sub": "razon",
+        "angulo": "φ",
+        "altura": "H",
+        "contexto": "puente"
+      },
+      "esperado": {
+        "respuesta": "cot(φ/2)",
+        "exacta": "cot(φ/2)"
+      }
+    },
+    {
+      "semilla": 3058,
+      "entrada": {
+        "tipo": "mitad-cima",
+        "sub": "mitad",
+        "h1": 14,
+        "h2": 28,
+        "D": 4,
+        "pide": "cot"
+      },
+      "esperado": {
+        "respuesta": 7.285714285714285,
+        "exacta": "51/7"
+      }
+    }
+  ]
+}

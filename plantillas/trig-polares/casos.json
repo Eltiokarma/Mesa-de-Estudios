@@ -1,0 +1,381 @@
+{
+  "plantilla": "trig-polares",
+  "tolerancia": 0,
+  "nota": "Ángulos en grados en entrada. La respuesta es una clave (ver la cabecera de generador.js): pf/pl ecuación polar, cart ecuación cartesiana, pt punto (x; y), pp punto (r; θ en grados).",
+  "verificacion": "Verificado el 12 nov 2026 por un subagente verificador: conversiones resueltas a mano desde el enunciado y comprobadas numéricamente en las dos direcciones (los puntos de la curva polar cumplen la cartesiana y al revés, con r negativo), y el foco de la trayectoria. Los 22 coinciden con esperado. Salvedad: el verificador vio casos.json antes de escribir su script de comprobación (las respuestas ya las tenía resueltas a mano); la verificación a ciegas anterior, del 8 nov, también cuadró 22 de 22.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "a-cartesiana",
+        "curva": "recta-y",
+        "polar": {
+          "forma": "frac",
+          "N": -8,
+          "D0": 0,
+          "Dc": 0,
+          "Ds": 1
+        }
+      },
+      "esperado": {
+        "respuesta": "cart:0|0|0|1|8",
+        "exacta": "y = −8"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "punto-a-polar",
+        "x": 1.7320508075688767,
+        "y": -1.0000000000000009,
+        "modo": "radianes"
+      },
+      "esperado": {
+        "respuesta": "pp:2|330",
+        "exacta": "(2; 11π/6)"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "a-cartesiana",
+        "curva": "circ-polo",
+        "polar": {
+          "forma": "lin",
+          "K0": 4,
+          "Kc": 0,
+          "Ks": 0
+        }
+      },
+      "esperado": {
+        "respuesta": "cart:1|1|0|0|-16",
+        "exacta": "x² + y² = 16"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "a-cartesiana",
+        "curva": "circ-sen",
+        "polar": {
+          "forma": "lin",
+          "K0": 0,
+          "Kc": 0,
+          "Ks": 16,
+          "pot": 1
+        }
+      },
+      "esperado": {
+        "respuesta": "cart:1|1|0|-16|0",
+        "exacta": "x² + y² = 16y"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "a-polar",
+        "curva": "parabola",
+        "cart": [
+          1,
+          0,
+          0,
+          16,
+          -64
+        ]
+      },
+      "esperado": {
+        "respuesta": "pf:8|1|0|1",
+        "exacta": "r = 8/(1 + sen θ)"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "a-cartesiana",
+        "curva": "recta",
+        "polar": {
+          "forma": "frac",
+          "N": -4,
+          "D0": 0,
+          "Dc": 1,
+          "Ds": -4
+        }
+      },
+      "esperado": {
+        "respuesta": "cart:0|0|1|-4|4",
+        "exacta": "x − 4y = −4"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "punto-a-polar",
+        "x": 1.7320508075688774,
+        "y": 0.9999999999999999,
+        "modo": "grados"
+      },
+      "esperado": {
+        "respuesta": "pp:2|30",
+        "exacta": "(2; 30°)"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "punto-a-cart",
+        "r": 8,
+        "theta": 330,
+        "modo": "grados"
+      },
+      "esperado": {
+        "respuesta": "pt:6.92820323|-4",
+        "exacta": "(4√3; −4)"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "a-cartesiana",
+        "curva": "recta-x",
+        "polar": {
+          "forma": "frac",
+          "N": 6,
+          "D0": 0,
+          "Dc": 1,
+          "Ds": 0
+        }
+      },
+      "esperado": {
+        "respuesta": "cart:0|0|1|0|-6",
+        "exacta": "x = 6"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "a-polar",
+        "curva": "circ-sen",
+        "cart": [
+          1,
+          1,
+          0,
+          12,
+          0
+        ]
+      },
+      "esperado": {
+        "respuesta": "pl:1:0|0|-12",
+        "exacta": "r = −12 sen θ"
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "tipo": "a-cartesiana",
+        "curva": "circ-cos",
+        "polar": {
+          "forma": "lin",
+          "K0": 0,
+          "Kc": 18,
+          "Ks": 0,
+          "pot": 1
+        }
+      },
+      "esperado": {
+        "respuesta": "cart:1|1|-18|0|0",
+        "exacta": "x² + y² = 18x"
+      }
+    },
+    {
+      "semilla": 21,
+      "entrada": {
+        "tipo": "punto-a-cart",
+        "r": 4,
+        "theta": 300,
+        "modo": "radianes"
+      },
+      "esperado": {
+        "respuesta": "pt:2|-3.464101615",
+        "exacta": "(2; −2√3)"
+      }
+    },
+    {
+      "semilla": 23,
+      "entrada": {
+        "tipo": "a-polar",
+        "curva": "circ-cos",
+        "cart": [
+          1,
+          1,
+          14,
+          0,
+          0
+        ]
+      },
+      "esperado": {
+        "respuesta": "pl:1:0|-14|0",
+        "exacta": "r = −14 cos θ"
+      }
+    },
+    {
+      "semilla": 29,
+      "entrada": {
+        "tipo": "a-polar",
+        "curva": "circ-polo",
+        "cart": [
+          1,
+          1,
+          0,
+          0,
+          -2
+        ]
+      },
+      "esperado": {
+        "respuesta": "pl:1:1.414213562|0|0",
+        "exacta": "r = √2"
+      }
+    },
+    {
+      "semilla": 34,
+      "entrada": {
+        "tipo": "a-cartesiana",
+        "curva": "parabola",
+        "polar": {
+          "forma": "frac",
+          "N": 8,
+          "D0": 1,
+          "Dc": 0,
+          "Ds": 1
+        }
+      },
+      "esperado": {
+        "respuesta": "cart:1|0|0|16|-64",
+        "exacta": "x² = −16y + 64"
+      }
+    },
+    {
+      "semilla": 37,
+      "entrada": {
+        "tipo": "a-polar",
+        "curva": "recta-x",
+        "cart": [
+          0,
+          0,
+          1,
+          0,
+          -6
+        ]
+      },
+      "esperado": {
+        "respuesta": "pf:6|0|1|0",
+        "exacta": "r = 6 sec θ"
+      }
+    },
+    {
+      "semilla": 49,
+      "entrada": {
+        "tipo": "a-polar",
+        "curva": "recta",
+        "cart": [
+          0,
+          0,
+          1,
+          5,
+          11
+        ]
+      },
+      "esperado": {
+        "respuesta": "pf:-11|0|1|5",
+        "exacta": "r = −11/(cos θ + 5 sen θ)"
+      }
+    },
+    {
+      "semilla": 51,
+      "entrada": {
+        "tipo": "a-polar",
+        "curva": "recta-y",
+        "cart": [
+          0,
+          0,
+          0,
+          1,
+          4
+        ]
+      },
+      "esperado": {
+        "respuesta": "pf:-4|0|0|1",
+        "exacta": "r = −4 csc θ"
+      }
+    },
+    {
+      "semilla": 56,
+      "entrada": {
+        "tipo": "a-polar",
+        "curva": "trayectoria",
+        "cart": [
+          1,
+          0,
+          0,
+          12,
+          -36
+        ],
+        "m": 9,
+        "k": 12,
+        "p": 3
+      },
+      "esperado": {
+        "respuesta": "pf:6|1|0|1",
+        "exacta": "r = 6/(1 + sen θ)"
+      }
+    },
+    {
+      "semilla": 140,
+      "entrada": {
+        "tipo": "punto-a-cart",
+        "r": -6,
+        "theta": 45,
+        "modo": "radianes"
+      },
+      "esperado": {
+        "respuesta": "pt:-4.242640687|-4.242640687",
+        "exacta": "(−3√2; −3√2)"
+      }
+    },
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "a-polar",
+        "curva": "recta-x",
+        "cart": [
+          0,
+          0,
+          1,
+          0,
+          8
+        ]
+      },
+      "esperado": {
+        "respuesta": "pf:-8|0|1|0",
+        "exacta": "r = −8 sec θ"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "a-cartesiana",
+        "curva": "parabola",
+        "polar": {
+          "forma": "frac",
+          "N": 6,
+          "D0": 1,
+          "Dc": 0,
+          "Ds": -1
+        }
+      },
+      "esperado": {
+        "respuesta": "cart:1|0|0|-12|-36",
+        "exacta": "x² = 12y + 36"
+      }
+    }
+  ]
+}

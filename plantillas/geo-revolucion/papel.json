@@ -1,0 +1,253 @@
+{
+  "titulo": "Sólidos de revolución: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 3 minutos por problema. Antes de usar una fórmula, haz un corte por el eje y dibuja la figura plana: un trapecio para el tronco, un triángulo para el cono, un círculo para la esfera. Fíjate si te dan radios o diámetros, altura o generatriz, y si el recipiente está lleno solo en parte.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Una maceta tiene forma de tronco de cono: el fondo es un círculo de 3 cm de radio, la boca un círculo de 6 cm de radio y su altura es 7 cm. ¿Cuánta tierra cabe en ella?",
+      "respuesta": "147π cm³",
+      "pasos": [
+        "V = πh(R² + Rr + r²)/3, con R = 6, r = 3 y h = 7.",
+        "R² + Rr + r² = 36 + 18 + 9 = 63.",
+        "V = π·7·63/3 = 147π cm³.",
+        "Si te salió 141,75π, usaste un cilindro con el radio promedio 4,5: el tronco no es un cilindro."
+      ],
+      "verificar": [
+        {
+          "fn": "troncoCono",
+          "args": [
+            6,
+            3,
+            7
+          ],
+          "espera": {
+            "pi": 147
+          }
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Un vaso cilíndrico tiene 10 cm de diámetro interior. Al meter por completo una piedra, el agua sube 3 cm sin derramarse. ¿Cuál es el volumen de la piedra?",
+      "respuesta": "75π cm³",
+      "pasos": [
+        "El volumen de la piedra es el del agua que subió: un cilindro de radio 5 cm (la mitad del diámetro) y altura 3 cm.",
+        "V = π·5²·3 = 75π cm³.",
+        "Con el diámetro como radio saldría 300π: cuatro veces más."
+      ],
+      "verificar": [
+        {
+          "fn": "cilindro",
+          "args": [
+            5,
+            3
+          ],
+          "espera": {
+            "pi": 75
+          }
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Un balde troncocónico tiene un fondo de 4 cm de radio, una boca de 10 cm de radio y 12 cm de altura. Se llena de agua hasta una altura igual a 2/3 de la altura del balde, medida desde el fondo. ¿Qué volumen de agua contiene?",
+      "respuesta": "896π/3 cm³",
+      "pasos": [
+        "Altura del agua: 2/3 de 12 = 8 cm.",
+        "Radio en la superficie del agua (semejanza): el radio crece 6 cm en 12 cm de altura; en 8 cm crece 4. Radio: 4 + 4 = 8 cm.",
+        "El agua es un tronco de radios 4 y 8 y altura 8: V = π·8·(64 + 32 + 16)/3 = 896π/3 cm³.",
+        "Tomar 2/3 del volumen del balde lleno da otro número: el balde se ensancha hacia arriba."
+      ],
+      "verificar": [
+        {
+          "fn": "radioANivel",
+          "args": [
+            4,
+            10,
+            12,
+            8
+          ],
+          "espera": 8
+        },
+        {
+          "fn": "troncoCono",
+          "args": [
+            8,
+            4,
+            8
+          ],
+          "espera": {
+            "pi": 896,
+            "den": 3
+          }
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "El trapecio rectángulo ABCD tiene ángulos rectos en A y B, con AD paralelo a BC; AD = 7 cm, BC = 3 cm y AB = 3 cm. El trapecio gira una vuelta alrededor de la base mayor AD. ¿Cuál es el volumen del sólido que se genera?",
+      "respuesta": "39π cm³",
+      "pasos": [
+        "El rectángulo de base BC y altura AB genera un cilindro de radio 3 y largo 3: 27π.",
+        "El triángulo que queda junto a D (catetos 3 y 7 − 3 = 4) genera un cono de radio 3 y altura 4: π·9·4/3 = 12π.",
+        "Total: 27π + 12π = 39π cm³."
+      ],
+      "verificar": [
+        {
+          "fn": "cilindro",
+          "args": [
+            3,
+            3
+          ],
+          "espera": {
+            "pi": 27
+          }
+        },
+        {
+          "fn": "cono",
+          "args": [
+            3,
+            4
+          ],
+          "espera": {
+            "pi": 12
+          }
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Un toldo tiene forma de casquete esférico. Su borde es un círculo de 6 m de radio y su punto más alto está 2 m por encima del plano del borde. ¿Cuál es el área del toldo?",
+      "respuesta": "40π m²",
+      "pasos": [
+        "Radio de la esfera: R² = 6² + (R − 2)² → 4R = 40 → R = 10 m.",
+        "Área del casquete: 2πRh = 2π·10·2 = 40π m².",
+        "El área del círculo del borde (36π) no es la del toldo: el toldo es curvo."
+      ],
+      "verificar": [
+        {
+          "fn": "casquete",
+          "args": [
+            10,
+            2
+          ],
+          "espera": {
+            "pi": 40
+          }
+        }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "avanzado",
+      "enunciado": "Un recipiente cónico con la punta hacia abajo tiene en la boca un círculo de 12 cm de radio y una altura de 16 cm. Dentro se coloca una esfera tangente a la superficie lateral y al plano de la boca, y se llena de agua el espacio libre. ¿Cuánta agua cabe?",
+      "respuesta": "480π cm³",
+      "pasos": [
+        "Corte por el eje: triángulo isósceles de base 24, altura 16 y lados 20. La esfera es su círculo inscrito.",
+        "r = área/semiperímetro = (24·16/2)/(32) = 192/32 = 6 cm.",
+        "Cono: π·144·16/3 = 768π. Esfera: (4/3)π·216 = 288π.",
+        "Agua: 768π − 288π = 480π cm³."
+      ],
+      "verificar": [
+        {
+          "fn": "radioInscritoCono",
+          "args": [
+            12,
+            16
+          ],
+          "espera": 6
+        },
+        {
+          "fn": "cono",
+          "args": [
+            12,
+            16
+          ],
+          "espera": {
+            "pi": 768
+          }
+        },
+        {
+          "fn": "esfera",
+          "args": [
+            6
+          ],
+          "espera": {
+            "pi": 288
+          }
+        }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Una lata tiene forma de tronco de cilindro recto de 3 cm de radio: su borde superior está a 5 cm del fondo en el punto más bajo y a 11 cm en el más alto. ¿Cuál es el volumen de la lata?",
+      "respuesta": "72π cm³",
+      "pasos": [
+        "Dos latas iguales, una invertida sobre la otra, forman un cilindro de altura 5 + 11 = 16: la lata es la mitad.",
+        "Generatriz media: (5 + 11)/2 = 8 cm.",
+        "V = π·3²·8 = 72π cm³."
+      ],
+      "verificar": [
+        {
+          "fn": "troncoCilindro",
+          "args": [
+            3,
+            5,
+            11
+          ],
+          "espera": {
+            "pi": 72
+          }
+        }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Dos pelotas de radios 8 cm y 2 cm están apoyadas en el piso y se tocan. ¿A qué distancia están los puntos donde tocan el piso?",
+      "respuesta": "8 cm",
+      "pasos": [
+        "Los centros distan 8 + 2 = 10 cm y sus alturas difieren 8 − 2 = 6 cm.",
+        "Distancia en el piso: √(10² − 6²) = 8 cm (es 2√(8·2))."
+      ],
+      "verificar": [
+        {
+          "fn": "distanciaContactos",
+          "args": [
+            8,
+            2
+          ],
+          "espera": 8
+        }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Un cilindro recto de 4 cm de radio se corta con dos planos paralelos inclinados y queda un cilindro oblicuo cuyas bases son elipses de 20π cm² de área. Las generatrices del cilindro oblicuo miden 10 cm. ¿Cuál es su altura?",
+      "respuesta": "8 cm",
+      "pasos": [
+        "Volumen con la sección recta: π·4²·10 = 160π cm³.",
+        "Volumen con la base: 20π·h.",
+        "20π·h = 160π → h = 8 cm (menos que la generatriz, como debe ser)."
+      ],
+      "verificar": [
+        {
+          "fn": "alturaOblicuo",
+          "args": [
+            4,
+            10,
+            20
+          ],
+          "espera": 8
+        }
+      ]
+    }
+  ]
+}
