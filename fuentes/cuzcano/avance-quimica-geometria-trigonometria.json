@@ -1,33 +1,33 @@
 {
   "schema_version": 1,
-  "fecha_utc": "2026-11-12T11:15:01.820818+00:00",
+  "fecha_utc": "2026-11-12T12:43:12.835328+00:00",
   "estado": "en_curso",
   "objetivo_nuevas": 3000,
   "objetivo_temas": 36,
   "fichas_anteriores_verificadas_por_sha256": 6213,
-  "fichas_nuevas": 2290,
-  "fichas_acumuladas": 8503,
-  "fichas_pendientes": 710,
-  "temas_con_cuota_cumplida": 22,
-  "paginas_pdf_distintas_cotejadas_por_fragmentos": 575,
-  "nuevas_con_observaciones": 399,
-  "fichas_con_diagrama": 846,
+  "fichas_nuevas": 2464,
+  "fichas_acumuladas": 8677,
+  "fichas_pendientes": 536,
+  "temas_con_cuota_cumplida": 26,
+  "paginas_pdf_distintas_cotejadas_por_fragmentos": 611,
+  "nuevas_con_observaciones": 426,
+  "fichas_con_diagrama": 896,
   "ocr_repetido": false,
   "app_certificada": false,
   "sha256_de_los_indices_locales": {
-    "quimica": "e3d81518344a17709fca2fdea00db2e30b2d47219aacdd4a121179c9e1fa9070",
-    "geometria": "c6298d16793736917d7dc21a7ddf686cdb8fec3de6d4db1f413e6f80bfe34165",
-    "trigonometria": "b43c7149750c0e2b7df5a0370b10b8c94acbb0bf93d52ad2bf3c902b0ec7fe4c"
+    "quimica": "7d27a0e8d5f8e5f9e37bb345c4ff59b4a56d0c932f68b547f2e120f56149970c",
+    "geometria": "bba1740b70f0f7d0d68ee212962c2df22e8b9206e10a0d322f1fee265df4b429",
+    "trigonometria": "9927ee390f771aee977b12af99cb38d187d9500ed43a9cd15d2aa5b57e09bcc8"
   },
   "tandas": [
     {
       "curso": "quimica",
       "objetivo": 1000,
-      "nuevas": 772,
-      "pendientes": 228,
-      "lotes": 36,
-      "con_observaciones": 191,
-      "fichas_con_diagrama": 130,
+      "nuevas": 918,
+      "pendientes": 82,
+      "lotes": 49,
+      "con_observaciones": 213,
+      "fichas_con_diagrama": 158,
       "temas": [
         {
           "id": "quimica.acidos-y-bases",
@@ -127,10 +127,10 @@
         {
           "id": "quimica.estequiometria",
           "nombre": "Estequiometría",
-          "nuevos": 65,
+          "nuevos": 84,
           "objetivo": 84,
-          "pendientes": 19,
-          "observaciones": 23,
+          "pendientes": 0,
+          "observaciones": 24,
           "subtemas_nuevos": {
             "Análisis por combustión": 1,
             "Balance de masa": 1,
@@ -164,7 +164,18 @@
             "Relaciones molares y de masa": 3,
             "Rendimiento": 2,
             "Rendimiento de reacción": 5,
-            "Rendimientos sucesivos": 1
+            "Rendimientos sucesivos": 1,
+            "equivalentes": 2,
+            "estequiometria-masa": 2,
+            "formula-empirica": 1,
+            "formula-molecular": 4,
+            "gravimetria": 1,
+            "hidratacion": 1,
+            "pureza-y-composicion": 2,
+            "pureza-y-rendimiento": 1,
+            "reactivo-limitante": 3,
+            "rendimiento": 1,
+            "volumen-y-moles": 1
           }
         },
         {
@@ -214,10 +225,10 @@
         {
           "id": "quimica.nomenclatura-inorganica",
           "nombre": "Nomenclatura inorgánica",
-          "nuevos": 33,
+          "nuevos": 57,
           "objetivo": 83,
-          "pendientes": 50,
-          "observaciones": 9,
+          "pendientes": 26,
+          "observaciones": 10,
           "subtemas_nuevos": {
             "Conteo de átomos": 2,
             "Estados de oxidación": 3,
@@ -232,25 +243,43 @@
             "Peróxidos": 1,
             "Sales ácidas": 1,
             "Sistemas de nomenclatura": 4,
-            "estados-de-oxidacion": 1,
-            "hidroxidos": 1,
-            "iones": 2,
-            "oxacidos": 1,
+            "estados-de-oxidacion": 2,
+            "funciones-inorganicas": 1,
+            "hidroxidos": 2,
+            "hidroxidos-y-oxacidos": 1,
+            "hidruros": 1,
+            "hidruros-e-hidracidos": 1,
+            "iones": 3,
+            "iones-y-sales": 2,
+            "nomenclatura-de-sales": 2,
+            "nomenclatura-stock": 1,
+            "numero-de-oxidacion": 2,
+            "oxacidos": 4,
+            "oxidos": 1,
+            "oxidos-e-hidruros": 1,
+            "oxisales": 1,
+            "sales": 3,
+            "sales-acidas": 1,
             "Óxidos": 4
           }
         },
         {
           "id": "quimica.reacciones-quimicas",
           "nombre": "Reacciones químicas",
-          "nuevos": 24,
+          "nuevos": 38,
           "objetivo": 83,
-          "pendientes": 59,
-          "observaciones": 8,
+          "pendientes": 45,
+          "observaciones": 11,
           "subtemas_nuevos": {
             "balance": 8,
+            "balance-redox": 7,
+            "cambios-fisicos-y-quimicos": 1,
             "clasificacion": 4,
+            "clasificacion-de-reacciones": 4,
+            "doble-desplazamiento": 1,
             "energia": 4,
             "evidencias": 2,
+            "isomerizacion": 1,
             "neutralizacion": 1,
             "redox": 5
           }
@@ -258,10 +287,10 @@
         {
           "id": "quimica.soluciones",
           "nombre": "Soluciones",
-          "nuevos": 73,
+          "nuevos": 83,
           "objetivo": 83,
-          "pendientes": 10,
-          "observaciones": 24,
+          "pendientes": 0,
+          "observaciones": 26,
           "subtemas_nuevos": {
             "Clasificación de soluciones": 2,
             "Coloides": 8,
@@ -278,16 +307,25 @@
             "Solubilidad": 8,
             "Solubilidad y cristalización": 7,
             "Soluto y solvente": 3,
-            "Valoración": 4
+            "Valoración": 4,
+            "diluciones": 1,
+            "mezcla-de-soluciones": 1,
+            "molalidad": 1,
+            "molaridad": 2,
+            "normalidad": 1,
+            "porcentaje-en-masa": 1,
+            "sistemas-dispersos": 1,
+            "solubilidad": 1,
+            "unidades-de-concentracion": 1
           }
         },
         {
           "id": "quimica.equilibrio-quimico",
           "nombre": "Equilibrio químico",
-          "nuevos": 53,
+          "nuevos": 72,
           "objetivo": 83,
-          "pendientes": 30,
-          "observaciones": 15,
+          "pendientes": 11,
+          "observaciones": 21,
           "subtemas_nuevos": {
             "Avance de reacción": 1,
             "Cinética y reversibilidad": 4,
@@ -305,16 +343,27 @@
             "Operaciones con constantes": 1,
             "Presiones parciales": 2,
             "Relación entre Kp y Kc": 1,
-            "Tabla de equilibrio": 1
+            "Tabla de equilibrio": 1,
+            "balance-de-equilibrio": 1,
+            "cociente-de-reaccion": 1,
+            "constantes-de-equilibrio": 2,
+            "conversion": 1,
+            "conversion-kp-kc": 1,
+            "disociacion": 1,
+            "equilibrio-dinamico": 3,
+            "equilibrio-heterogeneo": 2,
+            "grado-de-disociacion": 1,
+            "le-chatelier": 5,
+            "presiones-parciales": 1
           }
         },
         {
           "id": "quimica.electroquimica",
           "nombre": "Electroquímica",
-          "nuevos": 52,
+          "nuevos": 83,
           "objetivo": 83,
-          "pendientes": 31,
-          "observaciones": 9,
+          "pendientes": 0,
+          "observaciones": 14,
           "subtemas_nuevos": {
             "Agentes oxidantes": 2,
             "Celdas en serie": 4,
@@ -327,40 +376,51 @@
             "Rendimiento de corriente": 1,
             "Series de actividad": 1,
             "aplicaciones": 2,
-            "celdas-galvanicas": 2,
+            "celdas-en-serie": 2,
+            "celdas-galvanicas": 6,
+            "corrosion": 3,
             "electrolisis": 5,
-            "ley-de-faraday": 5,
-            "nernst": 1,
+            "ley-de-faraday": 15,
+            "nernst": 4,
             "pilas-secas": 1,
-            "potencial-estandar": 4,
+            "potencial-estandar": 13,
             "semiceldas": 1
           }
         },
         {
           "id": "quimica.quimica-organica",
           "nombre": "Química orgánica",
-          "nuevos": 54,
+          "nuevos": 83,
           "objetivo": 83,
-          "pendientes": 29,
-          "observaciones": 8,
+          "pendientes": 0,
+          "observaciones": 12,
           "subtemas_nuevos": {
             "alcanos": 2,
-            "aromaticidad": 2,
+            "aromaticidad": 5,
             "carbohidratos": 6,
             "carbonos": 1,
+            "catenacion": 1,
             "cicloalcanos": 1,
-            "clasificacion-de-cadenas": 3,
+            "clasificacion-de-cadenas": 6,
             "combustion": 1,
+            "estereoquimica": 2,
+            "formulas-moleculares": 1,
             "grupos-funcionales": 7,
-            "hibridacion": 1,
+            "hibridacion": 3,
             "hidrocarburos": 3,
             "insaturaciones": 1,
             "isomeria": 6,
-            "nomenclatura": 11,
+            "nomenclatura": 12,
+            "nomenclatura-aromatica": 2,
+            "nomenclatura-ciclica": 2,
+            "nomenclatura-de-alcanos": 5,
+            "nomenclatura-de-alquenos": 1,
+            "petroleo": 2,
             "propiedades-del-carbono": 1,
+            "propiedades-fisicas": 1,
             "sustituyentes": 3,
-            "tipos-de-carbono": 3,
-            "tipos-de-formula": 2
+            "tipos-de-carbono": 5,
+            "tipos-de-formula": 3
           }
         },
         {
@@ -408,11 +468,11 @@
     {
       "curso": "geometria",
       "objetivo": 1000,
-      "nuevas": 645,
-      "pendientes": 355,
-      "lotes": 39,
-      "con_observaciones": 90,
-      "fichas_con_diagrama": 498,
+      "nuevas": 655,
+      "pendientes": 345,
+      "lotes": 40,
+      "con_observaciones": 91,
+      "fichas_con_diagrama": 508,
       "temas": [
         {
           "id": "geometria.la-linea-recta",
@@ -683,10 +743,10 @@
         {
           "id": "geometria.congruencia-de-triangulos",
           "nombre": "Congruencia de triángulos",
-          "nuevos": 48,
+          "nuevos": 58,
           "objetivo": 83,
-          "pendientes": 35,
-          "observaciones": 4,
+          "pendientes": 25,
+          "observaciones": 5,
           "subtemas_nuevos": {
             "Bisectrices y ley de senos": 1,
             "Bisectrices y proyecciones": 1,
@@ -717,12 +777,21 @@
             "Triángulo rectángulo y ley de senos": 1,
             "Triángulos rectángulos congruentes": 2,
             "angulos": 1,
+            "angulos-exteriores": 1,
             "bisectrices": 1,
+            "bisectrices-y-perpendicular": 1,
+            "bisectriz-exterior": 2,
+            "bisectriz-interior": 1,
             "congruencia": 1,
+            "congruencia-y-proyecciones": 1,
+            "equilatero-y-angulos": 1,
+            "isosceles-e-incentro": 1,
             "ley-senos": 1,
             "mediatrices": 2,
             "simetria": 1,
-            "triangulo-rectangulo": 1
+            "simetria-axial": 1,
+            "triangulo-rectangulo": 1,
+            "triangulo-rectangulo-isosceles": 1
           }
         },
         {
@@ -940,11 +1009,11 @@
     {
       "curso": "trigonometria",
       "objetivo": 1000,
-      "nuevas": 873,
-      "pendientes": 127,
-      "lotes": 38,
-      "con_observaciones": 118,
-      "fichas_con_diagrama": 218,
+      "nuevas": 891,
+      "pendientes": 109,
+      "lotes": 39,
+      "con_observaciones": 122,
+      "fichas_con_diagrama": 230,
       "temas": [
         {
           "id": "trigonometria.circunferencia-trigonometrica",
@@ -1230,11 +1299,20 @@
         {
           "id": "trigonometria.razones-trigonometricas-de-un-angulo-agudo",
           "nombre": "Razones trigonométricas de un ángulo agudo",
-          "nuevos": 0,
+          "nuevos": 18,
           "objetivo": 83,
-          "pendientes": 83,
-          "observaciones": 0,
-          "subtemas_nuevos": {}
+          "pendientes": 65,
+          "observaciones": 4,
+          "subtemas_nuevos": {
+            "arco-y-razones": 1,
+            "complementariedad": 1,
+            "elevacion-y-depresion": 3,
+            "extremos-de-razones": 2,
+            "razones-en-figuras": 6,
+            "razones-reciprocas": 1,
+            "razones-y-areas": 2,
+            "triangulos-notables": 2
+          }
         },
         {
           "id": "trigonometria.razones-trigonometricas-de-un-angulo-en-posicion-normal",
@@ -1508,43 +1586,63 @@
   },
   "lote_600_2026_11_12": {
     "meta": 600,
-    "fichas_registradas": 321,
-    "pendientes": 279,
+    "fichas_registradas": 495,
+    "pendientes": 105,
     "cursos": [
       {
         "curso": "quimica",
-        "nuevas": 104,
-        "observaciones": 19,
-        "graficos": 22,
+        "nuevas": 250,
+        "observaciones": 41,
+        "graficos": 50,
         "temas": [
           {
             "id": "quimica.electroquimica",
             "tema": "Electroquímica",
-            "fichas": 21
+            "fichas": 52
+          },
+          {
+            "id": "quimica.equilibrio-quimico",
+            "tema": "Equilibrio químico",
+            "fichas": 19
+          },
+          {
+            "id": "quimica.estequiometria",
+            "tema": "Estequiometría",
+            "fichas": 19
           },
           {
             "id": "quimica.nomenclatura-inorganica",
             "tema": "Nomenclatura inorgánica",
-            "fichas": 5
+            "fichas": 29
           },
           {
             "id": "quimica.quimica-organica",
             "tema": "Química orgánica",
-            "fichas": 54
+            "fichas": 83
           },
           {
             "id": "quimica.reacciones-quimicas",
             "tema": "Reacciones químicas",
-            "fichas": 24
+            "fichas": 38
+          },
+          {
+            "id": "quimica.soluciones",
+            "tema": "Soluciones",
+            "fichas": 10
           }
         ]
       },
       {
         "curso": "geometria",
-        "nuevas": 12,
-        "observaciones": 1,
-        "graficos": 12,
+        "nuevas": 22,
+        "observaciones": 2,
+        "graficos": 22,
         "temas": [
+          {
+            "id": "geometria.congruencia-de-triangulos",
+            "tema": "Congruencia de triángulos",
+            "fichas": 10
+          },
           {
             "id": "geometria.proporcionalidad-de-segmentos-y-semejanza-de-triangulos",
             "tema": "Proporcionalidad de segmentos y semejanza de triángulos",
@@ -1554,14 +1652,19 @@
       },
       {
         "curso": "trigonometria",
-        "nuevas": 205,
-        "observaciones": 31,
-        "graficos": 89,
+        "nuevas": 223,
+        "observaciones": 35,
+        "graficos": 101,
         "temas": [
           {
             "id": "trigonometria.numeros-complejos",
             "tema": "Números complejos",
             "fichas": 39
+          },
+          {
+            "id": "trigonometria.razones-trigonometricas-de-un-angulo-agudo",
+            "tema": "Razones trigonométricas de un ángulo agudo",
+            "fichas": 18
           },
           {
             "id": "trigonometria.razones-trigonometricas-de-un-angulo-en-posicion-normal",
