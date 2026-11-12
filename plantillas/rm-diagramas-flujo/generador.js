@@ -59,6 +59,8 @@
   const v = P.v;
   const xml = P.xml;
   const redondo = x => Math.round(x * 1e6) / 1e6;
+  // Soles siempre con dos decimales: «S/ 563,20».
+  const soles = x => { const [e, d] = Math.abs(x).toFixed(2).split('.'); return `S/ ${x < 0 ? '−' : ''}${f(Number(e))},${d}`; };
 
   // ---------------- Expresiones ----------------
   // número | 'variable' | [op, a, b]; op: + − * / ^ div mod cifras. Condiciones: > >= < <= = primo mult par.
@@ -585,10 +587,13 @@
       [sub === 'primo' ? `Primos entre ellos: ${ns.filter(esPrimo).join(', ') || 'ninguno'}. ` : `Múltiplos de ${dd}: ${ns.filter(n => n % dd === 0).join(', ')}. `,
         ...(sub === 'primo' && ns.includes(1) ? ['El 1 no es primo. '] : []),
         'Al final: ', v('A', `A = ${f(fin.A)}`), ' y ', v('B', `B = ${f(fin.B)}`), sub === 'multiplo' ? ' (A suma los múltiplos; B cuenta los demás).' : ' (A cuenta los primos; B, los demás).'],
-      ['Se imprime ', datos.imprime === 'B-A' ? 'B − A' : 'A − B', ` = ${f(correcta)}.`],
+      ['Se imprime ', ...(datos.imprime === 'B-A' ? [v('B', 'B'), ' − ', v('A', 'A')] : [v('A', 'A'), ' − ', v('B', 'B')]), ` = ${f(correcta)}.`],
     ];
     return {
       datos, correcta, errores, variables, enunciado: INTRO(prog), pregunta: ['¿Qué valor se imprime?'], solucion,
+      // Con primos, la resta es chica: un error (el 1 como primo, los impares como primos) puede dar 0 o
+      // un negativo, y el diagrama bien podría imprimirlo. Sin esto, los arranques en 1 o 2 nunca salían.
+      negativos: sub === 'primo',
       figura: { svg: dibujar(prog, colores), alt: describir(prog) }, figuraSolucion: tablaTraza(['n', 'A', 'B'], run.traza, colores, null),
     };
   };
@@ -629,12 +634,12 @@
     const solucion = [
       ['Se lee ', v('P', `P = ${Pp}`), '. ', `Primera pregunta: ¿${Pp} ${opTexto(op1)} ${T1}? ${enAlta ? 'Sí' : 'No'}.`,
         ...(enAlta ? [] : [` Segunda pregunta: ¿${Pp} ${opTexto(op2)} ${T2}? ${enMedia ? 'Sí' : 'No'}.`])],
-      enAlta ? ['Rama del «Sí»: ', v('D', `D = ${f(fa)} × ${Pp} = ${f(Pp * fa)}`), '; luego ', v('D', `D = ${f(fb)} × ${f(Pp * fa)} = ${f(D)}`), '.']
-        : enMedia ? ['Un solo descuento: ', v('D', `D = ${f(fc)} × ${Pp} = ${f(D)}`), '.'] : ['Sin descuento: ', v('D', `D = ${f(D)}`), '.'],
-      ['Se imprime ', v('D', 'D'), ` + ${E} = ${f(correcta)}.`],
+      enAlta ? ['Rama del «Sí»: ', v('D', `D = ${f(fa)} × ${Pp} = ${soles(Pp * fa)}`), '; luego ', v('D', `D = ${f(fb)} × ${f(redondo(Pp * fa))} = ${soles(D)}`), '.']
+        : enMedia ? ['Un solo descuento: ', v('D', `D = ${f(fc)} × ${Pp} = ${soles(D)}`), '.'] : ['Sin descuento: ', v('D', `D = ${soles(D)}`), '.'],
+      ['Se imprime ', v('D', 'D'), ` + ${E} = ${soles(correcta)}.`],
     ];
     return {
-      datos, correcta, errores, variables, texto: x => `S/ ${f(x)}`,
+      datos, correcta, errores, variables, texto: soles,
       enunciado: ['Una tienda de Juliaca calcula el cobro con este diagrama: ', v('P', 'P'), ' es el precio de lista en soles y lo impreso es lo que se paga, con el envío incluido. «D ← …» significa que ', v('D', 'D'), ' toma el valor de la derecha.'],
       pregunta: ['Si se ingresa ', v('P', `P = ${Pp}`), ', ¿qué se imprime?'], solucion, unidad: 'soles',
       figura: { svg: dibujar(prog, colores), alt: describir(prog) },
@@ -714,7 +719,7 @@
       errores = [
         h('RMP20-una-vuelta-menos', correcta - 1, 'Te detuviste antes de sumar el 1. Cuando n se vuelve 1, igual se suma a S y recién después la pregunta «¿n = 1?» da «Sí».'),
         h('RMP20-una-vuelta-mas', correcta + (datos.regla === '3n+1' ? 4 : 2), `Diste una vuelta de más: con n = 1 la pregunta «¿n = 1?» da «Sí» y se imprime; no se aplica otra vez la regla (1 → ${datos.regla === '3n+1' ? 4 : 2}).`),
-        h('RMP20-orden', correcta - 1 + N, `Sumaste n antes de cambiarlo: así entra ${N}, que no se suma, y queda afuera el 1. En el diagrama, S suma el n ya cambiado.`),
+        h('RMP20-orden', correcta - 1 + N, `Sumaste n antes de cambiarlo: así sumas ${N}, que en el diagrama no se suma, y dejas afuera el 1.`),
       ];
       solucion = [
         ['Al empezar, ', v('n', `n = ${N}`), ` y S = 0. Si n es par se divide entre 2; si es impar, se cambia por ${datos.regla === '3n+1' ? '3n + 1' : 'n + 1'}. Luego S suma el n nuevo.`],
@@ -763,15 +768,20 @@
       errores.push(h('RMP25-conmuta', o2(z, o(y, x)), 'Cambiaste el orden de los operandos. En a ∗ b y en a ◇ b, a es el de la izquierda: estas reglas no son conmutativas.'));
       txtExpr = ['(', v('x', x), ' ◇ ', v('y', y), ') ∗ ', v('z', z)];
     }
+    if (correcta === interno) return null; // el error «solo el paréntesis» daría la respuesta
     errores.push(h('RMP23-solo-parentesis', interno, 'Ese es solo el valor del paréntesis. Falta la operación de afuera.'));
-    const variables = { x: { nombre: 'primer número', color: 'o' }, y: { nombre: 'segundo número', color: 'i' }, z: { nombre: 'tercer número', color: 'h' } };
+    const variables = { x: { nombre: 'primer número', color: 'o' }, y: { nombre: 'segundo número', color: 'i' }, z: { nombre: 'tercer número', color: 'h' }, p: { nombre: 'valor del paréntesis', color: 'd' } };
     const enunciado = ['Se define la operación a ◇ b = ', R, ...(forma === 'mixto' ? [' y la operación a ∗ b = ', R2] : []), ' para números enteros.'];
-    const pasoInterno = forma === 'der' ? `${y} ◇ ${z}` : `${x} ◇ ${y}`;
+    const pasoInterno = forma === 'der' ? [v('y', y), ' ◇ ', v('z', z)] : [v('x', x), ' ◇ ', v('y', y)];
     const [ia, ib] = forma === 'der' ? [y, z] : [x, y];
     const afuera = forma === 'izq' ? [interno, z, regla, '◇'] : forma === 'der' ? [x, interno, regla, '◇'] : [interno, z, regla2, '∗'];
+    // En la lista «a = …, b = …» el valor va suelto; dentro de la operación, un negativo va entre paréntesis.
+    const pT = v('p', f(interno)), pE = v('p', pn(interno));
+    const [aT, bT] = forma === 'der' ? [v('x', x), pT] : [pT, v('z', z)];
+    const [aE, bE] = forma === 'der' ? [v('x', x), pE] : [pE, v('z', z)];
     const solucion = [
-      ['Primero el paréntesis: ', `${pasoInterno} = ${REGLAS[regla].s(ia, ib)} = ${f(interno)}.`],
-      ['Luego la operación de afuera, con ', forma === 'der' ? `a = ${x} y b = ${f(interno)}` : `a = ${f(interno)} y b = ${z}`, `: ${f(afuera[0])} ${afuera[3]} ${f(afuera[1])} = ${REGLAS[afuera[2]].s(afuera[0], afuera[1])} = ${f(correcta)}.`],
+      ['Primero el paréntesis: ', ...pasoInterno, ` = ${REGLAS[regla].s(ia, ib)} = `, v('p', f(interno)), '.'],
+      ['Luego la operación de afuera, con a = ', aT, ' y b = ', bT, ': ', aE, ` ${afuera[3]} `, bE, ` = ${REGLAS[afuera[2]].s(afuera[0], afuera[1])} = ${f(correcta)}.`],
       ['La regla no es conmutativa: a es siempre el número de la izquierda y b el de la derecha.'],
     ];
     return { datos, correcta, errores, variables, enunciado, pregunta: ['Calcula ', ...txtExpr, '.'], solucion, negativos: true };

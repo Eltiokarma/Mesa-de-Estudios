@@ -150,3 +150,25 @@ test('cada error da otro valor que la respuesta y las vueltas son pocas', () => 
     }
   }
 });
+
+test('el error «el 1 es primo» sale de verdad (en 1000 semillas) y solo cuando se revisa el 1', () => {
+  let veces = 0;
+  for (let s = 0; s < 1000; s++) {
+    const p = gen.generar(s);
+    if (!p.alternativas.some(a => a.error && a.error.id === 'RMP24-uno-primo')) continue;
+    veces++;
+    assert.equal(p._datos.a, 1, `semilla ${s}`);
+  }
+  assert.ok(veces >= 3, `salió ${veces} veces`);
+});
+
+test('operador: el valor del paréntesis nunca es la respuesta y los negativos van entre paréntesis', () => {
+  for (let s = 0; s < 1000; s++) {
+    const p = gen.generar(s), d = p._datos;
+    if (d.tipo !== 'operador') continue;
+    const interno = d.forma === 'der' ? gen.calc.operar(d.regla, d.y, d.z) : gen.calc.operar(d.regla, d.x, d.y);
+    assert.notEqual(interno, p.respuesta.valor, `semilla ${s}`);
+    const txt = p.solucion.map(l => l.map(x => (typeof x === 'string' ? x : x.texto ?? x.t ?? '')).join('')).join(' ');
+    assert.ok(!/[◇∗] −/.test(txt), `semilla ${s}: ${txt}`);
+  }
+});

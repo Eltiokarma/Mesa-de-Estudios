@@ -220,6 +220,19 @@
       "grado": 3,
       "plantillas": ["tablas-graficos"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
-    }
-  ]
+    },
+    {
+      "id": "razonamiento-matematico.diagramas-de-flujo",
+      "nombre": "Diagramas de flujo y operadores",
+      "temas": [
+        "Seguir un diagrama con bucles y condiciones",
+        "Contadores y acumuladores",
+        "Operadores definidos por una regla"
+      ],
+      "universidades": {"unmsm": {"temas": [1]}},
+      "potencial_visual": "alto",
+      "grado": 3,
+      "plantillas": ["rm-diagramas-flujo"],
+      "investigacion": "docs/investigacion/codigos-rm-procesos.md"
+    }  ]
 }

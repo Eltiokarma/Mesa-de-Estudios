@@ -2,7 +2,7 @@
   "plantilla": "rm-diagramas-flujo",
   "tolerancia": 0.005,
   "nota": "Respuesta: el último valor impreso (en contador, cuántos números se imprimen o su suma; en operador, el valor de la expresión). Las entradas son el _datos del generador; ver la cabecera de generador.js.",
-  "verificacion": "",
+  "verificacion": "Verificación ciega (subagente, 8 nov 2026): los 20 casos se resolvieron sin ver el generador, ejecutando a mano en Python cada diagrama tal como lo describe el alt (máquina de pasos con saltos), los operadores por evaluación directa y los descuentos con fracciones exactas; los casos de base 3 se contrastaron además con la suma de cifras en base 3. 20 de 20 coinciden. La semilla 10 cambió de datos tras la revisión (12 nov 2026) y se volvió a resolver a mano desde el alt: primos de 14 a 23, B − A = 4, coincide.",
   "casos": [
     {
       "semilla": 0,
@@ -130,8 +130,8 @@
         "tipo": "dos-contadores",
         "sub": "primo",
         "a": 14,
-        "opFin": ">",
-        "b": 21,
+        "opFin": ">=",
+        "b": 24,
         "d": null,
         "imprime": "B-A"
       },
