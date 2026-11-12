@@ -94,6 +94,18 @@ const ESCENAS = {
       [['C', 'H', 'O', 'N'], ['--c-pu', '--c-T']],
       [['C', 'H', 'O'], ['--c-ac', '--c-al']],
     ] },
+  'molecula-grande': {
+    elementos: ['H', 'C', 'N', 'O', 'S', 'I'],
+    // Los elementos solo se pintan en la vista «sin lupa» de Explorar: con una lupa puesta, los átomos van en tinta
+    // y no salen junto a ninguna variable de la escena.
+    vistas: [
+      [['C', 'H', 'N', 'O'], []],        // aminoácidos, nicotinamida, capsaicina, cafeína, adenina
+      [['C', 'H', 'O'], []],             // glúcidos, vitaminas, esteroides, polifenoles, ácidos
+      [['C', 'H', 'N', 'O', 'S'], []],   // penicilina G
+      [['C', 'H', 'O', 'S'], []],        // alicina
+      // PENDIENTE: la tiroxina junta O e I (Elementos.CERCANOS, ΔE00 16,3); pedido a la conversación principal.
+      [['C', 'H', 'N', 'I'], []],
+    ] },
   'hidrocarburos': {
     elementos: ['C', 'H'],
     vistas: [
