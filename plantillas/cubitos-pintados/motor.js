@@ -53,9 +53,9 @@
  *         olvidaMesa:  cuenta[k] con sinPintar sin 'mesa' (solo si sinPintar trae 'mesa' y al menos una pared) (RME1);
  *         olvidaPared: cuenta[k] con sinPintar = ['mesa'] (solo si sinPintar trae 'mesa' y al menos una pared) (RME1);
  *         restaUna:  solo con dims: cuenta[k] del bloque [a + 1, b + 1, c + 1] con el mismo sinPintar: en cada
- *                    arista o cara se resta una sola esquina (n − 1 en vez de n − 2) (RME115);
+ *                    arista o cara se resta una sola esquina (n − 1 en vez de n − 2) (RME170);
  *         sinRestar: solo con dims: lo mismo con el bloque [a + 2, b + 2, c + 2]: no se restan las esquinas (n en vez
- *                    de n − 2) (RME115).
+ *                    de n − 2) (RME4).
  *   agujereado({ n, tuneles: [{ eje, en: [u, v] }, …], masa })
  *       Cubo de n × n × n (celdas de 0 a n − 1) con túneles de un cubito de sección que lo atraviesan de cara a cara.
  *       Un túnel de eje 'x' quita las celdas (t, u, v) para todo t (en = [y, z]); de eje 'y', las (u, t, v) (en = [x, z]);
@@ -67,7 +67,7 @@
  *       errores, coinciden, repetidos }.
  *       errores.quitados, en este orden: sinCruces: n · T, cada túnel por separado: el cruce se quita dos veces
  *       (RME2); parejas: n · T − Σ (celdas comunes de cada par de túneles), que descuenta los cruces de a dos y falla
- *       donde se cruzan tres (RME110); soloVisibles: las celdas quitadas que están en la superficie del cubo (alguna
+ *       donde se cruzan tres (RME173); soloVisibles: las celdas quitadas que están en la superficie del cubo (alguna
  *       coordenada 0 o n − 1): cuenta solo los huecos que se ven (RME3).
  *       errores.quedan: n³ menos cada uno de esos, con las mismas claves. errores.peso: lo mismo por masa (sin masa,
  *       respuestas.peso es null y no hay errores de peso).
@@ -128,7 +128,7 @@
  *       ⌊∛chicos⌋ (RME116); soloGrandes: g · ⌊∛grandes⌋ (RME116).
  *       errores.bloques, en este orden: porVolumen: con L' = errores del lado por volumen (aunque no se pueda armar),
  *       min(grandes, ⌊L'/g⌋³) + L'³ − g³ · min(grandes, ⌊L'/g⌋³) (RME114); unidades: L³, los cubitos de volumen en
- *       vez de los bloques (RME117); soloChicos: ⌊∛chicos⌋³ (RME116); soloGrandes: ⌊∛grandes⌋³ (RME116).
+ *       vez de los bloques (RME172); soloChicos: ⌊∛chicos⌋³ (RME116); soloGrandes: ⌊∛grandes⌋³ (RME116).
  *       Se revisan todos los lados de ⌊∛volumen⌋ hacia abajo: que no se pueda un lado no impide uno mayor (con 7 de
  *       arista 3 y 27 cubitos no sale el de 4 pero sí el de 6). Si no se puede ni un cubo de lado 1, L = 0.
  *   util: { clave, DIRS, NOMBRE_DIR, caja, celdasFigura }   piezas internas que usa la escena para dibujar.

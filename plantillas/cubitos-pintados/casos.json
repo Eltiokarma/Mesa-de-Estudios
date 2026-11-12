@@ -2,7 +2,7 @@
  "plantilla": "cubitos-pintados",
  "unidades": "Cubitos de arista 1 en celdas [x, y, z] (x a la derecha, y hacia el fondo, z hacia arriba; z = 0 toca la mesa). Masas en gramos.",
  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.k.otra, respuestas.k); las listas y objetos se comparan completos. 'tambien' son llamadas extra del mismo caso (con 'fn' propia si la traen). Un error que con esos datos da la respuesta correcta va en 'coinciden'; uno que repite a otro anterior, en 'repetidos'.",
- "verificacion": "",
+ "verificacion": "Verificador independiente (subagente, 12 nov 2026), sin leer el código del motor ni casos.json: vóxeles con código propio en Python (caras pintadas mirando vecinos, con mesa y pared sin pintar; túneles como conjuntos de celdas; barras contando caras por cubito; cada figura de la sucesión construida y contada), búsqueda exhaustiva de cortes apilando y de empaques de cubos para el mayor cubo. Coinciden los 200 campos de los 20 casos; el plan de la disección coincide caja por caja (solo cambia el orden dentro de cada etapa). Los casos 20 (escalera en la esquina sobre la mesa) y 21 (pirámide sin base, figuras 3, 6 y 12), agregados tras la revisión, se verificaron después con el mismo método y coinciden en todos sus campos.",
  "casos": [
   {
    "nombre": "Paso a paso, predicción 1: cubo de 4 × 4 × 4 pintado por fuera; cubitos con exactamente dos caras pintadas = 24 (con las esquinas: 32; n − 1 por arista: 36; aristas enteras: 48)",
@@ -1559,6 +1559,94 @@
       "usaGrandes": 7,
       "usaChicos": 27,
       "bloques": 34
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Paso a paso, predicción 3 (nueva): escalera en la esquina de 10 cubitos (columnas 3, 2, 1 / 2, 1, 0 / 1, 0, 0) sobre la mesa: 30 caras pintadas (con las pegadas: 54; con la base: 36; todas: 60); 24 caras pegadas y 6 en la mesa",
+   "fn": "pintado",
+   "args": [
+    {
+     "alturas": [
+      [
+       3,
+       2,
+       1
+      ],
+      [
+       2,
+       1,
+       0
+      ],
+      [
+       1,
+       0,
+       0
+      ]
+     ],
+     "sinPintar": [
+      "mesa"
+     ]
+    }
+   ],
+   "espera": {
+    "cubitos": 10,
+    "caras": 30,
+    "expuestas": 36,
+    "cuenta": [
+     0,
+     2,
+     2,
+     1,
+     4,
+     1,
+     0
+    ],
+    "errores.caras.pegadas": 54,
+    "errores.caras.conTodas": 36,
+    "errores.caras.todas": 60
+   }
+  },
+  {
+   "nombre": "¿Qué pasa si…? 6: pirámide escalonada sin la base, figura 12: 3n² + 2n = 456 (figura 6: 120; el doble de la 6: 240; con la base: 600; lineal: 126)",
+   "fn": "sucesion",
+   "args": [
+    {
+     "tipo": "piramide",
+     "n": 12,
+     "desde": 6
+    }
+   ],
+   "espera": {
+    "cubitos": 650,
+    "area": 456,
+    "errores.area.objetoEntero": 240,
+    "errores.area.otraBase": 600,
+    "errores.area.lineal": 126,
+    "errores.area.pegadas": 3756
+   },
+   "tambien": [
+    {
+     "args": [
+      {
+       "tipo": "piramide",
+       "n": 6
+      }
+     ],
+     "espera": {
+      "area": 120
+     }
+    },
+    {
+     "args": [
+      {
+       "tipo": "piramide",
+       "n": 3
+      }
+     ],
+     "espera": {
+      "area": 33
      }
     }
    ]

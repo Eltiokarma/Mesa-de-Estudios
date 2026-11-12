@@ -177,7 +177,7 @@
     {
       "id": "p5",
       "nivel": "avanzado",
-      "enunciado": "Un cubo de 6 × 6 × 6 está hecho con cubitos de 2 g. Se le hacen cuatro túneles rectos de un cubito de ancho, de cara a cara: dos de arriba hacia abajo, uno de izquierda a derecha y uno de adelante hacia atrás. Cada túnel horizontal corta a uno de los verticales, y los dos horizontales también se cortan entre sí, siempre en cubitos distintos. ¿Cuánto pesa lo que queda?",
+      "enunciado": "Un cubo de 6 × 6 × 6 está hecho con cubitos de 2 g. Se le hacen cuatro túneles rectos de un cubito de ancho, de cara a cara: dos de arriba hacia abajo, uno de izquierda a derecha y uno de adelante hacia atrás. Cada túnel horizontal corta a uno solo de los verticales, y los dos horizontales también se cortan entre sí, siempre en cubitos distintos. ¿Cuánto pesa lo que queda?",
       "respuesta": "390 g.",
       "pasos": [
         "Cada túnel pasa por 6 cubitos: 4 × 6 = 24 si no se cruzaran.",
@@ -379,7 +379,7 @@
       "respuesta": "Arista 4 cm, con 8 bloques.",
       "pasos": [
         "El volumen total es 10 × 8 + 50 = 130, así que el cubo no pasa de 5 (125).",
-        "En un cubo de 5 solo caben 2 × 2 × 2 = 8 cubos de 2 cm (5 no se parte en mitades enteras): 8 × 8 = 64, y faltarían 125 − 64 = 61 cubitos. Solo hay 50: no se puede.",
+        "En un cubo de 5 solo caben 2 × 2 × 2 = 8 cubos de 2 cm (en cada dirección caben solo 2, porque 5 ÷ 2 = 2,5): 8 × 8 = 64, y faltarían 125 − 64 = 61 cubitos. Solo hay 50: no se puede.",
         "El de 4 sí: 8 cubos de 2 cm lo llenan (8 × 8 = 64). Se usan 8 bloques, que es lo menos, porque cada bloque grande reemplaza a 8 cubitos."
       ],
       "verificar": [

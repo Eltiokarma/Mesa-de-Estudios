@@ -23,7 +23,7 @@
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
   --c-p3:#c0364a; --c-p2:#a05200; --c-p1:#0f766e; --c-p0:#6b3dbd; --c-pin:#17451e; --c-tun:#a10fbf; --c-cr:#7d6a00;
   --c-b:#1f5fbf; --c-ca:#b3246b; --c-co:#44691a; --c-g:#551c07; --c-ch:#1c3940;
-  --cubo:#fffdf9; --mesa:#e9dccf; --pared:#e3d6ea;
+  --cubo:#fffdf9; --mesa:#e9dccf; --pared:#e3d6ea; --pin-alfa:.4; --pin-borde:1;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
   color-scheme:light;
@@ -34,7 +34,7 @@
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
   --c-p3:#f17384; --c-p2:#f0a04a; --c-p1:#5ed9c8; --c-p0:#ab8cf2; --c-pin:#40bf59; --c-tun:#cf6bfa; --c-cr:#e3c84a;
   --c-b:#7cb0ff; --c-ca:#ff86bd; --c-co:#a3d65e; --c-g:#f27448; --c-ch:#58a8bb;
-  --cubo:#3a3047; --mesa:#2f2739; --pared:#332a42;
+  --cubo:#3a3047; --mesa:#2f2739; --pared:#332a42; --pin-alfa:.82; --pin-borde:0;
   color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
@@ -42,7 +42,7 @@
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
   --c-p3:#f17384; --c-p2:#f0a04a; --c-p1:#5ed9c8; --c-p0:#ab8cf2; --c-pin:#40bf59; --c-tun:#cf6bfa; --c-cr:#e3c84a;
   --c-b:#7cb0ff; --c-ca:#ff86bd; --c-co:#a3d65e; --c-g:#f27448; --c-ch:#58a8bb;
-  --cubo:#3a3047; --mesa:#2f2739; --pared:#332a42;
+  --cubo:#3a3047; --mesa:#2f2739; --pared:#332a42; --pin-alfa:.82; --pin-borde:0;
   color-scheme:dark }
 
 *{box-sizing:border-box}
@@ -164,7 +164,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible, input:focus-visible{out
 .lecturas:empty{display:none}
 .lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
 .lectura b{display:block; color:var(--k); font:800 1.0rem var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.lectura span{display:block; font-size:.76rem; line-height:1.25; color:var(--muted); overflow-wrap:anywhere}
 
 /* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
 @media (min-width:900px){
@@ -284,12 +284,15 @@ const dot3 = (p, q) => p[0]*q[0] + p[1]*q[1] + p[2]*q[2];
 const num = n => String(n).replace('.', ',');
 const V_ = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
 const opcionesHTML = (opts, idFb, texto) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span class="m${texto ? ' t' : ''}">${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
-const fuenteHip = que => `<p class="fuente">${que}: buscamos estos errores con cubitos pintados, túneles y barras en estudios publicados y no encontramos datos, así que son hipótesis nuestras, tomadas de las alternativas de exámenes de admisión. Lo que marquen los alumnos dirá cuáles aparecen.</p>`;
+const fuenteHip = (que, tema) => `<p class="fuente">${que}: buscamos estos errores ${tema || 'con cubitos pintados'} en estudios publicados y no encontramos datos, así que son hipótesis nuestras, tomadas de las alternativas de exámenes de admisión. Lo que marquen los alumnos dirá cuáles aparecen.</p>`;
+// Para la disección y el mayor cubo: no salen de alternativas de examen sino de cómo se resuelven estos problemas.
+const fuenteHipResolver = que => `<p class="fuente">${que}: buscamos estos errores en estudios publicados y no encontramos datos; son hipótesis nuestras, pensadas a partir de cómo se resuelven estos problemas. Lo que marquen los alumnos dirá cuáles aparecen.</p>`;
 const CATS = ['p0', 'p1', 'p2', 'p3'];   // color de un cubito según cuántas caras pintadas tiene (0 a 3)
 const catDe = k => CATS[Math.min(k, 3)];
 
 function colores(){
-  const g = n => css(n), c = { ink:g('--ink'), muted:g('--muted'), paper:g('--paper'), card:g('--card'), line:g('--line'), cubo:g('--cubo'), mesa:g('--mesa'), pared:g('--pared'), font:g('--font') };
+  const g = n => css(n), c = { ink:g('--ink'), muted:g('--muted'), paper:g('--paper'), card:g('--card'), line:g('--line'), cubo:g('--cubo'), mesa:g('--mesa'), pared:g('--pared'), font:g('--font'),
+    pinAlfa:Number(g('--pin-alfa')) || .82, pinBorde:g('--pin-borde') === '1' };
   for (const k of ['p3', 'p2', 'p1', 'p0', 'pin', 'tun', 'cr', 'b', 'ca', 'co', 'g', 'ch']) c[k] = g('--c-' + k);
   return c;
 }
@@ -433,16 +436,19 @@ function crearEscena(cv, idDesc, idLect, idLey, idCtl, idIzq, idDer){
   document.getElementById(idDer).addEventListener('click', () => { E.az = rango(E.az + 20); E.dibujar(); });
 
   // ----- encuadre: la esfera que envuelve la caja cabe con cualquier giro, así el dibujo no salta -----
-  function calcularEncuadre(){
-    const pts = E.cfg.caja || [[0, 0, 0], [1, 1, 1]];
+  // caja: lista de puntos, o 'auto' (lo que se dibuja en ese momento: las cajas y las líneas)
+  function calcularEncuadre(L){
+    let pts = E.cfg.caja || [[0, 0, 0], [1, 1, 1]];
+    if (pts === 'auto'){ pts = []; for (const b of L.cajas){ pts.push(b.o, add3(b.o, b.d)); } for (const l of L.lineas) pts.push(l.p, l.q); if (!pts.length) pts = [[0, 0, 0], [1, 1, 1]]; }
     const m = [0, 1, 2].map(i => Math.min(...pts.map(p => p[i]))), M = [0, 1, 2].map(i => Math.max(...pts.map(p => p[i])));
     const c3 = m.map((v, i) => (v + M[i])/2), R = Math.max(.5, Math.hypot(M[0] - m[0], M[1] - m[1], M[2] - m[2])/2);
     const pad = 14, s = Math.min((W - 2*pad)/(2*R), (H - 2*pad)/(2*R));
     return { s, c3 };
   }
-  E.proyector = () => {
+  E.proyector = L => {
     const clave = `${W}x${H}`;
-    if (!encuadre || clave !== claveEnc){ encuadre = calcularEncuadre(); claveEnc = clave; }
+    if (E.cfg.caja === 'auto' && L){ encuadre = calcularEncuadre(L); claveEnc = clave; }
+    else if (!encuadre || clave !== claveEnc){ encuadre = calcularEncuadre(L || lista()); claveEnc = clave; }
     const V = vista(E.az, E.el), K = encuadre, cx = dot3(K.c3, V.u), cy = dot3(K.c3, V.up);
     const f = p => [W/2 + K.s*(dot3(p, V.u) - cx), H/2 - K.s*(dot3(p, V.up) - cy)];
     f.V = V; f.s = K.s; return f;
@@ -451,10 +457,10 @@ function crearEscena(cv, idDesc, idLect, idLey, idCtl, idIzq, idDer){
 
   E.dibujar = () => {
     if (!W || !E.cfg) return;
-    const c = colores(), P = E.proyector();
-    ctx.clearRect(0, 0, W, H); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, W, H);
-    const L = lista();
+    const c = colores(), L = lista();
     if (E.cfg.dibujo) E.cfg.dibujo(L, E);
+    const P = E.proyector(L);
+    ctx.clearRect(0, 0, W, H); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, W, H);
     pintar(ctx, c, E, P, L);
   };
   return E;
@@ -504,15 +510,32 @@ function pintar(ctx, c, E, P, L){
       let a = s.alfa === undefined ? 1 : s.alfa;
       if (s.col && s.caras) a *= est === 1 ? .92 : (s.fuerte ? .8 : .4);
       else if (s.col) a *= .8;
-      else if (est === 1) a *= .82;
+      else if (est === 1) a *= c.pinAlfa;
       ctx.fillStyle = c.cubo; ctx.globalAlpha = s.transparente ? 0 : (s.alfa === undefined ? 1 : s.alfa); ctx.fill();
       ctx.fillStyle = base; ctx.globalAlpha = a; ctx.fill();
       // sombra suave según la cara
       const sombra = .16*(1 - Math.max(0, dot3(NORMALES[f], LUZ)));
       if (!s.transparente){ ctx.fillStyle = '#000'; ctx.globalAlpha = sombra*(s.alfa === undefined ? 1 : s.alfa); ctx.fill(); }
-      ctx.globalAlpha = (s.bordeAlfa === undefined ? .7 : s.bordeAlfa)*(s.alfa === undefined ? 1 : Math.max(.35, s.alfa));
-      ctx.strokeStyle = s.borde ? col(s.borde) : c.ink; ctx.lineWidth = lw*(s.col && fuerte(s.col) ? 2.4 : 1) + (s.grueso || 0); ctx.lineJoin = 'round'; ctx.stroke();
+      const bordePin = !s.col && est === 1 && c.pinBorde;
+      ctx.globalAlpha = bordePin ? 1 : (s.bordeAlfa === undefined ? .7 : s.bordeAlfa)*(s.alfa === undefined ? 1 : Math.max(.35, s.alfa));
+      ctx.strokeStyle = bordePin ? c.pin : s.borde ? col(s.borde) : c.ink; ctx.lineWidth = lw*(s.col && fuerte(s.col) ? 2.4 : 1) + (s.grueso || 0); ctx.lineJoin = 'round'; ctx.stroke();
       ctx.restore();
+      // contorno grueso solo en las aristas del bloque al que pertenece el cubito (un cubo grande, una pieza)
+      if (s.grupo){
+        const G = s.grupo, borde = (v, i) => Math.abs(v - G.o[i]) < 1e-6 || Math.abs(v - (G.o[i] + G.d[i])) < 1e-6;
+        ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = lw*2.2; ctx.lineCap = 'round'; ctx.globalAlpha = .95;
+        for (let j = 0; j < 4; j++){
+          const p = pts[j], q = pts[(j + 1) % 4], eje = [0, 1, 2].find(i => Math.abs(p[i] - q[i]) > 1e-6);
+          if ([0, 1, 2].filter(i => i !== eje).every(i => borde(p[i], i))){ const a2 = P(p), b2 = P(q); ctx.beginPath(); ctx.moveTo(a2[0], a2[1]); ctx.lineTo(b2[0], b2[1]); ctx.stroke(); }
+        }
+        ctx.restore();
+      }
+      // el número de caras pintadas, escrito sobre la cara de arriba
+      if (s.num !== undefined && f === 5 && P.s >= 17){   // muy chicos, el número no se lee: solo el color
+        const cen = pts.reduce((p, q) => add3(p, q.map(v => v/4)), [0, 0, 0]), q = P(cen), tam = Math.round(clamp(P.s*.42, 8, 13));
+        ctx.save(); ctx.font = `800 ${tam}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = c.ink; ctx.globalAlpha = .9;
+        ctx.fillText(String(s.num), q[0], q[1] + .5); ctx.restore();
+      }
       // cara atravesada: un cuadrito en el centro
       if (s.marcas && s.marcas.includes(f)){
         const cen = pts.reduce((p, q) => add3(p, q.map(v => v/4)), [0, 0, 0]);
@@ -538,27 +561,41 @@ function pintar(ctx, c, E, P, L){
 function mesa(L, x0, x1, y0, y1, et){ L.plano([[x0, y0, 0], [x1, y0, 0], [x1, y1, 0], [x0, y1, 0]], 'mesa', { et, etEn:[x1 - .6, y0 + .4, 0] }); }
 function paredAtras(L, x0, x1, yp, h, a){ if (a === 0) return; L.plano([[x0, yp, 0], [x1, yp, 0], [x1, yp, h], [x0, yp, h]], 'pared', { alfa:.9*(a === undefined ? 1 : a) }); }
 function paredIzq(L, xp, y0, y1, h, a){ if (a === 0) return; L.plano([[xp, y0, 0], [xp, y1, 0], [xp, y1, h], [xp, y0, h]], 'pared', { alfa:.9*(a === undefined ? 1 : a) }); }
-// Separación de un cubito al abrir: por pisos (z), por capas (todas las direcciones) o nada
-function abrir(p, f, modo, gap){
+// Separación de un cubito al abrir. 'pisos': cada piso baja a la mesa y se pone al lado del anterior (dim = [ancho,
+// fondo, pisos] del sólido; con más de tres pisos, en dos filas), para ver los cubitos de adentro desde arriba.
+// 'todo': se separan en las tres direcciones.
+function abrir(p, f, modo, gap, dim){
   const g = (gap || .9)*f;
-  if (modo === 'pisos') return [p[0], p[1], p[2]*(1 + g)];
+  if (modo === 'pisos'){
+    const [a, b, c] = dim || [4, 4, 4], k = c <= 3 ? c : Math.ceil(c/2), col = p[2] % k, fila = Math.floor(p[2]/k);
+    return [p[0] + f*col*(a + 1.5), p[1] - f*fila*(b + 1.5), p[2]*(1 - f)];
+  }
   if (modo === 'todo') return [p[0]*(1 + g), p[1]*(1 + g), p[2]*(1 + g)];
   return p;
 }
 // Lo que cuenta cada color de cubito
 const LEY_CAT = [['p3', 'tres caras'], ['p2', 'dos caras'], ['p1', 'una cara'], ['p0', 'ninguna']];
+const LEY_CAT3 = [['p3', 'tres o más'], ['p2', 'dos caras'], ['p1', 'una cara'], ['p0', 'ninguna']];
+const lectCat3 = R => [['p3', '3 o más', R.cuenta.slice(3).reduce((s, v) => s + v, 0)], ['p2', '2 caras', R.cuenta[2]], ['p1', '1 cara', R.cuenta[1]], ['p0', 'ninguna', R.cuenta[0]]];
+// La mesa debajo de un sólido de dim = [ancho, fondo, pisos] abierto por pisos con la fracción f (margen m)
+function mesaAbierta(L, dim, f, m){
+  const [a, b, c] = dim, k = c <= 3 ? c : Math.ceil(c/2), filas = Math.ceil(c/k);
+  mesa(L, -m, a + f*(k - 1)*(a + 1.5) + m, -m - f*(filas - 1)*(b + 1.5), b + m);
+}
+const dimDe = celdas => { const B = MC.util.caja(celdas); return [0, 1, 2].map(i => B.max[i] - B.min[i] + 1); };
 const lectCat = R => [['p3', '3 caras', R.cuenta[3]], ['p2', '2 caras', R.cuenta[2]], ['p1', '1 cara', R.cuenta[1]], ['p0', 'ninguna', R.cuenta[0]]];
 // Un sólido pintado: cada cubito con sus caras (pintadas en verde) y, si col, con el color de su cantidad de caras
 function dibSolido(L, R, o){
   o = o || {};
+  const dim = dimDe(R.celdas);
   R.celdas.forEach((p, i) => {
-    const q = add3(abrir(p, o.abre || 0, o.modo || 'pisos', o.gap), o.mover || [0, 0, 0]);
+    const q = add3(abrir(p, o.abre || 0, o.modo || 'pisos', o.gap, dim), o.mover || [0, 0, 0]);
     const cat = o.col ? catDe(R.pintadas[i]) : null;
     const fuera = o.solo && !o.solo.includes(R.pintadas[i]);
-    L.cubo(q, { caras:R.porCara[i], col:fuera ? null : cat, fuerte:!!o.solo && !fuera, alfa:fuera ? .16 : (o.alfa === undefined ? 1 : o.alfa) });
+    L.cubo(q, { caras:R.porCara[i], col:fuera ? null : cat, fuerte:!!o.solo && !fuera, alfa:fuera ? .16 : (o.alfa === undefined ? 1 : o.alfa),
+      num:o.col && !fuera ? R.pintadas[i] : undefined });
   });
 }
-const cajaSolido = (R, f, modo, extra) => { const B = MC.util.caja(R.celdas), M = B.max.map(v => v + 1); const top = abrir(M, f || 0, modo || 'pisos'); return [[B.min[0], B.min[1], 0], top].concat(extra || []); };
 </script>
 
 <script>
@@ -571,32 +608,32 @@ const S = { step:0, max:0, pred:{}, ocupado:false };
 // ----- los datos de cada predicción, del motor -----
 const C4 = MC.pintado({ dims:[4, 4, 4], k:2 });
 const MP = MC.pintado({ dims:[5, 4, 3], sinPintar:['mesa', 'atras'], k:0 });
-const SOL = [[3, 2, 1], [2, 2, 1], [1, 1, 1]];
+const SOL = [[3, 2, 1], [2, 1, 0], [1, 0, 0]];   // una escalera en la esquina: 10 cubitos
 const AR = MC.pintado({ alturas:SOL, sinPintar:['mesa'] });
 const TU = MC.agujereado({ n:5, tuneles:[{ eje:'x', en:[2, 2] }, { eje:'y', en:[2, 2] }, { eje:'z', en:[2, 2] }] });
 const BA = MC.barras({ dims:[4, 3, 3], barras:[{ eje:'x', en:[1, 1] }, { eje:'y', en:[1, 1] }, { eje:'z', en:[1, 1] }] });
 const ES = MC.sucesion({ tipo:'escalera', n:20, desde:10 });
 const ES10 = MC.sucesion({ tipo:'escalera', n:10 });
-const CAJA_TU = [[-3.6, -3.6, 0], [8.6, 8.6, 12]], CAJA_BA = [[-1.5, -1.5, -1.5], [6.5, 5, 5.5]];
+const CAJA_BA = [[-1.5, -1.5, -1.5], [6.5, 5, 5.5]];
 
 const P1 = { id:'cubitos-dos-caras', ok:'b', opts:[
   ['a', `${C4.errores.k.yLaSiguiente} cubitos`, 'RME4', 'hipotesis'],
   ['b', `${C4.respuestas.k} cubitos`],
-  ['c', `${C4.errores.k.restaUna} cubitos`, 'RME115', 'hipotesis'],
-  ['d', `${C4.errores.k.sinRestar} cubitos`, 'RME115', 'hipotesis']],
+  ['c', `${C4.errores.k.restaUna} cubitos`, 'RME170', 'hipotesis'],
+  ['d', `${C4.errores.k.sinRestar} cubitos`, 'RME4', 'hipotesis']],
   fb:{ b:'¡Bien! En cada una de las 12 aristas hay 4 cubitos, pero los 2 de los extremos son esquinas (tres caras): quedan 2 por arista, 12 × 2 = 24.',
     a:'Elegiste la A. 32 junta los 24 de las aristas con las 8 esquinas. Las esquinas tienen tres caras pintadas, no dos. La correcta está marcada.',
     c:'Elegiste la C. 36 sale de restar una sola esquina por arista (4 − 1 = 3). Cada arista tiene dos extremos, y los dos son esquinas: 4 − 2 = 2. La correcta está marcada.',
     d:'Elegiste la D. 48 cuenta las aristas enteras, 12 × 4, con sus esquinas. Las esquinas tienen tres caras pintadas. La correcta está marcada.' } };
-const P2 = { id:'cubitos-mesa-pared', ok:'b', opts:[
+const P2 = { id:'cubitos-mesa-pared', ok:'d', opts:[
   ['a', `${MP.errores.k.olvidaPared} cubitos`, 'RME1', 'hipotesis'],
-  ['b', `${MP.respuestas.k} cubitos`],
+  ['b', `${MP.errores.k.olvidaMesa} cubitos`, 'RME1', 'hipotesis'],
   ['c', `${MP.errores.k.conTodas} cubitos`, 'RME1', 'hipotesis'],
-  ['d', `${MP.errores.k.olvidaMesa} cubitos`, 'RME1', 'hipotesis']],
-  fb:{ b:'¡Bien! Abajo y atrás no se pinta, así que no se quita esa capa: (5 − 2) × (4 − 1) × (3 − 1) = 3 × 3 × 2 = 18.',
+  ['d', `${MP.respuestas.k} cubitos`]],
+  fb:{ d:'¡Bien! Abajo y atrás no se pinta, así que no se quita esa capa: (5 − 2) × (4 − 1) × (3 − 1) = 3 × 3 × 2 = 18.',
     a:'Elegiste la A. 12 sale de quitar la capa de atrás, como si la pared también se pintara. Pero la cara pegada a la pared no recibe pintura. La correcta está marcada.',
     c:'Elegiste la C. 6 sería si se pintara todo, también abajo y atrás: (5 − 2)(4 − 2)(3 − 2). La mesa y la pared tapan esas caras. La correcta está marcada.',
-    d:'Elegiste la D. 9 sale de quitar la capa de abajo, como si se pintara la base. La base está sobre la mesa y no se pinta. La correcta está marcada.' } };
+    b:'Elegiste la B. 9 sale de quitar la capa de abajo, como si se pintara la base. La base está sobre la mesa y no se pinta. La correcta está marcada.' } };
 const P3 = { id:'cubitos-caras-solido', ok:'a', opts:[
   ['a', `${AR.respuestas.caras} caras`],
   ['b', `${AR.errores.caras.pegadas} caras`, 'RME1', 'hipotesis'],
@@ -609,7 +646,7 @@ const P3 = { id:'cubitos-caras-solido', ok:'a', opts:[
 const P4 = { id:'cubitos-tuneles', ok:'b', opts:[
   ['a', `${TU.errores.quedan.sinCruces} cubitos`, 'RME2', 'hipotesis'],
   ['b', `${TU.respuestas.quedan} cubitos`],
-  ['c', `${TU.errores.quedan.parejas} cubitos`, 'RME110', 'hipotesis'],
+  ['c', `${TU.errores.quedan.parejas} cubitos`, 'RME173', 'hipotesis'],
   ['d', `${TU.errores.quedan.soloVisibles} cubitos`, 'RME3', 'hipotesis']],
   fb:{ b:`¡Bien! Cada túnel pasa por 5 cubitos, pero el del centro está en los tres y se quita una sola vez: 15 − 2 = ${TU.quitados} quitados, quedan ${TU.quedan}.`,
     a:`Elegiste la A. ${TU.errores.quedan.sinCruces} resta 3 × 5 = 15, como si el cubito del centro se quitara tres veces. Se quita una vez. La correcta está marcada.`,
@@ -641,7 +678,7 @@ function dibCubo4(L, E, R){ dibSolido(L, R, { col:E.prog.col > .5, abre:E.prog.a
 
 const steps = [
  { k:'Paso 1', t:'Un bloque de cubitos',
-   prep:() => { const R = MC.pintado({ dims:[3, 3, 3] }); E.config({ vista:V0, prog:{ abre:0 }, caja:cajaSolido(R, 1),
+   prep:() => { const R = MC.pintado({ dims:[3, 3, 3] }); E.config({ vista:V0, prog:{ abre:0 }, caja:'auto',
      desc:'Un cubo armado con 27 cubitos, pintado por fuera.',
      dibujo:(L, E) => dibSolido(L, R, { abre:E.prog.abre, modo:'pisos' }),
      control:manijaAbrir('abre', 'Abrir por pisos'),
@@ -652,12 +689,12 @@ const steps = [
 
  { k:'Paso 2', t:'El cubo de 4 × 4 × 4', gate:P1,
    prep:() => { const r = !!S.pred[P1.id];
-     E.config({ vista:V0, prog:{ abre:r ? .85 : 0, col:r ? 1 : 0 }, caja:cajaSolido(C4, r ? 1 : 0),
+     E.config({ vista:V0, prog:{ abre:r ? 1 : 0, col:r ? 1 : 0 }, caja:'auto',
        desc:'Un cubo de 4 × 4 × 4 cubitos pintado por fuera.',
        dibujo:(L, E) => dibCubo4(L, E, C4),
        ley:r ? LEY_CAT : [['pin', 'caras pintadas']], lect:r ? lectCat(C4) : null, control:r ? manijaAbrir('abre', 'Abrir por pisos') : null }); },
-   anima:fin => { E.cfg.ley = LEY_CAT; E.leyenda(); E.cfg.caja = cajaSolido(C4, 1); E.recajar();
-     E.cadena([n => { E.prog.col = 1; E.dibujar(); esperar(500, n); }, n => E.animar('abre', .85, 1500, n)], () => {
+   anima:fin => { E.cfg.ley = LEY_CAT; E.leyenda(); 
+     E.cadena([n => { E.prog.col = 1; E.dibujar(); esperar(500, n); }, n => E.animar('abre', 1, 1500, n)], () => {
        E.cfg.lect = lectCat(C4); E.cfg.control = manijaAbrir('abre', 'Abrir por pisos'); E.lecturas(); E.control();
        E.avisar('Cada cubito tomó el color de sus caras pintadas: rojo las 8 esquinas, naranja los 24 de las aristas, turquesa los 24 del centro de las caras y violeta los 8 de adentro. Los cuatro pisos se separaron.'); fin(); }); },
    body:() => `<p class="problem">Un cubo de 4 × 4 × 4 cubitos se pinta por fuera y se desarma. ¿Cuántos cubitos tienen <b>exactamente dos</b> caras pintadas?</p>${opcionesHTML(P1.opts, 'fb')}
@@ -670,10 +707,10 @@ const steps = [
  { k:'Paso 3', t:'Cuatro lugares, cuatro fórmulas',
    prep:() => {
      const R = n => MC.pintado({ dims:[n, n, n] });
-     E.config({ vista:V0, prog:{ n:5 }, caja:cajaSolido(R(7), .6),
+     E.config({ vista:V0, prog:{ n:5 }, caja:'auto',
        desc:'Un cubo de n × n × n cubitos pintado, con los pisos un poco separados y cada cubito del color de sus caras pintadas.',
-       dibujo:(L, E) => dibSolido(L, R(E.prog.n), { col:true, abre:.6, modo:'pisos' }),
-       ley:LEY_CAT, lect:E => lectCat(R(E.prog.n)).concat([['ink', 'total n³', E.prog.n ** 3]]),
+       dibujo:(L, E) => dibSolido(L, R(E.prog.n), { col:true, abre:1, modo:'pisos' }),
+       ley:LEY_CAT, lect:E => lectCat(R(E.prog.n)).concat([['ink', 'n³', E.prog.n ** 3]]),
        control:{ etiqueta:'Arista n', min:2, max:7, paso:1, fmt:v => `n = ${v}`, leer:E => E.prog.n, poner:(E, v) => { E.prog.n = v; } } }); },
    body:() => `<p class="problem">Para un cubo de n × n × n pintado por fuera, cada lugar tiene su fórmula. Mueve la arista n y mira cómo cambia cada grupo.</p>
    <div class="tabla"><table class="formulas"><tr><th>Cubitos con…</th><th>dónde están</th><th>cuántos</th></tr>
@@ -687,18 +724,18 @@ const steps = [
 
  { k:'Paso 4', t:'Sobre la mesa y contra la pared', gate:P2,
    prep:() => { const r = !!S.pred[P2.id];
-     E.config({ vista:{ az:-28, el:26 }, azRango:r ? null : [-75, 75], prog:{ sep:r ? 1 : 0, col:r ? 1 : 0, abre:r ? .6 : 0 }, caja:[[-1, -2, 0], [6, 5.2, 5]],
+     E.config({ vista:{ az:-28, el:26 }, azRango:r ? null : [-75, 75], prog:{ sep:r ? 1 : 0, col:r ? 1 : 0, abre:r ? 1 : 0 }, caja:'auto',
        desc:'Un bloque de 5 × 4 × 3 cubitos sobre la mesa, con su cara de atrás pegada a una pared. Está pintado todo lo que se ve.',
        dibujo:(L, E) => { const pr = E.prog;
-         mesa(L, -1, 6, -2, 4); paredAtras(L, -1, 6, 4, 4.6, 1 - pr.sep);
+         mesa(L, -1, 6 + pr.abre*2*6.5, -2.2, 4); paredAtras(L, -1, 6, 4, 4.6, 1 - pr.sep);
          dibSolido(L, MP, { col:pr.col > .5, solo:pr.col > .5 ? [0] : null, abre:pr.abre, mover:[0, -1.6*pr.sep, .0] }); },
-       ley:r ? [['p0', 'ninguna cara pintada'], ['pin', 'caras pintadas']] : [['pin', 'caras pintadas']],
+       ley:r ? [['p0', 'ninguna cara pintada']] : [['pin', 'caras pintadas']],
        lect:r ? [['p0', 'ninguna', MP.respuestas.k], ['ink', 'cubitos', MP.cubitos]] : [['ink', 'cubitos', MP.cubitos]],
        control:r ? manijaAbrir('abre', 'Abrir por pisos') : null }); },
-   anima:fin => { E.cfg.ley = [['p0', 'ninguna cara pintada'], ['pin', 'caras pintadas']]; E.leyenda();
+   anima:fin => { E.cfg.ley = [['p0', 'ninguna cara pintada']]; E.leyenda();
      E.cfg.azRango = null;
      E.cadena([n => E.animar('sep', 1, 1200, n), n => E.animar('az', 150, 1600, n), E.pausa(900), n => E.animar('az', -28, 1400, n),
-       n => { E.prog.col = 1; E.dibujar(); esperar(400, n); }, n => E.animar('abre', .6, 1200, n)], () => {
+       n => { E.prog.col = 1; E.dibujar(); esperar(400, n); }, n => E.animar('abre', 1, 1200, n)], () => {
        E.cfg.lect = [['p0', 'ninguna', MP.respuestas.k], ['ink', 'cubitos', MP.cubitos]]; E.cfg.control = manijaAbrir('abre', 'Abrir por pisos'); E.lecturas(); E.control();
        E.avisar('El bloque se separó de la pared y giró: su cara de atrás quedó sin pintar, igual que la de abajo, que estaba sobre la mesa. Se iluminaron los 18 cubitos sin ninguna cara pintada: 3 de ancho, 3 de fondo y 2 de alto.'); fin(); }); },
    body:() => `<p class="problem">Este bloque de 5 × 4 × 3 cubitos (5 de ancho, 4 de fondo, 3 de alto) está sobre la mesa y pegado a la pared por detrás. Se pinta todo lo que queda a la vista. ¿Cuántos cubitos quedan sin <b>ninguna</b> cara pintada?</p>${opcionesHTML(P2.opts, 'fb')}
@@ -712,14 +749,14 @@ const steps = [
 
  { k:'Paso 5', t:'Un sólido armado', gate:P3,
    prep:() => { const r = !!S.pred[P3.id];
-     E.config({ vista:{ az:-38, el:30 }, prog:{ abre:r ? 1 : 0 }, caja:cajaSolido(AR, r ? 1 : 0, 'todo'),
-       desc:`Un sólido de ${AR.cubitos} cubitos pegados sobre la mesa: adelante, columnas de 3, 2 y 1 cubitos; en el medio, de 2, 2 y 1; atrás, de 1, 1 y 1. Está pintado por fuera, menos la base.`,
-       dibujo:(L, E) => { mesa(L, -1, 5.5, -1, 5.5); dibSolido(L, AR, { abre:E.prog.abre, modo:'todo', gap:.7 }); },
+     E.config({ vista:{ az:-38, el:30 }, prog:{ abre:r ? 1 : 0 }, caja:'auto',
+       desc:`Un sólido de ${AR.cubitos} cubitos pegados sobre la mesa: adelante, columnas de 3, 2 y 1 cubitos; en el medio, de 2 y 1, desde la izquierda; atrás, una sola de 1, a la izquierda. Está pintado por fuera, menos la base.`,
+       dibujo:(L, E) => { mesa(L, -1, 4.6, -1, 4.6); dibSolido(L, AR, { abre:E.prog.abre, modo:'todo', gap:.7 }); },
        ley:[['pin', 'caras pintadas'], ['cubo', 'caras sin pintar']],
        lect:r ? lectSol : [['ink', 'cubitos', AR.cubitos]], control:r ? manijaAbrir('abre', 'Separar') : null }); },
-   anima:fin => { E.cfg.caja = cajaSolido(AR, 1, 'todo'); E.recajar(); E.animar('abre', 1, 1800, () => { E.cfg.lect = lectSol; E.cfg.control = manijaAbrir('abre', 'Separar'); E.lecturas(); E.control();
+   anima:fin => { E.animar('abre', 1, 1800, () => { E.cfg.lect = lectSol; E.cfg.control = manijaAbrir('abre', 'Separar'); E.lecturas(); E.control();
      E.avisar(`Los cubitos se separaron: las caras que estaban pegadas y las de la base quedaron sin pintar. Hay ${AR.caras} caras pintadas.`); fin(); }); },
-   body:() => `<p class="problem">Este sólido de ${AR.cubitos} cubitos pegados está sobre la mesa. Adelante tiene columnas de 3, 2 y 1 cubitos; en el medio, de 2, 2 y 1; atrás, de 1, 1 y 1. Se pinta por fuera, menos la base. ¿Cuántas caras de cubito quedan ${V_('pin', 'pintadas')}?</p>${opcionesHTML(P3.opts, 'fb')}
+   body:() => `<p class="problem">Este sólido de ${AR.cubitos} cubitos pegados está sobre la mesa. Adelante tiene columnas de 3, 2 y 1 cubitos; en el medio, de 2 y 1, desde la izquierda; atrás, una sola columna de 1, a la izquierda. Se pinta por fuera, menos la base. ¿Cuántas caras de cubito quedan ${V_('pin', 'pintadas')}?</p>${opcionesHTML(P3.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">6 × ${AR.cubitos} = ${6*AR.cubitos}<span class="note">todas las caras de los cubitos</span></div>
    <div class="eq">− ${6*AR.cubitos - AR.expuestas}<span class="note">caras pegadas (dos por cada par de cubitos que se tocan)</span></div>
@@ -730,13 +767,13 @@ const steps = [
 
  { k:'Paso 6', t:'Tres túneles en un cubo', gate:P4,
    prep:() => { const r = !!S.pred[P4.id];
-     E.config({ vista:{ az:-30, el:28 }, prog:{ saca:r ? 1 : 0, abre:r ? .7 : 0 }, caja:r ? CAJA_TU : [[-.5, -.5, 0], [5.5, 5.5, 5]],
+     E.config({ vista:{ az:-30, el:28 }, prog:{ saca:r ? 1 : 0, abre:0 }, caja:'auto',
        desc:'Un cubo de 5 × 5 × 5 cubitos con tres túneles de un cubito de ancho, de cara a cara: de izquierda a derecha, de adelante hacia atrás y de arriba hacia abajo, los tres por el centro.',
        dibujo:(L, E) => dibTuneles(L, E, TU, 5),
        ley:r ? [['tun', 'cubitos que se quitan'], ['cr', 'el cubito del cruce']] : [['ink', 'cubitos del cubo']],
        lect:r ? lectTun : null, control:r ? manijaAbrir('abre', 'Abrir por pisos') : null }); },
-   anima:fin => { E.cfg.ley = [['tun', 'cubitos que se quitan'], ['cr', 'el cubito del cruce']]; E.leyenda(); E.cfg.caja = CAJA_TU; E.recajar();
-     E.cadena([n => E.animar('saca', 1, 2200, n), E.pausa(400), n => E.animar('abre', .7, 1200, n)], () => {
+   anima:fin => { E.cfg.ley = [['tun', 'cubitos que se quitan'], ['cr', 'el cubito del cruce']]; E.leyenda();
+     E.cadena([n => E.animar('saca', 1, 2200, n)], () => {
        E.cfg.lect = lectTun; E.cfg.control = manijaAbrir('abre', 'Abrir por pisos'); E.lecturas(); E.control();
        E.avisar(`Los cubitos de los túneles salieron del cubo: 4 por cada túnel y el del centro, que es de los tres, una sola vez. Se quitaron ${TU.quitados} y quedan ${TU.quedan}.`); fin(); }); },
    body:() => `<p class="problem">A un cubo de 5 × 5 × 5 cubitos se le hacen tres túneles rectos de un cubito de ancho, de cara a cara: uno de izquierda a derecha, uno de adelante hacia atrás y uno de arriba hacia abajo. Los tres pasan por el centro. ¿Cuántos cubitos quedan?</p>${opcionesHTML(P4.opts, 'fb')}
@@ -745,7 +782,7 @@ const steps = [
    <div class="eq">${V_('cr', 'el del centro')} está en los 3: se contó 3 veces y es 1 → 15 − 2 = ${V_('tun', TU.quitados)}</div>
    <div class="eq">quedan 125 − ${V_('tun', TU.quitados)} = ${TU.quedan}</div></div>
    <p>Primero suma los cubitos de cada túnel; después, en cada ${V_('cr', 'cruce')}, resta las veces que ese cubito se contó de más. Si se cruzan dos túneles, se resta 1; si se cruzan tres en el mismo cubito, se restan 2.</p>
-   ${fuenteHip('Contar el cruce más de una vez, descontarlo por parejas o contar solo los huecos que se ven')}</div>` },
+   ${fuenteHip('Contar el cruce más de una vez, descontarlo por parejas o contar solo los huecos que se ven', 'con cubos perforados por túneles')}</div>` },
 
  { k:'Paso 7', t:'Barras que atraviesan', gate:P5,
    prep:() => { const r = !!S.pred[P5.id];
@@ -758,13 +795,13 @@ const steps = [
      E.cadena([n => { E.prog.marca = 1; E.dibujar(); esperar(500, n); }, n => E.animar('abre', 1, 1600, n)], () => {
        E.cfg.lect = lectBar; E.cfg.control = manijaAbrir('abre', 'Separar'); E.lecturas(); E.control();
        E.avisar(`Los cubitos se separaron: entre dos cubitos vecinos de una barra hay dos caras atravesadas, una de cada uno. Son ${BA.caras} caras en ${BA.atravesados} cubitos.`); fin(); }); },
-   body:() => `<p class="problem">Tres barras atraviesan este bloque de 4 × 3 × 3 cubitos de cara a cara, una en cada dirección, y se cruzan en un mismo cubito. ¿Cuántas caras de cubito atraviesan en total?</p>${opcionesHTML(P5.opts, 'fb')}
+   body:() => `<p class="problem">Tres barras atraviesan este bloque de 4 × 3 × 3 cubitos de cara a cara, cada una por el centro de una fila de cubitos, una en cada dirección, y se cruzan en un mismo cubito. ¿Cuántas caras de cubito son atravesadas por las barras?</p>${opcionesHTML(P5.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">${V_('ca', 'caras')} = 2 × (4 + 3 + 3) = ${V_('ca', BA.caras)}<span class="note">dos por cubito y por barra</span></div>
    <div class="eq">${V_('b', 'cubitos')} = 4 + 3 + 3 − 2 = ${V_('b', BA.atravesados)}<span class="note">${V_('cr', 'el del cruce')}, una vez</span></div></div>
    <p>Las preguntas de barras piden a veces <b>caras</b> y a veces <b>cubitos</b>. Las caras se suman barra por barra (el cubito del cruce tiene seis); los cubitos se cuentan como en los túneles, restando los cruces.</p>
    <p class="hint">Sin atravesar quedan ${BA.libres} de los ${BA.cubitos} cubitos.</p>
-   ${fuenteHip('Dar los cubitos en vez de las caras, contar como una las dos caras que se tocan o dar dos caras al cubito del cruce')}</div>` },
+   ${fuenteHip('Dar los cubitos en vez de las caras, contar como una las dos caras que se tocan o dar dos caras al cubito del cruce', 'con barras que atraviesan bloques de cubitos')}</div>` },
 
  { k:'Paso 8', t:'Una escalera que crece', gate:P6,
    prep:() => { const r = !!S.pred[P6.id];
@@ -780,13 +817,13 @@ const steps = [
    body:() => `<p class="problem">Las figuras 1, 2 y 3 son escaleras de cubitos de un cubito de fondo, sobre la mesa. Se pinta cada figura por fuera, sin la base. La figura 10 tiene ${ES10.area} cuadraditos pintados. ¿Cuántos tiene la figura 20?</p>${opcionesHTML(P6.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">adelante y atrás: 2 × (1 + 2 + … + n) = n(n + 1)</div>
-   <div class="eq">arriba: n · izquierda: n · derecha: n</div>
+   <div class="eq">arriba: n; izquierda: n; derecha: n</div>
    <div class="eq">${V_('pin', 'pintados')} = n(n + 1) + 3n = n² + 4n → n = 20: ${V_('pin', ES.area)}</div></div>
    <p>Antes de extender una sucesión de sólidos, mira cómo crece cada lado: lo de adelante y atrás crece como un triángulo de cubitos (n²), y lo demás, como n. Por eso la figura 20 no es el doble de la 10 ni crece de 7 en 7.</p>
    <p class="fuente">Duplicar un término (la opción A) es el método del «objeto entero», que Stacey (1989) describe como frecuente en sucesiones, incluso en alumnos que antes usaron bien otro método; no da porcentajes. Suponer un crecimiento parejo y contar la base son hipótesis nuestras.</p></div>` },
 
  { k:'Paso 9', t:'Lo que se cuenta y lo que no',
-   prep:() => { const R = MC.pintado({ dims:[4, 4, 4] }); E.config({ vista:V0, prog:{ abre:.85 }, caja:cajaSolido(R, 1),
+   prep:() => { const R = MC.pintado({ dims:[4, 4, 4] }); E.config({ vista:V0, prog:{ abre:1 }, caja:'auto',
      desc:'El cubo de 4 × 4 × 4, abierto por pisos, con cada cubito del color de sus caras pintadas.',
      dibujo:(L, E) => dibSolido(L, R, { col:true, abre:E.prog.abre, modo:'pisos' }),
      ley:LEY_CAT, control:manijaAbrir('abre', 'Abrir por pisos') }); },
@@ -797,29 +834,30 @@ const steps = [
    <tr><th>${V_('pin', 'caras pintadas')} de un sólido</th><td>6N − pegadas − base</td></tr>
    <tr><th>${V_('tun', 'túneles')}</th><td>suma de túneles − lo contado de más en los ${V_('cr', 'cruces')}</td></tr>
    <tr><th>${V_('ca', 'caras atravesadas')}</th><td>2 × cubitos de cada barra, sumados</td></tr>
-   <tr><th>sucesión de sólidos</th><td>cómo crece cada lado, no el doble ni de a poco</td></tr></table></div>
-   <p class="hint">Sigue con «¿Qué pasa si…?»: una esquina del cuarto, otro sólido armado, un cubo con más túneles, una tira que se corta para armar un cubo y el mayor cubo con bloques de dos tamaños.</p>` },
+   <tr><th>sucesión de sólidos</th><td>cómo crece cada lado, no el doble ni sumando siempre lo mismo</td></tr></table></div>
+   <p class="hint">Sigue con «¿Qué pasa si…?»: una esquina del cuarto, otro sólido armado, un cubo con más túneles, una tira que se corta para armar un cubo, el mayor cubo con bloques de dos tamaños y una pirámide escalonada que crece.</p>` },
 ];
 
 // ----- los dibujos de túneles, barras y escalera -----
 function dibTuneles(L, E, T, n){
   const pr = E.prog;
-  mesa(L, -3.5, n + 3.5, -3.5, n + 3.5);
-  const cruce = new Set(T.cruceCeldas.map(MC.util.clave)), c0 = (n - 1)/2;
-  for (const p of T.quedanCeldas) L.cubo(abrir(p, pr.abre, 'pisos', .9), {});
-  if (pr.saca > 0){
+  mesaAbierta(L, [n, n, n], pr.abre, 3.5);
+  const cruce = new Set(T.cruceCeldas.map(MC.util.clave)), c0 = (n - 1)/2, dim = [n, n, n];
+  for (const p of T.quedanCeldas) L.cubo(abrir(p, pr.abre, 'pisos', .9, dim), {});
+  // al abrir por pisos, los cubitos quitados se apagan para dejar ver los huecos
+  if (pr.saca > 0 && pr.abre < .98){
     for (const p of T.quitadas){
       const k = MC.util.clave(p), esCruce = cruce.has(k);
       // cada cubito sale por su túnel hacia la cara más cercana; el del cruce sube por encima del cubo
-      const base = abrir(p, pr.abre, 'pisos', .9);
+      const base = abrir(p, pr.abre, 'pisos', .9, dim);
       let q;
       if (esCruce) q = lerp3(base, [n + 1.5, -2.5, 0], pr.saca);   // el del cruce sale aparte, una sola vez
       else {
         const ejes = [0, 1, 2].filter(i => p[i] !== c0), i = ejes.length ? ejes.reduce((a, b) => (Math.abs(p[a] - c0) >= Math.abs(p[b] - c0) ? a : b)) : 2;
         const d = [0, 0, 0]; d[i] = i === 2 || p[i] > c0 ? 1 : -1;
-        q = add3(base, d.map(v => v*(i === 2 ? n*(1 + .9*pr.abre) - c0 + .5 : 3.2)*pr.saca));
+        q = add3(base, d.map(v => v*(i === 2 ? n*(1 + .9*pr.abre) + .5 : 3.2)*pr.saca));
       }
-      L.cubo(q, { col:esCruce ? 'cr' : 'tun', alfa:.95 });
+      L.cubo(q, { col:esCruce ? 'cr' : 'tun', alfa:.95*(1 - pr.abre) });
     }
   }
 }
@@ -839,7 +877,7 @@ function dibBarras(L, E){
     const i = 'xyz'.indexOf(e), otros = [0, 1, 2].filter(j => j !== i);
     const a = [0, 0, 0], b = [0, 0, 0];
     otros.forEach((j, t) => { a[j] = b[j] = (en[t] + .5)*(1 + g) - g/2; });
-    a[i] = -1.2; b[i] = largo[i]*(1 + g) + .2;
+    a[i] = -1.2; b[i] = largo[i]*(1 + g) - g + 1.2;
     L.linea(a, b, 'ink', { ancho:3.5, alfa:.9 });
   });
 }
@@ -864,9 +902,9 @@ function dibEscalera(L, E){
   R.celdas.forEach((p, i) => L.cubo(p, { caras:R.porCara[i] }));
   L.texto([n/2, 0, -.7], `figura ${n}`, 'muted', { dy:10 });
 }
-const lectEsc = E => { const n = Math.max(1, Math.round(E.prog.n)), F = MC.sucesion({ tipo:'escalera', n }); return [['ink', 'figura', n], ['ink', 'cubitos', F.cubitos], ['pin', 'pintados', F.area]]; };
+const lectEsc = E => { const n = Math.max(1, Math.round(E.prog.n)), F = MC.sucesion({ tipo:'escalera', n }); return [['ink', 'figura', n], ['ink', 'cubitos', F.cubitos], ['pin', 'pintadas', F.area]]; };
 const manijaEsc = { etiqueta:'Figura', min:1, max:20, paso:1, fmt:v => `n = ${v}`, leer:E => Math.round(E.prog.n), poner:(E, v) => { E.prog.n = v; } };
-var lectSol = [['pin', 'caras pintadas', AR.caras], ['ink', 'pegadas', 6*AR.cubitos - AR.expuestas], ['ink', 'en la mesa', AR.expuestas - AR.caras]];
+var lectSol = [['pin', 'pintadas', AR.caras], ['ink', 'pegadas', 6*AR.cubitos - AR.expuestas], ['ink', 'en la mesa', AR.expuestas - AR.caras]];
 
 const dots = $('dots');
 steps.forEach((s, k) => {
@@ -939,7 +977,7 @@ go(0);
 <script>
 /* ================= MODO 2: ¿qué pasa si…? =================
    Una esquina del cuarto, otro sólido armado, un cubo con cuatro túneles y su peso, una tira que se corta para armar un
-   cubo y el mayor cubo con bloques de dos tamaños. La escena cambia recién después de responder. */
+   cubo, el mayor cubo con bloques de dos tamaños y una pirámide escalonada. La escena cambia recién después de responder. */
 (function(){
 const $ = id => document.getElementById(id);
 const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2', 'ctl2', 'izq2', 'der2');
@@ -950,9 +988,9 @@ const TUN4 = [{ eje:'x', en:[1, 2] }, { eje:'y', en:[1, 2] }, { eje:'z', en:[1, 
 const PE = MC.agujereado({ n:4, masa:5, tuneles:TUN4 });
 const DI = MC.diseccion({ dims:[32, 2, 1] });
 const MY = MC.mayorCubo({ g:3, grandes:3, chicos:60 });
+const PY = MC.sucesion({ tipo:'piramide', n:12, desde:6 }), PY6 = MC.sucesion({ tipo:'piramide', n:6 });
 const manijaAbrir = (k, et) => ({ etiqueta:et || 'Abrir', min:0, max:100, paso:1, fmt:v => `${Math.round(v)} %`, leer:E => Math.round((E.prog[k] || 0)*100), poner:(E, v) => { E.prog[k] = v/100; } });
 const g = n => `${n} g`;
-const CAJA_T4 = [[-3, -3, 0], [7, 7, 11]];
 
 const EXPS = [
  { id:'esquina', corto:'En la esquina del cuarto', ok:'b',
@@ -965,57 +1003,57 @@ const EXPS = [
      desc:'Un cubo de 3 × 3 × 3 cubitos en la esquina de un cuarto: sobre el piso, contra la pared de atrás y la de la izquierda, pintado en lo que se ve.',
      dibujo:(L, E) => { const pr = E.prog; mesa(L, 0, 4.5, -2.5, 3); paredAtras(L, 0, 4.5, 3, 4, 1 - pr.sep); paredIzq(L, 0, -2.5, 3, 4, 1 - pr.sep);
        dibSolido(L, ESQ, { col:pr.col > .5, solo:pr.col > .5 ? [3] : null, mover:[.8*pr.sep, -1.4*pr.sep, .6*pr.sep] }); },
-     ley:r ? [['p3', 'tres caras pintadas'], ['pin', 'caras pintadas']] : [['pin', 'caras pintadas']],
+     ley:r ? LEY_CAT : [['pin', 'caras pintadas']],
      lect:r ? lectCat(ESQ) : null }),
-   despues:fin => { E.cfg.ley = [['p3', 'tres caras pintadas'], ['pin', 'caras pintadas']]; E.leyenda(); E.cfg.azRango = null;
+   despues:fin => { E.cfg.ley = LEY_CAT; E.leyenda(); E.cfg.azRango = null;
      E.cadena([n => E.animar('sep', 1, 1300, n), n => E.animar('az', 215, 2200, n), E.pausa(600), n => E.animar('az', 32, 1600, n), n => { E.prog.col = 1; E.dibujar(); esperar(200, n); }], () => { E.cfg.lect = lectCat(ESQ); E.lecturas();
        E.avisar('El cubo salió de la esquina y giró: sus caras de atrás y de la izquierda quedaron sin pintar, igual que la de abajo. Solo la esquina de arriba, adelante y a la derecha tiene tres caras pintadas.'); fin(); }); },
    exp:() => `<p>Una esquina tiene tres caras pintadas solo si ninguna de sus tres caras toca el piso o una pared. Con el piso y dos paredes, de las 8 esquinas queda ${V_('p3', '1')}: la de arriba, adelante y a la derecha.</p>
      <p>Los cubitos sin ninguna cara pintada también cambian: (3 − 1)³ = ${V_('p0', ESQ.cuenta[0])}, porque de cada lado se quita una sola capa.</p>${fuenteHip('Pintar también lo que toca el piso o las paredes')}` },
 
- { id:'armado', corto:'Otro sólido armado', ok:'b',
+ { id:'armado', corto:'Otro sólido armado', ok:'c',
    q:`Este sólido de ${AR2.cubitos} cubitos está sobre la mesa. Adelante tiene columnas de 3, 2 y 2 cubitos; en el medio, de 2, 1 y 1; atrás, una sola columna de 1, a la izquierda. Se pinta por fuera, menos la base. ¿Cuántos cubitos quedan con <b>exactamente dos</b> caras pintadas?`,
-   opts:[['a', `${AR2.errores.k.yLaSiguiente} cubitos`, 'RME4', 'hipotesis'], ['b', `${AR2.respuestas.k} cubitos`], ['c', `${AR2.errores.k.otra} cubitos`, 'RME4', 'hipotesis'], ['d', `${AR2.errores.k.conTodas} cubitos`, 'RME1', 'hipotesis']],
+   opts:[['a', `${AR2.errores.k.yLaSiguiente} cubitos`, 'RME4', 'hipotesis'], ['b', `${AR2.errores.k.otra} cubitos`, 'RME4', 'hipotesis'], ['c', `${AR2.respuestas.k} cubitos`], ['d', `${AR2.errores.k.conTodas} cubitos`, 'RME1', 'hipotesis']],
    fb:{ a:`${AR2.errores.k.yLaSiguiente} junta los de dos caras con los de tres. «Exactamente dos» deja fuera a los de tres.`,
-     c:`${AR2.errores.k.otra} son los que tienen tres caras pintadas, no dos.`,
+     b:`${AR2.errores.k.otra} son los que tienen tres caras pintadas, no dos.`,
      d:`${AR2.errores.k.conTodas} sería si también se pintara la base: entonces los cubitos de abajo tendrían una cara más.` },
-   antes:r => E.config({ vista:{ az:-38, el:30 }, prog:{ abre:r ? 1 : 0, col:r ? 1 : 0 }, caja:cajaSolido(AR2, r ? 1 : 0, 'todo'),
+   antes:r => E.config({ vista:{ az:-38, el:30 }, prog:{ abre:r ? 1 : 0, col:r ? 1 : 0 }, caja:'auto',
      desc:`Un sólido de ${AR2.cubitos} cubitos sobre la mesa: adelante, columnas de 3, 2 y 2; en el medio, de 2, 1 y 1; atrás, una columna de 1. Pintado por fuera, menos la base.`,
      dibujo:(L, E) => { mesa(L, -1, 5.5, -1, 5.5); dibSolido(L, AR2, { col:E.prog.col > .5, abre:E.prog.abre, modo:'todo', gap:.7 }); },
-     ley:r ? LEY_CAT.concat([['pin', 'caras pintadas']]) : [['pin', 'caras pintadas']],
-     lect:r ? lectCat(AR2) : [['ink', 'cubitos', AR2.cubitos]], control:r ? manijaAbrir('abre', 'Separar') : null }),
-   despues:fin => { E.cfg.ley = LEY_CAT.concat([['pin', 'caras pintadas']]); E.leyenda(); E.cfg.caja = cajaSolido(AR2, 1, 'todo'); E.recajar();
-     E.cadena([n => { E.prog.col = 1; E.dibujar(); esperar(300, n); }, n => E.animar('abre', 1, 1500, n)], () => { E.cfg.lect = lectCat(AR2); E.cfg.control = manijaAbrir('abre', 'Separar'); E.lecturas(); E.control();
+     ley:r ? LEY_CAT3 : [['pin', 'caras pintadas']],
+     lect:r ? lectCat3(AR2) : [['ink', 'cubitos', AR2.cubitos]], control:r ? manijaAbrir('abre', 'Separar') : null }),
+   despues:fin => { E.cfg.ley = LEY_CAT3; E.leyenda();
+     E.cadena([n => { E.prog.col = 1; E.dibujar(); esperar(300, n); }, n => E.animar('abre', 1, 1500, n)], () => { E.cfg.lect = lectCat3(AR2); E.cfg.control = manijaAbrir('abre', 'Separar'); E.lecturas(); E.control();
        E.avisar(`Cada cubito tomó el color de sus caras pintadas y se separaron. Con dos caras hay ${AR2.respuestas.k}.`); fin(); }); },
    exp:() => `<p>En un sólido armado no hay fórmula: se mira cada cubito y se cuentan sus caras que quedan al aire, sin las pegadas y sin la base. Separarlos ayuda a verlo. Los de una sola columna sobresalen y tienen más caras pintadas que los del medio.</p>
-     <p class="hint">Las cuentas: ${V_('p3', 'tres o más')}: ${AR2.cuenta[3] + AR2.cuenta[4] + AR2.cuenta[5]} · ${V_('p2', 'dos')}: ${AR2.cuenta[2]} · ${V_('p1', 'una')}: ${AR2.cuenta[1]} · ${V_('p0', 'ninguna')}: ${AR2.cuenta[0]}.</p>${fuenteHip('Contar también los de tres caras, confundir dos con tres o pintar la base')}` },
+     <p class="hint">Las cuentas: ${V_('p3', 'tres o más')}: ${AR2.cuenta.slice(3).reduce((a, b) => a + b, 0)} · ${V_('p2', 'dos')}: ${AR2.cuenta[2]} · ${V_('p1', 'una')}: ${AR2.cuenta[1]} · ${V_('p0', 'ninguna')}: ${AR2.cuenta[0]}.</p>${fuenteHip('Contar también los de tres caras, confundir dos con tres o pintar la base')}` },
 
- { id:'peso', corto:'Cuatro túneles y el peso', ok:'b',
+ { id:'peso', corto:'Cuatro túneles y el peso', ok:'a',
    q:'Un cubo de 4 × 4 × 4 está hecho con cubitos de 5 g. Se le hacen cuatro túneles de un cubito de ancho, de cara a cara. Uno de izquierda a derecha y otro de adelante hacia atrás, en el tercer piso, que se cruzan. Dos de arriba hacia abajo: uno pasa justo por ese cruce y el otro no toca a ningún túnel. ¿Cuánto pesa lo que queda?',
-   opts:[['a', g(PE.errores.peso.sinCruces), 'RME2', 'hipotesis'], ['b', g(PE.respuestas.peso)], ['c', g(PE.errores.peso.parejas), 'RME110', 'hipotesis'], ['d', g(PE.errores.peso.soloVisibles), 'RME3', 'hipotesis']],
-   fb:{ a:`${g(PE.errores.peso.sinCruces)} resta 4 × 4 = 16 cubitos. El del cruce está en tres túneles y se quita una sola vez.`,
+   opts:[['a', g(PE.respuestas.peso)], ['b', g(PE.errores.peso.sinCruces), 'RME2', 'hipotesis'], ['c', g(PE.errores.peso.parejas), 'RME173', 'hipotesis'], ['d', g(PE.errores.peso.soloVisibles), 'RME3', 'hipotesis']],
+   fb:{ b:`${g(PE.errores.peso.sinCruces)} resta 4 × 4 = 16 cubitos. El del cruce está en tres túneles y se quita una sola vez.`,
      c:`${g(PE.errores.peso.parejas)} descuenta los tres pares de túneles que se cruzan, pero los tres se cruzan en el mismo cubito: se descuentan 2.`,
      d:`${g(PE.errores.peso.soloVisibles)} quita solo los cubitos que se ven en la superficie. Los túneles siguen por dentro.` },
-   antes:r => E.config({ vista:{ az:-30, el:30 }, prog:{ saca:r ? 1 : 0, abre:r ? .7 : 0 }, caja:r ? CAJA_T4 : [[-.5, -.5, 0], [4.5, 4.5, 4]],
+   antes:r => E.config({ vista:{ az:-30, el:30 }, prog:{ saca:r ? 1 : 0, abre:0 }, caja:'auto',
      desc:'Un cubo de 4 × 4 × 4 cubitos con cuatro túneles: uno de izquierda a derecha y otro de adelante hacia atrás en el tercer piso, que se cruzan, y dos de arriba hacia abajo.',
      dibujo:(L, E) => dibTun4(L, E),
      ley:r ? [['tun', 'cubitos que se quitan'], ['cr', 'el cubito del cruce']] : [['ink', 'cubitos de 5 g']],
      lect:r ? [['tun', 'quitados', PE.quitados], ['ink', 'quedan', PE.quedan], ['ink', 'peso', g(PE.peso)]] : null, control:r ? manijaAbrir('abre', 'Abrir por pisos') : null }),
-   despues:fin => { E.cfg.ley = [['tun', 'cubitos que se quitan'], ['cr', 'el cubito del cruce']]; E.leyenda(); E.cfg.caja = CAJA_T4; E.recajar();
-     E.cadena([n => E.animar('saca', 1, 2000, n), n => E.animar('abre', .7, 1100, n)], () => {
+   despues:fin => { E.cfg.ley = [['tun', 'cubitos que se quitan'], ['cr', 'el cubito del cruce']]; E.leyenda();
+     E.cadena([n => E.animar('saca', 1, 2000, n)], () => {
        E.cfg.lect = [['tun', 'quitados', PE.quitados], ['ink', 'quedan', PE.quedan], ['ink', 'peso', g(PE.peso)]]; E.cfg.control = manijaAbrir('abre', 'Abrir por pisos'); E.lecturas(); E.control();
        E.avisar(`Salieron los ${PE.quitados} cubitos de los túneles; el del cruce, una sola vez. Quedan ${PE.quedan} cubitos, que pesan ${PE.peso} g.`); fin(); }); },
    exp:() => `<div class="eqs"><div class="eq">4 túneles × 4 = 16 → 16 − 2 = ${V_('tun', PE.quitados)}<span class="note">${V_('cr', 'el cruce')} está en tres túneles</span></div>
      <div class="eq">quedan 64 − ${V_('tun', PE.quitados)} = ${PE.quedan} → ${PE.quedan} × 5 g = ${g(PE.peso)}</div></div>
-     <p>El túnel que no toca a ninguno se resta entero. En el cubito donde se cruzan tres túneles, hay que devolver 2 de las 3 veces que se restó.</p>${fuenteHip('Contar el cruce varias veces, descontarlo por parejas o restar solo lo que se ve')}` },
+     <p>El túnel que no toca a ninguno se resta entero. En el cubito donde se cruzan tres túneles, hay que devolver 2 de las 3 veces que se restó.</p>${fuenteHip('Contar el cruce varias veces, descontarlo por parejas o restar solo lo que se ve', 'con cubos perforados por túneles')}` },
 
  { id:'diseccion', corto:'Una tira que se vuelve cubo', ok:'d',
-   q:'Una tira de madera de 32 × 2 × 1 cm se corta con cortes rectos para armar con todas las piezas un cubo macizo. Entre corte y corte se pueden mover y apilar las piezas, para que un corte las parta a la vez. ¿Cuántos cortes hacen falta como mínimo?',
+   q:'Una tira de madera de 32 × 2 × 1 cm se corta con cortes rectos, paralelos a sus caras, para armar con todas las piezas un cubo macizo. Entre corte y corte se pueden mover y apilar las piezas, para que un corte las parta a la vez. ¿Cuántos cortes hacen falta como mínimo?',
    opts:[['a', `${DI.errores.cortes.piezas} cortes`, 'RME113', 'hipotesis'], ['b', `${DI.errores.cortes.sinApilar} cortes`, 'RME118', 'hipotesis'], ['c', `${DI.errores.cortes.mitad} cortes`, 'RME119', 'hipotesis'], ['d', `${DI.respuestas.cortes} cortes`]],
    fb:{ a:`${DI.errores.cortes.piezas} son las piezas que hacen falta (de 4 × 2 × 1), no los cortes.`,
      b:`${DI.errores.cortes.sinApilar} serían los cortes sin apilar, uno entre cada dos piezas. Apilando, cada corte parte todas las piezas del montón.`,
      c:`${DI.errores.cortes.mitad} supone que cada corte suelta dos piezas nuevas. Apilando, cada corte duplica las piezas: 1 → 2 → 4 → 8.` },
-   antes:r => E.config({ vista:{ az:-25, el:30 }, prog:{ t:r ? DI.plan.length - 1 : 0 }, caja:r ? [[-2, -1, 0], [6, 5, 4]] : [[0, 0, 0], [32, 4, 4]],
+   antes:r => E.config({ vista:{ az:-25, el:30 }, prog:{ t:r ? DI.plan.length - 1 : 0 }, caja:'auto',
      desc:'Una tira de madera de 32 × 2 × 1, larga y baja, sobre la mesa.',
      dibujo:(L, E) => dibPlan(L, E),
      ley:r ? [['co', 'corte'], ['ink', 'piezas']] : [['ink', 'la tira de 32 × 2 × 1']],
@@ -1023,74 +1061,132 @@ const EXPS = [
    despues:fin => { E.cfg.ley = [['co', 'corte'], ['ink', 'piezas']]; E.leyenda();
      const pasos = [];
      for (let j = 0; j < DI.plan.length - 1; j++) pasos.push(n => { E.prog.t = j; E.prog.corte = 0; E.prog.mueve = 0; E.dibujar(); esperar(200, n); }, n => E.animar('corte', 1, 700, n), n => E.animar('mueve', 1, 1100, n));
-     E.cadena(pasos, () => { E.prog.t = DI.plan.length - 1; E.prog.corte = 0; E.prog.mueve = 0; E.cfg.caja = [[-2, -1, 0], [6, 5, 4]]; E.recajar();
+     E.cadena(pasos, () => { E.prog.t = DI.plan.length - 1; E.prog.corte = 0; E.prog.mueve = 0; E.dibujar();
        E.cfg.lect = [['co', 'cortes', DI.cortes], ['ink', 'piezas', DI.piezas], ['ink', 'cubo', `${DI.lado} × ${DI.lado} × ${DI.lado}`]]; E.lecturas();
        E.avisar('Tres cortes: la tira se partió en dos y se apiló; las dos piezas se partieron juntas y se apilaron; las cuatro se partieron juntas y se acomodaron en un cubo de 4 × 4 × 4.'); fin(); }); },
-   exp:() => `<div class="eqs"><div class="eq">volumen 32 × 2 × 1 = 64 = 4³ → cubo de 4</div><div class="eq">piezas de 4 de largo: 32 ÷ 4 = 8 → 1 → 2 → 4 → 8: ${V_('co', DI.cortes)} cortes</div></div>
-     <p>Ninguna pieza puede medir más de 4 de largo, así que hacen falta 8 piezas. Cada corte, apilando, a lo más <b>duplica</b> las piezas: con 2 cortes hay a lo más 4. Por eso el mínimo es 3. Sin apilar serían 7.</p>${fuenteHip('Dar las piezas en vez de los cortes, no apilar o creer que cada corte suelta dos piezas')}` },
+   exp:() => `<div class="eqs"><div class="eq">volumen 32 × 2 × 1 = 64 = 4³ → cubo de 4</div><div class="eq">piezas de 4 de largo: 32 ÷ 4 = 8</div><div class="eq">piezas tras cada corte: 1 → 2 → 4 → 8: ${V_('co', DI.cortes)} cortes</div></div>
+     <p>Ninguna pieza puede medir más de 4 de largo, así que hacen falta 8 piezas. Cada corte, apilando, a lo más <b>duplica</b> las piezas: con 2 cortes hay a lo más 4. Por eso el mínimo es 3. Sin apilar serían 7.</p>${fuenteHipResolver('Dar las piezas en vez de los cortes, no apilar o creer que cada corte suelta dos piezas')}` },
 
- { id:'mayor-cubo', corto:'El mayor cubo con dos tamaños', ok:'b',
+ { id:'mayor-cubo', corto:'El mayor cubo con dos tamaños', ok:'d',
    q:'Hay 3 cubos de 3 cm de arista y 60 cubitos de 1 cm. Con ellos se arma el mayor cubo macizo posible, usando la menor cantidad de bloques. ¿Cuántos bloques se usan?',
-   opts:[['a', `${MY.errores.bloques.porVolumen} bloques`, 'RME114', 'hipotesis'], ['b', `${MY.respuestas.bloques} bloques`], ['c', `${MY.errores.bloques.unidades} bloques`, 'RME117', 'hipotesis'], ['d', `${MY.errores.bloques.soloChicos} bloques`, 'RME116', 'hipotesis']],
+   opts:[['a', `${MY.errores.bloques.porVolumen} bloques`, 'RME114', 'hipotesis'], ['b', `${MY.errores.bloques.soloChicos} bloques`, 'RME116', 'hipotesis'], ['c', `${MY.errores.bloques.unidades} bloques`, 'RME172', 'hipotesis'], ['d', `${MY.respuestas.bloques} bloques`]],
    fb:{ a:`${MY.errores.bloques.porVolumen} sale de un cubo de 5, porque el volumen total es ${MY.volumen} ≥ 125. Pero en un cubo de 5 cabe un solo cubo de 3, y faltarían cubitos: no se puede.`,
      c:`${MY.errores.bloques.unidades} es el volumen del cubo de 4, en cubitos de 1 cm. El cubo grande cuenta como un solo bloque.`,
-     d:`${MY.errores.bloques.soloChicos} es el cubo de 3 hecho solo con cubitos. Usando un cubo grande se arma uno mayor.` },
-   antes:r => E.config({ vista:{ az:-28, el:30 }, prog:{ arma:r ? 1 : 0 }, caja:[[-1, -1, 0], [16, 8, 4]],
+     b:`${MY.errores.bloques.soloChicos} es el cubo de 3 hecho solo con cubitos. Usando un cubo grande se arma uno mayor.` },
+   antes:r => E.config({ vista:{ az:-28, el:30 }, prog:{ arma:r ? 1 : 0 }, caja:[[-1, -1, 0], [15, 8, 6.5]],
      desc:'Tres cubos de 3 cm de arista en fila y, al lado, una bandeja con 60 cubitos de 1 cm.',
      dibujo:(L, E) => dibMayor(L, E),
      ley:[['g', 'cubos de 3 cm'], ['ch', 'cubitos de 1 cm']],
      lect:r ? lectMayor : null }),
-   despues:fin => E.animar('arma', 1, 2400, () => { E.cfg.lect = lectMayor; E.lecturas();
+   despues:fin => E.animar('arma', 1, 6000, () => { E.cfg.lect = lectMayor; E.lecturas();
      E.avisar(`Se armó un cubo de 4 cm con 1 cubo grande y ${MY.usaChicos} cubitos: ${MY.bloques} bloques. Sobran ${MY.sobranGrandes} cubos grandes y ${MY.sobranChicos} cubitos.`); fin(); }),
    exp:() => `<div class="eqs"><div class="eq">volumen: 3 × 27 + 60 = ${MY.volumen} → a lo más un cubo de 5</div>
      <div class="eq">lado 5: cabe ${V_('g', '1')} grande (5 &lt; 6) → faltan 125 − 27 = 98 cubitos; hay 60 ✗</div>
      <div class="eq">lado 4: ${V_('g', '1')} grande + ${V_('ch', MY.usaChicos)} cubitos = ${MY.bloques} bloques ✓</div></div>
-     <p>El volumen solo dice el tamaño máximo posible. Hay que ver cuántos bloques grandes <b>caben</b> en el cubo: en uno de lado L entran ⌊L/3⌋³ cubos de 3. Y como cada cubo grande reemplaza a 27 cubitos, se usan los más que quepan.</p>${fuenteHip('Fijar el lado solo por el volumen, contar cubitos de volumen en vez de bloques o usar un solo tamaño')}` },
+     <p>El volumen solo dice el tamaño máximo posible. Hay que ver cuántos bloques grandes <b>caben</b> en el cubo: en uno de lado L entran (la parte entera de L ÷ 3)³ cubos de 3. Y como cada cubo grande reemplaza a 27 cubitos, se usan los más que quepan.</p>${fuenteHipResolver('Fijar el lado solo por el volumen, contar cubitos de volumen en vez de bloques o usar un solo tamaño')}` },
+
+ { id:'piramide', corto:'Una pirámide escalonada', ok:'a',
+   q:'La figura 1 es un cubito. La figura 2 es una pirámide escalonada de dos pisos: abajo, un cuadrado de 2 × 2 cubitos; encima, uno de 1 × 1, en una esquina. La figura 3 tiene pisos de 3 × 3, 2 × 2 y 1 × 1, y así sigue. Cada figura está sobre la mesa y se pinta por fuera, sin la base. La figura 6 tiene ' + PY6.area + ' cuadraditos pintados. ¿Cuántos tiene la figura 12?',
+   opts:[['a', `${PY.respuestas.area} cuadraditos`], ['b', `${PY.errores.area.objetoEntero} cuadraditos`, 'RM2', 'parcial'], ['c', `${PY.errores.area.otraBase} cuadraditos`, 'RME1', 'hipotesis'], ['d', `${PY.errores.area.lineal} cuadraditos`, 'RME112', 'hipotesis']],
+   fb:{ b:`${PY.errores.area.objetoEntero} duplica la figura 6. Pero la figura 12 no son dos figuras 6: su planta tiene cuatro veces más cuadraditos.`,
+     c:`${PY.errores.area.otraBase} cuenta también la base, ${12*12} cuadraditos que tocan la mesa y no se pintan.`,
+     d:`${PY.errores.area.lineal} supone que cada figura suma lo mismo que de la 1 a la 2 (11). De la 2 a la 3 ya suma 17: el crecimiento no es parejo.` },
+   antes:r => E.config({ vista:{ az:-30, el:26 }, prog:{ n:r ? 12 : 3, tres:r ? 0 : 1 }, caja:'auto',
+     desc:'Las figuras 1, 2 y 3: pirámides escalonadas de cubitos sobre la mesa, con pisos cuadrados apoyados en una esquina, pintadas por fuera menos la base.',
+     dibujo:(L, E) => dibPiramide(L, E),
+     ley:[['pin', 'cuadraditos pintados'], ['cubo', 'sin pintar']],
+     lect:r ? lectPir : null, control:r ? manijaPir : null }),
+   despues:fin => E.cadena([n => { E.prog.tres = 0; E.prog.n = 3; E.dibujar(); esperar(300, n); }, n => E.animar('n', 12, 2600, n)], () => {
+     E.prog.n = 12; E.cfg.lect = lectPir; E.cfg.control = manijaPir; E.lecturas(); E.control(); E.dibujar();
+     E.avisar(`La pirámide creció hasta la figura 12, de ${PY.cubitos} cubitos y ${PY.area} cuadraditos pintados. Con el control puedes ver cualquier figura.`); fin(); }),
+   exp:() => `<div class="eqs"><div class="eq">arriba (vista desde arriba): n × n = n²</div><div class="eq">los cuatro lados: 4 × (1 + 2 + … + n) = 2n(n + 1)</div>
+     <div class="eq">${V_('pin', 'pintados')} = n² + 2n(n + 1) = 3n² + 2n → n = 12: ${V_('pin', PY.area)}</div></div>
+     <p>Desde arriba se ve toda la planta, aunque esté escalonada: cada escalón muestra su parte. Los lados crecen como 1 + 2 + … + n. Por eso la figura 12 no es el doble de la 6: lo de arriba crece como n².</p>
+     <p class="fuente">Duplicar un término (la opción B) es el método del «objeto entero», que Stacey (1989) describe como frecuente en sucesiones; no da porcentajes. Contar la base y suponer un crecimiento parejo son hipótesis nuestras.</p>` },
 ];
 function dibTun4(L, E){
   const pr = E.prog, n = 4;
-  mesa(L, -3, n + 3, -3, n + 3);
+  const dim = [n, n, n], fa = 1 - pr.abre;
+  mesaAbierta(L, dim, pr.abre, 3);
   const cruce = new Set(PE.cruceCeldas.map(MC.util.clave));
-  for (const p of PE.quedanCeldas) L.cubo(abrir(p, pr.abre, 'pisos', .9), {});
-  if (pr.saca > 0) PE.quitadas.forEach(p => {
+  for (const p of PE.quedanCeldas) L.cubo(abrir(p, pr.abre, 'pisos', .9, dim), {});
+  // al abrir por pisos, los cubitos quitados se apagan para dejar ver los huecos
+  if (pr.saca > 0 && pr.abre < .98) PE.quitadas.forEach(p => {
     const k = MC.util.clave(p), esCruce = cruce.has(k);
     // el cubito sale por el túnel al que pertenece (el del cruce, hacia arriba)
     const t = TUN4.find(t => { const i = 'xyz'.indexOf(t.eje), o = [0, 1, 2].filter(j => j !== i); return p[o[0]] === t.en[0] && p[o[1]] === t.en[1]; });
-    const base = abrir(p, pr.abre, 'pisos', .9);
-    if (esCruce) { L.cubo(lerp3(base, [n + 1.5, -2.5, 0], pr.saca), { col:'cr', alfa:.95 }); return; }
+    const base = abrir(p, pr.abre, 'pisos', .9, dim);
+    if (esCruce) { L.cubo(lerp3(base, [n + 1.5, -2.5, 0], pr.saca), { col:'cr', alfa:.95*fa }); return; }
     const i = 'xyz'.indexOf(t.eje), d = [0, 0, 0]; d[i] = i === 2 || p[i] >= 2 ? 1 : -1;
-    L.cubo(add3(base, d.map(v => v*(i === 2 ? n*(1 + .9*pr.abre) + .5 : 2.6)*pr.saca)), { col:'tun', alfa:.95 });
+    L.cubo(add3(base, d.map(v => v*(i === 2 ? n*(1 + .9*pr.abre) + .5 : 2.6)*pr.saca)), { col:'tun', alfa:.95*fa });
   });
 }
 function dibPlan(L, E){
   const pr = E.prog, j = Math.min(Math.round(pr.t), DI.plan.length - 1);
   mesa(L, -.5, 32.5, -.5, 4.5);
+  // cada pieza se dibuja con sus cubitos de 1 cm, con el contorno grueso solo en el borde de la pieza
+  const pieza = (o, d) => { for (let x = 0; x < d[0]; x++) for (let y = 0; y < d[1]; y++) for (let z = 0; z < d[2]; z++) L.cubo([o[0] + x, o[1] + y, o[2] + z], { grupo:{ o, d }, bordeAlfa:.18 }); };
   const etapa = DI.plan[j], sig = DI.plan[j + 1];
   if (sig && (pr.corte || pr.mueve)){
-    // corte: un plano por la mitad del lado largo de todas las piezas, luego cada mitad va a su lugar
-    for (const c of sig) L.caja(lerp3(c.antes, c.o, pr.mueve || 0), c.d, { alfa:1 });
+    // corte: un plano por la mitad del lado largo de todas las piezas; luego cada mitad lejana sube (o va al fondo)
+    // y después se corre a lo largo: dos tramos, sin pasar por otra pieza
+    const t1 = clamp(2*(pr.mueve || 0), 0, 1), t2 = clamp(2*(pr.mueve || 0) - 1, 0, 1);
+    for (const c of sig) pieza([lerp(c.antes[0], c.o[0], t2), lerp(c.antes[1], c.o[1], t1), lerp(c.antes[2], c.o[2], t1)], c.d);
     if (!pr.mueve || pr.mueve < .05){
       const x = etapa[0].o[0] + etapa[0].d[0]/2, h = Math.max(...etapa.map(c => c.o[2] + c.d[2])) + .6, w = Math.max(...etapa.map(c => c.o[1] + c.d[1])) + .6;
       L.corte([[x, -.3, -.2], [x, w, -.2], [x, w, h], [x, -.3, h]], 'co', { alfa:.35*(pr.corte || 1) });
     }
     return;
   }
-  for (const c of etapa) L.caja(c.o, c.d, {});
+  for (const c of etapa) pieza(c.o, c.d);
 }
 function dibMayor(L, E){
   const f = E.prog.arma;
   mesa(L, -1, 16, -1, 8);
-  // dónde está cada bloque antes (fila de cubos grandes y bandeja de cubitos) y después (el cubo de 4 en x = 0..4)
-  const grandesAntes = [[0, 0, 0], [3.6, 0, 0], [7.2, 0, 0]], grandesDespues = [[0, 0, 0], [5.2, 0, 0], [5.2, 3.8, 0]];
-  for (let i = 0; i < 3; i++) L.caja(lerp3(grandesAntes[i], grandesDespues[i], f), [3, 3, 3], { col:'g', alfa:.85 });
+  // Antes: tres cubos de 3 en fila y una bandeja de 60 cubitos (x de 11 a 14). Después: el cubo de 4 en x = 0..4.
+  // Todo se mueve por tramos y de a uno, para que nada pase a través de otra pieza: primero el tercer cubo grande
+  // (hacia el fondo y luego a la izquierda), después el segundo (a la derecha) y luego cada cubito: sube, va encima
+  // de su lugar y baja; se toman de arriba de la bandeja y se llenan de abajo hacia arriba.
+  const grande = (o, alfa) => { for (let x = 0; x < 3; x++) for (let y = 0; y < 3; y++) for (let z = 0; z < 3; z++) L.cubo([o[0] + x, o[1] + y, o[2] + z], { col:'g', grupo:{ o, d:[3, 3, 3] }, bordeAlfa:.22 }); };
+  const tramo = (a, b, c) => clamp((f - a)/(b - a), 0, 1);
+  const g3a = tramo(0, .07), g3b = tramo(.07, .14), g2 = tramo(.14, .2);
+  grande([0, 0, 0]);
+  grande([3.6 + 1.6*g2, 0, 0]);
+  grande([7.2 - 2*g3b, 3.8*g3a, 0]);
   const destino = [];
   for (let z = 0; z < 4; z++) for (let y = 0; y < 4; y++) for (let x = 0; x < 4; x++) if (!(x < 3 && y < 3 && z < 3)) destino.push([x, y, z]);
+  const N = destino.length, alto = 5.5;
   for (let i = 0; i < 60; i++){
-    const a = [11 + (i % 4), Math.floor(i/4) % 5, Math.floor(i/20)];
-    const j = i - destino.length, d = i < destino.length ? destino[i] : [9.6 + (j % 4), Math.floor(j/4) % 3, Math.floor(j/12)];
-    L.cubo(lerp3(a, d, f), { col:'ch', alfa:.8 });
+    const a = [11 + (i % 4), Math.floor(i/4) % 5, Math.floor(i/20)], k = 59 - i;   // el k-ésimo que se mueve
+    let p = a;
+    if (k < N){
+      const t0 = .2 + .8*k/N, t1 = .2 + .8*(k + 1)/N, u = tramo(t0, t1), d = destino[k];
+      const s1 = clamp(u*3, 0, 1), s2 = clamp(u*3 - 1, 0, 1), s3 = clamp(u*3 - 2, 0, 1);
+      p = [lerp(a[0], d[0], s2), lerp(a[1], d[1], s2), s3 > 0 ? lerp(alto, d[2], s3) : lerp(a[2], alto, s1)];
+    }
+    L.cubo(p, { col:'ch' });
   }
 }
+function dibPiramide(L, E){
+  const pr = E.prog;
+  if (pr.tres){
+    let x0 = 0;
+    for (const n of [1, 2, 3]){
+      const R = MC.pintado({ celdas:MC.util.celdasFigura('piramide', n), sinPintar:['mesa'] });
+      mesa(L, x0 - .4, x0 + n + .4, -.4, n + .4);
+      R.celdas.forEach((p, i) => L.cubo([p[0] + x0, p[1], p[2]], { caras:R.porCara[i] }));
+      L.texto([x0 + n/2, -.4, 0], `figura ${n}`, 'muted', { dy:14 });
+      x0 += n + 2;
+    }
+    return;
+  }
+  const n = Math.max(1, Math.round(pr.n));
+  const R = MC.pintado({ celdas:MC.util.celdasFigura('piramide', n), sinPintar:['mesa'] });
+  mesa(L, -.6, n + .6, -.6, n + .6);
+  R.celdas.forEach((p, i) => L.cubo(p, { caras:R.porCara[i] }));
+}
+const lectPir = E => { const n = Math.max(1, Math.round(E.prog.n)), F = MC.sucesion({ tipo:'piramide', n }); return [['ink', 'figura', n], ['ink', 'cubitos', F.cubitos], ['pin', 'pintadas', F.area]]; };
+const manijaPir = { etiqueta:'Figura', min:1, max:12, paso:1, fmt:v => `n = ${v}`, leer:E => Math.round(E.prog.n), poner:(E, v) => { E.prog.n = v; } };
 const lectMayor = [['ink', 'arista', `${MY.lado} cm`], ['g', 'grandes', MY.usaGrandes], ['ch', 'cubitos', MY.usaChicos], ['ink', 'bloques', MY.bloques]];
 
 const S = { k:0, pred:{}, t0:Date.now() };

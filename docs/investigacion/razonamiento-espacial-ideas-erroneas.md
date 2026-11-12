@@ -184,3 +184,18 @@ En rutas-espacio también se usan RME31, RME167 (seguir 2, 4, 6…), RME186 (mul
 | RME158 | Tomar los pedazos de un corte sobre un doblez como figuras aparte y contar como borde sus tramos sobre el doblez. |
 | RME159 | Creer que, en un corte sobre un doblez, cada capa da la figura entera. |
 | RME200 | Extender la paridad de los volteos de a dos a los volteos de a tres. |
+
+### cubitos-pintados
+
+| Código | Error |
+| --- | --- |
+| RME111 | Contar como una sola las dos caras pegadas que atraviesa una barra (largo + 1 por barra). |
+| RME112 | Suponer que la superficie crece lo mismo en cada figura (extrapolar en línea recta desde las figuras 1 y 2). |
+| RME113 | Dar el número de piezas en vez del de cortes. |
+| RME114 | Fijar el lado del mayor cubo solo por el volumen, sin ver si caben los bloques grandes. |
+| RME116 | Usar un solo tipo de bloque. |
+| RME117 | En las barras, dar solo dos caras al cubito del cruce. |
+| RME118 | No apilar las piezas al cortar. |
+| RME119 | Creer que cada corte suelta dos piezas nuevas. |
+
+La escena usa además RME170 (quitar una sola capa), RME172 (volumen en vez de bloques) y RME173 (cruces de a pares), los mismos códigos del generador cubitos-conteo, para que la medición junte los datos. RME110 y RME115 quedaron libres.
