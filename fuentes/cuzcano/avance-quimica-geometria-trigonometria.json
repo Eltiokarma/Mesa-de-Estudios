@@ -1,33 +1,33 @@
 {
   "schema_version": 1,
-  "fecha_utc": "2026-11-12T03:05:53.947645+00:00",
+  "fecha_utc": "2026-11-12T10:05:51.400228+00:00",
   "estado": "en_curso",
   "objetivo_nuevas": 3000,
   "objetivo_temas": 36,
   "fichas_anteriores_verificadas_por_sha256": 6213,
-  "fichas_nuevas": 1969,
-  "fichas_acumuladas": 8182,
-  "fichas_pendientes": 1031,
-  "temas_con_cuota_cumplida": 20,
-  "paginas_pdf_distintas_cotejadas_por_fragmentos": 498,
-  "nuevas_con_observaciones": 348,
-  "fichas_con_diagrama": 723,
+  "fichas_nuevas": 2169,
+  "fichas_acumuladas": 8382,
+  "fichas_pendientes": 831,
+  "temas_con_cuota_cumplida": 21,
+  "paginas_pdf_distintas_cotejadas_por_fragmentos": 555,
+  "nuevas_con_observaciones": 373,
+  "fichas_con_diagrama": 792,
   "ocr_repetido": false,
   "app_certificada": false,
   "sha256_de_los_indices_locales": {
-    "quimica": "f3b43a2498c568b48b26b258a3291d6cb10b8ed260136ac31a318129fd037b10",
+    "quimica": "f44cfd2ac365a9d6e8beb24d514253f3eb1459e49edaec74d37f1f5a60f62503",
     "geometria": "c758df7720c9d45f72434270e84f0e493b4f2d19e61198c444abc64e36cd2221",
-    "trigonometria": "8592cfb96bbbdca658e319b211c051dfa195641f5a6864e21208ad18282646b8"
+    "trigonometria": "7cc78f452ba58fb759b0f9945272bd4ff873e384ec79c2218cb0e224014c50f9"
   },
   "tandas": [
     {
       "curso": "quimica",
       "objetivo": 1000,
-      "nuevas": 668,
-      "pendientes": 332,
-      "lotes": 31,
-      "con_observaciones": 172,
-      "fichas_con_diagrama": 108,
+      "nuevas": 756,
+      "pendientes": 244,
+      "lotes": 34,
+      "con_observaciones": 187,
+      "fichas_con_diagrama": 121,
       "temas": [
         {
           "id": "quimica.acidos-y-bases",
@@ -238,11 +238,18 @@
         {
           "id": "quimica.reacciones-quimicas",
           "nombre": "Reacciones químicas",
-          "nuevos": 0,
+          "nuevos": 24,
           "objetivo": 83,
-          "pendientes": 83,
-          "observaciones": 0,
-          "subtemas_nuevos": {}
+          "pendientes": 59,
+          "observaciones": 8,
+          "subtemas_nuevos": {
+            "balance": 8,
+            "clasificacion": 4,
+            "energia": 4,
+            "evidencias": 2,
+            "neutralizacion": 1,
+            "redox": 5
+          }
         },
         {
           "id": "quimica.soluciones",
@@ -300,10 +307,10 @@
         {
           "id": "quimica.electroquimica",
           "nombre": "Electroquímica",
-          "nuevos": 31,
+          "nuevos": 52,
           "objetivo": 83,
-          "pendientes": 52,
-          "observaciones": 6,
+          "pendientes": 31,
+          "observaciones": 9,
           "subtemas_nuevos": {
             "Agentes oxidantes": 2,
             "Celdas en serie": 4,
@@ -314,17 +321,38 @@
             "Notación de celdas": 1,
             "Potencial estándar": 6,
             "Rendimiento de corriente": 1,
-            "Series de actividad": 1
+            "Series de actividad": 1,
+            "aplicaciones": 2,
+            "celdas-galvanicas": 2,
+            "electrolisis": 5,
+            "ley-de-faraday": 5,
+            "nernst": 1,
+            "pilas-secas": 1,
+            "potencial-estandar": 4,
+            "semiceldas": 1
           }
         },
         {
           "id": "quimica.quimica-organica",
           "nombre": "Química orgánica",
-          "nuevos": 0,
+          "nuevos": 43,
           "objetivo": 83,
-          "pendientes": 83,
-          "observaciones": 0,
-          "subtemas_nuevos": {}
+          "pendientes": 40,
+          "observaciones": 4,
+          "subtemas_nuevos": {
+            "alcanos": 2,
+            "aromaticidad": 2,
+            "carbohidratos": 6,
+            "carbonos": 1,
+            "cicloalcanos": 1,
+            "combustion": 1,
+            "grupos-funcionales": 7,
+            "hidrocarburos": 3,
+            "insaturaciones": 1,
+            "isomeria": 5,
+            "nomenclatura": 11,
+            "sustituyentes": 3
+          }
         },
         {
           "id": "quimica.estado-gaseoso-y-mezcla-gaseosa",
@@ -891,11 +919,11 @@
     {
       "curso": "trigonometria",
       "objetivo": 1000,
-      "nuevas": 668,
-      "pendientes": 332,
-      "lotes": 29,
-      "con_observaciones": 87,
-      "fichas_con_diagrama": 129,
+      "nuevas": 780,
+      "pendientes": 220,
+      "lotes": 34,
+      "con_observaciones": 97,
+      "fichas_con_diagrama": 185,
       "temas": [
         {
           "id": "trigonometria.circunferencia-trigonometrica",
@@ -1152,11 +1180,28 @@
         {
           "id": "trigonometria.numeros-complejos",
           "nombre": "Números complejos",
-          "nuevos": 0,
+          "nuevos": 29,
           "objetivo": 83,
-          "pendientes": 83,
-          "observaciones": 0,
-          "subtemas_nuevos": {}
+          "pendientes": 54,
+          "observaciones": 7,
+          "subtemas_nuevos": {
+            "argumentos": 1,
+            "conjugado": 1,
+            "de-moivre": 1,
+            "ecuacion-cuadratica": 1,
+            "ecuacion-exponencial": 2,
+            "ecuacion-polar": 1,
+            "forma-polar": 1,
+            "funciones-complejas": 4,
+            "identidad": 2,
+            "limites": 2,
+            "logaritmo": 5,
+            "partes-real-e-imaginaria": 2,
+            "potencias-complejas": 1,
+            "raices-cuartas": 1,
+            "raices-cubicas": 1,
+            "serie-geometrica": 3
+          }
         },
         {
           "id": "trigonometria.razones-trigonometricas-de-un-angulo-agudo",
@@ -1170,11 +1215,48 @@
         {
           "id": "trigonometria.razones-trigonometricas-de-un-angulo-en-posicion-normal",
           "nombre": "Razones trigonométricas de un ángulo en posición normal",
-          "nuevos": 0,
+          "nuevos": 83,
           "objetivo": 83,
-          "pendientes": 83,
-          "observaciones": 0,
-          "subtemas_nuevos": {}
+          "pendientes": 0,
+          "observaciones": 3,
+          "subtemas_nuevos": {
+            "angulos-cuadrantales": 2,
+            "angulos-entre-rectas": 4,
+            "angulos-orientados": 1,
+            "aproximacion": 2,
+            "areas": 1,
+            "baricentro": 3,
+            "bisectrices": 1,
+            "bisectriz": 1,
+            "cambio-de-ejes": 4,
+            "circunferencia": 1,
+            "coordenadas": 7,
+            "cosecante": 1,
+            "cotangente": 1,
+            "coterminales": 4,
+            "cuadrantes": 2,
+            "distancia": 2,
+            "eje-inicial-vertical": 3,
+            "ejes-iniciales": 1,
+            "identidad-pitagorica": 5,
+            "interceptos": 1,
+            "pendientes": 3,
+            "perpendiculares": 4,
+            "perpendicularidad": 4,
+            "proyecciones": 1,
+            "punto-medio": 2,
+            "puntos-medios": 3,
+            "rayos-coincidentes": 1,
+            "rayos-opuestos": 1,
+            "razon-de-segmentos": 1,
+            "reduccion": 1,
+            "rombo": 1,
+            "rotacion": 3,
+            "signos": 6,
+            "signos-cuadrantes": 2,
+            "tangencia": 2,
+            "valores-absolutos": 1
+          }
         },
         {
           "id": "trigonometria.resolucion-de-triangulos-oblicuangulos",
@@ -1368,6 +1450,54 @@
           {
             "id": "trigonometria.transformaciones-trigonometricas",
             "tema": "Transformaciones trigonométricas",
+            "fichas": 83
+          }
+        ]
+      }
+    ]
+  },
+  "lote_600_2026_11_12": {
+    "meta": 600,
+    "fichas_registradas": 200,
+    "pendientes": 400,
+    "cursos": [
+      {
+        "curso": "quimica",
+        "nuevas": 88,
+        "observaciones": 15,
+        "graficos": 13,
+        "temas": [
+          {
+            "id": "quimica.electroquimica",
+            "tema": "Electroquímica",
+            "fichas": 21
+          },
+          {
+            "id": "quimica.quimica-organica",
+            "tema": "Química orgánica",
+            "fichas": 43
+          },
+          {
+            "id": "quimica.reacciones-quimicas",
+            "tema": "Reacciones químicas",
+            "fichas": 24
+          }
+        ]
+      },
+      {
+        "curso": "trigonometria",
+        "nuevas": 112,
+        "observaciones": 10,
+        "graficos": 56,
+        "temas": [
+          {
+            "id": "trigonometria.numeros-complejos",
+            "tema": "Números complejos",
+            "fichas": 29
+          },
+          {
+            "id": "trigonometria.razones-trigonometricas-de-un-angulo-en-posicion-normal",
+            "tema": "Razones trigonométricas de un ángulo en posición normal",
             "fichas": 83
           }
         ]
