@@ -24,7 +24,7 @@ Muchas unidades traen además un botón **✎ Papel**, con problemas para resolv
 
 **Sin cuentas** (modo demostración, como en la versión de prueba):
 
-1. **La dirección de la app.** Se la da el equipo del proyecto. Mientras la app no esté publicada en internet, el equipo la instala en el laboratorio del colegio.
+1. **La dirección de la app:** **https://mesa-de-estudios.vercel.app** (publicada el 12 nov 2026). Abre la pantalla de ingreso; «Probar sin cuenta» entra en modo demostración.
 2. **Un código para su colegio.** Elijan una palabra corta, sin espacios, por ejemplo `ABC` o `SANJOSE`. Ese código va en todos los datos y sirve para separar su colegio de otros. No identifica a ningún alumno.
 3. **El enlace para los alumnos.** Es la dirección de la app con el código al final: `…/app/?colegio=ABC`. Compártanlo por WhatsApp o en un código QR en la pizarra. El alumno también puede escribir el código después, en **Perfil → Código del colegio**.
 4. **Ábranla una vez con internet** en cada equipo. Desde ahí queda guardada y funciona sin conexión; en Perfil aparece "Lista para usar sin internet". En algunos celulares aparece además el botón **Instalar en este celular**, que la deja como una app más (en el iPhone no aparece; ahí se usa desde el navegador).

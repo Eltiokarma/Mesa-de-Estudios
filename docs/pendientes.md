@@ -40,6 +40,17 @@ Si hay que hacer OCR, instala tesseract en español: `apt-get install -y tessera
 
 ## Pendientes, en orden de prioridad
 
+### Publicación (12 nov 2026)
+
+La app está en **https://mesa-de-estudios.vercel.app**, publicada en Vercel desde `main` con el preset Other en la raíz. El servidor de cuentas está en **https://mesa-de-estudios-production.up.railway.app**, en Railway desde `main` con la carpeta `servidor`. Cada push a `main` publica los dos.
+
+Antes del piloto queda:
+- **Consentimiento (Ley 29733)**, antes de cargar nombres y DNI reales.
+- **Prueba de punta a punta con datos inventados:** colegio de prueba, CSV, tarjetas, ingreso del alumno en un celular, práctica sin conexión, sincronización y panel del profesor.
+- **Probar en los celulares y en las PC reales del colegio.**
+- **Respaldos de PostgreSQL** en Railway.
+- **Los pendientes de la auditoría** que siguen abajo.
+
 ### Auditoría (12 nov 2026)
 
 Revisado: `npm test` (7889 en verde); los 90 generadores con 606 semillas como las de la app; las 99 escenas a 390 y 1366 px y en oscuro; las 307 pantallas de la app; los datos del catálogo, el papel y la caja sin conexión; y una revisión de la lógica de medición. Arreglado: la molécula grande sin conexión, papel para 22 generadores, el doble toque que contestaba la pregunta siguiente, «Borrar mi avance» que dejaba la práctica en NaN, la salida el mismo día de la entrada (fuera de Hake), preguntas repetidas al recargar, la descarga en CSV que se marcaba como descargada, la entrada de verbal que se podía saltar y la frase larga que se salía de la tarjeta.

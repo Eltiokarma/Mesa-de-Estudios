@@ -1,5 +1,7 @@
 # Publicar la app (la3)
 
+> **Publicada el 12 nov 2026:** app en https://mesa-de-estudios.vercel.app (Vercel, rama `main`, raíz del repo, preset Other) y servidor de cuentas en https://mesa-de-estudios-production.up.railway.app (Railway, carpeta `servidor`). Cada push a `main` publica los dos.
+
 La app es un sitio estático: no tiene servidor ni base de datos. Para que se instale en el celular y funcione sin conexión, tiene que estar en HTTPS. La opción recomendada es Vercel, porque es gratis para esto, da HTTPS y comprime los archivos sin configurar nada. Los requisitos del hosting están en `docs/arquitectura.md`, en «Carga, caché y despliegue».
 
 ## Qué ya está listo en el repo
