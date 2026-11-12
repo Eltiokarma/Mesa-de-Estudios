@@ -106,6 +106,32 @@
         "N 37° E está más cerca del norte que del este; E 37° N, más cerca del este."
       ],
       "verificar": [ { "fn": "azimut", "args": ["N 53° E"], "espera": 53 }, { "fn": "rumboTexto", "args": [37], "espera": "N 37° E" } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "intermedio",
+      "enunciado": "Dos ciclistas, A y B, salen a la vez de la plaza. A va 10 km hacia el este y luego 20 km con rumbo N 37° E. B va 12 km hacia el norte y luego 22 km hacia el este. Al detenerse, ¿a qué distancia queda B de A? (Usa el triángulo 3-4-5 para 37°).",
+      "respuesta": "4 km",
+      "pasos": [
+        "A: los 20 km al N 37° E son 12 km al este y 16 km al norte. Posición final: 10 + 12 = 22 km al este y 16 km al norte.",
+        "B: 12 km al norte y 22 km al este. Posición final: 22 km al este y 12 km al norte.",
+        "Las partes este-oeste coinciden (22 km); las norte-sur difieren en 16 − 12 = 4 km.",
+        "Quedan a 4 km. Si sumabas los recorridos (10 + 20 + 12 + 22 = 64 km), contabas el camino, no la distancia entre ellos."
+      ],
+      "verificar": [{"fn": "entreMoviles", "args": [[{"rumbo": "este", "largo": 10}, {"rumbo": "N 37° E", "largo": 20}], [{"rumbo": "norte", "largo": 12}, {"rumbo": "este", "largo": 22}]], "espera": 4}]
+    },
+    {
+      "id": "p10",
+      "nivel": "intermedio",
+      "enunciado": "Una pastora sale de su cabaña: camina 60 m hacia el oeste y luego 50 m con rumbo N 37° E. ¿A qué distancia y con qué rumbo queda del punto de partida, visto desde la cabaña? (Usa el triángulo 3-4-5 para 37°).",
+      "respuesta": "50 m al N 37° O",
+      "pasos": [
+        "Los 50 m al N 37° E son 30 m al este y 40 m al norte.",
+        "Neto: 60 m al oeste y 30 m al este dejan 30 m al oeste; y 40 m al norte.",
+        "Los catetos 30 y 40 dan la hipotenusa 50 m. El ángulo con el eje norte-sur es 37°, hacia el oeste: N 37° O.",
+        "Si respondías S 37° E, diste el rumbo del regreso a la cabaña, no el de la pastora vista desde ella."
+      ],
+      "verificar": [{"fn": "recorrido", "args": [[{"rumbo": "oeste", "largo": 60}, {"rumbo": "N 37° E", "largo": 50}]], "espera": {"distancia": 50, "rumbo": "N 37° O", "regreso": "S 37° E"}}]
     }
   ]
 }

@@ -154,3 +154,28 @@ Se reutilizan RMP63-sin-tapadas, RMP69-dividir, RMP69-redondeo y RMP2-voraz en e
 | RMP132 | sumar-las-vistas (sumar los números pedidos en vez de sus opuestos); como-dado (opuestas suman siempre lo mismo); misma-tirada (opuesto = otro número del mismo lanzamiento); solo-dos-lanzamientos (pareja que sirve con dos tiradas y la tercera descarta) | UNMSM 2023-I p. 25: tres fichas de dos caras |
 | RMP133 | solo-diagonales; medios-como-diagonales (cada pieza de puntos medios = una diagonal); dos-medias (solo dos de las cuatro piezas); todas-iguales; y, en la variante inversa, sin-duplicar, mitad-sin-restar, triple, otra-diagonal-mas-medias | UNMSM 2021 (4 sep 2021) p. 23: listón de una cometa |
 | RMP134 | solo-alineadas (sin intercalar); desfase-sin-perder (todas las filas intercaladas con n vasos); dividir-areas (área bandeja ÷ área circular); cuadrados (área bandeja ÷ d²) | UNMSM 2021 (4 sep 2021) p. 25: vasos en una bandeja |
+
+## Relojes con retraso y jornada; diagramas con impresos y bucles (`rm-relojes`, `rm-diagramas-flujo`, cierre-100, 12 nov 2026)
+
+Todos en hipótesis (sin dato publicado). Columnas: código · id en el generador · error · de qué trampa sale.
+
+| Código | Id en el generador | Error | Trampa de la pregunta oficial |
+| --- | --- | --- | --- |
+| RMP100 | RMP100-sin-retraso | Dar la hora en que empezó el examen y olvidar sumar el retraso (rm-relojes, tipo «retraso») | UNMSM 2019-II (10 mar 2019) p. 31: «olvidar sumar el retraso al inicio» |
+| RMP101 | RMP101-razon-invertida | Tomar el tiempo de antes como q veces el de después (leer «la cuarta parte de» al revés) (rm-relojes, «retraso») | misma pregunta: la razón entre el tiempo transcurrido y el por transcurrir |
+| RMP102 | RMP102-sin-duracion | Repartir todo el intervalo entre las partes sin quitar la duración del examen (rm-relojes, «retraso») | misma pregunta: 5x + 105 = 240, no 5x = 240 |
+| RMP103 | RMP103-retraso-restado | Restar el retraso en vez de sumarlo (rm-relojes, «retraso») | misma pregunta |
+| RMP104 | RMP104-falta-del-dia | Dar las horas que faltan para que termine el día (24 − t) cuando se pregunta por la jornada (rm-relojes, «jornada») | UNMSM 2024-II (10 mar 2024) p. 18: «responder la hora y no lo que falta» (da 3 en vez de 2) |
+| RMP105 | RMP105-ya-trabajadas | Dar las horas ya trabajadas (t − S) en vez de las que faltan (rm-relojes, «jornada») | misma pregunta |
+| RMP106 | RMP106-cuenta-lo-no-impreso | Sumar también los valores que salen de la división, que no se imprimen (rm-diagramas-flujo, «impresos») | UNMSM 2023-I (10 dic 2022) p. 29: suma de lo impreso |
+| RMP107 | RMP107-sin-sumar-cifras | Quedarse con la suma de lo impreso (3330) sin sumar sus cifras (rm-diagramas-flujo, «impresos») | misma pregunta: la respuesta es la suma de cifras de la suma |
+| RMP108 | RMP108-sale-sin-probar | Salir del bucle sin probar la última condición: «Fin» apenas N pasa de T, o imprimir K sin ver si es múltiplo (rm-diagramas-flujo, «impresos» y «bucles») | UNMSM 2026-I (4 oct 2025) p. 24: «salir del bucle antes de cumplir la condición» (951 en vez de 1832) |
+| RMP109 | RMP109-cuenta-el-ingreso | Contar como impreso el número que se ingresa (rm-diagramas-flujo, «impresos») | UNMSM 2023-I p. 29 |
+
+## Ids con código viejo, usados por los tipos nuevos (no son códigos nuevos)
+
+- rm-diagramas-flujo, «impresos» y «bucles»: RMP20-una-vuelta-menos, RMP20-una-vuelta-mas, RMP20-flecha-de-vuelta (la flecha de N ← pK + q vuelve a K ← N ÷ 2 en vez de a K ← N − c), RMP20-variable (restar al K de antes en vez de al N), RMP21-borde, RMP22-imprime-N.
+- rm-rumbos, «moviles-tramos» y «direccion»: RMP41-desde-el-destino (la trampa de UNMSM 2024-I p. 25: dar el rumbo del regreso, visto desde la tía y no desde la casa), RMP41-RMP40-al-reves-y-eje, RMP41-suma-de-posiciones, RMP41-tramo-invertido (un tramo tomado en sentido contrario), RMP40-eje, RMP40-345-al-reves, RMP42-suma-recorridos, RMP42-resta-recorridos, RMP42-sin-restar-opuestas, RMP42-suma-tramos, RMP43-angulo-recto, AR5-dato-intermedio (distancia de A o de B al punto de partida).
+- rm-relojes, «retraso» y «jornada»: AR5-hora-de-fin, AR5-la-hora, AR5-duracion-del-turno, RMP48-pasado-por-falta, RMP44-am-pm.
+
+Nota: RMP41-tramo-invertido y RMP41-suma-de-posiciones son ids nuevos dentro de la familia RMP41 (invertir el sentido); la sesión principal decide si les da fila propia en el informe.

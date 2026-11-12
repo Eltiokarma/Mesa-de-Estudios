@@ -116,6 +116,19 @@
         "P = 1 × 3 × 5 × 7 × 9 = 945."
       ],
       "verificar": [ { "fn": "resolver", "args": [{ "tipo": "acumulador", "sub": "producto", "termino": "k", "k0": 1, "p": 2, "forma": "arriba", "op": "<=", "L": 9, "orden": "acum", "imprime": "P" }], "espera": 945 } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Se ingresa N = 12. Un diagrama hace K ← N ÷ 2 y pregunta ¿K > 17?. Si es no, hace N ← K² y vuelve a K ← N ÷ 2. Si es sí, hace K ← N − 20 y pregunta ¿K es múltiplo de 5?. Si es no, hace N ← 3K + 1 y vuelve a K ← N − 20; si es sí, imprime K. ¿Qué se imprime?",
+      "respuesta": "185",
+      "pasos": [
+        "Primer bucle: K = 6 (no pasa de 17) → N = 36 → K = 18, que sí pasa de 17.",
+        "Segundo bloque: K = 36 − 20 = 16, no es múltiplo de 5 → N = 3 · 16 + 1 = 49 → K = 49 − 20 = 29.",
+        "29 no es múltiplo de 5 → N = 88 → K = 68; 68 tampoco → N = 205 → K = 185.",
+        "185 es múltiplo de 5: se imprime 185. Ojo: después de N ← 3K + 1 se vuelve a K ← N − 20, no a K ← N ÷ 2."
+      ],
+      "verificar": [{"fn": "resolver", "args": [{"tipo": "bucles", "N0": 12, "T": 17, "c": 20, "p": 3, "q": 1, "m": 5}], "espera": 185}]
     }
   ]
 }

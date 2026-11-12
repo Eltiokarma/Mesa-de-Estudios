@@ -21,6 +21,15 @@
  *   calendario   'maximo': cuántos días de una clase puede tener como máximo un año; 'inicio': qué día de la
  *                semana debe empezar un periodo para tener la mayor cantidad de días de una clase.
  *                { tipo, forma, N (días), clase: [índices], ... }
+ *   retraso      una persona llega tarde a un examen de duración fija; el tiempo desde una hora de referencia hasta
+ *                que empezó el examen es una fracción del que hay desde que termina hasta otra hora: a qué hora llegó.
+ *                { tipo, H0, Hf (min), D (min), r (retraso, min), q (la parte es 1/q del tiempo de después) }
+ *                (UNMSM 2019-II: H0 = 18:00, Hf = 22:00, D = 105, r = 25, q = 4; semilla 'unmsm-2019-II-10mar-31'.)
+ *   jornada      las horas transcurridas del día son un número de dos cifras y las que faltan para que termine el
+ *                día cumplen una relación con sus cifras; se pregunta lo que falta (o lo que ya pasó) de la
+ *                jornada. { tipo, rel: 'suma'|'suma+2'|'suma-1'|'producto'|'doble-decenas'|'triple-unidades',
+ *                S, J (horas de inicio y fin de la jornada), pide: 'falta'|'ya' }
+ *                (UNMSM 2024-II: suma, S = 15, J = 23, falta; semilla 'unmsm-2024-II-18'.)
  *   mentirosos   dos personas que mienten ciertos días y dicen algo sobre ayer o mañana: qué día es (o qué día
  *                fue ayer, o será mañana). { tipo, mienteA, mienteB, dichoA, dichoB, pide }
  *
@@ -41,6 +50,11 @@
  *   constante en vez de creciente (parcial); RMP85 leer la parte decimal de las horas como minutos (13,5 h
  *   como 13 h 50 min); AR13 MCD o producto en vez
  *   de MCM (parcial); AR18 quedarse con un día que cumple una sola condición (parcial).
+ * Errores de «retraso» y «jornada» (cierre-100, 12 nov 2026; hipótesis): RMP100 olvidar sumar el retraso (dar la hora
+ *   en que empezó el examen), RMP101 invertir la razón (la parte de antes como múltiplo de la de después), RMP102
+ *   repartir todo el intervalo sin quitar la duración del examen, RMP103 restar el retraso en vez de sumarlo;
+ *   RMP104 dar lo que falta del día cuando se pregunta por la jornada, RMP105 dar lo que ya se trabajó en vez de lo
+ *   que falta (y AR5 de la hora actual y de la duración completa, RMP48 de pasado por falta).
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -103,14 +117,25 @@
 
   const NOMBRES = [['Rosa', 'Tito'], ['Lucha', 'Pepe'], ['Ana', 'Beto'], ['Celia', 'Juan'], ['Nora', 'Raúl']];
 
+  // Preguntas oficiales reproducidas tal cual (UNMSM): semilla → [tipo, datos]; la solución y la figura son propias.
+  const OFICIAL = {
+    'unmsm-2019-II-10mar-31': ['retraso', { tipo: 'retraso', H0: 1080, Hf: 1320, D: 105, r: 25, q: 4 }],
+    'unmsm-2024-II-18': ['jornada', { tipo: 'jornada', rel: 'suma', S: 15, J: 23, pide: 'falta' }],
+  };
   function generar(semilla) {
     const rng = Azar.crear(ID + '|' + semilla);
     const FIJO = { 1: 'que-hora', 2: 'adelanto', 3: 'calendario' };
     const m = /^(entrada|salida)-([123])$/.exec(String(semilla));
-    const tipo = m ? FIJO[m[2]] : rng.elegir(['que-hora', 'que-hora', 'turno', 'turno', 'anio', 'adelanto', 'dos-relojes', 'creciente', 'calendario', 'calendario', 'mentirosos', 'mentirosos']);
+    let tipo = m ? FIJO[m[2]] : rng.elegir(['que-hora', 'que-hora', 'turno', 'turno', 'anio', 'adelanto', 'dos-relojes', 'creciente', 'calendario', 'calendario', 'mentirosos', 'mentirosos']);
+    // Los tipos de cierre-100 salen de un sorteo aparte, para no mover lo que ya se había generado con cada semilla.
+    const lado = Azar.crear(`${ID}|nuevos|${semilla}`);
+    if (!m && lado.sig() < 0.15) tipo = lado.elegir(['retraso', 'jornada']);
+    const of = OFICIAL[semilla];
+    if (of) tipo = of[0];
     for (let intento = 0; intento < 3000; intento++) {
-      const pr = ({ 'que-hora': queHora, turno, anio, adelanto, 'dos-relojes': dosRelojes, creciente, calendario, mentirosos })[tipo](rng, semilla);
+      const pr = ({ 'que-hora': queHora, turno, anio, adelanto, 'dos-relojes': dosRelojes, creciente, calendario, mentirosos, retraso, jornada })[tipo](rng, semilla, of && of[1]);
       if (pr && pr.alternativas.length >= 4) return pr;
+      if (of) break;
     }
     throw new Error('No se pudo generar un problema con 4 alternativas distintas');
   }
@@ -202,6 +227,89 @@
     const alternativas = armarHora(rng, x, errores);
     return cerrar(semilla, { variables: forma === 'hace-dentro' ? VAR_HD : forma === 'pasado-dentro' ? VAR_PD : VAR_DIA, enunciado, pregunta: ['¿Qué hora es?'], alternativas, solucion, valor: x, unidad: 'min',
       datos: { tipo: 'que-hora', forma, p, q, a, b, k } });
+  }
+
+  // ---------- llegar tarde a un examen ----------
+  const PARTE = { 2: 'la mitad', 3: 'la tercera parte', 4: 'la cuarta parte', 5: 'la quinta parte' };
+  const NOM_RET = ['Pedro', 'Rosa', 'Luis', 'Carmen', 'Mario', 'Elena'];
+  // Minutos antes de que empiece el examen: x + q·x + D = Hf − H0. Llegada = H0 + x + r.
+  const llegada = (H0, Hf, D, q, r) => H0 + (Hf - H0 - D) / (1 + q) + r;
+  function retraso(rng, semilla, fijo) {
+    let o = fijo;
+    if (!o) {
+      const q = rng.elegir([2, 3, 4, 5]);
+      const H0 = rng.elegir([360, 480, 540, 840, 900, 960, 1080]), T = 60 * rng.entero(3, 8);
+      o = { tipo: 'retraso', H0, Hf: H0 + T, D: 5 * rng.entero(9, 30), r: rng.elegir([10, 15, 20, 25, 30]), q };
+    }
+    const { H0, Hf, D, r, q } = o, T = Hf - H0;
+    const x = (T - D) / (1 + q);
+    if (!ent(x) || x < 10 || x > 90 || r >= D || Hf >= 1440) return null;
+    const lleg = H0 + x + r;
+    if (!horaOk(lleg)) return null;
+    const nom = rng.elegir(NOM_RET);
+    const variables = { r: { nombre: 'retraso', color: 'o' }, D: { nombre: 'duración del examen', color: 'i' }, k: { nombre: 'la fracción', color: 'h' }, x: { nombre: 'la hora de llegada', color: 'd' } };
+    const enunciado = [`${nom} llegó con `, v('r', `${r} minutos`), ' de retraso a un examen que duraba ', v('D', `${D} minutos`), ' y que empezó a su hora. Notó que el tiempo que transcurrió desde las ', hora(H0),
+      ' hasta que empezó el examen era ', v('k', PARTE[q]), ' del tiempo que transcurriría desde que terminó el examen hasta las ', hora(Hf), '.'];
+    const solucion = [
+      [`Entre las ${hora(H0)} y las ${hora(Hf)} hay ${dur(T)}. El examen ocupa `, v('D', dur(D)), `, así que para el tiempo de antes y el de después quedan ${dur(T - D)}.`],
+      ['Si el tiempo de antes es ', v('k', 'x'), `, como es ${PARTE[q]} del de después, el de después es ${q}x. Entonces x + ${q}x = ${dur(T - D)} → ${q + 1}x = ${dur(T - D)} → `, v('k', `x = ${dur(x)}`), '.'],
+      [`El examen empezó a las ${hora(H0)} + ${dur(x)} = ${hora(H0 + x)}.`],
+      [v('r', `${nom} llegó ${r} minutos después`), `: ${hora(H0 + x)} + ${r} min = `, v('x', hora(lleg)), '.'],
+    ];
+    const errores = [
+      h('RMP100-sin-retraso', H0 + x, `Esa es la hora en que empezó el examen. ${nom} llegó ${r} minutos después, y la pregunta pide la hora de llegada.`),
+      h('RMP101-razon-invertida', H0 + (q * (T - D)) / (1 + q) + r, `Tomaste el tiempo de antes como ${q} veces el de después. Si lo de antes es ${PARTE[q]} de lo de después, lo de después es el que tiene ${q} partes.`),
+      h('RMP102-sin-duracion', H0 + T / (1 + q) + r, `Repartiste todo el intervalo entre las partes. Una parte de ese intervalo es el examen mismo (${dur(D)}): hay que quitarlo antes de repartir.`),
+      h('RMP103-retraso-restado', H0 + x - r, `Restaste el retraso. Llegar con retraso es llegar después de la hora de inicio: se suma.`),
+      h('AR5-hora-de-fin', H0 + x + D, 'Esa es la hora en que termina el examen, no la hora de llegada.'),
+      h('RMP44-am-pm', lleg < 720 ? lleg + 720 : lleg - 720, 'La cuenta está bien, pero confundiste a. m. con p. m.'),
+    ];
+    return cerrar(semilla, { variables, enunciado, pregunta: ['¿A qué hora llegó ', nom, '?'], alternativas: armarHora(rng, lleg, errores), solucion, valor: lleg, unidad: 'min', datos: o });
+  }
+
+  // ---------- horas transcurridas de dos cifras y lo que falta de la jornada ----------
+  const RELACIONES = {
+    suma: { f: (a, b) => a + b, t: 'la suma de las cifras de las horas transcurridas', e: (a, b) => `${a} + ${b}` },
+    'suma+2': { f: (a, b) => a + b + 2, t: 'dos más que la suma de las cifras de las horas transcurridas', e: (a, b) => `${a} + ${b} + 2` },
+    'suma-1': { f: (a, b) => a + b - 1, t: 'una menos que la suma de las cifras de las horas transcurridas', e: (a, b) => `${a} + ${b} − 1` },
+    producto: { f: (a, b) => a * b, t: 'el producto de las cifras de las horas transcurridas', e: (a, b) => `${a} × ${b}` },
+    'doble-decenas': { f: (a, b) => 2 * a, t: 'el doble de la cifra de las decenas de las horas transcurridas', e: (a, b) => `2 × ${a}` },
+    'triple-unidades': { f: (a, b) => 3 * b, t: 'el triple de la cifra de las unidades de las horas transcurridas', e: (a, b) => `3 × ${b}` },
+  };
+  // Las horas transcurridas (de 10 a 23) cuyas horas que faltan para las 24 cumplen la relación.
+  const horasDosCifras = rel => { const r = []; for (let t = 10; t < 24; t++) if (24 - t === RELACIONES[rel].f(Math.floor(t / 10), t % 10)) r.push(t); return r; };
+  const NOM_JOR = ['Roberto', 'Marisol', 'Hugo', 'Teresa', 'Wilmer', 'Dina'];
+  const LUGAR_JOR = ['una empresa textil', 'una panadería', 'una planta de lácteos', 'una fábrica de calzado', 'un taller de cerámica'];
+  const hs = n => `${n} ${n === 1 ? 'hora' : 'horas'}`;
+  function jornada(rng, semilla, fijo) {
+    let o = fijo;
+    if (!o) {
+      const rel = rng.elegir(Object.keys(RELACIONES)), t0 = horasDosCifras(rel)[0];
+      o = { tipo: 'jornada', rel, S: rng.elegir([6, 7, 8, 12, 13, 14, 15].filter(S => S <= t0 - 2)), J: rng.entero(t0 + 1, 23), pide: rng.elegir(['falta', 'falta', 'ya']) };
+    }
+    const sols = horasDosCifras(o.rel);
+    if (sols.length !== 1 || o.S === undefined || o.J === undefined) return null;
+    const t = sols[0], R = RELACIONES[o.rel];
+    if (!(o.S < t && t < o.J && o.J < 24 && o.J - o.S >= 6)) return null;
+    const a = Math.floor(t / 10), b = t % 10, resp = o.pide === 'falta' ? o.J - t : t - o.S;
+    const nom = rng.elegir(NOM_JOR), lugar = rng.elegir(LUGAR_JOR);
+    const variables = { t: { nombre: 'horas transcurridas del día', color: 'o' }, f: { nombre: 'horas que faltan del día', color: 'i' }, x: { nombre: 'lo que se pide', color: 'd' } };
+    const enunciado = [`${nom} trabaja en ${lugar}, desde las ${o.S} horas hasta las ${o.J} horas. Las `, v('t', 'horas transcurridas del día'), ' son un número de dos cifras, y las ', v('f', 'horas que faltan'), ' para que termine el día son ', R.t, '.'];
+    const pregunta = o.pide === 'falta' ? ['¿Cuántas horas le faltan para terminar su jornada?'] : [`¿Cuántas horas de su jornada ya trabajó ${nom}?`];
+    const solucion = [
+      ['Si han transcurrido ', v('t', 't'), ' horas del día (de 24), faltan ', v('f', '24 − t'), '. Como t tiene dos cifras, va de 10 a 23.'],
+      [`Se prueba cada valor de t entre 10 y 23: lo que falta (24 − t) debe ser ${R.t.replace(' de las horas transcurridas', '')}. Solo cumple t = ${t}: faltan 24 − ${t} = ${24 - t} y sus cifras dan ${R.e(a, b)} = ${24 - t}. Con los demás valores no coincide.`],
+      [`Son las ${t} horas. `, o.pide === 'falta' ? `La jornada termina a las ${o.J} horas: faltan ${o.J} − ${t} = ` : `La jornada empezó a las ${o.S} horas: ya trabajó ${t} − ${o.S} = `, v('x', hs(resp)), '.'],
+    ];
+    const errores = [
+      h('RMP104-falta-del-dia', 24 - t, `Esas son las horas que faltan para que termine el día (24 − ${t}). La pregunta es por la jornada, que termina a las ${o.J} horas.`),
+      h('AR5-la-hora', t, `Esa es la hora actual, no lo que ${o.pide === 'falta' ? 'falta' : 'ya trabajó'}.`),
+      o.pide === 'falta' ? h('RMP105-ya-trabajadas', t - o.S, `Esas son las horas que ya trabajó (desde las ${o.S} hasta las ${t}). La pregunta pide las que le faltan.`)
+        : h('RMP48-pasado-por-falta', o.J - t, `Esas son las horas que le faltan (hasta las ${o.J}). La pregunta pide las que ya trabajó.`),
+      h('AR5-duracion-del-turno', o.J - o.S, 'Esa es la duración completa de la jornada, no la parte que corresponde a la pregunta.'),
+    ];
+    const alternativas = P.armar({ correcta: resp, errores, rng, texto: hs });
+    return cerrar(semilla, { variables, enunciado, pregunta, alternativas, solucion, valor: resp, unidad: 'h', datos: o });
   }
 
   // ---------- turnos y reuniones ----------
@@ -544,5 +652,5 @@
 
   const vueltaCorrecta = a => 720 / a;
   const diasCreciente = (a1, r) => nPara(a1, r, 720);
-  return { id: ID, titulo: 'Horas, relojes y calendarios', generar, calc: { hora, anioMinutos, sumarDias, diaSemanaMax, mentirosos: diasMentirosos, vueltaCorrecta, mcm, diasCreciente } };
+  return { id: ID, titulo: 'Horas, relojes y calendarios', generar, calc: { llegada, horasDosCifras, hora, anioMinutos, sumarDias, diaSemanaMax, mentirosos: diasMentirosos, vueltaCorrecta, mcm, diasCreciente } };
 });

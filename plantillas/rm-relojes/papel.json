@@ -106,6 +106,19 @@
         "El único día común es el jueves; mañana será viernes."
       ],
       "verificar": [ { "fn": "mentirosos", "args": [{ "mienteA": [0, 1, 2], "mienteB": [3, 4, 5], "dichoA": "ayer-menti", "dichoB": "ayer-menti" }], "espera": [3] } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "intermedio",
+      "enunciado": "Rosa llegó con 20 minutos de retraso a una clase de 100 minutos que empezó a su hora. Desde las 2:00 p. m. hasta que empezó la clase pasó la tercera parte del tiempo que pasará desde que termine la clase hasta las 7:00 p. m. ¿A qué hora llegó Rosa?",
+      "respuesta": "3:10 p. m.",
+      "pasos": [
+        "De 2:00 a 7:00 p. m. hay 300 minutos; la clase ocupa 100, así que quedan 200 para el antes y el después.",
+        "Si el antes es x, el después es 3x: x + 3x = 200 → x = 50 minutos.",
+        "La clase empezó a las 2:50 p. m. y Rosa llegó 20 minutos después: 3:10 p. m.",
+        "Si respondías 2:50 p. m., diste la hora en que empezó la clase y olvidaste sumar el retraso."
+      ],
+      "verificar": [{"fn": "llegada", "args": [840, 1140, 100, 3, 20], "espera": 910}]
     }
   ]
 }

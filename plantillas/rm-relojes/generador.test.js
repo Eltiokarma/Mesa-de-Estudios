@@ -54,6 +54,19 @@ function recalcular(p) {
     do { n++; A += d.a; B += d.b; } while (A % 720 !== 0 || B % 720 !== 0);
     return n;
   }
+  if (d.tipo === 'retraso') {
+    // Minuto a minuto: ¿cuándo empieza el examen para que (inicio − H0)·q = Hf − (inicio + D)? La llegada es r minutos después.
+    for (let ini = d.H0 + 1; ini < d.Hf; ini++) if ((ini - d.H0) * d.q === d.Hf - (ini + d.D)) return ini + d.r;
+    return NaN;
+  }
+  if (d.tipo === 'jornada') {
+    // Se prueban las horas de dos cifras (de 10 a 23) leyendo las cifras del texto.
+    const rel = { suma: (a, b) => a + b, 'suma+2': (a, b) => a + b + 2, 'suma-1': (a, b) => a + b - 1, producto: (a, b) => a * b, 'doble-decenas': (a, b) => 2 * a, 'triple-unidades': (a, b) => 3 * b }[d.rel];
+    const ok = [];
+    for (let t = 10; t < 24; t++) { const [a, b] = String(t).split('').map(Number); if (24 - t === rel(a, b)) ok.push(t); }
+    if (ok.length !== 1) return NaN;
+    return d.pide === 'falta' ? d.J - ok[0] : ok[0] - d.S;
+  }
   if (d.tipo === 'creciente') {
     let n = 0, acum = 0;
     while (acum < 720) { n++; acum += d.a1 + (n - 1) * d.r; }
@@ -80,10 +93,10 @@ function recalcular(p) {
 const igual = (a, b) => (typeof a === 'number' ? Math.abs(a - b) < 1e-9 : a === b);
 probarGenerador(gen, { semillas: 600, recalcular, igual });
 
-test('salen los ocho tipos y sus formas', () => {
+test('salen los diez tipos y sus formas', () => {
   const vistos = new Set();
   for (let s = 0; s < 300; s++) { const d = gen.generar(s)._datos; vistos.add(d.tipo); if (d.forma) vistos.add(`${d.tipo}/${d.forma}`); if (d.pide) vistos.add(`${d.tipo}/${d.pide}`); }
-  for (const k of ['que-hora/razon', 'que-hora/fraccion', 'que-hora/hace-dentro', 'que-hora/pasado-dentro', 'turno/hora', 'turno/falta', 'turno/inicio', 'turno/fin', 'anio', 'adelanto', 'dos-relojes', 'creciente/dias', 'creciente/fecha', 'calendario/maximo', 'calendario/inicio', 'mentirosos/hoy', 'mentirosos/manana', 'mentirosos/ayer']) assert.ok(vistos.has(k), `falta ${k}`);
+  for (const k of ['que-hora/razon', 'que-hora/fraccion', 'que-hora/hace-dentro', 'que-hora/pasado-dentro', 'turno/hora', 'turno/falta', 'turno/inicio', 'turno/fin', 'anio', 'adelanto', 'dos-relojes', 'creciente/dias', 'creciente/fecha', 'calendario/maximo', 'calendario/inicio', 'mentirosos/hoy', 'mentirosos/manana', 'mentirosos/ayer', 'retraso', 'jornada']) assert.ok(vistos.has(k), `falta ${k}`);
 });
 
 test('las horas de las alternativas son horas válidas y ninguna es justo mediodía o medianoche', () => {
@@ -100,6 +113,27 @@ test('mentirosos: un solo día cumple las dos frases; dos relojes: el MCM no es 
     if (d.tipo === 'mentirosos') assert.equal(gen.calc.mentirosos(d).length, 1, `semilla ${s}`);
     if (d.tipo === 'dos-relojes') { const a = 720 / d.a, b = 720 / d.b; assert.ok(gen.generar(s).respuesta.valor < a * b, `semilla ${s}`); }
   }
+});
+
+test('retraso y jornada: la respuesta es única, el retraso hace falta y las preguntas oficiales de UNMSM salen', () => {
+  let vistos = { retraso: 0, jornada: 0, ya: 0, falta: 0 };
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s), d = p._datos;
+    if (d.tipo === 'retraso') {
+      vistos.retraso++;
+      const x = (d.Hf - d.H0 - d.D) / (1 + d.q);
+      assert.ok(Number.isInteger(x) && d.r > 0 && d.r < d.D, `semilla ${s}`);
+      assert.equal(p.respuesta.valor, d.H0 + x + d.r);
+      assert.ok(p.alternativas.some(a => a.error && a.error.id === 'RMP100-sin-retraso') || p.alternativas.length === 5, `semilla ${s}`);
+    }
+    if (d.tipo === 'jornada') { vistos.jornada++; vistos[d.pide]++; assert.equal(gen.calc.horasDosCifras(d.rel).length, 1); assert.ok(d.J < 24 && d.S < gen.calc.horasDosCifras(d.rel)[0]); }
+  }
+  assert.ok(vistos.retraso >= 30 && vistos.jornada >= 30 && vistos.ya >= 5 && vistos.falta >= 5, JSON.stringify(vistos));
+  const a = gen.generar('unmsm-2019-II-10mar-31'), b = gen.generar('unmsm-2024-II-18');
+  assert.equal(a.alternativas.find(x => x.correcta).texto, '6:52 p. m.');
+  assert.ok(a.alternativas.some(x => x.error && x.error.id === 'RMP100-sin-retraso' && x.texto === '6:27 p. m.'));
+  assert.equal(b.respuesta.valor, 2);
+  assert.ok(b.alternativas.some(x => x.error && x.error.id === 'RMP104-falta-del-dia' && x.valor === 3));
 });
 
 test('calc.sumarDias coincide con Date en 2000 saltos al azar', () => {

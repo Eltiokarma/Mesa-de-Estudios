@@ -2,7 +2,7 @@
   "plantilla": "rm-rumbos",
   "tolerancia": 1e-09,
   "nota": "Rumbos desde el norte o el sur hacia el este o el oeste (N 37° E). Triángulos de academia: 37° y 53° con 3-4-5, 45° con √2, 30° y 60° con 1-√3-2. Las respuestas de rumbo son claves 'az:<azimut>' (más '|d2:<distancia²>' si piden la distancia); texto es la alternativa correcta tal como la ve el alumno. Entrada-k y salida-k son del mismo tipo (formas paralelas).",
-  "verificacion": "Verificación ciega (subagente, 12 nov 2026): los 22 casos resueltos aparte sumando componentes (37°/53° con 3-4-5, el resto con trigonometría real; canchas como vectores con el poste en (B+D)/2; rapidez por la cuadrática de la ley de cosenos). 22/22 coinciden. Tras la revisión, el enunciado nombra el triángulo notable y se descartan los problemas en que 3-4-5 y la trigonometría real difieren en más del 2 %; ninguna respuesta de casos.json cambió.",
+  "verificacion": "Verificación ciega (subagente, 12 nov 2026): los 22 casos resueltos aparte sumando componentes (37°/53° con 3-4-5, el resto con trigonometría real; canchas como vectores con el poste en (B+D)/2; rapidez por la cuadrática de la ley de cosenos). 22/22 coinciden. Tras la revisión, el enunciado nombra el triángulo notable y se descartan los problemas en que 3-4-5 y la trigonometría real difieren en más del 2 %; ninguna respuesta de casos.json cambió. Cierre-100 (12 nov 2026): los casos nuevos y los reasignados se resolvieron a ciegas con un script propio. 10 casos (moviles-tramos y direccion, con unmsm-2020-I-39 y unmsm-2024-I-25, y los reasignados 0, 5, 9, 11, 27 y 48): 10/10 coinciden.",
   "casos": [
     {
       "semilla": 1,
@@ -24,19 +24,31 @@
     {
       "semilla": 11,
       "entrada": {
-        "tipo": "cuadrado",
-        "forma": "cuadrado",
-        "AB": 30,
-        "AD": 30,
-        "rumboB": "N 15° E",
-        "rumboD": "S 75° E",
-        "desde": "O",
-        "hacia": "B"
+        "tipo": "direccion",
+        "tramos": [
+          {
+            "rumbo": "oeste",
+            "largo": 12.12435565298214,
+            "largoTexto": "7√3"
+          },
+          {
+            "rumbo": "S 45° O",
+            "largo": 5.656854249492381,
+            "largoTexto": "4√2"
+          },
+          {
+            "rumbo": "S 53° E",
+            "largo": 5,
+            "largoTexto": "5"
+          }
+        ],
+        "unidad": "m"
       },
       "esperado": {
-        "respuesta": "az:330",
-        "texto": "N 30° O"
-      }
+        "respuesta": "az:240|d2:196",
+        "texto": "14 m al S 60° O"
+      },
+      "nuevo": "cierre-100"
     },
     {
       "semilla": 15,
@@ -75,58 +87,73 @@
     {
       "semilla": 0,
       "entrada": {
-        "tipo": "distancia",
+        "tipo": "direccion",
         "tramos": [
           {
-            "rumbo": "N 37° O",
-            "largo": 10,
-            "largoTexto": "10"
+            "rumbo": "sur",
+            "largo": 16,
+            "largoTexto": "16"
           },
           {
-            "rumbo": "N 53° E",
-            "largo": 10,
-            "largoTexto": "10"
+            "rumbo": "N 60° E",
+            "largo": 4,
+            "largoTexto": "4"
+          },
+          {
+            "rumbo": "norte",
+            "largo": 16,
+            "largoTexto": "16"
           }
         ],
-        "unidad": "km"
+        "unidad": "m"
       },
       "esperado": {
-        "respuesta": 14.142135623730951,
-        "texto": "10√2 km"
-      }
+        "respuesta": "az:60|d2:16",
+        "texto": "4 m al N 60° E"
+      },
+      "nuevo": "cierre-100"
     },
     {
       "semilla": 5,
       "entrada": {
-        "tipo": "distancia",
-        "tramos": [
+        "tipo": "moviles-tramos",
+        "recorridos": [
           {
-            "rumbo": "norte",
-            "largo": 14,
-            "largoTexto": "14"
+            "tramos": [
+              {
+                "rumbo": "N 45° E",
+                "largo": 2.8284271247461903,
+                "largoTexto": "2√2"
+              },
+              {
+                "rumbo": "S 53° O",
+                "largo": 5,
+                "largoTexto": "5"
+              }
+            ]
           },
           {
-            "rumbo": "este",
-            "largo": 13,
-            "largoTexto": "13"
-          },
-          {
-            "rumbo": "N 37° E",
-            "largo": 5,
-            "largoTexto": "5"
-          },
-          {
-            "rumbo": "norte",
-            "largo": 14,
-            "largoTexto": "14"
+            "tramos": [
+              {
+                "rumbo": "S 37° O",
+                "largo": 10,
+                "largoTexto": "10"
+              },
+              {
+                "rumbo": "oeste",
+                "largo": 3,
+                "largoTexto": "3"
+              }
+            ]
           }
         ],
         "unidad": "km"
       },
       "esperado": {
-        "respuesta": 35.77708763999664,
-        "texto": "16√5 km"
-      }
+        "respuesta": 9.899494936611665,
+        "texto": "7√2 km"
+      },
+      "nuevo": "cierre-100"
     },
     {
       "semilla": 3,
@@ -235,31 +262,49 @@
     {
       "semilla": 9,
       "entrada": {
-        "tipo": "regreso",
-        "tramos": [
+        "tipo": "moviles-tramos",
+        "recorridos": [
           {
-            "rumbo": "S 37° O",
-            "largo": 5,
-            "largoTexto": "5"
+            "tramos": [
+              {
+                "rumbo": "S 53° O",
+                "largo": 5,
+                "largoTexto": "5"
+              },
+              {
+                "rumbo": "oeste",
+                "largo": 3,
+                "largoTexto": "3"
+              },
+              {
+                "rumbo": "N 53° O",
+                "largo": 15,
+                "largoTexto": "15"
+              }
+            ]
           },
           {
-            "rumbo": "S 53° O",
-            "largo": 20,
-            "largoTexto": "20"
-          },
-          {
-            "rumbo": "N 45° O",
-            "largo": 1.4142135623730951,
-            "largoTexto": "√2"
+            "tramos": [
+              {
+                "rumbo": "oeste",
+                "largo": 12,
+                "largoTexto": "12"
+              },
+              {
+                "rumbo": "N 53° E",
+                "largo": 10,
+                "largoTexto": "10"
+              }
+            ]
           }
         ],
-        "unidad": "km",
-        "conDistancia": false
+        "unidad": "km"
       },
       "esperado": {
-        "respuesta": "az:53",
-        "texto": "N 53° E"
-      }
+        "respuesta": 15,
+        "texto": "15 km"
+      },
+      "nuevo": "cierre-100"
     },
     {
       "semilla": 22,
@@ -285,23 +330,44 @@
     {
       "semilla": 48,
       "entrada": {
-        "tipo": "relativo",
-        "lugares": [
+        "tipo": "moviles-tramos",
+        "recorridos": [
           {
-            "rumbo": "sur",
-            "largo": 2
+            "tramos": [
+              {
+                "rumbo": "S 53° E",
+                "largo": 5,
+                "largoTexto": "5"
+              },
+              {
+                "rumbo": "N 53° E",
+                "largo": 5,
+                "largoTexto": "5"
+              }
+            ]
           },
           {
-            "rumbo": "S 60° O",
-            "largo": 2
+            "tramos": [
+              {
+                "rumbo": "S 37° E",
+                "largo": 5,
+                "largoTexto": "5"
+              },
+              {
+                "rumbo": "N 37° E",
+                "largo": 15,
+                "largoTexto": "15"
+              }
+            ]
           }
         ],
-        "pide": "distancia"
+        "unidad": "km"
       },
       "esperado": {
-        "respuesta": 2,
-        "texto": "2 km"
-      }
+        "respuesta": 8.94427190999916,
+        "texto": "4√5 km"
+      },
+      "nuevo": "cierre-100"
     },
     {
       "semilla": 20,
@@ -327,23 +393,26 @@
     {
       "semilla": 27,
       "entrada": {
-        "tipo": "relativo",
-        "lugares": [
+        "tipo": "direccion",
+        "tramos": [
           {
-            "rumbo": "N 37° E",
-            "largo": 10
+            "rumbo": "norte",
+            "largo": 18,
+            "largoTexto": "18"
           },
           {
-            "rumbo": "este",
-            "largo": 12
+            "rumbo": "S 53° E",
+            "largo": 15,
+            "largoTexto": "15"
           }
         ],
-        "pide": "rumbo"
+        "unidad": "km"
       },
       "esperado": {
-        "respuesta": "az:143",
-        "texto": "S 37° E"
-      }
+        "respuesta": "az:53|d2:225",
+        "texto": "15 km al N 53° E"
+      },
+      "nuevo": "cierre-100"
     },
     {
       "semilla": "entrada-1",
@@ -472,6 +541,163 @@
         "respuesta": "az:240",
         "texto": "S 60° O"
       }
+    },
+    {
+      "semilla": "unmsm-2020-I-39",
+      "entrada": {
+        "tipo": "moviles-tramos",
+        "recorridos": [
+          {
+            "tramos": [
+              {
+                "rumbo": "norte",
+                "largo": 12,
+                "largoTexto": "12"
+              },
+              {
+                "rumbo": "N 45° E",
+                "largo": 8.485281374238571,
+                "largoTexto": "6√2"
+              },
+              {
+                "rumbo": "este",
+                "largo": 20.784609690826528,
+                "largoTexto": "12√3"
+              }
+            ]
+          },
+          {
+            "tramos": [
+              {
+                "rumbo": "este",
+                "largo": 6,
+                "largoTexto": "6"
+              },
+              {
+                "rumbo": "N 60° E",
+                "largo": 24,
+                "largoTexto": "24"
+              }
+            ]
+          }
+        ],
+        "unidad": "km"
+      },
+      "esperado": {
+        "respuesta": 6,
+        "texto": "6 km"
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "unmsm-2024-I-25",
+      "entrada": {
+        "tipo": "direccion",
+        "tramos": [
+          {
+            "rumbo": "este",
+            "largo": 500,
+            "largoTexto": "500"
+          },
+          {
+            "rumbo": "N 30° E",
+            "largo": 200,
+            "largoTexto": "200"
+          },
+          {
+            "rumbo": "sur",
+            "largo": 1212.435565298214,
+            "largoTexto": "700√3"
+          }
+        ],
+        "unidad": "m"
+      },
+      "esperado": {
+        "respuesta": "az:150|d2:1440000",
+        "texto": "1200 m al S 30° E"
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": 133,
+      "entrada": {
+        "tipo": "direccion",
+        "tramos": [
+          {
+            "rumbo": "N 45° E",
+            "largo": 4.242640687119286,
+            "largoTexto": "3√2"
+          },
+          {
+            "rumbo": "este",
+            "largo": 10.392304845413264,
+            "largoTexto": "6√3"
+          },
+          {
+            "rumbo": "N 45° O",
+            "largo": 4.242640687119286,
+            "largoTexto": "3√2"
+          }
+        ],
+        "unidad": "km"
+      },
+      "esperado": {
+        "respuesta": "az:60|d2:144",
+        "texto": "12 km al N 60° E"
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": 93,
+      "entrada": {
+        "tipo": "moviles-tramos",
+        "recorridos": [
+          {
+            "tramos": [
+              {
+                "rumbo": "S 53° O",
+                "largo": 15,
+                "largoTexto": "15"
+              },
+              {
+                "rumbo": "S 45° E",
+                "largo": 2.8284271247461903,
+                "largoTexto": "2√2"
+              },
+              {
+                "rumbo": "S 37° O",
+                "largo": 15,
+                "largoTexto": "15"
+              }
+            ]
+          },
+          {
+            "tramos": [
+              {
+                "rumbo": "S 53° E",
+                "largo": 10,
+                "largoTexto": "10"
+              },
+              {
+                "rumbo": "N 37° O",
+                "largo": 5,
+                "largoTexto": "5"
+              },
+              {
+                "rumbo": "S 53° O",
+                "largo": 15,
+                "largoTexto": "15"
+              }
+            ]
+          }
+        ],
+        "unidad": "km"
+      },
+      "esperado": {
+        "respuesta": 16.97056274847714,
+        "texto": "12√2 km"
+      },
+      "nuevo": "cierre-100"
     }
   ]
 }
