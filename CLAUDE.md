@@ -31,6 +31,7 @@ nucleo/                        piezas compartidas: azar con semilla, armado de a
 plantillas/<id>/generador.js   módulos de formato "predicciones": generan problemas con errores típicos (ver nucleo/predicciones.js)
 herramientas/analizar-medicion.js  junta los datos que exportan los alumnos y resume entrada, salida y errores por módulo
 herramientas/servidor.js       servidor local sin dependencias: npm run dev → http://localhost:4173
+docs/vision-colegios.md        plan de gestión para colegios: notas, comunicados, brecha UNI, precios y frentes (12 nov 2026; sin código todavía)
 docs/vision-futura.md          ideas de Gerson para después (todos los grados, seguimiento, curar contenido externo, historia); no se desarrollan aún
 docs/taxonomia-uni-2026.md     temario de física y química de la UNI (sílabo CEPRE-UNI 2026-2)
 docs/taxonomia-unmsm-2026.md   temario de San Marcos (CEPRE-UNMSM 2026-I) comparado con la UNI

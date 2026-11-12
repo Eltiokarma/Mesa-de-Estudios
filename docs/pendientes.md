@@ -113,6 +113,12 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 - **la3:** publicar con dominio y HTTPS. Una PWA necesita HTTPS para instalarse y funcionar sin conexión.
 - **la4:** una guía corta para profesores: el código de colegio en el enlace (`/app/?colegio=ABC`), cómo descargar los datos de cada alumno y cómo juntarlos con `analizar-medicion.js`.
 
+### 4b. Gestión para colegios (plan del 12 nov 2026)
+
+- Plan, precios y frentes en `docs/vision-colegios.md`; tareas `co1` a `co10` y `gr1` a `gr3` en la hoja de ruta.
+- Lo urgente: los datos del colegio piloto (`co2`) y el prototipo para presentarlo al director antes de que fije las pensiones de 2027 (`co5` y `co6`).
+- Los grados nuevos (`gr1` a `gr3`) se trabajan solo si sobra capacidad de IA.
+
 ### 5. Después del lanzamiento
 
 - Analizar los datos y confirmar o descartar las hipótesis de error (la6).

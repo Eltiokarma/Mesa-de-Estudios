@@ -47,4 +47,5 @@
 
 ## Más ideas a futuro
 
+- Gestión para colegios (notas, comunicados, brecha UNI) y grados nuevos: `docs/vision-colegios.md` (12 nov 2026). Toca las ideas 1 y 2 de este documento.
 - Modo PISA, agilidad mental (al estilo de Peak), interacciones tipo juego (al estilo de Brilliant) y aprendizaje guiado (POGIL): `docs/vision-pisa-agilidad-interaccion.md` (5 nov 2026).
