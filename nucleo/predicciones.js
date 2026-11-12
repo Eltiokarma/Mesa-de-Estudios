@@ -177,7 +177,8 @@
   function enEscala(valor, correcta, id, { tope = 20, topeUnidades = 1000 } = {}) {
     if (!Number.isFinite(valor) || !Number.isFinite(correcta) || correcta === 0) return false;
     const r = Math.abs(valor) / Math.abs(correcta), t = esUnidades(id) ? Math.max(tope, topeUnidades) : tope;
-    return r >= (1 / t) * (1 - 1e-9) && r <= t * (1 + 1e-9); // margen para el redondeo binario de un ×1000 exacto
+    const m = esUnidades(id) ? 1e-9 : 0; // margen para el redondeo binario de un ×1000 exacto
+    return r >= (1 / t) * (1 - m) && r <= t * (1 + m);
   }
 
   return { formatear, radical, pi, v, armar, LETRAS, frac, textoFraccion, combinacion, vector, armarTexto, xml, CODIGO_UNIDADES, esUnidades, enEscala };
