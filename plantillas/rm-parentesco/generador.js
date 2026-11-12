@@ -14,9 +14,10 @@
  *   arbol     { tipo, arbol: { personas: [{ id, nombre, sexo, padre, madre, conyuge, gen }] }, habla, pasos, dicho }
  *             un árbol de tres generaciones dibujado; quien habla dice una cadena y se pregunta quién es.
  *             Respuesta: el id de la persona.
- *   minimo    { tipo, pedido: { padre: 2, hija: 1, … } } en una reunión hay exactamente esos parentescos
- *             (cada persona cuenta en todos los que tenga). El mínimo de personas se halla recorriendo todas
- *             las familias de hasta 7 personas (cada persona con su padre y su madre, si están presentes).
+ *   minimo    { tipo, pedido: { padre: 2, hija: 1, … } } en una reunión hay al menos esos parentescos
+ *             (cada persona cuenta en todos los que tenga; hermanos de padre y madre; una pareja por persona).
+ *             El mínimo se halla recorriendo todas las familias de hasta 7 personas, y solo se piden los casos
+ *             donde una cota general (cota) llega a ese mínimo.
  *   orden     { tipo, nombres: [4], tema: 'edad'|'dinero', pistas: [{ t: 'suma', a: [i, j], b: [k, l], rel }
  *             | { t: 'simple', a: i, b: j }] } cuatro personas con valores distintos; las pistas comparan
  *             sumas de a dos. Respuesta: el orden de mayor a menor (clave 'orden:i,j,k,l').
@@ -29,7 +30,9 @@
  * calc (funciones puras, para el papel y las pruebas):
  *   cadena(ego, pasos, unicos)        → { final, nodos, clave, texto } (final: posición o { amb: [a, b] })
  *   nombre(pos, ego)                  → { clave, texto } o null
- *   minimoPersonas(pedido)            → { n, ejemplo, alMenos } (alMenos: el mínimo si los conteos fueran «al menos»)
+ *   minimoPersonas(pedido)            → { n, ejemplo }: el mínimo de personas con al menos esos parentescos
+ *   cota(pedido)                      → { n, tipo: 'sexo'|'hijos'|'padres' }: la cota que explica por qué no alcanza
+ *                                       con una persona menos (vale aunque falten parientes intermedios)
  *   roles(personas)                   → conteo de cada parentesco en una familia [{ s: 0|1, f, m }]
  *   ordenes(pistas)                   → órdenes (de mayor a menor) que cumplen las pistas
  *   repartos(montos, pistas)          → repartos [[a, b], [c, d], [e, f]] que cumplen las pistas
@@ -199,6 +202,10 @@
   const DICHOS = [['vive en Juliaca', 'vive en Juliaca'], ['me regaló una chompa', 'le regaló una chompa'], ['vende quinua en la feria', 'vende quinua en la feria'],
     ['juega vóley conmigo', 'juega vóley con'], ['me enseñó a tocar charango', 'le enseñó a tocar charango'], ['me ayuda con las tareas', 'ayuda con las tareas'],
     ['trabaja en el mercado de Puno', 'trabaja en el mercado de Puno'], ['cumple años hoy', 'cumple años hoy']];
+  // Si «él mismo» o «ella misma» está entre las respuestas, el dicho va en tercera persona («me regaló» haría
+  // que esa opción se descarte sin pensar, o sería una frase absurda si es la correcta).
+  const TERCERA = ['vive en Juliaca', 'vende quinua en la feria', 'trabaja en el mercado de Puno', 'cumple años hoy'];
+  const enPrimera = dicho => /\b(me|conmigo)\b/.test(dicho);
 
   function construirCadena(rng, semilla) {
     const ego = rng.moneda() ? 'v' : 'm';
@@ -271,6 +278,9 @@
     }
     const alternativas = P.armarTexto({ correcta, errores: errores.filter(Boolean), rng });
     if (alternativas.length < 4) return null;
+    if (enPrimera(d.dicho) && alternativas.some(a => /\bmism[oa]\b/.test(a.texto))) d.dicho = TERCERA[DICHOS.findIndex(x => x[0] === d.dicho) % TERCERA.length];
+    // Los hermanos se toman de padre y madre: importa en cuanto la cadena pasa por un hijo o un hermano.
+    const nota = pasos.some(q => q !== 'padre' && q !== 'madre') ? ' Los hermanos lo son de padre y madre.' : '';
     // Solución: de «mi …» hacia afuera.
     const solucion = [['Se lee desde el final, desde lo más cercano a ', d.nombre, ': ', v('a', anc), '.']];
     for (let i = 0; i < n; i++) {
@@ -289,7 +299,7 @@
     return {
       id: `rm-parentesco#${semilla}`,
       variables: { a: { nombre: 'eslabón de partida', color: 'o' }, u: { nombre: 'único', color: 'i' }, x: { nombre: 'parentesco buscado', color: 'h' } },
-      enunciado: [`${d.nombre} dice: «`, ...fr, ` ${d.dicho}».`],
+      enunciado: [`${d.nombre} dice: «`, ...fr, ` ${d.dicho}».${nota}`],
       pregunta: [`¿Qué parentesco tiene esa persona con ${d.nombre}?`],
       datos: '', alternativas, solucion,
       respuesta: { valor: correcta.clave, texto: correcta.texto },
@@ -429,13 +439,13 @@
     }
     const alternativas = P.armarTexto({ correcta: per(final), errores: errores.filter(Boolean), rng });
     if (alternativas.length < 4) return null;
-    const solucion = [['Se lee desde el final. ', v('a', `«Mi ${pasos[0]}»`), ` de ${quien} es ${ps[ids[0]].nombre}.`]];
+    const solucion = [['Se lee desde el final. «', v('a', `Mi ${pasos[0]}`), `» de ${quien} es ${ps[ids[0]].nombre}.`]];
     for (let i = 1; i < n; i++) solucion.push([`${cap(ART[pasos[i]])} ${pasos[i]} de ${ps[ids[i - 1]].nombre} es `, i === n - 1 ? v('x', ps[ids[i]].nombre) : ps[ids[i]].nombre, '.']);
     solucion.push(['Es ', v('x', ps[final].nombre), `: «${fraseArbol(pasos)}» de ${quien}.`]);
     return {
       id: `rm-parentesco#${semilla}`,
       variables: { a: { nombre: 'eslabón de partida', color: 'o' }, x: { nombre: 'persona buscada', color: 'h' } },
-      enunciado: [`En el árbol de la familia, ${quien} dice: «`, v('a', fraseArbol(pasos)), ` ${d.dicho[0]}».`],
+      enunciado: [`En el árbol de la familia, ${quien} dice: «`, fraseArbol(pasos).slice(0, -('mi ' + pasos[0]).length), v('a', 'mi ' + pasos[0]), ` ${d.dicho[0]}».`],
       figura: { svg: figuraArbol(arbol), alt: altArbol(arbol) },
       pregunta: [`¿Quién ${d.dicho[1]} ${quien}?`],
       datos: '', alternativas, solucion,
@@ -504,10 +514,27 @@
     TABLA = [...mapa.values()].sort((a, b) => a.n - b.n);
     return TABLA;
   }
-  function minimoPersonas(pedido, alMenos = false) {
+  // El enunciado pide «al menos» esos parentescos: la familia puede tener más.
+  function minimoPersonas(pedido) {
     const roles_ = Object.keys(pedido);
-    for (const e of familias()) if (roles_.every(r => alMenos ? e.cuenta[r] >= pedido[r] : e.cuenta[r] === pedido[r])) return { n: e.n, ejemplo: e.ps };
+    for (const e of familias()) if (roles_.every(r => e.cuenta[r] >= pedido[r])) return { n: e.n, ejemplo: e.ps };
     return null;
+  }
+  // Cotas por debajo que valen en cualquier familia, aunque falten parientes intermedios en la reunión
+  // (el abuelo puede estar sin el padre del nieto; dos hermanos, sin sus padres):
+  //   sexo    hacen falta tantos varones como el parentesco de varón más pedido, y lo mismo con las mujeres;
+  //   hijos   cada hijo o hija tiene a su padre o a su madre en la reunión, y la persona de más edad no es
+  //           hijo de nadie de la reunión: hijos + hijas + 1;
+  //   padres  cada padre o madre tiene un hijo en la reunión, y la persona más joven no es padre ni madre de
+  //           nadie de la reunión: padres + madres + 1.
+  // Devuelve la mayor { n, tipo, ... } (en empate: sexo, hijos, padres).
+  function cota(pedido) {
+    const g = r => pedido[r] || 0;
+    const masc = ['padre', 'hijo', 'hermano', 'abuelo', 'nieto'], fem = ['madre', 'hija', 'hermana', 'abuela', 'nieta'];
+    const V = Math.max(...masc.map(g)), M = Math.max(...fem.map(g));
+    const rv = masc.find(r => g(r) === V), rm = fem.find(r => g(r) === M);
+    const cs = [{ tipo: 'sexo', n: V + M, V, M, rv, rm }, { tipo: 'hijos', n: g('hijo') + g('hija') + 1 }, { tipo: 'padres', n: g('padre') + g('madre') + 1 }];
+    return cs.reduce((a, b) => (b.n > a.n ? b : a));
   }
   // Describe una familia con nombres: «Juan y Rosa son padres de Luis y Ana. …».
   function describirFamilia(ps) {
@@ -533,8 +560,11 @@
       const k = Math.min(conRol.length, rng.entero(5, 8));
       const elegidos = rng.barajar(conRol).slice(0, k);
       const pedido = {}; for (const r of ROLES) if (elegidos.includes(r)) pedido[r] = base.cuenta[r];
-      const ex = minimoPersonas(pedido), am = minimoPersonas(pedido, true);
-      if (!ex || !am || ex.n !== am.n) continue;
+      const ex = minimoPersonas(pedido);
+      // Solo los pedidos donde una cota que vale para cualquier familia llega al mínimo: así la respuesta no
+      // depende de si los parientes intermedios están o no en la reunión, y se puede explicar por qué no alcanza
+      // con una persona menos.
+      if (!ex || cota(pedido).n !== ex.n) continue;
       const suma = Object.values(pedido).reduce((a, b) => a + b, 0);
       if (suma - ex.n < 3) continue;
       const d = { tipo: 'minimo', pedido };
@@ -553,6 +583,7 @@
     if (base.n !== N) errores.push(h('RMP2-primera', base.n, `Con ${base.n} personas sí se arma una familia que cumple, pero no es la más chica: se puede con menos.`));
     for (const r of rng.barajar(rs)) {
       const otro = {}; for (const q of rs) if (q !== r) otro[q] = pedido[q];
+      // (al menos: sin ese parentesco el mínimo solo puede bajar)
       const m = minimoPersonas(otro);
       if (m && m.n !== N) errores.push(h('RMP63-sin-un-rol', m.n, `Esa cantidad sale si no tomas en cuenta que hay ${pedido[r]} ${pedido[r] === 1 ? r : PLURAL[r]}.`));
     }
@@ -561,19 +592,28 @@
     const fam = describirFamilia(ex.ejemplo), cuenta = roles(ex.ejemplo);
     const quienes = r => fam.nom.filter((_, i) => tieneRol(ex.ejemplo, i, r));
     const textoPedido = rs.map(r => `${pedido[r]} ${pedido[r] === 1 ? r : PLURAL[r]}`);
+    const otros = ['padre', 'abuelo', 'madre', 'abuela', 'hijo', 'hermano', 'nieto', 'hija', 'hermana', 'nieta'].filter(r => !(r in pedido)).slice(0, 2);
+    const ct = cota(pedido);
+    const nom = (k, r) => `${k} ${k === 1 ? r : PLURAL[r]}`;
+    const porque = ct.tipo === 'sexo'
+      ? [`¿Por qué no alcanza con ${N - 1}? Hay al menos ${nom(ct.V, ct.rv)}, que son ${ct.V === 1 ? 'un varón' : ct.V + ' varones distintos'}, y al menos ${nom(ct.M, ct.rm)}, que son ${ct.M === 1 ? 'una mujer' : ct.M + ' mujeres distintas'}. Nadie es varón y mujer a la vez: `, v('V', `${ct.V}`), ' + ', v('M', `${ct.M}`), ' = ', v('N', `${N} personas`), ' como mínimo.']
+      : (() => {
+        const hj = ct.tipo === 'hijos', par = (hj ? ['hijo', 'hija'] : ['padre', 'madre']).filter(r => r in pedido);
+        return [`¿Por qué no alcanza con ${N - 1}? Hay al menos ${lista(par.map(r => nom(pedido[r], r)))}, ${hj ? 'y cada uno tiene a su padre o a su madre en la reunión' : 'y cada uno tiene un hijo o una hija en la reunión'}. Pero ${hj ? 'la persona de más edad no es hijo ni hija de nadie de la reunión' : 'la persona más joven no es padre ni madre de nadie de la reunión'}, así que hay alguien más: ${[...par.map(r => pedido[r]), 1].join(' + ')} = `, v('N', `${N} personas`), ' como mínimo.'];
+      })();
     return {
       id: `rm-parentesco#${semilla}`,
       variables: { V: { nombre: 'varones como mínimo', color: 'o' }, M: { nombre: 'mujeres como mínimo', color: 'i' }, N: { nombre: 'personas', color: 'h' } },
-      enunciado: [`En una reunión familiar hay exactamente ${lista(textoPedido)}. Cada persona se cuenta en todos los parentescos que tiene con alguien de la reunión.`],
+      enunciado: [`En una reunión familiar hay, entre otras personas, al menos ${lista(textoPedido)} (puede haber parentescos que no se nombran, como ${otros.join(' o ')}). Cada persona se cuenta en todos los parentescos que tiene con alguien de la reunión. Los hermanos lo son de padre y madre.`],
       pregunta: ['¿Cuántas personas, como mínimo, hay en la reunión?'],
       datos: '', alternativas,
       solucion: [
         ['Una persona puede tener varios parentescos: el mismo varón puede ser hijo de uno y padre de otro.'],
-        ['Hacen falta al menos ', v('V', `${varones} ${varones === 1 ? 'varón' : 'varones'}`), ' y ', v('M', `${mujeres} ${mujeres === 1 ? 'mujer' : 'mujeres'}`), `, porque es lo que pide el parentesco más numeroso de cada sexo${varones + mujeres < N ? '; con eso todavía no alcanza' : ''}.`],
+        ct.tipo !== 'sexo' && ['Hacen falta al menos ', v('V', `${varones} ${varones === 1 ? 'varón' : 'varones'}`), ' y ', v('M', `${mujeres} ${mujeres === 1 ? 'mujer' : 'mujeres'}`), `, porque es lo que pide el parentesco más numeroso de cada sexo${varones + mujeres < N ? '; con eso todavía no alcanza' : ''}.`],
         [`Una familia de ${N} que cumple: ${fam.texto}`],
         ['Cuenta: ' + rs.map(r => `${PLURAL[r]}, ${lista(quienes(r))}`).join('; ') + '.'],
-        ['Con menos personas siempre falta o sobra algún parentesco (se revisan todas las familias posibles). Mínimo: ', v('N', `${N} personas`), '.'],
-      ].filter(x => cuenta && x),
+        porque,
+      ].filter(Boolean),
       respuesta: { valor: N, unidad: 'personas' },
       _datos: d,
     };
@@ -732,14 +772,14 @@
     const formula = p => p.t === 'simple' ? `${ini[p.a]} > ${ini[p.b]}` : `${ini[p.a[0]]} + ${ini[p.a[1]]} ${p.rel} ${ini[p.b[0]]} + ${ini[p.b[1]]}`;
     const solucion = [['Escribe cada pista con las iniciales: ', pistas.map(formula).join(' ; '), '.']];
     for (const x of necesarias) {
-      if (x.de.length === 1) solucion.push([`De ${formula(x.de[0])} sale directo `, v('x', `${ini[x.mayor]} > ${ini[x.menor]}`), '.']);
-      else solucion.push([`${x.op === 'suma' ? 'Sumando' : 'Restando'} ${formula(x.de[0])} y ${formula(x.de[1])}, se cancelan los que aparecen a los dos lados y queda `, v('x', `${ini[x.mayor]} > ${ini[x.menor]}`), '.']);
+      if (x.de.length === 1) solucion.push([`De ${formula(x.de[0])} sale directo `, v('c', `${ini[x.mayor]} > ${ini[x.menor]}`), '.']);
+      else solucion.push([`${x.op === 'suma' ? 'Sumando' : 'Restando'} ${formula(x.de[0])} y ${formula(x.de[1])}, se cancelan los que aparecen a los dos lados y queda `, v('c', `${ini[x.mayor]} > ${ini[x.menor]}`), '.']);
     }
     if (necesarias.length < 3) solucion.push(['Juntando lo anterior (si A > B y B > C, entonces A > C) queda un solo orden.']);
     solucion.push(['De mayor a menor: ', v('x', txt(o)), '.']);
     return {
       id: `rm-parentesco#${semilla}`,
-      variables: { x: { nombre: 'comparación deducida', color: 'h' } },
+      variables: { c: { nombre: 'comparación deducida', color: 'i' }, x: { nombre: 'orden final', color: 'h' } },
       enunciado: [`${lista(nom)} tienen ${tema === 'edad' ? 'edades' : 'cantidades de dinero'} distintas. Se sabe que: ` + pistas.map(p => textoPista(p, nom, tema)).join('; ') + '.'],
       pregunta: [`¿Cuál es el orden de ${tema === 'edad' ? 'mayor a menor edad' : 'quien tiene más a quien tiene menos'}?`],
       datos: '', alternativas, solucion,
@@ -961,6 +1001,6 @@
 
   return {
     id: 'rm-parentesco', titulo: 'Parentescos, órdenes y repartos con pistas', generar,
-    calc: { cadena, nombre, minimoPersonas, roles, ordenes, repartos, edades, recorrerArbol, esPrimo },
+    calc: { cadena, nombre, minimoPersonas, cota, roles, ordenes, repartos, edades, recorrerArbol, esPrimo },
   };
 });

@@ -257,3 +257,23 @@ test('vertices: el arreglo de la solución cumple y usa los nueve números', () 
     assert.deepEqual(arr.slice().sort((a, b) => a - b), p._datos.numeros.slice().sort((a, b) => a - b));
   }
 });
+test('vertices: la respuesta es la cota de 4S = total + 3 · centro + bordes, y no se dice «revisando todas las formas»', () => {
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s), d = p._datos;
+    if (d.tipo !== 'vertices') continue;
+    const o = d.numeros.slice().sort((a, b) => a - b), T = o.reduce((a, b) => a + b, 0);
+    const cota = d.pide === 'max' ? Math.floor((T + 3 * o[8] + o[7] + o[6] + o[5] + o[4]) / 4) : Math.ceil((T + 3 * o[0] + o[1] + o[2] + o[3] + o[4]) / 4);
+    assert.equal(p.respuesta.valor, cota, `semilla ${s}`);
+    const txt = p.solucion.map(l => l.map(x => (typeof x === 'string' ? x : x.t)).join('')).join(' ');
+    assert.doesNotMatch(txt, /todas las formas/);
+    assert.doesNotMatch(p.figura.svg, /--c-o/, 'los puntos no llevan el color de S');
+  }
+});
+test('latino: ningún problema repite el id de un error en dos alternativas', () => {
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s);
+    if (p._datos.tipo !== 'latino') continue;
+    const ids = p.alternativas.filter(a => a.error).map(a => a.error.id);
+    assert.equal(new Set(ids).size, ids.length, `semilla ${s}: ${ids}`);
+  }
+});

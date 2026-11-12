@@ -13,7 +13,8 @@
  *                   número de la casilla marcada; 'suma': la suma de todos los números que faltan.
  *   vertices        { tipo, numeros: [9], pide: 'max'|'min' } se ponen los 9 números en un cuadro de 3 × 3 de modo
  *                   que las cuatro casillas alrededor de cada uno de los 4 vértices interiores sumen lo mismo.
- *                   Respuesta: la mayor (o la menor) suma común posible, por búsqueda sobre todas las formas.
+ *                   Respuesta: la mayor (o la menor) suma común posible, por búsqueda sobre todas las formas; solo
+ *                   se piden los casos donde la alcanza la cota de 4S = total + 3 · centro + bordes (cotaVertices).
  *   piramide        { tipo, base: [n], pide: 'cima'|'x', x: índice de la base } cada círculo es la suma de los dos
  *                   de abajo. 'cima': se da la base y se pide el de arriba; 'x': se da el de arriba y la base
  *                   menos un número.
@@ -36,6 +37,8 @@
  *   completarMultiplicativo(d)    todas las formas de completar el cuadro con los dados (búsqueda en una familia amplia)
  *   sumasVertices(numeros)        { [S]: un arreglo } con todas las sumas comunes posibles
  *   extremoVertices(numeros, pide) { S, posibles }
+ *   cotaVertices(numeros, pide)   { S, centro, bordes, X }: la cota de 4S = total + 3 · centro + bordes (solo se
+ *                                 piden los casos donde se alcanza)
  *   sumaFila({ n, k, primero, ultimo, total })  { S, grupos, sobran }
  *   cima(base), coeficientes(n)   la cima de la pirámide y sus coeficientes (de Pascal)
  *   resolverLatino(n, diag, dados, tope, reglas)  soluciones (hasta tope) con las reglas { filas, columnas, diagonales }
@@ -304,6 +307,10 @@
     const correcta = pide === 'max' ? Ss[Ss.length - 1] : Ss[0];
     const T = numeros.reduce((s, x) => s + x, 0);
     const orden = numeros.slice().sort((x, y) => x - y), medio = orden[4];
+    // Cota: 4S = T + 3 · centro + (bordes). Lo más (o lo menos) que da 3 · centro + bordes es con el extremo al
+    // centro y los cuatro siguientes en los bordes. Solo se piden los casos donde esa cota se alcanza.
+    const cotaV = cotaVertices(numeros, pide);
+    if (cotaV.S !== correcta) return null;
     const errores = [];
     const conMedioTodas = buscarConCentro(numeros, medio);
     if (conMedioTodas.length) errores.push(h('RMP2-centro-medio', pide === 'max' ? Math.max(...conMedioTodas) : Math.min(...conMedioTodas),
@@ -320,24 +327,32 @@
     const marcas = { 0: { t: '', c: 'i' }, 1: { t: '', c: 'i' }, 3: { t: '', c: 'i' }, 4: { t: '', c: 'i' } };
     let fig = '';
     for (let i = 0; i < 9; i++) fig += caja(10 + (i % 3) * 60, 10 + Math.floor(i / 3) * 60, 60, 60, marcas[i] ? 'fill:var(--c-i);fill-opacity:0.18' : 'fill:var(--card)');
-    for (const [px, py] of [[70, 70], [130, 70], [70, 130], [130, 130]]) fig += `<circle cx="${px}" cy="${py}" r="5" style="fill:var(--c-o)"/>`;
+    for (const [px, py] of [[70, 70], [130, 70], [70, 130], [130, 130]]) fig += `<circle cx="${px}" cy="${py}" r="5" style="fill:currentColor"/>`;
     return {
       id: `rm-arreglos#${semilla}`,
       variables: { S: { nombre: 'suma común', color: 'o' }, c: { nombre: 'centro', color: 'h' }, g: { nombre: 'un grupo de cuatro', color: 'i' } },
-      enunciado: [`Se escriben los números ${lista(numeros.map(String))}, uno en cada casilla de un cuadro de 3 × 3. Alrededor de cada uno de los 4 `, v('S', 'puntos marcados'), ' hay un ', v('g', 'grupo de cuatro casillas'), ', y los cuatro grupos deben sumar lo mismo.'],
+      enunciado: [`Se escriben los números ${lista(numeros.map(String))}, uno en cada casilla de un cuadro de 3 × 3. Alrededor de cada uno de los 4 puntos marcados hay un `, v('g', 'grupo de cuatro casillas'), ', y los cuatro grupos deben sumar lo mismo: ', v('S', 'S'), '.'],
       figura: { svg: SVG(200, 200, fig), alt: 'Cuadro de 3 × 3 vacío con los cuatro puntos interiores marcados (donde se cruzan las líneas). Sombreado, como ejemplo, el grupo de las cuatro casillas de arriba a la izquierda alrededor del primer punto.' },
       pregunta: [`¿Cuál es la ${pide === 'max' ? 'mayor' : 'menor'} suma común posible?`],
       datos: '', alternativas,
       solucion: [
         ['Cada casilla está en varios grupos: el ', v('c', 'centro'), ' en los 4, cada casilla del medio de un borde en 2 y cada esquina en 1.'],
-        ['Sumando los cuatro grupos: 4S = 4 · centro + 2 · (bordes) + esquinas = ', `${T} + 3 · centro + (bordes)`, `. Para que S sea ${pide === 'max' ? 'grande' : 'chica'} conviene ${pide === 'max' ? 'el mayor' : 'el menor'} al centro y ${pide === 'max' ? 'los grandes' : 'los chicos'} en los bordes, pero los cuatro grupos tienen que quedar iguales.`],
-        [`Revisando todas las formas de llenar el cuadro, la ${pide === 'max' ? 'mayor' : 'menor'} suma que se logra es `, v('S', `S = ${correcta}`), `, por ejemplo con ${arr[4]} al centro, ${lista(bordes.map(String))} en los bordes y ${lista(esquinas.map(String))} en las esquinas.`],
+        ['Sumando los cuatro grupos: 4S = 4 · centro + 2 · (bordes) + esquinas = (todos) + 3 · centro + (bordes) = ', `${T} + 3 · centro + (bordes)`, '.'],
+        [pide === 'max'
+          ? `3 · centro + (bordes) vale lo más con el mayor, ${cotaV.centro}, al centro (cuenta tres veces) y los cuatro siguientes en los bordes: 3 · ${cotaV.centro} + ${cotaV.bordes.join(' + ')} = ${cotaV.X}. Entonces 4S ≤ ${T} + ${cotaV.X} = ${T + cotaV.X}, y S ≤ ${T + cotaV.X} ÷ 4${(T + cotaV.X) % 4 ? ` = ${f((T + cotaV.X) / 4)}; como S es entero, S ≤ ${cotaV.S}` : ` = ${cotaV.S}`}.`
+          : `3 · centro + (bordes) vale lo menos con el menor, ${cotaV.centro}, al centro (cuenta tres veces) y los cuatro siguientes en los bordes: 3 · ${cotaV.centro} + ${cotaV.bordes.join(' + ')} = ${cotaV.X}. Entonces 4S ≥ ${T} + ${cotaV.X} = ${T + cotaV.X}, y S ≥ ${T + cotaV.X} ÷ 4${(T + cotaV.X) % 4 ? ` = ${f((T + cotaV.X) / 4)}; como S es entero, S ≥ ${cotaV.S}` : ` = ${cotaV.S}`}.`],
+        [`Y `, v('S', `S = ${correcta}`), ` sí se logra: por ejemplo con ${arr[4]} al centro, ${lista(bordes.map(String))} en los bordes y ${lista(esquinas.map(String))} en las esquinas.`],
         ['Comprueba: ' + BLOQUES.map(B => B.map(i => arr[i]).join(' + ') + ' = ' + B.reduce((s, i) => s + arr[i], 0)).join('; ') + '.'],
       ],
       figuraSolucion: { svg: figuraCuadro(arr.map(String)), alt: 'Un arreglo que lo logra. ' + altCuadro(arr.map(String)) + '.' },
       respuesta: { valor: correcta, unidad: '' },
       _datos: d,
     };
+  }
+  function cotaVertices(numeros, pide) {
+    const o = numeros.slice().sort((x, y) => (pide === 'max' ? y - x : x - y));
+    const X = 3 * o[0] + o[1] + o[2] + o[3] + o[4], T = numeros.reduce((s, x) => s + x, 0);
+    return { S: pide === 'max' ? Math.floor((T + X) / 4) : Math.ceil((T + X) / 4), centro: o[0], bordes: o.slice(1, 5), X };
   }
   function extremoVertices(numeros, pide) {
     const Ss = Object.keys(sumasVertices(numeros)).map(Number);
@@ -426,7 +441,7 @@
       const dob = conCoef(dobles);
       if (ent(dob) && n > 3) errores.push(h('RMP1-doble', dob, `Usaste 1, 2, …, 2, 1 como coeficientes. Con ${n} pisos son ${C.join(', ')}.`));
       if (C[x] > 1) errores.push(h('RMP61-sin-dividir', resto, `Llegaste a ${C[x]} · x = ${resto}, pero te faltó dividir entre ${C[x]}.`));
-      errores.push(h('RMP61-vecino', filas[1][Math.min(x, n - 2)], 'Ese es el círculo que está encima de x, no x.'));
+      errores.push(h('RMP61-vecino', filas[1][Math.min(x, n - 2)], `Ese es el círculo que está encima de x, a la ${x <= n - 2 ? 'derecha' : 'izquierda'}; no es x.`));
       mostrar = (r, i) => (r === 0 ? (i === x ? { t: 'x', c: 'o' } : { t: String(base[i]) }) : r === n - 1 ? { t: String(T), c: 'h' } : null);
       enunciado = ['En la pirámide, cada círculo vale la suma de los dos que tiene debajo. El de arriba vale ', v('T', String(T)), ` y abajo están ${base.map((z, i) => (i === x ? 'x' : String(z))).join(', ')}.`];
       pregunta = ['¿Cuánto vale ', v('x', 'x'), '?'];
@@ -588,7 +603,7 @@
     if (diag) relajar({ filas: true, columnas: true, diagonales: false }, 'RMP63-sin-diagonal', 'Ese valor sale de un cuadro que repite un número en una diagonal. También las dos diagonales deben tener todos los números distintos.');
     relajar({ filas: true, columnas: false, diagonales: true }, 'RMP63-sin-columnas', 'Ese valor sale de un cuadro que cumple las filas pero repite un número en alguna columna.');
     relajar({ filas: false, columnas: true, diagonales: true }, 'RMP63-sin-filas', 'Ese valor sale de un cuadro que cumple las columnas pero repite un número en alguna fila.');
-    if (errores.length < 3) relajar({ filas: true, columnas: false, diagonales: false }, 'RMP63-sin-columnas', 'Ese valor sale de un cuadro que solo revisa las filas: repite números en alguna columna.');
+    if (errores.length < 3) relajar({ filas: true, columnas: false, diagonales: false }, 'RMP63-solo-filas', 'Ese valor sale de un cuadro que solo revisa las filas: repite números en alguna columna.');
     const alternativas = P.armar({ correcta, errores, rng, negativos: true });
     if (alternativas.length < 4) return null;
     const LET = ['a', 'b', 'c'], COL = ['o', 'i', 'h'];
@@ -680,7 +695,7 @@
     const arrTxt = arreglo.map(fl => fl.map(map).join(' < ')).join(' / ');
     return {
       id: `rm-arreglos#${semilla}`,
-      variables: { j: { nombre: 'columna pedida', color: 'o' }, k: { nombre: 'lugares que deben quedar', color: 'i' } },
+      variables: { j: { nombre: 'columna pedida', color: 'o' }, k: { nombre: 'lugares que deben quedar', color: 'i' }, s: { nombre: 'suma de la columna', color: 'h' } },
       enunciado: [`Los ${N} números ${numeros.length > 8 ? `${numeros[0]}, ${numeros[1]}, ${numeros[2]}, …, ${numeros[N - 1]} (de ${dd} en ${dd})` : lista_} se escriben, uno por casilla, en un cuadro de ${r} filas y ${c} columnas, de modo que en cada fila crezcan de izquierda a derecha.`],
       figura: { svg: SVG(W, r * tam + 44, fig), alt: `Cuadro vacío de ${r} filas y ${c} columnas, con la columna ${j} (contando desde la izquierda) sombreada.` },
       pregunta: ['¿Cuál es la ', pide === 'max' ? 'mayor' : 'menor', ' suma posible de los números de la ', v('j', `columna ${j}`), '?'],
@@ -688,7 +703,7 @@
       solucion: [
         [`En cada fila, el número de la columna ${j} tiene `, v('k', `${pide === 'max' ? c - j : j - 1} ${pide === 'max' ? 'números mayores a su derecha' : 'números menores a su izquierda'}`), '.'],
         [pide === 'max' ? `Para la mayor suma, el más grande posible de la columna es el ${map(vals[0])} (a su derecha van los ${c - j} mayores). El siguiente tiene que dejar libres otros ${c - j} mayores que él, y así: ` : `Para la menor suma, el más chico posible es el ${map(vals[0])} (a su izquierda van ${j - 1} menores). El siguiente tiene que dejar ${j - 1} menores más, y así: `,
-          v('j', vals.map(map).join(' + ')), ' = ', String(correcta), '.'],
+          v('s', `${vals.map(map).join(' + ')} = ${correcta}`), '.'],
         [`Un arreglo que lo logra (filas): ${arrTxt}.`],
       ],
       respuesta: { valor: correcta, unidad: '' },
@@ -856,6 +871,6 @@
 
   return {
     id: 'rm-arreglos', titulo: 'Cuadros, pirámides y filas de números', generar,
-    calc: { magicoDesde, completarMultiplicativo, sumasVertices, extremoVertices, cima, coeficientes, sumaFila, resolverLatino, columnaExtrema, maxPares, butaca, numeroEn },
+    calc: { magicoDesde, completarMultiplicativo, sumasVertices, extremoVertices, cotaVertices, cima, coeficientes, sumaFila, resolverLatino, columnaExtrema, maxPares, butaca, numeroEn },
   };
 });

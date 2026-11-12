@@ -158,12 +158,12 @@
     "c": 5,
     "bloqueadas": [
      [
-      0,
+      4,
       1
      ],
      [
-      2,
-      1
+      1,
+      2
      ],
      [
       3,
@@ -174,7 +174,7 @@
       4
      ],
      [
-      1,
+      4,
       4
      ]
     ],
@@ -190,14 +190,14 @@
    "entrada": {
     "tipo": "rectangulo",
     "piezas": [
-     "L3",
-     "L4"
+     "L4",
+     "T4"
     ],
     "pide": "area"
    },
    "esperado": {
-    "respuesta": 14,
-    "texto": "14 cuadraditos"
+    "respuesta": 12,
+    "texto": "12 cuadraditos"
    }
   },
   {
@@ -205,14 +205,14 @@
    "entrada": {
     "tipo": "rectangulo",
     "piezas": [
-     "I4",
-     "L3"
+     "P5",
+     "D2"
     ],
     "pide": "area"
    },
    "esperado": {
-    "respuesta": 14,
-    "texto": "14 cuadraditos"
+    "respuesta": 9,
+    "texto": "9 cuadraditos"
    }
   },
   {

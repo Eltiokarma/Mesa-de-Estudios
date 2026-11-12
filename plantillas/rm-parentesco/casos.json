@@ -659,17 +659,17 @@
    "entrada": {
     "tipo": "minimo",
     "pedido": {
-     "padre": 1,
-     "madre": 1,
+     "padre": 2,
+     "madre": 2,
      "hijo": 2,
-     "hija": 1,
-     "hermano": 2,
-     "hermana": 1
+     "hija": 3,
+     "abuelo": 2,
+     "nieta": 2
     }
    },
    "esperado": {
-    "respuesta": 5,
-    "texto": "5"
+    "respuesta": 6,
+    "texto": "6"
    }
   },
   {
@@ -677,18 +677,18 @@
    "entrada": {
     "tipo": "minimo",
     "pedido": {
-     "padre": 1,
-     "madre": 2,
-     "hija": 3,
+     "padre": 2,
+     "madre": 1,
+     "hijo": 3,
+     "hija": 1,
      "hermano": 1,
-     "hermana": 2,
-     "nieto": 1,
-     "nieta": 1
+     "abuela": 1,
+     "nieto": 1
     }
    },
    "esperado": {
-    "respuesta": 6,
-    "texto": "6"
+    "respuesta": 5,
+    "texto": "5"
    }
   },
   {
@@ -1040,7 +1040,7 @@
      true
     ],
     "nombre": "Nora",
-    "dicho": "juega vóley conmigo"
+    "dicho": "cumple años hoy"
    },
    "esperado": {
     "respuesta": "D:0m",

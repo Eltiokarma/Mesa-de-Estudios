@@ -22,14 +22,17 @@
  *                 cuadrado n, o la razón entre los perímetros del 1 y del n.
  *   rectangulo    { tipo, piezas: [id, id], pide: 'area'|'perimetro' } el menor rectángulo (en área o en
  *                 perímetro) que se cubre exactamente con piezas de los dos tipos, al menos una de cada una
- *                 (se pueden girar y voltear). Búsqueda de embaldosados.
+ *                 (se pueden girar y voltear). Búsqueda de embaldosados; solo los pares donde el descarte se explica
+ *                 por área, por la caja de cada pieza o por el ajedrezado (cotaRectangulo).
  *   lineal        { tipo, W, H, n } un bloque de W × H se corta en n tiras iguales (cortes paralelos al lado H) y
  *                 se ponen en fila, cada una pegada a la siguiente por un lado completo. Respuesta: el mayor
  *                 perímetro posible (se juntan por el lado corto).
  *   cajas         { tipo, W, L, p, q, H } barras de p × q × H en una caja de W × L × H (de pie). Respuesta: el
- *                 máximo de barras que caben (búsqueda de empaques, con giros).
+ *                 máximo de barras que caben (búsqueda de empaques, con giros); solo si lo alcanza la cota por área o
+ *                 por franjas de 1 cm (cotaCajas).
  *   tablero       { tipo, r, c, bloqueadas: [[f, c]], pieza: 'I3'|'L3' } máximo de fichas de tres cuadraditos
- *                 en un tablero con casillas tapadas (búsqueda).
+ *                 en un tablero con casillas tapadas (búsqueda); solo si lo alcanza una cota explicable: casillas ÷ 3,
+ *                 casillas donde no entra ninguna ficha, zonas separadas o un coloreo (cotaTablero).
  *   fibonacci     { tipo, u, n, pide: 'area'|'perimetro' } figuras de cuadrados de lados 1, 1, 2, 3, 5, … (por u cm)
  *                 que se arman en espiral. Respuesta: área o perímetro de la figura n.
  *   malla         { tipo, n, t } puntos en n filas (1, 2, …, n) en una malla triangular; una hormiga recorre
@@ -43,7 +46,8 @@
  * Errores (ver el informe de respuesta de este módulo):
  *   AR7-*          linealidad: escalar el perímetro como el área, usar todas las fichas, la mitad en cada paso
  *                  (parcial: el informe documenta AR7 con figuras semejantes, no estas caras)
- *   RM2-*          sucesión de figuras tomada como lineal u «objeto entero» (parcial)
+ *   RM2-objeto-entero  sucesión de figuras tomada como proporcional («objeto entero», parcial)
+ *   RMP86-lineal   suponer que una figura que crece cada vez más crece siempre lo mismo (hipótesis)
  *   RMP68-*        perímetro del contorno: sumar perímetros sin restar lo que se toca, restarlo una sola vez,
  *                  creer que se conserva al cortar
  *   RMP69-*        contar áreas o piezas sin ver cómo encajan: dividir áreas, sumar áreas, el hexágono como una ficha
@@ -71,6 +75,7 @@
   const poligono = (pts, estilo = 'fill:var(--card)', ancho = 1.5) => `<polygon points="${pts.map(([x, y]) => `${f2(x)},${f2(y)}`).join(' ')}" style="${estilo}" stroke="currentColor" stroke-width="${ancho}"/>`;
   const f2 = x => Math.round(x * 10) / 10;
   const R3 = Math.sqrt(3);
+  const lista = xs => xs.length <= 1 ? xs.join('') : xs.slice(0, -1).join(', ') + ' y ' + xs[xs.length - 1];
 
   // =====================================================================
   // Piezas de cuadraditos: orientaciones, embaldosados y empaques
@@ -172,6 +177,72 @@
       }
     }
     return n;
+  }
+  // ---------- Cotas que el alumno puede seguir (solo se piden los casos donde la cota se alcanza) ----------
+  // Rectángulo: el área tiene que ser m·a1 + n·a2 (m, n ≥ 1), cada pieza tiene que caber (por su caja) y, si una
+  // pieza cubre en el ajedrezado 3 de un color y 1 del otro (la te) y la otra 2 y 2, las tes van en número par.
+  // Devuelve los rectángulos que se descartan antes del primero que pasa, con su motivo.
+  const cajaPieza = cs => { const w = Math.max(...cs.map(c => c[0])) + 1, hh = Math.max(...cs.map(c => c[1])) + 1; return [Math.min(w, hh), Math.max(w, hh)]; };
+  const desbalance = cs => Math.abs(cs.reduce((t, [x, y]) => t + ((x + y) % 2 ? 1 : -1), 0));
+  function candidatosRect(ids, pide) {
+    const a = ids.map(t => PIEZAS[t].celdas.length), minA = a[0] + a[1];
+    const cand = [];
+    for (let w = 1; w <= 12; w++) for (let hh = w; hh <= 24; hh++) if (w * hh >= minA && w * hh <= 60) cand.push([w, hh]);
+    cand.sort(pide === 'area' ? (p, q) => p[0] * p[1] - q[0] * q[1] || (p[0] + p[1]) - (q[0] + q[1]) : (p, q) => (p[0] + p[1]) - (q[0] + q[1]) || p[0] * p[1] - q[0] * q[1]);
+    return cand;
+  }
+  function cotaRectangulo(ids, pide) {
+    const a = ids.map(t => PIEZAS[t].celdas.length), cajas = ids.map(t => cajaPieza(PIEZAS[t].celdas)), des = ids.map(t => desbalance(PIEZAS[t].celdas));
+    const tes = des.map((e, i) => e === 2 && des[1 - i] === 0); // la te con una pieza pareja: tes en número par
+    const descartes = [];
+    for (const [w, hh] of candidatosRect(ids, pide)) {
+      const A = w * hh;
+      const combos = []; for (let m = 1; m * a[0] < A; m++) if ((A - m * a[0]) % a[1] === 0) combos.push([m, (A - m * a[0]) / a[1]]);
+      let motivo = null;
+      if (!combos.length) motivo = 'area';
+      else { const no = cajas.findIndex(([u, vv]) => u > w || vv > hh); if (no >= 0) motivo = 'cabe' + no; }
+      if (!motivo && tes.some(Boolean)) { const t = tes.indexOf(true); if (combos.every(cm => cm[t] % 2 === 1)) motivo = 'color'; }
+      if (!motivo) return { w, h: hh, descartes, tes };
+      descartes.push({ w, h: hh, motivo, combos });
+    }
+    return null;
+  }
+  // Cajas: por área, o por franjas de 1 cm (en cada franja las barras ocupan tramos de p o q cm).
+  const llenaFranja = (L, p, q) => { let m = { t: 0, i: 0, j: 0 }; for (let i = 0; i * p <= L; i++) for (let j = 0; i * p + j * q <= L; j++) if (i * p + j * q > m.t) m = { t: i * p + j * q, i, j }; return m; };
+  function cotaCajas(W, L, p, q) {
+    const area = Math.floor(W * L / (p * q));
+    const fA = llenaFranja(L, p, q), fB = llenaFranja(W, p, q);
+    const porA = Math.floor(W * fA.t / (p * q)), porB = Math.floor(L * fB.t / (p * q));
+    const fr = porA <= porB ? { n: porA, franjas: W, largo: L, ...fA } : { n: porB, franjas: L, largo: W, ...fB };
+    return fr.n < area ? { tipo: 'franjas', ...fr } : { tipo: 'area', n: area };
+  }
+  // Tablero: casillas libres ÷ 3; sin las casillas donde no entra ninguna ficha; por zonas separadas; o un
+  // coloreo (recta: restos de fila + columna o de fila + 2 × columna entre 3; ele: columnas o filas alternadas).
+  function cotaTablero(r, c, bloq, pieza) {
+    const O = orientaciones(PIEZAS[pieza].celdas), tap = new Set(bloq.map(([x, y]) => x + ',' + y));
+    const libres = []; for (let y = 0; y < r; y++) for (let x = 0; x < c; x++) if (!tap.has(x + ',' + y)) libres.push([x, y]);
+    const cub = new Set();
+    for (let y = 0; y < r; y++) for (let x = 0; x < c; x++) for (const o of O) { const cel = o.map(([a, b]) => [a + x, b + y]); if (cel.every(([X, Y]) => X < c && Y < r && !tap.has(X + ',' + Y))) cel.forEach(([X, Y]) => cub.add(X + ',' + Y)); }
+    const muertas = libres.filter(([x, y]) => !cub.has(x + ',' + y));
+    const vis = new Set(), zonas = [];
+    for (const k of cub) { if (vis.has(k)) continue; let n = 0; const pila = [k]; vis.add(k); while (pila.length) { const [x, y] = pila.pop().split(',').map(Number); n++; for (const w of [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]]) { const kk = w.join(','); if (cub.has(kk) && !vis.has(kk)) { vis.add(kk); pila.push(kk); } } } zonas.push(n); }
+    const colores = [];
+    const cuenta = (celdas, fn, k) => { const t = Array(k).fill(0); celdas.forEach(([x, y]) => t[fn(x, y)]++); return t; };
+    const cubL = [...cub].map(z => z.split(',').map(Number));
+    for (const [conjunto, sinMuertas] of [[libres, false], [cubL, true]]) {
+      if (sinMuertas && !muertas.length) continue;
+      if (pieza === 'I3') for (const [nom, fn] of [['fila + columna', (x, y) => (y + 1 + x + 1) % 3], ['fila + 2 × columna', (x, y) => (y + 1 + 2 * (x + 1)) % 3]]) {
+        const t = cuenta(conjunto, fn, 3), k = t.indexOf(Math.min(...t)); colores.push({ n: t[k], forma: nom, resto: k, cuentas: t, sinMuertas });
+      } else for (const [nom, fn] of [['columnas', (x) => (x + 1) % 2], ['filas', (x, y) => (y + 1) % 2]]) {
+        const t = cuenta(conjunto, fn, 2), k = t.indexOf(Math.min(...t)); colores.push({ n: t[k], forma: nom, resto: k, cuentas: t, sinMuertas });
+      }
+    }
+    const cs = [{ tipo: 'dividir', n: Math.floor(libres.length / 3) }];
+    if (muertas.length) cs.push({ tipo: 'muertas', n: Math.floor(cub.size / 3) });
+    if (zonas.length > 1) cs.push({ tipo: 'zonas', n: zonas.reduce((t, z) => t + Math.floor(z / 3), 0) });
+    colores.sort((A, B) => A.n - B.n).slice(0, 1).forEach(k => cs.push({ tipo: 'colores', ...k }));
+    const min = Math.min(...cs.map(k => k.n));
+    return { ...cs.find(k => k.n === min), libres: libres.length, muertas, zonas, cubribles: cub.size };
   }
   const rectCeldas = (p, q) => { const r = []; for (let y = 0; y < q; y++) for (let x = 0; x < p; x++) r.push([x, y]); return r; };
   function dibujaCuadricula(w, hh, celdaPx, x0, y0, pintar) {
@@ -463,6 +534,7 @@
       const fp = { forma, n, s: forma === 'escalera' ? rng.entero(1, a + 1) : 0, m: forma === 'L' || forma === 'T' ? rng.entero(2, n - 1) : 0 };
       const fichas = formaFichas(fp, a, b);
       if (!fichas || contorno(fichas) === null) continue;
+      if (forma === 'escalera' && b <= fp.s) continue; // si no, las fichas no se tocan
       const d = { tipo: 'contorno', ...fp, a, b, pide, P: contorno(fichas) };
       const p = armarContorno(d, rng, semilla);
       if (p) return p;
@@ -521,13 +593,28 @@
         ['RMP68-caja', 'Igualaste el perímetro al del rectángulo que encierra la figura. La figura tiene entrantes que agregan bordes.'],
       ].map(([id, ex]) => { const bb = despeja({ 'RMP68-suma': 'suma', 'RMP68-una-vez': 'una', 'RMP68-lado-entero': 'lado', 'RMP68-caja': 'caja' }[id]); return bb ? h(id, bb, ex) : null; }).filter(Boolean);
       etiqueta = { largo: 'b', corto: `${a} cm` };
-      enunciado = [`Con ${n} fichas rectangulares iguales de `, v('a', `${a} cm`), ' por ', v('b', 'b cm'), ` (b mayor que ${a}) se arma la figura del dibujo, sin superponerlas. El perímetro del contorno es `, v('P', `${T.bien} cm`), '.'];
+      enunciado = [`Con ${n} fichas rectangulares iguales de `, v('a', `${a} cm`), ' por ', v('b', 'b cm'), ` (b mayor que ${a}${d.forma === 'escalera' ? ` y que el corrimiento de ${d.s} cm` : ''}) se arma la figura del dibujo, sin superponerlas. El perímetro del contorno es `, v('P', `${T.bien} cm`), '.'];
       pregunta = ['¿Cuánto mide ', v('b', 'b'), '?'];
     }
     const alternativas = P.armar({ correcta, errores, rng }).map(x => ({ ...x, texto: x.texto + ' cm' }));
     if (alternativas.length < 4) return null;
     const A_ = `${a} cm`, B_ = pide === 'b' ? 'b' : `${b} cm`;
-    const solucion = [
+    // Con b desconocido se despeja: el contorno es α · b + β (se mide con dos valores de b y se comprueba con un tercero).
+    const P1 = perimetroCon(d, b, 'bien'), P2 = perimetroCon(d, b + 1, 'bien'), P3 = perimetroCon(d, b + 2, 'bien');
+    const alfa = P2 - P1, beta = P1 - alfa * b;
+    if (pide === 'b' && (P3 - P2 !== alfa || alfa <= 0)) return null;
+    const escalera = d.forma === 'escalera', Wc = (n - 1) * d.s, Hc = n * a;
+    const tocanA = T.toques.every(t => t === a);
+    if (pide === 'b' && !escalera && !tocanA) return null;
+    const solucion = pide === 'b' && escalera ? [
+      [`Como b es mayor que el corrimiento, cada ficha toca a la de abajo. El rectángulo que encierra la figura mide (b + ${Wc}) cm de ancho (una ficha más ${n - 1} corrimientos de ${d.s} cm) y ${Hc} cm de alto (${n} × ${a}).`],
+      ['En la escalera el contorno mide lo mismo que el rectángulo que la encierra: 2 × [(b + ', `${Wc}) + ${Hc}] = `, v('P', `${T.bien}`), `, así que b + ${Wc + Hc} = ${T.bien / 2} y `, v('b', `b = ${b} cm`), '.'],
+    ] : pide === 'b' ? [
+      [`Si las fichas estuvieran separadas, sus bordes sumarían ${n} × 2 × (${a} + b) = ${2 * n}b + ${2 * n * a}.`],
+      [`Donde dos fichas se tocan, ese tramo deja de ser borde en las dos: se resta dos veces. Hay ${n - 1} tramos de contacto y cada uno mide ${a} cm (el lado corto), sea cual sea b.`],
+      [`Contorno: ${2 * n}b + ${2 * n * a} − 2 × ${n - 1} × ${a} = ${alfa}b + ${beta} = `, v('P', `${T.bien}`), `, así que ${alfa}b = ${T.bien - beta} y `, v('b', `b = ${b} cm`), '.'],
+    ] : null;
+    const solucionP = solucion || [
       [`Si las fichas estuvieran separadas, sus bordes sumarían ${n} × 2 × (${pide === 'b' ? `${a} + b` : `${a} + ${b}`}) cm${pide === 'b' ? '' : ` = ${T.suma} cm`}.`],
       [`Donde dos fichas se tocan, ese tramo deja de ser borde en las dos: se resta dos veces. Tramos de contacto${pide === 'b' ? ` (con b = ${b})` : ''}: ${T.toques.map(t => `${t} cm`).join(', ')}.`],
       pide === 'perimetro'
@@ -539,7 +626,7 @@
       id: `rm-fichas#${semilla}`,
       variables: { a: { nombre: 'lado corto', color: 'i' }, b: { nombre: 'lado largo', color: 'h' }, P: { nombre: 'perímetro', color: 'o' } },
       enunciado, figura: { svg: figuraContorno(fichas, etiqueta), alt: `Fichas de ${A_} por ${B_}: ` + textoForma(d, A_, B_) + coords },
-      pregunta, datos: '', alternativas, solucion,
+      pregunta, datos: '', alternativas, solucion: solucionP,
       respuesta: { valor: correcta, unidad: 'cm' },
       _datos: d,
     };
@@ -582,7 +669,7 @@
         pa('AR7-mitad', P1 / 2 ** m, 'Dividiste el perímetro a la mitad en cada paso. Lo que se reduce a la mitad es el área; el lado (y el perímetro) se divide entre √2.'),
         h('RMP1-pasos', P1 / r2 ** n, `Contaste ${pasos(n)}, pero del cuadrado 1 al ${n} hay ${m}.`),
         h('RMP61-lado', L / r2 ** m, `Ese es el lado del cuadrado ${n}; el perímetro es 4 veces el lado.`),
-        pa('AR7-area-como-lado', P1 / 4 ** m, 'Dividiste entre 4 en cada paso. El lado nuevo une puntos medios: es la mitad de la diagonal del anterior, o sea, el lado anterior entre √2.'),
+        pa('AR7-area-como-lado', P1 / 4 ** m, 'Dividiste el perímetro entre 4 en cada paso. El lado nuevo es el anterior ÷ √2, así que el perímetro se divide entre √2.'),
       ];
       texto_ = x => P.radical(x) + ' cm';
       pregunta = [`¿Cuál es el perímetro del cuadrado ${n}?`];
@@ -592,7 +679,7 @@
         pa('AR7-mitad', 2 ** m, `Usaste 2 en cada paso: esa es la razón de las áreas. La de los perímetros es √2 por paso.`),
         h('RMP1-pasos', r2 ** n, `Contaste ${pasos(n)}; del cuadrado 1 al ${n} hay ${m}.`),
         h('RMP1-pasos', r2 ** (m - 1), `Contaste ${pasos(m - 1)}; del cuadrado 1 al ${n} hay ${m}.`),
-        pa('AR7-area-como-lado', 4 ** m, 'Usaste 4 por paso, como si el lado se redujera a la mitad.'),
+        pa('AR7-area-como-lado', 4 ** m, `Tomaste que el perímetro se divide entre 4 en cada paso (4^${m}). El lado nuevo es el anterior ÷ √2, así que el perímetro se divide entre √2: la razón es (√2)^${m}.`),
       ];
       texto_ = x => P.radical(x);
       pregunta = [`¿Cuál es la razón entre el perímetro del cuadrado 1 y el del cuadrado ${n}?`];
@@ -644,6 +731,8 @@
     const { piezas, pide } = d;
     const r = minRectangulo(piezas, pide);
     if (!r) return null;
+    const cota = cotaRectangulo(piezas, pide);
+    if (!cota || cota.w !== r.w || cota.h !== r.h) return null; // solo si el descarte se puede explicar
     const a = piezas.map(t => PIEZAS[t].celdas.length);
     const correcta = pide === 'area' ? r.w * r.h : 2 * (r.w + r.h);
     const medida = (w, hh) => (pide === 'area' ? w * hh : 2 * (w + hh));
@@ -671,6 +760,17 @@
     r.teselas.forEach(q => { figS += q.celdas.map(([x, y]) => `<rect x="${f2(10 + x * cs)}" y="${f2(10 + y * cs)}" width="${f2(cs)}" height="${f2(cs)}" style="fill:var(--c-${COLORES[q.t]});fill-opacity:0.25" stroke="currentColor" stroke-width="0.5"/>`).join(''); });
     figS += bordesPiezas(r.teselas.map(q => q.celdas), cs, 10, 10);
     const cuenta = piezas.map((_, t) => r.teselas.filter(q => q.t === t).length);
+    const AB = ['A', 'B'], cajas = piezas.map(t => cajaPieza(PIEZAS[t].celdas));
+    const areas = []; for (let A = a[0] + a[1]; A <= r.w * r.h; A++) { for (let m = 1; m * a[0] < A; m++) if ((A - m * a[0]) % a[1] === 0) { areas.push(A); break; } }
+    const grupo = mot => cota.descartes.filter(x => x.motivo === mot).map(x => `${x.w} × ${x.h}`);
+    const razonRect = [[`Con al menos una pieza de cada tipo, el área es ${a[0]} × (piezas A) + ${a[1]} × (piezas B): puede ser ${lista(areas.map(String))}${areas.length && areas[areas.length - 1] < 60 ? ', …' : ''} cuadraditos.`]];
+    const tq = cota.tes.indexOf(true);
+    if (tq >= 0) razonRect.push([`Además, pinta el rectángulo como un tablero de ajedrez. Un rectángulo de área par tiene tantas casillas de un color como del otro. La pieza ${AB[tq]} cubre 3 de un color y 1 del otro, y la pieza ${AB[1 - tq]} cubre 2 y 2; para que se emparejen, las piezas ${AB[tq]} tienen que ser un número par.`]);
+    const motivos = [];
+    if (grupo('area').length) motivos.push(`${lista(grupo('area'))}, porque su área no sale así`);
+    for (const k of [0, 1]) if (grupo('cabe' + k).length) motivos.push(`${lista(grupo('cabe' + k))}, porque no cabe la pieza ${AB[k]} (necesita ${cajas[k][0]} × ${cajas[k][1]})`);
+    if (grupo('color').length) motivos.push(`${lista(grupo('color'))}, porque con esa área habría un número impar de piezas ${AB[tq]}`);
+    if (motivos.length) razonRect.push([`Los rectángulos de menor ${pide === 'area' ? 'área' : 'perímetro'} no sirven: ${motivos.join('; ')}.`]);
     return {
       id: `rm-fichas#${semilla}`,
       variables: { A: { nombre: 'pieza A', color: 'o' }, B: { nombre: 'pieza B', color: 'i' }, x: { nombre: 'rectángulo', color: 'h' } },
@@ -679,8 +779,9 @@
       pregunta: [pide === 'area' ? '¿Cuántos cuadraditos tiene el rectángulo más pequeño que se puede cubrir así?' : '¿Cuál es el menor perímetro posible de un rectángulo cubierto así? (cada cuadradito mide 1 unidad de lado)'],
       datos: '', alternativas,
       solucion: [
-        [`La pieza A tiene ${a[0]} cuadraditos y la B, ${a[1]}. No basta con que la cuenta dé: las piezas tienen que encajar en el rectángulo.`],
-        ['Probando los rectángulos de menor a mayor ' + (pide === 'area' ? 'área' : 'perímetro') + ', el primero que se puede cubrir es el de ', v('x', `${r.w} × ${r.h}`), `, con ${cuenta[0]} pieza${cuenta[0] > 1 ? 's' : ''} A y ${cuenta[1]} pieza${cuenta[1] > 1 ? 's' : ''} B.`],
+        [`La pieza A tiene ${a[0]} cuadraditos y la B, ${a[1]}. Se descartan los rectángulos más chicos, de menor a mayor ${pide === 'area' ? 'área' : 'perímetro'}.`],
+        ...razonRect,
+        [`El primero que queda es el de `, v('x', `${r.w} × ${r.h}`), `, y sí se cubre: con ${cuenta[0]} pieza${cuenta[0] > 1 ? 's' : ''} A y ${cuenta[1]} pieza${cuenta[1] > 1 ? 's' : ''} B (dibujo de la solución).`],
         [pide === 'area' ? `Área: ${r.w} × ${r.h} = ` : `Perímetro: 2 × (${r.w} + ${r.h}) = `, v('x', String(correcta)), pide === 'area' ? ' cuadraditos.' : ' unidades.'],
       ],
       figuraSolucion: { svg: SVG(r.w * cs + 20, r.h * cs + 20, figS), alt: `Rectángulo de ${r.w} × ${r.h} cubierto con ${cuenta[0]} piezas A y ${cuenta[1]} piezas B: ` + r.teselas.map(q => `${'AB'[q.t]} en ${q.celdas.map(([x, y]) => `(${x + 1}; ${y + 1})`).join(' ')}`).join('; ') + '.' },
@@ -761,6 +862,8 @@
     const M = maxEmpaque(W, L, rectCeldas(p, q));
     const correcta = M.max;
     const area = Math.floor(W * L / (p * q)), uni = Math.max(Math.floor(W / p) * Math.floor(L / q), Math.floor(W / q) * Math.floor(L / p));
+    const cota = cotaCajas(W, L, p, q);
+    if (cota.n !== correcta) return null; // solo si la cota se alcanza: así se puede explicar sin probar todo
     if (area === correcta && uni === correcta && rng.sig() < 0.8) return null; // casi siempre con alguna trampa
     const errores = [
       h('RMP69-volumen', area, `Dividiste volúmenes (${W * L * H} ÷ ${p * q * H}) y te quedaste con la parte entera. Las barras no se pueden partir: hay que ver cuántas encajan.`),
@@ -791,7 +894,8 @@
       solucion: [
         [`Como las barras tienen la altura de la caja, basta mirar el fondo: cuántos rectángulos de ${p} × ${q} caben en uno de ${W} × ${L}.`],
         [`Por área cabrían a lo más ${W * L} ÷ ${p * q} = ${f(W * L / (p * q))}, pero tienen que encajar. Todas en la misma dirección entran ${uni}.`],
-        ['Probando todas las formas de acomodarlas (mezclando direcciones), el máximo es ', v('x', String(correcta)), '.'],
+        ...(cota.tipo === 'area' ? [] : [[`Mejor, por franjas: divide el fondo en ${cota.franjas} franjas de 1 cm de ancho, cada una de ${cota.largo} cm de largo. Cada barra ocupa, en cada franja que cruza, un tramo de ${p} o de ${q} cm. En ${cota.largo} cm, lo más que se llena con tramos de ${p} y de ${q} es ${cota.t} cm (${[...Array(cota.i).fill(p), ...Array(cota.j).fill(q)].join(' + ')}). Entre todas las franjas se ocupan a lo más ${cota.franjas} × ${cota.t} = ${cota.franjas * cota.t} cm² del fondo, y cada barra ocupa ${p * q} cm²: caben a lo más ${cota.franjas * cota.t} ÷ ${p * q}, o sea ${cota.n}.`]]),
+        [`Y ${cota.tipo === 'area' ? 'mezclando direcciones se llega a esas ' : 'con el arreglo del dibujo de la solución entran '}`, v('x', String(correcta)), ` barras: es el máximo.`],
       ],
       figuraSolucion: { svg: SVG(W * cs + 20, L * cs + 20, figS), alt: `Una forma de acomodar ${correcta} barras en el fondo de ${W} × ${L}: ` + M.piezas.map(cel => { const xs = cel.map(c => c[0]), ys = cel.map(c => c[1]); return `de (${Math.min(...xs)}; ${Math.min(...ys)}) a (${Math.max(...xs) + 1}; ${Math.max(...ys) + 1})`; }).join(', ') + '.' },
       respuesta: { valor: correcta, unidad: 'barras' },
@@ -822,6 +926,8 @@
     const libres = r * c - bloq.length;
     const correcta = M.max;
     if (Math.floor(libres / 3) === correcta && rng.sig() < 0.75) return null; // casi siempre que no baste dividir
+    const cota = cotaTablero(r, c, bloq, pieza);
+    if (cota.n !== correcta) return null; // solo si una cota que el alumno puede seguir se alcanza
     const errores = [
       h('RMP69-dividir', Math.floor(libres / 3), `Dividiste las ${libres} casillas libres entre 3. Las fichas tienen forma: no siempre caben tantas.`),
       h('RMP63-sin-tapadas', maxEmpaque(c, r, cs, []).max, `Contaste como si el tablero de ${r} × ${c} no tuviera casillas tapadas.`),
@@ -837,6 +943,17 @@
     fig += dibujaPieza(cs, cp, 10 + c * cp + 30, 10, 'o') + texto(10 + c * cp + 30 + 1.5 * cp, 10 + altoF * cp + 20, 'ficha', 14, 'fill:var(--c-o)');
     let figS = dibujaCuadricula(c, r, cp, 10, 10, (x, y) => (tap(x, y) ? 'fill:currentColor' : 'fill:var(--card)'));
     M.piezas.forEach((cel, i) => { figS += dibujaPieza(cel, cp, 10, 10, COLORES[i % 4]); });
+    const fc = ([x, y]) => `(${y + 1}, ${x + 1})`;
+    const txtMuertas = cota.muertas.length ? `En ${cota.muertas.length === 1 ? 'la casilla' : 'las casillas'} ${lista(cota.muertas.map(fc))} (fila, columna) no entra ninguna ficha: ${cota.muertas.length === 1 ? 'queda encerrada' : 'quedan encerradas'} por casillas tapadas o por el borde. Quedan ${cota.cubribles} casillas aprovechables` : '';
+    const razonTab = [];
+    if (cota.tipo === 'muertas') razonTab.push([`${txtMuertas}: caben a lo más ${cota.cubribles} ÷ 3, o sea ${cota.n}.`]);
+    if (cota.tipo === 'zonas') razonTab.push([`${txtMuertas ? txtMuertas + '. ' : ''}Las casillas aprovechables quedan en ${cota.zonas.length} zonas separadas, de ${lista(cota.zonas.map(String))} casillas; en cada zona caben a lo más sus casillas ÷ 3: ${cota.zonas.map(z => Math.floor(z / 3)).join(' + ')} = ${cota.n}.`]);
+    if (cota.tipo === 'colores') {
+      const pre = cota.sinMuertas ? `${txtMuertas}. ` : '';
+      razonTab.push(pieza === 'I3'
+        ? [`${pre}Escribe en cada casilla el resto de dividir (${cota.forma}) entre 3. Una ficha recta, echada o parada, cubre tres casillas seguidas: una con resto 0, una con resto 1 y una con resto 2. Entre las casillas ${cota.sinMuertas ? 'aprovechables' : 'libres'} hay ${cota.cuentas.join(', ')} con resto 0, 1 y 2: solo ${cota.n} con resto ${cota.resto}, así que caben a lo más ${cota.n} fichas.`]
+        : [`${pre}Pinta las ${cota.forma} ${cota.resto === 1 ? 'impares (1.ª, 3.ª, 5.ª, …)' : 'pares (2.ª, 4.ª, …)'}. Una ficha en ele ocupa dos ${cota.forma} vecinas, así que cubre al menos una casilla pintada. Entre las casillas ${cota.sinMuertas ? 'aprovechables' : 'libres'} solo ${cota.n === 1 ? 'hay 1 pintada' : `hay ${cota.n} pintadas`}: caben a lo más ${cota.n} fichas.`]);
+    }
     figS += bordesPiezas(M.piezas, cp, 10, 10);
     return {
       id: `rm-fichas#${semilla}`,
@@ -846,8 +963,9 @@
       pregunta: ['¿Cuántas fichas, como máximo, se pueden poner?'],
       datos: '', alternativas,
       solucion: [
-        [`Hay ${libres} casillas libres; por cuenta cabrían a lo más ${Math.floor(libres / 3)} fichas, pero la forma de la ficha y las casillas tapadas pueden dejar huecos que no se aprovechan.`],
-        ['Probando todas las formas de acomodarlas, el máximo es ', v('x', String(correcta)), correcta < Math.floor(libres / 3) ? `: siempre quedan casillas sueltas donde no entra ninguna ficha.` : '.'],
+        [`Hay ${libres} casillas libres y cada ficha cubre 3: caben a lo más ${Math.floor(libres / 3)}${cota.tipo === 'dividir' ? '.' : ', pero hay casillas que no se aprovechan.'}`],
+        ...razonTab,
+        [`Y ${correcta} sí se ponen, como en el dibujo de la solución: el máximo es `, v('x', String(correcta)), '.'],
       ],
       figuraSolucion: { svg: SVG(c * cp + 20, r * cp + 20, figS), alt: `Una forma de poner ${correcta} fichas: ` + M.piezas.map(cel => cel.map(([x, y]) => `(${y + 1}, ${x + 1})`).join(' ')).join('; ') + '.' },
       respuesta: { valor: correcta, unidad: 'fichas' },
@@ -882,13 +1000,14 @@
     const correcta = val(n);
     const lin = val(4) + (n - 4) * (val(4) - val(3));
     const errores = [
-      pa('RM2-lineal', lin, `Supusiste que crece siempre igual que de la figura 3 a la 4 (${val(4) - val(3)} cada vez). Cada cuadrado nuevo es más grande que el anterior: crece cada vez más.`),
+      h('RMP86-lineal', lin, `Supusiste que crece siempre igual que de la figura 3 a la 4 (${val(4) - val(3)} cada vez). Cada cuadrado nuevo es más grande que el anterior: crece cada vez más.`),
       h('RMP1-corrido', val(n - 1), `Esa es la figura ${n - 1}: la figura 1 ya tiene un cuadrado.`),
       pide === 'area' ? h('RMP61-ultimo', fib(n) ** 2 * u * u, `Ese es solo el cuadrado más grande de la figura ${n}; el área es la de todo el rectángulo.`)
         : h('RMP68-suma', 4 * u * Array.from({ length: n }, (_, i) => fib(i + 1)).reduce((a, b) => a + b, 0), 'Sumaste los perímetros de todos los cuadrados. Los lados que comparten quedan adentro del rectángulo.'),
-      ent(n / 2) ? pa('RM2-objeto-entero', 2 * val(n / 2), `Duplicaste la figura ${n / 2} para la ${n}, como si fuera proporcional.`) : pa('RM2-objeto-entero', Math.round(n / 4 * val(4)), `Tomaste la figura 4 y la multiplicaste por ${f(n / 4)}, como si fuera proporcional.`),
+      ent(n / 2) ? pa('RM2-objeto-entero', 2 * val(n / 2), `Duplicaste la figura ${n / 2} para la ${n}, como si fuera proporcional.`)
+        : (ent(n * val(4) / 4) ? pa('RM2-objeto-entero', n * val(4) / 4, `Tomaste la figura 4 y la multiplicaste por ${f(n / 4)}, como si fuera proporcional.`) : null),
     ];
-    const alternativas = P.armar({ correcta, errores: errores.filter(e => ent(e.valor)), rng }).map(x => ({ ...x, texto: x.texto + (pide === 'area' ? ' cm²' : ' cm') }));
+    const alternativas = P.armar({ correcta, errores: errores.filter(e => e && ent(e.valor)), rng }).map(x => ({ ...x, texto: x.texto + (pide === 'area' ? ' cm²' : ' cm') }));
     if (alternativas.length < 4) return null;
     const px = 17;
     let fig = '', xoff = 10;
@@ -909,7 +1028,7 @@
       solucion: [
         ['Los lados de los cuadrados son ', v('a', '1, 1, 2, 3, 5, 8, 13, …'), ` (cada uno es la suma de los dos anteriores), por ${u} cm.`],
         [`La figura k es un rectángulo cuyos lados son dos números seguidos de esa lista: la figura ${n} mide ${fib(n) * u} cm × ${fib(n + 1) * u} cm.`],
-        [pide === 'area' ? `Área: ${fib(n) * u} × ${fib(n + 1) * u} = ` : `Perímetro: 2 × (${fib(n) * u} + ${fib(n + 1) * u}) = `, v('x', `${correcta} ${pide === 'area' ? 'cm²' : 'cm'}`), '.'],
+        [pide === 'area' ? `Área: ${fib(n) * u} × ${fib(n + 1) * u} = ` : `Perímetro: 2 × (${fib(n) * u} + ${fib(n + 1) * u}) = `, v('x', `${f(correcta)} ${pide === 'area' ? 'cm²' : 'cm'}`), '.'],
       ],
       respuesta: { valor: correcta, unidad: pide === 'area' ? 'cm²' : 'cm' },
       _datos: d,
@@ -942,7 +1061,7 @@
     const errores = [
       h('RMP1-puntos', M.puntos * t, `Contaste los puntos (${M.puntos}) en vez de los tramos: para pasar por ${M.puntos} puntos bastan ${M.puntos - 1} tramos.`),
       h('RMP1-todos-los-tramos', M.segmentos * t, `Contaste todos los segmentos de la malla (${M.segmentos}). No hace falta recorrerlos todos, solo pasar por todos los puntos.`),
-      pa('RM2-lineal', (f4 + (n - 4) * (f4 - f3)) * t, `Supusiste que cada fila nueva agrega lo mismo que la cuarta (${f4 - f3} tramos). Cada fila agrega un punto más que la anterior.`),
+      h('RMP86-lineal', (f4 + (n - 4) * (f4 - f3)) * t, `Supusiste que cada fila nueva agrega lo mismo que la cuarta (${f4 - f3} tramos). Cada fila agrega un punto más que la anterior.`),
       h('RMP1-filas', (M.puntos - n) * t, `Restaste un tramo por fila (${n}); solo se resta 1 en total: la hormiga empieza en un punto y cada tramo la lleva a uno nuevo.`),
     ];
     const alternativas = P.armar({ correcta, errores, rng }).map(x => ({ ...x, texto: x.texto + ' s' }));
@@ -993,6 +1112,6 @@
 
   return {
     id: 'rm-fichas', titulo: 'Fichas, piezas y figuras que crecen', generar,
-    calc: { semejanza, medios, orientaciones, embaldosar, minRectangulo, maxEmpaque, voraz, hmax, hexagonos, contorno, formaFichas, perimetroCon, trapecioTeselado, malla, fib, PIEZAS },
+    calc: { semejanza, medios, orientaciones, cotaRectangulo, cotaCajas, cotaTablero, embaldosar, minRectangulo, maxEmpaque, voraz, hmax, hexagonos, contorno, formaFichas, perimetroCon, trapecioTeselado, malla, fib, PIEZAS },
   };
 });

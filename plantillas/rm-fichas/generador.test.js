@@ -226,3 +226,56 @@ test('cajas y tablero: el empaque de la solución no se superpone ni toca casill
     if (d.tipo === 'tablero') for (const [x, y] of d.bloqueadas) assert.ok(!cel.includes(`${x},${y}`));
   }
 });
+
+const textoDe = p => p.solucion.map(l => l.map(x => (typeof x === 'string' ? x : x.t)).join('')).join(' ');
+test('cajas, tablero y rectángulo: la solución da un argumento (no «probando todas las formas») y la cota coincide con la búsqueda', () => {
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s), d = p._datos;
+    if (!['cajas', 'tablero', 'rectangulo'].includes(d.tipo)) continue;
+    assert.doesNotMatch(textoDe(p), /[Pp]robando/, `semilla ${s}`);
+    if (d.tipo === 'cajas') assert.equal(gen.calc.cotaCajas(d.W, d.L, d.p, d.q).n, p.respuesta.valor, `semilla ${s}`);
+    if (d.tipo === 'tablero') assert.equal(gen.calc.cotaTablero(d.r, d.c, d.bloqueadas, d.pieza).n, p.respuesta.valor, `semilla ${s}`);
+    if (d.tipo === 'rectangulo') { const c = gen.calc.cotaRectangulo(d.piezas, d.pide); assert.equal(d.pide === 'area' ? c.w * c.h : 2 * (c.w + c.h), p.respuesta.valor, `semilla ${s}`); }
+  }
+});
+test('cotas: valen siempre (nunca quedan por debajo del máximo de la búsqueda)', () => {
+  const rng = require('../../nucleo/azar.js').crear('cotas-fichas');
+  for (let k = 0; k < 60; k++) {
+    const W = rng.entero(4, 9), L = rng.entero(4, 8), [p, q] = rng.elegir([[1, 3], [2, 3], [2, 5], [3, 4], [3, 5]]);
+    const celdas = []; for (let y = 0; y < q; y++) for (let x = 0; x < p; x++) celdas.push([x, y]);
+    assert.ok(gen.calc.cotaCajas(W, L, p, q).n >= gen.calc.maxEmpaque(W, L, celdas).max);
+    const r = rng.entero(4, 5), c = rng.entero(4, 5), pieza = rng.elegir(['I3', 'L3']), bl = [];
+    for (let i = 0; i < 3; i++) bl.push([rng.entero(0, c - 1), rng.entero(0, r - 1)]);
+    const bloq = bl.filter((z, i) => bl.findIndex(w => w[0] === z[0] && w[1] === z[1]) === i);
+    assert.ok(gen.calc.cotaTablero(r, c, bloq, pieza).n >= gen.calc.maxEmpaque(c, r, gen.calc.PIEZAS[pieza].celdas, bloq).max);
+  }
+});
+test('contorno con b desconocido: b mayor que el corrimiento, y la escalera se despeja con el rectángulo que la encierra', () => {
+  let n = 0;
+  for (let s = 0; s < 1500; s++) {
+    const p = gen.generar(s), d = p._datos;
+    if (d.tipo !== 'contorno') continue;
+    if (d.forma === 'escalera') assert.ok(d.b > d.s, `semilla ${s}`);
+    if (d.pide !== 'b' || d.forma !== 'escalera') continue;
+    n++;
+    assert.equal(2 * (d.b + (d.n - 1) * d.s + d.n * d.a), d.P, `semilla ${s}`);
+    assert.match(p.enunciado.map(x => (typeof x === 'string' ? x : x.t)).join(''), /corrimiento/);
+    assert.match(textoDe(p), /rectángulo que la encierra/);
+  }
+  assert.ok(n > 3);
+});
+test('fibonacci y malla: el error lineal es RMP86 (hipótesis) y «multiplicar por k» da un entero exacto', () => {
+  for (let s = 0; s < 1500; s++) {
+    const p = gen.generar(s), d = p._datos;
+    if (d.tipo !== 'fibonacci' && d.tipo !== 'malla') continue;
+    for (const a of p.alternativas) {
+      if (!a.error) continue;
+      assert.ok(!a.error.id.startsWith('RM2-lineal'), `semilla ${s}`);
+      if (a.error.id === 'RMP86-lineal') { assert.equal(a.error.respaldo, 'hipotesis'); assert.equal(a.error.fuente, null); }
+      if (/multiplicaste por/.test(a.error.explicacion)) {
+        const k = d.n / 4, area = j => gen.calc.fib(j) * gen.calc.fib(j + 1) * d.u * d.u, per = j => 2 * (gen.calc.fib(j) + gen.calc.fib(j + 1)) * d.u;
+        assert.equal(a.valor, k * (d.pide === 'area' ? area : per)(4), `semilla ${s}`);
+      }
+    }
+  }
+});

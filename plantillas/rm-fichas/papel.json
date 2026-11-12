@@ -66,14 +66,15 @@
     {
       "id": "p6",
       "nivel": "intermedio",
-      "enunciado": "Con piezas rectas de 3 cuadraditos y piezas en forma de T de 4 cuadraditos (se pueden girar), ¿cuántos cuadraditos tiene el menor rectángulo que se cubre exactamente usando al menos una pieza de cada tipo?",
-      "respuesta": "15 cuadraditos (un rectángulo de 3 × 5).",
+      "enunciado": "Con piezas en forma de L de 4 cuadraditos y piezas en forma de T de 4 cuadraditos (se pueden girar y voltear), ¿cuántos cuadraditos tiene el menor rectángulo que se cubre exactamente usando al menos una pieza de cada tipo?",
+      "respuesta": "12 cuadraditos (un rectángulo de 3 × 4).",
       "pasos": [
-        "Con una de cada una (7 cuadraditos) solo saldría un rectángulo de 1 × 7, y la T no entra en él.",
-        "Se prueban rectángulos más grandes: los de 2 × 5, 2 × 6, 3 × 4 y 2 × 7 no se pueden cubrir (la T siempre deja huecos). El de 3 × 5 sí: 3 piezas T y 1 recta de 3.",
-        "Respuesta: 15 cuadraditos."
+        "Con al menos una pieza de cada tipo, el área es un múltiplo de 4 de por lo menos 8 cuadraditos.",
+        "Con 8 habría una L y una T. Pinta el rectángulo como un tablero de ajedrez: un rectángulo de área par tiene tantas casillas de un color como del otro. La L cubre 2 y 2, pero la T cubre 3 de un color y 1 del otro: con una sola T no se emparejan. Las T tienen que ser un número par.",
+        "Hacen falta al menos 2 T y 1 L: 12 cuadraditos. Y el rectángulo de 3 × 4 sí se cubre. Filas de arriba abajo: L L T / L T T / L U T / U U U (T y U son las dos tes).",
+        "Respuesta: 12 cuadraditos. Trampa: creer que basta con 4 + 4 = 8."
       ],
-      "verificar": [ { "fn": "minRectangulo", "args": [["I3", "T4"], "area"], "espera": { "w": 3, "h": 5 } }, { "fn": "embaldosar", "args": [2, 5, ["I3", "T4"]], "espera": null }, { "fn": "embaldosar", "args": [2, 6, ["I3", "T4"]], "espera": null }, { "fn": "embaldosar", "args": [3, 4, ["I3", "T4"]], "espera": null }, { "fn": "embaldosar", "args": [2, 7, ["I3", "T4"]], "espera": null } ]
+      "verificar": [ {"fn": "minRectangulo", "args": [["L4", "T4"], "area"], "espera": {"w": 3, "h": 4}}, {"fn": "cotaRectangulo", "args": [["L4", "T4"], "area"], "espera": {"w": 3, "h": 4}}, {"fn": "embaldosar", "args": [2, 4, ["L4", "T4"]], "espera": null} ]
     },
     {
       "id": "p7",

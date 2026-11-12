@@ -3,7 +3,8 @@
 //   cadena    familias concretas al azar (con hermanos, hijos y nietos de cada pariente) donde cada «único»
 //             es cierto; el parentesco se nombra subiendo hasta el antepasado común. Todas deben dar lo mismo.
 //   arbol     el árbol recorrido con su propio código.
-//   minimo    todas las familias etiquetadas de hasta 7 personas (sin ordenar), con sus parentescos contados aparte.
+//   minimo    todas las familias etiquetadas de hasta 7 personas (sin ordenar), con sus parentescos contados aparte
+//             («al menos» cada parentesco pedido).
 //   orden     cada uno de los 24 órdenes, probando valores de 1 a 16 que lo respeten.
 //   billetes  las 720 permutaciones de los sobres.
 //   edades    el triple bucle completo de 1 a 40.
@@ -155,7 +156,7 @@ function recalcularMinimo(d) {
   let mejor = Infinity;
   for (const [k, n] of tablaEtiquetada()) {
     const c = k.split(',').map(Number);
-    if (Object.entries(d.pedido).every(([r, x]) => c[ORDEN_ROLES.indexOf(r)] === x)) mejor = Math.min(mejor, n);
+    if (Object.entries(d.pedido).every(([r, x]) => c[ORDEN_ROLES.indexOf(r)] >= x)) mejor = Math.min(mejor, n); // «al menos»
   }
   return mejor;
 }
@@ -257,7 +258,44 @@ test('minimo: el mínimo es mínimo (no hay familia con una persona menos) y la 
     const r = gen.calc.minimoPersonas(p._datos.pedido);
     assert.equal(r.ejemplo.length, r.n);
     const c = gen.calc.roles(r.ejemplo);
-    for (const [k, x] of Object.entries(p._datos.pedido)) assert.equal(c[k], x);
+    for (const [k, x] of Object.entries(p._datos.pedido)) assert.ok(c[k] >= x);
+  }
+});
+test('minimo: el mínimo llega a una cota que vale en cualquier familia (aunque falten parientes intermedios)', () => {
+  let n = 0;
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s), d = p._datos;
+    if (d.tipo !== 'minimo') continue;
+    n++;
+    const g = r => d.pedido[r] || 0;
+    const sexo = Math.max(g('padre'), g('hijo'), g('hermano'), g('abuelo'), g('nieto')) + Math.max(g('madre'), g('hija'), g('hermana'), g('abuela'), g('nieta'));
+    const cota = Math.max(sexo, g('hijo') + g('hija') + 1, g('padre') + g('madre') + 1);
+    assert.equal(p.respuesta.valor, cota, `semilla ${s}`);
+    const t = p.enunciado.join('');
+    assert.match(t, /al menos/); assert.match(t, /Los hermanos lo son de padre y madre/);
+    assert.doesNotMatch(p.solucion.map(x => x.map(y => typeof y === 'string' ? y : y.t).join('')).join(' '), /todas las familias/);
+  }
+  assert.ok(n > 30);
+});
+test('cadena: si «él mismo» o «ella misma» está entre las respuestas, el dicho va en tercera persona', () => {
+  let n = 0;
+  for (let s = 0; s < 1000; s++) {
+    const p = gen.generar(s);
+    if (p._datos.tipo !== 'cadena') continue;
+    if (!p.alternativas.some(a => /\bmism[oa]\b/.test(a.texto))) continue;
+    n++;
+    assert.doesNotMatch(p._datos.dicho, /\b(me|conmigo)\b/, `semilla ${s}`);
+  }
+  assert.ok(n > 20);
+});
+test('árbol y orden: el color del punto de partida no pinta toda la frase; pistas y orden final con colores distintos', () => {
+  for (let s = 0; s < 300; s++) {
+    const p = gen.generar(s), d = p._datos;
+    if (d.tipo === 'arbol') {
+      const a = p.enunciado.find(x => typeof x === 'object');
+      assert.equal(a.t, 'mi ' + d.pasos[0]);
+    }
+    if (d.tipo === 'orden') assert.notEqual(p.variables.c.color, p.variables.x.color);
   }
 });
 test('cadena: cada «único» del enunciado decide algo o es parte de la frase, y la respuesta doble no dice «único» al final', () => {
