@@ -43,7 +43,8 @@
  *        { pisos, volumen (con medidas, si las hay), cubitos (cuántos), coincide (true si sus tres vistas son las dadas;
  *        false: las vistas no son de ningún sólido), caras, aristas, vertices, euler, cuadraditos, carasEnVistas, dims,
  *        errores:{ soloFrontal (cuadraditos de la frontal), soloSuperior, sumaVistas (los de las tres vistas sumados),
- *        caja (nx·ny·nz), minimo (el volumen mínimo, si las vistas lo permiten), caraCuadraditos (= cuadraditos),
+ *        caja (nx·ny·nz; con medidas, el volumen de la caja: suma de x · suma de y · suma de z), minimo (el volumen
+ *        mínimo, si las vistas lo permiten), caraCuadraditos (= cuadraditos),
  *        caraVistas (= carasEnVistas), prismaFrontal y verticesPrismaFrontal (caras y vértices del prisma que sale de
  *        la vista frontal sola, de fondo ny), puntosEnAristas (puntos de la cuadrícula que están sobre las aristas,
  *        contando los vértices), cajaCaras: 6, cajaVertices: 8 } }.
@@ -56,8 +57,10 @@
  *        { volumen, pisos (un sólido mínimo), maximo (cubitos del máximo), alturas:[[...]] (filas como la superior),
  *        errores:{ unoPorCuadro (= área de la superior), maximo, soloFrontal } }.
  *   elegirVista(pisos, cual) cual = 'superior' | 'frontal' | 'lateral' → { correcta (la vista pedida), errores:{
- *        frontal, superior, lateral (las otras vistas), reflejada (la pedida vista desde el lado opuesto: la superior desde
- *        abajo, la frontal desde atrás, la lateral desde la izquierda) } }, cada vista como lista de textos.
+ *        frontal, superior, lateral (las otras vistas), reflejada (la pedida leída al revés: en la superior se invierte el
+ *        orden de las filas, de modo que el frente queda arriba y el fondo abajo; en la frontal y en la lateral se invierte
+ *        cada fila, izquierda por derecha: la frontal desde atrás, la lateral desde la izquierda) } }, cada vista como
+ *        lista de textos.
  *   completarCubo(pisos) → { n (arista del cubo compacto más pequeño = la mayor de nx, ny, nz), cubo (n³), volumen,
  *        faltan (n³ − volumen), visibles, errores:{ soloVisibles (n³ − visibles), caja (nx·ny·nz − volumen),
  *        deFrente (n³ − área frontal) } }.

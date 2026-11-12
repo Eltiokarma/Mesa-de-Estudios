@@ -59,7 +59,6 @@ h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; let
   .mode.pendiente .bench{position:sticky; top:0; z-index:1; padding:6px; gap:4px; background:var(--card); border-radius:0 0 20px 20px}
   .mode.pendiente .legend, .mode.pendiente .lecturas, .mode.pendiente .giro{display:none}
   .mode.pendiente .vistas figcaption{font-size:.72rem}
-  .mode.pendiente .vistas svg{max-height:74px}
 }
 .bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
 .lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
@@ -80,7 +79,8 @@ canvas:active{cursor:grabbing}
 .vistas figcaption{font-size:.78rem; font-weight:800; color:var(--k); text-align:center; line-height:1.2}
 .vistas figcaption small{display:block; font-weight:600; color:var(--muted); font-size:.72rem}
 .vistas figcaption.cambio{color:var(--warn)}
-.vistas svg{display:block; width:100%; max-width:118px; height:auto; max-height:104px}
+.vistas svg{display:block; max-width:100%; height:auto}
+.vistas figure.cambio{border:2px dashed var(--warn); border-top:4px dashed var(--warn)}
 
 .guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
 .dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
@@ -129,7 +129,7 @@ table.formulas th, table.formulas td{border-bottom:1px solid var(--line); paddin
 .opt:disabled{cursor:default}
 .opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
 .opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
-.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong{border-color:var(--warn); border-style:dashed; background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
 .fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
@@ -265,7 +265,7 @@ const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
 const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
 const opcionesHTML = (opts, idFb, texto, grilla) => `<div class="opts${grilla ? ' grilla' : ''}">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span class="m${texto ? ' t' : ''}">${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
 const fuenteHip = que => `<p class="fuente">${que}: son hipótesis nuestras, tomadas de las trampas que se repiten en los exámenes de admisión y en los problemas de academia; no encontramos estudios con datos para estos errores. Lo que marquen los alumnos dirá cuáles aparecen.</p>`;
-const fuenteOcultos = `<p class="fuente">Olvidar los cubitos que no se ven es hipótesis nuestra para estos problemas. Se parece a un error descrito: al contar los cubitos de un sólido dibujado, lo más frecuente fue contar solo las caras o los cubitos visibles, y menos de la mitad de los alumnos de 5.° a 8.° grado resolvió esos problemas (Ben-Chaim, Lappan y Houang, 1985, según autores que lo citan).</p>`;
+const fuenteOcultos = `<p class="fuente">Olvidar los cubitos que no se ven es hipótesis nuestra para estos problemas. Se parece a errores descritos al contar cubitos de un sólido dibujado: contar las caras visibles (el más frecuente) o solo los cubitos visibles; menos de la mitad de los alumnos de 5.° a 8.° grado resolvió esos problemas (Ben-Chaim, Lappan y Houang, 1985, según autores que lo citan).</p>`;
 
 function colores(){
   const g = n => css(n);
@@ -297,7 +297,7 @@ const D = {
   CASA: { frontal: [[0, 0], [2, 0], [2, 2], [1, 3], [0, 2]], superior: [[0, 0], [2, 0], [2, 2], [0, 2]], lateral: [[0, 0], [2, 0], [2, 2], [1, 3], [0, 2]] },
   PIR: { frontal: [[0, 0], [2, 0], [1, 2]], superior: [[0, 0], [2, 0], [2, 2], [0, 2]], lateral: [[0, 0], [2, 0], [1, 2]] },
   COMP: [['###', '###'], ['##.', '#..']],
-  CUB: [['##']],
+  CUB: [['#']],
   AF: ['#..', '###'], AT: ['###', '#.#'], AL: ['#.', '##'], AM: { x: [1, 2, 1], y: [2, 1], z: [2, 1] },
   CAJA: [['##.', '###', '#..'], ['...', '#..', '#..']],
   COP: [['##', '#.']],
@@ -322,11 +322,11 @@ function centro(f){ const s = [0, 0, 0]; for (const q of f.cuadros) { s[0] += q[
    o: { col (variable), anchos, altos (medidas de columnas y filas, filas de arriba abajo), cotas, dif (Set "fila,col"), max } */
 function svgVista(v, o){
   o = o || {};
-  const col = `var(--c-${o.col}, var(--ink))`, max = o.max || 96, pad = o.cotas ? 16 : 5;
+  const col = `var(--c-${o.col}, var(--ink))`, max = o.max || 96, pad = o.cotas ? 14 : 5;
   if (Array.isArray(v)) {
     const nc = Math.max(...v.map(f => f.length)), nr = v.length;
     const cw = o.anchos || Array(nc).fill(1), rh = o.altos || Array(nr).fill(1);
-    const TW = cw.reduce((a, b) => a + b, 0), TH = rh.reduce((a, b) => a + b, 0), s = Math.min(26, max/Math.max(TW, TH));
+    const TW = cw.reduce((a, b) => a + b, 0), TH = rh.reduce((a, b) => a + b, 0), s = o.s || Math.min(26, max/Math.max(TW, TH));
     const W = TW*s + 2*pad, H = TH*s + 2*pad + (o.pie ? 12 : 0) + (o.cotas ? 4 : 0);
     let x0s = [0]; cw.forEach(w => x0s.push(x0s[x0s.length - 1] + w));
     let y0s = [0]; rh.forEach(h => y0s.push(y0s[y0s.length - 1] + h));
@@ -342,21 +342,34 @@ function svgVista(v, o){
       rh.forEach((h, r) => { out += `<text x="${pad - 5}" y="${pad + (y0s[r] + h/2)*s + 3.5}" font-size="11.5" font-weight="800" text-anchor="end" fill="var(--muted)">${fmt(h)}</text>`; });
     }
     if (o.pie) out += `<text x="${o.pie.lado === 'izq' ? pad : W/2}" y="${H - 2}" font-size="9.5" font-weight="700" text-anchor="${o.pie.lado === 'izq' ? 'start' : 'middle'}" fill="var(--muted)">${o.pie.t}</text>`;
-    return `<svg viewBox="0 0 ${W} ${H}" aria-hidden="true">${out}</svg>`;
+    return `<svg viewBox="0 0 ${W} ${H}" width="${W}" aria-hidden="true">${out}</svg>`;
   }
   const P = v.pol, as = P.map(p => p[0]), bs = P.map(p => p[1]);
   const a0 = Math.min(...as), a1 = Math.max(...as), b0 = Math.min(...bs), b1 = Math.max(...bs);
-  const s = Math.min(30, max/Math.max(a1 - a0, b1 - b0)), W = (a1 - a0)*s + 2*pad, H = (b1 - b0)*s + 2*pad + (o.pie ? 12 : 0);
+  const s = o.s || Math.min(30, max/Math.max(a1 - a0, b1 - b0)), W = (a1 - a0)*s + 2*pad, H = (b1 - b0)*s + 2*pad + (o.pie ? 12 : 0);
   const X = a => pad + (a - a0)*s, Y = b => pad + (b1 - b)*s;
   let out = `<polygon points="${P.map(p => X(p[0]) + ',' + Y(p[1])).join(' ')}" fill="${col}" fill-opacity=".22" stroke="${col}" stroke-width="1.8" stroke-linejoin="round"/>`;
   for (const [p, q] of v.lineas || []) out += `<line x1="${X(p[0])}" y1="${Y(p[1])}" x2="${X(q[0])}" y2="${Y(q[1])}" stroke="${col}" stroke-width="1.4"/>`;
   if (o.pie) out += `<text x="${o.pie.lado === 'izq' ? pad : W/2}" y="${H - 2}" font-size="9.5" font-weight="700" text-anchor="${o.pie.lado === 'izq' ? 'start' : 'middle'}" fill="var(--muted)">${o.pie.t}</text>`;
-  return `<svg viewBox="0 0 ${W} ${H}" aria-hidden="true">${out}</svg>`;
+  return `<svg viewBox="0 0 ${W} ${H}" width="${W}" aria-hidden="true">${out}</svg>`;
 }
 // Descripción para el lector de pantalla: cada fila, de arriba abajo
-function decirVista(v){
+function decirVista(v, o){
   if (!Array.isArray(v)) return 'un polígono';
-  return v.map((f, i) => `fila ${i + 1}: ${[...f].map(ch => ch === '#' ? 'lleno' : 'vacío').join(', ')}`).join('; ');
+  const y = l => l.length > 1 ? l.slice(0, -1).map(fmt).join(', ') + ' y ' + fmt(l[l.length - 1]) : fmt(l[0]);
+  const cotas = o && o.cotas ? `; columnas de ancho ${y(o.anchos)} de izquierda a derecha y filas de alto ${y(o.altos)} de arriba abajo` : '';
+  return v.map((f, i) => `fila ${i + 1}: ${[...f].map(ch => ch === '#' ? 'lleno' : 'vacío').join(', ')}`).join('; ') + cotas;
+}
+// Escala común: las tres vistas se dibujan con el mismo tamaño de unidad (la más grande manda)
+function escalaComun(cfg){
+  let ext = 0, poli = false;
+  for (const k of ['F', 'T', 'L']){
+    const v = cfg[k]; if (!v) continue; const o = (cfg.opc && cfg.opc[k]) || {};
+    if (Array.isArray(v)){ const nc = Math.max(...v.map(f => f.length)); ext = Math.max(ext, (o.anchos || Array(nc).fill(1)).reduce((a, b) => a + b, 0), (o.altos || Array(v.length).fill(1)).reduce((a, b) => a + b, 0)); }
+    else { poli = true; const as = v.pol.map(p => p[0]), bs = v.pol.map(p => p[1]); ext = Math.max(ext, Math.max(...as) - Math.min(...as), Math.max(...bs) - Math.min(...bs)); }
+  }
+  const conCotas = ['F', 'T', 'L'].some(k => cfg.opc && cfg.opc[k] && cfg.opc[k].cotas);
+  return Math.min(poli ? 30 : 26, (conCotas ? 72 : 82)/Math.max(ext, 1e-9));
 }
 // Las tres vistas de un poliedro convexo: el contorno y las aristas proyectadas
 function vistasPoliedro(o, R){
@@ -366,13 +379,14 @@ function vistasPoliedro(o, R){
 }
 function vistasHTML(cfg){
   if (!cfg) return '';
-  const pies = { F:null, T:{ t:'frente ↓' }, L:{ t:'← frente', lado:'izq' } };
+  const pies = { F:'', T:'frente ↓', L:'← frente' };
   const nombre = { F:'Frontal', T:'Superior', L:'Lateral' }, sub = { F:'de frente', T:'desde arriba', L:'desde la derecha' };
+  const s = escalaComun(cfg);
   return ['F', 'T', 'L'].map(k => {
     const v = cfg[k]; if (!v) return '';
-    const o = Object.assign({ col:k, pie:pies[k] }, (cfg.opc && cfg.opc[k]) || {});
+    const o = Object.assign({ col:k, s }, (cfg.opc && cfg.opc[k]) || {});
     const cambio = cfg.cambio && cfg.cambio[k];
-    return `<figure style="--k:var(--c-${k})" role="img" aria-label="Vista ${nombre[k].toLowerCase()} (${sub[k]}): ${decirVista(v)}${cambio ? '. Cambió' : ''}">${svgVista(v, o)}<figcaption${cambio ? ' class="cambio"' : ''}>${nombre[k]}${cambio ? ' · cambió' : ''}<small>${sub[k]}</small></figcaption></figure>`;
+    return `<figure${cambio ? ' class="cambio"' : ''} style="--k:var(--c-${k})" role="img" aria-label="Vista ${nombre[k].toLowerCase()} (${sub[k]}): ${decirVista(v, o)}${cambio ? '. Cambió' : ''}">${svgVista(v, o)}<figcaption${cambio ? ' class="cambio"' : ''}>${nombre[k]}${cambio ? ' · cambió' : ''}<small>${sub[k]}${pies[k] ? ' · ' + pies[k] : ''}</small></figcaption></figure>`;
   }).join('');
 }
 
@@ -734,7 +748,7 @@ const P3 = { id:'vistas-minimo', ok:'d', opts:[
     c:`Elegiste la C. ${MN.errores.soloFrontal} cubitos dan la frontal, pero no la superior: la huella pide 9 columnas con al menos un cubito. La correcta está marcada.` } };
 const P4 = { id:'vistas-caras-pintadas', ok:'a', opts:[
   ['a', `${MX.caras} caras`],
-  ['b', `${MX.carasEnVistas} caras`, 'RME3', 'hipotesis'],
+  ['b', `${MX.carasEnVistas} caras`, 'RME193', 'hipotesis'],
   ['c', `${MX.cuadraditos} caras`, 'RME104', 'hipotesis'],
   ['d', `${MX.errores.prismaFrontal} caras`, 'RME5', 'hipotesis']],
   fb:{ a:`¡Bien! Al sumergirlo se pintan todas: también las de atrás, la de la izquierda y la de abajo. Son ${MX.caras}.`,
@@ -769,7 +783,7 @@ const P7 = { id:'vistas-completar-cubo', ok:'a', opts:[
     c:`Elegiste la C. Llenaste la caja de 3 × 2 × 2 que lo envuelve. Esa caja no es un cubo: el cubo necesita la medida mayor (3) en las tres direcciones. La correcta está marcada.`,
     d:`Elegiste la D. Contaste solo los cubitos de la vista frontal (5). Detrás de la fila del frente hay otra. La correcta está marcada.` } };
 const P8 = { id:'vistas-cubrir', ok:'d', opts:[
-  ['a', `${CU3.errores.porCara} cubitos`, 'RME6', 'hipotesis'],
+  ['a', `${CU3.errores.porCara} cubitos`, 'RME192', 'hipotesis'],
   ['b', `${CU3.errores.conMesa} cubitos`, 'RME1', 'hipotesis'],
   ['c', `${CU3.errores.mismoAumento} cubitos`, 'RME107', 'hipotesis'],
   ['d', `${CU3.agregados} cubitos`]],
@@ -814,7 +828,7 @@ const steps = [
    prep:() => E.config({ desc:'Un sólido de cinco cubitos sobre la mesa: abajo una fila de tres en el fondo y uno delante a la izquierda; encima, un cubito en la esquina del fondo a la izquierda. Al lado, sus tres vistas.',
      marco:[[-0.6, 3.6], [-0.6, 2.6], [0, 2]], vistas:{ F:V1.frontal, T:V1.superior, L:V1.lateral },
      escena:() => ({ cubos:cubosDe(celdasDe(D.P1), { tinte:true }), mesa:mesaDe(3, 2) }),
-     lect:[['ink', 'cubitos', String(A1.volumen)], ['F', 'cuadraditos de la frontal', String(V1.areas.frontal)], ['T', 'de la superior', String(V1.areas.superior)], ['L', 'de la lateral', String(V1.areas.lateral)]],
+     lect:[['ink', 'cubitos', String(A1.volumen)], ['F', 'en la frontal', String(V1.areas.frontal)], ['T', 'de la superior', String(V1.areas.superior)], ['L', 'de la lateral', String(V1.areas.lateral)]],
      ley:ley3 }),
    body:() => `<p class="problem">Cada vista es lo que se ve mirando el sólido de lejos y de frente a una cara de la caja: la ${F_('frontal')} desde el frente, la ${T_('superior')} desde arriba y la ${L_('lateral')} desde la derecha.</p>
    <p>Gira el sólido y compara: cada cara del dibujo tiene el color de la vista en la que aparece. Un cuadradito de una vista está pintado si <b>al menos un cubito</b> queda en esa línea de mirada, aunque haya varios en fila.</p>
@@ -992,23 +1006,23 @@ const steps = [
      const t1 = new Set(c1.map(k3)), t2 = c2.map(c => [c[0] - off2[0], c[1] - off2[1], c[2]]), s2 = new Set(t2.map(k3));
      const t3 = c3.map(c => [c[0] - off3[0], c[1] - off3[1], c[2]]).filter(c => !s2.has(k3(c)));
      t3.sort((a, b) => a[2] - b[2] || a[1] - b[1] || a[0] - b[0]);
-     E.config({ desc:r ? `El término 3: ${CU3.volumen} cubitos.` : `El término 1 son dos cubitos en fila sobre la mesa. El término 2 los tapa por arriba y por los lados: ${CU2.volumen} cubitos.`,
-       marco:[[-2.6, 4.6], [-2.6, 3.6], [0, 3]],
-       escena:E => ({ mesa:[[-2.6, 4.6], [-2.6, 3.6]], mesaRotulos:false, gap:E.prog.gap,
+     E.config({ desc:r ? `El término 3: ${CU3.volumen} cubitos.` : `El término 1 es un cubito sobre la mesa. El término 2 lo tapa por arriba y por los lados: ${CU2.volumen} cubitos.`,
+       marco:[[-2.6, 3.6], [-2.6, 3.6], [0, 3]],
+       escena:E => ({ mesa:[[-2.6, 3.6], [-2.6, 3.6]], mesaRotulos:false, gap:E.prog.gap,
          cubos:t2.filter(c => t1.has(k3(c)) || E.prog.t2 > .01).map(c => t1.has(k3(c)) ? { c } : { c, col:E.prog.t3 > 0 ? null : 'n', alfa:Math.min(1, E.prog.t2) })
            .concat(t3.slice(0, Math.ceil(E.prog.t3)).map(c => ({ c, col:'n' }))) }),
        prog:{ t2:r ? 1 : 0, t3:r ? t3.length : 0, gap:0 },
        lect:E => [['ink', 'término', E.prog.t3 > 0 ? '3' : E.prog.t2 > .5 ? '2' : '1'], ['n', 'agregados', String(E.prog.t3 > 0 ? Math.ceil(E.prog.t3) : E.prog.t2 > .5 ? CU2.agregados : 0)]],
        ley:[['ink', 'término anterior'], ['n', 'cubitos que se agregan']] });
      S.t3 = t3.length; },
-   entrar:() => { if (S.pred[P8.id]) return; E.cadena([E.pausa(700), n => E.animar('t2', 1, 1400, n)], () => E.avisar(`Del término 1 al 2 se agregaron ${CU2.agregados} cubitos: 2 encima y 6 alrededor. Ninguno debajo, porque abajo está la mesa.`)); },
+   entrar:() => { if (S.pred[P8.id]) return; E.cadena([E.pausa(700), n => E.animar('t2', 1, 1400, n)], () => E.avisar(`Del término 1 al 2 se agregaron ${CU2.agregados} cubitos: 1 encima y 4 alrededor. Ninguno debajo, porque abajo está la mesa.`)); },
    anima:fin => { E.prog.t2 = 1; E.prog.t3 = 0;
      E.cadena([E.pausa(300), n => E.animar('t3', S.t3, RM ? 0 : 3600, n), E.pausa(500), n => E.animar('gap', .9, 1000, n), E.pausa(1800), n => E.animar('gap', 0, 900, n)], () => {
        E.avisar(`Del término 2 al 3 se agregaron ${CU3.agregados} cubitos: rodean al término 2 por arriba y por los lados, sin bajar de la mesa. Al separar los pisos se ve el término 2 adentro.`); fin(); }); },
-   body:() => `<p class="problem">Dos cubitos en fila sobre la mesa son el término 1. El término 2 se forma tapando con un cubito cada cara al aire del término 1, menos las que tocan la mesa: se agregaron ${n_(CU2.agregados)}. Si se repite la regla, ¿cuántos cubitos se agregan para formar el término 3?</p>${opcionesHTML(P8.opts, 'fb')}
+   body:() => `<p class="problem">Un cubito sobre la mesa es el término 1. El término 2 se forma tapando con un cubito cada cara al aire del término 1, menos la que toca la mesa: se agregaron ${n_(CU2.agregados)}. Si se repite la regla, ¿cuántos cubitos se agregan para formar el término 3?</p>${opcionesHTML(P8.opts, 'fb')}
    <div id="tras" class="body" hidden>
-   <p>Por pisos: en el de abajo el término 2 tiene 8 cubitos y se rodea con 10 más; en el segundo hay 2 y se rodean con 6; arriba de todo van 2. Un cubito en una esquina entrante tapa dos caras a la vez.</p>
-   <div class="eqs"><div class="eq">${n_('agregados')} = 10 + 6 + 2 = ${n_(CU3.agregados)}</div><div class="eq">términos: ${CU3.terminos.join(', ')}</div></div>
+   <p>Por pisos: abajo hay 5 y se rodean con 8; en el segundo hay 1 y se rodea con 4; arriba va 1. Un cubito en una esquina entrante tapa dos caras a la vez.</p>
+   <div class="eqs"><div class="eq">${n_('agregados')} = 8 + 4 + 1 = ${n_(CU3.agregados)}</div><div class="eq">términos: ${CU3.terminos.join(', ')}</div></div>
    <p class="hint">La cara que se apoya en la mesa nunca se tapa: no hay lugar para un cubito debajo.</p>
    ${fuenteHip('Contar caras en vez de cubitos, tapar también la base o suponer que siempre se agrega lo mismo')}</div>` },
 
@@ -1128,7 +1142,7 @@ const PIR_ORDEN_V = (() => {
 const EXPS = [
   { id:'acotadas', corto:'Vistas con medidas',
     q:`Las tres vistas ahora tienen medidas: las columnas, las filas y los pisos no miden todos 1. ¿Cuántas caras tiene el sólido de volumen máximo?`,
-    opts:[['a', `${AC.errores.caraVistas} caras`, 'RME3', 'hipotesis'], ['b', `${AC.errores.caraCuadraditos} caras`, 'RME104', 'hipotesis'], ['c', `${AC.caras} caras`], ['d', `${AC.errores.prismaFrontal} caras`, 'RME5', 'hipotesis']], ok:'c',
+    opts:[['a', `${AC.errores.caraVistas} caras`, 'RME193', 'hipotesis'], ['b', `${AC.errores.caraCuadraditos} caras`, 'RME104', 'hipotesis'], ['c', `${AC.caras} caras`], ['d', `${AC.errores.prismaFrontal} caras`, 'RME5', 'hipotesis']], ok:'c',
     fb:{ a:`Son las que miran al frente, arriba o a la derecha. Faltan las de atrás, la izquierda y abajo.`, b:`Son los cuadraditos de la superficie contando cada celda: una cara es la región plana entera, mida lo que mida.`, d:`Es el prisma de la frontal sola: la superior tiene un hueco al frente y la lateral pone la parte alta adelante.` },
     antes:r => E.config({ desc:r ? `El sólido de volumen máximo con esas vistas acotadas: ${AC.cubitos} bloques, ${AC.caras} caras.` : 'Una caja vacía sobre la mesa. Al lado, tres vistas con sus medidas.',
       marco:[[-0.6, 4.6], [-0.6, 3.6], [0, 3]], elMin:-30, vistas:{ F:D.AF, T:D.AT, L:D.AL, opc:opcAC },
@@ -1142,11 +1156,12 @@ const EXPS = [
         n => E.animar('luz', AC.caras, RM ? 0 : 1400, n), E.pausa(700), n => E.animarVarias([['az', ISO.az + 360], ['el', ISO.el]], 1500, n)], () => { E.az = ISO.az; E.lecturas();
         E.avisar(`El sólido se armó con las medidas de las vistas y se encendieron sus ${AC.caras} caras. Las medidas cambian el volumen (${fmt(AC.volumen)}), no el número de caras.`); fin(); }); },
     exp:() => `<p>Con medidas, la cuadrícula ya no es de cuadraditos iguales, pero se trabaja igual: cada línea de una vista corta el sólido en la misma posición en las otras. El máximo sigue siendo lo que permiten las tres vistas a la vez.</p>
-      <div class="eqs"><div class="eq">${c_('C')} = ${AC.caras} · volumen = ${fmt(AC.volumen)} (con las medidas)</div><div class="eq">V − A + ${c_('C')} = ${AC.vertices} − ${AC.aristas} + ${c_(AC.caras)} = ${AC.euler}</div></div>
+      <p>Para el volumen se suman bloques: la fila del fondo, de 4 de largo, 1 de fondo y 2 de alto (4·1·2); las dos columnas del frente, que juntas miden 2 de ancho, 2 de fondo y 2 de alto (2·2·2); y la parte alta de adelante a la izquierda, de 1 de ancho, 2 de fondo y 1 de alto (1·2·1).</p>
+      <div class="eqs"><div class="eq">${c_('C')} = ${AC.caras}</div><div class="eq">volumen = 4·1·2 + 2·2·2 + 1·2·1 = 8 + 8 + 2 = ${fmt(AC.volumen)}</div><div class="eq">V − A + ${c_('C')} = ${AC.vertices} − ${AC.aristas} + ${c_(AC.caras)} = ${AC.euler}</div></div>
       ${fuenteHip('Contar cuadraditos, solo las caras de las vistas o leer una sola vista')}` },
   { id:'caja-transparente', corto:'Caja transparente',
     q:`En una caja transparente de 3 × 3 × 3 hay algunos cubitos. ¿Cuántos faltan para llenarla?`,
-    opts:[['a', `${CJ.errores.deFrente} cubitos`, 'RME3', 'hipotesis'], ['b', `${CJ.faltan} cubitos`], ['c', `${CJ.errores.soloVisibles} cubitos`, 'RME3', 'hipotesis'], ['d', `${CJ.errores.deArriba} cubitos`, 'RME5', 'hipotesis']], ok:'b',
+    opts:[['a', `${CJ.errores.deFrente} cubitos`, 'RME5', 'hipotesis'], ['b', `${CJ.faltan} cubitos`], ['c', `${CJ.errores.soloVisibles} cubitos`, 'RME3', 'hipotesis'], ['d', `${CJ.errores.deArriba} cubitos`, 'RME5', 'hipotesis']], ok:'b',
     fb:{ a:'Contaste solo los cubitos que se ven de frente: detrás hay más.', c:`Contaste los ${CJ.visibles} que se ven desde la esquina: uno queda escondido.`, d:'Contaste un cubito por cada cuadradito de la superior: hay columnas de dos pisos.' },
     antes:r => E.config({ desc:r ? `La caja llena: había ${CJ.volumen} cubitos y se agregaron ${CJ.faltan}.` : 'Una caja transparente de 3 × 3 × 3 con algunos cubitos adentro, vista desde una esquina.',
       marco:[[-0.6, 3.6], [-0.6, 3.6], [0, 3]],
@@ -1167,7 +1182,7 @@ const EXPS = [
     fb:{ a:'Es el cubo de 2 × 2 × 2 menos la pieza: 8 no es múltiplo de 3, así que con copias enteras no se puede.', b:`Son las copias que se agregan (${CP.errores.copiasEnVezDeCubitos}), no los cubitos: cada copia trae 3.`, c:'Es el cubo entero: la pieza ya pone 3 cubitos.' },
     antes:r => E.config({ desc:r ? `El cubo de ${CP.n} × ${CP.n} × ${CP.n} armado con ${CP.copias} copias de la pieza.` : 'Una pieza en L de tres cubitos sobre la mesa.',
       marco:[[-0.6, 3.6], [-0.6, 3.6], [0, 3]],
-      escena:E => ({ mesa:mesaDe(3, 3), cubos:CP.colocaciones.slice(0, Math.max(1, Math.ceil(E.prog.k))).flatMap((cs, i) => cs.map(c => ({ c, col:i % 2 ? 'n' : null, borde:i > 0 && i % 2 === 0 ? 'n' : null }))) }),
+      escena:E => ({ mesa:mesaDe(3, 3), cubos:CP.colocaciones.slice(0, Math.max(1, Math.ceil(E.prog.k))).flatMap((cs, i) => cs.map(c => ({ c, col:i === 0 ? 'ink' : i % 2 ? 'n' : null, borde:i > 0 && i % 2 === 0 ? 'n' : null }))) }),
       prog:{ k:r ? CP.copias : 1 },
       lect:E => (r || E.prog.k > 1) ? [['ink', 'copias', String(Math.max(1, Math.ceil(E.prog.k)))], ['n', 'cubitos agregados', String((Math.max(1, Math.ceil(E.prog.k)) - 1)*CP.volumen)]] : [],
       ley:r ? [['ink', 'la pieza'], ['n', 'las copias que se agregan']] : [['ink', 'la pieza']] }),

@@ -110,3 +110,22 @@ Los abrieron las escenas al construirse. Todos son hipótesis.
 | RME169 | Triángulos con puntos: no restar las ternas alineadas, o restar una por recta en vez de C(k, 3). |
 | RME190 | Contar los marcos (rectángulos) donde cabe una pieza en vez de sus ubicaciones. |
 | RME191 | Tomar la semicircunferencia como si fuera la circunferencia entera (πd). |
+
+### vistas-cubitos
+
+| Código | Error |
+| --- | --- |
+| RME100 | Leer la vista desde el lado contrario (la superior con el frente arriba, la lateral desde la izquierda). |
+| RME101 | Sumar lo que se cuenta en las tres vistas (cuadraditos, regiones o esquinas) como si fuera del sólido. |
+| RME102 | Tomar la caja entera (largo × ancho × alto) como sólido máximo. |
+| RME103 | Poner un cubito por cuadradito de la superior, olvidando las alturas que piden la frontal y la lateral. |
+| RME104 | Contar cuadraditos o puntos de la cuadrícula en vez de caras o vértices enteros. |
+| RME105 | Suponer que el sólido tiene las 6 caras y los 8 vértices de una caja. |
+| RME106 | Completar la caja que envuelve al sólido en vez del cubo. |
+| RME107 | Suponer que la sucesión agrega siempre lo mismo. |
+| RME108 | No comprobar que n³ sea múltiplo del volumen de la pieza. |
+| RME109 | Confundir lo que se agrega con el total (copias en vez de cubitos, o el cubo entero). |
+| RME192 | Al rodear un sólido, contar caras en vez de cubitos, sin ver que un cubito en una esquina entrante tapa dos caras. |
+| RME193 | Contar solo las caras que salen en las vistas. |
+
+RME3 (solo los cubitos visibles) se parece a GE13 de `geometria-ideas-erroneas.md` (Ben-Chaim, Lappan y Houang, 1985), que trata de contar cubitos de un sólido dibujado; aquí sigue como hipótesis.

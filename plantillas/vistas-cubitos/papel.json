@@ -5,37 +5,119 @@
     {
       "id": "p1",
       "nivel": "básico",
-      "enunciado": "Un sólido de cubitos iguales ocupa, visto desde arriba, un rectángulo de 3 columnas y 2 filas, todo lleno. En la vista frontal, las columnas miden (de izquierda a derecha) 3, 1 y 2 cubitos de alto. En la vista lateral, vista desde la derecha, la fila del frente mide 2 y la del fondo 3. ¿Cuántos cubitos puede tener como máximo?",
-      "respuesta": "11 cubitos.",
+      "enunciado": "Un sólido de cubitos iguales ocupa, visto desde arriba, un rectángulo de 3 columnas y 2 filas, todo lleno. En la vista frontal, las columnas miden (de izquierda a derecha) 3, 1 y 2 cubitos de alto. En la vista lateral, vista desde la derecha, la fila del frente mide 2 y la del fondo 3. ¿Cuántos cubitos puede tener como máximo? ¿Y como mínimo, si cada cubito está sobre la mesa o sobre otro cubito?",
+      "respuesta": "Como máximo 11 cubitos; como mínimo 9.",
       "pasos": [
         "En el sólido de volumen máximo cada columna es tan alta como lo permiten las dos vistas: su altura es la menor entre la altura de su columna en la frontal y la de su fila en la lateral.",
         "Fila del frente (la lateral permite 2): mín(3, 2) = 2, mín(1, 2) = 1, mín(2, 2) = 2. Suman 5.",
         "Fila del fondo (la lateral permite 3): mín(3, 3) = 3, mín(1, 3) = 1, mín(2, 3) = 2. Suman 6.",
-        "Máximo: 5 + 6 = 11. No es 3 · 2 · 3 = 18 (la caja entera) ni 6 (los cuadraditos de una vista)."
+        "Máximo: 5 + 6 = 11. No es 3 · 2 · 3 = 18 (la caja entera) ni 6 (los cuadraditos de una vista).",
+        "Mínimo: cada cuadradito de la superior lleva al menos un cubito (6). La columna de 3 de la frontal y la fila de 3 de la lateral se cumplen con una sola torre de 3 en la esquina del fondo a la izquierda (2 más); la columna de 2 y la fila de 2, con una torre de 2 en la esquina del frente a la derecha (1 más): 6 + 2 + 1 = 9."
       ],
       "verificar": [
-        { "fn": "maximo", "args": [["#..", "#.#", "###"], ["###", "###"], [".#", "##", "##"]], "espera": { "cubitos": 11, "coincide": true, "errores.caja": 18 } }
+        {
+          "fn": "maximo",
+          "args": [
+            [
+              "#..",
+              "#.#",
+              "###"
+            ],
+            [
+              "###",
+              "###"
+            ],
+            [
+              ".#",
+              "##",
+              "##"
+            ]
+          ],
+          "espera": {
+            "cubitos": 11,
+            "coincide": true,
+            "errores.caja": 18
+          }
+        },
+        {
+          "fn": "minimo",
+          "args": [
+            [
+              "#..",
+              "#.#",
+              "###"
+            ],
+            [
+              "###",
+              "###"
+            ],
+            [
+              ".#",
+              "##",
+              "##"
+            ]
+          ],
+          "espera": {
+            "volumen": 9,
+            "errores.unoPorCuadro": 6
+          }
+        }
       ]
     },
     {
       "id": "p2",
       "nivel": "intermedio",
-      "enunciado": "Con las mismas tres vistas del problema anterior, ¿cuántos cubitos tiene como mínimo el sólido, si cada cubito está sobre la mesa o sobre otro cubito?",
-      "respuesta": "9 cubitos.",
+      "enunciado": "Las vistas de un sólido tienen medidas en centímetros. Frontal: dos columnas, la de la izquierda de 3 cm de ancho y la de la derecha de 2 cm; abajo, una franja de 1 cm de alto a todo lo ancho y, encima, solo sobre la columna de la izquierda, un bloque de 3 cm de alto. Superior: un rectángulo lleno de 5 cm de ancho, con la fila del frente de 2 cm de fondo y la del fondo de 4 cm. Lateral (desde la derecha): la franja de 1 cm a todo lo ancho y, encima, solo sobre la fila del fondo, 3 cm de alto. ¿Cuál es el volumen del sólido de volumen máximo?",
+      "respuesta": "66 cm³.",
       "pasos": [
-        "Cada cuadradito de la vista superior necesita al menos un cubito: 6.",
-        "La frontal pide una columna de 3 (la de la izquierda) y la lateral una fila de 3 (la del fondo): una sola torre de 3 en la esquina del fondo a la izquierda cumple las dos. Suma 2 cubitos más.",
-        "La frontal pide una columna de 2 (la de la derecha) y la lateral una fila de 2 (la del frente): una torre de 2 en la esquina del frente a la derecha cumple las dos. Suma 1 más.",
-        "Mínimo: 6 + 2 + 1 = 9. La columna del medio queda con 1, como pide la frontal."
+        "Con medidas se trabaja igual que con cuadraditos: el sólido máximo tiene, en cada lugar, lo que permiten las tres vistas a la vez.",
+        "La franja de abajo está en las tres vistas en toda su extensión: es un bloque de 5 · 6 · 1 = 30 cm³ (5 de ancho, 2 + 4 = 6 de fondo y 1 de alto).",
+        "La parte alta solo puede estar sobre la columna de la izquierda (frontal) y sobre la fila del fondo (lateral): un bloque de 3 · 4 · 3 = 36 cm³.",
+        "Volumen máximo: 30 + 36 = 66 cm³. No es la caja entera, 5 · 6 · 4 = 120 cm³."
       ],
       "verificar": [
-        { "fn": "minimo", "args": [["#..", "#.#", "###"], ["###", "###"], [".#", "##", "##"]], "espera": { "volumen": 9, "errores.unoPorCuadro": 6 } }
+        {
+          "fn": "maximo",
+          "args": [
+            [
+              "#.",
+              "##"
+            ],
+            [
+              "##",
+              "##"
+            ],
+            [
+              ".#",
+              "##"
+            ],
+            {
+              "x": [
+                3,
+                2
+              ],
+              "y": [
+                2,
+                4
+              ],
+              "z": [
+                1,
+                3
+              ]
+            }
+          ],
+          "espera": {
+            "volumen": 66,
+            "coincide": true,
+            "errores.caja": 120
+          }
+        }
       ]
     },
     {
       "id": "p3",
       "nivel": "intermedio",
-      "enunciado": "El sólido de volumen máximo del problema 1 se sumerge entero en pintura. ¿Cuántas caras (regiones planas, sin contar cuadraditos sueltos) quedan pintadas?",
+      "enunciado": "El sólido de volumen máximo del problema 1 se sumerge entero en pintura. ¿Cuántas caras quedan pintadas? (cada región plana cuenta como una sola cara, aunque tenga varios cuadraditos)",
       "respuesta": "12 caras.",
       "pasos": [
         "Tabla de alturas: frente 2, 1, 2; fondo 3, 1, 2. Al sumergirlo se pintan todas las caras: también las de atrás, las de la izquierda y la de abajo.",
@@ -44,7 +126,30 @@
         "Total: 4 + 2 + 2 + 2 + 1 + 1 = 12. Si se cuentan solo las que se ven en las tres vistas (arriba, frente y derecha) salen 8: faltan las ocultas."
       ],
       "verificar": [
-        { "fn": "maximo", "args": [["#..", "#.#", "###"], ["###", "###"], [".#", "##", "##"]], "espera": { "caras": 12, "carasEnVistas": 8, "cuadraditos": 38 } }
+        {
+          "fn": "maximo",
+          "args": [
+            [
+              "#..",
+              "#.#",
+              "###"
+            ],
+            [
+              "###",
+              "###"
+            ],
+            [
+              ".#",
+              "##",
+              "##"
+            ]
+          ],
+          "espera": {
+            "caras": 12,
+            "carasEnVistas": 8,
+            "cuadraditos": 38
+          }
+        }
       ]
     },
     {
@@ -54,11 +159,34 @@
       "respuesta": "20 vértices y 30 aristas.",
       "pasos": [
         "Cuenta los vértices piso por piso: los de la base, los de los escalones y los de las puntas. Un punto en medio de una arista recta no es vértice.",
-        "Salen 20 vértices. Las aristas se cuentan de vértice a vértice: 30.",
+        "Por alturas: 4 en la mesa, 4 en el fondo del canal (altura 1), 8 a la altura 2 y 4 en la punta de la torre (altura 3): 4 + 4 + 8 + 4 = 20. Las aristas se cuentan de vértice a vértice: 30.",
         "Euler: V − A + C = 20 − 30 + 12 = 2. Si la cuenta no da 2, falta o sobra algo (en un sólido de una pieza y sin túneles)."
       ],
       "verificar": [
-        { "fn": "maximo", "args": [["#..", "#.#", "###"], ["###", "###"], [".#", "##", "##"]], "espera": { "vertices": 20, "aristas": 30, "euler": 2 } }
+        {
+          "fn": "maximo",
+          "args": [
+            [
+              "#..",
+              "#.#",
+              "###"
+            ],
+            [
+              "###",
+              "###"
+            ],
+            [
+              ".#",
+              "##",
+              "##"
+            ]
+          ],
+          "espera": {
+            "vertices": 20,
+            "aristas": 30,
+            "euler": 2
+          }
+        }
       ]
     },
     {
@@ -72,7 +200,37 @@
         "No es la frontal: esa tendría 3 pisos de alto (3 cuadraditos abajo, 1 en el segundo y 1 en el tercero, a la izquierda)."
       ],
       "verificar": [
-        { "fn": "elegirVista", "args": [[["###", "##."], ["#..", "#.."], ["...", "#.."]], "superior"], "espera": { "correcta": ["###", "##."], "errores.frontal": ["#..", "#..", "###"] } }
+        {
+          "fn": "elegirVista",
+          "args": [
+            [
+              [
+                "###",
+                "##."
+              ],
+              [
+                "#..",
+                "#.."
+              ],
+              [
+                "...",
+                "#.."
+              ]
+            ],
+            "superior"
+          ],
+          "espera": {
+            "correcta": [
+              "###",
+              "##."
+            ],
+            "errores.frontal": [
+              "#..",
+              "#..",
+              "###"
+            ]
+          }
+        }
       ]
     },
     {
@@ -86,7 +244,26 @@
         "No basta llenar la caja de 4 × 2 × 2 = 16 (faltarían 5): esa caja no es un cubo."
       ],
       "verificar": [
-        { "fn": "completarCubo", "args": [[["####", "####"], ["###.", "...."]]], "espera": { "n": 4, "faltan": 53, "errores.caja": 5 } }
+        {
+          "fn": "completarCubo",
+          "args": [
+            [
+              [
+                "####",
+                "####"
+              ],
+              [
+                "###.",
+                "...."
+              ]
+            ]
+          ],
+          "espera": {
+            "n": 4,
+            "faltan": 53,
+            "errores.caja": 5
+          }
+        }
       ]
     },
     {
@@ -100,7 +277,32 @@
         "Faltan 24 − 11 = 13. Contando solo los que se ven de frente saldrían 24 − 5 = 19."
       ],
       "verificar": [
-        { "fn": "completarCaja", "args": [[["####", "###.", "##.."], ["#...", "#...", "...."]], [4, 3, 2]], "espera": { "faltan": 13, "errores.deFrente": 19 } }
+        {
+          "fn": "completarCaja",
+          "args": [
+            [
+              [
+                "####",
+                "###.",
+                "##.."
+              ],
+              [
+                "#...",
+                "#...",
+                "...."
+              ]
+            ],
+            [
+              4,
+              3,
+              2
+            ]
+          ],
+          "espera": {
+            "faltan": 13,
+            "errores.deFrente": 19
+          }
+        }
       ]
     },
     {
@@ -114,7 +316,23 @@
         "Se puede armar: cuatro T llenan un cuadrado de 4 × 4 y cuatro capas así llenan el cubo. Se agregan 64 − 4 = 60 cubitos a la pieza."
       ],
       "verificar": [
-        { "fn": "copiasCubo", "args": [[["###", ".#."]]], "espera": { "n": 4, "copias": 16, "adicionales": 60, "errores.sinDividir": 23 } }
+        {
+          "fn": "copiasCubo",
+          "args": [
+            [
+              [
+                "###",
+                ".#."
+              ]
+            ]
+          ],
+          "espera": {
+            "n": 4,
+            "copias": 16,
+            "adicionales": 60,
+            "errores.sinDividir": 23
+          }
+        }
       ]
     },
     {
@@ -128,8 +346,38 @@
         "Por pisos: en el piso 1 se agregan 12, en el piso 2 se agregan 8 y en el piso 3, 3. Total: 23 (quedan 37). Con un cubito por cara saldrían 35, y no se agrega lo mismo que antes (11)."
       ],
       "verificar": [
-        { "fn": "cubrir", "args": [[["###"]], 3], "espera": { "agregados": 23, "volumen": 37, "errores.porCara": 35, "errores.mismoAumento": 11 } },
-        { "fn": "cubrir", "args": [[["###"]], 2], "espera": { "agregados": 11, "volumen": 14 } }
+        {
+          "fn": "cubrir",
+          "args": [
+            [
+              [
+                "###"
+              ]
+            ],
+            3
+          ],
+          "espera": {
+            "agregados": 23,
+            "volumen": 37,
+            "errores.porCara": 35,
+            "errores.mismoAumento": 11
+          }
+        },
+        {
+          "fn": "cubrir",
+          "args": [
+            [
+              [
+                "###"
+              ]
+            ],
+            2
+          ],
+          "espera": {
+            "agregados": 11,
+            "volumen": 14
+          }
+        }
       ]
     },
     {
@@ -143,7 +391,69 @@
         "Aristas: 3 + 3 de los triángulos y 3 a lo largo: 9. Euler: 6 − 9 + 5 = 2."
       ],
       "verificar": [
-        { "fn": "poliedroVistas", "args": [{ "frontal": [[0, 0], [2, 0], [1, 2]], "superior": [[0, 0], [2, 0], [2, 3], [0, 3]], "lateral": [[0, 0], [3, 0], [3, 2], [0, 2]] }], "espera": { "caras": 5, "vertices": 6, "aristas": 9, "euler": 2 } }
+        {
+          "fn": "poliedroVistas",
+          "args": [
+            {
+              "frontal": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  2,
+                  0
+                ],
+                [
+                  1,
+                  2
+                ]
+              ],
+              "superior": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  2,
+                  0
+                ],
+                [
+                  2,
+                  3
+                ],
+                [
+                  0,
+                  3
+                ]
+              ],
+              "lateral": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  3,
+                  0
+                ],
+                [
+                  3,
+                  2
+                ],
+                [
+                  0,
+                  2
+                ]
+              ]
+            }
+          ],
+          "espera": {
+            "caras": 5,
+            "vertices": 6,
+            "aristas": 9,
+            "euler": 2
+          }
+        }
       ]
     }
   ]

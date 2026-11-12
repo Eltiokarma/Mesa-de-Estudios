@@ -2,7 +2,7 @@
  "plantilla": "vistas-cubitos",
  "unidades": "Cubitos de arista 1 (o con las medidas dadas). Ejes: x a la derecha, y hacia el fondo (y = 0 es la fila del frente), z hacia arriba (z = 0 apoya en la mesa). Un sólido es una lista de pisos de abajo hacia arriba; cada piso es una lista de filas COMO SE VE DESDE ARRIBA (primera fila = la del fondo, última = la del frente) y cada carácter es una columna x («#» hay cubito, «.» no hay). Las vistas son listas de filas tal como se dibujan, de arriba abajo: frontal (columnas x, filas z de arriba abajo), superior (columnas x, filas y del fondo al frente), lateral desde la DERECHA (columnas y del frente al fondo, filas z de arriba abajo).",
  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.soloFrontal). Caras = regiones planas maximales de la superficie (cuadraditos coplanares con la misma normal y unidos por un lado), incluida la base. Vértices = puntos donde la superficie no es plana ni una arista recta. El mínimo es de cubitos apilados (cada uno sobre la mesa o sobre otro). Visibles = cubitos con alguna parte de su superficie que se ve desde la dirección (1, −1, 1). En poliedroVistas las vistas son polígonos convexos; el sólido es la intersección de los tres prismas. En cubrir, cada término tapa con un cubito cada cara al aire del anterior salvo las que tocan la mesa; un cubito que toca dos caras cuenta una vez.",
- "verificacion": "",
+ "verificacion": "Verificado a ciegas por un subagente (12 nov 2026), sin leer el motor ni los casos, con código propio en Python: vóxeles con el máximo como intersección de extrusiones, el mínimo por búsqueda exhaustiva de alturas, caras como regiones planas maximales conexas y vértices y aristas contados directamente y comprobados con Euler; visibles por rayos exactos y poliedros de vistas inclinadas por intersección de semiespacios con fracciones. Coinciden 153 de 155 campos; las dos diferencias eran de convención (superior reflejada adelante–atrás; distractor «caja» con medidas), casos.json es correcto y la cabecera ahora lo aclara. El caso de cubrir con un solo cubito (agregado tras la revisión) lo recalculó a mano la conversación principal, por pisos: 8 + 4 + 1 = 13, total 19, errores 21, 18 y 5.",
  "tolerancia": 1e-9,
  "casos": [
   {
@@ -576,6 +576,7 @@
     "alto": 3,
     "volumen": 36
    }
-  }
+  },
+  {"nombre": "Predicción 8 (paso 9): sucesión que tapa las caras al aire de un cubito → el tercer término agrega 13 (errores: un cubito por cara 21, también bajo la mesa 18, el mismo aumento 5)", "fn": "cubrir", "args": [[["#"]], 3], "espera": {"volumen": 19, "agregados": 13, "terminos": [1, 6, 19], "errores.porCara": 21, "errores.conMesa": 18, "errores.mismoAumento": 5}, "tambien": [{"fn": "cubrir", "args": [[["#"]], 2], "espera": {"volumen": 6, "agregados": 5}}]}
  ]
 }

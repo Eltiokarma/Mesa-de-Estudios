@@ -290,7 +290,7 @@ test('predicciones: las cuatro opciones de cada una son distintas', () => {
   const mx = M.maximo(F, T, L), mn = M.minimo(F, T, L);
   const P2 = [['##.', '###', '#..'], ['#..', '##.', '...'], ['#..', '...', '...']], v2 = M.elegirVista(P2, 'superior');
   const casa = M.poliedroVistas({ frontal: [[0, 0], [2, 0], [2, 2], [1, 3], [0, 2]], superior: [[0, 0], [2, 0], [2, 2], [0, 2]], lateral: [[0, 0], [2, 0], [2, 2], [1, 3], [0, 2]] });
-  const co = M.completarCubo([['###', '###'], ['##.', '#..']]), cu = M.cubrir([['##']], 3);
+  const co = M.completarCubo([['###', '###'], ['##.', '#..']]), cu = M.cubrir([['#']], 3);
   const AF = ['#..', '###'], AT = ['###', '#.#'], AL = ['#.', '##'], ac = M.maximo(AF, AT, AL, { x: [1, 2, 1], y: [2, 1], z: [2, 1] });
   const caja = M.completarCaja([['##.', '###', '#..'], ['...', '#..', '#..']], [3, 3, 3]), cp = M.copiasCubo([['##', '#.']]);
   const lat = M.elegirVista([['###', '###', '###'], ['.##', '...', '###'], ['...', '...', '#..']], 'lateral');
