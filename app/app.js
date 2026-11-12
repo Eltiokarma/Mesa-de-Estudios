@@ -19,17 +19,35 @@ const GRADOS = [['3', '3.º de secundaria'], ['4', '4.º de secundaria'], ['5', 
 function cargarEstado() {
   try { return JSON.parse(localStorage.getItem(CLAVE)) || {}; } catch { return {}; }
 }
-let est = Object.assign({ nombre: '', uni: '', grado: '', colegio: '', alumno: '', vistas: {}, dias: [], tema: '', practica: {}, pruebas: {}, salidaHabilitada: [], solucionesHabilitadas: [] }, cargarEstado());
-// Identificador anónimo del dispositivo: la medición nunca guarda nombres.
+const BASE_EST = () => ({ nombre: '', uni: '', grado: '', colegio: '', alumno: '', vistas: {}, dias: [], tema: '', practica: {}, pruebas: {}, salidaHabilitada: [], solucionesHabilitadas: [] });
+let est = Object.assign(BASE_EST(), cargarEstado());
+// ---------- Cuentas (docs/cuentas.md, fase C2) ----------
+// Con window.MESA_API (app/config.js) hay servidor: el alumno entra con usuario y contraseña, y nucleo/sesion.js sube
+// la cola de eventos y su est. Sin servidor, o si elige «Probar sin cuenta», la app queda en modo demostración.
+const API = String(window.MESA_API || '').trim();
+let cambiandoCuenta = false;
+const ses = API && window.Sesion ? Sesion.crear({ api: API, alEstado: e => {
+  if (cambiandoCuenta) { try { localStorage.setItem(CLAVE, JSON.stringify(e)); } catch { /* sin almacenamiento */ } return; }
+  Sesion.aplicarEnSitio(est, e); guardar();
+} }) : null;
+const cuenta = () => (ses && ses.activa() ? ses.usuario() : null);
+const esAlumnoCuenta = () => (cuenta() || {}).rol === 'alumno';
+const demoElegido = () => sessionStorage.getItem('lab-demo') === '1';
+// Identificador anónimo del dispositivo: la medición nunca guarda nombres. Con cuenta, es el seudónimo del servidor.
 const idNuevo = () => 'a' + Array.from(crypto.getRandomValues(new Uint8Array(5)), b => b.toString(16).padStart(2, '0')).join('');
+if (esAlumnoCuenta()) est.alumno = ses.seudonimo();
 if (!est.alumno) est.alumno = idNuevo();
-// Código del colegio: llega en el enlace que reparte el profesor (…/app/?colegio=ABC).
-{ const c = new URLSearchParams(location.search).get('colegio'); if (c) est.colegio = c.trim().toUpperCase().slice(0, 20); }
+// Código del colegio: llega en el enlace que reparte el profesor (…/app/?colegio=ABC). Con cuenta, el colegio es el de la cuenta.
+{ const c = new URLSearchParams(location.search).get('colegio'); if (c && !esAlumnoCuenta()) est.colegio = c.trim().toUpperCase().slice(0, 20); }
+// El servidor manda el colegio como { id, nombre }; en la medición va su id.
+function colegioId(c) { return c && typeof c === 'object' ? String(c.id ?? '') : String(c || ''); }
+if (esAlumnoCuenta()) est.colegio = colegioId(cuenta().colegio) || est.colegio || '';
 // Solo el profesor abre la prueba de salida y la revisión de soluciones, con el enlace que reparte en clase:
 // …/app/?salida=fisica,quimica (o ?salida=todas) y …/app/?soluciones=fisica (o =todas). Queda guardado en este
 // navegador, también si cambia el alumno. No hay servidor ni clave: el control es que el enlace lo da el profesor.
+// Con cuenta, lo abre el profesor desde su panel (por sección) y llega con la sincronización: los enlaces no cuentan.
 const habilitacionesNuevas = [];
-for (const [param, campo] of [['salida', 'salidaHabilitada'], ['soluciones', 'solucionesHabilitadas']]) {
+for (const [param, campo] of esAlumnoCuenta() ? [] : [['salida', 'salidaHabilitada'], ['soluciones', 'solucionesHabilitadas']]) {
   const v = new URLSearchParams(location.search).get(param);
   if (!v) continue;
   const lista = v.toLowerCase().split(',').map(x => x.trim()).filter(x => /^[a-z0-9-]+$/.test(x));
@@ -37,11 +55,14 @@ for (const [param, campo] of [['salida', 'salidaHabilitada'], ['soluciones', 'so
   for (const c of lista) if (!antes.has(c)) habilitacionesNuevas.push({ que: param, curso: c });
   est[campo] = [...new Set([...antes, ...lista])];
 }
-function guardar() { try { localStorage.setItem(CLAVE, JSON.stringify(est)); } catch { /* sin almacenamiento: la app sigue */ } }
+function guardar() {
+  try { localStorage.setItem(CLAVE, JSON.stringify(est)); } catch { /* sin almacenamiento: la app sigue */ }
+  if (ses && !cambiandoCuenta && esAlumnoCuenta()) { ses.pronto(); actualizarSync(); }
+}
 const hoy = () => new Date().toLocaleDateString('en-CA');
 // ---------- Medición (anónima; ver nucleo/medicion.js) ----------
 const eventos = () => Medicion.eventosGuardados();
-const registrar = ev => Medicion.guardar(ev, VERSION_APP, est);
+const registrar = ev => { const r = Medicion.guardar(ev, VERSION_APP, est); if (ses && esAlumnoCuenta()) { ses.pronto(); actualizarSync(); } return r; };
 // Quién habilitó qué: cada habilitación nueva queda en la medición (origen: el enlace del profesor).
 for (const h of habilitacionesNuevas) registrar({ tipo: 'habilitacion', que: h.que, curso: h.curso, origen: 'profesor' });
 // Registros todavía sin descargar (de cualquier alumno de este navegador): desde la última descarga.
@@ -114,14 +135,15 @@ function vBienvenida() {
       <h1>Ve la física.<br>Entiende el examen.</h1>
       <p>Escenas que se mueven, predicciones antes de ver la respuesta y problemas para resolver en papel.</p>
     </div>
-    <label class="sub" for="nombre">¿Cómo te llamas?</label>
-    <input type="text" id="nombre" autocomplete="given-name" maxlength="30" placeholder="Tu nombre" value="${esc(est.nombre)}">
+    ${esAlumnoCuenta() ? `<p class="sub" style="margin:0">Hola, <b>${esc(est.nombre || cuenta().nombre || '')}</b>. Antes de empezar, dos preguntas.</p>`
+      : `<label class="sub" for="nombre">¿Cómo te llamas?</label>
+    <input type="text" id="nombre" autocomplete="given-name" maxlength="30" placeholder="Tu nombre" value="${esc(est.nombre)}">`}
     <span class="sub">¿A qué universidad postulas?</span>
     <div class="opciones">${opc}</div>
     <span class="sub">¿En qué grado estás?</span>
     <div class="chips" style="margin:0">${GRADOS.map(([k, t]) => `<button class="chip${est.grado === k ? ' on' : ''}" data-grado="${k}">${esc(t)}</button>`).join('')}</div>
     <button class="btn acento ancho" id="empezar"${est.uni && est.grado ? '' : ' disabled'}>Empezar</button>
-    <span class="sub" style="text-align:center">Tu avance se guarda en este celular. Funciona sin internet.</span>
+    <span class="sub" style="text-align:center">${esAlumnoCuenta() ? 'Tu avance se guarda en tu cuenta. Funciona sin internet y se sube cuando vuelve la señal.' : 'Tu avance se guarda en este celular. Funciona sin internet.'}</span>
   </section>`;
   $app.querySelectorAll('[data-uni]').forEach(b => b.onclick = () => {
     est.uni = b.dataset.uni; $app.querySelectorAll('[data-uni]').forEach(x => x.classList.toggle('on', x === b));
@@ -132,7 +154,8 @@ function vBienvenida() {
     document.getElementById('empezar').disabled = !(est.uni && est.grado);
   });
   document.getElementById('empezar').onclick = () => {
-    est.nombre = document.getElementById('nombre').value.trim(); guardar(); marcarDia(); location.hash = '#/inicio';
+    const n = document.getElementById('nombre'); if (n) est.nombre = n.value.trim();
+    guardar(); marcarDia(); location.hash = '#/inicio';
   };
 }
 
@@ -177,7 +200,7 @@ function vInicio() {
     <header class="saludo"><span class="avatar">${esc((est.nombre || '?')[0].toUpperCase())}</span>
       <div><p class="sub">Hola${est.nombre ? `, ${esc(est.nombre)}` : ''} 👋</p><h1>¿Qué entendemos hoy?</h1></div>
       <span class="pildora-racha" title="Racha de estudio">${Ilus.mini.llama}${racha()}<span class="lector"> ${racha() === 1 ? 'día seguido' : 'días seguidos'}</span></span>
-      <a class="btn borde solo-grande" href="#/otro">Otro alumno en esta PC</a></header>
+      ${esAlumnoCuenta() ? `${pildoraSync()}<a class="btn borde solo-grande" href="#/salir">Cerrar sesión</a>` : '<a class="btn borde solo-grande" href="#/otro">Otro alumno en esta PC</a>'}</header>
     <div class="col2 inicio"><div>
     ${reto}
     <h2>Hoy</h2>
@@ -301,37 +324,47 @@ function vPerfil() {
     `<button class="chip${est.uni === k ? ' on' : ''}" data-uni="${k}">${esc(UNI_CORTA[k] || k)}</button>`).join('');
   const temas = [['', 'Automático'], ['light', 'Claro'], ['dark', 'Oscuro']].map(([k, v]) =>
     `<button class="chip${est.tema === k ? ' on' : ''}" data-tema="${k}">${v}</button>`).join('');
+  const cu = esAlumnoCuenta() ? cuenta() : null;
   $app.innerHTML = `<h1>Perfil</h1>
     <div class="col2"><div>
-    <h2>Nombre</h2><input type="text" id="nombre" maxlength="30" value="${esc(est.nombre)}" placeholder="Tu nombre">
+    ${cu ? `<h2>Tu cuenta</h2><div class="card cuenta-ficha"><span class="avatar">${esc((cu.nombre || est.nombre || '?')[0].toUpperCase())}</span>
+      <div><b>${esc(cu.nombre || est.nombre)}</b><br><span class="sub">Usuario <b>${esc(ses.usuario().usuario || '')}</b>${cu.seccion ? ` · ${esc(seccionTxt(cu.seccion))}` : ''}</span><br>${pildoraSync()}</div></div>`
+      : `<h2>Nombre</h2><input type="text" id="nombre" maxlength="30" value="${esc(est.nombre)}" placeholder="Tu nombre">`}
     <h2>Universidad</h2><div class="chips">${unis}</div>
     <h2>Grado</h2><div class="chips">${GRADOS.map(([k, t]) => `<button class="chip${est.grado === k ? ' on' : ''}" data-grado="${k}">${esc(t)}</button>`).join('')}</div>
-    <h2>Código del colegio</h2><input type="text" id="colegio" maxlength="20" value="${esc(est.colegio)}" placeholder="Lo da tu profesor" autocapitalize="characters">
+    ${cu ? '' : `<h2>Código del colegio</h2><input type="text" id="colegio" maxlength="20" value="${esc(est.colegio)}" placeholder="Lo da tu profesor" autocapitalize="characters">`}
     <h2>Apariencia</h2><div class="chips">${temas}</div>
     <h2>Esta app</h2>
     <div class="lista">
       <div class="item"><span class="ico" aria-hidden="true">${offlineListo ? '✓' : '…'}</span><span class="tx"><span class="t">${offlineListo ? 'Lista para usar sin internet' : 'Preparando modo sin internet'}</span><br>
         <span class="d">Las escenas y el catálogo quedan guardados en el celular.</span></span></div>
       ${instalar ? '<button class="btn morado ancho" id="instalar">Instalar en este celular</button>' : ''}
-      <a class="btn borde ancho" href="#/otro" id="otroAlumno">Otro alumno en esta PC</a>
-      <button class="btn borde ancho" id="borrar">Borrar mi avance</button>
+      ${cu ? `<a class="btn borde ancho" href="#/contrasena">Cambiar contraseña</a>
+      <a class="btn morado ancho" href="#/salir" id="salir">Cerrar sesión</a>`
+      : `<a class="btn borde ancho" href="#/otro" id="otroAlumno">Otro alumno en esta PC</a>
+      <button class="btn borde ancho" id="borrar">Borrar mi avance</button>${ses ? '<a class="btn morado ancho" href="#/ingreso">Entrar con mi cuenta</a>' : ''}`}
     </div></div><div>
     <h2>Datos para el profesor</h2>
     <div class="card">
-      <p class="sub" style="margin:0 0 10px">Se guardan en este dispositivo, sin tu nombre: tus predicciones, tus pasos previos de lectura y tus pruebas de entrada y salida (${eventos().length} registros${sinExportar() ? `, ${sinExportar()} sin descargar` : ', todos descargados'}).</p>
+      ${cu ? `<p class="sub" style="margin:0 0 10px">Se suben solos a tu cuenta, con un código y sin tu nombre: tus predicciones, tus pasos previos de lectura y tus pruebas de entrada y salida (${eventos().length} registros en este equipo).</p>
+      ${resumenHTML()}`
+      : `<p class="sub" style="margin:0 0 10px">Se guardan en este dispositivo, sin tu nombre: tus predicciones, tus pasos previos de lectura y tus pruebas de entrada y salida (${eventos().length} registros${sinExportar() ? `, ${sinExportar()} sin descargar` : ', todos descargados'}).</p>
       ${resumenHTML()}
-      <div class="acciones-datos"><button class="btn morado" id="json">Descargar datos para el profesor</button><button class="btn borde" id="csv">Descargar CSV (hoja de cálculo)</button></div>
+      <div class="acciones-datos"><button class="btn morado" id="json">Descargar datos para el profesor</button><button class="btn borde" id="csv">Descargar CSV (hoja de cálculo)</button></div>`}
     </div></div></div>`;
-  document.getElementById('nombre').onchange = e => { est.nombre = e.target.value.trim(); guardar(); };
-  document.getElementById('colegio').onchange = e => { est.colegio = e.target.value.trim().toUpperCase(); guardar(); };
+  if (!cu) {
+    document.getElementById('nombre').onchange = e => { est.nombre = e.target.value.trim(); guardar(); };
+    document.getElementById('colegio').onchange = e => { est.colegio = e.target.value.trim().toUpperCase(); guardar(); };
+    document.getElementById('csv').onclick = () => { exportar('csv'); vPerfil(); };
+    document.getElementById('json').onclick = () => { exportar('json'); vPerfil(); };
+  }
   $app.querySelectorAll('[data-grado]').forEach(b => b.onclick = () => { est.grado = b.dataset.grado; guardar(); vPerfil(); });
-  document.getElementById('csv').onclick = () => { exportar('csv'); vPerfil(); };
-  document.getElementById('json').onclick = () => { exportar('json'); vPerfil(); };
   $app.querySelectorAll('[data-uni]').forEach(b => b.onclick = () => { est.uni = b.dataset.uni; guardar(); vPerfil(); });
   $app.querySelectorAll('[data-tema]').forEach(b => b.onclick = () => { est.tema = b.dataset.tema; guardar(); aplicarTema(); vPerfil(); });
   const bi = document.getElementById('instalar');
   if (bi) bi.onclick = async () => { instalar.prompt(); await instalar.userChoice; instalar = null; vPerfil(); };
-  document.getElementById('borrar').onclick = () => {
+  const bb = document.getElementById('borrar');
+  if (bb) bb.onclick = () => {
     if (!confirm('¿Borrar tu avance de este celular? No se puede deshacer.')) return;
     // Las pruebas de entrada y salida se conservan: se hacen una sola vez y son los datos del colegio. Las de
     // razonamiento verbal viven en practica[id] (app/lectura.js): de esas solo se guardan entrada y salida.
@@ -368,6 +401,278 @@ function vOtro() {
     if (n && !confirm(`Quedan ${n} registros sin descargar. Siguen guardados en esta PC y saldrán en la próxima descarga. ¿Cambiar igual?`)) return;
     cambiar(false);
   };
+}
+
+// ---------- Cuentas: ingreso, contraseña, cierre de sesión y panel del profesor ----------
+const ADMIN = new Set(['admin', 'admin-colegio', 'administrador', 'general']);
+function pantallaSola(ruta) { $nav.hidden = true; document.body.dataset.ruta = ruta; document.body.classList.remove('con-nav'); }
+// La sección llega como id; el servidor falso usa s4a (4.º A). Si viene como objeto, se usa su grado y su letra.
+function seccionTxt(s) {
+  if (s && typeof s === 'object') return `${s.grado}.º ${s.letra}`;
+  const m = String(s || '').match(/^s(\d)([a-z])$/i);
+  return m ? `${m[1]}.º ${m[2].toUpperCase()}` : `Sección ${s}`;
+}
+function textoSync() {
+  if (!ses) return '';
+  const i = ses.info();
+  if (i.estado === 'vencida') return 'Sesión vencida: vuelve a entrar';
+  if (i.estado === 'subiendo') return i.pendientes ? `Subiendo (${i.pendientes})…` : 'Subiendo…';
+  if (!i.pendientes) return '✓ Guardado';
+  return `Pendiente de subir (${i.pendientes})`;
+}
+const pildoraSync = () => (esAlumnoCuenta() ? `<span class="sync" data-sync role="status" title="Tu avance y tus respuestas se suben solos a tu cuenta">${esc(textoSync())}</span>` : '');
+function actualizarSync() {
+  const t = textoSync(), pend = ses && ses.info().pendientes;
+  document.querySelectorAll('[data-sync]').forEach(x => { x.textContent = t; x.classList.toggle('pendiente', !!pend); });
+}
+// Después de entrar o salir, el est de la memoria se vuelve a leer del navegador (es de otra persona).
+function recargarEst() {
+  est = Object.assign(BASE_EST(), cargarEstado());
+  if (esAlumnoCuenta()) { est.alumno = ses.seudonimo(); est.colegio = colegioId(cuenta().colegio) || est.colegio || ''; }
+  if (!est.alumno) est.alumno = idNuevo();
+  aplicarTema();
+}
+const destinoCuenta = u => (u.debe_cambiar ? '#/contrasena' : u.rol === 'alumno' ? '#/inicio' : '#/panel');
+
+function vIngreso() {
+  if (cuenta()) return ir(destinoCuenta(cuenta()));
+  pantallaSola('ingreso');
+  const vencida = ses.vencida();
+  $app.innerHTML = `<section class="bienvenida ingreso">
+    <div class="hero">
+      ${Ilus.escritorio('class="deco"')}
+      <h1>Ve la física.<br>Entiende el examen.</h1>
+      <p>Entra con el usuario y la contraseña que te dio tu profesor. Tu avance se guarda en tu cuenta, en cualquier equipo.</p>
+    </div>
+    <form id="fIngreso" class="form-cuenta" novalidate>
+      ${vencida ? '<div class="aviso">Tu sesión venció. Vuelve a entrar: lo que hiciste sigue guardado en este equipo.</div>' : ''}
+      <label class="sub" for="usuario">Usuario</label>
+      <input type="text" id="usuario" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="40" placeholder="Por ejemplo, qroman26" value="${esc(vencida ? (ses.usuario() || {}).usuario || '' : '')}">
+      <label class="sub" for="clave">Contraseña</label>
+      <input type="password" id="clave" autocomplete="current-password" maxlength="80">
+      <p class="error-cuenta" id="error" role="alert" hidden></p>
+      <button class="btn acento ancho" id="entrar" type="submit">Entrar</button>
+      <p class="sub" style="text-align:center;margin:0">¿Olvidaste tu contraseña? Pídesela a tu profesor.</p>
+      <button class="btn borde ancho" id="demo" type="button">Probar sin cuenta</button>
+      <span class="sub" style="text-align:center">Sin cuenta, la app funciona igual, pero tu avance se queda solo en este equipo.</span>
+    </form>
+  </section>`;
+  const $e = document.getElementById('error');
+  const error = m => { $e.textContent = m; $e.hidden = !m; };
+  document.getElementById('demo').onclick = () => {
+    sessionStorage.setItem('lab-demo', '1');
+    ir(est.uni && est.grado ? '#/inicio' : '#/bienvenida');
+  };
+  document.getElementById('fIngreso').onsubmit = async ev => {
+    ev.preventDefault();
+    const usuario = document.getElementById('usuario').value.trim().toLowerCase(), clave = document.getElementById('clave').value;
+    if (!usuario || !clave) return error('Escribe tu usuario y tu contraseña.');
+    const b = document.getElementById('entrar'); b.disabled = true; b.textContent = 'Entrando…'; error('');
+    let u;
+    cambiandoCuenta = true;
+    try { u = await ses.login(usuario, clave); } catch (e) {
+      b.disabled = false; b.textContent = 'Entrar';
+      document.getElementById('clave').value = '';
+      return error(e.codigo === 'sin-conexion' ? 'Para entrar hace falta internet. Revisa la conexión e inténtalo otra vez.' : e.message);
+    } finally { cambiandoCuenta = false; }
+    sessionStorage.clear();
+    recargarEst();
+    if (u.rol === 'alumno') ses.arrancar({ ventana: window, doc: document });
+    ir(destinoCuenta(u));
+  };
+}
+
+function vContrasena(obligatoria) {
+  pantallaSola('contrasena');
+  const u = cuenta();
+  $app.innerHTML = `<section class="cuenta-caja">
+    ${obligatoria ? '' : `<a class="volver" href="${u.rol === 'alumno' ? '#/perfil' : '#/panel'}" aria-label="Volver">‹</a>`}
+    <h1>${obligatoria ? 'Elige tu contraseña' : 'Cambiar contraseña'}</h1>
+    <p class="sub">${obligatoria ? `Hola, ${esc(u.nombre || '')}. La contraseña de la tarjeta es solo para entrar la primera vez: elige una nueva, que solo sepas tú.` : 'Escribe la que usas ahora y la nueva.'}</p>
+    <form id="fClave" class="card form-cuenta" novalidate>
+      <label class="sub" for="actual">${obligatoria ? 'La contraseña de tu tarjeta' : 'Contraseña actual'}</label>
+      <input type="password" id="actual" autocomplete="current-password" maxlength="80">
+      <label class="sub" for="nueva">Contraseña nueva (6 caracteres o más)</label>
+      <input type="password" id="nueva" autocomplete="new-password" maxlength="80">
+      <label class="sub" for="repite">Repite la contraseña nueva</label>
+      <input type="password" id="repite" autocomplete="new-password" maxlength="80">
+      <p class="error-cuenta" id="error" role="alert" hidden></p>
+      <button class="btn morado ancho" id="guardarClave" type="submit">Guardar contraseña</button>
+      ${obligatoria ? '<a class="btn borde ancho" href="#/salir">Salir</a>' : ''}
+    </form></section>`;
+  const $e = document.getElementById('error');
+  const error = m => { $e.textContent = m; $e.hidden = !m; };
+  document.getElementById('fClave').onsubmit = async ev => {
+    ev.preventDefault();
+    const actual = document.getElementById('actual').value, nueva = document.getElementById('nueva').value, repite = document.getElementById('repite').value;
+    if (!actual) return error('Escribe tu contraseña actual.');
+    if (nueva.length < 6) return error('La contraseña nueva debe tener 6 caracteres o más.');
+    if (nueva !== repite) return error('Las dos contraseñas nuevas no son iguales.');
+    if (nueva === actual) return error('La contraseña nueva no puede ser igual a la actual.');
+    const b = document.getElementById('guardarClave'); b.disabled = true; error('');
+    try { await ses.cambiarContrasena(actual, nueva); } catch (e) {
+      b.disabled = false;
+      return error(e.codigo === 'sin-conexion' ? 'Para cambiar la contraseña hace falta internet.' : e.message);
+    }
+    if (obligatoria) {
+      // cambiarContrasena ya trajo el estado del servidor: se vuelve a leer y arranca la sincronización.
+      recargarEst();
+      if (esAlumnoCuenta()) ses.arrancar({ ventana: window, doc: document });
+      ir(destinoCuenta(cuenta()));
+    }
+    else { $app.querySelector('form').outerHTML = `<div class="card"><p><b>Listo.</b> Tu contraseña cambió. La próxima vez entra con la nueva.</p><a class="btn morado" href="${u.rol === 'alumno' ? '#/perfil' : '#/panel'}">Volver</a></div>`; }
+  };
+}
+
+// Cerrar sesión: sube lo pendiente y borra del navegador el estado y los tokens. Si no pudo subir, avisa.
+async function vSalir(forzar = false) {
+  pantallaSola('salir');
+  const u = cuenta();
+  if (!u) return ir('#/ingreso');
+  $app.innerHTML = `<section class="cuenta-caja"><h1>Cerrar sesión</h1><div class="card"><p>Subiendo lo que falta…</p></div></section>`;
+  const r = await ses.salir({ forzar });
+  if (location.hash !== '#/salir') return;
+  if (r.ok) {
+    sessionStorage.clear(); recargarEst(); guardar();
+    Object.assign(panel, { secciones: null, sel: '', avance: null, hab: {}, aviso: '', error: '', admin: null });
+    return ir('#/ingreso');
+  }
+  $app.innerHTML = `<section class="cuenta-caja"><h1>Cerrar sesión</h1>
+    <div class="card prueba-intro">
+      <div class="aviso">No se pudo subir todo: ${r.pendientes} ${r.pendientes === 1 ? 'cosa pendiente' : 'cosas pendientes'}. Revisa la conexión.</div>
+      <p>Si cierras igual, lo pendiente queda guardado en este equipo, separado de los demás, y se sube la próxima vez que entres aquí con tu cuenta.</p>
+      <div class="acciones-prueba">
+        <button class="btn morado" id="reintentar">Reintentar</button>
+        <button class="btn borde" id="cerrarIgual">Cerrar igual</button>
+        <a class="btn borde" href="${u.rol === 'alumno' ? '#/perfil' : '#/panel'}">Cancelar</a></div></div></section>`;
+  document.getElementById('reintentar').onclick = () => vSalir(false);
+  document.getElementById('cerrarIgual').onclick = () => vSalir(true);
+}
+
+// Panel del profesor (fase C3 mínima): sus secciones, el avance por alumno, abrir y cerrar la salida y las soluciones
+// por curso, y el reinicio de contraseña. El administrador del colegio ve además la carga de la lista y los eventos.
+const panel = { secciones: null, sel: '', avance: null, hab: {}, aviso: '', error: '', admin: null };
+async function vPanel() {
+  pantallaSola('panel');
+  const u = cuenta(), admin = ADMIN.has(u.rol);
+  const pintar = () => {
+    if (location.hash.split('/')[1] !== 'panel') return;
+    const secs = panel.secciones || [];
+    const hab = panel.hab[panel.sel] || { salida: [], soluciones: [] };
+    const abierto = (que, c) => (hab[que] || []).includes(c);
+    const filaHab = (c, nombre) => `<tr><th scope="row">${esc(nombre)}</th>${['salida', 'soluciones'].map(que => {
+      const on = abierto(que, c), porTodas = c !== 'todas' && abierto(que, 'todas');
+      return `<td><button class="chip${on || porTodas ? ' on' : ''}" data-hab="${esc(c)}" data-que="${que}" data-abierto="${on ? '0' : '1'}"${porTodas ? ' disabled title="Abierta para todos los cursos"' : ''}
+        aria-label="${on ? 'Cerrar' : 'Abrir'} ${que === 'salida' ? 'la salida' : 'las soluciones'} de ${esc(nombre)}">${on || porTodas ? 'Abierta' : 'Cerrada'}</button></td>`; }).join('')}</tr>`;
+    const nombreCurso = id => (cat.cursos.find(c => c.id === id) || {}).nombre || id;
+    const pr = r => (r ? `${r.aciertos}/${r.total}` : '—');
+    const alumnos = (panel.avance && (panel.avance.alumnos || panel.avance)) || [];
+    const filasAl = (Array.isArray(alumnos) ? alumnos : []).map(a => {
+      // pruebas por curso; la de razonamiento verbal vive en practica['lectura-verbal'] (servidor/LEEME.md).
+      const lv = (a.practica || {})['lectura-verbal'];
+      const todas = Object.assign({}, a.pruebas || a.cursos || {}, lv ? { 'razonamiento-verbal': lv } : {});
+      const cursos = Object.entries(todas).filter(([, x]) => x && (x.entrada || x.salida));
+      return `<tr><th scope="row">${esc(a.nombre)}</th><td>${esc(a.usuario)}</td><td>${esc(a.dias_activos ?? a.dias ?? 0)}</td><td>${esc(a.unidades_vistas ?? a.modulos ?? 0)}</td>
+        <td class="pruebas-al">${cursos.length ? cursos.map(([c, x]) => `<span>${esc(nombreCurso(c))}: ${pr(x.entrada)} → ${pr(x.salida)}</span>`).join('') : '<span class="sub">Sin pruebas</span>'}</td>
+        <td><button class="btn borde chico" data-reiniciar="${esc(a.usuario)}">Reiniciar contraseña</button></td></tr>`; }).join('');
+    $app.innerHTML = `<header class="panel-cab"><div><p class="sub">${esc(admin ? 'Administración del colegio' : 'Panel del profesor')}</p><h1>Hola, ${esc(u.nombre || '')}</h1></div>
+        <span class="panel-acc"><a class="btn borde chico" href="#/contrasena">Cambiar contraseña</a><a class="btn morado chico" href="#/salir">Cerrar sesión</a></span></header>
+      ${panel.aviso ? `<div class="card aviso-panel" role="status">${panel.aviso}</div>` : ''}
+      ${panel.error ? `<p class="error-cuenta" role="alert">${esc(panel.error)}</p>` : ''}
+      <h2>Tus secciones</h2>
+      ${panel.secciones === null ? '<p class="sub">Cargando…</p>' : secs.length ? `<div class="chips">${secs.map(x => `<button class="chip${x.id == panel.sel ? ' on' : ''}" data-sec="${esc(x.id)}">${esc(x.grado)}.º ${esc(x.letra)} · ${esc(x.alumnos)} ${x.alumnos == 1 ? 'alumno' : 'alumnos'}</button>`).join('')}</div>` : '<p class="sub">Todavía no tienes secciones asignadas. Pídeselas al administrador del colegio.</p>'}
+      ${panel.sel ? `<div class="col2 panel"><div>
+        <h2>Pruebas de salida y soluciones</h2>
+        <p class="sub">Lo que abras aquí les llega a los alumnos de la sección la próxima vez que su app se sincronice (cada 30 segundos con internet). Las soluciones conviene abrirlas cuando todo el grupo terminó la salida.</p>
+        <div class="tabla card"><table><thead><tr><th>Curso</th><th>Salida</th><th>Soluciones</th></tr></thead><tbody>
+          ${filaHab('todas', 'Todos los cursos')}${cat.cursos.map(c => filaHab(c.id, c.nombre)).join('')}</tbody></table></div>
+        </div><div>
+        <h2>Avance por alumno</h2>
+        ${panel.avance === null ? '<p class="sub">Cargando…</p>' : `<div class="tabla card"><table><thead><tr><th>Alumno</th><th>Usuario</th><th>Días</th><th>Unidades</th><th>Entrada → salida</th><th></th></tr></thead>
+          <tbody>${filasAl || '<tr><td colspan="6" class="sub">Sin alumnos.</td></tr>'}</tbody></table></div>
+          <p><button class="btn borde chico" id="recargar">Actualizar</button></p>`}
+      </div></div>` : ''}
+      ${admin ? `<h2>Lista de alumnos</h2>
+      <div class="card form-cuenta">
+        <p class="sub" style="margin:0">Un archivo CSV con las columnas <code>apellidos,nombres,dni,grado,seccion</code>. Si un DNI ya está, el alumno se actualiza y no se duplica. Las contraseñas iniciales solo aparecen en la respuesta de esta carga: baja las tarjetas en ese momento.</p>
+        <input type="file" id="csv" accept=".csv,text/csv">
+        <div class="acciones-datos"><button class="btn morado" id="subirPdf">Subir y bajar las tarjetas (PDF)</button><button class="btn borde" id="subirVer">Subir y ver en pantalla</button></div>
+        ${panel.admin ? panel.admin : ''}
+      </div>
+      <h2>Datos para el análisis</h2>
+      <div class="card"><p class="sub" style="margin:0 0 10px">Los eventos del colegio con el código de cada alumno, sin nombres ni DNI. Es la entrada de <code>herramientas/analizar-medicion.js</code>.</p>
+        <button class="btn morado" id="eventos">Descargar los eventos (JSON)</button></div>` : ''}`;
+    $app.querySelectorAll('[data-sec]').forEach(b => b.onclick = () => { panel.sel = b.dataset.sec; panel.avance = null; panel.aviso = ''; cargarAvance(); pintar(); });
+    $app.querySelectorAll('[data-hab]').forEach(b => b.onclick = async () => {
+      b.disabled = true;
+      try {
+        const r = await ses.pedir('POST', `/api/secciones/${encodeURIComponent(panel.sel)}/habilitar`, { curso: b.dataset.hab, que: b.dataset.que, abierto: b.dataset.abierto === '1' });
+        const h = panel.hab[panel.sel] = panel.hab[panel.sel] || { salida: [], soluciones: [] };
+        if (r && Array.isArray(r.salida)) Object.assign(h, { salida: r.salida, soluciones: r.soluciones || [] });
+        else { const l = new Set(h[b.dataset.que]); if (b.dataset.abierto === '1') l.add(b.dataset.hab); else l.delete(b.dataset.hab); h[b.dataset.que] = [...l]; }
+        panel.error = '';
+      } catch (e) { panel.error = e.message; }
+      pintar();
+    });
+    $app.querySelectorAll('[data-reiniciar]').forEach(b => b.onclick = async () => {
+      if (!confirm(`¿Reiniciar la contraseña de ${b.dataset.reiniciar}? La de ahora deja de servir.`)) return;
+      try {
+        const r = await ses.pedir('POST', `/api/alumnos/${encodeURIComponent(b.dataset.reiniciar)}/reiniciar`);
+        panel.aviso = `Nueva contraseña de <b>${esc(r.usuario)}</b>: <span class="clave-nueva">${esc(r.contrasena)}</span><br><span class="sub">Dísela al alumno. Al entrar, la app le pide elegir otra.</span>`;
+        panel.error = '';
+      } catch (e) { panel.error = e.message; }
+      pintar(); window.scrollTo(0, 0);
+    });
+    const rc = document.getElementById('recargar'); if (rc) rc.onclick = () => { panel.avance = null; cargarAvance(); pintar(); };
+    if (admin) {
+      const subir = async pdf => {
+        const f = document.getElementById('csv').files[0];
+        if (!f) { panel.error = 'Elige primero el archivo CSV.'; return pintar(); }
+        const fd = new FormData(); fd.append('archivo', f, f.name);
+        try {
+          if (pdf) {
+            const r = await ses.pedir('POST', '/api/colegio/alumnos?formato=pdf', fd, { crudo: true });
+            descargar(`tarjetas-${hoy()}.pdf`, await r.blob(), 'application/pdf');
+            panel.admin = '<p><b>Listo.</b> Se bajó el PDF con las tarjetas de los alumnos nuevos.</p>';
+          } else {
+            const r = await ses.pedir('POST', '/api/colegio/alumnos', fd);
+            panel.admin = `<p><b>${r.creados.length} nuevos, ${r.actualizados} actualizados${r.errores.length ? `, ${r.errores.length} con errores` : ''}.</b> Anota o imprime las contraseñas ahora: no se vuelven a mostrar.</p>
+              ${r.creados.length ? `<div class="tabla"><table><thead><tr><th>Nombre</th><th>Grado</th><th>Usuario</th><th>Contraseña</th></tr></thead><tbody>${r.creados.map(c => `<tr><td>${esc(c.nombre)}</td><td>${esc(c.grado)}.º ${esc(c.seccion)}</td><td>${esc(c.usuario)}</td><td><b>${esc(c.contrasena)}</b></td></tr>`).join('')}</tbody></table></div>` : ''}
+              ${r.errores.length ? `<ul>${r.errores.map(x => `<li>Fila ${esc(x.fila)}: ${esc(x.motivo)}</li>`).join('')}</ul>` : ''}`;
+          }
+          panel.error = ''; panel.secciones = null; cargarSecciones();
+        } catch (e) { panel.error = e.message; }
+        pintar();
+      };
+      document.getElementById('subirPdf').onclick = () => subir(true);
+      document.getElementById('subirVer').onclick = () => subir(false);
+      document.getElementById('eventos').onclick = async () => {
+        try { const l = await ses.pedir('GET', '/api/colegio/eventos'); descargar(`eventos-colegio-${hoy()}.json`, JSON.stringify(l), 'application/json'); panel.error = ''; }
+        catch (e) { panel.error = e.message; pintar(); }
+      };
+    }
+  };
+  async function cargarSecciones() {
+    try { panel.secciones = await ses.pedir('GET', '/api/secciones'); if (!panel.sel && panel.secciones.length) { panel.sel = panel.secciones[0].id; cargarAvance(); } }
+    catch (e) { panel.secciones = []; panel.error = e.message; }
+    pintar();
+  }
+  async function cargarAvance() {
+    const id = panel.sel;
+    try {
+      const a = await ses.pedir('GET', `/api/secciones/${encodeURIComponent(id)}/avance`);
+      if (panel.sel !== id) return;
+      panel.avance = a;
+      // El servidor da una fila por (curso, qué) con abierto; se pasa a { salida: [cursos], soluciones: [cursos] }.
+      const h = a && a.habilitaciones;
+      if (Array.isArray(h)) panel.hab[id] = { salida: h.filter(x => x.abierto && x.que === 'salida').map(x => x.curso), soluciones: h.filter(x => x.abierto && x.que === 'soluciones').map(x => x.curso) };
+      else if (h) panel.hab[id] = { salida: h.salida || [], soluciones: h.soluciones || [] };
+    } catch (e) { panel.avance = []; panel.error = e.message; }
+    pintar();
+  }
+  pintar();
+  if (panel.secciones === null) cargarSecciones();
+  else if (panel.sel && panel.avance === null) cargarAvance();
 }
 
 // Papel de un módulo de lectura (herramientas/papel-lectura.js): el texto con sus oraciones numeradas y figuras,
@@ -447,6 +752,18 @@ function cuandoListo(promesa, fn) {
 function ir(h) { if (location.hash === h) render(); else location.hash = h; }
 function render() {
   const [, ruta = 'inicio', arg] = location.hash.split('/');
+  // Con servidor: sin sesión (y sin «Probar sin cuenta») va el ingreso; el primer ingreso pide la contraseña nueva;
+  // el profesor y el administrador van a su panel.
+  if (ses) {
+    const u = cuenta();
+    if (ruta === 'ingreso' || (!u && !demoElegido())) return ruta === 'ingreso' ? vIngreso() : ir('#/ingreso');
+    if (u && u.debe_cambiar) return ruta === 'contrasena' ? vContrasena(true) : ruta === 'salir' ? vSalir() : ir('#/contrasena');
+    if (u && ruta === 'contrasena') return vContrasena(false);
+    if (u && ruta === 'salir') return vSalir();
+    if (u && u.rol !== 'alumno') return ruta === 'panel' ? vPanel() : ir('#/panel');
+    if (u && ruta === 'otro') return ir('#/salir');
+  }
+  if (['ingreso', 'contrasena', 'salir', 'panel'].includes(ruta)) return ir('#/inicio');
   if ((!est.uni || !est.grado) && ruta !== 'bienvenida') return ir('#/bienvenida');
   if (ruta === 'bienvenida') return vBienvenida();
   $nav.hidden = false; document.body.dataset.ruta = ruta; document.body.classList.add('con-nav');
@@ -507,6 +824,21 @@ async function registrarSW() {
 }
 
 aplicarTema();
+// Con cuenta de alumno: la sincronización arranca sola y el indicador se actualiza con cada cambio. Si llegan
+// habilitaciones nuevas, el inicio vuelve a pintar sus avisos; si la sesión vence, va al ingreso.
+if (ses) {
+  let avisosAntes = -1;
+  ses.alCambiar(i => {
+    actualizarSync();
+    if (i.estado === 'vencida' && !/^#\/ingreso/.test(location.hash)) return ir('#/ingreso');
+    if (i.estado === 'debe-cambiar' && !/^#\/contrasena/.test(location.hash)) return ir('#/contrasena');
+    const [, ruta = 'inicio'] = location.hash.split('/');
+    if (cat && i.estado === 'guardado' && ruta === 'inicio' && est.uni && est.grado) {
+      const n = avisosSalida().length; if (avisosAntes !== -1 && n !== avisosAntes) vInicio(); avisosAntes = n;
+    }
+  });
+  if (esAlumnoCuenta()) ses.arrancar({ ventana: window, doc: document });
+}
 // Primero el catálogo y el primer pintado. Después (cuando la página terminó de cargar, para no quitarle ancho de banda
 // al primer pintado) el banco de pruebas con prueba.js; si cambia los avisos del inicio, el inicio se vuelve a pintar.
 // Al final se registra el service worker, cuya precarga es lo más pesado.

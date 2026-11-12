@@ -524,3 +524,38 @@ h1{font-weight:850;letter-spacing:-.025em}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .halo-v{opacity:.14}}
 @media (min-width:900px){ #nav .marca{width:auto;height:auto;margin:0;border-radius:0;vertical-align:baseline} }
 .volver{border:2px solid var(--borde);box-shadow:0 3px 0 var(--borde)}
+
+/* ---------- Cuentas (docs/cuentas.md, fase C2): ingreso, contraseña, perfil, sincronización y panel ---------- */
+input[type=password]{width:100%;font:inherit;color:inherit;background:var(--card);border:2px solid var(--line);border-radius:var(--radius-s);padding:14px}
+input[type=password]:focus{outline:none;border-color:var(--brand)}
+input[type=file]{font:inherit;max-width:100%}
+.form-cuenta{display:grid;gap:10px}
+.form-cuenta label{margin-top:4px}
+.error-cuenta{margin:0;padding:10px 14px;border-radius:var(--radius-s);background:#fde3e7;color:#7a1026;font-weight:600;font-size:14px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .error-cuenta{background:#4a1626;color:#ffd3dc}}
+:root[data-theme="dark"] .error-cuenta{background:#4a1626;color:#ffd3dc}
+.cuenta-caja{max-width:520px;margin:0 auto;display:grid;gap:12px}
+.cuenta-caja h1{margin-top:8px}
+.cuenta-ficha{display:flex;gap:14px;align-items:center}
+.cuenta-ficha .sync{margin-top:8px}
+/* Indicador discreto de sincronización: «✓ Guardado» o «Pendiente de subir (n)». */
+.sync{display:inline-block;font-size:12px;font-weight:700;color:var(--muted);border:1.5px solid var(--line);border-radius:999px;padding:3px 10px;white-space:nowrap}
+.sync.pendiente{color:var(--acento-ink);background:var(--acento);border-color:var(--borde)}
+.saludo .sync{margin-left:4px}
+@media (max-width:899px){ .saludo .sync{display:none} }
+.btn.chico{padding:7px 14px;font-size:14px}
+.panel-cab{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;justify-content:space-between}
+.panel-acc{display:flex;gap:8px;flex-wrap:wrap}
+.aviso-panel{margin-top:14px;line-height:1.6}
+.clave-nueva{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:22px;font-weight:800;letter-spacing:.08em;background:var(--brand-soft);border-radius:10px;padding:2px 10px}
+.pruebas-al span{display:block;white-space:nowrap}
+.tabla .chip:disabled{opacity:.7}
+@media (min-width:900px){
+  body[data-ruta="ingreso"] #app{max-width:1080px;padding:32px}
+  body[data-ruta="panel"] #app{max-width:1200px;padding:32px}
+  .col2.panel{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr)}
+}
+.col2.panel .tabla th[scope=row]{white-space:normal;min-width:90px}
+.col2.panel .tabla .chip{padding:6px 11px}
+.form-cuenta code,.card code{overflow-wrap:anywhere}
+.form-cuenta>*{min-width:0;max-width:100%}

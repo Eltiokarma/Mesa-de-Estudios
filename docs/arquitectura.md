@@ -169,8 +169,27 @@ En el celular (menos de 900 px) la barra de abajo se queda (decisión de Gerson,
 
 **Alternativas que no delatan la correcta** (8 nov 2026). `herramientas/alternativas.test.js` recorre el banco de pruebas, los textos de lectura y 300 semillas de cada generador, y falla si la forma delata la clave: la correcta es la más larga, sola, en más del 35 % de una fuente con 20 ítems o más; es la única que justifica («porque», «por eso», «: …») en más del 10 %; es la única con negrita o marcas, aunque sea una vez; o, en un generador, cae en la misma letra más de la mitad de las veces. `node herramientas/alternativas.js` imprime la tabla por fuente. Si salta en un generador, se cambia el armado, no la respuesta; en el banco o en lectura, se reescriben las alternativas igualando el largo y la forma.
 
+## Cuentas en la app (fase C2, 12 nov 2026)
+
+El diseño y el contrato de la API están en `docs/cuentas.md`; ese contrato manda. La app se construyó contra él con un servidor falso, mientras `servidor/` (FastAPI) se hace aparte.
+
+**Modo.** `app/config.js` trae `window.MESA_API`. Vacío: no hay servidor y la app queda en **modo demostración**, igual que antes (nada cambia). Con una dirección, `app/app.js` crea la sesión con `nucleo/sesion.js` y pide el ingreso (`#/ingreso`); «Probar sin cuenta» entra en demostración por esa sesión del navegador (`sessionStorage` `lab-demo`). Las dos van en la CASCARA de `app/sw.js`.
+
+**`nucleo/sesion.js`** (sin DOM; navegador y Node; `fetch`, almacén y relojes inyectables):
+- `login`, `cambiarContrasena`, `salir({ forzar })` y `pedir(método, ruta, cuerpo)`, que renueva antes de que venza el acceso y otra vez si el servidor responde 401 (una sola renovación a la vez). Si la renovación se rechaza, la sesión **vence**: se quitan los tokens, pero el estado y la cola se quedan y suben cuando esa cuenta vuelve a entrar.
+- Claves: `lab-sesion-v1` (tokens y usuario; nunca la contraseña), `lab-cuenta-v1` (seudónimo dueño de `lab-v1` y de la cola), `lab-subido-v1` (último `t` subido y huella del último `est`), `lab-pendiente-v1` (lo que no se pudo subir al cerrar sesión, por cuenta) y `lab-demo-v1` (el modo demostración guardado aparte mientras hay cuenta; vuelve al cerrar sesión).
+- `sincronizar()`: la cola en tandas de 500 (anota el último `t` tras cada tanda, así que un corte no pierde ni duplica), `PUT /api/estado` si `est` cambió y `GET /api/estado`, unido con el `est` local de ese momento (`unirEst`, las reglas del contrato) y con las habilitaciones de la sección copiadas en `salidaHabilitada` y `solucionesHabilitadas`. La app aplica el resultado **en sitio** (`aplicarEnSitio`), porque las pantallas abiertas guardan referencias a `est.practica[id]` y a `enCurso`. Una prueba a medio hacer de una fase ya terminada se descarta al unir.
+- Cuándo sincroniza (`arrancar`): al entrar, cada 30 s, al volver la señal (`online`), al pasar a segundo plano (`visibilitychange`, `pagehide`) y unos segundos después de cada cambio (`pronto`). Si falla, reintenta con espera creciente (2, 4, 8… s, hasta 5 min).
+- `Medicion.guardar` da a cada evento un `t` único y creciente en el dispositivo (el servidor no duplica por alumno + `t`).
+
+**Pantallas** (`app/app.js`, estilos al final de `app/estilos.css`): ingreso, cambio de contraseña (obligatorio si `debe_cambiar`), cierre de sesión (`#/salir`: sube lo pendiente; si no puede, avisa y ofrece «Reintentar» o «Cerrar igual», que deja lo pendiente en `lab-pendiente-v1`), el perfil con nombre, usuario, sección, «Cambiar contraseña» y «Cerrar sesión» (en vez de «Otro alumno en esta PC», «Borrar mi avance», el código del colegio y la descarga manual), la bienvenida sin el nombre (viene de la cuenta) y el indicador «✓ Guardado» o «Pendiente de subir (n)» (`[data-sync]`, en el perfil y en el inicio en pantalla grande). Con cuenta, `est.alumno` es el seudónimo del servidor y los enlaces `?salida=` y `?soluciones=` no cuentan: lo abre el profesor desde su panel.
+
+**Panel** (`#/panel`, fase C3 mínima): el profesor y el administrador entran en la misma app y van ahí. Sus secciones, el avance por alumno (`GET /api/secciones/{id}/avance`), abrir y cerrar la salida y las soluciones por curso o para todos, y el reinicio de contraseña, que muestra la nueva. El administrador del colegio (`rol` `admin`) ve además la carga del CSV (con el PDF de tarjetas o la lista en pantalla, porque las contraseñas iniciales solo vienen en esa respuesta) y la descarga de los eventos en JSON para `herramientas/analizar-medicion.js`.
+
+**Pruebas.** `herramientas/servidor-falso.js` cumple el contrato en memoria (`node herramientas/servidor-falso.js` → puerto 4180, con cuentas de ejemplo). `nucleo/sesion.test.js` corre contra él; `node rutinas/cuentas-app/pw.js` prueba la app en Chromium a 390 y 1366 px (ingreso, contraseña, práctica sin conexión y sincronización al volver, cierre de sesión en una PC compartida y otro alumno sin mezclar datos, panel del profesor y del administrador, y el modo demostración sin cambios).
+
 ## Decisiones que esta arquitectura evita tomar ahora
 
 - **Framework de la app.** El catálogo es JSON y los módulos son HTML y JavaScript sin dependencias, así que sirven con cualquier framework o sin ninguno.
-- **Servidor y cuentas.** Primero todo vive en el celular; la sincronización y el cobro llegan con el piloto pagado (fase 3 del fundacional).
+- **Servidor y cuentas.** Ya no se evita: Gerson decidió cuentas para el piloto (12 nov 2026; `docs/cuentas.md` y la sección «Cuentas en la app»). Lo que sigue sin decidirse es el cobro.
 - **Cómo se generan los módulos a escala.** El método se destila después de cuatro plantillas probadas (tarea 6).
