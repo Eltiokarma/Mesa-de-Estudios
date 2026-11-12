@@ -1,8 +1,8 @@
 {
   "plantilla": "rm-lectura-palabras",
-  "tolerancia": 1e-9,
-  "nota": "Una lectura es un camino de casilla en casilla vecina que deletrea la palabra: en los arreglos de filas centradas se baja a la vecina de abajo a la izquierda o a la derecha; en la cuadrícula, a la derecha o abajo. En los palíndromos (sentidos = 2) también vale de abajo arriba; con iguales = true, una lectura y la misma al revés cuentan como una. tapada = [fila, posición en la fila], desde 1. Entrada-k y salida-k son del mismo tipo.",
-  "verificacion": "",
+  "tolerancia": 1e-09,
+  "nota": "Una lectura es un camino de casilla en casilla vecina que deletrea la palabra: en los arreglos en filas (cada letra entre dos de la fila de abajo; en los rombos con a ≠ b las filas no quedan centradas) se baja a la vecina de abajo a la izquierda o a la derecha; en la cuadrícula, a la derecha o abajo. En los palíndromos (sentidos = 2) también vale de abajo arriba; con iguales = true, una lectura y la misma al revés cuentan como una. tapada = [fila, posición en la fila], desde 1. Entrada-k y salida-k son del mismo tipo.",
+  "verificacion": "Verificación ciega (subagente, 12 nov 2026): los 24 casos contados por DFS sobre el arreglo; palíndromos por unión de conjuntos de casillas o suma de los dos sentidos, según el enunciado. 24/24 coinciden; barrido de 1500 semillas con DFS sobre las coordenadas del SVG: 1500/1500. Tras la revisión el alt da la posición de cada letra en medias casillas y una prueba reconstruye las vecindades solo desde el alt en 500 semillas; ninguna respuesta cambió.",
   "casos": [
     {
       "semilla": 6,

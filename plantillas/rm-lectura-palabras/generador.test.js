@@ -16,9 +16,24 @@ function casillas(svg) {
   return cs;
 }
 const cerca = (a, b) => Math.abs(a - b) < 0.5;
-function contar(p) {
+// Las mismas casillas, pero leídas solo del texto alternativo (lo que oye un lector de pantalla): posición
+// en medias casillas en los arreglos en filas; columnas en la cuadrícula.
+function casillasAlt(alt) {
+  const cs = [];
+  const filas = [...alt.matchAll(/fila (\d+): ([^;.]*)/g)];
+  for (const [, nf, cuerpo] of filas) {
+    const y = Number(nf);
+    const col = /^(.*) \(columnas (\d+) a (\d+)\)$/.exec(cuerpo.trim());
+    if (col) {
+      const ls = col[1].split(' ');
+      ls.forEach((l, k) => cs.push({ x: Number(col[2]) + k, y, l }));
+      assert.equal(ls.length, Number(col[3]) - Number(col[2]) + 1);
+    } else for (const m of cuerpo.matchAll(/(\S+) \((\d+)\)/g)) cs.push({ x: Number(m[2]), y, l: m[1] });
+  }
+  return cs;
+}
+function contar(p, cs = casillas(p.figura.svg)) {
   const d = p._datos, w = d.palabra;
-  const cs = casillas(p.figura.svg);
   const ys = [...new Set(cs.map(c => c.y))].sort((a, b) => a - b);
   const fila = c => ys.indexOf(c.y);
   // Separación entre letras vecinas de una misma fila.
@@ -86,6 +101,26 @@ test('con casilla tapada: la respuesta es total − llegan × salen, y tapar nun
     const L = gen.calc.lecturas(d);
     assert.equal(p.respuesta.valor, L.sinTapar - L.llegan * L.salen, `semilla ${s}`);
     assert.ok(L.llegan * L.salen > 0, `semilla ${s}: la tapada no corta ningún camino`);
+  }
+});
+
+test('desde el alt solo se rehacen las vecindades y la búsqueda da la respuesta (500 semillas)', () => {
+  for (let s = 0; s < 500; s++) {
+    const p = gen.generar(s);
+    const cs = casillasAlt(p.figura.alt);
+    assert.equal(cs.length, casillas(p.figura.svg).length, `semilla ${s}: el alt no trae todas las casillas`);
+    assert.equal(contar(p, cs), p.respuesta.valor, `semilla ${s}: el alt no basta para resolver`);
+    assert.ok(!/centrad/.test(p.figura.alt), `semilla ${s}: el alt dice filas centradas`);
+    const num = /^\d+$/.test(p._datos.palabra);
+    assert.match(p.figura.alt, num ? /^(Arreglo|Cuadrícula) de cifras/ : /^(Arreglo|Cuadrícula) de letras/, `semilla ${s}`);
+  }
+});
+
+test('respaldos: solo AR18-solo-rectas es AR18 (parcial); lo demás, códigos propios en hipótesis', () => {
+  for (let s = 0; s < 600; s++) for (const a of gen.generar(s).alternativas) {
+    if (!a.error) continue;
+    if (a.error.id.startsWith('AR18')) { assert.equal(a.error.id, 'AR18-solo-rectas'); assert.equal(a.error.respaldo, 'parcial'); }
+    else { assert.match(a.error.id, /^RMP(1|45|46|81|82|83|84)-/); assert.equal(a.error.respaldo, 'hipotesis'); assert.equal(a.error.fuente, null); }
   }
 });
 

@@ -4,7 +4,8 @@
  * (docs/arquitectura.md). Funciona en el navegador (window.Generadores['rm-lectura-palabras']) y en Node.
  *
  * Una lectura es un camino de letra en letra que deletrea la palabra. Vecindad:
- *   'diag'  filas centradas; de una letra se pasa a la de abajo a la izquierda o a la de abajo a la derecha.
+ *   'diag'  filas en zigzag (cada letra entre dos de la fila de abajo; en los rombos con a ≠ b las filas
+ *           no quedan centradas); de una letra se pasa a la de abajo a la izquierda o a la de abajo a la derecha.
  *   'rd'    cuadrícula; de una letra se pasa a la de la derecha o a la de abajo.
  * El cálculo es el de Pascal (el mismo del tablero de los caminos, plantillas/binomio-newton/): sobre cada
  * letra se escribe cuántas lecturas llegan a ella, y cada una suma lo que le llega de sus vecinas de arriba
@@ -29,11 +30,14 @@
  *   lecturas(spec) → { total, numeros (por fila, lo que llega a cada letra de arriba abajo), llegan, salen }
  *                    (llegan y salen, solo si hay tapada: lecturas que llegan a la tapada y que salen de ella).
  *
- * Errores: AR18 (enumeración sin sistema y sus caras: una lectura por letra final, solo las rectas, sumar
- * los tramos o las opciones en vez de multiplicarlas; parcial, docs/investigacion/aritmetica-razonamiento-
- * ideas-erroneas.md), RMP1 (letras contra pasos: n decisiones en vez de n − 1), RMP45 (contar dos veces la
- * lectura común: una lectura y la misma al revés) y RMP46 (olvidar restar lo que no vale: la casilla
- * tapada o las casillas que no están), estas tres hipótesis.
+ * Errores: AR18-solo-rectas (enumeración sin sistema: solo las lecturas por los bordes; parcial,
+ * docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md). Hipótesis: RMP1 (letras contra pasos: n
+ * decisiones en vez de n − 1), RMP45 (contar dos veces la lectura común: una lectura y la misma al revés),
+ * RMP46 (olvidar restar lo que no vale: la casilla tapada o las casillas que no están), RMP81 (multiplicar
+ * donde no va: 2 por paso aunque en los bordes haya una sola salida, o pasos por pasos), RMP82 (contar las
+ * casillas en vez de los caminos), RMP83 (sumar opciones, tramos o caminos que se combinan, en vez de
+ * multiplicarlos) y RMP84 (contar solo una parte: hasta la fila ancha, un tramo, solo el centro, una lectura
+ * por letra final o un solo sentido).
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -174,15 +178,20 @@
     return s + '</svg>';
   }
   const filaTxt = r => r.map(x => x.l).join(' ');
-  function altArreglo(A, forma) {
-    const desc = A.mov === 'rd'
-      ? `Cuadrícula de letras${forma === 'escalonada' ? ' escalonada (cada fila empieza o termina corrida respecto de la de arriba)' : ''}, fila por fila de arriba abajo, con las columnas alineadas: `
-      : 'Arreglo de letras en filas centradas: cada letra queda entre la de abajo a la izquierda y la de abajo a la derecha, que son sus vecinas (en los bordes puede faltar una); de arriba abajo: ';
-    const filas = A.filas.map((r, i) => {
-      let t = `fila ${i + 1}: ${filaTxt(r)}`;
-      if (A.mov === 'rd') t += ` (columnas ${r[0].c + 1} a ${r[r.length - 1].c + 1})`;
-      return t;
-    }).join('; ');
+  // El alt da la posición de cada letra en medias casillas (de izquierda a derecha), para que se puedan
+  // rehacer las vecindades sin ver el dibujo: en los rombos con a ≠ b las filas no quedan centradas.
+  function altArreglo(A, forma, cifras) {
+    const L = cifras ? 'cifras' : 'letras', l1 = cifras ? 'cifra' : 'letra';
+    if (A.mov === 'rd') {
+      const desc = `Cuadrícula de ${L}${forma === 'escalonada' ? ' escalonada (cada fila empieza o termina corrida respecto de la de arriba)' : ''}, fila por fila de arriba abajo, con las columnas alineadas: `;
+      const filas = A.filas.map((r, i) => `fila ${i + 1}: ${filaTxt(r)} (columnas ${r[0].c + 1} a ${r[r.length - 1].c + 1})`).join('; ');
+      const tap = A.filas.flat().some(x => x.l === '■') ? ' El cuadrado ■ es una casilla tapada.' : '';
+      return desc + filas + '.' + tap;
+    }
+    const minC = Math.min(...A.filas.flat().map(x => x.c));
+    const desc = `Arreglo de ${L} en filas; cada ${l1} queda entre la de abajo a la izquierda y la de abajo a la derecha, que son sus vecinas (en los bordes puede faltar una). `
+      + `Entre paréntesis va la posición de cada ${l1} contada en medias casillas desde la izquierda: dos ${L} de filas seguidas son vecinas si sus posiciones se diferencian en 1. De arriba abajo: `;
+    const filas = A.filas.map((r, i) => `fila ${i + 1}: ${r.map(x => `${x.l} (${x.c - minC + 1})`).join(', ')}`).join('; ');
     const tap = A.filas.flat().some(x => x.l === '■') ? ' El cuadrado ■ es una casilla tapada.' : '';
     return desc + filas + '.' + tap;
   }
@@ -211,30 +220,30 @@
   function erroresBase(spec, n) {
     const e = [];
     if (spec.forma === 'triangulo') {
-      e.push(par('AR18-una-por-final', n, `Contaste una lectura por cada letra de la última fila (${n}). A cada letra de abajo llegan muchas lecturas distintas: hay que sumarlas, fila por fila.`));
+      e.push(h('RMP84-una-por-final', n, `Contaste una lectura por cada letra de la última fila (${n}). A cada letra de abajo llegan muchas lecturas distintas: hay que sumarlas, fila por fila.`));
       e.push(h('RMP1-letras-por-pasos', 2 ** n, `Contaste ${n} pasos con dos opciones cada uno, pero entre ${n} letras hay solo ${n - 1} pasos: son 2^${n - 1}, no 2^${n}.`));
-      e.push(par('AR18-suma-opciones', 2 * (n - 1), `Sumaste las dos opciones de cada paso (2 + 2 + …). Las opciones de pasos seguidos se combinan entre sí: se multiplican, 2 · 2 · … · 2.`));
-      e.push(par('AR18-solo-centro', comb(n - 1, Math.floor((n - 1) / 2)), 'Contaste solo las lecturas que terminan en la letra del medio de la última fila. Valen las que terminan en cualquier letra de abajo.'));
-      e.push(par('AR18-casillas', n * (n + 1) / 2, 'Contaste las casillas del arreglo, no los caminos que deletrean la palabra.'));
+      e.push(h('RMP83-suma-opciones', 2 * (n - 1), `Sumaste las dos opciones de cada paso (2 + 2 + …). Las opciones de pasos seguidos se combinan entre sí: se multiplican, 2 · 2 · … · 2.`));
+      e.push(h('RMP84-solo-centro', comb(n - 1, Math.floor((n - 1) / 2)), 'Contaste solo las lecturas que terminan en la letra del medio de la última fila. Valen las que terminan en cualquier letra de abajo.'));
+      e.push(h('RMP82-casillas', n * (n + 1) / 2, 'Contaste las casillas del arreglo, no los caminos que deletrean la palabra.'));
     } else if (spec.forma === 'rombo') {
       const { a, b } = spec;
-      e.push(par('AR18-como-triangulo', 2 ** (a + b), `Multiplicaste por 2 en cada uno de los ${a + b} pasos, como en un triángulo. En la mitad de abajo el arreglo se cierra: las letras del borde tienen una sola vecina abajo.`));
-      e.push(par('AR18-hasta-la-fila-ancha', 2 ** Math.min(a, b), 'Contaste solo hasta la fila más ancha. Desde ahí los caminos siguen bajando y se juntan: hay que seguir sumando hasta la última letra.'));
-      e.push(par('AR18-casillas', (a + 1) * (b + 1), 'Contaste las casillas del arreglo, no los caminos que deletrean la palabra.'));
+      e.push(h('RMP81-como-triangulo', 2 ** (a + b), `Multiplicaste por 2 en cada uno de los ${a + b} pasos, como en un triángulo. En la mitad de abajo el arreglo se cierra: las letras del borde tienen una sola vecina abajo.`));
+      e.push(h('RMP84-hasta-la-fila-ancha', 2 ** Math.min(a, b), 'Contaste solo hasta la fila más ancha. Desde ahí los caminos siguen bajando y se juntan: hay que seguir sumando hasta la última letra.'));
+      e.push(h('RMP82-casillas', (a + 1) * (b + 1), 'Contaste las casillas del arreglo, no los caminos que deletrean la palabra.'));
       e.push(par('AR18-solo-rectas', 2, 'Contaste solo las lecturas que van por los bordes. Hay muchas más que zigzaguean por dentro.'));
     } else if (spec.forma === 'cuadricula') {
       const R = spec.filas, C = spec.columnas, n = R + C - 1;
       if (spec.banda) e.push(h('RMP46-casillas-que-no-estan', comb(R + C - 2, R - 1), 'Contaste como si la cuadrícula estuviera completa. Las esquinas que faltan no tienen letras: los caminos que pasarían por ahí no valen.'));
-      e.push(par('AR18-como-triangulo', 2 ** (n - 1), `Multiplicaste por 2 en cada paso. En el borde derecho y en el de abajo solo hay una forma de seguir.`));
-      e.push(par('AR18-casillas', spec.banda ? arreglo(spec).filas.flat().length : R * C, 'Contaste las casillas de la cuadrícula, no los caminos que deletrean la palabra.'));
-      e.push(par('AR18-producto-pasos', (R - 1) * (C - 1) || NaN, `Multiplicaste los ${R - 1} pasos hacia abajo por los ${C - 1} hacia la derecha. Lo que importa es en qué orden se intercalan: eso lo cuentan los números de Pascal.`));
+      e.push(h('RMP81-como-triangulo', 2 ** (n - 1), `Multiplicaste por 2 en cada paso. En el borde derecho y en el de abajo solo hay una forma de seguir.`));
+      e.push(h('RMP82-casillas', spec.banda ? arreglo(spec).filas.flat().length : R * C, 'Contaste las casillas de la cuadrícula, no los caminos que deletrean la palabra.'));
+      e.push(h('RMP81-producto-pasos', (R - 1) * (C - 1) || NaN, `Multiplicaste los ${R - 1} pasos hacia abajo por los ${C - 1} hacia la derecha. Lo que importa es en qué orden se intercalan: eso lo cuentan los números de Pascal.`));
       e.push(par('AR18-solo-rectas', 2, 'Contaste solo los dos caminos por los bordes. Hay muchos más que bajan y avanzan intercalados.'));
     } else if (spec.forma === 'bloques') {
       const T = bloque(spec.arriba, true), U = bloque(spec.abajo, false);
-      e.push(par('AR18-suma-tramos', T + U, `Sumaste las lecturas de los dos tramos (${T} + ${U}). Cada lectura del tramo de arriba se puede seguir con cualquiera del de abajo: se multiplican.`));
-      e.push(par('AR18-un-tramo', Math.max(T, U), 'Contaste solo uno de los dos tramos. La palabra pasa por los dos, y cada forma de hacer el primero se combina con cada forma de hacer el segundo.'));
-      e.push(par('AR18-como-triangulo', 2 ** (spec.palabra.length - 1), 'Contaste dos opciones en cada paso, como en un triángulo completo. En la letra de la unión todos los caminos se juntan en una sola casilla.'));
-      e.push(par('AR18-un-tramo-menor', Math.min(T, U), 'Contaste solo uno de los dos tramos. La palabra pasa por los dos, y se multiplican.'));
+      e.push(h('RMP83-suma-tramos', T + U, `Sumaste las lecturas de los dos tramos (${T} + ${U}). Cada lectura del tramo de arriba se puede seguir con cualquiera del de abajo: se multiplican.`));
+      e.push(h('RMP84-un-tramo', Math.max(T, U), 'Contaste solo uno de los dos tramos. La palabra pasa por los dos, y cada forma de hacer el primero se combina con cada forma de hacer el segundo.'));
+      e.push(h('RMP81-como-triangulo', 2 ** (spec.palabra.length - 1), 'Contaste dos opciones en cada paso, como en un triángulo completo. En la letra de la unión todos los caminos se juntan en una sola casilla.'));
+      e.push(h('RMP84-un-tramo-menor', Math.min(T, U), 'Contaste solo uno de los dos tramos. La palabra pasa por los dos, y se multiplican.'));
     }
     return e;
   }
@@ -309,13 +318,13 @@
         h('RMP46-solo-llegan', S - L.llegan, `Restaste ${L.llegan === 1 ? 'la única lectura que llega' : `las ${L.llegan} lecturas que llegan`} a la casilla tapada, pero ${L.llegan === 1 ? 'esa lectura' : 'cada una'} se puede continuar de ${L.salen} formas. Las que se pierden son ${L.llegan} × ${L.salen}.`),
         h('RMP46-solo-salen', S - L.salen, `Restaste solo ${L.salen === 1 ? 'el único camino que sale' : `los ${L.salen} caminos que salen`} de la casilla tapada. Las lecturas que se pierden son las que llegan a ella (${L.llegan}) por las que salen (${L.salen}).`),
         h('RMP46-una', S - 1, 'Restaste una sola lectura por la casilla tapada. Por esa casilla pasan muchas lecturas: todas se pierden.'),
-        par('AR18-suma-en-vez-de-producto', S - L.llegan - L.salen, `Restaste ${L.llegan} + ${L.salen}. Cada camino que llega a la casilla tapada se puede seguir con cada camino que sale: se pierden ${L.llegan} × ${L.salen}.`),
+        h('RMP83-suma-en-vez-de-producto', S - L.llegan - L.salen, `Restaste ${L.llegan} + ${L.salen}. Cada camino que llega a la casilla tapada se puede seguir con cada camino que sale: se pierden ${L.llegan} × ${L.salen}.`),
       ];
     } else if (spec.sentidos === 2) {
       const B = lecturas({ ...spec, sentidos: 1 }).total;
       errores = spec.iguales
         ? [h('RMP45-doble', 2 * B, `Contaste cada lectura dos veces: una de arriba abajo y otra de abajo arriba. Usan las mismas casillas, y el problema dice que cuentan como una sola.`)]
-        : [par('AR18-solo-ida', B, 'Contaste solo las lecturas de arriba abajo. Como la palabra se lee igual al revés, también valen las de abajo arriba, y el problema dice que se cuentan aparte.')];
+        : [h('RMP84-solo-ida', B, 'Contaste solo las lecturas de arriba abajo. Como la palabra se lee igual al revés, también valen las de abajo arriba, y el problema dice que se cuentan aparte.')];
       const s = spec.iguales ? 1 : 2;
       for (const e of erroresBase({ ...spec, sentidos: 1 }, n)) errores.push({ ...e, valor: s * e.valor, explicacion: e.explicacion + (s === 2 ? ' (Y luego lo duplicaste por los dos sentidos.)' : '') });
     } else errores = erroresBase(spec, n);
@@ -347,7 +356,7 @@
     for (const paso of solucion) for (let i = 0; i < paso.length; i++) if (typeof paso[i] === 'string') paso[i] = cifras(paso[i]);
     return {
       id: `${ID}#${semilla}`, variables, enunciado, pregunta: [`¿De cuántas maneras distintas se puede leer ${esNumero(w) ? 'el número' : 'la palabra'}?`], datos: '',
-      figura: { svg: svgArreglo(A), alt: altArreglo(A, forma) },
+      figura: { svg: svgArreglo(A), alt: altArreglo(A, forma, esNumero(w)) },
       figuraSolucion: { svg: svgArreglo(A, (fi, k) => num[fi][k]), alt: altNumeros(num, A) },
       alternativas, solucion, respuesta: { valor: correcta, unidad: 'lecturas' }, _datos: spec,
     };
