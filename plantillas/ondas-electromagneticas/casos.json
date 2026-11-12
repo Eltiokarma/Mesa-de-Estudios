@@ -2,7 +2,7 @@
  "plantilla": "ondas-electromagneticas",
  "unidades": "f en Hz, λ en m (lambdaNm en nm), rapideces c y v en m/s, distancias d en m, tiempos t en s, energía del fotón E en eV (EJ en J), campo eléctrico de la onda en V/m (electrico0, sin letra en la escena) y campo magnético B₀ en T, índice n sin unidades. Constantes: c = 3 × 10⁸ m/s, hc = 1240 eV·nm, e = 1,6 × 10⁻¹⁹ C. Bordes del espectro por λ en el vacío: gamma < 0,01 nm ≤ rayos X < 10 nm ≤ ultravioleta < 380 nm ≤ visible ≤ 750 nm < infrarrojo ≤ 1 mm < microondas ≤ 30 cm < radio.",
  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.multiplica); los textos y los booleanos, exactos; 'valor' es el resultado entero. 'tambien' repite la llamada con otros argumentos (y, si trae 'fn', con otra función). Los errores típicos van en 'errores': lo que da cada error (OE1 a OE20 de docs/investigacion/ondas-electromagneticas-ideas-erroneas.md, o hipótesis nuestras; están definidos en la cabecera de motor.js).",
- "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer motor.js ni casos.json: recalculó los 124 campos en Python con fracciones exactas, por caminos distintos (λ = c·T con T = 1/f, E = h·f con h = 1240 eV·nm / c, eco con la mitad del tiempo, medio con f fija y λ' = (c/n)/f), con los bordes del espectro y la tabla de la cabecera. Coinciden los 124. Solo hubo dos nombres por corregir (600 nm es naranja, no roja; 1 mm cae todavía en infrarrojo), ya corregidos. Segunda vuelta (7 nov 2026): con la tabla nueva de qué atraviesa qué, leerOnda por la fase constante (dx/dt = ±ω/k, B por avance × campo eléctrico) e I = c·ε₀E₀²/2, se recalcularon aparte los 31 campos de los casos 16, 21 y 22 y coinciden todos.",
+ "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer motor.js ni casos.json: recalculó los 124 campos en Python con fracciones exactas, por caminos distintos (λ = c·T con T = 1/f, E = h·f con h = 1240 eV·nm / c, eco con la mitad del tiempo, medio con f fija y λ' = (c/n)/f), con los bordes del espectro y la tabla de la cabecera. Coinciden los 124. Solo hubo dos nombres por corregir (600 nm es naranja, no roja; 1 mm cae todavía en infrarrojo), ya corregidos. Segunda vuelta (7 nov 2026): con la tabla nueva de qué atraviesa qué, leerOnda por la fase constante (dx/dt = ±ω/k, B por avance × campo eléctrico) e I = c·ε₀E₀²/2, se recalcularon aparte los 31 campos de los casos 16, 21 y 22 y coinciden todos. Refracción (casos 23 a 28): verificador independiente (subagente, 8 nov 2026), sin leer motor.js ni casos.json, recalculó los 44 campos con Snell por componente tangencial y atan2 y con Fresnel en forma de senos y tangentes (promedio s y p). Coinciden los 44.",
  "tolerancia": 1e-09,
  "casos": [
   {
@@ -687,6 +687,124 @@
     "I": 13.275,
     "errores.sinMitad": 26.55,
     "errores.sinCuadrado": 0.13275
+   }
+  },
+  {
+   "nombre": "Snell, del agua al aire: n1 = 4/3, n2 = 1, incidencia 37°: sen r = (4/3)·sen 37° ≈ 0,8024, r ≈ 53,36°: se aleja de la normal. Con la convención sen 37° = 3/5 daría 53°. Errores: sin desviarse 37° (R5); índices al revés 26,83° (R3); medido desde la superficie 36,64°",
+   "fn": "snell",
+   "args": [
+    1.3333333333333333,
+    1,
+    37
+   ],
+   "espera": {
+    "r": 53.3618236772,
+    "senR": 0.802420030869,
+    "total": false,
+    "seAcerca": false,
+    "reflejado": 37,
+    "R": 0.0396813661477,
+    "errores.noSeDesvia.r": 37,
+    "errores.alReves.r": 26.8310550451,
+    "errores.alReves.total": false,
+    "errores.desdeSuperficie.r": 36.6381763228,
+    "errores.noPasa.total": true
+   }
+  },
+  {
+   "nombre": "Snell, del aire al vidrio: n1 = 1, n2 = 3/2, incidencia 53°: sen r ≈ 0,5324, r ≈ 32,17°: se acerca a la normal. Con los índices al revés, sen r = 1,5·sen 53° > 1: parece reflexión total (R3)",
+   "fn": "snell",
+   "args": [
+    1,
+    1.5,
+    53
+   ],
+   "espera": {
+    "r": 32.1693594072,
+    "total": false,
+    "seAcerca": true,
+    "L": null,
+    "errores.alReves.total": true,
+    "errores.alReves.r": null,
+    "errores.desdeSuperficie.r": 57.8306405928
+   }
+  },
+  {
+   "nombre": "Snell, reflexión total: del agua (n = 4/3) al aire con 50°, más que el ángulo límite de 48,59°: sen r valdría 1,0214 > 1, no hay rayo refractado y se refleja todo (R = 1)",
+   "fn": "snell",
+   "args": [
+    1.3333333333333333,
+    1,
+    50
+   ],
+   "espera": {
+    "r": null,
+    "senR": 1.02139259083,
+    "total": true,
+    "R": 1,
+    "T": 0,
+    "L": 48.5903778907,
+    "errores.desdeSuperficie.r": null,
+    "errores.alReves.r": 35.0669577221
+   }
+  },
+  {
+   "nombre": "Snell, incidencia normal del aire al vidrio (n = 3/2): r = 0°, sigue recto; se refleja el 4 % de la luz, ((1,5 − 1)/(1,5 + 1))² = 0,04 (Fresnel)",
+   "fn": "snell",
+   "args": [
+    1,
+    1.5,
+    0
+   ],
+   "espera": {
+    "r": 0,
+    "senR": 0,
+    "total": false,
+    "R": 0.04,
+    "T": 0.96
+   }
+  },
+  {
+   "nombre": "Ángulo límite del agua hacia el aire: sen L = 1/(4/3) = 3/4, L ≈ 48,59°. Errores: índices al revés sen L = 4/3 (no existe); desde la superficie 41,41°; el rayo rasante 90°",
+   "fn": "anguloLimite",
+   "args": [
+    1.3333333333333333,
+    1
+   ],
+   "espera": {
+    "existe": true,
+    "L": 48.5903778907,
+    "senL": 0.75,
+    "errores.invertido.existe": false,
+    "errores.invertido.senL": 1.33333333333,
+    "errores.desdeSuperficie.L": 41.4096221093,
+    "errores.rozando.L": 90
+   },
+   "tambien": [
+    {
+     "args": [
+      1.6666666666666667,
+      1
+     ],
+     "espera": {
+      "L": 36.8698976458,
+      "senL": 0.6
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Ángulo límite del aire al vidrio (n1 = 1, n2 = 3/2): no existe, porque la luz pasa a un medio de mayor índice. Con los índices al revés saldría sen L = 2/3, L ≈ 41,81°",
+   "fn": "anguloLimite",
+   "args": [
+    1,
+    1.5
+   ],
+   "espera": {
+    "existe": false,
+    "L": null,
+    "errores.invertido.existe": true,
+    "errores.invertido.L": 41.8103148958
    }
   }
  ]

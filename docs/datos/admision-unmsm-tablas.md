@@ -4,7 +4,7 @@ Líneas descartadas: 0. Preguntas registradas: 2550; distintas: 2550.
 
 | Curso | Registradas | Distintas | Periodos con el curso | Cubre sí | A medias | No |
 | --- | --- | --- | --- | --- | --- | --- |
-| Física | 277 | 277 | 14 | 170 (61 %) | 107 (39 %) | 0 (0 %) |
+| Física | 277 | 277 | 14 | 276 (100 %) | 1 (0 %) | 0 (0 %) |
 | Química | 307 | 307 | 14 | 196 (64 %) | 110 (36 %) | 1 (0 %) |
 | Aritmética | 184 | 184 | 14 | 184 (100 %) | 0 (0 %) | 0 (0 %) |
 | Álgebra | 160 | 160 | 14 | 160 (100 %) | 0 (0 %) | 0 (0 %) |
@@ -12,7 +12,7 @@ Líneas descartadas: 0. Preguntas registradas: 2550; distintas: 2550.
 | Trigonometría | 113 | 113 | 14 | 113 (100 %) | 0 (0 %) | 0 (0 %) |
 | Razonamiento matemático | 650 | 650 | 14 | 350 (54 %) | 282 (43 %) | 18 (3 %) |
 | Razonamiento verbal | 690 | 690 | 14 | 689 (100 %) | 1 (0 %) | 0 (0 %) |
-| **Total** | 2550 | 2550 | | 2031 (80 %) | 500 (20 %) | 19 (1 %) |
+| **Total** | 2550 | 2550 | | 2137 (84 %) | 394 (15 %) | 19 (1 %) |
 
 ## Física (277 distintas)
 
@@ -20,26 +20,26 @@ Por unidad del catálogo:
 
 | Unidad | Preguntas | Periodos (de 14) | Sí / medio / no | Módulos que la cubren |
 | --- | --- | --- | --- | --- |
-| fisica.trabajo-y-energia | 24 | 12 | 13 / 11 / 0 | energia |
-| fisica.corriente-y-circuitos | 23 | 12 | 8 / 15 / 0 | circuitos-cc |
-| fisica.oscilaciones | 23 | 12 | 18 / 5 / 0 | mas |
-| fisica.temperatura-y-calor | 22 | 13 | 15 / 7 / 0 | calorimetria |
-| fisica.fluidos | 21 | 10 | 12 / 9 / 0 | fluidos |
-| fisica.dinamica | 20 | 13 | 13 / 7 / 0 | dinamica |
-| fisica.movimiento-rectilineo | 20 | 10 | 11 / 9 / 0 | mruv, vectores |
-| fisica.electrostatica | 16 | 12 | 6 / 10 / 0 | electrostatica |
-| fisica.fisica-moderna | 16 | 11 | 10 / 6 / 0 | fisica-moderna |
-| fisica.ondas-mecanicas | 16 | 8 | 12 / 4 / 0 | ondas |
-| fisica.magnetismo | 14 | 10 | 6 / 8 / 0 | magnetismo |
-| fisica.magnitudes-y-vectores | 12 | 8 | 11 / 1 / 0 | vectores, vectores-componentes, vectores-ley-cosenos |
-| fisica.impulso-y-choques | 10 | 8 | 6 / 4 / 0 | choques |
-| fisica.movimiento-parabolico-y-circular | 10 | 9 | 8 / 2 / 0 | tiro-parabolico, circular-mcuv, movimiento-circular |
-| fisica.induccion-electromagnetica | 8 | 6 | 6 / 2 / 0 | induccion |
-| fisica.optica-geometrica | 8 | 6 | 4 / 4 / 0 | optica-espejo-esferico, optica-lente-delgada |
-| fisica.estatica | 7 | 6 | 6 / 1 / 0 | estatica |
-| fisica.gravitacion | 3 | 3 | 2 / 1 / 0 | gravitacion |
+| fisica.trabajo-y-energia | 24 | 12 | 23 / 1 / 0 | energia, energia-potencia |
+| fisica.corriente-y-circuitos | 23 | 12 | 23 / 0 / 0 | circuitos-cc, circuitos-joule, circuitos-mallas |
+| fisica.oscilaciones | 23 | 12 | 23 / 0 / 0 | mas, mas-horaria |
+| fisica.temperatura-y-calor | 22 | 13 | 22 / 0 / 0 | calorimetria, calor-escalas |
+| fisica.fluidos | 21 | 10 | 21 / 0 / 0 | fluidos, fluidos-hidrodinamica |
+| fisica.dinamica | 20 | 13 | 20 / 0 / 0 | dinamica, dinamica-fuerzas |
+| fisica.movimiento-rectilineo | 20 | 10 | 20 / 0 / 0 | mruv, cinematica-medias, velocidad-relativa |
+| fisica.electrostatica | 16 | 12 | 16 / 0 / 0 | condensadores, electrostatica, cargas-sistema |
+| fisica.fisica-moderna | 16 | 11 | 16 / 0 / 0 | fisica-moderna, relatividad |
+| fisica.ondas-mecanicas | 16 | 8 | 16 / 0 / 0 | ondas, ondas-llegadas |
+| fisica.magnetismo | 14 | 10 | 14 / 0 / 0 | carga-en-campo, magnetismo |
+| fisica.magnitudes-y-vectores | 12 | 8 | 12 / 0 / 0 | vectores-componentes, vectores, analisis-dimensional |
+| fisica.impulso-y-choques | 10 | 8 | 10 / 0 / 0 | choques, impulso-grafica, velocidad-relativa |
+| fisica.movimiento-parabolico-y-circular | 10 | 9 | 10 / 0 / 0 | circular-mcuv, tiro-parabolico, cinematica-medias |
+| fisica.induccion-electromagnetica | 8 | 6 | 8 / 0 / 0 | induccion, induccion-flujo |
+| fisica.optica-geometrica | 8 | 6 | 8 / 0 / 0 | refraccion-snell, optica-espejo-esferico |
+| fisica.estatica | 7 | 6 | 7 / 0 / 0 | estatica, dinamica-fuerzas |
+| fisica.gravitacion | 3 | 3 | 3 / 0 / 0 | gravitacion, dinamica-fuerzas |
 | fisica.ondas-electromagneticas | 3 | 3 | 3 / 0 / 0 | ondas-electromagneticas |
-| fuera-del-catalogo:propiedades de la materia | 1 | 1 | 0 / 1 / 0 | calorimetria |
+| fuera-del-catalogo:propiedades de la materia | 1 | 1 | 1 / 0 / 0 | calor-escalas |
 
 Por tema (en razonamiento matemático y verbal, por familia de temas):
 
@@ -48,102 +48,102 @@ Por tema (en razonamiento matemático y verbal, por familia de temas):
 | Flotación y principio de Arquímedes | 6 | 6 | fisica.fluidos | fluidos | 6 / 0 / 0 |
 | Nivel de intensidad sonora | 6 | 5 | fisica.ondas-mecanicas | ondas | 6 / 0 / 0 |
 | Calorimetría sin cambio de fase | 5 | 5 | fisica.temperatura-y-calor | calorimetria | 5 / 0 / 0 |
-| Resistencias en serie y paralelo | 6 | 4 | fisica.corriente-y-circuitos | circuitos-cc | 5 / 1 / 0 |
-| Condensadores en serie y paralelo | 5 | 4 | fisica.electrostatica | electrostatica | 0 / 5 / 0 |
+| Resistencias en serie y paralelo | 6 | 4 | fisica.corriente-y-circuitos | circuitos-cc | 6 / 0 / 0 |
+| Condensadores en serie y paralelo | 5 | 4 | fisica.electrostatica | condensadores | 5 / 0 / 0 |
 | Energía en el MAS | 5 | 4 | fisica.oscilaciones | mas | 5 / 0 / 0 |
-| Análisis dimensional | 4 | 4 | fisica.magnitudes-y-vectores | vectores | 3 / 1 / 0 |
+| Análisis dimensional | 4 | 4 | fisica.magnitudes-y-vectores | vectores | 4 / 0 / 0 |
 | Campo magnético de conductores rectos | 4 | 4 | fisica.magnetismo | magnetismo | 4 / 0 / 0 |
-| Efecto fotoeléctrico y potencial de frenado | 4 | 4 | fisica.fisica-moderna | fisica-moderna | 3 / 1 / 0 |
+| Efecto fotoeléctrico y potencial de frenado | 4 | 4 | fisica.fisica-moderna | fisica-moderna | 4 / 0 / 0 |
 | Calorimetría con cambio de fase | 4 | 3 | fisica.temperatura-y-calor | calorimetria | 4 / 0 / 0 |
 | Ondas: relación v = λf | 4 | 3 | fisica.ondas-mecanicas | ondas | 4 / 0 / 0 |
 | Calor sensible | 3 | 3 | fisica.temperatura-y-calor | calorimetria | 3 / 0 / 0 |
-| Caudal y continuidad | 3 | 3 | fisica.fluidos | fluidos | 0 / 3 / 0 |
+| Caudal y continuidad | 3 | 3 | fisica.fluidos | fluidos-hidrodinamica | 3 / 0 / 0 |
 | Conservación de la energía mecánica | 3 | 3 | fisica.trabajo-y-energia | energia | 3 / 0 / 0 |
-| Continuidad y Bernoulli | 3 | 3 | fisica.fluidos | fluidos | 0 / 3 / 0 |
-| Ecuación del MAS | 3 | 3 | fisica.oscilaciones | mas | 0 / 3 / 0 |
-| Efecto Joule | 3 | 3 | fisica.corriente-y-circuitos | circuitos-cc | 0 / 3 / 0 |
+| Continuidad y Bernoulli | 3 | 3 | fisica.fluidos | fluidos-hidrodinamica | 3 / 0 / 0 |
+| Ecuación del MAS | 3 | 3 | fisica.oscilaciones | mas-horaria | 3 / 0 / 0 |
+| Efecto Joule | 3 | 3 | fisica.corriente-y-circuitos | circuitos-joule | 3 / 0 / 0 |
 | Impulso y fuerza media | 3 | 3 | fisica.impulso-y-choques | choques | 3 / 0 / 0 |
-| Ley de Snell | 3 | 3 | fisica.optica-geometrica | optica-lente-delgada | 0 / 3 / 0 |
-| Leyes de Kirchhoff con dos fuentes | 3 | 3 | fisica.corriente-y-circuitos | circuitos-cc | 0 / 3 / 0 |
+| Ley de Snell | 3 | 3 | fisica.optica-geometrica | refraccion-snell | 3 / 0 / 0 |
+| Leyes de Kirchhoff con dos fuentes | 3 | 3 | fisica.corriente-y-circuitos | circuitos-mallas | 3 / 0 / 0 |
 | Resultante por componentes | 3 | 3 | fisica.magnitudes-y-vectores | vectores-componentes | 3 / 0 / 0 |
-| Potencia a velocidad constante | 4 | 2 | fisica.trabajo-y-energia | energia | 0 / 4 / 0 |
+| Potencia a velocidad constante | 4 | 2 | fisica.trabajo-y-energia | energia-potencia | 4 / 0 / 0 |
 | Bloques unidos por cuerda y polea | 2 | 2 | fisica.dinamica | dinamica | 2 / 0 / 0 |
-| Carga en campo magnético: periodo | 2 | 2 | fisica.magnetismo | magnetismo | 0 / 2 / 0 |
+| Carga en campo magnético: periodo | 2 | 2 | fisica.magnetismo | carga-en-campo | 2 / 0 / 0 |
 | Choque plástico y conservación del momento | 2 | 2 | fisica.impulso-y-choques | choques | 2 / 0 / 0 |
 | Conservación de la energía con resorte | 2 | 2 | fisica.trabajo-y-energia | energia | 1 / 1 / 0 |
 | Dilatación lineal | 2 | 2 | fisica.temperatura-y-calor | calorimetria | 2 / 0 / 0 |
-| Ecuación horaria del MRUV | 2 | 2 | fisica.movimiento-rectilineo | mruv | 0 / 2 / 0 |
+| Ecuación horaria del MRUV | 2 | 2 | fisica.movimiento-rectilineo | cinematica-medias | 2 / 0 / 0 |
 | Efecto fotoeléctrico | 2 | 2 | fisica.fisica-moderna | fisica-moderna | 2 / 0 / 0 |
 | Efecto fotoeléctrico con dos longitudes de onda | 2 | 2 | fisica.fisica-moderna | fisica-moderna | 2 / 0 / 0 |
-| Escalas termométricas | 2 | 2 | fisica.temperatura-y-calor | calorimetria | 0 / 2 / 0 |
+| Escalas termométricas | 2 | 2 | fisica.temperatura-y-calor | calor-escalas | 2 / 0 / 0 |
 | Gráfica x-t en MRU | 2 | 2 | fisica.movimiento-rectilineo | mruv | 2 / 0 / 0 |
 | Ley de Coulomb y equilibrio | 2 | 2 | fisica.electrostatica | electrostatica | 2 / 0 / 0 |
 | Ley de Lenz | 2 | 2 | fisica.induccion-electromagnetica | induccion | 2 / 0 / 0 |
-| Masa, peso y segunda ley | 2 | 2 | fisica.dinamica | dinamica | 0 / 2 / 0 |
+| Masa, peso y segunda ley | 2 | 2 | fisica.dinamica | dinamica-fuerzas | 2 / 0 / 0 |
 | Periodo masa-resorte | 2 | 2 | fisica.oscilaciones | mas | 2 / 0 / 0 |
 | Peso aparente en ascensor | 2 | 2 | fisica.dinamica | dinamica | 2 / 0 / 0 |
-| Potencia y eficiencia | 2 | 2 | fisica.trabajo-y-energia | energia | 0 / 2 / 0 |
-| Rapidez media | 2 | 2 | fisica.movimiento-rectilineo | mruv | 0 / 2 / 0 |
-| Relatividad: dilatación del tiempo | 2 | 2 | fisica.fisica-moderna | fisica-moderna | 0 / 2 / 0 |
-| Resistividad | 2 | 2 | fisica.corriente-y-circuitos | circuitos-cc | 0 / 2 / 0 |
+| Potencia y eficiencia | 2 | 2 | fisica.trabajo-y-energia | energia-potencia | 2 / 0 / 0 |
+| Rapidez media | 2 | 2 | fisica.movimiento-rectilineo | cinematica-medias | 2 / 0 / 0 |
+| Relatividad: dilatación del tiempo | 2 | 2 | fisica.fisica-moderna | relatividad | 2 / 0 / 0 |
+| Resistividad | 2 | 2 | fisica.corriente-y-circuitos | circuitos-joule | 2 / 0 / 0 |
 | Suma de vectores en componentes | 2 | 2 | fisica.magnitudes-y-vectores | vectores-componentes | 2 / 0 / 0 |
 | Trabajo del rozamiento y energía | 2 | 2 | fisica.trabajo-y-energia | energia | 2 / 0 / 0 |
 | Ecuación de espejos y aumento | 2 | 1 | fisica.optica-geometrica | optica-espejo-esferico | 2 / 0 / 0 |
 | Gráfica v-t: área y pendiente | 2 | 1 | fisica.movimiento-rectilineo | mruv | 2 / 0 / 0 |
-| Impulso como área de F-t | 2 | 1 | fisica.impulso-y-choques | choques | 0 / 2 / 0 |
+| Impulso como área de F-t | 2 | 1 | fisica.impulso-y-choques | impulso-grafica | 2 / 0 / 0 |
 | Péndulo simple: periodo y longitud | 2 | 1 | fisica.oscilaciones | mas | 2 / 0 / 0 |
 | Aceleración en el MAS | 1 | 1 | fisica.oscilaciones | mas | 1 / 0 / 0 |
 | Aceleración media | 1 | 1 | fisica.movimiento-rectilineo | mruv | 1 / 0 / 0 |
-| Barómetro y presión atmosférica | 1 | 1 | fisica.fluidos | fluidos | 0 / 1 / 0 |
-| Calor latente de vaporización | 1 | 1 | fisica.temperatura-y-calor | calorimetria | 0 / 1 / 0 |
+| Barómetro y presión atmosférica | 1 | 1 | fisica.fluidos | fluidos-hidrodinamica | 1 / 0 / 0 |
+| Calor latente de vaporización | 1 | 1 | fisica.temperatura-y-calor | calor-escalas | 1 / 0 / 0 |
 | Calor sensible proporcional a ΔT | 1 | 1 | fisica.temperatura-y-calor | calorimetria | 1 / 0 / 0 |
 | Cambio de medio: velocidad y longitud de onda | 1 | 1 | fisica.ondas-electromagneticas | ondas-electromagneticas | 1 / 0 / 0 |
-| Campo de una espira y ley de Ohm | 1 | 1 | fisica.magnetismo | magnetismo | 0 / 1 / 0 |
+| Campo de una espira y ley de Ohm | 1 | 1 | fisica.magnetismo | carga-en-campo | 1 / 0 / 0 |
 | Campo y potencial de una carga puntual | 1 | 1 | fisica.electrostatica | electrostatica | 1 / 0 / 0 |
-| Capacidad de un condensador plano | 1 | 1 | fisica.electrostatica | electrostatica | 0 / 1 / 0 |
-| Carga acelerada que entra a un campo magnético | 1 | 1 | fisica.magnetismo | magnetismo | 0 / 1 / 0 |
-| Carga en campo magnético: hélice | 1 | 1 | fisica.magnetismo | magnetismo | 0 / 1 / 0 |
-| Carga en campo magnético: radio de giro | 1 | 1 | fisica.magnetismo | magnetismo | 0 / 1 / 0 |
+| Capacidad de un condensador plano | 1 | 1 | fisica.electrostatica | condensadores | 1 / 0 / 0 |
+| Carga acelerada que entra a un campo magnético | 1 | 1 | fisica.magnetismo | carga-en-campo | 1 / 0 / 0 |
+| Carga en campo magnético: hélice | 1 | 1 | fisica.magnetismo | carga-en-campo | 1 / 0 / 0 |
+| Carga en campo magnético: radio de giro | 1 | 1 | fisica.magnetismo | carga-en-campo | 1 / 0 / 0 |
 | Caída libre | 1 | 1 | fisica.movimiento-rectilineo | mruv | 1 / 0 / 0 |
-| Coeficiente de restitución con pérdidas | 1 | 1 | fisica.impulso-y-choques | choques | 0 / 1 / 0 |
+| Coeficiente de restitución con pérdidas | 1 | 1 | fisica.impulso-y-choques | impulso-grafica | 1 / 0 / 0 |
 | Coeficiente de restitución y energía disipada | 1 | 1 | fisica.impulso-y-choques | choques | 1 / 0 / 0 |
-| Conservación de la cantidad de movimiento | 1 | 1 | fisica.impulso-y-choques | choques | 0 / 1 / 0 |
+| Conservación de la cantidad de movimiento | 1 | 1 | fisica.impulso-y-choques | velocidad-relativa | 1 / 0 / 0 |
 | Conservación de la energía con resorte vertical | 1 | 1 | fisica.trabajo-y-energia | energia | 1 / 0 / 0 |
-| Corriente, carga y tiempo | 1 | 1 | fisica.corriente-y-circuitos | circuitos-cc | 0 / 1 / 0 |
-| Densidad y peso específico | 1 | 1 | fisica.fluidos | fluidos | 0 / 1 / 0 |
-| Dilatación volumétrica de líquido y recipiente | 1 | 1 | fisica.temperatura-y-calor | calorimetria | 0 / 1 / 0 |
-| Dilatación volumétrica de líquidos | 1 | 1 | fisica.temperatura-y-calor | calorimetria | 0 / 1 / 0 |
-| Dinámica circular con rozamiento estático | 1 | 1 | fisica.dinamica | dinamica | 0 / 1 / 0 |
+| Corriente, carga y tiempo | 1 | 1 | fisica.corriente-y-circuitos | circuitos-joule | 1 / 0 / 0 |
+| Densidad y peso específico | 1 | 1 | fisica.fluidos | fluidos-hidrodinamica | 1 / 0 / 0 |
+| Dilatación volumétrica de líquido y recipiente | 1 | 1 | fisica.temperatura-y-calor | calor-escalas | 1 / 0 / 0 |
+| Dilatación volumétrica de líquidos | 1 | 1 | fisica.temperatura-y-calor | calor-escalas | 1 / 0 / 0 |
+| Dinámica circular con rozamiento estático | 1 | 1 | fisica.dinamica | dinamica-fuerzas | 1 / 0 / 0 |
 | Dinámica circular vertical | 1 | 1 | fisica.dinamica | dinamica | 1 / 0 / 0 |
-| Dinámica circular: péndulo cónico | 1 | 1 | fisica.dinamica | dinamica | 0 / 1 / 0 |
-| Efecto Joule y calorimetría | 1 | 1 | fisica.corriente-y-circuitos | circuitos-cc | 0 / 1 / 0 |
+| Dinámica circular: péndulo cónico | 1 | 1 | fisica.dinamica | dinamica-fuerzas | 1 / 0 / 0 |
+| Efecto Joule y calorimetría | 1 | 1 | fisica.corriente-y-circuitos | circuitos-joule | 1 / 0 / 0 |
 | Electrización por contacto | 1 | 1 | fisica.electrostatica | electrostatica | 1 / 0 / 0 |
 | Empuje y peso aparente | 1 | 1 | fisica.fluidos | fluidos | 1 / 0 / 0 |
 | Encuentro MRU-MRUV | 1 | 1 | fisica.movimiento-rectilineo | mruv | 1 / 0 / 0 |
 | Encuentro y alcance en MRU | 1 | 1 | fisica.movimiento-rectilineo | mruv | 1 / 0 / 0 |
-| Energía con pérdidas porcentuales en rebotes | 1 | 1 | fisica.trabajo-y-energia | energia | 0 / 1 / 0 |
-| Energía de un condensador | 1 | 1 | fisica.electrostatica | electrostatica | 0 / 1 / 0 |
-| Energía mecánica convertida en calor | 1 | 1 | fisica.temperatura-y-calor | calorimetria | 0 / 1 / 0 |
-| Energía potencial de un sistema de cargas | 1 | 1 | fisica.electrostatica | electrostatica | 0 / 1 / 0 |
+| Energía con pérdidas porcentuales en rebotes | 1 | 1 | fisica.trabajo-y-energia | energia-potencia | 1 / 0 / 0 |
+| Energía de un condensador | 1 | 1 | fisica.electrostatica | condensadores | 1 / 0 / 0 |
+| Energía mecánica convertida en calor | 1 | 1 | fisica.temperatura-y-calor | calor-escalas | 1 / 0 / 0 |
+| Energía potencial de un sistema de cargas | 1 | 1 | fisica.electrostatica | cargas-sistema | 1 / 0 / 0 |
 | Energía potencial elástica y ley de Hooke | 1 | 1 | fisica.trabajo-y-energia | energia | 1 / 0 / 0 |
 | Equilibrio con poleas y resorte | 1 | 1 | fisica.estatica | estatica | 1 / 0 / 0 |
 | Equilibrio de tres fuerzas | 1 | 1 | fisica.estatica | estatica | 1 / 0 / 0 |
-| Equilibrio del cuerpo rígido: escalera apoyada | 1 | 1 | fisica.estatica | estatica | 0 / 1 / 0 |
+| Equilibrio del cuerpo rígido: escalera apoyada | 1 | 1 | fisica.estatica | dinamica-fuerzas | 1 / 0 / 0 |
 | Equilibrio del cuerpo rígido: palanca del cuerpo humano | 1 | 1 | fisica.estatica | estatica | 1 / 0 / 0 |
 | Equilibrio en plano inclinado con rozamiento | 1 | 1 | fisica.estatica | estatica | 1 / 0 / 0 |
-| Escalas termométricas: variaciones | 1 | 1 | fisica.temperatura-y-calor | calorimetria | 0 / 1 / 0 |
+| Escalas termométricas: variaciones | 1 | 1 | fisica.temperatura-y-calor | calor-escalas | 1 / 0 / 0 |
 | Fem en conductor móvil | 1 | 1 | fisica.induccion-electromagnetica | induccion | 1 / 0 / 0 |
-| Fem y resistencia interna | 1 | 1 | fisica.corriente-y-circuitos | circuitos-cc | 0 / 1 / 0 |
-| Flujo magnético en espira que gira | 1 | 1 | fisica.induccion-electromagnetica | induccion | 0 / 1 / 0 |
+| Fem y resistencia interna | 1 | 1 | fisica.corriente-y-circuitos | circuitos-mallas | 1 / 0 / 0 |
+| Flujo magnético en espira que gira | 1 | 1 | fisica.induccion-electromagnetica | induccion-flujo | 1 / 0 / 0 |
 | Fotones: energía y longitud de onda | 1 | 1 | fisica.fisica-moderna | fisica-moderna | 1 / 0 / 0 |
 | Fotones: potencia y número por segundo | 1 | 1 | fisica.fisica-moderna | fisica-moderna | 1 / 0 / 0 |
-| Fuerza magnética sobre un conductor | 1 | 1 | fisica.magnetismo | magnetismo | 0 / 1 / 0 |
+| Fuerza magnética sobre un conductor | 1 | 1 | fisica.magnetismo | carga-en-campo | 1 / 0 / 0 |
 | Fuerza magnética sobre una carga | 1 | 1 | fisica.magnetismo | magnetismo | 1 / 0 / 0 |
 | Fuerza magnética sobre una carga cerca de un hilo | 1 | 1 | fisica.magnetismo | magnetismo | 1 / 0 / 0 |
-| Función de onda | 1 | 1 | fisica.ondas-mecanicas | ondas | 0 / 1 / 0 |
+| Función de onda | 1 | 1 | fisica.ondas-mecanicas | ondas-llegadas | 1 / 0 / 0 |
 | Función trabajo y longitud de onda umbral | 1 | 1 | fisica.fisica-moderna | fisica-moderna | 1 / 0 / 0 |
 | Gráfica a-t | 1 | 1 | fisica.movimiento-rectilineo | mruv | 1 / 0 / 0 |
-| Gráfica v-t: área y tiempo mínimo | 1 | 1 | fisica.movimiento-rectilineo | mruv | 0 / 1 / 0 |
+| Gráfica v-t: área y tiempo mínimo | 1 | 1 | fisica.movimiento-rectilineo | cinematica-medias | 1 / 0 / 0 |
 | Gráfica x-t del MAS | 1 | 1 | fisica.oscilaciones | mas | 1 / 0 / 0 |
 | Gráfica x-t del MAS y energía | 1 | 1 | fisica.oscilaciones | mas | 1 / 0 / 0 |
 | Imagen en espejo convexo | 1 | 1 | fisica.optica-geometrica | optica-espejo-esferico | 1 / 0 / 0 |
@@ -152,13 +152,13 @@ Por tema (en razonamiento matemático y verbal, por familia de temas):
 | Instrumentos de medición eléctrica | 1 | 1 | fisica.corriente-y-circuitos | circuitos-cc | 1 / 0 / 0 |
 | Intensidad sonora y distancia | 1 | 1 | fisica.ondas-mecanicas | ondas | 1 / 0 / 0 |
 | Ley de Coulomb | 1 | 1 | fisica.electrostatica | electrostatica | 1 / 0 / 0 |
-| Ley de Faraday y carga inducida | 1 | 1 | fisica.induccion-electromagnetica | induccion | 0 / 1 / 0 |
+| Ley de Faraday y carga inducida | 1 | 1 | fisica.induccion-electromagnetica | induccion-flujo | 1 / 0 / 0 |
 | Ley de Faraday: fem máxima | 1 | 1 | fisica.induccion-electromagnetica | induccion | 1 / 0 / 0 |
 | Ley de Ohm | 1 | 1 | fisica.corriente-y-circuitos | circuitos-cc | 1 / 0 / 0 |
 | Leyes de Kepler | 1 | 1 | fisica.gravitacion | gravitacion | 1 / 0 / 0 |
-| MAS con rozamiento estático entre bloques | 1 | 1 | fisica.oscilaciones | mas | 0 / 1 / 0 |
-| MAS de un cuerpo flotante | 1 | 1 | fisica.oscilaciones | mas | 0 / 1 / 0 |
-| MCU: rotación terrestre y latitud | 1 | 1 | fisica.movimiento-parabolico-y-circular | circular-mcu | 0 / 1 / 0 |
+| MAS con rozamiento estático entre bloques | 1 | 1 | fisica.oscilaciones | mas-horaria | 1 / 0 / 0 |
+| MAS de un cuerpo flotante | 1 | 1 | fisica.oscilaciones | mas-horaria | 1 / 0 / 0 |
+| MCU: rotación terrestre y latitud | 1 | 1 | fisica.movimiento-parabolico-y-circular | cinematica-medias | 1 / 0 / 0 |
 | MCUV desde el reposo | 1 | 1 | fisica.movimiento-parabolico-y-circular | circular-mcuv | 1 / 0 / 0 |
 | MCUV: aceleración angular | 1 | 1 | fisica.movimiento-parabolico-y-circular | circular-mcuv | 1 / 0 / 0 |
 | MCUV: frenado con número de vueltas | 1 | 1 | fisica.movimiento-parabolico-y-circular | circular-mcuv | 1 / 0 / 0 |
@@ -166,57 +166,57 @@ Por tema (en razonamiento matemático y verbal, por familia de temas):
 | MRUV: distancia de frenado | 1 | 1 | fisica.movimiento-rectilineo | mruv | 1 / 0 / 0 |
 | MRUV: distancia de frenado y rapidez | 1 | 1 | fisica.movimiento-rectilineo | mruv | 1 / 0 / 0 |
 | Manómetro en U | 1 | 1 | fisica.fluidos | fluidos | 1 / 0 / 0 |
-| Masa e inercia frente a cambios de volumen | 1 | 1 | fuera-del-catalogo:propiedades de la materia | calorimetria | 0 / 1 / 0 |
-| Movimiento en el plano con ecuaciones horarias | 1 | 1 | fisica.movimiento-parabolico-y-circular | tiro-parabolico | 0 / 1 / 0 |
+| Masa e inercia frente a cambios de volumen | 1 | 1 | fuera-del-catalogo:propiedades de la materia | calor-escalas | 1 / 0 / 0 |
+| Movimiento en el plano con ecuaciones horarias | 1 | 1 | fisica.movimiento-parabolico-y-circular | cinematica-medias | 1 / 0 / 0 |
 | Máquina de Atwood | 1 | 1 | fisica.dinamica | dinamica | 1 / 0 / 0 |
 | Máquina de Atwood y trabajo de la tensión | 1 | 1 | fisica.dinamica | dinamica | 1 / 0 / 0 |
 | Normal con fuerza inclinada | 1 | 1 | fisica.estatica | estatica | 1 / 0 / 0 |
 | Ondas electromagnéticas: c = λf | 1 | 1 | fisica.ondas-electromagneticas | ondas-electromagneticas | 1 / 0 / 0 |
-| Ondas transversales y longitudinales | 1 | 1 | fisica.ondas-mecanicas | ondas | 0 / 1 / 0 |
+| Ondas transversales y longitudinales | 1 | 1 | fisica.ondas-mecanicas | ondas-llegadas | 1 / 0 / 0 |
 | Ondas: gráfica y-t y v = λf | 1 | 1 | fisica.ondas-mecanicas | ondas | 1 / 0 / 0 |
 | Periodo y frecuencia | 1 | 1 | fisica.oscilaciones | mas | 1 / 0 / 0 |
-| Pilas con resistencia interna y medidores | 1 | 1 | fisica.corriente-y-circuitos | circuitos-cc | 0 / 1 / 0 |
+| Pilas con resistencia interna y medidores | 1 | 1 | fisica.corriente-y-circuitos | circuitos-mallas | 1 / 0 / 0 |
 | Polígono de vectores | 1 | 1 | fisica.magnitudes-y-vectores | vectores-poligono | 1 / 0 / 0 |
-| Potencia como energía por tiempo | 1 | 1 | fisica.trabajo-y-energia | energia | 0 / 1 / 0 |
-| Potencial de una carga puntual: gráfica V-r | 1 | 1 | fisica.electrostatica | electrostatica | 0 / 1 / 0 |
+| Potencia como energía por tiempo | 1 | 1 | fisica.trabajo-y-energia | energia-potencia | 1 / 0 / 0 |
+| Potencial de una carga puntual: gráfica V-r | 1 | 1 | fisica.electrostatica | cargas-sistema | 1 / 0 / 0 |
 | Presión hidrostática en el aire | 1 | 1 | fisica.fluidos | fluidos | 1 / 0 / 0 |
 | Presión hidrostática en líquidos no miscibles | 1 | 1 | fisica.fluidos | fluidos | 1 / 0 / 0 |
 | Presión hidrostática: absoluta y manométrica | 1 | 1 | fisica.fluidos | fluidos | 1 / 0 / 0 |
 | Presión hidrostática: gráfica P-h | 1 | 1 | fisica.fluidos | fluidos | 1 / 0 / 0 |
-| Principio de incertidumbre | 1 | 1 | fisica.fisica-moderna | fisica-moderna | 0 / 1 / 0 |
-| Puente de Wheatstone | 1 | 1 | fisica.corriente-y-circuitos | circuitos-cc | 0 / 1 / 0 |
-| Punto de fuerza gravitatoria nula | 1 | 1 | fisica.gravitacion | gravitacion | 0 / 1 / 0 |
+| Principio de incertidumbre | 1 | 1 | fisica.fisica-moderna | relatividad | 1 / 0 / 0 |
+| Puente de Wheatstone | 1 | 1 | fisica.corriente-y-circuitos | circuitos-mallas | 1 / 0 / 0 |
+| Punto de fuerza gravitatoria nula | 1 | 1 | fisica.gravitacion | dinamica-fuerzas | 1 / 0 / 0 |
 | Péndulo simple y gravedad | 1 | 1 | fisica.oscilaciones | mas | 1 / 0 / 0 |
 | Péndulo simple: tiempos en la oscilación | 1 | 1 | fisica.oscilaciones | mas | 1 / 0 / 0 |
-| Rapidez de propagación y diferencia de tiempos | 1 | 1 | fisica.ondas-mecanicas | ondas | 0 / 1 / 0 |
-| Rapidez del sonido en distintos medios | 1 | 1 | fisica.ondas-mecanicas | ondas | 0 / 1 / 0 |
-| Rapidez media con tabla de posiciones | 1 | 1 | fisica.movimiento-rectilineo | mruv | 0 / 1 / 0 |
-| Relatividad: energía cinética clásica contra relativista | 1 | 1 | fisica.fisica-moderna | fisica-moderna | 0 / 1 / 0 |
-| Relatividad: energía en reposo y cinética | 1 | 1 | fisica.fisica-moderna | fisica-moderna | 0 / 1 / 0 |
+| Rapidez de propagación y diferencia de tiempos | 1 | 1 | fisica.ondas-mecanicas | ondas-llegadas | 1 / 0 / 0 |
+| Rapidez del sonido en distintos medios | 1 | 1 | fisica.ondas-mecanicas | ondas-llegadas | 1 / 0 / 0 |
+| Rapidez media con tabla de posiciones | 1 | 1 | fisica.movimiento-rectilineo | cinematica-medias | 1 / 0 / 0 |
+| Relatividad: energía cinética clásica contra relativista | 1 | 1 | fisica.fisica-moderna | relatividad | 1 / 0 / 0 |
+| Relatividad: energía en reposo y cinética | 1 | 1 | fisica.fisica-moderna | relatividad | 1 / 0 / 0 |
 | Resistencia en serie para una lámpara | 1 | 1 | fisica.corriente-y-circuitos | circuitos-cc | 1 / 0 / 0 |
-| Resistividad y potencia disipada | 1 | 1 | fisica.corriente-y-circuitos | circuitos-cc | 0 / 1 / 0 |
+| Resistividad y potencia disipada | 1 | 1 | fisica.corriente-y-circuitos | circuitos-joule | 1 / 0 / 0 |
 | Resorte vertical y periodo | 1 | 1 | fisica.oscilaciones | mas | 1 / 0 / 0 |
 | Resultante con ley de cosenos | 1 | 1 | fisica.magnitudes-y-vectores | vectores-ley-cosenos | 1 / 0 / 0 |
-| Rozamiento como fuerza motriz | 1 | 1 | fisica.dinamica | dinamica | 0 / 1 / 0 |
+| Rozamiento como fuerza motriz | 1 | 1 | fisica.dinamica | dinamica-fuerzas | 1 / 0 / 0 |
 | Rozamiento estático con fuerza inclinada | 1 | 1 | fisica.estatica | estatica | 1 / 0 / 0 |
 | Segunda ley con MRUV | 1 | 1 | fisica.dinamica | dinamica | 1 / 0 / 0 |
 | Segunda ley con frenado por rozamiento | 1 | 1 | fisica.dinamica | dinamica | 1 / 0 / 0 |
 | Segunda ley con fuerza inclinada y rozamiento | 1 | 1 | fisica.dinamica | dinamica | 1 / 0 / 0 |
 | Segunda ley de Newton | 1 | 1 | fisica.dinamica | dinamica | 1 / 0 / 0 |
-| Segunda ley e impulso con tabla de datos | 1 | 1 | fisica.dinamica | dinamica | 0 / 1 / 0 |
+| Segunda ley e impulso con tabla de datos | 1 | 1 | fisica.dinamica | dinamica-fuerzas | 1 / 0 / 0 |
 | Segunda ley: tensión con aceleración vertical | 1 | 1 | fisica.dinamica | dinamica | 1 / 0 / 0 |
-| Selector de velocidades: campos cruzados | 1 | 1 | fisica.magnetismo | magnetismo | 0 / 1 / 0 |
-| Sistemas de bloques con resorte | 1 | 1 | fisica.dinamica | dinamica | 0 / 1 / 0 |
+| Selector de velocidades: campos cruzados | 1 | 1 | fisica.magnetismo | carga-en-campo | 1 / 0 / 0 |
+| Sistemas de bloques con resorte | 1 | 1 | fisica.dinamica | dinamica-fuerzas | 1 / 0 / 0 |
 | Subida por plano inclinado rugoso | 1 | 1 | fisica.dinamica | dinamica | 1 / 0 / 0 |
 | Suma de vectores desplazamiento | 1 | 1 | fisica.magnitudes-y-vectores | vectores | 1 / 0 / 0 |
-| Superposición de campos eléctricos en 3D | 1 | 1 | fisica.electrostatica | electrostatica | 0 / 1 / 0 |
+| Superposición de campos eléctricos en 3D | 1 | 1 | fisica.electrostatica | cargas-sistema | 1 / 0 / 0 |
 | Teorema trabajo-energía cinética | 1 | 1 | fisica.trabajo-y-energia | energia | 1 / 0 / 0 |
-| Teorema trabajo-energía con cuerda y polea | 1 | 1 | fisica.trabajo-y-energia | energia | 0 / 1 / 0 |
+| Teorema trabajo-energía con cuerda y polea | 1 | 1 | fisica.trabajo-y-energia | energia-potencia | 1 / 0 / 0 |
 | Tiro horizontal: tiempo de caída | 1 | 1 | fisica.movimiento-parabolico-y-circular | tiro-parabolico | 1 / 0 / 0 |
 | Tiro parabólico | 1 | 1 | fisica.movimiento-parabolico-y-circular | tiro-parabolico | 1 / 0 / 0 |
 | Tiro parabólico: alcance máximo a 45° | 1 | 1 | fisica.movimiento-parabolico-y-circular | tiro-parabolico | 1 / 0 / 0 |
-| Torricelli y chorro parabólico | 1 | 1 | fisica.fluidos | fluidos | 0 / 1 / 0 |
-| Trabajo contra el peso con carga variable | 1 | 1 | fisica.trabajo-y-energia | energia | 0 / 1 / 0 |
+| Torricelli y chorro parabólico | 1 | 1 | fisica.fluidos | fluidos-hidrodinamica | 1 / 0 / 0 |
+| Trabajo contra el peso con carga variable | 1 | 1 | fisica.trabajo-y-energia | energia-potencia | 1 / 0 / 0 |
 | Trabajo del campo y diferencia de potencial | 1 | 1 | fisica.electrostatica | electrostatica | 1 / 0 / 0 |
 | Trabajo del rozamiento con fuerza inclinada | 1 | 1 | fisica.trabajo-y-energia | energia | 1 / 0 / 0 |
 | Trabajo neto con MRUV | 1 | 1 | fisica.trabajo-y-energia | energia | 1 / 0 / 0 |
@@ -226,11 +226,11 @@ Por tema (en razonamiento matemático y verbal, por familia de temas):
 | Variación de g con la altura | 1 | 1 | fisica.gravitacion | gravitacion | 1 / 0 / 0 |
 | Velocidad en función de la posición en el MAS | 1 | 1 | fisica.oscilaciones | mas | 1 / 0 / 0 |
 | Velocidad instantánea como vector | 1 | 1 | fisica.movimiento-parabolico-y-circular | movimiento-circular | 1 / 0 / 0 |
-| Velocidad relativa | 1 | 1 | fisica.movimiento-rectilineo | mruv | 0 / 1 / 0 |
-| Velocidad relativa: bote y río | 1 | 1 | fisica.movimiento-rectilineo | vectores | 0 / 1 / 0 |
-| Velocidad relativa: ida y vuelta junto a un bote | 1 | 1 | fisica.movimiento-rectilineo | mruv | 0 / 1 / 0 |
+| Velocidad relativa | 1 | 1 | fisica.movimiento-rectilineo | velocidad-relativa | 1 / 0 / 0 |
+| Velocidad relativa: bote y río | 1 | 1 | fisica.movimiento-rectilineo | velocidad-relativa | 1 / 0 / 0 |
+| Velocidad relativa: ida y vuelta junto a un bote | 1 | 1 | fisica.movimiento-rectilineo | velocidad-relativa | 1 / 0 / 0 |
 | Velocidad y aceleración máximas en el MAS | 1 | 1 | fisica.oscilaciones | mas | 1 / 0 / 0 |
-| Ángulo límite y reflexión total | 1 | 1 | fisica.optica-geometrica | — | 0 / 1 / 0 |
+| Ángulo límite y reflexión total | 1 | 1 | fisica.optica-geometrica | refraccion-snell | 1 / 0 / 0 |
 | Índice de refracción y rapidez de la luz | 1 | 1 | fisica.ondas-electromagneticas | ondas-electromagneticas | 1 / 0 / 0 |
 - tipo: calculo 239 (86 %), grafica 19 (7 %), conceptual 17 (6 %), mixta 2 (1 %)
 - visual: alto 122 (44 %), medio 113 (41 %), bajo 42 (15 %)
@@ -1341,176 +1341,101 @@ Ordenados por número de periodos en que salen y luego por número de preguntas.
 | 13 | Razonamiento matemático | Perímetros, áreas y particiones | 7 | 7 (0 + 7) | razonamiento-matematico.cortes-y-pesadas | partir una cuadrícula en dos piezas congruentes |
 | 14 | Razonamiento matemático | Papel doblado y cortado | 5 | 6 (0 + 6) | razonamiento-matematico.trazos-y-perimetros | doblar, cortar y desplegar papel; perímetro resultante |
 | 15 | Química | Clasificación de reacciones | 5 | 5 (0 + 5) | quimica.reacciones-y-balance | Clasificar reacciones: redox, combustión, exotérmica a la vez |
-| 16 | Física | Condensadores en serie y paralelo | 4 | 5 (0 + 5) | fisica.electrostatica | Asociación de condensadores y energía almacenada |
-| 17 | Física | Caudal y continuidad | 3 | 3 (0 + 3) | fisica.fluidos | Caudal, continuidad y Bernoulli (hidrodinámica) |
-| 18 | Física | Continuidad y Bernoulli | 3 | 3 (0 + 3) | fisica.fluidos | Caudal, continuidad y Bernoulli (hidrodinámica) |
-| 19 | Física | Ecuación del MAS | 3 | 3 (0 + 3) | fisica.oscilaciones | Ecuación x(t) con fase inicial y velocidad media en un intervalo |
-| 20 | Física | Efecto Joule | 3 | 3 (0 + 3) | fisica.corriente-y-circuitos | Efecto Joule como energía disipada en el tiempo |
-| 21 | Física | Ley de Snell | 3 | 3 (0 + 3) | fisica.optica-geometrica | Refracción, ley de Snell y ángulo límite sin escena |
-| 22 | Física | Leyes de Kirchhoff con dos fuentes | 3 | 3 (0 + 3) | fisica.corriente-y-circuitos | Mallas con varias fuentes resueltas por Kirchhoff |
-| 23 | Física | Potencia a velocidad constante | 2 | 4 (0 + 4) | fisica.trabajo-y-energia | Potencia como fuerza por velocidad no trabajada como experimento |
-| 24 | Química | Normalidad y miliequivalentes | 2 | 3 (0 + 3) | quimica.soluciones | Concentraciones en miliequivalentes y normalidad en contexto fisiológico |
-| 25 | Física | Carga en campo magnético: periodo | 2 | 2 (0 + 2) | fisica.magnetismo | Movimiento circular de cargas en campo magnético y su periodo |
-| 26 | Física | Ecuación horaria del MRUV | 2 | 2 (0 + 2) | fisica.movimiento-rectilineo | Lectura de coeficientes en la ecuación x(t) del MRUV |
-| 27 | Física | Escalas termométricas | 2 | 2 (0 + 2) | fisica.temperatura-y-calor | Conversión entre escalas termométricas no trabajada en la escena |
-| 28 | Física | Masa, peso y segunda ley | 2 | 2 (0 + 2) | fisica.dinamica | Distinción entre masa y peso en distintos campos gravitatorios |
-| 29 | Física | Potencia y eficiencia | 2 | 2 (0 + 2) | fisica.trabajo-y-energia | Potencia útil con eficiencia y su relación con fuerza y velocidad |
-| 30 | Física | Rapidez media | 2 | 2 (0 + 2) | fisica.movimiento-rectilineo | Rapidez media de un viaje en tramos de distinta duración |
-| 31 | Física | Relatividad: dilatación del tiempo | 2 | 2 (0 + 2) | fisica.fisica-moderna | Relatividad especial: dilatación del tiempo |
-| 32 | Física | Resistividad | 2 | 2 (0 + 2) | fisica.corriente-y-circuitos | Resistencia en función de resistividad, longitud y sección |
-| 33 | Química | Carotenoides y vitaminas: estructura y oxidación | 2 | 2 (0 + 2) | quimica.biomoleculas-y-productos-naturales | Vitaminas y carotenoides: solubilidad, sustituyentes y oxidación de grupos |
-| 34 | Química | Grupos funcionales en hormonas | 2 | 2 (0 + 2) | quimica.biomoleculas-y-productos-naturales | Identificar grupos funcionales y reacciones en moléculas biológicas grandes |
-| 35 | Química | Mecanismo: intermediario y catalizador | 2 | 2 (0 + 2) | quimica.cinetica-quimica | Distinguir intermediario de catalizador en un mecanismo por pasos |
-| 36 | Química | Nomenclatura de compuestos polifuncionales | 2 | 2 (0 + 2) | quimica.funciones-organicas | Nombrar compuestos con varios grupos funcionales y prioridades |
-| 37 | Química | Partes por millón | 2 | 2 (0 + 2) | quimica.soluciones | Conversión de ppm a moles por volumen |
-| 38 | Física | Impulso como área de F-t | 1 | 2 (0 + 2) | fisica.impulso-y-choques | Impulso como área bajo una gráfica fuerza-tiempo |
-| 39 | Química | Colorantes naturales: grupos funcionales | 1 | 2 (0 + 2) | quimica.biomoleculas-y-productos-naturales | Colorantes naturales: grupos funcionales, hibridación y enlaces pi |
-| 40 | Física | Barómetro y presión atmosférica | 1 | 1 (0 + 1) | fisica.fluidos | Barómetro de mercurio y presión atmosférica con la altitud |
-| 41 | Física | Calor latente de vaporización | 1 | 1 (0 + 1) | fisica.temperatura-y-calor | Enfriamiento corporal por evaporación con calor latente |
-| 42 | Física | Campo de una espira y ley de Ohm | 1 | 1 (0 + 1) | fisica.magnetismo | Campo en el centro de una espira circular combinado con Ohm |
-| 43 | Física | Capacidad de un condensador plano | 1 | 1 (0 + 1) | fisica.electrostatica | Capacidad del condensador plano a partir de su geometría |
-| 44 | Física | Carga acelerada que entra a un campo magnético | 1 | 1 (0 + 1) | fisica.magnetismo | Combinar aceleración por potencial con radio de giro magnético |
-| 45 | Física | Carga en campo magnético: hélice | 1 | 1 (0 + 1) | fisica.magnetismo | Velocidad oblicua al campo que produce trayectoria helicoidal |
-| 46 | Física | Carga en campo magnético: radio de giro | 1 | 1 (0 + 1) | fisica.magnetismo | Trayectoria circular de cargas en campo magnético y su radio |
-| 47 | Física | Coeficiente de restitución con pérdidas | 1 | 1 (0 + 1) | fisica.impulso-y-choques | Rebote con restitución combinado con pérdida de energía por el aire |
-| 48 | Física | Conservación de la cantidad de movimiento | 1 | 1 (0 + 1) | fisica.impulso-y-choques | Lanzamientos entre varios botes con velocidad relativa |
-| 49 | Física | Corriente, carga y tiempo | 1 | 1 (0 + 1) | fisica.corriente-y-circuitos | Carga total transportada como corriente por tiempo |
-| 50 | Física | Densidad y peso específico | 1 | 1 (0 + 1) | fisica.fluidos | Distinguir densidad de peso específico con sus unidades |
-| 51 | Física | Dilatación volumétrica de líquido y recipiente | 1 | 1 (0 + 1) | fisica.temperatura-y-calor | Dilatación aparente de un líquido en un recipiente que también se dilata |
-| 52 | Física | Dilatación volumétrica de líquidos | 1 | 1 (0 + 1) | fisica.temperatura-y-calor | Dilatación volumétrica de líquidos en un tanque |
-| 53 | Física | Dinámica circular con rozamiento estático | 1 | 1 (0 + 1) | fisica.dinamica | Rozamiento estático como fuerza centrípeta en plataforma giratoria |
-| 54 | Física | Dinámica circular: péndulo cónico | 1 | 1 (0 + 1) | fisica.dinamica | Movimiento circular horizontal con normal inclinada |
-| 55 | Física | Efecto Joule y calorimetría | 1 | 1 (0 + 1) | fisica.corriente-y-circuitos | Potencia eléctrica convertida en calor para calentar agua |
-| 56 | Física | Energía con pérdidas porcentuales en rebotes | 1 | 1 (0 + 1) | fisica.trabajo-y-energia | Rebotes sucesivos con pérdidas porcentuales de energía |
-| 57 | Física | Energía de un condensador | 1 | 1 (0 + 1) | fisica.electrostatica | Energía almacenada en un condensador con eficiencia de conversión |
-| 58 | Física | Energía mecánica convertida en calor | 1 | 1 (0 + 1) | fisica.temperatura-y-calor | Equivalente mecánico del calor: energía de caída que calienta agua |
-| 59 | Física | Energía potencial de un sistema de cargas | 1 | 1 (0 + 1) | fisica.electrostatica | Energía potencial de un sistema de varias cargas puntuales |
-| 60 | Física | Equilibrio del cuerpo rígido: escalera apoyada | 1 | 1 (0 + 1) | fisica.estatica | Escalera apoyada con pared lisa y persona encima |
-| 61 | Física | Escalas termométricas: variaciones | 1 | 1 (0 + 1) | fisica.temperatura-y-calor | Conversión de variaciones de temperatura entre escalas |
-| 62 | Física | Fem y resistencia interna | 1 | 1 (0 + 1) | fisica.corriente-y-circuitos | Pila real con resistencia interna y gráfica corriente-resistencia externa |
-| 63 | Física | Flujo magnético en espira que gira | 1 | 1 (0 + 1) | fisica.induccion-electromagnetica | Flujo magnético como función armónica del tiempo en una espira giratoria |
-| 64 | Física | Fuerza magnética sobre un conductor | 1 | 1 (0 + 1) | fisica.magnetismo | Fuerza sobre un conductor con corriente en un campo, con circuito de riel |
-| 65 | Física | Función de onda | 1 | 1 (0 + 1) | fisica.ondas-mecanicas | Lectura de k y ω en la función de onda armónica |
-| 66 | Física | Gráfica v-t: área y tiempo mínimo | 1 | 1 (0 + 1) | fisica.movimiento-rectilineo | Optimizar tiempo con tramos acelerado y frenado en gráfica v-t |
-| 67 | Física | Ley de Faraday y carga inducida | 1 | 1 (0 + 1) | fisica.induccion-electromagnetica | Carga total inducida al invertir el flujo en una bobina |
-| 68 | Física | MAS con rozamiento estático entre bloques | 1 | 1 (0 + 1) | fisica.oscilaciones | Bloque apilado que no resbala en un oscilador |
-| 69 | Física | MAS de un cuerpo flotante | 1 | 1 (0 + 1) | fisica.oscilaciones | Empuje como fuerza restauradora de un oscilador |
-| 70 | Física | MCU: rotación terrestre y latitud | 1 | 1 (0 + 1) | fisica.movimiento-parabolico-y-circular | Radio de giro según la latitud en la Tierra que rota |
-| 71 | Física | Masa e inercia frente a cambios de volumen | 1 | 1 (0 + 1) | fuera-del-catalogo:propiedades de la materia | Dilatación con conservación de masa e inercia |
-| 72 | Física | Movimiento en el plano con ecuaciones horarias | 1 | 1 (0 + 1) | fisica.movimiento-parabolico-y-circular | Ecuaciones horarias x(t), y(t) generales en el plano |
-| 73 | Física | Ondas transversales y longitudinales | 1 | 1 (0 + 1) | fisica.ondas-mecanicas | Dirección de oscilación de las partículas en ondas longitudinales |
-| 74 | Física | Pilas con resistencia interna y medidores | 1 | 1 (0 + 1) | fisica.corriente-y-circuitos | Arreglos de pilas reales en serie y paralelo con medidores |
-| 75 | Física | Potencia como energía por tiempo | 1 | 1 (0 + 1) | fisica.trabajo-y-energia | Potencia de un flujo que eleva masa por unidad de tiempo |
-| 76 | Física | Potencial de una carga puntual: gráfica V-r | 1 | 1 (0 + 1) | fisica.electrostatica | Gráfica del potencial en función de la distancia |
-| 77 | Física | Principio de incertidumbre | 1 | 1 (0 + 1) | fisica.fisica-moderna | Principio de incertidumbre de Heisenberg |
-| 78 | Física | Puente de Wheatstone | 1 | 1 (0 + 1) | fisica.corriente-y-circuitos | Puente de Wheatstone equilibrado donde una rama no conduce |
-| 79 | Física | Punto de fuerza gravitatoria nula | 1 | 1 (0 + 1) | fisica.gravitacion | Superposición de fuerzas gravitatorias de dos masas en línea |
-| 80 | Física | Rapidez de propagación y diferencia de tiempos | 1 | 1 (0 + 1) | fisica.ondas-mecanicas | Ondas sísmicas que llegan en distinto tiempo, tratadas como MRU |
-| 81 | Física | Rapidez del sonido en distintos medios | 1 | 1 (0 + 1) | fisica.ondas-mecanicas | Sonido por dos medios con diferencia de tiempos de llegada |
-| 82 | Física | Rapidez media con tabla de posiciones | 1 | 1 (0 + 1) | fisica.movimiento-rectilineo | Distinguir rapidez media de velocidad media en ida y vuelta |
-| 83 | Física | Relatividad: energía cinética clásica contra relativista | 1 | 1 (0 + 1) | fisica.fisica-moderna | Relatividad especial: factor de Lorentz y energía cinética |
-| 84 | Física | Relatividad: energía en reposo y cinética | 1 | 1 (0 + 1) | fisica.fisica-moderna | Relatividad especial: energía total, en reposo y cinética |
-| 85 | Física | Resistividad y potencia disipada | 1 | 1 (0 + 1) | fisica.corriente-y-circuitos | Resistencia de cables por resistividad y su efecto en la potencia |
-| 86 | Física | Rozamiento como fuerza motriz | 1 | 1 (0 + 1) | fisica.dinamica | Rozamiento estático en ruedas motrices que impulsa el vehículo |
-| 87 | Física | Segunda ley e impulso con tabla de datos | 1 | 1 (0 + 1) | fisica.dinamica | Comparar varios cuerpos con datos de fuerza, masa y tiempo en tabla |
-| 88 | Física | Selector de velocidades: campos cruzados | 1 | 1 (0 + 1) | fisica.magnetismo | Campos eléctrico y magnético cruzados que equilibran una carga |
-| 89 | Física | Sistemas de bloques con resorte | 1 | 1 (0 + 1) | fisica.dinamica | Bloques unidos por resorte con aceleraciones distintas |
-| 90 | Física | Superposición de campos eléctricos en 3D | 1 | 1 (0 + 1) | fisica.electrostatica | Superposición vectorial de campos de varias cargas en geometría espacial |
-| 91 | Física | Teorema trabajo-energía con cuerda y polea | 1 | 1 (0 + 1) | fisica.trabajo-y-energia | Trabajo de una fuerza por el desplazamiento del extremo de la cuerda, con geometría |
-| 92 | Física | Torricelli y chorro parabólico | 1 | 1 (0 + 1) | fisica.fluidos | Teorema de Torricelli combinado con caída parabólica del chorro |
-| 93 | Física | Trabajo contra el peso con carga variable | 1 | 1 (0 + 1) | fisica.trabajo-y-energia | Trabajo por tramos con carga que cambia en cada piso |
-| 94 | Física | Velocidad relativa | 1 | 1 (0 + 1) | fisica.movimiento-rectilineo | Marcos de referencia y velocidad relativa entre móviles |
-| 95 | Física | Velocidad relativa: bote y río | 1 | 1 (0 + 1) | fisica.movimiento-rectilineo | Composición de velocidades del bote respecto al río y a tierra |
-| 96 | Física | Velocidad relativa: ida y vuelta junto a un bote | 1 | 1 (0 + 1) | fisica.movimiento-rectilineo | Velocidad relativa en ida y vuelta respecto a un móvil |
-| 97 | Física | Ángulo límite y reflexión total | 1 | 1 (0 + 1) | fisica.optica-geometrica | Refracción, ley de Snell y ángulo límite sin escena |
-| 98 | Química | Acumulador de plomo | 1 | 1 (0 + 1) | quimica.electroquimica | Pilas comerciales: acumulador de plomo y sus semirreacciones |
-| 99 | Química | Agentes y especies en un redox con radicales | 1 | 1 (0 + 1) | quimica.reacciones-y-balance | Radicales libres y su notación de Lewis en reacciones redox |
-| 100 | Química | Aminoácidos y proteínas: propiedades | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Punto isoeléctrico, interacciones de cadenas laterales y solubilidad de proteínas |
-| 101 | Química | Aminoácidos y reacciones orgánicas | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Tipos de reacción orgánica sobre aminoácidos aromáticos |
-| 102 | Química | Aminoácidos: estructura | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Hibridación, electrones y grupos funcionales en aminoácidos aromáticos |
-| 103 | Química | Aminoácidos: estructura y nombre | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Nombre IUPAC e hibridación en aminoácidos aromáticos |
-| 104 | Química | Aminoácidos: grupos y pares libres | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Contar pares libres y enlaces apolares en aminoácidos |
-| 105 | Química | Aminoácidos: nombre, ionización y quiralidad | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Forma ionizada de aminoácidos según pH y centros quirales |
-| 106 | Química | Balance de materia en flotación | 1 | 1 (0 + 1) | quimica.estequiometria | Ley de mineral y balance de masa en concentración metalúrgica |
-| 107 | Química | Bases de Lewis y alcaloides | 1 | 1 (0 + 1) | quimica.acidos-y-bases | Teorías de Lewis y Brønsted aplicadas a bases nitrogenadas |
-| 108 | Química | Biomoléculas en alimentos | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Esteroles, azúcares reductores y alcaloides en alimentos |
-| 109 | Química | Calentamiento global: lectura de gráfico | 1 | 1 (0 + 1) | quimica.ambiente-y-quimica-aplicada | Leer datos ambientales en gráficos de tendencia |
-| 110 | Química | Calor de vaporización molar | 1 | 1 (0 + 1) | quimica.liquidos-y-solidos | Calor latente molar en cambios de fase |
-| 111 | Química | Carbohidratos: aldosas y cetosas | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Clasificar monosacáridos como aldosas o cetosas y su isomería |
-| 112 | Química | Carbohidratos: disacáridos | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Disacáridos: solubilidad, estructura cíclica y molaridad de jarabes |
-| 113 | Química | Carbohidratos: estructura y nombre | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Nombrar azúcares como polihidroxialdehídos con numeración IUPAC |
-| 114 | Química | Carbohidratos: quiralidad y actividad óptica | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Isomería óptica y quiralidad en monosacáridos (proyección de Fischer) |
-| 115 | Química | Celda de combustible microbiana | 1 | 1 (0 + 1) | quimica.electroquimica | Celdas de combustible y semirreacciones orgánicas en medio acuoso |
-| 116 | Química | Clasificación de reacciones: oxidación y reversibilidad | 1 | 1 (0 + 1) | quimica.reacciones-y-balance | Clasificar reacciones como reversibles o irreversibles y de oxidación |
-| 117 | Química | Combustión, polimerización y aromáticos policíclicos | 1 | 1 (0 + 1) | quimica.recursos-naturales | Polímeros de adición y aromáticos policíclicos junto con la combustión |
-| 118 | Química | Compuestos aromáticos con dos funciones | 1 | 1 (0 + 1) | quimica.funciones-organicas | Reacciones del anillo aromático y conteo de carbonos sp2 |
-| 119 | Química | Compuestos iónicos: propiedades | 1 | 1 (0 + 1) | quimica.enlace-quimico | Propiedades de sólidos iónicos y clases de iones |
-| 120 | Química | Compuestos polifuncionales: ésteres y aminas | 1 | 1 (0 + 1) | quimica.funciones-organicas | Nombrar y clasificar compuestos con varias funciones |
-| 121 | Química | Configuración de iones de transición y redox | 1 | 1 (0 + 1) | quimica.estructura-atomica | Configuración de cationes de transición junto con agentes redox y radicales |
-| 122 | Química | Configuración y ubicación de iones | 1 | 1 (0 + 1) | quimica.tabla-periodica | Relación química-salud del ion sodio |
-| 123 | Química | Configuración, nomenclatura y electrólisis de sales | 1 | 1 (0 + 1) | quimica.nomenclatura-inorganica | Pregunta mixta: configuración de metal pesado, nombre tradicional y electrólisis |
-| 124 | Química | Configuración, ubicación y enlace de un halógeno | 1 | 1 (0 + 1) | quimica.estructura-atomica | Mezcla de configuración, ubicación, tipo de sal y enlace dativo |
-| 125 | Química | Conservación de un elemento (atómica) | 1 | 1 (0 + 1) | quimica.estequiometria | Estequiometría por conservación de átomos sin ecuación balanceada |
-| 126 | Química | Contaminantes del aire, agua y suelo | 1 | 1 (0 + 1) | quimica.ambiente-y-quimica-aplicada | Contaminantes primarios y secundarios, persistentes y naturales |
-| 127 | Química | Diagrama de Pourbaix | 1 | 1 (0 + 1) | quimica.electroquimica | Diagramas de Pourbaix potencial-pH |
-| 128 | Química | Dilución con miliequivalentes | 1 | 1 (0 + 1) | quimica.soluciones | Dilución expresada en miliequivalentes por litro |
-| 129 | Química | Elementos frente a compuestos y oxoaniones | 1 | 1 (0 + 1) | quimica.enlace-quimico | Distinguir molécula elemental de compuesto y carga de oxoaniones |
-| 130 | Química | Enlaces pi y sustituyentes en polienos | 1 | 1 (0 + 1) | quimica.hidrocarburos | Contar enlaces pi y sustituyentes en moléculas grandes |
-| 131 | Química | Enlaces polares y octeto en moléculas orgánicas | 1 | 1 (0 + 1) | quimica.enlace-quimico | Contar enlaces polares y octeto en moléculas orgánicas largas |
-| 132 | Química | Equilibrio y reacciones en la sangre | 1 | 1 (0 + 1) | quimica.equilibrio-quimico | Equilibrio heterogéneo y soluciones reguladoras en contexto biológico |
-| 133 | Química | Escalas de temperatura | 1 | 1 (0 + 1) | quimica.materia-y-energia | Conversión de escalas y variaciones de temperatura en gráficos |
-| 134 | Química | Esferas de la Tierra | 1 | 1 (0 + 1) | quimica.ambiente-y-quimica-aplicada | Atmósfera, hidrósfera y litósfera como sistemas del ambiente |
-| 135 | Química | Esteroides: estructura y quiralidad | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Esteroides y carbonos quirales (isomería óptica) |
-| 136 | Química | Fermentación: redox y productos | 1 | 1 (0 + 1) | quimica.funciones-organicas | Reacciones de oxidación de alcoholes y estados de oxidación del carbono |
-| 137 | Química | Fórmulas, mezclas y tipo de óxido | 1 | 1 (0 + 1) | quimica.nomenclatura-inorganica | Clasificar óxidos como ácidos o básicos junto con sustancias y mezclas |
-| 138 | Química | Grupos funcionales en moléculas complejas | 1 | 1 (0 + 1) | quimica.funciones-organicas | Reconocer grupos funcionales en moléculas grandes como vitaminas |
-| 139 | Química | Grupos funcionales y quiralidad en moléculas biológicas | 1 | 1 (0 + 1) | quimica.funciones-organicas | Heterociclos nitrogenados y carbonos quirales en moléculas grandes |
-| 140 | Química | Heterociclos: pares libres e hibridación | 1 | 1 (0 + 1) | quimica.funciones-organicas | Heterociclos aromáticos nitrogenados (bases nitrogenadas) |
-| 141 | Química | Hibridación e isomería en compuestos oxigenados | 1 | 1 (0 + 1) | quimica.funciones-organicas | Hibridación de carbonos en ácidos con varias funciones |
-| 142 | Química | Hibridación y electrones pi en polienos | 1 | 1 (0 + 1) | quimica.hidrocarburos | Contar carbonos sp2, sp3 y electrones pi en moléculas grandes |
-| 143 | Química | Hibridación y enlaces pi en polienos | 1 | 1 (0 + 1) | quimica.hidrocarburos | Contar enlaces pi, metilos e hibridación en hidrocarburos grandes |
-| 144 | Química | Hidrogenación parcial y total de alquinos | 1 | 1 (0 + 1) | quimica.hidrocarburos | Reacciones de adición con catalizadores selectivos (Lindlar) |
-| 145 | Química | Hidrogenación y reacciones de adición | 1 | 1 (0 + 1) | quimica.hidrocarburos | Reacciones de adición y conteo de átomos de hidrógeno |
-| 146 | Química | Hidruros no metálicos: enlace y pares libres | 1 | 1 (0 + 1) | quimica.enlace-quimico | Hidruros no metálicos y sales ácidas en una misma pregunta |
-| 147 | Química | Hidróxidos: estequiometría y disociación | 1 | 1 (0 + 1) | quimica.nomenclatura-inorganica | Estequiometría de formación de hidróxidos y conteo de iones |
-| 148 | Química | Insaturación, adición y moles | 1 | 1 (0 + 1) | quimica.hidrocarburos | Reacciones de adición y conteo de pares libres en organosulfurados |
-| 149 | Química | Isomería geométrica en ácidos insaturados | 1 | 1 (0 + 1) | quimica.hidrocarburos | Notación Z/E y comparación de isómeros geométricos con funciones |
-| 150 | Química | Isótopos radiactivos y vida media | 1 | 1 (0 + 1) | quimica.materia-y-energia | Radiactividad y lectura de vida media en curva de decaimiento |
-| 151 | Química | Ley de un mineral y moles | 1 | 1 (0 + 1) | quimica.estequiometria | Ley de mineral y balance de masa en concentración metalúrgica |
-| 152 | Química | Limitante y estequiometría redox con soluciones | 1 | 1 (0 + 1) | quimica.estequiometria | Estequiometría redox con soluciones y concentración de producto |
-| 153 | Química | Limitante, rendimiento y calor de reacción | 1 | 1 (0 + 1) | quimica.estequiometria | Estequiometría con entalpía de reacción (termoquímica) |
-| 154 | Química | Lípidos: hidrólisis de triglicéridos | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Estequiometría de hidrólisis de triglicéridos |
-| 155 | Química | Mecanismo en dos etapas: intermediario y complejo activado | 1 | 1 (0 + 1) | quimica.cinetica-quimica | Perfiles de energía con dos etapas e intermediario |
-| 156 | Química | Mecanismo y orden de reacción | 1 | 1 (0 + 1) | quimica.cinetica-quimica | Mecanismos con etapa lenta que determina la ley de velocidad |
-| 157 | Química | Mecanismo: etapa lenta, catalizador e intermediario | 1 | 1 (0 + 1) | quimica.cinetica-quimica | Mecanismos por etapas con catalizador e intermediario |
-| 158 | Química | Metales de transición: configuración y grupo | 1 | 1 (0 + 1) | quimica.tabla-periodica | Configuraciones anómalas y ubicación de elementos con Z mayor que 36 |
-| 159 | Química | Mezcla de soluciones en miliequivalentes | 1 | 1 (0 + 1) | quimica.soluciones | Mezcla de soluciones y concentración de iones en miliequivalentes |
-| 160 | Química | Modelo de Rutherford | 1 | 1 (0 + 1) | quimica.estructura-atomica | Experimento de Rutherford y evolución de modelos atómicos |
-| 161 | Química | Modelos atómicos | 1 | 1 (0 + 1) | quimica.estructura-atomica | Evolución histórica de los modelos atómicos y sus aportes |
-| 162 | Química | Modelos atómicos: Dalton | 1 | 1 (0 + 1) | quimica.estructura-atomica | Evolución histórica de los modelos atómicos y sus postulados |
-| 163 | Química | Nomenclatura de ácidos con otra función y fuerza ácida | 1 | 1 (0 + 1) | quimica.funciones-organicas | Nombrar oxo e hidroxiácidos con prioridad de grupos |
-| 164 | Química | Oxidación sucesiva de grupos funcionales | 1 | 1 (0 + 1) | quimica.funciones-organicas | Secuencia de oxidación alcano, alcohol, aldehído, ácido con hibridación |
-| 165 | Química | Oxidación y reducción de azúcares | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Oxidación y reducción de grupos funcionales en carbohidratos |
-| 166 | Química | Polifenoles: estructura | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Polifenoles y flavonoides: pares libres, hibridación y acidez |
-| 167 | Química | Porcentaje en volumen y mezclas | 1 | 1 (0 + 1) | quimica.soluciones | Porcentaje en volumen y proporciones en mezclas de solventes |
-| 168 | Química | Precipitación y miliequivalentes | 1 | 1 (0 + 1) | quimica.soluciones | Valoración por precipitación con miliequivalentes |
-| 169 | Química | Radicales libres | 1 | 1 (0 + 1) | quimica.enlace-quimico | Radicales libres: especies con electrón desapareado en la estructura de Lewis |
-| 170 | Química | Ramas de la química | 1 | 1 (0 + 1) | quimica.materia-y-energia | Ramas de la química y su objeto de estudio |
-| 171 | Química | Reacciones del carbonato en aguas duras | 1 | 1 (0 + 1) | quimica.reacciones-y-balance | Reacciones de carbonatos y bicarbonatos en aguas duras |
-| 172 | Química | Sólidos iónicos y radio iónico | 1 | 1 (0 + 1) | quimica.liquidos-y-solidos | Sólidos cristalinos contra amorfos, celda unitaria y radio iónico |
-| 173 | Química | Termoquímica, limitante y electrólisis | 1 | 1 (0 + 1) | quimica.estequiometria | Termoquímica: calor según la cantidad de producto |
-| 174 | Química | Tipo de enlace según propiedades | 1 | 1 (0 + 1) | quimica.enlace-quimico | Deducir tipo de sólido por fusión, solubilidad y conductividad |
-| 175 | Química | Tostación y estequiometría metalúrgica | 1 | 1 (0 + 1) | quimica.recursos-naturales | Estequiometría de procesos metalúrgicos con ley de mineral |
-| 176 | Química | Ubicación de un elemento | 1 | 1 (0 + 1) | quimica.tabla-periodica | Ubicar elementos con Z mayor que 36 en la tabla |
-| 177 | Química | Ubicación y configuración de un halógeno | 1 | 1 (0 + 1) | quimica.tabla-periodica | Ubicar elementos con Z mayor que 36 y configurar sus iones |
-| 178 | Química | Unidades y conversiones | 1 | 1 (1 + 0) | fuera-del-catalogo:unidades y conversiones | Conversiones de unidades: densidad, ángstrom, variaciones de temperatura |
-| 179 | Química | Velocidad media desde un gráfico | 1 | 1 (0 + 1) | quimica.cinetica-quimica | Leer concentraciones y velocidad media en gráficos concentración-tiempo |
-| 180 | Química | Viscosidad y forma molecular | 1 | 1 (0 + 1) | quimica.liquidos-y-solidos | Viscosidad según forma molecular y fuerzas intermoleculares |
-| 181 | Química | Viscosidad, tensión superficial y presión de vapor | 1 | 1 (0 + 1) | quimica.liquidos-y-solidos | Tensión superficial y viscosidad según fuerzas intermoleculares |
-| 182 | Química | Vitaminas | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Vitaminas hidro y liposolubles: estructura y funciones |
-| 183 | Química | Vitaminas como agentes redox | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Vitaminas antioxidantes como agentes reductores; lactona frente a lactama |
-| 184 | Química | Vitaminas y coenzimas | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Relación entre vitaminas y coenzimas |
-| 185 | Química | Vitaminas: síntesis de vitamina D | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Vitaminas liposolubles, esteroides y su ruta de activación |
+| 16 | Química | Normalidad y miliequivalentes | 2 | 3 (0 + 3) | quimica.soluciones | Concentraciones en miliequivalentes y normalidad en contexto fisiológico |
+| 17 | Química | Carotenoides y vitaminas: estructura y oxidación | 2 | 2 (0 + 2) | quimica.biomoleculas-y-productos-naturales | Vitaminas y carotenoides: solubilidad, sustituyentes y oxidación de grupos |
+| 18 | Química | Grupos funcionales en hormonas | 2 | 2 (0 + 2) | quimica.biomoleculas-y-productos-naturales | Identificar grupos funcionales y reacciones en moléculas biológicas grandes |
+| 19 | Química | Mecanismo: intermediario y catalizador | 2 | 2 (0 + 2) | quimica.cinetica-quimica | Distinguir intermediario de catalizador en un mecanismo por pasos |
+| 20 | Química | Nomenclatura de compuestos polifuncionales | 2 | 2 (0 + 2) | quimica.funciones-organicas | Nombrar compuestos con varios grupos funcionales y prioridades |
+| 21 | Química | Partes por millón | 2 | 2 (0 + 2) | quimica.soluciones | Conversión de ppm a moles por volumen |
+| 22 | Química | Colorantes naturales: grupos funcionales | 1 | 2 (0 + 2) | quimica.biomoleculas-y-productos-naturales | Colorantes naturales: grupos funcionales, hibridación y enlaces pi |
+| 23 | Química | Acumulador de plomo | 1 | 1 (0 + 1) | quimica.electroquimica | Pilas comerciales: acumulador de plomo y sus semirreacciones |
+| 24 | Química | Agentes y especies en un redox con radicales | 1 | 1 (0 + 1) | quimica.reacciones-y-balance | Radicales libres y su notación de Lewis en reacciones redox |
+| 25 | Química | Aminoácidos y proteínas: propiedades | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Punto isoeléctrico, interacciones de cadenas laterales y solubilidad de proteínas |
+| 26 | Química | Aminoácidos y reacciones orgánicas | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Tipos de reacción orgánica sobre aminoácidos aromáticos |
+| 27 | Química | Aminoácidos: estructura | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Hibridación, electrones y grupos funcionales en aminoácidos aromáticos |
+| 28 | Química | Aminoácidos: estructura y nombre | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Nombre IUPAC e hibridación en aminoácidos aromáticos |
+| 29 | Química | Aminoácidos: grupos y pares libres | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Contar pares libres y enlaces apolares en aminoácidos |
+| 30 | Química | Aminoácidos: nombre, ionización y quiralidad | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Forma ionizada de aminoácidos según pH y centros quirales |
+| 31 | Química | Balance de materia en flotación | 1 | 1 (0 + 1) | quimica.estequiometria | Ley de mineral y balance de masa en concentración metalúrgica |
+| 32 | Química | Bases de Lewis y alcaloides | 1 | 1 (0 + 1) | quimica.acidos-y-bases | Teorías de Lewis y Brønsted aplicadas a bases nitrogenadas |
+| 33 | Química | Biomoléculas en alimentos | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Esteroles, azúcares reductores y alcaloides en alimentos |
+| 34 | Química | Calentamiento global: lectura de gráfico | 1 | 1 (0 + 1) | quimica.ambiente-y-quimica-aplicada | Leer datos ambientales en gráficos de tendencia |
+| 35 | Química | Calor de vaporización molar | 1 | 1 (0 + 1) | quimica.liquidos-y-solidos | Calor latente molar en cambios de fase |
+| 36 | Química | Carbohidratos: aldosas y cetosas | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Clasificar monosacáridos como aldosas o cetosas y su isomería |
+| 37 | Química | Carbohidratos: disacáridos | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Disacáridos: solubilidad, estructura cíclica y molaridad de jarabes |
+| 38 | Química | Carbohidratos: estructura y nombre | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Nombrar azúcares como polihidroxialdehídos con numeración IUPAC |
+| 39 | Química | Carbohidratos: quiralidad y actividad óptica | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Isomería óptica y quiralidad en monosacáridos (proyección de Fischer) |
+| 40 | Química | Celda de combustible microbiana | 1 | 1 (0 + 1) | quimica.electroquimica | Celdas de combustible y semirreacciones orgánicas en medio acuoso |
+| 41 | Química | Clasificación de reacciones: oxidación y reversibilidad | 1 | 1 (0 + 1) | quimica.reacciones-y-balance | Clasificar reacciones como reversibles o irreversibles y de oxidación |
+| 42 | Química | Combustión, polimerización y aromáticos policíclicos | 1 | 1 (0 + 1) | quimica.recursos-naturales | Polímeros de adición y aromáticos policíclicos junto con la combustión |
+| 43 | Química | Compuestos aromáticos con dos funciones | 1 | 1 (0 + 1) | quimica.funciones-organicas | Reacciones del anillo aromático y conteo de carbonos sp2 |
+| 44 | Química | Compuestos iónicos: propiedades | 1 | 1 (0 + 1) | quimica.enlace-quimico | Propiedades de sólidos iónicos y clases de iones |
+| 45 | Química | Compuestos polifuncionales: ésteres y aminas | 1 | 1 (0 + 1) | quimica.funciones-organicas | Nombrar y clasificar compuestos con varias funciones |
+| 46 | Química | Configuración de iones de transición y redox | 1 | 1 (0 + 1) | quimica.estructura-atomica | Configuración de cationes de transición junto con agentes redox y radicales |
+| 47 | Química | Configuración y ubicación de iones | 1 | 1 (0 + 1) | quimica.tabla-periodica | Relación química-salud del ion sodio |
+| 48 | Química | Configuración, nomenclatura y electrólisis de sales | 1 | 1 (0 + 1) | quimica.nomenclatura-inorganica | Pregunta mixta: configuración de metal pesado, nombre tradicional y electrólisis |
+| 49 | Química | Configuración, ubicación y enlace de un halógeno | 1 | 1 (0 + 1) | quimica.estructura-atomica | Mezcla de configuración, ubicación, tipo de sal y enlace dativo |
+| 50 | Química | Conservación de un elemento (atómica) | 1 | 1 (0 + 1) | quimica.estequiometria | Estequiometría por conservación de átomos sin ecuación balanceada |
+| 51 | Química | Contaminantes del aire, agua y suelo | 1 | 1 (0 + 1) | quimica.ambiente-y-quimica-aplicada | Contaminantes primarios y secundarios, persistentes y naturales |
+| 52 | Química | Diagrama de Pourbaix | 1 | 1 (0 + 1) | quimica.electroquimica | Diagramas de Pourbaix potencial-pH |
+| 53 | Química | Dilución con miliequivalentes | 1 | 1 (0 + 1) | quimica.soluciones | Dilución expresada en miliequivalentes por litro |
+| 54 | Química | Elementos frente a compuestos y oxoaniones | 1 | 1 (0 + 1) | quimica.enlace-quimico | Distinguir molécula elemental de compuesto y carga de oxoaniones |
+| 55 | Química | Enlaces pi y sustituyentes en polienos | 1 | 1 (0 + 1) | quimica.hidrocarburos | Contar enlaces pi y sustituyentes en moléculas grandes |
+| 56 | Química | Enlaces polares y octeto en moléculas orgánicas | 1 | 1 (0 + 1) | quimica.enlace-quimico | Contar enlaces polares y octeto en moléculas orgánicas largas |
+| 57 | Química | Equilibrio y reacciones en la sangre | 1 | 1 (0 + 1) | quimica.equilibrio-quimico | Equilibrio heterogéneo y soluciones reguladoras en contexto biológico |
+| 58 | Química | Escalas de temperatura | 1 | 1 (0 + 1) | quimica.materia-y-energia | Conversión de escalas y variaciones de temperatura en gráficos |
+| 59 | Química | Esferas de la Tierra | 1 | 1 (0 + 1) | quimica.ambiente-y-quimica-aplicada | Atmósfera, hidrósfera y litósfera como sistemas del ambiente |
+| 60 | Química | Esteroides: estructura y quiralidad | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Esteroides y carbonos quirales (isomería óptica) |
+| 61 | Química | Fermentación: redox y productos | 1 | 1 (0 + 1) | quimica.funciones-organicas | Reacciones de oxidación de alcoholes y estados de oxidación del carbono |
+| 62 | Química | Fórmulas, mezclas y tipo de óxido | 1 | 1 (0 + 1) | quimica.nomenclatura-inorganica | Clasificar óxidos como ácidos o básicos junto con sustancias y mezclas |
+| 63 | Química | Grupos funcionales en moléculas complejas | 1 | 1 (0 + 1) | quimica.funciones-organicas | Reconocer grupos funcionales en moléculas grandes como vitaminas |
+| 64 | Química | Grupos funcionales y quiralidad en moléculas biológicas | 1 | 1 (0 + 1) | quimica.funciones-organicas | Heterociclos nitrogenados y carbonos quirales en moléculas grandes |
+| 65 | Química | Heterociclos: pares libres e hibridación | 1 | 1 (0 + 1) | quimica.funciones-organicas | Heterociclos aromáticos nitrogenados (bases nitrogenadas) |
+| 66 | Química | Hibridación e isomería en compuestos oxigenados | 1 | 1 (0 + 1) | quimica.funciones-organicas | Hibridación de carbonos en ácidos con varias funciones |
+| 67 | Química | Hibridación y electrones pi en polienos | 1 | 1 (0 + 1) | quimica.hidrocarburos | Contar carbonos sp2, sp3 y electrones pi en moléculas grandes |
+| 68 | Química | Hibridación y enlaces pi en polienos | 1 | 1 (0 + 1) | quimica.hidrocarburos | Contar enlaces pi, metilos e hibridación en hidrocarburos grandes |
+| 69 | Química | Hidrogenación parcial y total de alquinos | 1 | 1 (0 + 1) | quimica.hidrocarburos | Reacciones de adición con catalizadores selectivos (Lindlar) |
+| 70 | Química | Hidrogenación y reacciones de adición | 1 | 1 (0 + 1) | quimica.hidrocarburos | Reacciones de adición y conteo de átomos de hidrógeno |
+| 71 | Química | Hidruros no metálicos: enlace y pares libres | 1 | 1 (0 + 1) | quimica.enlace-quimico | Hidruros no metálicos y sales ácidas en una misma pregunta |
+| 72 | Química | Hidróxidos: estequiometría y disociación | 1 | 1 (0 + 1) | quimica.nomenclatura-inorganica | Estequiometría de formación de hidróxidos y conteo de iones |
+| 73 | Química | Insaturación, adición y moles | 1 | 1 (0 + 1) | quimica.hidrocarburos | Reacciones de adición y conteo de pares libres en organosulfurados |
+| 74 | Química | Isomería geométrica en ácidos insaturados | 1 | 1 (0 + 1) | quimica.hidrocarburos | Notación Z/E y comparación de isómeros geométricos con funciones |
+| 75 | Química | Isótopos radiactivos y vida media | 1 | 1 (0 + 1) | quimica.materia-y-energia | Radiactividad y lectura de vida media en curva de decaimiento |
+| 76 | Química | Ley de un mineral y moles | 1 | 1 (0 + 1) | quimica.estequiometria | Ley de mineral y balance de masa en concentración metalúrgica |
+| 77 | Química | Limitante y estequiometría redox con soluciones | 1 | 1 (0 + 1) | quimica.estequiometria | Estequiometría redox con soluciones y concentración de producto |
+| 78 | Química | Limitante, rendimiento y calor de reacción | 1 | 1 (0 + 1) | quimica.estequiometria | Estequiometría con entalpía de reacción (termoquímica) |
+| 79 | Química | Lípidos: hidrólisis de triglicéridos | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Estequiometría de hidrólisis de triglicéridos |
+| 80 | Química | Mecanismo en dos etapas: intermediario y complejo activado | 1 | 1 (0 + 1) | quimica.cinetica-quimica | Perfiles de energía con dos etapas e intermediario |
+| 81 | Química | Mecanismo y orden de reacción | 1 | 1 (0 + 1) | quimica.cinetica-quimica | Mecanismos con etapa lenta que determina la ley de velocidad |
+| 82 | Química | Mecanismo: etapa lenta, catalizador e intermediario | 1 | 1 (0 + 1) | quimica.cinetica-quimica | Mecanismos por etapas con catalizador e intermediario |
+| 83 | Química | Metales de transición: configuración y grupo | 1 | 1 (0 + 1) | quimica.tabla-periodica | Configuraciones anómalas y ubicación de elementos con Z mayor que 36 |
+| 84 | Química | Mezcla de soluciones en miliequivalentes | 1 | 1 (0 + 1) | quimica.soluciones | Mezcla de soluciones y concentración de iones en miliequivalentes |
+| 85 | Química | Modelo de Rutherford | 1 | 1 (0 + 1) | quimica.estructura-atomica | Experimento de Rutherford y evolución de modelos atómicos |
+| 86 | Química | Modelos atómicos | 1 | 1 (0 + 1) | quimica.estructura-atomica | Evolución histórica de los modelos atómicos y sus aportes |
+| 87 | Química | Modelos atómicos: Dalton | 1 | 1 (0 + 1) | quimica.estructura-atomica | Evolución histórica de los modelos atómicos y sus postulados |
+| 88 | Química | Nomenclatura de ácidos con otra función y fuerza ácida | 1 | 1 (0 + 1) | quimica.funciones-organicas | Nombrar oxo e hidroxiácidos con prioridad de grupos |
+| 89 | Química | Oxidación sucesiva de grupos funcionales | 1 | 1 (0 + 1) | quimica.funciones-organicas | Secuencia de oxidación alcano, alcohol, aldehído, ácido con hibridación |
+| 90 | Química | Oxidación y reducción de azúcares | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Oxidación y reducción de grupos funcionales en carbohidratos |
+| 91 | Química | Polifenoles: estructura | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Polifenoles y flavonoides: pares libres, hibridación y acidez |
+| 92 | Química | Porcentaje en volumen y mezclas | 1 | 1 (0 + 1) | quimica.soluciones | Porcentaje en volumen y proporciones en mezclas de solventes |
+| 93 | Química | Precipitación y miliequivalentes | 1 | 1 (0 + 1) | quimica.soluciones | Valoración por precipitación con miliequivalentes |
+| 94 | Química | Radicales libres | 1 | 1 (0 + 1) | quimica.enlace-quimico | Radicales libres: especies con electrón desapareado en la estructura de Lewis |
+| 95 | Química | Ramas de la química | 1 | 1 (0 + 1) | quimica.materia-y-energia | Ramas de la química y su objeto de estudio |
+| 96 | Química | Reacciones del carbonato en aguas duras | 1 | 1 (0 + 1) | quimica.reacciones-y-balance | Reacciones de carbonatos y bicarbonatos en aguas duras |
+| 97 | Química | Sólidos iónicos y radio iónico | 1 | 1 (0 + 1) | quimica.liquidos-y-solidos | Sólidos cristalinos contra amorfos, celda unitaria y radio iónico |
+| 98 | Química | Termoquímica, limitante y electrólisis | 1 | 1 (0 + 1) | quimica.estequiometria | Termoquímica: calor según la cantidad de producto |
+| 99 | Química | Tipo de enlace según propiedades | 1 | 1 (0 + 1) | quimica.enlace-quimico | Deducir tipo de sólido por fusión, solubilidad y conductividad |
+| 100 | Química | Tostación y estequiometría metalúrgica | 1 | 1 (0 + 1) | quimica.recursos-naturales | Estequiometría de procesos metalúrgicos con ley de mineral |
+| 101 | Química | Ubicación de un elemento | 1 | 1 (0 + 1) | quimica.tabla-periodica | Ubicar elementos con Z mayor que 36 en la tabla |
+| 102 | Química | Ubicación y configuración de un halógeno | 1 | 1 (0 + 1) | quimica.tabla-periodica | Ubicar elementos con Z mayor que 36 y configurar sus iones |
+| 103 | Química | Unidades y conversiones | 1 | 1 (1 + 0) | fuera-del-catalogo:unidades y conversiones | Conversiones de unidades: densidad, ángstrom, variaciones de temperatura |
+| 104 | Química | Velocidad media desde un gráfico | 1 | 1 (0 + 1) | quimica.cinetica-quimica | Leer concentraciones y velocidad media en gráficos concentración-tiempo |
+| 105 | Química | Viscosidad y forma molecular | 1 | 1 (0 + 1) | quimica.liquidos-y-solidos | Viscosidad según forma molecular y fuerzas intermoleculares |
+| 106 | Química | Viscosidad, tensión superficial y presión de vapor | 1 | 1 (0 + 1) | quimica.liquidos-y-solidos | Tensión superficial y viscosidad según fuerzas intermoleculares |
+| 107 | Química | Vitaminas | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Vitaminas hidro y liposolubles: estructura y funciones |
+| 108 | Química | Vitaminas como agentes redox | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Vitaminas antioxidantes como agentes reductores; lactona frente a lactama |
+| 109 | Química | Vitaminas y coenzimas | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Relación entre vitaminas y coenzimas |
+| 110 | Química | Vitaminas: síntesis de vitamina D | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Vitaminas liposolubles, esteroides y su ruta de activación |
 
 ## Huecos por unidad: preguntas sin cubrir del todo (no + medio)
 
@@ -1525,44 +1450,31 @@ Ordenados por número de periodos en que salen y luego por número de preguntas.
 | 7 | Razonamiento matemático | razonamiento-matematico.certezas | 21 | 30 | 11 | Certezas (20); Verdades y mentiras (1) |
 | 8 | Razonamiento matemático | geometria.razonamiento-con-figuras | 17 | 26 | 10 | Cubos, sólidos y vistas (10); Conteo de figuras (3); Inducción y series (3) |
 | 9 | Razonamiento matemático | razonamiento-matematico.maximos-y-minimos | 16 | 25 | 9 | Máximos y mínimos (10); Traslados de fichas y juegos (3); Planteo y otros (2) |
-| 10 | Física | fisica.corriente-y-circuitos | 15 | 23 | 8 | Efecto Joule (3); Leyes de Kirchhoff con dos fuentes (3); Resistividad (2) |
-| 11 | Razonamiento matemático | razonamiento-matematico.razonamiento-deductivo | 14 | 32 | 10 | Ordenamiento y parentesco (5); Planteo y otros (5); Dados y dominó (2) |
-| 12 | Razonamiento matemático | fuera-del-catalogo:diagramas de flujo | 12 | 12 | 8 | Diagramas de flujo (12) |
-| 13 | Razonamiento matemático | razonamiento-matematico.cronometria-y-calendarios | 11 | 66 | 8 | Relojes (10); Calendarios (1) |
-| 14 | Química | quimica.funciones-organicas | 11 | 32 | 8 | Nomenclatura de compuestos polifuncionales (2); Hibridación e isomería en compuestos oxigenados (1); Nomenclatura de ácidos con otra función y fuerza ácida (1) |
-| 15 | Física | fisica.trabajo-y-energia | 11 | 24 | 7 | Potencia a velocidad constante (4); Potencia y eficiencia (2); Trabajo contra el peso con carga variable (1) |
-| 16 | Física | fisica.electrostatica | 10 | 16 | 9 | Condensadores en serie y paralelo (5); Energía potencial de un sistema de cargas (1); Potencial de una carga puntual: gráfica V-r (1) |
-| 17 | Razonamiento matemático | razonamiento-matematico.arreglos-numericos | 10 | 30 | 7 | Arreglos numéricos (6); Cuadro de doble entrada (2); Inducción y series (1) |
-| 18 | Química | quimica.reacciones-y-balance | 10 | 24 | 7 | Clasificación de reacciones (5); Balance y clasificación de reacciones (1); Dismutación redox (1) |
-| 19 | Física | fisica.movimiento-rectilineo | 9 | 20 | 7 | Rapidez media (2); Ecuación horaria del MRUV (2); Velocidad relativa (1) |
-| 20 | Química | quimica.soluciones | 9 | 14 | 7 | Normalidad y miliequivalentes (3); Partes por millón (2); Mezcla de soluciones en miliequivalentes (1) |
-| 21 | Razonamiento matemático | razonamiento-matematico.trazos-y-perimetros | 9 | 33 | 7 | Papel doblado y cortado (3); Traslados de fichas y juegos (2); Cortes y estacas (1) |
-| 22 | Física | fisica.fluidos | 9 | 21 | 7 | Caudal y continuidad (3); Continuidad y Bernoulli (3); Densidad y peso específico (1) |
-| 23 | Razonamiento matemático | razonamiento-matematico.planteo-de-ecuaciones | 9 | 21 | 6 | Planteo y otros (8); Máximos y mínimos (1) |
-| 24 | Física | fisica.magnetismo | 8 | 14 | 6 | Carga en campo magnético: periodo (2); Campo de una espira y ley de Ohm (1); Carga en campo magnético: radio de giro (1) |
-| 25 | Razonamiento matemático | razonamiento-matematico.razonamiento-inductivo | 8 | 26 | 6 | Inducción y series (4); Frecuencia de sucesos (2); Cubos, sólidos y vistas (2) |
-| 26 | Física | fisica.temperatura-y-calor | 7 | 22 | 7 | Escalas termométricas (2); Energía mecánica convertida en calor (1); Dilatación volumétrica de líquidos (1) |
-| 27 | Física | fisica.dinamica | 7 | 20 | 6 | Masa, peso y segunda ley (2); Dinámica circular con rozamiento estático (1); Rozamiento como fuerza motriz (1) |
-| 28 | Química | quimica.estequiometria | 7 | 34 | 6 | Estequiometría con soluciones (1); Ley de un mineral y moles (1); Balance de materia en flotación (1) |
-| 29 | Química | quimica.hidrocarburos | 7 | 21 | 6 | Hibridación y electrones pi en polienos (1); Enlaces pi y sustituyentes en polienos (1); Insaturación, adición y moles (1) |
-| 30 | Física | fisica.fisica-moderna | 6 | 16 | 6 | Relatividad: dilatación del tiempo (2); Principio de incertidumbre (1); Efecto fotoeléctrico y potencial de frenado (1) |
-| 31 | Química | quimica.enlace-quimico | 6 | 13 | 5 | Enlaces polares y octeto en moléculas orgánicas (1); Tipo de enlace según propiedades (1); Hidruros no metálicos: enlace y pares libres (1) |
-| 32 | Química | quimica.cinetica-quimica | 6 | 12 | 5 | Mecanismo: intermediario y catalizador (2); Mecanismo y orden de reacción (1); Velocidad media desde un gráfico (1) |
-| 33 | Razonamiento matemático | razonamiento-matematico.ruedas-poleas-engranajes | 6 | 12 | 3 | Rodamientos, ruedas y poleas (6) |
-| 34 | Física | fisica.oscilaciones | 5 | 23 | 5 | Ecuación del MAS (3); MAS con rozamiento estático entre bloques (1); MAS de un cuerpo flotante (1) |
-| 35 | Química | quimica.estructura-atomica | 5 | 13 | 5 | Modelos atómicos: Dalton (1); Configuración de iones de transición y redox (1); Configuración, ubicación y enlace de un halógeno (1) |
-| 36 | Razonamiento matemático | fuera-del-catalogo:trasvases | 5 | 5 | 4 | Trasvases (5) |
-| 37 | Física | fisica.ondas-mecanicas | 4 | 16 | 4 | Rapidez de propagación y diferencia de tiempos (1); Rapidez del sonido en distintos medios (1); Ondas transversales y longitudinales (1) |
-| 38 | Química | quimica.tabla-periodica | 4 | 8 | 4 | Configuración y ubicación de iones (1); Ubicación de un elemento (1); Metales de transición: configuración y grupo (1) |
-| 39 | Razonamiento matemático | razonamiento-matematico.frecuencia-de-sucesos | 4 | 16 | 4 | Frecuencia de sucesos (4) |
-| 40 | Razonamiento matemático | aritmetica.razonamiento-numerico | 4 | 7 | 4 | Planteo y otros (1); Rumbos y desplazamientos (1); Trasvases (1) |
-| 41 | Química | quimica.liquidos-y-solidos | 4 | 9 | 4 | Viscosidad y forma molecular (1); Sólidos iónicos y radio iónico (1); Calor de vaporización molar (1) |
-| 42 | Física | fisica.impulso-y-choques | 4 | 10 | 3 | Impulso como área de F-t (2); Conservación de la cantidad de movimiento (1); Coeficiente de restitución con pérdidas (1) |
-| 43 | Física | fisica.optica-geometrica | 4 | 8 | 3 | Ley de Snell (3); Ángulo límite y reflexión total (1) |
-| 44 | Química | quimica.electroquimica | 3 | 21 | 3 | Acumulador de plomo (1); Celda de combustible microbiana (1); Diagrama de Pourbaix (1) |
-| 45 | Química | quimica.ambiente-y-quimica-aplicada | 3 | 12 | 3 | Esferas de la Tierra (1); Calentamiento global: lectura de gráfico (1); Contaminantes del aire, agua y suelo (1) |
-| 46 | Química | quimica.nomenclatura-inorganica | 3 | 10 | 3 | Fórmulas, mezclas y tipo de óxido (1); Configuración, nomenclatura y electrólisis de sales (1); Hidróxidos: estequiometría y disociación (1) |
-| 47 | Química | quimica.materia-y-energia | 3 | 6 | 2 | Ramas de la química (1); Escalas de temperatura (1); Isótopos radiactivos y vida media (1) |
+| 10 | Razonamiento matemático | razonamiento-matematico.razonamiento-deductivo | 14 | 32 | 10 | Ordenamiento y parentesco (5); Planteo y otros (5); Dados y dominó (2) |
+| 11 | Razonamiento matemático | fuera-del-catalogo:diagramas de flujo | 12 | 12 | 8 | Diagramas de flujo (12) |
+| 12 | Razonamiento matemático | razonamiento-matematico.cronometria-y-calendarios | 11 | 66 | 8 | Relojes (10); Calendarios (1) |
+| 13 | Química | quimica.funciones-organicas | 11 | 32 | 8 | Nomenclatura de compuestos polifuncionales (2); Hibridación e isomería en compuestos oxigenados (1); Nomenclatura de ácidos con otra función y fuerza ácida (1) |
+| 14 | Razonamiento matemático | razonamiento-matematico.arreglos-numericos | 10 | 30 | 7 | Arreglos numéricos (6); Cuadro de doble entrada (2); Inducción y series (1) |
+| 15 | Química | quimica.reacciones-y-balance | 10 | 24 | 7 | Clasificación de reacciones (5); Balance y clasificación de reacciones (1); Dismutación redox (1) |
+| 16 | Química | quimica.soluciones | 9 | 14 | 7 | Normalidad y miliequivalentes (3); Partes por millón (2); Mezcla de soluciones en miliequivalentes (1) |
+| 17 | Razonamiento matemático | razonamiento-matematico.trazos-y-perimetros | 9 | 33 | 7 | Papel doblado y cortado (3); Traslados de fichas y juegos (2); Cortes y estacas (1) |
+| 18 | Razonamiento matemático | razonamiento-matematico.planteo-de-ecuaciones | 9 | 21 | 6 | Planteo y otros (8); Máximos y mínimos (1) |
+| 19 | Razonamiento matemático | razonamiento-matematico.razonamiento-inductivo | 8 | 26 | 6 | Inducción y series (4); Frecuencia de sucesos (2); Cubos, sólidos y vistas (2) |
+| 20 | Química | quimica.estequiometria | 7 | 34 | 6 | Estequiometría con soluciones (1); Ley de un mineral y moles (1); Balance de materia en flotación (1) |
+| 21 | Química | quimica.hidrocarburos | 7 | 21 | 6 | Hibridación y electrones pi en polienos (1); Enlaces pi y sustituyentes en polienos (1); Insaturación, adición y moles (1) |
+| 22 | Química | quimica.enlace-quimico | 6 | 13 | 5 | Enlaces polares y octeto en moléculas orgánicas (1); Tipo de enlace según propiedades (1); Hidruros no metálicos: enlace y pares libres (1) |
+| 23 | Química | quimica.cinetica-quimica | 6 | 12 | 5 | Mecanismo: intermediario y catalizador (2); Mecanismo y orden de reacción (1); Velocidad media desde un gráfico (1) |
+| 24 | Razonamiento matemático | razonamiento-matematico.ruedas-poleas-engranajes | 6 | 12 | 3 | Rodamientos, ruedas y poleas (6) |
+| 25 | Química | quimica.estructura-atomica | 5 | 13 | 5 | Modelos atómicos: Dalton (1); Configuración de iones de transición y redox (1); Configuración, ubicación y enlace de un halógeno (1) |
+| 26 | Razonamiento matemático | fuera-del-catalogo:trasvases | 5 | 5 | 4 | Trasvases (5) |
+| 27 | Química | quimica.tabla-periodica | 4 | 8 | 4 | Configuración y ubicación de iones (1); Ubicación de un elemento (1); Metales de transición: configuración y grupo (1) |
+| 28 | Razonamiento matemático | razonamiento-matematico.frecuencia-de-sucesos | 4 | 16 | 4 | Frecuencia de sucesos (4) |
+| 29 | Razonamiento matemático | aritmetica.razonamiento-numerico | 4 | 7 | 4 | Planteo y otros (1); Rumbos y desplazamientos (1); Trasvases (1) |
+| 30 | Química | quimica.liquidos-y-solidos | 4 | 9 | 4 | Viscosidad y forma molecular (1); Sólidos iónicos y radio iónico (1); Calor de vaporización molar (1) |
+| 31 | Química | quimica.electroquimica | 3 | 21 | 3 | Acumulador de plomo (1); Celda de combustible microbiana (1); Diagrama de Pourbaix (1) |
+| 32 | Química | quimica.ambiente-y-quimica-aplicada | 3 | 12 | 3 | Esferas de la Tierra (1); Calentamiento global: lectura de gráfico (1); Contaminantes del aire, agua y suelo (1) |
+| 33 | Química | quimica.nomenclatura-inorganica | 3 | 10 | 3 | Fórmulas, mezclas y tipo de óxido (1); Configuración, nomenclatura y electrólisis de sales (1); Hidróxidos: estequiometría y disociación (1) |
+| 34 | Química | quimica.materia-y-energia | 3 | 6 | 2 | Ramas de la química (1); Escalas de temperatura (1); Isótopos radiactivos y vida media (1) |
 
 ## Preguntas por examen (registradas, con repetidas)
 

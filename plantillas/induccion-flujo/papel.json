@@ -1,0 +1,90 @@
+{
+  "titulo": "El flujo que va y vuelve: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema. Recuerda: Φ = B·A·cos θ, con θ el ángulo entre el campo y la perpendicular a la espira; la fem media es ε = N·|ΔΦ|/Δt y la carga que circula, Q = N·|ΔΦ|/R. Pasa las áreas a m² (1 cm² = 10⁻⁴ m²), los tiempos a segundos y las rpm a rad/s (ω = 2π·rpm/60).",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Una bobina de 200 espiras de 50 cm² cada una, con 12 Ω de resistencia, está en un campo de 0,6 T perpendicular a sus espiras. El campo se invierte. ¿Qué carga circula por la bobina?",
+      "respuesta": "0,1 C",
+      "pasos": [
+        "Área: 50 cm² = 5 × 10⁻³ m².",
+        "El flujo por espira pasa de +B·A a −B·A: ΔΦ = 2 · 0,6 · 5 × 10⁻³ = 6 × 10⁻³ Wb (no B·A).",
+        "Q = N·ΔΦ/R = 200 · 6 × 10⁻³ / 12 = 0,1 C. No hace falta saber cuánto tardó."
+      ],
+      "verificar": [ { "tipo": "carga", "args": [200, 0.005, 0.6, 12, 2], "espera": 0.1 } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Una bobina de 100 espiras de 40 cm² cada una, con 4 Ω de resistencia, está en un campo de 0,5 T perpendicular a sus espiras. Se la saca por completo del campo. ¿Qué carga circula?",
+      "respuesta": "0,05 C",
+      "pasos": [
+        "Área: 40 cm² = 4 × 10⁻³ m².",
+        "El flujo por espira pasa de B·A a cero: ΔΦ = 0,5 · 4 × 10⁻³ = 2 × 10⁻³ Wb.",
+        "Q = 100 · 2 × 10⁻³ / 4 = 0,05 C."
+      ],
+      "verificar": [ { "tipo": "carga", "args": [100, 0.004, 0.5, 4, 1], "espera": 0.05 } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Una espira de 0,02 m² gira a 300 rpm en un campo de 0,5 T, con el eje perpendicular al campo. En t = 0 su plano es paralelo a las líneas de campo y el flujo empieza a crecer. Escribe Φ(t) y halla el flujo en t = 1/60 s.",
+      "respuesta": "Φ = 0,01·sen(10πt) Wb; en t = 1/60 s, 0,005 Wb",
+      "pasos": [
+        "ω = 2π · 300/60 = 10π rad/s (no 300 ni 5).",
+        "Flujo máximo: B·A = 0,5 · 0,02 = 0,01 Wb.",
+        "En t = 0 la espira es paralela al campo: el flujo es cero y crece, así que va un seno: Φ = 0,01·sen(10πt) Wb.",
+        "En t = 1/60 s: 10π/60 = π/6, y Φ = 0,01 · sen(π/6) = 0,005 Wb."
+      ],
+      "verificar": [ { "tipo": "flujo", "args": [0.5, 0.02, 31.41592653589793, 0.016666666666666666, "sen"], "espera": 0.005 } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Un generador tiene una bobina de 100 espiras de 0,05 m² que gira a 600 rpm en un campo de 0,2 T. ¿Cuál es su fem máxima?",
+      "respuesta": "20π V, unos 62,8 V",
+      "pasos": [
+        "ω = 2π · 600/60 = 20π rad/s.",
+        "ε máx = N·B·A·ω = 100 · 0,2 · 0,05 · 20π = 20π V ≈ 62,8 V.",
+        "Si usaras las rpm como ω saldría 600 V: las rpm hay que convertirlas."
+      ],
+      "verificar": [ { "tipo": "femmax", "args": [100, 0.2, 0.05, 600], "espera": 62.83185307179586 } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "básico",
+      "enunciado": "La bobina de un generador da 1500 vueltas por minuto. ¿Cuál es la frecuencia de la corriente que produce?",
+      "respuesta": "25 Hz",
+      "pasos": [
+        "Un ciclo de la fem por cada vuelta.",
+        "f = 1500 / 60 = 25 vueltas por segundo = 25 Hz."
+      ],
+      "verificar": [ { "tipo": "frecuencia", "args": [1500], "espera": 25 } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Una bobina de 50 espiras de 100 cm² está en un campo perpendicular a sus espiras. En 40 ms el campo pasa de 0,3 T a 0,5 T, pero en sentido contrario. ¿Cuál es la fem media inducida?",
+      "respuesta": "10 V",
+      "pasos": [
+        "Área: 100 cm² = 0,01 m²; tiempo: 40 ms = 0,04 s.",
+        "El flujo pasa de +0,3 · 0,01 a −0,5 · 0,01: |ΔΦ| = 0,8 · 0,01 = 8 × 10⁻³ Wb (se suman porque el campo cambia de sentido).",
+        "ε = 50 · 8 × 10⁻³ / 0,04 = 10 V."
+      ],
+      "verificar": [ { "tipo": "femmedia", "args": [50, 0.01, 0.8, 0.04], "espera": 10 } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "El flujo a través de una espira es Φ = 0,03·cos(40πt) Wb. ¿Cuál es la fem máxima en la espira y cuál es su frecuencia?",
+      "respuesta": "1,2π V (unos 3,77 V) y 20 Hz",
+      "pasos": [
+        "Lo que acompaña a t es ω = 40π rad/s.",
+        "La fem es la rapidez con que cambia el flujo: ε = 0,03 · 40π · sen(40πt); su máximo es 1,2π V ≈ 3,77 V.",
+        "f = ω/(2π) = 20 Hz (no 40 ni 40π)."
+      ],
+      "verificar": [ { "tipo": "phi", "args": [0.03, 40], "espera": { "emax": 3.7699111843077517, "f": 20 } } ]
+    }
+  ]
+}

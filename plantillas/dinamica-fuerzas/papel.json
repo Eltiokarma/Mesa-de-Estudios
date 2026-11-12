@@ -1,0 +1,128 @@
+{
+  "titulo": "La plataforma que gira: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la pantalla, con unos 3 minutos por problema. Primero dibuja cada cuerpo con sus fuerzas y escribe quién ejerce cada una (la Tierra, el piso, la pared, el resorte). No hay fuerza centrífuga: la fuerza hacia el centro sale de alguna de las fuerzas que dibujaste. Toma g = 10 m/s², sen 37° = 3/5, cos 37° = 4/5 y cos 60° = 1/2.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Un niño se para sobre un juego giratorio del parque que gira con una rapidez angular de 2 rad/s. El coeficiente de rozamiento estático entre sus zapatillas y el piso del juego es 0,4. ¿A qué distancia máxima del eje puede pararse sin resbalar?",
+      "respuesta": "A 1 m del eje.",
+      "pasos": [
+        "Lo único que empuja al niño hacia el centro es el roce estático del piso: hace de fuerza centrípeta, f = m·ω²·r.",
+        "El roce estático tiene un tope: μs·m·g. Justo antes de resbalar, m·ω²·r = μs·m·g.",
+        "r = μs·g/ω² = 0,4 · 10 / 4 = 1 m. Con la misma ω, más lejos del eje hace falta más fuerza: por eso hay una distancia máxima."
+      ],
+      "verificar": [{ "tipo": "radio-plataforma", "args": { "w": 2, "mu": 0.4 }, "espera": 1 }]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Una moto tiene tracción trasera: el motor hace girar solo la rueda de atrás, sobre la que descansa la mitad del peso. El coeficiente de rozamiento estático entre las llantas y la pista es 0,8. Al arrancar sin patinar, ¿hacia dónde apunta el rozamiento del piso sobre la rueda de atrás y cuál es la máxima aceleración posible?",
+      "respuesta": "El rozamiento sobre la rueda de atrás apunta hacia adelante, y la aceleración máxima es 4 m/s².",
+      "pasos": [
+        "La rueda de atrás empuja el piso hacia atrás; por la tercera ley, el piso la empuja hacia adelante. Ese roce estático es la fuerza que acelera la moto.",
+        "La rueda de adelante gira libre y recibe un roce pequeño hacia atrás.",
+        "El tope del roce en la rueda motriz es μs·N = 0,8 · (m·g/2).",
+        "a = 0,8 · 0,5 · 10 = 4 m/s²."
+      ],
+      "verificar": [{ "tipo": "aceleracion-motriz", "args": { "mus": 0.8, "fraccion": 0.5 }, "espera": 4 }]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Una curva de 30 m de radio de la carretera de Arequipa está peraltada 37°. ¿Con qué rapidez debe tomarla un camión para no necesitar nada de rozamiento?",
+      "respuesta": "15 m/s.",
+      "pasos": [
+        "Sin roce, sobre el camión actúan el peso y la normal, perpendicular a la pista inclinada.",
+        "Vertical: N·cos 37° = m·g. Horizontal, hacia el centro: N·sen 37° = m·v²/r.",
+        "Dividiendo: tan 37° = v²/(r·g), así que v² = 30 · 10 · 3/4 = 225 y v = 15 m/s."
+      ],
+      "verificar": [{ "tipo": "peralte", "args": { "r": 30, "angulo": 37 }, "espera": 15 }]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Una bolita de 0,2 kg gira sin rozamiento por dentro de un cuenco semiesférico de 0,8 m de radio, en una circunferencia horizontal. El radio del cuenco que llega a la bolita forma 60° con la vertical. ¿Con qué rapidez angular gira y cuánto vale la normal del cuenco?",
+      "respuesta": "Gira a 5 rad/s y la normal vale 4 N.",
+      "pasos": [
+        "La normal va a lo largo del radio, hacia el centro del cuenco. El radio de giro es r = R·sen 60°, no R.",
+        "Vertical: N·cos 60° = m·g, así que N = 0,2 · 10 / 0,5 = 4 N.",
+        "Horizontal: N·sen 60° = m·ω²·R·sen 60°, así que N = m·ω²·R y ω² = g/(R·cos 60°) = 10 / 0,4 = 25.",
+        "ω = 5 rad/s."
+      ],
+      "verificar": [
+        { "tipo": "cuenco-omega", "args": { "R": 0.8, "angulo": 60 }, "espera": 5 },
+        { "tipo": "cuenco-normal", "args": { "m": 0.2, "angulo": 60 }, "espera": 4 }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "básico",
+      "enunciado": "Una astronauta de 80 kg llega a Marte, donde g = 3,7 m/s². Allí empuja un carrito de 16 kg por un riel horizontal sin rozamiento con una fuerza de 40 N. ¿Cuál es su peso en Marte y qué aceleración tiene el carrito? ¿Sería distinta esa aceleración en la Tierra?",
+      "respuesta": "Su peso en Marte es 296 N; el carrito acelera 2,5 m/s², lo mismo que en la Tierra.",
+      "pasos": [
+        "La masa de la astronauta sigue siendo 80 kg. Su peso es m·g = 80 · 3,7 = 296 N.",
+        "El riel es horizontal y sin roce: la única fuerza que acelera al carrito es el empuje. a = F/m = 40/16 = 2,5 m/s².",
+        "En la Tierra la masa del carrito es la misma, así que la misma fuerza da la misma aceleración. La gravedad no entra en un empuje horizontal sin roce."
+      ],
+      "verificar": [
+        { "tipo": "peso", "args": { "m": 80, "gLugar": 3.7 }, "espera": 296 },
+        { "tipo": "aceleracion", "args": { "F": 40, "m": 16 }, "espera": 2.5 }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "avanzado",
+      "enunciado": "Dos bloques, A de 2 kg y B de 3 kg, están unidos por un resorte sobre un piso con coeficiente de rozamiento cinético 0,2. Se tira de A con una fuerza horizontal de 19 N. En cierto instante, los dos avanzan y B acelera 1 m/s². ¿Cuál es la aceleración de A en ese instante?",
+      "respuesta": "3 m/s².",
+      "pasos": [
+        "Los bloques no tienen por qué acelerar igual: el resorte se estira y se encoge. Se toma cada bloque por separado.",
+        "Sobre B: F_resorte − 0,2 · 3 · 10 = 3 · 1, así que F_resorte = 9 N.",
+        "Sobre A: 19 − 9 − 0,2 · 2 · 10 = 2·a_A, así que a_A = 6/2 = 3 m/s².",
+        "Comprobación con todo el sistema: 19 − 0,2 · 5 · 10 = 2 · 3 + 3 · 1 = 9 N."
+      ],
+      "verificar": [{ "tipo": "resorte", "args": { "mA": 2, "mB": 3, "mu": 0.2, "F": 19, "aB": 1 }, "espera": 3 }]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Tres carretillas están en reposo sobre un piso muy liso. A la 1 (4 kg) la empujan con 20 N durante 3 s; a la 2 (10 kg), con 30 N durante 4 s; a la 3 (5 kg), con 50 N durante 1 s. ¿Cuál termina más rápido?",
+      "respuesta": "La carretilla 1, con 15 m/s (la 2 llega a 12 m/s y la 3, a 10 m/s).",
+      "pasos": [
+        "Cada una parte del reposo con a = F/m y termina con v = a·t = F·t/m.",
+        "Carretilla 1: 20 · 3 / 4 = 15 m/s. Carretilla 2: 30 · 4 / 10 = 12 m/s. Carretilla 3: 50 · 1 / 5 = 10 m/s.",
+        "No gana la de más fuerza (la 3) ni la de más tiempo (la 2): hay que mirar fuerza, masa y tiempo juntos."
+      ],
+      "verificar": [
+        { "tipo": "rapidez-final", "args": { "F": 20, "m": 4, "t": 3 }, "espera": 15 },
+        { "tipo": "rapidez-final", "args": { "F": 30, "m": 10, "t": 4 }, "espera": 12 },
+        { "tipo": "rapidez-final", "args": { "F": 50, "m": 5, "t": 1 }, "espera": 10 }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Una escalera uniforme de 5 m y 20 kg se apoya en una pared lisa y forma 53° con el piso. Un pintor de 60 kg sube hasta la mitad de la escalera. ¿Cuánto rozamiento tiene que dar el piso y qué coeficiente de rozamiento estático mínimo hace falta?",
+      "respuesta": "El roce vale 300 N y el coeficiente mínimo es 0,375.",
+      "pasos": [
+        "La normal del piso sostiene los dos pesos: N = 80 · 10 = 800 N.",
+        "Momentos respecto al pie: N_pared · 5 · sen 53° = 200 · 2,5 · cos 53° + 600 · 2,5 · cos 53°, así que N_pared · 4 = 1200 y N_pared = 300 N.",
+        "En horizontal solo están la pared y el roce del piso: f = 300 N.",
+        "μs mínimo = f/N = 300/800 = 0,375."
+      ],
+      "verificar": [{ "tipo": "escalera-roce", "args": { "L": 5, "M": 20, "m": 60, "d": 2.5, "angulo": 53 }, "espera": 300 }]
+    },
+    {
+      "id": "p9",
+      "nivel": "intermedio",
+      "enunciado": "Dos esferas de 2 kg y 18 kg tienen sus centros a 2 m. ¿En qué punto entre ellas una bolita no siente fuerza gravitatoria neta?",
+      "respuesta": "A 0,5 m de la esfera de 2 kg (y a 1,5 m de la de 18 kg).",
+      "pasos": [
+        "Las atracciones se igualan: 2/x² = 18/(2 − x)².",
+        "(2 − x)²/x² = 9, así que (2 − x)/x = 3: hay que sacar la raíz de la razón de masas.",
+        "x = 0,5 m de la esfera chica. El punto queda más cerca de la esfera de menos masa."
+      ],
+      "verificar": [{ "tipo": "nulo", "args": { "MA": 2, "MB": 18, "d": 2 }, "espera": 0.5 }]
+    }
+  ]
+}

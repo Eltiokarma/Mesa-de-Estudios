@@ -1,0 +1,281 @@
+{
+  "plantilla": "dinamica-fuerzas",
+  "tolerancia": 1e-06,
+  "nota": "g = 10 m/s²; sen 37° = 3/5 y cos 37° = 4/5. Ángulos de la escalera desde el piso, del cuenco desde la vertical y del embudo con el eje. En peralte se pide la longitud: el radio de la curva (de v), el del cuenco (de ω) o la altura en el embudo (de v). En gravitatoria/neta las masas van en unidades de M y las distancias en decenas de miles de km. Las respuestas de texto son la clave de armarTexto (caja:n, vf:..., D±T±).",
+  "verificacion": "Verificado a ciegas el 8 nov 2026 por un subagente que no vio el generador ni las claves: 46 problemas (16 de casos.json y 30 semillas nuevas) resueltos con planteamiento propio en Python con fracciones (momentos respecto al pie, componentes de la normal, Newton por bloque). 46/46 letras y 16/16 valores coinciden con tolerancia 1e-6; sin errores de física. Tras la revisión se quitaron distractores fuera de escala y los que se delataban por no ser redondos; esos casos los recalculó el constructor aparte.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "tabla",
+        "sub": "rapidez",
+        "cajas": [
+          {
+            "F": 30,
+            "m": 10,
+            "t": 5
+          },
+          {
+            "F": 60,
+            "m": 8,
+            "t": 3
+          },
+          {
+            "F": 60,
+            "m": 4,
+            "t": 1
+          },
+          {
+            "F": 30,
+            "m": 3,
+            "t": 1
+          }
+        ]
+      },
+      "esperado": {
+        "respuesta": "caja:2",
+        "exacta": "La caja 2"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "peralte",
+        "sub": "normal",
+        "m": 1.5,
+        "R": 0.3,
+        "angulo": 53,
+        "contexto": [
+          4,
+          1
+        ]
+      },
+      "esperado": {
+        "respuesta": 25,
+        "exacta": "25 N"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "plataforma",
+        "sub": "radio",
+        "objeto": 0,
+        "w": 2,
+        "r": 2,
+        "mu": 0.8,
+        "radioPlataforma": 6
+      },
+      "esperado": {
+        "respuesta": 2,
+        "exacta": "2 m"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "resorte",
+        "sub": "instante",
+        "mA": 1,
+        "mB": 6,
+        "mu": 0.2,
+        "F": 35,
+        "aB": 2.5
+      },
+      "esperado": {
+        "respuesta": 6,
+        "exacta": "6 m/s²"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "peralte",
+        "sub": "curva",
+        "v": 18,
+        "angulo": 37
+      },
+      "esperado": {
+        "respuesta": 43.2,
+        "exacta": "43,2 m"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "escalera",
+        "sub": "roce",
+        "angulo": 53,
+        "L": 3,
+        "M": 10,
+        "m": 50,
+        "d": 2,
+        "mu": 0.5
+      },
+      "esperado": {
+        "respuesta": 287.5,
+        "exacta": "287,5 N"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "astro",
+        "sub": "proposiciones",
+        "lugar": "luna",
+        "afirmaciones": [
+          "L-peso",
+          "L-balanza",
+          "L-frenar"
+        ]
+      },
+      "esperado": {
+        "respuesta": "vf:VVF",
+        "exacta": "VVF"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "gravitatoria",
+        "sub": "nulo",
+        "MA": 1,
+        "MB": 4,
+        "d": 7.5,
+        "desdeA": false
+      },
+      "esperado": {
+        "respuesta": 5,
+        "exacta": "5 m"
+      }
+    },
+    {
+      "semilla": 20,
+      "entrada": {
+        "tipo": "astro",
+        "sub": "peso",
+        "k": 3,
+        "q": 2,
+        "m": 50
+      },
+      "esperado": {
+        "respuesta": 375,
+        "exacta": "375 N"
+      }
+    },
+    {
+      "semilla": 21,
+      "entrada": {
+        "tipo": "resorte",
+        "sub": "estiramiento",
+        "mA": 2,
+        "mB": 1,
+        "mu": 0.25,
+        "F": 33,
+        "k": 400,
+        "x": 0.05
+      },
+      "esperado": {
+        "respuesta": 17.5,
+        "exacta": "17,5 m/s²"
+      }
+    },
+    {
+      "semilla": 32,
+      "entrada": {
+        "tipo": "plataforma",
+        "sub": "omega",
+        "objeto": 2,
+        "w": 2,
+        "r": 0.9,
+        "mu": 0.36,
+        "radioPlataforma": 3.6
+      },
+      "esperado": {
+        "respuesta": 2,
+        "exacta": "2 rad/s"
+      }
+    },
+    {
+      "semilla": 36,
+      "entrada": {
+        "tipo": "peralte",
+        "sub": "cuenco",
+        "w": 5,
+        "angulo": 37,
+        "contexto": [
+          1,
+          1
+        ]
+      },
+      "esperado": {
+        "respuesta": 0.5,
+        "exacta": "0,5 m"
+      }
+    },
+    {
+      "semilla": 46,
+      "entrada": {
+        "tipo": "escalera",
+        "sub": "maximo",
+        "angulo": 37,
+        "L": 4,
+        "M": 30,
+        "m": 75,
+        "mu": 0.5
+      },
+      "esperado": {
+        "respuesta": 0.78,
+        "exacta": "0,78 m"
+      }
+    },
+    {
+      "semilla": 50,
+      "entrada": {
+        "tipo": "motriz",
+        "sub": "sentido",
+        "motriz": "D",
+        "bici": false,
+        "frena": true,
+        "vehiculo": 1
+      },
+      "esperado": {
+        "respuesta": "D-T-",
+        "exacta": "Delanteras: hacia atrás; traseras: hacia atrás"
+      }
+    },
+    {
+      "semilla": 58,
+      "entrada": {
+        "tipo": "motriz",
+        "sub": "aceleracion",
+        "m": 1500,
+        "fraccion": 0.6,
+        "mus": 0.7,
+        "muk": 0.5
+      },
+      "esperado": {
+        "respuesta": 4.2,
+        "exacta": "4,2 m/s²"
+      }
+    },
+    {
+      "semilla": 81,
+      "entrada": {
+        "tipo": "gravitatoria",
+        "sub": "neta",
+        "MA": 1,
+        "MB": 2,
+        "d": 6,
+        "rA": 4,
+        "rB": 2,
+        "FA": 400,
+        "fuera": false
+      },
+      "esperado": {
+        "respuesta": 2800,
+        "exacta": "2 800 N"
+      }
+    }
+  ]
+}

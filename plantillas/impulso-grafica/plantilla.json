@@ -1,0 +1,14 @@
+{
+  "id": "impulso-grafica",
+  "titulo": "La patada en la gráfica",
+  "formato": "predicciones",
+  "unidades": [
+    "fisica.impulso-y-choques"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

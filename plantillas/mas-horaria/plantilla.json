@@ -1,0 +1,14 @@
+{
+  "id": "mas-horaria",
+  "titulo": "La ecuación del resorte",
+  "formato": "predicciones",
+  "unidades": [
+    "fisica.oscilaciones"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

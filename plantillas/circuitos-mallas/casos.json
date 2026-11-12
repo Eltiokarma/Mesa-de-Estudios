@@ -1,0 +1,318 @@
+{
+  "plantilla": "circuitos-mallas",
+  "tolerancia": 1e-06,
+  "nota": "Corrientes en A, voltajes en V, resistencias en Ω, potencias en W; respuestas en magnitud, salvo ddp (V_A − V_B con signo) y estado (texto: si la pila 3 entrega o se carga, y con qué corriente). En kirchhoff, e[k] es la fem de la rama k con signo (+ si el borne positivo mira hacia A), en serie con R[k]; en «fem», I1 e I2 son las corrientes que suben hacia A por la rama 1 y por la rama 2. En puente, R = [R1 (A-C), R2 (C-B), R3 (A-D), R4 (D-B)].",
+  "verificacion": "Verificado a ciegas (8 nov 2026) por un subagente que no vio el generador: 45 problemas (15 de casos.json y 30 semillas nuevas) resueltos con potencial de nodo y Kirchhoff propios, en fracciones exactas. 45/45 coinciden en letra y valor, incluidos los signos con pilas en oposición, la pila que se carga y el puente no equilibrado con amperímetro. Tras la revisión se agregaron puentes no equilibrados con R5 y la pregunta de si la pila entrega o se carga; sus casos los recalculó el constructor aparte. Tras la regla de escala y redondez (12 nov) cambiaron algunos casos; los recalculó el constructor aparte.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "kirchhoff",
+        "sub": "potencia",
+        "e": [
+          30,
+          0,
+          8
+        ],
+        "R": [
+          6,
+          6,
+          4
+        ]
+      },
+      "esperado": {
+        "respuesta": 90.0,
+        "exacta": "90 W"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "kirchhoff",
+        "sub": "tres",
+        "e": [
+          6,
+          -4,
+          -6.5
+        ],
+        "R": [
+          4,
+          4,
+          3
+        ]
+      },
+      "esperado": {
+        "respuesta": 0.5,
+        "exacta": "0,5 A"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "kirchhoff",
+        "sub": "fem",
+        "e": [
+          4,
+          0,
+          8
+        ],
+        "R": [
+          2,
+          6,
+          1
+        ],
+        "I1": -1,
+        "I2": -1
+      },
+      "esperado": {
+        "respuesta": 8.0,
+        "exacta": "8 V"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "kirchhoff",
+        "sub": "rama",
+        "e": [
+          9,
+          0,
+          -9
+        ],
+        "R": [
+          2,
+          2,
+          8
+        ]
+      },
+      "esperado": {
+        "respuesta": 1.5,
+        "exacta": "1,5 A"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "puente",
+        "sub": "amperimetro",
+        "R": [
+          2,
+          4,
+          8,
+          6
+        ],
+        "E": 60
+      },
+      "esperado": {
+        "respuesta": 3.0,
+        "exacta": "3 A"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "pilas",
+        "sub": "grafica",
+        "pide": "r",
+        "puntos": [
+          [
+            0.5,
+            4.5
+          ],
+          [
+            4.5,
+            1.5
+          ]
+        ]
+      },
+      "esperado": {
+        "respuesta": 1.5,
+        "exacta": "1,5 Ω"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "puente",
+        "sub": "corriente",
+        "R": [
+          3,
+          15,
+          5,
+          5
+        ],
+        "R5": 20,
+        "E": 48
+      },
+      "esperado": {
+        "respuesta": 7.68,
+        "exacta": "7,68 A"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "kirchhoff",
+        "sub": "ddp",
+        "e": [
+          7,
+          0,
+          19
+        ],
+        "R": [
+          3,
+          5,
+          3
+        ]
+      },
+      "esperado": {
+        "respuesta": 10.0,
+        "exacta": "10 V"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "kirchhoff",
+        "sub": "estado",
+        "e": [
+          25,
+          0,
+          25
+        ],
+        "R": [
+          5,
+          5,
+          10
+        ]
+      },
+      "esperado": {
+        "respuesta": "pila3:Entrega energía, con 1 A",
+        "exacta": "Entrega energía, con 1 A"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "puente",
+        "sub": "req",
+        "R": [
+          10,
+          1,
+          10,
+          10
+        ],
+        "R5": 5
+      },
+      "esperado": {
+        "respuesta": 6.4,
+        "exacta": "6,4 Ω"
+      }
+    },
+    {
+      "semilla": 16,
+      "entrada": {
+        "tipo": "pilas",
+        "sub": "paralelo",
+        "n": 3,
+        "E": 3,
+        "r": 1.5,
+        "R": 12,
+        "medidor": "A"
+      },
+      "esperado": {
+        "respuesta": 0.24,
+        "exacta": "0,24 A"
+      }
+    },
+    {
+      "semilla": 20,
+      "entrada": {
+        "tipo": "pilas",
+        "sub": "serie",
+        "n": 3,
+        "E": 9,
+        "r": 1,
+        "R": 2,
+        "medidor": "A"
+      },
+      "esperado": {
+        "respuesta": 5.4,
+        "exacta": "5,4 A"
+      }
+    },
+    {
+      "semilla": 35,
+      "entrada": {
+        "tipo": "puente",
+        "sub": "corto",
+        "R": [
+          2,
+          10,
+          3
+        ],
+        "cable": "CB"
+      },
+      "esperado": {
+        "respuesta": 1.2,
+        "exacta": "1,2 Ω"
+      }
+    },
+    {
+      "semilla": 59,
+      "entrada": {
+        "tipo": "puente",
+        "sub": "corriente",
+        "R": [
+          2,
+          8,
+          2,
+          8
+        ],
+        "R5": 2,
+        "E": 48
+      },
+      "esperado": {
+        "respuesta": 9.6,
+        "exacta": "9,6 A"
+      }
+    },
+    {
+      "semilla": 66,
+      "entrada": {
+        "tipo": "puente",
+        "sub": "r5",
+        "R": [
+          4,
+          4,
+          10,
+          4
+        ],
+        "R5": 8,
+        "E": 9
+      },
+      "esperado": {
+        "respuesta": 0.15,
+        "exacta": "0,15 A"
+      }
+    },
+    {
+      "semilla": 93,
+      "entrada": {
+        "tipo": "puente",
+        "sub": "req",
+        "R": [
+          20,
+          20,
+          60,
+          60
+        ],
+        "R5": 20
+      },
+      "esperado": {
+        "respuesta": 30.0,
+        "exacta": "30 Ω"
+      }
+    }
+  ]
+}

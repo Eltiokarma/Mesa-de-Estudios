@@ -6,7 +6,8 @@
 //    las regiones del espectro van en orden con la frecuencia y sus bordes empalman; B₀ = (campo eléctrico)/c; los dos
 //    campos y el avance forman un trío perpendicular (campo eléctrico × B apunta hacia el avance) y oscilan en fase;
 //    en un medio, f no cambia, v·λ' = c·λ/n… y v = λ'·f; el tiempo de viaje no depende de la frecuencia; el eco es la
-//    mitad del recorrido; la regla logarítmica va y vuelve; ionizar depende solo de f.
+//    mitad del recorrido; la regla logarítmica va y vuelve; ionizar depende solo de f; Snell va y vuelve por el
+//    mismo camino, la reflexión total empieza en el ángulo límite y la luz reflejada (Fresnel) va de 0 a 1.
 // 3. Errores de entrada.
 // 4. Cada problema de papel.json coincide con el motor.
 
@@ -152,6 +153,34 @@ test('errores de entrada', () => {
   assert.throws(() => motor.atraviesa('pared', 'sonido'), /región/);
   assert.throws(() => motor.posicion(10, 100, 10), /fmax/);
 });
+test('snell: n₁·sen i = n₂·sen r; el camino de vuelta; reflexión total solo pasando L; Fresnel entre 0 y 1', () => {
+  for (let k = 0; k < N_; k++) {
+    const n1 = al(1, 2.5), n2 = al(1, 2.5), i = al(0, 89.9);
+    const R = motor.snell(n1, n2, i), L = motor.anguloLimite(n1, n2);
+    assert.equal(R.L, L.L);
+    if (n1 <= n2) { assert.ok(!R.total, 'hacia un medio de mayor índice nunca hay reflexión total'); assert.equal(L.existe, false); }
+    else if (Math.abs(i - L.L) > 1e-6) assert.equal(R.total, i > L.L, 'hay reflexión total justo cuando i pasa L');
+    assert.ok(R.R >= 0 && R.R <= 1 && Math.abs(R.R + R.T - 1) < 1e-9);
+    assert.equal(R.reflejado, i);
+    if (!R.total) {
+      cerca(n1 * Math.sin(i * Math.PI / 180), n2 * Math.sin(R.r * Math.PI / 180), 'Snell', 1e-9);
+      assert.equal(R.seAcerca, R.r < i);
+      assert.equal(n2 > n1, R.r <= i + 1e-9, 'al medio de mayor índice se acerca a la normal');
+      const V = motor.snell(n2, n1, R.r);               // el rayo vuelve por el mismo camino
+      cerca(V.r, i, 'camino de vuelta', 1e-7);
+      cerca(V.R, R.R, 'la misma fracción se refleja a la vuelta', 1e-6);
+    } else assert.equal(R.R, 1);
+  }
+  const N0 = motor.snell(1, 1.5, 0); assert.equal(N0.r, 0);
+  // justo debajo del límite el rayo sale casi rozando; justo encima, no sale
+  const L = motor.anguloLimite(4 / 3, 1).L;
+  assert.ok(motor.snell(4 / 3, 1, L - 1e-4).r > 89);
+  assert.ok(motor.snell(4 / 3, 1, L + 1e-4).total);
+  assert.throws(() => motor.snell(0.9, 1, 30), /menor que 1/);
+  assert.throws(() => motor.snell(1, 1.5, 95), /0° a 90°/);
+  assert.throws(() => motor.anguloLimite(1, 'x'), /número/);
+});
+
 // 4. Problemas de papel (regla 6)
 const rutaPapel = path.join(__dirname, 'papel.json');
 const papel = fs.existsSync(rutaPapel) ? JSON.parse(fs.readFileSync(rutaPapel, 'utf8')) : null;

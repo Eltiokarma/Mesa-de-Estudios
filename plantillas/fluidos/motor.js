@@ -1,7 +1,8 @@
 /*
  * Motor de fluidos en reposo y en movimiento: presión hidrostática, recipientes de distintas formas, vasos
  * comunicantes, tubo en U con dos líquidos, barómetro, prensa hidráulica, empuje, flotación, el bloque que se hunde
- * colgado de un dinamómetro sobre una balanza, continuidad y Bernoulli.
+ * colgado de un dinamómetro sobre una balanza, caudal, continuidad, Bernoulli, Torricelli y el tubo con estrechamiento
+ * con sus dos tubitos (versión 0.2.0).
  *
  * Aquí vive toda la física de la plantilla (regla 1 de CLAUDE.md). No toca el DOM: funciona igual en el
  * navegador (window.MotorFluidos) y en Node (require('./motor.js')), donde lo prueban casos.json y papel.json.
@@ -58,8 +59,23 @@
  *                                         líquido. Wvaso = (mVaso + ρF·Avaso·hLiq)·g es el peso del vaso más el del
  *                                         líquido (lo que marca la balanza sin el bloque). N = Wvaso + E y T = W − E
  *                                         (0 si el hilo queda flojo y el bloque flota).
- *   continuidad({ A1, v1, A2 | D1, D2 })  caudal Q = A·v y la rapidez en la otra sección.
+ *   continuidad({ A1, v1, A2 | D1, D2 | r1, r2 })  caudal Q = A·v y la rapidez en la otra sección.
  *   bernoulli({ P1, v1, h1, v2 | A1, A2, h2, rho })  presión en el punto 2 de un tubo con líquido ideal.
+ *   caudal({ A | D | r, v | Q, V, pi })   Q = A·v en m³/s (y en L/s y L/min), o la rapidez si se da Q; con V (m³), el
+ *                                         tiempo de llenado. pi permite el π = 3 de la academia (por defecto, Math.PI).
+ *                                         errores: diametroComoRadio (área 4 veces mayor: v/4, o Q·4), litrosEntre100
+ *                                         (v·10, de pasar L a m³ entre 100), sinCuadrado (área π·r: el radio sin elevar).
+ *   torricelli({ h | H, y })              chorro por un orificio a la profundidad h bajo la superficie: v = √(2gh). Con H
+ *                                         (altura del agua sobre el piso) e y (altura del orificio sobre el piso), h = H − y,
+ *                                         y el chorro horizontal cae al piso: tiempo, alcance x, vy, rapidez y ángulo de
+ *                                         llegada (grados bajo la horizontal). errores: profundidadTotal (√(2gH)),
+ *                                         alturaDelOrificio (√(2gy)), sinRaiz (2gh), alcanceConH (x con la H).
+ *   estrechamiento({ r1, r2, v1, P1, rho })  tubo horizontal de radio r1 que se angosta a r2, con dos tubitos verticales
+ *                                         abiertos (manómetros) en el ancho y en el angosto. P1 es la presión manométrica
+ *                                         en el eje del tramo ancho; la de cada tubito sube hasta h = P/(ρg) sobre el eje.
+ *                                         Da A1, A2, v2, Q, P2, h1, h2 y dP. errores: masRapidoMasPresion (P y h del angosto
+ *                                         si la presión subiera con la rapidez), presionIgual, v2RadioLineal (v1·r1/r2),
+ *                                         v2Invertida (v1·(r2/r1)²), v2Igual.
  *
  * Cada resultado trae 'errores': los números que salen de las ideas erróneas del informe
  * (docs/investigacion/fluidos-calor-termodinamica-ideas-erroneas.md, F1 a F15, y la tabla de errores de cálculo sin
@@ -291,6 +307,10 @@
       const D1 = pos(o.D1, 'diámetro D1'), D2 = pos(o.D2, 'diámetro D2');
       return { A1: Math.PI * D1 * D1 / 4, A2: Math.PI * D2 * D2 / 4, D1, D2 };
     }
+    if (o.r1 !== undefined || o.r2 !== undefined) {
+      const r1 = pos(o.r1, 'radio r1'), r2 = pos(o.r2, 'radio r2');
+      return { A1: Math.PI * r1 * r1, A2: Math.PI * r2 * r2, r1, r2 };
+    }
     return { A1: pos(o.A1, 'área A1'), A2: pos(o.A2, 'área A2') };
   }
   function continuidad(o) {
@@ -298,6 +318,7 @@
     const s = areas(o), v1 = noNeg(o.v1, 'rapidez v1'), Q = s.A1 * v1, v2 = Q / s.A2;
     const e = { invertido: v1 * s.A2 / s.A1, igual: v1 };
     if (s.D1 !== undefined) e.razonDiametros = v1 * s.D1 / s.D2;
+    if (s.r1 !== undefined) e.razonRadios = v1 * s.r1 / s.r2;
     return { A1: s.A1, A2: s.A2, v1, v2, Q, errores: e };
   }
   function bernoulli(o) {
@@ -310,5 +331,56 @@
       errores: { masRapidoMasPresion: P1 + rho * (v2 * v2 - v1 * v1) / 2 + rho * g * (h1 - h2), sinAltura: P1 + rho * (v1 * v1 - v2 * v2) / 2 } };
   }
 
-  return { G, AGUA, P_ATM, FORMAS, presion, recipiente, presionEn, vasosComunicantes, tuboU, barometro, prensa, empuje, flotacion, sumergido, bloques, balanza, continuidad, bernoulli };
+  // ---------- Caudal, Torricelli y el tubo con estrechamiento ----------
+  function caudal(o) {
+    o = o || {};
+    const pi = o.pi === undefined ? Math.PI : pos(o.pi, 'pi');
+    let A, r = null;
+    if (o.D !== undefined) r = pos(o.D, 'diámetro D') / 2;
+    else if (o.r !== undefined) r = pos(o.r, 'radio r');
+    A = r === null ? pos(o.A, 'área A') : pi * r * r;
+    let v, Q;
+    if (o.Q !== undefined) { Q = noNeg(o.Q, 'caudal Q'); v = Q / A; } else { v = noNeg(o.v, 'rapidez v'); Q = A * v; }
+    const res = { A, r, v, Q, QLs: Q * 1000, QLmin: Q * 60000, errores: {} };
+    if (o.V !== undefined) { const V = pos(o.V, 'volumen V'); if (!(Q > 0)) throw new Error('sin caudal no se llena'); res.V = V; res.t = V / Q; }
+    const e = res.errores, dado = o.Q !== undefined;
+    if (o.D !== undefined) e.diametroComoRadio = dado ? v / 4 : Q * 4;
+    if (r !== null) e.sinCuadrado = dado ? Q / (pi * r) : pi * r * v;
+    if (dado) e.litrosEntre100 = v * 10;
+    return res;
+  }
+  function torricelli(o) {
+    o = o || {};
+    const g = gDe(o);
+    let h, H = null, y = null;
+    if (o.H !== undefined) {
+      H = pos(o.H, 'altura del agua H'); y = noNeg(o.y, 'altura del orificio y');
+      if (!(y < H)) throw new Error('el orificio debe estar bajo la superficie del agua');
+      h = H - y;
+    } else h = pos(o.h, 'profundidad del orificio h');
+    const v = Math.sqrt(2 * g * h);
+    const res = { h, v, H, y, errores: { sinRaiz: 2 * g * h } };
+    if (H !== null) {
+      const t = Math.sqrt(2 * y / g), vy = g * t, x = v * t;
+      Object.assign(res, { t, x, vy, vLlegada: Math.hypot(v, vy), angulo: Math.atan2(vy, v) * 180 / Math.PI });
+      Object.assign(res.errores, { profundidadTotal: Math.sqrt(2 * g * H), alturaDelOrificio: Math.sqrt(2 * g * y),
+        alcanceConH: Math.sqrt(2 * g * H) * t, sumaEscalar: v + vy });
+    }
+    return res;
+  }
+  function estrechamiento(o) {
+    o = o || {};
+    const rho = rhoDe(o, 'rho', AGUA), g = gDe(o);
+    const r1 = pos(o.r1, 'radio ancho r1'), r2 = pos(o.r2, 'radio angosto r2'), v1 = noNeg(o.v1, 'rapidez v1'), P1 = noNeg(o.P1, 'presión P1');
+    if (r2 > r1 + EPS) throw new Error('la parte angosta no puede ser más ancha que el tubo');
+    const A1 = Math.PI * r1 * r1, A2 = Math.PI * r2 * r2, Q = A1 * v1, v2 = Q / A2;
+    const dP = rho * (v2 * v2 - v1 * v1) / 2, P2 = P1 - dP;
+    if (P2 < -EPS) throw new Error('la presión en lo angosto quedaría bajo la atmosférica: el tubito chuparía aire');
+    const h = P => P / (rho * g);
+    return { r1, r2, A1, A2, Q, v1, v2, P1, P2: limpio(P2), dP, h1: h(P1), h2: limpio(h(P2)), rho, g,
+      errores: { masRapidoMasPresion: P1 + dP, hMasRapidoMasPresion: h(P1 + dP), presionIgual: P1, hIgual: h(P1),
+        v2RadioLineal: v1 * r1 / r2, v2Invertida: v1 * (r2 / r1) ** 2, v2Igual: v1 } };
+  }
+
+  return { G, AGUA, P_ATM, FORMAS, caudal, torricelli, estrechamiento, presion, recipiente, presionEn, vasosComunicantes, tuboU, barometro, prensa, empuje, flotacion, sumergido, bloques, balanza, continuidad, bernoulli };
 });

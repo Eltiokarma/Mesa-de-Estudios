@@ -1,0 +1,15 @@
+{
+  "id": "refraccion-snell",
+  "titulo": "El rayo que cambia de medio",
+  "formato": "predicciones",
+  "unidades": [
+    "fisica.optica-geometrica",
+    "fisica.ondas-electromagneticas"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

@@ -1,12 +1,12 @@
 {
   "id": "fluidos",
-  "titulo": "Fluidos: presión, Pascal y Arquímedes",
+  "titulo": "Fluidos: presión, Pascal, Arquímedes y el tubo que se angosta",
   "formato": "escena",
   "unidades": [
     "fisica.fluidos"
   ],
   "estado": "borrador",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "escena": "index.html",
   "motor": "motor.js",
   "casos": "casos.json",

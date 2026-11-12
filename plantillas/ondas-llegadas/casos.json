@@ -1,0 +1,204 @@
+{
+  "plantilla": "ondas-llegadas",
+  "tolerancia": 1e-06,
+  "nota": "Distancias en km (sismo, trueno) o m (riel); sonido en el aire a 340 m/s; en y(x, t), SI. Las respuestas de texto son claves de armarTexto: sent:<sentido>|<rapidez en µm/s> y vf:<secuencia>.",
+  "verificacion": "Verificador a ciegas (subagente, 12 nov 2026): resolvió los 43 problemas de la muestra (13 de casos y 30 al azar) con un script propio en Python, sin leer el generador: MRU con diferencia de tiempos, λ = v/f con f fija al cambiar de medio, k y ω leídos de y(x,t) con la regla de signos, y tabla propia de V/F. 43/43 de letra y los 13 casos en valor. Sin discrepancias. Después (12 nov) se ampliaron proposiciones, metales y rapideces del sonido para más variedad; las semillas 0, 1, 2, 3, 17 y 20 cambiaron de datos y se recalcularon a mano.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "particulas",
+        "sub": "vf",
+        "props": [
+          "S1",
+          "V3",
+          "R2"
+        ]
+      },
+      "esperado": {
+        "respuesta": "vf:FVV",
+        "exacta": "FVV"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "medio",
+        "sub": "lambda",
+        "L": 95.2,
+        "dt": 0.26,
+        "va": 340,
+        "f": 1700,
+        "dato": "f"
+      },
+      "esperado": {
+        "respuesta": 2.8,
+        "exacta": "2,8 m"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "llegadas",
+        "sub": "riel",
+        "v1": 3400,
+        "v2": 340,
+        "dt": 1.35
+      },
+      "esperado": {
+        "respuesta": 510,
+        "exacta": "510 m"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "llegadas",
+        "sub": "sismo-tp",
+        "v1": 8,
+        "v2": 6,
+        "dt": 9
+      },
+      "esperado": {
+        "respuesta": 27,
+        "exacta": "27 s"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "funcion",
+        "sub": "lambda",
+        "A": 0.03,
+        "k": 1.5707963267948966,
+        "w": 3.141592653589793,
+        "forma": "kx-wt"
+      },
+      "esperado": {
+        "respuesta": 4,
+        "exacta": "4 m"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "funcion",
+        "sub": "distancia",
+        "A": 0.1,
+        "k": 12.566370614359172,
+        "w": 50.26548245743669,
+        "forma": "kx-wt",
+        "t": 0.2
+      },
+      "esperado": {
+        "respuesta": 0.8,
+        "exacta": "0,8 m"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "llegadas",
+        "sub": "sismo",
+        "v1": 9,
+        "v2": 6,
+        "dt": 5
+      },
+      "esperado": {
+        "respuesta": 90,
+        "exacta": "90 km"
+      }
+    },
+    {
+      "semilla": 16,
+      "entrada": {
+        "tipo": "funcion",
+        "sub": "frecuencia",
+        "A": 0.2,
+        "k": 1.5707963267948966,
+        "w": 1.5707963267948966,
+        "forma": "kx-wt"
+      },
+      "esperado": {
+        "respuesta": 0.25,
+        "exacta": "0,25 Hz"
+      }
+    },
+    {
+      "semilla": 20,
+      "entrada": {
+        "tipo": "llegadas",
+        "sub": "trueno",
+        "v1": null,
+        "v2": 340,
+        "dt": 6
+      },
+      "esperado": {
+        "respuesta": 2.04,
+        "exacta": "2,04 km"
+      }
+    },
+    {
+      "semilla": 23,
+      "entrada": {
+        "tipo": "funcion",
+        "sub": "sentido",
+        "A": 0.02,
+        "k": 0.5,
+        "w": 4,
+        "forma": "wt+kx"
+      },
+      "esperado": {
+        "respuesta": "sent:-|8000000",
+        "exacta": "hacia −x, a 8 m/s"
+      }
+    },
+    {
+      "semilla": 17,
+      "entrada": {
+        "tipo": "medio",
+        "sub": "lambda",
+        "L": 510,
+        "dt": 1.4,
+        "va": 340,
+        "f": 1360,
+        "dato": "f"
+      },
+      "esperado": {
+        "respuesta": 3.75,
+        "exacta": "3,75 m"
+      }
+    },
+    {
+      "semilla": 24,
+      "entrada": {
+        "tipo": "funcion",
+        "sub": "sentido",
+        "A": 0.03,
+        "k": 0.5,
+        "w": 5,
+        "forma": "kx-wt"
+      },
+      "esperado": {
+        "respuesta": "sent:+|10000000",
+        "exacta": "hacia +x, a 10 m/s"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "particulas",
+        "sub": "vf",
+        "props": [
+          "R3",
+          "V2",
+          "S5"
+        ]
+      },
+      "esperado": {
+        "respuesta": "vf:FVF",
+        "exacta": "FVF"
+      }
+    }
+  ]
+}

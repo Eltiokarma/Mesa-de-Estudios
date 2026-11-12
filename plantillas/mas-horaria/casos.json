@@ -1,0 +1,232 @@
+{
+  "plantilla": "mas-horaria",
+  "tolerancia": 1e-06,
+  "nota": "x(t) = A·sen(ωt + φ), x positiva hacia la derecha; fase en _datos va en múltiplos de π. En escribir, la respuesta es la clave «mas:A|ω|φ/π» (A en m, ω en rad/s) y exacta es el texto de la ecuación. g = 10 m/s². En flotante, k = ρ·g·S con S en cm² pasada a m². media/omega y media/vm se escriben en decimales; flotante/periodo e instante/v, con π.",
+  "verificacion": "Verificación a ciegas (8 nov 2026, subagente verificador): se resolvieron 46 problemas del lote (los 16 de casos y 30 más) con x = A·sen(ωt + φ), v = Aω·cos(ωt + φ), k = ρgS y a máx = μs·g, comparando las ecuaciones de las alternativas por (A, ω, φ). 46/46 letras y los 16 valores esperados coinciden. Tras la revisión, las alternativas de cada problema van en un mismo formato (con π o en decimales) para que la forma no dé pista; esos casos los recalculó el constructor aparte.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "apilado",
+        "sub": "aceleracion",
+        "m": 2,
+        "M": 2,
+        "mu": 0.6,
+        "k": 400,
+        "A": 2
+      },
+      "esperado": {
+        "respuesta": 6.0,
+        "exacta": "6 m/s²"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "leer",
+        "sub": "x0",
+        "A": 2,
+        "w": 3,
+        "fase": 1.3333333333333333
+      },
+      "esperado": {
+        "respuesta": -1.7320508076,
+        "exacta": "−√3 cm"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "instante",
+        "sub": "x",
+        "A": 6,
+        "w": 1.0471975511965976,
+        "fase": 1.1666666666666665,
+        "t": 3
+      },
+      "esperado": {
+        "respuesta": 3.0,
+        "exacta": "3 cm"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "escribir",
+        "sub": "extremo",
+        "m": null,
+        "k": null,
+        "T": 0.25,
+        "x0": -0.02,
+        "v0": 0
+      },
+      "esperado": {
+        "respuesta": "mas:0.02|25.132741|1.5",
+        "exacta": "x = 0,02 sen(8πt + 3π/2) m"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "flotante",
+        "sub": "masa",
+        "rho": 1000,
+        "S": 32,
+        "T": 1.2566370614359172
+      },
+      "esperado": {
+        "respuesta": 1.28,
+        "exacta": "1,28 kg"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "media",
+        "sub": "vm",
+        "A": 15,
+        "w": 0.7853981633974483,
+        "fase": 1,
+        "t1": 6,
+        "t2": 12
+      },
+      "esperado": {
+        "respuesta": -2.5,
+        "exacta": "−2,5 cm/s"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "media",
+        "sub": "omega",
+        "A": 20,
+        "vm": 150,
+        "meta": 0.5
+      },
+      "esperado": {
+        "respuesta": 7.853981634,
+        "exacta": "7,85 rad/s"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "escribir",
+        "sub": "centro",
+        "m": 0.4,
+        "k": 6.4,
+        "T": null,
+        "x0": 0,
+        "v0": 0.32
+      },
+      "esperado": {
+        "respuesta": "mas:0.08|4|0",
+        "exacta": "x = 0,08 sen(4t) m"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "escribir",
+        "sub": "extremo",
+        "m": 0.25,
+        "k": 25,
+        "T": null,
+        "x0": 0.02,
+        "v0": 0
+      },
+      "esperado": {
+        "respuesta": "mas:0.02|10|0.5",
+        "exacta": "x = 0,02 sen(10t + π/2) m"
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "tipo": "flotante",
+        "sub": "periodo",
+        "rho": 1000,
+        "S": 90,
+        "m": 10
+      },
+      "esperado": {
+        "respuesta": 2.0943951024,
+        "exacta": "2π/3 s"
+      }
+    },
+    {
+      "semilla": 18,
+      "entrada": {
+        "tipo": "apilado",
+        "sub": "amplitud",
+        "m": 2,
+        "M": 4,
+        "mu": 0.5,
+        "k": 600
+      },
+      "esperado": {
+        "respuesta": 5.0,
+        "exacta": "5 cm"
+      }
+    },
+    {
+      "semilla": 22,
+      "entrada": {
+        "tipo": "leer",
+        "sub": "frecuencia",
+        "A": 0.05,
+        "w": 15.707963267948966,
+        "fase": 1
+      },
+      "esperado": {
+        "respuesta": 2.5,
+        "exacta": "2,5 Hz"
+      }
+    },
+    {
+      "semilla": 30,
+      "entrada": {
+        "tipo": "leer",
+        "sub": "k",
+        "A": 0.2,
+        "w": 5,
+        "fase": 1.5,
+        "m": 0.8
+      },
+      "esperado": {
+        "respuesta": 20.0,
+        "exacta": "20 N/m"
+      }
+    },
+    {
+      "semilla": 46,
+      "entrada": {
+        "tipo": "leer",
+        "sub": "periodo",
+        "A": 0.1,
+        "w": 62.83185307179586,
+        "fase": 1.5
+      },
+      "esperado": {
+        "respuesta": 0.1,
+        "exacta": "0,1 s"
+      }
+    },
+    {
+      "semilla": 68,
+      "entrada": {
+        "tipo": "instante",
+        "sub": "v",
+        "A": 12,
+        "w": 0.5235987755982988,
+        "fase": 1.1666666666666665,
+        "t": 3
+      },
+      "esperado": {
+        "respuesta": 3.1415926536,
+        "exacta": "π cm/s"
+      }
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "titulo": "El rayo que cambia de medio: lápiz y papel",
+  "indicacion": "Resuelve sin la escena. Dibuja siempre la normal y mide los ángulos desde ella. Usa sen 37° = 3/5, sen 53° = 4/5 y c = 3 × 10⁸ m/s.",
+  "problemas": [
+    {
+      "id": "rs-p1",
+      "nivel": 1,
+      "enunciado": "Un rayo pasa del aire al agua (n = 4/3) con 53° de incidencia. ¿Qué ángulo forma el rayo refractado con la normal? ¿Se acerca o se aleja de la normal?",
+      "respuesta": "37°; se acerca a la normal.",
+      "pasos": ["1 · sen 53° = (4/3) · sen r.", "sen r = (4/5) · (3/4) = 3/5, así que r = 37°.", "Pasa a un medio de mayor índice: se acerca a la normal."],
+      "verificar": [{ "tipo": "snell", "args": [1, 1.3333333333333333, 53], "espera": 0.6 }]
+    },
+    {
+      "id": "rs-p2",
+      "nivel": 1,
+      "enunciado": "En un bloque de acrílico la luz viaja a 2 × 10⁸ m/s. ¿Cuál es su índice de refracción?",
+      "respuesta": "n = 3/2.",
+      "pasos": ["n = c/v = (3 × 10⁸)/(2 × 10⁸) = 3/2.", "Más lento que en el aire: índice mayor que 1. Si sale menor que 1, dividiste al revés."],
+      "verificar": [{ "tipo": "rapidez", "args": [1.5], "espera": 200000000 }]
+    },
+    {
+      "id": "rs-p3",
+      "nivel": 2,
+      "enunciado": "Con un transportador se mide que un rayo que pasa del aire a un vidrio forma 30° con la superficie del vidrio, y que el rayo refractado forma 60° con esa misma superficie. Halla el índice del vidrio.",
+      "respuesta": "n = √3.",
+      "pasos": ["Se pasa a la normal: i = 90° − 30° = 60° y r = 90° − 60° = 30°.", "n = sen 60° / sen 30° = (√3/2)/(1/2) = √3.", "Con los ángulos de la superficie habría salido √3/3, menor que 1: imposible."],
+      "verificar": [{ "tipo": "indice", "args": [60, 30], "espera": 1.7320508075688772 }]
+    },
+    {
+      "id": "rs-p4",
+      "nivel": 2,
+      "enunciado": "Un rayo viaja por un vidrio de índice 5/3 hacia el aire. Halla el ángulo límite. Si el rayo llega con 30°, ¿sale? ¿Y si llega con 53°?",
+      "respuesta": "L = 37°. Con 30° sale (sen r = 5/6); con 53° no sale: reflexión total.",
+      "pasos": ["sen L = 1/(5/3) = 3/5, así que L = 37°.", "Con 30°: sen r = (5/3)(1/2) = 5/6, menor que 1: sale alejándose de la normal.", "Con 53°: 53° > 37°; sen r valdría (5/3)(4/5) = 4/3, mayor que 1: se refleja todo."],
+      "verificar": [{ "tipo": "limite", "args": [1.6666666666666667, 1], "espera": 0.6 }, { "tipo": "sale", "args": [1.6666666666666667, 1, 30], "espera": 1 }, { "tipo": "sale", "args": [1.6666666666666667, 1, 53], "espera": 0 }]
+    },
+    {
+      "id": "rs-p5",
+      "nivel": 2,
+      "enunciado": "Una luz de 600 nm (en el aire) entra al agua (n = 4/3). ¿Cuál es su longitud de onda dentro del agua? ¿Cambia su frecuencia?",
+      "respuesta": "450 nm; la frecuencia no cambia.",
+      "pasos": ["La frecuencia la pone la fuente: no cambia.", "v = c/n baja, y λ = v/f baja en la misma proporción: λ = 600/(4/3) = 450 nm."],
+      "verificar": [{ "tipo": "lambda", "args": [600, 1.3333333333333333], "espera": 450 }]
+    },
+    {
+      "id": "rs-p6",
+      "nivel": 3,
+      "enunciado": "En el fondo de una piscina de 2 m de profundidad, llena de un líquido de índice 5/4, hay un foco pequeño. ¿Cuál es el radio del círculo de la superficie por el que sale luz al aire?",
+      "respuesta": "R = 8/3 m ≈ 2,67 m.",
+      "pasos": ["sen L = 1/(5/4) = 4/5, así que L = 53° y tan L = 4/3.", "En el borde del círculo, el rayo forma L con la vertical: R = h · tan L = 2 · 4/3 = 8/3 m.", "No es la profundidad (2 m) ni la profundidad aparente (2/(5/4) = 1,6 m)."],
+      "verificar": [{ "tipo": "circulo", "args": [2, 1.25], "espera": 2.6666666666666665 }]
+    },
+    {
+      "id": "rs-p7",
+      "nivel": 3,
+      "enunciado": "Un rayo pasa del aire a un plástico con 60° de incidencia y se refracta con 30°. Luego, otro rayo viaja por ese plástico y pasa a un aceite de índice √2 con 45° de incidencia. ¿Con qué ángulo se refracta en el aceite?",
+      "respuesta": "60°.",
+      "pasos": ["Índice del plástico: n = sen 60°/sen 30° = √3.", "√3 · sen 45° = √2 · sen r, así que sen r = √3 · (√2/2)/√2 = √3/2.", "r = 60°: pasa a un medio de menor índice y se aleja de la normal."],
+      "verificar": [{ "tipo": "indice", "args": [60, 30], "espera": 1.7320508075688772 }, { "tipo": "snell", "args": [1.7320508075688772, 1.4142135623730951, 45], "espera": 0.8660254037844386 }]
+    },
+    {
+      "id": "rs-p8",
+      "nivel": 1,
+      "enunciado": "Una moneda está a 1,2 m de profundidad en el agua (n = 4/3). Vista casi en vertical desde el aire, ¿a qué profundidad parece estar?",
+      "respuesta": "0,9 m.",
+      "pasos": ["Casi en vertical, la profundidad aparente es h/n.", "1,2/(4/3) = 0,9 m: parece más arriba de lo que está."],
+      "verificar": [{ "tipo": "aparente", "args": [1.2, 1.3333333333333333], "espera": 0.9 }]
+    }
+  ]
+}
