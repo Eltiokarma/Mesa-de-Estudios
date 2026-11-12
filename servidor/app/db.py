@@ -1,7 +1,7 @@
 """Motor de base de datos y sesión por petición."""
 from datetime import datetime, timezone
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 from sqlalchemy.pool import StaticPool
 
@@ -26,3 +26,11 @@ def crear_motor(url: str):
 
 def crear_sesiones(motor):
     return sessionmaker(bind=motor, autoflush=False, expire_on_commit=False)
+
+
+def crear_tablas(motor, base) -> None:
+    """Crea las tablas que falten. En PostgreSQL toma un candado para que dos procesos no las creen a la vez."""
+    with motor.begin() as cx:
+        if motor.dialect.name == "postgresql":
+            cx.execute(text("SELECT pg_advisory_xact_lock(417301)"))
+        base.metadata.create_all(cx)

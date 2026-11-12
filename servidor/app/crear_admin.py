@@ -14,7 +14,7 @@ import sys
 from sqlalchemy import select
 
 from .config import desde_entorno
-from .db import Base, crear_motor, crear_sesiones
+from .db import Base, crear_motor, crear_sesiones, crear_tablas
 from .modelos import Colegio, Usuario
 from .rutas.general import resumen_colegios
 from .seguridad import contrasena_inicial, hash_contrasena
@@ -31,7 +31,7 @@ def principal(argv=None, salida=sys.stdout) -> int:
     cfg = desde_entorno()
     cfg.validar()
     motor = crear_motor(cfg.database_url)
-    Base.metadata.create_all(motor)
+    crear_tablas(motor, Base)
     with crear_sesiones(motor)() as s:
         if a.listar:
             print(json.dumps(resumen_colegios(s), ensure_ascii=False, indent=2), file=salida)

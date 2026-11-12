@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from . import errores
 from .config import Config, desde_entorno
-from .db import Base, crear_motor, crear_sesiones
+from .db import Base, crear_motor, crear_sesiones, crear_tablas
 from .rutas import alumno, colegio, general, profesor, sesion
 from .seguridad import Cofre
 
@@ -15,7 +15,7 @@ def crear_app(cfg: Config | None = None) -> FastAPI:
     app = FastAPI(title="Mesa de Estudios", docs_url=None if cfg.produccion else "/docs",
                   redoc_url=None, openapi_url=None if cfg.produccion else "/openapi.json")
     motor = crear_motor(cfg.database_url)
-    Base.metadata.create_all(motor)
+    crear_tablas(motor, Base)
     app.state.cfg, app.state.motor, app.state.sesiones = cfg, motor, crear_sesiones(motor)
     app.state.cofre = Cofre(cfg.dni_clave_fernet, cfg.dni_hmac_clave)
     app.add_middleware(CORSMiddleware, allow_origins=cfg.cors_origenes, allow_credentials=False,

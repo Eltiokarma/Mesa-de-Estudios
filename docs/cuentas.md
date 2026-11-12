@@ -1,6 +1,6 @@
 # Cuentas, login y progreso: diseño (borrador del 12 nov 2026)
 
-> Estado: diseño con las decisiones de Gerson del 12 nov 2026. En construcción: `servidor/` (fase C1).
+> Estado: diseño con las decisiones de Gerson del 12 nov 2026. Fase C1 hecha en `servidor/` (ver `servidor/LEEME.md`; lo que el contrato no fijaba está ahí, en «Detalles que el contrato no fijaba»).
 
 ## Por qué cambia
 
