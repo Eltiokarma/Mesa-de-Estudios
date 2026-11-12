@@ -339,9 +339,9 @@ test('salen los seis tipos, las ocho familias, la línea con rama y los errores 
   assert.deepEqual([...tipos].sort(), ['amina', 'cadena', 'ester', 'nombre', 'oxidacion', 'sufijo']);
   assert.deepEqual([...fams].sort(), ['acidoSec', 'aminoacido', 'aromatico', 'azucar', 'bifuncional', 'diacido', 'diolEnIno', 'tricarboxilico']);
   assert.ok(rama >= 20, `pocas líneas con rama: ${rama}`);
-  for (const id of ['HC3-cadena-horizontal', 'HC3-numeracion-al-reves', 'QA-carboxilo-en-cadena', 'QA-numera-por-insaturacion', 'FO4-sufijo-del-secundario',
-    'QA-oxo-por-hidroxi', 'QA-metil-por-etil', 'HC3-orden-por-localizador', 'QA-numera-desde-hidroxilo', 'QA-bencilo-por-fenilo', 'QA-amina-como-alcohol',
-    'QA-ester-partes-cruzadas', 'FO3-ester-por-eter', 'QA-carboxilo-sp3', 'QA-oh-da-sp2', 'QA-aldehido-sp', 'QA-falta-localizador', 'QA-olvida-multiplicador'])
+  for (const id of ['HC3-cadena-horizontal', 'HC3-numeracion-al-reves', 'AQ-carboxilo-en-cadena', 'AQ-numera-por-insaturacion', 'FO4-sufijo-del-secundario',
+    'AQ-oxo-por-hidroxi', 'AQ-metil-por-etil', 'HC3-orden-por-localizador', 'AQ-numera-desde-hidroxilo', 'AQ-bencilo-por-fenilo', 'AQ-amina-como-alcohol',
+    'AQ-ester-partes-cruzadas', 'FO3-ester-por-eter', 'AQ-sin-localizador-del-sufijo', 'AQ-carboxilo-sp3', 'AQ-oh-da-sp2', 'AQ-aldehido-sp', 'AQ-falta-localizador', 'AQ-olvida-multiplicador'])
     assert.ok(ids.has(id), `no aparece ${id}`);
 });
 
@@ -367,6 +367,80 @@ test('en pantalla la fórmula lleva subíndices y los grupos su color', () => {
     const txt = p.enunciado.map(x => (typeof x === 'string' ? x : x.t)).join('');
     if (p._datos.semi) assert.ok(!/[A-Z]\d/.test(txt), `semilla ${s}: dígito sin subíndice en ${txt}`);
   }
+});
+
+
+// ---------- Nombre sin el número del sufijo: debe servir para dos o más moléculas ----------
+// Se lee el nombre (prefijos, raíz, enlaces y sufijo -ona/-ol/-amina sin número), se pone el grupo principal en cada carbono
+// de la cadena recta, se descartan las moléculas imposibles y se nombran las demás con el nombrador por fuerza bruta.
+function moleculasSinLocalizador(nombre) {
+  const m = nombre.match(/^(.*?)(met|et|prop|but|pent|hex|hept|oct)((?:an)|a?(?:-[\d,]+-(?:di)?en)?(?:-[\d,]+-(?:di)?in)?)o?(ona|ol|amina)$/);
+  assert.ok(m, `no leo «${nombre}»`);
+  const [, pre, raiz, tallo, suf] = m, n = RAIZ.indexOf(raiz);
+  const prefijos = [];
+  for (const g of pre.matchAll(/([\d,]+)-(?:di|tri|tetra|penta)?(hidroxi|amino|oxo|metil|etil)/g)) for (const L of g[1].split(',')) prefijos.push({ n: g[2], L: +L });
+  const orden = Array(n + 1).fill(1);
+  for (const [x, o] of [[/-([\d,]+)-(?:di)?en/, 2], [/-([\d,]+)-(?:di)?in/, 3]]) { const y = tallo.match(x); if (y) for (const L of y[1].split(',')) orden[+L] = o; }
+  const nombres = new Set();
+  for (let k = 1; k <= n; k++) {
+    const G = nuevoG(), C = [];
+    for (let i = 1; i <= n; i++) C[i] = atomo(G, 'C', 0);
+    for (let i = 1; i < n; i++) enlace(G, C[i], C[i + 1], orden[i]);
+    const grupos = prefijos.map(p => [p.n, p.L]).concat([[{ ona: 'oxo', ol: 'hidroxi', amina: 'amino' }[suf], k]]);
+    const het = Array(n + 1).fill(0);
+    for (const [g, L] of grupos) {
+      if (g === 'hidroxi') { enlace(G, C[L], atomo(G, 'O', 1)); het[L]++; }
+      if (g === 'amino') { enlace(G, C[L], atomo(G, 'N', 2)); het[L]++; }
+      if (g === 'oxo') { enlace(G, C[L], atomo(G, 'O', 0), 2); het[L] += 2; }
+      if (g === 'metil') enlace(G, C[L], atomo(G, 'C', 3));
+      if (g === 'etil') { const a = atomo(G, 'C', 2); enlace(G, C[L], a); enlace(G, a, atomo(G, 'C', 3)); }
+    }
+    let ok = true;
+    for (let i = 1; i <= n; i++) {
+      const b = G.en.filter(e => e.a === C[i] || e.b === C[i]).reduce((t, e) => t + e.o, 0);
+      const multiple = (i > 1 && orden[i - 1] > 1) || (i < n && orden[i] > 1);
+      if (b > 4 || het[i] > 2 || (het[i] && multiple) || (het[i] === 2 && grupos.some(([g, L]) => L === i && g === 'oxo') && (i === 1 || i === n))) ok = false;
+      G.at[C[i]].h = 4 - b;
+    }
+    if (!ok) continue;
+    const r = nombrarG(G);
+    if (r.tipo !== { ona: 'cetona', ol: 'alcohol', amina: 'amina' }[suf]) continue;
+    if (r.nombre.replace(/-[\d,]+-((?:di|tri|tetr|pent)?(?:ona|ol|amina))$/, '$1') === nombre) nombres.add(r.nombre);
+  }
+  return nombres;
+}
+
+test('un nombre sin el número del sufijo solo se ofrece si sirve para dos o más moléculas (20000 semillas)', () => {
+  let n = 0;
+  for (let s = 0; s < 20000; s++) {
+    const p = gen.generar(s);
+    for (const a of p.alternativas) if (a.error && a.error.id === 'AQ-sin-localizador-del-sufijo') {
+      n++;
+      const mol = moleculasSinLocalizador(a.texto);
+      assert.ok(mol.size >= 2, `semilla ${s}: «${a.texto}» solo puede ser ${[...mol].join(', ')}`);
+    }
+  }
+  assert.ok(n >= 50, `pocas opciones sin localizador: ${n}`);
+});
+
+test('ninguna opción nombra la misma molécula con la regla de 1993 (…carboxi…dioico, -dicarboxílico)', () => {
+  for (let s = 0; s < 5000; s++) {
+    const p = gen.generar(s);
+    for (const a of p.alternativas) {
+      assert.ok(!/carboxi.*dioico|dicarboxílico/.test(a.texto), `semilla ${s}: ${a.texto}`);
+      if (p._datos.tipo === 'cadena' && p._datos.familia === 'tricarboxilico') assert.notEqual(a.valor, p.respuesta.valor + 2, `semilla ${s}`);
+    }
+  }
+});
+
+test('en cada tipo la correcta es la más larga, sola, a lo más en el 35 % de los problemas', () => {
+  const cuenta = {};
+  for (let s = 0; s < 4000; s++) {
+    const p = gen.generar(s), t = p._datos.tipo, c = cuenta[t] = cuenta[t] || { n: 0, larga: 0 };
+    const L = p.alternativas.map(a => [...a.texto].length), k = p.alternativas.findIndex(a => a.correcta);
+    c.n++; if (L.every((l, i) => i === k || l < L[k])) c.larga++;
+  }
+  for (const [t, c] of Object.entries(cuenta)) assert.ok(c.larga / c.n <= 0.35, `${t}: ${Math.round(100 * c.larga / c.n)} %`);
 });
 
 // ---------- casos.json y papel ----------

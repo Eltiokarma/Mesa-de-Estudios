@@ -1,7 +1,7 @@
 {
   "plantilla": "nombre-polifuncional",
   "nota": "Claves y reglas: ver la cabecera de generador.js (tipos, claves y reglas de nombre). La correcta se recalcula desde _datos.semi (la fórmula que ve el alumno) o desde _datos.smiles; en oxidacion, desde _datos.secuencia, _datos.sub, _datos.paso y _datos.j.",
-  "verificacion": "",
+  "verificacion": "Verificado a ciegas (12 nov 2026) en 53 problemas distintos (25 casos y las semillas 100 a 129): SMILES armados a mano desde la semidesarrollada; cada alternativa de nombre pasada por OPSIN y comparada con RDKit; ésteres armados uniendo ácido y alcohol con RDKit; números de oxidación con la regla de la cabecera e hibridación con RDKit. Todas las claves coinciden. Los distractores que nombraban la misma molécula con la regla de 1993 se quitaron tras la revisión; los casos que cambiaron los recalculó la conversación principal.",
   "casos": [
     {
       "semilla": 2,
@@ -48,12 +48,12 @@
       "entrada": {
         "tipo": "nombre",
         "familia": "tricarboxilico",
-        "semi": "HOOC-CH(OH)-CH(COOH)-CH2-COOH",
-        "smiles": "C(C(=O)O)(O)C(C(=O)O)C(C(=O)O)"
+        "semi": "HOOC-CH(OH)-CH(COOH)-CH2-CH2-COOH",
+        "smiles": "C(C(=O)O)(O)C(C(=O)O)CC(C(=O)O)"
       },
       "esperado": {
-        "clave": "nom:ácido 1-hidroxipropano-1,2,3-tricarboxílico",
-        "texto": "ácido 1-hidroxipropano-1,2,3-tricarboxílico"
+        "clave": "nom:ácido 1-hidroxibutano-1,2,4-tricarboxílico",
+        "texto": "ácido 1-hidroxibutano-1,2,4-tricarboxílico"
       }
     },
     {
@@ -61,12 +61,12 @@
       "entrada": {
         "tipo": "nombre",
         "familia": "tricarboxilico",
-        "semi": "HOOC-CH2-CH2-CH(OH)-CH2-CH(COOH)-CH2-COOH",
-        "smiles": "C(C(=O)O)C(C(=O)O)CC(O)CC(C(=O)O)"
+        "semi": "HOOC-CH2-C(COOH)(OH)-CH2-CH2-COOH",
+        "smiles": "C(C(=O)O)C(C(=O)O)(O)CC(C(=O)O)"
       },
       "esperado": {
-        "clave": "nom:ácido 4-hidroxihexano-1,2,6-tricarboxílico",
-        "texto": "ácido 4-hidroxihexano-1,2,6-tricarboxílico"
+        "clave": "nom:ácido 2-hidroxibutano-1,2,4-tricarboxílico",
+        "texto": "ácido 2-hidroxibutano-1,2,4-tricarboxílico"
       }
     },
     {
@@ -187,16 +187,16 @@
       }
     },
     {
-      "semilla": 50,
+      "semilla": 141,
       "entrada": {
         "tipo": "cadena",
         "familia": "tricarboxilico",
-        "semi": "HOOC-CH2-CH2-CH(COOH)-CH2-CH(OH)-COOH",
-        "smiles": "C(C(=O)O)(O)CC(C(=O)O)CC(C(=O)O)"
+        "semi": "HOOC-CH2-CH2-C(COOH)(OH)-CH2-COOH",
+        "smiles": "C(C(=O)O)C(C(=O)O)(O)CC(C(=O)O)"
       },
       "esperado": {
-        "clave": 5,
-        "texto": "5 carbonos"
+        "clave": 4,
+        "texto": "4 carbonos"
       }
     },
     {
@@ -231,12 +231,12 @@
       "entrada": {
         "tipo": "sufijo",
         "familia": "bifuncional",
-        "semi": "OHC-CH2-CH2-CH2-CH(OH)-CH2-CH3",
-        "smiles": "C(=O)CCCC(O)CC"
+        "semi": "CH3-CH2-CH2-C(OH)(CH3)-CH2-CHO",
+        "smiles": "C(=O)CC(O)(C)CCC"
       },
       "esperado": {
         "clave": "suf:aldehido",
-        "texto": "el formilo de aldehído (–CHO)"
+        "texto": "el aldehído (–CHO)"
       }
     },
     {
