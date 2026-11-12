@@ -1,0 +1,94 @@
+{
+  "titulo": "El vector unitario: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Se tienen A = 4i + 3j y B = −6j. ¿Cuál es el vector unitario de A + B? Alternativas: A) (4; −3)   B) (−4/5; 3/5)   C) (4/7; −3/7)   D) (4/5; −3/5)   E) (4/5; −2/5)",
+      "respuesta": "D) (4/5; −3/5)",
+      "pasos": [
+        "Primero se suma: A + B = (4; −3).",
+        "|A + B| = √(4² + (−3)²) = 5.",
+        "Unitario de A + B = (A + B)/5 = (4/5; −3/5).",
+        "Ojo: sumar los unitarios de A y de B da otro vector, que no mide 1."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Para cierto número c > 0, el vector c·(i − 2j − 2k) es unitario. ¿Cuánto vale c? Alternativas: A) 1/3   B) 1/9   C) 1/5   D) −1/3   E) 3",
+      "respuesta": "A) 1/3",
+      "pasos": [
+        "|c·A| = c·|A| para c > 0, y |A| = √(1² + (−2)² + (−2)²) = 3.",
+        "c·3 = 1 → c = 1/3."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Para cierto número c > 0, el vector c·(−i + 4j − 8k) es unitario. ¿Cuánto vale c? Alternativas: A) 1/81   B) −1/9   C) 1/9   D) 9   E) 1/13",
+      "respuesta": "C) 1/9",
+      "pasos": [
+        "|c·A| = c·|A| para c > 0, y |A| = √((−1)² + 4² + (−8)²) = 9.",
+        "c·9 = 1 → c = 1/9."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Se tiene la recta y = (−8/15)x + 4. ¿Cuál es el vector unitario paralelo a la recta que apunta hacia donde crece x? Alternativas: A) (−15/17; 8/17)   B) (15/17; 8/17)   C) (−8/17; 15/17)   D) (1; −8/15)   E) (15/17; −8/17)",
+      "respuesta": "E) (15/17; −8/17)",
+      "pasos": [
+        "La recta sube −8/15 por cada unidad que avanza x: su dirección es (1; −8/15), o, sin fracciones, (15; −8).",
+        "Su módulo es √(15² + 8²) = 17.",
+        "Unitario hacia x creciente: (15/17; −8/17). El término independiente no cambia la dirección."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Se tiene el vector A = −4i − 8j − k. ¿Cuál es el vector unitario de A? Alternativas: A) (−4; −8; −1)   B) (−4/13; −8/13; −1/13)   C) (−4/81; −8/81; −1/81)   D) (4/9; 8/9; 1/9)   E) (−4/9; −8/9; −1/9)",
+      "respuesta": "E) (−4/9; −8/9; −1/9)",
+      "pasos": [
+        "Módulo: |A| = √((−4)² + (−8)² + (−1)²) = √81 = 9.",
+        "El unitario es A dividido entre su módulo: û = A/9 = (−4/9; −8/9; −1/9).",
+        "Comprobación: la suma de los cuadrados de sus componentes es 1."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Se tienen A = 4i + 3j y B = −4i + 3j. ¿Cuál es el vector unitario de A + B? Alternativas: A) (0; −1)   B) (0; 6)   C) (0; 1)   D) (0; 6/5)   E) (1; 0)",
+      "respuesta": "C) (0; 1)",
+      "pasos": [
+        "Primero se suma: A + B = (0; 6).",
+        "|A + B| = √(0² + 6²) = 6.",
+        "Unitario de A + B = (A + B)/6 = (0; 1).",
+        "Ojo: sumar los unitarios de A y de B da otro vector, que no mide 1."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Se tiene la recta y = (8/15)x − 2. ¿Cuál es el vector unitario paralelo a la recta que apunta hacia donde crece x? Alternativas: A) (15/17; 8/17)   B) (1; 8/15)   C) (−15/17; −8/17)   D) (8/17; 15/17)   E) (15/17; −8/17)",
+      "respuesta": "A) (15/17; 8/17)",
+      "pasos": [
+        "La recta sube 8/15 por cada unidad que avanza x: su dirección es (1; 8/15), o, sin fracciones, (15; 8).",
+        "Su módulo es √(15² + 8²) = 17.",
+        "Unitario hacia x creciente: (15/17; 8/17). El término independiente no cambia la dirección."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Para cierto número c > 0, el vector c·(i + 4j + 8k) es unitario. ¿Cuánto vale c? Alternativas: A) 1/81   B) 9   C) −1/9   D) 1/13   E) 1/9",
+      "respuesta": "E) 1/9",
+      "pasos": [
+        "|c·A| = c·|A| para c > 0, y |A| = √(1² + 4² + 8²) = 9.",
+        "c·9 = 1 → c = 1/9."
+      ]
+    }
+  ]
+}

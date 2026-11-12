@@ -1,0 +1,118 @@
+{
+  "titulo": "Componentes con triángulos notables: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Se tienen los vectores A = 6 u (150° con el eje x positivo), B = 6 u (90° con el eje x positivo) y C = 6 u (330° con el eje x positivo). ¿Cuánto mide |A + 2B + C|? Alternativas: A) 12 u   B) 6 u   C) 144 u   D) 12√3 u   E) 24 u",
+      "respuesta": "A) 12 u",
+      "pasos": [
+        "Cada vector se pasa a componentes: x = módulo·cos θ e y = módulo·sen θ, con θ medido desde +x (sen 30° = 1/2, cos 30° = √3/2).",
+        "A: x = −3√3, y = 3",
+        "2B: x = 0, y = 12",
+        "C: x = 3√3, y = −3",
+        "Se suman por componentes: Rx = 0 y Ry = 12.",
+        "|R| = √(Rx² + Ry²) = √144 = 12 u."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Se tienen los vectores A = 4 u (0° con el eje x positivo), B = 8 u (300° con el eje x positivo) y C = 4 u (240° con el eje x positivo). ¿Qué ángulo forma la resultante con el eje x positivo (medido en sentido antihorario)? Alternativas: A) 120°   B) 300°   C) 60°   D) 330°",
+      "respuesta": "B) 300°",
+      "pasos": [
+        "Cada vector se pasa a componentes: x = módulo·cos θ e y = módulo·sen θ, con θ medido desde +x (cos 60° = 1/2, sen 60° = √3/2).",
+        "A: x = 4, y = 0",
+        "B: x = 4, y = −4√3",
+        "C: x = −2, y = −2√3",
+        "Se suman por componentes: Rx = 6 y Ry = −6√3.",
+        "tan α = |Ry|/|Rx| da el ángulo de referencia α = 60°; con los signos de Rx y Ry, la resultante forma 300° con +x."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Sobre un anillo actúan las fuerzas A = 6 N (240° con el eje x positivo), B = 6 N (120° con el eje x positivo) y C = 4 N (0° con el eje x positivo). Se agrega una fuerza más para que el anillo quede en equilibrio. ¿Cuánto mide esa fuerza? Alternativas: A) 4√13 N   B) 2 N   C) 4 N   D) 16 N",
+      "respuesta": "B) 2 N",
+      "pasos": [
+        "Cada vector se pasa a componentes: x = módulo·cos θ e y = módulo·sen θ, con θ medido desde +x (cos 60° = 1/2, sen 60° = √3/2).",
+        "A: x = −3, y = −3√3",
+        "B: x = −3, y = 3√3",
+        "C: x = 4, y = 0",
+        "Se suman por componentes: Rx = −2 y Ry = 0.",
+        "La fuerza que falta es −R: mide lo mismo que R. |R| = √(Rx² + Ry²) = √4 = 2 N."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Se tienen los vectores A = 2 u (150° con el eje x positivo) y B = 6 u (330° con el eje x positivo). ¿Qué ángulo forma la resultante con el eje x positivo (medido en sentido antihorario)? Alternativas: A) 30°   B) 150°   C) 300°   D) 330°",
+      "respuesta": "D) 330°",
+      "pasos": [
+        "Cada vector se pasa a componentes: x = módulo·cos θ e y = módulo·sen θ, con θ medido desde +x (sen 30° = 1/2, cos 30° = √3/2).",
+        "A: x = −√3, y = 1",
+        "B: x = 3√3, y = −3",
+        "Se suman por componentes: Rx = 2√3 y Ry = −2.",
+        "tan α = |Ry|/|Rx| da el ángulo de referencia α = 30°; con los signos de Rx y Ry, la resultante forma 330° con +x."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Una persona camina, en este orden: 10 m hacia el este, 5 m en la dirección 53° al este del sur y 10 m hacia el norte. Toma el norte como +y y el este como +x. ¿A qué distancia queda del punto de partida (módulo del desplazamiento)? Alternativas: A) 25 m   B) 245 m   C) 21 m   D) √365 m   E) 7√5 m",
+      "respuesta": "E) 7√5 m",
+      "pasos": [
+        "Cada vector se pasa a componentes: x = módulo·cos θ e y = módulo·sen θ, con θ medido desde +x (sen 37° = 3/5, cos 37° = 4/5); norte = +y, este = +x.",
+        "A: x = 10, y = 0",
+        "B: x = 4, y = −3",
+        "C: x = 0, y = 10",
+        "Se suman por componentes: Rx = 14 y Ry = 7.",
+        "|R| = √(Rx² + Ry²) = √245 = 7√5 m."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Una persona camina, en este orden: 6√2 m hacia el noreste, 4√2 m hacia el sureste y 6√2 m hacia el noroeste. Toma el norte como +y y el este como +x. ¿A qué distancia queda del punto de partida (módulo del desplazamiento)? Alternativas: A) 16√2 m   B) 12 m   C) 80 m   D) 4√5 m",
+      "respuesta": "D) 4√5 m",
+      "pasos": [
+        "Cada vector se pasa a componentes: x = módulo·cos θ e y = módulo·sen θ, con θ medido desde +x (cos 45° = sen 45° = √2/2); norte = +y, este = +x.",
+        "A: x = 6, y = 6",
+        "B: x = 4, y = −4",
+        "C: x = −6, y = 6",
+        "Se suman por componentes: Rx = 4 y Ry = 8.",
+        "|R| = √(Rx² + Ry²) = √80 = 4√5 m."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Se tienen los vectores A = 8 u (270° con el eje x positivo) y B = 8 u (210° con el eje x positivo). ¿Qué ángulo forma la resultante con el eje x positivo (medido en sentido antihorario)? Alternativas: A) 210°   B) 240°   C) 60°   D) 120°",
+      "respuesta": "B) 240°",
+      "pasos": [
+        "Cada vector se pasa a componentes: x = módulo·cos θ e y = módulo·sen θ, con θ medido desde +x (sen 30° = 1/2, cos 30° = √3/2).",
+        "A: x = 0, y = −8",
+        "B: x = −4√3, y = −4",
+        "Se suman por componentes: Rx = −4√3 y Ry = −12.",
+        "tan α = |Ry|/|Rx| da el ángulo de referencia α = 60°; con los signos de Rx y Ry, la resultante forma 240° con +x."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Sobre un anillo actúan las fuerzas A = 6 N (30° con el eje x positivo), B = 6 N (150° con el eje x positivo), C = 6 N (90° con el eje x positivo) y D = 6 N (210° con el eje x positivo). Se agrega una fuerza más para que el anillo quede en equilibrio. ¿Cuánto mide esa fuerza? Alternativas: A) 6√3 N   B) 24 N   C) 108 N   D) 6√13 N",
+      "respuesta": "A) 6√3 N",
+      "pasos": [
+        "Cada vector se pasa a componentes: x = módulo·cos θ e y = módulo·sen θ, con θ medido desde +x (sen 30° = 1/2, cos 30° = √3/2).",
+        "A: x = 3√3, y = 3",
+        "B: x = −3√3, y = 3",
+        "C: x = 0, y = 6",
+        "D: x = −3√3, y = −3",
+        "Se suman por componentes: Rx = −3√3 y Ry = 9.",
+        "La fuerza que falta es −R: mide lo mismo que R. |R| = √(Rx² + Ry²) = √108 = 6√3 N."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "titulo": "Rpm, radianes y puntos que giran juntos: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Dos marcas, A y B, están sobre un mismo radio de un disco que gira con rapidez angular constante, separadas 40 cm. A se mueve a 1,2 m/s y B, que está más lejos del eje, a 4,4 m/s. ¿Cuál es la rapidez angular del disco? Alternativas: A) 14 rad/s   B) 8 rad/s   C) 11 rad/s   D) 0,08 rad/s   E) 3 rad/s",
+      "respuesta": "B) 8 rad/s",
+      "pasos": [
+        "Misma ω: vB − vA = ω·(rB − rA) = ω·d.",
+        "ω = (4,4 − 1,2)/0,4 = 3,2/0,4 = 8 rad/s."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Una rueda de 40 cm de radio da una vuelta cada 0,25 s. ¿Con qué rapidez se mueve un punto de su borde? Alternativas: A) π/5 m/s   B) 8π/5 m/s   C) 20π m/s   D) 16π/5 m/s   E) 320π m/s",
+      "respuesta": "D) 16π/5 m/s",
+      "pasos": [
+        "Una vuelta (2π rad) en 0,25 s: ω = 2π/0,25 = 8π rad/s.",
+        "El radio en metros: 40 cm = 0,4 m.",
+        "v = ω·r = 8π rad/s · 0,4 m = 16π/5 m/s."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Dos marcas, A y B, están sobre un mismo radio de un disco que gira con rapidez angular constante, separadas 10 cm. A se mueve a 0,3 m/s y B, que está más lejos del eje, a 0,6 m/s. ¿Cuál es la rapidez angular del disco? Alternativas: A) 6 rad/s   B) 9 rad/s   C) 0,03 rad/s   D) 3 rad/s",
+      "respuesta": "D) 3 rad/s",
+      "pasos": [
+        "Misma ω: vB − vA = ω·(rB − rA) = ω·d.",
+        "ω = (0,6 − 0,3)/0,1 = 0,3/0,1 = 3 rad/s."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Un disco gira con rapidez angular constante. Una marca A, a 20 cm del eje, se mueve a 2,4 m/s. Otra marca B está a 40 cm del eje. ¿Con qué rapidez se mueve B? Alternativas: A) 9,6 m/s   B) 4,8 m/s   C) 1,2 m/s   D) 2,4 m/s   E) 7,2 m/s",
+      "respuesta": "B) 4,8 m/s",
+      "pasos": [
+        "Las dos marcas giran juntas: tienen la misma ω. ω = vA/rA = 2,4/0,2 = 12 rad/s.",
+        "vB = ω·rB = 12 · 0,4 = 4,8 m/s (o, directo: 2,4 · 40/20)."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Dos marcas, A y B, están sobre un mismo radio de un disco que gira con rapidez angular constante, separadas 40 cm. A se mueve a 0,5 m/s y B, que está más lejos del eje, a 2,5 m/s. ¿Cuál es la rapidez angular del disco? Alternativas: A) 6,25 rad/s   B) 0,05 rad/s   C) 1,25 rad/s   D) 7,5 rad/s   E) 5 rad/s",
+      "respuesta": "E) 5 rad/s",
+      "pasos": [
+        "Misma ω: vB − vA = ω·(rB − rA) = ω·d.",
+        "ω = (2,5 − 0,5)/0,4 = 2/0,4 = 5 rad/s."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Una rueda de 50 cm de diámetro da una vuelta cada 0,5 s. ¿Con qué rapidez se mueve un punto de su borde? Alternativas: A) π m/s   B) π/2 m/s   C) π/4 m/s   D) 100π m/s   E) 2π m/s",
+      "respuesta": "A) π m/s",
+      "pasos": [
+        "Una vuelta (2π rad) en 0,5 s: ω = 2π/0,5 = 4π rad/s.",
+        "El radio es la mitad del diámetro: r = 25 cm = 0,25 m.",
+        "v = ω·r = 4π rad/s · 0,25 m = π m/s."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Un esmeril gira a 30 rpm durante 4 s. ¿Cuántas vueltas da el esmeril en ese tiempo? Alternativas: A) 1 vuelta   B) 2 vueltas   C) 4 vueltas   D) 120 vueltas",
+      "respuesta": "B) 2 vueltas",
+      "pasos": [
+        "30 rpm son 30 vueltas en 60 s: 0,5 vueltas por segundo.",
+        "En 4 s: vueltas = 0,5 · 4 = 2 vueltas."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Un ventilador de 30 cm de radio gira a 90 rpm. ¿Con qué rapidez se mueve un punto de su borde? Alternativas: A) 10π m/s   B) 90π m/s   C) 54π m/s   D) 9π/10 m/s",
+      "respuesta": "D) 9π/10 m/s",
+      "pasos": [
+        "90 rpm = 90 · 2π/60 rad/s = 3π rad/s.",
+        "El radio en metros: 30 cm = 0,3 m.",
+        "v = ω·r = 3π rad/s · 0,3 m = 9π/10 m/s."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "titulo": "Vectores en un polígono regular: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "En un heptágono regular de lado 12 cm, se dibujan, cola con punta, los vectores de 6 lados consecutivos: AB, BC, CD, DE, EF, FG. ¿Cuánto mide su resultante? Alternativas: A) 84 cm   B) 72 cm   C) 12 cm   D) 0 cm   E) 24 cm",
+      "respuesta": "C) 12 cm",
+      "pasos": [
+        "Con los 7 lados cola con punta se vuelve al punto de partida: la suma es 0.",
+        "Entonces la suma de 6 lados es lo que falta para cerrar: el vector AG, al revés del lado GA.",
+        "|R| = un lado = 12 cm."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "En un cuadrado de lado 4 m y centro O, se dibujan los vectores que van de O a todos los vértices menos B. ¿Cuánto mide su resultante? Alternativas: A) 0 m   B) 4√2 m   C) 6√2 m   D) 2√2 m   E) 4 m",
+      "respuesta": "D) 2√2 m",
+      "pasos": [
+        "Los 4 vectores del centro a los vértices se anulan: el polígono es simétrico.",
+        "Si falta OB, la suma de los demás es −OB.",
+        "|R| = radio = L/√2 = 2√2 m."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "En un heptágono regular de lado 3 u, se dibujan, cola con punta, los vectores de 6 lados consecutivos: AB, BC, CD, DE, EF, FG. ¿Cuánto mide su resultante? Alternativas: A) 21 u   B) 3 u   C) 0 u   D) 18 u   E) 6 u",
+      "respuesta": "B) 3 u",
+      "pasos": [
+        "Con los 7 lados cola con punta se vuelve al punto de partida: la suma es 0.",
+        "Entonces la suma de 6 lados es lo que falta para cerrar: el vector AG, al revés del lado GA.",
+        "|R| = un lado = 3 u."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "En un hexágono regular de lado 6 cm, se dibujan, cola con punta, los vectores de 5 lados consecutivos: AB, BC, CD, DE, EF. ¿Cuánto mide su resultante? Alternativas: A) 0 cm   B) 36 cm   C) 12 cm   D) 6 cm   E) 30 cm",
+      "respuesta": "D) 6 cm",
+      "pasos": [
+        "Con los 6 lados cola con punta se vuelve al punto de partida: la suma es 0.",
+        "Entonces la suma de 5 lados es lo que falta para cerrar: el vector AF, al revés del lado FA.",
+        "|R| = un lado = 6 cm."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "En un cuadrado ABCD de lado 6 u, se dibujan los vectores que van de A a cada uno de los otros vértices (AB, AC, AD). ¿Cuánto mide su resultante? Alternativas: A) 24√2 u   B) 9√2 u   C) 12√2 u   D) 0 u   E) 6√2 u",
+      "respuesta": "C) 12√2 u",
+      "pasos": [
+        "Con O el centro: cada vector A→X es OX − OA. Al sumar todos, aparece la suma de las posiciones de los otros vértices menos 3·OA.",
+        "La suma de las 4 posiciones desde el centro es 0, así que la de los otros 3 vale −OA.",
+        "Resultante = −OA − 3·OA = 4·AO: 4 veces el vector de A al centro, que mide el radio 3√2 u.",
+        "|R| = 12√2 u."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "En un cuadrado de lado 8 m y centro O, se dibujan los vectores que van de O a todos los vértices menos D. ¿Cuánto mide su resultante? Alternativas: A) 0 m   B) 4√2 m   C) 8√2 m   D) 8 m   E) 12√2 m",
+      "respuesta": "B) 4√2 m",
+      "pasos": [
+        "Los 4 vectores del centro a los vértices se anulan: el polígono es simétrico.",
+        "Si falta OD, la suma de los demás es −OD.",
+        "|R| = radio = L/√2 = 4√2 m."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "En un cuadrado de lado 4 m y centro O, se dibujan los vectores que van de O a todos los vértices menos D. ¿Cuánto mide su resultante? Alternativas: A) 2√2 m   B) 0 m   C) 6√2 m   D) 4 m   E) 4√2 m",
+      "respuesta": "A) 2√2 m",
+      "pasos": [
+        "Los 4 vectores del centro a los vértices se anulan: el polígono es simétrico.",
+        "Si falta OD, la suma de los demás es −OD.",
+        "|R| = radio = L/√2 = 2√2 m."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "En un pentágono regular de lado 12 cm, se dibujan, cola con punta, los vectores de 4 lados consecutivos: AB, BC, CD, DE. ¿Cuánto mide su resultante? Alternativas: A) 48 cm   B) 12 cm   C) 60 cm   D) 0 cm   E) 24 cm",
+      "respuesta": "B) 12 cm",
+      "pasos": [
+        "Con los 5 lados cola con punta se vuelve al punto de partida: la suma es 0.",
+        "Entonces la suma de 4 lados es lo que falta para cerrar: el vector AE, al revés del lado EA.",
+        "|R| = un lado = 12 cm."
+      ]
+    }
+  ]
+}

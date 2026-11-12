@@ -1,0 +1,90 @@
+{
+  "titulo": "El giro que acelera: tres datos y lo que falta: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Un ventilador gira a 3π rad/s y frena de manera uniforme hasta girar a π rad/s. Mientras tanto, da 5 vueltas. ¿Cuánto dura ese cambio? Alternativas: A) 1,25 s   B) 10 s   C) 5 s   D) 2,5 s",
+      "respuesta": "C) 5 s",
+      "pasos": [
+        "Una vuelta son 2π rad: 3π rad/s = 1,5 vueltas/s y π rad/s = 0,5 vueltas/s.",
+        "Con α constante, lo girado es la rapidez media por el tiempo: θ = (ω0 + ωf)/2 · t.",
+        "t = 2θ/(ω0 + ωf) = 2 · 5/(1,5 + 0,5) = 5 s."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Un ventilador gira con aceleración angular constante. En el instante t = 1 s su rapidez angular es 7 rad/s, y en t = 3 s es 1 rad/s. ¿Cuál es el módulo de su aceleración angular? Alternativas: A) 3 rad/s²   B) 0,5 rad/s²   C) 2 rad/s²   D) 4 rad/s²",
+      "respuesta": "A) 3 rad/s²",
+      "pasos": [
+        "El intervalo dura Δt = 3 − 1 = 2 s.",
+        "|α| = |ωf − ω0|/Δt = |1 − 7|/2 = 3 rad/s²."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Una polea gira con aceleración angular constante. En el instante t = 2 s su rapidez angular es 24 rad/s, y en t = 4 s es 39 rad/s. ¿Cuál es el módulo de su aceleración angular? Alternativas: A) 31,5 rad/s²   B) 9,75 rad/s²   C) 19,5 rad/s²   D) 3,75 rad/s²   E) 7,5 rad/s²",
+      "respuesta": "E) 7,5 rad/s²",
+      "pasos": [
+        "El intervalo dura Δt = 4 − 2 = 2 s.",
+        "|α| = |ωf − ω0|/Δt = |39 − 24|/2 = 7,5 rad/s²."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Una polea gira a 660 rpm y acelera de manera uniforme hasta girar a 1 140 rpm. Mientras tanto, da 225 vueltas. ¿Cuánto dura ese cambio? Alternativas: A) 15 s   B) 56,25 s   C) 0,25 s   D) 7,5 s   E) 3,75 s",
+      "respuesta": "A) 15 s",
+      "pasos": [
+        "En vueltas por segundo: 660 rpm = 11 vueltas/s y 1 140 rpm = 19 vueltas/s.",
+        "Con α constante, lo girado es la rapidez media por el tiempo: θ = (ω0 + ωf)/2 · t.",
+        "t = 2θ/(ω0 + ωf) = 2 · 225/(11 + 19) = 15 s."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Un disco parte del reposo y acelera de manera uniforme con 4 rad/s² durante 2 s; luego gira con rapidez constante durante 12 s y, al final, frena de manera uniforme hasta detenerse en 3 s. ¿Qué ángulo gira el disco en total? Alternativas: A) 104 rad   B) 116 rad   C) 20 rad   D) 136 rad   E) 68 rad",
+      "respuesta": "B) 116 rad",
+      "pasos": [
+        "Rapidez máxima, al final del arranque: ωmáx = α · t1 = 4 · 2 = 8 rad/s.",
+        "Lo girado es el área bajo ω-t: un trapecio con dos triángulos (arranque y frenado) y un rectángulo (el tramo constante).",
+        "θ = 8 · 2/2 + 8 · 12 + 8 · 3/2 = 116 rad."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Un disco gira con aceleración angular constante. En el instante t = 5 s su rapidez angular es 1 rad/s, y en t = 15 s es 10 rad/s. ¿Qué ángulo gira el disco entre t = 5 s y t = 15 s? Alternativas: A) 10 rad   B) 55 rad   C) 100 rad   D) 0,9 rad   E) 82,5 rad",
+      "respuesta": "B) 55 rad",
+      "pasos": [
+        "El intervalo dura Δt = 15 − 5 = 10 s.",
+        "Con α constante, ω cambia en línea recta y lo girado es la rapidez media por el tiempo (el área del trapecio bajo ω-t): θ = (1 + 10)/2 · 10 = 55 rad."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Una rueda gira con aceleración angular constante. En el instante t = 5 s su rapidez angular es 29 rad/s, y en t = 9 s es 38 rad/s. ¿Cuál es el módulo de su aceleración angular? Alternativas: A) 16,75 rad/s²   B) 9,5 rad/s²   C) 2,25 rad/s²   D) 1 rad/s²",
+      "respuesta": "C) 2,25 rad/s²",
+      "pasos": [
+        "El intervalo dura Δt = 9 − 5 = 4 s.",
+        "|α| = |ωf − ω0|/Δt = |38 − 29|/4 = 2,25 rad/s²."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Una rueda gira a 2 rad/s y acelera de manera uniforme hasta girar a 16 rad/s. Mientras tanto, gira 171 rad. ¿Cuánto dura ese cambio? Alternativas: A) 4,75 s   B) 85,5 s   C) 9,5 s   D) 19 s",
+      "respuesta": "D) 19 s",
+      "pasos": [
+        "Con α constante, lo girado es la rapidez media por el tiempo: θ = (ω0 + ωf)/2 · t.",
+        "t = 2θ/(ω0 + ωf) = 2 · 171/(2 + 16) = 19 s."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "titulo": "Combinación lineal y condiciones: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Dos vectores cumplen A + B = (−2; 5) y A − B = (−6; −3). ¿Cuánto vale B? Alternativas: A) (4; 8)   B) (−2; 5)   C) (−2; −4)   D) (2; 4)   E) (−4; 1)",
+      "respuesta": "D) (2; 4)",
+      "pasos": [
+        "Se restan las dos igualdades: (A + B) − (A − B) = 2B.",
+        "2B = (−2; 5) − (−6; −3) = (4; 8).",
+        "B = (2; 4)."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Los vectores A = (6; t) y B = (2; 8) son paralelos. ¿Cuánto vale t? Alternativas: A) 24   B) 8/3   C) −24   D) −3/2   E) 3/2",
+      "respuesta": "A) 24",
+      "pasos": [
+        "Paralelos ⇔ A = k·B: las componentes son proporcionales.",
+        "x: 6 = k·2 → k = 3.",
+        "y: t = k·8 = 24."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Dos vectores cumplen A + B = (−9; −5) y A − B = (−3; −5). ¿Cuánto vale B? Alternativas: A) (3; 0)   B) (−9; −5)   C) (−6; −5)   D) (−6; 0)   E) (−3; 0)",
+      "respuesta": "E) (−3; 0)",
+      "pasos": [
+        "Se restan las dos igualdades: (A + B) − (A − B) = 2B.",
+        "2B = (−9; −5) − (−3; −5) = (−6; 0).",
+        "B = (−3; 0)."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Dos vectores cumplen A + B = (−1; −8) y A − B = (−7; −4). ¿Cuánto vale A? Alternativas: A) (−7; −4)   B) (4; 6)   C) (−8; −12)   D) (−4; −6)   E) (3; −2)",
+      "respuesta": "D) (−4; −6)",
+      "pasos": [
+        "Se suman las dos igualdades: (A + B) + (A − B) = 2A.",
+        "2A = (−1; −8) + (−7; −4) = (−8; −12).",
+        "A = (−4; −6)."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Se tienen A = (1; −3), B = (−1; 1) y C = (3; −5). ¿Cómo se escribe C en función de A y B? Alternativas: A) 3A − 5B   B) B − 2A   C) A + 2B   D) 2B − A   E) A − 2B",
+      "respuesta": "E) A − 2B",
+      "pasos": [
+        "Se busca m y n con m·A + n·B = C, componente por componente:",
+        "x: m − n = 3;  y: −3m + n = −5.",
+        "Resolviendo el sistema: m = 1 y n = −2.",
+        "C = A − 2B. Comprobación: 1·(1; −3) − 2·(−1; 1) = (3; −5)."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Dos vectores cumplen A + B = (3; 0) y A − B = (−9; 12). ¿Cuánto vale B? Alternativas: A) (3; 0)   B) (12; −12)   C) (−6; 6)   D) (6; −6)   E) (−3; 6)",
+      "respuesta": "D) (6; −6)",
+      "pasos": [
+        "Se restan las dos igualdades: (A + B) − (A − B) = 2B.",
+        "2B = (3; 0) − (−9; 12) = (12; −12).",
+        "B = (6; −6)."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Los vectores A = (4; t) y B = (6; 9) son paralelos. ¿Cuánto vale t? Alternativas: A) −6   B) 6   C) 27/2   D) 8/3   E) −8/3",
+      "respuesta": "B) 6",
+      "pasos": [
+        "Paralelos ⇔ A = k·B: las componentes son proporcionales.",
+        "x: 4 = k·6 → k = 2/3.",
+        "y: t = k·9 = 6."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Los vectores A = (3; t) y B = (−4; 2) son paralelos. ¿Cuánto vale t? Alternativas: A) 6   B) −3/2   C) −8/3   D) 3/2   E) −6",
+      "respuesta": "B) −3/2",
+      "pasos": [
+        "Paralelos ⇔ A = k·B: las componentes son proporcionales.",
+        "x: 3 = k·−4 → k = −3/4.",
+        "y: t = k·2 = −3/2."
+      ]
+    }
+  ]
+}

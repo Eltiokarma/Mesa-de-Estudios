@@ -1,0 +1,99 @@
+{
+  "titulo": "Dos móviles en la misma circunferencia: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Dos móviles, A y B, recorren una misma circunferencia. A da una vuelta cada 12 s y B da una vuelta cada 15 s. Los dos giran en sentido antihorario. Parten juntos del mismo punto. ¿Al cabo de cuánto tiempo se encuentran por segunda vez? Alternativas: A) 24 s   B) 12 s   C) 180 s   D) 120 s",
+      "respuesta": "D) 120 s",
+      "pasos": [
+        "En vueltas por segundo: T = 12 s, o sea 1/12 de vuelta por segundo y T = 15 s, o sea 1/15 de vuelta por segundo.",
+        "Van en el mismo sentido: el más rápido gana, cada segundo, la diferencia de rapideces: 1/12 − 1/15 = 1/60 de vuelta por segundo.",
+        "Parten juntos: para el primer encuentro hace falta una vuelta entera de diferencia (1 de vuelta); luego, una vuelta entera más por cada encuentro: 1 + 1 = 2 vueltas.",
+        "Tiempo: t = 2 ÷ 1/60 = 120 s."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Dos móviles, A y B, recorren una misma circunferencia. A gira a 4 rpm y B gira a 5 rpm. Los dos giran en sentido antihorario. Al comienzo, B está 90° delante de A, medidos en el sentido en que gira A. ¿Cuántas vueltas da A hasta que se encuentran por tercera vez? Alternativas: A) 12 vueltas   B) 3 vueltas   C) 9 vueltas   D) 13,75 vueltas   E) 11 vueltas",
+      "respuesta": "E) 11 vueltas",
+      "pasos": [
+        "En vueltas por segundo: 4 rpm = 1/15 de vuelta por segundo y 5 rpm = 1/12 de vuelta por segundo.",
+        "Van en el mismo sentido: el más rápido gana, cada segundo, la diferencia de rapideces: 1/12 − 1/15 = 1/60 de vuelta por segundo.",
+        "Para el primer encuentro, B, que es más rápido, tiene que ganar los 270° que le faltan para alcanzar a A por detrás (0,75 de vuelta); luego, una vuelta entera más por cada encuentro: 0,75 + 2 = 2,75 vueltas.",
+        "Tiempo: t = 2,75 ÷ 1/60 = 165 s.",
+        "Vueltas de A: su rapidez por el tiempo, 1/15 · 165 = 11 vueltas."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Dos móviles, A y B, parten juntos de un punto P de una misma circunferencia. A gira a 4 rpm y B gira a 10 rpm. Los dos giran en sentido antihorario. ¿Al cabo de cuánto tiempo vuelven a estar juntos en P por primera vez? Alternativas: A) 90 s   B) 10 s   C) 15 s   D) 21 s   E) 30 s",
+      "respuesta": "E) 30 s",
+      "pasos": [
+        "Periodos (lo que tarda cada uno en dar una vuelta): TA = 60/4 = 15 s y TB = 60/10 = 6 s.",
+        "Están juntos en P cuando el tiempo es múltiplo de los dos periodos. El sentido de giro no importa. El primero es el mínimo común múltiplo: mcm(15; 6) = 30 s."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Dos móviles, A y B, recorren una misma circunferencia. A gira a 20 rpm y B gira a 15 rpm. Los dos giran en sentido antihorario. Al comienzo, B está 135° delante de A, medidos en el sentido en que gira A. ¿Al cabo de cuánto tiempo se encuentran por segunda vez? Alternativas: A) 19,5 s   B) 16,5 s   C) 24 s   D) 28,5 s   E) 9 s",
+      "respuesta": "B) 16,5 s",
+      "pasos": [
+        "En vueltas por segundo: 20 rpm = 1/3 de vuelta por segundo y 15 rpm = 0,25 de vuelta por segundo.",
+        "Van en el mismo sentido: el más rápido gana, cada segundo, la diferencia de rapideces: 1/3 − 0,25 = 1/12 de vuelta por segundo.",
+        "Para el primer encuentro, A tiene que ganar los 135° que lo separan de B (3/8 de vuelta); luego, una vuelta entera más por cada encuentro: 3/8 + 1 = 11/8 vueltas.",
+        "Tiempo: t = 11/8 ÷ 1/12 = 16,5 s."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Dos móviles, A y B, recorren una misma circunferencia. A gira con rapidez angular constante de π/6 rad/s y B gira con rapidez angular constante de 2π/3 rad/s. A gira en sentido antihorario y B, en sentido horario. Al comienzo, B está 90° delante de A, medidos en el sentido en que gira A. ¿Al cabo de cuánto tiempo se encuentran por primera vez? Alternativas: A) 1,8 s   B) 3 s   C) 0,6 s   D) 2,4 s   E) 1 s",
+      "respuesta": "C) 0,6 s",
+      "pasos": [
+        "En vueltas por segundo: π/6 rad/s = 1/12 de vuelta por segundo y 2π/3 rad/s = 1/3 de vuelta por segundo.",
+        "Van en sentidos contrarios: se acercan, cada segundo, la suma de las rapideces: 1/3 + 1/12 = 5/12 de vuelta por segundo.",
+        "Para el primer encuentro, entre los dos tienen que cubrir los 90° que los separan (0,25 de vuelta).",
+        "Tiempo: t = 0,25 ÷ 5/12 = 0,6 s."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Dos móviles, A y B, recorren una misma circunferencia. A gira a 8 rpm y B gira a 12 rpm. A gira en sentido antihorario y B, en sentido horario. Al comienzo, B está 90° delante de A, medidos en el sentido en que gira A, así que se acercan. ¿Al cabo de cuánto tiempo la separación angular entre los dos es 60° por primera vez? Alternativas: A) 0,75 s   B) 1,25 s   C) 0,25 s   D) 5 s",
+      "respuesta": "C) 0,25 s",
+      "pasos": [
+        "En vueltas por segundo: 8 rpm = 2/15 de vuelta por segundo y 12 rpm = 0,2 de vuelta por segundo.",
+        "Van en sentidos contrarios: la separación cambia con la suma de las rapideces, 1/3 de vuelta por segundo.",
+        "Al comienzo están a 90° y se acercan; la separación es 60° cuando han cubierto entre los dos 90° − 60° = 30° (1/12 de vuelta), o sea cuando t = 1/12 ÷ 1/3 = 0,25 s."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Dos móviles, A y B, recorren una misma circunferencia. A gira a 4 rpm y B gira a 2 rpm. Los dos giran en sentido antihorario. Al comienzo, B está 135° delante de A, medidos en el sentido en que gira A. ¿Al cabo de cuánto tiempo se encuentran por primera vez? Alternativas: A) 11,25 s   B) 18,75 s   C) 30 s   D) 15 s   E) 3,75 s",
+      "respuesta": "A) 11,25 s",
+      "pasos": [
+        "En vueltas por segundo: 4 rpm = 1/15 de vuelta por segundo y 2 rpm = 1/30 de vuelta por segundo.",
+        "Van en el mismo sentido: el más rápido gana, cada segundo, la diferencia de rapideces: 1/15 − 1/30 = 1/30 de vuelta por segundo.",
+        "Para el primer encuentro, A tiene que ganar los 135° que lo separan de B (3/8 de vuelta).",
+        "Tiempo: t = 3/8 ÷ 1/30 = 11,25 s."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Dos móviles, A y B, parten juntos de un punto P de una misma circunferencia. A gira con rapidez angular constante de π/6 rad/s y B gira con rapidez angular constante de π/5 rad/s. Los dos giran en sentido antihorario. ¿Al cabo de cuánto tiempo vuelven a estar juntos en P por primera vez? Alternativas: A) 22 s   B) 60 s   C) 12 s   D) 120 s",
+      "respuesta": "B) 60 s",
+      "pasos": [
+        "Periodos (lo que tarda cada uno en dar una vuelta): TA = 2π/(π/6) = 12 s y TB = 2π/(π/5) = 10 s.",
+        "Están juntos en P cuando el tiempo es múltiplo de los dos periodos. El sentido de giro no importa. El primero es el mínimo común múltiplo: mcm(12; 10) = 60 s."
+      ]
+    }
+  ]
+}

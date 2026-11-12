@@ -1,0 +1,95 @@
+{
+  "titulo": "Aumentos y descuentos sucesivos: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Una tienda hace dos descuentos sucesivos: primero del 20 % y luego del 10 %. ¿A qué descuento único equivalen? Alternativas: A) 28 %   B) 30 %   C) 72 %   D) 15 %   E) 2 %",
+      "respuesta": "A) 28 %",
+      "pasos": [
+        "Después de los dos descuentos se paga 0,8 × 0,9 = 0,72 del precio, o sea, el 72 %.",
+        "El descuento único es lo que falta para el 100 %: 100 % − 72 % = 28 %.",
+        "Atajo: 20 + 10 − (20 × 10) ÷ 100 = 28 %."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Una tienda ofrece una licuadora a S/ 200. Primero le hace un descuento del 15 % y, sobre el nuevo precio, otro descuento del 40 %. ¿Cuánto se paga al final? Alternativas: A) S/ 145   B) S/ 102   C) S/ 120   D) S/ 98   E) S/ 90",
+      "respuesta": "B) S/ 102",
+      "pasos": [
+        "Después del primer descuento queda el 85 %: S/ 200 × 0,85 = S/ 170.",
+        "El segundo descuento se aplica sobre ese precio: S/ 170 × 0,6 = S/ 102.",
+        "Atajo: los factores se multiplican. 0,85 × 0,6 = 0,51, o sea, se paga el 51 % del precio."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Una tienda hace dos descuentos sucesivos: primero del 10 % y luego del 15 %. ¿A qué descuento único equivalen? Alternativas: A) 25 %   B) 12,5 %   C) 1,5 %   D) 23,5 %   E) 76,5 %",
+      "respuesta": "D) 23,5 %",
+      "pasos": [
+        "Después de los dos descuentos se paga 0,9 × 0,85 = 0,77 del precio, o sea, el 76,5 %.",
+        "El descuento único es lo que falta para el 100 %: 100 % − 76,5 % = 23,5 %.",
+        "Atajo: 10 + 15 − (10 × 15) ÷ 100 = 23,5 %."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "El precio de una licuadora era S/ 1 000. Subió un 10 % y luego bajó un 15 %. ¿Cuál es el precio ahora? Alternativas: A) S/ 950   B) S/ 850   C) S/ 935   D) S/ 1 100   E) S/ 65",
+      "respuesta": "C) S/ 935",
+      "pasos": [
+        "Con el aumento se paga el 110 %: S/ 1 000 × 1,1 = S/ 1 100.",
+        "El descuento se aplica sobre el precio aumentado: S/ 1 100 × 0,85 = S/ 935.",
+        "En un solo paso: 1,1 × 0,85 = 0,94 del precio inicial."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Una tienda hace dos descuentos sucesivos: primero del 40 % y luego del 25 %. ¿A qué descuento único equivalen? Alternativas: A) 45 %   B) 32,5 %   C) 55 %   D) 10 %   E) 65 %",
+      "respuesta": "C) 55 %",
+      "pasos": [
+        "Después de los dos descuentos se paga 0,6 × 0,75 = 0,45 del precio, o sea, el 45 %.",
+        "El descuento único es lo que falta para el 100 %: 100 % − 45 % = 55 %.",
+        "Atajo: 40 + 25 − (40 × 25) ÷ 100 = 55 %."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Una tienda ofrece un televisor a S/ 400. Primero le hace un descuento del 10 % y, sobre el nuevo precio, otro descuento del 50 %. ¿Cuánto se paga al final? Alternativas: A) S/ 220   B) S/ 280   C) S/ 160   D) S/ 180   E) S/ 200",
+      "respuesta": "D) S/ 180",
+      "pasos": [
+        "Después del primer descuento queda el 90 %: S/ 400 × 0,9 = S/ 360.",
+        "El segundo descuento se aplica sobre ese precio: S/ 360 × 0,5 = S/ 180.",
+        "Atajo: los factores se multiplican. 0,9 × 0,5 = 0,45, o sea, se paga el 45 % del precio."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Una tienda ofrece unas zapatillas a S/ 600. Primero le hace un descuento del 50 % y, sobre el nuevo precio, otro descuento del 10 %. ¿Cuánto se paga al final? Alternativas: A) S/ 330   B) S/ 300   C) S/ 240   D) S/ 420   E) S/ 270",
+      "respuesta": "E) S/ 270",
+      "pasos": [
+        "Después del primer descuento queda el 50 %: S/ 600 × 0,5 = S/ 300.",
+        "El segundo descuento se aplica sobre ese precio: S/ 300 × 0,9 = S/ 270.",
+        "Atajo: los factores se multiplican. 0,5 × 0,9 = 0,45, o sea, se paga el 45 % del precio."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Una tienda hace dos descuentos sucesivos: primero del 25 % y luego del 20 %. ¿A qué descuento único equivalen? Alternativas: A) 60 %   B) 5 %   C) 45 %   D) 40 %   E) 22,5 %",
+      "respuesta": "D) 40 %",
+      "pasos": [
+        "Después de los dos descuentos se paga 0,75 × 0,8 = 0,6 del precio, o sea, el 60 %.",
+        "El descuento único es lo que falta para el 100 %: 100 % − 60 % = 40 %.",
+        "Atajo: 25 + 20 − (25 × 20) ÷ 100 = 40 %."
+      ]
+    }
+  ]
+}

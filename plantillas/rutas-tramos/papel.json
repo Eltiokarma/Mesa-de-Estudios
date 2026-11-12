@@ -1,0 +1,107 @@
+{
+  "titulo": "Rutas por tramos y por cuadras: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Los pueblos A, B, C, D y E están unidos por caminos de herradura. De A a B hay 3 caminos; de B a C, 2; de C a D, 2; de D a E, 2. Además, hay un camino directo entre B y D y hay un camino directo entre B y E. Todos los caminos se pueden recorrer en los dos sentidos. ¿De cuántas maneras se puede ir de A a E sin pasar dos veces por el mismo pueblo? Alternativas: A) 30   B) 33   C) 432   D) 24   E) 19",
+      "respuesta": "B) 33",
+      "pasos": [
+        "Se listan las rutas de pueblos en orden (por el primer tramo, después por el segundo…). En cada ruta se multiplican los caminos de sus tramos; las rutas distintas se suman.",
+        "A–B–C–D–E: 3 · 2 · 2 · 2 = 24.",
+        "A–B–D–E: 3 · 1 · 2 = 6.",
+        "A–B–E: 3 · 1 = 3.",
+        "Total: 24 + 6 + 3 = 33 maneras."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Los pueblos A, B, C, D y E están unidos por caminos de herradura. De A a B hay 2 caminos; de B a C, 5; de C a D, 4; de D a E, 3. Además, hay 2 caminos directos entre A y C, hay un camino directo entre A y D y hay un camino directo entre A y E. Todos los caminos se pueden recorrer en los dos sentidos. ¿De cuántas maneras se puede ir de A a E sin pasar dos veces por el mismo pueblo y pasando por C? Alternativas: A) 23   B) 144   C) 120   D) 148   E) 2 880",
+      "respuesta": "B) 144",
+      "pasos": [
+        "Se listan las rutas de pueblos en orden (por el primer tramo, después por el segundo…). En cada ruta se multiplican los caminos de sus tramos; las rutas distintas se suman.",
+        "Solo valen las que pasan por C.",
+        "A–B–C–D–E: 2 · 5 · 4 · 3 = 120.",
+        "A–C–D–E: 2 · 4 · 3 = 24.",
+        "Total: 120 + 24 = 144 maneras."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Los pueblos A, B, C y D están unidos por caminos de herradura. De A a B hay 3 caminos; de B a C, 4; de C a D, 3. Además, hay un camino directo entre B y D. Todos los caminos se pueden recorrer en los dos sentidos. ¿De cuántas maneras se puede ir de A a D sin pasar dos veces por el mismo pueblo? Alternativas: A) 14   B) 39   C) 108   D) 36",
+      "respuesta": "B) 39",
+      "pasos": [
+        "Se listan las rutas de pueblos en orden (por el primer tramo, después por el segundo…). En cada ruta se multiplican los caminos de sus tramos; las rutas distintas se suman.",
+        "A–B–C–D: 3 · 4 · 3 = 36.",
+        "A–B–D: 3 · 1 = 3.",
+        "Total: 36 + 3 = 39 maneras."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Los pueblos A, B, C, D y E están unidos por caminos de herradura. De A a B hay 2 caminos; de B a C, 3; de C a D, 5; de D a E, 2. Además, hay un camino directo entre A y C y hay 2 caminos directos entre A y D. Todos los caminos se pueden recorrer en los dos sentidos. ¿De cuántas maneras se puede ir de A a E sin pasar dos veces por el mismo pueblo? Alternativas: A) 24   B) 2 400   C) 74   D) 60   E) 70",
+      "respuesta": "C) 74",
+      "pasos": [
+        "Se listan las rutas de pueblos en orden (por el primer tramo, después por el segundo…). En cada ruta se multiplican los caminos de sus tramos; las rutas distintas se suman.",
+        "A–B–C–D–E: 2 · 3 · 5 · 2 = 60.",
+        "A–C–D–E: 1 · 5 · 2 = 10.",
+        "A–D–E: 2 · 2 = 4.",
+        "Total: 60 + 10 + 4 = 74 maneras."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Las calles de un barrio forman una cuadrícula de 4 cuadras de oeste a este por 3 cuadras de sur a norte. Iván va de la esquina suroeste a la esquina noreste por las calles, siempre hacia el este o hacia el norte. Tiene que pasar por la bodega de la esquina que queda a 2 cuadras al este y 2 cuadras al norte de la partida. ¿Cuántas rutas distintas puede seguir? Alternativas: A) 18   B) 9   C) 35   D) 17   E) 128",
+      "respuesta": "A) 18",
+      "pasos": [
+        "Cada ruta tiene 4 cuadras al este y 3 al norte en algún orden: sin condición hay C(7, 4) = 35 rutas.",
+        "Rutas hasta la esquina: C(4, 2) = 6. Desde la esquina hasta la llegada: C(3, 2) = 3. Pasan por la esquina 6 · 3 = 18.",
+        "Solo valen las que pasan por la esquina: 18 rutas."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Los pueblos A, B, C, D y E están unidos por caminos de herradura. De A a B hay 2 caminos; de B a C, 2; de C a D, 3; de D a E, 2. Además, hay 3 caminos directos entre A y D y hay un camino directo entre B y D. Todos los caminos se pueden recorrer en los dos sentidos. ¿De cuántas maneras se puede ir de A a E sin pasar dos veces por el mismo pueblo? Alternativas: A) 34   B) 24   C) 19   D) 576   E) 28",
+      "respuesta": "A) 34",
+      "pasos": [
+        "Se listan las rutas de pueblos en orden (por el primer tramo, después por el segundo…). En cada ruta se multiplican los caminos de sus tramos; las rutas distintas se suman.",
+        "A–B–C–D–E: 2 · 2 · 3 · 2 = 24.",
+        "A–B–D–E: 2 · 1 · 2 = 4.",
+        "A–D–E: 3 · 2 = 6.",
+        "Total: 24 + 4 + 6 = 34 maneras."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Los pueblos A, B, C y D están unidos por caminos de herradura. De A a B hay 5 caminos; de B a C, 4; de C a D, 2. Además, hay un camino directo entre A y C y hay un camino directo entre B y D. Todos los caminos se pueden recorrer en los dos sentidos. ¿De cuántas maneras se puede ir de A a D sin pasar dos veces por el mismo pueblo y pasando por B? Alternativas: A) 45   B) 49   C) 40   D) 23   E) 800",
+      "respuesta": "B) 49",
+      "pasos": [
+        "Se listan las rutas de pueblos en orden (por el primer tramo, después por el segundo…). En cada ruta se multiplican los caminos de sus tramos; las rutas distintas se suman.",
+        "Solo valen las que pasan por B.",
+        "A–B–C–D: 5 · 4 · 2 = 40.",
+        "A–B–D: 5 · 1 = 5.",
+        "A–C–B–D: 1 · 4 · 1 = 4.",
+        "Total: 40 + 5 + 4 = 49 maneras."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Las calles de un barrio forman una cuadrícula de 4 cuadras de oeste a este por 2 cuadras de sur a norte. Valeria va de la esquina suroeste a la esquina noreste por las calles, siempre hacia el este o hacia el norte. Tiene que pasar por la bodega de la esquina que queda a 2 cuadras al este y 1 cuadra al norte de la partida. ¿Cuántas rutas distintas puede seguir? Alternativas: A) 15   B) 6   C) 9   D) 24   E) 64",
+      "respuesta": "C) 9",
+      "pasos": [
+        "Cada ruta tiene 4 cuadras al este y 2 al norte en algún orden: sin condición hay C(6, 4) = 15 rutas.",
+        "Rutas hasta la esquina: C(3, 2) = 3. Desde la esquina hasta la llegada: C(3, 2) = 3. Pasan por la esquina 3 · 3 = 9.",
+        "Solo valen las que pasan por la esquina: 9 rutas."
+      ]
+    }
+  ]
+}

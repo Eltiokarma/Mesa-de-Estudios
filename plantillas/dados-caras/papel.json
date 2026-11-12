@@ -1,0 +1,100 @@
+{
+  "titulo": "Dados y dominó: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Sobre una mesa se colocan 5 dados comunes (en cada dado, las caras opuestas suman 7 puntos), en fila de izquierda a derecha y pegados uno al otro por sus caras. La fila está contra una pared: la cara de atrás de cada dado toca la pared. Se cuentan como visibles las caras que se ven caminando alrededor de la mesa; las que tocan la mesa u otro dado (o una pared, si la hay) no se ven. ¿Cuál es la suma máxima de los puntos de las caras no visibles? Alternativas: A) 55 puntos   B) 84 puntos   C) 61 puntos   D) 42 puntos",
+      "respuesta": "B) 84 puntos",
+      "pasos": [
+        "Visibles: en cada dado, la de arriba y la del frente; además, el costado izquierdo del primero y el derecho del último.",
+        "Caras que se ven juntas y no son opuestas pueden tener los números más altos (o más bajos) a la vez: 6, 5 y 4 (o 1, 2 y 3). Dos caras opuestas suman siempre 7.",
+        "Lo que no se ve es el total, 21 · 5 = 105, menos lo que se ve: para que una suma sea máxima, la otra tiene que ser mínima.",
+        "Respuesta: 84 puntos."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Sobre una mesa se colocan 4 dados comunes (en cada dado, las caras opuestas suman 7 puntos), en fila de izquierda a derecha y pegados uno al otro por sus caras. La fila está en el centro de la mesa, lejos de las paredes. Se cuentan como visibles las caras que se ven caminando alrededor de la mesa; las que tocan la mesa u otro dado (o una pared, si la hay) no se ven. ¿Cuál es la suma máxima de los puntos de las caras no visibles? Alternativas: A) 48 puntos   B) 24 puntos   C) 52 puntos   D) 22 puntos",
+      "respuesta": "A) 48 puntos",
+      "pasos": [
+        "Visibles: en cada dado, la de arriba y la del frente y la de atrás; además, el costado izquierdo del primero y el derecho del último.",
+        "Caras que se ven juntas y no son opuestas pueden tener los números más altos (o más bajos) a la vez: 6, 5 y 4 (o 1, 2 y 3). Dos caras opuestas suman siempre 7.",
+        "Lo que no se ve es el total, 21 · 4 = 84, menos lo que se ve: para que una suma sea máxima, la otra tiene que ser mínima.",
+        "Respuesta: 48 puntos."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Se apilan 4 dados comunes (en cada dado, las caras opuestas suman 7 puntos), uno encima de otro, sobre una mesa. Se cuentan como visibles las caras que se ven caminando alrededor de la mesa; las que tocan la mesa u otro dado (o una pared, si la hay) no se ven. La cara de arriba de la torre muestra 2 puntos. ¿Cuál es la suma mínima de los puntos de las caras no visibles? Alternativas: A) 26 puntos   B) 1 punto   C) 22 puntos   D) 20 puntos   E) 10 puntos",
+      "respuesta": "A) 26 puntos",
+      "pasos": [
+        "En cada dado, las cuatro caras de los costados se ven y suman 21 − 7 = 14, porque son dos pares de caras opuestas.",
+        "Ocultas: en cada dado de abajo, la cara de arriba y la de abajo (un par opuesto: 7 puntos); en el dado de arriba, solo la de abajo. Eso da 7 · 3 = 21 más la cara de abajo del último dado.",
+        "La cara de abajo del dado de arriba es 7 menos la de arriba de la torre, que está fijada o limitada por el dato.",
+        "Respuesta: 26 puntos."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Se tiene un dominó común, del 0 (blanco) al 6, que trae una ficha por cada par de números, dobles incluidos. ¿Cuántos puntos hay en total, sumando todas las fichas del juego? Alternativas: A) 252 puntos   B) 168 puntos   C) 294 puntos   D) 126 puntos   E) 147 puntos",
+      "respuesta": "B) 168 puntos",
+      "pasos": [
+        "Las fichas son los pares (a, b) con 0 ≤ a ≤ b ≤ 6: 7 dobles y 21 con números distintos, 28 en total.",
+        "Cada número del 0 al 6 aparece 8 veces en las mitades (una vez con cada número, y dos en su doble). Suma: 8 · (0 + 1 + … + 6) = 8 · 21.",
+        "Respuesta: 168 puntos."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Se tiene un dominó común, del 0 (blanco) al 6, que trae una ficha por cada par de números, dobles incluidos. ¿En cuántas fichas la suma de sus puntos es par? Alternativas: A) 12 fichas   B) 25 fichas   C) 16 fichas   D) 18 fichas   E) 9 fichas",
+      "respuesta": "C) 16 fichas",
+      "pasos": [
+        "Las fichas son los pares (a, b) con 0 ≤ a ≤ b ≤ 6: 7 dobles y 21 con números distintos, 28 en total.",
+        "Se recorren en orden, empezando por el blanco: 0-0, 0-2, 0-4, 0-6, 1-1, 1-3, 1-5, 2-2, 2-4, 2-6, 3-3, 3-5, 4-4, 4-6, 5-5, 6-6.",
+        "Respuesta: 16 fichas."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Se apilan 2 dados comunes (en cada dado, las caras opuestas suman 7 puntos), uno encima de otro, sobre una mesa, de modo que en cada par de caras en contacto entre dos dados los puntos suman 3. Se cuentan como visibles las caras que se ven caminando alrededor de la mesa; las que tocan la mesa u otro dado (o una pared, si la hay) no se ven. ¿Cuál es la suma máxima de los puntos de las caras no visibles? Alternativas: A) 6 puntos   B) 9 puntos   C) 13 puntos   D) 8 puntos",
+      "respuesta": "B) 9 puntos",
+      "pasos": [
+        "Si la cara de abajo del dado de arriba tiene x puntos, la regla da la de arriba del dado siguiente, y el 7 da su cara de abajo; así se baja dado por dado hasta la mesa.",
+        "Solo sirven los x con los que todas las caras quedan entre 1 y 6. Se prueban todos y se elige el que hace la suma extrema.",
+        "Las caras de los costados suman 14 en cada dado; las ocultas son los contactos y la cara de la mesa.",
+        "Respuesta: 9 puntos."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Sobre una mesa hay 2 dados comunes (en cada dado, las caras opuestas suman 7 puntos) separados, sin tocarse. El producto de los puntos de las caras de arriba es 4. ¿Cuál es la suma máxima de los puntos de las caras que tocan la mesa? Alternativas: A) 10 puntos   B) 5 puntos   C) 12 puntos   D) 9 puntos",
+      "respuesta": "A) 10 puntos",
+      "pasos": [
+        "Se listan las formas de escribir 4 como producto de 2 números del 1 al 6 (el orden de los dados no cambia la suma).",
+        "Cada cara de abajo es 7 menos la de arriba: la suma de abajo es 14 menos la suma de arriba. Para que sea máxima, la de arriba tiene que ser mínima.",
+        "El mejor reparto es 2 · 2: abajo quedan 5 + 5 = 10 puntos."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Se apilan 2 dados comunes (en cada dado, las caras opuestas suman 7 puntos), uno encima de otro, sobre una mesa, de modo que en cada par de caras en contacto entre dos dados los puntos suman 4. Se cuentan como visibles las caras que se ven caminando alrededor de la mesa; las que tocan la mesa u otro dado (o una pared, si la hay) no se ven. ¿Cuál es la suma máxima de los puntos de las caras no visibles? Alternativas: A) 10 puntos   B) 8 puntos   C) 6 puntos   D) 13 puntos",
+      "respuesta": "A) 10 puntos",
+      "pasos": [
+        "Si la cara de abajo del dado de arriba tiene x puntos, la regla da la de arriba del dado siguiente, y el 7 da su cara de abajo; así se baja dado por dado hasta la mesa.",
+        "Solo sirven los x con los que todas las caras quedan entre 1 y 6. Se prueban todos y se elige el que hace la suma extrema.",
+        "Las caras de los costados suman 14 en cada dado; las ocultas son los contactos y la cara de la mesa.",
+        "Respuesta: 10 puntos."
+      ]
+    }
+  ]
+}

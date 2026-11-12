@@ -1,0 +1,98 @@
+{
+  "titulo": "Cubitos que se cuentan: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Un bloque de 7 × 5 × 6 (7 de largo, 5 de fondo y 6 de alto) está armado con 210 cubitos iguales. El bloque está apoyado en la mesa y se pinta todo lo que queda a la vista; la base, que toca la mesa, queda sin pintar. Luego se separan los cubitos. ¿Cuántas caras de cubito quedaron pintadas en total? Alternativas: A) 214 caras   B) 1 260 caras   C) 135 caras   D) 179 caras   E) 107 caras",
+      "respuesta": "D) 179 caras",
+      "pasos": [
+        "Las caras pintadas son los cuadraditos de la superficie del bloque que recibieron pintura; las caras pegadas entre cubitos quedan adentro.",
+        "Caras del bloque: dos de 7 × 6 (frente y atrás), dos de 5 × 6 (costados) y dos de 7 × 5 (arriba y abajo).",
+        "Se quitan las que no se pintan: la base.",
+        "Respuesta: 179 caras."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Un bloque de 3 × 5 × 6 (3 de largo, 5 de fondo y 6 de alto) está armado con 90 cubitos iguales. Se pinta todo el bloque por fuera, incluida la base, y luego se separan los cubitos. ¿Cuántos cubitos tienen exactamente una cara pintada? Alternativas: A) 32 cubitos   B) 78 cubitos   C) 12 cubitos   D) 76 cubitos   E) 38 cubitos",
+      "respuesta": "E) 38 cubitos",
+      "pasos": [
+        "Cada cubito tiene tantas caras pintadas como caras a la vista que recibieron pintura. Sin apoyo, las esquinas tienen 3, las aristas 2, el centro de cada cara 1 y el interior 0.",
+        "Contando cubito por cubito: 12 con 0, 38 con 1, 32 con 2, 8 con 3.",
+        "Respuesta: 38 cubitos (están en el centro de las caras pintadas)."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Una sucesión de pirámides escalonadas de cubitos iguales está apoyada en la mesa. El término n tiene n pisos cuadrados: el de arriba es un solo cubito y cada piso tiene 2 cubitos más de lado que el de encima, con todos los pisos centrados. El área exterior se mide en cuadraditos (caras de cubito), sin contar la cara apoyada en la mesa: el término 1 tiene 5, el término 2 tiene 25 y el término 3 tiene 61. ¿Cuántos cuadraditos tiene el área exterior del término 15? Alternativas: A) 1 291 cuadraditos   B) 26 970 cuadraditos   C) 1 741 cuadraditos   D) 285 cuadraditos   E) 2 582 cuadraditos",
+      "respuesta": "C) 1 741 cuadraditos",
+      "pasos": [
+        "Vista desde arriba, la pirámide es un cuadrado de 29 × 29: 841 cuadraditos arriba.",
+        "Cada piso de lado 2j − 1 tiene 4(2j − 1) caras verticales a la vista; sumando los 15 pisos: 4 · 15² = 900.",
+        "Suma: 1 741 cuadraditos."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Un bloque compacto de 7 × 3 × 3 (7 de largo, 3 de fondo y 3 de alto) está armado con 63 cubitos iguales. Se le agregan cubitos iguales, sin quitar ninguno, hasta formar el cubo compacto más pequeño posible. ¿Cuántos cubitos hay que agregar como mínimo? Alternativas: A) 280 cubitos   B) 168 cubitos   C) 392 cubitos   D) 343 cubitos   E) 28 cubitos",
+      "respuesta": "A) 280 cubitos",
+      "pasos": [
+        "El cubo tiene que contener al bloque, así que su lado es la mayor de las tres medidas: 7.",
+        "El cubo tiene 7³ = 343 cubitos y el bloque ya tiene 7 · 3 · 3 = 63.",
+        "Faltan 343 − 63 = 280 cubitos."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Un bloque de 3 × 6 × 4 (3 de largo, 6 de fondo y 4 de alto) está armado con 72 cubitos iguales. El bloque está en el rincón de un cuarto: apoyado en el piso, con su cara trasera pegada a una pared y su cara izquierda pegada a la otra. Se pinta todo lo que queda a la vista; la base y las dos caras pegadas a las paredes quedan sin pintar. Luego se separan los cubitos. ¿Cuántos cubitos tienen exactamente una cara pintada? Alternativas: A) 42 cubitos   B) 30 cubitos   C) 10 cubitos   D) 31 cubitos   E) 28 cubitos",
+      "respuesta": "D) 31 cubitos",
+      "pasos": [
+        "Cada cubito tiene tantas caras pintadas como caras a la vista que recibieron pintura. Sin apoyo, las esquinas tienen 3, las aristas 2, el centro de cada cara 1 y el interior 0.",
+        "Aquí la base y las caras de las dos paredes no se pintan: los cubitos que tocan esa zona pierden una cara pintada y pasan al grupo de abajo.",
+        "Contando cubito por cubito: 30 con 0, 31 con 1, 10 con 2, 1 con 3.",
+        "Respuesta: 31 cubitos (están en las posiciones que quedan con 1 caras pintadas)."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Un bloque de 3 × 3 × 3 (3 de largo, 3 de fondo y 3 de alto) está armado con 27 cubitos iguales. El bloque está en el piso, con su cara trasera pegada a una pared. Se pinta todo lo que queda a la vista; la base y la cara pegada a la pared quedan sin pintar. Luego se separan los cubitos. ¿Cuántos cubitos tienen exactamente dos caras pintadas? Alternativas: A) 2 cubitos   B) 9 cubitos   C) 11 cubitos   D) 12 cubitos",
+      "respuesta": "B) 9 cubitos",
+      "pasos": [
+        "Cada cubito tiene tantas caras pintadas como caras a la vista que recibieron pintura. Sin apoyo, las esquinas tienen 3, las aristas 2, el centro de cada cara 1 y el interior 0.",
+        "Aquí la base y la cara de la pared no se pintan: los cubitos que tocan esa zona pierden una cara pintada y pasan al grupo de abajo.",
+        "Contando cubito por cubito: 4 con 0, 12 con 1, 9 con 2, 2 con 3.",
+        "Respuesta: 9 cubitos (están en las posiciones que quedan con 2 caras pintadas)."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Un cubo de 5 × 5 × 5 está armado con 125 cubitos iguales. Se le abren 3 túneles rectos, cada uno de un cubito de sección, que lo atraviesan de cara a cara: uno que va de la cara de arriba a la de abajo por la columna 2 (contando desde la izquierda) y la capa 5 (contando desde el frente); uno que va de la cara de arriba a la de abajo por la columna 1 (contando desde la izquierda) y la capa 5 (contando desde el frente); uno que va de la cara izquierda a la derecha por la fila 3 (contando desde abajo) y la capa 5 (contando desde el frente). Se retiran todos los cubitos de los túneles. ¿Cuántos cubitos quedan? Alternativas: A) 119 cubitos   B) 112 cubitos   C) 110 cubitos   D) 13 cubitos",
+      "respuesta": "B) 112 cubitos",
+      "pasos": [
+        "Cada túnel quita una fila de 5 cubitos: 3 · 5 = 15, si no se cruzaran.",
+        "Pero hay cubitos compartidos por varios túneles: contados uno por uno, se quitan 13 cubitos distintos (2 se habían contado de más).",
+        "Quedan 125 − 13 = 112 cubitos."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Un bloque de 7 × 7 × 7 (7 de largo, 7 de fondo y 7 de alto) está armado con 343 cubitos iguales. Se pinta todo el bloque por fuera, incluida la base, y luego se separan los cubitos. ¿Cuántas caras de cubito quedaron pintadas en total? Alternativas: A) 2 058 caras   B) 218 caras   C) 147 caras   D) 294 caras",
+      "respuesta": "D) 294 caras",
+      "pasos": [
+        "Las caras pintadas son los cuadraditos de la superficie del bloque que recibieron pintura; las caras pegadas entre cubitos quedan adentro.",
+        "Caras del bloque: dos de 7 × 7 (frente y atrás), dos de 7 × 7 (costados) y dos de 7 × 7 (arriba y abajo).",
+        "Respuesta: 294 caras."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "titulo": "El área bajo la gráfica ω-t: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "La gráfica ω-t de un disco que gira pasa por los puntos (0 s; 6 rad/s), (4 s; 6 rad/s) y (6 s; −4 rad/s), unidos por rectas. ω es positiva cuando el disco gira en sentido antihorario. ¿Qué ángulo total recorre el disco entre t = 0 y t = 6 s? (Se suma lo que gira hacia un lado y hacia el otro.) Alternativas: A) 26 rad   B) 36 rad   C) 4 rad   D) 29,2 rad",
+      "respuesta": "D) 29,2 rad",
+      "pasos": [
+        "El área bajo la gráfica ω-t es el ángulo girado: con signo (arriba del eje, antihorario; abajo, horario).",
+        "La gráfica cruza el eje en t = 5,2 s: ahí el disco se detiene y cambia de sentido.",
+        "Áreas de cada tramo entre t = 0 y t = 6 s: 24, 3,6, −1,6 (en rad).",
+        "Lo recorrido suma todas las áreas sin signo: 29,2 rad."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "La gráfica ω-t de un ventilador que gira pasa por los puntos (0 s; 0), (2 s; 2 rad/s) y (5 s; 4 rad/s), unidos por rectas. ω es positiva cuando el ventilador gira en sentido antihorario. ¿Qué ángulo gira el ventilador entre t = 2 s y t = 5 s? Alternativas: A) 4 rad   B) 9 rad   C) 11 rad   D) 12 rad",
+      "respuesta": "B) 9 rad",
+      "pasos": [
+        "El área bajo la gráfica ω-t es el ángulo girado: con signo (arriba del eje, antihorario; abajo, horario).",
+        "Áreas de cada tramo entre t = 2 s y t = 5 s: 9 (en rad).",
+        "Lo girado es la suma: 9 rad."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "La gráfica ω-t de un ventilador que gira pasa por los puntos (0 s; 4π rad/s), (2 s; π rad/s), (6 s; −3π rad/s) y (10 s; −7π rad/s), unidos por rectas. ω es positiva cuando el ventilador gira en sentido antihorario. ¿Cuántas vueltas da el ventilador entre t = 2 s y t = 10 s? (Se cuentan las que da hacia un lado y hacia el otro.) Alternativas: A) 12 vueltas   B) 3,5 vueltas   C) 0,5 vueltas   D) 15 vueltas   E) 12,5 vueltas",
+      "respuesta": "E) 12,5 vueltas",
+      "pasos": [
+        "El área bajo la gráfica ω-t es el ángulo girado: con signo (arriba del eje, antihorario; abajo, horario).",
+        "La gráfica cruza el eje en t = 3 s: ahí el ventilador se detiene y cambia de sentido.",
+        "Áreas de cada tramo entre t = 2 s y t = 10 s: π/2, −9π/2, −20π (en rad).",
+        "Lo recorrido, sin signo, es 25π rad; cada vuelta son 2π rad: 12,5 vueltas."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "La gráfica ω-t de una rueda que gira pasa por los puntos (0 s; 0), (1 s; 8 rad/s) y (4 s; −2 rad/s), unidos por rectas. ω es positiva cuando la rueda gira en sentido antihorario. ¿Qué ángulo total recorre la rueda entre t = 0 y t = 4 s? (Se suma lo que gira hacia un lado y hacia el otro.) Alternativas: A) 2 rad   B) 8 rad   C) 32 rad   D) 13 rad   E) 14,2 rad",
+      "respuesta": "E) 14,2 rad",
+      "pasos": [
+        "El área bajo la gráfica ω-t es el ángulo girado: con signo (arriba del eje, antihorario; abajo, horario).",
+        "La gráfica cruza el eje en t = 3,4 s: ahí la rueda se detiene y cambia de sentido.",
+        "Áreas de cada tramo entre t = 0 y t = 4 s: 4, 9,6, −0,6 (en rad).",
+        "Lo recorrido suma todas las áreas sin signo: 14,2 rad."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "La gráfica ω-t de un ventilador que gira pasa por los puntos (0 s; 3 rad/s), (3 s; 4 rad/s) y (6 s; −1 rad/s), unidos por rectas. ω es positiva cuando el ventilador gira en sentido antihorario. ¿Qué ángulo total recorre el ventilador entre t = 3 s y t = 6 s? (Se suma lo que gira hacia un lado y hacia el otro.) Alternativas: A) 4,5 rad   B) 5,1 rad   C) 15,6 rad   D) 12 rad   E) 1 rad",
+      "respuesta": "B) 5,1 rad",
+      "pasos": [
+        "El área bajo la gráfica ω-t es el ángulo girado: con signo (arriba del eje, antihorario; abajo, horario).",
+        "La gráfica cruza el eje en t = 5,4 s: ahí el ventilador se detiene y cambia de sentido.",
+        "Áreas de cada tramo entre t = 3 s y t = 6 s: 4,8, −0,3 (en rad).",
+        "Lo recorrido suma todas las áreas sin signo: 5,1 rad."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "La gráfica ω-t de un disco que gira pasa por los puntos (0 s; 10 rad/s), (3 s; 8 rad/s), (6 s; 9 rad/s) y (7 s; 8 rad/s), unidos por rectas. ω es positiva cuando el disco gira en sentido antihorario. ¿Qué ángulo gira el disco entre t = 0 s y t = 3 s? Alternativas: A) 8 rad   B) 27 rad   C) 30 rad   D) 24 rad",
+      "respuesta": "B) 27 rad",
+      "pasos": [
+        "El área bajo la gráfica ω-t es el ángulo girado: con signo (arriba del eje, antihorario; abajo, horario).",
+        "Áreas de cada tramo entre t = 0 s y t = 3 s: 27 (en rad).",
+        "Lo girado es la suma: 27 rad."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "La gráfica ω-t de un disco que gira pasa por los puntos (0 s; 5 rad/s), (4 s; −3 rad/s) y (8 s; −3 rad/s), unidos por rectas. ω es positiva cuando el disco gira en sentido antihorario. ¿Cuál es el desplazamiento angular del disco entre t = 0 y t = 8 s? (Con signo: positivo en sentido antihorario.) Alternativas: A) −14,25 rad   B) 2 rad   C) 20,5 rad   D) −8 rad   E) 8 rad",
+      "respuesta": "D) −8 rad",
+      "pasos": [
+        "El área bajo la gráfica ω-t es el ángulo girado: con signo (arriba del eje, antihorario; abajo, horario).",
+        "La gráfica cruza el eje en t = 2,5 s: ahí el disco se detiene y cambia de sentido.",
+        "Áreas de cada tramo entre t = 0 y t = 8 s: 6,25, −2,25, −12 (en rad).",
+        "El desplazamiento las suma con su signo: −8 rad."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "La gráfica ω-t de un ventilador que gira pasa por los puntos (0 s; −3 rad/s), (1 s; 2 rad/s) y (5 s; 4 rad/s), unidos por rectas. ω es positiva cuando el ventilador gira en sentido antihorario. ¿Qué ángulo total recorre el ventilador entre t = 0 s y t = 1 s? (Se suma lo que gira hacia un lado y hacia el otro.) Alternativas: A) 2 rad   B) 3 rad   C) 5 rad   D) 0,5 rad   E) 1,3 rad",
+      "respuesta": "E) 1,3 rad",
+      "pasos": [
+        "El área bajo la gráfica ω-t es el ángulo girado: con signo (arriba del eje, antihorario; abajo, horario).",
+        "La gráfica cruza el eje en t = 0,6 s: ahí el ventilador se detiene y cambia de sentido.",
+        "Áreas de cada tramo entre t = 0 s y t = 1 s: −0,9, 0,4 (en rad).",
+        "Lo recorrido suma todas las áreas sin signo: 1,3 rad."
+      ]
+    }
+  ]
+}

@@ -4872,9 +4872,10 @@
     "fisica.movimiento-parabolico-y-circular"
    ],
    "url": "#/practica/circular-aceleracion-total",
-   "papel": null,
+   "papel": "/plantillas/circular-aceleracion-total/papel.json",
    "archivos": [
-    "/plantillas/circular-aceleracion-total/generador.js"
+    "/plantillas/circular-aceleracion-total/generador.js",
+    "/plantillas/circular-aceleracion-total/papel.json"
    ]
   },
   "circular-encuentros": {
@@ -4887,9 +4888,10 @@
     "fisica.movimiento-parabolico-y-circular"
    ],
    "url": "#/practica/circular-encuentros",
-   "papel": null,
+   "papel": "/plantillas/circular-encuentros/papel.json",
    "archivos": [
-    "/plantillas/circular-encuentros/generador.js"
+    "/plantillas/circular-encuentros/generador.js",
+    "/plantillas/circular-encuentros/papel.json"
    ]
   },
   "circular-enesimo-segundo": {
@@ -4902,9 +4904,10 @@
     "fisica.movimiento-parabolico-y-circular"
    ],
    "url": "#/practica/circular-enesimo-segundo",
-   "papel": null,
+   "papel": "/plantillas/circular-enesimo-segundo/papel.json",
    "archivos": [
-    "/plantillas/circular-enesimo-segundo/generador.js"
+    "/plantillas/circular-enesimo-segundo/generador.js",
+    "/plantillas/circular-enesimo-segundo/papel.json"
    ]
   },
   "circular-giro-combinado": {
@@ -4917,9 +4920,10 @@
     "fisica.movimiento-parabolico-y-circular"
    ],
    "url": "#/practica/circular-giro-combinado",
-   "papel": null,
+   "papel": "/plantillas/circular-giro-combinado/papel.json",
    "archivos": [
-    "/plantillas/circular-giro-combinado/generador.js"
+    "/plantillas/circular-giro-combinado/generador.js",
+    "/plantillas/circular-giro-combinado/papel.json"
    ]
   },
   "circular-grafica": {
@@ -4932,9 +4936,10 @@
     "fisica.movimiento-parabolico-y-circular"
    ],
    "url": "#/practica/circular-grafica",
-   "papel": null,
+   "papel": "/plantillas/circular-grafica/papel.json",
    "archivos": [
-    "/plantillas/circular-grafica/generador.js"
+    "/plantillas/circular-grafica/generador.js",
+    "/plantillas/circular-grafica/papel.json"
    ]
   },
   "circular-horaria": {
@@ -4947,9 +4952,10 @@
     "fisica.movimiento-parabolico-y-circular"
    ],
    "url": "#/practica/circular-horaria",
-   "papel": null,
+   "papel": "/plantillas/circular-horaria/papel.json",
    "archivos": [
-    "/plantillas/circular-horaria/generador.js"
+    "/plantillas/circular-horaria/generador.js",
+    "/plantillas/circular-horaria/papel.json"
    ]
   },
   "circular-mcu": {
@@ -4962,9 +4968,10 @@
     "fisica.movimiento-parabolico-y-circular"
    ],
    "url": "#/practica/circular-mcu",
-   "papel": null,
+   "papel": "/plantillas/circular-mcu/papel.json",
    "archivos": [
-    "/plantillas/circular-mcu/generador.js"
+    "/plantillas/circular-mcu/generador.js",
+    "/plantillas/circular-mcu/papel.json"
    ]
   },
   "circular-mcuv": {
@@ -4977,9 +4984,10 @@
     "fisica.movimiento-parabolico-y-circular"
    ],
    "url": "#/practica/circular-mcuv",
-   "papel": null,
+   "papel": "/plantillas/circular-mcuv/papel.json",
    "archivos": [
-    "/plantillas/circular-mcuv/generador.js"
+    "/plantillas/circular-mcuv/generador.js",
+    "/plantillas/circular-mcuv/papel.json"
    ]
   },
   "circular-transmision": {
@@ -4992,9 +5000,10 @@
     "fisica.movimiento-parabolico-y-circular"
    ],
    "url": "#/practica/circular-transmision",
-   "papel": null,
+   "papel": "/plantillas/circular-transmision/papel.json",
    "archivos": [
-    "/plantillas/circular-transmision/generador.js"
+    "/plantillas/circular-transmision/generador.js",
+    "/plantillas/circular-transmision/papel.json"
    ]
   },
   "circunferencia-trig": {
@@ -5239,9 +5248,10 @@
     "razonamiento-matematico.rutas-y-visualizacion-espacial"
    ],
    "url": "#/practica/cubitos-conteo",
-   "papel": null,
+   "papel": "/plantillas/cubitos-conteo/papel.json",
    "archivos": [
-    "/plantillas/cubitos-conteo/generador.js"
+    "/plantillas/cubitos-conteo/generador.js",
+    "/plantillas/cubitos-conteo/papel.json"
    ]
   },
   "cubitos-pintados": {
@@ -5271,9 +5281,10 @@
     "razonamiento-matematico.juegos-recreativos"
    ],
    "url": "#/practica/dados-caras",
-   "papel": null,
+   "papel": "/plantillas/dados-caras/papel.json",
    "archivos": [
-    "/plantillas/dados-caras/generador.js"
+    "/plantillas/dados-caras/generador.js",
+    "/plantillas/dados-caras/papel.json"
    ]
   },
   "dados-domino": {
@@ -5529,9 +5540,10 @@
     "quimica.estequiometria"
    ],
    "url": "#/practica/estequiometria-limitante",
-   "papel": null,
+   "papel": "/plantillas/estequiometria-limitante/papel.json",
    "archivos": [
-    "/plantillas/estequiometria-limitante/generador.js"
+    "/plantillas/estequiometria-limitante/generador.js",
+    "/plantillas/estequiometria-limitante/papel.json"
    ]
   },
   "exponenciales-logaritmos": {
@@ -6676,9 +6688,10 @@
     "razonamiento-matematico.ruedas-poleas-engranajes"
    ],
    "url": "#/practica/poleas-giros",
-   "papel": null,
+   "papel": "/plantillas/poleas-giros/papel.json",
    "archivos": [
-    "/plantillas/poleas-giros/generador.js"
+    "/plantillas/poleas-giros/generador.js",
+    "/plantillas/poleas-giros/papel.json"
    ]
   },
   "poligonos": {
@@ -6748,9 +6761,10 @@
     "aritmetica.porcentajes"
    ],
    "url": "#/practica/porcentajes-sucesivos",
-   "papel": null,
+   "papel": "/plantillas/porcentajes-sucesivos/papel.json",
    "archivos": [
-    "/plantillas/porcentajes-sucesivos/generador.js"
+    "/plantillas/porcentajes-sucesivos/generador.js",
+    "/plantillas/porcentajes-sucesivos/papel.json"
    ]
   },
   "potenciacion": {
@@ -7328,9 +7342,10 @@
     "razonamiento-matematico.rutas-y-visualizacion-espacial"
    ],
    "url": "#/practica/rutas-tramos",
-   "papel": null,
+   "papel": "/plantillas/rutas-tramos/papel.json",
    "archivos": [
-    "/plantillas/rutas-tramos/generador.js"
+    "/plantillas/rutas-tramos/generador.js",
+    "/plantillas/rutas-tramos/papel.json"
    ]
   },
   "segmentos-angulos": {
@@ -7925,9 +7940,10 @@
     "fisica.magnitudes-y-vectores"
    ],
    "url": "#/practica/vectores-combinacion",
-   "papel": null,
+   "papel": "/plantillas/vectores-combinacion/papel.json",
    "archivos": [
-    "/plantillas/vectores-combinacion/generador.js"
+    "/plantillas/vectores-combinacion/generador.js",
+    "/plantillas/vectores-combinacion/papel.json"
    ]
   },
   "vectores-componentes": {
@@ -7940,9 +7956,10 @@
     "fisica.magnitudes-y-vectores"
    ],
    "url": "#/practica/vectores-componentes",
-   "papel": null,
+   "papel": "/plantillas/vectores-componentes/papel.json",
    "archivos": [
-    "/plantillas/vectores-componentes/generador.js"
+    "/plantillas/vectores-componentes/generador.js",
+    "/plantillas/vectores-componentes/papel.json"
    ]
   },
   "vectores-division": {
@@ -7955,9 +7972,10 @@
     "fisica.magnitudes-y-vectores"
    ],
    "url": "#/practica/vectores-division",
-   "papel": null,
+   "papel": "/plantillas/vectores-division/papel.json",
    "archivos": [
-    "/plantillas/vectores-division/generador.js"
+    "/plantillas/vectores-division/generador.js",
+    "/plantillas/vectores-division/papel.json"
    ]
   },
   "vectores-ley-cosenos": {
@@ -7970,9 +7988,10 @@
     "fisica.magnitudes-y-vectores"
    ],
    "url": "#/practica/vectores-ley-cosenos",
-   "papel": null,
+   "papel": "/plantillas/vectores-ley-cosenos/papel.json",
    "archivos": [
-    "/plantillas/vectores-ley-cosenos/generador.js"
+    "/plantillas/vectores-ley-cosenos/generador.js",
+    "/plantillas/vectores-ley-cosenos/papel.json"
    ]
   },
   "vectores-poligono": {
@@ -7985,9 +8004,10 @@
     "fisica.magnitudes-y-vectores"
    ],
    "url": "#/practica/vectores-poligono",
-   "papel": null,
+   "papel": "/plantillas/vectores-poligono/papel.json",
    "archivos": [
-    "/plantillas/vectores-poligono/generador.js"
+    "/plantillas/vectores-poligono/generador.js",
+    "/plantillas/vectores-poligono/papel.json"
    ]
   },
   "vectores-productos": {
@@ -8000,9 +8020,10 @@
     "fisica.magnitudes-y-vectores"
    ],
    "url": "#/practica/vectores-productos",
-   "papel": null,
+   "papel": "/plantillas/vectores-productos/papel.json",
    "archivos": [
-    "/plantillas/vectores-productos/generador.js"
+    "/plantillas/vectores-productos/generador.js",
+    "/plantillas/vectores-productos/papel.json"
    ]
   },
   "vectores-unitario": {
@@ -8015,9 +8036,10 @@
     "fisica.magnitudes-y-vectores"
    ],
    "url": "#/practica/vectores-unitario",
-   "papel": null,
+   "papel": "/plantillas/vectores-unitario/papel.json",
    "archivos": [
-    "/plantillas/vectores-unitario/generador.js"
+    "/plantillas/vectores-unitario/generador.js",
+    "/plantillas/vectores-unitario/papel.json"
    ]
   },
   "velocidad-relativa": {

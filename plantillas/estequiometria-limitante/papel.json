@@ -1,0 +1,103 @@
+{
+  "titulo": "Reactivo limitante: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "En una celda de combustible ocurre la reacción 2 H₂ + O₂ → 2 H₂O. Se mezclan 4 g de H₂ con 96 g de O₂. ¿Cuántos gramos de H₂O se forman como máximo? Alternativas: A) 100 g   B) 4 g   C) 36 g   D) 108 g",
+      "respuesta": "C) 36 g",
+      "pasos": [
+        "Pasa cada masa a moles: 4 g ÷ 2 = 2 mol de H₂; 96 g ÷ 32 = 3 mol de O₂.",
+        "Divide entre el coeficiente: H₂ alcanza para 1 veces la ecuación y O₂ para 3 veces.",
+        "El que alcanza para menos veces es el limitante: H₂.",
+        "Producto: 1 × 2 mol × 18 g/mol = 36 g de H₂O."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Al encender una cinta de magnesio en el laboratorio ocurre la reacción 2 Mg + O₂ → 2 MgO. Se mezclan 96 g de Mg con 128 g de O₂. ¿Cuántos gramos de MgO se forman como máximo? Alternativas: A) 160 g   B) 96 g   C) 320 g   D) 224 g",
+      "respuesta": "A) 160 g",
+      "pasos": [
+        "Pasa cada masa a moles: 96 g ÷ 24 = 4 mol de Mg; 128 g ÷ 32 = 4 mol de O₂.",
+        "Divide entre el coeficiente: Mg alcanza para 2 veces la ecuación y O₂ para 4 veces.",
+        "El que alcanza para menos veces es el limitante: Mg.",
+        "Producto: 2 × 2 mol × 40 g/mol = 160 g de MgO."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "En una planta de fertilizantes ocurre la reacción N₂ + 3 H₂ → 2 NH₃. Se mezclan 70 g de N₂ con 9 g de H₂. ¿Cuántos gramos de NH₃ se forman como máximo? Alternativas: A) 76,5 g   B) 79 g   C) 6 g   D) 85 g   E) 51 g",
+      "respuesta": "E) 51 g",
+      "pasos": [
+        "Pasa cada masa a moles: 70 g ÷ 28 = 2,5 mol de N₂; 9 g ÷ 2 = 4,5 mol de H₂.",
+        "Divide entre el coeficiente: N₂ alcanza para 2,5 veces la ecuación y H₂ para 1,5 veces.",
+        "El que alcanza para menos veces es el limitante: H₂.",
+        "Producto: 1,5 × 2 mol × 17 g/mol = 51 g de NH₃."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "En una celda de combustible ocurre la reacción 2 H₂ + O₂ → 2 H₂O. Se mezclan 16 g de H₂ con 96 g de O₂. ¿Cuántos gramos de H₂O se forman como máximo? Alternativas: A) 144 g   B) 108 g   C) 112 g   D) 192 g   E) 54 g",
+      "respuesta": "B) 108 g",
+      "pasos": [
+        "Pasa cada masa a moles: 16 g ÷ 2 = 8 mol de H₂; 96 g ÷ 32 = 3 mol de O₂.",
+        "Divide entre el coeficiente: H₂ alcanza para 4 veces la ecuación y O₂ para 3 veces.",
+        "El que alcanza para menos veces es el limitante: O₂. Ojo: tiene más gramos que el H₂, y aun así se acaba primero.",
+        "Producto: 3 × 2 mol × 18 g/mol = 108 g de H₂O."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "En un balón de gas de cocina ocurre la reacción C₃H₈ + 5 O₂ → 3 CO₂ + 4 H₂O. Se mezclan 176 g de C₃H₈ con 320 g de O₂. ¿Cuántos gramos de CO₂ se forman como máximo? Alternativas: A) 440 g   B) 496 g   C) 264 g   D) 192 g   E) 528 g",
+      "respuesta": "C) 264 g",
+      "pasos": [
+        "Pasa cada masa a moles: 176 g ÷ 44 = 4 mol de C₃H₈; 320 g ÷ 32 = 10 mol de O₂.",
+        "Divide entre el coeficiente: C₃H₈ alcanza para 4 veces la ecuación y O₂ para 2 veces.",
+        "El que alcanza para menos veces es el limitante: O₂. Ojo: tiene más gramos que el C₃H₈, y aun así se acaba primero.",
+        "Producto: 2 × 3 mol × 44 g/mol = 264 g de CO₂."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "En una planta de fertilizantes ocurre la reacción N₂ + 3 H₂ → 2 NH₃. Se mezclan 28 g de N₂ con 24 g de H₂. ¿Cuántos gramos de NH₃ se forman como máximo? Alternativas: A) 136 g   B) 17 g   C) 56 g   D) 34 g   E) 52 g",
+      "respuesta": "D) 34 g",
+      "pasos": [
+        "Pasa cada masa a moles: 28 g ÷ 28 = 1 mol de N₂; 24 g ÷ 2 = 12 mol de H₂.",
+        "Divide entre el coeficiente: N₂ alcanza para 1 veces la ecuación y H₂ para 4 veces.",
+        "El que alcanza para menos veces es el limitante: N₂. Ojo: tiene más gramos que el H₂, y aun así se acaba primero.",
+        "Producto: 1 × 2 mol × 17 g/mol = 34 g de NH₃."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "En una celda de combustible ocurre la reacción 2 H₂ + O₂ → 2 H₂O. Se mezclan 12 g de H₂ con 64 g de O₂. ¿Cuántos gramos de H₂O se forman como máximo? Alternativas: A) 76 g   B) 108 g   C) 72 g   D) 36 g   E) 128 g",
+      "respuesta": "C) 72 g",
+      "pasos": [
+        "Pasa cada masa a moles: 12 g ÷ 2 = 6 mol de H₂; 64 g ÷ 32 = 2 mol de O₂.",
+        "Divide entre el coeficiente: H₂ alcanza para 3 veces la ecuación y O₂ para 2 veces.",
+        "El que alcanza para menos veces es el limitante: O₂. Ojo: tiene más gramos que el H₂, y aun así se acaba primero.",
+        "Producto: 2 × 2 mol × 18 g/mol = 72 g de H₂O."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "En una celda de combustible ocurre la reacción 2 H₂ + O₂ → 2 H₂O. Se mezclan 6 g de H₂ con 128 g de O₂. ¿Cuántos gramos de H₂O se forman como máximo? Alternativas: A) 6 g   B) 144 g   C) 54 g   D) 134 g",
+      "respuesta": "C) 54 g",
+      "pasos": [
+        "Pasa cada masa a moles: 6 g ÷ 2 = 3 mol de H₂; 128 g ÷ 32 = 4 mol de O₂.",
+        "Divide entre el coeficiente: H₂ alcanza para 1,5 veces la ecuación y O₂ para 4 veces.",
+        "El que alcanza para menos veces es el limitante: H₂.",
+        "Producto: 1,5 × 2 mol × 18 g/mol = 54 g de H₂O."
+      ]
+    }
+  ]
+}

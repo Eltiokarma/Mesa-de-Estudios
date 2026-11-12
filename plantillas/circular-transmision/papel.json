@@ -1,0 +1,103 @@
+{
+  "titulo": "Ruedas, fajas y poleas: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Un bloque cuelga de una polea móvil. Una cuerda pasa por debajo de la polea; sus dos tramos suben verticalmente y cada extremo está enrollado en un tambor fijo al techo. El tambor 1, de 5 cm de radio, gira a 2 rad/s y enrolla su extremo de la cuerda. El tambor 2, de 15 cm de radio, gira a 6 rad/s y suelta su extremo. La cuerda no resbala en los tambores. ¿Con qué rapidez se mueve el bloque? Alternativas: A) 0,5 m/s   B) 0,8 m/s   C) 0,9 m/s   D) 0,4 m/s   E) 0,1 m/s",
+      "respuesta": "D) 0,4 m/s",
+      "pasos": [
+        "Cada tambor mueve su cuerda con la rapidez de su borde, v = ω·r: v1 = 2 · 0,05 = 0,1 m/s y v2 = 6 · 0,15 = 0,9 m/s.",
+        "La polea móvil se mueve con el promedio de lo que se acortan sus dos cuerdas por segundo; la que se suelta cuenta con signo menos.",
+        "v = (0,1 − 0,9)/2 = −0,4 m/s: el signo menos dice que el bloque baja, con una rapidez de 0,4 m/s."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "La rueda A, de 30 cm de radio, gira a 600 rpm. La rueda B, de 10 cm de radio, está unida a la rueda A por una faja que no resbala. La rueda C, de 5 cm de radio, está fija al mismo eje que la rueda B. La rueda D, de 50 cm de radio, está en contacto con el borde de la rueda C y gira sin resbalar. ¿A cuántas rpm gira la rueda D? Alternativas: A) 360 rpm   B) 600 rpm   C) 180 rpm   D) 2 000 rpm   E) 54 rpm",
+      "respuesta": "C) 180 rpm",
+      "pasos": [
+        "Con faja o en contacto, los bordes van igual de rápido (v = ω·r es la misma), así que ω cambia al revés que el radio. En el mismo eje, ω es la misma.",
+        "ωB = ωA · 30/10 = 600 · 30/10 = 1 800 rpm.",
+        "ωC = ωB = 1 800 rpm (mismo eje).",
+        "ωD = ωC · 5/50 = 1 800 · 5/50 = 180 rpm.",
+        "Respuesta: 180 rpm."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "La rueda A, de 20 cm de radio, gira a 10 rad/s en sentido antihorario. La rueda B, de 10 cm de radio, está unida a la rueda A por una faja que no resbala. La rueda C, de 5 cm de radio, está en contacto con el borde de la rueda B y gira sin resbalar. La rueda D, de 25 cm de radio, está unida a la rueda C por una faja cruzada (en forma de 8) que no resbala. ¿Con qué rapidez angular, y en qué sentido, gira la rueda D? Alternativas: A) 10 rad/s, en sentido antihorario   B) 6,4 rad/s, en sentido antihorario   C) 8 rad/s, en sentido horario   D) 8 rad/s, en sentido antihorario   E) 12,5 rad/s, en sentido antihorario",
+      "respuesta": "D) 8 rad/s, en sentido antihorario",
+      "pasos": [
+        "Con faja o en contacto, los bordes van igual de rápido (v = ω·r es la misma), así que ω cambia al revés que el radio. En el mismo eje, ω es la misma.",
+        "La faja abierta conserva el sentido de giro; la faja cruzada y el contacto lo invierten.",
+        "ωB = ωA · 20/10 = 10 · 20/10 = 20 rad/s; gira en sentido antihorario.",
+        "ωC = ωB · 10/5 = 20 · 10/5 = 40 rad/s; gira en sentido horario.",
+        "ωD = ωC · 5/25 = 40 · 5/25 = 8 rad/s; gira en sentido antihorario.",
+        "Respuesta: 8 rad/s, en sentido antihorario."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Un motor hace girar la polea A, de 15 cm de radio, a 4 rad/s. Una faja que no resbala une A con la garganta menor de la polea B, que tiene dos gargantas fijas al mismo eje: una de 25 cm de radio y otra de 5 cm de radio. Un bloque cuelga de una cuerda enrollada en la garganta mayor de B, y la cuerda no resbala. ¿Con qué rapidez sube el bloque? Alternativas: A) 3 m/s   B) 0,6 m/s   C) 0,12 m/s   D) 1 m/s",
+      "respuesta": "A) 3 m/s",
+      "pasos": [
+        "La faja une el borde de A con la garganta de radio 5 cm: misma v, así que ωB = ωA · 15/5 = 12 rad/s.",
+        "Las dos gargantas de B giran juntas (mismo eje). La cuerda del bloque sale de la garganta de radio 25 cm = 0,25 m: v = ωB · r = 12 rad/s · 0,25 m = 3 m/s."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "La rueda A, de 5 cm de radio, gira a 30 rad/s en sentido horario. La rueda B, de 50 cm de radio, está unida a la rueda A por una faja que no resbala. La rueda C, de 40 cm de radio, está unida a la rueda B por una faja cruzada (en forma de 8) que no resbala. La rueda D, de 25 cm de radio, está unida a la rueda C por una faja cruzada (en forma de 8) que no resbala. ¿Con qué rapidez angular, y en qué sentido, gira la rueda D? Alternativas: A) 6 rad/s, en sentido antihorario   B) 150 rad/s, en sentido horario   C) 30 rad/s, en sentido horario   D) 6 rad/s, en sentido horario   E) 1,2 rad/s, en sentido horario",
+      "respuesta": "D) 6 rad/s, en sentido horario",
+      "pasos": [
+        "Con faja o en contacto, los bordes van igual de rápido (v = ω·r es la misma), así que ω cambia al revés que el radio. En el mismo eje, ω es la misma.",
+        "La faja abierta conserva el sentido de giro; la faja cruzada y el contacto lo invierten.",
+        "ωB = ωA · 5/50 = 30 · 5/50 = 3 rad/s; gira en sentido horario.",
+        "ωC = ωB · 50/40 = 3 · 50/40 = 3,75 rad/s; gira en sentido antihorario.",
+        "ωD = ωC · 40/25 = 3,75 · 40/25 = 6 rad/s; gira en sentido horario.",
+        "Respuesta: 6 rad/s, en sentido horario."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "La rueda A, de 60 cm de radio, gira a 900 rpm. La rueda B, de 50 cm de radio, está fija al mismo eje que la rueda A. La rueda C, de 5 cm de radio, está unida a la rueda B por una faja cruzada (en forma de 8) que no resbala. ¿A cuántas rpm gira la rueda C? Alternativas: A) 10 800 rpm   B) 90 000 rpm   C) 90 rpm   D) 900 rpm   E) 9 000 rpm",
+      "respuesta": "E) 9 000 rpm",
+      "pasos": [
+        "Con faja o en contacto, los bordes van igual de rápido (v = ω·r es la misma), así que ω cambia al revés que el radio. En el mismo eje, ω es la misma.",
+        "ωB = ωA = 900 rpm (mismo eje).",
+        "ωC = ωB · 50/5 = 900 · 50/5 = 9 000 rpm.",
+        "Respuesta: 9 000 rpm."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "La rueda A, de 50 cm de radio, parte del reposo con una aceleración angular constante de 20 rad/s². La rueda B, de 20 cm de radio, está unida a la rueda A por una faja que no resbala. La rueda C, de 25 cm de radio, está fija al mismo eje que la rueda B. ¿Cuál es la aceleración angular de la rueda C? Alternativas: A) 50 rad/s²   B) 125 rad/s²   C) 40 rad/s²   D) 8 rad/s²   E) 20 rad/s²",
+      "respuesta": "A) 50 rad/s²",
+      "pasos": [
+        "Con faja o en contacto, los bordes tienen la misma aceleración tangencial (aT = α·r), así que α cambia al revés que el radio. En el mismo eje, α es la misma.",
+        "αB = αA · 50/20 = 20 · 50/20 = 50 rad/s².",
+        "αC = αB = 50 rad/s² (mismo eje).",
+        "Respuesta: 50 rad/s²."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Un motor hace girar la polea A, de 30 cm de radio, a 24 rad/s. Una faja que no resbala une A con la garganta mayor de la polea B, que tiene dos gargantas fijas al mismo eje: una de 50 cm de radio y otra de 40 cm de radio. Un bloque cuelga de una cuerda enrollada en la garganta menor de B, y la cuerda no resbala. ¿Con qué rapidez sube el bloque? Alternativas: A) 5,76 m/s   B) 9,6 m/s   C) 9 m/s   D) 7,2 m/s   E) 16 m/s",
+      "respuesta": "A) 5,76 m/s",
+      "pasos": [
+        "La faja une el borde de A con la garganta de radio 50 cm: misma v, así que ωB = ωA · 30/50 = 14,4 rad/s.",
+        "Las dos gargantas de B giran juntas (mismo eje). La cuerda del bloque sale de la garganta de radio 40 cm = 0,4 m: v = ωB · r = 14,4 rad/s · 0,4 m = 5,76 m/s."
+      ]
+    }
+  ]
+}

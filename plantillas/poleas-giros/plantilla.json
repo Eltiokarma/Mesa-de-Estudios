@@ -10,5 +10,5 @@
   "generador": "generador.js",
   "casos": "casos.json",
   "pruebas": "generador.test.js",
-  "papel": null
+  "papel": "papel.json"
 }

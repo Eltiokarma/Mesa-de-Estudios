@@ -1,0 +1,93 @@
+{
+  "titulo": "Poleas: sentido de giro, bloques y coincidencias: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Hay 7 poleas en fila: A, B, C, D, E, F y G. B está unida a A por una faja cruzada (en forma de 8). C está unida a B por una faja cruzada (en forma de 8). D está en contacto con C y gira sin resbalar. E está unida a D por una faja abierta. F está unida a E por una faja cruzada (en forma de 8). G está unida a F por una faja cruzada (en forma de 8). La polea A gira en sentido antihorario. Nada resbala. ¿Qué poleas giran en sentido antihorario? Alternativas: A) A, B y C   B) A, C, E y G   C) B, D, E y G   D) A, C y F   E) A, C, D, E y G",
+      "respuesta": "D) A, C y F",
+      "pasos": [
+        "La faja abierta y el mismo eje conservan el sentido; la faja cruzada y el contacto lo invierten.",
+        "Se recorre la fila desde A: A antihorario, B horario, C antihorario, D horario, E horario, F antihorario, G horario.",
+        "Giran en sentido antihorario: A, C y F."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Dos ruedas tangentes giran sin resbalar: A, de 18 cm de radio, y B, de 4 cm de radio. Al empezar, un punto marcado en el borde de A y otro marcado en el borde de B están en contacto. ¿Cuántas vueltas habrá dado A cuando los puntos marcados se hayan vuelto a tocar 2 veces (sin contar el inicio)? Alternativas: A) 72 vueltas   B) 2 vueltas   C) 4 vueltas   D) 18 vueltas   E) 8 vueltas",
+      "respuesta": "C) 4 vueltas",
+      "pasos": [
+        "Las ruedas tangentes recorren el mismo arco en el punto de contacto.",
+        "La marca de A vuelve a su lugar cada 2π·18 cm de arco y la de B cada 2π·4 cm. Se juntan cuando el arco es múltiplo de los dos perímetros: cada 2π·MCM(18, 4) = 2π·36 cm.",
+        "Para juntarse 2 veces hace falta un arco de 2 · 2π·36 cm; A da (2 · 2π·36)/(2π·18) = 4 vueltas."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Las poleas P y Q tienen dos gargantas cada una, fijas a su eje: P de 10 cm y 8 cm de radio; Q de 10 cm y 40 cm. Una faja cruzada (en forma de 8) une la garganta de 8 cm de P con la de 10 cm de Q. Del lado izquierdo de la garganta de 10 cm de P cuelga el bloque X, y del lado derecho de la garganta de 40 cm de Q cuelga el bloque Y. Nada resbala. Si el bloque X baja 4 cm, ¿cuánto y en qué sentido se mueve el bloque Y? Alternativas: A) sube 12,8 cm   B) baja 1,25 cm   C) baja 12,8 cm   D) baja 16 cm   E) baja 4 cm",
+      "respuesta": "C) baja 12,8 cm",
+      "pasos": [
+        "En P, mismo eje: la garganta de la faja mueve 4 · 8/10 = 3,2 cm de faja.",
+        "Por la faja se comparte el arco: la garganta de Q de 10 cm también avanza 3,2 cm.",
+        "En Q, mismo eje: la cuerda de Y se mueve 3,2 · 40/10 = 12,8 cm.",
+        "Para el sentido: la faja cruzada hace girar a Q al revés que P, y una polea que gira en sentido horario sube la cuerda de su lado izquierdo y baja la del derecho. Por eso Y baja 12,8 cm."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Las poleas A, de 24 cm de radio, y B, de 16 cm de radio, están unidas por una faja abierta que no resbala. Al empezar, cada una tiene una marca en su punto más alto. ¿Cuántas vueltas habrá dado A cuando las dos marcas hayan coincidido arriba 4 veces (sin contar el inicio)? Alternativas: A) 6 vueltas   B) 64 vueltas   C) 8 vueltas   D) 12 vueltas   E) 192 vueltas",
+      "respuesta": "C) 8 vueltas",
+      "pasos": [
+        "La faja hace avanzar el borde de A y el de B el mismo arco.",
+        "La marca de A vuelve a su lugar cada 2π·24 cm de arco y la de B cada 2π·16 cm. Se juntan cuando el arco es múltiplo de los dos perímetros: cada 2π·MCM(24, 16) = 2π·48 cm.",
+        "Para juntarse 4 veces hace falta un arco de 4 · 2π·48 cm; A da (4 · 2π·48)/(2π·24) = 8 vueltas."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Dos ruedas tangentes giran sin resbalar: A, de 15 cm de radio, y B, de 21 cm de radio. Al empezar, un punto marcado en el borde de A y otro marcado en el borde de B están en contacto. ¿Cuántas vueltas habrá dado A cuando los puntos marcados se hayan vuelto a tocar 3 veces (sin contar el inicio)? Alternativas: A) 63 vueltas   B) 21 vueltas   C) 14 vueltas   D) 315 vueltas   E) 15 vueltas",
+      "respuesta": "B) 21 vueltas",
+      "pasos": [
+        "Las ruedas tangentes recorren el mismo arco en el punto de contacto.",
+        "La marca de A vuelve a su lugar cada 2π·15 cm de arco y la de B cada 2π·21 cm. Se juntan cuando el arco es múltiplo de los dos perímetros: cada 2π·MCM(15, 21) = 2π·105 cm.",
+        "Para juntarse 3 veces hace falta un arco de 3 · 2π·105 cm; A da (3 · 2π·105)/(2π·15) = 21 vueltas."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Una polea tiene dos gargantas fijas al mismo eje, de 15 cm y 30 cm de radio. Del lado derecho de la garganta de 15 cm cuelga el bloque X, y del lado derecho de la garganta de 30 cm cuelga el bloque Y. Cada cuerda está enrollada en su garganta y no resbala. Si el bloque X sube 6 cm, ¿cuánto y en qué sentido se mueve el bloque Y? Alternativas: A) sube 6 cm   B) sube 12 cm   C) sube 3 cm   D) baja 12 cm   E) baja 6 cm",
+      "respuesta": "B) sube 12 cm",
+      "pasos": [
+        "Las dos gargantas giran el mismo ángulo. Lo que enrolla cada una va como su radio: Y se mueve 6 · 30/15 = 12 cm.",
+        "Las dos cuerdas cuelgan del mismo lado, así que se enrollan (o se sueltan) a la vez: Y sube 12 cm."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Una polea tiene dos gargantas fijas al mismo eje, de 15 cm y 10 cm de radio. Del lado izquierdo de la garganta de 15 cm cuelga el bloque X, y del lado derecho de la garganta de 10 cm cuelga el bloque Y. Cada cuerda está enrollada en su garganta y no resbala. Si el bloque X sube 15 cm, ¿cuánto y en qué sentido se mueve el bloque Y? Alternativas: A) baja 22,5 cm   B) baja 15 cm   C) sube 15 cm   D) sube 10 cm   E) baja 10 cm",
+      "respuesta": "E) baja 10 cm",
+      "pasos": [
+        "Las dos gargantas giran el mismo ángulo. Lo que enrolla cada una va como su radio: Y se mueve 15 · 10/15 = 10 cm.",
+        "Las cuerdas cuelgan de lados opuestos, así que si una se enrolla la otra se suelta: Y baja 10 cm."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Una polea tiene dos gargantas fijas al mismo eje, de 25 cm y 10 cm de radio. Del lado derecho de la garganta de 25 cm cuelga el bloque X, y del lado izquierdo de la garganta de 10 cm cuelga el bloque Y. Cada cuerda está enrollada en su garganta y no resbala. Si el bloque X baja 10 cm, ¿cuánto y en qué sentido se mueve el bloque Y? Alternativas: A) sube 25 cm   B) sube 10 cm   C) sube 4 cm   D) baja 4 cm   E) baja 10 cm",
+      "respuesta": "C) sube 4 cm",
+      "pasos": [
+        "Las dos gargantas giran el mismo ángulo. Lo que enrolla cada una va como su radio: Y se mueve 10 · 10/25 = 4 cm.",
+        "Las cuerdas cuelgan de lados opuestos, así que si una se enrolla la otra se suelta: Y sube 4 cm."
+      ]
+    }
+  ]
+}

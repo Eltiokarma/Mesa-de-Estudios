@@ -1,0 +1,91 @@
+{
+  "titulo": "De la ecuación al giro: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Un punto recorre una circunferencia de 0,5 m de radio. La posición medida sobre la circunferencia (el arco) es S = 8 − 2t − 0,5t², con S en m y t en s (S crece en sentido antihorario). ¿Cuál es su aceleración angular? (Con signo: positiva en sentido antihorario.) Alternativas: A) −1 rad/s²   B) −4 rad/s²   C) −0,5 rad/s²   D) −2 rad/s²   E) 2 rad/s²",
+      "respuesta": "D) −2 rad/s²",
+      "pasos": [
+        "Comparando con S = S0 + v0·t + ½·aT·t², el coeficiente de t² es aT/2: aT = −1 m/s².",
+        "α = aT/R = −1/0,5 = −2 rad/s²."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Un ciclista recorre una pista circular de 50 m de radio. Su posición medida sobre la pista (el arco) es S = 6 + 2t + t², con S en m y t en s. ¿Cuál es su aceleración centrípeta en t = 1 s? Alternativas: A) 0,08 m/s²   B) 0,32 m/s²   C) 1,62 m/s²   D) 0,18 m/s²   E) 2 m/s²",
+      "respuesta": "B) 0,32 m/s²",
+      "pasos": [
+        "Comparando con S = S0 + v0·t + ½·aT·t²: v0 = 2 m/s y aT = 2 · 1 = 2 m/s².",
+        "Rapidez en t = 1 s: v = 2 + 2 · 1 = 4 m/s.",
+        "acp = v²/R = 4²/50 = 0,32 m/s²."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Un auto de juguete recorre una pista circular de 5 m de radio. Su posición medida sobre la pista (el arco) es S = 3t + 0,5t², con S en m y t en s. ¿Cuál es su aceleración centrípeta en t = 3 s? Alternativas: A) 4,05 m/s²   B) 1,8 m/s²   C) 7,2 m/s²   D) 1,2 m/s²   E) 1 m/s²",
+      "respuesta": "C) 7,2 m/s²",
+      "pasos": [
+        "Comparando con S = S0 + v0·t + ½·aT·t²: v0 = 3 m/s y aT = 2 · 0,5 = 1 m/s².",
+        "Rapidez en t = 3 s: v = 3 + 1 · 3 = 6 m/s.",
+        "acp = v²/R = 6²/5 = 7,2 m/s²."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Una partícula gira en una circunferencia. Su posición angular es θ = −8t − 2t², con θ en rad y t en s (θ crece en sentido antihorario). ¿Cuál es su aceleración angular? (Con signo: positiva en sentido antihorario.) Alternativas: A) −2 rad/s²   B) −1 rad/s²   C) 4 rad/s²   D) −4 rad/s²   E) −8 rad/s²",
+      "respuesta": "D) −4 rad/s²",
+      "pasos": [
+        "Comparando con θ = θ0 + ω0·t + ½·α·t², el coeficiente de t² es α/2.",
+        "α = 2 · (−2) = −4 rad/s²."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Una partícula gira en una circunferencia. Su posición angular es θ = 2 + 2t + 3t², con θ en rad y t en s (θ crece en sentido antihorario). ¿Cuál es su velocidad angular en t = 2 s? (Positiva si gira en sentido antihorario.) Alternativas: A) −14 rad/s   B) 12 rad/s   C) 8 rad/s   D) 9 rad/s   E) 14 rad/s",
+      "respuesta": "E) 14 rad/s",
+      "pasos": [
+        "Comparando con θ = θ0 + ω0·t + ½·α·t²: ω0 = 2 rad/s y ½·α = 3, así que α = 6 rad/s².",
+        "ω = ω0 + α·t = 2 + 6 · 2 = 14 rad/s: gira en sentido antihorario."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Una partícula gira en una circunferencia. Su posición angular es θ = −8t + 2t², con θ en rad y t en s (θ crece en sentido antihorario). ¿Cuál es el desplazamiento angular de la partícula entre t = 1 s y t = 4 s? (Con signo: positivo en sentido antihorario.) Alternativas: A) 0 rad   B) 10 rad   C) −2 rad   D) −6 rad   E) 6 rad",
+      "respuesta": "E) 6 rad",
+      "pasos": [
+        "ω = −8 + 4·t se anula en t = 2 s: ahí la partícula se detiene y cambia de sentido.",
+        "Posiciones: θ(1) = −6 rad, θ(2) = −8 rad y θ(4) = 0 rad.",
+        "Desplazamiento angular: θ(4) − θ(1) = 0 − −6 = 6 rad."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Una esfera pequeña gira en una circunferencia. Su posición angular es θ = 3 + 4t + 3t², con θ en rad y t en s (θ crece en sentido antihorario). ¿Qué ángulo gira la esfera entre t = 4 s y t = 7 s? Alternativas: A) 111 rad   B) 39 rad   C) 178 rad   D) 84 rad   E) 61,5 rad",
+      "respuesta": "A) 111 rad",
+      "pasos": [
+        "Lo girado es la diferencia de posiciones (en ese intervalo no se detiene).",
+        "Reemplazando t en la ecuación: θ(7) = 178 rad y θ(4) = 67 rad.",
+        "Δθ = 178 − 67 = 111 rad."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Una partícula recorre una circunferencia de 0,5 m de radio. La posición medida sobre la circunferencia (el arco) es S = 6 − 9t + 4t², con S en m y t en s (S crece en sentido antihorario). ¿Cuál es su aceleración angular? (Con signo: positiva en sentido antihorario.) Alternativas: A) 4 rad/s²   B) −16 rad/s²   C) −18 rad/s²   D) 16 rad/s²   E) 8 rad/s²",
+      "respuesta": "D) 16 rad/s²",
+      "pasos": [
+        "Comparando con S = S0 + v0·t + ½·aT·t², el coeficiente de t² es aT/2: aT = 8 m/s².",
+        "α = aT/R = 8/0,5 = 16 rad/s²."
+      ]
+    }
+  ]
+}

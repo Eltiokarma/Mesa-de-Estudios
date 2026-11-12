@@ -1,0 +1,103 @@
+{
+  "titulo": "Dos vectores: la ley de cosenos: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Dos desplazamientos A y B miden 6 m y 5 m y forman un ángulo de 37° entre sí. ¿Cuánto mide la resultante |A + B|? Alternativas: A) 11 m   B) √13 m   C) √61 m   D) 1 m   E) √109 m",
+      "respuesta": "E) √109 m",
+      "pasos": [
+        "Ley de cosenos para la suma (método del paralelogramo): R² = A² + B² + 2AB·cos θ.",
+        "cos 37° = 4/5 (triángulo notable 3-4-5).",
+        "R² = 6² + 5² + 2·6·5·(0,8) = 36 + 25 + 48 = 109.",
+        "R = √109 m."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Dos vectores A y B miden 8 u y 5 u y forman un ángulo de 53° entre sí. ¿Cuánto mide la diferencia |A − B|? Alternativas: A) √41 u   B) 13 u   C) 3 u   D) √89 u   E) √137 u",
+      "respuesta": "A) √41 u",
+      "pasos": [
+        "Para la diferencia, −B forma 180° − θ con A, y cos(180° − θ) = −cos θ: D² = A² + B² − 2AB·cos θ.",
+        "cos 53° = 3/5 (triángulo notable 3-4-5).",
+        "D² = 8² + 5² − 2·8·5·(0,6) = 64 + 25 − 48 = 41.",
+        "D = √41 u."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Dos vectores A y B tienen el mismo módulo, 20 u. Se sabe que |A − B| es √3 veces |A + B|. ¿Qué ángulo forman A y B? Alternativas: A) 120°   B) 60°   C) 30°   D) 90°",
+      "respuesta": "A) 120°",
+      "pasos": [
+        "Con módulos iguales: |A + B|² = 2A²(1 + cos θ) y |A − B|² = 2A²(1 − cos θ). El módulo 20 u se cancela al dividir.",
+        "(1 − cos θ)/(1 + cos θ) = √3² = 3.",
+        "1 − cos θ = 3 + 3·cos θ → cos θ = −2/4 = −0,5.",
+        "θ = 120°. Comprobación con el rombo: la diagonal A + B parte el ángulo en dos de 60°."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Dos vectores A y B tienen el mismo módulo, 10 u. Se sabe que |A − B| es 2 veces |A + B|. ¿Qué ángulo forman A y B? Alternativas: A) 63,5°   B) 37°   C) 90°   D) 53°   E) 127°",
+      "respuesta": "E) 127°",
+      "pasos": [
+        "Con módulos iguales: |A + B|² = 2A²(1 + cos θ) y |A − B|² = 2A²(1 − cos θ). El módulo 10 u se cancela al dividir.",
+        "(1 − cos θ)/(1 + cos θ) = 2² = 4.",
+        "1 − cos θ = 4 + 4·cos θ → cos θ = −3/5 = −0,6.",
+        "θ = 127°. Comprobación con el rombo: la diagonal A + B parte el ángulo en dos de 63,5°."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Tres vectores A, B y C suman cero: A + B + C = 0. Sus módulos son 8 u, 5 u y √129 u. ¿Qué ángulo forman A y B (puestos con el origen en el mismo punto)? Alternativas: A) 120°   B) 30°   C) 90°   D) 60°",
+      "respuesta": "D) 60°",
+      "pasos": [
+        "Si A + B + C = 0, entonces A + B = −C: la resultante de A y B mide lo mismo que C.",
+        "(√129)² = 129 = 8² + 5² + 2·8·5·cos θ → 129 = 89 + 80·cos θ.",
+        "cos θ = (129 − 89) / 80 = 0,5.",
+        "θ = 60°."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Dos vectores A y B miden 15 u y 8 u y forman un ángulo de 37° entre sí. ¿Cuánto mide la resultante |A + B|? Alternativas: A) 7 u   B) 17 u   C) 23 u   D) √97 u   E) √481 u",
+      "respuesta": "E) √481 u",
+      "pasos": [
+        "Ley de cosenos para la suma (método del paralelogramo): R² = A² + B² + 2AB·cos θ.",
+        "cos 37° = 4/5 (triángulo notable 3-4-5).",
+        "R² = 15² + 8² + 2·15·8·(0,8) = 225 + 64 + 192 = 481.",
+        "R = √481 u."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Tres vectores A, B y C suman cero: A + B + C = 0. Sus módulos son 12 m, 15 m y 9 m. ¿Qué ángulo forman A y B (puestos con el origen en el mismo punto)? Alternativas: A) 143°   B) 37°   C) 53°   D) 90°",
+      "respuesta": "A) 143°",
+      "pasos": [
+        "Si A + B + C = 0, entonces A + B = −C: la resultante de A y B mide lo mismo que C.",
+        "9² = 81 = 12² + 15² + 2·12·15·cos θ → 81 = 369 + 360·cos θ.",
+        "cos θ = (81 − 369) / 360 = −0,8: es negativo, así que el ángulo es obtuso.",
+        "θ = 143° (con el triángulo 3-4-5 de academia)."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Dos vectores A y B tienen el mismo módulo, 20 N. Se sabe que |A + B| es 2 veces |A − B|. ¿Qué ángulo forman A y B? Alternativas: A) 53°   B) 127°   C) 26,5°   D) 90°   E) 37°",
+      "respuesta": "A) 53°",
+      "pasos": [
+        "Con módulos iguales: |A + B|² = 2A²(1 + cos θ) y |A − B|² = 2A²(1 − cos θ). El módulo 20 N se cancela al dividir.",
+        "(1 + cos θ)/(1 − cos θ) = 2² = 4.",
+        "1 + cos θ = 4 − 4·cos θ → cos θ = 3/5 = 0,6.",
+        "θ = 53°. Comprobación con el rombo: la diagonal A + B parte el ángulo en dos de 26,5°."
+      ]
+    }
+  ]
+}

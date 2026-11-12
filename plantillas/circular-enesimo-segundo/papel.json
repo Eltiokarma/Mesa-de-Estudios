@@ -1,0 +1,94 @@
+{
+  "titulo": "Segundo a segundo: lo que gira cada segundo: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Un esmeril parte del reposo y gira con aceleración angular constante. En el segundo segundo de su movimiento da 15 vueltas. ¿Cuál es su aceleración angular? Alternativas: A) 5 vueltas/s²   B) 7,5 vueltas/s²   C) 10 vueltas/s²   D) 30 vueltas/s²   E) 6 vueltas/s²",
+      "respuesta": "C) 10 vueltas/s²",
+      "pasos": [
+        "Desde el reposo, lo girado en el segundo n es θ(n) − θ(n − 1) = ½·α·(2n − 1).",
+        "Segundo 2: 15 vueltas = ½·α·3, así que α = 2 · 15/3 = 10 vueltas/s²."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Un esmeril gira a 11 rad/s y, desde ese instante, acelera de manera uniforme a razón de 4 rad/s². ¿Qué ángulo gira en el segundo segundo contado desde ese instante? Alternativas: A) 15 rad   B) 6 rad   C) 17 rad   D) 19 rad   E) 30 rad",
+      "respuesta": "C) 17 rad",
+      "pasos": [
+        "El segundo 2 va de t = 1 s a t = 2 s. Lo girado es θ(2) − θ(1), con θ(t) = ω0·t + ½·α·t².",
+        "θ(2) − θ(1) = 30 − 13 = 17 rad.",
+        "Atajo: es la rapidez a la mitad de ese segundo por 1 s, ω0 + α·(2 − ½)."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Una polea parte del reposo y gira con aceleración angular constante. En el quinto segundo de su movimiento da 45 vueltas. ¿Cuántas vueltas da en el segundo segundo? Alternativas: A) 20 vueltas   B) 15 vueltas   C) 5,4 vueltas   D) 7,2 vueltas   E) 18 vueltas",
+      "respuesta": "B) 15 vueltas",
+      "pasos": [
+        "Desde el reposo, lo girado en el segundo n es ½·α·(2n − 1): crece como los impares 1, 3, 5…",
+        "Segundo 5: 45 vueltas = ½·α·9, así que α = 10 vueltas/s².",
+        "Segundo 2: ½ · 10 · 3 = 15 vueltas (o sea, 45 · 3/9)."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Un disco parte del reposo y gira con aceleración angular constante. En el quinto segundo de su movimiento da 36 vueltas. ¿Cuántas vueltas da en el décimo segundo? Alternativas: A) 27,36 vueltas   B) 144 vueltas   C) 72 vueltas   D) 400 vueltas   E) 76 vueltas",
+      "respuesta": "E) 76 vueltas",
+      "pasos": [
+        "Desde el reposo, lo girado en el segundo n es ½·α·(2n − 1): crece como los impares 1, 3, 5…",
+        "Segundo 5: 36 vueltas = ½·α·9, así que α = 8 vueltas/s².",
+        "Segundo 10: ½ · 8 · 19 = 76 vueltas (o sea, 36 · 19/9)."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Una polea parte del reposo y gira con aceleración angular constante. En el cuarto segundo de su movimiento gira 21 rad. ¿Qué ángulo gira en el sexto segundo? Alternativas: A) 47,25 rad   B) 33 rad   C) 108 rad   D) 31,5 rad",
+      "respuesta": "B) 33 rad",
+      "pasos": [
+        "Desde el reposo, lo girado en el segundo n es ½·α·(2n − 1): crece como los impares 1, 3, 5…",
+        "Segundo 4: 21 rad = ½·α·7, así que α = 6 rad/s².",
+        "Segundo 6: ½ · 6 · 11 = 33 rad (o sea, 21 · 11/7)."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Un disco parte del reposo y gira con aceleración angular constante. En el cuarto segundo de su movimiento gira 21 rad. ¿Qué ángulo gira en el sexto segundo? Alternativas: A) 33 rad   B) 47,25 rad   C) 108 rad   D) 31,5 rad",
+      "respuesta": "A) 33 rad",
+      "pasos": [
+        "Desde el reposo, lo girado en el segundo n es ½·α·(2n − 1): crece como los impares 1, 3, 5…",
+        "Segundo 4: 21 rad = ½·α·7, así que α = 6 rad/s².",
+        "Segundo 6: ½ · 6 · 11 = 33 rad (o sea, 21 · 11/7)."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Un disco gira a 20 vueltas/s y, desde ese instante, acelera de manera uniforme a razón de 8 vueltas/s². ¿Cuántas vueltas da en el séptimo segundo contado desde ese instante? Alternativas: A) 76 vueltas   B) 72 vueltas   C) 336 vueltas   D) 52 vueltas   E) 68 vueltas",
+      "respuesta": "B) 72 vueltas",
+      "pasos": [
+        "El segundo 7 va de t = 6 s a t = 7 s. Lo girado es θ(7) − θ(6), con θ(t) = ω0·t + ½·α·t².",
+        "θ(7) − θ(6) = 336 − 264 = 72 vueltas.",
+        "Atajo: es la rapidez a la mitad de ese segundo por 1 s, ω0 + α·(7 − ½)."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Una rueda gira a 17 rad/s y, desde ese instante, acelera de manera uniforme a razón de 4 rad/s². ¿Qué ángulo gira en el segundo segundo contado desde ese instante? Alternativas: A) 25 rad   B) 42 rad   C) 21 rad   D) 6 rad   E) 23 rad",
+      "respuesta": "E) 23 rad",
+      "pasos": [
+        "El segundo 2 va de t = 1 s a t = 2 s. Lo girado es θ(2) − θ(1), con θ(t) = ω0·t + ½·α·t².",
+        "θ(2) − θ(1) = 42 − 19 = 23 rad.",
+        "Atajo: es la rapidez a la mitad de ese segundo por 1 s, ω0 + α·(2 − ½)."
+      ]
+    }
+  ]
+}

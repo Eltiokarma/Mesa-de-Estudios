@@ -1,0 +1,96 @@
+{
+  "titulo": "Producto escalar y producto vectorial: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Un triángulo tiene vértices P(1; −2), Q(0; −1) y S(4; 3) (en unidades de la cuadrícula). ¿Cuánto mide su área? Alternativas: A) 2 u²   B) 8 u²   C) 1 u²   D) 4 u²",
+      "respuesta": "D) 4 u²",
+      "pasos": [
+        "Dos lados desde P (final menos inicio): PQ = (−1; 1) y PS = (3; 5).",
+        "PQ × PS = (−1·5 − 1·3) k = −8 k: el paralelogramo mide 8 u².",
+        "Área del triángulo = |PQ × PS| / 2 = 4 u²."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Se tienen los vectores A = −2i + 4j − 2k y B = 5i + 4j − 4k. ¿Cuánto vale el producto escalar A·B? Alternativas: A) 34   B) −14   C) −34   D) 14   E) 5",
+      "respuesta": "D) 14",
+      "pasos": [
+        "El producto escalar multiplica componente por componente y suma: A·B = AₓBₓ + A_yB_y + A_zB_z.",
+        "A·B = (−2)(5) + (4)(4) + (−2)(−4) = −10 + 16 + 8.",
+        "A·B = 14: es positivo, así que el ángulo entre A y B es agudo."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Un triángulo tiene vértices P(−3; 2), Q(−1; −3) y S(−1; 1) (en unidades de la cuadrícula). ¿Cuánto mide su área? Alternativas: A) 8 u²   B) 4 u²   C) 4,5 u²   D) 6 u²   E) 2 u²",
+      "respuesta": "B) 4 u²",
+      "pasos": [
+        "Dos lados desde P (final menos inicio): PQ = (2; −5) y PS = (2; −1).",
+        "PQ × PS = (2·−1 + 5·2) k = 8 k: el paralelogramo mide 8 u².",
+        "Área del triángulo = |PQ × PS| / 2 = 4 u²."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Un triángulo tiene vértices P(0; 2), Q(5; 0) y S(4; 4) (en unidades de la cuadrícula). ¿Cuánto mide su área? Alternativas: A) 10 u²   B) 9 u²   C) 8 u²   D) 1 u²   E) 18 u²",
+      "respuesta": "B) 9 u²",
+      "pasos": [
+        "Dos lados desde P (final menos inicio): PQ = (5; −2) y PS = (4; 2).",
+        "PQ × PS = (5·2 + 2·4) k = 18 k: el paralelogramo mide 18 u².",
+        "Área del triángulo = |PQ × PS| / 2 = 9 u²."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Se tienen los vectores A = 4i − j − 2k y B = −4i + 2j − 5k. ¿Cuánto vale el producto escalar A·B? Alternativas: A) 28   B) 21   C) −6   D) −8   E) 8",
+      "respuesta": "D) −8",
+      "pasos": [
+        "El producto escalar multiplica componente por componente y suma: A·B = AₓBₓ + A_yB_y + A_zB_z.",
+        "A·B = (4)(−4) + (−1)(2) + (−2)(−5) = −16 − 2 + 10.",
+        "A·B = −8: es negativo, así que el ángulo entre A y B es obtuso."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Se tienen los vectores A = −2i − 4j y B = i − 2j. ¿Qué ángulo forman A y B? Alternativas: A) 37°   B) 90°   C) 127°   D) 53°",
+      "respuesta": "D) 53°",
+      "pasos": [
+        "De A·B = |A||B|·cos θ: cos θ = A·B / (|A||B|).",
+        "A·B = 6; |A| = √20 = 2√5; |B| = √5.",
+        "cos θ = 6 / 10 = 0,6.",
+        "θ = 53° (triángulo 3-4-5 de academia)."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Se tienen los vectores A = 2i − 2j y B = −4i − j. ¿Cuánto vale el producto escalar A·B? Alternativas: A) 6   B) −6   C) 10   D) −5",
+      "respuesta": "B) −6",
+      "pasos": [
+        "El producto escalar multiplica componente por componente y suma: A·B = AₓBₓ + A_yB_y.",
+        "A·B = (2)(−4) + (−2)(−1) = −8 + 2.",
+        "A·B = −6: es negativo, así que el ángulo entre A y B es obtuso."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "En el plano xy se tienen A = −4i − 2j y B = −i + 4j. Su producto vectorial es A × B = ck. ¿Cuánto vale c? Alternativas: A) −4   B) −14   C) −18   D) 18",
+      "respuesta": "C) −18",
+      "pasos": [
+        "Con i × j = k y j × i = −k (y i × i = j × j = 0), A × B = (AₓB_y − A_yBₓ) k.",
+        "c = (−4)(4) − (−2)(−1) = −16 − (2).",
+        "c = −18: A × B entra en la pantalla (−k); de A a B se gira en sentido horario."
+      ]
+    }
+  ]
+}
