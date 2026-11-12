@@ -3,7 +3,8 @@
   "titulo": "La hoja que se dobla, se corta y se voltea",
   "formato": "escena",
   "unidades": [
-    "razonamiento-matematico.transformaciones-de-figuras"
+    "razonamiento-matematico.transformaciones-de-figuras",
+    "razonamiento-matematico.trazos-y-perimetros"
   ],
   "estado": "borrador",
   "version": "0.1.0",

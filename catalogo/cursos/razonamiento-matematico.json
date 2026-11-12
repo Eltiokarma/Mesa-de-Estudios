@@ -31,7 +31,7 @@
       "universidades": {"unmsm": {"temas": [1, 2, 3, 4]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": ["trazos-rutas", "cuadricula-piezas", "rutas-espacio"],
+      "plantillas": ["trazos-rutas", "cuadricula-piezas", "rutas-espacio", "papel-doblado"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
@@ -198,7 +198,7 @@
       "universidades": {"unmsm": {"temas": [13, 14, 15]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": ["arreglos-giros", "ampliadora", "cuadricula-piezas"],
+      "plantillas": ["arreglos-giros", "ampliadora", "cuadricula-piezas", "papel-doblado"],
       "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {

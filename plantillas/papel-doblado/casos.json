@@ -2,7 +2,7 @@
   "plantilla": "papel-doblado",
   "unidades": "Longitudes en cuadritos de la cuadrícula (1 cm); la hoja es { ancho, alto } con esquinas (0; 0) y (ancho; alto), el eje y hacia arriba. Un doblez es { recta, mueve }: la parte del paquete del lado «mueve» de la recta cae sobre el otro lado. Los cortes atraviesan todas las capas del paquete y se dan en las coordenadas del paquete.",
   "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (perimetro.exacto, errores.soloDoblez.1.agujeros, copias.0); las listas se comparan completas; los textos se comparan exactos. Un texto exacto se escribe con la parte racional primero, luego las raíces de menor a mayor y al final π, con ' + ' entre términos y fracciones con barra ('15/2'). El perímetro es la suma de los bordes de todas las piezas al abrir, incluidos los bordes de los agujeros; un tijeretazo (corte 'linea') que separa cuenta sus dos lados. Las áreas de las piezas son exactas cuando sus bordes son rectas horizontales o verticales.",
-  "verificacion": "",
+  "verificacion": "Verificado a ciegas por un subagente (12 nov 2026) sin leer el motor: dobleces como reflexiones con fracciones exactas y desdoblado por las 2ⁿ historias; piezas y agujeros por componentes en una rejilla propia de 1/16; perímetros exactos clasificando cada tramo de las curvas candidatas por si hay papel a cada lado; fichas por búsqueda en anchura y paridad; C sobre A por mediatriz y Pitágoras con fracciones. 144 de 150 campos coincidieron; los 6 perímetros de unaCapa y soloDoblez, que no contaban el pliegue como borde del agujero parcial, se corrigieron en el motor y ahora dan los valores del verificador.",
   "tolerancia": 1e-9,
   "casos": [
     { "nombre": "Predicción del paso 1: hoja de 8 × 8 doblada en cuatro (x = 4, la derecha sobre la izquierda; y = 4, arriba sobre abajo) con un agujero triangular (1; 1), (3; 1), (1; 2) → 4 capas, 4 agujeros triangulares; perímetro 44 + 4√5 (una capa: 1 agujero; deshaciendo un solo doblez: 2)",
@@ -24,11 +24,11 @@
       "espera": { "agujeros": 0, "muescas": 4, "perimetro.exacto": "24 + 4π", "perimetro.valor": 36.56637061435917,
                   "errores.unaCapa.perimetro.exacto": "30 + π", "errores.sinRestarBorde.exacto": "32 + 4π", "errores.soloDoblez.1.perimetro.exacto": "28 + 2π" } },
 
-    { "nombre": "Predicción del paso 4: el mismo paquete con un rombo de semidiagonales 2 (horizontal) y 1 (vertical) centrado en la esquina doblada (4; 4) → 1 rombo entero de lado √5; perímetro 32 + 4√5 (una capa: 32 + √5; un doblez: 32 + 2√5; con los tramos del doblez: 44 + 4√5)",
+    { "nombre": "Predicción del paso 4: el mismo paquete con un rombo de semidiagonales 2 (horizontal) y 1 (vertical) centrado en la esquina doblada (4; 4) → 1 rombo entero de lado √5; perímetro 32 + 4√5 (una capa: 35 + √5, el triángulo con sus catetos sobre los dobleces; un doblez: 36 + 2√5; con los tramos del doblez: 44 + 4√5)",
       "fn": "desplegar",
       "args": [{ "ancho": 8, "alto": 8 }, [{ "recta": { "x": 4 }, "mueve": "derecha" }, { "recta": { "y": 4 }, "mueve": "arriba" }], [{ "tipo": "rombo", "centro": { "x": 4, "y": 4 }, "dx": 2, "dy": 1 }]],
       "espera": { "copias.0": 4, "agujeros": 1, "agujerosDetalle.0.celdas": 4, "agujerosDetalle.0.area": 4, "perimetro.exacto": "32 + 4√5",
-                  "errores.unaCapa.perimetro.exacto": "32 + √5", "errores.soloDoblez.0.perimetro.exacto": "32 + 2√5",
+                  "errores.unaCapa.perimetro.exacto": "35 + √5", "errores.soloDoblez.0.perimetro.exacto": "36 + 2√5",
                   "errores.tramosDelDoblez.exacto": "44 + 4√5", "errores.enteroPorCapa.perimetro.exacto": "32 + 16√5" } },
 
     { "nombre": "Predicción del paso 5: tira de 6 × 2 doblada en tres como acordeón (x = 2 la izquierda; x = 4 la derecha) y cortada de través por x = 3 → 4 piezas (dos cuadrados de 2 × 2 y dos tiras de 1 × 2); cada capa suelta: 6; una capa: 2; los tajos: 3",
@@ -47,16 +47,16 @@
       "args": [{ "ancho": 8, "alto": 4 }, [{ "recta": { "x": 4 }, "mueve": "derecha" }], [{ "tipo": "linea", "A": { "x": 2, "y": -1 }, "B": { "x": 2, "y": 5 } }]],
       "espera": { "capas": 2, "piezas": 3, "areas": [16, 8, 8], "piezasCuadradas": 1, "errores.sinUniones": 4, "errores.unaCapa.piezas": 2 } },
 
-    { "nombre": "Cuadrado de 6 × 6 doblado por la diagonal y = x (lo de arriba baja) y por x + y = 6 → triángulo de 4 capas; un corte de y = 2 a y = 4 quita la punta → 1 agujero cuadrado de 2 × 2, perímetro 32 (una capa: 26; un doblez: 28; con los tramos del doblez: 32 + 8√2)",
+    { "nombre": "Cuadrado de 6 × 6 doblado por la diagonal y = x (lo de arriba baja) y por x + y = 6 → triángulo de 4 capas; un corte de y = 2 a y = 4 quita la punta → 1 agujero cuadrado de 2 × 2, perímetro 32 (una capa: 26 + 2√2; un doblez: 28 + 2√2; con los tramos del doblez: 32 + 8√2)",
       "fn": "desplegar",
       "args": [{ "ancho": 6, "alto": 6 }, [{ "recta": { "m": 1, "n": 0 }, "mueve": "arriba" }, { "recta": { "m": -1, "n": 6 }, "mueve": "arriba" }], [{ "tipo": "poligono", "puntos": [{ "x": 1, "y": 2 }, { "x": 5, "y": 2 }, { "x": 5, "y": 4 }, { "x": 1, "y": 4 }] }]],
       "espera": { "capas": 4, "caja": [0, 6, 0, 3], "agujeros": 1, "agujerosDetalle.0.area": 4, "perimetro.exacto": "32",
-                  "errores.unaCapa.perimetro.exacto": "26", "errores.soloDoblez.1.perimetro.exacto": "28", "errores.tramosDelDoblez.exacto": "32 + 8√2" } },
+                  "errores.unaCapa.perimetro.exacto": "26 + 2√2", "errores.soloDoblez.1.perimetro.exacto": "28 + 2√2", "errores.tramosDelDoblez.exacto": "32 + 8√2" } },
 
     { "nombre": "Hoja de 8 × 8 en cuatro con un círculo de radio 1 en la esquina doblada (4; 4) → 1 agujero redondo entero, de 4 capas; perímetro 32 + 2π (cada capa una figura: 4 agujeros)",
       "fn": "desplegar",
       "args": [{ "ancho": 8, "alto": 8 }, [{ "recta": { "x": 4 }, "mueve": "derecha" }, { "recta": { "y": 4 }, "mueve": "arriba" }], [{ "tipo": "circulo", "centro": { "x": 4, "y": 4 }, "r": 1 }]],
-      "espera": { "agujeros": 1, "agujerosDetalle.0.celdas": 4, "perimetro.exacto": "32 + 2π", "errores.enteroPorCapa.agujeros": 4, "errores.unaCapa.perimetro.exacto": "32 + π/2" } },
+      "espera": { "agujeros": 1, "agujerosDetalle.0.celdas": 4, "perimetro.exacto": "32 + 2π", "errores.enteroPorCapa.agujeros": 4, "errores.unaCapa.perimetro.exacto": "34 + π/2" } },
 
     { "nombre": "Hoja de 10 × 10 en cuatro con un agujero redondo de radio 1 en (2; 3) → 4 agujeros, perímetro 40 + 8π",
       "fn": "desplegar",
@@ -66,7 +66,7 @@
     { "nombre": "Hoja de 10 × 10 en cuatro con un rombo de semidiagonales 1 y 3 en la esquina doblada (5; 5) → 1 rombo de lado √10, perímetro 40 + 4√10",
       "fn": "desplegar",
       "args": [{ "ancho": 10, "alto": 10 }, [{ "recta": { "x": 5 }, "mueve": "derecha" }, { "recta": { "y": 5 }, "mueve": "arriba" }], [{ "tipo": "rombo", "centro": { "x": 5, "y": 5 }, "dx": 1, "dy": 3 }]],
-      "espera": { "agujeros": 1, "agujerosDetalle.0.area": 6, "perimetro.exacto": "40 + 4√10", "errores.unaCapa.perimetro.exacto": "40 + √10" } },
+      "espera": { "agujeros": 1, "agujerosDetalle.0.area": 6, "perimetro.exacto": "40 + 4√10", "errores.unaCapa.perimetro.exacto": "44 + √10" } },
 
     { "nombre": "Capas en un punto del paquete: hoja de 8 × 8 en cuatro, en (1; 1) → 4",
       "fn": "capasEn",

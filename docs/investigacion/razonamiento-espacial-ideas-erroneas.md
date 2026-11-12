@@ -168,3 +168,19 @@ RME3 (solo los cubitos visibles) se parece a GE13 de `geometria-ideas-erroneas.m
 | RME201 | Medir el camino por el aire (la recta entre los puntos) en vez de sobre la superficie. |
 
 En rutas-espacio también se usan RME31, RME167 (seguir 2, 4, 6…), RME186 (multiplicar alternativas) y RME189 (tres opciones en cada paso: 3^n).
+
+### papel-doblado
+
+| Código | Error |
+| --- | --- |
+| RME150 | Tomar el doblez de un rectángulo, cuando se juntan vértices opuestos, por la diagonal que los une o por su mitad. |
+| RME151 | No usar que el doblez es la mediatriz (EA = EC): suponerlo paralelo a un lado, cortando el lado en su punto medio, o con la hipotenusa equivocada. |
+| RME152 | Copiar el corte corrido a su lugar sin reflejarlo: todas las copias con la misma orientación. |
+| RME153 | Desdoblar solo uno de los dobleces (salen copias de menos). |
+| RME154 | Contar una jugada por ficha distinta, como si se volteara una por vez. |
+| RME155 | No usar la paridad ni que una ficha puede voltearse varias veces: dividir las distintas entre k, voltear cada grupo una vez, o creer que siempre se puede. |
+| RME156 | Creer que dos reflexiones seguidas se anulan; en rectas que se cortan dan un giro. |
+| RME157 | Contar los tajos como piezas (en una tira, las piezas son una más que los tajos). |
+| RME158 | Tomar los pedazos de un corte sobre un doblez como figuras aparte y contar como borde sus tramos sobre el doblez. |
+| RME159 | Creer que, en un corte sobre un doblez, cada capa da la figura entera. |
+| RME200 | Extender la paridad de los volteos de a dos a los volteos de a tres. |

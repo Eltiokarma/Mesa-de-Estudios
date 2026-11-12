@@ -43,13 +43,16 @@
  *                                     de los agujeros: { valor, exacto }), agujerosDetalle ([{ celdas: de cuántas
  *                                     capas sale ese agujero, area }]); las áreas se cuentan en una rejilla de 1/16 y
  *                                     son exactas solo si los bordes de la pieza son horizontales o verticales.
- *                                     Para el dibujo: celdas (cada una con huecos, polígonos en la hoja, y tajos,
- *                                     [A, B] en la hoja), trozos ({ poli, celda, pieza }: las celdas partidas por los
+ *                                     Para el dibujo: celdas (cada una con huecos, polígonos en la hoja; tajos,
+ *                                     [A, B]; bordes, las líneas del borde de los huecos sin los tramos sobre un
+ *                                     doblez o el borde; y aristas, { A, B, borde } fuera de los cortes), trozos ({ poli, celda, pieza }: las celdas partidas por los
  *                                     tajos) y dibujoErrores ({ unaCapa, soloDoblez: [...], corrida (RME152: cada copia
- *                                     corrida a su lugar sin reflejarla) }, listas de polígonos en la hoja). Y
+ *                                     trasladada a su capa, esquina con esquina, sin reflejarla) }, listas de polígonos en la hoja). Y
  *                                   errores (lo que da cada error típico):
  *                                     unaCapa        RME40: el corte se hace en una sola capa (la de abajo, que no se
- *                                                    movió): { agujeros, muescas, piezas, perimetro }
+ *                                                    movió): { agujeros, muescas, piezas, perimetro }. En estos errores
+ *                                                    con capas sin cortar, el tramo de un doblez que cae dentro del corte
+ *                                                    y da a una capa sin cortar sí es borde del agujero
  *                                     soloDoblez     RME153: lista; soloDoblez[i] es lo que sale si solo se deshace el
  *                                                    doblez i (solo cortan las capas que no se movieron o que se
  *                                                    movieron únicamente en el doblez i): { agujeros, muescas, piezas,
@@ -375,7 +378,7 @@
   }
   function crucesPoli(P, Q, poli) { const ts = []; for (let i = 0; i < poli.length; i++) { const t = cruceSeg(P, Q, poli[i], poli[(i + 1) % poli.length]); if (t !== null) ts.push(t); } return ts; }
   // borde de un corte que cae dentro de la celda (imagen convexa) y fuera de los otros cortes: suma al exacto
-  function bordeCorteEnCelda(E, c, img, otros, veces) {
+  function bordeCorteEnCelda(E, c, img, otros, veces, junta) {
     const dentro = M => dentroConvexo(img, M) && !otros.some(o => dentroCorte(o, M));
     if (c.tipo === 'circulo') {
       let angs = [];
@@ -388,7 +391,10 @@
       for (let i = 0; i + 1 < angs.length; i++) {
         const d = angs[i + 1] - angs[i]; if (d < 1e-12) continue;
         const m = (angs[i] + angs[i + 1]) / 2;
-        if (dentro({ x: c.centro.x + c.r * Math.cos(m), y: c.centro.y + c.r * Math.sin(m) })) { sumarArco(E, c.r, d, veces); largo += c.r * d * veces; }
+        if (dentro({ x: c.centro.x + c.r * Math.cos(m), y: c.centro.y + c.r * Math.sin(m) })) {
+          sumarArco(E, c.r, d, veces); largo += c.r * d * veces;
+          if (junta) { const k = Math.max(2, Math.ceil(d / 0.08)); junta.push(Array.from({ length: k + 1 }, (_, j) => { const u = angs[i] + d * j / k; return { x: c.centro.x + c.r * Math.cos(u), y: c.centro.y + c.r * Math.sin(u) }; })); }
+        }
       }
       return largo;
     }
@@ -397,7 +403,7 @@
     for (const [P, Q] of segs) {
       let ts = crucesPoli(P, Q, img);
       for (const o of otros) ts = ts.concat(crucesSegCorte(P, Q, o));
-      for (const [A, B] of tramos(P, Q, ts, dentro)) { sumarLargo(E, B.x - A.x, B.y - A.y, veces); largo += Math.hypot(B.x - A.x, B.y - A.y) * veces; }
+      for (const [A, B] of tramos(P, Q, ts, dentro)) { sumarLargo(E, B.x - A.x, B.y - A.y, veces); largo += Math.hypot(B.x - A.x, B.y - A.y) * veces; if (junta) junta.push([A, B]); }
     }
     return largo;
   }
@@ -421,9 +427,26 @@
         const A = ce.poli[i], B = ce.poli[(i + 1) % ce.poli.length], borde = sobreBorde(A, B, W, H);
         if (borde && modo !== 'sinRestar') v += dentroDeCortes(E, ap(ce.g, A), ap(ce.g, B), region, -1);
         if (!borde && modo === 'tramos') v += dentroDeCortes(E, ap(ce.g, A), ap(ce.g, B), region, 1);
+        else if (!borde) v += plieguePartido(E, ce, A, B, celdas, region, filtro);
       }
     });
     return empaquetar(E, v);
+  }
+  // Un doblez de una capa cortada que da a una capa sin cortar (solo pasa con un filtro, en los errores): el tramo del
+  // doblez que cae dentro del corte queda como borde del agujero, porque del otro lado el papel sigue entero.
+  function plieguePartido(E, ce, A, B, celdas, region, filtro) {
+    const P = ap(ce.g, A), Q = ap(ce.g, B);
+    let ts = []; for (const c of region) ts = ts.concat(crucesSegCorte(P, Q, c));
+    const s = area(ce.poli) > 0 ? 1 : -1, L = Math.hypot(B.x - A.x, B.y - A.y), nx = s * (B.y - A.y) / L, ny = -s * (B.x - A.x) / L;
+    let largo = 0;
+    for (const [U, W] of tramos(P, Q, ts, M => region.some(c => dentroCorte(c, M)))) {
+      const t = (Math.hypot(U.x - P.x, U.y - P.y) + Math.hypot(W.x - P.x, W.y - P.y)) / (2 * Math.hypot(Q.x - P.x, Q.y - P.y));
+      const N = { x: A.x + t * (B.x - A.x) + 1e-6 * nx, y: A.y + t * (B.y - A.y) + 1e-6 * ny };
+      const k = celdas.findIndex(o => o !== ce && dentroConvexo(o.poli, N, -1e-12));
+      if (k >= 0 && filtro(celdas[k], k)) continue;
+      sumarLargo(E, W.x - U.x, W.y - U.y, 1); largo += Math.hypot(W.x - U.x, W.y - U.y);
+    }
+    return largo;
   }
   // perímetro de la figura completa de un corte (para «cada capa da la figura entera»)
   function perimetroCorte(c, E) {
@@ -533,11 +556,24 @@
           const p = recortarConvexo(poliCorte(c, 96), ce.img);
           if (p.length >= 3 && Math.abs(area(p)) > 1e-6) {
             const q = p.map(P => ap(gi, P)); huecos.push(q);
-            const a = centro(p), b = centro(q); corridos.push(p.map(P => ({ x: P.x + b.x - a.x, y: P.y + b.y - a.y })));
+            // la copia corrida sin reflejar: la celda se trae a su lugar solo trasladándola (esquina con esquina)
+            const mx = q2 => Math.min(...q2.map(P => P.x)), my = q2 => Math.min(...q2.map(P => P.y));
+            const dx = mx(ce.poli) - mx(ce.img), dy = my(ce.poli) - my(ce.img); corridos.push(p.map(P => ({ x: P.x + dx, y: P.y + dy })));
           }
         } else for (const [A, B] of tramos(c.A, c.B, crucesPoli(c.A, c.B, ce.img), M => dentroConvexo(ce.img, M))) tajos.push([ap(gi, A), ap(gi, B)]);
       }
-      return { poli: ce.poli, img: ce.img, hist: ce.hist, z: ce.z, cara: ce.cara, huecos, tajos };
+      // bordes de los huecos (sin los tramos que caen sobre un doblez o sobre el borde de la hoja) y aristas de la celda
+      // que quedan fuera de los cortes, todo en la hoja
+      const region = cortes.filter(quita), junta = [];
+      region.forEach((c, j) => bordeCorteEnCelda(nuevoExacto(), c, ce.img, region.filter((_, i) => i !== j), 1, junta));
+      const bordes = junta.map(l => l.map(P => ap(gi, P)));
+      const aristas = [];
+      ce.poli.forEach((A, i) => {
+        const B = ce.poli[(i + 1) % ce.poli.length], P = ap(ce.g, A), Q = ap(ce.g, B), borde = sobreBorde(A, B, hoja.ancho, hoja.alto);
+        let ts = []; for (const c of region) ts = ts.concat(crucesSegCorte(P, Q, c));
+        for (const [U, W] of tramos(P, Q, ts, M => !region.some(c => dentroCorte(c, M)))) aristas.push({ A: ap(gi, U), B: ap(gi, W), borde });
+      });
+      return { poli: ce.poli, img: ce.img, hist: ce.hist, z: ce.z, cara: ce.cara, huecos, tajos, bordes, aristas };
     });
     // trozos: cada celda partida por sus tajos, con el número de pieza al que pertenece (para separar las piezas)
     const ox = R.h * 0.5 + R.h * 0.0123, oy = R.h * 0.5 + R.h * 0.0071;
