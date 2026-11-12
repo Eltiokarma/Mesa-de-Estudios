@@ -36,6 +36,12 @@ async function vista(ctx, id, unidad) {
   const { $app, cat, est, esc, guardar, registrar, marcarDia } = ctx;
   const pl = cat.plantillas[id];
   if (!pl || pl.formato !== 'lectura') { location.hash = '#/cursos'; return; }
+  // La entrada de razonamiento verbal vive en lectura-verbal: si el alumno abre otro módulo de lectura sin
+  // haberla hecho, va primero a esa entrada (si no, practicaría antes y la entrada ya no sería en frío).
+  const verbal = cat.plantillas['lectura-verbal'];
+  if (id !== 'lectura-verbal' && verbal && !((est.practica || {})['lectura-verbal'] || {}).entrada) {
+    location.hash = '#/lectura/lectura-verbal'; return;
+  }
   document.body.style.overflow = '';
   actual = null;
   const ruta = location.hash;
@@ -392,7 +398,7 @@ async function vista(ctx, id, unidad) {
       resultados.push(r);
       registrar(L().ev.item({ fase: faseP, curso: CURSO, modulo: id, forma, orden, pregunta: q, resultado: r, codigos: b.codigos, ms: msq }));
     }
-    st[faseP] = { aciertos: resultados.filter(r => r.correcta).length, total: resultados.length, nose: resultados.filter(r => r.nose).length, forma }; guardar();
+    st[faseP] = { aciertos: resultados.filter(r => r.correcta).length, total: resultados.length, nose: resultados.filter(r => r.nose).length, forma, fecha: new Date().toISOString() }; guardar();
     registrar(L().ev.prueba({ fase: faseP, curso: CURSO, forma, orden, modulo: id, unidad: it.preguntas[0].unidad, item: it, resultados, ms: Date.now() - t0 }));
     return faseP === 'entrada' ? practica() : resultado();
   }
@@ -541,7 +547,9 @@ async function vista(ctx, id, unidad) {
   function salidaAbierta() {
     const P = window.PruebaCurso;
     return !!(b.indice.salida && b.items[L().formaPrueba(b.indice, est.alumno, 'salida', CURSO).id] && st.entrada && !st.salida
-      && P && P.habilitada(est, CURSO));
+      && P && P.habilitada(est, CURSO)
+      // Como en las pruebas por curso: la salida, otro día que la entrada.
+      && !(st.entrada.fecha && new Date(st.entrada.fecha).toLocaleDateString('en-CA') === new Date().toLocaleDateString('en-CA')));
   }
 
   function terminado(it, bien) {
