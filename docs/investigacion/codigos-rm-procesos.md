@@ -41,6 +41,43 @@ El id de cada alternativa es `<código>-<detalle>` (por ejemplo `RMP20-una-vuelt
 | RMP18 | Contar mal qué es un movimiento: las fichas, sacar y meter como uno, ida y vuelta | traslado de fichas |
 | RMP19 | Olvidar los bordes del tablero o de la fila | movimientos en tablero |
 
+## Certezas, cortes y balanzas (`rm-certezas`, `rm-cortes`, `rm-balanzas`)
+
+El peor caso usa RM6 del informe (hipótesis allí).
+
+| Código | Error | Trampa de origen |
+| --- | --- | --- |
+| RMP30 | Dejar fuera del peor caso lo que no sirve: los sin pareja, los que no son primos, el 1, los otros colores | rm-a #1, rm-b (certezas) |
+| RMP31 | Armar mal el peor caso: tomar los mayores, un solo color, ignorar izquierdo y derecho, k por caja | huecos de certezas |
+| RMP32 | Contar mal el conjunto: los múltiplos comunes dos veces, contar los que sí sirven | huecos de certezas |
+| RMP33 | Contar mal las casillas del palomar: olvidar el 29 de febrero, las sumas de cifras con pocos casos | rm-a #2, huecos de certezas |
+| RMP34 | El último paso: sin el + 1, con un + 1 de más, el último intento que ya se sabe | huecos de certezas |
+| RMP35 | Cortar sin apilar ni superponer (pieza por pieza o por las líneas dibujadas) | rm-a #6, rm-b |
+| RMP36 | Contar mal lo que permite el apilado: redondear el logaritmo, el logaritmo del total, ignorar el tope de capas | rm-a #6 |
+| RMP37 | Tomar mal una medida que queda: los lados nuevos del corte, el promedio de los tramos, olvidar la hipotenusa | huecos de cortes |
+| RMP38 | Plantear mal las balanzas: la desigualdad como igualdad, olvidar que son enteros, sustituir a medias, razón invertida | huecos de balanzas |
+| RMP39 | Usar un solo platillo (sin restar pesas) | rm-a #13 |
+
+## Rumbos, lecturas y relojes (`rm-rumbos`, `rm-lectura-palabras`, `rm-relojes`)
+
+| Código | Error | Trampa de origen |
+| --- | --- | --- |
+| RMP40 | Medir el ángulo desde el eje o hacia el lado equivocado (E 37° N por N 37° E), o el 3-4-5 al revés | rm-b (rumbos: «eje equivocado») |
+| RMP41 | Invertir el sentido: el rumbo desde el destino y no hacia él | rm-b (rumbos: «invertir la dirección») |
+| RMP42 | Sumar largos sin dirección: los tramos, o las componentes sin restar las opuestas | rumbos |
+| RMP43 | Usar Pitágoras con un ángulo que no es recto | rumbos |
+| RMP44 | Confundir las 12 h del reloj con las 24 h del día (a. m. y p. m., 1440 min por 720) | rm-a #5 |
+| RMP45 | Contar dos veces la lectura común o las simétricas | rm-b sueltas («la lectura común contada dos veces») |
+| RMP46 | No restar la casilla tapada o las que faltan | lecturas |
+| RMP47 | Olvidar el 29 de febrero o contar uno que no hay | rm-a #2, rm-b |
+| RMP48 | Cambiar antes por después: lo que pasó por lo que falta, hace por dentro de, inicio por fin, ayer por mañana | rm-a #5 |
+| RMP49 | Creerle al que miente ese día | relojes (mentirosos) |
+| RMP81 | Multiplicar donde no va (como si fuera un triángulo, pasos multiplicados) | lecturas |
+| RMP82 | Contar casillas en vez de caminos | lecturas |
+| RMP83 | Sumar en vez de multiplicar dos tramos | rm-b («sumar en vez de multiplicar por tramos») |
+| RMP84 | Contar solo una parte de las lecturas: hasta la fila ancha, un tramo, solo la ida | lecturas |
+| RMP85 | Leer la parte decimal de una hora como minutos (14,4 h como 14 h 40 min) | relojes |
+
 ## Diagramas de flujo y ciclos (`rm-diagramas-flujo`, `rm-ciclos`)
 
 | Código | Error | Trampa de origen |
