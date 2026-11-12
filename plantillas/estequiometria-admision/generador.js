@@ -458,7 +458,7 @@
       h('AQ-coeficiente-de-la-sal', c * V / 1000 * r.alc / r.sal * r.M, `Usaste el coeficiente del Cr₂(SO₄)₃ (${r.sal}) como si fuera el del Cr³⁺. Cada Cr₂(SO₄)₃ da 2 iones Cr³⁺: por ${r.alc} mol de ${r.nombre} se forman ${r.cr} mol de Cr³⁺.`),
       h('AQ-sin-coeficientes', c * V / 1000 * r.M, `Tomaste un mol de ${r.nombre} por cada mol de Cr³⁺. La ecuación dice ${r.alc} a ${r.cr}.`),
       h('AQ-razon-invertida', c * V / 1000 * r.cr / r.alc * r.M, `Invertiste la proporción: son ${r.alc} mol de ${r.nombre} por cada ${r.cr} mol de Cr³⁺, no al revés.`),
-      h('AQ-ml-sin-pasar', correcta * 1000, `Multiplicaste la concentración por ${V} sin pasar los mL a litros. La molaridad es mol por litro: ${V} mL = ${f(V / 1000, 3)} L.`),
+      h('QU2-ml-sin-pasar', correcta * 1000, `Multiplicaste la concentración por ${V} sin pasar los mL a litros. La molaridad es mol por litro: ${V} mL = ${f(V / 1000, 3)} L.`),
       h('AQ-masa-del-producto-molar', x.nAlcohol * r.Mp, `Los moles están bien, pero los pasaste a gramos con la masa molar del ${r.nombreProd} (${r.Mp}). Se pide la masa del ${r.nombre} (${r.M} g/mol).`),
     ];
     const solucion = [

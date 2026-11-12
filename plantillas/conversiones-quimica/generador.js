@@ -32,7 +32,7 @@
  *            o kg: masa ya está en g) } → kJ; sub 'inversa' { Q (kJ) } → mL de agua vaporizada.
  *   vida     sub 'queda' { m0, tMedia, t } → masa que queda; sub 'deducir' { m0, T1, a, T2 } (en T1 queda m0/2^a;
  *            se pide lo que queda en T2) → masa; sub 'tiempo' { tMedia, n } (queda 1/2^n) → tiempo.
- * Errores: ES7 del informe de estequiometría (fórmula de moles invertida); los AQ-* son hipótesis nuestras (los de vida
+ * Errores: ES7 del informe de estequiometría (fórmula de moles invertida); los AQ-* y las trampas de unidades QU1 a QU3 (docs/investigacion/unidades-ideas-erroneas.md) son hipótesis nuestras (los de vida
  * media, AQ-vm-*, comparten id con configuracion-ubicacion). Rangos creíbles: cada objeto y cada lugar tiene su rango de
  * temperatura, y el dato se genera dentro de él; en lectura no salen kelvin negativos entre las alternativas.
  * FIN DE LA CABECERA: con esto basta para recalcular cada caso de casos.json sin leer el código.
@@ -224,15 +224,15 @@
         h('AQ-factor-invertido-temp', (valor - 32) * 1.8, 'Multiplicaste por 1,8. Para ir de °F a °C se divide entre 1,8.'),
         h('AQ-olvida-factor', valor - 32, 'Solo restaste 32. Falta dividir entre 1,8.'),
         h('AQ-olvida-32', valor / 1.8, 'Dividiste entre 1,8 pero no restaste 32 antes.')],
-      'c-k': [h('AQ-signo-273', valor - 273, 'Restaste 273. Para pasar a kelvin se suma: el cero absoluto está 273 grados debajo del 0 °C.'),
+      'c-k': [h('QU3-signo-273', valor - 273, 'Restaste 273. Para pasar a kelvin se suma: el cero absoluto está 273 grados debajo del 0 °C.'),
         h('AQ-sin-convertir', valor, 'Dejaste el mismo número. El kelvin tiene el tamaño del grado Celsius, pero su cero está corrido 273.'),
         h('AQ-escala-equivocada-f', 1.8 * valor + 32, 'Pasaste a °F, no a kelvin.'),
         h('AQ-mezcla-escalas', 1.8 * valor + 273, 'Mezclaste las dos fórmulas: el factor 1,8 es del Fahrenheit. Para kelvin solo se suma 273.')],
-      'k-c': [h('AQ-signo-273', valor + 273, 'Sumaste 273. De kelvin a °C se resta.'),
+      'k-c': [h('QU3-signo-273', valor + 273, 'Sumaste 273. De kelvin a °C se resta.'),
         h('AQ-sin-convertir', valor, 'Dejaste el mismo número; falta restar 273.'),
         h('AQ-formula-de-fahrenheit', (valor - 32) / 1.8, 'Usaste la fórmula del Fahrenheit (restar 32 y dividir entre 1,8). El dato está en kelvin.'),
         h('AQ-escala-equivocada-f', (valor - 273) * 1.8 + 32, 'Pasaste a °F, no a °C.')],
-      'f-k': [h('AQ-olvida-273', C, 'Llegaste a °C y te detuviste. Falta sumar 273 para pasar a kelvin.'),
+      'f-k': [h('QU3-olvida-273', C, 'Llegaste a °C y te detuviste. Falta sumar 273 para pasar a kelvin.'),
         h('AQ-orden-de-operaciones', valor / 1.8 + 273, 'No restaste 32 antes de dividir entre 1,8.'),
         h('AQ-olvida-factor', valor + 273, 'Sumaste 273 directo al valor en °F. Primero hay que pasar a °C: (°F − 32) ÷ 1,8.'),
         h('AQ-factor-invertido-temp', (valor - 32) * 1.8 + 273, 'Multiplicaste por 1,8. Para ir de °F a °C se divide.')],
@@ -274,16 +274,16 @@
       const enunciado = ['Un lingote de ', met.nombre, ' tiene una ', v('m', `masa de ${masaTxt}`), ' y una ', v('rho', `densidad de ${f(met.rho, 1)} g/cm³`), '.'];
       const pregunta = ['¿Cuál es su ', v('V', 'volumen'), `, en ${U}?`];
       const errores = [];
-      if (unidad !== 'cm3') errores.push(h('AQ-deja-en-cm3', r.cm3, `Ese número son los cm³ (${f(r.cm3, 1)} cm³). Falta pasarlos a ${U}${unidad === 'L' ? ': 1 L = 1000 cm³' : ': 1 m³ = 10⁶ cm³'}.`));
+      if (unidad !== 'cm3') errores.push(h('QU2-deja-en-cm3', r.cm3, `Ese número son los cm³ (${f(r.cm3, 1)} cm³). Falta pasarlos a ${U}${unidad === 'L' ? ': 1 L = 1000 cm³' : ': 1 m³ = 10⁶ cm³'}.`));
       if (unidad === 'm3') {
-        errores.push(h('AQ-cubo-sin-elevar', r.cm3 * 1e-2, 'Usaste 1 cm = 10⁻² m sin elevar al cubo. En volumen, 1 cm³ = (10⁻² m)³ = 10⁻⁶ m³.'));
-        errores.push(h('AQ-m3-como-1000-cm3', r.cm3 * 1e-3, 'Tomaste 1 m³ = 1000 cm³ (eso es un litro). 1 m³ = (100 cm)³ = 10⁶ cm³.'));
+        errores.push(h('QU2-cubo-sin-elevar', r.cm3 * 1e-2, 'Usaste 1 cm = 10⁻² m sin elevar al cubo. En volumen, 1 cm³ = (10⁻² m)³ = 10⁻⁶ m³.'));
+        errores.push(h('QU2-m3-como-1000-cm3', r.cm3 * 1e-3, 'Tomaste 1 m³ = 1000 cm³ (eso es un litro). 1 m³ = (100 cm)³ = 10⁶ cm³.'));
       }
       if (unidad === 'L') {
-        errores.push(h('AQ-litro-como-m3', r.cm3 * 1e-6, 'Dividiste entre 10⁶: eso da m³. Un litro son 1000 cm³.'));
-        errores.push(h('AQ-litro-como-100-cm3', r.cm3 / 100, 'Tomaste 1 L = 100 cm³. Un litro es un cubo de 10 cm de lado: 10 × 10 × 10 = 1000 cm³.'));
+        errores.push(h('QU2-litro-como-m3', r.cm3 * 1e-6, 'Dividiste entre 10⁶: eso da m³. Un litro son 1000 cm³.'));
+        errores.push(h('QU2-litro-como-100-cm3', r.cm3 / 100, 'Tomaste 1 L = 100 cm³. Un litro es un cubo de 10 cm de lado: 10 × 10 × 10 = 1000 cm³.'));
       }
-      if (enKg && unidad !== 'L') errores.push(h('AQ-kg-sin-pasar', g / 1000 / met.rho / UV[unidad], 'Dividiste los kilogramos entre una densidad en g/cm³. Antes, pasa la masa a gramos (× 1000).'));
+      if (enKg && unidad !== 'L') errores.push(h('QU1-kg-sin-pasar', g / 1000 / met.rho / UV[unidad], 'Dividiste los kilogramos entre una densidad en g/cm³. Antes, pasa la masa a gramos (× 1000).'));
       errores.push(h('AQ-multiplica-densidad', g * met.rho / UV[unidad], 'Multiplicaste la masa por la densidad. El volumen es masa entre densidad: V = m ÷ ρ.'));
       const solucion = [
         [enKg ? [v('m', masaTxt), ` = ${f(g, 1)} g. `] : [], 'V = ', v('m', `${f(g, 1)} g`), ' ÷ ', v('rho', `${f(met.rho, 1)} g/cm³`), ` = ${f(r.cm3, 1)} cm³.`].flat(),
@@ -300,13 +300,13 @@
     const enunciado = ['Una pieza de ', met.nombre, ' ocupa ', v('V', `${cient(volumen)} ${U}`), '. Su ', v('rho', `densidad es ${f(met.rho, 1)} g/cm³`), '.'];
     const pregunta = ['¿Cuál es su ', v('m', 'masa'), ', en kg?'];
     const errores = [
-      h('AQ-sin-pasar-a-cm3', volumen * met.rho, `Multiplicaste los ${U} por g/cm³ sin pasar el volumen a cm³.`),
-      h('AQ-gramos-como-kg', r.g, `Ese número son gramos (${f(r.g, 1)} g). Falta dividir entre 1000 para pasar a kilogramos.`),
+      h('QU2-sin-pasar-a-cm3', volumen * met.rho, `Multiplicaste los ${U} por g/cm³ sin pasar el volumen a cm³.`),
+      h('QU1-gramos-como-kg', r.g, `Ese número son gramos (${f(r.g, 1)} g). Falta dividir entre 1000 para pasar a kilogramos.`),
       h('AQ-divide-densidad', r.cm3 / met.rho / 1000, 'Dividiste el volumen entre la densidad. La masa es volumen por densidad: m = ρ × V.'),
-      unidad === 'm3' ? h('AQ-cubo-sin-elevar', volumen * 1e2 * met.rho / 1000, 'Usaste 1 m = 100 cm sin elevar al cubo. En volumen, 1 m³ = (100 cm)³ = 10⁶ cm³.')
-        : h('AQ-litro-como-m3', volumen * 1e6 * met.rho / 1000, 'Tomaste el litro como si fuera un metro cúbico (10⁶ cm³). Un litro son 1000 cm³.'),
-      unidad === 'm3' ? h('AQ-m3-como-1000-cm3', volumen * 1e3 * met.rho / 1000, 'Tomaste 1 m³ = 1000 cm³ (eso es un litro). 1 m³ = (100 cm)³ = 10⁶ cm³.')
-        : h('AQ-litro-como-100-cm3', volumen * 100 * met.rho / 1000, 'Tomaste 1 L = 100 cm³. Un litro es un cubo de 10 cm de lado: 1000 cm³.'),
+      unidad === 'm3' ? h('QU2-cubo-sin-elevar', volumen * 1e2 * met.rho / 1000, 'Usaste 1 m = 100 cm sin elevar al cubo. En volumen, 1 m³ = (100 cm)³ = 10⁶ cm³.')
+        : h('QU2-litro-como-m3', volumen * 1e6 * met.rho / 1000, 'Tomaste el litro como si fuera un metro cúbico (10⁶ cm³). Un litro son 1000 cm³.'),
+      unidad === 'm3' ? h('QU2-m3-como-1000-cm3', volumen * 1e3 * met.rho / 1000, 'Tomaste 1 m³ = 1000 cm³ (eso es un litro). 1 m³ = (100 cm)³ = 10⁶ cm³.')
+        : h('QU2-litro-como-100-cm3', volumen * 100 * met.rho / 1000, 'Tomaste 1 L = 100 cm³. Un litro es un cubo de 10 cm de lado: 1000 cm³.'),
     ];
     const solucion = [
       [v('V', `${cient(volumen)} ${U}`), ' ', v('k', unidad === 'L' ? '× 1000' : '× 10⁶'), ` = ${f(r.cm3, 1)} cm³.`],
@@ -391,7 +391,7 @@
       { id: 'ES7', valor: 18 / masa * DH[fase], respaldo: 'parcial', fuente: FES,
         explicacion: 'Calculaste los moles al revés (masa molar ÷ masa). Los moles son masa ÷ masa molar: más agua, más moles.' },
     ];
-    if (litros) errores.splice(1, 0, h('AQ-litros-como-gramos', masa / 1000 / 18 * DH[fase], `Usaste los ${sub === 'vaporizar' ? 'litros' : 'kilogramos'} como si fueran gramos. Primero pasa a gramos: × 1000.`));
+    if (litros) errores.splice(1, 0, h('QU1-litros-como-gramos', masa / 1000 / 18 * DH[fase], `Usaste los ${sub === 'vaporizar' ? 'litros' : 'kilogramos'} como si fueran gramos. Primero pasa a gramos: × 1000.`));
     const solucion = [
       [v('m', dato), litros ? ` = ${masa} g` : (sub === 'vaporizar' ? ` = ${masa} g (1 g/mL)` : ''), '; ÷ 18 g/mol = ', v('n', `${f(r.n, 2)} mol`), '.'],
       ['Energía: ', v('n', `${f(r.n, 2)} mol`), ' × ', v('H', `${f(DH[fase])} kJ/mol`), ' = ', v('Q', `${f(correcta, 2)} kJ`), '.'],

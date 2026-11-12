@@ -14,6 +14,9 @@ const ESPERADAS = {
   'condensadores': ['U3-cm2', 'U2-mm'],
   'circuitos-joule': ['U6-min', 'U2-mA'],
   'calor-escalas': ['U8-sumar-273', 'U8-kelvin'],
+  // Química (las AQ- de unidades pasaron a QU, 12 nov 2026).
+  'conversiones-quimica': ['QU1-gramos-como-kg', 'QU2-litro-como-100-cm3', 'QU3-signo-273'],
+  'estequiometria-admision': ['QU2-ml-sin-pasar'],
 };
 module.exports = { ESPERADAS };
 
