@@ -1,6 +1,6 @@
 # Rutina unidades-notas (12 nov 2026)
 
-Rama `rutina/unidades-notas`, creada desde `claude/awesome-wozniak-5etl1n`. Tres decisiones de Gerson del 12 nov 2026. `npm test`: 7708 pruebas en verde. No se subió `VERSION` ni se tocó `app/datos/`.
+Rama `rutina/unidades-notas`, creada desde `claude/awesome-wozniak-5etl1n`. Tres decisiones de Gerson del 12 nov 2026. `npm test`: 7709 pruebas en verde. No se subió `VERSION` ni se tocó `app/datos/`.
 
 ## 1. Trampas de unidades y magnitudes en todos los cursos
 
