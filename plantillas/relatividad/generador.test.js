@@ -52,7 +52,7 @@ function recalcular(p) {
     if (d.sub === 'razon') return 0.5 * (d.beta * c) ** 2 / cineticaIntegral(1, d.beta);
     return biseccion(b => cineticaIntegral(1, b) - d.k * c * c, 1e-6, 0.999);
   }
-  if (d.tipo === 'incertidumbre') return d.sub === 'posicion' ? hbar / (2 * d.m * d.dv) : hbar / (2 * d.dx);
+  if (d.tipo === 'incertidumbre') return d.sub === 'posicion' ? hbar / (2 * d.m * d.v * d.pct / 100) : hbar / (2 * d.dx);
   const Kmax = (d.E - d.phi) * e; // en joules
   if (d.sub === 'potencial') return Kmax / e;
   return biseccion(Q => e * k * Q / d.r - Kmax, 0, 1e-6);
@@ -100,6 +100,31 @@ test('la pregunta no revela la respuesta y cada variable usada tiene color', () 
     const plano = p.pregunta.map(x => (typeof x === 'string' ? x : x.t)).join('');
     assert.ok(!plano.includes(p.respuesta.texto), `semilla ${s}`);
     for (const seg of [...p.enunciado, ...p.pregunta, ...p.solucion.flat()]) if (typeof seg !== 'string') assert.ok(p.variables[seg.v] && p.variables[seg.v].color, `semilla ${s}: ${seg.v} sin color`);
+  }
+});
+
+// Distractores no absurdos y tan «limpios» como la correcta: cada alternativa entre 1/20 y 20 veces la correcta (en la
+// hora, el intervalo desde el cruce) y la correcta no es la única con menos cifras en más del 35 % de los problemas.
+test('distractores entre 1/20 y 20 veces la correcta; la correcta no se reconoce por redonda', () => {
+  let masCorta = 0;
+  const cifras = t => (t.replace(/ × 10[⁻⁰¹²³⁴⁵⁶⁷⁸⁹]+/, '').match(/\d/g) || []).length;
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s), d = p._datos, alt = p.alternativas, c = alt.find(a => a.correcta);
+    const base = d.sub === 'hora' ? d.inicio : 0;
+    for (const a of alt) { const q = (a.valor - base) / (c.valor - base); assert.ok(q >= 1 / 20 && q <= 20, `semilla ${s}: ${a.texto} frente a ${c.texto}`); }
+    const k = cifras(c.texto);
+    if (alt.every(a => a.correcta || cifras(a.texto) > k)) masCorta++;
+  }
+  assert.ok(masCorta / 600 <= 0.35, `la correcta es la de menos cifras en ${masCorta} de 600`);
+});
+
+test('energia/razon: todas las alternativas en fracción; γ = 2 no sale en la cinética; «núcleo» solo con masa de núcleo', () => {
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s), d = p._datos;
+    if (d.sub === 'razon') for (const a of p.alternativas) assert.ok(/^\d+(\/\d+)?$/.test(a.texto), `semilla ${s}: ${a.texto}`);
+    if (d.sub === 'cinetica') assert.ok(Math.abs(d.beta - Math.sqrt(3) / 2) > 1e-9, `semilla ${s}: γ = 2`);
+    if (d.tipo === 'energia' && d.m !== undefined && p.enunciado[0].includes('núcleo')) assert.ok(d.m >= 1.67e-27, `semilla ${s}`);
+    if (d.sub === 'rapidez') assert.ok(Math.sqrt(1 - 1 / (d.gamma * d.gamma)) >= 0.6 - 1e-9, `semilla ${s}: muon lento`);
   }
 });
 

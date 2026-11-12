@@ -1201,7 +1201,7 @@ ir(0);
    MO.anguloLimite (motor.js); aquí solo se dibuja y se arrastra el rayo.
    Dos predicciones que bloquean: el rayo que sale del agua con 37° (opciones del informe, Fyttas y otros 2013:
    R5 sin desviarse, R3 se acerca a la normal y R4 no sale «porque el agua es más densa», 'parcial') y el mismo
-   rayo con 50°, más que el ángulo límite (R3 y R5 'parcial'; «siempre sale» es hipótesis nuestra). Mientras una
+   rayo con 50°, más que el ángulo límite (todas hipótesis: ángulos proporcionales, sale rozando, R5 y R3 fuera del estudio). Mientras una
    está pendiente, el rayo queda quieto, no se dibuja lo que pasa después de la superficie y las lecturas que darían
    la respuesta van con «?». Después se arrastra el rayo (o se usa el deslizador), se cambia el medio y el sentido.
    Los ángulos se miden siempre desde la normal (la raya vertical); el rayo reflejado se dibuja siempre, más tenue
@@ -1301,7 +1301,7 @@ function dibujar(){
       flechaRayo(O, Q, c.ink, 3, 0.25 + 0.75*R.T);
     }
   } else {
-    ctx.fillStyle = c.muted; ctx.font = `800 ${chico ? 26 : 30}px ${c.font}`; ctx.textAlign = 'center'; ctx.fillText('?', O.x + rho*0.45, O.y - rho*0.45);
+    ctx.fillStyle = c.muted; ctx.font = `800 ${chico ? 26 : 30}px ${c.font}`; ctx.textAlign = 'center'; ctx.fillText('?', O.x + rho*0.45, O.y + 4); // en la superficie, sin sugerir que el rayo sale ni que vuelve
   }
   flechaRayo(P, O, c.ink, 3, 1);
   // ángulos desde la normal
@@ -1393,30 +1393,32 @@ const PRED = [
     ok:'c',
     fb:{ a:'Sigue recto solo si llega perpendicular (i = 0°). Con 37° se desvía: al pasar a un medio de menor índice, se aleja de la normal.',
       b:'Es al revés: se acerca a la normal cuando entra a un medio de MAYOR índice. Al salir al aire, que tiene menor índice, se aleja.',
-      d:'Una parte se refleja, pero la mayor parte sale. Para que no salga nada, el ángulo tiene que pasar el ángulo límite, y 37° no lo pasa.' },
+      d:'Una parte se refleja, pero la mayor parte sale: con 37°, la ley de Snell da un ángulo de salida.' },
     exp:() => {
       const R = MO.snell(4/3, 1, 37);
       return `<div class="eqs"><div class="eq">${n_('n₁')} · sen ${i_('i')} = ${n_('n₂')} · sen ${r_('r')}<span class="note">los ángulos, desde la normal</span></div>
         <div class="eq">${n_('4/3')} · sen ${i_('37°')} = ${n_('1')} · sen ${r_('r')} → sen ${r_('r')} ≈ (4/3) · 0,6 = 0,8 → ${r_('r ≈ 53°')}</div></div>
         <p>El rayo sale y se aleja de la normal: ${r_('r')} es mayor que ${i_('i')}. Con calculadora, sen 37° = 0,602 y ${r_('r')} sale ${fmt(R.r, 1)}°; con sen 37° = 3/5 de los exámenes, 53°. El rayo tenue que vuelve al agua es la parte que se refleja: aquí, cerca del ${fmt(100*R.R, 0)} % de la luz.</p>
-        <p class="fuente">En un estudio con 213 escolares de 14 y 15 años que ya habían visto la ley de Snell (Fyttas y otros, 2013), más de la mitad dibujó este rayo sin desviarse (A), alrededor de uno de cada diez lo acercó a la normal (B) y más o menos uno de cada siete dijo que no sale «porque el agua es más densa» (D); solo uno de cada cinco lo dibujó bien. Son alumnos más jóvenes que un postulante, y las cifras salen del informe, por verificar.</p>`; } },
+        <p class="fuente">En un estudio con 213 escolares de 14 y 15 años que ya habían visto la ley de Snell (Fyttas y otros, 2013), más de la mitad dibujó un rayo parecido sin desviarse (A), alrededor de uno de cada diez lo acercó a la normal (B) y más o menos uno de cada siete dijo que no sale «porque el agua es más densa» (D); solo uno de cada cinco lo dibujó bien. Son alumnos más jóvenes que un postulante, y las cifras salen del informe, por verificar.</p>`; } },
   { id:'rayo-a-50', i:50, corto:'Del agua al aire, con 50°',
     q:() => `Ahora el mismo rayo llega desde el agua (${n_('n = 4/3')}) a la superficie con ${i_('i = 50°')}. ¿Qué pasa en la superficie?`,
-    opts:[['a', 'Sale al aire y se aleja todavía más de la normal, a unos 70°', 'R-siempre-sale', 'hipotesis'],
-          ['b', 'Sale al aire sin desviarse, a 50° de la normal', 'R5-no-se-desvia', 'parcial'],
-          ['c', 'No sale al aire: se refleja todo dentro del agua'],
-          ['d', 'Sale al aire y se acerca a la normal, a unos 35°', 'R3-desviacion-al-reves', 'parcial']],
+    opts:[['a', `Sale al aire a unos ${fmt(50*4/3, 0)}° de la normal`, 'R-angulos-proporcionales', 'hipotesis'],
+          ['b', 'Sale al aire rozando la superficie', 'R-limite-rozando', 'hipotesis'],
+          ['c', 'No sale al aire; toda la luz vuelve al agua'],
+          ['d', 'Sale al aire a 50° de la normal', 'R5-no-se-desvia', 'hipotesis'],
+          ['e', `Sale al aire a unos ${fmt(MO.snell(4/3, 1, 50).errores.alReves.r, 0)}° de la normal`, 'R3-desviacion-al-reves', 'hipotesis']],
     ok:'c',
-    fb:{ a:'Con la ley de Snell, sen r = (4/3) · sen 50° ≈ 1,02, y ningún ángulo tiene seno mayor que 1: no hay rayo que salga.',
-      b:'Para salir sin desviarse tendría que llegar perpendicular. Y con 50° ya no sale: se pasa del ángulo límite.',
-      d:'Ese resultado sale de poner los índices al revés. Con los índices en su sitio, sen r sería mayor que 1: no sale.' },
+    fb:{ a:`Multiplicaste el ángulo por 4/3 (50° · 4/3 ≈ ${fmt(50*4/3, 0)}°). La ley de Snell va con los senos: sen r = (4/3) · sen 50° ≈ 1,02, y ningún ángulo tiene seno mayor que 1.`,
+      b:'Sale rozando solo justo en el ángulo límite, cerca de 49°. Con 50° ya se pasó: sen r valdría más que 1.',
+      d:'Para salir sin desviarse tendría que llegar perpendicular. Y con 50° ya no sale: se pasa del ángulo límite.',
+      e:'Ese resultado sale de poner los índices al revés. Con los índices en su sitio, sen r sería mayor que 1: no sale.' },
     exp:() => {
       const R = MO.snell(4/3, 1, 50), Lm = MO.anguloLimite(4/3, 1);
       return `<div class="eqs"><div class="eq">sen ${r_('r')} = ${n_('4/3')} · sen ${i_('50°')} ≈ ${fmt(R.senR, 2)}<span class="note">mayor que 1: no hay ángulo r</span></div>
         <div class="eq">ángulo límite: ${n_('4/3')} · sen L = ${n_('1')} · sen 90° → sen L = 3/4 → L ≈ ${fmt(Lm.L, 1)}°</div></div>
         <p>Al crecer ${i_('i')}, el rayo que sale se acerca a la superficie; en el ángulo límite sale rozándola (${r_('r')} = 90°). Más allá ya no sale: toda la luz se refleja dentro del agua. Es la reflexión total, el final de la refracción, no una regla aparte. Solo pasa al ir hacia un medio de menor índice.</p>
         <p class="hint">Arrastra el rayo (o usa el deslizador), cambia el medio y el sentido. Mira los dos segmentos de color: el de ${i_('i')} por ${n_('n₁')} da lo mismo que el de ${r_('r')} por ${n_('n₂')}.</p>
-        <p class="fuente">«Siempre sale, cada vez más inclinado» (A) es hipótesis nuestra; B y D son las mismas ideas del estudio de Fyttas y otros (2013), que no midió la reflexión total.</p>`; } },
+        <p class="fuente">Todas las opciones incorrectas de esta pregunta son hipótesis nuestras: D y E repiten ideas del estudio de Fyttas y otros (2013), pero ese estudio no midió la reflexión total.</p>`; } },
 ];
 
 function pintarPred(P, k){

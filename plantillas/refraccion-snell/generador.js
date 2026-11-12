@@ -21,8 +21,11 @@
  *
  * Convenciones: ángulos en grados, medidos desde la normal salvo que se diga otra cosa;
  * sen 37° = 3/5 y sen 53° = 4/5; c = 3 × 10⁸ m/s.
- * Errores: R1 a R5 (parcial: un solo estudio, Fyttas y otros 2013, en
- * docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md); ON2 (parcial,
+ * Forma: casi un tercio de los ángulos correctos son arcsen(p/q), el rayo justo en L sale rozando, y si la correcta es
+ * notable va con a lo más una alternativa en arcsen (la forma no delata la respuesta). Los índices reales llevan
+ * nombre de material (aire 1, agua 4/3, vidrio o acrílico 3/2, vidrio √2, vidrio denso 8/5); los demás, «medio 1/2».
+ * Errores: R1 a R5 (parcial solo con aire de un lado, como en el único estudio, Fyttas y otros 2013, en
+ * docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md; entre otros medios, hipótesis); ON2 (hipótesis,
  * docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md); OE12 (hipótesis,
  * docs/investigacion/ondas-electromagneticas-ideas-erroneas.md); ángulo desde la superficie, índices
  * al revés y n tomado como v/c, de la trampa 17 de docs/clasificacion/trampas-admision-unmsm/fisica.md
@@ -83,13 +86,18 @@
   const kN = x => 'n:' + x.toFixed(8);
   const kX = x => 'x:' + x.toFixed(8);
   const nTxt = n => exacto(n, 12) || f(n);
-  // Índices con que se arman los problemas (1 es el aire, 4/3 el agua).
+  // Índices con que se arman los problemas. Los que corresponden a un material real llevan su nombre
+  // (aire 1, agua 4/3, vidrio o acrílico 3/2, vidrio √2, vidrio denso 8/5); los demás son «el medio 1» o «el medio 2».
   const INDICES = [1, 4 / 3, 3 / 2, 5 / 3, 5 / 4, 6 / 5, 8 / 5, Math.SQRT2, Math.sqrt(3), 2];
-  const OTROS = ['un vidrio', 'un cristal', 'un plástico transparente', 'un acrílico'];
+  const REALES = [[1, ['el aire']], [4 / 3, ['el agua']], [3 / 2, ['un vidrio', 'un acrílico']], [Math.SQRT2, ['un vidrio']], [8 / 5, ['un vidrio denso']]];
+  const real = n => { const x = REALES.find(([m]) => cerca(m, n)); return x ? x[1] : null; };
   function nombres(rng, ns) {
-    const pool = rng.barajar(OTROS);
-    let k = 0;
-    return ns.map(n => (cerca(n, 1) ? 'el aire' : cerca(n, 4 / 3) ? 'el agua' : pool[k++]));
+    const usados = new Set();
+    return ns.map((n, k) => {
+      const op = (real(n) || []).filter(o => !usados.has(o));
+      const nom = op.length ? rng.elegir(op) : `el medio ${k + 1}`;
+      usados.add(nom); return nom;
+    });
   }
   const conIndice = (nombre, n) => (nombre === 'el aire' ? 'el aire' : `${nombre} (n = ${nTxt(n)})`);
   const de = o => o.replace(/^el /, 'del ').replace(/^un /, 'de un ');
@@ -99,21 +107,37 @@
   // «al aire (n = 1)», «a un vidrio (n = 3/2)».
   const hacia = (nombre, n) => `${a_(nombre)} (n = ${nTxt(n)})`;
   const dela = (nombre, n) => `${de(nombre)} (n = ${nTxt(n)})`;
+  const senTxt = s => exacto(s, 30) || f(s);
 
-  // Todas las combinaciones (n₁, n₂, i) con un ángulo de refracción notable.
-  const SNELL = [];
+  // Combinaciones (n₁, n₂, i) con i notable y un ángulo de refracción de seno exacto: notable (37°) o arcsen(p/q).
+  const SNELL_N = [], SNELL_A = [];
   for (const n1 of INDICES) for (const n2 of INDICES) {
     if (n1 === n2) continue;
-    for (const i of NOTABLES) { const r = notable(n1 * SEN[i] / n2); if (r && r !== 90 && r !== i) SNELL.push({ n1, n2, i, r }); }
+    for (const i of NOTABLES) {
+      const s = n1 * SEN[i] / n2;
+      if (s >= 1 - 1e-9 || cerca(s, SEN[i])) continue;
+      const r = notable(s);
+      if (r) SNELL_N.push({ n1, n2, i, s, r });
+      else if (exacto(s, 30)) SNELL_A.push({ n1, n2, i, s, r: null });
+    }
   }
+  // Casi un tercio de las veces la correcta es un arcsen; así la forma no delata la respuesta.
+  function elegirSnell(rng, filtro) {
+    const a = SNELL_A.filter(filtro), n = SNELL_N.filter(filtro);
+    return rng.sig() < 0.3 && a.length ? rng.elegir(a) : rng.elegir(n.length ? n : a);
+  }
+  const SNELL = SNELL_N; // compatibilidad: el índice y el primer ensayo usan solo ángulos notables
 
   function cerrar(rng, semilla, o) {
     // Se descartan los errores sin texto y los que se escribirían igual que otra opción con otra clave.
+    // Si la correcta no es un arcsen, a lo más una alternativa lo es (la forma no debe delatar a la correcta).
     const textos = new Map([[o.correcta.texto, o.correcta.clave]]);
     const errores = [];
+    let arcsen = /arcsen/.test(o.correcta.texto) ? -Infinity : 0;
     for (const e of o.errores) {
       if (!e || !e.clave || !e.texto) continue;
       if (textos.has(e.texto) && textos.get(e.texto) !== e.clave) continue;
+      if (/arcsen/.test(e.texto)) { if (arcsen >= 1) continue; arcsen++; }
       textos.set(e.texto, e.clave);
       errores.push(e);
     }
@@ -151,78 +175,84 @@
     i: { nombre: 'ángulo de incidencia', color: 'i' },
     x: { nombre: 'lo que se pide', color: 'd' },
   };
-  const TOTAL = { clave: 'total', texto: 'No pasa al otro medio: se refleja todo (reflexión total)' };
-  const REFLEJA = { clave: 'refleja', texto: 'No entra: rebota en la superficie' };
+  // Sin dos puntos en las opciones: «X: y» cuenta como justificación (herramientas/alternativas.js).
+  const TOTAL = { clave: 'total', texto: 'No pasa al otro medio (reflexión total)' };
+  const REFLEJA = { clave: 'refleja', texto: 'No entra al otro medio, rebota en la superficie' };
+  const ROZA = { clave: kS(1), texto: 'Sale rozando la superficie (90° de la normal)' };
   const snellSeg = (n1, i, n2, r) => [v('n1', n1), ' · sen ', v('i', i), ' = ', v('n2', n2), ' · sen ', v('x', r)];
+  // Respaldo de los errores de Fyttas y otros (2013): «parcial» solo en la situación que midieron (con aire de un lado).
+  const R_ = (id, conAire, clave, texto, explicacion) => (conAire ? pa : h)(id, clave, texto, explicacion, EM);
 
   // Errores comunes cuando se pide el ángulo de refracción (n₁ sen i = n₂ sen r).
-  function erroresAngulo(n1, n2, i, sr, prefijo = '') {
-    const entra = n1 < n2;
-    const r = notable(sr);
+  // t: cómo se escribe un ángulo dado por su seno (por defecto «37°» o «arcsen(9/20)»).
+  function erroresAngulo(n1, n2, i, sr, t = angTxt) {
+    const entra = n1 < n2, aire = cerca(n1, 1) || cerca(n2, 1);
     const inv = n2 * SEN[i] / n1;
-    const t = s => { const a = angTxt(s); return a ? prefijo + a : null; };
+    const cr = Math.sqrt(Math.max(0, 1 - sr * sr)), r = notable(sr);
     const lista = [
       entra
-        ? pa('R1-no-se-desvia', kS(SEN[i]), t(SEN[i]), `Supusiste que el rayo sigue recto. Al pasar oblicuo a un medio de mayor índice, el rayo se acerca a la normal: el ángulo de refracción es menor que ${i}°.`)
-        : pa('R5-no-se-desvia', kS(SEN[i]), t(SEN[i]), `Supusiste que el rayo sale sin desviarse. Al pasar a un medio de menor índice, el rayo se aleja de la normal: el ángulo de refracción es mayor que ${i}°.`),
+        ? R_('R1-no-se-desvia', cerca(n1, 1), kS(SEN[i]), t(SEN[i]), `Supusiste que el rayo sigue recto. Al pasar oblicuo a un medio de mayor índice, el rayo se acerca a la normal: el ángulo de refracción es menor que ${i}°.`)
+        : R_('R5-no-se-desvia', cerca(n2, 1), kS(SEN[i]), t(SEN[i]), `Supusiste que el rayo sale sin desviarse. Al pasar a un medio de menor índice, el rayo se aleja de la normal: el ángulo de refracción es mayor que ${i}°.`),
       cerca(inv, 1) ? null : inv > 1
-        ? pa('R3-indices-invertidos', TOTAL.clave, TOTAL.texto, `Pusiste los índices al revés: n₂·sen i = n₁·sen r. Con eso el seno sale mayor que 1 y parece que no hay rayo refractado. En la ley de Snell, cada índice va con el ángulo de su propio medio: n₁·sen i = n₂·sen r.`)
-        : pa('R3-indices-invertidos', kS(inv), t(inv), `Pusiste los índices al revés, cada uno con el ángulo del otro medio. Así el rayo ${entra ? 'se aleja' : 'se acerca'} de la normal, justo lo contrario de lo que pasa ${entra ? 'al entrar a un medio de mayor índice' : 'al salir a uno de menor índice'}.`),
+        ? R_('R3-indices-invertidos', aire, TOTAL.clave, TOTAL.texto, `Pusiste los índices al revés: n₂·sen i = n₁·sen r. Con eso el seno sale mayor que 1 y parece que no hay rayo refractado. En la ley de Snell, cada índice va con el ángulo de su propio medio: n₁·sen i = n₂·sen r.`)
+        : R_('R3-indices-invertidos', aire, kS(inv), t(inv), `Pusiste los índices al revés, cada uno con el ángulo del otro medio. Así el rayo ${entra ? 'se aleja' : 'se acerca'} de la normal, justo lo contrario de lo que pasa ${entra ? 'al entrar a un medio de mayor índice' : 'al salir a uno de menor índice'}.`),
     ];
-    if (r && r !== 45) lista.push(h('R-desde-superficie', kS(COS(r)), t(COS(r)), `Diste el ángulo entre el rayo refractado y la superficie (${90 - r}°). En la ley de Snell los ángulos se miden desde la normal: el rayo forma ${r}° con la normal.`));
+    if (r !== 45 && cr > 1e-9) lista.push(h('R-desde-superficie', kS(cr), t(cr), `Diste el ángulo entre el rayo refractado y la superficie, el complemento de r. En la ley de Snell los ángulos se miden desde la normal: sen r = ${senTxt(sr)}.`));
     lista.push(entra
-      ? pa('R2-no-entra', REFLEJA.clave, REFLEJA.texto, 'Pensaste que la luz no entra a un medio más denso y rebota. Una parte se refleja, pero la mayor parte entra y se refracta.')
-      : pa('R4-no-sale', TOTAL.clave, TOTAL.texto, `Pensaste que el rayo no sale porque el medio de donde viene es más denso. Solo hay reflexión total si el ángulo de incidencia supera el ángulo límite; con ${i}° el rayo sale.`));
+      ? R_('R2-no-entra', cerca(n1, 1), REFLEJA.clave, REFLEJA.texto, 'Pensaste que la luz no entra a un medio más denso y rebota. Una parte se refleja, pero la mayor parte entra y se refracta.')
+      : R_('R4-no-sale', cerca(n2, 1), TOTAL.clave, TOTAL.texto, `Pensaste que el rayo no pasa porque el medio de donde viene tiene mayor índice. Solo hay reflexión total si el ángulo de incidencia supera el ángulo límite; con ${i}° el rayo pasa.`));
+    // Un índice olvidado (tomado como 1, como si ese medio fuera aire).
+    if (!cerca(n1, 1)) { const q = SEN[i] / n2; if (q < 1 - 1e-9) lista.push(h('R-olvida-n1', kS(q), t(q), `Tomaste el índice del medio de donde viene el rayo como 1, como si fuera aire. Ese medio tiene n = ${nTxt(n1)}, y va multiplicando a sen i.`)); }
+    if (!cerca(n2, 1)) { const q = n1 * SEN[i]; if (q < 1 - 1e-9) lista.push(h('R-olvida-n2', kS(q), t(q), `Tomaste el índice del medio al que pasa el rayo como 1, como si fuera aire. Ese medio tiene n = ${nTxt(n2)}, y va multiplicando a sen r.`)); }
     return lista;
   }
+  // Paso final de la solución: sen r y el ángulo, notable o arcsen.
+  const finSnell = (sr, acerca) => [`${senTxt(sr)}, así que `, v('x', `r = ${angTxt(sr)}`), acerca ? ': el rayo se acerca a la normal.' : ': el rayo se aleja de la normal.'];
 
   // ---- angulo: n₁ sen i = n₂ sen r ----
   function angulo(rng, semilla, sub) {
-    const pool = SNELL.filter(c => (sub === 'entra' ? c.n1 < c.n2 : sub === 'sale' ? c.n1 > c.n2 : c.i !== 45));
-    const { n1, n2, i, r } = rng.elegir(pool);
+    const { n1, n2, i, s: sr } = elegirSnell(rng, c => (sub === 'entra' ? c.n1 < c.n2 : sub === 'sale' ? c.n1 > c.n2 : c.i !== 45));
     const [m1, m2] = nombres(rng, [n1, n2]);
-    const sr = SEN[r];
     const datoAng = sub === 'superficie'
       ? ['El rayo incidente forma ', v('i', `${90 - i}°`), ' con la superficie de separación']
       : ['El rayo incide con ', v('i', `${i}°`), ' respecto a la normal a la superficie'];
-    const enunciado = ['Un rayo de luz viaja por ', v('n1', conIndice(m1, n1)), ' y pasa ', v('n2', hacia(m2, n2)), '. ', ...datoAng, '.'];
+    const enunciado = ['Un rayo de luz viaja por ', v('n1', conIndice(m1, n1)), ' y pasa ', v('n2', hacia(def(m2), n2)), '. ', ...datoAng, '.'];
     const pregunta = ['¿Qué ', v('x', 'ángulo forma el rayo refractado con la normal'), '?'];
     const errores = erroresAngulo(n1, n2, i, sr);
     if (sub === 'superficie') {
       const s2 = n1 * SEN[90 - i] / n2;
       errores.unshift(s2 > 1 + 1e-9
-        ? h('R-desde-superficie', TOTAL.clave, TOTAL.texto, `Usaste ${90 - i}° como ángulo de incidencia, pero ese ángulo se mide desde la superficie. Desde la normal, la incidencia es 90° − ${90 - i}° = ${i}°.`)
-        : h('R-desde-superficie', kS(s2), angTxt(s2), `Usaste ${90 - i}° como ángulo de incidencia, pero ese ángulo se mide desde la superficie. Desde la normal, la incidencia es 90° − ${90 - i}° = ${i}°.`));
+        ? h('R-desde-superficie-incidencia', TOTAL.clave, TOTAL.texto, `Usaste ${90 - i}° como ángulo de incidencia, pero ese ángulo se mide desde la superficie. Desde la normal, la incidencia es 90° − ${90 - i}° = ${i}°.`)
+        : h('R-desde-superficie-incidencia', kS(s2), angTxt(s2), `Usaste ${90 - i}° como ángulo de incidencia, pero ese ángulo se mide desde la superficie. Desde la normal, la incidencia es 90° − ${90 - i}° = ${i}°.`));
     }
     const solucion = [];
     if (sub === 'superficie') solucion.push(['Los ángulos se miden desde la normal: ', v('i', `i = 90° − ${90 - i}° = ${i}°`), '.']);
     solucion.push(['Ley de Snell: ', ...snellSeg('n₁', 'i', 'n₂', 'r'), '.']);
-    solucion.push(['sen ', v('x', 'r'), ' = ', v('n1', nTxt(n1)), ` · sen ${i}° / `, v('n2', pn(n2)), ` = ${nTxt(n1)} · ${SEN_TXT[i]} / ${pn(n2)} = ${SEN_TXT[r]}, así que `, v('x', `r = ${r}°`),
-      n1 < n2 ? ': el rayo se acerca a la normal.' : ': el rayo se aleja de la normal.']);
-    return cerrar(rng, semilla, { correcta: { clave: kS(sr), texto: `${r}°` }, errores, variables: VAR, enunciado, pregunta, solucion,
+    solucion.push(['sen ', v('x', 'r'), ' = ', v('n1', nTxt(n1)), ` · sen ${i}° / `, v('n2', pn(n2)), ` = ${nTxt(n1)} · ${SEN_TXT[i]} / ${pn(n2)} = `, ...finSnell(sr, n1 < n2)]);
+    return cerrar(rng, semilla, { correcta: { clave: kS(sr), texto: angTxt(sr) }, errores, variables: VAR, enunciado, pregunta, solucion,
       datos: { tipo: 'angulo', sub, n1, n2, i } });
   }
 
   // ---- indice: el transportador ----
   function indice(rng, semilla, sub) {
-    const pool = SNELL.filter(c => c.n1 === 1);
-    const { n2, i, r } = rng.elegir(pool);
-    const [, m2] = nombres(rng, [1, n2]);
-    const vidrio = m2.replace(/^el /, '').replace(/^un /, '');
     const sup = sub === 'superficie';
+    const { n2, i, r } = rng.elegir(SNELL.filter(c => c.n1 === 1 && (!sup || (c.i !== 45 && c.r !== 45))));
+    const nom = real(n2), agua = cerca(n2, 4 / 3);
+    const cosa = agua ? 'el agua' : nom ? rng.elegir(nom).replace(/^un /, 'el ') : 'el material';
+    const donde = agua ? 'al agua de un estanque' : nom ? `a un bloque de ${cosa.replace(/^el /, '')}` : 'a un bloque de un material transparente';
     const a1 = sup ? 90 - i : i, a2 = sup ? 90 - r : r;
-    const enunciado = [`En el laboratorio, un rayo de luz pasa del aire a un bloque de ${vidrio}. Con un transportador se mide que el rayo incidente forma `, v('i', `${a1}°`),
-      ` y el rayo refractado forma `, v('x', `${a2}°`), sup ? ` con la superficie del bloque.` : ' con la normal a la superficie.'];
-    const pregunta = ['¿Cuál es el ', v('n2', `índice de refracción del ${vidrio}`), '?'];
+    const enunciado = [`En el laboratorio, un rayo de luz pasa del aire ${donde}. Con un transportador se mide que el rayo incidente forma `, v('i', `${a1}°`),
+      ` y el rayo refractado forma `, v('x', `${a2}°`), sup ? (agua ? ' con la superficie del agua.' : ' con la superficie del bloque.') : ' con la normal a la superficie.'];
+    const pregunta = ['¿Cuál es el ', v('n2', `índice de refracción ${de(cosa)}`), '?'];
     const correcta = SEN[i] / SEN[r];
-    const T = x => nTxt(x);
+    const T = x => exacto(x, 12) || exacto(x, 60) || f(x);
     const errores = [
-      h('R-razon-invertida', kN(1 / correcta), T(1 / correcta), `Dividiste al revés. Del aire (n = 1) al ${vidrio}: 1 · sen i = n · sen r, así que n = sen i / sen r. Un índice menor que 1 no puede ser: la luz no va más rápido que en el vacío.`),
-      h('R-angulos-proporcionales', kN(a1 / a2), T(a1 / a2), `Dividiste los ángulos. La ley de Snell relaciona los senos de los ángulos, no los ángulos: n = sen i / sen r.`),
+      h('R-razon-invertida', kN(1 / correcta), T(1 / correcta), `Dividiste al revés. Del aire (n = 1) ${a_(cosa)}: 1 · sen i = n · sen r, así que n = sen i / sen r. Un índice menor que 1 no puede ser: la luz no va más rápido que en el vacío.`),
+      h('R-angulos-proporcionales', kN(a1 / a2), T(a1 / a2), `Dividiste los ángulos (${a1}/${a2}). La ley de Snell relaciona los senos de los ángulos, no los ángulos: n = sen i / sen r.`),
     ];
     if (sup) {
-      errores.unshift(h('R-desde-superficie', kN(SEN[a1] / SEN[a2]), T(SEN[a1] / SEN[a2]), `Usaste los ángulos medidos desde la superficie. En la ley de Snell se miden desde la normal: i = 90° − ${a1}° = ${i}° y r = 90° − ${a2}° = ${r}°.`));
-      errores.push(h('R-desde-superficie', kN(SEN[a2] / SEN[a1]), T(SEN[a2] / SEN[a1]), `Usaste los ángulos medidos desde la superficie, que es como invertir el cociente. Hay que pasarlos a la normal: i = ${i}° y r = ${r}°.`));
+      errores.unshift(h('R-desde-superficie', kN(SEN[a1] / SEN[a2]), T(SEN[a1] / SEN[a2]), `Usaste los ángulos medidos desde la superficie: sen ${a1}° / sen ${a2}°. En la ley de Snell se miden desde la normal: i = 90° − ${a1}° = ${i}° y r = 90° − ${a2}° = ${r}°.`));
+      errores.push(h('R-desde-superficie-y-al-reves', kN(SEN[a2] / SEN[a1]), T(SEN[a2] / SEN[a1]), `Usaste los ángulos medidos desde la superficie y además dividiste al revés: sen ${a2}° / sen ${a1}°. Desde la normal, i = ${i}° y r = ${r}°, y n = sen i / sen r.`));
     } else {
       errores.push(h('R-desde-superficie', kN(COS(i) / COS(r)), T(COS(i) / COS(r)), `Usaste los complementos de los ángulos (${90 - i}° y ${90 - r}°), los que se miden desde la superficie. Los datos ya están medidos desde la normal.`));
     }
@@ -237,20 +267,21 @@
 
   // ---- ensayos: hallar el índice del sólido y usarlo en un segundo medio ----
   function ensayos(rng, semilla) {
-    const primero = rng.elegir(SNELL.filter(c => c.n1 === 1));
+    const primero = rng.elegir(SNELL.filter(c => c.n1 === 1 && !cerca(c.n2, 4 / 3))); // el sólido no es agua
     const ns = primero.n2;
     const desde = rng.moneda(); // true: del sólido al segundo medio; false: del segundo medio al sólido
-    const pool = SNELL.filter(c => (desde ? cerca(c.n1, ns) && !cerca(c.n2, 1) : cerca(c.n2, ns) && !cerca(c.n1, 1)));
-    if (!pool.length) return null;
-    const seg = rng.elegir(pool);
+    const filtro = c => (desde ? cerca(c.n1, ns) && !cerca(c.n2, 1) : cerca(c.n2, ns) && !cerca(c.n1, 1));
+    if (!SNELL_N.some(filtro) && !SNELL_A.some(filtro)) return null;
+    const seg = elegirSnell(rng, filtro);
     const nm = desde ? seg.n2 : seg.n1;
-    const [, solido, medio] = nombres(rng, [1, ns, nm]);
-    const S = solido.replace(/^el /, '').replace(/^un /, '');
+    const nomS = real(ns), S = nomS ? rng.elegir(nomS).replace(/^un /, '') : 'material transparente';
+    const opM = (real(nm) || []).filter(x => !x.endsWith(S)), medio = opM.length ? rng.elegir(opM) : 'otro medio';
+    const medioDef = medio === 'otro medio' ? 'otro medio' : def(medio);
     const enunciado = [`Primer ensayo: un rayo pasa del aire a un bloque de ${S}; incide con `, v('i', `${primero.i}°`), ' y se refracta con ', `${primero.r}°`, ', ambos medidos desde la normal. ',
-      `Segundo ensayo: un rayo viaja por `, desde ? v('n1', `el ${S}`) : v('n1', conIndice(medio, nm)), ' y pasa ', desde ? v('n2', hacia(medio, nm)) : v('n2', `al ${S}`),
+      `Segundo ensayo: un rayo viaja por `, desde ? v('n1', `el ${S}`) : v('n1', `${medioDef} (n = ${nTxt(nm)})`), ' y pasa ', desde ? v('n2', `${medio === 'otro medio' ? 'a otro medio' : a_(medioDef)} (n = ${nTxt(nm)})`) : v('n2', `al ${S}`),
       ' con un ángulo de incidencia de ', v('i', `${seg.i}°`), '.'];
     const pregunta = ['En el segundo ensayo, ¿qué ', v('x', 'ángulo forma el rayo refractado con la normal'), '?'];
-    const n1 = seg.n1, n2 = seg.n2, sr = SEN[seg.r];
+    const n1 = seg.n1, n2 = seg.n2, sr = seg.s;
     const nsMal = SEN[primero.r] / SEN[primero.i];
     const sMal = desde ? nsMal * SEN[seg.i] / n2 : n1 * SEN[seg.i] / nsMal;
     const errores = [
@@ -259,43 +290,42 @@
         : h('R-indices-invertidos-ensayo', kS(sMal), angTxt(sMal), `En el primer ensayo dividiste al revés: el ${S} quedó con n = ${nTxt(nsMal)}, menor que 1. Del aire al ${S}: n = sen ${primero.i}° / sen ${primero.r}° = ${nTxt(ns)}.`),
       ...erroresAngulo(n1, n2, seg.i, sr),
     ];
-    if (seg.i !== primero.r && seg.r !== primero.r) errores.push(h('R-copia-primer-ensayo', kS(SEN[primero.r]), `${primero.r}°`, `Copiaste el ángulo de refracción del primer ensayo. El segundo ensayo es otro par de medios: hay que usar el índice del ${S} con la ley de Snell.`));
+    if (seg.i !== primero.r && !cerca(sr, SEN[primero.r])) errores.push(h('R-copia-primer-ensayo', kS(SEN[primero.r]), `${primero.r}°`, `Copiaste el ángulo de refracción del primer ensayo. El segundo ensayo es otro par de medios: hay que usar el índice del ${S} con la ley de Snell.`));
     const solucion = [
       [`Primer ensayo, del aire al ${S}: 1 · sen ${primero.i}° = n · sen ${primero.r}°, así que `, v(desde ? 'n1' : 'n2', `n = (${SEN_TXT[primero.i]}) / (${SEN_TXT[primero.r]}) = ${nTxt(ns)}`), '.'],
       ['Segundo ensayo: ', ...snellSeg(nTxt(n1), `${seg.i}°`, nTxt(n2), 'r'), '.'],
-      ['sen ', v('x', 'r'), ` = ${nTxt(n1)} · ${SEN_TXT[seg.i]} / ${pn(n2)} = ${SEN_TXT[seg.r]}, así que `, v('x', `r = ${seg.r}°`), '.'],
+      ['sen ', v('x', 'r'), ` = ${nTxt(n1)} · ${SEN_TXT[seg.i]} / ${pn(n2)} = `, ...finSnell(sr, n1 < n2)],
     ];
-    return cerrar(rng, semilla, { correcta: { clave: kS(sr), texto: `${seg.r}°` }, errores, variables: VAR, enunciado, pregunta, solucion,
+    return cerrar(rng, semilla, { correcta: { clave: kS(sr), texto: angTxt(sr) }, errores, variables: VAR, enunciado, pregunta, solucion,
       datos: { tipo: 'ensayos', i1: primero.i, r1: primero.r, n1, n2, i: seg.i, desde } });
   }
 
   // ---- rapidez/angulo: con las rapideces de la luz en los dos medios ----
   const VEL = INDICES.filter(n => Math.abs(3 / n * 100 - Math.round(3 / n * 100)) < 1e-6); // rapideces con dos decimales a lo más
   function rapidezAngulo(rng, semilla) {
-    const pool = SNELL.filter(c => VEL.includes(c.n1) && VEL.includes(c.n2));
-    const { n1, n2, i, r } = rng.elegir(pool);
+    const { n1, n2, i, s: sr } = elegirSnell(rng, c => VEL.includes(c.n1) && VEL.includes(c.n2));
     const v1 = 3 / n1, v2 = 3 / n2;
     const [m1, m2] = nombres(rng, [n1, n2]);
     const enunciado = ['La luz viaja a ', v('n1', `${f(v1)} × 10⁸ m/s`), ` en ${m1} y a `, v('n2', `${f(v2)} × 10⁸ m/s`), ` en ${m2}. Un rayo pasa ${de(def(m1))} ${a_(def(m2))} con un ángulo de incidencia de `, v('i', `${i}°`), '.'];
     const pregunta = ['¿Qué ', v('x', 'ángulo forma el rayo refractado con la normal'), '?'];
-    const sr = SEN[r], mal = SEN[i] * v1 / v2;
+    const mal = SEN[i] * v1 / v2;
     const errores = [
       mal > 1 + 1e-9
         ? h('R-n-como-v-sobre-c', TOTAL.clave, TOTAL.texto, `Tomaste el índice como si creciera con la rapidez (n = v/c). Es al revés: n = c/v, el medio donde la luz va más lento tiene el índice mayor. Así, sen i / sen r = v₁/v₂.`)
         : h('R-n-como-v-sobre-c', kS(mal), angTxt(mal), `Tomaste el índice como si creciera con la rapidez (n = v/c). Es al revés: n = c/v, el medio donde la luz va más lento tiene el índice mayor. Así, sen i / sen r = v₁/v₂.`),
-      ...erroresAngulo(n1, n2, i, sr).filter(e => e.id !== 'R3-indices-invertidos'),
+      ...erroresAngulo(n1, n2, i, sr).filter(e => e && e.id !== 'R3-indices-invertidos'),
     ];
     const solucion = [
       ['Con n = c/v: ', v('n1', `n₁ = 3/${f(v1)} = ${nTxt(n1)}`), ' y ', v('n2', `n₂ = 3/${f(v2)} = ${nTxt(n2)}`), '. Equivale a sen i / sen r = v₁/v₂.'],
-      ['sen ', v('x', 'r'), ' = sen ', v('i', `${i}°`), ' · ', v('n2', f(v2)), ' / ', v('n1', f(v1)), ` = ${SEN_TXT[i]} · ${f(v2)} / ${f(v1)} = ${SEN_TXT[r]}, así que `, v('x', `r = ${r}°`), '.'],
+      ['sen ', v('x', 'r'), ' = sen ', v('i', `${i}°`), ' · ', v('n2', f(v2)), ' / ', v('n1', f(v1)), ` = ${SEN_TXT[i]} · ${f(v2)} / ${f(v1)} = `, ...finSnell(sr, n1 < n2)],
     ];
-    return cerrar(rng, semilla, { correcta: { clave: kS(sr), texto: `${r}°` }, errores, variables: VAR, enunciado, pregunta, solucion,
+    return cerrar(rng, semilla, { correcta: { clave: kS(sr), texto: angTxt(sr) }, errores, variables: VAR, enunciado, pregunta, solucion,
       datos: { tipo: 'rapidez', sub: 'angulo', v1, v2, i } });
   }
 
   // ---- rapidez/lambda: la frecuencia no cambia al cambiar de medio ----
   function lambda(rng, semilla) {
-    const n = rng.elegir([4 / 3, 3 / 2, 5 / 4, 6 / 5, 8 / 5]);
+    const n = rng.elegir([4 / 3, 3 / 2, 8 / 5]); // agua, vidrio y vidrio denso
     const fr = rng.elegir([4, 4.8, 5, 6, 6.25, 7.5]); // en 10¹⁴ Hz
     const l0 = Math.round(3e17 / (fr * 1e14)); // en nm: c = λ·f
     const lm = l0 / n;
@@ -310,7 +340,7 @@
     const errores = [
       h('OE12-cambia-f', `f=${f(1 / n)};l=${f(l0)}`, txt(menor, l0), `Supusiste que al cambiar de medio cambia la frecuencia y la longitud de onda se queda. Es al revés: la frecuencia la pone la fuente y no cambia; lo que cambia es la rapidez (v = c/n), y con ella λ = v/f.`, OEM),
       h('PR4-lambda-por-n', `f=1;l=${f(l0 * n)}`, txt(igual, l0 * n), `Multiplicaste por el índice. En un medio de mayor índice la luz va más lento: v = c/n y λ = λ₀/n, más corta.`, 'docs/investigacion/fisica-calculo-transversal-ideas-erroneas.md'),
-      pa('ON2-cambian-las-dos', `f=${f(1 / n)};l=${f(lm)}`, txt(menor, lm), `Bajaste la frecuencia y también la longitud de onda. Con v = λ·f, si las dos bajaran entre n, la rapidez bajaría entre n². La frecuencia no cambia: solo λ y v bajan entre n.`, ONDAS),
+      h('ON2-cambian-las-dos', `f=${f(1 / n)};l=${f(lm)}`, txt(menor, lm), `Bajaste la frecuencia y también la longitud de onda. Con v = λ·f, si las dos bajaran entre n, la rapidez bajaría entre n². La frecuencia no cambia: solo λ y v bajan entre n.`, ONDAS),
       h('OE12-nada-cambia', `f=1;l=${f(l0)}`, txt(igual, l0), `Dejaste λ igual. La frecuencia no cambia, pero la rapidez sí (v = c/n): como λ = v/f, la longitud de onda baja en la misma proporción.`, OEM),
     ];
     const solucion = [
@@ -321,72 +351,96 @@
       datos: { tipo: 'rapidez', sub: 'lambda', n, l0 } });
   }
 
-  // ---- limite/angulo: sen L = n₂/n₁ ----
-  const LIMITES = [];
-  for (const n1 of INDICES) for (const n2 of INDICES) if (n2 < n1) { const L = notable(n2 / n1); if (L && L !== 90) LIMITES.push({ n1, n2, L }); }
+
+  // ---- limite/angulo: sen L = n₂/n₁ (notable o arcsen) ----
+  const LIMITES = [], LIMITES_A = [];
+  for (const n1 of INDICES) for (const n2 of INDICES) if (n2 < n1) {
+    const s = n2 / n1, L = notable(s);
+    if (L && L !== 90) LIMITES.push({ n1, n2, L, s }); else if (!L && exacto(s, 30)) LIMITES_A.push({ n1, n2, L: null, s });
+  }
   const NOEXISTE = { clave: 'noexiste', texto: 'No tiene ángulo límite' };
   function limiteAngulo(rng, semilla) {
-    const { n1, n2, L } = rng.elegir(LIMITES);
+    const { n1, n2, s } = rng.sig() < 0.3 ? rng.elegir(LIMITES_A) : rng.elegir(LIMITES);
     const [m1, m2] = nombres(rng, [n1, n2]);
-    const enunciado = ['La luz viaja por ', v('n1', conIndice(m1, n1)), ' hacia la superficie que lo separa ', v('n2', dela(m2, n2)), '.'];
+    const enunciado = ['La luz viaja por ', v('n1', conIndice(m1, n1)), ' hacia la superficie que lo separa ', v('n2', dela(def(m2), n2)), '.'];
     const pregunta = ['¿Cuál es el ', v('x', 'ángulo límite'), ' para esa superficie?'];
+    const cL = Math.sqrt(1 - s * s);
     const errores = [
       h('R-limite-invertido', NOEXISTE.clave, NOEXISTE.texto, `Pusiste sen L = n₁/n₂ = ${pn(n1)}/${pn(n2)}, que sale mayor que 1. El ángulo límite existe al pasar a un medio de menor índice, y se halla con el rayo refractado rozando la superficie: n₁·sen L = n₂·sen 90°.`, EM),
-      pa('R4-no-sale', 'nunca', 'Ningún rayo pasa: todos se reflejan', `Pensaste que la luz no sale porque el medio de donde viene es más denso. Con ángulos pequeños el rayo sí sale; la reflexión total empieza recién en el ángulo límite.`),
+      h('R4-ningun-rayo-pasa', 'nunca', 'Ningún rayo pasa, todos se reflejan', `Pensaste que la luz no pasa porque el medio de donde viene tiene mayor índice. Con ángulos pequeños el rayo sí pasa; la reflexión total empieza recién en el ángulo límite.`, EM),
+      h('R-desde-superficie', kS(cL), angTxt(cL), `Diste el ángulo con la superficie, el complemento de L. El ángulo límite se mide desde la normal: sen L = n₂/n₁ = ${senTxt(s)}.`),
     ];
-    if (L !== 45) errores.push(h('R-desde-superficie', kS(COS(L)), `${90 - L}°`, `Diste el ángulo con la superficie. El ángulo límite se mide desde la normal: sen L = n₂/n₁ da L = ${L}°.`));
-    if (!cerca(n2, 1)) { const s = 1 / n1; errores.push(h('R-limite-sin-n2', kS(s), angTxt(s), `Usaste sen L = 1/n₁, como si el otro medio fuera aire. Aquí el otro medio tiene n = ${nTxt(n2)}: sen L = n₂/n₁.`)); }
+    if (!cerca(n2, 1)) { const q = 1 / n1; errores.push(h('R-limite-sin-n2', kS(q), angTxt(q), `Usaste sen L = 1/n₁, como si el otro medio fuera aire. Aquí el otro medio tiene n = ${nTxt(n2)}: sen L = n₂/n₁.`)); }
     errores.push(h('R-limite-rozando', kS(1), '90°', 'Diste el ángulo del rayo refractado que sale rozando la superficie. El ángulo límite es el ángulo de incidencia que produce ese rayo rasante.'));
     const solucion = [
       ['En el ángulo límite el rayo refractado sale rozando la superficie (90° con la normal): ', v('n1', 'n₁'), ' · sen ', v('x', 'L'), ' = ', v('n2', 'n₂'), ' · sen 90°.'],
-      ['sen ', v('x', 'L'), ' = ', v('n2', pn(n2)), ' / ', v('n1', pn(n1)), ` = ${SEN_TXT[L]}, así que `, v('x', `L = ${L}°`), '.'],
+      ['sen ', v('x', 'L'), ' = ', v('n2', pn(n2)), ' / ', v('n1', pn(n1)), ` = ${senTxt(s)}, así que `, v('x', `L = ${angTxt(s)}`), '.'],
     ];
-    return cerrar(rng, semilla, { correcta: { clave: kS(SEN[L]), texto: `${L}°` }, errores, variables: VAR, enunciado, pregunta, solucion,
+    return cerrar(rng, semilla, { correcta: { clave: kS(s), texto: angTxt(s) }, errores, variables: VAR, enunciado, pregunta, solucion,
       datos: { tipo: 'limite', sub: 'angulo', n1, n2 } });
   }
 
-  // ---- limite/sale: ¿sale o no sale? ----
+  // ---- limite/sale: ¿sale o no sale? (sale, sale rozando justo en L, o reflexión total) ----
+  // Las opciones dicen si el rayo se aleja o se acerca a la normal, y el ángulo.
+  function saleTxt(s, i) {
+    if (cerca(s, 1)) return ROZA.texto;
+    const a = angTxt(s); if (!a) return null;
+    return cerca(s, SEN[i]) ? `Sale sin desviarse (${a} de la normal)` : s > SEN[i] ? `Sale y se aleja de la normal (${a})` : `Sale y se acerca a la normal (${a})`;
+  }
   function limiteSale(rng, semilla) {
-    const total = rng.moneda();
+    const caso = rng.elegir(['total', 'total', 'sale', 'sale', 'roza']);
     let n1, n2, i, sr;
-    if (total) {
-      ({ n1, n2 } = rng.elegir(LIMITES.concat([{ n1: 4 / 3, n2: 1 }, { n1: 3 / 2, n2: 1 }, { n1: 8 / 5, n2: 1 }])));
+    if (caso === 'total') {
+      ({ n1, n2 } = rng.elegir(LIMITES.concat(LIMITES_A)));
       const opciones = NOTABLES.filter(a => SEN[a] > n2 / n1 + 1e-9); // se compara con senos: sen 37° = 3/5 es la convención
       if (!opciones.length) return null;
       i = rng.elegir(opciones); sr = n1 * SEN[i] / n2;
+    } else if (caso === 'roza') {
+      ({ n1, n2 } = rng.elegir(LIMITES.filter(c => NOTABLES.includes(c.L))));
+      i = notable(n2 / n1); sr = 1;
     } else {
-      ({ n1, n2, i } = rng.elegir(SNELL.filter(c => c.n1 > c.n2)));
-      sr = n1 * SEN[i] / n2;
+      ({ n1, n2, i, s: sr } = elegirSnell(rng, c => c.n1 > c.n2));
     }
     const [m1, m2] = nombres(rng, [n1, n2]);
-    const enunciado = ['Un rayo de luz viaja por ', v('n1', conIndice(m1, n1)), ' y llega a la superficie que lo separa ', v('n2', dela(m2, n2)), ' con un ángulo de incidencia de ', v('i', `${i}°`), '.'];
+    const enunciado = ['Un rayo de luz viaja por ', v('n1', conIndice(m1, n1)), ' y llega a la superficie que lo separa ', v('n2', dela(def(m2), n2)), ' con un ángulo de incidencia de ', v('i', `${i}°`), '.'];
     const pregunta = ['¿Qué ', v('x', 'pasa con el rayo'), ' en esa superficie?'];
-    const pre = 'Sale a ', post = ' de la normal';
-    const sale = s => { const a = angTxt(s); return a ? pre + a + post : null; };
+    const t = s => saleTxt(s, i);
     const Ltxt = angTxt(n2 / n1);
+    const inv = n2 * SEN[i] / n1, s90 = n1 * SEN[90 - i] / n2, aire = cerca(n2, 1);
     let correcta, errores;
-    if (sr > 1 + 1e-9) {
+    if (caso === 'total') {
       correcta = TOTAL;
-      const inv = n2 * SEN[i] / n1, s90 = n1 * SEN[90 - i] / n2;
       errores = [
-        pa('R5-no-se-desvia', kS(SEN[i]), sale(SEN[i]), `Supusiste que el rayo sale sin desviarse. Además, ${i}° supera el ángulo límite (sen L = ${pn(n2)}/${pn(n1)}, L = ${Ltxt}): no hay rayo refractado, todo se refleja.`),
-        pa('R3-indices-invertidos', kS(inv), sale(inv), `Pusiste los índices al revés: con n₂·sen i = n₁·sen r el rayo parece acercarse a la normal. Con los índices en su sitio, sen r saldría ${nTxt(sr) || f(sr)}, mayor que 1: no hay rayo refractado.`),
-        s90 <= 1 + 1e-9
-          ? h('R-desde-superficie', kS(s90), sale(s90), `Usaste ${90 - i}°, el ángulo con la superficie, como si fuera la incidencia. La incidencia, desde la normal, es ${i}°, mayor que el ángulo límite: hay reflexión total.`)
-          : null,
-        h('R-limite-rozando', kS(1), 'Sale rozando la superficie, a 90° de la normal', `El rayo sale rozando solo justo en el ángulo límite (${Ltxt}). Con ${i}°, más que el límite, ya no sale: se refleja todo.`),
+        R_('R5-no-se-desvia', aire, kS(SEN[i]), t(SEN[i]), `Supusiste que el rayo sale sin desviarse. Además, ${i}° supera el ángulo límite (sen L = ${pn(n2)}/${pn(n1)}, L = ${Ltxt}): no hay rayo refractado, todo se refleja.`),
+        R_('R3-indices-invertidos', aire, kS(inv), t(inv), `Pusiste los índices al revés: con n₂·sen i = n₁·sen r el rayo parece acercarse a la normal. Con los índices en su sitio, sen r saldría ${senTxt(sr)}, mayor que 1: no hay rayo refractado.`),
+        s90 < 1 - 1e-9 ? h('R-desde-superficie-incidencia', kS(s90), t(s90), `Usaste ${90 - i}°, el ángulo con la superficie, como si fuera la incidencia. La incidencia, desde la normal, es ${i}°, mayor que el ángulo límite: hay reflexión total.`) : null,
+        h('R-limite-rozando', ROZA.clave, ROZA.texto, `El rayo sale rozando solo justo en el ángulo límite (${Ltxt}). Con ${i}°, más que el límite, ya no sale: se refleja todo.`),
+      ];
+    } else if (caso === 'roza') {
+      correcta = ROZA;
+      errores = [
+        h('R-limite-ya-es-total', TOTAL.clave, TOTAL.texto, `Justo en el ángulo límite todavía hay rayo refractado: sen r = ${pn(n1)} · sen ${i}° / ${pn(n2)} = 1, así que r = 90°. La reflexión total empieza recién con un ángulo mayor que L.`),
+        R_('R5-no-se-desvia', aire, kS(SEN[i]), t(SEN[i]), `Supusiste que el rayo sale sin desviarse. Al salir a un medio de menor índice se aleja de la normal; con ${i}°, el ángulo límite, sale rozando.`),
+        R_('R3-indices-invertidos', aire, kS(inv), t(inv), 'Pusiste los índices al revés: n₂·sen i = n₁·sen r. Así el rayo parece acercarse a la normal, y al salir a un medio de menor índice se aleja.'),
+        s90 < 1 - 1e-9 ? h('R-desde-superficie-incidencia', kS(s90), t(s90), `Usaste ${90 - i}°, el ángulo con la superficie, como si fuera la incidencia. Desde la normal, la incidencia es ${i}°, justo el ángulo límite.`) : null,
       ];
     } else {
-      correcta = { clave: kS(sr), texto: sale(sr) };
-      errores = erroresAngulo(n1, n2, i, sr, pre).map(e => (e.texto && e.texto.startsWith(pre) ? { ...e, texto: e.texto + post } : e));
-      errores.push(h('R-limite-rozando', kS(1), 'Sale rozando la superficie, a 90° de la normal', `El rayo sale rozando solo en el ángulo límite (${Ltxt}). Con ${i}°, menos que el límite, sale y se aleja de la normal sin llegar a rozar.`));
+      correcta = { clave: kS(sr), texto: t(sr) };
+      errores = erroresAngulo(n1, n2, i, sr, t);
     }
+    if (caso !== 'sale') errores.push(...erroresAngulo(n1, n2, i, Math.min(sr, 1), t).filter(e => e && /^R-olvida/.test(e.id)));
+    if (caso === 'sale') {
+      errores.push(h('R-limite-rozando', ROZA.clave, ROZA.texto, `El rayo sale rozando solo en el ángulo límite (${Ltxt}). Con ${i}°, menos que el límite, sale y se aleja de la normal sin llegar a rozar.`));
+    }
+    const comp = SEN[i] > n2 / n1 + 1e-9 ? 'mayor' : SEN[i] < n2 / n1 - 1e-9 ? 'menor' : 'igual';
     const solucion = [
-      ['Ángulo límite: sen ', v('x', 'L'), ' = ', v('n2', pn(n2)), ' / ', v('n1', pn(n1)), ` = ${exacto(n2 / n1, 30)}`, Ltxt && !Ltxt.startsWith('arcsen') ? ` (L = ${Ltxt})` : '',
-        `. Se comparan los senos: sen ${i}° = ${SEN_TXT[i]} es ${SEN[i] > n2 / n1 ? 'mayor' : 'menor'} que sen L.`],
-      sr > 1 + 1e-9
-        ? ['La incidencia, ', v('i', `${i}°`), ', supera el límite: con Snell, sen r = ', `${nTxt(n1)} · ${SEN_TXT[i]} / ${pn(n2)} = ${exacto(sr, 30) || f(sr)}`, ', mayor que 1. ', v('x', 'No pasa al otro medio: se refleja todo (reflexión total).')]
-        : ['La incidencia, ', v('i', `${i}°`), ', no llega al límite: el rayo sale. ', ...snellSeg(nTxt(n1), `${i}°`, nTxt(n2), 'r'), `, sen r = ${exacto(sr, 30)}: `, v('x', correcta.texto.replace(/^S/, 's')), ' (se aleja de ella).'],
+      ['Ángulo límite: sen ', v('x', 'L'), ' = ', v('n2', pn(n2)), ' / ', v('n1', pn(n1)), ` = ${senTxt(n2 / n1)}`, Ltxt && !Ltxt.startsWith('arcsen') ? ` (L = ${Ltxt})` : '',
+        `. Se comparan los senos: sen ${i}° = ${SEN_TXT[i]} es ${comp} ${comp === 'igual' ? 'a' : 'que'} sen L.`],
+      caso === 'total'
+        ? ['La incidencia, ', v('i', `${i}°`), ', supera el límite: con Snell, sen r = ', `${nTxt(n1)} · ${SEN_TXT[i]} / ${pn(n2)} = ${senTxt(sr)}`, ', mayor que 1. ', v('x', 'No pasa al otro medio: se refleja todo (reflexión total).')]
+        : caso === 'roza'
+          ? ['La incidencia es justo el ángulo límite: sen r = 1 y ', v('x', 'el rayo sale rozando la superficie, a 90° de la normal'), '. Con un poco más, ya no saldría.']
+          : ['La incidencia, ', v('i', `${i}°`), ', no llega al límite: el rayo sale. ', ...snellSeg(nTxt(n1), `${i}°`, nTxt(n2), 'r'), `, sen r = ${senTxt(sr)}, así que `, v('x', `r = ${angTxt(sr)}`), ': se aleja de la normal.'],
     ];
     return cerrar(rng, semilla, { correcta, errores, variables: VAR, enunciado, pregunta, solucion,
       datos: { tipo: 'limite', sub: 'sale', n1, n2, i } });

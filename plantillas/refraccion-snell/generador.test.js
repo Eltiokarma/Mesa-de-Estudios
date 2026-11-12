@@ -41,16 +41,23 @@ function fermat(si, ci, w1, w2) {
 const indiceFermat = (i, r) => biseccion(n => dTiempo(S[i], C[i], 1, n, S[r]), 1.0001, 10);
 const ff = x => P.formatear(x, 2);
 
+// Rayo que sale (seno de r), justo en el límite (sale rozando: sen r = 1) o reflexión total.
+function salida(si, ci, w1, w2) {
+  const s = fermat(si, ci, w1, w2);
+  if (s !== null) return 'sen:' + s;
+  const sj = si * (1 - 1e-9), s2 = fermat(sj, Math.sqrt(1 - sj * sj), w1, w2); // un pelo menos de incidencia
+  return s2 !== null && s2 > 1 - 1e-3 ? 'sen:1' : 'total';
+}
 function recalcular(p) {
   const d = p._datos;
-  if (d.tipo === 'angulo' || (d.tipo === 'limite' && d.sub === 'sale')) { const s = fermat(S[d.i], C[d.i], d.n1, d.n2); return s === null ? 'total' : 'sen:' + s; }
+  if (d.tipo === 'angulo' || (d.tipo === 'limite' && d.sub === 'sale')) return salida(S[d.i], C[d.i], d.n1, d.n2);
   if (d.tipo === 'indice') return 'n:' + indiceFermat(d.i, d.r);
   if (d.tipo === 'ensayos') {
     const ns = indiceFermat(d.i1, d.r1);
     const n1 = d.desde ? ns : d.n1, n2 = d.desde ? d.n2 : ns;
-    const s = fermat(S[d.i], C[d.i], n1, n2); return s === null ? 'total' : 'sen:' + s;
+    return salida(S[d.i], C[d.i], n1, n2);
   }
-  if (d.tipo === 'rapidez' && d.sub === 'angulo') { const s = fermat(S[d.i], C[d.i], 1 / d.v1, 1 / d.v2); return s === null ? 'total' : 'sen:' + s; }
+  if (d.tipo === 'rapidez' && d.sub === 'angulo') return salida(S[d.i], C[d.i], 1 / d.v1, 1 / d.v2);
   if (d.tipo === 'rapidez') {
     // La frecuencia es la de la fuente; la rapidez en el medio es c/n y λ = v/f.
     const c = 3e8, f0 = c / (d.l0 * 1e-9), vm = c / d.n;
@@ -102,7 +109,7 @@ test('alternativas comparables: longitudes en m, ángulos en grados o frases; si
     if (d.tipo === 'indice') assert.ok(alt.every(t => /^[\d√/,]+$/.test(t)), `semilla ${s}: ${alt}`);
     if (d.sub === 'lambda') assert.ok(alt.every(t => /^f = [\d,]+ × 10¹⁴ Hz y λ = \d+(,\d+)? nm$/.test(t)), `semilla ${s}: ${alt}`);
     if (d.tipo === 'angulo' || d.tipo === 'ensayos' || (d.tipo === 'rapidez' && d.sub === 'angulo'))
-      assert.ok(alt.every(t => /^(\d+°|arcsen\([\d√/]+\)|No pasa al otro medio.*|No entra.*)$/.test(t)), `semilla ${s}: ${alt}`);
+      assert.ok(alt.every(t => /^(\d+°|arcsen\([\d√/]+\)|No pasa al otro medio \(reflexión total\)|No entra al otro medio, rebota en la superficie)$/.test(t)), `semilla ${s}: ${alt}`);
     for (const t of alt) assert.ok(!/\d,\d{3}/.test(t), `semilla ${s}: ${t}`);
   }
 });
@@ -122,6 +129,47 @@ test('la pregunta no revela la respuesta', () => {
     const p = gen.generar(s);
     assert.ok(!plano(p.pregunta).includes(p.respuesta.texto), `semilla ${s}`);
   }
+});
+
+// La forma no delata la correcta: en los problemas de ángulo (angulo, ensayos, rapidez/angulo, limite), cada forma de
+// alternativa que aparece (ángulo notable, arcsen o frase) es la correcta al menos una vez en 600 semillas; y si la
+// correcta es notable, a lo más una alternativa es un arcsen.
+test('ninguna forma de alternativa es siempre incorrecta, y la correcta notable va con a lo más un arcsen', () => {
+  const forma = t => (/^\d+°$/.test(t) ? 'notable' : /^arcsen\(/.test(t) ? 'arcsen' : 'texto');
+  const vista = {}, correcta = {};
+  let conArcsen = 0, angulares = 0;
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s), d = p._datos;
+    if (!(d.tipo === 'angulo' || d.tipo === 'ensayos' || d.tipo === 'limite' || (d.tipo === 'rapidez' && d.sub === 'angulo'))) continue;
+    angulares++;
+    for (const a of p.alternativas) { const k = forma(a.texto); vista[k] = (vista[k] || 0) + 1; if (a.correcta) correcta[k] = (correcta[k] || 0) + 1; }
+    const c = p.alternativas.find(a => a.correcta);
+    if (forma(c.texto) === 'notable') assert.ok(p.alternativas.filter(a => forma(a.texto) === 'arcsen').length <= 1, `semilla ${s}: más de un arcsen`);
+    if (forma(c.texto) === 'arcsen') conArcsen++;
+  }
+  for (const k of Object.keys(vista)) assert.ok(correcta[k] >= 1, `la forma «${k}» nunca es la correcta`);
+  assert.deepEqual(Object.keys(vista).sort(), ['arcsen', 'notable', 'texto']);
+  assert.ok(conArcsen / angulares > 0.15, `solo ${conArcsen} de ${angulares} con la correcta en arcsen`);
+});
+
+// Distractores no absurdos y tan «limpios» como la correcta: en las respuestas numéricas (índice, longitudes), cada
+// alternativa está entre 1/20 y 20 veces la correcta, y la correcta no es la única con menos cifras en más del 35 %.
+test('distractores entre 1/20 y 20 veces la correcta; la correcta no se reconoce por redonda', () => {
+  let n = 0, masCorta = 0;
+  const cifras = t => (t.match(/\d/g) || []).length;
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s), alt = p.alternativas, c = alt.find(a => a.correcta);
+    const num = a => Number(String(a.valor).split(':')[1]);
+    if (/^(n|x|sen):/.test(c.valor)) for (const a of alt) {
+      if (!/^(n|x|sen):/.test(a.valor)) continue;
+      const q = num(a) / num(c);
+      assert.ok(q >= 1 / 20 && q <= 20, `semilla ${s}: ${a.texto} frente a ${c.texto}`);
+    }
+    n++;
+    const k = cifras(c.texto);
+    if (alt.every(a => a.correcta || cifras(a.texto) > k)) masCorta++;
+  }
+  assert.ok(masCorta / n <= 0.35, `la correcta es la de menos cifras en ${masCorta} de ${n}`);
 });
 
 // ---------- lápiz y papel ----------

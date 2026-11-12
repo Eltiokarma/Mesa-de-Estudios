@@ -13,7 +13,7 @@
  *   energia      Sub: cinetica (K = (γ − 1)·m·c², en joules), total (E = γ·m·c²), razon (energía
  *                cinética clásica entre la relativista) e igual (¿a qué rapidez la energía cinética
  *                es k veces la energía en reposo?).
- *   incertidumbre Δx·Δp ≥ h/4π. Sub: posicion (bala con la rapidez medida con cierta precisión)
+ *   incertidumbre Δx·Δp ≥ h/4π. Sub: posicion (bala con la rapidez medida con una incertidumbre en %)
  *                y momento (electrón encerrado en una región).
  *   esfera       esfera metálica aislada que se ilumina: suelta electrones hasta que su potencial
  *                frena a los más rápidos, V = Kmax/e = (E_fotón − φ)/e. Sub: potencial y carga
@@ -97,7 +97,9 @@
   const gamSeg = (b, g) => [v('g', 'γ'), ' = 1/√(1 − v²/c²) = 1/√(1 − ', `${num(b * b)}`, ') = ', v('g', num(g))];
 
   function cerrar(rng, semilla, o) {
-    const alternativas = P.armar({ correcta: o.correcta, errores: o.errores.filter(e => Number.isFinite(e.valor) && e.valor > 0 && (!o.filtro || o.filtro(e.valor))), rng, texto: o.texto });
+    // Sin distractores absurdos: cada uno entre 1/20 y 20 veces la correcta (en la hora, el intervalo desde el cruce).
+    const base = o.base || 0, cerca20 = x => { const q = (x - base) / (o.correcta - base); return q >= 1 / 20 && q <= 20; };
+    const alternativas = P.armar({ correcta: o.correcta, errores: o.errores.filter(e => Number.isFinite(e.valor) && e.valor > 0 && cerca20(e.valor) && (!o.filtro || o.filtro(e.valor))), rng, texto: o.texto });
     if (alternativas.length < 4) return null;
     return {
       id: `relatividad#${semilla}`, variables: o.variables || VAR, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
@@ -137,10 +139,11 @@
       const enunciado = ['Una nave pasa junto a una estación espacial a ', v('v', cTxt(b)), `. Cuando se cruzan, los dos relojes marcan las ${hora(inicio)}. Más tarde, el reloj de la nave marca que pasaron `, v('d', `${f(dt0 / 60)} h`), ' desde el cruce.'];
       const pregunta = ['En ese instante, según los observadores de la estación, ¿', v('x', 'qué hora marca el reloj de la estación'), '?'];
       const errores = [
-        h('REL-gamma-invertido', inicio + dt0 / g, `Dividiste entre γ. El intervalo más corto es el del reloj que viaja (el tiempo propio): en la estación pasa más tiempo, Δt = γ·Δt₀ = ${num(g)} · ${f(dt0 / 60)} h.`),
+        h('REL-divide-entre-gamma', inicio + dt0 / g, `Calculaste Δt₀/γ = ${f(dt0 / 60)} h / ${num(g)} y lo sumaste a la hora del cruce. El intervalo más corto es el del reloj que viaja (el tiempo propio): en la estación pasa más tiempo, Δt = γ·Δt₀ = ${num(g)} · ${f(dt0 / 60)} h.`),
         h('REL-tiempo-absoluto', inicio + dt0, 'Supusiste que en los dos relojes pasa el mismo tiempo. A esa rapidez, para la estación el reloj de la nave va lento: en la estación pasa γ veces más.'),
         h('REL-solo-el-adelanto', inicio + (g - 1) * dt0, `Sumaste solo la diferencia entre los dos relojes, (γ − 1)·Δt₀. A la hora del cruce hay que sumarle todo el intervalo de la estación, γ·Δt₀.`),
         h('PR2-sin-raiz', inicio + dt0 / (1 - b * b), 'Olvidaste la raíz del factor de Lorentz: γ = 1/√(1 − v²/c²), no 1/(1 − v²/c²).', TRANS),
+        h('REL-suma-lineal', inicio + dt0 * (1 + b), `Calculaste Δt₀·(1 + v/c), como si el atraso creciera en línea recta con la rapidez. El factor es γ = 1/√(1 − v²/c²) = ${num(g)}.`),
       ];
       const solucion = [
         [...gamSeg(b, g), '.'],
@@ -148,7 +151,7 @@
         [`${hora(inicio)} + ${f(dt)} min = `, v('x', hora(correcta)), '.'],
       ];
       return cerrar(rng, semilla, { correcta, errores, texto: hora, variables: VAR, enunciado, pregunta, solucion,
-        filtro: x => Number.isInteger(Math.round(x * 1e6) / 1e6) && x < 1440, // el mismo día
+        base: inicio, filtro: x => Number.isInteger(Math.round(x * 1e6) / 1e6) && x < 1440, // el mismo día
         datos: { tipo: 'tiempo', sub, beta: b, inicio, dt0 } });
     }
     // propio: la Tierra mide Δt; la nave marca Δt₀ = Δt/γ
@@ -158,10 +161,11 @@
     const enunciado = ['Una astronauta viaja a una estrella lejana a ', v('v', cTxt(b)), ' respecto a la Tierra. Según los relojes de la Tierra, el viaje dura ', v('d', `${f(dtT)} años`), '.'];
     const pregunta = ['¿', v('x', 'Cuánto dura el viaje según el reloj de la astronauta'), '?'];
     const errores = [
-      h('REL-gamma-invertido', dtT * g, 'Multiplicaste por γ. El reloj que viaja con la astronauta mide el tiempo propio, el más corto: Δt₀ = Δt/γ.'),
+      h('REL-multiplica-por-gamma', dtT * g, `Calculaste Δt·γ = ${f(dtT)} · ${num(g)}. El reloj que viaja con la astronauta mide el tiempo propio, el más corto: Δt₀ = Δt/γ.`),
       h('REL-tiempo-absoluto', dtT, 'Supusiste que el tiempo es el mismo para la astronauta y para la Tierra. A esa rapidez, su reloj marca menos.'),
       h('REL-por-beta', dtT * b, 'Multiplicaste por v/c. El tiempo propio es Δt·√(1 − v²/c²) = Δt/γ, no Δt·v/c.'),
       h('PR2-sin-raiz', dtT * (1 - b * b), 'Olvidaste la raíz: Δt₀ = Δt·√(1 − v²/c²).', TRANS),
+      h('REL-lo-que-se-atrasa', dtT - dtT / g, 'Eso es cuánto se atrasa el reloj de la astronauta, Δt − Δt/γ. Lo que marca su reloj es Δt₀ = Δt/γ.'),
     ];
     const solucion = [
       [...gamSeg(b, g), '.'],
@@ -173,7 +177,7 @@
 
   // ---- tiempo/rapidez: el muon que vive más ----
   function muon(rng, semilla) {
-    const [b, g] = rng.elegir(RAP);
+    const [b, g] = rng.elegir(RAP.filter(([bb]) => bb >= 0.6)); // «muy rápido»: desde 0,6c
     const tau = rng.elegir([2, 2.2, 1.5, 3]);
     const obs = tau * g;
     const conRazon = rng.moneda() || !corto(obs);
@@ -183,9 +187,10 @@
     const pregunta = ['¿Con qué ', v('x', 'rapidez'), ' viaja ese muon?'];
     const errores = [
       h('REL-v-c-sobre-gamma', 1 / g, 'Tomaste v = c/γ, como si la razón de tiempos fuera c/v. La razón de tiempos es γ = 1/√(1 − v²/c²): de ahí, v = c·√(1 − 1/γ²).'),
-      h('REL-gamma-invertido', Math.sqrt(1 - 1 / g), 'Despejaste con la raíz de 1/γ, no de 1/γ²: de 1/γ² = 1 − v²/c² sale v/c = √(1 − 1/γ²).'),
+      h('REL-raiz-sin-cuadrado', Math.sqrt(1 - 1 / g), `Calculaste v/c = √(1 − 1/γ) = √(1 − 1/${pg(g)}), sin el cuadrado de γ. De 1/γ² = 1 − v²/c² sale v/c = √(1 − 1/γ²).`),
       h('REL-resta-lineal', 1 - 1 / g, 'Escribiste 1/γ = 1 − v/c, sin cuadrados ni raíz. El factor es γ = 1/√(1 − v²/c²).'),
       h('REL-gamma-menos-uno', g - 1, 'Tomaste γ − 1 como v/c. γ − 1 dice cuánto más vive el muon, no su rapidez.'),
+      h('PR2-sin-raiz', 1 - 1 / (g * g), 'Te quedaste en v²/c² = 1 − 1/γ² y olvidaste sacar la raíz: v/c = √(1 − 1/γ²).', TRANS),
     ];
     const solucion = [
       conRazon ? ['La razón entre las vidas es el factor de Lorentz: ', v('g', `γ = ${num(g)}`), '.']
@@ -211,16 +216,17 @@
       ? ['¿Qué ', v('x', 'largo le miden desde la Tierra'), '?']
       : ['¿Cuál es su ', v('x', 'largo en reposo'), '?'];
     const errores = sub === 'observada' ? [
-      h('REL-gamma-invertido', L0 * g, 'Multiplicaste por γ. Un objeto en movimiento se ve más corto en la dirección en que se mueve: L = L₀/γ.'),
+      h('REL-multiplica-por-gamma', L0 * g, `Calculaste L₀·γ = ${f(L0)} · ${num(g)}. Un objeto en movimiento se ve más corto en la dirección en que se mueve: L = L₀/γ.`),
       h('REL-sin-contraccion', L0, 'Supusiste que el largo no depende del movimiento. A esa rapidez, desde la Tierra se mide más corto.'),
       h('REL-lo-que-se-acorta', L0 - L0 / g, 'Ese es cuánto se acorta, L₀ − L₀/γ. Se pide el largo que se mide: L₀/γ.'),
       h('PR2-sin-raiz', L0 * (1 - b * b), 'Olvidaste la raíz: L = L₀·√(1 − v²/c²).', TRANS),
       h('REL-por-beta', L0 * b, 'Multiplicaste por v/c. El largo es L₀·√(1 − v²/c²) = L₀/γ.'),
     ] : [
-      h('REL-gamma-invertido', L0 / g, 'Dividiste entre γ. El largo que se mide desde la Tierra ya está acortado: el largo en reposo, el mayor, es L₀ = γ·L.'),
+      h('REL-divide-entre-gamma', L0 / g, `Calculaste L/γ = ${f(L0)}/${pg(g)}. El largo que se mide desde la Tierra ya está acortado: el largo en reposo, el mayor, es L₀ = γ·L.`),
       h('REL-sin-contraccion', L0, 'Supusiste que el largo no depende del movimiento. El largo en reposo es mayor que el que se mide con la nave en movimiento.'),
       h('PR2-sin-raiz', L0 / (1 - b * b), 'Olvidaste la raíz: L₀ = L/√(1 − v²/c²).', TRANS),
       h('REL-suma-lineal', L0 * (1 + b), 'Sumaste L·v/c. La relación es L₀ = γ·L, con γ = 1/√(1 − v²/c²).'),
+      h('REL-lo-que-se-acorta', L0 * (g - 1), 'Eso es cuánto más mide en reposo, γ·L − L. Se pide el largo en reposo: L₀ = γ·L.'),
     ];
     const solucion = [
       [...gamSeg(b, g), '.'],
@@ -234,26 +240,26 @@
 
   // ---- energia: cinética o total, en joules ----
   function energia(rng, semilla, sub) {
-    const [b, g] = rng.elegir([[0.6, 5 / 4], [0.8, 5 / 3], [Math.sqrt(3) / 2, 2], [0.96, 25 / 7], [12 / 13, 13 / 5]]);
+    const [b, g] = rng.elegir([[0.6, 5 / 4], [0.8, 5 / 3], [Math.sqrt(3) / 2, 2], [0.96, 25 / 7], [12 / 13, 13 / 5]].filter(([, gg]) => sub !== 'cinetica' || gg !== 2)); // con γ = 2, K = E₀
     const ma = rng.elegir([1, 2, 3, 4, 5, 6, 8]), me = -rng.elegir([26, 27, 28]);
     const m = ma * 10 ** me, c2 = 9e16;
     const E0 = m * c2, K = (g - 1) * E0, E = g * E0, Kc = 0.5 * m * b * b * c2;
     const correcta = sub === 'cinetica' ? K : E;
     const [mm] = partes(correcta, 3);
     if (!corto(mm, 2)) return null; // mantisa con tres cifras a lo más, exacta
-    const part = rng.elegir(['Una partícula', 'Un núcleo liviano', 'Una partícula subatómica']);
+    const part = rng.elegir(m >= 1.67e-27 ? ['Una partícula', 'Un núcleo liviano'] : ['Una partícula', 'Una partícula subatómica']); // un núcleo pesa al menos lo que un protón
     const enunciado = [`${part} de masa `, v('d', `${sci(m, 1)} kg`), ' se mueve a ', v('v', cTxt(b)), '. Usa c = 3 × 10⁸ m/s.'];
     const pregunta = sub === 'cinetica' ? ['¿Cuál es su ', v('x', 'energía cinética'), '?'] : ['¿Cuál es su ', v('x', 'energía total'), '?'];
     const errores = sub === 'cinetica' ? [
       h('REL-K-clasica', Kc, 'Usaste la energía cinética clásica, ½·m·v². A esa rapidez ya no sirve: K = E − E₀ = (γ − 1)·m·c².'),
       h('REL-total-por-cinetica', E, 'Esa es la energía total, γ·m·c². La cinética es lo que se suma a la energía en reposo: K = (γ − 1)·m·c².'),
       h('REL-reposo', E0, 'Esa es la energía en reposo, m·c². La cinética es (γ − 1)·m·c².'),
-      h('REL-gamma-invertido', (1 - 1 / g) * E0, 'Usaste 1/γ en lugar de γ: K = (γ − 1)·m·c², con γ mayor que 1.'),
+      h('REL-uno-menos-inverso-de-gamma', (1 - 1 / g) * E0, `Calculaste (1 − 1/γ)·m·c² = (1 − 1/${pg(g)})·E₀, con 1/γ en lugar de γ. La cinética es (γ − 1)·m·c².`),
     ] : [
       h('REL-reposo', E0, 'Esa es la energía en reposo, m·c². Moviéndose, la energía total es γ·m·c².'),
       h('REL-total-por-cinetica', K, 'Esa es solo la energía cinética, (γ − 1)·m·c². La total suma la energía en reposo: E = γ·m·c².'),
       h('REL-K-clasica', E0 + Kc, 'Sumaste la energía en reposo y la cinética clásica, ½·m·v². A esa rapidez la cinética es (γ − 1)·m·c²: E = γ·m·c².'),
-      h('REL-gamma-invertido', E0 / g, 'Dividiste entre γ. La energía total crece con la rapidez: E = γ·m·c².'),
+      h('REL-divide-entre-gamma', E0 / g, `Calculaste E₀/γ = m·c²/${pg(g)}. La energía total crece con la rapidez: E = γ·m·c².`),
     ];
     const solucion = [
       [...gamSeg(b, g), '.'],
@@ -276,7 +282,7 @@
       h('REL-total-por-cinetica', 0.5 * b * b / g, 'Dividiste entre la energía total, γ·m·c². La energía cinética relativista es (γ − 1)·m·c².'),
       h('REL-razon-invertida', (g - 1) / (0.5 * b * b), 'Dividiste al revés: la relativista entre la clásica. Se pide K clásica / K relativista, que sale menor que 1.'),
       h('PR3-sin-medio', b * b / (g - 1), 'Olvidaste el ½ de la energía cinética clásica, ½·m·v².', TRANS),
-      h('REL-gamma-invertido', 0.5 * b * b / (1 - 1 / g), 'Usaste 1/γ en lugar de γ en la cinética relativista: K = (γ − 1)·m·c².'),
+      h('REL-uno-menos-inverso-de-gamma', 0.5 * b * b / (1 - 1 / g), `Dividiste entre (1 − 1/γ) = 1 − 1/${pg(g)}, con 1/γ en lugar de γ. La cinética relativista es (γ − 1)·m·c².`),
       h('REL-iguales', 1, 'Supusiste que las dos fórmulas dan lo mismo. A esa rapidez la clásica se queda corta.'),
     ];
     const solucion = [
@@ -284,7 +290,8 @@
       ['K clásica = ½·m·v² = ½·', `${num(b * b)}·m·c² = ${num(0.5 * b * b)}·m·c². K relativista = (`, v('g', 'γ'), ` − 1)·m·c² = ${num(g - 1)}·m·c².`],
       ['Razón: ', `${pg(0.5 * b * b)}/${pg(g - 1)} = `, v('x', num(correcta)), '.'],
     ];
-    return cerrar(rng, semilla, { correcta, errores, texto: num, variables: VAR, enunciado, pregunta, solucion,
+    const fr = x => exacto(x, 200) || num(x); // todas como fracción, el mismo formato
+    return cerrar(rng, semilla, { correcta, errores, texto: fr, filtro: x => !!exacto(x, 200), variables: VAR, enunciado, pregunta, solucion,
       datos: { tipo: 'energia', sub: 'razon', beta: b } });
   }
 
@@ -315,35 +322,36 @@
     if (sub === 'posicion') {
       const g = rng.elegir([5, 10, 15, 20, 25, 40, 50]);           // masa en gramos
       const vel = rng.elegir([200, 300, 400, 500, 600, 800]);
-      const dv = rng.elegir([0.01, 0.02, 0.05, 0.1, 0.001, 0.002]); // precisión de la rapidez, en m/s
+      const pct = rng.elegir([5, 10, 20, 25]);                       // precisión de la rapidez, en %
+      const dv = vel * pct / 100;
       const m = g / 1000, dp = m * dv;
       const correcta = H / (4 * Math.PI * dp);
       const errs = [
-        h('HE-momento-total', H / (4 * Math.PI * m * vel), 'Usaste el momento total, m·v. El principio relaciona las incertidumbres: Δp = m·Δv, con Δv la precisión de la rapidez.', TRAMPAS),
-        h('U4-gramos', H / (4 * Math.PI * g * dv), 'Dejaste la masa en gramos. En el SI va en kilogramos.', TRANS),
+        h('HE-momento-total', H / (4 * Math.PI * m * vel), 'Usaste el momento total, m·v. El principio relaciona las incertidumbres: Δp = m·Δv, con Δv la incertidumbre de la rapidez.', TRAMPAS),
+        h('HE-porcentaje-como-rapidez', H / (4 * Math.PI * m * pct), `Tomaste el ${pct} % como si fueran ${pct} m/s. La incertidumbre de la rapidez es el ${pct} % de ${vel} m/s: Δv = ${f(dv)} m/s.`),
         h('HE-h-sin-4pi', H / dp, 'Usaste Δx·Δp ≥ h, sin el 4π. La forma que se usa es Δx·Δp ≥ h/4π.'),
         h('HE-h-entre-2pi', H / (2 * Math.PI * dp), 'Usaste h/2π. La forma que se usa es Δx·Δp ≥ h/4π: la mitad.'),
+        h('HE-sin-pi', H / (4 * dp), 'Usaste h/4, sin el π. La forma que se usa es Δx·Δp ≥ h/(4π).'),
       ];
       const todos = [correcta, ...errs.map(e => e.valor)];
       if (!todos.every(x => seguro(x))) return null;
-      const enunciado = ['Una bala de ', v('d', `${g} g`), ' sale a ', v('v', `${vel} m/s`), ', y su rapidez se mide con una precisión de ', v('g', `${f4(dv)} m/s`),
-        ' (Δv). Usa h = 6,63 × 10⁻³⁴ J·s.'];
+      const enunciado = ['Una bala de ', v('d', `${g} g`), ' sale a ', v('v', `${vel} m/s`), ', y su rapidez se mide con una incertidumbre del ', v('g', `${pct} %`),
+        '. Usa h = 6,63 × 10⁻³⁴ J·s.'];
       const pregunta = ['¿Cuál es la ', v('x', 'incertidumbre mínima en su posición'), '?'];
       const solucion = [
-        ['Incertidumbre del momento: Δp = ', v('d', 'm'), '·', v('g', 'Δv'), ` = ${f4(m)} kg · ${f4(dv)} m/s = ${sci(dp, 2)} kg·m/s. La rapidez de ${vel} m/s no entra.`],
+        ['Incertidumbre de la rapidez: ', v('g', 'Δv'), ` = ${pct} % de ${vel} m/s = ${f(dv)} m/s. Del momento: Δp = `, v('d', 'm'), '·', v('g', 'Δv'), ` = ${f4(m)} kg · ${f(dv)} m/s = ${sci(dp, 2)} kg·m/s. El momento total m·v no entra.`],
         [v('x', 'Δx'), ' ≥ h/(4π·Δp) = 6,63 × 10⁻³⁴ / (4π · ', `${sci(dp, 2)}) = `, v('x', `${sci(correcta)} m`), '.'],
       ];
-      return cerrar(rng, semilla, { correcta, errores: errs, texto: x => `${sci(x)} m`, unidad: 'm', variables: { d: { nombre: 'masa', color: 'i' }, v: { nombre: 'rapidez', color: 'o' }, g: { nombre: 'precisión de la rapidez Δv', color: 'h' }, x: VAR.x }, enunciado, pregunta, solucion,
-        datos: { tipo: 'incertidumbre', sub, m, v: vel, dv } });
+      return cerrar(rng, semilla, { correcta, errores: errs, texto: x => `${sci(x)} m`, unidad: 'm', variables: { d: { nombre: 'masa', color: 'i' }, v: { nombre: 'rapidez', color: 'o' }, g: { nombre: 'incertidumbre de la rapidez Δv', color: 'h' }, x: VAR.x }, enunciado, pregunta, solucion,
+        datos: { tipo: 'incertidumbre', sub, m, v: vel, pct } });
     }
     const dxa = rng.elegir([1, 1.6, 2, 2.5, 4, 5]), dxe = -rng.elegir([9, 10, 11, 12]);
-    const dx = dxa * 10 ** dxe, me = 9.1e-31;
+    const dx = dxa * 10 ** dxe;
     const correcta = H / (4 * Math.PI * dx);
     const errs = [
       h('HE-h-sin-4pi', H / dx, 'Usaste Δx·Δp ≥ h, sin el 4π. La forma que se usa es Δx·Δp ≥ h/4π.'),
       h('HE-h-entre-2pi', H / (2 * Math.PI * dx), 'Usaste h/2π. La forma que se usa es Δx·Δp ≥ h/4π: la mitad.'),
-      h('HE-velocidad-por-momento', H / (4 * Math.PI * dx * me), 'Dividiste también entre la masa: eso es la incertidumbre de la rapidez, Δv = Δp/m. Se pide la del momento.'),
-      h('HE-producto', H * dx / (4 * Math.PI), 'Multiplicaste por Δx. El producto Δx·Δp es el que vale al menos h/4π: Δp = h/(4π·Δx).'),
+      h('HE-sin-pi', H / (4 * dx), 'Usaste h/4, sin el π. La forma que se usa es Δx·Δp ≥ h/(4π).'),
     ];
     if (![correcta, ...errs.map(e => e.valor)].every(x => seguro(x))) return null;
     const enunciado = ['Un electrón (m = 9,1 × 10⁻³¹ kg) está encerrado en una región de ', v('d', `${sci(dx, dxa === 1 ? 1 : 2)} m`), ' de ancho (Δx). Usa h = 6,63 × 10⁻³⁴ J·s.'];
@@ -392,8 +400,8 @@
       h('FM-kmax-sin-restar-phi', R * Ef / k, 'No restaste la función trabajo: tomaste toda la energía del fotón como energía cinética. Kmax = E − φ, y con eso V = Kmax/e.'),
       h('FM-kmax-suma-phi', R * (Ef + phi) / k, 'Sumaste la función trabajo. Esa energía se gasta en sacar al electrón: Kmax = E − φ.'),
       diametro ? h('PR6-diametro', 2 * R * V / k, 'Usaste el diámetro como radio. El radio es la mitad.', TRANS)
-        : h('FM-esfera-solo-phi', R * phi / k, 'Usaste la función trabajo como si fuera el potencial. El potencial final corresponde a Kmax = E − φ.'),
-      h('U2-centimetros', Rcm * V / k, 'Dejaste el radio en centímetros. En Q = R·V/k va en metros.', TRANS),
+        : h('PR6-radio-como-diametro', R / 2 * V / k, 'Tomaste la mitad del radio, como si el dato fuera el diámetro. El dato ya es el radio.', TRANS),
+      h('FM-esfera-solo-phi', R * phi / k, 'Usaste la función trabajo como si fuera el potencial. El potencial final corresponde a Kmax = E − φ.'),
       h('FM-esfera-radio-al-reves', V / (k * R), 'Pusiste el radio dividiendo. El potencial de una esfera es V = kQ/R, así que Q = R·V/k: a mayor radio, más carga.'),
     ];
     const solucion = [...pasos0,
