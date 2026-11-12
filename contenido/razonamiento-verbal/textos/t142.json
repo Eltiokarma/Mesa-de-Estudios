@@ -158,5 +158,5 @@
   "hechos": [
     { "afirmacion": "En el Perú, la mayoría de los trabajadores tiene un empleo informal.", "fuente": "INEI, Producción y Empleo Informal en el Perú (informes de la Cuenta Satélite de la Economía Informal) y Encuesta Nacional de Hogares (ENAHO)" }
   ],
-  "revision": null
+  "revision": { "por": "subagente (revisor a ciegas, rutina verbal-mas)", "fecha": "2026-11-12", "veredicto": "aprobado", "notas": "A ciegas coincidió en 8 de 8 ítems (previos y preguntas). Sin cambios. Códigos de p4 revisados: RV36, RV10 y RV61 describen bien cada distractor. El dato de empleo informal (INEI) va de memoria, sin búsqueda en la web." }
 }

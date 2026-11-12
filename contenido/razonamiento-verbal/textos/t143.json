@@ -146,7 +146,7 @@
   "hechos": [
     { "afirmacion": "El altiplano del sur del Perú tiene niveles altos de radiación solar a lo largo del año.", "fuente": "SENAMHI y Ministerio de Energía y Minas del Perú (2003), Atlas de Energía Solar del Perú" },
     { "afirmacion": "El Estado peruano ha instalado sistemas fotovoltaicos domiciliarios para dar electricidad a viviendas rurales aisladas.", "fuente": "Ministerio de Energía y Minas del Perú, Dirección General de Electrificación Rural, programa masivo de sistemas fotovoltaicos en zonas no conectadas a la red" },
-    { "afirmacion": "Las baterías que acompañan a los paneles solares tienen una vida útil menor que la de los paneles y deben reemplazarse.", "fuente": "IRENA (2017), Electricity Storage and Renewables: Costs and Markets to 2030" }
+    { "afirmacion": "Las baterías que acompañan a los paneles solares tienen una vida útil menor que la de los paneles y deben reemplazarse en algún momento.", "fuente": "Conocimiento técnico general sobre sistemas fotovoltaicos domiciliarios; el informe IRENA (2017), Electricity Storage and Renewables, trata el almacenamiento con baterías, pero no se confirmó en él la vida útil" }
   ],
-  "revision": null
+  "revision": { "por": "subagente (revisor a ciegas, rutina verbal-mas)", "fecha": "2026-11-12", "veredicto": "aprobado", "notas": "A ciegas coincidió en 7 de 7 ítems (previos y preguntas). Se hizo explícita en el texto A (oración 4: «incluso en la casa más apartada») la idea del previo de p4, y el distractor de la batería pasó de RV60 a RV59 (RV60 hablaba de temas y coincidencias, no de incompatibilidad). Web: el informe IRENA 2017 existe, pero no se encontró en él una cifra de vida útil de baterías de paneles domésticos; la fuente se ablandó a conocimiento técnico general. Radiación solar (Atlas de Energía Solar) y programa de paneles del MINEM van de memoria." }
 }

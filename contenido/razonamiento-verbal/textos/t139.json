@@ -148,5 +148,5 @@
     { "afirmacion": "Chile y los países de Medio Oriente usan plantas desalinizadoras, y la desalinización consume mucha energía.", "fuente": "Banco Mundial (2019), The Role of Desalination in an Increasingly Water-Scarce World" },
     { "afirmacion": "Las empresas de agua del Perú, Sedapal entre ellas, tienen una proporción importante de agua no facturada.", "fuente": "SUNASS, Benchmarking regulatorio de las empresas prestadoras de servicios de saneamiento" }
   ],
-  "revision": null
+  "revision": { "por": "subagente (revisor a ciegas, rutina verbal-mas)", "fecha": "2026-11-12", "veredicto": "aprobado", "notas": "A ciegas coincidió en 7 de 7 ítems (previos y preguntas). Se afinaron los previos de p2 y p3 para que la idea quede literal en el autor que corresponde (sonda de p2 pasa a «Conviene cobrar más a quien más agua gasta»; en p3 el texto B dice «planta grande» como el A). Hechos: Sedapal, SENAMHI, INAIGEM, Banco Mundial y SUNASS no se buscaron en la web, van de memoria (afirmaciones generales y prudentes)." }
 }

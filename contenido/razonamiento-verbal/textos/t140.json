@@ -22,7 +22,7 @@
       { "id": "o6", "rol": "principal", "t": "Empezar con inglés en el nivel inicial sería una distracción para los colegios públicos." },
       { "id": "o7", "rol": "apoyo", "t": "Las evaluaciones nacionales muestran que muchos alumnos terminan la primaria sin entender bien lo que leen en castellano." },
       { "id": "o8", "rol": "apoyo", "t": "Si un niño no comprende un texto en castellano, tampoco lo comprenderá en inglés." },
-      { "id": "o9", "rol": "apoyo", "t": "Además, faltan profesores de inglés incluso para la secundaria, y las horas de clase no alcanzan para todo." },
+      { "id": "o9", "rol": "apoyo", "t": "Además, en muchos lugares faltan profesores de inglés incluso para la secundaria, y las horas de clase no alcanzan para todo." },
       { "id": "o10", "rol": "principal", "t": "Primero hay que asegurar que cada niño lea y entienda en castellano; el inglés puede venir después." }
     ]
   ],
@@ -144,7 +144,7 @@
   "fecha": "2026-11-12",
   "hechos": [
     { "afirmacion": "Las evaluaciones nacionales de aprendizaje del Perú muestran que una parte grande de los alumnos de primaria no alcanza el nivel satisfactorio en lectura.", "fuente": "Ministerio de Educación del Perú, Oficina de Medición de la Calidad de los Aprendizajes (UMC), resultados de la Evaluación Nacional de Logros de Aprendizaje" },
-    { "afirmacion": "El Estado peruano reconoce la falta de docentes de inglés en la educación pública.", "fuente": "Ministerio de Educación del Perú, Política Nacional de Enseñanza, Aprendizaje y Uso del Idioma Inglés (D. S. N.º 007-2015-MINEDU)" }
+    { "afirmacion": "El Estado peruano reconoce la falta de docentes de inglés en la educación pública.", "fuente": "Ministerio de Educación del Perú, Política Nacional de Enseñanza, Aprendizaje y Uso del Idioma Inglés (D. S. N.º 012-2015-MINEDU)" }
   ],
-  "revision": null
+  "revision": { "por": "subagente (revisor a ciegas, rutina verbal-mas)", "fecha": "2026-11-12", "veredicto": "aprobado", "notas": "A ciegas coincidió en 7 de 7 ítems (previos y preguntas). Distractor de p4 sobre «más adelante» reescrito con negación y código RV34 (antes RV5, que no describía el error). Verificado en la web: la política de inglés es el D. S. 012-2015-MINEDU (El Peruano, 8 set 2015), no el 007-2015, que es de carrera magisterial; se corrigió la fuente. No se pudo abrir el texto del decreto, así que la falta de docentes de inglés queda de memoria y se ablandó en el texto a «en muchos lugares faltan»." }
 }
