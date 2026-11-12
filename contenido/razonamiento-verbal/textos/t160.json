@@ -97,7 +97,7 @@
       "alternativas": [
         { "t": "someter a una misma obligación.", "correcta": true, "evidencia": ["o10"],
           "explicacion": "La prohibición general obliga por igual a todos los trabajos, aunque no todos se parezcan." },
-        { "t": "sujetar con una cuerda.", "codigo": "RV18",
+        { "t": "sujetar algo con una cuerda o una soga.", "codigo": "RV18",
           "explicacion": "Es el sentido físico más común de «atar», pero una prohibición no se ata con cuerdas." },
         { "t": "castigar con una sanción.", "codigo": "RV19",
           "explicacion": "Se asocia con «prohibición», pero «atar» habla de obligar a todos a lo mismo, no de castigar." },
@@ -115,7 +115,7 @@
           "explicacion": "Encaja con el texto B: pide acuerdos sobre cuándo se escribe, qué es urgente y cómo se compensa ese tiempo (oración 9)." },
         { "t": "ninguna persona debería recibir jamás un mensaje del trabajo fuera de su horario, sea cual sea su oficio.", "codigo": "RV10",
           "explicacion": "Choca con el texto B: dice que algunos oficios necesitan, a veces, responder fuera de hora (oración 8). Revisa «ninguna» y «jamás»." },
-        { "t": "una regla igual para todos los trabajos es la mejor forma de cuidar el descanso del personal de las empresas.", "codigo": "RV9",
+        { "t": "una regla igual para todos los trabajos es la mejor forma de cuidar el descanso del personal de todas las empresas del país.", "codigo": "RV9",
           "explicacion": "Choca con el texto B, que prefiere un acuerdo flexible antes que una regla general (oraciones 7 y 10)." },
         { "t": "la ley debe obligar a todas las empresas a prohibir los mensajes fuera del horario, sin excepción alguna.", "codigo": "RV59",
           "explicacion": "Es la postura del texto A (oraciones 1 y 5); el B la rechaza en la oración 10." },

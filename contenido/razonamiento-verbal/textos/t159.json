@@ -99,7 +99,7 @@
           "explicacion": "Una regla clara es la que se entiende sin dudas, igual para todos." },
         { "t": "con mucha luz.", "codigo": "RV18",
           "explicacion": "Es el sentido más frecuente de «claro» (lo iluminado), pero una regla no tiene luz." },
-        { "t": "justa con todos.", "codigo": "RV19",
+        { "t": "justa con todas las personas que la cumplen.", "codigo": "RV19",
           "explicacion": "Se asocia con «igual para todos», pero «clara» habla de lo fácil de entender, no de lo justo." },
         { "t": "igual para todos.", "codigo": "RV5", "origen": "o5",
           "explicacion": "Repite palabras de la misma oración, que añaden otra cualidad de la regla; no explican «clara»." }
