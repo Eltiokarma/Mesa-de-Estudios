@@ -32,7 +32,32 @@ Rama `rutina/cuentas-app`, creada desde `claude/awesome-wozniak-5etl1n`. Tres co
   - `docs/arquitectura.md` tiene la sección nueva «Cuentas en la app»;
   - `docs/guia-profesores.md` cubre cómo entran con cuenta, el panel, el laboratorio con «Cerrar sesión», los datos que llegan solos y los problemas nuevos. La guía mantiene el modo sin cuentas.
 
-## Huecos del contrato: supuestos que tomé (la rutina del servidor debería confirmarlos)
+## Ajuste al servidor real (12 nov 2026, tarde)
+
+La rutina del servidor fijó los detalles que faltaban (`servidor/LEEME.md`, «Detalles que el contrato no fijaba»). La app y el servidor falso ya los siguen:
+
+- **Login:** `colegio` llega como `{id, nombre}`; en la medición va su id. `seccion` llega como `{id, grado, letra}`.
+- **Contraseña:**
+  - con `debe_cambiar`, la sesión no pide el estado ni sincroniza; lo trae al cambiar la contraseña, y un 403 `debe-cambiar` lleva a la pantalla de contraseña;
+  - el error de contraseña actual equivocada es `contrasena-actual`.
+- **El 401 `token-vencido`** se renueva y se repite (cualquier 401 lo hace).
+- **Estado:** `GET` y `PUT` de `/api/estado` traen las habilitaciones dentro de `est`.
+- **Panel:**
+  - lee `habilitaciones` del avance como filas `{curso, que, abierto}`;
+  - lee de cada alumno `dias_activos`, `unidades_vistas` y `pruebas`, y la de razonamiento verbal sale de `practica['lectura-verbal']`.
+
+**Probado contra el servidor real en local** (uvicorn con SQLite):
+
+- `rutinas/cuentas-app/contra-real.js` pasa entero, con 17 comprobaciones:
+  - el administrador cambia su contraseña, sube el CSV, crea un profesor y baja el PDF;
+  - la alumna entra con `debe_cambiar`, cambia la contraseña y sube 1203 eventos en tandas sin duplicar;
+  - el profesor abre la salida, ve el avance y reinicia la contraseña;
+  - la alumna, con su sesión cortada por el reinicio, conserva lo pendiente, vuelve a entrar y lo sube; el administrador baja sus 1204 eventos.
+- Una pasada en Chromium a 390 px desde `localhost:4173` (CORS) también salió bien: ingreso, contraseña, bienvenida, «✓ Guardado», cerrar sesión y el panel del administrador, sin errores.
+
+**Ojo:** tras un reinicio de contraseña, si el acceso de 15 minutos sigue vigente, el alumno ve la pantalla de contraseña en vez del ingreso. Igual necesita la contraseña nueva que le da el profesor.
+
+## Huecos del contrato: supuestos que tomé al principio (ya resueltos arriba, salvo CORS)
 
 1. **Nombre del rol del administrador del colegio:** usé `admin`. La app también acepta `admin-colegio`, `administrador` y `general`.
 2. **Forma de `GET /api/secciones/{id}/avance`:** usé `{ alumnos: [{ usuario, nombre, dias, modulos, cursos: { <curso>: { entrada: {aciertos,total,fecha}|null, salida } } }], habilitaciones: { salida: [], soluciones: [] } }`.

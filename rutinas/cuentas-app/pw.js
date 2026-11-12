@@ -138,6 +138,8 @@ const espera = ms => new Promise(r => setTimeout(r, ms));
       await page.click('[data-hab="fisica"][data-que="salida"]');
       await page.waitForSelector('[data-hab="fisica"][data-que="salida"].on');
       ok(f.datos.habilitaciones.s4a.salida.has('fisica'), 'abre la salida de física para 4.º A');
+      await page.click('#recargar'); await page.waitForSelector('td.pruebas-al');
+      ok(await page.locator('[data-hab="fisica"][data-que="salida"].on').count() === 1, 'al actualizar, el panel lee del servidor qué está abierto');
       page.once('dialog', d => d.accept());
       await page.click('[data-reiniciar="qroman26"]');
       await page.waitForSelector('.clave-nueva');

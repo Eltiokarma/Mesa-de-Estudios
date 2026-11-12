@@ -1,4 +1,6 @@
-// Servidor falso de cuentas: cumple el «Contrato de la API» de docs/cuentas.md, todo en memoria y sin dependencias.
+// Servidor falso de cuentas: cumple el «Contrato de la API» de docs/cuentas.md, todo en memoria y sin dependencias,
+// con los «Detalles que el contrato no fijaba» del servidor real (servidor/LEEME.md): colegio y sección como objetos,
+// 403 debe-cambiar, 401 token-vencido, estado con habilitaciones y la forma del avance.
 // Sirve para probar la app con cuentas (nucleo/sesion.test.js y las pruebas de Playwright) mientras el servidor
 // de verdad (servidor/, FastAPI) se construye aparte. No es para producción: guarda contraseñas en claro y olvida todo
 // al cerrarse.
@@ -65,8 +67,8 @@ function crear({ ttlAcceso = 15 * 60 * 1000, ttlRenovacion = 30 * 864e5, ahora =
   };
   if (conSemilla) f.sembrar();
 
-  const publico = u => ({ rol: u.rol, nombre: u.nombre, debe_cambiar: !!u.debe_cambiar, colegio: d.colegio.id,
-    ...(u.rol === 'alumno' ? { alumno: u.alumno, seccion: u.seccion } : {}) });
+  const publico = u => ({ rol: u.rol, nombre: u.nombre, debe_cambiar: !!u.debe_cambiar, usuario: u.usuario, colegio: { ...d.colegio },
+    ...(u.rol === 'alumno' ? { alumno: u.alumno, seccion: { ...d.secciones[u.seccion] } } : {}) });
   function emitir(u) {
     const acceso = token(), renovacion = token();
     d.acceso.set(acceso, { usuario: u.usuario, expira: ahora() + ttlAcceso });
@@ -102,11 +104,12 @@ function crear({ ttlAcceso = 15 * 60 * 1000, ttlRenovacion = 30 * 864e5, ahora =
     }
     // Lo demás pide el token de acceso.
     const a = d.acceso.get(String(cab.authorization || '').replace(/^Bearer /, ''));
-    if (!a || a.expira < ahora()) return err('acceso', 401, 'Tu sesión venció.');
+    if (!a || a.expira < ahora()) return err('token-vencido', 401, 'Tu sesión venció.');
     const u = d.usuarios[a.usuario];
+    if (u.debe_cambiar && !(metodo === 'PUT' && ruta === '/api/contrasena')) return err('debe-cambiar', 403, 'Primero elige una contraseña nueva.');
     if (metodo === 'PUT' && ruta === '/api/contrasena') {
       const { actual, nueva } = json(cuerpo);
-      if (actual !== u.contrasena) return err('credenciales', 400, 'La contraseña actual no es correcta.');
+      if (actual !== u.contrasena) return err('contrasena-actual', 400, 'La contraseña actual no es correcta.');
       if (!nueva || String(nueva).length < 6) return err('contrasena-corta', 400, 'La contraseña nueva debe tener 6 caracteres o más.');
       if (nueva === actual) return err('contrasena-igual', 400, 'La contraseña nueva no puede ser igual a la actual.');
       u.contrasena = nueva; u.debe_cambiar = false;
@@ -115,15 +118,16 @@ function crear({ ttlAcceso = 15 * 60 * 1000, ttlRenovacion = 30 * 864e5, ahora =
     if (ruta === '/api/estado' || ruta === '/api/eventos') {
       if (u.rol !== 'alumno') return err('prohibido', 403, 'Solo para alumnos.');
       const st = d.estados[u.alumno] || (d.estados[u.alumno] = { est: { alumno: u.alumno }, actualizado: null });
-      if (metodo === 'GET' && ruta === '/api/estado') {
-        const h = d.habilitaciones[u.seccion] || { salida: new Set(), soluciones: new Set() };
-        return { estado: 200, cuerpo: { est: st.est, actualizado: st.actualizado, habilitaciones: { salida: [...h.salida], soluciones: [...h.soluciones] } } };
-      }
+      const h = d.habilitaciones[u.seccion] || { salida: new Set(), soluciones: new Set() };
+      const hab = { salida: [...h.salida].sort(), soluciones: [...h.soluciones].sort() };
+      const conHab = e => ({ ...e, salidaHabilitada: hab.salida, solucionesHabilitadas: hab.soluciones });
+      if (metodo === 'GET' && ruta === '/api/estado') return { estado: 200, cuerpo: { est: conHab(st.est), actualizado: st.actualizado, habilitaciones: hab } };
       if (metodo === 'PUT' && ruta === '/api/estado') {
         const e = unirEst(st.est, json(cuerpo).est || {});
         e.alumno = u.alumno;
+        delete e.salidaHabilitada; delete e.solucionesHabilitadas; // las decide el profesor, no se guardan del cliente
         st.est = e; st.actualizado = new Date(ahora()).toISOString();
-        return { estado: 200, cuerpo: { est: e } };
+        return { estado: 200, cuerpo: { est: conHab(e), actualizado: st.actualizado, habilitaciones: hab } };
       }
       if (metodo === 'POST' && ruta === '/api/eventos') {
         const l = json(cuerpo).eventos;
@@ -151,22 +155,23 @@ function crear({ ttlAcceso = 15 * 60 * 1000, ttlRenovacion = 30 * 864e5, ahora =
       if (!esProfe || !mias().includes(id)) return err('prohibido', 403, 'Esa sección no es tuya.');
       const h = d.habilitaciones[id];
       if (m[2] === 'avance' && metodo === 'GET') {
+        const p = r => (r ? { aciertos: r.aciertos, total: r.total, fecha: r.fecha || null } : null);
         const alumnos = Object.values(d.usuarios).filter(x => x.seccion === id).map(x => {
-          const e = (d.estados[x.alumno] || {}).est || {};
-          const cursos = {};
-          const p = r => (r ? { aciertos: r.aciertos, total: r.total, fecha: r.fecha || null } : null);
-          for (const [c, r] of Object.entries(e.pruebas || {})) cursos[c] = { entrada: p(r.entrada), salida: p(r.salida) };
-          const lv = (e.practica || {})['lectura-verbal'];
-          if (lv && (lv.entrada || lv.salida)) cursos['razonamiento-verbal'] = { entrada: p(lv.entrada), salida: p(lv.salida) };
-          return { usuario: x.usuario, nombre: x.nombre, dias: (e.dias || []).length, modulos: Object.keys(e.vistas || {}).length, cursos };
+          const e = (d.estados[x.alumno] || {}).est || {}, dias = e.dias || [], pr = e.practica || {};
+          return { usuario: x.usuario, nombre: x.nombre, dias_activos: new Set(dias).size, ultimo_dia: dias.length ? [...dias].sort().pop() : null,
+            unidades_vistas: Object.keys(e.vistas || {}).length, modulos_practicados: Object.keys(pr).filter(k => pr[k] && pr[k].hechos).sort(),
+            pruebas: Object.fromEntries(Object.entries(e.pruebas || {}).map(([c, r]) => [c, { entrada: p(r.entrada), salida: p(r.salida) }])),
+            practica: Object.fromEntries(Object.entries(pr).filter(([, r]) => r && (r.entrada || r.salida)).map(([m, r]) => [m, { entrada: p(r.entrada), salida: p(r.salida) }])) };
         });
-        return { estado: 200, cuerpo: { seccion: d.secciones[id], alumnos, habilitaciones: { salida: [...h.salida], soluciones: [...h.soluciones] } } };
+        // Como el servidor real: una fila por (curso, qué) con abierto verdadero o falso.
+        return { estado: 200, cuerpo: { seccion: d.secciones[id], alumnos, habilitaciones: [...(h.filas || new Map()).values()] } };
       }
       if (m[2] === 'habilitar' && metodo === 'POST') {
         const { curso, que, abierto } = json(cuerpo);
         if (!['salida', 'soluciones'].includes(que) || !curso) return err('habilitar', 400, 'Falta el curso o qué abrir.');
         if (abierto) h[que].add(curso); else h[que].delete(curso);
-        return { estado: 200, cuerpo: { salida: [...h.salida], soluciones: [...h.soluciones] } };
+        (h.filas = h.filas || new Map()).set(curso + '|' + que, { curso, que, abierto: !!abierto, cuando: new Date(ahora()).toISOString() });
+        return { estado: 200, cuerpo: { seccion: id, curso, que, abierto: !!abierto } };
       }
     }
     if ((m = ruta.match(/^\/api\/alumnos\/([^/]+)\/reiniciar$/)) && metodo === 'POST') {

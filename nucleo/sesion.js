@@ -118,6 +118,8 @@
     const activa = () => !!(sesion() || {}).renovacion;
     const seudonimo = () => (usuario() || {}).alumno || '';
     const esAlumno = () => (usuario() || {}).rol === 'alumno';
+    // Con debe_cambiar, el servidor responde 403 debe-cambiar a todo menos PUT /api/contrasena: no se sincroniza.
+    const listo = () => esAlumno() && !(usuario() || {}).debe_cambiar;
 
     function avisar(cambio) {
       info = Object.assign({}, info, cambio, { pendientes: pendientes() });
@@ -175,7 +177,14 @@
       if (!s.acceso || ahora() > (s.expira || 0) - 15000) { await renovar(); s = sesion(); }
       let r = await red(metodo, ruta, cuerpo, s.acceso);
       if (r.status === 401) { await renovar(); r = await red(metodo, ruta, cuerpo, sesion().acceso); }
-      if (!r.ok) throw await errorDe(r);
+      if (!r.ok) {
+        const e = await errorDe(r);
+        if (e.codigo === 'debe-cambiar') {
+          const x = sesion(); if (x && x.usuario) { x.usuario.debe_cambiar = true; escribir(K.sesion, x); }
+          avisar({ estado: 'debe-cambiar' });
+        }
+        throw e;
+      }
       return crudo ? r : json(r);
     }
 
@@ -226,6 +235,8 @@
         }
         const local = leerEst();
         try {
+          // Con debe_cambiar no se puede pedir el estado: llega después de cambiar la contraseña.
+          if (u.debe_cambiar) throw new ErrorApi('debe-cambiar', '', 403);
           const g = await pedir('GET', '/api/estado');
           const e = conHabilitaciones(unirEst(Object.assign({}, g.est || {}, { alumno: u.alumno }), local), g.habilitaciones);
           e.alumno = u.alumno;
@@ -249,6 +260,8 @@
     async function cambiarContrasena(actual, nueva) {
       await pedir('PUT', '/api/contrasena', { actual, nueva });
       const s = sesion(); if (s && s.usuario) { s.usuario.debe_cambiar = false; escribir(K.sesion, s); }
+      // Recién ahora el servidor deja leer el estado del alumno.
+      if (esAlumno()) await sincronizar();
       return true;
     }
 
@@ -258,8 +271,9 @@
     async function salir({ forzar = false } = {}) {
       const alumno = seudonimo();
       if (alumno && pendientes()) {
-        await sincronizar().catch(() => {});
-        if (pendientes() && !forzar) return { ok: false, pendientes: pendientes() };
+        // Con la contraseña sin cambiar no se puede subir nada: lo pendiente se aparta sin preguntar.
+        if (listo()) await sincronizar().catch(() => {});
+        if (pendientes() && !forzar && listo()) return { ok: false, pendientes: pendientes() };
         if (pendientes()) apartar(alumno);
       }
       const s = sesion();
@@ -283,7 +297,7 @@
     function sincronizar() {
       if (sincronizando) return sincronizando;
       sincronizando = (async () => {
-        if (!activa() || !esAlumno() || !seudonimo()) return { ok: false, pendientes: pendientes() };
+        if (!activa() || !listo() || !seudonimo()) return { ok: false, pendientes: pendientes() };
         avisar({ estado: 'subiendo' });
         try {
           for (;;) {
@@ -349,7 +363,7 @@
     // reintento esperando por un fallo, se respeta su espera.
     let prontoT = null;
     function pronto(ms = 3000) {
-      if (!activa() || !esAlumno() || reintento || prontoT) return;
+      if (!activa() || !listo() || reintento || prontoT) return;
       prontoT = reloj.setTimeout(() => { prontoT = null; sincronizar(); }, ms);
     }
     function parar() {

@@ -39,7 +39,9 @@ if (esAlumnoCuenta()) est.alumno = ses.seudonimo();
 if (!est.alumno) est.alumno = idNuevo();
 // Código del colegio: llega en el enlace que reparte el profesor (…/app/?colegio=ABC). Con cuenta, el colegio es el de la cuenta.
 { const c = new URLSearchParams(location.search).get('colegio'); if (c && !esAlumnoCuenta()) est.colegio = c.trim().toUpperCase().slice(0, 20); }
-if (esAlumnoCuenta()) est.colegio = String(cuenta().colegio || est.colegio || '');
+// El servidor manda el colegio como { id, nombre }; en la medición va su id.
+function colegioId(c) { return c && typeof c === 'object' ? String(c.id ?? '') : String(c || ''); }
+if (esAlumnoCuenta()) est.colegio = colegioId(cuenta().colegio) || est.colegio || '';
 // Solo el profesor abre la prueba de salida y la revisión de soluciones, con el enlace que reparte en clase:
 // …/app/?salida=fisica,quimica (o ?salida=todas) y …/app/?soluciones=fisica (o =todas). Queda guardado en este
 // navegador, también si cambia el alumno. No hay servidor ni clave: el control es que el enlace lo da el profesor.
@@ -426,7 +428,7 @@ function actualizarSync() {
 // Después de entrar o salir, el est de la memoria se vuelve a leer del navegador (es de otra persona).
 function recargarEst() {
   est = Object.assign(BASE_EST(), cargarEstado());
-  if (esAlumnoCuenta()) { est.alumno = ses.seudonimo(); est.colegio = String(cuenta().colegio || est.colegio || ''); }
+  if (esAlumnoCuenta()) { est.alumno = ses.seudonimo(); est.colegio = colegioId(cuenta().colegio) || est.colegio || ''; }
   if (!est.alumno) est.alumno = idNuevo();
   aplicarTema();
 }
@@ -512,7 +514,12 @@ function vContrasena(obligatoria) {
       b.disabled = false;
       return error(e.codigo === 'sin-conexion' ? 'Para cambiar la contraseña hace falta internet.' : e.message);
     }
-    if (obligatoria) ir(destinoCuenta(cuenta()));
+    if (obligatoria) {
+      // cambiarContrasena ya trajo el estado del servidor: se vuelve a leer y arranca la sincronización.
+      recargarEst();
+      if (esAlumnoCuenta()) ses.arrancar({ ventana: window, doc: document });
+      ir(destinoCuenta(cuenta()));
+    }
     else { $app.querySelector('form').outerHTML = `<div class="card"><p><b>Listo.</b> Tu contraseña cambió. La próxima vez entra con la nueva.</p><a class="btn morado" href="${u.rol === 'alumno' ? '#/perfil' : '#/panel'}">Volver</a></div>`; }
   };
 }
@@ -561,8 +568,11 @@ async function vPanel() {
     const pr = r => (r ? `${r.aciertos}/${r.total}` : '—');
     const alumnos = (panel.avance && (panel.avance.alumnos || panel.avance)) || [];
     const filasAl = (Array.isArray(alumnos) ? alumnos : []).map(a => {
-      const cursos = Object.entries(a.cursos || {}).filter(([, x]) => x && (x.entrada || x.salida));
-      return `<tr><th scope="row">${esc(a.nombre)}</th><td>${esc(a.usuario)}</td><td>${esc(a.dias ?? a.dias_activos ?? 0)}</td><td>${esc(a.modulos ?? a.modulos_vistos ?? 0)}</td>
+      // pruebas por curso; la de razonamiento verbal vive en practica['lectura-verbal'] (servidor/LEEME.md).
+      const lv = (a.practica || {})['lectura-verbal'];
+      const todas = Object.assign({}, a.pruebas || a.cursos || {}, lv ? { 'razonamiento-verbal': lv } : {});
+      const cursos = Object.entries(todas).filter(([, x]) => x && (x.entrada || x.salida));
+      return `<tr><th scope="row">${esc(a.nombre)}</th><td>${esc(a.usuario)}</td><td>${esc(a.dias_activos ?? a.dias ?? 0)}</td><td>${esc(a.unidades_vistas ?? a.modulos ?? 0)}</td>
         <td class="pruebas-al">${cursos.length ? cursos.map(([c, x]) => `<span>${esc(nombreCurso(c))}: ${pr(x.entrada)} → ${pr(x.salida)}</span>`).join('') : '<span class="sub">Sin pruebas</span>'}</td>
         <td><button class="btn borde chico" data-reiniciar="${esc(a.usuario)}">Reiniciar contraseña</button></td></tr>`; }).join('');
     $app.innerHTML = `<header class="panel-cab"><div><p class="sub">${esc(admin ? 'Administración del colegio' : 'Panel del profesor')}</p><h1>Hola, ${esc(u.nombre || '')}</h1></div>
@@ -578,7 +588,7 @@ async function vPanel() {
           ${filaHab('todas', 'Todos los cursos')}${cat.cursos.map(c => filaHab(c.id, c.nombre)).join('')}</tbody></table></div>
         </div><div>
         <h2>Avance por alumno</h2>
-        ${panel.avance === null ? '<p class="sub">Cargando…</p>' : `<div class="tabla card"><table><thead><tr><th>Alumno</th><th>Usuario</th><th>Días</th><th>Módulos</th><th>Entrada → salida</th><th></th></tr></thead>
+        ${panel.avance === null ? '<p class="sub">Cargando…</p>' : `<div class="tabla card"><table><thead><tr><th>Alumno</th><th>Usuario</th><th>Días</th><th>Unidades</th><th>Entrada → salida</th><th></th></tr></thead>
           <tbody>${filasAl || '<tr><td colspan="6" class="sub">Sin alumnos.</td></tr>'}</tbody></table></div>
           <p><button class="btn borde chico" id="recargar">Actualizar</button></p>`}
       </div></div>` : ''}
@@ -653,7 +663,10 @@ async function vPanel() {
       const a = await ses.pedir('GET', `/api/secciones/${encodeURIComponent(id)}/avance`);
       if (panel.sel !== id) return;
       panel.avance = a;
-      if (a && a.habilitaciones) panel.hab[id] = { salida: a.habilitaciones.salida || [], soluciones: a.habilitaciones.soluciones || [] };
+      // El servidor da una fila por (curso, qué) con abierto; se pasa a { salida: [cursos], soluciones: [cursos] }.
+      const h = a && a.habilitaciones;
+      if (Array.isArray(h)) panel.hab[id] = { salida: h.filter(x => x.abierto && x.que === 'salida').map(x => x.curso), soluciones: h.filter(x => x.abierto && x.que === 'soluciones').map(x => x.curso) };
+      else if (h) panel.hab[id] = { salida: h.salida || [], soluciones: h.soluciones || [] };
     } catch (e) { panel.avance = []; panel.error = e.message; }
     pintar();
   }
@@ -818,6 +831,7 @@ if (ses) {
   ses.alCambiar(i => {
     actualizarSync();
     if (i.estado === 'vencida' && !/^#\/ingreso/.test(location.hash)) return ir('#/ingreso');
+    if (i.estado === 'debe-cambiar' && !/^#\/contrasena/.test(location.hash)) return ir('#/contrasena');
     const [, ruta = 'inicio'] = location.hash.split('/');
     if (cat && i.estado === 'guardado' && ruta === 'inicio' && est.uni && est.grado) {
       const n = avisosSalida().length; if (avisosAntes !== -1 && n !== avisosAntes) vInicio(); avisosAntes = n;

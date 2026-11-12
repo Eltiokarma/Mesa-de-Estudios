@@ -87,9 +87,19 @@ test('login: guarda tokens y nunca la contraseña; credenciales y demasiados int
     assert.ok(!m.alm.todo.includes('abc234'), 'la contraseña no queda en el almacén');
     assert.equal(est(m.alm).alumno, m.f.datos.usuarios.qroman26.alumno, 'est.alumno es el seudónimo de la cuenta');
     assert.equal(est(m.alm).nombre, 'Ana Quispe Román', 'el nombre viene de la cuenta');
+    assert.deepEqual(m.s.usuario().colegio, { id: 'c1', nombre: 'Colegio Piloto' });
+    assert.equal(m.s.usuario().seccion.letra, 'A');
+    // Con debe_cambiar, el servidor no deja leer el estado y la sesión no sincroniza.
+    assert.ok(!m.f.datos.pedidos.some(p => p.ruta === '/api/estado'), 'el login no pide el estado');
+    await assert.rejects(m.s.pedir('GET', '/api/estado'), e => e.codigo === 'debe-cambiar' && e.estado === 403);
+    assert.equal((await m.s.sincronizar()).ok, false);
+    assert.ok(!m.f.datos.pedidos.some(p => p.ruta === '/api/estado' && p.metodo === 'PUT'));
+    await assert.rejects(m.s.cambiarContrasena('mala', 'otra-clave'), e => e.codigo === 'contrasena-actual');
     await assert.rejects(m.s.cambiarContrasena('abc234', 'abc234'), e => e.codigo === 'contrasena-igual');
     await m.s.cambiarContrasena('abc234', 'nueva-clave');
     assert.equal(m.s.usuario().debe_cambiar, false);
+    assert.ok(m.f.datos.pedidos.some(p => p.ruta === '/api/estado' && p.metodo === 'GET'), 'al cambiarla, trae el estado');
+    assert.equal(m.f.estadoDe('qroman26').alumno, m.f.datos.usuarios.qroman26.alumno);
     assert.ok(!m.alm.todo.includes('nueva-clave'));
   } finally { await m.cerrar(); }
 });

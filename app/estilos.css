@@ -558,3 +558,4 @@ input[type=file]{font:inherit;max-width:100%}
 .col2.panel .tabla th[scope=row]{white-space:normal;min-width:90px}
 .col2.panel .tabla .chip{padding:6px 11px}
 .form-cuenta code,.card code{overflow-wrap:anywhere}
+.form-cuenta>*{min-width:0;max-width:100%}
