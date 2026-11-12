@@ -80,7 +80,7 @@ def test_recargar_no_duplica_y_actualiza(e):
 def test_usuario_que_choca_lleva_numero(e):
     _, adm = e.colegio()
     texto = "apellidos,nombres,dni,grado,seccion\nRomán,Quispe,11111111,3,A\nRoman,Queta,22222222,3,A\nROMÁN,Q,33333333,3,A\n"
-    assert [c["usuario"] for c in e.cargar(adm, texto).json()["creados"]] == ["qroman26", "qroman262", "qroman263"]
+    assert [c["usuario"] for c in e.cargar(adm, texto).json()["creados"]] == ["qroman26", "qroman26b", "qroman26c"]
 
 
 def test_reglas_del_usuario():

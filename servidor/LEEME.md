@@ -60,7 +60,7 @@ python3 -c "import secrets; print(secrets.token_urlsafe(48))"                   
 
 1. **New Project → Deploy from GitHub repo** → `Eltiokarma/Mesa-de-Estudios`, con la rama que tenga `servidor/`.
 2. En el servicio, **Settings**:
-   - **Root Directory:** `servidor`.
+   - **Root Directory:** `servidor`. Si Railway dice «Railpack detected a Node project but found no start script», es que está construyendo desde la raíz del repo: falta este campo (Settings → Source → Root Directory).
    - **Config as code → Railway config file:** `/servidor/railway.json`. Railway no busca ese archivo dentro de la carpeta raíz del servicio, así que se le da la ruta completa.
    - El archivo ya trae el comando de arranque (`uvicorn app.main:app --host 0.0.0.0 --port $PORT --workers 1`) y el chequeo de salud (`/api/salud`). Arranca un solo proceso a propósito: el límite de intentos de ingreso vive en memoria, y con varios procesos cada uno contaría sus propios fallos. Para un colegio alcanza; antes de escalar hay que pasar ese conteo a la base de datos. Si no se configura, el `Procfile` arranca lo mismo.
 3. **+ New → Database → PostgreSQL** en el mismo proyecto.
@@ -104,7 +104,7 @@ Las del contrato, más estas:
 - **`GET /api/secciones/{id}/avance`** responde `{ seccion, habilitaciones, alumnos: [{ usuario, nombre, dias_activos, ultimo_dia, unidades_vistas, modulos_practicados, pruebas: { curso: { entrada, salida } }, practica: { modulo: { entrada, salida } } }] }`. En `entrada` y `salida` van `{ aciertos, total, fecha }` o `null`.
 - **`POST /api/secciones/{id}/habilitar`**: `curso` es un id de curso en minúsculas o `todas`. Responde el estado nuevo.
 - **CSV:** admite multipart (cualquier nombre de campo) o el CSV crudo en el cuerpo, hasta 2 MB y 3000 filas. Las filas se numeran como en la hoja (la cabecera es la 1). Un DNI de 7 dígitos se completa con un 0 adelante, porque Excel se come el 0 inicial. El grado se lee del primer dígito del 1 al 6 (`3`, `3.º`, `3ro`). La sección se pasa a mayúsculas y lleva de 1 a 3 letras o números. Un DNI repetido dentro del archivo es error en la segunda fila. Un DNI que ya está en el colegio actualiza nombre y sección y cuenta en `actualizados`.
-- **Usuario que choca:** se le agrega 2, 3, …: `qroman26`, `qroman262`. Los apellidos con partícula se juntan: «De la Cruz» da `delacruz`.
+- **Usuario que choca:** se le agrega una letra: `qroman26`, `qroman26b`, `qroman26c` (sin l ni o). Decisión de Gerson, 12 nov 2026. Los apellidos con partícula se juntan: «De la Cruz» da `delacruz`.
 - **Errores de acceso a lo ajeno:** responden 404 y no 403, para no confirmar que existe una sección o un alumno de otro colegio.
 - **IP para el límite de intentos:** con `CONFIAR_PROXY=1` se toma la última de `X-Forwarded-For`, la que agrega el borde de Railway.
 

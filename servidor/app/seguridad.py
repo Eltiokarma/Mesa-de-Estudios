@@ -116,10 +116,13 @@ def base_usuario(nombres: str, apellidos: str, anio: int) -> str:
 
 
 def usuario_libre(base: str, existe) -> str:
-    """Si `base` choca, le agrega 2, 3, ...: qroman26, qroman262, qroman263."""
+    """Si `base` choca, le agrega una letra: qroman26, qroman26b, qroman26c… (decisión de Gerson, 12 nov 2026:
+    un número pegado se leía como parte del año). Pasada la z, sigue con dos letras: qroman26ba…"""
     if not existe(base):
         return base
-    n = 2
-    while existe(f"{base}{n}"):
-        n += 1
-    return f"{base}{n}"
+    letras = "bcdefghijkmnpqrstuvwxyz"  # sin «l» ni «o», que se confunden con 1 y 0
+    sufijos = list(letras) + [a + b for a in letras for b in letras]
+    for suf in sufijos:
+        if not existe(base + suf):
+            return base + suf
+    raise ValueError(f"demasiados usuarios con la base {base}")
