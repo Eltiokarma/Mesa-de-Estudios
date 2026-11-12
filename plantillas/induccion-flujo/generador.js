@@ -107,10 +107,21 @@
     // Sin distractores absurdos: de 1/20 a 20 veces la correcta (en valor absoluto).
     const ok = e => { if (!Number.isFinite(e.valor) || !(o.negativos ? Math.abs(e.valor) > 1e-12 : e.valor > 0)) return false;
       const r = Math.abs(e.valor / o.correcta); return r >= 1 / 20 && r <= 20; };
-    const alternativas = P.armar({ correcta: o.correcta, errores: o.errores.filter(ok), rng, texto: o.texto, negativos: !!o.negativos });
+    const errores = o.errores.filter(ok);
+    // Formato parejo: si unas opciones salen como múltiplos de π y otras no, todas van en decimales.
+    let texto = o.texto, solucion = o.solucion;
+    const dec = x => num(x) + (o.unidad ? ' ' + o.unidad : '');
+    const conPi = x => !limpio(x) && limpio(x / PI);
+    const vistos = new Set([texto(o.correcta)]), vals = [o.correcta];
+    for (const e of errores) { if (vals.length >= 5) break; const t = texto(e.valor); if (!vistos.has(t)) { vistos.add(t); vals.push(e.valor); } }
+    if (vals.some(conPi) && !vals.every(conPi)) {
+      texto = dec;
+      if (conPi(o.correcta)) solucion = [...solucion, ['En decimales: ', c('x', dec(o.correcta)), '.']];
+    }
+    const alternativas = P.armar({ correcta: o.correcta, errores, rng, texto, negativos: !!o.negativos });
     return {
       id: `${ID}#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
-      alternativas, solucion: o.solucion, respuesta: { valor: o.correcta, unidad: o.unidad }, _datos: o.datos,
+      alternativas, solucion, respuesta: { valor: o.correcta, unidad: o.unidad }, _datos: o.datos,
     };
   }
 
@@ -174,7 +185,9 @@
   };
   // Φ(t) escrito como en los exámenes: «Φ = 0,02·sen(10πt) Wb».
   const wTexto = w => (limpio(w / PI) && !limpio(w) ? textoPi(w / PI) : num(w));
-  const expr = (fn, amp, w) => ({ clave: `${fn}:${Math.round(amp * 1e9) / 1e9}:${Math.round(w * 1e9) / 1e9}`, texto: `Φ = ${num(amp)}·${fn}(${wTexto(w)}t) Wb` });
+  // «cos(5πt)», pero «cos t» si ω = 1 rad/s.
+  const argumento = (fn, w) => (Math.abs(w - 1) < 1e-12 ? `${fn} t` : `${fn}(${wTexto(w)}t)`);
+  const expr = (fn, amp, w) => ({ clave: `${fn}:${Math.round(amp * 1e9) / 1e9}:${Math.round(w * 1e9) / 1e9}`, texto: `Φ = ${num(amp)}·${argumento(fn, w)} Wb` });
 
   function expresion(rng, semilla) {
     const a = area(rng), B = rng.elegir([0.1, 0.2, 0.4, 0.5, 0.8, 1, 1.5, 2]), g = giro(rng);
@@ -225,17 +238,17 @@
     const tTxt = `${fraccion(t)} s`;
     const enunciado = ['Una espira de ', c('A', a.texto), ' de área gira con rapidez constante de ', c('w', g.texto), ' en un campo magnético uniforme de ', c('B', `${num(B)} T`), ', alrededor de un eje perpendicular al campo. ', ARRANQUE[inicio]];
     const pregunta = ['¿Cuánto vale el ', c('x', 'flujo magnético'), ` a través de la espira en t = ${tTxt}? (Con signo: negativo si las líneas la atraviesan por la otra cara.)`];
+    const angTxt = { 1: 'π/6', 2: 'π/3', 3: 'π/2', 4: '2π/3', 5: '5π/6', 6: 'π', 7: '7π/6', 8: '4π/3', 9: '3π/2', 10: '5π/3', 11: '11π/6' }[j];
     const f = fGiro(g);
     const errores = [
       ta('IN-fase-cero', amp * otra(ang), inicio === 'paralelo'
         ? 'Usaste Φ = B·A·cos ωt, que vale B·A en t = 0. Pero en t = 0 la espira es paralela al campo y el flujo es cero: Φ = B·A·sen ωt.'
         : 'Usaste Φ = B·A·sen ωt, que vale 0 en t = 0. Pero en t = 0 la espira es perpendicular al campo y el flujo es máximo: Φ = B·A·cos ωt.'),
-      h('IN-flujo-max', amp, 'Ese es el flujo máximo, B·A, cuando la espira es perpendicular al campo. En ese instante la espira está inclinada: hay que multiplicar por el seno o el coseno de ω·t.'),
-      h('IN-signo', -correcta, 'Te salió el signo cambiado. Revisa en qué parte de la vuelta está la espira: después de un cuarto de vuelta desde la posición perpendicular, las líneas empiezan a entrar por la otra cara y el flujo es negativo.'),
+      h('IN-signo', -correcta, `Te salió ${correcta > 0 ? 'negativo' : 'positivo'}. En t = ${tTxt} la espira giró ${angTxt} rad desde la posición ${inicio === 'paralelo' ? 'paralela al campo' : 'perpendicular al campo'}, y ${inicio === 'paralelo' ? 'sen' : 'cos'}(${angTxt}) es ${correcta > 0 ? 'positivo: las líneas la siguen atravesando por la misma cara que ' + (inicio === 'paralelo' ? 'cuando el flujo empezó a crecer' : 'al inicio') : 'negativo: las líneas ya la atraviesan por la otra cara'}.`),
+      ...(Math.abs(Math.abs(correcta) - amp) > 1e-9 ? [h('IN-flujo-max', amp, 'Ese es el flujo máximo, B·A, cuando la espira es perpendicular al campo. En ese instante la espira está inclinada: hay que multiplicar por el seno o el coseno de ω·t.')] : []),
       ...(g.forma === 'rpm' ? [tr('U7-rpm', amp * fn(g.rpm * t), 'Usaste las rpm como si fueran rad/s dentro del seno o del coseno. Primero se pasa: ω = 2π·(rpm/60).')] : []),
       tr('U7-f-como-omega', amp * fn(f * t), `Usaste la frecuencia (${vueltas(f)} por segundo) como si fuera ω. El ángulo girado es ω·t con ω = 2π·f.`),
     ];
-    const angTxt = { 1: 'π/6', 2: 'π/3', 3: 'π/2', 4: '2π/3', 5: '5π/6', 6: 'π', 7: '7π/6', 8: '4π/3', 9: '3π/2', 10: '5π/3', 11: '11π/6' }[j];
     const solucion = [
       ...pasoA(a),
       ...pasoW(g),

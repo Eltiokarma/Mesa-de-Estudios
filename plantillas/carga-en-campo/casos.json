@@ -2,7 +2,7 @@
   "plantilla": "carga-en-campo",
   "tolerancia": 1e-9,
   "nota": "SI. La tolerancia es relativa. radio, paso y radio de la hélice en cm; periodos en s (ns en «cambio»); masa en kg; voltajes en V; E en V/m; fuerza en N; aceleración en m/s²; campo en T. En la hélice la respuesta es «forma:radio en cm». Esperados calculados a mano con r = mv/(|q|B), T = 2πm/(|q|B), |q|V = ½mv², E = vB, F = B(ε/R)L y B = µ0I/(2R), sin mirar la salida del generador.",
-  "verificacion": "PENDIENTE",
+  "verificacion": "Verificado a ciegas (12 nov 2026) por un subagente que no vio el generador: 46 problemas (16 de casos.json y 30 semillas nuevas) resueltos con r = mv⊥/(|q|B), T = 2πm/(|q|B), paso v∥·T, |q|V = ½mv², E = vB, F = BIL con I = ε/R y B = µ0I/(2R). 46/46 coinciden en letra y valor; tras la revisión se ajustaron ayudas, formato y respaldos.",
   "casos": [
     {
       "semilla": 0,
@@ -119,7 +119,7 @@
       },
       "esperado": {
         "respuesta": 0.000003141592653589793,
-        "exacta": "π × 10⁻⁶ s"
+        "exacta": "3,14 × 10⁻⁶ s"
       }
     },
     {
@@ -142,8 +142,10 @@
       "entrada": {
         "tipo": "cruzados",
         "sub": "campo",
+        "pide": "E",
         "particula": "proton",
         "v": 200000,
+        "d": 0.05,
         "B": 0.025,
         "mT": true
       },
@@ -164,7 +166,7 @@
       },
       "esperado": {
         "respuesta": 0.000028274333882308137,
-        "exacta": "9π × 10⁻⁶ T"
+        "exacta": "2,83 × 10⁻⁵ T"
       }
     },
     {

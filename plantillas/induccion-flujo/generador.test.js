@@ -171,6 +171,10 @@ test('alternativas sin absurdos y con la misma limpieza que la correcta (600 sem
   let redonda = 0;
   for (let s = 0; s < 600; s++) {
     const p = gen.generar(s), c = p.alternativas.find(a => a.correcta);
+    const ids = p.alternativas.filter(a => a.error).map(a => a.error.id);
+    assert.equal(new Set(ids).size, ids.length, `semilla ${s}: un id repetido (${ids})`);
+    const textos = p.alternativas.map(a => a.texto).filter(t => !t.startsWith('Φ'));
+    assert.ok(textos.every(t => t.includes('π')) || textos.every(t => !t.includes('π')), `semilla ${s}: π disparejo (${textos})`);
     if (typeof c.valor === 'number') for (const a of p.alternativas) {
       const r = Math.abs(a.valor / c.valor);
       assert.ok(r >= 1 / 20 - 1e-12 && r <= 20 + 1e-9, `semilla ${s}: «${a.texto}» frente a «${c.texto}»`);

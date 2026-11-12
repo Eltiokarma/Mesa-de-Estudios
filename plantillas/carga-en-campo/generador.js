@@ -50,7 +50,6 @@
   const h = (id, valor, explicacion, fuente = null) => ({ id, valor, explicacion, respaldo: 'hipotesis', fuente });
   const tr = (id, valor, explicacion) => h(id, valor, explicacion, TR);
   const ta = (id, valor, explicacion) => h(id, valor, explicacion, TRA);
-  const pa = (id, valor, explicacion) => ({ id, valor, explicacion, respaldo: 'parcial', fuente: EM });
   const c = P.v;
   const PI = Math.PI;
   const MU0 = 4 * PI * 1e-7;
@@ -112,9 +111,7 @@
   }
   const rapidez = (rng, exps) => rng.elegir([1, 1.5, 2, 2.5, 3, 4, 5, 6, 8]) * 10 ** rng.elegir(exps);
   const pasoMT = b => (b.mT ? [['El campo en teslas: ', c('B', `${b.texto} = ${num(b.B)} T`), '.']] : []);
-  // U2 con el prefijo mal pasado: 1 T = 1000 mT, pero se divide entre 100 (el campo sale 10 veces mayor).
-  // (Usar los mT como si fueran T da un factor 1000: una opción así se descarta por absurda.)
-  const errMT = (b, valor, que = 'el resultado') => (b.mT ? [tr('U2-mT-100', valor, `Pasaste los militeslas a teslas dividiendo entre 100, y el campo te salió 10 veces mayor. Un tesla son 1000 mT: ${b.texto} = ${num(b.B)} T. Con eso cambia ${que}.`)] : []);
+  // (Los mT tomados como T dan un factor 1000: esa opción sería absurda; la conversión queda en la solución.)
 
   // ---------- Armado ----------
   function generar(semilla) {
@@ -148,10 +145,22 @@
     if (!exacto(o.correcta)) return null;
     // Sin distractores absurdos: de 1/20 a 20 veces la correcta.
     const errores = o.errores.filter(e => Number.isFinite(e.valor) && e.valor > 0 && e.valor / o.correcta >= 1 / 20 && e.valor / o.correcta <= 20);
-    const alternativas = P.armar({ correcta: o.correcta, errores, rng, texto: o.texto });
+    // Formato parejo: si unas opciones salen como múltiplos de π y otras no, todas van en decimales.
+    let texto = o.texto, solucion = o.solucion;
+    if (texto !== razon) {
+      const dec = x => num(x) + (o.unidad ? ' ' + o.unidad : '');
+      const conPi = x => !limpio(x) && limpio(x / PI);
+      const vistos = new Set([texto(o.correcta)]), vals = [o.correcta];
+      for (const e of errores) { if (vals.length >= 5) break; const t = texto(e.valor); if (!vistos.has(t)) { vistos.add(t); vals.push(e.valor); } }
+      if (vals.some(conPi) && !vals.every(conPi)) {
+        texto = dec;
+        if (conPi(o.correcta)) solucion = [...solucion, ['En decimales: ', c('x', dec(o.correcta)), '.']];
+      }
+    }
+    const alternativas = P.armar({ correcta: o.correcta, errores, rng, texto });
     return {
       id: `${ID}#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
-      alternativas, solucion: o.solucion, respuesta: { valor: o.correcta, unidad: o.unidad }, _datos: o.datos,
+      alternativas, solucion, respuesta: { valor: o.correcta, unidad: o.unidad }, _datos: o.datos,
     };
   }
 
@@ -165,7 +174,6 @@
     const enunciado = [`${descr(p)} entra con una rapidez de `, c('v', `${num(v)} m/s`), ' a una región con un campo magnético uniforme de ', c('B', b.texto), ', perpendicular a su velocidad.'];
     const pregunta = ['¿Cuál es el ', c('x', 'radio'), ' de la circunferencia que describe?'];
     const errores = [
-      ...errMT(b, rc / 10, 'el radio'),
       tr('PR3-medio', rc / 2, 'Pusiste un ½ como en la energía cinética. La fuerza centrípeta es m·v²/r, sin ½: r = m·v/(|q|·B).'),
       h('MG-diametro', 2 * rc, 'Ese es el diámetro: la distancia entre el punto donde entra y el punto donde está después de media vuelta. El radio es m·v/(|q|·B), la mitad.'),
       h('MG-perimetro', 2 * PI * rc, 'Multiplicaste por 2π: eso es la longitud de la circunferencia, 2π·r. El radio es solo m·v/(|q|·B).'),
@@ -233,7 +241,6 @@
     const errores = [
       tr('U7-sin-2pi', p.m / (p.q * b.B), 'Calculaste m/(|q|·B), que es 1/ω. Una vuelta son 2π rad: T = 2π/ω = 2π·m/(|q|·B).'),
       tr('PR7-medio', PI * p.m / (p.q * b.B), 'Ese es el tiempo de media vuelta, π·m/(|q|·B). El periodo es una vuelta completa: el doble.'),
-      ...errMT(b, T / 10, 'el periodo'),
       h('PR7-doble', 2 * T, 'Te salió el doble: contaste dos veces el 2 de la vuelta. Una vuelta son 2π rad, y T = 2π·m/(|q|·B).'),
     ];
     const solucion = [
@@ -258,7 +265,6 @@
     const errores = [
       tr('U7-f-como-omega', q * b.B * t / n, `Tomaste ${n} vueltas entre el tiempo como si fuera ω, en rad/s. Eso es la frecuencia f, en vueltas por segundo; ω = 2π·f.`),
       tr('PR7-tiempo-total', q * b.B * t / (2 * PI), `Usaste el tiempo de las ${n} vueltas como periodo. El periodo es lo que dura una sola vuelta: T = t/${n}.`),
-      ...errMT(b, m * 10, 'la masa'),
       h('MG-sin-2', 2 * m, 'Te faltó el 2 de 2π: de T = 2π·m/(|q|·B) sale m = |q|·B·T/(2π), no |q|·B·T/π.'),
     ];
     const solucion = [
@@ -285,7 +291,7 @@
       : [`Si ${p.el} entrara con la misma rapidez a un campo con `, c('k', `${veces} de intensidad`), ', ¿cuál sería su ', c('x', 'periodo'), '?'];
     const errores = modo === 'v' ? [
       h('MG-periodo-con-v', T0 / k, `Pensaste que, al ir ${k} veces más rápido, da la vuelta en ${k} veces menos tiempo. Pero el radio también crece ${k} veces (r = m·v/(|q|·B)): recorre una circunferencia ${k} veces más larga, y el periodo no cambia.`),
-      h('MG-periodo-con-v', T0 * k, 'El periodo no crece con la rapidez. T = 2π·m/(|q|·B): no tiene v.'),
+      h('MG-periodo-crece-con-v', T0 * k, 'El periodo no crece con la rapidez. T = 2π·m/(|q|·B): no tiene v.'),
       tr('PR1-periodo-v2', T0 / (k * k), 'Dividiste entre el cuadrado del cambio de rapidez. El periodo no depende de la rapidez: ni de v ni de v².'),
       tr('PR2-periodo-raiz', T0 / Math.sqrt(k), 'Dividiste entre la raíz del cambio. El periodo no depende de la rapidez.'),
     ] : [
@@ -307,6 +313,7 @@
 
   // ---- hélice ----
   const SEN = { 30: 0.5, 37: 0.6, 53: 0.8 };
+  const AYUDA = { 30: 'Usa sen 30° = 1/2 y cos 30° = √3/2.', 37: 'Usa sen 37° = 3/5 y cos 37° = 4/5.', 53: 'Usa sen 53° = 4/5 y cos 53° = 3/5.', 60: 'Usa sen 60° = √3/2 y cos 60° = 1/2.' };
   const COS = { 37: 0.8, 53: 0.6, 60: 0.5 };
   function heliceRadio(rng, semilla) {
     const p = PARTS[rng.elegir(['proton', 'proton', 'alfa', 'deuteron', 'electron'])];
@@ -317,13 +324,13 @@
     if (!limpio(r) || !limpio(rTot) || r < 0.5 || rTot > 500) return null;
     const forma = (f, x) => ({ clave: `${f}:${Math.round(x * 1e6) / 1e6}`, texto: `${f === 'helice' ? 'Hélice' : 'Circunferencia'} de ${num(x)} cm de radio` });
     const variables = { v: { nombre: 'rapidez', color: 'o' }, th: { nombre: 'ángulo con el campo', color: 'h' }, B: { nombre: 'campo magnético', color: 'i' }, x: { nombre: 'trayectoria y radio', color: 'd' } };
-    const enunciado = [`${descr(p)} entra con una rapidez de `, c('v', `${num(v)} m/s`), ' a una región con un campo magnético uniforme de ', c('B', b.texto), '. Su velocidad forma ', c('th', `${th}°`), ` con el campo. (Usa sen 37° = 3/5 y sen 53° = 4/5.)`];
+    const enunciado = [`${descr(p)} entra con una rapidez de `, c('v', `${num(v)} m/s`), ' a una región con un campo magnético uniforme de ', c('B', b.texto), '. Su velocidad forma ', c('th', `${th}°`), ` con el campo. (${AYUDA[th]})`];
     const pregunta = ['¿Qué ', c('x', 'trayectoria'), ' describe y de qué ', c('x', 'radio'), '?'];
     const errores = [
       { id: 'MG-v-total', ...forma('circunferencia', rTot), respaldo: 'hipotesis', fuente: TRA, explicacion: 'Usaste la rapidez total y supusiste una circunferencia. Solo la parte de la velocidad perpendicular al campo hace girar; la parte paralela no siente fuerza y la lleva de avance: es una hélice con v⊥ = v·sen θ.' },
-      { id: 'MG-v-total', ...forma('helice', rTot), respaldo: 'hipotesis', fuente: TRA, explicacion: `La forma está bien, pero usaste la rapidez total para el radio. El radio sale de la componente perpendicular al campo: v⊥ = v·sen ${th}°.` },
+      { id: 'MG-v-total-helice', ...forma('helice', rTot), respaldo: 'hipotesis', fuente: TRA, explicacion: `La forma está bien, pero usaste la rapidez total para el radio. El radio sale de la componente perpendicular al campo: v⊥ = v·sen ${th}°.` },
       { id: 'MG-circulo-oblicuo', ...forma('circunferencia', r), respaldo: 'hipotesis', fuente: TRA, explicacion: 'El radio está bien, pero no es una circunferencia: la componente de la velocidad paralela al campo no siente fuerza y se mantiene, así que la carga avanza a lo largo del campo mientras gira. Es una hélice.' },
-      { id: 'MG3-coseno', ...forma('helice', rCos), respaldo: 'parcial', fuente: EM, explicacion: `Tomaste la componente paralela al campo (v·cos ${th}°) en vez de la perpendicular. La que hace girar es la perpendicular al campo: v⊥ = v·sen ${th}°.` },
+      { id: 'MG3-coseno', ...forma('helice', rCos), respaldo: 'hipotesis', fuente: EM, explicacion: `Tomaste la componente paralela al campo (v·cos ${th}°) en vez de la perpendicular. La que hace girar es la perpendicular al campo: v⊥ = v·sen ${th}°.` },
     ];
     const correcta = forma('helice', r);
     const alternativas = P.armarTexto({ correcta, errores, rng });
@@ -348,14 +355,13 @@
     const T = 2 * PI * p.m / (p.q * b.B), paso = v * cs * T * 100;
     if (!exacto(paso) || paso < 0.5 || paso / PI > 500) return null;
     const variables = { v: { nombre: 'rapidez', color: 'o' }, th: { nombre: 'ángulo con el campo', color: 'h' }, B: { nombre: 'campo magnético', color: 'i' }, x: { nombre: 'paso de la hélice', color: 'd' } };
-    const enunciado = [`${descr(p)} entra con una rapidez de `, c('v', `${num(v)} m/s`), ' a una región con un campo magnético uniforme de ', c('B', b.texto), '. Su velocidad forma ', c('th', `${th}°`), ' con el campo, y describe una hélice. (Usa sen 37° = 3/5, sen 53° = 4/5 y cos 60° = 1/2.)'];
+    const enunciado = [`${descr(p)} entra con una rapidez de `, c('v', `${num(v)} m/s`), ' a una región con un campo magnético uniforme de ', c('B', b.texto), '. Su velocidad forma ', c('th', `${th}°`), ' con el campo, y describe una hélice. (', AYUDA[th], ')'];
     const pregunta = ['¿Cuál es el ', c('x', 'paso'), ' de la hélice, la distancia que avanza a lo largo del campo en cada vuelta?'];
     const errores = [
-      pa('MG3-seno', v * s * T * 100, `Usaste la componente perpendicular (v·sen ${th}°) para el avance. A lo largo del campo avanza con la componente paralela: v∥ = v·cos ${th}°.`),
+      h('MG3-seno', v * s * T * 100, `Usaste la componente perpendicular (v·sen ${th}°) para el avance. A lo largo del campo avanza con la componente paralela: v∥ = v·cos ${th}°.`, EM),
       ta('MG-v-total', v * T * 100, 'Usaste la rapidez total. Lo que avanza a lo largo del campo en una vuelta sale de la componente paralela: paso = v∥·T.'),
       tr('PR7-medio', v * cs * T * 50, 'Usaste el tiempo de media vuelta. El paso es lo que avanza en una vuelta completa: T = 2π·m/(|q|·B).'),
       h('MG-paso-perimetro', 2 * PI * p.m * v * s / (p.q * b.B) * 100, 'Calculaste la longitud de la circunferencia que se ve de frente, 2π·r. El paso es otra cosa: lo que avanza a lo largo del campo en una vuelta, v∥·T.'),
-      ...errMT(b, paso / 10, 'el paso'),
     ];
     const solucion = [
       ['La componente paralela al campo no cambia: ', c('v', 'v∥'), ' = v·cos ', c('th', `${th}°`), ` = ${num(v * cs)} m/s. La perpendicular hace girar.`],
@@ -383,7 +389,6 @@
       const errores = [
         tr('PR3-sin-medio', rc / Math.SQRT2, 'Olvidaste el ½ de la energía cinética: con |q|·V = m·v², la rapidez sale √2 veces menor. Es |q|·V = ½·m·v².'),
         tr('PR3-doble-medio', rc * Math.SQRT2, 'Pusiste el ½ al otro lado: |q|·V = ½·m·v² da v = √(2|q|V/m), no √(4|q|V/m).'),
-        ...errMT(b, rc / 10, 'el radio'),
         h('MG-diametro', 2 * rc, 'Ese es el diámetro, la distancia a la que sale después de media vuelta. El radio es la mitad: m·v/(|q|·B).'),
       ];
       const solucion = [solV,
@@ -398,13 +403,12 @@
     const enunciado = diam
       ? [`${intro}. Luego entra por una rendija, perpendicular a un campo magnético uniforme de `, c('B', b.texto), ', da media vuelta y choca con la placa a ', c('r', `${num(2 * rc)} cm`), ' de la rendija.']
       : [`${intro}. Luego entra perpendicular a un campo magnético uniforme de `, c('B', b.texto), ' y describe una circunferencia de ', c('r', `${num(rc)} cm`), ' de radio.'];
-    const pregunta = ['¿Qué ', c('x', 'diferencia de potencial'), ' lo aceleró?'];
+    const pregunta = ['¿Qué ', c('x', 'diferencia de potencial'), ` ${p.Un.startsWith('Una') ? 'la' : 'lo'} aceleró?`];
     const errores = [
       ...(diam ? [tr('PR6-diametro', 4 * V, 'Usaste la distancia a la rendija como radio. Después de media vuelta la carga choca a un diámetro de la rendija: el radio es la mitad. Como r va al cuadrado, el error es de 4 veces.')] : []),
       tr('PR1-B-sin-cuadrado', V / b.B, 'Te faltó elevar el campo al cuadrado. V = |q|·B²·r²/(2m): r y B van al cuadrado.'),
       tr('PR3-sin-medio', 2 * V, 'Olvidaste el ½ de la energía cinética: |q|·V = ½·m·v², no m·v². Por eso te sale el doble.'),
       tr('PR3-doble-medio', V / 2, 'Pusiste el ½ dos veces. Es |q|·V = ½·m·v², con v = |q|·B·r/m.'),
-      ...errMT(b, V * 100, 'el voltaje (B va al cuadrado)'),
       tr('PR1-sin-cuadrado', V / r, 'Te faltó elevar el radio al cuadrado. V = |q|·B²·r²/(2m): r y B van al cuadrado.'),
     ];
     const solucion = [
@@ -422,25 +426,34 @@
   // ---- campos cruzados ----
   function cruzadosCampo(rng, semilla) {
     const p = PARTS[rng.elegir(['proton', 'electron', 'alfa', 'deuteron'])];
-    const b = campoB(rng, rng.entero(0, 3) < 3 ? 'mT' : false); // casi siempre en mT, la trampa del examen
+    const b = campoB(rng, rng.entero(0, 3) < 3 ? 'mT' : false); // casi siempre en mT, como en el examen
     const v = rapidez(rng, [4, 5, 6]);
-    const E = v * b.B;
-    if (!limpio(E) || E < 10 || E > 1e7) return null;
-    const variables = { v: { nombre: 'rapidez', color: 'o' }, B: { nombre: 'campo magnético', color: 'i' }, x: { nombre: 'campo eléctrico', color: 'd' } };
-    const enunciado = [`${descr(p)} entra con una rapidez de `, c('v', `${num(v)} m/s`), ' entre dos placas paralelas, donde hay un campo magnético uniforme de ', c('B', b.texto), ' perpendicular a su velocidad. Entre las placas también hay un campo eléctrico, perpendicular a los dos.'];
-    const pregunta = ['¿Qué ', c('x', 'campo eléctrico'), ` hace falta para que ${p.el} pase sin desviarse?`];
+    const dcm = rng.elegir([5, 8, 10]), d = dcm / 100;
+    const pide = rng.elegir(['E', 'E', 'V']);
+    const E = v * b.B, dV = E * d;
+    const correcta = pide === 'E' ? E : dV;
+    if (!limpio(E) || !limpio(dV) || E < 10 || E > 1e7) return null;
+    const variables = { v: { nombre: 'rapidez', color: 'o' }, B: { nombre: 'campo magnético', color: 'i' }, d: { nombre: 'separación', color: 'h' }, x: { nombre: pide === 'E' ? 'campo eléctrico' : 'voltaje entre placas', color: 'd' } };
+    const enunciado = [`${descr(p)} entra con una rapidez de `, c('v', `${num(v)} m/s`), ' entre dos placas paralelas separadas ', c('d', `${dcm} cm`), ', donde hay un campo magnético uniforme de ', c('B', b.texto), ' perpendicular a su velocidad. Las placas están conectadas a una fuente, que crea entre ellas un campo eléctrico perpendicular a los dos.'];
+    const pregunta = pide === 'E'
+      ? ['¿Qué ', c('x', 'campo eléctrico'), ` hace falta entre las placas para que ${p.el} pase sin desviarse?`]
+      : ['¿Qué ', c('x', 'voltaje'), ` debe dar la fuente para que ${p.el} pase sin desviarse?`];
     const errores = [
-      ...errMT(b, E * 10, 'el campo eléctrico'),
-      tr('PR3-medio', E / 2, 'Pusiste un ½ como en la energía cinética. Aquí se igualan dos fuerzas, |q|·E = |q|·v·B, y no hay ningún ½.'),
-      h('MG-doble', 2 * E, 'Te salió el doble. Para que no se desvíe, la fuerza eléctrica tiene que ser igual a la magnética, no el doble: E = v·B.'),
+      tr('PR3-medio', correcta / 2, 'Pusiste un ½ como en la energía cinética. Aquí se igualan dos fuerzas, |q|·E = |q|·v·B, y no hay ningún ½.'),
+      h('MG-doble', 2 * correcta, 'Te salió el doble. Para que no se desvíe, la fuerza eléctrica tiene que ser igual a la magnética, no el doble: E = v·B.'),
+      pide === 'E'
+        ? h('MG-voltaje-por-campo', dV, 'Multiplicaste por la separación: eso es el voltaje entre las placas, ΔV = E·d. Se pide el campo, E = v·B.')
+        : h('MG-campo-como-voltaje', E, 'Ese es el campo eléctrico, en V/m. El voltaje entre las placas es ese campo por la separación: ΔV = E·d.'),
     ];
+    const u = pide === 'E' ? 'V/m' : 'V';
     const solucion = [
-      ['Para que no se desvíe, la fuerza eléctrica y la magnética deben anularse: |q|·', c('x', 'E'), ' = |q|·', c('v', 'v'), '·', c('B', 'B'), '. La carga se simplifica: E = v·B, sea cual sea la partícula.'],
+      ['Para que no se desvíe, la fuerza eléctrica y la magnética deben anularse: |q|·E = |q|·', c('v', 'v'), '·', c('B', 'B'), '. La carga se simplifica: E = v·B, sea cual sea la partícula.'],
       ...pasoMT(b),
-      [c('x', 'E'), ` = ${num(v)} · ${num(b.B)} = `, c('x', `${num(E)} V/m`), '.'],
+      [pide === 'E' ? c('x', 'E') : 'E', ` = ${num(v)} · ${num(b.B)} = `, pide === 'E' ? c('x', `${num(E)} V/m`) : `${num(E)} V/m`, '.'],
+      ...(pide === 'V' ? [['Entre placas paralelas, ', c('x', 'ΔV'), ' = E·', c('d', 'd'), ` = ${num(E)} · ${num(d)} = `, c('x', `${num(dV)} V`), '.']] : []),
     ];
-    return cerrar(rng, semilla, { correcta: E, errores, texto: x => txt(x, 'V/m'), unidad: 'V/m', variables, enunciado, pregunta, solucion,
-      datos: { tipo: 'cruzados', sub: 'campo', particula: p.id, v, B: b.B, mT: b.mT } });
+    return cerrar(rng, semilla, { correcta, errores, texto: x => txt(x, u), unidad: u, variables, enunciado, pregunta, solucion,
+      datos: { tipo: 'cruzados', sub: 'campo', pide, particula: p.id, v, d, B: b.B, mT: b.mT } });
   }
 
   function cruzadosRapidez(rng, semilla) {
@@ -454,7 +467,6 @@
     const pregunta = ['¿Con qué ', c('x', 'rapidez'), ' pasan sin desviarse?'];
     const errores = [
       h('MG-voltaje-como-campo', dV / b.B, 'Usaste el voltaje como si fuera el campo eléctrico. Entre placas paralelas, E = ΔV/d: primero se divide entre la separación.'),
-      ...errMT(b, v / 10, 'la rapidez'),
       tr('PR3-medio', v / 2, 'Pusiste un ½ como en la energía cinética. Aquí se igualan dos fuerzas, |q|·E = |q|·v·B: v = E/B.'),
       h('MG-doble', 2 * v, 'Te salió el doble. Sin desviarse, la fuerza eléctrica es igual a la magnética: v = E/B.'),
     ];
@@ -483,7 +495,6 @@
       const pregunta = ['¿Qué ', c('x', 'fuerza horizontal'), ' hay que aplicar a la barra para mantenerla quieta?'];
       const errores = [
         ta('MG-sin-ohm', b.B * eps * L, 'Usaste el voltaje de la batería como si fuera la corriente. Primero se calcula la corriente con la ley de Ohm: I = ε/R.'),
-        ...errMT(b, F * 10, 'la fuerza'),
         h('MG-sin-L', F / L, 'Te faltó el largo de la barra. La fuerza sobre el conductor es B·I·L: depende de cuánto mide el tramo dentro del campo.'),
         tr('PR4-ohm', b.B * eps * R * L, 'Multiplicaste la fem por la resistencia. La ley de Ohm dice I = ε/R: más resistencia, menos corriente.'),
         h('MG-mitad', F / 2, 'Dividiste entre 2. La fuerza sobre un tramo recto perpendicular al campo es B·I·L, sin ningún medio.'),
@@ -499,7 +510,6 @@
     const pregunta = ['Al cerrar el circuito, con la barra en reposo, ¿cuál es su ', c('x', 'aceleración'), '?'];
     const errores = [
       ta('MG-sin-ohm', b.B * eps * L / m, 'Usaste el voltaje de la batería como si fuera la corriente. Primero, I = ε/R.'),
-      ...errMT(b, a * 10, 'la aceleración'),
       h('MG-sin-L', a / L, 'Te faltó el largo de la barra. La fuerza es B·I·L, y a = F/m.'),
       h('MG-mitad', a / 2, 'Dividiste entre 2. La fuerza sobre la barra es B·I·L, sin ningún medio, y a = F/m.'),
       tr('PR4-ohm', b.B * eps * R * L / m, 'Multiplicaste la fem por la resistencia. La ley de Ohm dice I = ε/R.'),
