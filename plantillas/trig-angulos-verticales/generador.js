@@ -429,7 +429,7 @@
     }
     const errores = erroresDos({ d, tA: a.t, tB: b.t });
     errores.push(h('AV-distancia-por-altura', H / b.t, 'Esa es la distancia horizontal en el segundo momento, no la altura.'));
-    if (kmh) errores.splice(1, 0, h('AV-sin-convertir', H * 3.6, `Multiplicaste ${c.v} por ${c.t} sin pasar los km/h a m/s. Con segundos, la rapidez va en m/s: ${c.v} km/h = ${P.formatear(c.v / 3.6, 2)} m/s.`));
+    if (kmh) errores.splice(1, 0, h('AU3-sin-convertir', H * 3.6, `Multiplicaste ${c.v} por ${c.t} sin pasar los km/h a m/s. Con segundos, la rapidez va en m/s: ${c.v} km/h = ${P.formatear(c.v / 3.6, 2)} m/s.`));
     if (sub === 'avioneta') {
       const otraV = c.sentido === 'opuesto' ? c.v - c.v2 : c.v + c.v2;
       errores.splice(1, 0, h('AV-velocidad-relativa', calc.mismoLado({ d: otraV * c.t / 3.6, tA: a.t, tB: b.t }), c.sentido === 'opuesto' ? 'Restaste las rapideces. Si se acercan en sentidos contrarios, cada segundo la distancia horizontal entre ellos baja en la suma de las dos rapideces.' : 'Sumaste las rapideces. Si van en el mismo sentido, la avioneta solo gana la diferencia de rapideces cada segundo.'),

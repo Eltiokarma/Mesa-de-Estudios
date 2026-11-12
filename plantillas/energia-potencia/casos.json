@@ -1,8 +1,8 @@
 {
   "plantilla": "energia-potencia",
-  "tolerancia": 0.000001,
+  "tolerancia": 1e-06,
   "nota": "g = 10 m/s²; sen 37° = cos 53° = 0,6 y cos 37° = sen 53° = 0,8; 1 L de agua = 1 kg; 1 HP = 746 W. Unidades de la respuesta: kW en fv/horizontal y peso/grua; W en fv/subida, peso/escalera y bomba/util; kW o HP (campo unidad) en bomba/consumida; m/s en fv/velocidad y cuerda/rapidez; N en fv/eficiencia; kJ en pisos; m en rebotes; J en cuerda/trabajo. En bomba/util con contexto pozo, h es profundidad + altura del tanque. Los valores que no salen exactos (HP, algunas rapideces y alturas) se comparan con dos decimales en la alternativa.",
-  "verificacion": "Verificación a ciegas (8 nov 2026, subagente verificador): se resolvieron 46 problemas del lote (los 16 de casos y 30 más) con un planteamiento propio en Python (P = F·v, P = W/t, pérdidas en cadena, W = F·ΔL en la cuerda). 46/46 letras y los 16 valores esperados coinciden (tolerancia 1e-6). Todos los distractores se recalcularon y calzan con su explicación.",
+  "verificacion": "Verificación a ciegas (8 nov 2026, subagente verificador): se resolvieron 46 problemas del lote (los 16 de casos y 30 más) con un planteamiento propio en Python (P = F·v, P = W/t, pérdidas en cadena, W = F·ΔL en la cuerda). 46/46 letras y los 16 valores esperados coinciden (tolerancia 1e-6). Todos los distractores se recalcularon y calzan con su explicación. Rutina unidades-notas (12 nov 2026): las semillas 15 cambiaron (trampas de unidades o moléculas reales nuevas) y se verificaron a ciegas: 1/1 coinciden en letra y valor.",
   "casos": [
     {
       "semilla": 0,

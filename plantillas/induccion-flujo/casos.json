@@ -1,8 +1,8 @@
 {
   "plantilla": "induccion-flujo",
-  "tolerancia": 1e-9,
+  "tolerancia": 1e-09,
   "nota": "SI. Tolerancia relativa. Carga en mC; flujo en un instante en mWb, con signo; fem en V; frecuencia en Hz. En «expresion» la respuesta es «función:amplitud en Wb:ω en rad/s». Esperados calculados a mano con Q = N·ΔΦ/R (ΔΦ = 2BA al invertir), Φ = BA·cos ωt o BA·sen ωt según el arranque, ε máx = NBAω con ω = 2π·rpm/60, f = ω/2π y ε = N|ΔΦ|/Δt, sin mirar la salida del generador.",
-  "verificacion": "Verificado a ciegas (12 nov 2026) por un subagente que no vio el generador: 46 problemas (16 de casos.json y 30 semillas nuevas) resueltos con Q = NΔΦ/R, ε = N|ΔΦ|/Δt, Φ = BA·cos ωt o BA·sen ωt según la posición inicial, ε_máx = NBAω y ω = 2π·rpm/60. 46/46 coinciden en letra y valor. Tras la revisión se corrigieron las explicaciones de IN-signo e IN-flujo-max.",
+  "verificacion": "Verificado a ciegas (12 nov 2026) por un subagente que no vio el generador: 46 problemas (16 de casos.json y 30 semillas nuevas) resueltos con Q = NΔΦ/R, ε = N|ΔΦ|/Δt, Φ = BA·cos ωt o BA·sen ωt según la posición inicial, ε_máx = NBAω y ω = 2π·rpm/60. 46/46 coinciden en letra y valor. Tras la revisión se corrigieron las explicaciones de IN-signo e IN-flujo-max. Rutina unidades-notas (12 nov 2026): las semillas 28, 39 cambiaron (trampas de unidades o moléculas reales nuevas) y se verificaron a ciegas: 2/2 coinciden en letra y valor.",
   "casos": [
     {
       "semilla": 0,

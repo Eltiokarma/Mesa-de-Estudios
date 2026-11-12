@@ -1,7 +1,7 @@
 {
   "plantilla": "nombre-polifuncional",
   "nota": "Claves y reglas: ver la cabecera de generador.js (tipos, claves y reglas de nombre). La correcta se recalcula desde _datos.semi (la fórmula que ve el alumno) o desde _datos.smiles; en oxidacion, desde _datos.secuencia, _datos.sub, _datos.paso y _datos.j.",
-  "verificacion": "Verificado a ciegas (12 nov 2026) en 53 problemas distintos (25 casos y las semillas 100 a 129): SMILES armados a mano desde la semidesarrollada; cada alternativa de nombre pasada por OPSIN y comparada con RDKit; ésteres armados uniendo ácido y alcohol con RDKit; números de oxidación con la regla de la cabecera e hibridación con RDKit. Todas las claves coinciden. Los distractores que nombraban la misma molécula con la regla de 1993 se quitaron tras la revisión; los casos que cambiaron los recalculó la conversación principal.",
+  "verificacion": "Verificado a ciegas (12 nov 2026) en 53 problemas distintos (25 casos y las semillas 100 a 129): SMILES armados a mano desde la semidesarrollada; cada alternativa de nombre pasada por OPSIN y comparada con RDKit; ésteres armados uniendo ácido y alcohol con RDKit; números de oxidación con la regla de la cabecera e hibridación con RDKit. Todas las claves coinciden. Los distractores que nombraban la misma molécula con la regla de 1993 se quitaron tras la revisión; los casos que cambiaron los recalculó la conversación principal. Rutina unidades-notas (12 nov 2026): las semillas 17, 20, 141, 18, 373 cambiaron (trampas de unidades o moléculas reales nuevas) y se verificaron a ciegas: 5/5 coinciden en letra y valor.",
   "casos": [
     {
       "semilla": 2,

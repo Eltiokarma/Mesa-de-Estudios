@@ -261,7 +261,7 @@
         h('AQ-metal-del-concentrado', r.metalConc * 1000 / met.M, `Calculaste el ${met.s} que se fue con el concentrado. Lo que queda en el relave es la diferencia entre el metal de la mena y el del concentrado.`),
         h('AQ-metal-total', r.metalTotal * 1000 / met.M, `Ese es todo el ${met.s} de la mena. Una parte salió en el concentrado; hay que restarla.`),
         h('AQ-relave-con-ley-de-mena', (mena - conc) * leyMena / 100 * 1000 / met.M, `Tomaste la masa del relave (${f(mena - conc)} t) con la ley de la mena. El relave no tiene la ley de la mena: la flotación le quitó casi todo el metal.`),
-        h('AQ-potencia-diez-x1000', r.metalRelave / met.M * 1000 * 1000, 'Pasaste dos veces de toneladas a kilogramos (× 1000 × 1000). 1 t son 1000 kg, y 1 kmol de metal pesa su masa molar en kilogramos.'),
+        h('QU1-potencia-diez-x1000', r.metalRelave / met.M * 1000 * 1000, 'Pasaste dos veces de toneladas a kilogramos (× 1000 × 1000). 1 t son 1000 kg, y 1 kmol de metal pesa su masa molar en kilogramos.'),
       ];
       const solucion = [
         [`${met.s} en la mena: `, v('mena', `${f(mena)} t × ${f(leyMena / 100, 3)}`), ` = ${f(r.metalTotal, 3)} t.`],
@@ -350,8 +350,8 @@
     ];
     if (pureza === 100) errores[0] = h('AQ-divide-entre-22-4', r.nGas / VN, `Dividiste entre 22,4. El volumen molar multiplica: cada ${umol} de gas ocupa 22,4 ${uv}.`);
     if (x.n > 1) errores.unshift(es('ES6', correcta / x.n, `Contaste un solo átomo de ${s} por fórmula. En ${x.f} hay ${x.n}: cada ${umol} de mineral da ${x.n} ${umol} de ${x.gas}.`, 'parcial'));
-    if (kilo) errores.push(h('AQ-potencia-diez-x1000', correcta * 1000, `Ese número son litros: los ${f(r.nGas)} kmol son ${f(r.nGas * 1000)} mol, y por 22,4 L dan litros. En m³, 1 kmol ocupa 22,4 m³.`));
-    else errores.push(h('AQ-potencia-diez-entre1000', correcta / 1000, 'Pasaste a m³ un volumen que ya estaba en litros. Con gramos y mol, el volumen molar es 22,4 L/mol.'));
+    if (kilo) errores.push(h('QU1-potencia-diez-x1000', correcta * 1000, `Ese número son litros: los ${f(r.nGas)} kmol son ${f(r.nGas * 1000)} mol, y por 22,4 L dan litros. En m³, 1 kmol ocupa 22,4 m³.`));
+    else errores.push(h('QU2-potencia-diez-entre1000', correcta / 1000, 'Pasaste a m³ un volumen que ya estaba en litros. Con gramos y mol, el volumen molar es 22,4 L/mol.'));
     const solucion = [
       [pureza < 100 ? [v('m', `${f(masa, 1)} ${um}`), ' × ', v('p', f(pureza / 100)), ` = ${f(masa * pureza / 100, 1)} ${um} de ${x.f}; `] : [v('m', `${f(masa, 1)} ${um}`), ` de ${x.f}; `],
         `÷ ${f(x.M, 1)} = ${f(r.n)} ${umol} de ${x.f}.`].flat(),

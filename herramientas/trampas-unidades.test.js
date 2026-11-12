@@ -17,6 +17,8 @@ const ESPERADAS = {
   // Química (las AQ- de unidades pasaron a QU, 12 nov 2026).
   'conversiones-quimica': ['QU1-gramos-como-kg', 'QU2-litro-como-100-cm3', 'QU3-signo-273'],
   'estequiometria-admision': ['QU2-ml-sin-pasar'],
+  // Trigonometría.
+  'trig-angulos-verticales': ['AU3-sin-convertir'],
 };
 module.exports = { ESPERADAS };
 

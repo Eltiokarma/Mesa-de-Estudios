@@ -1,8 +1,8 @@
 {
   "plantilla": "cargas-sistema",
-  "tolerancia": 0.000001,
+  "tolerancia": 1e-06,
   "nota": "k = 9 × 10⁹ N·m²/C². Energía en mJ con signo (q en µC; las distancias de pares en cm). En razon-nula, q en A, Q en B y m·q en C, con AB = a y BC = b en unidades de 10, 20 o 30 cm; la respuesta es Q/q. En grafica, r1 y r2 en m, v1 en V; la carga en nC. En campo, q en µC y a en m; la respuesta va en unidades de 10⁵ N/C; signo = +1 o −1 multiplica todas las cargas (el módulo no cambia).",
-  "verificacion": "Verificación a ciegas (subagente verificador, 12 nov 2026): 44 problemas (14 de casos + 30 semillas 300-329) recalculados con suma de pares k·qi·qj/r y superposición vectorial en 3D, sin ver generador ni claves: 44/44 coinciden, incluidos los radicales del cubo y Q/q de la energía nula. Barrido de 4000 semillas limpio.",
+  "verificacion": "Verificación a ciegas (subagente verificador, 12 nov 2026): 44 problemas (14 de casos + 30 semillas 300-329) recalculados con suma de pares k·qi·qj/r y superposición vectorial en 3D, sin ver generador ni claves: 44/44 coinciden, incluidos los radicales del cubo y Q/q de la energía nula. Barrido de 4000 semillas limpio. Rutina unidades-notas (12 nov 2026): las semillas 15 cambiaron (trampas de unidades o moléculas reales nuevas) y se verificaron a ciegas: 1/1 coinciden en letra y valor.",
   "casos": [
     {
       "semilla": 0,
