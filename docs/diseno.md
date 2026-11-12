@@ -166,6 +166,17 @@ Variables de las dos flechas en la circunferencia (`plantillas/transformaciones-
 | Opción del paso previo | `.opc`, `.marcable`, `.tarjeta` | Elegir antes de ver las alternativas; la elegida lleva borde y fondo de marca (`--brand`, `--brand-soft`): es un estado, no una variable, así que no usa el verde de idea. Mínimo 44 px de alto (también los botones ↑↓ de las tarjetas) |
 | Evidencia y distractor en la misma oración | `.o.pinta-ev.pinta-di` | Pasa en 11 de las 21 preguntas del banco: la oración que prueba la correcta es también de donde sale lo que eligió el alumno. Se pinta como evidencia (fondo y subrayado turquesa) y el origen lleva un contorno naranja a trazos (`outline: 2px dashed var(--c-o)`), porque mezclar los dos fondos daba un color casi igual al del distractor solo (ΔE00 de 1,1 en claro). La explicación lo dice en palabras: «La oración N prueba la correcta, y de ella misma sale lo que elegiste: leíste bien la oración, pero sacaste otra conclusión.» |
 | Hoja del texto | `.lec-texto` en `.fase-preg` | Celular: sube desde abajo al 85 % con la franja fija de 56 px; se cierra deslizando. Desde 900 px es la columna izquierda |
+| Convención del examen | `.convencion` (`nucleo/convencion.js`) | Ver abajo |
+
+### Convención del examen (12 nov 2026, decisión de Gerson)
+
+Algunas respuestas del examen siguen una convención de academia que la química universitaria matiza. La app responde como en el examen, pero lo dice **en grande**, nunca en letra chica: una tarjeta con el sello «📌 Convención del examen», el título de la convención y dos lados, «Así se responde en el examen de admisión.» y «En la universidad verás que…», con una explicación breve y correcta.
+
+- **Las cuatro de hoy** (`Convencion.LISTA`): `hibridacion` (hibridación escolar), `azufre-expandido` (el S con S=O y 10 electrones), `dativos` (Lewis con dativos en los oxoaniones) y `etapa-lenta` (la etapa lenta leída desde el valle). Una nueva se agrega en `LISTA`, con su prueba en `nucleo/convencion.test.js`.
+- **En una escena**: `<script src="../../nucleo/convencion.js"></script>` y `Convencion.html('id')` donde va la explicación (después de responder, nunca en el enunciado: no debe dar pistas). Hoy: `molecula-grande` (paso 1 y el azufre del ajo), `enlace` (paso 4) y `cinetica` («Mecanismos», paso 5).
+- **En la práctica**: el generador pone `convenciones: ['dativos']` en el problema; `app/practica.js` pinta una tarjeta por id debajo de la solución y `nucleo/probar-generador.js` comprueba que los ids existan. Hoy: `quimica-conceptos` (tema de los dativos) y `nombre-polifuncional` (hibridación en la secuencia de oxidación).
+- **Forma**: crema `#fff4cc` con contorno ciruela y base ámbar `#e0a21b` (en oscuro, ámbar `#3b2e0c` con texto crema); el sello es una píldora de alto contraste; el lado de la universidad va en un recuadro a trazos. Contraste de 7:1 o más en claro y en oscuro (prueba). Dos columnas cuando la tarjeta mide 600 px o más (container query); si no, una. El estilo se inyecta solo, así que la tarjeta se ve igual en la cáscara y en las escenas. `role="note"` con `aria-label`.
+- **Probado** con Playwright a 390 y 1366 px, en claro y en oscuro, en las tres escenas y en la práctica: sin desbordes ni errores de consola.
 
 ## Dos pantallas: celular y laboratorio de cómputo
 

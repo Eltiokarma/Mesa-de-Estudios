@@ -692,7 +692,8 @@
       ? P.armar({ correcta: o.correcta, errores: o.errores, rng, texto: x => `${x} carbonos` })
       : P.armarTexto({ correcta: o.correcta, errores: o.errores, rng });
     return { id: `${ID}#${semilla}`, variables: o.variables || VARIABLES, enunciado: o.enunciado, pregunta: o.pregunta, datos: '', alternativas,
-      solucion: o.solucion, respuesta: { valor: o.numerica ? o.correcta : o.correcta.clave }, _datos: o._datos };
+      solucion: o.solucion, respuesta: { valor: o.numerica ? o.correcta : o.correcta.clave }, _datos: o._datos,
+      ...(o.convenciones ? { convenciones: o.convenciones } : {}) };
   }
   const enunciadoMol = (M, antes) => [antes, ...partes(M.piezas), M.nota || '', '.'];
   const datosMol = (M, tipo, extra = {}) => ({ tipo, familia: M.familia, semi: M.semi, smiles: M.smiles, ...(M.rama ? { dibujo: 'rama' } : {}), ...extra });
@@ -902,7 +903,7 @@
         correcta: op(c.e, c.h), errores: rng.barajar(errores).slice(0, 4),
         solucion: [regla, [`En el ${S.nombres[j]}, `, v('c', 'el carbono'), ` tiene ${S.Oe[j] === 3 ? 'un C=O y un –OH (+3)' : S.Oe[j] === 2 ? 'un C=O (+2)' : 'un –OH (+1)'}, ${S.H[j] ? `${S.H[j]} H (−${S.H[j]})` : 'ningún H'}${n > 1 || sub === 'dos' ? ' y un C (0)' : ''}: ${fmtEO(c.e)}.`],
           [`Hibridación: ${c.h === 'sp2' ? 'con un doble enlace C=O es sp²' : 'con cuatro enlaces simples es sp³'}.`]],
-        variables: VAR_OX, _datos: { tipo: 'oxidacion', sub, n, paso, j, secuencia: S.semis },
+        variables: VAR_OX, convenciones: ['hibridacion'], _datos: { tipo: 'oxidacion', sub, n, paso, j, secuencia: S.semis },
       });
     }
     if (paso === 'cambio') {
@@ -917,7 +918,7 @@
         correcta: op(2), errores,
         solucion: [['Un carbono con cuatro enlaces simples es sp³; con un doble enlace, sp².'],
           [`Alcano y alcohol: solo enlaces simples (sp³). Aldehído y ácido: un C=O (sp²). El cambio ocurre de ${S.nombres[1]} a ${S.nombres[2]}.`]],
-        variables: VAR_OX, _datos: { tipo: 'oxidacion', sub, n, paso, secuencia: S.semis },
+        variables: VAR_OX, convenciones: ['hibridacion'], _datos: { tipo: 'oxidacion', sub, n, paso, secuencia: S.semis },
       });
     }
     // serie

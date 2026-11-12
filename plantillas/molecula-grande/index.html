@@ -243,6 +243,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/convencion.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'molecula-grande', unidad: 'quimica.biomoleculas-y-productos-naturales', version: '0.1.0' };
@@ -543,6 +544,8 @@ const I1 = MG.ionizar(FEN, 1), I7 = MG.ionizar(FEN, 7.4), I12 = MG.ionizar(FEN, 
 const S9 = MG.solubilidad('retinol'), S9g = MG.solubilidad('glucosa-abierta'), E9 = MG.enlaces('retinol'), E9g = MG.enlaces('glucosa-abierta');
 const fe = MG.formula;
 const estadoTxt = r => `${r.estado.amino} y ${r.estado.carboxilo}`;
+// Tarjeta grande «Convención del examen» (nucleo/convencion.js): hibridación escolar y el S con 10 electrones.
+const CV = id => (window.Convencion ? Convencion.html(id) : '');
 
 const steps = [
   { k:'Paso 1', t:'Un aminoácido con anillo', mol: FEN, lupa:'sp2',
@@ -553,7 +556,7 @@ const steps = [
           ['d', `${L1.errores.todosLosC} ${chip('sp2')}`, 'AQ-sp2-todos-los-C', 'hipotesis']], ok:'c',
     fb:{ a:'Contaste dobles enlaces, no carbonos: cada C=C del anillo tiene dos carbonos sp².', b:'Faltó el carbono del carboxilo (–COOH): su doble enlace con el O también lo hace sp².', d:'Los dos carbonos de la cadena (el CH₂ y el CH del NH₂) solo tienen enlaces simples: son sp³.' },
     marca:() => marcaDe(FEN, 'sp2'), leyenda: 'carbonos sp²',
-    tras:() => `<div class="eqs"><div class="eq">${L1.valor - 1} del anillo + 1 del carboxilo = ${V('sp2', L1.valor + ' carbonos sp²')}</div><div class="eq"><span class="note">Los ${L1.errores.todosLosC - L1.valor} restantes solo tienen enlaces simples: sp³. En el examen, el C del –COOH es el que más se olvida.</span></div></div>` },
+    tras:() => `<div class="eqs"><div class="eq">${L1.valor - 1} del anillo + 1 del carboxilo = ${V('sp2', L1.valor + ' carbonos sp²')}</div><div class="eq"><span class="note">Los ${L1.errores.todosLosC - L1.valor} restantes solo tienen enlaces simples: sp³. En el examen, el C del –COOH es el que más se olvida.</span></div></div>${CV('hibridacion')}` },
   { k:'Paso 2', t:'El pigmento de la zanahoria', mol:'beta-caroteno', lupa:'epi',
     q:() => `<p>El ${MG.ficha('beta-caroteno').nombre} (${F(fe('beta-caroteno').texto)}) es naranja porque tiene una cadena larga de dobles enlaces alternados. Acércate con el + o con dos dedos si quieres.</p><p class="problem">¿Cuántos <b>electrones π</b> tiene en total?</p>`,
     opts:[['a', `${E2.errores.electronesPi.comoEnlaces} electrones π`, 'AQ-pi-enlaces-por-electrones', 'hipotesis'],
@@ -817,7 +820,7 @@ const EXPS = [
     fb:{ a:'6 son los electrones de valencia del S solo; al enlazarse comparte más.', b:'Ese S tiene 3 enlaces σ y un π (4 pares compartidos, 8 electrones) y además un par libre: 10. El octeto no es una ley para el tercer período.', d:'Ese S tiene un solo par libre, no dos como el S de un sulfuro: le pusiste uno de más.' },
     antes:() => vista('alicina', { espera:'electrones alrededor: se encienden al responder' }),
     despues:() => { const v = vista('alicina'); v.marca = { tipo:'electrones', c:'oct', atomos:[OA.atomo], electrones: MG.octeto('alicina').atomos.map(a => a.electrones) }; v.leyenda = 'electrones alrededor del átomo'; return v; },
-    exp:() => `<p>${OA.enlacesDelAtomo} pares compartidos y ${OA.pares} par libre: ${V('oct', OA.valor + ' electrones')}, octeto expandido. El O, los carbonos y el otro S cumplen el octeto. Algunos libros la escriben S⁺–O⁻; así el S cumple el octeto. Aquí se cuenta con el S=O dibujado.</p>` },
+    exp:() => `<p>${OA.enlacesDelAtomo} pares compartidos y ${OA.pares} par libre: ${V('oct', OA.valor + ' electrones')}, octeto expandido. El O, los carbonos y el otro S cumplen el octeto. Aquí se cuenta con el S=O dibujado, como en el examen.</p>${CV('azufre-expandido')}` },
   { id:'fenilalanina-tirosina', corto:'De fenilalanina a tirosina',
     q:`En el hígado, a la fenilalanina se le cambia un H del anillo por un OH y queda tirosina (${F(FT.formulaAntes)} → ${F(FT.formulaDespues)}). ¿Qué ${V('gf', 'grupo funcional')} nuevo aparece?`,
     opts:[['a', `Un ${N.alcohol}: el OH queda unido a un carbono de la molécula`, 'AQ-fenol-alcohol', 'hipotesis'], ['b', `Un ${N[FT.valor]}: el OH queda en un C del anillo aromático`], ['c', `Un ${N.eter}: entra un O entre dos átomos`, 'AQ-oxigeno-eter', 'hipotesis'], ['d', `Un ${N.acido}: entra un O más`, 'AQ-oxigeno-acido', 'hipotesis']], ok:'b',

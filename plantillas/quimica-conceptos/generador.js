@@ -834,9 +834,14 @@
     throw new Error('No se pudo generar un problema con 4 alternativas distintas');
   }
 
+  // Convenciones de academia que la respuesta sigue (nucleo/convencion.js): se muestran en grande bajo la solución.
+  const CONVENCION_POR_TEMA = { 'dativo-oxisales': 'dativos' };
   function cierre(o) {
+    const temas = new Set([o.datos.tema, ...(o.datos.ids || []).map(id => (BANCO.find(b => b.id === id) || {}).tema)]);
+    const convenciones = [...new Set([...temas].map(t => CONVENCION_POR_TEMA[t]).filter(Boolean))];
     return { id: '', variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '', alternativas: o.alternativas,
-      solucion: o.solucion, respuesta: { valor: o.correcta.clave, texto: o.correcta.texto }, _datos: o.datos };
+      solucion: o.solucion, respuesta: { valor: o.correcta.clave, texto: o.correcta.texto }, _datos: o.datos,
+      ...(convenciones.length ? { convenciones } : {}) };
   }
 
   // ---- vf: secuencia de 3 o 4 proposiciones ----

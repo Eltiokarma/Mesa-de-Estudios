@@ -25,6 +25,12 @@ function figuraHTML(f, esc) {
   return `<figure class="fig-gen" role="img" aria-label="${esc(f.alt || 'Figura del problema')}">${f.svg}</figure>`;
 }
 
+// Convenciones de academia (nucleo/convencion.js): la respuesta sigue la del examen, y la tarjeta lo dice en grande.
+function convencionesHTML(ids) {
+  if (!Array.isArray(ids) || !window.Convencion) return '';
+  return ids.filter(id => window.Convencion.LISTA[id]).map(id => window.Convencion.html(id)).join('');
+}
+
 function cargarGenerador(pl) {
   if (window.Generadores && window.Generadores[pl.id]) return Promise.resolve(window.Generadores[pl.id]);
   return new Promise((ok, mal) => {
@@ -124,6 +130,7 @@ async function vista(ctx, id) {
         <h3 class="sol-t">Solución paso a paso</h3>
         <ol class="sol">${p.solucion.map(paso => `<li>${texto(paso, p, esc)}</li>`).join('')}</ol>
         ${figuraHTML(p.figuraSolucion, esc)}
+        ${convencionesHTML(p.convenciones)}
         <button class="btn morado ancho" id="otro">Otro problema</button>`;
       document.getElementById('otro').onclick = practica;
       document.getElementById('retro').scrollIntoView({ behavior: 'smooth', block: 'start' });

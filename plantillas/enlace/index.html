@@ -222,6 +222,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/convencion.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'enlace', unidad: 'quimica.enlace-quimico', version: '0.1.0' };
@@ -690,7 +691,7 @@ const steps = [
    <p class="fuente">En ${KARONEN}, antes del curso solo cerca del 44 % acertó la forma del NH₃, y cerca del 77 % después. Algunos alumnos de otro estudio dieron como «trigonal plana» al NH₃, al BF₃ y al ICl₃ a la vez (Uyulgan y Akkuzu, 2016).</p></div>` },
  { k:'Paso 4', t:'La hibridación: predice', gate:P2, vista:r => vHib(!!r), anima: fin => { E.vista = vHib(true); E.dibujar(); fin(); },
    body:() => `<p>Gira la molécula y cuenta los dominios del N: ${En_('3 enlaces')} y ${Li_('1 par libre')}. ¿Qué hibridación tiene el N?</p>${opcionesHTML(P2.opts, 'fb')}
-   <div id="tras" class="body" hidden><div class="eqs"><div class="eq"><span class="ex">2 dominios: sp · 3: sp² · 4: sp³ · 5: sp³d · 6: sp³d²</span><span class="note">Un enlace doble o triple cuenta como un solo dominio. La hibridación sale de los dominios, igual que la forma de los dominios.</span></div></div>
+   <div id="tras" class="body" hidden><div class="eqs"><div class="eq"><span class="ex">2 dominios: sp · 3: sp² · 4: sp³ · 5: sp³d · 6: sp³d²</span><span class="note">Un enlace doble o triple cuenta como un solo dominio. La hibridación sale de los dominios, igual que la forma de los dominios.</span></div></div>${window.Convencion ? Convencion.html('hibridacion') : ''}
    <p class="fuente">En ${UYULGAN}, cerca de 1 de cada 6 dio una definición errónea de hibridación y casi 1 de cada 3 no respondió. Las opciones incorrectas de esta pregunta son hipótesis nuestras.</p></div>` },
  { k:'Paso 5', t:'Flechas que se suman', vista:vDip,
    body:() => `<p>El N es más electronegativo que el H (3,04 contra 2,20 en la escala de Pauling): atrae más al par compartido. Cada enlace N–H tiene un ${Di_('dipolo')}, una flecha que apunta al átomo más electronegativo, con la cruz en el extremo δ+. Su tamaño en este modelo es la diferencia de electronegatividad: ${Di_('ΔEN = ' + dNH)}.</p>

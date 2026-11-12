@@ -41,6 +41,11 @@ function probarGenerador(gen, { semillas = 400, recalcular, igual = igualNumero 
       const plano = x => (Array.isArray(x) ? x.map(plano).join('') : x && typeof x === 'object' ? String(x.t) : String(x));
       const visto = [p.enunciado, p.pregunta, p.solucion, alt.map(a => a.texto), alt.filter(a => a.error).map(a => a.error.explicacion)].map(plano).join(' ');
       assert.ok(!/\bnull\b|\bNaN\b|\bundefined\b/.test(visto), `semilla ${s}: el texto muestra null, NaN o undefined`);
+      // Convenciones de academia opcionales (nucleo/convencion.js): una tarjeta grande por id, debajo de la solución.
+      if (p.convenciones !== undefined) {
+        assert.ok(Array.isArray(p.convenciones) && p.convenciones.length, `semilla ${s}: convenciones debe ser una lista no vacía`);
+        for (const id of p.convenciones) assert.ok(require('./convencion.js').LISTA[id], `semilla ${s}: no existe la convención ${id}`);
+      }
       // Figura opcional ({ svg, alt }, ver app/practica.js): SVG propio, con descripción y sin código.
       for (const campo of ['figura', 'figuraSolucion']) {
         const f = p[campo];

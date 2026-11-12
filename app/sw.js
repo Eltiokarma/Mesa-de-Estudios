@@ -19,7 +19,7 @@ const VERSION = 'v147';
 const CACHE = `lab-${VERSION}`;
 const CASCARA = ['/app/', '/app/index.html', '/app/estilos.css', '/app/app.js', '/app/manifest.webmanifest',
   '/app/practica.js', '/app/prueba.js', '/app/lectura.js', '/app/ilustraciones.js', '/app/datos/catalogo.json', '/app/datos/pruebas.json',
-  '/nucleo/azar.js', '/nucleo/predicciones.js', '/nucleo/medicion.js', '/nucleo/pruebas.js', '/nucleo/lectura.js', '/nucleo/celular.js', '/nucleo/elementos.js', '/nucleo/pegatina.css', '/app/iconos/icono.svg', '/app/iconos/icono-192.png', '/app/iconos/icono-512.png'];
+  '/nucleo/azar.js', '/nucleo/predicciones.js', '/nucleo/medicion.js', '/nucleo/pruebas.js', '/nucleo/lectura.js', '/nucleo/celular.js', '/nucleo/elementos.js', '/nucleo/pegatina.css', '/nucleo/convencion.js', '/app/iconos/icono.svg', '/app/iconos/icono-192.png', '/app/iconos/icono-512.png'];
 
 // Clave de la caché: la dirección sin «?…» (las respuestas se buscan con ignoreSearch).
 const clave = u => { const x = new URL(u, location.origin); return x.origin + x.pathname; };

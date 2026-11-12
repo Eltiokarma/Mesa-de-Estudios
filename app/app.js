@@ -414,7 +414,7 @@ async function vPapel(id) {
 // cargan sus scripts al entrar a su ruta. Todos están en la CASCARA de sw.js, así que sin conexión salen de la caché.
 const MODULOS = {
   prueba: ['/nucleo/azar.js', '/nucleo/pruebas.js', '/app/prueba.js'],
-  practica: ['/nucleo/azar.js', '/nucleo/predicciones.js', '/app/practica.js'],
+  practica: ['/nucleo/azar.js', '/nucleo/predicciones.js', '/nucleo/convencion.js', '/app/practica.js'],
   lectura: ['/nucleo/azar.js', '/nucleo/pruebas.js', '/nucleo/lectura.js', '/app/prueba.js', '/app/lectura.js'],
 };
 const scripts = {};

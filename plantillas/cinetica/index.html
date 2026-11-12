@@ -291,6 +291,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/convencion.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'cinetica', unidad: 'quimica.cinetica-quimica', version: '0.3.0' };
@@ -1818,7 +1819,7 @@ const steps = [
      <div class="eq"><span class="ex">${Ea_('Ea₂')} = ${fmt(PF.TS2, 0)} − (${fmt(PF.I, 0)}) = ${Ea_(fmt(PP.Ea2, 0))} kJ/mol</span><span class="note">Desde el valle, donde empieza la etapa 2.</span></div>
      <div class="eq"><span class="ex">${dH_('ΔH')} = ${fmt(PF.P, 0)} − ${fmt(PF.R, 0)} = ${dH_(fmt(PP.dH, 0))} kJ/mol</span><span class="note">De los reactivos a los productos: la reacción libera calor. No es la altura de los productos en el eje.</span></div>
    </div>
-   <p>La lenta es la de mayor barrera, medida desde su propio valle: la etapa ${PP.lenta}, aunque su cima está más abajo que la primera. Si el valle quedara por encima de los reactivos, mandaría la cima más alta. Lo que queda en el valle, ${fmt(-PP.dH1, 0)} kJ/mol por debajo de los reactivos, tiene que subir ${fmt(PP.Ea2, 0)} kJ/mol para seguir.</p>
+   <p>La lenta es la de mayor barrera, medida desde su propio valle: la etapa ${PP.lenta}, aunque su cima está más abajo que la primera. Si el valle quedara por encima de los reactivos, mandaría la cima más alta. Lo que queda en el valle, ${fmt(-PP.dH1, 0)} kJ/mol por debajo de los reactivos, tiene que subir ${fmt(PP.Ea2, 0)} kJ/mol para seguir.</p>${window.Convencion ? Convencion.html('etapa-lenta') : ''}
    <p>El eje horizontal es el avance de la reacción, no el tiempo: de izquierda a derecha, los reactivos se van convirtiendo en productos.</p>
    <p class="fuente">Las opciones de esta pregunta son hipótesis nuestras: medir la Ea desde el cero del eje o leer la de vuelta no tienen un estudio que los mida. Leer el eje del perfil como tiempo está descrito en universitarios (Popova y Bretz, 2018), sin cifra verificada.</p>` },
  { k:'Paso 6', t:'Cimas y valle: predice', gate:G5, vista:r => ({ tipo:'perfil', ea:true, nombres:r }),
