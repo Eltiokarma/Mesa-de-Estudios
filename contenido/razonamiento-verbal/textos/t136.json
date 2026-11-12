@@ -7,23 +7,71 @@
   "dificultad": 2,
   "tipo_texto": "argumentativo",
   "autores": [
-    { "id": "A", "desde": 0, "firma": "Una médica infectóloga" },
-    { "id": "B", "desde": 1, "firma": "Un químico farmacéutico de una provincia andina" }
+    {
+      "id": "A",
+      "desde": 0,
+      "firma": "Una médica infectóloga"
+    },
+    {
+      "id": "B",
+      "desde": 1,
+      "firma": "Un químico farmacéutico de una provincia andina"
+    }
   ],
   "parrafos": [
     [
-      { "id": "o1", "rol": "principal", "t": "Los antibióticos deberían venderse solo con receta, y las farmacias y boticas que no la pidan tendrían que ser sancionadas." },
-      { "id": "o2", "rol": "apoyo", "t": "Hoy cualquiera entra a una botica, cuenta que tiene tos y sale con un antibiótico, aunque la norma exija receta." },
-      { "id": "o3", "rol": "apoyo", "t": "Muchas veces se trata de un resfrío causado por un virus, contra el que el antibiótico no sirve de nada." },
-      { "id": "o4", "rol": "apoyo", "t": "Y cuando alguien lo toma sin necesidad, o lo deja a los tres días porque ya se siente mejor, las bacterias que resisten sobreviven y se multiplican." },
-      { "id": "o5", "rol": "principal", "t": "Así, infecciones que hoy se curan con una pastilla barata podrían volverse, mañana, muy difíciles de tratar." }
+      {
+        "id": "o1",
+        "rol": "principal",
+        "t": "Los antibióticos deberían venderse solo con receta, y las farmacias y boticas que no la pidan tendrían que ser sancionadas."
+      },
+      {
+        "id": "o2",
+        "rol": "apoyo",
+        "t": "Hoy cualquiera entra a una botica, cuenta que tiene tos y sale con un antibiótico, aunque la norma exija receta."
+      },
+      {
+        "id": "o3",
+        "rol": "apoyo",
+        "t": "Muchas veces se trata de un resfrío causado por un virus, contra el que el antibiótico no sirve de nada."
+      },
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "Y cuando alguien lo toma sin necesidad, o lo deja a los tres días porque ya se siente mejor, las bacterias que resisten sobreviven y se multiplican."
+      },
+      {
+        "id": "o5",
+        "rol": "principal",
+        "t": "Así, infecciones que hoy se curan con una pastilla barata podrían volverse, mañana, muy difíciles de tratar."
+      }
     ],
     [
-      { "id": "o6", "rol": "apoyo", "t": "Coincido en que regalar antibióticos para un resfrío es un error que todos terminaremos pagando." },
-      { "id": "o7", "rol": "contraste", "t": "Pero una regla estricta, pensada desde la capital, olvida que en muchos distritos el médico más cercano está a horas de camino." },
-      { "id": "o8", "rol": "apoyo", "t": "Allí, la botica es a menudo el único lugar donde una madre puede pedir ayuda cuando su hijo tiene una infección de verdad." },
-      { "id": "o9", "rol": "apoyo", "t": "Si se le exige una receta que no puede conseguir, no dejará de buscar el medicamento: lo comprará en un mercado, sin ninguna orientación, o no lo comprará y la infección avanzará." },
-      { "id": "o10", "rol": "principal", "t": "Prefiero que el control vaya junto con más acceso: consultas a distancia con un médico, farmacéuticos capacitados para orientar y reglas más firmes donde sí hay médicos cerca." }
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "Coincido en que dispensar antibióticos para un resfrío es un error que todos terminaremos pagando."
+      },
+      {
+        "id": "o7",
+        "rol": "contraste",
+        "t": "Pero una regla estricta, pensada desde la capital, olvida que en muchos distritos el médico más cercano está a horas de camino."
+      },
+      {
+        "id": "o8",
+        "rol": "apoyo",
+        "t": "Allí, la botica es a menudo el único lugar donde una madre puede pedir ayuda cuando su hijo tiene una infección de verdad."
+      },
+      {
+        "id": "o9",
+        "rol": "apoyo",
+        "t": "Si se le exige una receta que no puede conseguir, no dejará de buscar el medicamento: lo comprará en un mercado, sin ninguna orientación, o no lo comprará y la infección avanzará."
+      },
+      {
+        "id": "o10",
+        "rol": "principal",
+        "t": "Prefiero que el control vaya junto con más acceso: consultas a distancia con un médico, farmacéuticos capacitados para orientar y reglas más firmes donde sí hay médicos cerca."
+      }
     ]
   ],
   "preguntas": [
@@ -36,7 +84,11 @@
         "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
         "sonda": "Pedir una receta que no se puede conseguir empuja a la gente a comprar el medicamento sin que nadie la oriente.",
         "aceptada": "B",
-        "codigos": { "A": "RV59", "ambos": "RV60", "ninguno": null },
+        "codigos": {
+          "A": "RV59",
+          "ambos": "RV60",
+          "ninguno": null
+        },
         "explicacion": "Lo sostiene el texto B en la oración 9: quien no puede conseguir la receta comprará el medicamento en un mercado, sin ninguna orientación.",
         "explicaciones": {
           "A": "El texto A no habla de lo que pasa cuando no se puede conseguir la receta: pide exigirla y sancionar a quien no la pida (oración 1). La idea es del B (oración 9).",
@@ -46,16 +98,37 @@
       },
       "enunciado": "El autor del texto B sostiene que",
       "alternativas": [
-        { "t": "toda farmacia o botica que venda antibióticos sin receta debería ser sancionada, esté donde esté.", "codigo": "RV59", "origen": "o1",
-          "explicacion": "Es la propuesta del texto A (oración 1). El B advierte que esa regla olvida a los distritos sin médico (oración 7)." },
-        { "t": "el control de los antibióticos debe ir junto con formas de llegar a un médico.", "correcta": true, "evidencia": ["o10"],
-          "explicacion": "Es su tesis, en la oración 10: control junto con más acceso, como las consultas a distancia." },
-        { "t": "los antibióticos deberían venderse libremente para que ninguna familia se quede sin ellos.", "codigo": "RV33",
-          "explicacion": "El texto B no pide la venta libre: dice que regalar antibióticos para un resfrío es un error (oración 6) y quiere reglas firmes donde hay médicos (oración 10)." },
-        { "t": "venderlos para un resfrío es un error, así que las boticas rurales deberían dejar de venderlos.", "codigo": "RV62", "origen": "o6",
-          "explicacion": "La primera mitad es del texto B (oración 6), pero la segunda no: para él, la botica rural es a menudo la única ayuda de una madre (oración 8)." },
-        { "t": "en muchos distritos del país el médico más cercano está a horas de camino.", "codigo": "RV1", "origen": "o7",
-          "explicacion": "Es un argumento del texto B (oración 7), no lo que sostiene: lo usa para defender su propuesta de la oración 10." }
+        {
+          "t": "toda farmacia o botica que venda antibióticos sin receta debería ser sancionada, esté donde esté.",
+          "codigo": "RV59",
+          "origen": "o1",
+          "explicacion": "Es la propuesta del texto A (oración 1). El B advierte que esa regla olvida a los distritos sin médico (oración 7)."
+        },
+        {
+          "t": "el control de los antibióticos debe ir junto con formas de llegar a un médico.",
+          "correcta": true,
+          "evidencia": [
+            "o10"
+          ],
+          "explicacion": "Es su tesis, en la oración 10: control junto con más acceso, como las consultas a distancia."
+        },
+        {
+          "t": "los antibióticos deberían venderse libremente para que ninguna familia se quede sin ellos.",
+          "codigo": "RV33",
+          "explicacion": "El texto B no pide la venta libre: dice que dispensar antibióticos para un resfrío es un error (oración 6) y quiere reglas firmes donde hay médicos (oración 10)."
+        },
+        {
+          "t": "venderlos para un resfrío es un error, así que las boticas rurales deberían dejar de venderlos.",
+          "codigo": "RV62",
+          "origen": "o6",
+          "explicacion": "La primera mitad es del texto B (oración 6), pero la segunda no: para él, la botica rural es a menudo la única ayuda de una madre (oración 8)."
+        },
+        {
+          "t": "en muchos distritos del país el médico más cercano está a horas de camino.",
+          "codigo": "RV1",
+          "origen": "o7",
+          "explicacion": "Es un argumento del texto B (oración 7), no lo que sostiene: lo usa para defender su propuesta de la oración 10."
+        }
       ]
     },
     {
@@ -67,7 +140,11 @@
         "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
         "sonda": "Tomar antibióticos para un resfrío causa un daño que no se queda en quien los toma.",
         "aceptada": "ambos",
-        "codigos": { "A": "RV61", "B": "RV61", "ninguno": null },
+        "codigos": {
+          "A": "RV61",
+          "B": "RV61",
+          "ninguno": null
+        },
         "explicacion": "Los dos lo sostienen: el texto A explica que así las bacterias resistentes se multiplican y las infecciones se vuelven difíciles de tratar (oraciones 4 y 5), y el B dice que es un error «que todos terminaremos pagando» (oración 6).",
         "explicaciones": {
           "A": "El texto A lo explica (oraciones 4 y 5), pero el B también lo acepta en la oración 6.",
@@ -77,14 +154,33 @@
       },
       "enunciado": "Los dos autores coinciden en que",
       "alternativas": [
-        { "t": "la regla de vender solo con receta debe aplicarse igual en todos los distritos del país.", "codigo": "RV60", "origen": "o1",
-          "explicacion": "Es lo que se desprende del texto A (oración 1). El B lo rechaza: pide reglas más firmes solo donde hay médicos cerca (oración 10)." },
-        { "t": "el antibiótico no sirve contra los virus, y la botica rural debe venderlo sin receta a quien lo pida.", "codigo": "RV62", "origen": "o3",
-          "explicacion": "La primera mitad es del texto A (oración 3) y el B no la discute; la segunda no la sostiene nadie: el B quiere orientación, no venta a cualquiera (oración 10)." },
-        { "t": "usar antibióticos para un resfrío agrava un problema que nos afecta a todos.", "correcta": true, "evidencia": ["o4", "o5", "o6"],
-          "explicacion": "El texto A lo explica con las bacterias que resisten (oraciones 4 y 5) y el B lo acepta: es un error que todos terminaremos pagando (oración 6)." },
-        { "t": "las bacterias resistentes son más comunes en las provincias andinas que en la capital del país.", "codigo": "RV8",
-          "explicacion": "Ninguno de los dos compara regiones. Es un dato de fuera de los textos, sea cierto o no." }
+        {
+          "t": "la regla de vender solo con receta debe aplicarse igual en todos los distritos del país.",
+          "codigo": "RV60",
+          "origen": "o1",
+          "explicacion": "Es lo que se desprende del texto A (oración 1). El B lo rechaza: pide reglas más firmes solo donde hay médicos cerca (oración 10)."
+        },
+        {
+          "t": "el antibiótico no sirve contra los virus, y la botica rural debe venderlo sin receta a quien lo pida.",
+          "codigo": "RV62",
+          "origen": "o3",
+          "explicacion": "La primera mitad es del texto A (oración 3) y el B no la discute; la segunda no la sostiene nadie: el B quiere orientación, no venta a cualquiera (oración 10)."
+        },
+        {
+          "t": "usar antibióticos para un resfrío agrava un problema que nos afecta a todos.",
+          "correcta": true,
+          "evidencia": [
+            "o4",
+            "o5",
+            "o6"
+          ],
+          "explicacion": "El texto A lo explica con las bacterias que resisten (oraciones 4 y 5) y el B lo acepta: es un error que todos terminaremos pagando (oración 6)."
+        },
+        {
+          "t": "las bacterias resistentes son más comunes en las provincias andinas que en la capital del país.",
+          "codigo": "RV8",
+          "explicacion": "Ninguno de los dos compara regiones. Es un dato de fuera de los textos, sea cierto o no."
+        }
       ]
     },
     {
@@ -96,42 +192,83 @@
         "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
         "sonda": "Un antibiótico tomado a tiempo también cura un resfrío causado por un virus.",
         "aceptada": "ninguno",
-        "codigos": { "A": "RV9", "B": "RV33", "ambos": null },
+        "codigos": {
+          "A": "RV9",
+          "B": "RV33",
+          "ambos": null
+        },
         "explicacion": "Ninguno lo sostiene: el texto A dice que contra un virus el antibiótico no sirve de nada (oración 3), y el B llama error a darlo para un resfrío (oración 6).",
         "explicaciones": {
           "A": "El texto A dice lo contrario: contra el virus del resfrío, el antibiótico «no sirve de nada» (oración 3).",
-          "B": "El texto B no lo dice; al contrario, llama error a regalar antibióticos para un resfrío (oración 6).",
+          "B": "El texto B no lo dice; al contrario, llama error a dispensar antibióticos para un resfrío (oración 6).",
           "ambos": "Ninguno lo sostiene. Los dos ven como un error usarlos para un resfrío (oraciones 3 y 6)."
         }
       },
       "enunciado": "Es incompatible con lo que plantea el autor del texto B afirmar que",
       "alternativas": [
-        { "t": "no está bien vender antibióticos para curar un simple resfrío.", "codigo": "RV10", "origen": "o6",
-          "explicacion": "Por la negación parece contraria, pero dice lo mismo que el texto B en la oración 6: es compatible." },
-        { "t": "en la costa del país hay muchas más boticas por habitante que en las zonas de la sierra.", "codigo": "RV36",
-          "explicacion": "El texto B no habla de cuántas boticas hay en cada región. Que no lo mencione no significa que lo contradiga." },
-        { "t": "exigir receta donde no hay médico basta para que nadie tome antibióticos por su cuenta.", "correcta": true, "evidencia": ["o9"],
-          "explicacion": "Choca con la oración 9: si no puede conseguir la receta, la madre comprará el medicamento en un mercado, sin orientación." },
-        { "t": "las bacterias que resisten sobreviven y se multiplican cuando el tratamiento se deja a medias.", "codigo": "RV59", "origen": "o4",
-          "explicacion": "Es una idea del texto A (oración 4). El B no la niega: acepta que el mal uso es un error que todos pagaremos (oración 6)." }
+        {
+          "t": "no está bien vender antibióticos para curar un simple resfrío.",
+          "codigo": "RV10",
+          "origen": "o6",
+          "explicacion": "Por la negación parece contraria, pero dice lo mismo que el texto B en la oración 6: es compatible."
+        },
+        {
+          "t": "en la costa del país hay muchas más boticas por habitante que en las zonas de la sierra.",
+          "codigo": "RV36",
+          "explicacion": "El texto B no habla de cuántas boticas hay en cada región. Que no lo mencione no significa que lo contradiga."
+        },
+        {
+          "t": "exigir receta donde no hay médico basta para que nadie tome antibióticos por su cuenta.",
+          "correcta": true,
+          "evidencia": [
+            "o9"
+          ],
+          "explicacion": "Choca con la oración 9: si no puede conseguir la receta, la madre comprará el medicamento en un mercado, sin orientación."
+        },
+        {
+          "t": "las bacterias que resisten sobreviven y se multiplican cuando el tratamiento se deja a medias.",
+          "codigo": "RV59",
+          "origen": "o4",
+          "explicacion": "Es una idea del texto A (oración 4). El B no la niega: acepta que el mal uso es un error que todos pagaremos (oración 6)."
+        }
       ]
     },
     {
       "id": "p4",
       "tipo": "sentido-contextual",
       "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
-      "enunciado": "En el texto B, el verbo REGALAR («regalar antibióticos para un resfrío») significa",
+      "enunciado": "En el texto B, el verbo DISPENSAR («dispensar antibióticos para un resfrío») significa",
       "alternativas": [
-        { "t": "entregar sin cuidado.", "correcta": true, "evidencia": ["o2", "o6"],
-          "explicacion": "Se refiere a lo que describe el texto A en la oración 2: dar el antibiótico a cualquiera que cuente que tiene tos, sin receta ni control. No quiere decir que sea gratis." },
-        { "t": "obsequiar sin cobrar.", "codigo": "RV18",
-          "explicacion": "Es el sentido más común de «regalar», pero en las boticas los antibióticos se venden; lo que el autor critica es la facilidad con que se dan." },
-        { "t": "recetar.", "codigo": "RV19",
-          "explicacion": "Es del mismo campo (los medicamentos), pero recetar es lo que hace el médico, y aquí se critica justamente darlos sin receta." },
-        { "t": "pagar.", "codigo": "RV5", "origen": "o6",
-          "explicacion": "Es la palabra vecina de la misma oración («terminaremos pagando»), que habla de las consecuencias, no de la venta." },
-        { "t": "regular.", "codigo": "RV20",
-          "explicacion": "Se parece en la forma, pero significa lo contrario de lo que critica el autor: poner reglas." }
+        {
+          "t": "entregar a quien lo pide.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o6"
+          ],
+          "explicacion": "Se refiere a lo que describe el texto A en la oración 2: la botica da el antibiótico a quien cuenta que tiene tos, sin pedir receta."
+        },
+        {
+          "t": "disculpar.",
+          "codigo": "RV18",
+          "explicacion": "Es el sentido más común de «dispensar» en la conversación («dispense usted»), pero aquí se habla de medicamentos que se dan, no de perdonar a alguien."
+        },
+        {
+          "t": "recetar.",
+          "codigo": "RV19",
+          "explicacion": "Es del mismo campo (los medicamentos), pero recetar es lo que hace el médico, y aquí se critica justamente darlos sin receta."
+        },
+        {
+          "t": "pagar.",
+          "codigo": "RV5",
+          "origen": "o6",
+          "explicacion": "Es la palabra vecina de la misma oración («terminaremos pagando»), que habla de las consecuencias, no de la entrega del medicamento."
+        },
+        {
+          "t": "dispersar.",
+          "codigo": "RV20",
+          "explicacion": "Se parece en la forma, pero significa esparcir en distintas direcciones, no dar un medicamento a quien lo pide."
+        }
       ]
     },
     {
@@ -140,23 +277,55 @@
       "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
       "enunciado": "Si un distrito alejado tuviera todos los días consultas por teléfono con un médico que puede dar recetas, el autor del texto B probablemente",
       "alternativas": [
-        { "t": "seguiría oponiéndose a que allí se exija receta porque el médico está a horas de camino.", "codigo": "RV63", "origen": "o7",
-          "explicacion": "Repite la objeción que el supuesto acaba de quitar: con la consulta por teléfono, el médico ya no está fuera del alcance de la madre." },
-        { "t": "aceptaría allí un control más firme de la venta con receta.", "correcta": true, "evidencia": ["o9", "o10"],
-          "explicacion": "Su objeción era que no se podía conseguir la receta (oración 9). Con las consultas a distancia que él mismo propone (oración 10), el control y el acceso irían juntos." },
-        { "t": "pediría que los antibióticos se vendan sin receta en todas las boticas del país, sin excepción.", "codigo": "RV11",
-          "explicacion": "El texto B nunca pide la venta libre, y menos en todo el país: el supuesto, además, le da el acceso que reclamaba." },
-        { "t": "dejaría de confiar en los farmacéuticos para orientar a quienes compran medicamentos.", "codigo": "RV7", "origen": "o10",
-          "explicacion": "Nada en el texto B ata la orientación del farmacéutico a la falta de médico: la propone junto con las consultas a distancia (oración 10)." }
+        {
+          "t": "seguiría oponiéndose a que allí se exija receta porque el médico está a horas de camino.",
+          "codigo": "RV63",
+          "origen": "o7",
+          "explicacion": "Repite la objeción que el supuesto acaba de quitar: con la consulta por teléfono, el médico ya no está fuera del alcance de la madre."
+        },
+        {
+          "t": "aceptaría allí un control más firme de la venta con receta.",
+          "correcta": true,
+          "evidencia": [
+            "o9",
+            "o10"
+          ],
+          "explicacion": "Su objeción era que no se podía conseguir la receta (oración 9). Con las consultas a distancia que él mismo propone (oración 10), el control y el acceso irían juntos."
+        },
+        {
+          "t": "pediría que los antibióticos se vendan sin receta en todas las boticas del país, sin excepción.",
+          "codigo": "RV11",
+          "explicacion": "El texto B nunca pide la venta libre, y menos en todo el país: el supuesto, además, le da el acceso que reclamaba."
+        },
+        {
+          "t": "dejaría de confiar en los farmacéuticos para orientar a quienes compran medicamentos.",
+          "codigo": "RV7",
+          "origen": "o10",
+          "explicacion": "Nada en el texto B ata la orientación del farmacéutico a la falta de médico: la propone junto con las consultas a distancia (oración 10)."
+        }
       ]
     }
   ],
   "origen": "propio",
   "fecha": "2026-11-12",
   "hechos": [
-    { "afirmacion": "Los antibióticos no sirven contra las infecciones causadas por virus, como el resfriado común.", "fuente": "Organización Mundial de la Salud, nota descriptiva «Resistencia a los antimicrobianos» (2023)" },
-    { "afirmacion": "El uso indebido y excesivo de antibióticos favorece la aparición de bacterias resistentes; la OMS considera la resistencia a los antimicrobianos una de las principales amenazas para la salud pública mundial.", "fuente": "Organización Mundial de la Salud, nota descriptiva «Resistencia a los antimicrobianos» (2023)" },
-    { "afirmacion": "En el Perú, los antibióticos tienen como condición de venta la receta médica.", "fuente": "Ley N.º 29459, Ley de los Productos Farmacéuticos, Dispositivos Médicos y Productos Sanitarios, y registros sanitarios de DIGEMID (Ministerio de Salud)" }
+    {
+      "afirmacion": "Los antibióticos no sirven contra las infecciones causadas por virus, como el resfriado común.",
+      "fuente": "Organización Mundial de la Salud, nota descriptiva «Resistencia a los antimicrobianos» (2023)"
+    },
+    {
+      "afirmacion": "El uso indebido y excesivo de antibióticos favorece la aparición de bacterias resistentes; la OMS considera la resistencia a los antimicrobianos una de las principales amenazas para la salud pública mundial.",
+      "fuente": "Organización Mundial de la Salud, nota descriptiva «Resistencia a los antimicrobianos» (2023)"
+    },
+    {
+      "afirmacion": "En el Perú, los antibióticos se venden solo con receta médica (condición de venta «con receta médica»).",
+      "fuente": "Ley N.º 29459, Ley de los Productos Farmacéuticos, Dispositivos Médicos y Productos Sanitarios, y registros sanitarios de DIGEMID (Ministerio de Salud)"
+    }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (revisor a ciegas, rutina verbal-mas)",
+    "fecha": "2026-11-12",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidieron todos los ítems de t136. Cambio: p4 usaba REGALAR, cuyo sentido literal (obsequiar sin cobrar) era defendible; se cambió la palabra del texto (oración 6 y explicaciones) a DISPENSAR y se rehízo p4 (correcta: entregar a quien lo pide; distractores disculpar, recetar, pagar, dispersar, todos falsos en el contexto). Hechos confirmados con fuente en la web: los antibióticos se venden solo con receta (Ley 29459; DIGEMID y MINSA exigen a farmacias y boticas pedir receta y las sancionan con multa, nota DIGEMID 2023 y 2025). Resistencia por mal uso y que no sirven contra virus: de memoria, según la OMS."
+  }
 }

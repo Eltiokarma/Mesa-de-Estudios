@@ -19,7 +19,7 @@
       { "id": "o5", "rol": "principal", "t": "Esperar a que falte el agua para recién construir plantas sería llegar tarde, porque una planta grande demora años en estar lista." }
     ],
     [
-      { "id": "o6", "rol": "apoyo", "t": "Acepto que el mar puede ser una fuente para el futuro y que una planta no se levanta de un día para otro." },
+      { "id": "o6", "rol": "apoyo", "t": "Acepto que el mar puede ser una fuente para el futuro y que una planta grande no se levanta de un día para otro." },
       { "id": "o7", "rol": "contraste", "t": "Pero antes de pagar por un agua bastante más cara, conviene dejar de perder la que ya se tiene." },
       { "id": "o8", "rol": "apoyo", "t": "Una parte importante del agua que se potabiliza en Lima nunca se factura: se escapa por tuberías viejas, se va por conexiones clandestinas o no se mide." },
       { "id": "o9", "rol": "apoyo", "t": "Desalinizar, además, consume mucha energía, y ese costo terminaría en el recibo de cada familia." },
@@ -53,13 +53,13 @@
       "previo": {
         "tipo": "atribuir",
         "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
-        "sonda": "Cobrar más a quien consume más agua ayudaría a que el agua alcance.",
+        "sonda": "Conviene cobrar más a quien más agua gasta.",
         "aceptada": "B",
         "codigos": { "A": "RV59", "ambos": "RV60", "ninguno": null },
         "explicacion": "Lo propone el texto B en la oración 10, entre las medidas para dejar de perder agua.",
         "explicaciones": {
-          "A": "El texto A no habla de tarifas ni de consumo: propone sacar agua del mar. La idea es del texto B (oración 10).",
-          "ambos": "Solo el texto B lo plantea (oración 10). El A no dice nada sobre cobrar según el consumo.",
+          "A": "El texto A no habla de tarifas ni de cobrar según el gasto: propone sacar agua del mar. La idea es del texto B (oración 10).",
+          "ambos": "Solo el texto B lo plantea (oración 10). El A no dice nada sobre cobrar según el gasto.",
           "ninguno": "Sí lo sostiene alguien: el texto B, en la oración 10."
         }
       },
@@ -84,10 +84,10 @@
       "previo": {
         "tipo": "atribuir",
         "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
-        "sonda": "Una planta para potabilizar agua de mar no se construye en poco tiempo.",
+        "sonda": "Una planta grande para sacar agua del mar no se levanta en poco tiempo.",
         "aceptada": "ambos",
         "codigos": { "A": "RV61", "B": "RV61", "ninguno": null },
-        "explicacion": "Los dos lo sostienen: el texto A dice que una planta grande demora años (oración 5) y el B lo acepta (oración 6).",
+        "explicacion": "Los dos lo sostienen: el texto A dice que una planta grande demora años (oración 5) y el B dice que una planta grande no se levanta de un día para otro (oración 6).",
         "explicaciones": {
           "A": "El texto A lo dice en la oración 5, pero el B también lo acepta: una planta «no se levanta de un día para otro» (oración 6).",
           "B": "El texto B lo concede en la oración 6, pero el A lo dice antes, en la oración 5.",

@@ -119,8 +119,8 @@
           "explicacion": "El texto B no habla de bibliotecas, pero tampoco dice nada en contra: que algo no esté dicho no lo vuelve incompatible." },
         { "t": "no hay suficientes profesores de inglés ni siquiera para los alumnos de secundaria.", "codigo": "RV10", "origen": "o9",
           "explicacion": "Tiene un «no», pero es compatible: el director lo dice en la oración 9." },
-        { "t": "el inglés puede enseñarse más adelante, cuando el niño ya lea bien en castellano.", "codigo": "RV5", "origen": "o10",
-          "explicacion": "No choca con el texto B: es casi lo mismo que dice la oración 10." }
+        { "t": "el inglés no debería enseñarse antes de que el niño lea y entienda bien en castellano.", "codigo": "RV34", "origen": "o10",
+          "explicacion": "No lo dice con esas palabras, pero se deduce y es compatible: es casi lo que dice la oración 10, que el inglés puede venir después de asegurar la lectura en castellano." }
       ]
     },
     {

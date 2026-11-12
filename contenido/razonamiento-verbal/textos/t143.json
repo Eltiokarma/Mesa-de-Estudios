@@ -15,7 +15,7 @@
       { "id": "o1", "rol": "principal", "t": "Para llevar electricidad a las comunidades rurales del altiplano, lo más sensato es instalar un panel solar en cada casa." },
       { "id": "o2", "rol": "apoyo", "t": "El altiplano recibe una radiación solar alta durante casi todo el año, y ese recurso hoy se desperdicia." },
       { "id": "o3", "rol": "apoyo", "t": "Las viviendas, además, están dispersas: tender kilómetros de postes y cables para llegar a unas pocas familias cuesta mucho y puede tardar años." },
-      { "id": "o4", "rol": "apoyo", "t": "Un equipo en el techo, en cambio, se instala en pocos días y alcanza para encender focos, escuchar la radio y cargar el celular." },
+      { "id": "o4", "rol": "apoyo", "t": "Un equipo en el techo, en cambio, se instala en pocos días y, incluso en la casa más apartada, alcanza para encender focos, escuchar la radio y cargar el celular." },
       { "id": "o5", "rol": "principal", "t": "Esperar la red es condenar a esas familias a otra década de velas y mecheros." }
     ],
     [
@@ -105,11 +105,11 @@
         "sonda": "Para una vivienda muy alejada, un panel en el techo es una opción sensata.",
         "aceptada": "ambos",
         "codigos": { "A": "RV61", "B": "RV61", "ninguno": null },
-        "explicacion": "Los dos lo sostienen: el texto A propone el panel para las comunidades dispersas (oraciones 1 y 3) y el B lo acepta para las casas más aisladas (oraciones 6 y 11).",
+        "explicacion": "Los dos lo sostienen: el texto A dice que el panel sirve incluso en la casa más apartada (oración 4) y el B lo acepta para las casas más aisladas (oraciones 6 y 11).",
         "explicaciones": {
-          "A": "El texto A lo propone (oraciones 1 y 3), pero el B también lo acepta para las casas más aisladas (oración 6).",
-          "B": "El texto B lo concede en las oraciones 6 y 11, pero es la propuesta misma del texto A (oración 1).",
-          "ninguno": "Los dos lo sostienen: el texto A en la oración 1 y el B en la oración 6."
+          "A": "El texto A lo dice en la oración 4, pero el B también lo acepta para las casas más aisladas (oración 6).",
+          "B": "El texto B lo concede en las oraciones 6 y 11, pero el A ya lo planteaba en la oración 4.",
+          "ninguno": "Los dos lo sostienen: el texto A en la oración 4 y el B en la oración 6."
         }
       },
       "enunciado": "Es incompatible con lo que sostienen los dos autores afirmar que",
@@ -120,8 +120,8 @@
           "explicacion": "Ninguno de los textos habla de salud ni de maestros, pero tampoco dice nada en contra: que algo no esté dicho no lo vuelve incompatible." },
         { "t": "un panel doméstico no mueve un molino de granos ni una ordeñadora.", "codigo": "RV10", "origen": "o8",
           "explicacion": "Tiene un «no», pero es compatible: lo dice el texto B (oración 8), y el A, que solo habla de focos, radio y celular (oración 4), no lo niega." },
-        { "t": "la batería de un panel hay que cambiarla cada cierto número de años.", "codigo": "RV60", "origen": "o9",
-          "explicacion": "Lo dice solo el texto B (oración 9), y el A no lo contradice: no choca con ninguno de los dos." }
+        { "t": "la batería de un panel hay que cambiarla cada cierto número de años.", "codigo": "RV59", "origen": "o9",
+          "explicacion": "Es una idea del texto B (oración 9), pero que sea de uno solo no la vuelve incompatible: el A no la niega, así que no choca con ninguno de los dos." }
       ]
     },
     {

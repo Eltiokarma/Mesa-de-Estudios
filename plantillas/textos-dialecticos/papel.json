@@ -4,214 +4,6 @@
   "origen": "Generado por herramientas/papel-lectura.js desde el banco; no se edita a mano.",
   "problemas": [
     {
-      "id": "t101",
-      "nivel": "intermedio",
-      "enunciado": "Lee el texto «¿Tarea en casa o práctica en el aula?» y responde las 5 preguntas.",
-      "texto": {
-        "titulo": "¿Tarea en casa o práctica en el aula?",
-        "parrafos": [
-          [
-            {
-              "n": 1,
-              "t": "Las tareas para la casa tienen mala fama, pero cumplen una función que el aula no puede cumplir."
-            },
-            {
-              "n": 2,
-              "t": "En clase, el alumno sigue el ritmo del profesor y de sus compañeros; en casa, frente a un problema que no sale, tiene que decidir solo qué intentar."
-            },
-            {
-              "n": 3,
-              "t": "Esa práctica a solas es la que fija lo aprendido: un procedimiento que solo se vio en la pizarra se olvida en pocos días."
-            },
-            {
-              "n": 4,
-              "t": "Además, la tarea le muestra al profesor quién entendió y quién no, antes de que llegue el examen."
-            },
-            {
-              "n": 5,
-              "t": "Por eso, eliminarlas no aliviaría a los alumnos: solo les quitaría la ocasión de equivocarse cuando todavía no cuenta."
-            },
-            {
-              "n": 6,
-              "t": "Lo que sí conviene es que sean cortas y que el profesor las revise."
-            }
-          ],
-          [
-            {
-              "n": 7,
-              "t": "Cada tarde, muchos escolares llegan a casa y encuentran que la tarea supone algo que no tienen: un adulto que explique, una computadora o una mesa tranquila."
-            },
-            {
-              "n": 8,
-              "t": "Para ellos, la tarea no es práctica a solas, sino una prueba de lo que hay en su casa."
-            },
-            {
-              "n": 9,
-              "t": "El que tiene ayuda la entrega completa; el que no la tiene, la copia en la mañana o no la hace, y el profesor anota una diferencia que no salió del aula."
-            },
-            {
-              "n": 10,
-              "t": "No niego que practicar sea necesario para aprender."
-            },
-            {
-              "n": 11,
-              "t": "Sostengo que esa práctica debe hacerse en el colegio, con el profesor cerca, en horas destinadas a ello."
-            },
-            {
-              "n": 12,
-              "t": "Así, el esfuerzo de cada alumno dependería de él y no de las condiciones de su hogar."
-            }
-          ]
-        ],
-        "autores": [
-          {
-            "titulo": "Texto A",
-            "desde": 0
-          },
-          {
-            "titulo": "Texto B",
-            "desde": 1
-          }
-        ]
-      },
-      "preguntas": [
-        {
-          "n": 1,
-          "enunciado": "¿Cuál es el tema en controversia entre los dos textos?",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "Si muchos escolares tienen en casa la ayuda que la tarea necesita."
-            },
-            {
-              "letra": "B",
-              "t": "Si practicar lo que se vio en clase es necesario para aprender."
-            },
-            {
-              "letra": "C",
-              "t": "Si la escuela debe preocuparse por lo que aprenden sus alumnos."
-            },
-            {
-              "letra": "D",
-              "t": "Si la práctica de lo aprendido en clase debe hacerse en casa, como tarea, o en el colegio."
-            },
-            {
-              "letra": "E",
-              "t": "Si la práctica a solas fija un procedimiento que solo se vio en la pizarra."
-            }
-          ]
-        },
-        {
-          "n": 2,
-          "previo": "Antes de mirar las alternativas: ¿quién sostiene esta idea? «La tarea para la casa mide, en parte, lo que cada alumno tiene en su hogar.» Elige: «El autor del texto A», «El autor del texto B», «Los dos autores», «Ninguno de los dos».",
-          "enunciado": "¿Qué sostiene el autor del texto B?",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "Los profesores dejan tareas para no tener que enseñar en clase."
-            },
-            {
-              "letra": "B",
-              "t": "Practicar es innecesario, y por eso la tarea debe hacerse en el colegio."
-            },
-            {
-              "letra": "C",
-              "t": "Las tareas para la casa perjudican a todos los escolares por igual."
-            },
-            {
-              "letra": "D",
-              "t": "Practicar a solas en casa es lo que fija un procedimiento visto en la pizarra."
-            },
-            {
-              "letra": "E",
-              "t": "La práctica escolar debería hacerse en el colegio, para que no dependa de lo que cada alumno tiene en casa."
-            }
-          ]
-        },
-        {
-          "n": 3,
-          "previo": "Antes de mirar las alternativas: ¿quién sostiene esta idea? «Para aprender hace falta practicar lo que se vio en clase.» Elige: «El autor del texto A», «El autor del texto B», «Los dos autores», «Ninguno de los dos».",
-          "enunciado": "¿En qué coinciden los autores de los dos textos?",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "En que la tarea muestra lo que cada alumno tiene en su casa."
-            },
-            {
-              "letra": "B",
-              "t": "En que practicar es necesario y debe hacerse en casa."
-            },
-            {
-              "letra": "C",
-              "t": "En que aprender exige practicar lo que se vio en clase."
-            },
-            {
-              "letra": "D",
-              "t": "En que las tareas deben ser cortas y revisadas por el profesor."
-            }
-          ]
-        },
-        {
-          "n": 4,
-          "enunciado": "Ante la propuesta del texto B, el autor del texto A probablemente objetaría que",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "con el profesor cerca, el alumno ya no tiene que decidir solo qué intentar ante un problema que no sale."
-            },
-            {
-              "letra": "B",
-              "t": "sería mejor dejar tareas largas, para que todos practiquen más."
-            },
-            {
-              "letra": "C",
-              "t": "las condiciones de cada hogar no influyen en cómo se hace la tarea."
-            },
-            {
-              "letra": "D",
-              "t": "el profesor termina anotando una diferencia que no salió del aula."
-            },
-            {
-              "letra": "E",
-              "t": "no es verdad que practicar sea necesario para aprender."
-            }
-          ]
-        },
-        {
-          "n": 5,
-          "enunciado": "En el texto B, el verbo SUPONER (la tarea «supone algo que no tienen») significa",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "propone."
-            },
-            {
-              "letra": "B",
-              "t": "pone a prueba."
-            },
-            {
-              "letra": "C",
-              "t": "requiere, da por sentado."
-            },
-            {
-              "letra": "D",
-              "t": "imagina."
-            }
-          ]
-        }
-      ],
-      "respuesta": "Clave: 1: D · 2: E · 3: C · 4: A · 5: C.",
-      "pasos": [
-        "Pregunta 1. Clave D. El texto A defiende las tareas para la casa y el texto B pide que esa práctica se haga en el colegio: discuten dónde practicar.",
-        "Pregunta 2. Antes de las alternativas: El autor del texto B. Lo dice el texto B en las oraciones 8 y 9: la tarea se vuelve «una prueba de lo que hay en su casa». El texto A no lo menciona.",
-        "Pregunta 2. Clave E. Es su tesis (oración 11) con su razón (oración 12): que el esfuerzo dependa del alumno y no de su hogar.",
-        "Pregunta 3. Antes de las alternativas: Los dos autores. Los dos lo sostienen: el texto A dice que la práctica «fija lo aprendido» (oración 3) y el texto B, «no niego que practicar sea necesario para aprender» (oración 10).",
-        "Pregunta 3. Clave C. El texto A lo dice al defender la práctica a solas, y el B lo concede en la oración 10 antes de proponer que se practique en el colegio.",
-        "Pregunta 4. Clave A. Para el texto A, el valor de la tarea está en que el alumno decide solo (oración 2). Practicar en el colegio con el profesor al lado le quita eso.",
-        "Pregunta 5. Clave C. La tarea cuenta con que en la casa hay un adulto, una computadora o una mesa tranquila, y los necesita aunque no los haya."
-      ]
-    },
-    {
       "id": "t109",
       "nivel": "intermedio",
       "enunciado": "Lee el texto «Los octógonos en los envases» y responde las 5 preguntas.",
@@ -2057,6 +1849,210 @@
         "Pregunta 4. Antes de las alternativas: Ninguno de los dos. Ninguno lo sostiene. El texto A quiere comprobar cuáles funcionan para defenderlas con pruebas (oración 5), no reemplazarlas todas; el texto B defiende ese saber y pide dialogar con él (oración 9).",
         "Pregunta 4. Clave D. El texto A propone los ensayos en parcelas (oración 4) y el B dice que no se opone a ellos (oración 6).",
         "Pregunta 5. Clave E. La autora lo opone a dialogar: examinar es juzgar las prácticas sin escuchar a quienes las usan (oración 10)."
+      ]
+    },
+    {
+      "id": "t137",
+      "nivel": "avanzado (tipo UNI)",
+      "enunciado": "Lee el texto «El puerto de Chancay: ¿oportunidad o desorden?» y responde las 5 preguntas.",
+      "texto": {
+        "titulo": "El puerto de Chancay: ¿oportunidad o desorden?",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "El puerto de Chancay, que empezó a operar en 2024 a unos ochenta kilómetros al norte de Lima, puede ser la obra que cambie la economía del país en esta década."
+            },
+            {
+              "n": 2,
+              "t": "Con barcos que viajan directo a Asia, nuestros arándanos, paltas y minerales podrían llegar antes y a menor costo a sus compradores."
+            },
+            {
+              "n": 3,
+              "t": "Pero el muelle, por sí solo, solo mueve contenedores: el desarrollo vendrá si a su alrededor se instalan almacenes, talleres y plantas que procesen lo que hoy exportamos en bruto."
+            },
+            {
+              "n": 4,
+              "t": "Esa es la oportunidad: que Chancay no sea un lugar por donde la riqueza pasa, sino uno donde se produce."
+            },
+            {
+              "n": 5,
+              "t": "Para lograrlo, el Estado debe atraer esas industrias y formar a los jóvenes de la zona en los oficios que ellas pedirán."
+            }
+          ],
+          [
+            {
+              "n": 6,
+              "t": "Comparto que el puerto puede traer empleo y que su valor dependerá de lo que se construya a su alrededor."
+            },
+            {
+              "n": 7,
+              "t": "Mi temor es que eso se construya sin orden."
+            },
+            {
+              "n": 8,
+              "t": "Chancay era una ciudad pequeña, y ya recibe camiones, trabajadores y compradores de terrenos más rápido de lo que puede darles agua, desagüe y pistas."
+            },
+            {
+              "n": 9,
+              "t": "Si nadie decide dónde irán las fábricas y dónde las casas, las laderas se llenarán de viviendas precarias y algunas fábricas terminarán junto a los colegios."
+            },
+            {
+              "n": 10,
+              "t": "Además, los pescadores artesanales necesitan saber si el tráfico de los grandes barcos dejará a salvo sus zonas de pesca, y eso debe estudiarse antes de que el puerto crezca más."
+            },
+            {
+              "n": 11,
+              "t": "Antes que las nuevas industrias, Chancay necesita un plan de ciudad: sin él, la oportunidad se pagará con desorden."
+            }
+          ]
+        ],
+        "autores": [
+          {
+            "titulo": "Texto A",
+            "firma": "Un economista especializado en comercio exterior",
+            "desde": 0
+          },
+          {
+            "titulo": "Texto B",
+            "firma": "Una urbanista",
+            "desde": 1
+          }
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas: ¿quién sostiene esta idea? «Lo que hoy se vende al extranjero sin procesar podría procesarse cerca del puerto.» Elige: «El autor del texto A», «El autor del texto B», «Los dos autores», «Ninguno de los dos».",
+          "enunciado": "Los autores discrepan principalmente sobre",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "si los arándanos y las paltas del país llegarán a sus compradores de Asia antes y a menor costo."
+            },
+            {
+              "letra": "B",
+              "t": "si el puerto bastará por sí solo o necesitará que alguien construya a su alrededor."
+            },
+            {
+              "letra": "C",
+              "t": "si el puerto debería cerrarse para proteger las zonas donde trabajan los pescadores artesanales."
+            },
+            {
+              "letra": "D",
+              "t": "si el valor del puerto dependerá de lo que se construya a su alrededor."
+            },
+            {
+              "letra": "E",
+              "t": "cuál debe ser la prioridad en Chancay: atraer industrias que procesen lo que se exporta, o fijar antes un plan de ciudad."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "previo": "Antes de mirar las alternativas: ¿quién sostiene esta idea? «Para que el puerto dé frutos, importa lo que se construya a su alrededor.» Elige: «El autor del texto A», «El autor del texto B», «Los dos autores», «Ninguno de los dos».",
+          "enunciado": "¿Qué enunciado sintetiza mejor lo que plantean los dos textos?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "El puerto ofrece empleo a la zona, y por eso conviene dejar que la ciudad crezca sin plan para no frenar las inversiones."
+            },
+            {
+              "letra": "B",
+              "t": "El comercio con Asia decidirá el futuro económico de toda América del Sur en las próximas décadas."
+            },
+            {
+              "letra": "C",
+              "t": "El puerto traerá desorden a Chancay, pues las nuevas industrias procesarán lo que hoy se exporta en bruto."
+            },
+            {
+              "letra": "D",
+              "t": "El puerto puede impulsar el desarrollo, pero solo si lo acompañan industrias y una ciudad ordenada."
+            },
+            {
+              "letra": "E",
+              "t": "Lo primero que debe hacer el Estado es formar a los jóvenes de la zona en los oficios que pedirán las industrias."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "En el texto A, la expresión EN BRUTO («lo que hoy exportamos en bruto») significa",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "en contenedores."
+            },
+            {
+              "letra": "B",
+              "t": "sin descontar los costos."
+            },
+            {
+              "letra": "C",
+              "t": "sin elaborar."
+            },
+            {
+              "letra": "D",
+              "t": "de manera torpe y descuidada."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "previo": "Antes de mirar las alternativas: ¿quién sostiene esta idea? «Si la ciudad crece sin un plan, la oportunidad del puerto saldrá cara.» Elige: «El autor del texto A», «El autor del texto B», «Los dos autores», «Ninguno de los dos».",
+          "enunciado": "Ante la propuesta del texto A, la urbanista del texto B le diría que",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "el puerto no traerá ningún empleo a la zona, ni ahora ni cuando lleguen las industrias."
+            },
+            {
+              "letra": "B",
+              "t": "los barcos que viajan a Asia contaminan el mar mucho más que los que viajan a otros continentes."
+            },
+            {
+              "letra": "C",
+              "t": "el desarrollo vendrá si cerca del puerto se procesa lo que hoy se exporta sin elaborar."
+            },
+            {
+              "letra": "D",
+              "t": "las industrias que él quiere atraer necesitan saber antes dónde podrán instalarse."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "enunciado": "Si Chancay aprobara un plan que fije dónde irán las fábricas y las viviendas, y llevara agua y desagüe a los barrios nuevos, la autora del texto B probablemente",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "seguiría temiendo que, a falta de un plan, algunas fábricas terminen junto a los colegios."
+            },
+            {
+              "letra": "B",
+              "t": "propondría llevar el puerto a otra ciudad, con más espacio para crecer."
+            },
+            {
+              "letra": "C",
+              "t": "rechazaría cualquier fábrica nueva en toda la provincia, por más ordenada que estuviera la ciudad."
+            },
+            {
+              "letra": "D",
+              "t": "vería mejor la llegada de industrias, aunque aún pediría estudiar la pesca."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: E · 2: D · 3: C · 4: D · 5: D.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: El autor del texto A. Lo sostiene el texto A en la oración 3: el desarrollo vendrá si alrededor del puerto se instalan plantas que procesen lo que hoy se exporta en bruto.",
+        "Pregunta 1. Clave E. El texto A propone que el Estado atraiga industrias (oración 5); el B pide un plan de ciudad «antes que las nuevas industrias» (oración 11).",
+        "Pregunta 2. Antes de las alternativas: Los dos autores. Los dos lo sostienen: el texto A dice que el desarrollo vendrá si a su alrededor se instalan industrias (oración 3) y el B, que el valor del puerto dependerá de lo que se construya a su alrededor (oración 6).",
+        "Pregunta 2. Clave D. Integra los dos aportes: el texto A pide industrias que procesen (oraciones 3 y 4) y el B, un plan de ciudad (oración 11); y los dos aceptan que el valor del puerto depende de lo que lo rodee (oraciones 3 y 6).",
+        "Pregunta 3. Clave C. Se opone a lo que harían las plantas: procesar el producto antes de venderlo.",
+        "Pregunta 4. Antes de las alternativas: El autor del texto B. Lo sostiene el texto B en la oración 11: sin un plan de ciudad, la oportunidad se pagará con desorden.",
+        "Pregunta 4. Clave D. Para el texto B hay que decidir primero dónde van las fábricas y dónde las casas (oración 9): el plan va antes que las industrias (oración 11).",
+        "Pregunta 5. Clave D. El plan atiende su condición principal (oración 11), pero no toca la otra: estudiar si el tráfico de barcos deja a salvo las zonas de pesca (oración 10)."
       ]
     }
   ]

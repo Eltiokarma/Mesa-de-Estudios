@@ -7,23 +7,71 @@
   "dificultad": 1,
   "tipo_texto": "argumentativo",
   "autores": [
-    { "id": "A", "desde": 0, "firma": "Una abogada laboralista" },
-    { "id": "B", "desde": 1, "firma": "Un economista" }
+    {
+      "id": "A",
+      "desde": 0,
+      "firma": "Una abogada laboralista"
+    },
+    {
+      "id": "B",
+      "desde": 1,
+      "firma": "Un economista"
+    }
   ],
   "parrafos": [
     [
-      { "id": "o1", "rol": "principal", "t": "Quien reparte pedidos en Lima, en bicicleta o en moto, para una aplicación es en la práctica un trabajador, aunque su contrato lo llame socio." },
-      { "id": "o2", "rol": "apoyo", "t": "La aplicación fija cuánto se paga por cada pedido, decide a quién le toca el siguiente encargo y puede desconectar al repartidor si recibe malas calificaciones." },
-      { "id": "o3", "rol": "apoyo", "t": "Un socio de verdad negocia sus precios y elige a sus clientes; el repartidor no puede hacer ninguna de las dos cosas." },
-      { "id": "o4", "rol": "apoyo", "t": "Y si sufre un accidente en plena avenida, no tiene seguro de salud, ni vacaciones pagadas, ni un ingreso mínimo asegurado." },
-      { "id": "o5", "rol": "principal", "t": "Por eso la ley debería reconocerlo como trabajador, con todos los derechos que eso trae." }
+      {
+        "id": "o1",
+        "rol": "principal",
+        "t": "Quien reparte pedidos en Lima, en bicicleta o en moto, para una aplicación es en la práctica un trabajador, aunque su contrato lo llame socio."
+      },
+      {
+        "id": "o2",
+        "rol": "apoyo",
+        "t": "La aplicación fija cuánto se paga por cada pedido, decide a quién le toca el siguiente encargo y puede desconectar al repartidor si recibe malas calificaciones."
+      },
+      {
+        "id": "o3",
+        "rol": "apoyo",
+        "t": "Un socio de verdad negocia sus precios y elige a sus clientes; el repartidor no puede hacer ninguna de las dos cosas."
+      },
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "Y si sufre un accidente en plena avenida, no tiene seguro de salud, ni vacaciones pagadas, ni un ingreso mínimo asegurado."
+      },
+      {
+        "id": "o5",
+        "rol": "principal",
+        "t": "Por eso la ley debería reconocerlo como trabajador, con todos los derechos que eso trae."
+      }
     ],
     [
-      { "id": "o6", "rol": "apoyo", "t": "Es verdad que un repartidor que se accidenta no debería quedar desprotegido." },
-      { "id": "o7", "rol": "contraste", "t": "Pero tratarlo como un empleado con horario fijo le quitaría lo que muchos buscan en este trabajo: conectarse cuando quieren y por las horas que pueden." },
-      { "id": "o8", "rol": "ejemplo", "t": "Hay estudiantes que reparten solo los fines de semana y madres que lo hacen mientras sus hijos están en el colegio; con un horario fijo, varios de ellos ya no podrían hacerlo." },
-      { "id": "o9", "rol": "apoyo", "t": "Además, si cada repartidor le costara a la empresa lo mismo que un empleado, la aplicación trabajaría con muchos menos." },
-      { "id": "o10", "rol": "principal", "t": "Lo razonable es mantenerlos como independientes y obligar a las aplicaciones a pagarles un seguro contra accidentes." }
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "Es verdad que un repartidor que se accidenta no debería quedar desprotegido."
+      },
+      {
+        "id": "o7",
+        "rol": "contraste",
+        "t": "Pero tratarlo como un empleado con horario fijo le quitaría lo que muchos buscan en este trabajo: conectarse cuando quieren y por las horas que pueden."
+      },
+      {
+        "id": "o8",
+        "rol": "ejemplo",
+        "t": "Hay estudiantes que reparten solo los fines de semana y madres que lo hacen mientras sus hijos están en el colegio; con un horario fijo, varios de ellos ya no podrían hacerlo."
+      },
+      {
+        "id": "o9",
+        "rol": "apoyo",
+        "t": "Además, si cada repartidor le costara a la empresa lo mismo que un empleado, la aplicación trabajaría con muchos menos."
+      },
+      {
+        "id": "o10",
+        "rol": "principal",
+        "t": "Lo razonable es mantenerlos como independientes y obligar a las aplicaciones a pagarles un seguro contra accidentes."
+      }
     ]
   ],
   "preguntas": [
@@ -33,16 +81,38 @@
       "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
       "enunciado": "¿Cuál es el eje del debate entre los dos textos?",
       "alternativas": [
-        { "t": "Si un repartidor que sufre un accidente en la avenida debe quedar sin ninguna protección.", "codigo": "RV61", "origen": "o6",
-          "explicacion": "En eso coinciden: el texto A reclama que el repartidor accidentado no tiene seguro (oración 4) y el B concede que no debería quedar desprotegido (oración 6)." },
-        { "t": "Si la ley debe tratar a los repartidores de las aplicaciones como trabajadores con derechos laborales.", "correcta": true, "evidencia": ["o5", "o10"],
-          "explicacion": "El texto A pide que la ley los reconozca como trabajadores (oración 5); el B, que se los mantenga como independientes (oración 10). Sobre eso toman posiciones opuestas." },
-        { "t": "Si un socio de verdad es quien negocia sus propios precios y elige a qué clientes atender.", "codigo": "RV60", "origen": "o3",
-          "explicacion": "Es un argumento del texto A (oración 3). El texto B no lo discute; el eje tiene que ser algo sobre lo que los dos toman posición." },
-        { "t": "Cómo ha cambiado el comercio de Lima desde que la gente empezó a comprar por internet y por el celular.", "codigo": "RV2",
-          "explicacion": "Es demasiado general: los textos discuten la situación de los repartidores, no el comercio de la ciudad." },
-        { "t": "Si los estudiantes deberían repartir pedidos solo durante los fines de semana.", "codigo": "RV1", "origen": "o8",
-          "explicacion": "Es un detalle del ejemplo del texto B (oración 8), no lo que se discute." }
+        {
+          "t": "Si un repartidor que sufre un accidente en la avenida debe quedar sin ninguna protección.",
+          "codigo": "RV61",
+          "origen": "o6",
+          "explicacion": "En eso coinciden: el texto A reclama que el repartidor accidentado no tiene seguro (oración 4) y el B concede que no debería quedar desprotegido (oración 6)."
+        },
+        {
+          "t": "Si la ley debe tratar a los repartidores de las aplicaciones como trabajadores con derechos laborales.",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "o10"
+          ],
+          "explicacion": "El texto A pide que la ley los reconozca como trabajadores (oración 5); el B, que se los mantenga como independientes (oración 10). Sobre eso toman posiciones opuestas."
+        },
+        {
+          "t": "Si un socio de verdad es quien negocia sus propios precios y elige a qué clientes atender.",
+          "codigo": "RV60",
+          "origen": "o3",
+          "explicacion": "Es un argumento del texto A (oración 3). El texto B no lo discute; el eje tiene que ser algo sobre lo que los dos toman posición."
+        },
+        {
+          "t": "Cómo ha cambiado el comercio de Lima desde que la gente empezó a comprar por internet y por el celular.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos discuten la situación de los repartidores, no el comercio de la ciudad."
+        },
+        {
+          "t": "Si los estudiantes deberían repartir pedidos solo durante los fines de semana.",
+          "codigo": "RV1",
+          "origen": "o8",
+          "explicacion": "Es un detalle del ejemplo del texto B (oración 8), no lo que se discute."
+        }
       ]
     },
     {
@@ -54,7 +124,11 @@
         "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
         "sonda": "Un repartidor que tiene un accidente debería contar con alguna protección.",
         "aceptada": "ambos",
-        "codigos": { "A": "RV61", "B": "RV61", "ninguno": null },
+        "codigos": {
+          "A": "RV61",
+          "B": "RV61",
+          "ninguno": null
+        },
         "explicacion": "Los dos lo sostienen: el texto A se queja de que el repartidor accidentado no tiene seguro (oración 4) y el B dice que no debería quedar desprotegido (oración 6) y pide un seguro contra accidentes (oración 10).",
         "explicaciones": {
           "A": "El texto A lo sostiene (oración 4), pero el B también: lo concede en la oración 6 y propone un seguro en la oración 10.",
@@ -64,16 +138,39 @@
       },
       "enunciado": "¿Qué enunciado integra lo que plantean los dos textos?",
       "alternativas": [
-        { "t": "Los repartidores tienen accidentes en las avenidas de Lima debido a la libertad de horario que les dan las aplicaciones.", "codigo": "RV44",
-          "explicacion": "Une dos ideas con una causa que ningún texto plantea: la libertad de horario (oración 7) no se presenta como causa de los accidentes (oración 4)." },
-        { "t": "Los dos autores aceptan que el repartidor necesita protección ante accidentes y que debe tener un horario fijo.", "codigo": "RV62", "origen": "o7",
-          "explicacion": "La primera mitad es común (oraciones 4 y 6), pero la segunda es falsa: el texto B rechaza el horario fijo (oración 7) y el A no lo menciona." },
-        { "t": "El repartidor necesita protección; se discute si dársela como empleado o como independiente.", "correcta": true, "evidencia": ["o4", "o5", "o6", "o10"],
-          "explicacion": "Recoge lo común (la protección, oraciones 4 y 6) y lo que los separa: el texto A quiere reconocerlo como trabajador (oración 5) y el B, mantenerlo como independiente con un seguro (oración 10)." },
-        { "t": "Muchos estudiantes y madres de familia reparten pedidos en sus horas libres.", "codigo": "RV1", "origen": "o8",
-          "explicacion": "Es un ejemplo del texto B (oración 8); no integra lo que plantean los dos." },
-        { "t": "El trabajo en el Perú necesita leyes más modernas para todos los sectores de la economía.", "codigo": "RV2",
-          "explicacion": "Es demasiado general: los textos hablan de los repartidores de aplicaciones, no de todos los sectores." }
+        {
+          "t": "Los repartidores tienen accidentes en las avenidas de Lima debido a la libertad de horario que les dan las aplicaciones.",
+          "codigo": "RV44",
+          "explicacion": "Une dos ideas con una causa que ningún texto plantea: la libertad de horario (oración 7) no se presenta como causa de los accidentes (oración 4)."
+        },
+        {
+          "t": "Los dos autores aceptan que el repartidor necesita protección ante accidentes y que debe tener un horario fijo.",
+          "codigo": "RV62",
+          "origen": "o7",
+          "explicacion": "La primera mitad es común (oraciones 4 y 6), pero la segunda es falsa: el texto B rechaza el horario fijo (oración 7) y el A no lo menciona."
+        },
+        {
+          "t": "El repartidor necesita protección; se discute si dársela como empleado o como independiente.",
+          "correcta": true,
+          "evidencia": [
+            "o4",
+            "o5",
+            "o6",
+            "o10"
+          ],
+          "explicacion": "Recoge lo común (la protección, oraciones 4 y 6) y lo que los separa: el texto A quiere reconocerlo como trabajador (oración 5) y el B, mantenerlo como independiente con un seguro (oración 10)."
+        },
+        {
+          "t": "Muchos estudiantes y madres de familia reparten pedidos en sus horas libres.",
+          "codigo": "RV1",
+          "origen": "o8",
+          "explicacion": "Es un ejemplo del texto B (oración 8); no integra lo que plantean los dos."
+        },
+        {
+          "t": "El trabajo en el Perú necesita leyes más modernas para todos los sectores de la economía.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos hablan de los repartidores de aplicaciones, no de todos los sectores."
+        }
       ]
     },
     {
@@ -82,14 +179,30 @@
       "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
       "enunciado": "En el texto B, el verbo MANTENER («mantenerlos como independientes») significa",
       "alternativas": [
-        { "t": "conservar.", "correcta": true, "evidencia": ["o10"],
-          "explicacion": "El autor quiere que los repartidores sigan en la condición en que están: como independientes." },
-        { "t": "pagarles lo necesario para vivir.", "codigo": "RV18",
-          "explicacion": "Es un sentido común de «mantener» (mantener a la familia), pero aquí no se habla de dar dinero, sino de dejarlos en la misma condición." },
-        { "t": "proteger.", "codigo": "RV19",
-          "explicacion": "Está cerca del tema de la oración, que habla de un seguro, pero «mantenerlos como independientes» no significa protegerlos." },
-        { "t": "obligar.", "codigo": "RV5", "origen": "o10",
-          "explicacion": "Es una palabra de la misma oración, pero lo que se obliga es a las aplicaciones, no a los repartidores." }
+        {
+          "t": "conservar.",
+          "correcta": true,
+          "evidencia": [
+            "o10"
+          ],
+          "explicacion": "El autor quiere que los repartidores sigan en la condición en que están: como independientes."
+        },
+        {
+          "t": "pagarles lo necesario para vivir.",
+          "codigo": "RV18",
+          "explicacion": "Es un sentido común de «mantener» (mantener a la familia), pero aquí no se habla de dar dinero, sino de dejarlos en la misma condición."
+        },
+        {
+          "t": "proteger.",
+          "codigo": "RV19",
+          "explicacion": "Está cerca del tema de la oración, que habla de un seguro, pero «mantenerlos como independientes» no significa protegerlos."
+        },
+        {
+          "t": "obligar.",
+          "codigo": "RV5",
+          "origen": "o10",
+          "explicacion": "Es una palabra de la misma oración, pero lo que se obliga es a las aplicaciones, no a los repartidores."
+        }
       ]
     },
     {
@@ -101,7 +214,11 @@
         "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
         "sonda": "Las aplicaciones de reparto deberían prohibirse en la ciudad.",
         "aceptada": "ninguno",
-        "codigos": { "A": "RV7", "B": "RV33", "ambos": null },
+        "codigos": {
+          "A": "RV7",
+          "B": "RV33",
+          "ambos": null
+        },
         "explicacion": "Ninguno lo sostiene: el texto A pide derechos para los repartidores, no cerrar las aplicaciones (oración 5), y el B quiere que sigan funcionando con un seguro (oración 10).",
         "explicaciones": {
           "A": "El texto A critica cómo tratan las aplicaciones a los repartidores, pero no pide prohibirlas: pide que la ley los reconozca como trabajadores (oración 5).",
@@ -111,14 +228,32 @@
       },
       "enunciado": "Ante la propuesta del texto A, el autor del texto B probablemente objetaría que",
       "alternativas": [
-        { "t": "un repartidor que tiene un accidente en la avenida no necesita ninguna protección.", "codigo": "RV61", "origen": "o6",
-          "explicacion": "En eso no discrepan: el texto B concede que el repartidor accidentado no debe quedar desprotegido (oración 6)." },
-        { "t": "el repartidor no puede negociar sus precios ni elegir a los clientes que atiende.", "codigo": "RV59", "origen": "o3",
-          "explicacion": "Ese es un argumento del texto A (oración 3); no sirve al B para objetarle." },
-        { "t": "tratarlo como empleado le quitaría a muchos la libertad de elegir sus horas.", "correcta": true, "evidencia": ["o7", "o8"],
-          "explicacion": "Es su objeción central: un empleado con horario fijo pierde lo que muchos buscan, conectarse cuando quieren (oración 7), como los estudiantes y las madres de la oración 8." },
-        { "t": "las motos son más peligrosas que las bicicletas en el tráfico de Lima, sea cual sea el horario.", "codigo": "RV8",
-          "explicacion": "El texto B no compara motos y bicicletas. Es un dato de fuera del texto, sea cierto o no." }
+        {
+          "t": "un repartidor que tiene un accidente en la avenida no necesita ninguna protección.",
+          "codigo": "RV61",
+          "origen": "o6",
+          "explicacion": "En eso no discrepan: el texto B concede que el repartidor accidentado no debe quedar desprotegido (oración 6)."
+        },
+        {
+          "t": "el repartidor no puede negociar sus precios ni elegir a los clientes que atiende.",
+          "codigo": "RV59",
+          "origen": "o3",
+          "explicacion": "Ese es un argumento del texto A (oración 3); no sirve al B para objetarle."
+        },
+        {
+          "t": "tratarlo como empleado le quitaría a muchos la libertad de elegir sus horas.",
+          "correcta": true,
+          "evidencia": [
+            "o7",
+            "o8"
+          ],
+          "explicacion": "Es su objeción central: un empleado con horario fijo pierde lo que muchos buscan, conectarse cuando quieren (oración 7), como los estudiantes y las madres de la oración 8."
+        },
+        {
+          "t": "las motos son más peligrosas que las bicicletas en el tráfico de Lima, sea cual sea el horario.",
+          "codigo": "RV8",
+          "explicacion": "El texto B no compara motos y bicicletas. Es un dato de fuera del texto, sea cierto o no."
+        }
       ]
     },
     {
@@ -130,7 +265,11 @@
         "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
         "sonda": "Es la aplicación, y no el repartidor, la que pone el precio de cada pedido.",
         "aceptada": "A",
-        "codigos": { "B": "RV59", "ambos": "RV60", "ninguno": null },
+        "codigos": {
+          "B": "RV59",
+          "ambos": "RV60",
+          "ninguno": null
+        },
         "explicacion": "Lo dice el texto A en la oración 2: la aplicación «fija cuánto se paga por cada pedido».",
         "explicaciones": {
           "B": "El texto B no habla de quién pone los precios: habla del horario y del costo para la empresa. La idea es del A (oración 2).",
@@ -140,19 +279,43 @@
       },
       "enunciado": "Es incompatible con lo que sostiene la autora del texto A afirmar que",
       "alternativas": [
-        { "t": "lo razonable es que las aplicaciones les paguen a los repartidores un seguro contra accidentes.", "codigo": "RV59", "origen": "o10",
-          "explicacion": "Es la propuesta del texto B (oración 10), pero no choca con el A, que pide incluso más protección (oraciones 4 y 5)." },
-        { "t": "el repartidor decide con libertad cuánto cobra por cada pedido.", "correcta": true, "evidencia": ["o2", "o3"],
-          "explicacion": "Choca con el texto A: la aplicación fija cuánto se paga por cada pedido (oración 2) y el repartidor no negocia sus precios (oración 3)." },
-        { "t": "la aplicación no deja que el repartidor fije por su cuenta el precio de los pedidos.", "codigo": "RV10", "origen": "o2",
-          "explicacion": "Por la negación parece contraria, pero dice lo mismo que el texto A en las oraciones 2 y 3: es compatible." },
-        { "t": "muchos de los repartidores son estudiantes que trabajan solo los fines de semana.", "codigo": "RV36", "origen": "o8",
-          "explicacion": "El texto A no habla de quiénes son los repartidores. Que no lo mencione no significa que lo contradiga." }
+        {
+          "t": "lo razonable es que las aplicaciones les paguen a los repartidores un seguro contra accidentes.",
+          "codigo": "RV59",
+          "origen": "o10",
+          "explicacion": "Es la propuesta del texto B (oración 10), pero no choca con el A, que pide incluso más protección (oraciones 4 y 5)."
+        },
+        {
+          "t": "el repartidor decide con libertad cuánto cobra por cada pedido.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o3"
+          ],
+          "explicacion": "Choca con el texto A: la aplicación fija cuánto se paga por cada pedido (oración 2) y el repartidor no negocia sus precios (oración 3)."
+        },
+        {
+          "t": "la aplicación no deja que el repartidor fije por su cuenta el precio de los pedidos.",
+          "codigo": "RV10",
+          "origen": "o2",
+          "explicacion": "Por la negación parece contraria, pero dice lo mismo que el texto A en las oraciones 2 y 3: es compatible."
+        },
+        {
+          "t": "muchos de los repartidores son estudiantes que trabajan solo los fines de semana.",
+          "codigo": "RV36",
+          "origen": "o8",
+          "explicacion": "El texto A no habla de quiénes son los repartidores. Que no lo mencione no significa que lo contradiga."
+        }
       ]
     }
   ],
   "origen": "propio",
   "fecha": "2026-11-12",
   "hechos": [],
-  "revision": null
+  "revision": {
+    "por": "subagente (revisor a ciegas, rutina verbal-mas)",
+    "fecha": "2026-11-12",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidieron 8 de 8 ítems de t134 (39 de 39 en la tanda). Sin cambios. Hechos: texto de opinión sin datos verificables externos; no hay 'hechos' que confirmar."
+  }
 }

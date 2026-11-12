@@ -14,7 +14,7 @@
     [
       { "id": "o1", "rol": "principal", "t": "Los kioscos de los colegios no deberían vender comida chatarra, y esa regla tendría que cumplirse sin excepciones." },
       { "id": "o2", "rol": "apoyo", "t": "Un niño de diez años no compara etiquetas en el recreo: compra lo que tiene a la mano, lo que es barato y lo que ve anunciado en la televisión." },
-      { "id": "o3", "rol": "apoyo", "t": "Si en el kiosco hay galletas rellenas y gaseosas, eso es lo que comerá casi todos los días." },
+      { "id": "o3", "rol": "apoyo", "t": "Si en el kiosco hay galletas rellenas y gaseosas, eso es lo que comerá casi todos los días, así que el kiosco decide buena parte de su dieta." },
       { "id": "o4", "rol": "apoyo", "t": "La ley de alimentación saludable ya pide que los colegios ofrezcan alimentos sanos; el problema es que muchas veces nadie lo controla." },
       { "id": "o5", "rol": "principal", "t": "Retirar esos productos no es quitarle libertad al alumno, sino quitarle una trampa de su camino." }
     ],
@@ -70,8 +70,8 @@
           "explicacion": "Es la tesis del texto A. El B la discute: prohibir no enseña a elegir (oración 7)." },
         { "t": "el kiosco influye en lo que comen y debe retirar las golosinas sin dar explicaciones.", "codigo": "RV62", "origen": "o10",
           "explicacion": "La primera mitad es común, pero la segunda la rechaza el texto B, que no quiere «un muro que se levanta sin explicar por qué» (oración 10)." },
-        { "t": "las gaseosas son la principal causa de la obesidad de los niños en el Perú.", "codigo": "RV8",
-          "explicacion": "Ninguno de los textos habla de obesidad ni de su causa principal; puede ser un tema cercano, pero no sale de lo leído." }
+        { "t": "lo que vende el colegio decide por completo lo que comen los alumnos.", "codigo": "RV11", "origen": "o8",
+          "explicacion": "Dice más que los textos: el B señala que el alumno compra la misma golosina en la bodega de la esquina (oración 8), así que el colegio influye, pero no decide todo." }
       ]
     },
     {
