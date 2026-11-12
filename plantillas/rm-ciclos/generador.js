@@ -34,8 +34,8 @@
  *
  * Errores: RMP26 desfase del ciclo ignorado (empezar por el primero, olvidar los minutos ya sonados, sin
  * preperiodo, como si partieran juntos); RMP27 residuo mal leído (el 0 como el primero, la que terminó, el
- * sobrante como bloque completo o ignorado); RMP28 recorrido mal orientado (sentido al revés, como si fuera
- * una recta); RMP29 avance y retroceso mal combinados (todo entre el avance neto, el último ciclo completo);
+ * sobrante como bloque completo o ignorado); RMP28 recorrido mal orientado (sentido al revés, el residuo
+ * contado desde la derecha, la espiral tomada como una fila); RMP29 avance y retroceso mal combinados (todo entre el avance neto, el último ciclo completo);
  * RMP1 puntos contra intervalos (contar la posición de partida como un paso); RMP2 una coincidencia que no es
  * la primera; AR7 ilusión de linealidad (parcial, en la espiral). Todos hipótesis salvo AR7.
  */
@@ -241,11 +241,11 @@
       enunciado: ['En una combi de Juliaca suena siempre la misma lista de canciones, en este orden y sin pausas: ',
         nombres.map((x, i) => `${x} (${dur[i]} min)`).join(', '), '; al terminar la última vuelve a empezar la primera. A las 4:00 p. m. ',
         ...(m === 0 ? ['empieza a sonar ', v('s', nombres[s])] : [v('s', nombres[s]), ' lleva ', v('m', `${m} min`), ' sonando']), '.'],
-      pregunta: ['¿Qué canción suena a las ', v('T', reloj(hora)), '?'],
+      pregunta: [`¿Qué canción suena a las ${reloj(hora)}?`],
       solucion: [
         ['Una vuelta de la lista dura ', v('C', `${C} min`), '. Se cuentan los minutos desde el comienzo de la lista: ', acum.join('; '), '.'],
         ['A las 4:00 p. m. la lista va en el minuto ', ...(m ? [`${antes} + `, v('m', String(m)), ` = ${antes + m}`] : [String(antes)]), ' (dentro de ', v('s', nombres[s]), ').'],
-        ['De 4:00 p. m. a ', v('T', reloj(hora)), ' pasan ', v('T', `${T} min`), `. Minuto de la lista: ${antes + m} + ${T} = ${antes + m + T}; al dividir entre ${C} el residuo es ${pos}.`],
+        [`De 4:00 p. m. a ${reloj(hora)} pasan `, v('T', `${T} min`), `. Minuto de la lista: ${antes + m} + ${T} = ${antes + m + T}; al dividir entre ${C} el residuo es ${pos}.`],
         [`El minuto ${pos} cae dentro de ${nombres[idx]}: es la canción que suena.`],
       ],
     };
@@ -326,8 +326,6 @@
     const t = encuentro(datos);
     if (!t || t < 3 || t > 20) return null;
     const errores = [];
-    const lineal = mismo ? (b - a) / (p - q) : (mod(b - a, n)) / (p + q);
-    if (Number.isInteger(lineal) && lineal > 0 && lineal !== t) errores.push(h('RMP28-como-recta', lineal, `Hiciste la cuenta como si las fichas fueran por una recta, sin dar la vuelta al tablero. Después de la casilla ${n} viene la 1: hay que comparar las casillas con el residuo entre ${n}.`));
     const otro = encuentro({ ...datos, mismo: !mismo });
     if (otro) errores.push(h('RMP28-sentido', otro, mismo ? 'Moviste B en sentido contrario al de A. Las dos fichas avanzan en sentido horario.' : 'Moviste las dos fichas en el mismo sentido. B avanza en sentido antihorario, al revés que A.'));
     const dv = mod(p - (mismo ? q : -q), n);
@@ -373,18 +371,18 @@
     const errores = [];
     const lp = pre.length;
     const variables = { b: { nombre: 'bloque que se repite', color: 'o' }, k: { nombre: 'lugar o cantidad de cifras', color: 'i' }, pre: { nombre: 'cifras del comienzo', color: 'h' } };
-    const enunciado = [lp ? 'Un número empieza con las cifras ' : 'Un número se escribe repitiendo el bloque ', ...(lp ? [v('pre', pre), ' y sigue con el bloque ', v('b', bloque), ' repetido una y otra vez'] : [v('b', bloque), ' una y otra vez']), `, sin espacios: ${muestra}…`];
+    const enunciado = [lp ? `Un número empieza con ${lp === 1 ? 'la cifra' : 'las cifras'} ` : 'Un número se escribe repitiendo el bloque ', ...(lp ? [v('pre', pre), ' y sigue con el bloque ', v('b', bloque), ' repetido una y otra vez'] : [v('b', bloque), ' una y otra vez']), `, sin espacios: ${muestra}…`];
     let pregunta, solucion;
     if (pide === 'cifra') {
       const kk = datos.k, r = mod(kk - lp, L);
-      if (lp) errores.push(h('RMP26-sin-preperiodo', cifraEn(bloque, '', kk), `Dividiste ${kk} entre ${L} como si el bloque empezara en la primera cifra. Las ${lp === 1 ? 'primera cifra' : lp + ' primeras cifras'} (${pre}) no son parte del bloque: hay que restarlas antes de dividir.`));
+      if (lp) errores.push(h('RMP26-sin-preperiodo', cifraEn(bloque, '', kk), `Dividiste ${kk} entre ${L} como si el bloque empezara en la primera cifra. ${lp === 1 ? `La primera cifra (${pre}) no es parte del bloque: hay que restarla` : `Las ${lp} primeras (${pre}) no son parte del bloque: hay que restarlas`} antes de dividir.`));
       if (r === 0) errores.push(h('RMP27-residuo-cero', Number(bloque[0]), `Con residuo 0, la cifra es la última del bloque (${bloque[L - 1]}), no la primera: el lugar ${kk} cierra un bloque completo.`));
       errores.push(h('RMP28-desde-la-derecha', Number(bloque[L - 1 - ((r === 0 ? L : r) - 1)]), `Contaste el residuo desde el final del bloque. El residuo ${r === 0 ? L : r} indica el lugar dentro del bloque contado desde su primera cifra.`));
       errores.push(h('RMP27-con-el-cociente', Number(bloque[mod(Math.floor((kk - lp) / L), L)]), `Usaste el cociente (${Math.floor((kk - lp) / L)}) para ubicarte en el bloque. El cociente dice cuántos bloques completos hay; el lugar dentro del bloque lo da el residuo.`));
       errores.push(h('RMP1-un-lugar-corrido', cifraEn(bloque, pre, kk + 1), `Te corriste un lugar: esa es la cifra del lugar ${kk + 1}.`));
       pregunta = ['¿Qué cifra ocupa el lugar ', v('k', String(kk)), '?'];
       solucion = [
-        [lp ? `Las ${lp === 1 ? 'primera cifra' : lp + ' primeras cifras'} (` : 'El bloque ', ...(lp ? [v('pre', pre), `) van antes del bloque: quedan ${kk} − ${lp} = ${kk - lp} lugares dentro de la parte que se repite. El bloque `] : []), v('b', bloque), ` tiene ${L} cifras.`],
+        [lp ? `${lp === 1 ? 'La primera cifra' : `Las ${lp} primeras cifras`} (` : 'El bloque ', ...(lp ? [v('pre', pre), `) ${lp === 1 ? 'va' : 'van'} antes del bloque: quedan ${kk} − ${lp} = ${kk - lp} lugares dentro de la parte que se repite. El bloque `] : []), v('b', bloque), ` tiene ${L} cifras.`],
         [`${kk - lp} = ${L} × ${Math.floor((kk - lp) / L)} + ${r}.`, r === 0 ? ' Residuo 0: el lugar cierra un bloque completo, así que es la última cifra del bloque.' : ` Residuo ${r}: es la cifra ${r} del bloque.`],
         [`La cifra es ${correcta}.`],
       ];
@@ -396,23 +394,23 @@
         errores.push(h('RMP27-sin-sobrante', sp + q * sb, `Te quedaste con los ${q} bloques completos y olvidaste ${r === 1 ? 'la cifra que sobra' : 'las ' + r + ' cifras que sobran'} al final.`));
         errores.push(h('RMP28-desde-la-derecha', sp + q * sb + digitos(bloque.slice(L - r)).reduce((x, y) => x + y, 0), `Tomaste ${r === 1 ? 'la cifra' : 'las ' + r + ' cifras'} del sobrante desde el final del bloque. El bloque incompleto empieza por su primera cifra: ${bloque.slice(0, r)}.`));
       }
-      if (lp) errores.push(h('RMP26-sin-preperiodo', sumaCifras(bloque, '', DD), `Repartiste las ${DD} cifras en bloques desde el comienzo, pero las ${lp === 1 ? 'primera' : lp + ' primeras'} (${pre}) no son parte del bloque.`));
+      if (lp) errores.push(h('RMP26-sin-preperiodo', sumaCifras(bloque, '', DD), `Repartiste las ${DD} cifras en bloques desde el comienzo, pero ${lp === 1 ? `la primera cifra (${pre}) no es parte del bloque` : `las ${lp} primeras (${pre}) no son parte del bloque`}.`));
       pregunta = ['¿Cuál es la suma de las primeras ', v('k', String(DD)), ' cifras del número?'];
       solucion = [
-        lp ? ['Primero las cifras del comienzo: ', v('pre', pre), ` suman ${sp}; quedan ${DD} − ${lp} = ${resto} cifras.`] : [`Hay ${resto} cifras en total.`],
+        lp ? [lp === 1 ? 'Primero la cifra del comienzo, ' : 'Primero las cifras del comienzo: ', v('pre', pre), `${lp === 1 ? '' : ` suman ${sp}`}; quedan ${DD} − ${lp} = ${resto} cifras.`] : [`Hay ${resto} cifras en total.`],
         [`${resto} = ${L} × ${q} + ${r}: son ${q} bloques completos`, r ? ` y ${r === 1 ? 'sobra la primera cifra' : 'sobran las ' + r + ' primeras cifras'} del bloque (${bloque.slice(0, r)}).` : ', sin sobrante.'],
         ['Cada bloque ', v('b', bloque), ` suma ${sb}. Total: ${lp ? sp + ' + ' : ''}${q} × ${sb}${r ? ' + ' + digitos(bloque.slice(0, r)).join(' + ') : ''} = ${correcta}.`],
       ];
     } else {
       const DD = datos.D, resto = DD - lp, r = resto % L;
       if (r !== 0) errores.push(h('RMP27-bloque-completo', Number(bloque.slice(-2)), `Supusiste que el número termina con un bloque completo. ${resto} no es múltiplo de ${L}: el último bloque queda cortado después de ${r} ${r === 1 ? 'cifra' : 'cifras'}.`));
-      if (lp) errores.push(h('RMP26-sin-preperiodo', ultimas(bloque, '', DD), `Dividiste ${DD} entre ${L} sin quitar las cifras del comienzo (${pre}), que no son parte del bloque.`));
+      if (lp) errores.push(h('RMP26-sin-preperiodo', ultimas(bloque, '', DD), `Dividiste ${DD} entre ${L} sin quitar ${lp === 1 ? `la cifra del comienzo (${pre}), que no es parte` : `las cifras del comienzo (${pre}), que no son parte`} del bloque.`));
       errores.push(h('RMP1-un-lugar-corrido', ultimas(bloque, pre, DD + 1), 'Te corriste un lugar: esas serían las dos últimas cifras si el número tuviera una cifra más.'));
       errores.push(h('RMP1-un-lugar-menos', ultimas(bloque, pre, DD - 1), 'Te corriste un lugar: esas serían las dos últimas cifras si el número tuviera una cifra menos.'));
       if (r === 0) errores.push(h('RMP27-residuo-cero', Number(bloque.slice(0, 2)), `Con residuo 0 el número termina justo con un bloque completo: sus últimas cifras son las del final del bloque, no las del comienzo.`));
       pregunta = ['Si el número tiene ', v('k', String(DD)), ' cifras, ¿cuáles son sus dos últimas cifras? (Escríbelas como un número de dos cifras.)'];
       solucion = [
-        lp ? ['Sin las cifras del comienzo (', v('pre', pre), `) quedan ${DD} − ${lp} = ${resto} cifras de la parte que se repite.`] : [`Las ${resto} cifras son todas de la parte que se repite.`],
+        lp ? [lp === 1 ? 'Sin la cifra del comienzo (' : 'Sin las cifras del comienzo (', v('pre', pre), `) quedan ${DD} − ${lp} = ${resto} cifras de la parte que se repite.`] : [`Las ${resto} cifras son todas de la parte que se repite.`],
         [`${resto} = ${L} × ${Math.floor(resto / L)} + ${r}.`, r === 0 ? ' Residuo 0: termina con un bloque completo.' : ` Residuo ${r}: el último bloque se corta después de su cifra ${r}.`],
         ['Las dos últimas cifras son ', String(correcta).padStart(2, '0'), '.'],
       ];
@@ -432,7 +430,7 @@
     const r = mod(datos.N - c.pre, c.periodo);
     const ciclo = T.slice(c.pre, c.pre + c.periodo);
     const errores = [
-      h('RMP26-sin-preperiodo', T[mod(datos.N - 1, c.periodo)], `Contaste el período desde el primer término. ${c.pre === 1 ? 'El primer término no se repite' : `Los primeros ${c.pre} términos no se repiten`}: el ciclo (${ciclo.join(', ')}) empieza en el término ${c.pre + 1}, y hay que descontar${c.pre === 1 ? 'lo' : 'los'} antes de dividir.`),
+      h('RMP26-sin-preperiodo', T[mod(datos.N - 1, c.periodo)], `Contaste el período desde el primer término. ${c.pre === 1 ? 'El primer término no forma parte del ciclo' : `Los ${c.pre} primeros términos no forman parte del ciclo`}: el ciclo (${ciclo.join(', ')}) empieza en el término ${c.pre + 1}, y hay que descontar${c.pre === 1 ? 'lo' : 'los'} antes de dividir.`),
       h('RMP26-periodo-con-preperiodo', T[mod(datos.N - 1, c.pre + c.periodo)], `Tomaste como período los ${c.pre + c.periodo} primeros términos. El período es solo lo que se repite: ${ciclo.join(', ')} (${c.periodo} términos).`),
     ];
     if (r === 0) errores.unshift(h('RMP27-residuo-cero', ciclo[0], `Con residuo 0 el término cierra un ciclo completo: es el último del ciclo (${ciclo[c.periodo - 1]}), no el primero.`));
@@ -442,14 +440,14 @@
     const variables = { u: { nombre: 'primeros términos', color: 'o' }, N: { nombre: 'lugar pedido', color: 'i' }, P: { nombre: 'período', color: 'h' } };
     const regTxt = regla === 'producto'
       ? 'desde el tercero, cada término es la cifra de las unidades del producto de los dos anteriores'
-      : `cada término es la cifra de las unidades de ${datos.c1} por el anterior más ${datos.c0}`;
+      : `cada término es la cifra de las unidades del número ${datos.c1} × (término anterior) + ${datos.c0}`;
     return {
       datos, correcta, errores, variables,
       enunciado: ['En una sucesión, ', regla === 'producto' ? ['los dos primeros términos son ', v('u', `${datos.u1} y ${datos.u2}`)].flat() : ['el primer término es ', v('u', String(datos.u1))].flat(), `, y ${regTxt}.`].flat(),
       pregunta: ['¿Cuál es el término del lugar ', v('N', String(datos.N)), '?'],
       solucion: [
         ['Primeros términos: ', T.slice(0, c.pre + c.periodo + 2).join(', '), ', …'],
-        [`${c.pre === 1 ? 'El primer término no se repite' : `Los ${c.pre} primeros términos no se repiten`} (preperíodo). Desde el término ${c.pre + 1} se repite el ciclo ${ciclo.join(', ')}, de `, v('P', `${c.periodo} términos`), '.'],
+        [`${c.pre === 1 ? 'El primer término no forma parte del ciclo' : `Los ${c.pre} primeros términos no forman parte del ciclo`} (preperíodo). Desde el término ${c.pre + 1} se repite el ciclo ${ciclo.join(', ')}, de `, v('P', `${c.periodo} términos`), '.'],
         [`Lugares dentro de la parte que se repite: `, v('N', String(datos.N)), ` − ${c.pre} = ${datos.N - c.pre} = ${c.periodo} × ${Math.floor((datos.N - c.pre) / c.periodo)} + ${r}.`, r === 0 ? ' Residuo 0: es el último del ciclo.' : ` Residuo ${r}: es el término ${r} del ciclo.`],
         [`El término pedido es ${correcta}.`],
       ],
@@ -587,9 +585,9 @@
 
   // ---- avance y retroceso ----
   const SUBEN = [
-    ['Un caracol sube por un poste de ', 'De día sube ', ' y de noche resbala ', 'Empieza a subir el día 1 por la mañana desde el pie del poste.', 'la punta del poste'],
-    ['Una rana sale de un pozo de ', 'De día trepa ', ' y de noche resbala ', 'Empieza a trepar el día 1 por la mañana desde el fondo.', 'el borde del pozo'],
-    ['Un gusano sube por una caña de la chacra de ', 'De día sube ', ' y de noche baja ', 'Empieza el día 1 por la mañana desde el suelo.', 'la punta de la caña'],
+    ['Un caracol sube por un poste de ', 'De día sube ', ' y de noche resbala ', 'Empieza a subir el día 1 por la mañana desde el pie del poste.', 'a la punta del poste'],
+    ['Una rana sale de un pozo de ', 'De día trepa ', ' y de noche resbala ', 'Empieza a trepar el día 1 por la mañana desde el fondo.', 'al borde del pozo'],
+    ['Un gusano sube por una caña de la chacra de ', 'De día sube ', ' y de noche baja ', 'Empieza el día 1 por la mañana desde el suelo.', 'a la punta de la caña'],
   ];
   CONSTR.avance = function (rng) {
     const pide = rng.elegir(['dias', 'hora']);
@@ -609,12 +607,12 @@
         h('RMP29-avance-neto', neto, `Dividiste toda la altura entre el avance neto (${a} − ${b} = ${a - b} m por día). El último día llega arriba antes de que llegue la noche: ese día no resbala.`),
         h('RMP1-cuenta-noches', k - 1, `Contaste las noches, no los días. Después de ${k - 1} noches le falta un día más de subida.`),
         h('RMP29-sin-retroceso', Math.ceil(H / a), 'Olvidaste que cada noche resbala. Solo el último día no retrocede.'),
-        h('RMP29-un-dia-de-mas', k + 1, `Diste un día de más: el día ${k} ya alcanza ${meta}.`),
+        h('RMP29-un-dia-de-mas', k + 1, `Diste un día de más: el día ${k} ya llega ${meta}.`),
       ];
       return {
         datos, correcta: k, errores, variables, texto: x => `El día ${x}`,
         enunciado: [ini, v('H', `${H} m`), ' de alto. ', sube, v('a', `${a} m`), baja, v('b', `${b} m`), `. ${empieza}`],
-        pregunta: [`¿Qué día llega a ${meta}?`],
+        pregunta: [`¿Qué día llega ${meta}?`],
         solucion: [
           ['Cada día completo (con su noche) avanza ', v('a', String(a)), ' − ', v('b', String(b)), ` = ${a - b} m. Pero el día en que llega no resbala.`],
           ['Le basta estar a ', v('a', `${a} m`), ' o menos de la meta al amanecer: ', v('H', String(H)), ' − ', v('a', String(a)), ` = ${H - a} m. Con ${a - b} m por día eso pide ${H - a} ÷ ${a - b} → ${k - 1} ${k - 1 === 1 ? 'día con su noche' : 'días con sus noches'} (redondeando hacia arriba).`],
@@ -639,7 +637,7 @@
         ['Cada hora completa avanza ', v('a', String(a)), ' − ', v('b', String(b)), ` = ${a - b} m, pero en la última hora llega mientras sube y ya no resbala.`],
         [`Le basta empezar una hora estando a ${a} m o menos del borde: ${H} − ${a} = ${H - a} m, que con ${a - b} m por hora pide ${k - 1} ${k - 1 === 1 ? 'hora completa' : 'horas completas'}. A las ${reloj(base + (k - 1) * 60)} está a ${(k - 1) * (a - b)} m del fondo.`],
         ['Le faltan ', `${falta} m`, '. Sube ', v('a', `${a} m`), ' en ', v('t', `${t1} min`), `, o sea ${t1 / a} min por metro: tarda ${falta} × ${t1 / a} = ${falta * t1 / a} min.`],
-        [`Llega a las ${reloj(base + correcta)}`],
+        [`Llega a las ${reloj(base + correcta)} (${correcta} min después de empezar).`],
       ],
     };
   };

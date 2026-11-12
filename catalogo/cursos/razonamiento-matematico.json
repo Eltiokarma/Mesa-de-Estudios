@@ -85,7 +85,7 @@
       "universidades": {"unmsm": {"temas": [7]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": ["sucesiones"],
+      "plantillas": ["sucesiones", "rm-ciclos"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
@@ -131,7 +131,7 @@
       "universidades": {"unmsm": {"temas": [10]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": ["traslados-sucesos"],
+      "plantillas": ["traslados-sucesos", "rm-ciclos"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {

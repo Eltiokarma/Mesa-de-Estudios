@@ -2,7 +2,7 @@
   "plantilla": "rm-ciclos",
   "tolerancia": 0,
   "nota": "Respuesta: canciones, el nombre de la canción; pista, la marca; fichas, la jugada; bloque, la cifra, la suma o las dos últimas cifras como número; unidades, el término; figuras, la clave p<vértice>f<dirección> (vértices y direcciones numerados desde 0, empezando arriba, en sentido horario); espiral, el número o el perímetro en cm; avance, el día o los minutos desde el comienzo. Las entradas son el _datos del generador; ver la cabecera de generador.js.",
-  "verificacion": "",
+  "verificacion": "Verificación ciega (subagente, 8 nov 2026): los 22 casos se resolvieron sin ver el generador, por simulación literal (jugada a jugada, cadena de cifras construida, minuto a minuto en canciones y pozo, espiral en coordenadas con el perímetro por lados expuestos) y, en figuras, deduciendo el paso del punto y el giro de la flecha de las 4 figuras dibujadas. 22 de 22 coinciden; ninguna serie de figuras admite dos continuaciones. Las correcciones de la revisión (12 nov 2026) solo cambiaron la redacción de las semillas 1, 9, entrada-2 y salida-2, con la misma respuesta.",
   "casos": [
     {
       "semilla": 0,
