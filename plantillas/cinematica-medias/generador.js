@@ -24,7 +24,7 @@
  * Convenciones: g = 10 m/s²; en la Tierra R = 6400 km, un día = 24 h y π = 3 (como en la academia);
  * cos 16° = 24/25, cos 37° = 4/5, cos 53° = 3/5, cos 60° = 1/2. Coma decimal. Las respuestas con signo
  * (velocidad, aceleración, desplazamiento de la ecuación) usan negativos y se escriben con signo.
- * Errores: G2, G4 y K4 (parcial, docs/investigacion/cinematica-ideas-erroneas.md); PR3, PR6 y U6
+ * Errores: G2, G4 y K4 (parcial, docs/investigacion/cinematica-ideas-erroneas.md); PR3, PR6 y PR7
  * (hipótesis, docs/investigacion/fisica-calculo-transversal-ideas-erroneas.md); MED-* (trampa 10,
  * docs/clasificacion/trampas-admision-unmsm/fisica.md), VT-*, XY-*, LAT-* y MRUV-*, hipótesis nuestras.
  */
@@ -57,7 +57,8 @@
     const [tipo, sub] = rng.elegir(TIPOS);
     for (let intento = 0; intento < 5000; intento++) {
       const pr = construir(rng, semilla, tipo, sub);
-      if (pr && pr.alternativas.length >= 4) return pr;
+      // Se evita que la correcta sea la única «redonda» (las demás con más decimales).
+      if (pr && pr.alternativas.length >= 4 && (intento > 300 || !soloRedonda(pr))) return pr;
     }
     throw new Error('No se pudo generar un problema con 4 alternativas distintas');
   }
@@ -71,9 +72,20 @@
     return latitud(rng, semilla, sub);
   }
 
+  // Decimales que se ven en un texto «12,5 s» (0 si es entero).
+  const decimales = t => ((String(t).match(/^[−\d ]+(?:,(\d+))?/) || [])[1] || '').length;
+  function soloRedonda(pr) {
+    if (typeof pr.respuesta.valor !== 'number') return false;
+    const dc = decimales(pr.alternativas.find(a => a.correcta).texto);
+    return pr.alternativas.filter(a => !a.correcta).every(a => decimales(a.texto) > dc);
+  }
   function cerrar(rng, semilla, o) {
-    const ok = o.negativos ? limpio : corto;
-    const alternativas = P.armar({ correcta: o.correcta, errores: o.errores.filter(e => ok(e.valor)), rng, texto: o.texto, negativos: !!o.negativos });
+    // Las incorrectas: tan limpias como la correcta (a lo más un decimal más si la correcta es entera) y
+    // razonables (entre 1/20 y 20 veces la correcta); un error que da 0 o un número absurdo no entra.
+    const ok = o.negativos ? limpio : corto, dc = decimales(f(o.correcta)), maxd = Math.max(dc, 1);
+    const razonable = x => o.correcta === 0 || (Math.abs(x) >= Math.abs(o.correcta) / 20 && Math.abs(x) <= Math.abs(o.correcta) * 20);
+    const errores = o.errores.filter(e => e && ok(e.valor) && decimales(f(e.valor)) <= maxd && razonable(e.valor));
+    const alternativas = P.armar({ correcta: o.correcta, errores, rng, texto: o.texto, negativos: !!o.negativos });
     return {
       id: `cinematica-medias#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
       alternativas, solucion: o.solucion, respuesta: { valor: o.correcta, unidad: o.unidad }, _datos: o.datos,
@@ -156,7 +168,7 @@
         errores.push(h('MED-promedio-con-parada', (v1 + v2) / 3, 'Promediaste tres rapideces (la de la parada como 0). Los tramos duran distinto; la media es distancia total entre tiempo total.'));
       } else {
         errores.push(h('MED-un-tramo', d1 + d2 > 0 && t1 > t2 ? v1 : v2, 'Tomaste la rapidez del tramo que dura más. Ese tramo pesa más, pero el otro también cuenta.'));
-        errores.push(h('U6-minutos', (d1 + d2) / (t1 + t2), `Dividiste los ${f(d1 + d2)} km entre los minutos, sin pasarlos a horas: ${t1 + t2} min = ${f(T)} h.`, TRV));
+        errores.push(h('MED-un-tramo', t1 > t2 ? v2 : v1, 'Tomaste la rapidez de un solo tramo. La media junta los dos: distancia total entre tiempo total.'));
       }
       const solucion = [
         ['Distancia de cada tramo: ', v('v1', f(v1)), '·', v('t', `${t1}/60`), ` = ${f(d1)} km y `, v('v2', f(v2)), '·', v('t', `${t2}/60`), ` = ${f(d2)} km.`],
@@ -543,7 +555,6 @@
       h('LAT-seno', 2 * 3 * R * L.sen / 24, 'Usaste R·sen λ. La distancia al eje, que es el radio de giro, es R·cos λ.'),
       h('LAT-sin-2', 3 * r / 24, 'Olvidaste el 2 de la circunferencia: una vuelta recorre 2π·r.'),
       h('PR7-medio-dia', 2 * 3 * r / 12, 'Usaste 12 h como periodo. La Tierra da una vuelta en 24 h (el día entero, no solo el día con sol).', TRV),
-      h('U6-por-dia', 2 * 3 * r, `Diste los km de una vuelta (por día) como si fueran km/h. Falta dividir entre las 24 h.`, TRV),
     ];
     const solucion = [
       ['El lugar gira en su paralelo, de radio ', v('r', 'r'), ' = ', v('R', 'R'), '·cos ', v('lam', 'λ'), ` = ${f(R)}·${f(L.cos)} = ${f(r)} km.`],

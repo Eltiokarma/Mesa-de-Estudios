@@ -14,7 +14,7 @@
  *                          la Ceq en serie (hay que sacar n = √razón)
  *   carga-voltaje/serie-voltaje  dos o tres en serie a una batería: el voltaje en uno de ellos
  *   carga-voltaje/mixta-carga    (C1 ∥ C2) en serie con C3: la carga en C1
- *   energia/basica         U = ½·C·V² con C en µF
+ *   energia/basica         U = ½·C·V² con C en µF: cuánta energía más guarda al subir de V1 a V2
  *   energia/serie-paralelo dos condensadores en serie a V1 guardan U; el voltaje V2 que, en paralelo,
  *                          les hace guardar lo mismo
  *   energia/eficiencia     flash de cámara: energía de luz, eficiencia y voltaje → la capacidad
@@ -91,7 +91,9 @@
 
   function cerrar(rng, semilla, o) {
     const ok = o.ok || (x => limpio(x));
-    const alternativas = P.armar({ correcta: o.correcta, errores: o.errores.filter(e => ok(e.valor)), rng, texto: o.texto });
+    // Sin distractores absurdos: fuera de 1/20 a 20 veces la correcta no entran.
+    const razonable = x => x === 0 || (Math.abs(x / o.correcta) <= 20 && Math.abs(x / o.correcta) >= 1 / 20);
+    const alternativas = P.armar({ correcta: o.correcta, errores: o.errores.filter(e => ok(e.valor) && razonable(e.valor)), rng, texto: o.texto });
     return {
       id: `condensadores#${semilla}`, variables: o.variables || VAR, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
       alternativas, solucion: o.solucion, respuesta: { valor: o.correcta, unidad: o.unidad }, _datos: o.datos,
@@ -272,7 +274,7 @@
 
   // ---- n-iguales ----
   function nIguales(rng, semilla, sub) {
-    const n = rng.entero(2, 6);
+    const n = rng.entero(2, 4);
     if (sub === 'veces') {
       const C = rng.elegir([2, 3, 4, 5, 6, 10]), V = rng.elegir([6, 9, 12, 20, 24, 50]);
       const correcta = n * n;
@@ -282,6 +284,7 @@
       const pregunta = ['¿Cuál es la ', v('x', 'razón U(paralelo)/U(serie)'), ' entre la energía que guardan al final y la que guardaban al inicio?'];
       const errores = [
         tr('PR5-n-por-n2', n, `Pensaste que la energía crece ${n} veces. La capacidad equivalente pasa de C/${n} a ${n}·C: crece ${n}·${n} = ${n * n} veces, y con el mismo voltaje la energía ½·C·V² crece igual.`),
+        h('CAP-cuenta-doble', n * n * n, `Multiplicaste la razón de capacidades (${n}²) otra vez por los ${n} condensadores. La capacidad equivalente ya los cuenta a todos: la razón es ${n}² = ${n * n}.`),
         h('CAP-energia-igual', 1, 'Supusiste que la energía no cambia porque son los mismos condensadores. Con el mismo voltaje, la energía depende de la capacidad equivalente, que cambia mucho.'),
         h('CAP-como-resistencia', 1 / (n * n), `Usaste las reglas de las resistencias: en serie sumaste (${n}·C) y en paralelo dividiste (C/${n}). En condensadores es al revés, así que la energía crece, no baja.`),
       ];
@@ -303,6 +306,7 @@
       tr('PR5-n-por-n2', C / r, `Tomaste la razón de energías (${r}) como el número de condensadores. Con el mismo voltaje, Up/Us = Cp/Cs = n·C ÷ (C/n) = n²: n = √${r} = ${n}.`),
       h('CAP-como-resistencia', n * C, `Sumaste las capacidades en serie, como si fueran resistencias. En serie, n condensadores iguales dan C/n.`),
       h('CAP-como-resistencia', r * C, `Tomaste la razón ${r} como el número de condensadores y además sumaste en serie, como con resistencias. Son ${n} condensadores, y en serie dan C/${n}.`),
+      h('CAP-uno-solo', C, `Esa es la capacidad de un solo condensador. En serie, ${n} iguales dan C/${n}.`),
       h('CAP-paralelo-por-serie', n * C, `Esa es la capacidad de los ${n} en paralelo. En serie, n iguales dan C/n.`),
     ];
     const solucion = [
@@ -367,26 +371,29 @@
 
   // ---- energia/basica ----
   function energiaBasica(rng, semilla) {
-    const C = rng.elegir([2, 4, 5, 8, 10, 20, 25, 40, 50, 100, 200, 500]), V = rng.elegir([10, 20, 30, 50, 100, 200, 300, 400, 500]);
-    const UJ = 0.5 * C * 1e-6 * V * V;
-    const enJ = UJ >= 1;
+    // Se carga a V1 y luego se sube a V2 = k·V1: cuánta energía más guarda.
+    const C = rng.elegir([2, 4, 5, 8, 10, 20, 25, 40, 50, 100]), V1 = rng.elegir([10, 20, 30, 50, 100, 150, 200]);
+    const kV = rng.elegir([2, 3, 1.5, 4]), V2 = V1 * kV;
+    const U = V => 0.5 * C * 1e-6 * V * V;
+    const enJ = U(V2) >= 1;
     const k = enJ ? 1 : 1e3, u = enJ ? 'J' : 'mJ';
-    const correcta = UJ * k;
-    if (UJ > 100 || !limpio(correcta, 2) || correcta < 0.1) return null;
-    const enunciado = ['Un condensador de ', v('C', uF(C)), ' se carga con una fuente de ', v('V', `${V} V`), '.'];
-    const pregunta = ['¿Cuánta ', v('x', 'energía'), ` guarda? (Responde en ${u}.)`];
+    const correcta = (U(V2) - U(V1)) * k;
+    if (U(V2) > 100 || !limpio(correcta, 2) || correcta < 0.1 || !Number.isInteger(V2)) return null;
+    const enunciado = ['Un condensador de ', v('C', uF(C)), ' está cargado a ', v('V', `${V1} V`), '. Luego se conecta a otra fuente que lo carga hasta ', v('V', `${V2} V`), '.'];
+    const pregunta = ['¿Cuánta ', v('x', 'energía más'), ` guarda al final que al inicio? (Responde en ${u}.)`];
     const errores = [
       tr('PR3-sin-medio', 2 * correcta, 'Olvidaste el ½: la energía del condensador es U = ½·C·V².'),
-      tr('PR1-sin-cuadrado', 0.5 * C * 1e-6 * V * k, 'Usaste V en vez de V²: U = ½·C·V², con el voltaje al cuadrado.'),
-      tr('U2-microfaradio', correcta * 1e6, `Usaste los ${C} µF como si fueran faradios. 1 µF = 10⁻⁶ F.`),
-      h('CAP-carga-por-energia', C * 1e-6 * V * k, 'Calculaste C·V, que es la carga (en C), no la energía. U = ½·C·V².'),
+      tr('PR1-diferencia', 0.5 * C * 1e-6 * (V2 - V1) ** 2 * k, 'Elevaste al cuadrado la diferencia de voltajes. La energía va con V²: se restan las energías, ½·C·V2² − ½·C·V1², no ½·C·(V2 − V1)².'),
+      h('CAP-final-por-cambio', U(V2) * k, 'Esa es la energía final, no lo que aumentó. Falta restar lo que ya guardaba a ' + V1 + ' V.'),
+      tr('PR1-lineal', U(V1) * (kV - 1) * k, `Supusiste que la energía crece en proporción al voltaje. Va con V²: al multiplicar el voltaje por ${f(kV)}, la energía se multiplica por ${f(kV * kV)}.`),
     ];
     const solucion = [
-      ['Se pasa a faradios: ', v('C', `C = ${C} × 10⁻⁶ F`), '.'],
-      [v('x', 'U'), ` = ½·C·V² = ½ · ${C} × 10⁻⁶ · ${V}² = `, v('x', `${f(correcta)} ${u}`), '.'],
+      ['Se pasa a faradios: ', v('C', `C = ${C} × 10⁻⁶ F`), '. U = ½·C·V² en cada estado.'],
+      [`Al inicio: ½ · ${C} × 10⁻⁶ · ${V1}² = ${f(U(V1) * k, 3)} ${u}; al final: ½ · ${C} × 10⁻⁶ · ${V2}² = ${f(U(V2) * k, 3)} ${u}.`],
+      [v('x', `ΔU = ${f(U(V2) * k, 3)} − ${f(U(V1) * k, 3)} = ${f(correcta)} ${u}`), '.'],
     ];
     return cerrar(rng, semilla, { correcta, errores, texto: x => `${f(x)} ${u}`, unidad: u, ok: x => limpio(x, 2) && x >= 0.01, enunciado, pregunta, solucion,
-      datos: { tipo: 'energia', sub: 'basica', c: C, v: V, unidad: u } });
+      datos: { tipo: 'energia', sub: 'basica', c: C, v1: V1, v2: V2, unidad: u } });
   }
 
   // ---- energia/serie-paralelo ----
@@ -418,7 +425,7 @@
   // ---- energia/eficiencia: el flash ----
   function eficiencia(rng, semilla) {
     const C = rng.elegir([20, 40, 50, 80, 100, 150, 200, 250, 400, 500]), V = rng.elegir([100, 150, 200, 250, 300, 400]);
-    const eta = rng.elegir([20, 25, 40, 50, 60, 75, 80]);
+    const eta = rng.elegir([25, 40, 50, 60, 75, 80]);
     const U = 0.5 * C * 1e-6 * V * V, E = Math.round(U * eta) / 100;
     if (!limpio(U * eta / 100, 2) || E < 0.1 || E > 50) return null;
     const correcta = C;
@@ -458,6 +465,8 @@
       tr('U3-cm2', correcta * 100, `Pasaste los cm² a m² dividiendo entre 100. Un metro tiene 100 cm, así que 1 m² = 100² = 10⁴ cm²: ${A} cm² = ${f(A * 1e-4, 4)} m².`),
       tr('U3-sin-convertir', EPS * A / d * 1e12, 'No convertiste ni el área ni la separación. Con unidades del SI: A en m² (÷ 10⁴) y d en m (÷ 1000).'),
       tr('U2-mm', correcta / 1000, `Usaste la separación en mm como si fueran metros. ${f(d)} mm = ${f(d * 1e-3, 4)} m.`),
+      tr('U2-mm-como-cm', correcta / 10, `Pasaste los milímetros como si fueran centímetros. ${f(d)} mm = ${f(d * 1e-3, 4)} m, no ${f(d * 1e-2, 4)} m.`),
+      h('CAP-sin-4pi', (A * 1e-4) / (9e9 * d * 1e-3) * 1e12, 'Escribiste C = A/(k·d) y olvidaste el 4π. Con k: C = A/(4π·k·d), que es lo mismo que ε0·A/d.'),
       tr('PR4-separacion', EPS * (d * 1e-3) / (A * 1e-4) * 1e12, 'Escribiste C = ε0·d/A, con la proporción al revés. La capacidad crece con el área y baja con la separación: C = ε0·A/d.'),
     ];
     const solucion = [

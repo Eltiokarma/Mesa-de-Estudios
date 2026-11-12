@@ -18,7 +18,7 @@
       "universidades": {"uni": {"semanas": [0]}, "unmsm": {"temas": [1, 2]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": ["vectores", "vectores-ley-cosenos", "vectores-componentes", "vectores-productos", "vectores-unitario", "vectores-combinacion", "vectores-division", "vectores-poligono"],
+      "plantillas": ["vectores", "vectores-ley-cosenos", "vectores-componentes", "vectores-productos", "vectores-unitario", "vectores-combinacion", "vectores-division", "vectores-poligono", "velocidad-relativa"],
       "investigacion": null
     },
     {
@@ -36,7 +36,7 @@
       "universidades": {"uni": {"semanas": [1, 2]}, "unmsm": {"temas": [2, 3]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": ["mruv"],
+      "plantillas": ["mruv", "cinematica-medias", "velocidad-relativa"],
       "investigacion": "docs/investigacion/cinematica-ideas-erroneas.md"
     },
     {
@@ -53,7 +53,7 @@
       "universidades": {"uni": {"semanas": [3]}, "unmsm": {"temas": [4]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": ["tiro-parabolico", "movimiento-circular", "circular-transmision", "circular-mcuv", "circular-enesimo-segundo", "circular-encuentros", "circular-mcu", "circular-horaria", "circular-grafica", "circular-aceleracion-total", "circular-giro-combinado"],
+      "plantillas": ["tiro-parabolico", "movimiento-circular", "circular-transmision", "circular-mcuv", "circular-enesimo-segundo", "circular-encuentros", "circular-mcu", "circular-horaria", "circular-grafica", "circular-aceleracion-total", "circular-giro-combinado", "cinematica-medias"],
       "investigacion": "docs/investigacion/cinematica-ideas-erroneas.md"
     },
     {
@@ -137,7 +137,7 @@
       "universidades": {"uni": {"semanas": [7]}, "unmsm": {"temas": [8]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": ["choques"],
+      "plantillas": ["choques", "velocidad-relativa"],
       "investigacion": "docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md"
     },
     {
@@ -243,7 +243,7 @@
       "universidades": {"uni": {"semanas": [13, 14, 15]}, "unmsm": {"temas": [11, 12]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": ["electrostatica"],
+      "plantillas": ["electrostatica", "condensadores", "cargas-sistema"],
       "investigacion": "docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md"
     },
     {

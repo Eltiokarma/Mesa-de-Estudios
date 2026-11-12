@@ -96,11 +96,11 @@
         "sub": "tren",
         "u": 2.5,
         "V": 10,
-        "L": 40
+        "L": 15
       },
       "esperado": {
-        "respuesta": 32.0,
-        "exacta": "32 s"
+        "respuesta": 12.0,
+        "exacta": "12 s"
       }
     },
     {
@@ -108,13 +108,13 @@
       "entrada": {
         "tipo": "idavuelta",
         "sub": "nadador",
-        "V": 1,
-        "L": 12,
-        "T": 16
+        "V": 1.5,
+        "L": 20,
+        "T": 25
       },
       "esperado": {
-        "respuesta": 2.0,
-        "exacta": "2 m/s"
+        "respuesta": 2.5,
+        "exacta": "2,5 m/s"
       }
     },
     {
@@ -136,13 +136,13 @@
       "entrada": {
         "tipo": "botes",
         "sub": "objeto",
-        "M": 240,
+        "M": 90,
         "m": 10,
-        "u": 2
+        "u": 6
       },
       "esperado": {
-        "respuesta": 1.92,
-        "exacta": "1,92 m/s"
+        "respuesta": 5.4,
+        "exacta": "5,4 m/s"
       }
     },
     {
@@ -152,11 +152,11 @@
         "sub": "lanza",
         "M": 90,
         "m": 30,
-        "u": 6
+        "u": 10
       },
       "esperado": {
-        "respuesta": 1.5,
-        "exacta": "1,5 m/s"
+        "respuesta": 2.5,
+        "exacta": "2,5 m/s"
       }
     },
     {
@@ -220,14 +220,14 @@
       "entrada": {
         "tipo": "cruce",
         "sub": "trenes",
-        "v1": 12,
-        "v2": 11,
-        "L1": 80,
-        "L2": 150
+        "v1": 10,
+        "v2": -5,
+        "L1": 180,
+        "L2": 120
       },
       "esperado": {
-        "respuesta": 230.0,
-        "exacta": "230 s"
+        "respuesta": 20.0,
+        "exacta": "20 s"
       }
     }
   ]

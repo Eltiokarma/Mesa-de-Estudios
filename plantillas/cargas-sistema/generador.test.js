@@ -115,6 +115,21 @@ test('salen todos los tipos y subtipos; las alternativas llevan la misma unidad;
   assert.ok(negativas > 20, `solo ${negativas} energías negativas`);
 });
 
+test('sin distractores absurdos ni correcta reconocible por redonda (600 semillas)', () => {
+  const dec = t => { const m = t.match(/,(\d+)/); return m ? m[1].length : 0; };
+  let redonda = 0;
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s), c = p.respuesta.valor;
+    for (const a of p.alternativas) if (!a.correcta && a.valor !== 0) {
+      const r = Math.abs(a.valor / c);
+      assert.ok(r <= 20 && r >= 1 / 20, `semilla ${s}: ${a.texto} es ${r} veces la correcta`);
+    }
+    const ct = p.alternativas.find(a => a.correcta).texto;
+    if (p.alternativas.filter(a => !a.correcta).every(a => dec(a.texto) > dec(ct))) redonda++;
+  }
+  assert.ok(redonda <= 30, `la correcta es la única redonda en ${redonda} de 600`);
+});
+
 test('las trampas de la admisión salen: pares dos veces, par de los extremos, 1/r² y suma de módulos', () => {
   const ids = new Set();
   for (let s = 0; s < 600; s++) for (const a of gen.generar(s).alternativas) if (a.error) ids.add(a.error.id);

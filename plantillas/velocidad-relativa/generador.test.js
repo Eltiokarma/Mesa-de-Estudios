@@ -144,3 +144,26 @@ test('papel.json: de 5 a 10 problemas bien armados, sin HTML, y cada respuesta s
     }
   }
 });
+
+// La correcta no se reconoce por redonda y ninguna incorrecta es absurda (entre 1/20 y 20 veces la correcta).
+test('incorrectas tan limpias como la correcta y de tamaño razonable (600 semillas); nunca lanza', () => {
+  const dec = t => ((t.match(/^[−\d ]+(?:,(\d+))?/) || [])[1] || '').length;
+  let sola = 0, n = 0;
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s);
+    if (typeof p.respuesta.valor !== 'number') continue;
+    n++;
+    const c = p.alternativas.find(a => a.correcta), dc = dec(c.texto);
+    const otras = p.alternativas.filter(a => !a.correcta);
+    if (otras.every(a => dec(a.texto) > dc)) sola++;
+    for (const a of otras) {
+      assert.ok(dec(a.texto) <= Math.max(dc, 1), `semilla ${s}: «${a.texto}» es menos limpia que «${c.texto}»`);
+      if (c.valor !== 0) {
+        const r = Math.abs(a.valor / c.valor);
+        assert.ok(r >= 1 / 20 && r <= 20, `semilla ${s}: «${a.texto}» frente a «${c.texto}» (${a.error.id})`);
+      }
+    }
+  }
+  assert.ok(sola / n < 0.05, `la correcta es la única redonda en ${sola} de ${n}`);
+  for (const s of [...Array(2001).keys(), 'entrada-1', 'entrada-2', 'salida-1', 'salida-3']) assert.doesNotThrow(() => gen.generar(s), `semilla ${s}`);
+});

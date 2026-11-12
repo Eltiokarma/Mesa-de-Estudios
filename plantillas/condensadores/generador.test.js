@@ -85,7 +85,11 @@ function recalcular(p) {
   }
   if (d.sub === 'serie-voltaje') return cadena(d.c, d.v).dv[d.i];
   if (d.sub === 'mixta-carga') { const r = red('T2', d.c, d.v); return d.c[0] * r.dv[0]; }
-  if (d.sub === 'basica') { const Q = d.c * 1e-6 * d.v; return Q * Q / (2 * d.c * 1e-6) * (d.unidad === 'J' ? 1 : 1e3); }
+  if (d.sub === 'basica') {
+    // Trabajo para subir la carga de C·V1 a C·V2: ∫ V dq con V = q/C (regla del trapecio, exacta para una recta).
+    const C = d.c * 1e-6, q1 = C * d.v1, q2 = C * d.v2;
+    return (q2 - q1) * (q1 / C + q2 / C) / 2 * (d.unidad === 'J' ? 1 : 1e3);
+  }
   if (d.sub === 'serie-paralelo') {
     const Us = cadena(d.c, d.v1).energia;
     return biseccion(V => paralelo(d.c, V).energia - Us, 0, d.v1);
@@ -121,6 +125,21 @@ test('salen todos los tipos y subtipos; las alternativas llevan la misma unidad'
   }
   assert.deepEqual([...vistos].sort(), ['carga-voltaje/mixta-carga', 'carga-voltaje/serie-voltaje', 'energia/basica', 'energia/eficiencia', 'energia/serie-paralelo',
     'equivalente/iguales', 'equivalente/incognita', 'equivalente/mixta', 'n-iguales/serie-eq', 'n-iguales/veces', 'plano/cambio', 'plano/capacidad']);
+});
+
+test('sin distractores absurdos ni correcta reconocible por redonda (600 semillas)', () => {
+  const dec = t => { const m = t.match(/,(\d+)/); return m ? m[1].length : 0; };
+  let redonda = 0;
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s), c = p.respuesta.valor;
+    for (const a of p.alternativas) if (!a.correcta && a.valor !== 0) {
+      const r = Math.abs(a.valor / c);
+      assert.ok(r <= 20 && r >= 1 / 20, `semilla ${s}: ${a.texto} es ${r} veces la correcta`);
+    }
+    const ct = p.alternativas.find(a => a.correcta).texto;
+    if (p.alternativas.filter(a => !a.correcta).every(a => dec(a.texto) > dec(ct))) redonda++;
+  }
+  assert.ok(redonda <= 30, `la correcta es la única redonda en ${redonda} de 600`);
 });
 
 test('la trampa principal (CAP-como-resistencia) sale a menudo', () => {

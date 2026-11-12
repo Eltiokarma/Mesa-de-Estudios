@@ -31,7 +31,7 @@
  * en movimiento (después del lanzamiento). Ángulos de la proa medidos desde la perpendicular a la orilla,
  * con sen 16° = 7/25, sen 30° = 1/2, sen 37° = 3/5, sen 53° = 4/5 y sen 74° = 24/25. Coma decimal.
  * Errores: REL-V-* (trampa 12, docs/clasificacion/trampas-admision-unmsm/fisica.md; K1 del informe de
- * cinemática es lo más cercano, sin cifra para este caso), hipótesis nuestras; U1 y U2 (hipótesis,
+ * cinemática es lo más cercano, sin cifra para este caso), hipótesis nuestras; U1 (hipótesis,
  * docs/investigacion/fisica-calculo-transversal-ideas-erroneas.md); CHO-* (hipótesis).
  */
 (function (root, fabrica) {
@@ -61,7 +61,8 @@
     const [tipo, sub] = rng.elegir(TIPOS);
     for (let intento = 0; intento < 5000; intento++) {
       const pr = construir(rng, semilla, tipo, sub);
-      if (pr && pr.alternativas.length >= 4) return pr;
+      // Se evita que la correcta sea la única «redonda» (las demás con más decimales).
+      if (pr && pr.alternativas.length >= 4 && (intento > 300 || !soloRedonda(pr))) return pr;
     }
     throw new Error('No se pudo generar un problema con 4 alternativas distintas');
   }
@@ -72,10 +73,20 @@
     if (tipo === 'bote') return bote(rng, semilla, sub);
     return botes(rng, semilla, sub);
   }
+  // Decimales que se ven en un texto «12,5 s» (0 si es entero).
+  const decimales = t => ((String(t).match(/^[−\d ]+(?:,(\d+))?/) || [])[1] || '').length;
+  function soloRedonda(pr) {
+    if (typeof pr.respuesta.valor !== 'number') return false;
+    const dc = decimales(pr.alternativas.find(a => a.correcta).texto);
+    return pr.alternativas.filter(a => !a.correcta).every(a => decimales(a.texto) > dc);
+  }
   function cerrar(rng, semilla, o) {
-    // aprox: la correcta es limpia, pero un error puede dar un decimal largo (√7, 36/14): se muestra redondeado.
-    const ok = o.aprox ? (x => Number.isFinite(x) && x > 0.005) : o.negativos ? limpio : corto;
-    const alternativas = P.armar({ correcta: o.correcta, errores: o.errores.filter(e => e && ok(e.valor)), rng, texto: o.texto, negativos: !!o.negativos });
+    // Las incorrectas: tan limpias como la correcta (a lo más un decimal más si la correcta es entera) y
+    // razonables (entre 1/20 y 20 veces la correcta); un error que da 0 o un número absurdo no entra.
+    const ok = o.negativos ? limpio : corto, dc = decimales(f(o.correcta)), maxd = Math.max(dc, 1);
+    const razonable = x => o.correcta === 0 || (Math.abs(x) >= Math.abs(o.correcta) / 20 && Math.abs(x) <= Math.abs(o.correcta) * 20);
+    const errores = o.errores.filter(e => e && ok(e.valor) && decimales(f(e.valor)) <= maxd && razonable(e.valor));
+    const alternativas = P.armar({ correcta: o.correcta, errores, rng, texto: o.texto, negativos: !!o.negativos });
     return {
       id: `velocidad-relativa#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
       alternativas, solucion: o.solucion, respuesta: { valor: o.correcta, unidad: o.unidad }, _datos: o.datos,
@@ -117,7 +128,6 @@
       h('REL-V-signo', (mismo ? vA + vBm : Math.abs(vA - vBm)) * N / 100, mismo ? 'Sumaste las dos velocidades. Las dos van hacia el este: respecto a B, A solo avanza la diferencia.' : 'Restaste las dos velocidades. Van en sentidos opuestos: respecto a B, A se aleja con la suma.'),
       h('REL-V-respecto-a-tierra', vA * N / 100, 'Ese es el desplazamiento de A respecto a M. Piden respecto a B, que también se mueve: hay que usar vA − vB.'),
       h('REL-V-la-propia', vBm * N / 100, 'Ese es el desplazamiento de B respecto a M. Piden el de A visto desde B: vA − vB.'),
-      h('U2-centimetros', rel * N, `Ese número está en centímetros. En metros: ${f(rel * N)} cm = ${f(correcta)} m.`, TRV),
     ];
     const solucion = [
       ['Con el este positivo y respecto a M: ', v('a', `vA = ${vA}`), ' y ', v('b', `vB = ${vB < 0 ? '−' : ''}${vBm}`), ' cm/año.'],
@@ -271,12 +281,13 @@
           h('REL-V-suma-pitagoras', W / Math.hypot(u, c), 'Sumaste la corriente y el bote con Pitágoras, como si la proa fuera perpendicular. Para ir recto, la velocidad del bote es la hipotenusa: el cruce va con √(u² − c²).'),
           h('REL-V-signo', W / (u - c), 'Restaste las rapideces como si fueran paralelas. La corriente es perpendicular a la línea de cruce: la componente que cruza es √(u² − c²).'),
           h('REL-V-signo', W / (u + c), 'Sumaste las rapideces como si fueran paralelas. La corriente no ayuda a cruzar: es perpendicular al cruce.'),
+          h('REL-V-usa-corriente', W / c, 'Dividiste el ancho entre la corriente. La corriente es paralela a la orilla: no hace cruzar. Cruza la parte de la velocidad del bote que queda después de anular la corriente.'),
         ];
         const solucion = [
           ['Para no ser arrastrado, la componente río arriba del bote debe anular la corriente: ', v('u', f(u)), '·sen θ = ', v('c', f(c)), `, θ = ${g}°.`],
           ['Lo que queda para cruzar: ', v('u', `√(${f(u)}² − ${f(c)}²)`), ` = ${f(vy)} m/s. `, v('x', 't'), ' = ', v('W', `${W}`), `/${f(vy)} = `, v('x', `${f(correcta)} s`), '.'],
         ];
-        return cerrar(rng, semilla, { aprox: true, correcta, errores, texto: con('s'), unidad: 's', variables: VAR_B, enunciado, pregunta: ['¿Cuánto ', v('x', 'tiempo'), ' tarda en cruzar?'], solucion,
+        return cerrar(rng, semilla, { correcta, errores, texto: con('s'), unidad: 's', variables: VAR_B, enunciado, pregunta: ['¿Cuánto ', v('x', 'tiempo'), ' tarda en cruzar?'], solucion,
           datos: { tipo: 'bote', sub, u, c, W } });
       }
       const correcta = direccion(g, 'arriba');
@@ -307,12 +318,14 @@
           u > c ? h('REL-V-recto-es-rapido', W / Math.sqrt(u * u - c * c), 'Ese es el tiempo para cruzar en línea recta, apuntando río arriba. Ir recto no es lo más rápido: así se gasta parte de la velocidad en pelear con la corriente.') : null,
           h('REL-V-signo', W / (u + c), 'Sumaste la corriente como si ayudara a cruzar. La corriente es paralela a la orilla: no acerca ni aleja de la otra orilla.'),
           u > c ? h('REL-V-signo', W / (u - c), 'Restaste la corriente como si frenara el cruce. Es paralela a la orilla: el tiempo de cruce depende solo de la componente perpendicular.') : null,
+          h('REL-V-usa-corriente', W / c, 'Dividiste el ancho entre la corriente. La corriente es paralela a la orilla: no acerca a la otra orilla. Cruza la velocidad del bote.'),
+          h('REL-V-diagonal', W * R / (u * u), `Dividiste la distancia en diagonal (${f(W * R / u)} m) entre ${f(u)} m/s. En la diagonal el bote va a ${f(R)} m/s respecto a tierra; más simple: el cruce va solo con la componente perpendicular.`),
         ];
         const solucion = [
           ['Lo que lo acerca a la otra orilla es solo la componente perpendicular de su velocidad. Es máxima con la proa perpendicular: ', v('u', `${f(u)} m/s`), '.'],
           [v('x', 't'), ' = ', v('W', `${W}`), '/', v('u', f(u)), ' = ', v('x', `${f(t)} s`), '. La corriente lo desvía, pero no lo retrasa.'],
         ];
-        return cerrar(rng, semilla, { aprox: true, correcta: t, errores, texto: con('s'), unidad: 's', variables: VAR_B, enunciado, pregunta: ['¿Cuál es el ', v('x', 'tiempo mínimo'), ' para cruzar?'], solucion,
+        return cerrar(rng, semilla, { correcta: t, errores, texto: con('s'), unidad: 's', variables: VAR_B, enunciado, pregunta: ['¿Cuál es el ', v('x', 'tiempo mínimo'), ' para cruzar?'], solucion,
           datos: { tipo: 'bote', sub, u, c, W } });
       }
       if (sub === 'deriva') {
@@ -326,7 +339,7 @@
           ['Tiempo de cruce: ', v('W', `${W}`), '/', v('u', f(u)), ` = ${f(t)} s.`],
           ['En ese tiempo la corriente lo lleva río abajo: ', v('c', f(c)), `·${f(t)} = `, v('x', `${f(deriva)} m`), '.'],
         ];
-        return cerrar(rng, semilla, { aprox: true, correcta: deriva, errores, texto: con('m'), unidad: 'm', variables: VAR_B, enunciado,
+        return cerrar(rng, semilla, { correcta: deriva, errores, texto: con('m'), unidad: 'm', variables: VAR_B, enunciado,
           pregunta: ['¿A qué ', v('x', 'distancia río abajo'), ' del punto de enfrente llega a la otra orilla?'], solucion, datos: { tipo: 'bote', sub, u, c, W } });
       }
       const errores = [
@@ -339,7 +352,7 @@
         ['Respecto a tierra, el bote lleva su velocidad perpendicular a la orilla (', v('u', f(u)), ') y la de la corriente, paralela (', v('c', f(c)), ').'],
         [v('x', 'v'), ` = √(${f(u)}² + ${f(c)}²) = `, v('x', `${f(R)} m/s`), '.'],
       ];
-      return cerrar(rng, semilla, { aprox: true, correcta: R, errores, texto: con('m/s'), unidad: 'm/s', variables: VAR_B, enunciado,
+      return cerrar(rng, semilla, { correcta: R, errores, texto: con('m/s'), unidad: 'm/s', variables: VAR_B, enunciado,
         pregunta: ['¿Cuál es la ', v('x', 'rapidez del bote respecto a tierra'), '?'], solucion, datos: { tipo: 'bote', sub, u, c, W } });
     }
     // linea: llegar a un punto que está d más abajo (o más arriba) en la otra orilla
@@ -446,6 +459,7 @@
       ' cada uno. El tripulante lanza un saco hacia el oeste y, después, el otro hacia el este, los dos horizontalmente y a ', v('u', `${f(u)} m/s`), ' respecto al bote (medida con el bote ya en movimiento). No hay roce con el agua.'];
     const errores = [
       h('REL-V-respecto-al-agua', 0, `Tomaste los ${f(u)} m/s como rapidez respecto al agua: así los dos lanzamientos se anularían y el bote quedaría quieto. Cada rapidez es respecto al bote, que ya se mueve distinto en cada lanzamiento.`),
+      h('CHO-masa-sin-restar', Math.abs(((M + m) * V1 - m * u) / (M + 2 * m)), 'En el segundo lanzamiento dejaste en el bote la masa del primer saco, que ya no está. Después del primero quedan bote y un saco: M + m.'),
       h('CHO-solo-un-lanzamiento', V1, 'Esa es la rapidez después del primer lanzamiento. Falta el segundo, que lo frena y lo hace retroceder.'),
       h('CHO-solo-un-lanzamiento', m * u / (M + m), 'Ese es el cambio de velocidad del segundo lanzamiento solo. Hay que restarle la velocidad que ya traía del primero.'),
       h('REL-V-signo', V1 + m * u / (M + m), 'Sumaste los efectos de los dos lanzamientos. Van en sentidos opuestos: uno empuja el bote al este y el otro al oeste.'),

@@ -161,8 +161,8 @@
       "entrada": {
         "tipo": "grafica",
         "sub": "carga",
-        "r1": 0.5,
-        "v1": 36
+        "r1": 2,
+        "v1": 9
       },
       "esperado": {
         "respuesta": 2.0,

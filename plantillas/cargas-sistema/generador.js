@@ -95,7 +95,9 @@
 
   function cerrar(rng, semilla, o) {
     const ok = o.ok || positivo;
-    const alternativas = P.armar({ correcta: o.correcta, errores: o.errores.filter(e => ok(e.valor)), rng, texto: o.texto, negativos: !!o.negativos });
+    // Sin distractores absurdos: fuera de 1/20 a 20 veces la correcta (en valor absoluto) no entran.
+    const razonable = x => x === 0 || (Math.abs(x / o.correcta) <= 20 && Math.abs(x / o.correcta) >= 1 / 20);
+    const alternativas = P.armar({ correcta: o.correcta, errores: o.errores.filter(e => ok(e.valor) && razonable(e.valor)), rng, texto: o.texto, negativos: !!o.negativos });
     return {
       id: `cargas-sistema#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
       alternativas, solucion: o.solucion, respuesta: { valor: o.correcta, unidad: o.unidad }, _datos: o.datos,
@@ -233,6 +235,7 @@
     const errores = [
       h('CS-inverso-cuadrado', V1 * r1 * r1 / 9, 'Usaste V = kq/r², la forma del campo. El potencial es V = kq/r: q = V·r/k.'),
       tr('PR4-potencial', V1 / (9 * r1), 'Despejaste al revés: de V = kq/r sale q = V·r/k, no V/(k·r).'),
+      h('CS-sin-r', V1 / 9, 'Olvidaste multiplicar por la distancia: de V = kq/r sale q = V·r/k.'),
       tr('U2-cm', q * 100, `Dejaste la distancia en centímetros. ${f(r1 * 100)} cm = ${f(r1)} m.`),
     ];
     const solucion = [

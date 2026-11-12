@@ -51,13 +51,13 @@
       "entrada": {
         "tipo": "n-iguales",
         "sub": "veces",
-        "n": 3,
+        "n": 2,
         "c": 3,
         "v": 24
       },
       "esperado": {
-        "respuesta": 9,
-        "exacta": "9"
+        "respuesta": 4,
+        "exacta": "4"
       }
     },
     {
@@ -158,17 +158,17 @@
       "entrada": {
         "tipo": "equivalente",
         "sub": "incognita",
-        "forma": "T2",
-        "pos": 0,
+        "forma": "T1",
+        "pos": 2,
         "conocidos": [
-          3,
-          24
+          1,
+          1
         ],
-        "ceq": 8
+        "ceq": 6.5
       },
       "esperado": {
-        "respuesta": 9.0,
-        "exacta": "9 µF"
+        "respuesta": 6.0,
+        "exacta": "6 µF"
       }
     },
     {
@@ -176,12 +176,12 @@
       "entrada": {
         "tipo": "n-iguales",
         "sub": "serie-eq",
-        "razon": 25,
-        "c": 18
+        "razon": 4,
+        "c": 72
       },
       "esperado": {
-        "respuesta": 3.6,
-        "exacta": "3,6 µF"
+        "respuesta": 36.0,
+        "exacta": "36 µF"
       }
     },
     {
@@ -207,13 +207,14 @@
       "entrada": {
         "tipo": "energia",
         "sub": "basica",
-        "c": 8,
-        "v": 20,
+        "c": 5,
+        "v1": 10,
+        "v2": 30,
         "unidad": "mJ"
       },
       "esperado": {
-        "respuesta": 1.6,
-        "exacta": "1,6 mJ"
+        "respuesta": 2.0,
+        "exacta": "2 mJ"
       }
     },
     {
