@@ -1,0 +1,28 @@
+{
+  "id": "quimica-conceptos",
+  "titulo": "Verdadero o falso de química",
+  "formato": "predicciones",
+  "unidades": [
+    "quimica.biomoleculas-y-productos-naturales",
+    "quimica.enlace-quimico",
+    "quimica.ambiente-y-quimica-aplicada",
+    "quimica.estructura-atomica",
+    "quimica.recursos-naturales",
+    "quimica.electroquimica",
+    "quimica.hidrocarburos",
+    "quimica.materia-y-energia",
+    "quimica.liquidos-y-solidos",
+    "quimica.nomenclatura-inorganica",
+    "quimica.tabla-periodica",
+    "quimica.equilibrio-quimico",
+    "quimica.acidos-y-bases",
+    "quimica.funciones-organicas",
+    "quimica.soluciones"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

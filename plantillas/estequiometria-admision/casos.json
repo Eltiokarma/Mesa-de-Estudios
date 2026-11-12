@@ -1,0 +1,335 @@
+{
+  "plantilla": "estequiometria-admision",
+  "tolerancia": 0.000001,
+  "nota": "Tolerancia relativa. Masas en t, kg o g según el tipo (ver la cabecera del generador); calor en kJ liberados; volúmenes de gas en CN (22,4 L/mol o 22,4 m³/kmol). exacta es el texto de la alternativa correcta, con 1 o 2 decimales.",
+  "verificacion": "Verificación a ciegas (subagente verificador, 8 nov 2026): se recalcularon los 23 casos con fracciones exactas, por moles y factores de conversión, sin leer el código, y 27 semillas extra (100 a 139) de todos los tipos. Coinciden 23/23 y 27/27, con una sola alternativa correcta en cada uno. Los casos que cambiaron tras la revisión los recalculó la conversación principal.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "termo",
+        "sub": "producto",
+        "reaccion": "monoxido",
+        "producto": "CO₂",
+        "masaProducto": 22
+      },
+      "esperado": {
+        "respuesta": 141.5,
+        "exacta": "Se liberan 141,5 kJ"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "termo",
+        "sub": "limitante",
+        "reaccion": "agua",
+        "mA": 6,
+        "mB": 64,
+        "rendimiento": 75
+      },
+      "esperado": {
+        "respuesta": 643.5,
+        "exacta": "Se liberan 643,5 kJ"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "termo",
+        "sub": "producto",
+        "reaccion": "amoniaco",
+        "producto": "NH₃",
+        "masaProducto": 85
+      },
+      "esperado": {
+        "respuesta": 230,
+        "exacta": "Se liberan 230 kJ"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "hidroxido",
+        "sub": "moles",
+        "oxido": "K2O",
+        "masa": 23.5
+      },
+      "esperado": {
+        "respuesta": 0.5,
+        "exacta": "0,5 mol"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "redox",
+        "reaccion": "etanol-acido",
+        "c": 0.3,
+        "V": 400
+      },
+      "esperado": {
+        "respuesta": 4.14,
+        "exacta": "4,14 g"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "grasa",
+        "grasa": "triestearina",
+        "V": 50,
+        "rendimiento": 90
+      },
+      "esperado": {
+        "respuesta": 677.1739130434784,
+        "exacta": "677,2 g"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "grasa",
+        "grasa": "trioleina",
+        "V": 75,
+        "rendimiento": 100
+      },
+      "esperado": {
+        "respuesta": 908.0217391304348,
+        "exacta": "908 g"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "flotacion",
+        "sub": "ley",
+        "mena": 800,
+        "conc": 50,
+        "leyConc": 32,
+        "relave": 4,
+        "metal": "Cu"
+      },
+      "esperado": {
+        "respuesta": 2.5,
+        "exacta": "2,5 %"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "atomos",
+        "fuente": "dolomita",
+        "masa": 46,
+        "pureza": 100,
+        "kilo": false
+      },
+      "esperado": {
+        "respuesta": 11.2,
+        "exacta": "11,2 L"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "flotacion",
+        "sub": "ley",
+        "mena": 100,
+        "conc": 10,
+        "leyConc": 32,
+        "relave": 0.7999999999999998,
+        "metal": "Pb"
+      },
+      "esperado": {
+        "respuesta": 4,
+        "exacta": "4 %"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "hidroxido",
+        "sub": "iones",
+        "oxido": "Li2O",
+        "masa": 12
+      },
+      "esperado": {
+        "respuesta": 1.6,
+        "exacta": "1,6 mol de iones"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "mineral",
+        "mineral": "magnetita",
+        "mena": 100,
+        "pct": 10,
+        "rendimiento": 90
+      },
+      "esperado": {
+        "respuesta": 6517.241379310345,
+        "exacta": "6 517,2 kg"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "termo",
+        "sub": "limitante",
+        "reaccion": "monoxido",
+        "mA": 140,
+        "mB": 128,
+        "rendimiento": 80
+      },
+      "esperado": {
+        "respuesta": 1132,
+        "exacta": "Se liberan 1 132 kJ"
+      }
+    },
+    {
+      "semilla": 16,
+      "entrada": {
+        "tipo": "mineral",
+        "mineral": "argentita",
+        "mena": 25,
+        "pct": 12,
+        "rendimiento": 90
+      },
+      "esperado": {
+        "respuesta": 2351.612903225807,
+        "exacta": "2 351,6 kg"
+      }
+    },
+    {
+      "semilla": 17,
+      "entrada": {
+        "tipo": "redox",
+        "reaccion": "etanol-acido",
+        "c": 0.3,
+        "V": 100
+      },
+      "esperado": {
+        "respuesta": 1.035,
+        "exacta": "1,04 g"
+      }
+    },
+    {
+      "semilla": 18,
+      "entrada": {
+        "tipo": "flotacion",
+        "sub": "recuperacion",
+        "mena": 1000,
+        "leyMena": 2.5,
+        "conc": 93.75,
+        "leyConc": 24,
+        "metal": "Cu"
+      },
+      "esperado": {
+        "respuesta": 90,
+        "exacta": "90 %"
+      }
+    },
+    {
+      "semilla": 24,
+      "entrada": {
+        "tipo": "hidroxido",
+        "sub": "agua",
+        "oxido": "BaO",
+        "masa": 38.25
+      },
+      "esperado": {
+        "respuesta": 4.5,
+        "exacta": "4,5 g"
+      }
+    },
+    {
+      "semilla": 26,
+      "entrada": {
+        "tipo": "hidroxido",
+        "sub": "iones",
+        "oxido": "Na2O",
+        "masa": 93
+      },
+      "esperado": {
+        "respuesta": 6,
+        "exacta": "6 mol de iones"
+      }
+    },
+    {
+      "semilla": 30,
+      "entrada": {
+        "tipo": "flotacion",
+        "sub": "relave",
+        "mena": 500,
+        "leyMena": 5,
+        "conc": 118.75,
+        "leyConc": 20,
+        "metal": "Pb"
+      },
+      "esperado": {
+        "respuesta": 6.038647342995169,
+        "exacta": "6,04 kmol"
+      }
+    },
+    {
+      "semilla": 32,
+      "entrada": {
+        "tipo": "termo",
+        "sub": "limitante",
+        "reaccion": "propano",
+        "mA": 66,
+        "mB": 160,
+        "rendimiento": 100
+      },
+      "esperado": {
+        "respuesta": 2220,
+        "exacta": "Se liberan 2 220 kJ"
+      }
+    },
+    {
+      "semilla": 33,
+      "entrada": {
+        "tipo": "flotacion",
+        "sub": "relave",
+        "mena": 800,
+        "leyMena": 2.5,
+        "conc": 42.5,
+        "leyConc": 40,
+        "metal": "Cu"
+      },
+      "esperado": {
+        "respuesta": 47.24409448818898,
+        "exacta": "47,24 kmol"
+      }
+    },
+    {
+      "semilla": 39,
+      "entrada": {
+        "tipo": "atomos",
+        "fuente": "esfalerita",
+        "masa": 4850,
+        "pureza": 80,
+        "kilo": true
+      },
+      "esperado": {
+        "respuesta": 896,
+        "exacta": "896 m³"
+      }
+    },
+    {
+      "semilla": 51,
+      "entrada": {
+        "tipo": "atomos",
+        "fuente": "calcopirita",
+        "masa": 18350,
+        "pureza": 50,
+        "kilo": true
+      },
+      "esperado": {
+        "respuesta": 2240,
+        "exacta": "2 240 m³"
+      }
+    }
+  ]
+}

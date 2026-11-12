@@ -1,0 +1,347 @@
+{
+  "plantilla": "configuracion-ubicacion",
+  "tolerancia": 1e-9,
+  "nota": "Configuraciones por la regla de Möller en el orden de llenado, con las anómalas Cr, Cu, Mo, Ag y Au; cationes: salen primero los electrones de mayor n y, a igual n, de mayor ℓ; abreviada con el gas noble más grande de menos electrones. Grupo de 1 a 18 y A/B de academia. Números cuánticos con cajas de mₗ = −ℓ a +ℓ y primero mₛ = +1/2. Las respuestas de texto se comparan por la clave (ver la cabecera de generador.js) y por el texto exacto de la alternativa correcta.",
+  "verificacion": "Verificador independiente a ciegas (subagente, 8 nov 2026): recalculó los 24 casos y 40 semillas extra (100 a 139) con un script propio en Python (Möller por n + ℓ con las anómalas Cr, Cu, Mo, Ag y Au, Hund, cajas de mₗ y vida media con fractions) y contrastó periodo, grupo y configuraciones de los neutros con los datos reales del paquete mendeleev. Las 64 coinciden con el generador y cada una tiene una sola alternativa correcta. Los casos que cambiaron tras la revisión los recalculó la conversación principal.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "desapareados",
+        "Z": 79,
+        "carga": 1
+      },
+      "esperado": {
+        "respuesta": 0,
+        "exacta": "0"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "ubicar",
+        "Z": 82
+      },
+      "esperado": {
+        "respuesta": "ub:6:14",
+        "exacta": "periodo 6, grupo 14 (IVA)"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "vida-media",
+        "sub": "queda",
+        "m0": 240,
+        "T": 5,
+        "t": 10,
+        "unidad": "años"
+      },
+      "esperado": {
+        "respuesta": 60,
+        "exacta": "60 mg"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "familia",
+        "pares": [
+          [
+            24,
+            32
+          ],
+          [
+            24,
+            79
+          ],
+          [
+            73,
+            74
+          ],
+          [
+            24,
+            84
+          ],
+          [
+            24,
+            74
+          ]
+        ]
+      },
+      "esperado": {
+        "respuesta": "fam:24-74",
+        "exacta": "Z = 24 y Z = 74"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "anomala",
+        "Z": 24
+      },
+      "esperado": {
+        "respuesta": "conf:[Ar] 4s1 3d5",
+        "exacta": "[Ar] 4s¹ 3d⁵"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "anomala",
+        "Z": 29
+      },
+      "esperado": {
+        "respuesta": "conf:[Ar] 4s1 3d10",
+        "exacta": "[Ar] 4s¹ 3d¹⁰"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "ubicar",
+        "Z": 43
+      },
+      "esperado": {
+        "respuesta": "ub:5:7",
+        "exacta": "periodo 5, grupo 7 (VIIB)"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "cation",
+        "Z": 82,
+        "carga": 4
+      },
+      "esperado": {
+        "respuesta": "conf:[Xe] 4f14 5d10",
+        "exacta": "[Xe] 4f¹⁴ 5d¹⁰"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "familia",
+        "pares": [
+          [
+            22,
+            83
+          ],
+          [
+            22,
+            50
+          ],
+          [
+            22,
+            30
+          ],
+          [
+            22,
+            40
+          ],
+          [
+            40,
+            42
+          ]
+        ]
+      },
+      "esperado": {
+        "respuesta": "fam:22-40",
+        "exacta": "Z = 22 y Z = 40"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "cuanticos",
+        "Z": 53
+      },
+      "esperado": {
+        "respuesta": "qn:5:1:0:-",
+        "exacta": "(5; 1; 0; −1/2)"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "desapareados",
+        "Z": 80,
+        "carga": 2
+      },
+      "esperado": {
+        "respuesta": 0,
+        "exacta": "0"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "ubicar",
+        "Z": 80
+      },
+      "esperado": {
+        "respuesta": "ub:6:12",
+        "exacta": "periodo 6, grupo 12 (IIB)"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "atomo-ion",
+        "Z": 11,
+        "carga": 1
+      },
+      "esperado": {
+        "respuesta": "ion:10|1s2 2s2 2p6",
+        "exacta": "10 electrones; 1s² 2s² 2p⁶"
+      }
+    },
+    {
+      "semilla": 16,
+      "entrada": {
+        "tipo": "anion",
+        "Z": 52,
+        "carga": -2
+      },
+      "esperado": {
+        "respuesta": "conf:[Kr] 5s2 4d10 5p6",
+        "exacta": "[Kr] 5s² 4d¹⁰ 5p⁶"
+      }
+    },
+    {
+      "semilla": 20,
+      "entrada": {
+        "tipo": "vida-media",
+        "sub": "tiempo",
+        "m0": 96,
+        "T": 5,
+        "n": 3,
+        "porcentaje": false,
+        "unidad": "días"
+      },
+      "esperado": {
+        "respuesta": 15,
+        "exacta": "15 días"
+      }
+    },
+    {
+      "semilla": 27,
+      "entrada": {
+        "tipo": "cuanticos",
+        "Z": 42
+      },
+      "esperado": {
+        "respuesta": "qn:4:2:2:+",
+        "exacta": "(4; 2; +2; +1/2)"
+      }
+    },
+    {
+      "semilla": 54,
+      "entrada": {
+        "tipo": "particulas",
+        "Z": 50,
+        "A": 118,
+        "carga": 4
+      },
+      "esperado": {
+        "respuesta": "part:68:46",
+        "exacta": "68 neutrones y 46 electrones"
+      }
+    },
+    {
+      "semilla": 58,
+      "entrada": {
+        "tipo": "contar",
+        "Z": 49,
+        "l": 0
+      },
+      "esperado": {
+        "respuesta": 10,
+        "exacta": "10"
+      }
+    },
+    {
+      "semilla": 60,
+      "entrada": {
+        "tipo": "vida-media",
+        "sub": "lectura",
+        "A0": 640,
+        "A1": 80,
+        "A2": 20,
+        "t1": 12,
+        "t2": 20,
+        "unidad": "días"
+      },
+      "esperado": {
+        "respuesta": 4,
+        "exacta": "4 días"
+      }
+    },
+    {
+      "semilla": 62,
+      "entrada": {
+        "tipo": "cation",
+        "Z": 25,
+        "carga": 2
+      },
+      "esperado": {
+        "respuesta": "conf:[Ar] 3d5",
+        "exacta": "[Ar] 3d⁵"
+      }
+    },
+    {
+      "semilla": 63,
+      "entrada": {
+        "tipo": "particulas",
+        "Z": 47,
+        "A": 107,
+        "carga": 1
+      },
+      "esperado": {
+        "respuesta": "part:60:46",
+        "exacta": "60 neutrones y 46 electrones"
+      }
+    },
+    {
+      "semilla": 70,
+      "entrada": {
+        "tipo": "contar",
+        "Z": 53,
+        "l": 1
+      },
+      "esperado": {
+        "respuesta": 23,
+        "exacta": "23"
+      }
+    },
+    {
+      "semilla": 97,
+      "entrada": {
+        "tipo": "vida-media",
+        "sub": "tiempo",
+        "m0": 96,
+        "T": 20,
+        "n": 2,
+        "porcentaje": true,
+        "unidad": "años"
+      },
+      "esperado": {
+        "respuesta": 40,
+        "exacta": "40 años"
+      }
+    },
+    {
+      "semilla": 102,
+      "entrada": {
+        "tipo": "cation",
+        "Z": 47,
+        "carga": 1
+      },
+      "esperado": {
+        "respuesta": "conf:[Kr] 4d10",
+        "exacta": "[Kr] 4d¹⁰"
+      }
+    }
+  ]
+}

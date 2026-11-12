@@ -1,0 +1,367 @@
+{
+  "plantilla": "quimica-conceptos",
+  "nota": "Cada caso da la semilla, el tipo, el tema o conjunto y los ids que se muestran (en el orden I, II, III… o en el orden en que se eligieron), y la respuesta. vf: la secuencia de los valores de verdad de gen.BANCO en el orden de ids. incorrecta y correcta: el único id falso (o verdadero) entre los ids. relacionar: la letra de cada id de la izquierda es su posición (a, b, c, d) en derecha. Lo que se verifica a ciegas es el valor de verdad de cada proposición del banco y cada par de gen.PARES.",
+  "verificacion": "Verificado a ciegas (8 nov 2026): un verificador independiente decidió V o F en las 250 proposiciones sin ver la clave y coincidió en las 250, y en los 6 conjuntos de pares; las 124 «corregida» son verdaderas. Las proposiciones nuevas o reescritas tras la revisión las revisó la conversación principal. Temas agregados el 12 nov 2026: 98 proposiciones nuevas (52 V, 46 F) y el conjunto de pares «precursores» verificados a ciegas por otro subagente independiente: 98/98 y 6/6 coinciden, sin dudosas; las «corregida» de las falsas son verdaderas.",
+  "casos": [
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "correcta",
+        "tema": "oxidos",
+        "ids": [
+          "oxi13",
+          "oxi8",
+          "oxi4",
+          "oxi11"
+        ]
+      },
+      "esperado": {
+        "respuesta": "p:oxi4",
+        "texto": "En la nomenclatura tradicional, el sufijo -ico indica el mayor de dos estados de oxidación."
+      }
+    },
+    {
+      "semilla": "entrada-2",
+      "entrada": {
+        "tipo": "vf",
+        "tema": "radicales",
+        "ids": [
+          "rad1",
+          "rad2",
+          "rad12"
+        ]
+      },
+      "esperado": {
+        "respuesta": "vf:VVF",
+        "texto": "VVF"
+      }
+    },
+    {
+      "semilla": "entrada-3",
+      "entrada": {
+        "tipo": "correcta",
+        "tema": "rutherford",
+        "ids": [
+          "rut3",
+          "rut10",
+          "rut8",
+          "rut7"
+        ]
+      },
+      "esperado": {
+        "respuesta": "p:rut3",
+        "texto": "Las partículas alfa usadas en el experimento tienen carga positiva."
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "correcta",
+        "tema": "gases-sangre",
+        "ids": [
+          "gas6",
+          "gas7",
+          "gas9",
+          "gas4"
+        ]
+      },
+      "esperado": {
+        "respuesta": "p:gas4",
+        "texto": "El HCO₃⁻ que lleva el CO₂ en la sangre es un anión de carga 1−."
+      }
+    },
+    {
+      "semilla": "salida-2",
+      "entrada": {
+        "tipo": "incorrecta",
+        "tema": "equilibrio-sangre",
+        "ids": [
+          "eqs12",
+          "eqs2",
+          "eqs3",
+          "eqs4",
+          "eqs1"
+        ]
+      },
+      "esperado": {
+        "respuesta": "p:eqs12",
+        "texto": "Cuando el ácido carbónico llega al equilibrio, su disociación se detiene."
+      }
+    },
+    {
+      "semilla": "salida-3",
+      "entrada": {
+        "tipo": "vf",
+        "tema": "tendencia",
+        "ids": [
+          "ten7",
+          "ten10",
+          "ten5"
+        ]
+      },
+      "esperado": {
+        "respuesta": "vf:FVV",
+        "texto": "FVV"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "vf",
+        "tema": "modelos",
+        "ids": [
+          "mod8",
+          "mod10",
+          "mod6",
+          "mod3"
+        ]
+      },
+      "esperado": {
+        "respuesta": "vf:FFVV",
+        "texto": "FFVV"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "relacionar",
+        "conjunto": "solido-ejemplo",
+        "ids": [
+          "se-hielo",
+          "se-cu",
+          "se-mgo"
+        ],
+        "derecha": [
+          "se-mgo",
+          "se-hielo",
+          "se-cu"
+        ]
+      },
+      "esperado": {
+        "respuesta": "rel:Ib, IIc, IIIa",
+        "texto": "Ib, IIc, IIIa"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "vf",
+        "tema": "hidrogenacion",
+        "ids": [
+          "hgn2",
+          "hgn6",
+          "hgn4",
+          "hgn5"
+        ]
+      },
+      "esperado": {
+        "respuesta": "vf:VFVV",
+        "texto": "VFVV"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "vf",
+        "tema": "dativo-oxisales",
+        "ids": [
+          "dat2",
+          "dat7",
+          "dat6",
+          "dat8"
+        ]
+      },
+      "esperado": {
+        "respuesta": "vf:VFFF",
+        "texto": "VFFF"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "incorrecta",
+        "tema": "sales-acidas",
+        "ids": [
+          "hid7",
+          "hid9",
+          "hid5",
+          "hid16"
+        ]
+      },
+      "esperado": {
+        "respuesta": "p:hid9",
+        "texto": "El NaHCO₃ es una sal básica, porque contiene grupos OH⁻."
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "vf",
+        "tema": "polimeros",
+        "ids": [
+          "pol13",
+          "pol1",
+          "pol2"
+        ]
+      },
+      "esperado": {
+        "respuesta": "vf:FVV",
+        "texto": "FVV"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "vf",
+        "tema": "tipo-solido",
+        "ids": [
+          "ts12",
+          "ts1",
+          "ts2",
+          "ts3"
+        ]
+      },
+      "esperado": {
+        "respuesta": "vf:FVVV",
+        "texto": "FVVV"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "incorrecta",
+        "tema": "solidos",
+        "ids": [
+          "sol1",
+          "sol13",
+          "sol5",
+          "sol3"
+        ]
+      },
+      "esperado": {
+        "respuesta": "p:sol13",
+        "texto": "El cloruro de sodio sólido está formado por moléculas de NaCl separadas."
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "correcta",
+        "tema": "aldosas-cetosas",
+        "ids": [
+          "ald10",
+          "ald1",
+          "ald9",
+          "ald7",
+          "ald8"
+        ]
+      },
+      "esperado": {
+        "respuesta": "p:ald1",
+        "texto": "La glucosa es una aldosa: su grupo carbonilo es un aldehído."
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "tipo": "relacionar",
+        "conjunto": "cientificos",
+        "ids": [
+          "c-dalton",
+          "c-heisenberg",
+          "c-millikan"
+        ],
+        "derecha": [
+          "c-dalton",
+          "c-millikan",
+          "c-heisenberg"
+        ]
+      },
+      "esperado": {
+        "respuesta": "rel:Ia, IIc, IIIb",
+        "texto": "Ia, IIc, IIIb"
+      }
+    },
+    {
+      "semilla": 18,
+      "entrada": {
+        "tipo": "relacionar",
+        "conjunto": "solido-propiedad",
+        "ids": [
+          "sp-molecular",
+          "sp-metalico",
+          "sp-red",
+          "sp-ionico"
+        ],
+        "derecha": [
+          "sp-molecular",
+          "sp-red",
+          "sp-ionico",
+          "sp-metalico"
+        ]
+      },
+      "esperado": {
+        "respuesta": "rel:Ia, IId, IIIb, IVc",
+        "texto": "Ia, IId, IIIb, IVc"
+      }
+    },
+    {
+      "semilla": 19,
+      "entrada": {
+        "tipo": "relacionar",
+        "conjunto": "metalurgia",
+        "ids": [
+          "m-altohorno",
+          "m-cianuracion",
+          "m-electro",
+          "m-tostacion"
+        ],
+        "derecha": [
+          "m-electro",
+          "m-cianuracion",
+          "m-tostacion",
+          "m-altohorno"
+        ]
+      },
+      "esperado": {
+        "respuesta": "rel:Id, IIb, IIIa, IVc",
+        "texto": "Id, IIb, IIIa, IVc"
+      }
+    },
+    {
+      "semilla": 22,
+      "entrada": {
+        "tipo": "incorrecta",
+        "tema": "ionicos",
+        "ids": [
+          "ion6",
+          "ion5",
+          "ion3",
+          "ion1",
+          "ion14"
+        ]
+      },
+      "esperado": {
+        "respuesta": "p:ion14",
+        "texto": "El ion sulfato tiene la fórmula SO₃²⁻."
+      }
+    },
+    {
+      "semilla": 27,
+      "entrada": {
+        "tipo": "incorrecta",
+        "tema": "proteinas",
+        "ids": [
+          "pro11",
+          "pro4",
+          "pro2",
+          "pro7"
+        ]
+      },
+      "esperado": {
+        "respuesta": "p:pro11",
+        "texto": "El enlace peptídico solo existe en las proteínas de origen animal."
+      }
+    }
+  ]
+}

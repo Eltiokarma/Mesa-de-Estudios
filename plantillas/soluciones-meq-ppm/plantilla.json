@@ -1,0 +1,15 @@
+{
+  "id": "soluciones-meq-ppm",
+  "titulo": "Miliequivalentes, ppm y porcentajes",
+  "formato": "predicciones",
+  "unidades": [
+    "quimica.soluciones",
+    "quimica.estequiometria"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

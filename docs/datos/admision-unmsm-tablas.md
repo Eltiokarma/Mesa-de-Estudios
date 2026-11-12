@@ -5,14 +5,14 @@ Líneas descartadas: 0. Preguntas registradas: 2550; distintas: 2550.
 | Curso | Registradas | Distintas | Periodos con el curso | Cubre sí | A medias | No |
 | --- | --- | --- | --- | --- | --- | --- |
 | Física | 277 | 277 | 14 | 276 (100 %) | 1 (0 %) | 0 (0 %) |
-| Química | 307 | 307 | 14 | 196 (64 %) | 110 (36 %) | 1 (0 %) |
+| Química | 307 | 307 | 14 | 299 (97 %) | 8 (3 %) | 0 (0 %) |
 | Aritmética | 184 | 184 | 14 | 184 (100 %) | 0 (0 %) | 0 (0 %) |
 | Álgebra | 160 | 160 | 14 | 160 (100 %) | 0 (0 %) | 0 (0 %) |
 | Geometría | 169 | 169 | 14 | 169 (100 %) | 0 (0 %) | 0 (0 %) |
 | Trigonometría | 113 | 113 | 14 | 113 (100 %) | 0 (0 %) | 0 (0 %) |
 | Razonamiento matemático | 650 | 650 | 14 | 625 (96 %) | 23 (4 %) | 2 (0 %) |
 | Razonamiento verbal | 690 | 690 | 14 | 689 (100 %) | 1 (0 %) | 0 (0 %) |
-| **Total** | 2550 | 2550 | | 2412 (95 %) | 135 (5 %) | 3 (0 %) |
+| **Total** | 2550 | 2550 | | 2515 (99 %) | 33 (1 %) | 2 (0 %) |
 
 ## Física (277 distintas)
 
@@ -243,61 +243,61 @@ Por unidad del catálogo:
 
 | Unidad | Preguntas | Periodos (de 14) | Sí / medio / no | Módulos que la cubren |
 | --- | --- | --- | --- | --- |
-| quimica.estequiometria | 34 | 14 | 27 / 7 / 0 | rendimiento-pureza, limitante-particulas, soluciones |
-| quimica.funciones-organicas | 32 | 13 | 21 / 11 / 0 | funciones-organicas |
-| quimica.biomoleculas-y-productos-naturales | 27 | 9 | 2 / 25 / 0 | biomoleculas |
-| quimica.reacciones-y-balance | 24 | 12 | 14 / 10 / 0 | balance-reacciones |
-| quimica.electroquimica | 21 | 14 | 18 / 3 / 0 | celda-galvanica |
-| quimica.hidrocarburos | 21 | 11 | 14 / 7 / 0 | hidrocarburos |
-| quimica.acidos-y-bases | 15 | 10 | 14 / 1 / 0 | acidos-bases |
-| quimica.soluciones | 14 | 9 | 5 / 9 / 0 | soluciones |
-| quimica.enlace-quimico | 13 | 9 | 7 / 6 / 0 | enlace, hidrocarburos, materia-energia |
-| quimica.estructura-atomica | 13 | 11 | 8 / 5 / 0 | atomo-y-tabla |
+| quimica.estequiometria | 34 | 14 | 34 / 0 / 0 | rendimiento-pureza, estequiometria-admision, limitante-particulas |
+| quimica.funciones-organicas | 32 | 13 | 29 / 3 / 0 | funciones-organicas, nombre-polifuncional, molecula-grande |
+| quimica.biomoleculas-y-productos-naturales | 27 | 9 | 26 / 1 / 0 | molecula-grande, quimica-conceptos, nombre-polifuncional |
+| quimica.reacciones-y-balance | 24 | 12 | 22 / 2 / 0 | balance-reacciones, clasificar-reacciones |
+| quimica.electroquimica | 21 | 14 | 20 / 1 / 0 | celda-galvanica, quimica-conceptos |
+| quimica.hidrocarburos | 21 | 11 | 20 / 1 / 0 | hidrocarburos, molecula-grande, quimica-conceptos |
+| quimica.acidos-y-bases | 15 | 10 | 15 / 0 / 0 | acidos-bases, quimica-conceptos |
+| quimica.soluciones | 14 | 9 | 14 / 0 / 0 | soluciones-meq-ppm, soluciones, quimica-conceptos |
+| quimica.enlace-quimico | 13 | 9 | 13 / 0 / 0 | enlace, quimica-conceptos, hidrocarburos |
+| quimica.estructura-atomica | 13 | 11 | 13 / 0 / 0 | atomo-y-tabla, quimica-conceptos, configuracion-ubicacion |
 | quimica.mol-y-composicion | 13 | 8 | 13 / 0 / 0 | mol-composicion |
-| quimica.ambiente-y-quimica-aplicada | 12 | 9 | 9 / 3 / 0 | quimica-ambiente |
-| quimica.cinetica-quimica | 12 | 9 | 6 / 6 / 0 | cinetica |
-| quimica.nomenclatura-inorganica | 10 | 9 | 7 / 3 / 0 | nomenclatura-inorganica |
+| quimica.ambiente-y-quimica-aplicada | 12 | 9 | 12 / 0 / 0 | quimica-ambiente, quimica-conceptos |
+| quimica.cinetica-quimica | 12 | 9 | 12 / 0 / 0 | cinetica |
+| quimica.nomenclatura-inorganica | 10 | 9 | 10 / 0 / 0 | nomenclatura-inorganica, quimica-conceptos, configuracion-ubicacion |
 | quimica.gases | 9 | 7 | 9 / 0 / 0 | gases |
-| quimica.liquidos-y-solidos | 9 | 6 | 5 / 4 / 0 | liquidos-y-solidos |
-| quimica.recursos-naturales | 8 | 7 | 6 / 2 / 0 | quimica-ambiente |
-| quimica.tabla-periodica | 8 | 7 | 4 / 4 / 0 | atomo-y-tabla |
-| quimica.materia-y-energia | 6 | 5 | 3 / 3 / 0 | materia-energia, atomo-y-tabla |
-| quimica.equilibrio-quimico | 5 | 4 | 4 / 1 / 0 | equilibrio-quimico |
-| fuera-del-catalogo:unidades y conversiones | 1 | 1 | 0 / 0 / 1 | — |
+| quimica.liquidos-y-solidos | 9 | 6 | 9 / 0 / 0 | liquidos-y-solidos, quimica-conceptos, conversiones-quimica |
+| quimica.recursos-naturales | 8 | 7 | 8 / 0 / 0 | quimica-ambiente, estequiometria-admision, quimica-conceptos |
+| quimica.tabla-periodica | 8 | 7 | 8 / 0 / 0 | atomo-y-tabla, configuracion-ubicacion |
+| quimica.materia-y-energia | 6 | 5 | 6 / 0 / 0 | materia-energia, quimica-conceptos, conversiones-quimica |
+| quimica.equilibrio-quimico | 5 | 4 | 5 / 0 / 0 | equilibrio-quimico, quimica-conceptos |
+| fuera-del-catalogo:unidades y conversiones | 1 | 1 | 1 / 0 / 0 | conversiones-quimica |
 
 Por tema (en razonamiento matemático y verbal, por familia de temas):
 
 | Tema | Preguntas | Periodos (de 14) | Unidad | Módulo más usado | Sí / medio / no |
 | --- | --- | --- | --- | --- | --- |
-| Clasificación de reacciones | 5 | 5 | quimica.reacciones-y-balance | balance-reacciones | 0 / 5 / 0 |
+| Clasificación de reacciones | 5 | 5 | quimica.reacciones-y-balance | clasificar-reacciones | 5 / 0 / 0 |
 | Balance redox ion-electrón | 4 | 3 | quimica.reacciones-y-balance | balance-reacciones | 4 / 0 / 0 |
 | Reactivo limitante | 4 | 3 | quimica.estequiometria | limitante-particulas | 4 / 0 / 0 |
 | Nomenclatura de fenoles | 3 | 3 | quimica.funciones-organicas | funciones-organicas | 3 / 0 / 0 |
 | Notación de celda y fem | 3 | 3 | quimica.electroquimica | celda-galvanica | 3 / 0 / 0 |
-| Normalidad y miliequivalentes | 3 | 2 | quimica.soluciones | soluciones | 0 / 3 / 0 |
-| Balance y clasificación de reacciones | 2 | 2 | quimica.reacciones-y-balance | balance-reacciones | 1 / 1 / 0 |
-| Carotenoides y vitaminas: estructura y oxidación | 2 | 2 | quimica.biomoleculas-y-productos-naturales | biomoleculas | 0 / 2 / 0 |
+| Normalidad y miliequivalentes | 3 | 2 | quimica.soluciones | soluciones-meq-ppm | 3 / 0 / 0 |
+| Balance y clasificación de reacciones | 2 | 2 | quimica.reacciones-y-balance | balance-reacciones | 2 / 0 / 0 |
+| Carotenoides y vitaminas: estructura y oxidación | 2 | 2 | quimica.biomoleculas-y-productos-naturales | molecula-grande | 2 / 0 / 0 |
 | Curva de titulación | 2 | 2 | quimica.acidos-y-bases | acidos-bases | 2 / 0 / 0 |
 | Dismutación redox | 2 | 2 | quimica.reacciones-y-balance | balance-reacciones | 1 / 1 / 0 |
 | Electrólisis del agua y Faraday | 2 | 2 | quimica.electroquimica | celda-galvanica | 2 / 0 / 0 |
-| Estequiometría con soluciones | 2 | 2 | quimica.estequiometria | soluciones | 1 / 1 / 0 |
+| Estequiometría con soluciones | 2 | 2 | quimica.estequiometria | soluciones-meq-ppm | 2 / 0 / 0 |
 | Fuerzas intermoleculares y punto de ebullición | 2 | 2 | quimica.liquidos-y-solidos | liquidos-y-solidos | 2 / 0 / 0 |
 | Gas natural | 2 | 2 | quimica.recursos-naturales | quimica-ambiente | 2 / 0 / 0 |
-| Grupos funcionales en hormonas | 2 | 2 | quimica.biomoleculas-y-productos-naturales | biomoleculas | 0 / 2 / 0 |
+| Grupos funcionales en hormonas | 2 | 2 | quimica.biomoleculas-y-productos-naturales | molecula-grande | 2 / 0 / 0 |
 | Hibridación del carbono | 2 | 2 | quimica.enlace-quimico | hidrocarburos | 2 / 0 / 0 |
 | Ley general de los gases | 2 | 2 | quimica.gases | gases | 2 / 0 / 0 |
 | Leyes de Faraday | 2 | 2 | quimica.electroquimica | celda-galvanica | 2 / 0 / 0 |
-| Mecanismo: intermediario y catalizador | 2 | 2 | quimica.cinetica-quimica | cinetica | 0 / 2 / 0 |
-| Nomenclatura de compuestos polifuncionales | 2 | 2 | quimica.funciones-organicas | funciones-organicas | 0 / 2 / 0 |
-| Partes por millón | 2 | 2 | quimica.soluciones | soluciones | 0 / 2 / 0 |
+| Mecanismo: intermediario y catalizador | 2 | 2 | quimica.cinetica-quimica | cinetica | 2 / 0 / 0 |
+| Nomenclatura de compuestos polifuncionales | 2 | 2 | quimica.funciones-organicas | nombre-polifuncional | 2 / 0 / 0 |
+| Partes por millón | 2 | 2 | quimica.soluciones | soluciones-meq-ppm | 2 / 0 / 0 |
 | Potabilización del agua | 2 | 2 | quimica.ambiente-y-quimica-aplicada | quimica-ambiente | 2 / 0 / 0 |
 | Potencial de celda y corrosión | 2 | 2 | quimica.electroquimica | celda-galvanica | 2 / 0 / 0 |
 | Rendimiento de reacción | 2 | 2 | quimica.estequiometria | rendimiento-pureza | 2 / 0 / 0 |
-| Colorantes naturales: grupos funcionales | 2 | 1 | quimica.biomoleculas-y-productos-naturales | biomoleculas | 0 / 2 / 0 |
+| Colorantes naturales: grupos funcionales | 2 | 1 | quimica.biomoleculas-y-productos-naturales | molecula-grande | 2 / 0 / 0 |
 | Estequiometría con soluciones (porcentaje y densidad) | 2 | 1 | quimica.estequiometria | soluciones | 2 / 0 / 0 |
 | Moles de átomos en un compuesto | 2 | 1 | quimica.mol-y-composicion | mol-composicion | 2 / 0 / 0 |
 | Neutralización con equivalentes | 2 | 1 | quimica.acidos-y-bases | acidos-bases | 2 / 0 / 0 |
-| Acumulador de plomo | 1 | 1 | quimica.electroquimica | celda-galvanica | 0 / 1 / 0 |
+| Acumulador de plomo | 1 | 1 | quimica.electroquimica | quimica-conceptos | 1 / 0 / 0 |
 | Agente oxidante y reductor | 1 | 1 | quimica.reacciones-y-balance | balance-reacciones | 1 / 0 / 0 |
 | Agentes y especies en un redox con radicales | 1 | 1 | quimica.reacciones-y-balance | balance-reacciones | 0 / 1 / 0 |
 | Alcoholes y su oxidación | 1 | 1 | quimica.funciones-organicas | funciones-organicas | 1 / 0 / 0 |
@@ -307,60 +307,60 @@ Por tema (en razonamiento matemático y verbal, por familia de temas):
 | Amidas, aminoácidos y quiralidad | 1 | 1 | quimica.funciones-organicas | funciones-organicas | 1 / 0 / 0 |
 | Aminas aromáticas | 1 | 1 | quimica.funciones-organicas | funciones-organicas | 1 / 0 / 0 |
 | Aminas y grupos funcionales | 1 | 1 | quimica.funciones-organicas | funciones-organicas | 1 / 0 / 0 |
-| Aminoácidos y proteínas: propiedades | 1 | 1 | quimica.biomoleculas-y-productos-naturales | biomoleculas | 0 / 1 / 0 |
-| Aminoácidos y reacciones orgánicas | 1 | 1 | quimica.biomoleculas-y-productos-naturales | biomoleculas | 0 / 1 / 0 |
-| Aminoácidos: estructura | 1 | 1 | quimica.biomoleculas-y-productos-naturales | biomoleculas | 0 / 1 / 0 |
-| Aminoácidos: estructura y nombre | 1 | 1 | quimica.biomoleculas-y-productos-naturales | biomoleculas | 0 / 1 / 0 |
-| Aminoácidos: grupos y pares libres | 1 | 1 | quimica.biomoleculas-y-productos-naturales | biomoleculas | 0 / 1 / 0 |
-| Aminoácidos: nombre, ionización y quiralidad | 1 | 1 | quimica.biomoleculas-y-productos-naturales | biomoleculas | 0 / 1 / 0 |
+| Aminoácidos y proteínas: propiedades | 1 | 1 | quimica.biomoleculas-y-productos-naturales | quimica-conceptos | 1 / 0 / 0 |
+| Aminoácidos y reacciones orgánicas | 1 | 1 | quimica.biomoleculas-y-productos-naturales | nombre-polifuncional | 1 / 0 / 0 |
+| Aminoácidos: estructura | 1 | 1 | quimica.biomoleculas-y-productos-naturales | molecula-grande | 1 / 0 / 0 |
+| Aminoácidos: estructura y nombre | 1 | 1 | quimica.biomoleculas-y-productos-naturales | nombre-polifuncional | 1 / 0 / 0 |
+| Aminoácidos: grupos y pares libres | 1 | 1 | quimica.biomoleculas-y-productos-naturales | molecula-grande | 1 / 0 / 0 |
+| Aminoácidos: nombre, ionización y quiralidad | 1 | 1 | quimica.biomoleculas-y-productos-naturales | nombre-polifuncional | 1 / 0 / 0 |
 | Aromáticos: resonancia y electrones pi | 1 | 1 | quimica.hidrocarburos | hidrocarburos | 1 / 0 / 0 |
-| Balance de materia en flotación | 1 | 1 | quimica.estequiometria | rendimiento-pureza | 0 / 1 / 0 |
+| Balance de materia en flotación | 1 | 1 | quimica.estequiometria | estequiometria-admision | 1 / 0 / 0 |
 | Balance redox y agentes | 1 | 1 | quimica.reacciones-y-balance | balance-reacciones | 1 / 0 / 0 |
 | Balance y nomenclatura de sales | 1 | 1 | quimica.reacciones-y-balance | balance-reacciones | 1 / 0 / 0 |
 | Balance y relaciones molares en precipitación | 1 | 1 | quimica.reacciones-y-balance | balance-reacciones | 1 / 0 / 0 |
 | Balance y relación mol-masa | 1 | 1 | quimica.estequiometria | balance-reacciones | 1 / 0 / 0 |
-| Bases de Lewis y alcaloides | 1 | 1 | quimica.acidos-y-bases | acidos-bases | 0 / 1 / 0 |
-| Biomoléculas en alimentos | 1 | 1 | quimica.biomoleculas-y-productos-naturales | biomoleculas | 0 / 1 / 0 |
-| Calentamiento global: lectura de gráfico | 1 | 1 | quimica.ambiente-y-quimica-aplicada | quimica-ambiente | 0 / 1 / 0 |
-| Calor de vaporización molar | 1 | 1 | quimica.liquidos-y-solidos | liquidos-y-solidos | 0 / 1 / 0 |
+| Bases de Lewis y alcaloides | 1 | 1 | quimica.acidos-y-bases | quimica-conceptos | 1 / 0 / 0 |
+| Biomoléculas en alimentos | 1 | 1 | quimica.biomoleculas-y-productos-naturales | quimica-conceptos | 1 / 0 / 0 |
+| Calentamiento global: lectura de gráfico | 1 | 1 | quimica.ambiente-y-quimica-aplicada | quimica-conceptos | 1 / 0 / 0 |
+| Calor de vaporización molar | 1 | 1 | quimica.liquidos-y-solidos | conversiones-quimica | 1 / 0 / 0 |
 | Cambio climático | 1 | 1 | quimica.ambiente-y-quimica-aplicada | quimica-ambiente | 1 / 0 / 0 |
 | Cambios de fase | 1 | 1 | quimica.liquidos-y-solidos | liquidos-y-solidos | 1 / 0 / 0 |
-| Carbohidratos: aldosas y cetosas | 1 | 1 | quimica.biomoleculas-y-productos-naturales | biomoleculas | 0 / 1 / 0 |
-| Carbohidratos: disacáridos | 1 | 1 | quimica.biomoleculas-y-productos-naturales | biomoleculas | 0 / 1 / 0 |
-| Carbohidratos: estructura y nombre | 1 | 1 | quimica.biomoleculas-y-productos-naturales | biomoleculas | 0 / 1 / 0 |
-| Carbohidratos: quiralidad y actividad óptica | 1 | 1 | quimica.biomoleculas-y-productos-naturales | biomoleculas | 0 / 1 / 0 |
+| Carbohidratos: aldosas y cetosas | 1 | 1 | quimica.biomoleculas-y-productos-naturales | quimica-conceptos | 1 / 0 / 0 |
+| Carbohidratos: disacáridos | 1 | 1 | quimica.biomoleculas-y-productos-naturales | molecula-grande | 1 / 0 / 0 |
+| Carbohidratos: estructura y nombre | 1 | 1 | quimica.biomoleculas-y-productos-naturales | nombre-polifuncional | 1 / 0 / 0 |
+| Carbohidratos: quiralidad y actividad óptica | 1 | 1 | quimica.biomoleculas-y-productos-naturales | molecula-grande | 1 / 0 / 0 |
 | Catalizadores | 1 | 1 | quimica.cinetica-quimica | cinetica | 1 / 0 / 0 |
-| Celda de combustible microbiana | 1 | 1 | quimica.electroquimica | celda-galvanica | 0 / 1 / 0 |
+| Celda de combustible microbiana | 1 | 1 | quimica.electroquimica | quimica-conceptos | 1 / 0 / 0 |
 | Celda galvánica: ánodo, diagrama y fem | 1 | 1 | quimica.electroquimica | celda-galvanica | 1 / 0 / 0 |
 | Celdas electrolíticas en serie | 1 | 1 | quimica.electroquimica | celda-galvanica | 1 / 0 / 0 |
 | Cinética de primer orden con exponencial | 1 | 1 | quimica.cinetica-quimica | cinetica | 1 / 0 / 0 |
-| Clasificación de reacciones: oxidación y reversibilidad | 1 | 1 | quimica.reacciones-y-balance | balance-reacciones | 0 / 1 / 0 |
-| Combustión, polimerización y aromáticos policíclicos | 1 | 1 | quimica.recursos-naturales | quimica-ambiente | 0 / 1 / 0 |
+| Clasificación de reacciones: oxidación y reversibilidad | 1 | 1 | quimica.reacciones-y-balance | clasificar-reacciones | 1 / 0 / 0 |
+| Combustión, polimerización y aromáticos policíclicos | 1 | 1 | quimica.recursos-naturales | quimica-conceptos | 1 / 0 / 0 |
 | Composición centesimal | 1 | 1 | quimica.mol-y-composicion | mol-composicion | 1 / 0 / 0 |
 | Composición centesimal de sales hidratadas | 1 | 1 | quimica.mol-y-composicion | mol-composicion | 1 / 0 / 0 |
 | Compuestos aromáticos con dos funciones | 1 | 1 | quimica.funciones-organicas | funciones-organicas | 0 / 1 / 0 |
-| Compuestos iónicos: propiedades | 1 | 1 | quimica.enlace-quimico | enlace | 0 / 1 / 0 |
-| Compuestos polifuncionales: ésteres y aminas | 1 | 1 | quimica.funciones-organicas | funciones-organicas | 0 / 1 / 0 |
+| Compuestos iónicos: propiedades | 1 | 1 | quimica.enlace-quimico | quimica-conceptos | 1 / 0 / 0 |
+| Compuestos polifuncionales: ésteres y aminas | 1 | 1 | quimica.funciones-organicas | nombre-polifuncional | 1 / 0 / 0 |
 | Configuración anómala del cromo | 1 | 1 | quimica.estructura-atomica | atomo-y-tabla | 1 / 0 / 0 |
 | Configuración de iones de transición y estado de oxidación | 1 | 1 | quimica.estructura-atomica | atomo-y-tabla | 1 / 0 / 0 |
 | Configuración de iones de transición y números cuánticos | 1 | 1 | quimica.estructura-atomica | atomo-y-tabla | 1 / 0 / 0 |
-| Configuración de iones de transición y redox | 1 | 1 | quimica.estructura-atomica | atomo-y-tabla | 0 / 1 / 0 |
+| Configuración de iones de transición y redox | 1 | 1 | quimica.estructura-atomica | configuracion-ubicacion | 1 / 0 / 0 |
 | Configuración de metales de transición y números cuánticos | 1 | 1 | quimica.estructura-atomica | atomo-y-tabla | 1 / 0 / 0 |
 | Configuración electrónica de iones | 1 | 1 | quimica.estructura-atomica | atomo-y-tabla | 1 / 0 / 0 |
-| Configuración y ubicación de iones | 1 | 1 | quimica.tabla-periodica | atomo-y-tabla | 0 / 1 / 0 |
+| Configuración y ubicación de iones | 1 | 1 | quimica.tabla-periodica | configuracion-ubicacion | 1 / 0 / 0 |
 | Configuración, espín y radio iónico | 1 | 1 | quimica.estructura-atomica | atomo-y-tabla | 1 / 0 / 0 |
-| Configuración, nomenclatura y electrólisis de sales | 1 | 1 | quimica.nomenclatura-inorganica | nomenclatura-inorganica | 0 / 1 / 0 |
-| Configuración, ubicación y enlace de un halógeno | 1 | 1 | quimica.estructura-atomica | atomo-y-tabla | 0 / 1 / 0 |
-| Conservación de un elemento (atómica) | 1 | 1 | quimica.estequiometria | mol-composicion | 0 / 1 / 0 |
+| Configuración, nomenclatura y electrólisis de sales | 1 | 1 | quimica.nomenclatura-inorganica | configuracion-ubicacion | 1 / 0 / 0 |
+| Configuración, ubicación y enlace de un halógeno | 1 | 1 | quimica.estructura-atomica | quimica-conceptos | 1 / 0 / 0 |
+| Conservación de un elemento (atómica) | 1 | 1 | quimica.estequiometria | estequiometria-admision | 1 / 0 / 0 |
 | Constante de equilibrio Kc | 1 | 1 | quimica.equilibrio-quimico | equilibrio-quimico | 1 / 0 / 0 |
 | Contaminación: invernadero, ozono y eutrofización | 1 | 1 | quimica.ambiente-y-quimica-aplicada | quimica-ambiente | 1 / 0 / 0 |
 | Contaminación: ozono, lluvia ácida y eutrofización | 1 | 1 | quimica.ambiente-y-quimica-aplicada | quimica-ambiente | 1 / 0 / 0 |
-| Contaminantes del aire, agua y suelo | 1 | 1 | quimica.ambiente-y-quimica-aplicada | quimica-ambiente | 0 / 1 / 0 |
+| Contaminantes del aire, agua y suelo | 1 | 1 | quimica.ambiente-y-quimica-aplicada | quimica-conceptos | 1 / 0 / 0 |
 | Conversión de unidades de concentración | 1 | 1 | quimica.soluciones | soluciones | 1 / 0 / 0 |
 | Densidad de gases y ecuación de estado | 1 | 1 | quimica.gases | gases | 1 / 0 / 0 |
 | Diagrama de Pourbaix | 1 | 1 | quimica.electroquimica | celda-galvanica | 0 / 1 / 0 |
 | Diagrama de fases del agua | 1 | 1 | quimica.liquidos-y-solidos | liquidos-y-solidos | 1 / 0 / 0 |
-| Dilución con miliequivalentes | 1 | 1 | quimica.soluciones | soluciones | 0 / 1 / 0 |
+| Dilución con miliequivalentes | 1 | 1 | quimica.soluciones | soluciones-meq-ppm | 1 / 0 / 0 |
 | Dilución desde ácido concentrado | 1 | 1 | quimica.soluciones | soluciones | 1 / 0 / 0 |
 | Dilución y neutralización | 1 | 1 | quimica.soluciones | soluciones | 1 / 0 / 0 |
 | Ecuación de estado | 1 | 1 | quimica.gases | gases | 1 / 0 / 0 |
@@ -370,17 +370,17 @@ Por tema (en razonamiento matemático y verbal, por familia de temas):
 | Electrólisis del agua | 1 | 1 | quimica.electroquimica | celda-galvanica | 1 / 0 / 0 |
 | Electrólisis del agua con gases | 1 | 1 | quimica.electroquimica | celda-galvanica | 1 / 0 / 0 |
 | Electrólisis: migración de iones | 1 | 1 | quimica.electroquimica | celda-galvanica | 1 / 0 / 0 |
-| Elementos frente a compuestos y oxoaniones | 1 | 1 | quimica.enlace-quimico | materia-energia | 0 / 1 / 0 |
+| Elementos frente a compuestos y oxoaniones | 1 | 1 | quimica.enlace-quimico | quimica-conceptos | 1 / 0 / 0 |
 | Elementos, compuestos y mezclas | 1 | 1 | quimica.materia-y-energia | materia-energia | 1 / 0 / 0 |
 | Enlace iónico y estructura de Lewis | 1 | 1 | quimica.enlace-quimico | enlace | 1 / 0 / 0 |
 | Enlaces pi y sustituyentes en polienos | 1 | 1 | quimica.hidrocarburos | hidrocarburos | 0 / 1 / 0 |
-| Enlaces polares y octeto en moléculas orgánicas | 1 | 1 | quimica.enlace-quimico | enlace | 0 / 1 / 0 |
+| Enlaces polares y octeto en moléculas orgánicas | 1 | 1 | quimica.enlace-quimico | molecula-grande | 1 / 0 / 0 |
 | Enlaces sigma y pi en alquenos | 1 | 1 | quimica.hidrocarburos | hidrocarburos | 1 / 0 / 0 |
 | Enlaces sigma y pi en aromáticos | 1 | 1 | quimica.hidrocarburos | hidrocarburos | 1 / 0 / 0 |
-| Equilibrio y reacciones en la sangre | 1 | 1 | quimica.equilibrio-quimico | equilibrio-quimico | 0 / 1 / 0 |
+| Equilibrio y reacciones en la sangre | 1 | 1 | quimica.equilibrio-quimico | quimica-conceptos | 1 / 0 / 0 |
 | Escala de pH | 1 | 1 | quimica.acidos-y-bases | acidos-bases | 1 / 0 / 0 |
-| Escalas de temperatura | 1 | 1 | quimica.materia-y-energia | materia-energia | 0 / 1 / 0 |
-| Esferas de la Tierra | 1 | 1 | quimica.ambiente-y-quimica-aplicada | quimica-ambiente | 0 / 1 / 0 |
+| Escalas de temperatura | 1 | 1 | quimica.materia-y-energia | conversiones-quimica | 1 / 0 / 0 |
+| Esferas de la Tierra | 1 | 1 | quimica.ambiente-y-quimica-aplicada | quimica-conceptos | 1 / 0 / 0 |
 | Estequiometría con gases | 1 | 1 | quimica.estequiometria | gases | 1 / 0 / 0 |
 | Estequiometría con soluciones (normalidad) | 1 | 1 | quimica.estequiometria | soluciones | 1 / 0 / 0 |
 | Estequiometría con soluciones de sales hidratadas | 1 | 1 | quimica.estequiometria | soluciones | 1 / 0 / 0 |
@@ -388,72 +388,72 @@ Por tema (en razonamiento matemático y verbal, por familia de temas):
 | Estequiometría redox | 1 | 1 | quimica.estequiometria | balance-reacciones | 1 / 0 / 0 |
 | Esterificación y nomenclatura de ésteres | 1 | 1 | quimica.funciones-organicas | funciones-organicas | 1 / 0 / 0 |
 | Esterificación y ácidos aromáticos | 1 | 1 | quimica.funciones-organicas | funciones-organicas | 1 / 0 / 0 |
-| Esteroides: estructura y quiralidad | 1 | 1 | quimica.biomoleculas-y-productos-naturales | biomoleculas | 0 / 1 / 0 |
+| Esteroides: estructura y quiralidad | 1 | 1 | quimica.biomoleculas-y-productos-naturales | molecula-grande | 1 / 0 / 0 |
 | Estructura de Lewis | 1 | 1 | quimica.enlace-quimico | enlace | 1 / 0 / 0 |
 | Eutrofización | 1 | 1 | quimica.ambiente-y-quimica-aplicada | quimica-ambiente | 1 / 0 / 0 |
 | Fenoles y aminas: acidez y basicidad | 1 | 1 | quimica.funciones-organicas | funciones-organicas | 1 / 0 / 0 |
 | Fenoles y esterificación | 1 | 1 | quimica.funciones-organicas | funciones-organicas | 1 / 0 / 0 |
-| Fermentación: redox y productos | 1 | 1 | quimica.funciones-organicas | funciones-organicas | 0 / 1 / 0 |
+| Fermentación: redox y productos | 1 | 1 | quimica.funciones-organicas | quimica-conceptos | 1 / 0 / 0 |
 | Fórmula empírica desde composición | 1 | 1 | quimica.mol-y-composicion | mol-composicion | 1 / 0 / 0 |
 | Fórmula global de cicloalcanos | 1 | 1 | quimica.hidrocarburos | hidrocarburos | 1 / 0 / 0 |
 | Fórmulas de oxisales | 1 | 1 | quimica.nomenclatura-inorganica | nomenclatura-inorganica | 1 / 0 / 0 |
-| Fórmulas, mezclas y tipo de óxido | 1 | 1 | quimica.nomenclatura-inorganica | nomenclatura-inorganica | 0 / 1 / 0 |
+| Fórmulas, mezclas y tipo de óxido | 1 | 1 | quimica.nomenclatura-inorganica | quimica-conceptos | 1 / 0 / 0 |
 | Gases nobles | 1 | 1 | quimica.tabla-periodica | atomo-y-tabla | 1 / 0 / 0 |
-| Grupos funcionales en moléculas complejas | 1 | 1 | quimica.funciones-organicas | funciones-organicas | 0 / 1 / 0 |
+| Grupos funcionales en moléculas complejas | 1 | 1 | quimica.funciones-organicas | molecula-grande | 1 / 0 / 0 |
 | Grupos funcionales y propiedades | 1 | 1 | quimica.funciones-organicas | funciones-organicas | 1 / 0 / 0 |
 | Grupos funcionales y quiralidad en moléculas biológicas | 1 | 1 | quimica.funciones-organicas | funciones-organicas | 0 / 1 / 0 |
 | Grupos funcionales: aldehídos | 1 | 1 | quimica.funciones-organicas | funciones-organicas | 1 / 0 / 0 |
 | Grupos y periodos: propiedades | 1 | 1 | quimica.tabla-periodica | atomo-y-tabla | 1 / 0 / 0 |
-| Heterociclos: pares libres e hibridación | 1 | 1 | quimica.funciones-organicas | funciones-organicas | 0 / 1 / 0 |
+| Heterociclos: pares libres e hibridación | 1 | 1 | quimica.funciones-organicas | molecula-grande | 1 / 0 / 0 |
 | Hibridación e isomería en compuestos oxigenados | 1 | 1 | quimica.funciones-organicas | funciones-organicas | 0 / 1 / 0 |
 | Hibridación en aminas | 1 | 1 | quimica.funciones-organicas | funciones-organicas | 1 / 0 / 0 |
 | Hibridación en cicloalquenos | 1 | 1 | quimica.hidrocarburos | hidrocarburos | 1 / 0 / 0 |
 | Hibridación en hidrocarburos | 1 | 1 | quimica.hidrocarburos | hidrocarburos | 1 / 0 / 0 |
-| Hibridación y electrones pi en polienos | 1 | 1 | quimica.hidrocarburos | hidrocarburos | 0 / 1 / 0 |
-| Hibridación y enlaces pi en polienos | 1 | 1 | quimica.hidrocarburos | hidrocarburos | 0 / 1 / 0 |
+| Hibridación y electrones pi en polienos | 1 | 1 | quimica.hidrocarburos | molecula-grande | 1 / 0 / 0 |
+| Hibridación y enlaces pi en polienos | 1 | 1 | quimica.hidrocarburos | molecula-grande | 1 / 0 / 0 |
 | Hidrocarburos aromáticos: hibridación | 1 | 1 | quimica.hidrocarburos | hidrocarburos | 1 / 0 / 0 |
-| Hidrogenación parcial y total de alquinos | 1 | 1 | quimica.hidrocarburos | hidrocarburos | 0 / 1 / 0 |
-| Hidrogenación y reacciones de adición | 1 | 1 | quimica.hidrocarburos | hidrocarburos | 0 / 1 / 0 |
-| Hidruros no metálicos: enlace y pares libres | 1 | 1 | quimica.enlace-quimico | enlace | 0 / 1 / 0 |
-| Hidróxidos: estequiometría y disociación | 1 | 1 | quimica.nomenclatura-inorganica | nomenclatura-inorganica | 0 / 1 / 0 |
-| Insaturación, adición y moles | 1 | 1 | quimica.hidrocarburos | hidrocarburos | 0 / 1 / 0 |
+| Hidrogenación parcial y total de alquinos | 1 | 1 | quimica.hidrocarburos | quimica-conceptos | 1 / 0 / 0 |
+| Hidrogenación y reacciones de adición | 1 | 1 | quimica.hidrocarburos | molecula-grande | 1 / 0 / 0 |
+| Hidruros no metálicos: enlace y pares libres | 1 | 1 | quimica.enlace-quimico | quimica-conceptos | 1 / 0 / 0 |
+| Hidróxidos: estequiometría y disociación | 1 | 1 | quimica.nomenclatura-inorganica | estequiometria-admision | 1 / 0 / 0 |
+| Insaturación, adición y moles | 1 | 1 | quimica.hidrocarburos | molecula-grande | 1 / 0 / 0 |
 | Iones y átomos en una fórmula | 1 | 1 | quimica.mol-y-composicion | mol-composicion | 1 / 0 / 0 |
 | Isomería geométrica | 1 | 1 | quimica.hidrocarburos | hidrocarburos | 1 / 0 / 0 |
-| Isomería geométrica en ácidos insaturados | 1 | 1 | quimica.hidrocarburos | hidrocarburos | 0 / 1 / 0 |
+| Isomería geométrica en ácidos insaturados | 1 | 1 | quimica.hidrocarburos | quimica-conceptos | 1 / 0 / 0 |
 | Isómeros de alcanos y fuerzas de London | 1 | 1 | quimica.hidrocarburos | hidrocarburos | 1 / 0 / 0 |
 | Isómeros de alcanos y punto de ebullición | 1 | 1 | quimica.hidrocarburos | hidrocarburos | 1 / 0 / 0 |
 | Isótopos | 1 | 1 | quimica.estructura-atomica | atomo-y-tabla | 1 / 0 / 0 |
-| Isótopos radiactivos y vida media | 1 | 1 | quimica.materia-y-energia | atomo-y-tabla | 0 / 1 / 0 |
+| Isótopos radiactivos y vida media | 1 | 1 | quimica.materia-y-energia | configuracion-ubicacion | 1 / 0 / 0 |
 | Le Chatelier en el sistema bicarbonato | 1 | 1 | quimica.equilibrio-quimico | equilibrio-quimico | 1 / 0 / 0 |
 | Le Chatelier y constante con temperatura | 1 | 1 | quimica.equilibrio-quimico | equilibrio-quimico | 1 / 0 / 0 |
 | Lewis de moléculas diatómicas y tabla | 1 | 1 | quimica.enlace-quimico | enlace | 1 / 0 / 0 |
 | Ley de Graham | 1 | 1 | quimica.gases | gases | 1 / 0 / 0 |
-| Ley de un mineral y moles | 1 | 1 | quimica.estequiometria | rendimiento-pureza | 0 / 1 / 0 |
+| Ley de un mineral y moles | 1 | 1 | quimica.estequiometria | estequiometria-admision | 1 / 0 / 0 |
 | Ley de velocidad | 1 | 1 | quimica.cinetica-quimica | cinetica | 1 / 0 / 0 |
 | Ley de velocidad de primer orden | 1 | 1 | quimica.cinetica-quimica | cinetica | 1 / 0 / 0 |
-| Limitante y estequiometría redox con soluciones | 1 | 1 | quimica.estequiometria | limitante-particulas | 0 / 1 / 0 |
+| Limitante y estequiometría redox con soluciones | 1 | 1 | quimica.estequiometria | estequiometria-admision | 1 / 0 / 0 |
 | Limitante, pureza y rendimiento | 1 | 1 | quimica.estequiometria | rendimiento-pureza | 1 / 0 / 0 |
 | Limitante, rendimiento y agente reductor | 1 | 1 | quimica.estequiometria | rendimiento-pureza | 1 / 0 / 0 |
-| Limitante, rendimiento y calor de reacción | 1 | 1 | quimica.estequiometria | limitante-particulas | 0 / 1 / 0 |
+| Limitante, rendimiento y calor de reacción | 1 | 1 | quimica.estequiometria | estequiometria-admision | 1 / 0 / 0 |
 | Lluvia ácida y lixiviación | 1 | 1 | quimica.ambiente-y-quimica-aplicada | quimica-ambiente | 1 / 0 / 0 |
 | Lluvia ácida y oxácidos | 1 | 1 | quimica.ambiente-y-quimica-aplicada | quimica-ambiente | 1 / 0 / 0 |
 | Lípidos: ceras y saponificación | 1 | 1 | quimica.biomoleculas-y-productos-naturales | biomoleculas | 1 / 0 / 0 |
-| Lípidos: hidrólisis de triglicéridos | 1 | 1 | quimica.biomoleculas-y-productos-naturales | biomoleculas | 0 / 1 / 0 |
+| Lípidos: hidrólisis de triglicéridos | 1 | 1 | quimica.biomoleculas-y-productos-naturales | estequiometria-admision | 1 / 0 / 0 |
 | Lípidos: triglicéridos | 1 | 1 | quimica.biomoleculas-y-productos-naturales | biomoleculas | 1 / 0 / 0 |
-| Mecanismo en dos etapas: intermediario y complejo activado | 1 | 1 | quimica.cinetica-quimica | cinetica | 0 / 1 / 0 |
-| Mecanismo y orden de reacción | 1 | 1 | quimica.cinetica-quimica | cinetica | 0 / 1 / 0 |
-| Mecanismo: etapa lenta, catalizador e intermediario | 1 | 1 | quimica.cinetica-quimica | cinetica | 0 / 1 / 0 |
-| Metales de transición: configuración y grupo | 1 | 1 | quimica.tabla-periodica | atomo-y-tabla | 0 / 1 / 0 |
+| Mecanismo en dos etapas: intermediario y complejo activado | 1 | 1 | quimica.cinetica-quimica | cinetica | 1 / 0 / 0 |
+| Mecanismo y orden de reacción | 1 | 1 | quimica.cinetica-quimica | cinetica | 1 / 0 / 0 |
+| Mecanismo: etapa lenta, catalizador e intermediario | 1 | 1 | quimica.cinetica-quimica | cinetica | 1 / 0 / 0 |
+| Metales de transición: configuración y grupo | 1 | 1 | quimica.tabla-periodica | configuracion-ubicacion | 1 / 0 / 0 |
 | Metalurgia de cinc y cobre | 1 | 1 | quimica.recursos-naturales | quimica-ambiente | 1 / 0 / 0 |
 | Metalurgia de oro, plata y cobre | 1 | 1 | quimica.recursos-naturales | quimica-ambiente | 1 / 0 / 0 |
 | Metalurgia del hierro | 1 | 1 | quimica.recursos-naturales | quimica-ambiente | 1 / 0 / 0 |
 | Metalurgia del oro | 1 | 1 | quimica.recursos-naturales | quimica-ambiente | 1 / 0 / 0 |
-| Mezcla de soluciones en miliequivalentes | 1 | 1 | quimica.soluciones | soluciones | 0 / 1 / 0 |
+| Mezcla de soluciones en miliequivalentes | 1 | 1 | quimica.soluciones | soluciones-meq-ppm | 1 / 0 / 0 |
 | Mezclas de gases: Dalton y Amagat | 1 | 1 | quimica.gases | gases | 1 / 0 / 0 |
 | Milimoles y átomos en una dosis | 1 | 1 | quimica.mol-y-composicion | mol-composicion | 1 / 0 / 0 |
-| Modelo de Rutherford | 1 | 1 | quimica.estructura-atomica | atomo-y-tabla | 0 / 1 / 0 |
-| Modelos atómicos | 1 | 1 | quimica.estructura-atomica | atomo-y-tabla | 0 / 1 / 0 |
-| Modelos atómicos: Dalton | 1 | 1 | quimica.estructura-atomica | atomo-y-tabla | 0 / 1 / 0 |
+| Modelo de Rutherford | 1 | 1 | quimica.estructura-atomica | quimica-conceptos | 1 / 0 / 0 |
+| Modelos atómicos | 1 | 1 | quimica.estructura-atomica | quimica-conceptos | 1 / 0 / 0 |
+| Modelos atómicos: Dalton | 1 | 1 | quimica.estructura-atomica | quimica-conceptos | 1 / 0 / 0 |
 | Mol, masa molar y volumen molar | 1 | 1 | quimica.mol-y-composicion | mol-composicion | 1 / 0 / 0 |
 | Molaridad | 1 | 1 | quimica.soluciones | soluciones | 1 / 0 / 0 |
 | Molaridad desde porcentaje en masa y densidad | 1 | 1 | quimica.soluciones | soluciones | 1 / 0 / 0 |
@@ -467,13 +467,13 @@ Por tema (en razonamiento matemático y verbal, por familia de temas):
 | Nomenclatura de dienos | 1 | 1 | quimica.hidrocarburos | hidrocarburos | 1 / 0 / 0 |
 | Nomenclatura de hidróxidos | 1 | 1 | quimica.nomenclatura-inorganica | nomenclatura-inorganica | 1 / 0 / 0 |
 | Nomenclatura de ácidos carboxílicos | 1 | 1 | quimica.funciones-organicas | funciones-organicas | 1 / 0 / 0 |
-| Nomenclatura de ácidos con otra función y fuerza ácida | 1 | 1 | quimica.funciones-organicas | funciones-organicas | 0 / 1 / 0 |
+| Nomenclatura de ácidos con otra función y fuerza ácida | 1 | 1 | quimica.funciones-organicas | nombre-polifuncional | 1 / 0 / 0 |
 | Nomenclatura de óxidos | 1 | 1 | quimica.nomenclatura-inorganica | nomenclatura-inorganica | 1 / 0 / 0 |
 | Nomenclatura tradicional de óxidos y sales | 1 | 1 | quimica.nomenclatura-inorganica | nomenclatura-inorganica | 1 / 0 / 0 |
 | Número de Avogadro y mol | 1 | 1 | quimica.mol-y-composicion | mol-composicion | 1 / 0 / 0 |
 | Número de moléculas en una dosis | 1 | 1 | quimica.mol-y-composicion | mol-composicion | 1 / 0 / 0 |
 | Números de oxidación en redox | 1 | 1 | quimica.reacciones-y-balance | balance-reacciones | 1 / 0 / 0 |
-| Oxidación sucesiva de grupos funcionales | 1 | 1 | quimica.funciones-organicas | funciones-organicas | 0 / 1 / 0 |
+| Oxidación sucesiva de grupos funcionales | 1 | 1 | quimica.funciones-organicas | nombre-polifuncional | 1 / 0 / 0 |
 | Oxidación y reducción de azúcares | 1 | 1 | quimica.biomoleculas-y-productos-naturales | biomoleculas | 0 / 1 / 0 |
 | Oxoaniones del cloro | 1 | 1 | quimica.nomenclatura-inorganica | nomenclatura-inorganica | 1 / 0 / 0 |
 | Pares libres y geometría molecular | 1 | 1 | quimica.enlace-quimico | enlace | 1 / 0 / 0 |
@@ -482,10 +482,10 @@ Por tema (en razonamiento matemático y verbal, por familia de temas):
 | Perfil de energía y catalizador | 1 | 1 | quimica.cinetica-quimica | cinetica | 1 / 0 / 0 |
 | Peróxidos, hidruros y oxisales | 1 | 1 | quimica.nomenclatura-inorganica | nomenclatura-inorganica | 1 / 0 / 0 |
 | Pilas comerciales: litio | 1 | 1 | quimica.electroquimica | celda-galvanica | 1 / 0 / 0 |
-| Polifenoles: estructura | 1 | 1 | quimica.biomoleculas-y-productos-naturales | biomoleculas | 0 / 1 / 0 |
-| Porcentaje en volumen y mezclas | 1 | 1 | quimica.soluciones | soluciones | 0 / 1 / 0 |
+| Polifenoles: estructura | 1 | 1 | quimica.biomoleculas-y-productos-naturales | molecula-grande | 1 / 0 / 0 |
+| Porcentaje en volumen y mezclas | 1 | 1 | quimica.soluciones | quimica-conceptos | 1 / 0 / 0 |
 | Potencial de celda y masa equivalente | 1 | 1 | quimica.electroquimica | celda-galvanica | 1 / 0 / 0 |
-| Precipitación y miliequivalentes | 1 | 1 | quimica.soluciones | soluciones | 0 / 1 / 0 |
+| Precipitación y miliequivalentes | 1 | 1 | quimica.soluciones | soluciones-meq-ppm | 1 / 0 / 0 |
 | Presión de vapor y volatilidad | 1 | 1 | quimica.liquidos-y-solidos | liquidos-y-solidos | 1 / 0 / 0 |
 | Presión parcial: Dalton | 1 | 1 | quimica.gases | gases | 1 / 0 / 0 |
 | Principio de Le Chatelier | 1 | 1 | quimica.equilibrio-quimico | equilibrio-quimico | 1 / 0 / 0 |
@@ -493,9 +493,9 @@ Por tema (en razonamiento matemático y verbal, por familia de temas):
 | Propiedades periódicas en un periodo | 1 | 1 | quimica.tabla-periodica | atomo-y-tabla | 1 / 0 / 0 |
 | Pureza de reactivos | 1 | 1 | quimica.estequiometria | rendimiento-pureza | 1 / 0 / 0 |
 | Pureza y volumen en CN | 1 | 1 | quimica.estequiometria | rendimiento-pureza | 1 / 0 / 0 |
-| Radicales libres | 1 | 1 | quimica.enlace-quimico | enlace | 0 / 1 / 0 |
-| Ramas de la química | 1 | 1 | quimica.materia-y-energia | materia-energia | 0 / 1 / 0 |
-| Reacciones del carbonato en aguas duras | 1 | 1 | quimica.reacciones-y-balance | balance-reacciones | 0 / 1 / 0 |
+| Radicales libres | 1 | 1 | quimica.enlace-quimico | quimica-conceptos | 1 / 0 / 0 |
+| Ramas de la química | 1 | 1 | quimica.materia-y-energia | quimica-conceptos | 1 / 0 / 0 |
+| Reacciones del carbonato en aguas duras | 1 | 1 | quimica.reacciones-y-balance | clasificar-reacciones | 1 / 0 / 0 |
 | Reactivo limitante con soluciones | 1 | 1 | quimica.estequiometria | limitante-particulas | 1 / 0 / 0 |
 | Reconocer hidrocarburos aromáticos | 1 | 1 | quimica.hidrocarburos | hidrocarburos | 1 / 0 / 0 |
 | Redox del alcoholímetro | 1 | 1 | quimica.reacciones-y-balance | balance-reacciones | 1 / 0 / 0 |
@@ -511,21 +511,21 @@ Por tema (en razonamiento matemático y verbal, por familia de temas):
 | Semirreacción ion-electrón | 1 | 1 | quimica.reacciones-y-balance | balance-reacciones | 1 / 0 / 0 |
 | Sustancias y cambios físicos y químicos | 1 | 1 | quimica.materia-y-energia | materia-energia | 1 / 0 / 0 |
 | Sustancias y mezclas | 1 | 1 | quimica.materia-y-energia | materia-energia | 1 / 0 / 0 |
-| Sólidos iónicos y radio iónico | 1 | 1 | quimica.liquidos-y-solidos | liquidos-y-solidos | 0 / 1 / 0 |
-| Termoquímica, limitante y electrólisis | 1 | 1 | quimica.estequiometria | limitante-particulas | 0 / 1 / 0 |
+| Sólidos iónicos y radio iónico | 1 | 1 | quimica.liquidos-y-solidos | quimica-conceptos | 1 / 0 / 0 |
+| Termoquímica, limitante y electrólisis | 1 | 1 | quimica.estequiometria | estequiometria-admision | 1 / 0 / 0 |
 | Tipo de enlace | 1 | 1 | quimica.enlace-quimico | enlace | 1 / 0 / 0 |
-| Tipo de enlace según propiedades | 1 | 1 | quimica.enlace-quimico | enlace | 0 / 1 / 0 |
-| Tostación y estequiometría metalúrgica | 1 | 1 | quimica.recursos-naturales | quimica-ambiente | 0 / 1 / 0 |
-| Ubicación de un elemento | 1 | 1 | quimica.tabla-periodica | atomo-y-tabla | 0 / 1 / 0 |
-| Ubicación y configuración de un halógeno | 1 | 1 | quimica.tabla-periodica | atomo-y-tabla | 0 / 1 / 0 |
-| Unidades y conversiones | 1 | 1 | fuera-del-catalogo:unidades y conversiones | — | 0 / 0 / 1 |
-| Velocidad media desde un gráfico | 1 | 1 | quimica.cinetica-quimica | cinetica | 0 / 1 / 0 |
-| Viscosidad y forma molecular | 1 | 1 | quimica.liquidos-y-solidos | liquidos-y-solidos | 0 / 1 / 0 |
-| Viscosidad, tensión superficial y presión de vapor | 1 | 1 | quimica.liquidos-y-solidos | liquidos-y-solidos | 0 / 1 / 0 |
-| Vitaminas | 1 | 1 | quimica.biomoleculas-y-productos-naturales | biomoleculas | 0 / 1 / 0 |
-| Vitaminas como agentes redox | 1 | 1 | quimica.biomoleculas-y-productos-naturales | biomoleculas | 0 / 1 / 0 |
-| Vitaminas y coenzimas | 1 | 1 | quimica.biomoleculas-y-productos-naturales | biomoleculas | 0 / 1 / 0 |
-| Vitaminas: síntesis de vitamina D | 1 | 1 | quimica.biomoleculas-y-productos-naturales | biomoleculas | 0 / 1 / 0 |
+| Tipo de enlace según propiedades | 1 | 1 | quimica.enlace-quimico | quimica-conceptos | 1 / 0 / 0 |
+| Tostación y estequiometría metalúrgica | 1 | 1 | quimica.recursos-naturales | estequiometria-admision | 1 / 0 / 0 |
+| Ubicación de un elemento | 1 | 1 | quimica.tabla-periodica | configuracion-ubicacion | 1 / 0 / 0 |
+| Ubicación y configuración de un halógeno | 1 | 1 | quimica.tabla-periodica | configuracion-ubicacion | 1 / 0 / 0 |
+| Unidades y conversiones | 1 | 1 | fuera-del-catalogo:unidades y conversiones | conversiones-quimica | 1 / 0 / 0 |
+| Velocidad media desde un gráfico | 1 | 1 | quimica.cinetica-quimica | cinetica | 1 / 0 / 0 |
+| Viscosidad y forma molecular | 1 | 1 | quimica.liquidos-y-solidos | quimica-conceptos | 1 / 0 / 0 |
+| Viscosidad, tensión superficial y presión de vapor | 1 | 1 | quimica.liquidos-y-solidos | quimica-conceptos | 1 / 0 / 0 |
+| Vitaminas | 1 | 1 | quimica.biomoleculas-y-productos-naturales | quimica-conceptos | 1 / 0 / 0 |
+| Vitaminas como agentes redox | 1 | 1 | quimica.biomoleculas-y-productos-naturales | molecula-grande | 1 / 0 / 0 |
+| Vitaminas y coenzimas | 1 | 1 | quimica.biomoleculas-y-productos-naturales | quimica-conceptos | 1 / 0 / 0 |
+| Vitaminas: síntesis de vitamina D | 1 | 1 | quimica.biomoleculas-y-productos-naturales | quimica-conceptos | 1 / 0 / 0 |
 | Volumen molar y masa molar | 1 | 1 | quimica.gases | gases | 1 / 0 / 0 |
 | Volumen molar, estequiometría y leyes de gases | 1 | 1 | quimica.gases | gases | 1 / 0 / 0 |
 | pH de base fuerte con pureza | 1 | 1 | quimica.acidos-y-bases | acidos-bases | 1 / 0 / 0 |
@@ -1326,126 +1326,23 @@ Ordenados por número de periodos en que salen y luego por número de preguntas.
 
 | # | Curso | Tema | Periodos | Preguntas sin cubrir (no + medio) | Unidad | Qué falta (lo más dicho) |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Química | Clasificación de reacciones | 5 | 5 (0 + 5) | quimica.reacciones-y-balance | Clasificar reacciones: redox, combustión, exotérmica a la vez |
-| 2 | Química | Normalidad y miliequivalentes | 2 | 3 (0 + 3) | quimica.soluciones | Concentraciones en miliequivalentes y normalidad en contexto fisiológico |
-| 3 | Química | Carotenoides y vitaminas: estructura y oxidación | 2 | 2 (0 + 2) | quimica.biomoleculas-y-productos-naturales | Vitaminas y carotenoides: solubilidad, sustituyentes y oxidación de grupos |
-| 4 | Química | Grupos funcionales en hormonas | 2 | 2 (0 + 2) | quimica.biomoleculas-y-productos-naturales | Identificar grupos funcionales y reacciones en moléculas biológicas grandes |
-| 5 | Química | Mecanismo: intermediario y catalizador | 2 | 2 (0 + 2) | quimica.cinetica-quimica | Distinguir intermediario de catalizador en un mecanismo por pasos |
-| 6 | Química | Nomenclatura de compuestos polifuncionales | 2 | 2 (0 + 2) | quimica.funciones-organicas | Nombrar compuestos con varios grupos funcionales y prioridades |
-| 7 | Química | Partes por millón | 2 | 2 (0 + 2) | quimica.soluciones | Conversión de ppm a moles por volumen |
-| 8 | Química | Colorantes naturales: grupos funcionales | 1 | 2 (0 + 2) | quimica.biomoleculas-y-productos-naturales | Colorantes naturales: grupos funcionales, hibridación y enlaces pi |
-| 9 | Química | Acumulador de plomo | 1 | 1 (0 + 1) | quimica.electroquimica | Pilas comerciales: acumulador de plomo y sus semirreacciones |
-| 10 | Química | Agentes y especies en un redox con radicales | 1 | 1 (0 + 1) | quimica.reacciones-y-balance | Radicales libres y su notación de Lewis en reacciones redox |
-| 11 | Química | Aminoácidos y proteínas: propiedades | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Punto isoeléctrico, interacciones de cadenas laterales y solubilidad de proteínas |
-| 12 | Química | Aminoácidos y reacciones orgánicas | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Tipos de reacción orgánica sobre aminoácidos aromáticos |
-| 13 | Química | Aminoácidos: estructura | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Hibridación, electrones y grupos funcionales en aminoácidos aromáticos |
-| 14 | Química | Aminoácidos: estructura y nombre | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Nombre IUPAC e hibridación en aminoácidos aromáticos |
-| 15 | Química | Aminoácidos: grupos y pares libres | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Contar pares libres y enlaces apolares en aminoácidos |
-| 16 | Química | Aminoácidos: nombre, ionización y quiralidad | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Forma ionizada de aminoácidos según pH y centros quirales |
-| 17 | Química | Balance de materia en flotación | 1 | 1 (0 + 1) | quimica.estequiometria | Ley de mineral y balance de masa en concentración metalúrgica |
-| 18 | Química | Bases de Lewis y alcaloides | 1 | 1 (0 + 1) | quimica.acidos-y-bases | Teorías de Lewis y Brønsted aplicadas a bases nitrogenadas |
-| 19 | Química | Biomoléculas en alimentos | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Esteroles, azúcares reductores y alcaloides en alimentos |
-| 20 | Química | Calentamiento global: lectura de gráfico | 1 | 1 (0 + 1) | quimica.ambiente-y-quimica-aplicada | Leer datos ambientales en gráficos de tendencia |
-| 21 | Química | Calor de vaporización molar | 1 | 1 (0 + 1) | quimica.liquidos-y-solidos | Calor latente molar en cambios de fase |
-| 22 | Química | Carbohidratos: aldosas y cetosas | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Clasificar monosacáridos como aldosas o cetosas y su isomería |
-| 23 | Química | Carbohidratos: disacáridos | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Disacáridos: solubilidad, estructura cíclica y molaridad de jarabes |
-| 24 | Química | Carbohidratos: estructura y nombre | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Nombrar azúcares como polihidroxialdehídos con numeración IUPAC |
-| 25 | Química | Carbohidratos: quiralidad y actividad óptica | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Isomería óptica y quiralidad en monosacáridos (proyección de Fischer) |
-| 26 | Química | Celda de combustible microbiana | 1 | 1 (0 + 1) | quimica.electroquimica | Celdas de combustible y semirreacciones orgánicas en medio acuoso |
-| 27 | Química | Clasificación de reacciones: oxidación y reversibilidad | 1 | 1 (0 + 1) | quimica.reacciones-y-balance | Clasificar reacciones como reversibles o irreversibles y de oxidación |
-| 28 | Química | Combustión, polimerización y aromáticos policíclicos | 1 | 1 (0 + 1) | quimica.recursos-naturales | Polímeros de adición y aromáticos policíclicos junto con la combustión |
-| 29 | Química | Compuestos aromáticos con dos funciones | 1 | 1 (0 + 1) | quimica.funciones-organicas | Reacciones del anillo aromático y conteo de carbonos sp2 |
-| 30 | Química | Compuestos iónicos: propiedades | 1 | 1 (0 + 1) | quimica.enlace-quimico | Propiedades de sólidos iónicos y clases de iones |
-| 31 | Química | Compuestos polifuncionales: ésteres y aminas | 1 | 1 (0 + 1) | quimica.funciones-organicas | Nombrar y clasificar compuestos con varias funciones |
-| 32 | Química | Configuración de iones de transición y redox | 1 | 1 (0 + 1) | quimica.estructura-atomica | Configuración de cationes de transición junto con agentes redox y radicales |
-| 33 | Química | Configuración y ubicación de iones | 1 | 1 (0 + 1) | quimica.tabla-periodica | Relación química-salud del ion sodio |
-| 34 | Química | Configuración, nomenclatura y electrólisis de sales | 1 | 1 (0 + 1) | quimica.nomenclatura-inorganica | Pregunta mixta: configuración de metal pesado, nombre tradicional y electrólisis |
-| 35 | Química | Configuración, ubicación y enlace de un halógeno | 1 | 1 (0 + 1) | quimica.estructura-atomica | Mezcla de configuración, ubicación, tipo de sal y enlace dativo |
-| 36 | Química | Conservación de un elemento (atómica) | 1 | 1 (0 + 1) | quimica.estequiometria | Estequiometría por conservación de átomos sin ecuación balanceada |
-| 37 | Química | Contaminantes del aire, agua y suelo | 1 | 1 (0 + 1) | quimica.ambiente-y-quimica-aplicada | Contaminantes primarios y secundarios, persistentes y naturales |
-| 38 | Química | Diagrama de Pourbaix | 1 | 1 (0 + 1) | quimica.electroquimica | Diagramas de Pourbaix potencial-pH |
-| 39 | Química | Dilución con miliequivalentes | 1 | 1 (0 + 1) | quimica.soluciones | Dilución expresada en miliequivalentes por litro |
-| 40 | Química | Elementos frente a compuestos y oxoaniones | 1 | 1 (0 + 1) | quimica.enlace-quimico | Distinguir molécula elemental de compuesto y carga de oxoaniones |
-| 41 | Química | Enlaces pi y sustituyentes en polienos | 1 | 1 (0 + 1) | quimica.hidrocarburos | Contar enlaces pi y sustituyentes en moléculas grandes |
-| 42 | Química | Enlaces polares y octeto en moléculas orgánicas | 1 | 1 (0 + 1) | quimica.enlace-quimico | Contar enlaces polares y octeto en moléculas orgánicas largas |
-| 43 | Química | Equilibrio y reacciones en la sangre | 1 | 1 (0 + 1) | quimica.equilibrio-quimico | Equilibrio heterogéneo y soluciones reguladoras en contexto biológico |
-| 44 | Química | Escalas de temperatura | 1 | 1 (0 + 1) | quimica.materia-y-energia | Conversión de escalas y variaciones de temperatura en gráficos |
-| 45 | Química | Esferas de la Tierra | 1 | 1 (0 + 1) | quimica.ambiente-y-quimica-aplicada | Atmósfera, hidrósfera y litósfera como sistemas del ambiente |
-| 46 | Química | Esteroides: estructura y quiralidad | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Esteroides y carbonos quirales (isomería óptica) |
-| 47 | Química | Fermentación: redox y productos | 1 | 1 (0 + 1) | quimica.funciones-organicas | Reacciones de oxidación de alcoholes y estados de oxidación del carbono |
-| 48 | Química | Fórmulas, mezclas y tipo de óxido | 1 | 1 (0 + 1) | quimica.nomenclatura-inorganica | Clasificar óxidos como ácidos o básicos junto con sustancias y mezclas |
-| 49 | Química | Grupos funcionales en moléculas complejas | 1 | 1 (0 + 1) | quimica.funciones-organicas | Reconocer grupos funcionales en moléculas grandes como vitaminas |
-| 50 | Química | Grupos funcionales y quiralidad en moléculas biológicas | 1 | 1 (0 + 1) | quimica.funciones-organicas | Heterociclos nitrogenados y carbonos quirales en moléculas grandes |
-| 51 | Química | Heterociclos: pares libres e hibridación | 1 | 1 (0 + 1) | quimica.funciones-organicas | Heterociclos aromáticos nitrogenados (bases nitrogenadas) |
-| 52 | Química | Hibridación e isomería en compuestos oxigenados | 1 | 1 (0 + 1) | quimica.funciones-organicas | Hibridación de carbonos en ácidos con varias funciones |
-| 53 | Química | Hibridación y electrones pi en polienos | 1 | 1 (0 + 1) | quimica.hidrocarburos | Contar carbonos sp2, sp3 y electrones pi en moléculas grandes |
-| 54 | Química | Hibridación y enlaces pi en polienos | 1 | 1 (0 + 1) | quimica.hidrocarburos | Contar enlaces pi, metilos e hibridación en hidrocarburos grandes |
-| 55 | Química | Hidrogenación parcial y total de alquinos | 1 | 1 (0 + 1) | quimica.hidrocarburos | Reacciones de adición con catalizadores selectivos (Lindlar) |
-| 56 | Química | Hidrogenación y reacciones de adición | 1 | 1 (0 + 1) | quimica.hidrocarburos | Reacciones de adición y conteo de átomos de hidrógeno |
-| 57 | Química | Hidruros no metálicos: enlace y pares libres | 1 | 1 (0 + 1) | quimica.enlace-quimico | Hidruros no metálicos y sales ácidas en una misma pregunta |
-| 58 | Química | Hidróxidos: estequiometría y disociación | 1 | 1 (0 + 1) | quimica.nomenclatura-inorganica | Estequiometría de formación de hidróxidos y conteo de iones |
-| 59 | Química | Insaturación, adición y moles | 1 | 1 (0 + 1) | quimica.hidrocarburos | Reacciones de adición y conteo de pares libres en organosulfurados |
-| 60 | Química | Isomería geométrica en ácidos insaturados | 1 | 1 (0 + 1) | quimica.hidrocarburos | Notación Z/E y comparación de isómeros geométricos con funciones |
-| 61 | Química | Isótopos radiactivos y vida media | 1 | 1 (0 + 1) | quimica.materia-y-energia | Radiactividad y lectura de vida media en curva de decaimiento |
-| 62 | Química | Ley de un mineral y moles | 1 | 1 (0 + 1) | quimica.estequiometria | Ley de mineral y balance de masa en concentración metalúrgica |
-| 63 | Química | Limitante y estequiometría redox con soluciones | 1 | 1 (0 + 1) | quimica.estequiometria | Estequiometría redox con soluciones y concentración de producto |
-| 64 | Química | Limitante, rendimiento y calor de reacción | 1 | 1 (0 + 1) | quimica.estequiometria | Estequiometría con entalpía de reacción (termoquímica) |
-| 65 | Química | Lípidos: hidrólisis de triglicéridos | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Estequiometría de hidrólisis de triglicéridos |
-| 66 | Química | Mecanismo en dos etapas: intermediario y complejo activado | 1 | 1 (0 + 1) | quimica.cinetica-quimica | Perfiles de energía con dos etapas e intermediario |
-| 67 | Química | Mecanismo y orden de reacción | 1 | 1 (0 + 1) | quimica.cinetica-quimica | Mecanismos con etapa lenta que determina la ley de velocidad |
-| 68 | Química | Mecanismo: etapa lenta, catalizador e intermediario | 1 | 1 (0 + 1) | quimica.cinetica-quimica | Mecanismos por etapas con catalizador e intermediario |
-| 69 | Química | Metales de transición: configuración y grupo | 1 | 1 (0 + 1) | quimica.tabla-periodica | Configuraciones anómalas y ubicación de elementos con Z mayor que 36 |
-| 70 | Química | Mezcla de soluciones en miliequivalentes | 1 | 1 (0 + 1) | quimica.soluciones | Mezcla de soluciones y concentración de iones en miliequivalentes |
-| 71 | Química | Modelo de Rutherford | 1 | 1 (0 + 1) | quimica.estructura-atomica | Experimento de Rutherford y evolución de modelos atómicos |
-| 72 | Química | Modelos atómicos | 1 | 1 (0 + 1) | quimica.estructura-atomica | Evolución histórica de los modelos atómicos y sus aportes |
-| 73 | Química | Modelos atómicos: Dalton | 1 | 1 (0 + 1) | quimica.estructura-atomica | Evolución histórica de los modelos atómicos y sus postulados |
-| 74 | Química | Nomenclatura de ácidos con otra función y fuerza ácida | 1 | 1 (0 + 1) | quimica.funciones-organicas | Nombrar oxo e hidroxiácidos con prioridad de grupos |
-| 75 | Química | Oxidación sucesiva de grupos funcionales | 1 | 1 (0 + 1) | quimica.funciones-organicas | Secuencia de oxidación alcano, alcohol, aldehído, ácido con hibridación |
-| 76 | Química | Oxidación y reducción de azúcares | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Oxidación y reducción de grupos funcionales en carbohidratos |
-| 77 | Química | Polifenoles: estructura | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Polifenoles y flavonoides: pares libres, hibridación y acidez |
-| 78 | Química | Porcentaje en volumen y mezclas | 1 | 1 (0 + 1) | quimica.soluciones | Porcentaje en volumen y proporciones en mezclas de solventes |
-| 79 | Química | Precipitación y miliequivalentes | 1 | 1 (0 + 1) | quimica.soluciones | Valoración por precipitación con miliequivalentes |
-| 80 | Química | Radicales libres | 1 | 1 (0 + 1) | quimica.enlace-quimico | Radicales libres: especies con electrón desapareado en la estructura de Lewis |
-| 81 | Química | Ramas de la química | 1 | 1 (0 + 1) | quimica.materia-y-energia | Ramas de la química y su objeto de estudio |
-| 82 | Química | Reacciones del carbonato en aguas duras | 1 | 1 (0 + 1) | quimica.reacciones-y-balance | Reacciones de carbonatos y bicarbonatos en aguas duras |
-| 83 | Química | Sólidos iónicos y radio iónico | 1 | 1 (0 + 1) | quimica.liquidos-y-solidos | Sólidos cristalinos contra amorfos, celda unitaria y radio iónico |
-| 84 | Química | Termoquímica, limitante y electrólisis | 1 | 1 (0 + 1) | quimica.estequiometria | Termoquímica: calor según la cantidad de producto |
-| 85 | Química | Tipo de enlace según propiedades | 1 | 1 (0 + 1) | quimica.enlace-quimico | Deducir tipo de sólido por fusión, solubilidad y conductividad |
-| 86 | Química | Tostación y estequiometría metalúrgica | 1 | 1 (0 + 1) | quimica.recursos-naturales | Estequiometría de procesos metalúrgicos con ley de mineral |
-| 87 | Química | Ubicación de un elemento | 1 | 1 (0 + 1) | quimica.tabla-periodica | Ubicar elementos con Z mayor que 36 en la tabla |
-| 88 | Química | Ubicación y configuración de un halógeno | 1 | 1 (0 + 1) | quimica.tabla-periodica | Ubicar elementos con Z mayor que 36 y configurar sus iones |
-| 89 | Química | Unidades y conversiones | 1 | 1 (1 + 0) | fuera-del-catalogo:unidades y conversiones | Conversiones de unidades: densidad, ángstrom, variaciones de temperatura |
-| 90 | Química | Velocidad media desde un gráfico | 1 | 1 (0 + 1) | quimica.cinetica-quimica | Leer concentraciones y velocidad media en gráficos concentración-tiempo |
-| 91 | Química | Viscosidad y forma molecular | 1 | 1 (0 + 1) | quimica.liquidos-y-solidos | Viscosidad según forma molecular y fuerzas intermoleculares |
-| 92 | Química | Viscosidad, tensión superficial y presión de vapor | 1 | 1 (0 + 1) | quimica.liquidos-y-solidos | Tensión superficial y viscosidad según fuerzas intermoleculares |
-| 93 | Química | Vitaminas | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Vitaminas hidro y liposolubles: estructura y funciones |
-| 94 | Química | Vitaminas como agentes redox | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Vitaminas antioxidantes como agentes reductores; lactona frente a lactama |
-| 95 | Química | Vitaminas y coenzimas | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Relación entre vitaminas y coenzimas |
-| 96 | Química | Vitaminas: síntesis de vitamina D | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Vitaminas liposolubles, esteroides y su ruta de activación |
+| 1 | Química | Agentes y especies en un redox con radicales | 1 | 1 (0 + 1) | quimica.reacciones-y-balance | Radicales libres y su notación de Lewis en reacciones redox |
+| 2 | Química | Compuestos aromáticos con dos funciones | 1 | 1 (0 + 1) | quimica.funciones-organicas | Reacciones del anillo aromático y conteo de carbonos sp2 |
+| 3 | Química | Diagrama de Pourbaix | 1 | 1 (0 + 1) | quimica.electroquimica | Diagramas de Pourbaix potencial-pH |
+| 4 | Química | Enlaces pi y sustituyentes en polienos | 1 | 1 (0 + 1) | quimica.hidrocarburos | Contar enlaces pi y sustituyentes en moléculas grandes |
+| 5 | Química | Grupos funcionales y quiralidad en moléculas biológicas | 1 | 1 (0 + 1) | quimica.funciones-organicas | Heterociclos nitrogenados y carbonos quirales en moléculas grandes |
+| 6 | Química | Hibridación e isomería en compuestos oxigenados | 1 | 1 (0 + 1) | quimica.funciones-organicas | Hibridación de carbonos en ácidos con varias funciones |
+| 7 | Química | Oxidación y reducción de azúcares | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Oxidación y reducción de grupos funcionales en carbohidratos |
 
 ## Huecos por unidad: preguntas sin cubrir del todo (no + medio)
 
 | # | Curso | Unidad | Sin cubrir | De | Periodos con alguna sin cubrir | Lo que más falta |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Química | quimica.biomoleculas-y-productos-naturales | 25 | 27 | 9 | Colorantes naturales: grupos funcionales (2); Carotenoides y vitaminas: estructura y oxidación (2); Grupos funcionales en hormonas (2) |
-| 2 | Química | quimica.funciones-organicas | 11 | 32 | 8 | Nomenclatura de compuestos polifuncionales (2); Hibridación e isomería en compuestos oxigenados (1); Nomenclatura de ácidos con otra función y fuerza ácida (1) |
-| 3 | Química | quimica.reacciones-y-balance | 10 | 24 | 7 | Clasificación de reacciones (5); Balance y clasificación de reacciones (1); Dismutación redox (1) |
-| 4 | Química | quimica.soluciones | 9 | 14 | 7 | Normalidad y miliequivalentes (3); Partes por millón (2); Mezcla de soluciones en miliequivalentes (1) |
-| 5 | Química | quimica.estequiometria | 7 | 34 | 6 | Estequiometría con soluciones (1); Ley de un mineral y moles (1); Balance de materia en flotación (1) |
-| 6 | Química | quimica.hidrocarburos | 7 | 21 | 6 | Hibridación y electrones pi en polienos (1); Enlaces pi y sustituyentes en polienos (1); Insaturación, adición y moles (1) |
-| 7 | Química | quimica.enlace-quimico | 6 | 13 | 5 | Enlaces polares y octeto en moléculas orgánicas (1); Tipo de enlace según propiedades (1); Hidruros no metálicos: enlace y pares libres (1) |
-| 8 | Química | quimica.cinetica-quimica | 6 | 12 | 5 | Mecanismo: intermediario y catalizador (2); Mecanismo y orden de reacción (1); Velocidad media desde un gráfico (1) |
-| 9 | Química | quimica.estructura-atomica | 5 | 13 | 5 | Modelos atómicos: Dalton (1); Configuración de iones de transición y redox (1); Configuración, ubicación y enlace de un halógeno (1) |
-| 10 | Química | quimica.tabla-periodica | 4 | 8 | 4 | Configuración y ubicación de iones (1); Ubicación de un elemento (1); Metales de transición: configuración y grupo (1) |
-| 11 | Química | quimica.liquidos-y-solidos | 4 | 9 | 4 | Viscosidad y forma molecular (1); Sólidos iónicos y radio iónico (1); Calor de vaporización molar (1) |
-| 12 | Razonamiento matemático | razonamiento-matematico.traslados-y-puntos-cardinales | 4 | 33 | 3 | Rumbos y desplazamientos (2); Traslados de fichas y juegos (2) |
-| 13 | Razonamiento matemático | razonamiento-matematico.cortes-y-pesadas | 3 | 55 | 3 | Cortes y estacas (2); Balanzas y pesadas (1) |
-| 14 | Razonamiento matemático | razonamiento-matematico.certezas | 3 | 30 | 3 | Certezas (2); Verdades y mentiras (1) |
-| 15 | Química | quimica.electroquimica | 3 | 21 | 3 | Acumulador de plomo (1); Celda de combustible microbiana (1); Diagrama de Pourbaix (1) |
-| 16 | Química | quimica.ambiente-y-quimica-aplicada | 3 | 12 | 3 | Esferas de la Tierra (1); Calentamiento global: lectura de gráfico (1); Contaminantes del aire, agua y suelo (1) |
-| 17 | Química | quimica.nomenclatura-inorganica | 3 | 10 | 3 | Fórmulas, mezclas y tipo de óxido (1); Configuración, nomenclatura y electrólisis de sales (1); Hidróxidos: estequiometría y disociación (1) |
-| 18 | Razonamiento matemático | razonamiento-matematico.juegos-recreativos | 3 | 23 | 2 | Traslados de fichas y juegos (3) |
-| 19 | Química | quimica.materia-y-energia | 3 | 6 | 2 | Ramas de la química (1); Escalas de temperatura (1); Isótopos radiactivos y vida media (1) |
+| 1 | Razonamiento matemático | razonamiento-matematico.traslados-y-puntos-cardinales | 4 | 33 | 3 | Rumbos y desplazamientos (2); Traslados de fichas y juegos (2) |
+| 2 | Razonamiento matemático | razonamiento-matematico.cortes-y-pesadas | 3 | 55 | 3 | Cortes y estacas (2); Balanzas y pesadas (1) |
+| 3 | Química | quimica.funciones-organicas | 3 | 32 | 3 | Hibridación e isomería en compuestos oxigenados (1); Compuestos aromáticos con dos funciones (1); Grupos funcionales y quiralidad en moléculas biológicas (1) |
+| 4 | Razonamiento matemático | razonamiento-matematico.certezas | 3 | 30 | 3 | Certezas (2); Verdades y mentiras (1) |
+| 5 | Razonamiento matemático | razonamiento-matematico.juegos-recreativos | 3 | 23 | 2 | Traslados de fichas y juegos (3) |
 
 ## Preguntas por examen (registradas, con repetidas)
 

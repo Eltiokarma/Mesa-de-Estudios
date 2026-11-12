@@ -1,0 +1,101 @@
+{
+  "titulo": "Termómetros, lingotes e isótopos: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin ayuda, con unos 2 a 3 minutos por problema, como en el examen. Antes de calcular, decide qué te dan: una lectura del termómetro, un cambio, una masa, una longitud o un tiempo. Escribe la unidad en cada paso. Datos: K = °C + 273; °F = 1,8 × °C + 32; agua: 18 g/mol y 1 g/mL; ΔHvap = 40,7 kJ/mol; ΔHfus = 6,01 kJ/mol.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "El agua de una olla pasa de 18 °C a 63 °C. ¿Cuánto subió su temperatura en °F? ¿Y en kelvin?",
+      "respuesta": "81 °F y 45 K.",
+      "pasos": [
+        "En °C, el cambio es 63 − 18 = 45 °C.",
+        "Un grado Celsius equivale a 1,8 grados Fahrenheit: 45 × 1,8 = 81 °F. No se suma 32, porque es una diferencia.",
+        "El kelvin tiene el tamaño del grado Celsius: 45 K. Tampoco se suma 273."
+      ],
+      "verificar": [ { "fn": "variacion", "args": [45, "C", "F"], "espera": { "valor": 81 } }, { "fn": "variacion", "args": [45, "C", "K"], "espera": { "valor": 45 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Al final del problema anterior, el termómetro marca 63 °C. ¿Cuánto marcaría un termómetro en °F? ¿Y uno en kelvin?",
+      "respuesta": "145,4 °F y 336 K.",
+      "pasos": [
+        "Ahora es una lectura, no un cambio: sí se corre el cero de cada escala.",
+        "°F = 1,8 × 63 + 32 = 113,4 + 32 = 145,4 °F.",
+        "K = 63 + 273 = 336 K. Compara con el problema 1: allí salieron 81 °F y 45 K."
+      ],
+      "verificar": [ { "fn": "convertir", "args": [63, "C", "F"], "espera": { "valor": 145.4 } }, { "fn": "convertir", "args": [63, "C", "K"], "espera": { "valor": 336 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Al calentar un aceite se anota: a los 0 min, 20 °C; a los 5 min, 35 °C; a los 9 min, 50 °C. ¿Cuánto subió la temperatura, en °F, entre el minuto 5 y el minuto 9?",
+      "respuesta": "27 °F.",
+      "pasos": [
+        "Solo interesa el tramo del minuto 5 al 9: 50 − 35 = 15 °C.",
+        "15 × 1,8 = 27 °F. Si tomas todo el registro (de 20 °C a 50 °C) saldrían 54 °F, que no es lo que se pregunta."
+      ],
+      "verificar": [ { "fn": "variacion", "args": [15, "C", "F"], "espera": { "valor": 27 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Un lingote de cobre tiene 4,45 kg de masa. La densidad del cobre es 8,9 g/cm³. ¿Cuál es su volumen en cm³, en litros y en m³?",
+      "respuesta": "500 cm³ = 0,5 L = 5 × 10⁻⁴ m³.",
+      "pasos": [
+        "Masa en gramos: 4,45 kg = 4450 g, porque la densidad está en g/cm³.",
+        "V = 4450 ÷ 8,9 = 500 cm³.",
+        "500 cm³ ÷ 1000 = 0,5 L. Y como 1 m³ = (100 cm)³ = 10⁶ cm³, 500 cm³ = 5 × 10⁻⁴ m³."
+      ],
+      "verificar": [ { "fn": "volumenDeMetal", "args": [{ "masa": 4450, "rho": 8.9, "unidad": "m3" }], "espera": { "cm3": 500, "volumen": 0.0005 } },
+                     { "fn": "volumenDeMetal", "args": [{ "masa": 4450, "rho": 8.9, "unidad": "L" }], "espera": { "volumen": 0.5 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "básico",
+      "enunciado": "El radio de un átomo de sodio es 1,86 Å. Exprésalo en picómetros y en nanómetros.",
+      "respuesta": "186 pm y 0,186 nm.",
+      "pasos": [
+        "1 Å = 10⁻¹⁰ m, 1 pm = 10⁻¹² m y 1 nm = 10⁻⁹ m.",
+        "En pm: 1 Å = 100 pm, así que 1,86 × 100 = 186 pm.",
+        "En nm: 1 Å = 0,1 nm, así que 1,86 × 0,1 = 0,186 nm. En metros sería 1,86 × 10⁻¹⁰ m."
+      ],
+      "verificar": [ { "fn": "longitud", "args": [1.86, "A", "pm"], "espera": { "valor": 186 } }, { "fn": "longitud", "args": [1.86, "A", "nm"], "espera": { "valor": 0.186 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "¿Cuánta energía hace falta para vaporizar 90 mL de agua que ya está a 100 °C? ¿Y para fundir 36 g de hielo que ya está a 0 °C?",
+      "respuesta": "203,5 kJ para vaporizar; 12,02 kJ para fundir.",
+      "pasos": [
+        "90 mL de agua son 90 g; 90 ÷ 18 = 5 mol. 5 × 40,7 = 203,5 kJ.",
+        "36 g de hielo son 36 ÷ 18 = 2 mol. 2 × 6,01 = 12,02 kJ.",
+        "Los calores están por mol: si multiplicas los gramos directamente, el resultado sale 18 veces más grande."
+      ],
+      "verificar": [ { "fn": "calorLatente", "args": [{ "masa": 90, "fase": "vap" }], "espera": { "n": 5, "Q": 203.5 } }, { "fn": "calorLatente", "args": [{ "masa": 36, "fase": "fus" }], "espera": { "n": 2, "Q": 12.02 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "básico",
+      "enunciado": "Una clínica recibe 80 mg de yodo-131, cuya vida media es 8 días. ¿Cuántos miligramos quedan después de 24 días?",
+      "respuesta": "10 mg.",
+      "pasos": [
+        "24 días son 24 ÷ 8 = 3 vidas medias.",
+        "80 → 40 → 20 → 10 mg. Se desintegraron 70 mg."
+      ],
+      "verificar": [ { "fn": "vidaMedia", "args": [{ "m0": 80, "tMedia": 8, "t": 24 }], "espera": { "vidas": 3, "queda": 10, "desintegrado": 70 } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "En 15 horas, una muestra radiactiva se reduce a la octava parte. ¿Cuánto tiempo, desde el inicio, tarda en quedar 1/32 de la muestra?",
+      "respuesta": "25 horas.",
+      "pasos": [
+        "1/8 = 1/2³: en 15 horas pasaron 3 vidas medias. La vida media es 15 ÷ 3 = 5 horas, no 15.",
+        "1/32 = 1/2⁵: hacen falta 5 vidas medias.",
+        "5 × 5 = 25 horas."
+      ],
+      "verificar": [ { "fn": "tiempoPara", "args": [{ "tMedia": 5, "fraccion": 0.125 }], "espera": { "vidas": 3, "t": 15 } }, { "fn": "tiempoPara", "args": [{ "tMedia": 5, "fraccion": 0.03125 }], "espera": { "vidas": 5, "t": 25 } } ]
+    }
+  ]
+}

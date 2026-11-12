@@ -685,7 +685,10 @@
      "potencial_visual": "medio",
      "grado": 3,
      "plantillas": [
-      "materia-energia"
+      "materia-energia",
+      "configuracion-ubicacion",
+      "quimica-conceptos",
+      "conversiones-quimica"
      ]
     },
     {
@@ -718,7 +721,10 @@
      "potencial_visual": "medio",
      "grado": 3,
      "plantillas": [
-      "atomo-y-tabla"
+      "atomo-y-tabla",
+      "configuracion-ubicacion",
+      "quimica-conceptos",
+      "conversiones-quimica"
      ]
     },
     {
@@ -749,7 +755,9 @@
      "potencial_visual": "medio",
      "grado": 3,
      "plantillas": [
-      "atomo-y-tabla"
+      "atomo-y-tabla",
+      "configuracion-ubicacion",
+      "quimica-conceptos"
      ]
     },
     {
@@ -781,7 +789,8 @@
      "potencial_visual": "medio",
      "grado": 3,
      "plantillas": [
-      "enlace"
+      "enlace",
+      "quimica-conceptos"
      ]
     },
     {
@@ -813,7 +822,8 @@
      "potencial_visual": "bajo",
      "grado": 3,
      "plantillas": [
-      "nomenclatura-inorganica"
+      "nomenclatura-inorganica",
+      "quimica-conceptos"
      ]
     },
     {
@@ -874,7 +884,8 @@
      "potencial_visual": "medio",
      "grado": 4,
      "plantillas": [
-      "balance-reacciones"
+      "balance-reacciones",
+      "clasificar-reacciones"
      ]
     },
     {
@@ -904,7 +915,9 @@
      "plantillas": [
       "estequiometria-limitante",
       "limitante-particulas",
-      "rendimiento-pureza"
+      "rendimiento-pureza",
+      "soluciones-meq-ppm",
+      "estequiometria-admision"
      ]
     },
     {
@@ -966,7 +979,9 @@
      "potencial_visual": "medio",
      "grado": 4,
      "plantillas": [
-      "liquidos-y-solidos"
+      "liquidos-y-solidos",
+      "quimica-conceptos",
+      "conversiones-quimica"
      ]
     },
     {
@@ -994,7 +1009,9 @@
      "potencial_visual": "alto",
      "grado": 4,
      "plantillas": [
-      "soluciones"
+      "soluciones",
+      "soluciones-meq-ppm",
+      "quimica-conceptos"
      ]
     },
     {
@@ -1050,7 +1067,8 @@
      "potencial_visual": "medio",
      "grado": 5,
      "plantillas": [
-      "equilibrio-quimico"
+      "equilibrio-quimico",
+      "quimica-conceptos"
      ]
     },
     {
@@ -1078,7 +1096,8 @@
      "potencial_visual": "medio",
      "grado": 5,
      "plantillas": [
-      "acidos-bases"
+      "acidos-bases",
+      "quimica-conceptos"
      ]
     },
     {
@@ -1107,7 +1126,10 @@
      "potencial_visual": "medio",
      "grado": 5,
      "plantillas": [
-      "celda-galvanica"
+      "celda-galvanica",
+      "quimica-conceptos",
+      "clasificar-reacciones",
+      "estequiometria-admision"
      ]
     },
     {
@@ -1139,7 +1161,10 @@
      "potencial_visual": "bajo",
      "grado": 4,
      "plantillas": [
-      "hidrocarburos"
+      "hidrocarburos",
+      "molecula-grande",
+      "quimica-conceptos",
+      "nombre-polifuncional"
      ]
     },
     {
@@ -1171,7 +1196,10 @@
      "potencial_visual": "bajo",
      "grado": 4,
      "plantillas": [
-      "funciones-organicas"
+      "funciones-organicas",
+      "molecula-grande",
+      "quimica-conceptos",
+      "nombre-polifuncional"
      ]
     },
     {
@@ -1203,7 +1231,11 @@
      "potencial_visual": "bajo",
      "grado": 5,
      "plantillas": [
-      "biomoleculas"
+      "biomoleculas",
+      "quimica-conceptos",
+      "estequiometria-admision",
+      "molecula-grande",
+      "nombre-polifuncional"
      ]
     },
     {
@@ -1232,7 +1264,9 @@
      "potencial_visual": "bajo",
      "grado": 4,
      "plantillas": [
-      "quimica-ambiente"
+      "quimica-ambiente",
+      "quimica-conceptos",
+      "estequiometria-admision"
      ]
     },
     {
@@ -1265,7 +1299,8 @@
      "potencial_visual": "bajo",
      "grado": 4,
      "plantillas": [
-      "quimica-ambiente"
+      "quimica-ambiente",
+      "quimica-conceptos"
      ]
     }
    ]
@@ -4748,7 +4783,7 @@
    "titulo": "Cinética química",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.2.0",
+   "version": "0.3.0",
    "unidades": [
     "quimica.cinetica-quimica"
    ],
@@ -4985,6 +5020,23 @@
     "/plantillas/circunferencia-trig/papel.json"
    ]
   },
+  "clasificar-reacciones": {
+   "id": "clasificar-reacciones",
+   "titulo": "¿Qué clase de reacción es?",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.reacciones-y-balance",
+    "quimica.electroquimica"
+   ],
+   "url": "#/practica/clasificar-reacciones",
+   "papel": "/plantillas/clasificar-reacciones/papel.json",
+   "archivos": [
+    "/plantillas/clasificar-reacciones/generador.js",
+    "/plantillas/clasificar-reacciones/papel.json"
+   ]
+  },
   "condensadores": {
    "id": "condensadores",
    "titulo": "Condensadores en fila y en paralelo",
@@ -4999,6 +5051,24 @@
    "archivos": [
     "/plantillas/condensadores/generador.js",
     "/plantillas/condensadores/papel.json"
+   ]
+  },
+  "configuracion-ubicacion": {
+   "id": "configuracion-ubicacion",
+   "titulo": "Configuración y lugar en la tabla, hasta Z = 86",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.tabla-periodica",
+    "quimica.estructura-atomica",
+    "quimica.materia-y-energia"
+   ],
+   "url": "#/practica/configuracion-ubicacion",
+   "papel": "/plantillas/configuracion-ubicacion/papel.json",
+   "archivos": [
+    "/plantillas/configuracion-ubicacion/generador.js",
+    "/plantillas/configuracion-ubicacion/papel.json"
    ]
   },
   "congruencia": {
@@ -5052,6 +5122,24 @@
     "/plantillas/conjuntos/index.html",
     "/plantillas/conjuntos/motor.js",
     "/plantillas/conjuntos/papel.json"
+   ]
+  },
+  "conversiones-quimica": {
+   "id": "conversiones-quimica",
+   "titulo": "Termómetros, lingotes e isótopos que se desintegran",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.materia-y-energia",
+    "quimica.liquidos-y-solidos",
+    "quimica.estructura-atomica"
+   ],
+   "url": "#/practica/conversiones-quimica",
+   "papel": "/plantillas/conversiones-quimica/papel.json",
+   "archivos": [
+    "/plantillas/conversiones-quimica/generador.js",
+    "/plantillas/conversiones-quimica/papel.json"
    ]
   },
   "coordenadas-polares": {
@@ -5410,6 +5498,25 @@
     "/plantillas/estatica/index.html",
     "/plantillas/estatica/motor.js",
     "/plantillas/estatica/papel.json"
+   ]
+  },
+  "estequiometria-admision": {
+   "id": "estequiometria-admision",
+   "titulo": "Estequiometría de examen: minerales, calor y átomos",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.estequiometria",
+    "quimica.recursos-naturales",
+    "quimica.biomoleculas-y-productos-naturales",
+    "quimica.electroquimica"
+   ],
+   "url": "#/practica/estequiometria-admision",
+   "papel": "/plantillas/estequiometria-admision/papel.json",
+   "archivos": [
+    "/plantillas/estequiometria-admision/generador.js",
+    "/plantillas/estequiometria-admision/papel.json"
    ]
   },
   "estequiometria-limitante": {
@@ -6266,6 +6373,25 @@
     "/plantillas/mol-composicion/papel.json"
    ]
   },
+  "molecula-grande": {
+   "id": "molecula-grande",
+   "titulo": "La lupa de las moléculas grandes",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.biomoleculas-y-productos-naturales",
+    "quimica.funciones-organicas",
+    "quimica.hidrocarburos"
+   ],
+   "url": "/plantillas/molecula-grande/index.html",
+   "papel": "/plantillas/molecula-grande/papel.json",
+   "archivos": [
+    "/plantillas/molecula-grande/index.html",
+    "/plantillas/molecula-grande/motor.js",
+    "/plantillas/molecula-grande/papel.json"
+   ]
+  },
   "movimiento-circular": {
    "id": "movimiento-circular",
    "titulo": "El disco y sus flechas: movimiento circular",
@@ -6298,6 +6424,24 @@
     "/plantillas/mruv/index.html",
     "/plantillas/mruv/motor.js",
     "/plantillas/mruv/papel.json"
+   ]
+  },
+  "nombre-polifuncional": {
+   "id": "nombre-polifuncional",
+   "titulo": "Ponle nombre: moléculas con varios grupos",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.funciones-organicas",
+    "quimica.biomoleculas-y-productos-naturales",
+    "quimica.hidrocarburos"
+   ],
+   "url": "#/practica/nombre-polifuncional",
+   "papel": "/plantillas/nombre-polifuncional/papel.json",
+   "archivos": [
+    "/plantillas/nombre-polifuncional/generador.js",
+    "/plantillas/nombre-polifuncional/papel.json"
    ]
   },
   "nomenclatura-inorganica": {
@@ -6684,6 +6828,36 @@
     "/plantillas/quimica-ambiente/index.html",
     "/plantillas/quimica-ambiente/motor.js",
     "/plantillas/quimica-ambiente/papel.json"
+   ]
+  },
+  "quimica-conceptos": {
+   "id": "quimica-conceptos",
+   "titulo": "Verdadero o falso de química",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.biomoleculas-y-productos-naturales",
+    "quimica.enlace-quimico",
+    "quimica.ambiente-y-quimica-aplicada",
+    "quimica.estructura-atomica",
+    "quimica.recursos-naturales",
+    "quimica.electroquimica",
+    "quimica.hidrocarburos",
+    "quimica.materia-y-energia",
+    "quimica.liquidos-y-solidos",
+    "quimica.nomenclatura-inorganica",
+    "quimica.tabla-periodica",
+    "quimica.equilibrio-quimico",
+    "quimica.acidos-y-bases",
+    "quimica.funciones-organicas",
+    "quimica.soluciones"
+   ],
+   "url": "#/practica/quimica-conceptos",
+   "papel": "/plantillas/quimica-conceptos/papel.json",
+   "archivos": [
+    "/plantillas/quimica-conceptos/generador.js",
+    "/plantillas/quimica-conceptos/papel.json"
    ]
   },
   "razonamiento-figuras": {
@@ -7236,6 +7410,23 @@
     "/plantillas/soluciones/index.html",
     "/plantillas/soluciones/motor.js",
     "/plantillas/soluciones/papel.json"
+   ]
+  },
+  "soluciones-meq-ppm": {
+   "id": "soluciones-meq-ppm",
+   "titulo": "Miliequivalentes, ppm y porcentajes",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.soluciones",
+    "quimica.estequiometria"
+   ],
+   "url": "#/practica/soluciones-meq-ppm",
+   "papel": "/plantillas/soluciones-meq-ppm/papel.json",
+   "archivos": [
+    "/plantillas/soluciones-meq-ppm/generador.js",
+    "/plantillas/soluciones-meq-ppm/papel.json"
    ]
   },
   "sucesiones": {

@@ -1,0 +1,296 @@
+{
+  "titulo": "Clases de reacciones: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la pantalla, con unos 2 a 3 minutos por problema, como en el examen. Para cada ecuación, primero cuenta reactivos y productos y busca elementos libres (forma); después calcula los números de oxidación (redox); al final mira la flecha (reversible) y el calor (energía). Una reacción puede estar en varias clases a la vez.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Se deja una cinta de magnesio en una disolución azul de cloruro de cobre(II): Mg(s) + CuCl₂(ac) → MgCl₂(ac) + Cu(s). ¿De qué tipo es por su forma? ¿Es redox? Si lo es, ¿qué sustancia se oxida y cuál es el agente oxidante?",
+      "respuesta": "Desplazamiento simple y redox: se oxida el Mg (agente reductor); el agente oxidante es el CuCl₂.",
+      "pasos": [
+        "Forma: un elemento libre (Mg) entra al compuesto y deja libre a otro (Cu). Dos reactivos y dos productos, un elemento libre a cada lado: desplazamiento simple.",
+        "Números de oxidación: Mg 0 → +2 en MgCl₂; Cu +2 en CuCl₂ → 0; el Cl queda en −1.",
+        "El Mg sube: se oxida y es el agente reductor. El Cu baja: el CuCl₂ se reduce y es el agente oxidante.",
+        "Todo desplazamiento simple es redox: el elemento que estaba libre termina combinado."
+      ],
+      "verificar": [
+        {
+          "fn": "analizar",
+          "args": [
+            "Mg(s) + CuCl2(ac) -> MgCl2(ac) + Cu(s)"
+          ],
+          "espera": {
+            "simple": "si",
+            "redox": "si",
+            "seOxida": [
+              "Mg"
+            ],
+            "seReduce": [
+              "CuCl2"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "En un encendedor arde butano: 2C₄H₁₀(g) + 13O₂(g) → 8CO₂(g) + 10H₂O(l), ΔH = −5760 kJ. Indica si es verdadero (V) o falso (F): I. Es redox. II. Es una combustión. III. Absorbe calor.",
+      "respuesta": "VVF.",
+      "pasos": [
+        "I. El C pasa de −5/2 (promedio en C₄H₁₀) a +4 en CO₂: se oxida. El O pasa de 0 a −2: se reduce. Es redox: V.",
+        "II. Un combustible con carbono arde con O₂ y da solo CO₂ y H₂O: combustión, V. Toda combustión es también redox.",
+        "III. ΔH es negativo: la reacción libera calor (exotérmica). Absorbe calor es F."
+      ],
+      "verificar": [
+        {
+          "fn": "oxidacion",
+          "args": [
+            "C4H10"
+          ],
+          "espera": {
+            "C": -2.5,
+            "H": 1
+          }
+        },
+        {
+          "fn": "analizar",
+          "args": [
+            "2C4H10(g) + 13O2(g) -> 8CO2(g) + 10H2O(l)",
+            -5760
+          ],
+          "espera": {
+            "combustion": "si",
+            "redox": "si",
+            "exotermica": "si",
+            "endotermica": "no"
+          }
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Un técnico agrega potasa cáustica a agua con bicarbonato de potasio: KHCO₃(ac) + KOH(ac) → K₂CO₃(ac) + H₂O(l). Un compañero dice que es redox porque «el bicarbonato pierde su hidrógeno». ¿Tiene razón? ¿Cómo se clasifica?",
+      "respuesta": "No tiene razón: es una reacción ácido-base (neutralización de una sal ácida con un hidróxido), no redox. Por su forma es de doble desplazamiento.",
+      "pasos": [
+        "Números de oxidación en KHCO₃: K +1, H +1, O −2; el C se despeja: 1 + 1 + C − 6 = 0, C = +4.",
+        "En K₂CO₃: 2 + C − 6 = 0, C = +4. En KOH y en H₂O, el H sigue en +1 y el O en −2. El K sigue en +1.",
+        "Ningún número de oxidación cambia: no es redox. El H⁺ pasa de una sustancia a otra con su +1.",
+        "La sal ácida (KHCO₃) cede su H⁺ al OH⁻ del hidróxido y sale agua: es una neutralización."
+      ],
+      "verificar": [
+        {
+          "fn": "analizar",
+          "args": [
+            "KHCO3(ac) + KOH(ac) -> K2CO3(ac) + H2O(l)"
+          ],
+          "espera": {
+            "redox": "no",
+            "neutralizacion": "si",
+            "doble": "si"
+          }
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "El bromo líquido reacciona con soda cáustica: Br₂(l) + 2NaOH(ac) → NaBr(ac) + NaBrO(ac) + H₂O(l). ¿Qué pasa con el número de oxidación del bromo? ¿Cuál es el agente oxidante?",
+      "respuesta": "El Br pasa de 0 a −1 (en NaBr) y a +1 (en NaBrO): se oxida y se reduce a la vez (dismutación). El Br₂ es a la vez agente oxidante y agente reductor.",
+      "pasos": [
+        "En Br₂ el bromo es un elemento libre: 0.",
+        "En NaBr: Na +1, así que Br −1. En NaBrO: Na +1 y O −2, así que 1 + Br − 2 = 0 y Br = +1.",
+        "Un átomo de Br baja de 0 a −1 (se reduce) y el otro sube de 0 a +1 (se oxida).",
+        "Es una dismutación: no todo el bromo va en el mismo sentido. El mismo Br₂ hace de oxidante y de reductor."
+      ],
+      "verificar": [
+        {
+          "fn": "oxidacion",
+          "args": [
+            "NaBrO"
+          ],
+          "espera": {
+            "Br": 1
+          }
+        },
+        {
+          "fn": "analizar",
+          "args": [
+            "Br2(l) + 2NaOH(ac) -> NaBr(ac) + NaBrO(ac) + H2O(l)"
+          ],
+          "espera": {
+            "redox": "si",
+            "dismutacion": "si",
+            "seOxida": [
+              "Br2"
+            ],
+            "seReduce": [
+              "Br2"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "En los rayos de una tormenta se forma monóxido de nitrógeno: 180 kJ + N₂(g) + O₂(g) ⇌ 2NO(g). ¿La reacción es exotérmica o endotérmica? ¿Cuánto calor interviene al formarse 15 g de NO? (N = 14, O = 16)",
+      "respuesta": "Endotérmica; se absorben 45 kJ.",
+      "pasos": [
+        "El calor está del lado de los reactivos: entra a la reacción, como un reactivo más. Se absorbe: endotérmica (ΔH = +180 kJ).",
+        "Masa molar del NO: 14 + 16 = 30 g/mol. Moles: 15 ÷ 30 = 0,5 mol.",
+        "Por la ecuación, 180 kJ por cada 2 mol de NO: 180 × 0,5 ÷ 2 = 45 kJ, que se absorben.",
+        "Además es redox (N de 0 a +2, O de 0 a −2) y reversible (doble flecha)."
+      ],
+      "verificar": [
+        {
+          "fn": "analizar",
+          "args": [
+            "N2(g) + O2(g) <=> 2NO(g)",
+            180
+          ],
+          "espera": {
+            "endotermica": "si",
+            "reversible": "si",
+            "redox": "si",
+            "adicion": "si"
+          }
+        }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Relaciona cada ecuación con su tipo. I. Ba(OH)₂(ac) + 2HNO₃(ac) → Ba(NO₃)₂(ac) + 2H₂O(l). II. Cl₂(g) + 2KI(ac) → 2KCl(ac) + I₂(s). III. MgCO₃(s) → MgO(s) + CO₂(g). IV. Pb(NO₃)₂(ac) + Na₂SO₄(ac) → PbSO₄(s) + 2NaNO₃(ac). Tipos: a) descomposición; b) precipitación; c) neutralización; d) desplazamiento simple.",
+      "respuesta": "I-c, II-d, III-a, IV-b.",
+      "pasos": [
+        "I: un ácido (HNO₃) y un hidróxido (Ba(OH)₂) dan sal y agua: neutralización (c).",
+        "II: el elemento libre Cl₂ toma el lugar del yodo y lo deja libre como I₂: desplazamiento simple (d). Es redox: Cl 0 → −1, I −1 → 0.",
+        "III: una sola sustancia se rompe en dos: descomposición (a). No es redox.",
+        "IV: dos disoluciones dan un sólido, PbSO₄: precipitación (b). Ojo: el II también da un sólido, pero tiene un elemento libre a cada lado y es simple, no doble."
+      ],
+      "verificar": [
+        {
+          "fn": "analizar",
+          "args": [
+            "Ba(OH)2(ac) + 2HNO3(ac) -> Ba(NO3)2(ac) + 2H2O(l)"
+          ],
+          "espera": {
+            "neutralizacion": "si",
+            "redox": "no"
+          }
+        },
+        {
+          "fn": "analizar",
+          "args": [
+            "Cl2(g) + 2KI(ac) -> 2KCl(ac) + I2(s)"
+          ],
+          "espera": {
+            "simple": "si",
+            "redox": "si"
+          }
+        },
+        {
+          "fn": "analizar",
+          "args": [
+            "MgCO3(s) -> MgO(s) + CO2(g)"
+          ],
+          "espera": {
+            "descomposicion": "si",
+            "redox": "no"
+          }
+        },
+        {
+          "fn": "analizar",
+          "args": [
+            "Pb(NO3)2(ac) + Na2SO4(ac) -> PbSO4(s) + 2NaNO3(ac)"
+          ],
+          "espera": {
+            "precipitacion": "si",
+            "doble": "si"
+          }
+        }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Al mezclar cloruro férrico con yoduro de potasio aparece un color pardo: 2FeCl₃(ac) + 2KI(ac) → 2FeCl₂(ac) + 2KCl(ac) + I₂(s). Señala la sustancia que se oxida, el agente oxidante, la forma oxidada y la forma reducida. ¿Cuántos electrones pasan según la ecuación escrita?",
+      "respuesta": "Se oxida el KI (agente reductor); el agente oxidante es el FeCl₃; forma oxidada: I₂; forma reducida: FeCl₂. Pasan 2 electrones.",
+      "pasos": [
+        "Fe: +3 en FeCl₃ (Cl −1) → +2 en FeCl₂. Baja: el FeCl₃ se reduce y es el agente oxidante; el FeCl₂ es la forma reducida.",
+        "I: −1 en KI → 0 en I₂. Sube: el KI se oxida y es el agente reductor; el I₂ es la forma oxidada.",
+        "El K y el Cl no cambian: el KCl no participa en el paso de electrones.",
+        "Electrones: 2 Fe ganan 1 cada uno (2 e⁻) y 2 I pierden 1 cada uno (2 e⁻). Perdidos = ganados = 2."
+      ],
+      "verificar": [
+        {
+          "fn": "analizar",
+          "args": [
+            "2FeCl3(ac) + 2KI(ac) -> 2FeCl2(ac) + 2KCl(ac) + I2(s)"
+          ],
+          "espera": {
+            "redox": "si",
+            "seOxida": [
+              "KI"
+            ],
+            "seReduce": [
+              "FeCl3"
+            ],
+            "formaOxidada": [
+              "I2"
+            ],
+            "formaReducida": [
+              "FeCl2"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "¿Cuál de estas reacciones es a la vez redox y reversible? I. 2NO₂(g) ⇌ N₂O₄(g). II. H₂(g) + I₂(g) ⇌ 2HI(g). III. 2KClO₃(s) → 2KCl(s) + 3O₂(g). IV. CO₂(g) + H₂O(l) ⇌ H₂CO₃(ac).",
+      "respuesta": "Solo la II.",
+      "pasos": [
+        "I: el N está en +4 a los dos lados; reversible, pero no redox.",
+        "II: H de 0 a +1 e I de 0 a −1; es redox y tiene doble flecha: cumple las dos.",
+        "III: es redox (Cl +5 → −1, O −2 → 0), pero tiene una sola flecha: no toda descomposición es reversible.",
+        "IV: reversible, pero nada cambia de número de oxidación (C +4, H +1, O −2 a los dos lados)."
+      ],
+      "verificar": [
+        {
+          "fn": "analizar",
+          "args": [
+            "H2(g) + I2(g) <=> 2HI(g)"
+          ],
+          "espera": {
+            "redox": "si",
+            "reversible": "si"
+          }
+        },
+        {
+          "fn": "analizar",
+          "args": [
+            "2NO2(g) <=> N2O4(g)"
+          ],
+          "espera": {
+            "redox": "no",
+            "reversible": "si"
+          }
+        },
+        {
+          "fn": "analizar",
+          "args": [
+            "2KClO3(s) -> 2KCl(s) + 3O2(g)"
+          ],
+          "espera": {
+            "redox": "si",
+            "reversible": "no"
+          }
+        }
+      ]
+    }
+  ]
+}

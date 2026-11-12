@@ -94,6 +94,10 @@ const ESCENAS = {
       [['C', 'H', 'O', 'N'], ['--c-pu', '--c-T']],
       [['C', 'H', 'O'], ['--c-ac', '--c-al']],
     ] },
+  'molecula-grande': {
+    elementos: ['H', 'C', 'N', 'O', 'S', 'I'],
+    // Los átomos van siempre en tinta (las letras dicen el elemento): ningún color de elemento sale en una vista.
+    vistas: [] },
   'hidrocarburos': {
     elementos: ['C', 'H'],
     vistas: [

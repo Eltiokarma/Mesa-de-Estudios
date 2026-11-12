@@ -30,7 +30,7 @@
       },
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": ["materia-energia"],
+      "plantillas": ["materia-energia", "configuracion-ubicacion", "quimica-conceptos", "conversiones-quimica"],
       "investigacion": "docs/investigacion/atomo-enlace-ideas-erroneas.md"
     },
     {
@@ -62,7 +62,7 @@
       },
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": ["atomo-y-tabla"],
+      "plantillas": ["atomo-y-tabla", "configuracion-ubicacion", "quimica-conceptos", "conversiones-quimica"],
       "investigacion": "docs/investigacion/atomo-enlace-ideas-erroneas.md"
     },
     {
@@ -92,7 +92,7 @@
       },
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": ["atomo-y-tabla"],
+      "plantillas": ["atomo-y-tabla", "configuracion-ubicacion", "quimica-conceptos"],
       "investigacion": "docs/investigacion/atomo-enlace-ideas-erroneas.md"
     },
     {
@@ -123,7 +123,7 @@
       },
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": ["enlace"],
+      "plantillas": ["enlace", "quimica-conceptos"],
       "investigacion": "docs/investigacion/atomo-enlace-ideas-erroneas.md"
     },
     {
@@ -154,7 +154,7 @@
       },
       "potencial_visual": "bajo",
       "grado": 3,
-      "plantillas": ["nomenclatura-inorganica"],
+      "plantillas": ["nomenclatura-inorganica", "quimica-conceptos"],
       "investigacion": "docs/investigacion/quimica-materia-nomenclatura-organica-ideas-erroneas.md"
     },
     {
@@ -213,7 +213,7 @@
       },
       "potencial_visual": "medio",
       "grado": 4,
-      "plantillas": ["balance-reacciones"],
+      "plantillas": ["balance-reacciones", "clasificar-reacciones"],
       "investigacion": "docs/investigacion/estequiometria-ideas-erroneas.md"
     },
     {
@@ -243,7 +243,9 @@
       "plantillas": [
         "estequiometria-limitante",
         "limitante-particulas",
-        "rendimiento-pureza"
+        "rendimiento-pureza",
+        "soluciones-meq-ppm",
+        "estequiometria-admision"
       ],
       "investigacion": "docs/investigacion/estequiometria-ideas-erroneas.md"
     },
@@ -304,7 +306,7 @@
       },
       "potencial_visual": "medio",
       "grado": 4,
-      "plantillas": ["liquidos-y-solidos"],
+      "plantillas": ["liquidos-y-solidos", "quimica-conceptos", "conversiones-quimica"],
       "investigacion": "docs/investigacion/gases-soluciones-ideas-erroneas.md"
     },
     {
@@ -331,7 +333,7 @@
       },
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": ["soluciones"],
+      "plantillas": ["soluciones", "soluciones-meq-ppm", "quimica-conceptos"],
       "investigacion": "docs/investigacion/gases-soluciones-ideas-erroneas.md"
     },
     {
@@ -385,7 +387,7 @@
       },
       "potencial_visual": "medio",
       "grado": 5,
-      "plantillas": ["equilibrio-quimico"],
+      "plantillas": ["equilibrio-quimico", "quimica-conceptos"],
       "investigacion": "docs/investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md"
     },
     {
@@ -412,7 +414,7 @@
       },
       "potencial_visual": "medio",
       "grado": 5,
-      "plantillas": ["acidos-bases"],
+      "plantillas": ["acidos-bases", "quimica-conceptos"],
       "investigacion": "docs/investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md"
     },
     {
@@ -440,7 +442,7 @@
       },
       "potencial_visual": "medio",
       "grado": 5,
-      "plantillas": ["celda-galvanica"],
+      "plantillas": ["celda-galvanica", "quimica-conceptos", "clasificar-reacciones", "estequiometria-admision"],
       "investigacion": "docs/investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md"
     },
     {
@@ -471,7 +473,7 @@
       },
       "potencial_visual": "bajo",
       "grado": 4,
-      "plantillas": ["hidrocarburos"],
+      "plantillas": ["hidrocarburos", "molecula-grande", "quimica-conceptos", "nombre-polifuncional"],
       "investigacion": "docs/investigacion/quimica-materia-nomenclatura-organica-ideas-erroneas.md"
     },
     {
@@ -502,7 +504,7 @@
       },
       "potencial_visual": "bajo",
       "grado": 4,
-      "plantillas": ["funciones-organicas"],
+      "plantillas": ["funciones-organicas", "molecula-grande", "quimica-conceptos", "nombre-polifuncional"],
       "investigacion": "docs/investigacion/quimica-materia-nomenclatura-organica-ideas-erroneas.md"
     },
     {
@@ -533,7 +535,7 @@
       },
       "potencial_visual": "bajo",
       "grado": 5,
-      "plantillas": ["biomoleculas"],
+      "plantillas": ["biomoleculas", "quimica-conceptos", "estequiometria-admision", "molecula-grande", "nombre-polifuncional"],
       "investigacion": "docs/investigacion/biomoleculas-ideas-erroneas.md"
     },
     {
@@ -561,7 +563,7 @@
       },
       "potencial_visual": "bajo",
       "grado": 4,
-      "plantillas": ["quimica-ambiente"],
+      "plantillas": ["quimica-ambiente", "quimica-conceptos", "estequiometria-admision"],
       "investigacion": "docs/investigacion/quimica-ambiente-ideas-erroneas.md"
     },
     {
@@ -593,7 +595,7 @@
       },
       "potencial_visual": "bajo",
       "grado": 4,
-      "plantillas": ["quimica-ambiente"],
+      "plantillas": ["quimica-ambiente", "quimica-conceptos"],
       "investigacion": "docs/investigacion/quimica-ambiente-ideas-erroneas.md"
     }
   ]

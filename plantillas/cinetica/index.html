@@ -14,8 +14,8 @@
      C (A y B unidos)             fucsia    #c90eb4 / #fe3dd6   (y el anillo del choque eficaz: ahí se forma una C)
      T (temperatura)              rojo      #c0364a / #f17384   (el de docs/diseno.md)
      Ea (barrera)                 turquesa  #1c7170 / #79c6c5
-     ΔH (calor de reacción)       verde     #198036 / #4fb256
-     v (rapidez)                  mostaza   #856d02 / #d8c84a
+     ΔH (calor de reacción)       verde     #177732 / #4fb256   (0.3.0: un poco más oscuro, AA sobre el chip)
+     v (rapidez)                  mostaza   #7c6502 / #d8c84a   (0.3.0: un poco más oscuro, AA sobre el chip)
      choque sin energía (cruz)    gris      #434038 / #8c8f85   (y las barras del histograma bajo Ea)
      choque mal orientado (flecha que gira)  violeta  #4b06b9 / #9978fa
    Todos pueden salir a la vez (el explorador muestra todo), así que se revisaron todos contra todos y contra la
@@ -30,14 +30,24 @@
    Sale solo con v (mostaza), la tinta y el gris: ΔE00 ≥ 20 con ellos en los dos temas (claro: 32,4, 27,0 y 28,5;
    oscuro: 44,1, 39,5 y 34,0). Contra los otros nueve: ≥ 21,2 en claro; en oscuro, 16,5 con B y 18,7 con T, que no
    salen en esos experimentos (la caja y el termómetro se esconden). Contraste: 10,8 y 5,05; sobre el chip, 9,36 y 4,59.
-   Las vidas medias (t½) son tiempos y van en tinta, como t. */
+   Las vidas medias (t½) son tiempos y van en tinta, como t.
+   Pestaña «Mecanismos» (0.3.0, 8 nov 2026; sin la caja). Tres colores nuevos:
+     intermediario (fichas y valle)  rojo ladrillo  #b31c05 / salmón #fb8674
+     catalizador (fichas)            azul petróleo  #04708b / celeste #74e0fb
+     [medicamento] (concentración)   verde pino     #1c5f3f / verde menta #47faa7
+   Salen con la tinta, el gris y v (las fichas y la ley), con Ea y ΔH (el perfil) o con v (la curva). ΔE00 entre los
+   que salen juntos: ≥ 30,4 en claro y ≥ 27,1 en oscuro (intermediario–catalizador, cada uno con tinta, gris, v, Ea y
+   ΔH; la concentración con tinta, gris y v: 29,0 y 29,7). Con colores de las otras pestañas, que no salen en esta,
+   quedan más cerca (11 a 18: el rojo con T, B y [N₂O₅]; el azul con Ea y A; el verde con ΔH y Ea). Contraste sobre el
+   papel: 6,40, 5,34 y 7,16 en claro; 6,84, 10,8 y 12,1 en oscuro; sobre el chip (fondo 12 %), ≥ 4,52 (el azul en
+   claro). Los complejos activados van en tinta, con ‡. Los colores se revisaron con docs/metodo/paleta.py. */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
   --detras:#f6ece4; --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
-  --c-A:#1f5fbf; --c-B:#b55302; --c-C:#c90eb4; --c-T:#c0364a; --c-Ea:#1c7170; --c-dH:#198036; --c-v:#856d02;
-  --c-sinE:#434038; --c-malO:#4b06b9; --c-N:#652515;
+  --c-A:#1f5fbf; --c-B:#b55302; --c-C:#c90eb4; --c-T:#c0364a; --c-Ea:#1c7170; --c-dH:#177732; --c-v:#7c6502;
+  --c-sinE:#434038; --c-malO:#4b06b9; --c-N:#652515; --c-int:#b31c05; --c-cat:#04708b; --c-F:#1c5f3f;
   --vidrio:#8e97a8;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
@@ -48,14 +58,14 @@
   --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
   --c-A:#7cb0ff; --c-B:#fb9c5e; --c-C:#fe3dd6; --c-T:#f17384; --c-Ea:#79c6c5; --c-dH:#4fb256; --c-v:#d8c84a;
-  --c-sinE:#8c8f85; --c-malO:#9978fa; --c-N:#fa572e;
+  --c-sinE:#8c8f85; --c-malO:#9978fa; --c-N:#fa572e; --c-int:#fb8674; --c-cat:#74e0fb; --c-F:#47faa7;
   --vidrio:#5e5670; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
   --c-A:#7cb0ff; --c-B:#fb9c5e; --c-C:#fe3dd6; --c-T:#f17384; --c-Ea:#79c6c5; --c-dH:#4fb256; --c-v:#d8c84a;
-  --c-sinE:#8c8f85; --c-malO:#9978fa; --c-N:#fa572e;
+  --c-sinE:#8c8f85; --c-malO:#9978fa; --c-N:#fa572e; --c-int:#fb8674; --c-cat:#74e0fb; --c-F:#47faa7;
   --vidrio:#5e5670; color-scheme:dark }
 
 *{box-sizing:border-box}
@@ -72,6 +82,9 @@ h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; let
 .tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
 .tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
 .tabs a:hover:not([aria-current]){color:var(--ink)}
+/* Tres pestañas en 390 px: un poco más justas. */
+@media (max-width:480px){ .tabs{gap:2px} .tabs a{padding:8px 8px; font-size:.82rem} }
+@media (max-width:370px){ .tabs a{padding:7px 6px; font-size:.76rem} }
 
 .mode{display:grid; gap:16px; min-width:0; align-items:start}
 .bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
@@ -109,7 +122,11 @@ canvas{display:block; width:100%; touch-action:pan-y; -webkit-user-select:none; 
 .v-sinE{color:var(--c-sinE); background:color-mix(in srgb, var(--c-sinE) 12%, transparent)}
 .v-malO{color:var(--c-malO); background:color-mix(in srgb, var(--c-malO) 12%, transparent)}
 .v-N{color:var(--c-N); background:color-mix(in srgb, var(--c-N) 12%, transparent)}
-.v.hl{background:color-mix(in srgb, currentColor 26%, transparent)}
+.v-int{color:var(--c-int); background:color-mix(in srgb, var(--c-int) 12%, transparent)}
+.v-cat{color:var(--c-cat); background:color-mix(in srgb, var(--c-cat) 12%, transparent)}
+.v-F{color:var(--c-F); background:color-mix(in srgb, var(--c-F) 12%, transparent)}
+/* Resaltado con contorno y sin fondo: el fondo más cargado bajaba el contraste del texto. */
+.v.hl{outline:2px solid currentColor; outline-offset:1px}
 input.r-T{accent-color:var(--c-T)}
 
 .eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
@@ -189,11 +206,12 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
     <header>
       <p class="eyebrow">Química · Cinética química · Problemas tipo admisión</p>
       <h1>Cinética química: choques que reaccionan</h1>
-      <p class="sub">Una caja donde A y B chocan y a veces forman C. Mira, predice y cuenta los choques.</p>
+      <p class="sub">Una caja donde A y B chocan y a veces forman C, reacciones que van por etapas y perfiles de energía. Mira, predice y cuenta.</p>
     </header>
     <nav class="tabs" aria-label="Modo de la escena">
       <a href="#paso-a-paso" id="tab1">Paso a paso</a>
       <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+      <a href="#mecanismos" id="tab3">Mecanismos</a>
     </nav>
   </div>
 
@@ -238,6 +256,27 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
     </section>
   </div>
 
+  <!-- ===== MODO 3: mecanismos (0.3.0) ===== -->
+  <div id="m3" class="mode" hidden>
+    <section class="bench" aria-label="Etapas de un mecanismo, perfil de energía de dos etapas y curva de concentración">
+      <div class="lienzo" id="lz4"><canvas id="cv4" role="img" aria-label="Fichas con las etapas de un mecanismo, un perfil de energía con dos lomas o una curva de concentración contra el tiempo, según el paso"></canvas></div>
+      <p class="sr" id="desc3" aria-live="polite"></p>
+      <div class="legend" id="ley3"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots3"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="k3"></p>
+        <h2 class="step-t" id="t3"></h2>
+      </div>
+      <div id="body3" class="body"></div>
+      <div class="nav">
+        <button id="prev3" type="button" class="btn">Anterior</button>
+        <button id="next3" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
   <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/cinetica">Problemas para lápiz y papel</a></p>
 </main>
 
@@ -254,7 +293,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="../../nucleo/celular.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
-const PLANTILLA = { id: 'cinetica', unidad: 'quimica.cinetica-quimica', version: '0.1.0' };
+const PLANTILLA = { id: 'cinetica', unidad: 'quimica.cinetica-quimica', version: '0.3.0' };
 function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
   if (!window.Medicion) return;
   Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
@@ -1407,9 +1446,458 @@ ir(0);
 </script>
 
 <script>
+/* ================= MODO 3: mecanismos (0.3.0, 8 nov 2026) =================
+   Huecos de admisión (San Marcos): intermediario contra catalizador, la ley que fija la etapa lenta, el perfil de dos
+   etapas (qué hay en las cimas y en el valle, Ea desde cada valle) y la velocidad media leída en una curva con cambio
+   de unidades. Mecanismos de libro con números propios. Todo sale del motor: MC.mecanismo (suma, tachado y papeles),
+   MC.leyVelocidad, MC.perfilDosEtapas y MC.velocidadMedia; aquí solo se dibuja. Antes de responder, las fichas van en
+   tinta, sin tachar y sin la suma; el perfil no tiene flechas ni nombres; la curva no tiene la secante. */
+(function(){
+const $ = id => document.getElementById(id);
+const modo = $('m3'), cv = $('cv4'), ctx = cv.getContext('2d');
+const I_ = t => V('int', t), K_ = t => V('cat', t), F_ = t => V('F', t);
+// Nombres: H2O2 → H₂O₂, I- → I⁻.
+const nombre = sp => sp.replace(/\d/g, d => '₀₁₂₃₄₅₆₇₈₉'[d]).replace(/-$/, '⁻').replace(/\+$/, '⁺');
+const supN = n => (n === 1 ? '' : String(n).replace('-', '⁻').replace(/\d/g, d => '⁰¹²³⁴⁵⁶⁷⁸⁹'[d]));
+// Exponentes negativos al denominador: v = k·K₁·[O₃]²/[O₂].
+const leyTxt = (l, k) => { const e = Object.entries(l.ordenes), arr = e.filter(([, m]) => m > 0), aba = e.filter(([, m]) => m < 0);
+  const t = (l2, f) => l2.map(([sp, m]) => `[${nombre(sp)}]${supN(f*m)}`).join('·');
+  return `v = ${k || 'k'}·` + t(arr, 1) + (aba.length ? '/' + (aba.length > 1 ? `(${t(aba, -1)})` : t(aba, -1)) : ''); };
+const lado = o => Object.entries(o).map(([sp, n]) => (n === 1 ? '' : n + ' ') + nombre(sp)).join(' + ');
+const ecuacion = (g, flecha) => `${lado(g.r)} ${flecha || '→'} ${lado(g.p)}`;
+const nw = t => `<span style="white-space:nowrap">${t}</span>`;
+function cientifica(x){
+  const a = Math.abs(x); if (a >= 1e-3 && a < 1e4) return fmt(x, 4);
+  const e = Math.floor(Math.log10(a) + 1e-9), m = x/Math.pow(10, e);
+  return `${fmt(m, 2)} × 10${supN(e)}`;
+}
+
+// Los mecanismos (propios, de libro). Etapas con nombres ASCII, como las pide el motor.
+const MECS = {
+  peroxido:{ etapas:[{ r:{ H2O2:1, 'I-':1 }, p:{ H2O:1, 'IO-':1 } }, { r:{ H2O2:1, 'IO-':1 }, p:{ H2O:1, O2:1, 'I-':1 } }], lenta:1 },
+  ozono:{ etapas:[{ r:{ Cl:1, O3:1 }, p:{ ClO:1, O2:1 } }, { r:{ ClO:1, O:1 }, p:{ Cl:1, O2:1 } }], lenta:null },
+  no2:{ etapas:[{ r:{ NO2:2 }, p:{ NO3:1, NO:1 } }, { r:{ NO3:1, CO:1 }, p:{ NO2:1, CO2:1 } }], lenta:1 },
+};
+for (const m of Object.values(MECS)) m.res = MC.mecanismo(m.etapas);
+const MP = MECS.peroxido.res, MO = MECS.ozono.res, MN = MECS.no2.res;
+const LN = MC.leyVelocidad(MECS.no2.etapas, 1);
+const OZ = [{ r:{ O3:1 }, p:{ O2:1, O:1 } }, { r:{ O:1, O3:1 }, p:{ O2:2 } }], LOZ = MC.leyVelocidad(OZ, 2);
+const PF = { R:40, TS1:100, I:-10, TS2:75, P:-50 }, PP = MC.perfilDosEtapas(PF);
+const CURVA = [[0, 0], [1, 0.08], [2, 0.12], [3, 0.09], [4, 0.07], [5, 0.06], [6, 0.05]], T1 = 2, T2 = 5;
+const VM = MC.velocidadMedia(CURVA, T1, T2, { de:'mg/mL', a:'kg/m3', tiempo:'h' });
+const etapaTxt = (e, i, m) => `Etapa ${i + 1}${m.lenta ? (m.lenta === i + 1 ? ' (lenta)' : ' (rápida)') : ''}: ${nw(ecuacion(e))}`;
+const listaEtapas = m => `<div class="eqs">${m.etapas.map((e, i) => `<div class="eq"><span class="ex">${etapaTxt(e, i, m)}</span></div>`).join('')}</div>`;
+// La suma con lo que se tacha (texto): las especies que se cancelan, tachadas a los dos lados.
+function sumaHTML(m){
+  const R = m.res, col = sp => R.clase[sp] === 'intermediario' ? 'int' : R.clase[sp] === 'catalizador' ? 'cat' : null;
+  const pieza = (sp, n, t) => { const nom = nombre(sp), c = col(sp), todo = Math.min(n, t), resto = n - todo, out = [];
+    for (let q = 0; q < todo; q++) out.push(`<s>${c ? V(c, nom) : nom}</s>`); for (let q = 0; q < resto; q++) out.push(nom); return out; };
+  const tach = { ...R.tachadas };
+  const fila = o => Object.entries(o).flatMap(([sp, n]) => pieza(sp, n, tach[sp] || 0)).join(' + ');
+  return `<div class="eq"><span class="ex">${fila(R.errores.sinCancelar.r)} → ${fila(R.errores.sinCancelar.p)}</span></div>
+    <div class="eq"><span class="ex">${nw(ecuacion(R.global))}</span><span class="note">Lo tachado aparece igual a los dos lados y se cancela. Lo que queda es la reacción global.</span></div>`;
+}
+
+/* ----- El dibujo ----- */
+const D3 = { v:null, f:1, t0:0, anim:false, hl:null, compacto:false };
+let W = 0, H = 0;
+function medir(){
+  const w = cv.clientWidth; if (!w || !D3.v) return false;
+  const chico = w < 560, t = D3.v.tipo;
+  const h0 = t === 'fichas' ? (chico ? 236 : 250) : (chico ? 250 : 330);
+  const h = Math.round(Celular.alto(h0, D3.compacto, { tope:250 })), dpr = Celular.dpr();
+  if (w !== W || h !== H){ W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); ctx.setTransform(dpr,0,0,dpr,0,0); }
+  return true;
+}
+const fase = (a, b) => clamp((D3.f - a)/(b - a), 0, 1);
+// Fichas: cada etapa en una fila, una ficha por partícula (2 NO₂ son dos fichas). Al responder se tachan, de a pares,
+// las que se cancelan (MC.mecanismo: tachadas), con una raya que une la que sale con la que entra; después aparece la suma.
+function fichas(c, v){
+  const m = MECS[v.mec], R = m.res, chico = W < 560, pad = chico ? 10 : 16;
+  const filas = m.etapas.map(e => ({ izq:Object.entries(e.r).flatMap(([sp, n]) => Array(n).fill(sp)), der:Object.entries(e.p).flatMap(([sp, n]) => Array(n).fill(sp)) }));
+  let fs = chico ? 15 : 17;
+  const anchoFila = (fl, f) => { ctx.font = `800 ${f}px ${c.mono}`; const mas = ctx.measureText(' + ').width;
+    const ws = l => l.reduce((s, sp) => s + ctx.measureText(nombre(sp)).width + 14, 0) + Math.max(0, l.length - 1)*mas;
+    return ws(fl.izq) + ws(fl.der) + 34; };
+  while (fs > 10 && Math.max(...filas.map(fl => anchoFila(fl, fs))) > W - 2*pad) fs--;
+  const hT = fs + 14, rowH = hT + 26, y0 = 22, toks = [], rotulos = [];
+  ctx.font = `700 11px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+  ctx.fillText('Las etapas, ficha por ficha', pad, 4);
+  filas.forEach((fl, i) => {
+    const y = y0 + i*(rowH + 8) + 16;
+    ctx.font = `800 11px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
+    rotulos.push([`Etapa ${i + 1}${m.lenta ? (m.lenta === i + 1 ? ' · lenta' : ' · rápida') : ''}`, y - 10]);   // se escriben al final, encima de las rayas
+    if (v.ley && m.lenta === i + 1){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.setLineDash([5, 3]); rr(ctx, pad - 6, y - 18, W - 2*pad + 12, hT + 22, 12); ctx.stroke(); ctx.restore(); }
+    let x = pad; ctx.font = `800 ${fs}px ${c.mono}`; const mas = ctx.measureText(' + ').width;
+    const poner = (l, ladoT) => l.forEach((sp, k) => {
+      if (k){ ctx.fillStyle = c.muted; ctx.textBaseline = 'middle'; ctx.textAlign = 'left'; ctx.fillText(' + ', x, y + hT/2); x += mas; }
+      ctx.font = `800 ${fs}px ${c.mono}`; const w = ctx.measureText(nombre(sp)).width + 14;
+      toks.push({ sp, lado:ladoT, etapa:i, x, y, w, h:hT }); x += w;
+    });
+    poner(fl.izq, 'r');
+    ctx.strokeStyle = c.ink; ctx.fillStyle = c.ink; flecha(ctx, x + 6, y + hT/2, x + 28, y + hT/2, c.ink, 2); x += 34;
+    poner(fl.der, 'p');
+  });
+  // Qué fichas se tachan: de cada especie, las primeras 'tachadas' de cada lado, en el orden de las etapas.
+  const pares = [];
+  if (v.tachar) for (const [sp, t] of Object.entries(R.tachadas)){
+    const iz = toks.filter(q => q.sp === sp && q.lado === 'r').slice(0, t), de = toks.filter(q => q.sp === sp && q.lado === 'p').slice(0, t);
+    iz.forEach((q, k) => pares.push([de[k], q]));
+  }
+  const colorDe = sp => { if (!v.roles) return null; const k = R.clase[sp]; return k === 'intermediario' ? c.int : k === 'catalizador' ? c.cat : null; };
+  for (const q of toks){
+    const col = colorDe(q.sp), grueso = col && D3.hl === (R.clase[q.sp] === 'intermediario' ? 'int' : 'cat');
+    rr(ctx, q.x, q.y, q.w, q.h, 8);
+    ctx.fillStyle = c.card; ctx.fill();
+    if (col){ ctx.save(); ctx.globalAlpha = .12; ctx.fillStyle = col; ctx.fill(); ctx.restore(); }
+    ctx.strokeStyle = col || c.ink; ctx.lineWidth = grueso ? 3.5 : col ? 2.4 : 1.4; ctx.stroke();
+    ctx.font = `800 ${fs}px ${c.mono}`; ctx.fillStyle = col || c.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(nombre(q.sp), q.x + q.w/2, q.y + q.h/2 + 1);
+  }
+  // Rayas de tachado (en dos tiempos) y la unión de cada par.
+  for (const [a, b] of pares){
+    const g = fase(0.05, 0.55), col = colorDe(a.sp) || c.ink;
+    for (const q of [a, b]){ ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = 2.6; ctx.lineCap = 'round';
+      linea(ctx, q.x + 4, q.y + q.h - 4, q.x + 4 + (q.w - 8)*g, q.y + q.h - 4 - (q.h - 8)*g); ctx.restore(); }
+    const g2 = fase(0.4, 0.8); if (g2 <= 0) continue;
+    const xa = a.x + a.w/2, ya = a.etapa < b.etapa ? a.y + a.h : a.y, xb = b.x + b.w/2, yb = a.etapa < b.etapa ? b.y : b.y + b.h;
+    ctx.save(); ctx.globalAlpha = g2; ctx.strokeStyle = col; ctx.lineWidth = 1.8; ctx.setLineDash([4, 3]);
+    ctx.beginPath(); ctx.moveTo(xa, ya); ctx.bezierCurveTo(xa, (ya + yb)/2, xb, (ya + yb)/2, xb, yb); ctx.stroke(); ctx.restore();
+  }
+  for (const [t, yl] of rotulos) rotulo(ctx, c, pad, yl, t, c.muted, 'left', 800, 11);
+  // La suma (y la ley de la etapa lenta), solo después de responder.
+  const yG = y0 + filas.length*rowH + 8*(filas.length - 1) + 14, hG = H - yG - 6;
+  if (!v.global){ placeholder(c, pad, yG, W - 2*pad, Math.min(hG, 46), 'Responde para ver la suma'); return; }
+  const g3 = fase(0.75, 1);
+  ctx.save(); ctx.globalAlpha = g3;
+  ctx.font = `800 11px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+  ctx.fillText('Al sumar y tachar queda la reacción global:', pad, yG);
+  let f2 = chico ? 15 : 17; const eq = ecuacion(R.global);
+  do { ctx.font = `800 ${f2}px ${c.mono}`; } while (ctx.measureText(eq).width > W - 2*pad && --f2 > 10);
+  ctx.fillStyle = c.ink; ctx.textBaseline = 'middle'; ctx.fillText(eq, pad, yG + 28);
+  if (v.ley){
+    const t = `etapa lenta → ${leyTxt(LN)}`; ctx.font = `800 ${chico ? 13 : 15}px ${c.mono}`; ctx.fillStyle = c.v;
+    ctx.fillText(t, pad, yG + 56);
+    if (D3.hl === 'v'){ const w = ctx.measureText(t).width; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; ctx.strokeRect(pad - 3, yG + 46, w + 6, 20); }
+  }
+  ctx.restore();
+}
+function placeholder(c, x, y, w, h, t){
+  ctx.save(); ctx.setLineDash([4, 4]); ctx.strokeStyle = c.line; ctx.lineWidth = 1.5; rr(ctx, x, y, w, h, 10); ctx.stroke(); ctx.restore();
+  ctx.font = `700 12px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(t, x + w/2, y + h/2);
+}
+// Perfil de dos etapas (MC.perfilDosEtapas). Los niveles se leen en el eje. Al responder: flechas de Ea desde cada valle
+// y ΔH; después, los nombres de las cimas (‡) y del valle.
+function perfil2(c, v){
+  const p = PF, P = PP, chico = W < 560;
+  const x0 = chico ? 46 : 58, x1 = W - 12, top = 30, bot = H - (chico ? 34 : 38), w = x1 - x0;
+  const lo = Math.min(p.R, p.I, p.P) - 16, hi = Math.max(p.TS1, p.TS2) + 22;
+  const Y = e => top + (hi - e)/(hi - lo)*(bot - top);
+  const X = { r0:x0 + 2, r1:x0 + w*0.11, c1:x0 + w*0.31, v:x0 + w*0.5, c2:x0 + w*0.69, p0:x0 + w*0.86, p1:x1 };
+  ctx.font = `700 11px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+  ctx.fillText('Energía (kJ/mol) · perfil de una reacción en dos etapas', 8, 6);
+  // Eje y marcas de los cinco niveles, con guías a trazos hasta cada punto.
+  ctx.strokeStyle = c.muted; ctx.lineWidth = 1.3; linea(ctx, x0 - 6, top - 6, x0 - 6, bot + 2); linea(ctx, x0 - 6, bot + 2, x1, bot + 2);
+  const niveles = [[p.TS1, X.c1], [p.TS2, X.c2], [p.R, X.r1], [p.I, X.v], [p.P, X.p0]].sort((a, b) => b[0] - a[0]);
+  let yPrev = -1e9;
+  for (const [e, xe] of niveles){
+    ctx.save(); ctx.setLineDash([2, 3]); ctx.strokeStyle = c.muted; ctx.globalAlpha = .7; ctx.lineWidth = 1; linea(ctx, x0 - 6, Y(e), xe, Y(e)); ctx.restore();
+    const yl = Math.max(Y(e), yPrev + 12); yPrev = yl;
+    ctx.font = `700 ${chico ? 10 : 11}px ${c.mono}`; ctx.fillStyle = c.ink; ctx.textAlign = 'right'; ctx.textBaseline = 'middle'; ctx.fillText(fmt(e, 0), x0 - 10, yl);
+  }
+  // La curva.
+  ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.6; ctx.beginPath(); ctx.moveTo(X.r0, Y(p.R)); ctx.lineTo(X.r1, Y(p.R));
+  const tramo = (xa, ea, xb, eb) => { const d = (xb - xa)*0.45; ctx.bezierCurveTo(xa + d, Y(ea), xb - d, Y(eb), xb, Y(eb)); };
+  tramo(X.r1, p.R, X.c1, p.TS1); tramo(X.c1, p.TS1, X.v, p.I); tramo(X.v, p.I, X.c2, p.TS2); tramo(X.c2, p.TS2, X.p0, p.P); ctx.lineTo(X.p1, Y(p.P)); ctx.stroke(); ctx.restore();
+  ctx.font = `700 ${chico ? 10 : 11}px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
+  ctx.textBaseline = 'top'; ctx.fillText('reactivos', X.r0 + 2, Y(p.R) + 4); ctx.textAlign = 'right'; ctx.fillText('productos', X.p1, Y(p.P) + 3);
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  ctx.fillText('etapa 1', (X.r1 + X.v)/2, bot + 5); ctx.fillText('etapa 2', (X.v + X.p0)/2, bot + 5);
+  ctx.textAlign = 'right'; ctx.font = `700 ${chico ? 9 : 10}px ${c.font}`; ctx.fillText('avance (no es el tiempo) →', x1, bot + 18);
+  if (v.ea){
+    const g = fase(0, 0.7);
+    const ea = (x, de, a, txt, lenta, der) => {   // der: rótulo a la derecha de la flecha (la segunda, en pantalla grande)
+      const lw = (D3.hl === 'Ea' ? 1.6 : 1)*(lenta ? 3.6 : 2.2), yA = Y(de) + (Y(a) - Y(de))*g;
+      ctx.save(); ctx.setLineDash([2, 3]); ctx.strokeStyle = c.Ea; ctx.lineWidth = 1; linea(ctx, x - 26, Y(de), x + 4, Y(de)); ctx.restore();
+      flecha(ctx, x, Y(de), x, yA + 1, c.Ea, lw);
+      const xr = der ? x + 6 : x - 6, al = der ? 'left' : 'right';
+      if (g >= 1){ rotulo(ctx, c, xr, (Y(de) + Y(a))/2 - (lenta ? 8 : 0), txt, c.Ea, al, 800, chico ? 10 : 11);
+        if (lenta) rotulo(ctx, c, xr, (Y(de) + Y(a))/2 + 10, 'la lenta', c.Ea, al, 800, chico ? 10 : 11); }
+    };
+    ea(X.c1, p.R, p.TS1, `Ea₁ = ${fmt(P.Ea1, 0)}`, P.lenta === 1);
+    ea(X.c2, p.I, p.TS2, `Ea₂ = ${fmt(P.Ea2, 0)}`, P.lenta === 2, !chico);
+    if (g >= 1){
+      const xh = X.p0 + (X.p1 - X.p0)*0.3;
+      ctx.save(); ctx.setLineDash([2, 3]); ctx.strokeStyle = c.dH; ctx.lineWidth = 1; linea(ctx, X.r1, Y(p.R), xh + 4, Y(p.R)); ctx.restore();
+      flecha(ctx, xh, Y(p.R), xh, Y(p.P) - 1, c.dH, D3.hl === 'dH' ? 3.5 : 2.2);
+      rotulo(ctx, c, xh - 5, (Y(p.R) + Y(p.P))/2 + 14, `ΔH = ${fmt(P.dH, 0)}`, c.dH, 'right', 800, chico ? 10 : 11);
+    }
+  }
+  if (v.nombres){
+    const g = fase(0, 0.6); ctx.save(); ctx.globalAlpha = g;
+    for (const x of [X.c1, X.c2]){ const e = x === X.c1 ? p.TS1 : p.TS2; ctx.font = `800 ${chico ? 14 : 16}px ${c.font}`; ctx.fillStyle = c.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom'; ctx.fillText('‡', x, Y(e) - 3); }
+    rotulo(ctx, c, (X.c1 + X.c2)/2, top - 2, '‡ complejos activados', c.ink, 'center', 800, chico ? 10 : 11);
+    ctx.fillStyle = c.int; ctx.beginPath(); ctx.arc(X.v, Y(p.I), D3.hl === 'int' ? 7 : 5.5, 0, Math.PI*2); ctx.fill();
+    rotulo(ctx, c, X.v, Y(p.I) + 14, 'intermediario', c.int, 'center', 800, chico ? 10 : 11);
+    ctx.restore();
+  }
+}
+// Curva del medicamento: mediciones cada hora unidas con rectas (como interpola el motor). Al responder, la secante.
+function curva(c, v){
+  const chico = W < 560, x0 = chico ? 46 : 58, x1 = W - 14, top = 30, bot = H - 40, tmax = 6, cmax = 0.14;
+  const X = t => x0 + t/tmax*(x1 - x0), Y = y => bot - y/cmax*(bot - top);
+  ctx.font = `700 11px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+  ctx.fillText('Concentración en la sangre (mg/mL)', 8, 6);
+  ctx.strokeStyle = c.grid; ctx.lineWidth = 1; ctx.font = `600 10px ${c.mono}`; ctx.fillStyle = c.muted; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+  for (let k = 0; k <= 7; k++){ const y = k*0.02; linea(ctx, x0, Y(y), x1, Y(y)); ctx.fillText((y).toFixed(2).replace('.', ','), x0 - 5, Y(y)); }
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  for (let t = 0; t <= tmax; t++){ linea(ctx, X(t), top, X(t), bot); ctx.fillText(String(t), X(t), bot + 4); }
+  ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4; linea(ctx, x0, bot, x1, bot); linea(ctx, x0, top, x0, bot);
+  ctx.font = `800 11px ${c.font}`; ctx.fillStyle = c.ink; ctx.textAlign = 'right'; ctx.textBaseline = 'top'; ctx.fillText('t (h)', x1, bot + 18);
+  ctx.save(); ctx.strokeStyle = c.F; ctx.lineWidth = D3.hl === 'F' ? 4.5 : 3; ctx.lineJoin = 'round'; ctx.beginPath();
+  CURVA.forEach(([t, y], k) => { if (k) ctx.lineTo(X(t), Y(y)); else ctx.moveTo(X(t), Y(y)); }); ctx.stroke();
+  ctx.fillStyle = c.F; for (const [t, y] of CURVA){ ctx.beginPath(); ctx.arc(X(t), Y(y), 3.8, 0, Math.PI*2); ctx.fill(); }
+  ctx.restore();
+  if (!v.secante) return;
+  const g = fase(0, 0.7), xa = X(T1), ya = Y(VM.c1), xb = X(T2), yb = Y(VM.c2);
+  ctx.save(); ctx.setLineDash([4, 3]); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4;
+  linea(ctx, xa, ya, xa + (xb - xa)*g, ya); if (g >= 1) linea(ctx, xb, ya, xb, yb); ctx.restore();
+  ctx.strokeStyle = c.v; ctx.lineWidth = D3.hl === 'v' ? 5 : 3.4; ctx.lineCap = 'round'; linea(ctx, xa, ya, xa + (xb - xa)*g, ya + (yb - ya)*g);
+  if (g < 1) return;
+  rotulo(ctx, c, (xa + xb)/2, ya - 10, `Δt = ${fmt(VM.dt, 0)} h`, c.ink, 'center', 800, 11);
+  rotulo(ctx, c, xb - 6, ya + 16, `Δc = ${fmt(VM.dc, 2)}`, c.ink, 'right', 800, 11);
+  rotulo(ctx, c, X(tmax) - 4, Y(0.02), `v media = ${fmt(VM.rapidez, 2)} kg/(m³·h)`, c.v, 'right', 800, chico ? 10 : 11);
+  ctx.fillStyle = c.F; ctx.beginPath(); ctx.arc(X(VM.tMax), Y(VM.cMax), 6, 0, Math.PI*2); ctx.fill();
+  rotulo(ctx, c, X(VM.tMax) - 8, Y(VM.cMax) - 2, `máx. ${fmt(VM.cMax, 2)}`, c.F, 'right', 800, 11);
+}
+D3.pintar = () => {
+  if (modo.hidden || !medir()) return;
+  const c = { ...colores(), int:css('--c-int'), cat:css('--c-cat'), F:css('--c-F') }; ctx.clearRect(0, 0, W, H);
+  const v = D3.v; if (v.tipo === 'fichas') fichas(c, v); else if (v.tipo === 'perfil') perfil2(c, v); else curva(c, v);
+};
+D3.dibujar = () => { D3.pintar(); if (D3.B) D3.B.despertar(); };
+D3.B = Celular.bucle(cv, (dt, now) => {
+  if (D3.anim){ D3.f = Math.max(0, Math.min(1, (now - D3.t0)/1400)); if (D3.f >= 1) D3.anim = false; }
+  D3.pintar(); return D3.anim;
+});
+D3.animar = () => { if (RM){ D3.f = 1; D3.anim = false; } else { D3.f = 0; D3.t0 = performance.now(); D3.anim = true; } D3.dibujar(); };
+new ResizeObserver(() => D3.dibujar()).observe(cv);
+alRedibujarTema(() => D3.dibujar());
+ESCENAS.push(D3);   // resaltar() también lo redibuja
+
+function leyenda(v){
+  const it = [], sw = (col, t) => `<span><i style="background:var(--c-${col})"></i>${t}</span>`;
+  if (v.tipo === 'fichas'){
+    it.push('<span>cada ficha, una partícula de esa etapa</span>');
+    if (v.roles){ const R = MECS[v.mec].res; if (R.intermediarios.length) it.push(sw('int', 'intermediario')); if (R.catalizadores.length) it.push(sw('cat', 'catalizador'));
+      it.push('<span>ficha tachada: se cancela al sumar</span>'); }
+    if (v.ley) it.push(sw('v', 'v · ley de velocidad'));
+  } else if (v.tipo === 'perfil'){
+    it.push('<span>números del eje: energía en kJ/mol</span>');
+    if (v.ea) it.push(sw('Ea', 'Ea · desde donde empieza cada etapa'), sw('dH', 'ΔH · de los reactivos a los productos'));
+    if (v.nombres) it.push('<span>‡ complejo activado (cima)</span>', sw('int', 'intermediario (valle)'));
+  } else {
+    it.push(sw('F', 'c · concentración del medicamento'));
+    if (v.secante) it.push(sw('v', 'v media · pendiente de la secante'));
+  }
+  return it.join('');
+}
+D3.describir = () => {
+  const v = D3.v; let t;
+  if (v.tipo === 'fichas'){
+    const m = MECS[v.mec];
+    t = `Fichas de las etapas: ${m.etapas.map((e, i) => `etapa ${i + 1}${m.lenta ? (m.lenta === i + 1 ? ', lenta' : ', rápida') : ''}, ${ecuacion(e)}`).join('; ')}.`;
+    if (v.tachar) t += ` Se tachan ${Object.keys(m.res.tachadas).map(nombre).join(' y ')} a los dos lados. Global: ${ecuacion(m.res.global)}.`;
+    if (v.roles) t += `${m.res.intermediarios.length ? ` Intermediario: ${m.res.intermediarios.map(nombre).join(', ')}.` : ''}${m.res.catalizadores.length ? ` Catalizador: ${m.res.catalizadores.map(nombre).join(', ')}.` : ''}`;
+    if (v.ley) t += ` Ley de la etapa lenta: ${leyTxt(LN)}.`;
+  } else if (v.tipo === 'perfil'){
+    t = `Perfil de energía con dos lomas. Niveles en kJ/mol: reactivos ${fmt(PF.R, 0)}, primera cima ${fmt(PF.TS1, 0)}, valle ${fmt(PF.I, 0)}, segunda cima ${fmt(PF.TS2, 0)}, productos ${fmt(PF.P, 0)}.`;
+    if (v.ea) t += ` Ea de la etapa 1: ${fmt(PP.Ea1, 0)}; de la etapa 2, desde el valle: ${fmt(PP.Ea2, 0)}; la lenta es la etapa ${PP.lenta}. ΔH = ${fmt(PP.dH, 0)}.`;
+    if (v.nombres) t += ' En las cimas, complejos activados; en el valle, el intermediario.';
+  } else {
+    t = `Concentración del medicamento en la sangre, en mg/mL, cada hora: ${CURVA.map(([h, y]) => `${h} h, ${fmt(y, 3)}`).join('; ')}.`;
+    if (v.secante) t += ` Secante entre las ${T1} h y las ${T2} h: baja ${fmt(-VM.dc, 2)} en ${fmt(VM.dt, 0)} h; velocidad media ${fmt(VM.rapidez, 2)} kg/(m³·h).`;
+  }
+  $('desc3').textContent = t;
+};
+
+/* ----- Los pasos ----- */
+const hip = 'Esta opción es una hipótesis nuestra, sin estudio que la mida.';
+const G1 = { id:'mecanismos-intermediario', ok:'c', opts:[
+  ['a', nombre(MP.errores.enVariasEtapas[0]), 'AQ-int-repetido', 'hipotesis'],
+  ['b', nombre(MP.errores.intercambio.intermediarios[0]), 'AQ-cat-por-intermediario', 'hipotesis'],
+  ['c', nombre(MP.intermediarios[0])],
+  ['d', nombre(MP.errores.enVariasEtapas[1]), 'AQ-int-producto', 'hipotesis']],
+  fb:{ c:`¡Bien! El IO⁻ sale en la etapa 1 y entra en la 2: aparece primero como producto y después como reactivo. Se forma y se gasta; por eso se tacha y no queda en la ecuación global.`,
+    a:`Elegiste la 1. El H₂O₂ entra en las dos etapas, pero no vuelve a salir: se gasta, y es el reactivo de la global. Un intermediario tiene que formarse en una etapa y gastarse en otra. ${hip} La correcta está marcada.`,
+    b:`Elegiste la 2. El I⁻ entra en la etapa 1 y vuelve a salir en la 2: eso es un catalizador. El intermediario va al revés: primero sale y después entra. ${hip} La correcta está marcada.`,
+    d:`Elegiste la 4. El H₂O sale en las dos etapas y no se gasta en ninguna: es un producto de la global. Un intermediario se forma y después se gasta. ${hip} La correcta está marcada.` } };
+const G2 = { id:'mecanismos-catalizador', ok:'a', opts:[
+  ['a', nombre(MO.catalizadores[0])],
+  ['b', nombre(MO.errores.intercambio.catalizadores[0]), 'AQ-int-por-catalizador', 'hipotesis'],
+  ['c', nombre(MO.errores.enVariasEtapas[0]), 'AQ-cat-repetido', 'hipotesis'],
+  ['d', 'O₃', 'AQ-cat-se-gasta', 'hipotesis']],
+  fb:{ a:'¡Bien! El Cl entra en la etapa 1 y vuelve a salir en la 2: se gasta y se regenera, sale igual que entró. Por eso un poco de cloro destruye muchísimo ozono.',
+    b:`Elegiste la 2. El ClO sale en la etapa 1 y entra en la 2: se forma y se gasta, es el intermediario. El catalizador va al revés: entra primero y se regenera después. ${hip} La correcta está marcada.`,
+    c:`Elegiste la 3. El O₂ sale en las dos etapas y nunca entra: es el producto de la global. Un catalizador entra y vuelve a salir. ${hip} La correcta está marcada.`,
+    d:'Elegiste la 4. El O₃ entra en la etapa 1 y no vuelve a salir: se gasta, es un reactivo de la global. El catalizador no se gasta: se recupera entero al final. Esta opción es una hipótesis nuestra, relacionada con la idea de que el catalizador no participa (Çakmakçı, 2010, sin cifra verificada). La correcta está marcada.' } };
+const lOpc = e => `${leyTxt(e)}, orden ${fmt(e.ordenTotal, 0)}`;
+const G3 = { id:'mecanismos-ley', ok:'c', opts:[
+  ['a', lOpc(LN.errores.coeficientes), 'CI9-coeficiente', 'parcial'],
+  ['b', lOpc(LN.errores.otraEtapa), 'CI11-etapa-rapida', 'parcial'],
+  ['c', lOpc(LN)],
+  ['d', lOpc(LN.errores.sumaEtapas), 'AQ-ley-suma-etapas', 'hipotesis']],
+  fb:{ c:'¡Bien! La etapa lenta fija la velocidad, y sus coeficientes son los órdenes: es una etapa elemental, un solo choque.',
+    a:`Elegiste la 1. Esa ley usa los coeficientes de la ecuación global, que no es una etapa: en una reacción de varias etapas los órdenes no se leen de la global. Tomar los órdenes de los coeficientes es una idea documentada incluso en profesores (Kolomuç y Tekin, 2011, según Bain y Towns, 2016), sin cifra. La correcta está marcada.`,
+    b:`Elegiste la 2. Esa es la ley de la etapa rápida: espera a que la lenta le dé NO₃, así que no decide la velocidad. Que la etapa lenta no es la que fija la velocidad lo describe un estudio con futuros profesores (Taştan Kırık, Yalçınkaya y Boz, 2010), sin cifra verificada. La correcta está marcada.`,
+    d:`Elegiste la 4. No se suman las etapas: la velocidad la fija solo la lenta. El CO entra después, en la etapa rápida, y no cambia lo rápido que va la lenta. ${hip} La correcta está marcada.` } };
+const eaLenta = e => (e.lenta === 1 ? e.Ea1 : e.Ea2);
+const pOpc = e => `La etapa ${e.lenta}, con Ea = ${fmt(eaLenta(e), 0)} kJ/mol`;
+const G4 = { id:'mecanismos-perfil', ok:'b', opts:[
+  ['a', pOpc(PP.errores.desdeCero), 'AQ-Ea-desde-cero', 'hipotesis'],
+  ['b', pOpc(PP)],
+  ['c', pOpc(PP.errores.desdeReactivos), 'AQ-Ea-cima-mas-alta', 'hipotesis'],   // cubre dos errores: las dos Ea desde los reactivos y «la cima más alta es la lenta»
+  ['d', pOpc(PP.errores.inversa), 'AQ-Ea-inversa', 'hipotesis']],
+  fb:{ b:`¡Bien! La segunda loma empieza en el valle (${fmt(PF.I, 0)}), no en los reactivos: Ea₂ = ${fmt(PF.TS2, 0)} − (${fmt(PF.I, 0)}) = ${fmt(PP.Ea2, 0)} kJ/mol, más que Ea₁ = ${fmt(PP.Ea1, 0)}. La segunda etapa es la lenta, aunque su cima esté más abajo.`,
+    a:`Elegiste la 1. ${fmt(PF.TS1, 0)} es la altura de la primera cima en el eje, no su barrera: la Ea se mide desde donde empieza la etapa. ${hip} La correcta está marcada.`,
+    c:`Elegiste la 3. Mediste las dos lomas desde los reactivos, o tomaste la cima más alta como la lenta. Pero el valle está ${fmt(-PP.dH1, 0)} kJ/mol por debajo de los reactivos: casi todo baja hasta ahí y se queda, y para salir necesita subir ${fmt(PP.Ea2, 0)}. Esa barrera es la que frena. ${hip} La correcta está marcada.`,
+    d:`Elegiste la 4. ${fmt(PP.EaInv2, 0)} es lo que se baja desde la segunda cima hasta los productos: la Ea de esa etapa al revés. La Ea de ida se mide desde el valle donde empieza la etapa 2. ${hip} La correcta está marcada.` } };
+const G5 = { id:'mecanismos-valle', ok:'d', opts:[
+  ['a', 'En las cimas, intermediarios; en el valle, un complejo activado', 'CI12-cimas-intermedios', 'parcial'],
+  ['b', 'En las cimas, los productos de cada etapa; en el valle, un intermediario', 'AQ-complejo-producto', 'hipotesis'],
+  ['c', 'En las cimas, complejos activados; en el valle, el catalizador', 'AQ-valle-catalizador', 'hipotesis'],
+  ['d', 'En las cimas, complejos activados; en el valle, un intermediario']],
+  fb:{ d:'¡Bien! En cada cima está el complejo activado: los átomos a medio camino, un instante. En el valle, el intermediario: una especie que dura un rato, hasta que la segunda etapa la gasta.',
+    a:'Elegiste la 1. Es al revés: lo que dura un rato está en un valle; en lo más alto de la loma no se queda nada. Leer las cimas como intermediarios aparece en un estudio con universitarios de química orgánica: lo hicieron 10 de los 17 estudiantes que comentaron ese rasgo del diagrama, en una muestra de 36 (Popova y Bretz, 2018, citado vía buscador; cifra por verificar). La correcta está marcada.',
+    b:`Elegiste la 2. El complejo activado no es un producto: no se puede guardar ni separar, se deshace en un instante hacia un lado o hacia el otro. Los productos están al final, abajo a la derecha. ${hip} La correcta está marcada.`,
+    c:`Elegiste la 3. El catalizador no queda en un valle del perfil: en el valle está el intermediario, que la etapa 1 forma y la etapa 2 gasta. El catalizador, en cambio, se recupera al final. ${hip} La correcta está marcada.` } };
+const vOpc = x => `${cientifica(Math.abs(x))} kg/(m³·h)`;
+const G6 = { id:'mecanismos-velocidad-media', ok:'b', opts:[
+  ['a', vOpc(VM.errores.soloMasa), 'AQ-mg-a-kg-sin-volumen', 'hipotesis'],
+  ['b', vOpc(VM.valor)],
+  ['c', vOpc(VM.errores.sinTiempo), 'AQ-vmedia-sin-tiempo', 'hipotesis'],
+  ['d', vOpc(VM.errores.soloVolumen), 'AQ-mL-a-m3-sin-masa', 'hipotesis']],
+  fb:{ b:`¡Bien! Baja ${fmt(-VM.dc, 2)} mg/mL en ${fmt(VM.dt, 0)} h: ${fmt(VM.rapidez, 2)} mg/(mL·h). Y 1 mg/mL es lo mismo que 1 kg/m³.`,
+    a:`Elegiste la 1. Pasaste los miligramos a kilogramos (× 10⁻⁶), pero los mililitros también cambian: 1 mL = 10⁻⁶ m³. Las dos potencias de diez se cancelan. ${hip} La correcta está marcada.`,
+    c:`Elegiste la 3. ${fmt(-VM.dc, 2)} es lo que bajó la concentración, no la velocidad: falta dividir entre las ${fmt(VM.dt, 0)} horas. ${hip} La correcta está marcada.`,
+    d:`Elegiste la 4. Pasaste los mililitros a metros cúbicos (÷ 10⁻⁶), pero los miligramos también cambian: 1 mg = 10⁻⁶ kg. Las dos potencias de diez se cancelan. ${hip} La correcta está marcada.` } };
+
+const fichasV = (mec, r, extra) => ({ tipo:'fichas', mec, roles:r, tachar:r, global:r, ...(extra ? extra(r) : {}) });
+const steps = [
+ { k:'Paso 1', t:'Etapas que se suman', vista:() => fichasV('peroxido', false),
+   body:() => `<p class="problem">El agua oxigenada (H₂O₂) se descompone sola muy despacio. Con yoduro (I⁻) disuelto, se propone que ocurre en dos etapas:</p>
+   ${listaEtapas(MECS.peroxido)}
+   <p>Un mecanismo es la lista de las etapas, cada una de un solo choque. Para hallar la reacción global se suman: todo lo de la izquierda junto, todo lo de la derecha junto, y se tacha lo que aparece igual a los dos lados.</p>
+   <p>Entre lo que se tacha puede haber dos tipos de especie. Un <b>intermediario</b> se forma en una etapa y se gasta en otra posterior. Un <b>catalizador</b> se gasta en una etapa y se regenera en otra posterior. Ninguno de los dos queda en la ecuación global.</p>
+   <p class="hint">En el dibujo, cada ficha es una partícula de esa etapa. En el paso siguiente se tachan.</p>` },
+ { k:'Paso 2', t:'El intermediario: predice', gate:G1, vista:r => fichasV('peroxido', r),
+   body:() => `<p>En el mecanismo del agua oxigenada con yoduro, ¿cuál es el intermediario?</p>${listaEtapas(MECS.peroxido)}${opcionesHTML(G1.opts, 'fb3')}<div id="res3" class="body"></div>`,
+   res:() => `<div class="eqs">${sumaHTML(MECS.peroxido)}</div>
+   <p>El ${I_('IO⁻')} es el intermediario: sale en la etapa 1 y entra en la 2. El ${K_('I⁻')} también se tacha, pero en el orden contrario: entra en la etapa 1 y vuelve a salir en la 2. Es el catalizador.</p>
+   <p>El catalizador sí participa: se combina con el H₂O₂ y abre otro camino, más rápido. Por eso un poco de yoduro hace que burbujee oxígeno mucho más rápido. No está en la ecuación global, pero se recupera entero al final.</p>
+   <p class="fuente">Que el catalizador no participa en la reacción es una idea descrita en Çakmakçı (2010), sin cifra verificada. Las opciones de esta pregunta son hipótesis nuestras.</p>` },
+ { k:'Paso 3', t:'El catalizador: predice', gate:G2, vista:r => fichasV('ozono', r),
+   body:() => `<p>En la estratósfera, el ozono se destruye en dos etapas en las que participa el cloro. ¿Cuál es el catalizador?</p>${listaEtapas(MECS.ozono)}${opcionesHTML(G2.opts, 'fb3')}<div id="res3" class="body"></div>`,
+   res:() => `<div class="eqs">${sumaHTML(MECS.ozono)}</div>
+   <p>El ${K_('Cl')} es el catalizador: entra en la etapa 1 y vuelve a salir en la 2. El ${I_('ClO')} es el intermediario: sale en la 1 y entra en la 2. Los dos se tachan; lo que los distingue es el orden.</p>
+   <p>Como el cloro se recupera, vuelve a empezar: cada átomo de cloro destruye muchísimas moléculas de ozono antes de salir de la estratósfera.</p>
+   <p class="fuente">Las opciones de esta pregunta son hipótesis nuestras: no encontramos estudios que midan la confusión entre catalizador e intermediario.</p>` },
+ { k:'Paso 4', t:'La ley de velocidad: predice', gate:G3, vista:r => fichasV('no2', r, q => ({ ley:q })),
+   body:() => `<p>El dióxido de nitrógeno y el monóxido de carbono reaccionan según ${nw(ecuacion(MN.global))}, pero en dos etapas:</p>${listaEtapas(MECS.no2)}<p>¿Cuál es la ley de velocidad, y su orden global?</p>${opcionesHTML(G3.opts, 'fb3')}<div id="res3" class="body"></div>`,
+   res:() => `<div class="eqs">
+     <div class="eq"><span class="ex">etapa lenta: ${nw(ecuacion(MECS.no2.etapas[0]))}</span></div>
+     <div class="eq"><span class="ex">${v_('v')} = ${leyTxt(LN).slice(4)}</span><span class="note">Orden ${fmt(LN.ordenes.NO2, 0)} en NO₂ y ${fmt(LN.ordenTotal, 0)} en total. El CO no aparece: su orden es cero, aunque es reactivo de la global.</span></div>
+   </div>
+   <p>Como el tramo más angosto de una tubería, la etapa lenta decide cuánto pasa por segundo. Es de un solo choque (dos NO₂), así que sus coeficientes son sus órdenes. El ${I_('NO₃')} que forma se gasta enseguida en la etapa rápida.</p>
+   <p>¿Y si la etapa lenta tuviera un intermediario? Como no se mide, se reemplaza con el equilibrio de la etapa rápida anterior. Por ejemplo, el ozono solo: ${nw(ecuacion(OZ[0], '⇌'))} (rápida, en equilibrio) y ${nw(ecuacion(OZ[1]))} (lenta). Con [O] = K₁·[O₃]/[O₂] queda ${nw(leyTxt(LOZ, LOZ.constante))}, de orden ${fmt(LOZ.ordenTotal, 0)}.</p>
+   <p class="fuente">Tomar los órdenes de los coeficientes de la ecuación es una idea documentada incluso en profesores (Kolomuç y Tekin, 2011, según Bain y Towns, 2016), sin cifra. Que la etapa lenta no fija la velocidad lo describe un estudio con futuros profesores (Taştan Kırık, Yalçınkaya y Boz, 2010), sin cifra verificada. La opción 4 es una hipótesis nuestra.</p>` },
+ { k:'Paso 5', t:'Dos lomas: predice', gate:G4, vista:r => ({ tipo:'perfil', ea:r, nombres:false }),
+   body:() => `<p>Otra reacción ocurre en dos etapas. Su perfil de energía tiene dos lomas; en el eje están las energías de los reactivos, de las dos cimas, del valle entre ellas y de los productos, en kJ/mol. ¿Qué etapa es la lenta, y cuál es su energía de activación?</p>${opcionesHTML(G4.opts, 'fb3')}<div id="res3" class="body"></div>`,
+   res:() => `<div class="eqs">
+     <div class="eq"><span class="ex">${Ea_('Ea₁')} = ${fmt(PF.TS1, 0)} − ${fmt(PF.R, 0)} = ${Ea_(fmt(PP.Ea1, 0))} kJ/mol</span><span class="note">Desde los reactivos, donde empieza la etapa 1.</span></div>
+     <div class="eq"><span class="ex">${Ea_('Ea₂')} = ${fmt(PF.TS2, 0)} − (${fmt(PF.I, 0)}) = ${Ea_(fmt(PP.Ea2, 0))} kJ/mol</span><span class="note">Desde el valle, donde empieza la etapa 2.</span></div>
+     <div class="eq"><span class="ex">${dH_('ΔH')} = ${fmt(PF.P, 0)} − ${fmt(PF.R, 0)} = ${dH_(fmt(PP.dH, 0))} kJ/mol</span><span class="note">De los reactivos a los productos: la reacción libera calor. No es la altura de los productos en el eje.</span></div>
+   </div>
+   <p>La lenta es la de mayor barrera, medida desde su propio valle: la etapa ${PP.lenta}, aunque su cima está más abajo que la primera. Si el valle quedara por encima de los reactivos, mandaría la cima más alta. Lo que queda en el valle, ${fmt(-PP.dH1, 0)} kJ/mol por debajo de los reactivos, tiene que subir ${fmt(PP.Ea2, 0)} kJ/mol para seguir.</p>
+   <p>El eje horizontal es el avance de la reacción, no el tiempo: de izquierda a derecha, los reactivos se van convirtiendo en productos.</p>
+   <p class="fuente">Las opciones de esta pregunta son hipótesis nuestras: medir la Ea desde el cero del eje o leer la de vuelta no tienen un estudio que los mida. Leer el eje del perfil como tiempo está descrito en universitarios (Popova y Bretz, 2018), sin cifra verificada.</p>` },
+ { k:'Paso 6', t:'Cimas y valle: predice', gate:G5, vista:r => ({ tipo:'perfil', ea:true, nombres:r }),
+   body:() => `<p>En el mismo perfil, ¿qué hay en las dos cimas y qué hay en el valle entre ellas?</p>${opcionesHTML(G5.opts, 'fb3')}<div id="res3" class="body"></div>`,
+   res:() => `<p>En cada cima está un <b>complejo activado</b> (se marca con ‡): los átomos a medio camino entre el antes y el después de esa etapa, con algunos enlaces medio rotos y otros medio formados. Dura un instante y no se puede guardar en un frasco.</p>
+   <p>En el valle está el ${I_('intermediario')}: una especie de verdad, como el IO⁻ del paso 2, que dura un rato hasta que la segunda etapa la gasta. Un perfil con dos lomas tiene dos complejos activados y un intermediario.</p>
+   <p class="fuente">Leer las cimas como intermediarios aparece en un estudio con universitarios de química orgánica: lo hicieron 10 de los 17 estudiantes que comentaron ese rasgo del diagrama, en una muestra de 36 (Popova y Bretz, 2018, citado vía buscador; cifra por verificar). Las opciones 2 y 3 son hipótesis nuestras.</p>` },
+ { k:'Paso 7', t:'Velocidad media: predice', gate:G6, vista:r => ({ tipo:'curva', secante:r }),
+   body:() => `<p>Un medicamento tomado por la boca pasa a la sangre y después se elimina. La gráfica muestra su concentración (${F_('c')}) en la sangre, en mg/mL, medida cada hora. Entre las ${T1} h y las ${T2} h, ¿con qué velocidad media baja la concentración, en kg/(m³·h)?</p>${opcionesHTML(G6.opts, 'fb3')}<div id="res3" class="body"></div>`,
+   res:() => `<div class="eqs">
+     <div class="eq"><span class="ex">${v_('v media')} = − ${fr('Δ' + F_('c'), 'Δt')} = − ${fr(F_(fmt(VM.c2, 2)) + ' − ' + F_(fmt(VM.c1, 2)), T2 + ' − ' + T1)} = ${v_(fmt(VM.rapidez, 2))} mg/(mL·h)</span><span class="note">El signo menos es porque la concentración baja: la velocidad se da positiva.</span></div>
+     <div class="eq"><span class="ex">1 mg/mL = ${fr('10⁻⁶ kg', '10⁻⁶ m³')} = 1 kg/m³ = 1 g/L</span><span class="note">Los mg y los mL cambian por la misma potencia de diez: se cancelan.</span></div>
+     <div class="eq"><span class="ex">${v_('v media')} = ${v_(fmt(VM.rapidez, 2) + ' kg/(m³·h)')}</span></div>
+   </div>
+   <p>La concentración más alta es ${F_(fmt(VM.cMax, 2) + ' mg/mL')}, a las ${VM.tMax} h: hasta ahí entra más medicamento del que se elimina. La velocidad media es la pendiente de la secante entre los dos puntos, no la de la curva en un instante.</p>
+   <p class="fuente">Las opciones de esta pregunta son hipótesis nuestras: no encontramos estudios que midan estos errores de unidades.</p>` },
+];
+
+const S = { step:0, max:0, pred:{} };
+const dots = $('dots3');
+steps.forEach((s, n) => { const li = document.createElement('li'), b = document.createElement('button'); b.type = 'button'; b.textContent = n + 1; b.addEventListener('click', () => go(n)); li.appendChild(b); dots.appendChild(li); });
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : `Ir al ${steps[k].k.toLowerCase()}: ${steps[k].t}`);
+    if (k > S.max) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function nav(){
+  const s = steps[S.step], pend = s.gate && !S.pred[s.gate.id];
+  $('prev3').disabled = S.step === 0;
+  $('next3').disabled = S.step === steps.length - 1 || pend;
+  $('next3').textContent = pend ? 'Elige una opción' : 'Siguiente';
+}
+function compactar(on){ on = !!on; Celular.compactar(modo, on); if (D3.compacto !== on){ D3.compacto = on; D3.dibujar(); } }
+function pintarVista(){ const ley = leyenda(D3.v), el = $('ley3'); if (el.dataset.k !== ley){ el.dataset.k = ley; el.innerHTML = ley; } D3.describir(); }
+function go(n){
+  if (n < 0 || n >= steps.length || n > S.max) return;
+  S.step = n; const s = steps[n], r = s.gate ? !!S.pred[s.gate.id] : true;
+  D3.v = s.vista(r); D3.anim = false; D3.f = 1;
+  $('k3').textContent = `${s.k} de ${steps.length}`; $('t3').textContent = s.t;
+  $('body3').innerHTML = s.body();
+  pintarDots(); nav(); compactar(s.gate && !r);
+  if (s.gate) prediccion(s);
+  pintarVista(); D3.dibujar();
+}
+function prediccion(s){
+  const P = s.gate, btns = [...$('body3').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb3'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('res3').innerHTML = s.res();
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id]) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; if (S.max < S.step + 1) S.max = S.step + 1;
+    pintar(); pintarDots(); nav(); compactar(false);
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    $('next3').focus({ preventScroll:true });
+    const paso = S.step;
+    Celular.alResponder($('lz4'), () => { D3.v = s.vista(true); pintarVista(); D3.animar(); }, () => S.step === paso && !modo.hidden);
+  }));
+  pintar();
+}
+$('next3').addEventListener('click', () => { if (S.max < S.step + 1) S.max = S.step + 1; go(S.step + 1); });
+$('prev3').addEventListener('click', () => go(S.step - 1));
+addEventListener('modo', () => { if (!modo.hidden){ W = 0; D3.dibujar(); } });
+go(0);
+})();
+</script>
+
+<script>
 /* ================= Pestañas ================= */
 (function(){
-  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2'], ['#mecanismos', 'm3', 'tab3']];
   function route(){
     const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
     modos.forEach(([, m, t], j) => {

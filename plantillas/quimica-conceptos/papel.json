@@ -1,0 +1,118 @@
+{
+  "titulo": "Verdadero o falso de química: proposiciones para lápiz y papel",
+  "indicacion": "Marca V o F en cada proposición antes de mirar la respuesta. Para cada F, escribe la versión verdadera: si no puedes corregirla, todavía no sabes por qué es falsa.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Sobre los modelos atómicos: I. En el modelo de Thomson, el átomo es neutro: la carga de los electrones compensa la carga positiva. II. Bohr propuso que el electrón no emite energía mientras gira en una órbita permitida. III. Rutherford descubrió el electrón.",
+      "respuesta": "VVF",
+      "pasos": [
+        "I es V: los electrones incrustados compensan la esfera positiva; el átomo completo no tiene carga.",
+        "II es V: en el modelo de Bohr solo hay emisión o absorción cuando el electrón salta de una órbita a otra.",
+        "III es F: el electrón lo descubrió Thomson (1897) con los rayos catódicos; Rutherford propuso el núcleo."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Sobre las sustancias y las mezclas: I. El bronce es un elemento, porque es un metal. II. El diamante y el grafito son formas distintas del mismo elemento. III. El dióxido de carbono es un compuesto.",
+      "respuesta": "FVV",
+      "pasos": [
+        "I es F: el bronce es una aleación de cobre y estaño, es decir, una mezcla homogénea.",
+        "II es V: los dos son solo carbono, con sus átomos ordenados de otra manera (alótropos).",
+        "III es V: el CO₂ tiene dos elementos, carbono y oxígeno, en proporción fija."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Sobre las propiedades de los líquidos: I. En una ciudad a mayor altitud, el agua hierve a menor temperatura. II. Un líquido muy viscoso fluye con rapidez. III. Gracias a la tensión superficial, algunos insectos pueden caminar sobre el agua.",
+      "respuesta": "VFV",
+      "pasos": [
+        "I es V: un líquido hierve cuando su presión de vapor iguala a la presión externa; arriba la presión del aire es menor y basta menos temperatura.",
+        "II es F: la viscosidad es la resistencia a fluir; un líquido muy viscoso, como la miel, fluye lento.",
+        "III es V: la superficie del agua se comporta como una película tensa que sostiene objetos muy livianos."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Sobre la contaminación del aire: I. Los CFC dañan la capa de ozono. II. El monóxido de carbono es tóxico porque se une a la hemoglobina. III. El ozono de la estratósfera es un contaminante que daña los pulmones de las personas.",
+      "respuesta": "VVF",
+      "pasos": [
+        "I es V: el cloro que liberan los CFC en la estratósfera destruye moléculas de ozono.",
+        "II es V: el CO ocupa el lugar del oxígeno en la hemoglobina y la sangre transporta menos O₂.",
+        "III es F: el ozono de la estratósfera nos protege de la radiación ultravioleta; el que irrita los pulmones es el ozono que se forma cerca del suelo."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Sobre los nombres de los compuestos inorgánicos: I. El HNO₃ se llama ácido nítrico. II. El ion nitrito tiene la fórmula NO₃⁻. III. El Fe₂O₃ se llama óxido férrico. IV. El P₂O₅ es un óxido básico.",
+      "respuesta": "VFVF",
+      "pasos": [
+        "I es V: el nitrógeno actúa con +5, su mayor estado común, y lleva -ico.",
+        "II es F: el NO₃⁻ es el nitrato (del ácido nítrico); el nitrito es NO₂⁻ (del ácido nitroso).",
+        "III es V: en el Fe₂O₃ el hierro tiene +3, su mayor estado común: férrico.",
+        "IV es F: el fósforo es un no metal; su óxido forma ácido fosfórico con agua: es un óxido ácido."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Sobre las pilas: I. En una pila, los electrones van por el cable del cátodo al ánodo. II. En una pila, la oxidación ocurre en el ánodo. III. En la batería de plomo, el plomo metálico es el agente reductor.",
+      "respuesta": "FVV",
+      "pasos": [
+        "I es F: los electrones salen del ánodo, donde se pierden en la oxidación, y llegan al cátodo, donde se ganan.",
+        "II es V: por definición, el ánodo es el electrodo donde ocurre la oxidación.",
+        "III es V: el Pb pierde electrones (pasa de 0 a +2): se oxida, y por eso es el agente reductor."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Sobre el enlace y los sólidos: I. El NO₂ tiene un número impar de electrones de valencia. II. El cuarzo (SiO₂) está formado por moléculas de SiO₂ sueltas. III. El KCl fundido conduce la corriente eléctrica.",
+      "respuesta": "VFV",
+      "pasos": [
+        "I es V: 5 del nitrógeno y 6 de cada oxígeno suman 17; queda un electrón desapareado: el NO₂ es un radical.",
+        "II es F: el cuarzo es un sólido covalente de red: cada silicio está unido a cuatro oxígenos y la red no tiene moléculas sueltas.",
+        "III es V: al fundirse, los iones K⁺ y Cl⁻ quedan libres para moverse y llevar la carga."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Sobre las biomoléculas: I. La vitamina B12 tiene cobalto en su estructura. II. La maltosa es un azúcar reductor. III. Al desnaturalizarse, una proteína se descompone en glucosa. IV. La vitamina E es hidrosoluble.",
+      "respuesta": "VVFF",
+      "pasos": [
+        "I es V: el cobalto está en el centro de su anillo; por eso se llama cobalamina.",
+        "II es V: la maltosa conserva un extremo que puede abrirse y dar un grupo aldehído.",
+        "III es F: la desnaturalización solo cambia la forma de la proteína; sus aminoácidos siguen unidos, y una proteína no tiene glucosa.",
+        "IV es F: las vitaminas A, D, E y K son liposolubles."
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "intermedio",
+      "enunciado": "Sobre las soluciones reguladoras: I. Una mezcla de ácido acético y acetato de sodio es una solución reguladora. II. Una solución reguladora mantiene el mismo pH aunque se le agregue mucho ácido. III. Una solución de HCl y NaCl es una solución reguladora.",
+      "respuesta": "VFF",
+      "pasos": [
+        "I es V: es un ácido débil con su base conjugada (el ion acetato); cada uno neutraliza lo que se agrega del otro tipo.",
+        "II es F: solo amortigua cantidades pequeñas; si el ácido agregado gasta todo el acetato, el pH cae.",
+        "III es F: el HCl es un ácido fuerte y el Cl⁻ casi no acepta protones; hace falta un ácido débil con su base conjugada."
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "intermedio",
+      "enunciado": "Sobre la obtención de metales: I. En la flotación, el mineral cambia de composición química. II. La tostación de un sulfuro produce un óxido metálico y SO₂. III. En el alto horno, el coque aporta el monóxido de carbono que reduce el óxido de hierro.",
+      "respuesta": "FVV",
+      "pasos": [
+        "I es F: la flotación solo separa la mena de la ganga; el sulfuro sigue siendo el mismo sulfuro.",
+        "II es V: el azufre del sulfuro se une al oxígeno del aire y sale como dióxido de azufre; el metal queda como óxido.",
+        "III es V: el carbono del coque se quema y forma CO, que le quita el oxígeno al óxido de hierro y deja hierro metálico."
+      ]
+    }
+  ]
+}

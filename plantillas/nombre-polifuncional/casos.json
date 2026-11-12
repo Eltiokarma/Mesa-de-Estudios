@@ -1,0 +1,359 @@
+{
+  "plantilla": "nombre-polifuncional",
+  "nota": "Claves y reglas: ver la cabecera de generador.js (tipos, claves y reglas de nombre). La correcta se recalcula desde _datos.semi (la fórmula que ve el alumno) o desde _datos.smiles; en oxidacion, desde _datos.secuencia, _datos.sub, _datos.paso y _datos.j.",
+  "verificacion": "Verificado a ciegas (12 nov 2026) en 53 problemas distintos (25 casos y las semillas 100 a 129): SMILES armados a mano desde la semidesarrollada; cada alternativa de nombre pasada por OPSIN y comparada con RDKit; ésteres armados uniendo ácido y alcohol con RDKit; números de oxidación con la regla de la cabecera e hibridación con RDKit. Todas las claves coinciden. Los distractores que nombraban la misma molécula con la regla de 1993 se quitaron tras la revisión; los casos que cambiaron los recalculó la conversación principal.",
+  "casos": [
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "nombre",
+        "familia": "acidoSec",
+        "semi": "HOOC-CH2-CH2-CO-CH2-CH2-CH3",
+        "smiles": "C(=O)(O)CCC(=O)CCC"
+      },
+      "esperado": {
+        "clave": "nom:ácido 4-oxoheptanoico",
+        "texto": "ácido 4-oxoheptanoico"
+      }
+    },
+    {
+      "semilla": 120,
+      "entrada": {
+        "tipo": "nombre",
+        "familia": "acidoSec",
+        "semi": "HOOC-CH(OH)-CH(CH2-CH3)-CH3",
+        "smiles": "C(=O)(O)C(O)C(C)CC",
+        "dibujo": "rama"
+      },
+      "esperado": {
+        "clave": "nom:ácido 2-hidroxi-3-metilpentanoico",
+        "texto": "ácido 2-hidroxi-3-metilpentanoico"
+      }
+    },
+    {
+      "semilla": 31,
+      "entrada": {
+        "tipo": "nombre",
+        "familia": "diacido",
+        "semi": "HOOC-CO-CH(CH3)-CH2-CH2-CH2-COOH",
+        "smiles": "C(=O)(O)C(=O)C(C)CCCC(=O)(O)"
+      },
+      "esperado": {
+        "clave": "nom:ácido 3-metil-2-oxoheptanodioico",
+        "texto": "ácido 3-metil-2-oxoheptanodioico"
+      }
+    },
+    {
+      "semilla": 17,
+      "entrada": {
+        "tipo": "nombre",
+        "familia": "tricarboxilico",
+        "semi": "HOOC-CH(OH)-CH(COOH)-CH2-CH2-COOH",
+        "smiles": "C(C(=O)O)(O)C(C(=O)O)CC(C(=O)O)"
+      },
+      "esperado": {
+        "clave": "nom:ácido 1-hidroxibutano-1,2,4-tricarboxílico",
+        "texto": "ácido 1-hidroxibutano-1,2,4-tricarboxílico"
+      }
+    },
+    {
+      "semilla": 20,
+      "entrada": {
+        "tipo": "nombre",
+        "familia": "tricarboxilico",
+        "semi": "HOOC-CH2-C(COOH)(OH)-CH2-CH2-COOH",
+        "smiles": "C(C(=O)O)C(C(=O)O)(O)CC(C(=O)O)"
+      },
+      "esperado": {
+        "clave": "nom:ácido 2-hidroxibutano-1,2,4-tricarboxílico",
+        "texto": "ácido 2-hidroxibutano-1,2,4-tricarboxílico"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "nombre",
+        "familia": "diolEnIno",
+        "semi": "HOCH2-C≡C-CH=CH-CH2OH",
+        "smiles": "C(O)C=CC#CC(O)"
+      },
+      "esperado": {
+        "clave": "nom:hex-2-en-4-ino-1,6-diol",
+        "texto": "hex-2-en-4-ino-1,6-diol"
+      }
+    },
+    {
+      "semilla": 28,
+      "entrada": {
+        "tipo": "nombre",
+        "familia": "diolEnIno",
+        "semi": "CH≡C-CH(OH)-CH=CH-CH2OH",
+        "smiles": "C(O)C=CC(O)C#C"
+      },
+      "esperado": {
+        "clave": "nom:hex-2-en-5-ino-1,4-diol",
+        "texto": "hex-2-en-5-ino-1,4-diol"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "nombre",
+        "familia": "bifuncional",
+        "semi": "CH3-CH(OH)-CH2-CH2-C(NH2)(CH3)-CH3",
+        "smiles": "CC(O)CCC(N)(C)C"
+      },
+      "esperado": {
+        "clave": "nom:5-amino-5-metilhexan-2-ol",
+        "texto": "5-amino-5-metilhexan-2-ol"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "nombre",
+        "familia": "azucar",
+        "semi": "HOCH2-CH(OH)-CHO",
+        "smiles": "C(=O)C(O)C(O)"
+      },
+      "esperado": {
+        "clave": "nom:2,3-dihidroxipropanal",
+        "texto": "2,3-dihidroxipropanal"
+      }
+    },
+    {
+      "semilla": 26,
+      "entrada": {
+        "tipo": "nombre",
+        "familia": "azucar",
+        "semi": "HOCH2-CO-CH(OH)-CH2OH",
+        "smiles": "C(O)C(=O)C(O)C(O)"
+      },
+      "esperado": {
+        "clave": "nom:1,3,4-trihidroxibutan-2-ona",
+        "texto": "1,3,4-trihidroxibutan-2-ona"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "nombre",
+        "familia": "aminoacido",
+        "semi": "HOCH2-CH2-CH(NH2)-COOH",
+        "smiles": "C(=O)(O)C(N)CC(O)"
+      },
+      "esperado": {
+        "clave": "nom:ácido 2-amino-4-hidroxibutanoico",
+        "texto": "ácido 2-amino-4-hidroxibutanoico"
+      }
+    },
+    {
+      "semilla": 53,
+      "entrada": {
+        "tipo": "nombre",
+        "familia": "aminoacido",
+        "semi": "HOOC-CH(NH2)-CH2-CH2-CH2-C6H4-OH",
+        "smiles": "C(=O)(O)C(N)CCC(c1ccc(O)cc1)"
+      },
+      "esperado": {
+        "clave": "nom:ácido 2-amino-5-(4-hidroxifenil)pentanoico",
+        "texto": "ácido 2-amino-5-(4-hidroxifenil)pentanoico"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "nombre",
+        "familia": "aromatico",
+        "semi": "C(COOH)=C(NH2)-CH=CH-C(NH2)=CH-",
+        "smiles": "c1(C(=O)O)c(N)ccc(N)c1"
+      },
+      "esperado": {
+        "clave": "nom:ácido 2,5-diaminobenzoico",
+        "texto": "ácido 2,5-diaminobenzoico"
+      }
+    },
+    {
+      "semilla": 125,
+      "entrada": {
+        "tipo": "nombre",
+        "familia": "aromatico",
+        "semi": "C(COOH)=CH-C(CH3)=CH-CH=C(NH2)-",
+        "smiles": "c1(C(=O)O)cc(C)ccc1(N)"
+      },
+      "esperado": {
+        "clave": "nom:ácido 2-amino-5-metilbenzoico",
+        "texto": "ácido 2-amino-5-metilbenzoico"
+      }
+    },
+    {
+      "semilla": 141,
+      "entrada": {
+        "tipo": "cadena",
+        "familia": "tricarboxilico",
+        "semi": "HOOC-CH2-CH2-C(COOH)(OH)-CH2-COOH",
+        "smiles": "C(C(=O)O)C(C(=O)O)(O)CC(C(=O)O)"
+      },
+      "esperado": {
+        "clave": 4,
+        "texto": "4 carbonos"
+      }
+    },
+    {
+      "semilla": 224,
+      "entrada": {
+        "tipo": "cadena",
+        "familia": "acidoSec",
+        "semi": "CH3-CH(CH2-CH3)-CO-COOH",
+        "smiles": "C(=O)(O)C(=O)C(C)CC",
+        "dibujo": "rama"
+      },
+      "esperado": {
+        "clave": 5,
+        "texto": "5 carbonos"
+      }
+    },
+    {
+      "semilla": 21,
+      "entrada": {
+        "tipo": "cadena",
+        "familia": "aminoacido",
+        "semi": "HOCH2-CH(NH2)-COOH",
+        "smiles": "C(=O)(O)C(N)C(O)"
+      },
+      "esperado": {
+        "clave": 3,
+        "texto": "3 carbonos"
+      }
+    },
+    {
+      "semilla": 18,
+      "entrada": {
+        "tipo": "sufijo",
+        "familia": "bifuncional",
+        "semi": "CH3-CH2-CH2-C(OH)(CH3)-CH2-CHO",
+        "smiles": "C(=O)CC(O)(C)CCC"
+      },
+      "esperado": {
+        "clave": "suf:aldehido",
+        "texto": "el aldehído (–CHO)"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "amina",
+        "semi": "HOCH2-CH2-NH2",
+        "smiles": "NCCO",
+        "grupos": [
+          "2-hidroxietil"
+        ]
+      },
+      "esperado": {
+        "clave": "am:primaria",
+        "texto": "amina primaria"
+      }
+    },
+    {
+      "semilla": 204,
+      "entrada": {
+        "tipo": "amina",
+        "semi": "(CH3)3C-NH2",
+        "smiles": "NC(C)(C)C",
+        "grupos": [
+          "terc-butil"
+        ]
+      },
+      "esperado": {
+        "clave": "am:primaria",
+        "texto": "amina primaria"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "ester",
+        "semi": "CH3-CH2-CH2-CH2-OOC-CH2-CH2-CH3",
+        "smiles": "CCCC(=O)OCCCC",
+        "acido": "ácido butanoico",
+        "alcohol": "butan-1-ol"
+      },
+      "esperado": {
+        "clave": "es:ácido butanoico|butan-1-ol",
+        "texto": "ácido butanoico y butan-1-ol"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "ester",
+        "semi": "HCOO-CH(CH3)-CH2-CH3",
+        "smiles": "C(=O)OC(C)CC",
+        "acido": "ácido metanoico",
+        "alcohol": "butan-2-ol"
+      },
+      "esperado": {
+        "clave": "es:ácido metanoico|butan-2-ol",
+        "texto": "ácido metanoico y butan-2-ol"
+      }
+    },
+    {
+      "semilla": 33,
+      "entrada": {
+        "tipo": "oxidacion",
+        "sub": "terminal",
+        "n": 2,
+        "paso": "estado",
+        "j": 1,
+        "secuencia": [
+          "CH3-CH3",
+          "CH3-CH2OH",
+          "CH3-CHO",
+          "CH3-COOH"
+        ]
+      },
+      "esperado": {
+        "clave": "eo:-1:sp3",
+        "texto": "−1 y sp³"
+      }
+    },
+    {
+      "semilla": 373,
+      "entrada": {
+        "tipo": "oxidacion",
+        "sub": "dos",
+        "n": 3,
+        "paso": "cambio",
+        "secuencia": [
+          "CH3-CH2-CH3",
+          "HOCH2-CH2-CH2OH",
+          "OHC-CH2-CHO",
+          "HOOC-CH2-COOH"
+        ]
+      },
+      "esperado": {
+        "clave": "hib:2",
+        "texto": "de propano-1,3-diol a propanodial"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "oxidacion",
+        "sub": "terminal",
+        "n": 2,
+        "paso": "serie",
+        "secuencia": [
+          "CH3-CH3",
+          "CH3-CH2OH",
+          "CH3-CHO",
+          "CH3-COOH"
+        ]
+      },
+      "esperado": {
+        "clave": "serie:-3,-1,1,3",
+        "texto": "−3; −1; +1; +3"
+      }
+    }
+  ]
+}

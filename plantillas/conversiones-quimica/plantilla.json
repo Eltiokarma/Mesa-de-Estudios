@@ -1,0 +1,16 @@
+{
+  "id": "conversiones-quimica",
+  "titulo": "Termómetros, lingotes e isótopos que se desintegran",
+  "formato": "predicciones",
+  "unidades": [
+    "quimica.materia-y-energia",
+    "quimica.liquidos-y-solidos",
+    "quimica.estructura-atomica"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

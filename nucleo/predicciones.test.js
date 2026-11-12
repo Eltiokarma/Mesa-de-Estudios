@@ -126,3 +126,13 @@ test('xml escapa el texto que va dentro de la figura de un problema', () => {
   assert.equal(P.xml('a < b & "c" > d'), 'a &lt; b &amp; &quot;c&quot; &gt; d');
   assert.equal(P.xml(12), '12');
 });
+
+test('formatear redondea bien los valores que en binario quedan justo debajo de la mitad', () => {
+  assert.equal(P.formatear(1.035), '1,04');
+  assert.equal(P.formatear(1.005), '1,01');
+  assert.equal(P.formatear(0.345), '0,35');
+  assert.equal(P.formatear(5.175), '5,18');
+  assert.equal(P.formatear(-2.675), '−2,68');
+  assert.equal(P.formatear(1.0349), '1,03');
+  assert.equal(P.formatear(0), '0');
+});

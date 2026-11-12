@@ -1,0 +1,150 @@
+{
+  "titulo": "Moléculas con varios grupos: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la pantalla, con unos 2 a 3 minutos por problema. En cada molécula sigue siempre el mismo orden: 1) ¿qué grupo da el sufijo? (ácido > aldehído > cetona > alcohol > amina); 2) ¿cuál es la cadena principal y cuántos carbonos tiene?; 3) ¿desde qué extremo se numera?; 4) escribe los prefijos en orden alfabético. Rodea con un color cada grupo funcional antes de empezar.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Escribe el nombre IUPAC de CH₃–CH(OH)–CH₂–CH₂–COOH.",
+      "respuesta": "ácido 4-hidroxipentanoico",
+      "pasos": [
+        "Grupos: un –COOH (ácido) y un –OH. El de mayor prioridad es el ácido: sufijo «ácido …oico»; el –OH va como prefijo, hidroxi.",
+        "Cadena: los 5 carbonos, contando el del –COOH, que es el C1. Raíz pent-.",
+        "Desde el C1 (el del –COOH), el –OH queda en el C4.",
+        "Nombre: ácido 4-hidroxipentanoico."
+      ],
+      "verificar": [{ "fn": "nombre", "args": ["CH3-CH(OH)-CH2-CH2-COOH"], "espera": "ácido 4-hidroxipentanoico" }]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Escribe el nombre IUPAC de CH₃–CO–CH₂–CH(OH)–CH₂–CH₃. ¿Por qué no se llama «4-oxohexan-2-ol»?",
+      "respuesta": "4-hidroxihexan-2-ona. No es «4-oxohexan-2-ol» porque la cetona tiene más prioridad que el alcohol: da el sufijo -ona y el –OH va como prefijo.",
+      "pasos": [
+        "Grupos: un C=O entre dos carbonos (cetona) y un –OH. Prioridad: cetona > alcohol. Sufijo -ona; prefijo hidroxi.",
+        "Cadena: 6 carbonos (hex-).",
+        "Se numera para dar el número más bajo a la cetona: desde la izquierda queda en el C2 (desde la derecha, en el C5). El –OH queda en el C4.",
+        "Nombre: 4-hidroxihexan-2-ona."
+      ],
+      "verificar": [{ "fn": "nombre", "args": ["CH3-CO-CH2-CH(OH)-CH2-CH3"], "espera": "4-hidroxihexan-2-ona" }]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Una molécula tiene la fórmula HOOC–CH₂–CH(COOH)–CH(OH)–CH₂–COOH. a) ¿Cuántos carbonos tiene su cadena principal? b) Escribe su nombre IUPAC.",
+      "respuesta": "a) 4 carbonos. b) ácido 3-hidroxibutano-1,2,4-tricarboxílico.",
+      "pasos": [
+        "Hay tres –COOH en una cadena abierta. Con más de dos, los tres se nombran con el sufijo -tricarboxílico y sus carbonos NO entran a la cadena.",
+        "Sin los C de los –COOH quedan 4 carbonos en fila: CH₂, CH, CH(OH) y CH₂. Raíz but-, tallo butano.",
+        "Numeración: los –COOH deben tener los números más bajos. Desde la izquierda cuelgan del C1, C2 y C4 (1,2,4); desde la derecha, del C1, C3 y C4 (1,3,4). Gana 1,2,4. El –OH queda en el C3.",
+        "Nombre: ácido 3-hidroxibutano-1,2,4-tricarboxílico. Si metes en la cadena los C de dos –COOH sale «ácido 3-carboxi-4-hidroxihexanodioico»: no es el nombre IUPAC actual, aunque algunos libros (con la regla de 1993) usan esa forma para la misma molécula."
+      ],
+      "verificar": [
+        { "fn": "nombre", "args": ["HOOC-CH2-CH(COOH)-CH(OH)-CH2-COOH"], "espera": "ácido 3-hidroxibutano-1,2,4-tricarboxílico" },
+        { "fn": "cadena", "args": ["HOOC-CH2-CH(COOH)-CH(OH)-CH2-COOH"], "espera": 4 }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "avanzado",
+      "enunciado": "Escribe el nombre IUPAC de HOCH₂–CH₂–C≡C–CH=CH–CH(OH)–CH₃. Un compañero numeró desde la derecha «para que el doble enlace tenga el número más bajo». ¿Qué nombre escribió y por qué está mal?",
+      "respuesta": "oct-5-en-3-ino-1,7-diol. El compañero escribió oct-3-en-5-ino-2,8-diol: está mal porque primero se numera para el grupo principal (los –OH: 1,7 es menor que 2,8); los enlaces múltiples deciden solo si los –OH empatan.",
+      "pasos": [
+        "Grupo principal: los dos –OH (no hay C=O ni –COOH). Sufijo -diol. Los enlaces C≡C y C=C van en el tallo.",
+        "Cadena: 8 carbonos (oct-).",
+        "Numeración por los –OH: desde la izquierda quedan en 1 y 7; desde la derecha, en 2 y 8. Gana la izquierda.",
+        "Con esa numeración el triple enlace está entre C3 y C4 (3-ino) y el doble entre C5 y C6 (5-en). En el nombre -en va antes que -in.",
+        "Nombre: oct-5-en-3-ino-1,7-diol."
+      ],
+      "verificar": [{ "fn": "nombre", "args": ["HOCH2-CH2-C≡C-CH=CH-CH(OH)-CH3"], "espera": "oct-5-en-3-ino-1,7-diol" }]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Un azúcar del ADN, en su forma abierta, es OHC–CH₂–CH(OH)–CH(OH)–CH₂OH. Escribe su nombre IUPAC como polihidroxialdehído (sin estereoquímica).",
+      "respuesta": "3,4,5-trihidroxipentanal",
+      "pasos": [
+        "Grupos: un –CHO (aldehído) y tres –OH. El aldehído tiene más prioridad: sufijo -al; los –OH van como hidroxi.",
+        "Cadena: 5 carbonos (pent-). El C del –CHO es el C1: no se empieza a numerar por el –CH₂OH.",
+        "Desde el –CHO: el C2 es el CH₂ sin –OH; los –OH están en C3, C4 y C5. Son tres: trihidroxi.",
+        "Nombre: 3,4,5-trihidroxipentanal."
+      ],
+      "verificar": [{ "fn": "nombre", "args": ["OHC-CH2-CH(OH)-CH(OH)-CH2OH"], "espera": "3,4,5-trihidroxipentanal" }]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Escribe el nombre IUPAC del aminoácido HOOC–CH(NH₂)–CH₂–CH₂–C₆H₅. ¿Por qué el sustituyente se llama fenil y no bencil?",
+      "respuesta": "ácido 2-amino-4-fenilbutanoico. Es fenil porque es C₆H₅– solo; bencil sería C₆H₅–CH₂–, y aquí ese CH₂ ya es parte de la cadena.",
+      "pasos": [
+        "Grupos: –COOH (principal: ácido …oico), –NH₂ (amino) y un anillo de benceno C₆H₅– (fenil).",
+        "Cadena: la que lleva el –COOH, 4 carbonos (but-); el anillo es una rama.",
+        "Desde el C del –COOH (C1): –NH₂ en el C2 y el fenil en el C4.",
+        "Orden alfabético: amino antes que fenil. Nombre: ácido 2-amino-4-fenilbutanoico."
+      ],
+      "verificar": [{ "fn": "nombre", "args": ["HOOC-CH(NH2)-CH2-CH2-C6H5"], "espera": "ácido 2-amino-4-fenilbutanoico" }]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Un anillo de benceno se escribe C(COOH)=CH–CH=C(OH)–CH=C(CH₃)– (el último C se une al primero). Escribe el nombre IUPAC del ácido.",
+      "respuesta": "ácido 4-hidroxi-2-metilbenzoico",
+      "pasos": [
+        "El –COOH es el grupo principal: el nombre base es ácido benzoico y el C que lo lleva es el C1.",
+        "Recorriendo el anillo en el sentido escrito, el –OH queda en el C4 y el –CH₃ en el C6 (4,6). En el otro sentido, el –CH₃ queda en el C2 y el –OH en el C4 (2,4).",
+        "Gana el conjunto más bajo, 2,4.",
+        "Orden alfabético: hidroxi antes que metil. Nombre: ácido 4-hidroxi-2-metilbenzoico."
+      ],
+      "verificar": [{ "fn": "anillo", "args": ["C(COOH)=CH-CH=C(OH)-CH=C(CH3)-"], "espera": "ácido 4-hidroxi-2-metilbenzoico" }]
+    },
+    {
+      "id": "p8",
+      "nivel": "básico",
+      "enunciado": "a) ¿Qué clase de amina es (CH₃)₂CH–NH–CH₃? b) El éster CH₃–CH₂–COO–CH₂–CH(CH₃)₂, ¿de qué ácido y de qué alcohol se obtiene?",
+      "respuesta": "a) Amina secundaria. b) Del ácido propanoico y del 2-metilpropan-1-ol.",
+      "pasos": [
+        "a) Se cuentan los carbonos unidos directamente al N: el del isopropil y el del metil. Son 2: amina secundaria. (Que el C del isopropil tenga dos C vecinos no importa: eso es para clasificar alcoholes.)",
+        "b) En R–CO–O–R′, el ácido es el lado del C=O con todos sus carbonos: CH₃–CH₂–CO– viene del ácido propanoico (3 C).",
+        "El alcohol es el grupo unido al O del puente, –CH₂–CH(CH₃)₂, con el –OH en el carbono que estaba unido al O: 2-metilpropan-1-ol."
+      ],
+      "verificar": [
+        { "fn": "amina", "args": ["(CH3)2CH-NH-CH3"], "espera": "secundaria" },
+        { "fn": "ester", "args": ["CH3-CH2-COO-CH2-CH(CH3)2"], "espera": ["ácido propanoico", "2-metilpropan-1-ol"] }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "intermedio",
+      "enunciado": "En la secuencia butano → butan-1-ol → butanal → ácido butanoico, el carbono del extremo se oxida. Da su número de oxidación y su hibridación en cada compuesto.",
+      "respuesta": "butano −3 y sp³; butan-1-ol −1 y sp³; butanal +1 y sp²; ácido butanoico +3 y sp².",
+      "pasos": [
+        "Regla: +1 por cada enlace a O (C=O cuenta +2), −1 por cada H y 0 por cada C.",
+        "Butano: CH₃ del extremo, 3 H y un C: −3. Butan-1-ol: CH₂OH, un O y 2 H: −1.",
+        "Butanal: CHO, un C=O (+2) y 1 H: +1. Ácido: COOH, C=O (+2) y –OH (+1), sin H: +3. Sube 2 en cada paso.",
+        "Hibridación: con solo enlaces simples, sp³ (butano y butan-1-ol); con un C=O, sp² (butanal y ácido). El C del –COOH no es sp³."
+      ],
+      "verificar": [
+        { "fn": "estado", "args": ["CH3-CH2-CH2-CH3"], "espera": { "eo": -3, "hib": "sp3" } },
+        { "fn": "estado", "args": ["CH3-CH2-CH2-CH2OH"], "espera": { "eo": -1, "hib": "sp3" } },
+        { "fn": "estado", "args": ["CH3-CH2-CH2-CHO"], "espera": { "eo": 1, "hib": "sp2" } },
+        { "fn": "estado", "args": ["CH3-CH2-CH2-COOH"], "espera": { "eo": 3, "hib": "sp2" } }
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Escribe el nombre IUPAC de HOOC–CH(CH₃)–CH(CH₂–CH₃)–CH₃. Ojo: la línea escrita no tiene por qué ser la cadena principal.",
+      "respuesta": "ácido 2,3-dimetilpentanoico",
+      "pasos": [
+        "Grupo principal: el –COOH (ácido …oico); su carbono es el C1.",
+        "Cadena: desde el C1, la línea escrita tiene 4 carbonos; pero si se sigue por el –CH₂–CH₃ colgado se llega a 5. La cadena principal es la más larga: 5 carbonos (pent-).",
+        "Por ese camino quedan dos ramas –CH₃, en el C2 y en el C3 (el CH₃ que estaba al final de la línea): 2,3-dimetil.",
+        "Nombre: ácido 2,3-dimetilpentanoico (no «ácido 3-etil-2-metilbutanoico»)."
+      ],
+      "verificar": [
+        { "fn": "nombre", "args": ["HOOC-CH(CH3)-CH(CH2-CH3)-CH3"], "espera": "ácido 2,3-dimetilpentanoico" },
+        { "fn": "cadena", "args": ["HOOC-CH(CH3)-CH(CH2-CH3)-CH3"], "espera": 5 }
+      ]
+    }
+  ]
+}
