@@ -239,13 +239,18 @@
     const alternativas = o.texto
       ? P.armarTexto({ correcta: o.correcta, errores: o.errores, rng })
       : P.armar({ correcta: o.correcta, errores: o.errores.filter(e => e && Number.isFinite(e.valor)), rng, texto: o.formato || (y => f(y) + (u ? ' ' + (y === 1 ? o.singular || u : u) : '')) });
-    const p = { id: `${ID}#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
+    // Solo las variables que de verdad aparecen (regla 4: ninguna declarada de adorno).
+    const usadas = new Set(), marca = x => { if (Array.isArray(x)) x.forEach(marca); else if (x && typeof x === 'object' && x.v) usadas.add(x.v); };
+    marca(o.enunciado); marca(o.pregunta); marca(o.solucion);
+    const variables = {}; for (const k of Object.keys(o.variables)) if (usadas.has(k)) variables[k] = o.variables[k];
+    const p = { id: `${ID}#${semilla}`, variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
       alternativas, solucion: o.solucion, respuesta: { valor: o.texto ? o.correcta.clave : o.correcta, unidad: u }, _datos: o.datos };
     if (o.figura) p.figura = o.figura;
     return p;
   }
 
   const REGLA = 'Un corte es recto y atraviesa todo lo que esté apilado. Entre corte y corte se pueden mover, girar y apilar las piezas, pero no doblarlas.';
+  const SIN_TOPE = ' La sierra corta cualquier cantidad de piezas apiladas (sin límite de capas).';
 
   // ---------- plancha ----------
   function tPlancha(rng, semilla) {
@@ -262,6 +267,7 @@
       ? ['Una tira de cartón está dividida en ', v('n', `${n} cuadraditos`), ' iguales, uno tras otro. Se quiere separar todos los cuadraditos. ', REGLA]
       : ['Una plancha de triplay está cuadriculada en ', v('m', `${m} filas`), ' y ', v('n', `${n} columnas`), ' de cuadraditos iguales. Se quiere separar todos los cuadraditos. ', REGLA];
     if (c) enunciado.push(' La sierra puede cortar a la vez ', v('c', `a lo más ${c} piezas apiladas`), '.');
+    else enunciado.push(SIN_TOPE);
     const pregunta = ['¿Cuántos cortes se necesitan como mínimo?'];
     const sinLim = log2arriba(m) + log2arriba(n);
     const errores = [
@@ -275,8 +281,8 @@
     let solucion;
     if (!c) {
       solucion = [
-        [`Apilando todo, cada corte puede partir por la mitad todas las piezas que hay. A lo largo, `, v('n', `${n}`), ` cuadraditos piden ${log2arriba(n)} cortes (cada corte a lo más duplica: 1, 2, 4, 8, 16…, hasta pasar de ${n}).`],
-        tira ? ['La tira tiene un solo cuadradito de ancho: no hace falta cortar a lo ancho.'] : [`A lo ancho, `, v('m', `${m}`), ` filas piden ${log2arriba(m)} cortes más.`],
+        [`Apilando todo, cada corte puede partir por la mitad todas las piezas que hay. A lo largo, `, v('n', `${n}`), ` cuadraditos piden ${log2arriba(n)} corte${log2arriba(n) === 1 ? '' : 's'} (cada corte a lo más duplica: 1, 2, 4, 8, 16…, hasta pasar de ${n}).`],
+        tira ? ['La tira tiene un solo cuadradito de ancho: no hace falta cortar a lo ancho.'] : [`A lo ancho, `, v('m', `${m}`), ` filas piden ${log2arriba(m)} corte${log2arriba(m) === 1 ? '' : 's'} más.`],
         [`No se puede menos: un corte parte cada pieza a lo más en dos y en un solo sentido. Total: ${log2arriba(n)}${tira ? '' : ` + ${log2arriba(m)}`} = ${f(r)}.`],
       ];
     } else {
@@ -327,7 +333,7 @@
     for (let i = 1; i < F; i++) if (celdas[i].some((z, j) => celdas[i - 1][j] !== z)) lineas++;
     const variables = { p: { nombre: 'piezas', color: 'o' } };
     const enunciado = [`Una cartulina cuadriculada de ${F} × ${C} tiene una letra en cada casilla. Se quiere cortarla en `, v('p', `${k} piezas`), ': ',
-      lista(grupos.map(g => g.length === 1 ? g : g.split('').join('-'))), ' (las casillas unidas con guion quedan juntas; en el dibujo, cada pieza tiene borde grueso). ', REGLA];
+      lista(grupos.map(g => g.length === 1 ? g : g.split('').join('-'))), ' (las casillas unidas con guion quedan juntas; en el dibujo, cada pieza tiene borde grueso). ', REGLA, SIN_TOPE];
     const pregunta = ['¿Cuántos cortes se necesitan como mínimo?'];
     const errores = [
       h('RMP35-pieza-por-pieza', k - 1, `Cortaste sin apilar: cada corte suelta una pieza más, y para ${k} piezas salen ${k - 1}. Apilando, un corte separa varias piezas a la vez.`),
@@ -395,6 +401,7 @@
     const pide = rng.elegir(['vertices', 'cada']);
     let p = rng.entero(2, 5), q = rng.entero(2, 5);
     if (mcd(p, q) !== 1) return null;
+    if (p < q) [p, q] = [q, p];   // el largo (A) es el lado mayor
     const e = pide === 'cada' ? rng.elegir([2, 3, 4, 5]) : null;
     const g = pide === 'cada' ? e * rng.entero(2, 4) : rng.elegir([6, 8, 9, 10, 12, 15, 18, 20, 24]);
     const A = p * g, B = q * g;
@@ -448,6 +455,7 @@
     else t = q > 0 ? `${r} − ${f(-p)}` : `−${f(-p)} − ${r}`;
     return { clave: `rad:${p}:${q}`, texto: t + ' cm' };
   }
+  const aprox = x => Number.isInteger(x) ? f(x) : `unos ${P.formatear(x, 1)}`;
   const numTxt = n => ({ clave: `num:${n}`, texto: `${f(n)} cm` });
   function tEsquinas(rng, semilla) {
     const corte = rng.elegir(['cuadrado', 'triangulo', 'triangulo', 'octogono']);
@@ -497,7 +505,7 @@
       pregunta = ['¿Cuál es el perímetro del octógono?'];
       correcta = raiz(R.respuesta);
       errores = [
-        { id: 'RMP37-tercios', clave: `frac:${8 * L}/3`, texto: `${f(8 * L / 3)} cm`, explicacion: `Partiste el lado en tres partes iguales, pero entonces el corte de cada esquina (la hipotenusa) mediría ${f(L / 3)}√2, más que ${f(L / 3)}: los ocho lados no serían iguales.`, respaldo: 'hipotesis', fuente: null },
+        { id: 'RMP37-tercios', clave: `frac:${8 * L}/3`, texto: aprox(8 * L / 3) + ' cm', explicacion: `Partiste el lado en tres partes iguales, pero entonces el corte de cada esquina (la hipotenusa) mediría √2 veces un tercio del lado, más que el tercio del medio (${aprox(L / 3)} cm): los ocho lados no serían iguales.`, respaldo: 'hipotesis', fuente: null },
         e('RMP37-cateto', { p: 8 * L, q: -4 * L }, 'Calculaste 8 veces el cateto del triángulo que se quita (lo que se recorta de cada borde), no el lado del octógono.'),
         e('RMP37-no-cambia', 4 * L, 'Pensaste que el perímetro no cambia, pero cada corte cambia dos tramos del borde por un solo lado más corto: el perímetro disminuye.'),
       ];

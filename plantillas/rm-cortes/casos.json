@@ -2,7 +2,7 @@
   "plantilla": "rm-cortes",
   "tolerancia": 0,
   "nota": "Cortes rectos que atraviesan todo lo apilado; entre corte y corte las piezas se mueven, giran y apilan sin doblarse. c: piezas que admite la sierra por corte (null, sin límite). En arreglo, celdas da el número de pieza de cada casilla (las casillas con el mismo número deben quedar juntas). En esquinas la respuesta es una clave: 'num:x' (perímetro x cm) o 'rad:p:q' (p + q√2 cm).",
-  "verificacion": "",
+  "verificacion": "Verificación ciega (12 nov 2026, subagente verificador): 26 casos resueltos sin ver el generador. Planchas y cartulinas por BFS propio sobre los conjuntos de piezas (cada corte parte hasta c piezas, sin cortar piezas pedidas); estacas contando puntos de la cuadrícula; progresiones con fracciones exactas; octógonos en forma p + q√2. 26/26 coinciden. Tras la revisión solo cambiaron textos (sin límite de capas; largo como lado mayor), con las mismas respuestas.",
   "casos": [
     {
       "semilla": "entrada-1",
@@ -83,8 +83,8 @@
       "semilla": "salida-2",
       "entrada": {
         "tipo": "estacas",
-        "A": 30,
-        "B": 50,
+        "A": 50,
+        "B": 30,
         "e": 5,
         "pide": "cada"
       },
@@ -96,8 +96,8 @@
       "semilla": "salida-3",
       "entrada": {
         "tipo": "estacas",
-        "A": 60,
-        "B": 100,
+        "A": 100,
+        "B": 60,
         "e": null,
         "pide": "vertices"
       },
