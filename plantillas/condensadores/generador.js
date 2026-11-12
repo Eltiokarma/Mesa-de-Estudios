@@ -28,7 +28,10 @@
  * «Lo que no tiene respaldo» de docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md):
  *   CAP-como-resistencia  código nuevo: asociar condensadores con las reglas de las resistencias
  *                         (en serie se suman, en paralelo producto entre suma). Es la trampa 9 de
- *                         docs/clasificacion/trampas-admision-unmsm/fisica.md.
+ *                         docs/clasificacion/trampas-admision-unmsm/fisica.md. Respaldo parcial: el informe
+ *                         de electromagnetismo cita a Engelhardt y Beichner (2004) para sumar en serie.
+ *   CAP-reparto-como-resistencia  repartir el voltaje de una serie en proporción a C (hipótesis).
+ *   CAP-cuadrado-de-mas, CAP-cuadrado-diferencia, CAP-sin-convertir  códigos propios (hipótesis).
  *   CAP-*                 los demás errores propios del tema (todo en serie o en paralelo, voltaje
  *                         en partes iguales, la misma equivalente en serie y en paralelo, etc.).
  *   PR1, PR2, PR3, PR4, PR5, U2, U3 con sufijo: docs/investigacion/fisica-calculo-transversal-ideas-erroneas.md.
@@ -49,6 +52,8 @@
   const EN = 'docs/investigacion/estatica-energia-ideas-erroneas.md';
   const h = (id, valor, explicacion, fuente = EM) => ({ id, valor, explicacion, respaldo: 'hipotesis', fuente });
   const tr = (id, valor, explicacion) => h(id, valor, explicacion, TR);
+  // Asociar como resistencias (en serie, sumar capacidades): parcial, Engelhardt y Beichner (2004) en el informe.
+  const cr = (valor, explicacion) => ({ id: 'CAP-como-resistencia', valor, explicacion, respaldo: 'parcial', fuente: EM });
   const f = (x, d = 2) => P.formatear(x, d);
   const v = P.v;
   // Número "de examen": exacto con dos decimales como mucho.
@@ -156,7 +161,7 @@
     const enunciado = [`${NUM[F.n][0].toUpperCase() + NUM[F.n].slice(1)} condensadores, `, ...joinY(nombres(F.n, c)), ', se conectan así: ', ...F.texto(soloNombres(F.n))];
     const pregunta = ['¿Cuál es la ', v('x', 'capacidad equivalente'), ' de la asociación?'];
     const errores = [
-      h('CAP-como-resistencia', eq(T, 'res'), 'Usaste las reglas de las resistencias. En condensadores es al revés: en paralelo las capacidades se suman y en serie se combinan como 1/C = 1/C1 + 1/C2.'),
+      cr(eq(T, 'res'), 'Usaste las reglas de las resistencias. En condensadores es al revés: en paralelo las capacidades se suman y en serie se combinan como 1/C = 1/C1 + 1/C2.'),
       h('CAP-todo-paralelo', todoParalelo(T), 'Sumaste todas las capacidades, como si los condensadores estuvieran todos en paralelo. Hay grupos en serie: primero se reduce cada grupo con su regla.'),
       h('CAP-todo-serie', todoSerie(T), 'Combinaste todas las capacidades como si estuvieran todas en serie. Solo los grupos en serie se combinan así; los que están en paralelo se suman.'),
       h('CAP-solo-un-grupo', eq(T.s ? T.s[0] : T.p[0]), 'Esa es la capacidad de solo una parte del arreglo. Falta combinarla con el resto.'),
@@ -195,7 +200,7 @@
       const [a, b] = c;
       rama = F.id === 'T1' ? inv(a, b) : a + b; // el par, ya conocido
       errores = [
-        h('CAP-como-resistencia', res(Ceq), 'Usaste las reglas de las resistencias para combinar. En condensadores es al revés: en paralelo se suman y en serie se combinan con 1/C = 1/C1 + 1/C2.'),
+        cr(res(Ceq), 'Usaste las reglas de las resistencias para combinar. En condensadores es al revés: en paralelo se suman y en serie se combinan con 1/C = 1/C1 + 1/C2.'),
         h('CAP-par-como-x', rama, `Ese es el valor del par C1–C2, no el de ${nx}. Falta combinar el par con ${nx} y despejar.`),
         F.id === 'T1'
           ? h('CAP-despeje-signo', Ceq + rama, `Sumaste en vez de restar. En paralelo Ceq = C12 + ${nx}, así que ${nx} = Ceq − C12.`)
@@ -251,13 +256,13 @@
   ];
   function iguales(rng, semilla) {
     const A = rng.elegir(ARREGLOS);
-    const C = rng.elegir([2, 3, 4, 5, 6, 8, 9, 10, 12, 15, 20, 30]);
+    const C = rng.elegir([2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 18, 20, 24, 25, 30, 36, 40, 45, 60]);
     const Cp = A.n * C, T = A.arbol(C), correcta = eq(T);
     if (!limpio(correcta, 1)) return null;
     const enunciado = [`Se tienen ${NUM[A.n]} condensadores iguales. Conectados todos en paralelo, su capacidad equivalente es `, v('C', uF(Cp)), `. Luego se conectan así: ${A.texto}.`];
     const pregunta = ['¿Cuál es la ', v('x', 'capacidad equivalente'), ' del nuevo arreglo?'];
     const errores = [
-      h('CAP-como-resistencia', eq(A.arbol(C), 'res'), 'Usaste las reglas de las resistencias. En condensadores, en paralelo se suman y en serie se combinan con 1/C = 1/C1 + 1/C2.'),
+      cr(eq(A.arbol(C), 'res'), 'Usaste las reglas de las resistencias. En condensadores, en paralelo se suman y en serie se combinan con 1/C = 1/C1 + 1/C2.'),
       h('CAP-dato-como-C', eq(A.arbol(Cp)), `Usaste ${uF(Cp)} como la capacidad de cada condensador. Ese es el valor de los ${NUM[A.n]} en paralelo: cada uno tiene ${uF(Cp)}/${A.n}.`),
       h('CAP-todo-serie', C / A.n, `Esa es la capacidad de los ${NUM[A.n]} en serie. El arreglo mezcla serie y paralelo.`),
       tr('PR5-n-cuadrado', eq(A.arbol(Cp / (A.n * A.n))), `Dividiste el dato entre ${A.n}² para hallar cada capacidad. En paralelo, n condensadores iguales dan n·C, no n²·C: cada uno tiene ${uF(Cp)}/${A.n}.`),
@@ -280,13 +285,13 @@
       const correcta = n * n;
       const texto = x => (Number.isInteger(x) ? String(x) : P.textoFraccion([1, Math.round(1 / x)]));
       const enunciado = [`${NUM[n][0].toUpperCase() + NUM[n].slice(1)} condensadores iguales, de `, v('C', uF(C)), ' cada uno, se conectan en serie a una batería de ', v('V', `${V} V`),
-        '. Después se desconectan, se descargan, se vuelven a conectar todos en paralelo y se conectan a la misma batería.'];
+        `. Después se desconectan, se descargan, se vuelven a conectar ${n === 2 ? 'los dos' : 'todos'} en paralelo y se conectan a la misma batería.`];
       const pregunta = ['¿Cuál es la ', v('x', 'razón U(paralelo)/U(serie)'), ' entre la energía que guardan al final y la que guardaban al inicio?'];
       const errores = [
         tr('PR5-n-por-n2', n, `Pensaste que la energía crece ${n} veces. La capacidad equivalente pasa de C/${n} a ${n}·C: crece ${n}·${n} = ${n * n} veces, y con el mismo voltaje la energía ½·C·V² crece igual.`),
         h('CAP-cuenta-doble', n * n * n, `Multiplicaste la razón de capacidades (${n}²) otra vez por los ${n} condensadores. La capacidad equivalente ya los cuenta a todos: la razón es ${n}² = ${n * n}.`),
         h('CAP-energia-igual', 1, 'Supusiste que la energía no cambia porque son los mismos condensadores. Con el mismo voltaje, la energía depende de la capacidad equivalente, que cambia mucho.'),
-        h('CAP-como-resistencia', 1 / (n * n), `Usaste las reglas de las resistencias: en serie sumaste (${n}·C) y en paralelo dividiste (C/${n}). En condensadores es al revés, así que la energía crece, no baja.`),
+        cr(1 / (n * n), `Usaste las reglas de las resistencias: en serie sumaste (${n}·C) y en paralelo dividiste (C/${n}). En condensadores es al revés, así que la energía crece, no baja.`),
       ];
       const solucion = [
         [`En serie: `, v('C', limpio(C / n) ? `Cs = C/${n} = ${f(C / n)} µF` : `Cs = C/${n}`), `. En paralelo: `, v('C', `Cp = ${n}·C = ${uF(n * C)}`), '.'],
@@ -295,7 +300,7 @@
       return cerrar(rng, semilla, { correcta, errores, texto, unidad: '', ok: x => x > 0, enunciado, pregunta, solucion,
         datos: { tipo: 'n-iguales', sub, n, c: C, v: V } });
     }
-    const C = rng.elegir([6, 12, 18, 24, 30, 36, 48, 60, 72, 120]);
+    const C = rng.elegir([6, 8, 9, 12, 16, 18, 20, 24, 27, 30, 32, 36, 40, 45, 48, 60, 64, 72, 80, 90, 96, 120]);
     const correcta = C / n;
     if (!limpio(correcta, 1)) return null;
     const r = n * n;
@@ -304,8 +309,8 @@
     const pregunta = ['¿Cuál es la ', v('x', 'capacidad equivalente'), ' cuando están todos en serie?'];
     const errores = [
       tr('PR5-n-por-n2', C / r, `Tomaste la razón de energías (${r}) como el número de condensadores. Con el mismo voltaje, Up/Us = Cp/Cs = n·C ÷ (C/n) = n²: n = √${r} = ${n}.`),
-      h('CAP-como-resistencia', n * C, `Sumaste las capacidades en serie, como si fueran resistencias. En serie, n condensadores iguales dan C/n.`),
-      h('CAP-como-resistencia', r * C, `Tomaste la razón ${r} como el número de condensadores y además sumaste en serie, como con resistencias. Son ${n} condensadores, y en serie dan C/${n}.`),
+      cr(n * C, `Sumaste las capacidades en serie, como si fueran resistencias. En serie, n condensadores iguales dan C/n.`),
+      cr(r * C, `Tomaste la razón ${r} como el número de condensadores y además sumaste en serie, como con resistencias. Son ${n} condensadores, y en serie dan C/${n}.`),
       h('CAP-uno-solo', C, `Esa es la capacidad de un solo condensador. En serie, ${n} iguales dan C/${n}.`),
       h('CAP-paralelo-por-serie', n * C, `Esa es la capacidad de los ${n} en paralelo. En serie, n iguales dan C/n.`),
     ];
@@ -331,9 +336,9 @@
     const pregunta = ['¿Qué ', v('x', `voltaje hay en C${i + 1}`), '?'];
     const errores = [
       h('CAP-partes-iguales', V / cs.length, `Repartiste el voltaje en partes iguales. En serie todos tienen la misma carga, y V = Q/C: el de menor capacidad se lleva más voltaje.`),
-      h('CAP-como-resistencia', V * cs[i] / suma, `Repartiste el voltaje en proporción a las capacidades, como se hace con resistencias en serie. En condensadores es al revés: V = Q/C, así que al de mayor capacidad le toca menos.`),
+      h('CAP-reparto-como-resistencia', V * cs[i] / suma, `Repartiste el voltaje en proporción a las capacidades, como se hace con resistencias en serie. En condensadores es al revés: V = Q/C, así que al de mayor capacidad le toca menos.`),
       h('CAP-todo-el-voltaje', V, 'Ese es el voltaje de la batería, que se reparte entre los condensadores en serie. Cada uno tiene solo una parte.'),
-      h('CAP-como-resistencia', suma * V / cs[i], `Sumaste las capacidades para hallar la carga, como si estuvieran en paralelo. En serie, 1/Ceq = 1/C1 + 1/C2${cs.length === 3 ? ' + 1/C3' : ''}.`),
+      cr(suma * V / cs[i], `Sumaste las capacidades para hallar la carga, como si estuvieran en paralelo. En serie, 1/Ceq = 1/C1 + 1/C2${cs.length === 3 ? ' + 1/C3' : ''}.`),
     ];
     const solucion = [
       ['En serie, ', v('C', `1/Ceq = ${cs.map(c => '1/' + f(c)).join(' + ')}`), ', así que ', v('C', `Ceq = ${uF(Ceq)}`), '.'],
@@ -358,7 +363,7 @@
       h('CAP-carga-total', Q, 'Esa es la carga de toda la asociación, la misma que la de C3. En el par en paralelo esa carga se reparte entre C1 y C2.'),
       h('CAP-partes-iguales', Q / 2, 'Repartiste la carga del par en partes iguales. C1 y C2 tienen el mismo voltaje, así que cada uno guarda Q = C·V: el de mayor capacidad guarda más.'),
       h('CAP-todo-el-voltaje', c[0] * V, 'Pusiste todo el voltaje de la batería en C1. El par está en serie con C3, así que el voltaje se reparte entre el par y C3.'),
-      h('CAP-como-resistencia', Qr * c[0] / Cp, 'Calculaste la capacidad equivalente con las reglas de las resistencias. En condensadores, en paralelo se suman y en serie se combinan con inversos.'),
+      cr(Qr * c[0] / Cp, 'Calculaste la capacidad equivalente con las reglas de las resistencias. En condensadores, en paralelo se suman y en serie se combinan con inversos.'),
     ];
     const solucion = [
       ['C1 y C2 en paralelo: ', v('C', `C12 = ${f(c[0])} + ${f(c[1])} = ${uF(Cp)}`), '. En serie con C3: ', v('C', `Ceq = ${f(Cp)}·${f(c[2])}/(${f(Cp)} + ${f(c[2])}) = ${uF(Ceq)}`), '.'],
@@ -383,7 +388,7 @@
     const pregunta = ['¿Cuánta ', v('x', 'energía más'), ` guarda al final que al inicio? (Responde en ${u}.)`];
     const errores = [
       tr('PR3-sin-medio', 2 * correcta, 'Olvidaste el ½: la energía del condensador es U = ½·C·V².'),
-      tr('PR1-diferencia', 0.5 * C * 1e-6 * (V2 - V1) ** 2 * k, 'Elevaste al cuadrado la diferencia de voltajes. La energía va con V²: se restan las energías, ½·C·V2² − ½·C·V1², no ½·C·(V2 − V1)².'),
+      h('CAP-cuadrado-diferencia', 0.5 * C * 1e-6 * (V2 - V1) ** 2 * k, 'Elevaste al cuadrado la diferencia de voltajes. La energía va con V²: se restan las energías, ½·C·V2² − ½·C·V1², no ½·C·(V2 − V1)².'),
       h('CAP-final-por-cambio', U(V2) * k, 'Esa es la energía final, no lo que aumentó. Falta restar lo que ya guardaba a ' + V1 + ' V.'),
       tr('PR1-lineal', U(V1) * (kV - 1) * k, `Supusiste que la energía crece en proporción al voltaje. Va con V²: al multiplicar el voltaje por ${f(kV)}, la energía se multiplica por ${f(kV * kV)}.`),
     ];
@@ -411,7 +416,7 @@
     const errores = [
       h('CAP-misma-equivalente', V1, 'Usaste la misma capacidad equivalente en serie y en paralelo, así que te salió el mismo voltaje. En paralelo la capacidad es mucho mayor: hace falta menos voltaje.'),
       tr('PR2-raiz', V1 * Cs / Cp, `Olvidaste la raíz. De ½·Cs·V1² = ½·Cp·V2² sale V2² = V1²·Cs/Cp: V2 = V1·√(Cs/Cp).`),
-      h('CAP-como-resistencia', V1 / raz, 'Calculaste las equivalentes con las reglas de las resistencias (en serie sumaste), así que la razón te salió al revés. En condensadores, en paralelo se suman.'),
+      cr(V1 / raz, 'Calculaste las equivalentes con las reglas de las resistencias (en serie sumaste), así que la razón te salió al revés. En condensadores, en paralelo se suman.'),
     ];
     const solucion = [
       ['En serie: ', v('C', `Cs = ${f(c[0])}·${f(c[1])}/(${f(c[0])} + ${f(c[1])}) = ${uF(Cs)}`), '. En paralelo: ', v('C', `Cp = ${f(c[0])} + ${f(c[1])} = ${uF(Cp)}`), '.'],
@@ -456,14 +461,14 @@
   const EPS = 8.85e-12;
   const pF = x => `${f(x)} pF`;
   function plano(rng, semilla) {
-    const A = rng.elegir([50, 100, 150, 200, 300, 400, 500, 600, 800, 1000]), d = rng.elegir([0.5, 1, 1.5, 2, 3, 4, 5]);
+    const A = rng.elegir([50, 80, 100, 120, 150, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 1000]), d = rng.elegir([0.2, 0.25, 0.5, 0.8, 1, 1.5, 2, 2.5, 3, 4, 5]);
     const correcta = EPS * (A * 1e-4) / (d * 1e-3) * 1e12;
     if (!limpio(correcta, 2)) return null;
     const enunciado = ['Un condensador de placas paralelas tiene placas de ', v('C', `${A} cm²`), ' de área separadas ', v('C', `${f(d)} mm`), ' por aire.'];
     const pregunta = ['¿Cuál es su ', v('x', 'capacidad'), '? (Usa ε0 = 8,85 × 10⁻¹² C²/(N·m²) y responde en pF.)'];
     const errores = [
       tr('U3-cm2', correcta * 100, `Pasaste los cm² a m² dividiendo entre 100. Un metro tiene 100 cm, así que 1 m² = 100² = 10⁴ cm²: ${A} cm² = ${f(A * 1e-4, 4)} m².`),
-      tr('U3-sin-convertir', EPS * A / d * 1e12, 'No convertiste ni el área ni la separación. Con unidades del SI: A en m² (÷ 10⁴) y d en m (÷ 1000).'),
+      h('CAP-sin-convertir', EPS * A / d * 1e12, 'No convertiste ni el área ni la separación. Con unidades del SI: A en m² (÷ 10⁴) y d en m (÷ 1000).'),
       tr('U2-mm', correcta / 1000, `Usaste la separación en mm como si fueran metros. ${f(d)} mm = ${f(d * 1e-3, 4)} m.`),
       tr('U2-mm-como-cm', correcta / 10, `Pasaste los milímetros como si fueran centímetros. ${f(d)} mm = ${f(d * 1e-3, 4)} m, no ${f(d * 1e-2, 4)} m.`),
       h('CAP-sin-4pi', (A * 1e-4) / (9e9 * d * 1e-3) * 1e12, 'Escribiste C = A/(k·d) y olvidaste el 4π. Con k: C = A/(4π·k·d), que es lo mismo que ε0·A/d.'),
@@ -493,8 +498,8 @@
     const errores = [
       tr('PR4-separacion', C0 * fA * kd, 'Tomaste la capacidad como directamente proporcional a la separación. Es al revés: C = ε0·A/d, al separar las placas la capacidad baja.'),
       h('CAP-no-cambia', C0, 'Supusiste que la capacidad no cambia porque la carga es la misma. La capacidad depende solo de la forma: del área y de la separación.'),
-      tr('PR4-area', C0 / fA / kd, 'Invertiste las dos proporciones. C = ε0·A/d crece con el área y baja con la separación.'),
-      tr('PR1-cuadrado', C0 * fA / (kd * kd), 'Hiciste la capacidad inversa al cuadrado de la separación. C = ε0·A/d: es inversa a d, sin cuadrado.'),
+      tr('PR4-area', C0 / fA / kd, `Tomaste la capacidad como inversa al área: dividiste entre ${fA} en vez de multiplicar. C = ε0·A/d crece con el área.`),
+      h('CAP-cuadrado-de-mas', C0 * fA / (kd * kd), 'Hiciste la capacidad inversa al cuadrado de la separación. C = ε0·A/d: es inversa a d, sin cuadrado.'),
     ];
     const solucion = [
       ['C = ε0·A/d: crece con el área y es inversa a la separación. La carga no interviene.'],

@@ -165,8 +165,8 @@
 
   // ---- energia/razon-nula: q en 0, Q en a, m·q en a + b ----
   function razonNula(rng, semilla) {
-    const a = rng.elegir([1, 1, 2, 3]), b = rng.elegir([1, 1, 2, 3]), m = rng.elegir([1, 1, 2, 3, 4]);
-    const d = rng.elegir([10, 20, 30]);
+    const a = rng.elegir([1, 1, 2, 3, 4]), b = rng.elegir([1, 1, 2, 3, 4]), m = rng.elegir([1, 1, 2, 3, 4, 5]);
+    const d = rng.elegir([5, 10, 15, 20, 30]);
     // q·Q/a + Q·m·q/b + m·q²/(a + b) = 0  →  Q/q = −m/(a + b) ÷ (1/a + m/b)
     const correcta = -(m / (a + b)) / (1 / a + m / b);
     const enunciado = ['Tres cargas puntuales están sobre una recta: ', v('q', 'q'), ' en el punto A, ', v('x', 'Q'), ' en el punto B y ', v('q', m === 1 ? 'q' : `${m}q`), ' en el punto C, con q > 0. ',
@@ -192,8 +192,8 @@
   // ---- grafica: V = k·q/r de una carga puntual, leída en un punto ----
   const VAR_G = { V: { nombre: 'potencial', color: 'i' }, r: { nombre: 'distancia', color: 'o' }, q: { nombre: 'carga o campo', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
   function grafica(rng, semilla, sub) {
-    const q = rng.elegir([1, 2, 3, 4, 5, 6, 8, 10, 12]); // nC, positiva
-    const r1 = rng.elegir([0.1, 0.2, 0.3, 0.5, 0.6, 0.9, 1, 1.5, 2, 3]);
+    const q = rng.elegir([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 16, 18, 20]); // nC, positiva
+    const r1 = rng.elegir([0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.75, 0.8, 0.9, 1, 1.2, 1.5, 2, 2.5, 3]);
     const V1 = 9 * q / r1; // 9 × 10⁹ · 10⁻⁹ = 9
     if (!limpio(V1, 1)) return null;
     const fac = rng.elegir([2, 3, 4, 1 / 2, 1 / 3, 3 / 2, 2 / 3]);
@@ -208,7 +208,7 @@
         h('CS-inverso-cuadrado', V1 * (r1 / r2) ** 2, 'Hiciste el potencial inverso al cuadrado de la distancia, como el campo. El potencial de una carga puntual es V = kq/r: inverso a r, sin cuadrado.'),
         tr('PR4-potencial', V1 * r2 / r1, `Hiciste el potencial directamente proporcional a la distancia. La curva baja: al ${r2 > r1 ? 'alejarse' : 'acercarse'}, el potencial ${r2 > r1 ? 'baja' : 'sube'}, en la razón inversa de las distancias.`),
         h('CS-e-por-v', E2, 'Calculaste el campo, E = V/r, no el potencial. Con la gráfica V–r, el potencial en otro punto sale de V·r = constante.'),
-        h('CS-v-lineal', V1 - (V1 / r1) * (r2 - r1), 'Supusiste que la gráfica es una recta con pendiente V1/r1. Es una curva: V·r se mantiene constante.'),
+        h('CS-v-lineal', V1 - (V1 / r1) * (r2 - r1), `Leíste la gráfica como una recta que baja hasta cero en ${f(2 * r1)} m (el potencial bajando lo mismo por cada metro). No es una recta: V·r se mantiene constante, así que V2 = V1·r1/r2.`),
       ];
       const solucion = [
         ['Para una carga puntual, V = kq/r: el producto V·r no cambia. En el punto leído, ', v('V', 'V1'), '·', v('r', 'r1'), ` = ${f(V1)} · ${f(r1)} = ${f(V1 * r1)} V·m.`],
@@ -267,10 +267,19 @@
     'CS-distancia-arista': 'Usaste la arista como distancia de cada carga al centro de la cara opuesta. Esa distancia es √(a²/2 + a²): r² = 3a²/2.',
     'CS-distancia-diagonal-cara': 'Usaste la diagonal de una cara como distancia. Desde un vértice de una cara hasta el centro de la cara opuesta, r² = a²/2 + a² = 3a²/2.',
   };
+  const PERP = {
+    'tri-iguales': 'Sumaste los dos campos con Pitágoras, como si formaran 90°. En el triángulo equilátero forman 60°: R² = E² + E² + 2·E·E·cos 60°.',
+    'tri-opuestas': 'Sumaste los dos campos con Pitágoras, como si formaran 90°. Aquí forman 120°: R² = E² + E² + 2·E·E·cos 120° = E².',
+    'cuad-tres': 'Sumaste con Pitágoras el campo de la diagonal A–C y el de la diagonal B–D, como si las dos dejaran campo. Las cargas de A y C son iguales: sus campos se cancelan y solo queda la diagonal B–D.',
+  };
+  const PARES_CAMPO = [[1, 30], [2, 30], [3, 30], [4, 30], [5, 30], [6, 30], [7, 30], [8, 30], [9, 30], [1, 10], [2, 10], [3, 10], [4, 10],
+    [1, 15], [2, 15], [3, 15], [4, 20], [8, 20], [4, 60], [8, 60], [9, 45], [9, 90]];
   function campo(rng, semilla, sub) {
     const ids = Object.keys(CONFIG).filter(k => CONFIG[k].sub === sub);
     const id = rng.elegir(ids), C = CONFIG[id];
-    const [q, acm] = rng.elegir([[1, 30], [2, 30], [3, 30], [4, 30], [5, 30], [6, 30], [1, 10], [2, 10], [3, 10], [4, 20], [4, 60], [9, 90]]);
+    const [q, acm] = rng.elegir(PARES_CAMPO);
+    const sg = rng.elegir([1, 1, -1]); // con todas las cargas de signo contrario, el módulo no cambia
+    const S = s => (s * sg > 0 ? '+' : '−');
     const a = acm / 100;
     const B = 9e9 * q * 1e-6 / (a * a); // N/C
     const m = B / 1e5;
@@ -279,40 +288,41 @@
     const texto = x => (Math.abs(x) < 1e-12 ? '0 N/C' : `${exacto(x)} × 10⁵ N/C`);
     const Bt = `${exacto(m)} × 10⁵ N/C`;
     let enunciado, solucion;
-    const Q = v('q', `${q} µC`), A = v('r', `${acm} cm`);
+    const A = v('r', `${acm} cm`);
     if (id === 'tri-iguales' || id === 'tri-opuestas') {
-      enunciado = ['En dos vértices, A y B, de un triángulo equilátero de ', A, ' de lado hay dos cargas puntuales: ', v('q', `+${q} µC`), ' en A y ',
-        v('q', id === 'tri-iguales' ? `+${q} µC` : `−${q} µC`), ' en B.'];
+      enunciado = ['En dos vértices, A y B, de un triángulo equilátero de ', A, ' de lado hay dos cargas puntuales: ', v('q', `${S(1)}${q} µC`), ' en A y ',
+        v('q', `${S(id === 'tri-iguales' ? 1 : -1)}${q} µC`), ' en B.'];
+      const deA = sg > 0 ? 'se aleja de A' : 'apunta hacia A', deB = sg > 0 ? 'apunta hacia B' : 'se aleja de B';
       solucion = [
         ['Cada carga está a un lado del tercer vértice C: ', v('E', `E = kq/a² = 9 × 10⁹ · ${q} × 10⁻⁶/${f(a)}² = ${Bt}`), ' (las dos iguales).'],
         id === 'tri-iguales'
-          ? ['Los dos campos se alejan de A y de B: forman 60° entre sí. La resultante: ', v('x', `E·√(1 + 1 + 2·cos 60°) = √3·E = ${texto(correcta)}`), '.']
-          : ['El de A se aleja de A y el de B apunta hacia B: forman 120° entre sí, y dos flechas iguales a 120° dan una resultante del mismo largo que cada una: ', v('x', `E·√(1 + 1 + 2·cos 120°) = E = ${texto(correcta)}`), ', paralela a AB.'],
+          ? [`Los dos campos ${sg > 0 ? 'se alejan de A y de B' : 'apuntan hacia A y hacia B'}: forman 60° entre sí. La resultante: `, v('x', `E·√(1 + 1 + 2·cos 60°) = √3·E = ${texto(correcta)}`), '.']
+          : [`El de A ${deA} y el de B ${deB}: forman 120° entre sí, y dos flechas iguales a 120° dan una resultante del mismo largo que cada una: `, v('x', `E·√(1 + 1 + 2·cos 120°) = E = ${texto(correcta)}`), ', paralela a AB.'],
       ];
     } else if (sub === 'cuadrado') {
-      const cargas = id === 'cuad-adyacentes' ? `+${q} µC en A y B, y −${q} µC en C y D` : `+${q} µC en A, B y C, y −${q} µC en D`;
+      const cargas = id === 'cuad-adyacentes' ? `${S(1)}${q} µC en A y B, y ${S(-1)}${q} µC en C y D` : `${S(1)}${q} µC en A, B y C, y ${S(-1)}${q} µC en D`;
       enunciado = ['En los vértices de un cuadrado ABCD de ', A, ' de lado hay cuatro cargas puntuales de igual valor: ', v('q', cargas), '.'];
       solucion = [
         ['Cada carga está a media diagonal del centro: r² = a²/2. Cada campo vale ', v('E', `E = kq/r² = 2kq/a² = ${texto(2 * m)}`), '.'],
         id === 'cuad-adyacentes'
-          ? ['A (+) y C (−) son opuestos: sus campos apuntan los dos de A hacia C y se suman, 2E. Lo mismo B (+) y D (−): 2E de B hacia D. Esas dos diagonales son perpendiculares: ', v('x', `√((2E)² + (2E)²) = 2√2·E = ${texto(correcta)}`), '.']
-          : ['A y C son positivas y opuestas: sus campos se cancelan. B (+) y D (−): los dos campos apuntan de B hacia D y se suman: ', v('x', `2E = ${texto(correcta)}`), '.'],
+          ? [`A (${S(1)}) y C (${S(-1)}) son opuestos: sus campos apuntan los dos ${sg > 0 ? 'de A hacia C' : 'de C hacia A'} y se suman, 2E. Lo mismo B (${S(1)}) y D (${S(-1)}): 2E ${sg > 0 ? 'de B hacia D' : 'de D hacia B'}. Esas dos diagonales son perpendiculares: `, v('x', `√((2E)² + (2E)²) = 2√2·E = ${texto(correcta)}`), '.']
+          : [`A y C son ${sg > 0 ? 'positivas' : 'negativas'} y opuestas: sus campos se cancelan. B (${S(1)}) y D (${S(-1)}): los dos campos apuntan ${sg > 0 ? 'de B hacia D' : 'de D hacia B'} y se suman: `, v('x', `2E = ${texto(correcta)}`), '.'],
       ];
     } else {
-      const cargas = id === 'cubo-iguales' ? `+${q} µC en cada uno` : `+${q} µC en los dos extremos de una arista y −${q} µC en los otros dos`;
+      const cargas = id === 'cubo-iguales' ? `${S(1)}${q} µC en cada uno` : `${S(1)}${q} µC en los dos extremos de una arista y ${S(-1)}${q} µC en los otros dos`;
       enunciado = ['Un cubo tiene ', A, ' de arista. En los cuatro vértices de su cara de arriba hay cargas puntuales: ', v('q', cargas), '. Nos interesa el punto P, el centro de la cara de abajo.'];
       solucion = [
         ['Cada carga está a ', v('r', 'r² = a²/2 + a² = 3a²/2'), ' de P. Cada campo vale ', v('E', `E = kq/r² = (2/3)·kq/a² = ${texto(2 * m / 3)}`), '.'],
         ['Cada flecha tiene una componente vertical (cos = a/r = √(2/3)) y otra horizontal hacia o desde el pie de la carga (de largo (a/√2)/r = 1/√3 de E).'],
         id === 'cubo-iguales'
-          ? ['Las cuatro horizontales se cancelan de dos en dos. Las verticales se suman: ', v('x', `4·E·√(2/3) = (8√6/9)·kq/a² = ${texto(correcta)}`), ', hacia abajo.']
+          ? ['Las cuatro horizontales se cancelan de dos en dos. Las verticales se suman: ', v('x', `4·E·√(2/3) = (8√6/9)·kq/a² = ${texto(correcta)}`), sg > 0 ? ', hacia abajo.' : ', hacia arriba.']
           : ['Las verticales se cancelan (dos van hacia abajo y dos hacia arriba). De las horizontales, se cancela la parte paralela a la arista y se suma la otra, 1/√6 de E cada una: ', v('x', `4·E/√6 = (4√6/9)·kq/a² = ${texto(correcta)}`), '.'],
       ];
     }
     const pregunta = ['¿Cuál es el módulo del ', v('x', 'campo eléctrico resultante'), sub === 'triangulo' ? ' en el tercer vértice, C?' : sub === 'cuadrado' ? ' en el centro del cuadrado?' : ' en P?', ' (k = 9 × 10⁹ N·m²/C².)'];
-    const errores = C.errores.map(([cod, fac]) => h(cod, fac * m, EXPL[cod]));
+    const errores = C.errores.map(([cod, fac]) => h(cod, fac * m, cod === 'CS-como-perpendiculares' && PERP[id] ? PERP[id] : EXPL[cod]));
     return cerrar(rng, semilla, { negativos: true, ok: x => Number.isFinite(x) && x >= 0, correcta, errores, texto, unidad: '× 10⁵ N/C', variables: VAR_C, enunciado, pregunta, solucion,
-      datos: { tipo: 'campo', sub, config: id, q, a } });
+      datos: { tipo: 'campo', sub, config: id, q, a, signo: sg } });
   }
 
   return { id: 'cargas-sistema', titulo: 'Tres cargas en el plano', generar };

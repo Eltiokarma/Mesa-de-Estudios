@@ -48,7 +48,7 @@ function campoEn(cargas, P) {
   return Math.hypot(...E);
 }
 function cargasCampo(d) {
-  const a = d.a, q = d.q * 1e-6;
+  const a = d.a, q = d.q * 1e-6 * (d.signo || 1);
   const C = (s, p) => ({ q: s * q, p });
   if (d.config === 'tri-iguales' || d.config === 'tri-opuestas') {
     const sB = d.config === 'tri-iguales' ? 1 : -1;

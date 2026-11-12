@@ -2,7 +2,7 @@
   "plantilla": "condensadores",
   "tolerancia": 1e-06,
   "nota": "Capacidades en µF (pF en el condensador plano), voltajes en V, cargas en µC, energías en mJ; ε0 = 8,85 × 10⁻¹² C²/(N·m²). En equivalente/incognita, conocidos son las capacidades sin la incógnita, en orden, y pos el índice de la incógnita (0 = C1). En plano/cambio, kd es el factor de la separación. La razón de n-iguales/veces es U(paralelo)/U(serie).",
-  "verificacion": "PENDIENTE",
+  "verificacion": "Verificación a ciegas (subagente verificador, 12 nov 2026): 46 problemas (16 de casos + 30 semillas 300-329) resueltos aparte con fracciones (serie, paralelo, ε0·A/d, ½CV²), sin ver generador ni claves: 46/46 coinciden. Barrido de 4000 semillas sin alternativas repetidas. Tras la revisión se corrigió la explicación de PR4-area y los códigos.",
   "casos": [
     {
       "semilla": 0,
@@ -10,11 +10,11 @@
         "tipo": "equivalente",
         "sub": "iguales",
         "arreglo": "A3b",
-        "cp": 18
+        "cp": 27
       },
       "esperado": {
-        "respuesta": 4.0,
-        "exacta": "4 µF"
+        "respuesta": 6.0,
+        "exacta": "6 µF"
       }
     },
     {
@@ -38,12 +38,12 @@
       "entrada": {
         "tipo": "plano",
         "sub": "capacidad",
-        "a": 150,
-        "d": 1
+        "a": 120,
+        "d": 0.5
       },
       "esperado": {
-        "respuesta": 132.75,
-        "exacta": "132,75 pF"
+        "respuesta": 212.4,
+        "exacta": "212,4 pF"
       }
     },
     {
@@ -100,11 +100,11 @@
         "tipo": "equivalente",
         "sub": "iguales",
         "arreglo": "A4c",
-        "cp": 36
+        "cp": 60
       },
       "esperado": {
-        "respuesta": 15.0,
-        "exacta": "15 µF"
+        "respuesta": 25.0,
+        "exacta": "25 µF"
       }
     },
     {
