@@ -126,3 +126,20 @@ Usan también AR7 (linealidad: escalar el perímetro como el área, usar todas l
 | RMP58 | Jerarquía de operaciones: de izquierda a derecha, o las sumas primero | huecos («olvidar la jerarquía») |
 | RMP59 | Puntos del empate mal contados (1 en total, o 0) | situaciones deportivas |
 | RMP80 | Dar por posible uno más allá del óptimo sin comprobarlo (una moneda en dos grupos, un dardo menos) | máximos con existencias |
+
+## Fichas: conteo con giros, tablero con fichas de 5 y la región de arcos (`rm-fichas`) (cierre-100, 12 nov 2026)
+
+| Código | Error | Trampa de la que sale |
+|---|---|---|
+| RMP120-sin-giros | Contar la ficha solo como está dibujada, sin ponerla de lado | UNMSM 2025-II p. 25 (olvidar las orientaciones giradas) |
+| RMP121-dividir-area | Dividir las casillas de la figura entre las de la ficha (fichas que no se tocan) en vez de contar todas las posiciones | UNMSM 2025-II p. 25 |
+| RMP122-sin-voltear / RMP122-volteo-de-mas | Solo girar cuando también se puede voltear, o voltear cuando el enunciado solo permite girar | conteo de fichas quirales (L4, S4, P5) |
+| RMP123-giro-repetido | Contar cada giro de 90° (y volteo) como posición nueva aunque la ficha quede igual | conteo con fichas simétricas (I3, T4, U5) |
+| RMP124-caja-completa | Contar solo donde entra el rectángulo que encierra a la ficha, sin ver que entra también donde falta una casilla de ese rectángulo | conteo con fichas con huecos en su caja |
+| RMP125-dividir-todo | Dividir las casillas de todo el tablero (con las tapadas) entre las de la ficha | UNMSM 2025-I p. 23 (49 ÷ 5 = 9) |
+| RMP126-circulo-completo | Al rectángulo que encierra la figura restarle un círculo completo | UNMSM 2025-I p. 30 (restar círculos completos) |
+| RMP127-sumar-sin-restar | Sumar la media luna de arriba sin quitar los dos huecos de abajo | UNMSM 2025-I p. 30 |
+| RMP128-olvidar-la-luna | Quitar los dos huecos y olvidar la media luna que los rellena | UNMSM 2025-I p. 30 |
+| RMP129-toda-la-caja | Tomar todo el rectángulo que encierra la figura | UNMSM 2025-I p. 30 |
+
+Se reutilizan RMP63-sin-tapadas, RMP69-dividir, RMP69-redondeo y RMP2-voraz en el tablero de fichas de 5.

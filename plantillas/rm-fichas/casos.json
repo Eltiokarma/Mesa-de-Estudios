@@ -2,7 +2,7 @@
   "plantilla": "rm-fichas",
   "tolerancia": 0,
   "nota": "Respuestas numéricas (cm, cm², cantidades o segundos).",
-  "verificacion": "Verificado a ciegas el 12 nov 2026: 26/26 por búsqueda de empaquetados y embaldosados en cuadrícula, contorno por celdas, centros de hexágonos sin vecinos y teselado del trapecio para k = 2 a 7. Segunda vuelta tras las correcciones: tablero con tapadas (15), menor rectángulo con dos piezas (16 y 17) y contorno con b desconocido (entrada-2), todos coinciden. Papel p6 y cinco soluciones con cotas (casillas inútiles, restos y colores) revisados.",
+  "verificacion": "Verificado a ciegas el 12 nov 2026: 26/26 por búsqueda de empaquetados y embaldosados en cuadrícula, contorno por celdas, centros de hexágonos sin vecinos y teselado del trapecio para k = 2 a 7. Segunda vuelta tras las correcciones: tablero con tapadas (15), menor rectángulo con dos piezas (16 y 17) y contorno con b desconocido (entrada-2), todos coinciden. Papel p6 y cinco soluciones con cotas (casillas inútiles, restos y colores) revisados. Cierre-100 (12 nov 2026): los 7 casos nuevos (pétalo 87 y 111, conteo 86, 228 y 131, tablero de fichas de 5 63 y 175) se resolvieron a ciegas por geometría y fuerza bruta exacta (todas las posiciones y orientaciones; empaquetamiento máximo); 7/7 coinciden, cada uno con respuesta única.",
   "casos": [
     {
       "semilla": 0,
@@ -441,6 +441,293 @@
         "respuesta": 54,
         "texto": "54 cm"
       }
+    },
+    {
+      "semilla": 87,
+      "entrada": {
+        "tipo": "petalo",
+        "r": 7,
+        "H": 11
+      },
+      "esperado": {
+        "respuesta": 154,
+        "texto": "154 cm²"
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": 111,
+      "entrada": {
+        "tipo": "petalo",
+        "r": 9,
+        "H": 9
+      },
+      "esperado": {
+        "respuesta": 162,
+        "texto": "162 cm²"
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": 86,
+      "entrada": {
+        "tipo": "conteo",
+        "pieza": "P5",
+        "reflejos": true,
+        "celdas": [
+          [
+            1,
+            0
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            3,
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            3,
+            1
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            3,
+            2
+          ]
+        ]
+      },
+      "esperado": {
+        "respuesta": 22,
+        "texto": "22 fichas"
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": 228,
+      "entrada": {
+        "tipo": "conteo",
+        "pieza": "L3",
+        "reflejos": false,
+        "celdas": [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            3,
+            2
+          ]
+        ]
+      },
+      "esperado": {
+        "respuesta": 17,
+        "texto": "17 fichas"
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": 131,
+      "entrada": {
+        "tipo": "conteo",
+        "pieza": "L4",
+        "reflejos": true,
+        "celdas": [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            0,
+            3
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            2,
+            3
+          ]
+        ]
+      },
+      "esperado": {
+        "respuesta": 17,
+        "texto": "17 fichas"
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": 63,
+      "entrada": {
+        "tipo": "tablero",
+        "r": 7,
+        "c": 6,
+        "bloqueadas": [
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            4
+          ],
+          [
+            5,
+            4
+          ],
+          [
+            0,
+            6
+          ]
+        ],
+        "pieza": "P5"
+      },
+      "esperado": {
+        "respuesta": 6,
+        "texto": "6 fichas"
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": 175,
+      "entrada": {
+        "tipo": "tablero",
+        "r": 7,
+        "c": 6,
+        "bloqueadas": [
+          [
+            1,
+            1
+          ],
+          [
+            3,
+            1
+          ],
+          [
+            5,
+            1
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            3,
+            3
+          ],
+          [
+            5,
+            3
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            3,
+            5
+          ],
+          [
+            5,
+            5
+          ]
+        ],
+        "pieza": "U5"
+      },
+      "esperado": {
+        "respuesta": 6,
+        "texto": "6 fichas"
+      },
+      "nuevo": "cierre-100"
     }
   ]
 }
