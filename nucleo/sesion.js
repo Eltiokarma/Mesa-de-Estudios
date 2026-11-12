@@ -104,7 +104,9 @@
     const pedirRed = op.fetch || (typeof fetch === 'function' ? (...a) => fetch(...a) : null);
     const alm = op.almacen || (typeof localStorage !== 'undefined' ? localStorage : null);
     const ahora = op.ahora || (() => Date.now());
-    const reloj = op.reloj || { setTimeout, clearTimeout, setInterval, clearInterval };
+    // Envueltos: en el navegador, setTimeout llamado como método de otro objeto da «Illegal invocation».
+    const reloj = op.reloj || { setTimeout: (f, ms) => setTimeout(f, ms), clearTimeout: t => clearTimeout(t),
+      setInterval: (f, ms) => setInterval(f, ms), clearInterval: t => clearInterval(t) };
     const leer = (k, d) => { try { const v = alm.getItem(k); return v === null ? d : JSON.parse(v); } catch { return d; } };
     const escribir = (k, v) => { try { if (v === undefined || v === null) alm.removeItem(k); else alm.setItem(k, JSON.stringify(v)); } catch { /* sin espacio */ } };
     const oyentes = new Set();
@@ -121,8 +123,10 @@
       info = Object.assign({}, info, cambio, { pendientes: pendientes() });
       for (const f of oyentes) try { f(info); } catch { /* un oyente roto no frena la sincronización */ }
     }
-    function guardarTokens(r) {
-      const u = r.usuario || usuario();
+    // El usuario de la respuesta no trae el nombre de usuario (con el que se entra): se guarda el que se escribió.
+    // Al renovar se conserva lo que ya se sabía de la cuenta; al entrar, no (puede ser otra persona).
+    function guardarTokens(r, nuevo = false) {
+      const u = Object.assign({}, nuevo ? {} : usuario() || {}, r.usuario || {});
       escribir(K.sesion, { acceso: r.acceso, renovacion: r.renovacion, expira: ahora() + 1000 * (Number(r.expira_en) || 900), usuario: u });
     }
 
@@ -208,7 +212,8 @@
         if (previa !== u.alumno) { escribir(K.est, { tema: leerEst().tema || '' }); escribir(K.eventos, []); escribir(K.subido, null); }
         escribir(K.cuenta, u.alumno);
       }
-      guardarTokens(d);
+      if (!u.usuario) u.usuario = String(nombreUsuario || '').trim();
+      guardarTokens(d, true);
       if (u.rol === 'alumno' && u.alumno) {
         // Lo que esta cuenta dejó pendiente en este navegador vuelve a la cola.
         const pend = leer(K.pendiente, {}) || {};
@@ -340,7 +345,15 @@
       };
       sincronizar();
     }
+    // Después de un cambio local: sincroniza en unos segundos (varios cambios seguidos dan un solo turno). Si hay un
+    // reintento esperando por un fallo, se respeta su espera.
+    let prontoT = null;
+    function pronto(ms = 3000) {
+      if (!activa() || !esAlumno() || reintento || prontoT) return;
+      prontoT = reloj.setTimeout(() => { prontoT = null; sincronizar(); }, ms);
+    }
     function parar() {
+      if (prontoT) { reloj.clearTimeout(prontoT); prontoT = null; }
       if (intervalo) reloj.clearInterval(intervalo);
       if (reintento) reloj.clearTimeout(reintento);
       intervalo = reintento = null;
@@ -348,7 +361,7 @@
     }
 
     return {
-      activa, usuario, seudonimo, login, salir, cambiarContrasena, pedir, renovar, sincronizar, arrancar, parar, pendientes,
+      activa, usuario, seudonimo, login, salir, cambiarContrasena, pedir, renovar, sincronizar, pronto, arrancar, parar, pendientes,
       vencida: () => !!(sesion() || {}).vencida,
       info: () => Object.assign({}, info, { pendientes: pendientes() }),
       alCambiar: f => { oyentes.add(f); return () => oyentes.delete(f); },

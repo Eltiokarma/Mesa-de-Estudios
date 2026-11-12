@@ -82,7 +82,7 @@ test('login: guarda tokens y nunca la contraseña; credenciales y demasiados int
     await assert.rejects(m.s.login('qroman26', 'abc234'), e => e.codigo === 'demasiados-intentos' && e.estado === 429);
     m.reloj.t += 11 * 60 * 1000;
     const u = await m.s.login('qroman26', 'abc234');
-    assert.equal(u.rol, 'alumno'); assert.equal(u.debe_cambiar, true);
+    assert.equal(u.rol, 'alumno'); assert.equal(u.debe_cambiar, true); assert.equal(m.s.usuario().usuario, 'qroman26');
     assert.ok(m.s.activa());
     assert.ok(!m.alm.todo.includes('abc234'), 'la contraseña no queda en el almacén');
     assert.equal(est(m.alm).alumno, m.f.datos.usuarios.qroman26.alumno, 'est.alumno es el seudónimo de la cuenta');
@@ -105,6 +105,7 @@ test('renovación automática al recibir un 401, con rotación', async () => {
     assert.ok(g.est);
     const r2 = JSON.parse(m.alm.getItem('lab-sesion-v1')).renovacion;
     assert.notEqual(r1, r2, 'la renovación rota');
+    assert.equal(m.s.usuario().usuario, 'lmamani26', 'renovar no pierde el nombre de usuario');
     assert.equal(m.f.datos.pedidos.filter(p => p.ruta === '/api/renovar').length, 1);
     // Acceso vencido según el reloj del cliente: renueva antes de pedir, sin pasar por el 401.
     m.reloj.t += 61000;
