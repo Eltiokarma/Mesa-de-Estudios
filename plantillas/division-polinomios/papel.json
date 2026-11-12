@@ -1,0 +1,117 @@
+{
+  "titulo": "División de polinomios: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. En los cocientes notables, primero cuenta los términos y escribe el término de lugar k antes de reemplazar. En los restos, pregúntate qué número anula al divisor. En la identidad D = d·Q + R, elige el valor de x que hace más fácil la cuenta. En el MCD y el MCM, factoriza primero y mira el exponente de cada factor.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Escribe el término de lugar 4 del cociente notable (x²⁰ + y¹⁵)/(x⁴ + y³), con su signo.",
+      "respuesta": "−x⁴y⁹.",
+      "pasos": [
+        "Número de términos: 20/4 = 15/3 = 5 (es impar, como debe ser con más arriba y abajo).",
+        "Término de lugar k: (x⁴)⁵⁻ᵏ·(y³)ᵏ⁻¹. Con divisor x⁴ + y³ los signos se alternan: + en los lugares impares y − en los pares.",
+        "Con k = 4: (x⁴)¹·(y³)³ = x⁴y⁹, y el lugar 4 es par: −x⁴y⁹."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "¿Cuántos términos tiene el desarrollo de (x³⁶ − y⁴⁵)/(x⁴ − y⁵)? ¿Cuál es el grado absoluto de su término central?",
+      "respuesta": "Tiene 9 términos; el término central es x¹⁶y²⁰, de grado 36.",
+      "pasos": [
+        "Número de términos: 36/4 = 45/5 = 9.",
+        "Con 9 términos, el central es el de lugar (9 + 1)/2 = 5: deja 4 antes y 4 después.",
+        "Término de lugar 5: (x⁴)⁴·(y⁵)⁴ = x¹⁶y²⁰. Grado absoluto: 16 + 20 = 36."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "En el desarrollo de (x⁸ − 3⁸)/(x + 3), ¿cuál es el coeficiente del término de lugar 5?",
+      "respuesta": "81.",
+      "pasos": [
+        "Con menos arriba, más abajo y exponente par, el cociente es notable: tiene 8 términos y los signos se alternan empezando por +.",
+        "Término de lugar 5: x⁸⁻⁵·3⁵⁻¹ = x³·3⁴, con signo + porque 5 es impar.",
+        "3⁴ = 81. Ojo: no es 3·4 = 12 ni 3⁵ = 243."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Un polinomio P(x) deja resto 5 al dividirlo entre x − 1 y resto −7 al dividirlo entre x + 2. Halla el resto de dividir P(x) entre x² + x − 2.",
+      "respuesta": "4x + 1.",
+      "pasos": [
+        "x² + x − 2 = (x − 1)(x + 2) es de grado 2: el resto es R(x) = px + q.",
+        "P(x) = (x − 1)(x + 2)·Q(x) + px + q. En x = 1: p + q = 5. En x = −2: −2p + q = −7.",
+        "Restando: 3p = 12, p = 4 y q = 1. El resto es 4x + 1."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Halla el resto de dividir x⁵ + 2x² − 3 entre x² − x − 2, sin hacer la división.",
+      "respuesta": "13x + 11.",
+      "pasos": [
+        "x² − x − 2 = (x − 2)(x + 1), con raíces 2 y −1. El resto es px + q.",
+        "P(2) = 32 + 8 − 3 = 37 y P(−1) = −1 + 2 − 3 = −2.",
+        "2p + q = 37 y −p + q = −2. Restando: 3p = 39, p = 13 y q = 11. El resto es 13x + 11."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Al dividir 2x⁴ − x³ + 5x² + 3x − 1 entre x² + x − 3 se obtiene resto −20x + 41. ¿Cuál es el término independiente del cociente?",
+      "respuesta": "14.",
+      "pasos": [
+        "Identidad de la división: D(x) = d(x)·Q(x) + R(x). Se evalúa en x = 0, que deja solo los términos independientes.",
+        "D(0) = −1, d(0) = −3 y R(0) = 41: −1 = −3·Q(0) + 41.",
+        "−3·Q(0) = −42, así que Q(0) = 14. (Si no restas el resto, sale 1/3, que ni siquiera es entero.)"
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Halla a y b para que x³ + ax² + bx + 18 sea divisible entre x² − x − 6.",
+      "respuesta": "a = −4 y b = −3.",
+      "pasos": [
+        "El cociente es mónico de grado 1: x³ + ax² + bx + 18 = (x² − x − 6)(x + t).",
+        "Términos independientes: −6t = 18, así que t = −3 y el cociente es x − 3.",
+        "(x² − x − 6)(x − 3) = x³ − 4x² − 3x + 18: a = −4 y b = −3. Control: x = 3 y x = −2 anulan el polinomio."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "De una plancha de cartón de 20 cm de ancho y L cm de largo se recortan en las esquinas cuadrados de x cm de lado para armar una caja sin tapa, de volumen V(x). El resto de dividir V(x) entre x − 5 es 1 200. ¿Cuánto mide L?",
+      "respuesta": "L = 34 cm.",
+      "pasos": [
+        "V(x) = x(20 − 2x)(L − 2x): el fondo pierde dos recortes en cada lado y la altura es x.",
+        "Teorema del resto: el resto entre x − 5 es V(5) = 5·10·(L − 10) = 50(L − 10).",
+        "50(L − 10) = 1 200, L − 10 = 24 y L = 34 cm. (24 cm es el largo del fondo, no el de la plancha.)"
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Halla el MCD y el MCM de A(x) = x³ − 3x² + 4 y B(x) = x³ − 4x² + 4x. Da el grado del MCM y su valor para x = 1.",
+      "respuesta": "MCD = (x − 2)²; MCM = x(x + 1)(x − 2)², de grado 4, con MCM(1) = 2.",
+      "pasos": [
+        "A(−1) = 0: por Ruffini, A(x) = (x + 1)(x² − 4x + 4) = (x + 1)(x − 2)².",
+        "B(x) = x(x² − 4x + 4) = x(x − 2)².",
+        "MCD: comunes con su menor exponente, (x − 2)². MCM: todos con su mayor exponente, x(x + 1)(x − 2)², de grado 4 (no 6, que sería el grado de A·B).",
+        "MCM(1) = 1·2·1 = 2."
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "básico",
+      "enunciado": "En una cola hay tantas personas como términos tiene el desarrollo de (x⁶⁰ − y⁹⁰)/(x⁴ − y⁶). ¿Cuántas personas hay delante de la que está en el centro?",
+      "respuesta": "7 personas.",
+      "pasos": [
+        "Número de términos: 60/4 = 90/6 = 15 personas.",
+        "La del centro está en el lugar (15 + 1)/2 = 8.",
+        "Delante están los lugares 1 a 7: 7 personas (8 es su lugar; a ella no se la cuenta)."
+      ]
+    }
+  ]
+}

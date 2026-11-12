@@ -1,0 +1,126 @@
+{
+  "titulo": "Dominio, rango y composición de funciones: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema. En los dominios, escribe primero todas las condiciones (cada raíz, cada denominador, cada logaritmo y cada base) y recién después interseca. En los rangos, mira qué valores toma la parte de adentro antes de aplicar la función de afuera. En las composiciones, la función de la derecha actúa primero.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Una máquina tejedora deja c(h) = 5h + 4 chompas listas después de h horas de trabajo, y la ganancia del día por c chompas es G(c) = 20c − 100 soles. Calcula (G∘c)(6).",
+      "respuesta": "580 soles.",
+      "pasos": [
+        "Primero actúa c, la función de la derecha: c(6) = 5 · 6 + 4 = 34 chompas.",
+        "Ese número entra en G: G(34) = 20 · 34 − 100 = 680 − 100 = 580.",
+        "Ojo: poner 6 directamente en G daría 20 · 6 − 100 = 20 soles, como si 6 fueran chompas."
+      ],
+      "datos": { "tipo": "composicion", "sub": "evaluar", "ctx": "chompas", "a": 5, "b": 4, "p": 20, "F": 100, "h0": 6 }
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Halla el dominio de f(x) = √(3 − √(x − 2)).",
+      "respuesta": "[2; 11].",
+      "pasos": [
+        "Radical interior: x − 2 ≥ 0, es decir, x ≥ 2.",
+        "Radical exterior: 3 − √(x − 2) ≥ 0, es decir, √(x − 2) ≤ 3. Los dos lados son positivos, así que se elevan al cuadrado: x − 2 ≤ 9, x ≤ 11.",
+        "Se intersecan las dos condiciones: [2; 11]. Sin la condición interior saldría ⟨−∞; 11], que incluye valores donde √(x − 2) no existe."
+      ],
+      "datos": { "tipo": "dominio-radicales", "sub": "anidado", "a": 2, "c": 3, "dentro": true }
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Halla el dominio de f(x) = √[(x² − 10x + 21)/(x − 7)].",
+      "respuesta": "[3; +∞⟩ − {7}.",
+      "pasos": [
+        "Se factoriza el numerador: x² − 10x + 21 = (x − 7)(x − 3).",
+        "Para x ≠ 7 el cociente es x − 3, y la raíz pide x − 3 ≥ 0, es decir, x ≥ 3.",
+        "En x = 7 el denominador original vale 0: ese valor se excluye aunque el factor se haya simplificado. Dominio: [3; +∞⟩ − {7}."
+      ],
+      "datos": { "tipo": "racional-simplificable", "sub": "dominio", "a": 7, "b": 3 }
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "La función f: [−2; 3] → [m; n], f(x) = 2^(|x − 1|) + 3, es sobreyectiva. Halla m + n.",
+      "respuesta": "15.",
+      "pasos": [
+        "Sobreyectiva quiere decir que [m; n] es el rango de f en [−2; 3].",
+        "El exponente |x − 1| vale 0 en x = 1 (dentro del intervalo) y crece al alejarse: en x = −2 vale 3 y en x = 3 vale 2.",
+        "Con base 2 > 1: m = 2⁰ + 3 = 4 y n = 2³ + 3 = 11. Entonces m + n = 15. Si solo se evalúa en los bordes, saldría f(−2) + f(3) = 11 + 7 = 18."
+      ],
+      "datos": { "tipo": "rango-exp-abs", "sub": "sobre", "base": "2", "a": 1, "c": 3, "p": -2, "q": 3 }
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "La función g(x) = x² − 4x − 5, con dominio [a; +∞⟩, es inyectiva. ¿Cuál es el menor valor posible de a?",
+      "respuesta": "2.",
+      "pasos": [
+        "Una parábola que abre hacia arriba baja hasta su vértice y luego sube: es inyectiva solo a un lado del vértice.",
+        "El vértice está en x = −(−4)/2 = 2.",
+        "En [a; +∞⟩ no debe quedar parte que baje: a ≥ 2. El menor es a = 2. Las raíces (−1 y 5) no son lo que importa aquí."
+      ],
+      "datos": { "tipo": "inyectiva-restringir", "sub": "minimo", "u": -1, "w": 5, "sentido": "der" }
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Un tanque sin tapa tiene base rectangular cuyo largo es el doble del ancho y una capacidad de 24 m³. El metro cuadrado de la base cuesta 50 soles y el de las paredes, 30 soles. Si el ancho es 2 m, ¿cuánto cuesta construirlo?",
+      "respuesta": "1 480 soles.",
+      "pasos": [
+        "La base mide 2 m × 4 m = 8 m², así que la altura es 24/8 = 3 m.",
+        "Base: 8 m² · 50 = 400 soles. Paredes: dos de 2 × 3 y dos de 4 × 3, es decir, 12 + 24 = 36 m², que cuestan 36 · 30 = 1 080 soles.",
+        "Total: 400 + 1 080 = 1 480 soles. No va tapa: si se cuenta, el costo sube a 1 880 soles."
+      ],
+      "datos": { "tipo": "costo-recipiente", "sub": "evaluar", "k": 2, "x": 2, "h": 3, "a": 50, "b": 30 }
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Halla el área de la región limitada por las gráficas de f(x) = |x| y g(x) = ⟦x⟧ (máximo entero) y las rectas x = −2 y x = 3.",
+      "respuesta": "6,5 u².",
+      "pasos": [
+        "La altura de la región es |x| − ⟦x⟧. Para x ≥ 0 es la parte decimal de x: en cada tramo [k; k + 1⟩ es un triángulo de área 1/2. De 0 a 3 hay tres: 1,5.",
+        "En [−1; 0⟩, ⟦x⟧ = −1 y la altura va de 2 (en x = −1) a 1 (cerca de 0): trapecio de área (2 + 1)/2 = 1,5. En [−2; −1⟩, ⟦x⟧ = −2 y la altura va de 4 a 3: área 3,5.",
+        "Total: 1,5 + 1,5 + 3,5 = 6,5 u². Ojo con ⟦−1,5⟧: vale −2, no −1."
+      ],
+      "datos": { "tipo": "area-entero-abs", "sub": "total", "m": 2, "n": 3 }
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Halla el dominio de f(x) = log₍ₓ₋₂₎[log₂(10 − x)].",
+      "respuesta": "⟨2; 9⟩ − {3}.",
+      "pasos": [
+        "Base: x − 2 > 0 y x − 2 ≠ 1, es decir, x > 2 y x ≠ 3.",
+        "Argumento de f: log₂(10 − x) > 0, es decir, 10 − x > 1, x < 9. Esta condición ya incluye 10 − x > 0.",
+        "Se intersecan: ⟨2; 9⟩ − {3}. Si solo se pide 10 − x > 0, saldría ⟨2; 10⟩ − {3}, que incluye valores donde log₂(10 − x) es negativo o cero."
+      ],
+      "datos": { "tipo": "dominio-log", "sub": "base-crece", "a": 2, "c": 10, "bi": 2 }
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Si log 3 ≈ 0,4771, ¿cuántas cifras tiene 3⁴⁰?",
+      "respuesta": "20 cifras.",
+      "pasos": [
+        "log 3⁴⁰ = 40 · log 3 ≈ 40 · 0,4771 = 19,084.",
+        "Entonces 10¹⁹ ≤ 3⁴⁰ < 10²⁰, y todo número de ese tramo tiene 20 cifras (10¹⁹ ya tiene 20).",
+        "Regla: las cifras son la parte entera del logaritmo más 1: 19 + 1 = 20."
+      ],
+      "datos": { "tipo": "log-entero", "sub": "cifras", "base": 3, "n": 40 }
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "El número de truchas de una piscigranja se modela con P(t) = 1800/(1 + 5·2⁻ᵗ), con t en años desde hoy. ¿En cuánto aumenta la población durante los dos primeros años?",
+      "respuesta": "500 truchas.",
+      "pasos": [
+        "Hoy: 2⁰ = 1, así que P(0) = 1800/(1 + 5) = 300.",
+        "A los 2 años: 2⁻² = 1/4, así que P(2) = 1800/(1 + 5/4) = 1800 · 4/9 = 800.",
+        "Aumento: 800 − 300 = 500 truchas. Ojo: se pide el aumento, no la población final (800)."
+      ],
+      "datos": { "tipo": "logistico", "sub": "incremento", "ctx": "truchas", "A": 1800, "c": 1, "d": 5, "b": 2, "t1": 2 }
+    }
+  ]
+}

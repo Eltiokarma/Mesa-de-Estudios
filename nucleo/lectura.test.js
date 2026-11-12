@@ -353,3 +353,71 @@ test('figuras: validar acepta el texto y rechaza figuras mal armadas', () => {
   assert.ok(con(t => { t.preguntas[0].alternativas[0].evidencia = ['f9']; }).some(e => /f9/.test(e)));
   assert.ok(con(t => { delete t.figuras[0].titulo; }).some(e => /título/.test(e)));
 });
+
+// ---------- Pares de textos A/B (rutina verbal A/B, 8 nov 2026) ----------
+const PAR = {
+  id: 'tpar', version: 1, titulo: 'Par de muestra', tipo_texto: 'argumentativo',
+  autores: [{ id: 'A', desde: 0 }, { id: 'B', desde: 1, firma: 'Una profesora' }],
+  parrafos: [
+    [{ id: 'o1', rol: 'principal', t: 'Conviene X.' }, { id: 'o2', rol: 'apoyo', t: 'Practicar ayuda.' }],
+    [{ id: 'o3', rol: 'principal', t: 'Conviene Y.' }, { id: 'o4', rol: 'apoyo', t: 'Practicar ayuda, sí.' }],
+  ],
+  preguntas: [{
+    id: 'p1', tipo: 'postura', unidad: 'razonamiento-verbal.textos-argumentativos-y-dialecticos', enunciado: '¿Qué sostiene B?',
+    previo: { tipo: 'atribuir', pide: '¿Quién lo sostiene?', sonda: 'Conviene Y.', aceptada: 'B',
+      codigos: { A: 'RV59', ambos: 'RV60', ninguno: null }, explicacion: 'Lo dice B.', explicaciones: { A: 'No.', ambos: 'No.', ninguno: 'No.' } },
+    alternativas: [{ t: 'Y', correcta: true, evidencia: ['o3'], explicacion: 'Sí.' }, { t: 'X', codigo: 'RV59', origen: 'o1', explicacion: 'Es de A.' }],
+  }],
+};
+
+test('par A/B: cada oración sabe de qué autor es y la numeración sigue de corrido', () => {
+  const ors = L.oraciones(PAR);
+  assert.deepEqual(ors.map(o => [o.id, o.n, o.autor]), [['o1', 1, 'A'], ['o2', 2, 'A'], ['o3', 3, 'B'], ['o4', 4, 'B']]);
+  assert.equal(L.autores(PAR)[1].titulo, 'Texto B');
+  assert.equal(L.autorDe(PAR, 0), 'A');
+  // Un texto sin autores no cambia: sus oraciones no llevan "autor".
+  assert.ok(L.oraciones(TEXTOS.find(t => !t.autores)).every(o => !('autor' in o)));
+});
+
+test('par A/B: el previo atribuir se califica con su tabla y valida sus campos', () => {
+  const p = PAR.preguntas[0].previo;
+  assert.deepEqual(L.opcionesPrevio(p, PAR), ['A', 'B', 'ambos', 'ninguno']);
+  assert.deepEqual(L.calificarPrevio(p, 'B', PAR), { correcta: true, error: null, opcion: 'B' });
+  assert.deepEqual(L.calificarPrevio(p, 'A', PAR), { correcta: false, error: 'RV59', opcion: 'A' });
+  assert.deepEqual(L.calificarPrevio(p, 'ninguno', PAR), { correcta: false, error: null, opcion: 'ninguno' });
+  assert.equal(L.etiquetaPrevio(p, 'ambos', PAR), 'Los dos autores');
+  assert.throws(() => L.calificarPrevio(p, 'C', PAR));
+  assert.deepEqual(L.validar(PAR, { codigos: CODIGOS, unidades: UNIDADES }), []);
+  const c = L.correccionPrevio(p, L.calificarPrevio(p, 'A', PAR), PAR, FRASES);
+  assert.equal(c.porQue, 'No.');
+  assert.equal(c.aceptada, 'El autor del texto B');
+});
+
+test('par A/B: validar avisa de autores mal puestos y de un atribuir sin par', () => {
+  const mal = { ...PAR, autores: [{ id: 'A', desde: 0 }, { id: 'B', desde: 2 }] };
+  assert.ok(L.validar(mal).some(e => /texto B debe empezar/.test(e)));
+  const solo = { ...PAR, autores: undefined };
+  assert.ok(L.validar(solo).some(e => /atribuir solo va en un par/.test(e)));
+  const sinSonda = { ...PAR, preguntas: [{ ...PAR.preguntas[0], previo: { ...PAR.preguntas[0].previo, sonda: '' } }] };
+  assert.ok(L.validar(sinSonda).some(e => /atribuir necesita "sonda"/.test(e)));
+});
+
+// ---------- «No sé» en las pruebas de entrada y salida ----------
+test('«No sé» en la prueba de lectura: ni acierto ni código, 0 en las respuestas', () => {
+  const M = require('./medicion.js');
+  const t = TEXTOS[0], it = L.preparar(t, 'prueba-A'), q = it.preguntas[0];
+  const r = L.noSe(q);
+  assert.equal(r.nose, true); assert.equal(r.correcta, false); assert.equal(r.error, null); assert.equal(r.pos, 0);
+  const e = L.ev.item({ fase: 'entrada', curso: 'razonamiento-verbal', modulo: 'lectura-verbal', forma: 'A', orden: 'AB', pregunta: q, resultado: r, codigos: CODIGOS, ms: 3 });
+  assert.equal(e.nose, true); assert.equal(e.opcion, ''); assert.equal(e.error, ''); assert.equal(e.respaldo, '');
+  const sinNose = L.ev.item({ fase: 'entrada', curso: 'razonamiento-verbal', modulo: 'lectura-verbal', forma: 'A', orden: 'AB', pregunta: q, resultado: L.calificar(q, 'A'), codigos: CODIGOS, ms: 3 });
+  assert.ok(!('nose' in sinNose), 'una respuesta normal no lleva el campo');
+  const rs = it.preguntas.map((x, k) => (k === 0 ? L.noSe(x) : L.calificar(x, x.alternativas.find(a => a.correcta).letra)));
+  const p = L.ev.prueba({ fase: 'entrada', curso: 'razonamiento-verbal', forma: 'A', orden: 'AB', modulo: 'lectura-verbal', unidad: 'u', item: it, resultados: rs, ms: 9 });
+  assert.equal(p.respuestas[0], '0');
+  assert.equal(p.nose, 1);
+  assert.equal(p.aciertos, it.preguntas.length - 1);
+  // En el resumen por curso, «No sé» no aparece como error RV.
+  const [c] = M.resumirCursos([{ alumno: 'x', ...e }]);
+  assert.deepEqual(c.errores, []);
+});

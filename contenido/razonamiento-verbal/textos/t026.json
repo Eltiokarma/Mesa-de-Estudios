@@ -1,6 +1,6 @@
 {
   "id": "t026",
-  "version": 1,
+  "version": 2,
   "titulo": "Contar hasta el trueno",
   "tema": "Ciencia de todos los días · luz y sonido",
   "grado": 3,
@@ -92,7 +92,7 @@
           "explicacion": "Junta la causa (oración 3) con la conclusión (oración 8): la demora mide la distancia."
         },
         {
-          "t": "Si pasan nueve segundos entre el destello del rayo y el ruido del trueno, la tormenta está a unos tres kilómetros de quien la observa.",
+          "t": "Si pasan nueve segundos entre el destello del rayo y el ruido del trueno, la tormenta está a unos tres kilómetros, porque el sonido recorre un kilómetro cada tres segundos.",
           "codigo": "RV1",
           "origen": "o6",
           "explicacion": "Es un ejemplo del cálculo, un detalle."
@@ -246,6 +246,6 @@
     "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
     "fecha": "2026-11-07",
     "veredicto": "aprobado",
-    "notas": "Cambios aplicados tras la revisión a ciegas; la segunda verificación pidió cuatro retoques de redacción (t025 p5, t026 p2, t027 p2 y la oración 8 de t028), ya aplicados."
+    "notas": "Cambios aplicados tras la revisión a ciegas; la segunda verificación pidió cuatro retoques de redacción (t025 p5, t026 p2, t027 p2 y la oración 8 de t028), ya aplicados. 8 nov 2026 (rutina no-se): una incorrecta tomó la forma de la correcta (justificación o dos puntos) para que la forma no delate la clave; mismo código y mismo sentido."
   }
 }

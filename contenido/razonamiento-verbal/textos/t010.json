@@ -1,6 +1,6 @@
 {
   "id": "t010",
-  "version": 1,
+  "version": 2,
   "titulo": "La balanza de la feria",
   "tema": "Relato · confianza y verdad",
   "grado": 3,
@@ -178,7 +178,7 @@
           "explicacion": "Nada en el relato apoya eso, y además choca con él: el azúcar era de la señora (oración 6), y la abuela vende quinua."
         },
         {
-          "t": "el azúcar pesa más que la quinua y llena más rápido el plato.",
+          "t": "el azúcar pesa más que la quinua, así que llena más rápido el plato.",
           "codigo": "RV8",
           "explicacion": "Es una idea de fuera del relato, y además confusa: un kilo pesa lo mismo sea de azúcar o de quinua."
         }
@@ -269,6 +269,6 @@
     "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
     "fecha": "2026-11-06",
     "veredicto": "aprobado",
-    "notas": "A ciegas: 7 de 7. Cambios: la correcta de p2 incluye que el paquete era de la señora (el distractor RV6 era defendible y se reemplazó por uno que choca con el relato, RV9); \"idea central\" en vez de \"tema\"; previo de propósito con RV33 en \"convencer\". Una segunda verificación de los ítems cambiados confirmó claves únicas; se ajustaron cuatro explicaciones y un enunciado. Rutina verbal C (7 nov 2026): en el previo clasificar, «lo dice» ante lo que se deduce pasó a RV58 (antes RV6, RV5 o null)."
+    "notas": "A ciegas: 7 de 7. Cambios: la correcta de p2 incluye que el paquete era de la señora (el distractor RV6 era defendible y se reemplazó por uno que choca con el relato, RV9); \"idea central\" en vez de \"tema\"; previo de propósito con RV33 en \"convencer\". Una segunda verificación de los ítems cambiados confirmó claves únicas; se ajustaron cuatro explicaciones y un enunciado. Rutina verbal C (7 nov 2026): en el previo clasificar, «lo dice» ante lo que se deduce pasó a RV58 (antes RV6, RV5 o null). 8 nov 2026 (rutina no-se): una incorrecta tomó la forma de la correcta (justificación o dos puntos) para que la forma no delate la clave; mismo código y mismo sentido."
   }
 }

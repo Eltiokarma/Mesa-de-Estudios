@@ -56,5 +56,10 @@
   "RV55": "Fíjate en el verbo: dice cuándo pasa algo o si es seguro, y eso cambia la respuesta.",
   "RV56": "La pregunta pide qué es algo (el concepto), y elegiste un ejemplo o un caso.",
   "RV57": "Te fijaste en una parte pequeña del texto. El tipo y la estructura los decide lo que organiza todo el texto.",
-  "RV58": "Eso no está escrito: lo dedujiste (o lo calculaste) a partir de lo que dice el texto. Está bien deducirlo, pero deducir no es lo mismo que leerlo."
+  "RV58": "Eso no está escrito: lo dedujiste (o lo calculaste) a partir de lo que dice el texto. Está bien deducirlo, pero deducir no es lo mismo que leerlo.",
+  "RV59": "Esa idea es del otro autor: antes de responder, fíjate en cuál de los dos textos está escrita.",
+  "RV60": "Eso lo sostiene solo uno de los autores: no es el tema que discuten ni algo en lo que coincidan.",
+  "RV61": "Los dos autores discrepan en otras cosas, pero en esto coinciden: búscalo en los dos textos.",
+  "RV62": "Una mitad de esa respuesta es correcta, pero la otra no: revisa las dos partes por separado.",
+  "RV63": "La pregunta cambia una condición del texto: la consecuencia no puede ser la misma que con la condición original."
 }

@@ -49,26 +49,28 @@ async function vista(ctx, id) {
       ${p.datos ? `<p class="sub">${esc(p.datos)}</p>` : ''}
       <p class="preg">${texto(p.pregunta, p, esc)}</p>
       <div class="alts" role="group" aria-label="Alternativas">${p.alternativas.map(a =>
-        `<button class="alt" data-letra="${a.letra}"><span class="letra">${a.letra}</span><span>${esc(a.texto)}</span></button>`).join('')}</div>
-      <p class="solo-teclado">Con teclado: <kbd>A</kbd>–<kbd>${p.alternativas[p.alternativas.length - 1].letra}</kbd> o <kbd>1</kbd>–<kbd>${p.alternativas.length}</kbd> para elegir, <kbd>Enter</kbd> para seguir.</p>
+        `<button class="alt" data-letra="${a.letra}"><span class="letra">${a.letra}</span><span>${esc(a.texto)}</span></button>`).join('')}
+        <button class="alt nose" data-nose="1">No sé</button></div>
+      <p class="solo-teclado">Con teclado: <kbd>A</kbd>–<kbd>${p.alternativas[p.alternativas.length - 1].letra}</kbd> o <kbd>1</kbd>–<kbd>${p.alternativas.length}</kbd> para elegir, <kbd>0</kbd> o <kbd>N</kbd> para «No sé», <kbd>Enter</kbd> para seguir.</p>
       <div id="retro"></div>
     </article>`;
   }
 
   // ---- Pruebas de entrada y salida: mismas semillas para todos, sin corrección inmediata ----
   function prueba(fase) {
-    let i = 0, aciertos = 0; const respuestas = []; const t0 = Date.now();
+    let i = 0, aciertos = 0, nose = 0; const respuestas = []; const t0 = Date.now();
     const sig = () => {
       if (i === N_PRUEBA) {
-        st[fase] = { aciertos, total: N_PRUEBA }; guardar();
-        registrar({ tipo: 'prueba', fase, modulo: id, unidad, aciertos, total: N_PRUEBA, respuestas: respuestas.join(''), ms: Date.now() - t0 });
+        st[fase] = { aciertos, total: N_PRUEBA, nose }; guardar();
+        registrar({ tipo: 'prueba', fase, modulo: id, unidad, aciertos, total: N_PRUEBA, respuestas: respuestas.join(''), nose, ms: Date.now() - t0 });
         return fase === 'entrada' ? practica() : resultado();
       }
       const p = gen.generar(`${fase}-${i + 1}`);
       $app.innerHTML = cabecera(fase === 'entrada'
-        ? 'Antes de empezar: 3 preguntas rápidas para saber de dónde partes. No cuentan para nada; responde lo que creas.'
+        ? 'Antes de empezar: 3 preguntas rápidas para saber de dónde partes. No cuentan para nada. Si no lo sabes, marca «No sé»: nos ayuda más que adivinar.'
         : 'Prueba final: 3 preguntas parecidas a las del inicio, para ver cuánto avanzaste.') + problemaHTML(p, i + 1, N_PRUEBA, fase === 'entrada' ? 'Prueba de entrada' : 'Prueba de salida');
       $app.querySelectorAll('.alt').forEach(b => b.onclick = () => {
+        if (b.dataset.nose) { respuestas.push('0'); nose++; i++; return sig(); } // «No sé»: 0 en la cadena
         const a = p.alternativas.find(x => x.letra === b.dataset.letra);
         respuestas.push(a.letra); if (a.correcta) aciertos++; i++; sig();
       });
@@ -88,22 +90,27 @@ async function vista(ctx, id) {
       problemaHTML(p, 0, 0, 'Predice antes de ver la solución');
     const ir = document.getElementById('irSalida'); if (ir) ir.onclick = e => { e.preventDefault(); prueba('salida'); };
     $app.querySelectorAll('.alt').forEach(b => b.onclick = () => {
-      const a = p.alternativas.find(x => x.letra === b.dataset.letra);
+      // «No sé»: se muestra la respuesta y su solución sin marcar error, y se registra nose: true.
+      const nose = !!b.dataset.nose;
+      const a = nose ? null : p.alternativas.find(x => x.letra === b.dataset.letra);
       const correcta = p.alternativas.find(x => x.correcta);
       $app.querySelectorAll('.alt').forEach(x => {
         x.disabled = true;
         if (x.dataset.letra === correcta.letra) x.classList.add('ok');
-        else if (x === b) x.classList.add('mal');
+        else if (x === b) x.classList.add(nose ? 'elegida' : 'mal');
       });
-      st.hechos++; if (a.correcta) st.aciertos++; guardar(); marcarDia();
+      st.hechos++; if (a && a.correcta) st.aciertos++; if (nose) st.nose = (st.nose || 0) + 1; guardar(); marcarDia();
       est.vistas[unidad] = est.vistas[unidad] || new Date().toLocaleDateString('en-CA'); guardar();
-      registrar({ tipo: 'prediccion', modulo: id, unidad, problema: p.id, opcion: a.letra, correcta: a.correcta,
-        error: a.error ? a.error.id : '', respaldo: a.error ? a.error.respaldo : '', ms: Date.now() - t0 });
+      registrar(nose
+        ? { tipo: 'prediccion', modulo: id, unidad, problema: p.id, opcion: '', correcta: false, error: '', respaldo: '', nose: true, ms: Date.now() - t0 }
+        : { tipo: 'prediccion', modulo: id, unidad, problema: p.id, opcion: a.letra, correcta: a.correcta,
+          error: a.error ? a.error.id : '', respaldo: a.error ? a.error.respaldo : '', ms: Date.now() - t0 });
       document.getElementById('retro').innerHTML = `
-        <div class="retro ${a.correcta ? 'bien' : 'malo'}">
-          ${a.correcta && window.Ilus ? Ilus.gato('class="retro-gato"') : ''}
-          <b>${a.correcta ? `¡Bien! Es la ${correcta.letra}. ${PREMIOS[st.hechos % PREMIOS.length]}` : `Elegiste la ${a.letra}. La correcta es la ${correcta.letra}: ${esc(correcta.texto)}.`}</b>
-          ${a.correcta ? '' : `<p>${esc(a.error.explicacion)}</p>`}
+        <div class="retro ${nose ? 'nose' : a.correcta ? 'bien' : 'malo'}">
+          ${a && a.correcta && window.Ilus ? Ilus.gato('class="retro-gato"') : ''}
+          <b>${nose ? `Gracias por decirlo. La respuesta es la ${correcta.letra}: ${esc(correcta.texto)}.`
+            : a.correcta ? `¡Bien! Es la ${correcta.letra}. ${PREMIOS[st.hechos % PREMIOS.length]}` : `Elegiste la ${a.letra}. La correcta es la ${correcta.letra}: ${esc(correcta.texto)}.`}</b>
+          ${nose ? '<p>Mira la solución paso a paso y prueba con el siguiente.</p>' : a.correcta ? '' : `<p>${esc(a.error.explicacion)}</p>`}
         </div>
         <h3 class="sol-t">Solución paso a paso</h3>
         <ol class="sol">${p.solucion.map(paso => `<li>${texto(paso, p, esc)}</li>`).join('')}</ol>
@@ -131,15 +138,16 @@ async function vista(ctx, id) {
   else practica();
 }
 
-// Teclado (laboratorio de cómputo): A–E o 1–5 eligen una alternativa; Enter pasa al siguiente.
+// Teclado (laboratorio de cómputo): A–E o 1–5 eligen una alternativa; 0 o N, «No sé»; Enter pasa al siguiente.
 // Un solo oyente para toda la app; solo actúa en la ruta de práctica.
 document.addEventListener('keydown', e => {
   if (!location.hash.startsWith('#/practica') || e.ctrlKey || e.metaKey || e.altKey || e.repeat) return;
   if (e.target.closest && e.target.closest('input, textarea, select')) return;
   const k = e.key.toUpperCase();
   const letra = /^[A-E]$/.test(k) ? k : /^[1-5]$/.test(k) ? 'ABCDE'[+k - 1] : null;
-  if (letra) {
-    const b = document.querySelector(`.alt[data-letra="${letra}"]:not(:disabled)`);
+  const nose = k === '0' || k === 'N';
+  if (letra || nose) {
+    const b = document.querySelector(nose ? '.alt.nose:not(:disabled)' : `.alt[data-letra="${letra}"]:not(:disabled)`);
     if (b) { e.preventDefault(); b.click(); }
     return;
   }

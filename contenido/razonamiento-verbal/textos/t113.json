@@ -1,0 +1,149 @@
+{
+  "id": "t113",
+  "version": 1,
+  "titulo": "¿Mide a todos igual el examen de admisión?",
+  "tema": "Educación · ingreso a la universidad pública",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    { "id": "A", "desde": 0, "firma": "Una docente universitaria" },
+    { "id": "B", "desde": 1, "firma": "Un profesor de un colegio público" }
+  ],
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "principal", "t": "El examen de admisión sigue siendo la forma más justa de elegir quién entra a una universidad pública." },
+      { "id": "o2", "rol": "apoyo", "t": "Todos los postulantes responden las mismas preguntas, el mismo día y con el mismo tiempo, y quien califica no sabe de quién es cada hoja." },
+      { "id": "o3", "rol": "apoyo", "t": "No importa el apellido del postulante, ni a quién conoce, ni el colegio del que viene: solo cuenta lo que responde." },
+      { "id": "o4", "rol": "contraste", "t": "Cualquier otro criterio, como una entrevista o una carta de recomendación, abre la puerta a la preferencia de quien evalúa." },
+      { "id": "o5", "rol": "principal", "t": "Si las vacantes son pocas, lo menos que se puede pedir es una regla igual para todos." }
+    ],
+    [
+      { "id": "o6", "rol": "apoyo", "t": "Es cierto que el examen trata a todos igual el día de la prueba." },
+      { "id": "o7", "rol": "contraste", "t": "Lo que no dice es cuánto tiempo y cuánto dinero pudo poner cada postulante antes de ese día." },
+      { "id": "o8", "rol": "apoyo", "t": "Quien pagó meses de academia llega habiendo practicado cientos de preguntas del mismo estilo; quien trabajó por las tardes llega con lo que aprendió en su colegio." },
+      { "id": "o9", "rol": "apoyo", "t": "Así, una parte del puntaje mide la preparación que se pudo comprar, y no solo lo que se sabe." },
+      { "id": "o10", "rol": "principal", "t": "Por eso propongo que el examen no sea lo único: que también pese el rendimiento del alumno durante la secundaria, que muestra un esfuerzo sostenido y no el de un solo día." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "controversia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "¿Cuál es el eje del debate entre los dos textos?",
+      "alternativas": [
+        { "t": "Si el examen de admisión basta, por sí solo, para elegir con justicia a los ingresantes.", "correcta": true, "evidencia": ["o1", "o10"],
+          "explicacion": "El texto A dice que el examen es la forma más justa (oración 1); el B, que no debe ser lo único (oración 10)." },
+        { "t": "Si el examen trata igual a todos los postulantes el día de la prueba.", "codigo": "RV61", "origen": "o6",
+          "explicacion": "En eso coinciden: el texto A lo afirma en la oración 2 y el B lo concede en la oración 6 («es cierto que…»)." },
+        { "t": "Si una entrevista personal o una carta de recomendación abren la puerta a la preferencia de quien evalúa.", "codigo": "RV60", "origen": "o4",
+          "explicacion": "Es un argumento del texto A (oración 4). El texto B no lo discute; el eje tiene que ser algo sobre lo que los dos toman posición." },
+        { "t": "Si conviene trabajar por las tardes mientras se postula.", "codigo": "RV1", "origen": "o8",
+          "explicacion": "Es un detalle del ejemplo del texto B, no lo que se discute." },
+        { "t": "Si la educación pública del Perú necesita más presupuesto.", "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos discuten cómo elegir a los ingresantes, no el presupuesto de la educación." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "discrepancia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Usar criterios distintos de la prueba escrita deja entrar la preferencia de quien evalúa.",
+        "aceptada": "A",
+        "codigos": { "B": "RV59", "ambos": "RV60", "ninguno": null },
+        "explicacion": "Lo dice el texto A en la oración 4: una entrevista o una carta «abre la puerta a la preferencia de quien evalúa».",
+        "explicaciones": {
+          "B": "El texto B no habla de preferencias de quien evalúa: habla de lo que cada uno pudo pagar antes del examen. La idea es del texto A (oración 4).",
+          "ambos": "Solo el texto A lo sostiene. El B, de hecho, propone sumar otro criterio: el rendimiento en la secundaria.",
+          "ninguno": "Sí lo sostiene alguien: el texto A, en la oración 4."
+        }
+      },
+      "enunciado": "¿En qué discrepan los autores?",
+      "alternativas": [
+        { "t": "A cree que basta el examen para elegir con justicia; B, que también debe pesar la secundaria.", "correcta": true, "evidencia": ["o1", "o10"],
+          "explicacion": "Cada mitad es la tesis de su autor: la oración 1 en el texto A y la oración 10 en el B." },
+        { "t": "A cree que basta el examen para elegir con justicia; B, que debe eliminarse el examen de admisión.", "codigo": "RV62", "origen": "o10",
+          "explicacion": "La primera mitad es correcta, pero el texto B no pide eliminar el examen: pide que «no sea lo único» (oración 10)." },
+        { "t": "A sostiene que el puntaje mide en parte la preparación comprada; B, que solo cuenta lo que se responde.", "codigo": "RV59", "origen": "o9",
+          "explicacion": "Cambia las posturas de lugar: lo de la preparación comprada es del texto B (oración 9) y lo de que solo cuenta lo que se responde, del A (oración 3)." },
+        { "t": "A dice que la prueba es igual para todos el día del examen; B lo niega y afirma que unos tienen más tiempo que otros.", "codigo": "RV61", "origen": "o6",
+          "explicacion": "El texto B no lo niega: concede que el examen trata a todos igual ese día (oración 6). Su crítica es a lo que pasa antes." },
+        { "t": "A defiende las academias preuniversitarias; B pide cerrarlas.", "codigo": "RV33",
+          "explicacion": "Ninguno toma esa postura: el texto A no menciona las academias y el B las usa como ejemplo, sin pedir que se cierren." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "dialogo",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Ante la propuesta del texto B, la autora del texto A probablemente objetaría que",
+      "alternativas": [
+        { "t": "las notas del colegio las pone cada profesor con su propio criterio, sin una regla igual para todos.", "correcta": true, "evidencia": ["o3", "o4", "o5"],
+          "explicacion": "Para el texto A, cualquier criterio distinto del examen deja entrar la preferencia de quien evalúa (oración 4) y lo justo es una regla igual (oración 5). Las notas de la secundaria tienen ese problema." },
+        { "t": "una parte del puntaje mide la preparación que se pudo comprar.", "codigo": "RV59", "origen": "o9",
+          "explicacion": "Ese es el argumento del texto B (oración 9); no sirve al A para objetarle." },
+        { "t": "el examen no trata igual a todos los postulantes el día de la prueba.", "codigo": "RV33", "origen": "o2",
+          "explicacion": "El texto A dice justamente lo contrario en la oración 2: las mismas preguntas, el mismo día y el mismo tiempo para todos." },
+        { "t": "las universidades privadas ya admiten alumnos por las notas del colegio.", "codigo": "RV8",
+          "explicacion": "El texto A no habla de las universidades privadas. Es un dato de fuera del texto, sea cierto o no." },
+        { "t": "entonces habría que admitir sin ninguna prueba a todos los que terminaron la secundaria con buenas notas.", "codigo": "RV12",
+          "explicacion": "Exagera la propuesta del texto B, que suma la secundaria al examen pero no elimina la prueba; y no es lo que el A objetaría." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto B, el adjetivo SOSTENIDO («un esfuerzo sostenido») significa",
+      "alternativas": [
+        { "t": "constante.", "correcta": true, "evidencia": ["o10"],
+          "explicacion": "Se opone al esfuerzo «de un solo día»: es un esfuerzo que dura todos los años de la secundaria." },
+        { "t": "sujetado.", "codigo": "RV18",
+          "explicacion": "Es el sentido físico más frecuente de «sostener» (tener algo para que no caiga), pero un esfuerzo no se sujeta." },
+        { "t": "intenso.", "codigo": "RV19",
+          "explicacion": "Se asocia con «esfuerzo», pero el texto no habla de cuán fuerte es, sino de cuánto dura." },
+        { "t": "de un solo día.", "codigo": "RV5", "origen": "o10",
+          "explicacion": "Repite palabras de la misma oración, que dicen justo lo contrario de «sostenido»." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "coincidencia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "El día del examen, todos los postulantes compiten en las mismas condiciones.",
+        "aceptada": "ambos",
+        "codigos": { "A": "RV61", "B": "RV61", "ninguno": null },
+        "explicacion": "Los dos lo sostienen: el texto A lo dice en la oración 2 y el B lo concede en la oración 6.",
+        "explicaciones": {
+          "A": "El texto A lo dice (oración 2), pero el B también lo acepta: «es cierto que el examen trata a todos igual el día de la prueba» (oración 6).",
+          "B": "El texto B lo concede en la oración 6, pero el A lo dice primero, en la oración 2.",
+          "ninguno": "Los dos lo sostienen: el texto A en la oración 2 y el B en la oración 6."
+        }
+      },
+      "enunciado": "¿En qué coinciden ambos autores?",
+      "alternativas": [
+        { "t": "En que la prueba pone a todos en las mismas condiciones el día en que se rinde.", "correcta": true, "evidencia": ["o2", "o6"],
+          "explicacion": "El texto A lo afirma en la oración 2 y el B lo concede en la oración 6, antes de su crítica." },
+        { "t": "En que el examen es la forma más justa de elegir a los ingresantes.", "codigo": "RV60", "origen": "o1",
+          "explicacion": "Es la tesis del texto A (oración 1). El B no la comparte: quiere que el examen no sea lo único." },
+        { "t": "En que la prueba es igual para todos y mide solo lo que cada uno sabe.", "codigo": "RV62", "origen": "o9",
+          "explicacion": "La primera mitad es común, pero la segunda la niega el texto B: una parte del puntaje mide la preparación comprada (oración 9)." },
+        { "t": "En que las universidades públicas tienen menos vacantes que postulantes.", "codigo": "RV8", "origen": "o5",
+          "explicacion": "El texto A dice «si las vacantes son pocas», como supuesto; el B no habla de vacantes. No es un punto en común de los textos." },
+        { "t": "En que las academias deberían ser gratuitas para los alumnos de los colegios públicos.", "codigo": "RV33",
+          "explicacion": "Ninguno de los dos lo propone: el texto B menciona la academia como ejemplo de lo que se puede pagar." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-08",
+  "hechos": [],
+  "revision": { "por": "subagente (revisor a ciegas)", "fecha": "2026-11-08", "veredicto": "aprobado", "notas": "Coincidí a ciegas en 7 de 7. En p3 la correcta ahora dice «con su propio criterio» para atarla mejor a la oración 4; códigos revisados sin cambios." }
+}

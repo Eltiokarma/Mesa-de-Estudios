@@ -1,0 +1,384 @@
+{
+ "plantilla": "funciones-dominio-rango",
+ "tolerancia": 0.000001,
+ "nota": "Respuesta numérica en su unidad, o el texto del conjunto, la expresión o la secuencia V/F tal como lo escribe el generador; exacta es el texto de la alternativa correcta.",
+ "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver el generador: resolvió los 24 casos con aritmética exacta (Fraction), áreas por tramos para |x| − ⟦x⟧, muestreo de dominios y rangos, y conteo directo de cifras de 2⁵⁰. Los 24 coinciden con esperado; no hay ambigüedades ni distractores defendibles.",
+ "casos": [
+  {
+   "semilla": 0,
+   "entrada": {
+    "tipo": "costo-recipiente",
+    "sub": "formula",
+    "k": 3,
+    "x": 1,
+    "h": 2,
+    "a": 40,
+    "b": 45
+   },
+   "esperado": {
+    "respuesta": "C(x) = 120x² + 720/x",
+    "exacta": "C(x) = 120x² + 720/x"
+   }
+  },
+  {
+   "semilla": 1,
+   "entrada": {
+    "tipo": "area-entero-abs",
+    "sub": "total",
+    "m": 3,
+    "n": 3
+   },
+   "esperado": {
+    "respuesta": 12,
+    "exacta": "12 u²"
+   }
+  },
+  {
+   "semilla": 2,
+   "entrada": {
+    "tipo": "logistico",
+    "sub": "incremento",
+    "ctx": "truchas",
+    "A": 1584,
+    "c": 1,
+    "d": 10,
+    "b": 2,
+    "t1": 3
+   },
+   "esperado": {
+    "respuesta": 560,
+    "exacta": "560 truchas"
+   }
+  },
+  {
+   "semilla": 3,
+   "entrada": {
+    "tipo": "dominio-log",
+    "sub": "base-decrece",
+    "a": 1,
+    "c": 7,
+    "bi": 2
+   },
+   "esperado": {
+    "respuesta": "⟨2; 7⟩ − {6}",
+    "exacta": "⟨2; 7⟩ − {6}"
+   }
+  },
+  {
+   "semilla": 4,
+   "entrada": {
+    "tipo": "log-entero",
+    "sub": "ingreso",
+    "A": 14,
+    "L": 3000,
+    "U": 80000
+   },
+   "esperado": {
+    "respuesta": 100000,
+    "exacta": "100 000 soles"
+   }
+  },
+  {
+   "semilla": 5,
+   "entrada": {
+    "tipo": "monotonia-vf",
+    "u": 3,
+    "w": 5,
+    "p": 4,
+    "q": 6,
+    "d": -2,
+    "e": 1,
+    "rangoUno": true,
+    "p3": 1,
+    "q3": 3,
+    "k": 4,
+    "m": -3,
+    "afirma": "min"
+   },
+   "esperado": {
+    "respuesta": "VVF",
+    "exacta": "VVF"
+   }
+  },
+  {
+   "semilla": 6,
+   "entrada": {
+    "tipo": "dominio-radicales",
+    "sub": "irracional",
+    "r": 3,
+    "s": -1
+   },
+   "esperado": {
+    "respuesta": "[2; +∞⟩",
+    "exacta": "[2; +∞⟩"
+   }
+  },
+  {
+   "semilla": 7,
+   "entrada": {
+    "tipo": "costo-recipiente",
+    "sub": "evaluar",
+    "k": 2,
+    "x": 3,
+    "h": 2,
+    "a": 70,
+    "b": 20
+   },
+   "esperado": {
+    "respuesta": 1980,
+    "exacta": "1 980 soles"
+   }
+  },
+  {
+   "semilla": 9,
+   "entrada": {
+    "tipo": "inyectiva-restringir",
+    "sub": "raiz",
+    "h": 1,
+    "r": 5,
+    "q": -1
+   },
+   "esperado": {
+    "respuesta": "[−4; 1]",
+    "exacta": "[−4; 1]"
+   }
+  },
+  {
+   "semilla": 11,
+   "entrada": {
+    "tipo": "racional-simplificable",
+    "sub": "dominio",
+    "a": 6,
+    "b": 5
+   },
+   "esperado": {
+    "respuesta": "[5; +∞⟩ − {6}",
+    "exacta": "[5; +∞⟩ − {6}"
+   }
+  },
+  {
+   "semilla": 12,
+   "entrada": {
+    "tipo": "dominio-radicales",
+    "sub": "anidado",
+    "a": -1,
+    "c": 2,
+    "dentro": false
+   },
+   "esperado": {
+    "respuesta": "[3; +∞⟩",
+    "exacta": "[3; +∞⟩"
+   }
+  },
+  {
+   "semilla": 16,
+   "entrada": {
+    "tipo": "logistico",
+    "sub": "limite",
+    "ctx": "cuyes",
+    "A": 10998,
+    "c": 2,
+    "d": 7,
+    "b": 3,
+    "t1": 1
+   },
+   "esperado": {
+    "respuesta": 5499,
+    "exacta": "5 499 cuyes"
+   }
+  },
+  {
+   "semilla": 19,
+   "entrada": {
+    "tipo": "dominio-log",
+    "sub": "base-crece",
+    "a": 1,
+    "c": 9,
+    "bi": 2
+   },
+   "esperado": {
+    "respuesta": "⟨1; 8⟩ − {2}",
+    "exacta": "⟨1; 8⟩ − {2}"
+   }
+  },
+  {
+   "semilla": 20,
+   "entrada": {
+    "tipo": "area-entero-abs",
+    "sub": "izquierda",
+    "m": 3,
+    "n": 4
+   },
+   "esperado": {
+    "respuesta": 10.5,
+    "exacta": "10,5 u²"
+   }
+  },
+  {
+   "semilla": 23,
+   "entrada": {
+    "tipo": "rango-exp-abs",
+    "sub": "rango",
+    "base": "3",
+    "a": 2,
+    "c": 2
+   },
+   "esperado": {
+    "respuesta": "[3; +∞⟩",
+    "exacta": "[3; +∞⟩"
+   }
+  },
+  {
+   "semilla": 27,
+   "entrada": {
+    "tipo": "racional-simplificable",
+    "sub": "rango",
+    "a": 2,
+    "b": -2
+   },
+   "esperado": {
+    "respuesta": "[0; +∞⟩ − {2}",
+    "exacta": "[0; +∞⟩ − {2}"
+   }
+  },
+  {
+   "semilla": 29,
+   "entrada": {
+    "tipo": "composicion",
+    "sub": "despejar",
+    "ctx": "chompas",
+    "a": 6,
+    "b": 6,
+    "p": 25,
+    "F": 120,
+    "G": 1230
+   },
+   "esperado": {
+    "respuesta": 8,
+    "exacta": "8 horas"
+   }
+  },
+  {
+   "semilla": 34,
+   "entrada": {
+    "tipo": "rango-exp-abs",
+    "sub": "sobre",
+    "base": "3",
+    "a": 0,
+    "c": 1,
+    "p": -3,
+    "q": 1
+   },
+   "esperado": {
+    "respuesta": 30,
+    "exacta": "30"
+   }
+  },
+  {
+   "semilla": 38,
+   "entrada": {
+    "tipo": "log-entero",
+    "sub": "cifras",
+    "base": 2,
+    "n": 50
+   },
+   "esperado": {
+    "respuesta": 16,
+    "exacta": "16 cifras"
+   }
+  },
+  {
+   "semilla": 40,
+   "entrada": {
+    "tipo": "clasificar-verbal",
+    "sits": [
+     {
+      "s": "doble",
+      "prop": "biyectiva",
+      "n": 6,
+      "exacta": false
+     },
+     {
+      "s": "cuadrado",
+      "prop": "biyectiva",
+      "k": 2,
+      "exacta": false
+     },
+     {
+      "s": "mitad",
+      "prop": "biyectiva",
+      "k": 33
+     }
+    ]
+   },
+   "esperado": {
+    "respuesta": "FFF",
+    "exacta": "FFF"
+   }
+  },
+  {
+   "semilla": 44,
+   "entrada": {
+    "tipo": "composicion",
+    "sub": "evaluar",
+    "ctx": "papa",
+    "a": 9,
+    "b": 12,
+    "p": 4,
+    "F": 15,
+    "h0": 6
+   },
+   "esperado": {
+    "respuesta": 249,
+    "exacta": "249 soles"
+   }
+  },
+  {
+   "semilla": 62,
+   "entrada": {
+    "tipo": "inyectiva-restringir",
+    "sub": "minimo",
+    "u": 1,
+    "w": 3,
+    "sentido": "izq"
+   },
+   "esperado": {
+    "respuesta": 2,
+    "exacta": "2"
+   }
+  },
+  {
+   "semilla": "entrada-1",
+   "entrada": {
+    "tipo": "composicion",
+    "sub": "despejar",
+    "ctx": "chompas",
+    "a": 8,
+    "b": 3,
+    "p": 30,
+    "F": 120,
+    "G": 1650
+   },
+   "esperado": {
+    "respuesta": 7,
+    "exacta": "7 horas"
+   }
+  },
+  {
+   "semilla": "salida-1",
+   "entrada": {
+    "tipo": "costo-recipiente",
+    "sub": "evaluar",
+    "k": 3,
+    "x": 2,
+    "h": 1,
+    "a": 60,
+    "b": 30
+   },
+   "esperado": {
+    "respuesta": 1200,
+    "exacta": "1 200 soles"
+   }
+  }
+ ]
+}

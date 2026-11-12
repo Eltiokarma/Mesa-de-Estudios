@@ -75,6 +75,7 @@ function consigna(p, it) {
     case 'marcar-oracion': return p.ninguna ? `${pide} Si ninguna lo dice completo, escribe «ninguna».` : pide;
     case 'clasificar': return `${pide} «${p.sonda}» Elige: ${ops(Lectura.CLASES.map(c => c.t))}.`;
     case 'proposito': return `${pide} Elige: ${ops(Lectura.PROPOSITOS.map(c => c.t))}.`;
+    case 'atribuir': return `${pide} «${p.sonda}» Elige: ${ops(Lectura.ATRIBUCIONES.map(c => c.t))}.`;
     case 'relacion': return `${pide} Elige: ${ops(Lectura.RELACIONES.map(c => `${c.t} (${c.d})`))}.`;
     case 'relacion-analogia': return `${pide} Escríbela con tus palabras, por ejemplo «${Lectura.textoAnalogia('a-usa-b', (it.cuerpo || {}).base)}».`;
     default: return pide;
@@ -106,6 +107,9 @@ function problema(item, k) {
       return f.tipo === 'tabla' ? { ...f, filas: limpia(f.filas) } : f.tipo === 'barras' ? { ...f, barras: limpia(f.barras) } : { ...f, recuadros: limpia(f.recuadros) };
     });
     if (figs.length) texto.figuras = figs;
+    // Par A/B: el rótulo de cada texto va antes de su primer párrafo ("desde", contado desde 0).
+    const as = Lectura.autores(it).map(a => ({ titulo: a.titulo, ...(a.firma ? { firma: a.firma } : {}), desde: a.desde }));
+    if (as.length) texto.autores = as;
   }
   const varias = it.preguntas.length > 1;
   const preguntas = it.preguntas.map((q, j) => ({

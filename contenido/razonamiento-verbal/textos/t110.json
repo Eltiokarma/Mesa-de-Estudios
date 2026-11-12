@@ -1,0 +1,159 @@
+{
+  "id": "t110",
+  "version": 1,
+  "titulo": "La moratoria a los transgénicos",
+  "tema": "Ciencia y agro · cultivos transgénicos y diversidad nativa",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    { "id": "A", "desde": 0, "firma": "Una agrónoma que trabaja con comunidades andinas" },
+    { "id": "B", "desde": 1, "firma": "Un investigador en biotecnología de una universidad pública" }
+  ],
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "apoyo", "t": "El Perú es uno de los centros de origen de la papa y guarda una gran diversidad de maíces nativos, cuidados durante siglos por comunidades campesinas." },
+      { "id": "o2", "rol": "apoyo", "t": "Esa diversidad no está guardada en un depósito: vive en chacras abiertas, donde el polen viaja con el viento y las semillas se intercambian en las ferias." },
+      { "id": "o3", "rol": "apoyo", "t": "Si se sembraran variedades transgénicas cerca, sus genes podrían pasar a las nativas, y ese cambio no tendría marcha atrás." },
+      { "id": "o4", "rol": "principal", "t": "Por eso la moratoria al cultivo de transgénicos es una medida de prudencia: protege un patrimonio que no se puede reconstruir." },
+      { "id": "o5", "rol": "apoyo", "t": "Prohibir que se siembren no es rechazar la ciencia; es reconocer que hay riesgos que, una vez corridos, ya no se pueden deshacer." }
+    ],
+    [
+      { "id": "o6", "rol": "apoyo", "t": "Comparto la preocupación por las papas y los maíces nativos: son una riqueza que ningún laboratorio podría reemplazar." },
+      { "id": "o7", "rol": "contraste", "t": "Lo que no comparto es que la respuesta sea una prohibición general, que trata igual a una planta que no tiene parientes silvestres en el país y a un maíz que podría cruzarse con los nativos." },
+      { "id": "o8", "rol": "apoyo", "t": "Mientras dure la moratoria, los grupos de investigación del país tienen pocas razones para desarrollar variedades propias, y muchos jóvenes científicos buscan su oportunidad fuera." },
+      { "id": "o9", "rol": "principal", "t": "La moratoria debería reemplazarse por una evaluación caso por caso, en la que cada cultivo se apruebe o se rechace según sus riesgos para el lugar donde se sembraría." },
+      { "id": "o10", "rol": "apoyo", "t": "Prudencia no es cerrar la puerta: es abrirla solo cuando se sabe qué entra." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "controversia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "¿Cuál es el eje del debate entre los dos textos?",
+      "alternativas": [
+        { "t": "Si el cultivo de transgénicos debe seguir prohibido en general o evaluarse caso por caso.", "correcta": true, "evidencia": ["o4", "o9"],
+          "explicacion": "El texto A defiende la moratoria (oración 4) y el texto B propone reemplazarla por una evaluación caso por caso (oración 9)." },
+        { "t": "Si las papas y los maíces nativos son una riqueza que merece protegerse.", "codigo": "RV61", "origen": "o6",
+          "explicacion": "En eso coinciden: el texto B dice «comparto la preocupación por las papas y los maíces nativos» (oración 6)." },
+        { "t": "Si la diversidad nativa se conserva mejor en chacras abiertas, donde el polen viaja, que en depósitos.", "codigo": "RV60", "origen": "o2",
+          "explicacion": "Es un argumento del texto A (oración 2); el texto B no lo discute." },
+        { "t": "Si los alimentos transgénicos hacen daño a quienes los comen.", "codigo": "RV8",
+          "explicacion": "Es una discusión conocida fuera del texto, pero ninguno de los dos autores habla de la salud de quien come transgénicos: hablan de cultivos y de diversidad." },
+        { "t": "Si la ciencia moderna es buena o mala para el país.", "codigo": "RV2",
+          "explicacion": "Es demasiado general. Además, los dos dicen valorar la ciencia; lo que discuten es una medida concreta." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "postura",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Una misma regla para todos los transgénicos pasa por alto que no todos tienen el mismo riesgo.",
+        "aceptada": "B",
+        "codigos": { "A": "RV59", "ambos": "RV60", "ninguno": null },
+        "explicacion": "Lo sostiene el texto B en la oración 7: la prohibición general trata igual a cultivos con riesgos distintos.",
+        "explicaciones": {
+          "A": "El texto A defiende justamente la prohibición general (oración 4); la crítica a tratar igual a todos los cultivos es del texto B (oración 7).",
+          "ambos": "Solo el texto B lo sostiene. El texto A no distingue entre unos transgénicos y otros.",
+          "ninguno": "Sí lo sostiene alguien: el texto B, en la oración 7, critica que la prohibición trate igual a una planta sin parientes silvestres y a un maíz que podría cruzarse."
+        }
+      },
+      "enunciado": "Según el texto B, la moratoria es criticable porque",
+      "alternativas": [
+        { "t": "no distingue entre cultivos que tienen riesgos distintos.", "correcta": true, "evidencia": ["o7"],
+          "explicacion": "Es la objeción de la oración 7: una prohibición general trata igual a cultivos que no tienen el mismo riesgo." },
+        { "t": "no distingue riesgos y, además, desprecia las variedades nativas.", "codigo": "RV62", "origen": "o6",
+          "explicacion": "La primera mitad es cierta, pero la segunda no: el texto B dice que las variedades nativas son una riqueza (oración 6)." },
+        { "t": "los transgénicos ya demostraron que son seguros.", "codigo": "RV33",
+          "explicacion": "El texto B no dice eso. Pide evaluar cada cultivo según sus riesgos, lo que supone que algunos podrían rechazarse." },
+        { "t": "impide por completo toda investigación científica en el país.", "codigo": "RV11", "origen": "o8",
+          "explicacion": "El texto B dice que los grupos de investigación «tienen pocas razones» para desarrollar variedades propias, no que toda la investigación esté prohibida." },
+        { "t": "deja que el polen viaje con el viento por las chacras abiertas.", "codigo": "RV5", "origen": "o2",
+          "explicacion": "Repite palabras de la oración 2, del texto A, que no son una crítica a la moratoria: describen cómo vive la diversidad nativa." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "dialogo",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Ante la propuesta del texto B, la autora del texto A probablemente replicaría que",
+      "alternativas": [
+        { "t": "en chacras abiertas, un solo error de evaluación ya no se puede corregir.", "correcta": true, "evidencia": ["o2", "o3", "o5"],
+          "explicacion": "Para el texto A, el polen viaja libre (oración 2) y el cambio no tiene marcha atrás (oraciones 3 y 5): si una evaluación caso por caso se equivoca una vez, el daño queda." },
+        { "t": "una prohibición general aleja del país a los jóvenes científicos que buscan oportunidades.", "codigo": "RV59", "origen": "o8",
+          "explicacion": "Ese es un argumento del texto B (oración 8), no una réplica del texto A." },
+        { "t": "las papas y los maíces nativos no valen tanto como se cree.", "codigo": "RV61", "origen": "o6",
+          "explicacion": "Los dos autores valoran las variedades nativas; el texto A es el que más las defiende." },
+        { "t": "la ciencia no debería estudiar nunca los transgénicos.", "codigo": "RV33", "origen": "o5",
+          "explicacion": "El texto A dice que prohibir la siembra «no es rechazar la ciencia» (oración 5); no pide que no se estudien." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Si se perdieran las papas y los maíces nativos, no habría cómo reponerlos.",
+        "aceptada": "ambos",
+        "codigos": { "A": "RV61", "B": "RV61", "ninguno": null },
+        "explicacion": "Los dos lo sostienen: el texto A habla de un patrimonio «que no se puede reconstruir» (oración 4) y el texto B, de una riqueza que «ningún laboratorio podría reemplazar» (oración 6).",
+        "explicaciones": {
+          "A": "El texto A lo dice (oración 4), pero el B también: ningún laboratorio podría reemplazar esa riqueza (oración 6).",
+          "B": "El texto B lo dice (oración 6), pero el A también: es un patrimonio que no se puede reconstruir (oración 4).",
+          "ninguno": "Los dos lo sostienen: el texto A en la oración 4 y el texto B en la oración 6."
+        }
+      },
+      "enunciado": "¿Cuál de estas afirmaciones es incompatible con lo que sostienen los dos autores?",
+      "alternativas": [
+        { "t": "Un laboratorio podría reponer sin pérdida las variedades nativas.", "correcta": true, "evidencia": ["o4", "o6"],
+          "explicacion": "Los dos lo niegan: para el texto A, ese patrimonio no se puede reconstruir (oración 4); para el texto B, ningún laboratorio podría reemplazarlo (oración 6)." },
+        { "t": "Los transgénicos podrían afectar la salud de las personas que los comen todos los días.", "codigo": "RV36",
+          "explicacion": "Ninguno de los textos habla de eso. Que un texto no mencione algo no lo vuelve incompatible con él." },
+        { "t": "La moratoria debería dar paso a una evaluación de cada cultivo.", "codigo": "RV60", "origen": "o9",
+          "explicacion": "Es incompatible con el texto A, pero es justo lo que propone el texto B (oración 9). No choca con los dos." },
+        { "t": "Las semillas nativas se intercambian en las ferias del campo.", "codigo": "RV5", "origen": "o2",
+          "explicacion": "Lo dice el texto A (oración 2) y el texto B no lo contradice: es compatible con los dos." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto B, la expresión CERRAR LA PUERTA («Prudencia no es cerrar la puerta») significa",
+      "alternativas": [
+        { "t": "descartar toda posibilidad de antemano.", "correcta": true, "evidencia": ["o9", "o10"],
+          "explicacion": "El autor opone «cerrar la puerta», la prohibición general, a «abrirla solo cuando se sabe qué entra», que es evaluar cada caso (oración 9)." },
+        { "t": "impedir el paso a un local.", "codigo": "RV49",
+          "explicacion": "Es el sentido literal de la frase; aquí no hay ningún local: la puerta es la posibilidad de aprobar un cultivo." },
+        { "t": "actuar con prudencia.", "codigo": "RV10", "origen": "o10",
+          "explicacion": "Se pasa por alto el «no»: el autor dice que la prudencia no es cerrar la puerta." },
+        { "t": "ocultar información.", "codigo": "RV19",
+          "explicacion": "Se asocia con el secreto, pero el texto no habla de esconder datos, sino de prohibir o permitir cultivos." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-08",
+  "hechos": [
+    {
+      "afirmacion": "El Perú es parte del centro de origen de la papa y conserva una gran diversidad de variedades nativas de papa y de razas de maíz.",
+      "fuente": "Centro Internacional de la Papa (CIP); Ministerio del Ambiente del Perú, líneas de base de la diversidad de la papa y del maíz (elaboradas en el marco de la Ley 29811)."
+    },
+    {
+      "afirmacion": "En el Perú rige una moratoria al ingreso y producción de organismos vivos modificados con fines de cultivo o crianza, creada por la Ley 29811 y ampliada por la Ley 31111.",
+      "fuente": "Ley 29811 (2011) y Ley 31111 (2021), Congreso de la República del Perú."
+    }
+  ],
+  "revision": {
+    "por": "subagente (revisor a ciegas)",
+    "fecha": "2026-11-08",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidió en 7 de 7. Se cambió a RV33 el código de un distractor de p2 (atribuye al autor una postura que no toma). Leyes 29811 (2011) y 31111 (2021) confirmadas."
+  }
+}

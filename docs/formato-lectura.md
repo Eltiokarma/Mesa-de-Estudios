@@ -2,7 +2,7 @@
 
 6 de noviembre de 2026 · Propuesta de diseño para la tarea pl4 de la hoja de ruta
 
-Es el tercer formato de `docs/arquitectura.md`, junto a "escena" y "predicciones", y sirve para razonamiento verbal: textos con preguntas, donde cada alternativa incorrecta es un error con nombre. Los errores salen de `docs/investigacion/razonamiento-verbal-ideas-erroneas.md` (códigos RV1 a RV58).
+Es el tercer formato de `docs/arquitectura.md`, junto a "escena" y "predicciones", y sirve para razonamiento verbal: textos con preguntas, donde cada alternativa incorrecta es un error con nombre. Los errores salen de `docs/investigacion/razonamiento-verbal-ideas-erroneas.md` (códigos RV1 a RV63).
 
 **Es una propuesta.** No toca `nucleo/`, `app/` ni `catalogo/`: eso lo implementa la conversación principal (pedidos en la sección 8). Lo que sí queda fijo desde ahora es el **formato JSON del banco** (sección 5), porque los textos de `contenido/razonamiento-verbal/` se escriben con él.
 
@@ -353,6 +353,49 @@ El `respaldo` no se escribe en el banco: se toma de `codigos.json` por el códig
 - Lo valida `validar` de `nucleo/lectura.js` (`figuras`, `elementos`, `referencias`, `etiquetaRef`, `citas`), con pruebas en `nucleo/lectura.test.js`.
 
 **Idioma.** `"idioma": "en"` marca un texto en inglés (unidad `lectura-en-ingles`): la app pone `lang="en"` al texto y a sus citas, y el largo mínimo baja a 100 palabras. Las preguntas, los pasos previos y las explicaciones van en español.
+
+### 5.8 Pares de textos A/B y preguntas en inglés (rutina verbal A/B, 8 nov 2026)
+
+Desde 2019 cada examen de San Marcos trae un par de textos de dos autores que debaten o se complementan, y sus preguntas juegan con atribuir bien cada postura (240 preguntas de 690 en `docs/datos/admision-unmsm.csv`). Para eso, un texto puede llevar dos autores.
+
+**Dos textos en un ítem.** Un texto con `"autores"` es un par A/B:
+
+```json
+"tipo_texto": "argumentativo",
+"autores": [
+  { "id": "A", "desde": 0 },
+  { "id": "B", "desde": 1, "firma": "Una profesora de secundaria" }
+],
+"parrafos": [ [ …texto A… ], [ …texto B… ] ]
+```
+
+- `desde` es el primer párrafo de cada texto, contado desde 0: el A empieza en el 0 y el B en uno de 1 al último. `titulo` es opcional (por defecto, «Texto A» y «Texto B»), y `firma` es una descripción genérica, nunca una persona real.
+- Las oraciones se numeran de corrido en los dos textos (el B sigue la numeración del A), así que las explicaciones citan igual que siempre. `oraciones()` le pone a cada una su `autor`.
+- La app pone un rótulo («Texto A», con la firma) antes del primer párrafo de cada uno; el papel, también.
+- Los pares van en su propio módulo, `textos-dialecticos` (`indice-textos-dialecticos.json`), con la unidad `textos-argumentativos-y-dialecticos`.
+
+**Paso previo `atribuir`.** Es la predicción propia de los pares: el alumno lee una afirmación (`sonda`, una paráfrasis, nunca una cita) y dice quién la sostiene, antes de ver las alternativas.
+
+| Opción | Lo que ve el alumno |
+| --- | --- |
+| `A` | El autor del texto A |
+| `B` | El autor del texto B |
+| `ambos` | Los dos autores |
+| `ninguno` | Ninguno de los dos |
+
+Campos: `pide`, `sonda`, `aceptada`, `codigos` (uno o `null` por cada una de las otras tres), `explicacion` y `explicaciones`. Se califica con la tabla, como `clasificar`. `banco.test.js` fija los códigos que dicen lo mismo en todos los textos:
+
+- si `aceptada` es `A` o `B`: el otro autor es **RV59** (atribuir a un autor la postura del otro) y `ambos` es **RV60** (dar como de los dos lo que dice uno);
+- si `aceptada` es `ambos`: `A` y `B` son **RV61** (no ver la coincidencia);
+- `ninguno`, y todo lo de una `aceptada` `ninguno`, lo elige quien escribe el texto.
+
+Un par lleva al menos un previo `atribuir`, y puede llevar también `clasificar` o `proposito`. `atribuir` solo vale en un texto con `autores`.
+
+**Tipos de pregunta de los pares:** `controversia` (el tema en controversia o el eje del debate), `postura` (qué sostiene uno de los autores), `coincidencia`, `discrepancia`, `dialogo` (qué le objetaría o diría un autor al otro) y `sintesis` (lo que integra los dos textos). Solo van en un par. Además, los de siempre: `sentido-contextual`, `inferencia`, `compatibilidad`, `incompatibilidad` y `extrapolacion`.
+
+**Códigos nuevos** (hipótesis, en el informe): RV59 a RV61, los del previo; **RV62**, la pareja con una sola mitad correcta («A defiende…; B propone…», o dos respuestas a la vez); y **RV63**, la extrapolación con un condicional contrario al texto que vuelve a confirmar lo que se negó.
+
+**Preguntas en inglés.** En el examen, las preguntas del texto en inglés van en inglés. Una pregunta con `"idioma": "en"` (solo dentro de un texto con el mismo idioma) tiene el enunciado y las alternativas en inglés, y la app les pone `lang="en"`. Las explicaciones, los `pide` de los previos y sus explicaciones siguen en español. El tipo nuevo `antonimo` sirve para el antónimo contextual; el distractor de siempre es el sinónimo.
 
 ## 6. Medición
 

@@ -1,0 +1,304 @@
+{
+  "id": "t125",
+  "version": 1,
+  "titulo": "Ice That Feeds the Rivers",
+  "tema": "Lectura en inglés · glaciares de la Cordillera Blanca y el agua de la estación seca",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "expositivo",
+  "idioma": "en",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "general",
+        "t": "The Cordillera Blanca, in the region of Áncash, is often described as the largest range of tropical glaciers on Earth."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "For centuries, its ice has worked like a slow water tank for the valleys below."
+      }
+    ],
+    [
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "During the rainy months, snow falls on the high peaks and adds to the ice."
+      },
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "During the dry season, when it hardly rains, the glaciers keep melting little by little, and that meltwater helps keep the Santa River and many streams flowing."
+      },
+      {
+        "id": "o5",
+        "rol": "apoyo",
+        "t": "Farmers, towns and even some farms on the coast depend, to some degree, on that water."
+      }
+    ],
+    [
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "Studies by Peruvian and foreign scientists suggest that most of these glaciers have been getting smaller for several decades."
+      },
+      {
+        "id": "o7",
+        "rol": "detalle",
+        "t": "The likely main cause is the rise in temperature, although the details seem to vary from one valley to another."
+      },
+      {
+        "id": "o8",
+        "rol": "contraste",
+        "t": "At first, a melting glacier may even release more water than before, so some rivers could appear to be doing well."
+      },
+      {
+        "id": "o9",
+        "rol": "principal",
+        "t": "However, this extra water would probably not last: as the ice gets smaller, there would be less and less ice left to melt in the dry season."
+      }
+    ],
+    [
+      {
+        "id": "o10",
+        "rol": "apoyo",
+        "t": "That is why many researchers think that communities should begin to plan now, for example by storing rainwater or recovering old Andean ways of keeping water in the soil."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "titulo",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración (en inglés) que dice lo más importante del texto.",
+        "aceptadas": [
+          "o9"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o8": "RV53"
+        },
+        "explicacion": "La oración 9 dice lo que significa que los glaciares se achiquen: el agua de más no duraría, y en la estación seca quedaría cada vez menos hielo para derretirse. Las demás explican cómo funciona el glaciar, presentan los estudios o sacan una consecuencia.",
+        "explicaciones": {
+          "o1": "Presenta el lugar del que se habla, pero no dice qué está pasando con los glaciares ni qué significa para el agua.",
+          "o2": "Da la imagen del tanque de agua, que prepara la explicación. Es un detalle.",
+          "o3": "Cuenta cómo se forma el hielo en la temporada de lluvias: es parte de la explicación.",
+          "o4": "Explica para qué sirve el hielo en la estación seca. Es necesaria para entender el problema, pero no dice el problema.",
+          "o5": "Dice quiénes usan esa agua: apoya la idea de que importa, pero no es la idea central.",
+          "o6": "Dice que los glaciares se achican, pero no dice qué significa eso para el agua de la estación seca, que es lo que el texto quiere mostrar.",
+          "o7": "Da la causa probable y una salvedad. Es un detalle.",
+          "o8": "Es una apariencia que el autor presenta para corregirla enseguida («However…»): que al principio haya más agua no quiere decir que todo vaya bien.",
+          "o10": "Saca una consecuencia (hay que planificar) de la idea de la oración 9, pero no es esa idea.",
+          "ninguna": "La oración 9 sí dice lo central: el agua de más no duraría y quedaría cada vez menos hielo en la estación seca."
+        }
+      },
+      "enunciado": "Which is the best title for the text?",
+      "alternativas": [
+        {
+          "t": "Shrinking Glaciers and Dry-Season Water",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o9"
+          ],
+          "explicacion": "El texto trata de que los glaciares se achican (oración 6) y de lo que eso significaría para el agua de la estación seca (oración 9). El título junta las dos partes."
+        },
+        {
+          "t": "The Cordillera Blanca: The Largest Tropical Glacier Range on Earth",
+          "codigo": "RV1",
+          "origen": "o1",
+          "explicacion": "Repite la oración 1, que solo presenta el lugar (y el texto lo dice con cautela: «is often described as»). No dice nada del problema del agua, que es de lo que trata el texto."
+        },
+        {
+          "t": "Melting Glaciers Give the Andes More Water Than Ever",
+          "codigo": "RV53",
+          "origen": "o8",
+          "explicacion": "Toma la apariencia de la oración 8, que el autor corrige en la 9: esa agua de más «would probably not last»."
+        },
+        {
+          "t": "Scientists Prove That the Santa River Will Dry Up Soon",
+          "codigo": "RV52",
+          "explicacion": "El texto es prudente: los estudios «suggest» (sugieren), y el agua «would probably» disminuir. Nadie prueba que el río vaya a secarse."
+        },
+        {
+          "t": "Climate Change Around the World",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto habla de los glaciares de una cordillera del Perú y del agua de sus valles."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "In sentence 5, the phrase TO SOME DEGREE can be replaced by",
+      "alternativas": [
+        {
+          "t": "partly.",
+          "correcta": true,
+          "evidencia": [
+            "o5"
+          ],
+          "explicacion": "«To some degree» quiere decir en cierta medida, en parte: los agricultores y los pueblos dependen del agua del glaciar, pero no solo de ella."
+        },
+        {
+          "t": "with a university diploma.",
+          "codigo": "RV18",
+          "explicacion": "Toma el sentido más frecuente de «degree» (título universitario). En la frase «to some degree» la palabra significa grado o medida."
+        },
+        {
+          "t": "in degrees of temperature.",
+          "codigo": "RV19",
+          "explicacion": "Es del mismo campo del texto (la temperatura sube, oración 7), pero no es lo que dice la frase: aquí «degree» es medida, no grados de calor."
+        },
+        {
+          "t": "completely.",
+          "codigo": "RV11",
+          "explicacion": "Dice lo contrario de la frase: «to some degree» limita la dependencia («en parte»), no la vuelve total."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "If the temperature stopped rising and the glaciers kept their size, then",
+      "alternativas": [
+        {
+          "t": "the meltwater of the dry season would probably not keep decreasing.",
+          "correcta": true,
+          "evidencia": [
+            "o7",
+            "o9"
+          ],
+          "explicacion": "Según las oraciones 7 y 9, el agua de la estación seca disminuiría porque el hielo se achica, y la causa probable es el calor. Si el hielo no se achicara, ya no habría razón para esperar esa disminución."
+        },
+        {
+          "t": "there would still be less and less ice left to melt each dry season.",
+          "codigo": "RV63",
+          "origen": "o9",
+          "explicacion": "Vuelve a afirmar lo que la condición quitó: la oración 9 dice que quedaría menos hielo porque el hielo se achica. Si el glaciar mantiene su tamaño, eso ya no se puede afirmar."
+        },
+        {
+          "t": "it would never stop raining in the valleys of Áncash.",
+          "codigo": "RV11",
+          "explicacion": "El texto no relaciona la temperatura con la lluvia en los valles, y «never» exagera: siempre habría una estación seca."
+        },
+        {
+          "t": "farms on the coast would no longer need the Santa River.",
+          "codigo": "RV7",
+          "explicacion": "Nada del texto dice que, con el hielo intacto, la costa dejaría de necesitar el río. Al contrario, seguiría dependiendo en parte de esa agua (oración 5)."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "Which statement is NOT consistent with the text?",
+      "alternativas": [
+        {
+          "t": "Scientists know exactly when each glacier will melt away.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o7"
+          ],
+          "explicacion": "Choca con el tono del texto: los estudios «suggest» (oración 6), la causa es «likely» y los detalles cambian de un valle a otro (oración 7). Nada indica que se sepa con exactitud."
+        },
+        {
+          "t": "Not every valley shows exactly the same changes.",
+          "codigo": "RV10",
+          "explicacion": "Tiene un «not», pero es compatible: la oración 7 dice que los detalles parecen variar de un valle a otro."
+        },
+        {
+          "t": "For a while, a shrinking glacier can give rivers more water.",
+          "codigo": "RV8",
+          "explicacion": "Va en contra de lo que uno esperaría, pero es lo que dice la oración 8: al principio, un glaciar que se derrite puede soltar más agua."
+        },
+        {
+          "t": "The ice has worked like a water tank for a long time.",
+          "codigo": "RV55",
+          "origen": "o2",
+          "explicacion": "«Has worked» (presente perfecto) habla de algo que empezó hace mucho y sigue: es lo que dice la oración 2, no algo que ya terminó."
+        },
+        {
+          "t": "Many tourists visit the Cordillera Blanca to climb its peaks.",
+          "codigo": "RV36",
+          "explicacion": "El texto no habla de turistas, pero tampoco dice nada en contra: que algo no esté dicho no lo vuelve incompatible."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "antonimo",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "In sentence 7, the opposite of LIKELY is",
+      "alternativas": [
+        {
+          "t": "unlikely.",
+          "correcta": true,
+          "evidencia": [
+            "o7"
+          ],
+          "explicacion": "«Likely» es probable; lo contrario es «unlikely», improbable. El autor dice que el calor es la causa probable, sin darlo por seguro."
+        },
+        {
+          "t": "probable.",
+          "codigo": "RV19",
+          "explicacion": "«Probable» significa lo mismo que «likely»: es un sinónimo, no su contrario."
+        },
+        {
+          "t": "secondary.",
+          "codigo": "RV21",
+          "origen": "o7",
+          "explicacion": "Es lo contrario de «main» (principal), la palabra que viene después en la misma frase, no de «likely»."
+        },
+        {
+          "t": "well liked.",
+          "codigo": "RV20",
+          "explicacion": "Se confunde «likely» con «liked» (querido, apreciado) por la forma. «Likely» no tiene que ver con gustar: quiere decir probable."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-08",
+  "hechos": [
+    {
+      "afirmacion": "La Cordillera Blanca (Áncash) es la cordillera tropical con más glaciares del mundo.",
+      "fuente": "Autoridad Nacional del Agua (ANA), Inventario Nacional de Glaciares; INAIGEM (Instituto Nacional de Investigación en Glaciares y Ecosistemas de Montaña), inventario nacional de glaciares."
+    },
+    {
+      "afirmacion": "Los glaciares de la Cordillera Blanca han perdido superficie en las últimas décadas, sobre todo por el aumento de la temperatura.",
+      "fuente": "INAIGEM, Inventario Nacional de Glaciares y Lagunas de Origen Glaciar; IPCC (2019), Special Report on the Ocean and Cryosphere in a Changing Climate, capítulo 2 (alta montaña)."
+    },
+    {
+      "afirmacion": "En la estación seca, el agua de deshielo ayuda a mantener el caudal del río Santa, que se usa en los valles y en proyectos de riego de la costa.",
+      "fuente": "ANA, información sobre la cuenca del río Santa; Baraer, M. y otros (2012). Glacier recession and water resources in Peru's Cordillera Blanca. Journal of Glaciology, 58(207)."
+    },
+    {
+      "afirmacion": "Al principio, un glaciar que se derrite puede aumentar el caudal de los ríos, pero ese aumento no dura: después el caudal de la estación seca baja (el «pico de agua»).",
+      "fuente": "Baraer, M. y otros (2012), Journal of Glaciology, 58(207); IPCC (2019), SROCC, capítulo 2."
+    },
+    {
+      "afirmacion": "Hay técnicas andinas antiguas para que el agua de lluvia se infiltre y quede en el suelo (por ejemplo, las amunas de Huarochirí, en Lima), y hoy se recuperan algunas.",
+      "fuente": "Ochoa-Tocachi, B. F. y otros (2019). Potential contributions of pre-Inca infiltration infrastructure to Andean water security. Nature Sustainability, 2, 584-593; SUNASS, mecanismos de retribución por servicios ecosistémicos de SEDAPAL (recuperación de amunas en Huarochirí)."
+    }
+  ],
+  "revision": {
+    "por": "subagente (revisor a ciegas)",
+    "fecha": "2026-11-08",
+    "veredicto": "aprobado",
+    "notas": "A ciegas 6 de 6 (el previo, en la oración 9). Se concretó la fuente de las amunas (Ochoa-Tocachi y otros 2019, Nature Sustainability) y se precisó una explicación del título."
+  }
+}

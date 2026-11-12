@@ -1,0 +1,270 @@
+{
+  "id": "t122",
+  "version": 1,
+  "titulo": "Potatoes at School",
+  "tema": "Lectura en inglés · un huerto escolar de papas nativas en el Cusco",
+  "grado": 3,
+  "dificultad": 1,
+  "tipo_texto": "expositivo",
+  "idioma": "en",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "general",
+        "t": "Behind a public school in Cusco, there is a small garden with a surprise: it does not grow just one kind of potato, but many."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Some are yellow, some are purple, and one is almost black outside and pink inside."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "All of them are native potatoes, which means that they come from the Andes and have been grown in this region for thousands of years."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "principal",
+        "t": "The garden is not only a place to grow food; it is also a classroom where students learn science and the history of their region."
+      },
+      {
+        "id": "o5",
+        "rol": "ejemplo",
+        "t": "Every week, the students measure the plants and write the results in a notebook."
+      },
+      {
+        "id": "o6",
+        "rol": "ejemplo",
+        "t": "Some grandparents visit the school to teach them the old names of each potato and the way to plant it."
+      }
+    ],
+    [
+      {
+        "id": "o7",
+        "rol": "apoyo",
+        "t": "At harvest time, the students cook some of the potatoes and share them with their families at a school lunch."
+      },
+      {
+        "id": "o8",
+        "rol": "apoyo",
+        "t": "The teachers say that the children now feel proud of a food that they used to see as ordinary."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "titulo",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "Which is the best title for the text?",
+      "alternativas": [
+        {
+          "t": "A School Garden of Native Potatoes",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o3",
+            "o4"
+          ],
+          "explicacion": "El texto presenta el huerto de un colegio del Cusco donde se cultivan papas nativas (oraciones 1 y 3) y explica que ese huerto sirve para aprender (oración 4). El título junta las dos cosas."
+        },
+        {
+          "t": "Cooking Potatoes With the Family",
+          "codigo": "RV1",
+          "origen": "o7",
+          "explicacion": "La oración 7 cuenta que los alumnos cocinan las papas en la cosecha, pero es solo una de las actividades del huerto, no el tema del texto."
+        },
+        {
+          "t": "Purple and Yellow Potatoes",
+          "codigo": "RV5",
+          "origen": "o2",
+          "explicacion": "Repite los colores de la oración 2. Son un detalle de cómo se ven las papas; el texto trata del huerto y de lo que se aprende en él."
+        },
+        {
+          "t": "The Foods of Peru",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto no habla de las comidas del Perú, sino de un huerto escolar de papas nativas en el Cusco."
+        },
+        {
+          "t": "Why Every School Should Have Its Own Garden",
+          "codigo": "RV33",
+          "explicacion": "El autor no pide que todos los colegios tengan un huerto: describe uno y cuenta lo que se aprende en él. No defiende una postura."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "dato",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "According to the text, who teaches the students the old names of the potatoes?",
+      "alternativas": [
+        {
+          "t": "Some grandparents.",
+          "correcta": true,
+          "evidencia": [
+            "o6"
+          ],
+          "explicacion": "La oración 6 lo dice: «Some grandparents visit the school to teach them the old names of each potato» (algunos abuelos visitan el colegio para enseñarles los nombres antiguos de cada papa)."
+        },
+        {
+          "t": "The teachers of the school.",
+          "codigo": "RV50",
+          "origen": "o8",
+          "explicacion": "Los profesores aparecen en la oración 8, pero ahí solo dicen que los niños ahora están orgullosos. Quienes enseñan los nombres antiguos son los abuelos."
+        },
+        {
+          "t": "Their families, at the school lunch.",
+          "codigo": "RV5",
+          "origen": "o7",
+          "explicacion": "Toma las palabras de la oración 7: en el almuerzo los alumnos comparten las papas con sus familias, pero el texto no dice que ahí aprendan los nombres."
+        },
+        {
+          "t": "Farmers who sell potatoes at the market.",
+          "codigo": "RV7",
+          "explicacion": "El texto no menciona a vendedores ni al mercado. Suponer que ellos enseñan los nombres es ir más allá de lo que dice."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "In the phrase \"a food that they used to see as ordinary\" (sentence 8), the word ORDINARY can be replaced by",
+      "alternativas": [
+        {
+          "t": "common.",
+          "correcta": true,
+          "evidencia": [
+            "o8"
+          ],
+          "explicacion": "«Ordinary» quiere decir común, corriente: antes los niños veían la papa como algo de todos los días, sin nada especial; ahora se sienten orgullosos de ella."
+        },
+        {
+          "t": "rude.",
+          "codigo": "RV54",
+          "origen": "o8",
+          "explicacion": "Es un falso amigo: «ordinary» se parece a «ordinario», que en español también puede significar grosero o vulgar. En inglés «ordinary» solo quiere decir común, corriente."
+        },
+        {
+          "t": "proud.",
+          "codigo": "RV5",
+          "origen": "o8",
+          "explicacion": "«Proud» (orgulloso) está en la misma oración 8, pero describe lo que sienten los niños ahora, no cómo veían la papa antes."
+        },
+        {
+          "t": "special.",
+          "codigo": "RV55",
+          "explicacion": "Confunde el antes con el ahora: «used to see» habla de cómo veían la papa antes (como algo común). Que ahora la sientan especial es lo contrario de lo que dice la palabra.",
+          "origen": "o8"
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "antonimo",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "In sentence 8, the opposite of PROUD is",
+      "alternativas": [
+        {
+          "t": "ashamed.",
+          "correcta": true,
+          "evidencia": [
+            "o8"
+          ],
+          "explicacion": "«Proud» es orgulloso; lo contrario es «ashamed», avergonzado. Antes los niños veían la papa como algo común, y ahora sienten orgullo de ella."
+        },
+        {
+          "t": "pleased.",
+          "codigo": "RV19",
+          "explicacion": "«Pleased» (contento, satisfecho) es del mismo campo que «proud» y casi dice lo mismo: no es su contrario. Se pedía lo opuesto."
+        },
+        {
+          "t": "bored.",
+          "codigo": "RV21",
+          "explicacion": "«Bored» (aburrido) es solo otro sentimiento, distinto pero no opuesto. Lo contrario de sentir orgullo es sentir vergüenza."
+        },
+        {
+          "t": "ordinary.",
+          "codigo": "RV5",
+          "origen": "o8",
+          "explicacion": "Es otra palabra de la misma oración 8, pero describe cómo veían la comida, no un sentimiento. No es lo contrario de «proud»."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "intencion",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "previo": {
+        "tipo": "proposito",
+        "pide": "Antes de ver las alternativas: ¿qué busca sobre todo el autor?",
+        "aceptada": "explicar",
+        "codigos": {
+          "convencer": "RV33",
+          "narrar": "RV13"
+        },
+        "explicacion": "El texto describe un huerto escolar y lo que los alumnos aprenden en él, sin defender una postura ni contar una historia con personajes.",
+        "explicaciones": {
+          "convencer": "El autor no pide nada ni discute con nadie: cuenta cómo es el huerto y para qué sirve.",
+          "narrar": "No hay un personaje ni una historia que avance: el texto describe lo que los alumnos hacen cada semana y en la cosecha."
+        }
+      },
+      "enunciado": "What is the main purpose of the text?",
+      "alternativas": [
+        {
+          "t": "To show how a school garden teaches children about native potatoes.",
+          "correcta": true,
+          "evidencia": [
+            "o4",
+            "o5",
+            "o6"
+          ],
+          "explicacion": "El texto describe el huerto y lo que se aprende en él: ciencia al medir las plantas (oración 5) e historia con los abuelos (oración 6). Busca explicar, no convencer ni contar una historia."
+        },
+        {
+          "t": "To convince every school in Peru that it must build a potato garden of its own.",
+          "codigo": "RV33",
+          "explicacion": "El autor no le pide nada a ningún colegio: cuenta lo que pasa en un huerto del Cusco. No toma esa postura."
+        },
+        {
+          "t": "To tell the life story of a girl who grows purple potatoes with her grandmother.",
+          "codigo": "RV13",
+          "explicacion": "El texto no sigue a una persona ni cuenta su vida. Habla de los alumnos en general y de lo que hacen en el huerto."
+        },
+        {
+          "t": "To give instructions for measuring potato plants and writing down the results.",
+          "codigo": "RV1",
+          "origen": "o5",
+          "explicacion": "Medir las plantas es un ejemplo de la oración 5. El texto no enseña a hacerlo paso a paso: lo menciona para mostrar que el huerto sirve para aprender ciencia."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-08",
+  "hechos": [
+    {
+      "afirmacion": "La papa se domesticó en los Andes (en la zona del sur del Perú y el norte de Bolivia) hace miles de años.",
+      "fuente": "Centro Internacional de la Papa (CIP), Lima: página «Potato» / «Facts and figures about the potato»."
+    },
+    {
+      "afirmacion": "En el Perú se cultivan muchas variedades de papa nativa, de colores y formas distintas (piel y pulpa amarilla, morada, negra o rosada).",
+      "fuente": "Centro Internacional de la Papa (CIP) y Ministerio de Desarrollo Agrario y Riego (MIDAGRI), información sobre papas nativas del Perú."
+    }
+  ],
+  "revision": {
+    "por": "subagente (revisor a ciegas)",
+    "fecha": "2026-11-08",
+    "veredicto": "aprobado",
+    "notas": "A ciegas 6 de 6. Se cambió el distractor débil «healthy» por «special» (antes contra ahora, RV55) y se ajustaron los códigos del antónimo (casi sinónimo RV19, solo distinto RV21)."
+  }
+}

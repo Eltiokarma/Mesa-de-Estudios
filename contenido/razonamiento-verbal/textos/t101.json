@@ -1,0 +1,317 @@
+{
+  "id": "t101",
+  "version": 1,
+  "titulo": "¿Tarea en casa o práctica en el aula?",
+  "tema": "Educación · tareas escolares",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    {
+      "id": "A",
+      "desde": 0
+    },
+    {
+      "id": "B",
+      "desde": 1
+    }
+  ],
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "principal",
+        "t": "Las tareas para la casa tienen mala fama, pero cumplen una función que el aula no puede cumplir."
+      },
+      {
+        "id": "o2",
+        "rol": "apoyo",
+        "t": "En clase, el alumno sigue el ritmo del profesor y de sus compañeros; en casa, frente a un problema que no sale, tiene que decidir solo qué intentar."
+      },
+      {
+        "id": "o3",
+        "rol": "apoyo",
+        "t": "Esa práctica a solas es la que fija lo aprendido: un procedimiento que solo se vio en la pizarra se olvida en pocos días."
+      },
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "Además, la tarea le muestra al profesor quién entendió y quién no, antes de que llegue el examen."
+      },
+      {
+        "id": "o5",
+        "rol": "principal",
+        "t": "Por eso, eliminarlas no aliviaría a los alumnos: solo les quitaría la ocasión de equivocarse cuando todavía no cuenta."
+      },
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "Lo que sí conviene es que sean cortas y que el profesor las revise."
+      }
+    ],
+    [
+      {
+        "id": "o7",
+        "rol": "contraste",
+        "t": "Cada tarde, muchos escolares llegan a casa y encuentran que la tarea supone algo que no tienen: un adulto que explique, una computadora o una mesa tranquila."
+      },
+      {
+        "id": "o8",
+        "rol": "apoyo",
+        "t": "Para ellos, la tarea no es práctica a solas, sino una prueba de lo que hay en su casa."
+      },
+      {
+        "id": "o9",
+        "rol": "apoyo",
+        "t": "El que tiene ayuda la entrega completa; el que no la tiene, la copia en la mañana o no la hace, y el profesor anota una diferencia que no salió del aula."
+      },
+      {
+        "id": "o10",
+        "rol": "detalle",
+        "t": "No niego que practicar sea necesario para aprender."
+      },
+      {
+        "id": "o11",
+        "rol": "principal",
+        "t": "Sostengo que esa práctica debe hacerse en el colegio, con el profesor cerca, en horas destinadas a ello."
+      },
+      {
+        "id": "o12",
+        "rol": "apoyo",
+        "t": "Así, el esfuerzo de cada alumno dependería de él y no de las condiciones de su hogar."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "controversia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "¿Cuál es el tema en controversia entre los dos textos?",
+      "alternativas": [
+        {
+          "t": "Si la práctica de lo aprendido en clase debe hacerse en casa, como tarea, o en el colegio.",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "o11"
+          ],
+          "explicacion": "El texto A defiende las tareas para la casa y el texto B pide que esa práctica se haga en el colegio: discuten dónde practicar."
+        },
+        {
+          "t": "Si practicar lo que se vio en clase es necesario para aprender.",
+          "codigo": "RV61",
+          "origen": "o10",
+          "explicacion": "En eso no discuten: el texto A dice que la práctica fija lo aprendido y el B dice «no niego que practicar sea necesario». Es un punto en común, no la controversia."
+        },
+        {
+          "t": "Si la práctica a solas fija un procedimiento que solo se vio en la pizarra.",
+          "codigo": "RV60",
+          "origen": "o3",
+          "explicacion": "Es un argumento del texto A. El tema en controversia tiene que ser algo sobre lo que los dos toman posición."
+        },
+        {
+          "t": "Si muchos escolares tienen en casa la ayuda que la tarea necesita.",
+          "codigo": "RV1",
+          "origen": "o7",
+          "explicacion": "Es una afirmación del texto B (oración 7), que la usa como ejemplo; el texto A no la discute. El tema en controversia tiene que ser algo sobre lo que los dos toman posición."
+        },
+        {
+          "t": "Si la escuela debe preocuparse por lo que aprenden sus alumnos.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general, y en eso no discuten: los dos quieren que los alumnos aprendan. Lo que discuten es dónde se practica lo que se vio en clase."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "postura",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "La tarea para la casa mide, en parte, lo que cada alumno tiene en su hogar.",
+        "aceptada": "B",
+        "codigos": {
+          "A": "RV59",
+          "ambos": "RV60",
+          "ninguno": null
+        },
+        "explicacion": "Lo dice el texto B en las oraciones 8 y 9: la tarea se vuelve «una prueba de lo que hay en su casa». El texto A no lo menciona.",
+        "explicaciones": {
+          "A": "El texto A ve la tarea como práctica a solas; la idea de que mide lo que hay en casa es del texto B (oración 8).",
+          "ambos": "Solo el texto B lo sostiene. El texto A no habla de las condiciones de cada hogar.",
+          "ninguno": "Sí lo sostiene alguien: el texto B dice que la tarea es «una prueba de lo que hay en su casa» (oración 8)."
+        }
+      },
+      "enunciado": "¿Qué sostiene el autor del texto B?",
+      "alternativas": [
+        {
+          "t": "La práctica escolar debería hacerse en el colegio, para que no dependa de lo que cada alumno tiene en casa.",
+          "correcta": true,
+          "evidencia": [
+            "o11",
+            "o12"
+          ],
+          "explicacion": "Es su tesis (oración 11) con su razón (oración 12): que el esfuerzo dependa del alumno y no de su hogar."
+        },
+        {
+          "t": "Practicar a solas en casa es lo que fija un procedimiento visto en la pizarra.",
+          "codigo": "RV59",
+          "origen": "o3",
+          "explicacion": "Eso lo dice el texto A (oración 3). El texto B sostiene casi lo contrario: que en muchas casas la tarea no es práctica a solas."
+        },
+        {
+          "t": "Practicar es innecesario, y por eso la tarea debe hacerse en el colegio.",
+          "codigo": "RV62",
+          "origen": "o10",
+          "explicacion": "La segunda mitad se acerca a su tesis, pero la primera la contradice: el texto B dice «no niego que practicar sea necesario»."
+        },
+        {
+          "t": "Las tareas para la casa perjudican a todos los escolares por igual.",
+          "codigo": "RV11",
+          "explicacion": "El texto B habla de «muchos escolares» que no tienen ayuda, no de todos; y dice que el que tiene ayuda entrega la tarea completa, así que no los afecta por igual."
+        },
+        {
+          "t": "Los profesores dejan tareas para no tener que enseñar en clase.",
+          "codigo": "RV33",
+          "explicacion": "El texto B no acusa a los profesores: critica que la tarea dependa del hogar, no las intenciones de quien la deja."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "coincidencia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Para aprender hace falta practicar lo que se vio en clase.",
+        "aceptada": "ambos",
+        "codigos": {
+          "A": "RV61",
+          "B": "RV61",
+          "ninguno": null
+        },
+        "explicacion": "Los dos lo sostienen: el texto A dice que la práctica «fija lo aprendido» (oración 3) y el texto B, «no niego que practicar sea necesario para aprender» (oración 10).",
+        "explicaciones": {
+          "A": "El texto A lo dice, pero el B también: «no niego que practicar sea necesario para aprender» (oración 10). Discrepan en dónde practicar, no en si hay que hacerlo.",
+          "B": "El texto B lo dice en la oración 10, pero el A también: la práctica a solas «fija lo aprendido» (oración 3).",
+          "ninguno": "Los dos lo sostienen: el texto A en la oración 3 y el B en la oración 10."
+        }
+      },
+      "enunciado": "¿En qué coinciden los autores de los dos textos?",
+      "alternativas": [
+        {
+          "t": "En que aprender exige practicar lo que se vio en clase.",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "o10"
+          ],
+          "explicacion": "El texto A lo dice al defender la práctica a solas, y el B lo concede en la oración 10 antes de proponer que se practique en el colegio."
+        },
+        {
+          "t": "En que las tareas deben ser cortas y revisadas por el profesor.",
+          "codigo": "RV60",
+          "origen": "o6",
+          "explicacion": "Eso lo propone solo el texto A (oración 6). El texto B no pide tareas más cortas: pide practicar en el colegio."
+        },
+        {
+          "t": "En que practicar es necesario y debe hacerse en casa.",
+          "codigo": "RV62",
+          "origen": "o11",
+          "explicacion": "La primera mitad es el punto en común, pero la segunda es solo del texto A: el B quiere que la práctica se haga en el colegio."
+        },
+        {
+          "t": "En que la tarea muestra lo que cada alumno tiene en su casa.",
+          "codigo": "RV59",
+          "origen": "o8",
+          "explicacion": "Esa idea es del texto B (oración 8); atribuírsela también al A es un error. El texto A dice que la tarea muestra quién entendió y quién no (oración 4), que es otra cosa."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "dialogo",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Ante la propuesta del texto B, el autor del texto A probablemente objetaría que",
+      "alternativas": [
+        {
+          "t": "con el profesor cerca, el alumno ya no tiene que decidir solo qué intentar ante un problema que no sale.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o11"
+          ],
+          "explicacion": "Para el texto A, el valor de la tarea está en que el alumno decide solo (oración 2). Practicar en el colegio con el profesor al lado le quita eso."
+        },
+        {
+          "t": "el profesor termina anotando una diferencia que no salió del aula.",
+          "codigo": "RV59",
+          "origen": "o9",
+          "explicacion": "Ese es un argumento del texto B (oración 9), no una objeción del A contra él."
+        },
+        {
+          "t": "no es verdad que practicar sea necesario para aprender.",
+          "codigo": "RV61",
+          "origen": "o10",
+          "explicacion": "En eso los dos están de acuerdo: el texto A defiende la práctica porque fija lo aprendido."
+        },
+        {
+          "t": "sería mejor dejar tareas largas, para que todos practiquen más.",
+          "codigo": "RV33",
+          "origen": "o6",
+          "explicacion": "El texto A pide lo contrario: que las tareas sean cortas y que el profesor las revise (oración 6)."
+        },
+        {
+          "t": "las condiciones de cada hogar no influyen en cómo se hace la tarea.",
+          "codigo": "RV7",
+          "explicacion": "El texto A no habla de las condiciones de los hogares; nada en lo que dice permite saber que objetaría eso. Su defensa de la tarea se apoya en la práctica a solas."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto B, el verbo SUPONER (la tarea «supone algo que no tienen») significa",
+      "alternativas": [
+        {
+          "t": "requiere, da por sentado.",
+          "correcta": true,
+          "evidencia": [
+            "o7"
+          ],
+          "explicacion": "La tarea cuenta con que en la casa hay un adulto, una computadora o una mesa tranquila, y los necesita aunque no los haya."
+        },
+        {
+          "t": "imagina.",
+          "codigo": "RV18",
+          "origen": "o7",
+          "explicacion": "Es el sentido más frecuente de «suponer» (creer algo sin pruebas), pero una tarea no imagina nada: necesita algo para poder hacerse."
+        },
+        {
+          "t": "pone a prueba.",
+          "codigo": "RV5",
+          "origen": "o8",
+          "explicacion": "Repite la palabra «prueba» de la oración 8, que habla de otra cosa: de lo que la tarea termina midiendo."
+        },
+        {
+          "t": "propone.",
+          "codigo": "RV20",
+          "explicacion": "Se parece en la forma, pero la tarea no propone una computadora ni una mesa tranquila: las necesita."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-08",
+  "hechos": [],
+  "revision": {
+    "por": "subagente (revisor a ciegas)",
+    "fecha": "2026-11-08",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidió en 7 de 7. Se reforzaron distractores débiles (p1, p2, p3, p4 y p5), la correcta de p5 pasó a «requiere, da por sentado» para que no compita con «requiere», y se ajustaron códigos (p3 a RV60, p4 a RV7)."
+  }
+}
