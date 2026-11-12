@@ -4,214 +4,6 @@
   "origen": "Generado por herramientas/papel-lectura.js desde el banco; no se edita a mano.",
   "problemas": [
     {
-      "id": "t109",
-      "nivel": "intermedio",
-      "enunciado": "Lee el texto «Los octógonos en los envases» y responde las 5 preguntas.",
-      "texto": {
-        "titulo": "Los octógonos en los envases",
-        "parrafos": [
-          [
-            {
-              "n": 1,
-              "t": "Los octógonos negros de los alimentos procesados son una de las mejores herramientas que tenemos para comer mejor."
-            },
-            {
-              "n": 2,
-              "t": "Antes, saber cuánta azúcar o cuánta sal tenía una galleta exigía leer una tabla en letra pequeña y hacer cuentas."
-            },
-            {
-              "n": 3,
-              "t": "Ahora basta una mirada: «Alto en azúcar», «Alto en sodio»."
-            },
-            {
-              "n": 4,
-              "t": "Esa advertencia llega también a quien no tiene tiempo ni costumbre de leer etiquetas, y le permite comparar dos productos en el mismo estante."
-            },
-            {
-              "n": 5,
-              "t": "Por eso, los octógonos ayudan a elegir mejor, y deberían mantenerse y hacerse todavía más visibles."
-            }
-          ],
-          [
-            {
-              "n": 6,
-              "t": "Es cierto que los octógonos informan con claridad: cualquiera entiende qué producto tiene demasiada azúcar."
-            },
-            {
-              "n": 7,
-              "t": "Pero informar no es lo mismo que cambiar lo que se come."
-            },
-            {
-              "n": 8,
-              "t": "En la tienda del colegio, mis alumnos reconocen el octógono y compran igual la gaseosa, porque cuesta menos que una fruta y porque nadie les enseñó a armar una lonchera."
-            },
-            {
-              "n": 9,
-              "t": "Sin educación alimentaria en las escuelas y sin alimentos saludables a precios accesibles, la advertencia se queda en el envase."
-            },
-            {
-              "n": 10,
-              "t": "El octógono es un buen primer paso, no el camino entero."
-            }
-          ]
-        ],
-        "autores": [
-          {
-            "titulo": "Texto A",
-            "firma": "Una nutricionista de un centro de salud",
-            "desde": 0
-          },
-          {
-            "titulo": "Texto B",
-            "firma": "Un profesor de secundaria",
-            "desde": 1
-          }
-        ]
-      },
-      "preguntas": [
-        {
-          "n": 1,
-          "previo": "Antes de mirar las alternativas: ¿quién sostiene esta idea? «Los octógonos tendrían que verse todavía más en los envases.» Elige: «El autor del texto A», «El autor del texto B», «Los dos autores», «Ninguno de los dos».",
-          "enunciado": "¿Qué sostiene la autora del texto A?",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "Que las advertencias ayudan a elegir mejor y conviene mantenerlas."
-            },
-            {
-              "letra": "B",
-              "t": "Que antes la tabla de los envases tenía letra pequeña."
-            },
-            {
-              "letra": "C",
-              "t": "Que los alimentos procesados deberían prohibirse."
-            },
-            {
-              "letra": "D",
-              "t": "Que sin educación alimentaria las advertencias no cambian lo que se come."
-            },
-            {
-              "letra": "E",
-              "t": "Que los octógonos bastan para que todos coman sano."
-            }
-          ]
-        },
-        {
-          "n": 2,
-          "previo": "Antes de mirar las alternativas: ¿quién sostiene esta idea? «Con los octógonos, cualquiera puede darse cuenta rápido de qué producto tiene demasiada azúcar.» Elige: «El autor del texto A», «El autor del texto B», «Los dos autores», «Ninguno de los dos».",
-          "enunciado": "¿En qué discrepan los autores de los dos textos?",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "A cree que los octógonos informan con claridad; B piensa que confunden a los compradores en la tienda."
-            },
-            {
-              "letra": "B",
-              "t": "A cree que la advertencia sirve a quien no lee etiquetas; B, que solo sirve a quien ya sabe de nutrición."
-            },
-            {
-              "letra": "C",
-              "t": "A defiende que se mantengan los octógonos; B pide que se retiren de los envases."
-            },
-            {
-              "letra": "D",
-              "t": "A confía en que la advertencia lleva a elegir mejor; B duda de que, sola, cambie lo que se come."
-            },
-            {
-              "letra": "E",
-              "t": "A pide educación alimentaria en las escuelas; B, octógonos más visibles en cada envase."
-            }
-          ]
-        },
-        {
-          "n": 3,
-          "enunciado": "¿Cuál de estas ideas integra mejor lo que dicen los dos textos?",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "Los octógonos sirven para reconocer lo poco saludable, pero cambiar la dieta exige también educación y precios justos."
-            },
-            {
-              "letra": "B",
-              "t": "Lo importante es que los octógonos negros sean más grandes y se vean bien en todos los estantes de las tiendas."
-            },
-            {
-              "letra": "C",
-              "t": "Ni los octógonos ni las clases de alimentación sirven de algo mientras las gaseosas sigan siendo baratas."
-            },
-            {
-              "letra": "D",
-              "t": "Como en las escuelas ya se enseña a comer bien, las advertencias de los envases han dejado de ser necesarias para nadie."
-            },
-            {
-              "letra": "E",
-              "t": "Los octógonos de los envases informan con claridad cuánta azúcar o sal tiene cada producto que se compra."
-            }
-          ]
-        },
-        {
-          "n": 4,
-          "enunciado": "Del ejemplo de la tienda del colegio (texto B) se deduce que",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "saber que un producto no es sano no siempre basta para dejar de comprarlo."
-            },
-            {
-              "letra": "B",
-              "t": "los alumnos no entienden lo que advierte el octógono."
-            },
-            {
-              "letra": "C",
-              "t": "la gaseosa tiene más azúcar que cualquier fruta."
-            },
-            {
-              "letra": "D",
-              "t": "la tienda del colegio debería cerrarse para que los alumnos no compren gaseosas."
-            },
-            {
-              "letra": "E",
-              "t": "ningún escolar elige una fruta en la tienda."
-            }
-          ]
-        },
-        {
-          "n": 5,
-          "previo": "Antes de mirar las alternativas: ¿qué relación tiene esta afirmación con el texto B? «Para el autor del texto B, los octógonos no sirven para nada.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
-          "enunciado": "¿Cuál de estas propuestas es compatible con lo que sostiene el autor del texto B?",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "Retirar los octógonos, porque los alumnos compran igual la gaseosa."
-            },
-            {
-              "letra": "B",
-              "t": "Mantener los octógonos y enseñar en las escuelas a armar una lonchera."
-            },
-            {
-              "letra": "C",
-              "t": "Confiar solo en la advertencia del envase para que se coma mejor."
-            },
-            {
-              "letra": "D",
-              "t": "Dejar las clases de alimentación para cuando los precios bajen solos."
-            }
-          ]
-        }
-      ],
-      "respuesta": "Clave: 1: A · 2: D · 3: A · 4: A · 5: B.",
-      "pasos": [
-        "Pregunta 1. Antes de las alternativas: El autor del texto A. Lo pide el texto A en la oración 5. El texto B no habla de hacerlos más visibles: pide educación y precios accesibles.",
-        "Pregunta 1. Clave A. Es su tesis, anunciada en la oración 1 y cerrada en la 5: los octógonos ayudan a elegir mejor y deberían mantenerse.",
-        "Pregunta 2. Antes de las alternativas: Los dos autores. Los dos lo sostienen: el texto A dice que «basta una mirada» (oración 3) y el texto B, que «cualquiera entiende qué producto tiene demasiada azúcar» (oración 6).",
-        "Pregunta 2. Clave D. El texto A dice que los octógonos ayudan a elegir mejor (oración 5); el texto B responde que informar no es cambiar lo que se come (oración 7) y pone condiciones (oración 9).",
-        "Pregunta 3. Clave A. Recoge lo que acepta cada texto: el valor de la advertencia (texto A y oración 6) y lo que le falta según el texto B (oraciones 9 y 10).",
-        "Pregunta 4. Clave A. Los alumnos reconocen el octógono y aun así compran la gaseosa (oración 8): la información está, pero no cambia la compra.",
-        "Pregunta 5. Antes de las alternativas: Lo contradice. Lo contradice: el autor dice que los octógonos informan con claridad (oración 6) y que son «un buen primer paso» (oración 10).",
-        "Pregunta 5. Clave B. Conserva el «primer paso» (oración 10) y le suma la educación alimentaria que el autor echa de menos (oración 9)."
-      ]
-    },
-    {
       "id": "t105",
       "nivel": "avanzado (tipo UNI)",
       "enunciado": "Lee el texto «El oro de los ríos» y responde las 5 preguntas.",
@@ -2053,6 +1845,218 @@
         "Pregunta 4. Antes de las alternativas: El autor del texto B. Lo sostiene el texto B en la oración 11: sin un plan de ciudad, la oportunidad se pagará con desorden.",
         "Pregunta 4. Clave D. Para el texto B hay que decidir primero dónde van las fábricas y dónde las casas (oración 9): el plan va antes que las industrias (oración 11).",
         "Pregunta 5. Clave D. El plan atiende su condición principal (oración 11), pero no toca la otra: estudiar si el tráfico de barcos deja a salvo las zonas de pesca (oración 10)."
+      ]
+    },
+    {
+      "id": "t148",
+      "nivel": "avanzado (tipo UNI)",
+      "enunciado": "Lee el texto «¿A qué cursos van las horas nuevas?» y responde las 5 preguntas.",
+      "texto": {
+        "titulo": "¿A qué cursos van las horas nuevas?",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "La secundaria debería darle más horas a la educación física y al deporte."
+            },
+            {
+              "n": 2,
+              "t": "Muchos adolescentes pasan la mayor parte del día sentados, primero en el aula y luego frente a una pantalla, cuando la Organización Mundial de la Salud recomienda que a esa edad se haga, en promedio, una hora diaria de actividad física."
+            },
+            {
+              "n": 3,
+              "t": "Para muchos alumnos de colegios públicos, la clase de educación física es casi el único momento de la semana en que corren, juegan en equipo y aprenden a perder sin rendirse."
+            },
+            {
+              "n": 4,
+              "t": "Un alumno que se mueve llega al aula más despierto y atento, y eso también ayuda en los demás cursos."
+            },
+            {
+              "n": 5,
+              "t": "Ahorrar horas de deporte para sumarlas a otros cursos es ahorrar hoy en salud lo que mañana se pagará con creces."
+            }
+          ],
+          [
+            {
+              "n": 6,
+              "t": "No niego que el movimiento le hace bien a la salud y a la convivencia."
+            },
+            {
+              "n": 7,
+              "t": "Pero las evaluaciones nacionales muestran, año tras año, que una gran parte de los estudiantes de secundaria no alcanza el nivel esperado en lectura ni en matemática."
+            },
+            {
+              "n": 8,
+              "t": "Sin esas dos bases, un joven difícilmente podrá seguir estudiando, y le costará entender un contrato o revisar un recibo."
+            },
+            {
+              "n": 9,
+              "t": "El tiempo del colegio es limitado, y cada hora que se suma a un curso se le quita a otro."
+            },
+            {
+              "n": 10,
+              "t": "Mientras esos resultados no mejoren, las horas nuevas deben ir a matemática y lectura; el deporte puede crecer en talleres por la tarde o en los recreos."
+            }
+          ]
+        ],
+        "autores": [
+          {
+            "titulo": "Texto A",
+            "firma": "Un profesor de educación física",
+            "desde": 0
+          },
+          {
+            "titulo": "Texto B",
+            "firma": "Una especialista en evaluación educativa",
+            "desde": 1
+          }
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas: ¿quién sostiene esta idea? «Lo que hoy se deja de dar al deporte escolar se pagará más adelante en salud.» Elige: «El autor del texto A», «El autor del texto B», «Los dos autores», «Ninguno de los dos».",
+          "enunciado": "¿En qué discrepan los autores?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "En el valor que tiene la educación para el país."
+            },
+            {
+              "letra": "B",
+              "t": "En si la Organización Mundial de la Salud recomienda una hora diaria de actividad física."
+            },
+            {
+              "letra": "C",
+              "t": "En si un joven que no comprende lo que lee puede entender un contrato o un recibo."
+            },
+            {
+              "letra": "D",
+              "t": "En qué cursos deben recibir las horas adicionales de la secundaria."
+            },
+            {
+              "letra": "E",
+              "t": "En si la actividad física les hace bien a la salud y a la convivencia de los adolescentes."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "previo": "Antes de mirar las alternativas: ¿quién sostiene esta idea? «El deporte puede practicarse fuera de las horas de clase.» Elige: «El autor del texto A», «El autor del texto B», «Los dos autores», «Ninguno de los dos».",
+          "enunciado": "Ante la propuesta de llevar el deporte a talleres por la tarde, el autor del texto A podría responder que",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "sin leer bien ni resolver problemas, un joven difícilmente puede seguir estudiando."
+            },
+            {
+              "letra": "B",
+              "t": "entonces habría que eliminar la matemática y dedicar toda la jornada al deporte."
+            },
+            {
+              "letra": "C",
+              "t": "los talleres de la tarde deberían cobrarse a las familias para que funcionen bien."
+            },
+            {
+              "letra": "D",
+              "t": "para muchos alumnos, la clase de la semana es casi la única ocasión de moverse."
+            },
+            {
+              "letra": "E",
+              "t": "la matemática y la lectura no les sirven de nada a los jóvenes en su vida diaria."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "previo": "Antes de mirar las alternativas: ¿quién sostiene esta idea? «La educación física debería reemplazar por completo a los cursos de matemática y lectura.» Elige: «El autor del texto A», «El autor del texto B», «Los dos autores», «Ninguno de los dos».",
+          "enunciado": "Es compatible con lo que sostiene el autor del texto A afirmar que",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "las horas nuevas de la secundaria deberían ir primero a matemática y lectura."
+            },
+            {
+              "letra": "B",
+              "t": "el deporte mejora la atención en el aula, pero debería sacarse del horario escolar."
+            },
+            {
+              "letra": "C",
+              "t": "a los adolescentes de hoy no les hace falta moverse más de lo que ya se mueven."
+            },
+            {
+              "letra": "D",
+              "t": "la clase de educación física poco aporta a que los alumnos aprendan a convivir en equipo."
+            },
+            {
+              "letra": "E",
+              "t": "moverse más puede favorecer el aprendizaje en otros cursos."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "Si las evaluaciones nacionales mostraran que casi todos los estudiantes ya alcanzan el nivel esperado en lectura y matemática, la autora del texto B",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "podría aceptar más horas de deporte en el horario."
+            },
+            {
+              "letra": "B",
+              "t": "seguiría pidiendo las horas nuevas para matemática y lectura, porque los resultados en esos cursos son bajos."
+            },
+            {
+              "letra": "C",
+              "t": "propondría alargar la jornada escolar hasta la noche."
+            },
+            {
+              "letra": "D",
+              "t": "afirmaría que la educación física es casi el único momento en que muchos alumnos corren."
+            },
+            {
+              "letra": "E",
+              "t": "diría que la matemática y la lectura ya no hacen falta en la secundaria."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "enunciado": "En el texto A, el verbo RENDIRSE («aprenden a perder sin rendirse») significa",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "perder el partido."
+            },
+            {
+              "letra": "B",
+              "t": "cansarse."
+            },
+            {
+              "letra": "C",
+              "t": "entregarse a la autoridad o al enemigo."
+            },
+            {
+              "letra": "D",
+              "t": "darse por vencido."
+            },
+            {
+              "letra": "E",
+              "t": "dar buen resultado."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: D · 2: D · 3: E · 4: A · 5: D.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: El autor del texto A. Lo sostiene el texto A en la oración 5: ahorrar horas de deporte es ahorrar en salud lo que luego se pagará con creces.",
+        "Pregunta 1. Clave D. El texto A quiere más horas para la educación física (oración 1); el B, para matemática y lectura (oración 10).",
+        "Pregunta 2. Antes de las alternativas: El autor del texto B. Lo sostiene el texto B en la oración 10: el deporte puede crecer en talleres por la tarde o en los recreos.",
+        "Pregunta 2. Clave D. Según la oración 3, para muchos alumnos de colegios públicos la clase de educación física es casi el único momento en que corren y juegan; un taller fuera del horario podría no llegarles.",
+        "Pregunta 3. Antes de las alternativas: Ninguno de los dos. Ninguno lo sostiene. El texto A pide más horas para el deporte, no eliminar otros cursos; el B quiere justamente más horas para matemática y lectura.",
+        "Pregunta 3. Clave E. La oración 4 dice que un alumno que se mueve llega más despierto y atento, y que eso ayuda en los demás cursos.",
+        "Pregunta 4. Clave A. Su propuesta vale «mientras esos resultados no mejoren» (oración 10). Si mejoran, desaparece su razón, y ella ya reconoce que el movimiento hace bien (oración 6).",
+        "Pregunta 5. Clave D. Perder sin rendirse es perder un partido y seguir intentando, sin abandonar."
       ]
     }
   ]

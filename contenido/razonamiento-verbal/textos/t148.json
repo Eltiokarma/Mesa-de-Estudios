@@ -7,23 +7,71 @@
   "dificultad": 3,
   "tipo_texto": "argumentativo",
   "autores": [
-    { "id": "A", "desde": 0, "firma": "Un profesor de educación física" },
-    { "id": "B", "desde": 1, "firma": "Una especialista en evaluación educativa" }
+    {
+      "id": "A",
+      "desde": 0,
+      "firma": "Un profesor de educación física"
+    },
+    {
+      "id": "B",
+      "desde": 1,
+      "firma": "Una especialista en evaluación educativa"
+    }
   ],
   "parrafos": [
     [
-      { "id": "o1", "rol": "principal", "t": "La secundaria debería darle más horas a la educación física y al deporte." },
-      { "id": "o2", "rol": "apoyo", "t": "Muchos adolescentes pasan la mayor parte del día sentados, primero en el aula y luego frente a una pantalla, cuando la Organización Mundial de la Salud recomienda que a esa edad se haga, en promedio, una hora diaria de actividad física." },
-      { "id": "o3", "rol": "apoyo", "t": "Para muchos alumnos de colegios públicos, la clase de educación física es casi el único momento de la semana en que corren, juegan en equipo y aprenden a perder sin rendirse." },
-      { "id": "o4", "rol": "apoyo", "t": "Un alumno que se mueve llega al aula más despierto y atento, y eso también ayuda en los demás cursos." },
-      { "id": "o5", "rol": "principal", "t": "Ahorrar horas de deporte para sumarlas a otros cursos es ahorrar hoy en salud lo que mañana se pagará con creces." }
+      {
+        "id": "o1",
+        "rol": "principal",
+        "t": "La secundaria debería darle más horas a la educación física y al deporte."
+      },
+      {
+        "id": "o2",
+        "rol": "apoyo",
+        "t": "Muchos adolescentes pasan la mayor parte del día sentados, primero en el aula y luego frente a una pantalla, cuando la Organización Mundial de la Salud recomienda que a esa edad se haga, en promedio, una hora diaria de actividad física."
+      },
+      {
+        "id": "o3",
+        "rol": "apoyo",
+        "t": "Para muchos alumnos de colegios públicos, la clase de educación física es casi el único momento de la semana en que corren, juegan en equipo y aprenden a perder sin rendirse."
+      },
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "Un alumno que se mueve llega al aula más despierto y atento, y eso también ayuda en los demás cursos."
+      },
+      {
+        "id": "o5",
+        "rol": "principal",
+        "t": "Ahorrar horas de deporte para sumarlas a otros cursos es ahorrar hoy en salud lo que mañana se pagará con creces."
+      }
     ],
     [
-      { "id": "o6", "rol": "apoyo", "t": "No niego que el movimiento le hace bien a la salud y a la convivencia." },
-      { "id": "o7", "rol": "contraste", "t": "Pero las evaluaciones nacionales muestran, año tras año, que una gran parte de los estudiantes de secundaria no alcanza el nivel esperado en lectura ni en matemática." },
-      { "id": "o8", "rol": "apoyo", "t": "Sin esas dos bases, un joven difícilmente podrá seguir estudiando, y le costará entender un contrato o revisar un recibo." },
-      { "id": "o9", "rol": "apoyo", "t": "El tiempo del colegio es limitado, y cada hora que se suma a un curso se le quita a otro." },
-      { "id": "o10", "rol": "principal", "t": "Mientras esos resultados no mejoren, las horas nuevas deben ir a matemática y lectura; el deporte puede crecer en talleres por la tarde o en los recreos." }
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "No niego que el movimiento le hace bien a la salud y a la convivencia."
+      },
+      {
+        "id": "o7",
+        "rol": "contraste",
+        "t": "Pero las evaluaciones nacionales muestran, año tras año, que una gran parte de los estudiantes de secundaria no alcanza el nivel esperado en lectura ni en matemática."
+      },
+      {
+        "id": "o8",
+        "rol": "apoyo",
+        "t": "Sin esas dos bases, un joven difícilmente podrá seguir estudiando, y le costará entender un contrato o revisar un recibo."
+      },
+      {
+        "id": "o9",
+        "rol": "apoyo",
+        "t": "El tiempo del colegio es limitado, y cada hora que se suma a un curso se le quita a otro."
+      },
+      {
+        "id": "o10",
+        "rol": "principal",
+        "t": "Mientras esos resultados no mejoren, las horas nuevas deben ir a matemática y lectura; el deporte puede crecer en talleres por la tarde o en los recreos."
+      }
     ]
   ],
   "preguntas": [
@@ -36,7 +84,11 @@
         "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
         "sonda": "Lo que hoy se deja de dar al deporte escolar se pagará más adelante en salud.",
         "aceptada": "A",
-        "codigos": { "B": "RV59", "ambos": "RV60", "ninguno": null },
+        "codigos": {
+          "B": "RV59",
+          "ambos": "RV60",
+          "ninguno": null
+        },
         "explicacion": "Lo sostiene el texto A en la oración 5: ahorrar horas de deporte es ahorrar en salud lo que luego se pagará con creces.",
         "explicaciones": {
           "B": "El texto B admite que el movimiento hace bien (oración 6), pero no advierte un costo futuro en salud; esa advertencia es del A (oración 5).",
@@ -46,16 +98,38 @@
       },
       "enunciado": "¿En qué discrepan los autores?",
       "alternativas": [
-        { "t": "En qué cursos deben recibir las horas adicionales de la secundaria.", "correcta": true, "evidencia": ["o1", "o10"],
-          "explicacion": "El texto A quiere más horas para la educación física (oración 1); el B, para matemática y lectura (oración 10)." },
-        { "t": "En si la actividad física les hace bien a la salud y a la convivencia de los adolescentes.", "codigo": "RV61", "origen": "o6",
-          "explicacion": "En eso coinciden: el texto B dice «no niego que el movimiento le hace bien a la salud y a la convivencia» (oración 6)." },
-        { "t": "En si la Organización Mundial de la Salud recomienda una hora diaria de actividad física.", "codigo": "RV60", "origen": "o2",
-          "explicacion": "Es un dato del texto A (oración 2). El texto B no lo discute." },
-        { "t": "En si un joven que no comprende lo que lee puede entender un contrato o un recibo.", "codigo": "RV1", "origen": "o8",
-          "explicacion": "Es un ejemplo del texto B (oración 8), no el punto en que discrepan." },
-        { "t": "En el valor que tiene la educación para el país.", "codigo": "RV2",
-          "explicacion": "Es demasiado general: los textos discuten cómo repartir las horas de la secundaria." }
+        {
+          "t": "En qué cursos deben recibir las horas adicionales de la secundaria.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o10"
+          ],
+          "explicacion": "El texto A quiere más horas para la educación física (oración 1); el B, para matemática y lectura (oración 10)."
+        },
+        {
+          "t": "En si la actividad física les hace bien a la salud y a la convivencia de los adolescentes.",
+          "codigo": "RV61",
+          "origen": "o6",
+          "explicacion": "En eso coinciden: el texto B dice «no niego que el movimiento le hace bien a la salud y a la convivencia» (oración 6)."
+        },
+        {
+          "t": "En si la Organización Mundial de la Salud recomienda una hora diaria de actividad física.",
+          "codigo": "RV60",
+          "origen": "o2",
+          "explicacion": "Es un dato del texto A (oración 2). El texto B no lo discute."
+        },
+        {
+          "t": "En si un joven que no comprende lo que lee puede entender un contrato o un recibo.",
+          "codigo": "RV1",
+          "origen": "o8",
+          "explicacion": "Es un ejemplo del texto B (oración 8), no el punto en que discrepan."
+        },
+        {
+          "t": "En el valor que tiene la educación para el país.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos discuten cómo repartir las horas de la secundaria."
+        }
       ]
     },
     {
@@ -67,7 +141,11 @@
         "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
         "sonda": "El deporte puede practicarse fuera de las horas de clase.",
         "aceptada": "B",
-        "codigos": { "A": "RV59", "ambos": "RV60", "ninguno": null },
+        "codigos": {
+          "A": "RV59",
+          "ambos": "RV60",
+          "ninguno": null
+        },
         "explicacion": "Lo sostiene el texto B en la oración 10: el deporte puede crecer en talleres por la tarde o en los recreos.",
         "explicaciones": {
           "A": "El texto A quiere más horas de educación física dentro del horario de la secundaria (oración 1); la idea de llevar el deporte a la tarde es del B (oración 10).",
@@ -77,16 +155,35 @@
       },
       "enunciado": "Ante la propuesta de llevar el deporte a talleres por la tarde, el autor del texto A podría responder que",
       "alternativas": [
-        { "t": "para muchos alumnos, la clase de la semana es casi la única ocasión de moverse.", "correcta": true, "evidencia": ["o3"],
-          "explicacion": "Según la oración 3, para muchos alumnos de colegios públicos la clase de educación física es casi el único momento en que corren y juegan; un taller fuera del horario podría no llegarles." },
-        { "t": "sin leer bien ni resolver problemas, un joven difícilmente puede seguir estudiando.", "codigo": "RV59", "origen": "o8",
-          "explicacion": "Ese es un argumento del texto B (oración 8); no le sirve al A para responder." },
-        { "t": "la matemática y la lectura no les sirven de nada a los jóvenes en su vida diaria.", "codigo": "RV33",
-          "explicacion": "El texto A no dice eso; solo defiende más horas para el deporte, sin despreciar otros cursos." },
-        { "t": "los talleres de la tarde deberían cobrarse a las familias para que funcionen bien.", "codigo": "RV7",
-          "explicacion": "Nada en el texto A permite concluir eso: no habla de cobrar ni de cómo se pagarían los talleres." },
-        { "t": "entonces habría que eliminar la matemática y dedicar toda la jornada al deporte.", "codigo": "RV12",
-          "explicacion": "Exagera la postura del texto A, que pide más horas para el deporte, no quitar los demás cursos." }
+        {
+          "t": "para muchos alumnos, la clase de la semana es casi la única ocasión de moverse.",
+          "correcta": true,
+          "evidencia": [
+            "o3"
+          ],
+          "explicacion": "Según la oración 3, para muchos alumnos de colegios públicos la clase de educación física es casi el único momento en que corren y juegan; un taller fuera del horario podría no llegarles."
+        },
+        {
+          "t": "sin leer bien ni resolver problemas, un joven difícilmente puede seguir estudiando.",
+          "codigo": "RV59",
+          "origen": "o8",
+          "explicacion": "Ese es un argumento del texto B (oración 8); no le sirve al A para responder."
+        },
+        {
+          "t": "la matemática y la lectura no les sirven de nada a los jóvenes en su vida diaria.",
+          "codigo": "RV33",
+          "explicacion": "El texto A no dice eso; solo defiende más horas para el deporte, sin despreciar otros cursos."
+        },
+        {
+          "t": "los talleres de la tarde deberían cobrarse a las familias para que funcionen bien.",
+          "codigo": "RV7",
+          "explicacion": "Nada en el texto A permite concluir eso: no habla de cobrar ni de cómo se pagarían los talleres."
+        },
+        {
+          "t": "entonces habría que eliminar la matemática y dedicar toda la jornada al deporte.",
+          "codigo": "RV12",
+          "explicacion": "Exagera la postura del texto A, que pide más horas para el deporte, no quitar los demás cursos."
+        }
       ]
     },
     {
@@ -98,7 +195,11 @@
         "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
         "sonda": "La educación física debería reemplazar por completo a los cursos de matemática y lectura.",
         "aceptada": "ninguno",
-        "codigos": { "A": "RV11", "B": "RV33", "ambos": null },
+        "codigos": {
+          "A": "RV11",
+          "B": "RV33",
+          "ambos": null
+        },
         "explicacion": "Ninguno lo sostiene. El texto A pide más horas para el deporte, no eliminar otros cursos; el B quiere justamente más horas para matemática y lectura.",
         "explicaciones": {
           "A": "El texto A pide más horas de educación física (oración 1), pero «reemplazar por completo» dice mucho más que eso.",
@@ -108,16 +209,38 @@
       },
       "enunciado": "Es compatible con lo que sostiene el autor del texto A afirmar que",
       "alternativas": [
-        { "t": "moverse más puede favorecer el aprendizaje en otros cursos.", "correcta": true, "evidencia": ["o4"],
-          "explicacion": "La oración 4 dice que un alumno que se mueve llega más despierto y atento, y que eso ayuda en los demás cursos." },
-        { "t": "las horas nuevas de la secundaria deberían ir primero a matemática y lectura.", "codigo": "RV59", "origen": "o10",
-          "explicacion": "Es la propuesta del texto B (oración 10) y choca con la tesis del A (oración 1)." },
-        { "t": "la clase de educación física poco aporta a que los alumnos aprendan a convivir en equipo.", "codigo": "RV9", "origen": "o3",
-          "explicacion": "Choca con la oración 3: en esa clase los alumnos juegan en equipo y aprenden a perder sin rendirse." },
-        { "t": "a los adolescentes de hoy no les hace falta moverse más de lo que ya se mueven.", "codigo": "RV10", "origen": "o2",
-          "explicacion": "El «no» la vuelve contraria a la oración 2, que dice que muchos pasan casi todo el día sentados." },
-        { "t": "el deporte mejora la atención en el aula, pero debería sacarse del horario escolar.", "codigo": "RV62", "origen": "o10",
-          "explicacion": "La primera parte es suya (oración 4), pero la segunda se acerca a lo que propone el B y choca con la tesis del A (oración 1)." }
+        {
+          "t": "moverse más puede favorecer el aprendizaje en otros cursos.",
+          "correcta": true,
+          "evidencia": [
+            "o4"
+          ],
+          "explicacion": "La oración 4 dice que un alumno que se mueve llega más despierto y atento, y que eso ayuda en los demás cursos."
+        },
+        {
+          "t": "las horas nuevas de la secundaria deberían ir primero a matemática y lectura.",
+          "codigo": "RV59",
+          "origen": "o10",
+          "explicacion": "Es la propuesta del texto B (oración 10) y choca con la tesis del A (oración 1)."
+        },
+        {
+          "t": "la clase de educación física poco aporta a que los alumnos aprendan a convivir en equipo.",
+          "codigo": "RV9",
+          "origen": "o3",
+          "explicacion": "Choca con la oración 3: en esa clase los alumnos juegan en equipo y aprenden a perder sin rendirse."
+        },
+        {
+          "t": "a los adolescentes de hoy no les hace falta moverse más de lo que ya se mueven.",
+          "codigo": "RV10",
+          "origen": "o2",
+          "explicacion": "El «no» la vuelve contraria a la oración 2, que dice que muchos pasan casi todo el día sentados."
+        },
+        {
+          "t": "el deporte mejora la atención en el aula, pero debería sacarse del horario escolar.",
+          "codigo": "RV62",
+          "origen": "o10",
+          "explicacion": "La primera parte es suya (oración 4), pero la segunda se acerca a lo que propone el B y choca con la tesis del A (oración 1)."
+        }
       ]
     },
     {
@@ -126,16 +249,37 @@
       "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
       "enunciado": "Si las evaluaciones nacionales mostraran que casi todos los estudiantes ya alcanzan el nivel esperado en lectura y matemática, la autora del texto B",
       "alternativas": [
-        { "t": "podría aceptar más horas de deporte en el horario.", "correcta": true, "evidencia": ["o6", "o10"],
-          "explicacion": "Su propuesta vale «mientras esos resultados no mejoren» (oración 10). Si mejoran, desaparece su razón, y ella ya reconoce que el movimiento hace bien (oración 6)." },
-        { "t": "seguiría pidiendo las horas nuevas para matemática y lectura, porque los resultados en esos cursos son bajos.", "codigo": "RV63", "origen": "o7",
-          "explicacion": "Repite la razón que el supuesto acaba de quitar: en ese caso, los resultados ya no son bajos." },
-        { "t": "diría que la matemática y la lectura ya no hacen falta en la secundaria.", "codigo": "RV11",
-          "explicacion": "Que los alumnos alcancen el nivel no vuelve innecesarios esos cursos; el texto B no da pie a esa conclusión." },
-        { "t": "afirmaría que la educación física es casi el único momento en que muchos alumnos corren.", "codigo": "RV59", "origen": "o3",
-          "explicacion": "Esa idea es del texto A (oración 3), y el supuesto no tiene que ver con ella." },
-        { "t": "propondría alargar la jornada escolar hasta la noche.", "codigo": "RV7",
-          "explicacion": "Nada en el texto B lleva a eso; no habla de alargar la jornada." }
+        {
+          "t": "podría aceptar más horas de deporte en el horario.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o10"
+          ],
+          "explicacion": "Su propuesta vale «mientras esos resultados no mejoren» (oración 10). Si mejoran, desaparece su razón, y ella ya reconoce que el movimiento hace bien (oración 6)."
+        },
+        {
+          "t": "seguiría pidiendo las horas nuevas para matemática y lectura, porque los resultados en esos cursos son bajos.",
+          "codigo": "RV63",
+          "origen": "o7",
+          "explicacion": "Repite la razón que el supuesto acaba de quitar: en ese caso, los resultados ya no son bajos."
+        },
+        {
+          "t": "diría que la matemática y la lectura ya no hacen falta en la secundaria.",
+          "codigo": "RV11",
+          "explicacion": "Que los alumnos alcancen el nivel no vuelve innecesarios esos cursos; el texto B no da pie a esa conclusión."
+        },
+        {
+          "t": "afirmaría que la educación física es casi el único momento en que muchos alumnos corren.",
+          "codigo": "RV59",
+          "origen": "o3",
+          "explicacion": "Esa idea es del texto A (oración 3), y el supuesto no tiene que ver con ella."
+        },
+        {
+          "t": "propondría alargar la jornada escolar hasta la noche.",
+          "codigo": "RV7",
+          "explicacion": "Nada en el texto B lleva a eso; no habla de alargar la jornada."
+        }
       ]
     },
     {
@@ -144,24 +288,54 @@
       "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
       "enunciado": "En el texto A, el verbo RENDIRSE («aprenden a perder sin rendirse») significa",
       "alternativas": [
-        { "t": "darse por vencido.", "correcta": true, "evidencia": ["o3"],
-          "explicacion": "Perder sin rendirse es perder un partido y seguir intentando, sin abandonar." },
-        { "t": "entregarse a la autoridad o al enemigo.", "codigo": "RV18",
-          "explicacion": "Es un sentido común de «rendirse» (el soldado o el fugitivo que se rinde), pero aquí se habla de un juego." },
-        { "t": "cansarse.", "codigo": "RV19",
-          "explicacion": "Está cerca en el sentido (quien se cansa puede dejar de intentar), pero cansarse no es abandonar." },
-        { "t": "perder el partido.", "codigo": "RV5", "origen": "o3",
-          "explicacion": "Repite una palabra de la misma frase, pero «sin rendirse» se suma a «perder»: se puede perder sin rendirse." },
-        { "t": "dar buen resultado.", "codigo": "RV20",
-          "explicacion": "Viene de confundir «rendirse» con «rendir» (un alumno que rinde), que se parecen en la forma pero significan otra cosa." }
+        {
+          "t": "darse por vencido.",
+          "correcta": true,
+          "evidencia": [
+            "o3"
+          ],
+          "explicacion": "Perder sin rendirse es perder un partido y seguir intentando, sin abandonar."
+        },
+        {
+          "t": "entregarse a la autoridad o al enemigo.",
+          "codigo": "RV18",
+          "explicacion": "Es un sentido común de «rendirse» (el soldado o el fugitivo que se rinde), pero aquí se habla de un juego."
+        },
+        {
+          "t": "cansarse.",
+          "codigo": "RV19",
+          "explicacion": "Está cerca en el sentido (quien se cansa puede dejar de intentar), pero cansarse no es abandonar."
+        },
+        {
+          "t": "perder el partido.",
+          "codigo": "RV5",
+          "origen": "o3",
+          "explicacion": "Repite una palabra de la misma frase, pero «sin rendirse» se suma a «perder»: se puede perder sin rendirse."
+        },
+        {
+          "t": "dar buen resultado.",
+          "codigo": "RV20",
+          "explicacion": "Viene de confundir «rendirse» con «rendir» (un alumno que rinde), que se parecen en la forma pero significan otra cosa."
+        }
       ]
     }
   ],
   "origen": "propio",
   "fecha": "2026-11-12",
   "hechos": [
-    { "afirmacion": "La OMS recomienda que niños y adolescentes de 5 a 17 años hagan, en promedio, al menos 60 minutos diarios de actividad física moderada a intensa.", "fuente": "Organización Mundial de la Salud (2020), Directrices de la OMS sobre actividad física y hábitos sedentarios" },
-    { "afirmacion": "Las evaluaciones nacionales del Ministerio de Educación del Perú muestran que una gran parte de los estudiantes de secundaria evaluados no alcanza el nivel satisfactorio en lectura y en matemática.", "fuente": "Ministerio de Educación del Perú, Oficina de Medición de la Calidad de los Aprendizajes (UMC), resultados de la Evaluación Nacional de Logros de Aprendizaje (ENLA) y de la ECE en 2.º de secundaria" }
+    {
+      "afirmacion": "La OMS recomienda que niños y adolescentes de 5 a 17 años hagan, en promedio, al menos 60 minutos diarios de actividad física moderada a intensa.",
+      "fuente": "Organización Mundial de la Salud (2020), Directrices de la OMS sobre actividad física y hábitos sedentarios"
+    },
+    {
+      "afirmacion": "Las evaluaciones nacionales del Ministerio de Educación del Perú muestran que una gran parte de los estudiantes de secundaria evaluados no alcanza el nivel satisfactorio en lectura y en matemática.",
+      "fuente": "Ministerio de Educación del Perú, Oficina de Medición de la Calidad de los Aprendizajes (UMC), resultados de la Evaluación Nacional de Logros de Aprendizaje (ENLA) y de la ECE en 2.º de secundaria"
+    }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (revisor a ciegas, rutina verbal-mas)",
+    "fecha": "2026-11-12",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 38 de 38 coincidieron en la tanda (t148: 8 de 8). Sin cambios de texto. 'Cansarse' (p5) revisado: no es defendible, pues cansarse no equivale a abandonar y la frase 'perder sin rendirse' pide abandonar; se mantiene. Hechos de memoria, no re-verificados en la web: recomendación OMS 2020 de 60 minutos diarios para 5 a 17 años, y que una gran parte de los estudiantes no alcanza el nivel satisfactorio en las evaluaciones nacionales (el texto dice 'una gran parte', sin cifra)."
+  }
 }

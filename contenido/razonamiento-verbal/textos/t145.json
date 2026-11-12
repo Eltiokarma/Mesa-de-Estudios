@@ -7,24 +7,76 @@
   "dificultad": 2,
   "tipo_texto": "argumentativo",
   "autores": [
-    { "id": "A", "desde": 0, "firma": "Un regidor de un distrito de Lima" },
-    { "id": "B", "desde": 1, "firma": "Una abogada especialista en datos personales" }
+    {
+      "id": "A",
+      "desde": 0,
+      "firma": "Un regidor de un distrito de Lima"
+    },
+    {
+      "id": "B",
+      "desde": 1,
+      "firma": "Una abogada especialista en datos personales"
+    }
   ],
   "parrafos": [
     [
-      { "id": "o1", "rol": "principal", "t": "Las cámaras con reconocimiento facial pueden hacer de Lima una ciudad más segura." },
-      { "id": "o2", "rol": "apoyo", "t": "Una cámara común solo graba; el reconocimiento facial, en cambio, compara cada rostro con una lista de personas buscadas por la justicia y avisa en segundos a la policía." },
-      { "id": "o3", "rol": "apoyo", "t": "Así, un prófugo que camina por un paradero o entra a un estadio ya no pasa desapercibido." },
-      { "id": "o4", "rol": "apoyo", "t": "Quien no tiene cuentas pendientes no tiene nada que temer: su rostro se compara y se descarta." },
-      { "id": "o5", "rol": "principal", "t": "Con el miedo que sienten hoy los vecinos, no instalar esta tecnología sería renunciar a una herramienta útil." }
+      {
+        "id": "o1",
+        "rol": "principal",
+        "t": "Las cámaras con reconocimiento facial pueden hacer de Lima una ciudad más segura."
+      },
+      {
+        "id": "o2",
+        "rol": "apoyo",
+        "t": "Una cámara común solo graba; el reconocimiento facial, en cambio, compara cada rostro con una lista de personas buscadas por la justicia y avisa en segundos a la policía."
+      },
+      {
+        "id": "o3",
+        "rol": "apoyo",
+        "t": "Así, un prófugo que camina por un paradero o entra a un estadio ya no pasa desapercibido."
+      },
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "Quien no tiene cuentas pendientes no tiene nada que temer: su rostro se compara y se descarta."
+      },
+      {
+        "id": "o5",
+        "rol": "principal",
+        "t": "Con el miedo que sienten hoy los vecinos, no instalar esta tecnología sería renunciar a una herramienta útil."
+      }
     ],
     [
-      { "id": "o6", "rol": "apoyo", "t": "Nadie discute que la ciudad necesita más seguridad." },
-      { "id": "o7", "rol": "contraste", "t": "El problema es que, para encontrar a unos pocos buscados, el sistema tiene que leer el rostro de miles de personas que no han hecho nada." },
-      { "id": "o8", "rol": "apoyo", "t": "El rostro es un dato biométrico: no se puede cambiar como una contraseña, y si una base de datos se filtra, el daño no tiene arreglo." },
-      { "id": "o9", "rol": "apoyo", "t": "Además, estos sistemas se equivocan, y un error puede terminar con una persona inocente detenida frente a todos." },
-      { "id": "o10", "rol": "detalle", "t": "No por casualidad la ley peruana de protección de datos personales trata los datos biométricos como datos sensibles." },
-      { "id": "o11", "rol": "principal", "t": "Antes de instalar una sola cámara de este tipo, debería haber reglas claras sobre quién mira las imágenes, cuánto tiempo se guardan y quién responde por los errores." }
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "Nadie discute que la ciudad necesita más seguridad."
+      },
+      {
+        "id": "o7",
+        "rol": "contraste",
+        "t": "El problema es que, para encontrar a unos pocos buscados, el sistema tiene que leer el rostro de miles de personas que no han hecho nada."
+      },
+      {
+        "id": "o8",
+        "rol": "apoyo",
+        "t": "El rostro es un dato biométrico: no se puede cambiar como una contraseña, y si una base de datos se filtra, el daño no tiene arreglo."
+      },
+      {
+        "id": "o9",
+        "rol": "apoyo",
+        "t": "Además, estos sistemas se equivocan, y un error puede terminar con una persona inocente detenida frente a todos."
+      },
+      {
+        "id": "o10",
+        "rol": "detalle",
+        "t": "No por casualidad la ley peruana de protección de datos personales trata los datos biométricos como datos sensibles."
+      },
+      {
+        "id": "o11",
+        "rol": "principal",
+        "t": "Antes de instalar una sola cámara de este tipo, debería haber reglas claras sobre quién mira las imágenes, cuánto tiempo se guardan y quién responde por los errores."
+      }
     ]
   ],
   "preguntas": [
@@ -37,7 +89,11 @@
         "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
         "sonda": "A una persona sin problemas con la justicia no le pasa nada si una cámara analiza su rostro.",
         "aceptada": "A",
-        "codigos": { "B": "RV59", "ambos": "RV60", "ninguno": null },
+        "codigos": {
+          "B": "RV59",
+          "ambos": "RV60",
+          "ninguno": null
+        },
         "explicacion": "Lo sostiene el texto A en la oración 4: quien no tiene cuentas pendientes no tiene nada que temer.",
         "explicaciones": {
           "B": "El texto B dice lo contrario: el sistema lee el rostro de personas que no han hecho nada (oración 7) y puede detener por error a un inocente (oración 9).",
@@ -47,16 +103,39 @@
       },
       "enunciado": "El tema en controversia entre los dos textos es",
       "alternativas": [
-        { "t": "si la seguridad que promete el reconocimiento facial justifica el riesgo para la privacidad.", "correcta": true, "evidencia": ["o1", "o7", "o11"],
-          "explicacion": "El texto A destaca lo útil que es para la seguridad (oraciones 1 y 5); el B, lo que arriesga la privacidad de quienes no han hecho nada (oraciones 7 y 8)." },
-        { "t": "si Lima necesita más seguridad en sus calles, paraderos y estadios.", "codigo": "RV61", "origen": "o6",
-          "explicacion": "En eso coinciden: el texto B dice que «nadie discute que la ciudad necesita más seguridad» (oración 6)." },
-        { "t": "si un dato biométrico, como el rostro, se puede cambiar igual que una contraseña.", "codigo": "RV60", "origen": "o8",
-          "explicacion": "Es parte de un argumento del texto B (oración 8). El texto A no toma posición sobre eso." },
-        { "t": "el lugar que ocupa la tecnología en la vida moderna de las ciudades.", "codigo": "RV2",
-          "explicacion": "Es demasiado general: los textos discuten una tecnología concreta, las cámaras que reconocen rostros." },
-        { "t": "cuántos prófugos hay en Lima.", "codigo": "RV1", "origen": "o3",
-          "explicacion": "El prófugo es un ejemplo del texto A (oración 3); ninguno discute cuántos hay." }
+        {
+          "t": "si es aceptable analizar el rostro de todos los que pasan frente a una cámara para encontrar a unos pocos buscados.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o4",
+            "o7"
+          ],
+          "explicacion": "El texto A lo defiende: la cámara compara cada rostro con la lista y descarta al que no está en ella (oraciones 2 y 4). El B lo cuestiona: para hallar a unos pocos, el sistema lee el rostro de miles que no han hecho nada (oración 7). Los dos toman posición."
+        },
+        {
+          "t": "si Lima necesita más seguridad en sus calles, paraderos y estadios.",
+          "codigo": "RV61",
+          "origen": "o6",
+          "explicacion": "En eso coinciden: el texto B dice que «nadie discute que la ciudad necesita más seguridad» (oración 6)."
+        },
+        {
+          "t": "si un dato biométrico, como el rostro, se puede cambiar igual que una contraseña.",
+          "codigo": "RV60",
+          "origen": "o8",
+          "explicacion": "Es parte de un argumento del texto B (oración 8). El texto A no toma posición sobre eso."
+        },
+        {
+          "t": "el lugar que ocupa la tecnología en la vida moderna de las ciudades.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos discuten una tecnología concreta, las cámaras que reconocen rostros."
+        },
+        {
+          "t": "cuántos prófugos hay en Lima.",
+          "codigo": "RV1",
+          "origen": "o3",
+          "explicacion": "El prófugo es un ejemplo del texto A (oración 3); ninguno discute cuántos hay."
+        }
       ]
     },
     {
@@ -68,7 +147,11 @@
         "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
         "sonda": "Estas cámaras afectan también a la gente que no tiene ninguna deuda con la justicia.",
         "aceptada": "B",
-        "codigos": { "A": "RV59", "ambos": "RV60", "ninguno": null },
+        "codigos": {
+          "A": "RV59",
+          "ambos": "RV60",
+          "ninguno": null
+        },
         "explicacion": "Lo sostiene el texto B: el sistema lee el rostro de miles de personas que no han hecho nada (oración 7) y un error puede detener a un inocente (oración 9).",
         "explicaciones": {
           "A": "El texto A dice lo contrario: quien no tiene cuentas pendientes no tiene nada que temer (oración 4).",
@@ -78,16 +161,39 @@
       },
       "enunciado": "¿En qué discrepan los autores?",
       "alternativas": [
-        { "t": "A quiere instalar ya estas cámaras; B pide fijar reglas antes de usarlas.", "correcta": true, "evidencia": ["o5", "o11"],
-          "explicacion": "El texto A dice que no instalarlas sería renunciar a una herramienta útil (oración 5); el B pide reglas claras antes de poner una sola cámara (oración 11)." },
-        { "t": "A quiere instalar ya estas cámaras; B propone prohibirlas para siempre en todo el país.", "codigo": "RV62", "origen": "o11",
-          "explicacion": "La primera mitad es correcta, pero el texto B no pide prohibirlas: pide reglas «antes de instalar» (oración 11)." },
-        { "t": "A advierte que el sistema se equivoca; B, que un prófugo ya no pasa desapercibido.", "codigo": "RV59", "origen": "o9",
-          "explicacion": "Cambia las posturas de lugar: lo del error es del texto B (oración 9) y lo del prófugo, del A (oración 3)." },
-        { "t": "A cree que la ciudad necesita más seguridad; B sostiene que ya es bastante segura.", "codigo": "RV61", "origen": "o6",
-          "explicacion": "El texto B no lo niega: «nadie discute que la ciudad necesita más seguridad» (oración 6)." },
-        { "t": "A prefiere las cámaras comunes que solo graban; B, las que reconocen rostros.", "codigo": "RV33", "origen": "o2",
-          "explicacion": "Ninguno toma esa postura: el texto A defiende las cámaras con reconocimiento facial y el B no prefiere ningún tipo de cámara." }
+        {
+          "t": "A quiere instalar ya estas cámaras; B pide fijar reglas antes de usarlas.",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "o11"
+          ],
+          "explicacion": "El texto A dice que no instalarlas sería renunciar a una herramienta útil (oración 5); el B pide reglas claras antes de poner una sola cámara (oración 11)."
+        },
+        {
+          "t": "A quiere instalar ya estas cámaras; B propone prohibirlas para siempre en todo el país.",
+          "codigo": "RV62",
+          "origen": "o11",
+          "explicacion": "La primera mitad es correcta, pero el texto B no pide prohibirlas: pide reglas «antes de instalar» (oración 11)."
+        },
+        {
+          "t": "A advierte que el sistema se equivoca; B, que un prófugo ya no pasa desapercibido.",
+          "codigo": "RV59",
+          "origen": "o9",
+          "explicacion": "Cambia las posturas de lugar: lo del error es del texto B (oración 9) y lo del prófugo, del A (oración 3)."
+        },
+        {
+          "t": "A cree que la ciudad necesita más seguridad; B sostiene que ya es bastante segura.",
+          "codigo": "RV61",
+          "origen": "o6",
+          "explicacion": "El texto B no lo niega: «nadie discute que la ciudad necesita más seguridad» (oración 6)."
+        },
+        {
+          "t": "A prefiere las cámaras comunes que solo graban; B, las que reconocen rostros.",
+          "codigo": "RV33",
+          "origen": "o2",
+          "explicacion": "Ninguno toma esa postura: el texto A defiende las cámaras con reconocimiento facial y el B no prefiere ningún tipo de cámara."
+        }
       ]
     },
     {
@@ -96,16 +202,37 @@
       "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
       "enunciado": "Ante la oración 4 del texto A, la autora del texto B probablemente objetaría que",
       "alternativas": [
-        { "t": "incluso un inocente puede terminar detenido por un error del sistema.", "correcta": true, "evidencia": ["o9"],
-          "explicacion": "La oración 4 supone que el inocente no corre riesgo; la oración 9 responde que el sistema se equivoca y puede detener a un inocente frente a todos." },
-        { "t": "una cámara común solo graba, mientras que esta compara cada rostro con una lista.", "codigo": "RV59", "origen": "o2",
-          "explicacion": "Esa comparación es del texto A (oración 2) y sirve para defender las cámaras, no para objetarlas." },
-        { "t": "Lima ya es una ciudad segura y no necesita ninguna tecnología nueva para vigilar las calles.", "codigo": "RV33", "origen": "o6",
-          "explicacion": "La autora del B dice lo contrario: nadie discute que la ciudad necesita más seguridad (oración 6)." },
-        { "t": "en otros países el reconocimiento facial ya fue prohibido por completo.", "codigo": "RV8",
-          "explicacion": "El texto B no habla de otros países. Es un dato de fuera del texto, sea cierto o no." },
-        { "t": "quien sí tiene cuentas pendientes con la justicia tiene motivos para temer a las cámaras.", "codigo": "RV5", "origen": "o4",
-          "explicacion": "Repite palabras de la oración 4 y está de acuerdo con ella; no es una objeción." }
+        {
+          "t": "incluso un inocente puede terminar detenido por un error del sistema.",
+          "correcta": true,
+          "evidencia": [
+            "o9"
+          ],
+          "explicacion": "La oración 4 supone que el inocente no corre riesgo; la oración 9 responde que el sistema se equivoca y puede detener a un inocente frente a todos."
+        },
+        {
+          "t": "una cámara común solo graba, mientras que esta compara cada rostro con una lista.",
+          "codigo": "RV59",
+          "origen": "o2",
+          "explicacion": "Esa comparación es del texto A (oración 2) y sirve para defender las cámaras, no para objetarlas."
+        },
+        {
+          "t": "Lima ya es una ciudad segura y no necesita ninguna tecnología nueva para vigilar las calles.",
+          "codigo": "RV33",
+          "origen": "o6",
+          "explicacion": "La autora del B dice lo contrario: nadie discute que la ciudad necesita más seguridad (oración 6)."
+        },
+        {
+          "t": "en otros países el reconocimiento facial ya fue prohibido por completo.",
+          "codigo": "RV8",
+          "explicacion": "El texto B no habla de otros países. Es un dato de fuera del texto, sea cierto o no."
+        },
+        {
+          "t": "quien sí tiene cuentas pendientes con la justicia tiene motivos para temer a las cámaras.",
+          "codigo": "RV5",
+          "origen": "o4",
+          "explicacion": "Repite palabras de la oración 4 y está de acuerdo con ella; no es una objeción."
+        }
       ]
     },
     {
@@ -114,14 +241,30 @@
       "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
       "enunciado": "En el texto B, el verbo FILTRARSE («si una base de datos se filtra») significa",
       "alternativas": [
-        { "t": "darse a conocer sin autorización.", "correcta": true, "evidencia": ["o8"],
-          "explicacion": "Se habla del daño que causaría que los rostros guardados lleguen a manos de quien no debe tenerlos." },
-        { "t": "pasar un líquido por un colador.", "codigo": "RV18",
-          "explicacion": "Es el sentido físico y más común de «filtrar», pero una base de datos no es un líquido." },
-        { "t": "borrarse por un error.", "codigo": "RV19",
-          "explicacion": "Es del mismo campo (lo que le puede pasar a una base de datos), pero el daño del que habla el texto es que otros vean los datos, no que se pierdan." },
-        { "t": "compararse con una lista de personas buscadas.", "codigo": "RV5", "origen": "o2",
-          "explicacion": "Repite palabras de la oración 2, que describe cómo funciona el sistema, no qué le pasa a una base de datos que se filtra." }
+        {
+          "t": "darse a conocer sin autorización.",
+          "correcta": true,
+          "evidencia": [
+            "o8"
+          ],
+          "explicacion": "Se habla del daño que causaría que los rostros guardados lleguen a manos de quien no debe tenerlos."
+        },
+        {
+          "t": "pasar un líquido por un colador.",
+          "codigo": "RV18",
+          "explicacion": "Es el sentido físico y más común de «filtrar», pero una base de datos no es un líquido."
+        },
+        {
+          "t": "borrarse por un error.",
+          "codigo": "RV19",
+          "explicacion": "Es del mismo campo (lo que le puede pasar a una base de datos), pero el daño del que habla el texto es que otros vean los datos, no que se pierdan."
+        },
+        {
+          "t": "compararse con una lista de personas buscadas.",
+          "codigo": "RV5",
+          "origen": "o2",
+          "explicacion": "Repite palabras de la oración 2, que describe cómo funciona el sistema, no qué le pasa a una base de datos que se filtra."
+        }
       ]
     },
     {
@@ -130,21 +273,47 @@
       "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
       "enunciado": "Es incompatible con lo que sostiene la autora del texto B afirmar que",
       "alternativas": [
-        { "t": "un rostro registrado se puede reemplazar como se cambia una clave.", "correcta": true, "evidencia": ["o8"],
-          "explicacion": "La oración 8 dice que el rostro «no se puede cambiar como una contraseña»: esta afirmación choca con eso." },
-        { "t": "muchos vecinos de Lima tienen miedo de caminar solos por las calles de su distrito de noche.", "codigo": "RV36", "origen": "o5",
-          "explicacion": "El texto B no habla del miedo de los vecinos, pero tampoco lo niega: que algo no esté dicho no lo vuelve incompatible." },
-        { "t": "no conviene poner estas cámaras mientras no existan reglas sobre quién ve las imágenes.", "codigo": "RV10", "origen": "o11",
-          "explicacion": "Tiene un «no», pero es compatible: es justo lo que propone la oración 11." },
-        { "t": "una cámara con reconocimiento facial puede avisar a la policía en pocos segundos.", "codigo": "RV59", "origen": "o2",
-          "explicacion": "Lo dice el texto A (oración 2), y el B no lo niega: su crítica es a la privacidad y a los errores, no a la rapidez del aviso." }
+        {
+          "t": "un rostro registrado se puede reemplazar como se cambia una clave.",
+          "correcta": true,
+          "evidencia": [
+            "o8"
+          ],
+          "explicacion": "La oración 8 dice que el rostro «no se puede cambiar como una contraseña»: esta afirmación choca con eso."
+        },
+        {
+          "t": "muchos vecinos de Lima tienen miedo de caminar solos por las calles de su distrito de noche.",
+          "codigo": "RV36",
+          "origen": "o5",
+          "explicacion": "El texto B no habla del miedo de los vecinos, pero tampoco lo niega: que algo no esté dicho no lo vuelve incompatible."
+        },
+        {
+          "t": "no conviene poner estas cámaras mientras no existan reglas sobre quién ve las imágenes.",
+          "codigo": "RV10",
+          "origen": "o11",
+          "explicacion": "Tiene un «no», pero es compatible: es justo lo que propone la oración 11."
+        },
+        {
+          "t": "una cámara con reconocimiento facial puede avisar a la policía en pocos segundos.",
+          "codigo": "RV59",
+          "origen": "o2",
+          "explicacion": "Lo dice el texto A (oración 2), y el B no lo niega: su crítica es a la privacidad y a los errores, no a la rapidez del aviso."
+        }
       ]
     }
   ],
   "origen": "propio",
   "fecha": "2026-11-12",
   "hechos": [
-    { "afirmacion": "La ley peruana de protección de datos personales considera los datos biométricos como datos sensibles.", "fuente": "Ley N.º 29733, Ley de Protección de Datos Personales (Perú, 2011), artículo 2, definición de datos sensibles" }
+    {
+      "afirmacion": "La ley peruana de protección de datos personales considera los datos biométricos como datos sensibles.",
+      "fuente": "Ley N.º 29733, Ley de Protección de Datos Personales (Perú, 2011), artículo 2, definición de datos sensibles"
+    }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (revisor a ciegas, rutina verbal-mas)",
+    "fecha": "2026-11-12",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 38 de 38 coincidieron en la tanda (t145: 7 de 7). Cambio: la correcta de p1 ya no habla de 'privacidad' (palabra ausente en A) sino de si es aceptable analizar el rostro de todos para hallar a unos pocos, tema en que A (oraciones 2 y 4) y B (oración 7) toman posición. Hecho verificado en la web: Ley 29733, art. 2, num. 5, define como datos sensibles los datos biométricos que por sí mismos pueden identificar al titular (confirmado en fuentes secundarias que citan el texto; el reconocimiento facial como biométrico es de memoria). La oración 10 del texto dice 'trata los datos biométricos como datos sensibles', consistente."
+  }
 }
