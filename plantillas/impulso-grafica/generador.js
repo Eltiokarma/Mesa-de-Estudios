@@ -50,6 +50,8 @@
   const v = P.v;
   const limpio = (x, dec = 2) => Number.isFinite(x) && x > 0 && Math.abs(x * 10 ** dec - Math.round(x * 10 ** dec)) < 1e-7 && x < 1e6;
   const G = 10;
+  const decimales = t => { const m = t.match(/,(\d+)/); return m ? m[1].length : 0; };
+  const masLimpia = alt => { const c = alt.find(a => a.correcta); return decimales(c.texto) < Math.min(...alt.filter(a => !a.correcta).map(a => decimales(a.texto))); };
 
   const TIPOS = [['rapidez', 'reposo'], ['rapidez', 'reposo'], ['rapidez', 'inicial'], ['rapidez', 'inicial'],
     ['trabajo', 'mismo'], ['trabajo', 'mismo'], ['trabajo', 'contra'], ['trabajo', 'contra'],
@@ -66,7 +68,9 @@
   }
 
   function cerrar(rng, semilla, o) {
-    const alternativas = P.armar({ correcta: o.correcta, errores: o.errores.filter(e => Number.isFinite(e.valor) && e.valor > 0 && e.valor < 1e7), rng, texto: x => `${f(x)} ${o.unidad}` });
+    // Fuera los distractores de más de 20 veces la correcta (o menos de 1/20): no engañan a nadie.
+    const alternativas = P.armar({ correcta: o.correcta, errores: o.errores.filter(e => Number.isFinite(e.valor) && e.valor > 0 && e.valor / o.correcta <= 20 && e.valor / o.correcta >= 1 / 20), rng, texto: x => `${f(x)} ${o.unidad}` });
+    if (masLimpia(alternativas)) return null; // la correcta no debe ser la única redonda
     return {
       id: `${ID}#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
       alternativas, solucion: o.solucion, respuesta: { valor: o.correcta, unidad: o.unidad }, _datos: o.datos,
@@ -138,7 +142,7 @@
       h('IG-fmax-por-tiempo', v0 + Fm * T / m, `Multiplicaste la fuerza máxima por el tiempo total, como si la fuerza valiera ${f(Fm)} N todo el rato. El impulso es el área bajo la gráfica F-t, y la fuerza no se mantiene en su máximo.`),
       pa('G4-lee-eje', v0 + Fm / m, `Usaste el valor más alto del eje vertical (${f(Fm)} N) como si fuera el impulso. Lo que cambia la cantidad de movimiento es el área bajo la gráfica F-t, en N·s.`, CIN),
       tr('PR3-sin-medio', v0 + areaSinMedio(pts) / m, `Contaste cada tramo inclinado como un rectángulo con su fuerza mayor: te faltó el ½ del triángulo. Un tramo que sube de F1 a F2 aporta (F1 + F2)/2 · Δt.`),
-      h('IG-solo-meseta', v0 + meseta(pts) / m, `Contaste solo los tramos de fuerza constante y dejaste fuera las rampas. Mientras la fuerza sube o baja también empuja: su área (un triángulo) también es impulso.`),
+      ...(meseta(pts) > 0 && meseta(pts) < J - 1e-9 ? [h('IG-solo-meseta', v0 + meseta(pts) / m, `Contaste solo los tramos de fuerza constante y dejaste fuera las rampas. Mientras la fuerza sube o baja también empuja: su área (un triángulo) también es impulso.`)] : []),
       h('IG-promedio-vertices', v0 + promedioVertices(pts) / m, `Promediaste las fuerzas de los vértices y multiplicaste por el tiempo total. Ese promedio no es la fuerza media: los tramos duran distinto. Suma el área tramo por tramo.`),
       ...(sub === 'inicial' ? [h('IG-sin-v0', J / m, `Esa es solo la rapidez que gana, J/m. El cuerpo ya se movía a ${f(v0)} m/s en el mismo sentido: vf = v0 + J/m.`)] : []),
     ];
@@ -159,7 +163,7 @@
     const J = area(pts), dv = J / m, v0 = rng.elegir([2, 3, 4, 5, 6, 8]);
     if (!limpio(J) || !limpio(dv) || dv > 40 || dv < 4) return null;
     const contra = sub === 'contra';
-    if (contra && dv <= 2 * v0) return null; // sale más rápido de lo que llegó: trabajo positivo
+    if (contra && dv < 2 * v0 + 2 - 1e-9) return null; // sale al menos 2 m/s más rápido de lo que llegó: trabajo positivo
     const vf = contra ? dv - v0 : v0 + dv;    // rapidez final (en el sentido de la patada)
     const W = m * (vf * vf - v0 * v0) / 2;
     if (!limpio(W)) return null;

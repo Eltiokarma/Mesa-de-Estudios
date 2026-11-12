@@ -110,6 +110,22 @@ test('los textos no dicen «de el» ni «a el»', () => {
   }
 });
 
+test('600 semillas: en los exponentes la correcta no es la única entera ni la única fracción, y ningún distractor se dispara', () => {
+  const frac = t => t.includes('/');
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s);
+    if (p._datos.tipo !== 'exponentes') continue;
+    const c = p.alternativas.find(a => a.correcta), otras = p.alternativas.filter(a => !a.correcta);
+    assert.ok(otras.some(a => frac(a.texto) === frac(c.texto)), `semilla ${s}: la correcta se reconoce por su forma (${p.alternativas.map(a => a.texto)})`);
+    for (const a of otras) assert.ok(Math.abs(a.valor) <= 6, `semilla ${s}: exponente desmedido ${a.texto}`);
+  }
+});
+
+test('nunca se queda sin cuatro alternativas (semillas 0 a 2000 y de texto)', () => {
+  for (let s = 0; s <= 2000; s++) gen.generar(s);
+  for (const s of ['entrada-1', 'entrada-2', 'salida-1', 'salida-3', 'alternativas-7']) gen.generar(s);
+});
+
 // ---- Papel: estructura y cada «verificar» recalculado con funciones propias del test ----
 const PAPEL = {
   exponente: ([q, fs, j]) => exponentesBruta(q, fs)[j],

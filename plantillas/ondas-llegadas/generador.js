@@ -48,6 +48,10 @@
   const v = P.v;
   const limpio = (x, dec = 2) => Number.isFinite(x) && x > 0 && Math.abs(x * 10 ** dec - Math.round(x * 10 ** dec)) < 1e-7 && x < 1e7;
   const VA = 340;
+  // Un distractor que es más de 20 veces la correcta (o menos de 1/20) no engaña a nadie: se deja fuera.
+  const decimales = t => { const m = t.match(/,(\d+)/); return m ? m[1].length : 0; };
+  const masLimpia = alt => { const c = alt.find(a => a.correcta); return decimales(c.texto) < Math.min(...alt.filter(a => !a.correcta).map(a => decimales(a.texto))); };
+  const razonable = (x, c) => Number.isFinite(x) && x > 0 && x / c <= 20 && x / c >= 1 / 20;
 
   const TIPOS = [['llegadas', 'sismo'], ['llegadas', 'sismo'], ['llegadas', 'sismo-tp'], ['llegadas', 'trueno'], ['llegadas', 'riel'], ['llegadas', 'riel'],
     ['medio', 'lambda'], ['medio', 'lambda'], ['medio', 'lambda'],
@@ -72,14 +76,15 @@
   }
 
   function cerrar(rng, semilla, o) {
-    const alternativas = P.armar({ correcta: o.correcta, errores: o.errores.filter(e => Number.isFinite(e.valor) && e.valor > 0 && e.valor < 1e7), rng, texto: x => `${f(x)} ${o.unidad}` });
+    const alternativas = P.armar({ correcta: o.correcta, errores: o.errores.filter(e => razonable(e.valor, o.correcta)), rng, texto: x => `${f(x)} ${o.unidad}` });
+    if (masLimpia(alternativas)) return null; // la correcta no debe ser la única redonda
     return {
       id: `${ID}#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
       alternativas, solucion: o.solucion, respuesta: { valor: o.correcta, unidad: o.unidad }, _datos: o.datos,
     };
   }
   function cerrarTexto(rng, semilla, o) {
-    const alternativas = P.armarTexto({ correcta: o.correcta, errores: o.errores, rng });
+    const alternativas = P.armarTexto({ correcta: o.correcta, errores: o.errores.filter(e => e.rapidez === undefined || razonable(e.rapidez, o.rapidez)), rng });
     return {
       id: `${ID}#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
       alternativas, solucion: o.solucion, respuesta: { valor: o.correcta.clave, texto: o.correcta.texto, unidad: '' }, _datos: o.datos,
@@ -131,15 +136,14 @@
         datos: { tipo: 'llegadas', sub, v1: vP, v2: vS, dt } });
     }
     if (sub === 'trueno') {
-      const dt = rng.elegir([2, 3, 4, 5, 6, 7.5, 8, 9, 10, 12, 15]), d = VA * dt / 1000;
+      const dt = rng.elegir([2, 2.5, 3, 4, 4.5, 5, 6]), d = VA * dt / 1000;
       const quien = rng.elegir(['Un pastor en la puna de Puno', 'Una señora que espera la combi en Juliaca', 'Un niño en su chacra de Ayaviri']);
       const variables = { vs: { nombre: 'rapidez del sonido', color: 'i' }, dt: { nombre: 'tiempo entre el relámpago y el trueno', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
       const enunciado = [`${quien} ve un relámpago y oye el trueno `, v('dt', `${f(dt)} s`), ' después. La luz llega casi al instante y el sonido viaja por el aire a ', v('vs', `${VA} m/s`), '.'];
       const pregunta = ['¿A qué ', v('x', 'distancia'), ' cayó el rayo? (En kilómetros.)'];
       const errores = [
         h('LL-eco-ida-vuelta', d / 2, `Dividiste entre 2, como si el sonido fuera y volviera (eso pasa con un eco). El trueno viaja una sola vez, del rayo a la persona: d = v·Δt.`),
-        tr('U2-km', VA * dt, `Ese número está en metros, no en kilómetros: v·Δt = ${f(VA * dt)} m. Para pasar a km se divide entre 1000.`),
-        h('LL-divide-rapidez', VA / dt / 1000, `Dividiste la rapidez entre el tiempo. En MRU la distancia es rapidez por tiempo: d = v·Δt.`),
+        tr('U2-km-entre-100', VA * dt / 100, `Para pasar de metros a kilómetros dividiste entre 100. Un kilómetro tiene 1000 m: ${f(VA * dt)} m = ${f(d)} km.`),
         h('LL-doble', 2 * d, `Multiplicaste por 2. La luz llega casi al instante: todo el retraso es lo que tarda el sonido en hacer el camino una vez, d = v·Δt.`),
       ];
       const solucion = [
@@ -190,7 +194,7 @@
       pa('ON2-lambda-fija', la, `Dejaste la misma longitud de onda que en el aire. Al pasar a otro medio cambia la rapidez y la frecuencia se queda (la pone el martillo): como v = λ·f, si v crece, λ crece en la misma proporción.`),
       h('LL-tiempo-sumado', vSum / fr, `Sumaste Δt al tiempo del aire, como si el sonido del metal llegara después. Llega primero: tmetal = taire − Δt.`),
       h('LL-dt-como-tiempo', vDt / fr, `Tomaste Δt como el tiempo que tarda el sonido por el metal. Δt es la diferencia: tmetal = taire − Δt.`),
-      tr('PR4-lambda-invertida', la * VA / vm, `Pusiste la proporción al revés: dividiste λ entre la razón de rapideces. Con la misma frecuencia, λ es directamente proporcional a v: el medio más rápido tiene la λ más larga.`),
+      h('LL-razon-con-dt', la * (n - 1), `Comparaste Δt con el tiempo del metal (${f(dt)}/${f(tm)}) para hallar cuántas veces más rápido va el sonido. La razón de rapideces es la de los tiempos completos: taire/tmetal = ${f(ta)}/${f(tm)} = ${n}.`),
     ];
     const solucion = [
       ['Por el aire tarda ', v('L', f(d)), ` / 340 = ${f(ta)} s. El sonido por el metal llega `, v('dt', f(dt)), ` s antes: tmetal = ${f(ta)} − ${f(dt)} = ${f(tm)} s.`],
@@ -208,9 +212,13 @@
   const coef = (n, conPi, letra) => (conPi ? (n === 1 ? '' : f(n)) + 'π' : f(n)) + letra;
   function funcion(rng, semilla, sub) {
     const conPi = sub === 'sentido' ? false : rng.moneda();
-    const kk = rng.elegir(conPi ? [0.5, 1, 2, 4, 5, 10] : [0.5, 1, 2, 4, 5, 10, 20]);
-    const vel = rng.elegir([2, 4, 5, 8, 10, 20, 25, 40, 50, 100]);
+    // Números elegidos para que los distractores queden entre 1/20 y 20 veces la correcta.
+    const KS = { distancia: conPi ? [0.5, 1, 2, 4] : [0.5, 1, 2, 4, 5, 10], lambda: conPi ? [0.5, 1, 2, 2.5, 4] : [0.5, 1, 2, 4, 5],
+      frecuencia: conPi ? [0.5, 1, 2, 4] : [0.5, 1, 2, 4, 5], sentido: [0.5, 1, 2, 4, 5, 10] };
+    const kk = rng.elegir(KS[sub]);
+    const vel = sub === 'frecuencia' ? rng.elegir([1, 2, 4, 5, 8, 10]) : rng.elegir([2, 4, 5, 8, 10, 20]);
     const ww = kk * vel, A = rng.elegir([0.01, 0.02, 0.03, 0.05, 0.1, 0.2]);
+    if (sub === 'frecuencia' && (conPi ? ww > 8 : ww > 28)) return null;
     if (!limpio(ww) || ww > 2000) return null;
     const PI = conPi ? Math.PI : 1, k = kk * PI, w = ww * PI;
     const forma = sub === 'sentido' ? rng.elegir(['kx-wt', 'kx+wt', 'wt-kx', 'wt+kx']) : rng.elegir(['kx-wt', 'kx-wt', 'wt-kx']);
@@ -267,7 +275,7 @@
     }
     // sentido: hacia dónde va y con qué rapidez
     if (Math.abs(kk / ww - vel) < 1e-9 || kk === vel || kk === ww) return null;
-    const op = (s, r) => ({ clave: `sent:${s > 0 ? '+' : '-'}|${Math.round(r * 1e6)}`, texto: `hacia ${s > 0 ? '+x' : '−x'}, a ${f(r)} m/s` });
+    const op = (s, r) => ({ clave: `sent:${s > 0 ? '+' : '-'}|${Math.round(r * 1e6)}`, texto: `hacia ${s > 0 ? '+x' : '−x'}, a ${f(r)} m/s`, rapidez: r });
     const correcta = op(sentido, vel);
     const errSigno = 'Leíste el sentido por el signo que va entre los dos términos. Lo que importa es si kx y ωt tienen signos opuestos (va hacia +x) o iguales (va hacia −x): para seguir una cresta, si t crece, x tiene que crecer cuando los signos son opuestos.';
     const errores = [
@@ -284,7 +292,7 @@
         : 'kx y ωt tienen el mismo signo: para seguir una cresta (fase fija), si t crece, x tiene que bajar. La onda va hacia −x.'],
       ['Rapidez: v = ω/k = ', v('w', f(ww)), '/', v('k', f(kk)), ` = ${f(vel)} m/s. La onda va `, v('x', correcta.texto), '.'],
     ];
-    return cerrarTexto(rng, semilla, { correcta, errores, variables, enunciado, pregunta, solucion,
+    return cerrarTexto(rng, semilla, { correcta: { clave: correcta.clave, texto: correcta.texto }, rapidez: vel, errores, variables, enunciado, pregunta, solucion,
       datos: { tipo: 'funcion', sub, A, k, w, forma } });
   }
 

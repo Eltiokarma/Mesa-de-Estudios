@@ -89,6 +89,22 @@ test('los textos no dicen «de el» ni «a el»', () => {
   }
 });
 
+test('600 semillas: la correcta no es la única redonda y ningún distractor sale de 1/20 a 20 veces la correcta', () => {
+  const dec = t => { const m = t.match(/,(\d+)/); return m ? m[1].length : 0; };
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s);
+    if (typeof p.respuesta.valor !== 'number') continue;
+    const c = p.alternativas.find(a => a.correcta), otras = p.alternativas.filter(a => !a.correcta);
+    assert.ok(dec(c.texto) >= Math.min(...otras.map(a => dec(a.texto))), `semilla ${s}: solo la correcta es redonda (${p.alternativas.map(a => a.texto)})`);
+    for (const a of otras) assert.ok(a.valor / c.valor <= 20 && a.valor / c.valor >= 1 / 20, `semilla ${s}: ${a.texto} es absurdo frente a ${c.texto}`);
+  }
+});
+
+test('nunca se queda sin cuatro alternativas (semillas 0 a 2000 y de texto)', () => {
+  for (let s = 0; s <= 2000; s++) gen.generar(s);
+  for (const s of ['entrada-1', 'entrada-2', 'salida-1', 'salida-3', 'alternativas-7']) gen.generar(s);
+});
+
 // ---- Papel: estructura y cada «verificar» recalculado con funciones propias del test ----
 const PAPEL = {
   area: ([pts]) => simular(pts, 1, 0).vel,             // con m = 1 kg, Δv = J

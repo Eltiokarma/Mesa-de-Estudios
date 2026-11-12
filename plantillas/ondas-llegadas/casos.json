@@ -25,15 +25,15 @@
       "entrada": {
         "tipo": "medio",
         "sub": "lambda",
-        "L": 102,
-        "dt": 0.28,
+        "L": 340,
+        "dt": 0.9,
         "va": 340,
-        "f": 850,
-        "dato": "lambda"
+        "f": 170,
+        "dato": "f"
       },
       "esperado": {
-        "respuesta": 6,
-        "exacta": "6 m"
+        "respuesta": 20,
+        "exacta": "20 m"
       }
     },
     {
@@ -69,9 +69,9 @@
       "entrada": {
         "tipo": "funcion",
         "sub": "lambda",
-        "A": 0.1,
+        "A": 0.03,
         "k": 1.5707963267948966,
-        "w": 12.566370614359172,
+        "w": 3.141592653589793,
         "forma": "kx-wt"
       },
       "esperado": {
@@ -84,15 +84,15 @@
       "entrada": {
         "tipo": "funcion",
         "sub": "distancia",
-        "A": 0.2,
-        "k": 31.41592653589793,
-        "w": 1570.7963267948965,
+        "A": 0.1,
+        "k": 12.566370614359172,
+        "w": 50.26548245743669,
         "forma": "kx-wt",
-        "t": 2
+        "t": 0.2
       },
       "esperado": {
-        "respuesta": 100,
-        "exacta": "100 m"
+        "respuesta": 0.8,
+        "exacta": "0,8 m"
       }
     },
     {
@@ -114,14 +114,14 @@
       "entrada": {
         "tipo": "funcion",
         "sub": "frecuencia",
-        "A": 0.1,
-        "k": 31.41592653589793,
-        "w": 785.3981633974482,
+        "A": 0.2,
+        "k": 1.5707963267948966,
+        "w": 1.5707963267948966,
         "forma": "kx-wt"
       },
       "esperado": {
-        "respuesta": 125,
-        "exacta": "125 Hz"
+        "respuesta": 0.25,
+        "exacta": "0,25 Hz"
       }
     },
     {
@@ -131,11 +131,11 @@
         "sub": "trueno",
         "v1": null,
         "v2": 340,
-        "dt": 9
+        "dt": 5
       },
       "esperado": {
-        "respuesta": 3.06,
-        "exacta": "3,06 km"
+        "respuesta": 1.7,
+        "exacta": "1,7 km"
       }
     },
     {
@@ -145,12 +145,12 @@
         "sub": "sentido",
         "A": 0.02,
         "k": 0.5,
-        "w": 10,
+        "w": 4,
         "forma": "wt+kx"
       },
       "esperado": {
-        "respuesta": "sent:-|20000000",
-        "exacta": "hacia −x, a 20 m/s"
+        "respuesta": "sent:-|8000000",
+        "exacta": "hacia −x, a 8 m/s"
       }
     },
     {
@@ -174,14 +174,14 @@
       "entrada": {
         "tipo": "funcion",
         "sub": "sentido",
-        "A": 0.1,
-        "k": 20,
-        "w": 800,
-        "forma": "wt-kx"
+        "A": 0.03,
+        "k": 0.5,
+        "w": 5,
+        "forma": "kx-wt"
       },
       "esperado": {
-        "respuesta": "sent:+|40000000",
-        "exacta": "hacia +x, a 40 m/s"
+        "respuesta": "sent:+|10000000",
+        "exacta": "hacia +x, a 10 m/s"
       }
     },
     {
