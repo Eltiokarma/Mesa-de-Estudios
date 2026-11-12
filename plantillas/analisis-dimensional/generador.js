@@ -70,7 +70,7 @@
     w: ['ω', 'la velocidad angular', dim(0, 0, -1)], Q: ['Q', 'el caudal', dim(0, 3, -1)], q: ['q', 'la cantidad de movimiento', dim(1, 1, -1)],
     sig: ['σ', 'la tensión superficial', dim(1, 0, -2)], K: ['K', 'la constante del resorte', dim(1, 0, -2)], mu: ['μ', 'la densidad lineal de la cuerda', dim(1, -1)],
     G: ['G', 'la constante de gravitación', dim(-1, 3, -2)], M: ['M', 'la masa del planeta', dim(1)], Te: ['T', 'la temperatura', dim(0, 0, 0, 1)],
-    c: ['c', 'el calor específico', dim(0, 2, -2, -1)], Ft: ['F', 'la tensión de la cuerda', dim(1, 1, -2)], Per: ['T', 'el periodo', dim(0, 0, 1)],
+    c: ['c', 'el calor específico', dim(0, 2, -2, -1)], Ft: ['F', 'la tensión de la cuerda', dim(1, 1, -2)], Per: ['T', 'el periodo', dim(0, 0, 1)], lam: ['λ', 'la longitud de onda', dim(0, 1)],
   };
   const sim = k => MAG[k][0], nom = k => MAG[k][1], D = k => MAG[k][2];
 
@@ -79,8 +79,8 @@
     { q: 'Per', ctx: 'El periodo T de un péndulo simple', fs: ['L', 'g'], e: [0.5, -0.5] },
     { q: 'v', ctx: 'La rapidez v de una onda en una cuerda', fs: ['Ft', 'mu'], e: [0.5, -0.5] },
     { q: 'v', ctx: 'La rapidez v con que sale el agua por un agujero en el fondo de un tanque', fs: ['g', 'h'], e: [0.5, 0.5] },
-    { q: 'Pot', ctx: 'La potencia P que entrega un molino de viento', fs: ['rho', 'A', 'v'], e: [1, 1, 3] },
-    { q: 'F', ctx: 'La fuerza F del aire sobre un auto en la carretera', fs: ['rho', 'v', 'A'], e: [1, 2, 1] },
+    { q: 'Pot', ctx: 'La potencia P que entrega un molino de viento', fs: ['rho', 'S', 'v'], e: [1, 1, 3] },
+    { q: 'F', ctx: 'La fuerza F del aire sobre un auto en la carretera', fs: ['rho', 'v', 'S'], e: [1, 2, 1] },
     { q: 'f', ctx: 'La frecuencia f con que oscila un bloque colgado de un resorte', fs: ['m', 'K'], e: [-0.5, 0.5] },
     { q: 'Per', ctx: 'El periodo T de un satélite en órbita circular', fs: ['R', 'G', 'M'], e: [1.5, -0.5, -0.5] },
     { q: 't', ctx: 'El tiempo t que tarda en caer una piedra soltada en un pozo', fs: ['h', 'g'], e: [0.5, -0.5] },
@@ -90,6 +90,13 @@
     { q: 'p', ctx: 'La presión p que ejerce un chorro de agua al chocar contra una pared', fs: ['rho', 'v'], e: [1, 2] },
     { q: 'E', ctx: 'La energía E guardada en un resorte estirado una longitud d', fs: ['K', 'd'], e: [1, 2] },
     { q: 'v', ctx: 'La rapidez v de un satélite en órbita circular', fs: ['G', 'M', 'R'], e: [0.5, 0.5, -0.5] },
+    { q: 'v', ctx: 'La rapidez v de las olas en mar abierto', fs: ['g', 'lam'], e: [0.5, 0.5] },
+    { q: 'p', ctx: 'La presión p del agua en el fondo de una piscina', fs: ['rho', 'g', 'h'], e: [1, 1, 1] },
+    { q: 'E', ctx: 'La energía cinética E de una moto', fs: ['m', 'v'], e: [1, 2] },
+    { q: 'Per', ctx: 'El periodo T de un bloque que oscila colgado de un resorte', fs: ['m', 'K'], e: [0.5, -0.5] },
+    { q: 'f', ctx: 'La frecuencia f del sonido más grave de una cuerda de guitarra', fs: ['L', 'Ft', 'mu'], e: [-1, 0.5, -0.5] },
+    { q: 'W', ctx: 'El trabajo W que hace una fuerza constante a lo largo de su recorrido', fs: ['F', 'd'], e: [1, 1] },
+    { q: 'Pot', ctx: 'La potencia P de una grúa que sube una carga con rapidez constante', fs: ['m', 'g', 'v'], e: [1, 1, 1] },
   ];
   const LETRAS = ['x', 'y', 'z'];
   // «−3x + 2y + z», sin coeficientes 1 ni términos con 0.
@@ -156,15 +163,16 @@
         : hh('AD-exponente-mitad', e.map(x => x / 2), 'Te salió la mitad: dividiste de más al despejar. Revisa cada ecuación de M, L y T; aquí los exponentes son enteros.', null),
       hh('AD-signo-T', conTvolteado, 'Escribiste el tiempo en el numerador en alguna dimensión (por ejemplo, [g] = LT² en vez de LT⁻²). Cuando el tiempo divide, su exponente es negativo.', null),
       hh('AD-invierte', e.map(x => -x), 'Te salieron los exponentes con el signo cambiado: pusiste la magnitud que se pide en el otro lado de la ecuación. [Q] = Π[dato]^exp: las dimensiones de los datos, con sus exponentes, deben dar las de Q.', null),
-      sub === 'uno' ? hh('AD-cruza-exponentes', cruzado, `Intercambiaste los exponentes de ${sim(F.fs[0])} y de ${sim(F.fs[1])}. Fíjate en qué base aparece cada magnitud: por ejemplo, la que trae masa es la única que puede equilibrar la M.`, null) : null,
+      sub === 'uno' && dfs.some(d => d.M) ? hh('AD-cruza-exponentes', cruzado, `Intercambiaste los exponentes de ${sim(F.fs[0])} y de ${sim(F.fs[1])}. Fíjate en qué base aparece cada magnitud: por ejemplo, la que trae masa es la única que puede equilibrar la M.`, null) : null,
     ].filter(Boolean);
     const variables = { q: { nombre: nom(F.q), color: 'o' }, a: { nombre: nom(F.fs[0]), color: 'i' }, b: { nombre: nom(F.fs[1]), color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
     // Los dos primeros factores llevan color; el tercero (si hay) va sin color, para no confundirlo con lo que se pide.
     const col = i => (i === 0 ? 'a' : i === 1 ? 'b' : null);
     const vc = (k, t) => (k ? v(k, t) : t);
-    const formula = [v('q', sim(F.q)), ' = k·', ...F.fs.flatMap((k, i) => [i ? '·' : '', vc(col(i), `${sim(k)}^${LETRAS[i]}`)])];
+    const kn = F.fs.includes('K') ? 'C' : 'k'; // no mezclar el número k con la constante del resorte K
+    const formula = [v('q', sim(F.q)), ` = ${kn}·`, ...F.fs.flatMap((k, i) => [i ? '·' : '', vc(col(i), `${sim(k)}^${LETRAS[i]}`)])];
     const lista = F.fs.map((k, i) => `${nom(k)} (${sim(k)})`);
-    const enunciado = [`${F.ctx} depende ${(lista.slice(0, -1).join(', ') + ' y ' + lista[n - 1]).replace(/^el /, 'del ').replace(/^la /, 'de la ')}, según `, ...formula, ', donde k es un número sin dimensión.'];
+    const enunciado = [`${F.ctx} depende ${(lista.slice(0, -1).join(', ') + ' y ' + lista[n - 1]).replace(/^el /, 'del ').replace(/^la /, 'de la ')}, según `, ...formula, `, donde ${kn} es un número sin dimensión.`];
     const pide = sub === 'suma' ? ['¿Cuánto vale ', v('x', LETRAS.slice(0, n).join(' + ')), '?'] : ['¿Cuánto vale el exponente ', v('x', LETRAS[j]), '?'];
     const solucion = [
       ['Por homogeneidad, las dimensiones de los dos lados son iguales: [', v('q', sim(F.q)), '] = ', texto(dq), ' y ', ...F.fs.flatMap((k, i) => [i ? ', ' : '', `[${sim(k)}] = ${texto(D(k))}`]), '.'],
@@ -173,7 +181,10 @@
       ['Resolviendo: ', ...e.flatMap((x, i) => [i ? ', ' : '', vc(col(i), `${LETRAS[i]} = ${fr(x)}`)]), sub === 'suma' ? [', y la suma es ', v('x', fr(correcta)), '.'] : ['. Entonces ', v('x', `${LETRAS[j]} = ${fr(correcta)}`), '.']].flat(),
     ];
     const o = { variables, enunciado, pregunta: pide, solucion, datos: { tipo: 'exponentes', sub, q: F.q, fs: F.fs, ...(sub === 'uno' ? { j } : {}) } };
-    const alternativas = P.armar({ correcta, errores, rng, negativos: true, texto: fr });
+    const alternativas = P.armar({ correcta, errores: errores.filter(e => Number.isFinite(e.valor) && Math.abs(e.valor) <= 6), rng, negativos: true, texto: fr });
+    // La correcta no debe reconocerse por ser la única entera (o la única fracción).
+    const esFraccion = t => t.includes('/'), c = alternativas.find(x => x.correcta);
+    if (!alternativas.some(x => !x.correcta && esFraccion(x.texto) === esFraccion(c.texto))) return null;
     return salida(semilla, o, alternativas, { valor: correcta, unidad: '' });
   }
 
@@ -287,23 +298,33 @@
   const PROPS = [
     { id: 'H1', v: true, idea: 'detecta', t: 'Si una ecuación no es dimensionalmente homogénea, entonces es incorrecta.', por: 'Una ecuación física correcta siempre es homogénea; si no lo es, tiene un error. Por eso la homogeneidad sirve para detectar errores.' },
     { id: 'H2', v: false, idea: 'detecta', t: 'El principio de homogeneidad no sirve para detectar errores en una ecuación física.', por: 'Sí sirve: si los términos de una ecuación no tienen la misma dimensión, la ecuación está mal.' },
-    { id: 'H3', v: true, idea: 'detecta', t: 'En una ecuación física correcta, todos los términos de una suma tienen la misma dimensión.', por: 'Es el principio de homogeneidad: solo se suman o se igualan cantidades de la misma dimensión.' },
+    { id: 'H3', v: true, idea: 'suma', t: 'En una ecuación física correcta, todos los términos de una suma tienen la misma dimensión.', por: 'Es el principio de homogeneidad: solo se suman o se igualan cantidades de la misma dimensión.' },
     { id: 'S1', v: false, idea: 'suficiente', t: 'Toda ecuación dimensionalmente homogénea es físicamente correcta.', por: 'La homogeneidad es necesaria pero no suficiente: E = m·v² es homogénea y le falta el ½.' },
-    { id: 'S2', v: true, idea: 'suficiente', t: 'Con el análisis dimensional no se puede hallar el valor de las constantes numéricas de una fórmula, como el 2π del péndulo.', por: 'Los números no tienen dimensión, así que el análisis dimensional no los ve: se hallan con la teoría o con un experimento.' },
+    { id: 'S2', v: true, idea: 'suficiente', err: 'constantes', t: 'Con el análisis dimensional no se puede hallar el valor de las constantes numéricas de una fórmula, como el 2π del péndulo.', por: 'Los números no tienen dimensión, así que el análisis dimensional no los ve: se hallan con la teoría o con un experimento.' },
     { id: 'S3', v: true, idea: 'suficiente', t: 'Una ecuación puede ser dimensionalmente homogénea y estar equivocada en un factor numérico.', por: 'La homogeneidad no ve los números: E = m·v² pesa lo mismo que E = ½·m·v².' },
     { id: 'N1', v: false, idea: 'numeros', t: 'El número 2π de la fórmula T = 2π·√(L/g) tiene dimensión de tiempo.', por: 'Los números, como 2π, no tienen dimensión: el tiempo lo da √(L/g).' },
     { id: 'N2', v: true, idea: 'numeros', t: 'Los números, los ángulos medidos en radianes y las funciones como sen x no tienen dimensión.', por: 'Su dimensión es 1: no cambian la dimensión de un término.' },
     { id: 'N3', v: false, idea: 'numeros', t: 'En la expresión sen(ω·t), el producto ω·t tiene dimensión de tiempo.', por: 'El argumento de un seno es un ángulo, sin dimensión: ω·t es adimensional, por eso [ω] = T⁻¹.' },
-    { id: 'F1', v: true, idea: 'fundamental', t: 'La masa, la longitud, el tiempo y la temperatura son magnitudes fundamentales del SI.', por: 'El SI tiene siete magnitudes fundamentales: longitud, masa, tiempo, intensidad de corriente, temperatura, cantidad de sustancia e intensidad luminosa.' },
+    { id: 'F1', v: true, idea: 'fundamental', t: 'La masa, la longitud, el tiempo y la temperatura son cuatro de las siete magnitudes fundamentales del SI.', por: 'El SI tiene siete magnitudes fundamentales: longitud, masa, tiempo, intensidad de corriente, temperatura, cantidad de sustancia e intensidad luminosa.' },
     { id: 'F2', v: false, idea: 'fundamental', t: 'La fuerza es una magnitud fundamental del SI.', por: 'La fuerza es derivada: sale de la masa, la longitud y el tiempo, [F] = MLT⁻².' },
     { id: 'F3', v: false, idea: 'fundamental', t: 'La velocidad es una magnitud fundamental, porque se mide directamente con el velocímetro.', por: 'La velocidad es derivada, [v] = LT⁻¹: sale de dividir una longitud entre un tiempo, aunque un aparato la muestre directamente.' },
     { id: 'F4', v: true, idea: 'fundamental', t: 'La presión es una magnitud derivada.', por: 'La presión es fuerza entre área: [p] = ML⁻¹T⁻², derivada de M, L y T.' },
     { id: 'A1', v: false, idea: 'suma', t: 'Se puede sumar una velocidad con una aceleración si las dos están en unidades del SI.', por: 'Solo se suman magnitudes de la misma dimensión: LT⁻¹ y LT⁻² no se pueden sumar, estén en las unidades que estén.' },
     { id: 'A2', v: false, idea: 'suma', t: 'Al sumar dos longitudes, el resultado tiene dimensión L².', por: 'Sumar no cambia la dimensión: L + L sigue siendo L. Las dimensiones se suman (en el exponente) solo al multiplicar.' },
-    { id: 'A3', v: true, idea: 'suma', t: 'Si A + B = C es una ecuación física correcta, entonces A, B y C tienen la misma dimensión.', por: 'Es el principio de homogeneidad aplicado a una suma: [A] = [B] = [C].' },
+    { id: 'A3', v: true, idea: 'suma', t: 'Si P + Q = R es una ecuación física correcta, entonces P, Q y R tienen la misma dimensión.', por: 'Es el principio de homogeneidad aplicado a una suma: [P] = [Q] = [R].' },
     { id: 'U1', v: false, idea: 'unica', t: 'Si dos magnitudes tienen la misma dimensión, son la misma magnitud física.', por: 'El trabajo y el momento de una fuerza tienen la misma dimensión, ML²T⁻², y son magnitudes distintas.' },
     { id: 'U2', v: true, idea: 'unica', t: 'El trabajo y la energía cinética tienen la misma dimensión.', por: 'Los dos son ML²T⁻²: el trabajo cambia la energía cinética, así que tienen que pesar igual.' },
+    { id: 'H4', v: true, idea: 'detecta', t: 'Si en una ecuación un término es una fuerza y otro es una energía, la ecuación está mal escrita.', por: 'Una fuerza (MLT⁻²) y una energía (ML²T⁻²) no pesan igual: la ecuación no es homogénea y por eso tiene un error.' },
+    { id: 'H5', v: false, idea: 'detecta', t: 'Una fórmula que suma una masa con un tiempo puede ser correcta: el análisis dimensional no permite descartarla.', por: 'Sí permite descartarla: una masa y un tiempo no tienen la misma dimensión, así que esa fórmula está mal.' },
+    { id: 'S4', v: false, idea: 'suficiente', t: 'Si los dos lados de una fórmula tienen la misma dimensión, la fórmula queda demostrada.', por: 'Que pesen igual es necesario pero no basta: una constante numérica mal puesta no se nota en las dimensiones.' },
+    { id: 'N4', v: true, idea: 'numeros', t: 'El exponente de una potencia, como el 3 de x³, no tiene dimensión.', por: 'Los exponentes son números puros: x³ pesa [x]³, y el 3 no pesa nada.' },
+    { id: 'F5', v: true, idea: 'fundamental', t: 'La intensidad de corriente eléctrica es una magnitud fundamental del SI.', por: 'Es una de las siete fundamentales (su unidad es el ampere); la carga eléctrica, en cambio, es derivada.' },
+    { id: 'F6', v: false, idea: 'fundamental', t: 'La energía es una magnitud fundamental del SI, porque se conserva.', por: 'Conservarse no la hace fundamental: la energía es derivada, [E] = ML²T⁻².' },
+    { id: 'A4', v: false, idea: 'suma', t: 'En d = v·t + ½·a·t², el término ½·a·t² puede tener una dimensión distinta de la de d.', por: 'Cada término de la suma pesa lo mismo que d: [a·t²] = LT⁻²·T² = L.' },
+    { id: 'U3', v: false, idea: 'unica', t: 'La frecuencia y la velocidad angular son la misma magnitud, porque las dos tienen dimensión T⁻¹.', por: 'Tienen la misma dimensión pero son magnitudes distintas: ω = 2π·f.' },
+    { id: 'U4', v: true, idea: 'unica', t: 'El trabajo y el momento de una fuerza tienen la misma dimensión, aunque son magnitudes distintas.', por: 'Los dos son ML²T⁻²; la dimensión no basta para decir qué magnitud es.' },
   ];
+  const ERRS = { constantes: { id: 'AD-halla-constantes', que: 'creer que el análisis dimensional también da los números de una fórmula' } };
   const IDEAS = {
     detecta: { id: 'AD-no-detecta', que: 'creer que la homogeneidad no sirve para detectar errores' },
     suficiente: { id: 'AD-homogenea-es-correcta', que: 'creer que una ecuación homogénea ya es correcta' },
@@ -323,8 +344,9 @@
     const correcta = { clave: 'vf:' + vf(verdad), texto: vf(verdad) };
     const errores = elegidas.map((p, j) => {
       const otra = verdad.slice(); otra[j] = !otra[j];
-      return { id: IDEAS[p.idea].id, clave: 'vf:' + vf(otra), texto: vf(otra), respaldo: 'hipotesis', fuente: p.idea === 'detecta' ? 'docs/clasificacion/trampas-admision-unmsm/fisica.md' : null,
-        explicacion: `Juzgaste mal la proposición ${ROMANOS[j]}: es ${p.v ? 'verdadera' : 'falsa'}. El error de fondo es ${IDEAS[p.idea].que}. ${p.por}` };
+      const I = p.err ? ERRS[p.err] : IDEAS[p.idea];
+      return { id: I.id, clave: 'vf:' + vf(otra), texto: vf(otra), respaldo: 'hipotesis', fuente: p.idea === 'detecta' ? 'docs/clasificacion/trampas-admision-unmsm/fisica.md' : null,
+        explicacion: `Juzgaste mal la proposición ${ROMANOS[j]}: es ${p.v ? 'verdadera' : 'falsa'}. El error de fondo es ${I.que}. ${p.por}` };
     });
     const variables = { x: { nombre: 'lo que se pide', color: 'd' } };
     const enunciado = ['Sobre el análisis dimensional, indica si cada proposición es verdadera (V) o falsa (F).', ...elegidas.map((p, j) => ` ${ROMANOS[j]}. ${p.t}`)];

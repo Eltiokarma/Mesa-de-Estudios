@@ -2,7 +2,7 @@
   "plantilla": "analisis-dimensional",
   "tolerancia": 1e-09,
   "nota": "Claves de dimensión: dim:<M>,<L>,<T>,<Θ> con los exponentes. Exponentes: respuesta numérica (x, o la suma de los exponentes). Proposiciones: vf:<secuencia>. Las magnitudes van por su clave (Pot = potencia, rho = densidad, S = área, Per = periodo, K = constante del resorte, d = deformación).",
-  "verificacion": "PENDIENTE",
+  "verificacion": "Verificador a ciegas (subagente, 12 nov 2026): resolvió 44 problemas con un script propio en Python, sin leer el generador: vectores de exponentes (M, L, T), sistemas lineales con fracciones para los exponentes, despeje término a término, argumentos adimensionales y tabla propia de V/F. 44/44 de letra y los 14 casos en valor. Sin discrepancias; tras la revisión se ajustaron explicaciones y proposiciones. Después (12 nov) se sumaron fórmulas y proposiciones para más variedad; las semillas 0, 1, 4, 11, 17, 21 y 31 cambiaron de datos y se recalcularon a mano.",
   "casos": [
     {
       "semilla": 0,
@@ -11,13 +11,13 @@
         "sub": "vf",
         "props": [
           "U1",
-          "F2",
-          "N3"
+          "F3",
+          "N4"
         ]
       },
       "esperado": {
-        "respuesta": "vf:FFF",
-        "exacta": "FFF"
+        "respuesta": "vf:FFV",
+        "exacta": "FFV"
       }
     },
     {
@@ -27,13 +27,13 @@
         "sub": "vf",
         "props": [
           "S3",
-          "U2",
-          "H3"
+          "U3",
+          "H4"
         ]
       },
       "esperado": {
-        "respuesta": "vf:VVV",
-        "exacta": "VVV"
+        "respuesta": "vf:VFV",
+        "exacta": "VFV"
       }
     },
     {
@@ -69,17 +69,16 @@
       "entrada": {
         "tipo": "exponentes",
         "sub": "uno",
-        "q": "F",
+        "q": "Per",
         "fs": [
           "m",
-          "v",
-          "R"
+          "K"
         ],
-        "j": 2
+        "j": 1
       },
       "esperado": {
-        "respuesta": -1,
-        "exacta": "−1"
+        "respuesta": -0.5,
+        "exacta": "−1/2"
       }
     },
     {
@@ -133,17 +132,16 @@
       "entrada": {
         "tipo": "exponentes",
         "sub": "uno",
-        "q": "Pot",
+        "q": "f",
         "fs": [
-          "rho",
-          "A",
-          "v"
+          "m",
+          "K"
         ],
-        "j": 1
+        "j": 0
       },
       "esperado": {
-        "respuesta": 1,
-        "exacta": "1"
+        "respuesta": -0.5,
+        "exacta": "−1/2"
       }
     },
     {
@@ -197,16 +195,15 @@
       "entrada": {
         "tipo": "exponentes",
         "sub": "suma",
-        "q": "F",
+        "q": "E",
         "fs": [
-          "rho",
-          "v",
-          "A"
+          "m",
+          "v"
         ]
       },
       "esperado": {
-        "respuesta": 4,
-        "exacta": "4"
+        "respuesta": 3,
+        "exacta": "3"
       }
     },
     {
@@ -214,15 +211,16 @@
       "entrada": {
         "tipo": "exponentes",
         "sub": "suma",
-        "q": "E",
+        "q": "f",
         "fs": [
-          "K",
-          "d"
+          "L",
+          "Ft",
+          "mu"
         ]
       },
       "esperado": {
-        "respuesta": 3,
-        "exacta": "3"
+        "respuesta": -1,
+        "exacta": "−1"
       }
     },
     {
@@ -278,10 +276,10 @@
       "entrada": {
         "tipo": "exponentes",
         "sub": "uno",
-        "q": "Per",
+        "q": "v",
         "fs": [
-          "L",
-          "g"
+          "Ft",
+          "mu"
         ],
         "j": 1
       },

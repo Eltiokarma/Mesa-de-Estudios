@@ -14,7 +14,7 @@ const { probarGenerador } = require('../../nucleo/probar-generador.js');
 // factores al azar y se mira cómo escala cada término (en logaritmos). Los exponentes y las
 // dimensiones se buscan por fuerza bruta entre todos los candidatos, sin despejar.
 const SI = { // [kg, m, s, K]
-  m: [1, 0, 0, 0], M: [1, 0, 0, 0], h: [0, 1, 0, 0], x: [0, 1, 0, 0], R: [0, 1, 0, 0], L: [0, 1, 0, 0], d: [0, 1, 0, 0],
+  m: [1, 0, 0, 0], M: [1, 0, 0, 0], h: [0, 1, 0, 0], x: [0, 1, 0, 0], R: [0, 1, 0, 0], lam: [0, 1, 0, 0], L: [0, 1, 0, 0], d: [0, 1, 0, 0],
   S: [0, 2, 0, 0], A: [0, 2, 0, 0], V: [0, 3, 0, 0], t: [0, 0, 1, 0], Per: [0, 0, 1, 0], v: [0, 1, -1, 0], a: [0, 1, -2, 0], g: [0, 1, -2, 0],
   F: [1, 1, -2, 0], Ft: [1, 1, -2, 0], E: [1, 2, -2, 0], W: [1, 2, -2, 0], Pot: [1, 2, -3, 0], p: [1, -1, -2, 0], rho: [1, -3, 0, 0],
   f: [0, 0, -1, 0], w: [0, 0, -1, 0], Q: [0, 3, -1, 0], q: [1, 1, -1, 0], sig: [1, 0, -2, 0], K: [1, 0, -2, 0], mu: [1, -1, 0, 0],
@@ -47,7 +47,8 @@ function dimensionBruta(cumple) {
 const suma = (u, w, k = 1) => u.map((x, i) => x + k * w[i]);
 const claveDe = u => 'dim:' + u.map(x => P.textoFraccion(P.frac(x))).join(',');
 const VERDAD = { H1: true, H2: false, H3: true, S1: false, S2: true, S3: true, N1: false, N2: true, N3: false, F1: true, F2: false, F3: false, F4: true,
-  A1: false, A2: false, A3: true, U1: false, U2: true };
+  A1: false, A2: false, A3: true, U1: false, U2: true,
+  H4: true, H5: false, S4: false, N4: true, F5: true, F6: false, A4: false, U3: false, U4: true };
 
 function recalcular(p) {
   const d = p._datos;

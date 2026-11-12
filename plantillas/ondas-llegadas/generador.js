@@ -23,7 +23,9 @@
  *
  * Convenciones: sonido en el aire a 340 m/s; la luz llega «casi al instante» (se dice en el
  * enunciado). En y(x, t), x en m, t en s, y en m. Las fases con π se escriben «4πx».
- * Errores: ON2 y ON5 (documentados o parciales, docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md);
+ * Errores: ON2 y ON5 (documentados o parciales, docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md). ON2 está
+ * medido en un mismo medio («más frecuencia, más rapidez»); aquí se extiende al cambio de medio (ON2-lambda-fija:
+ * dejar λ fija y cambiar f), por eso va como parcial;
  * PR4, PR7, U2 y U7 (hipótesis, docs/investigacion/fisica-calculo-transversal-ideas-erroneas.md);
  * los LL- (llegadas), ON-k-como-rapidez, ON-cociente-invertido, ON-sentido-por-signo y los demás ON- nuevos
  * son hipótesis (trampas 5 y 15 de docs/clasificacion/trampas-admision-unmsm/fisica.md y la tabla
@@ -95,7 +97,7 @@
   // Sismo: pares (vP, vS) en km/s con 1/vS − 1/vP = 1/K (K entero): d = K·Δt.
   const SISMOS = [[8, 4, 8], [6, 4, 12], [7.5, 5, 15], [9, 6, 18], [6, 3, 6], [8, 6, 24], [7, 3.5, 7]];
   const LUGARES = ['Arequipa', 'Tacna', 'Ica', 'Moquegua', 'Cusco', 'Huancayo', 'Juliaca'];
-  const METALES = [['acero', 15], ['hierro', 15], ['aluminio', 16], ['cobre', 10], ['bronce', 10]];
+  const METALES = [['acero', 15], ['hierro', 15], ['aluminio', 16], ['cobre', 10], ['bronce', 10], ['latón', 10], ['níquel', 14], ['acero inoxidable', 16]];
 
   function llegadas(rng, semilla, sub) {
     if (sub === 'sismo' || sub === 'sismo-tp') {
@@ -136,29 +138,33 @@
         datos: { tipo: 'llegadas', sub, v1: vP, v2: vS, dt } });
     }
     if (sub === 'trueno') {
-      const dt = rng.elegir([2, 2.5, 3, 4, 4.5, 5, 6]), d = VA * dt / 1000;
-      const quien = rng.elegir(['Un pastor en la puna de Puno', 'Una señora que espera la combi en Juliaca', 'Un niño en su chacra de Ayaviri']);
+      const dt = rng.elegir([2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6]), VS = rng.elegir([330, 340, 345, 350]), d = VS * dt / 1000;
+      if (!limpio(d)) return null;
+      const quien = rng.elegir(['Un pastor en la puna de Puno', 'Una señora que espera la combi en Juliaca', 'Un niño en su chacra de Ayaviri',
+        'Una pescadora en una balsa del lago Titicaca', 'Un vendedor del mercado de Sicuani', 'Una alumna desde la ventana de su colegio en Abancay']);
       const variables = { vs: { nombre: 'rapidez del sonido', color: 'i' }, dt: { nombre: 'tiempo entre el relámpago y el trueno', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
-      const enunciado = [`${quien} ve un relámpago y oye el trueno `, v('dt', `${f(dt)} s`), ' después. La luz llega casi al instante y el sonido viaja por el aire a ', v('vs', `${VA} m/s`), '.'];
+      const enunciado = [`${quien} ve un relámpago y oye el trueno `, v('dt', `${f(dt)} s`), ' después. La luz llega casi al instante y el sonido viaja por el aire a ', v('vs', `${VS} m/s`), '.'];
       const pregunta = ['¿A qué ', v('x', 'distancia'), ' cayó el rayo? (En kilómetros.)'];
       const errores = [
         h('LL-eco-ida-vuelta', d / 2, `Dividiste entre 2, como si el sonido fuera y volviera (eso pasa con un eco). El trueno viaja una sola vez, del rayo a la persona: d = v·Δt.`),
-        tr('U2-km-entre-100', VA * dt / 100, `Para pasar de metros a kilómetros dividiste entre 100. Un kilómetro tiene 1000 m: ${f(VA * dt)} m = ${f(d)} km.`),
+        tr('U2-km-entre-100', VS * dt / 100, `Para pasar de metros a kilómetros dividiste entre 100. Un kilómetro tiene 1000 m: ${f(VS * dt)} m = ${f(d)} km.`),
         h('LL-doble', 2 * d, `Multiplicaste por 2. La luz llega casi al instante: todo el retraso es lo que tarda el sonido en hacer el camino una vez, d = v·Δt.`),
       ];
       const solucion = [
         ['La luz llega casi al instante, así que ', v('dt', 'Δt'), ' es lo que tarda el trueno: d = ', v('vs', 'v'), '·', v('dt', 'Δt'), '.'],
-        ['d = ', v('vs', `${VA}`), ' · ', v('dt', f(dt)), ` = ${f(VA * dt)} m = `, v('x', `${f(d)} km`), '.'],
+        ['d = ', v('vs', `${VS}`), ' · ', v('dt', f(dt)), ` = ${f(VS * dt)} m = `, v('x', `${f(d)} km`), '.'],
       ];
       return cerrar(rng, semilla, { correcta: d, unidad: 'km', errores, variables, enunciado, pregunta, solucion,
-        datos: { tipo: 'llegadas', sub, v1: null, v2: VA, dt } });
+        datos: { tipo: 'llegadas', sub, v1: null, v2: VS, dt } });
     }
     // riel: el sonido por el metal (n veces más rápido) y por el aire
-    const [metal, n] = rng.elegir(METALES), tau = rng.elegir([0.02, 0.05, 0.1, 0.2, 0.25]);
-    const vm = n * VA, d = VA * n * tau, dt = (n - 1) * tau;
+    const [metal, n] = rng.elegir(METALES), tau = rng.elegir([0.02, 0.04, 0.05, 0.08, 0.1, 0.12, 0.15, 0.2, 0.25, 0.3]);
+    const vm = n * VA, d = VA * n * tau, dt = Math.round((n - 1) * tau * 1e6) / 1e6;
     if (!limpio(dt) || !limpio(d)) return null;
     const variables = { vm: { nombre: 'rapidez del sonido en el metal', color: 'o' }, va: { nombre: 'rapidez del sonido en el aire', color: 'i' }, dt: { nombre: 'diferencia de tiempos de llegada', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
-    const enunciado = [`Un obrero golpea con un martillo un extremo de un riel de ${metal}. En el otro extremo, su compañera oye dos golpes separados por `, v('dt', `${f(dt)} s`),
+    const [quien, oye] = rng.elegir([['Un obrero golpea con un martillo', 'su compañera'], ['Una niña golpea con una piedra', 'su hermano, con el oído pegado al riel,'],
+      ['Un técnico del ferrocarril de Cusco golpea con una comba', 'su ayudante'], ['Un vigilante golpea con una llave', 'otro vigilante']]);
+    const enunciado = [`${quien} un extremo de un riel de ${metal}. En el otro extremo, ${oye} oye dos golpes separados por `, v('dt', `${f(dt)} s`),
       ': uno llega por el metal, a ', v('vm', `${f(vm)} m/s`), ', y el otro por el aire, a ', v('va', `${VA} m/s`), '.'];
     const pregunta = ['¿Cuál es la ', v('x', 'longitud del riel'), '?'];
     const errores = [
@@ -178,9 +184,9 @@
 
   // ---- medio: λ en el metal con la frecuencia fija ----
   function medio(rng, semilla) {
-    const [metal, n] = rng.elegir(METALES), tau = rng.elegir([0.02, 0.05, 0.1, 0.2, 0.25]);
+    const [metal, n] = rng.elegir(METALES), tau = rng.elegir([0.02, 0.04, 0.05, 0.08, 0.1, 0.12, 0.15, 0.2, 0.25, 0.3]);
     const fr = rng.elegir([170, 340, 425, 680, 850, 1360, 1700]);
-    const vm = n * VA, d = VA * n * tau, dt = (n - 1) * tau, ta = d / VA, tm = d / vm;
+    const vm = n * VA, d = VA * n * tau, dt = Math.round((n - 1) * tau * 1e6) / 1e6, ta = d / VA, tm = d / vm;
     const lm = vm / fr, la = VA / fr;
     if (!limpio(dt) || !limpio(lm) || !limpio(la) || !limpio(d)) return null;
     const conLambda = rng.moneda();
@@ -319,8 +325,20 @@
       por: 'La partícula no se va con la onda: oscila en su sitio y, cuando la onda pasa, queda donde estaba.' },
     { id: 'R1', v: false, idea: 'rapidez', t: 'En una cuerda, cada punto sube y baja con una rapidez igual a la rapidez con que avanza la onda.',
       por: 'Son dos rapideces distintas: la del punto que sube y baja depende de la mano (y cambia en cada instante); la de la onda la fija la cuerda (tensión y densidad).' },
-    { id: 'R2', v: true, idea: 'rapidez', t: 'En una cuerda, la rapidez con que sube y baja un punto es distinta de la rapidez con que avanza la onda a lo largo de la cuerda.',
+    { id: 'R2', v: true, idea: 'rapidez', t: 'En una cuerda, la rapidez con que sube y baja un punto en general no es la misma que la rapidez con que avanza la onda a lo largo de la cuerda.',
       por: 'La del punto que sube y baja depende de la mano (y cambia en cada instante); la de la onda la fija la cuerda (tensión y densidad).' },
+    { id: 'L4', v: false, idea: 'perp', t: 'En la onda P de un sismo, la roca sube y baja perpendicularmente a la dirección en que avanza la onda.',
+      por: 'La onda P es longitudinal: empuja y jala la roca en la misma dirección en que avanza; la que sacude de costado es la S.' },
+    { id: 'S4', v: true, idea: 'tipo', t: 'Una onda en una cuerda tensa es transversal.',
+      por: 'Cada punto de la cuerda sube y baja mientras la onda avanza a lo largo de ella: oscilación perpendicular a la propagación.' },
+    { id: 'S5', v: false, idea: 'tipo', t: 'Las ondas P de un sismo son transversales.',
+      por: 'La onda P es longitudinal (comprime y estira la roca en la dirección de avance); la S es la transversal.' },
+    { id: 'V4', v: false, idea: 'viaja', t: 'Cuando el sonido de un parlante llega a tu oído, el aire que estaba junto al parlante llegó contigo.',
+      por: 'El aire junto al parlante solo va y viene en su sitio: lo que llega a tu oído es la perturbación, que se pasa de capa en capa.' },
+    { id: 'V5', v: false, idea: 'viaja', t: 'Una boya en el lago avanza con las olas hasta la orilla mientras las olas pasan.',
+      por: 'La boya sube y baja (y se mece un poco) en su sitio: las olas pasan y ella se queda donde estaba.' },
+    { id: 'R3', v: false, idea: 'rapidez', t: 'Si la mano mueve la cuerda más rápido de arriba abajo, la onda avanza más rápido a lo largo de la cuerda.',
+      por: 'La mano cambia qué tan rápido sube y baja cada punto (y la frecuencia), pero la rapidez de la onda la fija la cuerda: tensión y densidad.' },
   ];
   const IDEAS = {
     perp: { id: 'ON5-sube-y-baja', respaldo: 'documentado', que: 'creer que en toda onda las partículas suben y bajan, perpendiculares a la propagación' },

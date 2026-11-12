@@ -36,7 +36,8 @@ function primerCero(F, paso, max) {
 }
 // Desplazamiento de la cresta en un tiempo t: la fase en (x, t) igual a la fase en (0, 0).
 const corrimiento = (d, t) => biseccion(x => fase(d, x, t) - fase(d, 0, 0), -1e5, 1e5);
-const VERDAD = { L1: true, L2: false, L3: true, S1: false, S2: true, S3: false, V1: false, V2: true, V3: true, R1: false, R2: true };
+const VERDAD = { L1: true, L2: false, L3: true, S1: false, S2: true, S3: false, V1: false, V2: true, V3: true, R1: false, R2: true,
+  L4: false, S4: true, S5: false, V4: false, V5: false, R3: false };
 
 function recalcular(p) {
   const d = p._datos;

@@ -2,7 +2,7 @@
   "plantilla": "impulso-grafica",
   "tolerancia": 1e-06,
   "nota": "puntos: vértices [t en s, F en N] de la gráfica F-t (unidadT dice cómo se muestran los tiempos). En «trabajo», v0 es la rapidez con que rodaba la pelota; en «contra» venía en sentido opuesto a la patada. Rebote: H en m, e, p y q en % de energía que quita el aire en la bajada y en la subida; g = 10 m/s².",
-  "verificacion": "PENDIENTE",
+  "verificacion": "Verificador a ciegas (subagente, 12 nov 2026): resolvió 43 problemas con fracciones exactas en Python, sin leer el generador: impulso como suma de trapecios entre vértices, vf = v0 + J/m con signo, W = ½m(vf² − v0²) y h' = e²·H·(1 − p)(1 − q). 43/43 de letra y los 13 casos en valor. Sin discrepancias; los distractores reproducen el número que explican.",
   "casos": [
     {
       "semilla": 0,

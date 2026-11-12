@@ -2,7 +2,7 @@
   "plantilla": "ondas-llegadas",
   "tolerancia": 1e-06,
   "nota": "Distancias en km (sismo, trueno) o m (riel); sonido en el aire a 340 m/s; en y(x, t), SI. Las respuestas de texto son claves de armarTexto: sent:<sentido>|<rapidez en µm/s> y vf:<secuencia>.",
-  "verificacion": "PENDIENTE",
+  "verificacion": "Verificador a ciegas (subagente, 12 nov 2026): resolvió los 43 problemas de la muestra (13 de casos y 30 al azar) con un script propio en Python, sin leer el generador: MRU con diferencia de tiempos, λ = v/f con f fija al cambiar de medio, k y ω leídos de y(x,t) con la regla de signos, y tabla propia de V/F. 43/43 de letra y los 13 casos en valor. Sin discrepancias. Después (12 nov) se ampliaron proposiciones, metales y rapideces del sonido para más variedad; las semillas 0, 1, 2, 3, 17 y 20 cambiaron de datos y se recalcularon a mano.",
   "casos": [
     {
       "semilla": 0,
@@ -11,13 +11,13 @@
         "sub": "vf",
         "props": [
           "S1",
-          "V2",
-          "R1"
+          "V3",
+          "R2"
         ]
       },
       "esperado": {
-        "respuesta": "vf:FVF",
-        "exacta": "FVF"
+        "respuesta": "vf:FVV",
+        "exacta": "FVV"
       }
     },
     {
@@ -25,15 +25,15 @@
       "entrada": {
         "tipo": "medio",
         "sub": "lambda",
-        "L": 340,
-        "dt": 0.9,
+        "L": 95.2,
+        "dt": 0.26,
         "va": 340,
-        "f": 170,
+        "f": 1700,
         "dato": "f"
       },
       "esperado": {
-        "respuesta": 20,
-        "exacta": "20 m"
+        "respuesta": 2.8,
+        "exacta": "2,8 m"
       }
     },
     {
@@ -41,13 +41,13 @@
       "entrada": {
         "tipo": "llegadas",
         "sub": "riel",
-        "v1": 5440,
+        "v1": 3400,
         "v2": 340,
-        "dt": 3
+        "dt": 1.35
       },
       "esperado": {
-        "respuesta": 1088,
-        "exacta": "1 088 m"
+        "respuesta": 510,
+        "exacta": "510 m"
       }
     },
     {
@@ -131,11 +131,11 @@
         "sub": "trueno",
         "v1": null,
         "v2": 340,
-        "dt": 5
+        "dt": 6
       },
       "esperado": {
-        "respuesta": 1.7,
-        "exacta": "1,7 km"
+        "respuesta": 2.04,
+        "exacta": "2,04 km"
       }
     },
     {
@@ -158,15 +158,15 @@
       "entrada": {
         "tipo": "medio",
         "sub": "lambda",
-        "L": 255,
-        "dt": 0.7000000000000001,
+        "L": 510,
+        "dt": 1.4,
         "va": 340,
-        "f": 680,
+        "f": 1360,
         "dato": "f"
       },
       "esperado": {
-        "respuesta": 7.5,
-        "exacta": "7,5 m"
+        "respuesta": 3.75,
+        "exacta": "3,75 m"
       }
     },
     {
@@ -190,14 +190,14 @@
         "tipo": "particulas",
         "sub": "vf",
         "props": [
-          "R2",
+          "R3",
           "V2",
-          "S3"
+          "S5"
         ]
       },
       "esperado": {
-        "respuesta": "vf:VVF",
-        "exacta": "VVF"
+        "respuesta": "vf:FVF",
+        "exacta": "FVF"
       }
     }
   ]
