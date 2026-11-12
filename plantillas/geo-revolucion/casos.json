@@ -2,7 +2,7 @@
   "plantilla": "geo-revolucion",
   "tolerancia": 0.000001,
   "nota": "Medidas en cm o m; ángulos de academia (sen 37° = 3/5, sen 53° = 4/5, sen 30° = 1/2). La respuesta es el valor numérico (con π ya multiplicado); en el subtipo desplazamiento/piramide es la clave «mix:a|b» de aπ − b√3. «exacta» es el texto que ve el alumno.",
-  "verificacion": "",
+  "verificacion": "Verificación independiente (subagente verificador, 8 nov 2026, segunda vuelta tras la revisión): los 25 casos se resolvieron desde el enunciado con fracciones exactas, integración numérica de secciones y métodos alternativos (cono menos cono, V = área de la base · h, Pitágoras entre centros). Coinciden todos con respuesta y exacta; se comprobó que cada enunciado es posible (la pirámide cabe en el vaso, el agua inclinada no destapa el fondo).",
   "casos": [
     {
       "semilla": 0,
