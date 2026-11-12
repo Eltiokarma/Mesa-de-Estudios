@@ -1,0 +1,139 @@
+{
+  "id": "t164",
+  "version": 1,
+  "titulo": "Earthquake Drill Notice",
+  "tema": "Lectura en inglés · aviso de un colegio de Arequipa sobre un simulacro de sismo (aviso inventado)",
+  "grado": 3,
+  "dificultad": 1,
+  "tipo_texto": "expositivo",
+  "idioma": "en",
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "principal", "t": "Our school will hold an earthquake drill next Thursday at 10:00 a.m." },
+      { "id": "o2", "rol": "apoyo", "t": "Arequipa is in an area where earthquakes are common, so everyone must know what to do." }
+    ],
+    [
+      { "id": "o3", "rol": "detalle", "t": "When the first alarm sounds, students must stop what they are doing and remain calm." },
+      { "id": "o4", "rol": "detalle", "t": "Students in a classroom should go under their desks and protect their heads with their arms." },
+      { "id": "o5", "rol": "detalle", "t": "When the second alarm sounds, the teachers will lead each class to the yard through the marked exits." },
+      { "id": "o6", "rol": "apoyo", "t": "Please do not run, and do not go back for your backpack." },
+      { "id": "o7", "rol": "detalle", "t": "Students who arrive late will wait with the school secretary until the drill ends." }
+    ],
+    [
+      { "id": "o8", "rol": "detalle", "t": "The drill will last about twenty minutes." },
+      { "id": "o9", "rol": "detalle", "t": "Parents are kindly asked not to come to the school during this time, as the entrance must stay free." },
+      { "id": "o10", "rol": "apoyo", "t": "We also invite families to talk about these steps at home." },
+      { "id": "o11", "rol": "detalle", "t": "Thank you for your cooperation." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "intencion",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "previo": {
+        "tipo": "proposito",
+        "pide": "Antes de ver las alternativas: ¿qué busca sobre todo este aviso?",
+        "aceptada": "explicar",
+        "codigos": {
+          "convencer": "RV33",
+          "narrar": "RV13"
+        },
+        "explicacion": "El aviso anuncia un simulacro (oración 1) y dice qué debe hacer cada uno (oraciones 3 a 7): busca informar y explicar.",
+        "explicaciones": {
+          "convencer": "No intenta cambiar la opinión de nadie: las oraciones 3 a 9 dan instrucciones. Pedir cooperación (oración 11) no es defender una postura.",
+          "narrar": "No cuenta hechos pasados: anuncia algo que va a pasar y da instrucciones."
+        }
+      },
+      "enunciado": "What is the main purpose of this text?",
+      "alternativas": [
+        { "t": "To ask parents to come to the school and help the teachers during the drill.", "codigo": "RV9", "origen": "o9",
+          "explicacion": "La oración 9 pide lo contrario: los padres no deben venir al colegio durante el simulacro." },
+        { "t": "To inform families about a drill and explain what students must do.", "correcta": true, "evidencia": ["o1", "o3", "o5"],
+          "explicacion": "El aviso anuncia el simulacro (oración 1) y explica qué debe hacer cada persona (oraciones 3 a 6 y 9): informa." },
+        { "t": "To persuade parents that the school needs a new alarm system for the yard.", "codigo": "RV33",
+          "explicacion": "El aviso no pide comprar nada ni habla de cambiar la alarma: el autor no toma esa postura." },
+        { "t": "To tell the story of a strong earthquake that once shook the city of Arequipa.", "codigo": "RV13",
+          "explicacion": "No se cuenta ningún sismo del pasado. Un aviso anuncia algo que va a pasar: no es un relato." },
+        { "t": "To explain only how students must protect their heads inside a classroom.", "codigo": "RV3", "origen": "o4",
+          "explicacion": "La oración 4 sí lo explica, pero es solo una parte: el aviso también dice cuándo, cómo salir y qué hacen las familias." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "contexto",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "Where would this text most probably be shown?",
+      "alternativas": [
+        { "t": "In a science magazine that explains why earthquakes happen in southern Peru.", "codigo": "RV51",
+          "explicacion": "Menciona los sismos (oración 2), pero no explica por qué ocurren. El trato directo («Please…») y las instrucciones son de un aviso, no de una revista." },
+        { "t": "In a newspaper report about the damage after a strong earthquake in the city.", "codigo": "RV41",
+          "explicacion": "Comparte una palabra del tema, pero el texto no informa de un hecho ocurrido: anuncia un simulacro futuro." },
+        { "t": "On the school notice board and in messages sent to families.", "correcta": true, "evidencia": ["o1", "o9"],
+          "explicacion": "El texto habla de «our school» (oración 1), da órdenes a los alumnos (oraciones 3 a 7) y pide cosas a los padres (oraciones 9 y 10): es un aviso del colegio." },
+        { "t": "In a tourist guide that tells visitors where to stay in Arequipa.", "codigo": "RV8",
+          "explicacion": "Arequipa se nombra solo para situar el colegio (oración 2); nada en el texto habla de turistas ni de alojamiento." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "dato",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "According to the notice, what must students do when the first alarm sounds?",
+      "alternativas": [
+        { "t": "Stop what they are doing and stay calm.", "correcta": true, "evidencia": ["o3"],
+          "explicacion": "La oración 3 lo dice: al primer sonido hay que detenerse y mantener la calma." },
+        { "t": "Walk to the yard through the marked exits with their teacher.", "codigo": "RV55", "origen": "o5",
+          "explicacion": "Eso pasa con la segunda alarma (oración 5), no con la primera (oración 3): fíjate en cuándo ocurre cada cosa." },
+        { "t": "Go back to the classroom to take their backpacks with them.", "codigo": "RV9", "origen": "o6",
+          "explicacion": "La oración 6 dice lo contrario: no hay que volver por la mochila." },
+        { "t": "Wait with the school secretary until the drill ends.", "codigo": "RV5", "origen": "o7",
+          "explicacion": "Repite una frase del texto, pero la oración 7 la dice de los alumnos que llegan tarde, no de todos." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "In sentence 3, the word REMAIN can be replaced by",
+      "alternativas": [
+        { "t": "rest.", "codigo": "RV19",
+          "explicacion": "Descansar está cerca en el sentido (estar tranquilo), pero no significa lo mismo: «remain calm» pide mantenerse en calma." },
+        { "t": "remember.", "codigo": "RV20",
+          "explicacion": "Se parece en la forma («remain», «remember»), pero significa recordar." },
+        { "t": "stay.", "correcta": true, "evidencia": ["o3"],
+          "explicacion": "«Remain calm» es mantener la calma: «remain» significa quedarse o permanecer en un estado." },
+        { "t": "stop.", "codigo": "RV5", "origen": "o3",
+          "explicacion": "Repite una idea de la misma oración («stop what they are doing»), pero «remain calm» no pide detenerse, sino seguir en calma." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "If a parent stopped at the school entrance during the drill, then, according to the notice, the parent would",
+      "alternativas": [
+        { "t": "be allowed to take his or her child home early.", "codigo": "RV7",
+          "explicacion": "El aviso no dice nada de salidas anticipadas: va más allá del texto." },
+        { "t": "make it harder to keep the entrance free.", "correcta": true, "evidencia": ["o9"],
+          "explicacion": "La oración 9 pide a los padres no venir porque la entrada debe quedar libre; quien se queda ahí la estorba." },
+        { "t": "help to keep the entrance free for an emergency.", "codigo": "RV63", "origen": "o9",
+          "explicacion": "Vuelve a confirmar lo que el condicional quita: el aviso pide justo lo contrario, que los padres no vengan para dejar libre la entrada." },
+        { "t": "receive a call from the Safety Committee at once.", "codigo": "RV8",
+          "explicacion": "Puede ser verdad en la vida real, pero no sale del texto." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-12",
+  "hechos": [
+    { "afirmacion": "Perú se ubica en el Cinturón de Fuego del Pacífico, una zona de alta actividad sísmica, y el sur del país, incluida la región Arequipa, ha tenido sismos fuertes.",
+      "fuente": "Instituto Geofísico del Perú (IGP), información sobre sismicidad en el Perú (igp.gob.pe)." }
+  ],
+  "revision": null
+}

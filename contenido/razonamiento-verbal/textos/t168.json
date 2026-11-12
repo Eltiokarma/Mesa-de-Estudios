@@ -1,0 +1,147 @@
+{
+  "id": "t168",
+  "version": 1,
+  "titulo": "Qhapaq Ñan",
+  "tema": "Lectura en inglés · artículo de enciclopedia sobre el camino inca",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "expositivo",
+  "idioma": "en",
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "principal", "t": "The Qhapaq Ñan, or Great Inca Road, was a network of roads that connected the many regions of the Inca Empire." },
+      { "id": "o2", "rol": "detalle", "t": "In total, it stretched for more than 30,000 kilometers across mountains, deserts and forests." },
+      { "id": "o3", "rol": "detalle", "t": "The Incas did not create all of these routes from nothing; they joined older paths built by earlier Andean peoples and improved them." }
+    ],
+    [
+      { "id": "o4", "rol": "detalle", "t": "Where the land was steep, builders made stone stairs, and where rivers were deep, they built bridges of rope." },
+      { "id": "o5", "rol": "detalle", "t": "Along the roads there were tambos, buildings where travelers could rest and where food and goods were kept." },
+      { "id": "o6", "rol": "detalle", "t": "Because the Incas did not use wheeled vehicles, people traveled on foot, and llamas carried the loads." },
+      { "id": "o7", "rol": "detalle", "t": "The roads were also used by the chasquis, runners who passed messages from one post to the next, so news could travel quickly across the empire." },
+      { "id": "o8", "rol": "apoyo", "t": "Thus, the road system allowed the state to move its armies, collect goods and keep control of distant lands." }
+    ],
+    [
+      { "id": "o9", "rol": "apoyo", "t": "In 2014, UNESCO recognized the Qhapaq Ñan as a World Heritage Site, shared by six countries, including Peru." },
+      { "id": "o10", "rol": "apoyo", "t": "Some stretches can still be walked today." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "titulo",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración (en inglés) que mejor dice de qué trata el texto.",
+        "aceptadas": [
+          "o1"
+        ],
+        "ninguna": "RV3",
+        "explicacion": "La oración 1 presenta el tema: la Qhapaq Ñan, una red de caminos que unía las regiones del imperio inca. Las demás dan datos sobre ella.",
+        "explicaciones": {
+          "o2": "Da la longitud de la red: es un dato que apoya la descripción.",
+          "o3": "Dice que se aprovecharon caminos más antiguos: es un detalle sobre su origen.",
+          "o4": "Cuenta cómo se superaba el terreno: es un detalle de construcción.",
+          "o5": "Explica qué eran los tambos: es un detalle de lo que había en los caminos.",
+          "o6": "Dice cómo se viajaba: es un detalle de su uso.",
+          "o7": "Habla de los mensajeros: es un detalle de su uso.",
+          "o8": "Dice para qué servía el sistema. Apoya la idea de que unía el imperio, pero no la dice.",
+          "o9": "Dice que la UNESCO lo reconoció: es un dato posterior, no dice qué era.",
+          "o10": "Habla de hoy: es un dato final.",
+          "ninguna": "La oración 1 sí dice lo central: la Qhapaq Ñan fue una red de caminos que unía las regiones del imperio inca."
+        }
+      },
+      "enunciado": "Which is the best title for the text?",
+      "alternativas": [
+        { "t": "The Chasquis: Fast Runners of the Inca Empire", "codigo": "RV1", "origen": "o7",
+          "explicacion": "Es un detalle verdadero (oración 7), pero el texto trata de toda la red de caminos y no solo de los mensajeros." },
+        { "t": "Great Roads of the Ancient World", "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto habla de un sistema de caminos concreto, el de los incas." },
+        { "t": "How the Incas Built Stairs and Bridges in the Mountains", "codigo": "RV3", "origen": "o4",
+          "explicacion": "Toma una parte (oración 4) y deja fuera lo principal: qué era la red, para qué servía y cómo se reconoce hoy." },
+        { "t": "The Qhapaq Ñan: The Inca Road Network", "correcta": true, "evidencia": ["o1"],
+          "explicacion": "La oración 1 presenta el tema, la red de caminos del imperio inca, y el resto del texto explica cómo era y para qué servía." },
+        { "t": "UNESCO World Heritage Sites in Six Countries", "codigo": "RV5", "origen": "o9",
+          "explicacion": "Repite palabras de la oración 9, pero es un dato del final: el texto no trata de la lista de sitios de la UNESCO." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "contexto",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "This text would most probably be published in",
+      "alternativas": [
+        { "t": "a travel blog where a family tells about its trip to Cusco.", "codigo": "RV51",
+          "explicacion": "El tono lo desmiente: no habla de un viaje ni usa «I» o «we», sino que describe el tema con datos, como un texto de consulta." },
+        { "t": "a newspaper opinion column that criticizes the building of new roads.", "codigo": "RV33",
+          "explicacion": "El texto no defiende ni critica nada: describe cómo era la red de caminos y no habla de caminos nuevos." },
+        { "t": "an encyclopedia or reference book about the history of Peru.", "correcta": true, "evidencia": ["o1", "o2", "o9"],
+          "explicacion": "Describe el tema con datos, sin opinión personal ni trato directo al lector: la forma de un artículo de consulta." },
+        { "t": "a school notice that invites the students to a walk in the mountains.", "codigo": "RV7", "origen": "o10",
+          "explicacion": "Las últimas oraciones dicen que hay tramos que se pueden recorrer, pero el texto no invita a nadie ni da fechas: va más allá del texto." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "dato",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "According to the text, what were tambos?",
+      "alternativas": [
+        { "t": "Runners who passed messages from one post to the next.", "codigo": "RV5", "origen": "o7",
+          "explicacion": "Esos eran los chasquis (oración 7): fíjate en la definición que da el texto de cada palabra." },
+        { "t": "Large carts with wheels that carried soldiers across the mountains.", "codigo": "RV9", "origen": "o6",
+          "explicacion": "La oración 6 dice lo contrario: los incas no usaban vehículos con ruedas." },
+        { "t": "Buildings where travelers could rest and goods were kept.", "correcta": true, "evidencia": ["o5"],
+          "explicacion": "La oración 5 los define así: edificios a lo largo de los caminos donde los viajeros descansaban y se guardaban alimentos y bienes." },
+        { "t": "Houses where the emperor lived while he visited the provinces.", "codigo": "RV8",
+          "explicacion": "Puede sonar posible, pero no sale del texto: la oración 5 los define de otra manera." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "antonimo",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "In sentence 4, the opposite of STEEP is",
+      "alternativas": [
+        { "t": "sloping.", "codigo": "RV19",
+          "explicacion": "Inclinado está cerca en el sentido: una pendiente empinada es inclinada. Es casi un sinónimo, no el contrario." },
+        { "t": "deep.", "codigo": "RV5", "origen": "o4",
+          "explicacion": "Está en la misma oración («rivers were deep»), pero se refiere a los ríos, y no es el contrario de «steep»." },
+        { "t": "flat.", "correcta": true, "evidencia": ["o4"],
+          "explicacion": "«Steep» describe un terreno muy inclinado; su contrario es un terreno plano. Por eso en los lugares empinados hacían escaleras (oración 4)." },
+        { "t": "narrow.", "codigo": "RV21",
+          "explicacion": "Eso no es lo contrario: cambia otro rasgo (el ancho y no la inclinación)." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "If a message had to reach a distant province quickly, then, according to the text, the Incas would most probably",
+      "alternativas": [
+        { "t": "send it with a single runner, who would never stop on the way.", "codigo": "RV63", "origen": "o7",
+          "explicacion": "Vuelve a confirmar lo que el condicional quita: la oración 7 habla de mensajeros que lo pasaban de un puesto al siguiente, no de uno solo." },
+        { "t": "carry it on a wagon pulled by a team of llamas.", "codigo": "RV9", "origen": "o6",
+          "explicacion": "La oración 6 dice que no usaban vehículos con ruedas; las llamas llevaban cargas." },
+        { "t": "ask the villagers to keep it until the road was finished.", "codigo": "RV8",
+          "explicacion": "Puede sonar posible, pero no sale del texto: la red ya existía y servía para mensajes (oración 7)." },
+        { "t": "pass it from one chasqui to the next along the road.", "correcta": true, "evidencia": ["o7"],
+          "explicacion": "La oración 7 dice que los chasquis pasaban los mensajes de un puesto al siguiente para que las noticias viajaran rápido por el imperio." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-12",
+  "hechos": [
+    { "afirmacion": "El Qhapaq Ñan (Sistema Vial Andino) fue inscrito en la Lista del Patrimonio Mundial de la UNESCO en 2014; es compartido por seis países (Argentina, Bolivia, Chile, Colombia, Ecuador y Perú) y la red superó los 30 000 km.",
+      "fuente": "UNESCO, Centro del Patrimonio Mundial, «Qhapaq Ñan, Andean Road System», n.º 1459 (whc.unesco.org/en/list/1459)." },
+    { "afirmacion": "La red incluyó caminos más antiguos, escaleras de piedra, puentes colgantes de cuerda, tambos (posadas y depósitos) y mensajeros llamados chasquis; los incas no usaban vehículos con ruedas.",
+      "fuente": "Hyslop, J. (1984). The Inka Road System. Academic Press." }
+  ],
+  "revision": null
+}

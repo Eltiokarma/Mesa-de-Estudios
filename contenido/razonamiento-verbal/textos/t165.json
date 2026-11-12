@@ -1,0 +1,153 @@
+{
+  "id": "t165",
+  "version": 1,
+  "titulo": "Catching Water from the Fog",
+  "tema": "Lectura en inglés · atrapanieblas en los cerros de Lima",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "expositivo",
+  "idioma": "en",
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "general", "t": "Lima is a big city on the desert coast, where it almost never rains." },
+      { "id": "o2", "rol": "detalle", "t": "Even so, in winter a thick fog covers the hills around the city for several months." },
+      { "id": "o3", "rol": "contraste", "t": "For the families who live there, this gray cloud is not just a nuisance; it is a possible source of water." },
+      { "id": "o4", "rol": "detalle", "t": "Many of these families do not have water pipes in their homes and must buy water from tank trucks, which is expensive." }
+    ],
+    [
+      { "id": "o5", "rol": "principal", "t": "A fog net is a simple tool that helps to catch that water." },
+      { "id": "o6", "rol": "detalle", "t": "It is a large plastic mesh stretched between two tall posts." },
+      { "id": "o7", "rol": "detalle", "t": "As the wind pushes the fog through the mesh, tiny drops stick to the threads and join into bigger drops." },
+      { "id": "o8", "rol": "detalle", "t": "These drops fall into a gutter at the bottom of the net, and a pipe carries the water to a tank." }
+    ],
+    [
+      { "id": "o9", "rol": "apoyo", "t": "Some communities use the water to grow plants on the dry slopes." },
+      { "id": "o10", "rol": "apoyo", "t": "Fog water is not a complete solution, because the nets work only when there is fog and the water must be treated before people drink it." },
+      { "id": "o11", "rol": "apoyo", "t": "Even so, fog nets show that a community can get more from the weather it already has." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "titulo",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración (en inglés) que mejor dice de qué trata el texto.",
+        "aceptadas": [
+          "o5"
+        ],
+        "ninguna": "RV3",
+        "explicacion": "La oración 5 presenta el tema: el atrapanieblas, una herramienta sencilla para conseguir agua de la neblina. Las demás dan el contexto, explican cómo funciona o ponen límites.",
+        "explicaciones": {
+          "o1": "Presenta el lugar (Lima, ciudad de costa desértica). Es el punto de partida, no el tema.",
+          "o2": "Dice que en invierno hay neblina en los cerros: es un dato de contexto.",
+          "o3": "Dice que la neblina puede ser una fuente de agua; prepara el tema, pero todavía no dice cómo se aprovecha.",
+          "o4": "Explica el problema de las familias (no tienen tuberías): es una razón por la que el tema importa.",
+          "o6": "Describe cómo es la red (una malla entre dos postes): es un detalle de cómo está hecha.",
+          "o7": "Explica cómo se juntan las gotas en la malla: es un detalle del funcionamiento.",
+          "o8": "Dice por dónde baja el agua hasta el tanque: es un detalle.",
+          "o9": "Cuenta un uso del agua en algunas comunidades: es un detalle.",
+          "o10": "Da una limitación del sistema: matiza la idea, pero no es el tema.",
+          "o11": "Es una conclusión general que depende de la idea de la oración 5.",
+          "ninguna": "La oración 5 sí dice el tema: el atrapanieblas es una herramienta sencilla para conseguir agua de la neblina."
+        }
+      },
+      "enunciado": "Which is the best title for the text?",
+      "alternativas": [
+        { "t": "Why It Never Rains in Lima and Other Desert Cities", "codigo": "RV3", "origen": "o1",
+          "explicacion": "Toma una parte (oración 1) y deja fuera el tema: cómo se consigue agua de la neblina." },
+        { "t": "How Tank Trucks Bring Water to the Hills of Lima Every Week", "codigo": "RV1", "origen": "o4",
+          "explicacion": "Es un detalle verdadero (oración 4), pero el texto trata de otra solución: las redes que recogen agua de la neblina." },
+        { "t": "Fog Nets: A Simple Way to Catch Water", "correcta": true, "evidencia": ["o5"],
+          "explicacion": "La oración 5 presenta el tema: la red atrapanieblas como herramienta sencilla para conseguir agua, y el resto del texto explica cómo funciona." },
+        { "t": "Fog Nets: The End of the Water Problems in Lima for Good", "codigo": "RV9", "origen": "o10",
+          "explicacion": "La oración 10 dice que no son una solución completa: solo funcionan con neblina y el agua se trata antes de beberla." },
+        { "t": "Water: A Problem That Every Country in the World Shares", "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto habla de un lugar y de una herramienta concretos." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "In sentence 5, the word CATCH can be replaced by",
+      "alternativas": [
+        { "t": "grab.", "codigo": "RV18", "origen": "o5",
+          "explicacion": "Es el significado más común («agarrar»), pero una red no agarra el agua con las manos: aquí significa recoger." },
+        { "t": "reach.", "codigo": "RV19", "origen": "o5",
+          "explicacion": "Llegar hasta el agua está cerca en el sentido, pero no significa lo mismo: la red toma el agua que pasa." },
+        { "t": "collect.", "correcta": true, "evidencia": ["o5", "o7"],
+          "explicacion": "«Catch water» es captar o recoger el agua: las gotas de la neblina se juntan en la malla (oración 7)." },
+        { "t": "wait for.", "codigo": "RV23",
+          "explicacion": "Encaja con la idea de una red que está quieta, pero no con el sentido de toda la oración: la red recoge el agua, no la espera." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "dato",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "According to the text, how does the water get to the tank?",
+      "alternativas": [
+        { "t": "Workers carry it in buckets from the net to the tank every morning.", "codigo": "RV8",
+          "explicacion": "Puede ser una forma de hacerlo, pero el texto no la menciona: la oración 8 habla de una canaleta y una tubería." },
+        { "t": "The wind pushes it through a pipe that goes up to the top of the posts.", "codigo": "RV5", "origen": "o7",
+          "explicacion": "Repite palabras del texto (wind, pipe, posts), pero las junta mal: el viento empuja la neblina (oración 7) y la tubería lleva el agua al tanque (oración 8)." },
+        { "t": "It runs through the ground until it reaches a tank under the hill.", "codigo": "RV9",
+          "explicacion": "La oración 8 dice que cae en una canaleta al pie de la red y que una tubería la lleva: no pasa por el suelo." },
+        { "t": "It falls into a gutter, and a pipe carries it to the tank.", "correcta": true, "evidencia": ["o8"],
+          "explicacion": "La oración 8 lo dice: las gotas caen en una canaleta y una tubería lleva el agua al tanque." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "If a hill in Lima had no fog during the winter, then, according to the text, a fog net there",
+      "alternativas": [
+        { "t": "would collect more water than ever before.", "codigo": "RV63", "origen": "o10",
+          "explicacion": "Contradice la oración 10: las redes funcionan solo cuando hay neblina." },
+        { "t": "would probably collect very little water.", "correcta": true, "evidencia": ["o7", "o10"],
+          "explicacion": "La oración 7 explica que el agua sale de la neblina que atraviesa la malla, y la 10 dice que las redes funcionan solo cuando hay neblina." },
+        { "t": "would collect water from the rain instead of the fog.", "codigo": "RV9", "origen": "o1",
+          "explicacion": "La oración 1 dice que en Lima casi nunca llueve: la lluvia no reemplazaría a la neblina." },
+        { "t": "would no longer need a gutter or a tank to work.", "codigo": "RV7",
+          "explicacion": "El texto no habla de quitar partes de la red: sin neblina, simplemente recogería muy poca agua." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "Which statement is incompatible with the text?",
+      "alternativas": [
+        { "t": "Some families in the hills depend on tank trucks for their water.", "codigo": "RV10", "origen": "o4",
+          "explicacion": "Es verdad: la oración 4 lo dice. Se pide la que choca con el texto." },
+        { "t": "Water from the nets is safe to drink without any treatment.", "correcta": true, "evidencia": ["o10"],
+          "explicacion": "La oración 10 dice que el agua debe tratarse antes de que la gente la beba." },
+        { "t": "Fog nets are used in every city and every town in Peru.", "codigo": "RV36",
+          "explicacion": "El texto no habla de otras ciudades, pero no decirlo no es contradecirlo. Se pide lo que choca con el texto." },
+        { "t": "Fog nets need wind to push the fog through the mesh.", "codigo": "RV9", "origen": "o7",
+          "explicacion": "Concuerda con la oración 7. Se pide la que contradice al texto." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-12",
+  "hechos": [
+    { "afirmacion": "En Lima, una ciudad de costa desértica, llueve muy poco durante el año.",
+      "fuente": "SENAMHI (Servicio Nacional de Meteorología e Hidrología del Perú), climatología de Lima Metropolitana." },
+    { "afirmacion": "En invierno, la costa central del Perú, incluidos los cerros de Lima, se cubre de neblina y garúa durante varios meses.",
+      "fuente": "SENAMHI, climatología de la costa central; Instituto Geofísico del Perú (IGP), información sobre la garúa." },
+    { "afirmacion": "Los atrapanieblas son mallas que captan las gotas de la neblina; el agua cae a una canaleta y se almacena en tanques. Se usan en comunidades de la costa peruana.",
+      "fuente": "Instituto Nacional de Investigación en Glaciares y Ecosistemas de Montaña, y proyectos de investigación sobre atrapanieblas en Lima y Chile (por ejemplo, Klemm, O. y otros, 2012, Fog as a fresh-water resource: overview and perspectives, Ambio, 41(3), 221-234)." },
+    { "afirmacion": "Varias familias de las zonas altas de Lima no tienen conexión de agua potable y la compran a camiones cisterna, a un precio por litro mayor que el de la red pública.",
+      "fuente": "SUNASS (Superintendencia Nacional de Servicios de Saneamiento), informes sobre acceso al agua en Lima." }
+  ],
+  "revision": null
+}

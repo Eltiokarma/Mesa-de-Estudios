@@ -1,0 +1,143 @@
+{
+  "id": "t167",
+  "version": 1,
+  "titulo": "Look, but Do Not Touch",
+  "tema": "Lectura en inglés · entrada de blog de opinión: ¿deben los turistas nadar con los delfines rosados del Amazonas?",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "argumentativo",
+  "idioma": "en",
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "detalle", "t": "Every year, many visitors travel to the Amazon hoping to swim next to a pink river dolphin." },
+      { "id": "o2", "rol": "detalle", "t": "The photos look magical: a smiling tourist, a curious animal and a river shining in the afternoon light." },
+      { "id": "o3", "rol": "principal", "t": "However, I believe that tourists should not be allowed to swim with wild river dolphins." }
+    ],
+    [
+      { "id": "o4", "rol": "apoyo", "t": "First, these animals are not pets, and they are not used to crowds." },
+      { "id": "o5", "rol": "apoyo", "t": "When boats and swimmers come close every day, the dolphins may become stressed, and some may leave the places where they feed or rest." },
+      { "id": "o6", "rol": "apoyo", "t": "Second, the pink river dolphin is considered an endangered species, so every disturbance matters more." }
+    ],
+    [
+      { "id": "o7", "rol": "contraste", "t": "Some tour operators reply that these visits give local families a reason to protect the river." },
+      { "id": "o8", "rol": "apoyo", "t": "That argument deserves respect, since many communities need an income." },
+      { "id": "o9", "rol": "apoyo", "t": "Yet there are other ways to earn it: guided boat trips, in which visitors watch the dolphins from a distance, bring money without forcing any contact." },
+      { "id": "o10", "rol": "apoyo", "t": "In my view, seeing a dolphin from a quiet boat is a better memory than touching it, and it leaves the animal free." },
+      { "id": "o11", "rol": "apoyo", "t": "If we protect the dolphins today, the next visitors will be able to enjoy them too." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "intencion",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "previo": {
+        "tipo": "proposito",
+        "pide": "Antes de ver las alternativas: ¿qué busca sobre todo la autora?",
+        "aceptada": "convencer",
+        "codigos": {
+          "explicar": "RV14",
+          "narrar": "RV13"
+        },
+        "explicacion": "La autora da su opinión («I believe», oración 3; «In my view», oración 10), responde a quienes piensan distinto (oraciones 7 a 9) y llama a proteger a los delfines (oración 11): quiere convencer.",
+        "explicaciones": {
+          "explicar": "Explica algunas cosas, como el efecto de los botes (oración 5), pero las usa para sostener una opinión. Quien solo explica no dice «I believe».",
+          "narrar": "La oración 2 pinta una escena, pero el texto no sigue una historia: da razones para defender una idea."
+        }
+      },
+      "enunciado": "What is the main purpose of the text?",
+      "alternativas": [
+        { "t": "To describe the pink river dolphin and explain how it lives in the Amazon.", "codigo": "RV14", "origen": "o3",
+          "explicacion": "Menciona al delfín, pero deja fuera la postura de la autora: lo central es que no se debe nadar con ellos (oración 3)." },
+        { "t": "To tell about a trip in which the author swam with a pink dolphin.", "codigo": "RV13",
+          "explicacion": "La autora no cuenta ningún viaje propio. Habla de lo que hacen los visitantes (oración 1) para dar su opinión." },
+        { "t": "To persuade readers that swimming with wild river dolphins should not be allowed.", "correcta": true, "evidencia": ["o3", "o10"],
+          "explicacion": "La oración 3 dice la tesis y la 10 la refuerza con su punto de vista («In my view…»): el texto busca convencer." },
+        { "t": "To invite tourists to visit Amazon communities and swim in the river.", "codigo": "RV33",
+          "explicacion": "La autora no toma esa postura: pide que los turistas no naden con los delfines, aunque sí acepta paseos en bote (oración 9)." },
+        { "t": "To argue that tourism in the Amazon is bad for local families.", "codigo": "RV9", "origen": "o8",
+          "explicacion": "La oración 8 reconoce que muchas comunidades necesitan ingresos, y la 9 propone otras formas de obtenerlos." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "In sentence 5, the word STRESSED means",
+      "alternativas": [
+        { "t": "emphasized.", "codigo": "RV18", "origen": "o5",
+          "explicacion": "Es el significado más común («remarcado», como en «stressed the importance»), pero aquí habla del estado de un animal." },
+        { "t": "crowded together.", "codigo": "RV23",
+          "explicacion": "Encaja con las palabras de al lado («crowds», «swimmers»), pero no con el sentido de toda la oración: habla de cómo se sienten los delfines." },
+        { "t": "stretched out.", "codigo": "RV20",
+          "explicacion": "Se parece en la forma («stressed», «stretched»), pero significa estirado." },
+        { "t": "uneasy.", "correcta": true, "evidencia": ["o5", "o6"],
+          "explicacion": "Con botes y bañistas cerca todos los días, los delfines pueden sentirse inquietos, y por eso algunos se van de sus zonas de alimentación (oración 5)." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "Which statement is incompatible with the text?",
+      "alternativas": [
+        { "t": "The author recognizes that some communities need an income from tourism.", "codigo": "RV10", "origen": "o8",
+          "explicacion": "Concuerda con la oración 8. Se pide la que contradice al texto." },
+        { "t": "The author thinks that guided boat trips should also be banned.", "correcta": true, "evidencia": ["o9", "o10"],
+          "explicacion": "La oración 9 propone justo esos paseos en bote, mirando a los delfines desde lejos, como una alternativa mejor." },
+        { "t": "The author believes that the dolphins are not used to crowds.", "codigo": "RV9", "origen": "o4",
+          "explicacion": "Concuerda con la oración 4. Se pide la que choca con el texto." },
+        { "t": "The author says that all the pink river dolphins will disappear soon.", "codigo": "RV36",
+          "explicacion": "La autora dice que la especie está en peligro (oración 6), pero no que vaya a desaparecer pronto. Es más fuerte que el texto; no lo contradice." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "If a study showed that swimmers never disturb the dolphins, then the author would probably",
+      "alternativas": [
+        { "t": "say that the reasons for her opinion stay exactly the same.", "codigo": "RV63", "origen": "o5",
+          "explicacion": "Vuelve a confirmar lo que el condicional quita: la oración 5 es una de las razones de la autora y dejaría de valer." },
+        { "t": "agree at once that tourists may swim with the dolphins.", "codigo": "RV7",
+          "explicacion": "Va más allá del texto: aún le quedaría la segunda razón (la especie en peligro, oración 6) y su preferencia por mirar desde el bote (oración 10)." },
+        { "t": "lose one of the main supports of her opinion.", "correcta": true, "evidencia": ["o5", "o6"],
+          "explicacion": "Las oraciones 4 y 5 explican que los bañistas pueden molestar a los delfines. Si no los molestaran, esa razón se debilita." },
+        { "t": "stop mentioning the income of the local families.", "codigo": "RV8",
+          "explicacion": "El estudio no tiene relación con eso; el texto no dice que la autora cambiaría lo que piensa de los ingresos." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "What can be inferred about the author's attitude toward tour operators?",
+      "alternativas": [
+        { "t": "The author thinks they are dishonest people who care only about money.", "codigo": "RV7", "origen": "o8",
+          "explicacion": "Va más allá del texto: la oración 8 dice que su argumento merece respeto, y no los acusa de nada." },
+        { "t": "The author listens to their argument but does not accept it.", "correcta": true, "evidencia": ["o7", "o8", "o9"],
+          "explicacion": "Reconoce su argumento («deserves respect», oración 8), pero propone otra forma de obtener ingresos sin contacto (oración 9)." },
+        { "t": "The author agrees with them and would like more swimming tours.", "codigo": "RV9", "origen": "o3",
+          "explicacion": "La oración 3 dice lo contrario: no se debería permitir nadar con los delfines." },
+        { "t": "The author thinks that all tour operators harm the dolphins.", "codigo": "RV11",
+          "explicacion": "«All» dice más de lo que el texto afirma: solo habla de los paseos con contacto, y propone paseos en bote." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-12",
+  "hechos": [
+    { "afirmacion": "El delfín rosado o bufeo colorado (Inia geoffrensis) está clasificado como especie en peligro (Endangered) en la Lista Roja de la UICN.",
+      "fuente": "Da Silva, V. y otros (2018). Inia geoffrensis. The IUCN Red List of Threatened Species 2018." },
+    { "afirmacion": "Acercarse de forma repetida a cetáceos silvestres con botes y bañistas puede alterar su comportamiento y sus zonas de alimentación o descanso.",
+      "fuente": "Higham, J., Bejder, L. y Williams, R. (eds.) (2014). Whale-Watching: Sustainable Tourism and Ecological Management. Cambridge University Press." },
+    { "afirmacion": "La autora y el blog son inventados; la opinión es del texto, no de una persona real.",
+      "fuente": "Texto propio de Mesa de Estudios." }
+  ],
+  "revision": null
+}
