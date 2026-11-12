@@ -143,3 +143,14 @@ Usan también AR7 (linealidad: escalar el perímetro como el área, usar todas l
 | RMP129-toda-la-caja | Tomar todo el rectángulo que encierra la figura | UNMSM 2025-I p. 30 |
 
 Se reutilizan RMP63-sin-tapadas, RMP69-dividir, RMP69-redondeo y RMP2-voraz en el tablero de fichas de 5.
+
+## Planteo: latas, fichas de dos caras, cometa y vasos (`rm-planteo`, cierre-100, 12 nov 2026)
+
+
+| Código | Sufijos (error) | Trampa de la que sale |
+|---|---|---|
+| RMP130 | una-por-lata (un golpe por lata gris); solo-grises (no golpear latas sin pintar que derriban varias grises); solo-la-de-encima (la caída arrastra solo a la lata justo encima); por-filas (un golpe por fila con grises); uno-de-mas | UNMSM 2026-I (4 oct 2025, áreas D/E) p. 22: pirámide de latas, golpes mínimos |
+| RMP131 | lata-doble-olvidada (ignorar la lata que faltó en las dos pirámides y se deduce con el puntaje); copiar-a-arturo (dar el puntaje de Arturo); union (sumar las caídas de ambos); comun-dos-veces | UNMSM 2026-I (11 oct 2025, área A) p. 28: dos pirámides numeradas que se completan |
+| RMP132 | sumar-las-vistas (sumar los números pedidos en vez de sus opuestos); como-dado (opuestas suman siempre lo mismo); misma-tirada (opuesto = otro número del mismo lanzamiento); solo-dos-lanzamientos (pareja que sirve con dos tiradas y la tercera descarta) | UNMSM 2023-I p. 25: tres fichas de dos caras |
+| RMP133 | solo-diagonales; medios-como-diagonales (cada pieza de puntos medios = una diagonal); dos-medias (solo dos de las cuatro piezas); todas-iguales; y, en la variante inversa, sin-duplicar, mitad-sin-restar, triple, otra-diagonal-mas-medias | UNMSM 2021 (4 sep 2021) p. 23: listón de una cometa |
+| RMP134 | solo-alineadas (sin intercalar); desfase-sin-perder (todas las filas intercaladas con n vasos); dividir-areas (área bandeja ÷ área circular); cuadrados (área bandeja ÷ d²) | UNMSM 2021 (4 sep 2021) p. 25: vasos en una bandeja |

@@ -23,11 +23,19 @@
  *   cortes       { tipo, q, c, delta: 2|3, pide: 'cuadrados'|'cortes' }  c cortes, cada uno sobre un
  *                cuadrado entero distinto; delta = vértices que se ganan con cada corte.
  *
+ *   latas        { tipo, n, marcadas: [[fila, lata], …] }  pirámide de n filas (fila 0 abajo); golpes mínimos para derribar las grises
+ *                (cae la golpeada y todo lo que se apoya en ella). Semillas ≥ 108 y «unmsm-…» (cierre-100, 12 nov 2026).
+ *   latas-pares  { tipo, n, valores, A, B, X }  dos pirámides idénticas; A y B, posiciones tumbadas; X, puntaje de A
+ *   lanzamientos { tipo, numeros, pares, lanzamientos, pq }  fichas de dos caras: caras opuestas por eliminación (solución única)
+ *   cometa       { tipo, d1, d2, pide: 'total'|'diagonal' }  listón = 2(d1 + d2): diagonales y rectángulo de puntos medios
+ *   vasos        { tipo, W, H, d }  vasos en una bandeja: alineados contra intercalados (solo esas dos disposiciones)
+ *
  * calc expone las funciones puras: lotes, regalos, comprarMinimo, canje, puedenGanar, asegurar,
- * minimoGanar, progresion, pista, diana, torneo, empatesDesde, fichas, cortes, cuadradosDesde.
+ * minimoGanar, progresion, pista, diana, torneo, empatesDesde, fichas, cortes, cuadradosDesde,
+ * conoLatas, latas, latasPares, lanzamientos, cometa, otraDiagonal, vasos.
  *
  * Errores (todos hipótesis salvo donde se dice): RMP1 (puntos contra intervalos), RMP50 a RMP57 y RMP59,
- * AR5 (dato intermedio), AR17 (orden: cada partido contado dos veces, parcial), RM4 (móviles) de
+ * RMP130 a RMP134 (cierre-100: latas, latas pares, lanzamientos, cometa y vasos; hipótesis), AR5 (dato intermedio), AR17 (orden: cada partido contado dos veces, parcial), RM4 (móviles) de
  * docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md.
  */
 (function (root, fabrica) {
@@ -99,16 +107,92 @@
     },
     cortes({ q, c, delta }) { return { piezas: q + c, vertices: 4 * q + delta * c }; },
     cuadradosDesde({ P: piezas, V, delta }) { return (V - delta * piezas) / (4 - delta); },
+    // Pirámide de latas: la fila r (0 = la de abajo) tiene n − r latas; la lata (r, i) se apoya en (r−1, i) y (r−1, i+1).
+    // Al golpear (r, i) cae ella y todas las que se apoyan en ella, directa o indirectamente (prof = niveles que arrastra).
+    conoLatas({ n, r, i, prof = Infinity }) {
+      const out = [];
+      for (let k = 0; r + k < n && k <= prof; k++) for (let j = i - k; j <= i; j++) if (j >= 0 && j <= n - r - k - 1) out.push([r + k, j]);
+      return out;
+    },
+    // Menor número de golpes para derribar todas las marcadas (se puede golpear cualquier lata), por búsqueda exacta.
+    latas({ n, marcadas }) {
+      const m = marcadas.length, full = (1 << m) - 1;
+      const indice = new Map(marcadas.map((p, k) => [p.join(','), k]));
+      const resolver = prof => {
+        const cands = [];
+        for (let r = 0; r < n; r++) for (let i = 0; i < n - r; i++) {
+          let mask = 0;
+          for (const p of calc.conoLatas({ n, r, i, prof })) if (indice.has(p.join(','))) mask |= 1 << indice.get(p.join(','));
+          if (mask) cands.push({ mask, r, i });
+        }
+        const bits = x => { let c = 0; for (; x; x &= x - 1) c++; return c; };
+        cands.sort((a, b) => bits(b.mask) - bits(a.mask) || a.r - b.r || a.i - b.i);
+        const dfs = (cub, lim, usadas) => {
+          if (cub === full) return usadas;
+          if (lim === 0) return null;
+          let b = 0; while (cub & (1 << b)) b++;
+          for (const c of cands) if (c.mask & (1 << b)) { const r = dfs(cub | c.mask, lim - 1, usadas.concat([[c.r, c.i]])); if (r) return r; }
+          return null;
+        };
+        for (let lim = 1; lim <= m; lim++) { const s = dfs(0, lim, []); if (s) return s; }
+        return null;
+      };
+      const elegidas = resolver(Infinity);
+      // Golpeando solo latas grises: las que no caen por el golpe a otra gris.
+      const voraz = marcadas.filter(p => !marcadas.some(q => q !== p && calc.conoLatas({ n, r: q[0], i: q[1] }).some(c => c.join(',') === p.join(',')))).length;
+      return { golpes: elegidas.length, elegidas, voraz, encima: resolver(1).length, filas: new Set(marcadas.map(p => p[0])).size, marcadas: m };
+    },
+    // Dos pirámides idénticas con latas numeradas; A y B son las posiciones tumbadas en cada una; X, el puntaje de las de A.
+    // Solo se usa lo que se ve: de B se lee en la pirámide A, salvo la lata que faltó en las dos (se deduce con X).
+    latasPares({ valores, A, B, X }) {
+      const en = (L, p) => L.some(q => q[0] === p[0] && q[1] === p[1]);
+      const soloA = A.filter(p => !en(B, p)), soloB = B.filter(p => !en(A, p)), comunes = B.filter(p => en(A, p));
+      if (comunes.length !== 1) return null;
+      const suma = L => L.reduce((s, p) => s + valores[p[0]][p[1]], 0); // «lee» en la pirámide donde esas latas están en pie
+      const valorComun = X - suma(soloA);
+      return { sumaB: suma(soloB) + valorComun, comun: comunes[0], valorComun, soloA, soloB, sumaSoloB: suma(soloB) };
+    },
+    // Tres fichas con dos caras cada una: parejas de números que pueden ser caras opuestas sin contradecir ningún lanzamiento.
+    lanzamientos({ numeros, lanzamientos }) {
+      const juntos = (a, b) => lanzamientos.some(l => l.includes(a) && l.includes(b));
+      const todas = [];
+      const armar = (resto, parejas) => {
+        if (!resto.length) { todas.push(parejas); return; }
+        const [a, ...r] = resto;
+        r.forEach((b, i) => { if (!juntos(a, b)) armar(r.filter((_, j) => j !== i), parejas.concat([[a, b]])); });
+      };
+      armar(numeros.slice().sort((a, b) => a - b), []);
+      const compatibles = Object.fromEntries(numeros.map(x => [x, numeros.filter(y => y !== x && !juntos(x, y))]));
+      const opuesta = x => { const p = todas[0] && todas[0].find(q => q.includes(x)); return p ? (p[0] === x ? p[1] : p[0]) : null; };
+      return { validas: todas, unica: todas.length === 1, parejas: todas[0] || null, compatibles, opuesta };
+    },
+    // Cometa de diagonales perpendiculares d1 y d2: los 4 tramos que unen puntos medios de lados consecutivos
+    // forman un rectángulo de lados d1/2 y d2/2 (perímetro d1 + d2).
+    cometa({ d1, d2 }) { return { diagonales: d1 + d2, medios: d1 + d2, total: 2 * (d1 + d2) }; },
+    otraDiagonal({ T, d1 }) { return T / 2 - d1; },
+    // Vasos de diámetro d en una bandeja W × H: filas alineadas (cuadrícula) o intercaladas (cada fila corrida medio vaso).
+    vasos({ W, H, d }) {
+      const n = Math.floor(W / d), alineadas = n * Math.floor(H / d);
+      // Separación entre filas intercaladas: d·√3/2. k filas caben si (k−1)·d·√3/2 ≤ H − d, es decir 3d²(k−1)² ≤ 4(H−d)².
+      let k = 0;
+      if (H >= d) { k = 1; while (3 * d * d * k * k <= 4 * (H - d) * (H - d)) k++; }
+      const corrida = 2 * W >= (2 * n + 1) * d ? n : n - 1;
+      const intercaladas = k === 0 ? 0 : Math.ceil(k / 2) * n + Math.floor(k / 2) * Math.max(corrida, 0);
+      return { n, filas: k, corrida, alineadas, intercaladas, maximo: Math.max(alineadas, intercaladas) };
+    },
   };
 
   // ------------------------------------------------------------------ armado
   const TIPOS = ['lotes', 'promocion', 'promocion', 'canje', 'votos', 'votos', 'votos', 'progresion', 'pista', 'diana', 'torneo', 'fichas', 'cortes'];
 
+  const TIPOS_NUEVOS = ['latas', 'latas-pares', 'lanzamientos', 'cometa', 'vasos'];
   function generar(semilla) {
     const rng = Azar.crear('rm-planteo|' + semilla);
-    const tipo = rng.elegir(TIPOS);
+    const oficial = typeof semilla === 'string' ? OFICIALES[semilla] : null;
+    const lista = typeof semilla === 'number' && semilla >= 108 ? TIPOS.concat(TIPOS_NUEVOS) : TIPOS;
+    const tipo = oficial ? oficial.tipo : rng.elegir(lista);
     for (let intento = 0; intento < 3000; intento++) {
-      const pr = CONSTRUIR[tipo](rng, semilla);
+      const pr = CONSTRUIR[tipo](rng, semilla, oficial ? oficial.fijo : undefined);
       if (pr && pr.alternativas.length >= 4) return pr;
     }
     throw new Error('No se pudo generar un problema con 4 alternativas distintas');
@@ -635,7 +719,248 @@
       pregunta: [pide === 'cuadrados' ? '¿Cuántas hojas cuadradas había al inicio?' : '¿Cuántos cortes se hicieron?'], datos: { tipo: 'cortes', q, c, delta, pide } });
   }
 
-  const CONSTRUIR = { lotes, promocion, canje, votos, progresion, pista, diana, torneo, fichas, cortes };
+  // ================================================================ cierre-100 (12 nov 2026)
+  // Las semillas de texto y los números menores que 108 siguen dando los mismos problemas de antes (casos.json verificados);
+  // desde la 108 también salen estos cinco tipos. Las semillas «unmsm-…» reproducen la pregunta oficial.
+  const ORD_FILA = ['', 'primera', 'segunda', 'tercera', 'cuarta', 'quinta', 'sexta', 'séptima', 'octava'];
+  const pos = ([r, i]) => `fila ${r + 1}, lata ${i + 1}`;
+
+  // ---------------------------------------------------------------- pirámide de latas (dibujo común)
+  // celda(r, i) → { t: texto o '', estado: 'normal' | 'gris' | 'hueco' }
+  function dibujoPiramide(n, ox, oy, w, hh, celda) {
+    let s = '';
+    for (let r = 0; r < n; r++) for (let i = 0; i < n - r; i++) {
+      const c = celda(r, i), x = ox + r * w / 2 + i * w, y = oy + (n - 1 - r) * hh;
+      const base = `x="${x + 1}" y="${y + 1}" width="${w - 2}" height="${hh - 2}" rx="3"`;
+      if (c.estado === 'hueco') s += `<rect ${base} fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3" opacity="0.6"/>`;
+      else s += `<rect ${base} ${c.estado === 'gris' ? 'fill="currentColor" fill-opacity="0.4"' : 'style="fill:var(--card)"'} stroke="currentColor" stroke-width="1.5"/>`;
+      if (c.t !== '' && c.t !== undefined) s += `<text x="${x + w / 2}" y="${y + hh / 2 + 5}" text-anchor="middle" font-size="14">${P.xml(c.t)}</text>`;
+    }
+    return s;
+  }
+
+  // ---------------------------------------------------------------- latas: golpes mínimos
+  function latas(rng, semilla, fijo) {
+    let n, marcadas, r;
+    if (fijo) ({ n, marcadas } = fijo);
+    for (let intento = 0; !fijo && intento < 400; intento++) {
+      n = rng.entero(5, 8);
+      const m = rng.entero(4, 7), todas = [];
+      for (let a = 0; a < n; a++) for (let b = 0; b < n - a; b++) todas.push([a, b]);
+      marcadas = rng.barajar(todas).slice(0, m).sort((p, q) => p[0] - q[0] || p[1] - q[1]);
+      r = calc.latas({ n, marcadas });
+      if (r.golpes >= 2 && r.voraz > r.golpes) break;
+      r = null;
+    }
+    if (!r) r = calc.latas({ n, marcadas });
+    if (!fijo && r.voraz <= r.golpes) return null;
+    const errores = [
+      h('RMP130-una-por-lata', r.marcadas, 'Contaste un golpe por cada lata gris. Una lata que cae arrastra a todas las que se apoyan en ella: algunas grises caen sin que las golpees.'),
+      h('RMP130-solo-grises', r.voraz, 'Golpeaste solo latas grises, las de más abajo de cada grupo. Pero también puedes golpear una lata sin pintar: si está debajo de varias grises, un solo golpe las derriba juntas.'),
+      h('RMP130-solo-la-de-encima', r.encima, 'Pensaste que al caer una lata solo arrastra a las que tiene justo encima. También arrastra a las que se apoyan en ellas, y así hasta arriba.'),
+      h('RMP130-por-filas', r.filas, 'Contaste un golpe por cada fila que tiene latas grises. Dos grises de filas distintas pueden necesitar golpes distintos, y dos de la misma fila, uno solo.'),
+      h('RMP130-uno-de-mas', r.golpes + 1, 'Tienes un golpe de más: ese conjunto de golpes ya derriba todas las grises.'),
+    ];
+    const lista = marcadas.map(p => `(${pos(p)})`).join(', ');
+    const enunciado = [`Claudia y sus amigas armaron una pirámide de latas de `, v('n', `${n} filas`), `: la fila de abajo tiene ${n} latas y cada fila de arriba, una menos; cada lata se apoya en las dos que tiene debajo. Pintaron de gris `, v('g', `${marcadas.length} latas`),
+      ' (figura). Con una honda lanzan una piedra que golpea una sola lata cada vez. Al golpear una lata, esa lata cae y también todas las que se apoyan en ella, directa o indirectamente (por ejemplo, si cae una lata, caen las dos que tiene encima, y las que se apoyan en esas). Se puede golpear cualquier lata, gris o no.'];
+    const figura = { svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${n * 30 + 20} ${n * 20 + 20}" fill="currentColor">${dibujoPiramide(n, 10, 10, 30, 20, (a, b) => ({ t: '', estado: marcadas.some(p => p[0] === a && p[1] === b) ? 'gris' : 'normal' }))}</svg>`,
+      alt: `Pirámide de latas de ${n} filas (${n} latas abajo, una menos en cada fila de arriba). Latas grises, contando las filas desde abajo y las latas desde la izquierda: ${lista}.` };
+    const elig = r.elegidas.map(p => `la lata de la ${pos(p)}${marcadas.some(q => q[0] === p[0] && q[1] === p[1]) ? ' (gris)' : ' (sin pintar)'}`).join('; ');
+    const solucion = [
+      ['Golpear una lata derriba el «cono» de latas que tiene encima: ella, las (hasta) 2 que se apoyan directamente en ella, las que se apoyan en esas, y así hasta arriba. Por eso conviene mirar de abajo hacia arriba qué grises caen juntas.'],
+      [`Golpeando solo latas grises harían falta ${r.voraz} golpes (las grises que no caen por el golpe a otra gris). Se puede hacer mejor golpeando una lata sin pintar que esté debajo de varias grises.`],
+      [`Una elección que sirve con `, v('x', r.golpes), ` golpes: ${elig}. Con menos golpes no alcanza (se comprobó probando todas las combinaciones).`],
+    ];
+    return cerrar(rng, semilla, { correcta: r.golpes, errores, texto: x => pl(x, 'golpe', 'golpes'), enunciado, solucion, figura,
+      variables: { n: { nombre: 'filas', color: 'o' }, g: { nombre: 'latas grises', color: 'i' }, x: { nombre: 'golpes', color: 'h' } },
+      pregunta: ['¿Cuántos golpes, como mínimo, hacen falta para derribar todas las latas grises?'], datos: { tipo: 'latas', n, marcadas } });
+  }
+
+  // ---------------------------------------------------------------- latas: dos pirámides que se completan
+  function latasPares(rng, semilla) {
+    for (let intento = 0; intento < 400; intento++) {
+      const n = rng.entero(5, 6);
+      const valores = Array.from({ length: n }, (_, r) => Array.from({ length: n - r }, () => rng.entero(1, 8)));
+      const todas = []; for (let a = 0; a < n; a++) for (let b = 0; b < n - a; b++) todas.push([a, b]);
+      const mezcla = rng.barajar(todas), na = rng.entero(3, 5), nb = rng.entero(3, 5);
+      const comun = mezcla[0], A = [comun, ...mezcla.slice(1, na)], B = [comun, ...mezcla.slice(na, na + nb - 1)];
+      const sum = L => L.reduce((s, p) => s + valores[p[0]][p[1]], 0);
+      const X = sum(A), r = calc.latasPares({ valores, A, B, X });
+      if (!r || r.sumaB !== sum(B)) continue;
+      const enA = p => A.some(q => q[0] === p[0] && q[1] === p[1]), enB = p => B.some(q => q[0] === p[0] && q[1] === p[1]);
+      const errores = [
+        h('RMP131-lata-doble-olvidada', r.sumaSoloB, 'Sumaste solo las latas de Benito que se leen en la pirámide de Arturo. Falta una lata que no se ve en ninguna de las dos pirámides: su número se deduce con el puntaje de Arturo.'),
+        h('RMP131-copiar-a-arturo', X, 'Ese es el puntaje de Arturo. La pregunta es por Benito, que tumbó otras latas (solo una coincide).'),
+        h('RMP131-union', r.sumaB + sum(r.soloA), 'Sumaste todas las latas que cayeron, las de Arturo y las de Benito, contando la repetida una vez. Se piden solo las de Benito.'),
+        h('RMP131-comun-dos-veces', r.sumaB + r.valorComun, 'Contaste dos veces la lata que faltó en las dos pirámides: una al leer la pirámide de Arturo y otra al deducirla con su puntaje.'),
+      ];
+      const nom = (L, c) => L.map(p => `${pos(p)}${c && p === c ? '*' : ''}`);
+      const enunciado = ['Arturo y Benito lanzaron pelotas a dos pirámides de latas idénticas: misma forma y mismos números en las mismas posiciones. Cada lata vale los puntos que dice su número. Arturo tumbó ', v('a', `${A.length} latas`), ' y obtuvo ', v('X', `${X} puntos`),
+        ' con ellas; su pirámide quedó como se ve a la izquierda (los huecos son las latas tumbadas). Benito tumbó ', v('b', `${B.length} latas`), ' y su pirámide quedó como se ve a la derecha.'];
+      const w = 26, hh = 20, ancho = n * w + 10;
+      const figura = { svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${2 * ancho + 20} ${n * hh + 40}" fill="currentColor">`
+        + dibujoPiramide(n, 5, 25, w, hh, (a, b) => (enA([a, b]) ? { t: '', estado: 'hueco' } : { t: String(valores[a][b]), estado: 'normal' }))
+        + dibujoPiramide(n, ancho + 25, 25, w, hh, (a, b) => (enB([a, b]) ? { t: '', estado: 'hueco' } : { t: String(valores[a][b]), estado: 'normal' }))
+        + `<text x="${ancho / 2}" y="16" text-anchor="middle" font-size="14">Arturo</text><text x="${ancho + 25 + ancho / 2}" y="16" text-anchor="middle" font-size="14">Benito</text></svg>`,
+        alt: `Dos pirámides de latas de ${n} filas con números del 1 al 8. Pirámide de Arturo, filas desde abajo: ${valores.map((fila, a) => fila.map((x, b) => (enA([a, b]) ? 'hueco' : x)).join(' ')).join(' / ')}. Pirámide de Benito, filas desde abajo: ${valores.map((fila, a) => fila.map((x, b) => (enB([a, b]) ? 'hueco' : x)).join(' ')).join(' / ')}.` };
+      const solucion = [
+        ['Como las pirámides son idénticas, un número que falta en una se lee en la otra. De las ', v('b', `${B.length} latas`), ' de Benito, ', `${r.soloB.length} están en pie en la de Arturo: valen ${r.soloB.map(p => valores[p[0]][p[1]]).join(' + ')} = ${r.sumaSoloB}.`],
+        [`La lata de la ${pos(r.comun)} faltó en las dos pirámides: no se puede leer. Pero Arturo tumbó ${A.length} latas por `, v('X', `${X} puntos`), `, y las otras ${r.soloA.length} se leen en la pirámide de Benito: ${r.soloA.map(p => valores[p[0]][p[1]]).join(' + ')} = ${sum(r.soloA)}.`],
+        [`Esa lata vale ${X} − ${sum(r.soloA)} = ${r.valorComun}. Benito obtuvo ${r.sumaSoloB} + ${r.valorComun} = `, v('s', `${r.sumaB} puntos`), '.'],
+      ];
+      const pr = cerrar(rng, semilla, { correcta: r.sumaB, errores, texto: x => pl(x, 'punto', 'puntos'), enunciado, solucion, figura,
+        variables: { a: { nombre: 'latas de Arturo', color: 'o' }, b: { nombre: 'latas de Benito', color: 'i' }, X: { nombre: 'puntaje de Arturo', color: 'h' }, s: { nombre: 'puntaje de Benito', color: 'd' } },
+        pregunta: ['¿Cuántos puntos obtuvo Benito con las latas que tumbó?'], datos: { tipo: 'latas-pares', n, valores, A, B, X } });
+      if (pr.alternativas.length >= 4) return pr;
+    }
+    return null;
+  }
+
+  // ---------------------------------------------------------------- fichas de dos caras: caras opuestas
+  function lanzamientos(rng, semilla, fijo) {
+    let numeros, pares, lanz, pq;
+    if (fijo) ({ numeros, pares, lanzamientos: lanz, pq } = fijo);
+    else {
+      const ini = rng.entero(1, 8);
+      numeros = rng.moneda() ? Array.from({ length: 6 }, (_, i) => ini + i) : rng.barajar(Array.from({ length: 15 }, (_, i) => i + 1)).slice(0, 6).sort((a, b) => a - b);
+      const mez = rng.barajar(numeros);
+      pares = [[mez[0], mez[1]], [mez[2], mez[3]], [mez[4], mez[5]]];
+      const k = rng.elegir([3, 3, 4]);
+      lanz = Array.from({ length: k }, () => rng.barajar(pares.map(p => rng.elegir(p))));
+      const p = rng.elegir(numeros), posibles = numeros.filter(x => x !== p && !pares.some(pa => pa.includes(p) && pa.includes(x)));
+      pq = [p, rng.elegir(posibles)];
+    }
+    const info = calc.lanzamientos({ numeros, lanzamientos: lanz });
+    if (!info.unica) return null;
+    const opp = x => info.opuesta(x);
+    const [p, q] = pq;
+    const correcta = opp(p) + opp(q);
+    // Errores
+    const mismaTirada = x => { const l = lanz.find(t => t.includes(x)); return l ? l[(l.indexOf(x) + 1) % l.length] : null; };
+    const S = Math.min(...numeros) + Math.max(...numeros);
+    const dos = (() => {
+      const sub = { numeros, lanzamientos: lanz.slice(0, 2) }, t = calc.lanzamientos(sub);
+      const otra = t.validas.find(v2 => JSON.stringify(v2) !== JSON.stringify(info.parejas));
+      if (!otra) return null;
+      const o = x => { const pa = otra.find(z => z.includes(x)); return pa[0] === x ? pa[1] : pa[0]; };
+      return o(p) + o(q);
+    })();
+    const errores = [
+      h('RMP132-sumar-las-vistas', p + q, 'Sumaste los dos números que mencionan, y no los de las caras opuestas.'),
+      h('RMP132-como-dado', 2 * S - p - q, `Supusiste que las caras opuestas suman siempre lo mismo (${S}), como en un dado común. Aquí los números son los que son: la pareja de cada uno se deduce de los lanzamientos.`),
+      ...(mismaTirada(p) && mismaTirada(q) ? [h('RMP132-misma-tirada', mismaTirada(p) + mismaTirada(q), 'Tomaste como opuesto a un número que salió junto a él en un mismo lanzamiento. Dos números que salen a la vez están en fichas distintas, así que no pueden ser caras opuestas de una misma ficha.')] : []),
+      ...(dos !== null ? [h('RMP132-solo-dos-lanzamientos', dos, 'Usaste solo los dos primeros lanzamientos y elegiste una pareja que parece servir. El tercer lanzamiento descarta esa pareja.')] : []),
+    ];
+    const orden = ['primero', 'segundo', 'tercero', 'cuarto'];
+    const lista = numeros.slice(0, -1).join(', ') + ' y ' + numeros[numeros.length - 1];
+    const enunciado = ['Rosa tiene tres fichas planas. Cada ficha tiene un número entero en cada una de sus dos caras y los seis números son distintos: ', v('n', lista), '. Lanza las tres fichas ', `${lanz.length} veces y anota los números que quedan hacia arriba, sin saber qué ficha es cuál: `,
+      ...lanz.flatMap((l, i) => [`${i ? '; ' : ''}${orden[i]}, `, v('l', l.join(', '))]), '.'];
+    const figura = { svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${lanz.length * 100 + 10} 80" font-size="14" fill="currentColor">`
+      + lanz.map((l, i) => l.map((x, j) => `<circle cx="${i * 100 + 25 + (j % 2) * 40}" cy="${28 + (j === 2 ? 28 : 0) * 1}" r="16" style="fill:var(--card)" stroke="currentColor" stroke-width="1.5"/><text x="${i * 100 + 25 + (j % 2) * 40}" y="${33 + (j === 2 ? 28 : 0)}" text-anchor="middle">${x}</text>`).join('') + `<text x="${i * 100 + 45}" y="76" text-anchor="middle" font-size="12">${i + 1}.º lanzamiento</text>`).join('')
+      + '</svg>', alt: `Tres fichas lanzadas ${lanz.length} veces. Números hacia arriba: ${lanz.map((l, i) => `lanzamiento ${i + 1}: ${l.join(', ')}`).join('; ')}.` };
+    const comp = numeros.map(x => `${x} puede ir con ${info.compatibles[x].join(', ')}`).join('; ');
+    const solucion = [
+      ['Dos números que salen en el mismo lanzamiento están en fichas distintas: no son caras opuestas. Para cada número, quedan como posibles parejas solo los que nunca salieron con él: ', comp + '.'],
+      ['La única forma de armar tres parejas con esas posibilidades es: ', info.parejas.map(pa => `${pa[0]}–${pa[1]}`).join(', '), ' (se probaron las 15 formas de formar tres parejas con seis números).'],
+      [`El opuesto a ${p} es ${opp(p)} y el opuesto a ${q} es ${opp(q)}: ${opp(p)} + ${opp(q)} = `, v('s', correcta), '.'],
+    ];
+    return cerrar(rng, semilla, { correcta, errores, decimal: false, texto: x => f(x), enunciado, solucion, figura,
+      variables: { n: { nombre: 'números de las caras', color: 'o' }, l: { nombre: 'números que salen arriba', color: 'i' }, s: { nombre: 'suma de los opuestos', color: 'h' } },
+      pregunta: [`Calcule la suma de los números que están en las caras opuestas al ${p} y al ${q}.`], datos: { tipo: 'lanzamientos', numeros, pares, lanzamientos: lanz, pq } });
+  }
+
+  // ---------------------------------------------------------------- cometa: listón cortado
+  function figuraCometa(d1, d2, u) {
+    const s = 170 / d1, cx = 110, top = 15, x1 = cx - s * d2 / 2, x2 = cx + s * d2 / 2, ym = top + s * u, bot = top + s * d1;
+    const mid = (a, b) => [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+    const T = [cx, top], L = [x1, ym], B = [cx, bot], R = [x2, ym];
+    const m = [mid(T, L), mid(L, B), mid(B, R), mid(R, T)].map(p => p.map(x => x.toFixed(1)).join(','));
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 ${Math.round(bot + 12)}" font-size="13" fill="currentColor">`
+      + `<polygon points="${[T, L, B, R].map(p => p.map(x => x.toFixed(1)).join(',')).join(' ')}" fill="none" stroke="currentColor" stroke-width="3"/>`
+      + `<line x1="${cx}" y1="${top}" x2="${cx}" y2="${bot.toFixed(1)}" style="stroke:var(--c-o)" stroke-width="3"/>`
+      + `<line x1="${x1.toFixed(1)}" y1="${ym.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${ym.toFixed(1)}" style="stroke:var(--c-i)" stroke-width="3"/>`
+      + `<polygon points="${m.join(' ')}" fill="none" style="stroke:var(--c-h)" stroke-width="3"/>`
+      + `<text x="${cx + 6}" y="${(top + 14).toFixed(1)}" style="fill:var(--c-o)">diagonal</text><text x="${(x2 + 6).toFixed(1)}" y="${(ym + 4).toFixed(1)}" style="fill:var(--c-i)">diagonal</text></svg>`;
+    return svg;
+  }
+  function cometa(rng, semilla, fijo) {
+    let d1, d2, pide;
+    if (fijo) ({ d1, d2, pide } = fijo);
+    else { d2 = rng.elegir([40, 48, 56, 60, 64, 72, 76, 80, 84, 90]); d1 = d2 + rng.elegir([10, 14, 20, 26, 30, 38, 44, 50]); pide = rng.elegir(['total', 'total', 'diagonal']); }
+    const { total } = calc.cometa({ d1, d2 });
+    const T = total, otra = calc.otraDiagonal({ T, d1 });
+    const u = d2 / 2;
+    const correcta = pide === 'total' ? T : otra;
+    const errores = pide === 'total' ? [
+      h('RMP133-solo-diagonales', d1 + d2, 'Sumaste solo las dos diagonales. Faltan las cuatro piezas que unen los puntos medios de los lados.'),
+      h('RMP133-medios-como-diagonales', 3 * (d1 + d2), 'Contaste cada una de las cuatro piezas de los puntos medios como si midiera lo mismo que una diagonal. Miden la mitad de la diagonal a la que son paralelas.'),
+      h('RMP133-dos-medias', d1 + d2 + (d1 + d2) / 2, 'Sumaste solo dos de las cuatro piezas de los puntos medios (una paralela a cada diagonal). Son cuatro: dos de cada medida.'),
+      h('RMP133-todas-iguales', d1 + d2 + 2 * d1, `Tomaste las cuatro piezas de los puntos medios como si todas midieran la mitad de la diagonal de ${d1} cm. Dos miden la mitad de cada diagonal.`),
+    ] : [
+      h('RMP133-sin-duplicar', T - d1, 'Restaste a la longitud total solo la diagonal conocida: la otra diagonal aparece además en las piezas de los puntos medios (el rectángulo mide, en total, tanto como las dos diagonales juntas).'),
+      h('RMP133-mitad-sin-restar', T / 2, 'Esa es la suma de las dos diagonales; falta restar la diagonal que ya se conoce.'),
+      h('RMP133-triple', T / 3 - d1, 'Supusiste que los tramos de los puntos medios suman el doble de las diagonales. Suman lo mismo que las dos diagonales juntas.'),
+      h('RMP133-otra-diagonal-mas-medias', T / 2 - d1 / 2, 'Restaste media diagonal conocida: las dos diagonales suman la mitad de la longitud, y de eso se resta la diagonal entera.'),
+    ];
+    const enunciado = pide === 'total'
+      ? ['Raúl fabrica una cometa con un listón recto de madera que corta en seis piezas, sin que sobre nada. Dos piezas son las diagonales de la cometa, que se cruzan en ángulo recto y miden ', v('a', `${d1} cm`), ' y ', v('b', `${d2} cm`),
+        '. Las otras cuatro piezas unen los puntos medios de los lados consecutivos de la cometa, como muestra la figura.']
+      : ['Raúl fabrica una cometa con un listón recto de madera de ', v('T', `${T} cm`), ' que corta en seis piezas, sin que sobre nada. Dos piezas son las diagonales de la cometa, que se cruzan en ángulo recto; una mide ', v('a', `${d1} cm`),
+        '. Las otras cuatro piezas unen los puntos medios de los lados consecutivos de la cometa, como muestra la figura.'];
+    const solucion = pide === 'total' ? [
+      ['Al unir los puntos medios de los lados se forma un rectángulo (diagonales perpendiculares). Cada lado del rectángulo es paralelo a una diagonal y mide su mitad: ', `${d1 / 2} cm y ${d2 / 2} cm, dos de cada uno.`],
+      [`Las cuatro piezas suman 2 × ${d1 / 2} + 2 × ${d2 / 2} = ${d1 + d2} cm: lo mismo que las dos diagonales juntas.`],
+      [`Listón: ${d1} + ${d2} + ${d1 + d2} = `, v('T', `${T} cm`), '.'],
+    ] : [
+      ['Cada pieza de los puntos medios mide la mitad de una diagonal; hay dos de cada clase, así que las cuatro suman lo mismo que las dos diagonales juntas.'],
+      [`Entonces el listón mide el doble de la suma de las diagonales: ${T} = 2 × (${d1} + d), de donde ${d1} + d = ${T / 2}.`],
+      [`La otra diagonal mide ${T / 2} − ${d1} = `, v('b', `${otra} cm`), '.'],
+    ];
+    return cerrar(rng, semilla, { correcta, errores, decimal: true, texto: x => `${f(x)} cm`, enunciado, solucion,
+      figura: { svg: figuraCometa(d1, d2, u), alt: `Una cometa con dos diagonales perpendiculares, una vertical y otra horizontal, y un rectángulo que une los puntos medios de sus cuatro lados. Las diagonales miden ${pide === 'total' ? `${d1} cm y ${d2} cm` : `${d1} cm y la otra es lo que se pregunta`}.` },
+      variables: { a: { nombre: 'una diagonal', color: 'o' }, b: { nombre: 'la otra diagonal', color: 'i' }, T: { nombre: 'longitud del listón', color: 'h' } },
+      pregunta: [pide === 'total' ? '¿Cuánto medía el listón antes de cortarlo?' : '¿Cuánto mide la otra diagonal?'], datos: { tipo: 'cometa', d1, d2, pide } });
+  }
+
+  // ---------------------------------------------------------------- vasos en una bandeja
+  function vasos(rng, semilla, fijo) {
+    let W, H, d;
+    if (fijo) ({ W, H, d } = fijo);
+    else { d = rng.elegir([4, 6, 8, 10]); W = rng.entero(Math.ceil(3.5 * d), 7 * d); H = rng.entero(Math.ceil(1.8 * d), 4 * d); }
+    const r = calc.vasos({ W, H, d });
+    if (r.alineadas === r.intercaladas || r.maximo < 6 || r.corrida >= r.n) { if (!fijo) return null; }
+    const errores = [
+      h('RMP134-solo-alineadas', r.alineadas, 'Pusiste los vasos en filas y columnas alineadas, sin intercalar. Corriendo cada fila medio vaso, las filas quedan más juntas y caben más (a veces con una fila corrida que pierde un vaso).'),
+      h('RMP134-desfase-sin-perder', r.filas * r.n, `Intercalaste las filas, pero contaste ${r.n} vasos en todas. Una fila corrida medio vaso puede perder uno si no sobra medio diámetro de ancho.`),
+      h('RMP134-dividir-areas', Math.floor(W * H / (Math.PI * d * d / 4)), 'Dividiste el área de la bandeja entre el área de la base de un vaso. Entre círculos siempre quedan huecos: no se puede aprovechar toda el área.'),
+      h('RMP134-cuadrados', Math.floor(W * H / (d * d)), 'Dividiste el área de la bandeja entre el área de un cuadrado de lado igual al diámetro. Es lo que cabe sin intercalar si todo encajara perfecto, y no cuenta lo que se pierde en los bordes ni lo que se gana intercalando.'),
+    ];
+    const comparar = [`Se comparan solo dos disposiciones, con las filas a lo largo del lado de ${W} cm: (1) vasos alineados en filas y columnas; (2) filas intercaladas, cada fila corrida medio vaso respecto de la anterior.`];
+    const enunciado = ['Se tiene una bandeja rectangular de ', v('W', `${W} cm`), ' por ', v('H', `${H} cm`), ' y vasos cilíndricos de base circular de ', v('d', `${d} cm`), ' de diámetro. Los vasos se colocan de pie, sin apilar y sin salirse de la bandeja. ', ...comparar, ' Se elige la mejor de las dos.'];
+    const solucion = [
+      [`Alineados: ${r.n} vasos por fila (⌊${W} ÷ ${d}⌋) y ${Math.floor(H / d)} filas (⌊${H} ÷ ${d}⌋): ${r.n} × ${Math.floor(H / d)} = ${r.alineadas}.`],
+      [`Intercalados: las filas quedan separadas ${f(d * Math.sqrt(3) / 2)} cm (la altura de un triángulo equilátero de lado ${d}), así que caben ${r.filas} filas. ${r.corrida === r.n ? `Cada fila corrida cabe completa (sobra al menos medio vaso de ancho): ${r.n} vasos.` : `Una fila corrida no cabe completa (no sobra medio vaso de ancho): tiene ${r.corrida}.`}`],
+      [`Total intercalado: ${Math.ceil(r.filas / 2)} filas de ${r.n} y ${Math.floor(r.filas / 2)} de ${r.corrida} = `, v('m', r.intercaladas), `. El máximo entre las dos disposiciones es `, v('m', r.maximo), '.'],
+    ];
+    const figura = { svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 ${Math.round(220 * H / W) + 50}" font-size="13" fill="currentColor">`
+      + `<rect x="20" y="10" width="240" height="${Math.round(220 * H / W)}" style="fill:var(--card)" stroke="currentColor" stroke-width="3"/>`
+      + `<circle cx="${20 + 240 * d / W / 2}" cy="${10 + 240 * d / W / 2}" r="${240 * d / W / 2}" fill="none" style="stroke:var(--c-o)" stroke-width="2"/>`
+      + `<text x="140" y="${Math.round(220 * H / W) + 32}" text-anchor="middle">${W} cm</text><text x="${20 + 240 * d / W + 6}" y="${22 + 240 * d / W / 2}" style="fill:var(--c-o)">${d} cm</text></svg>`,
+      alt: `Una bandeja rectangular de ${W} cm por ${H} cm, con un vaso de ${d} cm de diámetro dibujado en una esquina para dar la escala.` };
+    return cerrar(rng, semilla, { correcta: r.maximo, errores, texto: x => pl(x, 'vaso', 'vasos'), enunciado, solucion, figura,
+      variables: { W: { nombre: 'largo de la bandeja', color: 'o' }, H: { nombre: 'ancho de la bandeja', color: 'i' }, d: { nombre: 'diámetro del vaso', color: 'h' }, m: { nombre: 'vasos', color: 'd' } },
+      pregunta: ['¿Cuántos vasos caben, como máximo?'], datos: { tipo: 'vasos', W, H, d } });
+  }
+
+  // Preguntas oficiales de admisión (semilla → constructor y datos), con figura y solución rehechas.
+  const OFICIALES = {
+    'unmsm-2023-I-fichas': { tipo: 'lanzamientos', fijo: { numeros: [2, 3, 4, 5, 6, 7], pares: [[6, 7], [2, 3], [4, 5]], lanzamientos: [[2, 7, 4], [3, 6, 4], [7, 3, 5]], pq: [4, 2] } },
+    'unmsm-2021-cometa': { tipo: 'cometa', fijo: { d1: 114, d2: 76, pide: 'total' } },
+    'unmsm-2021-vasos': { tipo: 'vasos', fijo: { W: 32, H: 22, d: 8 } },
+  };
+
+  const CONSTRUIR = { lotes, promocion, canje, votos, progresion, pista, diana, torneo, fichas, cortes, latas, 'latas-pares': latasPares, lanzamientos, cometa, vasos };
 
   return { id: 'rm-planteo', titulo: 'Planteo de situaciones: compras, votos, pistas y torneos', generar, calc };
 });
