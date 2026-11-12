@@ -54,7 +54,17 @@ function construir() {
     }
     // Escena: página propia. Predicciones: se juega dentro de la app con el generador del módulo.
     // El primer archivo es el que se carga (escena o generador); los problemas de papel van al final.
-    const archivos = [...(formato === 'escena' ? [f.escena, f.motor] : [f.generador]), ...(f.papel ? [f.papel] : [])].map(url);
+    // Además, todo script o estilo local que cargue la escena (p. ej. una biblioteca de datos aparte): si no estuviera
+    // aquí, el service worker no lo guardaría y la escena no abriría sin conexión.
+    const locales = [];
+    if (formato === 'escena') {
+      const html = fs.readFileSync(path.join(dirPl, d, f.escena), 'utf8');
+      for (const m of html.matchAll(/(?:src|href)="([^"#?:]+\.(?:js|css))"/g)) {
+        const u = path.posix.join(`/plantillas/${f.id}`, m[1]);
+        if (u.startsWith(`/plantillas/${f.id}/`) && fs.existsSync(path.join(RAIZ, u))) locales.push(m[1]);
+      }
+    }
+    const archivos = [...new Set([...(formato === 'escena' ? [f.escena, f.motor, ...locales] : [f.generador]), ...(f.papel ? [f.papel] : [])].map(url))];
     plantillas[f.id] = { id: f.id, titulo: f.titulo, formato, estado: f.estado, version: f.version, unidades: f.unidades,
       url: formato === 'escena' ? url(f.escena) : `#/practica/${f.id}`,
       papel: f.papel ? url(f.papel) : null, archivos };

@@ -6399,6 +6399,7 @@
    "archivos": [
     "/plantillas/molecula-grande/index.html",
     "/plantillas/molecula-grande/motor.js",
+    "/plantillas/molecula-grande/moleculas.js",
     "/plantillas/molecula-grande/papel.json"
    ]
   },
