@@ -1,0 +1,163 @@
+{
+  "id": "t147",
+  "version": 1,
+  "titulo": "El paiche que volvió a las cochas",
+  "tema": "Amazonía · manejo comunal de un recurso pesquero",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    { "id": "A", "desde": 0, "firma": "Una bióloga que trabaja en la Amazonía" },
+    { "id": "B", "desde": 1, "firma": "Un economista de Iquitos" }
+  ],
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "contraste", "t": "Hace unas décadas, el paiche parecía condenado a desaparecer de muchas cochas de la Amazonía peruana." },
+      { "id": "o2", "rol": "detalle", "t": "Es uno de los peces de agua dulce más grandes del mundo y, como sube a la superficie para respirar, era fácil arponearlo." },
+      { "id": "o3", "rol": "principal", "t": "Hoy, en varias comunidades, el paiche ha vuelto, y no por una prohibición venida de lejos, sino porque los propios pescadores lo cuidan." },
+      { "id": "o4", "rol": "apoyo", "t": "Los grupos de manejo vigilan las cochas, cuentan los paiches cada vez que salen a respirar y pescan solo una parte de los adultos, con permiso de la autoridad." },
+      { "id": "o5", "rol": "principal", "t": "Como el pez vale más vivo en la cocha que agotado en una sola temporada, conservarlo se vuelve un negocio para la comunidad." }
+    ],
+    [
+      { "id": "o6", "rol": "apoyo", "t": "Los resultados de esos grupos son reales, y muestran que la conservación funciona mejor cuando quien vive del recurso decide sobre él." },
+      { "id": "o7", "rol": "contraste", "t": "Pero el equilibrio que describen depende de una condición: que lo que se vende no supere lo que la cocha repone." },
+      { "id": "o8", "rol": "apoyo", "t": "Si grandes compradores empiezan a pedir toneladas de carne de paiche, aparecerá la tentación de pescar más de lo permitido o de vender peces sacados de cochas sin manejo como si vinieran de una comunidad cuidadosa." },
+      { "id": "o9", "rol": "apoyo", "t": "Un precio alto premia al que cuida, pero premia aún más al que hace trampa, si nadie puede distinguir un pescado del otro." },
+      { "id": "o10", "rol": "principal", "t": "Abrir el mercado puede ser bueno, siempre que antes exista un registro que siga a cada paiche desde la cocha hasta el plato." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "controversia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "El punto en que el texto B matiza lo que plantea el texto A es",
+      "alternativas": [
+        { "t": "qué hace falta para que vender más paiche no destruya lo logrado.", "correcta": true, "evidencia": ["o7", "o10"],
+          "explicacion": "El texto B acepta los resultados del manejo (oración 6), pero añade una condición (oración 7) y pide un registro antes de abrir el mercado (oración 10)." },
+        { "t": "si los grupos de manejo de las comunidades han dado resultados reales en las cochas.", "codigo": "RV61", "origen": "o6",
+          "explicacion": "En eso coinciden: el texto B dice que «los resultados de esos grupos son reales» (oración 6)." },
+        { "t": "cómo cuentan los pescadores a los paiches cada vez que salen a respirar a la superficie.", "codigo": "RV60", "origen": "o4",
+          "explicacion": "Es un detalle del texto A (oración 4). El texto B no lo discute." },
+        { "t": "el futuro de la pesca en todos los ríos del Perú.", "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos tratan del paiche y de su manejo en las cochas amazónicas." },
+        { "t": "si se debe prohibir para siempre la venta de carne de paiche.", "codigo": "RV33", "origen": "o10",
+          "explicacion": "Ninguno lo propone: el texto B dice que abrir el mercado «puede ser bueno» con un registro (oración 10)." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "sintesis",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Un recurso se conserva mejor cuando lo cuidan las mismas personas que viven de él.",
+        "aceptada": "ambos",
+        "codigos": { "A": "RV61", "B": "RV61", "ninguno": null },
+        "explicacion": "Los dos lo sostienen: el texto A dice que el paiche volvió porque los propios pescadores lo cuidan (oración 3), y el B, que la conservación funciona mejor cuando quien vive del recurso decide sobre él (oración 6).",
+        "explicaciones": {
+          "A": "El texto A lo sostiene (oración 3), pero el B también lo dice, casi con esas palabras, en la oración 6.",
+          "B": "El texto B lo dice en la oración 6, pero el A ya lo había planteado en la oración 3.",
+          "ninguno": "Los dos lo sostienen: el texto A en la oración 3 y el B en la oración 6."
+        }
+      },
+      "enunciado": "¿Qué enunciado integra mejor lo que plantean los dos textos?",
+      "alternativas": [
+        { "t": "El manejo comunal del paiche une conservación e ingresos, pero venderlo a gran escala exige rastrear cada pez.", "correcta": true, "evidencia": ["o5", "o6", "o10"],
+          "explicacion": "Recoge la tesis del texto A (oración 5), que el B acepta (oración 6), y la condición que el B añade (oración 10)." },
+        { "t": "Los pescadores dejaron de arponear al paiche porque los compradores de las ciudades empezaron a pagar precios altos por su carne.", "codigo": "RV44", "origen": "o9",
+          "explicacion": "Une las ideas con una causa que ningún texto plantea: el texto A dice que el paiche volvió por el cuidado de los pescadores, no por el precio en las ciudades." },
+        { "t": "El manejo comunal recuperó al paiche, y por eso conviene abrir cuanto antes el mercado a grandes compradores sin más requisitos.", "codigo": "RV62", "origen": "o10",
+          "explicacion": "La primera parte es común, pero la segunda la contradice el texto B: antes de abrir el mercado hace falta un registro (oración 10)." },
+        { "t": "El paiche, que sube a respirar a la superficie, estuvo a punto de desaparecer de muchas cochas amazónicas.", "codigo": "RV3", "origen": "o1",
+          "explicacion": "Junta las oraciones 1 y 2 del texto A, pero deja fuera lo principal de los dos textos: la recuperación por el manejo y la condición para venderlo." },
+        { "t": "Los dos autores advierten que un precio alto premia más al que hace trampa que al que cuida el recurso.", "codigo": "RV60", "origen": "o9",
+          "explicacion": "Esa advertencia es solo del texto B (oración 9); el A no la plantea." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Antes de vender paiche a gran escala, tiene que poder saberse de dónde salió cada pez.",
+        "aceptada": "B",
+        "codigos": { "A": "RV59", "ambos": "RV60", "ninguno": null },
+        "explicacion": "Lo sostiene el texto B en la oración 10: abrir el mercado puede ser bueno si antes hay un registro que siga a cada paiche desde la cocha hasta el plato.",
+        "explicaciones": {
+          "A": "El texto A no habla de vender a gran escala ni de registros: describe cómo el manejo recuperó al paiche. La condición la pone el B (oración 10).",
+          "ambos": "Solo el texto B lo sostiene. El A no trata de lo que pasaría si el mercado se abre.",
+          "ninguno": "Sí lo sostiene alguien: el texto B, en la oración 10."
+        }
+      },
+      "enunciado": "Si existiera un registro que permitiera saber de qué cocha viene cada paiche vendido, el autor del texto B probablemente",
+      "alternativas": [
+        { "t": "vería con buenos ojos la venta a grandes compradores.", "correcta": true, "evidencia": ["o10"],
+          "explicacion": "Es la condición que pone en la oración 10: con un registro así, abrir el mercado «puede ser bueno»." },
+        { "t": "seguiría temiendo que se venda paiche de cochas sin manejo como si fuera de una comunidad cuidadosa.", "codigo": "RV63", "origen": "o8",
+          "explicacion": "Ese temor (oración 8) depende de que nadie pueda distinguir un pescado del otro (oración 9). El supuesto dice que sí se puede." },
+        { "t": "aseguraría que, desde ese momento, ningún pescador volverá jamás a sacar más paiches de lo permitido.", "codigo": "RV11", "origen": "o8",
+          "explicacion": "El texto B habla de una tentación y de un registro que ayuda a controlarla; «ningún» y «jamás» dicen más de lo que él sostendría." },
+        { "t": "pediría que el Estado compre todo el paiche de las comunidades.", "codigo": "RV7",
+          "explicacion": "Nada en el texto B lleva a esa conclusión: no habla de que el Estado compre el pescado." },
+        { "t": "se opondría a que el paiche salga de la Amazonía.", "codigo": "RV33",
+          "explicacion": "El texto B no se opone a vender fuera: acepta abrir el mercado si existe el registro (oración 10)." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Contar los paiches cuando suben a respirar sirve para decidir cuántos se pueden pescar.",
+        "aceptada": "A",
+        "codigos": { "B": "RV59", "ambos": "RV60", "ninguno": null },
+        "explicacion": "Lo sostiene el texto A en la oración 4: los grupos cuentan los paiches y pescan solo una parte de los adultos.",
+        "explicaciones": {
+          "B": "El texto B no describe cómo trabajan los grupos de manejo; eso lo hace el A, en la oración 4.",
+          "ambos": "Solo el texto A lo describe (oración 4). El B acepta los resultados, pero no habla del conteo.",
+          "ninguno": "Sí lo sostiene alguien: el texto A, en la oración 4."
+        }
+      },
+      "enunciado": "Es incompatible con lo que sostiene la autora del texto A afirmar que",
+      "alternativas": [
+        { "t": "el paiche se recuperó por una prohibición impuesta desde fuera.", "correcta": true, "evidencia": ["o3"],
+          "explicacion": "La oración 3 dice que el paiche volvió «no por una prohibición venida de lejos», sino porque los pescadores lo cuidan: esta afirmación choca con eso." },
+        { "t": "el paiche también se cría en estanques y piscigranjas de la selva peruana.", "codigo": "RV36",
+          "explicacion": "El texto A no habla de piscigranjas, pero tampoco dice nada en contra: que algo no esté dicho no lo vuelve incompatible." },
+        { "t": "los grupos de manejo no pescan todos los paiches adultos que encuentran en una cocha.", "codigo": "RV10", "origen": "o4",
+          "explicacion": "Tiene un «no», pero es compatible: la oración 4 dice que pescan solo una parte de los adultos." },
+        { "t": "un precio alto puede premiar también a quien vende pescado de cochas sin manejo.", "codigo": "RV59", "origen": "o9",
+          "explicacion": "Es una advertencia del texto B (oración 9). La autora del A no la plantea, pero nada de lo que dice la contradice." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto A, el adjetivo CONDENADO («parecía condenado a desaparecer») significa",
+      "alternativas": [
+        { "t": "destinado.", "correcta": true, "evidencia": ["o1"],
+          "explicacion": "Se dice que parecía que el paiche iba a desaparecer sin remedio, como si ese fuera su destino." },
+        { "t": "sentenciado por un juez.", "codigo": "RV18",
+          "explicacion": "Es el sentido más común de «condenado», el de un juicio; pero aquí no hay juez ni sentencia: se habla del futuro de una especie." },
+        { "t": "castigado.", "codigo": "RV19",
+          "explicacion": "Es del mismo campo que «condenar», pero el texto no dice que alguien castigue al paiche." },
+        { "t": "arponeado.", "codigo": "RV5", "origen": "o2",
+          "explicacion": "Repite una palabra de la oración 2, que explica por qué era fácil pescarlo, no qué significa «condenado»." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-12",
+  "hechos": [
+    { "afirmacion": "El paiche (Arapaima gigas) es uno de los peces de agua dulce más grandes del mundo y respira aire, por lo que sube a la superficie con frecuencia.", "fuente": "Castello, L. (2004). A method to count pirarucu Arapaima gigas: fishers, assessment, and management. North American Journal of Fisheries Management, 24(2), 379-389" },
+    { "afirmacion": "En la Reserva Nacional Pacaya Samiria (Loreto), grupos de manejo comunales aprovechan el paiche con planes de manejo aprobados por la autoridad, y sus poblaciones se han recuperado en las cochas manejadas.", "fuente": "SERNANP (Servicio Nacional de Áreas Naturales Protegidas por el Estado), información sobre el manejo de recursos pesqueros en la Reserva Nacional Pacaya Samiria" }
+  ],
+  "revision": null
+}

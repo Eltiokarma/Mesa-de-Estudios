@@ -1,0 +1,166 @@
+{
+  "id": "t146",
+  "version": 1,
+  "titulo": "El cine peruano en la pantalla de todos los días",
+  "tema": "Cultura · cine nacional y plataformas de streaming",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    { "id": "A", "desde": 0, "firma": "Una cineasta peruana" },
+    { "id": "B", "desde": 1, "firma": "Un economista especializado en cultura" }
+  ],
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "principal", "t": "Las plataformas de streaming que ganan dinero con el público peruano deberían estar obligadas a incluir en su catálogo una cuota de películas y series nacionales." },
+      { "id": "o2", "rol": "apoyo", "t": "Hoy una película peruana puede pasar dos semanas en unas pocas salas y desaparecer, mientras los catálogos de las plataformas se llenan de producciones extranjeras." },
+      { "id": "o3", "rol": "apoyo", "t": "Una cuota no le cuesta nada al Estado: la cumplen empresas que ya hacen buen negocio en el país." },
+      { "id": "o4", "rol": "ejemplo", "t": "En la Unión Europea, por ejemplo, las plataformas deben reservar una parte de su catálogo a obras europeas." },
+      { "id": "o5", "rol": "principal", "t": "Si el público no encuentra cine peruano en la pantalla que usa todos los días, difícilmente llegará a conocerlo." }
+    ],
+    [
+      { "id": "o6", "rol": "apoyo", "t": "Comparto que el cine peruano merece más pantallas y más público." },
+      { "id": "o7", "rol": "contraste", "t": "Dudo, sin embargo, de que una cuota lo consiga." },
+      { "id": "o8", "rol": "apoyo", "t": "Una plataforma obligada a cumplir un número puede subir películas antiguas sin promocionarlas, y una película escondida en un catálogo enorme casi no se ve." },
+      { "id": "o9", "rol": "apoyo", "t": "Además, la cuota no hace que se filmen más películas: solo reparte las que ya existen." },
+      { "id": "o10", "rol": "apoyo", "t": "Los fondos concursables del Ministerio de Cultura, en cambio, financian guiones, rodajes y estrenos que sin ese apoyo no existirían." },
+      { "id": "o11", "rol": "principal", "t": "Lo que conviene es aumentar esos fondos, y que el dinero llegue también a cineastas de las regiones, no solo de Lima." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "postura",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Exigir un número de títulos nacionales no asegura que el público llegue a verlos.",
+        "aceptada": "B",
+        "codigos": { "A": "RV59", "ambos": "RV60", "ninguno": null },
+        "explicacion": "Lo sostiene el texto B en la oración 8: una plataforma puede cumplir el número sin promocionar las películas, y una película escondida casi no se ve.",
+        "explicaciones": {
+          "A": "El texto A confía en la cuota para que el público conozca el cine peruano (oración 5); la duda es del texto B (oraciones 7 y 8).",
+          "ambos": "Solo el texto B lo sostiene. El A propone justamente la cuota.",
+          "ninguno": "Sí lo sostiene alguien: el texto B, en las oraciones 7 y 8."
+        }
+      },
+      "enunciado": "El autor del texto B sostiene que",
+      "alternativas": [
+        { "t": "conviene dar más dinero a los concursos que financian películas.", "correcta": true, "evidencia": ["o10", "o11"],
+          "explicacion": "Es su tesis, en la oración 11: aumentar los fondos concursables, que hacen posibles películas que no existirían (oración 10)." },
+        { "t": "las plataformas que ganan dinero con el público peruano deberían sostener al cine nacional.", "codigo": "RV59", "origen": "o1",
+          "explicacion": "Esa idea es del texto A (oraciones 1 y 3). El B pone el apoyo en los fondos del Estado." },
+        { "t": "hay que aumentar los fondos concursables y, a la vez, imponer una cuota a las plataformas.", "codigo": "RV62", "origen": "o7",
+          "explicacion": "La primera parte es suya, pero la segunda no: el texto B duda de que la cuota sirva (oración 7)." },
+        { "t": "ninguna película peruana consigue público en el país.", "codigo": "RV11",
+          "explicacion": "El texto B dice que el cine peruano merece más público, no que ninguna película lo tenga; «ninguna» dice más que el texto." },
+        { "t": "el cine peruano ya tiene suficientes pantallas y no necesita más espectadores.", "codigo": "RV33", "origen": "o6",
+          "explicacion": "El texto B dice lo contrario: el cine peruano merece más pantallas y más público (oración 6)." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "coincidencia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Hoy el cine peruano llega a menos espectadores de los que debería.",
+        "aceptada": "ambos",
+        "codigos": { "A": "RV61", "B": "RV61", "ninguno": null },
+        "explicacion": "Los dos lo sostienen: el texto A dice que una película peruana desaparece pronto de las salas y no está en la pantalla diaria (oraciones 2 y 5), y el B, que el cine peruano merece más público (oración 6).",
+        "explicaciones": {
+          "A": "El texto A lo sostiene (oraciones 2 y 5), pero el B también: «comparto que el cine peruano merece más pantallas y más público» (oración 6).",
+          "B": "El texto B lo dice en la oración 6, pero lo comparte con el A, que parte de ese problema (oraciones 2 y 5).",
+          "ninguno": "Los dos lo sostienen: el texto A en las oraciones 2 y 5, y el B en la oración 6."
+        }
+      },
+      "enunciado": "¿En qué coinciden ambos autores?",
+      "alternativas": [
+        { "t": "En que el cine nacional necesita llegar a más espectadores.", "correcta": true, "evidencia": ["o5", "o6"],
+          "explicacion": "El texto A quiere que el público encuentre cine peruano en su pantalla diaria (oración 5) y el B dice que merece más público (oración 6). Discrepan en el camino." },
+        { "t": "En que una cuota en las plataformas haría que el público conozca el cine peruano.", "codigo": "RV60", "origen": "o1",
+          "explicacion": "Eso lo sostiene solo el texto A. El B duda de que la cuota lo consiga (oración 7)." },
+        { "t": "En que el cine peruano merece más público y los fondos deben quedarse en Lima.", "codigo": "RV62", "origen": "o11",
+          "explicacion": "La primera mitad es común, pero la segunda la contradice el texto B: el dinero debe llegar también a las regiones (oración 11)." },
+        { "t": "En que las entradas a las salas de cine son demasiado caras para la mayoría de las familias.", "codigo": "RV8",
+          "explicacion": "Ninguno de los textos habla del precio de las entradas. Es una idea de fuera del texto." },
+        { "t": "En que las producciones extranjeras son de peor calidad que las peruanas.", "codigo": "RV33", "origen": "o2",
+          "explicacion": "Ninguno juzga la calidad de las producciones extranjeras: el texto A solo dice que llenan los catálogos." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto B, el adjetivo ESCONDIDA («una película escondida en un catálogo enorme») significa",
+      "alternativas": [
+        { "t": "difícil de encontrar.", "correcta": true, "evidencia": ["o8"],
+          "explicacion": "Entre miles de títulos y sin promoción, la película está en el catálogo, pero el público casi no da con ella." },
+        { "t": "ocultada a propósito por alguien.", "codigo": "RV18",
+          "explicacion": "Es el sentido más común de «esconder», pero el texto no dice que alguien la oculte: dice que se pierde entre muchos títulos." },
+        { "t": "olvidada por su director.", "codigo": "RV19",
+          "explicacion": "Está cerca de la idea de algo que nadie ve, pero el texto no habla del director." },
+        { "t": "antigua.", "codigo": "RV5", "origen": "o8",
+          "explicacion": "Repite una palabra de la misma oración («películas antiguas»), pero una película puede estar escondida aunque sea nueva." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "sintesis",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "El Estado debería dejar de financiar el cine y encargar todo a las plataformas.",
+        "aceptada": "ninguno",
+        "codigos": { "A": "RV7", "B": "RV33", "ambos": null },
+        "explicacion": "Ninguno lo sostiene. El texto A pide una cuota a las plataformas, pero no dice que el Estado deje de financiar; el B pide aumentar los fondos del Estado (oración 11).",
+        "explicaciones": {
+          "A": "El texto A pide que las plataformas cumplan una cuota y dice que eso no le cuesta al Estado (oración 3), pero de ahí no se sigue que el Estado deba dejar de financiar el cine.",
+          "B": "El texto B dice lo contrario: hay que aumentar los fondos del Ministerio de Cultura (oración 11).",
+          "ambos": "Ninguno lo sostiene: el B lo contradice y el A no lo dice."
+        }
+      },
+      "enunciado": "¿Qué enunciado integra mejor lo que plantean los dos textos?",
+      "alternativas": [
+        { "t": "Ambos quieren más público para el cine peruano, pero difieren en si la vía es una cuota o más fondos.", "correcta": true, "evidencia": ["o1", "o6", "o11"],
+          "explicacion": "Recoge el punto común (oraciones 5 y 6) y las dos propuestas: la cuota del texto A (oración 1) y los fondos del B (oración 11)." },
+        { "t": "Las plataformas extranjeras perjudican al cine peruano, y por eso el Estado creó fondos concursables para compensar ese daño.", "codigo": "RV44", "origen": "o10",
+          "explicacion": "Une las ideas con una causa que ningún texto plantea: el texto B no dice que los fondos se crearan por culpa de las plataformas." },
+        { "t": "Ambos autores proponen obligar a las plataformas a incluir una cuota de cine peruano en su catálogo.", "codigo": "RV60", "origen": "o1",
+          "explicacion": "La cuota es la propuesta del texto A; el B duda de ella (oración 7)." },
+        { "t": "Una película peruana puede pasar solo dos semanas en unas pocas salas y luego desaparecer de la cartelera.", "codigo": "RV3", "origen": "o2",
+          "explicacion": "Es un dato del texto A (oración 2). Una síntesis debe integrar los dos textos, no quedarse con una parte de uno." },
+        { "t": "Los dos quieren más público para el cine nacional y coinciden en que la cuota es la mejor herramienta.", "codigo": "RV62", "origen": "o7",
+          "explicacion": "La primera parte es común, pero la segunda no: el texto B duda de la cuota (oración 7) y prefiere los fondos." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Si se comprobara que, en un país con cuota, las plataformas sí promocionan las películas nacionales y estas tienen muchos espectadores, el autor del texto B",
+      "alternativas": [
+        { "t": "tendría que revisar una de sus objeciones a la cuota.", "correcta": true, "evidencia": ["o8", "o9"],
+          "explicacion": "El supuesto quita la objeción de la oración 8 (películas sin promoción que nadie ve). Le queda la de la oración 9: la cuota no hace que se filmen más películas." },
+        { "t": "seguiría diciendo que la plataforma sube las películas sin promocionarlas y que casi nadie las ve.", "codigo": "RV63", "origen": "o8",
+          "explicacion": "Repite la objeción que el supuesto acaba de quitar: en ese país las películas sí se promocionan y sí se ven." },
+        { "t": "aceptaría que la cuota resuelve todos los problemas del cine peruano, incluso el de filmar más.", "codigo": "RV11", "origen": "o9",
+          "explicacion": "El supuesto no toca la otra objeción: la cuota reparte las películas que ya existen y no hace que se filmen más (oración 9)." },
+        { "t": "pediría eliminar los fondos concursables del Ministerio de Cultura.", "codigo": "RV7", "origen": "o10",
+          "explicacion": "Nada en el texto B lleva a eso: los fondos financian películas que sin ellos no existirían, y eso sigue valiendo." },
+        { "t": "afirmaría que la cuota no le cuesta nada al Estado.", "codigo": "RV59", "origen": "o3",
+          "explicacion": "Ese argumento es del texto A (oración 3); el supuesto no trata de lo que cuesta la cuota." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-12",
+  "hechos": [
+    { "afirmacion": "En la Unión Europea, las plataformas de video a pedido deben reservar una parte de su catálogo a obras europeas (al menos el 30 %).", "fuente": "Directiva (UE) 2018/1808 del Parlamento Europeo y del Consejo, que modifica la Directiva de servicios de comunicación audiovisual 2010/13/UE, artículo 13" },
+    { "afirmacion": "El Ministerio de Cultura del Perú otorga fondos concursables (estímulos económicos) para proyectos cinematográficos y audiovisuales.", "fuente": "Decreto de Urgencia N.º 022-2019, que promueve la actividad cinematográfica y audiovisual; Ministerio de Cultura, Estímulos Económicos para la Cultura" }
+  ],
+  "revision": null
+}
