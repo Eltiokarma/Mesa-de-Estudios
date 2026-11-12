@@ -662,7 +662,8 @@
     // cono sin el 1/3 da siempre lo mismo que el rectángulo completo (h²b + h²(B − b) = h²B): no se calcula aparte.
     const grupos = { volumen: {} };
     for (const e of Object.keys(vol)) if (e !== eje) grupos.volumen['eje' + e[0].toUpperCase() + e.slice(1)] = vol[e];
-    grupos.volumen.rectangulo = rect;
+    // El rectángulo que encierra al trapecio, girando sobre el mismo eje: con el lado h de eje, un cilindro de radio B.
+    grupos.volumen.rectangulo = eje === 'perpendicular' ? B * B * h : rect;
     if (eje === 'mayor') grupos.volumen.restaCono = cilMayor - conoV;
     if (eje === 'menor') { grupos.volumen.sumaCono = rect + conoV; grupos.volumen.huecoSinTercio = rect - 3 * conoV; }
     if (eje === 'perpendicular') grupos.volumen.sinTercio = 3 * tronco;
