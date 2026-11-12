@@ -1,6 +1,6 @@
 {
   "titulo": "Laboratorio de Admisión: hacia el lanzamiento en el colegio",
-  "actualizado": "2026-11-06",
+  "actualizado": "2026-11-12",
   "secciones": [
     "Base (hecho)",
     "Plataforma y medición",
@@ -9,7 +9,9 @@
     "Matemática",
     "Razonamiento",
     "Lanzamiento en el colegio",
-    "Después del lanzamiento"
+    "Después del lanzamiento",
+    "Colegios, gestión",
+    "Grados nuevos (si sobra capacidad)"
   ],
   "tareas": [
     {
@@ -555,6 +557,186 @@
         "pl7"
       ],
       "notas": "Cálculo, unidades, notables y estimación, con tiempo y racha. Falta recibir capturas de Peak. Ver docs/vision-pisa-agilidad-interaccion.md, sección 2"
+    },
+    {
+      "id": "co1",
+      "seccion": "Colegios, gestión",
+      "nombre": "Modelo de negocio, precios y plan de gestión",
+      "inicio": "2026-11-12",
+      "fin": "2026-11-12",
+      "estado": "hecho",
+      "progreso": 100,
+      "critico": false,
+      "depende_de": [],
+      "notas": "docs/vision-colegios.md"
+    },
+    {
+      "id": "co2",
+      "seccion": "Colegios, gestión",
+      "nombre": "Datos del colegio piloto (alumnos, pensión, registros, formato de notas)",
+      "inicio": "2026-11-13",
+      "fin": "2026-11-20",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": true,
+      "depende_de": [
+        "co1"
+      ],
+      "notas": "Preguntas abiertas de docs/vision-colegios.md. Pedir 10 a 20 fotos reales de registros"
+    },
+    {
+      "id": "co3",
+      "seccion": "Colegios, gestión",
+      "nombre": "Diseño de las vistas de profesor, papá y dirección",
+      "inicio": "2026-11-16",
+      "fin": "2026-11-22",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [
+        "co1"
+      ],
+      "notas": "Maqueta antes de código. Sigue docs/diseno.md"
+    },
+    {
+      "id": "co4",
+      "seccion": "Colegios, gestión",
+      "nombre": "Prueba de OCR con fotos reales de registros",
+      "inicio": "2026-11-23",
+      "fin": "2026-11-27",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [
+        "co2"
+      ],
+      "notas": "API por uso, no suscripción. Comparar Haiku con un modelo mayor; el profesor confirma siempre"
+    },
+    {
+      "id": "co5",
+      "seccion": "Colegios, gestión",
+      "nombre": "Prototipo navegable de gestión con datos inventados",
+      "inicio": "2026-11-23",
+      "fin": "2026-12-04",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [
+        "co3"
+      ],
+      "notas": "Sin servidor, OCR simulado y avisado. Brecha UNI con el catálogo real"
+    },
+    {
+      "id": "co6",
+      "seccion": "Colegios, gestión",
+      "nombre": "Presentación al director antes de que fije las pensiones de 2027",
+      "inicio": "2026-12-07",
+      "fin": "2026-12-11",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": true,
+      "depende_de": [
+        "co5",
+        "co2"
+      ],
+      "notas": "Precios de docs/vision-colegios.md. Cobro por alumno matriculado"
+    },
+    {
+      "id": "co7",
+      "seccion": "Colegios, gestión",
+      "nombre": "Asesoría legal (contrato, datos de menores, cobro en la pensión)",
+      "inicio": "2026-12-01",
+      "fin": "2026-12-18",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [
+        "co1"
+      ],
+      "notas": "Ley 29733 y DS 016-2024-JUS; Indecopi"
+    },
+    {
+      "id": "co8",
+      "seccion": "Colegios, gestión",
+      "nombre": "Gestión real (servidor, cuentas, OCR por API, exportar a Excel o CSV)",
+      "inicio": "2027-01-11",
+      "fin": "2027-02-26",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [
+        "co6",
+        "co7"
+      ],
+      "notas": "Promedios y alertas en código determinístico. Entrar con código del colegio"
+    },
+    {
+      "id": "co9",
+      "seccion": "Colegios, gestión",
+      "nombre": "Piloto de gestión con el inicio de clases",
+      "inicio": "2027-03-08",
+      "fin": "2027-03-31",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [
+        "co8"
+      ],
+      "notas": "Papás y profesores de todo el colegio"
+    },
+    {
+      "id": "co10",
+      "seccion": "Después del lanzamiento",
+      "nombre": "Reforzar 3.º a 5.º (más módulos en las unidades que más pregunta la UNI)",
+      "inicio": "2027-01-11",
+      "fin": "2027-02-26",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [
+        "la6"
+      ],
+      "notas": "Frente 3 de docs/vision-colegios.md"
+    },
+    {
+      "id": "gr1",
+      "seccion": "Grados nuevos (si sobra capacidad)",
+      "nombre": "Informe de ideas erróneas en fracciones, decimales y proporcionalidad",
+      "inicio": "2027-01-04",
+      "fin": "2027-01-15",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [],
+      "notas": "Antes de construir. Docs/investigacion/"
+    },
+    {
+      "id": "gr2",
+      "seccion": "Grados nuevos (si sobra capacidad)",
+      "nombre": "Generadores de matemática para 5.º y 6.º de primaria y 1.º y 2.º de secundaria",
+      "inicio": "2027-01-18",
+      "fin": "2027-02-26",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [
+        "gr1"
+      ],
+      "notas": "Formato predicciones (nucleo/predicciones.js). Solo si sobra capacidad"
+    },
+    {
+      "id": "gr3",
+      "seccion": "Grados nuevos (si sobra capacidad)",
+      "nombre": "Interfaz para niños de 10 a 12 años",
+      "inicio": "2027-02-01",
+      "fin": "2027-02-19",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [
+        "gr1"
+      ],
+      "notas": "Menos texto, botones grandes, sesiones cortas"
     }
   ]
 }

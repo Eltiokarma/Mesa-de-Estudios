@@ -36,6 +36,8 @@ Como no hay prueba previa, **la app tiene que medir por sí misma**: pruebas cor
 5. **Después:** destilar el método de construcción de plantillas, la UNA Puno y la [visión a futuro](vision-futura.md).
    - Más componentes de interacción tipo Brilliant (ordenar, emparejar, clasificar), modo PISA y calentamientos de agilidad mental tipo Peak ([visión](vision-pisa-agilidad-interaccion.md)). El componente de fichas entra antes del colegio (pl7, en Plataforma y medición).
 
+**Gestión para colegios (12 nov 2026):** notas, comunicados y brecha con la UNI para todo el colegio, con su prototipo antes de que el colegio fije las pensiones de 2027. Los grados nuevos van solo si sobra capacidad. Ver [el plan](vision-colegios.md).
+
 **El riesgo principal no es el código, es el contenido.** Cada módulo necesita problemas propios, verificados y con errores típicos bien elegidos (reglas 2, 3, 5 y 6). Es mejor llegar con menos módulos completos que con muchos a medias: un módulo flojo en el colegio da datos que no sirven.
 
 ## Cómo verla y actualizarla
@@ -113,6 +115,23 @@ gantt
     Más componentes de interacción (ordenar, emparejar, clasificar) :f2d, 2027-01-11, 2027-01-23
     Modo PISA, problemas en contexto real por plantilla :f2e, 2027-01-18, 2027-01-30
     Calentamientos de agilidad mental (estilo Peak) :f2f, 2027-01-25, 2027-02-06
+    Reforzar 3.º a 5.º (más módulos en las unidades que más pregunta la UNI) :co10, 2027-01-11, 2027-02-27
+
+    section Colegios, gestión
+    Modelo de negocio, precios y plan de gestión :done, co1, 2026-11-12, 2026-11-13
+    Datos del colegio piloto (alumnos, pensión, registros, formato de notas) :crit, co2, 2026-11-13, 2026-11-21
+    Diseño de las vistas de profesor, papá y dirección :co3, 2026-11-16, 2026-11-23
+    Prueba de OCR con fotos reales de registros :co4, 2026-11-23, 2026-11-28
+    Prototipo navegable de gestión con datos inventados :co5, 2026-11-23, 2026-12-05
+    Presentación al director antes de que fije las pensiones de 2027 :crit, co6, 2026-12-07, 2026-12-12
+    Asesoría legal (contrato, datos de menores, cobro en la pensión) :co7, 2026-12-01, 2026-12-19
+    Gestión real (servidor, cuentas, OCR por API, exportar a Excel o CSV) :co8, 2027-01-11, 2027-02-27
+    Piloto de gestión con el inicio de clases :co9, 2027-03-08, 2027-04-01
+
+    section Grados nuevos (si sobra capacidad)
+    Informe de ideas erróneas en fracciones, decimales y proporcionalidad :gr1, 2027-01-04, 2027-01-16
+    Generadores de matemática para 5.º y 6.º de primaria y 1.º y 2.º de secundaria :gr2, 2027-01-18, 2027-02-27
+    Interfaz para niños de 10 a 12 años :gr3, 2027-02-01, 2027-02-20
 ```
 
 ## Estado de los pendientes
