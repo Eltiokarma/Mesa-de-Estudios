@@ -77,7 +77,12 @@
   // o: { correcta, errores, texto, unidad, variables, enunciado, pregunta, solucion, datos, dec }
   function cerrar(rng, semilla, o) {
     const dec = o.dec === undefined ? 3 : o.dec;
-    const errores = o.errores.filter(e => Number.isFinite(e.valor) && e.valor > 0 && (o.cualquiera || limpio(e.valor, dec)));
+    // Regla común de la rutina (12 nov 2026): ninguna incorrecta fuera de 1/20 a 20 veces la correcta (una opción de otra
+    // escala se descarta sola) ni con más decimales que la correcta (la correcta no puede ser la única redonda). Si
+    // quedan menos de tres errores, el problema se descarta y generar() prueba con otros datos.
+    const txt = o.texto, decs = t => ((t.match(/,(\d+)/) || ['', ''])[1]).length, dCorr = decs(txt(o.correcta));
+    const errores = o.errores.filter(e => Number.isFinite(e.valor) && e.valor > 0 && (o.cualquiera || limpio(e.valor, dec))
+      && e.valor >= o.correcta / 20 && e.valor <= o.correcta * 20 && decs(txt(e.valor)) <= dCorr);
     const alternativas = P.armar({ correcta: o.correcta, errores, rng, texto: o.texto });
     return {
       id: `fluidos-hidrodinamica#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
@@ -92,7 +97,7 @@
   function caudal(rng, semilla, sub) {
     const VAR = { Q: { nombre: 'caudal', color: 'o' }, D: { nombre: 'diámetro', color: 'i' }, t: { nombre: 'tiempo', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
     if (sub === 'rapidez') {
-      const D = rng.elegir([1, 2, 3, 4, 5, 6, 8, 10, 20]), vel = rng.elegir([0.5, 1, 1.2, 1.5, 2, 2.5, 3, 4, 5, 6, 8]);
+      const D = rng.elegir([1, 2, 3, 4, 5, 6, 8, 10, 20]), vel = rng.elegir([0.4, 0.8, 1.2, 1.6, 2, 2.4, 3.2, 4, 4.8, 6, 8]);
       const A = area(D), Q = A * vel, enMin = rng.moneda();
       const Qm = enMin ? Q * 60000 : Q * 1000, uQ = enMin ? 'L/min' : 'L/s';
       if (!limpio(Qm, 2) || Qm < 0.1 || Qm > 2000) return null;
@@ -102,9 +107,10 @@
       const errores = [
         h('PR6-diametro-radio', vel / 4, `Usaste el diámetro como si fuera el radio: el área te salió 4 veces mayor y la rapidez 4 veces menor. El radio es la mitad: r = ${f(D / 2)} cm.`),
         h('U3-litros', vel * 10, 'Pasaste los litros a m³ dividiendo entre 100. En 1 m³ caben 1000 L: hay que dividir entre 1000.'),
-        h('U3-cm2', vel / 100, 'Pasaste el área de cm² a m² dividiendo entre 100. Un metro cuadrado tiene 100 · 100 = 10 000 cm²: hay que dividir entre 10 000.'),
+        h('FH-area-sin-pi-cuartos', vel * 3 / 4, 'Tomaste el área como D², sin el π/4. El área de un círculo es π·r² = π·D²/4.'),
+        h('FH-sin-pi', vel * 3, 'Olvidaste π en el área: A = π·r², con π = 3.'),
+        h('PR6-diametro-radio-litros', vel * 2.5, 'Hubo dos errores: el diámetro como radio (área 4 veces mayor) y los litros pasados a m³ entre 100 (caudal 10 veces mayor).'),
       ];
-      if (enMin) errores.splice(1, 0, h('U6-minutos', vel * 60, 'Dejaste el caudal por minuto. La rapidez va en metros por segundo: primero divide el caudal entre 60.'));
       const solucion = [
         ['Caudal en m³/s: ', v('Q', `Q = ${f(Qm)} ${uQ}`), enMin ? ` = ${f(Qm / 60)} L/s` : '', ` = ${P.formatear(Q, 6)} m³/s (1 m³ = 1000 L).`],
         ['Área: r = ', v('D', `${f(D / 2)} cm`), ` = ${P.formatear(D / 200, 4)} m, así que A = π·r² = 3 · ${P.formatear(D / 200, 4)}² = ${P.formatear(A, 7)} m².`],
@@ -114,7 +120,7 @@
         datos: { tipo: 'caudal', sub, D_cm: D, Q: Qm, uQ, pi: PI } });
     }
     if (sub === 'ducto') {
-      const D = rng.elegir([20, 30, 40]), vel = rng.elegir([1, 1.5, 2, 2.5, 3, 4, 5]), t = rng.elegir([4, 5, 6, 8, 10, 12, 15, 20, 25, 30]);
+      const D = rng.elegir([20, 30, 40]), vel = rng.elegir([0.8, 1.2, 1.6, 2, 2.4, 3.2, 4, 4.8, 6, 8]), t = rng.elegir([4, 5, 6, 8, 10, 12, 15, 20, 25, 30]);
       const A = area(D), Vol = vel * A * t * 60;
       if (!limpio(Vol, 0) || Vol < 20 || Vol > 400) return null;
       const deLugar = rng.elegir(['de un aula', 'de la sala de cómputo', 'del comedor del colegio', 'del laboratorio', 'de la biblioteca', 'de un auditorio']);
@@ -123,7 +129,8 @@
       const errores = [
         h('PR6-diametro-radio', vel / 4, `Usaste el diámetro como radio: el área salió 4 veces mayor. El radio es ${f(D / 2)} cm.`),
         h('U6-minutos', vel * 60, 'Dejaste el tiempo en minutos. Para tener m/s, el tiempo va en segundos: multiplícalo por 60.'),
-        h('U3-cm2', vel / 100, 'Pasaste el área de cm² a m² dividiendo entre 100; hay que dividir entre 10 000.'),
+        h('FH-area-sin-pi-cuartos', vel * 3 / 4, 'Tomaste el área como D², sin el π/4. El área de un círculo es π·r² = π·D²/4.'),
+        h('FH-sin-pi', vel * 3, 'Olvidaste π en el área: A = π·r², con π = 3.'),
         h('PR6-diametro-radio-minutos', vel * 15, 'Hubo dos errores: el diámetro como radio (área 4 veces mayor) y el tiempo en minutos (60 veces menor).'),
       ];
       const solucion = [
@@ -135,7 +142,7 @@
         datos: { tipo: 'caudal', sub, D_cm: D, V_m3: Vol, t_min: t, pi: PI } });
     }
     // llenado
-    const D = rng.elegir([1, 2, 3, 4]), vel = rng.elegir([1, 1.5, 2, 2.5, 3, 4, 5]), t = rng.elegir([4, 5, 6, 8, 10, 12, 15, 20, 25, 30, 40, 50, 60]);
+    const D = rng.elegir([1, 2, 3, 4]), vel = rng.elegir([1, 1.5, 2, 2.5, 3, 4, 5]), t = rng.elegir([4, 6, 8, 12, 16, 20, 24, 30, 36, 40, 48, 60]);
     const A = area(D), VL = A * vel * t * 60 * 1000;
     if (!limpio(VL, 0) || VL < 40 || VL > 3000) return null;
     const enunciado = ['Con una manguera de ', v('D', `${f(D)} cm de diámetro`), `, por la que el agua sale a ${f(vel)} m/s, se llena ${rng.elegir(['un cilindro', 'un tanque', 'una tina', 'un bebedero'])} de ${f(VL)} L${rng.elegir([' en la chacra', ' en el patio', '', ' en el corral'])}.` + conPi];
@@ -144,7 +151,9 @@
       h('PR6-diametro-radio', t / 4, `Usaste el diámetro como radio: el área salió 4 veces mayor y el tiempo 4 veces menor. El radio es ${f(D / 2)} cm.`),
       h('U6-segundos', t * 60, 'Ese número es el tiempo en segundos. La pregunta pide minutos: divide entre 60.'),
       h('U3-litros', t * 10, 'Pasaste los litros a m³ dividiendo entre 100. 1 m³ = 1000 L.'),
-      h('U3-cm2', t / 100, 'Pasaste el área de cm² a m² dividiendo entre 100; hay que dividir entre 10 000.'),
+      h('FH-area-sin-pi-cuartos', t * 4 / 3, 'Tomaste el área como D², sin el π/4. El área de un círculo es π·r² = π·D²/4.'),
+      h('FH-sin-pi', t / 3, 'Olvidaste π en el área: A = π·r², con π = 3.'),
+      h('PR6-diametro-radio-litros', t * 2.5, 'Hubo dos errores: el diámetro como radio (área 4 veces mayor, tiempo 4 veces menor) y los litros pasados a m³ entre 100 (tiempo 10 veces mayor).'),
     ];
     const Q = A * vel;
     const solucion = [
@@ -160,7 +169,7 @@
   function continuidad(rng, semilla, sub) {
     const VAR = { D: { nombre: sub === 'radios' ? 'radio' : 'diámetro', color: 'i' }, v1: { nombre: 'rapidez conocida', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
     if (sub === 'diametros') {
-      const [D1, D2] = rng.elegir([[2, 4], [3, 6], [2, 6], [4, 6], [4, 10], [5, 10], [6, 9], [2, 5], [3, 9]]);
+      const [D1, D2] = rng.elegir([[2, 4], [3, 6], [4, 6], [4, 8], [5, 10], [6, 9], [3, 5], [4, 5], [6, 10], [8, 10]]);
       const v1 = rng.elegir([1.5, 2, 3, 3.6, 4, 4.5, 5, 6, 7.2, 8, 9, 10, 12, 14.4, 16, 18, 20, 25, 27]);
       const k = D1 / D2, v2 = v1 * k * k;
       if (!limpio(v2, 2) || v2 < 0.2) return null;
@@ -182,7 +191,7 @@
         datos: { tipo: 'continuidad', sub, D1_cm: D1, D2_cm: D2, v1 } });
     }
     // radios: manguera ancha con boquilla angosta
-    const [r1, r2] = rng.elegir([[1, 0.5], [2, 1], [1.5, 0.5], [3, 1], [2, 0.5], [1.2, 0.4], [3, 2], [2.5, 1], [1.5, 1], [2, 1.5], [1.8, 0.6], [2.4, 0.8], [1, 0.25]]);
+    const [r1, r2] = rng.elegir([[1, 0.5], [2, 1], [3, 2], [1.5, 1], [2, 1.5], [2.4, 1.2], [1.6, 0.8], [2.5, 2], [1.2, 0.8], [3, 1.5], [2.5, 1.25]]);
     const v1 = rng.elegir([0.2, 0.25, 0.4, 0.5, 0.6, 0.8, 0.9, 1, 1.2, 1.5, 1.6, 2]);
     const k = r1 / r2, v2 = v1 * k * k;
     if (!limpio(v2, 2) || v2 > 40) return null;
@@ -407,9 +416,8 @@
       const nm3 = x => `${f3(x)} N/m³`;
       const errores = [
         h('FH-densidad-como-peso-especifico', rho, `Ese número es la densidad, ${f(rho)} kg/m³: masa entre volumen. El peso específico es peso entre volumen: γ = ρ·g, en N/m³.`, TRAMPAS),
-        h('U4-gramos', gam * 1000, 'Usaste la masa en gramos como si fueran kilogramos. 1 g = 0,001 kg.'),
-        h('U3-cm3', gam / 10000, 'Pasaste los cm³ a m³ dividiendo entre 100. Un metro cúbico tiene 100 · 100 · 100 = 1 000 000 cm³.'),
-        h('FH-divide-entre-g', rho / G, 'Dividiste la densidad entre g. El peso es m·g: el peso específico es ρ·g, no ρ/g.'),
+        h('FH-supone-agua', AGUA * G, 'Ese es el peso específico del agua, 10 000 N/m³. Este líquido tiene otra densidad: calcúlala con su masa y su volumen.'),
+        h('FH-g-9-8', rho * 9.8, 'Usaste g = 9,8 m/s². El enunciado pide g = 10 m/s².'),
       ];
       const solucion = [
         ['Densidad: ρ = ', v('m', 'm'), '/', v('V', 'V'), ' = ', v('m', `${P.formatear(m / 1000, 4)} kg`), ' / ', v('V', `${P.formatear(Vc * 1e-6, 6)} m³`), ` = ${f(rho)} kg/m³.`],
@@ -431,6 +439,7 @@
     const errores = [
       h('FH-peso-especifico-como-densidad', rho * G, `Dividiste el peso entre el volumen: eso es el peso específico, ${f(rho * G)} N/m³. La densidad es masa entre volumen: primero pasa el peso a masa, m = W/g.`, TRAMPAS),
       h('U3-litros', rho / 10, 'Pasaste los litros a m³ dividiendo entre 100. 1 m³ = 1000 L.'),
+      h('FH-supone-agua', AGUA, 'Esa es la densidad del agua. Este cuerpo tiene otra: divide su masa entre su volumen.'),
       h('FH-multiplica-g', rho * G * G, 'Multiplicaste por g en vez de dividir. La masa es el peso entre g.'),
     ];
     const solucion = [
@@ -459,6 +468,7 @@
         h('FH-sin-g', Pa / HG * 100, 'Dividiste la presión entre la densidad sin la g: P = ρ·g·h.'),
         h('FH-densidad-del-agua', Pa / (AGUA * G) * 100, 'Usaste la densidad del agua. El barómetro es de mercurio, 13,6 veces más denso: su columna es 13,6 veces más baja.'),
         h('FH-metros-como-cm', hm, `La cuenta da ${f(hm)} en metros; en centímetros son ${f(hm * 100)}.`),
+        h('FH-da-la-bajada', 76 - hm * 100, `${f(76 - hm * 100)} cm es cuánto menos marca que al nivel del mar (76 cm), no la altura de la columna.`),
       ];
       const solucion = [
         ['El aire sostiene la columna: ', v('P', 'P'), ' = ρ·g·', v('hc', 'h'), ' (arriba de la columna casi no hay presión).'],
@@ -514,7 +524,10 @@
       return cerrar(rng, semilla, { correcta: Pm + Patm, errores, texto: kPa, unidad: 'kPa', dec: 2, cualquiera: true, variables: VAR, enunciado, pregunta, solucion,
         datos: { tipo: 'barometro', sub, h_cm: hm * 100, Pman_kPa: Pm } });
     }
-    const Pabs = Pm + Patm;
+    // La absoluta se da redonda y la manométrica sale con los decimales de la atmosférica: así las incorrectas no son
+    // las únicas con decimales.
+    const Pabs = rng.elegir([100, 120, 150, 180, 200, 250, 300]);
+    if (Pabs - Patm < 15 || (deCosa.includes('olla') && Pabs - Patm > 100)) return null;
     const enunciado = [`En ${ciudad}, un barómetro de mercurio (13 600 kg/m³) marca `, v('hc', cm(hm * 100)), `. La presión absoluta del aire dentro ${deCosa} es de `, v('P', kPa(Pabs)), '. Toma g = 10 m/s².'];
     const pregunta = ['¿Qué ', v('x', 'presión manométrica'), ' marca su manómetro?'];
     const errores = [
@@ -525,9 +538,9 @@
     ];
     const solucion = [
       ['Atmosférica en ', ciudad, ': ', v('hc', `ρ·g·h = 13 600 · 10 · ${f(hm)}`), ` = ${f(Patm)} kPa.`],
-      [v('x', 'manométrica'), ' = ', v('P', 'absoluta'), ` − atmosférica = ${f(Pabs)} − ${f(Patm)} = `, v('x', kPa(Pm)), '.'],
+      [v('x', 'manométrica'), ' = ', v('P', 'absoluta'), ` − atmosférica = ${f(Pabs)} − ${f(Patm)} = `, v('x', kPa(Pabs - Patm)), '.'],
     ];
-    return cerrar(rng, semilla, { correcta: Pm, errores, texto: kPa, unidad: 'kPa', dec: 2, cualquiera: true, variables: VAR, enunciado, pregunta, solucion,
+    return cerrar(rng, semilla, { correcta: Pabs - Patm, errores, texto: kPa, unidad: 'kPa', dec: 2, cualquiera: true, variables: VAR, enunciado, pregunta, solucion,
       datos: { tipo: 'barometro', sub, h_cm: hm * 100, Pabs_kPa: Pabs } });
   }
 

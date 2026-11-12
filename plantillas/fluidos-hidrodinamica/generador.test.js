@@ -164,3 +164,16 @@ for (const p of papel.problemas) test(`papel ${p.id}: la respuesta coincide con 
     for (const [k, e] of Object.entries(ver.espera)) assert.ok(Math.abs(r[k] - e) <= 1e-9 * Math.max(1, Math.abs(e)), `${p.id} · ${k}: da ${r[k]}, se esperaba ${e}`);
   }
 });
+
+test('escala: ninguna incorrecta fuera de 1/20 a 20 veces la correcta ni con más decimales que ella (600 semillas); nunca lanza en 0 a 2000', () => {
+  const decs = t => ((t.match(/,(\d+)/) || ['', ''])[1]).length;
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s), c = p.alternativas.find(a => a.correcta);
+    for (const a of p.alternativas.filter(a => !a.correcta)) {
+      assert.ok(a.valor >= c.valor / 20 && a.valor <= c.valor * 20, `semilla ${s}: ${a.texto} fuera de escala contra ${c.texto}`);
+      assert.ok(decs(a.texto) <= decs(c.texto), `semilla ${s}: ${a.texto} tiene más decimales que ${c.texto}`);
+    }
+  }
+  for (let s = 0; s <= 2000; s++) assert.doesNotThrow(() => gen.generar(s), `semilla ${s}`);
+  for (let s = 1; s <= 50; s++) assert.doesNotThrow(() => gen.generar('alternativas-' + s));
+});
