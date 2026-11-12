@@ -1,0 +1,170 @@
+{
+  "id": "t157",
+  "version": 1,
+  "titulo": "Universidad gratuita o becas para quienes más lo necesitan",
+  "tema": "Educación · gratuidad universal y becas focalizadas",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    { "id": "A", "desde": 0, "firma": "Una socióloga de la educación" },
+    { "id": "B", "desde": 1, "firma": "Un economista" }
+  ],
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "principal", "t": "La universidad pública debería ser gratuita para todos los que logren ingresar, sin preguntarle a nadie cuánto gana su familia." },
+      { "id": "o2", "rol": "apoyo", "t": "Cuando se exige probar que uno es pobre, se crean trámites, listas y sospechas, y muchas familias que apenas superan la línea de pobreza quedan fuera." },
+      { "id": "o3", "rol": "apoyo", "t": "Además, la educación gratuita es un derecho que se sostiene entre todos: si los ricos también la usan, también la defienden y exigen que sea de calidad." },
+      { "id": "o4", "rol": "principal", "t": "Un beneficio solo para los más pobres se recorta con facilidad; uno que alcanza a todos es difícil de quitar." }
+    ],
+    [
+      { "id": "o5", "rol": "apoyo", "t": "Comparto que los trámites para probar pobreza pueden dejar fuera a familias que sí necesitan ayuda." },
+      { "id": "o6", "rol": "contraste", "t": "Pero el dinero del Estado es limitado, y pagarles los estudios a quienes sí pueden pagarlos deja menos para sostener a los que más lo necesitan." },
+      { "id": "o7", "rol": "apoyo", "t": "Un programa como Beca 18, que paga los estudios de jóvenes de bajos recursos con buen rendimiento, usa cada sol allí donde hace más falta." },
+      { "id": "o8", "rol": "principal", "t": "La salida no es regalarlo todo a todos, sino mejorar cómo se selecciona a quienes reciben la beca, para que ninguna familia necesitada quede afuera." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "controversia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Probar la pobreza con trámites puede dejar fuera a familias que sí necesitan ayuda.",
+        "aceptada": "ambos",
+        "codigos": {
+          "A": "RV61",
+          "B": "RV61",
+          "ninguno": null
+        },
+        "explicacion": "Los dos lo dicen: el texto A en la oración 2 y el B en la oración 5.",
+        "explicaciones": {
+          "A": "El texto A lo dice en la oración 2, pero el B también lo comparte: «comparto que los trámites… pueden dejar fuera a familias» (oración 5).",
+          "B": "El texto B lo comparte en la oración 5, pero el A lo dice primero, en la oración 2.",
+          "ninguno": "Los dos lo sostienen: el texto A en la oración 2 y el B en la oración 5."
+        }
+      },
+      "enunciado": "¿Cuál es el eje del debate entre los dos textos?",
+      "alternativas": [
+        { "t": "Si los trámites para probar pobreza dejan fuera a familias que sí necesitan ayuda.", "codigo": "RV61", "origen": "o5",
+          "explicacion": "En eso coinciden: el texto A lo dice en la oración 2 y el B lo comparte en la oración 5." },
+        { "t": "Si un beneficio dirigido solo a los más pobres es más fácil de recortar que uno que alcanza a todos.", "codigo": "RV60", "origen": "o4",
+          "explicacion": "Es un argumento del texto A (oración 4). El B no lo discute, y el eje tiene que ser algo sobre lo que los dos toman posición." },
+        { "t": "Si el Estado debe pagar los estudios de todos o solo los de quienes menos tienen.", "correcta": true, "evidencia": ["o1", "o8"],
+          "explicacion": "El texto A pide gratuidad para todos los que ingresen (oración 1); el B prefiere ayudar a quienes la necesitan, con mejor selección (oración 8)." },
+        { "t": "Si Beca 18 paga los estudios de jóvenes de bajos recursos que tienen buen rendimiento.", "codigo": "RV1", "origen": "o7",
+          "explicacion": "Es un ejemplo del texto B (oración 7), no lo que se discute." },
+        { "t": "Si la educación superior es importante para el futuro del país.", "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos discuten cómo financiar los estudios, no si la educación importa." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En la oración 8 del texto B, la palabra SALIDA («la salida no es regalarlo todo a todos») significa",
+      "alternativas": [
+        { "t": "lugar por donde se sale.", "codigo": "RV18",
+          "explicacion": "Es el sentido más común de «salida», pero aquí no se habla de un lugar, sino de cómo resolver un problema." },
+        { "t": "retirada del Estado.", "codigo": "RV19",
+          "explicacion": "Se asocia con «irse» o «dejar», pero el autor no pide que el Estado se retire, sino que seleccione mejor a quienes reciben la beca." },
+        { "t": "mejorar cómo se selecciona a quienes reciben la beca.", "codigo": "RV5", "origen": "o8",
+          "explicacion": "Repite palabras de la misma oración, pero describe lo que propone el autor, no lo que significa la palabra «salida»." },
+        { "t": "solución.", "correcta": true, "evidencia": ["o8"],
+          "explicacion": "Es la respuesta que el autor propone al problema de los trámites y del dinero limitado." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "dialogo",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Un beneficio que alcanza a todos es difícil de quitar.",
+        "aceptada": "A",
+        "codigos": {
+          "B": "RV59",
+          "ambos": "RV60",
+          "ninguno": null
+        },
+        "explicacion": "Lo dice el texto A en la oración 4.",
+        "explicaciones": {
+          "B": "El texto B no habla de qué beneficio es difícil de quitar; habla de que el dinero es limitado (oración 6). La idea es del A (oración 4).",
+          "ambos": "Solo el texto A lo sostiene (oración 4). El B propone una beca selectiva, que justamente alcanza a pocos.",
+          "ninguno": "Sí lo sostiene alguien: el texto A, en la oración 4."
+        }
+      },
+      "enunciado": "Ante la propuesta del texto B, la autora del texto A probablemente objetaría que",
+      "alternativas": [
+        { "t": "el dinero del Estado es limitado y no alcanza para pagar los estudios de todos.", "codigo": "RV59", "origen": "o6",
+          "explicacion": "Ese es el argumento del texto B (oración 6); no sirve al A para objetarle." },
+        { "t": "las universidades privadas deberían recibir dinero del Estado.", "codigo": "RV33",
+          "explicacion": "Ninguno de los dos textos habla de universidades privadas." },
+        { "t": "los trámites para probar pobreza pueden dejar fuera a familias que sí necesitan ayuda.", "codigo": "RV12", "origen": "o2",
+          "explicacion": "Repite algo que el B ya reconoce en la oración 5; no es una objeción a su propuesta de mejorar la selección." },
+        { "t": "una ayuda reservada a los más pobres es más fácil de recortar que un derecho de todos.", "correcta": true, "evidencia": ["o4"],
+          "explicacion": "Aunque la selección mejore, el texto A sostiene que un beneficio solo para los más pobres se recorta con facilidad (oración 4)." },
+        { "t": "las universidades públicas del país no tienen laboratorios suficientes para recibir más alumnos.", "codigo": "RV8",
+          "explicacion": "Puede ser cierto, pero ningún texto lo dice." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Las becas deberían repartirse por sorteo entre los postulantes.",
+        "aceptada": "ninguno",
+        "codigos": {
+          "A": "RV33",
+          "B": "RV33",
+          "ambos": "RV33"
+        },
+        "explicacion": "Ninguno lo sostiene: el A pide gratuidad para todos los que ingresen (oración 1) y el B, mejorar la selección según necesidad y rendimiento (oraciones 7 y 8).",
+        "explicaciones": {
+          "A": "El texto A no habla de sorteos: pide gratuidad para todos (oración 1).",
+          "B": "El texto B habla de seleccionar mejor a quienes reciben la beca, por bajos recursos y buen rendimiento (oraciones 7 y 8), no de un sorteo.",
+          "ambos": "Ninguno de los dos lo propone."
+        }
+      },
+      "enunciado": "Es incompatible con lo que sostiene el autor del texto B afirmar que",
+      "alternativas": [
+        { "t": "muchos jóvenes con buen rendimiento no postulan a una beca por falta de información.", "codigo": "RV36",
+          "explicacion": "El texto B no lo menciona, pero tampoco lo contradice: incompatible es lo que choca con lo que dice, no lo que no dice." },
+        { "t": "el dinero del Estado alcanza para ayudar a todos sin tener que elegir.", "correcta": true, "evidencia": ["o6"],
+          "explicacion": "Choca con la oración 6: para el autor del texto B, el dinero del Estado es limitado." },
+        { "t": "no toda ayuda del Estado tiene que llegar a todos los ciudadanos por igual.", "codigo": "RV10",
+          "explicacion": "Parece contradecir al autor por el «no», pero dice casi lo mismo que él en las oraciones 6 y 8." },
+        { "t": "un beneficio que alcanza a todos es difícil de quitar.", "codigo": "RV59", "origen": "o4",
+          "explicacion": "Es una idea del texto A, pero el B no la contradice: no habla de qué tan fácil sea quitar un beneficio." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "sintesis",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "¿Qué enunciado integra mejor lo que plantean los dos textos?",
+      "alternativas": [
+        { "t": "Como los trámites dejan fuera a familias, el Estado debe eliminar Beca 18 y destinar ese dinero a otros programas.", "codigo": "RV44",
+          "explicacion": "Une las ideas con una relación que los textos no plantean: el B defiende Beca 18 y propone mejorar su selección (oraciones 7 y 8)." },
+        { "t": "Un beneficio que alcanza a todos es difícil de quitar, y es lo que defienden ambos textos.", "codigo": "RV60", "origen": "o4",
+          "explicacion": "Es una idea del texto A (oración 4); el B no la comparte." },
+        { "t": "La gratuidad total deja menos dinero para los más necesitados, y por eso conviene que los ricos también la usen.", "codigo": "RV62", "origen": "o6",
+          "explicacion": "La primera mitad es del texto B (oración 6), pero la conclusión no sigue de ella: que los ricos la usen es lo que el B quiere evitar." },
+        { "t": "Los dos quieren que nadie con necesidad quede fuera, y difieren en cómo lograrlo con el dinero disponible.", "correcta": true, "evidencia": ["o2", "o5", "o8"],
+          "explicacion": "Ambos reconocen que los trámites dejan fuera a familias (oraciones 2 y 5); difieren en la solución: gratuidad para todos (oración 1) o mejor selección (oración 8)." },
+        { "t": "La educación superior es el principal motor del crecimiento económico del Perú.", "codigo": "RV2",
+          "explicacion": "Es demasiado general y no sale de los textos." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-12",
+  "hechos": [{"afirmacion": "Beca 18 es un programa del Estado peruano, administrado por el Programa Nacional de Becas y Crédito Educativo (PRONABEC), que financia estudios superiores de jóvenes de bajos recursos económicos con buen rendimiento académico; fue creado en 2012.", "fuente": "PRONABEC, Ministerio de Educación del Perú, información institucional sobre Beca 18"}],
+  "revision": null
+}

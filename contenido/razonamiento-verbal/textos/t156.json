@@ -1,0 +1,172 @@
+{
+  "id": "t156",
+  "version": 1,
+  "titulo": "El mercado y el supermercado",
+  "tema": "Sociedad · mercados de abastos y supermercados",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    { "id": "A", "desde": 0, "firma": "Una dirigente de comerciantes de un mercado de abastos" },
+    { "id": "B", "desde": 1, "firma": "Un joven que trabaja en una cadena de supermercados" }
+  ],
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "principal", "t": "Los mercados de abastos siguen siendo el corazón de la compra diaria en nuestras ciudades, y no deberían ser reemplazados por los supermercados." },
+      { "id": "o2", "rol": "apoyo", "t": "Allí la verdura llega fresca, se puede regatear y la casera conoce a sus clientes y les fía cuando hace falta." },
+      { "id": "o3", "rol": "apoyo", "t": "Además, cada puesto es el sustento de una familia, mientras que un supermercado concentra la ganancia en una sola empresa." },
+      { "id": "o4", "rol": "principal", "t": "Las ciudades deberían ayudar a modernizar los mercados, no dejarlos morir." }
+    ],
+    [
+      { "id": "o5", "rol": "apoyo", "t": "Reconozco que los mercados tienen un trato cercano y una frescura que muchos supermercados no igualan." },
+      { "id": "o6", "rol": "contraste", "t": "Pero un supermercado ofrece algo distinto: precios marcados, horario amplio y un local limpio con refrigeración para la carne y los lácteos." },
+      { "id": "o7", "rol": "apoyo", "t": "Para una familia donde todos trabajan hasta tarde, poder comprar a las nueve de la noche es una necesidad, no un lujo." },
+      { "id": "o8", "rol": "principal", "t": "Por eso pienso que ambos pueden convivir: el mercado para lo fresco y el trato, el supermercado para lo envasado y las compras fuera de hora." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "postura",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Mercados y supermercados pueden convivir, cada uno con su función.",
+        "aceptada": "B",
+        "codigos": {
+          "A": "RV59",
+          "ambos": "RV60",
+          "ninguno": null
+        },
+        "explicacion": "Lo dice el texto B en la oración 8: ambos pueden convivir, el mercado para lo fresco y el trato, el supermercado para lo envasado y las compras fuera de hora.",
+        "explicaciones": {
+          "A": "El texto A pide que los mercados no sean reemplazados y que se modernicen (oraciones 1 y 4), pero no propone repartir funciones con los supermercados. La idea es del B (oración 8).",
+          "ambos": "Solo el texto B lo plantea (oración 8). El A defiende a los mercados frente a los supermercados.",
+          "ninguno": "Sí lo sostiene alguien: el texto B, en la oración 8."
+        }
+      },
+      "enunciado": "¿Qué sostiene el autor del texto B?",
+      "alternativas": [
+        { "t": "Que las ciudades deben ayudar a modernizar los mercados en lugar de dejarlos morir.", "codigo": "RV59", "origen": "o4",
+          "explicacion": "Es la propuesta del texto A (oración 4); el B no la plantea." },
+        { "t": "Que comprar a las nueve de la noche es una necesidad para algunas familias, no un lujo.", "codigo": "RV1", "origen": "o7",
+          "explicacion": "Es un ejemplo con el que apoya su idea (oración 7), no su postura general." },
+        { "t": "Que mercados y supermercados cumplen funciones distintas y pueden existir a la vez.", "correcta": true, "evidencia": ["o8"],
+          "explicacion": "Lo dice en la oración 8: cada uno sirve para algo distinto y ambos pueden convivir." },
+        { "t": "Que los mercados deben desaparecer porque no cuentan con refrigeración para la carne y los lácteos.", "codigo": "RV12", "origen": "o6",
+          "explicacion": "Exagera la postura del B: reconoce la frescura y el trato de los mercados (oración 5) y pide que convivan (oración 8)." },
+        { "t": "Que los supermercados son siempre mejores que los mercados de abastos para las familias.", "codigo": "RV11",
+          "explicacion": "«Siempre» dice más de lo que afirma el B, que reconoce ventajas de los mercados (oración 5)." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En la oración 2 del texto A, el verbo FÍA («les fía cuando hace falta») significa",
+      "alternativas": [
+        { "t": "confía en ellos sin dudar de su palabra.", "codigo": "RV18",
+          "explicacion": "Es el sentido de «fiarse» de alguien, más común, pero aquí la casera hace algo con la mercadería: la entrega sin cobrar en ese momento." },
+        { "t": "les regala la compra a sus clientes.", "codigo": "RV19",
+          "explicacion": "Se parece porque tampoco cobra en el momento, pero fiar no es regalar: el cliente después paga." },
+        { "t": "les vende y les deja pagar después.", "correcta": true, "evidencia": ["o2"],
+          "explicacion": "La casera entrega la mercadería «cuando hace falta» y el cliente paga luego, porque conoce a sus clientes." },
+        { "t": "conoce a sus clientes y a sus familias.", "codigo": "RV5", "origen": "o2",
+          "explicacion": "Repite palabras de la misma oración, pero es la razón por la que puede fiar, no lo que significa el verbo." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "coincidencia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "En un mercado de abastos el trato con quien vende es cercano.",
+        "aceptada": "ambos",
+        "codigos": {
+          "A": "RV61",
+          "B": "RV61",
+          "ninguno": null
+        },
+        "explicacion": "Los dos lo dicen: el texto A en la oración 2 (la casera conoce a sus clientes) y el B en la oración 5 (los mercados tienen un trato cercano).",
+        "explicaciones": {
+          "A": "El texto A lo dice en la oración 2, pero el B también lo reconoce en la oración 5.",
+          "B": "El texto B lo reconoce en la oración 5, pero el A lo dice primero, en la oración 2.",
+          "ninguno": "Los dos lo sostienen: el texto A en la oración 2 y el B en la oración 5."
+        }
+      },
+      "enunciado": "¿En qué coinciden ambos autores?",
+      "alternativas": [
+        { "t": "En que las compras fuera de hora son una necesidad para algunas familias.", "codigo": "RV60", "origen": "o7",
+          "explicacion": "Es un argumento del texto B (oración 7). El A no lo menciona." },
+        { "t": "En que el mercado ofrece trato cercano y el supermercado concentra la ganancia en una sola empresa.", "codigo": "RV62", "origen": "o3",
+          "explicacion": "La primera mitad es común, pero lo de la ganancia en una sola empresa lo dice solo el texto A (oración 3)." },
+        { "t": "En que los precios de los mercados son siempre más bajos que los de los supermercados.", "codigo": "RV11",
+          "explicacion": "Ningún texto compara precios de ese modo; el B habla de precios marcados en el supermercado (oración 6)." },
+        { "t": "En que los supermercados deberían pagar un impuesto para sostener a los mercados.", "codigo": "RV33",
+          "explicacion": "Ninguno de los dos lo propone." },
+        { "t": "En que los mercados de abastos tienen un trato cercano con el cliente.", "correcta": true, "evidencia": ["o2", "o5"],
+          "explicacion": "El texto A lo muestra con la casera que conoce a sus clientes (oración 2); el B lo reconoce en la oración 5." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "sintesis",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Cada puesto de un mercado es el sustento de una familia.",
+        "aceptada": "A",
+        "codigos": {
+          "B": "RV59",
+          "ambos": "RV60",
+          "ninguno": null
+        },
+        "explicacion": "Lo dice el texto A en la oración 3.",
+        "explicaciones": {
+          "B": "El texto B no habla de los puestos como sustento de familias, sino del horario y la limpieza de los supermercados. La idea es del A (oración 3).",
+          "ambos": "Solo el texto A lo dice (oración 3). El B reconoce las ventajas de los mercados, pero por su trato y su frescura (oración 5).",
+          "ninguno": "Sí lo sostiene alguien: el texto A, en la oración 3."
+        }
+      },
+      "enunciado": "¿Qué enunciado integra mejor lo que plantean los dos textos?",
+      "alternativas": [
+        { "t": "Los mercados deben modernizarse porque los supermercados ofrecen horarios amplios y precios marcados.", "codigo": "RV44",
+          "explicacion": "Une las ideas con una relación que los textos no plantean: el A pide modernizar los mercados para conservarlos (oración 4), no por los horarios del supermercado." },
+        { "t": "Los mercados tienen un trato cercano, pero deben cerrarse para que la ciudad tenga solo supermercados con horario amplio.", "codigo": "RV62", "origen": "o5",
+          "explicacion": "La primera mitad la aceptan los dos, pero la segunda la niegan ambos: el A pide no reemplazar los mercados (oración 1) y el B pide que convivan (oración 8)." },
+        { "t": "Los supermercados son la mayor amenaza para el sustento de las familias de una ciudad.", "codigo": "RV60", "origen": "o3",
+          "explicacion": "Es una idea fuerte del texto A (oración 3) que el B no comparte." },
+        { "t": "Los mercados valen por su trato y por las familias que viven de ellos, y pueden convivir con los supermercados.", "correcta": true, "evidencia": ["o3", "o4", "o8"],
+          "explicacion": "Integra lo del A (el sustento de las familias y la modernización, oraciones 3 y 4) con la convivencia que propone el B (oración 8)." },
+        { "t": "Comprar en un supermercado es mejor que comprar en un mercado cuando se tiene prisa.", "codigo": "RV2",
+          "explicacion": "Es una idea demasiado simple que ni siquiera usa los argumentos de los dos textos." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Si el municipio construyera un mercado de abastos con refrigeración, precios marcados y atención hasta las diez de la noche, el autor del texto B probablemente",
+      "alternativas": [
+        { "t": "seguiría diciendo que solo el supermercado puede ofrecer horario amplio y refrigeración.", "codigo": "RV63", "origen": "o6",
+          "explicacion": "La condición cambió: ese mercado ya tendría horario amplio y refrigeración, así que la razón del autor para preferir el supermercado se debilita." },
+        { "t": "aseguraría que los supermercados desaparecerán de todas las ciudades del país.", "codigo": "RV11",
+          "explicacion": "Dice más de lo que el texto permite: ni siquiera con ese mercado afirmaría que todos los supermercados desaparecerán." },
+        { "t": "vería menos necesidad de recurrir al supermercado para las compras fuera de hora.", "correcta": true, "evidencia": ["o6", "o7"],
+          "explicacion": "Pone el horario amplio y la refrigeración como lo propio del supermercado (oraciones 6 y 7); si el mercado los tiene, esa ventaja se reduce." },
+        { "t": "pediría que se prohíba la venta de productos envasados en toda la ciudad.", "codigo": "RV7",
+          "explicacion": "Va más allá de lo que el texto permite: el autor acepta el supermercado para lo envasado (oración 8)." },
+        { "t": "se opondría a que el mercado venda carne y lácteos, porque eso corresponde al supermercado.", "codigo": "RV33",
+          "explicacion": "El autor no toma esa postura: pide refrigeración para la carne y los lácteos, no que se dejen de vender en el mercado." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-12",
+  "hechos": [],
+  "revision": null
+}

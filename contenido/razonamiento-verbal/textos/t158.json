@@ -1,0 +1,172 @@
+{
+  "id": "t158",
+  "version": 1,
+  "titulo": "Datos abiertos: ¿quién los lee?",
+  "tema": "Sociedad · datos abiertos del Estado y corrupción",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    { "id": "A", "desde": 0, "firma": "Un periodista de investigación" },
+    { "id": "B", "desde": 1, "firma": "Una profesora de educación cívica" }
+  ],
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "principal", "t": "Publicar los datos del Estado, como las compras públicas y los presupuestos, es una de las mejores defensas contra la corrupción." },
+      { "id": "o2", "rol": "apoyo", "t": "Hoy las compras de las entidades públicas ya se publican en un portal, y gracias a eso se pueden comparar precios y descubrir contratos repetidos con una misma empresa." },
+      { "id": "o3", "rol": "apoyo", "t": "Lo que se esconde se presta a la trampa; lo que está a la vista de todos obliga a quien administra el dinero a cuidar lo que firma." },
+      { "id": "o4", "rol": "principal", "t": "Por eso el Estado debe publicar más datos, en formatos que cualquiera pueda descargar y analizar." }
+    ],
+    [
+      { "id": "o5", "rol": "apoyo", "t": "Estoy de acuerdo en que publicar los datos es un primer paso necesario, pues sin ellos nadie podría revisar nada." },
+      { "id": "o6", "rol": "contraste", "t": "Pero una tabla con miles de filas no previene nada si nadie la lee: abrir los datos no vuelve ciudadano a quien no sabe qué preguntar." },
+      { "id": "o7", "rol": "apoyo", "t": "Un vecino que no conoce cómo se aprueba una obra ni qué es un presupuesto no distinguirá un precio sospechoso de uno normal." },
+      { "id": "o8", "rol": "principal", "t": "Por eso la transparencia solo funciona si va acompañada de educación cívica, que enseñe a leer esos datos y a exigir cuentas." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "discrepancia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Lo que está a la vista de todos obliga a quien administra el dinero a cuidar lo que firma.",
+        "aceptada": "A",
+        "codigos": {
+          "B": "RV59",
+          "ambos": "RV60",
+          "ninguno": null
+        },
+        "explicacion": "Lo dice el texto A en la oración 3.",
+        "explicaciones": {
+          "B": "El texto B no habla de lo que obliga a cuidar lo que se firma: habla de que una tabla que nadie lee no previene nada (oración 6). La idea es del A (oración 3).",
+          "ambos": "Solo el texto A lo sostiene (oración 3). El B acepta que publicar es necesario (oración 5), pero no que por sí solo obligue a nadie.",
+          "ninguno": "Sí lo sostiene alguien: el texto A, en la oración 3."
+        }
+      },
+      "enunciado": "¿En qué discrepan los autores?",
+      "alternativas": [
+        { "t": "A cree que publicar datos previene la corrupción; B, que publicarlos es innecesario.", "codigo": "RV62", "origen": "o5",
+          "explicacion": "La primera mitad es correcta, pero el B no dice que sea innecesario: lo llama «un primer paso necesario» (oración 5)." },
+        { "t": "A sostiene que sin educación cívica una tabla no previene nada; B, que lo que está a la vista obliga a cuidar lo que se firma.", "codigo": "RV59", "origen": "o3",
+          "explicacion": "Cambia las posturas de lugar: lo de la educación cívica es del texto B (oraciones 6 y 8) y lo de lo que está a la vista, del A (oración 3)." },
+        { "t": "A defiende que el Estado publique sus datos; B, que no deben publicarse.", "codigo": "RV61", "origen": "o5",
+          "explicacion": "En eso no discrepan: el B también dice que publicarlos es un primer paso necesario (oración 5)." },
+        { "t": "A ve en publicar los datos una defensa contra la corrupción; B, que solo funciona si los ciudadanos saben leerlos.", "correcta": true, "evidencia": ["o1", "o8"],
+          "explicacion": "Cada mitad es la tesis de su autor: la oración 1 en el texto A y la oración 8 en el B." },
+        { "t": "A pide eliminar los portales actuales; B, mantenerlos.", "codigo": "RV33",
+          "explicacion": "Ninguno toma esas posturas: el A dice que las compras ya se publican en un portal y que se deben publicar más datos (oraciones 2 y 4)." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "coincidencia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "El Estado debe publicar sus datos.",
+        "aceptada": "ambos",
+        "codigos": {
+          "A": "RV61",
+          "B": "RV61",
+          "ninguno": null
+        },
+        "explicacion": "Los dos lo sostienen: el texto A en la oración 4 y el B, que lo llama un primer paso necesario, en la oración 5.",
+        "explicaciones": {
+          "A": "El texto A lo dice en la oración 4, pero el B también lo acepta: publicar los datos es «un primer paso necesario» (oración 5).",
+          "B": "El texto B lo dice en la oración 5, pero el A lo defiende primero, en las oraciones 1 y 4.",
+          "ninguno": "Los dos lo sostienen: el texto A en la oración 4 y el B en la oración 5."
+        }
+      },
+      "enunciado": "¿En qué coinciden ambos autores?",
+      "alternativas": [
+        { "t": "En que los datos publicados ya bastan para prevenir la corrupción.", "codigo": "RV60", "origen": "o1",
+          "explicacion": "Es la postura del texto A. El B dice que no previenen nada si nadie los lee (oración 6)." },
+        { "t": "En que los datos deben publicarse y en que cualquier vecino sabe leerlos sin ayuda.", "codigo": "RV62", "origen": "o7",
+          "explicacion": "La primera mitad es común, pero el texto B dice lo contrario de la segunda: quien no conoce un presupuesto no distinguirá un precio sospechoso (oración 7)." },
+        { "t": "En que el Perú publica más datos públicos que otros países de la región.", "codigo": "RV8",
+          "explicacion": "Puede ser cierto, pero ningún texto lo dice." },
+        { "t": "En que los ciudadanos deben revisar personalmente cada obra pública.", "codigo": "RV33",
+          "explicacion": "Ninguno de los dos lo plantea." },
+        { "t": "En que publicar los datos del Estado es un paso necesario para revisar su gestión.", "correcta": true, "evidencia": ["o4", "o5"],
+          "explicacion": "El texto A pide que el Estado publique más datos (oración 4); el B dice que sin ellos nadie podría revisar nada (oración 5)." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En la oración 8 del texto B, la expresión EXIGIR CUENTAS significa",
+      "alternativas": [
+        { "t": "pedir que alguien haga operaciones de suma y resta con exactitud.", "codigo": "RV18",
+          "explicacion": "Es el sentido más común de «cuentas», pero aquí se habla de las autoridades y su manejo del dinero." },
+        { "t": "pedir explicaciones a las autoridades sobre el dinero público.", "correcta": true, "evidencia": ["o8"],
+          "explicacion": "Es lo que hace el ciudadano que sabe leer los datos: pide explicaciones y responsabilidad a quienes administran." },
+        { "t": "cobrar lo que alguien debe por un servicio ya prestado.", "codigo": "RV19",
+          "explicacion": "Se asocia con dinero y deudas, pero el texto no habla de cobrar, sino de pedir explicaciones." },
+        { "t": "enseñar a leer esos datos a los vecinos del distrito.", "codigo": "RV5", "origen": "o8",
+          "explicacion": "Repite palabras de la misma oración, pero es lo que hace la educación cívica, no lo que significa «exigir cuentas»." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "compatibilidad",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "¿Cuál de estas propuestas es compatible con lo que sostiene la autora del texto B?",
+      "alternativas": [
+        { "t": "Retirar los datos del portal hasta que la población sepa leerlos.", "codigo": "RV9", "origen": "o5",
+          "explicacion": "Choca con la oración 5: la autora dice que publicar los datos es un primer paso necesario." },
+        { "t": "Confiar en que la sola publicación de datos prevendrá la corrupción.", "codigo": "RV59", "origen": "o1",
+          "explicacion": "Se acerca a lo que defiende el texto A; la autora del B dice que sin educación cívica no previene nada (oración 6)." },
+        { "t": "Publicar el presupuesto de la municipalidad y enseñar en el colegio a leerlo.", "correcta": true, "evidencia": ["o5", "o8"],
+          "explicacion": "Mantiene la publicación, que la autora acepta (oración 5), y le suma la educación cívica que pide (oración 8)." },
+        { "t": "Dejar que solo los periodistas consulten los datos, porque los vecinos siempre los malinterpretan.", "codigo": "RV11",
+          "explicacion": "«Siempre» dice más de lo que afirma la autora, que quiere enseñar a los vecinos a leerlos (oración 8)." },
+        { "t": "Esperar a que haya educación cívica en todo el país para comenzar a publicar datos.", "codigo": "RV44", "origen": "o8",
+          "explicacion": "Cambia la relación de la oración 8: la autora pide que la transparencia vaya acompañada de educación, no que se publique después." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Quien no conoce qué es un presupuesto no distingue un precio sospechoso de uno normal.",
+        "aceptada": "B",
+        "codigos": {
+          "A": "RV59",
+          "ambos": "RV60",
+          "ninguno": null
+        },
+        "explicacion": "Lo dice el texto B en la oración 7.",
+        "explicaciones": {
+          "A": "El texto A no habla de lo que no sabe un vecino: dice que los datos a la vista obligan a cuidar lo que se firma (oración 3). La idea es del B (oración 7).",
+          "ambos": "Solo el texto B lo dice (oración 7). El A supone que los datos se pueden comparar y analizar (oración 2), pero no habla de quién no sabe leerlos.",
+          "ninguno": "Sí lo sostiene alguien: el texto B, en la oración 7."
+        }
+      },
+      "enunciado": "Si se comprobara que, en un distrito donde se enseñó a leer el presupuesto, los vecinos usaron los datos y denunciaron contratos sospechosos, la autora del texto B probablemente",
+      "alternativas": [
+        { "t": "seguiría pensando que una tabla con miles de filas no previene nada.", "codigo": "RV63", "origen": "o6",
+          "explicacion": "La condición cambió: aquí los vecinos sí leyeron los datos y denunciaron, así que esa frase ya no describe el caso." },
+        { "t": "aseguraría que desde entonces no habrá corrupción en ningún distrito del país.", "codigo": "RV11",
+          "explicacion": "«Ningún» y «desde entonces» dicen más de lo que el hecho permite concluir." },
+        { "t": "vería confirmada su idea de que los datos sirven más con educación cívica.", "correcta": true, "evidencia": ["o6", "o8"],
+          "explicacion": "El caso muestra que, cuando los vecinos saben leer los datos, estos sirven para exigir cuentas, como ella sostiene (oración 8)." },
+        { "t": "pediría que el Estado deje de publicar datos y se dedique solo a educar a los vecinos.", "codigo": "RV7",
+          "explicacion": "Va más allá de lo que el texto permite: ella dice que publicar es un primer paso necesario (oración 5)." },
+        { "t": "diría que el periodismo de investigación es innecesario.", "codigo": "RV33",
+          "explicacion": "La autora no toma esa postura; el periodismo no se menciona en su texto." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-12",
+  "hechos": [{"afirmacion": "Las contrataciones de las entidades públicas peruanas se publican en el Sistema Electrónico de Contrataciones del Estado (SEACE), administrado por el Organismo Supervisor de las Contrataciones del Estado (OSCE).", "fuente": "OSCE, Perú, información institucional sobre el SEACE"}],
+  "revision": null
+}
