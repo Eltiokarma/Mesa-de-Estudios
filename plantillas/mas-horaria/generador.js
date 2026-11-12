@@ -105,7 +105,7 @@
       const pr = construir(rng, semilla, tipo, sub);
       if (pr && pr.alternativas.length >= 4) return pr;
     }
-    throw new Error('No se pudo generar un problema con 4 alternativas distintas');
+    throw new Error(`No se pudo generar un problema con 4 alternativas distintas (${tipo}/${sub})`);
   }
 
   function construir(rng, semilla, tipo, sub) {
@@ -117,8 +117,12 @@
     return flotante(rng, semilla, sub);
   }
 
+  // Sin distractores absurdos: entre 1/20 y 20 veces la correcta (en valor absoluto); el cero se deja
+  // donde tiene sentido físico (parte del equilibrio, está quieto).
+  const creible = (x, c) => Number.isFinite(x) && (Math.abs(x) < 1e-9 || (Math.abs(x) >= Math.abs(c) / 20 * (1 + 1e-9) && Math.abs(x) <= Math.abs(c) * 20 * (1 - 1e-9)));
+
   function cerrar(rng, semilla, o) {
-    const errores = o.errores.filter(e => e && Number.isFinite(e.valor) && (o.negativos || e.valor > 0))
+    const errores = o.errores.filter(e => e && creible(e.valor, o.correcta) && Number.isFinite(e.valor) && (o.negativos || e.valor > 0))
       .map(e => (Math.abs(e.valor) < 1e-9 ? { ...e, valor: 0 } : e));
     const alternativas = P.armar({ correcta: o.correcta, errores, rng, unidad: o.unidad, texto: o.texto || null, negativos: !!o.negativos, formato: o.formato || null, qmax: o.qmax || 12 });
     return {
@@ -171,7 +175,7 @@
         datos: { tipo: 'leer', sub, A, w, fase: ph / PI } });
     }
     // periodo o frecuencia, con ω = nπ
-    const n = rng.elegir([1, 2, 4, 5, 8, 10, 20]), w = n * PI, A = rng.elegir([0.02, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5]);
+    const n = rng.elegir([1, 4, 5, 8, 10, 20]), w = n * PI, A = rng.elegir([0.02, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5]);
     const ph = rng.elegir([0, PI / 6, PI / 4, PI / 3, PI / 2, 2 * PI / 3, PI, 4 * PI / 3, 3 * PI / 2, 5 * PI / 3]);
     const T = 2 / n, fr = n / 2;
     const enunciado = [`${Obj} oscila con MAS según `, ...ecuacion(A, w, ph, 'm'), ', con t en s.', CONV];
@@ -243,7 +247,10 @@
     // Las de h(...) con clave: el valor es el objeto de la ecuación.
     errores = errores.map(e => (e && e.valor && e.valor.clave ? { id: e.id, clave: e.valor.clave, texto: e.valor.texto, explicacion: e.explicacion, respaldo: e.respaldo, fuente: e.fuente } : e));
     const correcta = ec(A, w, ph);
-    const alternativas = P.armarTexto({ correcta, errores: errores.filter(e => e && e.clave), rng });
+    // Sin ecuaciones absurdas: A y ω de cada error, entre 1/20 y 20 veces los de la correcta.
+    const partes = cl => cl.slice(4).split('|').map(Number);
+    const [Ac, wc] = partes(correcta.clave);
+    const alternativas = P.armarTexto({ correcta, errores: errores.filter(e => e && e.clave && (([Ae, we]) => creible(Ae, Ac) && creible(we, wc))(partes(e.clave))), rng });
     const pregunta = ['¿Cuál es la ', v('x', 'ecuación de posición'), ' del bloque, con 0 ≤ φ < 2π?'];
     const solucion = [
       [conT ? `ω = 2π/T = 2π/${f(T)} = ` : `ω = √(k/m) = √(${f(k)}/${f(m)}) = `, v('w', `${wt(w).replace('t', '')} rad/s`), '.'],

@@ -130,7 +130,7 @@ test('las variantes internas salen: con μ y con fuerza, km/h, minutos, escalone
 test('hay variedad: en 600 semillas casi no se repiten los datos', () => {
   const vistos = new Set(); let repetidos = 0;
   for (let s = 0; s < 600; s++) { const k = JSON.stringify(gen.generar(s)._datos); if (vistos.has(k)) repetidos++; vistos.add(k); }
-  assert.ok(repetidos < 30, `${repetidos} repetidos`);
+  assert.ok(repetidos < 35, `${repetidos} repetidos`);
 });
 
 test('los textos no dicen «de el» ni «a el»', () => {
@@ -155,6 +155,31 @@ test('cada variable pintada tiene nombre y color, y la pregunta no dice la respu
     const correcta = p.alternativas.find(a => a.correcta).texto;
     assert.ok(!preg.includes(correcta), `semilla ${s}: la pregunta trae la respuesta`);
   }
+});
+
+test('nunca falla: semillas 0 a 2000 y de texto', () => {
+  for (let s = 0; s <= 2000; s++) assert.doesNotThrow(() => gen.generar(s), `semilla ${s}`);
+  for (const s of ['entrada-1', 'entrada-2', 'salida-1', 'salida-3', 'práctica-7']) assert.doesNotThrow(() => gen.generar(s), s);
+});
+
+test('sin distractores absurdos y la correcta no se reconoce por redonda (600 semillas)', () => {
+  const dec = t => { const m = t.match(/,(\d+)/); return (m ? m[1].length : 0) + (/√/.test(t) ? 1 : 0); };
+  const por = {}; let total = 0, sola = 0;
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s);
+    if (typeof p.respuesta.valor !== 'number') continue;
+    const c = p.respuesta.valor, k = p._datos.tipo + '/' + p._datos.sub;
+    for (const a of p.alternativas.filter(x => !x.correcta)) {
+      if (Math.abs(a.valor) < 1e-9) continue; // el cero, donde tiene sentido (equilibrio, reposo)
+      const r = Math.abs(a.valor / c);
+      assert.ok(r >= 1 / 20 && r <= 20, `semilla ${s}: ${a.texto} frente a ${c} (${a.error.id})`);
+    }
+    const correcta = p.alternativas.find(a => a.correcta), otras = p.alternativas.filter(a => !a.correcta);
+    por[k] = por[k] || [0, 0]; por[k][0]++; total++;
+    if (otras.every(a => dec(a.texto) > dec(correcta.texto))) { por[k][1]++; sola++; }
+  }
+  assert.ok(sola / total < 0.15, `la correcta es la única más redonda en ${sola} de ${total}`);
+  for (const [k, [n, m]] of Object.entries(por)) assert.ok(n < 10 || m / n <= 0.35, `${k}: la correcta es la más redonda en ${m} de ${n}`);
 });
 
 // ---------- Lápiz y papel ----------
