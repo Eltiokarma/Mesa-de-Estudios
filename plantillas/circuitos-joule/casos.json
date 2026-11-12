@@ -2,7 +2,7 @@
   "plantilla": "circuitos-joule",
   "tolerancia": 1e-06,
   "nota": "Tolerancia relativa. Unidades de _datos: ImA en mA, tmin en min, t en la unidad ut, E en J o kJ (kilo), P en W, hd en h por día, R en Ω, rho en Ω·m, L en m, Amm en mm², d y r en mm (π = 3); en comparar, x1 y x2 son secciones en mm² o, si diametro es true, diámetros en mm, Q en C, eta en %, m en kg, temperaturas en °C, Q0 en kJ. Respuestas: energia en J o kJ (unidad), corriente en A, escala en kJ, kwh en kW·h, calorias en cal, agua en min, resistividad en Ω (rho en Ω·m; comparar, R del segundo alambre), cables en W, carga en C, tiempo en min, duracion en h.",
-  "verificacion": "Verificado a ciegas (8 nov 2026) por un subagente que no vio el generador: 46 problemas (16 de casos.json y 30 semillas nuevas) resueltos con Q = It, E = I²Rt, R = ρL/A con π = 3, cable de ida y vuelta y Q = mcΔT/(ηP), en fracciones exactas. 46/46 coinciden en letra y valor, y cada distractor reproduce el error que dice su explicación. Tras la revisión se quitaron los distractores fuera de escala.",
+  "verificacion": "Verificado a ciegas (8 nov 2026) por un subagente que no vio el generador: 46 problemas (16 de casos.json y 30 semillas nuevas) resueltos con Q = It, E = I²Rt, R = ρL/A con π = 3, cable de ida y vuelta y Q = mcΔT/(ηP), en fracciones exactas. 46/46 coinciden en letra y valor, y cada distractor reproduce el error que dice su explicación. Tras la revisión se quitaron los distractores fuera de escala. Los 16 casos regenerados tras la revisión se volvieron a resolver a ciegas (12 nov 2026): 16/16.",
   "casos": [
     {
       "semilla": 0,

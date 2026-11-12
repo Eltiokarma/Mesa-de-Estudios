@@ -2,7 +2,7 @@
   "plantilla": "circuitos-mallas",
   "tolerancia": 1e-06,
   "nota": "Corrientes en A, voltajes en V, resistencias en Ω, potencias en W; respuestas en magnitud, salvo ddp (V_A − V_B con signo) y estado (texto: si la pila 3 entrega o se carga, y con qué corriente). En kirchhoff, e[k] es la fem de la rama k con signo (+ si el borne positivo mira hacia A), en serie con R[k]; en «fem», I1 e I2 son las corrientes que suben hacia A por la rama 1 y por la rama 2. En puente, R = [R1 (A-C), R2 (C-B), R3 (A-D), R4 (D-B)].",
-  "verificacion": "Verificado a ciegas (8 nov 2026) por un subagente que no vio el generador: 45 problemas (15 de casos.json y 30 semillas nuevas) resueltos con potencial de nodo y Kirchhoff propios, en fracciones exactas. 45/45 coinciden en letra y valor, incluidos los signos con pilas en oposición, la pila que se carga y el puente no equilibrado con amperímetro. Tras la revisión se agregaron puentes no equilibrados con R5 y la pregunta de si la pila entrega o se carga; sus casos los recalculó el constructor aparte.",
+  "verificacion": "Verificado a ciegas (8 nov 2026) por un subagente que no vio el generador: 45 problemas resueltos con potencial de nodo y Kirchhoff propios, en fracciones exactas; 45/45 coinciden en letra y valor. Tras la revisión se agregaron puentes no equilibrados con R5 y la pregunta de si la pila entrega o se carga, y los 16 casos regenerados se volvieron a resolver a ciegas (12 nov 2026): 16/16.",
   "casos": [
     {
       "semilla": 0,
