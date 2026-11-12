@@ -133,8 +133,8 @@ test('la trampa del periodo y la del 3d antes que el 4s aparecen seguido', () =>
   let periodo = 0, tresD = 0;
   for (let s = 0; s < 1500; s++) {
     const ids = gen.generar(s).alternativas.map(a => a.error && a.error.id);
-    if (ids.includes('QA-periodo-del-ultimo-subnivel')) periodo++;
-    if (ids.includes('QA-ion-quita-ultimos-llenados')) tresD++;
+    if (ids.includes('AQ-periodo-del-ultimo-subnivel')) periodo++;
+    if (ids.includes('AQ-ion-quita-ultimos-llenados')) tresD++;
   }
   assert.ok(periodo > 30 && tresD > 30, `periodo ${periodo}, 3d ${tresD}`);
 });

@@ -32,8 +32,8 @@
  *            o kg: masa ya está en g) } → kJ; sub 'inversa' { Q (kJ) } → mL de agua vaporizada.
  *   vida     sub 'queda' { m0, tMedia, t } → masa que queda; sub 'deducir' { m0, T1, a, T2 } (en T1 queda m0/2^a;
  *            se pide lo que queda en T2) → masa; sub 'tiempo' { tMedia, n } (queda 1/2^n) → tiempo.
- * Errores: ES7 del informe de estequiometría (fórmula de moles invertida); los QA-* son hipótesis nuestras (los de vida
- * media, QA-vm-*, comparten id con configuracion-ubicacion). Rangos creíbles: cada objeto y cada lugar tiene su rango de
+ * Errores: ES7 del informe de estequiometría (fórmula de moles invertida); los AQ-* son hipótesis nuestras (los de vida
+ * media, AQ-vm-*, comparten id con configuracion-ubicacion). Rangos creíbles: cada objeto y cada lugar tiene su rango de
  * temperatura, y el dato se genera dentro de él; en lectura no salen kelvin negativos entre las alternativas.
  * FIN DE LA CABECERA: con esto basta para recalcular cada caso de casos.json sin leer el código.
  */
@@ -140,13 +140,13 @@
       const enunciado = [`Al calentar ${O.obj}, se anotan estos datos de temperatura contra tiempo: `, ...lista, '.'];
       const pregunta = ['¿Cuánto ', v('d', 'aumentó la temperatura'), ' entre el minuto ', v('t', String(tiempos[i])), ' y el minuto ', v('t', String(tiempos[j])), `, en ${grado[a]}?`];
       const errores = [
-        h('QA-intervalo-equivocado', total, `Tomaste todo el registro (de ${tiempos[0]} a ${tiempos[3]} min). La pregunta es solo entre el minuto ${tiempos[i]} y el ${tiempos[j]}.`),
-        h('QA-desfase-en-variacion', a === 'F' ? correcta + 32 : correcta + 273, `Sumaste ${a === 'F' ? '32' : '273'} a una variación. Ese número solo sirve para pasar una lectura del termómetro; una diferencia no lo lleva, porque se cancela al restar.`),
-        h('QA-convierte-una-lectura-final', convertir(temps[j], 'C', a), `Pasaste a ${grado[a]} la lectura del minuto ${tiempos[j]}, no la diferencia entre las dos lecturas.`),
-        a === 'F' ? h('QA-factor-invertido-temp', dC / 1.8, 'Dividiste entre 1,8. El grado Fahrenheit es más chico que el Celsius: la misma variación tiene más grados °F, así que se multiplica.')
-          : h('QA-factor-de-fahrenheit', dC * 1.8, 'Usaste el factor 1,8, que es del Fahrenheit. El kelvin tiene el mismo tamaño que el grado Celsius: ΔK = Δ°C.'),
-        a === 'F' ? h('QA-sin-convertir', dC, 'Diste la variación en °C. Falta pasarla a °F: cada °C son 1,8 °F.')
-          : h('QA-convierte-una-lectura-inicial', convertir(temps[i], 'C', a), `Pasaste a kelvin la lectura del minuto ${tiempos[i]}, no la diferencia entre las dos lecturas.`),
+        h('AQ-intervalo-equivocado', total, `Tomaste todo el registro (de ${tiempos[0]} a ${tiempos[3]} min). La pregunta es solo entre el minuto ${tiempos[i]} y el ${tiempos[j]}.`),
+        h('AQ-desfase-en-variacion', a === 'F' ? correcta + 32 : correcta + 273, `Sumaste ${a === 'F' ? '32' : '273'} a una variación. Ese número solo sirve para pasar una lectura del termómetro; una diferencia no lo lleva, porque se cancela al restar.`),
+        h('AQ-convierte-una-lectura-final', convertir(temps[j], 'C', a), `Pasaste a ${grado[a]} la lectura del minuto ${tiempos[j]}, no la diferencia entre las dos lecturas.`),
+        a === 'F' ? h('AQ-factor-invertido-temp', dC / 1.8, 'Dividiste entre 1,8. El grado Fahrenheit es más chico que el Celsius: la misma variación tiene más grados °F, así que se multiplica.')
+          : h('AQ-factor-de-fahrenheit', dC * 1.8, 'Usaste el factor 1,8, que es del Fahrenheit. El kelvin tiene el mismo tamaño que el grado Celsius: ΔK = Δ°C.'),
+        a === 'F' ? h('AQ-sin-convertir', dC, 'Diste la variación en °C. Falta pasarla a °F: cada °C son 1,8 °F.')
+          : h('AQ-convierte-una-lectura-inicial', convertir(temps[i], 'C', a), `Pasaste a kelvin la lectura del minuto ${tiempos[i]}, no la diferencia entre las dos lecturas.`),
       ];
       const solucion = [
         ['En °C: ', v('T2', `${f(temps[j])} °C`), ' − ', v('T1', `${f(temps[i])} °C`), ' = ', v('d', `${dC} °C`), '.'],
@@ -162,10 +162,10 @@
       const enunciado = [`La temperatura ${O.de} sube `, v('d', `${dF} °F`), '.'];
       const pregunta = ['¿A cuántos grados Celsius equivale esa ', v('d', 'variación'), '?'];
       const errores = [
-        h('QA-desfase-en-variacion', (dF - 32) / 1.8, 'Restaste 32 a una variación. El 32 solo sirve para pasar una lectura; en una diferencia se cancela.'),
-        h('QA-factor-invertido-temp', dF * 1.8, 'Multiplicaste por 1,8. El grado Celsius es más grande que el Fahrenheit: la misma variación tiene menos grados °C, así que se divide.'),
-        h('QA-sin-convertir', dF, 'Dejaste el número en °F.'),
-        h('QA-escala-equivocada-k', dF / 1.8 + 273, 'Sumaste 273: eso pasa una lectura a kelvin. Se pide la variación en °C.'),
+        h('AQ-desfase-en-variacion', (dF - 32) / 1.8, 'Restaste 32 a una variación. El 32 solo sirve para pasar una lectura; en una diferencia se cancela.'),
+        h('AQ-factor-invertido-temp', dF * 1.8, 'Multiplicaste por 1,8. El grado Celsius es más grande que el Fahrenheit: la misma variación tiene menos grados °C, así que se divide.'),
+        h('AQ-sin-convertir', dF, 'Dejaste el número en °F.'),
+        h('AQ-escala-equivocada-k', dF / 1.8 + 273, 'Sumaste 273: eso pasa una lectura a kelvin. Se pide la variación en °C.'),
       ];
       const solucion = [['Cada °C de variación son ', v('k', '1,8 °F'), ': ', v('d', `${dF} °F`), ' ÷ 1,8 = ', v('d', `${f(correcta, 1)} °C`), '. Sin restar 32: es una diferencia.']];
       return cerrar(rng, semilla, { correcta, errores, unidad: '°C', decimales: 1, variables, enunciado, pregunta, solucion, _datos: { tipo: 'delta', sub, dF } });
@@ -178,12 +178,12 @@
     const enunciado = [`La temperatura ${O.de} ${baja ? 'baja' : 'sube'} de `, v('T1', `${f(T1)} °C`), ' a ', v('T2', `${f(T2)} °C`), '.'];
     const pregunta = ['¿De cuánto es la ', v('d', 'variación'), ` de temperatura, en ${grado[a]}?`];
     const errores = [
-      h('QA-desfase-en-variacion', a === 'F' ? correcta + 32 : correcta + 273, `Sumaste ${a === 'F' ? '32' : '273'} a la variación. Ese desfase solo sirve para pasar una lectura; al restar dos lecturas se cancela.`),
-      h('QA-convierte-una-lectura-final', convertir(T2, 'C', a), `Pasaste a ${grado[a]} la lectura final (${f(T2)} °C), no la diferencia.`),
-      a === 'F' ? h('QA-factor-invertido-temp', d / 1.8, 'Dividiste entre 1,8. El grado Fahrenheit es más chico: la misma variación tiene más grados °F.')
-        : h('QA-factor-de-fahrenheit', d * 1.8, 'Usaste el factor 1,8 del Fahrenheit. El kelvin y el grado Celsius tienen el mismo tamaño: ΔK = Δ°C.'),
-      a === 'F' ? h('QA-sin-convertir', d, 'Diste la variación en °C. Falta pasarla a °F.') : h('QA-escala-equivocada-f', d * 1.8 + 32, 'Pasaste la variación a °F, y además con el desfase de 32. Se pide en kelvin, que tiene el tamaño del grado Celsius.'),
-      h('QA-convierte-una-lectura-inicial', convertir(T1, 'C', a), `Pasaste a ${grado[a]} la lectura inicial (${f(T1)} °C), no la diferencia.`),
+      h('AQ-desfase-en-variacion', a === 'F' ? correcta + 32 : correcta + 273, `Sumaste ${a === 'F' ? '32' : '273'} a la variación. Ese desfase solo sirve para pasar una lectura; al restar dos lecturas se cancela.`),
+      h('AQ-convierte-una-lectura-final', convertir(T2, 'C', a), `Pasaste a ${grado[a]} la lectura final (${f(T2)} °C), no la diferencia.`),
+      a === 'F' ? h('AQ-factor-invertido-temp', d / 1.8, 'Dividiste entre 1,8. El grado Fahrenheit es más chico: la misma variación tiene más grados °F.')
+        : h('AQ-factor-de-fahrenheit', d * 1.8, 'Usaste el factor 1,8 del Fahrenheit. El kelvin y el grado Celsius tienen el mismo tamaño: ΔK = Δ°C.'),
+      a === 'F' ? h('AQ-sin-convertir', d, 'Diste la variación en °C. Falta pasarla a °F.') : h('AQ-escala-equivocada-f', d * 1.8 + 32, 'Pasaste la variación a °F, y además con el desfase de 32. Se pide en kelvin, que tiene el tamaño del grado Celsius.'),
+      h('AQ-convierte-una-lectura-inicial', convertir(T1, 'C', a), `Pasaste a ${grado[a]} la lectura inicial (${f(T1)} °C), no la diferencia.`),
     ];
     const solucion = [
       ['En °C: |', v('T2', f(T2)), ' − (', v('T1', f(T1)), ')| = ', v('d', `${d} °C`), '.'],
@@ -216,26 +216,26 @@
     const enunciado = [L.t, ' ', v('x', `${f(valor)} ${grado[de]}`), '.'];
     const pregunta = ['¿Cuál es esa ', v('y', 'temperatura'), ` en ${grado[a]}?`];
     const errores = {
-      'c-f': [h('QA-olvida-32', 1.8 * valor, 'Multiplicaste por 1,8 pero no sumaste 32. Para una lectura, el 0 °C está en 32 °F: hay que correr la escala.'),
-        h('QA-orden-de-operaciones', (valor + 32) * 1.8, 'Sumaste 32 antes de multiplicar. Primero se pasa el tamaño del grado (× 1,8) y después se corre el cero (+ 32).'),
-        h('QA-factor-invertido-temp', valor / 1.8 + 32, 'Dividiste entre 1,8. Un grado Celsius equivale a 1,8 °F: se multiplica.'),
-        h('QA-olvida-factor', valor + 32, 'Solo sumaste 32. Los grados de las dos escalas no tienen el mismo tamaño: falta × 1,8.')],
-      'f-c': [h('QA-orden-de-operaciones', valor / 1.8 - 32, 'Dividiste antes de restar 32. Primero se quita el desfase (− 32) y después se cambia el tamaño del grado (÷ 1,8).'),
-        h('QA-factor-invertido-temp', (valor - 32) * 1.8, 'Multiplicaste por 1,8. Para ir de °F a °C se divide entre 1,8.'),
-        h('QA-olvida-factor', valor - 32, 'Solo restaste 32. Falta dividir entre 1,8.'),
-        h('QA-olvida-32', valor / 1.8, 'Dividiste entre 1,8 pero no restaste 32 antes.')],
-      'c-k': [h('QA-signo-273', valor - 273, 'Restaste 273. Para pasar a kelvin se suma: el cero absoluto está 273 grados debajo del 0 °C.'),
-        h('QA-sin-convertir', valor, 'Dejaste el mismo número. El kelvin tiene el tamaño del grado Celsius, pero su cero está corrido 273.'),
-        h('QA-escala-equivocada-f', 1.8 * valor + 32, 'Pasaste a °F, no a kelvin.'),
-        h('QA-mezcla-escalas', 1.8 * valor + 273, 'Mezclaste las dos fórmulas: el factor 1,8 es del Fahrenheit. Para kelvin solo se suma 273.')],
-      'k-c': [h('QA-signo-273', valor + 273, 'Sumaste 273. De kelvin a °C se resta.'),
-        h('QA-sin-convertir', valor, 'Dejaste el mismo número; falta restar 273.'),
-        h('QA-formula-de-fahrenheit', (valor - 32) / 1.8, 'Usaste la fórmula del Fahrenheit (restar 32 y dividir entre 1,8). El dato está en kelvin.'),
-        h('QA-escala-equivocada-f', (valor - 273) * 1.8 + 32, 'Pasaste a °F, no a °C.')],
-      'f-k': [h('QA-olvida-273', C, 'Llegaste a °C y te detuviste. Falta sumar 273 para pasar a kelvin.'),
-        h('QA-orden-de-operaciones', valor / 1.8 + 273, 'No restaste 32 antes de dividir entre 1,8.'),
-        h('QA-olvida-factor', valor + 273, 'Sumaste 273 directo al valor en °F. Primero hay que pasar a °C: (°F − 32) ÷ 1,8.'),
-        h('QA-factor-invertido-temp', (valor - 32) * 1.8 + 273, 'Multiplicaste por 1,8. Para ir de °F a °C se divide.')],
+      'c-f': [h('AQ-olvida-32', 1.8 * valor, 'Multiplicaste por 1,8 pero no sumaste 32. Para una lectura, el 0 °C está en 32 °F: hay que correr la escala.'),
+        h('AQ-orden-de-operaciones', (valor + 32) * 1.8, 'Sumaste 32 antes de multiplicar. Primero se pasa el tamaño del grado (× 1,8) y después se corre el cero (+ 32).'),
+        h('AQ-factor-invertido-temp', valor / 1.8 + 32, 'Dividiste entre 1,8. Un grado Celsius equivale a 1,8 °F: se multiplica.'),
+        h('AQ-olvida-factor', valor + 32, 'Solo sumaste 32. Los grados de las dos escalas no tienen el mismo tamaño: falta × 1,8.')],
+      'f-c': [h('AQ-orden-de-operaciones', valor / 1.8 - 32, 'Dividiste antes de restar 32. Primero se quita el desfase (− 32) y después se cambia el tamaño del grado (÷ 1,8).'),
+        h('AQ-factor-invertido-temp', (valor - 32) * 1.8, 'Multiplicaste por 1,8. Para ir de °F a °C se divide entre 1,8.'),
+        h('AQ-olvida-factor', valor - 32, 'Solo restaste 32. Falta dividir entre 1,8.'),
+        h('AQ-olvida-32', valor / 1.8, 'Dividiste entre 1,8 pero no restaste 32 antes.')],
+      'c-k': [h('AQ-signo-273', valor - 273, 'Restaste 273. Para pasar a kelvin se suma: el cero absoluto está 273 grados debajo del 0 °C.'),
+        h('AQ-sin-convertir', valor, 'Dejaste el mismo número. El kelvin tiene el tamaño del grado Celsius, pero su cero está corrido 273.'),
+        h('AQ-escala-equivocada-f', 1.8 * valor + 32, 'Pasaste a °F, no a kelvin.'),
+        h('AQ-mezcla-escalas', 1.8 * valor + 273, 'Mezclaste las dos fórmulas: el factor 1,8 es del Fahrenheit. Para kelvin solo se suma 273.')],
+      'k-c': [h('AQ-signo-273', valor + 273, 'Sumaste 273. De kelvin a °C se resta.'),
+        h('AQ-sin-convertir', valor, 'Dejaste el mismo número; falta restar 273.'),
+        h('AQ-formula-de-fahrenheit', (valor - 32) / 1.8, 'Usaste la fórmula del Fahrenheit (restar 32 y dividir entre 1,8). El dato está en kelvin.'),
+        h('AQ-escala-equivocada-f', (valor - 273) * 1.8 + 32, 'Pasaste a °F, no a °C.')],
+      'f-k': [h('AQ-olvida-273', C, 'Llegaste a °C y te detuviste. Falta sumar 273 para pasar a kelvin.'),
+        h('AQ-orden-de-operaciones', valor / 1.8 + 273, 'No restaste 32 antes de dividir entre 1,8.'),
+        h('AQ-olvida-factor', valor + 273, 'Sumaste 273 directo al valor en °F. Primero hay que pasar a °C: (°F − 32) ÷ 1,8.'),
+        h('AQ-factor-invertido-temp', (valor - 32) * 1.8 + 273, 'Multiplicaste por 1,8. Para ir de °F a °C se divide.')],
     }[sub].filter(e => a !== 'K' || e.valor > 0);                         // no hay kelvin negativos
     const solucion = {
       'c-f': [['°F = ', v('fa', '1,8'), ' × ', v('x', px(valor)), ' + ', v('de', '32'), ' = ', v('y', `${f(correcta, 1)} °F`), '.']],
@@ -274,17 +274,17 @@
       const enunciado = ['Un lingote de ', met.nombre, ' tiene una ', v('m', `masa de ${masaTxt}`), ' y una ', v('rho', `densidad de ${f(met.rho, 1)} g/cm³`), '.'];
       const pregunta = ['¿Cuál es su ', v('V', 'volumen'), `, en ${U}?`];
       const errores = [];
-      if (unidad !== 'cm3') errores.push(h('QA-deja-en-cm3', r.cm3, `Ese número son los cm³ (${f(r.cm3, 1)} cm³). Falta pasarlos a ${U}${unidad === 'L' ? ': 1 L = 1000 cm³' : ': 1 m³ = 10⁶ cm³'}.`));
+      if (unidad !== 'cm3') errores.push(h('AQ-deja-en-cm3', r.cm3, `Ese número son los cm³ (${f(r.cm3, 1)} cm³). Falta pasarlos a ${U}${unidad === 'L' ? ': 1 L = 1000 cm³' : ': 1 m³ = 10⁶ cm³'}.`));
       if (unidad === 'm3') {
-        errores.push(h('QA-cubo-sin-elevar', r.cm3 * 1e-2, 'Usaste 1 cm = 10⁻² m sin elevar al cubo. En volumen, 1 cm³ = (10⁻² m)³ = 10⁻⁶ m³.'));
-        errores.push(h('QA-m3-como-1000-cm3', r.cm3 * 1e-3, 'Tomaste 1 m³ = 1000 cm³ (eso es un litro). 1 m³ = (100 cm)³ = 10⁶ cm³.'));
+        errores.push(h('AQ-cubo-sin-elevar', r.cm3 * 1e-2, 'Usaste 1 cm = 10⁻² m sin elevar al cubo. En volumen, 1 cm³ = (10⁻² m)³ = 10⁻⁶ m³.'));
+        errores.push(h('AQ-m3-como-1000-cm3', r.cm3 * 1e-3, 'Tomaste 1 m³ = 1000 cm³ (eso es un litro). 1 m³ = (100 cm)³ = 10⁶ cm³.'));
       }
       if (unidad === 'L') {
-        errores.push(h('QA-litro-como-m3', r.cm3 * 1e-6, 'Dividiste entre 10⁶: eso da m³. Un litro son 1000 cm³.'));
-        errores.push(h('QA-litro-como-100-cm3', r.cm3 / 100, 'Tomaste 1 L = 100 cm³. Un litro es un cubo de 10 cm de lado: 10 × 10 × 10 = 1000 cm³.'));
+        errores.push(h('AQ-litro-como-m3', r.cm3 * 1e-6, 'Dividiste entre 10⁶: eso da m³. Un litro son 1000 cm³.'));
+        errores.push(h('AQ-litro-como-100-cm3', r.cm3 / 100, 'Tomaste 1 L = 100 cm³. Un litro es un cubo de 10 cm de lado: 10 × 10 × 10 = 1000 cm³.'));
       }
-      if (enKg && unidad !== 'L') errores.push(h('QA-kg-sin-pasar', g / 1000 / met.rho / UV[unidad], 'Dividiste los kilogramos entre una densidad en g/cm³. Antes, pasa la masa a gramos (× 1000).'));
-      errores.push(h('QA-multiplica-densidad', g * met.rho / UV[unidad], 'Multiplicaste la masa por la densidad. El volumen es masa entre densidad: V = m ÷ ρ.'));
+      if (enKg && unidad !== 'L') errores.push(h('AQ-kg-sin-pasar', g / 1000 / met.rho / UV[unidad], 'Dividiste los kilogramos entre una densidad en g/cm³. Antes, pasa la masa a gramos (× 1000).'));
+      errores.push(h('AQ-multiplica-densidad', g * met.rho / UV[unidad], 'Multiplicaste la masa por la densidad. El volumen es masa entre densidad: V = m ÷ ρ.'));
       const solucion = [
         [enKg ? [v('m', masaTxt), ` = ${f(g, 1)} g. `] : [], 'V = ', v('m', `${f(g, 1)} g`), ' ÷ ', v('rho', `${f(met.rho, 1)} g/cm³`), ` = ${f(r.cm3, 1)} cm³.`].flat(),
         unidad === 'cm3' ? ['Ya está en cm³: ', v('V', `${f(correcta, 1)} cm³`), '.']
@@ -300,13 +300,13 @@
     const enunciado = ['Una pieza de ', met.nombre, ' ocupa ', v('V', `${cient(volumen)} ${U}`), '. Su ', v('rho', `densidad es ${f(met.rho, 1)} g/cm³`), '.'];
     const pregunta = ['¿Cuál es su ', v('m', 'masa'), ', en kg?'];
     const errores = [
-      h('QA-sin-pasar-a-cm3', volumen * met.rho, `Multiplicaste los ${U} por g/cm³ sin pasar el volumen a cm³.`),
-      h('QA-gramos-como-kg', r.g, `Ese número son gramos (${f(r.g, 1)} g). Falta dividir entre 1000 para pasar a kilogramos.`),
-      h('QA-divide-densidad', r.cm3 / met.rho / 1000, 'Dividiste el volumen entre la densidad. La masa es volumen por densidad: m = ρ × V.'),
-      unidad === 'm3' ? h('QA-cubo-sin-elevar', volumen * 1e2 * met.rho / 1000, 'Usaste 1 m = 100 cm sin elevar al cubo. En volumen, 1 m³ = (100 cm)³ = 10⁶ cm³.')
-        : h('QA-litro-como-m3', volumen * 1e6 * met.rho / 1000, 'Tomaste el litro como si fuera un metro cúbico (10⁶ cm³). Un litro son 1000 cm³.'),
-      unidad === 'm3' ? h('QA-m3-como-1000-cm3', volumen * 1e3 * met.rho / 1000, 'Tomaste 1 m³ = 1000 cm³ (eso es un litro). 1 m³ = (100 cm)³ = 10⁶ cm³.')
-        : h('QA-litro-como-100-cm3', volumen * 100 * met.rho / 1000, 'Tomaste 1 L = 100 cm³. Un litro es un cubo de 10 cm de lado: 1000 cm³.'),
+      h('AQ-sin-pasar-a-cm3', volumen * met.rho, `Multiplicaste los ${U} por g/cm³ sin pasar el volumen a cm³.`),
+      h('AQ-gramos-como-kg', r.g, `Ese número son gramos (${f(r.g, 1)} g). Falta dividir entre 1000 para pasar a kilogramos.`),
+      h('AQ-divide-densidad', r.cm3 / met.rho / 1000, 'Dividiste el volumen entre la densidad. La masa es volumen por densidad: m = ρ × V.'),
+      unidad === 'm3' ? h('AQ-cubo-sin-elevar', volumen * 1e2 * met.rho / 1000, 'Usaste 1 m = 100 cm sin elevar al cubo. En volumen, 1 m³ = (100 cm)³ = 10⁶ cm³.')
+        : h('AQ-litro-como-m3', volumen * 1e6 * met.rho / 1000, 'Tomaste el litro como si fuera un metro cúbico (10⁶ cm³). Un litro son 1000 cm³.'),
+      unidad === 'm3' ? h('AQ-m3-como-1000-cm3', volumen * 1e3 * met.rho / 1000, 'Tomaste 1 m³ = 1000 cm³ (eso es un litro). 1 m³ = (100 cm)³ = 10⁶ cm³.')
+        : h('AQ-litro-como-100-cm3', volumen * 100 * met.rho / 1000, 'Tomaste 1 L = 100 cm³. Un litro es un cubo de 10 cm de lado: 1000 cm³.'),
     ];
     const solucion = [
       [v('V', `${cient(volumen)} ${U}`), ' ', v('k', unidad === 'L' ? '× 1000' : '× 10⁶'), ` = ${f(r.cm3, 1)} cm³.`],
@@ -327,17 +327,17 @@
     const enunciado = [`En una tabla aparece ${que}: `, v('x', `${cient(valor)} ${NOMBRE_L[de]}`), '.'];
     const pregunta = ['¿Cuánto es en ', v('y', U), '?'];
     const errores = [
-      h('QA-factor-invertido-long', valor / razonL(de, a), 'Usaste la equivalencia al revés. Si la unidad nueva es más chica, el número tiene que crecer; si es más grande, achicarse.'),
-      h('QA-potencia-diez-x10', correcta * 10, 'Te pasaste por una potencia de diez. Cuenta los exponentes: 1 Å = 10⁻¹⁰ m, 1 nm = 10⁻⁹ m, 1 pm = 10⁻¹² m.'),
-      h('QA-potencia-diez-entre10', correcta / 10, 'Te faltó una potencia de diez. Cuenta los exponentes: 1 Å = 10⁻¹⁰ m, 1 nm = 10⁻⁹ m, 1 pm = 10⁻¹² m.'),
+      h('AQ-factor-invertido-long', valor / razonL(de, a), 'Usaste la equivalencia al revés. Si la unidad nueva es más chica, el número tiene que crecer; si es más grande, achicarse.'),
+      h('AQ-potencia-diez-x10', correcta * 10, 'Te pasaste por una potencia de diez. Cuenta los exponentes: 1 Å = 10⁻¹⁰ m, 1 nm = 10⁻⁹ m, 1 pm = 10⁻¹² m.'),
+      h('AQ-potencia-diez-entre10', correcta / 10, 'Te faltó una potencia de diez. Cuenta los exponentes: 1 Å = 10⁻¹⁰ m, 1 nm = 10⁻⁹ m, 1 pm = 10⁻¹² m.'),
     ];
     if ((de === 'A' || a === 'A') && de !== 'cm' && a !== 'cm') {
       const Ufalso = { ...UL, A: 1e-8 };
-      errores.unshift(h('QA-angstrom-como-1e-8', valor * (de === 'A' ? Ufalso.A : UL[de]) / (a === 'A' ? Ufalso.A : UL[a]), 'Tomaste 1 Å = 10⁻⁸ m. Esa equivalencia es en centímetros: 1 Å = 10⁻⁸ cm = 10⁻¹⁰ m.'));
+      errores.unshift(h('AQ-angstrom-como-1e-8', valor * (de === 'A' ? Ufalso.A : UL[de]) / (a === 'A' ? Ufalso.A : UL[a]), 'Tomaste 1 Å = 10⁻⁸ m. Esa equivalencia es en centímetros: 1 Å = 10⁻⁸ cm = 10⁻¹⁰ m.'));
     }
     if (de === 'nm' || a === 'nm') {
       const Uf = { ...UL, nm: 1e-6 };
-      errores.push(h('QA-nm-como-micra', valor * Uf[de] / Uf[a], 'Tomaste 1 nm = 10⁻⁶ m. Ese es el micrómetro; el nanómetro es 10⁻⁹ m.'));
+      errores.push(h('AQ-nm-como-micra', valor * Uf[de] / Uf[a], 'Tomaste 1 nm = 10⁻⁶ m. Ese es el micrómetro; el nanómetro es 10⁻⁹ m.'));
     }
     const k = Math.round(Math.log10(razonL(de, a)));
     const solucion = [
@@ -360,11 +360,11 @@
       const enunciado = ['Al agua que ya hierve a 100 °C se le entregan ', v('Q', `${f(Q, 2)} kJ`), ', y toda esa energía se usa en vaporizarla.'];
       const pregunta = ['¿Cuántos ', v('m', 'mililitros de agua'), ' se vaporizan?'];
       const errores = [
-        h('QA-moles-como-masa', r.n, 'Ese número son los moles de agua. Falta pasarlos a gramos (× 18) y, con la densidad de 1 g/mL, a mililitros.'),
-        h('QA-calor-de-otra-fase', Q / DH.fus * 18, 'Usaste el calor de fusión (6,01 kJ/mol). Para vaporizar se usa el de vaporización, 40,7 kJ/mol.'),
-        h('QA-kj-como-j', Q * 1000 / DH.vap * 18, 'Pasaste los kJ a J, pero el calor molar ya estaba en kJ/mol. Las dos cantidades deben ir en la misma unidad.'),
-        h('QA-divide-masa-molar', Q / DH.vap / 18, 'Dividiste entre 18. Los moles se pasan a gramos multiplicando por la masa molar.'),
-        h('QA-divide-al-reves', DH.vap / Q * 18, 'Dividiste el calor molar entre la energía. Moles = energía ÷ calor por mol.'),
+        h('AQ-moles-como-masa', r.n, 'Ese número son los moles de agua. Falta pasarlos a gramos (× 18) y, con la densidad de 1 g/mL, a mililitros.'),
+        h('AQ-calor-de-otra-fase', Q / DH.fus * 18, 'Usaste el calor de fusión (6,01 kJ/mol). Para vaporizar se usa el de vaporización, 40,7 kJ/mol.'),
+        h('AQ-kj-como-j', Q * 1000 / DH.vap * 18, 'Pasaste los kJ a J, pero el calor molar ya estaba en kJ/mol. Las dos cantidades deben ir en la misma unidad.'),
+        h('AQ-divide-masa-molar', Q / DH.vap / 18, 'Dividiste entre 18. Los moles se pasan a gramos multiplicando por la masa molar.'),
+        h('AQ-divide-al-reves', DH.vap / Q * 18, 'Dividiste el calor molar entre la energía. Moles = energía ÷ calor por mol.'),
       ];
       const solucion = [
         ['Moles: ', v('Q', `${f(Q, 2)} kJ`), ' ÷ ', v('H', '40,7 kJ/mol'), ' = ', v('n', `${f(r.n, 2)} mol`), '.'],
@@ -385,13 +385,13 @@
       : ['Se quiere fundir ', v('m', dato), ' que ya está a 0 °C.'];
     const pregunta = ['¿Cuánta ', v('Q', 'energía'), ' hace falta, en kJ?'];
     const errores = [
-      h('QA-latente-sin-moles', masa * DH[fase], `Multiplicaste los gramos por ${f(DH[fase])} kJ/mol. El calor es por mol: primero hay que pasar los gramos a moles (÷ 18).`),
-      h('QA-kj-como-j', correcta * 1000, 'Ese número son joules: el calor molar ya estaba en kJ/mol, no hacía falta multiplicar por 1000.'),
-      h('QA-calor-de-otra-fase', r.n * DH[otra], `Usaste el calor de ${otra === 'vap' ? 'vaporización (40,7' : 'fusión (6,01'} kJ/mol). Aquí el agua se ${fase === 'vap' ? 'vaporiza' : 'funde'}.`),
+      h('AQ-latente-sin-moles', masa * DH[fase], `Multiplicaste los gramos por ${f(DH[fase])} kJ/mol. El calor es por mol: primero hay que pasar los gramos a moles (÷ 18).`),
+      h('AQ-kj-como-j', correcta * 1000, 'Ese número son joules: el calor molar ya estaba en kJ/mol, no hacía falta multiplicar por 1000.'),
+      h('AQ-calor-de-otra-fase', r.n * DH[otra], `Usaste el calor de ${otra === 'vap' ? 'vaporización (40,7' : 'fusión (6,01'} kJ/mol). Aquí el agua se ${fase === 'vap' ? 'vaporiza' : 'funde'}.`),
       { id: 'ES7', valor: 18 / masa * DH[fase], respaldo: 'parcial', fuente: FES,
         explicacion: 'Calculaste los moles al revés (masa molar ÷ masa). Los moles son masa ÷ masa molar: más agua, más moles.' },
     ];
-    if (litros) errores.splice(1, 0, h('QA-litros-como-gramos', masa / 1000 / 18 * DH[fase], `Usaste los ${sub === 'vaporizar' ? 'litros' : 'kilogramos'} como si fueran gramos. Primero pasa a gramos: × 1000.`));
+    if (litros) errores.splice(1, 0, h('AQ-litros-como-gramos', masa / 1000 / 18 * DH[fase], `Usaste los ${sub === 'vaporizar' ? 'litros' : 'kilogramos'} como si fueran gramos. Primero pasa a gramos: × 1000.`));
     const solucion = [
       [v('m', dato), litros ? ` = ${masa} g` : (sub === 'vaporizar' ? ` = ${masa} g (1 g/mL)` : ''), '; ÷ 18 g/mol = ', v('n', `${f(r.n, 2)} mol`), '.'],
       ['Energía: ', v('n', `${f(r.n, 2)} mol`), ' × ', v('H', `${f(DH[fase])} kJ/mol`), ' = ', v('Q', `${f(correcta, 2)} kJ`), '.'],
@@ -417,11 +417,11 @@
       const enunciado = ['El ', iso.s, ' tiene una ', v('th', `vida media de ${iso.t} ${iso.u}`), '.'];
       const pregunta = ['¿Cuánto ', v('t', 'tiempo'), ` pasa hasta que en una muestra quede `, v('q', `1/${2 ** n}`), ' de lo que había?'];
       const errores = [
-        hv('QA-vm-multiplica-fraccion', iso.t * 2 ** n, `Multiplicaste la vida media por ${2 ** n}. El ${2 ** n} es 2${pot(n)}: se llega a 1/${2 ** n} después de ${n} vidas medias, no de ${2 ** n}.`),
-        hv('QA-vm-lineal', 2 * (1 - 1 / 2 ** n) * iso.t, 'Supusiste que se pierde siempre la misma cantidad por unidad de tiempo, como en una recta. Cada vida media se pierde la mitad de lo que queda, no la mitad de lo que había al inicio.'),
-        hv('QA-vm-una-vida-de-menos', (n - 1) * iso.t, `Contaste una vida media menos. Tras 1 vida media queda 1/2; tras 2, 1/4…: para 1/${2 ** n} hacen falta ${n}.`),
-        hv('QA-vm-una-vida-de-mas', (n + 1) * iso.t, `Contaste una vida media de más. Tras 1 vida media queda 1/2; tras 2, 1/4…: para 1/${2 ** n} hacen falta ${n}.`),
-        hv('QA-vm-divide-vida-media', iso.t / 2 ** n, 'Dividiste la vida media. Mientras menos queda, más tiempo pasó: el tiempo crece.'),
+        hv('AQ-vm-multiplica-fraccion', iso.t * 2 ** n, `Multiplicaste la vida media por ${2 ** n}. El ${2 ** n} es 2${pot(n)}: se llega a 1/${2 ** n} después de ${n} vidas medias, no de ${2 ** n}.`),
+        hv('AQ-vm-lineal', 2 * (1 - 1 / 2 ** n) * iso.t, 'Supusiste que se pierde siempre la misma cantidad por unidad de tiempo, como en una recta. Cada vida media se pierde la mitad de lo que queda, no la mitad de lo que había al inicio.'),
+        hv('AQ-vm-una-vida-de-menos', (n - 1) * iso.t, `Contaste una vida media menos. Tras 1 vida media queda 1/2; tras 2, 1/4…: para 1/${2 ** n} hacen falta ${n}.`),
+        hv('AQ-vm-una-vida-de-mas', (n + 1) * iso.t, `Contaste una vida media de más. Tras 1 vida media queda 1/2; tras 2, 1/4…: para 1/${2 ** n} hacen falta ${n}.`),
+        hv('AQ-vm-divide-vida-media', iso.t / 2 ** n, 'Dividiste la vida media. Mientras menos queda, más tiempo pasó: el tiempo crece.'),
       ];
       const solucion = [
         [`1 → 1/2 → 1/4 → … → `, v('q', `1/${2 ** n}`), `: son ${n} mitades, porque ${2 ** n} = 2${pot(n)}.`],
@@ -437,11 +437,11 @@
       const enunciado = ['Una muestra de ', v('m0', `${m0} mg`), ' de un isótopo radiactivo se reduce a ', `${f(m0 / 2 ** a, 2)} mg`, ' en ', v('t', `${T1} ${u}`), '.'];
       const pregunta = ['¿Cuántos ', v('q', 'mg del isótopo quedan'), u === 'días' ? ' a los ' : ' a las ', v('t', `${T2} ${u}`), ' de empezar?'];
       const errores = [
-        hv('QA-vm-lee-tiempo-sin-mitad', m0 / 2 ** (T2 / T1), `Tomaste ${T1} ${u} como vida media. En ese tiempo no quedó la mitad sino 1/${2 ** a}: pasaron ${a} vidas medias, así que la vida media es ${th} ${u}.`),
-        hv('QA-vm-desintegrada', m0 - correcta, 'Ese número es lo que se desintegró. Se pide lo que queda.'),
-        hv('QA-vm-una-vida-de-menos', m0 / 2 ** (b - 1), 'Contaste una vida media de menos.'),
-        hv('QA-vm-una-vida-de-mas', m0 / 2 ** (b + 1), 'Contaste una vida media de más.'),
-        hv('QA-vm-divide-entre-2n', m0 / (2 * b), `Dividiste entre 2 × ${b}. Cada vida media divide entre 2 lo que queda: después de ${b} vidas medias se divide entre 2${pot(b)} = ${2 ** b}.`),
+        hv('AQ-vm-lee-tiempo-sin-mitad', m0 / 2 ** (T2 / T1), `Tomaste ${T1} ${u} como vida media. En ese tiempo no quedó la mitad sino 1/${2 ** a}: pasaron ${a} vidas medias, así que la vida media es ${th} ${u}.`),
+        hv('AQ-vm-desintegrada', m0 - correcta, 'Ese número es lo que se desintegró. Se pide lo que queda.'),
+        hv('AQ-vm-una-vida-de-menos', m0 / 2 ** (b - 1), 'Contaste una vida media de menos.'),
+        hv('AQ-vm-una-vida-de-mas', m0 / 2 ** (b + 1), 'Contaste una vida media de más.'),
+        hv('AQ-vm-divide-entre-2n', m0 / (2 * b), `Dividiste entre 2 × ${b}. Cada vida media divide entre 2 lo que queda: después de ${b} vidas medias se divide entre 2${pot(b)} = ${2 ** b}.`),
       ];
       const solucion = [
         [`De `, v('m0', `${m0} mg`), ` a ${f(m0 / 2 ** a, 2)} mg es 1/${2 ** a}: ${a} vidas medias en `, v('t', `${T1} ${u}`), '. La ', v('th', `vida media es ${th} ${u}`), '.'],
@@ -456,12 +456,12 @@
     const enunciado = [iso.hospital ? 'Un hospital recibe ' : 'Un laboratorio guarda una fuente sellada con ', v('m0', `${m0} mg de ${iso.s}`), ', cuya ', v('th', `vida media es ${iso.t} ${iso.u}`), '.'];
     const pregunta = ['¿Cuántos ', v('q', 'mg quedan'), ' después de ', v('t', `${t} ${iso.u}`), '?'];
     const errores = [
-      hv('QA-vm-divide-entre-2n', m0 / (2 * n), `Dividiste entre 2 × ${n}. Cada vida media divide entre 2 lo que queda: después de ${n} vidas medias se divide entre 2${pot(n)} = ${2 ** n}.`),
-      hv('QA-vm-desintegrada', r.desintegrado, 'Ese número es lo que se desintegró. Se pide lo que queda.'),
-      hv('QA-vm-tiempo-como-una-vida', m0 / 2, `Tomaste los ${t} ${iso.u} como si fueran una sola vida media. La vida media es ${iso.t} ${iso.u}: en ${t} ${iso.u} caben ${n}.`),
-      hv('QA-vm-una-vida-de-menos', m0 / 2 ** (n - 1), 'Contaste una vida media de menos.'),
-      hv('QA-vm-una-vida-de-mas', m0 / 2 ** (n + 1), 'Contaste una vida media de más.'),
-      hv('QA-vm-divide-entre-n', m0 / n, `Dividiste entre ${n}. No se reparte en partes iguales: en cada vida media se va la mitad de lo que queda.`),
+      hv('AQ-vm-divide-entre-2n', m0 / (2 * n), `Dividiste entre 2 × ${n}. Cada vida media divide entre 2 lo que queda: después de ${n} vidas medias se divide entre 2${pot(n)} = ${2 ** n}.`),
+      hv('AQ-vm-desintegrada', r.desintegrado, 'Ese número es lo que se desintegró. Se pide lo que queda.'),
+      hv('AQ-vm-tiempo-como-una-vida', m0 / 2, `Tomaste los ${t} ${iso.u} como si fueran una sola vida media. La vida media es ${iso.t} ${iso.u}: en ${t} ${iso.u} caben ${n}.`),
+      hv('AQ-vm-una-vida-de-menos', m0 / 2 ** (n - 1), 'Contaste una vida media de menos.'),
+      hv('AQ-vm-una-vida-de-mas', m0 / 2 ** (n + 1), 'Contaste una vida media de más.'),
+      hv('AQ-vm-divide-entre-n', m0 / n, `Dividiste entre ${n}. No se reparte en partes iguales: en cada vida media se va la mitad de lo que queda.`),
     ];
     const solucion = [
       [v('t', `${t} ${iso.u}`), ' ÷ ', v('th', `${iso.t} ${iso.u}`), ` = ${n} vidas medias.`],

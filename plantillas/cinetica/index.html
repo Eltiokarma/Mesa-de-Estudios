@@ -1724,19 +1724,19 @@ D3.describir = () => {
 /* ----- Los pasos ----- */
 const hip = 'Esta opción es una hipótesis nuestra, sin estudio que la mida.';
 const G1 = { id:'mecanismos-intermediario', ok:'c', opts:[
-  ['a', nombre(MP.errores.enVariasEtapas[0]), 'QA-int-repetido', 'hipotesis'],
-  ['b', nombre(MP.errores.intercambio.intermediarios[0]), 'QA-cat-por-intermediario', 'hipotesis'],
+  ['a', nombre(MP.errores.enVariasEtapas[0]), 'AQ-int-repetido', 'hipotesis'],
+  ['b', nombre(MP.errores.intercambio.intermediarios[0]), 'AQ-cat-por-intermediario', 'hipotesis'],
   ['c', nombre(MP.intermediarios[0])],
-  ['d', nombre(MP.errores.enVariasEtapas[1]), 'QA-int-producto', 'hipotesis']],
+  ['d', nombre(MP.errores.enVariasEtapas[1]), 'AQ-int-producto', 'hipotesis']],
   fb:{ c:`¡Bien! El IO⁻ sale en la etapa 1 y entra en la 2: aparece primero como producto y después como reactivo. Se forma y se gasta; por eso se tacha y no queda en la ecuación global.`,
     a:`Elegiste la 1. El H₂O₂ entra en las dos etapas, pero no vuelve a salir: se gasta, y es el reactivo de la global. Un intermediario tiene que formarse en una etapa y gastarse en otra. ${hip} La correcta está marcada.`,
     b:`Elegiste la 2. El I⁻ entra en la etapa 1 y vuelve a salir en la 2: eso es un catalizador. El intermediario va al revés: primero sale y después entra. ${hip} La correcta está marcada.`,
     d:`Elegiste la 4. El H₂O sale en las dos etapas y no se gasta en ninguna: es un producto de la global. Un intermediario se forma y después se gasta. ${hip} La correcta está marcada.` } };
 const G2 = { id:'mecanismos-catalizador', ok:'a', opts:[
   ['a', nombre(MO.catalizadores[0])],
-  ['b', nombre(MO.errores.intercambio.catalizadores[0]), 'QA-int-por-catalizador', 'hipotesis'],
-  ['c', nombre(MO.errores.enVariasEtapas[0]), 'QA-cat-repetido', 'hipotesis'],
-  ['d', 'O₃', 'QA-cat-se-gasta', 'hipotesis']],
+  ['b', nombre(MO.errores.intercambio.catalizadores[0]), 'AQ-int-por-catalizador', 'hipotesis'],
+  ['c', nombre(MO.errores.enVariasEtapas[0]), 'AQ-cat-repetido', 'hipotesis'],
+  ['d', 'O₃', 'AQ-cat-se-gasta', 'hipotesis']],
   fb:{ a:'¡Bien! El Cl entra en la etapa 1 y vuelve a salir en la 2: se gasta y se regenera, sale igual que entró. Por eso un poco de cloro destruye muchísimo ozono.',
     b:`Elegiste la 2. El ClO sale en la etapa 1 y entra en la 2: se forma y se gasta, es el intermediario. El catalizador va al revés: entra primero y se regenera después. ${hip} La correcta está marcada.`,
     c:`Elegiste la 3. El O₂ sale en las dos etapas y nunca entra: es el producto de la global. Un catalizador entra y vuelve a salir. ${hip} La correcta está marcada.`,
@@ -1746,7 +1746,7 @@ const G3 = { id:'mecanismos-ley', ok:'c', opts:[
   ['a', lOpc(LN.errores.coeficientes), 'CI9-coeficiente', 'parcial'],
   ['b', lOpc(LN.errores.otraEtapa), 'CI11-etapa-rapida', 'parcial'],
   ['c', lOpc(LN)],
-  ['d', lOpc(LN.errores.sumaEtapas), 'QA-ley-suma-etapas', 'hipotesis']],
+  ['d', lOpc(LN.errores.sumaEtapas), 'AQ-ley-suma-etapas', 'hipotesis']],
   fb:{ c:'¡Bien! La etapa lenta fija la velocidad, y sus coeficientes son los órdenes: es una etapa elemental, un solo choque.',
     a:`Elegiste la 1. Esa ley usa los coeficientes de la ecuación global, que no es una etapa: en una reacción de varias etapas los órdenes no se leen de la global. Tomar los órdenes de los coeficientes es una idea documentada incluso en profesores (Kolomuç y Tekin, 2011, según Bain y Towns, 2016), sin cifra. La correcta está marcada.`,
     b:`Elegiste la 2. Esa es la ley de la etapa rápida: espera a que la lenta le dé NO₃, así que no decide la velocidad. Que la etapa lenta no es la que fija la velocidad lo describe un estudio con futuros profesores (Taştan Kırık, Yalçınkaya y Boz, 2010), sin cifra verificada. La correcta está marcada.`,
@@ -1754,18 +1754,18 @@ const G3 = { id:'mecanismos-ley', ok:'c', opts:[
 const eaLenta = e => (e.lenta === 1 ? e.Ea1 : e.Ea2);
 const pOpc = e => `La etapa ${e.lenta}, con Ea = ${fmt(eaLenta(e), 0)} kJ/mol`;
 const G4 = { id:'mecanismos-perfil', ok:'b', opts:[
-  ['a', pOpc(PP.errores.desdeCero), 'QA-Ea-desde-cero', 'hipotesis'],
+  ['a', pOpc(PP.errores.desdeCero), 'AQ-Ea-desde-cero', 'hipotesis'],
   ['b', pOpc(PP)],
-  ['c', pOpc(PP.errores.desdeReactivos), 'QA-Ea-cima-mas-alta', 'hipotesis'],   // cubre dos errores: las dos Ea desde los reactivos y «la cima más alta es la lenta»
-  ['d', pOpc(PP.errores.inversa), 'QA-Ea-inversa', 'hipotesis']],
+  ['c', pOpc(PP.errores.desdeReactivos), 'AQ-Ea-cima-mas-alta', 'hipotesis'],   // cubre dos errores: las dos Ea desde los reactivos y «la cima más alta es la lenta»
+  ['d', pOpc(PP.errores.inversa), 'AQ-Ea-inversa', 'hipotesis']],
   fb:{ b:`¡Bien! La segunda loma empieza en el valle (${fmt(PF.I, 0)}), no en los reactivos: Ea₂ = ${fmt(PF.TS2, 0)} − (${fmt(PF.I, 0)}) = ${fmt(PP.Ea2, 0)} kJ/mol, más que Ea₁ = ${fmt(PP.Ea1, 0)}. La segunda etapa es la lenta, aunque su cima esté más abajo.`,
     a:`Elegiste la 1. ${fmt(PF.TS1, 0)} es la altura de la primera cima en el eje, no su barrera: la Ea se mide desde donde empieza la etapa. ${hip} La correcta está marcada.`,
     c:`Elegiste la 3. Mediste las dos lomas desde los reactivos, o tomaste la cima más alta como la lenta. Pero el valle está ${fmt(-PP.dH1, 0)} kJ/mol por debajo de los reactivos: casi todo baja hasta ahí y se queda, y para salir necesita subir ${fmt(PP.Ea2, 0)}. Esa barrera es la que frena. ${hip} La correcta está marcada.`,
     d:`Elegiste la 4. ${fmt(PP.EaInv2, 0)} es lo que se baja desde la segunda cima hasta los productos: la Ea de esa etapa al revés. La Ea de ida se mide desde el valle donde empieza la etapa 2. ${hip} La correcta está marcada.` } };
 const G5 = { id:'mecanismos-valle', ok:'d', opts:[
   ['a', 'En las cimas, intermediarios; en el valle, un complejo activado', 'CI12-cimas-intermedios', 'parcial'],
-  ['b', 'En las cimas, los productos de cada etapa; en el valle, un intermediario', 'QA-complejo-producto', 'hipotesis'],
-  ['c', 'En las cimas, complejos activados; en el valle, el catalizador', 'QA-valle-catalizador', 'hipotesis'],
+  ['b', 'En las cimas, los productos de cada etapa; en el valle, un intermediario', 'AQ-complejo-producto', 'hipotesis'],
+  ['c', 'En las cimas, complejos activados; en el valle, el catalizador', 'AQ-valle-catalizador', 'hipotesis'],
   ['d', 'En las cimas, complejos activados; en el valle, un intermediario']],
   fb:{ d:'¡Bien! En cada cima está el complejo activado: los átomos a medio camino, un instante. En el valle, el intermediario: una especie que dura un rato, hasta que la segunda etapa la gasta.',
     a:'Elegiste la 1. Es al revés: lo que dura un rato está en un valle; en lo más alto de la loma no se queda nada. Leer las cimas como intermediarios aparece en un estudio con universitarios de química orgánica: lo hicieron 10 de los 17 estudiantes que comentaron ese rasgo del diagrama, en una muestra de 36 (Popova y Bretz, 2018, citado vía buscador; cifra por verificar). La correcta está marcada.',
@@ -1773,10 +1773,10 @@ const G5 = { id:'mecanismos-valle', ok:'d', opts:[
     c:`Elegiste la 3. El catalizador no queda en un valle del perfil: en el valle está el intermediario, que la etapa 1 forma y la etapa 2 gasta. El catalizador, en cambio, se recupera al final. ${hip} La correcta está marcada.` } };
 const vOpc = x => `${cientifica(Math.abs(x))} kg/(m³·h)`;
 const G6 = { id:'mecanismos-velocidad-media', ok:'b', opts:[
-  ['a', vOpc(VM.errores.soloMasa), 'QA-mg-a-kg-sin-volumen', 'hipotesis'],
+  ['a', vOpc(VM.errores.soloMasa), 'AQ-mg-a-kg-sin-volumen', 'hipotesis'],
   ['b', vOpc(VM.valor)],
-  ['c', vOpc(VM.errores.sinTiempo), 'QA-vmedia-sin-tiempo', 'hipotesis'],
-  ['d', vOpc(VM.errores.soloVolumen), 'QA-mL-a-m3-sin-masa', 'hipotesis']],
+  ['c', vOpc(VM.errores.sinTiempo), 'AQ-vmedia-sin-tiempo', 'hipotesis'],
+  ['d', vOpc(VM.errores.soloVolumen), 'AQ-mL-a-m3-sin-masa', 'hipotesis']],
   fb:{ b:`¡Bien! Baja ${fmt(-VM.dc, 2)} mg/mL en ${fmt(VM.dt, 0)} h: ${fmt(VM.rapidez, 2)} mg/(mL·h). Y 1 mg/mL es lo mismo que 1 kg/m³.`,
     a:`Elegiste la 1. Pasaste los miligramos a kilogramos (× 10⁻⁶), pero los mililitros también cambian: 1 mL = 10⁻⁶ m³. Las dos potencias de diez se cancelan. ${hip} La correcta está marcada.`,
     c:`Elegiste la 3. ${fmt(-VM.dc, 2)} es lo que bajó la concentración, no la velocidad: falta dividir entre las ${fmt(VM.dt, 0)} horas. ${hip} La correcta está marcada.`,

@@ -135,7 +135,7 @@ test('salen los doce tipos, con la misma unidad en todas las alternativas y sin 
 test('las trampas del examen aparecen: olvidar la carga, el ion común, el volumen final, Cl₂, m³ y °C, el 1:1', () => {
   const vistos = new Set();
   for (let s = 0; s < 1500; s++) for (const a of gen.generar(s).alternativas) if (a.error) vistos.add(a.error.id);
-  for (const id of ['SO15', 'SO14', 'SO7', 'ES12', 'BMH5', 'QA-ion-comun-una-sal', 'QA-volumen-final', 'QA-cl2-molecular', 'QA-m3-litros', 'QA-celsius', 'QA-eq-por-meq', 'QA-soluto-solvente'])
+  for (const id of ['SO15', 'SO14', 'SO7', 'ES12', 'BMH5', 'AQ-ion-comun-una-sal', 'AQ-volumen-final', 'AQ-cl2-molecular', 'AQ-m3-litros', 'AQ-celsius', 'AQ-eq-por-meq', 'AQ-soluto-solvente'])
     assert.ok(vistos.has(id), `no aparece ${id}`);
 });
 

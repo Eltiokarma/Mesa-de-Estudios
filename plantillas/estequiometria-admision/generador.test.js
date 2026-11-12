@@ -164,7 +164,7 @@ test('ningún id de error se repite dentro de un mismo problema', () => {
 test('salen todos los errores con nombre: ES21 y los iones de los óxidos', () => {
   const vistos = new Set();
   for (let s = 0; s < 3000; s++) for (const a of gen.generar(s).alternativas) if (a.error) vistos.add(a.error.id);
-  for (const id of ['ES6', 'ES19', 'ES20', 'ES21', 'QA-solo-aniones', 'QA-oxido-disociado', 'QA-cuenta-oxido', 'QA-cuenta-atomos', 'QA-dh-negativo-absorbe-sin-coeficiente'])
+  for (const id of ['ES6', 'ES19', 'ES20', 'ES21', 'AQ-solo-aniones', 'AQ-oxido-disociado', 'AQ-cuenta-oxido', 'AQ-cuenta-atomos', 'AQ-dh-negativo-absorbe-sin-coeficiente'])
     assert.ok(vistos.has(id), `no salió ${id}`);
 });
 

@@ -270,8 +270,8 @@ test('salen los diez tipos y los seis papeles redox; hay combustiones en V/F y e
     for (const a of p.alternativas) if (a.error) ids.add(a.error.id); }
   assert.deepEqual([...tipos].sort(), ['aLaVez', 'aguaDura', 'calor', 'dismutacion', 'redoxSet', 'relacionar', 'rol', 'tipo', 'tipoEnergia', 'vf']);
   assert.equal(subs.size, 8);
-  for (const id of ['QA-combustion-no-redox', 'QA-acido-base-redox', 'QA-tipo-simple', 'QA-tipo-doble', 'QA-agente-cruzado', 'EC9-definiciones-al-reves',
-    'QA-dismutacion-un-sentido', 'QA-calor-en-productos-absorbido', 'QA-descomposicion-reversible', 'EC9-oxidar-es-ganar-oxigeno', 'QA-calentar-endotermica', 'QA-sentido-invertido', 'QA-redox-sin-cambio'])
+  for (const id of ['AQ-combustion-no-redox', 'AQ-acido-base-redox', 'AQ-tipo-simple', 'AQ-tipo-doble', 'AQ-agente-cruzado', 'EC9-definiciones-al-reves',
+    'AQ-dismutacion-un-sentido', 'AQ-calor-en-productos-absorbido', 'AQ-descomposicion-reversible', 'EC9-oxidar-es-ganar-oxigeno', 'AQ-calentar-endotermica', 'AQ-sentido-invertido', 'AQ-redox-sin-cambio'])
     assert.ok(ids.has(id), `no aparece ${id}`);
 });
 

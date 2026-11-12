@@ -71,7 +71,7 @@ test('en las variaciones siempre está la trampa del desfase (32 o 273 sumado a 
     const p = gen.generar(s);
     if (p._datos.tipo !== 'delta') continue;
     n++;
-    assert.ok(p.alternativas.some(a => a.error && a.error.id === 'QA-desfase-en-variacion'), `semilla ${s}`);
+    assert.ok(p.alternativas.some(a => a.error && a.error.id === 'AQ-desfase-en-variacion'), `semilla ${s}`);
   }
   assert.ok(n > 100);
 });

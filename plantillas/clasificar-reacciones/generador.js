@@ -82,7 +82,7 @@
  *                 el CO₂ (si sobra, disuelve; si se escapa al hervir, precipita).
  *
  * Convenciones: coma decimal en pantalla; los gramos con hasta 1 decimal; Q con hasta 1 decimal.
- * Errores: EC9 (docs/investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md) y códigos QA-…
+ * Errores: EC9 (docs/investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md) y códigos AQ-…
  * (química admisión, hipótesis; mapa de trampas en docs/clasificacion/trampas-admision-unmsm/quimica.md).
  * Fin de la cabecera: con estas reglas y _datos (trae las ecuaciones y ΔH) se recalcula cada respuesta.
  */
@@ -429,47 +429,47 @@
     const c = a.clases;
     if (k === 'redox') {
       if (afirma) { // dice que es redox y no lo es
-        if (c.neutralizacion !== 'no') return H('QA-acido-base-redox', `Llamaste redox a una reacción ácido-base. ${porQueNo('redox', a)} El H⁺ pasa de una sustancia a otra, pero sigue con +1.`);
+        if (c.neutralizacion !== 'no') return H('AQ-acido-base-redox', `Llamaste redox a una reacción ácido-base. ${porQueNo('redox', a)} El H⁺ pasa de una sustancia a otra, pero sigue con +1.`);
         if (c.adicion === 'si' && a.ec.reactivos.some(t => t.atomos.O)) return { id: 'EC9-oxidar-es-ganar-oxigeno', respaldo: 'parcial', fuente: FUENTE_EC,
           explicacion: `Se une a un compuesto con oxígeno y parece que «se oxida». Oxidarse no es ganar oxígeno: es perder electrones, y aquí ningún número de oxidación cambia.` };
         if (c.descomposicion === 'si' && a.ec.productos.some(t => t.estado === 'g' && t.atomos.O)) return { id: 'EC9-oxidar-es-ganar-oxigeno', respaldo: 'parcial', fuente: FUENTE_EC,
           explicacion: `Suelta ${listaY(a.ec.productos.filter(t => t.estado === 'g' && t.atomos.O).map(t => F(t.f)))}, ${a.ec.productos.filter(t => t.estado === 'g' && t.atomos.O).length > 1 ? 'que llevan' : 'que lleva'} oxígeno, y parece que algo «se reduce» al perderlo. Reducirse no es perder oxígeno: es ganar electrones, y aquí ningún número de oxidación cambia.` };
-        if (c.descomposicion === 'si') return H('QA-descomposicion-redox', `No toda descomposición es redox. ${porQueNo('redox', a)}`);
+        if (c.descomposicion === 'si') return H('AQ-descomposicion-redox', `No toda descomposición es redox. ${porQueNo('redox', a)}`);
         if (a.ec.reactivos.length === 1 && a.ec.productos.length === 1) {
           const t = a.ec.reactivos[0], igual = Object.keys(t.atomos).map(e => `el ${e} sigue en ${eoTexto(a.eo.get(t.f)[e])}`);
-          return H('QA-redox-sin-cambio', `${t.coef === 2 ? 'Dos' : t.coef} moléculas de ${F(t.f)} se unen; ${listaY(igual)}. No es redox.`);
+          return H('AQ-redox-sin-cambio', `${t.coef === 2 ? 'Dos' : t.coef} moléculas de ${F(t.f)} se unen; ${listaY(igual)}. No es redox.`);
         }
-        if (c.doble === 'si') return H('QA-doble-redox', `${porQueNo('redox', a)} Que cambien de pareja los iones no es redox.`);
-        return H('QA-redox-sin-cambio', porQueNo('redox', a));
+        if (c.doble === 'si') return H('AQ-doble-redox', `${porQueNo('redox', a)} Que cambien de pareja los iones no es redox.`);
+        return H('AQ-redox-sin-cambio', porQueNo('redox', a));
       }
-      if (c.combustion === 'si') return H('QA-combustion-no-redox', `Toda combustión es redox: ${cambios(a)}. El O₂ se reduce y el combustible se oxida.`);
-      if (a.dism.length) return H('QA-dismutacion-no-redox', `Sí es redox aunque cambie un solo elemento: ${cambios(a)}.`);
+      if (c.combustion === 'si') return H('AQ-combustion-no-redox', `Toda combustión es redox: ${cambios(a)}. El O₂ se reduce y el combustible se oxida.`);
+      if (a.dism.length) return H('AQ-dismutacion-no-redox', `Sí es redox aunque cambie un solo elemento: ${cambios(a)}.`);
       if (![...a.sube, ...a.baja].includes('O')) { const e = a.sube[0], L = a.estados[e].L, D = a.estados[e].D;
         return { id: 'EC9-oxidar-es-ganar-oxigeno', respaldo: 'parcial', fuente: FUENTE_EC,
           explicacion: `Oxidarse no es ganar oxígeno: es perder electrones. Aquí no se gana ni se pierde oxígeno, pero el ${e} pierde electrones (${eoDe(a, e, L[0])} → ${eoDe(a, e, Math.max(...D))}). Es redox: ${cambios(a)}.` }; }
-      if (c.simple === 'si') return H('QA-desplazamiento-no-redox', `Todo desplazamiento simple es redox: ${cambios(a)}.`);
-      return H('QA-redox-no-visto', `Sí es redox: ${cambios(a)}.`);
+      if (c.simple === 'si') return H('AQ-desplazamiento-no-redox', `Todo desplazamiento simple es redox: ${cambios(a)}.`);
+      return H('AQ-redox-no-visto', `Sí es redox: ${cambios(a)}.`);
     }
     if (k === 'reversible') {
       if (afirma) return c.descomposicion === 'si' || a.dism.length
-        ? H('QA-descomposicion-reversible', `No toda descomposición o dismutación es reversible. Con → va en un solo sentido en estas condiciones${a.ec.productos.some(t => t.estado === 'g') ? `: el ${listaY(a.ec.productos.filter(t => t.estado === 'g').map(t => F(t.f)))} se escapa como gas` : ''}. Si en un recipiente cerrado esa reacción llegara al equilibrio, se escribiría con ⇌.`)
-        : H('QA-reversible-sin-doble-flecha', porQueNo('reversible', a));
-      return H('QA-reversible-sin-doble-flecha', `Es reversible: ${porQueSi('reversible', a)}.`);
+        ? H('AQ-descomposicion-reversible', `No toda descomposición o dismutación es reversible. Con → va en un solo sentido en estas condiciones${a.ec.productos.some(t => t.estado === 'g') ? `: el ${listaY(a.ec.productos.filter(t => t.estado === 'g').map(t => F(t.f)))} se escapa como gas` : ''}. Si en un recipiente cerrado esa reacción llegara al equilibrio, se escribiría con ⇌.`)
+        : H('AQ-reversible-sin-doble-flecha', porQueNo('reversible', a));
+      return H('AQ-reversible-sin-doble-flecha', `Es reversible: ${porQueSi('reversible', a)}.`);
     }
     if (k === 'exotermica' || k === 'endotermica') {
       const exo = a.r.dH < 0;
       const txt = exo ? `ΔH = ${P.formatear(a.r.dH, 1)} kJ: libera calor (exotérmica)` : `ΔH = ${dHTexto(a.r.dH)}: absorbe calor (endotérmica)`;
-      if (exo && /calentar/i.test(a.r.contexto || '')) return H('QA-calentar-endotermica', `Que haya que calentarla para que empiece no la vuelve endotérmica: el calor de arranque solo la enciende. Una vez en marcha libera más de lo que recibió: ${txt}.`);
+      if (exo && /calentar/i.test(a.r.contexto || '')) return H('AQ-calentar-endotermica', `Que haya que calentarla para que empiece no la vuelve endotérmica: el calor de arranque solo la enciende. Una vez en marcha libera más de lo que recibió: ${txt}.`);
       if (calor === 'termino') return exo
-        ? H('QA-calor-en-productos-absorbido', `El calor escrito del lado de los productos es calor que sale: la reacción lo libera, como un producto más. Es exotérmica, con ΔH = ${dHTexto(a.r.dH)}.`)
-        : H('QA-calor-en-reactivos-liberado', `El calor escrito del lado de los reactivos es calor que entra: la reacción lo absorbe, como un reactivo más. Es endotérmica, con ΔH = ${dHTexto(a.r.dH)}.`);
-      return H('QA-signo-dH', `El signo de ΔH dice el sentido: negativo, la reacción pierde energía y la libera; positivo, la absorbe. Aquí ${txt}.`);
+        ? H('AQ-calor-en-productos-absorbido', `El calor escrito del lado de los productos es calor que sale: la reacción lo libera, como un producto más. Es exotérmica, con ΔH = ${dHTexto(a.r.dH)}.`)
+        : H('AQ-calor-en-reactivos-liberado', `El calor escrito del lado de los reactivos es calor que entra: la reacción lo absorbe, como un reactivo más. Es endotérmica, con ΔH = ${dHTexto(a.r.dH)}.`);
+      return H('AQ-signo-dH', `El signo de ΔH dice el sentido: negativo, la reacción pierde energía y la libera; positivo, la absorbe. Aquí ${txt}.`);
     }
     if (k === 'dismutacion') return afirma
-      ? H('QA-dismutacion-otra-redox', porQueNo('dismutacion', a))
-      : H('QA-dismutacion-un-sentido', `Sí hay dismutación: ${cambios(a)}.`);
+      ? H('AQ-dismutacion-otra-redox', porQueNo('dismutacion', a))
+      : H('AQ-dismutacion-un-sentido', `Sí hay dismutación: ${cambios(a)}.`);
     // Clases por la forma
-    return H('QA-tipo-' + k, afirma ? porQueNo(k, a) : `Sí ${esClase(k)}: ${porQueSi(k, a)}.`);
+    return H('AQ-tipo-' + k, afirma ? porQueNo(k, a) : `Sí ${esClase(k)}: ${porQueSi(k, a)}.`);
   }
 
   // ---------- Utilidades ----------
@@ -612,18 +612,18 @@
       let e;
       if (ES_REAC[sub] && (ro === 'oxR' || ro === 'redR')) {
         e = sub.startsWith('agente')
-          ? H('QA-agente-cruzado', `El ${F(f)} ${ro === 'oxR' ? 'se oxida: pierde electrones y se los da al otro, por eso es el agente reductor' : 'se reduce: gana electrones y le quita al otro, por eso es el agente oxidante'}. El agente lleva el nombre de lo que le hace al otro, no de lo que le pasa a él.`)
+          ? H('AQ-agente-cruzado', `El ${F(f)} ${ro === 'oxR' ? 'se oxida: pierde electrones y se los da al otro, por eso es el agente reductor' : 'se reduce: gana electrones y le quita al otro, por eso es el agente oxidante'}. El agente lleva el nombre de lo que le hace al otro, no de lo que le pasa a él.`)
           : { id: 'EC9-definiciones-al-reves', respaldo: 'parcial', fuente: FUENTE_EC,
             explicacion: `Oxidarse es perder electrones (sube el número de oxidación) y reducirse es ganarlos (baja). El ${F(f)} ${ro === 'oxR' ? 'se oxida' : 'se reduce'}.` };
       } else if (!ES_REAC[sub] && (ro === 'oxP' || ro === 'redP')) {
         e = { id: 'EC9-definiciones-al-reves', respaldo: 'parcial', fuente: FUENTE_EC,
           explicacion: `El ${F(f)} es la forma ${ro === 'oxP' ? 'oxidada' : 'reducida'}: ahí el elemento quedó con un número de oxidación ${ro === 'oxP' ? 'mayor' : 'menor'}. Oxidarse es subir; reducirse, bajar.` };
       } else if (ES_REAC[sub] && (ro === 'oxP' || ro === 'redP')) {
-        e = H('QA-producto-por-reactivo', `El ${F(f)} es un producto (${a.roles.formaOxidada.includes(f) && a.roles.formaReducida.includes(f) ? 'forma oxidada y también reducida' : 'la forma ' + (ro === 'oxP' ? 'oxidada' : 'reducida')}). Los agentes y las sustancias que se oxidan o se reducen son reactivos: los que entran a la reacción.`);
+        e = H('AQ-producto-por-reactivo', `El ${F(f)} es un producto (${a.roles.formaOxidada.includes(f) && a.roles.formaReducida.includes(f) ? 'forma oxidada y también reducida' : 'la forma ' + (ro === 'oxP' ? 'oxidada' : 'reducida')}). Los agentes y las sustancias que se oxidan o se reducen son reactivos: los que entran a la reacción.`);
       } else if (!ES_REAC[sub] && (ro === 'oxR' || ro === 'redR')) {
-        e = H('QA-reactivo-por-producto', `El ${F(f)} es un reactivo (${ro === 'oxR' ? 'el que se oxida' : 'el que se reduce'}). Se pide el producto en que termina el elemento después del cambio.`);
+        e = H('AQ-reactivo-por-producto', `El ${F(f)} es un reactivo (${ro === 'oxR' ? 'el que se oxida' : 'el que se reduce'}). Se pide el producto en que termina el elemento después del cambio.`);
       } else {
-        e = H('QA-especie-sin-cambio', `En el ${F(f)} ningún elemento cambió su número de oxidación respecto de los reactivos: no participa en el paso de electrones.`);
+        e = H('AQ-especie-sin-cambio', `En el ${F(f)} ningún elemento cambió su número de oxidación respecto de los reactivos: no participa en el paso de electrones.`);
       }
       return { ...e, clave: 'esp:' + f, texto: T(f) };
     });
@@ -648,10 +648,10 @@
     const otro = rng.elegir([...new Set([...a.ec.reactivos, ...a.ec.productos].flatMap(s => Object.keys(s.atomos)))].filter(e => e !== E));
     const correcta = { clave: 'dis:' + E, texto: `El ${E} se oxida y se reduce a la vez: pasa de ${t(v0)} a ${t(arriba)} y a ${t(abajo)}.` };
     const errores = rng.barajar([
-      H('QA-dismutacion-un-sentido', `No todo el ${E} va en el mismo sentido: una parte sube a ${t(arriba)} (se oxida) y otra baja a ${t(abajo)} (se reduce).`, { clave: 'dis:sube', texto: `Todo el ${E} se oxida: pasa de ${t(v0)} a ${t(arriba)}.` }),
-      H('QA-dismutacion-un-sentido', `No todo el ${E} va en el mismo sentido: una parte baja a ${t(abajo)} (se reduce) y otra sube a ${t(arriba)} (se oxida).`, { clave: 'dis:baja', texto: `Todo el ${E} se reduce: pasa de ${t(v0)} a ${t(abajo)}.` }),
-      H('QA-dismutacion-no-redox', `Es redox: ${cambios(a)}. Que el ${E} esté a los dos lados no impide que cambie su número de oxidación.`, { clave: 'dis:no', texto: `No es redox: el ${E} está a los dos lados de la ecuación.` }),
-      H('QA-dismutacion-otro-elemento', `El ${otro} no cambia su número de oxidación. El que se oxida y se reduce es el mismo ${E}.`, { clave: 'dis:otro', texto: `El ${E} se oxida y el ${otro} se reduce.` }),
+      H('AQ-dismutacion-un-sentido', `No todo el ${E} va en el mismo sentido: una parte sube a ${t(arriba)} (se oxida) y otra baja a ${t(abajo)} (se reduce).`, { clave: 'dis:sube', texto: `Todo el ${E} se oxida: pasa de ${t(v0)} a ${t(arriba)}.` }),
+      H('AQ-dismutacion-un-sentido', `No todo el ${E} va en el mismo sentido: una parte baja a ${t(abajo)} (se reduce) y otra sube a ${t(arriba)} (se oxida).`, { clave: 'dis:baja', texto: `Todo el ${E} se reduce: pasa de ${t(v0)} a ${t(abajo)}.` }),
+      H('AQ-dismutacion-no-redox', `Es redox: ${cambios(a)}. Que el ${E} esté a los dos lados no impide que cambie su número de oxidación.`, { clave: 'dis:no', texto: `No es redox: el ${E} está a los dos lados de la ecuación.` }),
+      H('AQ-dismutacion-otro-elemento', `El ${otro} no cambia su número de oxidación. El que se oxida y se reduce es el mismo ${E}.`, { clave: 'dis:otro', texto: `El ${E} se oxida y el ${otro} se reduce.` }),
     ]);
     return cerrar(rng, semilla, {
       variables: { ox: { nombre: 'lo que se oxida', color: 'i' }, red: { nombre: 'lo que se reduce', color: 'o' } },
@@ -681,10 +681,10 @@
     const op = (s, q) => ({ clave: `q:${s}:${Math.round(q * 10) / 10}`, texto: txt(s, q) });
     const errores = [
       { ...errorClase('exotermica', a, !exo, forma), ...op(otro, Q) },
-      H('QA-calor-de-la-ecuacion', `${P.formatear(Math.abs(r.dH), 1)} kJ es el calor de la ecuación tal como está escrita, con ${t.coef} mol de ${F(t.f)}. Aquí hay ${P.formatear(n, 2)} mol: hay que hacer la regla de tres.`, op(sent, Math.abs(r.dH))),
-      ...(t.coef > 1 ? [H('QA-calor-sin-coeficiente', `Multiplicaste los moles por el calor de la ecuación como si fuera por 1 mol de ${F(t.f)}. En la ecuación hay ${t.coef} mol: hay que dividir entre el coeficiente.`, op(sent, Math.abs(r.dH) * n)),
-        H('QA-calor-por-coeficiente', `Multiplicaste también por el coeficiente ${t.coef}. El calor de la ecuación ya es para ${t.coef} mol de ${F(t.f)}: hay que dividir entre ${t.coef}, no multiplicar.`, op(sent, Math.abs(r.dH) * n * t.coef))] : []),
-      H('QA-calor-gramos-como-moles', `Usaste los gramos como si fueran moles. Primero pasa a moles: ${P.formatear(m, 1)} g ÷ ${P.formatear(M, 1)} g/mol = ${P.formatear(n, 2)} mol.`, op(sent, Math.abs(r.dH) * m / t.coef)),
+      H('AQ-calor-de-la-ecuacion', `${P.formatear(Math.abs(r.dH), 1)} kJ es el calor de la ecuación tal como está escrita, con ${t.coef} mol de ${F(t.f)}. Aquí hay ${P.formatear(n, 2)} mol: hay que hacer la regla de tres.`, op(sent, Math.abs(r.dH))),
+      ...(t.coef > 1 ? [H('AQ-calor-sin-coeficiente', `Multiplicaste los moles por el calor de la ecuación como si fuera por 1 mol de ${F(t.f)}. En la ecuación hay ${t.coef} mol: hay que dividir entre el coeficiente.`, op(sent, Math.abs(r.dH) * n)),
+        H('AQ-calor-por-coeficiente', `Multiplicaste también por el coeficiente ${t.coef}. El calor de la ecuación ya es para ${t.coef} mol de ${F(t.f)}: hay que dividir entre ${t.coef}, no multiplicar.`, op(sent, Math.abs(r.dH) * n * t.coef))] : []),
+      H('AQ-calor-gramos-como-moles', `Usaste los gramos como si fueran moles. Primero pasa a moles: ${P.formatear(m, 1)} g ÷ ${P.formatear(M, 1)} g/mol = ${P.formatear(n, 2)} mol.`, op(sent, Math.abs(r.dH) * m / t.coef)),
     ].filter(e => limpio(Number(e.clave.split(':')[2]), 1) && Number(e.clave.split(':')[2]) > 0 && Number(e.clave.split(':')[2]) < 1e6);
     const verbo = m === 1 ? (esReac ? 'reacciona' : 'se forma') : (esReac ? 'reaccionan' : 'se forman');
     return cerrar(rng, semilla, {
@@ -777,7 +777,7 @@
     if (a.redox && !a.dism.length && a.roles.seOxida.length === 1 && a.roles.seReduce.length === 1 && a.roles.seOxida[0] !== a.roles.seReduce[0]) {
       const ox = a.roles.seOxida[0], rd = a.roles.seReduce[0], verdad = rng.moneda();
       add('agente', `El ${F(verdad ? rd : ox)} es el agente oxidante.`, verdad,
-        H('QA-agente-cruzado', `El agente oxidante es el que se reduce (gana electrones): el ${F(rd)}. El ${F(ox)} se oxida y es el agente reductor.`));
+        H('AQ-agente-cruzado', `El agente oxidante es el que se reduce (gana electrones): el ${F(rd)}. El ${F(ox)} se oxida y es el agente reductor.`));
     }
     if (a.dism.length) add('dismutacion', `El ${a.dism[0]} se oxida y se reduce a la vez.`, true, errorClase('dismutacion', a, false));
     // Tres afirmaciones de tipos distintos; la de forma, como mucho dos (una verdadera y una falsa).
@@ -819,10 +819,10 @@
       pregunta = ['¿Qué ecuación la explica?'];
       correcta = { clave: 'agua:sarro', texto: Te('sarro') };
       errores = [
-        op('caliza-disuelta', H('QA-sentido-invertido', `Es la reacción al revés: así se disuelve la caliza cuando el agua tiene CO₂ de sobra. Al hervir, el CO₂ se escapa y el Ca(HCO₃)₂ disuelto se vuelve CaCO₃ sólido: la costra. ${CO2}`)),
-        op('caliza', H('QA-descompone-el-sarro', 'Esa es la descomposición de la caliza en un horno a unos 900 °C, que da cal viva (CaO). En la tetera no se forma CaO: la costra es el mismo CaCO₃, que sale del Ca(HCO₃)₂ disuelto.')),
-        op(abl, H('QA-ablandar-no-es-hervir', `Ahí se agrega ${abl === 'ablandar' ? 'soda (Na₂CO₃)' : 'cal (Ca(OH)₂)'} para ablandar el agua. En la tetera no se agregó nada: la costra sale del Ca(HCO₃)₂ que ya estaba disuelto, al perder su CO₂.`)),
-        op('acido-carbonico', H('QA-sin-solido', 'Esa ecuación forma ácido carbónico a partir del CO₂ y el agua: no tiene calcio ni da ningún sólido.')),
+        op('caliza-disuelta', H('AQ-sentido-invertido', `Es la reacción al revés: así se disuelve la caliza cuando el agua tiene CO₂ de sobra. Al hervir, el CO₂ se escapa y el Ca(HCO₃)₂ disuelto se vuelve CaCO₃ sólido: la costra. ${CO2}`)),
+        op('caliza', H('AQ-descompone-el-sarro', 'Esa es la descomposición de la caliza en un horno a unos 900 °C, que da cal viva (CaO). En la tetera no se forma CaO: la costra es el mismo CaCO₃, que sale del Ca(HCO₃)₂ disuelto.')),
+        op(abl, H('AQ-ablandar-no-es-hervir', `Ahí se agrega ${abl === 'ablandar' ? 'soda (Na₂CO₃)' : 'cal (Ca(OH)₂)'} para ablandar el agua. En la tetera no se agregó nada: la costra sale del Ca(HCO₃)₂ que ya estaba disuelto, al perder su CO₂.`)),
+        op('acido-carbonico', H('AQ-sin-solido', 'Esa ecuación forma ácido carbónico a partir del CO₂ y el agua: no tiene calcio ni da ningún sólido.')),
       ];
       solucion = [['La costra es CaCO₃, un sólido. En el agua dura el calcio está disuelto como Ca(HCO₃)₂.'], [CO2],
         ['Por eso la que explica la costra es ', { t: Te('sarro'), formula: true }, ', una descomposición.']];
@@ -831,10 +831,10 @@
       pregunta = ['¿Qué ecuación explica que se forme el bicarbonato?'];
       correcta = { clave: 'agua:caliza-disuelta', texto: Te('caliza-disuelta') };
       errores = [
-        op('sarro', H('QA-sentido-invertido', `Es la reacción al revés: así se forma el sarro cuando el CO₂ se escapa al hervir. Con CO₂ disuelto de sobra, la caliza se disuelve. ${CO2}`)),
-        op('caliza-acido', H('QA-caliza-con-acido-fuerte', 'Con ácido clorhídrico la caliza también se disuelve, pero da CaCl₂ y suelta el CO₂: no forma bicarbonato. La lluvia trae CO₂, no HCl.')),
-        op('acido-carbonico', H('QA-acido-por-anion', 'Esa forma el ácido carbónico (H₂CO₃), no el ion bicarbonato junto al calcio: falta la caliza, que aporta el Ca²⁺ y el CO₃²⁻.')),
-        op('bicarbonato', H('QA-bicarbonato-se-descompone', 'Esa es la descomposición del bicarbonato de sodio al hornear: lo destruye, no lo forma. Además la roca es de calcio, no de sodio.')),
+        op('sarro', H('AQ-sentido-invertido', `Es la reacción al revés: así se forma el sarro cuando el CO₂ se escapa al hervir. Con CO₂ disuelto de sobra, la caliza se disuelve. ${CO2}`)),
+        op('caliza-acido', H('AQ-caliza-con-acido-fuerte', 'Con ácido clorhídrico la caliza también se disuelve, pero da CaCl₂ y suelta el CO₂: no forma bicarbonato. La lluvia trae CO₂, no HCl.')),
+        op('acido-carbonico', H('AQ-acido-por-anion', 'Esa forma el ácido carbónico (H₂CO₃), no el ion bicarbonato junto al calcio: falta la caliza, que aporta el Ca²⁺ y el CO₃²⁻.')),
+        op('bicarbonato', H('AQ-bicarbonato-se-descompone', 'Esa es la descomposición del bicarbonato de sodio al hornear: lo destruye, no lo forma. Además la roca es de calcio, no de sodio.')),
       ];
       solucion = [['La caliza es CaCO₃ y casi no se disuelve en agua pura.'], [CO2],
         ['Por eso la que explica el bicarbonato es ', { t: Te('caliza-disuelta'), formula: true }, ', una adición.']];

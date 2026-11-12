@@ -110,7 +110,7 @@
  *      pH < pKa y desprotonado si pH > pKa (la forma que predomina; pKa de tabla, Lehninger). Forma: «catión», «anión»,
  *      «neutra» o «zwitterión» (ion dipolar: una carga + y una − en la misma molécula).
  *  10. Cada función que alimenta una predicción trae `errores`: lo que da cada error típico (ver ERRORES abajo; códigos
- *      EN3, EN4, EN12, FO3 y FO4 de docs/investigacion/ y QA- de química admisión, hipótesis).
+ *      EN3, EN4, EN12, FO3 y FO4 de docs/investigacion/ y AQ- de química admisión, hipótesis).
  * FIN DE LA CABECERA
  */
 (function (root, fabrica) {
@@ -570,10 +570,10 @@
     return { lista, cuenta, tipos, principal, alcoholes: clases('alcohol'), aminas: clases('amina'),
       errores: {
         porSecundaria: secundaria ? NOMBRES[secundaria] : null,                                  // FO4: toma la función que no manda
-        carboxiloComoCetonaAlcohol: tiene('acido') ? 'cetona y alcohol' : null,                  // QA-carboxilo-cetona-alcohol
-        fenolComoAlcohol: tiene('fenol') ? 'alcohol' : null,                                    // QA-fenol-alcohol
-        esterComoEter: tiene('ester') || tiene('lactona') ? 'éter' : null,                      // QA-ester-eter
-        lactonaComoLactama: tiene('lactona') ? 'lactama' : tiene('lactama') ? 'lactona' : null, // QA-lactona-lactama
+        carboxiloComoCetonaAlcohol: tiene('acido') ? 'cetona y alcohol' : null,                  // AQ-carboxilo-cetona-alcohol
+        fenolComoAlcohol: tiene('fenol') ? 'alcohol' : null,                                    // AQ-fenol-alcohol
+        esterComoEter: tiene('ester') || tiene('lactona') ? 'éter' : null,                      // AQ-ester-eter
+        lactonaComoLactama: tiene('lactona') ? 'lactama' : tiene('lactama') ? 'lactona' : null, // AQ-lactona-lactama
         aromaticoPrimero: (tiene('aromatico') || tiene('heterociclo')) && pTipo !== 'aromatico' ? 'anillo aromático' : null,
       } };
   }
@@ -694,45 +694,45 @@
   const ERRORES = {
     // lupa: [clave del error, código, respaldo, explicación]
     sp2: [['sinCarbonilo', 'EN12-sp2-sin-carbonilo', 'parcial', 'Olvidaste el carbono del C=O (del carboxilo, del aldehído o de la cetona): con su doble enlace al O también es sp².'],
-      ['comoDobles', 'QA-sp2-igual-dobles', 'hipotesis', 'Contaste dobles enlaces, no carbonos: cada C=C tiene dos carbonos sp², y un C=O tiene uno.'],
-      ['todosLosC', 'QA-sp2-todos-los-C', 'hipotesis', 'Contaste todos los carbonos: los que solo tienen enlaces simples son sp³.'],
-      ['conHeteroatomos', 'QA-sp2-cuenta-O-N', 'hipotesis', 'Sumaste átomos que no son carbonos: la lupa cuenta solo carbonos sp².']],
-    sp3: [['sinMetilos', 'QA-sp3-olvida-metilos', 'hipotesis', 'Olvidaste los CH₃ de las puntas y de las ramas: con cuatro enlaces simples también son sp³.'],
-      ['soloCadena', 'QA-sp3-olvida-anillo', 'hipotesis', 'Olvidaste los carbonos sp³ que están en los anillos.'],
-      ['conHeteroatomos', 'QA-sp3-cuenta-O-N', 'hipotesis', 'Sumaste los O y N con cuatro dominios: la lupa cuenta solo carbonos.'],
-      ['todosLosC', 'QA-sp3-todos-los-C', 'hipotesis', 'Contaste todos los carbonos: los que tienen un doble enlace son sp².']],
+      ['comoDobles', 'AQ-sp2-igual-dobles', 'hipotesis', 'Contaste dobles enlaces, no carbonos: cada C=C tiene dos carbonos sp², y un C=O tiene uno.'],
+      ['todosLosC', 'AQ-sp2-todos-los-C', 'hipotesis', 'Contaste todos los carbonos: los que solo tienen enlaces simples son sp³.'],
+      ['conHeteroatomos', 'AQ-sp2-cuenta-O-N', 'hipotesis', 'Sumaste átomos que no son carbonos: la lupa cuenta solo carbonos sp².']],
+    sp3: [['sinMetilos', 'AQ-sp3-olvida-metilos', 'hipotesis', 'Olvidaste los CH₃ de las puntas y de las ramas: con cuatro enlaces simples también son sp³.'],
+      ['soloCadena', 'AQ-sp3-olvida-anillo', 'hipotesis', 'Olvidaste los carbonos sp³ que están en los anillos.'],
+      ['conHeteroatomos', 'AQ-sp3-cuenta-O-N', 'hipotesis', 'Sumaste los O y N con cuatro dominios: la lupa cuenta solo carbonos.'],
+      ['todosLosC', 'AQ-sp3-todos-los-C', 'hipotesis', 'Contaste todos los carbonos: los que tienen un doble enlace son sp².']],
     sp: [['comoSp2', 'EN12-sp-con-doble', 'parcial', 'Contaste los carbonos con un doble enlace: esos son sp². Es sp el carbono con un triple (o con dos dobles).'],
-      ['todosLosC', 'QA-sp-todos-los-C', 'hipotesis', 'Contaste todos los carbonos.']],
-    pi: [['comoElectrones', 'QA-pi-electrones-por-enlaces', 'hipotesis', 'Esos son los electrones π: cada enlace π tiene 2 electrones.'],
-      ['soloCC', 'QA-pi-olvida-CO', 'hipotesis', 'Olvidaste los enlaces π de los C=O (o C=N): también son dobles.'],
-      ['sinAnillos', 'QA-pi-olvida-anillos', 'hipotesis', 'Olvidaste los dobles enlaces que están dentro de los anillos.'],
-      ['comoSigma', 'QA-pi-cuenta-sigma', 'hipotesis', 'Esos son los enlaces σ: hay uno en cada par de átomos unidos, con los C–H.']],
-    epi: [['comoEnlaces', 'QA-pi-enlaces-por-electrones', 'hipotesis', 'Contaste enlaces π, no electrones: cada enlace π tiene 2 electrones.'],
-      ['cuatroPorDoble', 'QA-pi-cuatro-por-doble', 'hipotesis', 'Contaste los 4 electrones de cada doble enlace: 2 son del σ y solo 2 son π.'],
-      ['sinAnillos', 'QA-pi-olvida-anillos', 'hipotesis', 'Olvidaste los dobles enlaces de los anillos.'],
-      ['conPares', 'QA-pi-suma-pares', 'hipotesis', 'Sumaste los pares libres: no son electrones π de enlace.']],
-    pares: [['sinO', 'QA-pares-olvida-O', 'hipotesis', 'Olvidaste los pares libres de los oxígenos: cada O tiene 2 (el O⁻, 3).'],
-      ['sinHalogenos', 'QA-pares-olvida-halogeno', 'hipotesis', 'Olvidaste los pares de los halógenos: cada uno, con un solo enlace, tiene 3.'],
-      ['sinN', 'QA-pares-olvida-N', 'hipotesis', 'Olvidaste el par libre del nitrógeno (el NH₃⁺ ya no lo tiene).'],
-      ['sinS', 'QA-pares-olvida-S', 'hipotesis', 'Olvidaste los pares libres del azufre.'],
-      ['comoElectrones', 'QA-pares-cuenta-electrones', 'hipotesis', 'Contaste electrones, no pares: cada par son 2 electrones.'],
-      ['unoPorAtomo', 'QA-pares-uno-por-atomo', 'hipotesis', 'Pusiste un solo par por átomo: el O tiene 2 y los halógenos 3.']],
+      ['todosLosC', 'AQ-sp-todos-los-C', 'hipotesis', 'Contaste todos los carbonos.']],
+    pi: [['comoElectrones', 'AQ-pi-electrones-por-enlaces', 'hipotesis', 'Esos son los electrones π: cada enlace π tiene 2 electrones.'],
+      ['soloCC', 'AQ-pi-olvida-CO', 'hipotesis', 'Olvidaste los enlaces π de los C=O (o C=N): también son dobles.'],
+      ['sinAnillos', 'AQ-pi-olvida-anillos', 'hipotesis', 'Olvidaste los dobles enlaces que están dentro de los anillos.'],
+      ['comoSigma', 'AQ-pi-cuenta-sigma', 'hipotesis', 'Esos son los enlaces σ: hay uno en cada par de átomos unidos, con los C–H.']],
+    epi: [['comoEnlaces', 'AQ-pi-enlaces-por-electrones', 'hipotesis', 'Contaste enlaces π, no electrones: cada enlace π tiene 2 electrones.'],
+      ['cuatroPorDoble', 'AQ-pi-cuatro-por-doble', 'hipotesis', 'Contaste los 4 electrones de cada doble enlace: 2 son del σ y solo 2 son π.'],
+      ['sinAnillos', 'AQ-pi-olvida-anillos', 'hipotesis', 'Olvidaste los dobles enlaces de los anillos.'],
+      ['conPares', 'AQ-pi-suma-pares', 'hipotesis', 'Sumaste los pares libres: no son electrones π de enlace.']],
+    pares: [['sinO', 'AQ-pares-olvida-O', 'hipotesis', 'Olvidaste los pares libres de los oxígenos: cada O tiene 2 (el O⁻, 3).'],
+      ['sinHalogenos', 'AQ-pares-olvida-halogeno', 'hipotesis', 'Olvidaste los pares de los halógenos: cada uno, con un solo enlace, tiene 3.'],
+      ['sinN', 'AQ-pares-olvida-N', 'hipotesis', 'Olvidaste el par libre del nitrógeno (el NH₃⁺ ya no lo tiene).'],
+      ['sinS', 'AQ-pares-olvida-S', 'hipotesis', 'Olvidaste los pares libres del azufre.'],
+      ['comoElectrones', 'AQ-pares-cuenta-electrones', 'hipotesis', 'Contaste electrones, no pares: cada par son 2 electrones.'],
+      ['unoPorAtomo', 'AQ-pares-uno-por-atomo', 'hipotesis', 'Pusiste un solo par por átomo: el O tiene 2 y los halógenos 3.']],
     octeto: [['tercerPeriodoCumple', 'EN3-octeto-ley', 'parcial', 'Diste por hecho que todo átomo cumple el octeto. El S unido a un O con doble enlace y a otros dos átomos queda con 10 electrones: octeto expandido, posible desde el tercer período.'],
-      ['todoTercerPeriodo', 'QA-octeto-todo-tercer-periodo', 'hipotesis', 'No todo átomo del tercer período expande su octeto: un S con dos enlaces simples y dos pares libres tiene 8.'],
-      ['dobleComoUno', 'QA-octeto-doble-un-par', 'hipotesis', 'Contaste cada doble enlace como un solo par: un C=C o un C=O son dos pares compartidos, 4 electrones.']],
-    quirales: [['soloVecinos', 'QA-quiral-solo-vecinos', 'hipotesis', 'Comparaste solo los átomos pegados al carbono: dos sustituyentes que empiezan con C pueden ser grupos distintos. Hay que mirar el grupo entero.'],
-      ['dosIguales', 'QA-quiral-dos-iguales', 'hipotesis', 'Contaste carbonos que tienen dos grupos iguales: para ser quiral, los cuatro tienen que ser distintos.'],
-      ['conHeteroatomo', 'QA-quiral-todo-C-con-O', 'hipotesis', 'Contaste los carbonos unidos a un O o un N: eso no basta, hacen falta cuatro grupos distintos.'],
-      ['todosLosC', 'QA-quiral-todos-los-C', 'hipotesis', 'Contaste todos los carbonos: un C con un doble enlace o con dos H no puede tener cuatro grupos distintos.'],
-      ['unoPorCH', 'QA-quiral-todo-CH', 'hipotesis', 'Contaste cada CH de la molécula sin mirar sus grupos.']],
-    aromaticos: [['todoAnillo', 'QA-aromatico-todo-anillo', 'hipotesis', 'Contaste todos los anillos: para ser aromático, el anillo no puede tener carbonos sp³ y su nube π debe tener 4n + 2 electrones.'],
-      ['conDoble', 'QA-aromatico-un-doble', 'hipotesis', 'Contaste anillos que tienen un doble enlace dentro: con un carbono sp³ en el anillo, la nube π se corta.'],
-      ['seisLados', 'QA-aromatico-seis-lados', 'hipotesis', 'Contaste los anillos de seis lados: el tamaño no basta.'],
-      ['sinCarbonilo', 'QA-aromatico-sin-carbonilo', 'hipotesis', 'Dejaste fuera el anillo con C=O. Aquí, como en RDKit, se cuenta (su C=O pone 0 electrones); algunos libros no lo cuentan.']],
-    polares: [['conCH', 'QA-polar-cuenta-CH', 'hipotesis', 'Contaste los C–H como polares: su diferencia de electronegatividad es 0,35, menos de 0,4.'],
-      ['dobleComoUno', 'QA-polar-doble-uno', 'hipotesis', 'Contaste cada doble enlace polar (C=O) como uno solo: son dos enlaces, un σ y un π.'],
-      ['sinOH', 'QA-polar-olvida-OH', 'hipotesis', 'Olvidaste los O–H y N–H: son de los más polares.'],
-      ['todos', 'QA-polar-todos', 'hipotesis', 'Contaste todos los enlaces: los C–C, C–H, C–S y C–I son apolares con el corte de 0,4.']],
+      ['todoTercerPeriodo', 'AQ-octeto-todo-tercer-periodo', 'hipotesis', 'No todo átomo del tercer período expande su octeto: un S con dos enlaces simples y dos pares libres tiene 8.'],
+      ['dobleComoUno', 'AQ-octeto-doble-un-par', 'hipotesis', 'Contaste cada doble enlace como un solo par: un C=C o un C=O son dos pares compartidos, 4 electrones.']],
+    quirales: [['soloVecinos', 'AQ-quiral-solo-vecinos', 'hipotesis', 'Comparaste solo los átomos pegados al carbono: dos sustituyentes que empiezan con C pueden ser grupos distintos. Hay que mirar el grupo entero.'],
+      ['dosIguales', 'AQ-quiral-dos-iguales', 'hipotesis', 'Contaste carbonos que tienen dos grupos iguales: para ser quiral, los cuatro tienen que ser distintos.'],
+      ['conHeteroatomo', 'AQ-quiral-todo-C-con-O', 'hipotesis', 'Contaste los carbonos unidos a un O o un N: eso no basta, hacen falta cuatro grupos distintos.'],
+      ['todosLosC', 'AQ-quiral-todos-los-C', 'hipotesis', 'Contaste todos los carbonos: un C con un doble enlace o con dos H no puede tener cuatro grupos distintos.'],
+      ['unoPorCH', 'AQ-quiral-todo-CH', 'hipotesis', 'Contaste cada CH de la molécula sin mirar sus grupos.']],
+    aromaticos: [['todoAnillo', 'AQ-aromatico-todo-anillo', 'hipotesis', 'Contaste todos los anillos: para ser aromático, el anillo no puede tener carbonos sp³ y su nube π debe tener 4n + 2 electrones.'],
+      ['conDoble', 'AQ-aromatico-un-doble', 'hipotesis', 'Contaste anillos que tienen un doble enlace dentro: con un carbono sp³ en el anillo, la nube π se corta.'],
+      ['seisLados', 'AQ-aromatico-seis-lados', 'hipotesis', 'Contaste los anillos de seis lados: el tamaño no basta.'],
+      ['sinCarbonilo', 'AQ-aromatico-sin-carbonilo', 'hipotesis', 'Dejaste fuera el anillo con C=O. Aquí, como en RDKit, se cuenta (su C=O pone 0 electrones); algunos libros no lo cuentan.']],
+    polares: [['conCH', 'AQ-polar-cuenta-CH', 'hipotesis', 'Contaste los C–H como polares: su diferencia de electronegatividad es 0,35, menos de 0,4.'],
+      ['dobleComoUno', 'AQ-polar-doble-uno', 'hipotesis', 'Contaste cada doble enlace polar (C=O) como uno solo: son dos enlaces, un σ y un π.'],
+      ['sinOH', 'AQ-polar-olvida-OH', 'hipotesis', 'Olvidaste los O–H y N–H: son de los más polares.'],
+      ['todos', 'AQ-polar-todos', 'hipotesis', 'Contaste todos los enlaces: los C–C, C–H, C–S y C–I son apolares con el corte de 0,4.']],
   };
   function conteo(x, tipo) {
     if (tipo === 'sp2' || tipo === 'sp3' || tipo === 'sp') return lupa(x, tipo);
@@ -774,7 +774,7 @@
         explicacion = 'No todo átomo del tercer período en adelante pasa de 8: cada I con un enlace y tres pares libres tiene 8.';
       reales.push({ valor: e, correcta: false, error: codigo, respaldo, explicacion });
     }
-    const relleno = d => ({ valor: v + d, correcta: false, error: 'QA-conteo-apurado', respaldo: 'hipotesis', explicacion: `Se te ${d > 0 ? 'coló' : 'escapó'} alguno al contar: vuelve a mirarlos uno por uno con la lupa.` });
+    const relleno = d => ({ valor: v + d, correcta: false, error: 'AQ-conteo-apurado', respaldo: 'hipotesis', explicacion: `Se te ${d > 0 ? 'coló' : 'escapó'} alguno al contar: vuelve a mirarlos uno por uno con la lupa.` });
     // No hay más de v valores enteros debajo de v: con v chico la correcta va arriba; con v ≥ 3 se compensa y no va primera.
     const sem = semilla(x, tipo), pos = v >= 3 ? 1 + sem % 3 : Math.min(sem % 4, v);
     const debajo = reales.filter(o => o.valor < v).slice(0, pos), arriba = reales.filter(o => o.valor > v).slice(0, 3 - pos);
@@ -790,11 +790,11 @@
     const lista = [{ valor: nombreP, correcta: true }];
     const E = [
       ['porSecundaria', 'FO4-funcion-secundaria', 'parcial', 'Esa función también está, pero manda la de mayor prioridad (ácido > éster > amida > aldehído > cetona > alcohol > amina).'],
-      ['carboxiloComoCetonaAlcohol', 'QA-carboxilo-cetona-alcohol', 'hipotesis', 'El C=O y el OH en el mismo carbono no son una cetona y un alcohol: juntos forman el carboxilo, –COOH.'],
-      ['esterComoEter', 'QA-ester-eter', 'hipotesis', 'El O entre dos carbonos, con un C=O al lado, es de un éster (o una lactona), no de un éter.'],
-      ['lactonaComoLactama', 'QA-lactona-lactama', 'hipotesis', 'Lactona es el éster cerrado en anillo (con O); lactama es la amida cerrada en anillo (con N).'],
-      ['fenolComoAlcohol', 'QA-fenol-alcohol', 'hipotesis', 'El OH sobre un carbono del anillo aromático es un fenol, no un alcohol.'],
-      ['aromaticoPrimero', 'QA-aromatico-manda', 'hipotesis', 'El anillo aromático no da sufijo: manda el grupo con O o N de mayor prioridad.'],
+      ['carboxiloComoCetonaAlcohol', 'AQ-carboxilo-cetona-alcohol', 'hipotesis', 'El C=O y el OH en el mismo carbono no son una cetona y un alcohol: juntos forman el carboxilo, –COOH.'],
+      ['esterComoEter', 'AQ-ester-eter', 'hipotesis', 'El O entre dos carbonos, con un C=O al lado, es de un éster (o una lactona), no de un éter.'],
+      ['lactonaComoLactama', 'AQ-lactona-lactama', 'hipotesis', 'Lactona es el éster cerrado en anillo (con O); lactama es la amida cerrada en anillo (con N).'],
+      ['fenolComoAlcohol', 'AQ-fenol-alcohol', 'hipotesis', 'El OH sobre un carbono del anillo aromático es un fenol, no un alcohol.'],
+      ['aromaticoPrimero', 'AQ-aromatico-manda', 'hipotesis', 'El anillo aromático no da sufijo: manda el grupo con O o N de mayor prioridad.'],
     ];
     for (const [k, codigo, respaldo, explicacion] of E) {
       const v = G.errores[k];
@@ -811,7 +811,7 @@
       const esta = presentes.includes(v);
       const explicacion = v === 'éter' && acetal ? 'Ese O entre dos carbonos está, pero forma un hemiacetal o un acetal, y el éter no da sufijo: manda el alcohol.'
         : esta ? 'Ese grupo está, pero no es el de mayor prioridad.' : 'Ese grupo no está en esta molécula: busca sus átomos con la lupa.';
-      lista.push({ valor: v, correcta: false, error: esta ? 'FO4-funcion-secundaria' : 'QA-grupo-a-ojo', respaldo: esta ? 'parcial' : 'hipotesis', explicacion });
+      lista.push({ valor: v, correcta: false, error: esta ? 'FO4-funcion-secundaria' : 'AQ-grupo-a-ojo', respaldo: esta ? 'parcial' : 'hipotesis', explicacion });
     }
     // Orden barajado con la semilla de la molécula: la correcta no cae siempre primero.
     let h = semilla(x, 'grupos');

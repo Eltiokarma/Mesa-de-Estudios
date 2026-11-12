@@ -81,12 +81,12 @@ test('banco: cada unidad tiene al menos 6 proposiciones y 2 falsas; cada tema si
 });
 
 test('errores: respaldo válido y fuente existente; todos los códigos se usan', () => {
-  const usados = new Set(['QA-negar-verdadera']);
+  const usados = new Set(['AQ-negar-verdadera']);
   for (const p of gen.BANCO) { if (p.error) usados.add(p.error); if (p.negar) usados.add(p.negar); }
   for (const c of gen.PARES) { usados.add(c.codigo); if (c.codigoFamilia) usados.add(c.codigoFamilia); }
   for (const [k, e] of Object.entries(gen.ERRORES)) {
     assert.ok(['documentado', 'parcial', 'hipotesis'].includes(e.respaldo), k);
-    if (k.startsWith('QA-')) assert.equal(e.respaldo, 'hipotesis', `${k}: los códigos nuevos son hipótesis`);
+    if (k.startsWith('AQ-')) assert.equal(e.respaldo, 'hipotesis', `${k}: los códigos nuevos son hipótesis`);
     assert.ok(usados.has(k), `${k} no se usa`);
   }
   for (const k of usados) assert.ok(gen.ERRORES[k], `${k} no está en ERRORES`);
@@ -136,7 +136,7 @@ test('600 problemas: los textos coinciden con el banco y aparecen todos los tipo
       for (const a of p.alternativas) assert.equal(a.texto, banco[a.valor.slice(2)].texto);
       for (const a of p.alternativas.filter(x => !x.correcta)) {
         const q = banco[a.valor.slice(2)];
-        assert.equal(a.error.id, q.verdad ? (q.negar || 'QA-negar-verdadera') : q.error);
+        assert.equal(a.error.id, q.verdad ? (q.negar || 'AQ-negar-verdadera') : q.error);
       }
     }
   }
@@ -146,7 +146,7 @@ test('600 problemas: los textos coinciden con el banco y aparecen todos los tipo
 });
 
 test('en vf, D0 lleva el código de su F y cada vecino el de la inversión que lo distingue de D0', () => {
-  const codigo = q => (q.verdad ? (q.negar || 'QA-negar-verdadera') : q.error);
+  const codigo = q => (q.verdad ? (q.negar || 'AQ-negar-verdadera') : q.error);
   for (let s = 0; s < 600; s++) {
     const p = gen.generar(s), d = p._datos;
     if (d.tipo !== 'vf') continue;
@@ -221,12 +221,12 @@ test('delatores de forma (2000 problemas): la correcta no es la más larga ni la
 test('respaldo: cada código de informe está en su fuente; documentado solo en una F con código de informe', () => {
   const fs = require('node:fs'), path = require('node:path');
   for (const [k, e] of Object.entries(gen.ERRORES)) {
-    if (k.startsWith('QA-')) { assert.equal(e.fuente, null, k); continue; }
+    if (k.startsWith('AQ-')) { assert.equal(e.fuente, null, k); continue; }
     const texto = fs.readFileSync(path.join(__dirname, '../..', e.fuente), 'utf8');
     assert.ok(texto.includes(`| ${k} |`), `${k} no aparece como «| ${k} |» en ${e.fuente}`);
   }
   for (const p of gen.BANCO) if (p.respaldo) {
-    assert.ok(!p.verdad && !p.error.startsWith('QA-'), `${p.id}: respaldo propio en una V o en un código nuevo`);
+    assert.ok(!p.verdad && !p.error.startsWith('AQ-'), `${p.id}: respaldo propio en una V o en un código nuevo`);
     assert.equal(p.respaldo, 'documentado');
   }
   assert.ok(!gen.ERRORES.BM8, 'BM8 ya no se usa');
