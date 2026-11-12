@@ -20,7 +20,7 @@
   const LISTA = [
     // Aminoácidos aromáticos (forma neutra escrita; la forma según el pH la arma el motor con los pKa)
     { id: 'fenilalanina', smiles: 'N[C@@H](Cc1ccccc1)C(=O)O', nombre: 'fenilalanina', familia: 'aminoácido aromático (esencial)', clase: 'aminoácido', solubilidad: 'soluble en agua',
-      pka: { carboxilo: 1.83, amino: 9.13 }, dato: 'Aminoácido esencial: viene de la dieta. En el hígado se hidroxila en el anillo y da tirosina.' },
+      pka: { carboxilo: 1.83, amino: 9.13 }, dato: 'Aminoácido esencial: viene de la dieta. Su cadena lateral lleva un anillo de benceno.' },
     { id: 'tirosina', smiles: 'N[C@@H](Cc1ccc(O)cc1)C(=O)O', nombre: 'tirosina', familia: 'aminoácido aromático', clase: 'aminoácido', solubilidad: 'poco soluble en agua',
       pka: { carboxilo: 2.20, amino: 9.11, fenol: 10.07 }, plantilla: 'fenilalanina', dato: 'Se forma de la fenilalanina. De ella salen la dopamina, la adrenalina y las hormonas tiroideas.' },
     { id: 'triptofano', smiles: 'N[C@@H](Cc1c[nH]c2ccccc12)C(=O)O', nombre: 'triptófano', familia: 'aminoácido aromático (esencial)', clase: 'aminoácido', solubilidad: 'poco soluble en agua',
@@ -60,14 +60,14 @@
     { id: 'estradiol', smiles: 'C[C@]12CC[C@H]3[C@@H](CCc4cc(O)ccc34)[C@@H]1CC[C@@H]2O', nombre: 'estradiol', familia: 'hormona esteroidea (estrógeno)', clase: 'lípido (esteroide)', solubilidad: 'muy poco soluble en agua',
       plantilla: 'testosterona', dato: 'Hormona sexual femenina; se forma a partir de la testosterona. Es de los pocos esteroides con un anillo aromático.' },
     // Polifenoles, colorantes y alcaloides
-    { id: 'quercetina', smiles: 'O=C1C(O)=C(c2ccc(O)c(O)c2)Oc2cc(O)cc(O)c21', nombre: 'quercetina', familia: 'flavonoide (polifenol)', clase: 'flavonoide', solubilidad: 'muy poco soluble en agua',
+    { id: 'quercetina', smiles: 'O=C1C(O)=C(c2ccc(O)c(O)c2)Oc2cc(O)cc(O)c21', sinAromaticos: true, nombre: 'quercetina', sinAromaticos: true, familia: 'flavonoide (polifenol)', clase: 'flavonoide', solubilidad: 'muy poco soluble en agua',
       dato: 'Flavonoide de la cebolla, la manzana y el té; antioxidante.' },
     { id: 'curcumina', smiles: 'COc1cc(/C=C/C(=O)CC(=O)/C=C/c2ccc(O)c(OC)c2)ccc1O', nombre: 'curcumina', familia: 'colorante natural (polifenol)', clase: 'colorante', solubilidad: 'insoluble en agua',
       dato: 'El colorante amarillo de la cúrcuma (el palillo de la cocina peruana).' },
     { id: 'capsaicina', smiles: 'CC(C)/C=C/CCCCC(=O)NCc1ccc(O)c(OC)c1', nombre: 'capsaicina', familia: 'capsaicinoide', clase: 'amida natural', solubilidad: 'muy poco soluble en agua',
       dato: 'Da el picor al ají y al rocoto. Por eso el picor no se quita con agua.' },
     { id: 'cafeina', smiles: 'Cn1cnc2c1C(=O)N(C)C(=O)N2C', nombre: 'cafeína', familia: 'alcaloide (xantina)', clase: 'alcaloide', solubilidad: 'soluble en agua (más en agua caliente)',
-      sinPrincipal: true,   // la IUPAC la nombra como purina-2,6-diona: la lupa de la función principal no se ofrece
+      sinPrincipal: true, sinAromaticos: true,   // la IUPAC la nombra como purina-2,6-diona: la lupa de la función principal no se ofrece
       dato: 'Alcaloide del café, el té y la guaraná. Su esqueleto es el de la purina, el mismo de la adenina.' },
     { id: 'adenina', smiles: 'Nc1ncnc2[nH]cnc12', nombre: 'adenina', familia: 'base nitrogenada (purina)', clase: 'heterociclo nitrogenado', solubilidad: 'poco soluble en agua fría',
       dato: 'Base púrica del ADN y del ARN; también es parte del ATP y del NAD⁺.' },

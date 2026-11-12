@@ -122,7 +122,7 @@ test('hidrogenar: entran 2 H y sale un enlace π; el doble enlace del C=C pasa a
 const LUPAS = ['sp2', 'sp3', 'sp', 'pi', 'epi', 'pares', 'quirales', 'aromaticos', 'polares', 'octeto'];
 test('opciones: cuatro valores distintos, una sola correcta, y ningún error da la correcta', () => {
   for (const id of IDS) for (const l of [...LUPAS, 'grupos']) {
-    if (l === 'grupos' && motor.ficha(id).sinPrincipal) continue;
+    if (!motor.lupaDisponible(id, l)) continue;
     const o = motor.opciones(id, l);
     assert.equal(o.opciones.length, 4, `${id} ${l}`);
     assert.equal(new Set(o.opciones.map(x => x.valor)).size, 4, `${id} ${l}`);
@@ -133,6 +133,16 @@ test('opciones: cuatro valores distintos, una sola correcta, y ningún error da 
     }
     if (l !== 'grupos') assert.ok(o.opciones.every(x => Number.isInteger(x.valor) && x.valor >= 0));
   }
+});
+test('opciones: la correcta no se amontona en un lugar (≤ 35 % en las numéricas y en «grupos»)', () => {
+  const lugar = { num: [0, 0, 0, 0], grupos: [0, 0, 0, 0] };
+  for (const id of IDS) for (const l of [...LUPAS, 'grupos']) {
+    if (!motor.lupaDisponible(id, l)) continue;
+    lugar[l === 'grupos' ? 'grupos' : 'num'][motor.opciones(id, l).opciones.findIndex(x => x.correcta)]++;
+  }
+  for (const [k, c] of Object.entries(lugar)) { const n = c.reduce((t, x) => t + x, 0); for (const x of c) assert.ok(x / n <= 0.35, `${k}: ${c}`); }
+  assert.ok(!motor.lupaDisponible('retinol', 'sp') && !motor.lupaDisponible('glucosa-abierta', 'octeto') && !motor.lupaDisponible('acido-citrico', 'aromaticos'));
+  assert.ok(!motor.lupaDisponible('quercetina', 'aromaticos') && !motor.lupaDisponible('cafeina', 'aromaticos') && motor.lupaDisponible('tiroxina', 'octeto'));
 });
 test('las tres formas de los aminoácidos y la carga de cada átomo', () => {
   for (const id of ['fenilalanina', 'tirosina', 'triptofano']) {

@@ -42,8 +42,11 @@
  *     cargas: [{ i, carga }], errores }.
  *   conteo(x, lupa) con lupa 'sp2' | 'sp3' | 'sp' | 'pi' (enlaces π) | 'epi' (electrones π) | 'pares' | 'quirales' |
  *     'aromaticos' | 'polares' | 'octeto': { valor, atomos o enlaces, errores }.
- *   opciones(x, lupa): la correcta y tres errores de valor distinto, de menor a mayor (con lupa 'grupos': la función
- *     principal). Si los errores no alcanzan, completa con el vecino de arriba o de abajo («conteo apurado»).
+ *   opciones(x, lupa): la correcta y tres errores de valor distinto, de menor a mayor; el lugar de la correcta lo
+ *     decide una semilla de la molécula y la lupa (con lupa 'grupos': la función principal, en orden barajado). Si los
+ *     errores no alcanzan, completa con el vecino de abajo o de arriba («conteo apurado»).
+ *   lupaDisponible(x, lupa): si Explorar ofrece esa lupa (no sp sin C≡C, octeto sin átomos del tercer período,
+ *     aromáticos sin anillos; tampoco aromáticos en quercetina y cafeína, ni la función principal de la cafeína).
  *   solubilidad(x): carbonos, O + N, grupos con OH, y la solubilidad de tabla de la ficha (el motor no la calcula).
  *   experimento(nombre): los cinco de «¿Qué pasa si…?» ('hidrogenar-oleico', 'piruvico-lactico', 'ciclar-glucosa',
  *     'octeto-alicina', 'fenilalanina-tirosina'): molécula de antes y de después, valor que se pregunta y errores.
@@ -353,7 +356,7 @@
     const I = info(x), R = I.anillos;
     const lista = R.map(r => ({ atomos: r.atomos.slice(), tamano: r.tamano, huckel: r.huckel, electrones: r.electrones, aromatico: r.aromatico, conCarbonilo: r.conCarbonilo, hetero: r.hetero.slice() }));
     const aromaticos = lista.filter(r => r.aromatico).length;
-    const conDoble = R.filter(r => r.atomos.some(a => I.v[a].some(z => z.orden === 2))).length;
+    const conDoble = R.filter(r => r.enlaces.some(k => I.m.enlaces[k].orden === 2)).length;   // un doble DENTRO del anillo
     return { lista, total: lista.length, aromaticos, atomos: [...new Set(lista.filter(r => r.aromatico).flatMap(r => r.atomos))].sort((a, b) => a - b),
       errores: { todoAnillo: lista.length, seisLados: lista.filter(r => r.tamano === 6).length, conDoble, sinCarbonilo: lista.filter(r => r.aromatico && !r.conCarbonilo).length } };
   }
@@ -451,9 +454,11 @@
     const tercer = atomos.filter(a => ['P', 'S', 'Cl', 'Br', 'I'].includes(a.el)).map(a => a.i);
     const nH = I.atom.reduce((t, a) => t + a.h, 0);
     // Errores (cuántos átomos «no cumplen»): EN3, el octeto como ley (los del tercer período también cumplen); contar
-    // los H (con 2 electrones) como si no cumplieran; dar por expandido a todo átomo del tercer período.
+    // cada enlace doble o triple como un solo par (así todo átomo con un doble parece quedar corto); dar por expandido
+    // a todo átomo del tercer período.
+    const dobleComoUno = I.atom.filter(A => 2 * (A.grado + A.h) + 2 * A.pares !== 8).length;
     return { atomos, noCumplen, valor: noCumplen.length, todosCumplen: noCumplen.length === 0, hidrogenos: nH,
-      errores: { tercerPeriodoCumple: noCumplen.filter(i => !tercer.includes(i)).length, cuentaH: noCumplen.length + nH,
+      errores: { tercerPeriodoCumple: noCumplen.filter(i => !tercer.includes(i)).length, dobleComoUno,
         todoTercerPeriodo: new Set([...noCumplen, ...tercer]).size } };
   }
 
@@ -714,14 +719,14 @@
       ['unoPorAtomo', 'QA-pares-uno-por-atomo', 'hipotesis', 'Pusiste un solo par por átomo: el O tiene 2 y los halógenos 3.']],
     octeto: [['tercerPeriodoCumple', 'EN3-octeto-ley', 'parcial', 'Diste por hecho que todo átomo cumple el octeto. El S unido a un O con doble enlace y a otros dos átomos queda con 10 electrones: octeto expandido, posible desde el tercer período.'],
       ['todoTercerPeriodo', 'QA-octeto-todo-tercer-periodo', 'hipotesis', 'No todo átomo del tercer período expande su octeto: un S con dos enlaces simples y dos pares libres tiene 8.'],
-      ['cuentaH', 'QA-octeto-cuenta-H', 'hipotesis', 'Contaste los H: con 2 electrones el H cumple su dueto, no le falta nada.']],
+      ['dobleComoUno', 'QA-octeto-doble-un-par', 'hipotesis', 'Contaste cada doble enlace como un solo par: un C=C o un C=O son dos pares compartidos, 4 electrones.']],
     quirales: [['soloVecinos', 'QA-quiral-solo-vecinos', 'hipotesis', 'Comparaste solo los átomos pegados al carbono: dos sustituyentes que empiezan con C pueden ser grupos distintos. Hay que mirar el grupo entero.'],
       ['dosIguales', 'QA-quiral-dos-iguales', 'hipotesis', 'Contaste carbonos que tienen dos grupos iguales: para ser quiral, los cuatro tienen que ser distintos.'],
       ['conHeteroatomo', 'QA-quiral-todo-C-con-O', 'hipotesis', 'Contaste los carbonos unidos a un O o un N: eso no basta, hacen falta cuatro grupos distintos.'],
       ['todosLosC', 'QA-quiral-todos-los-C', 'hipotesis', 'Contaste todos los carbonos: un C con un doble enlace o con dos H no puede tener cuatro grupos distintos.'],
       ['unoPorCH', 'QA-quiral-todo-CH', 'hipotesis', 'Contaste cada CH de la molécula sin mirar sus grupos.']],
     aromaticos: [['todoAnillo', 'QA-aromatico-todo-anillo', 'hipotesis', 'Contaste todos los anillos: para ser aromático, el anillo no puede tener carbonos sp³ y su nube π debe tener 4n + 2 electrones.'],
-      ['conDoble', 'QA-aromatico-un-doble', 'hipotesis', 'Contaste anillos que solo tienen uno o dos dobles enlaces: con un carbono sp³, la nube π se corta.'],
+      ['conDoble', 'QA-aromatico-un-doble', 'hipotesis', 'Contaste anillos que tienen un doble enlace dentro: con un carbono sp³ en el anillo, la nube π se corta.'],
       ['seisLados', 'QA-aromatico-seis-lados', 'hipotesis', 'Contaste los anillos de seis lados: el tamaño no basta.'],
       ['sinCarbonilo', 'QA-aromatico-sin-carbonilo', 'hipotesis', 'Dejaste fuera el anillo con C=O. Aquí, como en RDKit, se cuenta (su C=O pone 0 electrones); algunos libros no lo cuentan.']],
     polares: [['conCH', 'QA-polar-cuenta-CH', 'hipotesis', 'Contaste los C–H como polares: su diferencia de electronegatividad es 0,35, menos de 0,4.'],
@@ -740,25 +745,43 @@
     if (tipo === 'octeto') { const o = octeto(x); return { valor: o.valor, atomos: o.noCumplen, electrones: o.atomos.map(a => a.electrones), errores: o.errores }; }
     throw new Error(`conteo: no conozco «${tipo}»`);
   }
-  // La correcta y tres errores de valor distinto (si los errores no alcanzan, el vecino de arriba o de abajo, como
-  // «conteo apurado»). Las opciones van ordenadas de menor a mayor.
+  // ¿Se ofrece esta lupa en Explorar? No si la respuesta es 0 sin un error real que la pueda confundir (sp sin C≡C,
+  // octeto sin átomos del tercer período en adelante, aromáticos sin anillos), ni la función principal de la cafeína
+  // ni los aromáticos de la quercetina y la cafeína (anillos con C=O fuera del anillo: el motor los cuenta como RDKit,
+  // la academia no; ver la cabecera, convención 5).
+  function lupaDisponible(x, tipo) {
+    const I = info(x), f = typeof x === 'string' && BIB && BIB.POR_ID[x];
+    if (tipo === 'grupos') return !(f && f.sinPrincipal);
+    if (tipo === 'sp') return I.atom.some(a => a.triples || a.dobles >= 2);
+    if (tipo === 'octeto') return I.atom.some(a => ['P', 'S', 'Cl', 'Br', 'I'].includes(a.el));
+    if (tipo === 'aromaticos') return I.anillos.length > 0 && !(f && f.sinAromaticos);
+    return true;
+  }
+  // Semilla de una molécula y una lupa: decide en qué lugar cae la correcta (0 a 3).
+  function semilla(x, tipo) { const t = (typeof x === 'string' ? x : x.smiles) + '|' + tipo; let h = 2166136261; for (const ch of t) { h ^= ch.codePointAt(0); h = Math.imul(h, 16777619) >>> 0; } return h; }
+  // La correcta y tres errores de valor distinto, de menor a mayor. La correcta cae en el lugar que da la semilla (si
+  // hay valores debajo para ponerla ahí): los errores reales van primero; si no alcanzan, el vecino de abajo o de
+  // arriba («conteo apurado»).
   function opciones(x, tipo) {
     if (tipo === 'grupos') return opcionesGrupos(x);
-    const c = conteo(x, tipo), lista = [{ valor: c.valor, correcta: true }];
-    for (const [k, codigo, respaldo, explicacion] of ERRORES[tipo]) {
-      const v = c.errores[k];
-      if (typeof v !== 'number' || v < 0 || lista.some(o => o.valor === v)) continue;
-      lista.push({ valor: v, correcta: false, error: codigo, respaldo, explicacion });
-      if (lista.length === 4) break;
+    const c = conteo(x, tipo), v = c.valor;
+    const reales = [];
+    for (const [k, codigo, respaldo, explicacion0] of ERRORES[tipo]) {
+      const e = c.errores[k];
+      if (typeof e !== 'number' || e < 0 || e === v || reales.some(o => o.valor === e)) continue;
+      let explicacion = explicacion0;
+      if (tipo === 'octeto' && k === 'todoTercerPeriodo' && !info(x).atom.some(a => a.el === 'S'))
+        explicacion = 'No todo átomo del tercer período en adelante pasa de 8: cada I con un enlace y tres pares libres tiene 8.';
+      reales.push({ valor: e, correcta: false, error: codigo, respaldo, explicacion });
     }
-    for (const d of [1, -1, 2, -2, 3, 4]) {
-      if (lista.length >= 4) break;
-      const v = c.valor + d;
-      if (v < 0 || lista.some(o => o.valor === v)) continue;
-      lista.push({ valor: v, correcta: false, error: 'QA-conteo-apurado', respaldo: 'hipotesis', explicacion: `Se te ${d > 0 ? 'coló' : 'escapó'} alguno al contar: vuelve a mirarlos uno por uno con la lupa.` });
-    }
-    lista.sort((p, q) => p.valor - q.valor);
-    return { tipo, valor: c.valor, opciones: lista, conteo: c };
+    const relleno = d => ({ valor: v + d, correcta: false, error: 'QA-conteo-apurado', respaldo: 'hipotesis', explicacion: `Se te ${d > 0 ? 'coló' : 'escapó'} alguno al contar: vuelve a mirarlos uno por uno con la lupa.` });
+    // No hay más de v valores enteros debajo de v: con v chico la correcta va arriba; con v ≥ 3 se compensa y no va primera.
+    const sem = semilla(x, tipo), pos = v >= 3 ? 1 + sem % 3 : Math.min(sem % 4, v);
+    const debajo = reales.filter(o => o.valor < v).slice(0, pos), arriba = reales.filter(o => o.valor > v).slice(0, 3 - pos);
+    for (let d = -1; debajo.length < pos; d--) if (!debajo.some(o => o.valor === v + d)) debajo.push(relleno(d));
+    for (let d = 1; arriba.length < 3 - pos; d++) if (!arriba.some(o => o.valor === v + d)) arriba.push(relleno(d));
+    const lista = [{ valor: v, correcta: true }, ...debajo, ...arriba].sort((p, q) => p.valor - q.valor);
+    return { tipo, valor: v, opciones: lista, conteo: c };
   }
   function opcionesGrupos(x) {
     const G = grupos(x), p = G.principal;
@@ -779,11 +802,20 @@
       lista.push({ valor: v, correcta: false, error: codigo, respaldo, explicacion });
       if (lista.length === 4) break;
     }
-    for (const v of ['alcohol', 'cetona', 'éter', 'amina', 'alqueno', 'aldehído']) {
+    // Si faltan, primero un grupo que sí está (y no manda), después grupos que no están.
+    const presentes = G.tipos.filter(t => t !== p.tipo && FAMILIA[t] !== p.tipo && !['aromatico', 'heterociclo'].includes(t)).map(t => NOMBRES[t]);
+    const acetal = G.tipos.includes('hemiacetal') || G.tipos.includes('acetal');
+    for (const v of [...presentes, 'alcohol', 'cetona', 'éter', 'amina', 'alqueno', 'aldehído']) {
       if (lista.length >= 4) break;
       if (lista.some(o => o.valor === v)) continue;
-      lista.push({ valor: v, correcta: false, error: 'QA-grupo-a-ojo', respaldo: 'hipotesis', explicacion: G.tipos.includes(Object.keys(NOMBRES).find(t => NOMBRES[t] === v)) ? 'Ese grupo está, pero no es el de mayor prioridad.' : 'Ese grupo no está en esta molécula: busca sus átomos con la lupa.' });
+      const esta = presentes.includes(v);
+      const explicacion = v === 'éter' && acetal ? 'Ese O entre dos carbonos está, pero forma un hemiacetal o un acetal, y el éter no da sufijo: manda el alcohol.'
+        : esta ? 'Ese grupo está, pero no es el de mayor prioridad.' : 'Ese grupo no está en esta molécula: busca sus átomos con la lupa.';
+      lista.push({ valor: v, correcta: false, error: esta ? 'FO4-funcion-secundaria' : 'QA-grupo-a-ojo', respaldo: esta ? 'parcial' : 'hipotesis', explicacion });
     }
+    // Orden barajado con la semilla de la molécula: la correcta no cae siempre primero.
+    let h = semilla(x, 'grupos');
+    for (let i = lista.length - 1; i > 0; i--) { const j = h % (i + 1); h = Math.floor(h / (i + 1)) || semilla(x, 'grupos' + i); [lista[i], lista[j]] = [lista[j], lista[i]]; }
     return { tipo: 'grupos', valor: nombreP, opciones: lista, conteo: G };
   }
 
@@ -841,5 +873,5 @@
   function biblioteca() { return BIB ? BIB.LISTA : []; }
 
   return { molecula, formula, hibridacion, lupa, enlaces, pares, octeto, anillos, grupos, quirales, numeroOxidacion, hidrogenar, ionizar,
-    conteo, opciones, solubilidad, experimento, resumen, ficha, biblioteca, aSmiles, ERRORES, NOMBRES, PRIORIDAD, EN, MASA };
+    conteo, opciones, lupaDisponible, solubilidad, experimento, resumen, ficha, biblioteca, aSmiles, ERRORES, NOMBRES, PRIORIDAD, EN, MASA };
 });

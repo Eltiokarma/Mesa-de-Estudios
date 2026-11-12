@@ -9,10 +9,10 @@
 
    Colores de esta escena (claro / oscuro). Contraste AA ≥ 4,6 sobre #fdf7f1, #fffaf6, #241c2e, #2a2135 y sobre el chip
    .v (fondo del 8 %); ΔE00 ≥ 20 contra la tinta en los dos modos (docs/metodo/paleta.py, Elementos.distancia).
-     ELEMENTOS: paleta común de nucleo/elementos.js (C, H, N, O, S, I), en el bloque generado de abajo. Solo se pintan
-       en la vista «sin lupa» (Explorar). Con una lupa puesta, los átomos van en tinta y solo brilla lo que la lupa
-       cuenta: así ningún color de elemento sale junto con un color de variable. (Con 12 variables y 6 elementos no hay
-       colores AA que se separen ΔE00 ≥ 20 de todos a la vez: el mejor reparto daba ocres casi iguales entre sí.)
+     ELEMENTOS: los átomos van siempre en tinta (las letras dicen el elemento), también en la vista «sin lupa»: así
+       ningún color de elemento sale junto con un color de variable y ningún color nombra dos cosas. (Con 12 variables
+       y 6 elementos no hay colores AA que se separen ΔE00 ≥ 20 de todos a la vez.) El bloque de la paleta común queda
+       abajo por si se vuelve a pintar algún elemento.
      VARIABLES (una lupa a la vez; entre ellas el par más cercano es ΔE00 ≈ 10, y nunca salen juntas)
        sp2  carbono sp²                     naranja    #b33b00 / #ff8a4d
        sp3  carbono sp³                     azul       #1f5fbf / #7cb0ff
@@ -269,9 +269,9 @@ const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `
 const HIPO = 'Esta opción es una hipótesis nuestra, sin estudio que la mida.';
 const CITA = {
   'EN12-sp2-sin-carbonilo': 'En un estudio con 88 universitarios, el tipo de hibridación fue de lo que más se dejó en blanco o se respondió mal (Uyulgan y Akkuzu, 2016, según nuestro informe); que se olvide justo el carbono del C=O es una hipótesis nuestra.',
-  'EN12-sp-con-doble': 'En un estudio con 88 universitarios, el tipo de hibridación fue de lo que más se dejó en blanco o se respondió mal (Uyulgan y Akkuzu, 2016, según nuestro informe).',
+  'EN12-sp-con-doble': 'En un estudio con 88 universitarios, el tipo de hibridación fue de lo que más se dejó en blanco o se respondió mal (Uyulgan y Akkuzu, 2016, según nuestro informe); que se cuente el C con doble enlace como sp es una hipótesis nuestra.',
   'EN3-octeto-ley': 'Antes de un curso, solo cerca de 1 de cada 4 universitarios de un grupo de 200 acertó una pregunta de octeto expandido (Karonen y otros, 2021, según nuestro informe).',
-  'FO4-funcion-secundaria': 'No reconocer el grupo funcional que da el nombre está descrito en escolares de Ghana, sin porcentaje en lo que leímos (Adu-Gyamfi, Ampiah y Appiah, 2017).',
+  'FO4-funcion-secundaria': 'No reconocer el grupo funcional que da el nombre está descrito en escolares de Ghana, sin porcentaje en lo que leímos (Adu-Gyamfi, Ampiah y Appiah, 2017, citado por Adu-Gyamfi y Asaki, 2023).',
 };
 const respaldoTexto = (codigo, respaldo) => CITA[codigo] || (respaldo === 'hipotesis' ? HIPO : '');
 
@@ -330,11 +330,10 @@ function crearLienzo(cvId, descId, modoId, leyId){
     const v = E.vista; if (!v) return;
     const el = $(leyId);
     if (v.modo === 'color'){
-      const els = [...new Set(v.m.atomos.map(a => a.el).concat(v.m.atomos.some(a => a.h && a.el !== 'C') ? ['H'] : []))].filter(e => e !== 'C');
-      el.innerHTML = els.map(e => `<span><i style="background:var(--el-${e})"></i>${e}</span>`).join('') + '<span>las puntas y los vértices sin letra son carbonos</span>';
+      el.innerHTML = '<span>las letras dicen el elemento</span><span>las puntas y los vértices sin letra son carbonos</span>';
     } else {
       const m = v.marca;
-      el.innerHTML = m ? `<span><i style="background:var(--c-${m.c})"></i>${v.leyenda || 'lo que cuenta la lupa'}</span><span>átomos en tinta mientras la lupa está puesta</span>`
+      el.innerHTML = m ? `<span><i style="background:var(--c-${m.c})"></i>${v.total !== undefined ? v.total + ' ' : ''}${v.leyenda || 'lo que cuenta la lupa'}</span><span>acércate con + para ver los números</span>`
         : `<span>${v.espera || 'la lupa se enciende al responder'}</span><span>las puntas y los vértices sin letra son carbonos</span>`;
     }
   };
@@ -343,10 +342,10 @@ function crearLienzo(cvId, descId, modoId, leyId){
     const P = E.vista.coords;
     let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
     for (const [x, y] of P){ x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
-    const mg = 0.9, top = 22;
-    const s0 = Math.min((E.W - 16)/(x1 - x0 + 2*mg), (E.H - top - 10)/(y1 - y0 + 2*mg), 50);
+    const mg = 0.9, top = 12, abajo = 44;   // abajo: los botones de zoom
+    const s0 = Math.min((E.W - 16)/(x1 - x0 + 2*mg), (E.H - top - abajo)/(y1 - y0 + 2*mg), 50);
     const s = s0*E.z;
-    return { s, s0, cx: E.W/2 + E.px, cy: top/2 + E.H/2 + E.py, mx:(x0 + x1)/2, my:(y0 + y1)/2, w:(x1 - x0 + 2*mg)*s, h:(y1 - y0 + 2*mg)*s };
+    return { s, s0, cx: E.W/2 + E.px, cy: top + (E.H - top - abajo)/2 + E.py, mx:(x0 + x1)/2, my:(y0 + y1)/2, w:(x1 - x0 + 2*mg)*s, h:(y1 - y0 + 2*mg)*s };
   }
   E.limitar = () => { if (!E.vista) return; const a = ajuste(); const lx = Math.max(0, (a.w - E.W)/2 + 30), ly = Math.max(0, (a.h - E.H)/2 + 30); E.px = clamp(E.px, -lx, lx); E.py = clamp(E.py, -ly, ly); };
   function etiqueta(v, i, P, vec){
@@ -355,12 +354,16 @@ function crearLienzo(cvId, descId, modoId, leyId){
     let el = a.el, h = a.h;
     // En Fischer, el H de un CH(OH) va escrito aparte, al otro lado.
     if (v.fischer && a.el === 'C' && a.h === 1) h = 0;
-    const izq = h && vec[i].length && vec[i].reduce((t, j) => t + (P[j].X - P[i].X), 0) > 2 && vec[i].length === 1;
+    let izq = !!(h && vec[i].length === 1 && P[vec[i][0]].X - P[i].X > 2);
+    // Si del lado elegido hay otra letra cerca, el H va al otro lado (OH y HO que no se enciman).
+    if (h){ const fs = clamp(E.ajusteS*0.44, 11, 20), choca = lado => v.m.atomos.some((b, j) => j !== i && (b.el !== 'C' || v.fischer) && Math.abs(P[j].Y - P[i].Y) < fs*1.1 && (lado ? P[i].X - P[j].X : P[j].X - P[i].X) > 0 && Math.abs(P[j].X - P[i].X) < fs*2.6);
+      if (choca(izq) && !choca(!izq) && !(vec[i].length === 1 && Math.abs(P[vec[i][0]].Y - P[i].Y) < fs*0.6)) izq = !izq; }
     return { el, h, carga: a.carga, izq };
   }
   E.dibujar = () => {
     if (!E.vista || !E.W) return;
-    const v = E.vista, c = colores(), A = ajuste(), s = A.s;
+    const v = E.vista, c = colores(), A = ajuste(), s = A.s; E.ajusteS = s;
+    const conNumeros = s >= 22;   // con menos de ~22 px por enlace las píldoras se enciman: queda el resaltado
     const m = v.m, coords = v.coords, n = m.atomos.length;
     const P = coords.map(([x, y]) => ({ X: A.cx + (x - A.mx)*s, Y: A.cy - (y - A.my)*s }));
     const vec = m.atomos.map(() => []); m.enlaces.forEach(e => { vec[e.a].push(e.b); vec[e.b].push(e.a); });
@@ -428,12 +431,12 @@ function crearLienzo(cvId, descId, modoId, leyId){
       const o = vec[i].find(j => m.atomos[j].el !== 'C'); if (o === undefined) return;
       const hX = 2*P[i].X - P[o].X, hY = P[o].Y;
       ctx.strokeStyle = c.enlace; ctx.lineWidth = lw; const [x1, y1, x2, y2] = seg(P[i], { X:hX, Y:hY }, radio(i), fs*0.45); linea(x1, y1, x2, y2);
-      ctx.font = `700 ${fs}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = v.modo === 'color' ? c.el.H : c.ink; ctx.fillText('H', hX, hY);
+      ctx.font = `700 ${fs}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = c.ink; ctx.fillText('H', hX, hY);
     });
     // 3. Letras de los átomos.
     lab.forEach((L, i) => {
       if (!L) return;
-      const tinta = v.modo !== 'color';
+      const tinta = true;   // regla 4: los átomos van en tinta
       const partes = [[L.el, tinta ? c.ink : c.el[L.el] || c.ink]];
       if (L.h) partes[L.izq ? 'unshift' : 'push'](['H' + (L.h > 1 ? sub(L.h) : ''), tinta ? c.ink : c.el.H]);
       ctx.font = `700 ${fs}px ${c.font}`; ctx.textBaseline = 'middle';
@@ -446,6 +449,7 @@ function crearLienzo(cvId, descId, modoId, leyId){
     });
     // 4. Números y marcas encima.
     if (!marca) return;
+    if (!conNumeros && !['nox', 'cargas', 'pares', 'grupos', 'electrones'].includes(marca.tipo)) return;
     const nn = clamp(fs*0.78, 10, 15);
     if (marca.tipo === 'atomos') marca.atomos.forEach((i, k) => { const q = afuera(i, Math.max(13, s*0.55)); pill(marca.estrella ? `*${k + 1}` : String(k + 1), q.X, q.Y, col, nn); });
     if (marca.tipo === 'electrones') marca.atomos.forEach(i => { const q = afuera(i, Math.max(16, s*0.62)); pill(`${marca.electrones[i]} e⁻`, q.X, q.Y, col, nn); });
@@ -474,7 +478,7 @@ function crearLienzo(cvId, descId, modoId, leyId){
       const cxm = P.reduce((t, p) => t + p.X, 0)/n, cym = P.reduce((t, p) => t + p.Y, 0)/n;
       marca.grupos.forEach(gr => {
         const gx = gr.atomos.reduce((t, i) => t + P[i].X, 0)/gr.atomos.length, gy = gr.atomos.reduce((t, i) => t + P[i].Y, 0)/gr.atomos.length;
-        const dx = gx - cxm, dy = gy - cym, L = Math.hypot(dx, dy) || 1, d = Math.max(18, s*0.75);
+        const dx = gx - cxm, dy = gy - cym, L = Math.hypot(dx, dy) || 1, d = Math.max(22, s*1.1);
         const t = gr.nombre + (gr.clase && gr.tipo === 'alcohol' ? ' ' + gr.clase.slice(0, 1) + '.º' : '');
         pill(gr.tipo === marca.principal ? t + ' ★' : t, clamp(gx + dx/L*d, 40, E.W - 40), clamp(gy + dy/L*d, 32, E.H - 12), gr.tipo === marca.principal ? col : c.ink, clamp(fs*0.68, 10, 13));
       });
@@ -562,10 +566,10 @@ const steps = [
   { k:'Paso 3', t:'Cuatro anillos pegados', mol:'testosterona', lupa:'aromaticos',
     q:() => `<p>La ${MG.ficha('testosterona').nombre} es una hormona esteroidea: cuatro anillos pegados, tres de seis lados y uno de cinco. Uno tiene un doble enlace C=C.</p><p class="problem">${LUPA.aromaticos.preg.replace('anillos aromáticos', chip('aromaticos'))}</p>`,
     opts:[['a', `${A3.aromaticos} ${chip('aromaticos')}`],
-          ['b', `${A3.errores.conDoble} ${chip('aromaticos')}`, 'QA-aromatico-un-doble', 'hipotesis'],
+          ['b', `${A3.errores.conDoble} ${A3.errores.conDoble === 1 ? V('aro', 'anillo aromático') : chip('aromaticos')}`, 'QA-aromatico-un-doble', 'hipotesis'],
           ['c', `${A3.errores.seisLados} ${chip('aromaticos')}`, 'QA-aromatico-seis-lados', 'hipotesis'],
           ['d', `${A3.errores.todoAnillo} ${chip('aromaticos')}`, 'QA-aromatico-todo-anillo', 'hipotesis']], ok:'a',
-    fb:{ b:'Un doble enlace no basta: cada anillo de la testosterona tiene carbonos sp³ que cortan la nube π.', c:'Tener seis lados no hace aromático a un anillo: hacen falta todos sus átomos sp² y 4n + 2 electrones π.', d:'Ser anillo no basta: el benceno es aromático, el ciclohexano no.' },
+    fb:{ b:'Un doble enlace dentro del anillo no basta: ese anillo también tiene carbonos sp³ que cortan la nube π.', c:'Tener seis lados no hace aromático a un anillo: hacen falta todos sus átomos sp² y 4n + 2 electrones π.', d:'Ser anillo no basta: el benceno es aromático, el ciclohexano no.' },
     marca:() => ({ tipo:'anillos', c:'aro', anillos: [] }), leyenda: 'anillos aromáticos (ninguno)', seg:true,
     tras:() => `<p>Ninguno de sus ${A3.total} anillos es aromático: todos tienen carbonos sp³. Compara con el <b>estradiol</b>, la hormona que se forma de ella: su anillo A sí es aromático.</p><div class="seg" id="s3" role="group" aria-label="Molécula"><button type="button" data-m="testosterona" aria-pressed="true">Testosterona</button><button type="button" data-m="estradiol" aria-pressed="false">Estradiol</button></div><p class="hint" id="s3t">Testosterona: ${A3.aromaticos} de ${A3.total} anillos aromáticos.</p>` },
   { k:'Paso 4', t:'La vitamina de la naranja', mol:'vitamina-c', lupa:'grupos',
@@ -617,7 +621,7 @@ const steps = [
     q:() => `<p>El retinol (vitamina A) tiene un grupo OH, como la glucosa.</p><p class="problem">¿Se disuelve en agua?</p>`,
     opts:[['a', 'Sí: su OH lo hace soluble, igual que a la glucosa', 'QA-soluble-por-OH', 'hipotesis'],
           ['b', 'Sí: sus dobles enlaces alternados lo hacen polar', 'QA-polar-por-dobles', 'hipotesis'],
-          ['c', 'Casi nada: un solo OH no alcanza para su cadena de 20 C', ],
+          ['c', 'Casi nada: un solo OH no alcanza para sus 20 carbonos'],
           ['d', 'Sí: es una vitamina, y las vitaminas se disuelven en agua', 'QA-vitamina-hidrosoluble', 'hipotesis']], ok:'c',
     fb:{ a:'Un OH ayuda, pero aquí hay uno para veinte carbonos. La glucosa tiene seis grupos con O para seis carbonos.', b:'Los C=C y los C–H son apolares: una cadena de hidrocarburo conjugada no se vuelve polar.', d:'Hay vitaminas hidrosolubles (C, B) y liposolubles (A, D, E, K); la A es liposoluble.' },
     marca:() => marcaDe('retinol', 'polares'), leyenda: 'enlaces polares',
@@ -636,6 +640,7 @@ function vistaDespues(s){
   else if (s.despues === 'zwitterion') v = vista(FEN, { m: I7.molecula, nombre: 'fenilalanina a pH 7,4 (zwitterión)' });
   else v = vista(s.mol);
   v.marca = s.marca(); v.leyenda = s.leyenda;
+  if (['sp2', 'epi', 'quirales', 'pares', 'polares'].includes(s.lupa)) v.total = MG.conteo(s.mol, s.lupa).valor;
   v.texto = `Con la lupa: ${s.leyenda}.`;
   return v;
 }
@@ -725,10 +730,9 @@ function ficha(){
   $('ficha').innerHTML = `<div><b>${f.nombre}</b> · ${F(fo.texto)} · ${String(fo.masa).replace('.', ',')} g/mol</div><div>${f.familia} · ${fo.hidrocarburo ? 'hidrocarburo (solo C y H)' : 'no es hidrocarburo'}${f.solubilidad ? ' · ' + f.solubilidad + ' (de tabla)' : ''}</div><div class="hint">${f.dato}</div>`;
 }
 function lupas(){
-  const f = MG.ficha(S.id);
   $('lupas').innerHTML = ORDEN.map(l => {
-    const t = l === 'ninguna' ? 'Sin lupa' : LUPA[l].corto, off = l === 'grupos' && f.sinPrincipal;
-    return `<button type="button" data-l="${l}" aria-pressed="${l === S.lupa}"${off ? ' disabled aria-disabled="true" aria-label="Función principal: no se ofrece para esta molécula"' : ''}>${t}</button>`;
+    const t = l === 'ninguna' ? 'Sin lupa' : LUPA[l].corto, off = l !== 'ninguna' && !MG.lupaDisponible(S.id, l);
+    return `<button type="button" data-l="${l}" aria-pressed="${l === S.lupa}"${off ? ` disabled aria-disabled="true" aria-label="${LUPA[l].nombre}: no se ofrece para esta molécula"` : ''}>${t}</button>`;
   }).join('');
   $('lupas').querySelectorAll('button').forEach(b => b.onclick = () => { S.lupa = b.dataset.l; pintar(); });
 }
@@ -738,7 +742,7 @@ function pintar(){
   if (l === 'ninguna'){
     E.compactar(false);
     E.poner(vista(S.id, { modo:'color' }));
-    $('body2').innerHTML = `<p class="hint">Así se ve con los colores de los elementos. Elige una lupa para contar.</p>`;
+    $('body2').innerHTML = `<p class="hint">Elige una lupa para contar. Las lupas apagadas no se ofrecen para esta molécula (por ejemplo, la de los carbonos sp sin triple enlace, o la de aromáticos en la quercetina y la cafeína, cuyo anillo con C=O algunos libros cuentan y otros no).</p>`;
     return;
   }
   const O = MG.opciones(S.id, l), p = S.pred[k];
@@ -750,7 +754,7 @@ function pintar(){
   $('body2').innerHTML = `<p class="problem">${LUPA[l].preg.replace(LUPA[l].nombre, chip(l))}</p>` + opcionesHTML(opts, 'fb2') + '<div id="res2"></div>';
   const btns = [...$('body2').querySelectorAll('.opt')];
   const v = vista(S.id, { espera: `${LUPA[l].nombre}: se encienden al responder` });
-  const encender = () => { v.marca = marcaDe(S.id, l); v.leyenda = LUPA[l].nombre; v.texto = `Con la lupa: ${O.valor} ${l === 'grupos' ? '' : LUPA[l].nombre}`; E.poner(v); };
+  const encender = () => { v.marca = marcaDe(S.id, l); v.leyenda = LUPA[l].nombre; v.texto = `Con la lupa: ${O.valor} ${l === 'grupos' ? '' : LUPA[l].nombre}`; if (l !== 'grupos') v.total = O.valor; E.poner(v); };
   const mostrarFb = () => {
     const q = S.pred[k]; if (!q) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === okK) b.classList.add('correct'); else if (b.dataset.k === q) b.classList.add('wrong'); });
@@ -772,7 +776,7 @@ function pintar(){
     Celular.alResponder($('cv2'), encender, () => S.id === id && S.lupa === l);
   });
 }
-$('molSel').onchange = () => { S.id = $('molSel').value; if (S.lupa === 'grupos' && MG.ficha(S.id).sinPrincipal) S.lupa = 'ninguna'; pintar(); };
+$('molSel').onchange = () => { S.id = $('molSel').value; if (S.lupa !== 'ninguna' && !MG.lupaDisponible(S.id, S.lupa)) S.lupa = 'ninguna'; pintar(); };
 let listo = false;
 addEventListener('modo', () => { if (!listo && !$('m2').hidden){ listo = true; pintar(); } });
 })();
@@ -791,7 +795,7 @@ const EXPS = [
     opts:[['a', `${H.errores.sinCarbonilo} ${V('sp2', 'carbonos sp²')}`, 'EN12-sp2-sin-carbonilo', 'parcial'], ['b', `${H.valor} ${V('sp2', 'carbono sp²')}`], ['c', `${H.errores.unoMenos} ${V('sp2', 'carbonos sp²')}`, 'QA-hidrogenar-uno-menos', 'hipotesis'], ['d', `${H.errores.sinCambio} ${V('sp2', 'carbonos sp²')}`, 'QA-hidrogenar-no-cambia', 'hipotesis']], ok:'b',
     fb:{ a:'Queda el carbono del –COOH: su doble enlace con el O no se tocó.', c:'Los dos carbonos del C=C reciben un H cada uno: los dos pasan a sp³, no uno solo.', d:'Al entrar el H₂, el doble enlace C=C se vuelve simple: sus dos carbonos dejan de ser sp².' },
     antes:() => vista('acido-oleico', { espera:'carbonos sp²: se encienden al responder' }),
-    despues:() => { const v = vista('acido-oleico', { m: H.despues, nombre:'ácido esteárico (el oleico hidrogenado)' }); v.marca = { tipo:'atomos', c:'sp2', atomos: H.atomos }; v.leyenda = 'carbonos sp²'; return v; },
+    despues:() => { const v = vista('acido-oleico', { m: H.despues, nombre:'ácido esteárico (dibujado en la misma posición; en realidad la cadena queda recta)' }); v.marca = { tipo:'atomos', c:'sp2', atomos: H.atomos }; v.leyenda = 'carbonos sp²'; return v; },
     exp:() => `<p>Queda el ácido esteárico, ${F(H.formula)}: ${H.hDespues - H.hAntes} H más y la masa sube de ${H.masaAntes} a ${H.masaDespues} g/mol. Pasó de ${H.antesValor} a ${V('sp2', H.valor + ' carbono sp²')}. Sin el codo del doble enlace cis, las cadenas se acomodan mejor: por eso es sólido.</p>` },
   { id:'piruvico-lactico', corto:'Del pirúvico al láctico',
     q:`En el músculo sin oxígeno, el C=O del ácido pirúvico (CH₃–CO–COOH) se convierte en C–OH: queda ácido láctico. ¿Qué le pasa al carbono del medio?`,
@@ -805,15 +809,15 @@ const EXPS = [
     opts:[['a', `${CG.errores.pierdeC5} ${V('qui', 'carbonos quirales')}`, 'QA-ciclo-pierde-C5', 'hipotesis'], ['b', `${CG.errores.sinCambio} ${V('qui', 'carbonos quirales')}`, 'QA-ciclo-no-cambia', 'hipotesis'], ['c', `${CG.valor} ${V('qui', 'carbonos quirales')}`], ['d', `${CG.errores.conHeteroatomo} ${V('qui', 'carbonos quirales')}`, 'QA-quiral-todo-C-con-O', 'hipotesis']], ok:'c',
     fb:{ a:'El C5 pierde su H del OH, no su quiralidad: sigue con cuatro grupos distintos.', b:'El C1 deja de ser un CHO (con doble enlace) y pasa a tener H, OH, el O del anillo y el C2: un carbono quiral nuevo.', d:'El C6 (CH₂OH) tiene dos H: no es quiral.' },
     antes:() => vista('glucosa-abierta', { espera:'carbonos quirales: se encienden al responder' }),
-    despues:() => { const v = vista('glucosa-ciclica'); v.marca = { tipo:'atomos', c:'qui', atomos: CG.atomos, estrella:true }; v.leyenda = 'carbonos quirales'; return v; },
+    despues:() => { const v = vista('glucosa-ciclica', { nombre:'β-D-glucopiranosa (glucosa cerrada en anillo)' }); v.marca = { tipo:'atomos', c:'qui', atomos: CG.atomos, estrella:true }; v.leyenda = 'carbonos quirales'; return v; },
     exp:() => `<p>${CG.valor} carbonos quirales: el C1 es nuevo (el carbono anomérico). Por eso hay dos glucosas cerradas, α y β, según hacia dónde quede su OH. El C1 con OH y con el O del anillo es un hemiacetal.</p>` },
   { id:'octeto-alicina', corto:'El azufre del ajo',
-    q:`La alicina del ajo, CH₂=CH–CH₂–S(=O)–S–CH₂–CH=CH₂, tiene dos azufres. ¿Cuántos ${V('oct', 'electrones')} rodean al S que está unido al O, contando los de sus enlaces y sus pares libres?`,
+    q:`La alicina del ajo, CH₂=CH–CH₂–S(=O)–S–CH₂–CH=CH₂, tiene dos azufres. En la estructura escrita con S=O (como en el examen), ¿cuántos ${V('oct', 'electrones')} rodean al S que está unido al O, contando los de sus enlaces y sus pares libres?`,
     opts:[['a', `${OA.errores.valencia} ${V('oct', 'electrones')}`, 'QA-octeto-valencia', 'hipotesis'], ['b', `${OA.errores.comoLey} ${V('oct', 'electrones')}`, 'EN3-octeto-ley', 'parcial'], ['c', `${OA.valor} ${V('oct', 'electrones')}`], ['d', `${OA.errores.paresDeSulfuro} ${V('oct', 'electrones')}`, 'QA-octeto-pares-de-sulfuro', 'hipotesis']], ok:'c',
     fb:{ a:'6 son los electrones de valencia del S solo; al enlazarse comparte más.', b:'Ese S tiene 3 enlaces σ y un π (4 pares compartidos, 8 electrones) y además un par libre: 10. El octeto no es una ley para el tercer período.', d:'Ese S tiene un solo par libre, no dos como el S de un sulfuro: le pusiste uno de más.' },
     antes:() => vista('alicina', { espera:'electrones alrededor: se encienden al responder' }),
     despues:() => { const v = vista('alicina'); v.marca = { tipo:'electrones', c:'oct', atomos:[OA.atomo], electrones: MG.octeto('alicina').atomos.map(a => a.electrones) }; v.leyenda = 'electrones alrededor del átomo'; return v; },
-    exp:() => `<p>${OA.enlacesDelAtomo} pares compartidos y ${OA.pares} par libre: ${V('oct', OA.valor + ' electrones')}, octeto expandido. El otro S, con dos enlaces simples y dos pares libres, tiene 8. Los C=O, S=O y el resto cumplen.</p>` },
+    exp:() => `<p>${OA.enlacesDelAtomo} pares compartidos y ${OA.pares} par libre: ${V('oct', OA.valor + ' electrones')}, octeto expandido. El O, los carbonos y el otro S cumplen el octeto. Algunos libros la escriben S⁺–O⁻; así el S cumple el octeto. Aquí se cuenta con el S=O dibujado.</p>` },
   { id:'fenilalanina-tirosina', corto:'De fenilalanina a tirosina',
     q:`En el hígado, a la fenilalanina se le cambia un H del anillo por un OH y queda tirosina (${F(FT.formulaAntes)} → ${F(FT.formulaDespues)}). ¿Qué ${V('gf', 'grupo funcional')} nuevo aparece?`,
     opts:[['a', `Un ${N.alcohol}: el OH queda unido a un carbono de la molécula`, 'QA-fenol-alcohol', 'hipotesis'], ['b', `Un ${N[FT.valor]}: el OH queda en un C del anillo aromático`], ['c', `Un ${N.eter}: entra un O entre dos átomos`, 'QA-oxigeno-eter', 'hipotesis'], ['d', `Un ${N.acido}: entra un O más`, 'QA-oxigeno-acido', 'hipotesis']], ok:'b',

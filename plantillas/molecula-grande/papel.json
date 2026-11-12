@@ -36,13 +36,13 @@
     {
       "id": "p3",
       "nivel": "intermedio",
-      "enunciado": "La alicina del ajo es CH₂=CH–CH₂–S(=O)–S–CH₂–CH=CH₂. Cuenta sus enlaces σ y π, sus enlaces polares y di qué átomo no cumple el octeto.",
+      "enunciado": "La alicina del ajo es CH₂=CH–CH₂–S(=O)–S–CH₂–CH=CH₂. Cuenta sus enlaces σ y π y sus enlaces polares. En la estructura escrita con S=O (como en el examen), ¿cuántos electrones rodean a cada S y cuál no cumple el octeto?",
       "respuesta": "18 σ y 3 π; 2 enlaces polares (los dos del S=O); el S unido al O tiene 10 electrones (octeto expandido).",
       "pasos": [
         "Átomos sin los H: 6 C, 2 S y 1 O. Enlaces entre ellos: C=C, C–C, C–S, S–S, S=O, S–C, C–C, C=C: 8 pares de átomos unidos. Los H: la fórmula C₆H₁₀OS₂ tiene 10 C–H.",
         "σ: 8 + 10 = 18. π: uno en cada C=C y uno en el S=O: 3.",
         "Polares (ΔEN ≥ 0,4): solo el S=O (3,44 − 2,58 = 0,86), que cuenta como 2 enlaces. C–H (0,35), C–S (0,03), S–S (0) y C–C son apolares.",
-        "Octeto del S del medio: 3 enlaces σ (C, O, S) y 1 π son 4 pares compartidos = 8 electrones, más 1 par libre = 10. Es del tercer período: puede pasar de 8. El otro S (dos enlaces simples y dos pares libres) tiene 8."
+        "Octeto del S del medio: 3 enlaces σ (C, O, S) y 1 π son 4 pares compartidos = 8 electrones, más 1 par libre = 10. Es del tercer período: puede pasar de 8. El otro S (dos enlaces simples y dos pares libres) tiene 8. Algunos libros la escriben S⁺–O⁻; así el S cumple el octeto. Aquí se cuenta con el S=O dibujado."
       ],
       "verificar": [
         { "fn": "enlaces", "args": ["alicina"], "espera": { "sigma": 18, "pi": 3, "polares": 2 } },
