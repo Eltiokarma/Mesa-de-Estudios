@@ -99,7 +99,9 @@
   }
 
   function cerrar(rng, semilla, o) {
-    const errores = o.errores.filter(e => Number.isFinite(e.valor) && (o.negativos || e.valor > 0));
+    // Las trampas de unidades (QU) llegan hasta 1000 veces la correcta, no más (decisión de Gerson, 12 nov 2026):
+    // los cm³ dejados en un problema de m³ (un millón de veces) no entran.
+    const errores = o.errores.filter(e => Number.isFinite(e.valor) && (o.negativos || e.valor > 0) && (!P.esUnidades(e.id) || P.enEscala(e.valor, o.correcta, e.id)));
     const texto = o.texto || (x => f(x, o.decimales ?? 2) + (o.unidad ? ' ' + o.unidad : ''));
     const alternativas = P.armar({ correcta: o.correcta, errores, rng, texto, negativos: !!o.negativos });
     return { id: `${ID}#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: o.datos || '',
