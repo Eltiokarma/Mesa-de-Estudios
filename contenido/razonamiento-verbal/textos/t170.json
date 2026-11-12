@@ -1,0 +1,275 @@
+{
+  "id": "t170",
+  "version": 1,
+  "titulo": "From Beans to Bars",
+  "tema": "Lectura en inglés · noticia sobre agricultores de cacao de la Amazonía peruana que empiezan a hacer su propio chocolate",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "expositivo",
+  "idioma": "en",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "principal",
+        "t": "In a small village in the Peruvian Amazon, a group of cacao farmers has decided to make its own chocolate."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "For many years, these families sold their dried beans to buyers from the city, and the beans were sent to factories far away."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "The farmers usually received a low price, while the companies that made the chocolate earned much more."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "Now the group ferments and dries the beans, roasts them and grinds them in a small workshop that its members built together."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "The first bars have already been sold in a local market, and visitors say that the taste is strong and slightly fruity."
+      },
+      {
+        "id": "o6",
+        "rol": "contraste",
+        "t": "Making chocolate is not easy, however."
+      },
+      {
+        "id": "o7",
+        "rol": "apoyo",
+        "t": "The workshop needs a lot of electricity, and good packaging is expensive."
+      }
+    ],
+    [
+      {
+        "id": "o8",
+        "rol": "apoyo",
+        "t": "Still, the farmers are hopeful: if the bars sell well, they plan to hire young people from the village."
+      },
+      {
+        "id": "o9",
+        "rol": "detalle",
+        "t": "One farmer explained that she wants her children to see cacao as a business they can be proud of, and not only as a crop."
+      },
+      {
+        "id": "o10",
+        "rol": "detalle",
+        "t": "(The village and the group in this report are examples created for this exercise.)"
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "intencion",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "previo": {
+        "tipo": "proposito",
+        "pide": "Antes de ver las alternativas: ¿qué hace sobre todo este texto?",
+        "aceptada": "explicar",
+        "codigos": {
+          "convencer": "RV33",
+          "narrar": "RV13"
+        },
+        "explicacion": "El texto presenta un hecho: un grupo de agricultores empezó a hacer chocolate. Cuenta cómo lo hace, qué problemas tiene y qué planes; no pide nada al lector. Informa.",
+        "explicaciones": {
+          "convencer": "No hay un «debes» ni una opinión que se defienda: el autor no intenta que el lector cambie lo que hace.",
+          "narrar": "Hay un antes y un ahora (oraciones 2 y 4), pero no es un cuento con personajes y desenlace: es un reporte de un hecho actual."
+        }
+      },
+      "enunciado": "What is the main purpose of the text?",
+      "alternativas": [
+        {
+          "t": "To inform readers about farmers who now make their own chocolate.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o4"
+          ],
+          "explicacion": "Cuenta qué hizo el grupo, cómo lo hace y qué dificultades y planes tiene: informa sobre un hecho, como una noticia."
+        },
+        {
+          "t": "To convince readers to stop buying chocolate made in factories.",
+          "codigo": "RV33",
+          "explicacion": "El texto nunca pide dejar de comprar chocolate de fábrica; el autor no toma esa postura."
+        },
+        {
+          "t": "To teach readers every step needed to make chocolate at home.",
+          "codigo": "RV3",
+          "explicacion": "La oración 4 nombra los pasos, pero es solo una parte del texto, que trata de lo que hizo un grupo de agricultores."
+        },
+        {
+          "t": "To tell the life story of a farmer and her children.",
+          "codigo": "RV13",
+          "explicacion": "La oración 9 recoge lo que quiere una agricultora, pero el texto no sigue su historia: informa sobre todo el grupo."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "dato",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "Before making chocolate, the families sold their dried beans to",
+      "alternativas": [
+        {
+          "t": "buyers from the city.",
+          "correcta": true,
+          "evidencia": [
+            "o2"
+          ],
+          "explicacion": "La oración 2 dice que durante muchos años vendieron los granos secos a compradores de la ciudad."
+        },
+        {
+          "t": "visitors to a local market.",
+          "codigo": "RV45",
+          "origen": "o5",
+          "explicacion": "Los visitantes del mercado aparecen en la oración 5 y compran las barras de chocolate ya hechas, no los granos."
+        },
+        {
+          "t": "young people from the village.",
+          "codigo": "RV5",
+          "origen": "o8",
+          "explicacion": "Los jóvenes de la aldea aparecen en la oración 8 como futuros empleados, no como compradores."
+        },
+        {
+          "t": "a chocolate factory built by the group.",
+          "codigo": "RV8",
+          "explicacion": "El grupo construyó un pequeño taller (oración 4), no una fábrica, y los granos se vendían antes de tenerlo."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "If the bars sell well, the text suggests that the group will probably",
+      "alternativas": [
+        {
+          "t": "give jobs to young people from the village.",
+          "correcta": true,
+          "evidencia": [
+            "o8"
+          ],
+          "explicacion": "La oración 8 dice que, si las barras se venden bien, planean contratar jóvenes de la aldea."
+        },
+        {
+          "t": "go back to selling dried beans to buyers from the city.",
+          "codigo": "RV63",
+          "origen": "o2",
+          "explicacion": "Vuelve a lo que el éxito deja atrás. Vender granos secos es lo que hacían antes, y el grupo decidió hacer su propio chocolate (oración 1)."
+        },
+        {
+          "t": "pay all the families in the Amazon a much higher price.",
+          "codigo": "RV11",
+          "explicacion": "Exagera: el texto habla de un grupo pequeño y de su propio taller, no de todas las familias de la Amazonía."
+        },
+        {
+          "t": "close the workshop because it uses too much electricity.",
+          "codigo": "RV7",
+          "origen": "o7",
+          "explicacion": "El texto dice que el taller necesita mucha electricidad, pero no sugiere que venderse bien lleve a cerrarlo."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "antonimo",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "In sentence 3, the opposite of LOW is",
+      "alternativas": [
+        {
+          "t": "high.",
+          "correcta": true,
+          "evidencia": [
+            "o3"
+          ],
+          "explicacion": "«Low price» es un precio bajo; lo contrario es un precio alto («high»)."
+        },
+        {
+          "t": "cheap.",
+          "codigo": "RV19",
+          "explicacion": "«Cheap» es un sinónimo en el campo de los precios: no significa lo contrario de «low»."
+        },
+        {
+          "t": "short.",
+          "codigo": "RV21",
+          "explicacion": "«Short» (corto) es lo contrario de «long» y suele decirse de la altura o la longitud, no del precio: cambia otro rasgo."
+        },
+        {
+          "t": "much.",
+          "codigo": "RV5",
+          "origen": "o3",
+          "explicacion": "«Much» aparece en la misma oración («much more»), pero es una cantidad, no el contrario de «low»."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "Which statement is incompatible with the text?",
+      "alternativas": [
+        {
+          "t": "The group has not sold any chocolate yet.",
+          "correcta": true,
+          "evidencia": [
+            "o5"
+          ],
+          "explicacion": "Choca con la oración 5: las primeras barras ya se vendieron en un mercado local."
+        },
+        {
+          "t": "The group faces some difficulties with its project.",
+          "codigo": "RV10",
+          "origen": "o6",
+          "explicacion": "Es compatible: la oración 6 dice que hacer chocolate no es fácil."
+        },
+        {
+          "t": "The members built the workshop together.",
+          "codigo": "RV8",
+          "origen": "o4",
+          "explicacion": "Es compatible con la oración 4, que dice que el taller lo construyeron sus miembros."
+        },
+        {
+          "t": "The farmers usually received a low price for their dried beans.",
+          "codigo": "RV5",
+          "origen": "o3",
+          "explicacion": "Es compatible: la oración 3 dice que los agricultores solían recibir un precio bajo."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-12",
+  "hechos": [
+    {
+      "afirmacion": "El chocolate se hace con granos de cacao que se fermentan, se secan, se tuestan y se muelen.",
+      "fuente": "Organización Internacional del Cacao (ICCO), «From cocoa bean to chocolate» (Cocoa Processing)."
+    },
+    {
+      "afirmacion": "En el Perú se cultiva cacao en varias regiones de la Amazonía, y los pequeños agricultores venden los granos a compradores o a cooperativas.",
+      "fuente": "MIDAGRI (Ministerio de Desarrollo Agrario y Riego), Perfil del mercado del cacao / Plan Nacional de Cacao."
+    },
+    {
+      "afirmacion": "El caso del pueblo y del grupo de agricultores es un ejemplo creado para este ejercicio.",
+      "fuente": "Texto propio, dicho en la oración 10."
+    }
+  ],
+  "revision": {
+    "por": "subagente (revisor a ciegas, rutina verbal-mas)",
+    "fecha": "2026-11-12",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidieron 6 de 6 ítems. Cambio: en p5 el distractor «venderán en el extranjero» (no se sabe) se reemplazó por una afirmación compatible con la oración 3. Hechos: el proceso del cacao (fermentar, secar, tostar, moler) y la venta a compradores/cooperativas vienen de ICCO y MIDAGRI citados en hechos, de memoria, no reverificados en esta pasada; el pueblo es inventado y lo dice la oración 10."
+  }
+}

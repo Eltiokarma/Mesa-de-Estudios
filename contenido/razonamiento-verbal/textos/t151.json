@@ -1,0 +1,309 @@
+{
+  "id": "t151",
+  "version": 1,
+  "titulo": "Vacuna contra el VPH en los colegios: ¿basta la campaña?",
+  "tema": "Salud · vacunación escolar contra el VPH",
+  "grado": 5,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    {
+      "id": "A",
+      "desde": 0,
+      "firma": "Una enfermera de un centro de salud"
+    },
+    {
+      "id": "B",
+      "desde": 1,
+      "firma": "Una dirigente de padres de familia"
+    }
+  ],
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "principal",
+        "t": "El virus del papiloma humano, conocido como VPH, es una de las principales causas del cáncer de cuello uterino, y la vacuna es la mejor forma de prevenirlo."
+      },
+      {
+        "id": "o2",
+        "rol": "apoyo",
+        "t": "Por eso la campaña en los colegios es la vía más eficaz: allí están los estudiantes de la edad indicada y las familias no tienen que sacar tiempo para ir al establecimiento de salud."
+      },
+      {
+        "id": "o3",
+        "rol": "apoyo",
+        "t": "Si el personal de salud llega con un calendario claro, en pocos días se vacuna a casi todo un grado."
+      },
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "Las dudas que queden se resuelven el mismo día, con la información que el personal entrega en el colegio."
+      },
+      {
+        "id": "o5",
+        "rol": "principal",
+        "t": "Con una buena campaña escolar, entonces, basta para proteger a la mayoría."
+      }
+    ],
+    [
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "Estoy de acuerdo en que la vacuna es segura y en que debe llegar a los estudiantes de la edad indicada."
+      },
+      {
+        "id": "o7",
+        "rol": "apoyo",
+        "t": "También creo que el colegio es un buen lugar para aplicarla."
+      },
+      {
+        "id": "o8",
+        "rol": "contraste",
+        "t": "Mi preocupación es lo que ocurre antes de la campaña."
+      },
+      {
+        "id": "o9",
+        "rol": "apoyo",
+        "t": "Cuando una familia no sabe de qué se trata, circulan rumores y algunos padres terminan negando el permiso."
+      },
+      {
+        "id": "o10",
+        "rol": "apoyo",
+        "t": "Y cuando el rumor se instala, ni el mejor calendario logra revertirlo."
+      },
+      {
+        "id": "o11",
+        "rol": "principal",
+        "t": "Por eso, primero hay que conversar con los padres, en reuniones y con explicaciones sencillas, y recién después vacunar en el colegio."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "controversia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Conviene que la vacuna contra el VPH se aplique en los colegios.",
+        "aceptada": "ambos",
+        "codigos": {
+          "A": "RV61",
+          "B": "RV61",
+          "ninguno": null
+        },
+        "explicacion": "Los dos lo sostienen: el texto A dice que la campaña en los colegios es la vía más eficaz (oración 2) y el B, que el colegio es un buen lugar para aplicarla (oración 7).",
+        "explicaciones": {
+          "A": "El texto A lo dice en la oración 2, pero el B también: el colegio es un buen lugar para aplicarla (oración 7).",
+          "B": "El texto B lo dice en la oración 7, pero el A también: la campaña en los colegios es la vía más eficaz (oración 2).",
+          "ninguno": "Los dos lo sostienen: el texto A en la oración 2 y el B en la oración 7."
+        }
+      },
+      "enunciado": "El debate entre los dos textos gira en torno a si, para vacunar contra el VPH en los colegios,",
+      "alternativas": [
+        {
+          "t": "la escuela es un lugar adecuado para aplicar la vacuna a los estudiantes.",
+          "codigo": "RV61",
+          "origen": "o7",
+          "explicacion": "En eso coinciden: el texto A lo dice en la oración 2 y el B lo comparte en la oración 7."
+        },
+        {
+          "t": "el personal de salud puede vacunar a casi todo un grado en pocos días si lleva un calendario claro.",
+          "codigo": "RV60",
+          "origen": "o3",
+          "explicacion": "Es un argumento del texto A (oración 3); el B no lo discute, y no es el eje del debate."
+        },
+        {
+          "t": "basta con la campaña escolar o primero hay que ganarse a las familias.",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "o11"
+          ],
+          "explicacion": "El texto A dice que una buena campaña escolar basta (oración 5); el B pide conversar antes con los padres (oración 11)."
+        },
+        {
+          "t": "la vacuna es segura, pero los padres deben decidir si la reciben en el colegio sin saber de qué se trata.",
+          "codigo": "RV62",
+          "origen": "o11",
+          "explicacion": "La primera mitad es común (oraciones 1 y 6), pero la segunda no la sostiene ninguno: el texto B pide informar antes a los padres (oración 11)."
+        },
+        {
+          "t": "las vacunas son importantes para la salud de toda la población del país.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos discuten cómo se organiza una campaña concreta en los colegios."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto B, la expresión NEGANDO EL PERMISO («terminan negando el permiso») significa",
+      "alternativas": [
+        {
+          "t": "diciendo que el permiso nunca existió.",
+          "codigo": "RV18",
+          "explicacion": "Es el sentido de «negar» como decir que algo no es cierto, pero aquí se trata de no autorizar."
+        },
+        {
+          "t": "escondiendo el permiso para que el colegio no lo vea.",
+          "codigo": "RV19",
+          "explicacion": "Está cerca por el tema del permiso, pero el texto habla de no darlo, no de esconderlo."
+        },
+        {
+          "t": "difundiendo rumores sobre la vacuna entre otras familias.",
+          "codigo": "RV5",
+          "origen": "o9",
+          "explicacion": "Repite la palabra «rumores» de la oración anterior, pero eso es la causa; negar el permiso es la consecuencia."
+        },
+        {
+          "t": "negándose a autorizar la vacuna de su hijo.",
+          "correcta": true,
+          "evidencia": [
+            "o9"
+          ],
+          "explicacion": "Es la consecuencia de que la familia no sepa de qué se trata: algunos padres no firman la autorización."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "compatibilidad",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Si una familia no sabe de qué se trata, los rumores pueden hacer que rechace el permiso.",
+        "aceptada": "B",
+        "codigos": {
+          "A": "RV59",
+          "ambos": "RV60",
+          "ninguno": null
+        },
+        "explicacion": "Lo sostiene el texto B en la oración 9: cuando la familia no sabe de qué se trata, circulan rumores y algunos padres niegan el permiso.",
+        "explicaciones": {
+          "A": "El texto A dice que las dudas se resuelven con la información que se entrega el mismo día en el colegio (oración 4); no habla de rumores. La idea es del B (oración 9).",
+          "ambos": "Solo el texto B lo sostiene (oraciones 9 y 10). El A cree que la información del mismo día basta.",
+          "ninguno": "Sí lo sostiene alguien: el texto B, en la oración 9."
+        }
+      },
+      "enunciado": "Es compatible con lo que sostiene el texto B afirmar que",
+      "alternativas": [
+        {
+          "t": "los padres de familia no influyen en que sus hijos reciban o no la vacuna que se aplica en el colegio.",
+          "codigo": "RV9",
+          "explicacion": "Choca con el texto B: si los padres niegan el permiso (oración 9), el colegio no puede vacunar."
+        },
+        {
+          "t": "toda familia que recibe información antes de la campaña acepta la vacuna sin ninguna duda ni pregunta.",
+          "codigo": "RV11",
+          "explicacion": "El texto B no dice «toda»: pide conversar con los padres (oración 11), pero no asegura que todos acepten."
+        },
+        {
+          "t": "una campaña escolar bien organizada podría fracasar en un colegio donde las familias desconfían.",
+          "correcta": true,
+          "evidencia": [
+            "o9",
+            "o10"
+          ],
+          "explicacion": "Se deduce del texto B: si el rumor se instala, ni el mejor calendario logra revertirlo (oración 10)."
+        },
+        {
+          "t": "la vacuna solo debería aplicarse en los establecimientos de salud y nunca en los colegios, aunque las familias lo pidan.",
+          "codigo": "RV33",
+          "origen": "o7",
+          "explicacion": "El texto B comparte que el colegio es un buen lugar para aplicarla (oración 7)."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "sintesis",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "¿Qué enunciado integra mejor lo que plantean los dos textos?",
+      "alternativas": [
+        {
+          "t": "Como los rumores circulan rápido, la vacuna contra el VPH debe aplicarse solo en los establecimientos de salud y no en los colegios.",
+          "codigo": "RV44",
+          "explicacion": "Une dos ideas con una relación que los textos no plantean: el texto B quiere vacunar en el colegio, después de conversar con los padres (oraciones 7 y 11)."
+        },
+        {
+          "t": "La vacuna debe aplicarse en los colegios, y falta decidir si basta la campaña o se prepara antes a las familias.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o5",
+            "o7",
+            "o11"
+          ],
+          "explicacion": "Integra lo común, vacunar en el colegio (oraciones 2 y 7), y el punto en disputa: bastar con la campaña (oración 5) o conversar antes con los padres (oración 11)."
+        },
+        {
+          "t": "Con un calendario claro, el personal de salud vacuna a casi todo un grado en pocos días, sin otra preparación previa.",
+          "codigo": "RV60",
+          "origen": "o3",
+          "explicacion": "Es un argumento del texto A (oración 3); no integra lo que dice el B."
+        },
+        {
+          "t": "Los padres no necesitan participar, y la vacuna se aplica mejor si se evita explicarles de qué se trata antes.",
+          "codigo": "RV62",
+          "origen": "o4",
+          "explicacion": "No lo dice ninguno: el texto A entrega información en el colegio (oración 4) y el B pide conversar antes con los padres (oración 11)."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Si se comprobara que, después de reuniones con los padres, casi todas las familias aceptan la vacuna, la enfermera del texto A probablemente",
+      "alternativas": [
+        {
+          "t": "negaría que las familias necesiten información, pues para ella la campaña escolar basta por sí sola y sin más.",
+          "codigo": "RV63",
+          "explicacion": "Repite la postura de la oración 5 como si el supuesto no existiera; pero el hecho comprobado muestra que preparar a las familias ayuda."
+        },
+        {
+          "t": "pediría que la vacuna se aplique únicamente en las reuniones con los padres, y que se deje de hacerlo en los colegios.",
+          "codigo": "RV7",
+          "explicacion": "Va más allá del texto: ella ve en el colegio la vía más eficaz (oración 2) y no habla de dejarlo."
+        },
+        {
+          "t": "concluiría que los rumores no existen y que ninguna familia ha dudado nunca de la vacuna en su comunidad.",
+          "codigo": "RV11",
+          "explicacion": "Dice más de lo que se puede concluir: el supuesto habla de casi todas las familias, y la propia enfermera admite que hay dudas (oración 4)."
+        },
+        {
+          "t": "reconocería que preparar a las familias ayuda, aunque seguiría viendo en el colegio el lugar de vacunar.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o4"
+          ],
+          "explicacion": "El supuesto sostiene la idea del B de informar antes; el texto A ya admite dudas (oración 4) y mantiene la escuela como la vía más eficaz (oración 2)."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-12",
+  "hechos": [
+    {
+      "afirmacion": "El virus del papiloma humano (VPH) es una causa principal del cáncer de cuello uterino, y existe una vacuna que previene la infección por los tipos de virus más frecuentes.",
+      "fuente": "Organización Mundial de la Salud, ficha descriptiva sobre el cáncer de cuello uterino y la vacunación contra el VPH"
+    },
+    {
+      "afirmacion": "En el Perú, el Ministerio de Salud vacuna contra el VPH en las escuelas desde 2023 (primero a niñas y luego también a niños, desde quinto de primaria), con el consentimiento informado de los padres.",
+      "fuente": "Ministerio de Salud del Perú (MINSA), notas de prensa de la campaña de vacunación contra el VPH (2023 y 2025), recogidas por la agencia Andina"
+    }
+  ],
+  "revision": {
+    "por": "subagente (revisor a ciegas, rutina verbal-mas)",
+    "fecha": "2026-11-12",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidió en 34 de 34 ítems de la tanda (previos y preguntas). Cambios: se alargaron distractores de p3, p4 y p5 para que la correcta no sea la más larga. Verificado en la web (notas de Andina y Caretas sobre el Minsa): vacunación en escuelas desde 2023, quinto de primaria, luego varones, con consentimiento informado de los padres; el hecho se reescribió con eso. Lo del VPH y el cáncer de cuello uterino queda de memoria (OMS)."
+  }
+}

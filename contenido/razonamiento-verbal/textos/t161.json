@@ -1,0 +1,324 @@
+{
+  "id": "t161",
+  "version": 1,
+  "titulo": "Drones y surcos: ¿tecnología o saber de siempre?",
+  "tema": "Agricultura · tecnología y técnicas tradicionales",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    {
+      "id": "A",
+      "desde": 0,
+      "firma": "Un ingeniero agrónomo"
+    },
+    {
+      "id": "B",
+      "desde": 1,
+      "firma": "Una dirigente de una comunidad campesina"
+    }
+  ],
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "principal",
+        "t": "En la agricultura familiar, los drones y el riego tecnificado pueden ayudar a producir más con menos agua y menos esfuerzo."
+      },
+      {
+        "id": "o2",
+        "rol": "apoyo",
+        "t": "Un dron sobrevuela el terreno y muestra qué parcelas están secas o enfermas antes de que el agricultor lo note a simple vista."
+      },
+      {
+        "id": "o3",
+        "rol": "apoyo",
+        "t": "El riego por goteo lleva el agua a la raíz y evita que se pierda en surcos que la desperdician."
+      },
+      {
+        "id": "o4",
+        "rol": "contraste",
+        "t": "Insistir en que todo se haga como siempre es pedirle a la familia que siga sufriendo pérdidas que ya se pueden evitar."
+      },
+      {
+        "id": "o5",
+        "rol": "principal",
+        "t": "La tecnología no es un lujo de las grandes empresas: bien adaptada, puede servir también a la chacra pequeña."
+      }
+    ],
+    [
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "No niego que el riego tecnificado y los drones sirvan, sobre todo donde el agua escasea."
+      },
+      {
+        "id": "o7",
+        "rol": "contraste",
+        "t": "Pero un equipo sin conocimiento del lugar rinde poco."
+      },
+      {
+        "id": "o8",
+        "rol": "apoyo",
+        "t": "Los agricultores de la sierra saben, por generaciones de observación, cuándo sembrar, qué variedades resisten la helada y cómo repartir el agua entre las parcelas."
+      },
+      {
+        "id": "o9",
+        "rol": "apoyo",
+        "t": "Ese saber, junto con las técnicas tradicionales, indica dónde conviene usar un aparato y dónde no."
+      },
+      {
+        "id": "o10",
+        "rol": "principal",
+        "t": "Por eso la tecnología debe sumarse a las técnicas de la comunidad, no ocupar su lugar."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "coincidencia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "El riego tecnificado y los drones pueden servir en la chacra.",
+        "aceptada": "ambos",
+        "codigos": {
+          "A": "RV61",
+          "B": "RV61",
+          "ninguno": null
+        },
+        "explicacion": "Los dos lo sostienen: el texto A, en la oración 1, y el B, en la oración 6 («no niego que el riego tecnificado y los drones sirvan»).",
+        "explicaciones": {
+          "A": "El texto A lo dice en la oración 1, pero el B también lo concede en la oración 6.",
+          "B": "El texto B lo concede en la oración 6, pero el A lo dice primero, en la oración 1.",
+          "ninguno": "Los dos lo sostienen: el texto A en la oración 1 y el B en la oración 6."
+        }
+      },
+      "enunciado": "¿En qué coinciden ambos autores?",
+      "alternativas": [
+        {
+          "t": "En que el riego tecnificado y los drones pueden ayudar en la agricultura familiar.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o6"
+          ],
+          "explicacion": "El texto A lo afirma en la oración 1 y el B lo concede en la oración 6, antes de matizar."
+        },
+        {
+          "t": "En que el riego por goteo lleva el agua a la raíz y evita que se pierda en los surcos.",
+          "codigo": "RV60",
+          "origen": "o3",
+          "explicacion": "Es un argumento del texto A (oración 3). El B no lo menciona, así que no es un punto en común."
+        },
+        {
+          "t": "En que la tecnología es útil y en que debe ocupar el lugar de las técnicas de la comunidad.",
+          "codigo": "RV62",
+          "origen": "o10",
+          "explicacion": "La primera mitad es común, pero la segunda la rechaza el texto B (oración 10) y tampoco la dice el A."
+        },
+        {
+          "t": "En que los drones son hoy más baratos que los tractores y que otros equipos de trabajo.",
+          "codigo": "RV8",
+          "explicacion": "Ninguno de los dos habla de precios de los drones; sería un dato de fuera del texto."
+        },
+        {
+          "t": "En que el Estado debe regalar equipos de riego a todas las comunidades campesinas del país.",
+          "codigo": "RV33",
+          "explicacion": "Ninguno de los dos lo propone."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "postura",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "El saber acumulado por generaciones ayuda a decidir dónde conviene usar un aparato.",
+        "aceptada": "B",
+        "codigos": {
+          "A": "RV59",
+          "ambos": "RV60",
+          "ninguno": null
+        },
+        "explicacion": "Lo sostiene el texto B en las oraciones 8 y 9: ese saber, junto con las técnicas tradicionales, indica dónde conviene usar un aparato y dónde no.",
+        "explicaciones": {
+          "A": "El texto A no habla del saber de generaciones: habla de lo que muestran los drones y el goteo. La idea es del texto B (oraciones 8 y 9).",
+          "ambos": "Solo el texto B lo sostiene. El A insiste en lo que la tecnología evita (oración 4), sin hablar del saber de la comunidad.",
+          "ninguno": "Sí lo sostiene alguien: el texto B, en las oraciones 8 y 9."
+        }
+      },
+      "enunciado": "La dirigente del texto B sostiene que",
+      "alternativas": [
+        {
+          "t": "la tecnología debe sumarse a las técnicas de la comunidad y no ocupar su lugar.",
+          "correcta": true,
+          "evidencia": [
+            "o10"
+          ],
+          "explicacion": "Es su conclusión, en la oración 10."
+        },
+        {
+          "t": "la tecnología bien adaptada puede servir también a la chacra pequeña y no solo a las grandes empresas.",
+          "codigo": "RV59",
+          "origen": "o5",
+          "explicacion": "Es la postura del texto A (oración 5), no la de la dirigente."
+        },
+        {
+          "t": "los aparatos modernos nunca rinden en una chacra de la sierra, por más agua que les falte.",
+          "codigo": "RV11",
+          "explicacion": "«Nunca» dice más que el texto B, que reconoce que sirven sobre todo donde el agua escasea (oración 6)."
+        },
+        {
+          "t": "las comunidades deberían dejar de sembrar variedades que resisten la helada y probar otras nuevas.",
+          "codigo": "RV33",
+          "explicacion": "El texto B no toma esa postura: valora lo que la comunidad sabe de esas variedades (oración 8)."
+        },
+        {
+          "t": "el campo peruano necesita más inversión del Estado para que sus cultivos crezcan en los próximos años.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general y el texto B no lo plantea."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto B, el verbo SUMARSE («debe sumarse a las técnicas de la comunidad») significa",
+      "alternativas": [
+        {
+          "t": "añadirse.",
+          "correcta": true,
+          "evidencia": [
+            "o10"
+          ],
+          "explicacion": "La tecnología se agrega a las técnicas de la comunidad, sin reemplazarlas."
+        },
+        {
+          "t": "hacer una operación de cálculo.",
+          "codigo": "RV18",
+          "explicacion": "Es el sentido más común de «sumar» (una cuenta), pero aquí no se calcula nada."
+        },
+        {
+          "t": "juntarse con otras familias.",
+          "codigo": "RV19",
+          "explicacion": "Se asocia con «comunidad», pero «sumarse» se refiere a la tecnología, que se añade, no a las familias."
+        },
+        {
+          "t": "ocupar su lugar.",
+          "codigo": "RV5",
+          "origen": "o10",
+          "explicacion": "Repite palabras de la misma oración y dice justo lo contrario de lo que pide el autor."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "sintesis",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Los drones deberían repartirse gratis entre todas las familias campesinas.",
+        "aceptada": "ninguno",
+        "codigos": {
+          "A": "RV33",
+          "B": "RV33",
+          "ambos": "RV33"
+        },
+        "explicacion": "Ninguno lo sostiene: el texto A dice que la tecnología bien adaptada puede servir a la chacra pequeña (oración 5) y el B, que debe sumarse a las técnicas de la comunidad (oración 10); ninguno habla de repartir drones.",
+        "explicaciones": {
+          "A": "El texto A defiende la tecnología (oración 5), pero no dice que deba repartirse gratis.",
+          "B": "El texto B pide sumar la tecnología a las técnicas de la comunidad (oración 10); no habla de repartirla.",
+          "ambos": "Ninguno de los dos habla de repartir drones gratis."
+        }
+      },
+      "enunciado": "¿Qué enunciado sintetiza mejor lo que plantean los dos textos?",
+      "alternativas": [
+        {
+          "t": "La tecnología puede ayudar a la chacra familiar si se combina con el saber de la comunidad.",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "o9",
+            "o10"
+          ],
+          "explicacion": "Junta lo que el texto A defiende (oración 5) con la condición que pone el B (oraciones 9 y 10)."
+        },
+        {
+          "t": "La tecnología ahorra agua, y por eso las técnicas de la comunidad ya no sirven en la chacra.",
+          "codigo": "RV44",
+          "explicacion": "Une las ideas con una relación que el texto no plantea: ninguno de los dos dice que las técnicas tradicionales ya no sirven."
+        },
+        {
+          "t": "Los drones muestran qué parcelas están secas o enfermas antes de que el agricultor lo vea a simple vista.",
+          "codigo": "RV60",
+          "explicacion": "Es un argumento del texto A (oración 2); el B no lo discute, así que no sintetiza los dos textos."
+        },
+        {
+          "t": "La tecnología ayuda a la chacra familiar, pero solo si reemplaza por completo las técnicas tradicionales.",
+          "codigo": "RV62",
+          "explicacion": "La primera mitad es correcta, pero la segunda la rechaza el texto B (oración 10)."
+        },
+        {
+          "t": "La agricultura es la actividad más importante para la economía de todos los países del mundo.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos hablan de la agricultura familiar y de cómo combinar técnicas."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Sería incompatible con lo que plantea el texto B afirmar que",
+      "alternativas": [
+        {
+          "t": "donde hay riego por goteo, el conocimiento de la comunidad sobre siembras y heladas deja de ser necesario.",
+          "correcta": true,
+          "evidencia": [
+            "o7",
+            "o8",
+            "o9"
+          ],
+          "explicacion": "Choca con las oraciones 7 a 9: sin conocimiento del lugar un equipo rinde poco, y ese saber indica dónde conviene usarlo."
+        },
+        {
+          "t": "algunos agricultores de la sierra han aprendido a manejar un dron en sus propias parcelas.",
+          "codigo": "RV36",
+          "explicacion": "Que el texto no lo mencione no significa que lo contradiga: el B no niega que se use tecnología."
+        },
+        {
+          "t": "un equipo de riego sin conocimiento del lugar donde se instala suele rendir poco para la familia.",
+          "codigo": "RV6",
+          "origen": "o7",
+          "explicacion": "Está dicho en el texto tal cual (oración 7), así que es compatible, no incompatible."
+        },
+        {
+          "t": "una familia que usa goteo y conoce bien su terreno puede aprovechar mejor el agua que posee.",
+          "codigo": "RV34",
+          "explicacion": "Se deduce de lo que dice el texto B (oraciones 6 a 9); es compatible con él."
+        },
+        {
+          "t": "los drones pueden sobrevolar parcelas en zonas de montaña, donde los terrenos son más difíciles.",
+          "codigo": "RV8",
+          "explicacion": "Puede ser cierto, pero no sale del texto; tampoco choca con lo que dice el B."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-12",
+  "hechos": [],
+  "revision": {
+    "por": "subagente (revisor a ciegas, rutina verbal-mas)",
+    "fecha": "2026-11-12",
+    "veredicto": "aprobado",
+    "notas": "Resultado a ciegas: 40 de 40 coincidieron. Sin dudas. Las afirmaciones sobre goteo y drones son argumentos de los autores en general, no cifras ni datos verificables; no se afirma nada del mundo con fuente."
+  }
+}

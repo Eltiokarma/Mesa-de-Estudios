@@ -1,0 +1,7 @@
+{
+  "t169": { "p1.previo": "2", "p1": "C", "p2": "A", "p3": "D", "p4": "B", "p5": "C" },
+  "t170": { "p1.previo": "explicar", "p1": "D", "p2": "B", "p3": "B", "p4": "A", "p5": "B" },
+  "t171": { "p1": "C", "p2": "A", "p3.previo": "se-deduce", "p3": "A", "p4": "D", "p5": "C" },
+  "t172": { "p1.previo": "4", "p1": "B", "p2": "C", "p3": "B", "p4": "B", "p5.previo": "lo-contradice", "p5": "B" },
+  "t173": { "p1.previo": "convencer", "p1": "C", "p2": "D", "p3": "C", "p4": "A", "p5": "B" }
+}

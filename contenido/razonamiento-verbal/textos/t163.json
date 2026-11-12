@@ -1,0 +1,320 @@
+{
+  "id": "t163",
+  "version": 1,
+  "titulo": "Turismo en el Cusco: ¿ingresos o vecinos que se van?",
+  "tema": "Sociedad · turismo masivo y vivienda en el centro histórico",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    {
+      "id": "A",
+      "desde": 0,
+      "firma": "Un comerciante cusqueño"
+    },
+    {
+      "id": "B",
+      "desde": 1,
+      "firma": "Una arquitecta especialista en patrimonio"
+    }
+  ],
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "principal",
+        "t": "El turismo masivo y el alquiler de departamentos por aplicaciones han dado a muchas familias del Cusco un ingreso que antes no tenían."
+      },
+      {
+        "id": "o2",
+        "rol": "apoyo",
+        "t": "Una familia que alquila un cuarto o una casa a los visitantes paga estudios, mejora su vivienda y deja de depender de un solo empleo."
+      },
+      {
+        "id": "o3",
+        "rol": "apoyo",
+        "t": "Además, ese dinero se gasta en el barrio: en mercados, restaurantes y talleres de artesanía."
+      },
+      {
+        "id": "o4",
+        "rol": "contraste",
+        "t": "Quienes piden limitar los alquileres olvidan que el propietario suele ser un vecino de a pie, no un gran inversionista."
+      },
+      {
+        "id": "o5",
+        "rol": "principal",
+        "t": "Por eso la prioridad es ordenar el turismo sin cerrarles esa fuente de ingresos a las familias."
+      }
+    ],
+    [
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "Es verdad que algunas familias ganan con los alquileres, y no conviene negarlo."
+      },
+      {
+        "id": "o7",
+        "rol": "contraste",
+        "t": "El problema es lo que ocurre con quienes no son propietarios."
+      },
+      {
+        "id": "o8",
+        "rol": "apoyo",
+        "t": "Cuando muchas casas del centro histórico se dedican a hospedar visitantes, los alquileres para vivir suben y los inquilinos de siempre se mudan a la periferia."
+      },
+      {
+        "id": "o9",
+        "rol": "apoyo",
+        "t": "Así, el centro se llena de turistas y se vacía de vecinos, de tiendas del barrio y de la vida cotidiana que lo hace valioso."
+      },
+      {
+        "id": "o10",
+        "rol": "principal",
+        "t": "Por eso hay que limitar cuántas viviendas del centro histórico pueden ofrecerse a los turistas."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "discrepancia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Los alquileres turísticos hacen que los inquilinos de siempre se vayan del centro.",
+        "aceptada": "B",
+        "codigos": {
+          "A": "RV59",
+          "ambos": "RV60",
+          "ninguno": null
+        },
+        "explicacion": "Lo sostiene el texto B en la oración 8: los alquileres para vivir suben y los inquilinos de siempre se mudan a la periferia.",
+        "explicaciones": {
+          "A": "El texto A habla de los ingresos de las familias propietarias, no de los inquilinos que se mudan. La idea es del texto B (oración 8).",
+          "ambos": "Solo el texto B lo sostiene. El A defiende que el turismo da ingresos y propone ordenarlo (oración 5).",
+          "ninguno": "Sí lo sostiene alguien: el texto B, en la oración 8."
+        }
+      },
+      "enunciado": "¿En qué discrepan los autores?",
+      "alternativas": [
+        {
+          "t": "A cree que lo prioritario es ordenar el turismo sin quitar ingresos a las familias; B, que debe limitarse cuántas viviendas del centro se ofrecen a turistas.",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "o10"
+          ],
+          "explicacion": "Cada mitad es la postura de su autor: la oración 5 en el texto A y la oración 10 en el B."
+        },
+        {
+          "t": "A cree que el alquiler turístico da ingresos a las familias del Cusco; B, que debe prohibirse el turismo en toda la ciudad y en todos los barrios.",
+          "codigo": "RV62",
+          "origen": "o10",
+          "explicacion": "La primera mitad es correcta, pero el texto B no pide prohibir el turismo: pide limitar las viviendas del centro (oración 10)."
+        },
+        {
+          "t": "A sostiene que los inquilinos de siempre se mudan a la periferia; B, que muchas familias ganan con los alquileres.",
+          "codigo": "RV59",
+          "origen": "o8",
+          "explicacion": "Cambia las posturas de lugar: lo de los inquilinos que se mudan es del texto B (oración 8) y lo de las familias que ganan, del A (oración 2)."
+        },
+        {
+          "t": "A dice que algunas familias ganan con los alquileres de cuartos y casas; B lo niega y afirma que nadie gana.",
+          "codigo": "RV61",
+          "origen": "o6",
+          "explicacion": "El texto B no lo niega: concede que algunas familias ganan (oración 6). Su crítica es a lo que pasa con los inquilinos."
+        },
+        {
+          "t": "A defiende los grandes hoteles de lujo del centro; B pide cerrar los mercados de los barrios.",
+          "codigo": "RV33",
+          "explicacion": "Ninguno toma esa postura: el texto A habla de familias que alquilan y el B no menciona los mercados."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "coincidencia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Algunas familias cusqueñas ganan dinero alquilando a los visitantes.",
+        "aceptada": "ambos",
+        "codigos": {
+          "A": "RV61",
+          "B": "RV61",
+          "ninguno": null
+        },
+        "explicacion": "Los dos lo sostienen: el texto A, en las oraciones 1 y 2, y el B, en la oración 6 («algunas familias ganan con los alquileres»).",
+        "explicaciones": {
+          "A": "El texto A lo dice en las oraciones 1 y 2, pero el B también lo reconoce en la oración 6.",
+          "B": "El texto B lo reconoce en la oración 6, pero el A lo dice primero, en las oraciones 1 y 2.",
+          "ninguno": "Los dos lo sostienen: el texto A en la oración 2 y el B en la oración 6."
+        }
+      },
+      "enunciado": "¿En qué coinciden ambos autores?",
+      "alternativas": [
+        {
+          "t": "En que alquilar a los visitantes deja ingresos a algunas familias del Cusco.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o6"
+          ],
+          "explicacion": "El texto A lo afirma en la oración 2 y el B lo reconoce en la oración 6, antes de señalar el problema."
+        },
+        {
+          "t": "En que debe limitarse el número de viviendas del centro que se ofrecen a los turistas de visita.",
+          "codigo": "RV60",
+          "origen": "o10",
+          "explicacion": "Es la postura del texto B (oración 10). El A no la comparte: pide ordenar el turismo sin cerrar esa fuente de ingresos."
+        },
+        {
+          "t": "En que los alquileres dan ingresos a las familias, y en que los inquilinos de siempre se mudan a la periferia.",
+          "codigo": "RV62",
+          "origen": "o8",
+          "explicacion": "La primera mitad es común, pero la segunda la dice solo el texto B (oración 8)."
+        },
+        {
+          "t": "En que el turismo en el Cusco crece más cada año, y en que seguirá creciendo después.",
+          "codigo": "RV8",
+          "explicacion": "Ninguno de los dos habla del crecimiento futuro del turismo; sería un dato de fuera del texto."
+        },
+        {
+          "t": "En que el Estado debe construir viviendas en la periferia para los inquilinos que se mudan.",
+          "codigo": "RV33",
+          "explicacion": "Ninguno de los dos lo propone."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto A, el verbo ORDENAR («ordenar el turismo») significa",
+      "alternativas": [
+        {
+          "t": "regular con reglas.",
+          "correcta": true,
+          "evidencia": [
+            "o5"
+          ],
+          "explicacion": "Se trata de poner reglas al turismo, sin cerrar la fuente de ingresos de las familias."
+        },
+        {
+          "t": "colocar las cosas en fila, una tras otra.",
+          "codigo": "RV18",
+          "explicacion": "Es un sentido frecuente de «ordenar» (poner en orden las cosas), pero el turismo no se coloca en fila."
+        },
+        {
+          "t": "reducir.",
+          "codigo": "RV19",
+          "explicacion": "Se asocia con «limitar», que defiende el texto B; el A pide ordenar sin cerrar esa fuente de ingresos."
+        },
+        {
+          "t": "cerrar esa fuente.",
+          "codigo": "RV5",
+          "origen": "o5",
+          "explicacion": "Repite palabras de la misma oración, que dicen justo lo que el autor no quiere hacer."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "sintesis",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "El propietario que alquila suele ser un vecino común y no un gran inversionista.",
+        "aceptada": "A",
+        "codigos": {
+          "B": "RV59",
+          "ambos": "RV60",
+          "ninguno": null
+        },
+        "explicacion": "Lo sostiene el texto A en la oración 4: el propietario suele ser un vecino de a pie, no un gran inversionista.",
+        "explicaciones": {
+          "B": "El texto B habla de los inquilinos que se mudan, no de quién es el propietario. La idea es del texto A (oración 4).",
+          "ambos": "Solo el texto A lo sostiene. El B solo reconoce que algunas familias ganan (oración 6).",
+          "ninguno": "Sí lo sostiene alguien: el texto A, en la oración 4."
+        }
+      },
+      "enunciado": "¿Qué enunciado sintetiza mejor lo que plantean los dos textos?",
+      "alternativas": [
+        {
+          "t": "El alquiler turístico ayuda a algunas familias, pero se discute cuánto debe limitarse para que los vecinos no dejen el centro.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o8",
+            "o10"
+          ],
+          "explicacion": "Junta lo que reconocen los dos (oraciones 2 y 6) y el punto en que se separan: ordenar sin cerrar (oración 5) o limitar viviendas (oración 10)."
+        },
+        {
+          "t": "El alquiler turístico da ingresos a las familias, y por eso todo el centro debe dedicarse a hospedar visitantes.",
+          "codigo": "RV62",
+          "explicacion": "Mezcla dos mitades: la primera es común, pero ningún texto pide dedicar todo el centro a los visitantes."
+        },
+        {
+          "t": "Muchas casas del centro se dedican a hospedar visitantes y suben los alquileres para quienes viven allí.",
+          "codigo": "RV60",
+          "explicacion": "Es un argumento del texto B (oración 8); el A no lo discute como tal, así que no sintetiza los dos textos."
+        },
+        {
+          "t": "El turismo ha crecido tanto que los vecinos prefieren alquilar a los visitantes y mudarse del centro, pues ganan más.",
+          "codigo": "RV44",
+          "explicacion": "Une las ideas con una relación que el texto no plantea: los vecinos del texto B se mudan porque suben los alquileres, no porque elijan ganar más."
+        },
+        {
+          "t": "Las ciudades antiguas deben cambiar siempre para adaptarse a los tiempos modernos y a las nuevas costumbres.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos hablan del Cusco, de los alquileres turísticos y de sus vecinos."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "compatibilidad",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Resulta compatible con ambos textos afirmar que",
+      "alternativas": [
+        {
+          "t": "limitar los alquileres turísticos solo en el centro histórico dejaría ingresos a las familias de otros barrios.",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "o10"
+          ],
+          "explicacion": "Encaja con el A, que no quiere cerrar la fuente de ingresos (oración 5), y con el B, que pide limitar las viviendas del centro (oración 10)."
+        },
+        {
+          "t": "el turismo masivo debería prohibirse en toda la ciudad del Cusco, aunque las familias pierdan sus ingresos por completo.",
+          "codigo": "RV9",
+          "explicacion": "Choca con el texto A, que pide ordenar el turismo sin cerrar esa fuente de ingresos (oración 5), y con el B, que acepta que algunas familias ganan (oración 6)."
+        },
+        {
+          "t": "ninguna familia del Cusco gana dinero con los alquileres a los visitantes de la ciudad.",
+          "codigo": "RV10",
+          "explicacion": "Choca con los dos textos: el A (oración 2) y el B (oración 6) dicen que algunas familias sí ganan."
+        },
+        {
+          "t": "todos los propietarios del centro son grandes inversionistas que no viven en el barrio.",
+          "codigo": "RV11",
+          "explicacion": "Choca con el texto A, que dice que el propietario suele ser un vecino común (oración 4)."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-12",
+  "hechos": [],
+  "revision": {
+    "por": "subagente (revisor a ciegas, rutina verbal-mas)",
+    "fecha": "2026-11-12",
+    "veredicto": "aprobado",
+    "notas": "Resultado a ciegas: 40 de 40 coincidieron. Sin dudas. Sonda de p2 (algunas familias ganan, ambos) respaldada por las oraciones 1 y 6. Sin hechos del mundo: lo dicho sobre alquileres y mudanzas es argumentación de los autores, sin cifras."
+  }
+}

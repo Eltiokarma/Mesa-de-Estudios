@@ -1,0 +1,308 @@
+{
+  "id": "t138",
+  "version": 1,
+  "titulo": "¿Un carril para las bicicletas?",
+  "tema": "Ciudad · ciclovías en Lima",
+  "grado": 4,
+  "dificultad": 1,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    {
+      "id": "A",
+      "desde": 0,
+      "firma": "Una vecina que va en bicicleta a su trabajo"
+    },
+    {
+      "id": "B",
+      "desde": 1,
+      "firma": "Un conductor de bus"
+    }
+  ],
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "principal",
+        "t": "Las avenidas de Lima deberían ceder un carril de los carros para hacer ciclovías separadas por un sardinel."
+      },
+      {
+        "id": "o2",
+        "rol": "apoyo",
+        "t": "Hoy quien va en bicicleta tiene que elegir entre la pista, donde los carros le pasan a centímetros, y la vereda, donde estorba a los peatones."
+      },
+      {
+        "id": "o3",
+        "rol": "apoyo",
+        "t": "Una bicicleta ocupa mucho menos espacio que un auto, no hace ruido y no echa humo."
+      },
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "Mucha gente no pedalea porque tiene miedo, no porque no quiera; con un carril protegido, se animaría."
+      },
+      {
+        "id": "o5",
+        "rol": "principal",
+        "t": "Mientras más personas vayan en bicicleta, menos carros habrá en la pista, y el carril que se quitó se recuperará en menos tráfico."
+      }
+    ],
+    [
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "Estoy de acuerdo en que el ciclista necesita un lugar seguro y en que hoy no lo tiene."
+      },
+      {
+        "id": "o7",
+        "rol": "contraste",
+        "t": "Pero en avenidas donde ya avanzamos a paso de tortuga, quitar un carril no saca a nadie de su auto de un día para otro: solo junta a todos en menos espacio."
+      },
+      {
+        "id": "o8",
+        "rol": "apoyo",
+        "t": "En ese atasco quedarían también atrapados los buses llenos de pasajeros y las ambulancias."
+      },
+      {
+        "id": "o9",
+        "rol": "principal",
+        "t": "Prefiero las ciclovías en calles paralelas, más tranquilas, que lleven al mismo destino sin quitarles espacio a las avenidas principales."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "controversia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "¿Sobre qué discuten los autores de los dos textos?",
+      "alternativas": [
+        {
+          "t": "Sobre si conviene quitarles un carril a las avenidas para hacer ciclovías.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o9"
+          ],
+          "explicacion": "El texto A pide ceder un carril de las avenidas (oración 1); el B prefiere las ciclovías en calles paralelas, sin quitarles espacio a las avenidas (oración 9)."
+        },
+        {
+          "t": "Sobre si el ciclista necesita en la ciudad un lugar seguro por donde pueda circular.",
+          "codigo": "RV61",
+          "origen": "o6",
+          "explicacion": "En eso coinciden: el texto A describe el peligro (oración 2) y el B dice que está de acuerdo (oración 6)."
+        },
+        {
+          "t": "Sobre si una bicicleta ocupa menos espacio que un auto, no hace ruido y no echa humo.",
+          "codigo": "RV60",
+          "origen": "o3",
+          "explicacion": "Es un argumento del texto A (oración 3). El B no lo discute; no es el eje del debate."
+        },
+        {
+          "t": "Sobre cómo reducir la contaminación del aire en todas las ciudades grandes del Perú.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos discuten dónde poner las ciclovías de Lima."
+        },
+        {
+          "t": "Sobre si se debe prohibir que los autos particulares entren al centro de la ciudad.",
+          "codigo": "RV33",
+          "explicacion": "Ninguno lo propone: el texto A pide un carril para las bicicletas, no prohibir los autos."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "compatibilidad",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Lo que aleja a muchos de la bicicleta es el miedo, más que la falta de ganas.",
+        "aceptada": "A",
+        "codigos": {
+          "B": "RV59",
+          "ambos": "RV60",
+          "ninguno": null
+        },
+        "explicacion": "Lo dice el texto A en la oración 4: mucha gente no pedalea porque tiene miedo, no porque no quiera.",
+        "explicaciones": {
+          "B": "El texto B no habla de por qué la gente no usa la bicicleta: habla del atasco que causaría quitar un carril. La idea es del A (oración 4).",
+          "ambos": "Solo el texto A lo sostiene (oración 4). El B acepta que el ciclista no tiene un lugar seguro, pero no habla del miedo de quienes no pedalean.",
+          "ninguno": "Sí lo sostiene alguien: el texto A, en la oración 4."
+        }
+      },
+      "enunciado": "Es compatible con lo que sostiene la autora del texto A afirmar que",
+      "alternativas": [
+        {
+          "t": "quitarles un carril a las avenidas solo junta a todos los carros en menos espacio.",
+          "codigo": "RV59",
+          "origen": "o7",
+          "explicacion": "Es el argumento del texto B (oración 7). El A dice lo contrario: el carril perdido se recuperará en menos tráfico (oración 5)."
+        },
+        {
+          "t": "a la mayoría de la gente no le interesa pedalear, aunque tenga un carril protegido.",
+          "codigo": "RV9",
+          "origen": "o4",
+          "explicacion": "Choca con la oración 4: con un carril protegido, mucha gente se animaría."
+        },
+        {
+          "t": "algunas personas usarían la bicicleta si se sintieran seguras.",
+          "correcta": true,
+          "evidencia": [
+            "o4"
+          ],
+          "explicacion": "Está de acuerdo con la oración 4: mucha gente no pedalea por miedo y, con un carril protegido, se animaría."
+        },
+        {
+          "t": "todos los limeños dejarían su auto en casa si se construyeran ciclovías en cada avenida.",
+          "codigo": "RV11",
+          "origen": "o5",
+          "explicacion": "El «todos» dice más que el texto A, que habla de «menos carros» (oración 5), no de que nadie maneje."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto A, el verbo CEDER («ceder un carril de los carros») significa",
+      "alternativas": [
+        {
+          "t": "romperse.",
+          "codigo": "RV18",
+          "explicacion": "Es un sentido común de «ceder» (una soga o un techo que cede), pero aquí nada se rompe: se habla de dar un espacio."
+        },
+        {
+          "t": "prestar.",
+          "codigo": "RV19",
+          "explicacion": "Está cerca, pero prestar es dar algo para que lo devuelvan, y el texto A quiere que el carril quede para las bicicletas."
+        },
+        {
+          "t": "separar.",
+          "codigo": "RV5",
+          "origen": "o1",
+          "explicacion": "Es una palabra vecina de la misma oración («separadas por un sardinel»), que habla de cómo serían las ciclovías."
+        },
+        {
+          "t": "entregar.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o5"
+          ],
+          "explicacion": "Las avenidas darían un carril a las bicicletas: es «el carril que se quitó» de la oración 5."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "dialogo",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Hoy el ciclista no tiene en la ciudad un lugar seguro por donde ir.",
+        "aceptada": "ambos",
+        "codigos": {
+          "A": "RV61",
+          "B": "RV61",
+          "ninguno": null
+        },
+        "explicacion": "Los dos lo sostienen: el texto A lo muestra con la pista y la vereda (oración 2) y el B lo dice con todas sus palabras (oración 6).",
+        "explicaciones": {
+          "A": "El texto A lo dice (oración 2), pero el B también: está de acuerdo en que el ciclista necesita un lugar seguro y hoy no lo tiene (oración 6).",
+          "B": "El texto B lo dice en la oración 6, pero el A lo muestra antes, en la oración 2.",
+          "ninguno": "Los dos lo sostienen: el texto A en la oración 2 y el B en la oración 6."
+        }
+      },
+      "enunciado": "Ante la propuesta del texto A, el autor del texto B le objetaría que",
+      "alternativas": [
+        {
+          "t": "el ciclista no necesita en Lima ningún lugar especial para circular con seguridad.",
+          "codigo": "RV61",
+          "origen": "o6",
+          "explicacion": "En eso no discrepan: el texto B está de acuerdo en que el ciclista necesita un lugar seguro (oración 6)."
+        },
+        {
+          "t": "quitar un carril no reduce los autos de inmediato y empeora el atasco.",
+          "correcta": true,
+          "evidencia": [
+            "o7",
+            "o8"
+          ],
+          "explicacion": "Es su objeción: nadie deja el auto de un día para otro y todos quedan juntos en menos espacio, incluidos buses y ambulancias (oraciones 7 y 8)."
+        },
+        {
+          "t": "mucha gente no se sube a una bicicleta porque tiene miedo de los carros en la pista.",
+          "codigo": "RV59",
+          "origen": "o4",
+          "explicacion": "Es un argumento del texto A (oración 4); no sirve al B para objetarle."
+        },
+        {
+          "t": "las bicicletas eléctricas cuestan mucho más que las bicicletas comunes en las tiendas de Lima.",
+          "codigo": "RV8",
+          "explicacion": "El texto B no habla de precios de bicicletas. Es un dato de fuera del texto, sea cierto o no."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Lo mejor es que las bicicletas vayan por las veredas.",
+        "aceptada": "ninguno",
+        "codigos": {
+          "A": "RV5",
+          "B": "RV7",
+          "ambos": null
+        },
+        "explicacion": "Ninguno lo sostiene: el texto A dice que en la vereda el ciclista estorba a los peatones (oración 2) y el B propone ciclovías en calles paralelas (oración 9).",
+        "explicaciones": {
+          "A": "El texto A menciona la vereda, pero para decir que allí el ciclista estorba a los peatones (oración 2).",
+          "B": "El texto B no habla de veredas: propone ciclovías en calles paralelas (oración 9).",
+          "ambos": "Ninguno lo propone. El texto A rechaza la vereda (oración 2) y el B prefiere las calles paralelas (oración 9)."
+        }
+      },
+      "enunciado": "Del texto B se deduce que su autor",
+      "alternativas": [
+        {
+          "t": "rechaza cualquier ciclovía en la ciudad, sea en una avenida o en una calle.",
+          "codigo": "RV33",
+          "explicacion": "El texto B no rechaza las ciclovías: propone hacerlas en calles paralelas (oración 9)."
+        },
+        {
+          "t": "cree que con un carril protegido mucha más gente se animaría a usar la bicicleta.",
+          "codigo": "RV59",
+          "origen": "o4",
+          "explicacion": "Esa es la idea del texto A (oración 4); el B no la comparte ni la discute."
+        },
+        {
+          "t": "no se opone a las ciclovías, sino al lugar donde se las quiere poner.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o9"
+          ],
+          "explicacion": "Acepta que el ciclista necesita un lugar seguro (oración 6) y solo discute dónde: en calles paralelas, no en las avenidas (oración 9)."
+        },
+        {
+          "t": "piensa que las ambulancias deberían tener un carril propio en todas las avenidas de Lima.",
+          "codigo": "RV7",
+          "origen": "o8",
+          "explicacion": "Va más allá del texto: el B menciona las ambulancias como parte del atasco (oración 8), pero no propone un carril para ellas."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-12",
+  "hechos": [],
+  "revision": {
+    "por": "subagente (revisor a ciegas, rutina verbal-mas)",
+    "fecha": "2026-11-12",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidieron todos los ítems de t138. Sin cambios: en p3, 'prestar' queda como distractor porque el texto habla de que el carril 'se quitó' (oración 5) y no de devolverlo. Sin hechos externos."
+  }
+}

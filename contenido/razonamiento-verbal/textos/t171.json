@@ -1,0 +1,269 @@
+{
+  "id": "t171",
+  "version": 1,
+  "titulo": "A New App for the Bus",
+  "tema": "Lectura en inglés · reseña de una aplicación inventada que muestra dónde están los buses de Lima",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "idioma": "en",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "I travel by bus across Lima every day, so I was happy to try RutaYa, a new app that shows on a map where the buses are."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "The idea is simple: you choose your stop, and the app tells you how many minutes you have to wait."
+      },
+      {
+        "id": "o3",
+        "rol": "apoyo",
+        "t": "During my first week, the information was right most of the time, and I stopped arriving at the bus stop too early."
+      },
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "The screen is clean, and the buttons are big enough to use while standing on a crowded bus."
+      }
+    ],
+    [
+      {
+        "id": "o5",
+        "rol": "contraste",
+        "t": "Unfortunately, the app has two weaknesses."
+      },
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "First, it uses a lot of battery, so my phone was almost empty by the evening."
+      },
+      {
+        "id": "o7",
+        "rol": "apoyo",
+        "t": "Second, it only covers some of the main avenues, and it does not show small streets in districts far from the center."
+      },
+      {
+        "id": "o8",
+        "rol": "detalle",
+        "t": "The creators say that more routes will be added soon, but I have not seen them yet."
+      }
+    ],
+    [
+      {
+        "id": "o9",
+        "rol": "principal",
+        "t": "Overall, RutaYa is a useful tool for people who ride the same main routes every day, although it still needs work."
+      },
+      {
+        "id": "o10",
+        "rol": "detalle",
+        "t": "(RutaYa is an invented app, created only for this exercise.)"
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "contexto",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "Where would this text most likely be published?",
+      "alternativas": [
+        {
+          "t": "In the technology section of a magazine or a blog for commuters.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o9"
+          ],
+          "explicacion": "Es la opinión de un usuario sobre una aplicación nueva, dirigida a quienes viajan en bus: es una reseña, propia de una sección de tecnología o de un blog."
+        },
+        {
+          "t": "In a government law about public transport in Lima.",
+          "codigo": "RV49",
+          "explicacion": "Una ley no habla en primera persona («I travel…») ni da opiniones sobre una app."
+        },
+        {
+          "t": "On a sign inside a bus, next to the driver's seat.",
+          "codigo": "RV7",
+          "explicacion": "Habla de buses y de pasajeros, pero un letrero no contaría la experiencia de una semana ni pondría defectos y recomendaciones."
+        },
+        {
+          "t": "In a scientific study about air pollution in Lima's streets.",
+          "codigo": "RV8",
+          "explicacion": "El texto no presenta mediciones ni método científico: es una opinión personal sobre una aplicación."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "In sentence 3, the word RIGHT means",
+      "alternativas": [
+        {
+          "t": "correct.",
+          "correcta": true,
+          "evidencia": [
+            "o3"
+          ],
+          "explicacion": "«The information was right» quiere decir que los datos eran correctos, que acertaban."
+        },
+        {
+          "t": "on the side opposite to the left.",
+          "codigo": "RV18",
+          "explicacion": "Es el significado más común de «right», pero aquí no habla de lados: habla de si la información acertaba."
+        },
+        {
+          "t": "fair, as the law says it should be.",
+          "codigo": "RV19",
+          "explicacion": "«Right» también puede ser «justo», pero la oración habla de si los minutos de espera eran exactos, no de justicia."
+        },
+        {
+          "t": "allowed by the owner of the app.",
+          "codigo": "RV23",
+          "explicacion": "Encaja con un tema de aplicaciones, pero la oración dice que la información era acertada, no que estuviera permitida."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, lee esta afirmación y di qué relación tiene con el texto.",
+        "sonda": "The reviewer would like the app to cover more streets.",
+        "clase": "se-deduce",
+        "codigos": {
+          "lo-dice": "RV58",
+          "no-se-sabe": "RV34",
+          "lo-contradice": "RV9"
+        },
+        "explicacion": "El autor presenta como debilidad que solo cubre algunas avenidas (oración 7) y cuenta que espera las rutas nuevas que prometen los creadores sin haberlas visto aún (oración 8). De ahí se deduce que quiere más cobertura, aunque no lo escribe así.",
+        "explicaciones": {
+          "lo-dice": "El texto no escribe «me gustaría que cubriera más»: describe un defecto, y de ahí se deduce el deseo.",
+          "no-se-sabe": "Se puede saber: quien llama debilidad a una cobertura limitada y espera las rutas nuevas (oraciones 7 y 8) quiere más cobertura.",
+          "lo-contradice": "Nada en el texto afirma que le guste la cobertura actual; la señala como debilidad."
+        }
+      },
+      "enunciado": "If the app also showed small streets in districts far from the center, the reviewer would probably",
+      "alternativas": [
+        {
+          "t": "be more positive about the app.",
+          "correcta": true,
+          "evidencia": [
+            "o7",
+            "o9"
+          ],
+          "explicacion": "Una de las dos debilidades que señala es justamente esa (oración 7); si se corrigiera, su opinión mejoraría, aunque siguiera el problema de la batería."
+        },
+        {
+          "t": "still say that it only covers some main avenues.",
+          "codigo": "RV63",
+          "origen": "o7",
+          "explicacion": "Vuelve a afirmar lo que la condición cambia. Esa cobertura limitada es la debilidad de la oración 7."
+        },
+        {
+          "t": "say that the app has no weaknesses at all after that change.",
+          "codigo": "RV11",
+          "explicacion": "Exagera: quedaría la otra debilidad, el gasto de batería (oración 6)."
+        },
+        {
+          "t": "stop traveling by bus in the city, and walk instead.",
+          "codigo": "RV7",
+          "explicacion": "Nada en el texto sugiere que un cambio en la aplicación lo haga dejar el bus."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "Which statement is incompatible with the review?",
+      "alternativas": [
+        {
+          "t": "The reviewer thinks the buttons are too small to use on a bus.",
+          "correcta": true,
+          "evidencia": [
+            "o4"
+          ],
+          "explicacion": "Choca con la oración 4: el autor dice que los botones son lo bastante grandes para usarlos de pie en un bus lleno."
+        },
+        {
+          "t": "The app does not work well for every route in the city.",
+          "codigo": "RV10",
+          "origen": "o7",
+          "explicacion": "Es compatible: la oración 7 dice que solo cubre algunas avenidas y no las calles pequeñas de distritos lejanos."
+        },
+        {
+          "t": "The reviewer sometimes received wrong waiting times.",
+          "codigo": "RV8",
+          "origen": "o3",
+          "explicacion": "Es compatible: la oración 3 dice que la información fue correcta «most of the time», no siempre."
+        },
+        {
+          "t": "The app helped the reviewer avoid waiting too long at the stop.",
+          "codigo": "RV5",
+          "origen": "o3",
+          "explicacion": "Es compatible: la oración 3 dice que dejó de llegar demasiado temprano a la parada."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "intencion",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "What is the author's main purpose?",
+      "alternativas": [
+        {
+          "t": "To give an opinion about a new app, with good and bad points.",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "o9"
+          ],
+          "explicacion": "Cuenta qué hace la app, sus ventajas (oraciones 3 y 4) y sus debilidades (oraciones 5 a 7) y termina con una valoración: es una reseña."
+        },
+        {
+          "t": "To explain to readers how the technology behind bus maps works.",
+          "codigo": "RV14",
+          "explicacion": "Menciona un mapa de buses, pero no explica cómo funciona la tecnología: evalúa una aplicación concreta."
+        },
+        {
+          "t": "To persuade readers to delete the app because it wastes battery.",
+          "codigo": "RV53",
+          "origen": "o6",
+          "explicacion": "La batería es una de las debilidades (oración 6), no la conclusión: el autor termina diciendo que la app es útil (oración 9)."
+        },
+        {
+          "t": "To tell how the author's morning trip to work usually goes.",
+          "codigo": "RV13",
+          "explicacion": "La oración 1 cuenta que viaja a diario, pero solo para presentar su experiencia con la aplicación."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-12",
+  "hechos": [
+    {
+      "afirmacion": "La aplicación RutaYa y su reseña son inventadas para este ejercicio, como dice la oración 10; no existe una app real con ese nombre en el texto.",
+      "fuente": "Texto propio (ejercicio de lectura)."
+    }
+  ],
+  "revision": {
+    "por": "subagente (revisor a ciegas, rutina verbal-mas)",
+    "fecha": "2026-11-12",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidieron 6 de 6 ítems. Cambios: p4 reemplaza el distractor «gratis» (no se sabe) por una afirmación compatible con la oración 3; el previo de p3 queda en «se-deduce» apoyado en las oraciones 7 y 8 (debilidad y espera de rutas nuevas), con la explicación reescrita. Hechos: app inventada, de memoria."
+  }
+}

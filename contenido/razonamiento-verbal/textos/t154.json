@@ -1,0 +1,316 @@
+{
+  "id": "t154",
+  "version": 1,
+  "titulo": "¿Cuatro días de trabajo o cinco?",
+  "tema": "Trabajo · la semana laboral de cuatro días",
+  "grado": 4,
+  "dificultad": 1,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    {
+      "id": "A",
+      "desde": 0,
+      "firma": "Una gerente de una empresa de servicios"
+    },
+    {
+      "id": "B",
+      "desde": 1,
+      "firma": "Un dueño de una ferretería"
+    }
+  ],
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "principal",
+        "t": "La semana laboral de cuatro días puede darle al país trabajadores más descansados sin quitarle producción."
+      },
+      {
+        "id": "o2",
+        "rol": "apoyo",
+        "t": "Un trabajador cansado se equivoca más y rinde menos; en cambio, quien descansa tres días duerme mejor y llega con más ánimo."
+      },
+      {
+        "id": "o3",
+        "rol": "apoyo",
+        "t": "Además, quien sabe que tiene menos horas para cumplir se distrae menos y aprovecha mejor cada una."
+      },
+      {
+        "id": "o4",
+        "rol": "principal",
+        "t": "Por eso las empresas deberían probar la semana de cuatro días antes de rechazarla."
+      }
+    ],
+    [
+      {
+        "id": "o5",
+        "rol": "apoyo",
+        "t": "Concedo que un trabajador cansado rinde menos y que el descanso importa."
+      },
+      {
+        "id": "o6",
+        "rol": "contraste",
+        "t": "Pero en un negocio como el mío, que vende todos los días, un día cerrado es un día sin ingresos."
+      },
+      {
+        "id": "o7",
+        "rol": "apoyo",
+        "t": "Una oficina puede cumplir sus tareas en menos horas; una tienda necesita tener la puerta abierta para vender."
+      },
+      {
+        "id": "o8",
+        "rol": "principal",
+        "t": "Por eso la semana de cuatro días no puede ser una regla para todos: dejaría sin ingresos a los negocios que viven de atender cada día."
+      },
+      {
+        "id": "o9",
+        "rol": "detalle",
+        "t": "Lo digo por experiencia: en mi local, los sábados y domingos son los días de más ventas."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "controversia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Quien tiene menos horas para cumplir se distrae menos.",
+        "aceptada": "A",
+        "codigos": {
+          "B": "RV59",
+          "ambos": "RV60",
+          "ninguno": null
+        },
+        "explicacion": "Lo dice el texto A en la oración 3: quien sabe que tiene menos horas para cumplir se distrae menos y aprovecha mejor cada una.",
+        "explicaciones": {
+          "B": "El texto B no habla de la distracción: habla de los ingresos de un negocio que vende todos los días. La idea es del texto A (oración 3).",
+          "ambos": "Solo el texto A lo sostiene (oración 3). El B concede que el descanso importa (oración 5), pero no dice nada de distraerse menos.",
+          "ninguno": "Sí lo sostiene alguien: el texto A, en la oración 3."
+        }
+      },
+      "enunciado": "¿Cuál es el eje del debate entre los dos textos?",
+      "alternativas": [
+        {
+          "t": "Si un trabajador cansado rinde menos que uno que ha descansado lo suficiente.",
+          "codigo": "RV61",
+          "origen": "o5",
+          "explicacion": "En eso coinciden: el texto A lo dice en la oración 2 y el B lo concede en la oración 5."
+        },
+        {
+          "t": "Si quien tiene menos horas para cumplir se distrae menos y aprovecha mejor cada una de ellas.",
+          "codigo": "RV60",
+          "origen": "o3",
+          "explicacion": "Es un argumento del texto A (oración 3). El B no lo discute; el eje tiene que ser algo sobre lo que los dos toman posición."
+        },
+        {
+          "t": "Si la semana de cuatro días puede ser una regla para todos los negocios.",
+          "correcta": true,
+          "evidencia": [
+            "o4",
+            "o8"
+          ],
+          "explicacion": "El texto A pide que las empresas la prueben (oraciones 1 y 4); el B dice que no puede ser una regla para todos (oración 8)."
+        },
+        {
+          "t": "Si una oficina puede cumplir sus tareas en menos horas de las que se trabajan hoy.",
+          "codigo": "RV1",
+          "origen": "o7",
+          "explicacion": "Es un detalle del ejemplo del texto B (oración 7), no lo que se discute."
+        },
+        {
+          "t": "Si el trabajo debe ocupar un lugar central en la vida de las personas.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos discuten una medida concreta, la semana de cuatro días, y no el lugar del trabajo en la vida."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En la oración 2 del texto A, el verbo RINDE («rinde menos») significa",
+      "alternativas": [
+        {
+          "t": "se entrega.",
+          "codigo": "RV18",
+          "explicacion": "Es el sentido de «rendirse» (darse por vencido), que se parece en la forma, pero un trabajador cansado no se entrega: produce menos."
+        },
+        {
+          "t": "gana.",
+          "codigo": "RV19",
+          "explicacion": "Se asocia con el trabajo y el dinero, pero el texto no habla de cuánto cobra el trabajador, sino de cuánto logra hacer."
+        },
+        {
+          "t": "produce.",
+          "correcta": true,
+          "evidencia": [
+            "o2"
+          ],
+          "explicacion": "Se opone a quien descansa y «llega con más ánimo»: el trabajador cansado logra menos en el mismo tiempo."
+        },
+        {
+          "t": "se equivoca.",
+          "codigo": "RV5",
+          "origen": "o2",
+          "explicacion": "Repite una palabra de la misma oración, pero es otra consecuencia del cansancio, no lo que significa «rinde»."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Un negocio que vende todos los días pierde ingresos cuando cierra un día.",
+        "aceptada": "B",
+        "codigos": {
+          "A": "RV59",
+          "ambos": "RV60",
+          "ninguno": null
+        },
+        "explicacion": "Lo dice el texto B en la oración 6: en un negocio que vende todos los días, un día cerrado es un día sin ingresos.",
+        "explicaciones": {
+          "A": "El texto A no habla de negocios que venden todos los días: habla del descanso y de la producción. La idea es del texto B (oración 6).",
+          "ambos": "Solo el texto B lo sostiene (oración 6). El A pide que las empresas prueben la medida, pero no menciona los días cerrados.",
+          "ninguno": "Sí lo sostiene alguien: el texto B, en la oración 6."
+        }
+      },
+      "enunciado": "Es incompatible con lo que sostiene el autor del texto B afirmar que",
+      "alternativas": [
+        {
+          "t": "las ferreterías suelen vender más los fines de semana que entre semana.",
+          "codigo": "RV36",
+          "explicacion": "El texto B lo dice de su local (oración 9) y no lo contradice: incompatible es lo que choca con lo que dice, no lo que se suma a lo que dice."
+        },
+        {
+          "t": "no todos los negocios pueden cerrar un día más sin perder ingresos.",
+          "codigo": "RV10",
+          "explicacion": "Parece contradecir al autor por el «no», pero dice casi lo mismo que él en las oraciones 6 y 8."
+        },
+        {
+          "t": "un trabajador que descansa tres días duerme mejor y llega con más ánimo.",
+          "codigo": "RV59",
+          "origen": "o2",
+          "explicacion": "Es una idea del texto A, pero el B no la contradice: concede que el descanso importa (oración 5)."
+        },
+        {
+          "t": "una tienda que cierra un día más no pierde ingresos por ello.",
+          "correcta": true,
+          "evidencia": [
+            "o6"
+          ],
+          "explicacion": "Choca con la oración 6: para el autor del texto B, un día cerrado es un día sin ingresos."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "sintesis",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Un trabajador cansado rinde menos.",
+        "aceptada": "ambos",
+        "codigos": {
+          "A": "RV61",
+          "B": "RV61",
+          "ninguno": null
+        },
+        "explicacion": "Los dos lo dicen: el texto A en la oración 2 y el B lo concede en la oración 5.",
+        "explicaciones": {
+          "A": "El texto A lo dice (oración 2), pero el B también lo acepta: «concedo que un trabajador cansado rinde menos» (oración 5).",
+          "B": "El texto B lo concede en la oración 5, pero el A lo dice primero, en la oración 2.",
+          "ninguno": "Los dos lo sostienen: el texto A en la oración 2 y el B en la oración 5."
+        }
+      },
+      "enunciado": "¿Qué enunciado integra mejor lo que plantean los dos textos?",
+      "alternativas": [
+        {
+          "t": "Las empresas deben probar la semana de cuatro días, pues así los negocios que venden todos los días ganarán más.",
+          "codigo": "RV44",
+          "explicacion": "Une las ideas con una relación que el texto no plantea: el B dice que esos negocios perderían ingresos, no que ganarían más."
+        },
+        {
+          "t": "La semana de cuatro días mejora el ánimo de los trabajadores, y por eso debe imponerse a todas las empresas.",
+          "codigo": "RV62",
+          "explicacion": "La primera mitad es del texto A, pero imponerla a todas contradice la oración 8 del B."
+        },
+        {
+          "t": "El descanso mejora el trabajo, pero no todos los negocios pueden cerrar un día sin perder ingresos.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o5",
+            "o6",
+            "o8"
+          ],
+          "explicacion": "Junta lo que ambos aceptan, que el descanso ayuda (oraciones 2 y 5), con la reserva del B sobre los negocios que viven de atender cada día (oraciones 6 y 8)."
+        },
+        {
+          "t": "Lo primero que debe hacer una empresa es probar la semana de cuatro días antes de rechazarla.",
+          "codigo": "RV60",
+          "origen": "o4",
+          "explicacion": "Es solo la propuesta del texto A (oración 4); no integra la reserva del B."
+        },
+        {
+          "t": "El trabajo cambiará en todo el mundo durante las próximas décadas.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general y no sale de los textos, que hablan de una medida concreta."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Si una ferretería lograra abrir seis días a la semana con trabajadores que descansan por turnos, el autor del texto B probablemente",
+      "alternativas": [
+        {
+          "t": "seguiría pensando que ese descanso extra le haría perder ingresos.",
+          "codigo": "RV63",
+          "origen": "o6",
+          "explicacion": "La condición cambió: con la tienda abierta seis días por turnos no hay un día cerrado, así que la objeción de la oración 6 ya no se aplica."
+        },
+        {
+          "t": "aceptaría que la semana de cuatro días sirve para todos los negocios sin excepción.",
+          "codigo": "RV11",
+          "explicacion": "«Todos» y «sin excepción» dicen más de lo que el texto permite: el autor solo vería resuelto el problema de ese negocio."
+        },
+        {
+          "t": "pediría que el Estado pague los sueldos de los trabajadores que descansan un día más.",
+          "codigo": "RV7",
+          "explicacion": "Va más allá de lo que el texto permite concluir: el autor no habla de que el Estado pague sueldos."
+        },
+        {
+          "t": "dejaría de ver en el descanso extra un riesgo para sus ingresos.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o8"
+          ],
+          "explicacion": "Su objeción es que un día cerrado es un día sin ingresos (oración 6); con la tienda abierta por turnos, ese riesgo desaparece."
+        },
+        {
+          "t": "se opondría a que los trabajadores descansen más de dos días.",
+          "codigo": "RV33",
+          "explicacion": "El autor no toma esa postura: concede que el descanso importa (oración 5)."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-12",
+  "hechos": [],
+  "revision": {
+    "por": "subagente (revisor a ciegas, rutina verbal-mas)",
+    "fecha": "2026-11-12",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidió 40 de 40; dudas fuertes: p5 (el distractor «seguiría diciendo que un día cerrado es un día sin ingresos» era verdad general que B repetiría) y p3 (la venta por internet podía leerse como choque con «la puerta abierta»). Cambios: p5 distractor ahora «seguiría pensando que ese descanso extra le haría perder ingresos» (queda fuera por la condición de turnos); p3 el distractor neutro pasa a una afirmación compatible sobre fines de semana. Sin hechos externos que verificar."
+  }
+}

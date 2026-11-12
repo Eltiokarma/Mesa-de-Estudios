@@ -1,0 +1,309 @@
+{
+  "id": "t144",
+  "version": 1,
+  "titulo": "El uniforme escolar: ¿iguala o pesa?",
+  "tema": "Educación · uniforme en el colegio público",
+  "grado": 4,
+  "dificultad": 1,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    {
+      "id": "A",
+      "desde": 0,
+      "firma": "Una directora de un colegio público"
+    },
+    {
+      "id": "B",
+      "desde": 1,
+      "firma": "Un padre de familia"
+    }
+  ],
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "principal",
+        "t": "En un colegio público, el uniforme obligatorio ayuda a que ningún alumno se sienta menos que otro."
+      },
+      {
+        "id": "o2",
+        "rol": "apoyo",
+        "t": "Las burlas por la ropa son un problema que el colegio debe atender, y cuando todos visten igual nadie se burla de la ropa barata ni presume la de marca."
+      },
+      {
+        "id": "o3",
+        "rol": "apoyo",
+        "t": "Además, el uniforme ahorra discusiones en casa cada mañana y permite reconocer de inmediato a los alumnos del colegio en la calle."
+      },
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "Es verdad que cuesta, pero se compra una vez al año y dura más que la ropa de todos los días."
+      },
+      {
+        "id": "o5",
+        "rol": "principal",
+        "t": "Por eso creo que debe seguir siendo obligatorio."
+      }
+    ],
+    [
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "Coincido en que las burlas por la ropa hacen daño y en que la escuela debe evitarlas."
+      },
+      {
+        "id": "o7",
+        "rol": "contraste",
+        "t": "Pero el uniforme no borra las diferencias: se notan igual en las zapatillas, en la mochila y en la chompa gastada que pasó de un hermano a otro."
+      },
+      {
+        "id": "o8",
+        "rol": "apoyo",
+        "t": "Y para una familia con tres hijos, comprar en marzo tres uniformes, tres buzos y tres pares de zapatos es un gasto fuerte, justo cuando también hay que pagar los útiles."
+      },
+      {
+        "id": "o9",
+        "rol": "apoyo",
+        "t": "Hay niños que faltan los primeros días de clases porque sus padres todavía no completan el uniforme."
+      },
+      {
+        "id": "o10",
+        "rol": "principal",
+        "t": "Prefiero que el uniforme sea voluntario y que el colegio enfrente las burlas con normas de convivencia, no con una compra obligatoria."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "controversia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "¿Cuál es el tema en debate entre los dos textos?",
+      "alternativas": [
+        {
+          "t": "Si el uniforme debe ser obligatorio en el colegio público.",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "o10"
+          ],
+          "explicacion": "El texto A dice que debe seguir siendo obligatorio (oración 5) y el B prefiere que sea voluntario (oración 10)."
+        },
+        {
+          "t": "Si las burlas por la ropa barata o de marca les hacen daño a los alumnos.",
+          "codigo": "RV61",
+          "origen": "o6",
+          "explicacion": "En eso coinciden: el texto A lo da por supuesto en la oración 2 y el B lo dice en la oración 6 («coincido en que…»)."
+        },
+        {
+          "t": "Si el uniforme permite reconocer en la calle a los alumnos de un colegio.",
+          "codigo": "RV60",
+          "origen": "o3",
+          "explicacion": "Es un argumento del texto A (oración 3). El texto B no lo discute; el tema del debate es algo en lo que los dos toman posición."
+        },
+        {
+          "t": "Si los niños deberían usar zapatillas en lugar de zapatos.",
+          "codigo": "RV1",
+          "origen": "o7",
+          "explicacion": "Las zapatillas aparecen como ejemplo en la oración 7, pero nadie discute qué calzado usar."
+        },
+        {
+          "t": "Cómo mejorar la calidad de la educación pública en el Perú.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos discuten solo si el uniforme debe ser obligatorio."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "postura",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "El precio del uniforme se compensa con lo mucho que dura.",
+        "aceptada": "A",
+        "codigos": {
+          "B": "RV59",
+          "ambos": "RV60",
+          "ninguno": null
+        },
+        "explicacion": "Lo sostiene el texto A en la oración 4: cuesta, pero se compra una vez al año y dura más que la ropa diaria.",
+        "explicaciones": {
+          "B": "El texto B ve el uniforme como un gasto fuerte para las familias (oración 8); la idea de que el precio se compensa es del texto A (oración 4).",
+          "ambos": "Solo el texto A lo sostiene. El B insiste en lo que cuesta, sobre todo con varios hijos (oración 8).",
+          "ninguno": "Sí lo sostiene alguien: el texto A, en la oración 4."
+        }
+      },
+      "enunciado": "La autora del texto A sostiene que",
+      "alternativas": [
+        {
+          "t": "el uniforme obligatorio evita que un alumno se sienta menos que otro.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o2"
+          ],
+          "explicacion": "Es su tesis, en la oración 1, explicada en la 2: si todos visten igual, nadie se burla de la ropa del otro."
+        },
+        {
+          "t": "las diferencias entre los alumnos se notan igual en las zapatillas y en la mochila.",
+          "codigo": "RV59",
+          "origen": "o7",
+          "explicacion": "Ese es el argumento del texto B (oración 7), que la autora del A no comparte."
+        },
+        {
+          "t": "el uniforme evita las burlas, aunque debería ser voluntario para no obligar a las familias a gastar.",
+          "codigo": "RV62",
+          "origen": "o10",
+          "explicacion": "La primera parte es suya, pero la segunda es la propuesta del texto B (oración 10). El A quiere que siga siendo obligatorio (oración 5)."
+        },
+        {
+          "t": "con el uniforme desaparecen para siempre todas las diferencias entre los alumnos de un colegio.",
+          "codigo": "RV11",
+          "origen": "o2",
+          "explicacion": "El texto A habla de que nadie se burle de la ropa, no de que desaparezcan para siempre todas las diferencias; «todas» y «para siempre» dicen más que el texto."
+        },
+        {
+          "t": "el Estado debería regalar el uniforme a los alumnos de los colegios públicos.",
+          "codigo": "RV33",
+          "explicacion": "El texto A no propone eso: dice que el uniforme cuesta, pero que dura, y que debe seguir siendo obligatorio."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "coincidencia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Que un alumno reciba burlas por su ropa es un problema que el colegio tiene que atender.",
+        "aceptada": "ambos",
+        "codigos": {
+          "A": "RV61",
+          "B": "RV61",
+          "ninguno": null
+        },
+        "explicacion": "Los dos lo sostienen: el texto A defiende el uniforme para que nadie se burle de la ropa (oraciones 1 y 2), y el B dice que las burlas hacen daño y que la escuela debe evitarlas (oración 6).",
+        "explicaciones": {
+          "A": "El texto A lo sostiene (oraciones 1 y 2), pero el B también: «coincido en que las burlas por la ropa hacen daño» (oración 6).",
+          "B": "El texto B lo dice en la oración 6, pero el A también: para eso defiende el uniforme (oraciones 1 y 2).",
+          "ninguno": "Los dos lo sostienen: el texto A en las oraciones 1 y 2, y el B en la oración 6."
+        }
+      },
+      "enunciado": "¿En qué coinciden ambos autores?",
+      "alternativas": [
+        {
+          "t": "En que las burlas por la ropa son un daño que el colegio debe evitar.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o6"
+          ],
+          "explicacion": "El texto A busca que nadie se burle de la ropa (oración 2) y el B dice que esas burlas hacen daño y que la escuela debe evitarlas (oración 6). Discrepan en cómo hacerlo."
+        },
+        {
+          "t": "En que el uniforme debe seguir siendo obligatorio en los colegios públicos.",
+          "codigo": "RV60",
+          "origen": "o5",
+          "explicacion": "Eso lo sostiene solo el texto A (oración 5). El B prefiere que sea voluntario (oración 10)."
+        },
+        {
+          "t": "En que las burlas hacen daño y el uniforme las elimina por completo dentro del aula.",
+          "codigo": "RV62",
+          "origen": "o7",
+          "explicacion": "La primera mitad es común, pero la segunda la niega el texto B: las diferencias se siguen notando (oración 7)."
+        },
+        {
+          "t": "En que los uniformes deberían hacerse en talleres del barrio para que cuesten menos.",
+          "codigo": "RV8",
+          "explicacion": "Ninguno de los textos habla de dónde se hacen los uniformes. Es una idea de fuera del texto."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto B, el adjetivo FUERTE («un gasto fuerte») significa",
+      "alternativas": [
+        {
+          "t": "considerable.",
+          "correcta": true,
+          "evidencia": [
+            "o8"
+          ],
+          "explicacion": "Comprar tres uniformes, tres buzos y tres pares de zapatos a la vez es un gasto grande para la familia."
+        },
+        {
+          "t": "resistente.",
+          "codigo": "RV18",
+          "explicacion": "Es un sentido común de «fuerte» (una tela fuerte, una mesa fuerte), pero aquí se habla de cuánto dinero se gasta."
+        },
+        {
+          "t": "inesperado.",
+          "codigo": "RV19",
+          "explicacion": "Se asocia con un gasto que golpea, pero el texto no dice que sea una sorpresa: dice que es grande y que coincide con los útiles."
+        },
+        {
+          "t": "obligatorio.",
+          "codigo": "RV5",
+          "origen": "o10",
+          "explicacion": "Repite una palabra de la oración 10 («una compra obligatoria»), pero «fuerte» dice cuánto cuesta, no si se exige."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "compatibilidad",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Es compatible con lo que sostiene el autor del texto B afirmar que",
+      "alternativas": [
+        {
+          "t": "un colegio puede frenar las burlas sin exigir que todos compren el uniforme.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o10"
+          ],
+          "explicacion": "Es lo que propone en la oración 10: enfrentar las burlas con normas de convivencia, no con una compra obligatoria."
+        },
+        {
+          "t": "cuando todos llevan uniforme, ya no se notan las diferencias entre los alumnos de un salón.",
+          "codigo": "RV9",
+          "origen": "o7",
+          "explicacion": "Choca con la oración 7: para el texto B, las diferencias se notan igual en las zapatillas, la mochila y la ropa heredada."
+        },
+        {
+          "t": "ningún niño deja de ir a clases por no tener todavía el uniforme completo.",
+          "codigo": "RV10",
+          "origen": "o9",
+          "explicacion": "El «ningún» lo vuelve contrario a la oración 9, que dice que hay niños que faltan los primeros días por eso."
+        },
+        {
+          "t": "el uniforme cuesta mucho, pero aun así debe seguir siendo obligatorio para todos.",
+          "codigo": "RV62",
+          "origen": "o8",
+          "explicacion": "La primera parte sí la sostiene (oración 8), pero la segunda es la postura del texto A; el B prefiere que sea voluntario (oración 10)."
+        },
+        {
+          "t": "conviene mantenerlo obligatorio, pues se compra una vez al año y dura más que la ropa común.",
+          "codigo": "RV59",
+          "origen": "o4",
+          "explicacion": "Ese razonamiento es del texto A (oración 4) y lleva a lo contrario de lo que propone el B."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-12",
+  "hechos": [],
+  "revision": {
+    "por": "subagente (revisor a ciegas, rutina verbal-mas)",
+    "fecha": "2026-11-12",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 38 de 38 coincidieron en la tanda (t144: 7 de 7 ítems), con una duda leve en p3.previo. Cambio: la oración 2 del texto A ahora dice explícitamente que el colegio debe atender las burlas, para que la sonda de p3.previo sea 'ambos' sin inferencia. Sin hechos externos que verificar (hechos vacío)."
+  }
+}

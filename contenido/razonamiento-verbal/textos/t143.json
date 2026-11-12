@@ -1,0 +1,152 @@
+{
+  "id": "t143",
+  "version": 1,
+  "titulo": "Luz para el altiplano: ¿panel o red?",
+  "tema": "Sociedad · electrificación rural en Puno",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    { "id": "A", "desde": 0, "firma": "Una ingeniera en energía" },
+    { "id": "B", "desde": 1, "firma": "Un dirigente de un centro poblado de Puno" }
+  ],
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "principal", "t": "Para llevar electricidad a las comunidades rurales del altiplano, lo más sensato es instalar un panel solar en cada casa." },
+      { "id": "o2", "rol": "apoyo", "t": "El altiplano recibe una radiación solar alta durante casi todo el año, y ese recurso hoy se desperdicia." },
+      { "id": "o3", "rol": "apoyo", "t": "Las viviendas, además, están dispersas: tender kilómetros de postes y cables para llegar a unas pocas familias cuesta mucho y puede tardar años." },
+      { "id": "o4", "rol": "apoyo", "t": "Un equipo en el techo, en cambio, se instala en pocos días y, incluso en la casa más apartada, alcanza para encender focos, escuchar la radio y cargar el celular." },
+      { "id": "o5", "rol": "principal", "t": "Esperar la red es condenar a esas familias a otra década de velas y mecheros." }
+    ],
+    [
+      { "id": "o6", "rol": "apoyo", "t": "Es verdad que, en las casas más aisladas, el panel puede ser la única salida razonable." },
+      { "id": "o7", "rol": "contraste", "t": "Pero en los centros poblados del altiplano, contentarse con él es aceptar una electricidad de segunda." },
+      { "id": "o8", "rol": "apoyo", "t": "Un panel doméstico da luz, pero no mueve un molino de granos, una ordeñadora ni el refrigerador donde se guarda la leche para hacer queso." },
+      { "id": "o9", "rol": "apoyo", "t": "Su batería, además, hay que cambiarla después de unos años, y si nadie en la zona sabe hacerlo, la casa vuelve a quedar a oscuras." },
+      { "id": "o10", "rol": "principal", "t": "La red cuesta más al principio, pero permite que la comunidad no solo se ilumine, sino que también produzca." },
+      { "id": "o11", "rol": "principal", "t": "La red debería llegar primero adonde vive más gente, y el panel quedar para las casas a las que la red no podrá alcanzar." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "controversia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "El eje del debate entre los dos textos es",
+      "alternativas": [
+        { "t": "si un panel en cada casa basta para electrificar las comunidades del altiplano.", "correcta": true, "evidencia": ["o1", "o7", "o11"],
+          "explicacion": "El texto A dice que lo sensato es un panel por casa (oración 1); el B, que en los centros poblados eso es una electricidad de segunda y hace falta la red (oraciones 7 y 11)." },
+        { "t": "si en las casas más aisladas del altiplano un panel solar es una salida razonable.", "codigo": "RV61", "origen": "o6",
+          "explicacion": "En eso coinciden: el texto A propone el panel y el B lo acepta para las casas más aisladas (oración 6)." },
+        { "t": "si el altiplano recibe una radiación solar alta durante casi todo el año.", "codigo": "RV60", "origen": "o2",
+          "explicacion": "Lo dice solo el texto A (oración 2), como argumento; el B no lo discute." },
+        { "t": "si el Perú debe producir su energía con fuentes limpias o con petróleo y gas.", "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos discuten cómo llevar electricidad a las comunidades del altiplano." },
+        { "t": "si la leche del altiplano debe guardarse en un refrigerador para hacer queso.", "codigo": "RV1", "origen": "o8",
+          "explicacion": "Es un detalle del ejemplo del texto B (oración 8), no lo que se discute." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "dialogo",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Llevar cables a lo largo de grandes distancias para unas pocas viviendas resulta caro y lento.",
+        "aceptada": "A",
+        "codigos": { "B": "RV59", "ambos": "RV60", "ninguno": null },
+        "explicacion": "Lo dice el texto A en la oración 3: tender kilómetros de postes para pocas familias cuesta mucho y puede tardar años.",
+        "explicaciones": {
+          "B": "El texto B reconoce que la red cuesta más al principio (oración 10), pero no habla de distancias ni de demoras. La idea, así planteada, es del texto A (oración 3).",
+          "ambos": "Solo el texto A lo plantea (oración 3). El B dice que la red cuesta más al principio, pero la defiende.",
+          "ninguno": "Sí lo sostiene alguien: el texto A, en la oración 3."
+        }
+      },
+      "enunciado": "El autor del texto B le objetaría a la autora del texto A que",
+      "alternativas": [
+        { "t": "un panel doméstico ilumina la casa, pero no basta para producir.", "correcta": true, "evidencia": ["o8", "o10"],
+          "explicacion": "La autora del A cuenta lo que el panel sí alcanza a hacer (oración 4); el B responde que no mueve un molino ni un refrigerador (oración 8) y que la red permite producir (oración 10)." },
+        { "t": "tender postes y cables para pocas familias cuesta mucho y tarda años.", "codigo": "RV59", "origen": "o3",
+          "explicacion": "Ese es un argumento del texto A (oración 3); no le sirve al B para objetarle." },
+        { "t": "la radiación solar del altiplano es demasiado baja para usar paneles.", "codigo": "RV33", "origen": "o2",
+          "explicacion": "El texto B no dice nada de la radiación solar; la que habla de ella es la autora del A, y dice que es alta (oración 2)." },
+        { "t": "ninguna casa del altiplano debería tener nunca un panel solar en su techo.", "codigo": "RV11", "origen": "o6",
+          "explicacion": "Exagera: el texto B acepta el panel para las casas más aisladas (oraciones 6 y 11)." },
+        { "t": "los paneles solares contaminan más que las centrales eléctricas grandes.", "codigo": "RV8",
+          "explicacion": "Ninguno de los textos compara cuánto contaminan; eso no sale de lo que se leyó." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Si apareciera una batería que dura tanto como el panel y que cualquier vecino puede cambiar, el autor del texto B probablemente",
+      "alternativas": [
+        { "t": "mantendría su objeción de que el panel no alcanza para producir.", "correcta": true, "evidencia": ["o8", "o10"],
+          "explicacion": "El supuesto quita la objeción de la batería (oración 9), pero no la otra: el panel sigue sin mover un molino ni un refrigerador (oración 8)." },
+        { "t": "seguiría diciendo que la casa queda a oscuras cuando la batería se gasta.", "codigo": "RV63", "origen": "o9",
+          "explicacion": "Repite la objeción que el supuesto acaba de quitar: si la batería dura y cualquiera la cambia, ya no hay casa a oscuras por eso." },
+        { "t": "aceptaría que esperar la red es condenar a las familias a vivir con velas.", "codigo": "RV59", "origen": "o5",
+          "explicacion": "Esa es la idea del texto A (oración 5). El supuesto no toca la razón principal del B: la red permite producir." },
+        { "t": "dejaría de pedir que la red llegue primero a los centros poblados más grandes.", "codigo": "RV7", "origen": "o11",
+          "explicacion": "No se sigue del supuesto: su pedido de la oración 11 se apoya sobre todo en que el panel no sirve para producir (oraciones 8 y 10), y eso no cambia." },
+        { "t": "propondría que las baterías se fabriquen en una planta de la ciudad de Puno.", "codigo": "RV8",
+          "explicacion": "Nada en los textos habla de fabricar baterías; esa idea no sale de lo que se leyó." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Para una vivienda muy alejada, un panel en el techo es una opción sensata.",
+        "aceptada": "ambos",
+        "codigos": { "A": "RV61", "B": "RV61", "ninguno": null },
+        "explicacion": "Los dos lo sostienen: el texto A dice que el panel sirve incluso en la casa más apartada (oración 4) y el B lo acepta para las casas más aisladas (oraciones 6 y 11).",
+        "explicaciones": {
+          "A": "El texto A lo dice en la oración 4, pero el B también lo acepta para las casas más aisladas (oración 6).",
+          "B": "El texto B lo concede en las oraciones 6 y 11, pero el A ya lo planteaba en la oración 4.",
+          "ninguno": "Los dos lo sostienen: el texto A en la oración 4 y el B en la oración 6."
+        }
+      },
+      "enunciado": "Es incompatible con lo que sostienen los dos autores afirmar que",
+      "alternativas": [
+        { "t": "en las casas más aisladas del altiplano, un panel solar no sirve de nada.", "correcta": true, "evidencia": ["o4", "o6"],
+          "explicacion": "Choca con los dos: para el texto A, el panel alcanza para focos, radio y celular (oración 4); para el B, en las casas más aisladas puede ser la única salida razonable (oración 6)." },
+        { "t": "las comunidades del altiplano necesitan más postas de salud y más maestros.", "codigo": "RV36",
+          "explicacion": "Ninguno de los textos habla de salud ni de maestros, pero tampoco dice nada en contra: que algo no esté dicho no lo vuelve incompatible." },
+        { "t": "un panel doméstico no mueve un molino de granos ni una ordeñadora.", "codigo": "RV10", "origen": "o8",
+          "explicacion": "Tiene un «no», pero es compatible: lo dice el texto B (oración 8), y el A, que solo habla de focos, radio y celular (oración 4), no lo niega." },
+        { "t": "la batería de un panel hay que cambiarla cada cierto número de años.", "codigo": "RV59", "origen": "o9",
+          "explicacion": "Es una idea del texto B (oración 9), pero que sea de uno solo no la vuelve incompatible: el A no la niega, así que no choca con ninguno de los dos." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto B, la expresión DE SEGUNDA («una electricidad de segunda») significa",
+      "alternativas": [
+        { "t": "de menor calidad.", "correcta": true, "evidencia": ["o7", "o8"],
+          "explicacion": "El dirigente explica en la oración 8 por qué: el panel da luz, pero no alcanza para lo que la comunidad necesita." },
+        { "t": "que llega en segundo lugar.", "codigo": "RV18",
+          "explicacion": "Es el sentido literal de «segunda» como orden, pero el texto no habla de qué llega primero, sino de cuánto sirve esa electricidad." },
+        { "t": "que ya usó antes otro dueño.", "codigo": "RV19",
+          "explicacion": "Se acerca a «de segunda mano», pero el panel no es usado: es una electricidad que da menos." },
+        { "t": "que solo da luz.", "codigo": "RV5", "origen": "o8",
+          "explicacion": "Toma palabras de la oración 8, que da la razón del juicio, pero no es lo que significa la expresión." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-12",
+  "hechos": [
+    { "afirmacion": "El altiplano del sur del Perú tiene niveles altos de radiación solar a lo largo del año.", "fuente": "SENAMHI y Ministerio de Energía y Minas del Perú (2003), Atlas de Energía Solar del Perú" },
+    { "afirmacion": "El Estado peruano ha instalado sistemas fotovoltaicos domiciliarios para dar electricidad a viviendas rurales aisladas.", "fuente": "Ministerio de Energía y Minas del Perú, Dirección General de Electrificación Rural, programa masivo de sistemas fotovoltaicos en zonas no conectadas a la red" },
+    { "afirmacion": "Las baterías que acompañan a los paneles solares tienen una vida útil menor que la de los paneles y deben reemplazarse en algún momento.", "fuente": "Conocimiento técnico general sobre sistemas fotovoltaicos domiciliarios; el informe IRENA (2017), Electricity Storage and Renewables, trata el almacenamiento con baterías, pero no se confirmó en él la vida útil" }
+  ],
+  "revision": { "por": "subagente (revisor a ciegas, rutina verbal-mas)", "fecha": "2026-11-12", "veredicto": "aprobado", "notas": "A ciegas coincidió en 7 de 7 ítems (previos y preguntas). Se hizo explícita en el texto A (oración 4: «incluso en la casa más apartada») la idea del previo de p4, y el distractor de la batería pasó de RV60 a RV59 (RV60 hablaba de temas y coincidencias, no de incompatibilidad). Web: el informe IRENA 2017 existe, pero no se encontró en él una cifra de vida útil de baterías de paneles domésticos; la fuente se ablandó a conocimiento técnico general. Radiación solar (Atlas de Energía Solar) y programa de paneles del MINEM van de memoria." }
+}

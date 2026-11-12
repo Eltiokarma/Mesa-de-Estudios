@@ -973,7 +973,7 @@
       ]
     },
     {
-      "id": "t134",
+      "id": "t174",
       "nivel": "avanzado (tipo UNI)",
       "enunciado": "Lee el texto «La procesión del Corpus en el Cusco» y responde las 5 preguntas.",
       "texto": {
@@ -1053,19 +1053,19 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "la torre con la cruz y los emblemas de cada linaje."
-            },
-            {
-              "letra": "B",
               "t": "el sol con rostro y la ceremonia traída de España."
             },
             {
-              "letra": "C",
+              "letra": "B",
               "t": "las andas del santo y la fe afirmada entre los naturales."
             },
             {
-              "letra": "D",
+              "letra": "C",
               "t": "la música de quena y tambor y los trajes de los linajes antiguos."
+            },
+            {
+              "letra": "D",
+              "t": "la torre con la cruz y los emblemas de cada linaje."
             }
           ]
         },
@@ -1075,11 +1075,11 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "la población indígena rechazaba la fiesta por considerarla una imposición."
+              "t": "únicamente los nobles indígenas participaban en la fiesta."
             },
             {
               "letra": "B",
-              "t": "únicamente los nobles indígenas participaban en la fiesta."
+              "t": "la población indígena rechazaba la fiesta por considerarla una imposición."
             },
             {
               "letra": "C",
@@ -1097,11 +1097,11 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "su borla roja y su aceptación de la fe cristiana."
+              "t": "su quena y el emblema de su linaje."
             },
             {
               "letra": "B",
-              "t": "su túnica con borla y su deseo de mostrar rango."
+              "t": "su borla roja y su aceptación de la fe cristiana."
             },
             {
               "letra": "C",
@@ -1109,7 +1109,7 @@
             },
             {
               "letra": "D",
-              "t": "su quena y el emblema de su linaje."
+              "t": "su túnica con borla y su deseo de mostrar rango."
             }
           ]
         },
@@ -1124,15 +1124,15 @@
             },
             {
               "letra": "B",
-              "t": "veían la fiesta, igual que los nobles, como un acto de poder."
-            },
-            {
-              "letra": "C",
               "t": "daban a la fiesta un sentido distinto del de los nobles."
             },
             {
-              "letra": "D",
+              "letra": "C",
               "t": "temían que los nobles convirtieran la fiesta en una rebelión."
+            },
+            {
+              "letra": "D",
+              "t": "veían la fiesta, igual que los nobles, como un acto de poder."
             }
           ]
         },
@@ -1146,27 +1146,27 @@
             },
             {
               "letra": "B",
-              "t": "la fe cristiana no se afirmó entre los naturales."
+              "t": "los españoles no tuvieron ningún papel en ella."
             },
             {
               "letra": "C",
-              "t": "lo andino también tenía un lugar propio dentro de la fiesta."
+              "t": "la fe cristiana no se afirmó entre los naturales."
             },
             {
               "letra": "D",
-              "t": "los españoles no tuvieron ningún papel en ella."
+              "t": "lo andino también tenía un lugar propio dentro de la fiesta."
             }
           ]
         }
       ],
-      "respuesta": "Clave: 1: A · 2: D · 3: B · 4: C · 5: C.",
+      "respuesta": "Clave: 1: D · 2: D · 3: D · 4: B · 5: D.",
       "pasos": [
-        "Pregunta 1. Clave A. En la imagen, lo hispano es la torre con la cruz (elemento 1). En el texto, lo andino son los emblemas con que cada linaje salía a la fiesta (oración 4). Cada parte va en el orden que pide la pregunta.",
+        "Pregunta 1. Clave D. En la imagen, lo hispano es la torre con la cruz (elemento 1). En el texto, lo andino son los emblemas con que cada linaje salía a la fiesta (oración 4). Cada parte va en el orden que pide la pregunta.",
         "Pregunta 2. Clave D. La imagen junta la torre con cruz y las andas con el noble de túnica y los músicos con quena; el texto dice que la ceremonia traída de España llevaba símbolos que no eran españoles (oración 5) y que se mezclaron dos tradiciones (oración 6).",
-        "Pregunta 3. Clave B. En la imagen, el noble lleva túnica de diseños geométricos y borla roja (elemento 3). En el texto, usaban la fiesta para mostrar su rango ante la ciudad (oración 4).",
+        "Pregunta 3. Clave D. En la imagen, el noble lleva túnica de diseños geométricos y borla roja (elemento 3). En el texto, usaban la fiesta para mostrar su rango ante la ciudad (oración 4).",
         "Pregunta 4. Antes de las alternativas: Lo contradice. El cura y el corregidor veían una prueba de fe cristiana (oración 3); los nobles indígenas, una ocasión para mostrar su rango (oración 4). El «en cambio» marca que el sentido no era el mismo: el texto lo contradice.",
-        "Pregunta 4. Clave C. Unos veían en ella una prueba de fe; los otros, una ocasión de mostrar rango. El «en cambio» de la oración 4 marca el contraste.",
-        "Pregunta 5. Clave C. El texto muestra a los linajes con sus emblemas y estandartes (oraciones 2 y 4) y la imagen pone a un noble con túnica y borla, músicos con quena y un sol con rostro. Una imposición total no los dejaría ver."
+        "Pregunta 4. Clave B. Unos veían en ella una prueba de fe; los otros, una ocasión de mostrar rango. El «en cambio» de la oración 4 marca el contraste.",
+        "Pregunta 5. Clave D. El texto muestra a los linajes con sus emblemas y estandartes (oraciones 2 y 4) y la imagen pone a un noble con túnica y borla, músicos con quena y un sol con rostro. Una imposición total no los dejaría ver."
       ]
     }
   ]

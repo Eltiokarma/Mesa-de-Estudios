@@ -1,0 +1,303 @@
+{
+  "id": "t172",
+  "version": 1,
+  "titulo": "The Frog That Breathes Through Its Skin",
+  "tema": "Lectura en inglés · artículo de divulgación sobre la rana gigante del Titicaca, su respiración por la piel y sus amenazas",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "expositivo",
+  "idioma": "en",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "general",
+        "t": "Lake Titicaca, which lies between Peru and Bolivia, is home to a frog that spends its whole life under water: the Titicaca water frog."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "It is one of the largest water frogs in the world, and its loose, wrinkled skin looks too big for its body."
+      },
+      {
+        "id": "o3",
+        "rol": "contraste",
+        "t": "These folds are not a mistake of nature."
+      },
+      {
+        "id": "o4",
+        "rol": "principal",
+        "t": "Like all amphibians, this frog can take in oxygen through its skin, and the folds increase the surface that touches the water."
+      }
+    ],
+    [
+      {
+        "id": "o5",
+        "rol": "apoyo",
+        "t": "The lake is at about 3,800 meters above sea level, where the water holds little oxygen, so every extra centimeter of skin helps."
+      },
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "Researchers have also seen the frogs move up and down on the lake bottom, like a person doing push-ups, which probably brings fresher water to their skin."
+      }
+    ],
+    [
+      {
+        "id": "o7",
+        "rol": "contraste",
+        "t": "Their special body, however, does not protect them from people."
+      },
+      {
+        "id": "o8",
+        "rol": "detalle",
+        "t": "Pollution from cities and mines makes the water dirtier, and introduced fish, such as trout, can eat young frogs."
+      },
+      {
+        "id": "o9",
+        "rol": "detalle",
+        "t": "In addition, many frogs have been captured to be sold as food."
+      },
+      {
+        "id": "o10",
+        "rol": "apoyo",
+        "t": "The species is now considered critically endangered, so protecting the lake's water may be the best way to protect the frog."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "titulo",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración (en inglés) que explica por qué la piel de la rana es tan especial.",
+        "aceptadas": [
+          "o4"
+        ],
+        "ninguna": "RV3",
+        "codigos": {},
+        "explicacion": "La oración 4 explica el rasgo central: la rana toma oxígeno por la piel y los pliegues aumentan la superficie en contacto con el agua. Las demás presentan a la rana, dan más detalles de su respiración o hablan de las amenazas.",
+        "explicaciones": {
+          "o1": "Presenta a la rana y su lugar. Es un dato inicial, no la explicación.",
+          "o3": "Anuncia que los pliegues tienen una razón, pero no dice cuál.",
+          "o5": "Dice por qué ayuda tener más piel, pero la razón de fondo está en la oración 4.",
+          "o2": "Describe cómo se ve la piel, pero todavía no dice para qué sirve.",
+          "o6": "Añade otra forma de ayudar a respirar: es un detalle que apoya la explicación.",
+          "o7": "Cambia de tema: pasa de la piel a las amenazas.",
+          "o8": "Nombra dos amenazas, pero no explica la piel.",
+          "o9": "Nombra otra amenaza: no explica la piel.",
+          "o10": "Concluye sobre cómo proteger a la rana; no explica el rasgo de la piel.",
+          "ninguna": "La oración 4 sí lo dice: la rana respira por la piel y los pliegues aumentan la superficie."
+        }
+      },
+      "enunciado": "Which is the best title for this text?",
+      "alternativas": [
+        {
+          "t": "A Frog That Breathes Through Its Skin, and the Dangers It Faces",
+          "correcta": true,
+          "evidencia": [
+            "o4",
+            "o7"
+          ],
+          "explicacion": "Reúne las dos partes del texto: cómo respira la rana por la piel (oraciones 3 a 6) y qué la amenaza (oraciones 7 a 10)."
+        },
+        {
+          "t": "The Largest Frogs in the Whole World Live in South America",
+          "codigo": "RV11",
+          "origen": "o2",
+          "explicacion": "Exagera y se aparta del texto: dice que es una de las más grandes del mundo, no que las más grandes vivan en Sudamérica."
+        },
+        {
+          "t": "How Pollution from Cities and Mines Changes Lake Water",
+          "codigo": "RV3",
+          "origen": "o8",
+          "explicacion": "Las oraciones 8 y 9 hablan de amenazas, pero este título deja fuera a la rana y su piel, que son el centro del texto."
+        },
+        {
+          "t": "Why Trout Are the Only Danger for Water Frogs in Peru",
+          "codigo": "RV53",
+          "origen": "o8",
+          "explicacion": "La trucha es una de varias amenazas (oración 8); decir que es la única cambia lo que el autor sostiene."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "In sentence 1, the word LIES means",
+      "alternativas": [
+        {
+          "t": "is located.",
+          "correcta": true,
+          "evidencia": [
+            "o1"
+          ],
+          "explicacion": "El lago «lies between Peru and Bolivia»: está ubicado entre los dos países."
+        },
+        {
+          "t": "says something that is not true.",
+          "codigo": "RV18",
+          "origen": "o1",
+          "explicacion": "Es el significado más común de «lie» (mentir), pero un lago no puede decir algo falso."
+        },
+        {
+          "t": "rests flat on a bed or a floor.",
+          "codigo": "RV19",
+          "explicacion": "Es otro sentido de «lie» (estar tendido), cercano en forma pero no es lo que dice la oración sobre un lago entre dos países."
+        },
+        {
+          "t": "hides behind the mountains.",
+          "codigo": "RV23",
+          "explicacion": "Encaja con un paisaje, pero la oración solo dice dónde está el lago; no dice que se esconda."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "antonimo",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "In sentence 2, the opposite of LOOSE is",
+      "alternativas": [
+        {
+          "t": "tight.",
+          "correcta": true,
+          "evidencia": [
+            "o2"
+          ],
+          "explicacion": "«Loose skin» es una piel suelta, floja; lo contrario es «tight», ajustada."
+        },
+        {
+          "t": "baggy.",
+          "codigo": "RV19",
+          "explicacion": "«Baggy» (holgado) es casi un sinónimo de «loose»: no es su contrario."
+        },
+        {
+          "t": "wrinkled.",
+          "codigo": "RV5",
+          "origen": "o2",
+          "explicacion": "«Wrinkled» está en la misma oración, pero describe la piel como arrugada y va junto a «loose»; no es su contrario."
+        },
+        {
+          "t": "heavy.",
+          "codigo": "RV21",
+          "explicacion": "«Heavy» (pesado) habla de peso, otro rasgo distinto; no es lo contrario de «loose»."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "If all the trout disappeared from the lake and nothing else changed, then, according to the text, the frogs",
+      "alternativas": [
+        {
+          "t": "would still face other dangers, but young frogs would be safer.",
+          "correcta": true,
+          "evidencia": [
+            "o8",
+            "o9",
+            "o10"
+          ],
+          "explicacion": "Los peces introducidos pueden comerse a las ranas jóvenes (oración 8); sin ellos eso mejoraría, pero seguirían la contaminación y la captura."
+        },
+        {
+          "t": "would be completely safe from every danger in the lake.",
+          "codigo": "RV11",
+          "explicacion": "Exagera con «completely» y «every»: el texto menciona otras amenazas, como la contaminación y la captura (oraciones 8 y 9)."
+        },
+        {
+          "t": "would face exactly the same dangers as before, trout included.",
+          "codigo": "RV63",
+          "origen": "o8",
+          "explicacion": "Vuelve a confirmar lo que la condición quita: sin trucha ya no existe esa amenaza."
+        },
+        {
+          "t": "would begin to breathe only with lungs, like other animals.",
+          "codigo": "RV7",
+          "explicacion": "El texto no relaciona la trucha con el modo de respirar de la rana, que sigue siendo por la piel."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, lee esta afirmación y di qué relación tiene con el texto.",
+        "sonda": "The wrinkled skin of the frog is useless.",
+        "clase": "lo-contradice",
+        "codigos": {
+          "lo-dice": "RV58",
+          "se-deduce": "RV7",
+          "no-se-sabe": "RV9"
+        },
+        "explicacion": "Las oraciones 3 y 4 explican que los pliegues no son un error, sino que aumentan la superficie para tomar oxígeno: lo contradicen.",
+        "explicaciones": {
+          "lo-dice": "Algo parecido se insinúa en la oración 2 («too big for its body»), pero en la oración 3 el autor lo rechaza.",
+          "se-deduce": "No se deduce: el texto dice lo contrario, que los pliegues sirven para respirar.",
+          "no-se-sabe": "El texto sí lo trata: las oraciones 3 y 4 explican para qué sirve la piel."
+        }
+      },
+      "enunciado": "Which statement contradicts the text?",
+      "alternativas": [
+        {
+          "t": "The loose skin of the frog has no function in its life.",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "o4"
+          ],
+          "explicacion": "Choca con las oraciones 3 y 4: los pliegues de la piel aumentan la superficie para tomar oxígeno."
+        },
+        {
+          "t": "Some of the dangers for the frog come from human activities.",
+          "codigo": "RV10",
+          "origen": "o7",
+          "explicacion": "Es compatible con las oraciones 7 a 9: contaminación y captura vienen de las personas."
+        },
+        {
+          "t": "The water of the lake holds little oxygen at that height.",
+          "codigo": "RV8",
+          "origen": "o5",
+          "explicacion": "Es compatible con la oración 5, que dice que el agua tiene poco oxígeno."
+        },
+        {
+          "t": "Other species of animals also live in the lake.",
+          "codigo": "RV36",
+          "explicacion": "El texto nombra peces introducidos pero no dice nada sobre otros animales del lago: que algo no esté dicho no lo hace incompatible."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-12",
+  "hechos": [
+    {
+      "afirmacion": "El lago Titicaca está entre Perú y Bolivia, a unos 3.800 m de altitud (3.812 m).",
+      "fuente": "Autoridad Binacional Autónoma del Sistema Hídrico del Lago Titicaca, Río Desaguadero, Lago Poopó y Salar de Coipasa (ALT); descripción física del lago."
+    },
+    {
+      "afirmacion": "La rana gigante del Titicaca (Telmatobius culeus) vive todo el tiempo en el agua, tiene la piel muy plegada que aumenta la superficie para el intercambio de gases y hace movimientos de flexión en el fondo que renuevan el agua en contacto con la piel.",
+      "fuente": "Hutchison, V. H., Haines, H. B. y Engbretson, G. (1976). Aquatic life at high altitude: respiratory adaptations in the Lake Titicaca frog, Telmatobius culeus. Respiration Physiology, 27(1), 115-129."
+    },
+    {
+      "afirmacion": "Telmatobius culeus está catalogada En Peligro Crítico; entre sus amenazas se cuentan la contaminación del agua, las especies introducidas como la trucha y la captura para consumo.",
+      "fuente": "UICN, Lista Roja de Especies Amenazadas, ficha de Telmatobius culeus (Titicaca water frog)."
+    }
+  ],
+  "revision": {
+    "por": "subagente (revisor a ciegas, rutina verbal-mas)",
+    "fecha": "2026-11-12",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidieron 6 de 6 ítems. El previo de p1 queda con o4 como única oración que explica el porqué de la piel (o3 solo anuncia que hay razón). Verificado en web: Hutchison, Haines y Engbretson (1976), Respiration Physiology 27(1), 115-129, existe (registro bibliográfico y citas posteriores); citas secundarias confirman piel en pliegues, pulmones muy reducidos y movimientos de la piel que rompen la capa límite; el texto completo no se leyó. UICN: Telmatobius culeus En Peligro Crítico (AmphibiaWeb, Amphibian Ark con ficha UICN 57334); amenazas confirmadas: sobrecosecha para consumo, trucha introducida, contaminación. Altitud 3.812 m y 'rana de agua más grande' de memoria; sin cambios al texto."
+  }
+}

@@ -1,0 +1,268 @@
+{
+  "id": "t173",
+  "version": 1,
+  "titulo": "Give the Weekends Back",
+  "tema": "Lectura en inglés · columna de opinión de un docente sobre prohibir la tarea de fin de semana",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "argumentativo",
+  "idioma": "en",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "Every Friday afternoon, the same scene repeats in many schools: teachers hand out worksheets, and students sigh."
+      },
+      {
+        "id": "o2",
+        "rol": "contraste",
+        "t": "I have been a teacher for many years, and I used to believe that weekend homework made students responsible."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "Now I am not so sure."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "Students need time to rest, to play sports, to help at home and to be with their families."
+      },
+      {
+        "id": "o5",
+        "rol": "apoyo",
+        "t": "When two full days are filled with assignments, those activities become a burden, and tired students return on Monday with less energy."
+      },
+      {
+        "id": "o6",
+        "rol": "contraste",
+        "t": "Some people argue that, without weekend homework, students will forget what they learned."
+      },
+      {
+        "id": "o7",
+        "rol": "apoyo",
+        "t": "That is a fair worry, but it can be solved with short exercises during the week and good planning by teachers."
+      }
+    ],
+    [
+      {
+        "id": "o8",
+        "rol": "apoyo",
+        "t": "A ban would also oblige schools to think about quality: a few well-chosen tasks are worth more than many boring ones."
+      },
+      {
+        "id": "o9",
+        "rol": "principal",
+        "t": "For these reasons, schools should stop giving homework on weekends."
+      },
+      {
+        "id": "o10",
+        "rol": "apoyo",
+        "t": "Rest is not the opposite of learning; it is part of it."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "intencion",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "previo": {
+        "tipo": "proposito",
+        "pide": "Antes de ver las alternativas: ¿qué busca sobre todo la autora o el autor?",
+        "aceptada": "convencer",
+        "codigos": {
+          "explicar": "RV14",
+          "narrar": "RV13"
+        },
+        "explicacion": "El autor da su opinión («should stop», oración 9), explica por qué cambió de idea y responde a una objeción (oraciones 6 y 7): quiere convencer.",
+        "explicaciones": {
+          "explicar": "Explica algunas cosas (por ejemplo, que los alumnos cansados rinden menos), pero para sostener una propuesta; no se limita a informar.",
+          "narrar": "La oración 1 cuenta una escena de viernes, pero el texto no sigue una historia: da razones para defender una idea."
+        }
+      },
+      "enunciado": "What is the author's main purpose?",
+      "alternativas": [
+        {
+          "t": "To persuade readers that schools should not give weekend homework.",
+          "correcta": true,
+          "evidencia": [
+            "o9"
+          ],
+          "explicacion": "La oración 9 expresa la tesis («schools should stop giving homework on weekends») y el resto da razones y responde a una objeción."
+        },
+        {
+          "t": "To explain what happens in a student's brain when it rests.",
+          "codigo": "RV14",
+          "explicacion": "La oración 10 habla del descanso, pero solo como razón. El texto no explica cómo funciona el cerebro: defiende una postura."
+        },
+        {
+          "t": "To tell the story of one Friday afternoon at school.",
+          "codigo": "RV13",
+          "explicacion": "La oración 1 describe una escena, pero apenas para empezar. El texto no sigue una historia: argumenta."
+        },
+        {
+          "t": "To describe how teachers prepare worksheets for their classes.",
+          "codigo": "RV3",
+          "origen": "o1",
+          "explicacion": "Las hojas de trabajo aparecen en la oración 1 como parte de la escena inicial, pero no son el tema del texto."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "If schools followed the author's proposal, then teachers would probably",
+      "alternativas": [
+        {
+          "t": "rely on short exercises during the week.",
+          "correcta": true,
+          "evidencia": [
+            "o7"
+          ],
+          "explicacion": "La oración 7 propone resolver el olvido con ejercicios cortos durante la semana y una buena planificación."
+        },
+        {
+          "t": "give all of the week's homework on Friday afternoon instead.",
+          "codigo": "RV63",
+          "origen": "o5",
+          "explicacion": "Vuelve a lo que la propuesta quita: la tarea del fin de semana es justamente lo que el autor critica (oración 5)."
+        },
+        {
+          "t": "stop giving any homework at all during the whole school year.",
+          "codigo": "RV11",
+          "explicacion": "Exagera: el autor pide no dar tarea en fin de semana, no eliminar toda la tarea; propone ejercicios cortos entre semana."
+        },
+        {
+          "t": "ask students to forget what they learned on the weekend.",
+          "codigo": "RV7",
+          "origen": "o6",
+          "explicacion": "El texto no sugiere pedirle eso a nadie: dice que el olvido es una preocupación y que se puede evitar."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "Which statement is incompatible with the text?",
+      "alternativas": [
+        {
+          "t": "The author has always been against weekend homework.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o3"
+          ],
+          "explicacion": "Choca con la oración 2: antes creía que la tarea de fin de semana hacía responsables a los alumnos, y ahora no está seguro."
+        },
+        {
+          "t": "The author accepts that some students could forget lessons.",
+          "codigo": "RV10",
+          "origen": "o7",
+          "explicacion": "Es compatible: la oración 7 reconoce que esa preocupación es razonable."
+        },
+        {
+          "t": "The author thinks that fewer tasks could be better tasks.",
+          "codigo": "RV8",
+          "origen": "o8",
+          "explicacion": "Es compatible con la oración 8: unas pocas tareas bien elegidas valen más que muchas aburridas."
+        },
+        {
+          "t": "The author thinks that rest is part of learning.",
+          "codigo": "RV5",
+          "origen": "o10",
+          "explicacion": "Es compatible: la oración 10 dice que el descanso es parte del aprendizaje."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "contexto",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "This text would most likely appear in",
+      "alternativas": [
+        {
+          "t": "the opinion section of a newspaper or a school magazine.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o9"
+          ],
+          "explicacion": "Es la opinión de un docente, escrita en primera persona y con una tesis: es una columna de opinión."
+        },
+        {
+          "t": "a school's official list of rules for the next year.",
+          "codigo": "RV49",
+          "explicacion": "Un reglamento no usa la primera persona («I used to believe») ni da razones personales para cambiar de idea."
+        },
+        {
+          "t": "a science book that explains how memory is formed.",
+          "codigo": "RV8",
+          "explicacion": "Habla de aprender y descansar, pero no presenta estudios ni explica la memoria: defiende una postura."
+        },
+        {
+          "t": "a letter written by a student to a close friend.",
+          "codigo": "RV50",
+          "origen": "o2",
+          "explicacion": "El autor dice «I have been a teacher for many years» (oración 2): quien escribe es un docente, no un alumno."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "antonimo",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "In sentence 8, the opposite of BORING is",
+      "alternativas": [
+        {
+          "t": "interesting.",
+          "correcta": true,
+          "evidencia": [
+            "o8"
+          ],
+          "explicacion": "«Boring» es aburrido; lo contrario es «interesting», interesante."
+        },
+        {
+          "t": "dull.",
+          "codigo": "RV19",
+          "explicacion": "«Dull» (aburrido, sin gracia) es un sinónimo de «boring»: no es su contrario."
+        },
+        {
+          "t": "easy.",
+          "codigo": "RV21",
+          "explicacion": "«Easy» (fácil) describe otro rasgo: una tarea puede ser fácil y aburrida, o difícil e interesante."
+        },
+        {
+          "t": "many.",
+          "codigo": "RV5",
+          "origen": "o8",
+          "explicacion": "«Many» está en la misma oración («many boring ones»), pero habla de cantidad, no es lo contrario de «boring»."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-12",
+  "hechos": [
+    {
+      "afirmacion": "La columna y su autor son genéricos e inventados para este ejercicio; el texto expresa una opinión y no cita estudios.",
+      "fuente": "Texto propio (ejercicio de lectura)."
+    }
+  ],
+  "revision": {
+    "por": "subagente (revisor a ciegas, rutina verbal-mas)",
+    "fecha": "2026-11-12",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidieron 6 de 6 ítems. Cambio: en p3 el distractor «carta al ministerio» (no se sabe) se reemplazó por una afirmación compatible con la oración 10. Sin hechos externos: columna de opinión inventada, de memoria."
+  }
+}

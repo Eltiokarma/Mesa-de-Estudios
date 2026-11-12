@@ -1,0 +1,319 @@
+{
+  "id": "t162",
+  "version": 1,
+  "titulo": "Más mujeres en ciencia e ingeniería: ¿cuotas o cambios desde el colegio?",
+  "tema": "Educación · mujeres en carreras de ciencia e ingeniería",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    {
+      "id": "A",
+      "desde": 0,
+      "firma": "Un decano de ingeniería"
+    },
+    {
+      "id": "B",
+      "desde": 1,
+      "firma": "Una profesora de secundaria"
+    }
+  ],
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "principal",
+        "t": "Para que haya más mujeres en las carreras de ciencia e ingeniería, las universidades deberían reservar un porcentaje de vacantes para ellas."
+      },
+      {
+        "id": "o2",
+        "rol": "apoyo",
+        "t": "Esperar a que el cambio llegue solo ha tomado décadas, y hoy las aulas de estas carreras siguen con muy pocas mujeres: muchas jóvenes capaces ni siquiera postulan porque no ven a ninguna delante."
+      },
+      {
+        "id": "o3",
+        "rol": "apoyo",
+        "t": "Una cuota cambia eso de inmediato, pues crea una presencia visible que anima a las siguientes generaciones."
+      },
+      {
+        "id": "o4",
+        "rol": "contraste",
+        "t": "Se dice que bajaría el nivel, pero las alumnas admitidas por cuota tendrían que alcanzar el mismo puntaje mínimo que los demás."
+      },
+      {
+        "id": "o5",
+        "rol": "principal",
+        "t": "Corregir todo desde el colegio antes de actuar sería dejar a varias promociones sin oportunidad."
+      }
+    ],
+    [
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "Acepto que hay pocas mujeres en estas carreras y que ese problema no puede esperar."
+      },
+      {
+        "id": "o7",
+        "rol": "contraste",
+        "t": "Sin embargo, una cuota llega al final del camino, cuando ya se perdieron muchos años."
+      },
+      {
+        "id": "o8",
+        "rol": "apoyo",
+        "t": "Muchas niñas dejan de interesarse por las matemáticas y la física en la secundaria, cuando oyen en la escuela y en casa que esos cursos no son para ellas."
+      },
+      {
+        "id": "o9",
+        "rol": "apoyo",
+        "t": "Si eso cambia con mejores clases, profesoras de referencia y concursos de ciencia, más jóvenes llegarán a postular por interés propio y no por una reserva."
+      },
+      {
+        "id": "o10",
+        "rol": "principal",
+        "t": "Por eso la prioridad debe ser transformar lo que ocurre desde el colegio, y la cuota, si se usa, solo debe ser un apoyo transitorio."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "controversia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Mientras se corrige el problema desde el colegio, varias promociones quedarían sin oportunidad.",
+        "aceptada": "A",
+        "codigos": {
+          "B": "RV59",
+          "ambos": "RV60",
+          "ninguno": null
+        },
+        "explicacion": "Lo sostiene el texto A en la oración 5: corregir todo desde el colegio antes de actuar dejaría a varias promociones sin oportunidad.",
+        "explicaciones": {
+          "B": "El texto B más bien dice que una cuota llega tarde (oración 7). La idea de promociones sin oportunidad es del texto A (oración 5).",
+          "ambos": "Solo el texto A lo sostiene. El B no habla de promociones que se quedan sin oportunidad: su preocupación es que la cuota llega al final del camino.",
+          "ninguno": "Sí lo sostiene alguien: el texto A, en la oración 5."
+        }
+      },
+      "enunciado": "¿Cuál es el eje del debate entre los dos textos?",
+      "alternativas": [
+        {
+          "t": "Si, para tener más mujeres en ciencia e ingeniería, conviene reservar vacantes o transformar antes lo que ocurre en el colegio.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o10"
+          ],
+          "explicacion": "El texto A pide reservar vacantes (oración 1); el B, que la prioridad sea cambiar lo que pasa desde el colegio (oración 10)."
+        },
+        {
+          "t": "Si hoy hay muy pocas mujeres en las carreras de ciencia e ingeniería y eso es un problema que debe atenderse.",
+          "codigo": "RV61",
+          "origen": "o6",
+          "explicacion": "En eso coinciden: el texto A lo dice en la oración 2 y el B lo acepta en la oración 6."
+        },
+        {
+          "t": "Si muchas niñas pierden el interés por las matemáticas y la física al llegar a la secundaria.",
+          "codigo": "RV60",
+          "origen": "o8",
+          "explicacion": "Es un argumento del texto B (oración 8). El A no lo discute: el eje tiene que ser algo sobre lo que los dos toman posición."
+        },
+        {
+          "t": "Si los concursos de ciencia y las profesoras de referencia animan a más jóvenes a postular a estas carreras.",
+          "codigo": "RV1",
+          "origen": "o9",
+          "explicacion": "Es un detalle de lo que propone el texto B (oración 9), no lo que se discute."
+        },
+        {
+          "t": "Si la educación superior del país debería ser gratuita y abierta para todos los jóvenes sin distinción.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos discuten cómo aumentar la presencia de mujeres en ciencia e ingeniería."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "dialogo",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Hoy hay pocas mujeres en las carreras de ciencia e ingeniería.",
+        "aceptada": "ambos",
+        "codigos": {
+          "A": "RV61",
+          "B": "RV61",
+          "ninguno": null
+        },
+        "explicacion": "Los dos lo sostienen: el texto A, en la oración 2 («siguen con muy pocas mujeres»), y el B, en la oración 6 («hay pocas mujeres en estas carreras»).",
+        "explicaciones": {
+          "A": "El texto A lo dice en la oración 2, pero el B también: «acepto que hay pocas mujeres» (oración 6).",
+          "B": "El texto B lo acepta en la oración 6, pero el A lo dice primero, en la oración 2.",
+          "ninguno": "Los dos lo sostienen: el texto A en la oración 2 y el B en la oración 6."
+        }
+      },
+      "enunciado": "Ante la propuesta del texto B, el decano del texto A probablemente objetaría que",
+      "alternativas": [
+        {
+          "t": "mejorar el colegio tomará años, y mientras tanto las promociones actuales se quedan sin oportunidad.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o5"
+          ],
+          "explicacion": "Para el texto A, esperar a corregir todo desde el colegio deja a varias promociones sin oportunidad (oración 5) y el cambio solo ha tomado décadas (oración 2)."
+        },
+        {
+          "t": "muchas niñas dejan de interesarse por la física cuando oyen que esos cursos no son para ellas.",
+          "codigo": "RV59",
+          "origen": "o8",
+          "explicacion": "Ese es el argumento del texto B (oración 8); no sirve al A para objetar."
+        },
+        {
+          "t": "hoy no hay pocas mujeres en estas carreras, así que el problema que se discute en realidad no existe.",
+          "codigo": "RV61",
+          "origen": "o2",
+          "explicacion": "El texto A afirma lo contrario en la oración 2, y el B también acepta que son pocas (oración 6). No es una objeción posible."
+        },
+        {
+          "t": "las universidades privadas ya ofrecen becas solo para mujeres en las carreras de ingeniería.",
+          "codigo": "RV8",
+          "explicacion": "Ninguno de los textos habla de universidades privadas ni de becas; es un dato de fuera del texto."
+        },
+        {
+          "t": "ninguna niña elige jamás estas carreras por interés propio y sin necesitar una reserva de vacantes.",
+          "codigo": "RV11",
+          "explicacion": "«Ninguna» y «jamás» dicen más de lo que el texto A afirma."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto B, el sustantivo RESERVA («no por una reserva») significa",
+      "alternativas": [
+        {
+          "t": "cupo apartado.",
+          "correcta": true,
+          "evidencia": [
+            "o9"
+          ],
+          "explicacion": "Se refiere a las vacantes que la cuota aparta para las mujeres (oración 1)."
+        },
+        {
+          "t": "terreno protegido.",
+          "codigo": "RV18",
+          "explicacion": "Es un sentido frecuente de «reserva» (de animales o de bosques), pero aquí se habla de vacantes."
+        },
+        {
+          "t": "ayuda económica.",
+          "codigo": "RV19",
+          "explicacion": "Se asocia con una medida a favor de las estudiantes, pero «reserva» no significa dinero."
+        },
+        {
+          "t": "interés propio.",
+          "codigo": "RV5",
+          "origen": "o9",
+          "explicacion": "Repite palabras de la misma oración, pero es justo lo que se opone a la reserva."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Las universidades deberían eliminar el examen de ingreso para las mujeres.",
+        "aceptada": "ninguno",
+        "codigos": {
+          "A": "RV33",
+          "B": "RV33",
+          "ambos": "RV33"
+        },
+        "explicacion": "Ninguno lo sostiene: el texto A pide reservar un porcentaje de vacantes pero con el mismo puntaje mínimo (oraciones 1 y 4), y el B prioriza el colegio (oración 10); ninguno habla de eliminar el examen.",
+        "explicaciones": {
+          "A": "El texto A exige el mismo puntaje mínimo (oración 4), no eliminar el examen.",
+          "B": "El texto B pide transformar el colegio (oración 10); no habla de eliminar el examen.",
+          "ambos": "Ninguno de los dos habla de eliminar el examen de ingreso."
+        }
+      },
+      "enunciado": "Resulta incompatible con lo que plantea el texto A afirmar que",
+      "alternativas": [
+        {
+          "t": "a las alumnas admitidas por cuota se les puede exigir un puntaje mínimo menor que al resto.",
+          "correcta": true,
+          "evidencia": [
+            "o4"
+          ],
+          "explicacion": "Choca con la oración 4: tendrían que alcanzar el mismo puntaje mínimo que los demás."
+        },
+        {
+          "t": "algunas jóvenes capaces no postulan a estas carreras porque no ven a ninguna mujer en las aulas.",
+          "codigo": "RV6",
+          "origen": "o2",
+          "explicacion": "Está dicho en el texto tal cual (oración 2), así que es compatible, no incompatible."
+        },
+        {
+          "t": "una cuota podría animar a niñas que hoy no se ven representadas en las aulas de ingeniería.",
+          "codigo": "RV34",
+          "explicacion": "Se deduce de la oración 3: una presencia visible anima a las siguientes generaciones; es compatible con el texto."
+        },
+        {
+          "t": "algunos programas de orientación vocacional también podrían ayudar a que más jóvenes elijan ciencias.",
+          "codigo": "RV36",
+          "explicacion": "Que el texto no lo mencione no significa que lo contradiga: el A no niega otras ayudas."
+        },
+        {
+          "t": "una universidad podría usar cuotas de vacantes para equilibrar la presencia de ambos sexos en sus aulas.",
+          "codigo": "RV8",
+          "explicacion": "Puede ser cierto, pero no sale del texto ni choca con lo que dice el A."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Si se comprobara que, tras años de mejores clases y profesoras de referencia, casi la mitad de los postulantes a ingeniería fueran mujeres, la profesora del texto B probablemente",
+      "alternativas": [
+        {
+          "t": "diría que la cuota ya no hace falta, pues el cambio llegó por interés propio y no por una reserva.",
+          "correcta": true,
+          "evidencia": [
+            "o9",
+            "o10"
+          ],
+          "explicacion": "Es lo que prevé en las oraciones 9 y 10: si el colegio cambia, más jóvenes postulan por interés propio, y la cuota solo era un apoyo transitorio."
+        },
+        {
+          "t": "seguiría pidiendo una cuota permanente, pues sin ella nadie se interesaría por estas carreras.",
+          "codigo": "RV63",
+          "explicacion": "El condicional se cumple justo en lo que propone el texto B; decir que la cuota sigue siendo necesaria contradice su idea de apoyo transitorio (oración 10)."
+        },
+        {
+          "t": "afirmaría que todas las niñas del país ya eligen estudiar ciencias e ingeniería sin ninguna ayuda.",
+          "codigo": "RV11",
+          "explicacion": "«Todas» y «ninguna» dicen más que el texto B, que habla de cerca de la mitad de los postulantes."
+        },
+        {
+          "t": "propondría cerrar las carreras de ingeniería a los varones para sostener ese cambio en el futuro.",
+          "codigo": "RV7",
+          "explicacion": "Va más allá del texto: el B nunca plantea excluir a nadie."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-12",
+  "hechos": [],
+  "revision": {
+    "por": "subagente (revisor a ciegas, rutina verbal-mas)",
+    "fecha": "2026-11-12",
+    "veredicto": "aprobado",
+    "notas": "Resultado a ciegas: 40 de 40 coincidieron. Sin dudas. Se suavizó un distractor de p4 que afirmaba que en algunos países se usan cuotas por sexo (dato sin fuente) a una posibilidad hipotética. Sin hechos del mundo en el texto: «ha tomado décadas» es juicio del decano."
+  }
+}

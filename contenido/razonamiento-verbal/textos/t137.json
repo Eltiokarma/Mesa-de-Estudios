@@ -1,0 +1,339 @@
+{
+  "id": "t137",
+  "version": 1,
+  "titulo": "El puerto de Chancay: ¿oportunidad o desorden?",
+  "tema": "Economía · el puerto de Chancay y la ciudad",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    {
+      "id": "A",
+      "desde": 0,
+      "firma": "Un economista especializado en comercio exterior"
+    },
+    {
+      "id": "B",
+      "desde": 1,
+      "firma": "Una urbanista"
+    }
+  ],
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "principal",
+        "t": "El puerto de Chancay, que empezó a operar en 2024 a unos ochenta kilómetros al norte de Lima, puede ser la obra que cambie la economía del país en esta década."
+      },
+      {
+        "id": "o2",
+        "rol": "apoyo",
+        "t": "Con barcos que viajan directo a Asia, nuestros arándanos, paltas y minerales podrían llegar antes y a menor costo a sus compradores."
+      },
+      {
+        "id": "o3",
+        "rol": "apoyo",
+        "t": "Pero el muelle, por sí solo, solo mueve contenedores: el desarrollo vendrá si a su alrededor se instalan almacenes, talleres y plantas que procesen lo que hoy exportamos en bruto."
+      },
+      {
+        "id": "o4",
+        "rol": "principal",
+        "t": "Esa es la oportunidad: que Chancay no sea un lugar por donde la riqueza pasa, sino uno donde se produce."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "Para lograrlo, el Estado debe atraer esas industrias y formar a los jóvenes de la zona en los oficios que ellas pedirán."
+      }
+    ],
+    [
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "Comparto que el puerto puede traer empleo y que su valor dependerá de lo que se construya a su alrededor."
+      },
+      {
+        "id": "o7",
+        "rol": "contraste",
+        "t": "Mi temor es que eso se construya sin orden."
+      },
+      {
+        "id": "o8",
+        "rol": "apoyo",
+        "t": "Chancay era una ciudad pequeña, y ya recibe camiones, trabajadores y compradores de terrenos más rápido de lo que puede darles agua, desagüe y pistas."
+      },
+      {
+        "id": "o9",
+        "rol": "apoyo",
+        "t": "Si nadie decide dónde irán las fábricas y dónde las casas, las laderas se llenarán de viviendas precarias y algunas fábricas terminarán junto a los colegios."
+      },
+      {
+        "id": "o10",
+        "rol": "apoyo",
+        "t": "Además, los pescadores artesanales necesitan saber si el tráfico de los grandes barcos dejará a salvo sus zonas de pesca, y eso debe estudiarse antes de que el puerto crezca más."
+      },
+      {
+        "id": "o11",
+        "rol": "principal",
+        "t": "Antes que las nuevas industrias, Chancay necesita un plan de ciudad: sin él, la oportunidad se pagará con desorden."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "discrepancia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Lo que hoy se vende al extranjero sin procesar podría procesarse cerca del puerto.",
+        "aceptada": "A",
+        "codigos": {
+          "B": "RV59",
+          "ambos": "RV60",
+          "ninguno": null
+        },
+        "explicacion": "Lo sostiene el texto A en la oración 3: el desarrollo vendrá si alrededor del puerto se instalan plantas que procesen lo que hoy se exporta en bruto.",
+        "explicaciones": {
+          "B": "El texto B no habla de procesar lo que se exporta: habla del orden de la ciudad y de la pesca. La idea es del A (oración 3).",
+          "ambos": "Solo el texto A lo propone (oraciones 3 y 4). El B acepta que el valor del puerto depende de lo que se construya (oración 6), pero no dice qué industrias.",
+          "ninguno": "Sí lo sostiene alguien: el texto A, en la oración 3."
+        }
+      },
+      "enunciado": "Los autores discrepan principalmente sobre",
+      "alternativas": [
+        {
+          "t": "si el valor del puerto dependerá de lo que se construya a su alrededor.",
+          "codigo": "RV61",
+          "origen": "o6",
+          "explicacion": "En eso coinciden: el texto A lo dice en la oración 3 y el B lo comparte en la oración 6."
+        },
+        {
+          "t": "cuál debe ser la prioridad en Chancay: atraer industrias que procesen lo que se exporta, o fijar antes un plan de ciudad.",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "o11"
+          ],
+          "explicacion": "El texto A propone que el Estado atraiga industrias (oración 5); el B pide un plan de ciudad «antes que las nuevas industrias» (oración 11)."
+        },
+        {
+          "t": "si el puerto bastará por sí solo o necesitará que alguien construya a su alrededor.",
+          "codigo": "RV62",
+          "origen": "o3",
+          "explicacion": "En esto no discrepan: el texto A dice que el muelle, por sí solo, solo mueve contenedores (oración 3), y el B también pide que se construya a su alrededor (oración 6)."
+        },
+        {
+          "t": "si los arándanos y las paltas del país llegarán a sus compradores de Asia antes y a menor costo.",
+          "codigo": "RV60",
+          "origen": "o2",
+          "explicacion": "Es un argumento del texto A (oración 2). El B no lo discute: no es el punto en que discrepan."
+        },
+        {
+          "t": "si el puerto debería cerrarse para proteger las zonas donde trabajan los pescadores artesanales.",
+          "codigo": "RV33",
+          "origen": "o10",
+          "explicacion": "Nadie pide cerrar el puerto: el texto B pide estudiar el efecto en la pesca antes de que crezca más (oración 10)."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "sintesis",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Para que el puerto dé frutos, importa lo que se construya a su alrededor.",
+        "aceptada": "ambos",
+        "codigos": {
+          "A": "RV61",
+          "B": "RV61",
+          "ninguno": null
+        },
+        "explicacion": "Los dos lo sostienen: el texto A dice que el desarrollo vendrá si a su alrededor se instalan industrias (oración 3) y el B, que el valor del puerto dependerá de lo que se construya a su alrededor (oración 6).",
+        "explicaciones": {
+          "A": "El texto A lo dice en la oración 3, pero el B también: el valor del puerto «dependerá de lo que se construya a su alrededor» (oración 6).",
+          "B": "El texto B lo dice en la oración 6, pero el A también: el desarrollo vendrá si a su alrededor se instalan almacenes, talleres y plantas (oración 3).",
+          "ninguno": "Los dos lo sostienen: el texto A en la oración 3 y el B en la oración 6."
+        }
+      },
+      "enunciado": "¿Qué enunciado sintetiza mejor lo que plantean los dos textos?",
+      "alternativas": [
+        {
+          "t": "El puerto traerá desorden a Chancay, pues las nuevas industrias procesarán lo que hoy se exporta en bruto.",
+          "codigo": "RV44",
+          "origen": "o3",
+          "explicacion": "Une dos ideas con una causa que los textos no plantean: para el texto B el desorden vendría de construir sin plan (oración 9), no de procesar productos (oración 3)."
+        },
+        {
+          "t": "El puerto puede impulsar el desarrollo, pero solo si lo acompañan industrias y una ciudad ordenada.",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "o4",
+            "o6",
+            "o11"
+          ],
+          "explicacion": "Integra los dos aportes: el texto A pide industrias que procesen (oraciones 3 y 4) y el B, un plan de ciudad (oración 11); y los dos aceptan que el valor del puerto depende de lo que lo rodee (oraciones 3 y 6)."
+        },
+        {
+          "t": "Lo primero que debe hacer el Estado es formar a los jóvenes de la zona en los oficios que pedirán las industrias.",
+          "codigo": "RV60",
+          "origen": "o5",
+          "explicacion": "Es una propuesta del texto A (oración 5), y no la primera: el B pone antes el plan de ciudad. No integra los dos textos."
+        },
+        {
+          "t": "El puerto ofrece empleo a la zona, y por eso conviene dejar que la ciudad crezca sin plan para no frenar las inversiones.",
+          "codigo": "RV62",
+          "origen": "o6",
+          "explicacion": "La primera mitad es común (oración 6), pero la segunda la niega el texto B (oración 11) y el A nunca la propone."
+        },
+        {
+          "t": "El comercio con Asia decidirá el futuro económico de toda América del Sur en las próximas décadas.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos hablan de un puerto y de su ciudad, no del continente."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto A, la expresión EN BRUTO («lo que hoy exportamos en bruto») significa",
+      "alternativas": [
+        {
+          "t": "de manera torpe y descuidada.",
+          "codigo": "RV18",
+          "explicacion": "Es el sentido de «bruto» que se dice de las personas, pero aquí se habla de productos, no de cómo se trabaja."
+        },
+        {
+          "t": "sin descontar los costos.",
+          "codigo": "RV19",
+          "explicacion": "Es el sentido de «bruto» en las cuentas (ganancia bruta), del mismo campo que la exportación, pero el texto habla del estado del producto."
+        },
+        {
+          "t": "en contenedores.",
+          "codigo": "RV5",
+          "origen": "o3",
+          "explicacion": "Es una palabra de la misma oración, pero se refiere a lo que mueve el muelle, no a cómo está el producto."
+        },
+        {
+          "t": "sin elaborar.",
+          "correcta": true,
+          "evidencia": [
+            "o3"
+          ],
+          "explicacion": "Se opone a lo que harían las plantas: procesar el producto antes de venderlo."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "dialogo",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Si la ciudad crece sin un plan, la oportunidad del puerto saldrá cara.",
+        "aceptada": "B",
+        "codigos": {
+          "A": "RV59",
+          "ambos": "RV60",
+          "ninguno": null
+        },
+        "explicacion": "Lo sostiene el texto B en la oración 11: sin un plan de ciudad, la oportunidad se pagará con desorden.",
+        "explicaciones": {
+          "A": "El texto A no habla del orden de la ciudad: habla de industrias y de formar a los jóvenes (oraciones 3 y 5). La idea es del B (oración 11).",
+          "ambos": "Solo el texto B lo sostiene (oraciones 9 y 11). El A no menciona el crecimiento desordenado.",
+          "ninguno": "Sí lo sostiene alguien: el texto B, en la oración 11."
+        }
+      },
+      "enunciado": "Ante la propuesta del texto A, la urbanista del texto B le diría que",
+      "alternativas": [
+        {
+          "t": "las industrias que él quiere atraer necesitan saber antes dónde podrán instalarse.",
+          "correcta": true,
+          "evidencia": [
+            "o9",
+            "o11"
+          ],
+          "explicacion": "Para el texto B hay que decidir primero dónde van las fábricas y dónde las casas (oración 9): el plan va antes que las industrias (oración 11)."
+        },
+        {
+          "t": "el desarrollo vendrá si cerca del puerto se procesa lo que hoy se exporta sin elaborar.",
+          "codigo": "RV59",
+          "origen": "o3",
+          "explicacion": "Esa es la idea del texto A (oración 3); no es algo que el B le diga para objetarle."
+        },
+        {
+          "t": "el puerto no traerá ningún empleo a la zona, ni ahora ni cuando lleguen las industrias.",
+          "codigo": "RV61",
+          "origen": "o6",
+          "explicacion": "En eso no discrepan: el texto B concede que el puerto puede traer empleo (oración 6)."
+        },
+        {
+          "t": "los barcos que viajan a Asia contaminan el mar mucho más que los que viajan a otros continentes.",
+          "codigo": "RV8",
+          "explicacion": "El texto B no compara barcos ni rutas. Es un dato de fuera del texto, sea cierto o no."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Si Chancay aprobara un plan que fije dónde irán las fábricas y las viviendas, y llevara agua y desagüe a los barrios nuevos, la autora del texto B probablemente",
+      "alternativas": [
+        {
+          "t": "seguiría temiendo que, a falta de un plan, algunas fábricas terminen junto a los colegios.",
+          "codigo": "RV63",
+          "origen": "o9",
+          "explicacion": "Repite el temor que el supuesto acaba de quitar: con el plan, ya se decidió dónde van las fábricas y dónde las casas."
+        },
+        {
+          "t": "vería mejor la llegada de industrias, aunque aún pediría estudiar la pesca.",
+          "correcta": true,
+          "evidencia": [
+            "o10",
+            "o11"
+          ],
+          "explicacion": "El plan atiende su condición principal (oración 11), pero no toca la otra: estudiar si el tráfico de barcos deja a salvo las zonas de pesca (oración 10)."
+        },
+        {
+          "t": "rechazaría cualquier fábrica nueva en toda la provincia, por más ordenada que estuviera la ciudad.",
+          "codigo": "RV11",
+          "explicacion": "El texto B no rechaza las fábricas: pide decidir dónde irán (oración 9). Con el plan, su objeción pierde fuerza."
+        },
+        {
+          "t": "propondría llevar el puerto a otra ciudad, con más espacio para crecer.",
+          "codigo": "RV7",
+          "explicacion": "Nada en el texto B permite esa conclusión: acepta el puerto y su empleo (oración 6) y pide orden, no mudarlo."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-12",
+  "hechos": [
+    {
+      "afirmacion": "El puerto multipropósito de Chancay, en la provincia de Huaral (región Lima), a unos 80 km al norte de la ciudad de Lima, empezó a operar en noviembre de 2024.",
+      "fuente": "Ministerio de Transportes y Comunicaciones del Perú y Autoridad Portuaria Nacional, información pública sobre el Terminal Portuario Multipropósito de Chancay (2024)"
+    },
+    {
+      "afirmacion": "El puerto de Chancay ofrece rutas marítimas directas hacia Asia, en especial hacia China.",
+      "fuente": "Autoridad Portuaria Nacional del Perú y notas de prensa oficiales sobre el inicio de operaciones del puerto (2024)"
+    },
+    {
+      "afirmacion": "El Perú exporta arándanos, paltas y minerales a mercados de Asia.",
+      "fuente": "PROMPERÚ y Ministerio de Comercio Exterior y Turismo (MINCETUR), reportes de exportaciones"
+    }
+  ],
+  "revision": {
+    "por": "subagente (revisor a ciegas, rutina verbal-mas)",
+    "fecha": "2026-11-12",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidieron todos los ítems de t137, con duda fuerte en p1 y p2.previo. Cambios: p1 reescrita; la correcta ahora es 'cuál debe ser la prioridad: atraer industrias o fijar antes un plan de ciudad' (A la propone en la oración 5, B en la 11), y la alternativa A ya no atribuye al autor A que el puerto baste solo (ahora 'bastará por sí solo o necesitará que se construya a su alrededor', en la que coinciden). p2.previo: sonda cambiada a 'Para que el puerto dé frutos, importa lo que se construya a su alrededor', explícita en las oraciones 3 y 6, con explicaciones nuevas. Hechos confirmados con fuente en la web: el puerto se inauguró el 14 de noviembre de 2024 y está en el distrito de Chancay, provincia de Huaral, a unos 80 km de Lima (Andina, Rumbo Minero, Wikipedia); rutas directas a Asia: de memoria; exportaciones de arándanos, paltas y minerales: de memoria."
+  }
+}

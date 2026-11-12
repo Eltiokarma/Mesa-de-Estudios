@@ -1,0 +1,162 @@
+{
+  "id": "t142",
+  "version": 1,
+  "titulo": "La vereda y el sustento",
+  "tema": "Sociedad · comercio ambulatorio en las ciudades",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    { "id": "A", "desde": 0, "firma": "Un economista" },
+    { "id": "B", "desde": 1, "firma": "Una urbanista" }
+  ],
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "contraste", "t": "Cada cierto tiempo, una municipalidad desaloja a los ambulantes de una avenida y, a las pocas semanas, vuelven a estar ahí." },
+      { "id": "o2", "rol": "principal", "t": "El desalojo fracasa porque trata como un asunto de policía lo que es, sobre todo, un asunto de sustento." },
+      { "id": "o3", "rol": "apoyo", "t": "Quien vende en la calle suele ser una familia que no encontró un empleo formal, como le ocurre a la mayoría de los trabajadores del país." },
+      { "id": "o4", "rol": "apoyo", "t": "Si sacar una licencia exige meses de trámites y pagos que no puede cubrir, seguirá vendiendo sin ella, solo que más lejos o de noche." },
+      { "id": "o5", "rol": "principal", "t": "Lo que funciona es una regla simple: un registro rápido y barato, un lugar asignado y una cuota pequeña que se pague en el mismo puesto." },
+      { "id": "o6", "rol": "apoyo", "t": "Así, el vendedor gana algo que cuidar y la ciudad sabe quién está dónde." }
+    ],
+    [
+      { "id": "o7", "rol": "apoyo", "t": "Coincido en que desalojar sin ofrecer otra salida no resuelve nada y en que los ambulantes son trabajadores, no delincuentes." },
+      { "id": "o8", "rol": "apoyo", "t": "También creo que el registro debe ser sencillo." },
+      { "id": "o9", "rol": "contraste", "t": "Pero una licencia, por simple que sea, no decide dónde se puede vender, y la vereda no es un terreno que se pueda repartir sin fin." },
+      { "id": "o10", "rol": "apoyo", "t": "Cuando los puestos ocupan la vereda, el peatón baja a la pista, la ambulancia no pasa y la salida de un colegio se vuelve un embudo." },
+      { "id": "o11", "rol": "principal", "t": "Por eso la ciudad tiene que decidir primero qué calles quedan libres y cuáles se habilitan para ferias, y hacer cumplir esa decisión con firmeza, todos los días y con todos." },
+      { "id": "o12", "rol": "detalle", "t": "Formalizar sin ordenar el espacio solo convierte el desorden en un desorden con permiso." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "controversia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Lo mejor sería prohibir para siempre la venta en la calle en toda la ciudad.",
+        "aceptada": "ninguno",
+        "codigos": { "A": "RV33", "B": "RV7", "ambos": "RV33" },
+        "explicacion": "Ninguno lo sostiene: el texto A quiere formalizar a los vendedores y el B propone que unas calles queden libres y otras se habiliten para ferias.",
+        "explicaciones": {
+          "A": "El texto A dice lo contrario: que el desalojo fracasa y que hay que dar a los vendedores un registro y un lugar (oraciones 2 y 5).",
+          "B": "La urbanista pide firmeza, pero no prohibir toda venta: habla de calles que se habilitan para ferias (oración 11). Eso va más allá de lo que dice.",
+          "ambos": "Ninguno lo sostiene: los dos rechazan el desalojo sin otra salida (oraciones 2 y 7)."
+        }
+      },
+      "enunciado": "El punto en que discrepan los dos autores es",
+      "alternativas": [
+        { "t": "si basta una formalización sencilla o hace falta, antes, ordenar el espacio con firmeza.", "correcta": true, "evidencia": ["o5", "o11", "o12"],
+          "explicacion": "Para el texto A, lo que funciona es la regla simple (oración 5); para el B, primero hay que decidir qué calles quedan libres y hacerlo cumplir (oraciones 11 y 12)." },
+        { "t": "si los vendedores ambulantes son trabajadores que buscan su sustento o son delincuentes.", "codigo": "RV61", "origen": "o7",
+          "explicacion": "En eso coinciden: el texto A habla de sustento (oración 2) y el B dice que son trabajadores, no delincuentes (oración 7)." },
+        { "t": "si conviene cobrar a cada vendedor una cuota pequeña en su mismo puesto de venta.", "codigo": "RV60", "origen": "o5",
+          "explicacion": "La cuota es un detalle de la propuesta del texto A (oración 5); el B no la discute." },
+        { "t": "si el Perú tiene más empleo informal que los demás países de América del Sur.", "codigo": "RV2", "origen": "o3",
+          "explicacion": "Los textos hablan de la venta en la calle en las ciudades, no comparan el empleo del Perú con el de otros países." },
+        { "t": "si las ambulancias pueden pasar por las calles donde hay puestos.", "codigo": "RV1", "origen": "o10",
+          "explicacion": "Es un ejemplo del texto B (oración 10), no el punto que se discute." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "postura",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Dar permisos sin decidir dónde se vende deja el mismo desorden, solo que legal.",
+        "aceptada": "B",
+        "codigos": { "A": "RV59", "ambos": "RV60", "ninguno": null },
+        "explicacion": "Lo dice el texto B en la oración 12: formalizar sin ordenar el espacio convierte el desorden en «un desorden con permiso».",
+        "explicaciones": {
+          "A": "El texto A confía en la regla simple y no habla de un desorden con permiso. La idea es del texto B (oración 12).",
+          "ambos": "Solo el texto B lo sostiene (oraciones 9 y 12). El A cree que el registro y el lugar asignado bastan para que la ciudad sepa quién está dónde.",
+          "ninguno": "Sí lo sostiene alguien: el texto B, en la oración 12."
+        }
+      },
+      "enunciado": "Según la autora del texto B, una licencia sencilla para los vendedores",
+      "alternativas": [
+        { "t": "no resuelve, por sí sola, dónde se puede vender.", "correcta": true, "evidencia": ["o9", "o12"],
+          "explicacion": "La oración 9 dice que una licencia, por simple que sea, no decide dónde se puede vender." },
+        { "t": "le da al vendedor algo que cuidar y le dice a la ciudad quién está dónde.", "codigo": "RV59", "origen": "o6",
+          "explicacion": "Eso lo dice el texto A (oración 6), no la urbanista." },
+        { "t": "es innecesaria si la municipalidad desaloja a los ambulantes con firmeza.", "codigo": "RV9", "origen": "o7",
+          "explicacion": "Choca con el texto B: la autora quiere un registro sencillo (oración 8) y rechaza desalojar sin otra salida (oración 7)." },
+        { "t": "convierte la vereda en un terreno que se reparte sin fin entre todos.", "codigo": "RV5", "origen": "o9",
+          "explicacion": "Repite palabras de la oración 9, pero la autora dice que la vereda no es un terreno que se pueda repartir sin fin." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sintesis",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "¿Cuál de estas ideas integra mejor lo que plantean los dos textos?",
+      "alternativas": [
+        { "t": "Un registro sencillo para los vendedores, junto con zonas definidas que la ciudad haga respetar.", "correcta": true, "evidencia": ["o5", "o8", "o11"],
+          "explicacion": "Junta lo que los dos aceptan, el registro sencillo (oraciones 5 y 8), con lo que agrega el texto B: decidir las zonas y hacerlas cumplir (oración 11)." },
+        { "t": "Un registro sencillo para los vendedores, junto con desalojos frecuentes de todas las avenidas.", "codigo": "RV62", "origen": "o7",
+          "explicacion": "La primera mitad es común, pero los dos rechazan el desalojo sin otra salida (oraciones 2 y 7)." },
+        { "t": "Una regla simple, con registro rápido, puesto asignado y cuota pagada en el mismo lugar.", "codigo": "RV3", "origen": "o5",
+          "explicacion": "Es solo la propuesta del texto A (oración 5). Deja fuera lo que agrega el B: decidir qué calles quedan libres y hacerlo cumplir." },
+        { "t": "Como los ambulantes son trabajadores, la ciudad debe dejarlos ocupar las veredas que necesiten.", "codigo": "RV44", "origen": "o7",
+          "explicacion": "Saca de que son trabajadores una consecuencia que ninguno plantea; el texto B dice justo que la vereda no se reparte sin fin (oración 9)." },
+        { "t": "La ciudad y sus vendedores deben dialogar para encontrar soluciones a sus problemas.", "codigo": "RV2",
+          "explicacion": "Es tan general que no dice qué propone cada texto." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Sacar a los vendedores sin darles otra salida no arregla el problema.",
+        "aceptada": "ambos",
+        "codigos": { "A": "RV61", "B": "RV61", "ninguno": null },
+        "explicacion": "Los dos lo sostienen: el texto A dice que el desalojo fracasa (oraciones 1 y 2) y el B coincide en que desalojar sin otra salida no resuelve nada (oración 7).",
+        "explicaciones": {
+          "A": "El texto A lo dice en las oraciones 1 y 2, pero el B coincide expresamente en la oración 7.",
+          "B": "El texto B lo dice en la oración 7, pero lo hace para coincidir con el A, que lo sostiene en las oraciones 1 y 2.",
+          "ninguno": "Los dos lo sostienen: el texto A en las oraciones 1 y 2, y el B en la oración 7."
+        }
+      },
+      "enunciado": "Es incompatible con lo que sostiene el autor del texto A afirmar que",
+      "alternativas": [
+        { "t": "un desalojo firme basta para que los ambulantes dejen una avenida.", "correcta": true, "evidencia": ["o1", "o2"],
+          "explicacion": "Choca con las oraciones 1 y 2: los desalojados vuelven a las pocas semanas y el desalojo fracasa." },
+        { "t": "los mercados municipales deberían abrir también los domingos por la tarde.", "codigo": "RV36",
+          "explicacion": "El texto A no habla de mercados, pero tampoco dice nada en contra: que algo no esté dicho no lo vuelve incompatible." },
+        { "t": "no conviene exigir meses de trámites a quien solo quiere vender en un puesto.", "codigo": "RV10", "origen": "o4",
+          "explicacion": "Tiene un «no», pero es compatible: es lo que se desprende de la oración 4." },
+        { "t": "conviene que el registro de los vendedores ambulantes sea sencillo y rápido.", "codigo": "RV61", "origen": "o8",
+          "explicacion": "No choca con el texto A: es su propuesta (oración 5), y en eso coincide con el B (oración 8)." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto B, la palabra FIRMEZA («hacer cumplir esa decisión con firmeza») significa",
+      "alternativas": [
+        { "t": "constancia sin excepciones.", "correcta": true, "evidencia": ["o11"],
+          "explicacion": "La misma oración lo explica: la decisión se hace cumplir «todos los días y con todos»." },
+        { "t": "solidez de un objeto o de un material.", "codigo": "RV18",
+          "explicacion": "Es el sentido más concreto de «firmeza», pero aquí no se habla de un objeto, sino de cómo se aplica una decisión." },
+        { "t": "uso de la fuerza.", "codigo": "RV19",
+          "explicacion": "Se asocia con «firmeza», pero la autora no habla de fuerza; además, rechaza desalojar sin dar otra salida (oración 7)." },
+        { "t": "permiso.", "codigo": "RV5", "origen": "o12",
+          "explicacion": "Es una palabra de la oración siguiente («un desorden con permiso»), que no tiene que ver con el sentido de «firmeza»." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-12",
+  "hechos": [
+    { "afirmacion": "En el Perú, la mayoría de los trabajadores tiene un empleo informal.", "fuente": "INEI, Producción y Empleo Informal en el Perú (informes de la Cuenta Satélite de la Economía Informal) y Encuesta Nacional de Hogares (ENAHO)" }
+  ],
+  "revision": { "por": "subagente (revisor a ciegas, rutina verbal-mas)", "fecha": "2026-11-12", "veredicto": "aprobado", "notas": "A ciegas coincidió en 8 de 8 ítems (previos y preguntas). Sin cambios. Códigos de p4 revisados: RV36, RV10 y RV61 describen bien cada distractor. El dato de empleo informal (INEI) va de memoria, sin búsqueda en la web." }
+}

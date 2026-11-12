@@ -1,0 +1,7 @@
+{
+  "t139": { "p1": "A", "p2.previo": "B", "p2": "C", "p3.previo": "ambos", "p3": "A", "p4": "B", "p5": "C" },
+  "t140": { "p1": "B", "p2.previo": "A", "p2": "B", "p3": "B", "p4.previo": "ninguno", "p4": "B", "p5": "D" },
+  "t141": { "p1": "A", "p2.previo": "ambos", "p2": "D", "p3.previo": "B", "p3": "C", "p4": "B", "p5": "D" },
+  "t142": { "p1.previo": "ninguno", "p1": "B", "p2.previo": "B", "p2": "B", "p3": "E", "p4.previo": "ambos", "p4": "D", "p5": "C" },
+  "t143": { "p1": "A", "p2.previo": "A", "p2": "D", "p3": "C", "p4.previo": "ambos", "p4": "C", "p5": "B" }
+}

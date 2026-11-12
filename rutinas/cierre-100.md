@@ -47,7 +47,7 @@ Método, el de rm-procesos: un constructor por grupo de generadores y después u
   - **Moléculas:** la cuenta de metilos toma «metilo» como CH₃ unido a carbono (sin el del metoxilo). La bilirrubina usa la convención de academia de un par libre por N.
   - **Fenton:** fen6 y fen12 se reformularon para hablar de cómo se escribe la reacción (flecha simple) y no de si es reversible.
   - **Cita visible:** la cita de las preguntas oficiales de química va en comentarios del código, no en el texto que ve el alumno.
-- **Verbal:** el tipo de figura nuevo es `imagen`: un SVG propio validado (sin script, `on…=`, `foreignObject` ni colores fijos) con `partes` que se pueden citar como recuadros. t134 (el Corpus del Cusco) es un texto y un dibujo propios, no los del examen. Por el revisor, «estandarte» pasó a «emblema». Queda opcional acercar el tambor al número 4 del dibujo.
+- **Verbal:** el tipo de figura nuevo es `imagen`: un SVG propio validado (sin script, `on…=`, `foreignObject` ni colores fijos) con `partes` que se pueden citar como recuadros. t174 (antes t134; el Corpus del Cusco) es un texto y un dibujo propios, no los del examen. Por el revisor, «estandarte» pasó a «emblema». Queda opcional acercar el tambor al número 4 del dibujo.
 - **Alambre (rm-cortes):** el primer verificador leyó cada corte como una recta infinita. Así, dos estructuras de triángulos no tenían solución y la rejilla daba 2. El generador modela un tramo de sierra (un segmento) que no va a lo largo de un alambre, con el que la oficial da 4, igual que la clave. Se corrigió el enunciado para que diga ese modelo, y la segunda verificación ciega dio 3/3 (rejilla 3, triángulos 4, oficial 4), con cota inferior.
 
 ## Lo que toca a la integración

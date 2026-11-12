@@ -1,0 +1,313 @@
+{
+  "id": "t152",
+  "version": 1,
+  "titulo": "Pagar por el bosque en pie: ¿solución o mercancía?",
+  "tema": "Ambiente · bonos de carbono y comunidades amazónicas",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    {
+      "id": "A",
+      "desde": 0,
+      "firma": "Un ingeniero forestal"
+    },
+    {
+      "id": "B",
+      "desde": 1,
+      "firma": "Una antropóloga"
+    }
+  ],
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "apoyo",
+        "t": "Las comunidades amazónicas viven del bosque y son quienes mejor lo vigilan, pero conservarlo les cuesta: mientras el bosque en pie no deja ingresos, la tala ilegal sí."
+      },
+      {
+        "id": "o2",
+        "rol": "principal",
+        "t": "Pagarles por cada hectárea que mantienen en pie, incluso mediante bonos de carbono que compran empresas, cambia esa cuenta."
+      },
+      {
+        "id": "o3",
+        "rol": "apoyo",
+        "t": "Con ese dinero pueden sostener a sus vigilantes comunales, un puesto de salud o becas para sus jóvenes."
+      },
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "Exigirles que conserven sin pagarles equivale a pedirles que subsidien al mundo con su propio bolsillo."
+      },
+      {
+        "id": "o5",
+        "rol": "principal",
+        "t": "Por eso pagar es una solución real, y no hay que esperar una solución perfecta para empezar."
+      }
+    ],
+    [
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "Es justo que las comunidades reciban recursos, y coincido en que hoy conservar les cuesta más que talar."
+      },
+      {
+        "id": "o7",
+        "rol": "contraste",
+        "t": "Mi reparo es otro: convertir el bosque en un bien que se compra y se vende cambia la manera de relacionarse con él."
+      },
+      {
+        "id": "o8",
+        "rol": "apoyo",
+        "t": "Para muchas comunidades el bosque es territorio, memoria y sustento a la vez, no un inventario de toneladas de carbono."
+      },
+      {
+        "id": "o9",
+        "rol": "apoyo",
+        "t": "Cuando todo se mide en precio, el vínculo se vuelve un contrato, y los contratos se rompen cuando el precio baja o el comprador se va."
+      },
+      {
+        "id": "o10",
+        "rol": "apoyo",
+        "t": "Además, la empresa que compra el bono puede seguir emitiendo, de modo que el problema solo cambia de lugar."
+      },
+      {
+        "id": "o11",
+        "rol": "principal",
+        "t": "Si pagar es necesario, que sea un apoyo a la gestión comunal del bosque, no un negocio donde el comprador impone las condiciones."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "controversia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Hoy conservar el bosque les cuesta más a las comunidades que talarlo.",
+        "aceptada": "ambos",
+        "codigos": {
+          "A": "RV61",
+          "B": "RV61",
+          "ninguno": null
+        },
+        "explicacion": "Los dos lo sostienen: el texto A dice que el bosque en pie no deja ingresos y la tala ilegal sí (oración 1) y el B coincide en que hoy conservar cuesta más que talar (oración 6).",
+        "explicaciones": {
+          "A": "El texto A lo dice en la oración 1, pero el B también: hoy conservar les cuesta más que talar (oración 6).",
+          "B": "El texto B lo dice en la oración 6, pero el A también: el bosque en pie no deja ingresos y la tala ilegal sí (oración 1).",
+          "ninguno": "Los dos lo sostienen: el texto A en la oración 1 y el B en la oración 6."
+        }
+      },
+      "enunciado": "La controversia central entre los dos textos es si pagar a las comunidades por conservar el bosque",
+      "alternativas": [
+        {
+          "t": "compensa un costo real que hoy asumen las comunidades que lo cuidan.",
+          "codigo": "RV61",
+          "origen": "o6",
+          "explicacion": "En eso coinciden: el texto A lo plantea en las oraciones 1 y 4 y el B lo reconoce en la oración 6."
+        },
+        {
+          "t": "es una solución real o convierte el bosque en una mercancía.",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "o7"
+          ],
+          "explicacion": "El texto A dice que pagar es una solución real (oración 5); el B teme que comprar y vender el bosque cambie la relación con él (oración 7)."
+        },
+        {
+          "t": "permite financiar vigilantes comunales, un puesto de salud o becas para los jóvenes.",
+          "codigo": "RV60",
+          "origen": "o3",
+          "explicacion": "Es un argumento del texto A (oración 3); el B no lo discute, y no es el punto en disputa."
+        },
+        {
+          "t": "evita que las empresas sigan emitiendo gases, porque compran los bonos que pagan al bosque.",
+          "codigo": "RV62",
+          "origen": "o10",
+          "explicacion": "Una mitad aparece en el texto A (las empresas compran bonos, oración 2), pero la otra la niega el B (oración 10) y el A no la afirma."
+        },
+        {
+          "t": "es mejor que esperar a que exista una solución perfecta para detener la tala en el país.",
+          "codigo": "RV1",
+          "origen": "o5",
+          "explicacion": "Es un detalle del cierre del texto A (oración 5), no la discusión que sostienen los dos."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto B, la palabra REPARO («Mi reparo es otro») significa",
+      "alternativas": [
+        {
+          "t": "arreglo de algo que estaba roto o dañado, como un puente o una herramienta.",
+          "codigo": "RV18",
+          "explicacion": "Es el sentido de «reparo» cercano a «reparación», pero aquí se habla de una opinión frente al pago."
+        },
+        {
+          "t": "descuento sobre el precio que paga la empresa que compra un bono de carbono.",
+          "codigo": "RV19",
+          "origen": "o7",
+          "explicacion": "Está en el mismo campo (compra, venta y precio), pero «reparo» aquí no es un monto."
+        },
+        {
+          "t": "objeción que se pone a una idea con la que se coincide en parte.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o7"
+          ],
+          "explicacion": "Primero concede que es justo pagar (oración 6) y luego presenta su duda con «Mi reparo es otro» (oración 7)."
+        },
+        {
+          "t": "duda sobre si las comunidades recibirán o no los recursos que se les prometen.",
+          "codigo": "RV5",
+          "origen": "o6",
+          "explicacion": "Repite la palabra «recursos» de la oración anterior, pero su objeción no es sobre si los reciben, sino sobre convertir el bosque en bien de venta."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "dialogo",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Si el vínculo con el bosque se mide en precio, puede romperse cuando el precio baja.",
+        "aceptada": "B",
+        "codigos": {
+          "A": "RV59",
+          "ambos": "RV60",
+          "ninguno": null
+        },
+        "explicacion": "Lo sostiene el texto B en la oración 9: los contratos se rompen cuando el precio baja o el comprador se va.",
+        "explicaciones": {
+          "A": "El texto A ve el pago como una solución y no menciona que el precio pueda bajar. La idea es del B (oración 9).",
+          "ambos": "Solo el texto B lo sostiene (oración 9). El A supone que pagar mantiene el bosque en pie.",
+          "ninguno": "Sí lo sostiene alguien: el texto B, en la oración 9."
+        }
+      },
+      "enunciado": "Ante el argumento del texto A, la antropóloga del texto B le diría que",
+      "alternativas": [
+        {
+          "t": "exigir a las comunidades que conserven sin pagarles equivale a pedirles que subsidien al mundo.",
+          "codigo": "RV59",
+          "origen": "o4",
+          "explicacion": "Es un argumento del texto A (oración 4), no una objeción que el B le haga."
+        },
+        {
+          "t": "las comunidades no deberían recibir ningún recurso por cuidar el bosque, porque eso las perjudica.",
+          "codigo": "RV61",
+          "origen": "o6",
+          "explicacion": "En eso no discrepan: el texto B dice que es justo que las comunidades reciban recursos (oración 6)."
+        },
+        {
+          "t": "aun si el pago ayuda, tratar el bosque como mercancía puede debilitar el vínculo que lo cuida.",
+          "correcta": true,
+          "evidencia": [
+            "o7",
+            "o9"
+          ],
+          "explicacion": "Para el texto B el vínculo se vuelve un contrato, y los contratos se rompen cuando baja el precio o se va el comprador (oración 9)."
+        },
+        {
+          "t": "los bonos de carbono se venden más caros en las ciudades de otros países que en la Amazonía.",
+          "codigo": "RV8",
+          "explicacion": "El texto B no compara precios de bonos: es un dato de fuera del texto, sea cierto o no."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "compatibilidad",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Es compatible con los dos textos afirmar que",
+      "alternativas": [
+        {
+          "t": "talar el bosque seguirá siendo más rentable para las comunidades, hagan lo que hagan los compradores.",
+          "codigo": "RV11",
+          "explicacion": "Dice más de lo que los textos permiten: el A propone un pago que cambie esa cuenta (oración 2)."
+        },
+        {
+          "t": "las empresas dejarán de emitir gases en cuanto compren bonos de carbono, sin importar cuánto produzcan.",
+          "codigo": "RV9",
+          "origen": "o10",
+          "explicacion": "Choca con el texto B, que dice que la empresa puede seguir emitiendo (oración 10)."
+        },
+        {
+          "t": "el bono de carbono es la única forma posible de financiar a las comunidades que cuidan el bosque.",
+          "codigo": "RV10",
+          "origen": "o2",
+          "explicacion": "El texto A dice que los bonos son una de las vías («incluso mediante bonos», oración 2), no la única."
+        },
+        {
+          "t": "para las comunidades, el bosque tiene razones económicas y también valores propios de su territorio.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o8"
+          ],
+          "explicacion": "El texto A habla del ingreso que deja o no deja el bosque (oración 1) y el B, del territorio y la memoria (oración 8): nada de eso se contradice."
+        },
+        {
+          "t": "las comunidades deben conservar el bosque aunque no reciban ningún pago, pues es su deber de siempre.",
+          "codigo": "RV33",
+          "origen": "o6",
+          "explicacion": "Ningún texto lo defiende: el A pide pagar (oración 4) y el B también lo acepta como justo (oración 6)."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Si una comunidad que vende bonos viera que el comprador deja de pagar y el bosque queda sin vigilantes, la antropóloga del texto B probablemente",
+      "alternativas": [
+        {
+          "t": "diría que los pagos aseguran la conservación pase lo que pase, y que la comunidad se equivoca.",
+          "codigo": "RV63",
+          "explicacion": "Repite lo contrario de lo que su idea del vínculo sugiere: los contratos se rompen cuando se va el comprador (oración 9)."
+        },
+        {
+          "t": "rechazaría todo pago a las comunidades en cualquier circunstancia, por injusto.",
+          "codigo": "RV11",
+          "explicacion": "Dice más que el texto: el B afirma que es justo que reciban recursos (oración 6)."
+        },
+        {
+          "t": "concluiría que las comunidades no son capaces de cuidar su territorio por sí solas.",
+          "codigo": "RV7",
+          "explicacion": "Va más allá del texto: el B habla del vínculo basado en el precio, no de la capacidad de las comunidades (oraciones 8 y 9)."
+        },
+        {
+          "t": "lo vería como una muestra de que un vínculo basado solo en el precio es frágil.",
+          "correcta": true,
+          "evidencia": [
+            "o9",
+            "o11"
+          ],
+          "explicacion": "Es el caso que ella teme: los contratos se rompen cuando el comprador se va (oración 9), y por eso pide un apoyo a la gestión comunal (oración 11)."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-12",
+  "hechos": [
+    {
+      "afirmacion": "Un bono de carbono es un certificado que representa una tonelada de dióxido de carbono que se evitó emitir o se capturó, y que una empresa puede comprar para compensar sus emisiones.",
+      "fuente": "Convención Marco de las Naciones Unidas sobre el Cambio Climático (CMNUCC) y Protocolo de Kioto (1997), mecanismos de mercado de carbono"
+    }
+  ],
+  "revision": {
+    "por": "subagente (revisor a ciegas, rutina verbal-mas)",
+    "fecha": "2026-11-12",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidió en 34 de 34 ítems de la tanda (previos y preguntas). Cambios: se alargaron distractores de p2 y p4 para que la correcta no sea la más larga. El hecho sobre bonos de carbono (un certificado por tonelada de CO2) queda de memoria, sin verificar en la web; la afirmación de A de que las comunidades vigilan mejor el bosque es opinión del autor, no se presenta como dato."
+  }
+}

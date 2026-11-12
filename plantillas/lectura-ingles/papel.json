@@ -324,372 +324,6 @@
       ]
     },
     {
-      "id": "t123",
-      "nivel": "intermedio",
-      "enunciado": "Lee el texto «A Cold and Rich Sea» y responde las 5 preguntas.",
-      "texto": {
-        "titulo": "A Cold and Rich Sea",
-        "idioma": "en",
-        "parrafos": [
-          [
-            {
-              "n": 1,
-              "t": "Many visitors expect the sea in front of Lima to be warm, like the water of other tropical countries."
-            },
-            {
-              "n": 2,
-              "t": "In fact, it is surprisingly cold, even in summer."
-            },
-            {
-              "n": 3,
-              "t": "The reason is the Humboldt Current, and this cold water is also what makes the Peruvian sea one of the richest in fish in the world."
-            }
-          ],
-          [
-            {
-              "n": 4,
-              "t": "The Humboldt Current carries cold water from the south towards the north, along the coasts of Chile and Peru."
-            },
-            {
-              "n": 5,
-              "t": "At the same time, winds that blow along the coast push the surface water away from the shore."
-            },
-            {
-              "n": 6,
-              "t": "Cold water from the deep then rises to take its place, and it brings up nutrients that had sunk to the bottom."
-            },
-            {
-              "n": 7,
-              "t": "These nutrients feed tiny plants called phytoplankton, which are eaten by small fish such as the anchoveta."
-            },
-            {
-              "n": 8,
-              "t": "The anchoveta, in turn, is food for larger fish, sea birds and sea lions, and it is also the base of an important fishing industry."
-            }
-          ],
-          [
-            {
-              "n": 9,
-              "t": "However, this system does not work the same way every year."
-            },
-            {
-              "n": 10,
-              "t": "During an El Niño event, warm water reaches the coast, fewer nutrients come up from below, and the anchoveta becomes scarce."
-            },
-            {
-              "n": 11,
-              "t": "Then fishermen catch much less, and many sea birds have trouble finding food."
-            }
-          ]
-        ]
-      },
-      "preguntas": [
-        {
-          "n": 1,
-          "enunciado": "According to the text, what brings nutrients up to the surface of the sea?",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "The warm water that reaches the coast during El Niño."
-            },
-            {
-              "letra": "B",
-              "t": "Tiny plants that carry the nutrients up from the bottom."
-            },
-            {
-              "letra": "C",
-              "t": "Cold water that rises from the deep."
-            },
-            {
-              "letra": "D",
-              "t": "The rivers that come down from the Andes to the sea."
-            }
-          ]
-        },
-        {
-          "n": 2,
-          "enunciado": "If the winds along the coast stopped blowing for a long time, then",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "cold water from the deep would still rise and bring up the same nutrients."
-            },
-            {
-              "letra": "B",
-              "t": "less deep water would rise, so there would probably be fewer anchovetas."
-            },
-            {
-              "letra": "C",
-              "t": "every fish in the Peruvian sea would die and never come back."
-            },
-            {
-              "letra": "D",
-              "t": "the Humboldt Current would change direction and flow towards the south."
-            }
-          ]
-        },
-        {
-          "n": 3,
-          "enunciado": "Which statement is NOT consistent with the text?",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "Not every year is good for the fishermen of Peru."
-            },
-            {
-              "letra": "B",
-              "t": "The sea in front of Lima is warm, like a tropical sea."
-            },
-            {
-              "letra": "C",
-              "t": "Some of the anchoveta is sold in other countries."
-            },
-            {
-              "letra": "D",
-              "t": "A cold sea can have more fish than a warm one."
-            }
-          ]
-        },
-        {
-          "n": 4,
-          "enunciado": "In sentence 10, the word SCARCE can be replaced by",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "warmer."
-            },
-            {
-              "letra": "B",
-              "t": "smaller."
-            },
-            {
-              "letra": "C",
-              "t": "hard to find."
-            },
-            {
-              "letra": "D",
-              "t": "frightened."
-            }
-          ]
-        },
-        {
-          "n": 5,
-          "previo": "Antes de mirar las alternativas, decide qué relación tiene esta afirmación con el texto. «When El Niño arrives, the fishing industry of Peru has a harder time.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
-          "enunciado": "What can be inferred from the text?",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "Sea birds depend, indirectly, on the cold water that rises from the deep."
-            },
-            {
-              "letra": "B",
-              "t": "Phytoplankton is the only food that sea lions eat."
-            },
-            {
-              "letra": "C",
-              "t": "Fishermen catch much less fish during an El Niño event."
-            },
-            {
-              "letra": "D",
-              "t": "El Niño happens every year in the Peruvian sea."
-            },
-            {
-              "letra": "E",
-              "t": "The sea in front of Lima is cold only in winter."
-            }
-          ]
-        }
-      ],
-      "respuesta": "Clave: 1: C · 2: B · 3: B · 4: C · 5: A.",
-      "pasos": [
-        "Pregunta 1. Clave C. La oración 6 lo dice: el agua fría del fondo sube a ocupar el lugar del agua de la superficie «and it brings up nutrients» (y trae hacia arriba los nutrientes).",
-        "Pregunta 2. Clave B. Según las oraciones 5 y 6, el viento aparta el agua de la superficie y por eso sube el agua fría del fondo con sus nutrientes. Sin viento subiría menos agua y menos nutrientes, y habría menos fitoplancton para la anchoveta (oración 7).",
-        "Pregunta 3. Clave B. Choca con las oraciones 1 y 2: eso es lo que esperan muchos visitantes, pero el texto dice que el mar de Lima es sorprendentemente frío, incluso en verano.",
-        "Pregunta 4. Clave C. «Scarce» significa escaso, difícil de encontrar: con El Niño hay poca anchoveta, y por eso los pescadores pescan menos y las aves no encuentran comida (oración 11).",
-        "Pregunta 5. Antes de las alternativas: Se deduce del texto. La oración 8 dice que la anchoveta es la base de una industria pesquera importante, y las oraciones 10 y 11, que con El Niño escasea y se pesca mucho menos. El texto no lo dice con esas palabras, pero se deduce.",
-        "Pregunta 5. Clave A. Hay que juntar la cadena: el agua fría que sube trae nutrientes (oración 6), los nutrientes alimentan al fitoplancton, que come la anchoveta (oración 7), y la anchoveta alimenta a las aves (oración 8). Por eso, cuando sube menos agua fría, las aves no encuentran comida (oración 11). El texto no lo dice así, pero se deduce."
-      ]
-    },
-    {
-      "id": "t124",
-      "nivel": "intermedio",
-      "enunciado": "Lee el texto «Let Us Sleep» y responde las 5 preguntas.",
-      "texto": {
-        "titulo": "Let Us Sleep",
-        "idioma": "en",
-        "parrafos": [
-          [
-            {
-              "n": 1,
-              "t": "Every morning at six, my alarm rings, and I feel as if I have not slept at all."
-            },
-            {
-              "n": 2,
-              "t": "In my classroom, I am not the only one: during the first class, many of my classmates are yawning or resting their heads on their desks."
-            },
-            {
-              "n": 3,
-              "t": "Some adults say that we are just lazy, or that we stay up too late with our phones."
-            }
-          ],
-          [
-            {
-              "n": 4,
-              "t": "Phones are part of the problem, I admit, but they are not the whole story."
-            },
-            {
-              "n": 5,
-              "t": "Doctors explain that during adolescence the body's clock changes, so teenagers naturally feel sleepy later at night than children or adults."
-            },
-            {
-              "n": 6,
-              "t": "Health organizations recommend that teenagers sleep between eight and ten hours a night, but with classes that start so early, most of us cannot get that much rest."
-            },
-            {
-              "n": 7,
-              "t": "A tired student may sit in class for hours and still learn very little."
-            }
-          ],
-          [
-            {
-              "n": 8,
-              "t": "For these reasons, I believe that teenagers should sleep more, and that schools should start classes later in the morning."
-            },
-            {
-              "n": 9,
-              "t": "Even one more hour of sleep could help us pay attention, remember what we study and feel better."
-            },
-            {
-              "n": 10,
-              "t": "I hope that our principal and the parents of my classmates will think about this before the next school year begins."
-            }
-          ]
-        ]
-      },
-      "preguntas": [
-        {
-          "n": 1,
-          "previo": "Antes de mirar las alternativas: ¿qué busca sobre todo el autor? Elige: «Explicar o informar», «Convencer», «Narrar».",
-          "enunciado": "What is the author's main purpose?",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "To argue that schools should start later so teenagers can sleep more."
-            },
-            {
-              "letra": "B",
-              "t": "To tell how the author's mornings at home usually begin before going to school."
-            },
-            {
-              "letra": "C",
-              "t": "To describe the changes that happen in the body's clock during adolescence."
-            },
-            {
-              "letra": "D",
-              "t": "To warn teenagers that their phones are the real cause of their tiredness."
-            }
-          ]
-        },
-        {
-          "n": 2,
-          "enunciado": "In sentence 3, the opposite of LAZY is",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "late."
-            },
-            {
-              "letra": "B",
-              "t": "hard-working."
-            },
-            {
-              "letra": "C",
-              "t": "tired."
-            },
-            {
-              "letra": "D",
-              "t": "idle."
-            }
-          ]
-        },
-        {
-          "n": 3,
-          "enunciado": "Who does the author most want to persuade?",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "The principal and the students' parents."
-            },
-            {
-              "letra": "B",
-              "t": "Children in primary school who also wake up very early."
-            },
-            {
-              "letra": "C",
-              "t": "The doctors who study the body's clock during adolescence."
-            },
-            {
-              "letra": "D",
-              "t": "The companies that make and sell cell phones in Peru."
-            }
-          ]
-        },
-        {
-          "n": 4,
-          "enunciado": "According to the author, if classes started one hour later, then",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "students would probably pay more attention in class."
-            },
-            {
-              "letra": "B",
-              "t": "every student in the school would get top grades in all subjects."
-            },
-            {
-              "letra": "C",
-              "t": "teenagers would stop using their phones late at night."
-            },
-            {
-              "letra": "D",
-              "t": "most students would still be unable to get enough rest."
-            }
-          ]
-        },
-        {
-          "n": 5,
-          "enunciado": "Which statement is NOT consistent with the text?",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "The author's school has a library that opens very early."
-            },
-            {
-              "letra": "B",
-              "t": "Not all of the tiredness can be blamed on phones."
-            },
-            {
-              "letra": "C",
-              "t": "Teenagers naturally feel sleepy later at night than adults."
-            },
-            {
-              "letra": "D",
-              "t": "The author thinks phones play no part in the problem."
-            }
-          ]
-        }
-      ],
-      "respuesta": "Clave: 1: A · 2: B · 3: A · 4: A · 5: D.",
-      "pasos": [
-        "Pregunta 1. Antes de las alternativas: Convencer. El autor da su opinión («I believe», oración 8), responde a quienes piensan distinto (oraciones 3 y 4) y pide que el director y los padres lo piensen (oración 10): quiere convencer.",
-        "Pregunta 1. Clave A. La oración 8 dice la tesis con «I believe»: los adolescentes deberían dormir más y los colegios deberían empezar más tarde. Todo lo demás son razones para eso.",
-        "Pregunta 2. Clave B. «Lazy» es perezoso, flojo; lo contrario es «hard-working», trabajador. Algunos adultos dicen que los adolescentes son flojos, y el autor responde que lo que pasa es que les falta sueño.",
-        "Pregunta 3. Clave A. La oración 10 lo dice: el autor espera que el director y los padres de sus compañeros piensen en esto antes del próximo año escolar, porque ellos pueden cambiar la hora de entrada.",
-        "Pregunta 4. Clave A. La oración 9 dice que incluso una hora más de sueño podría ayudarlos a prestar atención, recordar lo que estudian y sentirse mejor.",
-        "Pregunta 5. Clave D. Choca con la oración 4: el autor admite que el celular es parte del problema («Phones are part of the problem, I admit»), aunque no toda la historia."
-      ]
-    },
-    {
       "id": "t125",
       "nivel": "avanzado (tipo UNI)",
       "enunciado": "Lee el texto «Ice That Feeds the Rivers» y responde las 5 preguntas.",
@@ -1061,380 +695,6 @@
         "Pregunta 3. Clave C. «Actually» quiere decir en realidad, de hecho: la biblioteca esperaba veinte personas, pero de hecho ya llamaron más de cuarenta. Por eso recomienda inscribirse esta semana.",
         "Pregunta 4. Clave D. La oración 3 lo dice: el grupo se reunirá de siete a ocho y media de la noche «so that people who work during the day can attend».",
         "Pregunta 5. Clave D. La oración 2 dice lo principal del aviso: la biblioteca ofrecerá un programa de lectura gratuito para adultos. Lo demás da detalles."
-      ]
-    },
-    {
-      "id": "t128",
-      "nivel": "intermedio",
-      "enunciado": "Lee el texto «Nazca from Above» y responde las 5 preguntas.",
-      "texto": {
-        "titulo": "Nazca from Above",
-        "idioma": "en",
-        "parrafos": [
-          [
-            {
-              "n": 1,
-              "t": "For a long time, the best way to see the Nazca lines was to fly over them in a small plane."
-            },
-            {
-              "n": 2,
-              "t": "These huge drawings on the desert floor of southern Peru were made more than a thousand years ago by people who moved the dark stones on the surface and uncovered the lighter ground below."
-            },
-            {
-              "n": 3,
-              "t": "Because it almost never rains there, many of the lines have survived until today."
-            }
-          ],
-          [
-            {
-              "n": 4,
-              "t": "Today, archaeologists also study them in a new way: with drones."
-            },
-            {
-              "n": 5,
-              "t": "A drone can fly low and slowly and take many photos, which are eventually joined into a detailed map of the ground."
-            },
-            {
-              "n": 6,
-              "t": "In these images, researchers can notice faint figures that are very hard to see from a plane or from the ground."
-            },
-            {
-              "n": 7,
-              "t": "In fact, in recent years some figures that nobody had noticed before have been found with the help of drones."
-            },
-            {
-              "n": 8,
-              "t": "Drones have another advantage: researchers do not need to walk on the fragile surface, so they leave no footprints on it."
-            }
-          ],
-          [
-            {
-              "n": 9,
-              "t": "However, drones do not replace archaeologists."
-            },
-            {
-              "n": 10,
-              "t": "A photo can show a shape, but only people who know the Nasca culture can suggest what that shape may have meant."
-            },
-            {
-              "n": 11,
-              "t": "The new technology, then, is a tool that helps researchers, not a machine that does their job."
-            }
-          ]
-        ]
-      },
-      "preguntas": [
-        {
-          "n": 1,
-          "enunciado": "In sentence 5, the word EVENTUALLY can be replaced by",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "quickly."
-            },
-            {
-              "letra": "B",
-              "t": "finally."
-            },
-            {
-              "letra": "C",
-              "t": "slowly."
-            },
-            {
-              "letra": "D",
-              "t": "occasionally."
-            }
-          ]
-        },
-        {
-          "n": 2,
-          "previo": "Antes de mirar las alternativas, lee esta afirmación y di qué relación tiene con el texto. «If it rained often in that desert, fewer lines would probably have survived.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
-          "enunciado": "If it rained often in the Nazca desert, then, according to the text, the lines",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "would certainly all have disappeared by now."
-            },
-            {
-              "letra": "B",
-              "t": "probably would not have lasted so well."
-            },
-            {
-              "letra": "C",
-              "t": "would have lasted just as well, because they are made of stones and ground."
-            },
-            {
-              "letra": "D",
-              "t": "would be easier to study with drones than from a plane."
-            }
-          ]
-        },
-        {
-          "n": 3,
-          "enunciado": "Which statement contradicts the text?",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "Some figures that nobody had noticed before were found with the help of drones."
-            },
-            {
-              "letra": "B",
-              "t": "Drones can now explain what each figure meant."
-            },
-            {
-              "letra": "C",
-              "t": "Many tourists from other countries visit the Nazca lines every year."
-            },
-            {
-              "letra": "D",
-              "t": "Thanks to drones, researchers can study the lines without walking on their fragile surface."
-            }
-          ]
-        },
-        {
-          "n": 4,
-          "enunciado": "According to the text, why can drones help find figures that were not noticed before?",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "Because it almost never rains in that part of southern Peru."
-            },
-            {
-              "letra": "B",
-              "t": "Because they fly much higher and faster than small planes do."
-            },
-            {
-              "letra": "C",
-              "t": "Because they fly low, and their images show faint figures."
-            },
-            {
-              "letra": "D",
-              "t": "Because, unlike archaeologists, they can tell what every shape meant."
-            }
-          ]
-        },
-        {
-          "n": 5,
-          "previo": "Antes de mirar las alternativas, escribe el número de la oración (en inglés) que mejor dice de qué trata el texto. Si ninguna lo dice completo, escribe «ninguna».",
-          "enunciado": "Which is the best title for the text?",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "The Deserts of Southern Peru"
-            },
-            {
-              "letra": "B",
-              "t": "Drones: A New Tool for Nazca Research"
-            },
-            {
-              "letra": "C",
-              "t": "Flying over Nazca in a Small Plane"
-            },
-            {
-              "letra": "D",
-              "t": "Drones Will Replace Archaeologists"
-            },
-            {
-              "letra": "E",
-              "t": "How the Ancient Nasca People Made Their Huge Drawings in the Desert"
-            }
-          ]
-        }
-      ],
-      "respuesta": "Clave: 1: B · 2: B · 3: B · 4: C · 5: B.",
-      "pasos": [
-        "Pregunta 1. Clave B. «Eventually» quiere decir al final, después de un proceso: primero el dron toma muchas fotos y, al final, se unen en un mapa.",
-        "Pregunta 2. Antes de las alternativas: Se deduce del texto. La oración 3 da la causa: muchas líneas sobrevivieron «because it almost never rains there». Si lloviera a menudo, faltaría esa causa: se deduce que habrían sobrevivido menos.",
-        "Pregunta 2. Clave B. La oración 3 dice que muchas líneas sobrevivieron porque casi nunca llueve. Sin esa causa, lo probable es que se hubieran conservado peor.",
-        "Pregunta 3. Clave B. Las oraciones 9 y 10 dicen lo contrario: los drones no reemplazan a los arqueólogos, y solo quienes conocen la cultura Nasca pueden proponer qué significaba una figura.",
-        "Pregunta 4. Clave C. Las oraciones 5 y 6 lo dicen: el dron vuela bajo y lento, toma muchas fotos, y en esas imágenes se ven figuras tenues, difíciles de ver desde un avión o desde el suelo.",
-        "Pregunta 5. Antes de las alternativas: la oración 4 o la oración 11. La oración 4 anuncia el tema (hoy las líneas también se estudian con drones) y la 11 lo completa: el dron es una herramienta que ayuda a los investigadores, no los reemplaza.",
-        "Pregunta 5. Clave B. Junta las oraciones 4 y 11: hoy las líneas también se estudian con drones, que ayudan a los investigadores sin reemplazarlos."
-      ]
-    },
-    {
-      "id": "t129",
-      "nivel": "intermedio",
-      "enunciado": "Lee el texto «Our Rivers Are Not a Trash Can» y responde las 5 preguntas.",
-      "texto": {
-        "titulo": "Our Rivers Are Not a Trash Can",
-        "idioma": "en",
-        "parrafos": [
-          [
-            {
-              "n": 1,
-              "t": "I am a science teacher in Iquitos, and I am writing because many people in our city think that a plastic bottle thrown into the river simply disappears."
-            },
-            {
-              "n": 2,
-              "t": "It does not: plastic breaks into smaller and smaller pieces, but it stays in the water for many years."
-            },
-            {
-              "n": 3,
-              "t": "When I was a child, my friends and I used to swim in the Itaya River every weekend."
-            },
-            {
-              "n": 4,
-              "t": "Today, after a heavy rain, its banks are covered with bags, bottles and food containers."
-            }
-          ],
-          [
-            {
-              "n": 5,
-              "t": "Last month, my students and I spent a morning cleaning a small part of the bank near our school, and we filled more than forty bags with trash."
-            },
-            {
-              "n": 6,
-              "t": "Their reaction surprised me: instead of complaining, they asked to do it again."
-            },
-            {
-              "n": 7,
-              "t": "Cleaning, however, is not enough if new plastic keeps arriving every day."
-            }
-          ],
-          [
-            {
-              "n": 8,
-              "t": "That is why I believe our city must reduce the plastic it uses, starting with the markets, where most products are still sold in single-use bags."
-            },
-            {
-              "n": 9,
-              "t": "Peru already has a law that limits single-use plastic, but a law works only if people and shops follow it."
-            },
-            {
-              "n": 10,
-              "t": "I invite your readers, and especially the market vendors, to try reusable bags for one month and see the difference in our rivers."
-            }
-          ]
-        ]
-      },
-      "preguntas": [
-        {
-          "n": 1,
-          "previo": "Antes de mirar las alternativas: ¿qué busca sobre todo la autora de la carta? Elige: «Explicar o informar», «Convencer», «Narrar».",
-          "enunciado": "What is the main purpose of the letter?",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "To tell the story of a morning when a teacher and some students cleaned a river bank."
-            },
-            {
-              "letra": "B",
-              "t": "To persuade people in Iquitos to use less plastic."
-            },
-            {
-              "letra": "C",
-              "t": "To explain how plastic breaks into smaller and smaller pieces in the water."
-            },
-            {
-              "letra": "D",
-              "t": "To describe the rivers of the Amazon."
-            },
-            {
-              "letra": "E",
-              "t": "To complain that Peru has no law about single-use plastic."
-            }
-          ]
-        },
-        {
-          "n": 2,
-          "enunciado": "This text would most probably be published in",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "an official document that explains Peru's law on plastic bags."
-            },
-            {
-              "letra": "B",
-              "t": "a science textbook chapter about how plastic breaks down in water."
-            },
-            {
-              "letra": "C",
-              "t": "the readers' letters section of a newspaper."
-            },
-            {
-              "letra": "D",
-              "t": "a school report written by the teacher's students."
-            }
-          ]
-        },
-        {
-          "n": 3,
-          "enunciado": "In sentence 10, the opposite of REUSABLE is",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "useful."
-            },
-            {
-              "letra": "B",
-              "t": "recycled."
-            },
-            {
-              "letra": "C",
-              "t": "single-use."
-            },
-            {
-              "letra": "D",
-              "t": "used once more."
-            }
-          ]
-        },
-        {
-          "n": 4,
-          "enunciado": "Which statement contradicts what the letter says?",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "Plastic in the river disappears after a few months."
-            },
-            {
-              "letra": "B",
-              "t": "After the cleaning day, the students asked to clean the river bank again."
-            },
-            {
-              "letra": "C",
-              "t": "Other cities in the Amazon have the same problem with plastic in their rivers."
-            },
-            {
-              "letra": "D",
-              "t": "According to the teacher, cleaning the river bank is not enough by itself."
-            }
-          ]
-        },
-        {
-          "n": 5,
-          "previo": "Antes de mirar las alternativas, lee esta afirmación y di qué relación tiene con el texto. «For the teacher, less new plastic in the city would mean less plastic arriving at the rivers.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
-          "enunciado": "If the markets of Iquitos had stopped using single-use bags years ago, then, according to the teacher's reasoning,",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "the students would not have wanted to clean the bank again."
-            },
-            {
-              "letra": "B",
-              "t": "the river banks would still be just as full of plastic after a heavy rain."
-            },
-            {
-              "letra": "C",
-              "t": "the river banks would have no plastic at all today, so no cleaning would ever be needed."
-            },
-            {
-              "letra": "D",
-              "t": "less plastic would probably reach the rivers today."
-            }
-          ]
-        }
-      ],
-      "respuesta": "Clave: 1: B · 2: C · 3: C · 4: A · 5: D.",
-      "pasos": [
-        "Pregunta 1. Antes de las alternativas: Convencer. La autora da su opinión («I believe our city must reduce the plastic…», oración 8) y termina invitando a los lectores a cambiar (oración 10): busca convencer.",
-        "Pregunta 1. Clave B. La oración 8 dice la tesis (la ciudad debe reducir el plástico que usa) y la 10 invita a los lectores a probar bolsas reutilizables: la carta busca convencer.",
-        "Pregunta 2. Clave C. La autora dice «I am writing because…» (oración 1) y se dirige a «your readers» (oración 10): escribe a un medio para que la lean sus lectores, como en una carta al director.",
-        "Pregunta 3. Clave C. «Reusable» es lo que se usa varias veces. Su contrario es lo que se usa una sola vez: «single-use», como las bolsas de la oración 8, que la autora quiere cambiar.",
-        "Pregunta 4. Clave A. Es lo que cree mucha gente (oración 1), y la autora lo niega: «It does not», el plástico se rompe en pedazos pero se queda muchos años en el agua (oración 2).",
-        "Pregunta 5. Antes de las alternativas: Se deduce del texto. La oración 7 dice que limpiar no basta si sigue llegando plástico nuevo, y la 8 propone reducir el plástico que usa la ciudad. De ahí se deduce que, para ella, menos plástico en la ciudad es menos plástico en los ríos.",
-        "Pregunta 5. Clave D. La autora une la basura de los ríos al plástico que sigue llegando (oración 7) y propone empezar por los mercados (oración 8). Si los mercados lo hubieran dejado antes, lo probable es que llegara menos plástico."
       ]
     },
     {
@@ -1813,6 +1073,736 @@
         "Pregunta 4. Clave A. La oración 1 avisa que Valeria es inventada, y su historia lleva a la idea de la oración 9: las variedades que guardaron las familias pueden ayudar ante la sequía.",
         "Pregunta 5. Antes de las alternativas: Se deduce del texto. La oración 8 dice que los agricultores compartieron semillas «that were not in any collection» y que Valeria las sumó a sus pruebas. Sin ellos, esas variedades no habrían estado: se deduce que habría probado menos.",
         "Pregunta 5. Clave D. La oración 8 dice que los agricultores le dieron semillas que no estaban en ninguna colección. Sin ellas, lo probable es que hubiera probado menos variedades."
+      ]
+    },
+    {
+      "id": "t167",
+      "nivel": "avanzado (tipo UNI)",
+      "enunciado": "Lee el texto «Look, but Do Not Touch» y responde las 5 preguntas.",
+      "texto": {
+        "titulo": "Look, but Do Not Touch",
+        "idioma": "en",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Every year, many visitors travel to the Amazon hoping to swim next to a pink river dolphin."
+            },
+            {
+              "n": 2,
+              "t": "The photos look magical: a smiling tourist, a curious animal and a river shining in the afternoon light."
+            },
+            {
+              "n": 3,
+              "t": "However, I believe that tourists should not be allowed to swim with wild river dolphins."
+            }
+          ],
+          [
+            {
+              "n": 4,
+              "t": "First, these animals are not pets, and they are not used to crowds."
+            },
+            {
+              "n": 5,
+              "t": "When boats and swimmers come close every day, the dolphins may become stressed, and some may leave the places where they feed or rest."
+            },
+            {
+              "n": 6,
+              "t": "Second, the pink river dolphin is considered an endangered species, so every disturbance matters more."
+            }
+          ],
+          [
+            {
+              "n": 7,
+              "t": "Some tour operators reply that these visits give local families a reason to protect the river."
+            },
+            {
+              "n": 8,
+              "t": "That argument deserves respect, since many communities need an income."
+            },
+            {
+              "n": 9,
+              "t": "Yet there are other ways to earn it: guided boat trips, in which visitors watch the dolphins from a distance, bring money without forcing any contact."
+            },
+            {
+              "n": 10,
+              "t": "In my view, seeing a dolphin from a quiet boat is a better memory than touching it, and it leaves the animal free."
+            },
+            {
+              "n": 11,
+              "t": "If we protect the dolphins today, the next visitors will be able to enjoy them too."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas: ¿qué busca sobre todo la autora? Elige: «Explicar o informar», «Convencer», «Narrar».",
+          "enunciado": "What is the main purpose of the text?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "To describe the pink river dolphin and explain how it lives in the Amazon."
+            },
+            {
+              "letra": "B",
+              "t": "To argue that tourism in the Amazon is bad for local families."
+            },
+            {
+              "letra": "C",
+              "t": "To invite tourists to visit Amazon communities and swim in the river."
+            },
+            {
+              "letra": "D",
+              "t": "To tell about a trip in which the author swam with a pink dolphin."
+            },
+            {
+              "letra": "E",
+              "t": "To persuade readers that swimming with wild river dolphins should not be allowed."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "In sentence 5, the word STRESSED means",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "crowded together."
+            },
+            {
+              "letra": "B",
+              "t": "uneasy."
+            },
+            {
+              "letra": "C",
+              "t": "stretched out."
+            },
+            {
+              "letra": "D",
+              "t": "emphasized."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "Which statement is incompatible with the text?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "The author recognizes that some communities need an income from tourism."
+            },
+            {
+              "letra": "B",
+              "t": "The author thinks that guided boat trips should also be banned."
+            },
+            {
+              "letra": "C",
+              "t": "The author says that the pink river dolphin is considered an endangered species."
+            },
+            {
+              "letra": "D",
+              "t": "The author believes that the dolphins are not used to crowds."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "If a study showed that swimmers never disturb the dolphins, then the author would probably",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "agree at once that tourists may swim with the dolphins."
+            },
+            {
+              "letra": "B",
+              "t": "lose one of the main supports of her opinion."
+            },
+            {
+              "letra": "C",
+              "t": "stop mentioning the income of the local families."
+            },
+            {
+              "letra": "D",
+              "t": "say that the reasons for her opinion stay exactly the same."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "enunciado": "What can be inferred about the author's attitude toward tour operators?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "The author listens to their argument but does not accept it."
+            },
+            {
+              "letra": "B",
+              "t": "The author thinks that all tour operators harm the dolphins."
+            },
+            {
+              "letra": "C",
+              "t": "The author agrees with them and would like more swimming tours."
+            },
+            {
+              "letra": "D",
+              "t": "The author thinks they are dishonest people who care only about money."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: E · 2: B · 3: B · 4: B · 5: A.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: Convencer. La autora da su opinión («I believe», oración 3; «In my view», oración 10), responde a quienes piensan distinto (oraciones 7 a 9) y llama a proteger a los delfines (oración 11): quiere convencer.",
+        "Pregunta 1. Clave E. La oración 3 dice la tesis y la 10 la refuerza con su punto de vista («In my view…»): el texto busca convencer.",
+        "Pregunta 2. Clave B. Con botes y bañistas cerca todos los días, los delfines pueden sentirse inquietos, y por eso algunos se van de sus zonas de alimentación (oración 5).",
+        "Pregunta 3. Clave B. La oración 9 propone justo esos paseos en bote, mirando a los delfines desde lejos, como una alternativa mejor.",
+        "Pregunta 4. Clave B. Las oraciones 4 y 5 explican que los bañistas pueden molestar a los delfines. Si no los molestaran, esa razón se debilita.",
+        "Pregunta 5. Clave A. Reconoce su argumento («deserves respect», oración 8), pero propone otra forma de obtener ingresos sin contacto (oración 9)."
+      ]
+    },
+    {
+      "id": "t168",
+      "nivel": "avanzado (tipo UNI)",
+      "enunciado": "Lee el texto «Qhapaq Ñan» y responde las 5 preguntas.",
+      "texto": {
+        "titulo": "Qhapaq Ñan",
+        "idioma": "en",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "The Qhapaq Ñan, or Great Inca Road, was a network of roads that connected the many regions of the Inca Empire."
+            },
+            {
+              "n": 2,
+              "t": "In total, it stretched for thousands of kilometers across mountains, deserts and forests."
+            },
+            {
+              "n": 3,
+              "t": "The Incas did not create all of these routes from nothing; they joined older paths built by earlier Andean peoples and improved them."
+            }
+          ],
+          [
+            {
+              "n": 4,
+              "t": "Where the land was steep, builders made stone stairs, and where rivers were deep, they built bridges of rope."
+            },
+            {
+              "n": 5,
+              "t": "Along the roads there were tambos, buildings where travelers could rest and where food and goods were kept."
+            },
+            {
+              "n": 6,
+              "t": "Because the Incas did not use wheeled vehicles, people traveled on foot, and llamas carried the loads."
+            },
+            {
+              "n": 7,
+              "t": "The roads were also used by the chasquis, runners who passed messages from one post to the next, so news could travel quickly across the empire."
+            },
+            {
+              "n": 8,
+              "t": "Thus, the road system allowed the state to move its armies, collect goods and keep control of distant lands."
+            }
+          ],
+          [
+            {
+              "n": 9,
+              "t": "In 2014, UNESCO recognized the Qhapaq Ñan as a World Heritage Site, shared by six countries, including Peru."
+            },
+            {
+              "n": 10,
+              "t": "Some stretches can still be walked today."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración (en inglés) que mejor dice de qué trata el texto. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "Which is the best title for the text?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "The Chasquis: Fast Runners of the Inca Empire"
+            },
+            {
+              "letra": "B",
+              "t": "UNESCO World Heritage Sites in Six Countries"
+            },
+            {
+              "letra": "C",
+              "t": "The Qhapaq Ñan: The Inca Road Network"
+            },
+            {
+              "letra": "D",
+              "t": "How the Incas Built Stairs and Bridges in the Mountains"
+            },
+            {
+              "letra": "E",
+              "t": "Great Roads of the Ancient World"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "This text would most probably be published in",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "a newspaper opinion column that criticizes the building of new roads."
+            },
+            {
+              "letra": "B",
+              "t": "an encyclopedia or reference book about the history of Peru."
+            },
+            {
+              "letra": "C",
+              "t": "a travel blog where a family tells about its trip to Cusco."
+            },
+            {
+              "letra": "D",
+              "t": "a school notice that invites the students to a walk in the mountains."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "According to the text, what were tambos?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Large carts with wheels that carried soldiers across the mountains."
+            },
+            {
+              "letra": "B",
+              "t": "Runners who passed messages from one post to the next."
+            },
+            {
+              "letra": "C",
+              "t": "Houses where the emperor lived while he visited the provinces."
+            },
+            {
+              "letra": "D",
+              "t": "Buildings where travelers could rest and goods were kept."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "In sentence 4, the opposite of STEEP is",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "narrow."
+            },
+            {
+              "letra": "B",
+              "t": "flat."
+            },
+            {
+              "letra": "C",
+              "t": "sloping."
+            },
+            {
+              "letra": "D",
+              "t": "deep."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "enunciado": "If a message had to reach a distant province quickly, then, according to the text, the Incas would most probably",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "send it with a single runner, who would never stop on the way."
+            },
+            {
+              "letra": "B",
+              "t": "pass it from one chasqui to the next along the road."
+            },
+            {
+              "letra": "C",
+              "t": "carry it on a wagon pulled by a team of llamas."
+            },
+            {
+              "letra": "D",
+              "t": "ask the villagers to keep it until the road was finished."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: C · 2: B · 3: D · 4: B · 5: B.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: la oración 1. La oración 1 presenta el tema: la Qhapaq Ñan, una red de caminos que unía las regiones del imperio inca. Las demás dan datos sobre ella.",
+        "Pregunta 1. Clave C. La oración 1 presenta el tema, la red de caminos del imperio inca, y el resto del texto explica cómo era y para qué servía.",
+        "Pregunta 2. Clave B. Describe el tema con datos, sin opinión personal ni trato directo al lector: la forma de un artículo de consulta.",
+        "Pregunta 3. Clave D. La oración 5 los define así: edificios a lo largo de los caminos donde los viajeros descansaban y se guardaban alimentos y bienes.",
+        "Pregunta 4. Clave B. «Steep» describe un terreno muy inclinado; su contrario es un terreno plano. Por eso en los lugares empinados hacían escaleras (oración 4).",
+        "Pregunta 5. Clave B. La oración 7 dice que los chasquis pasaban los mensajes de un puesto al siguiente para que las noticias viajaran rápido por el imperio."
+      ]
+    },
+    {
+      "id": "t172",
+      "nivel": "avanzado (tipo UNI)",
+      "enunciado": "Lee el texto «The Frog That Breathes Through Its Skin» y responde las 5 preguntas.",
+      "texto": {
+        "titulo": "The Frog That Breathes Through Its Skin",
+        "idioma": "en",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Lake Titicaca, which lies between Peru and Bolivia, is home to a frog that spends its whole life under water: the Titicaca water frog."
+            },
+            {
+              "n": 2,
+              "t": "It is one of the largest water frogs in the world, and its loose, wrinkled skin looks too big for its body."
+            },
+            {
+              "n": 3,
+              "t": "These folds are not a mistake of nature."
+            },
+            {
+              "n": 4,
+              "t": "Like all amphibians, this frog can take in oxygen through its skin, and the folds increase the surface that touches the water."
+            }
+          ],
+          [
+            {
+              "n": 5,
+              "t": "The lake is at about 3,800 meters above sea level, where the water holds little oxygen, so every extra centimeter of skin helps."
+            },
+            {
+              "n": 6,
+              "t": "Researchers have also seen the frogs move up and down on the lake bottom, like a person doing push-ups, which probably brings fresher water to their skin."
+            }
+          ],
+          [
+            {
+              "n": 7,
+              "t": "Their special body, however, does not protect them from people."
+            },
+            {
+              "n": 8,
+              "t": "Pollution from cities and mines makes the water dirtier, and introduced fish, such as trout, can eat young frogs."
+            },
+            {
+              "n": 9,
+              "t": "In addition, many frogs have been captured to be sold as food."
+            },
+            {
+              "n": 10,
+              "t": "The species is now considered critically endangered, so protecting the lake's water may be the best way to protect the frog."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración (en inglés) que explica por qué la piel de la rana es tan especial. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "Which is the best title for this text?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Why Trout Are the Only Danger for Water Frogs in Peru"
+            },
+            {
+              "letra": "B",
+              "t": "A Frog That Breathes Through Its Skin, and the Dangers It Faces"
+            },
+            {
+              "letra": "C",
+              "t": "How Pollution from Cities and Mines Changes Lake Water"
+            },
+            {
+              "letra": "D",
+              "t": "The Largest Frogs in the Whole World Live in South America"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "In sentence 1, the word LIES means",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "hides behind the mountains."
+            },
+            {
+              "letra": "B",
+              "t": "says something that is not true."
+            },
+            {
+              "letra": "C",
+              "t": "rests flat on a bed or a floor."
+            },
+            {
+              "letra": "D",
+              "t": "is located."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "In sentence 2, the opposite of LOOSE is",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "baggy."
+            },
+            {
+              "letra": "B",
+              "t": "heavy."
+            },
+            {
+              "letra": "C",
+              "t": "wrinkled."
+            },
+            {
+              "letra": "D",
+              "t": "tight."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "If all the trout disappeared from the lake and nothing else changed, then, according to the text, the frogs",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "would begin to breathe only with lungs, like other animals."
+            },
+            {
+              "letra": "B",
+              "t": "would be completely safe from every danger in the lake."
+            },
+            {
+              "letra": "C",
+              "t": "would face exactly the same dangers as before, trout included."
+            },
+            {
+              "letra": "D",
+              "t": "would still face other dangers, but young frogs would be safer."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "previo": "Antes de mirar las alternativas, lee esta afirmación y di qué relación tiene con el texto. «The wrinkled skin of the frog is useless.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
+          "enunciado": "Which statement contradicts the text?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Other species of animals also live in the lake."
+            },
+            {
+              "letra": "B",
+              "t": "The water of the lake holds little oxygen at that height."
+            },
+            {
+              "letra": "C",
+              "t": "Some of the dangers for the frog come from human activities."
+            },
+            {
+              "letra": "D",
+              "t": "The loose skin of the frog has no function in its life."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: B · 2: D · 3: D · 4: D · 5: D.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: la oración 4. La oración 4 explica el rasgo central: la rana toma oxígeno por la piel y los pliegues aumentan la superficie en contacto con el agua. Las demás presentan a la rana, dan más detalles de su respiración o hablan de las amenazas.",
+        "Pregunta 1. Clave B. Reúne las dos partes del texto: cómo respira la rana por la piel (oraciones 3 a 6) y qué la amenaza (oraciones 7 a 10).",
+        "Pregunta 2. Clave D. El lago «lies between Peru and Bolivia»: está ubicado entre los dos países.",
+        "Pregunta 3. Clave D. «Loose skin» es una piel suelta, floja; lo contrario es «tight», ajustada.",
+        "Pregunta 4. Clave D. Los peces introducidos pueden comerse a las ranas jóvenes (oración 8); sin ellos eso mejoraría, pero seguirían la contaminación y la captura.",
+        "Pregunta 5. Antes de las alternativas: Lo contradice. Las oraciones 3 y 4 explican que los pliegues no son un error, sino que aumentan la superficie para tomar oxígeno: lo contradicen.",
+        "Pregunta 5. Clave D. Choca con las oraciones 3 y 4: los pliegues de la piel aumentan la superficie para tomar oxígeno."
+      ]
+    },
+    {
+      "id": "t173",
+      "nivel": "avanzado (tipo UNI)",
+      "enunciado": "Lee el texto «Give the Weekends Back» y responde las 5 preguntas.",
+      "texto": {
+        "titulo": "Give the Weekends Back",
+        "idioma": "en",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Every Friday afternoon, the same scene repeats in many schools: teachers hand out worksheets, and students sigh."
+            },
+            {
+              "n": 2,
+              "t": "I have been a teacher for many years, and I used to believe that weekend homework made students responsible."
+            },
+            {
+              "n": 3,
+              "t": "Now I am not so sure."
+            }
+          ],
+          [
+            {
+              "n": 4,
+              "t": "Students need time to rest, to play sports, to help at home and to be with their families."
+            },
+            {
+              "n": 5,
+              "t": "When two full days are filled with assignments, those activities become a burden, and tired students return on Monday with less energy."
+            },
+            {
+              "n": 6,
+              "t": "Some people argue that, without weekend homework, students will forget what they learned."
+            },
+            {
+              "n": 7,
+              "t": "That is a fair worry, but it can be solved with short exercises during the week and good planning by teachers."
+            }
+          ],
+          [
+            {
+              "n": 8,
+              "t": "A ban would also oblige schools to think about quality: a few well-chosen tasks are worth more than many boring ones."
+            },
+            {
+              "n": 9,
+              "t": "For these reasons, schools should stop giving homework on weekends."
+            },
+            {
+              "n": 10,
+              "t": "Rest is not the opposite of learning; it is part of it."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas: ¿qué busca sobre todo la autora o el autor? Elige: «Explicar o informar», «Convencer», «Narrar».",
+          "enunciado": "What is the author's main purpose?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "To explain what happens in a student's brain when it rests."
+            },
+            {
+              "letra": "B",
+              "t": "To describe how teachers prepare worksheets for their classes."
+            },
+            {
+              "letra": "C",
+              "t": "To tell the story of one Friday afternoon at school."
+            },
+            {
+              "letra": "D",
+              "t": "To persuade readers that schools should not give weekend homework."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "If schools followed the author's proposal, then teachers would probably",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "ask students to forget what they learned on the weekend."
+            },
+            {
+              "letra": "B",
+              "t": "rely on short exercises during the week."
+            },
+            {
+              "letra": "C",
+              "t": "stop giving any homework at all during the whole school year."
+            },
+            {
+              "letra": "D",
+              "t": "give all of the week's homework on Friday afternoon instead."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "Which statement is incompatible with the text?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "The author has always been against weekend homework."
+            },
+            {
+              "letra": "B",
+              "t": "The author thinks that rest is part of learning."
+            },
+            {
+              "letra": "C",
+              "t": "The author thinks that fewer tasks could be better tasks."
+            },
+            {
+              "letra": "D",
+              "t": "The author accepts that some students could forget lessons."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "This text would most likely appear in",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "a letter written by a student to a close friend."
+            },
+            {
+              "letra": "B",
+              "t": "the opinion section of a newspaper or a school magazine."
+            },
+            {
+              "letra": "C",
+              "t": "a science book that explains how memory is formed."
+            },
+            {
+              "letra": "D",
+              "t": "a school's official list of rules for the next year."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "enunciado": "In sentence 8, the opposite of BORING is",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "easy."
+            },
+            {
+              "letra": "B",
+              "t": "interesting."
+            },
+            {
+              "letra": "C",
+              "t": "many."
+            },
+            {
+              "letra": "D",
+              "t": "dull."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: D · 2: B · 3: A · 4: B · 5: B.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: Convencer. El autor da su opinión («should stop», oración 9), explica por qué cambió de idea y responde a una objeción (oraciones 6 y 7): quiere convencer.",
+        "Pregunta 1. Clave D. La oración 9 expresa la tesis («schools should stop giving homework on weekends») y el resto da razones y responde a una objeción.",
+        "Pregunta 2. Clave B. La oración 7 propone resolver el olvido con ejercicios cortos durante la semana y una buena planificación.",
+        "Pregunta 3. Clave A. Choca con la oración 2: antes creía que la tarea de fin de semana hacía responsables a los alumnos, y ahora no está seguro.",
+        "Pregunta 4. Clave B. Es la opinión de un docente, escrita en primera persona y con una tesis: es una columna de opinión.",
+        "Pregunta 5. Clave B. «Boring» es aburrido; lo contrario es «interesting», interesante."
       ]
     }
   ]

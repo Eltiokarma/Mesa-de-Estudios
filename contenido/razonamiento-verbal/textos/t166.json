@@ -1,0 +1,142 @@
+{
+  "id": "t166",
+  "version": 1,
+  "titulo": "A Letter from Juliaca",
+  "tema": "Lectura en inglés · correo de Emma, una estudiante de intercambio inventada, sobre su primera semana en Juliaca",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "narrativo",
+  "idioma": "en",
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "detalle", "t": "Hi Mom and Dad," },
+      { "id": "o2", "rol": "principal", "t": "I have been in Juliaca for one week, and it is very different from what I imagined." },
+      { "id": "o3", "rol": "detalle", "t": "The first surprise was the altitude: the city is more than 3,800 meters above sea level, so on my first day I got tired just climbing the stairs at school." },
+      { "id": "o4", "rol": "detalle", "t": "My host mother gave me a cup of hot coca tea, and after two days I felt much better." }
+    ],
+    [
+      { "id": "o5", "rol": "detalle", "t": "The second surprise was the cold." },
+      { "id": "o6", "rol": "detalle", "t": "During the day it is sunny, but at night the temperature goes down so much that I sleep with three blankets." },
+      { "id": "o7", "rol": "detalle", "t": "At school, my classmates are curious and very kind." },
+      { "id": "o8", "rol": "detalle", "t": "They correct my Spanish with a lot of patience, and they ask me many questions about winter in Canada." }
+    ],
+    [
+      { "id": "o9", "rol": "detalle", "t": "On Saturday, my host family took me to the market, which is huge and full of colors, noises and people selling everything you can imagine." },
+      { "id": "o10", "rol": "principal", "t": "I miss you both, but I already feel that this is going to be a great year." },
+      { "id": "o11", "rol": "detalle", "t": "Please give my love to Grandma, and write soon! Emma" }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "contexto",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "Who is this text written for?",
+      "alternativas": [
+        { "t": "Her classmates at the school in Juliaca.", "codigo": "RV50",
+          "explicacion": "Los compañeros aparecen en el correo (oraciones 7 y 8), pero se habla de ellos: no son a quienes ella escribe." },
+        { "t": "The teachers who organize the exchange program.", "codigo": "RV8",
+          "explicacion": "Puede haber un programa de intercambio, pero el texto no lo menciona ni se dirige a nadie de él." },
+        { "t": "The readers of a magazine about travel in the Andes.", "codigo": "RV51",
+          "explicacion": "El tono es personal («I miss you both»): una revista se dirigiría a lectores desconocidos. Fíjate en cómo habla el texto y a quién nombra." },
+        { "t": "Her mother and father, who are far away.", "correcta": true, "evidencia": ["o1", "o10"],
+          "explicacion": "Empieza con «Hi Mom and Dad» (oración 1), les dice «I miss you both» (oración 10) y les pide mandar saludos a la abuela (oración 11): es un correo familiar." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "dato",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "According to Emma, what helped her feel better after her first days?",
+      "alternativas": [
+        { "t": "A cup of hot coca tea from her host mother.", "correcta": true, "evidencia": ["o4"],
+          "explicacion": "La oración 4 lo dice: tomó té de coca caliente que le dio su madre anfitriona y a los dos días se sintió mejor." },
+        { "t": "Sleeping with three blankets every night.", "codigo": "RV5", "origen": "o6",
+          "explicacion": "Las tres mantas aparecen en la oración 6, pero son para el frío de la noche, no para el cansancio de la altura." },
+        { "t": "Talking on the phone with her parents every evening.", "codigo": "RV7",
+          "explicacion": "El texto no dice que hable con sus padres por teléfono: va más allá de lo escrito." },
+        { "t": "Climbing the stairs at school every day to get used to them.", "codigo": "RV8", "origen": "o3",
+          "explicacion": "Las escaleras aparecen en la oración 3 como la causa del cansancio, no como lo que la ayudó a sentirse mejor." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "antonimo",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "In sentence 7, the opposite of CURIOUS is",
+      "alternativas": [
+        { "t": "furious.", "codigo": "RV20",
+          "explicacion": "Se parece en la forma («curious», «furious»), pero significa furioso, y no es el contrario." },
+        { "t": "interested.", "codigo": "RV19",
+          "explicacion": "Está cerca en el sentido: una persona curiosa tiene interés. Es casi un sinónimo, no el contrario." },
+        { "t": "unkind.", "codigo": "RV21", "origen": "o7",
+          "explicacion": "Es lo contrario de «kind», la otra palabra de la oración, no de «curious»: cambia otro rasgo." },
+        { "t": "uninterested.", "correcta": true, "evidencia": ["o7", "o8"],
+          "explicacion": "«Curious» es querer saber o conocer; los compañeros preguntan mucho (oración 8). Su contrario es no mostrar interés por saber." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "Which statement is incompatible with the text?",
+      "alternativas": [
+        { "t": "Emma's classmates help her to improve her Spanish.", "codigo": "RV10", "origen": "o8",
+          "explicacion": "Concuerda con la oración 8: la corrigen con paciencia. Se pide la que contradice al texto." },
+        { "t": "Emma felt tired at first because of the high altitude.", "codigo": "RV9", "origen": "o3",
+          "explicacion": "Concuerda con la oración 3. Se pide la que choca con el texto." },
+        { "t": "Emma has been living in Juliaca for several months.", "correcta": true, "evidencia": ["o2"],
+          "explicacion": "La oración 2 dice que lleva en Juliaca una semana («one week»), no varios meses." },
+        { "t": "Emma sleeps with several blankets at night.", "codigo": "RV8", "origen": "o6",
+          "explicacion": "Concuerda con la oración 6. Se pide la que contradice al texto." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, lee esta afirmación y di qué relación tiene con el texto.",
+        "sonda": "Emma's classmates know that her Spanish is not perfect yet.",
+        "clase": "se-deduce",
+        "codigos": {
+          "lo-dice": "RV58",
+          "no-se-sabe": "RV34",
+          "lo-contradice": "RV63"
+        },
+        "explicacion": "La oración 8 dice que corrigen su español con paciencia. El texto no dice que lo sepan imperfecto, pero para corregirla tienen que notar sus errores: se deduce.",
+        "explicaciones": {
+          "lo-dice": "El texto cuenta que la corrigen, pero no dice que sepan que su español es imperfecto: eso se deduce, no está escrito.",
+          "no-se-sabe": "Sí se puede saber: quien corrige a otra persona (oración 8) ha notado sus errores.",
+          "lo-contradice": "Nada en el texto lo niega: al contrario, la corrigen (oración 8)."
+        }
+      },
+      "enunciado": "What can be inferred about Emma's classmates?",
+      "alternativas": [
+        { "t": "They think that Emma already speaks Spanish perfectly.", "codigo": "RV9", "origen": "o8",
+          "explicacion": "La oración 8 dice que corrigen su español: no piensan que lo hable perfecto." },
+        { "t": "They would prefer that Emma went back to Canada soon.", "codigo": "RV7", "origen": "o7",
+          "explicacion": "Nada indica rechazo: son amables (oración 7). Va más allá del texto en sentido contrario." },
+        { "t": "They have all visited Canada at least once before.", "codigo": "RV8",
+          "explicacion": "Puede ser cierto, pero no sale del texto: solo se dice que preguntan por el invierno allá (oración 8)." },
+        { "t": "They want to help her feel welcome.", "correcta": true, "evidencia": ["o7", "o8"],
+          "explicacion": "Son amables (oración 7), la corrigen con paciencia y se interesan por su vida (oración 8): se deduce que quieren que se sienta bien recibida." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-12",
+  "hechos": [
+    { "afirmacion": "Juliaca, en la región Puno, está a más de 3 800 metros sobre el nivel del mar.",
+      "fuente": "Instituto Nacional de Estadística e Informática (INEI) e Instituto Geográfico Nacional (IGN): altitud de la ciudad de Juliaca, alrededor de 3 825 a 3 835 m s. n. m. según la fuente (búsqueda web: aeropuerto 3 825 m; ciudad 3 834 m)" },
+    { "afirmacion": "Emma es un personaje inventado; el texto es un correo de ficción.",
+      "fuente": "Texto propio de Mesa de Estudios (no se basa en una persona real)." }
+  ],
+  "revision": { "por": "subagente (revisor a ciegas, rutina verbal-mas)", "fecha": "2026-11-12", "veredicto": "aprobado", "notas": "A ciegas 6/6. Cambios: previo de p5, la sonda «interesados en su vida en Canadá» admitía lo-dice o se-deduce; ahora «saben que su español aún no es perfecto» (se deduce de la oración 8). p4: el distractor del lago Titicaca (no se sabe) se cambió por una afirmación compatible (oración 6). Altitud verificada en la web: aeropuerto 3 825 m, ciudad ~3 834 m; «más de 3 800 m» se mantiene; fuente corregida." }
+}
