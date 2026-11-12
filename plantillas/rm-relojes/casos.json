@@ -1,8 +1,8 @@
 {
   "plantilla": "rm-relojes",
-  "tolerancia": 1e-9,
+  "tolerancia": 1e-09,
   "nota": "Horas del día en minutos desde las 0:00 (texto «3:36 p. m.»); duraciones como 'dur:<min>'; fechas 'f:AAAA-MM-DD'; fecha y hora del año 'min:<minutos desde el 1 de enero a las 0:00>'; días de la semana 'dia:<0 = lunes … 6 = domingo>'. Un reloj de agujas vuelve a marcar bien con 720 min de desfase. Entrada-k y salida-k son del mismo tipo.",
-  "verificacion": "",
+  "verificacion": "Verificación ciega (subagente, 12 nov 2026): los 42 casos resueltos aparte. Relojes simulados minuto a minuto con fechas reales (datetime, bisiestos) hasta el primer múltiplo de 720 min; mentirosos y días de la semana por fuerza bruta sobre los 7 días; horas barriendo el día con fracciones exactas. 42/42 coinciden. Barrido de 1500 semillas leyendo solo el enunciado: 1500/1500, sin casos con dos soluciones. Las correcciones de la revisión no cambiaron ninguna respuesta.",
   "casos": [
     {
       "semilla": 7,

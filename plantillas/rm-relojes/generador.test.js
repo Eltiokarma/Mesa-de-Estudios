@@ -112,6 +112,62 @@ test('calc.sumarDias coincide con Date en 2000 saltos al azar', () => {
   }
 });
 
+test('RMP47 en el año: la fecha sale con los meses del año supuesto (2027 con 366 días → 14 de julio, 4:48 a. m.)', () => {
+  const p = gen.generar(228);
+  assert.equal(p._datos.anio, 2027);
+  const e = p.alternativas.find(a => a.error && a.error.id === 'RMP47-bisiesto');
+  assert.equal(e.texto, 'el 14 de julio, a las 4:48 a. m.');
+  // En general: con Date, contando el año supuesto desde un año con (o sin) 29 de febrero.
+  for (let s = 0; s < 1500; s++) {
+    const q = gen.generar(s), d = q._datos;
+    if (d.tipo !== 'anio') continue;
+    const x = q.alternativas.find(a => a.error && a.error.id === 'RMP47-bisiesto');
+    if (!x) continue;
+    const min = Number(x.valor.slice(4)), bis = y => (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0;
+    const supuesto = bis(d.anio) ? 2027 : 2028;          // un año con los meses del año supuesto
+    const t = new Date(Date.UTC(supuesto, 0, 1) + min * 60000);
+    const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'setiembre', 'octubre', 'noviembre', 'diciembre'];
+    assert.ok(x.texto.startsWith(`el ${t.getUTCDate()} de ${MESES[t.getUTCMonth()]}, a las ${gen.calc.hora(t.getUTCHours() * 60 + t.getUTCMinutes())}`), `semilla ${s}: ${x.texto}`);
+  }
+});
+
+test('RMP85: la parte decimal de las horas leída como minutos (13,5 h → 13 h 50 min), en hipótesis', () => {
+  let visto = 0;
+  for (let s = 0; s < 1500; s++) {
+    const p = gen.generar(s);
+    for (const a of p.alternativas) {
+      if (!a.error) continue;
+      assert.ok(!a.error.id.startsWith('AR11'), `semilla ${s}: queda AR11`);
+      if (a.error.id !== 'RMP85-decimal-como-minutos') continue;
+      visto++;
+      assert.equal(a.error.respaldo, 'hipotesis');
+      const h = p.respuesta.valor / 60, ent = Math.floor(h), cent = Math.round((h - ent) * 100);
+      assert.equal(a.valor, ent * 60 + cent, `semilla ${s}`);
+    }
+  }
+  assert.ok(visto > 0);
+});
+
+test('concordancia y redacción: la otra parte, 1 día entero, el 1 del mes, turno o jornada, mentirosos', () => {
+  const txt = l => l.map(x => (typeof x === 'string' ? x : x.t)).join('');
+  for (let s = 0; s < 1500; s++) {
+    const p = gen.generar(s), d = p._datos;
+    const todo = [txt(p.enunciado), ...p.solucion.map(txt), ...p.alternativas.map(a => (a.error ? a.error.explicacion : ''))].join(' ');
+    assert.ok(!/otras 1 partes|quedan 1 días|quedan 0 días/.test(todo), `semilla ${s}: ${todo}`);
+    if (/jornada/.test(todo)) assert.ok(!/turno/.test(todo), `semilla ${s}: mezcla turno y jornada`);
+    if (d.tipo === 'mentirosos') assert.match(txt(p.solucion[0]), /Se revisan los siete días; estos son los que cumplen al menos una frase:$/);
+    if (d.tipo === 'que-hora' && (d.forma === 'hace-dentro' || d.forma === 'pasado-dentro')) {
+      const vs = p.enunciado.filter(x => x && x.v);
+      const hace = vs.find(x => /hora/.test(x.t) && p.enunciado[p.enunciado.indexOf(x) - 1].endsWith(d.forma === 'hace-dentro' ? 'Hace ' : 'hace '));
+      const dentro = vs.find(x => x !== hace && /hora/.test(x.t));
+      assert.notEqual(p.variables[hace.v].color, p.variables[dentro.v].color, `semilla ${s}: hace y dentro con el mismo color`);
+    }
+    const usadas = new Set(); for (const parte of [p.enunciado, p.pregunta, ...p.solucion]) for (const x of parte) if (x && x.v) usadas.add(x.v);
+    const col = [...usadas].map(k => { assert.ok(p.variables[k], `semilla ${s}: ${k} sin variable`); return p.variables[k].color; });
+    assert.equal(new Set(col).size, col.length, `semilla ${s}: dos variables con un color`);
+  }
+});
+
 for (const c of casos.casos) {
   test(`casos.json: semilla ${c.semilla}`, () => {
     const p = gen.generar(c.semilla);

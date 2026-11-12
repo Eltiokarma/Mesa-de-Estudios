@@ -38,7 +38,8 @@
  *   1440 min en vez de 720); RMP47 olvidar el 29 de febrero (o contar uno que no hay); RMP49 creerle al
  *   mentiroso; RMP1 contar el día de partida (días transcurridos contra día en curso); RMP2 no maximizar;
  *   AR5 dato intermedio (la hora y no lo que falta; el día del encuentro y no el siguiente); AR7 atraso
- *   constante en vez de creciente (parcial); AR11 leer 0,6 h como 6 min (parcial); AR13 MCD o producto en vez
+ *   constante en vez de creciente (parcial); RMP85 leer la parte decimal de las horas como minutos (13,5 h
+ *   como 13 h 50 min); AR13 MCD o producto en vez
  *   de MCM (parcial); AR18 quedarse con un día que cumple una sola condición (parcial).
  */
 (function (root, fabrica) {
@@ -93,9 +94,10 @@
   function cruza29(f, n) { let g = f; for (let i = 0; i < n; i++) { g = sumarDias(g, 1); if (g.m === 2 && g.d === 29) return true; } return false; }
   function cruzaFebrero(f, n) { let g = f; for (let i = 0; i < n; i++) { g = sumarDias(g, 1); if (g.m === 3 && g.d === 1) return true; } return false; }
   // Minutos desde el inicio del año → fecha y hora.
-  function anioMinutos(min, anio) {
+  // feb fuerza los días de febrero (para el error del bisiesto: el año supuesto con 365 o 366 días).
+  function anioMinutos(min, anio, feb = null) {
     let dia = Math.floor(min / 1440), m = 1;
-    while (dia >= diasMes(m, anio)) { dia -= diasMes(m, anio); m++; }
+    while (dia >= diasMes(m, anio, feb)) { dia -= diasMes(m, anio, feb); m++; }
     return { m, d: dia + 1, min: min % 1440 };
   }
 
@@ -132,6 +134,9 @@
   const armarHora = (rng, correcta, errores) => P.armar({ correcta, errores: errores.filter(e => horaOk(e.valor)), rng, texto: hora });
 
   // ---------- ¿qué hora es? ----------
+  // Con «hace» y «dentro de», cada plazo con su color; la relación (el doble, el triple…) queda sin color.
+  const VAR_HD = { H: { nombre: 'hace', color: 'o' }, f: { nombre: 'lo que falta', color: 'i' }, E: { nombre: 'dentro de', color: 'h' }, x: { nombre: 'la hora', color: 'd' } };
+  const VAR_PD = { H: { nombre: 'hace', color: 'o' }, t: { nombre: 'lo que pasó', color: 'i' }, E: { nombre: 'dentro de', color: 'h' }, x: { nombre: 'la hora', color: 'd' } };
   const VAR_DIA = { t: { nombre: 'lo que pasó', color: 'o' }, f: { nombre: 'lo que falta', color: 'i' }, k: { nombre: 'relación', color: 'h' }, x: { nombre: 'la hora', color: 'd' } };
   function queHora(rng, semilla) {
     const forma = rng.elegir(['razon', 'fraccion', 'hace-dentro', 'hace-dentro', 'pasado-dentro']);
@@ -163,10 +168,10 @@
       x = 1440 - 60 * F;
       if (!horaOk(x) || x - 60 * a <= 0 || x + 60 * b >= 1440 || F <= b) return null;
       const VEZ = { 2: 'el doble', 3: 'el triple', 4: 'el cuádruple', 5: 'el quíntuple' };
-      enunciado = ['Hace ', v('t', `${a} ${a === 1 ? 'hora' : 'horas'}`), ', lo que faltaba para que terminara el día era ', v('k', VEZ[k]), ' de lo que ', v('f', 'faltará'), ' dentro de ', v('t', `${b} ${b === 1 ? 'hora' : 'horas'}`), '.'];
+      enunciado = ['Hace ', v('H', `${a} ${a === 1 ? 'hora' : 'horas'}`), `, lo que faltaba para que terminara el día era ${VEZ[k]} de lo que `, v('f', 'faltará'), ' dentro de ', v('E', `${b} ${b === 1 ? 'hora' : 'horas'}`), '.'];
       solucion = [
-        ['Llama ', v('f', 'f'), ' a las horas que faltan ahora para que termine el día. Hace ', v('t', `${a} h`), ` faltaban f + ${a}; dentro de `, v('t', `${b} h`), ` faltarán f − ${b}.`],
-        ['Ecuación: ', `f + ${a} = `, v('k', `${k}`), ` · (f − ${b}) → ${a} + ${k * b} = ${k - 1}f → `, v('f', `f = ${ent(F) ? F : fr(k * b + a, k - 1)} h = ${dur(60 * F)}`), '.'],
+        ['Llama ', v('f', 'f'), ' a las horas que faltan ahora para que termine el día. Hace ', v('H', `${a} h`), ` faltaban f + ${a}; dentro de `, v('E', `${b} h`), ` faltarán f − ${b}.`],
+        ['Ecuación: ', `f + ${a} = ${k} · (f − ${b}) → ${a} + ${k * b} = ${k - 1}f → `, v('f', `f = ${ent(F) ? F : fr(k * b + a, k - 1)} h = ${dur(60 * F)}`), '.'],
         [`Ya pasaron 24 h − ${dur(60 * F)} = ${dur(x)} desde la medianoche: son las `, v('x', hora(x)), '.'],
       ];
       errores.push(h('RMP48-pasado-por-falta', 1440 - x, `Esa hora corresponde a lo que falta (${dur(60 * F)}), no a lo que ya pasó desde la medianoche. Hay que restarlo de 24 h.`));
@@ -180,10 +185,10 @@
       x = 60 * X;
       if (!horaOk(x) || x - 60 * b <= 0 || x + 60 * a >= 1440) return null;
       const VEZ = { 2: 'el doble', 3: 'el triple', 4: 'el cuádruple' };
-      enunciado = ['Dentro de ', v('t', `${a} ${a === 1 ? 'hora' : 'horas'}`), ', las horas que habrán pasado del día serán ', v('k', VEZ[k]), ' de las que habían pasado hace ', v('t', `${b} ${b === 1 ? 'hora' : 'horas'}`), '.'];
+      enunciado = ['Dentro de ', v('E', `${a} ${a === 1 ? 'hora' : 'horas'}`), `, las horas que habrán pasado del día serán ${VEZ[k]} de las que habían pasado hace `, v('H', `${b} ${b === 1 ? 'hora' : 'horas'}`), '.'];
       solucion = [
-        ['Llama ', v('t', 'x'), ' a las horas que pasaron desde la medianoche. Dentro de ', v('t', `${a} h`), ` habrán pasado x + ${a}; hace `, v('t', `${b} h`), ` habían pasado x − ${b}.`],
-        ['Ecuación: ', `x + ${a} = `, v('k', `${k}`), ` · (x − ${b}) → ${a} + ${k * b} = ${k - 1}x → x = ${ent(X) ? X : fr(a + k * b, k - 1)} h = ${dur(x)}.`],
+        ['Llama ', v('t', 'x'), ' a las horas que pasaron desde la medianoche. Dentro de ', v('E', `${a} h`), ` habrán pasado x + ${a}; hace `, v('H', `${b} h`), ` habían pasado x − ${b}.`],
+        ['Ecuación: ', `x + ${a} = ${k} · (x − ${b}) → ${a} + ${k * b} = ${k - 1}x → `, v('t', ent(X) ? `x = ${X} h` : `x = ${fr(a + k * b, k - 1)} h = ${dur(x)}`), '.'],
         ['Son las ', v('x', hora(x)), '.'],
       ];
       errores.push(h('RMP48-pasado-por-falta', 1440 - x, `${dur(x)} es lo que ya pasó desde la medianoche, y eso da la hora. Restarlo de 24 h da lo que falta, no la hora.`));
@@ -191,12 +196,11 @@
       errores.push(h('AR5-hora-de-despues', x + 60 * a, `Esa es la hora de dentro de ${a} ${a === 1 ? 'hora' : 'horas'}, no la de ahora.`));
     }
     errores.push(h('RMP44-am-pm', amPm(x), `Las cuentas están bien, pero ${x < 720 ? 'antes del mediodía es a. m.' : 'después del mediodía es p. m.'}: ${dur(x)} después de la medianoche son las ${hora(x)}.`));
-    // 9,6 h leído como 9 h 6 min: los dígitos después de la coma, tomados como minutos.
-    const cifrasDec = (hDec(x).split(',')[1] || '');
-    const dec = Number(cifrasDec);
-    if (!ent(x / 60) && ent((x / 60) * 100) && cifrasDec && dec < 60 && dec !== Math.round(x % 60)) errores.push(par('AR11-decimal-como-minutos', Math.floor(x / 60) * 60 + dec, `Leíste ${hDec(x)} h como ${Math.floor(x / 60)} h ${dec} min. La parte decimal es una fracción de hora: ${P.formatear(x / 60 - Math.floor(x / 60), 2)} · 60 = ${Math.round(x % 60)} min.`));
+    // 13,5 h leído como 13 h 50 min: la parte decimal (en centésimas) tomada como minutos.
+    const cent = Math.round((x / 60 - Math.floor(x / 60)) * 100);
+    if (!ent(x / 60) && ent((x / 60) * 100) && cent < 60 && cent !== Math.round(x % 60)) errores.push(h('RMP85-decimal-como-minutos', Math.floor(x / 60) * 60 + cent, `Leíste ${hDec(x)} h como ${Math.floor(x / 60)} h ${cent} min. La parte decimal es una fracción de hora: ${P.formatear(x / 60 - Math.floor(x / 60), 2)} · 60 = ${Math.round(x % 60)} min.`));
     const alternativas = armarHora(rng, x, errores);
-    return cerrar(semilla, { variables: VAR_DIA, enunciado, pregunta: ['¿Qué hora es?'], alternativas, solucion, valor: x, unidad: 'min',
+    return cerrar(semilla, { variables: forma === 'hace-dentro' ? VAR_HD : forma === 'pasado-dentro' ? VAR_PD : VAR_DIA, enunciado, pregunta: ['¿Qué hora es?'], alternativas, solucion, valor: x, unidad: 'min',
       datos: { tipo: 'que-hora', forma, p, q, a, b, k } });
   }
 
@@ -215,6 +219,11 @@
       const e = Dm * p / (p + q);
       if (!ent(e) || e % 5 !== 0) return null;
       const quien = rng.elegir(['El turno de una enfermera de la posta', 'El turno de un vigilante del mercado', 'La jornada de un operario de la planta']);
+      // Un solo nombre en todo el problema: «turno» o «jornada».
+      const jor = /^La jornada/.test(quien);
+      const J = t => (jor ? String(t).replace(/\bdel turno\b/g, 'de la jornada').replace(/\bel turno\b/g, 'la jornada').replace(/\bturno\b/g, 'jornada') : t);
+      const Jl = l => l.map(x => (typeof x === 'string' ? J(x) : { ...x, t: J(x.t) }));
+      const Je = es => es.map(e => (e ? { ...e, explicacion: J(e.explicacion) } : e));
       const enunciado = [`${quien} dura `, v('D', `${D} horas`), ' y empezó a las ', hora(ini), '. Lo que ya ', v('t', 'pasó'), ' del turno y lo que ', v('f', 'falta'), ' están en la razón de ', `${p} a ${q}`, '.'];
       const solucion = [
         ['La razón reparte las ', v('D', `${D} h`), ` del turno en ${p} + ${q} = ${p + q} partes: ya `, v('t', `pasó ${dur(e)}`), ' y ', v('f', `falta ${dur(Dm - e)}`), '.'],
@@ -227,7 +236,7 @@
           h('RMP44-am-pm', ini + e < 720 ? ini + e + 720 : ini + e - 720, 'La cuenta está bien, pero confundiste a. m. con p. m.'),
           h('AR5-razon-del-dia', 1440 * p / (p + q), 'Repartiste las 24 horas del día con esa razón. La razón es entre lo que pasó y lo que falta del turno, no del día.'),
         ];
-        return cerrar(semilla, { variables, enunciado, pregunta: ['¿Qué hora es?'], alternativas: armarHora(rng, ini + e, errores), solucion, valor: ini + e, unidad: 'min',
+        return cerrar(semilla, { variables, enunciado: Jl(enunciado), pregunta: ['¿Qué hora es?'], alternativas: armarHora(rng, ini + e, Je(errores)), solucion: solucion.map(Jl), valor: ini + e, unidad: 'min',
           datos: { tipo: 'turno', forma, D, inicio: ini, ahora: null, p, q } });
       }
       // falta: lo que falta del turno, con la hora como trampa
@@ -235,13 +244,13 @@
       const horaT = m => (horaOk(m) ? { clave: `hora:${m}`, texto: hora(m) } : null);
       solucion.push(['Falta ', v('x', dur(Dm - e)), ` para que termine (ahora son las ${hora(ini + e)}).`]);
       const errores = [
-        ht('RMP48-pasado-por-falta', durT(e), `Ese es el tiempo que ya pasó del turno (${p} de las ${p + q} partes). Lo que falta son las otras ${q} partes.`),
+        ht('RMP48-pasado-por-falta', durT(e), `Ese es el tiempo que ya pasó del turno (${p} de las ${p + q} partes). ${q === 1 ? 'Lo que falta es la otra parte.' : `Lo que falta son las otras ${q} partes.`}`),
         ht('AR5-la-hora', horaT(ini + e), `Esa es la hora actual. La pregunta pide cuánto falta para que termine el turno.`),
         ht('AR5-duracion-del-turno', durT(Dm), 'Esa es la duración completa del turno, no lo que falta.'),
         ht('AR5-falta-del-dia', 1440 - (ini + e) !== Dm - e ? durT(1440 - (ini + e)) : null, 'Eso es lo que falta para que termine el día, no el turno.'),
         ht('AR5-hora-de-fin', horaT(ini + Dm), 'Esa es la hora en que termina el turno. La pregunta pide cuánto tiempo falta.'),
       ].filter(Boolean);
-      return cerrar(semilla, { variables, enunciado, pregunta: ['¿Cuánto tiempo falta para que termine?'], alternativas: P.armarTexto({ correcta: durT(Dm - e), errores, rng }), solucion,
+      return cerrar(semilla, { variables, enunciado: Jl(enunciado), pregunta: ['¿Cuánto tiempo falta para que termine?'], alternativas: P.armarTexto({ correcta: durT(Dm - e), errores: Je(errores), rng }), solucion: solucion.map(Jl),
         valor: `dur:${Dm - e}`, datos: { tipo: 'turno', forma, D, inicio: ini, ahora: null, p, q } });
     }
     // inicio: una reunión de D horas; ahora son las T y lo que falta es p/q de lo que pasó.
@@ -286,22 +295,23 @@
     if (!ent(M) || M % 60 !== 0) return null;
     const f0 = anioMinutos(M, A);
     if (f0.min % 720 === 0 || f0.min < 60) return null;
-    const mk = (min, anioUsado = A) => {
-      if (!ent(min) || min <= 0 || min >= T) return null;
-      const g = anioMinutos(min, A);
+    // feb: los días de febrero del año supuesto (el error del bisiesto pasa a fecha con sus propios meses).
+    const mk = (min, feb = null, Tmax = T) => {
+      if (!ent(min) || min <= 0 || min >= Tmax) return null;
+      const g = anioMinutos(min, A, feb);
       if (g.min % 720 === 0) return null;
-      void anioUsado;
       return { clave: `min:${min}`, texto: `el ${g.d} de ${MESES[g.m - 1]}, a las ${hora(g.min)}` };
     };
     const Totro = (bisiesto(A) ? 365 : 366) * 1440;
     const errores = [
-      ht('RMP47-bisiesto', mk(Totro * p / (p + q)), bisiesto(A) ? `${A} es bisiesto: tiene 366 días, con el 29 de febrero. Hiciste la cuenta con 365.` : `${A} no es bisiesto: tiene 365 días. Hiciste la cuenta con 366.`),
+      ht('RMP47-bisiesto', mk(Totro * p / (p + q), bisiesto(A) ? 28 : 29, Totro), bisiesto(A) ? `${A} es bisiesto: tiene 366 días, con el 29 de febrero. Hiciste la cuenta con 365.` : `${A} no es bisiesto: tiene 365 días. Hiciste la cuenta con 366.`),
       ht('RMP48-pasado-por-falta', mk(T * q / (p + q)), 'Cambiaste lo que pasó del año con lo que falta.'),
       ht('RMP1-dias-transcurridos', mk(M - 1440), `Pasaron ${Math.floor(M / 1440)} días completos y algo más: entonces estamos en el día ${Math.floor(M / 1440) + 1} del año, no en el ${Math.floor(M / 1440)}.`),
       ht('RMP44-am-pm', mk(f0.min < 720 ? M + 720 : M - 720), 'La fecha está bien, pero confundiste a. m. con p. m.'),
     ].filter(Boolean);
     const correcta = mk(M);
     if (!correcta) return null;
+    for (let i = 0; i < errores.length; i++) if (errores[i].texto === correcta.texto) errores.splice(i--, 1);
     const diasPas = Math.floor(M / 1440), horas = (M % 1440) / 60;
     // día del año → mes, contado mes por mes
     let resto = diasPas, m = 1; const cuenta = [];
@@ -310,7 +320,7 @@
     const solucion = [
       [`${A} ${bisiesto(A) ? 'es bisiesto (divisible por 4): tiene 366 días' : 'no es bisiesto: tiene 365 días'}, o sea ${dias} · 24 = ${dias * 24} horas.`],
       ['Lo que pasó: ', v('t', `${dias * 24} · ${p}/${p + q} = ${M / 60} h`), ` = ${diasPas} días completos y ${P.formatear(horas, 2)} h.`],
-      [`Pasaron ${diasPas} días enteros, así que estamos en el día ${diasPas + 1} del año. ${cuenta.length ? `Quitando ${cuenta.join(', ')}, ` : ''}quedan ${resto} días enteros del mes de ${MESES[m - 1]}: es el ${resto + 1} de ${MESES[m - 1]}.`],
+      [`Pasaron ${diasPas} días enteros, así que estamos en el día ${diasPas + 1} del año. ${cuenta.length ? `Quitando ${cuenta.join(', ')}, ` : ''}${resto === 0 ? `empieza ${MESES[m - 1]}: es el 1 de ${MESES[m - 1]}.` : `${resto === 1 ? 'queda 1 día entero' : `quedan ${resto} días enteros`} del mes de ${MESES[m - 1]}: es el ${resto + 1} de ${MESES[m - 1]}.`}`],
       ['Fecha y hora: ', v('x', correcta.texto), '.'],
     ];
     return cerrar(semilla, { variables: { k: { nombre: 'año', color: 'h' }, t: { nombre: 'lo que pasó', color: 'o' }, f: { nombre: 'lo que falta', color: 'i' }, x: { nombre: 'la fecha', color: 'd' } },
@@ -523,7 +533,7 @@
     ].filter(Boolean);
     const tabla = DIAS.map((nom, d) => `${nom}: ${nA} ${mienteA.includes(d) ? 'miente' : 'dice la verdad'} y su frase ${DICHOS[dichoA].vale(mienteA, d) ? 'es cierta' : 'es falsa'}${coherente(mienteA, dichoA, d) ? ' (cuadra)' : ' (no cuadra)'}; ${nB} ${mienteB.includes(d) ? 'miente' : 'dice la verdad'} y su frase ${DICHOS[dichoB].vale(mienteB, d) ? 'es cierta' : 'es falsa'}${coherente(mienteB, dichoB, d) ? ' (cuadra)' : ' (no cuadra)'}`);
     const solucion = [
-      ['Una frase cuadra con un día si, dicha un día de verdad, es cierta, o si, dicha un día de mentira, es falsa. Se revisan los siete días con las dos frases.'],
+      ['Una frase cuadra con un día si, dicha un día de verdad, es cierta, o si, dicha un día de mentira, es falsa. Se revisan los siete días; estos son los que cumplen al menos una frase:'],
       ...tabla.filter((t, d) => coherente(mienteA, dichoA, d) || coherente(mienteB, dichoB, d)).map(t => [t + '.']),
       ['El único día en que cuadran las dos frases es el ', v('x', DIAS[d0]), pide === 'hoy' ? '.' : `; el día ${pide === 'manana' ? 'siguiente' : 'anterior'} es `, ...(pide === 'hoy' ? [] : [v('x', DIAS[(d0 + desp + 7) % 7]), '.'])],
     ];
