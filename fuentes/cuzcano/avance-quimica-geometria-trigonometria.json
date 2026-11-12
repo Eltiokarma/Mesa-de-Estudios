@@ -1,33 +1,33 @@
 {
   "schema_version": 1,
-  "fecha_utc": "2026-11-12T10:18:22.090625+00:00",
+  "fecha_utc": "2026-11-12T11:15:01.820818+00:00",
   "estado": "en_curso",
   "objetivo_nuevas": 3000,
   "objetivo_temas": 36,
   "fichas_anteriores_verificadas_por_sha256": 6213,
-  "fichas_nuevas": 2184,
-  "fichas_acumuladas": 8397,
-  "fichas_pendientes": 816,
-  "temas_con_cuota_cumplida": 21,
-  "paginas_pdf_distintas_cotejadas_por_fragmentos": 557,
-  "nuevas_con_observaciones": 376,
-  "fichas_con_diagrama": 799,
+  "fichas_nuevas": 2290,
+  "fichas_acumuladas": 8503,
+  "fichas_pendientes": 710,
+  "temas_con_cuota_cumplida": 22,
+  "paginas_pdf_distintas_cotejadas_por_fragmentos": 575,
+  "nuevas_con_observaciones": 399,
+  "fichas_con_diagrama": 846,
   "ocr_repetido": false,
   "app_certificada": false,
   "sha256_de_los_indices_locales": {
-    "quimica": "827865de5aa983633e18df360c8823df1d1360123efa0789f10b0983a405b5d3",
-    "geometria": "c758df7720c9d45f72434270e84f0e493b4f2d19e61198c444abc64e36cd2221",
-    "trigonometria": "61402436a4a68bd96c52c0a708f849ba63449379e2886bb84a2a0b08bb9f151f"
+    "quimica": "e3d81518344a17709fca2fdea00db2e30b2d47219aacdd4a121179c9e1fa9070",
+    "geometria": "c6298d16793736917d7dc21a7ddf686cdb8fec3de6d4db1f413e6f80bfe34165",
+    "trigonometria": "b43c7149750c0e2b7df5a0370b10b8c94acbb0bf93d52ad2bf3c902b0ec7fe4c"
   },
   "tandas": [
     {
       "curso": "quimica",
       "objetivo": 1000,
-      "nuevas": 761,
-      "pendientes": 239,
-      "lotes": 35,
-      "con_observaciones": 187,
-      "fichas_con_diagrama": 121,
+      "nuevas": 772,
+      "pendientes": 228,
+      "lotes": 36,
+      "con_observaciones": 191,
+      "fichas_con_diagrama": 130,
       "temas": [
         {
           "id": "quimica.acidos-y-bases",
@@ -339,23 +339,28 @@
         {
           "id": "quimica.quimica-organica",
           "nombre": "Química orgánica",
-          "nuevos": 43,
+          "nuevos": 54,
           "objetivo": 83,
-          "pendientes": 40,
-          "observaciones": 4,
+          "pendientes": 29,
+          "observaciones": 8,
           "subtemas_nuevos": {
             "alcanos": 2,
             "aromaticidad": 2,
             "carbohidratos": 6,
             "carbonos": 1,
             "cicloalcanos": 1,
+            "clasificacion-de-cadenas": 3,
             "combustion": 1,
             "grupos-funcionales": 7,
+            "hibridacion": 1,
             "hidrocarburos": 3,
             "insaturaciones": 1,
-            "isomeria": 5,
+            "isomeria": 6,
             "nomenclatura": 11,
-            "sustituyentes": 3
+            "propiedades-del-carbono": 1,
+            "sustituyentes": 3,
+            "tipos-de-carbono": 3,
+            "tipos-de-formula": 2
           }
         },
         {
@@ -403,11 +408,11 @@
     {
       "curso": "geometria",
       "objetivo": 1000,
-      "nuevas": 633,
-      "pendientes": 367,
-      "lotes": 38,
-      "con_observaciones": 89,
-      "fichas_con_diagrama": 486,
+      "nuevas": 645,
+      "pendientes": 355,
+      "lotes": 39,
+      "con_observaciones": 90,
+      "fichas_con_diagrama": 498,
       "temas": [
         {
           "id": "geometria.la-linea-recta",
@@ -793,11 +798,23 @@
         {
           "id": "geometria.proporcionalidad-de-segmentos-y-semejanza-de-triangulos",
           "nombre": "Proporcionalidad de segmentos y semejanza de triángulos",
-          "nuevos": 0,
+          "nuevos": 12,
           "objetivo": 83,
-          "pendientes": 83,
-          "observaciones": 0,
-          "subtemas_nuevos": {}
+          "pendientes": 71,
+          "observaciones": 1,
+          "subtemas_nuevos": {
+            "arcos-y-cuerdas": 1,
+            "bisectrices": 2,
+            "cuerdas-y-tangentes": 1,
+            "ley-de-senos": 1,
+            "proyecciones": 1,
+            "seccion-armonica": 1,
+            "semejanza-por-paralelas": 1,
+            "tangentes-comunes": 1,
+            "tangentes-y-cuerdas": 1,
+            "tangentes-y-paralelas": 1,
+            "tangentes-y-perpendiculares": 1
+          }
         },
         {
           "id": "geometria.relaciones-metricas",
@@ -923,11 +940,11 @@
     {
       "curso": "trigonometria",
       "objetivo": 1000,
-      "nuevas": 790,
-      "pendientes": 210,
-      "lotes": 35,
-      "con_observaciones": 100,
-      "fichas_con_diagrama": 192,
+      "nuevas": 873,
+      "pendientes": 127,
+      "lotes": 38,
+      "con_observaciones": 118,
+      "fichas_con_diagrama": 218,
       "temas": [
         {
           "id": "trigonometria.circunferencia-trigonometrica",
@@ -1268,11 +1285,37 @@
         {
           "id": "trigonometria.resolucion-de-triangulos-oblicuangulos",
           "nombre": "Resolución de triángulos oblicuángulos",
-          "nuevos": 0,
+          "nuevos": 83,
           "objetivo": 83,
-          "pendientes": 83,
-          "observaciones": 0,
-          "subtemas_nuevos": {}
+          "pendientes": 0,
+          "observaciones": 18,
+          "subtemas_nuevos": {
+            "angulos-de-depresion": 3,
+            "angulos-mitad": 2,
+            "area-trigonometrica": 6,
+            "bisectrices": 5,
+            "circunradio": 2,
+            "composicion-vectorial": 2,
+            "cuadrilateros-bicentricos": 1,
+            "cuadrilateros-ciclicos": 2,
+            "cuerdas": 1,
+            "desigualdades": 1,
+            "equilibrio-vectorial": 1,
+            "exradios": 1,
+            "heron": 2,
+            "identidades-en-triangulos": 3,
+            "inradio": 1,
+            "inradio-y-circunradio": 4,
+            "ley-de-cosenos": 11,
+            "ley-de-senos": 10,
+            "ley-de-tangentes": 2,
+            "medianas": 5,
+            "ortocentro": 1,
+            "producto-escalar": 1,
+            "proyecciones": 5,
+            "rumbos": 9,
+            "semiperimetro": 2
+          }
         },
         {
           "id": "trigonometria.transformaciones-trigonometricas",
@@ -1465,14 +1508,14 @@
   },
   "lote_600_2026_11_12": {
     "meta": 600,
-    "fichas_registradas": 215,
-    "pendientes": 385,
+    "fichas_registradas": 321,
+    "pendientes": 279,
     "cursos": [
       {
         "curso": "quimica",
-        "nuevas": 93,
-        "observaciones": 15,
-        "graficos": 13,
+        "nuevas": 104,
+        "observaciones": 19,
+        "graficos": 22,
         "temas": [
           {
             "id": "quimica.electroquimica",
@@ -1487,7 +1530,7 @@
           {
             "id": "quimica.quimica-organica",
             "tema": "Química orgánica",
-            "fichas": 43
+            "fichas": 54
           },
           {
             "id": "quimica.reacciones-quimicas",
@@ -1497,10 +1540,23 @@
         ]
       },
       {
+        "curso": "geometria",
+        "nuevas": 12,
+        "observaciones": 1,
+        "graficos": 12,
+        "temas": [
+          {
+            "id": "geometria.proporcionalidad-de-segmentos-y-semejanza-de-triangulos",
+            "tema": "Proporcionalidad de segmentos y semejanza de triángulos",
+            "fichas": 12
+          }
+        ]
+      },
+      {
         "curso": "trigonometria",
-        "nuevas": 122,
-        "observaciones": 13,
-        "graficos": 63,
+        "nuevas": 205,
+        "observaciones": 31,
+        "graficos": 89,
         "temas": [
           {
             "id": "trigonometria.numeros-complejos",
@@ -1510,6 +1566,11 @@
           {
             "id": "trigonometria.razones-trigonometricas-de-un-angulo-en-posicion-normal",
             "tema": "Razones trigonométricas de un ángulo en posición normal",
+            "fichas": 83
+          },
+          {
+            "id": "trigonometria.resolucion-de-triangulos-oblicuangulos",
+            "tema": "Resolución de triángulos oblicuángulos",
             "fichas": 83
           }
         ]
