@@ -75,7 +75,7 @@
       "universidades": {"unmsm": {"temas": [6]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": ["arreglos-giros"],
+      "plantillas": ["arreglos-giros", "rm-arreglos"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
