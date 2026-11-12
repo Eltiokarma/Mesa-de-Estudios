@@ -65,7 +65,7 @@
       "universidades": {"unmsm": {"temas": [5]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": ["traslados-sucesos"],
+      "plantillas": ["traslados-sucesos", "rm-trasvases"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
@@ -95,7 +95,7 @@
       "universidades": {"unmsm": {"temas": [8]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": ["probabilidad-dados"],
+      "plantillas": ["probabilidad-dados", "rm-trasvases"],
       "investigacion": null
     },
     {

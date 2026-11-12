@@ -2,7 +2,7 @@
   "plantilla": "rm-trasvases",
   "tolerancia": 0,
   "nota": "Estados como (recipiente 1; recipiente 2; …) en el orden de caps. Un trasvase es pasar líquido hasta vaciar el primero o llenar el segundo. En dos-jarras, con cuenta 'todo' llenar, vaciar y pasar cuentan; con 'trasvases' solo cuenta pasar. En los demás tipos el primer recipiente empieza lleno y los otros vacíos. En barriles, la respuesta es la capacidad del barril que queda.",
-  "verificacion": "",
+  "verificacion": "Verificador ciego (subagente, 8 nov 2026): BFS propio sobre los estados de los recipientes (costo 0 para llenar y vaciar cuando no cuentan) y, en los barriles, enumeración de las formas de dejar un barril y repartir el resto. 22 de 22 coinciden, todos con respuesta única. Tras las correcciones de la revisión, un segundo verificador (12 nov 2026) volvió a resolver a ciegas los casos cambiados (entrada-1, entrada-2, salida-1 y semilla 2) con otro BFS, y coinciden.",
   "casos": [
     {
       "semilla": "entrada-1",
