@@ -473,7 +473,7 @@
       },
       "potencial_visual": "bajo",
       "grado": 4,
-      "plantillas": ["hidrocarburos", "molecula-grande", "quimica-conceptos"],
+      "plantillas": ["hidrocarburos", "molecula-grande", "quimica-conceptos", "nombre-polifuncional"],
       "investigacion": "docs/investigacion/quimica-materia-nomenclatura-organica-ideas-erroneas.md"
     },
     {
@@ -504,7 +504,7 @@
       },
       "potencial_visual": "bajo",
       "grado": 4,
-      "plantillas": ["funciones-organicas", "molecula-grande", "quimica-conceptos"],
+      "plantillas": ["funciones-organicas", "molecula-grande", "quimica-conceptos", "nombre-polifuncional"],
       "investigacion": "docs/investigacion/quimica-materia-nomenclatura-organica-ideas-erroneas.md"
     },
     {
@@ -535,7 +535,7 @@
       },
       "potencial_visual": "bajo",
       "grado": 5,
-      "plantillas": ["biomoleculas", "quimica-conceptos", "estequiometria-admision", "molecula-grande"],
+      "plantillas": ["biomoleculas", "quimica-conceptos", "estequiometria-admision", "molecula-grande", "nombre-polifuncional"],
       "investigacion": "docs/investigacion/biomoleculas-ideas-erroneas.md"
     },
     {

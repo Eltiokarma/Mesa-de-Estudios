@@ -1,0 +1,16 @@
+{
+  "id": "nombre-polifuncional",
+  "titulo": "Ponle nombre: moléculas con varios grupos",
+  "formato": "predicciones",
+  "unidades": [
+    "quimica.funciones-organicas",
+    "quimica.biomoleculas-y-productos-naturales",
+    "quimica.hidrocarburos"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}
