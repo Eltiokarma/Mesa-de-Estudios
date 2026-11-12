@@ -85,7 +85,7 @@ function informeCursos(eventos, bancos) {
   const g = x => x === null || x === undefined ? '—' : x.toFixed(2).replace('.', ',');
   let md = '\n# Pruebas de entrada y salida por curso\n\n';
   md += '| Curso | Entrada (alumnos) | Salida (alumnos) | Pareados | Entrada pareados | Salida pareados | Ganancia normalizada ⟨g⟩ | g individual promedio | Forma A / B en la entrada | «No sé» entrada / salida | Confianza calibrada entrada / salida |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n';
-  for (const c of r) md += `| ${c.curso} | ${pct(c.entrada)} (${c.alumnosEntrada}) | ${pct(c.salida)} (${c.alumnosSalida}) | ${c.pareados} | ${pct(c.entradaPareados)} | ${pct(c.salidaPareados)} | ${g(c.hake)} | ${g(c.hakeIndividual)} | ${pct(c.porForma.A.entrada)} (${c.porForma.A.alumnos}) / ${pct(c.porForma.B.entrada)} (${c.porForma.B.alumnos}) | ${pct(c.nose.entrada)} / ${pct(c.nose.salida)} | ${pct(c.confianza.entrada)} / ${pct(c.confianza.salida)} |\n`;
+  for (const c of r) md += `| ${c.curso} | ${pct(c.entrada)} (${c.alumnosEntrada}) | ${pct(c.salida)} (${c.alumnosSalida}) | ${c.pareados}${c.pareadosMismoDia ? ` (+${c.pareadosMismoDia} el mismo día, fuera)` : ""} | ${pct(c.entradaPareados)} | ${pct(c.salidaPareados)} | ${g(c.hake)} | ${g(c.hakeIndividual)} | ${pct(c.porForma.A.entrada)} (${c.porForma.A.alumnos}) / ${pct(c.porForma.B.entrada)} (${c.porForma.B.alumnos}) | ${pct(c.nose.entrada)} / ${pct(c.nose.salida)} | ${pct(c.confianza.entrada)} / ${pct(c.confianza.salida)} |\n`;
   for (const c of r) {
     const dic = (bancos[c.curso] || {}).errores || {};
     if (c.errores.length) {

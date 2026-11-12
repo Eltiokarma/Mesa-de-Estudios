@@ -51,7 +51,8 @@ function exportar(formato) {
   const ev = eventos(), archivo = `laboratorio-${est.colegio || 'sin-colegio'}-${est.alumno}-${new Date().toLocaleDateString('en-CA')}`;
   if (formato === 'csv') descargar(archivo + '.csv', Medicion.aCSV(ev), 'text/csv');
   else descargar(archivo + '.json', JSON.stringify(ev), 'application/json');
-  if (ev.length) try { localStorage.setItem(CLAVE_EXPORTADO, String(ev[ev.length - 1].t)); } catch { /* sin almacenamiento */ }
+  // Solo el JSON cuenta como descargado: es lo que lee herramientas/analizar-medicion.js. El CSV es para mirar en una hoja de cálculo.
+  if (ev.length && formato !== 'csv') try { localStorage.setItem(CLAVE_EXPORTADO, String(ev[ev.length - 1].t)); } catch { /* sin almacenamiento */ }
 }
 function descargar(nombre, contenido, tipo) {
   const url = URL.createObjectURL(new Blob([contenido], { type: tipo }));
@@ -319,7 +320,7 @@ function vPerfil() {
     <div class="card">
       <p class="sub" style="margin:0 0 10px">Se guardan en este dispositivo, sin tu nombre: tus predicciones, tus pasos previos de lectura y tus pruebas de entrada y salida (${eventos().length} registros${sinExportar() ? `, ${sinExportar()} sin descargar` : ', todos descargados'}).</p>
       ${resumenHTML()}
-      <div class="acciones-datos"><button class="btn morado" id="csv">Descargar CSV</button><button class="btn borde" id="json">Descargar JSON</button></div>
+      <div class="acciones-datos"><button class="btn morado" id="json">Descargar datos para el profesor</button><button class="btn borde" id="csv">Descargar CSV (hoja de cálculo)</button></div>
     </div></div></div>`;
   document.getElementById('nombre').onchange = e => { est.nombre = e.target.value.trim(); guardar(); };
   document.getElementById('colegio').onchange = e => { est.colegio = e.target.value.trim().toUpperCase(); guardar(); };
@@ -432,7 +433,7 @@ function cargarBanco() {
   return bancoListo || (bancoListo = Promise.all([
     fetch('datos/pruebas.json').then(r => (r.ok ? r.json() : null)).catch(() => null),
     modulo('prueba').then(() => true, () => false),
-  ]).then(([b, ok]) => { pruebas = ok ? b : null; if (!ok) bancoListo = null; }));
+  ]).then(([b, ok]) => { pruebas = ok && b ? b : null; if (!pruebas) bancoListo = null; })); // si falló el banco o el script, se reintenta
 }
 // Muestra la ruta cuando esté lo que necesita; si el alumno ya se fue a otra pantalla, no hace nada.
 function cuandoListo(promesa, fn) {

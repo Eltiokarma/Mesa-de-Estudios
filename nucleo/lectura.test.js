@@ -449,6 +449,6 @@ test('«No sé» en la prueba de lectura: ni acierto ni código, 0 en las respue
   assert.equal(p.nose, 1);
   assert.equal(p.aciertos, it.preguntas.length - 1);
   // En el resumen por curso, «No sé» no aparece como error RV.
-  const [c] = M.resumirCursos([{ alumno: 'x', ...e }]);
+  const [c] = M.resumirCursos([{ alumno: 'x', ...e }, { alumno: 'x', ...p }]);
   assert.deepEqual(c.errores, []);
 });

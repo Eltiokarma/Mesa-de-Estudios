@@ -32,6 +32,11 @@ function pideEntrada(ctx, curso) {
 }
 
 // Tarjeta para la página del curso.
+// La salida se hace otro día que la entrada: sin un tiempo de clases entre las dos, el par no mide aprendizaje
+// (en el laboratorio, un alumno nuevo podía hacer la entrada y en seguida la salida que el profesor ya había abierto).
+const mismoDia = fecha => !!fecha && new Date(fecha).toLocaleDateString('en-CA') === new Date().toLocaleDateString('en-CA');
+const ESPERA_SALIDA = 'La prueba de salida se hace otro día, después de trabajar el curso. Hoy sigue practicando.';
+
 function tarjeta(ctx, curso) {
   const { pruebas, est, esc } = ctx;
   const b = pruebas && pruebas.cursos[curso];
@@ -43,6 +48,8 @@ function tarjeta(ctx, curso) {
   if (!st.entrada) return `<div class="card prueba-tarjeta"><div class="etq-p">Prueba de entrada pendiente</div>
     <p>${n} preguntas, unos ${b.minutos} minutos. No es nota: sirve para ver de dónde partes.</p>${boton('entrada', 'Hacer la prueba de entrada ›', 'morado')}</div>`;
   if (!st.salida) {
+    if (habilitada(est, curso) && mismoDia(st.entrada.fecha)) return `<div class="card prueba-tarjeta"><div class="etq-p">Prueba de salida</div>
+      <p>${ESPERA_SALIDA}</p></div>`;
     if (!habilitada(est, curso)) return `<div class="card prueba-tarjeta"><div class="etq-p">Prueba de salida</div>
       <p>La prueba de salida la abre tu profesor cuando terminen el curso.</p></div>`;
     return `<div class="card prueba-tarjeta destacada"><div class="etq-p">Prueba de salida</div>
@@ -69,6 +76,11 @@ function vista(ctx, curso, fase) {
     return;
   }
   if (st[fase]) return fase === 'salida' ? resultado() : listo();
+  if (fase === 'salida' && !st.enCurso && mismoDia(st.entrada.fecha)) {
+    $app.innerHTML = cab('') + `<div class="card prueba-intro"><p>${ESPERA_SALIDA}</p>
+      <a class="btn morado ancho" href="#/curso/${esc(curso)}">Volver al curso</a></div>`;
+    return;
+  }
   if (fase === 'salida' && !habilitada(est, curso)) {
     $app.innerHTML = cab('') + `<div class="card prueba-intro"><p>La prueba de salida la abre tu profesor cuando terminen el curso.</p>
       <a class="btn morado ancho" href="#/curso/${esc(curso)}">Volver al curso</a></div>`;

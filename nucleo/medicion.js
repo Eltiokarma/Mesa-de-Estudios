@@ -107,6 +107,13 @@
   // Las formas son paralelas (mismos códigos de error), así que la comparación es justa.
   // porForma compara A con B en la entrada: si las formas fueran equivalentes, se parecen.
   function resumirCursos(eventos) {
+    // Preguntas sueltas ('item'): una por alumno, curso, fase y pregunta (vale la última, por si recargó a media
+    // prueba y la repitió), y solo de pruebas terminadas (las abandonadas no entran a «No sé» ni a los errores).
+    const terminadas = new Set(eventos.filter(e => e.tipo === 'prueba' && e.curso && e.total).map(e => `${e.alumno}|${e.curso}|${e.fase}`));
+    const clave = e => (e.item ? `${e.alumno}|${e.curso}|${e.fase}|${e.item}` : e);
+    const ultimo = new Map();
+    for (const e of eventos) if (e.tipo === 'item' && e.curso) ultimo.set(clave(e), e);
+    eventos = eventos.filter(e => e.tipo !== 'item' || (ultimo.get(clave(e)) === e && terminadas.has(`${e.alumno}|${e.curso}|${e.fase}`)));
     const por = {};
     const c = id => (por[id] = por[id] || { curso: id, entrada: {}, salida: {}, forma: { entrada: {}, salida: {} }, errores: { entrada: {}, salida: {} },
       plantillas: {}, previas: {}, items: { entrada: { n: 0, bien: 0, nose: 0 }, salida: { n: 0, bien: 0, nose: 0 } } });
@@ -116,6 +123,7 @@
       if (e.tipo === 'prueba' && e.total) {
         r[e.fase][e.alumno] = e.aciertos / e.total;
         r.forma[e.fase][e.alumno] = e.forma;
+        if (e.fase === 'salida') (r.dias = r.dias || {})[e.alumno] = e.dias;
         if (e.fase === 'entrada') r.previas[e.alumno] = Number(e.previas) || 0;
       } else if (e.tipo === 'item') {
         const ns = noseDe(e), bien = !ns && e.correcta ? 1 : 0;
@@ -129,7 +137,11 @@
     }
     const prom = l => (l.length ? l.reduce((a, b) => a + b, 0) / l.length : null);
     return Object.values(por).sort((a, b) => a.curso.localeCompare(b.curso)).map(r => {
-      const pareados = Object.keys(r.entrada).filter(a => a in r.salida);
+      // Pareados: hicieron las dos pruebas en días distintos. Una salida el mismo día de la entrada (dias = 0) no
+      // mide aprendizaje y empuja la ganancia hacia 0: se cuenta aparte. Los datos viejos sin «dias» entran.
+      const ambos = Object.keys(r.entrada).filter(a => a in r.salida);
+      const mismoDia = ambos.filter(a => (r.dias || {})[a] === 0);
+      const pareados = ambos.filter(a => (r.dias || {})[a] !== 0);
       const pre = prom(pareados.map(a => r.entrada[a])), post = prom(pareados.map(a => r.salida[a]));
       const gi = pareados.filter(a => r.entrada[a] < 1).map(a => (r.salida[a] - r.entrada[a]) / (1 - r.entrada[a]));
       const enPar = new Set(pareados);
@@ -142,7 +154,7 @@
       }
       return {
         curso: r.curso,
-        alumnosEntrada: Object.keys(r.entrada).length, alumnosSalida: Object.keys(r.salida).length, pareados: pareados.length,
+        alumnosEntrada: Object.keys(r.entrada).length, alumnosSalida: Object.keys(r.salida).length, pareados: pareados.length, pareadosMismoDia: mismoDia.length,
         entrada: prom(Object.values(r.entrada)), salida: prom(Object.values(r.salida)),
         entradaPareados: pre, salidaPareados: post,
         hake: pre === null ? null : pre >= 1 ? null : (post - pre) / (1 - pre),

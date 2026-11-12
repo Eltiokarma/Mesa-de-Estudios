@@ -230,3 +230,21 @@ test('«No sé» por curso: no es error, cuenta como no acierto en Hake y sale d
   assert.match(md, /\| 25 % \/ 25 % \| 33 % \/ 100 % \|/);
   assert.match(informe(l), /Confianza calibrada/);
 });
+
+test('resumirCursos: salida el mismo día fuera de Hake; preguntas repetidas o de pruebas abandonadas no cuentan', () => {
+  const M = require('./medicion.js');
+  const p = (alumno, fase, aciertos, extra = {}) => ({ tipo: 'prueba', alumno, curso: 'fisica', fase, aciertos, total: 10, forma: 'A', ...extra });
+  const it = (alumno, fase, item, correcta, extra = {}) => ({ tipo: 'item', alumno, curso: 'fisica', fase, item, correcta, error: correcta ? '' : 'F1', ...extra });
+  const ev = [
+    p('a', 'entrada', 2), p('a', 'salida', 6, { dias: 14 }),
+    p('b', 'entrada', 3), p('b', 'salida', 3, { dias: 0 }),       // mismo día: fuera
+    p('c', 'entrada', 4), p('c', 'salida', 7),                     // dato viejo sin dias: entra
+    it('a', 'entrada', 'f1', false), it('a', 'entrada', 'f1', true), // repetida al recargar: vale la última
+    it('z', 'entrada', 'f1', false),                                 // prueba abandonada: no cuenta
+  ];
+  const [r] = M.resumirCursos(ev);
+  assert.equal(r.pareados, 2);
+  assert.equal(r.pareadosMismoDia, 1);
+  assert.ok(Math.abs(r.entradaPareados - 0.3) < 1e-9 && Math.abs(r.salidaPareados - 0.65) < 1e-9);
+  assert.deepEqual(r.errores.map(e => e.id), []);
+});

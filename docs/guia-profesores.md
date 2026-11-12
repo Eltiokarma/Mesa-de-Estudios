@@ -57,6 +57,7 @@ Detalles importantes:
 - La salida tiene preguntas **parecidas** a las de la entrada, no las mismas. Hay dos formas, A y B, y la app reparte el orden: la mitad de los alumnos empieza con la A y la otra mitad con la B. Así se puede comparar sin que nadie repita preguntas.
 - Al terminar la salida, el alumno ve cuántas acertó antes y ahora. La revisión pregunta por pregunta aparece **solo si usted abrió `?soluciones=`**. Conviene abrirla después de que todo el grupo terminó la salida, para que las respuestas no circulen.
 - Si un alumno no hizo la entrada, el enlace de salida lo lleva primero a la entrada.
+- **La salida no se puede hacer el mismo día que la entrada.** Sin clases de por medio, el par no mide aprendizaje, y el análisis deja fuera esos pares. El alumno que hizo la entrada hoy ve «La prueba de salida se hace otro día».
 - Cada prueba se hace **una sola vez**. "Borrar mi avance" no borra las pruebas de ningún curso.
 - Lo que se abre con el enlace queda guardado en ese navegador, aunque cambie el alumno. No hay contraseña: el control es que el enlace lo reparte usted.
 
@@ -88,7 +89,7 @@ Con una sola computadora y un proyector, la escena se usa igual: el grupo vota l
 
 ## 7. Cómo recoger los datos
 
-1. En cada equipo: **Perfil → Datos para el profesor → Descargar JSON**. Se baja un archivo de datos con un nombre como `laboratorio-ABC-a3f9c01b2e-2026-12-09.json`. También se puede bajar en CSV, que se abre en Excel.
+1. En cada equipo: **Perfil → Datos para el profesor → Descargar datos para el profesor**. Se baja un archivo de datos con un nombre como `laboratorio-ABC-a3f9c01b2e-2026-12-09.json`. También se puede bajar en CSV, que se abre en Excel, pero ese archivo no sirve para el análisis: siempre hay que bajar el de datos.
 2. Junten todos los archivos en una carpeta (por USB, correo o WhatsApp). Si un mismo registro se descargó dos veces, no se cuenta doble.
 3. **Envíen la carpeta al equipo del proyecto**, que les devuelve un informe del grupo. Si alguien del colegio sabe usar Node.js, puede hacerlo él mismo (ver el recuadro).
 
