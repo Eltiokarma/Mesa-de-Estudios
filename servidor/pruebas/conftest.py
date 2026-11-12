@@ -1,7 +1,10 @@
+import os
+
 import pytest
 from fastapi.testclient import TestClient
 
-from app.config import Config
+from app.config import Config, _url_db
+from app.db import Base, crear_motor
 from app.main import crear_app
 from app.modelos import Colegio, Usuario
 from app.seguridad import hash_contrasena
@@ -15,7 +18,14 @@ De la Cruz Huanca,José,34567890,4,B
 
 class Entorno:
     def __init__(self, cfg=None):
-        self.cfg = cfg or Config(database_url="sqlite://")
+        # PRUEBAS_DATABASE_URL=postgresql://... corre todo contra PostgreSQL (se borra la base en cada prueba).
+        url = os.environ.get("PRUEBAS_DATABASE_URL")
+        if url and cfg is None:
+            url = _url_db(url)
+            m = crear_motor(url)
+            Base.metadata.drop_all(m)
+            m.dispose()
+        self.cfg = cfg or Config(database_url=url or "sqlite://")
         self.app = crear_app(self.cfg)
         self.c = TestClient(self.app)
 
@@ -50,7 +60,7 @@ class Entorno:
         return {"Authorization": f"Bearer {token}"}
 
     def cargar(self, token, texto=CSV_BASE, **params):
-        return self.c.post("/api/colegio/alumnos", content=texto.encode(), params=params,
+        return self.c.post("/api/colegio/alumnos", content=texto if isinstance(texto, bytes) else texto.encode(), params=params,
                            headers={**self.h(token), "Content-Type": "text/csv"})
 
     def alumno_listo(self, creado, nueva="mi-clave-nueva"):
