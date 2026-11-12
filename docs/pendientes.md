@@ -40,6 +40,17 @@ Si hay que hacer OCR, instala tesseract en español: `apt-get install -y tessera
 
 ## Pendientes, en orden de prioridad
 
+### Auditoría (12 nov 2026)
+
+Revisado: `npm test` (7889 en verde); los 90 generadores con 606 semillas como las de la app; las 99 escenas a 390 y 1366 px y en oscuro; las 307 pantallas de la app; los datos del catálogo, el papel y la caja sin conexión; y una revisión de la lógica de medición. Arreglado: la molécula grande sin conexión, papel para 22 generadores, el doble toque que contestaba la pregunta siguiente, «Borrar mi avance» que dejaba la práctica en NaN, la salida el mismo día de la entrada (fuera de Hake), preguntas repetidas al recargar, la descarga en CSV que se marcaba como descargada, la entrada de verbal que se podía saltar y la frase larga que se salía de la tarjeta.
+
+Queda:
+- **Decisión de Gerson: el alumno del laboratorio que vuelve otro día.** Cada «Otro alumno» crea un código nuevo, así que en una PC compartida no hay forma de juntar su entrada con su salida. Propuesta: mostrar el código al alumno para que lo anote y un botón «Ya tengo código» que lo recupere.
+- El perfil muestra el puntaje de la entrada antes de la salida, y en una PC compartida junta a todos los alumnos (baja).
+- `rm-balanzas` tarda hasta 0,8 s por problema y `rm-deduccion` 0,2 s: mirarlos en un celular de gama baja.
+- Analizador: `unir` no usa el campo `que` al quitar repetidos (solo afecta a la auditoría de habilitaciones); la tabla por módulo cuenta los reintentos de lectura y `resumirLectura` no (no coinciden).
+- El service worker puede mezclar archivos viejos y nuevos en la sesión en que se actualiza; no se encontró una rotura concreta.
+
 **Pausa por límite de uso (8 nov 2026).** Cinco rutinas de huecos quedaron detenidas con su trabajo a medias subido a su rama (commit «WIP: pausa por límite de uso», nota en `rutinas/<rama>.md`): `rutina/rm-espacial`, `rutina/rm-procesos`, `rutina/geometria-trig`, `rutina/fisica-admision` y `rutina/quimica-admision`. Al retomar: reanudar cada sesión desde su nota y, al integrar, mezclar el CSV por curso con `herramientas/mezclar-csv-admision.py` y rehacer las tablas con `herramientas/agregar_admision.py docs/datos/admision-unmsm.csv …`. Ya integradas: verbal A/B, «No sé» y aritmética-álgebra (cobertura 74 %).
 
 ### 0. Huecos que mide la admisión real de San Marcos (8 nov 2026)
