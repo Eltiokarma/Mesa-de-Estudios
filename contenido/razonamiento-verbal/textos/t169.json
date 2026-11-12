@@ -1,0 +1,122 @@
+{
+  "id": "t169",
+  "version": 1,
+  "titulo": "Free English on Saturdays",
+  "tema": "Lectura en inglés · aviso de una biblioteca comunitaria de Puno que ofrece clases de inglés gratuitas",
+  "grado": 4,
+  "dificultad": 1,
+  "tipo_texto": "expositivo",
+  "idioma": "en",
+  "parrafos": [
+    [
+      {"id": "o1", "rol": "general", "t": "Do you want to learn English but cannot pay for an academy?"},
+      {"id": "o2", "rol": "principal", "t": "Our community library in Puno is starting free English classes for teenagers and adults."},
+      {"id": "o3", "rol": "detalle", "t": "Classes are every Saturday from nine to eleven in the morning, in the reading room on the second floor."}
+    ],
+    [
+      {"id": "o4", "rol": "detalle", "t": "There are two groups: beginners start in March, and students who already know some English start in April."},
+      {"id": "o5", "rol": "apoyo", "t": "No previous course is necessary, and you do not need to buy a book, because the library will lend you one for the whole term."},
+      {"id": "o6", "rol": "detalle", "t": "Our teachers are volunteers from the neighborhood, and some of them have lived in other countries."},
+      {"id": "o7", "rol": "detalle", "t": "Places are limited, so please register at the front desk before the end of February."},
+      {"id": "o8", "rol": "detalle", "t": "Bring your ID card and a notebook, and come ready to speak!"},
+      {"id": "o9", "rol": "apoyo", "t": "Learning a language takes time, but we will practice together every week."}
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "titulo",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración (en inglés) que dice lo más importante del texto.",
+        "aceptadas": ["o2"],
+        "ninguna": "RV3",
+        "codigos": {
+
+        },
+        "explicacion": "La oración 2 anuncia lo central: la biblioteca empieza clases de inglés gratuitas para jóvenes y adultos. Las demás dan el horario, los grupos, los requisitos o animan a participar.",
+        "explicaciones": {
+          "o1": "Es la pregunta con la que empieza el aviso para llamar la atención; no dice todavía qué se ofrece.",
+          "o3": "Da el horario y el lugar: es un detalle necesario, pero no la idea principal.",
+          "o4": "Dice cuándo empieza cada grupo: es información práctica, no el tema.",
+          "o5": "Dice que no hace falta comprar libro. Es un detalle de las condiciones.",
+          "o6": "Presenta a los profesores. Es un detalle.",
+          "o7": "Pide inscribirse antes de febrero. Es una instrucción, no el tema del aviso.",
+          "o8": "Pide qué traer. Es un detalle práctico.",
+          "o9": "Anima a participar, pero no dice qué se ofrece.",
+          "ninguna": "La oración 2 sí dice lo central: clases de inglés gratuitas en la biblioteca."
+        }
+      },
+      "enunciado": "Which is the best title for this text?",
+      "alternativas": [
+        {"t": "Free English Classes at Our Library", "correcta": true, "evidencia": ["o2"], "explicacion": "Resume el aviso completo: clases de inglés gratuitas en la biblioteca (oración 2), con horario, grupos e inscripción."},
+        {"t": "Learning Languages Is Important for Everybody", "codigo": "RV2", "explicacion": "Es demasiado general: el aviso no habla de la importancia de los idiomas, sino de unas clases concretas en una biblioteca."},
+        {"t": "Teachers Who Have Lived in Other Countries", "codigo": "RV3", "origen": "o6", "explicacion": "La oración 6 dice que algunos profesores vivieron en otros países, pero es un detalle: el título deja fuera lo principal."},
+        {"t": "The Library Will Lend Books to Every Student", "codigo": "RV5", "origen": "o5", "explicacion": "Repite una idea de la oración 5, pero es un solo detalle del aviso y no su tema."}
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "dato",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "Beginners can start the classes in",
+      "alternativas": [
+        {"t": "March.", "correcta": true, "evidencia": ["o4"], "explicacion": "La oración 4 dice que los principiantes empiezan en marzo."},
+        {"t": "April, when the first group starts.", "codigo": "RV45", "origen": "o4", "explicacion": "Abril es el mes en que empiezan los alumnos que ya saben algo de inglés, no los principiantes: es el dato del otro grupo."},
+        {"t": "February, when places are given out.", "codigo": "RV5", "origen": "o7", "explicacion": "Febrero aparece en la oración 7, pero como fecha límite para inscribirse, no como inicio de clases."},
+        {"t": "May, after the library finishes its repairs.", "codigo": "RV8", "explicacion": "El aviso no menciona mayo ni ninguna reparación: es un dato inventado."}
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "contexto",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "Where would this text most likely be found?",
+      "alternativas": [
+        {"t": "On a notice board at a community library.", "correcta": true, "evidencia": ["o2", "o8"], "explicacion": "Es un aviso que invita a inscribirse en el escritorio de la biblioteca (oración 7) y habla de «our library»: se colocaría donde lo vean los vecinos."},
+        {"t": "In a scientific journal about how adults learn languages.", "codigo": "RV49", "explicacion": "El texto habla de una oferta concreta con horario y requisitos; no presenta una investigación ni usa lenguaje técnico."},
+        {"t": "In an advertisement for a private English academy downtown.", "codigo": "RV5", "explicacion": "Menciona el inglés y las clases, pero el aviso dice desde la primera oración que es para quien no puede pagar una academia."},
+        {"t": "In a newspaper report about a national exam for students.", "codigo": "RV8", "explicacion": "El texto no habla de ningún examen nacional ni de noticias: invita a unas clases del barrio."}
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "In sentence 5, the word TERM means",
+      "alternativas": [
+        {"t": "a period of classes.", "correcta": true, "evidencia": ["o5"], "explicacion": "En la oración 5, «for the whole term» quiere decir durante todo el periodo de clases."},
+        {"t": "a word with a special meaning.", "codigo": "RV18", "origen": "o5", "explicacion": "Es el significado más común de «term» en otros contextos, pero un libro prestado «for the whole term» no puede ser una palabra especial."},
+        {"t": "the last moment of a period.", "codigo": "RV54", "explicacion": "Es un falso amigo: «term» se parece a «término», pero aquí no es el final sino todo el periodo de clases."},
+        {"t": "an exam at the end of the course.", "codigo": "RV23", "explicacion": "Encaja con la idea de curso y de libro, pero la oración dice que el libro se presta durante todo el term, no solo en un examen."}
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "Which statement is incompatible with the text?",
+      "alternativas": [
+        {"t": "Students have to buy their own English book.", "correcta": true, "evidencia": ["o5"], "explicacion": "Choca con la oración 5: la biblioteca prestará un libro durante todo el periodo."},
+        {"t": "Students who know a little English can join in April.", "codigo": "RV10", "origen": "o4", "explicacion": "Es compatible con la oración 4: ese grupo empieza en abril."},
+        {"t": "The teachers who give the classes do not work for a school.", "codigo": "RV8", "origen": "o6", "explicacion": "Es compatible: la oración 6 dice que son voluntarios del barrio."},
+        {"t": "The library will hold an English exam in December.", "codigo": "RV36", "explicacion": "El aviso no menciona ningún examen, pero tampoco dice que no lo habrá: que algo no esté dicho no lo hace incompatible."}
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-12",
+  "hechos": [
+    {
+      "afirmacion": "El aviso, la biblioteca y las clases son inventados para este ejercicio; no corresponden a una institución real de Puno.",
+      "fuente": "Texto propio (ejercicio de lectura)."
+    }
+  ],
+  "revision": null
+}
