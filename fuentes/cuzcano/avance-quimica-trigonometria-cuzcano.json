@@ -1,0 +1,241 @@
+{
+  "schema_version": 1,
+  "fecha_utc": "2026-11-12T20:52:30.012973+00:00",
+  "estado": "en_curso",
+  "origen": "Escaneos de Cuzcano",
+  "objetivo_nuevas": 2000,
+  "objetivo_temas": 20,
+  "fichas_nuevas": 157,
+  "fichas_pendientes": 1843,
+  "porcentaje_del_lote": 7.85,
+  "fichas_acumuladas_banco": 9539,
+  "temas_banco_con_100_acumuladas": 58,
+  "paginas_pdf_distintas_cotejadas": 46,
+  "ocr_repetido": false,
+  "lectura_local": "fuentes/ocr-local/cuzcano/cobertura-temas/avance-detallado.html",
+  "cursos": [
+    {
+      "id": "quimica",
+      "curso": "Química",
+      "meta": 1000,
+      "nuevas": 67,
+      "pendientes": 933,
+      "porcentaje_del_lote": 6.7,
+      "temas_con_fichas_nuevas": 10,
+      "nuevas_con_observaciones": 19,
+      "acumuladas": 1244,
+      "temas_del_curso": 13,
+      "temas_del_curso_con_100_acumuladas": 3,
+      "indice_local": "fuentes/ocr-local/cuzcano/lote-quimica-1000-cuzcano/fichas.json",
+      "sha256_indice_local": "8930cdd2ea9c0e7d27dbe8e5df152d320c3ccf8eb805e5fc333a44d506a24189",
+      "recursos_visuales": {
+        "tabla_propia": 56,
+        "grafica_cartesiana_propia": 11
+      },
+      "temas": [
+        {
+          "id": "quimica.reacciones-quimicas",
+          "tema": "Reacciones químicas",
+          "nuevas": 8,
+          "meta": 100,
+          "pendientes": 92,
+          "porcentaje_del_lote": 8,
+          "acumuladas": 74
+        },
+        {
+          "id": "quimica.nomenclatura-inorganica",
+          "tema": "Nomenclatura inorgánica",
+          "nuevas": 3,
+          "meta": 100,
+          "pendientes": 97,
+          "porcentaje_del_lote": 3,
+          "acumuladas": 75
+        },
+        {
+          "id": "quimica.electroquimica",
+          "tema": "Electroquímica",
+          "nuevas": 4,
+          "meta": 100,
+          "pendientes": 96,
+          "porcentaje_del_lote": 4,
+          "acumuladas": 87
+        },
+        {
+          "id": "quimica.equilibrio-quimico",
+          "tema": "Equilibrio químico",
+          "nuevas": 1,
+          "meta": 100,
+          "pendientes": 99,
+          "porcentaje_del_lote": 1,
+          "acumuladas": 84
+        },
+        {
+          "id": "quimica.quimica-organica",
+          "tema": "Química orgánica",
+          "nuevas": 3,
+          "meta": 100,
+          "pendientes": 97,
+          "porcentaje_del_lote": 3,
+          "acumuladas": 86
+        },
+        {
+          "id": "quimica.soluciones",
+          "tema": "Soluciones",
+          "nuevas": 4,
+          "meta": 100,
+          "pendientes": 96,
+          "porcentaje_del_lote": 4,
+          "acumuladas": 87
+        },
+        {
+          "id": "quimica.tabla-periodica",
+          "tema": "Tabla periódica",
+          "nuevas": 1,
+          "meta": 100,
+          "pendientes": 99,
+          "porcentaje_del_lote": 1,
+          "acumuladas": 84
+        },
+        {
+          "id": "quimica.acidos-y-bases",
+          "tema": "Ácidos y bases",
+          "nuevas": 26,
+          "meta": 100,
+          "pendientes": 74,
+          "porcentaje_del_lote": 26,
+          "acumuladas": 110
+        },
+        {
+          "id": "quimica.enlace-quimico",
+          "tema": "Enlace químico",
+          "nuevas": 11,
+          "meta": 100,
+          "pendientes": 89,
+          "porcentaje_del_lote": 11,
+          "acumuladas": 95
+        },
+        {
+          "id": "quimica.estequiometria",
+          "tema": "Estequiometría",
+          "nuevas": 6,
+          "meta": 100,
+          "pendientes": 94,
+          "porcentaje_del_lote": 6,
+          "acumuladas": 90
+        }
+      ]
+    },
+    {
+      "id": "trigonometria",
+      "curso": "Trigonometría",
+      "meta": 1000,
+      "nuevas": 90,
+      "pendientes": 910,
+      "porcentaje_del_lote": 9,
+      "temas_con_fichas_nuevas": 5,
+      "nuevas_con_observaciones": 15,
+      "acumuladas": 1200,
+      "temas_del_curso": 13,
+      "temas_del_curso_con_100_acumuladas": 6,
+      "indice_local": "fuentes/ocr-local/cuzcano/lote-trigonometria-1000-cuzcano/fichas.json",
+      "sha256_indice_local": "7749bd572962221328607c71e625f6023a2e36125d4ce546635c1393e3bd0b10",
+      "recursos_visuales": {
+        "tabla_propia": 57,
+        "grafica_cartesiana_propia": 32,
+        "recta_numerica_propia": 1
+      },
+      "temas": [
+        {
+          "id": "trigonometria.numeros-complejos",
+          "tema": "Números complejos",
+          "nuevas": 8,
+          "meta": 100,
+          "pendientes": 92,
+          "porcentaje_del_lote": 8,
+          "acumuladas": 47
+        },
+        {
+          "id": "trigonometria.funciones-trigonometricas-inversas",
+          "tema": "Funciones trigonométricas inversas",
+          "nuevas": 22,
+          "meta": 100,
+          "pendientes": 78,
+          "porcentaje_del_lote": 22,
+          "acumuladas": 105
+        },
+        {
+          "id": "trigonometria.identidades-de-arcos-compuestos",
+          "tema": "Identidades de arcos compuestos",
+          "nuevas": 0,
+          "meta": 100,
+          "pendientes": 100,
+          "porcentaje_del_lote": 0,
+          "acumuladas": 83
+        },
+        {
+          "id": "trigonometria.identidades-de-arcos-multiples",
+          "tema": "Identidades de arcos múltiples",
+          "nuevas": 25,
+          "meta": 100,
+          "pendientes": 75,
+          "porcentaje_del_lote": 25,
+          "acumuladas": 108
+        },
+        {
+          "id": "trigonometria.razones-trigonometricas-de-un-angulo-en-posicion-normal",
+          "tema": "Razones trigonométricas de un ángulo en posición normal",
+          "nuevas": 0,
+          "meta": 100,
+          "pendientes": 100,
+          "porcentaje_del_lote": 0,
+          "acumuladas": 83
+        },
+        {
+          "id": "trigonometria.resolucion-de-triangulos-oblicuangulos",
+          "tema": "Resolución de triángulos oblicuángulos",
+          "nuevas": 17,
+          "meta": 100,
+          "pendientes": 83,
+          "porcentaje_del_lote": 17,
+          "acumuladas": 100
+        },
+        {
+          "id": "trigonometria.transformaciones-trigonometricas",
+          "tema": "Transformaciones trigonométricas",
+          "nuevas": 0,
+          "meta": 100,
+          "pendientes": 100,
+          "porcentaje_del_lote": 0,
+          "acumuladas": 83
+        },
+        {
+          "id": "trigonometria.ecuaciones-e-inecuaciones-trigonometricas",
+          "tema": "Ecuaciones e inecuaciones trigonométricas",
+          "nuevas": 0,
+          "meta": 100,
+          "pendientes": 100,
+          "porcentaje_del_lote": 0,
+          "acumuladas": 84
+        },
+        {
+          "id": "trigonometria.funciones-trigonometricas-directas",
+          "tema": "Funciones trigonométricas directas",
+          "nuevas": 18,
+          "meta": 100,
+          "pendientes": 82,
+          "porcentaje_del_lote": 18,
+          "acumuladas": 102
+        },
+        {
+          "id": "trigonometria.identidades-trigonometricas-fundamentales",
+          "tema": "Identidades trigonométricas fundamentales",
+          "nuevas": 0,
+          "meta": 100,
+          "pendientes": 100,
+          "porcentaje_del_lote": 0,
+          "acumuladas": 84
+        }
+      ]
+    }
+  ]
+}
