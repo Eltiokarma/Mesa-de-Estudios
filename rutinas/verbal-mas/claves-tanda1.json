@@ -1,0 +1,51 @@
+{
+ "t134": {
+  "p1": "D",
+  "p2.previo": "ambos",
+  "p2": "D",
+  "p3": "A",
+  "p4.previo": "ninguno",
+  "p4": "C",
+  "p5.previo": "A",
+  "p5": "A"
+ },
+ "t135": {
+  "p1": "C",
+  "p2.previo": "B",
+  "p2": "B",
+  "p3": "C",
+  "p4.previo": "ambos",
+  "p4": "A",
+  "p5": "D"
+ },
+ "t136": {
+  "p1.previo": "B",
+  "p1": "D",
+  "p2.previo": "ambos",
+  "p2": "C",
+  "p3.previo": "ninguno",
+  "p3": "B",
+  "p4": "D",
+  "p5": "C"
+ },
+ "t137": {
+  "p1.previo": "A",
+  "p1": "E",
+  "p2.previo": "ambos",
+  "p2": "D",
+  "p3": "B",
+  "p4.previo": "B",
+  "p4": "C",
+  "p5": "A"
+ },
+ "t138": {
+  "p1": "A",
+  "p2.previo": "A",
+  "p2": "A",
+  "p3": "A",
+  "p4.previo": "ambos",
+  "p4": "D",
+  "p5.previo": "ninguno",
+  "p5": "D"
+ }
+}

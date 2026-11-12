@@ -1,0 +1,153 @@
+{
+  "id": "t135",
+  "version": 1,
+  "titulo": "Cuando llega la helada: ¿cerrar la escuela o adaptarla?",
+  "tema": "Educación · heladas y friaje en el sur andino",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    { "id": "A", "desde": 0, "firma": "Una médica de un centro de salud rural" },
+    { "id": "B", "desde": 1, "firma": "Un director de una escuela rural" }
+  ],
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "principal", "t": "Durante las semanas más frías de la temporada de heladas, las escuelas de las zonas altas del sur deberían pasar a clases a distancia." },
+      { "id": "o2", "rol": "apoyo", "t": "Muchos niños salen de su casa antes del amanecer y caminan más de una hora, cuando el termómetro todavía marca varios grados bajo cero." },
+      { "id": "o3", "rol": "apoyo", "t": "Llegan a aulas sin calefacción, con ventanas que no cierran bien, y pasan la mañana con la ropa húmeda." },
+      { "id": "o4", "rol": "apoyo", "t": "En cada temporada de frío, los centros de salud reciben más niños con neumonía, y algunos no se recuperan." },
+      { "id": "o5", "rol": "principal", "t": "Ningún día de clase vale lo que la salud de un niño: esas semanas es mejor que estudien en casa, con fichas y por la radio." }
+    ],
+    [
+      { "id": "o6", "rol": "apoyo", "t": "Nadie duda de que el frío enferma a los niños de las alturas." },
+      { "id": "o7", "rol": "contraste", "t": "Lo que dudo es que cerrar la escuela sea la mejor respuesta, porque las heladas no duran unos días, sino varios meses." },
+      { "id": "o8", "rol": "apoyo", "t": "En muchas comunidades no hay señal de internet ni libros en casa, y los padres salen temprano a sus chacras y a sus animales, de modo que estudiar en casa suele significar no estudiar." },
+      { "id": "o9", "rol": "apoyo", "t": "Además, para varios niños el desayuno de la escuela es la primera comida caliente del día." },
+      { "id": "o10", "rol": "principal", "t": "Antes que suspender, conviene empezar las clases más tarde, cuando ya salió el sol, y arreglar las aulas: ventanas que cierren, y paredes y techos que guarden el calor." },
+      { "id": "o11", "rol": "apoyo", "t": "Solo en un día de frío extremo tendría sentido cerrar, y por el menor tiempo posible." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "controversia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "El tema en controversia entre los dos textos es",
+      "alternativas": [
+        { "t": "si el frío intenso de las zonas altas pone en riesgo la salud de los escolares.", "codigo": "RV61", "origen": "o6",
+          "explicacion": "En eso coinciden: el texto A lo muestra con las neumonías (oración 4) y el B lo acepta sin discutir (oración 6)." },
+        { "t": "si el desayuno de la escuela es para muchos niños la primera comida caliente del día.", "codigo": "RV60", "origen": "o9",
+          "explicacion": "Es un argumento del texto B (oración 9). El A no habla del desayuno; no puede ser el eje del debate." },
+        { "t": "si ante las heladas conviene pasar a clases a distancia o adaptar el horario y las aulas.", "correcta": true, "evidencia": ["o1", "o10"],
+          "explicacion": "El texto A propone clases a distancia en las semanas más frías (oración 1); el B, empezar más tarde y arreglar las aulas antes que suspender (oración 10)." },
+        { "t": "cómo afectará el cambio del clima a la agricultura y a la ganadería del sur andino.", "codigo": "RV2",
+          "explicacion": "Es demasiado general y además lejano: los textos hablan de qué hacer con las clases cuando hace frío." },
+        { "t": "si las escuelas rurales deben cerrarse para siempre y los niños estudiar en la ciudad.", "codigo": "RV33",
+          "explicacion": "Ninguno lo propone: el texto A habla de las semanas más frías, no de cerrar para siempre, y el B quiere mejorar las aulas." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "compatibilidad",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "La escuela podría cerrar en algún día de frío extremo, pero no durante semanas.",
+        "aceptada": "B",
+        "codigos": { "A": "RV59", "ambos": "RV60", "ninguno": null },
+        "explicacion": "Lo sostiene el texto B: cerrar tiene sentido solo en un día de frío extremo y por el menor tiempo posible (oración 11), porque las heladas duran meses (oración 7).",
+        "explicaciones": {
+          "A": "El texto A pide justamente lo contrario: pasar a clases a distancia durante las semanas más frías (oración 1).",
+          "ambos": "Solo el texto B lo sostiene (oración 11). El A quiere que los niños estudien en casa semanas enteras (oraciones 1 y 5).",
+          "ninguno": "Sí lo sostiene alguien: el texto B, en la oración 11."
+        }
+      },
+      "enunciado": "Es compatible con lo que sostiene el autor del texto B afirmar que",
+      "alternativas": [
+        { "t": "en un día de frío extremo, la escuela podría cerrar por poco tiempo.", "correcta": true, "evidencia": ["o11"],
+          "explicacion": "Es lo que dice la oración 11: solo en un día de frío extremo tendría sentido cerrar, y por el menor tiempo posible." },
+        { "t": "durante las semanas más frías, lo mejor es que los niños estudien en casa con fichas y por la radio.", "codigo": "RV59", "origen": "o5",
+          "explicacion": "Es la propuesta del texto A (oraciones 1 y 5). El B la rechaza: en muchas comunidades estudiar en casa suele significar no estudiar (oración 8)." },
+        { "t": "la escuela no debería cerrar nunca, ni siquiera en el día de frío más extremo del año.", "codigo": "RV11", "origen": "o11",
+          "explicacion": "El «nunca» dice más que el texto B, que acepta cerrar en un día de frío extremo (oración 11)." },
+        { "t": "en las comunidades sin internet, estudiar en casa da los mismos resultados que ir a la escuela.", "codigo": "RV9", "origen": "o8",
+          "explicacion": "Choca con la oración 8: allí, estudiar en casa suele significar no estudiar." },
+        { "t": "el Estado debería repartir estufas eléctricas en todas las casas de las comunidades altas.", "codigo": "RV7",
+          "explicacion": "El texto B habla de arreglar las aulas (oración 10), no de las casas. La idea va más allá de lo que dice." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto B, el verbo GUARDAR («paredes y techos que guarden el calor») significa",
+      "alternativas": [
+        { "t": "vigilar.", "codigo": "RV18",
+          "explicacion": "Es un sentido común de «guardar» (como un guardián), pero una pared no vigila nada: lo que hace es no dejar escapar el calor." },
+        { "t": "producir.", "codigo": "RV19",
+          "explicacion": "Se asocia con el calor y la calefacción, pero una pared no produce calor: lo conserva." },
+        { "t": "retener.", "correcta": true, "evidencia": ["o10"],
+          "explicacion": "Las paredes y los techos arreglados no dejan que el calor se escape del aula." },
+        { "t": "cerrar.", "codigo": "RV5", "origen": "o10",
+          "explicacion": "Es la palabra vecina de la misma oración («ventanas que cierren»), pero se dice de las ventanas, no del calor." },
+        { "t": "aguardar.", "codigo": "RV20",
+          "explicacion": "Se parece en la forma, pero «aguardar» es esperar, y las paredes no esperan el calor." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "sintesis",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "El frío de las alturas daña la salud de los escolares.",
+        "aceptada": "ambos",
+        "codigos": { "A": "RV61", "B": "RV61", "ninguno": null },
+        "explicacion": "Los dos lo sostienen: el texto A lo muestra con las neumonías de cada temporada (oración 4) y el B lo da por cierto (oración 6).",
+        "explicaciones": {
+          "A": "El texto A lo dice (oración 4), pero el B también: «nadie duda de que el frío enferma a los niños de las alturas» (oración 6).",
+          "B": "El texto B lo acepta en la oración 6, pero el A lo dice primero, con las neumonías de la oración 4.",
+          "ninguno": "Los dos lo sostienen: el texto A en la oración 4 y el B en la oración 6."
+        }
+      },
+      "enunciado": "¿Qué enunciado integra mejor los dos textos?",
+      "alternativas": [
+        { "t": "Los niños de las alturas se enferman de neumonía debido a que la escuela no siempre les da un desayuno caliente.", "codigo": "RV44", "origen": "o9",
+          "explicacion": "Une dos ideas con una causa que los textos no plantean: el desayuno (oración 9) no se presenta como causa de las neumonías (oración 4)." },
+        { "t": "Los dos quieren proteger la salud de los niños y suspender las clases durante toda la temporada de heladas.", "codigo": "RV62", "origen": "o7",
+          "explicacion": "La primera mitad es común, pero la segunda no: el texto B no quiere suspender durante la temporada, que dura meses (oraciones 7 y 11)." },
+        { "t": "Muchos niños de las zonas altas caminan más de una hora bajo cero, antes del amanecer, para llegar a su escuela.", "codigo": "RV1", "origen": "o2",
+          "explicacion": "Es un dato del texto A (oración 2); no recoge la propuesta de ninguno de los dos." },
+        { "t": "El frío amenaza la salud de los escolares; uno quiere cerrar las aulas en las semanas peores y el otro, mejorarlas.", "correcta": true, "evidencia": ["o1", "o4", "o6", "o10"],
+          "explicacion": "Junta el punto de partida común (oraciones 4 y 6) con las dos respuestas: clases a distancia en el texto A (oración 1) y aulas arregladas en el B (oración 10)." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Si las aulas de una comunidad tuvieran calefacción y las clases empezaran cuando ya salió el sol, la autora del texto A probablemente",
+      "alternativas": [
+        { "t": "seguiría pidiendo clases a distancia porque los niños caminan de madrugada a varios grados bajo cero.", "codigo": "RV63", "origen": "o2",
+          "explicacion": "Repite un motivo que el supuesto acaba de quitar: si las clases empiezan con el sol, los niños ya no caminan de madrugada bajo cero." },
+        { "t": "tendría menos razones para pedir que esa escuela cierre.", "correcta": true, "evidencia": ["o2", "o3"],
+          "explicacion": "Sus razones eran la caminata antes del amanecer (oración 2) y las aulas frías (oración 3). Con el supuesto, las dos pierden fuerza." },
+        { "t": "diría que en esa comunidad estudiar en casa suele significar no estudiar.", "codigo": "RV59", "origen": "o8",
+          "explicacion": "Ese es un argumento del texto B (oración 8), no algo que diga la autora del A." },
+        { "t": "pediría que ninguna escuela del país vuelva a cerrar, en ningún caso y por ningún motivo.", "codigo": "RV11",
+          "explicacion": "El supuesto habla de una comunidad con aulas abrigadas, no de todo el país ni de todos los casos." },
+        { "t": "exigiría que los centros de salud de la zona dejen de atender a los adultos durante el invierno.", "codigo": "RV7",
+          "explicacion": "Nada en el texto A permite esa conclusión: habla de las clases, no de a quién atienden los centros de salud." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-12",
+  "hechos": [
+    { "afirmacion": "En las zonas altoandinas del sur del Perú las heladas llevan la temperatura por debajo de 0 °C, sobre todo entre mayo y agosto.", "fuente": "SENAMHI (Servicio Nacional de Meteorología e Hidrología del Perú), avisos y boletines de heladas y friaje" },
+    { "afirmacion": "En la temporada de bajas temperaturas aumentan las infecciones respiratorias agudas y las neumonías en niños de las zonas altoandinas.", "fuente": "Ministerio de Salud del Perú (MINSA) y Presidencia del Consejo de Ministros, Plan Multisectorial ante Heladas y Friaje" }
+  ],
+  "revision": null
+}
