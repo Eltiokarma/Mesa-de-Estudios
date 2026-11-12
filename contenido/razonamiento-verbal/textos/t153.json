@@ -1,0 +1,281 @@
+{
+  "id": "t153",
+  "version": 1,
+  "titulo": "El examen de admisión en quechua o aimara",
+  "tema": "Educación · lenguas originarias y admisión universitaria",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    {
+      "id": "A",
+      "desde": 0,
+      "firma": "Una lingüista"
+    },
+    {
+      "id": "B",
+      "desde": 1,
+      "firma": "Un docente universitario"
+    }
+  ],
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "apoyo",
+        "t": "En el Perú, una parte de los postulantes tiene el quechua o el aimara como lengua de su casa, y aun así el examen de admisión se rinde solo en castellano."
+      },
+      {
+        "id": "o2",
+        "rol": "apoyo",
+        "t": "Un estudiante puede saber el tema y fallar el problema porque no entiende bien el enunciado."
+      },
+      {
+        "id": "o3",
+        "rol": "principal",
+        "t": "Entonces el examen no mide solo lo que sabe, sino también cuán bien domina otra lengua."
+      },
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "La Constitución reconoce al quechua y al aimara como idiomas oficiales donde predominan, y una universidad pública debería reflejarlo."
+      },
+      {
+        "id": "o5",
+        "rol": "principal",
+        "t": "Ofrecer también el examen en estas lenguas haría la evaluación más justa."
+      }
+    ],
+    [
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "Coincido en que quien piensa en quechua o en aimara parte con una desventaja que no se ve en las notas."
+      },
+      {
+        "id": "o7",
+        "rol": "contraste",
+        "t": "Mi duda es si un examen traducido resolvería esa desventaja o solo la trasladaría."
+      },
+      {
+        "id": "o8",
+        "rol": "apoyo",
+        "t": "En su gran mayoría, las clases universitarias se dictan en castellano, de modo que quien ingresara con un examen en su lengua llegaría a un aula donde tendría que entenderlo todo en otra."
+      },
+      {
+        "id": "o9",
+        "rol": "apoyo",
+        "t": "Además, muchos términos de la química o de la física no tienen un equivalente establecido, y una traducción apresurada podría crear diferencias entre los exámenes."
+      },
+      {
+        "id": "o10",
+        "rol": "principal",
+        "t": "Antes de traducir, habría que ofrecer cursos de nivelación en castellano académico y trabajar por años el vocabulario científico."
+      },
+      {
+        "id": "o11",
+        "rol": "apoyo",
+        "t": "Con ese trabajo, un examen en lengua originaria tendría sentido y no sería un camino hacia el fracaso."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "postura",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "La lingüista del texto A sostiene que",
+      "alternativas": [
+        {
+          "t": "hay que ofrecer cursos de nivelación y trabajar el vocabulario científico antes de traducir cualquier examen.",
+          "codigo": "RV59",
+          "origen": "o10",
+          "explicacion": "Es la postura del texto B (oración 10), no la de la lingüista."
+        },
+        {
+          "t": "todos los postulantes que hablan quechua o aimara fallan el examen de admisión por no entender bien el castellano.",
+          "codigo": "RV11",
+          "origen": "o2",
+          "explicacion": "Dice más que el texto A, que habla de «un estudiante» que puede fallar por el enunciado (oración 2), no de todos."
+        },
+        {
+          "t": "las clases de la universidad deberían dictarse desde el primer día solo en quechua y en aimara.",
+          "codigo": "RV33",
+          "origen": "o5",
+          "explicacion": "El texto A habla del examen de admisión, no de las clases (oración 5)."
+        },
+        {
+          "t": "un examen solo en castellano mide en parte el dominio de esa lengua y no solo el saber del postulante.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o3"
+          ],
+          "explicacion": "Lo dice en las oraciones 2 y 3: el estudiante puede saber el tema y fallar por no entender el enunciado."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "discrepancia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Los postulantes de lengua originaria deberían quedar exonerados del examen de admisión.",
+        "aceptada": "ninguno",
+        "codigos": {
+          "A": "RV33",
+          "B": "RV33",
+          "ambos": "RV33"
+        },
+        "explicacion": "Ninguno lo sostiene: el texto A quiere que el examen se ofrezca también en esas lenguas (oración 5) y el B pide nivelación antes de traducir (oración 10), pero ninguno habla de exonerar.",
+        "explicaciones": {
+          "A": "El texto A pide un examen en esas lenguas, no exonerar de él (oración 5).",
+          "B": "El texto B pide nivelación y vocabulario antes de traducir (oración 10); no habla de exonerar.",
+          "ambos": "Ninguno lo sostiene: los dos hablan del examen y no de dejar de darlo."
+        }
+      },
+      "enunciado": "Los autores discrepan principalmente en",
+      "alternativas": [
+        {
+          "t": "si quien tiene una lengua originaria como lengua de casa parte con una desventaja.",
+          "codigo": "RV61",
+          "origen": "o6",
+          "explicacion": "En eso coinciden: el texto A lo plantea en las oraciones 1 a 3 y el B lo acepta en la oración 6."
+        },
+        {
+          "t": "si el examen debe ofrecerse ya en lengua originaria o solo después de un trabajo previo de nivelación y vocabulario.",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "o10"
+          ],
+          "explicacion": "El texto A propone ofrecer también el examen en esas lenguas (oración 5); el B pide primero nivelación y trabajo en el vocabulario (oración 10)."
+        },
+        {
+          "t": "si la Constitución reconoce al quechua y al aimara como idiomas oficiales en las zonas donde predominan, y desde cuándo.",
+          "codigo": "RV60",
+          "origen": "o4",
+          "explicacion": "Es un dato que cita el texto A (oración 4); el B no lo discute."
+        },
+        {
+          "t": "si las lenguas originarias del país deben seguir hablándose y transmitiéndose en las familias y en las comunidades.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos discuten cómo debe ser el examen de admisión, no el futuro de las lenguas."
+        },
+        {
+          "t": "si el castellano es hoy la lengua que más personas hablan en todo el territorio del país, incluida la sierra.",
+          "codigo": "RV8",
+          "explicacion": "Puede ser cierto, pero no sale de los textos: ninguno compara cuántas personas hablan cada lengua."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto B, la palabra NIVELACIÓN («cursos de nivelación») significa",
+      "alternativas": [
+        {
+          "t": "trabajo de dejar plana una superficie con una máquina.",
+          "codigo": "RV18",
+          "explicacion": "Es el sentido de «nivelar» como allanar un terreno, pero aquí se habla de cursos para estudiantes."
+        },
+        {
+          "t": "selección de los postulantes que ingresan a la universidad.",
+          "codigo": "RV19",
+          "origen": "o10",
+          "explicacion": "Está en el mismo campo (el ingreso a la universidad), pero el curso de nivelación prepara a los estudiantes y no los selecciona."
+        },
+        {
+          "t": "traducción del examen a otra lengua del país.",
+          "codigo": "RV5",
+          "origen": "o10",
+          "explicacion": "Es una palabra cercana de la misma oración («traducir»), pero la nivelación va antes de la traducción."
+        },
+        {
+          "t": "refuerzo para que todos lleguen al mismo punto de partida.",
+          "correcta": true,
+          "evidencia": [
+            "o10"
+          ],
+          "explicacion": "Son cursos en castellano académico para quienes entrarán a un aula donde se dicta en esa lengua."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Si se comprobara que los ingresantes que rindieron el examen en quechua tienen en el primer ciclo notas parecidas a las de los demás, el docente del texto B probablemente",
+      "alternativas": [
+        {
+          "t": "insistiría en que el examen traducido fracasa, pues las clases se dictan en castellano.",
+          "codigo": "RV63",
+          "explicacion": "Repite el temor que el hecho comprobado desmiente: el B temía el fracaso de esos ingresantes (oraciones 8 y 11)."
+        },
+        {
+          "t": "vería atenuada su preocupación por el aula en castellano, aunque no la de sus palabras técnicas.",
+          "correcta": true,
+          "evidencia": [
+            "o8",
+            "o9"
+          ],
+          "explicacion": "Su temor era que el ingresante tuviera que entenderlo todo en otra lengua (oración 8); las notas parecidas lo atenúan, pero el vocabulario científico es un asunto aparte (oración 9)."
+        },
+        {
+          "t": "exigiría ofrecer el examen en todas las lenguas del país sin ninguna preparación previa.",
+          "codigo": "RV11",
+          "explicacion": "Dice más de lo que el texto permite: el docente pide trabajo previo (oración 10), y no «todas las lenguas»."
+        },
+        {
+          "t": "concluiría que ya no hace falta trabajar el vocabulario científico en lengua originaria.",
+          "codigo": "RV7",
+          "explicacion": "Va más allá del texto: unas buenas notas no dicen nada de si existen equivalentes establecidos (oración 9)."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Resulta incompatible con lo que plantea el texto A afirmar que",
+      "alternativas": [
+        {
+          "t": "algunos postulantes aprendieron el castellano como segunda lengua en la escuela primaria de su comunidad.",
+          "codigo": "RV36",
+          "explicacion": "El texto A no lo dice, pero no lo contradice: habla de quienes tienen otra lengua en casa (oración 1)."
+        },
+        {
+          "t": "un postulante puede conocer bien un tema y aun así fallar un problema por no entender el enunciado.",
+          "codigo": "RV6",
+          "explicacion": "Está dicho en el texto A casi tal cual (oración 2): es compatible porque es lo que sostiene."
+        },
+        {
+          "t": "el examen en castellano mide solo el conocimiento, sin que influya la lengua del postulante.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o3"
+          ],
+          "explicacion": "El texto A sostiene que el examen no mide solo lo que sabe, sino también el dominio de otra lengua (oración 3)."
+        },
+        {
+          "t": "la mayoría de las universidades públicas del país tiene exámenes de admisión muy exigentes y competidos.",
+          "codigo": "RV8",
+          "explicacion": "Puede ser cierto, pero no sale del texto y no lo contradice."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-12",
+  "hechos": [
+    {
+      "afirmacion": "La Constitución Política del Perú (1993) establece que son idiomas oficiales el castellano y, en las zonas donde predominen, también el quechua, el aimara y las demás lenguas aborígenes.",
+      "fuente": "Constitución Política del Perú de 1993, artículo 48"
+    }
+  ],
+  "revision": null
+}
