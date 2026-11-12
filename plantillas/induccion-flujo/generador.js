@@ -17,7 +17,9 @@
  * Convenciones: SI; las áreas se dan casi siempre en cm² (1 cm² = 10⁻⁴ m²) y los tiempos cortos en ms.
  * «Paralela al campo» quiere decir que el plano de la espira contiene las líneas de campo (flujo cero).
  * Números con tres cifras significativas y coma decimal; fuera de 0,01 a 100 000, en notación científica.
- * Errores: U2, U3, U7, PR4, PR7 (hipótesis, docs/investigacion/fisica-calculo-transversal-ideas-erroneas.md);
+ * Distractores: solo los que quedan entre 1/20 y 20 veces la correcta (cm² entre 100 o ms como s dan
+ * factores de 100 o 1000 y se descartan por absurdos; esas conversiones quedan en la solución).
+ * Errores: U7, PR4, PR7 (hipótesis, docs/investigacion/fisica-calculo-transversal-ideas-erroneas.md);
  * MG10 (parcial, docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md); las trampas de los
  * solucionarios de San Marcos (docs/clasificacion/trampas-admision-unmsm/fisica.md, hipótesis): ΔΦ = B·A al
  * invertir, fase cero con la espira paralela al campo; los demás, hipótesis nuestras con prefijo IN-.
@@ -77,7 +79,7 @@
     const A = rng.elegir([0.01, 0.02, 0.04, 0.05, 0.1, 0.2]); return { A, cm2: false, texto: `${num(A)} m²` };
   }
   const pasoA = a => (a.cm2 ? [['El área en m²: ', c('A', `${a.texto} = ${num(a.A)} m²`), ' (1 cm² = 10⁻⁴ m²).']] : []);
-  const errA = (a, valor) => (a.cm2 ? [tr('U3-cm2', valor, `Pasaste los cm² a m² dividiendo entre 100. Un metro tiene 100 cm, así que un metro cuadrado tiene 100 · 100 = 10 000 cm²: ${a.texto} = ${num(a.A)} m².`)] : []);
+  // (Pasar cm² a m² entre 100 da un factor 100: esa opción sería absurda; la conversión queda en la solución.)
 
   // ---------- Armado ----------
   function generar(semilla) {
@@ -102,7 +104,9 @@
 
   function cerrar(rng, semilla, o) {
     if (!exacto(o.correcta)) return null;
-    const ok = e => Number.isFinite(e.valor) && (o.negativos ? Math.abs(e.valor) > 1e-12 : e.valor > 0);
+    // Sin distractores absurdos: de 1/20 a 20 veces la correcta (en valor absoluto).
+    const ok = e => { if (!Number.isFinite(e.valor) || !(o.negativos ? Math.abs(e.valor) > 1e-12 : e.valor > 0)) return false;
+      const r = Math.abs(e.valor / o.correcta); return r >= 1 / 20 && r <= 20; };
     const alternativas = P.armar({ correcta: o.correcta, errores: o.errores.filter(ok), rng, texto: o.texto, negativos: !!o.negativos });
     return {
       id: `${ID}#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
@@ -120,7 +124,7 @@
   };
   function carga(rng, semilla, sub) {
     const modo = sub === 'invertir' ? rng.elegir(['campo', 'campo', 'giro180']) : rng.elegir(['apaga', 'saca', 'giro90']);
-    const N = rng.elegir([50, 100, 200, 250, 400, 500]), a = area(rng);
+    const N = rng.elegir([5, 10, 20, 50, 100, 200, 250, 500]), a = area(rng);
     const B = rng.elegir([0.1, 0.2, 0.25, 0.4, 0.5, 0.8, 1]), R = rng.elegir([2, 4, 5, 8, 10, 20, 25, 50]);
     const dt = rng.elegir([0.1, 0.2, 0.5, 2]);
     const k = sub === 'invertir' ? 2 : 1;
@@ -138,7 +142,7 @@
           ? 'Tomaste el cambio de flujo como 2·B·A. Con la espira paralela al campo el flujo queda en cero: pasa de B·A a 0 y cambia B·A.'
           : 'Tomaste el cambio de flujo como 2·B·A. Aquí el flujo solo baja a cero, no se invierte: cambia B·A.')]),
       h('IN-sin-N', Q / N, `Olvidaste multiplicar por el número de espiras. Cada una de las ${N} espiras aporta su cambio de flujo: Q = N·ΔΦ/R.`),
-      ...errA(a, Q * 100),
+      h('IN-sin-R', Q * R, 'Te faltó dividir entre la resistencia. N·ΔΦ es el cambio total de flujo de la bobina, en webers; la carga es Q = N·ΔΦ/R.'),
       h('IN-corriente-por-carga', Q / dt, `Dividiste entre el tiempo: eso da una corriente media, no una carga. La carga inducida no depende de lo rápido que cambie el flujo: Q = N·ΔΦ/R.`),
       tr('PR4-R', Q * R * R, 'Multiplicaste por la resistencia. Más resistencia deja pasar menos carga: Q = N·ΔΦ/R.'),
     ];
@@ -188,7 +192,6 @@
         : 'Usaste el seno, que vale 0 en t = 0. Pero en t = 0 la espira es perpendicular al campo y el flujo es el máximo, B·A. Una función que empieza en su máximo es el coseno.' },
       ...(f !== null ? [{ id: 'U7-f-como-omega', ...expr(fn, amp, f), respaldo: 'hipotesis', fuente: TR, explicacion: `Pusiste la frecuencia (${vueltas(f)} por segundo) donde va la rapidez angular. Dentro del seno o del coseno va ω en rad/s: ω = 2π·f.` }] : []),
       ...(g.forma === 'rpm' ? [{ id: 'U7-rpm', ...expr(fn, amp, g.rpm), respaldo: 'hipotesis', fuente: TR, explicacion: 'Pusiste las rpm directamente como si fueran rad/s. Hay que pasar a vueltas por segundo (entre 60) y a radianes (por 2π).' }] : []),
-      ...(a.cm2 ? [{ id: 'U3-cm2', ...expr(fn, amp * 100, g.w), respaldo: 'hipotesis', fuente: TR, explicacion: `Pasaste los cm² a m² dividiendo entre 100. Un metro cuadrado tiene 10 000 cm²: ${a.texto} = ${num(a.A)} m².` }] : []),
       { id: 'IN-fase-cero-U7', ...expr(otra, amp, f !== null ? f : g.w / PI), respaldo: 'hipotesis', fuente: TRA, explicacion: `Hay dos errores: la función (en t = 0 el flujo ${inicio === 'paralelo' ? 'es cero: va seno' : 'es máximo: va coseno'}) y lo que va dentro, que es ω en rad/s.` },
       { id: 'IN-amplitud-doble', ...expr(fn, 2 * amp, g.w), respaldo: 'hipotesis', fuente: null, explicacion: 'Pusiste 2·B·A como amplitud. El flujo va de +B·A a −B·A: su valor máximo es B·A; 2·B·A es lo que cambia en media vuelta.' },
     ];
@@ -231,7 +234,6 @@
       h('IN-signo', -correcta, 'Te salió el signo cambiado. Revisa en qué parte de la vuelta está la espira: después de un cuarto de vuelta desde la posición perpendicular, las líneas empiezan a entrar por la otra cara y el flujo es negativo.'),
       ...(g.forma === 'rpm' ? [tr('U7-rpm', amp * fn(g.rpm * t), 'Usaste las rpm como si fueran rad/s dentro del seno o del coseno. Primero se pasa: ω = 2π·(rpm/60).')] : []),
       tr('U7-f-como-omega', amp * fn(f * t), `Usaste la frecuencia (${vueltas(f)} por segundo) como si fuera ω. El ángulo girado es ω·t con ω = 2π·f.`),
-      ...errA(a, correcta * 100),
     ];
     const angTxt = { 1: 'π/6', 2: 'π/3', 3: 'π/2', 4: '2π/3', 5: '5π/6', 6: 'π', 7: '7π/6', 8: '4π/3', 9: '3π/2', 10: '5π/3', 11: '11π/6' }[j];
     const solucion = [
@@ -246,7 +248,7 @@
   }
 
   function femmax(rng, semilla) {
-    const N = rng.elegir([10, 20, 50, 100, 200, 500]), a = area(rng), B = rng.elegir([0.1, 0.2, 0.4, 0.5, 0.8, 1]);
+    const N = rng.elegir([5, 10, 20, 50, 100, 200, 500]), a = area(rng), B = rng.elegir([0.1, 0.2, 0.4, 0.5, 0.8, 1]);
     const g = giro(rng, false);
     if (g.forma === 'rps' && rng.moneda()) return null; // más rpm, que es la trampa
     const eps = N * B * a.A * g.w;
@@ -259,7 +261,7 @@
       ...(g.forma === 'rpm' ? [tr('U7-rpm', N * B * a.A * g.rpm, 'Usaste las rpm como si fueran rad/s. Primero se pasa: ω = 2π·(rpm/60).')] : []),
       tr('U7-sin-2pi', N * B * a.A * f, `Usaste ${vueltas(f)} por segundo como ω. Cada vuelta son 2π rad: ω = 2π·f.`),
       h('IN-sin-N', B * a.A * g.w, `Calculaste la fem de una sola espira. Las ${N} espiras están en serie y sus fem se suman: ε = N·B·A·ω.`),
-      ...errA(a, eps * 100),
+      h('IN-media-por-max', 2 * eps / PI, 'Esa es la fem media en media vuelta, 2·N·B·A·ω/π. La máxima es N·B·A·ω, cuando la espira está paralela al campo y el flujo cambia más rápido.'),
       h('IN-flujo-por-fem', N * B * a.A, 'Ese es el flujo máximo de la bobina, N·B·A, en webers. La fem es lo rápido que cambia el flujo: hay que multiplicar por ω.'),
     ];
     const solucion = [
@@ -283,6 +285,7 @@
       const errores = [
         tr('U7-omega-como-f', k * PI, `Tomaste ${textoPi(k)} rad/s, que es ω, como la frecuencia. La frecuencia es f = ω/(2π).`),
         tr('U7-sin-pi', k, `Tomaste el número que acompaña a πt como la frecuencia. ω = ${textoPi(k)} rad/s, y f = ω/(2π): hay que dividir entre 2.`),
+        tr('U7-pi-sobra', k * PI / 2, `Dividiste entre 2 pero dejaste la π. ω = ${textoPi(k)} rad/s, y f = ω/(2π): la π también se simplifica.`),
         tr('PR7-periodo', 2 / k, `Ese es el periodo, T = 2π/ω = ${fraccion(2 / k)} s. La frecuencia es su inverso: las vueltas por segundo.`),
       ];
       const solucion = [
@@ -299,6 +302,8 @@
       tr('U7-rpm', rpm, 'Usaste las rpm como hertz. Las rpm son vueltas por minuto; los hertz, por segundo: se divide entre 60.'),
       tr('U7-omega-como-f', 2 * PI * rpm / 60, 'Calculaste ω = 2π·f, en rad/s. La frecuencia es solo las vueltas por segundo.'),
       tr('PR7-periodo', 60 / rpm, 'Ese es el periodo, lo que dura una vuelta en segundos. La frecuencia es su inverso.'),
+      tr('U7-pi', PI * rpm / 60, 'Multiplicaste las vueltas por segundo por π. La frecuencia es solo las vueltas por segundo, sin π.'),
+      h('IN-medio-ciclo', rpm / 120, 'Pensaste que la fem hace un ciclo cada dos vueltas. Hace un ciclo completo en cada vuelta: sube, baja y vuelve.'),
       h('IN-dos-picos', rpm / 30, 'Contaste el máximo y el mínimo de la fem como dos ciclos. En una vuelta la fem hace un solo ciclo completo.'),
     ];
     const solucion = [
@@ -311,7 +316,7 @@
 
   // ---- fem media: ε = N·|ΔΦ|/Δt ----
   function femmedia(rng, semilla, sub) {
-    const N = rng.elegir([10, 20, 50, 100, 200, 500]), a = area(rng);
+    const N = rng.elegir([5, 10, 20, 10, 20, 50, 100, 200]), a = area(rng);
     const ms = rng.elegir([10, 20, 25, 40, 50, 100, 200]), dt = ms / 1000;
     const variables = { B: { nombre: 'campo magnético', color: 'o' }, A: { nombre: 'área', color: 'i' }, t: { nombre: 'tiempo', color: 'h' }, x: { nombre: 'fem media', color: 'd' } };
     const pregunta = ['¿Cuál es la ', c('x', 'fem media'), ' inducida en la bobina?'];
@@ -330,12 +335,11 @@
       const eps = N * dB * a.A / dt;
       errores = [
         pa('MG10-final', N * B2 * a.A / dt, 'Usaste el flujo final en lugar de su cambio. La fem depende de cuánto cambia el flujo: ΔΦ = Φ final − Φ inicial.'),
+        pa('MG10-inicial', N * B1 * a.A / dt, 'Usaste el flujo inicial en lugar de su cambio. La fem depende de cuánto cambia el flujo: ΔΦ = Φ final − Φ inicial.'),
         modo === 'invierte'
           ? ta('IN-sin-invertir', N * Math.abs(B2 - B1) * a.A / dt, `Restaste los valores sin tener en cuenta que el campo cambió de sentido. Si el flujo pasa de +${num(B1 * a.A)} Wb a −${num(B2 * a.A)} Wb, el cambio es la suma: (B₁ + B₂)·A.`)
           : h('IN-suma', N * (B1 + B2) * a.A / dt, 'Sumaste los dos campos. Si no cambia de sentido, el cambio de flujo es la diferencia: |B₂ − B₁|·A.'),
         h('IN-sin-N', dB * a.A / dt, `Calculaste la fem de una sola espira. Las ${N} espiras suman sus fem: ε = N·|ΔΦ|/Δt.`),
-        tr('U2-ms', eps / 1000, 'Usaste el tiempo en milisegundos como si fueran segundos. 1 ms = 0,001 s.'),
-        ...errA(a, eps * 100),
       ];
       solucion = [
         ...pasoA(a),
@@ -355,8 +359,7 @@
         ? h('IN-doble', 2 * eps, 'Tomaste el cambio de flujo como 2·B·A. Con el plano paralelo al campo, el flujo final es cero: cambia B·A.')
         : ta('IN-sin-invertir', eps / 2, 'Tomaste el cambio de flujo como B·A. Tras media vuelta las líneas entran por la otra cara: el flujo pasa de +B·A a −B·A y cambia 2·B·A.'),
       h('IN-sin-N', eps / N, `Calculaste la fem de una sola espira. Las ${N} espiras suman sus fem.`),
-      tr('U2-ms', eps / 1000, 'Usaste el tiempo en milisegundos como si fueran segundos. 1 ms = 0,001 s.'),
-      ...errA(a, eps * 100),
+      h('IN-max-por-media', eps * PI / 2, 'Calculaste la fem máxima, N·B·A·ω, con la rapidez angular de ese giro. Se pide la fem media: el cambio de flujo dividido entre el tiempo, N·|ΔΦ|/Δt.'),
       ...(modo === 180 ? [pa('MG10-final', N * B * a.A / dt, 'Usaste solo el valor del flujo final (B·A) y no su cambio. Al final las líneas entran por la otra cara: de +B·A a −B·A, el cambio es 2·B·A.')] : []),
     ];
     solucion = [

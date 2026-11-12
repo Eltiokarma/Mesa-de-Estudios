@@ -1,6 +1,6 @@
 {
   "plantilla": "carga-en-campo",
-  "tolerancia": 1e-09,
+  "tolerancia": 1e-9,
   "nota": "SI. La tolerancia es relativa. radio, paso y radio de la hélice en cm; periodos en s (ns en «cambio»); masa en kg; voltajes en V; E en V/m; fuerza en N; aceleración en m/s²; campo en T. En la hélice la respuesta es «forma:radio en cm». Esperados calculados a mano con r = mv/(|q|B), T = 2πm/(|q|B), |q|V = ½mv², E = vB, F = B(ε/R)L y B = µ0I/(2R), sin mirar la salida del generador.",
   "verificacion": "PENDIENTE",
   "casos": [
@@ -80,6 +80,7 @@
         "m": 6.4e-27,
         "q": 3.2e-19,
         "r": 0.1,
+        "diametro": true,
         "B": 0.02,
         "mT": true
       },
@@ -96,12 +97,12 @@
         "q": 1.6e-19,
         "B": 0.2,
         "mT": false,
-        "n": 100,
-        "t": 3.141592653589793e-05
+        "n": 20,
+        "t": 0.00003141592653589793
       },
       "esperado": {
-        "respuesta": 1.6e-27,
-        "exacta": "1,6 × 10⁻²⁷ kg"
+        "respuesta": 8e-27,
+        "exacta": "8 × 10⁻²⁷ kg"
       }
     },
     {
@@ -117,7 +118,7 @@
         "mT": true
       },
       "esperado": {
-        "respuesta": 3.141592653589793e-06,
+        "respuesta": 0.000003141592653589793,
         "exacta": "π × 10⁻⁶ s"
       }
     },
@@ -129,7 +130,7 @@
         "R": 0.5,
         "diametro": true,
         "Ral": 0.2,
-        "B": 6.283185307179586e-06
+        "B": 0.000006283185307179586
       },
       "esperado": {
         "respuesta": 1,
@@ -162,7 +163,7 @@
         "V": 9
       },
       "esperado": {
-        "respuesta": 2.8274333882308137e-05,
+        "respuesta": 0.000028274333882308137,
         "exacta": "9π × 10⁻⁶ T"
       }
     },
@@ -177,7 +178,7 @@
         "mT": true
       },
       "esperado": {
-        "respuesta": 2000000.0,
+        "respuesta": 2000000,
         "exacta": "2 × 10⁶ m/s"
       }
     },

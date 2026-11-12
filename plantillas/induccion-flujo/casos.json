@@ -1,6 +1,6 @@
 {
   "plantilla": "induccion-flujo",
-  "tolerancia": 1e-09,
+  "tolerancia": 1e-9,
   "nota": "SI. Tolerancia relativa. Carga en mC; flujo en un instante en mWb, con signo; fem en V; frecuencia en Hz. En «expresion» la respuesta es «función:amplitud en Wb:ω en rad/s». Esperados calculados a mano con Q = N·ΔΦ/R (ΔΦ = 2BA al invertir), Φ = BA·cos ωt o BA·sen ωt según el arranque, ε máx = NBAω con ω = 2π·rpm/60, f = ω/2π y ε = N|ΔΦ|/Δt, sin mirar la salida del generador.",
   "verificacion": "PENDIENTE",
   "casos": [
@@ -10,7 +10,7 @@
         "tipo": "carga",
         "sub": "invertir",
         "modo": "campo",
-        "N": 100,
+        "N": 10,
         "A": 0.01,
         "cm2": false,
         "B": 0.2,
@@ -18,8 +18,8 @@
         "dt": 0.2
       },
       "esperado": {
-        "respuesta": 200,
-        "exacta": "200 mC"
+        "respuesta": 20,
+        "exacta": "20 mC"
       }
     },
     {
@@ -98,15 +98,15 @@
         "tipo": "femmedia",
         "sub": "giro",
         "modo": 180,
-        "N": 10,
+        "N": 5,
         "A": 0.005,
         "cm2": true,
         "B": 0.4,
         "dt": 0.04
       },
       "esperado": {
-        "respuesta": 1,
-        "exacta": "1 V"
+        "respuesta": 0.5,
+        "exacta": "0,5 V"
       }
     },
     {
@@ -169,7 +169,7 @@
         "tipo": "carga",
         "sub": "anular",
         "modo": "saca",
-        "N": 200,
+        "N": 50,
         "A": 0.05,
         "cm2": true,
         "B": 0.4,
@@ -177,8 +177,8 @@
         "dt": 0.1
       },
       "esperado": {
-        "respuesta": 200,
-        "exacta": "200 mC"
+        "respuesta": 50,
+        "exacta": "50 mC"
       }
     },
     {
@@ -200,7 +200,7 @@
         "tipo": "femmedia",
         "sub": "campo",
         "modo": "baja",
-        "N": 500,
+        "N": 200,
         "A": 0.04,
         "cm2": true,
         "B1": 0.4,
@@ -208,8 +208,8 @@
         "dt": 0.02
       },
       "esperado": {
-        "respuesta": 300,
-        "exacta": "300 V"
+        "respuesta": 120,
+        "exacta": "120 V"
       }
     },
     {
@@ -232,39 +232,21 @@
       }
     },
     {
-      "semilla": 27,
-      "entrada": {
-        "tipo": "carga",
-        "sub": "anular",
-        "modo": "apaga",
-        "N": 200,
-        "A": 0.05,
-        "cm2": true,
-        "B": 1,
-        "R": 8,
-        "dt": 2
-      },
-      "esperado": {
-        "respuesta": 1250,
-        "exacta": "1 250 mC"
-      }
-    },
-    {
       "semilla": 28,
       "entrada": {
         "tipo": "carga",
         "sub": "invertir",
         "modo": "giro180",
-        "N": 500,
-        "A": 0.005,
+        "N": 10,
+        "A": 0.05,
         "cm2": true,
-        "B": 0.4,
-        "R": 25,
-        "dt": 0.1
+        "B": 0.2,
+        "R": 4,
+        "dt": 0.5
       },
       "esperado": {
-        "respuesta": 80,
-        "exacta": "80 mC"
+        "respuesta": 50,
+        "exacta": "50 mC"
       }
     },
     {
@@ -273,16 +255,34 @@
         "tipo": "femmedia",
         "sub": "campo",
         "modo": "invierte",
-        "N": 10,
-        "A": 0.04,
+        "N": 20,
+        "A": 0.008,
         "cm2": true,
-        "B1": 0.4,
-        "B2": 0.4,
-        "dt": 0.01
+        "B1": 0.6,
+        "B2": 0.2,
+        "dt": 0.025
       },
       "esperado": {
-        "respuesta": 32,
-        "exacta": "32 V"
+        "respuesta": 5.12,
+        "exacta": "5,12 V"
+      }
+    },
+    {
+      "semilla": 118,
+      "entrada": {
+        "tipo": "carga",
+        "sub": "anular",
+        "modo": "apaga",
+        "N": 20,
+        "A": 0.002,
+        "cm2": true,
+        "B": 0.8,
+        "R": 50,
+        "dt": 2
+      },
+      "esperado": {
+        "respuesta": 0.64,
+        "exacta": "0,64 mC"
       }
     }
   ]

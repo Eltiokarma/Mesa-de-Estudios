@@ -27,7 +27,9 @@
  * Convenciones: SI; los datos de cada partícula (masa y carga) se dan en el enunciado; µ0 = 4π × 10⁻⁷ T·m/A;
  * sen 37° = 3/5, sen 53° = 4/5. Números con tres cifras significativas y coma decimal; fuera de
  * 0,01 a 100 000 se escriben en notación científica. Los periodos y los pasos salen como múltiplos de π.
- * Errores: U2, U4, U7, PR1 a PR7 (hipótesis, docs/investigacion/fisica-calculo-transversal-ideas-erroneas.md);
+ * Distractores: solo los que quedan entre 1/20 y 20 veces la correcta (los mT tomados como T, los cm como m
+ * o los µs como s dan factores de 100 o 1000 y se descartan por absurdos; esas conversiones quedan en la
+ * solución). Errores: U2 (mT pasado entre 100), U7, PR1 a PR7 (hipótesis, docs/investigacion/fisica-calculo-transversal-ideas-erroneas.md);
  * MG3 (parcial, docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md); las trampas de los
  * solucionarios de San Marcos (docs/clasificacion/trampas-admision-unmsm/fisica.md, hipótesis): radio
  * inversamente proporcional a la rapidez, rapidez total en la hélice, olvidar Ohm en el riel, fórmula del
@@ -110,7 +112,9 @@
   }
   const rapidez = (rng, exps) => rng.elegir([1, 1.5, 2, 2.5, 3, 4, 5, 6, 8]) * 10 ** rng.elegir(exps);
   const pasoMT = b => (b.mT ? [['El campo en teslas: ', c('B', `${b.texto} = ${num(b.B)} T`), '.']] : []);
-  const errMT = (b, valor, que = 'el resultado') => (b.mT ? [tr('U2-mT', valor, `Usaste el campo en militeslas como si estuviera en teslas. Antes de reemplazar se pasa: ${b.texto} = ${num(b.B)} T. Con eso cambia ${que}.`)] : []);
+  // U2 con el prefijo mal pasado: 1 T = 1000 mT, pero se divide entre 100 (el campo sale 10 veces mayor).
+  // (Usar los mT como si fueran T da un factor 1000: una opción así se descarta por absurda.)
+  const errMT = (b, valor, que = 'el resultado') => (b.mT ? [tr('U2-mT-100', valor, `Pasaste los militeslas a teslas dividiendo entre 100, y el campo te salió 10 veces mayor. Un tesla son 1000 mT: ${b.texto} = ${num(b.B)} T. Con eso cambia ${que}.`)] : []);
 
   // ---------- Armado ----------
   function generar(semilla) {
@@ -142,7 +146,8 @@
 
   function cerrar(rng, semilla, o) {
     if (!exacto(o.correcta)) return null;
-    const errores = o.errores.filter(e => Number.isFinite(e.valor) && e.valor > 0);
+    // Sin distractores absurdos: de 1/20 a 20 veces la correcta.
+    const errores = o.errores.filter(e => Number.isFinite(e.valor) && e.valor > 0 && e.valor / o.correcta >= 1 / 20 && e.valor / o.correcta <= 20);
     const alternativas = P.armar({ correcta: o.correcta, errores, rng, texto: o.texto });
     return {
       id: `${ID}#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
@@ -160,11 +165,10 @@
     const enunciado = [`${descr(p)} entra con una rapidez de `, c('v', `${num(v)} m/s`), ' a una región con un campo magnético uniforme de ', c('B', b.texto), ', perpendicular a su velocidad.'];
     const pregunta = ['¿Cuál es el ', c('x', 'radio'), ' de la circunferencia que describe?'];
     const errores = [
-      ...errMT(b, rc / 1000, 'el radio: sale mil veces más chico'),
-      tr('U2-cm', r, `Te quedaste con el radio en metros (${num(r)} m) y lo leíste como centímetros. Para pasar de metros a centímetros se multiplica por 100.`),
+      ...errMT(b, rc / 10, 'el radio'),
+      tr('PR3-medio', rc / 2, 'Pusiste un ½ como en la energía cinética. La fuerza centrípeta es m·v²/r, sin ½: r = m·v/(|q|·B).'),
       h('MG-diametro', 2 * rc, 'Ese es el diámetro: la distancia entre el punto donde entra y el punto donde está después de media vuelta. El radio es m·v/(|q|·B), la mitad.'),
       h('MG-perimetro', 2 * PI * rc, 'Multiplicaste por 2π: eso es la longitud de la circunferencia, 2π·r. El radio es solo m·v/(|q|·B).'),
-      tr('PR1-v-cuadrado', rc * v, 'Dejaste v al cuadrado. De |q|·v·B = m·v²/r se simplifica una v: r = m·v/(|q|·B).'),
     ];
     const solucion = [
       ['La fuerza magnética, |q|·', c('v', 'v'), '·', c('B', 'B'), ', es la fuerza centrípeta: |q|·v·B = m·v²/r, así que ', c('x', 'r'), ' = m·', c('v', 'v'), '/(|q|·', c('B', 'B'), ').'],
@@ -227,11 +231,10 @@
     const enunciado = [`${descr(p)} entra con una rapidez de `, c('v', `${num(v)} m/s`), ' a una región con un campo magnético uniforme de ', c('B', b.texto), ', perpendicular a su velocidad, y describe una circunferencia.'];
     const pregunta = ['¿Cuál es el ', c('x', 'periodo'), ' de ese movimiento?'];
     const errores = [
-      tr('PR7-frecuencia', p.q * b.B / (2 * PI * p.m), 'Invertiste la fracción: |q|·B/(2π·m) es la frecuencia, las vueltas por segundo. El periodo es lo que dura una vuelta: T = 2π·m/(|q|·B).'),
       tr('U7-sin-2pi', p.m / (p.q * b.B), 'Calculaste m/(|q|·B), que es 1/ω. Una vuelta son 2π rad: T = 2π/ω = 2π·m/(|q|·B).'),
       tr('PR7-medio', PI * p.m / (p.q * b.B), 'Ese es el tiempo de media vuelta, π·m/(|q|·B). El periodo es una vuelta completa: el doble.'),
-      ...errMT(b, T / 1000, 'el periodo'),
-      h('MG-carga-numerador', 2 * PI * p.q * b.B / p.m, 'Pusiste la carga y el campo en el numerador. Más campo curva más la trayectoria y la vuelta dura menos: T = 2π·m/(|q|·B).'),
+      ...errMT(b, T / 10, 'el periodo'),
+      h('PR7-doble', 2 * T, 'Te salió el doble: contaste dos veces el 2 de la vuelta. Una vuelta son 2π rad, y T = 2π·m/(|q|·B).'),
     ];
     const solucion = [
       ['De |q|·v·B = m·v²/r sale r = m·v/(|q|·B). Una vuelta mide 2π·r y se recorre con rapidez ', c('v', 'v'), ': T = 2π·r/v = 2π·m/(|q|·', c('B', 'B'), '). La rapidez se simplifica: el periodo no depende de ella.'],
@@ -245,7 +248,7 @@
   // ---- periodo/masa: de las vueltas en un tiempo ----
   function masa(rng, semilla) {
     const q = rng.elegir([1.6e-19, 1.6e-19, 3.2e-19, 4.8e-19]);
-    const b = campoB(rng), n = rng.elegir([5, 10, 20, 25, 50, 100]), k = rng.elegir([1, 2, 4, 5, 8, 10, 20]);
+    const b = campoB(rng), n = rng.elegir([5, 10, 20]), k = rng.elegir([1, 2, 4, 5, 8, 10, 20]);
     const t = k * PI * 1e-6; // en s
     const m = q * b.B * t / (2 * PI * n);
     if (!limpio(m) || m < 1e-28 || m > 1e-24) return null;
@@ -255,8 +258,8 @@
     const errores = [
       tr('U7-f-como-omega', q * b.B * t / n, `Tomaste ${n} vueltas entre el tiempo como si fuera ω, en rad/s. Eso es la frecuencia f, en vueltas por segundo; ω = 2π·f.`),
       tr('PR7-tiempo-total', q * b.B * t / (2 * PI), `Usaste el tiempo de las ${n} vueltas como periodo. El periodo es lo que dura una sola vuelta: T = t/${n}.`),
-      ...errMT(b, m * 1000, 'la masa'),
-      tr('U2-micro', m * 1e6, 'Usaste el tiempo en microsegundos como si estuviera en segundos. 1 µs = 10⁻⁶ s.'),
+      ...errMT(b, m * 10, 'la masa'),
+      h('MG-sin-2', 2 * m, 'Te faltó el 2 de 2π: de T = 2π·m/(|q|·B) sale m = |q|·B·T/(2π), no |q|·B·T/π.'),
     ];
     const solucion = [
       ['El periodo es lo que dura una vuelta: T = ', c('t', `${k === 1 ? '' : k}π × 10⁻⁶ s`), ' / ', c('n', `${n}`), ` = ${txt(t / n, 's')}.`],
@@ -352,7 +355,7 @@
       ta('MG-v-total', v * T * 100, 'Usaste la rapidez total. Lo que avanza a lo largo del campo en una vuelta sale de la componente paralela: paso = v∥·T.'),
       tr('PR7-medio', v * cs * T * 50, 'Usaste el tiempo de media vuelta. El paso es lo que avanza en una vuelta completa: T = 2π·m/(|q|·B).'),
       h('MG-paso-perimetro', 2 * PI * p.m * v * s / (p.q * b.B) * 100, 'Calculaste la longitud de la circunferencia que se ve de frente, 2π·r. El paso es otra cosa: lo que avanza a lo largo del campo en una vuelta, v∥·T.'),
-      ...errMT(b, paso / 1000, 'el paso'),
+      ...errMT(b, paso / 10, 'el paso'),
     ];
     const solucion = [
       ['La componente paralela al campo no cambia: ', c('v', 'v∥'), ' = v·cos ', c('th', `${th}°`), ` = ${num(v * cs)} m/s. La perpendicular hace girar.`],
@@ -380,9 +383,8 @@
       const errores = [
         tr('PR3-sin-medio', rc / Math.SQRT2, 'Olvidaste el ½ de la energía cinética: con |q|·V = m·v², la rapidez sale √2 veces menor. Es |q|·V = ½·m·v².'),
         tr('PR3-doble-medio', rc * Math.SQRT2, 'Pusiste el ½ al otro lado: |q|·V = ½·m·v² da v = √(2|q|V/m), no √(4|q|V/m).'),
-        ...errMT(b, rc / 1000, 'el radio'),
-        tr('U2-cm', r, `Te quedaste con el radio en metros (${num(r)} m) y lo escribiste como si fueran centímetros. Se multiplica por 100.`),
-        tr('PR2-sin-raiz', 2 * V / b.B * 100, 'No sacaste la raíz: de ½·m·v² = |q|·V sale v² = 2|q|V/m, y la rapidez es su raíz.'),
+        ...errMT(b, rc / 10, 'el radio'),
+        h('MG-diametro', 2 * rc, 'Ese es el diámetro, la distancia a la que sale después de media vuelta. El radio es la mitad: m·v/(|q|·B).'),
       ];
       const solucion = [solV,
         ['v = √(2|q|V/m) = √(2 · ', `${num(p.q)} · `, c('V', num(V)), ` / ${num(p.m)}) = ${num(v)} m/s.`],
@@ -392,16 +394,21 @@
       return cerrar(rng, semilla, { correcta: rc, errores, texto: x => txt(x, 'cm'), unidad: 'cm', variables, enunciado, pregunta, solucion,
         datos: { tipo: 'potencial', sub, particula: p.id, m: p.m, q: p.q, V, B: b.B, mT: b.mT } });
     }
-    const enunciado = [`${intro}. Luego entra perpendicular a un campo magnético uniforme de `, c('B', b.texto), ' y describe una circunferencia de ', c('r', `${num(rc)} cm`), ' de radio.'];
+    const diam = rng.moneda(); // en el espectrómetro se mide dónde choca: a 2r de la rendija
+    const enunciado = diam
+      ? [`${intro}. Luego entra por una rendija, perpendicular a un campo magnético uniforme de `, c('B', b.texto), ', da media vuelta y choca con la placa a ', c('r', `${num(2 * rc)} cm`), ' de la rendija.']
+      : [`${intro}. Luego entra perpendicular a un campo magnético uniforme de `, c('B', b.texto), ' y describe una circunferencia de ', c('r', `${num(rc)} cm`), ' de radio.'];
     const pregunta = ['¿Qué ', c('x', 'diferencia de potencial'), ' lo aceleró?'];
     const errores = [
+      ...(diam ? [tr('PR6-diametro', 4 * V, 'Usaste la distancia a la rendija como radio. Después de media vuelta la carga choca a un diámetro de la rendija: el radio es la mitad. Como r va al cuadrado, el error es de 4 veces.')] : []),
+      tr('PR1-B-sin-cuadrado', V / b.B, 'Te faltó elevar el campo al cuadrado. V = |q|·B²·r²/(2m): r y B van al cuadrado.'),
       tr('PR3-sin-medio', 2 * V, 'Olvidaste el ½ de la energía cinética: |q|·V = ½·m·v², no m·v². Por eso te sale el doble.'),
       tr('PR3-doble-medio', V / 2, 'Pusiste el ½ dos veces. Es |q|·V = ½·m·v², con v = |q|·B·r/m.'),
-      tr('U2-cm', V * 1e4, 'Usaste el radio en centímetros como si fueran metros. Como el radio va al cuadrado, el error se multiplica por 10 000.'),
-      ...errMT(b, V * 1e6, 'el voltaje: como B va al cuadrado, el error es de un millón de veces'),
+      ...errMT(b, V * 100, 'el voltaje (B va al cuadrado)'),
       tr('PR1-sin-cuadrado', V / r, 'Te faltó elevar el radio al cuadrado. V = |q|·B²·r²/(2m): r y B van al cuadrado.'),
     ];
     const solucion = [
+      ...(diam ? [['Choca después de media vuelta: la distancia a la rendija es el diámetro. ', c('r', `r = ${num(2 * rc)}/2 = ${num(rc)} cm`), '.']] : []),
       ['En el campo magnético, r = m·v/(|q|·B), así que la rapidez es v = |q|·', c('B', 'B'), '·', c('r', 'r'), '/m.'],
       ...pasoMT(b),
       [`v = ${num(p.q)} · ${num(b.B)} · ${num(r)} / ${num(p.m)} = ${num(v)} m/s.`],
@@ -409,7 +416,7 @@
       [c('x', 'V'), ` = m·v²/(2|q|) = ${num(p.m)} · (${num(v)})² / (2 · ${num(p.q)}) = `, c('x', `${num(V)} V`), '.'],
     ];
     return cerrar(rng, semilla, { correcta: V, errores, texto: x => txt(x, 'V'), unidad: 'V', variables, enunciado, pregunta, solucion,
-      datos: { tipo: 'potencial', sub, particula: p.id, m: p.m, q: p.q, r, B: b.B, mT: b.mT } });
+      datos: { tipo: 'potencial', sub, particula: p.id, m: p.m, q: p.q, r, diametro: diam, B: b.B, mT: b.mT } });
   }
 
   // ---- campos cruzados ----
@@ -423,10 +430,9 @@
     const enunciado = [`${descr(p)} entra con una rapidez de `, c('v', `${num(v)} m/s`), ' entre dos placas paralelas, donde hay un campo magnético uniforme de ', c('B', b.texto), ' perpendicular a su velocidad. Entre las placas también hay un campo eléctrico, perpendicular a los dos.'];
     const pregunta = ['¿Qué ', c('x', 'campo eléctrico'), ` hace falta para que ${p.el} pase sin desviarse?`];
     const errores = [
-      ...errMT(b, E * 1000, 'el campo eléctrico'),
-      tr('PR4-invertido', v / b.B, 'Dividiste la rapidez entre el campo magnético. De |q|·E = |q|·v·B sale E = v·B: se multiplica.'),
-      tr('PR4-al-reves', b.B / v, 'Dividiste el campo magnético entre la rapidez. De |q|·E = |q|·v·B sale E = v·B.'),
-      h('MG-fuerza-por-campo', p.q * v * b.B, 'Ese número es la fuerza magnética, |q|·v·B, en newtons. El campo eléctrico es la fuerza por unidad de carga: la carga se simplifica y queda E = v·B.'),
+      ...errMT(b, E * 10, 'el campo eléctrico'),
+      tr('PR3-medio', E / 2, 'Pusiste un ½ como en la energía cinética. Aquí se igualan dos fuerzas, |q|·E = |q|·v·B, y no hay ningún ½.'),
+      h('MG-doble', 2 * E, 'Te salió el doble. Para que no se desvíe, la fuerza eléctrica tiene que ser igual a la magnética, no el doble: E = v·B.'),
     ];
     const solucion = [
       ['Para que no se desvíe, la fuerza eléctrica y la magnética deben anularse: |q|·', c('x', 'E'), ' = |q|·', c('v', 'v'), '·', c('B', 'B'), '. La carga se simplifica: E = v·B, sea cual sea la partícula.'],
@@ -440,7 +446,7 @@
   function cruzadosRapidez(rng, semilla) {
     const b = campoB(rng);
     const dV = rng.elegir([50, 100, 120, 150, 200, 240, 300, 400, 500, 600, 800, 1000]);
-    const dcm = rng.elegir([1, 2, 4, 5, 8, 10]), d = dcm / 100;
+    const dcm = rng.elegir([5, 8, 10]), d = dcm / 100;
     const v = dV / (d * b.B);
     if (!limpio(v) || v < 1e3 || v > 1e8) return null;
     const variables = { V: { nombre: 'voltaje entre placas', color: 'o' }, d: { nombre: 'separación', color: 'h' }, B: { nombre: 'campo magnético', color: 'i' }, x: { nombre: 'rapidez', color: 'd' } };
@@ -448,10 +454,9 @@
     const pregunta = ['¿Con qué ', c('x', 'rapidez'), ' pasan sin desviarse?'];
     const errores = [
       h('MG-voltaje-como-campo', dV / b.B, 'Usaste el voltaje como si fuera el campo eléctrico. Entre placas paralelas, E = ΔV/d: primero se divide entre la separación.'),
-      tr('U2-cm', v / 100, 'Usaste la separación en centímetros como si fueran metros. Se pasa a metros antes de dividir.'),
-      ...errMT(b, v / 1000, 'la rapidez'),
-      h('MG-por-d', dV * d / b.B, 'Multiplicaste el voltaje por la separación. Entre placas, el campo es E = ΔV/d.'),
-      tr('PR4-invertido', d * b.B / dV, 'Invertiste la fracción. De |q|·E = |q|·v·B sale v = E/B.'),
+      ...errMT(b, v / 10, 'la rapidez'),
+      tr('PR3-medio', v / 2, 'Pusiste un ½ como en la energía cinética. Aquí se igualan dos fuerzas, |q|·E = |q|·v·B: v = E/B.'),
+      h('MG-doble', 2 * v, 'Te salió el doble. Sin desviarse, la fuerza eléctrica es igual a la magnética: v = E/B.'),
     ];
     const solucion = [
       ['El campo eléctrico entre las placas: E = ', c('V', 'ΔV'), '/', c('d', 'd'), ` = ${dV}/${num(d)} = ${num(dV / d)} V/m.`],
@@ -478,8 +483,8 @@
       const pregunta = ['¿Qué ', c('x', 'fuerza horizontal'), ' hay que aplicar a la barra para mantenerla quieta?'];
       const errores = [
         ta('MG-sin-ohm', b.B * eps * L, 'Usaste el voltaje de la batería como si fuera la corriente. Primero se calcula la corriente con la ley de Ohm: I = ε/R.'),
-        tr('U2-cm', F * 100, 'Usaste la separación de los rieles en centímetros como si fueran metros. El largo de la barra entre rieles se pasa a metros.'),
-        ...errMT(b, F * 1000, 'la fuerza'),
+        ...errMT(b, F * 10, 'la fuerza'),
+        h('MG-sin-L', F / L, 'Te faltó el largo de la barra. La fuerza sobre el conductor es B·I·L: depende de cuánto mide el tramo dentro del campo.'),
         tr('PR4-ohm', b.B * eps * R * L, 'Multiplicaste la fem por la resistencia. La ley de Ohm dice I = ε/R: más resistencia, menos corriente.'),
         h('MG-mitad', F / 2, 'Dividiste entre 2. La fuerza sobre un tramo recto perpendicular al campo es B·I·L, sin ningún medio.'),
       ];
@@ -493,10 +498,10 @@
     const enunciado = [...base, ` La barra tiene una masa de ${mg} g y puede deslizar sin rozamiento.`];
     const pregunta = ['Al cerrar el circuito, con la barra en reposo, ¿cuál es su ', c('x', 'aceleración'), '?'];
     const errores = [
-      tr('U4-gramos', F / mg, 'Usaste la masa en gramos. En F = m·a la masa va en kilogramos.'),
       ta('MG-sin-ohm', b.B * eps * L / m, 'Usaste el voltaje de la batería como si fuera la corriente. Primero, I = ε/R.'),
-      tr('U2-cm', a * 100, 'Usaste la separación de los rieles en centímetros como si fueran metros.'),
-      ...errMT(b, a * 1000, 'la aceleración'),
+      ...errMT(b, a * 10, 'la aceleración'),
+      h('MG-sin-L', a / L, 'Te faltó el largo de la barra. La fuerza es B·I·L, y a = F/m.'),
+      h('MG-mitad', a / 2, 'Dividiste entre 2. La fuerza sobre la barra es B·I·L, sin ningún medio, y a = F/m.'),
       tr('PR4-ohm', b.B * eps * R * L / m, 'Multiplicaste la fem por la resistencia. La ley de Ohm dice I = ε/R.'),
     ];
     const solucion = [solI, ...pasoMT(b), solF, ['Por la segunda ley de Newton, con la masa en kilogramos: ', c('x', 'a'), ` = F/m = ${num(F)}/${num(m)} = `, c('x', `${num(a)} m/s²`), '. (Al moverse, la barra induce una fem que reduce la corriente; justo al cerrar el circuito, todavía no.)']];
@@ -526,7 +531,6 @@
         ta('MG-hilo-en-espira', PI * V, 'Usaste la fórmula del hilo recto largo, µ0·I/(2π·d). En el centro de una espira circular el campo es µ0·I/(2R), sin π en el denominador.'),
         h('MG-espira-sin-2', V / 2, 'Usaste B = µ0·I/R. En el centro de la espira es µ0·I/(2R): la corriente que hace falta es el doble.'),
         ...(diam ? [tr('PR6-diametro', 2 * V, 'Usaste el diámetro como si fuera el radio. En B = µ0·I/(2R), R es el radio: la mitad del diámetro.')] : []),
-        tr('U2-cm', V * 100, 'Usaste el radio en centímetros como si fueran metros.'),
         tr('PR4-ohm', I / Ral, 'Dividiste la corriente entre la resistencia. La ley de Ohm es V = I·R: se multiplica.'),
       ];
       const solucion = [...pasoR,
@@ -545,7 +549,6 @@
       ta('MG-hilo-en-espira', B / PI, 'Usaste la fórmula del hilo recto largo, µ0·I/(2π·d). En el centro de una espira circular es µ0·I/(2R), sin π en el denominador.'),
       h('MG-espira-sin-2', 2 * B, 'Usaste B = µ0·I/R. En el centro de la espira es µ0·I/(2R).'),
       ...(diam ? [tr('PR6-diametro', B / 2, 'Usaste el diámetro como si fuera el radio. En µ0·I/(2R), R es el radio.')] : []),
-      tr('U2-cm', B / 100, 'Usaste el radio en centímetros como si fueran metros.'),
       tr('PR4-ohm', MU0 * V * Ral / (2 * R), 'Multiplicaste el voltaje por la resistencia. La ley de Ohm da I = V/R.'),
     ];
     const solucion = [...pasoR,

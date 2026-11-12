@@ -278,7 +278,7 @@
       "universidades": {"uni": {"semanas": [17]}, "unmsm": {"temas": [14]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": ["magnetismo"],
+      "plantillas": ["magnetismo", "carga-en-campo"],
       "investigacion": "docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md"
     },
     {
@@ -295,7 +295,7 @@
       "universidades": {"uni": {"semanas": [18]}, "unmsm": {"temas": [15]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": ["induccion"],
+      "plantillas": ["induccion", "induccion-flujo"],
       "investigacion": "docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md"
     },
     {

@@ -162,3 +162,23 @@ test('papel.json: de 5 a 10 problemas propios, completos y verificados', () => {
     }
   }
 });
+
+// ---------- Forma de las alternativas ----------
+// Sin distractores absurdos (de 1/20 a 20 veces la correcta), la correcta no se reconoce por ser la
+// única «redonda» (la de menos cifras significativas), y el generador no se queda sin problema.
+const cifras = t => { const m = t.replace(/ × 10[⁻⁰¹²³⁴⁵⁶⁷⁸⁹]+/, '').match(/\d[\d ,]*/); if (!m) return 9; return m[0].replace(/[ ,]/g, '').replace(/^0+/, '').replace(/0+$/, '').length || 1; };
+test('alternativas sin absurdos y con la misma limpieza que la correcta (600 semillas)', () => {
+  let redonda = 0;
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s), c = p.alternativas.find(a => a.correcta);
+    if (typeof c.valor === 'number') for (const a of p.alternativas) {
+      const r = Math.abs(a.valor / c.valor);
+      assert.ok(r >= 1 / 20 - 1e-12 && r <= 20 + 1e-9, `semilla ${s}: «${a.texto}» frente a «${c.texto}»`);
+    }
+    if (cifras(c.texto) < Math.min(...p.alternativas.filter(a => !a.correcta).map(a => cifras(a.texto)))) redonda++;
+  }
+  assert.ok(redonda / 600 < 0.1, `la correcta es la única redonda en ${redonda} de 600`);
+});
+test('nunca se queda sin problema (semillas 0 a 2000 y de texto)', () => {
+  for (const s of [...Array(2001).keys(), 'entrada-1', 'salida-3', 'alternativas-0', 'alternativas-599']) assert.ok(gen.generar(s).alternativas.length >= 4, `semilla ${s}`);
+});
