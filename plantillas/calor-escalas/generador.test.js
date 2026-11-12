@@ -61,7 +61,7 @@ function recalcular(p) {
     if (d.sub === 'aparente') return d.V0 * (1 + d.gamma * d.deltaT) - lineal(cubo(d.V0, d.alfa), d.deltaT);
     const V0 = 1, masa = d.rho0 * V0;
     const V = d.lineal ? lineal(cubo(V0, d.coef), d.deltaT) : V0 * (1 + d.coef * d.deltaT);
-    return masa / V;
+    return Math.round(masa / V); // el enunciado pide redondear al entero
   }
   // sudor: calor en joules, calor latente en J/g
   const Lg = 2450;
@@ -94,14 +94,56 @@ test('salen todos los tipos y subtipos; las alternativas numéricas llevan la mi
   }
   assert.deepEqual([...vistos].sort(), ['coincidencia/c-f', 'coincidencia/k-f', 'conversion/c-a-f', 'conversion/f-a-c', 'conversion/inventada', 'conversion/k-a-c',
     'dilatacion/aparente', 'dilatacion/capacidad', 'dilatacion/densidad', 'dilatacion/proposiciones', 'dilatacion/tanque',
-    'joule/altura', 'joule/deltaT', 'sudor/calor', 'sudor/cuerpo', 'variacion/c-a-f', 'variacion/c-a-k', 'variacion/f-a-c', 'variacion/inventada']);
+    'joule/altura', 'sudor/calor', 'sudor/cuerpo', 'variacion/c-a-f', 'variacion/c-a-k', 'variacion/f-a-c', 'variacion/inventada']);
 });
 
 test('las trampas de la admisión salen como alternativas: sumar 273, restar 32 en una variación, el −40 y el recipiente olvidado', () => {
   const ids = new Set();
   for (let s = 0; s < 1500; s++) for (const a of gen.generar(s).alternativas) if (a.error) ids.add(a.error.id);
-  for (const id of ['U8-sumar-273', 'U8-restar-32', 'U8-sumar-32', 'CE-coincidencia-cf', 'CE-sin-cinetica', 'CE-sin-recipiente', 'Q11-sin-triplicar', 'Q7-sin-latente', 'U8-kelvin', 'CE-masa-cambia'])
+  for (const id of ['U8-sumar-273', 'U8-restar-32', 'U8-sumar-32', 'CE-coincidencia-cf', 'CE-sin-cinetica', 'CE-sin-recipiente', 'Q11-sin-triplicar', 'Q7-sin-latente', 'U8-fahrenheit', 'CE-orden-latente', 'CE-masa-cambia'])
     assert.ok(ids.has(id), `no sale ${id}`);
+});
+
+// Redondez pareja y nada fuera de escala (revisión del 8 nov 2026).
+const decs = x => { for (let k = 0; k <= 6; k++) if (Math.abs(x * 10 ** k - Math.round(x * 10 ** k)) < 1e-6) return k; return 99; };
+test('la correcta no se reconoce por redonda: en el 80 % o más, ninguna incorrecta tiene más decimales', () => {
+  let n = 0, parejo = 0;
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s);
+    if (typeof p.respuesta.valor !== 'number') continue;
+    n++;
+    const dc = decs(p.respuesta.valor);
+    if (!p.alternativas.some(a => !a.correcta && decs(a.valor) > dc)) parejo++;
+    for (const a of p.alternativas.filter(x => !x.correcta)) assert.ok(decs(a.valor) <= Math.max(2, dc), `semilla ${s}: ${a.texto} con más de 2 decimales`);
+  }
+  assert.ok(parejo / n >= 0.8, `solo ${parejo} de ${n}`);
+});
+test('sin distractores absurdos: escala, kelvin, «subió», mediodía, densidad y sudor', () => {
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s), d = p._datos;
+    if (typeof p.respuesta.valor !== 'number') continue;
+    for (const a of p.alternativas.filter(x => !x.correcta)) {
+      const r = Math.abs(a.valor) / Math.abs(p.respuesta.valor), msg = `semilla ${s} (${d.tipo}/${d.sub}): ${a.texto}`;
+      assert.ok(r >= 1 / 20 && r <= 20, msg);
+      if (p.respuesta.unidad === 'K') assert.ok(a.valor >= 0, msg);
+      if (d.tipo === 'variacion') assert.ok(a.valor > 0, msg);
+      if (d.sub === 'tanque') assert.ok(a.valor <= 60, msg);
+      if (d.sub === 'densidad') assert.ok(a.valor >= 0.5 * d.rho0 && a.valor <= 1.5 * d.rho0, msg);
+      if (d.tipo === 'sudor') assert.ok(a.valor <= 5000, msg);
+    }
+  }
+});
+test('los textos del alumno no dicen «trampa»', () => {
+  const plano = seg => seg.map(x => (typeof x === 'string' ? x : x.t)).join('');
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s);
+    const todo = [plano(p.enunciado), plano(p.pregunta), ...p.solucion.map(plano), ...p.alternativas.map(a => a.texto + (a.error ? a.error.explicacion : ''))].join(' ');
+    assert.ok(!/trampa/i.test(todo), `semilla ${s}`);
+  }
+});
+test('nunca lanza, tampoco con semillas de texto', () => {
+  for (let s = 0; s <= 2000; s++) gen.generar(s);
+  for (const s of ['entrada-1', 'entrada-2', 'salida-1', 'salida-3', 'x']) gen.generar(s);
 });
 
 test('los textos no dicen «de el» ni «a el»', () => {

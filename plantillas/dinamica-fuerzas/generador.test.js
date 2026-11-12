@@ -48,14 +48,14 @@ function recalcular(p) {
   }
   if (d.tipo === 'peralte') {
     const [s, c] = TR[d.angulo], ang = Math.atan2(s, c);
-    if (d.sub === 'curva') return biseccion(v => Math.atan((v * v / d.r) / g) - ang, 0, 200);
+    // Curva: la dirección de la fuerza neta (v²/r horizontal, g vertical) debe coincidir con la de la normal.
+    if (d.sub === 'curva') return biseccion(r => Math.atan((d.v * d.v / r) / g) - ang, 1e-6, 5000);
     // Cuenco: la normal va por el radio, a ang de la vertical; el giro es en r = R·sen.
     const wCuenco = R => biseccion(w => Math.atan((w * w * R * s) / g) - ang, 0, 200);
-    if (d.sub === 'cuenco') return wCuenco(d.R);
+    if (d.sub === 'cuenco') return biseccion(R => Math.atan((d.w * d.w * R * s) / g) - ang, 1e-9, 100);
     if (d.sub === 'normal') { const w = wCuenco(d.R); return Math.hypot(d.m * g, d.m * w * w * d.R * s); }
     // Embudo: la normal forma ang con la horizontal; r = h·tan(ang).
-    const r = d.altura * s / c;
-    return biseccion(v => Math.atan(g / (v * v / r)) - ang, 1e-6, 200);
+    return biseccion(hh => Math.atan(g / (d.v * d.v / (hh * s / c))) - ang, 1e-9, 100);
   }
   if (d.tipo === 'astro') {
     if (d.sub === 'aceleracion') return d.F / d.m;
@@ -125,6 +125,44 @@ test('salen todos los tipos y subtipos; las alternativas numéricas llevan la mi
     'peralte/normal', 'plataforma/mu', 'plataforma/omega', 'plataforma/radio', 'resorte/estiramiento', 'resorte/instante', 'tabla/distancia', 'tabla/rapidez']);
 });
 
+// Redondez pareja y nada fuera de escala (revisión del 8 nov 2026).
+const decs = x => { for (let k = 0; k <= 6; k++) if (Math.abs(x * 10 ** k - Math.round(x * 10 ** k)) < 1e-6) return k; return 99; };
+test('la correcta no se reconoce por redonda: en el 80 % o más, ninguna incorrecta tiene más decimales', () => {
+  let n = 0, parejo = 0;
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s);
+    if (typeof p.respuesta.valor !== 'number') continue;
+    n++;
+    const dc = decs(p.respuesta.valor);
+    if (!p.alternativas.some(a => !a.correcta && decs(a.valor) > dc)) parejo++;
+    for (const a of p.alternativas) assert.ok(decs(a.valor) <= Math.max(2, dc), `semilla ${s}: ${a.texto} con más de 2 decimales`);
+  }
+  assert.ok(parejo / n >= 0.8, `solo ${parejo} de ${n}`);
+});
+test('sin distractores absurdos: entre 1/20 y 20 veces la correcta, radios dentro del plato, μs ≤ 1,5', () => {
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s), d = p._datos;
+    if (typeof p.respuesta.valor !== 'number') continue;
+    for (const a of p.alternativas.filter(x => !x.correcta)) {
+      const r = a.valor / p.respuesta.valor;
+      assert.ok(r >= 1 / 20 && r <= 20, `semilla ${s}: ${a.texto} contra ${p.respuesta.valor}`);
+      if (d.tipo === 'plataforma' && d.sub === 'radio') assert.ok(a.valor <= d.radioPlataforma + 1e-9, `semilla ${s}: radio ${a.texto} mayor que el plato`);
+      if (d.tipo === 'plataforma' && d.sub === 'mu') assert.ok(a.valor <= 1.5, `semilla ${s}: μs = ${a.texto}`);
+    }
+  }
+});
+test('los textos del alumno no dicen «trampa»', () => {
+  const plano = seg => seg.map(x => (typeof x === 'string' ? x : x.t)).join('');
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s);
+    const todo = [plano(p.enunciado), plano(p.pregunta), ...p.solucion.map(plano), ...p.alternativas.map(a => a.texto + (a.error ? a.error.explicacion : ''))].join(' ');
+    assert.ok(!/trampa/i.test(todo), `semilla ${s}`);
+  }
+});
+test('nunca lanza, tampoco con semillas de texto', () => {
+  for (let s = 0; s <= 2000; s++) gen.generar(s);
+  for (const s of ['entrada-1', 'entrada-2', 'salida-1', 'salida-3', 'x']) gen.generar(s);
+});
 test('la escalera no resbala en «roce»: el roce que hace falta es menor que μs·N', () => {
   for (let s = 0; s < 1500; s++) {
     const d = gen.generar(s)._datos;

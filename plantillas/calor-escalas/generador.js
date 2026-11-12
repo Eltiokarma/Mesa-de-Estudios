@@ -11,8 +11,8 @@
  *                 (°F − K = Δ, con el 574,25)
  *   variacion     una variación de temperatura en otra escala: f-a-c (fiebre u horno), c-a-k, c-a-f
  *                 e inventada (no se suma 273 ni se resta 32: solo cambia el tamaño del grado)
- *   joule         la caída que calienta el agua (catarata): altura (con la rapidez en el borde) y
- *                 deltaT; 1 cal = 4,2 J
+ *   joule         la caída que calienta el agua (catarata): altura (con la rapidez en el borde);
+ *                 1 cal = 4,2 J
  *   dilatacion    tanque (el combustible que se contrae de noche: la temperatura del mediodía),
  *                 capacidad (un tanque sólido: γ = 3α), aparente (el líquido que rebasa: γ − 3α),
  *                 densidad (la masa no cambia: ρ = ρ0/(1 + γ·ΔT)) y proposiciones (V/F, armarTexto)
@@ -59,12 +59,17 @@
       ['conversion', 'k-a-c'], ['conversion', 'k-a-c'], ['conversion', 'c-a-f'], ['conversion', 'f-a-c'], ['conversion', 'inventada'], ['conversion', 'inventada'],
       ['coincidencia', 'c-f'], ['coincidencia', 'c-f'], ['coincidencia', 'k-f'], ['coincidencia', 'k-f'],
       ['variacion', 'f-a-c'], ['variacion', 'f-a-c'], ['variacion', 'c-a-k'], ['variacion', 'c-a-f'], ['variacion', 'inventada'],
-      ['joule', 'altura'], ['joule', 'altura'], ['joule', 'deltaT'],
+      ['joule', 'altura'], ['joule', 'altura'],
       ['dilatacion', 'tanque'], ['dilatacion', 'tanque'], ['dilatacion', 'capacidad'], ['dilatacion', 'aparente'], ['dilatacion', 'aparente'],
       ['dilatacion', 'densidad'], ['dilatacion', 'proposiciones'], ['dilatacion', 'proposiciones'],
       ['sudor', 'cuerpo'], ['sudor', 'cuerpo'], ['sudor', 'calor']]);
     for (let intento = 0; intento < 5000; intento++) {
       const pr = CONSTRUIR[tipo](rng, semilla, sub);
+      if (pr && pr.alternativas.length >= 4) return pr;
+    }
+    // Respaldo (no debería pasar): un tipo que siempre sale.
+    for (let intento = 0; intento < 5000; intento++) {
+      const pr = CONSTRUIR.dilatacion(rng, semilla, 'tanque');
       if (pr && pr.alternativas.length >= 4) return pr;
     }
     throw new Error('No se pudo generar un problema con 4 alternativas distintas');
@@ -76,7 +81,7 @@
       alternativas = P.armarTexto({ correcta: o.correcta, errores: o.errores, rng });
       respuesta = { valor: o.correcta.clave, texto: o.correcta.texto, unidad: '' };
     } else {
-      const dec = o.decimales || 2;
+      const dec = o.decimales ?? 2;
       const txt = x => f(x, dec) + (o.unidad ? ' ' + o.unidad : '');
       // Las incorrectas no pueden delatarse: ni con más decimales (hasta 1 si la correcta tiene 0 o 1; nunca más de 2) ni fuera de escala
       // (entre 1/20 y 20 veces la correcta, y dentro del rango físico del problema si lo hay).
@@ -90,6 +95,8 @@
       // Primero las que tienen a lo más los decimales de la correcta: así casi nunca se nota cuál es.
       const dc = decs(o.correcta);
       errores.sort((a, b) => (decs(a.valor) > dc) - (decs(b.valor) > dc));
+      const parejas = errores.filter(e => decs(e.valor) <= dc);
+      if (parejas.length >= 3) errores.splice(0, errores.length, ...parejas);
       alternativas = P.armar({ correcta: o.correcta, errores, rng, texto: txt, negativos: !!o.negativos });
       respuesta = { valor: o.correcta, unidad: o.unidad };
     }
@@ -103,8 +110,16 @@
   const VARE = { T: { nombre: 'lectura dada', color: 'o' }, a: { nombre: 'puntos fijos', color: 'i' }, k: { nombre: 'tamaño del grado', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
 
   // ---------------- conversion ----------------
-  const FRIO = [[4, 'El helio líquido hierve a unos'], [20, 'El hidrógeno líquido hierve a unos'], [63, 'El nitrógeno se congela a unos'], [77, 'El nitrógeno líquido hierve a unos'],
-    [90, 'El oxígeno líquido hierve a unos'], [195, 'El hielo seco (dióxido de carbono sólido) pasa a gas a unos'], [234, 'El mercurio se congela a unos']];
+  const FRIO = [[4, 'El helio líquido hierve a unos'], [20, 'El hidrógeno líquido hierve a unos'], [27, 'El neón líquido hierve a unos'], [54, 'El oxígeno se congela a unos'],
+    [63, 'El nitrógeno se congela a unos'], [77, 'El nitrógeno líquido hierve a unos'], [87, 'El argón líquido hierve a unos'], [90, 'El oxígeno líquido hierve a unos'],
+    [112, 'El metano líquido hierve a unos'], [165, 'El xenón líquido hierve a unos'], [195, 'El hielo seco (dióxido de carbono sólido) pasa a gas a unos'],
+    [234, 'El mercurio se congela a unos'], [239, 'El cloro líquido hierve a unos'], [183, 'El alcohol etílico se congela a unos']];
+  const DONDE_C = [['En Juliaca, una madrugada de junio el termómetro marca', [-20, -15, -10, -5]], ['En Macusani, una noche de helada el termómetro marca', [-25, -20, -15, -10]],
+    ['En la puna, al amanecer, el termómetro marca', [-10, -5, 5]], ['Una tarde de verano en Lima el termómetro marca', [20, 25, 30]], ['En Pucallpa, a mediodía, el termómetro marca', [30, 35, 40]],
+    ['Una sopa recién servida está a', [60, 70, 80, 90]], ['El agua de una terma está a', [40, 45, 50, 55, 60, 65]], ['El aceite de una freidora está a', [150, 160, 170, 180, 190]]];
+  const DONDE_F = [['Una receta de un libro de cocina de Estados Unidos pide hornear el queque a', [160, 170, 180, 190, 200]], ['El pronóstico de una ciudad de Florida anuncia', [25, 30, 35]],
+    ['El congelador de un laboratorio está a', [-30, -25, -20]], ['En un canal de Estados Unidos dicen que la ciudad llegará a', [10, 15, 20, 40]],
+    ['Una receta de pizza pide el horno a', [220, 230, 240, 250]], ['Un refrigerador de un hotel en Miami marca', [0, 5]]];
   function conversion(rng, semilla, sub) {
     if (sub === 'k-a-c') {
       const [K, frase] = rng.elegir(FRIO), C = K - 273;
@@ -115,6 +130,7 @@
         h('CE-signo', 273 - K, `Restaste al revés (273 − ${f(K)}). °C = K − 273: como ${f(K)} K está por debajo de 273 K, la temperatura es negativa.`),
         h('CE-factor-en-kelvin', C / 1.8, 'Dividiste entre 1,8, como si el kelvin fuera un grado de otro tamaño. Un kelvin y un grado Celsius miden lo mismo: solo cambia el cero.'),
         h('CE-da-fahrenheit', aF(C), `Esa es la lectura en °F. En °C basta restar 273: ${f(K)} − 273.`),
+        h('CE-sumar-con-signo', -(K + 273), 'Sumaste 273 y le pusiste signo menos porque es muy frío. La cuenta es °C = K − 273: se resta.'),
       ];
       const solucion = [['El kelvin y el grado Celsius tienen el mismo tamaño; la escala Kelvin empieza 273 grados más abajo.'],
         [v('x', '°C'), ' = ', v('T', f(K)), ` − 273 = `, v('x', `${f(C)} °C`), '.']];
@@ -122,8 +138,7 @@
         datos: { tipo: 'conversion', sub, K } });
     }
     if (sub === 'c-a-f') {
-      const [C, frase] = rng.elegir([[-10, 'En Juliaca, una madrugada de junio el termómetro marca'], [-15, 'En Macusani, una noche de helada el termómetro marca'], [-5, 'En la puna, al amanecer, el termómetro marca'],
-        [25, 'Una tarde de verano en Lima el termómetro marca'], [35, 'En Pucallpa, a mediodía, el termómetro marca'], [80, 'Una sopa recién servida está a'], [60, 'El agua de una terma está a']]);
+      const id = rng.entero(0, DONDE_C.length - 1), frase = DONDE_C[id][0], C = rng.elegir(DONDE_C[id][1]);
       const F = aF(C);
       const enunciado = [`${frase} `, v('T', `${f(C)} °C`), '.'];
       const pregunta = ['¿Cuánto marcaría un termómetro en ', v('x', 'grados Fahrenheit'), '?'];
@@ -132,15 +147,16 @@
         h('CE-factor-invertido', C / 1.8 + 32, 'Usaste el factor al revés. Un grado Celsius es más grande que uno Fahrenheit: se multiplica por 1,8 (9/5).'),
         h('CE-orden', 1.8 * (C + 32), 'Sumaste 32 antes de multiplicar. Primero se multiplica por 1,8 y después se suma 32.'),
         h('CE-solo-32', C + 32, 'Solo sumaste 32. Además del cero, cambia el tamaño del grado: se multiplica por 1,8.'),
+        h('CE-regla-aproximada', 2 * C + 30, 'Usaste la regla aproximada «el doble más 30». Sirve para tener una idea, pero el factor es 1,8 y el cero es 32: °F = 1,8·°C + 32.'),
+        h('CE-por-dos', 2 * C + 32, 'Multiplicaste por 2. Entre congelación y ebullición hay 180 grados Fahrenheit por cada 100 Celsius: el factor es 1,8.'),
       ];
       const solucion = [['Entre congelación (0 °C = 32 °F) y ebullición (100 °C = 212 °F) hay 100 grados Celsius y 180 Fahrenheit: un grado Celsius vale 1,8 Fahrenheit.'],
         [v('x', '°F'), ' = 1,8 · ', v('T', par(C)), ' + 32 = ', v('x', `${f(F)} °F`), '.']];
       return cerrar(rng, semilla, { negativos: true, correcta: F, errores, unidad: '°F', variables: VARE, enunciado, pregunta, solucion,
-        datos: { tipo: 'conversion', sub, C } });
+        datos: { tipo: 'conversion', sub, C, contexto: id } });
     }
     if (sub === 'f-a-c') {
-      const [C, frase] = rng.elegir([[180, 'Una receta de un libro de cocina de Estados Unidos pide hornear el queque a'], [35, 'El pronóstico de una ciudad de Florida anuncia'], [-20, 'El congelador de un laboratorio está a'],
-        [40, 'En un canal de Estados Unidos dicen que la ciudad llegará a'], [220, 'Una receta de pizza pide el horno a'], [5, 'Un refrigerador de un hotel en Miami marca']]);
+      const id = rng.entero(0, DONDE_F.length - 1), frase = DONDE_F[id][0], C = rng.elegir(DONDE_F[id][1]);
       const F = aF(C);
       const enunciado = [`${frase} `, v('T', `${f(F)} °F`), '.'];
       const pregunta = ['¿A cuántos ', v('x', 'grados Celsius'), ' equivale?'];
@@ -149,11 +165,13 @@
         h('CE-sin-32', F / 1.8, 'Te faltó restar 32: 32 °F es el 0 °C.'),
         h('CE-factor-invertido', 1.8 * (F - 32), 'Multiplicaste por 1,8. De Fahrenheit a Celsius se divide: el grado Fahrenheit es más chico.'),
         h('CE-solo-32', F - 32, 'Solo restaste 32. Además del cero, cambia el tamaño del grado: falta dividir entre 1,8.'),
+        h('CE-regla-aproximada', (F - 30) / 2, 'Usaste la regla aproximada «restar 30 y dividir entre 2». Sirve para tener una idea, pero la cuenta exacta es (°F − 32)/1,8.'),
+        h('CE-por-dos', (F - 32) / 2, 'Dividiste entre 2. Entre congelación y ebullición hay 180 grados Fahrenheit por cada 100 Celsius: se divide entre 1,8.'),
       ];
       const solucion = [['°F = 1,8·°C + 32, así que °C = (°F − 32)/1,8.'],
         [v('x', '°C'), ' = (', v('T', f(F)), ` − 32) / 1,8 = ${f(F - 32)} / 1,8 = `, v('x', `${f(C)} °C`), '.']];
       return cerrar(rng, semilla, { negativos: true, correcta: C, errores, unidad: '°C', variables: VARE, enunciado, pregunta, solucion,
-        datos: { tipo: 'conversion', sub, F } });
+        datos: { tipo: 'conversion', sub, F, contexto: id } });
     }
     // inventada: el termómetro de la chacra
     const a = rng.elegir([-20, -10, 10, 20, 30, 40]), b = a + rng.elegir([50, 80, 120, 150, 200]);
@@ -195,11 +213,11 @@
   // ---------------- coincidencia ----------------
   function coincidencia(rng, semilla, sub) {
     if (sub === 'c-f') {
-      const forma = rng.elegir(['igual', 'igual', 'doble', 'quintuple', 'delta', 'delta']);
+      const forma = rng.elegir(['igual', 'doble', 'quintuple', 'delta', 'delta', 'delta', 'delta']);
       let n = 1, D = 0, frase;
       if (forma === 'doble') { n = 2; frase = 'la lectura en °F es el doble de la lectura en °C'; }
       else if (forma === 'quintuple') { n = 5; frase = 'la lectura en °F es cinco veces la lectura en °C'; }
-      else if (forma === 'delta') { const C0 = rng.elegir([-30, -20, -10, 5, 10, 15, 20, 25, 30, 40, 50, 60, 100]); D = 32 + 0.8 * C0; frase = `la lectura en °F supera en ${f(D)} a la lectura en °C`; }
+      else if (forma === 'delta') { const C0 = rng.elegir([-35, -30, -25, -20, -15, -10, -5, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100]); D = 32 + 0.8 * C0; frase = `la lectura en °F supera en ${f(D)} a la lectura en °C`; }
       else frase = 'un termómetro en °C y otro en °F marcan el mismo número';
       // 1,8·C + 32 = n·C + D
       const sol = (k1, k0) => (k0 - D) / (n - k1); // C con k1·C + k0 = n·C + D
@@ -221,7 +239,7 @@
         datos: { tipo: 'coincidencia', sub, n, delta: D } });
     }
     // k-f: °F − K = Δ
-    const D = rng.elegir([0, 0, 0, 20, -20, 40, 100]);
+    const D = rng.elegir([0, 0, 0, -40, -20, -10, 10, 20, 30, 40, 50, 60, 80, 100, 120, 150]);
     const K = (D + 459.4) / 0.8;
     const VAR = { n: { nombre: 'la condición', color: 'o' }, x: { nombre: 'temperatura pedida', color: 'd' } };
     const frase = D === 0 ? 'un termómetro en kelvin y otro en °F marcan el mismo número' : (D > 0 ? `la lectura en °F supera en ${f(D)} a la lectura en kelvin` : `la lectura en °F es ${f(-D)} menos que la lectura en kelvin`);
@@ -235,7 +253,7 @@
     ];
     const solucion = [['En kelvin: °F = 1,8·(K − 273) + 32. La condición: 1,8·(K − 273) + 32 = ', v('n', D === 0 ? 'K' : `K ${D > 0 ? '+' : '−'} ${f(Math.abs(D))}`), '.'],
       [`0,8·K = 491,4 − 32 ${D >= 0 ? '+' : '−'} ${f(Math.abs(D))} = ${f(459.4 + D)}, así que `, v('x', `K = ${f(K)}`), '.']];
-    return cerrar(rng, semilla, { negativos: true, correcta: K, errores, unidad: 'K', variables: VAR, enunciado, pregunta, solucion,
+    return cerrar(rng, semilla, { negativos: true, rango: [0, Infinity], correcta: K, errores, unidad: 'K', variables: VAR, enunciado, pregunta, solucion,
       datos: { tipo: 'coincidencia', sub, delta: D } });
   }
 
@@ -244,21 +262,21 @@
     const VAR = { T: { nombre: 'lecturas', color: 'o' }, a: { nombre: 'puntos fijos', color: 'i' }, k: { nombre: 'tamaño del grado', color: 'h' }, x: { nombre: 'variación pedida', color: 'd' } };
     if (sub === 'f-a-c') {
       const fiebre = rng.moneda();
-      const T1 = fiebre ? rng.elegir([97.7, 98.6, 99.5]) : rng.elegir([68, 77, 86]);
-      const dF = fiebre ? rng.elegir([1.8, 2.7, 3.6, 4.5, 5.4]) : rng.elegir([90, 180, 270, 360]);
-      const T2 = T1 + dF, dC = dF / 1.8;
+      const T1 = fiebre ? rng.elegir([96.8, 97.7, 98.6, 99.5]) : rng.elegir([59, 68, 77, 86, 95]);
+      const dF = fiebre ? rng.elegir([0.9, 1.8, 2.7, 3.6, 4.5, 5.4]) : rng.elegir([90, 135, 180, 225, 270, 315, 360]);
+      const T2 = +(T1 + dF).toFixed(6), dC = +(dF / 1.8).toFixed(6);
       const enunciado = fiebre ? ['La temperatura de un paciente, medida con un termómetro en °F, sube de ', v('T', `${f(T1)} °F`), ' a ', v('T', `${f(T2)} °F`), ' por la fiebre.']
         : ['El horno de una panadería, con un termómetro en °F, pasa de ', v('T', `${f(T1)} °F`), ' a ', v('T', `${f(T2)} °F`), '.'];
       const pregunta = ['¿Cuánto ', v('x', 'subió su temperatura en grados Celsius'), '?'];
       const errores = [
-        h('U8-restar-32', (dF - 32) / 1.8, 'Le restaste 32 a la variación. El 32 corre el cero de la escala y se cancela al restar dos lecturas: una variación solo se divide entre 1,8.', TRV),
+        h('U8-restar-32', fiebre ? (dF - 32) / 1.8 : Math.round((dF - 32) / 1.8), 'Le restaste 32 a la variación. El 32 corre el cero de la escala y se cancela al restar dos lecturas: una variación solo se divide entre 1,8.', TRV),
         h('CE-factor-invertido', 1.8 * dF, 'Multiplicaste por 1,8. El grado Fahrenheit es más chico: la variación en °C es menor, se divide entre 1,8.'),
         h('CE-misma-variacion', dF, 'Usaste la misma variación. El grado Celsius es 1,8 veces más grande que el Fahrenheit.'),
         h('CE-final-por-variacion', aC(T2), 'Esa es la temperatura final en °C. Se pedía cuánto subió.'),
       ];
       const solucion = [['Variación en °F: ', v('T', `${f(T2)} − ${f(T1)}`), ` = ${f(dF)} °F.`],
         ['Un grado Celsius vale 1,8 Fahrenheit, y el 32 se cancela al restar: ', v('x', `ΔT = ${f(dF)} / 1,8 = ${f(dC)} °C`), '.']];
-      return cerrar(rng, semilla, { negativos: true, correcta: dC, errores, unidad: '°C', variables: VAR, enunciado, pregunta, solucion,
+      return cerrar(rng, semilla, { correcta: dC, errores, unidad: '°C', variables: VAR, enunciado, pregunta, solucion,
         datos: { tipo: 'variacion', sub, T1, T2 } });
     }
     if (sub === 'c-a-k') {
@@ -312,18 +330,19 @@
 
   // ---------------- joule: la catarata que calienta el agua ----------------
   function joule(rng, semilla, sub) {
-    const dT = rng.elegir([0.05, 0.1, 0.15, 0.2, 0.25, 0.3]), v0 = rng.elegir([0, 8, 10, 12, 14, 16, 20]);
+    const dT = rng.elegir([0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5]), v0 = rng.elegir([0, 8, 10, 12, 14, 16, 20]);
+    const il = rng.entero(0, 4), lugar = ['En la sierra de Amazonas', 'En la selva de Junín', 'En la sierra de Cajamarca', 'En el valle del Colca', 'En la selva de San Martín'][il];
     const c = 4200, H = (c * dT - v0 * v0 / 2) / g;
     if (!limpio(H, 1) || H < 10 || H > 800) return null;
     const VAR = { H: { nombre: 'altura', color: 'o' }, v0: { nombre: 'rapidez en el borde', color: 'i' }, dT: { nombre: 'calentamiento', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
     const datosC = ' El calor específico del agua es 1 cal/(g·°C) y 1 cal = 4,2 J; g = 10 m/s². Supón que toda la energía mecánica que el agua tenía en el borde se queda en ella como calor.';
     const borde = v0 ? ['llega al borde con una rapidez de ', v('v0', `${f(v0)} m/s`), ' y cae'] : ['cae desde el reposo'];
     if (sub === 'altura') {
-      const enunciado = ['En la sierra de Amazonas, el agua de un río ', ...borde, ' por una catarata. Al pie, su temperatura subió ', v('dT', `${f(dT)} °C`), '.', datosC];
+      const enunciado = [`${lugar}, el agua de un río `, ...borde, ' por una catarata. Al pie, su temperatura subió ', v('dT', `${f(dT)} °C`), '.', datosC];
       const pregunta = ['¿Qué ', v('x', 'altura'), ' tiene la catarata?'];
       const errores = [
         h('PR3-sin-medio', (c * dT - v0 * v0) / g, 'La energía cinética es ½·m·v²: te faltó el ½.', TRV),
-        h('CE-suma-cinetica', (c * dT + v0 * v0 / 2) / g, 'Sumaste la energía cinética en lugar de restarla. El calor viene de las dos energías juntas: m·g·h + ½·m·v0² = m·c·ΔT, así que la altura necesaria es menor.'),
+        h('CE-suma-cinetica', (c * dT + v0 * v0 / 2) / g, 'Al despejar h sumaste la energía cinética, y había que restarla. De g·h + ½·v0² = c·ΔT sale g·h = c·ΔT − ½·v0²: la energía cinética del borde ya pone parte del calor, así que la caída necesaria es menor.'),
         h('U5-sin-4,2', (1000 * dT - v0 * v0 / 2) / g, 'Usaste c = 1000 J/(kg·°C): pasaste los gramos a kilogramos, pero no las calorías a joules. c = 1 cal/(g·°C) = 4200 J/(kg·°C).', TRV),
         h('CE-por-g', c * dT * g, 'Multiplicaste por g en lugar de dividir: de m·g·h = m·c·ΔT sale h = c·ΔT/g.'),
       ];
@@ -332,23 +351,8 @@
         ['Energía por kilogramo: g·', v('x', 'h'), v0 ? ' + ½·' : '', v0 ? v('v0', 'v0') : '', v0 ? '²' : '', ' = c·', v('dT', 'ΔT'), ` = 4200 · ${f(dT)} = ${f(c * dT)} J/kg.`],
         [v('x', 'h'), ` = (${f(c * dT)}${v0 ? ` − ${f(v0 * v0 / 2)}` : ''}) / 10 = `, v('x', `${f(H, 1)} m`), '.']];
       return cerrar(rng, semilla, { correcta: H, errores, unidad: 'm', decimales: 1, variables: VAR, enunciado, pregunta, solucion,
-        datos: { tipo: 'joule', sub, deltaT: dT, v0 } });
+        datos: { tipo: 'joule', sub, deltaT: dT, v0, lugar: il } });
     }
-    const E = g * H + v0 * v0 / 2;
-    const enunciado = ['En la sierra de Amazonas, el agua de un río ', ...borde, ' por una catarata de ', v('H', `${f(H, 1)} m`), ' de altura.', datosC];
-    const pregunta = ['¿Cuánto ', v('x', 'sube la temperatura'), ' del agua al llegar al pie?'];
-    const errores = [
-      h('U5-sin-4,2', E / 1000, 'Usaste c = 1000 J/(kg·°C): pasaste los gramos a kilogramos, pero no las calorías a joules. c = 4200 J/(kg·°C).', TRV),
-      h('U5-al-reves', E * 4.2 / 1000, 'Dividiste entre 4,2 al pasar las calorías a joules. 1 cal = 4,2 J, así que c = 1000 · 4,2 = 4200 J/(kg·°C).', TRV),
-      h('PR3-sin-medio', (g * H + v0 * v0) / c, 'La energía cinética es ½·m·v²: te faltó el ½.', TRV),
-      h('U4-gramos', E / 4.2, 'Usaste c = 4,2 J/(g·°C) con la energía por kilogramo. Hay que pasar todo a kilogramos: c = 4200 J/(kg·°C).', TRV),
-    ];
-    if (v0) errores.unshift(h('CE-sin-cinetica', g * H / c, 'Te olvidaste de la energía cinética que el agua traía en el borde: también se vuelve calor.'));
-    const solucion = [['Energía por kilogramo: g·', v('H', 'h'), v0 ? ' + ½·' : '', v0 ? v('v0', 'v0') : '', v0 ? '²' : '', ` = 10 · ${f(H, 1)}${v0 ? ` + ${f(v0 * v0 / 2)}` : ''} = ${f(E)} J/kg.`],
-      ['Todo eso calienta el agua: c·ΔT = ', `${f(E)}, con c = 4200 J/(kg·°C).`],
-      [v('x', 'ΔT'), ` = ${f(E)} / 4200 = `, v('x', `${f(dT, 3)} °C`), '.']];
-    return cerrar(rng, semilla, { correcta: dT, errores, unidad: '°C', decimales: 3, variables: VAR, enunciado, pregunta, solucion,
-      datos: { tipo: 'joule', sub, altura: H, v0 } });
   }
 
   // ---------------- dilatacion ----------------
@@ -405,7 +409,7 @@
       const solucion = [[v('V', `V0 = ${f(Vm3)} m³ = ${f(Vm3 * 1000)} L`), '. ΔV = V0·', v('gam', 'γ'), '·ΔT, así que ΔT = ΔV/(V0·γ).'],
         [`ΔT = ${f(dV, 1)} / (${f(Vm3 * 1000)} · ${cient(gam)}) = ${f(dT)} °C.`],
         [v('x', 'T'), ' = ', v('T', f(T2)), ` + ${f(dT)} = `, v('x', `${f(T1)} °C`), '.']];
-      return cerrar(rng, semilla, { negativos: true, correcta: T1, errores, unidad: '°C', variables: VAR, enunciado, pregunta, solucion,
+      return cerrar(rng, semilla, { negativos: true, rango: [-30, 60], correcta: T1, errores, unidad: '°C', variables: VAR, enunciado, pregunta, solucion,
         datos: { tipo: 'dilatacion', sub, gamma: gam, V0: Vm3, T2, dV } });
     }
     if (sub === 'capacidad') {
@@ -448,64 +452,76 @@
       return cerrar(rng, semilla, { correcta: rebalse, errores, unidad: 'cm³', decimales: 3, variables: VAR, enunciado, pregunta, solucion,
         datos: { tipo: 'dilatacion', sub, gamma: gam, alfa: al, V0, deltaT: dT } });
     }
-    // densidad: la masa no cambia
-    const [mat, coef, lineal, rhoBase, El, del] = rng.elegir([['latón', 2e-5, true, [8400, 8500, 8600], 'Un bloque de latón', 'del latón'], ['aluminio', 2.4e-5, true, [2600, 2700, 2800], 'Un bloque de aluminio', 'del aluminio'],
-      ['aceite', 7e-4, false, [880, 900, 920], 'El aceite de cocina', 'del aceite'], ['glicerina', 5e-4, false, [1240, 1260, 1280], 'La glicerina', 'de la glicerina']]);
-    const dT = rng.elegir(lineal ? [50, 100, 150, 200] : [20, 40, 50, 60]);
-    const gam = lineal ? 3 * coef : coef, rho = rng.elegir(rhoBase), rho0 = rho * (1 + gam * dT);
-    if (!limpio(rho0, 2)) return null;
+    // densidad: la masa no cambia. Densidades reales a 20 °C; la respuesta se pide redondeada al entero.
+    const [mat, coef, lineal, rho0, El, del] = rng.elegir([['latón', 1.9e-5, true, 8500, 'Un bloque de latón', 'del latón'], ['aluminio', 2.4e-5, true, 2700, 'Un bloque de aluminio', 'del aluminio'],
+      ['cobre', 1.7e-5, true, 8900, 'Un bloque de cobre', 'del cobre'], ['hierro', 1.2e-5, true, 7900, 'Un bloque de hierro', 'del hierro'],
+      ['aceite', 7e-4, false, 920, 'El aceite de cocina', 'del aceite'], ['glicerina', 5e-4, false, 1260, 'La glicerina', 'de la glicerina'],
+      ['mercurio', 1.8e-4, false, 13600, 'El mercurio', 'del mercurio'], ['alcohol', 1.1e-3, false, 790, 'El alcohol', 'del alcohol']]);
+    const dT = rng.elegir(lineal ? [50, 100, 150, 200, 250, 300] : [10, 20, 30, 40, 50, 60]);
+    const gam = lineal ? 3 * coef : coef, exacta = rho0 / (1 + gam * dT), rho = Math.round(exacta);
     const VAR = { rho0: { nombre: 'densidad inicial', color: 'o' }, coef: { nombre: 'coeficiente', color: 'i' }, dT: { nombre: 'calentamiento', color: 'h' }, x: { nombre: 'densidad final', color: 'd' } };
     const enunciado = [`${El} tiene una densidad de `, v('rho0', `${f(rho0)} kg/m³`), ' a 20 °C. Se calienta ', v('dT', `${f(dT)} °C`), lineal ? '. El coeficiente de dilatación lineal ' : '. El coeficiente de dilatación volumétrica ', del, ' es ', v('coef', `${cient(coef)} °C⁻¹`), '.'];
-    const pregunta = ['¿Cuál es su ', v('x', 'densidad'), ' después de calentarse?'];
+    const pregunta = ['¿Cuál es su ', v('x', 'densidad'), ' después de calentarse? (Redondea al entero.)'];
     const errores = [
-      h('CE-densidad-sube', rho0 * (1 + gam * dT), 'Multiplicaste por (1 + γ·ΔT), como si la densidad creciera igual que el volumen. La masa no cambia y el volumen crece: la densidad baja, ρ = ρ0/(1 + γ·ΔT).'),
+      h('CE-densidad-sube', Math.round(rho0 * (1 + gam * dT)), 'Multiplicaste por (1 + γ·ΔT), como si la densidad creciera igual que el volumen. La masa no cambia y el volumen crece: la densidad baja, ρ = ρ0/(1 + γ·ΔT).'),
       h('CE-densidad-igual', rho0, 'Como la masa no cambia, supusiste que la densidad tampoco. Pero el volumen crece, y ρ = m/V baja.'),
-      h('CE-da-variacion', rho0 - rho, 'Eso es cuánto baja la densidad. Se pedía la densidad final.'),
+      lineal ? h('Q11-sin-triplicar', Math.round(rho0 / (1 + coef * dT)), 'Usaste el coeficiente lineal para el volumen. El bloque se dilata en las tres dimensiones: γ = 3α.', CAL)
+        : h('Q11-triplicar', Math.round(rho0 / (1 + 3 * coef * dT)), 'Multiplicaste el coeficiente por 3. Ya es volumétrico (γ): se triplica solo el coeficiente lineal α de un sólido.', CAL),
+      lineal ? h('Q11-area', Math.round(rho0 / (1 + 2 * coef * dT)), 'Usaste 2α, que es el coeficiente de un área. Para un volumen es 3α.', CAL)
+        : h('CE-densidad-sube', Math.round(rho0 + rho0 * gam * dT), 'Sumaste a la densidad lo que crece el volumen. Al crecer el volumen con la misma masa, la densidad baja.'),
     ];
-    if (lineal) errores.splice(2, 0, h('Q11-sin-triplicar', rho0 / (1 + coef * dT), 'Usaste el coeficiente lineal para el volumen. El bloque se dilata en las tres dimensiones: γ = 3α.', CAL));
     const solucion = [['La masa no cambia; el volumen pasa de V0 a V0·(1 + γ·ΔT)', lineal ? ', con γ = 3·' : '', lineal ? v('coef', 'α') : '', `. Aquí γ·ΔT = ${f(gam * dT, 4)}.`],
-      [v('x', 'ρ'), ' = m/V = ', v('rho0', 'ρ0'), ` / (1 + ${f(gam * dT, 4)}) = ${f(rho0)} / ${f(1 + gam * dT, 4)} = `, v('x', `${f(rho)} kg/m³`), '.']];
-    return cerrar(rng, semilla, { correcta: rho, errores, unidad: 'kg/m³', variables: VAR, enunciado, pregunta, solucion,
+      [v('x', 'ρ'), ' = m/V = ', v('rho0', 'ρ0'), ` / (1 + ${f(gam * dT, 4)}) = ${f(rho0)} / ${f(1 + gam * dT, 4)} ≈ `, v('x', `${f(rho)} kg/m³`), '.']];
+    return cerrar(rng, semilla, { correcta: rho, errores, unidad: 'kg/m³', decimales: 0, rango: [0.5 * rho0, 1.5 * rho0], variables: VAR, enunciado, pregunta, solucion,
       datos: { tipo: 'dilatacion', sub, rho0, coef, lineal, deltaT: dT } });
   }
 
   // ---------------- sudor: el calor latente que enfría ----------------
   function sudor(rng, semilla, sub) {
     const Lv = 2.45e6, Lf = 3.34e5, cc = 3500, ca = 4200;
+    const r1 = x => Math.round(x * 10) / 10; // lo que el alumno anotaría, con un decimal
     const VAR = { M: { nombre: 'masa del cuerpo', color: 'o' }, Q: { nombre: 'calor', color: 'h' }, L: { nombre: 'calor latente', color: 'i' }, x: { nombre: 'sudor que se evapora', color: 'd' } };
-    const datosL = ['El calor latente de vaporización del agua a 37 °C es ', v('L', '2450 kJ/kg'), ' (el de fusión del hielo es 334 kJ/kg) y el calor específico del agua líquida, 4200 J/(kg·°C).'];
+    const datosL = ['El calor latente de vaporización del agua a 37 °C es ', v('L', '2,45 × 10⁶ J/kg'), ' (el de fusión del hielo es 3,34 × 10⁵ J/kg) y el calor específico del agua líquida, 4200 J/(kg·°C).'];
+    const orden = (mg, unidad) => [
+      h('CE-orden-latente', mg * 10, `Leíste mal la potencia de diez del calor latente: 2,45 × 10⁶ J/kg son 2 450 000 J/kg, no 245 000. El sudor necesario es diez veces menor que tu cuenta.`, TRV),
+      h('CE-orden-latente', mg / 10, `Leíste mal la potencia de diez del calor latente: 2,45 × 10⁶ J/kg son 2 450 000 J/kg, no 24 500 000. El sudor necesario es diez veces mayor que tu cuenta.`, TRV),
+    ];
     if (sub === 'cuerpo') {
-      const M = rng.elegir([49, 56, 63, 70, 77, 84]), dT = rng.elegir([0.5, 1, 1.5, 2]);
+      const ip = rng.entero(0, 3), quien = ['Después de un partido en Iquitos, un futbolista de ', 'Después de cosechar al sol en Piura, un agricultor de ', 'Después de una maratón en Lima, una corredora de ', 'Después de cargar sacos en el mercado, un estibador de '][ip];
+      const M = rng.elegir([49, 56, 63, 70, 77, 84, 91]), dT = rng.elegir([0.5, 1, 1.5, 2]);
       const Q = M * cc * dT, mg = Q / Lv * 1000;
       if (!limpio(mg)) return null;
-      const enunciado = ['Después de un partido en Iquitos, un futbolista de ', v('M', `${f(M)} kg`), ' tiene la temperatura del cuerpo ', `${f(dT)} °C`, ' por encima de lo normal. Su cuerpo solo puede enfriarse evaporando sudor. El calor específico del cuerpo humano es 3500 J/(kg·°C). ', ...datosL, ' Un gramo de sudor ocupa 1 mL.'];
+      const enunciado = [quien, v('M', `${f(M)} kg`), ' tiene la temperatura del cuerpo ', `${f(dT)} °C`, ' por encima de lo normal. Su cuerpo solo puede enfriarse evaporando sudor. El calor específico del cuerpo humano es 3500 J/(kg·°C). ', ...datosL, ' Un gramo de sudor ocupa 1 mL.'];
       const pregunta = ['¿Qué ', v('x', 'volumen de sudor'), ` debe evaporarse para que su temperatura baje ${f(dT)} °C?`];
       const errores = [
-        pa('Q7-sin-latente', Q / (ca * 63) * 1000, 'Calentaste el sudor de 37 °C a 100 °C con el calor específico, sin evaporarlo. Lo que enfría es el cambio de fase: el sudor se evapora a la temperatura de la piel y se lleva el calor latente, 2450 kJ por kilogramo.', CAL),
-        h('U8-kelvin', M * cc * (dT + 273) / Lv * 1000, `Pasaste la variación a kelvin sumando 273. Una variación de ${f(dT)} °C es una variación de ${f(dT)} K.`, TRV),
-        h('U4-kg-por-g', mg / 1000, `Esa cuenta da kilogramos (${f(mg / 1000, 3)} kg). En gramos, o en mL, hay que multiplicar por 1000.`, TRV),
+        ...orden(mg),
         h('CE-calor-del-agua', M * ca * dT / Lv * 1000, 'Usaste el calor específico del agua (4200) para el cuerpo. El dato del cuerpo es 3500 J/(kg·°C).'),
-        pa('Q7-fusion', Q / Lf * 1000, 'Usaste el calor latente de fusión del hielo. El sudor no se derrite: se evapora, con el calor latente de vaporización.', CAL),
+        h('U8-fahrenheit', mg * 1.8, `Multiplicaste la variación por 1,8, como si la pasaras a Fahrenheit. El calor específico está por grado Celsius (o kelvin, que es lo mismo en una variación): ΔT = ${f(dT)} °C.`, TRV),
+        pa('Q7-sin-latente', r1(Q / (ca * 63) * 1000), 'Calentaste el sudor de 37 °C a 100 °C con el calor específico, sin evaporarlo. Lo que enfría es el cambio de fase: el sudor se evapora a la temperatura de la piel y se lleva el calor latente.', CAL),
+        h('U8-kelvin', M * cc * (dT + 273) / Lv * 1000, `Pasaste la variación a kelvin sumando 273. Una variación de ${f(dT)} °C es una variación de ${f(dT)} K.`, TRV),
+        h('Q7-fusion', r1(Q / Lf * 1000), 'Usaste el calor latente de fusión del hielo. El sudor no se derrite: se evapora, con el calor latente de vaporización.'),
       ];
       const solucion = [['Calor que el cuerpo debe perder: ', v('Q', 'Q'), ' = ', v('M', 'M'), `·c·ΔT = ${f(M)} · 3500 · ${f(dT)} = ${f(Q)} J.`],
         ['Ese calor se lo lleva el sudor al evaporarse, sin cambiar de temperatura: Q = m·', v('L', 'L'), '.'],
         [v('x', 'm'), ` = ${f(Q)} / 2 450 000 = ${f(mg / 1000, 3)} kg = `, v('x', `${f(mg)} mL`), '.']];
-      return cerrar(rng, semilla, { correcta: mg, errores, unidad: 'mL', variables: VAR, enunciado, pregunta, solucion,
-        datos: { tipo: 'sudor', sub, M, deltaT: dT } });
+      return cerrar(rng, semilla, { correcta: mg, errores, unidad: 'mL', rango: [0, 5000], variables: VAR, enunciado, pregunta, solucion,
+        datos: { tipo: 'sudor', sub, M, deltaT: dT, persona: ip } });
     }
-    const QkJ = rng.elegir([245, 490, 735, 980, 1225, 1470]), mg = QkJ * 1000 / Lv * 1000;
-    const enunciado = ['Durante una carrera en Lima, el cuerpo de una corredora produce ', v('Q', `${f(QkJ)} kJ`), ' de calor que debe eliminar evaporando sudor, a 37 °C. ', ...datosL];
+    const QkJ = rng.elegir([245, 367.5, 490, 612.5, 735, 857.5, 980, 1225, 1470]), mg = QkJ * 1000 / Lv * 1000;
+    const ip = rng.entero(0, 2), quien = ['Durante una carrera en Lima, el cuerpo de una corredora', 'Durante una tarde de fútbol en Tarapoto, el cuerpo de un arquero', 'Durante una caminata en Arequipa, el cuerpo de un turista'][ip];
+    const enunciado = [`${quien} produce `, v('Q', `${f(QkJ)} kJ`), ' de calor que debe eliminar evaporando sudor, a 37 °C. ', ...datosL];
     const pregunta = ['¿Qué ', v('x', 'masa de sudor'), ' debe evaporarse?'];
     const errores = [
-      pa('Q7-sin-latente', QkJ * 1000 / (ca * 63) * 1000, 'Calentaste el sudor de 37 °C a 100 °C con el calor específico, sin evaporarlo. Lo que se lleva el calor es la evaporación: Q = m·L.', CAL),
-      h('U2-kilo', QkJ / Lv * 1000, `Dejaste el calor en kJ y el calor latente en J/kg. Hay que usar las mismas unidades: Q = ${f(QkJ)} kJ = ${f(QkJ * 1000)} J, o L = 2450 kJ/kg.`, TRV),
-      h('CE-hasta-100', QkJ * 1000 / (Lv + ca * 63) * 1000, 'Sumaste calentar el sudor hasta 100 °C. El sudor se evapora a la temperatura de la piel: solo hace falta el calor latente.'),
-      pa('Q7-fusion', QkJ / 334 * 1000, 'Usaste el calor latente de fusión del hielo. El sudor se evapora: va el de vaporización, 2450 kJ/kg.', CAL),
+      ...orden(mg),
+      pa('Q7-sin-latente', r1(QkJ * 1000 / (ca * 63) * 1000), 'Calentaste el sudor de 37 °C a 100 °C con el calor específico, sin evaporarlo. Lo que se lleva el calor es la evaporación: Q = m·L.', CAL),
+      h('U2-kilo', QkJ / Lv * 1000, `Dejaste el calor en kJ y el calor latente en J/kg. Hay que usar las mismas unidades: Q = ${f(QkJ)} kJ = ${f(QkJ * 1000)} J.`, TRV),
+      h('CE-hasta-100', r1(QkJ * 1000 / (Lv + ca * 63) * 1000), 'Sumaste calentar el sudor hasta 100 °C. El sudor se evapora a la temperatura de la piel: solo hace falta el calor latente.'),
+      h('Q7-fusion', r1(QkJ / 334 * 1000), 'Usaste el calor latente de fusión del hielo. El sudor se evapora: va el de vaporización, 2,45 × 10⁶ J/kg.'),
     ];
     const solucion = [['El sudor se evapora a 37 °C y se lleva calor sin cambiar de temperatura: ', v('Q', 'Q'), ' = m·', v('L', 'L'), '.'],
-      [v('x', 'm'), ` = ${f(QkJ)} kJ / 2450 kJ/kg = ${f(mg / 1000, 3)} kg = `, v('x', `${f(mg)} g`), '.']];
-    return cerrar(rng, semilla, { correcta: mg, errores, unidad: 'g', variables: VAR, enunciado, pregunta, solucion,
-      datos: { tipo: 'sudor', sub, QkJ } });
+      [v('x', 'm'), ` = ${f(QkJ * 1000)} J / 2 450 000 J/kg = ${f(mg / 1000, 3)} kg = `, v('x', `${f(mg)} g`), '.']];
+    return cerrar(rng, semilla, { correcta: mg, errores, unidad: 'g', rango: [0, 5000], variables: VAR, enunciado, pregunta, solucion,
+      datos: { tipo: 'sudor', sub, QkJ, persona: ip } });
   }
 
   const CONSTRUIR = { conversion, coincidencia, variacion, joule, dilatacion, sudor };

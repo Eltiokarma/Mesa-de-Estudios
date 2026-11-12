@@ -27,7 +27,7 @@
  *
  * Convenciones: g = 10 m/s² en la Tierra; sen 37° = 3/5 y cos 37° = 4/5. Los ángulos de la escalera
  * se miden desde el piso; en el cuenco, desde la vertical; en el embudo, el semiángulo con el eje.
- * Errores: D9 y G1 (documentados); E8, E10, G3, G4, G8 y M8 llevados a la cuenta (parcial); PR1 y PR2
+ * Errores: G1 (documentado); E8, E10, G3, G4-sin-radio, G4-mismo-peso, G8 y M8 llevados a la cuenta (parcial); PR1 y PR2
  * del informe transversal y los códigos DF-, ES- y GR- (hipótesis nuestras, de las trampas de la
  * admisión de San Marcos: docs/clasificacion/trampas-admision-unmsm/fisica.md, trampas 7, 23 y 29).
  */
@@ -73,6 +73,11 @@
       const pr = CONSTRUIR[tipo](rng, semilla, sub);
       if (pr && pr.alternativas.length >= 4) return pr;
     }
+    // Respaldo (no debería pasar): un tipo que siempre sale.
+    for (let intento = 0; intento < 5000; intento++) {
+      const pr = CONSTRUIR.tabla(rng, semilla, 'rapidez');
+      if (pr && pr.alternativas.length >= 4) return pr;
+    }
     throw new Error('No se pudo generar un problema con 4 alternativas distintas');
   }
 
@@ -82,7 +87,7 @@
       alternativas = P.armarTexto({ correcta: o.correcta, errores: o.errores, rng });
       respuesta = { valor: o.correcta.clave, texto: o.correcta.texto, unidad: '' };
     } else {
-      const dec = o.decimales || 2;
+      const dec = o.decimales ?? 2;
       const txt = x => f(x, dec) + (o.unidad ? ' ' + o.unidad : '');
       // Las incorrectas no pueden delatarse: ni con más decimales (hasta 1 si la correcta tiene 0 o 1; nunca más de 2) ni fuera de escala
       // (entre 1/20 y 20 veces la correcta, y dentro del rango físico del problema si lo hay).
@@ -96,6 +101,8 @@
       // Primero las que tienen a lo más los decimales de la correcta: así casi nunca se nota cuál es.
       const dc = decs(o.correcta);
       errores.sort((a, b) => (decs(a.valor) > dc) - (decs(b.valor) > dc));
+      const parejas = errores.filter(e => decs(e.valor) <= dc);
+      if (parejas.length >= 3) errores.splice(0, errores.length, ...parejas);
       alternativas = P.armar({ correcta: o.correcta, errores, rng, texto: txt });
       respuesta = { valor: o.correcta, unidad: o.unidad };
     }
@@ -118,10 +125,10 @@
     const om = sub === 'omega';
     const w = om ? rng.elegir(o.moneda ? [2, 4, 6] : [1, 2, 3, 4, 6]) : rng.elegir(o.moneda ? [2, 2.5, 3, 4, 5, 6] : [0.5, 1, 1.5, 2, 2.5, 3, 4]);
     const mu = rng.elegir(om ? [0.16, 0.25, 0.36, 0.64] : [0.16, 0.2, 0.24, 0.25, 0.3, 0.32, 0.36, 0.4, 0.45, 0.48, 0.5, 0.6, 0.64, 0.72, 0.75, 0.8]);
-    const r = mu * g / (w * w);
+    const r = +(mu * g / (w * w)).toFixed(6);
     if (!limpio(r) || (o.moneda ? (r < 0.03 || r > 0.1) : (r < 0.3 || r > 2.5))) return null;
     // Radio del plato o de la plataforma: k veces la distancia del objeto al eje.
-    const Rp = r * (om ? 4 : rng.elegir([2, 2.5, 3, 4]));
+    const Rp = +(r * (om ? 4 : rng.elegir([2, 2.5, 3, 4]))).toFixed(6);
     if (!limpio(Rp) || Rp > (o.moneda ? 0.2 : 6)) return null;
     const diam = 2 * Rp, uDiam = o.moneda ? `${f(diam * 100)} cm` : `${f(diam)} m`;
     const VAR = { w: { nombre: 'rapidez angular', color: 'o' }, r: { nombre: 'distancia al eje', color: 'i' }, mu: { nombre: 'coeficiente de rozamiento estático', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
@@ -176,7 +183,11 @@
   const VEH = [
     { n: 'Un auto tiene tracción trasera: el motor hace girar solo las ruedas traseras', motriz: 'T', bici: false },
     { n: 'Un auto tiene tracción delantera: el motor hace girar solo las ruedas delanteras', motriz: 'D', bici: false },
+    { n: 'Una combi tiene tracción trasera: el motor hace girar solo las ruedas traseras', motriz: 'T', bici: false },
+    { n: 'Un taxi tiene tracción delantera: el motor hace girar solo las ruedas delanteras', motriz: 'D', bici: false },
+    { n: 'Un camión de carga tiene tracción trasera: el motor hace girar solo las ruedas traseras', motriz: 'T', bici: false },
     { n: 'Una ciclista va en bicicleta: los pedales hacen girar solo la rueda trasera', motriz: 'T', bici: true },
+    { n: 'Un repartidor va en bicicleta: los pedales hacen girar solo la rueda trasera', motriz: 'T', bici: true },
   ];
   const sentido = s => (s > 0 ? 'hacia adelante' : 'hacia atrás');
   function claveSentido(D, T, bici) {
@@ -214,14 +225,15 @@
            [veh.bici ? 'La otra rueda' : 'Las otras ruedas', ' giran libres: el piso tiene que hacerlas girar, y su roce apunta ', v('x', 'hacia atrás'), ' (y es más chico).'],
            ['Respuesta: ', v(veh.motriz === 'D' ? 'D' : 'T', veh.motriz === 'D' ? (veh.bici ? 'delantera' : 'delanteras') : (veh.bici ? 'trasera' : 'traseras')), ' hacia adelante; ', veh.motriz === 'D' ? (veh.bici ? 'trasera' : 'traseras') : (veh.bici ? 'delantera' : 'delanteras'), ' hacia atrás.']];
       return cerrar(rng, semilla, { textual: true, correcta: C, errores, variables: VAR, enunciado, pregunta, solucion,
-        datos: { tipo: 'motriz', sub, motriz: veh.motriz, bici: veh.bici, frena } });
+        datos: { tipo: 'motriz', sub, motriz: veh.motriz, bici: veh.bici, frena, vehiculo: VEH.indexOf(veh) } });
     }
     // cuales: del sentido del roce a las ruedas motrices.
     const caso = rng.elegir(['D', 'T', 'T', 'cuatro']);
     const sD = caso === 'T' ? -1 : 1, sT = caso === 'D' ? -1 : 1;
     const OP = { D: 'Las delanteras', T: 'Las traseras', cuatro: 'Las cuatro', nada: 'No se puede saber: el rozamiento siempre se opone al movimiento' };
     const C = { clave: 'motriz:' + caso, texto: OP[caso] };
-    const enunciado = ['Una camioneta acelera hacia adelante por una pista horizontal, sin que patine ninguna rueda. Un sensor mide que el rozamiento del piso sobre las ', v('D', 'ruedas delanteras'), ` apunta ${sentido(sD)} y sobre las `, v('T', 'ruedas traseras'), `, ${sentido(sT)}.`];
+    const iv = rng.entero(0, 4), veh = ['Una camioneta', 'Un auto', 'Una combi', 'Un camión de carga', 'Un jeep'][iv];
+    const enunciado = [`${veh} acelera hacia adelante por una pista horizontal, sin que patine ninguna rueda. Un sensor mide que el rozamiento del piso sobre las `, v('D', 'ruedas delanteras'), ` apunta ${sentido(sD)} y sobre las `, v('T', 'ruedas traseras'), `, ${sentido(sT)}.`];
     const pregunta = ['¿Cuáles son las ', v('x', 'ruedas motrices'), ' (las que hace girar el motor)?'];
     const errores = [];
     for (const k of ['D', 'T', 'cuatro']) {
@@ -230,11 +242,11 @@
         k === 'cuatro' ? 'Si las cuatro fueran motrices, el piso empujaría a las cuatro hacia adelante. Una rueda con roce hacia atrás gira libre: el piso la frena un poco.'
           : `Las ruedas motrices son las que reciben roce hacia adelante: empujan el piso hacia atrás y el piso las empuja hacia adelante. Las que tienen roce hacia atrás ruedan libres.`));
     }
-    errores.push(ht('DF-roce-se-opone', 'motriz:nada', OP.nada, 'El rozamiento se opone al deslizamiento entre la rueda y el piso, no al movimiento del vehículo. En las ruedas motrices apunta hacia adelante: es la fuerza que acelera la camioneta.'));
+    errores.push(ht('DF-roce-se-opone', 'motriz:nada', OP.nada, 'El rozamiento se opone al deslizamiento entre la rueda y el piso, no al movimiento del vehículo. En las ruedas motrices apunta hacia adelante: es la fuerza que acelera al vehículo.'));
     const solucion = [['La rueda que mueve el motor empuja el piso hacia atrás, y el piso la empuja hacia adelante. Una rueda libre recibe un roce hacia atrás.'],
       ['Con roce hacia adelante en ', caso === 'cuatro' ? 'las cuatro' : (caso === 'D' ? 'las delanteras' : 'las traseras'), ': ', v('x', OP[caso].toLowerCase()), ' son motrices.']];
     return cerrar(rng, semilla, { textual: true, correcta: C, errores, variables: VAR, enunciado, pregunta, solucion,
-      datos: { tipo: 'motriz', sub, sD, sT } });
+      datos: { tipo: 'motriz', sub, sD, sT, vehiculo: iv } });
   }
   function motrizAceleracion(rng, semilla) {
     const delantera = rng.moneda();
@@ -262,58 +274,68 @@
   }
 
   // ---------------- peralte: giro horizontal con la normal inclinada ----------------
+  // Se pide la longitud (radio de la curva, radio del cuenco, altura en el embudo) y no la rapidez:
+  // así las respuestas y los errores típicos salen sin raíces, igual de redondos.
+  const BOLITAS = ['Una bolita', 'Una canica', 'Una arveja seca', 'Una cuenta de collar', 'Una esferita de acero'];
+  const NOMBRE = ['bolita', 'canica', 'arveja', 'cuenta', 'esferita'];
+  const CUENCOS = ['un cuenco semiesférico', 'una olla semiesférica', 'una fuente semiesférica', 'una taza semiesférica'];
   function peralte(rng, semilla, sub) {
-    const th = sub === 'cuenco' ? rng.elegir([37, 37, 53, 60, 60]) : rng.elegir([37, 53]), T = TRIG[th];
-    notables = th === 60 ? 'Usa cos 60° = 1/2' : NOTABLES;
+    const ib = rng.entero(0, BOLITAS.length - 1), ic = rng.entero(0, CUENCOS.length - 1), Bol = BOLITAS[ib], bol = NOMBRE[ib], cuenco = CUENCOS[ic];
+    const th = sub === 'cuenco' ? 37 : rng.elegir([37, 53]), T = TRIG[th];
+    notables = th === 60 ? 'Usa sen 60° = √3/2 y cos 60° = 1/2' : NOTABLES;
     if (sub === 'curva') {
-      const vel = rng.elegir([10, 12, 15, 18, 20, 24, 30]);
+      const vel = rng.elegir([6, 9, 12, 15, 18, 20, 21, 24, 27, 30]);
       const r = vel * vel / (g * T.t);
-      if (!limpio(r, 1) || r < 10 || r > 150) return null;
-      const VAR = { r: { nombre: 'radio de la curva', color: 'i' }, th: { nombre: 'ángulo del peralte', color: 'o' }, x: { nombre: 'rapidez', color: 'd' } };
-      const enunciado = ['En la carretera a Juliaca, una curva de ', v('r', `${f(r)} m`), ' de radio tiene la pista inclinada (peraltada) ', v('th', `${th}°`), ` respecto a la horizontal. ${notables}; g = 10 m/s².`];
-      const pregunta = ['¿Con qué ', v('x', 'rapidez'), ' debe tomarla una combi para no necesitar nada de rozamiento?'];
+      if (!limpio(r, 1) || r < 8 || r > 150) return null;
+      const veh = rng.elegir(['una combi', 'un camión', 'un bus interprovincial', 'una moto']);
+      const lugar = rng.elegir(['En la carretera a Juliaca', 'En la Panamericana Sur', 'En la subida a Ticlio', 'En la vía a Cusco']);
+      const VAR = { v: { nombre: 'rapidez', color: 'i' }, th: { nombre: 'ángulo del peralte', color: 'o' }, x: { nombre: 'radio de la curva', color: 'd' } };
+      const enunciado = [`${lugar}, una curva tiene la pista inclinada (peraltada) `, v('th', `${th}°`), ` respecto a la horizontal. Está diseñada para que ${veh} la tome a `, v('v', `${f(vel)} m/s`), ` sin necesitar nada de rozamiento. ${notables}; g = 10 m/s².`];
+      const pregunta = ['¿Qué ', v('x', 'radio'), ' tiene la curva?'];
       const errores = [
-        h('PR2-raiz', r * g * T.t, `Te faltó la raíz: r·g·tan θ = ${f(r * g * T.t)} es v², no v.`, TRV),
-        h('DF-seno-por-tangente', Math.sqrt(r * g * T.s), 'Usaste sen θ. Con N·cos θ = m·g y N·sen θ = m·v²/r, al dividir queda tan θ = v²/(r·g).'),
-        h('DF-tangente-invertida', Math.sqrt(r * g / T.t), 'Cambiaste las componentes de la normal: la vertical (N·cos θ) sostiene el peso y la horizontal (N·sen θ) es la centrípeta. Queda tan θ, no 1/tan θ.'),
-        h('DF-coseno', Math.sqrt(r * g * T.c), 'Usaste cos θ. Al dividir las dos ecuaciones de la normal queda tan θ = v²/(r·g).'),
+        h('PR1-cuadrado', vel / (g * T.t), 'Pusiste la rapidez sin elevarla al cuadrado: la fuerza centrípeta es m·v²/r.', TRV),
+        h('DF-seno-por-tangente', vel * vel / (g * T.s), 'Usaste sen θ. Con N·cos θ = m·g y N·sen θ = m·v²/r, al dividir queda tan θ = v²/(r·g).'),
+        h('DF-tangente-invertida', vel * vel * T.t / g, 'Cambiaste las componentes de la normal: la vertical (N·cos θ) sostiene el peso y la horizontal (N·sen θ) es la centrípeta. Queda tan θ = v²/(r·g), no 1/tan θ.'),
+        h('DF-coseno', vel * vel / (g * T.c), 'Usaste cos θ. Al dividir las dos ecuaciones de la normal queda tan θ = v²/(r·g).'),
+        h('DF-sin-angulo', vel * vel / g, 'Te olvidaste del ángulo, como si la normal sola hiciera de centrípeta. Al dividir las ecuaciones de la normal queda tan θ = v²/(r·g).'),
       ];
       const solucion = [
-        ['Sin roce, sobre la combi solo actúan el peso y la normal, que es perpendicular a la pista inclinada ', v('th', `${th}°`), '.'],
-        ['Vertical: N·cos θ = m·g. Horizontal, hacia el centro: N·sen θ = m·v²/', v('r', 'r'), '. Dividiendo: tan θ = v²/(r·g).'],
-        [v('x', 'v'), ' = √(', v('r', 'r'), '·g·tan ', v('th', 'θ'), `) = √(${f(r)} · 10 · ${th === 37 ? '3/4' : '4/3'}) = `, v('x', `${f(vel)} m/s`), '.'],
+        ['Sin roce, sobre el vehículo solo actúan el peso y la normal, que es perpendicular a la pista inclinada ', v('th', `${th}°`), '.'],
+        ['Vertical: N·cos θ = m·g. Horizontal, hacia el centro: N·sen θ = m·', v('v', 'v'), '²/r. Dividiendo: tan θ = v²/(r·g).'],
+        [v('x', 'r'), ' = ', v('v', 'v'), '²/(g·tan ', v('th', 'θ'), `) = ${f(vel)}² / (10 · ${th === 37 ? '3/4' : '4/3'}) = `, v('x', `${f(r)} m`), '.'],
       ];
-      return cerrar(rng, semilla, { correcta: vel, errores, unidad: 'm/s', variables: VAR, enunciado, pregunta, solucion,
-        datos: { tipo: 'peralte', sub, r, angulo: th } });
+      return cerrar(rng, semilla, { correcta: r, errores, unidad: 'm', variables: VAR, enunciado, pregunta, solucion,
+        datos: { tipo: 'peralte', sub, v: vel, angulo: th } });
     }
-    if (sub === 'cuenco' || sub === 'normal') {
-      const VAR = { R: { nombre: 'radio del cuenco', color: 'i' }, th: { nombre: 'ángulo con la vertical', color: 'o' }, m: { nombre: 'masa', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
-      if (sub === 'cuenco') {
-        const w = rng.elegir([2, 2.5, 3, 4, 5, 6, 8, 10]);
-        const R = g / (w * w * T.c);
-        if (!limpio(R, 3) || R < 0.1 || R > 2.5) return null;
-        const enunciado = ['Una bolita gira sin rozamiento por dentro de un cuenco semiesférico de ', v('R', `${f(R, 3)} m`), ' de radio, en una circunferencia horizontal. El radio del cuenco que llega a la bolita forma ', v('th', `${th}°`), ` con la vertical. ${notables}; g = 10 m/s².`];
-        const pregunta = ['¿Con qué ', v('x', 'rapidez angular'), ' gira la bolita?'];
-        const errores = [
-          h('DF-radio-de-la-esfera', Math.sqrt(g * T.t / R), `Tomaste el radio del cuenco como radio de giro. La bolita gira en una circunferencia de radio r = R·sen θ = ${f(R * T.s, 3)} m, más chica que el cuenco.`),
-          h('DF-seno-coseno', Math.sqrt(g / (R * T.s)), 'Cambiaste seno y coseno. La componente vertical de la normal es N·cos θ, porque θ se mide desde la vertical.'),
-          h('PR2-raiz', g / (R * T.c), `Te faltó la raíz: g/(R·cos θ) = ${f(g / (R * T.c))} es ω², no ω.`, TRV),
-          h('DF-sin-angulo', Math.sqrt(g / R), 'Igualaste la normal al peso, como si la bolita estuviera en el fondo. La normal apunta hacia el centro del cuenco, inclinada: N·cos θ = m·g.'),
-        ];
-        const solucion = [
-          ['La normal apunta hacia el centro del cuenco, a lo largo del radio que llega a la bolita. El radio de giro es r = ', v('R', 'R'), '·sen ', v('th', 'θ'), `, no R.`],
-          ['Horizontal: N·sen θ = m·ω²·R·sen θ, así que N = m·ω²·R. Vertical: N·cos θ = m·g.'],
-          [v('x', 'ω'), ' = √(g/(', v('R', 'R'), '·cos ', v('th', 'θ'), `)) = √(10/(${f(R)} · ${f(T.c)})) = `, v('x', `${f(w)} rad/s`), '.'],
-        ];
-        return cerrar(rng, semilla, { correcta: w, errores, unidad: 'rad/s', variables: VAR, enunciado, pregunta, solucion,
-          datos: { tipo: 'peralte', sub, R, angulo: th } });
-      }
-      const m = rng.elegir([0.1, 0.2, 0.4, 0.5, 0.6, 0.8, 1, 1.2]);
+    if (sub === 'cuenco') {
+      const w = rng.elegir([5, 10]);
+      const R = g / (w * w * T.c);
+      if (!limpio(R, 3) || R < 0.1 || R > 2.5) return null;
+      const VAR = { w: { nombre: 'rapidez angular', color: 'i' }, th: { nombre: 'ángulo con la vertical', color: 'o' }, x: { nombre: 'radio del recipiente', color: 'd' } };
+      const enunciado = [`${Bol} gira sin rozamiento por dentro de ${cuenco}, en una circunferencia horizontal, con una rapidez angular de `, v('w', `${f(w)} rad/s`), `. El radio del recipiente que llega a la ${bol} forma `, v('th', `${th}°`), ` con la vertical. ${notables}; g = 10 m/s².`];
+      const pregunta = ['¿Cuál es el ', v('x', 'radio del recipiente'), '?'];
+      const errores = [
+        h('DF-radio-de-la-esfera', g * T.t / (w * w), `Tomaste el radio del recipiente como radio de giro. La ${bol} gira en una circunferencia de radio r = R·sen θ, más chica que el cuenco.`),
+        h('DF-seno-coseno', g / (w * w * T.s), 'Cambiaste seno y coseno. La componente vertical de la normal es N·cos θ, porque θ se mide desde la vertical.'),
+        h('PR1-cuadrado', g / (w * T.c), 'Pusiste ω sin elevarla al cuadrado: la centrípeta es m·ω²·r.', TRV),
+        h('DF-sin-angulo', g / (w * w), `Ese es R·cos θ, la profundidad del plano de giro bajo el centro del recipiente. El radio es R = ${f(g / (w * w))}/cos θ.`),
+      ];
+      const solucion = [
+        [`La normal apunta hacia el centro del recipiente, a lo largo del radio que llega a la ${bol}. El radio de giro es r = R·sen `, v('th', 'θ'), ', no R.'],
+        ['Horizontal: N·sen θ = m·', v('w', 'ω'), '²·R·sen θ, así que N = m·ω²·R. Vertical: N·cos θ = m·g. Dividiendo: ω² = g/(R·cos θ).'],
+        [v('x', 'R'), ' = g/(', v('w', 'ω'), '²·cos ', v('th', 'θ'), `) = 10/(${f(w)}² · ${f(T.c)}) = `, v('x', `${f(R, 3)} m`), '.'],
+      ];
+      return cerrar(rng, semilla, { correcta: R, errores, unidad: 'm', decimales: 3, variables: VAR, enunciado, pregunta, solucion,
+        datos: { tipo: 'peralte', sub, w, angulo: th, contexto: [ib, ic] } });
+    }
+    if (sub === 'normal') {
+      const VAR = { R: { nombre: 'radio del recipiente', color: 'i' }, th: { nombre: 'ángulo con la vertical', color: 'o' }, m: { nombre: 'masa', color: 'h' }, x: { nombre: 'fuerza normal', color: 'd' } };
+      const m = rng.elegir([0.3, 0.6, 0.9, 1.2, 1.5, 1.8, 2.4, 3]);
       const N = m * g / T.c;
       if (!limpio(N)) return null;
-      const R = rng.elegir([0.2, 0.25, 0.4, 0.5, 0.8]);
-      const enunciado = ['Una bolita de ', v('m', `${f(m)} kg`), ' gira sin rozamiento por dentro de un cuenco semiesférico de ', v('R', `${f(R)} m`), ' de radio, en una circunferencia horizontal. El radio del cuenco que llega a la bolita forma ', v('th', `${th}°`), ` con la vertical. ${notables}; g = 10 m/s².`];
-      const pregunta = ['¿Cuánto vale la ', v('x', 'fuerza normal'), ' del cuenco sobre la bolita?'];
+      const R = rng.elegir([0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.8, 1]);
+      const enunciado = [`${Bol} de `, v('m', `${f(m)} kg`), ` gira sin rozamiento por dentro de ${cuenco} de `, v('R', `${f(R)} m`), ` de radio, en una circunferencia horizontal. El radio del recipiente que llega a la ${bol} forma `, v('th', `${th}°`), ` con la vertical. ${notables}; g = 10 m/s².`];
+      const pregunta = ['¿Cuánto vale la ', v('x', 'fuerza normal'), ` del recipiente sobre la ${bol}?`];
       const errores = [
         h('DF-normal-igual-peso', m * g, 'Igualaste la normal al peso. La normal está inclinada: solo su componente vertical, N·cos θ, equilibra el peso, así que N es mayor que m·g.', TRA),
         h('DF-seno-coseno', m * g * T.c, 'Multiplicaste el peso por cos θ, como en un plano inclinado. Aquí es al revés: N·cos θ = m·g, así que N = m·g/cos θ.'),
@@ -321,45 +343,44 @@
         h('DF-centripeta-por-normal', m * g * T.t, 'Esa es la fuerza centrípeta, la componente horizontal de la normal (m·g·tan θ). La normal entera es la hipotenusa.'),
       ];
       const solucion = [
-        ['Sobre la bolita actúan el peso (vertical) y la normal (a lo largo del radio, hacia el centro del cuenco). No hay "fuerza centrífuga": la centrípeta es la parte horizontal de la normal.'],
+        [`Sobre la ${bol} actúan el peso (vertical) y la normal (a lo largo del radio, hacia el centro del recipiente). No hay «fuerza centrífuga»: la centrípeta es la parte horizontal de la normal.`],
         ['Vertical: N·cos ', v('th', 'θ'), ' = ', v('m', 'm'), '·g.'],
         [v('x', 'N'), ` = ${f(m)} · 10 / ${f(T.c)} = `, v('x', `${f(N)} N`), '.'],
       ];
       return cerrar(rng, semilla, { correcta: N, errores, unidad: 'N', variables: VAR, enunciado, pregunta, solucion,
-        datos: { tipo: 'peralte', sub, m, R, angulo: th } });
+        datos: { tipo: 'peralte', sub, m, R, angulo: th, contexto: [ib, ic] } });
     }
-    // embudo: la pared forma α con el eje vertical; la bolita gira a la altura hh sobre el vértice.
-    const hh = rng.elegir([0.1, 0.4, 0.9, 1.6, 2.5, 0.225, 0.625]);
-    const vel = Math.sqrt(g * hh);
-    if (!limpio(vel)) return null;
-    const r = hh * T.t;
-    const VAR = { hh: { nombre: 'altura sobre el vértice', color: 'i' }, th: { nombre: 'semiángulo del embudo', color: 'o' }, x: { nombre: 'rapidez', color: 'd' } };
-    const enunciado = ['Una bolita gira sin rozamiento por dentro de un embudo con el eje vertical y el vértice abajo. La pared forma ', v('th', `${th}°`), ' con el eje. La bolita describe una circunferencia horizontal a ', v('hh', `${f(hh, 3)} m`), ` de altura sobre el vértice. ${notables}; g = 10 m/s².`];
-    const pregunta = ['¿Con qué ', v('x', 'rapidez'), ' gira la bolita?'];
+    // embudo: la pared forma α con el eje vertical; se da la rapidez y se pide la altura sobre el vértice.
+    const vel = rng.elegir([1, 1.5, 2, 2.5, 3, 3.5, 4, 5, 6]);
+    const hh = vel * vel / g;
+    if (!limpio(hh, 3)) return null;
+    const VAR = { v: { nombre: 'rapidez', color: 'i' }, th: { nombre: 'semiángulo del embudo', color: 'o' }, x: { nombre: 'altura sobre el vértice', color: 'd' } };
+    const enunciado = [`${Bol} gira sin rozamiento por dentro de un embudo con el eje vertical y el vértice abajo. La pared forma `, v('th', `${th}°`), ' con el eje. Describe una circunferencia horizontal con una rapidez de ', v('v', `${f(vel)} m/s`), `. ${notables}; g = 10 m/s².`];
+    const pregunta = ['¿A qué ', v('x', 'altura sobre el vértice'), ` gira la ${bol}?`];
     const errores = [
-      h('DF-radio-por-altura', Math.sqrt(g * r), `Usaste el radio de giro (${f(r, 3)} m) como si fuera la altura, o tomaste tan θ en lugar de 1/tan θ. La pared forma ${th}° con la vertical, así que la normal forma ${th}° con la horizontal.`),
-      h('DF-caida-libre', Math.sqrt(2 * g * hh), 'Usaste √(2·g·h), la rapidez de una caída desde esa altura. La bolita no cae: gira a altura fija, y su rapidez sale de las fuerzas.'),
-      h('PR2-raiz', g * hh, `Te faltó la raíz: g·h = ${f(g * hh, 3)} es v², no v.`, TRV),
-      h('DF-tangente-invertida', Math.sqrt(g * hh) * T.t, 'Cambiaste las componentes de la normal. Su parte vertical sostiene el peso y su parte horizontal es la centrípeta.'),
+      h('DF-radio-por-altura', hh * T.t, 'Ese es el radio de giro, r = h·tan α, no la altura. La altura sale de v² = g·h.'),
+      h('DF-caida-libre', vel * vel / (2 * g), `Usaste v² = 2·g·h, la rapidez de una caída desde esa altura. La ${bol} no cae: gira a altura fija, y su rapidez sale de las fuerzas.`),
+      h('PR1-cuadrado', vel / g, 'Pusiste la rapidez sin elevarla al cuadrado: h = v²/g.', TRV),
+      h('DF-tangente-invertida', hh / (T.t * T.t), 'Cambiaste las componentes de la normal. Su parte vertical sostiene el peso y su parte horizontal es la centrípeta.'),
     ];
     const solucion = [
       ['La normal es perpendicular a la pared: si la pared forma ', v('th', 'α'), ' con la vertical, la normal forma α con la horizontal.'],
       ['Vertical: N·sen α = m·g. Horizontal: N·cos α = m·v²/r. Dividiendo: v² = r·g/tan α.'],
-      ['El radio de giro es r = ', v('hh', 'h'), '·tan α, así que v² = g·h: el ángulo se cancela.'],
-      [v('x', 'v'), ` = √(10 · ${f(hh, 3)}) = `, v('x', `${f(vel)} m/s`), '.'],
+      ['El radio de giro es r = h·tan α, así que ', v('v', 'v'), '² = g·h: el ángulo se cancela.'],
+      [v('x', 'h'), ` = ${f(vel)}² / 10 = `, v('x', `${f(hh, 3)} m`), '.'],
     ];
-    return cerrar(rng, semilla, { correcta: vel, errores, unidad: 'm/s', variables: VAR, enunciado, pregunta, solucion,
-      datos: { tipo: 'peralte', sub, altura: hh, angulo: th } });
+    return cerrar(rng, semilla, { correcta: hh, errores, unidad: 'm', decimales: 3, variables: VAR, enunciado, pregunta, solucion,
+      datos: { tipo: 'peralte', sub, v: vel, angulo: th, contexto: [ib, 0] } });
   }
 
   // ---------------- astro: masa contra peso ----------------
   const ROM = ['I', 'II', 'III'];
   const LUNA = [
-    { id: 'L-masa', t: 'La masa del astronauta en la Luna es menor que en la Tierra.', v: false, cod: 'G4-masa-cambia', r: 'parcial', fu: GRA,
+    { id: 'L-masa', t: 'La masa del astronauta en la Luna es menor que en la Tierra.', v: false, cod: 'G4-masa-cambia', r: 'hipotesis', fu: TRA,
       e: 'La masa mide cuánta inercia tiene el cuerpo y no depende del lugar. Lo que baja en la Luna es el peso, m·g.' },
     { id: 'L-peso', t: 'En la Luna, el peso del astronauta es menor que en la Tierra.', v: true, cod: 'G4-peso-igual', r: 'hipotesis', fu: TRA,
       e: 'El peso es m·g, y la gravedad en la Luna es unas seis veces menor: el peso sí baja.' },
-    { id: 'L-empujar', t: 'Sobre un piso liso, con la misma fuerza horizontal, una caja acelera lo mismo en la Luna que en la Tierra.', v: true, cod: 'G4-misma-fuerza-acelera-mas', r: 'parcial', fu: GRA,
+    { id: 'L-empujar', t: 'Sobre un piso liso, con la misma fuerza horizontal, una caja acelera lo mismo en la Luna que en la Tierra.', v: true, cod: 'G4-misma-fuerza-acelera-mas', r: 'hipotesis', fu: TRA,
       e: 'a = F/m y la masa es la misma en los dos lugares: la misma fuerza da la misma aceleración. En un empuje horizontal sin roce, la gravedad no entra.' },
     { id: 'L-levantar', t: 'En la Luna hace falta menos fuerza para sostener una caja quieta en el aire que en la Tierra.', v: true, cod: 'G4-peso-igual', r: 'hipotesis', fu: TRA,
       e: 'Para sostenerla quieta hay que equilibrar su peso, m·g, y en la Luna g es menor.' },
@@ -371,13 +392,13 @@
   const ORBITA = [
     { id: 'O-sin-gravedad', t: 'En la estación espacial en órbita, el astronauta flota porque allí no hay gravedad.', v: false, cod: 'G1-no-hay-gravedad', r: 'documentado', fu: GRA,
       e: 'A unos 400 km de altura, la gravedad de la Tierra todavía es casi el 90 % de la del suelo. Flota porque él y la estación caen juntos alrededor de la Tierra.' },
-    { id: 'O-masa', t: 'En órbita, la masa del astronauta es la misma que en la Tierra.', v: true, cod: 'G4-masa-cambia', r: 'parcial', fu: GRA,
+    { id: 'O-masa', t: 'En órbita, la masa del astronauta es la misma que en la Tierra.', v: true, cod: 'G4-masa-cambia', r: 'hipotesis', fu: TRA,
       e: 'La masa no depende del lugar: es la misma en el suelo, en la Luna y en órbita.' },
     { id: 'O-atrae', t: 'En órbita, la Tierra sigue atrayendo al astronauta.', v: true, cod: 'G1-no-hay-gravedad', r: 'documentado', fu: GRA,
       e: 'Esa atracción es la que curva su camino alrededor de la Tierra: sin ella, seguiría en línea recta.' },
     { id: 'O-balanza', t: 'Si se para sobre una balanza de resorte dentro de la estación, la balanza marca cero.', v: true, cod: 'G8-balanza', r: 'parcial', fu: GRA,
       e: 'La balanza y el astronauta caen juntos: no se aprietan uno contra otro, y la balanza marca cero, como en un ascensor en caída libre.' },
-    { id: 'O-empujar', t: 'Dentro de la estación, darle a una caja la misma aceleración que en un piso liso de la Tierra exige menos fuerza.', v: false, cod: 'G4-misma-fuerza-acelera-mas', r: 'parcial', fu: GRA,
+    { id: 'O-empujar', t: 'Dentro de la estación, darle a una caja la misma aceleración que en un piso liso de la Tierra exige menos fuerza.', v: false, cod: 'G4-misma-fuerza-acelera-mas', r: 'hipotesis', fu: TRA,
       e: 'a = F/m y la masa no cambia: para la misma aceleración hace falta la misma fuerza, también en órbita.' },
   ];
   const VF = b => (b ? 'V' : 'F');
@@ -404,23 +425,26 @@
         datos: { tipo: 'astro', sub, lugar, afirmaciones: elegidas.map(s => s.id) } });
     }
     if (sub === 'aceleracion') {
-      const [lugar, gA] = rng.elegir([['la Luna', 1.6], ['Marte', 3.7]]);
-      const a = rng.elegir([0.5, 1, 1.5, 2, 2.5, 3, 4]), m = rng.elegir([2, 4, 5, 8, 10, 20, 25]);
+      const [lugar, gA, toma] = rng.elegir([['la Luna', 1.6, ''], ['Marte', 4, ' (redondeada)']]);
+      const a = rng.elegir([0.8, 1.2, 1.6, 2.4, 3.2, 4.8]), m = rng.elegir([5, 10, 15, 20, 25, 30, 40, 50]);
       const F = m * a;
+      const [cosa, la] = rng.elegir([['un carrito', 'el carrito'], ['una caja con muestras', 'la caja'], ['un trineo con herramientas', 'el trineo'], ['un robot apagado', 'el robot']]);
       const VAR = { F: { nombre: 'fuerza', color: 'o' }, m: { nombre: 'masa', color: 'i' }, gA: { nombre: 'gravedad del astro', color: 'h' }, x: { nombre: 'aceleración', color: 'd' } };
-      const enunciado = [`En una base en ${lugar}, una astronauta empuja un carrito de `, v('m', `${f(m)} kg`), ' sobre un riel horizontal sin rozamiento, con una fuerza horizontal de ', v('F', `${f(F)} N`), `. La gravedad en ${lugar} es `, v('gA', `${f(gA)} m/s²`), ' y en la Tierra, 10 m/s².'];
-      const pregunta = ['¿Qué ', v('x', 'aceleración'), ' tiene el carrito?'];
+      const enunciado = [`En una base en ${lugar}, una astronauta empuja ${cosa} de `, v('m', `${f(m)} kg`), ' sobre un piso horizontal sin rozamiento, con una fuerza horizontal de ', v('F', `${f(F)} N`), `. La gravedad en ${lugar} es `, v('gA', `${f(gA)} m/s²`), `${toma} y en la Tierra, 10 m/s².`];
+      const pregunta = ['¿Qué ', v('x', 'aceleración'), ` tiene ${la}?`];
       const errores = [
-        pa('G4-misma-fuerza-acelera-mas', a * g / gA, `Creíste que, con menos gravedad, la misma fuerza acelera más. El empuje es horizontal y sin roce: solo cuenta la masa, que es la misma que en la Tierra. a = F/m.`, GRA),
-        pa('G4-misma-fuerza-acelera-mas', a * gA / g, `Corregiste la aceleración por la gravedad de ${lugar}. La masa no cambia y la gravedad no entra en un empuje horizontal sin roce: a = F/m.`, GRA),
+        h('G4-misma-fuerza-acelera-mas', a * g / gA, 'Creíste que, con menos gravedad, la misma fuerza acelera más. El empuje es horizontal y sin roce: solo cuenta la masa, que es la misma que en la Tierra. a = F/m.'),
+        h('G4-misma-fuerza-acelera-mas', a * gA / g, `Corregiste la aceleración por la gravedad de ${lugar}. La masa no cambia y la gravedad no entra en un empuje horizontal sin roce: a = F/m.`),
         h('DF-fuerza-entre-peso', F / (m * gA), `Dividiste la fuerza entre el peso en ${lugar}. La segunda ley usa la masa, no el peso: a = F/m.`),
         h('DF-fuerza-entre-peso', F / (m * g), 'Dividiste la fuerza entre el peso en la Tierra. La segunda ley usa la masa: a = F/m.'),
+        h('DF-resta-gravedad', a - gA, 'Le restaste la gravedad del lugar. El peso es vertical y lo cancela la normal: no frena un empuje horizontal.'),
+        h('DF-suma-gravedad', a + gA, 'Le sumaste la gravedad del lugar. El peso es vertical y lo cancela la normal: no ayuda a un empuje horizontal.'),
       ];
       const solucion = [['El riel es horizontal y sin roce: el peso y la normal se cancelan, y la única fuerza que acelera es el empuje.'],
         ['La masa es la misma en la Tierra y en ', lugar, ': el dato de ', v('gA', 'g'), ' no hace falta.'],
         [v('x', 'a'), ' = ', v('F', 'F'), '/', v('m', 'm'), ` = ${f(F)} / ${f(m)} = `, v('x', `${f(a)} m/s²`), '.']];
       return cerrar(rng, semilla, { correcta: a, errores, unidad: 'm/s²', variables: VAR, enunciado, pregunta, solucion,
-        datos: { tipo: 'astro', sub, F, m, gAstro: gA } });
+        datos: { tipo: 'astro', sub, F, m, gAstro: gA, cosa: la } });
     }
     // peso en un planeta con k veces la masa y q veces el radio de la Tierra
     const k = rng.elegir([2, 3, 4, 6, 8, 9, 16]), q = rng.elegir([2, 3, 0.5, 4]);
@@ -446,11 +470,11 @@
 
   // ---------------- resorte: dos bloques unidos por un resorte ----------------
   function resorte(rng, semilla, sub) {
-    const mA = rng.entero(1, 5), mB = rng.entero(1, 5), mu = rng.elegir([0, 0.1, 0.2, 0.25]);
+    const mA = sub === 'instante' ? rng.elegir([1, 2, 4, 5]) : rng.entero(1, 5), mB = rng.entero(1, 6), mu = rng.elegir([0, 0.1, 0.2, 0.25]);
     const piso = mu ? [`un piso horizontal; el coeficiente de rozamiento cinético con cada bloque es ${f(mu)}`] : ['un piso horizontal liso'];
     const VAR = { F: { nombre: 'fuerza aplicada', color: 'o' }, aB: { nombre: 'aceleración de B', color: 'i' }, Fr: { nombre: 'fuerza del resorte', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
     if (sub === 'instante') {
-      const aB = rng.elegir([0.5, 1, 1.5, 2, 3]), aA = rng.entero(1, 8);
+      const aB = rng.elegir([0.5, 1, 1.5, 2, 2.5, 3]), aA = rng.elegir([0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 5, 6]);
       if (aA === aB) return null;
       const Fr = mB * (aB + mu * g);
       const F = mA * (aA + mu * g) + Fr;
@@ -512,7 +536,8 @@
       ['DF-menor-masa', arg(c => c.m, -1), 'Elegiste la caja más liviana. La masa sola no decide: importan también la fuerza y el tiempo.', 'hipotesis', TRA],
       ['DF-mayor-tiempo', arg(c => c.t), 'Elegiste la caja que empujan más tiempo. El tiempo solo no decide: importan también la fuerza y la masa.', 'hipotesis', TRA],
       ['DF-sin-tiempo', arg(c => c.F / c.m), 'Elegiste la de mayor aceleración (F/m), sin mirar cuánto dura el empuje. Con la misma aceleración, gana más rapidez la que acelera más tiempo.', 'hipotesis', TRA],
-      ['M8-sin-masa', arg(c => c.F * c.t), 'Elegiste la de mayor F·t, que es el impulso: la cantidad de movimiento que gana. La rapidez es ese impulso dividido entre la masa.', 'parcial', GRA],
+      ['M8-sin-masa', arg(c => c.F * c.t), sub === 'rapidez' ? 'Elegiste la de mayor F·t, que es el impulso: la cantidad de movimiento que gana. La rapidez es ese impulso dividido entre la masa.'
+        : 'Elegiste la de mayor F·t, el impulso, sin mirar la masa. La distancia es d = ½·(F/m)·t²: depende de la masa y del cuadrado del tiempo.', 'parcial', GRA],
     ];
     if (sub === 'distancia') criterios.unshift(['DF-rapidez-por-distancia', arg(vel), 'Elegiste la que termina más rápido. La distancia depende de t²: d = ½·(F/m)·t², y una caja que acelera menos pero más tiempo puede recorrer más.', 'hipotesis', TRA]);
     const nombre = i => `La caja ${i + 1}`;
@@ -586,6 +611,8 @@
       const errores = [
         pa('E8-suma-escalar', N + fz, 'Sumaste la normal y el roce como números. Son perpendiculares: se suman como vectores, R = √(N² + f²).', EST),
         h('ES-solo-normal', N, 'Diste solo la normal del piso. La reacción del piso incluye también el roce, que es horizontal.', EST),
+        h('ES-solo-roce', fz, 'Diste solo el roce del piso. La reacción del piso también incluye la normal, que sostiene los dos pesos.', EST),
+        h('ES-resta-escalar', N - fz, 'Restaste la normal y el roce como números. Son perpendiculares: se suman como vectores, R = √(N² + f²).', EST),
         h('ES-tan-por-cot', Math.hypot(N, fzSwap), 'Cambiaste seno y coseno en los brazos al calcular el roce. El brazo de la pared es la altura, L·sen θ.', EST),
         h('ES-sin-peso-escalera', Math.hypot(c.m * g, g * cot * c.m * c.d / c.L), 'Te olvidaste del peso de la escalera, en la normal y en los momentos.', EST),
       ];
@@ -624,10 +651,11 @@
   function gravitatoria(rng, semilla, sub) {
     const VAR = { MA: { nombre: 'masa de A', color: 'o' }, MB: { nombre: 'masa de B', color: 'i' }, d: { nombre: 'distancia entre los centros', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
     if (sub === 'nulo') {
-      const [k2, kr] = rng.elegir([[4, 2], [9, 3], [16, 4], [9 / 4, 1.5], [25 / 4, 2.5]]);
+      const [k2, kr] = rng.elegir([[4, 2], [4, 2], [9, 3], [9, 3], [16, 4], [9 / 4, 1.5], [25 / 4, 2.5]]);
       const s = rng.elegir([1, 2, 3, 4, 5, 8]);
       const MA = kr % 1 ? 4 * s : s, MB = MA * k2;
-      const d = rng.elegir([0.6, 0.9, 1.2, 1.5, 2, 2.4, 3, 3.5, 4, 5, 6, 7]);
+      // Con kr = 2 o 3 la distancia es múltiplo de (1 + kr)·(1 + kr²): así también salen redondos los errores.
+      const d = kr === 2 ? rng.elegir([1.5, 4.5, 7.5, 10.5]) : kr === 3 ? rng.elegir([2, 6, 10, 14]) : rng.elegir([0.6, 0.9, 1.2, 1.5, 2, 2.4, 3, 3.5, 4, 5, 6, 7]);
       const desdeA = rng.moneda();
       const xA = d / (1 + kr), correcta = desdeA ? xA : d - xA;
       if (!limpio(correcta) || !limpio(MB)) return null;

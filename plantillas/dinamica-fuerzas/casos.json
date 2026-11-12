@@ -1,8 +1,8 @@
 {
   "plantilla": "dinamica-fuerzas",
   "tolerancia": 1e-06,
-  "nota": "g = 10 m/s²; sen 37° = 3/5, cos 37° = 4/5 y cos 60° = 1/2. Ángulos de la escalera desde el piso, del cuenco desde la vertical y del embudo con el eje. En gravitatoria/neta las masas van en unidades de M y las distancias en decenas de miles de km. Las respuestas de texto son la clave de armarTexto (caja:n, vf:..., D±T±).",
-  "verificacion": "PENDIENTE",
+  "nota": "g = 10 m/s²; sen 37° = 3/5 y cos 37° = 4/5. Ángulos de la escalera desde el piso, del cuenco desde la vertical y del embudo con el eje. En peralte se pide la longitud: el radio de la curva (de v), el del cuenco (de ω) o la altura en el embudo (de v). En gravitatoria/neta las masas van en unidades de M y las distancias en decenas de miles de km. Las respuestas de texto son la clave de armarTexto (caja:n, vf:..., D±T±).",
+  "verificacion": "Verificado a ciegas el 8 nov 2026 por un subagente que no vio el generador ni las claves: 46 problemas (16 de casos.json y 30 semillas nuevas) resueltos con planteamiento propio en Python con fracciones (momentos respecto al pie, componentes de la normal, Newton por bloque). 46/46 letras y 16/16 valores coinciden con tolerancia 1e-6; sin errores de física. Tras la revisión se quitaron distractores fuera de escala y los que se delataban por no ser redondos; esos casos los recalculó el constructor aparte.",
   "casos": [
     {
       "semilla": 0,
@@ -38,31 +38,37 @@
       }
     },
     {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "peralte",
+        "sub": "normal",
+        "m": 1.5,
+        "R": 0.3,
+        "angulo": 53,
+        "contexto": [
+          4,
+          1
+        ]
+      },
+      "esperado": {
+        "respuesta": 25,
+        "exacta": "25 N"
+      }
+    },
+    {
       "semilla": 4,
       "entrada": {
         "tipo": "plataforma",
         "sub": "radio",
+        "objeto": 0,
         "w": 2,
-        "r": 1.2,
-        "mu": 0.48,
-        "radioPlataforma": 2
+        "r": 2,
+        "mu": 0.8,
+        "radioPlataforma": 6
       },
       "esperado": {
-        "respuesta": 1.2,
-        "exacta": "1,2 m"
-      }
-    },
-    {
-      "semilla": 5,
-      "entrada": {
-        "tipo": "peralte",
-        "sub": "embudo",
-        "altura": 0.9,
-        "angulo": 37
-      },
-      "esperado": {
-        "respuesta": 3,
-        "exacta": "3 m/s"
+        "respuesta": 2,
+        "exacta": "2 m"
       }
     },
     {
@@ -71,14 +77,14 @@
         "tipo": "resorte",
         "sub": "instante",
         "mA": 1,
-        "mB": 1,
-        "mu": 0.1,
-        "F": 5,
-        "aB": 2
+        "mB": 6,
+        "mu": 0.2,
+        "F": 35,
+        "aB": 2.5
       },
       "esperado": {
-        "respuesta": 1,
-        "exacta": "1 m/s²"
+        "respuesta": 6,
+        "exacta": "6 m/s²"
       }
     },
     {
@@ -86,12 +92,12 @@
       "entrada": {
         "tipo": "peralte",
         "sub": "curva",
-        "r": 67.5,
-        "angulo": 53
+        "v": 18,
+        "angulo": 37
       },
       "esperado": {
-        "respuesta": 30,
-        "exacta": "30 m/s"
+        "respuesta": 43.2,
+        "exacta": "43,2 m"
       }
     },
     {
@@ -100,15 +106,15 @@
         "tipo": "escalera",
         "sub": "roce",
         "angulo": 53,
-        "L": 5,
-        "M": 15,
+        "L": 3,
+        "M": 10,
         "m": 50,
-        "d": 1.25,
-        "mu": 0.3
+        "d": 2,
+        "mu": 0.5
       },
       "esperado": {
-        "respuesta": 150,
-        "exacta": "150 N"
+        "respuesta": 287.5,
+        "exacta": "287,5 N"
       }
     },
     {
@@ -133,14 +139,14 @@
       "entrada": {
         "tipo": "gravitatoria",
         "sub": "nulo",
-        "MA": 8,
-        "MB": 32,
-        "d": 6,
+        "MA": 1,
+        "MB": 4,
+        "d": 7.5,
         "desdeA": false
       },
       "esperado": {
-        "respuesta": 4,
-        "exacta": "4 m"
+        "respuesta": 5,
+        "exacta": "5 m"
       }
     },
     {
@@ -158,18 +164,36 @@
       }
     },
     {
+      "semilla": 21,
+      "entrada": {
+        "tipo": "resorte",
+        "sub": "estiramiento",
+        "mA": 2,
+        "mB": 1,
+        "mu": 0.25,
+        "F": 33,
+        "k": 400,
+        "x": 0.05
+      },
+      "esperado": {
+        "respuesta": 17.5,
+        "exacta": "17,5 m/s²"
+      }
+    },
+    {
       "semilla": 32,
       "entrada": {
         "tipo": "plataforma",
         "sub": "omega",
-        "w": 2.5,
-        "r": 1.2,
-        "mu": 0.75,
-        "radioPlataforma": 4
+        "objeto": 2,
+        "w": 2,
+        "r": 0.9,
+        "mu": 0.36,
+        "radioPlataforma": 3.6
       },
       "esperado": {
-        "respuesta": 2.5,
-        "exacta": "2,5 rad/s"
+        "respuesta": 2,
+        "exacta": "2 rad/s"
       }
     },
     {
@@ -177,12 +201,16 @@
       "entrada": {
         "tipo": "peralte",
         "sub": "cuenco",
-        "R": 0.5,
-        "angulo": 37
+        "w": 5,
+        "angulo": 37,
+        "contexto": [
+          1,
+          1
+        ]
       },
       "esperado": {
-        "respuesta": 5,
-        "exacta": "5 rad/s"
+        "respuesta": 0.5,
+        "exacta": "0,5 m"
       }
     },
     {
@@ -206,29 +234,14 @@
       "entrada": {
         "tipo": "motriz",
         "sub": "sentido",
-        "motriz": "T",
+        "motriz": "D",
         "bici": false,
-        "frena": true
+        "frena": true,
+        "vehiculo": 1
       },
       "esperado": {
         "respuesta": "D-T-",
         "exacta": "Delanteras: hacia atrás; traseras: hacia atrás"
-      }
-    },
-    {
-      "semilla": 55,
-      "entrada": {
-        "tipo": "escalera",
-        "sub": "reaccion",
-        "angulo": 53,
-        "L": 6,
-        "M": 15,
-        "m": 60,
-        "d": 1.5
-      },
-      "esperado": {
-        "respuesta": 768.75,
-        "exacta": "768,75 N"
       }
     },
     {
