@@ -13,7 +13,9 @@ function texto(partes, p, esc) {
     if (typeof x === 'string') return esc(x);
     if (x.formula) return `<span class="formula">${esc(x.t)}</span>`;
     const col = (p.variables[x.v] || {}).color || 'o';
-    return `<span class="var c-${esc(col)}" title="${esc((p.variables[x.v] || {}).nombre || '')}">${esc(x.t)}</span>`;
+    // Un tramo largo (una frase, no un dato) puede partirse en líneas: si no, se sale de la tarjeta en el celular.
+    const largo = String(x.t).length > 22 ? ' largo' : '';
+    return `<span class="var c-${esc(col)}${largo}" title="${esc((p.variables[x.v] || {}).nombre || '')}">${esc(x.t)}</span>`;
   }).join('');
 }
 

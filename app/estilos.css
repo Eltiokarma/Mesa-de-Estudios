@@ -109,6 +109,7 @@ input[type=text]:focus{outline:none;border-color:var(--brand)}
 .fig-gen{margin:10px 0;color:var(--ink);text-align:center}
 .fig-gen svg{max-width:100%;height:auto;max-height:min(600px,75vh);font-family:inherit}
 .var{white-space:nowrap;font-weight:700;padding:0 4px;border-radius:6px;border-bottom:2px dotted currentColor}
+.var.largo{white-space:normal;-webkit-box-decoration-break:clone;box-decoration-break:clone}
 .var.c-o{color:var(--c-o);background:color-mix(in srgb,var(--c-o) 12%,transparent)}
 .var.c-i{color:var(--c-i);background:color-mix(in srgb,var(--c-i) 12%,transparent)}
 .var.c-h{color:var(--c-h);background:color-mix(in srgb,var(--c-h) 12%,transparent)}
