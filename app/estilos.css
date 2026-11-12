@@ -107,7 +107,7 @@ input[type=text]:focus{outline:none;border-color:var(--brand)}
 .practica .preg{font-weight:700;font-size:17px;margin:12px 0}
 /* Figura de un problema generado (app/practica.js, figuraHTML): el SVG escala al ancho y usa la tinta del tema. */
 .fig-gen{margin:10px 0;color:var(--ink);text-align:center}
-.fig-gen svg{max-width:100%;height:auto;max-height:420px;font-family:inherit}
+.fig-gen svg{max-width:100%;height:auto;max-height:min(600px,75vh);font-family:inherit}
 .var{white-space:nowrap;font-weight:700;padding:0 4px;border-radius:6px;border-bottom:2px dotted currentColor}
 .var.c-o{color:var(--c-o);background:color-mix(in srgb,var(--c-o) 12%,transparent)}
 .var.c-i{color:var(--c-i);background:color-mix(in srgb,var(--c-i) 12%,transparent)}
