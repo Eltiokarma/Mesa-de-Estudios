@@ -7,23 +7,71 @@
   "dificultad": 1,
   "tipo_texto": "argumentativo",
   "autores": [
-    { "id": "A", "desde": 0, "firma": "Una psicóloga infantil" },
-    { "id": "B", "desde": 1, "firma": "Un profesor de secundaria" }
+    {
+      "id": "A",
+      "desde": 0,
+      "firma": "Una psicóloga infantil"
+    },
+    {
+      "id": "B",
+      "desde": 1,
+      "firma": "Un profesor de secundaria"
+    }
   ],
   "parrafos": [
     [
-      { "id": "o1", "rol": "principal", "t": "Las redes sociales deberían estar prohibidas para los menores de 14 años." },
-      { "id": "o2", "rol": "apoyo", "t": "A esa edad todavía cuesta distinguir a un amigo de un desconocido, y una noticia de un simple rumor, y es fácil que crean a quien les habla con cariño sin conocerlo." },
-      { "id": "o3", "rol": "apoyo", "t": "Además, pasar horas frente a la pantalla les quita tiempo para dormir y para estudiar, justo cuando más lo necesitan." },
-      { "id": "o4", "rol": "contraste", "t": "Nadie deja que un niño maneje un auto solo porque alguien se lo explicó con paciencia: hay cosas para las que primero hay que tener la edad." },
-      { "id": "o5", "rol": "principal", "t": "Una regla clara, igual para todos, protege a los más chicos mientras crecen." }
+      {
+        "id": "o1",
+        "rol": "principal",
+        "t": "Las redes sociales deberían estar prohibidas para los menores de 14 años."
+      },
+      {
+        "id": "o2",
+        "rol": "apoyo",
+        "t": "A esa edad todavía cuesta distinguir a un amigo de un desconocido, y una noticia de un simple rumor, y es fácil que crean a quien les habla con cariño sin conocerlo."
+      },
+      {
+        "id": "o3",
+        "rol": "apoyo",
+        "t": "Además, pasar horas frente a la pantalla les quita tiempo para dormir y para estudiar, justo cuando más lo necesitan."
+      },
+      {
+        "id": "o4",
+        "rol": "contraste",
+        "t": "Nadie deja que un niño maneje un auto solo porque alguien se lo explicó con paciencia: hay cosas para las que primero hay que tener la edad."
+      },
+      {
+        "id": "o5",
+        "rol": "principal",
+        "t": "Una regla clara, igual para todos, protege a los más chicos mientras crecen."
+      }
     ],
     [
-      { "id": "o6", "rol": "apoyo", "t": "Los menores sí corren riesgos en las redes, sobre todo si pasan muchas horas en ellas." },
-      { "id": "o7", "rol": "contraste", "t": "Pero una prohibición no enseña nada." },
-      { "id": "o8", "rol": "apoyo", "t": "Los chicos entrarán igual, con una edad falsa y a escondidas, sin que nadie en casa o en el colegio los acompañe cuando algo les incomoda." },
-      { "id": "o9", "rol": "apoyo", "t": "Es mejor enseñarles a revisar quién les escribe, a dudar de lo que leen y a ponerse límites de tiempo." },
-      { "id": "o10", "rol": "principal", "t": "Por eso propongo que la familia y el colegio enseñen a usar las redes, en lugar de prohibirlas." }
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "Los menores sí corren riesgos en las redes, sobre todo si pasan muchas horas en ellas."
+      },
+      {
+        "id": "o7",
+        "rol": "contraste",
+        "t": "Pero una prohibición no enseña nada."
+      },
+      {
+        "id": "o8",
+        "rol": "apoyo",
+        "t": "Los chicos entrarán igual, con una edad falsa y a escondidas, sin que nadie en casa o en el colegio los acompañe cuando algo les incomoda."
+      },
+      {
+        "id": "o9",
+        "rol": "apoyo",
+        "t": "Es mejor enseñarles a revisar quién les escribe, a dudar de lo que leen y a ponerse límites de tiempo."
+      },
+      {
+        "id": "o10",
+        "rol": "principal",
+        "t": "Por eso propongo que la familia y el colegio enseñen a usar las redes, en lugar de prohibirlas."
+      }
     ]
   ],
   "preguntas": [
@@ -36,7 +84,11 @@
         "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
         "sonda": "Una norma común que fije una edad mínima protege a los menores.",
         "aceptada": "A",
-        "codigos": { "B": "RV59", "ambos": "RV60", "ninguno": null },
+        "codigos": {
+          "B": "RV59",
+          "ambos": "RV60",
+          "ninguno": null
+        },
         "explicacion": "Lo sostiene el texto A en las oraciones 1 y 5: una regla clara, igual para todos, protege a los más chicos.",
         "explicaciones": {
           "B": "El texto B rechaza la prohibición (oración 7) y propone enseñar a usar las redes. La idea de proteger con una edad mínima es del texto A (oración 5).",
@@ -46,16 +98,38 @@
       },
       "enunciado": "¿Cuál es el eje del debate entre los dos textos?",
       "alternativas": [
-        { "t": "Si a los menores de 14 años se les debe prohibir el uso de las redes sociales o enseñarles a usarlas.", "correcta": true, "evidencia": ["o1", "o10"],
-          "explicacion": "El texto A pide prohibirlas (oración 1); el B, enseñar a usarlas en lugar de prohibirlas (oración 10)." },
-        { "t": "Si pasar muchas horas frente a las redes puede perjudicar a los menores de edad.", "codigo": "RV61", "origen": "o6",
-          "explicacion": "En eso coinciden: el texto A lo dice en la oración 3 y el B lo concede en la oración 6." },
-        { "t": "Si un niño de esa edad puede distinguir bien entre una noticia verdadera y un simple rumor.", "codigo": "RV60", "origen": "o2",
-          "explicacion": "Es un argumento del texto A (oración 2). El B no lo discute: el eje tiene que ser algo sobre lo que los dos toman posición." },
-        { "t": "Si los chicos prohibidos entran igual a las redes con una edad falsa y a escondidas de los adultos.", "codigo": "RV1", "origen": "o8",
-          "explicacion": "Es un detalle del argumento del texto B (oración 8), no lo que se discute." },
-        { "t": "Si la tecnología ayuda o perjudica a la sociedad entera en la vida diaria.", "codigo": "RV2",
-          "explicacion": "Es demasiado general: los textos discuten qué hacer con los menores de 14 años y las redes." }
+        {
+          "t": "Si a los menores de 14 años se les debe prohibir el uso de las redes sociales o enseñarles a usarlas.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o10"
+          ],
+          "explicacion": "El texto A pide prohibirlas (oración 1); el B, enseñar a usarlas en lugar de prohibirlas (oración 10)."
+        },
+        {
+          "t": "Si pasar muchas horas frente a las redes puede perjudicar a los menores de edad.",
+          "codigo": "RV61",
+          "origen": "o6",
+          "explicacion": "En eso coinciden: el texto A lo dice en la oración 3 y el B lo concede en la oración 6."
+        },
+        {
+          "t": "Si un niño de esa edad puede distinguir bien entre una noticia verdadera y un simple rumor.",
+          "codigo": "RV60",
+          "origen": "o2",
+          "explicacion": "Es un argumento del texto A (oración 2). El B no lo discute: el eje tiene que ser algo sobre lo que los dos toman posición."
+        },
+        {
+          "t": "Si los chicos prohibidos entran igual a las redes con una edad falsa y a escondidas de los adultos.",
+          "codigo": "RV1",
+          "origen": "o8",
+          "explicacion": "Es un detalle del argumento del texto B (oración 8), no lo que se discute."
+        },
+        {
+          "t": "Si la tecnología ayuda o perjudica a la sociedad entera en la vida diaria.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos discuten qué hacer con los menores de 14 años y las redes."
+        }
       ]
     },
     {
@@ -67,7 +141,11 @@
         "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
         "sonda": "Pasar muchas horas en las redes perjudica a los menores.",
         "aceptada": "ambos",
-        "codigos": { "A": "RV61", "B": "RV61", "ninguno": null },
+        "codigos": {
+          "A": "RV61",
+          "B": "RV61",
+          "ninguno": null
+        },
         "explicacion": "Los dos lo sostienen: el texto A, en la oración 3 (las horas frente a la pantalla les quitan sueño y estudio), y el B, en la oración 6 (corren riesgos si pasan muchas horas).",
         "explicaciones": {
           "A": "El texto A lo dice en la oración 3, pero el B también: «sobre todo si pasan muchas horas en ellas» (oración 6).",
@@ -77,16 +155,37 @@
       },
       "enunciado": "¿En qué coinciden ambos autores?",
       "alternativas": [
-        { "t": "En que los menores salen perjudicados si pasan horas y horas frente a las redes.", "correcta": true, "evidencia": ["o3", "o6"],
-          "explicacion": "El texto A dice que las horas frente a la pantalla les quitan tiempo para dormir y estudiar (oración 3); el B reconoce el riesgo de pasar muchas horas (oración 6)." },
-        { "t": "En que los menores de 14 años no deberían tener cuentas propias en ninguna red social.", "codigo": "RV60", "origen": "o1",
-          "explicacion": "Es la tesis del texto A (oración 1). El B no la comparte: propone enseñar en lugar de prohibir." },
-        { "t": "En que los menores corren riesgos en las redes y en que el colegio debe prohibírselas por completo.", "codigo": "RV62", "origen": "o10",
-          "explicacion": "La primera mitad es común, pero la segunda es lo que el texto B rechaza (oración 10)." },
-        { "t": "En que la mayoría de los adolescentes del país ya tiene un celular propio desde los doce años.", "codigo": "RV8",
-          "explicacion": "Ninguno de los dos textos habla de cuántos adolescentes tienen celular; sería un dato de fuera del texto." },
-        { "t": "En que los padres deben revisar cada noche los mensajes que reciben sus hijos menores de edad.", "codigo": "RV33",
-          "explicacion": "Ninguno de los dos lo propone: el texto B pide enseñar a revisar quién les escribe (oración 9), no que los padres revisen los mensajes." }
+        {
+          "t": "En que los menores salen perjudicados si pasan horas y horas frente a las redes.",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "o6"
+          ],
+          "explicacion": "El texto A dice que las horas frente a la pantalla les quitan tiempo para dormir y estudiar (oración 3); el B reconoce el riesgo de pasar muchas horas (oración 6)."
+        },
+        {
+          "t": "En que los menores de 14 años no deberían tener cuentas propias en ninguna red social.",
+          "codigo": "RV60",
+          "origen": "o1",
+          "explicacion": "Es la tesis del texto A (oración 1). El B no la comparte: propone enseñar en lugar de prohibir."
+        },
+        {
+          "t": "En que los menores corren riesgos en las redes y en que el colegio debe prohibírselas por completo.",
+          "codigo": "RV62",
+          "origen": "o10",
+          "explicacion": "La primera mitad es común, pero la segunda es lo que el texto B rechaza (oración 10)."
+        },
+        {
+          "t": "En que la mayoría de los adolescentes del país ya tiene un celular propio desde los doce años.",
+          "codigo": "RV8",
+          "explicacion": "Ninguno de los dos textos habla de cuántos adolescentes tienen celular; sería un dato de fuera del texto."
+        },
+        {
+          "t": "En que los padres deben revisar cada noche los mensajes que reciben sus hijos menores de edad.",
+          "codigo": "RV33",
+          "explicacion": "Ninguno de los dos lo propone: el texto B pide enseñar a revisar quién les escribe (oración 9), no que los padres revisen los mensajes."
+        }
       ]
     },
     {
@@ -95,14 +194,29 @@
       "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
       "enunciado": "En el texto A, el adjetivo CLARA («una regla clara») significa",
       "alternativas": [
-        { "t": "fácil de entender.", "correcta": true, "evidencia": ["o5"],
-          "explicacion": "Una regla clara es la que se entiende sin dudas, igual para todos." },
-        { "t": "con mucha luz.", "codigo": "RV18",
-          "explicacion": "Es el sentido más frecuente de «claro» (lo iluminado), pero una regla no tiene luz." },
-        { "t": "justa con todas las personas que la cumplen.", "codigo": "RV19",
-          "explicacion": "Se asocia con «igual para todos», pero «clara» habla de lo fácil de entender, no de lo justo." },
-        { "t": "igual para todos.", "codigo": "RV5", "origen": "o5",
-          "explicacion": "Repite palabras de la misma oración, que añaden otra cualidad de la regla; no explican «clara»." }
+        {
+          "t": "fácil de entender.",
+          "correcta": true,
+          "evidencia": [
+            "o5"
+          ],
+          "explicacion": "Una regla clara es la que se entiende sin dudas: no deja lugar a interpretaciones distintas."
+        },
+        {
+          "t": "con mucha luz.",
+          "codigo": "RV18",
+          "explicacion": "Es el sentido más frecuente de «claro» (lo iluminado), pero una regla no tiene luz."
+        },
+        {
+          "t": "breve, de pocas palabras.",
+          "codigo": "RV19",
+          "explicacion": "Se asocia con «clara» como algo sencillo, pero una regla puede ser larga y aun así clara: el adjetivo habla de que se entiende, no de su extensión."
+        },
+        {
+          "t": "que no admite ninguna excepción.",
+          "codigo": "RV7",
+          "explicacion": "Es una cualidad cercana de las reglas, pero «clara» no habla de excepciones sino de que se entiende."
+        }
       ]
     },
     {
@@ -114,7 +228,11 @@
         "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
         "sonda": "Las empresas dueñas de las redes deberían pagar por el daño que causan a los menores.",
         "aceptada": "ninguno",
-        "codigos": { "A": "RV33", "B": "RV33", "ambos": "RV33" },
+        "codigos": {
+          "A": "RV33",
+          "B": "RV33",
+          "ambos": "RV33"
+        },
         "explicacion": "Ninguno lo sostiene: el texto A pide una regla de edad (oración 5) y el B, enseñar a usar las redes (oración 10); ninguno habla de que las empresas paguen.",
         "explicaciones": {
           "A": "El texto A propone una edad mínima (oración 1), no que las empresas paguen.",
@@ -124,16 +242,36 @@
       },
       "enunciado": "¿Qué enunciado sintetiza mejor lo que plantean los dos textos?",
       "alternativas": [
-        { "t": "Los menores corren riesgos en las redes; se discute si protegerlos con una prohibición o con enseñanza.", "correcta": true, "evidencia": ["o1", "o6", "o10"],
-          "explicacion": "Junta lo común (los riesgos, oraciones 3 y 6) y lo que los separa (prohibir, oración 1, o enseñar, oración 10)." },
-        { "t": "Hay que prohibir las redes a los menores, pues una regla igual para todos les enseña a usarlas bien.", "codigo": "RV44",
-          "explicacion": "Une las ideas con una relación que el texto no plantea: para el texto B, la enseñanza reemplaza a la prohibición, no sale de ella." },
-        { "t": "Los menores corren riesgos en las redes, y por eso el colegio debe prohibirlas mientras la familia las enseña.", "codigo": "RV62",
-          "explicacion": "Mezcla dos mitades: ningún texto pide prohibir y enseñar a la vez; cada autor elige una de las dos salidas." },
-        { "t": "Un niño no maneja un auto aunque se lo expliquen con paciencia, y lo mismo vale para las redes sociales.", "codigo": "RV60",
-          "explicacion": "Es el ejemplo del texto A (oración 4); el B no lo comparte, así que no sintetiza los dos textos." },
-        { "t": "Las pantallas y las redes cambian la manera de relacionarse de todas las personas en el mundo entero.", "codigo": "RV2",
-          "explicacion": "Es demasiado general: los textos hablan de los menores de 14 años y de qué hacer con las redes." }
+        {
+          "t": "Los menores corren riesgos en las redes; se discute si protegerlos con una prohibición o con enseñanza.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o6",
+            "o10"
+          ],
+          "explicacion": "Junta lo común (los riesgos, oraciones 3 y 6) y lo que los separa (prohibir, oración 1, o enseñar, oración 10)."
+        },
+        {
+          "t": "Hay que prohibir las redes a los menores, pues una regla igual para todos les enseña a usarlas bien.",
+          "codigo": "RV44",
+          "explicacion": "Une las ideas con una relación que el texto no plantea: para el texto B, la enseñanza reemplaza a la prohibición, no sale de ella."
+        },
+        {
+          "t": "Los menores corren riesgos en las redes, y por eso el colegio debe prohibirlas mientras la familia las enseña.",
+          "codigo": "RV62",
+          "explicacion": "Mezcla dos mitades: ningún texto pide prohibir y enseñar a la vez; cada autor elige una de las dos salidas."
+        },
+        {
+          "t": "Un niño no maneja un auto aunque se lo expliquen con paciencia, y lo mismo vale para las redes sociales.",
+          "codigo": "RV60",
+          "explicacion": "Es el ejemplo del texto A (oración 4); el B no lo comparte, así que no sintetiza los dos textos."
+        },
+        {
+          "t": "Las pantallas y las redes cambian la manera de relacionarse de todas las personas en el mundo entero.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos hablan de los menores de 14 años y de qué hacer con las redes."
+        }
       ]
     },
     {
@@ -142,19 +280,41 @@
       "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
       "enunciado": "Si un colegio lograra que todos sus alumnos de 12 y 13 años aprendieran a revisar quién les escribe y a ponerse límites de tiempo, el autor del texto B probablemente",
       "alternativas": [
-        { "t": "vería menos necesaria la prohibición, aunque seguiría pidiendo que haya adultos que acompañen.", "correcta": true, "evidencia": ["o8", "o9", "o10"],
-          "explicacion": "Para el texto B, la salida es enseñar (oraciones 9 y 10); si eso se logra, la prohibición sobra, y el acompañamiento de adultos importa (oración 8)." },
-        { "t": "seguiría pidiendo la prohibición, porque los menores de esa edad no pueden aprender a usar bien las redes.", "codigo": "RV63",
-          "explicacion": "El condicional se cumple justo en lo que el texto B propone (oración 9); decir que no se puede aprender contradice su postura y repite lo que negaba." },
-        { "t": "afirmaría que las redes nunca vuelven a ser un riesgo para ningún menor de esa edad.", "codigo": "RV11",
-          "explicacion": "«Nunca» y «ningún» dicen más que el texto B, que solo propone enseñar a manejar esos riesgos." },
-        { "t": "concluiría que los menores deberían abrir su cuenta propia desde los diez años, sin avisar en casa.", "codigo": "RV7",
-          "explicacion": "Va más allá del texto: el B pide acompañamiento (oración 8), no abrir cuentas sin avisar." }
+        {
+          "t": "vería confirmada su propuesta de enseñar, y seguiría pidiendo que haya adultos que acompañen.",
+          "correcta": true,
+          "evidencia": [
+            "o8",
+            "o9",
+            "o10"
+          ],
+          "explicacion": "Para el texto B, la salida es enseñar (oraciones 9 y 10) y no prohibir; si eso se logra, su propuesta funciona, y el acompañamiento de adultos sigue importando (oración 8)."
+        },
+        {
+          "t": "pediría la prohibición de todos modos, porque los menores de esa edad no pueden aprender a usar bien las redes.",
+          "codigo": "RV63",
+          "explicacion": "El texto B ya rechaza la prohibición (oraciones 7 y 10) y propone enseñar (oración 9); decir que no se puede aprender contradice su postura."
+        },
+        {
+          "t": "afirmaría que las redes nunca vuelven a ser un riesgo para ningún menor de esa edad.",
+          "codigo": "RV11",
+          "explicacion": "«Nunca» y «ningún» dicen más que el texto B, que solo propone enseñar a manejar esos riesgos."
+        },
+        {
+          "t": "concluiría que los menores deberían abrir su cuenta propia desde los diez años, sin avisar en casa.",
+          "codigo": "RV7",
+          "explicacion": "Va más allá del texto: el B pide acompañamiento (oración 8), no abrir cuentas sin avisar."
+        }
       ]
     }
   ],
   "origen": "propio",
   "fecha": "2026-11-12",
   "hechos": [],
-  "revision": null
+  "revision": {
+    "por": "subagente (revisor a ciegas, rutina verbal-mas)",
+    "fecha": "2026-11-12",
+    "veredicto": "aprobado",
+    "notas": "Resultado a ciegas: 40 de 40 coincidieron. Dudas del revisor: p3 (CLARA competía con «igual para todos»: se reemplazaron los distractores por «breve» y «sin excepción», sin pegarse a la oración) y p5 (el enunciado decía que B vería menos necesaria una prohibición que B nunca pide; ahora B vería confirmada su propuesta de enseñar y seguiría pidiendo acompañamiento). Sin hechos del mundo: todo son argumentos de los autores; el dato del celular está solo en un distractor marcado como ajeno al texto."
+  }
 }
