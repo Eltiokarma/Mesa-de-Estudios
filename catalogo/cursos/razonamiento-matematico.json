@@ -85,7 +85,7 @@
       "universidades": {"unmsm": {"temas": [7]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": ["sucesiones", "rm-ciclos"],
+      "plantillas": ["sucesiones", "rm-ciclos", "rm-fichas"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
@@ -156,7 +156,7 @@
       "universidades": {"unmsm": {"temas": [11]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": ["maximos-minimos", "rm-planteo", "rm-diofanticas"],
+      "plantillas": ["maximos-minimos", "rm-planteo", "rm-diofanticas", "rm-fichas"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
@@ -198,7 +198,7 @@
       "universidades": {"unmsm": {"temas": [13, 14, 15]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": ["arreglos-giros", "ampliadora"],
+      "plantillas": ["arreglos-giros", "ampliadora", "rm-fichas"],
       "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {

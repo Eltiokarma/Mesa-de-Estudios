@@ -784,7 +784,7 @@
         [`El primero que queda es el de `, v('x', `${r.w} × ${r.h}`), `, y sí se cubre: con ${cuenta[0]} pieza${cuenta[0] > 1 ? 's' : ''} A y ${cuenta[1]} pieza${cuenta[1] > 1 ? 's' : ''} B (dibujo de la solución).`],
         [pide === 'area' ? `Área: ${r.w} × ${r.h} = ` : `Perímetro: 2 × (${r.w} + ${r.h}) = `, v('x', String(correcta)), pide === 'area' ? ' cuadraditos.' : ' unidades.'],
       ],
-      figuraSolucion: { svg: SVG(r.w * cs + 20, r.h * cs + 20, figS), alt: `Rectángulo de ${r.w} × ${r.h} cubierto con ${cuenta[0]} piezas A y ${cuenta[1]} piezas B: ` + r.teselas.map(q => `${'AB'[q.t]} en ${q.celdas.map(([x, y]) => `(${x + 1}; ${y + 1})`).join(' ')}`).join('; ') + '.' },
+      figuraSolucion: { svg: SVG(r.w * cs + 20, r.h * cs + 20, figS), alt: `Rectángulo de ${r.w} × ${r.h} cubierto con ${cuenta[0]} ${cuenta[0] === 1 ? 'pieza' : 'piezas'} A y ${cuenta[1]} ${cuenta[1] === 1 ? 'pieza' : 'piezas'} B: ` + r.teselas.map(q => `${'AB'[q.t]} en ${q.celdas.map(([x, y]) => `(${x + 1}; ${y + 1})`).join(' ')}`).join('; ') + '.' },
       respuesta: { valor: correcta, unidad: pide === 'area' ? 'cuadraditos' : 'unidades' },
       _datos: d,
     };
@@ -944,7 +944,7 @@
     let figS = dibujaCuadricula(c, r, cp, 10, 10, (x, y) => (tap(x, y) ? 'fill:currentColor' : 'fill:var(--card)'));
     M.piezas.forEach((cel, i) => { figS += dibujaPieza(cel, cp, 10, 10, COLORES[i % 4]); });
     const fc = ([x, y]) => `(${y + 1}, ${x + 1})`;
-    const txtMuertas = cota.muertas.length ? `En ${cota.muertas.length === 1 ? 'la casilla' : 'las casillas'} ${lista(cota.muertas.map(fc))} (fila, columna) no entra ninguna ficha: ${cota.muertas.length === 1 ? 'queda encerrada' : 'quedan encerradas'} por casillas tapadas o por el borde. Quedan ${cota.cubribles} casillas aprovechables` : '';
+    const txtMuertas = cota.muertas.length ? `En ${cota.muertas.length === 1 ? 'la casilla' : 'las casillas'} ${lista(cota.muertas.map(fc))} (fila, columna) no entra ninguna ficha: no hay 3 casillas libres seguidas que ${cota.muertas.length === 1 ? 'la incluyan' : 'las incluyan'}. Quedan ${cota.cubribles} casillas aprovechables` : '';
     const razonTab = [];
     if (cota.tipo === 'muertas') razonTab.push([`${txtMuertas}: caben a lo más ${cota.cubribles} ÷ 3, o sea ${cota.n}.`]);
     if (cota.tipo === 'zonas') razonTab.push([`${txtMuertas ? txtMuertas + '. ' : ''}Las casillas aprovechables quedan en ${cota.zonas.length} zonas separadas, de ${lista(cota.zonas.map(String))} casillas; en cada zona caben a lo más sus casillas ÷ 3: ${cota.zonas.map(z => Math.floor(z / 3)).join(' + ')} = ${cota.n}.`]);
