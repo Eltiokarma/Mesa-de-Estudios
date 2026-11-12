@@ -62,7 +62,7 @@ python3 -c "import secrets; print(secrets.token_urlsafe(48))"                   
 2. En el servicio, **Settings**:
    - **Root Directory:** `servidor`.
    - **Config as code → Railway config file:** `/servidor/railway.json`. Railway no busca ese archivo dentro de la carpeta raíz del servicio, así que se le da la ruta completa.
-   - El archivo ya trae el comando de arranque (`uvicorn app.main:app --host 0.0.0.0 --port $PORT --workers 2`) y el chequeo de salud (`/api/salud`). Si no se configura, el `Procfile` arranca lo mismo.
+   - El archivo ya trae el comando de arranque (`uvicorn app.main:app --host 0.0.0.0 --port $PORT --workers 1`) y el chequeo de salud (`/api/salud`). Si no se configura, el `Procfile` arranca lo mismo.
 3. **+ New → Database → PostgreSQL** en el mismo proyecto.
 4. En el servicio, **Variables**, pon las ocho de la tabla. `DATABASE_URL` va como referencia: `${{Postgres.DATABASE_URL}}`.
 5. **Settings → Networking → Generate Domain** (o un dominio propio, por ejemplo `api.<dominio>`). Pon el dominio de la app en `CORS_ORIGENES`.
