@@ -1,7 +1,7 @@
 {
   "plantilla": "quimica-conceptos",
   "nota": "Cada caso da la semilla, el tipo, el tema o conjunto y los ids que se muestran (en el orden I, II, III… o en el orden en que se eligieron), y la respuesta. vf: la secuencia de los valores de verdad de gen.BANCO en el orden de ids. incorrecta y correcta: el único id falso (o verdadero) entre los ids. relacionar: la letra de cada id de la izquierda es su posición (a, b, c, d) en derecha. Lo que se verifica a ciegas es el valor de verdad de cada proposición del banco y cada par de gen.PARES.",
-  "verificacion": "Verificado a ciegas (8 nov 2026): un verificador independiente decidió V o F en las 250 proposiciones sin ver la clave y coincidió en las 250, y en los 6 conjuntos de pares; las 124 «corregida» son verdaderas. Las proposiciones nuevas o reescritas tras la revisión las revisó la conversación principal. Las proposiciones de los temas agregados el 12 nov 2026 las verificó aparte otro subagente.",
+  "verificacion": "Verificado a ciegas (8 nov 2026): un verificador independiente decidió V o F en las 250 proposiciones sin ver la clave y coincidió en las 250, y en los 6 conjuntos de pares; las 124 «corregida» son verdaderas. Las proposiciones nuevas o reescritas tras la revisión las revisó la conversación principal. Temas agregados el 12 nov 2026: 98 proposiciones nuevas (52 V, 46 F) y el conjunto de pares «precursores» verificados a ciegas por otro subagente independiente: 98/98 y 6/6 coinciden, sin dudosas; las «corregida» de las falsas son verdaderas.",
   "casos": [
     {
       "semilla": "entrada-1",
