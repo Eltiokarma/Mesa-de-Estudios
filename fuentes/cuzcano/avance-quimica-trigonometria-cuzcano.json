@@ -1,16 +1,16 @@
 {
   "schema_version": 1,
-  "fecha_utc": "2026-11-12T22:55:50.917213+00:00",
+  "fecha_utc": "2026-11-12T23:05:48.337905+00:00",
   "estado": "en_curso",
   "origen": "Escaneos de Cuzcano",
   "objetivo_nuevas": 2000,
   "objetivo_temas": 20,
-  "fichas_nuevas": 559,
-  "fichas_pendientes": 1441,
-  "porcentaje_del_lote": 27.95,
-  "fichas_acumuladas_banco": 9941,
-  "temas_banco_con_100_acumuladas": 66,
-  "paginas_pdf_distintas_cotejadas": 117,
+  "fichas_nuevas": 603,
+  "fichas_pendientes": 1397,
+  "porcentaje_del_lote": 30.15,
+  "fichas_acumuladas_banco": 9985,
+  "temas_banco_con_100_acumuladas": 68,
+  "paginas_pdf_distintas_cotejadas": 122,
   "ocr_repetido": false,
   "lectura_local": "fuentes/ocr-local/cuzcano/cobertura-temas/avance-detallado.html",
   "cursos": [
@@ -18,20 +18,20 @@
       "id": "quimica",
       "curso": "Química",
       "meta": 1000,
-      "nuevas": 136,
-      "pendientes": 864,
-      "porcentaje_del_lote": 13.6,
+      "nuevas": 180,
+      "pendientes": 820,
+      "porcentaje_del_lote": 18,
       "temas_con_fichas_nuevas": 10,
-      "nuevas_con_observaciones": 38,
-      "acumuladas": 1313,
+      "nuevas_con_observaciones": 48,
+      "acumuladas": 1357,
       "temas_del_curso": 13,
-      "temas_del_curso_con_100_acumuladas": 6,
+      "temas_del_curso_con_100_acumuladas": 8,
       "indice_local": "fuentes/ocr-local/cuzcano/lote-quimica-1000-cuzcano/fichas.json",
-      "sha256_indice_local": "6d7e1766654edb53e2bfef1576861c23a603044af71effacdfbdc467b973541d",
+      "sha256_indice_local": "9db379f38614d6e9acc9f6808d25478c0bf3f667265bbde98eeed82273e93492",
       "recursos_visuales": {
-        "tabla_propia": 60,
-        "grafica_cartesiana_propia": 19,
-        "tarjeta_relaciones_propias": 57
+        "tabla_propia": 61,
+        "grafica_cartesiana_propia": 22,
+        "tarjeta_relaciones_propias": 97
       },
       "temas": [
         {
@@ -55,11 +55,11 @@
         {
           "id": "quimica.electroquimica",
           "tema": "Electroquímica",
-          "nuevas": 4,
+          "nuevas": 29,
           "meta": 100,
-          "pendientes": 96,
-          "porcentaje_del_lote": 4,
-          "acumuladas": 87
+          "pendientes": 71,
+          "porcentaje_del_lote": 29,
+          "acumuladas": 112
         },
         {
           "id": "quimica.equilibrio-quimico",
@@ -82,11 +82,11 @@
         {
           "id": "quimica.soluciones",
           "tema": "Soluciones",
-          "nuevas": 4,
+          "nuevas": 23,
           "meta": 100,
-          "pendientes": 96,
-          "porcentaje_del_lote": 4,
-          "acumuladas": 87
+          "pendientes": 77,
+          "porcentaje_del_lote": 23,
+          "acumuladas": 106
         },
         {
           "id": "quimica.tabla-periodica",
@@ -249,8 +249,8 @@
     {
       "numero": 2,
       "meta": 400,
-      "nuevas": 2,
-      "pendientes": 398
+      "nuevas": 46,
+      "pendientes": 354
     },
     {
       "numero": 3,
