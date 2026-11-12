@@ -1,16 +1,16 @@
 {
   "schema_version": 1,
-  "fecha_utc": "2026-11-12T23:05:48.337905+00:00",
+  "fecha_utc": "2026-11-12T23:13:24.172422+00:00",
   "estado": "en_curso",
   "origen": "Escaneos de Cuzcano",
   "objetivo_nuevas": 2000,
   "objetivo_temas": 20,
-  "fichas_nuevas": 603,
-  "fichas_pendientes": 1397,
-  "porcentaje_del_lote": 30.15,
-  "fichas_acumuladas_banco": 9985,
+  "fichas_nuevas": 620,
+  "fichas_pendientes": 1380,
+  "porcentaje_del_lote": 31,
+  "fichas_acumuladas_banco": 10002,
   "temas_banco_con_100_acumuladas": 68,
-  "paginas_pdf_distintas_cotejadas": 122,
+  "paginas_pdf_distintas_cotejadas": 124,
   "ocr_repetido": false,
   "lectura_local": "fuentes/ocr-local/cuzcano/cobertura-temas/avance-detallado.html",
   "cursos": [
@@ -130,30 +130,31 @@
       "id": "trigonometria",
       "curso": "Trigonometría",
       "meta": 1000,
-      "nuevas": 423,
-      "pendientes": 577,
-      "porcentaje_del_lote": 42.3,
+      "nuevas": 440,
+      "pendientes": 560,
+      "porcentaje_del_lote": 44,
       "temas_con_fichas_nuevas": 10,
-      "nuevas_con_observaciones": 74,
-      "acumuladas": 1533,
+      "nuevas_con_observaciones": 79,
+      "acumuladas": 1550,
       "temas_del_curso": 13,
       "temas_del_curso_con_100_acumuladas": 11,
       "indice_local": "fuentes/ocr-local/cuzcano/lote-trigonometria-1000-cuzcano/fichas.json",
-      "sha256_indice_local": "1bc11aa0e22b2b9ac0642cdd36b03f3ccb51da532c5288f3017eb12e0281ad97",
+      "sha256_indice_local": "50ae0e0abe839dc33e75480fa4a35a422436aef1b0b22430201ff968478ce404",
       "recursos_visuales": {
         "tabla_propia": 309,
-        "grafica_cartesiana_propia": 113,
-        "recta_numerica_propia": 1
+        "grafica_cartesiana_propia": 118,
+        "recta_numerica_propia": 1,
+        "tarjeta_relaciones_propias": 12
       },
       "temas": [
         {
           "id": "trigonometria.numeros-complejos",
           "tema": "Números complejos",
-          "nuevas": 8,
+          "nuevas": 25,
           "meta": 100,
-          "pendientes": 92,
-          "porcentaje_del_lote": 8,
-          "acumuladas": 47
+          "pendientes": 75,
+          "porcentaje_del_lote": 25,
+          "acumuladas": 64
         },
         {
           "id": "trigonometria.funciones-trigonometricas-inversas",
@@ -249,8 +250,8 @@
     {
       "numero": 2,
       "meta": 400,
-      "nuevas": 46,
-      "pendientes": 354
+      "nuevas": 63,
+      "pendientes": 337
     },
     {
       "numero": 3,
