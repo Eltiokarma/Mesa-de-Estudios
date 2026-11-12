@@ -7,3 +7,4 @@
 /catalogo
 /*.md
 /*.png
+/plantillas/**/*.py
