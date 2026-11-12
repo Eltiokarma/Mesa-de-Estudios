@@ -392,11 +392,12 @@ function vistaEscalera(L, c, V){
   const esq = []; for (const x of [0, p*d]) for (const y of [0, p*a]) for (const z of [0, b]) esq.push(rot(x, y, z));
   const us = esq.map(q => q.u), vs = esq.map(q => q.v);
   const s = Math.min((W - 60)/(Math.max(...us) - Math.min(...us)), (H - 80)/(Math.max(...vs) - Math.min(...vs)));
+  if (!(s > 0)) return;
   const mx = (Math.max(...us) + Math.min(...us))/2, my = (Math.max(...vs) + Math.min(...vs))/2;
   const P = (x, y, z) => { const q = rot(x, y, z); return [W/2 + (q.u - mx)*s, H/2 + 6 - (q.v - my)*s]; };
   // pared del fondo y piso
   const pared = [[p*d, 0, 0], [p*d, 0, b], [p*d, p*a*1.08, b], [p*d, p*a*1.08, 0]];
-  if (ve([-1, 0, 0])){ ctx.save(); ctx.fillStyle = c.line; ctx.globalAlpha = .8; ctx.beginPath(); pared.forEach((q, i) => { const r = P(...q); i ? ctx.lineTo(r[0], r[1]) : ctx.moveTo(r[0], r[1]); }); ctx.closePath(); ctx.fill(); ctx.restore(); }
+  if (ve([-1, 0, 0])){ ctx.save(); ctx.fillStyle = c.muted; ctx.globalAlpha = .3; ctx.beginPath(); pared.forEach((q, i) => { const r = P(...q); i ? ctx.lineTo(r[0], r[1]) : ctx.moveTo(r[0], r[1]); }); ctx.closePath(); ctx.fill(); ctx.restore(); }
   // bloques d × a × b, ordenados de atrás hacia adelante
   const bloques = [];
   for (let i = 0; i < p; i++) for (let j = 0; j <= i; j++) bloques.push({ i, j, prof: rot((i + .5)*d, (j + .5)*a, b/2).prof });
@@ -434,6 +435,7 @@ function vistaEscalera(L, c, V){
 function vistaArcos(L, c, V){
   const { ctx, W, H } = L, AB = V.AB, AM = V.AM, MB = AB - AM;
   const s = V.forma === 's' ? Math.min((W - 60)/AB, (H - 70)/AB) : Math.min((W - 60)/AB, (H - 80)/(AB/2));
+  if (!(s > 0)) return;
   const xA = W/2 - AB*s/2, yAB = V.forma === 's' ? H/2 + 6 : H - 46, xM = xA + AM*s, xB = xA + AB*s;
   const R = AB*s/2, r1 = AM*s/2, r2 = MB*s/2, cx = xA + R, c1 = xA + r1, c2 = xM + r2;
   const col = V.colorear;
@@ -475,6 +477,7 @@ function vistaArcos(L, c, V){
 function vistaRect(L, c, V){
   const { ctx, W: AW, H: AH } = L, T = M.trianguloEn(V.W, V.H, ...V.tri);
   const s = Math.min((AW - 70)/12, (AH - 70)/10);
+  if (!(s > 0)) return;
   const ox = AW/2 - V.W*s/2, oy = AH/2 + V.H*s/2;
   const X = x => ox + x*s, Y = y => oy - y*s;
   // cuadrícula de unidades
@@ -515,6 +518,7 @@ function vistaPuntos(L, c, V){
   const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
   const padTop = V.cuenta ? 54 : 34;
   const s = Math.min((W - 70)/Math.max(x1 - x0, 1), (H - padTop - 34)/Math.max(y1 - y0, 1), 120);
+  if (!(s > 0)) return;
   const ox = W/2 - s*(x0 + x1)/2, oy = padTop + (H - padTop - 34)/2 - s*(y0 + y1)/2;
   const X = q => ox + q[0]*s, Y = q => oy + q[1]*s;
   for (const [i, j] of V.rectas || []){
@@ -545,7 +549,9 @@ function htmlReflector(id, que){
     <button type="button" data-r="play">Recorrer todos</button></div>`;
 }
 function crearReflector(){
-  const R = { lista:[], i:-1, tid:null, el:null, pintar:null, etiqueta:null };
+  // alReves: recorre de la última a la primera y termina en la 0 (las particiones van de mayor a menor perímetro)
+  const R = { lista:[], i:-1, tid:null, el:null, pintar:null, etiqueta:null, alReves:false };
+  R.final = () => (R.alReves ? 0 : R.lista.length - 1);
   R.parar = () => { clearTimeout(R.tid); R.tid = null; R.marcar(); };
   R.ir = i => { if (!R.lista.length) return; R.i = clamp(i, 0, R.lista.length - 1); R.pintar && R.pintar(); R.marcar(); };
   R.marcar = () => {
@@ -560,10 +566,10 @@ function crearReflector(){
   R.recorrer = (vigente, fin) => {
     clearTimeout(R.tid); R.tid = null;
     const n = R.lista.length; if (!n) return;
-    if (RM){ R.ir(n - 1); fin && fin(); return; }
+    if (RM){ R.ir(R.final()); fin && fin(); return; }
     const paso = clamp(6000/n, 160, 700);
-    let i = 0;
-    const tic = () => { if (vigente && !vigente()) { R.tid = null; return; } R.i = i; R.pintar && R.pintar(); i++; if (i < n) R.tid = setTimeout(tic, paso); else { R.tid = null; fin && fin(); } R.marcar(); };
+    let j = 0;
+    const tic = () => { if (vigente && !vigente()) { R.tid = null; return; } R.i = R.alReves ? n - 1 - j : j; R.pintar && R.pintar(); j++; if (j < n) R.tid = setTimeout(tic, paso); else { R.tid = null; fin && fin(); } R.marcar(); };
     R.tid = 1; tic();
   };
   R.montar = (el, vigente) => {
@@ -693,7 +699,7 @@ const P1 = { id:'cp-paso1-dos-piezas', ok:'c',
         ['c', `${n0(D1.maximo)} lados`], ['d', `${n0(D1.errores.mitadTablero)} lados`, 'RME165-reparte-el-borde', 'hipotesis']],
   fb:{ c:'¡Bien! Cada pieza se lleva la mitad del borde del tablero (8 lados) y todo el corte. El corte más largo que deja dos piezas iguales mide 10: 8 + 10 = 18.',
        a:'Elegiste la A. Ese es el corte recto por la mitad: 8 lados de borde más 4 de corte. Un corte en zigzag, simétrico respecto del centro, es más largo y también deja dos piezas iguales. La correcta está marcada.',
-       b:'Elegiste la B. Ese corte en escalera mide 8 y sí deja piezas iguales, pero hay cortes todavía más quebrados, de 10 lados. Para estar seguro hay que revisar todos los cortes posibles: son 22. La correcta está marcada.',
+       b:'Elegiste la B. Ese corte en escalera mide 8 y sí deja piezas iguales, pero hay cortes todavía más quebrados, de 10 lados. Para estar seguro hay que revisar todas las particiones posibles: son 22. La correcta está marcada.',
        d:'Elegiste la D. 8 es la mitad del borde del tablero, pero el corte también queda en el borde de cada pieza: hay que sumarlo. La correcta está marcada.' } };
 const P2 = { id:'cp-paso2-terreno', ok:'b',
   opts:[['a', `${n0(PER2/4*15)} m`, 'RME165-reparte-el-borde', 'hipotesis'], ['b', `${n0(D2.formas[0].metros)} m`],
@@ -739,7 +745,7 @@ const P7 = { id:'cp-paso7-fraccion', ok:'c',
        d:'Elegiste la D. 5/8 es lo que queda fuera del triángulo: los tres triángulos de las esquinas. El triángulo AMN es el resto. La correcta está marcada.' } };
 const P8 = { id:'cp-paso8-ubicaciones', ok:'d',
   opts:[['a', `${n0(D8.errores.comoDibujo)} ubicaciones`, 'RME45-solo-como-el-dibujo', 'hipotesis'], ['b', `${n0(D8.errores.soloGiros)} ubicaciones`, 'RME45-sin-reflejos', 'hipotesis'],
-        ['c', `${n0(D8.errores.marcos)} ubicaciones`, 'RME163-cuenta-marcos', 'hipotesis'], ['d', `${n0(D8.total)} ubicaciones`]],
+        ['c', `${n0(D8.errores.marcos)} ubicaciones`, 'RME190-cuenta-marcos', 'hipotesis'], ['d', `${n0(D8.total)} ubicaciones`]],
   fb:{ d:'¡Bien! La L tiene 8 posiciones distintas (4 giros, y otros 4 al voltearla), y cada una cabe de 2 maneras en el tablero: 8 · 2 = 16.',
        a:'Elegiste la A. Así, como en el dibujo, la L cabe en 2 lugares. Pero se puede girar y voltear. La correcta está marcada.',
        b:'Elegiste la B. Contaste los 4 giros, cada uno en 2 lugares. Al voltear la L salen otras 4 posiciones que no se logran girando. La correcta está marcada.',
@@ -771,7 +777,7 @@ function vista1(){
     if (lc.r.total >= 2) V.piezas = lc.r.piezas.map((p, i) => ({ celdas:p.celdas, k: i === 0 ? 'A' : i === 1 ? 'B' : null, sinContorno:true }));
     return V; }
   const p = R.lista[R.i]; if (!p) return V;
-  V.piezas = [{ celdas:p.A, k:'A', sinContorno:true }, { celdas:p.B, k:'B', sinContorno:true }]; V.cortes = M.cortesEntre(p.A, p.B); V.cuenta = cuentaDe('K');
+  V.piezas = [{ celdas:p.A, k:'A', sinContorno:true }, { celdas:p.B, k:'B', sinContorno:true }]; V.cortes = M.cortesEntre(p.A, p.B); V.cuenta = cuentaDe(null);
   return V;
 }
 function vista2(){
@@ -786,7 +792,7 @@ function vista2(){
 const CAJA3 = { f0:-3, f1:9, c0:0, c1:16 };
 function vista3(f){
   const V = { tipo:'tablero', m:9, n:16, caja:CAJA3, sinBorde:false, maxEscala:30 };
-  if (!S.pred[P3.id]) return V;
+  if (!S.pred[P3.id]){ V.caja = { f0:0, f1:9, c0:0, c1:16 }; return V; }
   V.marcos = [{ f:-3, c:0, l:12, k:'A' }];
   V.rotulos = [{ x:6, y:-1.5, t:'12 × 12 = 144', k:'A', tam:13 }];
   return V;
@@ -808,8 +814,10 @@ function vista4(f){
     return V;
   }
   V.sinBorde = t > 0;
-  V.piezas = [{ celdas:D3.A, k:'A' }, { celdas:D3.B, k:'B', df:D3.mover.df*t, dc:D3.mover.dc*t }];
-  if (t === 0) V.cortes = D3.corte;
+  const df = D3.mover.df*t, dc = D3.mover.dc*t;
+  V.piezas = [{ celdas:D3.A, k:'A' }, { celdas:D3.B, k:'B', df, dc }];
+  // el corte: el borde escalonado de B, que viaja con B y queda marcado al terminar
+  V.cortes = D3.corte.map(([x1, y1, x2, y2]) => [x1 + dc, y1 + df, x2 + dc, y2 + df]);
   return V;
 }
 function vista5(){ return { tipo:'escalera', p:4, d:0.3, a:0.2, b:1, yaw:S.extra.yaw, colorear:!!S.pred[P5.id] }; }
@@ -842,14 +850,15 @@ function vista10(){
 
 const steps = [
  { k:'Paso 1', t:'Predice: dos piezas iguales, el borde más largo', gate:P1, leg:['A','B','K'], legAntes:['L'], leyTextos:{ L:'el tablero', A:'pieza A', B:'pieza B, la A girada o volteada', K:'el corte' },
-   lista:() => { R.lista = D1.lista; R.etiqueta = p => `perímetro ${p.perimetro} · corte de ${p.corte}`; },
+   lista:() => { R.lista = D1.lista; R.alReves = true; R.etiqueta = p => `perímetro ${p.perimetro}; corte de ${p.corte}`; },
    vista:vista1,
    desc:() => 'Un tablero de 4 por 4 casillas.' + (S.pred[P1.id] ? (S.extra.editar ? ' ' + leerCortes(4, 4, E.lista()).t : (R.lista[R.i] ? ` Partición ${R.i + 1} de ${R.lista.length}: cada pieza tiene perímetro ${R.lista[R.i].perimetro}.` : '')) : ''),
-   body:() => `<p class="problem">Un tablero de ${V('A','4 × 4')} casillas se corta por las líneas de la cuadrícula en dos piezas congruentes: iguales en forma y tamaño, aunque haya que girar o voltear una. ¿Cuál es el mayor perímetro que puede tener cada pieza, en lados de casilla?</p>
+   body:() => `<p class="problem">Un tablero de 4 × 4 casillas se corta por las líneas de la cuadrícula en dos piezas congruentes: iguales en forma y tamaño, aunque haya que girar o voltear una. ¿Cuál es el mayor perímetro que puede tener cada pieza, en lados de casilla?</p>
      <p>Antes de que el motor pruebe todos los cortes, elige.</p>${opcionesHTML(P1.opts)}<p class="fb" id="fb"></p>`,
-   tras:() => `<div class="eqs"><div class="eq">perímetro de cada pieza = ${fr('16', '2')} + ${V('K','corte')}<span class="note">media vuelta de borde, más todo el corte</span></div>
-       <div class="eq">corte recto: 8 + ${V('K','4')} = 12 · corte más largo: 8 + ${V('K','10')} = <b>${n0(D1.maximo)}</b></div></div>
-     <p>El corte queda en el borde de las dos piezas. Por eso el mayor perímetro sale con el corte más largo, el más quebrado. El motor probó todas las maneras de partir el tablero en dos piezas iguales: hay ${n0(D1.total)}, y en las que tienen el corte quebrado la pieza ${V('B','B')} es la ${V('A','A')} girada media vuelta alrededor del centro. Truco: traza el corte simétrico respecto del centro del tablero.</p>
+   tras:() => `<div class="eqs"><div class="eq">perímetro de cada pieza = ${fr('16', '2')} + ${V('K','corte')}<span class="note">como las piezas son iguales, se reparten el borde por mitades; y cada una tiene todo el corte</span></div>
+       <div class="eq">corte recto: 8 + ${V('K','4')} = 12</div>
+       <div class="eq">corte más largo: 8 + ${V('K','10')} = <b>${n0(D1.maximo)}</b></div></div>
+     <p>El corte queda en el borde de las dos piezas. Por eso el mayor perímetro sale con el corte más largo, el más quebrado. El motor probó todas las maneras de partir el tablero en dos piezas iguales: hay ${n0(D1.total)}, y en las que tienen el corte quebrado la pieza ${V('B','B')} es la ${V('A','A')} girada media vuelta alrededor del centro. Truco: traza el corte simétrico respecto del centro del tablero. De las ${n0(D1.total)} particiones, ${n0(D1.maximo)} lados en ${D1.porPerimetro[18]} de ellas, 16 en ${D1.porPerimetro[16]}, 14 en ${D1.porPerimetro[14]} y 12 en ${D1.porPerimetro[12]}. Un corte más largo que 10 ya no deja dos piezas iguales: o una pieza queda partida o las dos dejan de ser congruentes.</p>
      ${htmlReflector('r1', 'una partición')}${htmlEditor('ed1')}${fuente(NOTA_AR18 + ' ' + NOTA_HIP)}`,
    montar:() => montarEditor(1),
    trasEditar: fin => { $('ed1-lec') && ($('ed1-lec').textContent = leerCortes(4, 4, E.lista()).t); S.vista = vista1(); draw(); if (fin) describir(); },
@@ -858,9 +867,10 @@ const steps = [
    lista:() => { R.lista = T2; R.etiqueta = () => `3 parcelas · perímetro 8 lados`; },
    vista:vista2,
    desc:() => 'Un terreno en forma de L hecho de 12 parcelas cuadradas.' + (S.pred[P2.id] && R.lista[R.i] ? ` Se ilumina la parte ${R.i + 1} de 4, una L de 3 parcelas.` : ''),
-   body:() => `<p class="problem">El terreno del dibujo tiene 12 parcelas cuadradas de ${V('A','15 m')} de lado. Se reparte en 4 partes congruentes, con cercas por los bordes de las parcelas. ¿Cuál es el perímetro de cada parte?</p>${opcionesHTML(P2.opts)}<p class="fb" id="fb"></p>`,
+   body:() => `<p class="problem">El terreno del dibujo tiene 12 parcelas cuadradas de 15 m de lado. Se reparte en 4 partes congruentes, con cercas por los bordes de las parcelas. ¿Cuál es el perímetro de cada parte?</p>${opcionesHTML(P2.opts)}<p class="fb" id="fb"></p>`,
    tras:() => `<div class="eqs"><div class="eq">${fr('12 parcelas', '4 partes')} = 3 parcelas por parte</div>
-       <div class="eq">3 · 4 − 2 · 2 = 8 lados · 8 · ${V('A','15')} = <b>${n0(D2.formas[0].metros)} m</b><span class="note">cada lado pegado se resta dos veces</span></div></div>
+       <div class="eq">3 · 4 − 2 · 2 = 8 lados<span class="note">cada lado pegado se resta dos veces</span></div>
+       <div class="eq">8 · 15 = <b>${n0(D2.formas[0].metros)} m</b></div></div>
      <p>La L se parte en 4 L de 3 parcelas, iguales a ella pero más chicas. El motor probó todas las formas posibles de 3 parcelas: solo la L reparte este terreno, y de una sola manera. Las ${V('K','cercas')} de adentro son borde de dos partes a la vez.</p>${htmlReflector('r1', 'una parte')}${fuente(NOTA_HIP)}`,
    animar:() => R.recorrer(() => S.step === 1) },
  { k:'Paso 3', t:'Predice: el lado del cuadrado', gate:P3, leg:['A'], legAntes:['L'], leyTextos:{ L:'el tablero', A:'el cuadrado' },
@@ -868,36 +878,39 @@ const steps = [
    desc:() => 'Un tablero de 16 columnas por 9 filas de casillas.' + (S.pred[P3.id] ? ' Encima, el contorno de un cuadrado de 12 por 12.' : ''),
    body:() => `<p class="problem">Un tablero de 16 × 9 casillas se corta por las líneas de la cuadrícula y, sin que sobre ni falte nada, se rearma como un cuadrado. ¿Cuánto mide el lado del ${V('A','cuadrado')}?</p>${opcionesHTML(P3.opts)}<p class="fb" id="fb"></p>`,
    tras:() => `<div class="eqs"><div class="eq">16 · 9 = 144 casillas = ${V('A','lado')} · ${V('A','lado')} → ${V('A','lado')} = √144 = <b>${n0(D3.lado)}</b></div>
-       <div class="eq">perímetros: 2(16 + 9) = 50 · 4 · 12 = 48<span class="note">el perímetro cambia; el área no</span></div></div>
+       <div class="eq">perímetros: 2(16 + 9) = 50; 4 · 12 = 48<span class="note">el perímetro cambia; el área no</span></div></div>
      <p>Cortar y rearmar conserva el área. El perímetro puede cambiar: aquí baja de 50 a 48.</p>${fuente(NOTA_HIP)}` },
- { k:'Paso 4', t:'Predice: cuántos trozos hacen falta', gate:P4, leg:['A','B','K'], legAntes:['L'], leyTextos:{ L:'el tablero', A:'el trozo que se queda', B:'el trozo que se mueve', K:'el corte' },
+ { k:'Paso 4', t:'Predice: cuántos trozos hacen falta', gate:P4, get leg(){ return S.extra.tiras ? ['A','B'] : ['A','B','K']; }, legAntes:['L'], leyTextos:{ L:'el tablero', A:'el trozo que se queda', B:'el trozo que se mueve', K:'el corte' },
    vista:() => vista4(S.pred[P4.id] ? 1 : 0),
    desc:() => 'El tablero de 16 por 9.' + (S.pred[P4.id] ? (S.extra.tiras ? ' Con cortes rectos: la franja de la derecha, partida en tres tiras de 4 por 3, sube encima.' : ' El corte en escalera parte el tablero en dos trozos; el de la derecha se corre 4 casillas a la izquierda y 3 hacia arriba y forma el cuadrado de 12 por 12.') : ''),
    body:() => `<p class="problem">Para rearmar el tablero de 16 × 9 como el cuadrado de 12 × 12, cortando solo por las líneas de la cuadrícula, ¿cuál es el menor número de trozos?</p>${opcionesHTML(P4.opts)}<p class="fb" id="fb"></p>`,
-   tras:() => `<div class="eqs"><div class="eq">ancho: 16 = 4 · 4 · alto: 9 = 3 · 3<span class="note">escalones de 4 de ancho y 3 de alto</span></div>
+   tras:() => `<div class="eqs"><div class="eq">ancho: 16 = 4 · 4; alto: 9 = 3 · 3<span class="note">escalones de 4 de ancho y 3 de alto</span></div>
        <div class="eq">el trozo ${V('B','B')} se corre 4 a la izquierda y 3 arriba → 12 × 12</div></div>
      <p>El ${V('K','corte')} en escalera tiene 3 escalones de 4 de ancho y 3 de alto. Al subir un escalón, el trozo ${V('B','B')} pierde 4 de ancho y gana 3 de alto: de 16 × 9 a 12 × 12. Con un solo trozo no se puede (no es cuadrado), así que 2 es el mínimo. Esta escalera funciona cuando los lados son como 16 = 4² y 9 = 3² (o 9 × 4, 25 × 16…).</p>
      <div class="ctl"><button type="button" class="mini" id="b4-esc" aria-pressed="true">Corte en escalera (2 trozos)</button><button type="button" class="mini" id="b4-tiras" aria-pressed="false">Cortes rectos (4 trozos)</button><button type="button" class="mini" id="b4-otra">Ver otra vez</button></div>${fuente(NOTA_HIP)}`,
    montar:() => {
-     const ver = tiras => { S.extra.tiras = tiras; $('b4-esc').setAttribute('aria-pressed', !tiras); $('b4-tiras').setAttribute('aria-pressed', tiras); steps[3].animar(); describir(); verLienzo(); };
+     const ver = tiras => { S.extra.tiras = tiras; ponerLeyenda(); $('b4-esc').setAttribute('aria-pressed', !tiras); $('b4-tiras').setAttribute('aria-pressed', tiras); steps[3].animar(); describir(); verLienzo(); };
      $('b4-esc').onclick = () => ver(false); $('b4-tiras').onclick = () => ver(true); $('b4-otra').onclick = () => { steps[3].animar(); verLienzo(); };
    },
-   animar:() => { const paso = S.step; S.vista = vista4(0); draw(); setTimeout(() => { if (S.step === paso) animar(1400, f => { S.vista = vista4(suave(f)); if (!S.extra.tiras && f < .02) S.vista.cortes = D3.corte; }); }, RM ? 0 : 500); } },
+   animar:() => { const paso = S.step; S.vista = vista4(0); draw(); setTimeout(() => { if (S.step === paso) animar(1400, f => { S.vista = vista4(suave(f)); }); }, RM ? 0 : 500); } },
  { k:'Paso 5', t:'Predice: enchapar la escalera', gate:P5, leg:['H','C','S'], legAntes:['L'], leyTextos:{ L:'la escalera (gírala con la manija)' },
    vista:vista5,
    desc:() => `Una escalera maciza de 4 peldaños apoyada en la pared, vista desde ${S.extra.yaw > 0 ? 'la izquierda' : S.extra.yaw < 0 ? 'la derecha' : 'el frente'}.` + (S.pred[P5.id] ? ' Las huellas, las contrahuellas y los costados están coloreados.' : ''),
-   body:() => `<p class="problem">Una escalera maciza de 4 peldaños está pegada a la pared. Cada peldaño tiene ${V('H','0,3 m')} de huella (fondo), ${V('C','0,2 m')} de contrahuella (alto) y 1 m de ancho. Se enchapan las huellas, las contrahuellas y los costados a S/ 50 el m². ¿Cuánto cuesta?</p>
+   body:() => `<p class="problem">Una escalera maciza de 4 peldaños está pegada a la pared. Cada peldaño tiene ${V('H','0,3 m')} de huella (fondo), ${V('C','0,2 m')} de contrahuella (alto) y 1 m de ancho. Se enchapan las huellas, las contrahuellas y los dos costados (la parte de atrás va contra la pared y la base, en el piso) a S/ 50 el m². ¿Cuánto cuesta?</p>
      <div class="ctl"><button type="button" class="mini" id="g-izq" aria-label="Girar la escalera a la izquierda">◀ Girar</button><button type="button" class="mini" id="g-der" aria-label="Girar la escalera a la derecha">Girar ▶</button></div>
      ${opcionesHTML(P5.opts)}<p class="fb" id="fb"></p>`,
-   tras:() => `<div class="eqs"><div class="eq">${V('H','huellas')}: 4 · 0,3 · 1 = 1,2 · ${V('C','contrahuellas')}: 4 · 0,2 · 1 = 0,8</div>
-       <div class="eq">${V('S','un costado')}: 0,3 · 0,2 · (1 + 2 + 3 + 4) = 0,6 · dos: 1,2</div>
-       <div class="eq">1,2 + 0,8 + 1,2 = 3,2 m² · 3,2 · 50 = <b>${pago(D5.costo)}</b></div></div>
+   tras:() => `<div class="eqs"><div class="eq">${V('H','huellas')}: 4 · 0,3 · 1 = 1,2</div>
+       <div class="eq">${V('C','contrahuellas')}: 4 · 0,2 · 1 = 0,8</div>
+       <div class="eq">${V('S','un costado')}: 0,3 · 0,2 · (1 + 2 + 3 + 4) = 0,6; dos: 1,2</div>
+       <div class="eq">1,2 + 0,8 + 1,2 = 3,2 m²</div>
+       <div class="eq">3,2 · 50 = <b>${pago(D5.costo)}</b></div></div>
      <p>El ${V('S','costado')} es escalonado: se parte en columnas de 0,3 de ancho y de 0,2, 0,4, 0,6 y 0,8 de alto (rectángulos). La espalda va contra la pared y la base en el piso: esas no se enchapan.</p>${fuente(NOTA_HIP)}` },
  { k:'Paso 6', t:'Predice: dos zonas con arcos', gate:P6, leg:['A','B','K','R'], legAntes:['L'], leyTextos:{ L:'las dos semicircunferencias', A:'zona 1', B:'zona 2', K:'el arco que comparten', R:'tramos rectos' },
    vista:vista6,
    desc:() => `Una semicircunferencia de diámetro AB = 8 y, adentro, otra de diámetro AM = ${fmt(S.pred[P6.id] ? S.extra.am : 4)}.` + (S.pred[P6.id] ? ` Suma de perímetros: ${pi(M.arcosZonas(8, S.extra.am).suma)}.` : ''),
    body:() => `<p class="problem">Sobre AB = 8 se dibuja una semicircunferencia, y sobre AM = 4, otra del mismo lado. Quedan dos zonas. ¿Cuánto suman sus perímetros?</p>${opcionesHTML(P6.opts)}<p class="fb" id="fb"></p>`,
-   tras:() => `<div class="eqs"><div class="eq">${V('A','zona 1')}: ${V('K','2π')} + ${V('R','4')} · ${V('B','zona 2')}: 4π + ${V('K','2π')} + ${V('R','4')}</div>
+   tras:() => `<div class="eqs"><div class="eq">${V('A','zona 1')}: ${V('K','2π')} + ${V('R','4')}</div>
+       <div class="eq">${V('B','zona 2')}: 4π + ${V('K','2π')} + ${V('R','4')}</div>
        <div class="eq">suma = ${V('R','8')} + 8π<span class="note">el arco compartido, dos veces</span></div></div>
      <p>Una semicircunferencia de diámetro d mide πd/2. El ${V('K','arco chico')} es borde de las dos zonas, y los ${V('R','tramos rectos')} AM y MB también son borde. Mueve M:</p>
      <div class="ctl"><label for="am6">AM</label><input id="am6" type="range" min="1" max="7" step="1" value="${S.extra.am}"><output id="am6o"></output></div>
@@ -910,7 +923,8 @@ const steps = [
    body:() => `<p class="problem">En el rectángulo ABCD, M es el punto medio de BC y N el de CD. ¿Qué fracción del rectángulo es el triángulo ${V('A','AMN')}?</p>${opcionesHTML(P7.opts)}<p class="fb" id="fb"></p>`,
    tras:() => `<div class="eqs"><div class="eq">1 − ${V('B','1/4')} − ${V('B','1/4')} − ${V('B','1/8')} = <b>${fq(D7)}</b><span class="note">ABM, ADN y MCN</span></div></div>
      <p>Para un triángulo con vértices en el borde, lo más seguro es restar las piezas que sobran, cada una con su medida. Arrastra la esquina C (o usa las barras): la fracción no cambia.</p>
-     <div class="ctl"><label for="w7">ancho</label><input id="w7" type="range" min="2" max="12" step="2" value="${S.extra.W}"><label for="h7">alto</label><input id="h7" type="range" min="2" max="10" step="2" value="${S.extra.H}"></div>
+     <div class="ctl"><label for="w7">ancho</label><input id="w7" type="range" min="2" max="12" step="2" value="${S.extra.W}"></div>
+     <div class="ctl"><label for="h7">alto</label><input id="h7" type="range" min="2" max="10" step="2" value="${S.extra.H}"></div>
      <p class="lectura" id="lec7" aria-live="polite"></p>${fuente(NOTA_HIP)}`,
    montar:() => { const w = $('w7'), h = $('h7'); w.oninput = () => { S.extra.W = +w.value; pon7(); }; h.oninput = () => { S.extra.H = +h.value; pon7(); }; pon7(); } },
  { k:'Paso 8', t:'Predice: ¿cuántas veces cabe la pieza?', gate:P8, leg:['A','B'], legAntes:['L'], leyTextos:{ L:'el tablero y la pieza', A:'ubicación como en el dibujo', B:'ubicación girada o volteada' },
@@ -918,7 +932,8 @@ const steps = [
    vista:vista8,
    desc:() => 'Un tablero de 3 por 3 casillas y, al lado, una pieza en forma de L de 4 casillas.' + (S.pred[P8.id] && R.lista[R.i] ? ` Ubicación ${R.i + 1} de ${R.lista.length}: ${NOMBRE_ISO[OR8.nombres[R.lista[R.i].orientacion]]}.` : ''),
    body:() => `<p class="problem">La pieza del dibujo se coloca sobre el tablero de 3 × 3 cubriendo casillas enteras, sin salirse. Se puede girar y voltear. ¿En cuántas ubicaciones distintas puede quedar?</p>${opcionesHTML(P8.opts)}<p class="fb" id="fb"></p>`,
-   tras:() => `<div class="eqs"><div class="eq">4 giros × 2 (volteada o no) = 8 posiciones · 8 · 2 lugares = <b>${n0(D8.total)}</b></div></div>
+   tras:() => `<div class="eqs"><div class="eq">4 giros × 2 (volteada o no) = 8 posiciones</div>
+       <div class="eq">8 · 2 lugares = <b>${n0(D8.total)}</b></div></div>
      <p>Cada posición de la L ocupa un rectángulo de 3 × 2 o de 2 × 3, y en el tablero cada uno entra en 2 lugares. Las ${V('A','azules')} van como en el dibujo; las ${V('B','naranjas')}, giradas o volteadas.</p>${htmlReflector('r1', 'una ubicación')}${fuente(NOTA_HIP)}`,
    animar:() => R.recorrer(() => S.step === 7) },
  { k:'Paso 9', t:'Predice: triángulos con siete puntos', gate:P9, leg:['A','N'], legAntes:['L'], leyTextos:{ L:'los puntos', A:'un triángulo', N:'ternas alineadas: no son triángulo' },
@@ -935,7 +950,10 @@ const steps = [
    vista:vista10,
    desc:() => { const t = S.pred[P10.id] ? S.extra.t : 5; return `Figura ${t}: un tablero de ${t} por ${t} con la diagonal sombreada.` + (S.pred[P10.id] && R.lista[R.i] ? ` Se ilumina un cuadrado de ${R.lista[R.i].k} por ${R.lista[R.i].k}.` : ''); },
    body:() => `<p class="problem">La figura t es un tablero de t × t casillas con la diagonal sombreada. Las figuras 1, 2, 3 y 4 tienen ${D10.terminos.slice(0, 4).join(', ')} cuadrados (de cualquier tamaño) sin ninguna casilla sombreada. ¿Cuántos tiene la figura 5, la del dibujo?</p>${opcionesHTML(P10.opts)}<p class="fb" id="fb"></p>`,
-   tras:() => `<div class="eqs"><div class="eq">1 × 1: 25 − 5 = 20 · 2 × 2: 3 + 3 = 6 · 3 × 3 o más: 0 → <b>${n0(D10.total)}</b></div></div>
+   tras:() => `<div class="eqs"><div class="eq">1 × 1: 25 − 5 = 20</div>
+       <div class="eq">2 × 2: 3 + 3 = 6</div>
+       <div class="eq">3 × 3 o más: 0</div>
+       <div class="eq">20 + 6 = <b>${n0(D10.total)}</b></div></div>
      <p>Un cuadrado no toca la diagonal si sus filas y sus columnas no se cruzan: tiene que estar entero arriba a la derecha o entero abajo a la izquierda. La sucesión sigue 0, 2, 6, 14, 26, 44…: las diferencias no se duplican. Mira otras figuras:</p>
      <div class="seg" id="t10" role="group" aria-label="Figura de la sucesión">${[1,2,3,4,5,6].map(t => `<button type="button" data-t="${t}" aria-pressed="${t === S.extra.t}">Figura ${t}</button>`).join('')}</div>
      <p class="lectura" id="lec10" aria-live="polite"></p>${htmlReflector('r1', 'un cuadrado')}${fuente(NOTA_AR18 + ' ' + NOTA_HIP)}`,
@@ -1002,14 +1020,14 @@ function go(k){
   if (k < 0 || k >= steps.length || k > S.max) return;
   parar();
   const s = steps[k]; S.step = k; S.hl = null;
-  R.lista = []; R.i = -1; R.el = null; R.etiqueta = null; R.alTocar = verLienzo;
+  R.lista = []; R.i = -1; R.el = null; R.etiqueta = null; R.alReves = false; R.alTocar = verLienzo;
   S.extra.editar = false; E.activo = false;
   $('stepK').textContent = `${s.k} de ${steps.length}`;
   $('stepT').textContent = s.t;
   $('stepBody').innerHTML = s.body() + '<div id="tras" class="body"></div>';
   ponerLeyenda();
   pintarDots();
-  if (s.lista && S.pred[s.gate.id]){ s.lista(); R.i = R.lista.length - 1; }
+  if (s.lista && S.pred[s.gate.id]){ s.lista(); R.i = R.final(); }
   S.vista = s.vista();
   prediccion(s.gate);
   const gi = $('g-izq'), gd = $('g-der'); if (gi){ gi.onclick = () => { girar(-10); verLienzo(); }; gd.onclick = () => { girar(10); verLienzo(); }; }
@@ -1117,7 +1135,7 @@ const EXPS = [
   { id:'te', corto:'La T en el tablero', leg:['A','B'], legAntes:['L'], leyTextos:{ L:'el tablero y la pieza', A:'como en el dibujo', B:'girada' },
     q:'La pieza en forma de T del dibujo se coloca sobre un tablero de 3 × 4 cubriendo casillas enteras. Se puede girar y voltear. ¿En cuántas ubicaciones distintas puede quedar?',
     opts:[['a', `${n0(E2.errores.ochoVeces)} ubicaciones`, 'RME164-ocho-posiciones', 'hipotesis'], ['b', `${n0(E2.errores.comoDibujo)} ubicaciones`, 'RME45-solo-como-el-dibujo', 'hipotesis'],
-          ['c', `${n0(E2.total)} ubicaciones`], ['d', `${n0(E2.errores.marcos)} ubicaciones`, 'RME163-cuenta-marcos', 'hipotesis']],
+          ['c', `${n0(E2.total)} ubicaciones`], ['d', `${n0(E2.errores.marcos)} ubicaciones`, 'RME190-cuenta-marcos', 'hipotesis']],
     ok:'c',
     fb:{ a:'Elegiste la A. Contaste 8 posiciones, como en la L. Pero la T es simétrica: volteada queda igual que girada. Solo tiene 4 posiciones distintas, y cada ubicación quedó contada dos veces. La correcta está marcada.',
          b:'Elegiste la B. Así, como en el dibujo, la T cabe en 4 lugares. Girada cabe en otros. La correcta está marcada.',
@@ -1126,12 +1144,12 @@ const EXPS = [
     antes:() => ({ tipo:'tablero', m:3, n:4, aparte:{ celdas:PT }, maxEscala:64 }),
     despues:() => { const u = R.lista[R.i], V = { tipo:'tablero', m:3, n:4, aparte:{ celdas:PT }, maxEscala:64 }; if (u){ V.piezas = [{ celdas:u.celdas, k: u.comoDibujo ? 'A' : 'B', a:.4 }]; V.cuenta = { t:`${R.i + 1} de ${R.lista.length}`, k: u.comoDibujo ? 'A' : 'B' }; } return V; },
     desc:() => 'Un tablero de 3 por 4 y una pieza en forma de T de 4 casillas.' + (S.pred.te && R.lista[R.i] ? ` Ubicación ${R.i + 1} de ${R.lista.length}.` : ''),
-    exp:`<div class="eqs"><div class="eq">4 posiciones distintas · 4 + 3 + 4 + 3 = <b>${n0(E2.total)}</b><span class="note">acostada: 2 · 2 lugares; parada: 3 · 1</span></div></div>
+    exp:`<div class="eqs"><div class="eq">4 posiciones distintas: 4 + 3 + 4 + 3 = <b>${n0(E2.total)}</b><span class="note">cada posición acostada cabe en 4 lugares; cada parada, en 3</span></div></div>
       <p>Antes de multiplicar por 8, mira si la pieza es simétrica: si al voltearla queda igual que una girada, esas ubicaciones ya están contadas.</p>${fuente(NOTA_HIP)}` },
   { id:'ese', corto:'La S en el círculo', leg:['A','B','K'], legAntes:['L'], leyTextos:{ L:'el círculo y la S', A:'gota de arriba', B:'gota de abajo', K:'la S, que comparten' },
     q:'Un círculo de diámetro AB = 10 se parte con una S: una semicircunferencia de diámetro AM = 6 hacia arriba y otra de diámetro MB = 4 hacia abajo. Quedan dos gotas. ¿Cuánto suman sus perímetros?',
     opts:[['a', `${n0(E3.errores.compartidoUnaVez.b)}π`, 'RME43-arco-compartido-una-vez', 'hipotesis'], ['b', '10π', 'RME43-sin-la-s', 'hipotesis'],
-          ['c', '40π', 'semicircunferencia-como-circunferencia', 'hipotesis'], ['d', `${n0(E3.suma.b)}π`]],
+          ['c', '40π', 'RME191-semicircunferencia-como-circunferencia', 'hipotesis'], ['d', `${n0(E3.suma.b)}π`]],
     ok:'d',
     fb:{ a:'Elegiste la A. Sumaste la circunferencia (10π) y la S una sola vez (5π). La S es borde de las dos gotas: entra en los dos perímetros. La correcta está marcada.',
          b:'Elegiste la B. 10π es la circunferencia grande. Falta la S, que es borde de las dos gotas. La correcta está marcada.',
@@ -1139,7 +1157,8 @@ const EXPS = [
     antes:() => ({ tipo:'arcos', forma:'s', AB:10, AM:6 }),
     despues:() => ({ tipo:'arcos', forma:'s', AB:10, AM:S.am, colorear:true }),
     desc:() => `Un círculo de diámetro AB = 10 partido por una S que pasa por M, con AM = ${S.pred.ese ? S.am : 6}.` + (S.pred.ese ? ` Cada gota mide ${pi(M.curvaS(10, S.am).zonas[0])}.` : ''),
-    exp:`<div class="eqs"><div class="eq">cada gota: 5π + ${V('K','3π + 2π')} = 10π · suma = <b>20π</b></div></div>
+    exp:`<div class="eqs"><div class="eq">cada gota: 5π + ${V('K','3π + 2π')} = 10π</div>
+       <div class="eq">suma: 10π + 10π = <b>20π</b></div></div>
       <p>Cada gota tiene media circunferencia grande y la ${V('K','S entera')}. Y la S mide lo mismo que media circunferencia grande, esté donde esté M: π · AM/2 + π · MB/2 = π · AB/2. Mueve M:</p>
       <div class="ctl"><label for="am2">AM</label><input id="am2" type="range" min="1" max="9" step="1" value="6"><output id="am2o">6</output></div>
       <p class="lectura" id="lec2" aria-live="polite"></p>${fuente(NOTA_HIP)}`,
@@ -1166,12 +1185,12 @@ const EXPS = [
     fb:{ a:'Elegiste la A. Ese es el corte recto que parte el 6 por la mitad: 9 lados de borde más 3 de corte. Un corte quebrado, simétrico respecto del centro, es más largo. La correcta está marcada.',
          b:'Elegiste la B. 9 es la mitad del borde del tablero; falta sumar el corte, que también es borde de cada pieza. La correcta está marcada.',
          c:'Elegiste la C. Hay cortes de 9 lados que dejan piezas iguales; el más largo mide 11. La correcta está marcada.' },
-    lista:() => { R.lista = E5.lista; R.etiqueta = p => `perímetro ${p.perimetro} · corte de ${p.corte}`; },
+    lista:() => { R.lista = E5.lista; R.alReves = true; R.etiqueta = p => `perímetro ${p.perimetro}; corte de ${p.corte}`; },
     antes:() => ({ tipo:'tablero', m:3, n:6, maxEscala:60 }),
     despues:() => {
       const V = { tipo:'tablero', m:3, n:6, maxEscala:60 };
       if (S.editar){ const lc = leerCortes(3, 6, editor.lista()); V.cortes = editor.lista(); V.puntos = true; V.cursor = editor.cursor ? Object.assign({ lapiz:editor.lapiz }, editor.cursor) : null; if (lc.r.total >= 2) V.piezas = lc.r.piezas.map((p, i) => ({ celdas:p.celdas, k: i === 0 ? 'A' : i === 1 ? 'B' : null, sinContorno:true })); return V; }
-      const p = R.lista[R.i]; if (p){ V.piezas = [{ celdas:p.A, k:'A', sinContorno:true }, { celdas:p.B, k:'B', sinContorno:true }]; V.cortes = M.cortesEntre(p.A, p.B); V.cuenta = { t:`${R.i + 1} de ${R.lista.length}`, k:'K' }; }
+      const p = R.lista[R.i]; if (p){ V.piezas = [{ celdas:p.A, k:'A', sinContorno:true }, { celdas:p.B, k:'B', sinContorno:true }]; V.cortes = M.cortesEntre(p.A, p.B); V.cuenta = { t:`${R.i + 1} de ${R.lista.length}` }; }
       return V;
     },
     desc:() => 'Un tablero de 3 por 6 casillas.' + (S.pred.largo ? (S.editar ? ' ' + leerCortes(3, 6, editor.lista()).t : (R.lista[R.i] ? ` Partición ${R.i + 1} de ${R.lista.length}: perímetro ${R.lista[R.i].perimetro}.` : '')) : ''),
@@ -1208,8 +1227,8 @@ function ir(k){
   R.parar();
   S.k = k; S.t0 = Date.now(); S.editar = false; editor.activo = false;
   const x = EXPS[k], hecho = !!S.pred[x.id];
-  R.lista = []; R.i = -1; R.el = null; R.etiqueta = null; R.alTocar = verLienzo;
-  if (hecho && x.lista){ x.lista(); R.i = R.lista.length - 1; }
+  R.lista = []; R.i = -1; R.el = null; R.etiqueta = null; R.alReves = false; R.alTocar = verLienzo;
+  if (hecho && x.lista){ x.lista(); R.i = R.final(); }
   S.vista = hecho ? x.despues() : x.antes(); draw();
   L.compactar(!hecho);
   botones();

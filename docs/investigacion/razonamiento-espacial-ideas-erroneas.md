@@ -89,3 +89,24 @@ Los abrieron los generadores de formato «predicciones». Todos son hipótesis.
 | RME187 | No aplicar la condición de paso obligado o prohibido, o contar justo las que excluye. | rutas-tramos |
 | RME188 | Con un cruce cerrado, restar una sola ruta en vez de todas las que pasan por él. | rutas-tramos |
 | RME189 | En una cuadrícula, contar 2 opciones por cuadra (2^(m+n)) sin ver que las cuadras al este y al norte están fijas. | rutas-tramos |
+
+## Errores de las escenas (12 nov 2026)
+
+Los abrieron las escenas al construirse. Todos son hipótesis.
+
+### cuadricula-piezas
+
+| Código | Error |
+| --- | --- |
+| RME160 | Confundir área y perímetro: al rearmar un rectángulo como cuadrado, conservar el perímetro o tomar el área como perímetro o como lado; medir una pieza por su número de casillas. |
+| RME161 | Rearmar solo con cortes rectos (tiras), con más trozos de los necesarios, o creer que no se puede. |
+| RME162 | Olvidar caras al enchapar o pintar: los costados, o la que no se ve en el dibujo. |
+| RME163 | Tomar un costado escalonado como si fuera el rectángulo lleno que lo encierra. |
+| RME164 | Contar las 8 posiciones de una pieza simétrica aunque algunas coincidan. |
+| RME165 | En el perímetro de las piezas, repartir el del total sin sumar los cortes, o sumar también los lados pegados. |
+| RME166 | Contar también las figuras que no cumplen la condición (los cuadrados con casillas sombreadas). |
+| RME167 | Extender el patrón de los primeros términos sin comprobarlo en la figura pedida. |
+| RME168 | En una fracción de área por resta, equivocar las piezas que sobran (tomarlas iguales, olvidar la chica, quedarse con lo que sobra). |
+| RME169 | Triángulos con puntos: no restar las ternas alineadas, o restar una por recta en vez de C(k, 3). |
+| RME190 | Contar los marcos (rectángulos) donde cabe una pieza en vez de sus ubicaciones. |
+| RME191 | Tomar la semicircunferencia como si fuera la circunferencia entera (πd). |

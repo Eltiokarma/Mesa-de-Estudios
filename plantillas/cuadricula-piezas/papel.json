@@ -68,8 +68,8 @@
       "enunciado": "En el rectángulo ABCD, M, N y P son los puntos medios de AB, BC y CD. ¿Qué fracción del rectángulo es el triángulo MNP?",
       "respuesta": "1/4.",
       "pasos": [
-        "Fuera del triángulo quedan tres piezas: el triángulo MBN, el triángulo NCP y el trapecio AMPD.",
-        "MBN y NCP miden cada uno 1/8 del rectángulo (medio ancho por medio alto, entre 2). El trapecio AMPD es la mitad izquierda: 1/2.",
+        "Fuera del triángulo quedan tres piezas: el triángulo MBN, el triángulo NCP y el rectángulo AMPD.",
+        "MBN y NCP miden cada uno 1/8 del rectángulo (medio ancho por medio alto, entre 2). El rectángulo AMPD es la mitad izquierda: 1/2.",
         "1 − 1/8 − 1/8 − 1/2 = 1/4. No depende de los lados del rectángulo."
       ],
       "verificar": [ { "fn": "fraccionTriangulo", "args": ["AB", "BC", "CD"], "espera": { "num": 1, "den": 4 } } ]

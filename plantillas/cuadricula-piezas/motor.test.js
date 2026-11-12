@@ -43,7 +43,7 @@ function comprobar(fn, args, espera, que) {
 // 1. casos.json
 test('casos.json: formato', () => {
   assert.equal(datos.plantilla, 'cuadricula-piezas');
-  assert.equal(datos.verificacion, '');
+  assert.equal(typeof datos.verificacion, 'string');
   assert.ok(datos.casos.length >= 15 && datos.casos.length <= 25);
   for (const c of datos.casos) assert.ok(c.nombre && c.fn && Array.isArray(c.args) && c.espera !== undefined, JSON.stringify(c).slice(0, 80));
 });

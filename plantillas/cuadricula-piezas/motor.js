@@ -30,7 +30,8 @@
  * CORTES EN UN TABLERO
  *   piezas(m, n, cortes)      parte el tablero m × n por los cortes. → { total, piezas:[{ celdas, area, perimetro }],
  *                             areas, perimetros (en el orden de las piezas: la que tiene la casilla [0, 0] primero),
- *                             congruentes (true si todas son congruentes entre sí), como (con 2 piezas: congruentes(A, B).como),
+ *                             congruentes (true si hay 2 piezas o más y todas son congruentes entre sí; con una sola pieza, false),
+ *                             como (con 2 piezas: congruentes(A, B).como),
  *                             cortesUsados (cortes que separan dos piezas distintas), sueltos (cortes dentro de una pieza o en
  *                             el borde, que no separan nada) }.
  *   cortesEntre(A, B)         los tramos de la cuadrícula que separan una casilla de A de una de B (el corte entre las dos).
@@ -55,8 +56,9 @@
  *   escalera(W, H)            rectángulo de W columnas por H filas (W > H) partido por UN corte en escalera para rearmar un
  *                             cuadrado. Existe si W = (k + 1)²·t y H = k²·t (escalones de w = (k + 1)·t de ancho y h = k·t de
  *                             alto). → { posible, k, w, h, lado = k·w = √(W·H), A, B (las dos piezas), mover:{ df:−h, dc:−w }
- *                             (lo que se corre B; después se sube todo h filas), cuadrado (piezas ya rearmadas), corte (los
- *                             tramos del corte), escalones = k, trozos = 2, cortes = 1, encaja, errores:{ mismoPerimetro =
+ *                             (lo que se corre B; en cuadrado, después todo baja h filas para empezar en la fila 0), cuadrado (piezas ya rearmadas), corte (los
+ *                             tramos del corte), largoCorte (cuántos tramos tiene: H + (k − 1)·w, las k bajadas de h y los k − 1
+ *                             pasos de w), escalones = k, trozos = 2, cortes = 1, encaja, errores:{ mismoPerimetro =
  *                             (W + H)/2 (lado si se conservara el perímetro), cuartoDelArea = W·H/4, tiras } }.
  *                             Con k = 1 el corte es recto. 'tiras' = trozos con el método de tiras rectas (ver tiras(W, H)).
  *   tiras(W, H)               método de tiras: se corta la franja de W − L columnas (L = lado) y se parte en tiras de
@@ -87,7 +89,7 @@
  * FRACCIÓN DE ÁREA EN UN RECTÁNGULO
  *   fraccionTriangulo(P, Q, R)  rectángulo ABCD (A abajo a la izquierda, B abajo a la derecha, C arriba a la derecha, D arriba
  *                             a la izquierda). Vértices: 'A', 'B', 'C', 'D', puntos medios 'AB', 'BC', 'CD', 'DA' o el centro 'O'.
- *                             → { num, den, valor, sobrantes:[{ num, den }] (las piezas del rectángulo fuera del triángulo, si los
+ *                             → { num, den, valor, sobrantes:[{ num, den }] (las piezas del rectángulo fuera del triángulo, de menor a mayor, si los
  *                             tres vértices están en el borde), errores:{ olvidaUna (no restar la pieza sobrante más chica),
  *                             todasIguales (restar todas las sobrantes como la más grande), mitad = 1/2 } (fracciones) }.
  *                             errores.loQueSobra = 1 − fracción (la parte que queda fuera). Vale para cualquier rectángulo.
