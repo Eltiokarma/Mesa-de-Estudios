@@ -36,6 +36,8 @@
  *     alcohol, fenol, enol, hemiacetal, acetal, tiol, amina, amonio, imina, eter, sulfuro, disulfuro, sulfoxido,
  *     tiosulfinato, halogenuro, alquino, alqueno, aromatico, heterociclo.
  *   quirales(x): { valor, atomos, errores }.
+ *   metilos(x): { valor, atomos, enAnillo, enCadena, errores } los CH₃ unidos a un carbono (sustituyentes metilo; el CH₃ de un
+ *     éter, éster o amina no cuenta; un etilo, CH₃–CH₂–, no es un metilo). Se agregó con conteo(x, 'metilos').
  *   numeroOxidacion(x, i): número de oxidación del átomo i, y errores.
  *   hidrogenar(x, k): la molécula con el enlace k (C=C, C≡C, C=O o C=N) un orden más abajo (entra H₂); mismos átomos.
  *   ionizar(id, pH): forma que predomina a ese pH según los pKa de la ficha → { smiles, molecula, carga, forma,
@@ -609,6 +611,22 @@
       unoPorCH: A.filter((a, i) => a.el === 'C' && H.porAtomo[i] === 'sp3' && a.h === 1).length, todosLosC: A.filter(a => a.el === 'C').length } };
   }
 
+  // ---------------- Metilos (sustituyentes CH₃) ----------------
+  // Un metilo es un CH₃ unido por un solo enlace a un carbono (queda fuera el CH₃ de un éter, un éster o una amina).
+  // Se cuenta cada CH₃ como un grupo; no es un «etilo» (CH₃–CH₂–), que tiene dos carbonos.
+  function metilos(x) {
+    const I = info(x), H = hibridacion(x);
+    const enAnillo = i => I.anillos.some(r => r.atomos.includes(i));
+    const at = I.atom.filter(a => a.el === 'C' && a.h === 3 && I.v[a.i].length === 1 && I.atom[I.v[a.i][0].j].el === 'C').map(a => a.i);
+    return { valor: at.length, atomos: at,
+      enAnillo: at.filter(i => enAnillo(I.v[i][0].j)).length, enCadena: at.filter(i => !enAnillo(I.v[i][0].j)).length,
+      errores: {
+        soloCadena: at.filter(i => !enAnillo(I.v[i][0].j)).length,    // solo los de la cadena larga
+        soloAnillos: at.filter(i => enAnillo(I.v[i][0].j)).length,    // solo los de los anillos
+        todosLosSp3: H.carbonos.sp3.length,                           // todos los carbonos sp³ (con los CH₂ y los cuaternarios)
+        puntasConDoble: at.filter(i => I.atom[I.v[i][0].j].dobles > 0).length } };   // solo los CH₃ pegados a un C=C
+  }
+
   // ---------------- Número de oxidación ----------------
   function numeroOxidacion(x, i) {
     const I = info(x), A = I.atom[i];
@@ -729,6 +747,10 @@
       ['conDoble', 'AQ-aromatico-un-doble', 'hipotesis', 'Contaste anillos que tienen un doble enlace dentro: con un carbono sp³ en el anillo, la nube π se corta.'],
       ['seisLados', 'AQ-aromatico-seis-lados', 'hipotesis', 'Contaste los anillos de seis lados: el tamaño no basta.'],
       ['sinCarbonilo', 'AQ-aromatico-sin-carbonilo', 'hipotesis', 'Dejaste fuera el anillo con C=O. Aquí, como en RDKit, se cuenta (su C=O pone 0 electrones); algunos libros no lo cuentan.']],
+    metilos: [['soloCadena', 'AQ-metilos-solo-cadena', 'hipotesis', 'Contaste solo los CH₃ de la cadena larga: los CH₃ que están pegados a los anillos también son metilos.'],
+      ['soloAnillos', 'AQ-metilos-solo-anillos', 'hipotesis', 'Contaste solo los CH₃ de los anillos: los de la cadena también cuentan.'],
+      ['puntasConDoble', 'AQ-metilos-solo-doble', 'hipotesis', 'Contaste solo los CH₃ pegados a un C=C: un CH₃ unido a un carbono con enlaces simples también es un metilo.'],
+      ['todosLosSp3', 'AQ-metilos-todos-sp3', 'hipotesis', 'Contaste todos los carbonos sp³: un CH₂ o un carbono sin H no es un metilo. Metilo es solo el CH₃.']],
     polares: [['conCH', 'AQ-polar-cuenta-CH', 'hipotesis', 'Contaste los C–H como polares: su diferencia de electronegatividad es 0,35, menos de 0,4.'],
       ['dobleComoUno', 'AQ-polar-doble-uno', 'hipotesis', 'Contaste cada doble enlace polar (C=O) como uno solo: son dos enlaces, un σ y un π.'],
       ['sinOH', 'AQ-polar-olvida-OH', 'hipotesis', 'Olvidaste los O–H y N–H: son de los más polares.'],
@@ -742,6 +764,7 @@
     if (tipo === 'quirales') return quirales(x);
     if (tipo === 'aromaticos') { const a = anillos(x); return { valor: a.aromaticos, atomos: a.atomos, anillos: a.lista.filter(r => r.aromatico), errores: a.errores }; }
     if (tipo === 'polares') { const e = enlaces(x); return { valor: e.polares, enlaces: e.enlacesPolares, hPolares: e.hPolares, errores: e.errores.polares }; }
+    if (tipo === 'metilos') return metilos(x);
     if (tipo === 'octeto') { const o = octeto(x); return { valor: o.valor, atomos: o.noCumplen, electrones: o.atomos.map(a => a.electrones), errores: o.errores }; }
     throw new Error(`conteo: no conozco «${tipo}»`);
   }
@@ -754,6 +777,7 @@
     if (tipo === 'grupos') return !(f && f.sinPrincipal);
     if (tipo === 'sp') return I.atom.some(a => a.triples || a.dobles >= 2);
     if (tipo === 'octeto') return I.atom.some(a => ['P', 'S', 'Cl', 'Br', 'I'].includes(a.el));
+    if (tipo === 'metilos') return metilos(x).valor >= 2;
     if (tipo === 'aromaticos') return I.anillos.length > 0 && !(f && f.sinAromaticos);
     return true;
   }
@@ -872,6 +896,6 @@
   function ficha(id) { const f = BIB && BIB.POR_ID[id]; if (!f) throw new Error(`no hay «${id}» en la biblioteca`); return f; }
   function biblioteca() { return BIB ? BIB.LISTA : []; }
 
-  return { molecula, formula, hibridacion, lupa, enlaces, pares, octeto, anillos, grupos, quirales, numeroOxidacion, hidrogenar, ionizar,
+  return { molecula, formula, hibridacion, lupa, enlaces, pares, octeto, anillos, grupos, quirales, metilos, numeroOxidacion, hidrogenar, ionizar,
     conteo, opciones, lupaDisponible, solubilidad, experimento, resumen, ficha, biblioteca, aSmiles, ERRORES, NOMBRES, PRIORIDAD, EN, MASA };
 });

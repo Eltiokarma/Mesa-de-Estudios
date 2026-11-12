@@ -90,6 +90,25 @@
     // Antibiótico
     { id: 'penicilina-g', smiles: 'CC1(C)S[C@@H]2[C@H](NC(=O)Cc3ccccc3)C(=O)N2[C@H]1C(=O)O', nombre: 'penicilina G', familia: 'antibiótico natural (del hongo Penicillium)', clase: 'β-lactama', solubilidad: 'su sal de potasio es soluble en agua',
       dato: 'Antibiótico que se obtiene del hongo Penicillium. El anillo de cuatro con el C=O y el N (β-lactama) es la parte activa.' },
+    // Cierre 100 (12 nov 2026): secuencia hidratación-oxidación, un ácido aromático, derivados de la glucosa y un pigmento biliar
+    { id: 'acido-crotonico', smiles: 'C/C=C/C(=O)O', nombre: 'ácido crotónico (but-2-enoico)', familia: 'ácido carboxílico insaturado', clase: 'ácido orgánico', solubilidad: 'soluble en agua',
+      dato: 'Ácido de cuatro carbonos con un doble enlace C=C. Si el doble enlace se hidrata, queda un hidroxiácido (el siguiente de la lista).' },
+    { id: 'acido-3-hidroxibutanoico', smiles: 'CC(O)CC(=O)O', nombre: 'ácido 3-hidroxibutanoico (β-hidroxibutírico)', familia: 'hidroxiácido', clase: 'ácido orgánico', solubilidad: 'muy soluble en agua',
+      dato: 'Sale de hidratar el doble enlace del ácido crotónico. Su alcohol es secundario: al oxidarse da una cetona (el cetoácido siguiente).' },
+    { id: 'acido-acetoacetico', smiles: 'CC(=O)CC(=O)O', nombre: 'ácido acetoacético (3-oxobutanoico)', familia: 'cetoácido', clase: 'ácido orgánico', solubilidad: 'muy soluble en agua',
+      dato: 'Se obtiene al oxidar el alcohol secundario del ácido 3-hidroxibutanoico. Tiene dos carbonos con C=O (el de la cetona y el del carboxilo).' },
+    { id: 'acido-p-aminobenzoico', smiles: 'Nc1ccc(cc1)C(=O)O', nombre: 'ácido 4-aminobenzoico (PABA)', familia: 'ácido aromático con amino', clase: 'ácido aromático', solubilidad: 'poco soluble en agua fría',
+      dato: 'Precursor de varios medicamentos. El carboxilo le da carácter ácido (con un hidróxido forma una sal) y el anillo le permite reacciones de sustitución.' },
+    { id: 'acido-gluconico', smiles: 'OC(=O)[C@H](O)[C@@H](O)[C@H](O)[C@H](O)CO', nombre: 'ácido glucónico', familia: 'derivado oxidado de la glucosa', clase: 'ácido orgánico (polihidroxiácido)', solubilidad: 'muy soluble en agua',
+      dato: 'Es la glucosa con el aldehído (C1) oxidado a carboxilo. Sus sales se llaman gluconatos.' },
+    { id: 'gluconato-de-isopropilo', smiles: 'CC(C)OC(=O)[C@H](O)[C@@H](O)[C@H](O)[C@H](O)CO', nombre: 'gluconato de isopropilo', familia: 'éster del ácido glucónico', clase: 'éster', solubilidad: 'soluble en agua',
+      dato: 'Se forma al unir el ácido glucónico con el alcohol isopropílico (propan-2-ol): el carboxilo y el alcohol sueltan agua y queda un éster, no un éter.' },
+    { id: 'sorbitol', smiles: 'OC[C@H](O)[C@@H](O)[C@H](O)[C@H](O)CO', nombre: 'sorbitol (D-glucitol)', familia: 'derivado reducido de la glucosa', clase: 'poliol (alcohol)', solubilidad: 'muy soluble en agua',
+      dato: 'Es la glucosa con el aldehído (C1) reducido a alcohol primario. Tiene seis OH y endulza menos que el azúcar de mesa.' },
+    { id: 'glucosa-6-fosfato', smiles: 'OP(=O)(O)OC[C@H]1O[C@@H](O)[C@H](O)[C@@H](O)[C@@H]1O', sinPrincipal: true, nombre: 'β-D-glucopiranosa 6-fosfato', familia: 'éster fosfórico de la glucosa', clase: 'glúcido fosforilado', solubilidad: 'muy soluble en agua',
+      dato: 'Primer paso de la glucólisis: el OH del C6 de la glucosa se une al ácido fosfórico (éster fosfórico) y la molécula queda cargada y atrapada en la célula.' },
+    { id: 'bilirrubina', smiles: 'CC1=C(C=C)C(=O)NC1=Cc1[nH]c(Cc2[nH]c(C=C3NC(=O)C(C)=C3C=C)c(C)c2CCC(=O)O)c(CCC(=O)O)c1C', nombre: 'bilirrubina', sinAromaticos: true, familia: 'pigmento biliar (tetrapirrol lineal)', clase: 'ácido carboxílico tetrapirrólico', solubilidad: 'insoluble en agua',
+      dato: 'Sale de la degradación del grupo hemo de la hemoglobina. Son cuatro anillos con N unidos en cadena por puentes de un carbono, y dos carboxilos que ayudan a eliminarla.' },
   ];
 
   // COORDENADAS (las escribe coordenadas.py; no editar a mano)
@@ -124,6 +143,15 @@
     'acido-oleico': [[7.108,1.8],[6.109,1.742],[5.66,0.849],[4.662,0.791],[4.213,-0.103],[3.215,-0.161],[2.766,-1.054],[1.767,-1.112],[1.318,-2.006],[0.32,-2.063],[-0.229,-1.228],[-1.228,-1.286],[-1.777,-0.45],[-2.775,-0.508],[-3.325,0.328],[-4.323,0.27],[-4.872,1.106],[-5.87,1.048],[-6.32,0.154],[-6.42,1.883]],
     'acido-taririco': [[-8.169,0.146],[-7.256,0.554],[-6.447,-0.033],[-5.534,0.375],[-4.724,-0.212],[-3.811,0.195],[-3.001,-0.392],[-2.088,0.016],[-1.278,-0.571],[-0.365,-0.163],[0.444,-0.75],[1.358,-0.342],[2.271,0.065],[3.184,0.473],[3.993,-0.114],[4.906,0.294],[5.716,-0.293],[6.629,0.115],[6.733,1.109],[7.439,-0.472]],
     'penicilina-g': [[-1.717,-2.05],[-1.991,-1.088],[-2.919,-1.461],[-1.006,-0.916],[-0.866,0.074],[-0.426,0.972],[0.52,1.296],[1.274,0.639],[1.082,-0.343],[2.22,0.963],[2.974,0.305],[2.781,-0.676],[3.535,-1.333],[4.481,-1.009],[4.673,-0.028],[3.92,0.629],[-1.324,1.412],[-1.648,2.358],[-1.764,0.514],[-2.459,-0.205],[-3.45,-0.064],[-4.066,-0.851],[-3.823,0.864]],
+    'acido-crotonico': [[-1.917,-0.146],[-0.988,0.226],[-0.202,-0.392],[0.726,-0.02],[0.868,0.97],[1.513,-0.638]],
+    'acido-3-hidroxibutanoico': [[-1.732,-0.571],[-0.866,-0.071],[-0.866,0.929],[0.0,-0.571],[0.866,-0.071],[0.866,0.929],[1.732,-0.571]],
+    'acido-acetoacetico': [[-1.732,-0.571],[-0.866,-0.071],[-0.866,0.929],[0.0,-0.571],[0.866,-0.071],[0.866,0.929],[1.732,-0.571]],
+    'acido-p-aminobenzoico': [[2.5,0.0],[1.5,-0.0],[1.0,0.866],[0.0,0.866],[-0.5,0.0],[-0.0,-0.866],[1.0,-0.866],[-1.5,0.0],[-2.0,-0.866],[-2.0,0.866]],
+    'acido-gluconico': [[-2.87,0.297],[-1.996,-0.188],[-1.979,-1.188],[-1.138,0.327],[-1.155,1.327],[-0.264,-0.158],[-0.247,-1.158],[0.594,0.356],[0.577,1.356],[1.468,-0.129],[1.485,-1.129],[2.325,0.386],[3.2,-0.1]],
+    'gluconato-de-isopropilo': [[-3.83,0.518],[-2.978,-0.007],[-3.007,-1.007],[-2.098,0.467],[-1.247,-0.058],[-1.276,-1.057],[-0.367,0.417],[-0.338,1.417],[0.484,-0.108],[0.455,-1.107],[1.364,0.367],[1.393,1.366],[2.216,-0.158],[2.187,-1.158],[3.096,0.317],[3.947,-0.208]],
+    'sorbitol': [[3.041,0.068],[2.127,0.475],[1.318,-0.113],[1.423,-1.107],[0.404,0.294],[0.3,1.288],[-0.404,-0.294],[-0.3,-1.288],[-1.318,0.113],[-1.423,1.107],[-2.127,-0.475],[-3.041,-0.068]],
+    'glucosa-6-fosfato': [[2.334,-0.856],[2.564,0.117],[2.794,1.09],[3.538,-0.113],[1.591,0.347],[0.905,-0.381],[-0.068,-0.151],[-0.355,0.807],[-1.328,1.037],[-1.616,1.995],[-2.014,0.309],[-2.987,0.539],[-1.727,-0.649],[-2.413,-1.376],[-0.754,-0.879],[-0.466,-1.836]],
+    'bilirrubina': [[4.055,-2.32],[4.145,-1.324],[5.004,-0.811],[5.924,-1.205],[6.724,-0.605],[4.782,0.164],[5.44,0.917],[3.786,0.254],[3.393,-0.666],[2.418,-0.888],[1.738,-0.154],[0.745,-0.273],[0.325,0.634],[-0.656,0.828],[-1.314,0.075],[-2.31,0.165],[-2.704,-0.754],[-3.679,-0.976],[-4.359,-0.243],[-4.165,0.738],[-5.038,1.226],[-5.157,2.219],[-5.771,0.546],[-6.753,0.739],[-5.352,-0.362],[-5.839,-1.235],[-6.839,-1.25],[-1.951,-1.412],[-2.041,-2.408],[-1.092,-0.9],[-0.173,-1.293],[-0.054,-2.286],[0.865,-2.68],[1.666,-2.08],[0.984,-3.672],[1.058,1.314],[0.939,2.307],[1.74,2.907],[1.621,3.899],[0.701,4.293],[2.421,4.499],[1.932,0.827],[2.839,1.247]],
   };
   // FIN COORDENADAS
 
