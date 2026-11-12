@@ -16,6 +16,14 @@ Muchas unidades traen además un botón **✎ Papel**, con problemas para resolv
 
 ## 2. Antes de la primera clase
 
+**Con cuentas** (cuando el equipo del proyecto le confirme que el servidor del colegio está activo):
+
+1. **La lista de alumnos.** El colegio entrega una hoja con apellidos, nombres, DNI, grado y sección. El administrador del colegio la sube desde su panel y baja un PDF con una **tarjeta por alumno** (usuario y contraseña inicial). Recórtelas y repártalas en clase. Las contraseñas iniciales solo aparecen en ese momento: guarde el PDF hasta repartirlas.
+2. **Su cuenta de profesor.** Se la da el administrador del colegio. Con ella entra a la misma app y ve su panel (sección 5).
+3. **Ábranla una vez con internet** en cada equipo, como se explica abajo.
+
+**Sin cuentas** (modo demostración, como en la versión de prueba):
+
 1. **La dirección de la app.** Se la da el equipo del proyecto. Mientras la app no esté publicada en internet, el equipo la instala en el laboratorio del colegio.
 2. **Un código para su colegio.** Elijan una palabra corta, sin espacios, por ejemplo `ABC` o `SANJOSE`. Ese código va en todos los datos y sirve para separar su colegio de otros. No identifica a ningún alumno.
 3. **El enlace para los alumnos.** Es la dirección de la app con el código al final: `…/app/?colegio=ABC`. Compártanlo por WhatsApp o en un código QR en la pizarra. El alumno también puede escribir el código después, en **Perfil → Código del colegio**.
@@ -23,7 +31,14 @@ Muchas unidades traen además un botón **✎ Papel**, con problemas para resolv
 
 ## 3. Cómo entran los alumnos
 
-La primera vez, la app pide el nombre (solo para saludar), la universidad a la que postula (por ahora, UNI o San Marcos) y el grado. El nombre **no se guarda en los datos de medición**: cada equipo recibe un código anónimo al azar, del tipo `a3f9c01b2e`.
+**Con cuentas.** La app pide **usuario y contraseña**, los de la tarjeta. La primera vez, el alumno elige una contraseña nueva, que solo sepa él; después la app le pregunta la universidad y el grado (el nombre ya viene de la lista). Para el primer ingreso en cada equipo hace falta internet. Después se puede practicar sin conexión: lo que haga se guarda en el equipo y **se sube solo** cuando vuelve la señal. En el Perfil, un indicador dice **«✓ Guardado»** o **«Pendiente de subir (n)»**.
+
+- Si un alumno **olvida su contraseña**, la pantalla le dice que se la pida a usted: la reinicia desde su panel (sección 5).
+- Su avance es de su cuenta: si otro día entra en otra PC o en su celular, encuentra lo que hizo y su prueba de entrada.
+- En el celular, la sesión dura unos 30 días; no hace falta entrar cada vez.
+- **«Probar sin cuenta»** abre la app en modo demostración: funciona igual, pero nada se sube y el avance se queda en ese equipo. Sirve para mostrarla, no para la clase.
+
+**Sin cuentas (modo demostración).** La primera vez, la app pide el nombre (solo para saludar), la universidad a la que postula (por ahora, UNI o San Marcos) y el grado. El nombre **no se guarda en los datos de medición**: cada equipo recibe un código anónimo al azar, del tipo `a3f9c01b2e`.
 
 Desde **Inicio**, el alumno ve el «Reto de hoy» y lo que le sigue. Desde **Cursos**, elige un curso y una unidad, y en ella abre la escena, la práctica o la lectura.
 
@@ -41,7 +56,9 @@ Antes de la entrada, dígales algo así: *«Si no lo sabes, marca No sé: nos ay
 
 En las prácticas con problemas que se generan solos también está «No sé»: al tocarlo, el alumno ve la respuesta y la solución paso a paso, sin que se le marque error. En las escenas **no** hay «No sé», a propósito: ahí la idea es comprometerse con una predicción antes de ver qué pasa.
 
-**Prueba de salida.** Solo aparece cuando **usted la abre**, con un enlace que reparte en clase, en cada equipo:
+**Prueba de salida.** Solo aparece cuando **usted la abre**. **Con cuentas**, se abre desde su panel, por sección y por curso (sección 5): les llega a todos los alumnos de la sección, en cualquier equipo, en menos de un minuto con internet. Las soluciones se abren igual. Los enlaces de abajo no sirven con cuenta.
+
+**Sin cuentas**, se abre con un enlace que reparte en clase, en cada equipo:
 
 | Para abrir | Enlace |
 | --- | --- |
@@ -61,9 +78,25 @@ Detalles importantes:
 - Cada prueba se hace **una sola vez**. "Borrar mi avance" no borra las pruebas de ningún curso.
 - Lo que se abre con el enlace queda guardado en ese navegador, aunque cambie el alumno. No hay contraseña: el control es que el enlace lo reparte usted.
 
-## 5. En el laboratorio de cómputo: «Otro alumno en esta PC»
+## 5. El panel del profesor (con cuentas)
 
-Si varios alumnos usan la misma computadora en turnos, al terminar cada uno toca **Otro alumno en esta PC**. Está en Inicio (arriba a la derecha, en pantalla grande) y en Perfil.
+Usted entra en la misma app, con su usuario y su contraseña, y ve su panel:
+
+- **Sus secciones**, con cuántos alumnos tiene cada una.
+- **Pruebas de salida y soluciones:** un botón por curso (y uno para todos) que dice «Abierta» o «Cerrada». Al tocarlo, cambia para toda la sección. Abra las soluciones cuando todo el grupo haya terminado la salida.
+- **Avance por alumno:** días con actividad, módulos vistos y, por curso, la entrada y la salida (aciertos sobre el total). «Actualizar» trae lo último que subieron.
+- **Reiniciar contraseña:** al tocarlo, la app muestra la contraseña nueva. Désela al alumno; al entrar, la app le pide elegir otra.
+
+El **administrador del colegio** ve además: **subir la lista** (un CSV con `apellidos,nombres,dni,grado,seccion`; si un DNI ya está, el alumno se actualiza y no se duplica), **bajar las tarjetas en PDF** de los alumnos nuevos y **descargar los eventos** del colegio en JSON, sin nombres ni DNI, para el análisis (sección 8).
+
+## 6. En el laboratorio de cómputo
+
+**Con cuentas: «Cerrar sesión».** Al terminar, cada alumno toca **Cerrar sesión** (en el Perfil, y arriba a la derecha del Inicio en pantalla grande). La app sube lo que falte y borra de esa PC su avance y su sesión, así que el siguiente alumno entra con su propia cuenta y nada se mezcla.
+
+- Si la PC no tiene internet en ese momento, la app avisa: «No se pudo subir todo». Lo mejor es **Reintentar** cuando vuelva la señal. Si hay que cerrar igual, lo pendiente queda guardado en esa PC, separado, y se sube la próxima vez que ese alumno entre en esa misma PC.
+- Si un alumno se va sin cerrar sesión, el siguiente debe tocar **Cerrar sesión** antes de entrar con su cuenta.
+
+**Sin cuentas: «Otro alumno en esta PC».** Si varios alumnos usan la misma computadora en turnos, al terminar cada uno toca **Otro alumno en esta PC**. Está en Inicio (arriba a la derecha, en pantalla grande) y en Perfil.
 
 1. Si hay registros sin descargar, la app ofrece **Descargar y cambiar**: baja el archivo de datos y deja la PC lista para el siguiente.
 2. El siguiente alumno empieza desde cero, con otro código anónimo y sus propias pruebas de entrada y salida.
@@ -71,7 +104,7 @@ Si varios alumnos usan la misma computadora en turnos, al terminar cada uno toca
 
 Si se cambia sin descargar, los datos del alumno anterior **siguen guardados en esa PC** y salen en la próxima descarga: el archivo de una PC trae los datos de todos los alumnos que la usaron, aunque su nombre lleve el código de uno solo. Pero si se borran los datos del navegador, se pierden, y cada navegador guarda como máximo 5000 registros (al pasarse, borra los más antiguos). **Descarguen al final de cada clase.**
 
-## 6. Una clase de 45 minutos con una escena
+## 7. Una clase de 45 minutos con una escena
 
 Ejemplo con física, unidad de movimiento rectilíneo (escena de MRUV con sus gráficas). Sirve igual para cualquier escena.
 
@@ -87,7 +120,9 @@ Cuando terminen el curso, reserven unos 20 minutos de una clase para la prueba d
 
 Con una sola computadora y un proyector, la escena se usa igual: el grupo vota la predicción con la mano y un alumno la marca.
 
-## 7. Cómo recoger los datos
+## 8. Cómo recoger los datos
+
+**Con cuentas**, los datos llegan solos al servidor: no hay que descargar nada en cada equipo. El administrador del colegio baja el archivo de eventos desde su panel y lo envía al equipo del proyecto (o lo analiza con el recuadro de abajo). Los pasos que siguen son para el modo sin cuentas.
 
 1. En cada equipo: **Perfil → Datos para el profesor → Descargar datos para el profesor**. Se baja un archivo de datos con un nombre como `laboratorio-ABC-a3f9c01b2e-2026-12-09.json`. También se puede bajar en CSV, que se abre en Excel, pero ese archivo no sirve para el análisis: siempre hay que bajar el de datos.
 2. Junten todos los archivos en una carpeta (por USB, correo o WhatsApp). Si un mismo registro se descargó dos veces, no se cuenta doble.
@@ -116,7 +151,7 @@ Cómo leerlo:
 - El informe completo trae más columnas (por ejemplo, el resultado de cada forma de la prueba, A y B). Para razonamiento verbal trae otra tabla: los errores de lectura con su código (por ejemplo, RV1 "elegir un detalle como idea principal"), contados en el paso previo y en la respuesta.
 - **Con pocos alumnos, las diferencias pueden ser azar.** Para sacar conclusiones, sirven más los datos de todo el grado que los de una sección.
 
-## 8. Qué mide y qué no guarda
+## 9. Qué mide y qué no guarda
 
 **Mide**, en cada equipo:
 
@@ -125,23 +160,28 @@ Cómo leerlo:
 - las pruebas de entrada y salida, pregunta por pregunta (incluido cuándo marcó «No sé»);
 - cuándo usted abrió la salida o las soluciones.
 
-**No guarda** el nombre del alumno ni ningún dato personal: solo el código anónimo del equipo, el grado y el código del colegio. **No envía sus respuestas ni ningún dato por internet**: los datos se quedan en el equipo hasta que alguien toca "Descargar".
+**Sin cuentas, no guarda** el nombre del alumno ni ningún dato personal: solo el código anónimo del equipo, el grado y el código del colegio. **No envía sus respuestas ni ningún dato por internet**: los datos se quedan en el equipo hasta que alguien toca "Descargar".
 
-## 9. Lo que la app no hace
+**Con cuentas**, el servidor guarda el nombre, el usuario, la sección y el DNI (cifrado; solo lo ve el administrador del colegio y nunca va en las respuestas ni en los datos para el análisis). Las respuestas se suben con un código al azar por alumno, no con su nombre. La contraseña no se guarda en el equipo.
+
+## 10. Lo que la app no hace
 
 - **No pone notas** ni reemplaza la evaluación del profesor. Las pruebas miden al grupo.
 - **No corrige con inteligencia artificial.** Cada respuesta correcta está calculada y revisada antes de entrar a la app, y cada error tiene su explicación escrita.
-- **No reemplaza la clase.** Funciona mejor cuando el profesor pone en común los errores (sección 6).
-- **No guarda los datos en ningún servidor.** Si se borra el navegador o se pierde el celular antes de descargar, esos datos se pierden.
-- **No controla quién abre la salida.** Si un alumno consigue el enlace `?salida=`, puede abrirla antes de tiempo. Por eso conviene repartirlo en el momento, en el aula.
+- **No reemplaza la clase.** Funciona mejor cuando el profesor pone en común los errores (sección 7).
+- **Sin cuentas, no guarda los datos en ningún servidor.** Si se borra el navegador o se pierde el celular antes de descargar, esos datos se pierden. Con cuentas, lo que ya se subió está a salvo; lo que estaba pendiente en un equipo se pierde si se borra ese navegador antes de que vuelva la señal.
+- **Sin cuentas, no controla quién abre la salida.** Si un alumno consigue el enlace `?salida=`, puede abrirla antes de tiempo. Por eso conviene repartirlo en el momento, en el aula. Con cuentas, solo la abre usted desde su panel.
 - **Todavía no tiene todo el temario.** Algunas unidades aún no tienen actividad; las que sí, se ven marcadas en la lista del curso.
 
-## 10. Problemas frecuentes
+## 11. Problemas frecuentes
 
 | Problema | Qué hacer |
 | --- | --- |
 | "No se pudieron cargar los problemas" | Abrir esa pantalla una vez con internet; después funciona sin conexión. |
 | La prueba de entrada aparece cada vez | Es a propósito, hasta que el alumno la haga. "Ahora no" la pospone hasta que se cierre el navegador. |
 | El alumno no ve la prueba de salida | Abrir en ese equipo el enlace `…/app/?salida=<curso>`. |
-| Dos alumnos se mezclaron en una PC | Desde ahora, "Otro alumno en esta PC" al cambiar de turno. Lo anterior no se puede separar. |
+| Dos alumnos se mezclaron en una PC | Con cuentas, cada uno toca "Cerrar sesión" al terminar. Sin cuentas, "Otro alumno en esta PC" al cambiar de turno. Lo anterior no se puede separar. |
+| Un alumno olvidó su contraseña | En su panel, "Reiniciar contraseña" junto a su nombre. La app le muestra la nueva; al entrar, el alumno elige otra. |
+| El Perfil dice "Pendiente de subir" | Falta internet en ese equipo. Se sube solo cuando vuelve la señal. No cierren sesión sin conexión si pueden esperar. |
+| "Tu sesión venció" | El alumno vuelve a entrar con su usuario y su contraseña. Lo que hizo en ese equipo sigue guardado y se sube al entrar. |
 | Un archivo se llama `laboratorio-sin-colegio-…` | Ese equipo no tenía el código: escribirlo en Perfil → Código del colegio. Los registros anteriores quedan sin código, pero igual entran al informe. |
