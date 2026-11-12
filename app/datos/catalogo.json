@@ -3557,7 +3557,10 @@
      "potencial_visual": "alto",
      "grado": 3,
      "plantillas": [
-      "trazos-rutas"
+      "trazos-rutas",
+      "cuadricula-piezas",
+      "rutas-espacio",
+      "papel-doblado"
      ]
     },
     {
@@ -3683,7 +3686,9 @@
      "potencial_visual": "alto",
      "grado": 3,
      "plantillas": [
-      "probabilidad-dados"
+      "probabilidad-dados",
+      "dados-caras",
+      "dados-domino"
      ]
     },
     {
@@ -3772,7 +3777,8 @@
      "potencial_visual": "alto",
      "grado": 3,
      "plantillas": [
-      "regla-de-tres"
+      "regla-de-tres",
+      "poleas-giros"
      ]
     },
     {
@@ -3866,7 +3872,10 @@
      "grado": 3,
      "plantillas": [
       "arreglos-giros",
-      "ampliadora"
+      "ampliadora",
+      "cuadricula-piezas",
+      "papel-doblado",
+      "rodamientos"
      ]
     },
     {
@@ -3888,7 +3897,13 @@
      "potencial_visual": "alto",
      "grado": 3,
      "plantillas": [
-      "trazos-rutas"
+      "trazos-rutas",
+      "rutas-tramos",
+      "cubitos-conteo",
+      "vistas-cubitos",
+      "dados-domino",
+      "rutas-espacio",
+      "cubitos-pintados"
      ]
     },
     {
@@ -5045,6 +5060,24 @@
     "/plantillas/cuadrado-crece/papel.json"
    ]
   },
+  "cuadricula-piezas": {
+   "id": "cuadricula-piezas",
+   "titulo": "El tablero que se parte en piezas: cortes, perímetros, áreas y conteos",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.trazos-y-perimetros",
+    "razonamiento-matematico.transformaciones-de-figuras"
+   ],
+   "url": "/plantillas/cuadricula-piezas/index.html",
+   "papel": "/plantillas/cuadricula-piezas/papel.json",
+   "archivos": [
+    "/plantillas/cuadricula-piezas/index.html",
+    "/plantillas/cuadricula-piezas/motor.js",
+    "/plantillas/cuadricula-piezas/papel.json"
+   ]
+  },
   "cuatro-operaciones": {
    "id": "cuatro-operaciones",
    "titulo": "El tablero de las llevadas: las cuatro operaciones",
@@ -5060,6 +5093,71 @@
     "/plantillas/cuatro-operaciones/index.html",
     "/plantillas/cuatro-operaciones/motor.js",
     "/plantillas/cuatro-operaciones/papel.json"
+   ]
+  },
+  "cubitos-conteo": {
+   "id": "cubitos-conteo",
+   "titulo": "Cubitos que se cuentan",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.rutas-y-visualizacion-espacial"
+   ],
+   "url": "#/practica/cubitos-conteo",
+   "papel": null,
+   "archivos": [
+    "/plantillas/cubitos-conteo/generador.js"
+   ]
+  },
+  "cubitos-pintados": {
+   "id": "cubitos-pintados",
+   "titulo": "El cubo que se pinta y se perfora: cubitos, túneles y barras",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.rutas-y-visualizacion-espacial"
+   ],
+   "url": "/plantillas/cubitos-pintados/index.html",
+   "papel": "/plantillas/cubitos-pintados/papel.json",
+   "archivos": [
+    "/plantillas/cubitos-pintados/index.html",
+    "/plantillas/cubitos-pintados/motor.js",
+    "/plantillas/cubitos-pintados/papel.json"
+   ]
+  },
+  "dados-caras": {
+   "id": "dados-caras",
+   "titulo": "Dados y dominó",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.juegos-recreativos"
+   ],
+   "url": "#/practica/dados-caras",
+   "papel": null,
+   "archivos": [
+    "/plantillas/dados-caras/generador.js"
+   ]
+  },
+  "dados-domino": {
+   "id": "dados-domino",
+   "titulo": "El dado en la mesa y las fichas del dominó",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.juegos-recreativos",
+    "razonamiento-matematico.rutas-y-visualizacion-espacial"
+   ],
+   "url": "/plantillas/dados-domino/index.html",
+   "papel": "/plantillas/dados-domino/papel.json",
+   "archivos": [
+    "/plantillas/dados-domino/index.html",
+    "/plantillas/dados-domino/motor.js",
+    "/plantillas/dados-domino/papel.json"
    ]
   },
   "dinamica": {
@@ -6349,6 +6447,39 @@
     "/plantillas/orden-informacion/papel.json"
    ]
   },
+  "papel-doblado": {
+   "id": "papel-doblado",
+   "titulo": "La hoja que se dobla, se corta y se voltea",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.transformaciones-de-figuras",
+    "razonamiento-matematico.trazos-y-perimetros"
+   ],
+   "url": "/plantillas/papel-doblado/index.html",
+   "papel": "/plantillas/papel-doblado/papel.json",
+   "archivos": [
+    "/plantillas/papel-doblado/index.html",
+    "/plantillas/papel-doblado/motor.js",
+    "/plantillas/papel-doblado/papel.json"
+   ]
+  },
+  "poleas-giros": {
+   "id": "poleas-giros",
+   "titulo": "Poleas: sentido de giro, bloques y coincidencias",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.ruedas-poleas-engranajes"
+   ],
+   "url": "#/practica/poleas-giros",
+   "papel": null,
+   "archivos": [
+    "/plantillas/poleas-giros/generador.js"
+   ]
+  },
   "poligonos": {
    "id": "poligonos",
    "titulo": "El polígono que se abre: ángulos, diagonales y cuadriláteros",
@@ -6653,6 +6784,56 @@
     "/contenido/razonamiento-verbal/textos/t038.json",
     "/contenido/razonamiento-verbal/textos/t056.json",
     "/plantillas/resumen-sintesis/papel.json"
+   ]
+  },
+  "rodamientos": {
+   "id": "rodamientos",
+   "titulo": "La rueda, el camino y la lámina que gira",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.transformaciones-de-figuras"
+   ],
+   "url": "/plantillas/rodamientos/index.html",
+   "papel": "/plantillas/rodamientos/papel.json",
+   "archivos": [
+    "/plantillas/rodamientos/index.html",
+    "/plantillas/rodamientos/motor.js",
+    "/plantillas/rodamientos/papel.json"
+   ]
+  },
+  "rutas-espacio": {
+   "id": "rutas-espacio",
+   "titulo": "La hormiga en el alambre: rutas en el espacio y en el cilindro",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.rutas-y-visualizacion-espacial",
+    "razonamiento-matematico.trazos-y-perimetros"
+   ],
+   "url": "/plantillas/rutas-espacio/index.html",
+   "papel": "/plantillas/rutas-espacio/papel.json",
+   "archivos": [
+    "/plantillas/rutas-espacio/index.html",
+    "/plantillas/rutas-espacio/motor.js",
+    "/plantillas/rutas-espacio/papel.json"
+   ]
+  },
+  "rutas-tramos": {
+   "id": "rutas-tramos",
+   "titulo": "Rutas por tramos y por cuadras",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.rutas-y-visualizacion-espacial"
+   ],
+   "url": "#/practica/rutas-tramos",
+   "papel": null,
+   "archivos": [
+    "/plantillas/rutas-tramos/generador.js"
    ]
   },
   "segmentos-angulos": {
@@ -7310,6 +7491,23 @@
    "archivos": [
     "/plantillas/velocidad-relativa/generador.js",
     "/plantillas/velocidad-relativa/papel.json"
+   ]
+  },
+  "vistas-cubitos": {
+   "id": "vistas-cubitos",
+   "titulo": "Los cubitos que giran: vistas y huecos",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.rutas-y-visualizacion-espacial"
+   ],
+   "url": "/plantillas/vistas-cubitos/index.html",
+   "papel": "/plantillas/vistas-cubitos/papel.json",
+   "archivos": [
+    "/plantillas/vistas-cubitos/index.html",
+    "/plantillas/vistas-cubitos/motor.js",
+    "/plantillas/vistas-cubitos/papel.json"
    ]
   }
  }

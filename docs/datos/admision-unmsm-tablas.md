@@ -10,9 +10,9 @@ Líneas descartadas: 0. Preguntas registradas: 2550; distintas: 2550.
 | Álgebra | 160 | 160 | 14 | 160 (100 %) | 0 (0 %) | 0 (0 %) |
 | Geometría | 169 | 169 | 14 | 169 (100 %) | 0 (0 %) | 0 (0 %) |
 | Trigonometría | 113 | 113 | 14 | 113 (100 %) | 0 (0 %) | 0 (0 %) |
-| Razonamiento matemático | 650 | 650 | 14 | 350 (54 %) | 282 (43 %) | 18 (3 %) |
+| Razonamiento matemático | 650 | 650 | 14 | 457 (70 %) | 175 (27 %) | 18 (3 %) |
 | Razonamiento verbal | 690 | 690 | 14 | 689 (100 %) | 1 (0 %) | 0 (0 %) |
-| **Total** | 2550 | 2550 | | 2137 (84 %) | 394 (15 %) | 19 (1 %) |
+| **Total** | 2550 | 2550 | | 2244 (88 %) | 287 (11 %) | 19 (1 %) |
 
 ## Física (277 distintas)
 
@@ -1225,30 +1225,30 @@ Por unidad del catálogo:
 | Unidad | Preguntas | Periodos (de 14) | Sí / medio / no | Módulos que la cubren |
 | --- | --- | --- | --- | --- |
 | razonamiento-matematico.cronometria-y-calendarios | 66 | 13 | 55 / 11 / 0 | relojes-calendarios |
-| razonamiento-matematico.cortes-y-pesadas | 55 | 13 | 33 / 22 / 0 | cortes-pesadas |
-| razonamiento-matematico.rutas-y-visualizacion-espacial | 54 | 13 | 10 / 44 / 0 | trazos-rutas, binomio-newton, solidos |
+| razonamiento-matematico.cortes-y-pesadas | 55 | 13 | 39 / 16 / 0 | cortes-pesadas, cuadricula-piezas, cubitos-pintados |
+| razonamiento-matematico.rutas-y-visualizacion-espacial | 54 | 13 | 40 / 14 / 0 | rutas-espacio, trazos-rutas, vistas-cubitos |
 | razonamiento-matematico.tablas-graficos-y-suficiencia | 43 | 13 | 41 / 2 / 0 | tablas-graficos |
-| razonamiento-matematico.transformaciones-de-figuras | 41 | 14 | 14 / 27 / 0 | arreglos-giros, simetria, ampliadora |
-| razonamiento-matematico.traslados-y-puntos-cardinales | 33 | 13 | 3 / 30 / 0 | traslados-sucesos |
-| razonamiento-matematico.trazos-y-perimetros | 33 | 12 | 24 / 9 / 0 | trazos-rutas |
-| razonamiento-matematico.razonamiento-deductivo | 32 | 14 | 18 / 14 / 0 | orden-informacion, logica, conjuntos |
+| razonamiento-matematico.transformaciones-de-figuras | 41 | 14 | 36 / 5 / 0 | rodamientos, simetria, ampliadora |
+| razonamiento-matematico.traslados-y-puntos-cardinales | 33 | 13 | 5 / 28 / 0 | traslados-sucesos, papel-doblado |
+| razonamiento-matematico.trazos-y-perimetros | 33 | 12 | 29 / 4 / 0 | trazos-rutas, papel-doblado, cuadricula-piezas |
+| razonamiento-matematico.razonamiento-deductivo | 32 | 14 | 20 / 12 / 0 | orden-informacion, dados-domino, logica |
 | razonamiento-matematico.arreglos-numericos | 30 | 14 | 20 / 10 / 0 | arreglos-giros, razonamiento-numerico |
 | razonamiento-matematico.certezas | 30 | 12 | 9 / 21 / 0 | orden-informacion |
-| geometria.razonamiento-con-figuras | 26 | 11 | 9 / 17 / 0 | razonamiento-figuras |
-| razonamiento-matematico.razonamiento-inductivo | 26 | 13 | 18 / 8 / 0 | sucesiones, razonamiento-figuras |
+| geometria.razonamiento-con-figuras | 26 | 11 | 22 / 4 / 0 | razonamiento-figuras, cubitos-pintados, cuadricula-piezas |
+| razonamiento-matematico.razonamiento-inductivo | 26 | 13 | 20 / 6 / 0 | sucesiones, cubitos-pintados, razonamiento-figuras |
 | razonamiento-matematico.verdades-y-mentiras | 26 | 14 | 25 / 1 / 0 | orden-informacion |
-| razonamiento-matematico.maximos-y-minimos | 25 | 12 | 9 / 16 / 0 | maximos-minimos |
-| razonamiento-matematico.juegos-recreativos | 23 | 10 | 0 / 23 / 0 | probabilidad-dados, arreglos-giros |
+| razonamiento-matematico.maximos-y-minimos | 25 | 12 | 10 / 15 / 0 | maximos-minimos, cubitos-pintados |
+| razonamiento-matematico.juegos-recreativos | 23 | 10 | 17 / 6 / 0 | dados-domino, probabilidad-dados |
 | razonamiento-matematico.ordenamiento-de-informacion | 21 | 13 | 20 / 1 / 0 | orden-informacion |
 | razonamiento-matematico.planteo-de-ecuaciones | 21 | 9 | 12 / 9 / 0 | traductor-enunciados, fracciones |
 | razonamiento-matematico.frecuencia-de-sucesos | 16 | 10 | 12 / 4 / 0 | traslados-sucesos |
 | fuera-del-catalogo:diagramas de flujo | 12 | 8 | 0 / 0 / 12 | — |
-| razonamiento-matematico.ruedas-poleas-engranajes | 12 | 7 | 6 / 6 / 0 | regla-de-tres |
+| razonamiento-matematico.ruedas-poleas-engranajes | 12 | 7 | 12 / 0 / 0 | regla-de-tres, poleas-giros |
 | geometria.simetria | 8 | 6 | 8 / 0 / 0 | simetria |
 | aritmetica.razonamiento-numerico | 7 | 5 | 3 / 4 / 0 | traductor-enunciados, razonamiento-numerico, cuatro-operaciones |
 | fuera-del-catalogo:trasvases | 5 | 4 | 0 / 0 / 5 | — |
 | aritmetica.divisibilidad | 2 | 2 | 0 / 2 / 0 | divisores |
-| aritmetica.analisis-combinatorio | 1 | 1 | 0 / 1 / 0 | probabilidad-dados |
+| aritmetica.analisis-combinatorio | 1 | 1 | 1 / 0 / 0 | cuadricula-piezas |
 | aritmetica.magnitudes-proporcionales | 1 | 1 | 1 / 0 / 0 | regla-de-tres |
 | fuera-del-catalogo:operadores matematicos | 1 | 1 | 0 / 0 / 1 | — |
 
@@ -1256,16 +1256,16 @@ Por tema (en razonamiento matemático y verbal, por familia de temas):
 
 | Tema | Preguntas | Periodos (de 14) | Unidad | Módulo más usado | Sí / medio / no |
 | --- | --- | --- | --- | --- | --- |
-| Rutas y caminos mínimos | 36 | 14 | razonamiento-matematico.rutas-y-visualizacion-espacial | trazos-rutas | 18 / 18 / 0 |
+| Rutas y caminos mínimos | 36 | 14 | razonamiento-matematico.rutas-y-visualizacion-espacial | rutas-espacio | 36 / 0 / 0 |
 | Arreglos numéricos | 28 | 14 | razonamiento-matematico.arreglos-numericos | arreglos-giros | 21 / 7 / 0 |
 | Verdades y mentiras | 26 | 14 | razonamiento-matematico.verdades-y-mentiras | orden-informacion | 25 / 1 / 0 |
 | Relojes | 40 | 13 | razonamiento-matematico.cronometria-y-calendarios | relojes-calendarios | 30 / 10 / 0 |
-| Simetrías y giros | 29 | 13 | razonamiento-matematico.transformaciones-de-figuras | simetria | 19 / 10 / 0 |
+| Simetrías y giros | 29 | 13 | razonamiento-matematico.transformaciones-de-figuras | simetria | 29 / 0 / 0 |
 | Calendarios | 27 | 13 | razonamiento-matematico.cronometria-y-calendarios | relojes-calendarios | 25 / 2 / 0 |
 | Ordenamiento y parentesco | 26 | 13 | razonamiento-matematico.ordenamiento-de-informacion | orden-informacion | 20 / 6 / 0 |
 | Certezas | 31 | 12 | razonamiento-matematico.certezas | orden-informacion | 10 / 21 / 0 |
-| Cubos, sólidos y vistas | 27 | 12 | razonamiento-matematico.rutas-y-visualizacion-espacial | razonamiento-figuras | 1 / 26 / 0 |
-| Rodamientos, ruedas y poleas | 26 | 12 | razonamiento-matematico.ruedas-poleas-engranajes | arreglos-giros | 6 / 20 / 0 |
+| Cubos, sólidos y vistas | 27 | 12 | razonamiento-matematico.rutas-y-visualizacion-espacial | vistas-cubitos | 27 / 0 / 0 |
+| Rodamientos, ruedas y poleas | 26 | 12 | razonamiento-matematico.ruedas-poleas-engranajes | rodamientos | 26 / 0 / 0 |
 | Traslados de fichas y juegos | 24 | 12 | razonamiento-matematico.juegos-recreativos | traslados-sucesos | 3 / 21 / 0 |
 | Inducción y series | 21 | 12 | razonamiento-matematico.razonamiento-inductivo | sucesiones | 13 / 8 / 0 |
 | Cuadro de doble entrada | 20 | 12 | razonamiento-matematico.razonamiento-deductivo | orden-informacion | 17 / 3 / 0 |
@@ -1275,16 +1275,16 @@ Por tema (en razonamiento matemático y verbal, por familia de temas):
 | Cortes y estacas | 20 | 11 | razonamiento-matematico.cortes-y-pesadas | cortes-pesadas | 9 / 11 / 0 |
 | Máximos y mínimos | 19 | 10 | razonamiento-matematico.maximos-y-minimos | maximos-minimos | 8 / 11 / 0 |
 | Frecuencia de sucesos | 18 | 10 | razonamiento-matematico.frecuencia-de-sucesos | traslados-sucesos | 12 / 6 / 0 |
-| Trazos de un solo golpe | 18 | 10 | razonamiento-matematico.trazos-y-perimetros | trazos-rutas | 17 / 1 / 0 |
+| Trazos de un solo golpe | 18 | 10 | razonamiento-matematico.trazos-y-perimetros | trazos-rutas | 18 / 0 / 0 |
 | Rumbos y desplazamientos | 16 | 10 | razonamiento-matematico.traslados-y-puntos-cardinales | traslados-sucesos | 1 / 15 / 0 |
 | Trasvases | 13 | 10 | razonamiento-matematico.traslados-y-puntos-cardinales | traslados-sucesos | 0 / 8 / 5 |
 | Tablas, gráficos y suficiencia | 22 | 9 | razonamiento-matematico.tablas-graficos-y-suficiencia | tablas-graficos | 22 / 0 / 0 |
-| Dados y dominó | 15 | 8 | razonamiento-matematico.juegos-recreativos | probabilidad-dados | 0 / 15 / 0 |
-| Conteo de figuras | 14 | 8 | geometria.razonamiento-con-figuras | razonamiento-figuras | 10 / 4 / 0 |
+| Dados y dominó | 15 | 8 | razonamiento-matematico.juegos-recreativos | dados-domino | 15 / 0 / 0 |
+| Conteo de figuras | 14 | 8 | geometria.razonamiento-con-figuras | razonamiento-figuras | 14 / 0 / 0 |
 | Lectura de palabras en arreglos | 14 | 8 | razonamiento-matematico.rutas-y-visualizacion-espacial | binomio-newton | 0 / 14 / 0 |
 | Diagramas de flujo | 12 | 8 | fuera-del-catalogo:diagramas de flujo | — | 0 / 0 / 12 |
-| Perímetros, áreas y particiones | 8 | 7 | razonamiento-matematico.cortes-y-pesadas | cortes-pesadas | 1 / 7 / 0 |
-| Papel doblado y cortado | 6 | 5 | razonamiento-matematico.trazos-y-perimetros | trazos-rutas | 0 / 6 / 0 |
+| Perímetros, áreas y particiones | 8 | 7 | razonamiento-matematico.cortes-y-pesadas | cuadricula-piezas | 8 / 0 / 0 |
+| Papel doblado y cortado | 6 | 5 | razonamiento-matematico.trazos-y-perimetros | papel-doblado | 6 / 0 / 0 |
 - tipo: calculo 402 (62 %), mixta 190 (29 %), grafica 36 (6 %), conceptual 22 (3 %)
 - visual: alto 338 (52 %), medio 272 (42 %), bajo 40 (6 %)
 - figura: True 388 (60 %), False 262 (40 %)
@@ -1326,155 +1326,149 @@ Ordenados por número de periodos en que salen y luego por número de preguntas.
 
 | # | Curso | Tema | Periodos | Preguntas sin cubrir (no + medio) | Unidad | Qué falta (lo más dicho) |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Razonamiento matemático | Cubos, sólidos y vistas | 12 | 26 (0 + 26) | razonamiento-matematico.rutas-y-visualizacion-espacial | reconstruir un sólido a partir de sus tres vistas |
-| 2 | Razonamiento matemático | Certezas | 12 | 21 (0 + 21) | razonamiento-matematico.certezas | certezas sobre sumas de números extraídos |
-| 3 | Razonamiento matemático | Traslados de fichas y juegos | 12 | 21 (0 + 21) | razonamiento-matematico.juegos-recreativos | armar figura semejante con fichas iguales (cuadrado de k) |
-| 4 | Razonamiento matemático | Rodamientos, ruedas y poleas | 12 | 20 (0 + 20) | razonamiento-matematico.ruedas-poleas-engranajes | recorrido del centro de una rueda en trayectoria quebrada |
-| 5 | Razonamiento matemático | Planteo y otros | 11 | 24 (1 + 23) | razonamiento-matematico.planteo-de-ecuaciones | cruces de río con capacidad y restricciones de pasajeros |
-| 6 | Razonamiento matemático | Cortes y estacas | 11 | 11 (0 + 11) | razonamiento-matematico.cortes-y-pesadas | cortes superponiendo piezas para separar casillas |
-| 7 | Razonamiento matemático | Rumbos y desplazamientos | 10 | 15 (0 + 15) | razonamiento-matematico.traslados-y-puntos-cardinales | rumbos con ángulos y triángulos notables en la brújula |
-| 8 | Razonamiento matemático | Trasvases | 10 | 13 (5 + 8) | razonamiento-matematico.traslados-y-puntos-cardinales | trasvases entre recipientes sin marcas |
-| 9 | Razonamiento matemático | Máximos y mínimos | 10 | 11 (0 + 11) | razonamiento-matematico.maximos-y-minimos | cubrir el rectángulo mínimo con piezas de cuadraditos |
-| 10 | Razonamiento matemático | Dados y dominó | 8 | 15 (0 + 15) | razonamiento-matematico.juegos-recreativos | caras opuestas y puntos visibles en dados apoyados |
-| 11 | Razonamiento matemático | Lectura de palabras en arreglos | 8 | 14 (0 + 14) | razonamiento-matematico.rutas-y-visualizacion-espacial | conteo de lecturas de una palabra en un arreglo de letras |
-| 12 | Razonamiento matemático | Diagramas de flujo | 8 | 12 (12 + 0) | fuera-del-catalogo:diagramas de flujo | seguir un diagrama de flujo con bucles y condiciones |
-| 13 | Razonamiento matemático | Perímetros, áreas y particiones | 7 | 7 (0 + 7) | razonamiento-matematico.cortes-y-pesadas | partir una cuadrícula en dos piezas congruentes |
-| 14 | Razonamiento matemático | Papel doblado y cortado | 5 | 6 (0 + 6) | razonamiento-matematico.trazos-y-perimetros | doblar, cortar y desplegar papel; perímetro resultante |
-| 15 | Química | Clasificación de reacciones | 5 | 5 (0 + 5) | quimica.reacciones-y-balance | Clasificar reacciones: redox, combustión, exotérmica a la vez |
-| 16 | Química | Normalidad y miliequivalentes | 2 | 3 (0 + 3) | quimica.soluciones | Concentraciones en miliequivalentes y normalidad en contexto fisiológico |
-| 17 | Química | Carotenoides y vitaminas: estructura y oxidación | 2 | 2 (0 + 2) | quimica.biomoleculas-y-productos-naturales | Vitaminas y carotenoides: solubilidad, sustituyentes y oxidación de grupos |
-| 18 | Química | Grupos funcionales en hormonas | 2 | 2 (0 + 2) | quimica.biomoleculas-y-productos-naturales | Identificar grupos funcionales y reacciones en moléculas biológicas grandes |
-| 19 | Química | Mecanismo: intermediario y catalizador | 2 | 2 (0 + 2) | quimica.cinetica-quimica | Distinguir intermediario de catalizador en un mecanismo por pasos |
-| 20 | Química | Nomenclatura de compuestos polifuncionales | 2 | 2 (0 + 2) | quimica.funciones-organicas | Nombrar compuestos con varios grupos funcionales y prioridades |
-| 21 | Química | Partes por millón | 2 | 2 (0 + 2) | quimica.soluciones | Conversión de ppm a moles por volumen |
-| 22 | Química | Colorantes naturales: grupos funcionales | 1 | 2 (0 + 2) | quimica.biomoleculas-y-productos-naturales | Colorantes naturales: grupos funcionales, hibridación y enlaces pi |
-| 23 | Química | Acumulador de plomo | 1 | 1 (0 + 1) | quimica.electroquimica | Pilas comerciales: acumulador de plomo y sus semirreacciones |
-| 24 | Química | Agentes y especies en un redox con radicales | 1 | 1 (0 + 1) | quimica.reacciones-y-balance | Radicales libres y su notación de Lewis en reacciones redox |
-| 25 | Química | Aminoácidos y proteínas: propiedades | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Punto isoeléctrico, interacciones de cadenas laterales y solubilidad de proteínas |
-| 26 | Química | Aminoácidos y reacciones orgánicas | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Tipos de reacción orgánica sobre aminoácidos aromáticos |
-| 27 | Química | Aminoácidos: estructura | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Hibridación, electrones y grupos funcionales en aminoácidos aromáticos |
-| 28 | Química | Aminoácidos: estructura y nombre | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Nombre IUPAC e hibridación en aminoácidos aromáticos |
-| 29 | Química | Aminoácidos: grupos y pares libres | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Contar pares libres y enlaces apolares en aminoácidos |
-| 30 | Química | Aminoácidos: nombre, ionización y quiralidad | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Forma ionizada de aminoácidos según pH y centros quirales |
-| 31 | Química | Balance de materia en flotación | 1 | 1 (0 + 1) | quimica.estequiometria | Ley de mineral y balance de masa en concentración metalúrgica |
-| 32 | Química | Bases de Lewis y alcaloides | 1 | 1 (0 + 1) | quimica.acidos-y-bases | Teorías de Lewis y Brønsted aplicadas a bases nitrogenadas |
-| 33 | Química | Biomoléculas en alimentos | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Esteroles, azúcares reductores y alcaloides en alimentos |
-| 34 | Química | Calentamiento global: lectura de gráfico | 1 | 1 (0 + 1) | quimica.ambiente-y-quimica-aplicada | Leer datos ambientales en gráficos de tendencia |
-| 35 | Química | Calor de vaporización molar | 1 | 1 (0 + 1) | quimica.liquidos-y-solidos | Calor latente molar en cambios de fase |
-| 36 | Química | Carbohidratos: aldosas y cetosas | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Clasificar monosacáridos como aldosas o cetosas y su isomería |
-| 37 | Química | Carbohidratos: disacáridos | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Disacáridos: solubilidad, estructura cíclica y molaridad de jarabes |
-| 38 | Química | Carbohidratos: estructura y nombre | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Nombrar azúcares como polihidroxialdehídos con numeración IUPAC |
-| 39 | Química | Carbohidratos: quiralidad y actividad óptica | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Isomería óptica y quiralidad en monosacáridos (proyección de Fischer) |
-| 40 | Química | Celda de combustible microbiana | 1 | 1 (0 + 1) | quimica.electroquimica | Celdas de combustible y semirreacciones orgánicas en medio acuoso |
-| 41 | Química | Clasificación de reacciones: oxidación y reversibilidad | 1 | 1 (0 + 1) | quimica.reacciones-y-balance | Clasificar reacciones como reversibles o irreversibles y de oxidación |
-| 42 | Química | Combustión, polimerización y aromáticos policíclicos | 1 | 1 (0 + 1) | quimica.recursos-naturales | Polímeros de adición y aromáticos policíclicos junto con la combustión |
-| 43 | Química | Compuestos aromáticos con dos funciones | 1 | 1 (0 + 1) | quimica.funciones-organicas | Reacciones del anillo aromático y conteo de carbonos sp2 |
-| 44 | Química | Compuestos iónicos: propiedades | 1 | 1 (0 + 1) | quimica.enlace-quimico | Propiedades de sólidos iónicos y clases de iones |
-| 45 | Química | Compuestos polifuncionales: ésteres y aminas | 1 | 1 (0 + 1) | quimica.funciones-organicas | Nombrar y clasificar compuestos con varias funciones |
-| 46 | Química | Configuración de iones de transición y redox | 1 | 1 (0 + 1) | quimica.estructura-atomica | Configuración de cationes de transición junto con agentes redox y radicales |
-| 47 | Química | Configuración y ubicación de iones | 1 | 1 (0 + 1) | quimica.tabla-periodica | Relación química-salud del ion sodio |
-| 48 | Química | Configuración, nomenclatura y electrólisis de sales | 1 | 1 (0 + 1) | quimica.nomenclatura-inorganica | Pregunta mixta: configuración de metal pesado, nombre tradicional y electrólisis |
-| 49 | Química | Configuración, ubicación y enlace de un halógeno | 1 | 1 (0 + 1) | quimica.estructura-atomica | Mezcla de configuración, ubicación, tipo de sal y enlace dativo |
-| 50 | Química | Conservación de un elemento (atómica) | 1 | 1 (0 + 1) | quimica.estequiometria | Estequiometría por conservación de átomos sin ecuación balanceada |
-| 51 | Química | Contaminantes del aire, agua y suelo | 1 | 1 (0 + 1) | quimica.ambiente-y-quimica-aplicada | Contaminantes primarios y secundarios, persistentes y naturales |
-| 52 | Química | Diagrama de Pourbaix | 1 | 1 (0 + 1) | quimica.electroquimica | Diagramas de Pourbaix potencial-pH |
-| 53 | Química | Dilución con miliequivalentes | 1 | 1 (0 + 1) | quimica.soluciones | Dilución expresada en miliequivalentes por litro |
-| 54 | Química | Elementos frente a compuestos y oxoaniones | 1 | 1 (0 + 1) | quimica.enlace-quimico | Distinguir molécula elemental de compuesto y carga de oxoaniones |
-| 55 | Química | Enlaces pi y sustituyentes en polienos | 1 | 1 (0 + 1) | quimica.hidrocarburos | Contar enlaces pi y sustituyentes en moléculas grandes |
-| 56 | Química | Enlaces polares y octeto en moléculas orgánicas | 1 | 1 (0 + 1) | quimica.enlace-quimico | Contar enlaces polares y octeto en moléculas orgánicas largas |
-| 57 | Química | Equilibrio y reacciones en la sangre | 1 | 1 (0 + 1) | quimica.equilibrio-quimico | Equilibrio heterogéneo y soluciones reguladoras en contexto biológico |
-| 58 | Química | Escalas de temperatura | 1 | 1 (0 + 1) | quimica.materia-y-energia | Conversión de escalas y variaciones de temperatura en gráficos |
-| 59 | Química | Esferas de la Tierra | 1 | 1 (0 + 1) | quimica.ambiente-y-quimica-aplicada | Atmósfera, hidrósfera y litósfera como sistemas del ambiente |
-| 60 | Química | Esteroides: estructura y quiralidad | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Esteroides y carbonos quirales (isomería óptica) |
-| 61 | Química | Fermentación: redox y productos | 1 | 1 (0 + 1) | quimica.funciones-organicas | Reacciones de oxidación de alcoholes y estados de oxidación del carbono |
-| 62 | Química | Fórmulas, mezclas y tipo de óxido | 1 | 1 (0 + 1) | quimica.nomenclatura-inorganica | Clasificar óxidos como ácidos o básicos junto con sustancias y mezclas |
-| 63 | Química | Grupos funcionales en moléculas complejas | 1 | 1 (0 + 1) | quimica.funciones-organicas | Reconocer grupos funcionales en moléculas grandes como vitaminas |
-| 64 | Química | Grupos funcionales y quiralidad en moléculas biológicas | 1 | 1 (0 + 1) | quimica.funciones-organicas | Heterociclos nitrogenados y carbonos quirales en moléculas grandes |
-| 65 | Química | Heterociclos: pares libres e hibridación | 1 | 1 (0 + 1) | quimica.funciones-organicas | Heterociclos aromáticos nitrogenados (bases nitrogenadas) |
-| 66 | Química | Hibridación e isomería en compuestos oxigenados | 1 | 1 (0 + 1) | quimica.funciones-organicas | Hibridación de carbonos en ácidos con varias funciones |
-| 67 | Química | Hibridación y electrones pi en polienos | 1 | 1 (0 + 1) | quimica.hidrocarburos | Contar carbonos sp2, sp3 y electrones pi en moléculas grandes |
-| 68 | Química | Hibridación y enlaces pi en polienos | 1 | 1 (0 + 1) | quimica.hidrocarburos | Contar enlaces pi, metilos e hibridación en hidrocarburos grandes |
-| 69 | Química | Hidrogenación parcial y total de alquinos | 1 | 1 (0 + 1) | quimica.hidrocarburos | Reacciones de adición con catalizadores selectivos (Lindlar) |
-| 70 | Química | Hidrogenación y reacciones de adición | 1 | 1 (0 + 1) | quimica.hidrocarburos | Reacciones de adición y conteo de átomos de hidrógeno |
-| 71 | Química | Hidruros no metálicos: enlace y pares libres | 1 | 1 (0 + 1) | quimica.enlace-quimico | Hidruros no metálicos y sales ácidas en una misma pregunta |
-| 72 | Química | Hidróxidos: estequiometría y disociación | 1 | 1 (0 + 1) | quimica.nomenclatura-inorganica | Estequiometría de formación de hidróxidos y conteo de iones |
-| 73 | Química | Insaturación, adición y moles | 1 | 1 (0 + 1) | quimica.hidrocarburos | Reacciones de adición y conteo de pares libres en organosulfurados |
-| 74 | Química | Isomería geométrica en ácidos insaturados | 1 | 1 (0 + 1) | quimica.hidrocarburos | Notación Z/E y comparación de isómeros geométricos con funciones |
-| 75 | Química | Isótopos radiactivos y vida media | 1 | 1 (0 + 1) | quimica.materia-y-energia | Radiactividad y lectura de vida media en curva de decaimiento |
-| 76 | Química | Ley de un mineral y moles | 1 | 1 (0 + 1) | quimica.estequiometria | Ley de mineral y balance de masa en concentración metalúrgica |
-| 77 | Química | Limitante y estequiometría redox con soluciones | 1 | 1 (0 + 1) | quimica.estequiometria | Estequiometría redox con soluciones y concentración de producto |
-| 78 | Química | Limitante, rendimiento y calor de reacción | 1 | 1 (0 + 1) | quimica.estequiometria | Estequiometría con entalpía de reacción (termoquímica) |
-| 79 | Química | Lípidos: hidrólisis de triglicéridos | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Estequiometría de hidrólisis de triglicéridos |
-| 80 | Química | Mecanismo en dos etapas: intermediario y complejo activado | 1 | 1 (0 + 1) | quimica.cinetica-quimica | Perfiles de energía con dos etapas e intermediario |
-| 81 | Química | Mecanismo y orden de reacción | 1 | 1 (0 + 1) | quimica.cinetica-quimica | Mecanismos con etapa lenta que determina la ley de velocidad |
-| 82 | Química | Mecanismo: etapa lenta, catalizador e intermediario | 1 | 1 (0 + 1) | quimica.cinetica-quimica | Mecanismos por etapas con catalizador e intermediario |
-| 83 | Química | Metales de transición: configuración y grupo | 1 | 1 (0 + 1) | quimica.tabla-periodica | Configuraciones anómalas y ubicación de elementos con Z mayor que 36 |
-| 84 | Química | Mezcla de soluciones en miliequivalentes | 1 | 1 (0 + 1) | quimica.soluciones | Mezcla de soluciones y concentración de iones en miliequivalentes |
-| 85 | Química | Modelo de Rutherford | 1 | 1 (0 + 1) | quimica.estructura-atomica | Experimento de Rutherford y evolución de modelos atómicos |
-| 86 | Química | Modelos atómicos | 1 | 1 (0 + 1) | quimica.estructura-atomica | Evolución histórica de los modelos atómicos y sus aportes |
-| 87 | Química | Modelos atómicos: Dalton | 1 | 1 (0 + 1) | quimica.estructura-atomica | Evolución histórica de los modelos atómicos y sus postulados |
-| 88 | Química | Nomenclatura de ácidos con otra función y fuerza ácida | 1 | 1 (0 + 1) | quimica.funciones-organicas | Nombrar oxo e hidroxiácidos con prioridad de grupos |
-| 89 | Química | Oxidación sucesiva de grupos funcionales | 1 | 1 (0 + 1) | quimica.funciones-organicas | Secuencia de oxidación alcano, alcohol, aldehído, ácido con hibridación |
-| 90 | Química | Oxidación y reducción de azúcares | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Oxidación y reducción de grupos funcionales en carbohidratos |
-| 91 | Química | Polifenoles: estructura | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Polifenoles y flavonoides: pares libres, hibridación y acidez |
-| 92 | Química | Porcentaje en volumen y mezclas | 1 | 1 (0 + 1) | quimica.soluciones | Porcentaje en volumen y proporciones en mezclas de solventes |
-| 93 | Química | Precipitación y miliequivalentes | 1 | 1 (0 + 1) | quimica.soluciones | Valoración por precipitación con miliequivalentes |
-| 94 | Química | Radicales libres | 1 | 1 (0 + 1) | quimica.enlace-quimico | Radicales libres: especies con electrón desapareado en la estructura de Lewis |
-| 95 | Química | Ramas de la química | 1 | 1 (0 + 1) | quimica.materia-y-energia | Ramas de la química y su objeto de estudio |
-| 96 | Química | Reacciones del carbonato en aguas duras | 1 | 1 (0 + 1) | quimica.reacciones-y-balance | Reacciones de carbonatos y bicarbonatos en aguas duras |
-| 97 | Química | Sólidos iónicos y radio iónico | 1 | 1 (0 + 1) | quimica.liquidos-y-solidos | Sólidos cristalinos contra amorfos, celda unitaria y radio iónico |
-| 98 | Química | Termoquímica, limitante y electrólisis | 1 | 1 (0 + 1) | quimica.estequiometria | Termoquímica: calor según la cantidad de producto |
-| 99 | Química | Tipo de enlace según propiedades | 1 | 1 (0 + 1) | quimica.enlace-quimico | Deducir tipo de sólido por fusión, solubilidad y conductividad |
-| 100 | Química | Tostación y estequiometría metalúrgica | 1 | 1 (0 + 1) | quimica.recursos-naturales | Estequiometría de procesos metalúrgicos con ley de mineral |
-| 101 | Química | Ubicación de un elemento | 1 | 1 (0 + 1) | quimica.tabla-periodica | Ubicar elementos con Z mayor que 36 en la tabla |
-| 102 | Química | Ubicación y configuración de un halógeno | 1 | 1 (0 + 1) | quimica.tabla-periodica | Ubicar elementos con Z mayor que 36 y configurar sus iones |
-| 103 | Química | Unidades y conversiones | 1 | 1 (1 + 0) | fuera-del-catalogo:unidades y conversiones | Conversiones de unidades: densidad, ángstrom, variaciones de temperatura |
-| 104 | Química | Velocidad media desde un gráfico | 1 | 1 (0 + 1) | quimica.cinetica-quimica | Leer concentraciones y velocidad media en gráficos concentración-tiempo |
-| 105 | Química | Viscosidad y forma molecular | 1 | 1 (0 + 1) | quimica.liquidos-y-solidos | Viscosidad según forma molecular y fuerzas intermoleculares |
-| 106 | Química | Viscosidad, tensión superficial y presión de vapor | 1 | 1 (0 + 1) | quimica.liquidos-y-solidos | Tensión superficial y viscosidad según fuerzas intermoleculares |
-| 107 | Química | Vitaminas | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Vitaminas hidro y liposolubles: estructura y funciones |
-| 108 | Química | Vitaminas como agentes redox | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Vitaminas antioxidantes como agentes reductores; lactona frente a lactama |
-| 109 | Química | Vitaminas y coenzimas | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Relación entre vitaminas y coenzimas |
-| 110 | Química | Vitaminas: síntesis de vitamina D | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Vitaminas liposolubles, esteroides y su ruta de activación |
+| 1 | Razonamiento matemático | Certezas | 12 | 21 (0 + 21) | razonamiento-matematico.certezas | certezas sobre sumas de números extraídos |
+| 2 | Razonamiento matemático | Traslados de fichas y juegos | 12 | 21 (0 + 21) | razonamiento-matematico.juegos-recreativos | armar figura semejante con fichas iguales (cuadrado de k) |
+| 3 | Razonamiento matemático | Planteo y otros | 11 | 24 (1 + 23) | razonamiento-matematico.planteo-de-ecuaciones | cruces de río con capacidad y restricciones de pasajeros |
+| 4 | Razonamiento matemático | Cortes y estacas | 11 | 11 (0 + 11) | razonamiento-matematico.cortes-y-pesadas | cortes superponiendo piezas para separar casillas |
+| 5 | Razonamiento matemático | Rumbos y desplazamientos | 10 | 15 (0 + 15) | razonamiento-matematico.traslados-y-puntos-cardinales | rumbos con ángulos y triángulos notables en la brújula |
+| 6 | Razonamiento matemático | Trasvases | 10 | 13 (5 + 8) | razonamiento-matematico.traslados-y-puntos-cardinales | trasvases entre recipientes sin marcas |
+| 7 | Razonamiento matemático | Máximos y mínimos | 10 | 11 (0 + 11) | razonamiento-matematico.maximos-y-minimos | cubrir el rectángulo mínimo con piezas de cuadraditos |
+| 8 | Razonamiento matemático | Lectura de palabras en arreglos | 8 | 14 (0 + 14) | razonamiento-matematico.rutas-y-visualizacion-espacial | conteo de lecturas de una palabra en un arreglo de letras |
+| 9 | Razonamiento matemático | Diagramas de flujo | 8 | 12 (12 + 0) | fuera-del-catalogo:diagramas de flujo | seguir un diagrama de flujo con bucles y condiciones |
+| 10 | Química | Clasificación de reacciones | 5 | 5 (0 + 5) | quimica.reacciones-y-balance | Clasificar reacciones: redox, combustión, exotérmica a la vez |
+| 11 | Química | Normalidad y miliequivalentes | 2 | 3 (0 + 3) | quimica.soluciones | Concentraciones en miliequivalentes y normalidad en contexto fisiológico |
+| 12 | Química | Carotenoides y vitaminas: estructura y oxidación | 2 | 2 (0 + 2) | quimica.biomoleculas-y-productos-naturales | Vitaminas y carotenoides: solubilidad, sustituyentes y oxidación de grupos |
+| 13 | Química | Grupos funcionales en hormonas | 2 | 2 (0 + 2) | quimica.biomoleculas-y-productos-naturales | Identificar grupos funcionales y reacciones en moléculas biológicas grandes |
+| 14 | Química | Mecanismo: intermediario y catalizador | 2 | 2 (0 + 2) | quimica.cinetica-quimica | Distinguir intermediario de catalizador en un mecanismo por pasos |
+| 15 | Química | Nomenclatura de compuestos polifuncionales | 2 | 2 (0 + 2) | quimica.funciones-organicas | Nombrar compuestos con varios grupos funcionales y prioridades |
+| 16 | Química | Partes por millón | 2 | 2 (0 + 2) | quimica.soluciones | Conversión de ppm a moles por volumen |
+| 17 | Química | Colorantes naturales: grupos funcionales | 1 | 2 (0 + 2) | quimica.biomoleculas-y-productos-naturales | Colorantes naturales: grupos funcionales, hibridación y enlaces pi |
+| 18 | Química | Acumulador de plomo | 1 | 1 (0 + 1) | quimica.electroquimica | Pilas comerciales: acumulador de plomo y sus semirreacciones |
+| 19 | Química | Agentes y especies en un redox con radicales | 1 | 1 (0 + 1) | quimica.reacciones-y-balance | Radicales libres y su notación de Lewis en reacciones redox |
+| 20 | Química | Aminoácidos y proteínas: propiedades | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Punto isoeléctrico, interacciones de cadenas laterales y solubilidad de proteínas |
+| 21 | Química | Aminoácidos y reacciones orgánicas | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Tipos de reacción orgánica sobre aminoácidos aromáticos |
+| 22 | Química | Aminoácidos: estructura | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Hibridación, electrones y grupos funcionales en aminoácidos aromáticos |
+| 23 | Química | Aminoácidos: estructura y nombre | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Nombre IUPAC e hibridación en aminoácidos aromáticos |
+| 24 | Química | Aminoácidos: grupos y pares libres | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Contar pares libres y enlaces apolares en aminoácidos |
+| 25 | Química | Aminoácidos: nombre, ionización y quiralidad | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Forma ionizada de aminoácidos según pH y centros quirales |
+| 26 | Química | Balance de materia en flotación | 1 | 1 (0 + 1) | quimica.estequiometria | Ley de mineral y balance de masa en concentración metalúrgica |
+| 27 | Química | Bases de Lewis y alcaloides | 1 | 1 (0 + 1) | quimica.acidos-y-bases | Teorías de Lewis y Brønsted aplicadas a bases nitrogenadas |
+| 28 | Química | Biomoléculas en alimentos | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Esteroles, azúcares reductores y alcaloides en alimentos |
+| 29 | Química | Calentamiento global: lectura de gráfico | 1 | 1 (0 + 1) | quimica.ambiente-y-quimica-aplicada | Leer datos ambientales en gráficos de tendencia |
+| 30 | Química | Calor de vaporización molar | 1 | 1 (0 + 1) | quimica.liquidos-y-solidos | Calor latente molar en cambios de fase |
+| 31 | Química | Carbohidratos: aldosas y cetosas | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Clasificar monosacáridos como aldosas o cetosas y su isomería |
+| 32 | Química | Carbohidratos: disacáridos | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Disacáridos: solubilidad, estructura cíclica y molaridad de jarabes |
+| 33 | Química | Carbohidratos: estructura y nombre | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Nombrar azúcares como polihidroxialdehídos con numeración IUPAC |
+| 34 | Química | Carbohidratos: quiralidad y actividad óptica | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Isomería óptica y quiralidad en monosacáridos (proyección de Fischer) |
+| 35 | Química | Celda de combustible microbiana | 1 | 1 (0 + 1) | quimica.electroquimica | Celdas de combustible y semirreacciones orgánicas en medio acuoso |
+| 36 | Química | Clasificación de reacciones: oxidación y reversibilidad | 1 | 1 (0 + 1) | quimica.reacciones-y-balance | Clasificar reacciones como reversibles o irreversibles y de oxidación |
+| 37 | Química | Combustión, polimerización y aromáticos policíclicos | 1 | 1 (0 + 1) | quimica.recursos-naturales | Polímeros de adición y aromáticos policíclicos junto con la combustión |
+| 38 | Química | Compuestos aromáticos con dos funciones | 1 | 1 (0 + 1) | quimica.funciones-organicas | Reacciones del anillo aromático y conteo de carbonos sp2 |
+| 39 | Química | Compuestos iónicos: propiedades | 1 | 1 (0 + 1) | quimica.enlace-quimico | Propiedades de sólidos iónicos y clases de iones |
+| 40 | Química | Compuestos polifuncionales: ésteres y aminas | 1 | 1 (0 + 1) | quimica.funciones-organicas | Nombrar y clasificar compuestos con varias funciones |
+| 41 | Química | Configuración de iones de transición y redox | 1 | 1 (0 + 1) | quimica.estructura-atomica | Configuración de cationes de transición junto con agentes redox y radicales |
+| 42 | Química | Configuración y ubicación de iones | 1 | 1 (0 + 1) | quimica.tabla-periodica | Relación química-salud del ion sodio |
+| 43 | Química | Configuración, nomenclatura y electrólisis de sales | 1 | 1 (0 + 1) | quimica.nomenclatura-inorganica | Pregunta mixta: configuración de metal pesado, nombre tradicional y electrólisis |
+| 44 | Química | Configuración, ubicación y enlace de un halógeno | 1 | 1 (0 + 1) | quimica.estructura-atomica | Mezcla de configuración, ubicación, tipo de sal y enlace dativo |
+| 45 | Química | Conservación de un elemento (atómica) | 1 | 1 (0 + 1) | quimica.estequiometria | Estequiometría por conservación de átomos sin ecuación balanceada |
+| 46 | Química | Contaminantes del aire, agua y suelo | 1 | 1 (0 + 1) | quimica.ambiente-y-quimica-aplicada | Contaminantes primarios y secundarios, persistentes y naturales |
+| 47 | Química | Diagrama de Pourbaix | 1 | 1 (0 + 1) | quimica.electroquimica | Diagramas de Pourbaix potencial-pH |
+| 48 | Química | Dilución con miliequivalentes | 1 | 1 (0 + 1) | quimica.soluciones | Dilución expresada en miliequivalentes por litro |
+| 49 | Química | Elementos frente a compuestos y oxoaniones | 1 | 1 (0 + 1) | quimica.enlace-quimico | Distinguir molécula elemental de compuesto y carga de oxoaniones |
+| 50 | Química | Enlaces pi y sustituyentes en polienos | 1 | 1 (0 + 1) | quimica.hidrocarburos | Contar enlaces pi y sustituyentes en moléculas grandes |
+| 51 | Química | Enlaces polares y octeto en moléculas orgánicas | 1 | 1 (0 + 1) | quimica.enlace-quimico | Contar enlaces polares y octeto en moléculas orgánicas largas |
+| 52 | Química | Equilibrio y reacciones en la sangre | 1 | 1 (0 + 1) | quimica.equilibrio-quimico | Equilibrio heterogéneo y soluciones reguladoras en contexto biológico |
+| 53 | Química | Escalas de temperatura | 1 | 1 (0 + 1) | quimica.materia-y-energia | Conversión de escalas y variaciones de temperatura en gráficos |
+| 54 | Química | Esferas de la Tierra | 1 | 1 (0 + 1) | quimica.ambiente-y-quimica-aplicada | Atmósfera, hidrósfera y litósfera como sistemas del ambiente |
+| 55 | Química | Esteroides: estructura y quiralidad | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Esteroides y carbonos quirales (isomería óptica) |
+| 56 | Química | Fermentación: redox y productos | 1 | 1 (0 + 1) | quimica.funciones-organicas | Reacciones de oxidación de alcoholes y estados de oxidación del carbono |
+| 57 | Química | Fórmulas, mezclas y tipo de óxido | 1 | 1 (0 + 1) | quimica.nomenclatura-inorganica | Clasificar óxidos como ácidos o básicos junto con sustancias y mezclas |
+| 58 | Química | Grupos funcionales en moléculas complejas | 1 | 1 (0 + 1) | quimica.funciones-organicas | Reconocer grupos funcionales en moléculas grandes como vitaminas |
+| 59 | Química | Grupos funcionales y quiralidad en moléculas biológicas | 1 | 1 (0 + 1) | quimica.funciones-organicas | Heterociclos nitrogenados y carbonos quirales en moléculas grandes |
+| 60 | Química | Heterociclos: pares libres e hibridación | 1 | 1 (0 + 1) | quimica.funciones-organicas | Heterociclos aromáticos nitrogenados (bases nitrogenadas) |
+| 61 | Química | Hibridación e isomería en compuestos oxigenados | 1 | 1 (0 + 1) | quimica.funciones-organicas | Hibridación de carbonos en ácidos con varias funciones |
+| 62 | Química | Hibridación y electrones pi en polienos | 1 | 1 (0 + 1) | quimica.hidrocarburos | Contar carbonos sp2, sp3 y electrones pi en moléculas grandes |
+| 63 | Química | Hibridación y enlaces pi en polienos | 1 | 1 (0 + 1) | quimica.hidrocarburos | Contar enlaces pi, metilos e hibridación en hidrocarburos grandes |
+| 64 | Química | Hidrogenación parcial y total de alquinos | 1 | 1 (0 + 1) | quimica.hidrocarburos | Reacciones de adición con catalizadores selectivos (Lindlar) |
+| 65 | Química | Hidrogenación y reacciones de adición | 1 | 1 (0 + 1) | quimica.hidrocarburos | Reacciones de adición y conteo de átomos de hidrógeno |
+| 66 | Química | Hidruros no metálicos: enlace y pares libres | 1 | 1 (0 + 1) | quimica.enlace-quimico | Hidruros no metálicos y sales ácidas en una misma pregunta |
+| 67 | Química | Hidróxidos: estequiometría y disociación | 1 | 1 (0 + 1) | quimica.nomenclatura-inorganica | Estequiometría de formación de hidróxidos y conteo de iones |
+| 68 | Química | Insaturación, adición y moles | 1 | 1 (0 + 1) | quimica.hidrocarburos | Reacciones de adición y conteo de pares libres en organosulfurados |
+| 69 | Química | Isomería geométrica en ácidos insaturados | 1 | 1 (0 + 1) | quimica.hidrocarburos | Notación Z/E y comparación de isómeros geométricos con funciones |
+| 70 | Química | Isótopos radiactivos y vida media | 1 | 1 (0 + 1) | quimica.materia-y-energia | Radiactividad y lectura de vida media en curva de decaimiento |
+| 71 | Química | Ley de un mineral y moles | 1 | 1 (0 + 1) | quimica.estequiometria | Ley de mineral y balance de masa en concentración metalúrgica |
+| 72 | Química | Limitante y estequiometría redox con soluciones | 1 | 1 (0 + 1) | quimica.estequiometria | Estequiometría redox con soluciones y concentración de producto |
+| 73 | Química | Limitante, rendimiento y calor de reacción | 1 | 1 (0 + 1) | quimica.estequiometria | Estequiometría con entalpía de reacción (termoquímica) |
+| 74 | Química | Lípidos: hidrólisis de triglicéridos | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Estequiometría de hidrólisis de triglicéridos |
+| 75 | Química | Mecanismo en dos etapas: intermediario y complejo activado | 1 | 1 (0 + 1) | quimica.cinetica-quimica | Perfiles de energía con dos etapas e intermediario |
+| 76 | Química | Mecanismo y orden de reacción | 1 | 1 (0 + 1) | quimica.cinetica-quimica | Mecanismos con etapa lenta que determina la ley de velocidad |
+| 77 | Química | Mecanismo: etapa lenta, catalizador e intermediario | 1 | 1 (0 + 1) | quimica.cinetica-quimica | Mecanismos por etapas con catalizador e intermediario |
+| 78 | Química | Metales de transición: configuración y grupo | 1 | 1 (0 + 1) | quimica.tabla-periodica | Configuraciones anómalas y ubicación de elementos con Z mayor que 36 |
+| 79 | Química | Mezcla de soluciones en miliequivalentes | 1 | 1 (0 + 1) | quimica.soluciones | Mezcla de soluciones y concentración de iones en miliequivalentes |
+| 80 | Química | Modelo de Rutherford | 1 | 1 (0 + 1) | quimica.estructura-atomica | Experimento de Rutherford y evolución de modelos atómicos |
+| 81 | Química | Modelos atómicos | 1 | 1 (0 + 1) | quimica.estructura-atomica | Evolución histórica de los modelos atómicos y sus aportes |
+| 82 | Química | Modelos atómicos: Dalton | 1 | 1 (0 + 1) | quimica.estructura-atomica | Evolución histórica de los modelos atómicos y sus postulados |
+| 83 | Química | Nomenclatura de ácidos con otra función y fuerza ácida | 1 | 1 (0 + 1) | quimica.funciones-organicas | Nombrar oxo e hidroxiácidos con prioridad de grupos |
+| 84 | Química | Oxidación sucesiva de grupos funcionales | 1 | 1 (0 + 1) | quimica.funciones-organicas | Secuencia de oxidación alcano, alcohol, aldehído, ácido con hibridación |
+| 85 | Química | Oxidación y reducción de azúcares | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Oxidación y reducción de grupos funcionales en carbohidratos |
+| 86 | Química | Polifenoles: estructura | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Polifenoles y flavonoides: pares libres, hibridación y acidez |
+| 87 | Química | Porcentaje en volumen y mezclas | 1 | 1 (0 + 1) | quimica.soluciones | Porcentaje en volumen y proporciones en mezclas de solventes |
+| 88 | Química | Precipitación y miliequivalentes | 1 | 1 (0 + 1) | quimica.soluciones | Valoración por precipitación con miliequivalentes |
+| 89 | Química | Radicales libres | 1 | 1 (0 + 1) | quimica.enlace-quimico | Radicales libres: especies con electrón desapareado en la estructura de Lewis |
+| 90 | Química | Ramas de la química | 1 | 1 (0 + 1) | quimica.materia-y-energia | Ramas de la química y su objeto de estudio |
+| 91 | Química | Reacciones del carbonato en aguas duras | 1 | 1 (0 + 1) | quimica.reacciones-y-balance | Reacciones de carbonatos y bicarbonatos en aguas duras |
+| 92 | Química | Sólidos iónicos y radio iónico | 1 | 1 (0 + 1) | quimica.liquidos-y-solidos | Sólidos cristalinos contra amorfos, celda unitaria y radio iónico |
+| 93 | Química | Termoquímica, limitante y electrólisis | 1 | 1 (0 + 1) | quimica.estequiometria | Termoquímica: calor según la cantidad de producto |
+| 94 | Química | Tipo de enlace según propiedades | 1 | 1 (0 + 1) | quimica.enlace-quimico | Deducir tipo de sólido por fusión, solubilidad y conductividad |
+| 95 | Química | Tostación y estequiometría metalúrgica | 1 | 1 (0 + 1) | quimica.recursos-naturales | Estequiometría de procesos metalúrgicos con ley de mineral |
+| 96 | Química | Ubicación de un elemento | 1 | 1 (0 + 1) | quimica.tabla-periodica | Ubicar elementos con Z mayor que 36 en la tabla |
+| 97 | Química | Ubicación y configuración de un halógeno | 1 | 1 (0 + 1) | quimica.tabla-periodica | Ubicar elementos con Z mayor que 36 y configurar sus iones |
+| 98 | Química | Unidades y conversiones | 1 | 1 (1 + 0) | fuera-del-catalogo:unidades y conversiones | Conversiones de unidades: densidad, ángstrom, variaciones de temperatura |
+| 99 | Química | Velocidad media desde un gráfico | 1 | 1 (0 + 1) | quimica.cinetica-quimica | Leer concentraciones y velocidad media en gráficos concentración-tiempo |
+| 100 | Química | Viscosidad y forma molecular | 1 | 1 (0 + 1) | quimica.liquidos-y-solidos | Viscosidad según forma molecular y fuerzas intermoleculares |
+| 101 | Química | Viscosidad, tensión superficial y presión de vapor | 1 | 1 (0 + 1) | quimica.liquidos-y-solidos | Tensión superficial y viscosidad según fuerzas intermoleculares |
+| 102 | Química | Vitaminas | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Vitaminas hidro y liposolubles: estructura y funciones |
+| 103 | Química | Vitaminas como agentes redox | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Vitaminas antioxidantes como agentes reductores; lactona frente a lactama |
+| 104 | Química | Vitaminas y coenzimas | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Relación entre vitaminas y coenzimas |
+| 105 | Química | Vitaminas: síntesis de vitamina D | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Vitaminas liposolubles, esteroides y su ruta de activación |
 
 ## Huecos por unidad: preguntas sin cubrir del todo (no + medio)
 
 | # | Curso | Unidad | Sin cubrir | De | Periodos con alguna sin cubrir | Lo que más falta |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Razonamiento matemático | razonamiento-matematico.rutas-y-visualizacion-espacial | 44 | 54 | 13 | Rutas y caminos mínimos (18); Lectura de palabras en arreglos (14); Cubos, sólidos y vistas (12) |
-| 2 | Razonamiento matemático | razonamiento-matematico.traslados-y-puntos-cardinales | 30 | 33 | 12 | Rumbos y desplazamientos (14); Trasvases (7); Traslados de fichas y juegos (4) |
-| 3 | Razonamiento matemático | razonamiento-matematico.transformaciones-de-figuras | 27 | 41 | 12 | Rodamientos, ruedas y poleas (10); Simetrías y giros (8); Traslados de fichas y juegos (4) |
-| 4 | Química | quimica.biomoleculas-y-productos-naturales | 25 | 27 | 9 | Colorantes naturales: grupos funcionales (2); Carotenoides y vitaminas: estructura y oxidación (2); Grupos funcionales en hormonas (2) |
-| 5 | Razonamiento matemático | razonamiento-matematico.juegos-recreativos | 23 | 23 | 10 | Dados y dominó (13); Traslados de fichas y juegos (6); Rodamientos, ruedas y poleas (4) |
-| 6 | Razonamiento matemático | razonamiento-matematico.cortes-y-pesadas | 22 | 55 | 10 | Cortes y estacas (10); Balanzas y pesadas (6); Perímetros, áreas y particiones (4) |
-| 7 | Razonamiento matemático | razonamiento-matematico.certezas | 21 | 30 | 11 | Certezas (20); Verdades y mentiras (1) |
-| 8 | Razonamiento matemático | geometria.razonamiento-con-figuras | 17 | 26 | 10 | Cubos, sólidos y vistas (10); Conteo de figuras (3); Inducción y series (3) |
-| 9 | Razonamiento matemático | razonamiento-matematico.maximos-y-minimos | 16 | 25 | 9 | Máximos y mínimos (10); Traslados de fichas y juegos (3); Planteo y otros (2) |
-| 10 | Razonamiento matemático | razonamiento-matematico.razonamiento-deductivo | 14 | 32 | 10 | Ordenamiento y parentesco (5); Planteo y otros (5); Dados y dominó (2) |
-| 11 | Razonamiento matemático | fuera-del-catalogo:diagramas de flujo | 12 | 12 | 8 | Diagramas de flujo (12) |
-| 12 | Razonamiento matemático | razonamiento-matematico.cronometria-y-calendarios | 11 | 66 | 8 | Relojes (10); Calendarios (1) |
-| 13 | Química | quimica.funciones-organicas | 11 | 32 | 8 | Nomenclatura de compuestos polifuncionales (2); Hibridación e isomería en compuestos oxigenados (1); Nomenclatura de ácidos con otra función y fuerza ácida (1) |
-| 14 | Razonamiento matemático | razonamiento-matematico.arreglos-numericos | 10 | 30 | 7 | Arreglos numéricos (6); Cuadro de doble entrada (2); Inducción y series (1) |
-| 15 | Química | quimica.reacciones-y-balance | 10 | 24 | 7 | Clasificación de reacciones (5); Balance y clasificación de reacciones (1); Dismutación redox (1) |
-| 16 | Química | quimica.soluciones | 9 | 14 | 7 | Normalidad y miliequivalentes (3); Partes por millón (2); Mezcla de soluciones en miliequivalentes (1) |
-| 17 | Razonamiento matemático | razonamiento-matematico.trazos-y-perimetros | 9 | 33 | 7 | Papel doblado y cortado (3); Traslados de fichas y juegos (2); Cortes y estacas (1) |
-| 18 | Razonamiento matemático | razonamiento-matematico.planteo-de-ecuaciones | 9 | 21 | 6 | Planteo y otros (8); Máximos y mínimos (1) |
-| 19 | Razonamiento matemático | razonamiento-matematico.razonamiento-inductivo | 8 | 26 | 6 | Inducción y series (4); Frecuencia de sucesos (2); Cubos, sólidos y vistas (2) |
-| 20 | Química | quimica.estequiometria | 7 | 34 | 6 | Estequiometría con soluciones (1); Ley de un mineral y moles (1); Balance de materia en flotación (1) |
-| 21 | Química | quimica.hidrocarburos | 7 | 21 | 6 | Hibridación y electrones pi en polienos (1); Enlaces pi y sustituyentes en polienos (1); Insaturación, adición y moles (1) |
-| 22 | Química | quimica.enlace-quimico | 6 | 13 | 5 | Enlaces polares y octeto en moléculas orgánicas (1); Tipo de enlace según propiedades (1); Hidruros no metálicos: enlace y pares libres (1) |
-| 23 | Química | quimica.cinetica-quimica | 6 | 12 | 5 | Mecanismo: intermediario y catalizador (2); Mecanismo y orden de reacción (1); Velocidad media desde un gráfico (1) |
-| 24 | Razonamiento matemático | razonamiento-matematico.ruedas-poleas-engranajes | 6 | 12 | 3 | Rodamientos, ruedas y poleas (6) |
-| 25 | Química | quimica.estructura-atomica | 5 | 13 | 5 | Modelos atómicos: Dalton (1); Configuración de iones de transición y redox (1); Configuración, ubicación y enlace de un halógeno (1) |
-| 26 | Razonamiento matemático | fuera-del-catalogo:trasvases | 5 | 5 | 4 | Trasvases (5) |
-| 27 | Química | quimica.tabla-periodica | 4 | 8 | 4 | Configuración y ubicación de iones (1); Ubicación de un elemento (1); Metales de transición: configuración y grupo (1) |
-| 28 | Razonamiento matemático | razonamiento-matematico.frecuencia-de-sucesos | 4 | 16 | 4 | Frecuencia de sucesos (4) |
-| 29 | Razonamiento matemático | aritmetica.razonamiento-numerico | 4 | 7 | 4 | Planteo y otros (1); Rumbos y desplazamientos (1); Trasvases (1) |
-| 30 | Química | quimica.liquidos-y-solidos | 4 | 9 | 4 | Viscosidad y forma molecular (1); Sólidos iónicos y radio iónico (1); Calor de vaporización molar (1) |
-| 31 | Química | quimica.electroquimica | 3 | 21 | 3 | Acumulador de plomo (1); Celda de combustible microbiana (1); Diagrama de Pourbaix (1) |
-| 32 | Química | quimica.ambiente-y-quimica-aplicada | 3 | 12 | 3 | Esferas de la Tierra (1); Calentamiento global: lectura de gráfico (1); Contaminantes del aire, agua y suelo (1) |
-| 33 | Química | quimica.nomenclatura-inorganica | 3 | 10 | 3 | Fórmulas, mezclas y tipo de óxido (1); Configuración, nomenclatura y electrólisis de sales (1); Hidróxidos: estequiometría y disociación (1) |
-| 34 | Química | quimica.materia-y-energia | 3 | 6 | 2 | Ramas de la química (1); Escalas de temperatura (1); Isótopos radiactivos y vida media (1) |
+| 1 | Razonamiento matemático | razonamiento-matematico.traslados-y-puntos-cardinales | 28 | 33 | 12 | Rumbos y desplazamientos (14); Trasvases (7); Traslados de fichas y juegos (4) |
+| 2 | Química | quimica.biomoleculas-y-productos-naturales | 25 | 27 | 9 | Colorantes naturales: grupos funcionales (2); Carotenoides y vitaminas: estructura y oxidación (2); Grupos funcionales en hormonas (2) |
+| 3 | Razonamiento matemático | razonamiento-matematico.certezas | 21 | 30 | 11 | Certezas (20); Verdades y mentiras (1) |
+| 4 | Razonamiento matemático | razonamiento-matematico.cortes-y-pesadas | 16 | 55 | 9 | Cortes y estacas (10); Balanzas y pesadas (6) |
+| 5 | Razonamiento matemático | razonamiento-matematico.maximos-y-minimos | 15 | 25 | 9 | Máximos y mínimos (10); Traslados de fichas y juegos (3); Planteo y otros (2) |
+| 6 | Razonamiento matemático | razonamiento-matematico.rutas-y-visualizacion-espacial | 14 | 54 | 8 | Lectura de palabras en arreglos (14) |
+| 7 | Razonamiento matemático | razonamiento-matematico.razonamiento-deductivo | 12 | 32 | 9 | Ordenamiento y parentesco (5); Planteo y otros (5); Cuadro de doble entrada (1) |
+| 8 | Razonamiento matemático | fuera-del-catalogo:diagramas de flujo | 12 | 12 | 8 | Diagramas de flujo (12) |
+| 9 | Razonamiento matemático | razonamiento-matematico.cronometria-y-calendarios | 11 | 66 | 8 | Relojes (10); Calendarios (1) |
+| 10 | Química | quimica.funciones-organicas | 11 | 32 | 8 | Nomenclatura de compuestos polifuncionales (2); Hibridación e isomería en compuestos oxigenados (1); Nomenclatura de ácidos con otra función y fuerza ácida (1) |
+| 11 | Razonamiento matemático | razonamiento-matematico.arreglos-numericos | 10 | 30 | 7 | Arreglos numéricos (6); Cuadro de doble entrada (2); Inducción y series (1) |
+| 12 | Química | quimica.reacciones-y-balance | 10 | 24 | 7 | Clasificación de reacciones (5); Balance y clasificación de reacciones (1); Dismutación redox (1) |
+| 13 | Química | quimica.soluciones | 9 | 14 | 7 | Normalidad y miliequivalentes (3); Partes por millón (2); Mezcla de soluciones en miliequivalentes (1) |
+| 14 | Razonamiento matemático | razonamiento-matematico.planteo-de-ecuaciones | 9 | 21 | 6 | Planteo y otros (8); Máximos y mínimos (1) |
+| 15 | Química | quimica.estequiometria | 7 | 34 | 6 | Estequiometría con soluciones (1); Ley de un mineral y moles (1); Balance de materia en flotación (1) |
+| 16 | Química | quimica.hidrocarburos | 7 | 21 | 6 | Hibridación y electrones pi en polienos (1); Enlaces pi y sustituyentes en polienos (1); Insaturación, adición y moles (1) |
+| 17 | Química | quimica.enlace-quimico | 6 | 13 | 5 | Enlaces polares y octeto en moléculas orgánicas (1); Tipo de enlace según propiedades (1); Hidruros no metálicos: enlace y pares libres (1) |
+| 18 | Química | quimica.cinetica-quimica | 6 | 12 | 5 | Mecanismo: intermediario y catalizador (2); Mecanismo y orden de reacción (1); Velocidad media desde un gráfico (1) |
+| 19 | Razonamiento matemático | razonamiento-matematico.razonamiento-inductivo | 6 | 26 | 5 | Inducción y series (4); Frecuencia de sucesos (2) |
+| 20 | Razonamiento matemático | razonamiento-matematico.juegos-recreativos | 6 | 23 | 3 | Traslados de fichas y juegos (6) |
+| 21 | Razonamiento matemático | razonamiento-matematico.transformaciones-de-figuras | 5 | 41 | 5 | Traslados de fichas y juegos (4); Planteo y otros (1) |
+| 22 | Química | quimica.estructura-atomica | 5 | 13 | 5 | Modelos atómicos: Dalton (1); Configuración de iones de transición y redox (1); Configuración, ubicación y enlace de un halógeno (1) |
+| 23 | Razonamiento matemático | fuera-del-catalogo:trasvases | 5 | 5 | 4 | Trasvases (5) |
+| 24 | Química | quimica.tabla-periodica | 4 | 8 | 4 | Configuración y ubicación de iones (1); Ubicación de un elemento (1); Metales de transición: configuración y grupo (1) |
+| 25 | Razonamiento matemático | razonamiento-matematico.trazos-y-perimetros | 4 | 33 | 4 | Traslados de fichas y juegos (2); Cortes y estacas (1); Planteo y otros (1) |
+| 26 | Razonamiento matemático | razonamiento-matematico.frecuencia-de-sucesos | 4 | 16 | 4 | Frecuencia de sucesos (4) |
+| 27 | Razonamiento matemático | aritmetica.razonamiento-numerico | 4 | 7 | 4 | Planteo y otros (1); Rumbos y desplazamientos (1); Trasvases (1) |
+| 28 | Química | quimica.liquidos-y-solidos | 4 | 9 | 4 | Viscosidad y forma molecular (1); Sólidos iónicos y radio iónico (1); Calor de vaporización molar (1) |
+| 29 | Razonamiento matemático | geometria.razonamiento-con-figuras | 4 | 26 | 3 | Inducción y series (3); Traslados de fichas y juegos (1) |
+| 30 | Química | quimica.electroquimica | 3 | 21 | 3 | Acumulador de plomo (1); Celda de combustible microbiana (1); Diagrama de Pourbaix (1) |
+| 31 | Química | quimica.ambiente-y-quimica-aplicada | 3 | 12 | 3 | Esferas de la Tierra (1); Calentamiento global: lectura de gráfico (1); Contaminantes del aire, agua y suelo (1) |
+| 32 | Química | quimica.nomenclatura-inorganica | 3 | 10 | 3 | Fórmulas, mezclas y tipo de óxido (1); Configuración, nomenclatura y electrólisis de sales (1); Hidróxidos: estequiometría y disociación (1) |
+| 33 | Química | quimica.materia-y-energia | 3 | 6 | 2 | Ramas de la química (1); Escalas de temperatura (1); Isótopos radiactivos y vida media (1) |
 
 ## Preguntas por examen (registradas, con repetidas)
 
