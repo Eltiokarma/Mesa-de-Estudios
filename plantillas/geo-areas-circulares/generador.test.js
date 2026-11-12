@@ -93,7 +93,9 @@ function recalcular(p) {
         // Región = triángulo V(i)V(i+1)V(i+2) más el segmento sobre la cuerda V(i)V(i+1) (del lado opuesto a O).
         dentro = (x, y) => x * x + y * y <= 1 && piezas.some(([i, j, k]) => enTri(V(i), V(j), V(k), x, y) || lado(V(i), V(j), x, y) < 0);
       } else {
-        dentro = (x, y) => x * x + y * y <= 1 && [0, 1, 2, 3, 4, 5].some(i => lado(V(i), V(i + 1), x, y) < 0);
+        // n = 3: segmentos sobre AB, CD y EF; n = 2: sobre AB y BC (A = V(0), B = V(1), …).
+        const lados = d.n === 3 ? [0, 2, 4] : [0, 1];
+        dentro = (x, y) => x * x + y * y <= 1 && lados.some(i => lado(V(i), V(i + 1), x, y) < 0);
       }
       const clave = d.sub + (d.n || '');
       const unidad = UNIDAD_HEX[clave] = UNIDAD_HEX[clave] || cuadricula(dentro, -1, 1, -1, 1, 900); // área con R = 1
@@ -121,6 +123,9 @@ function recalcular(p) {
 }
 const igual = (es, valor) => Math.abs(es.x - deClave(valor)) <= es.tol * Math.max(1, Math.abs(es.x));
 probarGenerador(gen, { semillas: 600, recalcular, igual });
+// Fugas: la correcta no debe ser la «central» ni estar siempre en un extremo. Valor de la clave q|p.
+const { probarFugas } = require('../../nucleo/probar-generador.js');
+probarFugas(gen, { valorNumerico: a => deClave(a.valor) });
 
 for (const c of casos.casos) {
   test(`casos.json: semilla ${c.semilla}`, () => {

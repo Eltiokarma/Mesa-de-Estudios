@@ -95,7 +95,7 @@
       },
       "esperado": {
         "respuesta": 2.2831853071795862,
-        "exacta": "(2π − 4) cm²"
+        "exacta": "2(π − 2) cm²"
       }
     },
     {
@@ -135,7 +135,7 @@
       },
       "esperado": {
         "respuesta": 85.84073464102067,
-        "exacta": "(400 − 100π) cm²"
+        "exacta": "100(4 − π) cm²"
       }
     },
     {
@@ -178,7 +178,7 @@
       },
       "esperado": {
         "respuesta": 9.132741228718345,
-        "exacta": "(8π − 16) m²"
+        "exacta": "8(π − 2) m²"
       }
     },
     {
@@ -201,12 +201,13 @@
         "tipo": "lunulas",
         "sub": "hex-segmentos",
         "u": "cm",
-        "Spi": 64,
-        "Sr3": -96
+        "n": 3,
+        "Spi": 18,
+        "Sr3": -27
       },
       "esperado": {
-        "respuesta": 50.26548245743669,
-        "exacta": "16π cm"
+        "respuesta": 37.69911184307752,
+        "exacta": "12π cm"
       }
     },
     {
@@ -214,11 +215,12 @@
       "entrada": {
         "tipo": "concentricas",
         "sub": "razon",
-        "m": 5
+        "m": 7,
+        "n": 4
       },
       "esperado": {
-        "respuesta": 9,
-        "exacta": "9"
+        "respuesta": 13,
+        "exacta": "13"
       }
     },
     {
@@ -255,11 +257,11 @@
         "tipo": "sombreada",
         "sub": "logo-tangente",
         "u": "dm",
-        "r": 5
+        "r": 6
       },
       "esperado": {
-        "respuesta": 164.38055098076552,
-        "exacta": "(400 − 75π) dm²"
+        "respuesta": 236.70799341230236,
+        "exacta": "(576 − 108π) dm²"
       }
     },
     {
@@ -281,11 +283,11 @@
         "tipo": "sombreada",
         "sub": "rect-tres",
         "u": "cm",
-        "r": 6
+        "r": 1
       },
       "esperado": {
-        "respuesta": 61.805328941534896,
-        "exacta": "(288 − 72π) cm²"
+        "respuesta": 1.7168146928204138,
+        "exacta": "2(4 − π) cm²"
       }
     },
     {
@@ -303,16 +305,16 @@
       }
     },
     {
-      "semilla": 76,
+      "semilla": 137,
       "entrada": {
         "tipo": "lunulas",
         "sub": "dos-cuadrantes",
-        "u": "cm",
-        "l": 6
+        "u": "m",
+        "l": 10
       },
       "esperado": {
-        "respuesta": 20.548667764616276,
-        "exacta": "(18π − 36) cm²"
+        "respuesta": 57.07963267948966,
+        "exacta": "(50π − 100) m²"
       }
     },
     {
@@ -334,11 +336,11 @@
         "tipo": "lunulas",
         "sub": "cuadricula",
         "u": "m",
-        "a": 6
+        "a": 8
       },
       "esperado": {
-        "respuesta": 72,
-        "exacta": "72 m²"
+        "respuesta": 128,
+        "exacta": "128 m²"
       }
     }
   ]
