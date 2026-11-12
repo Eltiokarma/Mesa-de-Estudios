@@ -504,3 +504,9 @@ Hice fetch y merge, pero la principal no trae nada nuevo. `npm test` da 5134 de 
 ## 11 nov 2026 · Sin pieza pendiente
 
 Hice fetch y merge, pero la principal no trae nada nuevo. `npm test` da 5134 de 5134. Es la cuarta ejecución seguida sin trabajo.
+
+---
+
+## 12 nov 2026 · Rutina apagada
+
+Gerson pidió apagarla. La tarea programada «Rutina diaria de razonamiento verbal» quedó desactivada, no borrada: se puede volver a prender con su historial. El trabajo queda todo en `rutina/verbal`: 30 textos, 21 ejercicios, la guía y el informe, ya integrados en la principal.
