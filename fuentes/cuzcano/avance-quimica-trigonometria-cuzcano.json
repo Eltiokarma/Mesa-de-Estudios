@@ -1,16 +1,16 @@
 {
   "schema_version": 1,
-  "fecha_utc": "2026-11-12T20:52:30.012973+00:00",
+  "fecha_utc": "2026-11-12T22:36:13.253742+00:00",
   "estado": "en_curso",
   "origen": "Escaneos de Cuzcano",
   "objetivo_nuevas": 2000,
   "objetivo_temas": 20,
-  "fichas_nuevas": 157,
-  "fichas_pendientes": 1843,
-  "porcentaje_del_lote": 7.85,
-  "fichas_acumuladas_banco": 9539,
-  "temas_banco_con_100_acumuladas": 58,
-  "paginas_pdf_distintas_cotejadas": 46,
+  "fichas_nuevas": 490,
+  "fichas_pendientes": 1510,
+  "porcentaje_del_lote": 24.5,
+  "fichas_acumuladas_banco": 9872,
+  "temas_banco_con_100_acumuladas": 63,
+  "paginas_pdf_distintas_cotejadas": 106,
   "ocr_repetido": false,
   "lectura_local": "fuentes/ocr-local/cuzcano/cobertura-temas/avance-detallado.html",
   "cursos": [
@@ -129,19 +129,19 @@
       "id": "trigonometria",
       "curso": "Trigonometría",
       "meta": 1000,
-      "nuevas": 90,
-      "pendientes": 910,
-      "porcentaje_del_lote": 9,
-      "temas_con_fichas_nuevas": 5,
-      "nuevas_con_observaciones": 15,
-      "acumuladas": 1200,
+      "nuevas": 423,
+      "pendientes": 577,
+      "porcentaje_del_lote": 42.3,
+      "temas_con_fichas_nuevas": 10,
+      "nuevas_con_observaciones": 74,
+      "acumuladas": 1533,
       "temas_del_curso": 13,
-      "temas_del_curso_con_100_acumuladas": 6,
+      "temas_del_curso_con_100_acumuladas": 11,
       "indice_local": "fuentes/ocr-local/cuzcano/lote-trigonometria-1000-cuzcano/fichas.json",
-      "sha256_indice_local": "7749bd572962221328607c71e625f6023a2e36125d4ce546635c1393e3bd0b10",
+      "sha256_indice_local": "1bc11aa0e22b2b9ac0642cdd36b03f3ccb51da532c5288f3017eb12e0281ad97",
       "recursos_visuales": {
-        "tabla_propia": 57,
-        "grafica_cartesiana_propia": 32,
+        "tabla_propia": 309,
+        "grafica_cartesiana_propia": 113,
         "recta_numerica_propia": 1
       },
       "temas": [
@@ -166,11 +166,11 @@
         {
           "id": "trigonometria.identidades-de-arcos-compuestos",
           "tema": "Identidades de arcos compuestos",
-          "nuevas": 0,
+          "nuevas": 100,
           "meta": 100,
-          "pendientes": 100,
-          "porcentaje_del_lote": 0,
-          "acumuladas": 83
+          "pendientes": 0,
+          "porcentaje_del_lote": 100,
+          "acumuladas": 183
         },
         {
           "id": "trigonometria.identidades-de-arcos-multiples",
@@ -184,11 +184,11 @@
         {
           "id": "trigonometria.razones-trigonometricas-de-un-angulo-en-posicion-normal",
           "tema": "Razones trigonométricas de un ángulo en posición normal",
-          "nuevas": 0,
+          "nuevas": 61,
           "meta": 100,
-          "pendientes": 100,
-          "porcentaje_del_lote": 0,
-          "acumuladas": 83
+          "pendientes": 39,
+          "porcentaje_del_lote": 61,
+          "acumuladas": 144
         },
         {
           "id": "trigonometria.resolucion-de-triangulos-oblicuangulos",
@@ -202,20 +202,20 @@
         {
           "id": "trigonometria.transformaciones-trigonometricas",
           "tema": "Transformaciones trigonométricas",
-          "nuevas": 0,
+          "nuevas": 37,
           "meta": 100,
-          "pendientes": 100,
-          "porcentaje_del_lote": 0,
-          "acumuladas": 83
+          "pendientes": 63,
+          "porcentaje_del_lote": 37,
+          "acumuladas": 120
         },
         {
           "id": "trigonometria.ecuaciones-e-inecuaciones-trigonometricas",
           "tema": "Ecuaciones e inecuaciones trigonométricas",
-          "nuevas": 0,
+          "nuevas": 45,
           "meta": 100,
-          "pendientes": 100,
-          "porcentaje_del_lote": 0,
-          "acumuladas": 84
+          "pendientes": 55,
+          "porcentaje_del_lote": 45,
+          "acumuladas": 129
         },
         {
           "id": "trigonometria.funciones-trigonometricas-directas",
@@ -229,13 +229,18 @@
         {
           "id": "trigonometria.identidades-trigonometricas-fundamentales",
           "tema": "Identidades trigonométricas fundamentales",
-          "nuevas": 0,
+          "nuevas": 90,
           "meta": 100,
-          "pendientes": 100,
-          "porcentaje_del_lote": 0,
-          "acumuladas": 84
+          "pendientes": 10,
+          "porcentaje_del_lote": 90,
+          "acumuladas": 174
         }
       ]
     }
-  ]
+  ],
+  "primera_tanda": {
+    "meta": 400,
+    "nuevas": 333,
+    "pendientes": 67
+  }
 }
