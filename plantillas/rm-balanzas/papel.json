@@ -99,6 +99,23 @@
         "En un solo platillo serían 3 + 0 + 9 + 7 = 19 pesas."
       ],
       "verificar": [ { "fn": "unaPesada", "args": [{ "base": 10, "cantidad": 3097 }], "espera": { "respuesta": 7 } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Cada figura pesa un número entero de kilogramos. Balanza 1 (en equilibrio): un círculo y un cuadrado pesan lo mismo que un triángulo y una pesa de 4 kg. Balanza 2 (en equilibrio): un cuadrado y un triángulo pesan lo mismo que un círculo y una pesa de 6 kg. Balanza 3: de un lado un círculo y un cuadrado, del otro un cuadrado y una pesa de 2 kg, y baja el platillo de la pesa. ¿Cuánto pesan juntos 2 cuadrados y un triángulo?",
+      "respuesta": "12 kg.",
+      "pasos": [
+        "Sumando las balanzas 1 y 2 se cancelan círculo y triángulo: 2 cuadrados = 4 + 6, así que un cuadrado pesa 5 kg.",
+        "De la balanza 1: triángulo = círculo + 5 − 4 = círculo + 1.",
+        "Balanza 3: el círculo pesa menos que 2 kg (el cuadrado se cancela) y es entero positivo: círculo = 1 kg, triángulo = 2 kg.",
+        "Dos cuadrados y un triángulo: 10 + 2 = 12 kg."
+      ],
+      "verificar": [ { "fn": "combinado", "args": [ { "balanzas": [
+        { "izq": { "circulo": 1, "cuadrado": 1 }, "der": { "triangulo": 1, "pesa": 4 }, "estado": "equilibrio" },
+        { "izq": { "cuadrado": 1, "triangulo": 1 }, "der": { "circulo": 1, "pesa": 6 }, "estado": "equilibrio" },
+        { "izq": { "circulo": 1, "cuadrado": 1 }, "der": { "cuadrado": 1, "pesa": 2 }, "estado": "der-baja" } ],
+        "pide": { "cuadrado": 2, "triangulo": 1 } } ], "espera": { "respuesta": 12 } } ]
     }
   ]
 }

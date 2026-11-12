@@ -2,7 +2,7 @@
   "plantilla": "rm-certezas",
   "tolerancia": 0,
   "nota": "La respuesta es el número mínimo de extracciones (o de intentos) para estar seguro: el mayor grupo que se puede sacar sin lograr lo pedido, más 1 (en llaves, la suma de los intentos que fallan en el peor caso). En cajas la respuesta es una clave: 'A', 'B' o 'mezcla' (el contenido o el rótulo de la caja) o 'no-se-sabe'.",
-  "verificacion": "Verificación ciega (12 nov 2026, subagente verificador): 50 casos resueltos sin ver el generador. Peor caso por búsqueda exhaustiva propia (máximo subconjunto que no cumple, sobre pares y tríos) y enumeración de cantidades por color, lado o billete; cajas por enumeración de las 6 asignaciones; llaves por la suma (n−1)+…+1; fechas con 366 casillas. 50/50 coinciden. Las correcciones de la revisión no cambiaron ninguna respuesta.",
+  "verificacion": "Verificación ciega (12 nov 2026, subagente verificador): 50 casos resueltos sin ver el generador. Peor caso por búsqueda exhaustiva propia (máximo subconjunto que no cumple, sobre pares y tríos) y enumeración de cantidades por color, lado o billete; cajas por enumeración de las 6 asignaciones; llaves por la suma (n−1)+…+1; fechas con 366 casillas. 50/50 coinciden. Las correcciones de la revisión no cambiaron ninguna respuesta. Cierre-100 (12 nov 2026): los casos nuevos se resolvieron a ciegas por fuerza bruta propia (conjunto independiente máximo en pareja-color, simulación en cumpleaños con ya, minimax sobre los repartos en cajas-abrir): 8/8 coinciden. Cumpleaños cuenta 366 fechas (la trampa de 365 está entre las alternativas, a propósito).",
   "casos": [
     {
       "semilla": "entrada-1",
@@ -690,6 +690,116 @@
       "esperado": {
         "respuesta": 3
       }
+    },
+    {
+      "semilla": "cierre-27",
+      "entrada": {
+        "tipo": "pareja-color",
+        "N": 6,
+        "S": 8,
+        "colores": [
+          "grises",
+          "negros"
+        ]
+      },
+      "esperado": {
+        "respuesta": 9
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "cierre-1",
+      "entrada": {
+        "tipo": "cumpleanos",
+        "casilla": "fecha",
+        "k": 3,
+        "ya": 684
+      },
+      "esperado": {
+        "respuesta": 49
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "cierre-8",
+      "entrada": {
+        "tipo": "pareja-color",
+        "N": 5,
+        "S": 7,
+        "colores": [
+          "marrones",
+          "azules"
+        ]
+      },
+      "esperado": {
+        "respuesta": 7
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "cierre-10",
+      "entrada": {
+        "tipo": "cumpleanos",
+        "casilla": "fecha",
+        "k": 3,
+        "ya": 501
+      },
+      "esperado": {
+        "respuesta": 232
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "cierre-11",
+      "entrada": {
+        "tipo": "pareja-color",
+        "N": 6,
+        "S": 6,
+        "colores": [
+          "blancos",
+          "marrones"
+        ]
+      },
+      "esperado": {
+        "respuesta": 9
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "cierre-45",
+      "entrada": {
+        "tipo": "cajas-abrir",
+        "c": 5,
+        "y": 5
+      },
+      "esperado": {
+        "respuesta": 4
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "cierre-51",
+      "entrada": {
+        "tipo": "cajas-abrir",
+        "c": 4,
+        "y": 4
+      },
+      "esperado": {
+        "respuesta": 3
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "cierre-58",
+      "entrada": {
+        "tipo": "cajas-abrir",
+        "c": 6,
+        "y": 6
+      },
+      "esperado": {
+        "respuesta": 5
+      },
+      "nuevo": "cierre-100"
     }
   ]
 }

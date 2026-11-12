@@ -134,8 +134,32 @@ function recalcularAsignacion(d) {
   return ciertas[0];
 }
 
+// puntajes: otro evaluador de las pistas (por quién tiene cada dado y comparaciones entre los tres), todas las
+// combinaciones de reparto y puntajes; se exige un solo reparto y que el máximo por persona sea un caso válido.
+function recalcularPuntajes(d) {
+  const L = d.lanz, valido = [];
+  const dueno = (col, c) => [0, 1, 2].find(p => col[p] === c);
+  const pistaOk = (q, col, s) => {
+    if (q.t === 'paridad') return [0, 1, 2].every(p => (s[p] % 2 === 1) === (q.par === 'impar'));
+    if (q.t === 'no') return col[q.p] !== q.c;
+    const w = dueno(col, q.c), otros = [0, 1, 2].filter(p => p !== w);
+    if (q.t === 'mayor') return w !== q.p && s[q.p] > s[w];
+    if (q.t === 'menor-todos') return otros.every(p => s[p] > s[w]);
+    return otros.every(p => s[p] < s[w]);
+  };
+  for (const col of [[0, 1, 2], [0, 2, 1], [1, 0, 2], [1, 2, 0], [2, 0, 1], [2, 1, 0]])
+    for (let a = L; a <= 6 * L; a++) for (let b = L; b <= 6 * L; b++) for (let c = L; c <= 6 * L; c++)
+      if (d.pistas.every(q => pistaOk(q, col, [a, b, c]))) valido.push({ col, s: [a, b, c] });
+  const repartos = new Set(valido.map(x => x.col.join('')));
+  assert.equal(repartos.size, 1, 'el reparto de dados debe ser único');
+  const max = [0, 1, 2].map(p => Math.max(...valido.map(x => x.s[p])));
+  assert.ok(valido.some(x => x.s.every((z, p) => z === max[p])), 'los máximos no se alcanzan a la vez');
+  return `pt:${max[d.persona]}:${valido[0].col[d.persona]}`;
+}
+
 function recalcular(p) {
   const d = p._datos;
+  if (d.tipo === 'puntajes') return recalcularPuntajes(d);
   if (d.tipo === 'silogismo') return recalcularSilogismo(d);
   if (d.tipo === 'siempre-cierto') return recalcularSiempre(d);
   return recalcularAsignacion(d);
@@ -143,6 +167,24 @@ function recalcular(p) {
 probarGenerador(gen, { semillas: 600, recalcular, igual: (a, b) => a === b });
 
 // ---------------------------------------------------------------- más pruebas
+test('puntajes: sale con semillas de práctica, cada pista hace falta y no hay dos pistas iguales', () => {
+  let vistos = 0;
+  for (let s = 1; s <= 300; s++) {
+    const p = gen.generar(`ana-${s}`); if (p._datos.tipo !== 'puntajes') continue;
+    vistos++;
+    const d = p._datos;
+    assert.equal(recalcularPuntajes(d), p.respuesta.valor, `ana-${s}`);
+    assert.ok(d.pistas.some(q => q.t === 'paridad'));
+    assert.ok(d.pistas.length >= 3 && d.pistas.length <= 5);
+    d.pistas.filter(q => q.t !== 'paridad').forEach((q, i) => {
+      const sin = gen.calc.puntajes({ lanz: d.lanz, pistas: d.pistas.filter(x => x !== q), persona: d.persona }).respuesta;
+      assert.ok(!sin || `pt:${sin.puntaje}:${sin.color}` !== p.respuesta.valor, `ana-${s}: la pista ${i} sobra`);
+    });
+  }
+  assert.ok(vistos > 30, `solo ${vistos}`);
+  for (const pre of ['entrada', 'salida']) for (let s = 1; s <= 30; s++) assert.notEqual(gen.generar(`${pre}-${s}`)._datos.tipo, 'puntajes');
+});
+
 test('salen los tres tipos (y los dos modos de asignación) en 200 semillas', () => {
   const tipos = new Set();
   for (let s = 0; s < 200; s++) { const d = gen.generar(s)._datos; tipos.add(d.tipo + (d.modo ? ':' + d.modo : '')); }

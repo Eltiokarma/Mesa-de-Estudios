@@ -179,3 +179,23 @@ Todos en hipótesis (sin dato publicado). Columnas: código · id en el generado
 - rm-relojes, «retraso» y «jornada»: AR5-hora-de-fin, AR5-la-hora, AR5-duracion-del-turno, RMP48-pasado-por-falta, RMP44-am-pm.
 
 Nota: RMP41-tramo-invertido y RMP41-suma-de-posiciones son ids nuevos dentro de la familia RMP41 (invertir el sentido); la sesión principal decide si les da fila propia en el informe.
+
+## Certezas con color, cumpleaños con «ya», cajas que se abren y balanzas con peso combinado (`rm-certezas`, `rm-balanzas`, `rm-deduccion`, cierre-100, 12 nov 2026)
+
+| Código | Error | Trampa de la que sale | Generador |
+| --- | --- | --- | --- |
+| RMP90-un-color | En el peor caso solo salen todos los de un color y el siguiente sirve (N + 1); se olvidan los números sin pareja del otro color | UNMSM 2023-I #28 | rm-certezas pareja-color |
+| RMP91-una-copia | Contar como si hubiera un solo bolo de cada número (ignora la copia del otro color) | UNMSM 2023-I #28 | rm-certezas pareja-color |
+| RMP92-sin-restar | Calcular el total de personas para el palomar y no restar las que ya hay | UNMSM 2024-II #21 | rm-certezas cumpleanos con ya |
+| RMP93-sin-bisiesto-ya | Usar 365 fechas (olvidar el 29 de febrero) en el «cuántos más» | UNMSM 2024-II #21 | rm-certezas cumpleanos con ya |
+| RMP94-sin-deducir-ultima | Abrir también la última caja rotulada «amarillo» (r + 1), sin deducirla | UNMSM 2025-II #30 | rm-certezas cajas-abrir |
+| RMP95-deduce-de-mas | Creer que se deducen dos cajas a la vez (r − 1) | UNMSM 2025-II #30 | rm-certezas cajas-abrir |
+| RMP96-una-por-color | Contar una caja por cada color distinto (c) | UNMSM 2025-II #30 | rm-certezas cajas-abrir |
+| RMP97-casi-todas | Abrir casi todas las cajas (n − 1), sin ver que las de rótulo de color ya se saben | UNMSM 2025-II #30 | rm-certezas cajas-abrir |
+| RMP98-sin-la-tercera | Resolver solo con las dos balanzas en equilibrio y tomar uno de los pesos que las cumplen, sin usar la desequilibrada | UNMSM 2024-I #20 | rm-balanzas combinado |
+| RMP99-borde | Tomar el borde de la desigualdad de la balanza desequilibrada como igualdad | UNMSM 2024-I #20 | rm-balanzas combinado |
+
+## Ids que cuelgan de códigos que ya existían (sin código nuevo)
+- rm-balanzas combinado: RMP38-otra-combinacion (falta contar una figura pedida), RMP38-una-sola (cada figura una vez), RMP38-suma-pesas (suma las pesas de las balanzas). Son variantes del RMP38 (plantear mal las balanzas).
+- rm-deduccion puntajes: RMP72-pista-sin-revisar (reparto o puntaje que sale al ignorar una pista), RMP72-dado-cruzado (puntaje de una persona con el dado de otra), RMP2-sin-maximizar (puntaje posible que no es el mayor). Variantes de RMP72 y RMP2.
+- rm-certezas: RM6-favorable, RMP34-sin-mas-uno, RMP34-mas-uno reutilizados en los tipos nuevos.

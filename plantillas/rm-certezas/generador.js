@@ -23,10 +23,13 @@
  *   suma-cifras    { tipo, desde, hasta, k }                      k fichas con la misma suma de cifras
  *   llaves         { tipo, n }                                    n llaves y n candados
  *   cajas          { tipo, pide: 'cual' | 'contenido', etiquetas, sale, rotulo }   tres cajas con rótulos todos errados
+ *   pareja-color   { tipo, N, S, colores }                        (nuevo, cierre-100) dos colores con 1..N cada uno; dos de distinto color y de número distinto que sumen S
+ *   cumpleanos     { tipo, casilla: 'fecha', k, ya }              (nuevo) con «ya» personas, ¿cuántas más? (ya ausente = 0)
+ *   cajas-abrir    { tipo, c, y }                                  (nuevo) c cajas de color distinto y y = c de amarillas, todos los rótulos errados: ¿cuántas abrir?
  *
  * calc (funciones puras; cada una devuelve { respuesta, peor, ... }, peor = un grupo del peor caso cuando aplica):
  *   colores, guantes, divisibilidad, sumaSupera, parejaSuma, trioSuma, consecutivos, paridad, diferencia,
- *   division, primos, billetes, cumpleanos, sumaCifras, llaves, cajas, esPrimo, sumaDeCifras.
+ *   division, primos, billetes, cumpleanos, sumaCifras, llaves, cajas, parejaColor, cajasAbrir, esPrimo, sumaDeCifras.
  *
  * Errores (todos hipótesis; RM6 es hipótesis en docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md):
  *   RM6-favorable            el caso favorable (la buena suerte) en vez del peor caso
@@ -35,6 +38,11 @@
  *   RMP32-…                  contar mal el conjunto (sin restar los comunes, contar los que sí sirven)
  *   RMP33-…                  palomar con casillas mal contadas (sin el 29 de febrero, sumas con pocos casos)
  *   RMP34-…                  el paso final: sin el +1, un +1 de más, el último intento que ya se sabe
+ *   RMP90 a RMP97            (cierre-100) pareja de distinto color y número, «cuántas más» y cajas que se abren: ver
+ *                            los ids en tParejaColor, tCumpleanosYa y tCajasAbrir
+ *
+ * Los tipos nuevos solo salen con semillas de práctica (texto que no sea entrada-… ni salida-…) y con semillas
+ * numéricas desde 400, para que los casos ya verificados con semillas chicas no cambien (ver «generar»).
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -51,7 +59,7 @@
   const f = x => P.formatear(x, 0);
   const rango = (a, b) => { const r = []; for (let x = a; x <= b; x++) r.push(x); return r; };
   const suma = l => l.reduce((s, x) => s + x, 0);
-  const SINGULAR = { canicas: 'canica', bolas: 'bola', fichas: 'ficha', guantes: 'guante', zapatos: 'zapato', cartas: 'carta', tarjetas: 'tarjeta', discos: 'disco', pesas: 'pesa', bolos: 'bolo', billetes: 'billete', personas: 'persona', intentos: 'intento' };
+  const SINGULAR = { canicas: 'canica', bolas: 'bola', fichas: 'ficha', guantes: 'guante', zapatos: 'zapato', cartas: 'carta', tarjetas: 'tarjeta', discos: 'disco', pesas: 'pesa', bolos: 'bolo', billetes: 'billete', personas: 'persona', intentos: 'intento', cajas: 'caja', estudiantes: 'estudiante', niños: 'niño', socios: 'socio' };
   const singular = u => SINGULAR[u] || u;
   const cuantos = (n, u) => `${n} ${n === 1 ? singular(u) : u}`;
   const lista = l => l.length <= 1 ? l.join('') : l.slice(0, -1).join(', ') + ' y ' + l[l.length - 1];
@@ -163,7 +171,49 @@
     return { respuesta: malo + 1, malo, detalle };
   }
   const CASILLAS = { fecha: 366, mes: 12, semana: 7, 'dia-mes': 31 };
-  function cumpleanos({ casilla, k }) { const c = CASILLAS[casilla]; return { respuesta: c * (k - 1) + 1, casillas: c }; }
+  // Con «ya» personas ya preguntadas (o matriculadas), en el peor caso ninguna coincide: faltan (peor caso total) − ya.
+  function cumpleanos({ casilla, k, ya = 0 }) { const c = CASILLAS[casilla]; return { respuesta: c * (k - 1) + 1 - ya, casillas: c, total: c * (k - 1) + 1 }; }
+  // Dos colores, números 1..N en cada uno. Se piden dos bolos de color distinto y de numeración distinta que sumen S.
+  // Peor caso: todos los de un color (entre ellos no hay pareja de colores distintos) y del otro color solo los
+  // números sin pareja posible: los que no tienen su complemento S − x en 1..N, o cuyo complemento es ellos mismos.
+  function parejaColor({ N, S }) {
+    const solos = [], parejas = []; let mitad = null;
+    for (let x = 1; x <= N; x++) {
+      const y = S - x;
+      if (y === x) mitad = x;
+      else if (y >= 1 && y <= N) { if (x < y) parejas.push([x, y]); }
+      else solos.push(x);
+    }
+    const sinPareja = solos.length + (mitad ? 1 : 0), malo = N + sinPareja;
+    return { respuesta: malo + 1, malo, solos, parejas, mitad, sinPareja };
+  }
+  // c cajas con canicas de un color distinto cada una y c cajas más con canicas amarillas. Los rótulos son los mismos
+  // colores (uno por cada color, y c con «amarillo») y todos están errados. Se abren cajas una a una, eligiendo cuál
+  // según lo visto; el mínimo que asegura poder rotular todo es el menor, en el peor caso, entre todas las estrategias.
+  function cajasAbrir({ c, y }) {
+    const n = c + y, rot = [...Array(c).keys(), ...Array(y).fill(c)], reparto = [];
+    const queda = {}; rot.forEach(x => { queda[x] = (queda[x] || 0) + 1; });
+    (function rec(i, cur) {
+      if (i === n) { reparto.push(cur.slice()); return; }
+      for (const k of Object.keys(queda)) {
+        if (queda[k] > 0 && +k !== rot[i]) { queda[k]--; cur.push(+k); rec(i + 1, cur); cur.pop(); queda[k]++; }
+      }
+    })(0, []);
+    const memo = new Map();
+    function mejor(idx) {
+      if (idx.length <= 1) return 0;
+      const clave = idx.join(',');
+      if (memo.has(clave)) return memo.get(clave);
+      let m = Infinity;
+      for (let b = 0; b < n; b++) {
+        const g = {}; for (const i of idx) (g[reparto[i][b]] = g[reparto[i][b]] || []).push(i);
+        const gs = Object.values(g); if (gs.length === 1) continue;
+        m = Math.min(m, 1 + Math.max(...gs.map(mejor)));
+      }
+      memo.set(clave, m); return m;
+    }
+    return { respuesta: mejor(reparto.map((_, i) => i)), repartos: reparto.length };
+  }
   function sumaCifras({ desde, hasta, k }) {
     const cuenta = {};
     for (let x = desde; x <= hasta; x++) { const s = sumaDeCifras(x); cuenta[s] = (cuenta[s] || 0) + 1; }
@@ -192,7 +242,7 @@
   }
 
   const calc = { colores, guantes, divisibilidad, sumaSupera, parejaSuma, trioSuma, consecutivos, paridad, diferencia,
-    division, primos, billetes, cumpleanos, sumaCifras, llaves, cajas, esPrimo, sumaDeCifras };
+    division, primos, billetes, cumpleanos, sumaCifras, llaves, cajas, parejaColor, cajasAbrir, esPrimo, sumaDeCifras };
 
   // ======================= redacción =======================
   const TIPOS = ['colores', 'guantes', 'divisibilidad', 'suma-supera', 'pareja-suma', 'trio-suma', 'consecutivos', 'paridad',
@@ -203,9 +253,14 @@
   const RECIPIENTES = ['una caja', 'una bolsa', 'un ánfora', 'una urna'];
   const SEGURO = 'para estar seguro de';
 
+  const NUEVOS = ['pareja-color', 'cumpleanos-ya', 'cajas-abrir'];
+  const conNuevos = s => (typeof s === 'number' ? s >= 400 : !/^(entrada|salida)-/.test(s));
+
   function generar(semilla) {
     const rng = Azar.crear(ID + '|' + semilla);
-    const tipo = rng.elegir(TIPOS);
+    let tipo = rng.elegir(TIPOS);
+    // Tipos nuevos (cierre-100): sorteo aparte, para que las semillas ya fijadas en casos.json no cambien.
+    if (conNuevos(semilla)) { const lado = Azar.crear(ID + '+nuevos|' + semilla); if (lado.sig() < 0.3) tipo = lado.elegir(NUEVOS); }
     for (let intento = 0; intento < 60; intento++) {
       const p = construir(rng, semilla, tipo);
       if (p && p.alternativas.length >= 4) return p;
@@ -233,7 +288,8 @@
   function construir(rng, semilla, tipo) {
     const fn = { colores: tColores, guantes: tGuantes, divisibilidad: tDivisibilidad, 'suma-supera': tSumaSupera, 'pareja-suma': tParejaSuma,
       'trio-suma': tTrioSuma, consecutivos: tConsecutivos, paridad: tParidad, diferencia: tDiferencia, division: tDivision, primos: tPrimos,
-      billetes: tBilletes, cumpleanos: tCumpleanos, 'suma-cifras': tSumaCifras, llaves: tLlaves, cajas: tCajas }[tipo];
+      billetes: tBilletes, cumpleanos: tCumpleanos, 'suma-cifras': tSumaCifras, llaves: tLlaves, cajas: tCajas,
+      'pareja-color': tParejaColor, 'cumpleanos-ya': tCumpleanosYa, 'cajas-abrir': tCajasAbrir }[tipo];
     return fn(rng, semilla);
   }
 
@@ -775,6 +831,86 @@
       ];
     }
     return cerrar(rng, semilla, { correcta, errores, enunciado, pregunta, solucion, variables, datos, texto: true });
+  }
+
+  // ---------- dos de distinto color y número que sumen S (nuevo) ----------
+  function tParejaColor(rng, semilla) {
+    const N = rng.entero(5, 8), S = rng.entero(Math.floor(N / 2) + 3, N + 4);
+    const [c1, c2] = rng.barajar(Object.keys(SING_M)).slice(0, 2);
+    const datos = { tipo: 'pareja-color', N, S, colores: [c1, c2] };
+    const R = parejaColor(datos), r = R.respuesta;
+    if (!R.solos.length || R.parejas.length < 2) return null;
+    const variables = { N: { nombre: 'números de cada color', color: 'o' }, S: { nombre: 'suma pedida', color: 'i' } };
+    const enunciado = ['Una urna tiene ', v('N', `${2 * N} bolos`), `: ${N} ${c1} numerados del 1 al ${N} (uno de cada número) y ${N} ${c2} numerados también del 1 al ${N}. Se sacan al azar, sin mirar.`];
+    const pregunta = [`¿Cuántos bolos hay que sacar como mínimo ${SEGURO} tener dos de distinto color y de numeración distinta cuya suma sea `, v('S', `${S}`), '?'];
+    const errores = [
+      h('RM6-favorable', 2, 'Ese es el caso con suerte: que los dos primeros sean justo la pareja pedida. Para estar seguro hay que pensar en la peor suerte.'),
+      h('RMP90-un-color', N + 1, `Pensaste que en el peor caso salen todos los bolos de un color y que el siguiente ya sirve. Pero del otro color pueden salir antes los números que no tienen pareja (${listaN(R.mitad ? R.solos.concat([R.mitad]).sort((a, b) => a - b) : R.solos)}).`),
+      h('RMP91-una-copia', R.solos.length + R.parejas.length + (R.mitad ? 1 : 0) + 1, 'Contaste como si hubiera un solo bolo de cada número. Pero cada número está dos veces (una por color), y el peor caso se queda con las dos copias de cada número que se pueda.'),
+      masUno(r, 'uno'),
+      masDos(r),
+    ];
+    const sinP = R.mitad ? R.solos.concat([R.mitad]).sort((a, b) => a - b) : R.solos;
+    const solucion = [
+      ['Pares de números que suman ', v('S', `${S}`), ': ', R.parejas.map(p => `${p[0]} y ${p[1]}`).join('; '), '. ', R.mitad ? `El ${R.mitad} necesitaría otro ${R.mitad}, pero la numeración debe ser distinta, así que no cuenta.` : ''],
+      [`Sin pareja posible: ${listaN(sinP)}.`],
+      [`Peor caso: salen todos los ${c1} (${N}), porque entre bolos del mismo color no vale ninguna pareja, y de los ${c2} solo los que no tienen pareja: ${sinP.length}. Son ${N} + ${sinP.length} = ${f(r - 1)} sin lograrlo.`],
+      [`Cualquier otro bolo es un ${SING_M[c2]} con pareja entre los ${c1} que ya salieron: ${f(r - 1)} + 1 = ${f(r)}.`],
+    ];
+    return cerrar(rng, semilla, { correcta: r, errores, enunciado, pregunta, solucion, variables, datos, unidad: 'bolos' });
+  }
+
+  // ---------- «ya hay m, ¿cuántos más?» (nuevo) ----------
+  function tCumpleanosYa(rng, semilla) {
+    const k = rng.elegir([2, 2, 2, 3]), total = 366 * (k - 1) + 1;
+    const ya = k === 2 ? rng.entero(200, 360) : rng.entero(500, 720);
+    const datos = { tipo: 'cumpleanos', casilla: 'fecha', k, ya };
+    const R = cumpleanos(datos), r = R.respuesta;
+    const lugar = rng.elegir([{ n: 'una academia', p: 'estudiantes', s: 'estudiante' }, { n: 'un colegio', p: 'niños', s: 'niño' }, { n: 'un club', p: 'socios', s: 'socio' }]);
+    const variables = { m: { nombre: 'personas que ya hay', color: 'o' }, k: { nombre: 'personas que coinciden', color: 'i' } };
+    const enunciado = [`Ya hay `, v('m', `${ya} ${lugar.p}`), ` inscritos en ${lugar.n}, y no se sabe cuándo cumple años cada uno.`];
+    const pregunta = [`¿Cuántos ${lugar.p} más deben inscribirse, como mínimo, para que haya con seguridad `, v('k', `${k}`), ` que cumplan años el mismo día (el mismo día y mes)?`];
+    const errores = [
+      h('RM6-favorable', 1, 'Ese es el caso con suerte: que el siguiente coincida con alguno. Para estar seguro hay que pensar en la peor suerte.'),
+      h('RMP92-sin-restar', total, `Calculaste cuántas personas hacen falta en total (${f(total)}) y no restaste las ${ya} que ya están inscritas.`),
+      h('RMP93-sin-bisiesto-ya', 365 * (k - 1) + 1 - ya, 'Olvidaste el 29 de febrero: alguien puede haber nacido ese día. Hay 366 fechas posibles, no 365.'),
+      h('RMP34-sin-mas-uno', 366 * (k - 1) - ya, `Con ${f(366 * (k - 1))} personas en total puede haber justo ${k - 1} en cada fecha. Todavía no coinciden ${k}: falta una más.`),
+      h('RMP34-mas-uno', r + 1, `Sumaste uno de más: con ${f(r)} más ya es seguro.`),
+    ];
+    const solucion = [
+      ['Fechas posibles: 365 días y el 29 de febrero, ', '366', '.'],
+      [`Peor caso: en cada fecha hay ${k - 1} ${k - 1 === 1 ? 'persona' : 'personas'} y no más: 366 × ${k - 1} = ${f(366 * (k - 1))} en total (las ${ya} que ya están pueden ser parte de ellas, todas con fechas distintas).`],
+      [`La siguiente persona completa ${k} en una fecha, así que en total hacen falta ${f(total)}.`],
+      [`Ya hay `, v('m', `${ya}`), `: faltan ${f(total)} − ${ya} = ${f(r)}.`],
+    ];
+    return cerrar(rng, semilla, { correcta: r, errores, enunciado, pregunta, solucion, variables, datos, unidad: lugar.p });
+  }
+
+  // ---------- cajas mal rotuladas: ¿cuántas abrir? (nuevo) ----------
+  const ABRIR_COLORES = ['azul', 'rojo', 'verde', 'naranja', 'marrón', 'morado'];
+  function tCajasAbrir(rng, semilla) {
+    const c = rng.entero(3, 6), y = c;
+    const cs = rng.barajar(ABRIR_COLORES).slice(0, c);
+    const datos = { tipo: 'cajas-abrir', c, y };
+    const R = cajasAbrir(datos), r = R.respuesta;
+    const n = c + y;
+    const variables = { c: { nombre: 'cajas de colores distintos', color: 'o' }, y: { nombre: 'cajas amarillas', color: 'i' } };
+    const enunciado = [`Hay ${n} cajas cerradas con canicas de colores: `, v('c', `${c} cajas con un solo color cada una (${lista(cs)})`), ' y ', v('y', `${y} cajas con canicas amarillas`),
+      `. Cada caja lleva un rótulo con el color que dice tener: uno por cada color (${lista(cs)}) y ${y} rótulos «amarillo». Todos los rótulos están equivocados.`];
+    const pregunta = ['¿Cuántas cajas hay que abrir, como mínimo, para estar seguro de poder poner bien el rótulo a todas? Puedes decidir qué caja abrir según lo que veas.'];
+    const errores = [
+      h('RMP94-sin-deducir-ultima', r + 1, 'Abriste las cajas rotuladas «amarillo» una por una hasta la última, pero la última se deduce: es el único color que falta.'),
+      h('RMP95-deduce-de-mas', r - 1, `Con ${f(r - 1)} cajas abiertas todavía quedan dos cajas rotuladas «amarillo» y dos colores por repartir: no se sabe cuál es cuál.`),
+      h('RMP96-una-por-color', c, `Contaste una caja por cada color distinto. Pero lo que se desconoce es qué color tiene cada una de las ${y} cajas rotuladas «amarillo», y eso depende de ${y}, no solo de cuántos colores hay.`),
+      h('RMP97-casi-todas', n - 1, 'Pensaste en abrir casi todas las cajas. Pero las cajas con rótulo de color ya se sabe qué tienen: amarillas, sin abrirlas.'),
+    ];
+    const solucion = [
+      [`Una caja rotulada «amarillo» no puede tener canicas amarillas: tiene un color de los ${c} que no son amarillo. Las ${y} cajas rotuladas «amarillo» se reparten esos ${c} colores, uno cada una (no queda otra: hay ${c} colores y ${y} cajas).`],
+      [`Entonces las ${c} cajas rotuladas con un color tienen todas canicas amarillas: ya está resuelto sin abrirlas.`],
+      [`Queda saber qué color tiene cada caja rotulada «amarillo». Se abren ${f(r)}; el color que no salió corresponde a la última, sin abrirla.`],
+      [`Respuesta: ${f(r)} cajas (comprobado repasando todos los repartos posibles, ${R.repartos}).`],
+    ];
+    return cerrar(rng, semilla, { correcta: r, errores, enunciado, pregunta, solucion, variables, datos, unidad: 'cajas' });
   }
 
   return { id: ID, titulo: 'Sacar a ciegas: ¿cuántas para estar seguro?', generar, calc };

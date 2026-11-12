@@ -49,6 +49,34 @@ function porSubconjuntos(xs, logra) {
   return mejor;
 }
 
+const cacheAbrir = {};
+function abrirPorBusqueda(c, y) {
+  const n = c + y, rot = [...rango(0, c - 1), ...new Array(y).fill(c)];
+  const sobran = new Array(c + 1).fill(1); sobran[c] = y;
+  const validos = [];
+  (function llena(i, cur) {
+    if (i === n) { validos.push(cur.slice()); return; }
+    for (let col = 0; col <= c; col++) if (sobran[col] > 0 && col !== rot[i]) { sobran[col]--; cur.push(col); llena(i + 1, cur); cur.pop(); sobran[col]++; }
+  })(0, []);
+  const visto = new Map();
+  function costo(vistos, posibles) {
+    if (posibles.length === 1) return 0;
+    const clave = [...vistos].sort((a, b) => a[0] - b[0]).map(x => x.join(':')).join(',');
+    if (visto.has(clave)) return visto.get(clave);
+    let mejor = Infinity;
+    for (let b = 0; b < n; b++) {
+      if (vistos.has(b)) continue;
+      const sale = [...new Set(posibles.map(q => q[b]))];
+      if (sale.length === 1) continue;
+      let peor = 0;
+      for (const col of sale) peor = Math.max(peor, costo(new Map(vistos).set(b, col), posibles.filter(q => q[b] === col)));
+      mejor = Math.min(mejor, 1 + peor);
+    }
+    visto.set(clave, mejor); return mejor;
+  }
+  return costo(new Map(), validos);
+}
+
 function recalcular(p) {
   const d = p._datos;
   switch (d.tipo) {
@@ -112,6 +140,17 @@ function recalcular(p) {
       const xs = rango(1, d.N);
       return mis(xs.length, (i, j) => primo(xs[i]) && primo(xs[j]) && xs[i] + xs[j] > d.S) + 1;
     }
+    case 'pareja-color': {
+      // bolos (color, número); dos bolos «logran» si son de distinto color, de distinto número y suman S
+      const xs = []; for (const c of [0, 1]) for (let x = 1; x <= d.N; x++) xs.push([c, x]);
+      return mis(xs.length, (i, j) => xs[i][0] !== xs[j][0] && xs[i][1] !== xs[j][1] && xs[i][1] + xs[j][1] === d.S) + 1;
+    }
+    case 'cajas-abrir': {
+      // repartos válidos por conteo y estrategia óptima por búsqueda sobre lo visto; se guarda por (c, y)
+      const k = d.c + ',' + d.y;
+      if (!cacheAbrir[k]) cacheAbrir[k] = abrirPorBusqueda(d.c, d.y);
+      return cacheAbrir[k];
+    }
     case 'billetes': {
       const vs = Object.keys(d.billetes).map(Number), topes = vs.map(x => d.billetes[x]);
       const logra = c => vs.some((x, i) => vs.some((y, j) => x + y === d.M && (i === j ? c[i] >= 2 : c[i] >= 1 && c[j] >= 1)));
@@ -126,7 +165,7 @@ function recalcular(p) {
       }
       const cuenta = new Array(casillas).fill(0); let gente = 0;
       for (;;) { const i = cuenta.findIndex(c => c < d.k - 1); if (i < 0) break; cuenta[i]++; gente++; }
-      return gente + 1;
+      return gente + 1 - (d.ya || 0);
     }
     case 'suma-cifras': {
       const cuenta = {};
@@ -164,6 +203,27 @@ probarGenerador(gen, { semillas: 600, recalcular, igual: (a, b) => a === b });
 test('salen los 16 tipos en 200 semillas', () => {
   const tipos = new Set(); for (let s = 0; s < 200; s++) tipos.add(gen.generar(s)._datos.tipo);
   assert.equal(tipos.size, 16, [...tipos].join(', '));
+});
+
+// Tipos nuevos (cierre-100): solo con semillas de práctica; se prueban con semillas de texto.
+const nuevosVistos = {};
+test('los tipos nuevos salen con semillas de práctica y se recalculan aparte', () => {
+  for (let s = 1; s <= 600; s++) {
+    const p = gen.generar(`ana-${s}`), d = p._datos;
+    assert.ok(p.alternativas.length >= 4);
+    const nuevo = d.tipo === 'pareja-color' || d.tipo === 'cajas-abrir' || (d.tipo === 'cumpleanos' && d.ya !== undefined);
+    if (!nuevo) continue;
+    nuevosVistos[d.tipo + (d.ya !== undefined ? '-ya' : '')] = 1;
+    assert.equal(recalcular(p), p.respuesta.valor, `ana-${s} (${d.tipo})`);
+    assert.equal(p.alternativas.filter(a => a.correcta).length, 1);
+  }
+  assert.deepEqual(Object.keys(nuevosVistos).sort(), ['cajas-abrir', 'cumpleanos-ya', 'pareja-color']);
+});
+test('las semillas de entrada y salida no usan tipos nuevos', () => {
+  for (const pre of ['entrada', 'salida']) for (let s = 1; s <= 60; s++) {
+    const d = gen.generar(`${pre}-${s}`)._datos;
+    assert.ok(!['pareja-color', 'cajas-abrir'].includes(d.tipo) && d.ya === undefined, `${pre}-${s}`);
+  }
 });
 
 test('el peor caso falla de verdad: trioSuma da un grupo sin trío del tamaño dicho', () => {

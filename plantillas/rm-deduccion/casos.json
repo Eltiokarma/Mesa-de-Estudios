@@ -2,7 +2,7 @@
   "plantilla": "rm-deduccion",
   "tolerancia": 0,
   "nota": "Respuestas de texto: la clave de armarTexto y el texto que ve el alumno. Silogismos: clave sil:F:s:p (s y p son índices de entrada.terminos; M = terminos[1] es el término medio; sil:nada = ninguna de las otras se deduce). Frascos: sc:… (o = frasco 0–3 = A–D, c = índice de entrada.cosas; pueden repetirse). Asignación: as:o:c o cosa:c (índices de personas y cosas; cada cosa la tiene una sola persona). Un contrafáctico «si X fuera…, Y sería…» se lee como «X no es…».",
-  "verificacion": "Verificador ciego (subagente, 8 nov 2026): resolvió los 15 casos sin ver el generador. Frascos por fuerza bruta (3^4), repartos por las 24 permutaciones con tres lecturas del contrafáctico (condicional común, «X no es…» y «ni X ni Y»), silogismos con los 256 modelos de Venn en lectura moderna y tradicional. Coinciden los 15, y cada caso da la misma respuesta con cualquier lectura. Barrido de las semillas 0 a 999: respuesta única y sin distractores válidos.",
+  "verificacion": "Verificador ciego (subagente, 8 nov 2026): resolvió los 15 casos sin ver el generador. Frascos por fuerza bruta (3^4), repartos por las 24 permutaciones con tres lecturas del contrafáctico (condicional común, «X no es…» y «ni X ni Y»), silogismos con los 256 modelos de Venn en lectura moderna y tradicional. Coinciden los 15, y cada caso da la misma respuesta con cualquier lectura. Barrido de las semillas 0 a 999: respuesta única y sin distractores válidos. Cierre-100 (12 nov 2026): los casos nuevos se resolvieron a ciegas por fuerza bruta propia (todos los repartos de dados y puntajes con todas las pistas): 3/3 coinciden, con reparto único.",
   "casos": [
     {
       "semilla": 1,
@@ -930,6 +930,156 @@
         "respuesta": "Gaby lleva Historia.",
         "clave": "as:1:1"
       }
+    },
+    {
+      "semilla": "cierre-1",
+      "entrada": {
+        "tipo": "puntajes",
+        "personas": [
+          "Tania",
+          "Wilber",
+          "Fito"
+        ],
+        "colores": [
+          "azul",
+          "negro",
+          "verde"
+        ],
+        "lanz": 5,
+        "pistas": [
+          {
+            "t": "paridad",
+            "par": "impar"
+          },
+          {
+            "t": "no",
+            "p": 2,
+            "c": 1
+          },
+          {
+            "t": "no",
+            "p": 2,
+            "c": 2
+          },
+          {
+            "t": "mayor",
+            "p": 0,
+            "c": 1
+          }
+        ],
+        "persona": 2,
+        "opciones": [
+          "pt:30:0",
+          "pt:29:0",
+          "pt:27:1",
+          "pt:29:2",
+          "pt:27:0"
+        ]
+      },
+      "esperado": {
+        "respuesta": "29 puntos, dado azul"
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "cierre-2",
+      "entrada": {
+        "tipo": "puntajes",
+        "personas": [
+          "Luis",
+          "Hugo",
+          "Rosa"
+        ],
+        "colores": [
+          "rojo",
+          "azul",
+          "amarillo"
+        ],
+        "lanz": 5,
+        "pistas": [
+          {
+            "t": "no",
+            "p": 1,
+            "c": 2
+          },
+          {
+            "t": "no",
+            "p": 2,
+            "c": 2
+          },
+          {
+            "t": "mayor",
+            "p": 2,
+            "c": 0
+          },
+          {
+            "t": "paridad",
+            "par": "impar"
+          }
+        ],
+        "persona": 2,
+        "opciones": [
+          "pt:27:1",
+          "pt:29:0",
+          "pt:30:1",
+          "pt:29:2",
+          "pt:29:1"
+        ]
+      },
+      "esperado": {
+        "respuesta": "29 puntos, dado azul"
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "cierre-4",
+      "entrada": {
+        "tipo": "puntajes",
+        "personas": [
+          "Elsa",
+          "Kelly",
+          "Wilber"
+        ],
+        "colores": [
+          "rojo",
+          "amarillo",
+          "negro"
+        ],
+        "lanz": 4,
+        "pistas": [
+          {
+            "t": "paridad",
+            "par": "par"
+          },
+          {
+            "t": "mayor",
+            "p": 1,
+            "c": 1
+          },
+          {
+            "t": "no",
+            "p": 1,
+            "c": 2
+          },
+          {
+            "t": "no",
+            "p": 2,
+            "c": 1
+          }
+        ],
+        "persona": 2,
+        "opciones": [
+          "pt:22:2",
+          "pt:24:0",
+          "pt:24:2",
+          "pt:22:1",
+          "pt:24:1"
+        ]
+      },
+      "esperado": {
+        "respuesta": "24 puntos, dado negro"
+      },
+      "nuevo": "cierre-100"
     }
   ]
 }

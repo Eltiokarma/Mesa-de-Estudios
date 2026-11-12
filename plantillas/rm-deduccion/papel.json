@@ -125,6 +125,20 @@
         { "fn": "repartos", "args": [[{ "t": "contra", "a": { "o": 0, "c": 0, "neg": false }, "b": { "o": 2, "c": 3, "neg": false } }, { "t": "cond", "a": { "o": 0, "c": 0, "neg": true }, "b": { "o": 1, "c": 1, "neg": false } }, { "t": "cond", "a": { "o": 0, "c": 2, "neg": false }, "b": { "o": 1, "c": 0, "neg": false } }, { "t": "cond", "a": { "o": 2, "c": 2, "neg": true }, "b": { "o": 3, "c": 0, "neg": false } }]], "espera": [[3, 1, 2, 0]] },
         { "fn": "repartos", "args": [[{ "t": "cond", "a": { "o": 0, "c": 0, "neg": false }, "b": { "o": 2, "c": 3, "neg": false } }, { "t": "cond", "a": { "o": 0, "c": 0, "neg": true }, "b": { "o": 1, "c": 1, "neg": false } }, { "t": "cond", "a": { "o": 0, "c": 2, "neg": false }, "b": { "o": 1, "c": 0, "neg": false } }, { "t": "cond", "a": { "o": 2, "c": 2, "neg": true }, "b": { "o": 3, "c": 0, "neg": false } }]], "espera": [[3, 1, 2, 0]] }
       ]
+    },
+    {
+      "id": "p9",
+      "nivel": "intermedio",
+      "enunciado": "Ana, Beto y Carla juegan con tres dados: uno azul, uno rojo y uno blanco. Cada una toma un dado distinto y lo lanza 4 veces; luego suma sus 4 resultados. Se sabe que: I. Beto obtuvo más puntos que quien usó el dado rojo. II. Quien usó el dado azul obtuvo el menor puntaje. III. Ninguno obtuvo un puntaje total par. IV. Carla no usó el dado azul. Cada uno obtuvo el mayor puntaje que permiten estas pistas. ¿Qué puntaje obtuvo Ana y con qué dado?",
+      "respuesta": "19 puntos, con el dado azul.",
+      "pasos": [
+        "Beto no usó el rojo (obtuvo más que ese jugador). Tampoco el azul: ese es el menor y Beto es mayor que alguien. Beto usó el blanco.",
+        "Carla no usó el azul, así que usó el rojo y Ana el azul.",
+        "Orden: azul < rojo < blanco, es decir Ana < Carla < Beto.",
+        "Con 4 lanzamientos el máximo es 24; sin pares, el mayor permitido es 23. Beto 23, Carla 21 y Ana 19."
+      ],
+      "verificar": [ { "fn": "puntajeMaximo", "args": [ { "lanz": 4, "persona": 0, "pistas": [
+        { "t": "mayor", "p": 1, "c": 1 }, { "t": "menor-todos", "c": 0 }, { "t": "paridad", "par": "impar" }, { "t": "no", "p": 2, "c": 0 } ] } ], "espera": { "color": 0, "puntaje": 19 } } ]
     }
   ]
 }
