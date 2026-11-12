@@ -382,8 +382,9 @@
       const errores = [
         par('GE2', Vt * k, `Tomaste ${fracTxt(p, q)} del volumen de la copa llena. El jugo forma un cono semejante con razón k = ${fracTxt(p, q)}: su volumen es k³ veces el de la copa.`),
         par('GE2', Vt * k * k, `Usaste k² (como para un área). Un volumen se multiplica por k³ = (${fracTxt(p, q)})³.`),
-        h_('GE-llenado-lo-que-falta', Vt * (1 - k ** 3), 'Calculaste el espacio vacío que queda en la copa, no el jugo.'),
         h_('GE20', 3 * V, 'Olvidaste el factor 1/3 del cono.'),
+        h_('GE-tercio-dos-veces', V / 3, `Dividiste entre 3 dos veces: una al calcular la copa llena y otra al pasar al jugo. El 1/3 va una sola vez; luego solo se multiplica por k³ = (${fracTxt(p, q)})³.`),
+        h_('GE-llenado-lo-que-falta', Vt * (1 - k ** 3), 'Calculaste el espacio vacío que queda en la copa, no el jugo.'),
       ];
       const solucion = [
         [`El jugo es un cono semejante a la copa, con razón k = ${fracTxt(p, q)}: radio ${f(R * k)} y altura ${f(H * k)}.`],
@@ -464,10 +465,11 @@
       const vars = { V: { nombre: 'vaso', color: 'o' }, s: { nombre: 'lado del hexágono', color: 'i' }, hp: { nombre: 'altura de la pirámide', color: 'h' }, X: { nombre: 'agua que queda', color: 'd' } };
       const enunciado = ['Un vaso con forma de tronco de cono, de ', v('V', `radio ${r} ${u} en el fondo, ${R} ${u} en la boca y ${H} ${u} de altura`), ', está lleno de agua hasta el borde. Se mete en él una pirámide regular de base hexagonal, de ', v('s', `${s} ${u}`), ' de lado de base y ', v('hp', `${hp} ${u}`), ' de altura, que se apoya en el fondo y queda totalmente sumergida; se derrama el agua que desplaza.'];
       const errores = [
-        { ...h_('GE20', 0, 'Calculaste la pirámide sin su 1/3: el agua derramada es el volumen de la pirámide, (área de la base)·h/3.'), valor: { A, B: 3 * B } },
-        { ...h_('GE-hexagono-un-triangulo', 0, 'Tomaste el área de un solo triángulo equilátero como base. El hexágono regular son seis: 6·s²√3/4.'), valor: { A, B: B / 6 } },
         { ...h_('GE20', 0, 'Calculaste el vaso sin el 1/3 de la fórmula del tronco de cono.'), valor: { A: 3 * A, B } },
-        { ...h_('GE-tronco-promedio-radios', 0, 'Tomaste el vaso como un cilindro con el radio promedio: el tronco no es un cilindro.'), valor: { A: H * ((R + r) / 2) ** 2, B } },
+        { ...h_('GE20', 0, 'Calculaste la pirámide sin su 1/3: el agua derramada es el volumen de la pirámide, (área de la base)·h/3.'), valor: { A, B: 3 * B } },
+        { ...h_('GE20+GE20', 0, 'Dos errores: olvidaste el 1/3 en el vaso y también en la pirámide. El tronco de cono y la pirámide llevan los dos su 1/3.'), valor: { A: 3 * A, B: 3 * B } },
+        { ...h_('GE-tronco-promedio-radios+GE20', 0, 'Dos errores: tomaste el vaso como un cilindro con el radio promedio (el tronco no es un cilindro) y calculaste la pirámide sin su 1/3.'), valor: { A: H * ((R + r) / 2) ** 2, B: 3 * B } },
+        { ...h_('GE-hexagono-un-triangulo', 0, 'Tomaste el área de un solo triángulo equilátero como base. El hexágono regular son seis: 6·s²√3/4.'), valor: { A, B: B / 6 } },
         { ...h_('GE-hexagono-area', 0, 'Usaste 6·s²√3/2 para el hexágono: cada triángulo equilátero mide s²√3/4, no s²√3/2.'), valor: { A, B: 2 * B } },
       ];
       const tA = coef(A) === '' ? '' : coef(A), tB = coef(B) === '' ? '' : coef(B);
@@ -525,7 +527,7 @@
       const errores = [
         h_('GE19', PI * d * d * s, `Usaste el diámetro (${d}) como radio. El radio del vaso es ${rc}.`),
         h_('GE19', PI * d * s, 'Usaste la longitud de la circunferencia por la subida: eso es la pared mojada, no el volumen del agua que subió.'),
-        h_('GE-desplaza-un-tercio', V / 3, 'Pusiste un 1/3, como en el cono. El agua que sube forma un cilindro: πr²·s, sin 1/3.'),
+        h_('GE19+GE-desplaza-un-tercio', PI * d * d * s / 3, `Dos errores: usaste el diámetro (${d}) como radio y además pusiste un 1/3, como en el cono. El agua que sube forma un cilindro de radio ${rc}: πr²·s, sin 1/3.`),
         h_('GE-desplaza-radio-sin-cuadrado', PI * rc * s, 'Olvidaste elevar el radio al cuadrado: el área del fondo es πr².'),
       ];
       const solucion = [
@@ -984,7 +986,7 @@
       h_('GE-tronco-cil-lateral-sin-dos', 2 * V, 'Usaste AL = πr·(eje). El área lateral es la circunferencia por el eje: 2πr·eje.'),
       h_('GE-tronco-cil-suma', V / 2, 'Tomaste AL = 2πr(g₁ + g₂) y te salió la mitad del eje. AL = πr(g₁ + g₂) = 2πr·eje.'),
       h_('GE19', PI * ALpi, `Dividiste el área entre πr² (el área de la base) para hallar la altura. Hay que dividir entre la circunferencia 2πr.`),
-      h_('GE-tercio-de-mas', V / 3, 'Pusiste un 1/3: el tronco de cilindro no tiene punta como el cono.'),
+      h_('GE-tronco-cil-lateral-sin-dos+GE-tercio-de-mas', 2 * V / 3, 'Dos errores: usaste AL = πr·(eje), que duplica el eje, y además pusiste un 1/3 como en el cono. El área lateral es 2πr·eje y el tronco de cilindro no tiene punta.'),
     ];
     const solucion = [
       ['El área lateral es la circunferencia por la generatriz media (el eje): AL = 2πr·eje.'],
@@ -1024,7 +1026,7 @@
     const errores = [
       h_('GE-oblicuo-base-por-generatriz', V * sd / sn, 'Multiplicaste el área de la base elíptica por la generatriz. La base va con la altura; la generatriz va con la sección recta.'),
       h_('GE-oblicuo-recta-por-altura', V * sn / sd, 'Multiplicaste la sección recta por la altura. La sección recta va con la generatriz: V = πr²·g.'),
-      h_('GE-tercio-de-mas', V / 3, 'Pusiste un 1/3: un cilindro, aunque esté inclinado, no es un cono.'),
+      h_('GE-oblicuo-base-por-generatriz+GE-tercio-de-mas', V * sd / sn / 3, 'Dos errores: multiplicaste el área de la base elíptica por la generatriz y además pusiste un 1/3 como en el cono. Con la sección recta basta: V = πr²·g.'),
       h_('GE-oblicuo-coseno', t === 30 ? NaN : V * (COS[t][0] / COS[t][1]), 'Multiplicaste por el coseno: no hace falta ningún ángulo si se usa la sección recta con la generatriz.'),
     ];
     const solucion = [

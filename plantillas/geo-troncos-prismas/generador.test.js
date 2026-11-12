@@ -116,6 +116,8 @@ probarGenerador(gen, { semillas: 600, recalcular: p => {
   const r = recalcular(p);
   return Math.abs(r - p.respuesta.valor) < 1e-7 * Math.max(1, Math.abs(r)) ? p.respuesta.valor : r;
 } });
+const { probarFugas } = require('../../nucleo/probar-generador.js');
+probarFugas(gen, { valorNumerico: a => (typeof a.valor === 'number' ? a.valor : NaN) });
 
 for (const c of casos.casos) {
   test(`casos.json: semilla ${c.semilla}`, () => {

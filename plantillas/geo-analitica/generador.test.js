@@ -101,6 +101,13 @@ function recalcular(pr) {
 }
 const igual = (a, b) => (typeof b === 'string' ? a === b : Math.abs(a - b) < 1e-6);
 probarGenerador(gen, { semillas: 600, recalcular, igual });
+// Las claves «fr:n/d» son números; las rectas y los vectores no se ordenan (NaN).
+const { probarFugas } = require('../../nucleo/probar-generador.js');
+probarFugas(gen, { valorNumerico: a => {
+  if (typeof a.valor === 'number') return a.valor;
+  const m = /^fr:(-?\d+)(?:\/(\d+))?$/.exec(a.valor);
+  return m ? Number(m[1]) / Number(m[2] || 1) : NaN;
+} });
 
 for (const c of casos.casos) {
   test(`casos.json: semilla ${c.semilla}`, () => {

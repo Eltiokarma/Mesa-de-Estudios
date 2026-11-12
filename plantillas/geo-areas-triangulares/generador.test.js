@@ -130,6 +130,8 @@ function recalcular(p) {
 }
 const igual = (es, valor) => Math.abs(es - deClave(valor)) < 1e-6 * Math.max(1, Math.abs(es));
 probarGenerador(gen, { semillas: 600, recalcular, igual });
+const { probarFugas } = require('../../nucleo/probar-generador.js');
+probarFugas(gen, { valorNumerico: a => deClave(a.valor) });
 
 for (const c of casos.casos) {
   test(`casos.json: semilla ${c.semilla}`, () => {

@@ -358,9 +358,10 @@
       correcta = X(S1);
       errores = [
         gp('GE1-escala-lineal', X(T * a / (a + b)), `Usaste la razón lineal ${a}/(${a} + ${b}). En triángulos semejantes las áreas van con el cuadrado de la razón: las cuatro partes son ${a}², ${a}·${b}, ${a}·${b} y ${b}² veces lo mismo.`),
-        e('GE-tri-sin-laterales', X(T * a * a / (a * a + b * b)), `Repartiste el trapecio solo entre BOC y AOD. Los laterales también ocupan área: ${a}·${b} partes cada uno.`),
         e('GE-tri-otro-triangulo', X(L), `Ese es el área de un triángulo lateral (AOB o COD), no la de BOC.`),
         e('GE-tri-base-mayor', X(S2), `Ese es el área de AOD, el triángulo de la base mayor.`),
+        e('GE-tri-una-parte', X(t), `Partiste el trapecio en (${a} + ${b})² = ${(a + b) ** 2} partes iguales y tomaste una sola: ${T}/${(a + b) ** 2} = ${t}. BOC ocupa ${a}² = ${a * a} de esas partes.`),
+        e('GE-tri-sin-laterales', X(T * a * a / (a * a + b * b)), `Repartiste el trapecio solo entre BOC y AOD. Los laterales también ocupan área: ${a}·${b} partes cada uno.`),
       ];
       solucion = [
         ['BOC y AOD son semejantes con razón ', v('k', `${a} : ${b}`), `; si BOC = ${a}²·s, entonces AOD = ${b}²·s y cada lateral = ${a}·${b}·s.`],
@@ -422,12 +423,13 @@
     if (pide === 'interior') errores = [
       e('GE-tri-puntos-medios', X(L * L / 2), `Supusiste que E, F, G y H son puntos medios. Con el ángulo de 37°, cada lado de la loseta queda partido en 3 y 4 partes, no en dos mitades.`),
       e('GE-tri-complemento', X(24 * kk), `Esa es el área de los cuatro triángulos de las esquinas, no la del cuadrado EFGH.`),
-      e('GE-tri-sin-mitad', X(kk), `Restaste los cuatro triángulos sin el 1/2: ${L}² − 4·(${3 * k}·${4 * k}).`),
+      e('GE-tri-hipotenusa-suma', X(L * L), `Tomaste el lado EF como la suma de los catetos, ${3 * k} + ${4 * k} = ${L}: así sale ${L}² = ${L * L}, la loseta entera. EF es la hipotenusa del triángulo EBF: ${5 * k}.`),
       e('TR-cateto-por-hipotenusa', X(16 * kk), `Tomaste EB = ${4 * k} como lado del cuadrado EFGH. EB es un cateto; el lado EF es la hipotenusa, ${5 * k}.`),
     ];
     else if (pide === 'esquina') errores = [
       e('GE-tri-sin-mitad', X(12 * kk), `Multiplicaste los catetos y no dividiste entre 2.`),
       gp('GE7-lado-como-altura', X(10 * kk), `Usaste la hipotenusa EF = ${5 * k} como base y un cateto como altura. En el triángulo rectángulo, base y altura son los catetos.`),
+      gp('GE1-escala-lineal', X(6 * k), `Multiplicaste el área del triángulo 3-4-5 (que es 6) por ${k}: ${6 * k}. Si los lados se multiplican por ${k}, el área se multiplica por ${k}² = ${kk}.`),
       e('GE-tri-las-cuatro', X(24 * kk), `Esa es la suma de los cuatro triángulos de las esquinas.`),
       e('GE-tri-mismo-cateto', X(8 * kk), `Usaste EB = ${4 * k} como base y también como altura: ${4 * k}·${4 * k}/2. La altura sobre EB es el otro cateto, BF = ${3 * k}.`),
     ];
@@ -533,7 +535,7 @@
         e('TR-tan15-por-tan75', X(b * b / 2, -b * b / 4), `Usaste tan 15° = 2 − √3. La altura AM forma con la base el ángulo de 75° en B: AM = BM·tan 75°.`),
         e('GE-tri-sin-mitad', X(b * b, b * b / 2), `Olvidaste el 1/2: área = BC·AM/2.`),
         e('TR-tan-suma-lineal', X(b * b / 4, b * b / 12), `Sumaste tangentes: tan 75° = tan 45° + tan 30° = 1 + √3/3. La tangente de una suma no es la suma de las tangentes; tan 75° = 2 + √3.`),
-        e('GE-tri-altura-doble', X(2 * b * b, b * b), `Tomaste AM = BC·tan 75° y además no dividiste entre 2.`),
+        e('TR-tan15-por-tan75+GE-tri-sin-mitad', X(b * b, -b * b / 2), `Dos errores: usaste tan 15° = 2 − √3 (la altura AM forma 75° con la base en B: AM = BM·tan 75°) y olvidaste el 1/2 del área. Así sale ${b}·${b / 2}(2 − √3) = ${textoX(X(b * b, -b * b / 2))}.`),
       ];
       solucion = [
         ['La altura AM cae en el punto medio de BC: BM = ', v('b', `${b}`), `/2 = ${b / 2}, y el ángulo en B es 75°.`],

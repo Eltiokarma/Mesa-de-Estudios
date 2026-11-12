@@ -141,6 +141,8 @@ function recalcular(p) {
   return Math.hypot(D[0] - T.B[0], D[1] - T.B[1], d.H);
 }
 probarGenerador(gen, { semillas: 600, recalcular, igual: (a, b) => Math.abs(a - b) < 1e-7 * Math.max(1, Math.abs(b)) });
+const { probarFugas } = require('../../nucleo/probar-generador.js');
+probarFugas(gen, { valorNumerico: a => (typeof a.valor === 'number' ? a.valor : NaN) });
 
 test('casos.json: formato', () => {
   assert.equal(casos.plantilla, 'geo-proporcionalidad');

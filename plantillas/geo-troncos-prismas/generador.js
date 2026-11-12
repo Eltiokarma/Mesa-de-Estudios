@@ -202,6 +202,8 @@
     const errores = erroresTronco(B, b, h).concat([
       h_('GE-diedro-circunradio', 2 * V, 'Mediste la diferencia de distancias del centro a los vértices (circunradios). El diedro se mide sobre la perpendicular a la arista de la base: va con los apotemas de las bases (los inradios).'),
     ]);
+    // Sin el 1/3, el error se escribe con el mismo numerador que la correcta y la delata: se cambia por uno doble.
+    errores[1] = h_('GE20+GE-tronco-sin-media', h * (B + b), 'Dos errores: olvidaste el factor 1/3 y te faltó el término √(Bb), la media geométrica de las bases. V = h(B + b + √(Bb))/3.');
     delete variables.h; variables.t = { nombre: 'diedro de 60°', color: 'h' };
     const enunciado = ['Un tronco de pirámide regular tiene por bases triángulos equiláteros de aristas ', v('L', `${L} ${u}`), ' y ', v('l', `${l} ${u}`), '. Cada cara lateral forma un ángulo diedro de ', v('t', '60°'), ' con la base mayor.'];
     const solucion = [
@@ -377,7 +379,7 @@
     const errores = [
       h_('GE-oblicuo-arista-como-altura', B * La, 'Usaste la arista lateral como altura. En el prisma oblicuo la arista está inclinada; la altura es la distancia entre las bases.'),
       theta === 30 ? null : h_('GE-seno-coseno', B * La * fr(COS[theta]), `Usaste cos ${theta}°: así sale la sombra horizontal de la arista, no la altura.`),
-      h_('GE-tercio-de-mas', V / 3, 'Pusiste 1/3: es un prisma, no una pirámide.'),
+      h_('GE-oblicuo-arista-como-altura+GE-tercio-de-mas', B * La / 3, 'Dos errores: usaste la arista lateral como altura (está inclinada; la altura es la distancia entre las bases) y pusiste 1/3, como si fuera una pirámide.'),
       h_('GE-oblicuo-divide', B * La / s, 'Dividiste entre el seno: la altura es más corta que la arista, hay que multiplicar.'),
     ].filter(Boolean);
     const solucion = [
@@ -422,6 +424,7 @@
         h_('GE-limite-estricto', lim * suma, `Tomaste lado ${lim}: con él el perímetro es exactamente ${P0}, y debe ser mayor. El menor lado entero que cumple es ${smin}.`),
         h_('GE-tronco-prisma-cada-arista-una-vez', AL / 2, 'Contaste cada arista en una sola cara. Cada arista lateral es lado de dos caras: AL = s·(a + b + c).'),
         h_('GE-tronco-prisma-perimetro-por-suma', 3 * AL, 'Multiplicaste el perímetro por la suma de aristas. Cada cara es un trapecio de altura s con dos aristas: sumando las tres, sale s·(a + b + c).'),
+        h_('GE-limite-estricto+GE-tronco-prisma-cada-arista-una-vez', lim * suma / 2, `Dos errores: tomaste lado ${lim} (con él el perímetro es exactamente ${P0}, y debe ser mayor) y contaste cada arista en una sola cara. El lado es ${smin} y AL = s·(a + b + c).`),
         h_('GE-tronco-prisma-altura-media', AL / 3, 'Multiplicaste la altura media (a + b + c)/3 por un solo lado: eso es una cara promedio. Son tres caras: (a + b + c)/3 · 3s = s·(a + b + c).'),
       ];
       const solucion = [

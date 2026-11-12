@@ -169,6 +169,8 @@ function recalcular(p) {
   return k * (d.pide === 'AE' ? dist(T.A, E) : dist(I, E));
 }
 probarGenerador(gen, { semillas: 600, recalcular, igual: (a, b) => Math.abs(a - b) < 1e-6 * Math.max(1, Math.abs(b)) });
+const { probarFugas } = require('../../nucleo/probar-generador.js');
+probarFugas(gen, { valorNumerico: a => (typeof a.valor === 'number' ? a.valor : NaN) });
 
 test('casos.json: formato', () => {
   assert.equal(casos.plantilla, 'geo-triangulos-notables');

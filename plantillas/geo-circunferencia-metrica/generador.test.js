@@ -147,6 +147,13 @@ function recalcular(p) {
 }
 const igual = (a, b) => (typeof b === 'string' ? a === b : Math.abs(a - b) < 1e-6);
 probarGenerador(gen, { semillas: 600, recalcular, igual });
+// Las claves «pq:p|q» valen p·π + q.
+const { probarFugas } = require('../../nucleo/probar-generador.js');
+probarFugas(gen, { valorNumerico: a => {
+  if (typeof a.valor === 'number') return a.valor;
+  const m = /^pq:(-?[\d.]+)\|(-?[\d.]+)$/.exec(a.valor);
+  return m ? Math.PI * Number(m[1]) + Number(m[2]) : NaN;
+} });
 
 for (const c of casos.casos) {
   test(`casos.json: semilla ${c.semilla}`, () => {

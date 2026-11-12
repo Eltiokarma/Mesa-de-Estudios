@@ -302,6 +302,13 @@
       h('GP-exterior-suma', a * b / (b + c) + a, 'Mezclaste las dos bisectrices: repartiste BC como con la interior y le sumaste BC. Con la exterior, la diferencia BE − CE es BC, y BE/CE = AB/AC.'),
       pa('GE8-bisectriz-mitad', a / 2, 'Supusiste que la bisectriz reparte por mitades. Ni la interior ni la exterior lo hacen si AB ≠ AC.'),
     ];
+    // La cuenta de la interior, ab/(b + c), suele escribirse con el mismo numerador que la correcta ab/(c − b)
+    // y la delata. Su pareja BD = ac/(b + c) hace lo mismo con BE: se usa en lugar de la «suma» cuando
+    // entra igual que ella (así no cambia cuántas alternativas hay ni los reintentos).
+    const BD = a * c / (b + c), txt = x => exacto(x);
+    const otros = new Set([CE, ...errores.filter((e, i) => i !== 2).map(e => e.valor)].map(txt).filter(Boolean));
+    if (txt(errores[2].valor) && !otros.has(txt(errores[2].valor)) && txt(BD) && !otros.has(txt(BD)))
+      errores[2] = h('GP-exterior-como-interior+GP-be-por-ce', BD, `Dos errores: usaste la cuenta de la bisectriz interior y además tomaste el tramo del lado de B, BD = ${a}·${c}/(${b} + ${c}) = ${n(BD)}. La exterior corta fuera del lado: BE/CE = AB/AC con BE = BC + CE, y CE es el tramo del lado de C.`);
     const solucion = [
       ['Teorema de la bisectriz exterior: BE/CE = AB/AC = ', v('c', `${c}`), '/', v('b', `${b}`), '.'],
       ['Como E está más allá de C, BE = ', v('a', `${a}`), ' + CE.'],
@@ -539,6 +546,13 @@
       h('GP-promedio', (b + c) / 2, 'Promediaste AB y AC. El radio sale de una semejanza con el diámetro, no de un promedio de cuerdas.'),
       h('GP-supone-recto', Math.sqrt(b * b + c * c) / 2, 'Supusiste que el ángulo A es recto (BC como diámetro). Nada lo dice; se traza el diámetro desde A.'),
     ];
+    // R/2 y 2R se escriben con el mismo numerador que R y la delatan. Cuando se puede, R/2 se cambia por la
+    // semejanza mal emparejada (AB·AH = AC·2R), que queda por debajo; solo donde R/2 también entraba, para
+    // que el número de alternativas (y con él los reintentos) no cambie.
+    const cruzada = c * hh / (2 * b), txt = x => exacto(x);
+    const otros = new Set([R, b * c / hh, (b + c) / 2, Math.sqrt(b * b + c * c) / 2].map(txt).filter(Boolean));
+    if (txt(errores[1].valor) && !otros.has(txt(errores[1].valor)) && txt(cruzada) && !otros.has(txt(cruzada)))
+      errores[1] = h('GP-semejanza-cruzada', cruzada, `Emparejaste mal los lados de la semejanza: pusiste AB·AH = AC·2R, y sale R = ${c}·${hh}/(2·${b}) = ${n(cruzada)}. En los triángulos AHB y ACE, AB va con AE y AH con AC: AB·AC = AH·2R.`);
     const solucion = [
       ['Se traza el diámetro AE. El ángulo ACE es recto (abarca media circunferencia) y el ángulo AEC es igual al ABC (abarcan el mismo arco AC).'],
       ['Los triángulos rectángulos AHB y ACE son semejantes: AB/AE = AH/AC, es decir, AB·AC = AH·2R.'],
@@ -566,9 +580,10 @@
       const pregunta = ['¿Cuál es el ', v('S', 'área'), ctx ? ' de todo el terreno?' : ' del triángulo ABC?'];
       const errores = [
         pa('GE1-suma-areas', S1 + S2 + S3, 'Sumaste las tres áreas y olvidaste los tres paralelogramos. En triángulos semejantes, lo que se suma son los lados (las raíces de las áreas), no las áreas.'),
-        h('GP-raices-sin-cuadrado', raices, 'Sumaste las raíces de las áreas, pero no elevaste al cuadrado: esa suma es proporcional a un lado, no al área.'),
         h('GP-paralelogramo-sin-2', S1 + S2 + S3 + sq(S1 * S2) + sq(S1 * S3) + sq(S2 * S3), 'Al desarrollar el cuadrado olvidaste el 2 de los dobles productos: cada paralelogramo mide 2√(SᵢSⱼ).'),
         h('GP-doble-de-la-suma', 2 * (S1 + S2 + S3), 'Supusiste que los paralelogramos suman lo mismo que los triángulos. Cada paralelogramo mide 2√(SᵢSⱼ), que depende de los dos triángulos vecinos.'),
+        h('GP-paralelogramo-vecinos', 3 * (S1 + S2 + S3), `Supusiste que cada paralelogramo mide lo mismo que sus dos triángulos vecinos juntos (Sᵢ + Sⱼ): así los paralelogramos suman 2·${n(S1 + S2 + S3)} y el total ${n(3 * (S1 + S2 + S3))}. Cada paralelogramo mide 2√(SᵢSⱼ), que es menor que Sᵢ + Sⱼ.`),
+        h('GP-raices-sin-cuadrado', raices, 'Sumaste las raíces de las áreas, pero no elevaste al cuadrado: esa suma es proporcional a un lado, no al área.'),
       ];
       const solucion = [
         ['Cada triángulo pequeño es semejante al ABC. Si el lado de ABC mide ℓ, sus lados correspondientes miden k₁ℓ, k₂ℓ y k₃ℓ, y los tres tramos juntos completan el lado: k₁ + k₂ + k₃ = 1.'],

@@ -146,7 +146,20 @@
     const conRaiz = exacto(o.correcta).includes('√');
     o.errores = o.errores.filter(Boolean);
     if (o.unidad === '°') o.errores = o.errores.filter(e => e.valor < 180); // un ángulo de triángulo no llega a 180°
-    const errores = o.errores.filter(e => exacto(e.valor) !== null && (conRaiz || !exacto(e.valor).includes('√')) && (!o.enteros || Number.isInteger(e.valor)));
+    const sirve = e => exacto(e.valor) !== null && (conRaiz || !exacto(e.valor).includes('√')) && (!o.enteros || Number.isInteger(e.valor));
+    // Cambios de distractor (para que la correcta no se adivine por quedar en un extremo): se aplican solo
+    // si el número de alternativas no cambia, así los reintentos (y con ellos el azar y _datos) son los mismos.
+    const cuantas = lista => new Set([texto(o.correcta), ...lista.filter(sirve).map(e => texto(e.valor))]).size;
+    for (const [de, a] of o.cambios || []) {
+      const i = o.errores.indexOf(de);
+      if (i < 0) continue;
+      const otra = o.errores.slice(); otra[i] = a;
+      if (Math.min(5, cuantas(otra)) === Math.min(5, cuantas(o.errores))) o.errores = otra;
+    }
+    // Listas completas de reemplazo, en orden de preferencia, con la misma condición.
+    const alterno = (o.alternos || []).find(l => Math.min(5, cuantas(l.filter(Boolean))) === Math.min(5, cuantas(o.errores)));
+    if (alterno) o.errores = alterno.filter(Boolean);
+    const errores = o.errores.filter(sirve);
     const alternativas = P.armar({ correcta: o.correcta, errores, rng, texto });
     return {
       id: `geo-triangulos-notables#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
@@ -197,8 +210,9 @@
         h('GT-limite-incluido-uno', R.cuantos + 1, `Contaste uno de los extremos (${lo} o ${hiS}). Ninguno de los dos da triángulo.`),
         h('GT-solo-cota-superior', hiS - 1, `Usaste solo x < ${hiS} y contaste desde 1. Falta la otra condición: x > ${lo}.`),
       ];
+      const cambios = [[errores[1], h('GT-resta-sin-mas-uno', R.cuantos - 1, `Restaste los extremos, ${R.max} − ${R.min} = ${R.cuantos - 1}, y olvidaste sumar 1: así dejas fuera uno de los valores. De ${R.min} a ${R.max} hay ${R.max} − ${R.min} + 1.`)]];
       const solucion = [paso1, ['Los valores van de ', `${R.min}`, ' a ', `${R.max}`, ': son ', v('x', `${R.max} − ${R.min} + 1 = ${R.cuantos}`), ' valores.']];
-      return { correcta: R.cuantos, unidad: '', errores, variables, enunciado, pregunta, solucion, enteros: true, datos: { tipo: 'desigualdad', sub, a, b, u } };
+      return { correcta: R.cuantos, unidad: '', errores, cambios, variables, enunciado, pregunta, solucion, enteros: true, datos: { tipo: 'desigualdad', sub, a, b, u } };
     }
     if (sub === 'diagonal') {
       const p = rng.entero(3, 15), q = rng.entero(3, 15), r = rng.entero(3, 15), s = rng.entero(3, 15);
@@ -380,8 +394,9 @@
           h('GT-condicion-invertida', agudos.cuantos, 'Contaste los triángulos con ese ángulo agudo (x² < a² + b²). Para que sea obtuso, el lado opuesto tiene que ser mayor: x² > a² + b².'),
           cuadS ? h('GT-limites-incluidos', R.cuantos + 2, `Contaste también x = ${rS} (ángulo recto) y x = ${a + b} (lados sobre una recta). Ninguno de los dos da un triángulo obtusángulo.`) : null,
         ];
+        const cambios = [[errores[1], h('GT-resta-sin-mas-uno', R.cuantos - 1, `Restaste los extremos, ${R.max} − ${R.min} = ${R.cuantos - 1}, y olvidaste sumar 1: así dejas fuera uno de los valores. De ${R.min} a ${R.max} hay ${R.max} − ${R.min} + 1.`)]];
         const solucion = [...pasos, ['Son ', v('x', `${R.max} − ${R.min} + 1 = ${R.cuantos}`), ' valores.']];
-        return { correcta: R.cuantos, unidad: '', errores, variables, enunciado, pregunta, solucion, enteros: true, datos: { tipo: 'obtusangulo', sub, a, b, u } };
+        return { correcta: R.cuantos, unidad: '', errores, cambios, variables, enunciado, pregunta, solucion, enteros: true, datos: { tipo: 'obtusangulo', sub, a, b, u } };
       }
       if (sub === 'entre-max') {
         const pregunta = ['¿Cuál es el ', v('x', 'mayor valor'), ' que puede tener el tercer lado?'];
@@ -419,9 +434,13 @@
               : h('GT-redondeo-abajo', k * (R.max - rS), `Redondeaste √${S2} hacia abajo (${rS}). El lado mínimo tiene que ser mayor que √${S2}.`),
         h('GT-condicion-invertida', k * (agudos.max - tri.min), 'Usaste los triángulos con el ángulo agudo (x² < a² + b²). Para el obtuso, x² > a² + b².'),
       ];
+      // El límite incluido y el redondeo dan siempre lo mismo (k más que la correcta): uno de los dos se cambia
+      // por un error que queda por debajo. Si no, todos los errores cuestan de más.
+      const dosVeces = h('GT-estricta-dos-veces', k * (R.max - R.min - 1), `Tomaste el lado mínimo ${R.min + 1}: al menor entero que cumple x² > ${S2} le sumaste otra unidad por la desigualdad estricta, y te salió (${R.max} − ${R.min + 1})·${k} = ${sol(k * (R.max - R.min - 1))}. ${R.min} ya la cumple (${R.min}² = ${R.min * R.min}): la diferencia de lados es ${R.max - R.min}.`);
+      const alternos = [[errores[0], dosVeces, errores[2], errores[3]], [errores[0], dosVeces, errores[2]]];
       const solucion = [...pasos, ['Los perímetros se diferencian solo en el tercer lado: ', `${R.max} − ${R.min} = ${R.max - R.min} ${u}`, '.'],
         ['Diferencia de costo: ', `${R.max - R.min} · `, v('k', `${k}`), ' = ', v('x', sol(correcta)), '.']];
-      return { correcta, unidad: 'soles', texto: sol, errores, variables, enunciado: enun, pregunta, solucion, enteros: true, datos: { tipo: 'obtusangulo', sub, a, b, k, u } };
+      return { correcta, unidad: 'soles', texto: sol, errores, alternos, variables, enunciado: enun, pregunta, solucion, enteros: true, datos: { tipo: 'obtusangulo', sub, a, b, k, u } };
     }
     if (sub === 'opuesto-cuantos') {
       const R = calc.obtusoOpuesto(a, b);
@@ -436,12 +455,13 @@
         h('GT-obtuso-frente-a-x', calc.obtusoEntre(a, b).cuantos, 'Pusiste el ángulo obtuso frente al tercer lado. El enunciado lo pone frente al lado de ' + b + ': b² > a² + x².'),
         h('GT-condicion-invertida', agudo.cuantos, 'Contaste los triángulos con ese ángulo agudo (x² > b² − a²). Para que sea obtuso, x² < b² − a².'),
       ];
+      const cambios = [[errores[1], h('GT-resta-sin-mas-uno', R.cuantos - 1, `Restaste los extremos, ${R.max} − ${R.min} = ${R.cuantos - 1}, y olvidaste sumar 1: así dejas fuera uno de los valores. De ${R.min} a ${R.max} hay ${R.max} − ${R.min} + 1.`)]];
       const solucion = [
         ['Desigualdad triangular: ', `${b - a} < x < ${a + b}`, '.'],
         ['El ángulo opuesto a ', v('b', `${b}`), ' es obtuso: ', `${b}² > ${a}² + x²`, ', o sea x² < ', `${D2}`, ' y x < ', raizD, '.'],
         ['Las dos a la vez: x va de ', `${R.min}`, ' a ', `${R.max}`, ': ', v('x', `${R.cuantos}`), ' valores.'],
       ];
-      return { correcta: R.cuantos, unidad: '', errores, variables, enunciado, pregunta, solucion, enteros: true, datos: { tipo: 'obtusangulo', sub, a, b, u } };
+      return { correcta: R.cuantos, unidad: '', errores, cambios, variables, enunciado, pregunta, solucion, enteros: true, datos: { tipo: 'obtusangulo', sub, a, b, u } };
     }
     if (sub === 'relacion') {
       // Lados AB = a (dato menor) y AC = b; ∠B obtuso y ∠A > ∠C; BC = x entero y único.
