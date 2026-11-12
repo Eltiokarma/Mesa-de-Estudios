@@ -1,6 +1,6 @@
 # Cuentas, login y progreso: diseño (borrador del 12 nov 2026)
 
-> Estado: propuesta para que Gerson decida. Nada de esto está construido todavía.
+> Estado: diseño con las decisiones de Gerson del 12 nov 2026. En construcción: `servidor/` (fase C1).
 
 ## Por qué cambia
 
@@ -17,7 +17,7 @@ Y trae dos obligaciones:
 ## Principios
 
 1. **La app sigue funcionando sin internet.** Hace falta internet para el primer ingreso en un equipo. Después se practica sin conexión y los eventos se suben cuando vuelve la señal.
-2. **Datos mínimos.** Del colegio solo se pide nombre, grado y sección. Nada de DNI, teléfono ni correo del alumno.
+2. **Datos mínimos.** Del colegio se pide nombre, grado, sección y DNI (decisión de Gerson; ver abajo). Nada de teléfono ni correo del alumno.
 3. **Investigación seudónima.** La medición sigue usando un id al azar por alumno (`alumno`), como hoy. El nombre vive en otra tabla, que solo ven el colegio y Gerson. Lo que se exporta para análisis no trae nombres.
 4. **Una sola fuente de verdad del progreso: el servidor.** El celular guarda una copia para trabajar sin conexión y la sincroniza.
 5. **Lo que ya existe no se rehace.** El estado del alumno ya está en un solo objeto (`est`, en `app/app.js`) y los eventos en una cola (`nucleo/medicion.js`). Con cuentas, `est` pasa a ser de la cuenta y la cola se sube al servidor.
@@ -113,10 +113,18 @@ Con esto, `?salida=fisica` y `?soluciones=` dejan de ser enlaces que se reparten
 
 Con el piloto en diciembre, C1 a C3 son unas 2 a 3 semanas de trabajo con pruebas. Hay que probar el ingreso en los celulares y en las PC reales del colegio antes de la primera clase.
 
-## Decisiones pendientes de Gerson
+## Decisiones de Gerson (12 nov 2026)
 
-1. Servidor: FastAPI en Railway (recomendado) o Supabase.
-2. Qué datos entrega el colegio. Lo mínimo es nombre, grado y sección; se recomienda no pedir DNI.
-3. Consentimiento: quién lo firma y cómo (hay que consultarlo antes de cargar nombres).
-4. Si el modo sin cuenta (demostración) se mantiene.
-5. El dominio: dónde vive la app y dónde la API.
+1. **Servidor:** FastAPI + PostgreSQL en Railway.
+2. **Datos del colegio:** nombre, grado, sección **y DNI**. El DNI sirve para no duplicar alumnos al volver a cargar la lista y para identificar sin dudas a un alumno que olvidó su usuario. Se guarda **cifrado** (no en texto plano) en la tabla de alumnos. Nunca va en los eventos, en el estado del alumno ni en las exportaciones para investigación. Solo lo ve el administrador del colegio. **No es el usuario**, para que no aparezca en las tarjetas ni en la pantalla de ingreso.
+3. **Equipos:** laboratorio y celulares propios. El diseño cubre los dos casos: «Cerrar sesión» en la PC compartida y sesión de unos 30 días en el celular.
+4. **Modo sin cuenta:** se mantiene como demostración, y nada de ese modo sube al servidor.
+
+**Pendiente:**
+- Consentimiento: quién lo firma y cómo. Hay que consultarlo antes de cargar nombres y DNI.
+- El dominio: dónde vive la app y dónde la API.
+
+Con el DNI pesa más el deber de seguridad. Además del cifrado del campo:
+- copias de respaldo cifradas;
+- acceso al panel del administrador con contraseña fuerte;
+- un registro de quién descargó qué.
