@@ -1,0 +1,162 @@
+{
+  "id": "t160",
+  "version": 1,
+  "titulo": "El derecho a la desconexión digital",
+  "tema": "Trabajo · mensajes fuera del horario",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    { "id": "A", "desde": 0, "firma": "Una abogada laboralista" },
+    { "id": "B", "desde": 1, "firma": "Un gerente de recursos humanos" }
+  ],
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "principal", "t": "Quien termina su jornada tiene derecho a no responder los mensajes del trabajo, y la ley debería protegerlo." },
+      { "id": "o2", "rol": "apoyo", "t": "Si el jefe escribe a las diez de la noche, el empleado no descansa aunque no abra el mensaje: ya está pensando en la respuesta." },
+      { "id": "o3", "rol": "apoyo", "t": "El descanso sin interrupciones es parte de un trabajo justo, porque las horas fuera del horario le pertenecen al trabajador." },
+      { "id": "o4", "rol": "contraste", "t": "Sin una norma, cada trabajador tendría que pelear solo por su tiempo, y muchos callarían por miedo a perder el empleo." },
+      { "id": "o5", "rol": "principal", "t": "Por eso desconectarse debe ser un derecho y no un favor que el jefe concede cuando quiere." }
+    ],
+    [
+      { "id": "o6", "rol": "apoyo", "t": "Descansar es necesario, y nadie debería recibir presiones fuera de su horario por asuntos que pueden esperar." },
+      { "id": "o7", "rol": "contraste", "t": "Pero una regla rígida no se adapta a todos los trabajos." },
+      { "id": "o8", "rol": "apoyo", "t": "Un médico de guardia, una técnica que atiende una falla en una mina o un vendedor que cierra tratos con clientes de otro país necesitan, a veces, responder fuera de hora." },
+      { "id": "o9", "rol": "apoyo", "t": "Lo razonable es que cada empresa y su personal acuerden cuándo se puede escribir, qué es urgente y cómo se compensa ese tiempo." },
+      { "id": "o10", "rol": "principal", "t": "Es mejor un acuerdo flexible que una prohibición general que ate a todos por igual." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "controversia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Responder mensajes fuera del horario puede ser necesario en algunos oficios.",
+        "aceptada": "B",
+        "codigos": { "A": "RV59", "ambos": "RV60", "ninguno": null },
+        "explicacion": "Lo sostiene el texto B en la oración 8: un médico de guardia, una técnica de mina o un vendedor a veces necesitan responder fuera de hora.",
+        "explicaciones": {
+          "A": "El texto A no admite excepciones por oficio: pide que desconectarse sea un derecho (oración 5). La idea es del texto B (oración 8).",
+          "ambos": "Solo el texto B lo sostiene. El A defiende la desconexión como derecho sin hablar de oficios que la necesiten.",
+          "ninguno": "Sí lo sostiene alguien: el texto B, en la oración 8."
+        }
+      },
+      "enunciado": "¿Cuál es el eje del debate entre los dos textos?",
+      "alternativas": [
+        { "t": "Si el derecho a la desconexión debe ser una norma general o un acuerdo flexible en cada empresa.", "correcta": true, "evidencia": ["o1", "o10"],
+          "explicacion": "El texto A pide que la ley proteja la desconexión como derecho (oraciones 1 y 5); el B prefiere un acuerdo flexible (oración 10)." },
+        { "t": "Si el trabajador necesita descansar durante las horas que están fuera de su horario de trabajo.", "codigo": "RV61", "origen": "o6",
+          "explicacion": "En eso coinciden: el texto A lo defiende en la oración 3 y el B lo acepta en la oración 6." },
+        { "t": "Si un médico de guardia o una técnica de una mina deben responder una urgencia fuera de hora.", "codigo": "RV60", "origen": "o8",
+          "explicacion": "Es un ejemplo del texto B (oración 8). El A no lo discute: el eje tiene que ser algo sobre lo que los dos toman posición." },
+        { "t": "Si un mensaje enviado a las diez de la noche impide descansar aunque nadie lo abra.", "codigo": "RV1", "origen": "o2",
+          "explicacion": "Es un detalle del argumento del texto A (oración 2), no lo que se discute." },
+        { "t": "Si el trabajo ocupa hoy demasiado espacio en la vida de las personas de cualquier edad.", "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos discuten cómo regular los mensajes fuera del horario, no el lugar del trabajo en la vida." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "postura",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Fuera del horario, el trabajador merece descansar.",
+        "aceptada": "ambos",
+        "codigos": { "A": "RV61", "B": "RV61", "ninguno": null },
+        "explicacion": "Los dos lo sostienen: el texto A, en las oraciones 1 y 3 (las horas fuera del horario le pertenecen al trabajador), y el B, en la oración 6 (descansar es necesario).",
+        "explicaciones": {
+          "A": "El texto A lo dice en la oración 3, pero el B también: «descansar es necesario» (oración 6).",
+          "B": "El texto B lo dice en la oración 6, pero el A también, en las oraciones 1 y 3.",
+          "ninguno": "Los dos lo sostienen: el texto A en la oración 3 y el B en la oración 6."
+        }
+      },
+      "enunciado": "La abogada del texto A sostiene que",
+      "alternativas": [
+        { "t": "desconectarse debe ser un derecho protegido por una norma y no un favor del jefe.", "correcta": true, "evidencia": ["o1", "o5"],
+          "explicacion": "Lo dice en las oraciones 1 y 5: la ley debería proteger a quien termina su jornada." },
+        { "t": "cada empresa y su personal deben acordar cuándo se puede escribir y cómo se compensa ese tiempo.", "codigo": "RV59", "origen": "o9",
+          "explicacion": "Es la postura del texto B (oraciones 9 y 10), no la de la abogada." },
+        { "t": "ningún jefe debe escribir jamás a sus empleados, ni siquiera cuando hay una urgencia de verdad.", "codigo": "RV11",
+          "explicacion": "«Jamás» y «ninguno» dicen más que el texto A, que defiende el descanso sin tratar el caso de las urgencias." },
+        { "t": "los trabajadores deberían cobrar el doble por cada mensaje que respondan fuera de su horario.", "codigo": "RV33",
+          "explicacion": "El texto A no propone pagos dobles: pide que desconectarse sea un derecho (oración 5)." },
+        { "t": "un mensaje de las diez de la noche ya impide el descanso del empleado, aunque este no lo abra.", "codigo": "RV1", "origen": "o2",
+          "explicacion": "Es un detalle verdadero (oración 2), pero es un ejemplo y no la postura general de la autora." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto B, el verbo ATAR («una prohibición general que ate a todos por igual») significa",
+      "alternativas": [
+        { "t": "someter a una misma obligación.", "correcta": true, "evidencia": ["o10"],
+          "explicacion": "La prohibición general obliga por igual a todos los trabajos, aunque no todos se parezcan." },
+        { "t": "sujetar con una cuerda.", "codigo": "RV18",
+          "explicacion": "Es el sentido físico más común de «atar», pero una prohibición no se ata con cuerdas." },
+        { "t": "castigar con una sanción.", "codigo": "RV19",
+          "explicacion": "Se asocia con «prohibición», pero «atar» habla de obligar a todos a lo mismo, no de castigar." },
+        { "t": "prohibir de manera general.", "codigo": "RV5", "origen": "o10",
+          "explicacion": "Repite palabras de la misma oración, pero no explica lo que hace el verbo «atar»." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "compatibilidad",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Resulta compatible con lo que plantea el texto B afirmar que",
+      "alternativas": [
+        { "t": "una empresa puede pactar con su personal que los técnicos de guardia respondan fuera de hora a cambio de tiempo libre.", "correcta": true, "evidencia": ["o8", "o9"],
+          "explicacion": "Encaja con el texto B: pide acuerdos sobre cuándo se escribe, qué es urgente y cómo se compensa ese tiempo (oración 9)." },
+        { "t": "ninguna persona debería recibir jamás un mensaje del trabajo fuera de su horario, sea cual sea su oficio.", "codigo": "RV10",
+          "explicacion": "Choca con el texto B: dice que algunos oficios necesitan, a veces, responder fuera de hora (oración 8). Revisa «ninguna» y «jamás»." },
+        { "t": "una regla igual para todos los trabajos es la mejor forma de cuidar el descanso del personal de las empresas.", "codigo": "RV9",
+          "explicacion": "Choca con el texto B, que prefiere un acuerdo flexible antes que una regla general (oraciones 7 y 10)." },
+        { "t": "la ley debe obligar a todas las empresas a prohibir los mensajes fuera del horario, sin excepción alguna.", "codigo": "RV59",
+          "explicacion": "Es la postura del texto A (oraciones 1 y 5); el B la rechaza en la oración 10." },
+        { "t": "el descanso fuera del horario es un lujo que a nadie le conviene exigir, ni siquiera con acuerdos.", "codigo": "RV11",
+          "explicacion": "Choca con el texto B, que sí dice que descansar es necesario (oración 6)." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "dialogo",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Las empresas que escriben fuera de horario deberían pagar una multa a cada empleado.",
+        "aceptada": "ninguno",
+        "codigos": { "A": "RV33", "B": "RV33", "ambos": "RV33" },
+        "explicacion": "Ninguno lo sostiene: el texto A pide una ley que proteja la desconexión (oración 1) y el B, un acuerdo flexible (oración 10); ninguno habla de multas.",
+        "explicaciones": {
+          "A": "El texto A pide que la ley proteja la desconexión (oración 1), pero no habla de multas a las empresas.",
+          "B": "El texto B propone acuerdos entre empresa y personal (oración 9); no habla de multas.",
+          "ambos": "Ninguno de los dos habla de multas por escribir fuera de horario."
+        }
+      },
+      "enunciado": "Ante la propuesta del texto A, el gerente del texto B probablemente objetaría que",
+      "alternativas": [
+        { "t": "una norma igual para todos no distingue entre quien responde un correo y quien atiende una emergencia.", "correcta": true, "evidencia": ["o7", "o8", "o10"],
+          "explicacion": "Para el texto B, una regla rígida no se adapta a todos los trabajos (oración 7) y algunos oficios necesitan responder a veces (oración 8)." },
+        { "t": "un jefe que escribe a las diez de la noche impide descansar al empleado, aunque este no abra el mensaje.", "codigo": "RV59", "origen": "o2",
+          "explicacion": "Ese es el argumento del texto A (oración 2); no sirve al B para objetar." },
+        { "t": "el descanso fuera del horario no es necesario, y por eso la ley no tiene nada que proteger.", "codigo": "RV61", "origen": "o6",
+          "explicacion": "El texto B no lo niega: concede que descansar es necesario (oración 6). Su crítica es a la regla rígida." },
+        { "t": "muchas empresas pequeñas no tienen cómo pagar horas extra a su personal que responde fuera de hora.", "codigo": "RV8",
+          "explicacion": "El texto B no habla de pagos de horas extra ni del tamaño de las empresas; es un dato de fuera del texto." },
+        { "t": "la ley sería necesaria para que desconectarse sea un derecho y no un favor del jefe.", "codigo": "RV12", "origen": "o5",
+          "explicacion": "Repite lo que dice el texto A (oración 5); no es una objeción del B." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-12",
+  "hechos": [],
+  "revision": null
+}
