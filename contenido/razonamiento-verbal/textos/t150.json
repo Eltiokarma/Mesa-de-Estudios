@@ -1,0 +1,300 @@
+{
+  "id": "t150",
+  "version": 1,
+  "titulo": "El cobro por las bolsas: ¿funciona o solo cambia quién paga?",
+  "tema": "Ambiente · ley del plástico",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    {
+      "id": "A",
+      "desde": 0,
+      "firma": "Una economista"
+    },
+    {
+      "id": "B",
+      "desde": 1,
+      "firma": "Un dirigente de consumidores"
+    }
+  ],
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "apoyo",
+        "t": "Desde que los supermercados cobran por las bolsas plásticas, muchas personas llevan su propia bolsa de tela o de papel."
+      },
+      {
+        "id": "o2",
+        "rol": "principal",
+        "t": "El cobro funciona porque pone un precio a algo que antes parecía gratis."
+      },
+      {
+        "id": "o3",
+        "rol": "apoyo",
+        "t": "Cuando cada bolsa cuesta unos centavos, el cliente piensa dos veces antes de pedirla."
+      },
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "Y cada bolsa que no se entrega es una bolsa que no termina en una calle, en un río o en el mar."
+      },
+      {
+        "id": "o5",
+        "rol": "principal",
+        "t": "Por eso la medida debería ampliarse a otros comercios."
+      }
+    ],
+    [
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "Reconozco que se ven menos bolsas en las colas del supermercado."
+      },
+      {
+        "id": "o7",
+        "rol": "principal",
+        "t": "El problema es que el costo se traslada al consumidor y no a quienes fabrican y venden el plástico."
+      },
+      {
+        "id": "o8",
+        "rol": "apoyo",
+        "t": "La familia que compra a diario paga cada vez, aunque solo pueda comprar poco."
+      },
+      {
+        "id": "o9",
+        "rol": "apoyo",
+        "t": "Además, las bolsas son solo una parte del plástico que llega a casa: el cobro, por sí solo, no toca los envoltorios ni los envases."
+      },
+      {
+        "id": "o10",
+        "rol": "principal",
+        "t": "Mientras no se pida también a las empresas que reduzcan los envases que fabrican, el cobro solo cambiará quién paga."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "controversia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Cuando la bolsa cuesta algo, el cliente lo piensa antes de pedirla.",
+        "aceptada": "A",
+        "codigos": {
+          "B": "RV59",
+          "ambos": "RV60",
+          "ninguno": null
+        },
+        "explicacion": "Lo sostiene el texto A en la oración 3: con un costo de unos centavos, el cliente piensa dos veces antes de pedir la bolsa.",
+        "explicaciones": {
+          "B": "El texto B solo reconoce que se ven menos bolsas (oración 6); no explica el porqué. La idea es del A (oración 3).",
+          "ambos": "Solo el texto A lo sostiene (oración 3). El B habla de quién paga el costo, no de cómo decide el cliente.",
+          "ninguno": "Sí lo sostiene alguien: el texto A, en la oración 3."
+        }
+      },
+      "enunciado": "El eje del debate entre los dos textos es si el cobro por las bolsas",
+      "alternativas": [
+        {
+          "t": "reduce el número de bolsas que se entregan en los supermercados del país.",
+          "codigo": "RV61",
+          "origen": "o6",
+          "explicacion": "En eso coinciden: el texto A lo dice en la oración 1 y el B lo reconoce en la oración 6."
+        },
+        {
+          "t": "debería ampliarse a otros comercios para que más personas cambien su hábito de compra.",
+          "codigo": "RV60",
+          "origen": "o5",
+          "explicacion": "Es una propuesta del texto A (oración 5); el B no discute dónde se aplicaría, sino a quién le toca pagar."
+        },
+        {
+          "t": "resuelve el problema del plástico o solo cambia quién paga el costo.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o7",
+            "o10"
+          ],
+          "explicacion": "El texto A dice que funciona porque pone un precio (oración 2); el B, que solo traslada el costo al consumidor (oraciones 7 y 10)."
+        },
+        {
+          "t": "reduce el uso de bolsas, pero obliga a las empresas a pagar por el plástico que fabrican.",
+          "codigo": "RV62",
+          "origen": "o7",
+          "explicacion": "La primera mitad es común (oraciones 1 y 6), pero la segunda no la dice ninguno: el texto B se queja justamente de que las empresas no pagan (oración 7)."
+        },
+        {
+          "t": "sirve para que la gente cuide el planeta y piense en las generaciones que vienen.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos discuten una medida concreta y quién paga su costo."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto B, la expresión SE TRASLADA («el costo se traslada al consumidor») significa que el costo",
+      "alternativas": [
+        {
+          "t": "se lleva de un lugar a otro dentro del supermercado.",
+          "codigo": "RV18",
+          "explicacion": "Es el sentido de «trasladar» como mover cosas de sitio, pero aquí se habla de quién paga."
+        },
+        {
+          "t": "se reduce hasta que casi no se nota en la compra.",
+          "codigo": "RV19",
+          "origen": "o8",
+          "explicacion": "Está en el mismo campo (el costo de la compra), pero el texto B dice que el costo sigue existiendo y lo paga otro."
+        },
+        {
+          "t": "pasa a ser asumido por otra persona.",
+          "correcta": true,
+          "evidencia": [
+            "o7"
+          ],
+          "explicacion": "Se opone a que lo paguen quienes fabrican y venden el plástico: lo paga el consumidor."
+        },
+        {
+          "t": "se produce en una fábrica distinta a la de los envases.",
+          "codigo": "RV5",
+          "origen": "o7",
+          "explicacion": "Repite la idea de fabricar de la oración, pero «trasladar» no tiene que ver con producir."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sintesis",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "¿Qué enunciado sintetiza mejor lo que plantean los dos textos?",
+      "alternativas": [
+        {
+          "t": "Las bolsas deben prohibirse, pues el cobro hace que las familias gasten más en cada compra.",
+          "codigo": "RV44",
+          "explicacion": "Une dos ideas con una relación que los textos no plantean: nadie pide prohibir las bolsas."
+        },
+        {
+          "t": "El cobro funciona porque pone un precio, y por eso las empresas ya fabrican menos envases.",
+          "codigo": "RV62",
+          "origen": "o2",
+          "explicacion": "La primera mitad es del texto A (oración 2), pero la segunda no la dice nadie: el B pide que se les exija (oración 10)."
+        },
+        {
+          "t": "El cobro logra que se entreguen menos bolsas; lo que se discute es si basta o debe acompañarse de exigencias a las empresas.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o6",
+            "o10"
+          ],
+          "explicacion": "Integra el punto común, que se ven menos bolsas (oraciones 1 y 6), y la discrepancia: el cobro solo, o con exigencias a quienes fabrican (oración 10)."
+        },
+        {
+          "t": "Las bolsas que no se entregan dejan de llegar a las calles, los ríos y el mar.",
+          "codigo": "RV60",
+          "origen": "o4",
+          "explicacion": "Es un argumento del texto A (oración 4); no integra lo que dice el B."
+        },
+        {
+          "t": "Todas las personas deberían cuidar el ambiente en cada una de sus compras.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: no recoge el debate sobre el cobro ni quién paga."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Hay que prohibir toda bolsa plástica en los supermercados desde mañana.",
+        "aceptada": "ninguno",
+        "codigos": {
+          "A": "RV33",
+          "B": "RV33",
+          "ambos": "RV33"
+        },
+        "explicacion": "Ninguno lo sostiene: el texto A propone un cobro que se amplíe a otros comercios (oración 5) y el B pide que las empresas reduzcan sus envases (oración 10).",
+        "explicaciones": {
+          "A": "El texto A defiende el cobro, no la prohibición (oraciones 2 y 5).",
+          "B": "El texto B critica quién paga el cobro (oración 7), pero no pide prohibir las bolsas.",
+          "ambos": "Ninguno lo sostiene: los dos hablan del cobro y no de prohibir."
+        }
+      },
+      "enunciado": "Sería incompatible con lo que sostiene el texto B afirmar que",
+      "alternativas": [
+        {
+          "t": "algunas personas llevan ahora sus propias bolsas a los supermercados.",
+          "codigo": "RV36",
+          "explicacion": "El texto B no lo dice, pero tampoco lo contradice: reconoce que se ven menos bolsas (oración 6)."
+        },
+        {
+          "t": "el cobro, por sí solo, ya garantiza que las empresas fabriquen menos envases.",
+          "correcta": true,
+          "evidencia": [
+            "o9",
+            "o10"
+          ],
+          "explicacion": "Para el texto B el cobro no toca los envases y mientras no se exija a las empresas solo cambia quién paga (oraciones 9 y 10)."
+        },
+        {
+          "t": "quien compra poco paga el cobro de la bolsa igual que quien compra mucho.",
+          "codigo": "RV34",
+          "explicacion": "Se deduce del texto B (oración 8): la familia paga cada vez, aunque compre poco."
+        },
+        {
+          "t": "las bolsas de tela se usan más años que las bolsas plásticas del supermercado.",
+          "codigo": "RV8",
+          "explicacion": "Puede ser cierto, pero no sale de los textos y no choca con lo que dice el B."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Si el Estado exigiera a las empresas reducir los envases que fabrican, el autor del texto B probablemente",
+      "alternativas": [
+        {
+          "t": "seguiría opinando que el cobro solo cambia quién paga, pues las empresas no habrían hecho nada.",
+          "codigo": "RV63",
+          "explicacion": "Repite la crítica que el supuesto acaba de atender: ya se les pide a las empresas que reduzcan los envases (oración 10)."
+        },
+        {
+          "t": "pediría que se prohíba todo producto que venga en envase, incluso el de la bodega.",
+          "codigo": "RV7",
+          "explicacion": "Va más allá del texto: pide que las empresas reduzcan los envases (oración 10), no prohibirlos todos."
+        },
+        {
+          "t": "vería más justo el cobro, porque ya no recaería solo sobre el consumidor.",
+          "correcta": true,
+          "evidencia": [
+            "o7",
+            "o10"
+          ],
+          "explicacion": "Su crítica es que el costo se traslada al consumidor y no a quienes fabrican el plástico (oración 7); el supuesto atiende esa condición (oración 10)."
+        },
+        {
+          "t": "exigiría que el cobro de bolsas se retire para siempre de los supermercados.",
+          "codigo": "RV11",
+          "explicacion": "Dice más de lo que el texto permite: el B reconoce que se ven menos bolsas (oración 6) y no pide quitar el cobro."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-12",
+  "hechos": [
+    {
+      "afirmacion": "En el Perú, la Ley N.° 30884 (2018) regula el plástico de un solo uso, y desde 2019 los supermercados y otros comercios cobran por las bolsas plásticas.",
+      "fuente": "Ley N.° 30884, Ley que regula el plástico de un solo uso y los recipientes o envases descartables (2018), y su reglamento del Ministerio del Ambiente (2019)"
+    }
+  ],
+  "revision": null
+}

@@ -1,0 +1,295 @@
+{
+  "id": "t149",
+  "version": 1,
+  "titulo": "Videojuegos: ¿tiempo perdido o tiempo ganado?",
+  "tema": "Sociedad · videojuegos y adolescentes",
+  "grado": 4,
+  "dificultad": 1,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    {
+      "id": "A",
+      "desde": 0,
+      "firma": "Un padre de familia"
+    },
+    {
+      "id": "B",
+      "desde": 1,
+      "firma": "Una profesora de secundaria"
+    }
+  ],
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "principal",
+        "t": "Mi hijo de catorce años pasa las tardes frente a la consola, y creo que esas horas se pierden."
+      },
+      {
+        "id": "o2",
+        "rol": "apoyo",
+        "t": "Mientras juega no lee, no hace deporte ni ayuda en casa."
+      },
+      {
+        "id": "o3",
+        "rol": "apoyo",
+        "t": "Además, a veces se desvela y al día siguiente llega cansado al colegio."
+      },
+      {
+        "id": "o4",
+        "rol": "principal",
+        "t": "Un juego puede ser entretenido, pero entretener no es aprender, y la adolescencia es el momento de formar hábitos de estudio."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "Por eso pienso que hay que limitar los videojuegos a los fines de semana."
+      }
+    ],
+    [
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "Estoy de acuerdo en que jugar toda la noche perjudica el sueño y las notas."
+      },
+      {
+        "id": "o7",
+        "rol": "contraste",
+        "t": "Sin embargo, no todo tiempo frente a la pantalla es tiempo perdido."
+      },
+      {
+        "id": "o8",
+        "rol": "apoyo",
+        "t": "En muchos juegos hay que planear, resolver problemas y coordinarse con un equipo, y esas habilidades se practican."
+      },
+      {
+        "id": "o9",
+        "rol": "apoyo",
+        "t": "Además, mis alumnos que juegan en línea conversan, se ponen de acuerdo y hacen amigos que de otro modo no tendrían."
+      },
+      {
+        "id": "o10",
+        "rol": "principal",
+        "t": "Lo que conviene no es prohibir, sino acordar con ellos un horario y conversar sobre qué juegan."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "controversia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Pasar la noche jugando le hace daño al descanso y al estudio.",
+        "aceptada": "ambos",
+        "codigos": {
+          "A": "RV61",
+          "B": "RV61",
+          "ninguno": null
+        },
+        "explicacion": "Los dos lo sostienen: el texto A cuenta que su hijo se desvela y llega cansado (oración 3) y el B dice que jugar toda la noche perjudica el sueño y las notas (oración 6).",
+        "explicaciones": {
+          "A": "El texto A lo dice en la oración 3, pero el B también: jugar toda la noche perjudica el sueño y las notas (oración 6).",
+          "B": "El texto B lo dice en la oración 6, pero el A también: su hijo se desvela y llega cansado (oración 3).",
+          "ninguno": "Los dos lo sostienen: el texto A en la oración 3 y el B en la oración 6."
+        }
+      },
+      "enunciado": "El tema en controversia entre los dos textos es",
+      "alternativas": [
+        {
+          "t": "si jugar toda la noche perjudica el sueño y las notas de los estudiantes de colegio.",
+          "codigo": "RV61",
+          "origen": "o6",
+          "explicacion": "En eso coinciden: el texto A lo cuenta en la oración 3 y el B lo reconoce en la oración 6."
+        },
+        {
+          "t": "si el tiempo que los adolescentes dedican a los videojuegos se pierde o puede dejarles algo valioso.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o7",
+            "o8"
+          ],
+          "explicacion": "El texto A dice que esas horas se pierden (oración 1); el B responde que no todo tiempo frente a la pantalla es tiempo perdido (oración 7)."
+        },
+        {
+          "t": "si los adolescentes deben hacer deporte y ayudar en casa además de estudiar y de jugar a la consola.",
+          "codigo": "RV60",
+          "origen": "o2",
+          "explicacion": "Es un argumento del texto A (oración 2); el B no lo discute, así que no es el eje del debate."
+        },
+        {
+          "t": "si la tecnología de hoy ayuda o perjudica a los jóvenes en todos los aspectos de su vida.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos hablan de los videojuegos y de lo que hacen los adolescentes con ellos."
+        },
+        {
+          "t": "si los alumnos de la profesora hacen amigos nuevos cuando juegan en línea con otras personas.",
+          "codigo": "RV1",
+          "origen": "o9",
+          "explicacion": "Es un ejemplo del texto B (oración 9), no el eje del debate."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "postura",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Jugar en línea puede ayudar a conocer gente y a ponerse de acuerdo con otros.",
+        "aceptada": "B",
+        "codigos": {
+          "A": "RV59",
+          "ambos": "RV60",
+          "ninguno": null
+        },
+        "explicacion": "Lo sostiene el texto B en la oración 9: sus alumnos que juegan en línea conversan, se ponen de acuerdo y hacen amigos.",
+        "explicaciones": {
+          "A": "El texto A no menciona ventajas sociales: dice que jugar es entretenido pero no enseña (oración 4). La idea es del B (oración 9).",
+          "ambos": "Solo el texto B lo sostiene (oración 9). El A no ve nada valioso en esas horas.",
+          "ninguno": "Sí lo sostiene alguien: el texto B, en la oración 9."
+        }
+      },
+      "enunciado": "La profesora del texto B sostiene que",
+      "alternativas": [
+        {
+          "t": "entretener no es aprender, y por eso los videojuegos deben limitarse a los fines de semana.",
+          "codigo": "RV59",
+          "origen": "o4",
+          "explicacion": "Es la postura del texto A (oraciones 4 y 5), no la de la profesora."
+        },
+        {
+          "t": "todos los videojuegos enseñan a resolver problemas y a coordinarse con un equipo.",
+          "codigo": "RV11",
+          "origen": "o8",
+          "explicacion": "El texto B dice que «en muchos juegos» se practican esas habilidades (oración 8), no en todos."
+        },
+        {
+          "t": "el problema no está en jugar, sino en hacerlo sin acuerdos ni horario.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o10"
+          ],
+          "explicacion": "Concede que jugar toda la noche perjudica (oración 6) y propone acordar un horario en lugar de prohibir (oración 10)."
+        },
+        {
+          "t": "lo más sensato es prohibir los videojuegos a los alumnos que llegan cansados a clase.",
+          "codigo": "RV33",
+          "origen": "o10",
+          "explicacion": "La profesora dice lo contrario: lo que conviene no es prohibir (oración 10)."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto B, el verbo ACORDAR («acordar con ellos un horario») significa",
+      "alternativas": [
+        {
+          "t": "recordar algo que se había olvidado.",
+          "codigo": "RV18",
+          "explicacion": "Es el sentido de «acordarse», pero aquí se habla de fijar un horario entre adultos y jóvenes."
+        },
+        {
+          "t": "ponerse de acuerdo en común con ellos.",
+          "correcta": true,
+          "evidencia": [
+            "o10"
+          ],
+          "explicacion": "La profesora propone que el horario no se imponga, sino que se decida junto con los jóvenes."
+        },
+        {
+          "t": "imponerles una norma sin escuchar lo que piensan.",
+          "codigo": "RV19",
+          "origen": "o10",
+          "explicacion": "Está en el mismo campo (horarios y normas), pero la profesora dice lo contrario de imponer: pide un acuerdo."
+        },
+        {
+          "t": "conversar sobre qué juegos prefieren.",
+          "codigo": "RV5",
+          "origen": "o10",
+          "explicacion": "Es una palabra de la misma oración, pero se refiere a otra acción: conversar es lo que se hace además de acordar."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Resulta incompatible con lo que sostienen los dos textos afirmar que",
+      "alternativas": [
+        {
+          "t": "algunos adolescentes juegan en línea con amigos que viven en otros distritos.",
+          "codigo": "RV36",
+          "explicacion": "Los textos no lo mencionan, pero tampoco lo contradicen: no choca con nada de lo que dicen."
+        },
+        {
+          "t": "un horario acordado con el adolescente puede ayudar a que el juego no quite tiempo al estudio.",
+          "codigo": "RV34",
+          "explicacion": "Se deduce del texto B (oración 10) y el A también quiere un horario (oración 5): es compatible."
+        },
+        {
+          "t": "conviene que un estudiante duerma menos para poder jugar más sin que bajen sus notas.",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "o6"
+          ],
+          "explicacion": "Los dos coinciden en que jugar hasta tarde perjudica el sueño y el rendimiento (oraciones 3 y 6)."
+        },
+        {
+          "t": "hoy hay más adolescentes que juegan videojuegos de los que había hace veinte años.",
+          "codigo": "RV8",
+          "explicacion": "Puede ser cierto, pero no sale del texto y tampoco lo contradice."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Si el hijo del padre del texto A, con su juego limitado a los fines de semana, empezara a hacer amigos jugando en equipo, el padre probablemente",
+      "alternativas": [
+        {
+          "t": "seguiría afirmando que los videojuegos no ofrecen nada bueno, pues entretener nunca es aprender.",
+          "codigo": "RV63",
+          "explicacion": "Repite lo que el supuesto pone en duda: si el hijo gana amigos, la idea de que esas horas no dejan nada ya no se sostiene igual (oración 4)."
+        },
+        {
+          "t": "pediría que su hijo juegue todos los días, pues ya no estaría perdiendo el tiempo.",
+          "codigo": "RV11",
+          "explicacion": "Iría más allá: su preocupación por el estudio y el descanso sigue (oraciones 2 y 3) y por eso pide límites."
+        },
+        {
+          "t": "aceptaría que el juego deja algo valioso, aunque mantendría un límite de horario.",
+          "correcta": true,
+          "evidencia": [
+            "o4",
+            "o5"
+          ],
+          "explicacion": "Su objeción era que jugar solo entretiene (oración 4); un beneficio social la matiza, pero su límite es por el estudio y el descanso (oraciones 3 y 5)."
+        },
+        {
+          "t": "dejaría de preocuparse por el sueño y por las notas de su hijo.",
+          "codigo": "RV7",
+          "explicacion": "Va más allá del texto: hacer amigos no responde a su temor de que se desvele y llegue cansado (oración 3)."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-12",
+  "hechos": [
+    {
+      "afirmacion": "Los textos A y B opinan sobre los videojuegos; no usan datos sobre cuántos adolescentes juegan ni cuánto tiempo.",
+      "fuente": "Texto propio, sin datos externos"
+    }
+  ],
+  "revision": null
+}
