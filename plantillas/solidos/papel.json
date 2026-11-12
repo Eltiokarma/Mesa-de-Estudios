@@ -101,7 +101,7 @@
     {
       "id": "p4",
       "nivel": "intermedio",
-      "enunciado": "Un recipiente cilíndrico de 10 cm de diámetro tiene agua. Al hundir por completo una piedra, el nivel sube 1,2 cm. ¿Cuál es el volumen de la piedra? Se saca la piedra y se hunde un cubo de 4 cm de arista: ¿cuánto sube ahora el agua?",
+      "enunciado": "Un recipiente cilíndrico de 10 cm de diámetro tiene agua. Al hundir por completo una piedra, el nivel sube 1,2 cm. ¿Cuál es el volumen de la piedra? Se saca la piedra y se hunde un cubo de 4 cm de arista, que queda cubierto: ¿cuánto sube ahora el agua?",
       "respuesta": "La piedra mide 30π cm³ (unos 94 cm³). Con el cubo, el agua sube 64/(25π) cm, unos 0,81 cm.",
       "pasos": [
         "El radio del recipiente es 5 cm (la mitad del diámetro). El agua que sube es un cilindro de radio 5 y alto 1,2: π · 5² · 1,2 = 30π cm³. Eso ocupa la piedra. Con el diámetro en lugar del radio saldría 120π, cuatro veces más.",
