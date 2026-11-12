@@ -1,0 +1,149 @@
+{
+  "id": "t114",
+  "version": 1,
+  "titulo": "¿Buses grandes o combis mejores?",
+  "tema": "Sociedad · transporte urbano en el Perú",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    { "id": "A", "desde": 0, "firma": "Un urbanista" },
+    { "id": "B", "desde": 1, "firma": "Una dirigente vecinal de la periferia" }
+  ],
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "apoyo", "t": "En muchas ciudades del Perú, decenas de combis compiten por los mismos pasajeros en las mismas avenidas." },
+      { "id": "o2", "rol": "apoyo", "t": "Como cada chofer gana según cuántos pasajeros sube, frena donde le hacen la señal, acelera para ganarle al de atrás y llena el vehículo más de lo debido." },
+      { "id": "o3", "rol": "apoyo", "t": "El resultado es tráfico, accidentes y viajes largos para recorrer distancias cortas." },
+      { "id": "o4", "rol": "principal", "t": "La solución es reemplazarlas por buses grandes, con rutas ordenadas, paraderos fijos y choferes con sueldo, de modo que nadie tenga que pelear por cada pasajero." },
+      { "id": "o5", "rol": "detalle", "t": "Un bus grande lleva en un solo viaje a los pasajeros de varias combis y ocupa menos espacio en la pista." }
+    ],
+    [
+      { "id": "o6", "rol": "apoyo", "t": "Comparto la preocupación por los accidentes y por el desorden en las avenidas." },
+      { "id": "o7", "rol": "contraste", "t": "Pero en muchos barrios de la periferia, donde las calles son angostas, empinadas o sin asfaltar, la combi es el único transporte que llega." },
+      { "id": "o8", "rol": "apoyo", "t": "Un bus grande no sube esos cerros, y si las combis desaparecen de un día para otro, miles de familias tendrán que caminar largos trechos para llegar a su trabajo o a su colegio." },
+      { "id": "o9", "rol": "principal", "t": "Lo sensato es formalizarlas: darles rutas autorizadas, revisar sus vehículos y capacitar a sus choferes, para que sigan llegando a donde nadie más llega." },
+      { "id": "o10", "rol": "apoyo", "t": "Mejorar lo que ya funciona es más realista que esperar un sistema que no alcanza a todos." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "postura",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Hay zonas de la ciudad a las que un bus grande no puede llegar.",
+        "aceptada": "B",
+        "codigos": { "A": "RV59", "ambos": "RV60", "ninguno": null },
+        "explicacion": "Lo dice el texto B en las oraciones 7 y 8: un bus grande no sube a los barrios de calles angostas y empinadas.",
+        "explicaciones": {
+          "A": "El texto A no menciona las zonas a las que no llega un bus. Esa es la objeción del texto B (oración 8).",
+          "ambos": "Solo el texto B lo sostiene; el A propone los buses grandes sin hablar de los cerros.",
+          "ninguno": "Sí lo sostiene alguien: el texto B, en la oración 8."
+        }
+      },
+      "enunciado": "¿Qué sostiene el texto B?",
+      "alternativas": [
+        { "t": "Que conviene formalizar las combis, porque en muchos barrios solo ellas llegan.", "correcta": true, "evidencia": ["o7", "o9"],
+          "explicacion": "Es su tesis (oración 9) con su razón (oración 7): en la periferia la combi es el único transporte." },
+        { "t": "Que los choferes deben recibir sueldo para no pelear por cada pasajero.", "codigo": "RV59", "origen": "o4",
+          "explicacion": "Eso lo propone el texto A en la oración 4, como parte de su sistema de buses." },
+        { "t": "Que las combis deben tener rutas autorizadas y retirarse de los cerros.", "codigo": "RV62", "origen": "o9",
+          "explicacion": "La primera mitad es del texto B, pero la segunda lo contradice: quiere que las combis sigan llegando a donde nadie más llega." },
+        { "t": "Que las combis nunca causan accidentes ni desorden en la ciudad.", "codigo": "RV11", "origen": "o6",
+          "explicacion": "El texto B comparte la preocupación por los accidentes y el desorden (oración 6); no dice «nunca»." },
+        { "t": "Que la ciudad debería dejar de comprar buses y destinar todo su presupuesto a las combis de los barrios.", "codigo": "RV12",
+          "explicacion": "Va mucho más allá del texto B, que pide formalizar las combis, no gastar todo en ellas ni renunciar a los buses." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "discrepancia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "¿En qué discrepan los autores?",
+      "alternativas": [
+        { "t": "A quiere reemplazar las combis por buses; B, formalizarlas para que sigan circulando.", "correcta": true, "evidencia": ["o4", "o9"],
+          "explicacion": "Cada mitad es la tesis de su autor: la oración 4 del texto A y la oración 9 del B." },
+        { "t": "A cree que las combis generan accidentes; B, que no generan ninguno.", "codigo": "RV61", "origen": "o6",
+          "explicacion": "En eso coinciden: el texto B también se preocupa por los accidentes (oración 6)." },
+        { "t": "A quiere formalizar las combis; B, cambiarlas por buses grandes.", "codigo": "RV59",
+          "explicacion": "Cambia las posturas de lugar: los buses son la propuesta del texto A y la formalización, la del B." },
+        { "t": "A quiere reemplazar las combis por buses; B, que las combis se retiren poco a poco de los barrios de los cerros.", "codigo": "RV62", "origen": "o8",
+          "explicacion": "La primera mitad es correcta, pero el texto B quiere que las combis sigan llegando a los barrios, no que se retiren." },
+        { "t": "A defiende a los choferes de combi; B, a los pasajeros.", "codigo": "RV33",
+          "explicacion": "El texto A no defiende a los choferes: critica cómo manejan. Y el B no opone choferes a pasajeros." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "dialogo",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Ante la propuesta del texto A, la autora del texto B probablemente respondería que",
+      "alternativas": [
+        { "t": "los buses grandes no pueden subir a muchos barrios donde hoy solo llega la combi.", "correcta": true, "evidencia": ["o7", "o8"],
+          "explicacion": "Es su objeción central: en los cerros de la periferia un bus grande no sube (oración 8)." },
+        { "t": "no es cierto que las combis provoquen desorden en las avenidas.", "codigo": "RV61", "origen": "o6",
+          "explicacion": "El texto B no lo niega: comparte la preocupación por el desorden (oración 6)." },
+        { "t": "un bus grande ocupa menos espacio en la pista que varias combis.", "codigo": "RV59", "origen": "o5",
+          "explicacion": "Ese es un argumento del texto A a favor de los buses (oración 5), no una respuesta del B." },
+        { "t": "en otras ciudades del mundo los buses grandes también fracasaron.", "codigo": "RV8",
+          "explicacion": "El texto B no habla de otras ciudades del mundo; es un dato de fuera del texto." },
+        { "t": "los choferes frenan donde les hacen la señal y aceleran para ganarle al vehículo de atrás.", "codigo": "RV5", "origen": "o2",
+          "explicacion": "Repite palabras del texto A (oración 2), que describen el problema; no es lo que el B le respondería." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Viajar en combi es más seguro que viajar en un bus grande.",
+        "aceptada": "ninguno",
+        "codigos": { "A": "RV33", "B": "RV7", "ambos": null },
+        "explicacion": "Ninguno de los dos lo dice. El texto A asocia las combis con accidentes (oración 3) y el B también se preocupa por ellos (oración 6) y pide revisar los vehículos.",
+        "explicaciones": {
+          "A": "El texto A dice lo contrario: el modo en que circulan las combis causa accidentes (oración 3).",
+          "B": "El texto B defiende las combis porque llegan a donde nadie más llega, no porque sean más seguras; incluso pide revisar sus vehículos (oración 9).",
+          "ambos": "Ninguno lo sostiene: los dos se preocupan por los accidentes."
+        }
+      },
+      "enunciado": "Del texto A se infiere que el desorden de las combis",
+      "alternativas": [
+        { "t": "nace en gran parte de la manera en que ganan los choferes.", "correcta": true, "evidencia": ["o2", "o4"],
+          "explicacion": "La oración 2 explica las maniobras «como cada chofer gana según cuántos pasajeros sube», y la 4 propone sueldo para que nadie pelee por cada pasajero." },
+        { "t": "hace que los choferes ganen según los pasajeros que suben.", "codigo": "RV16", "origen": "o2",
+          "explicacion": "Invierte la relación: para el texto A, el modo de ganar causa el desorden, no al revés." },
+        { "t": "se debe a que las autoridades no entregan permisos.", "codigo": "RV8",
+          "explicacion": "El texto A no habla de permisos ni de autoridades; esa causa no sale del texto." },
+        { "t": "se resolvería si se revisaran los vehículos y se capacitara a los choferes.", "codigo": "RV59", "origen": "o9",
+          "explicacion": "Esa es la propuesta del texto B (oración 9). El A propone reemplazar las combis por buses." },
+        { "t": "desaparecería con solo poner paraderos fijos.", "codigo": "RV12", "origen": "o4",
+          "explicacion": "Para el texto A, los paraderos son una parte de la solución, junto con buses, rutas y choferes con sueldo; «con solo» va más allá." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto A, la frase «pelear por cada pasajero» significa",
+      "alternativas": [
+        { "t": "disputarse a cada pasajero.", "correcta": true, "evidencia": ["o1", "o4"],
+          "explicacion": "Las combis «compiten por los mismos pasajeros» (oración 1): pelear es competir para quedarse con cada uno." },
+        { "t": "golpearse por cada pasajero.", "codigo": "RV18",
+          "explicacion": "Es el sentido más frecuente de «pelear», pero el texto habla de competir, no de pelea física." },
+        { "t": "cobrarle a cada pasajero.", "codigo": "RV19",
+          "explicacion": "Cobrar es del mismo campo (el pasaje), pero no es lo que significa pelear por alguien." },
+        { "t": "esperar a cada pasajero en un paradero fijo.", "codigo": "RV5", "origen": "o4",
+          "explicacion": "Toma «paraderos fijos» de la misma oración, que es parte de la solución, no del problema." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-08",
+  "hechos": [],
+  "revision": { "por": "subagente (revisor a ciegas)", "fecha": "2026-11-08", "veredicto": "aprobado", "notas": "Coincidí a ciegas en 7 de 7. Sin cambios: alternativas únicas, códigos coherentes y sin datos que verificar." }
+}

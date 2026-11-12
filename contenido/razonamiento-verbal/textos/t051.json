@@ -1,6 +1,6 @@
 {
   "id": "t051",
-  "version": 1,
+  "version": 2,
   "titulo": "Rosa and the Clay",
   "tema": "Lectura en inglés · cerámica en Ica",
   "grado": 3,
@@ -174,7 +174,7 @@
           "explicacion": "«At first … were not very good» (al principio no eran muy buenas) está en pasado, y «Now she can paint birds and fish» (ahora puede pintar aves y peces) muestra que mejoró."
         },
         {
-          "t": "Las vasijas de Rosa todavía no son buenas y siguen rompiéndose en el horno.",
+          "t": "Las vasijas de Rosa todavía no son buenas: siguen rompiéndose en el horno.",
           "codigo": "RV55",
           "origen": "o6",
           "explicacion": "«Were» y «broke» están en pasado, y «At first» marca el comienzo. El texto habla de cómo le iba antes; «Now she can paint…» dice que hoy ya le sale bien."
@@ -254,6 +254,6 @@
     "por": "subagente (verificador a ciegas y revisor de contenido)",
     "fecha": "2026-11-07",
     "veredicto": "aprobado",
-    "notas": "Coincidió a ciegas con todas las claves. Cambios: «oven» por «kiln (a special oven)» y «kiln»; o9 con «like the ones on the old Nasca pots»; nueva explicación de «ninguna» en el previo de p1."
+    "notas": "Coincidió a ciegas con todas las claves. Cambios: «oven» por «kiln (a special oven)» y «kiln»; o9 con «like the ones on the old Nasca pots»; nueva explicación de «ninguna» en el previo de p1. 8 nov 2026 (rutina no-se): una incorrecta tomó la forma de la correcta (justificación o dos puntos) para que la forma no delate la clave; mismo código y mismo sentido."
   }
 }

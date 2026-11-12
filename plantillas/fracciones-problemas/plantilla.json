@@ -1,0 +1,15 @@
+{
+  "id": "fracciones-problemas",
+  "titulo": "Fracciones, decimales periódicos y MCD en problemas",
+  "formato": "predicciones",
+  "unidades": [
+    "aritmetica.numeros-racionales",
+    "aritmetica.mcd-y-mcm"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

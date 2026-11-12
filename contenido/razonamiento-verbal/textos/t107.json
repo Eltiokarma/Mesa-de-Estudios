@@ -1,0 +1,167 @@
+{
+  "id": "t107",
+  "version": 1,
+  "titulo": "Los totorales del Titicaca",
+  "tema": "Ambiente · el lago Titicaca y la totora",
+  "grado": 3,
+  "dificultad": 1,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    { "id": "A", "desde": 0, "firma": "Una bióloga de Puno" },
+    { "id": "B", "desde": 1, "firma": "Un pescador de la orilla del lago" }
+  ],
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "principal", "t": "Los totorales del lago Titicaca son mucho más que un paisaje: son un filtro natural del lago." },
+      { "id": "o2", "rol": "apoyo", "t": "Entre sus tallos y raíces se queda el barro, y la planta absorbe parte de las sustancias que llegan con el agua." },
+      { "id": "o3", "rol": "apoyo", "t": "Además, en ellos se refugian peces y aves, y de ellos sacan las familias de la orilla el material para sus botes, sus techos y, en el caso de los uros, sus islas." },
+      { "id": "o4", "rol": "contraste", "t": "Sin embargo, en muchos lugares se corta o se quema la totora sin ningún cuidado, y hay zonas donde casi ha desaparecido." },
+      { "id": "o5", "rol": "principal", "t": "Por eso hay que proteger los totorales: cortar solo lo necesario, dejar que la planta se recupere y no quemarla nunca." }
+    ],
+    [
+      { "id": "o6", "rol": "apoyo", "t": "Estoy de acuerdo en que la totora ayuda a limpiar el agua y en que debe cuidarse." },
+      { "id": "o7", "rol": "contraste", "t": "Pero en la orilla vemos otra cosa: hay totorales que se pudren porque reciben más suciedad de la que pueden retener." },
+      { "id": "o8", "rol": "apoyo", "t": "Por los desagües de las ciudades llegan cada día aguas sin tratar, y una planta acuática no puede hacer el trabajo de una planta de tratamiento." },
+      { "id": "o9", "rol": "principal", "t": "Proteger la totora no basta si los desagües siguen llegando al lago tal como salen de las casas." },
+      { "id": "o10", "rol": "principal", "t": "Primero hay que tratar esas aguas; recién entonces la totora podrá hacer bien su parte." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "postura",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "En algunas zonas, la totora casi se ha acabado porque la cortan o la queman sin cuidado.",
+        "aceptada": "A",
+        "codigos": { "B": "RV59", "ambos": "RV60", "ninguno": null },
+        "explicacion": "Lo dice el texto A en la oración 4. El texto B explica el daño de otra manera: por la suciedad que llega con los desagües.",
+        "explicaciones": {
+          "B": "El texto B no habla de cortar ni de quemar totora; para él, los totorales se pudren por la suciedad que reciben (oración 7). La idea es del texto A (oración 4).",
+          "ambos": "Solo el texto A lo dice (oración 4). El texto B pone la causa del daño en los desagües, no en el corte ni en la quema.",
+          "ninguno": "Sí lo dice alguien: el texto A, en la oración 4, cuenta que se corta o se quema la totora sin cuidado."
+        }
+      },
+      "enunciado": "¿Qué sostiene la autora del texto A?",
+      "alternativas": [
+        { "t": "Que hay que cuidar los totorales porque limpian el lago y dan vida a la orilla.", "correcta": true, "evidencia": ["o1", "o3", "o5"],
+          "explicacion": "Es su tesis (oración 5) con sus razones: la totora filtra el agua (oraciones 1 y 2) y da refugio y material a la gente de la orilla (oración 3)." },
+        { "t": "Que lo primero es tratar las aguas sucias que llegan al lago por los desagües de las ciudades.", "codigo": "RV59", "origen": "o10",
+          "explicacion": "Eso lo propone el texto B (oración 10). El texto A no habla de los desagües." },
+        { "t": "Que los uros construyen sus islas con totora.", "codigo": "RV1", "origen": "o3",
+          "explicacion": "Es un detalle de la oración 3, que sirve para mostrar lo útil que es la totora; no es lo que la autora defiende." },
+        { "t": "Que nadie debería cortar totora en ningún caso.", "codigo": "RV11", "origen": "o5",
+          "explicacion": "El texto A no prohíbe cortar: pide «cortar solo lo necesario» (oración 5). Lo que dice que no se haga nunca es quemarla." },
+        { "t": "Que hay que cuidar el lago Titicaca.", "codigo": "RV2",
+          "explicacion": "Es demasiado general: no dice qué propone la autora para cuidarlo, que es proteger los totorales." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "coincidencia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "La totora ayuda a que el agua del lago esté más limpia.",
+        "aceptada": "ambos",
+        "codigos": { "A": "RV61", "B": "RV61", "ninguno": null },
+        "explicacion": "Los dos lo sostienen: el texto A dice que los totorales son un filtro natural (oración 1) y el texto B, que «la totora ayuda a limpiar el agua» (oración 6).",
+        "explicaciones": {
+          "A": "El texto A lo dice, pero el B también: «estoy de acuerdo en que la totora ayuda a limpiar el agua» (oración 6).",
+          "B": "El texto B lo dice en la oración 6, pero el A también: llama a los totorales «un filtro natural del lago» (oración 1).",
+          "ninguno": "Los dos lo sostienen: el texto A en la oración 1 y el texto B en la oración 6."
+        }
+      },
+      "enunciado": "¿En qué coinciden los autores de los dos textos?",
+      "alternativas": [
+        { "t": "En que la totora limpia el agua y merece cuidado.", "correcta": true, "evidencia": ["o1", "o5", "o6"],
+          "explicacion": "El texto A lo defiende en todo su párrafo, y el texto B lo acepta en la oración 6 antes de agregar su propia idea." },
+        { "t": "En que hay que tratar las aguas de los desagües antes de que lleguen al lago.", "codigo": "RV60", "origen": "o10",
+          "explicacion": "Eso lo propone solo el texto B (oración 10). El texto A no menciona los desagües." },
+        { "t": "En que la totora limpia el agua y puede limpiar todo lo que le llega.", "codigo": "RV62", "origen": "o7",
+          "explicacion": "La primera mitad es el punto en común, pero la segunda la niega el texto B: hay totorales que reciben más suciedad de la que pueden retener (oración 7)." },
+        { "t": "En que el lago Titicaca es el lago navegable más alto del mundo.", "codigo": "RV8",
+          "explicacion": "Ninguno de los dos textos lo dice. Es un dato que algunos conocen por fuera de la lectura." },
+        { "t": "En que la totora ya no debería usarse para hacer botes.", "codigo": "RV33", "origen": "o3",
+          "explicacion": "Nadie lo propone: el texto A menciona los botes como uno de los usos de la totora, sin pedir que se dejen de hacer." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "discrepancia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "¿En qué se diferencian los dos textos?",
+      "alternativas": [
+        { "t": "A pide cuidar la totora; B, tratar primero los desagües.", "correcta": true, "evidencia": ["o5", "o9", "o10"],
+          "explicacion": "El texto A propone proteger los totorales (oración 5). El texto B está de acuerdo, pero dice que eso no basta y que primero hay que tratar las aguas (oraciones 9 y 10)." },
+        { "t": "A dice que la totora limpia el agua; B dice que no la limpia.", "codigo": "RV61", "origen": "o6",
+          "explicacion": "En eso no se diferencian: el texto B dice que la totora «ayuda a limpiar el agua» (oración 6)." },
+        { "t": "A pide tratar los desagües; B, cuidar la totora.", "codigo": "RV59",
+          "explicacion": "Está al revés: cuidar la totora es lo que pide el texto A, y tratar los desagües, lo que pide el texto B." },
+        { "t": "A pide no quemar la totora; B, prohibir que se corte.", "codigo": "RV62", "origen": "o5",
+          "explicacion": "La primera mitad es cierta (oración 5), pero la segunda no: el texto B no habla de cortar la totora; pide tratar primero los desagües (oración 10)." },
+        { "t": "A cree que la totora lo resuelve todo; B, que no sirve para nada.", "codigo": "RV11",
+          "explicacion": "Las dos mitades exageran. El texto A no dice que la totora lo resuelva todo, y el texto B dice que sí ayuda, aunque no baste." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Del texto B se deduce que su autor",
+      "alternativas": [
+        { "t": "no salvaría los totorales que se pudren solo con prohibir que los quemen.", "correcta": true, "evidencia": ["o7", "o9"],
+          "explicacion": "Esos totorales se pudren por la suciedad que reciben (oración 7), y proteger la totora «no basta» si siguen llegando los desagües (oración 9)." },
+        { "t": "cree que los totorales se pudren porque los cortan sin cuidado.", "codigo": "RV59", "origen": "o4",
+          "explicacion": "El corte sin cuidado es lo que preocupa al texto A (oración 4). El texto B dice que se pudren por la suciedad que reciben (oración 7)." },
+        { "t": "piensa que ya es inútil proteger la totora.", "codigo": "RV33", "origen": "o9",
+          "explicacion": "El autor no dice que sea inútil: dice que debe cuidarse (oración 6) y que, con las aguas tratadas, la totora hará bien su parte (oración 10)." },
+        { "t": "cree que todo el daño de los totorales viene de los desagües.", "codigo": "RV11", "origen": "o7",
+          "explicacion": "El autor habla de «totorales que se pudren» por la suciedad (oración 7), no de todo el daño: no niega el corte ni la quema de los que habla el texto A." },
+        { "t": "piensa que la suciedad del lago viene sobre todo de los botes de totora.", "codigo": "RV7", "origen": "o3",
+          "explicacion": "El texto B pone la suciedad en los desagües de las ciudades (oración 8); de los botes no dice nada." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto B, el verbo RETENER («más suciedad de la que pueden retener») significa",
+      "alternativas": [
+        { "t": "atrapar.", "correcta": true, "evidencia": ["o7"],
+          "explicacion": "Los totorales atrapan la suciedad entre sus tallos y raíces; cuando llega demasiada, ya no pueden con ella." },
+        { "t": "recordar.", "codigo": "RV18",
+          "explicacion": "«Retener» a veces significa guardar en la memoria, pero una planta no recuerda: aquí se trata de la suciedad que se queda en ella." },
+        { "t": "retornar.", "codigo": "RV20",
+          "explicacion": "Se parece en la forma, pero no en el sentido: la suciedad no vuelve a ninguna parte; se queda en la planta." },
+        { "t": "limpiar.", "codigo": "RV19", "origen": "o6",
+          "explicacion": "Es una palabra del mismo tema del texto, pero no significa lo mismo: retener la suciedad no es limpiarla." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-08",
+  "hechos": [
+    {
+      "afirmacion": "Los uros construyen sus islas flotantes, sus botes y sus casas con totora (Schoenoplectus californicus), una planta acuática del lago Titicaca.",
+      "fuente": "SERNANP, Reserva Nacional del Titicaca (página institucional)."
+    },
+    {
+      "afirmacion": "Los totorales retienen sedimentos y absorben nutrientes y otras sustancias del agua, y son refugio de peces y aves del lago.",
+      "fuente": "SERNANP, Reserva Nacional del Titicaca; Autoridad Binacional del Lago Titicaca (ALT)."
+    },
+    {
+      "afirmacion": "Al lago Titicaca, sobre todo a la bahía interior de Puno, llegan aguas residuales de las ciudades sin tratamiento suficiente.",
+      "fuente": "Autoridad Nacional del Agua (ANA), informes sobre la calidad del agua del lago Titicaca."
+    }
+  ],
+  "revision": {
+    "por": "subagente (revisor a ciegas)",
+    "fecha": "2026-11-08",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidió en 9 de 9, pero dudó en p5 entre «atrapar» y «detener»: se cambió «detener» por «retornar». Se reforzaron distractores débiles de p1, p3 y p4 (RV2, RV62, RV7, RV11)."
+  }
+}

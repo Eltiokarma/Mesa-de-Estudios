@@ -1,0 +1,316 @@
+{
+  "plantilla": "probabilidad-conteo",
+  "tolerancia": 0.000001,
+  "nota": "Probabilidades como fracción irreducible y conteos como enteros. En bayes, p son los porcentajes de cada causa y q el porcentaje del efecto en cada causa; condicion «no» quiere decir que se sabe que el efecto no ocurrió. En circular, las ubicaciones que solo difieren por un giro son la misma.",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver el generador: resolvió los 17 casos con fracciones exactas en Python. Mesas redondas, filas, estante, bolsas y tiradores, por enumeración completa (permutaciones, giros contados una vez, extracciones ordenadas); Bayes y binomial, por fórmula directa con fracciones. Los 17 valores coinciden con esperado.exacta y no se hallaron alternativas defendibles ni enunciados ambiguos.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "circular",
+        "sub": "uno",
+        "n": 5,
+        "a": 3
+      },
+      "esperado": {
+        "respuesta": 12,
+        "exacta": "12"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "bloques-prob",
+        "sub": "pareja",
+        "lugar": "ronda",
+        "n": 6
+      },
+      "esperado": {
+        "respuesta": 0.4,
+        "exacta": "2/5"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "bayes",
+        "sub": "dos",
+        "contexto": "estudio",
+        "p": [
+          50,
+          50
+        ],
+        "q": [
+          70,
+          40
+        ],
+        "condicion": "no",
+        "causa": 0
+      },
+      "esperado": {
+        "respuesta": 0.3333333333333333,
+        "exacta": "1/3"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "exactamente",
+        "sub": "distintas",
+        "contexto": "tiradores",
+        "p": [
+          [
+            1,
+            4
+          ],
+          [
+            3,
+            4
+          ],
+          [
+            2,
+            3
+          ]
+        ],
+        "k": 1
+      },
+      "esperado": {
+        "respuesta": 0.3333333333333333,
+        "exacta": "1/3"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "bloques-prob",
+        "sub": "pareja",
+        "lugar": "fila",
+        "n": 6
+      },
+      "esperado": {
+        "respuesta": 0.3333333333333333,
+        "exacta": "1/3"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "bloques-prob",
+        "sub": "materias",
+        "libros": [
+          3,
+          3,
+          1
+        ]
+      },
+      "esperado": {
+        "respuesta": 0.04285714285714286,
+        "exacta": "3/70"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "circular",
+        "sub": "dos",
+        "n": 6,
+        "a": 3,
+        "b": 2
+      },
+      "esperado": {
+        "respuesta": 24,
+        "exacta": "24"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "fila",
+        "sub": "dos",
+        "n": 8,
+        "a": 2,
+        "b": 3
+      },
+      "esperado": {
+        "respuesta": 1440,
+        "exacta": "1 440"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "traspaso",
+        "sub": "dos",
+        "contexto": "caramelos",
+        "A": [
+          6,
+          4
+        ],
+        "B": [
+          6,
+          3
+        ]
+      },
+      "esperado": {
+        "respuesta": 0.6545454545454545,
+        "exacta": "36/55"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "bayes",
+        "sub": "dos",
+        "contexto": "estudio",
+        "p": [
+          70,
+          30
+        ],
+        "q": [
+          90,
+          40
+        ],
+        "condicion": "si",
+        "causa": 1
+      },
+      "esperado": {
+        "respuesta": 0.16,
+        "exacta": "4/25"
+      }
+    },
+    {
+      "semilla": 21,
+      "entrada": {
+        "tipo": "exactamente",
+        "sub": "binomial",
+        "contexto": "examen",
+        "n": 5,
+        "p": [
+          1,
+          5
+        ],
+        "k": 4
+      },
+      "esperado": {
+        "respuesta": 0.0064,
+        "exacta": "4/625"
+      }
+    },
+    {
+      "semilla": 24,
+      "entrada": {
+        "tipo": "bayes",
+        "sub": "tres",
+        "contexto": "institutos",
+        "p": [
+          40,
+          35,
+          25
+        ],
+        "q": [
+          25,
+          30,
+          60
+        ],
+        "condicion": "si",
+        "causa": 2
+      },
+      "esperado": {
+        "respuesta": 0.4225352112676056,
+        "exacta": "30/71"
+      }
+    },
+    {
+      "semilla": 30,
+      "entrada": {
+        "tipo": "bayes",
+        "sub": "tres",
+        "contexto": "institutos",
+        "p": [
+          50,
+          30,
+          20
+        ],
+        "q": [
+          55,
+          30,
+          15
+        ],
+        "condicion": "no",
+        "causa": 1
+      },
+      "esperado": {
+        "respuesta": 0.34710743801652894,
+        "exacta": "42/121"
+      }
+    },
+    {
+      "semilla": 34,
+      "entrada": {
+        "tipo": "fila",
+        "sub": "uno",
+        "n": 5,
+        "a": 3
+      },
+      "esperado": {
+        "respuesta": 36,
+        "exacta": "36"
+      }
+    },
+    {
+      "semilla": 53,
+      "entrada": {
+        "tipo": "traspaso",
+        "sub": "una",
+        "contexto": "canicas",
+        "A": [
+          2,
+          6
+        ],
+        "B": [
+          2,
+          1
+        ]
+      },
+      "esperado": {
+        "respuesta": 0.5625,
+        "exacta": "9/16"
+      }
+    },
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "bloques-prob",
+        "sub": "pareja",
+        "lugar": "ronda",
+        "n": 6
+      },
+      "esperado": {
+        "respuesta": 0.4,
+        "exacta": "2/5"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "bayes",
+        "sub": "dos",
+        "contexto": "combi",
+        "p": [
+          30,
+          70
+        ],
+        "q": [
+          30,
+          25
+        ],
+        "condicion": "si",
+        "causa": 0
+      },
+      "esperado": {
+        "respuesta": 0.33962264150943394,
+        "exacta": "18/53"
+      }
+    }
+  ]
+}

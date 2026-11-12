@@ -1,0 +1,123 @@
+{
+  "titulo": "Sucesiones, divisores y numerales: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. El subíndice indica la base: 4̅0̅₍ₐ₎ es el numeral 40 en base a. En las sucesiones, escribe cada término con su lugar debajo antes de buscar la ley. En los conteos, revisa si cuentas los extremos. Al final, comprueba tu respuesta con un caso concreto.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "En la sucesión 4, 3, 9, 6, 14, 12, 19, 24, …, halla el término de lugar 20 y el de lugar 31.",
+      "respuesta": "t₂₀ = 1536 y t₃₁ = 79.",
+      "pasos": [
+        "Las diferencias 3 − 4, 9 − 3, 6 − 9, … no siguen ningún orden: se separan los lugares impares y los pares.",
+        "Lugares impares: 4, 9, 14, 19 (progresión aritmética de razón 5). Lugares pares: 3, 6, 12, 24 (progresión geométrica de razón 2).",
+        "El lugar 20 es par: es el 10.º de los pares. t₂₀ = 3·2⁹ = 1536.",
+        "El lugar 31 es impar: es el (31 + 1)/2 = 16.º de los impares. t₃₁ = 4 + 15·5 = 79."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "intermedio",
+      "enunciado": "Los términos de la sucesión 1/2; 5/7; 4/5; 11/13; 7/8; … están escritos como fracciones irreducibles. Halla el término de lugar 25.",
+      "respuesta": "37/38.",
+      "pasos": [
+        "Los numeradores 1, 5, 4, 11, 7 no siguen una ley a simple vista: algunas fracciones vienen simplificadas.",
+        "Se restituyen: 1/2 = 2/4, 4/5 = 8/10 y 7/8 = 14/16. Queda 2/4; 5/7; 8/10; 11/13; 14/16.",
+        "Numeradores: 2, 5, 8, 11, 14 (razón 3). Denominadores: 4, 7, 10, 13, 16 (razón 3).",
+        "t₂₅ = (2 + 24·3)/(4 + 24·3) = 74/76 = 37/38."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Tres números enteros positivos están en progresión aritmética creciente y suman 30. Si al primero se le suma 1, al segundo 2 y al tercero 9, los resultados forman una progresión geométrica. Halla el mayor de los tres números.",
+      "respuesta": "15.",
+      "pasos": [
+        "El central es 30 ÷ 3 = 10: los números son 10 − d, 10 y 10 + d.",
+        "Después de sumar: 11 − d, 12 y 19 + d. En una progresión geométrica, 12² = (11 − d)(19 + d).",
+        "144 = 209 − 8d − d², es decir, d² + 8d − 65 = 0 = (d + 13)(d − 5). Como la progresión es creciente, d = 5.",
+        "Los números son 5, 10 y 15 (y 6, 12, 24 es geométrica). El mayor es 15."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "¿Cuántos términos comunes tienen las progresiones A: 5, 11, 17, …, 599 y B: 1, 9, 17, …, 497?",
+      "respuesta": "21.",
+      "pasos": [
+        "El primer término que está en las dos es 17.",
+        "Los comunes se repiten cada MCM(6, 8) = 24, no cada 6·8 = 48: el 24 ya es múltiplo de 6 y de 8.",
+        "No pueden pasar de 497, donde termina B. El último común es 17 + 20·24 = 497.",
+        "Son (497 − 17)/24 + 1 = 21. Sin el + 1 saldría 20: se cuentan saltos y no términos."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "básico",
+      "enunciado": "Calcula S = ∑ (2k² − 3k + 1), donde k toma los valores 1, 2, 3, …, 20.",
+      "respuesta": "5 130.",
+      "pasos": [
+        "Se separa: S = 2·∑k² − 3·∑k + 1·20.",
+        "∑k² = 20·21·41/6 = 2870 y ∑k = 20·21/2 = 210.",
+        "S = 2·2870 − 3·210 + 20 = 5740 − 630 + 20 = 5130. Ojo: el 1 se suma 20 veces, una por término."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "avanzado",
+      "enunciado": "Sea N = 12²·15³. Se afirma: I. N tiene 120 divisores. II. 80 divisores de N son múltiplos de 6. III. N tiene 23 divisores impares. IV. 12 divisores de N son cuadrados perfectos. ¿Cuántas afirmaciones son verdaderas?",
+      "respuesta": "2 (la I y la II).",
+      "pasos": [
+        "12² = 2⁴·3² y 15³ = 3³·5³. Se juntan las bases iguales: N = 2⁴·3⁵·5³.",
+        "I. CD(N) = 5·6·4 = 120: verdadera. II. Los múltiplos de 6 son los divisores de N/6 = 2³·3⁴·5³: 4·5·4 = 80: verdadera.",
+        "III. Los impares son los divisores de 3⁵·5³: 6·4 = 24, con el 1 incluido: falsa.",
+        "IV. Cuadrados: exponentes pares, 2 tiene 0, 2 o 4 (3 opciones), 3 tiene 0, 2 o 4 (3) y 5 tiene 0 o 2 (2): 3·3·2 = 18: falsa. Son verdaderas 2."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Cinco números primos, todos menores que 60, forman una progresión aritmética de razón 12. ¿Cuál es el mayor?",
+      "respuesta": "53.",
+      "pasos": [
+        "Si el menor es p, los primos son p, p + 12, p + 24, p + 36 y p + 48, con p + 48 < 60: p < 12.",
+        "p = 2 da 14 (par); p = 3 da 15; p = 7 da 7, 19, 31, 43, 55 y 55 = 5·11; p = 11 da 35 = 5·7.",
+        "Solo p = 5 sirve: 5, 17, 29, 41, 53. El mayor es 5 + 4·12 = 53 (con 5·12 saldría 65, un término de más)."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Las cifras a y b cumplen a̅a̅/b̅b̅b̅ = 11/37. ¿Cuál es el mayor valor que puede tomar a̅b̅?",
+      "respuesta": "93.",
+      "pasos": [
+        "Por descomposición: a̅a̅ = 11a y b̅b̅b̅ = 111b = 3·37·b.",
+        "11a/(111b) = 11/37 da a/b = 111/37 = 3: a = 3b.",
+        "Parejas: (3; 1), (6; 2) y (9; 3); con b = 4 saldría a = 12, que no es cifra.",
+        "El mayor a̅b̅ es 93. Comprobación: 99/333 = 11/37."
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Un tanque se llena con el grifo A en 4̅0̅₍ₐ₎ horas y con el grifo B en a̅0̅₍ₙ₎ horas; lleno, se vacía por un desagüe en n̅6̅₍₇₎ horas. Los tres numerales están bien escritos. Si el tanque está vacío y se abren los dos grifos y el desagüe, ¿en cuántas horas se llena?",
+      "respuesta": "16 h.",
+      "pasos": [
+        "Cada cifra es menor que su base: en 4̅0̅₍ₐ₎, 4 < a; en a̅0̅₍ₙ₎, a < n; en n̅6̅₍₇₎, n < 7. Entonces 4 < a < n < 7: a = 5 y n = 6.",
+        "En base 10: 4̅0̅₍₅₎ = 20, 5̅0̅₍₆₎ = 30 y 6̅6̅₍₇₎ = 48 horas.",
+        "En una hora: 1/20 + 1/30 − 1/48 = (12 + 8 − 5)/240 = 1/16 del tanque. El desagüe se resta, no se suma.",
+        "Se llena en 16 h."
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "básico",
+      "enunciado": "¿Cuántos cubos perfectos se escriben con 4 cifras en base 7, y cuánto suman sus raíces cúbicas?",
+      "respuesta": "7 cubos; sus raíces suman 70.",
+      "pasos": [
+        "Con 4 cifras en base 7 van de 1000₍₇₎ = 7³ = 343 hasta 6666₍₇₎ = 7⁴ − 1 = 2400.",
+        "Cubos en ese tramo: 7³ = 343 hasta 13³ = 2197 (14³ = 2744 se pasa).",
+        "Las raíces van de 7 a 13: son 13 − 7 + 1 = 7, y suman 7 + 8 + … + 13 = 70."
+      ]
+    }
+  ]
+}

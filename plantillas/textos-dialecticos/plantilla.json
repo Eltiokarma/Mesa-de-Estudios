@@ -1,0 +1,13 @@
+{
+  "id": "textos-dialecticos",
+  "titulo": "Dos autores, dos posturas",
+  "formato": "lectura",
+  "unidades": [
+    "razonamiento-verbal.textos-argumentativos-y-dialecticos"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "banco": "../../contenido/razonamiento-verbal/indice-textos-dialecticos.json",
+  "pruebas": "../../contenido/razonamiento-verbal/banco.test.js",
+  "papel": "papel.json"
+}

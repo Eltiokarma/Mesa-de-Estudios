@@ -288,5 +288,30 @@
   "nombre": "Se da por dicho lo que solo se deduce",
   "respaldo": "hipotesis",
   "por_verificar": false
+ },
+ "RV59": {
+  "nombre": "Se atribuye a un autor la postura o el argumento del otro",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV60": {
+  "nombre": "Se toma la tesis de uno de los textos como tema del debate o como punto en común de los dos",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV61": {
+  "nombre": "Se ve un desacuerdo donde los dos autores coinciden",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV62": {
+  "nombre": "Pareja con una sola mitad correcta",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV63": {
+  "nombre": "En una extrapolación con un condicional contrario a lo que dice el texto, se elige una consecuencia que vuelve a confirmar lo que se negó",
+  "respaldo": "hipotesis",
+  "por_verificar": false
  }
 }

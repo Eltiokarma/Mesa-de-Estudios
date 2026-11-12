@@ -1,0 +1,227 @@
+{
+  "titulo": "Probabilidad y conteo con condiciones: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la pantalla, con unos 2 a 3 minutos por problema, como en el examen. Da las probabilidades como fracción irreducible. Antes de contar, pregúntate: ¿es una fila o una ronda?, ¿qué personas o cosas pueden cambiar de lugar entre sí? Antes de calcular una probabilidad, pregúntate qué se sabe ya y qué se pregunta, y dibuja el árbol si hay etapas. C(n, k) es el número de grupos de k elegidos entre n; n! = 1 · 2 · … · n.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Seis amigos van a sentarse en seis butacas seguidas del cine. Tres de ellos (Ana, Beto y Carla) quieren ir juntos. ¿De cuántas maneras pueden sentarse?",
+      "respuesta": "144.",
+      "pasos": [
+        "Ana, Beto y Carla forman un bloque que cuenta como una sola pieza; con los otros tres amigos son 4 piezas.",
+        "En fila, 4 piezas se ordenan de 4! = 24 maneras.",
+        "Dentro del bloque, los tres cambian de lugar entre sí de 3! = 6 maneras. Total: 24 · 6 = 144. Si te olvidas de ordenar el bloque por dentro, sale 24."
+      ],
+      "verificar": {
+        "tipo": "fila",
+        "sub": "uno",
+        "n": 6,
+        "a": 3
+      }
+    },
+    {
+      "id": "p2",
+      "nivel": "intermedio",
+      "enunciado": "Siete personas se sientan alrededor de una mesa redonda. Dos hermanos quieren ir juntos y tres primas también (sin mezclarse con los hermanos). Dos ubicaciones que solo se diferencian por un giro de la mesa cuentan como la misma. ¿De cuántas maneras pueden sentarse?",
+      "respuesta": "72.",
+      "pasos": [
+        "Cada grupo es una pieza: el bloque de los hermanos, el de las primas y las 2 personas sueltas son 4 piezas.",
+        "En ronda se fija una pieza y se ordenan las otras: (4 − 1)! = 3! = 6 maneras. Contarlas como en fila (4! = 24) cuenta cada ubicación varias veces, una por cada giro.",
+        "Dentro de los bloques: 2! = 2 para los hermanos y 3! = 6 para las primas. Total: 6 · 2 · 6 = 72."
+      ],
+      "verificar": {
+        "tipo": "circular",
+        "sub": "dos",
+        "n": 7,
+        "a": 2,
+        "b": 3
+      }
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Cinco amigos, entre ellos Rosa y Luis, se reparten al azar cinco butacas seguidas. ¿Cuál es la probabilidad de que Rosa y Luis queden uno al lado del otro?",
+      "respuesta": "2/5.",
+      "pasos": [
+        "Casos posibles: 5! = 120 órdenes, todos igual de probables.",
+        "Favorables: Rosa y Luis son un bloque; con los otros 3 son 4 piezas, que se ordenan de 4! = 24 maneras, y el bloque puede ser Rosa-Luis o Luis-Rosa: 2 · 24 = 48.",
+        "Probabilidad = 48/120 = 2/5."
+      ],
+      "verificar": {
+        "tipo": "bloques-prob",
+        "sub": "pareja",
+        "lugar": "fila",
+        "n": 5
+      }
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "En un estante se colocan al azar 2 libros distintos de Física, 2 de Química y 3 de Álgebra. ¿Cuál es la probabilidad de que los libros de cada curso queden juntos?",
+      "respuesta": "1/35.",
+      "pasos": [
+        "Casos posibles: los 7 libros se ordenan de 7! = 5040 maneras.",
+        "Favorables: los 3 bloques se ordenan de 3! = 6 maneras, y dentro de cada bloque, 2! · 2! · 3! = 24 maneras. Favorables = 6 · 24 = 144.",
+        "Probabilidad = 144/5040 = 1/35."
+      ],
+      "verificar": {
+        "tipo": "bloques-prob",
+        "sub": "materias",
+        "libros": [
+          2,
+          2,
+          3
+        ]
+      }
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "En un aula, el 70 % de los alumnos estudió para el examen y el resto no. Aprueba el 90 % de los que estudiaron y el 40 % de los que no estudiaron. Se elige al azar un alumno que desaprobó. ¿Cuál es la probabilidad de que no haya estudiado?",
+      "respuesta": "18/25.",
+      "pasos": [
+        "Desaprueba el 10 % de los que estudiaron y el 60 % de los que no.",
+        "Ramas de desaprobar: estudió, 7/10 · 1/10 = 7/100; no estudió, 3/10 · 6/10 = 18/100. En total desaprueba 25/100.",
+        "De los que desaprobaron, la parte que no estudió es (18/100) ÷ (25/100) = 18/25. Ojo: 6/10 es la probabilidad de desaprobar sabiendo que no estudió; aquí se pregunta al revés."
+      ],
+      "verificar": {
+        "tipo": "bayes",
+        "sub": "dos",
+        "p": [
+          70,
+          30
+        ],
+        "q": [
+          90,
+          40
+        ],
+        "condicion": "no",
+        "causa": 1
+      }
+    },
+    {
+      "id": "p6",
+      "nivel": "avanzado",
+      "enunciado": "Tres máquinas, A, B y C, hacen el 50 %, el 30 % y el 20 % de los pernos de un taller. Sale defectuoso el 2 % de los pernos de A, el 3 % de los de B y el 5 % de los de C. Se toma al azar un perno y es defectuoso. ¿Cuál es la probabilidad de que lo haya hecho la máquina C?",
+      "respuesta": "10/29.",
+      "pasos": [
+        "Ramas de salir defectuoso (en diezmilésimas): A, 50 · 2 = 100; B, 30 · 3 = 90; C, 20 · 5 = 100.",
+        "Total de defectuosos: 100 + 90 + 100 = 290 de cada 10 000 pernos.",
+        "Probabilidad de C sabiendo que es defectuoso: 100/290 = 10/29. No es 5/100 (eso es la de salir defectuoso sabiendo que es de C)."
+      ],
+      "verificar": {
+        "tipo": "bayes",
+        "sub": "tres",
+        "p": [
+          50,
+          30,
+          20
+        ],
+        "q": [
+          2,
+          3,
+          5
+        ],
+        "condicion": "si",
+        "causa": 2
+      }
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Tres tiradores disparan una vez cada uno, por su cuenta, a un blanco. Aciertan con probabilidades 1/2, 2/3 y 3/4. ¿Cuál es la probabilidad de que acierten exactamente dos?",
+      "respuesta": "11/24.",
+      "pasos": [
+        "Fallan con probabilidades 1/2, 1/3 y 1/4.",
+        "Tres casos, según cuál falla: falla el tercero, (1/2)(2/3)(1/4) = 1/12; falla el segundo, (1/2)(1/3)(3/4) = 1/8; falla el primero, (1/2)(2/3)(3/4) = 1/4.",
+        "Suma: 2/24 + 3/24 + 6/24 = 11/24. Si sumas solo los productos de dos en dos (1/3 + 3/8 + 1/2), te pasas de 1: cada producto incluye también el caso en que aciertan los tres."
+      ],
+      "verificar": {
+        "tipo": "exactamente",
+        "sub": "distintas",
+        "p": [
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            3,
+            4
+          ]
+        ],
+        "k": 2
+      }
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Cada semilla de un lote germina con probabilidad 3/4, sin depender de las demás. Se siembran 4 semillas. ¿Cuál es la probabilidad de que germinen exactamente 3?",
+      "respuesta": "27/64.",
+      "pasos": [
+        "Un orden concreto (tres germinan y una no) tiene probabilidad (3/4)³ · (1/4) = 27/256.",
+        "La que no germina puede ser cualquiera de las 4: hay C(4, 3) = 4 órdenes.",
+        "Probabilidad = 4 · 27/256 = 27/64."
+      ],
+      "verificar": {
+        "tipo": "exactamente",
+        "sub": "binomial",
+        "n": 4,
+        "p": [
+          3,
+          4
+        ],
+        "k": 3
+      }
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "La bolsa 1 tiene 3 canicas rojas y 2 azules; la bolsa 2, 2 rojas y 4 azules. Se pasa una canica al azar de la bolsa 1 a la bolsa 2 y luego se saca una canica de la bolsa 2. ¿Cuál es la probabilidad de que sea roja?",
+      "respuesta": "13/35.",
+      "pasos": [
+        "La canica que pasa es roja con probabilidad 3/5 y azul con 2/5. Después, la bolsa 2 tiene 7 canicas.",
+        "Si pasó roja, la bolsa 2 tiene 3 rojas: 3/5 · 3/7 = 9/35. Si pasó azul, tiene 2 rojas: 2/5 · 2/7 = 4/35.",
+        "Probabilidad total = 9/35 + 4/35 = 13/35. Con la bolsa 2 como estaba (2/6 = 1/3) se ignora la canica que llegó."
+      ],
+      "verificar": {
+        "tipo": "traspaso",
+        "sub": "una",
+        "A": [
+          3,
+          2
+        ],
+        "B": [
+          2,
+          4
+        ]
+      }
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "La caja 1 tiene 2 bolas blancas y 3 negras; la caja 2, 1 blanca y 2 negras. Se sacan dos bolas de la caja 1, una tras otra y sin devolverlas, y se echan en la caja 2. Luego se saca una bola de la caja 2. ¿Cuál es la probabilidad de que sea blanca?",
+      "respuesta": "9/25.",
+      "pasos": [
+        "De la caja 1 hay C(5, 2) = 10 pares: pasan 0 blancas en 3, 1 blanca en 2 · 3 = 6 y 2 blancas en 1.",
+        "La caja 2 queda con 5 bolas, de las cuales 1, 2 o 3 son blancas.",
+        "Probabilidad total = 3/10 · 1/5 + 6/10 · 2/5 + 1/10 · 3/5 = 3/50 + 12/50 + 3/50 = 18/50 = 9/25."
+      ],
+      "verificar": {
+        "tipo": "traspaso",
+        "sub": "dos",
+        "A": [
+          2,
+          3
+        ],
+        "B": [
+          1,
+          2
+        ]
+      }
+    }
+  ]
+}

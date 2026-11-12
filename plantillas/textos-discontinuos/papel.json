@@ -602,6 +602,375 @@
         "Pregunta 3. Clave A. Las Retamas tuvo luces nuevas (su fila) y, según la nota, no tuvo patrullajes. Es el único caso de luz sin serenazgo, y ahí los robos bajaron poco.",
         "Pregunta 4. Clave D. Si se quita el patrullaje, se quedan las luces y los robos suben, la luz por sí sola no los mantuvo bajos. Sería una razón más para dudar de que la luz explicara toda la caída."
       ]
+    },
+    {
+      "id": "t132",
+      "nivel": "intermedio",
+      "enunciado": "Lee el texto «Agua segura en casa» y responde las 4 preguntas.",
+      "texto": {
+        "titulo": "Agua segura en casa",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "El agua del caño, del pozo o del río puede traer microbios que causan diarrea, aunque se vea limpia."
+            },
+            {
+              "n": 2,
+              "t": "Por eso, el centro de salud de Villa Ribera, un distrito ficticio, repartió esta infografía, que ordena los métodos caseros para hacer segura el agua en dos grupos según cómo se usan."
+            }
+          ],
+          [
+            {
+              "n": 3,
+              "t": "Los dos grupos no compiten: se combinan."
+            },
+            {
+              "n": 4,
+              "t": "Una familia puede filtrar el agua turbia, clorarla y guardarla en un bidón tapado y con caño."
+            },
+            {
+              "n": 5,
+              "t": "Lo que no conviene es confiar en un solo paso y descuidar los demás, porque hasta el agua mejor tratada vuelve a ensuciarse en un balde abierto."
+            }
+          ]
+        ],
+        "figuras": [
+          {
+            "tipo": "recuadros",
+            "despues": 1,
+            "titulo": "Cómo hacer segura el agua en casa",
+            "recuadros": [
+              {
+                "titulo": "Grupo 1 · Para el agua que vas a tomar pronto",
+                "t": "Estos métodos limpian una porción de agua, pero no la protegen después: si se guarda en un balde destapado o se saca con un vaso sucio, puede volver a contaminarse."
+              },
+              {
+                "titulo": "Hervir",
+                "t": "Deja que el agua hierva con burbujas grandes al menos un minuto. Déjala enfriar en la misma olla, tapada."
+              },
+              {
+                "titulo": "Desinfección solar",
+                "t": "Llena botellas de plástico transparente con agua clara, ciérralas y déjalas al sol directo al menos seis horas. Si el cielo está muy nublado, déjalas dos días seguidos."
+              },
+              {
+                "titulo": "Filtrar",
+                "t": "Pasar el agua por una tela limpia doblada le quita la tierra y la turbidez, pero no mata todos los microbios. Hazlo antes de hervir, de clorar o de poner el agua al sol."
+              },
+              {
+                "titulo": "Grupo 2 · Para el agua que vas a guardar",
+                "t": "Estos métodos siguen cuidando el agua durante el tiempo que pasa en el recipiente."
+              },
+              {
+                "titulo": "Clorar",
+                "t": "Echa dos gotas de lejía comercial sin aroma por cada litro de agua, mezcla, tapa y espera media hora antes de tomarla. El cloro que queda sigue actuando contra los microbios que entren después."
+              },
+              {
+                "titulo": "Guardar bien",
+                "t": "Usa un recipiente limpio, con tapa y, si se puede, con caño, para no meter la mano ni el vaso en el agua."
+              }
+            ],
+            "nota": "Consejos basados en recomendaciones de la OMS y del Minsa. El distrito y su centro de salud son ficticios."
+          }
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "enunciado": "Según la infografía, para que la desinfección solar funcione, las botellas con agua deben",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "quedarse dos días seguidos al sol, para mayor seguridad."
+            },
+            {
+              "letra": "B",
+              "t": "llenarse con agua que ya hirvió por un minuto."
+            },
+            {
+              "letra": "C",
+              "t": "ser de vidrio oscuro, que guarda mejor el calor."
+            },
+            {
+              "letra": "D",
+              "t": "ser transparentes y quedar al sol directo."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "¿Qué completa mejor el enunciado, según la infografía? «Los métodos del primer grupo ___, mientras que los del segundo ___».",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "limpian el agua que se va a tomar pronto / la siguen cuidando mientras está guardada"
+            },
+            {
+              "letra": "B",
+              "t": "limpian el agua que se va a tomar pronto / impiden para siempre que vuelva a contaminarse"
+            },
+            {
+              "letra": "C",
+              "t": "se usan con agua turbia / se usan con agua clara"
+            },
+            {
+              "letra": "D",
+              "t": "cuidan el agua mientras está guardada / limpian el agua que se va a tomar pronto"
+            },
+            {
+              "letra": "E",
+              "t": "son mejores que los del segundo / solo sirven cuando faltan los del primero"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "previo": "Antes de mirar las alternativas, decide qué relación tiene esta afirmación con el texto y la infografía. «Si el agua se va a quedar guardada varios días, conviene más clorarla que solo hervirla.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
+          "enunciado": "Se infiere de la infografía que, si una familia hierve el agua y luego la guarda en un balde destapado, esa agua",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "se contaminará toda sin remedio, aunque después se tape."
+            },
+            {
+              "letra": "B",
+              "t": "queda protegida, porque el hervor ya mató los microbios."
+            },
+            {
+              "letra": "C",
+              "t": "se volverá turbia por la tierra que entre al balde."
+            },
+            {
+              "letra": "D",
+              "t": "puede volver a tener microbios."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "Si en una casa el agua sale turbia del caño, lo que la infografía permite recomendar antes de clorarla o de ponerla al sol es",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "guardarla en un recipiente tapado y con caño."
+            },
+            {
+              "letra": "B",
+              "t": "nada, porque la infografía no dice qué hacer cuando el agua del caño sale turbia."
+            },
+            {
+              "letra": "C",
+              "t": "dejarla al sol dos días seguidos, como cuando el cielo está muy nublado."
+            },
+            {
+              "letra": "D",
+              "t": "pasarla por una tela limpia doblada."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: D · 2: A · 3: D · 4: D.",
+      "pasos": [
+        "Pregunta 1. Clave D. El recuadro «Desinfección solar» pide botellas de plástico transparente, con agua clara, al sol directo al menos seis horas.",
+        "Pregunta 2. Clave A. Las dos mitades salen de los títulos y las explicaciones de los grupos: el primero limpia una porción sin protegerla después; el segundo sigue cuidando el agua en el recipiente.",
+        "Pregunta 3. Antes de las alternativas: Se deduce del texto. La infografía no compara el cloro con el hervido, pero lo permite: el hervido está en el grupo que no protege el agua después, y del cloro dice que sigue actuando contra los microbios que entren. Se deduce.",
+        "Pregunta 3. Clave D. El primer grupo, donde está hervir, no protege el agua después: si se guarda destapada puede volver a contaminarse, como repite la oración 5.",
+        "Pregunta 4. Clave D. El recuadro «Filtrar» dice que la tela quita la turbidez y que se haga antes de hervir, de clorar o de poner el agua al sol."
+      ]
+    },
+    {
+      "id": "t133",
+      "nivel": "avanzado (tipo UNI)",
+      "enunciado": "Lee el texto «Tres maneras de mirar la helada» y responde las 5 preguntas.",
+      "texto": {
+        "titulo": "Tres maneras de mirar la helada",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "En los cursos de filosofía suele presentarse el conocimiento dividido en tres formas, como en el esquema que sigue."
+            }
+          ],
+          [
+            {
+              "n": 2,
+              "t": "Distinguir estas formas no significa enfrentarlas."
+            },
+            {
+              "n": 3,
+              "t": "Una agricultora sabe por experiencia que, si en junio la noche está despejada, puede helar; un meteorólogo explica ese enfriamiento con mediciones; y alguien puede preguntarse si es justo que los avisos del clima lleguen tarde a las comunidades que más sufren las heladas."
+            },
+            {
+              "n": 4,
+              "t": "Las tres respuestas no se anulan: miran el mismo hecho desde preguntas distintas."
+            },
+            {
+              "n": 5,
+              "t": "Además, se alimentan entre sí: la ciencia suele partir de observaciones comunes, y la filosofía examina lo que la ciencia da por supuesto, como la confianza en que la naturaleza sigue un orden."
+            },
+            {
+              "n": 6,
+              "t": "Por eso, el esquema sirve para ver en qué se diferencian, no para decidir cuál de ellas debe desaparecer."
+            }
+          ]
+        ],
+        "figuras": [
+          {
+            "tipo": "recuadros",
+            "despues": 1,
+            "titulo": "Las formas de conocer",
+            "recuadros": [
+              {
+                "titulo": "Conocimiento común",
+                "t": "Nace de la experiencia diaria y de lo que se aprende de los mayores. Es práctico: sirve para actuar, aunque no siempre explica por qué las cosas pasan."
+              },
+              {
+                "titulo": "Conocimiento científico",
+                "t": "Busca explicar los hechos con causas y leyes. Pone a prueba sus explicaciones con la observación, la medición y el experimento, y las corrige si fallan."
+              },
+              {
+                "titulo": "Conocimiento filosófico",
+                "t": "Pregunta por los fundamentos y el sentido: qué es conocer, qué es lo justo, qué vale la pena. Avanza con la reflexión y el argumento, no con el experimento."
+              },
+              {
+                "titulo": "Lo que comparten",
+                "t": "Las tres formas buscan comprender la realidad y orientar la vida."
+              }
+            ],
+            "nota": "Esquema propio, preparado para el ejercicio."
+          }
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "enunciado": "Según el esquema, lo que distingue al conocimiento científico de las otras dos formas es que",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "prueba sus explicaciones con experimentos."
+            },
+            {
+              "letra": "B",
+              "t": "es la única que llega a verdades definitivas."
+            },
+            {
+              "letra": "C",
+              "t": "trabaja con laboratorios y aparatos modernos."
+            },
+            {
+              "letra": "D",
+              "t": "busca comprender la realidad y orientar la vida."
+            },
+            {
+              "letra": "E",
+              "t": "se pregunta qué es lo justo y qué vale la pena."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "previo": "Antes de mirar las alternativas, decide qué relación tiene esta afirmación con el texto y el esquema. «Una persona puede valerse del saber común y del científico sin tener que renunciar a uno de ellos.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
+          "enunciado": "Se infiere del texto que el saber de la agricultora sobre las heladas",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "puede convivir con la explicación del meteorólogo."
+            },
+            {
+              "letra": "B",
+              "t": "explica, igual que la ciencia, por qué se enfría la noche."
+            },
+            {
+              "letra": "C",
+              "t": "merece más confianza que la ciencia, porque nace de la experiencia."
+            },
+            {
+              "letra": "D",
+              "t": "queda desmentido cuando el meteorólogo mide el enfriamiento."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "Es incompatible con el texto y el esquema afirmar que la filosofía",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "examina lo que la ciencia da por supuesto."
+            },
+            {
+              "letra": "B",
+              "t": "no avanza por experimentos, sino por argumentos."
+            },
+            {
+              "letra": "C",
+              "t": "avanza con mediciones y experimentos."
+            },
+            {
+              "letra": "D",
+              "t": "se enseña en la mayoría de los colegios del país."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "En la oración 5, la expresión SE ALIMENTAN ENTRE SÍ significa",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "se mezclan hasta confundirse."
+            },
+            {
+              "letra": "B",
+              "t": "se dan de comer."
+            },
+            {
+              "letra": "C",
+              "t": "parten de observaciones comunes."
+            },
+            {
+              "letra": "D",
+              "t": "se aportan unas a otras."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "enunciado": "Si un estudiante concluyera, al ver el esquema, que el conocimiento filosófico no sirve porque no hace experimentos, el autor del texto le respondería que",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "confunde una diferencia de método con una falta de valor."
+            },
+            {
+              "letra": "B",
+              "t": "debería empezar por el saber común, que es la base de todo."
+            },
+            {
+              "letra": "C",
+              "t": "en realidad la filosofía vale más, porque piensa los fundamentos."
+            },
+            {
+              "letra": "D",
+              "t": "tiene razón en parte, porque sin experimento no se puede saber nada sobre la helada."
+            },
+            {
+              "letra": "E",
+              "t": "las tres formas sirven para lo mismo, así que da igual cuál se use."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: A · 2: A · 3: C · 4: D · 5: A.",
+      "pasos": [
+        "Pregunta 1. Clave A. Solo el recuadro del conocimiento científico habla de la observación, la medición y el experimento; el del filosófico aclara que avanza «no con el experimento».",
+        "Pregunta 2. Antes de las alternativas: Se deduce del texto. El texto no habla de una persona que use los dos saberes, pero dice que las formas no se enfrentan (oración 2) y que no se anulan (oración 4). Si no se anulan, no hay que elegir una y dejar la otra. Se deduce.",
+        "Pregunta 2. Clave A. La oración 4 dice que las tres respuestas sobre la helada no se anulan: miran el mismo hecho desde preguntas distintas. El saber de ella y la explicación de él caben juntos.",
+        "Pregunta 3. Clave C. El recuadro del conocimiento filosófico dice que avanza con la reflexión y el argumento, «no con el experimento».",
+        "Pregunta 4. Clave D. La misma oración lo explica: la ciencia toma observaciones comunes y la filosofía examina lo que la ciencia supone. Cada forma recibe algo de otra.",
+        "Pregunta 5. Clave A. Que la filosofía no use el experimento es una de las diferencias del esquema; la oración 6 dice que el esquema muestra en qué se diferencian, no cuál debe desaparecer."
+      ]
     }
   ]
 }

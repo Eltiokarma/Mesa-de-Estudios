@@ -40,6 +40,8 @@ Si hay que hacer OCR, instala tesseract en español: `apt-get install -y tessera
 
 ## Pendientes, en orden de prioridad
 
+**Pausa por límite de uso (8 nov 2026).** Cinco rutinas de huecos quedaron detenidas con su trabajo a medias subido a su rama (commit «WIP: pausa por límite de uso», nota en `rutinas/<rama>.md`): `rutina/rm-espacial`, `rutina/rm-procesos`, `rutina/geometria-trig`, `rutina/fisica-admision` y `rutina/quimica-admision`. Al retomar: reanudar cada sesión desde su nota y, al integrar, mezclar el CSV por curso con `herramientas/mezclar-csv-admision.py` y rehacer las tablas con `herramientas/agregar_admision.py docs/datos/admision-unmsm.csv …`. Ya integradas: verbal A/B, «No sé» y aritmética-álgebra (cobertura 74 %).
+
 ### 0. Huecos que mide la admisión real de San Marcos (8 nov 2026)
 
 Fuente: `docs/clasificacion-unmsm-admision.md` (2550 preguntas de 50 exámenes, 14 periodos de 2019-I a 2027-I). La cobertura de la app es 57 % «sí», 42 % «a medias» y 1 % «no». En orden:

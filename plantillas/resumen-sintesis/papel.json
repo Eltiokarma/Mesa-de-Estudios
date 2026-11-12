@@ -62,7 +62,7 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "Como ya hay más de doscientas mil vicuñas, las comunidades de las punas pueden organizar el chaccu y vender su fibra."
+              "t": "La caza por su fibra casi acabó con la vicuña, pero hoy esa fibra, esquilada sin matarla, lleva a las comunidades a cuidarla, y la especie se recuperó."
             },
             {
               "letra": "B",
@@ -78,7 +78,7 @@
             },
             {
               "letra": "E",
-              "t": "La caza por su fibra casi acabó con la vicuña, pero hoy esa fibra, esquilada sin matarla, lleva a las comunidades a cuidarla, y la especie se recuperó."
+              "t": "Como ya hay más de doscientas mil vicuñas, las comunidades de las punas pueden organizar el chaccu y vender su fibra."
             }
           ]
         },
@@ -88,23 +88,23 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "La vicuña, una especie a punto de desaparecer"
+              "t": "Cómo se organiza un chaccu en las punas"
             },
             {
               "letra": "B",
-              "t": "La vicuña: de presa a animal que se cuida"
-            },
-            {
-              "letra": "C",
               "t": "Los camélidos de América del Sur"
             },
             {
-              "letra": "D",
+              "letra": "C",
               "t": "La vicuña, el animal del escudo nacional"
             },
             {
+              "letra": "D",
+              "t": "La vicuña: de presa a animal que se cuida"
+            },
+            {
               "letra": "E",
-              "t": "Cómo se organiza un chaccu en las punas"
+              "t": "La vicuña: una especie a punto de desaparecer"
             }
           ]
         },
@@ -114,15 +114,15 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "Hoy la fibra de la vicuña se vende a un precio mucho más alto que cuando la cazaban."
-            },
-            {
-              "letra": "B",
               "t": "Lo que antes ponía en peligro a la vicuña es ahora el motivo para cuidarla."
             },
             {
-              "letra": "C",
+              "letra": "B",
               "t": "La fibra de la vicuña casi acabó con las razones para protegerla."
+            },
+            {
+              "letra": "C",
+              "t": "Hoy la fibra de la vicuña se vende a un precio mucho más alto que cuando la cazaban."
             },
             {
               "letra": "D",
@@ -136,34 +136,34 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "Las comunidades de las punas dejaron de ver a la vicuña como una presa."
-            },
-            {
-              "letra": "B",
-              "t": "Los comuneros esquilan a las vicuñas con el fin de que su vellón vuelva a crecer en dos o tres años."
-            },
-            {
-              "letra": "C",
-              "t": "Los comuneros arrean a las vicuñas, las esquilan, las sueltan, venden su fibra y vigilan sus pastos."
-            },
-            {
-              "letra": "D",
               "t": "Las comunidades cuidan a la vicuña porque esquilarla viva les da un ingreso que se repite."
             },
             {
-              "letra": "E",
+              "letra": "B",
+              "t": "Los comuneros arrean a las vicuñas, las esquilan, las sueltan, venden su fibra y vigilan sus pastos."
+            },
+            {
+              "letra": "C",
               "t": "El Estado debería pagar a las comunidades por cada vicuña que cuidan en sus pastos."
+            },
+            {
+              "letra": "D",
+              "t": "Los comuneros esquilan a las vicuñas con el fin de que su vellón vuelva a crecer en dos o tres años."
+            },
+            {
+              "letra": "E",
+              "t": "Las comunidades de las punas dejaron de ver a la vicuña como una presa, y por eso empezaron a cuidarla."
             }
           ]
         }
       ],
-      "respuesta": "Clave: 1: E · 2: B · 3: B · 4: D.",
+      "respuesta": "Clave: 1: A · 2: D · 3: A · 4: A.",
       "pasos": [
         "Pregunta 1. Antes de las alternativas: la oración 4 o la oración 8. La oración 4 dice por qué se recuperó la vicuña: las comunidades la cuidan porque viva les deja más que muerta. La 8 lo junta con el comienzo: la fibra que la ponía en peligro hoy es la razón para protegerla.",
-        "Pregunta 1. Clave E. Junta las tres partes con su orden de importancia: el peligro, el cambio en las comunidades y por qué ese cambio salvó a la especie.",
-        "Pregunta 2. Clave B. Recoge el cambio que cuenta el texto: la vicuña dejó de ser una presa y pasó a ser cuidada.",
-        "Pregunta 3. Clave B. «La fibra que casi acabó con la vicuña» es lo que la ponía en peligro, y «la razón para protegerla» es el motivo para cuidarla.",
-        "Pregunta 4. Clave D. Es la idea que une el párrafo: la vicuña se esquila y se suelta, el vellón vuelve a crecer y la venta deja dinero en la comunidad, que por eso la cuida."
+        "Pregunta 1. Clave A. Junta las tres partes con su orden de importancia: el peligro, el cambio en las comunidades y por qué ese cambio salvó a la especie.",
+        "Pregunta 2. Clave D. Recoge el cambio que cuenta el texto: la vicuña dejó de ser una presa y pasó a ser cuidada.",
+        "Pregunta 3. Clave A. «La fibra que casi acabó con la vicuña» es lo que la ponía en peligro, y «la razón para protegerla» es el motivo para cuidarla.",
+        "Pregunta 4. Clave A. Es la idea que une el párrafo: la vicuña se esquila y se suelta, el vellón vuelve a crecer y la venta deja dinero en la comunidad, que por eso la cuida."
       ]
     },
     {

@@ -1,0 +1,350 @@
+{
+  "plantilla": "estadistica-datos",
+  "tolerancia": 0.000001,
+  "nota": "Varianza poblacional (se divide entre n). En reconstruir/seis se pide un extremo posible sobre todas las listas de enteros positivos que cumplen media, mediana y moda única; en reconstruir/cinco la lista es única. Las respuestas de central/orden son la relación entre x̄, Me y Mo (clave ord:…); las de medias/dados, fracciones.",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver el generador: resolvió los 22 problemas desde el enunciado con Python y fracciones exactas, y usó fuerza bruta en los casos de media, mediana y moda, en los cortes de los pares, en los dados y en los múltiplos. Los 22 valores coinciden con esperado, y en cada caso solo una alternativa es correcta. Tras la revisión cambiaron dos casos (semillas 0 y 13, por pasar las temperaturas a Puno: 53,6 °F y 1,8 °F), recalculados aparte por la conversación principal.",
+  "casos": [
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "reconstruir",
+        "sub": "seis",
+        "media": 10,
+        "mediana": 9.5,
+        "moda": 9,
+        "pide": "max-mayor"
+      },
+      "esperado": {
+        "respuesta": 20,
+        "exacta": "20"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "medias",
+        "sub": "mh",
+        "MA": 15,
+        "MG": 12
+      },
+      "esperado": {
+        "respuesta": 9.6,
+        "exacta": "9,6"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "varianza",
+        "sub": "media",
+        "contexto": "temperaturas",
+        "media": 12,
+        "desviacion": 2.5,
+        "a": 1.8,
+        "b": 32
+      },
+      "esperado": {
+        "respuesta": 53.6,
+        "exacta": "53,6 °F"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "extremo",
+        "sub": "cota",
+        "contexto": "sacos",
+        "n": 9,
+        "p": 45,
+        "m": 40
+      },
+      "esperado": {
+        "respuesta": 85,
+        "exacta": "85 kg"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "reconstruir",
+        "sub": "seis",
+        "media": 7,
+        "mediana": 6,
+        "moda": 2,
+        "pide": "min-mayor"
+      },
+      "esperado": {
+        "respuesta": 13,
+        "exacta": "13"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "reconstruir",
+        "sub": "incognitas",
+        "vista": "6; 9; x; 15; 19; y",
+        "media": 14,
+        "mediana": 14.5,
+        "pide": "y"
+      },
+      "esperado": {
+        "respuesta": 21,
+        "exacta": "21"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "central",
+        "sub": "mediana",
+        "datos": [
+          11,
+          7,
+          11,
+          22,
+          18,
+          24,
+          9,
+          23,
+          11
+        ]
+      },
+      "esperado": {
+        "respuesta": 11,
+        "exacta": "11"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "varianza",
+        "sub": "desv",
+        "contexto": "puntajes",
+        "media": 15,
+        "desviacion": 1.5,
+        "a": 4,
+        "b": 5
+      },
+      "esperado": {
+        "respuesta": 6,
+        "exacta": "6 puntos"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "subconjuntos",
+        "sub": "grupos",
+        "N": 55,
+        "p1": 12,
+        "p3": 102
+      },
+      "esperado": {
+        "respuesta": 58,
+        "exacta": "58"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "extremo",
+        "sub": "cota",
+        "contexto": "colecta",
+        "n": 8,
+        "p": 24,
+        "m": 20
+      },
+      "esperado": {
+        "respuesta": 52,
+        "exacta": "S/ 52"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "varianza",
+        "sub": "var-a-desv",
+        "contexto": "temperaturas",
+        "media": 15,
+        "desviacion": 1,
+        "a": 1.8,
+        "b": 32
+      },
+      "esperado": {
+        "respuesta": 1.8,
+        "exacta": "1,8 °F"
+      }
+    },
+    {
+      "semilla": 17,
+      "entrada": {
+        "tipo": "extremo",
+        "sub": "tope",
+        "n": 7,
+        "p": 15,
+        "M": 17
+      },
+      "esperado": {
+        "respuesta": 3,
+        "exacta": "3"
+      }
+    },
+    {
+      "semilla": 18,
+      "entrada": {
+        "tipo": "reconstruir",
+        "sub": "cinco",
+        "media": 6.4,
+        "mediana": 7,
+        "moda": 3,
+        "conocido": 9,
+        "pide": "mayor"
+      },
+      "esperado": {
+        "respuesta": 10,
+        "exacta": "10"
+      }
+    },
+    {
+      "semilla": 21,
+      "entrada": {
+        "tipo": "central",
+        "sub": "orden",
+        "datos": [
+          42,
+          29,
+          43,
+          18,
+          42,
+          40,
+          21,
+          33,
+          42
+        ]
+      },
+      "esperado": {
+        "respuesta": "ord:x̄ < Me < Mo",
+        "exacta": "x̄ < Me < Mo"
+      }
+    },
+    {
+      "semilla": 28,
+      "entrada": {
+        "tipo": "extremo",
+        "sub": "distintos",
+        "contexto": "notas",
+        "n": 5,
+        "p": 13.6,
+        "m": 11,
+        "tope": 20
+      },
+      "esperado": {
+        "respuesta": 18,
+        "exacta": "18"
+      }
+    },
+    {
+      "semilla": 30,
+      "entrada": {
+        "tipo": "medias",
+        "sub": "dos",
+        "MA": 29,
+        "MG": 20,
+        "pide": "dif"
+      },
+      "esperado": {
+        "respuesta": 42,
+        "exacta": "42"
+      }
+    },
+    {
+      "semilla": 36,
+      "entrada": {
+        "tipo": "reconstruir",
+        "sub": "seis",
+        "media": 7.5,
+        "mediana": 6.5,
+        "moda": 4,
+        "pide": "max-mayor"
+      },
+      "esperado": {
+        "respuesta": 17,
+        "exacta": "17"
+      }
+    },
+    {
+      "semilla": 42,
+      "entrada": {
+        "tipo": "varianza",
+        "sub": "var",
+        "contexto": "puntajes",
+        "media": 13,
+        "desviacion": 2.5,
+        "a": 3,
+        "b": -3
+      },
+      "esperado": {
+        "respuesta": 56.25,
+        "exacta": "56,25 puntos²"
+      }
+    },
+    {
+      "semilla": 43,
+      "entrada": {
+        "tipo": "medias",
+        "sub": "dados",
+        "k": 4,
+        "producto": 72
+      },
+      "esperado": {
+        "respuesta": 3,
+        "exacta": "3"
+      }
+    },
+    {
+      "semilla": 45,
+      "entrada": {
+        "tipo": "subconjuntos",
+        "sub": "multiplos",
+        "k": 4,
+        "resto": 0,
+        "A": 89,
+        "B": 369
+      },
+      "esperado": {
+        "respuesta": 230,
+        "exacta": "230"
+      }
+    },
+    {
+      "semilla": 47,
+      "entrada": {
+        "tipo": "medias",
+        "sub": "mh",
+        "MA": 25,
+        "MG": 7
+      },
+      "esperado": {
+        "respuesta": 1.96,
+        "exacta": "1,96"
+      }
+    },
+    {
+      "semilla": 139,
+      "entrada": {
+        "tipo": "extremo",
+        "sub": "distintos",
+        "contexto": "edades",
+        "n": 5,
+        "p": 13.6,
+        "m": 9,
+        "tope": 30
+      },
+      "esperado": {
+        "respuesta": 26,
+        "exacta": "26 años"
+      }
+    }
+  ]
+}

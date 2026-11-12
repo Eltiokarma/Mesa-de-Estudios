@@ -1,0 +1,16 @@
+{
+  "id": "ecuaciones-polinomiales",
+  "titulo": "Raíces y coeficientes de una ecuación",
+  "formato": "predicciones",
+  "unidades": [
+    "algebra.ecuaciones-polinomiales",
+    "algebra.factorizacion",
+    "algebra.numeros-complejos"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

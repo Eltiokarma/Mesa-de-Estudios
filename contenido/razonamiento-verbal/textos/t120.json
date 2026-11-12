@@ -1,0 +1,160 @@
+{
+  "id": "t120",
+  "version": 1,
+  "titulo": "El litio de Puno: ¿ahora o después?",
+  "tema": "Sociedad · minería y ambiente en Puno",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    { "id": "A", "desde": 0, "firma": "Un economista de Juliaca" },
+    { "id": "B", "desde": 1, "firma": "Una ingeniera ambiental de Puno" }
+  ],
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "principal", "t": "El litio de Carabaya es una oportunidad que Puno no debería dejar pasar." },
+      { "id": "o2", "rol": "apoyo", "t": "Es un metal que piden las fábricas de baterías de todo el mundo, y esa demanda no esperará indefinidamente: otros países ya lo extraen y lo venden." },
+      { "id": "o3", "rol": "apoyo", "t": "Si el Perú se demora una década en discusiones, el precio puede caer o puede aparecer otra tecnología, y el yacimiento quedaría como una promesa enterrada." },
+      { "id": "o4", "rol": "principal", "t": "Lo sensato es empezar pronto, con una empresa que cumpla reglas claras: que una parte de lo que se gane se quede en la región, que contrate y capacite a trabajadores de la zona y que procese el mineral aquí, en vez de exportarlo como piedra." },
+      { "id": "o5", "rol": "detalle", "t": "Explotar con reglas no es lo mismo que explotar a cualquier costo." }
+    ],
+    [
+      { "id": "o6", "rol": "detalle", "t": "Comparto que el litio podría dejar beneficios en la región y que no basta con exportar el mineral sin procesarlo." },
+      { "id": "o7", "rol": "contraste", "t": "Lo que no comparto es la prisa." },
+      { "id": "o8", "rol": "apoyo", "t": "Antes de abrir una mina hay que saber cuánta agua necesitará y de dónde la tomará, en una zona donde los ríos y los bofedales sostienen la crianza de alpacas." },
+      { "id": "o9", "rol": "apoyo", "t": "También hay que consultar a las comunidades, que tienen derecho a ser escuchadas antes de que se decida sobre sus territorios." },
+      { "id": "o10", "rol": "apoyo", "t": "El país conoce bien la historia de minas que empezaron rápido y dejaron conflictos, ríos dañados y promesas incumplidas." },
+      { "id": "o11", "rol": "principal", "t": "Los estudios, la consulta y las reglas deben llegar antes que las máquinas, no mientras la mina ya avanza: ese tiempo no es una pérdida, sino el precio de no repetir esa historia." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "controversia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "El eje de la discrepancia entre los dos textos es",
+      "alternativas": [
+        { "t": "cuándo debería empezar la explotación del litio de Carabaya.", "correcta": true, "evidencia": ["o4", "o7", "o11"],
+          "explicacion": "El texto A pide «empezar pronto» (oración 4) y el B dice «lo que no comparto es la prisa» (oración 7): la discrepancia es el momento de empezar." },
+        { "t": "si el litio puede dejar beneficios económicos en la región de Puno.", "codigo": "RV61", "origen": "o6",
+          "explicacion": "En eso coinciden: el texto B dice «comparto que el litio podría dejar beneficios en la región» (oración 6)." },
+        { "t": "si los ríos y los bofedales de la zona alcanzan para la crianza de alpacas.", "codigo": "RV60", "origen": "o8",
+          "explicacion": "Es parte de un argumento del texto B (oración 8); el texto A no toma posición sobre el agua." },
+        { "t": "el futuro de la minería en América Latina.", "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos discuten un solo yacimiento y cuándo explotarlo." },
+        { "t": "si el Perú debe prohibir para siempre la minería en el sur andino.", "codigo": "RV33",
+          "explicacion": "Ninguno de los dos lo propone: el texto B no rechaza la mina, sino la prisa." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "postura",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Los estudios del agua y la consulta deben hacerse antes de abrir la mina, aunque eso retrase el proyecto.",
+        "aceptada": "B",
+        "codigos": { "A": "RV59", "ambos": "RV60", "ninguno": null },
+        "explicacion": "Lo sostiene el texto B en las oraciones 8, 9 y 11: los estudios y la consulta deben llegar «antes que las máquinas», y ese tiempo no es una pérdida.",
+        "explicaciones": {
+          "A": "El texto A pide empezar pronto y ve la demora como un riesgo (oración 3); poner los estudios antes, aunque retrasen el proyecto, es la postura del texto B.",
+          "ambos": "Solo el texto B lo sostiene. El texto A también quiere reglas, pero no acepta la demora: pide empezar pronto.",
+          "ninguno": "Sí lo sostiene alguien: el texto B, en las oraciones 8, 9 y 11."
+        }
+      },
+      "enunciado": "La autora del texto B sostiene que",
+      "alternativas": [
+        { "t": "estudios, consulta y reglas deben preceder a la explotación.", "correcta": true, "evidencia": ["o8", "o9", "o11"],
+          "explicacion": "Es su tesis, en la oración 11, con lo que pide antes de abrir la mina en las oraciones 8 y 9." },
+        { "t": "una demora larga puede hacer que el yacimiento termine valiendo poco.", "codigo": "RV59", "origen": "o3",
+          "explicacion": "Ese es el argumento del texto A (oración 3), que la autora del B rechaza: para ella, el tiempo no es una pérdida." },
+        { "t": "conviene estudiar primero el agua, pero sin consultar a las comunidades para no perder más tiempo.", "codigo": "RV62", "origen": "o9",
+          "explicacion": "La primera parte es suya, pero la segunda la contradice: el texto B pide consultar a las comunidades (oración 9)." },
+        { "t": "el litio no le traerá beneficio alguno a la región.", "codigo": "RV33", "origen": "o6",
+          "explicacion": "El texto B dice lo contrario: comparte que el litio podría dejar beneficios en la región (oración 6)." },
+        { "t": "cualquier mina, sin excepción, termina dañando los ríos.", "codigo": "RV11", "origen": "o10",
+          "explicacion": "El texto B habla de minas «que empezaron rápido», no de todas; «sin excepción» dice más que el texto." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "coincidencia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Sería un error vender el mineral tal como sale, sin procesarlo en el país.",
+        "aceptada": "ambos",
+        "codigos": { "A": "RV61", "B": "RV61", "ninguno": null },
+        "explicacion": "Los dos lo sostienen: el texto A pide procesar el mineral aquí, «en vez de exportarlo como piedra» (oración 4), y el B dice que «no basta con exportar el mineral sin procesarlo» (oración 6).",
+        "explicaciones": {
+          "A": "El texto A lo dice en la oración 4, pero el B también, en la oración 6. Discrepan en cuándo empezar, no en esto.",
+          "B": "El texto B lo dice en la oración 6, pero el A también lo pide en la oración 4.",
+          "ninguno": "Los dos lo sostienen: el texto A en la oración 4 y el B en la oración 6."
+        }
+      },
+      "enunciado": "Los dos autores estarían de acuerdo en que",
+      "alternativas": [
+        { "t": "el mineral debería procesarse en el país y no venderse en bruto.", "correcta": true, "evidencia": ["o4", "o6"],
+          "explicacion": "El texto A lo pone entre sus reglas (oración 4) y el B lo comparte expresamente (oración 6)." },
+        { "t": "la explotación del litio debería empezar cuanto antes.", "codigo": "RV60", "origen": "o4",
+          "explicacion": "Eso lo sostiene solo el texto A. El texto B rechaza justamente la prisa (oración 7)." },
+        { "t": "el litio puede beneficiar a Puno, siempre que se explote sin demoras ni estudios previos.", "codigo": "RV62", "origen": "o6",
+          "explicacion": "La primera parte es el punto en común, pero la segunda la rechaza el texto B, que pide estudios antes de empezar (oración 11); y el A no pide omitir estudios." },
+        { "t": "el litio es más rentable para el país que el cobre o el oro.", "codigo": "RV8",
+          "explicacion": "Ninguno de los textos compara el litio con otros metales; eso vendría de lo que uno sabe o cree, no de lo leído." },
+        { "t": "la crianza de alpacas es la principal actividad de Carabaya.", "codigo": "RV7", "origen": "o8",
+          "explicacion": "El texto B dice que los ríos y los bofedales sostienen la crianza de alpacas, no que sea la principal actividad; y el A no habla de ella." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Es incompatible con lo que sostiene el autor del texto A afirmar que",
+      "alternativas": [
+        { "t": "el yacimiento conservará su valor aunque el país tarde muchos años en explotarlo.", "correcta": true, "evidencia": ["o3"],
+          "explicacion": "La oración 3 dice que, con una demora larga, el precio puede caer o aparecer otra tecnología, y el yacimiento quedaría como una promesa enterrada: esta afirmación choca con eso." },
+        { "t": "no conviene exportar el litio como piedra, sin procesarlo.", "codigo": "RV10", "origen": "o4",
+          "explicacion": "Tiene un «no», pero es compatible: el texto A pide procesar el mineral en la región en vez de exportarlo como piedra (oración 4)." },
+        { "t": "en la zona de Carabaya hay familias que crían alpacas.", "codigo": "RV36",
+          "explicacion": "El texto A no lo menciona, pero tampoco dice nada en contra: que algo no esté dicho no lo vuelve incompatible." },
+        { "t": "un yacimiento que no se explota a tiempo puede terminar valiendo poco.", "codigo": "RV8", "origen": "o3",
+          "explicacion": "Puede chocar con la idea común de que un mineral siempre conserva su valor, pero es justo lo que sostiene el texto A en la oración 3." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto A, la palabra ENTERRADA («una promesa enterrada») significa",
+      "alternativas": [
+        { "t": "sin aprovechar.", "correcta": true, "evidencia": ["o3"],
+          "explicacion": "Si el precio cae o aparece otra tecnología, la riqueza del yacimiento quedaría como algo que prometía y que nunca se aprovechó." },
+        { "t": "puesta bajo tierra.", "codigo": "RV18",
+          "explicacion": "Es el sentido literal y más común de «enterrar». Aunque el mineral está bajo tierra, lo que queda enterrada es la promesa, en sentido figurado." },
+        { "t": "exportada como piedra.", "codigo": "RV5", "origen": "o4",
+          "explicacion": "Repite palabras de la oración 4, que habla de otra cosa: de vender el mineral sin procesarlo." },
+        { "t": "sepultada por un derrumbe.", "codigo": "RV19",
+          "explicacion": "Es del mismo campo (enterrar, sepultar), pero el texto no habla de ningún derrumbe." },
+        { "t": "que ya todos conocen.", "codigo": "RV20",
+          "explicacion": "Viene de confundir «enterrada» con «enterada», que se parecen en la forma; el texto no habla de que la promesa sea conocida, sino de que quedaría sin aprovechar." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-08",
+  "hechos": [
+    { "afirmacion": "En la provincia de Carabaya (Puno), en la zona de Macusani, se han identificado yacimientos de litio.", "fuente": "INGEMMET (Instituto Geológico, Minero y Metalúrgico) y Ministerio de Energía y Minas del Perú, información sobre el proyecto Falchani" },
+    { "afirmacion": "El litio se usa en la fabricación de baterías recargables.", "fuente": "U.S. Geological Survey, Mineral Commodity Summaries: Lithium" },
+    { "afirmacion": "En el Perú, los pueblos indígenas u originarios tienen derecho a ser consultados antes de medidas que afecten sus derechos colectivos.", "fuente": "Ley N.º 29785, Ley del derecho a la consulta previa a los pueblos indígenas u originarios" },
+    { "afirmacion": "En las zonas altoandinas de Puno, los bofedales sostienen la crianza de alpacas.", "fuente": "Ministerio del Ambiente del Perú (MINAM), información sobre ecosistemas de bofedales" }
+  ],
+  "revision": {
+    "por": "subagente (revisor a ciegas)",
+    "fecha": "2026-11-08",
+    "veredicto": "aprobado",
+    "notas": "5 de 5 preguntas y 2 de 2 pasos previos coincidieron a ciegas. Se reforzó el distractor de parónimo de p5; Falchani (Macusani, Carabaya), la Ley 29785 de consulta previa y los bofedales como sustento de la crianza de alpacas son datos públicos y conocidos."
+  }
+}

@@ -35,7 +35,7 @@
       "universidades": {"uni": {"semanas": [2, 3]}, "unmsm": {"temas": [1]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": ["numeros-reales"],
+      "plantillas": ["numeros-reales", "inecuaciones-planteo"],
       "investigacion": null
     },
     {
@@ -51,7 +51,7 @@
       "universidades": {"uni": {"semanas": [2, 7]}, "unmsm": {"temas": [2, 5]}},
       "potencial_visual": "bajo",
       "grado": 3,
-      "plantillas": ["cuadrado-crece"],
+      "plantillas": ["cuadrado-crece", "sistemas-ecuaciones"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {
@@ -67,7 +67,7 @@
       "universidades": {"uni": {"semanas": [4]}, "unmsm": {"temas": [3]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": ["traductor-enunciados"],
+      "plantillas": ["traductor-enunciados", "sistemas-ecuaciones"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {
@@ -83,7 +83,7 @@
       "universidades": {"uni": {"semanas": [4]}, "unmsm": {"temas": [3, 12]}},
       "potencial_visual": "medio",
       "grado": 4,
-      "plantillas": ["grafica-perillas"],
+      "plantillas": ["grafica-perillas", "inecuaciones-planteo"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {
@@ -98,7 +98,7 @@
       "universidades": {"uni": {"semanas": [4]}, "unmsm": {"temas": [4, 11, 12]}},
       "potencial_visual": "medio",
       "grado": 4,
-      "plantillas": ["grafica-perillas"],
+      "plantillas": ["grafica-perillas", "sistemas-ecuaciones", "inecuaciones-planteo"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {
@@ -130,7 +130,7 @@
       "universidades": {"uni": {"semanas": [6]}, "unmsm": {"temas": [7, 10]}},
       "potencial_visual": "bajo",
       "grado": 3,
-      "plantillas": ["polinomios"],
+      "plantillas": ["polinomios", "division-polinomios"],
       "investigacion": null
     },
     {
@@ -146,7 +146,7 @@
       "universidades": {"uni": {"semanas": [7]}, "unmsm": {"temas": [8]}},
       "potencial_visual": "bajo",
       "grado": 3,
-      "plantillas": ["cuadrado-crece"],
+      "plantillas": ["cuadrado-crece", "division-polinomios", "ecuaciones-polinomiales"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {
@@ -163,7 +163,7 @@
       "universidades": {"uni": {"semanas": [4, 10]}, "unmsm": {"temas": [9, 11]}},
       "potencial_visual": "medio",
       "grado": 4,
-      "plantillas": ["polinomios"],
+      "plantillas": ["polinomios", "ecuaciones-polinomiales"],
       "investigacion": null
     },
     {
@@ -180,7 +180,7 @@
       "universidades": {"uni": {"semanas": [8, 9, 10]}, "unmsm": {"temas": [13]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": ["grafica-perillas"],
+      "plantillas": ["grafica-perillas", "funciones-dominio-rango"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {
@@ -196,7 +196,7 @@
       "universidades": {"uni": {"semanas": [8, 10]}, "unmsm": {"temas": [14]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": ["grafica-perillas", "exponenciales-logaritmos"],
+      "plantillas": ["grafica-perillas", "exponenciales-logaritmos", "funciones-dominio-rango"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {
@@ -213,7 +213,7 @@
       "universidades": {"uni": {"semanas": [11]}, "unmsm": {"temas": [15]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": ["exponenciales-logaritmos"],
+      "plantillas": ["exponenciales-logaritmos", "funciones-dominio-rango"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {
@@ -230,7 +230,7 @@
       "universidades": {"uni": {"semanas": [12]}, "unmsm": {"temas": [5]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": ["numeros-complejos"],
+      "plantillas": ["numeros-complejos", "ecuaciones-polinomiales"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {
@@ -247,7 +247,7 @@
       "universidades": {"uni": {"semanas": [13, 14, 16]}, "unmsm": {"temas": [16]}},
       "potencial_visual": "bajo",
       "grado": 5,
-      "plantillas": ["matrices"],
+      "plantillas": ["matrices", "sistemas-ecuaciones"],
       "investigacion": null
     },
     {
@@ -264,7 +264,7 @@
       "universidades": {"uni": {"semanas": [15, 16]}, "unmsm": {"temas": [17]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": ["traductor-enunciados", "matrices"],
+      "plantillas": ["traductor-enunciados", "matrices", "sistemas-ecuaciones"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {
@@ -280,7 +280,7 @@
       "universidades": {"uni": {"semanas": [16, 17]}, "unmsm": {"temas": [18]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": ["programacion-lineal"],
+      "plantillas": ["programacion-lineal", "inecuaciones-planteo"],
       "investigacion": null
     },
     {
