@@ -1,6 +1,6 @@
 {
   "titulo": "Laboratorio de Admisión: hacia el lanzamiento en el colegio",
-  "actualizado": "2026-11-05",
+  "actualizado": "2026-11-06",
   "secciones": [
     "Base (hecho)",
     "Plataforma y medición",
@@ -71,6 +71,18 @@
       "critico": false,
       "depende_de": [],
       "notas": "Aprobada por Gerson el 4 nov 2026"
+    },
+    {
+      "id": "f0h",
+      "seccion": "Base (hecho)",
+      "nombre": "Visión e investigación de PISA, Peak y Brilliant",
+      "inicio": "2026-11-05",
+      "fin": "2026-11-05",
+      "estado": "hecho",
+      "progreso": 100,
+      "critico": false,
+      "depende_de": [],
+      "notas": "docs/vision-pisa-agilidad-interaccion.md, docs/investigacion/pisa-y-evaluaciones.md, docs/investigacion/brilliant.md"
     },
     {
       "id": "f0e",
@@ -147,6 +159,18 @@
       "critico": false,
       "depende_de": [],
       "notas": "Estimación; confirmar con la programación anual del colegio (catalogo/LEEME.md, Grados)."
+    },
+    {
+      "id": "pl7",
+      "seccion": "Plataforma y medición",
+      "nombre": "Componente completar con fichas en el núcleo",
+      "inicio": "2026-11-10",
+      "fin": "2026-11-15",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [],
+      "notas": "Estilo Brilliant (las nubecitas). Sirve al formato lectura (pl4), a razonamiento verbal y a despejar ecuaciones. Corrige el código, no un LLM; con el dedo en celular barato y sin conexión; la medición registra la respuesta. Ver docs/investigacion/brilliant.md, sección 5"
     },
     {
       "id": "pl4",
@@ -485,6 +509,50 @@
       "critico": false,
       "depende_de": [],
       "notas": ""
+    },
+    {
+      "id": "f2d",
+      "seccion": "Después del lanzamiento",
+      "nombre": "Más componentes de interacción (ordenar, emparejar, clasificar)",
+      "inicio": "2027-01-11",
+      "fin": "2027-01-22",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [
+        "la6",
+        "pl7"
+      ],
+      "notas": "Estilo Brilliant, después del colegio. Ver docs/investigacion/brilliant.md, sección 5"
+    },
+    {
+      "id": "f2e",
+      "seccion": "Después del lanzamiento",
+      "nombre": "Modo PISA, problemas en contexto real por plantilla",
+      "inicio": "2027-01-18",
+      "fin": "2027-01-29",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [
+        "la6",
+        "pl7"
+      ],
+      "notas": "Formular e interpretar, no solo calcular; contexto de Puno. Antes, verificar cifras y leer los marcos de la OCDE. Ver docs/investigacion/pisa-y-evaluaciones.md"
+    },
+    {
+      "id": "f2f",
+      "seccion": "Después del lanzamiento",
+      "nombre": "Calentamientos de agilidad mental (estilo Peak)",
+      "inicio": "2027-01-25",
+      "fin": "2027-02-05",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [
+        "pl7"
+      ],
+      "notas": "Cálculo, unidades, notables y estimación, con tiempo y racha. Falta recibir capturas de Peak. Ver docs/vision-pisa-agilidad-interaccion.md, sección 2"
     }
   ]
 }

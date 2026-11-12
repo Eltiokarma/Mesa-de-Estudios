@@ -6,7 +6,7 @@
 'use strict';
 const N_PRUEBA = 3, MIN_PRACTICA = 5;
 // Un mimo distinto en cada acierto (dirección acogedora, docs/diseno.md).
-const PREMIOS = ['Te ganaste un bombón. 🍫', 'Así se piensa. ✨', 'El gato está orgulloso. 🐾', 'Una más para la racha. ☕', 'Predijiste antes de calcular: eso es entender. 💜'];
+const PREMIOS = ['Así se piensa. ✨', 'El gato está orgulloso. 🐾', 'Una más para la racha. ☕', 'Predijiste antes de calcular: eso es entender. 💜'];
 
 function texto(partes, p, esc) {
   return partes.map(x => {

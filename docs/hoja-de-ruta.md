@@ -61,6 +61,7 @@ gantt
     Clasificación de simulacros de San Marcos :done, f0c, 2026-11-04, 2026-11-05
     Arquitectura por módulos y catálogo de 8 cursos :done, f0g, 2026-11-04, 2026-11-05
     Decidir plataforma (PWA) :done, f0d, 2026-11-04, 2026-11-05
+    Visión e investigación de PISA, Peak y Brilliant :done, f0h, 2026-11-05, 2026-11-06
 
     section Plataforma y medición
     Sistema de diseño (colores por variable y marca, tipografía) :active, f0e, 2026-11-04, 2026-11-11
@@ -69,6 +70,7 @@ gantt
     Motor de predicciones generadas (química, aritmética, RM) :active, crit, pl3, 2026-11-06, 2026-11-14
     Medición integrada (entrada y salida, registro anónimo, exportar para el profesor) :active, crit, pl2, 2026-11-10, 2026-11-18
     Nivel por grado (3.º, 4.º, 5.º) en el catálogo :done, pl5, 2026-11-05, 2026-11-06
+    Componente completar con fichas en el núcleo :pl7, 2026-11-10, 2026-11-16
     Formato lectura (razonamiento verbal) :active, pl4, 2026-11-16, 2026-11-20
 
     section Física
@@ -107,6 +109,9 @@ gantt
     section Después del lanzamiento
     Método de construcción de plantillas (skill) :f2a, 2027-01-11, 2027-01-16
     Material de la UNA Puno (cuando llegue) :f2c, 2027-01-11, 2027-01-23
+    Más componentes de interacción (ordenar, emparejar, clasificar) :f2d, 2027-01-11, 2027-01-23
+    Modo PISA, problemas en contexto real por plantilla :f2e, 2027-01-18, 2027-01-30
+    Calentamientos de agilidad mental (estilo Peak) :f2f, 2027-01-25, 2027-02-06
 ```
 
 ## Estado de los pendientes
