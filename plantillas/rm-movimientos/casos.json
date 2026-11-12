@@ -2,7 +2,7 @@
   "plantilla": "rm-movimientos",
   "tolerancia": 0,
   "nota": "Casillas del caballo como [columna, fila] desde 0 (a1 = [0, 0]). En canoa, gente en el orden del enunciado; choques con índices de gente; cada cruce es un viaje. En salto, casillas 1..n. En tubo, el primer elemento es la izquierda (2 bocas) o la boca de arriba (1 boca); un movimiento es sacar una bola a la mesa o meterla desde la mesa. En pares, '_' es una casilla vacía; se mueven dos fichas vecinas a dos vacías vecinas sin cambiar su orden.",
-  "verificacion": "",
+  "verificacion": "Verificador ciego (subagente, 8 nov 2026): BFS propio por tipo (orillas y canoa con cupo o peso y quién rema, caballo por tramos, fila de saltos, tubo como pila o cola doble con la mesa, fichas de a dos con destino vacío). 26 de 26 coinciden; 800 semillas más sin discrepancias. Tras las correcciones de la revisión, un segundo verificador (12 nov 2026) volvió a resolver a ciegas los casos cambiados (entrada-1 a 3, salida-1 a 3 y semillas 2, 5, 8, 9, 10, 11, 21 y 61) con otro BFS, y coinciden.",
   "casos": [
     {
       "semilla": "entrada-1",
