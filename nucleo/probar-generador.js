@@ -45,4 +45,48 @@ function probarGenerador(gen, { semillas = 400, recalcular, igual = igualNumero 
   });
 }
 
-module.exports = { probarGenerador };
+/*
+ * Fugas (opcional): la correcta no debe poder adivinarse sin resolver.
+ *   - «central»: la alternativa que comparte más rasgos con las demás (distancia entre los textos
+ *     partidos en números, letras y signos) es la correcta en más de `central` de los problemas;
+ *   - «extremo»: con respuestas numéricas, la correcta es la mayor o la menor en más de `extremo`.
+ * Se mide por grupo (por defecto _datos.tipo + _datos.sub), solo en grupos con al menos `minimo` problemas.
+ * valorNumerico(a) convierte una alternativa en número (por defecto a.valor si es número; si no, NaN).
+ */
+const trozos = t => String(t).replace(/[()]/g, ' ').split(/[\s;,]+|(?=[+−\-·/])|(?<=[+−\-·/])/).filter(Boolean);
+function distancia(a, b) {
+  const A = trozos(a), B = trozos(b); let d = 0;
+  for (let i = 0; i < Math.max(A.length, B.length); i++) if (A[i] !== B[i]) d++;
+  return d;
+}
+function medirFugas(gen, { semillas = 1500, grupo = p => [p._datos && p._datos.tipo, p._datos && (p._datos.sub || p._datos.pide || '')].join('/'), valorNumerico = a => (typeof a.valor === 'number' ? a.valor : NaN) } = {}) {
+  const por = {};
+  for (let s = 0; s < semillas; s++) {
+    const p = gen.generar(s), al = p.alternativas, k = grupo(p);
+    const o = por[k] = por[k] || { n: 0, central: 0, numericos: 0, extremo: 0 };
+    o.n++;
+    const sc = al.map(a => al.reduce((t, b) => t + distancia(a.texto, b.texto), 0));
+    const mejores = al.filter((a, i) => sc[i] === Math.min(...sc));
+    if (mejores.length === 1 && mejores[0].correcta) o.central++;
+    const v = al.map(valorNumerico);
+    if (v.every(Number.isFinite)) {
+      o.numericos++;
+      const c = v[al.findIndex(a => a.correcta)];
+      if (c === Math.max(...v) || c === Math.min(...v)) o.extremo++;
+    }
+  }
+  return por;
+}
+function probarFugas(gen, { central = 0.4, extremo = 0.75, minimo = 15, ...opciones } = {}) {
+  test(`${gen.id}: la correcta no se adivina por ser la central ni por estar en un extremo`, () => {
+    const malos = [];
+    for (const [k, o] of Object.entries(medirFugas(gen, opciones))) {
+      if (o.n < minimo) continue;
+      if (o.central / o.n > central) malos.push(`${k}: central ${Math.round(100 * o.central / o.n)} %`);
+      if (o.numericos >= minimo && o.extremo / o.numericos > extremo) malos.push(`${k}: extremo ${Math.round(100 * o.extremo / o.numericos)} %`);
+    }
+    assert.deepEqual(malos, []);
+  });
+}
+
+module.exports = { probarGenerador, probarFugas, medirFugas, distancia };
