@@ -169,39 +169,43 @@
     return it;
   }
   function dibujarPlatillo(items, cx, base, unidad) {
-    // filas de a lo más 104 px de ancho
-    const filas = [[]]; let ancho = 0;
-    for (const it of items) { if (ancho + it.w > 112 && filas[filas.length - 1].length) { filas.push([]); ancho = 0; } filas[filas.length - 1].push(it); ancho += it.w; }
+    // Todo en una sola fila, dentro del triángulo de las cuerdas: si no cabe en 108 px, se achica (hasta 6 figuras).
+    const total = items.reduce((a, b) => a + b.w, 0), k = total > 108 ? 108 / total : 1;
     let s = '';
-    filas.forEach((fila, r) => {
-      const tot = fila.reduce((a, b) => a + b.w, 0); let xx = cx - tot / 2; const yb = base - 1 - r * 21;
-      for (const it of fila) {
+    [items].forEach(fila => {
+      let xx = cx - total * k / 2; const yb = base - 1;
+      for (const it0 of fila) {
+        const it = { ...it0, w: it0.w * k };
         if (it.t === 'pesa') {
           const txt = `${items.find(z => z.t === 'pesa').etiqueta}`;
           s += `<rect x="${xx + 1}" y="${yb - 19}" width="${it.w - 2}" height="19" rx="3" style="fill:var(--card);stroke:currentColor" stroke-width="1.5"/>`;
           s += `<text x="${xx + it.w / 2}" y="${yb - 5}" text-anchor="middle" font-size="14">${x(txt)}</text>`;
-        } else s += forma(it.t, xx + it.w / 2, yb);
+        } else {
+          const c0 = xx + it.w / 2;
+          s += k === 1 ? forma(it.t, c0, yb) : `<g transform="translate(${c0} ${yb}) scale(${+k.toFixed(3)}) translate(${-c0} ${-yb})">${forma(it.t, c0, yb)}</g>`;
+        }
         xx += it.w;
       }
     });
     return s;
   }
   function figuraBalanzas(balanzas, unidad) {
-    const alto = 116;
+    const alto = 128, colg = 70, medio = 70;   // alto de cada balanza, largo de las cuerdas y medio ancho del platillo
     let s = `<svg viewBox="0 0 380 ${balanzas.length * alto + 6}" xmlns="http://www.w3.org/2000/svg">`;
     balanzas.forEach((b, i) => {
-      const y0 = i * alto + 4, eje = y0 + 34, inc = b.estado === 'izq-baja' ? 9 : b.estado === 'der-baja' ? -9 : 0;
-      const xl = 70, xr = 310, yl = eje + inc, yr = eje - inc;
+      // El travesaño se inclina y los platillos suben y bajan con él (el que pesa más queda abajo).
+      const y0 = i * alto + 4, eje = y0 + 34, inc = b.estado === 'izq-baja' ? 14 : b.estado === 'der-baja' ? -14 : 0;
+      const xl = 78, xr = 302, yl = eje + inc, yr = eje - inc;
       s += `<text x="8" y="${y0 + 16}" font-size="14" style="fill:var(--muted)">${x(`${i + 1}.`)}</text>`;
-      s += `<line x1="190" y1="${eje}" x2="190" y2="${y0 + 106}" style="stroke:currentColor" stroke-width="3"/>`;
-      s += `<line x1="160" y1="${y0 + 106}" x2="220" y2="${y0 + 106}" style="stroke:currentColor" stroke-width="3"/>`;
+      s += `<line x1="190" y1="${eje}" x2="190" y2="${y0 + 120}" style="stroke:currentColor" stroke-width="3"/>`;
+      s += `<line x1="160" y1="${y0 + 120}" x2="220" y2="${y0 + 120}" style="stroke:currentColor" stroke-width="3"/>`;
       s += `<line x1="${xl}" y1="${yl}" x2="${xr}" y2="${yr}" style="stroke:currentColor" stroke-width="3" stroke-linecap="round"/>`;
       s += `<circle cx="190" cy="${eje}" r="4" style="fill:currentColor"/>`;
       for (const [cx, yy, lado] of [[xl, yl, b.izq], [xr, yr, b.der]]) {
-        const base = yy + 62;
-        s += `<line x1="${cx}" y1="${yy}" x2="${cx - 58}" y2="${base}" style="stroke:var(--muted)" stroke-width="1"/>`;
-        s += `<line x1="${cx}" y1="${yy}" x2="${cx + 58}" y2="${base}" style="stroke:var(--muted)" stroke-width="1"/>`;
-        s += `<line x1="${cx - 58}" y1="${base}" x2="${cx + 58}" y2="${base}" style="stroke:currentColor" stroke-width="3" stroke-linecap="round"/>`;
+        const base = yy + colg;
+        s += `<line x1="${cx}" y1="${yy}" x2="${cx - medio}" y2="${base}" style="stroke:var(--muted)" stroke-width="1"/>`;
+        s += `<line x1="${cx}" y1="${yy}" x2="${cx + medio}" y2="${base}" style="stroke:var(--muted)" stroke-width="1"/>`;
+        s += `<line x1="${cx - medio}" y1="${base}" x2="${cx + medio}" y2="${base}" style="stroke:currentColor" stroke-width="3" stroke-linecap="round"/>`;
         const items = itemsDe(lado, unidad);
         if (lado.pesa) items.find(z => z.t === 'pesa').etiqueta = `${lado.pesa} ${unidad}`;
         s += dibujarPlatillo(items, cx, base, unidad);
@@ -298,7 +302,8 @@
       pide === 'max'
         ? h('RMP38-sin-enteros', Math.ceil(borde) - 1, `Ese es el mayor entero por debajo de ${f(borde)}, pero el ${NOMBRE[figura][0]} siempre pesa un múltiplo de ${cF} (todas las figuras son múltiplos de una misma medida): ese valor no se puede.`)
         : h('RMP38-sin-enteros', Math.floor(borde) + 1, `Ese es el menor entero por encima de ${f(borde)}, pero el ${NOMBRE[figura][0]} siempre pesa un múltiplo de ${cF} (todas las figuras son múltiplos de una misma medida): ese valor no se puede.`),
-      h('RMP38-igualdad', borde, 'Tomaste la balanza que no está en equilibrio como si lo estuviera. Al bajar un platillo, ese lado pesa más: es una desigualdad estricta, y el borde no se alcanza.'),
+      // Si el borde no es entero se muestra «unos 65,1 kg»; si redondeado parece entero, se descarta (se confundiría).
+      Number.isInteger(borde) || Math.abs(borde - Math.round(borde)) >= 0.05 ? h('RMP38-igualdad', borde, 'Tomaste la balanza que no está en equilibrio como si lo estuviera. Al bajar un platillo, ese lado pesa más: es una desigualdad estricta, y el borde no se alcanza.') : null,
       h('RMP2-sin-optimizar', cF * (pide === 'max' ? R.t[0] : R.t[1]), pide === 'max' ? 'Ese peso sí es posible, pero no es el mayor: hay valores más grandes que también cumplen todas las balanzas.' : 'Ese peso sí es posible, pero no es el menor: hay valores más chicos que también cumplen todas las balanzas.'),
       h('RMP38-otra-figura', R.coef[otra] * (pide === 'max' ? R.t[1] : R.t[0]), `Ese es el ${pide === 'max' ? 'mayor' : 'menor'} peso del ${NOMBRE[otra][0]}, no del ${NOMBRE[figura][0]}.`),
     ];
@@ -309,12 +314,13 @@
     const tt = 't';
     const lin = k => (R.coef[k] === 1 ? tt : `${R.coef[k]}${tt}`);
     const solucion = [
-      ['De la balanza 1: ', v('circulo', `${q} círculos`), ' = ', v('triangulo', `${p} triángulos`), `, así que un círculo pesa ${p} partes y un triángulo ${q} partes iguales: `, v('circulo', `círculo = ${lin('circulo')}`), ', ', v('triangulo', `triángulo = ${lin('triangulo')}`), ', con t entero (los pesos son enteros).'],
+      ['De la balanza 1: ', v('circulo', nf('circulo', q)), ' = ', v('triangulo', nf('triangulo', p)), `, así que un círculo pesa ${p} parte${p === 1 ? '' : 's'} y un triángulo ${q} parte${q === 1 ? '' : 's'} iguales: `, v('circulo', `círculo = ${lin('circulo')}`), ', ', v('triangulo', `triángulo = ${lin('triangulo')}`), ', con t entero (los pesos son enteros).'],
       ['De la balanza 2: ', v('cuadrado', `cuadrado = ${lin('cuadrado')}`), '.'],
       ...desq.map(z => [`Balanza ${bs.indexOf(z.b) + 1}: las figuras pesan ${z.K}t y la pesa ${z.W} kg; ${z.arriba ? `baja la pesa, así que ${z.K}t < ${z.W} y t < ${f(z.W / z.K)}` : `bajan las figuras, así que ${z.K}t > ${z.W} y t > ${f(z.W / z.K)}`}.`]),
       [`Con t entero: t va de ${R.t[0]} a ${R.t[1]}. El ${pide === 'max' ? 'mayor' : 'menor'} peso del `, v(figura, NOMBRE[figura][0]), ` es ${cF} × ${pide === 'max' ? R.t[1] : R.t[0]} = ${f(res)} kg.`],
     ];
     return cerrar(rng, semilla, { correcta: res, errores, enunciado, pregunta, solucion, variables: vars, datos, unidad: 'kg',
+      formato: y => Number.isInteger(y) ? `${f(y)} kg` : `unos ${f(y, 1)} kg`,
       figura: { svg: figuraBalanzas(bs, 'kg'), alt: altBalanzas(bs, 'kg') } });
   }
 
@@ -461,7 +467,9 @@
       const errores = [
         h('RMP39-un-platillo', unPlatillo, `Pusiste todas las pesas en el otro platillo (una por cada unidad de cada cifra). Con pesas en el platillo del arroz, que restan, se ahorran muchas.`),
         h('RMP2-complemento', complemento, `Pusiste una pesa de ${f(10 ** k, 0)} g y completaste con el resto (${f(compl, 0)} g) junto al arroz. Funciona, pero no es lo mínimo: conviene decidir cifra por cifra.`),
-        h('RMP39-cifra-por-cifra', cifraXcifra, 'Elegiste en cada cifra lo menor entre sumar o restar, pero restar en una cifra cambia la cifra de al lado (te llevas 1). Hay que contarlo.'),
+        h('RMP39-cifra-por-cifra', cifraXcifra, cifraXcifra > R.respuesta
+          ? 'Elegiste en cada cifra lo menor entre sumar o restar, sin contar lo que te llevas. Aquí lo que se lleva ayuda: la cifra siguiente sube y se resta con menos pesas.'
+          : 'Elegiste en cada cifra lo menor entre sumar o restar, pero restar en una cifra cambia la cifra de al lado (te llevas 1). Hay que contarlo.'),
         h('RMP2-una-de-mas', R.respuesta + 1, 'Encontraste una forma que funciona, pero hay otra con una pesa menos.'),
       ];
       const enunciado = ['Se quiere pesar ', v('Q', `${f(cantidad, 0)} g`), ' de arroz en una sola pesada con una balanza de dos platillos. Hay pesas de 1 g, 10 g, 100 g, 1 000 g y 10 000 g, tantas como se quiera de cada una, y se pueden poner pesas en los dos platillos: en el platillo del arroz o en el otro.'];

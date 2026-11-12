@@ -166,7 +166,7 @@
       "universidades": {"unmsm": {"temas": [12, 13]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": ["cortes-pesadas", "rm-cortes"],
+      "plantillas": ["cortes-pesadas", "rm-cortes", "rm-balanzas"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
