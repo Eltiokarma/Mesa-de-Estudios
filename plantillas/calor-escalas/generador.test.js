@@ -5,7 +5,7 @@ const assert = require('node:assert/strict');
 const gen = require('./generador.js');
 const casos = require('./casos.json');
 const papel = require('./papel.json');
-const { probarGenerador, topeEscala } = require('../../nucleo/probar-generador.js');
+const { probarGenerador, topeEscala, esTrampaDeUnidades } = require('../../nucleo/probar-generador.js');
 
 // Camino independiente: toda escala se trata como una recta que pasa por dos puntos fijos (hielo que se
 // derrite y agua que hierve), sin usar 1,8 ni 32; los cruces se buscan por bisección; la catarata se
@@ -114,7 +114,7 @@ test('la correcta no se reconoce por redonda: en el 80 % o más, ninguna incorre
     n++;
     const dc = decs(p.respuesta.valor);
     if (!p.alternativas.some(a => !a.correcta && decs(a.valor) > dc)) parejo++;
-    for (const a of p.alternativas.filter(x => !x.correcta)) assert.ok(decs(a.valor) <= Math.max(2, dc), `semilla ${s}: ${a.texto} con más de 2 decimales`);
+    for (const a of p.alternativas.filter(x => !x.correcta)) assert.ok(decs(a.valor) <= Math.max(esTrampaDeUnidades(a) ? 3 : 2, dc), `semilla ${s}: ${a.texto} con más de 2 decimales`);
   }
   assert.ok(parejo / n >= 0.8, `solo ${parejo} de ${n}`);
 });
@@ -127,9 +127,9 @@ test('sin distractores absurdos: escala, kelvin, «subió», mediodía, densidad
       assert.ok(r >= 1 / topeEscala(a) && r <= topeEscala(a), msg);
       if (p.respuesta.unidad === 'K') assert.ok(a.valor >= 0, msg);
       if (d.tipo === 'variacion') assert.ok(a.valor > 0, msg);
-      if (d.sub === 'tanque') assert.ok(a.valor <= 60, msg);
-      if (d.sub === 'densidad') assert.ok(a.valor >= 0.5 * d.rho0 && a.valor <= 1.5 * d.rho0, msg);
-      if (d.tipo === 'sudor') assert.ok(a.valor <= 5000, msg);
+      if (d.sub === 'tanque') if (!esTrampaDeUnidades(a)) assert.ok(a.valor <= 60, msg);
+      if (d.sub === 'densidad') if (!esTrampaDeUnidades(a)) assert.ok(a.valor >= 0.5 * d.rho0 && a.valor <= 1.5 * d.rho0, msg);
+      if (d.tipo === 'sudor') if (!esTrampaDeUnidades(a)) assert.ok(a.valor <= 5000, msg);
     }
   }
 });

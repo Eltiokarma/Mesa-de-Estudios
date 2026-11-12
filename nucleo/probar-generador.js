@@ -111,7 +111,7 @@ const topeEscala = (a, { tope = 20, topeUnidades = 1000 } = {}) => (esTrampaDeUn
 function dentroDeEscala(a, correcta, { tope = 20, topeUnidades = 1000 } = {}) {
   const r = Math.abs(a.valor) / Math.abs(correcta);
   const t = topeEscala(a, { tope, topeUnidades });
-  return r >= 1 / t && r <= t;
+  return r >= (1 / t) * (1 - 1e-9) && r <= t * (1 + 1e-9);
 }
 
 module.exports = { probarGenerador, probarFugas, medirFugas, distancia, dentroDeEscala, topeEscala, esTrampaDeUnidades, CODIGO_UNIDADES };

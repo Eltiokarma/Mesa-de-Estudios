@@ -8,7 +8,7 @@ const gen = require('./generador.js');
 const casos = require('./casos.json');
 const papel = require('./papel.json');
 const motor = require('../circuitos-cc/motor.js');
-const { probarGenerador } = require('../../nucleo/probar-generador.js');
+const { probarGenerador, esTrampaDeUnidades, dentroDeEscala } = require('../../nucleo/probar-generador.js');
 
 const SI = { mA: 1e-3, A: 1, s: 1, min: 60, h: 3600, J: 1, kJ: 1e3, mm: 1e-3, mm2: 1e-6 };
 function biseccion(g, a, b) {
@@ -109,7 +109,8 @@ test('las trampas de unidades aparecen: mA, minutos, diámetro, calorías y el c
     for (const a of p.alternativas) {
       if (a.error) ids.add(a.error.id);
     }
-    const vals = p.alternativas.map(a => a.valor);
+    const vals = p.alternativas.filter(a => !esTrampaDeUnidades(a)).map(a => a.valor);
+    for (const a of p.alternativas.filter(esTrampaDeUnidades)) assert.ok(dentroDeEscala(a, c), `semilla ${s}: ${a.texto} a más de 1000 veces de la correcta`);
     assert.ok(Math.max(...vals) / Math.min(...vals) < 60, `semilla ${s}: alternativas fuera de escala (${p.alternativas.map(a => a.texto)})`);
     const sci = p.alternativas.map(a => / × 10/.test(a.texto));
     assert.ok(sci.every(x => x === sci[0]), `semilla ${s}: notaciones mezcladas`);

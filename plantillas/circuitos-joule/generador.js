@@ -28,7 +28,8 @@
  *     duracion   n pilas ideales en serie alimentan un aparato de resistencia R y pueden mover
  *                una carga Q: cuántas horas duran
  *
- * Cada distractor queda entre 1/60 y 60 veces la correcta (60 deja pasar minutos por segundos), y
+ * Cada distractor queda entre 1/60 y 60 veces la correcta, salvo las trampas de unidades (U2, U5, U6), que
+ * llegan a 1000 veces (decisión de Gerson, 12 nov 2026; P.enEscala), y
  * todas las alternativas de un problema van en la misma notación.
  * Errores: U2, U5, U6, PR1, PR3, PR4 y PR6 de docs/investigacion/fisica-calculo-transversal-ideas-erroneas.md
  * (hipótesis, con sufijo: U2-mA, U6-min, PR6-diametro…); JO-*, RES-*, CAB-*, PI-no-suma-fem y PI-voltaje-como-corriente,
@@ -93,6 +94,8 @@
     let lo = o.correcta, hi = o.correcta;
     for (const e of o.errores) {
       if (!Number.isFinite(e.valor) || e.valor <= 0) continue;
+      // Las trampas de unidades (U2, U5, U6: minutos por segundos, mA por A) van aunque se salgan, hasta 1000 veces la correcta.
+      if (P.esUnidades(e.id)) { if (P.enEscala(e.valor, o.correcta, e.id)) errores.push(e); continue; }
       const nlo = Math.min(lo, e.valor), nhi = Math.max(hi, e.valor);
       if (nhi / nlo >= 60 * (1 - 1e-12)) continue;
       errores.push(e); lo = nlo; hi = nhi;

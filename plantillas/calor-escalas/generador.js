@@ -87,7 +87,11 @@
       // (entre 1/20 y 20 veces la correcta, y dentro del rango físico del problema si lo hay).
       const maxDec = Math.min(decs(o.correcta) <= 1 ? 1 : 2, dec);
       const errores = o.errores.filter(e => {
-        if (!Number.isFinite(e.valor) || (!o.negativos && e.valor <= 0) || decs(e.valor) > maxDec) return false;
+        if (!Number.isFinite(e.valor) || (!o.negativos && e.valor <= 0)) return false;
+        if (decs(e.valor) > (P.esUnidades(e.id) ? Math.max(3, maxDec) : maxDec)) return false; // una trampa de unidades corre la coma
+        // Las trampas de unidades (U2, U3, U5, U8: kJ por J, sumar 273 a una variación) van aunque se salgan
+        // de escala o del rango físico, hasta 1000 veces la correcta (decisión de Gerson, 12 nov 2026).
+        if (P.esUnidades(e.id)) return P.enEscala(e.valor, o.correcta, e.id);
         const r = Math.abs(e.valor) / Math.abs(o.correcta);
         if (!(r >= 1 / 20 && r <= 20)) return false;
         return !o.rango || (e.valor >= o.rango[0] && e.valor <= o.rango[1]);
@@ -97,6 +101,10 @@
       errores.sort((a, b) => (decs(a.valor) > dc) - (decs(b.valor) > dc));
       const parejas = errores.filter(e => decs(e.valor) <= dc);
       if (parejas.length >= 3) errores.splice(0, errores.length, ...parejas);
+      // Una trampa de unidades, si hay, va siempre entre las alternativas (decisión de Gerson, 12 nov 2026).
+      const iu = errores.findIndex(e => P.esUnidades(e.id)), iu0 = o.errores.findIndex(e => e && P.esUnidades(e.id) && !errores.includes(e) && decs(e.valor) <= 3 && P.enEscala(e.valor, o.correcta, e.id));
+      if (iu > 0) errores.unshift(...errores.splice(iu, 1));
+      else if (iu < 0 && iu0 >= 0) errores.unshift(o.errores[iu0]);
       alternativas = P.armar({ correcta: o.correcta, errores, rng, texto: txt, negativos: !!o.negativos });
       respuesta = { valor: o.correcta, unidad: o.unidad };
     }
@@ -498,7 +506,7 @@
         h('CE-calor-del-agua', M * ca * dT / Lv * 1000, 'Usaste el calor específico del agua (4200) para el cuerpo. El dato del cuerpo es 3500 J/(kg·°C).'),
         h('U8-fahrenheit', mg * 1.8, `Multiplicaste la variación por 1,8, como si la pasaras a Fahrenheit. El calor específico está por grado Celsius (o kelvin, que es lo mismo en una variación): ΔT = ${f(dT)} °C.`, TRV),
         pa('Q7-sin-latente', r1(Q / (ca * 63) * 1000), 'Calentaste el sudor de 37 °C a 100 °C con el calor específico, sin evaporarlo. Lo que enfría es el cambio de fase: el sudor se evapora a la temperatura de la piel y se lleva el calor latente.', CAL),
-        h('U8-kelvin', M * cc * (dT + 273) / Lv * 1000, `Pasaste la variación a kelvin sumando 273. Una variación de ${f(dT)} °C es una variación de ${f(dT)} K.`, TRV),
+        h('U8-kelvin', r1(M * cc * (dT + 273) / Lv * 1000), `Pasaste la variación a kelvin sumando 273. Una variación de ${f(dT)} °C es una variación de ${f(dT)} K.`, TRV),
         h('Q7-fusion', r1(Q / Lf * 1000), 'Usaste el calor latente de fusión del hielo. El sudor no se derrite: se evapora, con el calor latente de vaporización.'),
       ];
       const solucion = [['Calor que el cuerpo debe perder: ', v('Q', 'Q'), ' = ', v('M', 'M'), `·c·ΔT = ${f(M)} · 3500 · ${f(dT)} = ${f(Q)} J.`],
