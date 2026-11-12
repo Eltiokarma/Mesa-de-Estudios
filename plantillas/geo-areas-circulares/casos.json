@@ -2,7 +2,7 @@
   "plantilla": "geo-areas-circulares",
   "tolerancia": 0.000001,
   "nota": "Respuestas exactas q + p·π; «respuesta» es su valor numérico. Ver la cabecera de generador.js para el significado de cada campo de «entrada».",
-  "verificacion": "",
+  "verificacion": "Verificador independiente (subagente, 12 nov 2026, tercera vuelta tras la revisión): los 24 casos resueltos desde el enunciado con q + pπ exactos (fracciones), áreas sombreadas comprobadas por conteo en rejilla, cicloides por integración numérica y cuadrantes y hexágono por fuerza bruta sobre R. Coinciden los 24 en respuesta y en la clave exacta (también las de factor común); ningún enunciado ambiguo.",
   "casos": [
     {
       "semilla": "entrada-1",
