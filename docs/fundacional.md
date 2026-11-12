@@ -144,7 +144,7 @@ Los libros, manuales y exámenes que se suban sirven para saber **qué** se ense
 | --- | --- | --- |
 | Manuales de academias (Lumbreras, cepres, separatas) | Mapear temas, estilos de pregunta y errores frecuentes | Copiar sus problemas, soluciones, gráficos o teoría en una app de pago |
 | Libros de texto | Consultar la teoría y verificar fórmulas | Reproducir párrafos, figuras o listas de ejercicios |
-| Exámenes de admisión publicados por las universidades | Clasificar preguntas por plantilla y medir cobertura; inspirar problemas propios del mismo tipo | Publicarlos tal cual sin revisar antes cómo los licencia cada universidad |
+| Exámenes de admisión publicados por las universidades | Clasificar preguntas por plantilla y medir cobertura; inspirar problemas propios del mismo tipo; usar sus preguntas tal cual como ejercicios, citando universidad y periodo (decisión de Gerson, 12 nov 2026: son públicos y estatales) | Copiar la solución o la figura de un solucionario de academia; copiar los textos de lectura, que suelen ser fragmentos de autores con derechos propios |
 | Problemas propios | Todo: guía, explorador, papel, casos de prueba | — |
 
 **Regla práctica:** un problema propio cambia el contexto, los números y la pregunta respecto al original, y se verifica con el motor de la plantilla antes de publicarse.
