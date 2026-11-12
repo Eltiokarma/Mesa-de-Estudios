@@ -96,20 +96,30 @@
   // ================= media: rapidez media de un viaje en tramos =================
   const VAR_MEDIA = { v1: { nombre: 'rapidez del primer tramo', color: 'o' }, v2: { nombre: 'rapidez del segundo tramo', color: 'i' },
     t: { nombre: 'tiempos de cada tramo', color: 'h' }, x: { nombre: 'rapidez media', color: 'd' } };
-  const VIAJES = [['Una combi va de Juliaca a Puno', 'la combi'], ['Un ciclista va de su casa a la chacra', 'el ciclista'],
-    ['Un bus interprovincial va de Arequipa a Camaná', 'el bus'], ['Una mototaxi va del mercado al paradero', 'la mototaxi']];
+  // [quién, distancia mínima y máxima del viaje en km, rapidez máxima creíble en km/h]
+  const VIAJES = [['Una combi va de Juliaca a Puno', 'la combi', 38, 50, 90], ['Un ciclista va de su casa a la chacra', 'el ciclista', 2, 25, 36],
+    ['Un bus interprovincial va de Arequipa a Camaná', 'el bus', 150, 190, 90], ['Una mototaxi va del mercado al paradero', 'la mototaxi', 1, 8, 40],
+    ['Un camión va de Cusco a Sicuani', 'el camión', 120, 150, 80], ['Un auto va de Lima a Huacho', 'el auto', 135, 160, 100],
+    ['Una combi va de Puno a Chucuito', 'la combi', 15, 22, 72], ['Un ciclista entrena por una carretera', 'el ciclista', 5, 80, 45],
+    ['Un bus recorre una carretera de la sierra', 'el bus', 20, 300, 90]];
+  // Un viaje creíble para esa distancia (o sin distancia) y esas rapideces; null si no hay.
+  function viaje(rng, D, vs) {
+    const ok = VIAJES.filter(([, , a, b, vmax]) => Math.max(...vs) <= vmax && (D === null || (D >= a && D <= b)));
+    return ok.length ? rng.elegir(ok) : null;
+  }
 
   function media(rng, semilla, sub) {
-    const [Quien, quien] = rng.elegir(VIAJES);
-    const RAP = [12, 15, 18, 20, 24, 30, 36, 40, 45, 48, 50, 60, 72, 80, 90];
+    const RAP = [10, 12, 14, 15, 16, 18, 20, 21, 24, 25, 28, 30, 32, 35, 36, 40, 42, 45, 48, 50, 54, 56, 60, 63, 64, 70, 72, 75, 80, 84, 90, 96];
     if (sub === 'distancia') {
       const v1 = rng.elegir(RAP), v2 = rng.elegir(RAP);
       if (v1 === v2) return null;
       const correcta = 2 * v1 * v2 / (v1 + v2);
       if (!Number.isInteger(correcta)) return null;
-      const D = rng.elegir([2, 4, 6]) * v1 * v2 / (v1 + v2) * rng.elegir([1, 2]);
-      if (!Number.isInteger(D) || D > 400) return null;
+      const vj = viaje(rng, null, [v1, v2]);
+      if (!vj) return null;
+      const [Quien, quien, Dmin, Dmax] = vj, D = 2 * rng.entero(Math.ceil(Dmin / 2), Math.floor(Dmax / 2));
       const t1 = D / 2 / v1, t2 = D / 2 / v2;
+      if (!limpio(t1) || !limpio(t2)) return null;
       const enunciado = [`${Quien}, que están a ${f(D)} km. La primera mitad del camino la hace a `, v('v1', `${f(v1)} km/h`),
         ' y la segunda mitad a ', v('v2', `${f(v2)} km/h`), '.'];
       const pregunta = ['¿Cuál es su ', v('x', 'rapidez media'), ' en todo el viaje?'];
@@ -128,8 +138,11 @@
         datos: { tipo: 'media', sub, v1, v2, D } });
     }
     if (sub === 'tiempo') {
-      const v1 = rng.elegir(RAP), v2 = rng.elegir(RAP), T = rng.elegir([1, 2, 3, 4]);
+      const v1 = rng.elegir(RAP), v2 = rng.elegir(RAP), T = rng.elegir([0.5, 1, 1.5, 2, 2.5, 3, 4]);
       if (v1 === v2) return null;
+      const vj = viaje(rng, (v1 + v2) * T / 2, [v1, v2]);
+      if (!vj) return null;
+      const [Quien] = vj;
       const correcta = (v1 + v2) / 2;
       if (!limpio(correcta, 1)) return null;
       const enunciado = [`${Quien}. Viaja ${f(T)} h en total: la primera mitad del tiempo va a `, v('v1', `${f(v1)} km/h`), ' y la otra mitad del tiempo a ', v('v2', `${f(v2)} km/h`), '.'];
@@ -156,6 +169,9 @@
       if (!limpio(d1) || !limpio(d2)) return null;
       const correcta = (d1 + d2) / T;
       if (!limpio(correcta, 1)) return null;
+      const vj = viaje(rng, d1 + d2, [v1, v2]);
+      if (!vj) return null;
+      const [Quien] = vj;
       const enunciado = [`${Quien}. Primero va `, v('t', `${t1} min`), ' a ', v('v1', `${f(v1)} km/h`),
         tp ? [', se detiene ', v('t', `${tp} min`), ' en un paradero'] : '', ' y luego va ', v('t', `${t2} min`), ' a ', v('v2', `${f(v2)} km/h`), ' hasta llegar.'].flat();
       const pregunta = ['¿Cuál es su ', v('x', 'rapidez media'), ' en todo el viaje?'];
@@ -182,7 +198,10 @@
     const v1 = rng.elegir(RAP), v2 = rng.elegir(RAP), v3 = rng.elegir(RAP);
     if (v2 === v3 || v1 === v2 || v1 === v3) return null;
     const u = (v2 + v3) / 2, correcta = 2 * v1 * u / (v1 + u);
-    if (!Number.isInteger(u) || !Number.isInteger(correcta)) return null;
+    if (!limpio(u, 1) || !limpio(correcta, 1)) return null;
+    const vj = viaje(rng, null, [v1, v2, v3]);
+    if (!vj) return null;
+    const [Quien] = vj;
     const u2 = 2 * v2 * v3 / (v2 + v3);
     const VAR = { ...VAR_MEDIA, v3: { nombre: 'rapideces de la segunda mitad', color: 'h' } };
     const enunciado = [`${Quien}. La primera mitad del camino la hace a `, v('v1', `${f(v1)} km/h`), '. En la otra mitad, la mitad del tiempo va a ',
@@ -252,9 +271,9 @@
 
   // ================= vt: tiempo mínimo con tramos acelerado y frenado =================
   const VAR_VT = { d: { nombre: 'distancia', color: 'o' }, a: { nombre: 'aceleraciones', color: 'i' }, t: { nombre: 'tiempo o rapidez tope', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
-  const ACEL = [0.5, 1, 1.5, 2, 2.5, 3, 4, 5];
+  const ACEL = [0.4, 0.5, 0.6, 0.8, 1, 1.2, 1.5, 2, 2.5, 3, 4, 5];
   function graficaVT(rng, semilla, sub) {
-    const [Quien, quien] = rng.elegir([['Un tren', 'el tren'], ['Un metro de Lima', 'el metro'], ['Un auto de carreras', 'el auto']]);
+    const [Quien, quien] = rng.elegir([['Un tren', 'el tren'], ['Un metro de Lima', 'el metro'], ['Un bus del Metropolitano', 'el bus']]);
     if (sub === 'vmax') {
       const vm = rng.entero(5, 30), t = rng.elegir([20, 24, 30, 36, 40, 50, 60, 80, 100]);
       const d = vm * t / 2;
@@ -276,7 +295,7 @@
     }
     const a = rng.elegir(ACEL), b = rng.elegir(ACEL);
     if (sub === 'tmin') {
-      const vm = rng.elegir([6, 8, 10, 12, 15, 18, 20, 24, 30]);
+      const vm = rng.entero(4, 30);
       const ta = vm / a, tb = vm / b, d = vm * (ta + tb) / 2, correcta = ta + tb;
       if (!Number.isInteger(d) || !limpio(correcta, 1) || d > 2000) return null;
       const enunciado = [`${Quien} debe ir de una estación a otra, a `, v('d', `${d} m`), ', partiendo del reposo y llegando en reposo. Puede acelerar como máximo a ',
@@ -287,6 +306,7 @@
         a !== b ? h('VT-mitad-camino', Math.sqrt(d / a) + Math.sqrt(d / b), `Supusiste que cambia de acelerar a frenar en la mitad del camino. Eso solo pasa si a y frenado son iguales; aquí frena con otra aceleración, y el punto de cambio se corre.`) : null,
         h('VT-todo-a-vmax', d / vm, `Dividiste ${d} m entre la rapidez máxima (${f(vm)} m/s), como si fuera siempre a esa rapidez. Va acelerando y frenando: su rapidez media es la mitad de la máxima.`),
         h('VT-un-tramo', ta, `Ese es solo el tiempo en que acelera. Falta el tiempo de frenado: ${f(vm)}/${f(b)} = ${f(tb)} s.`),
+        a !== b ? h('VT-un-tramo', tb, `Ese es solo el tiempo en que frena. Falta el tiempo en que acelera: ${f(vm)}/${f(a)} = ${f(ta)} s.`) : null,
       ].filter(Boolean);
       const solucion = [
         ['El tiempo mínimo se logra acelerando al máximo y frenando al máximo, sin tramo plano: la gráfica v-t es un triángulo.'],
@@ -297,7 +317,7 @@
         datos: { tipo: 'vt', sub, d, a, b } });
     }
     // tope
-    const vt = rng.elegir([6, 8, 10, 12, 15, 20]);
+    const vt = rng.entero(5, 20);
     const ta = vt / a, tb = vt / b, dab = vt * (ta + tb) / 2;
     const d = Math.round(dab + vt * rng.entero(2, 20) * rng.elegir([1, 2, 5]));
     const tc = (d - dab) / vt, correcta = ta + tc + tb;
@@ -384,7 +404,7 @@
       const errores = [
         h('MRUV-posicion-por-desplazamiento', T(t2), `Ese es x(${t2}), la posición final. El desplazamiento es posición final menos inicial: x(${t2}) − x(${t1}).`, TRA),
         h('MRUV-desde-cero', T(t2) - a, `Restaste x0 = ${f(a)} m, la posición en t = 0. El intervalo empieza en t = ${t1} s: hay que restar x(${t1}).`),
-        pa('K4-delta-t-contra-t', T(dt) - a, `Reemplazaste la duración (${dt} s) en la ecuación, como si empezara en t = 0. En t = ${t1} s ya va a otra velocidad.`),
+        h('K4-delta-t-contra-t', T(dt) - a, `Reemplazaste la duración (${dt} s) en la ecuación, como si empezara en t = 0. En t = ${t1} s ya va a otra velocidad.`),
         h('PR3-coeficiente-como-a', b * dt + c / 2 * (t2 * t2 - t1 * t1), 'Tomaste el coeficiente de t² como a y lo volviste a dividir entre 2. En la ecuación dada ese coeficiente ya es a/2.', TRV),
       ];
       const solucion = [
@@ -395,7 +415,7 @@
         pregunta: [`¿Cuál es su `, v('x', 'desplazamiento'), ` entre t = ${t1} s y t = ${t2} s?`], solucion, datos: { tipo: 'ecuacion', sub, coef: [a, b, c], t1, t2 } });
     }
     if (sub === 'parada') {
-      const k = rng.elegir([0.5, 1, 1.5, 2]), tp = rng.elegir([1, 1.5, 2, 2.5, 3, 4, 5, 6]), a = rng.entero(-10, 20);
+      const k = rng.elegir([0.5, 1, 1.5, 2, 2.5, 3, 4]), tp = rng.elegir([1, 1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 8]), a = rng.entero(-20, 40);
       const c = -k, b = 2 * k * tp; // v = b + 2c·t se anula en tp
       if (!limpio(b)) return null;
       const correcta = tp;
@@ -404,6 +424,7 @@
       const errores = [
         h('PR3-coeficiente-como-a', b / k, `Tomaste el coeficiente de t² como la aceleración. Ese coeficiente es a/2: a = ${f(2 * c)} m/s², y t = −v0/a = ${f(b)}/${f(2 * k)}.`, TRV),
         h('MRUV-despeje-al-reves', 2 * k / b, 'Despejaste al revés: de v0 + a·t = 0 sale t = −v0/a.'),
+        h('MRUV-v0-entre-2a', tp / 2, `Dividiste v0 entre 2·a, como en la fórmula de la altura máxima. El instante en que se detiene sale de v0 + a·t = 0: t = −v0/a.`),
         disc >= 0 ? pa('G2-cero-de-x', raiz, `En ese instante x = 0: ${obj} pasa por el origen, pero no se detiene. Se detiene cuando la pendiente de x-t es cero: v = 0.`) : null,
       ].filter(Boolean);
       const solucion = [
@@ -414,7 +435,7 @@
         pregunta: [`¿En qué instante se detiene ${obj} por un momento?`], solucion, datos: { tipo: 'ecuacion', sub, coef: [a, b, c] } });
     }
     // origen: x = c(t − r)(t + s), con r > 0 y s > 0 (una sola raíz positiva)
-    const c = rng.elegir([0.5, 1, 2, 2.5]), r = rng.entero(2, 10), s = rng.entero(1, 8);
+    const c = rng.elegir([0.5, 1, 1.5, 2, 2.5, 3, 4, 5]), r = rng.entero(1, 12), s = rng.entero(1, 12);
     if (r === s) return null;
     const a = -c * r * s, b = c * (s - r);
     if (!limpio(a) || !limpio(b) || b === 0) return null;
@@ -422,7 +443,8 @@
     const errores = [
       h('MRUV-sin-t2', -a / b, `Despejaste x0 + v0·t = 0, sin el término en t². ${obj[0].toUpperCase() + obj.slice(1)} acelera: hay que resolver la ecuación de segundo grado completa.`),
       h('MRUV-raiz-negativa', s, `${s} s sale de la raíz negativa, t = −${s} s, tomada sin signo. Un instante negativo es antes de empezar: no sirve.`),
-      h('MRUV-vertice-por-raiz', Math.abs(b / (2 * c)), 'Ese es el instante en que la velocidad se anula (el vértice de la parábola). Pasar por el origen es x = 0, no v = 0.'),
+      r > s ? h('MRUV-vertice-por-raiz', (r - s) / 2, 'Ese es el instante en que la velocidad se anula (el vértice de la parábola). Pasar por el origen es x = 0, no v = 0.')
+        : h('MRUV-vertice-por-raiz', (s - r) / 2, `Calculaste −v0/(2·c) y le quitaste el signo. Con esa cuenta se busca cuándo v = 0, pero da t = −${f((s - r) / 2)} s: el vértice de la parábola cae antes de empezar, y además pasar por el origen es x = 0, no v = 0.`),
       h('MRUV-sin-lineal', Math.sqrt(r * s), `Resolviste sin el término en t, como si fuera x0 + (coeficiente)·t² = 0. Los tres términos cuentan: hay que resolver la ecuación completa.`),
     ];
     const solucion = [
@@ -453,7 +475,7 @@
     const enun = (x0, vx, y0, vy) => ['Una piedra se lanza en un plano vertical. Sus coordenadas son ', ...lin(x0, vx, 'x', 'vx', 'g', false), ' y ', ...lin(y0, vy, 'y', 'vy', 'g', true),
       ', con x e y en m y t en s (y hacia arriba; el término en t² viene de g = 10 m/s²).'];
     if (sub === 'distancia') {
-      const [Xt, Yt, Rt] = rng.elegir(TRIPLES), t = rng.entero(1, 3), vx = rng.entero(2, 12), vy = rng.entero(5, 25);
+      const [Xt, Yt, Rt] = rng.elegir(TRIPLES), t = rng.entero(1, 4), vx = rng.entero(1, 15), vy = rng.entero(5, 30);
       const x0 = Xt - vx * t, y0 = Yt - vy * t + 5 * t * t;
       if (y0 < 0) return null;
       const correcta = Rt;
@@ -474,7 +496,7 @@
       const [vx, vyt, R] = rng.elegir(TRIPLES), t = rng.entero(1, 4), sube = rng.moneda();
       const vyNow = sube ? vyt : -vyt, vy = vyNow + 10 * t;
       if (vy <= 0) return null;
-      const x0 = rng.entero(0, 10), y0 = rng.elegir([0, 0, 5, 10, 20]);
+      const x0 = rng.entero(0, 20), y0 = rng.elegir([0, 0, 5, 10, 15, 20, 30]);
       const errores = [
         h('XY-suma-coordenadas', vx + vyt, `Sumaste las componentes: ${vx} + ${vyt}. La rapidez es la hipotenusa: √(vx² + vy²).`, TRA),
         h('XY-velocidad-inicial', Math.hypot(vx, vy), `Esa es la rapidez del inicio. vy cambia: en t = ${t} s vale ${f(vy)} − 10·${t} = ${f(vyNow)} m/s.`),
@@ -525,6 +547,9 @@
   const VAR_LAT = { R: { nombre: 'radio de la Tierra', color: 'o' }, lam: { nombre: 'latitud', color: 'i' }, r: { nombre: 'radio de giro', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
   const LUGARES = [
     { nombre: 'Juliaca', texto: 'Juliaca, a unos 16° de latitud sur (toma cos 16° = 24/25 y sen 16° = 7/25)', lat: 16, cos: 24 / 25, sen: 7 / 25 },
+    { nombre: 'Arequipa', texto: 'Arequipa, a unos 16° de latitud sur (toma cos 16° = 24/25 y sen 16° = 7/25)', lat: 16, cos: 24 / 25, sen: 7 / 25 },
+    { nombre: 'el Cusco', texto: 'el Cusco, a unos 14° de latitud sur (toma cos 14° = 0,97 y sen 14° = 0,24)', lat: 14, cos: 0.97, sen: 0.24 },
+    { nombre: 'Tacna', texto: 'Tacna, a unos 18° de latitud sur (toma cos 18° = 0,95 y sen 18° = 0,31)', lat: 18, cos: 0.95, sen: 0.31 },
     { nombre: 'Lima', texto: 'Lima, a unos 12° de latitud sur (toma cos 12° = 0,98 y sen 12° = 0,2)', lat: 12, cos: 0.98, sen: 0.2 },
     { nombre: 'un punto del ecuador', texto: 'un punto del ecuador (latitud 0°)', lat: 0, cos: 1, sen: 0 },
     { nombre: 'una ciudad a 37° de latitud norte', texto: 'una ciudad a 37° de latitud norte (toma cos 37° = 4/5 y sen 37° = 3/5)', lat: 37, cos: 0.8, sen: 0.6 },
@@ -547,7 +572,7 @@
         ['Su distancia al eje es ', v('r', 'r'), ' = ', v('R', 'R'), '·cos ', v('lam', 'λ'), ` = ${f(R)}·${f(L.cos)} = `, v('x', `${f(r)} km`), '.'],
       ];
       return cerrar(rng, semilla, { correcta: r, errores, texto: con('km'), unidad: 'km', variables: VAR_LAT, enunciado,
-        pregunta: ['¿Cuál es el ', v('x', 'radio de la circunferencia'), ' que describe ese lugar por la rotación de la Tierra?'], solucion, datos: { tipo: 'latitud', sub, lat: L.lat } });
+        pregunta: ['¿Cuál es el ', v('x', 'radio de la circunferencia'), ' que describe ese lugar por la rotación de la Tierra?'], solucion, datos: { tipo: 'latitud', sub, lat: L.lat, lugar: L.nombre } });
     }
     const correcta = 2 * 3 * r / 24;
     const errores = [
@@ -562,7 +587,7 @@
       ['Todos los lugares giran con la misma velocidad angular; la rapidez lineal es mayor en el ecuador porque ahí el radio de giro es el mayor.'],
     ];
     return cerrar(rng, semilla, { correcta, errores, texto: con('km/h'), unidad: 'km/h', variables: VAR_LAT, enunciado,
-      pregunta: ['¿Con qué ', v('x', 'rapidez lineal'), ` se mueve ${L.nombre} por la rotación de la Tierra?`], solucion, datos: { tipo: 'latitud', sub, lat: L.lat } });
+      pregunta: ['¿Con qué ', v('x', 'rapidez lineal'), ` se mueve ${L.nombre} por la rotación de la Tierra?`], solucion, datos: { tipo: 'latitud', sub, lat: L.lat, lugar: L.nombre } });
   }
 
   return { id: 'cinematica-medias', titulo: 'El viaje en tramos', generar };

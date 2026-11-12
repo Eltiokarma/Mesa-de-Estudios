@@ -1,22 +1,21 @@
 {
   "plantilla": "velocidad-relativa",
   "tolerancia": 1e-06,
-  "nota": "Velocidades con signo donde el enunciado da sentidos (vB < 0: va al sur u oeste; v2 < 0 en cruce: va hacia el otro). Bote: u respecto al agua, c corriente, W ancho, d > 0 río abajo; la respuesta de «angulo» y «linea» es la clave de la proa (grados desde la perpendicular y lado). Botes: M bote con tripulante, m cada saco, u rapidez del saco respecto al bote ya en movimiento.",
-  "verificacion": "PENDIENTE",
+  "nota": "Velocidades con signo donde el enunciado da sentidos (vB < 0: va al sur u oeste; v2 < 0 en cruce: va hacia el otro). Bote: u respecto al agua, c corriente, W ancho, d > 0 río abajo; la respuesta de «angulo» y «linea» es la clave de la proa (grados desde la perpendicular y lado). Botes: M (o MB, el del centro en «tres») bote con tripulante, m cada saco, u rapidez del saco respecto al bote ya en movimiento; en «tres», MA y MC reciben los sacos y cual dice qué bote se pregunta.",
+  "verificacion": "Verificación a ciegas (subagente verificador, 12 nov 2026): 46 problemas (16 de casos + 30 semillas 300-329) resueltos aparte: rumbo de la proa con las dos raíces comprobadas, ida y vuelta relativas y cantidad de movimiento paso a paso en los botes, sin ver generador ni claves: 46/46 coinciden. Barrido de 4000 semillas limpio. El subtipo de tres botes, agregado tras la revisión, lo recalculó el constructor aparte.",
   "casos": [
     {
       "semilla": 0,
       "entrada": {
-        "tipo": "bote",
-        "sub": "linea",
-        "u": 4,
-        "c": 4,
-        "W": 96,
-        "d": 128
+        "tipo": "botes",
+        "sub": "lanza",
+        "M": 180,
+        "m": 12,
+        "u": 12
       },
       "esperado": {
-        "respuesta": "proa:16:abajo",
-        "exacta": "16° río abajo de la perpendicular"
+        "respuesta": 0.75,
+        "exacta": "0,75 m/s"
       }
     },
     {
@@ -33,60 +32,49 @@
       }
     },
     {
-      "semilla": 2,
-      "entrada": {
-        "tipo": "cruce",
-        "sub": "encuentro",
-        "v1": 24,
-        "v2": -6,
-        "D": 360
-      },
-      "esperado": {
-        "respuesta": 12.0,
-        "exacta": "12 s"
-      }
-    },
-    {
       "semilla": 4,
       "entrada": {
         "tipo": "botes",
-        "sub": "recibe",
-        "M": 140,
-        "m": 20,
-        "u": 2,
-        "M2": 80
+        "sub": "tres",
+        "MA": 120,
+        "MB": 120,
+        "MC": 170,
+        "m": 30,
+        "u": 12,
+        "cual": "C"
       },
       "esperado": {
-        "respuesta": 0.35,
-        "exacta": "0,35 m/s"
+        "respuesta": 1.74,
+        "exacta": "1,74 m/s"
       }
     },
     {
       "semilla": 5,
       "entrada": {
         "tipo": "bote",
-        "sub": "tmin",
-        "u": 8,
-        "c": 6,
-        "W": 36
+        "sub": "deriva",
+        "u": 2.4,
+        "c": 1,
+        "W": 60
       },
       "esperado": {
-        "respuesta": 4.5,
-        "exacta": "4,5 s"
+        "respuesta": 25.0,
+        "exacta": "25 m"
       }
     },
     {
-      "semilla": 7,
+      "semilla": 6,
       "entrada": {
         "tipo": "bote",
-        "sub": "deriva",
-        "u": 4,
-        "c": 3,
-        "W": 96
+        "sub": "linea",
+        "u": 5,
+        "c": 1,
+        "W": 60,
+        "d": 60
       },
       "esperado": {
-        "respuesta": 72.0,
-        "exacta": "72 m"
+        "respuesta": "proa:37:abajo",
+        "exacta": "37° río abajo de la perpendicular"
       }
     },
     {
@@ -94,37 +82,66 @@
       "entrada": {
         "tipo": "idavuelta",
         "sub": "tren",
-        "u": 2.5,
+        "u": 2,
         "V": 10,
-        "L": 15
+        "L": 30
       },
       "esperado": {
-        "respuesta": 12.0,
-        "exacta": "12 s"
+        "respuesta": 30.0,
+        "exacta": "30 s"
       }
     },
     {
       "semilla": 9,
       "entrada": {
-        "tipo": "idavuelta",
-        "sub": "nadador",
-        "V": 1.5,
-        "L": 20,
-        "T": 25
+        "tipo": "cruce",
+        "sub": "encuentro",
+        "v1": 18,
+        "v2": -22,
+        "D": 360
       },
       "esperado": {
-        "respuesta": 2.5,
-        "exacta": "2,5 m/s"
+        "respuesta": 9.0,
+        "exacta": "9 s"
       }
     },
     {
       "semilla": 11,
       "entrada": {
         "tipo": "bote",
+        "sub": "tmin",
+        "u": 2,
+        "c": 1.5,
+        "W": 288
+      },
+      "esperado": {
+        "respuesta": 144.0,
+        "exacta": "144 s"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "botes",
+        "sub": "recibe",
+        "M": 90,
+        "m": 10,
+        "u": 12,
+        "M2": 190
+      },
+      "esperado": {
+        "respuesta": 0.54,
+        "exacta": "0,54 m/s"
+      }
+    },
+    {
+      "semilla": 21,
+      "entrada": {
+        "tipo": "bote",
         "sub": "angulo",
-        "u": 8,
-        "c": 4,
-        "W": 100
+        "u": 7,
+        "c": 3.5,
+        "W": 110
       },
       "esperado": {
         "respuesta": "proa:30:arriba",
@@ -132,102 +149,88 @@
       }
     },
     {
-      "semilla": 12,
+      "semilla": 27,
       "entrada": {
         "tipo": "botes",
-        "sub": "objeto",
-        "M": 90,
-        "m": 10,
-        "u": 6
+        "sub": "dos",
+        "M": 120,
+        "m": 40,
+        "u": 4
       },
       "esperado": {
-        "respuesta": 5.4,
-        "exacta": "5,4 m/s"
-      }
-    },
-    {
-      "semilla": 20,
-      "entrada": {
-        "tipo": "botes",
-        "sub": "lanza",
-        "M": 90,
-        "m": 30,
-        "u": 10
-      },
-      "esperado": {
-        "respuesta": 2.5,
-        "exacta": "2,5 m/s"
-      }
-    },
-    {
-      "semilla": 21,
-      "entrada": {
-        "tipo": "bote",
-        "sub": "recto",
-        "u": 10,
-        "c": 6,
-        "W": 80
-      },
-      "esperado": {
-        "respuesta": 10.0,
-        "exacta": "10 s"
+        "respuesta": 0.2,
+        "exacta": "0,2 m/s"
       }
     },
     {
       "semilla": 28,
       "entrada": {
-        "tipo": "marco",
-        "sub": "placas",
-        "vA": 2,
-        "vB": 3,
-        "N": 2000
-      },
-      "esperado": {
-        "respuesta": 20.0,
-        "exacta": "20 m"
-      }
-    },
-    {
-      "semilla": 38,
-      "entrada": {
-        "tipo": "botes",
-        "sub": "dos",
-        "M": 90,
-        "m": 30,
-        "u": 2
-      },
-      "esperado": {
-        "respuesta": 0.1,
-        "exacta": "0,1 m/s"
-      }
-    },
-    {
-      "semilla": 43,
-      "entrada": {
         "tipo": "idavuelta",
         "sub": "columna",
-        "u": 5,
-        "V": 3,
-        "L": 100
+        "u": 6,
+        "V": 1,
+        "L": 70
       },
       "esperado": {
-        "respuesta": 62.5,
-        "exacta": "62,5 s"
+        "respuesta": 24.0,
+        "exacta": "24 s"
       }
     },
     {
-      "semilla": 67,
+      "semilla": 33,
+      "entrada": {
+        "tipo": "idavuelta",
+        "sub": "nadador",
+        "V": 1.5,
+        "L": 11,
+        "T": 5.5
+      },
+      "esperado": {
+        "respuesta": 4.5,
+        "exacta": "4,5 m/s"
+      }
+    },
+    {
+      "semilla": 35,
       "entrada": {
         "tipo": "cruce",
         "sub": "trenes",
-        "v1": 10,
-        "v2": -5,
-        "L1": 180,
-        "L2": 120
+        "v1": 20,
+        "v2": 19,
+        "L1": 120,
+        "L2": 60
       },
       "esperado": {
-        "respuesta": 20.0,
-        "exacta": "20 s"
+        "respuesta": 180.0,
+        "exacta": "180 s"
+      }
+    },
+    {
+      "semilla": 37,
+      "entrada": {
+        "tipo": "marco",
+        "sub": "placas",
+        "vA": 3,
+        "vB": -8,
+        "N": 1000
+      },
+      "esperado": {
+        "respuesta": 110.0,
+        "exacta": "110 m"
+      }
+    },
+    {
+      "semilla": 58,
+      "entrada": {
+        "tipo": "bote",
+        "sub": "recto",
+        "u": 2.5,
+        "c": 1.5,
+        "W": 340
+      },
+      "esperado": {
+        "respuesta": 170.0,
+        "exacta": "170 s"
       }
     }
   ]

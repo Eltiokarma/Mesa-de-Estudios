@@ -26,6 +26,8 @@
  *             objeto      la rapidez del saco respecto al agua
  *             recibe      otro bote en reposo recibe el saco: su rapidez final
  *             dos         el mismo bote lanza dos sacos, uno a cada lado y uno tras otro: su rapidez final
+ *             tres        tres botes en fila: el del centro lanza un saco al de la izquierda y luego otro al de
+ *                         la derecha; la rapidez final del bote de un extremo (paso a paso)
  *
  * Convenciones: rapideces del bote «respecto al agua»; la del saco «respecto al bote» se mide con el bote ya
  * en movimiento (después del lanzamiento). Ángulos de la proa medidos desde la perpendicular a la orilla,
@@ -54,7 +56,7 @@
 
   const TIPOS = [['marco', 'combis'], ['marco', 'combis'], ['marco', 'placas'], ['idavuelta', 'columna'], ['idavuelta', 'tren'], ['idavuelta', 'nadador'],
     ['cruce', 'encuentro'], ['cruce', 'alcance'], ['cruce', 'trenes'], ['bote', 'recto'], ['bote', 'angulo'], ['bote', 'tmin'], ['bote', 'deriva'],
-    ['bote', 'resultante'], ['bote', 'linea'], ['bote', 'linea'], ['botes', 'lanza'], ['botes', 'objeto'], ['botes', 'recibe'], ['botes', 'dos']];
+    ['bote', 'resultante'], ['bote', 'linea'], ['bote', 'linea'], ['botes', 'lanza'], ['botes', 'objeto'], ['botes', 'recibe'], ['botes', 'dos'], ['botes', 'tres'], ['botes', 'tres']];
 
   function generar(semilla) {
     const rng = Azar.crear('velocidad-relativa|' + semilla);
@@ -97,7 +99,7 @@
   const VAR_M = { a: { nombre: 'velocidad del móvil observado', color: 'o' }, b: { nombre: 'velocidad del observador', color: 'i' }, t: { nombre: 'tiempo', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
   function marco(rng, semilla, sub) {
     if (sub === 'combis') {
-      const vA = rng.elegir([36, 54, 72, 90, 108]), vB = rng.elegir([18, 36, 54, 72, 90]), mismo = rng.moneda();
+      const vA = 9 * rng.entero(3, 12), vB = 9 * rng.entero(2, 10), mismo = rng.moneda();
       if (vA === vB) return null;
       const rel = mismo ? Math.abs(vA - vB) : vA + vB, correcta = rel / 3.6, otra = mismo ? vA + vB : Math.abs(vA - vB);
       const enunciado = ['Por la avenida Circunvalación de Juliaca, en carriles rectos y paralelos, la combi A va a ', v('a', `${vA} km/h`), ' y la combi B a ', v('b', `${vB} km/h`),
@@ -118,7 +120,7 @@
         datos: { tipo: 'marco', sub, vA, vB: mismo ? vB : -vB } });
     }
     // placas: velocidades respecto a la placa M (con signo: + al este)
-    const vA = rng.entero(1, 9), vBm = rng.entero(1, 9), mismo = rng.moneda(), N = rng.elegir([1000, 2000, 5000, 10000]);
+    const vA = rng.entero(1, 12), vBm = rng.entero(1, 12), mismo = rng.moneda(), N = rng.elegir([500, 1000, 2000, 3000, 5000, 10000, 20000]);
     if (vA === vBm) return null;
     const vB = mismo ? vBm : -vBm, rel = Math.abs(vA - vB), correcta = rel * N / 100;
     const enunciado = ['Tomando como referencia la placa tectónica M, la placa A se mueve hacia el este a ', v('a', `${vA} cm/año`), ' y la placa B se mueve hacia el ',
@@ -142,7 +144,7 @@
   const VAR_IV = { u: { nombre: 'rapidez de quien va y vuelve', color: 'o' }, V: { nombre: 'rapidez del vehículo o la columna', color: 'i' }, L: { nombre: 'largo', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
   function idaVuelta(rng, semilla, sub) {
     if (sub === 'columna') {
-      const u = rng.entero(3, 10), V = rng.entero(1, u - 1), L = rng.elegir([60, 80, 100, 120, 150, 180, 200, 240, 300]);
+      const u = rng.entero(3, 12), V = rng.entero(1, u - 1), L = 10 * rng.entero(4, 40);
       const t1 = L / (u - V), t2 = L / (u + V), correcta = t1 + t2;
       if (!limpio(t1) || !limpio(t2)) return null;
       const enunciado = ['Una columna de escolares de ', v('L', `${L} m`), ' de largo desfila por una avenida recta a ', v('V', `${V} m/s`),
@@ -163,7 +165,7 @@
         datos: { tipo: 'idavuelta', sub, u, V, L } });
     }
     if (sub === 'tren') {
-      const u = rng.elegir([1, 1.5, 2, 2.5]), V = rng.elegir([10, 15, 20, 25]), L = rng.elegir([15, 20, 24, 30, 40]);
+      const u = rng.elegir([0.5, 0.8, 1, 1.2, 1.5, 2, 2.5, 3]), V = rng.entero(8, 30), L = rng.entero(12, 40);
       const correcta = 2 * L / u;
       if (!limpio(correcta)) return null;
       const enunciado = ['El tren de Puno a Cusco avanza en línea recta a ', v('V', `${V} m/s`), '. Un pasajero camina a ', v('u', `${f(u)} m/s`),
@@ -183,7 +185,7 @@
         datos: { tipo: 'idavuelta', sub, u, V, L } });
     }
     // nadador: T = L/(u − V) + L/(u + V) dado; se pide u (respecto al agua). El bote avanza a V respecto al agua.
-    const u = rng.elegir([1.5, 2, 2.5, 3, 4, 5]), V = rng.elegir([0.5, 1, 1.5, 2, 3]), L = rng.elegir([6, 8, 10, 12, 15, 16, 20, 24]);
+    const u = rng.elegir([1.2, 1.5, 1.6, 2, 2.4, 2.5, 3, 3.5, 4, 4.5, 5]), V = rng.elegir([0.4, 0.5, 0.6, 0.8, 1, 1.2, 1.5, 2, 2.5, 3]), L = rng.entero(6, 30);
     if (V >= u) return null;
     const T = L / (u - V) + L / (u + V);
     if (!limpio(T, 1)) return null;
@@ -267,9 +269,9 @@
     const Rio = rng.elegir(RIO);
     if (sub === 'recto' || sub === 'angulo') {
       const [g, s, c0] = rng.elegir(NOT.filter(n => n[0] && (sub === 'angulo' || n[0] !== 30)));
-      const u = rng.elegir(g === 30 ? [2, 4, 6, 8, 10] : [2.5, 5, 10, 25, 50].filter(x => limpio(x * s) && limpio(x * c0)));
+      const u = rng.elegir(g === 30 ? [2, 3, 4, 5, 6, 7, 8, 9, 10, 12] : [1, 2, 2.5, 3, 4, 5, 6, 7.5, 8, 10, 12.5, 25].filter(x => limpio(x * s) && limpio(x * c0)));
       if (u === undefined) return null;
-      const c = u * s, vy = u * c0, W = rng.elegir([40, 60, 80, 100, 120, 150, 200, 240, 300]);
+      const c = u * s, vy = u * c0, W = 10 * rng.entero(3, 40);
       if (!limpio(c) || c > 10 || u > 12) return null;
       const enunciado = [`${Rio}, de `, v('W', `${W} m`), ' de ancho. La corriente es de ', v('c', `${f(c)} m/s`), ' y el bote avanza a ', v('u', `${f(u)} m/s`),
         ' respecto al agua. El botero quiere llegar al punto que está justo enfrente, siguiendo una línea recta perpendicular a la orilla.'];
@@ -305,9 +307,9 @@
         datos: { tipo: 'bote', sub, u, c, W } });
     }
     if (sub === 'tmin' || sub === 'deriva' || sub === 'resultante') {
-      const [u, c, R] = rng.elegir([[4, 3, 5], [3, 4, 5], [8, 6, 10], [6, 8, 10], [12, 5, 13], [5, 12, 13], [2.4, 1, 2.6], [1.5, 2, 2.5], [2, 1.5, 2.5]]);
+      const [u, c, R] = rng.elegir([[4, 3, 5], [3, 4, 5], [8, 6, 10], [6, 8, 10], [12, 5, 13], [5, 12, 13], [2.4, 1, 2.6], [1.5, 2, 2.5], [2, 1.5, 2.5], [1.6, 1.2, 2], [1.2, 1.6, 2], [2.4, 1.8, 3], [1.8, 2.4, 3], [3.2, 2.4, 4], [4.8, 3.6, 6], [2.4, 0.7, 2.5], [0.8, 0.6, 1], [6, 2.5, 6.5], [9, 12, 15], [12, 9, 15]]);
       if (!limpio(Math.hypot(u, c), 2) || Math.abs(Math.hypot(u, c) - R) > 1e-9) return null;
-      const W = rng.elegir([24, 36, 48, 60, 72, 96, 120, 144, 240]);
+      const W = 12 * rng.entero(2, 25);
       const t = W / u, deriva = c * t;
       if (!limpio(t, 1) || !limpio(deriva, 1)) return null;
       const enunciado = [`${Rio}, de `, v('W', `${W} m`), ' de ancho. La corriente es de ', v('c', `${f(c)} m/s`), ' y el bote avanza a ', v('u', `${f(u)} m/s`), ' respecto al agua.',
@@ -368,7 +370,7 @@
     // dirección del embarcadero desde la perpendicular: [grados, tangente]
     const tg = Rx / Ry, phi = [[16, 7 / 24], [37, 3 / 4], [45, 1], [53, 4 / 3], [74, 24 / 7]].find(n => Math.abs(Math.abs(tg) - n[1]) < 1e-9);
     if (!phi) return null;
-    const W = rng.elegir([24, 48, 60, 72, 84, 96, 120, 140, 144, 168, 240]), d = W * Math.abs(tg);
+    const W = 12 * rng.entero(2, 20), d = W * Math.abs(tg);
     if (!Number.isInteger(d)) return null;
     const lado = Rx > 0 ? 'abajo' : 'arriba';
     const enunciado = [`${Rio}, de `, v('W', `${W} m`), ' de ancho. La corriente es de ', v('c', `${f(c)} m/s`), ' y el bote avanza a ', v('u', `${f(u)} m/s`),
@@ -406,7 +408,7 @@
   // ================= botes: lanzar un saco =================
   const VAR_BS = { M: { nombre: 'masas', color: 'o' }, u: { nombre: 'rapidez del saco respecto al bote', color: 'i' }, V: { nombre: 'velocidades respecto al agua', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
   function botes(rng, semilla, sub) {
-    const M = rng.elegir([70, 90, 110, 140, 190, 240]), m = rng.elegir([5, 10, 20, 30]), u = rng.elegir([2, 3, 4, 5, 6, 8, 10]);
+    const M = 10 * rng.entero(5, 25), m = rng.elegir([2, 4, 5, 8, 10, 12, 15, 20, 25, 30, 40]), u = rng.entero(1, 12);
     const VA = m * u / (M + m), w = u - VA;
     const base = ['En una laguna de agua quieta, un bote está en reposo. El bote con su tripulante tiene ', v('M', `${M} kg`), ' y lleva un saco de ', v('M', `${m} kg`),
       '. El tripulante lanza el saco horizontalmente hacia el este con una rapidez de ', v('u', `${f(u)} m/s`), ' respecto al bote (medida con el bote ya en movimiento). No hay roce con el agua.'];
@@ -437,7 +439,7 @@
         solucion: [sol1, sol2, ['Saco respecto al agua: ', v('u', f(u)), ' − ', v('V', f(VA)), ' = ', v('x', `${f(w)} m/s`), ' hacia el este.']], datos: { tipo: 'botes', sub, M, m, u } });
     }
     if (sub === 'recibe') {
-      const M2 = rng.elegir([60, 80, 90, 120, 150, 190]);
+      const M2 = 10 * rng.entero(4, 25) - rng.elegir([0, 0, 2, 5]);
       const VB = m * w / (M2 + m);
       if (!limpio(VB) || !limpio(VA)) return null;
       const enunciado = [...base, ' Un segundo bote, de ', v('M', `${M2} kg`), ' con su tripulante, está en reposo al este y atrapa el saco.'];
@@ -452,6 +454,7 @@
       return cerrar(rng, semilla, { correcta: VB, errores, texto: con('m/s'), unidad: 'm/s', variables: VAR_BS, enunciado,
         pregunta: ['¿Con qué ', v('x', 'rapidez'), ' se mueve el segundo bote después de atrapar el saco?'], solucion, datos: { tipo: 'botes', sub, M, m, u, M2 } });
     }
+    if (sub === 'tres') return tresBotes(rng, semilla, M, m, u);
     // dos: dos sacos iguales, el primero al oeste y luego el segundo al este, cada uno a u respecto al bote
     const V1 = m * u / (M + 2 * m), V2 = V1 - m * u / (M + m), correcta = Math.abs(V2);
     if (!limpio(V1) || !limpio(correcta) || correcta === 0) return null;
@@ -471,6 +474,50 @@
     ];
     return cerrar(rng, semilla, { negativos: true, correcta, errores: errores.filter(e => e.valor >= 0), texto: con('m/s'), unidad: 'm/s', variables: VAR_BS, enunciado,
       pregunta: ['¿Con qué ', v('x', 'rapidez'), ' queda moviéndose el bote?'], solucion, datos: { tipo: 'botes', sub, M, m, u } });
+  }
+
+  // ---- tres botes en fila: A (oeste), B (centro, lanza) y C (este), todos en reposo ----
+  function tresBotes(rng, semilla, MB, m, u) {
+    const cual = rng.elegir(['A', 'C']);
+    const V1 = m * u / (MB + 2 * m);           // B tras el primer lanzamiento (al este)
+    const w1 = u - V1;                         // saco 1 respecto al agua, al oeste
+    const V2 = V1 - m * u / (MB + m);          // B tras el segundo lanzamiento (negativo: al oeste)
+    const w2 = V2 + u;                         // saco 2 respecto al agua, al este
+    if (![V1, w1, V2, w2].every(x => limpio(x))) return null;
+    // A y C: masas (de 40 a 250 kg) con las que la rapidez final sale limpia
+    const masas = w => Array.from({ length: 22 }, (_, i) => 40 + 10 * i).filter(Mx => limpio(m * w / (Mx + m)));
+    const opA = masas(w1), opC = masas(w2);
+    if (!opA.length || !opC.length) return null;
+    const MA = rng.elegir(opA), MC = rng.elegir(opC);
+    if (MA === MC) return null;
+    const VA = m * w1 / (MA + m), VC = m * w2 / (MC + m);
+    const correcta = cual === 'A' ? VA : VC;
+    const enunciado = ['En una laguna de agua quieta hay tres botes en fila, en reposo: A al oeste (', v('M', `${MA} kg`), '), B en el centro (', v('M', `${MB} kg`),
+      ', con dos sacos de ', v('M', `${m} kg`), ' cada uno) y C al este (', v('M', `${MC} kg`), '); cada masa incluye al tripulante. Desde B se lanza un saco hacia A y, después, el otro hacia C, los dos horizontalmente y a ',
+      v('u', `${f(u)} m/s`), ' respecto a B (medida con B ya en movimiento). A y C atrapan cada uno su saco. No hay roce con el agua.'];
+    const pregunta = ['¿Con qué ', v('x', 'rapidez'), ` queda moviéndose el bote ${cual}?`];
+    const errores = cual === 'A' ? [
+      h('REL-V-respecto-al-agua', m * u / (MA + m), `Tomaste ${f(u)} m/s como la rapidez del saco respecto al agua. Es respecto a B, que sale hacia el este: respecto al agua, el saco va a ${f(u)} − ${f(V1)} = ${f(w1)} m/s.`),
+      h('REL-V-signo', m * (u + V1) / (MA + m), 'Sumaste la rapidez de B. B se va hacia el este y el saco hacia el oeste: respecto al agua, el saco va a u − V₁.'),
+      h('CHO-sin-masa-saco', m * w1 / MA, `Olvidaste que el saco se queda en A: después de atraparlo se mueven juntos, con ${MA} + ${m} kg.`),
+      h('REL-V-otro-bote', VC, 'Esa es la rapidez de C. A recibe el primer saco, lanzado cuando B todavía tenía los dos.'),
+      h('CHO-masa-doble', m * (u - m * u / (MB + m)) / (MA + m), `Para el primer lanzamiento no contaste el segundo saco, que sigue en B: lo que retrocede es B con un saco, ${MB} + ${m} kg.`),
+    ] : [
+      h('REL-V-respecto-al-agua', m * u / (MC + m), `Tomaste ${f(u)} m/s como la rapidez del saco respecto al agua. Es respecto a B, que para entonces ya se mueve: respecto al agua, el saco va a ${f(V2)} + ${f(u)} = ${f(w2)} m/s.`),
+      h('CHO-velocidad-vieja', m * (V1 + u) / (MC + m), `Usaste la velocidad que B tenía antes del segundo lanzamiento (${f(V1)} m/s). La rapidez del saco se mide respecto a B ya en movimiento después de lanzarlo: V₂ = ${f(V2)} m/s.`),
+      h('CHO-sin-masa-saco', m * w2 / MC, `Olvidaste que el saco se queda en C: después de atraparlo se mueven juntos, con ${MC} + ${m} kg.`),
+      h('REL-V-otro-bote', VA, 'Esa es la rapidez de A. C recibe el segundo saco, que sale con otra rapidez respecto al agua.'),
+      h('REL-V-sin-marco', m * (u + m * u / (MB + 2 * m)) / (MC + m), 'Sumaste a u la velocidad de B como si B siguiera hacia el este después del segundo lanzamiento. Ese lanzamiento lo frena y lo hace retroceder.'),
+    ];
+    const solucion = [
+      ['1) B lanza el saco 1 al oeste: 0 = ', v('M', `(${MB} + ${m})`), '·V₁ − ', v('M', `${m}`), '·(', v('u', f(u)), ` − V₁) → V₁ = ${m}·${f(u)}/${MB + 2 * m} = `, v('V', `${f(V1)} m/s`), ` al este; el saco va a ${f(w1)} m/s al oeste.`],
+      ['2) B lanza el saco 2 al este: ', v('M', `(${MB} + ${m})`), `·${f(V1)} = `, v('M', `${MB}`), '·V₂ + ', v('M', `${m}`), '·(V₂ + ', v('u', f(u)), ') → ', v('V', `V₂ = ${f(V2)} m/s`), ` (${V2 < 0 ? 'al oeste' : 'al este'}); el saco va a ${f(w2)} m/s al este.`],
+      cual === 'A'
+        ? ['3) A atrapa el saco 1: ', v('M', `${m}`), `·${f(w1)} = (`, v('M', `${MA} + ${m}`), ')·V_A → ', v('x', `V_A = ${f(VA)} m/s`), ' al oeste.']
+        : ['3) C atrapa el saco 2: ', v('M', `${m}`), `·${f(w2)} = (`, v('M', `${MC} + ${m}`), ')·V_C → ', v('x', `V_C = ${f(VC)} m/s`), ' al este.'],
+    ];
+    return cerrar(rng, semilla, { correcta, errores, texto: con('m/s'), unidad: 'm/s', variables: VAR_BS, enunciado, pregunta, solucion,
+      datos: { tipo: 'botes', sub: 'tres', MA, MB, MC, m, u, cual } });
   }
 
   return { id: 'velocidad-relativa', titulo: 'La combi y el río', generar };

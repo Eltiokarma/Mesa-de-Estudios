@@ -52,6 +52,14 @@ function recalcular(p) {
     return Math.hypot(c, u);
   }
   // botes: cantidad de movimiento hacia el este, despejada por bisección
+  if (d.sub === 'tres') { // paso a paso, todo respecto al agua y con el este positivo
+    const { MA, MB, MC, m, u } = d;
+    const V1 = biseccion(V => (MB + m) * V + m * (V - u), -u, u);          // saco 1 sale a V1 − u
+    const V2 = biseccion(V => MB * V + m * (V + u) - (MB + m) * V1, -u, u); // saco 2 sale a V2 + u
+    const pA = m * (V1 - u), pC = m * (V2 + u);
+    const VA = biseccion(V => (MA + m) * V - pA, -u, u), VC = biseccion(V => (MC + m) * V - pC, -u, u);
+    return Math.abs(d.cual === 'A' ? VA : VC);
+  }
   const { M, m, u } = d;
   const VA = biseccion(V => M * (-V) + m * (u - V), 0, u); // el bote va al oeste con V
   if (d.sub === 'lanza') return VA;
@@ -78,7 +86,7 @@ for (const c of casos.casos) {
   });
 }
 
-const TODOS = ['bote/angulo', 'bote/deriva', 'bote/linea', 'bote/recto', 'bote/resultante', 'bote/tmin', 'botes/dos', 'botes/lanza', 'botes/objeto', 'botes/recibe',
+const TODOS = ['bote/angulo', 'bote/deriva', 'bote/linea', 'bote/recto', 'bote/resultante', 'bote/tmin', 'botes/dos', 'botes/lanza', 'botes/objeto', 'botes/recibe', 'botes/tres',
   'cruce/alcance', 'cruce/encuentro', 'cruce/trenes', 'idavuelta/columna', 'idavuelta/nadador', 'idavuelta/tren', 'marco/combis', 'marco/placas'];
 
 test('salen todos los tipos y subtipos; unidades iguales y pocos decimales; en «linea» el destino queda arriba y abajo', () => {

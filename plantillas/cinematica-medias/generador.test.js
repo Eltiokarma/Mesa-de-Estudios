@@ -23,7 +23,7 @@ function areaTrapecio(a, b, vt, T, n = 20000) {
   for (let i = 0; i < n; i++) s += (vel(i * dt) + vel((i + 1) * dt)) / 2 * dt; // exacta por tramos lineales salvo en los quiebres
   return s;
 }
-const COS = { 0: 1, 12: 0.98, 16: 0.96, 37: 0.8, 53: 0.6, 60: 0.5 };
+const COS = { 0: 1, 12: 0.98, 14: 0.97, 16: 0.96, 18: 0.95, 37: 0.8, 53: 0.6, 60: 0.5 };
 
 function recalcular(p) {
   const d = p._datos;
