@@ -78,6 +78,24 @@ El peor caso usa RM6 del informe (hipótesis allí).
 | RMP84 | Contar solo una parte de las lecturas: hasta la fila ancha, un tramo, solo la ida | lecturas |
 | RMP85 | Leer la parte decimal de una hora como minutos (14,4 h como 14 h 40 min) | relojes |
 
+## Parentesco, arreglos y fichas (`rm-parentesco`, `rm-arreglos`, `rm-fichas`)
+
+Usan también AR7 (linealidad: escalar el perímetro como el área, usar todas las fichas) y RM2 («objeto entero»), del informe, con respaldo parcial.
+
+| Código | Error | Trampa de origen |
+| --- | --- | --- |
+| RMP60 | Leer la cadena de parentescos desde el inicio y no desde «mi …» | rm-a sueltas («leer la cadena desde el inicio») |
+| RMP61 | Responder un paso intermedio: un eslabón de la cadena, la suma de una línea, el lado antes de dividir | rm-b (parentesco: «eslabón intermedio»; AR5 por analogía) |
+| RMP62 | Contar cada rol como una persona distinta, o juntar a todas las personas de un sexo | rm-a sueltas («sumar los roles») |
+| RMP63 | Ignorar o leer mal una condición: «único», una pista, las columnas o la diagonal, las casillas tapadas, el 1 como primo | varias |
+| RMP64 | Cambiar la línea paterna por la materna, o adelante por atrás | parentesco, asientos |
+| RMP65 | Tratar el cuadrado mágico multiplicativo como aditivo, o responder el exponente | rm-b sueltas («tratarlo como aditivo») |
+| RMP66 | En el tablero de paridad: la mitad y la mitad, un solo color, o todos los pares juntos | hueco de paridad |
+| RMP67 | Elegir el número más cercano en valor y no en posición | hueco de asientos |
+| RMP68 | Sumar perímetros sin restar los lados en contacto (o restarlos una sola vez, o tomar la caja que encierra) | rm-b sueltas («sumar perímetros sin restar lados internos») |
+| RMP69 | Dividir áreas o volúmenes sin ver el encaje, redondear hacia arriba, contar un hexágono como un triángulo | huecos de máximos y semejanza |
+| RMP86 | Suponer que la sucesión de figuras crece de forma lineal (diferencia constante) | rm-b (inducción: «suponer crecimiento lineal») |
+
 ## Diagramas de flujo y ciclos (`rm-diagramas-flujo`, `rm-ciclos`)
 
 | Código | Error | Trampa de origen |
