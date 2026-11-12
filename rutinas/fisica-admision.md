@@ -88,7 +88,7 @@ Ninguna correcta sale de una cuenta de un modelo de lenguaje.
   | impulso | 43/43 |
   | dimensiones | 44/44 |
 
-  Los `casos.json` que se regeneraron tras las correcciones se volvieron a resolver a ciegas el 12 nov: 260 de 260.
+  Los `casos.json` que se regeneraron tras las correcciones se volvieron a resolver a ciegas el 12 nov: 260 de 260, y los de circuitos y fluidos otra vez tras el último ajuste: 48 de 48.
 - **Revisión de contenido.** Se corrigió todo lo grave y lo medio. Lo que más se repitió:
   - la correcta delatada por su forma (la única redonda, la única con π, el arcsen que nunca era correcto);
   - distractores absurdos;
@@ -97,14 +97,14 @@ Ninguna correcta sale de una cuenta de un modelo de lenguaje.
   - datos irreales, como un acrílico con n = 2 o un núcleo más liviano que un protón.
 - **Reglas que quedaron como pruebas** en cada `generador.test.js`:
   - no lanza en las semillas 0 a 2000 ni en semillas de texto;
-  - las incorrectas quedan entre 1/20 y 20 veces la correcta (en Joule, entre 1/60 y 60, para conservar la trampa de minutos a segundos);
+  - las incorrectas quedan entre 1/20 y 20 veces la correcta (en Joule, la mayor alternativa no llega a 60 veces la menor);
   - la correcta casi nunca es la única redonda, con un tope por generador;
   - formato parejo dentro de cada problema;
   - ids de error únicos;
   - variedad de datos.
 - **App real.** Se probó con Playwright sobre una copia con el catálogo armado, a 390 y 1366 px: los 18 generadores cargan con 4 o 5 alternativas, sin desbordes ni errores de consola, y la cabecera no repite ninguna alternativa.
 - **`herramientas/alternativas.test.js`**: 58 de 58.
-- **`npm test`**: 5615 de 5616. Falla solo «app/datos/catalogo.json está al día», porque esta rutina no corre `npm run catalogo`.
+- **`npm test`**: 5618 de 5619. Falla solo «app/datos/catalogo.json está al día», porque esta rutina no corre `npm run catalogo`.
 
 ## Códigos de error
 
@@ -144,15 +144,12 @@ Ninguno: no se tocó `nucleo/`. Tampoco se tocaron `app/` ni `VERSION`.
   - mT sin convertir (factor 1000, 2027-I #84);
   - cm² entre 100 en el condensador plano (2025-I #84);
   - sumar 273 a una variación (calor);
-  - g por kg.
+  - g por kg;
+  - minutos sin pasar a segundos en Joule (factor 60): queda la versión «100 s por minuto».
 
   Si Gerson quiere esos distractores tal como salen en el examen, hay que hacerles una excepción a la regla, con su prueba.
 - **Coberturas «en espíritu»:**
   - triplicar el coeficiente lineal (2021-09-04 #84) se trabaja en un tanque sólido y no con el líquido, porque la clave del examen no tiene sentido físico;
   - el «vector velocidad» de Torricelli (2026-I #83) se pide como rapidez y tan θ, no en componentes.
-- **Pendiente de un ajuste final al cierre de este reporte.** Los constructores de esas dos carpetas lo están aplicando; si no entra, queda como pendiente:
-  - escala de los distractores en `fluidos-hidrodinamica` (aún salen 0,8 y 8 000 000 N/m³ contra 8 000);
-  - escala de `circuitos-joule`, por fuera de su propio rango de ×60;
-  - redondez de `circuitos-mallas`, donde en el 19 % de los problemas la correcta es la única redonda.
+- **Ajuste final de escala y redondez (12 nov), ya hecho:** en `fluidos-hidrodinamica` y `circuitos-mallas` la correcta ya no es nunca la única redonda (0 %), y no queda ningún distractor fuera de escala.
 - **Variedad limitada:** `analisis-dimensional` repite unos 160 problemas de 600, por lo chico del banco de fórmulas, y latitud tiene 12 lugares.
-- **Sin aviso a la principal todavía:** este reporte va con el `send_message` del cierre.
