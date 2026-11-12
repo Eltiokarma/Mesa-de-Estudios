@@ -17,6 +17,14 @@ function texto(partes, p, esc) {
   }).join('');
 }
 
+// Figura opcional del problema: { svg, alt }. El SVG lo arma el generador con código propio
+// (nunca con texto del alumno) y escapa sus textos con Predicciones.xml; sus colores van con
+// var(--c-o), var(--c-i), var(--c-h), var(--c-d) y currentColor, así sirve en claro y en oscuro.
+function figuraHTML(f, esc) {
+  if (!f || typeof f.svg !== 'string' || !/^<svg[\s>]/.test(f.svg)) return '';
+  return `<figure class="fig-gen" role="img" aria-label="${esc(f.alt || 'Figura del problema')}">${f.svg}</figure>`;
+}
+
 function cargarGenerador(pl) {
   if (window.Generadores && window.Generadores[pl.id]) return Promise.resolve(window.Generadores[pl.id]);
   return new Promise((ok, mal) => {
@@ -47,6 +55,7 @@ async function vista(ctx, id) {
       <div class="etq-p">${esc(etiqueta)}${total ? ` · ${n} de ${total}` : ''}</div>
       <p class="enun">${texto(p.enunciado, p, esc)}</p>
       ${p.datos ? `<p class="sub">${esc(p.datos)}</p>` : ''}
+      ${figuraHTML(p.figura, esc)}
       <p class="preg">${texto(p.pregunta, p, esc)}</p>
       <div class="alts" role="group" aria-label="Alternativas">${p.alternativas.map(a =>
         `<button class="alt" data-letra="${a.letra}"><span class="letra">${a.letra}</span><span>${esc(a.texto)}</span></button>`).join('')}
@@ -114,6 +123,7 @@ async function vista(ctx, id) {
         </div>
         <h3 class="sol-t">Solución paso a paso</h3>
         <ol class="sol">${p.solucion.map(paso => `<li>${texto(paso, p, esc)}</li>`).join('')}</ol>
+        ${figuraHTML(p.figuraSolucion, esc)}
         <button class="btn morado ancho" id="otro">Otro problema</button>`;
       document.getElementById('otro').onclick = practica;
       document.getElementById('retro').scrollIntoView({ behavior: 'smooth', block: 'start' });

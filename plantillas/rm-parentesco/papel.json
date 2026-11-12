@@ -1,0 +1,105 @@
+{
+  "titulo": "Parentescos, órdenes y edades: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la app, con unos 2 o 3 minutos por problema. En las cadenas de parentesco, empieza siempre por el final («mi …»).",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Flor dice: «El hijo de la hermana de mi madre estudia en Puno». ¿Qué parentesco tiene esa persona con Flor?",
+      "respuesta": "Es su primo.",
+      "pasos": [
+        "Se empieza por el final: «mi madre» es la madre de Flor.",
+        "La hermana de su madre es su tía materna.",
+        "El hijo de su tía es su primo."
+      ],
+      "verificar": [ { "fn": "cadena", "args": ["m", ["madre", "hermana", "hijo"], [false, false, false]], "espera": { "texto": "su primo" } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "intermedio",
+      "enunciado": "Hugo dice: «El único hijo del padre de mi padre me enseñó a nadar». ¿Qué parentesco tiene esa persona con Hugo?",
+      "respuesta": "Es su padre.",
+      "pasos": [
+        "«El padre de mi padre» es el abuelo paterno de Hugo.",
+        "El padre de Hugo es hijo de ese abuelo. Si el abuelo tiene un único hijo, ese hijo tiene que ser el padre de Hugo.",
+        "Trampa: responder «su tío». Un tío sería otro hijo del abuelo, y el enunciado dice que hay uno solo."
+      ],
+      "verificar": [ { "fn": "cadena", "args": ["v", ["padre", "padre", "hijo"], [false, false, true]], "espera": { "texto": "su padre" } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Saúl dice: «El único hermano de la hermana de mi madre vive en Juliaca». ¿Qué parentesco tiene esa persona con Saúl?",
+      "respuesta": "Es su tío materno.",
+      "pasos": [
+        "«La hermana de mi madre» es una tía materna de Saúl.",
+        "Los hermanos varones de esa tía son los hermanos varones de la madre de Saúl: sus tíos maternos. La madre es mujer, así que no entra.",
+        "Trampa: responder «su padre». Eso valdría si la cadena empezara por «mi padre»; aquí todo queda del lado de la madre."
+      ],
+      "verificar": [ { "fn": "cadena", "args": ["v", ["madre", "hermana", "hermano"], [false, false, true]], "espera": { "texto": "su tío materno" } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Gina dice: «El hijo del padre de mi padre cumple años hoy». ¿Qué se puede asegurar sobre esa persona?",
+      "respuesta": "Es su padre o su tío paterno: no se puede decir cuál.",
+      "pasos": [
+        "«El padre de mi padre» es el abuelo paterno de Gina.",
+        "Sus hijos varones son el padre de Gina y, si los hay, los tíos paternos de Gina.",
+        "El enunciado no dice «único», así que puede ser cualquiera de los dos."
+      ],
+      "verificar": [ { "fn": "cadena", "args": ["m", ["padre", "padre", "hijo"], [false, false, false]], "espera": { "texto": "su padre o su tío paterno" } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "básico",
+      "enunciado": "En una reunión familiar hay, entre otras personas, al menos 2 padres, 3 hijos, 2 hermanos, 1 abuelo y 2 nietos (puede haber parentescos que no se nombran). Cada persona se cuenta en todos los parentescos que tiene con alguien de la reunión. Los hermanos lo son de padre y madre. ¿Cuántas personas hay como mínimo?",
+      "respuesta": "4 personas.",
+      "pasos": [
+        "Un abuelo, su hijo y los dos hijos de ese hijo: 4 personas.",
+        "Padres: el abuelo y su hijo (2). Hijos: el hijo del abuelo y los dos nietos (3). Hermanos: los dos nietos (2). Abuelo: 1. Nietos: 2.",
+        "Con 3 no alcanza: los 3 hijos tienen a su padre o a su madre en la reunión, y la persona de más edad no es hijo de nadie de la reunión. Hacen falta 3 + 1 = 4."
+      ],
+      "verificar": [ {"fn": "minimoPersonas", "args": [{"padre": 2, "hijo": 3, "hermano": 2, "abuelo": 1, "nieto": 2}], "espera": {"n": 4}}, {"fn": "cota", "args": [{"padre": 2, "hijo": 3, "hermano": 2, "abuelo": 1, "nieto": 2}], "espera": {"n": 4, "tipo": "hijos"}} ]
+    },
+    {
+      "id": "p6",
+      "nivel": "avanzado",
+      "enunciado": "En una reunión familiar hay, entre otras personas, al menos 2 padres, 1 madre, 3 hijos, 2 hijas, 2 hermanas, 1 abuelo y 2 nietas (puede haber parentescos que no se nombran). Cada persona se cuenta en todos los parentescos que tiene con alguien de la reunión. Los hermanos lo son de padre y madre. ¿Cuántas personas hay como mínimo?",
+      "respuesta": "6 personas.",
+      "pasos": [
+        "Los 3 hijos y las 2 hijas son 5 personas distintas, y cada una tiene a su padre o a su madre en la reunión.",
+        "La persona de más edad no es hijo ni hija de nadie de la reunión: hace falta una persona más. Con 5 no alcanza; hacen falta 3 + 2 + 1 = 6.",
+        "Con 6 sí se puede: Abel es padre de Beto y Ciro; Beto es padre de Dina y Eva; Dina es madre de Fito.",
+        "Padres: Abel y Beto. Madre: Dina. Hijos: Beto, Ciro y Fito. Hijas: Dina y Eva. Hermanas: Dina y Eva. Abuelo: Abel (Beto también lo es, de Fito). Nietas: Dina y Eva."
+      ],
+      "verificar": [ {"fn": "minimoPersonas", "args": [{"padre": 2, "madre": 1, "hijo": 3, "hija": 2, "hermana": 2, "abuelo": 1, "nieta": 2}], "espera": {"n": 6}}, {"fn": "cota", "args": [{"padre": 2, "madre": 1, "hijo": 3, "hija": 2, "hermana": 2, "abuelo": 1, "nieta": 2}], "espera": {"n": 6, "tipo": "hijos"}}, {"fn": "roles", "args": [[{"s": 0, "f": -1, "m": -1}, {"s": 0, "f": 0, "m": -1}, {"s": 0, "f": 0, "m": -1}, {"s": 1, "f": 1, "m": -1}, {"s": 1, "f": 1, "m": -1}, {"s": 0, "f": -1, "m": 3}]], "espera": {"padre": 2, "madre": 1, "hijo": 3, "hija": 2, "hermana": 2, "abuelo": 2, "nieta": 2}} ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Ana, Beto, Ciro y Dina tienen edades distintas. Las edades de Ana y Beto suman lo mismo que las de Ciro y Dina; las de Ana y Ciro suman más que las de Beto y Dina; y Beto es mayor que Ana. Ordénalos de mayor a menor.",
+      "respuesta": "Ciro, Beto, Ana, Dina.",
+      "pasos": [
+        "Con iniciales: A + B = C + D y A + C > B + D.",
+        "Restando la igualdad a la desigualdad: C − B > B − C, o sea, C > B.",
+        "Sumándolas: 2A + B + C > B + C + 2D, o sea, A > D.",
+        "Con B > A: C > B > A > D."
+      ],
+      "verificar": [ { "fn": "ordenes", "args": [[{ "t": "suma", "a": [0, 1], "b": [2, 3], "rel": "=" }, { "t": "suma", "a": [0, 2], "b": [1, 3], "rel": ">" }, { "t": "simple", "a": 1, "b": 0 }]], "espera": [[2, 1, 0, 3]] } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Rosa, Teo y Gina son hermanos de edades distintas. La edad de Rosa es un número primo, la de Teo es par, Rosa es mayor que Gina, Gina es mayor que Teo y las tres edades suman 24 años. ¿Cuál es la menor suma posible de las edades de Rosa y Teo?",
+      "respuesta": "15 años.",
+      "pasos": [
+        "Rosa es la mayor y es prima; Teo es el menor y es par.",
+        "Prueba Rosa = 11, 13, 17, 19 (con 7 o menos no alcanza para sumar 24 siendo la mayor). Rosa = 11: Teo + Gina = 13 con Teo par menor que Gina menor que 11: (4, 9) o (6, 7).",
+        "Rosa = 13: Teo + Gina = 11: (2, 9) o (4, 7). Rosa = 17: (2, 5). Rosa = 19: (2, 3).",
+        "Rosa + Teo: 15, 17, 15, 17, 19, 21. La menor es 15 (por ejemplo, Rosa 11, Teo 4, Gina 9)."
+      ],
+      "verificar": [ { "fn": "edades", "args": [[{ "t": "primo", "p": 0 }, { "t": "par", "p": 1 }, { "t": "mayor", "p": 0, "q": 2 }, { "t": "mayor", "p": 2, "q": 1 }, { "t": "suma", "k": 24 }]], "espera": [[11, 4, 9], [11, 6, 7], [13, 2, 9], [13, 4, 7], [17, 2, 5], [19, 2, 3]] } ]
+    }
+  ]
+}

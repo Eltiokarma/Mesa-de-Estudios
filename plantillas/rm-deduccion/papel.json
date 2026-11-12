@@ -1,0 +1,130 @@
+{
+  "titulo": "Lo que se deduce: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la app, con unos 2 o 3 minutos por problema. En los de clases, dibuja tres círculos: tacha lo que queda vacío y pon una × donde seguro hay alguien. En los de pistas, arma una tabla y marca con ✓ y ✗; si te trabas, prueba un caso y mira si choca con alguna pista.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "En el elenco de un colegio de Puno, todos los quenistas son zampoñistas y ningún zampoñista es charanguista. ¿Qué se deduce sobre los quenistas y los charanguistas? ¿Se puede asegurar, además, que algunos quenistas no son charanguistas?",
+      "respuesta": "Ningún quenista es charanguista. Lo segundo solo se puede asegurar si se sabe que hay por lo menos un quenista.",
+      "pasos": [
+        "«Todos los quenistas son zampoñistas»: se tacha la parte del círculo de quenistas que queda fuera del de zampoñistas.",
+        "«Ningún zampoñista es charanguista»: se tacha toda la zona común de zampoñistas y charanguistas.",
+        "La zona común de quenistas y charanguistas quedó tachada entera: ningún quenista es charanguista.",
+        "«Algunos quenistas no son charanguistas» pide que exista al menos un quenista. Las premisas no lo dicen: si el elenco no tuviera quenistas, esa frase sería falsa."
+      ],
+      "verificar": [
+        { "fn": "conclusionesValidas", "args": [[{ "f": "A", "s": 0, "p": 1 }, { "f": "E", "s": 1, "p": 2 }]], "espera": { "booleanas": ["sil:E:0:2"], "existenciales": ["sil:E:0:2", "sil:O:0:2", "sil:O:2:0"] } }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Todos los que ingresaron a Medicina resolvieron el simulacro del sábado. Algunos alumnos del taller de los martes resolvieron el simulacro del sábado. ¿Se deduce que algunos alumnos del taller ingresaron a Medicina?",
+      "respuesta": "No. De estas dos premisas no se deduce ninguna conclusión sobre los alumnos del taller y los ingresantes.",
+      "pasos": [
+        "Las dos premisas ponen a los dos grupos dentro (o en parte dentro) de «los que resolvieron el simulacro», que es el término medio.",
+        "Pero ninguna de las dos habla de todos los que resolvieron el simulacro: puede que los del taller que lo resolvieron sean justo los que no ingresaron.",
+        "En el diagrama, la × de «algunos del taller resolvieron el simulacro» queda sobre la línea del círculo de ingresantes: no se sabe de qué lado está.",
+        "Compartir un tercer grupo no obliga a dos grupos a tocarse."
+      ],
+      "verificar": [
+        { "fn": "conclusionesValidas", "args": [[{ "f": "A", "s": 2, "p": 1 }, { "f": "I", "s": 0, "p": 1 }]], "espera": { "booleanas": [], "existenciales": [] } }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Algunos danzantes de la diablada son músicos de la banda. Ningún músico de la banda es futbolista. ¿Cuál de estas conclusiones se deduce: (a) ningún danzante es futbolista; (b) algunos danzantes no son futbolistas; (c) algunos futbolistas no son danzantes?",
+      "respuesta": "Solo la (b): algunos danzantes no son futbolistas.",
+      "pasos": [
+        "Primero la premisa con «ningún»: se tacha la zona común de músicos y futbolistas.",
+        "Luego «algunos danzantes son músicos»: la × va en la zona común de danzantes y músicos que no está tachada, o sea, fuera de los futbolistas.",
+        "Esa × es un danzante que no es futbolista: se deduce (b).",
+        "(a) no se deduce: puede haber danzantes que no son músicos y sí son futbolistas. (c) tampoco: puede que todos los futbolistas sean danzantes."
+      ],
+      "verificar": [
+        { "fn": "conclusionesValidas", "args": [[{ "f": "I", "s": 0, "p": 1 }, { "f": "E", "s": 1, "p": 2 }]], "espera": { "booleanas": ["sil:O:0:2"], "existenciales": ["sil:O:0:2"] } }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Todos los socios del club de ajedrez son de quinto año. Algunos de los que fueron al paseo a Sillustani no son de quinto año. ¿Qué se deduce sobre los que fueron al paseo y los socios del club?",
+      "respuesta": "Algunos de los que fueron al paseo no son socios del club de ajedrez.",
+      "pasos": [
+        "«Todos los socios son de quinto»: se tacha la parte de los socios que queda fuera de quinto.",
+        "«Algunos del paseo no son de quinto»: la × va entre los del paseo que están fuera de quinto. Esa zona, dentro de los socios, ya está tachada; así que la × cae fuera de los socios.",
+        "Esa persona fue al paseo y no es socia: algunos de los que fueron al paseo no son socios.",
+        "Ojo: leer «todos los socios son de quinto» como «todos los de quinto son socios» lleva a otra conclusión, que no se deduce."
+      ],
+      "verificar": [
+        { "fn": "conclusionesValidas", "args": [[{ "f": "A", "s": 2, "p": 1 }, { "f": "O", "s": 0, "p": 1 }]], "espera": { "booleanas": ["sil:O:0:2"], "existenciales": ["sil:O:0:2"] } }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "avanzado",
+      "enunciado": "En un concurso, todos los ganadores son de Juliaca y todos los ganadores son de quinto año. ¿Se puede asegurar que algunos de Juliaca son de quinto año?",
+      "respuesta": "Solo si hubo por lo menos un ganador. Con las dos premisas solas, no.",
+      "pasos": [
+        "Las dos premisas son «todos»: solo tachan zonas, no ponen ninguna ×.",
+        "«Algunos de Juliaca son de quinto» pide una × en la zona común de Juliaca y quinto, y las premisas no la ponen.",
+        "Si hubo un ganador, ese ganador es de Juliaca y de quinto: ahí sí se puede asegurar.",
+        "Moraleja: dos premisas con «todos» o «ningún» nunca aseguran un «algunos» si no se sabe que alguien existe."
+      ],
+      "verificar": [
+        { "fn": "conclusionesValidas", "args": [[{ "f": "A", "s": 1, "p": 0 }, { "f": "A", "s": 1, "p": 2 }]], "espera": { "booleanas": [], "existenciales": ["sil:I:0:2"] } }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Cuatro latas, A, B, C y D, tienen cada una té, café o cocoa (dos latas pueden tener lo mismo). Se sabe que: I. Si la lata A tiene té, entonces la lata B tiene café. II. La lata B no tiene café. III. Si la lata A no tiene té, entonces la lata C tiene cocoa. IV. Las latas C y D no tienen lo mismo. ¿Cuál de estas es siempre cierta: (a) la lata A tiene café; (b) la lata C tiene cocoa; (c) la lata D tiene té?",
+      "respuesta": "(b): la lata C tiene cocoa.",
+      "pasos": [
+        "Por II, B no tiene café. Si A tuviera té, por I, B tendría café: imposible. Entonces A no tiene té.",
+        "Como A no tiene té, por III, C tiene cocoa.",
+        "Por IV, D no tiene cocoa: D tiene té o café.",
+        "(a) y (c) pueden pasar, pero no siempre: A puede tener café o cocoa, y D puede tener té o café. Quedan 8 casos y en todos C tiene cocoa."
+      ],
+      "verificar": [
+        { "fn": "necesaria", "args": [[{ "t": "cond", "a": { "o": 0, "c": 0, "neg": false }, "b": { "o": 1, "c": 1, "neg": false } }, { "t": "no", "o": 1, "c": 1 }, { "t": "cond", "a": { "o": 0, "c": 0, "neg": true }, "b": { "o": 2, "c": 2, "neg": false } }, { "t": "distintos", "o1": 2, "o2": 3 }], "sc:es:2:2"], "espera": true },
+        { "fn": "necesaria", "args": [[{ "t": "cond", "a": { "o": 0, "c": 0, "neg": false }, "b": { "o": 1, "c": 1, "neg": false } }, { "t": "no", "o": 1, "c": 1 }, { "t": "cond", "a": { "o": 0, "c": 0, "neg": true }, "b": { "o": 2, "c": 2, "neg": false } }, { "t": "distintos", "o1": 2, "o2": 3 }], "sc:es:0:1"], "espera": false }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Tres cajas, A, B y C, guardan cada una un trompo, un yoyo o una pelota (pueden repetirse). Se sabe que: I. No es cierto que, si la caja A guarda un trompo, la caja B guarde un yoyo. II. Si la caja B guarda una pelota, entonces la caja C guarda un trompo. III. La caja C no guarda un trompo. ¿Qué guarda la caja B?",
+      "respuesta": "Un trompo (lo mismo que la caja A).",
+      "pasos": [
+        "Un «si…, entonces…» solo es falso cuando la primera parte se cumple y la segunda no. Por I: A guarda un trompo y B no guarda un yoyo.",
+        "Por III, C no guarda un trompo; si B guardara una pelota, por II, C guardaría un trompo: imposible. Entonces B no guarda una pelota.",
+        "B no guarda yoyo ni pelota: guarda un trompo, igual que A.",
+        "Error típico: leer I como «A no guarda un trompo y B no guarda un yoyo». Esa no es la negación de un condicional."
+      ],
+      "verificar": [
+        { "fn": "necesaria", "args": [[{ "t": "nocond", "a": { "o": 0, "c": 0, "neg": false }, "b": { "o": 1, "c": 1, "neg": false } }, { "t": "cond", "a": { "o": 1, "c": 2, "neg": false }, "b": { "o": 2, "c": 0, "neg": false } }, { "t": "no", "o": 2, "c": 0 }], "sc:es:1:0"], "espera": true },
+        { "fn": "necesaria", "args": [[{ "t": "nocond", "a": { "o": 0, "c": 0, "neg": false }, "b": { "o": 1, "c": 1, "neg": false } }, { "t": "cond", "a": { "o": 1, "c": 2, "neg": false }, "b": { "o": 2, "c": 0, "neg": false } }, { "t": "no", "o": 2, "c": 0 }], "sc:igual:0:1"], "espera": true }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Ana, Bety, Ceci y Dora tocan cada una un instrumento distinto: quena, zampoña, charango y bombo. Se sabe que: I. Si Ana tocara la quena, Ceci tocaría el bombo. II. Si Ana no toca la quena, entonces Bety toca la zampoña. III. Si Ana toca el charango, entonces Bety toca la quena. IV. Si Ceci no toca el charango, entonces Dora toca la quena. ¿Qué instrumento toca cada una?",
+      "respuesta": "Ana, el bombo; Bety, la zampoña; Ceci, el charango; Dora, la quena.",
+      "pasos": [
+        "«Si Ana tocara la quena…» habla de algo que no pasa: Ana no toca la quena.",
+        "Como Ana no toca la quena, por II, Bety toca la zampoña.",
+        "Bety no toca la quena; si Ana tocara el charango, por III, Bety tocaría la quena: imposible. Ana no toca el charango, así que toca el bombo.",
+        "Quedan quena y charango para Ceci y Dora. Si Ceci no tocara el charango, tocaría la quena, y por IV Dora también tocaría la quena: imposible. Ceci toca el charango y Dora la quena.",
+        "Comprobación: aunque se lea I como un «si…, entonces…» común, Ana no puede tocar la quena: Ceci tendría el bombo, no tendría el charango y, por IV, Dora tocaría la quena, que ya sería de Ana. El reparto es el mismo con las dos lecturas."
+      ],
+      "verificar": [
+        { "fn": "repartos", "args": [[{ "t": "contra", "a": { "o": 0, "c": 0, "neg": false }, "b": { "o": 2, "c": 3, "neg": false } }, { "t": "cond", "a": { "o": 0, "c": 0, "neg": true }, "b": { "o": 1, "c": 1, "neg": false } }, { "t": "cond", "a": { "o": 0, "c": 2, "neg": false }, "b": { "o": 1, "c": 0, "neg": false } }, { "t": "cond", "a": { "o": 2, "c": 2, "neg": true }, "b": { "o": 3, "c": 0, "neg": false } }]], "espera": [[3, 1, 2, 0]] },
+        { "fn": "repartos", "args": [[{ "t": "cond", "a": { "o": 0, "c": 0, "neg": false }, "b": { "o": 2, "c": 3, "neg": false } }, { "t": "cond", "a": { "o": 0, "c": 0, "neg": true }, "b": { "o": 1, "c": 1, "neg": false } }, { "t": "cond", "a": { "o": 0, "c": 2, "neg": false }, "b": { "o": 1, "c": 0, "neg": false } }, { "t": "cond", "a": { "o": 2, "c": 2, "neg": true }, "b": { "o": 3, "c": 0, "neg": false } }]], "espera": [[3, 1, 2, 0]] }
+      ]
+    }
+  ]
+}

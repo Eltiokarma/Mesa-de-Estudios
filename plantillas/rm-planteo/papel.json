@@ -1,0 +1,128 @@
+{
+  "titulo": "Planteo de situaciones: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la app, con unos 2 o 3 minutos por problema, como en el examen. Antes de calcular, busca el paso que engaña.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Cada uno de los 35 alumnos de un aula necesita 3 hojas para un concurso. Las hojas se venden en paquetes de 10 y no se venden sueltas. En la dirección ya hay 12 hojas. ¿Cuántos paquetes hay que comprar, como mínimo?",
+      "respuesta": "10 paquetes.",
+      "pasos": [
+        "Se necesitan 35 × 3 = 105 hojas; ya hay 12, faltan 93.",
+        "93 ÷ 10 = 9 y sobran 3: con 9 paquetes faltan 3 hojas.",
+        "Como no se venden sueltas, se redondea hacia arriba: 10 paquetes."
+      ],
+      "verificar": [ { "fn": "lotes", "args": [{ "n": 35, "g": 3, "s": 12, "k": 10 }], "espera": { "necesarios": 105, "faltan": 93, "paquetes": 10 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "intermedio",
+      "enunciado": "En una bodega, por cada 4 botellas vacías te dan una llena. Compras 30 botellas llenas. Los envases de las botellas que te dan también se canjean, y no te prestan envases. ¿Cuántas botellas tomas en total, como máximo?",
+      "respuesta": "39 botellas.",
+      "pasos": [
+        "Tomas 30 y quedan 30 envases: 30 ÷ 4 = 7 llenas y sobran 2 envases.",
+        "Tomas las 7: ahora tienes 7 + 2 = 9 envases → 2 llenas y sobra 1.",
+        "Tomas las 2: tienes 2 + 1 = 3 envases, que no alcanzan para otro canje.",
+        "Total: 30 + 7 + 2 = 39."
+      ],
+      "verificar": [ { "fn": "canje", "args": [{ "C": 30, "k": 4 }], "espera": { "total": 39, "canjeadas": 9, "sobran": 3 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "En una feria, por cada 5 polos que compras te regalan uno, y los regalos no dan más regalos. Inés necesita 50 polos en total, contando los regalados. ¿Cuántos debe comprar, como mínimo?",
+      "respuesta": "42 polos.",
+      "pasos": [
+        "Si compra C, recibe C + (C ÷ 5, redondeado hacia abajo).",
+        "Por cada 5 comprados recibe 6: 50 × 5 ÷ 6 ≈ 41,7, así que hay que probar desde 42.",
+        "Con 42: 42 + 8 = 50 (llega). Con 41: 41 + 8 = 49 (no llega). Compra 42.",
+        "Ojo: calcular los regalos sobre los 50 (10 regalos, comprar 40) no sirve, porque con 40 comprados solo regalan 8."
+      ],
+      "verificar": [ { "fn": "comprarMinimo", "args": [{ "T": 50, "k": 5 }], "espera": 42 } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "En una elección votan 250 personas; 10 votos son nulos y el resto se reparte entre 4 candidatos. Gana quien tenga más votos que cada uno de los otros (un empate no es ganar). ¿Con cuántos votos, como mínimo, puede ganar un candidato?",
+      "respuesta": "61 votos.",
+      "pasos": [
+        "Votos válidos: 250 − 10 = 240.",
+        "Si el ganador tiene x, cada uno de los otros 3 tiene a lo más x − 1: x + 3(x − 1) ≥ 240, o sea, 4x ≥ 243.",
+        "x ≥ 60,75: el menor entero es 61. Con 60, los otros tres tendrían a lo más 59 cada uno y no llegarían a sumar 180."
+      ],
+      "verificar": [ { "fn": "minimoGanar", "args": [{ "V": 240, "n": 4 }], "espera": 61 } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "En una elección escolar, A lleva 120 votos, B lleva 100 y C lleva 60, y faltan contar 50 votos. ¿Cuántos de esos 50 votos necesita A, como mínimo, para ganar con seguridad (un empate no es ganar)?",
+      "respuesta": "16 votos.",
+      "pasos": [
+        "Si A recibe x, en el peor caso los otros 50 − x van todos a B.",
+        "A gana si 120 + x > 100 + 50 − x: 2x > 30, x > 15.",
+        "El menor entero es 16. Con 15, B podría empatar 135 a 135."
+      ],
+      "verificar": [ { "fn": "asegurar", "args": [{ "votos": [120, 100, 60], "R": 50 }], "espera": 16 } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "avanzado",
+      "enunciado": "Ana y Beto parten juntos de la salida de una pista circular de 400 m y corren en sentidos contrarios. Mientras Ana corre 3 m, Beto corre 2 m. Las marcas se miden desde la salida en el sentido de Ana, y la salida no cuenta como encuentro. ¿En qué marca se encuentran por cuarta vez?",
+      "respuesta": "En la marca 160 m.",
+      "pasos": [
+        "En sentidos contrarios se encuentran cada vez que entre los dos completan 400 m.",
+        "De cada 5 m que recorren juntos, 3 son de Ana: hasta el cuarto encuentro corre 4 × 400 × 3/5 = 960 m.",
+        "960 m = 2 vueltas y 160 m: la marca 160 m."
+      ],
+      "verificar": [ { "fn": "pista", "args": [{ "L": 400, "p": 3, "q": 2, "mismo": false, "n": 4 }], "espera": { "recorrido": 960, "marca": 160 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "básico",
+      "enunciado": "En un campeonato, 8 equipos juegan una vez contra cada uno de los otros. La victoria da 3 puntos y el empate, 1 a cada equipo. Entre todos suman 70 puntos. ¿Cuántos partidos terminaron empatados?",
+      "respuesta": "14 empates.",
+      "pasos": [
+        "Partidos: 8 × 7 ÷ 2 = 28.",
+        "Si todos tuvieran ganador habría 3 × 28 = 84 puntos; cada empate reparte 2, uno menos.",
+        "Empates: 84 − 70 = 14."
+      ],
+      "verificar": [ { "fn": "empatesDesde", "args": [{ "n": 8, "vueltas": 1, "T": 70 }], "espera": 14 } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "En una diana de tres anillos (exterior, medio y centro), cada anillo vale una cantidad fija de puntos que no se conoce. Ana clavó 3 flechas en el exterior, 1 en el medio y 2 en el centro, y sumó 32 puntos. Beto clavó 3 en el exterior y 3 en el medio, y sumó 24. Carla clavó 3 en el exterior, 2 en el medio y 1 en el centro. ¿Cuántos puntos sumó Carla?",
+      "respuesta": "28 puntos.",
+      "pasos": [
+        "No se puede hallar cada anillo (tres incógnitas, dos datos), pero no hace falta.",
+        "Anillo por anillo, las flechas de Carla son la mitad de las de Ana y Beto juntas: (3 + 3)/2 = 3, (1 + 3)/2 = 2, (2 + 0)/2 = 1.",
+        "Entonces su puntaje es la mitad de 32 + 24: 28 puntos."
+      ],
+      "verificar": [ { "fn": "diana", "args": [{ "w": [3, 5, 9], "u": [[3, 1, 2], [3, 3, 0], [3, 2, 1]] }], "espera": [32, 24, 28] } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "intermedio",
+      "enunciado": "Se tienen varias hojas cuadradas. A algunas se les hace un solo corte por una diagonal (cada una queda en dos triángulos) y no se corta nada más. Al final hay 26 piezas y 84 vértices en total. ¿Cuántas hojas había al inicio?",
+      "respuesta": "16 hojas.",
+      "pasos": [
+        "Con q cuadrados y c cortes: cada corte suma una pieza, q + c = 26.",
+        "Cada corte cambia 4 vértices por 6: 4q + 2c = 84.",
+        "Restando el doble de la primera: 2q = 84 − 52 = 32, q = 16 (y c = 10)."
+      ],
+      "verificar": [ { "fn": "cuadradosDesde", "args": [{ "P": 26, "V": 84, "delta": 2 }], "espera": 16 } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "intermedio",
+      "enunciado": "Dos fichas tienen un número entero positivo en cada cara. Al lanzarlas y sumar las caras de arriba, las sumas posibles son 5, 8, 9 y 12. ¿Cuánto suman los cuatro números de las fichas?",
+      "respuesta": "17.",
+      "pasos": [
+        "La menor suma usa la cara menor de cada ficha; la mayor, la cara mayor de cada una.",
+        "Juntas usan las cuatro caras una vez: 5 + 12 = 17.",
+        "Sumar las cuatro sumas (34) cuenta cada número dos veces."
+      ],
+      "verificar": [ { "fn": "fichas", "args": [[[1, 4], [4, 8]]], "espera": { "sumas": [5, 8, 9, 12], "total": 17 } } ]
+    }
+  ]
+}

@@ -1,0 +1,606 @@
+{
+  "plantilla": "rm-arreglos",
+  "tolerancia": 0,
+  "nota": "Respuestas numéricas (casilla, suma o cantidad).",
+  "verificacion": "Verificado a ciegas el 12 nov 2026: 22/22 por fuerza bruta por tipo (9! permutaciones en los grupos de cuatro, cuadros latinos enumerados con solución única, sistema lineal de exponentes en los cuadros de producto, 2^n en paridad, todas las particiones en filas crecientes). Segunda vuelta tras las correcciones con las 9! permutaciones (semillas 5, 9 y entrada-2: 32, 44 y 44): coinciden.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "fila",
+        "n": 9,
+        "k": 4,
+        "periodo": [
+          2,
+          11,
+          6,
+          10
+        ],
+        "total": 60
+      },
+      "esperado": {
+        "respuesta": 29,
+        "texto": "29"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "multiplicativo",
+        "base": 2,
+        "signos": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "exps": [
+          6,
+          7,
+          2,
+          1,
+          5,
+          9,
+          8,
+          3,
+          4
+        ],
+        "dados": [
+          0,
+          2,
+          3,
+          5
+        ],
+        "x": null,
+        "pide": "suma"
+      },
+      "esperado": {
+        "respuesta": 440,
+        "texto": "440"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "latino",
+        "n": 4,
+        "diag": false,
+        "sol": [
+          [
+            1,
+            4,
+            2,
+            3
+          ],
+          [
+            4,
+            2,
+            3,
+            1
+          ],
+          [
+            2,
+            3,
+            1,
+            4
+          ],
+          [
+            3,
+            1,
+            4,
+            2
+          ]
+        ],
+        "dados": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            2,
+            1
+          ]
+        ],
+        "marcas": [
+          [
+            3,
+            2
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            3,
+            0
+          ]
+        ],
+        "expr": "a + b + c"
+      },
+      "esperado": {
+        "respuesta": 10,
+        "texto": "10"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "multiplicativo",
+        "base": 2,
+        "signos": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "exps": [
+          3,
+          8,
+          1,
+          2,
+          4,
+          6,
+          7,
+          0,
+          5
+        ],
+        "dados": [
+          0,
+          2,
+          5,
+          6
+        ],
+        "x": null,
+        "pide": "suma"
+      },
+      "esperado": {
+        "respuesta": 309,
+        "texto": "309"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "vertices",
+        "numeros": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "pide": "max"
+      },
+      "esperado": {
+        "respuesta": 32,
+        "texto": "32"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "paridad",
+        "r": 3,
+        "c": 3,
+        "bloqueadas": [
+          [
+            0,
+            0
+          ],
+          [
+            2,
+            2
+          ]
+        ]
+      },
+      "esperado": {
+        "respuesta": 4,
+        "texto": "4"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "paridad",
+        "r": 5,
+        "c": 4,
+        "bloqueadas": [
+          [
+            2,
+            2
+          ],
+          [
+            3,
+            1
+          ],
+          [
+            4,
+            2
+          ]
+        ]
+      },
+      "esperado": {
+        "respuesta": 10,
+        "texto": "10"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "vertices",
+        "numeros": [
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14
+        ],
+        "pide": "max"
+      },
+      "esperado": {
+        "respuesta": 44,
+        "texto": "44"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "asientos",
+        "c": 6,
+        "n": 35,
+        "pide": "delante"
+      },
+      "esperado": {
+        "respuesta": 26,
+        "texto": "26"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "crecientes",
+        "r": 3,
+        "c": 4,
+        "j": 2,
+        "pide": "min",
+        "m": 1,
+        "d": 2
+      },
+      "esperado": {
+        "respuesta": 21,
+        "texto": "21"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "asientos",
+        "c": 7,
+        "n": 40,
+        "pide": "delante"
+      },
+      "esperado": {
+        "respuesta": 31,
+        "texto": "31"
+      }
+    },
+    {
+      "semilla": 16,
+      "entrada": {
+        "tipo": "crecientes",
+        "r": 3,
+        "c": 4,
+        "j": 2,
+        "pide": "max",
+        "m": 5,
+        "d": 5
+      },
+      "esperado": {
+        "respuesta": 105,
+        "texto": "105"
+      }
+    },
+    {
+      "semilla": 17,
+      "entrada": {
+        "tipo": "piramide",
+        "base": [
+          7,
+          4,
+          9,
+          8,
+          2
+        ],
+        "pide": "cima",
+        "x": null
+      },
+      "esperado": {
+        "respuesta": 111,
+        "texto": "111"
+      }
+    },
+    {
+      "semilla": 20,
+      "entrada": {
+        "tipo": "piramide",
+        "base": [
+          3,
+          2,
+          1,
+          8,
+          2
+        ],
+        "pide": "cima",
+        "x": null
+      },
+      "esperado": {
+        "respuesta": 51,
+        "texto": "51"
+      }
+    },
+    {
+      "semilla": 29,
+      "entrada": {
+        "tipo": "fila",
+        "n": 10,
+        "k": 4,
+        "periodo": [
+          9,
+          8,
+          11,
+          9
+        ],
+        "total": 91
+      },
+      "esperado": {
+        "respuesta": 37,
+        "texto": "37"
+      }
+    },
+    {
+      "semilla": 30,
+      "entrada": {
+        "tipo": "latino",
+        "n": 4,
+        "diag": true,
+        "sol": [
+          [
+            3,
+            1,
+            2,
+            4
+          ],
+          [
+            4,
+            2,
+            1,
+            3
+          ],
+          [
+            1,
+            3,
+            4,
+            2
+          ],
+          [
+            2,
+            4,
+            3,
+            1
+          ]
+        ],
+        "dados": [
+          [
+            1,
+            2
+          ],
+          [
+            3,
+            1
+          ],
+          [
+            3,
+            2
+          ]
+        ],
+        "marcas": [
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            3
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "expr": "a × b − c"
+      },
+      "esperado": {
+        "respuesta": 15,
+        "texto": "15"
+      }
+    },
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "crecientes",
+        "r": 3,
+        "c": 4,
+        "j": 2,
+        "pide": "max",
+        "m": 5,
+        "d": 5
+      },
+      "esperado": {
+        "respuesta": 105,
+        "texto": "105"
+      }
+    },
+    {
+      "semilla": "entrada-2",
+      "entrada": {
+        "tipo": "vertices",
+        "numeros": [
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14
+        ],
+        "pide": "max"
+      },
+      "esperado": {
+        "respuesta": 44,
+        "texto": "44"
+      }
+    },
+    {
+      "semilla": "entrada-3",
+      "entrada": {
+        "tipo": "asientos",
+        "c": 11,
+        "n": 49,
+        "pide": "delante"
+      },
+      "esperado": {
+        "respuesta": 40,
+        "texto": "40"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "crecientes",
+        "r": 3,
+        "c": 5,
+        "j": 3,
+        "pide": "max",
+        "m": 1,
+        "d": 1
+      },
+      "esperado": {
+        "respuesta": 30,
+        "texto": "30"
+      }
+    },
+    {
+      "semilla": "salida-2",
+      "entrada": {
+        "tipo": "multiplicativo",
+        "base": 2,
+        "signos": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "exps": [
+          5,
+          6,
+          1,
+          0,
+          4,
+          8,
+          7,
+          2,
+          3
+        ],
+        "dados": [
+          4,
+          6,
+          7,
+          8
+        ],
+        "x": null,
+        "pide": "suma"
+      },
+      "esperado": {
+        "respuesta": 355,
+        "texto": "355"
+      }
+    },
+    {
+      "semilla": "salida-3",
+      "entrada": {
+        "tipo": "multiplicativo",
+        "base": 2,
+        "signos": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "exps": [
+          4,
+          3,
+          8,
+          9,
+          5,
+          1,
+          2,
+          7,
+          6
+        ],
+        "dados": [
+          0,
+          4,
+          5
+        ],
+        "x": 2,
+        "pide": "x"
+      },
+      "esperado": {
+        "respuesta": 256,
+        "texto": "256"
+      }
+    }
+  ]
+}

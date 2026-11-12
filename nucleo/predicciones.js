@@ -160,5 +160,8 @@
     return rng.barajar(elegidas).map((a, i) => ({ letra: LETRAS[i], ...a }));
   }
 
-  return { formatear, radical, pi, v, armar, LETRAS, frac, textoFraccion, combinacion, vector, armarTexto };
+  // Escapa texto para meterlo dentro de un SVG o HTML armado por el generador (figura del problema).
+  const xml = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+  return { formatear, radical, pi, v, armar, LETRAS, frac, textoFraccion, combinacion, vector, armarTexto, xml };
 });

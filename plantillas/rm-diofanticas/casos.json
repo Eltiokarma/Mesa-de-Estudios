@@ -1,0 +1,470 @@
+{
+  "plantilla": "rm-diofanticas",
+  "tolerancia": 1e-09,
+  "nota": "Dinero en soles (las monedas, en céntimos en _datos: S y den). Todas las respuestas son enteras y salen de enumerar todas las soluciones.",
+  "verificacion": "Verificador ciego (subagente, 8 nov 2026): resolvió los 27 casos sin ver el generador, por enumeración (compras, palitos, bodeguera), programación dinámica (dardos, alcancía, cifras que quedan), búsqueda recursiva (grupos de monedas), las 120 permutaciones con fracciones exactas (expresión) y la condición resto = n − f (caramelos). 27 de 27 coinciden. Las correcciones de la revisión (12 nov 2026) no cambiaron ningún caso.",
+  "casos": [
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "dos-articulos",
+        "ctx": 1,
+        "a": 7,
+        "b": 13,
+        "T": 125,
+        "pide": "menos"
+      },
+      "esperado": {
+        "respuesta": 11,
+        "texto": "11 artículos"
+      }
+    },
+    {
+      "semilla": "entrada-2",
+      "entrada": {
+        "tipo": "reparto",
+        "C": 559,
+        "f": 8,
+        "lo": 23,
+        "hi": 30
+      },
+      "esperado": {
+        "respuesta": 27,
+        "texto": "27 alumnos"
+      }
+    },
+    {
+      "semilla": "entrada-3",
+      "entrada": {
+        "tipo": "expresion",
+        "nums": [
+          2,
+          3,
+          4,
+          6,
+          8
+        ],
+        "ops": [
+          "−",
+          "×",
+          "+",
+          "÷"
+        ]
+      },
+      "esperado": {
+        "respuesta": 2,
+        "texto": "2"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "reparto",
+        "C": 418,
+        "f": 14,
+        "lo": 20,
+        "hi": 27
+      },
+      "esperado": {
+        "respuesta": 24,
+        "texto": "24 alumnos"
+      }
+    },
+    {
+      "semilla": "salida-2",
+      "entrada": {
+        "tipo": "dardos",
+        "sectores": [
+          2,
+          6,
+          10,
+          23
+        ],
+        "S": 88,
+        "pide": "costo",
+        "costo": 3
+      },
+      "esperado": {
+        "respuesta": 21,
+        "texto": "S/ 21"
+      }
+    },
+    {
+      "semilla": "salida-3",
+      "entrada": {
+        "tipo": "borrar",
+        "bloque": "260",
+        "r": 7,
+        "S": 18
+      },
+      "esperado": {
+        "respuesta": 18,
+        "texto": "18 cifras"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "dardos",
+        "sectores": [
+          7,
+          11,
+          13,
+          20
+        ],
+        "S": 32,
+        "pide": "costo",
+        "costo": 3
+      },
+      "esperado": {
+        "respuesta": 12,
+        "texto": "S/ 12"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "palitos",
+        "a": 4,
+        "b": 19,
+        "L": 159
+      },
+      "esperado": {
+        "respuesta": 21,
+        "texto": "21 palitos"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "reparto",
+        "C": 740,
+        "f": 8,
+        "lo": 42,
+        "hi": 50
+      },
+      "esperado": {
+        "respuesta": 44,
+        "texto": "44 alumnos"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "grupos",
+        "den": [
+          1,
+          2,
+          5
+        ],
+        "cant": [
+          3,
+          2,
+          7
+        ],
+        "G": 7
+      },
+      "esperado": {
+        "respuesta": 3,
+        "texto": "3 grupos"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "dardos",
+        "sectores": [
+          2,
+          8,
+          12,
+          25
+        ],
+        "S": 46,
+        "pide": "tiros",
+        "costo": 1
+      },
+      "esperado": {
+        "respuesta": 5,
+        "texto": "5 dardos"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "tres-precios",
+        "p": [
+          6,
+          8,
+          10
+        ],
+        "g": [
+          3,
+          2,
+          6
+        ],
+        "T": 158,
+        "m": 3
+      },
+      "esperado": {
+        "respuesta": 84,
+        "texto": "S/ 84"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "dos-articulos",
+        "ctx": 2,
+        "a": 3,
+        "b": 7,
+        "T": 153,
+        "pide": "cuantas"
+      },
+      "esperado": {
+        "respuesta": 7,
+        "texto": "7 maneras"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "borrar",
+        "bloque": "302",
+        "r": 6,
+        "S": 12
+      },
+      "esperado": {
+        "respuesta": 14,
+        "texto": "14 cifras"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "dos-articulos",
+        "ctx": 2,
+        "a": 5,
+        "b": 11,
+        "T": 128,
+        "pide": "mas"
+      },
+      "esperado": {
+        "respuesta": 22,
+        "texto": "22 artículos"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "monedas",
+        "den": [
+          20,
+          50,
+          100,
+          200
+        ],
+        "S": 750,
+        "k": 1
+      },
+      "esperado": {
+        "respuesta": 23,
+        "texto": "23 monedas"
+      }
+    },
+    {
+      "semilla": 17,
+      "entrada": {
+        "tipo": "dos-articulos",
+        "ctx": 0,
+        "a": 6,
+        "b": 13,
+        "T": 200,
+        "pide": "menos"
+      },
+      "esperado": {
+        "respuesta": 17,
+        "texto": "17 artículos"
+      }
+    },
+    {
+      "semilla": 25,
+      "entrada": {
+        "tipo": "expresion",
+        "nums": [
+          1,
+          4,
+          5,
+          6,
+          8
+        ],
+        "ops": [
+          "+",
+          "×",
+          "−",
+          "÷"
+        ]
+      },
+      "esperado": {
+        "respuesta": 49,
+        "texto": "49"
+      }
+    },
+    {
+      "semilla": 32,
+      "entrada": {
+        "tipo": "alcanza",
+        "l": 6,
+        "d": 2,
+        "k": 2,
+        "a1": 2,
+        "b1": 5,
+        "a2": 8,
+        "b3": 9
+      },
+      "esperado": {
+        "respuesta": 53,
+        "texto": "S/ 53"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "reparto",
+        "C": 452,
+        "f": 10,
+        "lo": 31,
+        "hi": 42
+      },
+      "esperado": {
+        "respuesta": 33,
+        "texto": "33 alumnos"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "grupos",
+        "den": [
+          1,
+          2,
+          5
+        ],
+        "cant": [
+          3,
+          7,
+          7
+        ],
+        "G": 6
+      },
+      "esperado": {
+        "respuesta": 5,
+        "texto": "5 grupos"
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "tipo": "palitos",
+        "a": 3,
+        "b": 5,
+        "L": 174
+      },
+      "esperado": {
+        "respuesta": 36,
+        "texto": "36 palitos"
+      }
+    },
+    {
+      "semilla": 21,
+      "entrada": {
+        "tipo": "borrar",
+        "bloque": "4860",
+        "r": 6,
+        "S": 38
+      },
+      "esperado": {
+        "respuesta": 19,
+        "texto": "19 cifras"
+      }
+    },
+    {
+      "semilla": 22,
+      "entrada": {
+        "tipo": "tres-precios",
+        "p": [
+          5,
+          8,
+          9
+        ],
+        "g": [
+          1,
+          4,
+          2
+        ],
+        "T": 77,
+        "m": 1
+      },
+      "esperado": {
+        "respuesta": 30,
+        "texto": "S/ 30"
+      }
+    },
+    {
+      "semilla": 27,
+      "entrada": {
+        "tipo": "monedas",
+        "den": [
+          20,
+          50,
+          100
+        ],
+        "S": 1620,
+        "k": 1
+      },
+      "esperado": {
+        "respuesta": 74,
+        "texto": "74 monedas"
+      }
+    },
+    {
+      "semilla": 30,
+      "entrada": {
+        "tipo": "expresion",
+        "nums": [
+          2,
+          4,
+          5,
+          7,
+          8
+        ],
+        "ops": [
+          "+",
+          "×",
+          "−",
+          "÷"
+        ]
+      },
+      "esperado": {
+        "respuesta": 59,
+        "texto": "59"
+      }
+    },
+    {
+      "semilla": 53,
+      "entrada": {
+        "tipo": "alcanza",
+        "l": 7,
+        "d": 1,
+        "k": 2,
+        "a1": 3,
+        "b1": 1,
+        "a2": 5,
+        "b3": 6
+      },
+      "esperado": {
+        "respuesta": 39,
+        "texto": "S/ 39"
+      }
+    }
+  ]
+}

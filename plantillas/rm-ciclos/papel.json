@@ -1,0 +1,132 @@
+{
+  "titulo": "Lo que se repite: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la app, con unos 2 minutos por problema. Busca qué se repite, cuánto dura una vuelta completa y desde dónde empiezas a contar.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "En una fiesta de Puno suena sin pausas esta lista, que se repite: Huaino (5 min), Saya (3 min), Morenada (4 min), Tondero (6 min) y Cumbia (2 min). A las 9:00 p. m. el Tondero lleva 2 min sonando. ¿Qué canción suena a las 2:00 a. m.?",
+      "respuesta": "El Tondero.",
+      "pasos": [
+        "Una vuelta de la lista dura 5 + 3 + 4 + 6 + 2 = 20 min.",
+        "A las 9:00 p. m. la lista va en el minuto 5 + 3 + 4 + 2 = 14 (el Tondero ocupa del minuto 12 al 18).",
+        "De 9:00 p. m. a 2:00 a. m. pasan 5 h = 300 min, que son 15 vueltas exactas.",
+        "Las vueltas completas no cambian nada: la lista vuelve al minuto 14, dentro del Tondero."
+      ],
+      "verificar": [ { "fn": "resolver", "args": [{ "tipo": "canciones", "nombres": ["Huaino", "Saya", "Morenada", "Tondero", "Cumbia"], "dur": [5, 3, 4, 6, 2], "s": 3, "m": 2, "T": 300 }], "espera": "Tondero" } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Una pista circular tiene 16 marcas equidistantes, numeradas del 1 al 16 en sentido horario, con 25 m entre marcas vecinas. Una ciclista parte de la marca 13 y recorre 3025 m en sentido antihorario. ¿En qué marca termina?",
+      "respuesta": "En la marca 4.",
+      "pasos": [
+        "Tramos: 3025 ÷ 25 = 121.",
+        "121 = 16 × 7 + 9: siete vueltas completas y 9 tramos más.",
+        "En sentido antihorario los números bajan: 13 − 9 = 4."
+      ],
+      "verificar": [ { "fn": "resolver", "args": [{ "tipo": "pista", "n": 16, "d": 25, "s": 13, "k": 121, "sentido": "antihorario" }], "espera": 4 } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Un tablero circular tiene 20 casillas numeradas del 1 al 20 en sentido horario. La ficha A está en la casilla 3 y la ficha B en la 15. En cada jugada, A avanza 7 casillas y B avanza 3, las dos en sentido horario. ¿Al final de qué jugada coinciden por primera vez?",
+      "respuesta": "Al final de la jugada 3.",
+      "pasos": [
+        "De A hacia B, en sentido horario, hay 15 − 3 = 12 casillas.",
+        "En cada jugada A le descuenta 7 − 3 = 4 casillas a esa separación.",
+        "12 ÷ 4 = 3: después de 3 jugadas la separación es 0.",
+        "Comprobación: A en 3 + 21 = 24 → casilla 4; B en 15 + 9 = 24 → casilla 4."
+      ],
+      "verificar": [ { "fn": "resolver", "args": [{ "tipo": "fichas", "n": 20, "a": 3, "b": 15, "p": 7, "q": 3, "mismo": true }], "espera": 3 } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Se escribe el bloque 31415 una y otra vez, sin espacios: 314153141531415… ¿Cuánto suman las primeras 203 cifras?",
+      "respuesta": "568",
+      "pasos": [
+        "El bloque tiene 5 cifras y suma 3 + 1 + 4 + 1 + 5 = 14.",
+        "203 = 5 × 40 + 3: hay 40 bloques completos y sobran 3 cifras.",
+        "Las 3 cifras que sobran son las primeras del bloque: 3, 1 y 4.",
+        "Suma: 40 × 14 + 3 + 1 + 4 = 568."
+      ],
+      "verificar": [ { "fn": "resolver", "args": [{ "tipo": "bloque", "bloque": "31415", "pre": "", "pide": "suma", "k": 0, "D": 203 }], "espera": 568 } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Un número empieza con la cifra 5 y sigue con el bloque 2468 repetido: 5246824682468… ¿Qué cifra ocupa el lugar 500?",
+      "respuesta": "6",
+      "pasos": [
+        "El 5 no es parte del bloque: quedan 500 − 1 = 499 lugares en la parte que se repite.",
+        "499 = 4 × 124 + 3.",
+        "Residuo 3: es la tercera cifra del bloque 2468, o sea 6."
+      ],
+      "verificar": [ { "fn": "resolver", "args": [{ "tipo": "bloque", "bloque": "2468", "pre": "5", "pide": "cifra", "k": 500, "D": 0 }], "espera": 6 } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "avanzado",
+      "enunciado": "Una sucesión empieza con 2 y 3, y desde el tercer término cada término es la cifra de las unidades del producto de los dos anteriores. ¿Cuál es el término 100?",
+      "respuesta": "8",
+      "pasos": [
+        "Términos: 2, 3, 6, 8, 8, 4, 2, 8, 6, 8, 8, 4, …",
+        "El 2 y el 3 del comienzo no vuelven a aparecer juntos: son el preperíodo. Desde el tercer término se repite 6, 8, 8, 4, 2, 8 (período 6).",
+        "100 − 2 = 98 = 6 × 16 + 2.",
+        "Residuo 2: el segundo del ciclo, que es 8."
+      ],
+      "verificar": [ { "fn": "resolver", "args": [{ "tipo": "unidades", "regla": "producto", "u1": 2, "u2": 3, "c1": null, "c0": null, "N": 100 }], "espera": 8 } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Se escriben los números en espiral como en la app: el 1 al centro, el 2 a su derecha y se sigue en sentido antihorario. Debajo del 1 están 8, 23, 46, … ¿Qué número está 25 casillas debajo del 1?",
+      "respuesta": "2576",
+      "pasos": [
+        "Saltos: 23 − 8 = 15 y 46 − 23 = 23. Crecen de 8 en 8, porque cada vuelta de la espiral tiene 8 casillas más.",
+        "Con saltos que crecen de 8 en 8, el número del lugar j es 4j² + bj + c. Con j = 1 da 8 y con j = 2 da 23: b = 3 y c = 1.",
+        "Para j = 25: 4 × 625 + 3 × 25 + 1 = 2576."
+      ],
+      "verificar": [ { "fn": "resolver", "args": [{ "tipo": "espiral", "pide": "rayo", "rayo": [0, -1], "m": 25, "N": 0 }], "espera": 2576 } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "En la misma espiral, cada casilla es un cuadrado de 1 cm de lado. Se sombrean las casillas del 1 al 200. ¿Cuál es el perímetro de la región sombreada?",
+      "respuesta": "58 cm",
+      "pasos": [
+        "Del 1 al 196 (= 14²) la región es un cuadrado de 14 por 14.",
+        "Las casillas 197 a 200 empiezan un lado nuevo: una columna incompleta pegada al cuadrado.",
+        "Esa columna agrega 2 cm, igual que si estuviera completa: el perímetro es el del rectángulo de 14 por 15.",
+        "2 × (14 + 15) = 58 cm."
+      ],
+      "verificar": [ { "fn": "resolver", "args": [{ "tipo": "espiral", "pide": "perimetro", "rayo": null, "m": 0, "N": 200 }], "espera": 58 } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "básico",
+      "enunciado": "Una lagartija sube por una pared de 30 m. De día sube 7 m y de noche resbala 4 m. Si empieza el día 1 por la mañana desde el suelo, ¿qué día llega arriba?",
+      "respuesta": "El día 9.",
+      "pasos": [
+        "Cada día con su noche avanza 7 − 4 = 3 m, pero el último día no resbala.",
+        "Le basta amanecer a 7 m o menos de la cima, es decir, a 23 m o más de altura.",
+        "Con 3 m por día: 23 ÷ 3 = 7,6…, así que necesita 8 días con sus noches (a los 24 m).",
+        "El día 9 sube de 24 m a 31 m: llega. Dividir 30 ÷ 3 = 10 sería el error de olvidar el último tramo."
+      ],
+      "verificar": [ { "fn": "resolver", "args": [{ "tipo": "avance", "pide": "dias", "H": 30, "a": 7, "b": 4, "t1": null }], "espera": 9 } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "En una serie de figuras, un hexágono tiene un punto que salta 2 vértices en sentido horario de una figura a la siguiente, y una flecha en el centro que gira 90° en sentido antihorario. En la figura 1 el punto está en el vértice de arriba y la flecha apunta hacia arriba. ¿Cómo es la figura 200?",
+      "respuesta": "Punto abajo a la derecha; flecha hacia la derecha.",
+      "pasos": [
+        "De la figura 1 a la 200 hay 199 cambios.",
+        "El punto vuelve a su lugar cada 3 figuras (6 vértices ÷ 2): 199 = 3 × 66 + 1. Queda como en la figura 2: dos vértices después del de arriba, abajo a la derecha.",
+        "La flecha vuelve cada 4 figuras: 199 = 4 × 49 + 3. Queda como en la figura 4: 3 × 90° = 270° antihorario, que es apuntar hacia la derecha."
+      ],
+      "verificar": [ { "fn": "resolver", "args": [{ "tipo": "figuras", "forma": "hexagono", "p0": 0, "sp": 2, "d0": 0, "giro": 2, "sd": -1, "N": 200 }], "espera": "p2f2" } ]
+    }
+  ]
+}

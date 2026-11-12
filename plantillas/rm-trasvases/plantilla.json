@@ -1,0 +1,15 @@
+{
+  "id": "rm-trasvases",
+  "titulo": "Recipientes sin marcas: trasvases y repartos",
+  "formato": "predicciones",
+  "unidades": [
+    "razonamiento-matematico.juegos-recreativos",
+    "razonamiento-matematico.traslados-y-puntos-cardinales"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

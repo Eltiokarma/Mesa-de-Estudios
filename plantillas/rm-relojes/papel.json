@@ -1,0 +1,111 @@
+{
+  "titulo": "Horas, relojes y calendarios: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la app, con unos 2 o 3 minutos por problema. Recuerda: el día tiene 24 horas; un reloj de agujas vuelve a marcar la hora correcta cuando se adelanta o se atrasa 12 horas (720 minutos); un año es bisiesto si es divisible por 4 (salvo los seculares que no son divisibles por 400).",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Las horas que ya pasaron del día y las que faltan para que termine están en la razón de 3 a 5. ¿Qué hora es?",
+      "respuesta": "Las 9:00 a. m.",
+      "pasos": [
+        "Las 24 horas se reparten en 3 + 5 = 8 partes de 3 horas.",
+        "Pasaron 3 partes: 9 horas desde la medianoche. Son las 9:00 a. m.",
+        "Si respondías 3:00 p. m., diste las 15 horas que faltan."
+      ],
+      "verificar": [ { "fn": "hora", "args": [540], "espera": "9:00 a. m." } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "intermedio",
+      "enunciado": "Hace 2 horas, lo que faltaba para que terminara el día era el triple de lo que faltará dentro de 4 horas. ¿Qué hora es?",
+      "respuesta": "Las 5:00 p. m.",
+      "pasos": [
+        "Sea f lo que falta ahora. Hace 2 h faltaban f + 2; dentro de 4 h faltarán f − 4.",
+        "f + 2 = 3(f − 4) → 2f = 14 → f = 7 h.",
+        "Pasaron 24 − 7 = 17 h: son las 5:00 p. m. (las 7:00 a. m. serían confundir lo que falta con lo que pasó)."
+      ],
+      "verificar": [ { "fn": "hora", "args": [1020], "espera": "5:00 p. m." } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "El turno de un vigilante dura 8 horas y empezó a las 7:00 a. m. Lo que ya pasó del turno es a lo que falta como 3 es a 1. ¿Cuánto falta para que termine el turno?",
+      "respuesta": "2 horas (ahora es la 1:00 p. m.).",
+      "pasos": [
+        "Las 8 horas se reparten en 3 + 1 = 4 partes de 2 horas: pasaron 6 h y faltan 2 h.",
+        "Ahora son las 7:00 a. m. + 6 h = 1:00 p. m.; pero la pregunta pide lo que falta: 2 horas."
+      ],
+      "verificar": [ { "fn": "hora", "args": [780], "espera": "1:00 p. m." } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "avanzado",
+      "enunciado": "En el año 2027, el tiempo que ya pasó del año y el que falta están en la razón de 1 a 2. ¿Qué fecha y qué hora es?",
+      "respuesta": "El 2 de mayo, a las 4:00 p. m.",
+      "pasos": [
+        "2027 no es bisiesto: 365 días = 8760 h. Pasó la tercera parte: 2920 h = 121 días y 16 h.",
+        "Pasaron 121 días completos: estamos en el día 122. Enero (31), febrero (28), marzo (31) y abril (30) suman 120; el día 122 es el 2 de mayo.",
+        "Hora: 16 h después de la medianoche, las 4:00 p. m. (El 1 de mayo sería tomar los 121 días pasados como si fuera el día 121.)"
+      ],
+      "verificar": [ { "fn": "anioMinutos", "args": [175200, 2027], "espera": { "m": 5, "d": 2, "min": 960 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Un reloj de agujas se puso en hora el 1 de enero de 2028 a las 9:00 a. m. Se adelanta 8 minutos cada día. ¿En qué fecha vuelve a marcar la hora correcta por primera vez?",
+      "respuesta": "El 31 de marzo de 2028.",
+      "pasos": [
+        "Tiene que adelantarse 720 minutos: 720 ÷ 8 = 90 días.",
+        "2028 es bisiesto. Del 1 de enero: 30 días hasta el 31 de enero, 29 de febrero (59) y 31 de marzo (90).",
+        "Vuelve a marcar bien el 31 de marzo de 2028. Sin el 29 de febrero saldría el 1 de abril."
+      ],
+      "verificar": [ { "fn": "vueltaCorrecta", "args": [8], "espera": 90 }, { "fn": "sumarDias", "args": [{ "a": 2028, "m": 1, "d": 1 }, 90], "espera": { "a": 2028, "m": 3, "d": 31 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Dos relojes se ponen en hora a la vez. Uno se adelanta 6 minutos por día y el otro se atrasa 8 minutos por día. ¿Dentro de cuántos días marcarán los dos la hora correcta a la vez, por primera vez?",
+      "respuesta": "360 días.",
+      "pasos": [
+        "El primero marca bien cada 720 ÷ 6 = 120 días; el segundo, cada 720 ÷ 8 = 90 días.",
+        "A la vez: mcm(120; 90) = 360 días. (El MCD, 30, y el producto, 10 800, son los errores típicos.)"
+      ],
+      "verificar": [ { "fn": "vueltaCorrecta", "args": [6], "espera": 120 }, { "fn": "mcm", "args": [120, 90], "espera": 360 } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Un reloj se atrasa 6 minutos el primer día, 12 el segundo, 18 el tercero, y así (cada día 6 minutos más). ¿Al cabo de cuántos días vuelve a marcar la hora correcta?",
+      "respuesta": "15 días.",
+      "pasos": [
+        "El atraso acumulado en n días es 6 + 12 + … + 6n = 6 · n(n + 1)/2 = 3n(n + 1).",
+        "3n(n + 1) = 720 → n(n + 1) = 240 = 15 · 16 → n = 15.",
+        "Con atraso constante de 6 min habrían sido 120 días: el atraso que crece llega mucho antes."
+      ],
+      "verificar": [ { "fn": "diasCreciente", "args": [6, 6], "espera": 15 } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Un mes tiene 31 días. ¿En qué día de la semana debe empezar para tener la mayor cantidad posible de viernes, sábados y domingos? ¿Cuántos serían en total?",
+      "respuesta": "En viernes; 15 (5 de cada uno).",
+      "pasos": [
+        "31 = 4 semanas + 3 días. Los 3 días que sobran son los tres primeros del mes.",
+        "Para que sean viernes, sábado y domingo, el mes empieza en viernes: 5 + 5 + 5 = 15."
+      ],
+      "verificar": [ { "fn": "diaSemanaMax", "args": [{ "N": 31, "clase": [4, 5, 6] }], "espera": { "maximo": 15, "inicio": 4 } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Lucha miente los lunes, martes y miércoles, y dice la verdad los demás días. Pepe miente los jueves, viernes y sábados, y dice la verdad los demás días. Un día los dos dicen: «Ayer mentí». ¿Qué día es? ¿Qué día será mañana?",
+      "respuesta": "Jueves; mañana será viernes.",
+      "pasos": [
+        "Lucha: la frase cuadra el lunes (miente y ayer, domingo, dijo la verdad: frase falsa) y el jueves (dice la verdad y ayer, miércoles, mintió).",
+        "Pepe: cuadra el jueves (miente y ayer, miércoles, dijo la verdad) y el domingo (dice la verdad y ayer, sábado, mintió).",
+        "El único día común es el jueves; mañana será viernes."
+      ],
+      "verificar": [ { "fn": "mentirosos", "args": [{ "mienteA": [0, 1, 2], "mienteB": [3, 4, 5], "dichoA": "ayer-menti", "dichoB": "ayer-menti" }], "espera": [3] } ]
+    }
+  ]
+}

@@ -1,0 +1,371 @@
+{
+  "plantilla": "rm-ciclos",
+  "tolerancia": 0,
+  "nota": "Respuesta: canciones, el nombre de la canción; pista, la marca; fichas, la jugada; bloque, la cifra, la suma o las dos últimas cifras como número; unidades, el término; figuras, la clave p<vértice>f<dirección> (vértices y direcciones numerados desde 0, empezando arriba, en sentido horario); espiral, el número o el perímetro en cm; avance, el día o los minutos desde el comienzo. Las entradas son el _datos del generador; ver la cabecera de generador.js.",
+  "verificacion": "Verificación ciega (subagente, 8 nov 2026): los 22 casos se resolvieron sin ver el generador, por simulación literal (jugada a jugada, cadena de cifras construida, minuto a minuto en canciones y pozo, espiral en coordenadas con el perímetro por lados expuestos) y, en figuras, deduciendo el paso del punto y el giro de la flecha de las 4 figuras dibujadas. 22 de 22 coinciden; ninguna serie de figuras admite dos continuaciones. Las correcciones de la revisión (12 nov 2026) solo cambiaron la redacción de las semillas 1, 9, entrada-2 y salida-2, con la misma respuesta.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "fichas",
+        "n": 8,
+        "a": 4,
+        "b": 2,
+        "p": 4,
+        "q": 1,
+        "mismo": false
+      },
+      "esperado": {
+        "respuesta": 6
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "unidades",
+        "regla": "lineal",
+        "u1": 6,
+        "u2": null,
+        "c1": 8,
+        "c0": 9,
+        "N": 74
+      },
+      "esperado": {
+        "respuesta": 7
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "espiral",
+        "pide": "perimetro",
+        "rayo": null,
+        "m": 0,
+        "N": 93
+      },
+      "esperado": {
+        "respuesta": 40
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "pista",
+        "n": 11,
+        "d": 50,
+        "s": 6,
+        "k": 50,
+        "sentido": "antihorario"
+      },
+      "esperado": {
+        "respuesta": 11
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "pista",
+        "n": 10,
+        "d": 20,
+        "s": 7,
+        "k": 51,
+        "sentido": "horario"
+      },
+      "esperado": {
+        "respuesta": 8
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "bloque",
+        "bloque": "9142",
+        "pre": "35",
+        "pide": "ultimas",
+        "k": 0,
+        "D": 58
+      },
+      "esperado": {
+        "respuesta": 42
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "espiral",
+        "pide": "perimetro",
+        "rayo": null,
+        "m": 0,
+        "N": 77
+      },
+      "esperado": {
+        "respuesta": 36
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "avance",
+        "pide": "dias",
+        "H": 26,
+        "a": 4,
+        "b": 1,
+        "t1": null
+      },
+      "esperado": {
+        "respuesta": 9
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "canciones",
+        "nombres": [
+          "Tondero",
+          "Saya",
+          "Tuntuna",
+          "Cumbia"
+        ],
+        "dur": [
+          6,
+          2,
+          6,
+          4
+        ],
+        "s": 2,
+        "m": 1,
+        "T": 162
+      },
+      "esperado": {
+        "respuesta": "Tuntuna"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "unidades",
+        "regla": "lineal",
+        "u1": 4,
+        "u2": null,
+        "c1": 2,
+        "c0": 5,
+        "N": 41
+      },
+      "esperado": {
+        "respuesta": 9
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "canciones",
+        "nombres": [
+          "Huaino",
+          "Marinera",
+          "Diablada",
+          "Cumbia",
+          "Carnaval",
+          "Tondero"
+        ],
+        "dur": [
+          4,
+          3,
+          3,
+          5,
+          3,
+          4
+        ],
+        "s": 2,
+        "m": 0,
+        "T": 224
+      },
+      "esperado": {
+        "respuesta": "Cumbia"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "fichas",
+        "n": 14,
+        "a": 14,
+        "b": 12,
+        "p": 5,
+        "q": 5,
+        "mismo": false
+      },
+      "esperado": {
+        "respuesta": 4
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "bloque",
+        "bloque": "72158",
+        "pre": "",
+        "pide": "ultimas",
+        "k": 0,
+        "D": 68
+      },
+      "esperado": {
+        "respuesta": 21
+      }
+    },
+    {
+      "semilla": 26,
+      "entrada": {
+        "tipo": "avance",
+        "pide": "hora",
+        "H": 24,
+        "a": 6,
+        "b": 1,
+        "t1": 30
+      },
+      "esperado": {
+        "respuesta": 260
+      }
+    },
+    {
+      "semilla": 27,
+      "entrada": {
+        "tipo": "figuras",
+        "forma": "hexagono",
+        "p0": 3,
+        "sp": 1,
+        "d0": 1,
+        "giro": 3,
+        "sd": 1,
+        "N": 32
+      },
+      "esperado": {
+        "respuesta": "p4f6"
+      }
+    },
+    {
+      "semilla": 44,
+      "entrada": {
+        "tipo": "figuras",
+        "forma": "cuadrado",
+        "p0": 1,
+        "sp": -1,
+        "d0": 3,
+        "giro": 3,
+        "sd": 1,
+        "N": 108
+      },
+      "esperado": {
+        "respuesta": "p2f4"
+      }
+    },
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "canciones",
+        "nombres": [
+          "Cumbia",
+          "Tuntuna",
+          "Diablada",
+          "Huaino"
+        ],
+        "dur": [
+          5,
+          6,
+          6,
+          5
+        ],
+        "s": 2,
+        "m": 0,
+        "T": 98
+      },
+      "esperado": {
+        "respuesta": "Huaino"
+      }
+    },
+    {
+      "semilla": "entrada-2",
+      "entrada": {
+        "tipo": "bloque",
+        "bloque": "5138",
+        "pre": "6",
+        "pide": "suma",
+        "k": 0,
+        "D": 59
+      },
+      "esperado": {
+        "respuesta": 250
+      }
+    },
+    {
+      "semilla": "entrada-3",
+      "entrada": {
+        "tipo": "avance",
+        "pide": "hora",
+        "H": 22,
+        "a": 5,
+        "b": 2,
+        "t1": 40
+      },
+      "esperado": {
+        "respuesta": 392
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "canciones",
+        "nombres": [
+          "Tuntuna",
+          "Marinera",
+          "Morenada",
+          "Carnaval",
+          "Cumbia",
+          "Diablada"
+        ],
+        "dur": [
+          6,
+          2,
+          4,
+          4,
+          5,
+          3
+        ],
+        "s": 2,
+        "m": 1,
+        "T": 154
+      },
+      "esperado": {
+        "respuesta": "Cumbia"
+      }
+    },
+    {
+      "semilla": "salida-2",
+      "entrada": {
+        "tipo": "bloque",
+        "bloque": "35421",
+        "pre": "8",
+        "pide": "suma",
+        "k": 0,
+        "D": 97
+      },
+      "esperado": {
+        "respuesta": 296
+      }
+    },
+    {
+      "semilla": "salida-3",
+      "entrada": {
+        "tipo": "fichas",
+        "n": 12,
+        "a": 10,
+        "b": 11,
+        "p": 1,
+        "q": 2,
+        "mismo": true
+      },
+      "esperado": {
+        "respuesta": 11
+      }
+    }
+  ]
+}

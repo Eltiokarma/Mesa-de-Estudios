@@ -1,0 +1,14 @@
+{
+  "id": "rm-diagramas-flujo",
+  "titulo": "Diagramas de flujo y operadores",
+  "formato": "predicciones",
+  "unidades": [
+    "razonamiento-matematico.diagramas-de-flujo"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

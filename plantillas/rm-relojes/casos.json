@@ -1,0 +1,726 @@
+{
+  "plantilla": "rm-relojes",
+  "tolerancia": 1e-09,
+  "nota": "Horas del día en minutos desde las 0:00 (texto «3:36 p. m.»); duraciones como 'dur:<min>'; fechas 'f:AAAA-MM-DD'; fecha y hora del año 'min:<minutos desde el 1 de enero a las 0:00>'; días de la semana 'dia:<0 = lunes … 6 = domingo>'. Un reloj de agujas vuelve a marcar bien con 720 min de desfase. Entrada-k y salida-k son del mismo tipo.",
+  "verificacion": "Verificación ciega (subagente, 12 nov 2026): los 42 casos resueltos aparte. Relojes simulados minuto a minuto con fechas reales (datetime, bisiestos) hasta el primer múltiplo de 720 min; mentirosos y días de la semana por fuerza bruta sobre los 7 días; horas barriendo el día con fracciones exactas. 42/42 coinciden. Barrido de 1500 semillas leyendo solo el enunciado: 1500/1500, sin casos con dos soluciones. Las correcciones de la revisión no cambiaron ninguna respuesta.",
+  "casos": [
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "adelanto",
+        "a": 12,
+        "sentido": "adelanta",
+        "desde": {
+          "a": 2028,
+          "m": 10,
+          "d": 3
+        },
+        "hora": 420
+      },
+      "esperado": {
+        "respuesta": "f:2028-12-02",
+        "texto": "2 de diciembre de 2028"
+      }
+    },
+    {
+      "semilla": 17,
+      "entrada": {
+        "tipo": "adelanto",
+        "a": 4,
+        "sentido": "atrasa",
+        "desde": {
+          "a": 2028,
+          "m": 3,
+          "d": 13
+        },
+        "hora": 420
+      },
+      "esperado": {
+        "respuesta": "f:2028-09-09",
+        "texto": "9 de setiembre de 2028"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "anio",
+        "anio": 2031,
+        "p": 7,
+        "q": 5
+      },
+      "esperado": {
+        "respuesta": "min:306600",
+        "texto": "el 1 de agosto, a las 10:00 p. m."
+      }
+    },
+    {
+      "semilla": 21,
+      "entrada": {
+        "tipo": "anio",
+        "anio": 2029,
+        "p": 3,
+        "q": 5
+      },
+      "esperado": {
+        "respuesta": "min:197100",
+        "texto": "el 17 de mayo, a las 9:00 p. m."
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "calendario",
+        "forma": "inicio",
+        "N": 61,
+        "clase": [
+          4,
+          5,
+          6,
+          0,
+          1
+        ]
+      },
+      "esperado": {
+        "respuesta": "dia:4",
+        "texto": "viernes"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "calendario",
+        "forma": "inicio",
+        "N": 60,
+        "clase": [
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "esperado": {
+        "respuesta": "dia:2",
+        "texto": "miércoles"
+      }
+    },
+    {
+      "semilla": 138,
+      "entrada": {
+        "tipo": "calendario",
+        "forma": "maximo",
+        "N": 365,
+        "clase": [
+          0,
+          1,
+          2
+        ]
+      },
+      "esperado": {
+        "respuesta": 157,
+        "texto": "157"
+      }
+    },
+    {
+      "semilla": 140,
+      "entrada": {
+        "tipo": "calendario",
+        "forma": "maximo",
+        "N": 365,
+        "clase": [
+          0,
+          1,
+          2
+        ]
+      },
+      "esperado": {
+        "respuesta": 157,
+        "texto": "157"
+      }
+    },
+    {
+      "semilla": 16,
+      "entrada": {
+        "tipo": "creciente",
+        "a1": 40,
+        "r": 10,
+        "pide": "dias",
+        "desde": null,
+        "hora": null
+      },
+      "esperado": {
+        "respuesta": 9,
+        "texto": "9 días"
+      }
+    },
+    {
+      "semilla": 42,
+      "entrada": {
+        "tipo": "creciente",
+        "a1": 20,
+        "r": 4,
+        "pide": "dias",
+        "desde": null,
+        "hora": null
+      },
+      "esperado": {
+        "respuesta": 15,
+        "texto": "15 días"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "creciente",
+        "a1": 30,
+        "r": 2,
+        "pide": "fecha",
+        "desde": {
+          "a": 2029,
+          "m": 8,
+          "d": 13
+        },
+        "hora": 420
+      },
+      "esperado": {
+        "respuesta": "f:2029-08-29",
+        "texto": "29 de agosto de 2029"
+      }
+    },
+    {
+      "semilla": 27,
+      "entrada": {
+        "tipo": "creciente",
+        "a1": 20,
+        "r": 4,
+        "pide": "fecha",
+        "desde": {
+          "a": 2032,
+          "m": 3,
+          "d": 5
+        },
+        "hora": 1080
+      },
+      "esperado": {
+        "respuesta": "f:2032-03-20",
+        "texto": "20 de marzo de 2032"
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "tipo": "dos-relojes",
+        "a": 10,
+        "b": 8
+      },
+      "esperado": {
+        "respuesta": 360,
+        "texto": "360 días"
+      }
+    },
+    {
+      "semilla": 51,
+      "entrada": {
+        "tipo": "dos-relojes",
+        "a": 16,
+        "b": 18
+      },
+      "esperado": {
+        "respuesta": 360,
+        "texto": "360 días"
+      }
+    },
+    {
+      "semilla": 29,
+      "entrada": {
+        "tipo": "mentirosos",
+        "mienteA": [
+          0,
+          1,
+          2
+        ],
+        "mienteB": [
+          2,
+          3
+        ],
+        "dichoA": "ayer-verdad",
+        "dichoB": "manana-mentire",
+        "pide": "ayer"
+      },
+      "esperado": {
+        "respuesta": "dia:0",
+        "texto": "lunes"
+      }
+    },
+    {
+      "semilla": 46,
+      "entrada": {
+        "tipo": "mentirosos",
+        "mienteA": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "mienteB": [
+          5,
+          6
+        ],
+        "dichoA": "manana-mentire",
+        "dichoB": "manana-verdad",
+        "pide": "ayer"
+      },
+      "esperado": {
+        "respuesta": "dia:2",
+        "texto": "miércoles"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "mentirosos",
+        "mienteA": [
+          0,
+          1,
+          6
+        ],
+        "mienteB": [
+          5,
+          6
+        ],
+        "dichoA": "ayer-verdad",
+        "dichoB": "manana-mentire",
+        "pide": "hoy"
+      },
+      "esperado": {
+        "respuesta": "dia:4",
+        "texto": "viernes"
+      }
+    },
+    {
+      "semilla": 44,
+      "entrada": {
+        "tipo": "mentirosos",
+        "mienteA": [
+          2,
+          3,
+          4,
+          5
+        ],
+        "mienteB": [
+          4,
+          5
+        ],
+        "dichoA": "manana-mentire",
+        "dichoB": "manana-verdad",
+        "pide": "hoy"
+      },
+      "esperado": {
+        "respuesta": "dia:1",
+        "texto": "martes"
+      }
+    },
+    {
+      "semilla": 35,
+      "entrada": {
+        "tipo": "mentirosos",
+        "mienteA": [
+          3,
+          4,
+          5
+        ],
+        "mienteB": [
+          5,
+          6
+        ],
+        "dichoA": "ayer-menti",
+        "dichoB": "manana-verdad",
+        "pide": "manana"
+      },
+      "esperado": {
+        "respuesta": "dia:4",
+        "texto": "viernes"
+      }
+    },
+    {
+      "semilla": 37,
+      "entrada": {
+        "tipo": "mentirosos",
+        "mienteA": [
+          2,
+          3,
+          4
+        ],
+        "mienteB": [
+          0,
+          1,
+          2
+        ],
+        "dichoA": "ayer-menti",
+        "dichoB": "manana-verdad",
+        "pide": "manana"
+      },
+      "esperado": {
+        "respuesta": "dia:6",
+        "texto": "domingo"
+      }
+    },
+    {
+      "semilla": 64,
+      "entrada": {
+        "tipo": "que-hora",
+        "forma": "fraccion",
+        "p": 7,
+        "q": 1,
+        "a": null,
+        "b": null,
+        "k": null
+      },
+      "esperado": {
+        "respuesta": 180,
+        "texto": "3:00 a. m."
+      }
+    },
+    {
+      "semilla": 107,
+      "entrada": {
+        "tipo": "que-hora",
+        "forma": "fraccion",
+        "p": 4,
+        "q": 1,
+        "a": null,
+        "b": null,
+        "k": null
+      },
+      "esperado": {
+        "respuesta": 288,
+        "texto": "4:48 a. m."
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "que-hora",
+        "forma": "hace-dentro",
+        "p": null,
+        "q": null,
+        "a": 7,
+        "b": 4,
+        "k": 4
+      },
+      "esperado": {
+        "respuesta": 980,
+        "texto": "4:20 p. m."
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "que-hora",
+        "forma": "hace-dentro",
+        "p": null,
+        "q": null,
+        "a": 3,
+        "b": 6,
+        "k": 4
+      },
+      "esperado": {
+        "respuesta": 900,
+        "texto": "3:00 p. m."
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "que-hora",
+        "forma": "pasado-dentro",
+        "p": null,
+        "q": null,
+        "a": 1,
+        "b": 2,
+        "k": 4
+      },
+      "esperado": {
+        "respuesta": 180,
+        "texto": "3:00 a. m."
+      }
+    },
+    {
+      "semilla": 20,
+      "entrada": {
+        "tipo": "que-hora",
+        "forma": "pasado-dentro",
+        "p": null,
+        "q": null,
+        "a": 6,
+        "b": 5,
+        "k": 4
+      },
+      "esperado": {
+        "respuesta": 520,
+        "texto": "8:40 a. m."
+      }
+    },
+    {
+      "semilla": 33,
+      "entrada": {
+        "tipo": "que-hora",
+        "forma": "razon",
+        "p": 5,
+        "q": 3,
+        "a": null,
+        "b": null,
+        "k": null
+      },
+      "esperado": {
+        "respuesta": 900,
+        "texto": "3:00 p. m."
+      }
+    },
+    {
+      "semilla": 39,
+      "entrada": {
+        "tipo": "que-hora",
+        "forma": "razon",
+        "p": 1,
+        "q": 2,
+        "a": null,
+        "b": null,
+        "k": null
+      },
+      "esperado": {
+        "respuesta": 480,
+        "texto": "8:00 a. m."
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "turno",
+        "forma": "falta",
+        "D": 12,
+        "inicio": 480,
+        "ahora": null,
+        "p": 1,
+        "q": 5
+      },
+      "esperado": {
+        "respuesta": "dur:600",
+        "texto": "10 h"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "turno",
+        "forma": "falta",
+        "D": 8,
+        "inicio": 360,
+        "ahora": null,
+        "p": 5,
+        "q": 7
+      },
+      "esperado": {
+        "respuesta": "dur:280",
+        "texto": "4 h 40 min"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "turno",
+        "forma": "fin",
+        "D": 2,
+        "inicio": null,
+        "ahora": 690,
+        "p": 7,
+        "q": 1
+      },
+      "esperado": {
+        "respuesta": 795,
+        "texto": "1:15 p. m."
+      }
+    },
+    {
+      "semilla": 31,
+      "entrada": {
+        "tipo": "turno",
+        "forma": "fin",
+        "D": 5,
+        "inicio": null,
+        "ahora": 1110,
+        "p": 7,
+        "q": 5
+      },
+      "esperado": {
+        "respuesta": 1285,
+        "texto": "9:25 p. m."
+      }
+    },
+    {
+      "semilla": 86,
+      "entrada": {
+        "tipo": "turno",
+        "forma": "hora",
+        "D": 12,
+        "inicio": 450,
+        "ahora": null,
+        "p": 3,
+        "q": 1
+      },
+      "esperado": {
+        "respuesta": 990,
+        "texto": "4:30 p. m."
+      }
+    },
+    {
+      "semilla": 98,
+      "entrada": {
+        "tipo": "turno",
+        "forma": "hora",
+        "D": 12,
+        "inicio": 480,
+        "ahora": null,
+        "p": 3,
+        "q": 5
+      },
+      "esperado": {
+        "respuesta": 750,
+        "texto": "12:30 p. m."
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "turno",
+        "forma": "inicio",
+        "D": 4,
+        "inicio": null,
+        "ahora": 660,
+        "p": 5,
+        "q": 3
+      },
+      "esperado": {
+        "respuesta": 570,
+        "texto": "9:30 a. m."
+      }
+    },
+    {
+      "semilla": 76,
+      "entrada": {
+        "tipo": "turno",
+        "forma": "inicio",
+        "D": 2,
+        "inicio": null,
+        "ahora": 900,
+        "p": 1,
+        "q": 7
+      },
+      "esperado": {
+        "respuesta": 795,
+        "texto": "1:15 p. m."
+      }
+    },
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "que-hora",
+        "forma": "fraccion",
+        "p": 3,
+        "q": 5,
+        "a": null,
+        "b": null,
+        "k": null
+      },
+      "esperado": {
+        "respuesta": 900,
+        "texto": "3:00 p. m."
+      }
+    },
+    {
+      "semilla": "entrada-2",
+      "entrada": {
+        "tipo": "adelanto",
+        "a": 12,
+        "sentido": "atrasa",
+        "desde": {
+          "a": 2028,
+          "m": 9,
+          "d": 8
+        },
+        "hora": 420
+      },
+      "esperado": {
+        "respuesta": "f:2028-11-07",
+        "texto": "7 de noviembre de 2028"
+      }
+    },
+    {
+      "semilla": "entrada-3",
+      "entrada": {
+        "tipo": "calendario",
+        "forma": "maximo",
+        "N": 365,
+        "clase": [
+          3,
+          4
+        ]
+      },
+      "esperado": {
+        "respuesta": 105,
+        "texto": "105"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "que-hora",
+        "forma": "hace-dentro",
+        "p": null,
+        "q": null,
+        "a": 5,
+        "b": 1,
+        "k": 5
+      },
+      "esperado": {
+        "respuesta": 1290,
+        "texto": "9:30 p. m."
+      }
+    },
+    {
+      "semilla": "salida-2",
+      "entrada": {
+        "tipo": "adelanto",
+        "a": 6,
+        "sentido": "atrasa",
+        "desde": {
+          "a": 2028,
+          "m": 8,
+          "d": 16
+        },
+        "hora": 960
+      },
+      "esperado": {
+        "respuesta": "f:2028-12-14",
+        "texto": "14 de diciembre de 2028"
+      }
+    },
+    {
+      "semilla": "salida-3",
+      "entrada": {
+        "tipo": "calendario",
+        "forma": "inicio",
+        "N": 60,
+        "clase": [
+          5,
+          6,
+          0,
+          1
+        ]
+      },
+      "esperado": {
+        "respuesta": "dia:5",
+        "texto": "sábado"
+      }
+    }
+  ]
+}

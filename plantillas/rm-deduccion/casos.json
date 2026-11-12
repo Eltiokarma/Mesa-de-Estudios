@@ -1,0 +1,935 @@
+{
+  "plantilla": "rm-deduccion",
+  "tolerancia": 0,
+  "nota": "Respuestas de texto: la clave de armarTexto y el texto que ve el alumno. Silogismos: clave sil:F:s:p (s y p son índices de entrada.terminos; M = terminos[1] es el término medio; sil:nada = ninguna de las otras se deduce). Frascos: sc:… (o = frasco 0–3 = A–D, c = índice de entrada.cosas; pueden repetirse). Asignación: as:o:c o cosa:c (índices de personas y cosas; cada cosa la tiene una sola persona). Un contrafáctico «si X fuera…, Y sería…» se lee como «X no es…».",
+  "verificacion": "Verificador ciego (subagente, 8 nov 2026): resolvió los 15 casos sin ver el generador. Frascos por fuerza bruta (3^4), repartos por las 24 permutaciones con tres lecturas del contrafáctico (condicional común, «X no es…» y «ni X ni Y»), silogismos con los 256 modelos de Venn en lectura moderna y tradicional. Coinciden los 15, y cada caso da la misma respuesta con cualquier lectura. Barrido de las semillas 0 a 999: respuesta única y sin distractores válidos.",
+  "casos": [
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "siempre-cierto",
+        "piel": "frascos",
+        "cosas": [
+          "quinua",
+          "maíz",
+          "trigo"
+        ],
+        "pistas": [
+          {
+            "t": "cond",
+            "a": {
+              "o": 1,
+              "c": 2,
+              "neg": true
+            },
+            "b": {
+              "o": 3,
+              "c": 1,
+              "neg": false
+            }
+          },
+          {
+            "t": "distintos",
+            "o1": 1,
+            "o2": 2
+          },
+          {
+            "t": "nocond",
+            "a": {
+              "o": 3,
+              "c": 0,
+              "neg": false
+            },
+            "b": {
+              "o": 1,
+              "c": 1,
+              "neg": false
+            }
+          },
+          {
+            "t": "cond",
+            "a": {
+              "o": 0,
+              "c": 0,
+              "neg": false
+            },
+            "b": {
+              "o": 1,
+              "c": 1,
+              "neg": false
+            }
+          },
+          {
+            "t": "cond",
+            "a": {
+              "o": 2,
+              "c": 0,
+              "neg": false
+            },
+            "b": {
+              "o": 1,
+              "c": 1,
+              "neg": false
+            }
+          }
+        ],
+        "opciones": [
+          "sc:no:0:1",
+          "sc:no:0:2",
+          "sc:no:3:0",
+          "sc:igual:0:2",
+          "sc:no:0:0"
+        ]
+      },
+      "esperado": {
+        "respuesta": "El frasco A no tiene quinua.",
+        "clave": "sc:no:0:0"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "silogismo",
+        "terminos": [
+          "bailarines",
+          "ajedrecistas",
+          "dibujantes"
+        ],
+        "premisas": [
+          {
+            "f": "A",
+            "s": 1,
+            "p": 2
+          },
+          {
+            "f": "I",
+            "s": 1,
+            "p": 0
+          }
+        ],
+        "opciones": [
+          "sil:A:0:2",
+          "sil:nada",
+          "sil:A:2:0",
+          "sil:O:2:0",
+          "sil:I:0:2"
+        ]
+      },
+      "esperado": {
+        "respuesta": "Algunos bailarines son dibujantes.",
+        "clave": "sil:I:0:2"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "asignacion",
+        "piel": "talleres",
+        "personas": [
+          "Beto",
+          "Dante",
+          "Gaby",
+          "Kelly"
+        ],
+        "cosas": [
+          "Historia",
+          "Química",
+          "Física",
+          "Arte"
+        ],
+        "pistas": [
+          {
+            "t": "no",
+            "o": 2,
+            "c": 0
+          },
+          {
+            "t": "contra",
+            "a": {
+              "o": 3,
+              "c": 0,
+              "neg": false
+            },
+            "b": {
+              "o": 0,
+              "c": 2,
+              "neg": false
+            }
+          },
+          {
+            "t": "no",
+            "o": 3,
+            "c": 1
+          },
+          {
+            "t": "cond",
+            "a": {
+              "o": 1,
+              "c": 2,
+              "neg": true
+            },
+            "b": {
+              "o": 3,
+              "c": 1,
+              "neg": false
+            }
+          }
+        ],
+        "modo": "afirmacion",
+        "opciones": [
+          "as:0:0",
+          "as:2:3",
+          "as:3:0",
+          "as:2:2",
+          "as:0:1"
+        ]
+      },
+      "esperado": {
+        "respuesta": "Beto lleva Historia.",
+        "clave": "as:0:0"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "asignacion",
+        "piel": "ciudades",
+        "personas": [
+          "Ana",
+          "Dante",
+          "Fito",
+          "Luis"
+        ],
+        "cosas": [
+          "Puno",
+          "Tacna",
+          "Arequipa",
+          "Cusco"
+        ],
+        "pistas": [
+          {
+            "t": "no",
+            "o": 3,
+            "c": 1
+          },
+          {
+            "t": "no",
+            "o": 3,
+            "c": 0
+          },
+          {
+            "t": "no",
+            "o": 1,
+            "c": 3
+          },
+          {
+            "t": "no",
+            "o": 1,
+            "c": 1
+          },
+          {
+            "t": "contra",
+            "a": {
+              "o": 1,
+              "c": 0,
+              "neg": false
+            },
+            "b": {
+              "o": 3,
+              "c": 1,
+              "neg": false
+            }
+          },
+          {
+            "t": "cond",
+            "a": {
+              "o": 2,
+              "c": 0,
+              "neg": false
+            },
+            "b": {
+              "o": 3,
+              "c": 1,
+              "neg": false
+            }
+          }
+        ],
+        "modo": "quien",
+        "persona": 0,
+        "opciones": [
+          "cosa:3",
+          "cosa:0",
+          "cosa:2",
+          "cosa:1"
+        ]
+      },
+      "esperado": {
+        "respuesta": "De Puno",
+        "clave": "cosa:0"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "asignacion",
+        "piel": "deportes",
+        "personas": [
+          "Carla",
+          "Inés",
+          "Julio",
+          "Saúl"
+        ],
+        "cosas": [
+          "ajedrez",
+          "fútbol",
+          "vóley",
+          "básquet"
+        ],
+        "pistas": [
+          {
+            "t": "cond",
+            "a": {
+              "o": 0,
+              "c": 0,
+              "neg": false
+            },
+            "b": {
+              "o": 3,
+              "c": 1,
+              "neg": false
+            }
+          },
+          {
+            "t": "cond",
+            "a": {
+              "o": 1,
+              "c": 0,
+              "neg": false
+            },
+            "b": {
+              "o": 3,
+              "c": 1,
+              "neg": false
+            }
+          },
+          {
+            "t": "cond",
+            "a": {
+              "o": 3,
+              "c": 0,
+              "neg": false
+            },
+            "b": {
+              "o": 1,
+              "c": 3,
+              "neg": false
+            }
+          },
+          {
+            "t": "contra",
+            "a": {
+              "o": 2,
+              "c": 0,
+              "neg": false
+            },
+            "b": {
+              "o": 3,
+              "c": 1,
+              "neg": false
+            }
+          },
+          {
+            "t": "cond",
+            "a": {
+              "o": 0,
+              "c": 2,
+              "neg": false
+            },
+            "b": {
+              "o": 2,
+              "c": 3,
+              "neg": false
+            }
+          },
+          {
+            "t": "no",
+            "o": 3,
+            "c": 1
+          }
+        ],
+        "modo": "quien",
+        "persona": 0,
+        "opciones": [
+          "cosa:0",
+          "cosa:3",
+          "cosa:1",
+          "cosa:2"
+        ]
+      },
+      "esperado": {
+        "respuesta": "Fútbol",
+        "clave": "cosa:1"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "silogismo",
+        "terminos": [
+          "pianistas",
+          "ajedrecistas",
+          "futbolistas"
+        ],
+        "premisas": [
+          {
+            "f": "E",
+            "s": 1,
+            "p": 2
+          },
+          {
+            "f": "A",
+            "s": 0,
+            "p": 1
+          }
+        ],
+        "opciones": [
+          "sil:A:1:0",
+          "sil:I:0:2",
+          "sil:E:0:2",
+          "sil:nada"
+        ]
+      },
+      "esperado": {
+        "respuesta": "Ningún pianista es futbolista.",
+        "clave": "sil:E:0:2"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "silogismo",
+        "terminos": [
+          "futbolistas",
+          "cantantes",
+          "ciclistas"
+        ],
+        "premisas": [
+          {
+            "f": "E",
+            "s": 2,
+            "p": 1
+          },
+          {
+            "f": "A",
+            "s": 0,
+            "p": 1
+          }
+        ],
+        "opciones": [
+          "sil:E:0:2",
+          "sil:A:1:0",
+          "sil:nada",
+          "sil:I:0:2"
+        ]
+      },
+      "esperado": {
+        "respuesta": "Ningún futbolista es ciclista.",
+        "clave": "sil:E:0:2"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "siempre-cierto",
+        "piel": "cajas",
+        "cosas": [
+          "un lápiz",
+          "un borrador",
+          "una regla"
+        ],
+        "pistas": [
+          {
+            "t": "cond",
+            "a": {
+              "o": 3,
+              "c": 2,
+              "neg": false
+            },
+            "b": {
+              "o": 1,
+              "c": 1,
+              "neg": false
+            }
+          },
+          {
+            "t": "cond",
+            "a": {
+              "o": 3,
+              "c": 0,
+              "neg": false
+            },
+            "b": {
+              "o": 0,
+              "c": 2,
+              "neg": true
+            }
+          },
+          {
+            "t": "cond",
+            "a": {
+              "o": 1,
+              "c": 1,
+              "neg": false
+            },
+            "b": {
+              "o": 0,
+              "c": 0,
+              "neg": false
+            }
+          },
+          {
+            "t": "nocond",
+            "a": {
+              "o": 0,
+              "c": 2,
+              "neg": false
+            },
+            "b": {
+              "o": 2,
+              "c": 1,
+              "neg": false
+            }
+          }
+        ],
+        "opciones": [
+          "sc:dist:0:2",
+          "sc:no:0:2",
+          "sc:es:3:1",
+          "sc:alguno:0",
+          "sc:igual:0:1"
+        ]
+      },
+      "esperado": {
+        "respuesta": "La caja D guarda un borrador.",
+        "clave": "sc:es:3:1"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "siempre-cierto",
+        "piel": "cajas",
+        "cosas": [
+          "un lápiz",
+          "un borrador",
+          "una regla"
+        ],
+        "pistas": [
+          {
+            "t": "es",
+            "o": 2,
+            "c": 1
+          },
+          {
+            "t": "cond",
+            "a": {
+              "o": 0,
+              "c": 1,
+              "neg": false
+            },
+            "b": {
+              "o": 3,
+              "c": 2,
+              "neg": false
+            }
+          },
+          {
+            "t": "cond",
+            "a": {
+              "o": 3,
+              "c": 2,
+              "neg": false
+            },
+            "b": {
+              "o": 1,
+              "c": 2,
+              "neg": false
+            }
+          },
+          {
+            "t": "nocond",
+            "a": {
+              "o": 1,
+              "c": 0,
+              "neg": false
+            },
+            "b": {
+              "o": 2,
+              "c": 2,
+              "neg": false
+            }
+          }
+        ],
+        "opciones": [
+          "sc:es:1:0",
+          "sc:igual:1:3",
+          "sc:dist:0:3",
+          "sc:es:3:1",
+          "sc:no:1:0"
+        ]
+      },
+      "esperado": {
+        "respuesta": "La caja B guarda un lápiz.",
+        "clave": "sc:es:1:0"
+      }
+    },
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "silogismo",
+        "terminos": [
+          "pianistas",
+          "dibujantes",
+          "cantantes"
+        ],
+        "premisas": [
+          {
+            "f": "O",
+            "s": 2,
+            "p": 1
+          },
+          {
+            "f": "E",
+            "s": 1,
+            "p": 0
+          }
+        ],
+        "opciones": [
+          "sil:O:0:2",
+          "sil:O:2:0",
+          "sil:O:1:2",
+          "sil:nada"
+        ]
+      },
+      "esperado": {
+        "respuesta": "Ninguna de las otras conclusiones se deduce.",
+        "clave": "sil:nada"
+      }
+    },
+    {
+      "semilla": "entrada-2",
+      "entrada": {
+        "tipo": "siempre-cierto",
+        "piel": "frascos",
+        "cosas": [
+          "sal",
+          "azúcar",
+          "arroz"
+        ],
+        "pistas": [
+          {
+            "t": "nocond",
+            "a": {
+              "o": 0,
+              "c": 2,
+              "neg": false
+            },
+            "b": {
+              "o": 3,
+              "c": 2,
+              "neg": false
+            }
+          },
+          {
+            "t": "cond",
+            "a": {
+              "o": 3,
+              "c": 0,
+              "neg": true
+            },
+            "b": {
+              "o": 2,
+              "c": 2,
+              "neg": false
+            }
+          },
+          {
+            "t": "todas"
+          },
+          {
+            "t": "distintos",
+            "o1": 0,
+            "o2": 2
+          }
+        ],
+        "opciones": [
+          "sc:dist:1:3",
+          "sc:no:0:2",
+          "sc:dist:1:2",
+          "sc:es:3:0",
+          "sc:no:1:0"
+        ]
+      },
+      "esperado": {
+        "respuesta": "El frasco D tiene sal.",
+        "clave": "sc:es:3:0"
+      }
+    },
+    {
+      "semilla": "entrada-3",
+      "entrada": {
+        "tipo": "asignacion",
+        "piel": "deportes",
+        "personas": [
+          "Dante",
+          "Elsa",
+          "Kelly",
+          "Tania"
+        ],
+        "cosas": [
+          "ajedrez",
+          "fútbol",
+          "vóley",
+          "básquet"
+        ],
+        "pistas": [
+          {
+            "t": "no",
+            "o": 2,
+            "c": 3
+          },
+          {
+            "t": "cond",
+            "a": {
+              "o": 3,
+              "c": 1,
+              "neg": true
+            },
+            "b": {
+              "o": 1,
+              "c": 0,
+              "neg": false
+            }
+          },
+          {
+            "t": "contra",
+            "a": {
+              "o": 0,
+              "c": 2,
+              "neg": false
+            },
+            "b": {
+              "o": 2,
+              "c": 1,
+              "neg": false
+            }
+          },
+          {
+            "t": "cond",
+            "a": {
+              "o": 0,
+              "c": 0,
+              "neg": true
+            },
+            "b": {
+              "o": 3,
+              "c": 1,
+              "neg": false
+            }
+          },
+          {
+            "t": "cond",
+            "a": {
+              "o": 2,
+              "c": 2,
+              "neg": false
+            },
+            "b": {
+              "o": 3,
+              "c": 0,
+              "neg": false
+            }
+          }
+        ],
+        "modo": "afirmacion",
+        "opciones": [
+          "as:1:3",
+          "as:2:1",
+          "as:3:1",
+          "as:0:0",
+          "as:3:3"
+        ]
+      },
+      "esperado": {
+        "respuesta": "Tania practica fútbol.",
+        "clave": "as:3:1"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "silogismo",
+        "terminos": [
+          "cantantes",
+          "nadadores",
+          "ciclistas"
+        ],
+        "premisas": [
+          {
+            "f": "I",
+            "s": 1,
+            "p": 2
+          },
+          {
+            "f": "A",
+            "s": 1,
+            "p": 0
+          }
+        ],
+        "opciones": [
+          "sil:A:2:0",
+          "sil:O:0:2",
+          "sil:I:0:2",
+          "sil:O:2:0",
+          "sil:nada"
+        ]
+      },
+      "esperado": {
+        "respuesta": "Algunos cantantes son ciclistas.",
+        "clave": "sil:I:0:2"
+      }
+    },
+    {
+      "semilla": "salida-2",
+      "entrada": {
+        "tipo": "siempre-cierto",
+        "piel": "frascos",
+        "cosas": [
+          "quinua",
+          "maíz",
+          "trigo"
+        ],
+        "pistas": [
+          {
+            "t": "nocond",
+            "a": {
+              "o": 2,
+              "c": 1,
+              "neg": false
+            },
+            "b": {
+              "o": 3,
+              "c": 2,
+              "neg": false
+            }
+          },
+          {
+            "t": "distintos",
+            "o1": 0,
+            "o2": 3
+          },
+          {
+            "t": "cond",
+            "a": {
+              "o": 1,
+              "c": 2,
+              "neg": true
+            },
+            "b": {
+              "o": 2,
+              "c": 0,
+              "neg": false
+            }
+          },
+          {
+            "t": "cond",
+            "a": {
+              "o": 0,
+              "c": 0,
+              "neg": false
+            },
+            "b": {
+              "o": 2,
+              "c": 0,
+              "neg": false
+            }
+          }
+        ],
+        "opciones": [
+          "sc:no:0:1",
+          "sc:no:2:1",
+          "sc:no:3:1",
+          "sc:dist:2:3",
+          "sc:es:2:1"
+        ]
+      },
+      "esperado": {
+        "respuesta": "El frasco C tiene maíz.",
+        "clave": "sc:es:2:1"
+      }
+    },
+    {
+      "semilla": "salida-3",
+      "entrada": {
+        "tipo": "asignacion",
+        "piel": "talleres",
+        "personas": [
+          "Ana",
+          "Gaby",
+          "Hugo",
+          "Wilber"
+        ],
+        "cosas": [
+          "Química",
+          "Historia",
+          "Música",
+          "Arte"
+        ],
+        "pistas": [
+          {
+            "t": "cond",
+            "a": {
+              "o": 1,
+              "c": 0,
+              "neg": true
+            },
+            "b": {
+              "o": 0,
+              "c": 3,
+              "neg": false
+            }
+          },
+          {
+            "t": "contra",
+            "a": {
+              "o": 2,
+              "c": 0,
+              "neg": true
+            },
+            "b": {
+              "o": 1,
+              "c": 3,
+              "neg": false
+            }
+          },
+          {
+            "t": "no",
+            "o": 1,
+            "c": 2
+          }
+        ],
+        "modo": "afirmacion",
+        "opciones": [
+          "as:0:2",
+          "as:1:1",
+          "as:3:3",
+          "as:3:1"
+        ]
+      },
+      "esperado": {
+        "respuesta": "Gaby lleva Historia.",
+        "clave": "as:1:1"
+      }
+    }
+  ]
+}

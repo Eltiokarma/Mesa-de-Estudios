@@ -3532,7 +3532,9 @@
      "potencial_visual": "medio",
      "grado": 3,
      "plantillas": [
-      "orden-informacion"
+      "orden-informacion",
+      "rm-deduccion",
+      "rm-parentesco"
      ]
     },
     {
@@ -3581,7 +3583,8 @@
      "potencial_visual": "alto",
      "grado": 3,
      "plantillas": [
-      "orden-informacion"
+      "orden-informacion",
+      "rm-parentesco"
      ]
     },
     {
@@ -3623,7 +3626,10 @@
      "potencial_visual": "alto",
      "grado": 3,
      "plantillas": [
-      "traslados-sucesos"
+      "traslados-sucesos",
+      "rm-trasvases",
+      "rm-movimientos",
+      "rm-rumbos"
      ]
     },
     {
@@ -3644,7 +3650,8 @@
      "potencial_visual": "medio",
      "grado": 3,
      "plantillas": [
-      "arreglos-giros"
+      "arreglos-giros",
+      "rm-arreglos"
      ]
     },
     {
@@ -3665,7 +3672,9 @@
      "potencial_visual": "medio",
      "grado": 3,
      "plantillas": [
-      "sucesiones"
+      "sucesiones",
+      "rm-ciclos",
+      "rm-fichas"
      ]
     },
     {
@@ -3688,7 +3697,9 @@
      "plantillas": [
       "probabilidad-dados",
       "dados-caras",
-      "dados-domino"
+      "dados-domino",
+      "rm-trasvases",
+      "rm-movimientos"
      ]
     },
     {
@@ -3713,7 +3724,8 @@
      "potencial_visual": "medio",
      "grado": 3,
      "plantillas": [
-      "relojes-calendarios"
+      "relojes-calendarios",
+      "rm-relojes"
      ]
     },
     {
@@ -3734,7 +3746,9 @@
      "potencial_visual": "medio",
      "grado": 3,
      "plantillas": [
-      "orden-informacion"
+      "orden-informacion",
+      "rm-deduccion",
+      "rm-certezas"
      ]
     },
     {
@@ -3755,7 +3769,8 @@
      "potencial_visual": "medio",
      "grado": 3,
      "plantillas": [
-      "traslados-sucesos"
+      "traslados-sucesos",
+      "rm-ciclos"
      ]
     },
     {
@@ -3800,7 +3815,10 @@
      "potencial_visual": "medio",
      "grado": 3,
      "plantillas": [
-      "maximos-minimos"
+      "maximos-minimos",
+      "rm-planteo",
+      "rm-diofanticas",
+      "rm-fichas"
      ]
     },
     {
@@ -3823,7 +3841,9 @@
      "potencial_visual": "alto",
      "grado": 3,
      "plantillas": [
-      "cortes-pesadas"
+      "cortes-pesadas",
+      "rm-cortes",
+      "rm-balanzas"
      ]
     },
     {
@@ -3845,7 +3865,9 @@
      "potencial_visual": "medio",
      "grado": 3,
      "plantillas": [
-      "traductor-enunciados"
+      "traductor-enunciados",
+      "rm-planteo",
+      "rm-diofanticas"
      ]
     },
     {
@@ -3875,7 +3897,8 @@
       "ampliadora",
       "cuadricula-piezas",
       "papel-doblado",
-      "rodamientos"
+      "rodamientos",
+      "rm-fichas"
      ]
     },
     {
@@ -3903,7 +3926,8 @@
       "vistas-cubitos",
       "dados-domino",
       "rutas-espacio",
-      "cubitos-pintados"
+      "cubitos-pintados",
+      "rm-lectura-palabras"
      ]
     },
     {
@@ -3924,7 +3948,29 @@
      "potencial_visual": "medio",
      "grado": 3,
      "plantillas": [
-      "tablas-graficos"
+      "tablas-graficos",
+      "rm-planteo"
+     ]
+    },
+    {
+     "id": "razonamiento-matematico.diagramas-de-flujo",
+     "nombre": "Diagramas de flujo y operadores",
+     "temas": [
+      "Seguir un diagrama con bucles y condiciones",
+      "Contadores y acumuladores",
+      "Operadores definidos por una regla"
+     ],
+     "universidades": {
+      "unmsm": {
+       "temas": [
+        1
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "grado": 3,
+     "plantillas": [
+      "rm-diagramas-flujo"
      ]
     }
    ]
@@ -6784,6 +6830,272 @@
     "/contenido/razonamiento-verbal/textos/t038.json",
     "/contenido/razonamiento-verbal/textos/t056.json",
     "/plantillas/resumen-sintesis/papel.json"
+   ]
+  },
+  "rm-arreglos": {
+   "id": "rm-arreglos",
+   "titulo": "Cuadros, pirámides y filas de números",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.arreglos-numericos"
+   ],
+   "url": "#/practica/rm-arreglos",
+   "papel": "/plantillas/rm-arreglos/papel.json",
+   "archivos": [
+    "/plantillas/rm-arreglos/generador.js",
+    "/plantillas/rm-arreglos/papel.json"
+   ]
+  },
+  "rm-balanzas": {
+   "id": "rm-balanzas",
+   "titulo": "Balanzas, figuras y pesas",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.cortes-y-pesadas"
+   ],
+   "url": "#/practica/rm-balanzas",
+   "papel": "/plantillas/rm-balanzas/papel.json",
+   "archivos": [
+    "/plantillas/rm-balanzas/generador.js",
+    "/plantillas/rm-balanzas/papel.json"
+   ]
+  },
+  "rm-certezas": {
+   "id": "rm-certezas",
+   "titulo": "Sacar a ciegas: ¿cuántas para estar seguro?",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.certezas"
+   ],
+   "url": "#/practica/rm-certezas",
+   "papel": "/plantillas/rm-certezas/papel.json",
+   "archivos": [
+    "/plantillas/rm-certezas/generador.js",
+    "/plantillas/rm-certezas/papel.json"
+   ]
+  },
+  "rm-ciclos": {
+   "id": "rm-ciclos",
+   "titulo": "Lo que se repite",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.frecuencia-de-sucesos",
+    "razonamiento-matematico.razonamiento-inductivo"
+   ],
+   "url": "#/practica/rm-ciclos",
+   "papel": "/plantillas/rm-ciclos/papel.json",
+   "archivos": [
+    "/plantillas/rm-ciclos/generador.js",
+    "/plantillas/rm-ciclos/papel.json"
+   ]
+  },
+  "rm-cortes": {
+   "id": "rm-cortes",
+   "titulo": "Cortes, tramos y estacas",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.cortes-y-pesadas"
+   ],
+   "url": "#/practica/rm-cortes",
+   "papel": "/plantillas/rm-cortes/papel.json",
+   "archivos": [
+    "/plantillas/rm-cortes/generador.js",
+    "/plantillas/rm-cortes/papel.json"
+   ]
+  },
+  "rm-deduccion": {
+   "id": "rm-deduccion",
+   "titulo": "Lo que se deduce: clases, frascos y condicionales",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.razonamiento-deductivo",
+    "razonamiento-matematico.certezas"
+   ],
+   "url": "#/practica/rm-deduccion",
+   "papel": "/plantillas/rm-deduccion/papel.json",
+   "archivos": [
+    "/plantillas/rm-deduccion/generador.js",
+    "/plantillas/rm-deduccion/papel.json"
+   ]
+  },
+  "rm-diagramas-flujo": {
+   "id": "rm-diagramas-flujo",
+   "titulo": "Diagramas de flujo y operadores",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.diagramas-de-flujo"
+   ],
+   "url": "#/practica/rm-diagramas-flujo",
+   "papel": "/plantillas/rm-diagramas-flujo/papel.json",
+   "archivos": [
+    "/plantillas/rm-diagramas-flujo/generador.js",
+    "/plantillas/rm-diagramas-flujo/papel.json"
+   ]
+  },
+  "rm-diofanticas": {
+   "id": "rm-diofanticas",
+   "titulo": "Enteros que cumplen la cuenta: compras, monedas y cifras",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.maximos-y-minimos",
+    "razonamiento-matematico.planteo-de-ecuaciones"
+   ],
+   "url": "#/practica/rm-diofanticas",
+   "papel": "/plantillas/rm-diofanticas/papel.json",
+   "archivos": [
+    "/plantillas/rm-diofanticas/generador.js",
+    "/plantillas/rm-diofanticas/papel.json"
+   ]
+  },
+  "rm-fichas": {
+   "id": "rm-fichas",
+   "titulo": "Fichas, piezas y figuras que crecen",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.transformaciones-de-figuras",
+    "razonamiento-matematico.maximos-y-minimos",
+    "razonamiento-matematico.razonamiento-inductivo"
+   ],
+   "url": "#/practica/rm-fichas",
+   "papel": "/plantillas/rm-fichas/papel.json",
+   "archivos": [
+    "/plantillas/rm-fichas/generador.js",
+    "/plantillas/rm-fichas/papel.json"
+   ]
+  },
+  "rm-lectura-palabras": {
+   "id": "rm-lectura-palabras",
+   "titulo": "Lecturas en un arreglo de letras",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.rutas-y-visualizacion-espacial"
+   ],
+   "url": "#/practica/rm-lectura-palabras",
+   "papel": "/plantillas/rm-lectura-palabras/papel.json",
+   "archivos": [
+    "/plantillas/rm-lectura-palabras/generador.js",
+    "/plantillas/rm-lectura-palabras/papel.json"
+   ]
+  },
+  "rm-movimientos": {
+   "id": "rm-movimientos",
+   "titulo": "El menor número de movimientos: canoas, caballos, saltos y fichas",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.juegos-recreativos",
+    "razonamiento-matematico.traslados-y-puntos-cardinales"
+   ],
+   "url": "#/practica/rm-movimientos",
+   "papel": "/plantillas/rm-movimientos/papel.json",
+   "archivos": [
+    "/plantillas/rm-movimientos/generador.js",
+    "/plantillas/rm-movimientos/papel.json"
+   ]
+  },
+  "rm-parentesco": {
+   "id": "rm-parentesco",
+   "titulo": "Parentescos, órdenes y repartos con pistas",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.razonamiento-deductivo",
+    "razonamiento-matematico.ordenamiento-de-informacion"
+   ],
+   "url": "#/practica/rm-parentesco",
+   "papel": "/plantillas/rm-parentesco/papel.json",
+   "archivos": [
+    "/plantillas/rm-parentesco/generador.js",
+    "/plantillas/rm-parentesco/papel.json"
+   ]
+  },
+  "rm-planteo": {
+   "id": "rm-planteo",
+   "titulo": "Planteo de situaciones: compras, votos, pistas y torneos",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.planteo-de-ecuaciones",
+    "razonamiento-matematico.maximos-y-minimos",
+    "razonamiento-matematico.tablas-graficos-y-suficiencia"
+   ],
+   "url": "#/practica/rm-planteo",
+   "papel": "/plantillas/rm-planteo/papel.json",
+   "archivos": [
+    "/plantillas/rm-planteo/generador.js",
+    "/plantillas/rm-planteo/papel.json"
+   ]
+  },
+  "rm-relojes": {
+   "id": "rm-relojes",
+   "titulo": "Horas, relojes y calendarios",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.cronometria-y-calendarios"
+   ],
+   "url": "#/practica/rm-relojes",
+   "papel": "/plantillas/rm-relojes/papel.json",
+   "archivos": [
+    "/plantillas/rm-relojes/generador.js",
+    "/plantillas/rm-relojes/papel.json"
+   ]
+  },
+  "rm-rumbos": {
+   "id": "rm-rumbos",
+   "titulo": "Rumbos con la brújula",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.traslados-y-puntos-cardinales"
+   ],
+   "url": "#/practica/rm-rumbos",
+   "papel": "/plantillas/rm-rumbos/papel.json",
+   "archivos": [
+    "/plantillas/rm-rumbos/generador.js",
+    "/plantillas/rm-rumbos/papel.json"
+   ]
+  },
+  "rm-trasvases": {
+   "id": "rm-trasvases",
+   "titulo": "Recipientes sin marcas: trasvases y repartos",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.juegos-recreativos",
+    "razonamiento-matematico.traslados-y-puntos-cardinales"
+   ],
+   "url": "#/practica/rm-trasvases",
+   "papel": "/plantillas/rm-trasvases/papel.json",
+   "archivos": [
+    "/plantillas/rm-trasvases/generador.js",
+    "/plantillas/rm-trasvases/papel.json"
    ]
   },
   "rodamientos": {

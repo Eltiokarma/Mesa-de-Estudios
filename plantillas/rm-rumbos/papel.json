@@ -1,0 +1,111 @@
+{
+  "titulo": "Rumbos con la brújula: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la app, con unos 2 o 3 minutos por problema, como en el examen. Usa los triángulos notables de academia: 37° y 53° con el 3-4-5, 45° con el √2, 30° y 60° con el 1-√3-2. Un rumbo como N 37° E se mide desde el norte, girando 37° hacia el este.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Una lancha sale del muelle, recorre 12 km hacia el norte y luego 10 km con rumbo S 53° E. ¿A qué distancia del muelle termina y qué rumbo debe seguir para volver en línea recta?",
+      "respuesta": "10 km; rumbo S 53° O.",
+      "pasos": [
+        "El segundo tramo, 10 km al S 53° E, se parte con el 3-4-5: el cateto junto a los 53° (sobre el eje norte-sur) es 6 km al sur y el otro, 8 km al este.",
+        "Norte-sur: 12 − 6 = 6 km al norte. Este-oeste: 8 km al este.",
+        "Distancia: √(8² + 6²) = 10 km.",
+        "Para volver hay que ir 8 km al oeste y 6 km al sur: el ángulo con el eje sur cumple tan θ = 8/6, así que θ = 53°. Rumbo S 53° O (no N 53° E, que es el del final visto desde el muelle)."
+      ],
+      "verificar": [ { "fn": "recorrido", "args": [[{ "rumbo": "norte", "largo": 12 }, { "rumbo": "S 53° E", "largo": 10 }]], "espera": { "distancia": 10, "regreso": "S 53° O" } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "intermedio",
+      "enunciado": "Un pastor sale de su cabaña: camina 4√2 km con rumbo N 45° O, luego 10 km hacia el este y por último 5 km con rumbo S 37° E. ¿Dónde termina, respecto de la cabaña?",
+      "respuesta": "9 km al este de la cabaña.",
+      "pasos": [
+        "4√2 km al N 45° O: 4 km al oeste y 4 km al norte.",
+        "10 km al este: 10 km al este.",
+        "5 km al S 37° E: el cateto junto a los 37° es 4 km al sur; el otro, 3 km al este.",
+        "Este-oeste: −4 + 10 + 3 = 9 km al este. Norte-sur: 4 − 4 = 0.",
+        "Termina 9 km al este de la cabaña. Si sumabas los tramos (4√2 + 15) o te olvidabas de restar el sur del norte, salía otra cosa."
+      ],
+      "verificar": [ { "fn": "recorrido", "args": [[{ "rumbo": "N 45° O", "largo": "4√2" }, { "rumbo": "este", "largo": 10 }, { "rumbo": "S 37° E", "largo": 5 }]], "espera": { "distancia": 9, "rumbo": "este" } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Dos camionetas salen a la vez de Juliaca: una con rumbo N 37° E a 10 km/h y otra con rumbo S 53° E a 15 km/h, las dos en línea recta. ¿Qué distancia las separa al cabo de 2 horas?",
+      "respuesta": "10√13 km.",
+      "pasos": [
+        "En 2 horas recorren 20 km y 30 km.",
+        "Medidos desde el norte en sentido horario, N 37° E está a 37° y S 53° E a 180° − 53° = 127°: entre los dos rumbos hay 90°.",
+        "Con el ángulo recto vale Pitágoras: √(20² + 30²) = √1300 = 10√13 km.",
+        "Ojo: 50 km sería sumar los recorridos, como si fueran en sentidos opuestos."
+      ],
+      "verificar": [ { "fn": "separacion", "args": [20, 30, 90], "espera": 36.05551275463989 } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "avanzado",
+      "enunciado": "Dos lanchas salen juntas del muelle: A con rumbo N 30° E a 15 km/h y B con rumbo S 30° E. Al cabo de 2 horas están a 70 km una de la otra. ¿Cuál es la rapidez de B?",
+      "respuesta": "25 km/h.",
+      "pasos": [
+        "Entre N 30° E (azimut 30°) y S 30° E (azimut 150°) hay 120°.",
+        "A recorre 30 km. Si B recorre b km, por la ley de cosenos: 70² = 30² + b² − 2·30·b·cos 120° = 900 + b² + 30b.",
+        "b² + 30b − 4000 = 0 → (b − 50)(b + 80) = 0 → b = 50 km.",
+        "Rapidez de B: 50 ÷ 2 = 25 km/h. Con Pitágoras (como si el ángulo fuera recto) habría salido √(4900 − 900)/2 = 10√10 ≈ 31,6 km/h, que está mal."
+      ],
+      "verificar": [ { "fn": "separacion", "args": [30, 50, 120], "espera": 70 } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Ana, Beto, Carla y Diego están en las esquinas de una cancha cuadrada, en ese orden. Vistos desde Ana, Beto está al N 15° E y Diego al S 75° E. ¿Qué rumbo sigue Ana para ir hacia Carla? ¿Y Beto para ir hacia Diego?",
+      "respuesta": "Ana: N 60° E. Beto: S 30° E.",
+      "pasos": [
+        "De Beto a Diego, vistos desde Ana, se gira 90° en sentido horario (de 15° a 105° de azimut).",
+        "La diagonal AC forma 45° con el lado AB, hacia el lado de Diego: 15° + 45° = 60°, o sea N 60° E.",
+        "De B a D se va «hacia atrás» por AB y «hacia adelante» por AD: esa diagonal está girada 135° desde AB, hacia Diego: 15° + 135° = 150° de azimut, o sea S 30° E."
+      ],
+      "verificar": [
+        { "fn": "rumboEnCancha", "args": [{ "forma": "cuadrado", "AB": 50, "AD": 50, "rumboB": "N 15° E", "rumboD": "S 75° E", "desde": "A", "hacia": "C" }], "espera": "N 60° E" },
+        { "fn": "rumboEnCancha", "args": [{ "forma": "cuadrado", "AB": 50, "AD": 50, "rumboB": "N 15° E", "rumboD": "S 75° E", "desde": "B", "hacia": "D" }], "espera": "S 30° E" }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Desde la plaza, la posta está a 10 km al N 37° E y el colegio a 14 km al este. ¿Qué rumbo hay que seguir para ir de la posta al colegio, y qué distancia hay?",
+      "respuesta": "S 45° E; 8√2 km.",
+      "pasos": [
+        "La posta está 6 km al este y 8 km al norte de la plaza; el colegio, 14 km al este.",
+        "De la posta al colegio: 14 − 6 = 8 km al este y 8 km al sur.",
+        "Catetos iguales: 45° desde el sur hacia el este, S 45° E; distancia 8√2 km.",
+        "N 45° O sería el camino al revés, del colegio a la posta."
+      ],
+      "verificar": [ { "fn": "recorrido", "args": [[{ "rumbo": "S 37° O", "largo": 10 }, { "rumbo": "este", "largo": 14 }]], "espera": { "rumbo": "S 45° E", "distanciaTexto": "8√2" } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Una avioneta vuela 100 km con rumbo N 60° E y después 100 km con rumbo S 60° E. ¿A qué distancia del aeródromo queda y con qué rumbo debe volver?",
+      "respuesta": "100√3 km; rumbo oeste.",
+      "pasos": [
+        "Cada tramo de 100 km con 60° desde el eje norte-sur da 50 km sobre ese eje y 50√3 km sobre el este-oeste.",
+        "Norte-sur: 50 al norte y 50 al sur se anulan. Este-oeste: 50√3 + 50√3 = 100√3 km al este.",
+        "Queda a 100√3 km al este y vuelve con rumbo oeste."
+      ],
+      "verificar": [ { "fn": "recorrido", "args": [[{ "rumbo": "N 60° E", "largo": 100 }, { "rumbo": "S 60° E", "largo": 100 }]], "espera": { "distanciaTexto": "100√3", "regreso": "oeste" } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "básico",
+      "enunciado": "En algunos libros se escribe «E 37° N». ¿Es el mismo rumbo que N 37° E? Si no, ¿cómo se escribe con el ángulo medido desde el norte?",
+      "respuesta": "No: E 37° N se mide desde el este, y es N 53° E.",
+      "pasos": [
+        "E 37° N: se parte del este y se giran 37° hacia el norte.",
+        "Desde el norte faltan 90° − 37° = 53° para llegar a esa dirección: es N 53° E.",
+        "N 37° E está más cerca del norte que del este; E 37° N, más cerca del este."
+      ],
+      "verificar": [ { "fn": "azimut", "args": ["N 53° E"], "espera": 53 }, { "fn": "rumboTexto", "args": [37], "espera": "N 37° E" } ]
+    }
+  ]
+}

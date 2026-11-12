@@ -16,7 +16,7 @@
       "universidades": {"unmsm": {"temas": [1, 2, 18]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": ["orden-informacion"],
+      "plantillas": ["orden-informacion", "rm-deduccion", "rm-parentesco"],
       "investigacion": null
     },
     {
@@ -41,7 +41,7 @@
       "universidades": {"unmsm": {"temas": [3]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": ["orden-informacion"],
+      "plantillas": ["orden-informacion", "rm-parentesco"],
       "investigacion": null
     },
     {
@@ -65,7 +65,7 @@
       "universidades": {"unmsm": {"temas": [5]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": ["traslados-sucesos"],
+      "plantillas": ["traslados-sucesos", "rm-trasvases", "rm-movimientos", "rm-rumbos"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
@@ -75,7 +75,7 @@
       "universidades": {"unmsm": {"temas": [6]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": ["arreglos-giros"],
+      "plantillas": ["arreglos-giros", "rm-arreglos"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
@@ -85,7 +85,7 @@
       "universidades": {"unmsm": {"temas": [7]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": ["sucesiones"],
+      "plantillas": ["sucesiones", "rm-ciclos", "rm-fichas"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
@@ -95,7 +95,7 @@
       "universidades": {"unmsm": {"temas": [8]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": ["probabilidad-dados", "dados-caras", "dados-domino"],
+      "plantillas": ["probabilidad-dados", "dados-caras", "dados-domino", "rm-trasvases", "rm-movimientos"],
       "investigacion": null
     },
     {
@@ -111,7 +111,7 @@
       "universidades": {"unmsm": {"temas": [8, 9, 16]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": ["relojes-calendarios"],
+      "plantillas": ["relojes-calendarios", "rm-relojes"],
       "investigacion": null
     },
     {
@@ -121,7 +121,7 @@
       "universidades": {"unmsm": {"temas": [9]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": ["orden-informacion"],
+      "plantillas": ["orden-informacion", "rm-deduccion", "rm-certezas"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
@@ -131,7 +131,7 @@
       "universidades": {"unmsm": {"temas": [10]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": ["traslados-sucesos"],
+      "plantillas": ["traslados-sucesos", "rm-ciclos"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
@@ -156,7 +156,7 @@
       "universidades": {"unmsm": {"temas": [11]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": ["maximos-minimos"],
+      "plantillas": ["maximos-minimos", "rm-planteo", "rm-diofanticas", "rm-fichas"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
@@ -166,7 +166,7 @@
       "universidades": {"unmsm": {"temas": [12, 13]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": ["cortes-pesadas"],
+      "plantillas": ["cortes-pesadas", "rm-cortes", "rm-balanzas"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
@@ -181,7 +181,7 @@
       "universidades": {"unmsm": {"temas": [12]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": ["traductor-enunciados"],
+      "plantillas": ["traductor-enunciados", "rm-planteo", "rm-diofanticas"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
@@ -198,7 +198,7 @@
       "universidades": {"unmsm": {"temas": [13, 14, 15]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": ["arreglos-giros", "ampliadora", "cuadricula-piezas", "papel-doblado", "rodamientos"],
+      "plantillas": ["arreglos-giros", "ampliadora", "cuadricula-piezas", "papel-doblado", "rodamientos", "rm-fichas"],
       "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
@@ -208,7 +208,7 @@
       "universidades": {"unmsm": {"temas": [15, 16]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": ["trazos-rutas", "rutas-tramos", "cubitos-conteo", "vistas-cubitos", "dados-domino", "rutas-espacio", "cubitos-pintados"],
+      "plantillas": ["trazos-rutas", "rutas-tramos", "cubitos-conteo", "vistas-cubitos", "dados-domino", "rutas-espacio", "cubitos-pintados", "rm-lectura-palabras"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
@@ -218,8 +218,21 @@
       "universidades": {"unmsm": {"temas": [17]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": ["tablas-graficos"],
+      "plantillas": ["tablas-graficos", "rm-planteo"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
-    }
-  ]
+    },
+    {
+      "id": "razonamiento-matematico.diagramas-de-flujo",
+      "nombre": "Diagramas de flujo y operadores",
+      "temas": [
+        "Seguir un diagrama con bucles y condiciones",
+        "Contadores y acumuladores",
+        "Operadores definidos por una regla"
+      ],
+      "universidades": {"unmsm": {"temas": [1]}},
+      "potencial_visual": "alto",
+      "grado": 3,
+      "plantillas": ["rm-diagramas-flujo"],
+      "investigacion": "docs/investigacion/codigos-rm-procesos.md"
+    }  ]
 }
