@@ -1,23 +1,23 @@
 {
   "schema_version": 1,
-  "fecha_utc": "2026-11-12T00:41:10.024374+00:00",
+  "fecha_utc": "2026-11-12T03:05:53.947645+00:00",
   "estado": "en_curso",
   "objetivo_nuevas": 3000,
   "objetivo_temas": 36,
   "fichas_anteriores_verificadas_por_sha256": 6213,
-  "fichas_nuevas": 1774,
-  "fichas_acumuladas": 7987,
-  "fichas_pendientes": 1226,
-  "temas_con_cuota_cumplida": 17,
-  "paginas_pdf_distintas_cotejadas_por_fragmentos": 440,
-  "nuevas_con_observaciones": 330,
-  "fichas_con_diagrama": 650,
+  "fichas_nuevas": 1969,
+  "fichas_acumuladas": 8182,
+  "fichas_pendientes": 1031,
+  "temas_con_cuota_cumplida": 20,
+  "paginas_pdf_distintas_cotejadas_por_fragmentos": 498,
+  "nuevas_con_observaciones": 348,
+  "fichas_con_diagrama": 723,
   "ocr_repetido": false,
   "app_certificada": false,
   "sha256_de_los_indices_locales": {
     "quimica": "f3b43a2498c568b48b26b258a3291d6cb10b8ed260136ac31a318129fd037b10",
-    "geometria": "5302526f8b5b824e1b9ab040deb2ecfdd772b28cdcc77f6e82f60ce91d0c159c",
-    "trigonometria": "8c96eca2cb317fd8bfbdaf9a2e16d6b4aa90a6ad92f4de753c2cc7052ef53a2d"
+    "geometria": "c758df7720c9d45f72434270e84f0e493b4f2d19e61198c444abc64e36cd2221",
+    "trigonometria": "8592cfb96bbbdca658e319b211c051dfa195641f5a6864e21208ad18282646b8"
   },
   "tandas": [
     {
@@ -371,11 +371,11 @@
     {
       "curso": "geometria",
       "objetivo": 1000,
-      "nuevas": 459,
-      "pendientes": 541,
-      "lotes": 29,
-      "con_observaciones": 73,
-      "fichas_con_diagrama": 413,
+      "nuevas": 633,
+      "pendientes": 367,
+      "lotes": 38,
+      "con_observaciones": 89,
+      "fichas_con_diagrama": 486,
       "temas": [
         {
           "id": "geometria.la-linea-recta",
@@ -646,9 +646,9 @@
         {
           "id": "geometria.congruencia-de-triangulos",
           "nombre": "Congruencia de triángulos",
-          "nuevos": 40,
+          "nuevos": 48,
           "objetivo": 83,
-          "pendientes": 43,
+          "pendientes": 35,
           "observaciones": 4,
           "subtemas_nuevos": {
             "Bisectrices y ley de senos": 1,
@@ -678,7 +678,14 @@
             "Simetría y semejanza": 2,
             "Triángulo rectángulo": 2,
             "Triángulo rectángulo y ley de senos": 1,
-            "Triángulos rectángulos congruentes": 2
+            "Triángulos rectángulos congruentes": 2,
+            "angulos": 1,
+            "bisectrices": 1,
+            "congruencia": 1,
+            "ley-senos": 1,
+            "mediatrices": 2,
+            "simetria": 1,
+            "triangulo-rectangulo": 1
           }
         },
         {
@@ -763,11 +770,38 @@
         {
           "id": "geometria.relaciones-metricas",
           "nombre": "Relaciones métricas",
-          "nuevos": 0,
+          "nuevos": 83,
           "objetivo": 83,
-          "pendientes": 83,
-          "observaciones": 0,
-          "subtemas_nuevos": {}
+          "pendientes": 0,
+          "observaciones": 2,
+          "subtemas_nuevos": {
+            "areas": 3,
+            "baricentro": 2,
+            "bisectrices": 2,
+            "coordenadas": 3,
+            "cuadrados": 1,
+            "cuerdas": 6,
+            "cuerdas-paralelas": 2,
+            "heron": 2,
+            "inradio": 2,
+            "ley-cosenos": 2,
+            "ley-senos": 2,
+            "mediana": 1,
+            "medianas": 3,
+            "ortocentro": 3,
+            "pitagoras": 5,
+            "potencia": 14,
+            "producto-escalar": 1,
+            "proyecciones": 13,
+            "ptolomeo": 5,
+            "puntos-medios": 3,
+            "rombos": 1,
+            "semejanza": 1,
+            "stewart": 2,
+            "tangencia": 1,
+            "tangentes": 2,
+            "triangulo-rectangulo": 1
+          }
         },
         {
           "id": "geometria.areas-de-regiones-poligonales-y-circulares",
@@ -790,21 +824,77 @@
         {
           "id": "geometria.esfera",
           "nombre": "Esfera",
-          "nuevos": 0,
+          "nuevos": 83,
           "objetivo": 83,
-          "pendientes": 83,
-          "observaciones": 0,
-          "subtemas_nuevos": {}
+          "pendientes": 0,
+          "observaciones": 14,
+          "subtemas_nuevos": {
+            "Anillo esférico": 1,
+            "Casquete esférico": 2,
+            "Casquete iluminado": 1,
+            "Casquete y base circular": 1,
+            "Casquetes congruentes": 1,
+            "Casquetes esféricos": 1,
+            "Casquetes y sección": 1,
+            "Cilindro inscrito": 1,
+            "Cono circunscrito": 2,
+            "Cono de tangencia": 1,
+            "Cono inscrito en una esfera": 1,
+            "Cono y tetraedro regular": 1,
+            "Conservación de volumen": 1,
+            "Corte paralelo en un cono": 1,
+            "Cuña con cono inscrito": 1,
+            "Cuña esférica": 4,
+            "Diedro de una pirámide": 1,
+            "Esfera circunscrita": 1,
+            "Esfera inscrita en un tetraedro": 2,
+            "Esfera tangente a aristas": 1,
+            "Esfera tangente a un diedro": 1,
+            "Esfera y pirámide": 1,
+            "Esfera y prisma regular": 1,
+            "Esferas de un prisma": 1,
+            "Esferas de un tetraedro": 2,
+            "Esferas de una pirámide": 1,
+            "Esferas dentro de un cubo": 1,
+            "Fracción de revolución": 1,
+            "Huso esférico": 1,
+            "Huso y casquete": 1,
+            "Huso y cuña": 2,
+            "Intersección con un diedro": 1,
+            "Intersección de sólidos": 1,
+            "Optimización": 1,
+            "Pirámide inscrita en una semiesfera": 1,
+            "Secciones de una esfera": 1,
+            "Secciones paralelas": 1,
+            "Sección circular inscrita": 1,
+            "Sección de una semiesfera": 1,
+            "Sector esférico": 2,
+            "Sectores de revolución": 1,
+            "Segmento circular de revolución": 1,
+            "Segmento esférico": 1,
+            "Segmentos esféricos": 1,
+            "Semiesfera inscrita": 1,
+            "Superficie de revolución": 4,
+            "Superficie de una cuña": 2,
+            "Sólidos de revolución": 15,
+            "Tronco de cono circunscrito": 1,
+            "Troncos de cono y esfera": 1,
+            "Volumen de una zona": 1,
+            "Zona esférica": 2,
+            "Zona y casquete": 1,
+            "Zonas de igual área": 1,
+            "Área de un casquete": 1
+          }
         }
       ]
     },
     {
       "curso": "trigonometria",
       "objetivo": 1000,
-      "nuevas": 647,
-      "pendientes": 353,
-      "lotes": 28,
-      "con_observaciones": 85,
+      "nuevas": 668,
+      "pendientes": 332,
+      "lotes": 29,
+      "con_observaciones": 87,
       "fichas_con_diagrama": 129,
       "temas": [
         {
@@ -1098,10 +1188,10 @@
         {
           "id": "trigonometria.transformaciones-trigonometricas",
           "nombre": "Transformaciones trigonométricas",
-          "nuevos": 62,
+          "nuevos": 83,
           "objetivo": 83,
-          "pendientes": 21,
-          "observaciones": 7,
+          "pendientes": 0,
+          "observaciones": 9,
           "subtemas_nuevos": {
             "Arco triple": 2,
             "Arcos múltiples": 1,
@@ -1111,28 +1201,35 @@
             "Desarrollo en potencias": 1,
             "Diferencia de cosenos": 2,
             "Diferencia de cuadrados": 2,
+            "Diferencia de ángulos": 1,
+            "Dominio de una identidad": 1,
             "Eliminación de una variable": 1,
             "Extremos": 3,
             "Factorización": 3,
             "Identidades en triángulos": 10,
+            "Números complejos auxiliares": 1,
             "Polígonos y series": 1,
+            "Potencias de coseno": 1,
+            "Potencias de seno": 1,
             "Producto a suma": 7,
             "Producto de cotangentes": 1,
             "Producto de razones": 1,
             "Series de senos": 1,
-            "Series trigonométricas": 1,
-            "Suma a producto": 6,
+            "Series trigonométricas": 4,
+            "Suma a producto": 8,
             "Suma angular de cuadrilátero": 1,
-            "Suma de cosenos": 2,
-            "Suma de cuadrados": 1,
-            "Suma de senos": 4,
+            "Suma de cosenos": 3,
+            "Suma de cuadrados": 2,
+            "Suma de senos": 5,
             "Suma de tangentes": 1,
-            "Suma telescópica": 2,
-            "Suma y diferencia de cosenos": 1,
+            "Suma telescópica": 3,
+            "Suma y diferencia de arcos": 1,
+            "Suma y diferencia de cosenos": 2,
             "Suma y diferencia de senos": 1,
             "Tangentes y áreas": 1,
             "Triángulos rectángulos": 1,
-            "Ángulo medio": 1
+            "Ángulo doble": 1,
+            "Ángulo medio": 5
           }
         }
       ]
@@ -1140,8 +1237,8 @@
   ],
   "lote_1500": {
     "meta": 1500,
-    "fichas_registradas": 1305,
-    "pendientes": 195,
+    "fichas_registradas": 1500,
+    "pendientes": 0,
     "cursos": [
       {
         "id": "quimica",
@@ -1196,8 +1293,8 @@
         "id": "geometria",
         "curso": "Geometría",
         "meta": 500,
-        "fichas": 326,
-        "pendientes": 174,
+        "fichas": 500,
+        "pendientes": 0,
         "temas": [
           {
             "id": "geometria.triangulos",
@@ -1222,7 +1319,17 @@
           {
             "id": "geometria.congruencia-de-triangulos",
             "tema": "Congruencia de triángulos",
-            "fichas": 40
+            "fichas": 48
+          },
+          {
+            "id": "geometria.esfera",
+            "tema": "Esfera",
+            "fichas": 83
+          },
+          {
+            "id": "geometria.relaciones-metricas",
+            "tema": "Relaciones métricas",
+            "fichas": 83
           }
         ]
       },
@@ -1230,8 +1337,8 @@
         "id": "trigonometria",
         "curso": "Trigonometría",
         "meta": 500,
-        "fichas": 479,
-        "pendientes": 21,
+        "fichas": 500,
+        "pendientes": 0,
         "temas": [
           {
             "id": "trigonometria.identidades-trigonometricas-fundamentales",
@@ -1261,7 +1368,7 @@
           {
             "id": "trigonometria.transformaciones-trigonometricas",
             "tema": "Transformaciones trigonométricas",
-            "fichas": 62
+            "fichas": 83
           }
         ]
       }
