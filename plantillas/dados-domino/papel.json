@@ -55,7 +55,7 @@
     {
       "id": "p2",
       "nivel": "intermedio",
-      "enunciado": "Tres dados están en fila sobre una mesa, pegados entre sí y contra la pared del fondo. Desde donde miras ves la cara de arriba, la del frente y la de cada extremo libre. Las caras del frente tienen, de izquierda a derecha, 2, 5 y 3 puntos, pero las de arriba no se distinguen. ¿Cuál es la mayor suma posible de los puntos que no se ven?",
+      "enunciado": "Tres dados están en fila sobre una mesa, pegados entre sí y contra la pared del fondo. Desde donde miras ves la cara de arriba, la del frente y la de cada extremo libre. Las caras del frente tienen, de izquierda a derecha, 2, 5 y 3 puntos, pero no sabes cuántos puntos tienen las de arriba. ¿Cuál es la mayor suma posible de los puntos que no se ven?",
       "respuesta": "45 puntos.",
       "pasos": [
         "No se ven: la cara de abajo de cada dado, la que toca la pared (la opuesta de la del frente) y las caras pegadas entre dados.",
@@ -312,7 +312,7 @@
       "pasos": [
         "Las fichas son 3|1, 1|x, x|y, y|6 y 6|4. Suman 3 + 1 + 1 + x + x + y + y + 6 + 6 + 4 = 21 + 2x + 2y = 35, así que x + y = 7.",
         "La cuarta ficha es y|6 y vale y + 6: hay que hacer y lo más chico posible.",
-        "y = 0 o y = 1 piden x = 7 o x = 6: con x = 6 la segunda ficha sería 1|6 y la cuarta 1|6: se repite. y = 0 pide x = 7, que no existe.",
+        "y = 0 pide x = 7, que no existe; y = 1 pide x = 6, y entonces la 2.ª y la 4.ª serían 1|6: se repite.",
         "y = 2 da x = 5: fichas 3|1, 1|5, 5|2, 2|6 y 6|4, todas distintas. La cuarta vale 2 + 6 = 8."
       ],
       "verificar": [

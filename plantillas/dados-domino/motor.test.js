@@ -35,7 +35,7 @@ function comprobar(fn, args, espera, que) {
 // 1. casos.json
 test('casos.json: formato', () => {
   assert.equal(datos.plantilla, 'dados-domino');
-  assert.equal(datos.verificacion, '', 'la verificación la llena otro subagente');
+  assert.equal(typeof datos.verificacion, 'string', 'verificacion es un texto (lo llena otro subagente)');
   assert.ok(datos.casos.length >= 16);
   for (const c of datos.casos) assert.ok(c.nombre && c.fn && Array.isArray(c.args) && c.espera, JSON.stringify(c).slice(0, 80));
 });

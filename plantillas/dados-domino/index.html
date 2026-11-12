@@ -268,6 +268,7 @@ document.addEventListener('mouseover', e => { const s = e.target.closest && e.ta
 document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
 document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
 const L = (k, nombre, valor) => [k, nombre, valor];
+const pts = n => (n === 1 ? '1 punto' : `${n} puntos`);
 function opcionesHTML(opts, idFb){
   return `<div class="opts">${opts.map(o => `<button type="button" class="opt" data-k="${o[0]}"><span class="l">${o[0].toUpperCase()}</span><span>${o[1]}</span></button>`).join('')}</div><p class="fb" id="${idFb}" aria-live="polite"></p>`;
 }
@@ -296,6 +297,20 @@ function girar3(p, eje, ang){      // Rodrigues: gira p alrededor del eje unitar
 }
 const DIR = { derecha:[1,0,0], izquierda:[-1,0,0], atras:[0,1,0], frente:[0,-1,0] };
 const ejeVuelco = l => { const d = DIR[l]; return [-d[1], d[0], 0]; };     // arriba × dirección
+// Dibujo de los puntos: el patrón de cada cara (el 2, el 3 y el 6 tienen dirección) va girado q cuartos de vuelta sobre
+// los ejes u, v de la cara. Tras un vuelco, cada patrón sigue al dado: así los puntos no saltan al terminar.
+const prod = (a, b) => a[0]*b[0] + a[1]*b[1] + a[2]*b[2];
+function ejesPips(G, q){ const a = q*Math.PI/2, c = Math.round(Math.cos(a)), s = Math.round(Math.sin(a));
+  return [suma3(por(G.u, c), por(G.v, s)), suma3(por(G.u, -s), por(G.v, c))]; }
+function giroTras(giro, eje){
+  const R = v => girar3(v, eje, Math.PI/2).map(Math.round), n = {};
+  for (const f of Object.keys(CARA)){
+    const U = R(ejesPips(CARA[f], giro[f] || 0)[0]), nn = R(CARA[f].n);
+    const f2 = Object.keys(CARA).find(g => CARA[g].n.every((x, i) => x === nn[i])), G2 = CARA[f2];
+    n[f2] = ((Math.round(Math.atan2(prod(U, G2.v), prod(U, G2.u))/(Math.PI/2)) % 4) + 4) % 4;
+  }
+  return n;
+}
 
 /* ================= La escena =================
    Modos:
@@ -304,7 +319,7 @@ const ejeVuelco = l => { const d = DIR[l]; return [-d[1], d[0], 0]; };     // ar
              { cara: variable } (cara teñida con el color de la variable), nombre (letra sobre el dado) }], pared:
              'atras' (pared del fondo), tablero: { w, h, caminos: [{ casillas, color }], marcas: [{ c: [x, y], t }] }, cam:
              { yaw, pitch }, sep (0 a 1: los dados se separan para ver las caras ocultas).
-   'domino'  fichas en 2D. dom = { tipo: 'juego' (las 28 en triángulo) | 'cadena' | 'pie', fichas, ocultas (índices boca
+   'domino'  fichas en 2D. dom = { tipo: 'juego' (las 28 en triángulo) | 'cadena', fichas, ocultas (índices boca
              abajo), marca (índices con el color F), x (índice con el color x), tachada (ficha que se repetiría) }.
    'puntajes' cuatro dados de frente con su letra. pun = { nombres, valores (null = «?») }.
    Antes de responder, lo que se pregunta no se dibuja: las caras que no se conocen van en blanco. */
@@ -316,7 +331,7 @@ function crearEscena(cv, idDesc, idLect, idLey, idMandos){
   let W = 0, Hh = 0, caja = null;
   function altoBase(w){
     const ancho = w >= 560;
-    if (E.modo === 'domino') return E.dom && E.dom.tipo === 'juego' ? Math.round(Math.min(w, 520)*.56) + 24 : (ancho ? 220 : 190);
+    if (E.modo === 'domino') return E.dom && E.dom.tipo === 'juego' ? Math.round(Math.min(w, 520)*.56) + 24 : Math.max(ancho ? 220 : 190, Math.round(Math.min((w - 16)/10, 48)*1.8 + 60));
     if (E.modo === 'puntajes') return ancho ? 200 : 170;
     return ancho ? 360 : 300;
   }
@@ -432,8 +447,9 @@ function crearEscena(cv, idDesc, idLect, idLey, idMandos){
       const val = D.d ? D.d[f] : null, ver = D.ver === 'todas' || (Array.isArray(D.ver) && D.ver.includes(f));
       if (val && ver){
         ctx.fillStyle = c.ink;
+        const [U, Vv] = ejesPips(G, (D.giro || {})[f] || 0);
         for (const [px, py] of PIP[val]){
-          const pc = suma3(ce, suma3(por(G.u, .27*px), por(G.v, .27*py)));
+          const pc = suma3(ce, suma3(por(U, .27*px), por(Vv, .27*py)));
           ctx.beginPath();
           for (let i = 0; i < 12; i++){ const a = i/12*Math.PI*2, q = proy(T(suma3(pc, suma3(por(G.u, .085*Math.cos(a)), por(G.v, .085*Math.sin(a)))))); i ? ctx.lineTo(q.x, q.y) : ctx.moveTo(q.x, q.y); }
           ctx.closePath(); ctx.fill();
@@ -492,18 +508,15 @@ function crearEscena(cv, idDesc, idLect, idLey, idMandos){
       return;
     }
     if (D.tipo === 'cadena'){
-      const n = D.fichas.length, gap = 2, s = Math.floor(Math.min((W - 24 - (n - 1)*gap)/(2*n), 46)), w = n*2*s + (n - 1)*gap, x0 = (W - w)/2, y0 = Hh/2 - s/2 - 12;
+      // fichas tan grandes como quepan; debajo, la ficha tachada (si hay), siempre dentro del dibujo
+      const n = D.fichas.length, gap = 2, s = Math.floor(Math.min((W - 8 - (n - 1)*gap)/(2*n), 48)), w = n*2*s + (n - 1)*gap, x0 = (W - w)/2;
+      const s2 = Math.round(s*.8), alto = s + 28 + (D.tachada ? s2 + 8 : 0), y0 = Math.max(8, (Hh - alto)/2);
       D.fichas.forEach((f, i) => {
         const x = x0 + i*(2*s + gap);
         ficha(c, x, y0, s, f || [0, 0], { oculta: !f, color: D.x === i ? 'x' : null });
-        rotulo(ctx, c, x + s, y0 + s + 16, `${i + 1}.ª`, D.x === i ? c.x : c.muted, 11, 700);
+        rotulo(ctx, c, x + s, y0 + s + 14, `${i + 1}.ª`, D.x === i ? c.x : c.muted, 11, 700);
       });
-      if (D.tachada){ const s2 = Math.round(s*.8), x = W/2 - s2, y = y0 + s + 30; if (y + s2 < Hh){ ficha(c, x, y, s2, D.tachada, { tachada:true }); } }
-      return;
-    }
-    if (D.tipo === 'pie'){
-      const n = D.fichas.length, gap = 12, s = Math.floor(Math.min((W - 30 - (n - 1)*gap)/n, (Hh - 40)/2, 46)), w = n*s + (n - 1)*gap, x0 = (W - w)/2, y0 = (Hh - 2*s)/2;
-      D.fichas.forEach((f, i) => ficha(c, x0 + i*(s + gap), y0, s, f || [0, 0], { vertical:true, oculta:!f }));
+      if (D.tachada) ficha(c, W/2 - s2, y0 + s + 28, s2, D.tachada, { tachada:true });
     }
   }
   function dibPuntajes(c){
@@ -542,7 +555,7 @@ function crearEscena(cv, idDesc, idLect, idLey, idMandos){
       D.rot = enSitio ? { centro:true, eje, ang:f*Math.PI/2 } : { pivote:[d[0]*.5, d[1]*.5, -.5], eje, ang:f*Math.PI/2 };
       if (enSitio) D.mov = [0, 0, Math.sin(f*Math.PI)*.35];
     }, () => {
-      D.rot = null; D.mov = null; D.d = MD.rodar(D.d, lado);
+      D.rot = null; D.mov = null; D.d = MD.rodar(D.d, lado); D.giro = giroTras(D.giro || {}, eje);
       if (!enSitio) D.p = [D.p[0] + d[0], D.p[1] + d[1], D.p[2]];
       E.dibujar(); if (fin) fin();
     });
@@ -609,16 +622,19 @@ function crearEscena(cv, idDesc, idLect, idLey, idMandos){
 const $ = id => document.getElementById(id);
 const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1', 'mandos1');
 const { v:v_, o:o_, a:a_, s:s_, T:T_, r:r_, F:F_ } = W_;
-const TORRE = [[0,0,0],[0,0,1],[0,0,2]], FILA = [[0,0,0],[1,0,0],[2,0,0]], ELE = [[0,0,0],[1,0,0],[0,1,0],[0,1,1]];
+const TORRE = [[0,0,0],[0,0,1],[0,0,2]], FILA = [[0,0,0],[1,0,0],[2,0,0]], ELE = [[0,1,0],[1,1,0],[0,0,0],[0,1,1]];
 
 // --- datos del motor ---
 const D1 = MD.dado({ arriba:2, frente:6, derecha:3 }), P1 = MD.unDado({ arriba:2, frente:6, derecha:3 });
 const P2 = MD.unDado({ arriba:6, pregunta:'visibles' }), D2 = MD.dado({ arriba:6, frente:2 });
 const P3 = MD.optimizarDados({ dados:TORRE, extremo:'min' });
 const P4 = MD.optimizarDados({ dados:FILA, condicion:{ arriba:'impar' } });
-const P5 = MD.optimizarDados({ dados:ELE, pared:['atras'], objetivo:'noVisibles' });
+const P5 = MD.optimizarDados({ dados:ELE, pared:['atras'], objetivo:'noVisibles' }), P5sinPared = MD.optimizarDados({ dados:ELE, objetivo:'noVisibles' });
 const INI6 = { arriba:2, frente:1 }, D6 = MD.dado(INI6), P6 = MD.rodarCamino({ inicio:INI6, camino:'DADAD' }), P6v = MD.rodarCamino({ inicio:INI6, camino:'DADAD', pregunta:'visibles' });
 const P7 = MD.circuito({ inicio:INI6, vuelta:'DAIF', vueltas:70 });
+// la animación da un ciclo completo y después las vueltas del resto (70 mod periodo): termina como tras 70 vueltas
+const VUELTAS7 = Array.from({ length:P7.periodo + 70 % P7.periodo + 1 }, (_, k) => P7.arribas[k % P7.periodo]);
+const FIN7 = MD.rodarCamino({ inicio:INI6, camino:'DAIF'.repeat(70 % P7.periodo) }).final;
 const VISTAS8 = [[1, 2, 3], [6, 2, 1], [5, 4, 3]], P8 = MD.deducirCubo({ vistas:VISTAS8, cara:1 });
 const P9 = MD.mismoDado([1, 2, 3], [3, 2, 1]), DA9 = MD.dado({ arriba:1, frente:2, derecha:3 }), DB9 = MD.dado({ arriba:3, frente:2, derecha:1 });
 const GIRO9 = MD.caminoGiro(DB9, MD.dado({ arriba:1, frente:2, espejo:true }));
@@ -645,8 +661,8 @@ G[1] = { id:'cara-de-la-mesa', ok:'a',
        b:`Sí se puede: en un dado las caras opuestas suman 7, y la de abajo es la opuesta de la de arriba. Con 2 arriba, abajo hay 7 − 2 = ${P1.respuesta}.`,
        c:`No hay una regla que ponga la menor abajo. Lo que manda es que las opuestas suman 7: abajo hay 7 − 2 = ${P1.respuesta}.` } };
 G[2] = { id:'vuelta-a-la-mesa', ok:'a',
-  opts:[['a', `${P2.respuesta} puntos`], ['b', `${P2.errores.cuentaAbajo} puntos`, 'RME11-cuenta-la-de-abajo', 'hipotesis'],
-        ['c', `${P2.errores.restaArriba} puntos`, 'RME10-resta-la-de-arriba', 'hipotesis'], ['d', 'Depende de cómo esté girado', 'RME10-depende-del-giro', 'hipotesis']],
+  opts:[['a', pts(P2.respuesta)], ['b', pts(P2.errores.cuentaAbajo), 'RME11-cuenta-la-de-abajo', 'hipotesis'],
+        ['c', pts(P2.errores.restaArriba), 'RME11-resta-la-de-arriba', 'hipotesis'], ['d', 'Depende de cómo esté girado', 'RME10-depende-del-giro', 'hipotesis']],
   fb:{ a:'¡Bien pensado! Mira qué cara queda oculta.',
        b:`21 son todos los puntos del dado, pero la cara que toca la mesa no se ve desde ningún lado. Abajo está el 7 − 6 = 1: se ven 21 − 1 = ${P2.respuesta}.`,
        c:`La cara de arriba sí se ve; la que no se ve es la de abajo, que tiene 7 − 6 = 1. Se ven 21 − 1 = ${P2.respuesta}.`,
@@ -666,36 +682,36 @@ G[4] = { id:'fila-impar', ok:'a',
        c:`${P4.errores.sinSiete} sale escondiendo 1, 2 y 3 en el dado del medio. Pero sus dos caras pegadas son opuestas y suman 7. La mayor suma es ${P4.respuesta}.`,
        d:`${P4.errores.contactosVisibles} cuenta las caras pegadas entre dados, que no se ven desde ningún lado. La mayor suma es ${P4.respuesta}.` } };
 G[5] = { id:'ele-pared', ok:'a', unidad:U_RUTAS,
-  opts:[['a', String(P5.respuesta)], ['b', String(P5.errores.sinSiete), 'RME10-sin-pares-de-siete', 'hipotesis'],
+  opts:[['a', String(P5.respuesta)], ['b', String(P5sinPared.respuesta), 'RME11-la-pared-no-tapa', 'hipotesis'],
         ['c', String(P5.errores.alReves), 'RME129-el-otro-extremo', 'hipotesis'], ['d', String(P5.errores.contactosVisibles), 'RME11-cuenta-las-pegadas', 'hipotesis']],
   fb:{ a:'¡Bien pensado! Separa los dados y cuenta las caras ocultas.',
-       b:`${P5.errores.sinSiete} sale poniendo 6, 5, 4 y 3 en las cuatro caras ocultas del dado de atrás. Pero esas caras son dos pares de opuestas: arriba y abajo suman 7, y frente y atrás también. La mayor suma es ${P5.respuesta}.`,
+       b:`${P5sinPared.respuesta} sale si las caras que tocan la pared se cuentan como si se vieran. Tocan la pared: no se ven. La mayor suma es ${P5.respuesta}.`,
        c:`${P5.errores.alReves} es lo menos que puede quedar oculto: es el total menos lo más que se puede ver. Se pide lo más que puede quedar oculto: ${P5.respuesta}.`,
        d:`${P5.errores.contactosVisibles} cuenta solo las caras que tocan la mesa. Las pegadas entre dados y las que tocan la pared tampoco se ven. La mayor suma es ${P5.respuesta}.` } };
 G[6] = { id:'dado-rueda', ok:'a', unidad:U_RUTAS,
-  opts:[['a', `${P6.respuesta} puntos`], ['b', `${P6.errores.alReves} puntos`, 'RME13-sube-la-de-adelante', 'hipotesis'], ['c', `${P6.errores.soloArriba} puntos`, 'RME121-solo-la-de-arriba', 'hipotesis']],
+  opts:[['a', pts(P6.respuesta)], ['b', pts(P6.errores.alReves), 'RME13-sube-la-de-adelante', 'hipotesis'], ['c', pts(P6.errores.soloArriba), 'RME121-solo-la-de-arriba', 'hipotesis']],
   fb:{ a:'¡Bien pensado! Mira el dado rodar.',
-       b:`${P6.errores.alReves} sale si en cada vuelco sube la cara del lado hacia el que rueda. Es al revés: la cara de arriba cae hacia ese lado y sube la de atrás del movimiento. Al llegar hay ${P6.respuesta} arriba.`,
+       b:`${P6.errores.alReves} sale si en cada vuelco sube la cara del lado hacia el que rueda. Es al revés: la cara de arriba cae hacia ese lado y sube la del lado contrario al movimiento. Al llegar hay ${P6.respuesta} arriba.`,
        c:`${P6.errores.soloArriba} sale siguiendo solo la cara de arriba y dejando los costados como al inicio. En cada vuelco los costados también cambian: hay que llevar la cuenta de todas las caras. Al llegar hay ${P6.respuesta} arriba.` } };
 G[7] = { id:'circuito-70', ok:'a', unidad:U_RUTAS,
-  opts:[['a', `${P7.respuesta} puntos`], ['b', `${P7.errores.unaVuelta} puntos`, 'RME120-vuelve-igual', 'hipotesis'],
-        ['c', `${P7.errores.periodoCuatro} puntos`, 'RME120-periodo-cuatro', 'hipotesis'], ['d', `${P7.errores.alReves} puntos`, 'RME13-sube-la-de-adelante', 'hipotesis']],
+  opts:[['a', pts(P7.respuesta)], ['b', pts(P7.errores.unaVuelta), 'RME120-vuelve-igual', 'hipotesis'],
+        ['c', pts(P7.errores.periodoCuatro), 'RME120-periodo-cuatro', 'hipotesis'], ['d', pts(P7.errores.alReves), 'RME13-sube-la-de-adelante', 'hipotesis']],
   fb:{ a:'¡Bien pensado! Mira las primeras vueltas.',
        b:`${P7.errores.unaVuelta} sería si cada vuelta dejara el dado como empezó. No lo deja: tras una vuelta arriba queda el ${P7.arribas[1]}. El dado vuelve a ser el mismo cada ${P7.periodo} vueltas, y 70 = ${P7.periodo} · ${Math.floor(70/P7.periodo)} + ${70 % P7.periodo}. Arriba queda ${P7.respuesta}.`,
        c:`${P7.errores.periodoCuatro} sale contando de 4 en 4 vueltas, como el dado que rueda en línea recta. Aquí el dado vuelve a ser el mismo cada ${P7.periodo} vueltas: 70 = ${P7.periodo} · ${Math.floor(70/P7.periodo)} + ${70 % P7.periodo}. Arriba queda ${P7.respuesta}.`,
        d:`${P7.errores.alReves} sale si en cada vuelco sube la cara del lado hacia el que rueda. Sube la del lado contrario. Arriba queda ${P7.respuesta}.` } };
 G[8] = { id:'cubo-tres-fotos', ok:'a', unidad:U_RUTAS,
-  opts:[['a', `La de ${P8.respuesta} puntos`], ['b', `La de ${P8.errores.siete} puntos`, 'RME124-siete-sin-ser-dado', 'hipotesis'], ['c', `La de ${P8.errores.noJuntas} puntos`, 'RME123-no-salen-juntas', 'hipotesis']],
+  opts:[['a', `La de ${pts(P8.respuesta)}`], ['b', `La de ${pts(P8.errores.siete)}`, 'RME124-siete-sin-ser-dado', 'hipotesis'], ['c', `La de ${pts(P8.errores.noJuntas)}`, 'RME123-no-salen-juntas', 'hipotesis']],
   fb:{ a:'¡Bien pensado! Mira el cubo armado.',
        b:`1 + 6 = 7 vale en un dado de tienda, pero este cubo no lo es. Además, en la segunda foto el 6 y el 1 se ven juntos: son vecinos, no opuestos. Al otro lado del 1 está el ${P8.respuesta}.`,
        c:`Es cierto que el ${P8.errores.noJuntas} nunca sale junto al 1 en las fotos, pero el ${P8.respuesta} tampoco. No basta con eso: hay que ver el orden de las caras alrededor del 3. Al otro lado del 1 está el ${P8.respuesta}.` } };
 G[9] = { id:'dado-espejo', ok:'b', unidad:U_RUTAS,
   opts:[['a', 'Sí: tienen los mismos números y en los dos las opuestas suman 7', 'RME122-mismo-dado-por-el-siete', 'hipotesis'],
-        ['b', 'No: B es como A visto en un espejo'],
+        ['b', 'No: Q es como P visto en un espejo'],
         ['c', 'No se puede saber sin ver las otras caras', 'RME10-no-se-sabe-sin-ver', 'hipotesis']],
-  fb:{ b:'¡Bien pensado! Mira B girar hasta parecerse a A.',
-       a:'La regla del 7 no basta. Si B se gira hasta tener el 1 arriba y el 2 al frente, a la derecha le queda el 4, y a A le queda el 3. Ningún giro los iguala: uno es el espejo del otro.',
-       c:'Las otras caras sí se conocen: son las opuestas, que suman 7. Y alcanza con estas tres: girando B hasta tener el 1 arriba y el 2 al frente, a la derecha le queda el 4, y a A el 3. Son espejo uno del otro.' } };
+  fb:{ b:'¡Bien pensado! Mira Q girar hasta tener 1 arriba y 2 al frente, como P.',
+       a:'La regla del 7 no basta. Si Q se gira hasta tener el 1 arriba y el 2 al frente, a la derecha le queda el 4, y a P le queda el 3. Ningún giro los iguala: uno es el espejo del otro.',
+       c:'Las otras caras sí se conocen: son las opuestas, que suman 7. Y alcanza con estas tres: girando Q hasta tener el 1 arriba y el 2 al frente, a la derecha le queda el 4, y a P el 3. Son espejo uno del otro.' } };
 G[10] = { id:'domino-primos', ok:'a',
   opts:[['a', `${P10.respuesta} fichas`], ['b', `${P10.errores.ordenadas} fichas`, 'RME12-cuenta-a-b-y-b-a', 'hipotesis'],
         ['c', `${P10.errores.sinDobles} fichas`, 'RME125-olvida-los-dobles', 'hipotesis'], ['d', `${P10.errores.sinBlanco} fichas`, 'RME127-olvida-el-blanco', 'hipotesis']],
@@ -733,7 +749,7 @@ const steps = [
       E.lect = [L('T', 'Total del dado', '21'), L('o', 'No se ve', '1'), L('v', 'Se ven', String(P2.respuesta))]; E.ley = [['v', 'v · caras que se ven', 'pt'], ['o', 'o · cara que no se ve', 'pt']]; E.leyenda();
       E.serie([f => E.camara(-2.4, .5, 1300, f), f => E.camara(-.6, -.7, 900, f)], fin); } },
   { k:'Paso 3', t:'La torre de tres dados', gate:G[3],
-    body:() => `<p class="problem">Tres dados forman una torre sobre la mesa y tú das la vuelta alrededor. Puedes girar cada dado como quieras antes de apilarlo. ¿Cuál es la menor suma posible de los puntos que se ven?</p>
+    body:() => `<p class="problem">Tres dados forman una torre sobre la mesa y tú das la vuelta alrededor, y también la miras desde arriba. Puedes girar cada dado como quieras antes de apilarlo. ¿Cuál es la menor suma posible de los puntos que se ven?</p>
       ${opcionesHTML(G[3].opts, 'fb')}<div id="tras" class="body" hidden>
       <div class="eqs"><div class="eq">encima: ${T_('21')} − ${o_('6')} = 15<span class="note">esconde solo la cara de abajo: que sea el 6</span></div>
       <div class="eq">medio y abajo: ${T_('21')} − (${o_('arriba')} + ${o_('abajo')}) = ${T_('21')} − ${s_('7')} = 14<span class="note">siempre, giren como giren</span></div>
@@ -741,12 +757,12 @@ const steps = [
       <p>En los dos dados de abajo se esconden la cara de arriba y la de abajo, que son opuestas: suman 7 pase lo que pase. Solo el dado de encima se puede acomodar. El motor probó las 24 posiciones de cada dado.</p>${FUENTE}</div>`,
     prep:yaR => E.config({ dados:conOrient(TORRE, yaR ? P3.ejemplo : null, yaR ? CL3 : null), cam:Object.assign({}, CAM), holgura:true, separable:yaR, sep: yaR ? 1 : 0,
       lect: yaR ? [L('T', 'Total', '3 · 21 = 63'), L('o', 'No se ven', String(63 - P3.respuesta)), L('v', 'Se ven (lo menos)', String(P3.respuesta))] : [L('T', 'Total', '3 · 21 = 63'), L('v', 'Se ven (lo menos)', '?')],
-      ley: yaR ? [['o', 'o · caras que no se ven', 'pt']] : [], desc:'Una torre de tres dados con las caras en blanco.' }),
-    anima:fin => { E.dados.forEach((D, k) => { D.d = P3.ejemplo[k]; D.marca = marcar(CL3, k, true); }); E.separable = true;
+      ley: yaR ? [['o', 'o · caras que no se ven', 'pt']] : [], desc: yaR ? `Torre de tres dados separada; las caras que no se ven, marcadas: lo menos que se ve es ${P3.respuesta}.` : 'Una torre de tres dados con las caras en blanco.' }),
+    anima:fin => { E.desc = `Torre de tres dados separada; las caras que no se ven, marcadas: lo menos que se ve es ${P3.respuesta}.`; E.dados.forEach((D, k) => { D.d = P3.ejemplo[k]; D.marca = marcar(CL3, k, true); }); E.separable = true;
       E.lect = [L('T', 'Total', '3 · 21 = 63'), L('o', 'No se ven', String(63 - P3.respuesta)), L('v', 'Se ven (lo menos)', String(P3.respuesta))]; E.ley = [['o', 'o · caras que no se ven', 'pt']]; E.leyenda(); E.mandos();
       E.serie([f => E.separar(true, 900, f), f => E.camara(-.9, -.45, 1000, f)], fin); } },
   { k:'Paso 4', t:'En fila, con un impar arriba', gate:G[4],
-    body:() => `<p class="problem">Tres dados están en fila sobre la mesa, pegados. Cada uno tiene ${a_('un número impar de puntos arriba')}. Das la vuelta a la mesa. ¿Cuál es la mayor suma posible de los puntos que se ven?</p>
+    body:() => `<p class="problem">Tres dados están en fila sobre la mesa, pegados. Cada uno tiene ${a_('un número impar de puntos arriba')}. Das la vuelta a la mesa y también la miras desde arriba. ¿Cuál es la mayor suma posible de los puntos que se ven?</p>
       ${opcionesHTML(G[4].opts, 'fb')}<div id="tras" class="body" hidden>
       <div class="eqs"><div class="eq">cada extremo: ${T_('21')} − (${o_('2')} + ${o_('1')}) = 18<span class="note">${a_('5')} arriba, 2 abajo; la cara pegada, el 1</span></div>
       <div class="eq">el del medio: ${T_('21')} − (${o_('2')} + ${s_('7')}) = 12<span class="note">sus dos caras pegadas son opuestas</span></div>
@@ -754,24 +770,25 @@ const steps = [
       <p>Para ver mucho hay que esconder poco: el mayor impar, el 5, va arriba, y abajo queda el 2. En los extremos, la cara pegada puede ser el 1. En el del medio, las dos caras pegadas suman 7 siempre.</p>${FUENTE}</div>`,
     prep:yaR => E.config({ dados:conOrient(FILA, yaR ? P4.ejemplo : null, yaR ? CL4 : null), cam:Object.assign({}, CAM), holgura:true, separable:yaR, sep: yaR ? 1 : 0,
       lect: yaR ? [L('a', 'Arriba', '5, 5 y 5'), L('o', 'No se ven', String(63 - P4.respuesta)), L('v', 'Se ven (lo más)', String(P4.respuesta))] : [L('a', 'Arriba', 'impares'), L('v', 'Se ven (lo más)', '?')],
-      ley: yaR ? [['o', 'o · caras que no se ven', 'pt']] : [], desc:'Tres dados en fila con las caras en blanco.' }),
-    anima:fin => { E.dados.forEach((D, k) => { D.d = P4.ejemplo[k]; D.marca = marcar(CL4, k, true); }); E.separable = true;
+      ley: yaR ? [['o', 'o · caras que no se ven', 'pt']] : [], desc: yaR ? `Tres dados en fila, separados, con 5 arriba; las caras que no se ven, marcadas: lo más que se ve es ${P4.respuesta}.` : 'Tres dados en fila con las caras en blanco.' }),
+    anima:fin => { E.desc = `Tres dados en fila, separados, con 5 arriba; las caras que no se ven, marcadas: lo más que se ve es ${P4.respuesta}.`; E.dados.forEach((D, k) => { D.d = P4.ejemplo[k]; D.marca = marcar(CL4, k, true); }); E.separable = true;
       E.lect = [L('a', 'Arriba', '5, 5 y 5'), L('o', 'No se ven', String(63 - P4.respuesta)), L('v', 'Se ven (lo más)', String(P4.respuesta))]; E.ley = [['o', 'o · caras que no se ven', 'pt']]; E.leyenda(); E.mandos();
       E.serie([f => E.separar(true, 900, f), f => E.camara(-.35, -.5, 1000, f)], fin); } },
   { k:'Paso 5', t:'En L, contra la pared', gate:G[5],
-    body:() => `<p class="problem">Hay cuatro dados: tres en forma de L sobre la mesa y el cuarto encima del de atrás. La mesa está pegada a la pared del fondo. Das la vuelta por delante y por los costados. ¿Cuál es la mayor suma posible de los puntos que no se ven?</p>
+    body:() => `<p class="problem">Hay cuatro dados: tres en forma de L sobre la mesa (dos pegados a la pared del fondo y uno delante del de la izquierda) y el cuarto encima del de la esquina. Se ven todas las caras que no tocan la mesa, la pared ni otro dado (también las de arriba). ¿Cuál es la mayor suma posible de los puntos que no se ven?</p>
       ${opcionesHTML(G[5].opts, 'fb')}<div id="tras" class="body" hidden>
-      <div class="eqs"><div class="eq">esquina: ${o_('6 + 5 + 4')} = 15<span class="note">abajo, atrás y derecha: tres caras vecinas</span></div>
-      <div class="eq">derecha: ${o_('6 + 5')} = 11 · encima: ${o_('6 + 5')} = 11</div>
-      <div class="eq">atrás: ${s_('7')} + ${s_('7')} = 14<span class="note">arriba y abajo, frente y pared: dos pares de opuestas</span></div>
-      <div class="eq">${o_('no se ven')} = 15 + 11 + 14 + 11 = ${o_(String(P5.respuesta))}</div></div>
-      <p>Las caras que tocan la mesa, otro dado o la pared no se ven. Cuando dos de ellas son opuestas, suman 7 sin remedio; cuando son vecinas, se pueden poner las más grandes.</p>${FUENTE}</div>`,
+      <div class="eqs"><div class="eq">esquina: ${T_('21')} − ${v_('1')} = 20<span class="note">solo se ve su cara izquierda: que sea el 1</span></div>
+      <div class="eq">el de la derecha: ${o_('6 + 5 + 4')} = 15<span class="note">abajo, pared e izquierda: tres caras vecinas</span></div>
+      <div class="eq">el de delante: ${o_('6 + 5')} = 11 · el de encima: ${o_('6 + 5')} = 11<span class="note">abajo y atrás: vecinas</span></div>
+      <div class="eq">${o_('no se ven')} = 20 + 15 + 11 + 11 = ${o_(String(P5.respuesta))}</div></div>
+      <p>Las caras que tocan la mesa, otro dado o la pared no se ven. Cuando un dado esconde casi todo, conviene pensar al revés: el total menos lo poco que se ve. Cuando las caras ocultas son vecinas, se pueden poner las más grandes.</p>${FUENTE}</div>`,
     prep:yaR => E.config({ dados:conOrient(ELE, yaR ? P5.ejemplo : null, yaR ? CL5 : null), pared:'atras', cam:{ yaw:-.55, pitch:.6 }, holgura:true, separable:yaR, sep: yaR ? 1 : 0,
       lect: yaR ? [L('T', 'Total', '4 · 21 = 84'), L('o', 'No se ven (lo más)', String(P5.respuesta)), L('v', 'Se ven', String(84 - P5.respuesta))] : [L('T', 'Total', '4 · 21 = 84'), L('o', 'No se ven (lo más)', '?')],
-      ley: yaR ? [['o', 'o · caras que no se ven', 'pt']] : [], desc:'Cuatro dados en blanco: tres en L sobre la mesa y uno encima del de atrás, junto a la pared del fondo.' }),
+      ley: yaR ? [['o', 'o · caras que no se ven', 'pt']] : [], desc: yaR ? `Cuatro dados en L contra la pared, separados; las caras que no se ven, marcadas: suman ${P5.respuesta}.` : 'Cuatro dados en blanco: tres en L sobre la mesa, dos contra la pared del fondo, y uno encima del de la esquina.' }),
     anima:fin => { E.dados.forEach((D, k) => { D.d = P5.ejemplo[k]; D.marca = marcar(CL5, k, true); }); E.separable = true;
       E.lect = [L('T', 'Total', '4 · 21 = 84'), L('o', 'No se ven (lo más)', String(P5.respuesta)), L('v', 'Se ven', String(84 - P5.respuesta))]; E.ley = [['o', 'o · caras que no se ven', 'pt']]; E.leyenda(); E.mandos();
-      E.serie([f => E.separar(true, 900, f), f => E.camara(-.8, -.4, 1000, f)], fin); } },
+      E.desc = `Cuatro dados en L contra la pared, separados; las caras que no se ven, marcadas: suman ${P5.respuesta}.`;
+      E.serie([f => E.separar(true, 900, f), f => E.camara(-.9, .35, 1000, f)], fin); } },
   { k:'Paso 6', t:'El dado que rueda', gate:G[6],
     body:() => `<p class="problem">El dado empieza en la casilla de salida con ${a_('2 arriba')}, 1 al frente y 4 a la derecha. Rueda volcándose sobre una arista, una casilla a la vez, por el ${r_('camino')}: derecha, fondo, derecha, fondo y derecha. ¿Cuántos puntos tiene la cara de arriba al llegar a la meta?</p>
       ${opcionesHTML(G[6].opts, 'fb')}<div id="tras" class="body" hidden>
@@ -788,18 +805,18 @@ const steps = [
       E.serie(vs.map((l, i) => f => E.volcar(0, l, 520, () => { E.lect = [L('a', 'Arriba en cada casilla', lectArriba(P6.arribas.slice(0, i + 2)))]; E.avisar(); f(); })), () => {
         E.dados[0].ver = 'todas'; E.lect = [L('a', 'Arriba en cada casilla', lectArriba(P6.arribas)), L('v', 'Se ven al llegar', String(P6v.respuesta))]; E.dibujar(); E.avisar(); fin(); }); } },
   { k:'Paso 7', t:'La vuelta al bloque', gate:G[7],
-    body:() => `<p class="problem">El mismo dado (${a_('2 arriba')}, 1 al frente, 4 a la derecha) da vueltas a un bloque de cuatro casillas: derecha, fondo, izquierda y frente, y así vuelve a la salida. Da 70 vueltas. ¿Cuántos puntos tiene la cara de arriba al terminar?</p>
+    body:() => `<p class="problem">El mismo dado (${a_('2 arriba')}, 1 al frente, 4 a la derecha) recorre en círculo un cuadrado de 2 × 2 casillas: derecha, fondo, izquierda y frente, y así vuelve a la salida. Da 70 vueltas. ¿Cuántos puntos tiene la cara de arriba al terminar?</p>
       ${opcionesHTML(G[7].opts, 'fb')}<div id="tras" class="body" hidden>
       <div class="eqs"><div class="eq">${a_('arriba')} tras 0, 1, 2, 3 vueltas: ${P7.arribas.map(a_).join(', ')}<span class="note">a la tercera vuelta el dado queda como empezó</span></div>
       <div class="eq">70 = ${P7.periodo} · ${Math.floor(70/P7.periodo)} + ${70 % P7.periodo} → como tras ${70 % P7.periodo} vuelta: ${a_(String(P7.respuesta))}</div></div>
       <p>Una vuelta al bloque no deja el dado igual: lo gira un tercio de vuelta alrededor de una diagonal. Cuando un movimiento se repite, se busca cada cuántas vueltas el dado queda como al inicio, y se usa el resto de la división.</p>${FUENTE}</div>`,
-    prep:yaR => E.config({ dados:[{ p:[0,0,0], d:D6, ver:['arriba', 'frente', 'derecha'], marca:{ arriba:'a' } }], cam:{ yaw:-.5, pitch:.8 },
+    prep:yaR => E.config({ dados:[{ p:[0,0,0], d: yaR ? FIN7 : D6, ver:['arriba', 'frente', 'derecha'], marca:{ arriba:'a' } }], cam:{ yaw:-.5, pitch:.8 },
       tablero:{ w:2, h:2, caminos:[{ casillas:[[0,0],[1,0],[1,1],[0,1],[0,0]], color:'r' }], marcas:[{ c:[0, -.72], t:'salida' }] },
-      lect: yaR ? [L('a', 'Arriba tras cada vuelta', P7.arribas.join(' → ')), L('a', 'Tras 70 vueltas', String(P7.respuesta))] : [L('a', 'Tras 70 vueltas', '?')],
+      lect: yaR ? [L('a', 'Arriba tras cada vuelta', VUELTAS7.join(' → ')), L('a', 'Tras 70 vueltas', String(P7.respuesta))] : [L('a', 'Tras 70 vueltas', '?')],
       ley:[['r', 'r · una vuelta'], ['a', 'a · cara de arriba', 'pt']], desc:'Un bloque de 2 por 2 casillas con un camino en círculo y el dado en la salida.' }),
-    anima:fin => { const vs = [...'DAIF'.repeat(P7.periodo)].map(ch => ({ D:'derecha', A:'atras', I:'izquierda', F:'frente' })[ch]);
-      E.serie(vs.map((l, i) => f => E.volcar(0, l, 340, () => { if ((i + 1) % 4 === 0){ E.lect = [L('a', 'Arriba tras cada vuelta', P7.arribas.slice(0, (i + 1)/4 + 1).join(' → '))]; E.avisar(); } f(); })), () => {
-        E.lect = [L('a', 'Arriba tras cada vuelta', P7.arribas.join(' → ')), L('a', 'Tras 70 vueltas', String(P7.respuesta))]; E.avisar(); fin(); }); } },
+    anima:fin => { const vs = [...'DAIF'.repeat(P7.periodo + 70 % P7.periodo)].map(ch => ({ D:'derecha', A:'atras', I:'izquierda', F:'frente' })[ch]);
+      E.serie(vs.map((l, i) => f => E.volcar(0, l, 340, () => { if ((i + 1) % 4 === 0){ E.lect = [L('a', 'Arriba tras cada vuelta', VUELTAS7.slice(0, (i + 1)/4 + 1).join(' → '))]; E.avisar(); } f(); })), () => {
+        E.lect = [L('a', 'Arriba tras cada vuelta', VUELTAS7.join(' → ')), L('a', 'Tras 70 vueltas', String(P7.respuesta))]; E.avisar(); fin(); }); } },
   { k:'Paso 8', t:'Un cubo, tres fotos', gate:G[8],
     body:() => `<p class="problem">Este cubo tiene caras con 1 a 6 puntos, pero <b>no</b> es un dado de los de siempre. Son tres fotos del mismo cubo, cada una con la cara de arriba, la del frente y la de la derecha. ¿Qué cara está al otro lado de la de 1 punto?</p>
       ${opcionesHTML(G[8].opts, 'fb')}<div id="tras" class="body" hidden>
@@ -815,17 +832,17 @@ const steps = [
       E.lect = [L('s', 'Opuesta del 1', String(P8.respuesta)), L('ink', 'Cubos posibles', String(P8.cubos))]; E.ley = [['s', 's · el 1 y su opuesta', 'pt']]; E.leyenda();
       E.serie([f => E.camara(-2.2, -.5, 1500, f), f => E.camara(-.6, .5, 900, f)], fin); } },
   { k:'Paso 9', t:'¿El mismo dado?', gate:G[9],
-    body:() => `<p class="problem">Los dos dados tienen las caras opuestas que suman 7. El dado A muestra 1 arriba, 2 al frente y 3 a la derecha. El dado B muestra 3 arriba, 2 al frente y 1 a la derecha. ¿Son el mismo dado, solo que girado?</p>
+    body:() => `<p class="problem">Los dos dados tienen las caras opuestas que suman 7. El dado P muestra 1 arriba, 2 al frente y 3 a la derecha. El dado Q muestra 3 arriba, 2 al frente y 1 a la derecha. ¿Son el mismo dado, solo que girado?</p>
       ${opcionesHTML(G[9].opts, 'fb')}<div id="tras" class="body" hidden>
-      <div class="eqs"><div class="eq">A con 1 arriba y 2 al frente: 3 a la derecha</div><div class="eq">B con 1 arriba y 2 al frente: ${MD.dado({ arriba:1, frente:2, espejo:true }).derecha} a la derecha</div></div>
-      <p>Con la misma regla del 7 hay dos dados distintos, uno espejo del otro: alrededor de la esquina del 1, el 2 y el 3, uno los tiene en el sentido de las agujas del reloj y el otro al revés. Por eso en los problemas se mira dónde está cada número en el dibujo, no solo que las opuestas sumen 7.</p>${FUENTE}</div>`,
+      <div class="eqs"><div class="eq">P con 1 arriba y 2 al frente: 3 a la derecha</div><div class="eq">Q con 1 arriba y 2 al frente: ${MD.dado({ arriba:1, frente:2, espejo:true }).derecha} a la derecha</div></div>
+      <p>Con la misma regla del 7 hay dos dados distintos, uno espejo del otro: alrededor de la esquina del 1, el 2 y el 3, uno los tiene en el sentido de las agujas del reloj y el otro al revés. Por eso en los problemas se mira dónde está cada número en el dibujo, no solo que las opuestas sumen 7. Hasta donde sabemos, el dado común de tienda tiene el 1, el 2 y el 3 en sentido contrario a las agujas del reloj alrededor de su esquina, como P, pero hay dados de los dos tipos.</p>${FUENTE}</div>`,
     prep:yaR => { const B = yaR ? MD.dado({ arriba:1, frente:2, espejo:true }) : DB9;
-      E.config({ dados:[{ p:[0,0,0], d:DA9, ver: yaR ? 'todas' : ['arriba', 'frente', 'derecha'], nombre:'A', marca: yaR ? { derecha:'ink' } : {} }, { p:[2,0,0], d:B, ver: yaR ? 'todas' : ['arriba', 'frente', 'derecha'], nombre:'B', marca: yaR ? { derecha:'ink' } : {} }], cam:{ yaw:-.5, pitch:.5 },
-        lect: yaR ? [L('ink', 'Derecha de A', '3'), L('ink', 'Derecha de B', String(B.derecha))] : [L('ink', '¿Iguales?', '?')], ley: yaR ? [['ink', 'cara de la derecha', 'pt']] : [],
-        desc:'Dos dados: A con 1 arriba, 2 al frente y 3 a la derecha; B con 3 arriba, 2 al frente y 1 a la derecha.' }); },
+      E.config({ dados:[{ p:[0,0,0], d:DA9, ver: yaR ? 'todas' : ['arriba', 'frente', 'derecha'], nombre:'P', marca: yaR ? { derecha:'ink' } : {} }, { p:[2,0,0], d:B, ver: yaR ? 'todas' : ['arriba', 'frente', 'derecha'], nombre:'Q', marca: yaR ? { derecha:'ink' } : {} }], cam:{ yaw:-.5, pitch:.5 },
+        lect: yaR ? [L('ink', 'Derecha de P', '3'), L('ink', 'Derecha de Q', String(B.derecha))] : [L('ink', '¿Iguales?', '?')], ley: yaR ? [['ink', 'cara de la derecha', 'pt']] : [],
+        desc:'Dos dados: P con 1 arriba, 2 al frente y 3 a la derecha; Q con 3 arriba, 2 al frente y 1 a la derecha.' }); },
     anima:fin => { E.dados.forEach(D => { D.ver = 'todas'; });
       E.serie(GIRO9.map(l => f => E.volcar(1, l, 700, f, true)), () => { E.dados.forEach(D => { D.marca = { derecha:'ink' }; });
-        E.lect = [L('ink', 'Derecha de A', String(E.dados[0].d.derecha)), L('ink', 'Derecha de B', String(E.dados[1].d.derecha))]; E.ley = [['ink', 'cara de la derecha', 'pt']]; E.leyenda(); E.dibujar(); E.avisar(); fin(); }); } },
+        E.lect = [L('ink', 'Derecha de P', String(E.dados[0].d.derecha)), L('ink', 'Derecha de Q', String(E.dados[1].d.derecha))]; E.ley = [['ink', 'cara de la derecha', 'pt']]; E.leyenda(); E.dibujar(); E.avisar(); fin(); }); } },
   { k:'Paso 10', t:'Las fichas del dominó', gate:G[10],
     body:() => `<p class="problem">Un dominó del 0 al 6 tiene una sola ficha por cada pareja de números: la 2|5 es la misma que la 5|2, y hay dobles como la 3|3. El 0 es la mitad en blanco. ¿Cuántas fichas tienen una suma de puntos que es un número primo?</p>
       ${opcionesHTML(G[10].opts, 'fb')}<div id="tras" class="body" hidden>
@@ -922,9 +939,10 @@ const IA = { arriba:2, frente:3 }, IB = { arriba:6, frente:4 }, CA = 'DDA', CB =
 const Q3 = MD.rodarDos({ a:{ inicio:IA, camino:CA }, b:{ inicio:IB, camino:CB } });
 const RA = MD.rodarCamino({ inicio:IA, camino:CA }), RB = MD.rodarCamino({ inicio:IB, camino:CB });
 const CAD = [[2, 5], null, null, [3, 6], null], Q4 = MD.cadenaDomino({ cadena:CAD, total:40, ficha:2 });
-const CONDS = [{ id:'sumas', suma:['A', 'D'], igual:['B', 'C'] }, { id:'parB', par:'B' }, { id:'doble', doble:['A', 'D'] }];
-const Q5 = MD.deducirPuntajes({ nombres:['A', 'B', 'C', 'D'], condiciones:CONDS, pregunta:'D' });
-const caso = s => `A = ${s.A}, B = ${s.B}, C = ${s.C}, D = ${s.D}`;
+const NOM5 = ['P', 'Q', 'R', 'S'];
+const CONDS = [{ id:'sumas', suma:['P', 'S'], igual:['Q', 'R'] }, { id:'parQ', par:'Q' }, { id:'doble', doble:['P', 'S'] }];
+const Q5 = MD.deducirPuntajes({ nombres:NOM5, condiciones:CONDS, pregunta:'S' });
+const caso = s => `P = ${s.P}, Q = ${s.Q}, R = ${s.R}, S = ${s.S}`;
 const marcarK = (cl, k) => { const m = {}; for (const c of MD.CARAS) if (cl[k][c] === 'dado') m[c] = 'k'; return m; };
 const FUENTE = '<p class="fuente">Las opciones incorrectas son hipótesis nuestras sobre errores de los postulantes.</p>';
 const LT = (k, nombre, valor) => [k, nombre, valor];
@@ -935,7 +953,7 @@ const enTablero = (o, cas) => cas.map(([x, y]) => [x + o[0], y + o[1]]);
 
 const EXPS = [
   { id:'contacto-ocho', corto:'Caras pegadas que suman 8',
-    q:`Tres dados forman una torre. Cada par de ${k_('caras pegadas')} suma 8 puntos. ¿Cuál es la menor suma posible entre la cara que toca la mesa y la cara de abajo del dado de encima?`,
+    q:`Tres dados forman una torre. Cada par de ${k_('caras pegadas')} suma 8 puntos. ¿Cuál es la menor suma posible de los puntos de la cara que toca la mesa y de la cara de abajo del dado de encima?`,
     opts:[['a', String(Q1.errores.sinSiete), 'RME10-sin-pares-de-siete', 'hipotesis'], ['b', String(Q1.respuesta)],
           ['c', String(Q1.errores.alReves), 'RME129-el-otro-extremo', 'hipotesis'], ['d', String(Q1.errores.sinCondicion), 'RME126-sin-la-condicion', 'hipotesis']],
     ok:'b',
@@ -944,9 +962,9 @@ const EXPS = [
          d:`${Q1.errores.sinCondicion} sale olvidando que las caras pegadas suman 8. Con esa regla, la menor suma es ${Q1.respuesta}.` },
     antes:ya => E.config({ dados:TORRE.map((p, k) => ({ p, d: ya ? Q1.ejemplo[k] : null, marca: ya ? Object.assign(marcarK(Q1.clases, k), k === 0 ? { abajo:'o' } : k === 2 ? { abajo:'o' } : {}) : {} })), cam:{ yaw:-.6, pitch:.5 }, holgura:true, separable:ya, sep: ya ? 1 : 0,
       lect: ya ? [LT('k', 'Pegadas', `${Q1.ejemplo[0].arriba} + ${Q1.ejemplo[1].abajo} = 8 · ${Q1.ejemplo[1].arriba} + ${Q1.ejemplo[2].abajo} = 8`), LT('o', 'Las dos caras', `${Q1.ejemplo[0].abajo} + ${Q1.ejemplo[2].abajo} = ${Q1.respuesta}`)] : [LT('k', 'Cada par pegado', '8'), LT('o', 'Lo menos', '?')],
-      ley: ya ? [['k', 'k · caras pegadas', 'pt'], ['o', 'o · las dos caras de la pregunta', 'pt']] : [], desc:'Una torre de tres dados con las caras en blanco.' }),
+      ley: ya ? [['k', 'k · caras pegadas', 'pt'], ['o', 'o · las dos caras de la pregunta', 'pt']] : [], desc: ya ? `Torre de tres dados separada con las caras pegadas y las dos caras de la pregunta marcadas: suman ${Q1.respuesta}.` : 'Una torre de tres dados con las caras en blanco.' }),
     despues:fin => { const x = EXPS[0]; x.antes(true); E.sep = 0; E.serie([f => E.separar(true, 900, f), f => E.camara(-.9, -.45, 1000, f)], fin); },
-    exp:() => `<div class="eqs"><div class="eq">${a_('a')} + (8 − ${a_('a')}) → medio: abajo 8 − ${a_('a')}, arriba ${s_('7')} − (8 − ${a_('a')}) = ${a_('a')} − 1</div>
+    exp:() => `<div class="eqs"><div class="eq">pegadas: ${a_('a')} + (8 − ${a_('a')}) = 8 → medio: abajo 8 − ${a_('a')}, arriba ${s_('7')} − (8 − ${a_('a')}) = ${a_('a')} − 1</div>
       <div class="eq">encima: abajo = 8 − (${a_('a')} − 1) = 9 − ${a_('a')}<span class="note">${a_('a')}: la cara de arriba del dado de abajo</span></div>
       <div class="eq">${o_('mesa')} + ${o_('abajo de encima')} = (${s_('7')} − ${a_('a')}) + (9 − ${a_('a')}) = 16 − 2${a_('a')}</div>
       <div class="eq">${a_('a')} = 6 → ${o_('1')} + ${o_('3')} = ${o_(String(Q1.respuesta))}</div></div>
@@ -959,7 +977,7 @@ const EXPS = [
          b:`${Q2.errores.sinSiete} pone 1 abajo de cada dado sin mirar qué hay arriba. Pero abajo está la opuesta: 7 menos la de arriba. La menor suma es ${Q2.respuesta}.` },
     antes:ya => E.config({ dados:FILA.map((p, k) => ({ p, d: ya ? Q2.ejemplo[k] : null, marca: ya ? { arriba:'a', abajo:'o' } : {} })), cam:{ yaw:-.6, pitch:.5 },
       lect: ya ? [LT('a', 'Arriba', Q2.ejemplo.map(d => d.arriba).join(' · ') + ' = 36'), LT('o', 'Abajo', Q2.ejemplo.map(d => d.abajo).join(' + ') + ' = ' + Q2.respuesta)] : [LT('a', 'Producto de arriba', '36'), LT('o', 'Abajo, lo menos', '?')],
-      ley: ya ? [['a', 'a · caras de arriba', 'pt'], ['o', 'o · caras sobre la mesa', 'pt']] : [], desc:'Tres dados en fila con las caras en blanco.' }),
+      ley: ya ? [['a', 'a · caras de arriba', 'pt'], ['o', 'o · caras sobre la mesa', 'pt']] : [], desc: ya ? `Tres dados en fila con arriba ${Q2.ejemplo.map(d => d.arriba).join(', ')} y abajo ${Q2.ejemplo.map(d => d.abajo).join(', ')}.` : 'Tres dados en fila con las caras en blanco.' }),
     despues:fin => { const x = EXPS[1]; x.antes(true); E.serie([f => E.camara(-.6, -.6, 1100, f)], fin); },
     exp:() => `<div class="eqs"><div class="eq">${o_('abajo')} = ${s_('7')} − ${a_('arriba')} → suma de abajo = 21 − suma de ${a_('arriba')}</div>
       <div class="eq">36 = 6 · 6 · 1 = 6 · 3 · 2 = 4 · 3 · 3 → la mayor suma arriba: 6 + 6 + 1 = 13</div>
@@ -1000,25 +1018,25 @@ const EXPS = [
       <div class="eq">y = 2 → 5|2 repite la 2|5 ✗ · y = 3 → z = 4: ${x_('3|3')} = ${x_(String(Q4.respuesta))}</div></div>
       <p>Abajo del dibujo está tachada la ficha 5|2: es la que haría falta para que la 3.ª valga 5, y ya está en la cadena como 2|5. El motor probó todas las cadenas: hay ${Q4.cadenas} que suman 40.</p>${FUENTE}` },
   { id:'cuatro-dados-pistas', corto:'Cuatro dados y tres pistas',
-    q:'Se lanzan cuatro dados, A, B, C y D, y salen cuatro puntajes distintos. Se sabe que A + D = B + C, que B es par y que A es el doble de D. ¿Cuántos puntos tiene D?',
-    opts:[['a', `${Q5.errores.conRepetidos} (con ${caso(Q5.casos.conRepetidos)})`, 'AR19-repite-puntajes', 'parcial'],
-          ['b', `${Q5.errores.sin_parB} (con ${caso(Q5.casos.sin_parB)})`, 'RME126-olvida-la-paridad', 'hipotesis'],
-          ['c', `${Q5.respuesta} (con ${caso(Q5.valores)})`],
-          ['d', `${Q5.errores.sin_doble} (con ${caso(Q5.casos.sin_doble)})`, 'RME126-olvida-el-doble', 'hipotesis']],
+    q:'Se lanzan cuatro dados, P, Q, R y S, y salen cuatro puntajes distintos. Se sabe que P + S = Q + R, que Q es par y que P es el doble de S. ¿Cuántos puntos tiene S?',
+    opts:[['a', pts(Q5.errores.conRepetidos), 'AR19-repite-puntajes', 'parcial'],
+          ['b', pts(Q5.errores.sin_parQ), 'RME126-olvida-la-paridad', 'hipotesis'],
+          ['c', pts(Q5.respuesta)],
+          ['d', pts(Q5.errores.sin_doble), 'RME126-olvida-el-doble', 'hipotesis']],
     ok:'c',
-    fb:{ a:'Ese caso cumple las tres pistas, pero repite puntajes (A y B son 2; C y D son 1), y los cuatro deben ser distintos.',
-         b:'Ese caso cumple que A + D = B + C y que A es el doble de D, pero B es impar.',
-         d:'Ese caso cumple que A + D = B + C y que B es par, pero A no es el doble de D.' },
-    antes:ya => E.config({ modo:'puntajes', pun:{ nombres:['A', 'B', 'C', 'D'], valores: ya ? ['A', 'B', 'C', 'D'].map(n => Q5.valores[n]) : [null, null, null, null] },
-      lect: ya ? [LT('ink', 'A + D', `${Q5.valores.A} + ${Q5.valores.D} = ${Q5.valores.A + Q5.valores.D}`), LT('ink', 'B + C', `${Q5.valores.B} + ${Q5.valores.C} = ${Q5.valores.B + Q5.valores.C}`)] : [LT('ink', 'D', '?')],
-      desc:'Cuatro dados, A, B, C y D, con los puntajes ocultos.' }),
+    fb:{ a:`Sale con ${caso(Q5.casos.conRepetidos)}: cumple las tres pistas, pero repite puntajes, y los cuatro deben ser distintos. La única forma es ${caso(Q5.valores)}.`,
+         b:`Sale con ${caso(Q5.casos.sin_parQ)}: cumple que P + S = Q + R y que P es el doble de S, pero Q es impar. La única forma es ${caso(Q5.valores)}.`,
+         d:`Sale con ${caso(Q5.casos.sin_doble)}: cumple que P + S = Q + R y que Q es par, pero P no es el doble de S. La única forma es ${caso(Q5.valores)}.` },
+    antes:ya => E.config({ modo:'puntajes', pun:{ nombres:NOM5, valores: ya ? NOM5.map(n => Q5.valores[n]) : [null, null, null, null] },
+      lect: ya ? [LT('ink', 'P + S', `${Q5.valores.P} + ${Q5.valores.S} = ${Q5.valores.P + Q5.valores.S}`), LT('ink', 'Q + R', `${Q5.valores.Q} + ${Q5.valores.R} = ${Q5.valores.Q + Q5.valores.R}`)] : [LT('ink', 'S', '?')],
+      desc: ya ? `Cuatro dados con sus puntajes: ${caso(Q5.valores)}.` : 'Cuatro dados, P, Q, R y S, con los puntajes ocultos.' }),
     despues:fin => { const x = EXPS[4]; x.antes(false); const vals = E.pun.valores;
-      E.serie(['D', 'A', 'B', 'C'].map(n => f => E.animar(420, () => {}, () => { vals[['A', 'B', 'C', 'D'].indexOf(n)] = Q5.valores[n]; E.dibujar(); f(); })), () => { x.antes(true); fin(); }); },
-    exp:() => `<div class="eqs"><div class="eq">A = 2D → (A, D) = (2, 1), (4, 2) o (6, 3)</div>
-      <div class="eq">(2, 1): B + C = 3 con B par → B = 2, repite A ✗ · (4, 2): B + C = 6 con B par y sin 2 ni 4 → B = 6, C = 0 ✗</div>
-      <div class="eq">(6, 3): B + C = 9 con B par y sin 6 → B = 4, C = 5 ✓ → D = ${Q5.respuesta}</div></div>
-      <p>Se empieza por la pista que deja menos casos (A = 2D) y se revisan todos: el primer caso que parece funcionar puede romper otra pista. El motor probó las 360 formas de dar puntajes distintos a los cuatro dados: solo una cumple todo.</p>
-      <p class="fuente">La opción A es un error de repetición que un estudio de combinatoria describió y observó, sin dar su frecuencia (Navarro-Pelayo y otros); las demás opciones incorrectas son hipótesis nuestras.</p>` },
+      E.serie(['S', 'P', 'Q', 'R'].map(n => f => E.animar(420, () => {}, () => { vals[NOM5.indexOf(n)] = Q5.valores[n]; E.dibujar(); f(); })), () => { x.antes(true); fin(); }); },
+    exp:() => `<div class="eqs"><div class="eq">P = 2S → (P, S) = (2, 1), (4, 2) o (6, 3)</div>
+      <div class="eq">(2, 1): Q + R = 3 con Q par → Q = 2, repite P ✗ · (4, 2): Q + R = 6 con Q par y sin 2 ni 4 → Q = 6, R = 0 ✗</div>
+      <div class="eq">(6, 3): Q + R = 9 con Q par y sin 6 → Q = 4, R = 5 ✓ → S = ${Q5.respuesta}</div></div>
+      <p>Se empieza por la pista que deja menos casos (P = 2S) y se revisan todos: el primer caso que parece funcionar puede romper otra pista. El motor probó las 360 formas de dar puntajes distintos a los cuatro dados: solo una cumple todo.</p>
+      <p class="fuente">La opción que repite puntajes es un error de repetición que un estudio de combinatoria describió y observó, sin dar su frecuencia (Navarro-Pelayo y otros); las demás opciones incorrectas son hipótesis nuestras.</p>` },
 ];
 [['contacto-ocho', 'b'], ['producto-arriba', 'c'], ['dos-dados-ruedan', 'a'], ['cadena-domino', 'b'], ['cuatro-dados-pistas', 'c']].forEach(([id, l]) => mover(EXPS.find(x => x.id === id), l));
 const S = { k:0, pred:{}, t0:Date.now() };

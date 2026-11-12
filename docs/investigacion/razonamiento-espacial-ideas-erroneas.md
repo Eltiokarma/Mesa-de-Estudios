@@ -129,3 +129,18 @@ Los abrieron las escenas al construirse. Todos son hipótesis.
 | RME193 | Contar solo las caras que salen en las vistas. |
 
 RME3 (solo los cubitos visibles) se parece a GE13 de `geometria-ideas-erroneas.md` (Ben-Chaim, Lappan y Houang, 1985), que trata de contar cubitos de un sólido dibujado; aquí sigue como hipótesis.
+
+### dados-domino
+
+| Código | Error |
+| --- | --- |
+| RME120 | Suponer mal el período de un circuito: creer que tras una vuelta el dado queda como empezó, o contar de 4 en 4 vueltas como en línea recta. |
+| RME121 | Seguir solo la cara de arriba del dado que rueda, sin actualizar los costados. |
+| RME122 | Creer que dos dados con las opuestas que suman 7 son siempre el mismo dado girado (existen dados espejo). |
+| RME123 | Tomar como opuestas dos caras solo porque nunca salen juntas en las vistas. |
+| RME124 | Aplicar «las opuestas suman 7» a un cubo marcado que no es un dado común. |
+| RME125 | Olvidar las fichas dobles del dominó (el generador dados-caras usa RME176 para lo mismo). |
+| RME126 | No aplicar a todas las caras o puntajes una condición del enunciado (paridad, producto, suma fija, una pista). |
+| RME127 | Olvidar la mitad en blanco (el 0) del dominó. |
+| RME128 | En una cadena de dominó, elegir las fichas ocultas sin respetar que las mitades que se tocan son iguales. |
+| RME129 | Responder el otro extremo (el máximo por el mínimo). |
