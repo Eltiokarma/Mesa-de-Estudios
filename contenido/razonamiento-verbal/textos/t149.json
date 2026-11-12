@@ -33,7 +33,7 @@
       {
         "id": "o3",
         "rol": "apoyo",
-        "t": "Además, a veces se desvela y al día siguiente llega cansado al colegio."
+        "t": "Además, a veces se desvela jugando y al día siguiente llega tan cansado al colegio que no rinde en clase."
       },
       {
         "id": "o4",
@@ -89,10 +89,10 @@
           "B": "RV61",
           "ninguno": null
         },
-        "explicacion": "Los dos lo sostienen: el texto A cuenta que su hijo se desvela y llega cansado (oración 3) y el B dice que jugar toda la noche perjudica el sueño y las notas (oración 6).",
+        "explicacion": "Los dos lo sostienen: el texto A cuenta que su hijo se desvela jugando y no rinde en clase (oración 3) y el B dice que jugar toda la noche perjudica el sueño y las notas (oración 6).",
         "explicaciones": {
           "A": "El texto A lo dice en la oración 3, pero el B también: jugar toda la noche perjudica el sueño y las notas (oración 6).",
-          "B": "El texto B lo dice en la oración 6, pero el A también: su hijo se desvela y llega cansado (oración 3).",
+          "B": "El texto B lo dice en la oración 6, pero el A también: su hijo se desvela jugando y no rinde en clase (oración 3).",
           "ninguno": "Los dos lo sostienen: el texto A en la oración 3 y el B en la oración 6."
         }
       },
@@ -163,19 +163,19 @@
           "explicacion": "Es la postura del texto A (oraciones 4 y 5), no la de la profesora."
         },
         {
-          "t": "todos los videojuegos enseñan a resolver problemas y a coordinarse con un equipo.",
+          "t": "todos los videojuegos enseñan a resolver problemas y a coordinarse con un equipo, sin excepción.",
           "codigo": "RV11",
           "origen": "o8",
           "explicacion": "El texto B dice que «en muchos juegos» se practican esas habilidades (oración 8), no en todos."
         },
         {
-          "t": "el problema no está en jugar, sino en hacerlo sin acuerdos ni horario.",
+          "t": "no todo el tiempo de juego se pierde, y en vez de prohibir conviene acordar con los jóvenes un horario.",
           "correcta": true,
           "evidencia": [
-            "o6",
+            "o7",
             "o10"
           ],
-          "explicacion": "Concede que jugar toda la noche perjudica (oración 6) y propone acordar un horario en lugar de prohibir (oración 10)."
+          "explicacion": "Dice que no todo tiempo frente a la pantalla es tiempo perdido (oración 7) y que lo que conviene no es prohibir, sino acordar un horario (oración 10)."
         },
         {
           "t": "lo más sensato es prohibir los videojuegos a los alumnos que llegan cansados a clase.",
@@ -291,5 +291,10 @@
       "fuente": "Texto propio, sin datos externos"
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (revisor a ciegas, rutina verbal-mas)",
+    "fecha": "2026-11-12",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidió en 34 de 34 ítems de la tanda (previos y preguntas). Cambios: el texto A (oración 3) dice ahora que el hijo se desvela jugando y no rinde en clase, para que el previo de p1 tenga la idea explícita en ambos textos; la correcta de p2 pasó a ser paráfrasis fiel de las oraciones 7 y 10 del B; distractores de p2 igualados en largo. Sin hechos externos."
+  }
 }

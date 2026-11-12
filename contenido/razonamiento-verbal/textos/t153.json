@@ -211,26 +211,27 @@
       "enunciado": "Si se comprobara que los ingresantes que rindieron el examen en quechua tienen en el primer ciclo notas parecidas a las de los demás, el docente del texto B probablemente",
       "alternativas": [
         {
-          "t": "insistiría en que el examen traducido fracasa, pues las clases se dictan en castellano.",
+          "t": "insistiría en que el examen traducido fracasa, pues las clases se dictan en castellano y no podrán seguirlas.",
           "codigo": "RV63",
           "explicacion": "Repite el temor que el hecho comprobado desmiente: el B temía el fracaso de esos ingresantes (oraciones 8 y 11)."
         },
         {
-          "t": "vería atenuada su preocupación por el aula en castellano, aunque no la de sus palabras técnicas.",
+          "t": "tendría menos motivo para temer que el aula en castellano haga fracasar a esos ingresantes, pero seguiría reclamando trabajo con los términos técnicos.",
           "correcta": true,
           "evidencia": [
             "o8",
-            "o9"
+            "o9",
+            "o11"
           ],
-          "explicacion": "Su temor era que el ingresante tuviera que entenderlo todo en otra lengua (oración 8); las notas parecidas lo atenúan, pero el vocabulario científico es un asunto aparte (oración 9)."
+          "explicacion": "Su temor era que el ingresante fracasara al tener que entenderlo todo en otra lengua (oraciones 8 y 11); las notas parecidas lo atenúan, pero esas notas no resuelven que falten términos con equivalente establecido (oración 9)."
         },
         {
-          "t": "exigiría ofrecer el examen en todas las lenguas del país sin ninguna preparación previa.",
+          "t": "exigiría ofrecer el examen en todas las lenguas del país sin ninguna preparación previa ni trabajo con el vocabulario.",
           "codigo": "RV11",
           "explicacion": "Dice más de lo que el texto permite: el docente pide trabajo previo (oración 10), y no «todas las lenguas»."
         },
         {
-          "t": "concluiría que ya no hace falta trabajar el vocabulario científico en lengua originaria.",
+          "t": "concluiría que ya no hace falta trabajar el vocabulario científico en lengua originaria, pues las notas muestran que todo va bien.",
           "codigo": "RV7",
           "explicacion": "Va más allá del texto: unas buenas notas no dicen nada de si existen equivalentes establecidos (oración 9)."
         }
@@ -277,5 +278,10 @@
       "fuente": "Constitución Política del Perú de 1993, artículo 48"
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (revisor a ciegas, rutina verbal-mas)",
+    "fecha": "2026-11-12",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidió en 34 de 34 ítems de la tanda (previos y preguntas). Cambios: p4 reescrita: la correcta separa claramente el temor al fracaso en el aula (que las notas atenúan) del reparo por los términos sin equivalente (que sigue); el distractor rival ahora agrega «pues las notas muestran que todo va bien» y distractores igualados en largo. Verificado en la web: artículo 48 de la Constitución de 1993 (castellano oficial y, donde predominen, quechua, aimara y demás lenguas originarias; la ley 29735 precisa dónde). Lo de términos sin equivalente en química y física queda de memoria y está dicho como opinión del docente."
+  }
 }

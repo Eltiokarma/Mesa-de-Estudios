@@ -184,7 +184,7 @@
           "explicacion": "La primera mitad es del texto A (oración 2), pero la segunda no la dice nadie: el B pide que se les exija (oración 10)."
         },
         {
-          "t": "El cobro logra que se entreguen menos bolsas; lo que se discute es si basta o debe acompañarse de exigencias a las empresas.",
+          "t": "El cobro reduce las bolsas; se discute si basta o debe sumarse una exigencia a las empresas.",
           "correcta": true,
           "evidencia": [
             "o1",
@@ -194,13 +194,13 @@
           "explicacion": "Integra el punto común, que se ven menos bolsas (oraciones 1 y 6), y la discrepancia: el cobro solo, o con exigencias a quienes fabrican (oración 10)."
         },
         {
-          "t": "Las bolsas que no se entregan dejan de llegar a las calles, los ríos y el mar.",
+          "t": "Las bolsas que no se entregan dejan de llegar a las calles, los ríos y el mar, y eso ya es suficiente.",
           "codigo": "RV60",
           "origen": "o4",
           "explicacion": "Es un argumento del texto A (oración 4); no integra lo que dice el B."
         },
         {
-          "t": "Todas las personas deberían cuidar el ambiente en cada una de sus compras.",
+          "t": "Todas las personas deberían cuidar el ambiente en cada una de sus compras, sea cual sea el comercio.",
           "codigo": "RV2",
           "explicacion": "Es demasiado general: no recoge el debate sobre el cobro ni quién paga."
         }
@@ -292,9 +292,14 @@
   "fecha": "2026-11-12",
   "hechos": [
     {
-      "afirmacion": "En el Perú, la Ley N.° 30884 (2018) regula el plástico de un solo uso, y desde 2019 los supermercados y otros comercios cobran por las bolsas plásticas.",
-      "fuente": "Ley N.° 30884, Ley que regula el plástico de un solo uso y los recipientes o envases descartables (2018), y su reglamento del Ministerio del Ambiente (2019)"
+      "afirmacion": "En el Perú, la Ley N.° 30884 (2018) regula el plástico de un solo uso y crea un impuesto al consumo de las bolsas de plástico; su reglamento general se aprobó en 2019 y el del impuesto, también en 2019. Cómo se cobra hoy en cada comercio no se afirma en el texto.",
+      "fuente": "Ley N.° 30884 (art. 12, impuesto al consumo de bolsas de plástico); D. S. N.° 006-2019-MINAM (reglamento de la ley); D. S. N.° 244-2019-EF (reglamento del impuesto)"
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (revisor a ciegas, rutina verbal-mas)",
+    "fecha": "2026-11-12",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidió en 34 de 34 ítems de la tanda (previos y preguntas). Cambios: la correcta de p3 se acortó y se alargaron dos distractores para que no la delate el largo. Verificado en la web: Ley 30884 (2018), impuesto al consumo de bolsas de plástico (art. 12), D. S. 006-2019-MINAM y D. S. 244-2019-EF. No se confirmó cómo se cobra hoy en cada comercio (hay reportes de que la aplicación se frenó con la pandemia), así que el hecho se ablandó y no afirma que todos los supermercados cobren desde 2019."
+  }
 }

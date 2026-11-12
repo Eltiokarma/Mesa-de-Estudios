@@ -145,12 +145,12 @@
       "enunciado": "En el texto B, la palabra REPARO («Mi reparo es otro») significa",
       "alternativas": [
         {
-          "t": "arreglo de algo que estaba roto o dañado.",
+          "t": "arreglo de algo que estaba roto o dañado, como un puente o una herramienta.",
           "codigo": "RV18",
           "explicacion": "Es el sentido de «reparo» cercano a «reparación», pero aquí se habla de una opinión frente al pago."
         },
         {
-          "t": "descuento sobre el precio que paga el comprador de un bono.",
+          "t": "descuento sobre el precio que paga la empresa que compra un bono de carbono.",
           "codigo": "RV19",
           "origen": "o7",
           "explicacion": "Está en el mismo campo (compra, venta y precio), pero «reparo» aquí no es un monto."
@@ -165,7 +165,7 @@
           "explicacion": "Primero concede que es justo pagar (oración 6) y luego presenta su duda con «Mi reparo es otro» (oración 7)."
         },
         {
-          "t": "duda sobre si las comunidades recibirán o no los recursos.",
+          "t": "duda sobre si las comunidades recibirán o no los recursos que se les prometen.",
           "codigo": "RV5",
           "origen": "o6",
           "explicacion": "Repite la palabra «recursos» de la oración anterior, pero su objeción no es sobre si los reciben, sino sobre convertir el bosque en bien de venta."
@@ -230,18 +230,18 @@
       "enunciado": "Es compatible con los dos textos afirmar que",
       "alternativas": [
         {
-          "t": "talar el bosque seguirá siendo más rentable para las comunidades, hagan lo que hagan.",
+          "t": "talar el bosque seguirá siendo más rentable para las comunidades, hagan lo que hagan los compradores.",
           "codigo": "RV11",
           "explicacion": "Dice más de lo que los textos permiten: el A propone un pago que cambie esa cuenta (oración 2)."
         },
         {
-          "t": "las empresas dejarán de emitir gases en cuanto compren bonos de carbono.",
+          "t": "las empresas dejarán de emitir gases en cuanto compren bonos de carbono, sin importar cuánto produzcan.",
           "codigo": "RV9",
           "origen": "o10",
           "explicacion": "Choca con el texto B, que dice que la empresa puede seguir emitiendo (oración 10)."
         },
         {
-          "t": "el bono de carbono es la única forma posible de financiar a las comunidades.",
+          "t": "el bono de carbono es la única forma posible de financiar a las comunidades que cuidan el bosque.",
           "codigo": "RV10",
           "origen": "o2",
           "explicacion": "El texto A dice que los bonos son una de las vías («incluso mediante bonos», oración 2), no la única."
@@ -256,7 +256,7 @@
           "explicacion": "El texto A habla del ingreso que deja o no deja el bosque (oración 1) y el B, del territorio y la memoria (oración 8): nada de eso se contradice."
         },
         {
-          "t": "las comunidades deben conservar el bosque aunque no reciban ningún pago por hacerlo.",
+          "t": "las comunidades deben conservar el bosque aunque no reciban ningún pago, pues es su deber de siempre.",
           "codigo": "RV33",
           "origen": "o6",
           "explicacion": "Ningún texto lo defiende: el A pide pagar (oración 4) y el B también lo acepta como justo (oración 6)."
@@ -304,5 +304,10 @@
       "fuente": "Convención Marco de las Naciones Unidas sobre el Cambio Climático (CMNUCC) y Protocolo de Kioto (1997), mecanismos de mercado de carbono"
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (revisor a ciegas, rutina verbal-mas)",
+    "fecha": "2026-11-12",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidió en 34 de 34 ítems de la tanda (previos y preguntas). Cambios: se alargaron distractores de p2 y p4 para que la correcta no sea la más larga. El hecho sobre bonos de carbono (un certificado por tonelada de CO2) queda de memoria, sin verificar en la web; la afirmación de A de que las comunidades vigilan mejor el bosque es opinión del autor, no se presenta como dato."
+  }
 }

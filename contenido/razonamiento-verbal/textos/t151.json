@@ -193,12 +193,12 @@
       "enunciado": "Es compatible con lo que sostiene el texto B afirmar que",
       "alternativas": [
         {
-          "t": "los padres no influyen en que sus hijos reciban la vacuna que se aplica en el colegio.",
+          "t": "los padres de familia no influyen en que sus hijos reciban o no la vacuna que se aplica en el colegio.",
           "codigo": "RV9",
           "explicacion": "Choca con el texto B: si los padres niegan el permiso (oración 9), el colegio no puede vacunar."
         },
         {
-          "t": "toda familia que recibe información antes de la campaña acepta la vacuna sin ninguna duda.",
+          "t": "toda familia que recibe información antes de la campaña acepta la vacuna sin ninguna duda ni pregunta.",
           "codigo": "RV11",
           "explicacion": "El texto B no dice «toda»: pide conversar con los padres (oración 11), pero no asegura que todos acepten."
         },
@@ -212,7 +212,7 @@
           "explicacion": "Se deduce del texto B: si el rumor se instala, ni el mejor calendario logra revertirlo (oración 10)."
         },
         {
-          "t": "la vacuna solo debería aplicarse en los establecimientos de salud y nunca en los colegios.",
+          "t": "la vacuna solo debería aplicarse en los establecimientos de salud y nunca en los colegios, aunque las familias lo pidan.",
           "codigo": "RV33",
           "origen": "o7",
           "explicacion": "El texto B comparte que el colegio es un buen lugar para aplicarla (oración 7)."
@@ -226,7 +226,7 @@
       "enunciado": "¿Qué enunciado integra mejor lo que plantean los dos textos?",
       "alternativas": [
         {
-          "t": "Como los rumores circulan rápido, la vacuna contra el VPH debe aplicarse solo en los establecimientos de salud.",
+          "t": "Como los rumores circulan rápido, la vacuna contra el VPH debe aplicarse solo en los establecimientos de salud y no en los colegios.",
           "codigo": "RV44",
           "explicacion": "Une dos ideas con una relación que los textos no plantean: el texto B quiere vacunar en el colegio, después de conversar con los padres (oraciones 7 y 11)."
         },
@@ -242,13 +242,13 @@
           "explicacion": "Integra lo común, vacunar en el colegio (oraciones 2 y 7), y el punto en disputa: bastar con la campaña (oración 5) o conversar antes con los padres (oración 11)."
         },
         {
-          "t": "Con un calendario claro, el personal de salud vacuna a casi todo un grado en pocos días.",
+          "t": "Con un calendario claro, el personal de salud vacuna a casi todo un grado en pocos días, sin otra preparación previa.",
           "codigo": "RV60",
           "origen": "o3",
           "explicacion": "Es un argumento del texto A (oración 3); no integra lo que dice el B."
         },
         {
-          "t": "Los padres no necesitan participar, y la vacuna se aplica mejor si se evita explicarles de qué se trata.",
+          "t": "Los padres no necesitan participar, y la vacuna se aplica mejor si se evita explicarles de qué se trata antes.",
           "codigo": "RV62",
           "origen": "o4",
           "explicacion": "No lo dice ninguno: el texto A entrega información en el colegio (oración 4) y el B pide conversar antes con los padres (oración 11)."
@@ -262,17 +262,17 @@
       "enunciado": "Si se comprobara que, después de reuniones con los padres, casi todas las familias aceptan la vacuna, la enfermera del texto A probablemente",
       "alternativas": [
         {
-          "t": "negaría que las familias necesiten información, pues para ella la campaña escolar basta por sí sola.",
+          "t": "negaría que las familias necesiten información, pues para ella la campaña escolar basta por sí sola y sin más.",
           "codigo": "RV63",
           "explicacion": "Repite la postura de la oración 5 como si el supuesto no existiera; pero el hecho comprobado muestra que preparar a las familias ayuda."
         },
         {
-          "t": "pediría que la vacuna se aplique únicamente en las reuniones con los padres, no en los colegios.",
+          "t": "pediría que la vacuna se aplique únicamente en las reuniones con los padres, y que se deje de hacerlo en los colegios.",
           "codigo": "RV7",
           "explicacion": "Va más allá del texto: ella ve en el colegio la vía más eficaz (oración 2) y no habla de dejarlo."
         },
         {
-          "t": "concluiría que los rumores no existen y que ninguna familia ha dudado de la vacuna.",
+          "t": "concluiría que los rumores no existen y que ninguna familia ha dudado nunca de la vacuna en su comunidad.",
           "codigo": "RV11",
           "explicacion": "Dice más de lo que se puede concluir: el supuesto habla de casi todas las familias, y la propia enfermera admite que hay dudas (oración 4)."
         },
@@ -296,9 +296,14 @@
       "fuente": "Organización Mundial de la Salud, ficha descriptiva sobre el cáncer de cuello uterino y la vacunación contra el VPH"
     },
     {
-      "afirmacion": "En el Perú, el Ministerio de Salud realiza campañas de vacunación contra el VPH en las escuelas.",
-      "fuente": "Ministerio de Salud del Perú (MINSA), esquema nacional de vacunación y comunicados sobre la vacunación contra el VPH"
+      "afirmacion": "En el Perú, el Ministerio de Salud vacuna contra el VPH en las escuelas desde 2023 (primero a niñas y luego también a niños, desde quinto de primaria), con el consentimiento informado de los padres.",
+      "fuente": "Ministerio de Salud del Perú (MINSA), notas de prensa de la campaña de vacunación contra el VPH (2023 y 2025), recogidas por la agencia Andina"
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (revisor a ciegas, rutina verbal-mas)",
+    "fecha": "2026-11-12",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidió en 34 de 34 ítems de la tanda (previos y preguntas). Cambios: se alargaron distractores de p3, p4 y p5 para que la correcta no sea la más larga. Verificado en la web (notas de Andina y Caretas sobre el Minsa): vacunación en escuelas desde 2023, quinto de primaria, luego varones, con consentimiento informado de los padres; el hecho se reescribió con eso. Lo del VPH y el cáncer de cuello uterino queda de memoria (OMS)."
+  }
 }
