@@ -20,7 +20,7 @@
  *                s = ±1, x real con el denominador distinto de cero; campos m, s, n; pide 'rango'
  *                (la respuesta es un intervalo; su clave es 'int:lo:hi:cerradoIzq:cerradoDer').
  *   secante      intervalo desde ≤ x ≤ hasta (grados) donde la secante existe. sub 'max-f': máximo (o
- *                mínimo, campo pide) de f(x) = a·sec x + b. sub 'otra': valor de g(x) = p·cos x +
+ *                mínimo, campo pide) de f(x) = a·sec x + b. sub 'otra': valor de g(x) = p·cos 2x +
  *                q·tan² x en el punto del intervalo donde sec x es máxima. Campos sub, a, b o p, q,
  *                desde, hasta, pide.
  *   senoide      precio P(t) = a + b·cos(πt/L) (t en meses, L = semiperiodo). Datos: P0 = P(0) y, según
@@ -91,6 +91,14 @@
       let errores = o.errores.filter(e => Number.isFinite(e.valor) && texto(e.valor) !== null);
       if (entero(o.correcta)) errores = errores.filter(e => entero(e.valor));
       alternativas = P.armar({ correcta: o.correcta, errores, rng, texto, negativos: true });
+      // Distractores revisados (para que la correcta no quede siempre en un extremo): se arman con un azar
+      // aparte y solo si lo de arriba ya sirve, para no mover la secuencia de rng ni los problemas.
+      if (o.distractores && alternativas.length >= 4) {
+        let ds = o.distractores.filter(e => Number.isFinite(e.valor) && texto(e.valor) !== null);
+        if (entero(o.correcta)) ds = ds.filter(e => entero(e.valor));
+        const alt2 = P.armar({ correcta: o.correcta, errores: ds, rng: Azar.crear(`${ID}|distractores|` + semilla), texto, negativos: true });
+        if (alt2.length >= 4) alternativas = alt2;
+      }
     }
     const usadas = new Set([...o.enunciado, ...o.pregunta, ...o.solucion.flat()].filter(x => x && x.v).map(x => x.v));
     const variables = Object.fromEntries(Object.entries(o.variables).filter(([k]) => usadas.has(k)));
@@ -370,6 +378,12 @@
         h('TX-sin-signo', fx(Math.abs(E.absMax.s)), `Usaste ${f(Math.abs(E.absMax.s))} como valor de la secante sin su signo. En ${intTxt}, sec x es ${E.max.s < 0 ? 'negativa' : 'positiva'}.`),
         h('TX-coseno-por-secante', fx(cos(pide === 'max' ? (a > 0 ? E.max.g : E.min.g) : (a > 0 ? E.min.g : E.max.g))), 'Pusiste cos x donde va sec x = 1/cos x.'),
       ];
+      // Todos los errores de arriba evalúan f dentro del intervalo: dan menos que el máximo (o más que el
+      // mínimo). Olvidar la constante b cae del otro lado cuando b va en contra, y va primero.
+      const distractores = [
+        h('TX-sin-constante', correcta - b, `Olvidaste sumar la constante ${f(b)} al final: ${fracTxt(correcta - b)} es solo el valor de ${f(a)}·sec x.`),
+        ...errores,
+      ];
       const enunciado = ['Sea f(x) = ', poli([[a, 'sec x'], [b, '']]), `, con x ∈ ${intTxt}.`];
       const solucion = [
         [`En ${intTxt}, cos x va de ${fracTxt(Math.min(...[a0, b0, ...[-180, 0, 180, 360].filter(g => g > a0 && g < b0)].map(cos)))} a ${fracTxt(Math.max(...[a0, b0, ...[-180, 0, 180, 360].filter(g => g > a0 && g < b0)].map(cos)))}, sin pasar por 0.`],
@@ -377,7 +391,7 @@
         a < 0 ? [`Al multiplicar por ${f(a)} (negativo), se invierten los extremos: ${fracTxt(fx(E.max.s))} ≤ f(x) ≤ ${fracTxt(fx(E.min.s))}.`] : [`Al multiplicar por ${f(a)}: ${fracTxt(fx(E.min.s))} ≤ f(x) ≤ ${fracTxt(fx(E.max.s))}.`],
         [pide === 'max' ? 'El máximo es ' : 'El mínimo es ', v('y', fracTxt(correcta)), '.'],
       ];
-      return cerrar(rng, semilla, { correcta, errores, variables, enunciado, pregunta: [PREG[pide]], solucion,
+      return cerrar(rng, semilla, { correcta, errores, distractores, variables, enunciado, pregunta: [PREG[pide]], solucion,
         datos: { tipo: 'secante', sub, a, b, desde: a0, hasta: b0, pide } });
     }
     return null;

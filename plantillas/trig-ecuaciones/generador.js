@@ -143,10 +143,21 @@
     if (o.modo === 'radianes') {
       const conv = g => g * Math.PI / 180;
       alternativas = P.armar({ correcta: conv(o.correcta), errores: o.errores.map(e => ({ ...e, valor: conv(e.valor) })), rng, formato: 'pi', qmax: 36 });
+      if (o.distractores && alternativas.length >= 4) {
+        const alt2 = P.armar({ correcta: conv(o.correcta), errores: o.distractores.map(e => ({ ...e, valor: conv(e.valor) })), rng: Azar.crear(`${ID}|distractores|` + semilla), formato: 'pi', qmax: 36 });
+        if (alt2.length >= 4) alternativas = alt2;
+      }
       return armado(semilla, o, alternativas, conv(o.correcta), 'rad');
     }
     const texto = o.texto || (o.modo === 'grados' ? (g => `${f(g)}°`) : o.modo === 'cuantas' ? (x => cuantasTxt(x, o.palabra)) : o.modo === 'horas' ? (x => `${f(x)} h`) : o.modo === 'segundos' ? (x => `${f(x)} s`) : null);
     alternativas = P.armar({ correcta: o.correcta, errores: o.errores, rng, texto });
+    // Distractores revisados (para que la correcta no quede siempre en un extremo): se arman con un azar
+    // aparte y solo si lo de arriba ya sirve, para no mover la secuencia de rng ni los problemas.
+    if (o.distractores && alternativas.length >= 4) {
+      const ds = o.modo !== 'cisterna' && entero(o.correcta) ? o.distractores.filter(e => entero(e.valor)) : o.distractores;
+      const alt2 = P.armar({ correcta: o.correcta, errores: ds, rng: Azar.crear(`${ID}|distractores|` + semilla), texto });
+      if (alt2.length >= 4) alternativas = alt2;
+    }
     return armado(semilla, o, alternativas, o.correcta, unidad === 'grados' ? '°' : unidad === 'cuantas' ? '' : unidad === 'horas' ? 'h' : unidad === 'segundos' ? 's' : unidad);
   }
   function armado(semilla, o, alternativas, valor, unidad) {
@@ -595,6 +606,18 @@
     errores.push(h('TE-periodo-360', tomar(fuera(todas.filter(x => Math.abs(((M * x - NOT.tan[k]) / 360) - Math.round((M * x - NOT.tan[k]) / 360)) < 1e-9))), 'Repetiste el ángulo cada 360° del argumento, como el seno. La tangente se repite cada 180°: faltan la mitad de las soluciones.'));
     if (k.startsWith('-')) errores.push(pa('TR12-sin-signo', tomar(fuera(soluciones('tan', opuesto(k), M, 0, 0, 360))), `Resolviste con ${menos(opuesto(k))}, sin el signo. La tangente negativa está en el II y IV cuadrante.`));
     if (T.signo > 0 && T.p !== T.q) errores.push(h('TE-producto-por-suma', tomar(fuera(soluciones('tan', k, T.p * T.q, 0, 0, 360))), `Juntaste los ángulos multiplicándolos (${xk(T.p * T.q)}). La fórmula de la tangente de una suma da tan(${xk(T.p)} + ${xk(T.q)}) = tan ${xk(M)}.`));
+    // Menor positiva: casi todos los errores daban menos que la correcta. Se agrega no dividir entre M
+    // (suele dar más) y su versión doble con el signo olvidado, y se ponen primero.
+    let distractores = null;
+    if (pide === 'menor') {
+      const u = ((NOT.tan[k] % 180) + 180) % 180 || 180, u2 = Math.abs(NOT.tan[k]) || 180;
+      distractores = [
+        h('TE-sin-dividir', u, `Hallaste el primer ángulo positivo de ${xk(M)}, ${angTxt(u, modo)}, y no lo dividiste entre ${M}. Ese ángulo es ${xk(M)}, no x.`),
+        ...errores.slice(0, 1),
+        ...(k.startsWith('-') ? [h('TE-sin-dividir+TR12-sin-signo', u2, `Dos errores: resolviste con ${menos(opuesto(k))}, sin el signo (la tangente negativa está en el II y IV cuadrante), y además no dividiste ${angTxt(u2, modo)} entre ${M}: ese es el ángulo ${xk(M)}, no x.`)] : []),
+        ...errores.slice(1),
+      ];
+    }
     const tp = `tan ${xk(T.p)}`, tq = `tan ${xk(T.q)}`;
     const lhs = T.p === T.q ? `(2 tan x)/(1 − tan² x)` : `(${tp} ${T.signo > 0 ? '+' : '−'} ${tq})/(1 ${T.signo > 0 ? '−' : '+'} ${tp} · ${tq})`;
     const variables = { M: { nombre: 'ángulo juntado', color: 'o' }, k: { nombre: 'valor', color: 'i' }, x: { nombre: 'soluciones', color: 'd' }, mal: { nombre: 'valores prohibidos', color: 'h' } };
@@ -606,7 +629,7 @@
       ['Quedan ', v('x', lista(sols, modo)), '.'],
       [{ cuantas: 'Son ', suma: 'La suma es ', menor: 'La menor positiva es ' }[pide], v('x', pide === 'cuantas' ? cuantasTxt(correcta) : angTxt(correcta, modo)), '.'],
     ];
-    return cerrar(rng, semilla, { modo: pide === 'cuantas' ? 'cuantas' : modo, correcta, errores, variables, enunciado, pregunta: [preguntaDe(pide)], solucion,
+    return cerrar(rng, semilla, { modo: pide === 'cuantas' ? 'cuantas' : modo, correcta, errores, distractores, variables, enunciado, pregunta: [preguntaDe(pide)], solucion,
       datos: { tipo: 'tangente', p: T.p, q: T.q, signo: T.signo, k, modo: pide === 'cuantas' ? 'cuantas' : modo, pide } });
   }
 

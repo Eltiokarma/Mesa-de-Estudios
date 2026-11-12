@@ -165,9 +165,18 @@
     const clase = t => (t.includes('√') ? 'r' : '') + (t.includes('/') ? 'f' : '');
     const cc = clase(alternativas.find(a => a.correcta).texto);
     if (!alternativas.some(a => !a.correcta && clase(a.texto) === cc)) return null;
+    // Distractores revisados (para que la correcta no sea la central ni quede siempre en un extremo): se
+    // arman con un azar aparte, después de las comprobaciones de arriba, para no mover la secuencia de rng
+    // ni los problemas. Si no alcanzan para 4 alternativas con la forma de la correcta, se queda lo de antes.
+    let finales = alternativas;
+    if (r.distractores && alternativas.length >= 4) {
+      const nuevos = r.distractores.filter(e => Number.isFinite(e.valor) && (negativos || e.valor > 0) && ok(e.valor));
+      const alt2 = P.armar({ correcta, errores: nuevos, rng: Azar.crear(ID + '|distractores|' + semilla), texto, negativos });
+      if (alt2.length >= 4 && alt2.some(a => !a.correcta && clase(a.texto) === cc)) finales = alt2;
+    }
     return {
       id: `${ID}#${semilla}`, variables: r.variables, enunciado: r.enunciado, pregunta: r.pregunta, datos: '',
-      alternativas, solucion: r.solucion, respuesta: { valor: correcta, unidad }, _datos: { tipo, ...r.datos },
+      alternativas: finales, solucion: r.solucion, respuesta: { valor: correcta, unidad }, _datos: { tipo, ...r.datos },
     };
   }
 
@@ -225,13 +234,18 @@
     if (equivocada.length) errores.push(h('OB-angulo-equivocado', equivocada[equivocada.length - 1], pide === 'BD'
       ? 'Usaste cos C en el triángulo ABD. En ABD, el ángulo entre AB y BD es B: va cos B.'
       : 'Usaste cos B en el triángulo ADC. En ADC, el ángulo entre CA y CD es C: va cos C (o halla BD con cos B y réstalo de BC).'));
+    // DC: los errores de arriba casi siempre dan más que la correcta. Se agrega uno que da menos (restar los
+    // lados como si A, D y C estuvieran alineados) y se pone antes del punto medio.
+    const distractores = pide === 'DC' && o.bEntero ? [errores[0], errores[1],
+      h('OB-lados-alineados', b - d, `Restaste CA − AD = ${bTxt} − ${d}, como si A, D y C estuvieran en una misma recta. ADC es un triángulo: CA < AD + DC, pero no CA = AD + DC.`),
+      ...errores.slice(2)] : null;
     const solucion = [
       ['Ley de cosenos en ABC para hallar cos B: ', `cos B = (AB² + BC² − CA²)/(2·AB·BC) = (${c * c} + ${a * a} − ${Math.round(b * b)})/(2·${c}·${a}) = ${ex(cB)}.`],
       ['Ley de cosenos en ABD, con BD = x: ', v('d', `${d}`), '² = ', v('c', `${c}`), `² + x² − 2·${c}·x·${entreP(ex(cB))}.`],
       [`x² ${2 * c * cB >= 0 ? '−' : '+'} ${ex(Math.abs(2 * c * cB))}x ${c * c - d * d >= 0 ? '+' : '−'} ${Math.abs(c * c - d * d)} = 0 → x = ${ex(x)} o x = ${ex(otraX)}. Solo ${ex(x)} cae dentro de BC (entre 0 y `, v('a', `${a}`), ').'],
       pide === 'BD' ? ['BD = ', v('x', `${ex(x)} m`), '.'] : ['DC = ', `${a} − ${ex(x)} = `, v('x', `${ex(correcta)} m`), '.'],
     ];
-    return { correcta, errores, variables, enunciado, pregunta, solucion, datos: { a, b2: Math.round(b * b), c, d, pide } };
+    return { correcta, errores, distractores, variables, enunciado, pregunta, solucion, datos: { a, b2: Math.round(b * b), c, d, pide } };
   }
 
   // ---------- faro ----------
@@ -556,7 +570,7 @@
     const variables = { L: { nombre: 'lado AB', color: 'o' }, W: { nombre: 'lado BC', color: 'i' }, x: { nombre: 'AE = EC', color: 'd' }, r: { nombre: sub === 'coseno' ? 'cos AEC' : sub === 'longitud' ? 'AE' : 'doblez EF', color: 'h' } };
     const enunciado = ['Una hoja rectangular ABCD tiene AB = ', v('L', `${L} cm`), ' y BC = ', v('W', `${W} cm`), '. Se dobla de modo que el vértice C cae exactamente sobre el vértice A; el doblez es un segmento que corta al lado AB en E y al lado CD en F.'];
     const pregunta = [sub === 'coseno' ? 'Con la hoja ya desdoblada, ¿cuánto vale el coseno del ángulo AEC?' : sub === 'longitud' ? '¿Cuánto mide AE?' : '¿Cuánto mide el doblez EF?'];
-    let correcta, errores;
+    let correcta, errores, distractores = null;
     if (sub === 'coseno') {
       correcta = cAEC;
       const s = 2 * L * W / (L * L + W * W);
@@ -565,6 +579,19 @@
         p('TR9', -s, 'Ese es el seno con signo menos. En el triángulo rectángulo EBC, el coseno de BEC es EB/EC (adyacente sobre hipotenusa), no BC/EC.'),
         h('OB-doblez-seno', s, 'Ese es el seno del ángulo AEC (que es positivo, igual al de BEC). Se pide el coseno.'),
         h('OB-doblez-cotangente', -EB / W, 'Dividiste EB entre BC: eso es la cotangente de BEC, no su coseno. El coseno usa la hipotenusa EC.'),
+      ];
+      // Revisados: antes casi todos compartían el signo menos y el denominador de la correcta (la central).
+      // Ahora hay razones con otra hipotenusa, con y sin el signo, y errores dobles.
+      // El otro negativo sale unas veces por debajo de la correcta (cotangente) y otras por encima (AB como
+      // hipotenusa), según los datos, para que la correcta no sea siempre la menor.
+      const negCot = h('OB-doblez-cotangente', -EB / W, `Dividiste EB entre BC (${ex(EB)}/${W}): eso es la cotangente de BEC, no su coseno. El coseno usa la hipotenusa EC.`);
+      const negAB = h('OB-doblez-hipotenusa-AB', -EB / L, `Dividiste EB entre AB (${ex(EB)}/${L}). En el triángulo rectángulo EBC la hipotenusa es EC = ${ex(AE)}, no AB: cos BEC = EB/EC, y cos AEC = −cos BEC.`);
+      distractores = [
+        p('TR12', -cAEC, 'Ese es el coseno del ángulo BEC, que es agudo. El ángulo AEC es su suplemento y es obtuso: cos(180° − x) = −cos x, así que el coseno es negativo.'),
+        h('OB-doblez-cotangente+TR12', EB / W, `Dos errores: dividiste EB entre BC (${ex(EB)}/${W}), que es la cotangente de BEC y no su coseno, y además no le pusiste el signo menos del ángulo obtuso AEC.`),
+        (L + W) % 2 ? negCot : negAB,
+        h('OB-doblez-hipotenusa-AB+TR12', EB / L, `Dos errores: dividiste EB entre AB (${ex(EB)}/${L}), pero en el triángulo rectángulo EBC la hipotenusa es EC = ${ex(AE)}, no AB; y además no le pusiste el signo menos del ángulo obtuso AEC.`),
+        (L + W) % 2 ? negAB : negCot,
       ];
     } else if (sub === 'pliegue') {
       correcta = EF;
@@ -591,7 +618,7 @@
         : sub === 'longitud' ? ['AE = ', v('r', `${ex(correcta)} cm`), '.']
         : [`El doblez corta AC en su punto medio O: AO = ${ex(Math.sqrt(L * L + W * W) / 2)} y OE = √(AE² − AO²) = ${ex(EF / 2)}. Por simetría OF = OE, así que EF = `, v('r', `${ex(correcta)} cm`), '.'],
     ];
-    return { correcta, errores, variables, enunciado, pregunta, solucion, unidad: sub === 'coseno' ? '' : 'cm', forma: sub === 'coseno' ? 'fraccion' : 'longitud', negativos: sub === 'coseno', datos: { sub, L, W } };
+    return { correcta, errores, distractores, variables, enunciado, pregunta, solucion, unidad: sub === 'coseno' ? '' : 'cm', forma: sub === 'coseno' ? 'fraccion' : 'longitud', negativos: sub === 'coseno', datos: { sub, L, W } };
   }
 
 
@@ -629,37 +656,44 @@
       };
       const clave = (dato === 'perimetro' ? 'P' : 'R') + pide;
       correcta = T(K[clave]);
+      // Cada lista mezcla errores sueltos con errores dobles («A+B»), para que la correcta no sea la que
+      // comparte más rasgos con las demás (antes lo era en cerca del 70 % de los problemas).
       errores = {
         Parea: [
           X('OB-area-sin-mitad', '2p²·senθ·cosθ/((1 + senθ)·(1 + cosθ))', 'Te faltó el 1/2 del área: S = (1/2)·(cateto)·(cateto) = 2R²·senθ·cosθ, no 4R²·senθ·cosθ.'),
-          X('OB-perimetro-como-semiperimetro', 'p²·senθ·cosθ/(4·(1 + senθ)·(1 + cosθ))', 'Tomaste p como el perímetro. El perímetro es 2p: 2R(1 + senθ + cosθ) = 2p.'),
           X('OB-sin-cuadrado', '2p²·senθ·cosθ/(1 + senθ + cosθ)', 'R lleva (1 + senθ + cosθ) en el denominador y en el área va R²: ese factor también se eleva al cuadrado.'),
+          X('OB-area-sin-mitad+OB-sin-cuadrado', '4p²·senθ·cosθ/(1 + senθ + cosθ)', 'Dos errores: te faltó el 1/2 del área (quedó 4R²·senθ·cosθ) y no elevaste al cuadrado el (1 + senθ + cosθ) que trae R = p/(1 + senθ + cosθ).'),
           X('OB-cuadrado-repartido', 'p²·senθ·cosθ', '(1 + senθ + cosθ)² no es 1 + sen²θ + cos²θ: faltan los dobles productos. Se cumple (1 + senθ + cosθ)² = 2(1 + senθ)(1 + cosθ).'),
         ],
         Pradio: [
           X('OB-senos-sin-2R', '2p/(1 + senθ + cosθ)', 'Tomaste cada lado como R·sen del ángulo opuesto. La ley de senos da lado = 2R·sen(ángulo opuesto): la hipotenusa es el diámetro, 2R.'),
-          X('OB-perimetro-como-semiperimetro', 'p/(2·(1 + senθ + cosθ))', 'Tomaste p como el perímetro. El perímetro es 2p.'),
           X('OB-sin-hipotenusa', 'p/(senθ + cosθ)', 'Sumaste solo los catetos. El perímetro también lleva la hipotenusa, 2R·sen 90° = 2R.'),
+          X('OB-senos-sin-2R+OB-sin-hipotenusa', '2p/(senθ + cosθ)', 'Dos errores: tomaste los catetos como R·senθ y R·cosθ (son 2R·senθ y 2R·cosθ) y además dejaste fuera la hipotenusa, que también es parte del perímetro.'),
+          X('OB-hipotenusa-como-radio', '2p/(1 + 2senθ + 2cosθ)', 'Tomaste la hipotenusa como R: 2R·senθ + 2R·cosθ + R = 2p. En un triángulo rectángulo la hipotenusa es un diámetro: mide 2R.'),
         ],
         Pinradio: [
           X('OB-inradio-sin-mitad', '2p·(senθ + cosθ − 1)/(1 + senθ + cosθ)', 'En un triángulo rectángulo r = (cateto + cateto − hipotenusa)/2: te faltó dividir entre 2.'),
           X('OB-inradio-como-circunradio', 'p/(1 + senθ + cosθ)', 'Ese es R, el radio de la circunferencia que pasa por los vértices. El inradio es el de la circunferencia inscrita.'),
-          X('OB-inradio-con-perimetro', 'p·(senθ + cosθ − 1)/(2·(1 + senθ + cosθ))', 'Usaste S = r·(perímetro). Es S = r·(semiperímetro) = r·p.'),
+          X('OB-inradio-sin-hipotenusa', 'p·(senθ + cosθ)/(1 + senθ + cosθ)', 'Te faltó restar la hipotenusa: r = (cateto + cateto − hipotenusa)/2 = R(senθ + cosθ − 1).'),
+          X('OB-inradio-sin-mitad+OB-inradio-sin-hipotenusa', '2p·(senθ + cosθ)/(1 + senθ + cosθ)', 'Dos errores: sumaste los catetos sin restar la hipotenusa y además no dividiste entre 2. Es r = (cateto + cateto − hipotenusa)/2.'),
         ],
         Rperimetro: [
           X('OB-senos-sin-2R', 'R·(1 + senθ + cosθ)', 'Tomaste cada lado como R·sen del ángulo opuesto. La ley de senos da lado = 2R·sen(ángulo opuesto).'),
           X('OB-sin-hipotenusa', '2R·(senθ + cosθ)', 'Sumaste solo los catetos; falta la hipotenusa, que mide 2R.'),
           X('OB-hipotenusa-como-radio', 'R·(1 + 2senθ + 2cosθ)', 'Tomaste la hipotenusa como R. En un triángulo rectángulo la hipotenusa es un diámetro: mide 2R.'),
+          X('OB-senos-sin-2R+OB-sin-hipotenusa', 'R·(senθ + cosθ)', 'Dos errores: tomaste los catetos como R·senθ y R·cosθ (son 2R·senθ y 2R·cosθ) y además te faltó sumar la hipotenusa, 2R.'),
         ],
         Rarea: [
           X('OB-area-R-sin-2', 'R²·senθ·cosθ', 'Falta un 2: (1/2)·(2R·senθ)·(2R·cosθ) = 2R²·senθ·cosθ.'),
           X('OB-area-sin-mitad', '4R²·senθ·cosθ', 'Multiplicaste los catetos sin el 1/2 del área.'),
-          X('OB-senos-sin-2R', 'R²·senθ·cosθ/2', 'Tomaste los catetos como R·senθ y R·cosθ. La ley de senos da 2R·senθ y 2R·cosθ.'),
+          X('OB-area-hipotenusa-cateto', '2R²·senθ', 'Tomaste la hipotenusa 2R como si fuera un cateto: (1/2)·(2R)·(2R·senθ). El área usa los dos catetos, 2R·senθ y 2R·cosθ.'),
+          X('OB-area-sin-mitad+OB-area-hipotenusa-cateto', '4R²·senθ', 'Dos errores: multiplicaste la hipotenusa 2R por el cateto 2R·senθ (el área usa los dos catetos) y además te faltó el 1/2 del área.'),
         ],
         Rinradio: [
-          X('OB-inradio-sin-mitad', '2R·(senθ + cosθ − 1)', 'En un triángulo rectángulo r = (cateto + cateto − hipotenusa)/2: te faltó dividir entre 2.'),
           X('OB-inradio-semiperimetro', 'R·(senθ + cosθ + 1)', 'Ese es el semiperímetro, (2R·senθ + 2R·cosθ + 2R)/2. El inradio resta la hipotenusa: r = (a + b − c)/2.'),
           X('OB-inradio-sin-hipotenusa', 'R·(senθ + cosθ)', 'Te faltó restar la hipotenusa: r = (cateto + cateto − hipotenusa)/2.'),
+          X('OB-inradio-sin-mitad+OB-inradio-sin-hipotenusa', '2R·(senθ + cosθ)', 'Dos errores: sumaste los catetos sin restar la hipotenusa y además no dividiste entre 2. Es r = (2R·senθ + 2R·cosθ − 2R)/2.'),
+          X('OB-inradio-mitad-solo-catetos', 'R·(senθ + cosθ − 2)', 'Dividiste entre 2 solo los catetos y restaste la hipotenusa entera: r = (2R·senθ + 2R·cosθ − 2R)/2, y el 2R también se divide entre 2.'),
         ],
       }[clave];
       const pasos = [
@@ -696,13 +730,15 @@
       const t = (fn, medio = true) => (medio ? `${fn}(${Z}/2)` : `${fn} ${Z}`);
       const kTxt = t(F.k), correcta = T(kTxt);
       const semisuma = `tan((${A1} + ${A2})/2)`;
+      // Función cambiada, ángulo sin partir y los dos errores a la vez: así ni la función de k ni el
+      // semiángulo quedan en mayoría alrededor de la correcta.
       const errores = [
         X('OB-tangentes-invertida', t(otra), F.k === 'tan'
           ? `Pusiste ${t(otra)}. Como ${semisuma} = cot(${Z}/2), dividir entre cot(${Z}/2) es multiplicar por tan(${Z}/2): k = tan(${Z}/2).`
           : `Pusiste ${t(otra)}. Al despejar, ${semisuma} = cot(${Z}/2) queda multiplicando: k = cot(${Z}/2).`),
         X('OB-angulo-sin-mitad', t(F.k, false), `En la ley de tangentes van los semiángulos: (${A1} + ${A2})/2 = 90° − ${Z}/2, así que k = ${kTxt}, no ${t(F.k, false)}.`),
+        X('OB-tangentes-invertida+OB-angulo-sin-mitad', t(otra, false), `Dos errores: invertiste la razón (${semisuma} = cot(${Z}/2) ${F.k === 'tan' ? 'divide, y dividir entre cot es multiplicar por tan' : 'queda multiplicando'}) y además no partiste el ángulo: (${A1} + ${A2})/2 = 90° − ${Z}/2. Es k = ${kTxt}, no ${t(otra, false)}.`),
         X('OB-sin-semisuma', '1', `Te olvidaste de ${semisuma} = cot(${Z}/2). Vale 1 solo si ${Z} = 90°; en general k = ${kTxt}.`),
-        X('OB-funcion-cambiada', t(F.k === 'tan' ? 'sen' : 'cos'), `La constante sale de ${semisuma} = tan(90° − ${Z}/2) = cot(${Z}/2) o de su inverso, tan(${Z}/2); aquí k = ${kTxt}, no ${t(F.k === 'tan' ? 'sen' : 'cos')}.`),
       ];
       const variables = { k: { nombre: 'constante k', color: 'h' }, d: { nombre: 'semidiferencia', color: 'o' }, s: { nombre: 'semisuma', color: 'i' } };
       const enunciado = [`En todo triángulo ABC, con a, b y c opuestos a A, B y C, se cumple ${forma}, donde k depende solo del ángulo ${Z}.`];

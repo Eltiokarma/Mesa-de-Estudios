@@ -309,9 +309,19 @@
         h(otra === 'sen' ? 'INV-da-el-seno-cuadrado' : 'INV-da-el-coseno-cuadrado', 1 - x2, `Ese es 1 − x² = ${otra}²θ. Pedían x² = ${fuera}²θ.`),
         m !== 1 ? h('INV-sin-coeficiente', (S5 - 1) / 2, `Resolviste como si el coeficiente de x dentro del ${fa0} fuera 1; aquí es ${tm}.`) : null,
       ].filter(Boolean);
+      // Revisados: los de arriba se escriben casi como la correcta y la dejaban en el centro. Estos cambian el
+      // signo de −b, el denominador 2a o los dos a la vez; los de arriba quedan de reserva.
+      const q = Math.sqrt(1 + 4 * m * m), a2 = ex(2 * m * m);
+      const distractores = [
+        h('INV-sin-el-2', 2 * x2, `En la fórmula de la cuadrática dividiste entre a = ${ex(m * m)} y no entre 2a = ${a2}.`),
+        h('INV-signo-de-b', (1 + q) / (2 * m * m), `Pusiste +1 en vez de −b = −1 en la fórmula y te salió (1 + √(${ex(1 + 4 * m * m)}))/${a2}. La raíz es z = (−1 + √(${ex(1 + 4 * m * m)}))/${a2}.`),
+        h('INV-olvida-la-mitad', x2 / 2, 'En la fórmula de la cuadrática dividiste entre el doble de lo que va (2a).'),
+        h('INV-signo-de-b+INV-olvida-la-mitad', (1 + q) / (4 * m * m), `Dos errores: pusiste +1 en vez de −b = −1 y además dividiste entre 4a en vez de 2a = ${a2}.`),
+        ...errores,
+      ];
       return {
         variables, enunciado, pregunta: ['¿Cuánto vale el cuadrado de la abscisa de P?'],
-        correcta: x2, errores, solucion: cuerpo,
+        correcta: x2, errores, distractores, solucion: cuerpo,
         datos: { tipo: 'interseccion', par, m: mm, pide },
       };
     }
@@ -339,6 +349,16 @@
         h('INV-da-la-abscisa', x, 'Esa es la abscisa x, no la ordenada.', ex(x)),
         h('INV-doble', 2 * ordenada, 'Duplicaste el ángulo: la ordenada es θ.'),
         h('INV-mitad', ordenada / 2, 'Dividiste el ángulo entre 2: la ordenada es θ.'),
+      ],
+      // Revisados: con un error doble (complemento y suplemento) en vez del suplemento solo, la correcta deja de
+      // ser la que más se parece a las demás.
+      distractores: [
+        h('INV-da-la-abscisa', x, 'Esa es la abscisa x, no la ordenada.', ex(x)),
+        h('IN7', PI / 2 - ordenada, `Ese es ${par === 'tan-cos' ? 'arcsen' : 'arccos'} x, el complemento de θ. La ordenada es ${fb} x.`),
+        h('IN7+IN1', PI / 2 + ordenada, `Dos errores: tomaste ${par === 'tan-cos' ? 'arcsen' : 'arccos'} x (el complemento de θ, π/2 − θ) y además lo pasaste al otro lado con π − (π/2 − θ). La ordenada es θ = ${fb} x, un ángulo agudo.`),
+        h('INV-doble', 2 * ordenada, 'Duplicaste el ángulo: la ordenada es θ.'),
+        h('INV-mitad', ordenada / 2, 'Dividiste el ángulo entre 2: la ordenada es θ.'),
+        h('IN1', PI - ordenada, `Ese ángulo está fuera de donde se cortan las dos gráficas: ${fa0} con m > 0 da un ángulo agudo para x > 0.`),
       ],
       solucion: cuerpo,
       datos: { tipo: 'interseccion', par, m: mm, pide },
@@ -375,17 +395,22 @@
     const rg = rng.elegir(RANGOS);
     // Dos repartos: errores sueltos, o combinados de modo que ni el rango ni el sentido ni el cierre de la correcta
     // sean los que más se repiten entre las opciones.
-    const errores = rng.moneda()
+    const sueltos = rng.moneda();
+    const errores = sueltos
       ? [op(null, true, false), ...RANGOS.map(r => op(r, false, false)), op(null, false, true)]
       : [op(null, true, true), op(rg, false, true), op(rg, true, false), op(rg, true, true)];
-    errores.forEach(e => { e.explicacion = e.explicacion.charAt(0).toUpperCase() + e.explicacion.slice(1); });
+    // Revisado: con los errores sueltos, la correcta era la mayoría en rango, sentido y cierre (la central).
+    // En su lugar va otro reparto combinado, con dos rangos equivocados si los hay.
+    const rg2 = RANGOS.find(r => r !== rg) || rg;
+    const distractores = sueltos ? [op(rg, true, false), op(rg2, false, true), op(null, true, true), op(rg2, true, true)] : null;
+    [...errores, ...(distractores || [])].forEach(e => { e.explicacion = e.explicacion.charAt(0).toUpperCase() + e.explicacion.slice(1); });
     const enB = B < 0 ? `−${aB}` : String(aB);
     return {
       variables, texto: true,
       enunciado: ['Sea f(x) = ', ...(A === 0 ? (aB === 1 ? [`${B < 0 ? '−' : ''}arctan(${dentro})`] : [v('B', enB), `·arctan(${dentro})`])
         : [v('A', pi(A)), ' + ', v('B', `(${enB})`), `·arctan(${dentro})`]), ', con x real.'],
       pregunta: ['¿Cuál es el rango de f y es creciente o decreciente?'],
-      correcta, errores,
+      correcta, errores, distractores,
       solucion: [
         [`−π/2 < arctan(${dentro}) < π/2 para todo x (las rectas ±π/2 son asíntotas y nunca se alcanzan).`],
         ['Multiplicado por ', aB === 1 && A === 0 ? enB : v('B', enB), `: queda entre ${pi(-aB * PI / 2)} y ${pi(aB * PI / 2)}${B < 0 ? ' (el signo menos lo da vuelta)' : ''}` + (A === 0 ? '.' : '; luego se suma '), ...(A === 0 ? [] : [v('A', pi(A)), '.'])],
@@ -511,9 +536,18 @@
         valor = pr.correcta; unidad = o.unidad || '';
       }
       if (!alternativas || alternativas.length < 4) continue;
+      // Distractores revisados (para que la correcta no sea la que más se parece a las demás): se arman con un
+      // azar aparte, después de la comprobación de arriba, para no mover la secuencia de rng ni los problemas.
+      let finales = alternativas;
+      if (pr.distractores) {
+        const r2 = Azar.crear(ID + '|distractores|' + semilla);
+        const alt2 = pr.texto ? P.armarTexto({ correcta: pr.correcta, errores: pr.distractores, rng: r2 })
+          : armarNum(r2, pr.correcta, pr.textoCorrecta, pr.distractores, pr.opciones || {});
+        if (alt2 && alt2.length >= 4) finales = alt2;
+      }
       return {
         id: `${ID}#${semilla}`, variables: pr.variables, enunciado: pr.enunciado, pregunta: pr.pregunta, datos: '',
-        alternativas, solucion: pr.solucion, respuesta: { valor, unidad }, _datos: pr.datos,
+        alternativas: finales, solucion: pr.solucion, respuesta: { valor, unidad }, _datos: pr.datos,
       };
     }
     throw new Error('No se pudo generar un problema con 4 alternativas distintas');

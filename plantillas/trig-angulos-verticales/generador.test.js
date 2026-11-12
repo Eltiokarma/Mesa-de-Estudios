@@ -91,6 +91,10 @@ function recalcular(p) {
   throw new Error('tipo desconocido ' + d.tipo);
 }
 probarGenerador(gen, { semillas: 600, recalcular, igual: (a, b) => (typeof b === 'string' ? a === b : cerca(a, b)) });
+// Fugas: la correcta no se adivina por ser la central ni por estar en un extremo. Las respuestas numéricas
+// son números; las simbólicas del puente («h·cot(α/2)») no se comparan por tamaño.
+const { probarFugas } = require('../../nucleo/probar-generador.js');
+probarFugas(gen, { valorNumerico: a => (typeof a.valor === 'number' ? a.valor : NaN) });
 
 for (const c of casos.casos) {
   test(`casos.json: semilla ${c.semilla}`, () => {

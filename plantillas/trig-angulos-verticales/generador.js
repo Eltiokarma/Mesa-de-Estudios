@@ -206,9 +206,18 @@
     const clase = t => (t.includes('√') ? 'r' : '') + (t.includes('/') ? 'f' : '');
     const cc = clase(alternativas.find(a => a.correcta).texto);
     if (!alternativas.some(a => !a.correcta && clase(a.texto) === cc)) return null;
+    // Distractores revisados (para que la correcta no quede siempre en un extremo): se arman con un azar
+    // aparte, después de las comprobaciones de arriba, para no mover la secuencia de rng ni los problemas.
+    // Si no alcanzan para 4 alternativas de la misma forma, se queda lo de antes.
+    let finales = alternativas;
+    if (r.distractores && alternativas.length >= 4) {
+      const nuevos = r.distractores.filter(e => Number.isFinite(e.valor) && e.valor > 0 && limpio(e.valor));
+      const alt2 = P.armar({ correcta, errores: nuevos, rng: Azar.crear(ID + '|distractores|' + semilla), texto });
+      if (alt2.length >= 4 && alt2.some(a => !a.correcta && clase(a.texto) === cc)) finales = alt2;
+    }
     return {
       id: `${ID}#${semilla}`, variables: r.variables, enunciado: r.enunciado, pregunta: r.pregunta, datos: '',
-      alternativas, solucion: r.solucion, respuesta: { valor: correcta, unidad }, _datos: { tipo, ...r.datos },
+      alternativas: finales, solucion: r.solucion, respuesta: { valor: correcta, unidad }, _datos: { tipo, ...r.datos },
     };
   }
 
@@ -229,16 +238,18 @@
     const e = (id, fn, arg, explicacion) => ({ id, ...T(fn, arg), explicacion, respaldo: 'hipotesis', fuente: null });
     const x = angulo, xm = mitad.includes('/') ? `(${mitad})` : ` ${mitad}`;
     const correcta = T(suma ? 'cot' : 'tan', mitad);
+    // Cada distractor cambia la función, el ángulo o los dos; así ni «cot» ni «α/2» quedan en mayoría
+    // alrededor de la correcta (antes, la que compartía más rasgos con las demás era siempre la correcta).
     const errores = suma ? [
       e('AV-mitad-invertida', 'tan', mitad, `Cambiaste las dos identidades: cot ${x} + csc ${x} da cot${xm}; la que da tan${xm} es csc ${x} − cot ${x}.`),
       e('AV-sin-mitad', 'cot', entero, `Simplificaste cot ${x} + csc ${x} como si diera cot ${x}, pero el csc ${x} no desaparece. Escribe todo con senos y cosenos: (cos ${x} + 1)/sen ${x}. Con 1 + cos ${x} = 2cos²${xm} y sen ${x} = 2 sen${xm}·cos${xm} queda cot${xm}.`),
-      e('AV-angulo-doble', 'cot', doble, `Usaste el ángulo doble en vez del mitad. Al escribir 1 + cos ${x} = 2cos²${xm}, el ángulo se parte en dos, no se duplica.`),
-      e('AV-funcion-cambiada', 'csc', mitad, `Al simplificar, cos${xm} queda arriba y sen${xm} abajo: eso es cot${xm}, no csc${xm}.`),
+      e('AV-mitad-invertida+AV-sin-mitad', 'tan', entero, `Dos errores: no partiste el ángulo (1 + cos ${x} = 2cos²${xm} deja ${mitad}, no ${x}) y además invertiste la razón, porque cos${xm} queda arriba y sen${xm} abajo. Sale cot${xm}, no tan ${x}.`),
+      e('AV-mitad-invertida+AV-angulo-doble', 'tan', doble, `Dos errores: duplicaste el ángulo en vez de partirlo (1 + cos ${x} = 2cos²${xm}) y además invertiste la razón (cos${xm} queda arriba). Sale cot${xm}, no tan ${doble}.`),
     ] : [
       e('AV-mitad-invertida', 'cot', mitad, `Cambiaste las dos identidades: csc ${x} − cot ${x} da tan${xm}; la que da cot${xm} es csc ${x} + cot ${x}.`),
       e('AV-sin-mitad', 'tan', entero, `Simplificaste csc ${x} − cot ${x} como si diera tan ${x}. Escribe todo con senos y cosenos: (1 − cos ${x})/sen ${x}. Con 1 − cos ${x} = 2sen²${xm} y sen ${x} = 2 sen${xm}·cos${xm} queda tan${xm}.`),
-      e('AV-angulo-doble', 'tan', doble, `Usaste el ángulo doble en vez del mitad. Al escribir 1 − cos ${x} = 2sen²${xm}, el ángulo se parte en dos, no se duplica.`),
-      e('AV-funcion-cambiada', 'sen', mitad, `Al simplificar queda sen${xm} arriba y cos${xm} abajo: eso es tan${xm}, no sen${xm}.`),
+      e('AV-mitad-invertida+AV-sin-mitad', 'cot', entero, `Dos errores: no partiste el ángulo (1 − cos ${x} = 2sen²${xm} deja ${mitad}, no ${x}) y además invertiste la razón, porque sen${xm} queda arriba y cos${xm} abajo. Sale tan${xm}, no cot ${x}.`),
+      e('AV-mitad-invertida+AV-angulo-doble', 'cot', doble, `Dos errores: duplicaste el ángulo en vez de partirlo (1 − cos ${x} = 2sen²${xm}) y además invertiste la razón (sen${xm} queda arriba). Sale tan${xm}, no cot ${doble}.`),
     ];
     const variables = {
       h: { nombre: 'altura', color: 'o' }, a: { nombre: 'ángulo de elevación', color: 'i' },
@@ -507,6 +518,25 @@
       h('AV-tangente-parte', ta, 'Esa es la tangente de la elevación al punto más bajo, no la del ángulo entre las dos visuales.'),
     ];
   }
+  // Distractores revisados de tan(β − α): unos por encima de la correcta (TR16, signo del denominador) y
+  // otros por debajo (errores al multiplicar las tangentes en el denominador), alternados, para que la
+  // correcta no sea siempre la menor. Con inv = true se pide la cotangente: cada error es el inverso del
+  // tan(β − α) mal calculado, y la explicación lo dice.
+  function distractoresTanDif(h1, h2, D, quien, inv = false) {
+    const ta = h1 / D, tb = h2 / D, c = (tb - ta) / (1 + ta * tb);
+    const f = x => (inv ? 1 / x : x);
+    const y = inv ? ' Luego invertiste ese valor para la cotangente.' : '';
+    return [
+      p('TR16', f(tb - ta), 'Restaste las tangentes: tan(β − α) no es tan β − tan α. La resta va arriba, pero se divide entre 1 + tan β·tan α.' + y),
+      h('AV-cuadrado-denominador', f((tb - ta) / (1 + tb * tb)), `En el denominador pusiste tan β·tan β = (${h2}/${D})² en vez de tan β·tan α = (${h2}/${D})(${h1}/${D}).` + y),
+      h('AV-signo-denominador', f((tb - ta) / (1 - ta * tb)), 'Pusiste 1 − tan β·tan α abajo: ese es el denominador de tan(β + α). Para la diferencia va 1 + tan β·tan α.' + y),
+      h('AV-producto-sin-cuadrado', f((h2 - h1) / (D + h1 * h2)), `Al multiplicar tan β·tan α = (${h2}/${D})(${h1}/${D}) dividiste ${h1 * h2} entre ${D} y no entre ${D}² = ${D * D}: el denominador te salió 1 + ${h1 * h2}/${D}.` + y),
+      h('AV-cancelar-D', f(c / D), `Al dividir (${h2 - h1}/${D}) entre (${D * D + h1 * h2}/${D * D}) te quedó ${h2 - h1}/${D * D + h1 * h2}: se te fue el factor ${D} que sube al multiplicar por ${D}².` + y),
+      inv ? h('AV-tangente-por-cotangente', c, 'Ese es tan(β − α). Se pide la cotangente, su inverso.')
+          : h('AV-tangente-total', tb, `Esa es la tangente del ángulo de elevación a ${quien}, no la del ángulo entre las dos visuales.`),
+      h('AV-tangente-parte', f(ta), inv ? 'Esa es la cotangente de la elevación al punto más bajo, no la del ángulo entre las dos visuales.' : 'Esa es la tangente de la elevación al punto más bajo, no la del ángulo entre las dos visuales.'),
+    ];
+  }
   function elegirTanDif(rng, filtro) {
     const cand = todosTanDif(filtro);
     return cand.length ? rng.elegir(cand) : null;
@@ -554,7 +584,8 @@
       [`= (${ex(tb)} − ${ex(ta)}) / (1 + ${ex(tb)}·${ex(ta)}) = ${entreP(ex(tb - ta))} ÷ ${entreP(ex(1 + ta * tb))} = ${ex(tanDif)}.`],
       ...(pide === 'cot' ? [['cot(β − α) = 1/tan(β − α) = ', ex(correcta), '.']] : []),
     ];
-    return { correcta, errores, variables, enunciado, pregunta, solucion, datos: { sub, h1, h2, D, pide }, unidad: '', fraccion: true };
+    const distractores = distractoresTanDif(h1, h2, D, 'la punta', pide === 'cot');
+    return { correcta, errores, distractores, variables, enunciado, pregunta, solucion, datos: { sub, h1, h2, D, pide }, unidad: '', fraccion: true };
   }
 
   function objetoElevado(rng, pref) {
@@ -573,7 +604,7 @@
         ['tan α = ', v('b', `${b}`), '/', v('d', `${D}`), ` = ${ex(b / D)}; tan β = (${b} + ${a})/${D} = ${ex(h2 / D)}.`],
         ['tan ', v('t', 'θ'), ` = (${ex(h2 / D)} − ${ex(b / D)}) / (1 + ${ex(h2 / D)}·${ex(b / D)}) = `, v('t', ex(correcta)), '.'],
       ];
-      return { correcta, errores: erroresTanDif(b, h2, D, 'la punta de la antena'), variables, enunciado, pregunta: ['¿Cuánto vale tan θ?'], solucion, datos: { sub, a, b, D }, unidad: '', fraccion: true };
+      return { correcta, errores: erroresTanDif(b, h2, D, 'la punta de la antena'), distractores: distractoresTanDif(b, h2, D, 'la punta de la antena'), variables, enunciado, pregunta: ['¿Cuánto vale tan θ?'], solucion, datos: { sub, a, b, D }, unidad: '', fraccion: true };
     }
     if (sub === 'altura' || sub === 'pura') {
       // Se buscan números con al menos tres distractores que se escriban como la respuesta (enteros).

@@ -51,6 +51,9 @@ function chequeo(d, clave) {
   return Math.abs(r - Math.hypot(d.x, d.y)) < 1e-6 && Math.abs(g - gg) < 1e-6 && g >= 0 && g < 360;
 }
 probarGenerador(gen, { semillas: 600, recalcular: p => (chequeo(p._datos, p.respuesta.valor) ? p.respuesta.valor : 'no cumple'), igual: (a, b) => a === b });
+// Fugas: la correcta no se adivina por ser la central ni por estar en un extremo.
+const { probarFugas } = require('../../nucleo/probar-generador.js');
+probarFugas(gen, { valorNumerico: a => (typeof a.valor === 'number' ? a.valor : NaN) });
 
 // Control contra la estrategia «elige la alternativa más parecida a las demás» (Hamming sobre las partes
 // de la clave; con empate se reparte). No debe acertar más del 40 %.

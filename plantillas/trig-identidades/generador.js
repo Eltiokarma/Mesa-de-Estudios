@@ -241,6 +241,16 @@
         h('TRI-denominador-con-mas', (ta + tb) / (ta * tb + 1), 'Pusiste tan A·tan B + 1 en el denominador. De tan A + tan B + tan C = tan A·tan B·tan C se despeja tan C = (tan A + tan B)/(tan A·tan B − 1).'),
         h('TRI-producto', ta * tb, 'Multiplicaste las dos tangentes. La condición del triángulo relaciona la suma de las tres tangentes con su producto; hay que despejar tan C.'),
       ],
+      // Revisados: la correcta solía ser la mayor (o la menor, si es negativa). Se agregan el despeje al revés
+      // (más grande o más chico según el caso) y el error doble sin denominador ni cambio de signo.
+      distractores: [
+        pa('TR12', -correcta, 'Calculaste tan(A + B) = (tan A + tan B)/(1 − tan A·tan B). Pero C = 180° − (A + B) y tan(180° − θ) = −tan θ: faltó cambiar el signo.'),
+        h('TRI-despeje-invertido', 1 / correcta, 'Despejaste al revés: de tan C·(tan A·tan B − 1) = tan A + tan B sale tan C = (tan A + tan B)/(tan A·tan B − 1), no (tan A·tan B − 1)/(tan A + tan B).'),
+        pa('TR16', -(ta + tb), 'Tomaste tan(A + B) como tan A + tan B. La tangente de una suma no se reparte: lleva el denominador 1 − tan A·tan B.'),
+        h('TR16+TR12', ta + tb, `Dos errores: tomaste tan(A + B) = tan A + tan B (la tangente de una suma lleva el denominador 1 − tan A·tan B) y además no cambiaste el signo, aunque C = 180° − (A + B). Quedó ${ex(ta + tb)}.`),
+        h('TRI-condicion-90', (1 - ta * tb) / (ta + tb), 'Usaste la condición de los ángulos que suman 90° (tan A·tan B + tan B·tan C + tan C·tan A = 1). En un triángulo suman 180° y la condición es tan A + tan B + tan C = tan A·tan B·tan C.'),
+        h('TRI-denominador-con-mas', (ta + tb) / (ta * tb + 1), 'Pusiste tan A·tan B + 1 en el denominador. De tan A + tan B + tan C = tan A·tan B·tan C se despeja tan C = (tan A + tan B)/(tan A·tan B − 1).'),
+      ],
       solucion: [
         ['En un triángulo, A + B + C = 180°, y de ahí sale tan A + tan B + tan C = tan A·tan B·tan C.'],
         [v('A', a), ' + ', v('B', b), ' + tan C = ', v('A', a), ' · ', v('B', b), ' · tan C → tan C·(tan A·tan B − 1) = tan A + tan B.'],
@@ -399,6 +409,14 @@
       h('TRI-da-tan-B', t, 'Ese es tan B. Pedían tan C, y C = 2B.'),
       pa('TR21', 2 * neg / (1 - neg * neg), `Partiste de la raíz negativa de la cuadrática (tan B = ${ex(neg)}). B es agudo: tan B > 0.`),
     ];
+    // tan C: todos los errores de arriba dan menos que tan 2B. Se agregan dos que suelen dar más.
+    const distractores = pide === 'tanC' ? [
+      errores[0],
+      h('TRI-doble-sin-cuadrado', 2 * t / (1 - t), `En el denominador pusiste 1 − tan B en vez de 1 − tan²B: 2·${fr(n, d)}/(1 − ${fr(n, d)}). Es tan 2B = 2 tan B/(1 − tan²B).`),
+      errores[1],
+      h('TRI-da-cot-C', (1 - t * t) / (2 * t), 'Ese es cot C = (1 − tan²B)/(2 tan B): pusiste la fórmula al revés. La tangente del doble es 2 tan B/(1 − tan²B).'),
+      errores[2], errores[3],
+    ] : null;
     const sol = [
       ['Con t = tan B: en el triángulo ABH, BH = AH/t; en el triángulo ACH, HC = AH/tan C = AH·cot 2B.'],
       ['Como tan 2B = 2t/(1 − t²), cot 2B = (1 − t²)/(2t).'],
@@ -411,7 +429,7 @@
       enunciado: [intro, ' el ángulo C igual al doble del ángulo B. La altura AH (con H en el lado BC) mide ', v('h', `${al} m`), ' y el lado BC mide ', v('a', `${a} m`), '.'],
       pregunta: [pide === 'tanB' ? '¿Cuánto vale tan B?' : '¿Cuánto vale tan C?'],
       correcta: pide === 'tanB' ? t : tC,
-      errores,
+      errores, distractores,
       solucion: sol,
       datos: { tipo: 'triangulo-doble', h: al, a, pide },
     };
@@ -615,6 +633,15 @@
         h('TRI-confunde-con-csc', N * csc(N * x), 'Usaste cot θ + tan θ = 2 csc 2θ. Aquí la tangente se resta: va cot θ − tan θ = 2 cot 2θ.'),
         h('TRI-cuenta-mal-los-pasos', 2 * N * cotR(2 * N * x), 'Aplicaste la identidad una vez de más: hay tantos pasos como términos con tangente.'),
       ],
+      // Revisados: con errores dobles, para que la correcta no sea la que más se parece a las demás.
+      distractores: [
+        h('TRI-olvida-el-2', cotR(N * x), `Usaste cot θ − tan θ = cot 2θ, sin el factor 2. Cada paso duplica el coeficiente: al final queda ${N}·cot ${grados(N * x)}.`),
+        h('TRI-olvida-el-2+TRI-tan-por-cot', tanR(N * x), `Dos errores: usaste cot θ − tan θ = tan 2θ (la identidad da la cotangente del doble, no la tangente) y sin el factor 2, que en cada paso duplica el coeficiente.`),
+        h('TRI-tan-por-cot', N * tanR(N * x), 'La identidad da la cotangente del doble, no la tangente.'),
+        h('TRI-confunde-con-csc', N * csc(N * x), 'Usaste cot θ + tan θ = 2 csc 2θ. Aquí la tangente se resta: va cot θ − tan θ = 2 cot 2θ.'),
+        h('TRI-cuenta-mal-los-pasos', 2 * N * cotR(2 * N * x), 'Aplicaste la identidad una vez de más: hay tantos pasos como términos con tangente.'),
+        (N * x > 90 ? pa : h)(N * x > 90 ? 'TR12' : 'TRI-cambia-signo', -correcta, `Te equivocaste de signo: cot ${grados(N * x)} es ${correcta > 0 ? 'positiva' : 'negativa'} (${grados(N * x)} está en el ${N * x < 90 ? 'I' : 'II'} cuadrante).`),
+      ],
       solucion: sol,
       datos: { tipo: 'cadena', n, x },
     };
@@ -658,9 +685,16 @@
       const pr = TIPOS[rng.elegir(NOMBRES)](rng);
       const alternativas = armarEx(rng, pr.correcta, pr.errores, pr.opciones);
       if (!alternativas || alternativas.length < 4) continue;
+      // Distractores revisados (para que la correcta no sea la central ni quede siempre en un extremo): se
+      // arman con un azar aparte, después de la comprobación de arriba, para no mover la secuencia de rng.
+      let finales = alternativas;
+      if (pr.distractores) {
+        const alt2 = armarEx(Azar.crear(ID + '|distractores|' + semilla), pr.correcta, pr.distractores, pr.opciones);
+        if (alt2 && alt2.length >= 4) finales = alt2;
+      }
       return {
         id: `${ID}#${semilla}`, variables: pr.variables, enunciado: pr.enunciado, pregunta: pr.pregunta, datos: '',
-        alternativas, solucion: pr.solucion, respuesta: { valor: pr.correcta, unidad: (pr.opciones && pr.opciones.unidad) || '' },
+        alternativas: finales, solucion: pr.solucion, respuesta: { valor: pr.correcta, unidad: (pr.opciones && pr.opciones.unidad) || '' },
         _datos: pr.datos,
       };
     }

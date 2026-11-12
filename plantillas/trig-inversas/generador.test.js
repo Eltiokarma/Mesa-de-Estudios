@@ -115,6 +115,10 @@ probarGenerador(gen, {
   recalcular,
   igual: (a, b) => (typeof a === 'string' || typeof b === 'string' ? a === b : Math.abs(a - b) < 1e-7 * Math.max(1, Math.abs(b))),
 });
+// Fugas: la correcta no se adivina por ser la central ni por estar en un extremo. Las respuestas de
+// transformación (rango y sentido, en texto) no se comparan por tamaño.
+const { probarFugas } = require('../../nucleo/probar-generador.js');
+probarFugas(gen, { valorNumerico: a => (typeof a.valor === 'number' ? a.valor : NaN) });
 
 for (const c of casos.casos) {
   test(`casos.json: semilla ${c.semilla}`, () => {
