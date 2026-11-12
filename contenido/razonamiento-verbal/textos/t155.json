@@ -7,21 +7,61 @@
   "dificultad": 2,
   "tipo_texto": "argumentativo",
   "autores": [
-    { "id": "A", "desde": 0, "firma": "Una médica de un hospital de la sierra" },
-    { "id": "B", "desde": 1, "firma": "Un radiólogo de un hospital de Lima" }
+    {
+      "id": "A",
+      "desde": 0,
+      "firma": "Una médica de un hospital de la sierra"
+    },
+    {
+      "id": "B",
+      "desde": 1,
+      "firma": "Un radiólogo de un hospital de Lima"
+    }
   ],
   "parrafos": [
     [
-      { "id": "o1", "rol": "principal", "t": "En un hospital regional que no tiene radiólogo, un programa de inteligencia artificial que lea radiografías y ecografías puede salvar vidas." },
-      { "id": "o2", "rol": "apoyo", "t": "Hoy esas imágenes esperan días a que alguien con experiencia las interprete, y mientras tanto la enfermedad del paciente avanza." },
-      { "id": "o3", "rol": "apoyo", "t": "El programa no se cansa ni se demora, y marca las imágenes más sospechosas para que el médico las atienda primero." },
-      { "id": "o4", "rol": "principal", "t": "Mientras no lleguen más especialistas, una lectura imperfecta pero inmediata vale más que ninguna." }
+      {
+        "id": "o1",
+        "rol": "principal",
+        "t": "En un hospital regional que no tiene radiólogo, un programa de inteligencia artificial que lea radiografías y ecografías puede salvar vidas."
+      },
+      {
+        "id": "o2",
+        "rol": "apoyo",
+        "t": "Hoy esas imágenes esperan días a que alguien con experiencia las interprete, y mientras tanto la enfermedad del paciente avanza."
+      },
+      {
+        "id": "o3",
+        "rol": "apoyo",
+        "t": "El programa no se cansa ni se demora, y marca las imágenes más sospechosas para que el médico las atienda primero."
+      },
+      {
+        "id": "o4",
+        "rol": "principal",
+        "t": "Mientras no lleguen más especialistas, una lectura imperfecta pero inmediata vale más que ninguna."
+      }
     ],
     [
-      { "id": "o5", "rol": "apoyo", "t": "Acepto que esperar días por una lectura es un problema serio y que el programa puede ordenar la fila de imágenes pendientes." },
-      { "id": "o6", "rol": "contraste", "t": "Pero un programa que aprendió con imágenes de otros pacientes puede fallar con los que atiende un hospital de provincia, y no avisa cuando duda." },
-      { "id": "o7", "rol": "apoyo", "t": "En una ecografía, además, el resultado depende de cómo se mueve la mano de quien la toma, y una imagen mal tomada será mal leída." },
-      { "id": "o8", "rol": "principal", "t": "Por eso el programa debe ser un apoyo: cada lectura debe llegar a un especialista que la revise a distancia, aunque tarde unas horas." }
+      {
+        "id": "o5",
+        "rol": "apoyo",
+        "t": "Acepto que esperar días por una lectura es un problema serio y que el programa puede ordenar la fila de imágenes pendientes."
+      },
+      {
+        "id": "o6",
+        "rol": "contraste",
+        "t": "Pero un programa que aprendió con imágenes de otros pacientes puede fallar con los que atiende un hospital de provincia, y no avisa cuando duda."
+      },
+      {
+        "id": "o7",
+        "rol": "apoyo",
+        "t": "En una ecografía, además, el resultado depende de cómo se mueve la mano de quien la toma, y una imagen mal tomada será mal leída."
+      },
+      {
+        "id": "o8",
+        "rol": "principal",
+        "t": "Por eso el programa debe ser un apoyo: cada lectura debe llegar a un especialista que la revise a distancia, aunque tarde unas horas."
+      }
     ]
   ],
   "preguntas": [
@@ -48,16 +88,37 @@
       },
       "enunciado": "¿En qué coinciden ambos autores?",
       "alternativas": [
-        { "t": "En que una lectura imperfecta pero inmediata vale más que ninguna lectura.", "codigo": "RV60", "origen": "o4",
-          "explicacion": "Es la tesis del texto A (oración 4). El B no la comparte: quiere que cada lectura sea revisada por un especialista." },
-        { "t": "En que el programa sirve para leer las imágenes y no necesita ninguna revisión de un especialista.", "codigo": "RV62", "origen": "o8",
-          "explicacion": "La primera mitad se acerca a lo que dicen, pero la segunda la niega el texto B (oración 8)." },
-        { "t": "En que los hospitales de la sierra reciben menos equipos médicos que los de la costa.", "codigo": "RV8",
-          "explicacion": "Puede ser cierto, pero ninguno de los dos textos lo dice." },
-        { "t": "En que el programa puede ayudar a ordenar las imágenes que esperan lectura.", "correcta": true, "evidencia": ["o3", "o5"],
-          "explicacion": "El texto A dice que el programa marca las más sospechosas para atenderlas primero (oración 3); el B acepta que puede ordenar la fila (oración 5)." },
-        { "t": "En que la tecnología mejora todos los servicios de salud del país.", "codigo": "RV2",
-          "explicacion": "Es demasiado general: los textos hablan de un programa concreto, en hospitales sin especialistas." }
+        {
+          "t": "En que una lectura imperfecta pero inmediata vale más que ninguna lectura.",
+          "codigo": "RV60",
+          "origen": "o4",
+          "explicacion": "Es la tesis del texto A (oración 4). El B no la comparte: quiere que cada lectura sea revisada por un especialista."
+        },
+        {
+          "t": "En que el programa sirve para leer las imágenes y no necesita ninguna revisión de un especialista.",
+          "codigo": "RV62",
+          "origen": "o8",
+          "explicacion": "La primera mitad se acerca a lo que dicen, pero la segunda la niega el texto B (oración 8)."
+        },
+        {
+          "t": "En que los hospitales de la sierra reciben menos equipos médicos que los de la costa.",
+          "codigo": "RV8",
+          "explicacion": "Puede ser cierto, pero ninguno de los dos textos lo dice."
+        },
+        {
+          "t": "En que el programa puede ayudar a ordenar las imágenes que esperan lectura.",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "o5"
+          ],
+          "explicacion": "El texto A dice que el programa marca las más sospechosas para atenderlas primero (oración 3); el B acepta que puede ordenar la fila (oración 5)."
+        },
+        {
+          "t": "En que la tecnología mejora todos los servicios de salud del país.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos hablan de un programa concreto, en hospitales sin especialistas."
+        }
       ]
     },
     {
@@ -83,16 +144,38 @@
       },
       "enunciado": "¿En qué discrepan los autores?",
       "alternativas": [
-        { "t": "A pide usar la lectura del programa de inmediato; B, que se deje de usar el programa en las ecografías.", "codigo": "RV62", "origen": "o7",
-          "explicacion": "La primera mitad es del texto A, pero el B no pide dejar de usarlo: lo propone como apoyo con revisión (oración 8)." },
-        { "t": "En si conviene usar la lectura del programa de inmediato o esperar a que un especialista la revise.", "correcta": true, "evidencia": ["o4", "o8"],
-          "explicacion": "El texto A prefiere una lectura imperfecta pero inmediata (oración 4); el B quiere que cada lectura la revise un especialista (oración 8)." },
-        { "t": "En si esperar días por la lectura de una imagen es un problema serio para el paciente.", "codigo": "RV61", "origen": "o5",
-          "explicacion": "En eso coinciden: el texto A lo dice en la oración 2 y el B lo acepta en la oración 5." },
-        { "t": "A dice que el programa puede fallar con pacientes distintos de aquellos con los que aprendió; B, que no se cansa ni se demora.", "codigo": "RV59", "origen": "o6",
-          "explicacion": "Cambia los autores: lo del programa que no se cansa es del texto A (oración 3) y lo de fallar con otros pacientes es del B (oración 6)." },
-        { "t": "A pide comprar más equipos de ecografía; B, contratar más médicos para los hospitales de provincia.", "codigo": "RV33",
-          "explicacion": "Ninguno de los dos toma esas posturas." }
+        {
+          "t": "A pide usar la lectura del programa de inmediato; B, que se deje de usar el programa en las ecografías.",
+          "codigo": "RV62",
+          "origen": "o7",
+          "explicacion": "La primera mitad es del texto A, pero el B no pide dejar de usarlo: lo propone como apoyo con revisión (oración 8)."
+        },
+        {
+          "t": "En si conviene usar la lectura del programa de inmediato o esperar a que un especialista la revise.",
+          "correcta": true,
+          "evidencia": [
+            "o4",
+            "o8"
+          ],
+          "explicacion": "El texto A prefiere una lectura imperfecta pero inmediata (oración 4); el B quiere que cada lectura la revise un especialista (oración 8)."
+        },
+        {
+          "t": "En si esperar días por la lectura de una imagen es un problema serio para el paciente.",
+          "codigo": "RV61",
+          "origen": "o5",
+          "explicacion": "En eso coinciden: el texto A lo dice en la oración 2 y el B lo acepta en la oración 5."
+        },
+        {
+          "t": "A dice que el programa puede fallar con pacientes distintos de aquellos con los que aprendió; B, que no se cansa ni se demora.",
+          "codigo": "RV59",
+          "origen": "o6",
+          "explicacion": "Cambia los autores: lo del programa que no se cansa es del texto A (oración 3) y lo de fallar con otros pacientes es del B (oración 6)."
+        },
+        {
+          "t": "A pide comprar más equipos de ecografía; B, contratar más médicos para los hospitales de provincia.",
+          "codigo": "RV33",
+          "explicacion": "Ninguno de los dos toma esas posturas."
+        }
       ]
     },
     {
@@ -101,16 +184,38 @@
       "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
       "enunciado": "¿Cuál de estas propuestas es compatible con lo que sostiene el autor del texto B?",
       "alternativas": [
-        { "t": "Dejar que el programa dé el diagnóstico final cuando el especialista tarde más de un día.", "codigo": "RV9", "origen": "o8",
-          "explicacion": "Choca con la oración 8: el autor pide que cada lectura sea revisada por un especialista, aunque tarde unas horas." },
-        { "t": "Usar solo la lectura del programa mientras no lleguen más especialistas.", "codigo": "RV59", "origen": "o4",
-          "explicacion": "Es lo que defiende el texto A (oración 4); el B pide que un especialista revise cada lectura." },
-        { "t": "Usar el programa para ordenar las imágenes y que un especialista revise cada lectura el mismo día.", "correcta": true, "evidencia": ["o5", "o8"],
-          "explicacion": "Conserva el orden de la fila que el autor acepta (oración 5) y la revisión a distancia que pide (oración 8)." },
-        { "t": "Prohibir el programa en todos los hospitales, porque siempre se equivoca con las ecografías.", "codigo": "RV11", "origen": "o7",
-          "explicacion": "«Siempre» dice más de lo que el autor afirma: dice que puede fallar (oraciones 6 y 7), y acepta usarlo como apoyo." },
-        { "t": "Cerrar los servicios de imágenes de los hospitales regionales hasta que haya radiólogos suficientes en todo el país.", "codigo": "RV7",
-          "explicacion": "Va más allá de lo que el texto permite: el autor acepta usar el programa como apoyo (oración 8)." }
+        {
+          "t": "Dejar que el programa dé el diagnóstico final cuando el especialista tarde más de un día.",
+          "codigo": "RV9",
+          "origen": "o8",
+          "explicacion": "Choca con la oración 8: el autor pide que cada lectura sea revisada por un especialista, aunque tarde unas horas."
+        },
+        {
+          "t": "Usar solo la lectura del programa mientras no lleguen más especialistas.",
+          "codigo": "RV59",
+          "origen": "o4",
+          "explicacion": "Es lo que defiende el texto A (oración 4); el B pide que un especialista revise cada lectura."
+        },
+        {
+          "t": "Usar el programa para ordenar las imágenes y que un especialista revise cada lectura el mismo día.",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "o8"
+          ],
+          "explicacion": "Conserva el orden de la fila que el autor acepta (oración 5) y la revisión a distancia que pide (oración 8)."
+        },
+        {
+          "t": "Prohibir el programa en todos los hospitales, porque siempre se equivoca con las ecografías.",
+          "codigo": "RV11",
+          "origen": "o7",
+          "explicacion": "«Siempre» dice más de lo que el autor afirma: dice que puede fallar (oraciones 6 y 7), y acepta usarlo como apoyo."
+        },
+        {
+          "t": "Cerrar los servicios de imágenes de los hospitales regionales hasta que haya radiólogos suficientes en todo el país.",
+          "codigo": "RV7",
+          "explicacion": "Va más allá de lo que el texto permite: el autor acepta usar el programa como apoyo (oración 8)."
+        }
       ]
     },
     {
@@ -119,14 +224,29 @@
       "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
       "enunciado": "En la oración 3 del texto A, el adjetivo SOSPECHOSAS («las imágenes más sospechosas») significa",
       "alternativas": [
-        { "t": "que hacen pensar en un delito o en una trampa.", "codigo": "RV18",
-          "explicacion": "Es el uso más común de «sospechoso» (de una persona de la que se desconfía), pero una imagen médica no se relaciona con un delito." },
-        { "t": "que podrían mostrar una enfermedad.", "correcta": true, "evidencia": ["o3"],
-          "explicacion": "El programa marca las imágenes que parecen anormales para que el médico las vea primero." },
-        { "t": "borrosas, poco claras o difíciles de ver.", "codigo": "RV19",
-          "explicacion": "Se asocia con imágenes poco claras, pero el texto no habla de la nitidez, sino de cuáles requieren atención primero." },
-        { "t": "que el médico atiende antes que las demás.", "codigo": "RV5", "origen": "o3",
-          "explicacion": "Repite palabras de la misma oración, pero esa es la consecuencia de marcarlas, no lo que significa el adjetivo." }
+        {
+          "t": "que hacen pensar en un delito o en una trampa.",
+          "codigo": "RV18",
+          "explicacion": "Es el uso más común de «sospechoso» (de una persona de la que se desconfía), pero una imagen médica no se relaciona con un delito."
+        },
+        {
+          "t": "que podrían mostrar una enfermedad.",
+          "correcta": true,
+          "evidencia": [
+            "o3"
+          ],
+          "explicacion": "El programa marca las imágenes que parecen anormales para que el médico las vea primero."
+        },
+        {
+          "t": "borrosas, poco claras o difíciles de ver.",
+          "codigo": "RV19",
+          "explicacion": "Se asocia con imágenes poco claras, pero el texto no habla de la nitidez, sino de cuáles requieren atención primero."
+        },
+        {
+          "t": "que fueron tomadas sin cuidado y no sirven para diagnosticar.",
+          "codigo": "RV7",
+          "explicacion": "Va más allá del texto: «sospechosas» no habla de cómo fueron tomadas, sino de que podrían mostrar algo anormal."
+        }
       ]
     },
     {
@@ -152,21 +272,48 @@
       },
       "enunciado": "Ante la afirmación del texto A de que una lectura imperfecta pero inmediata vale más que ninguna, el autor del texto B probablemente respondería que",
       "alternativas": [
-        { "t": "el programa no se cansa ni se demora y marca las imágenes más sospechosas.", "codigo": "RV59", "origen": "o3",
-          "explicacion": "Ese es el argumento del texto A (oración 3); no sirve al B para responderle." },
-        { "t": "la lectura de un programa nunca debería usarse en un hospital.", "codigo": "RV33", "origen": "o8",
-          "explicacion": "El autor no toma esa postura: acepta que el programa sea un apoyo (oración 8)." },
-        { "t": "una lectura imperfecta que no avisa su duda puede causar errores si nadie la revisa.", "correcta": true, "evidencia": ["o6", "o8"],
-          "explicacion": "El B advierte que el programa puede fallar y no avisa su duda (oración 6), por eso pide la revisión de un especialista (oración 8)." },
-        { "t": "los radiólogos de Lima deberían viajar cada mes a los hospitales de la sierra para revisar los equipos.", "codigo": "RV8",
-          "explicacion": "Ningún texto propone viajes de radiólogos; es una idea de fuera, sea buena o no." },
-        { "t": "todo programa de inteligencia artificial se equivoca siempre con los pacientes de provincia y de la sierra.", "codigo": "RV11", "origen": "o6",
-          "explicacion": "«Siempre» exagera lo que dice el B, que habla de que el programa puede fallar (oración 6)." }
+        {
+          "t": "el programa no se cansa ni se demora y marca las imágenes más sospechosas.",
+          "codigo": "RV59",
+          "origen": "o3",
+          "explicacion": "Ese es el argumento del texto A (oración 3); no sirve al B para responderle."
+        },
+        {
+          "t": "la lectura de un programa nunca debería usarse en un hospital.",
+          "codigo": "RV33",
+          "origen": "o8",
+          "explicacion": "El autor no toma esa postura: acepta que el programa sea un apoyo (oración 8)."
+        },
+        {
+          "t": "una lectura imperfecta que no avisa su duda puede causar errores si nadie la revisa.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o8"
+          ],
+          "explicacion": "El B advierte que el programa puede fallar y no avisa su duda (oración 6), por eso pide la revisión de un especialista (oración 8)."
+        },
+        {
+          "t": "los radiólogos de Lima deberían viajar cada mes a los hospitales de la sierra para revisar los equipos.",
+          "codigo": "RV8",
+          "explicacion": "Ningún texto propone viajes de radiólogos; es una idea de fuera, sea buena o no."
+        },
+        {
+          "t": "todo programa de inteligencia artificial se equivoca siempre con los pacientes de provincia y de la sierra.",
+          "codigo": "RV11",
+          "origen": "o6",
+          "explicacion": "«Siempre» exagera lo que dice el B, que habla de que el programa puede fallar (oración 6)."
+        }
       ]
     }
   ],
   "origen": "propio",
   "fecha": "2026-11-12",
   "hechos": [],
-  "revision": null
+  "revision": {
+    "por": "subagente (revisor a ciegas, rutina verbal-mas)",
+    "fecha": "2026-11-12",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidió 40 de 40 en la tanda; duda leve en p4 (el distractor «que el médico atiende antes» era la consecuencia del marcado y rozaba la clave). Cambio: ese distractor ahora habla de imágenes mal tomadas, claramente fuera del texto. Sin hechos externos."
+  }
 }
