@@ -7,21 +7,22 @@
 <style>
 /* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de trazos-rutas/.
    Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
-   direcciones de avance: a la derecha x celeste, al fondo y magenta, hacia arriba z ámbar; rutas N (el número de
-   cada vértice y los totales) índigo; la ruta que se ve r verde; cuadraditos de la franja n granate; cilindro: altura h
-   rojo, contorno C turquesa; tarro: lo que está debajo del borde afuera a ocre y adentro b violeta; recorrido máximo:
-   esquinas impares i fucsia, alambres que se quitan Q naranja.
+   direcciones de avance: a la derecha x celeste, al fondo y magenta, hacia arriba z ámbar (en los pasos 1 y 2 cada
+   alambre lleva un tono suave de su dirección); rutas N (el número de cada vértice y los totales) índigo; la ruta que
+   se ve d verde; cuadraditos de la franja k granate; cilindro: altura h rojo, perímetro de la base P turquesa; tarro: lo
+   que está debajo del borde afuera a ocre y adentro b violeta; recorrido máximo: esquinas impares i fucsia, alambres
+   que se quitan Q naranja. Las letras A, B, C, D, E, F, O, V y M nombran puntos; los puntos sin nombre llevan un número.
    Elegidos con CIEDE2000 (docs/metodo/paleta.py); mínimos entre los que salen juntos (claro / oscuro): alambre
-   (x, y, z, N, r) 22,7 / 26,2; franja (N, r, n) 32,4 / 26,2; cilindro (h, C, r) 20,4 / 21,2; tarro (a, b, C, r)
-   20,4 / 21,2; máximo (i, Q, r) 41,0 / 45,0. Contraste AA sobre el papel, la tarjeta y su chip (.v, fondo al 8 %),
+   (x, y, z, N, d) 22,7 / 26,2; franja (N, d, k) 32,4 / 26,2; cilindro (h, P, d) 20,4 / 21,2; tarro (a, b, P, d)
+   20,4 / 21,2; máximo (i, Q, d) 41,0 / 45,0. Contraste AA sobre el papel, la tarjeta y su chip (.v, fondo al 8 %),
    en claro y en oscuro: mínimo 4,54 (claro) y 4,64 (oscuro). */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
   --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
-  --c-x:#086a96; --c-y:#b3246b; --c-z:#8f5800; --c-N:#3328c4; --c-r:#255c1f; --c-n:#77032c;
-  --c-h:#c0364a; --c-C:#0f766e; --c-a:#7d6a00; --c-b:#6a3fc0; --c-i:#a10fbf; --c-Q:#a05200;
+  --c-x:#086a96; --c-y:#b3246b; --c-z:#8f5800; --c-N:#3328c4; --c-d:#255c1f; --c-k:#77032c;
+  --c-h:#c0364a; --c-P:#0f766e; --c-a:#7d6a00; --c-b:#6a3fc0; --c-i:#a10fbf; --c-Q:#a05200;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
   color-scheme:light;
@@ -30,15 +31,15 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-x:#25caf4; --c-y:#ff86bd; --c-z:#ffc04d; --c-N:#9f9bff; --c-r:#5fe06a; --c-n:#fdb4ce;
-  --c-h:#f17384; --c-C:#5ed9c8; --c-a:#e3c84a; --c-b:#b49cff; --c-i:#cf6bfa; --c-Q:#f0a04a;
+  --c-x:#25caf4; --c-y:#ff86bd; --c-z:#ffc04d; --c-N:#9f9bff; --c-d:#5fe06a; --c-k:#fdb4ce;
+  --c-h:#f17384; --c-P:#5ed9c8; --c-a:#e3c84a; --c-b:#b49cff; --c-i:#cf6bfa; --c-Q:#f0a04a;
   color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-x:#25caf4; --c-y:#ff86bd; --c-z:#ffc04d; --c-N:#9f9bff; --c-r:#5fe06a; --c-n:#fdb4ce;
-  --c-h:#f17384; --c-C:#5ed9c8; --c-a:#e3c84a; --c-b:#b49cff; --c-i:#cf6bfa; --c-Q:#f0a04a;
+  --c-x:#25caf4; --c-y:#ff86bd; --c-z:#ffc04d; --c-N:#9f9bff; --c-d:#5fe06a; --c-k:#fdb4ce;
+  --c-h:#f17384; --c-P:#5ed9c8; --c-a:#e3c84a; --c-b:#b49cff; --c-i:#cf6bfa; --c-Q:#f0a04a;
   color-scheme:dark }
 
 *{box-sizing:border-box}
@@ -95,10 +96,10 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .v-y{color:var(--c-y); background:color-mix(in srgb, var(--c-y) 8%, transparent)}
 .v-z{color:var(--c-z); background:color-mix(in srgb, var(--c-z) 8%, transparent)}
 .v-N{color:var(--c-N); background:color-mix(in srgb, var(--c-N) 8%, transparent)}
-.v-r{color:var(--c-r); background:color-mix(in srgb, var(--c-r) 8%, transparent)}
-.v-n{color:var(--c-n); background:color-mix(in srgb, var(--c-n) 8%, transparent)}
+.v-d{color:var(--c-d); background:color-mix(in srgb, var(--c-d) 8%, transparent)}
+.v-k{color:var(--c-k); background:color-mix(in srgb, var(--c-k) 8%, transparent)}
 .v-h{color:var(--c-h); background:color-mix(in srgb, var(--c-h) 8%, transparent)}
-.v-C{color:var(--c-C); background:color-mix(in srgb, var(--c-C) 8%, transparent)}
+.v-P{color:var(--c-P); background:color-mix(in srgb, var(--c-P) 8%, transparent)}
 .v-a{color:var(--c-a); background:color-mix(in srgb, var(--c-a) 8%, transparent)}
 .v-b{color:var(--c-b); background:color-mix(in srgb, var(--c-b) 8%, transparent)}
 .v-i{color:var(--c-i); background:color-mix(in srgb, var(--c-i) 8%, transparent)}
@@ -274,12 +275,12 @@ function tween(dur, paso, fin, lineal){
   const tick = now => { const f = Math.max(0, Math.min(1, (now - t0)/dur)); paso(lineal ? f : suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
   requestAnimationFrame(tick);
 }
-const VARS = ['x', 'y', 'z', 'N', 'r', 'n', 'h', 'C', 'a', 'b', 'i', 'Q'];
+const VARS = ['x', 'y', 'z', 'N', 'd', 'k', 'h', 'P', 'a', 'b', 'i', 'Q'];
 const W_ = {}; VARS.forEach(k => { W_[k] = t => V(k, t); });
 const DIRS = { x:'a la derecha', y:'al fondo', z:'hacia arriba' };
 const letras = s => s.split('').map(ch => W_[ch]({ x:'→', y:'↗', z:'↑' }[ch])).join('');
 const aprox = (ex, v) => (ex && ex === String(Math.round(v)) && Math.abs(v - Math.round(v)) < 1e-9) ? ex : `${ex} ≈ ${fmt(v, 1)}`;
-const nombreNodo = (marcas, v) => (marcas && marcas[v]) || `P${v + 1}`;
+const nombreNodo = (marcas, v) => (marcas && marcas[v]) || `punto ${v + 1}`;
 
 function colores(){
   const c = { ink:css('--ink'), muted:css('--muted'), grid:css('--grid'), paper:css('--paper'), card:css('--card'), line:css('--line'), warn:css('--warn'), font:css('--font') };
@@ -320,7 +321,7 @@ document.addEventListener('focusin', e => { const s = e.target.closest && e.targ
                los nodos), tocable (tocar un alambre llama a E.alTocarTramo) }. Con E.girar, la estructura gira con la
                manija (dedo), con el ratón en cualquier parte, con los botones y con las flechas del teclado.
    'cilindro'  cil = { tipo: 'helice' | 'tarro' | 'tangentes', y sus medidas (las del motor), abrir (0 a 1: cuánto se desarrolló
-               la superficie), ruta (0 a 1), ver (lo que se rotula: { h, C, a, b, r }: textos o null) }.
+               la superficie), ruta (0 a 1), ver (lo que se rotula: { h, P, a, b, d }: textos o null) }.
    Antes de responder, lo que se pregunta se dibuja como «?» y nada adelanta la respuesta. */
 function crearEscena(cv, idDesc, idLect, idLey, idGiro){
   const E = { modo:'alambre', al:null, cil:null, lect:[], ley:null, hl:null, alCambiar:null, ocupado:false, tok:0, anim:false, compacto:false, desc:'',
@@ -351,7 +352,7 @@ function crearEscena(cv, idDesc, idLect, idLey, idGiro){
     const rot = o.rot || null;
     Object.assign(E, { modo:'alambre', lect:[], ley:null, alCambiar:null, desc:'', girar:false, al:null, cil:null, alTocarTramo:null }, o);
     if (rot) E.rot = Object.assign({}, rot);
-    if (E.al) E.al = Object.assign({ plano:false, marcas:{}, tripode:false, num:null, ruta:null, quitados:new Set(), impares:[], etiquetas:false, tocable:false, bajo:false }, E.al);
+    if (E.al) E.al = Object.assign({ plano:false, marcas:{}, tripode:false, num:null, ruta:null, quitados:new Set(), impares:[], etiquetas:false, tocable:false, bajo:false, tinte:false }, E.al);
     if (E.cil) E.cil = Object.assign({ abrir:0, ruta:0, ver:{} }, E.cil);
     cv.tabIndex = E.girar ? 0 : -1;
     if (giro) giro.hidden = !E.girar;
@@ -411,9 +412,11 @@ function crearEscena(cv, idDesc, idLect, idLey, idGiro){
       ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
       if (q){ ctx.strokeStyle = c.Q; ctx.globalAlpha = .9*atenuar('Q'); ctx.lineWidth = grosor('Q', 2.4); ctx.setLineDash([7, 6]); }
       else {
-        const colorDir = dir && E.hl === dir ? c[dir] : null;
-        ctx.strokeStyle = colorDir || c.ink; ctx.globalAlpha = (A.plano ? 1 : .38 + .62*prof(T.d))*(colorDir ? 1 : (E.hl && E.hl !== 'r' && E.hl !== 'N' ? .6 : 1));
-        ctx.lineWidth = colorDir ? 4.5 : 2.4;
+        const colorDir = dir && E.hl === dir ? c[dir] : null, tinte = !colorDir && A.tinte && dir ? c[dir] : null;
+        const base = (A.plano ? 1 : .38 + .62*prof(T.d))*(colorDir ? 1 : (E.hl && E.hl !== 'd' && E.hl !== 'N' ? .6 : 1));
+        if (tinte){ ctx.strokeStyle = c.ink; ctx.globalAlpha = base*.45; ctx.lineWidth = 2.4; trazar(T.L); ctx.strokeStyle = tinte; ctx.globalAlpha = base*(E.hl && E.hl !== dir ? .35 : .7); }
+        else { ctx.strokeStyle = colorDir || c.ink; ctx.globalAlpha = base; }
+        ctx.lineWidth = colorDir ? 4.5 : tinte ? 2.6 : 2.4;
       }
       trazar(T.L); ctx.restore();
     }
@@ -422,7 +425,7 @@ function crearEscena(cv, idDesc, idLect, idLey, idGiro){
     let punta = null;
     if (R && R.tramos && R.tramos.length){
       const n = R.tramos.length, hasta = clamp(R.prog, 0, 1)*n;
-      ctx.save(); ctx.strokeStyle = c.r; ctx.globalAlpha = .9*atenuar('r'); ctx.lineWidth = grosor('r', 6); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      ctx.save(); ctx.strokeStyle = c.d; ctx.globalAlpha = .9*atenuar('d'); ctx.lineWidth = grosor('d', 6); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
       ctx.beginPath();
       for (let q = 0; q < n && q < hasta; q++){
         let L = geo.tramos[R.tramos[q]].slice();
@@ -445,12 +448,12 @@ function crearEscena(cv, idDesc, idLect, idLey, idGiro){
     if (A.num) for (const v of ordenN){
       if (A.num[v] === null || A.num[v] === undefined) continue;
       const p = pts[v];
-      rotulo(ctx, c, p.x + 13, p.y - 12, String(A.num[v]), c.N, 'center', 800, E.hl === 'N' ? 15 : 13);
+      rotulo(ctx, c, p.x + 9, p.y - 9, String(A.num[v]), c.N, 'center', 800, E.hl === 'N' ? 14 : 12);
     }
-    if (A.etiquetas) for (const v of ordenN){ if (A.marcas[v]) continue; const p = pts[v]; rotulo(ctx, c, p.x - 12, p.y + 12, `P${v + 1}`, c.muted, 'center', 700, 10); }
+    if (A.etiquetas) for (const v of ordenN){ if (A.marcas[v]) continue; const p = pts[v]; rotulo(ctx, c, p.x - 11, p.y + 11, String(v + 1), c.muted, 'center', 700, 10); }
     for (const [v, t] of Object.entries(A.marcas)){ const p = pts[+v]; punto(ctx, p.x, p.y, 6, c.ink); rotulo(ctx, c, p.x - 14, p.y + 13, t, c.ink, 'center', 800, 14); }
     // la hormiga
-    if (punta){ punto(ctx, punta.x, punta.y, 7, c.r, c.paper, 2); }
+    if (punta){ punto(ctx, punta.x, punta.y, 7, c.d, c.paper, 2); }
     // las tres direcciones de avance, junto a la salida
     if (A.tripode && !A.plano){
       const O = P([0, 0, 0]), b = { x:38, y:Hh - 30 }, L = 30;
@@ -494,7 +497,7 @@ function crearEscena(cv, idDesc, idLect, idLey, idGiro){
         if (u <= Math.PI*r){ const al = Math.PI - u/r; return { x:cx - Rs + Rs*Math.cos(al), y:baseC - v*sc + Rs*e*Math.sin(al), frente:Math.sin(al) >= -1e-9 }; }
         const al = Math.PI - (u - Math.PI*r)/r; return { x:cx + Rs + Rs*Math.cos(al), y:baseC - v*sc + Rs*e*Math.sin(al), frente:Math.sin(al) >= -1e-9 };
       }
-      const th = u/r;
+      const th = u/r + (tipo === 'tarro' ? -1.15 : 0);   // el tarro se ve girado: la hormiga a la izquierda y la miel a la derecha
       if (tipo === 'tarro' && v > Hc){ const z = 2*Hc - v, R2 = Rs*.93; return { x:cx + R2*Math.sin(th), y:baseC - z*sc + R2*e*Math.cos(th), frente:false, dentro:true }; }
       return { x:cx + Rs*Math.sin(th), y:baseC - v*sc + Rs*e*Math.cos(th), frente:Math.cos(th) >= -1e-9 };
     }
@@ -515,8 +518,8 @@ function crearEscena(cv, idDesc, idLect, idLey, idGiro){
         if (f < .5) rotulo(ctx, c, xl - 4, baseC - Hc*sc/2, Q.ver.h, c.h, 'right', 800, 12); }
       if (tipo === 'tangentes'){ cil(cx - Rs); cil(cx + Rs); ctx.save(); ctx.setLineDash([3, 4]); ctx.strokeStyle = c.muted; ctx.beginPath(); ctx.moveTo(cx, baseC); ctx.lineTo(cx, baseC - Hc*sc); ctx.stroke(); ctx.restore(); }
       else cil(cx);
-      // contorno C: el borde de abajo, adelante
-      if (Q.ver.C){ ctx.strokeStyle = c.C; ctx.globalAlpha = (1 - f)*atenuar('C'); ctx.lineWidth = grosor('C', 3.5);
+      // perímetro de la base P: el borde de abajo, adelante
+      if (Q.ver.P){ ctx.strokeStyle = c.P; ctx.globalAlpha = (1 - f)*atenuar('P'); ctx.lineWidth = grosor('P', 3.5);
         const ox = tipo === 'tangentes' ? cx - Rs : cx; ctx.beginPath(); ctx.ellipse(ox, baseC, Rs, Rs*e, 0, 0, Math.PI); ctx.stroke(); }
       ctx.restore();
     }
@@ -546,14 +549,14 @@ function crearEscena(cv, idDesc, idLect, idLey, idGiro){
         const a0 = mix(0, V0);
         if (Q.ver.h){ const t = mix(0, Hc); ctx.save(); ctx.globalAlpha = atenuar('h'); ctx.strokeStyle = c.h; ctx.lineWidth = grosor('h', 3); ctx.beginPath(); ctx.moveTo(a0.x - 10, a0.y); ctx.lineTo(t.x - 10, t.y); ctx.stroke(); ctx.restore();
           rotulo(ctx, c, a0.x - 14, (a0.y + t.y)/2, Q.ver.h, c.h, 'right', 800, 12); }
-        if (Q.ver.C && tipo === 'helice') for (let j = 0; j < k; j++){ const p = mix(j*C, V0), q = mix((j + 1)*C, V0);
-          ctx.save(); ctx.globalAlpha = atenuar('C'); ctx.strokeStyle = c.C; ctx.lineWidth = grosor('C', 3); ctx.beginPath(); ctx.moveTo(p.x + 2, p.y + 9); ctx.lineTo(q.x - 2, q.y + 9); ctx.stroke(); ctx.restore();
-          rotulo(ctx, c, (p.x + q.x)/2, p.y + 20, Q.ver.C, c.C, 'center', 800, 12); }
-        if (tipo === 'tarro' && Q.ver.C){ const p = mix(0, V0), q = mix(U, V0); ctx.save(); ctx.strokeStyle = c.C; ctx.globalAlpha = atenuar('C'); ctx.lineWidth = grosor('C', 3); ctx.beginPath(); ctx.moveTo(p.x, p.y + 9); ctx.lineTo(q.x, q.y + 9); ctx.stroke(); ctx.restore();
-          rotulo(ctx, c, (p.x + q.x)/2, p.y + 20, Q.ver.C, c.C, 'center', 800, 12); }
-        if (tipo === 'tangentes' && Q.ver.C){ [[0, Math.PI*r], [Math.PI*r, 2*Math.PI*r]].forEach(([u0, u1]) => { const p = mix(u0, V0), q = mix(u1, V0);
-          ctx.save(); ctx.strokeStyle = c.C; ctx.globalAlpha = atenuar('C'); ctx.lineWidth = grosor('C', 3); ctx.beginPath(); ctx.moveTo(p.x + 2, p.y + 9); ctx.lineTo(q.x - 2, q.y + 9); ctx.stroke(); ctx.restore();
-          rotulo(ctx, c, (p.x + q.x)/2, p.y + 20, Q.ver.C, c.C, 'center', 800, 12); }); }
+        if (Q.ver.P && tipo === 'helice') for (let j = 0; j < k; j++){ const p = mix(j*C, V0), q = mix((j + 1)*C, V0);
+          ctx.save(); ctx.globalAlpha = atenuar('P'); ctx.strokeStyle = c.P; ctx.lineWidth = grosor('P', 3); ctx.beginPath(); ctx.moveTo(p.x + 2, p.y + 9); ctx.lineTo(q.x - 2, q.y + 9); ctx.stroke(); ctx.restore();
+          rotulo(ctx, c, (p.x + q.x)/2, p.y + 20, Q.ver.P, c.P, 'center', 800, 12); }
+        if (tipo === 'tarro' && Q.ver.P){ const p = mix(0, V0), q = mix(U, V0); ctx.save(); ctx.strokeStyle = c.P; ctx.globalAlpha = atenuar('P'); ctx.lineWidth = grosor('P', 3); ctx.beginPath(); ctx.moveTo(p.x, p.y + 9); ctx.lineTo(q.x, q.y + 9); ctx.stroke(); ctx.restore();
+          rotulo(ctx, c, (p.x + q.x)/2, p.y + 20, Q.ver.P, c.P, 'center', 800, 12); }
+        if (tipo === 'tangentes' && Q.ver.P){ [[0, Math.PI*r], [Math.PI*r, 2*Math.PI*r]].forEach(([u0, u1]) => { const p = mix(u0, V0), q = mix(u1, V0);
+          ctx.save(); ctx.strokeStyle = c.P; ctx.globalAlpha = atenuar('P'); ctx.lineWidth = grosor('P', 3); ctx.beginPath(); ctx.moveTo(p.x + 2, p.y + 9); ctx.lineTo(q.x - 2, q.y + 9); ctx.stroke(); ctx.restore();
+          rotulo(ctx, c, (p.x + q.x)/2, p.y + 20, Q.ver.P, c.P, 'center', 800, 12); }); }
       }
     }
     // alturas a y b del tarro (en el cilindro y en el desarrollo)
@@ -569,22 +572,22 @@ function crearEscena(cv, idDesc, idLect, idLey, idGiro){
     const ini = mix(...ruta(0)), fin = mix(...ruta(1));
     if (Q.ruta > 0){
       const n = 160, hasta = clamp(Q.ruta, 0, 1);
-      ctx.save(); ctx.strokeStyle = c.r; ctx.lineWidth = grosor('r', 4.5); ctx.lineCap = 'round';
+      ctx.save(); ctx.strokeStyle = c.d; ctx.lineWidth = grosor('d', 4.5); ctx.lineCap = 'round';
       let prev = ini;
       for (let q = 1; q <= n && (q - 1)/n < hasta; q++){
         const t = Math.min(q/n, hasta), p = mix(...ruta(t));
-        ctx.globalAlpha = (p.frente && !p.dentro ? .95 : .35)*atenuar('r');
+        ctx.globalAlpha = (p.frente && !p.dentro ? .95 : .35)*atenuar('d');
         ctx.setLineDash(p.frente && !p.dentro ? [] : [5, 5]);
         ctx.beginPath(); ctx.moveTo(prev.x, prev.y); ctx.lineTo(p.x, p.y); ctx.stroke(); prev = p;
       }
       ctx.restore();
-      if (hasta < 1) punto(ctx, prev.x, prev.y, 6.5, c.r, c.paper, 2);
+      if (hasta < 1) punto(ctx, prev.x, prev.y, 6.5, c.d, c.paper, 2);
     }
     punto(ctx, ini.x, ini.y, 6, c.ink); punto(ctx, fin.x, fin.y, 6, c.paper, c.ink, 2.5);
     const plano = f > .5, nomFin = tipo === 'tarro' ? 'miel' : 'llegada';
     if (plano){ rotulo(ctx, c, ini.x + 8, ini.y - 12, 'hormiga', c.ink, 'left', 800, 11); rotulo(ctx, c, fin.x - 8, fin.y + (tipo === 'tarro' ? 14 : -12), nomFin, c.ink, 'right', 800, 11); }
     else { rotulo(ctx, c, ini.x - 12, ini.y + 14, 'hormiga', c.ink, 'right', 800, 11); rotulo(ctx, c, fin.x + 10, fin.y - 13, nomFin, c.ink, 'left', 800, 11); }
-    if (Q.ver.r && Q.ruta >= 1 && f > .6){ const m = mix(...ruta(.5)); rotulo(ctx, c, m.x + 8, m.y - 14, Q.ver.r, c.r, 'left', 800, 12); }
+    if (Q.ver.d && Q.ruta >= 1 && f > .6){ const m = mix(...ruta(.5)); rotulo(ctx, c, m.x + 8, m.y - 14, Q.ver.d, c.d, 'left', 800, 12); }
   }
 
   E.dibujar = () => {
@@ -628,7 +631,7 @@ function crearEscena(cv, idDesc, idLect, idLey, idGiro){
   });
   cv.addEventListener('keydown', e => {
     if (!E.girar || E.modo !== 'alambre') return;
-    const m = { ArrowLeft:[-.2, 0], ArrowRight:[.2, 0], ArrowUp:[0, -.12], ArrowDown:[0, .12] }[e.key];
+    const m = { ArrowLeft:[-.2, 0], ArrowRight:[.2, 0], ArrowUp:[0, .12], ArrowDown:[0, -.12] }[e.key];
     if (m){ e.preventDefault(); girar(m[0], m[1]); }
   });
   if (giro) giro.querySelectorAll('[data-g]').forEach(b => b.addEventListener('click', () => {
@@ -668,7 +671,7 @@ function visor(cont, rutas, mostrar, rotular){
 const $ = id => document.getElementById(id);
 const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1', 'giro1');
 const S = { step:0, max:0, pred:{}, ocupado:false, est2:'ele', nivel2:0, sol4:'piramide', rep4:'punto', n6:3, tipo8:'helice', k8:2, abrir8:0, quit10:new Set() };
-const { x:x_, y:y_, z:z_, N:N_, r:r_, n:n_, h:h_, C:C_, a:a_, b:b_, i:i_, Q:Q_ } = W_;
+const { x:x_, y:y_, z:z_, N:N_, d:d_, k:k_, h:h_, P:P_, a:a_, b:b_, i:i_, Q:Q_ } = W_;
 const ROT = { yaw:-.62, pitch:.5 };
 
 // Números de la escena: todos salen del motor
@@ -683,6 +686,7 @@ const T5 = MR.porTramos({ cadenas:[[2, 2, 2], [2, 2, 2], [1]] });
 const MAR_HEX = { 0:'A', 1:'B', 2:'C', 3:'D', 4:'E', 5:'F', 6:'O' };
 const F6 = MR.franjaPrediccion({ n:6 }), SUC6 = MR.franjaSucesion({ hasta:6 });
 const P7 = MR.helice({ radio:2, altura:12, vueltas:2 });
+const T8 = MR.tangentes({ radio:3, altura:8 });
 const P9 = MR.maximoSinRepetir(EST.cuboArista3, { desde:0, hasta:7 });
 const M10 = MR.maximoSinRepetir(EST.torre, { desde:0, hasta:11 });
 const nomRuta = (R, mar) => R.nodos.map(v => nombreNodo(mar, v)).join(' → ');
@@ -691,7 +695,7 @@ const G1 = { id:'rutas-espacio-paso1', ok:'b', opts:[
   ['a', `${D1.errores.cajaCompleta}: los 5 pasos (2 ${x_('→')}, 2 ${y_('↗')} y 1 ${z_('↑')}) en cualquier orden, como en una caja`, 'RME140', 'hipotesis'],
   ['b', `${D1.total}: cada vértice suma las rutas de los vértices que llegan a él`],
   ['c', `${D1.errores.aMano}: las que encuentro dibujándolas una por una`, 'AR18', 'parcial'],
-  ['d', `${D1.errores.potencia}: en cada uno de los 5 pasos hay 3 direcciones`, 'tres-a-la-n', 'hipotesis']],
+  ['d', `${D1.errores.potencia}: en cada uno de los 5 pasos hay 3 direcciones`, 'RME189', 'hipotesis']],
   fb:{ b:`¡Bien! A cada vértice se llega desde los vértices de atrás que lo tocan con un alambre. Escribiendo en cada uno la suma de los que llegan a él, en el azúcar sale ${N_(String(D1.total))}.`,
     a:`Elegiste la A. Esa cuenta (5! ÷ (2! · 2! · 1!) = ${D1.errores.cajaCompleta}) vale para una caja de 2 × 2 × 1 completa. A la L le falta un cubito: las rutas que pasaban por sus alambres ya no existen. Numerando vértices salen ${D1.total}. La correcta está marcada.`,
     c:`Elegiste la C. Al dibujarlas a mano salen primero las que doblan poco y las demás se escapan. Con un orden (vértice por vértice, sumando) salen ${D1.total}. La correcta está marcada.`,
@@ -709,35 +713,44 @@ const G5 = { id:'rutas-espacio-paso5', ok:'c', opts:[
   ['a', `${T5.errores.sumarTodo}: 2 + 2 + 2 por arriba, 2 + 2 + 2 por abajo y 1 por el diámetro`, 'RME30', 'hipotesis'],
   ['b', `${H5.errores.unLado}: 2 · 2 · 2 por arriba y 2 · 2 · 2 por abajo`, 'AR18', 'parcial'],
   ['c', `${T5.total}: 2 · 2 · 2 por arriba, 2 · 2 · 2 por abajo y 1 por el diámetro`],
-  ['d', `${T5.errores.multiplicarTodo}: 2 · 2 · 2 por arriba, por 2 · 2 · 2 por abajo, por 1`, 'RME143', 'hipotesis']],
+  ['d', `${T5.errores.multiplicarTodo}: 2 · 2 · 2 por arriba, por 2 · 2 · 2 por abajo, por 1`, 'RME186', 'hipotesis']],
   fb:{ c:`¡Bien! Por arriba hay tres tramos seguidos (A–B, B–C, C–D) y en cada uno se elige recto o arco: se multiplica, 2 · 2 · 2 = 8. Por abajo, otras 8. Arriba, abajo o el diámetro son caminos distintos que no se juntan: se suman. 8 + 8 + 1 = ${N_(String(T5.total))}.`,
     a:`Elegiste la A. En una cadena de tramos, cada elección del primero se combina con cada una del segundo: 2 · 2 = 4, no 2 + 2. Por arriba hay 8, no 6. Total: ${T5.total}. La correcta está marcada.`,
     b:`Elegiste la B. Faltó el diámetro A–O–D: también es una ruta de A a D que no repite punto. 8 + 8 + 1 = ${T5.total}. La correcta está marcada.`,
     d:`Elegiste la D. Multiplicar es para tramos seguidos (y después). Ir por arriba o por abajo es elegir uno u otro camino: eso se suma. 8 + 8 + 1 = ${T5.total}. La correcta está marcada.` } };
 const G6 = { id:'rutas-espacio-paso6', ok:'c', opts:[
-  ['a', `${F6.errores.lineal}: crece de 2 en 2 (2, 4, 6, …)`, 'RME144', 'hipotesis'],
-  ['b', `${F6.errores.cuadrado}: 6 · 6, por los 6 cuadraditos`, 'franja-cuadrado', 'hipotesis'],
+  ['a', `${F6.errores.lineal}: crece de 2 en 2 (2, 4, 6, …)`, 'RME167', 'hipotesis'],
+  ['b', `${F6.unPalito}: las que suben por un solo palito vertical, uno por cada palito`, 'RME141', 'hipotesis'],
   ['c', `${F6.total}: cada cuadradito nuevo duplica las rutas (2, 4, 8, …)`],
-  ['d', `${F6.errores.porPuntos}: en cada uno de los 7 palitos verticales se elige cambiar de fila o no (2⁷)`, 'franja-por-puntos', 'hipotesis']],
-  fb:{ c:`¡Bien! El motor las contó una por una para 1, 2, 3, … 6 cuadraditos: ${SUC6.valores.join(', ')}. Cada cuadradito nuevo duplica las rutas: con ${n_('6')} hay 2⁶ = ${N_(String(F6.total))}.`,
+  ['d', `${F6.errores.porPuntos}: en cada uno de los 7 palitos verticales se elige cambiar de fila o no (2⁷)`, 'RME197', 'hipotesis']],
+  fb:{ c:`¡Bien! El motor las contó una por una para 1, 2, 3, … 6 cuadraditos: ${SUC6.valores.join(', ')}. Cada cuadradito nuevo duplica las rutas: con ${k_('6')} hay 2⁶ = ${N_(String(F6.total))}.`,
     a:`Elegiste la A. Con dos casos (2 y 4) no basta para ver la regla. Con 3 cuadraditos ya hay 8, no 6: las rutas se duplican. Con 6 hay ${F6.total}. La correcta está marcada.`,
-    b:`Elegiste la B. 6 · 6 = 36 no sale de ningún conteo. Prueba con 3 cuadraditos: hay 8 rutas, no 9. Cada cuadradito duplica: ${F6.total}. La correcta está marcada.`,
+    b:`Elegiste la B. Esas son solo las rutas más simples: van por una fila y cambian de fila una sola vez. También valen las que cambian 3, 5 o más veces (siempre un número impar). Con todas, ${F6.total}. La correcta está marcada.`,
     d:`Elegiste la D. Casi: la ruta sí elige en qué palitos verticales cambia de fila, pero tiene que cambiar un número impar de veces para terminar arriba. Eso deja la mitad de las 2⁷ elecciones: ${F6.total}. La correcta está marcada.` } };
 const G7 = { id:'rutas-espacio-paso7', ok:'b', opts:[
-  ['a', `${aprox(P7.exactos.unaVuelta, P7.errores.unaVuelta)} cm: la diagonal del desarrollo de una vuelta, de 4π por 12`, 'RME31', 'hipotesis'],
+  ['a', `${aprox(P7.exactos.unaVuelta, P7.errores.unaVuelta)} cm: la diagonal del desarrollo de una vuelta, de 4π por 12`, 'RME199', 'hipotesis'],
   ['b', `${aprox(P7.exacto, P7.L)} cm: la diagonal de dos desarrollos seguidos, de 8π por 12`],
   ['c', `${aprox(P7.exactos.porBorde, P7.errores.porBorde)} cm: subir los 12 cm y dar las dos vueltas por el borde`, 'RME31', 'hipotesis'],
   ['d', `${aprox(P7.exactos.cadaVuelta, P7.errores.cadaVuelta)} cm: dos veces la diagonal de una vuelta, de 4π por 12`, 'RME145', 'hipotesis']],
-  fb:{ b:`¡Bien! Al cortar el tarro por la recta que une los dos puntos y desarrollarlo dos veces seguidas, queda un rectángulo de ${C_('8π')} por ${h_('12')}. La ruta más corta es su diagonal: √(12² + (8π)²) = ${r_(P7.exacto)} ≈ ${fmt(P7.L, 1)} cm.`,
-    a:`Elegiste la A. Eso mide una sola vuelta. Con dos vueltas, la hormiga recorre dos contornos a lo ancho: el rectángulo es de 8π por 12 y su diagonal mide ${P7.exacto} ≈ ${fmt(P7.L, 1)} cm. La correcta está marcada.`,
+  fb:{ b:`¡Bien! Al cortar el tarro por la recta que une los dos puntos y desarrollarlo dos veces seguidas, queda un rectángulo de ${P_('8π')} por ${h_('12')}. La ruta más corta es su diagonal: √(12² + (8π)²) = ${d_(P7.exacto)} ≈ ${fmt(P7.L, 1)} cm.`,
+    a:`Elegiste la A. Eso mide una sola vuelta. Con dos vueltas, la hormiga recorre dos perímetros a lo ancho: el rectángulo es de 8π por 12 y su diagonal mide ${P7.exacto} ≈ ${fmt(P7.L, 1)} cm. La correcta está marcada.`,
     c:`Elegiste la C. Por el borde la hormiga dobla en una esquina. Si sube mientras gira, va en línea recta sobre el desarrollo: ${P7.exacto} ≈ ${fmt(P7.L, 1)} cm. La correcta está marcada.`,
     d:`Elegiste la D. En cada vuelta la hormiga sube solo la mitad, 6 cm, no los 12. Dos diagonales de 4π por 6 juntas son la diagonal de 8π por 12: ${P7.exacto} ≈ ${fmt(P7.L, 1)} cm. La correcta está marcada.` } };
-const G9 = { id:'rutas-espacio-paso9', ok:'b', unidad:U_TRAZOS, opts:[
-  ['a', `${P9.errores.todas} cm: las 12 aristas, si empieza bien`, 'max-todas', 'hipotesis'],
+const G8 = { id:'rutas-espacio-paso8', ok:'b', opts:[
+  ['a', `${aprox(T8.exactos.porBorde, T8.errores.porBorde)} cm: subir los 8 cm y rodear las dos latas por el borde`, 'RME31', 'hipotesis'],
+  ['b', `${aprox(T8.exacto, T8.L)} cm: la diagonal de media lata más media lata, de 6π por 8`],
+  ['c', `${aprox(T8.exactos.unCilindro, T8.errores.unCilindro)} cm: la diagonal de media vuelta de una lata, de 3π por 8`, 'RME147', 'hipotesis'],
+  ['d', `${aprox(T8.porElAireExacto, T8.porElAire)} cm: la recta entre los dos puntos, de 12 por 8`, 'RME201-por-el-aire', 'hipotesis']],
+  fb:{ b:`¡Bien! La hormiga solo pasa de una lata a la otra por la recta en que se tocan. Media lata de cada una forma un rectángulo de ${P_('3π')} + ${P_('3π')} = 6π por ${h_('8')}: la ruta es su diagonal, ${d_(T8.exacto)} ≈ ${fmt(T8.L, 1)} cm.`,
+    a:`Elegiste la A. Por el borde la hormiga dobla dos veces. Si sube mientras rodea, va en línea recta sobre el desarrollo: ${T8.exacto} ≈ ${fmt(T8.L, 1)} cm. La correcta está marcada.`,
+    c:`Elegiste la C. Esa es solo la primera lata: después falta otra media vuelta en la segunda. Las dos medias latas juntas dan 6π de ancho: ${T8.exacto} ≈ ${fmt(T8.L, 1)} cm. La correcta está marcada.`,
+    d:`Elegiste la D. Esa recta va por el aire, entre las latas; la hormiga camina por la superficie. Desarrollando, ${T8.exacto} ≈ ${fmt(T8.L, 1)} cm. La correcta está marcada.` } };
+const G9 = { id:'rutas-espacio-paso10', ok:'b', unidad:U_TRAZOS, opts:[
+  ['a', `${P9.errores.todas} cm: las 12 aristas, si empieza bien`, 'RME143', 'hipotesis'],
   ['b', `${P9.maximo} cm: se quedan sin usar 3 aristas que no se tocan`],
   ['c', `${P9.errores.unaPorImpar} cm: se deja una arista por cada esquina impar, menos A y B`, 'RME148', 'hipotesis'],
   ['d', `${P9.errores.sumar} cm: hay que repetir 3 aristas, 36 + 9`, 'RME149', 'hipotesis']],
-  fb:{ b:`¡Bien! Las 8 esquinas tienen 3 aristas: son impares. Para un recorrido de un tirón solo pueden ser impares A y B. Las otras ${i_('6')} se arreglan dejando sin usar ${Q_('3 aristas')} que no se tocan: cada una arregla dos esquinas a la vez. 36 − 9 = ${r_(P9.maximo + ' cm')}.`,
+  fb:{ b:`¡Bien! Las 8 esquinas tienen 3 aristas: son impares. Para un recorrido de un tirón solo pueden ser impares A y B. Las otras ${i_('6')} se arreglan dejando sin usar ${Q_('3 aristas')} que no se tocan: cada una arregla dos esquinas a la vez. 36 − 9 = ${d_(P9.maximo + ' cm')}.`,
     a:`Elegiste la A. Para pasar por todas sin repetir, solo podrían ser impares la salida y la llegada, y aquí son impares las 8 esquinas. Lo más largo deja 3 aristas sin usar: ${P9.maximo} cm. La correcta está marcada.`,
     c:`Elegiste la C. Una arista que no se usa le quita una a cada uno de sus dos extremos: arregla dos esquinas impares a la vez. Bastan 3 aristas, no 6: ${P9.maximo} cm. La correcta está marcada.`,
     d:`Elegiste la D. Repetir aristas es para el recorrido más corto que pasa por todo. Aquí no se puede repetir: hay que dejar algunas sin usar. ${P9.maximo} cm. La correcta está marcada.` } };
@@ -746,16 +759,16 @@ const G9 = { id:'rutas-espacio-paso9', ok:'b', unidad:U_TRAZOS, opts:[
 const leyDir = [['x', 'x · a la derecha'], ['y', 'y · al fondo'], ['z', 'z · hacia arriba']];
 function numHasta(D, nivel){ const ok = new Set(D.niveles.slice(0, nivel + 1).flat()); return D.tabla.map((v, k) => ok.has(k) ? v : null); }
 function ele1(ya){
-  return { modo:'alambre', girar:true, rot:ROT, al:{ est:EST.ele, marcas:{ 0:'A', 15:'B' }, tripode:true, num: ya ? D1.tabla : null, ruta: ya ? Object.assign({ prog:1 }, D1.rutas[0]) : null },
+  return { modo:'alambre', girar:true, rot:ROT, al:{ est:EST.ele, marcas:{ 0:'A', 15:'B' }, tripode:true, tinte:true, num: ya ? D1.tabla : null, ruta: ya ? Object.assign({ prog:1 }, D1.rutas[0]) : null },
     lect:[L('x', 'A la derecha x', '2 pasos'), L('y', 'Al fondo y', '2 pasos'), L('z', 'Hacia arriba z', '1 paso'), L('N', 'Rutas N', ya ? String(D1.total) : '?')],
-    ley:leyDir.concat(ya ? [['N', 'N · rutas que llegan al vértice'], ['r', 'r · una ruta']] : []),
+    ley:leyDir.concat(ya ? [['N', 'N · rutas que llegan al vértice'], ['d', 'd · una ruta']] : []),
     desc:'Tres cubitos de alambre en forma de L sobre la mesa: dos en fila a lo largo y uno pegado al fondo del segundo. La hormiga está en A, en la esquina de abajo, adelante a la izquierda; el azúcar en B, la esquina de arriba más alejada. Solo avanza a la derecha, al fondo o hacia arriba.' };
 }
 function numerar2(){
   const X = ESTS2[S.est2], D = MR.dirigidas(X.e, { desde:0, hasta:X.h });
-  E.config({ modo:'alambre', girar:true, rot:E.rot, al:{ est:X.e, marcas:{ 0:'A', [X.h]:'B' }, tripode:true, num:numHasta(D, S.nivel2), ruta:S.ruta2 ? Object.assign({ prog:1 }, S.ruta2) : null },
+  E.config({ modo:'alambre', girar:true, rot:E.rot, al:{ est:X.e, marcas:{ 0:'A', [X.h]:'B' }, tripode:true, tinte:true, num:numHasta(D, S.nivel2), ruta:S.ruta2 ? Object.assign({ prog:1 }, S.ruta2) : null },
     lect:[E0 => ['N', 'Niveles llenos', `${Math.min(S.nivel2 + 1, D.niveles.length)} de ${D.niveles.length}`], L('N', 'Rutas a B', S.nivel2 >= D.niveles.length - 1 ? String(D.total) : '?')],
-    ley:leyDir.concat([['N', 'N · rutas que llegan al vértice'], ['r', 'r · la ruta que se ve']]), alCambiar:vivo2,
+    ley:leyDir.concat([['N', 'N · rutas que llegan al vértice'], ['d', 'd · la ruta que se ve']]), alCambiar:vivo2,
     desc:`${X.nom}: una estructura de cubitos de alambre. La hormiga va de A a B y solo avanza a la derecha, al fondo o hacia arriba.` });
   return D;
 }
@@ -769,13 +782,13 @@ function vivo2(){
     (S.nivel2 >= D.niveles.length - 1 ? `<div class="eq">en B: ${Object.entries(D.casos).map(([k, v]) => `${v} que empiezan ${W_[k]({ x:'→', y:'↗', z:'↑' }[k])}`).join(' + ')} = ${N_(String(D.total))}<span class="note">${caja}</span></div>` : '');
 }
 const piramide3 = ya => ({ modo:'alambre', girar:true, rot:{ yaw:-.5, pitch:.42 }, al:{ est:EST.piramide, marcas:MAR_PIR, ruta: ya ? Object.assign({ prog:1 }, P3.rutas[P3.total - 1]) : null },
-  lect:[L('N', 'Rutas de A a C', ya ? String(P3.total) : '?')], ley: ya ? [['r', 'r · una ruta']] : [],
+  lect:[L('N', 'Rutas de A a C', ya ? String(P3.total) : '?')], ley: ya ? [['d', 'd · una ruta']] : [],
   desc:'Una pirámide de hilos: la base es el cuadrado ABCD y la punta es V, unida a las cuatro esquinas. La araña va de A a C, la esquina opuesta de la base.' });
 function casos4(){
   const pir = S.sol4 === 'piramide', est = pir ? EST.piramide : EST.tronco, mar = pir ? MAR_PIR : MAR_TRO;
   const R = MR.rutasSinRepetir(est, { desde:0, hasta: pir ? 2 : 6, repetir:S.rep4 });
   E.config({ modo:'alambre', girar:true, rot:E.rot, al:{ est, marcas:mar, etiquetas:!pir, ruta:S.ruta4 ? Object.assign({ prog:1 }, S.ruta4) : null },
-    lect:[L('N', 'Rutas', String(R.total)), L('ink', S.rep4 === 'punto' ? 'Sin repetir' : 'Sin repetir', S.rep4 === 'punto' ? 'puntos' : 'tramos')], ley:[['r', 'r · la ruta que se ve']], alCambiar:vivo4,
+    lect:[L('N', 'Rutas', String(R.total)), L('ink', S.rep4 === 'punto' ? 'Sin repetir' : 'Sin repetir', S.rep4 === 'punto' ? 'puntos' : 'tramos')], ley:[['d', 'd · la ruta que se ve']], alCambiar:vivo4,
     desc: pir ? 'La pirámide de hilos: base ABCD y punta V. De A a C.' : 'Un tronco de pirámide de alambre: un cuadrado abajo, otro más chico arriba y cuatro aristas que los unen. De A, abajo, a B, la esquina opuesta de arriba.' });
   return R;
 }
@@ -786,55 +799,59 @@ function vivo4(){
   d.innerHTML = `<table class="tabla"><tr><th>alambres</th>${ks.map(k => `<td>${k}</td>`).join('')}<th>total</th></tr><tr><th>rutas</th>${ks.map(k => `<td>${R.porPasos[k]}</td>`).join('')}<td>${N_(String(R.total))}</td></tr></table>`;
 }
 const hex5 = ya => ({ modo:'alambre', al:{ est:EST.hexagono, plano:true, marcas:MAR_HEX, ruta: ya ? Object.assign({ prog:1 }, H5.rutas[H5.total - 1]) : null },
-  lect:[L('N', 'Rutas de A a D', ya ? String(H5.total) : '?')], ley: ya ? [['r', 'r · una ruta']] : [],
+  lect:[L('N', 'Rutas de A a D', ya ? String(H5.total) : '?')], ley: ya ? [['d', 'd · una ruta']] : [],
   desc:'Un adorno de alambre: una circunferencia, el hexágono regular ABCDEF inscrito en ella y el diámetro de A a D, que pasa por el centro O. Entre cada dos vértices vecinos hay un lado recto y un arco.' });
 function franja6(n, ya, ruta){
   const f = MR.franja({ n });
   return { modo:'alambre', al:{ est:f, plano:true, bajo:true, marcas:{ 0:'A', [2*n + 1]:'B' }, ruta: ruta ? Object.assign({ prog:1 }, ruta) : null },
-    lect:[L('n', 'Cuadraditos n', String(n)), L('N', 'Rutas de A a B', ya ? String(SUC6.valores[n - 1]) : '?')], ley: ruta ? [['r', 'r · una ruta']] : [],
+    lect:[L('k', 'Cuadraditos k', String(n)), L('N', 'Rutas de A a B', ya ? String(SUC6.valores[n - 1]) : '?')], ley: ruta ? [['d', 'd · una ruta']] : [],
     desc:`Una reja de ${n} cuadraditos en fila. Se va de A, abajo a la izquierda, a B, arriba a la derecha, por las líneas, sin pasar dos veces por un punto.` };
 }
-const verC = { h:'12 cm', C:'4π cm' };
-const cil7 = ya => ({ modo:'cilindro', cil:{ tipo:'helice', radio:2, altura:12, vueltas:2, abrir: ya ? 1 : 0, ruta: ya ? 1 : 0, ver:Object.assign({ r: ya ? `${P7.exacto} cm` : null }, verC) },
-  lect:[L('h', 'Altura h', '12 cm'), L('C', 'Contorno C', '4π cm'), L('ink', 'Vueltas', '2'), L('r', 'Ruta r', ya ? `${P7.exacto} ≈ ${fmt(P7.L, 1)} cm` : '?')],
-  ley:[['h', 'h · altura'], ['C', 'C · contorno (una vuelta)']].concat(ya ? [['r', 'r · la ruta']] : []),
+const verC = { h:'12 cm', P:'4π cm' };
+const cil7 = ya => ({ modo:'cilindro', cil:{ tipo:'helice', radio:2, altura:12, vueltas:2, abrir: ya ? 1 : 0, ruta: ya ? 1 : 0, ver:Object.assign({ d: ya ? `${P7.exacto} cm` : null }, verC) },
+  lect:[L('h', 'Altura h', '12 cm'), L('P', 'Perímetro P', '4π cm'), L('ink', 'Vueltas', '2'), L('d', 'Ruta d', ya ? `${P7.exacto} ≈ ${fmt(P7.L, 1)} cm` : '?')],
+  ley:[['h', 'h · altura'], ['P', 'P · perímetro de la base (una vuelta)']].concat(ya ? [['d', 'd · la ruta']] : []),
   desc:'Un tarro de 2 cm de radio y 12 cm de alto. La hormiga sale del borde de abajo y llega al punto del borde de arriba que está justo encima, dando dos vueltas.' });
 function cil8(){
   const t = S.tipo8;
   let o, R;
-  if (t === 'helice'){ R = MR.helice({ radio:2, altura:12, vueltas:S.k8 }); o = { tipo:'helice', radio:2, altura:12, vueltas:S.k8, ver:{ h:'12', C:'4π', r:R.exacto } }; }
-  else if (t === 'tarro'){ R = MR.tarro({ contorno:30, afuera:4, adentro:4 }); o = { tipo:'tarro', contorno:30, alto:7, afuera:4, adentro:4, ver:{ a:'4', b:'4', C:'C/2 = 15', r:R.exacto } }; }
-  else { R = MR.tangentes({ radio:3, altura:8 }); o = { tipo:'tangentes', radio:3, altura:8, ver:{ h:'8', C:'C/2 = 3π', r:R.exacto } }; }
+  if (t === 'helice'){ R = MR.helice({ radio:2, altura:12, vueltas:S.k8 }); o = { tipo:'helice', radio:2, altura:12, vueltas:S.k8, ver:{ h:'12', P:'4π', d:R.exacto } }; }
+  else if (t === 'tarro'){ R = MR.tarro({ contorno:30, afuera:4, adentro:4 }); o = { tipo:'tarro', contorno:30, alto:7, afuera:4, adentro:4, ver:{ a:'4', b:'4', P:'P/2 = 15', d:R.exacto } }; }
+  else { R = MR.tangentes({ radio:3, altura:8 }); o = { tipo:'tangentes', radio:3, altura:8, ver:{ h:'8', P:'P/2 = 3π', d:R.exacto } }; }
   Object.assign(o, { abrir:S.abrir8, ruta:1 });
-  const lect = t === 'helice' ? [L('h', 'Altura h', '12 cm'), L('C', 'Contorno C', '4π cm'), L('ink', 'Vueltas', String(S.k8)), L('r', 'Ruta r', `${aprox(R.exacto, R.L)} cm`)]
-    : t === 'tarro' ? [L('C', 'Contorno C', '30 cm'), L('a', 'Afuera a', '4 cm bajo el borde'), L('b', 'Adentro b', '4 cm bajo el borde'), L('r', 'Ruta r', `${aprox(R.exacto, R.L)} cm`)]
-    : [L('h', 'Altura h', '8 cm'), L('ink', 'Radio', '3 cm'), L('C', 'Contorno C', '6π cm'), L('r', 'Ruta r', `${aprox(R.exacto, R.L)} cm`)];
-  const ley = t === 'tarro' ? [['a', 'a · afuera'], ['b', 'b · adentro'], ['C', 'C/2 · media vuelta'], ['r', 'r · la ruta']] : [['h', 'h · altura'], ['C', t === 'helice' ? 'C · una vuelta' : 'C/2 · media vuelta de cada lata'], ['r', 'r · la ruta']];
+  const lect = t === 'helice' ? [L('h', 'Altura h', '12 cm'), L('P', 'Perímetro P', '4π cm'), L('ink', 'Vueltas', String(S.k8)), L('d', 'Ruta d', `${aprox(R.exacto, R.L)} cm`)]
+    : t === 'tarro' ? [L('P', 'Perímetro P', '30 cm'), L('a', 'Afuera a', '4 cm bajo el borde'), L('b', 'Adentro b', '4 cm bajo el borde'), L('d', 'Ruta d', `${aprox(R.exacto, R.L)} cm`)]
+    : [L('h', 'Altura h', '8 cm'), L('ink', 'Radio', '3 cm'), L('P', 'Perímetro P', '6π cm'), L('d', 'Ruta d', `${aprox(R.exacto, R.L)} cm`)];
+  const ley = t === 'tarro' ? [['a', 'a · afuera'], ['b', 'b · adentro'], ['P', 'P/2 · media vuelta'], ['d', 'd · la ruta']] : [['h', 'h · altura'], ['P', t === 'helice' ? 'P · una vuelta' : 'P/2 · media vuelta de cada lata'], ['d', 'd · la ruta']];
   E.config({ modo:'cilindro', cil:o, lect, ley, alCambiar:vivo8,
-    desc: t === 'helice' ? `El tarro de 2 cm de radio y 12 cm de alto; la hormiga da ${S.k8} vueltas.` : t === 'tarro' ? 'Un tarro sin tapa de 30 cm de contorno: la hormiga por fuera, 4 cm bajo el borde; la miel por dentro, 4 cm bajo el borde, del otro lado.' : 'Dos latas de 3 cm de radio y 8 cm de alto que se tocan a lo largo de una recta. La hormiga va del lado opuesto de una al lado opuesto de la otra.' });
+    desc: t === 'helice' ? `El tarro de 2 cm de radio y 12 cm de alto; la hormiga da ${S.k8} vueltas.` : t === 'tarro' ? 'Un tarro sin tapa; el perímetro de su base mide 30 cm: la hormiga por fuera, 4 cm bajo el borde; la miel por dentro, 4 cm bajo el borde, del otro lado.' : 'Dos latas de 3 cm de radio y 8 cm de alto que se tocan a lo largo de una recta. La hormiga va del lado opuesto de una al lado opuesto de la otra.' });
 }
 function vivo8(){
   const d = $('vivo8'); if (!d) return;
   const t = S.tipo8;
   if (t === 'helice'){ const R = MR.helice({ radio:2, altura:12, vueltas:S.k8 });
-    d.innerHTML = `<div class="eq">ancho = ${S.k8} · ${C_('4π')} = ${R.anchoTexto}; alto = ${h_('12')}</div><div class="eq">${r_('r')} = √(12² + (${R.anchoTexto})²) = ${r_(aprox(R.exacto, R.L) + ' cm')}</div>`; }
+    d.innerHTML = `<div class="eq">ancho = ${S.k8} · ${P_('4π')} = ${R.anchoTexto}; alto = ${h_('12')}</div><div class="eq">${d_('d')} = √(12² + (${R.anchoTexto})²) = ${d_(aprox(R.exacto, R.L) + ' cm')}</div>`; }
   else if (t === 'tarro'){ const R = MR.tarro({ contorno:30, afuera:4, adentro:4 });
-    d.innerHTML = `<div class="eq">ancho = ${C_('C')}/2 = ${R.anchoTexto}; alto = ${a_('4')} + ${b_('4')} = ${R.alto}</div><div class="eq">${r_('r')} = √(15² + 8²) = ${r_(R.exacto + ' cm')}<span class="note">por el borde: ${R.errores.porBorde} cm</span></div>`; }
+    d.innerHTML = `<div class="eq">ancho = ${P_('P')}/2 = ${R.anchoTexto}; alto = ${a_('4')} + ${b_('4')} = ${R.alto}</div><div class="eq">${d_('d')} = √(15² + 8²) = ${d_(R.exacto + ' cm')}<span class="note">por el borde: ${R.errores.porBorde} cm</span></div>`; }
   else { const R = MR.tangentes({ radio:3, altura:8 });
-    d.innerHTML = `<div class="eq">ancho = ${C_('C')}/2 + ${C_('C')}/2 = 3π + 3π = ${R.anchoTexto}; alto = ${h_('8')}</div><div class="eq">${r_('r')} = √(8² + (6π)²) = ${r_(aprox(R.exacto, R.L) + ' cm')}</div>`; }
+    d.innerHTML = `<div class="eq">ancho = ${P_('P')}/2 + ${P_('P')}/2 = 3π + 3π = ${R.anchoTexto}; alto = ${h_('8')}</div><div class="eq">${d_('d')} = √(8² + (6π)²) = ${d_(aprox(R.exacto, R.L) + ' cm')}</div>`; }
 }
+const latas8 = ya => ({ modo:'cilindro', cil:{ tipo:'tangentes', radio:3, altura:8, abrir: ya ? 1 : 0, ruta: ya ? 1 : 0, ver:{ h:'8 cm', P: ya ? 'P/2 = 3π' : null, d: ya ? T8.exacto : null } },
+  lect:[L('h', 'Altura h', '8 cm'), L('ink', 'Radio', '3 cm'), L('P', 'Perímetro P', '6π cm'), L('d', 'Ruta d', ya ? `${T8.exacto} ≈ ${fmt(T8.L, 1)} cm` : '?')],
+  ley:[['h', 'h · altura']].concat(ya ? [['P', 'P/2 · media vuelta de cada lata'], ['d', 'd · la ruta']] : []),
+  desc:'Dos latas de 3 cm de radio y 8 cm de alto, paradas, que se tocan a lo largo de una recta. La hormiga sale del borde de abajo de una, del lado opuesto al contacto, y llega al borde de arriba de la otra, también del lado opuesto.' });
 const MAR9 = { 0:'A', 7:'B' };
 const cubo9 = (ya, fase) => ({ modo:'alambre', girar:true, rot:ROT, al:{ est:EST.cuboArista3, marcas:MAR9, impares: ya ? P9.impares.filter(v => v !== 0 && v !== 7) : [],
   quitados: ya && fase !== 'impares' ? new Set(P9.sobran) : new Set(), ruta: ya && !fase ? Object.assign({ prog:1 }, P9.ruta) : null },
-  lect:[L('ink', 'Arista', '3 cm'), L('ink', 'Alambre total', `${P9.total} cm`), L('r', 'El más largo r', ya ? `${P9.maximo} cm` : '?')].concat(ya ? [L('Q', 'Sin usar Q', `${P9.quitado} cm`)] : []),
-  ley: ya ? [['i', 'i · esquina impar (no es A ni B)', 'pt'], ['Q', 'Q · arista sin usar', 'dash'], ['r', 'r · el recorrido']] : [],
+  lect:[L('ink', 'Arista', '3 cm'), L('ink', 'Alambre total', `${P9.total} cm`), L('d', 'El más largo d', ya ? `${P9.maximo} cm` : '?')].concat(ya ? [L('Q', 'Sin usar Q', `${P9.quitado} cm`)] : []),
+  ley: ya ? [['i', 'i · esquina impar (no es A ni B)', 'pt'], ['Q', 'Q · arista sin usar', 'dash'], ['d', 'd · el recorrido']] : [],
   desc:'Un cubo de alambre de 3 cm de arista. La hormiga va de A, una esquina de abajo, a B, la esquina de arriba más alejada.' });
 function quitar10(){
   const R = MR.revisarQuitar(EST.torre, { desde:0, hasta:11, quitados:[...S.quit10] });
   E.config({ modo:'alambre', girar:true, rot:E.rot, alTocarTramo:tocar10, al:{ est:EST.torre, marcas:{ 0:'A', 11:'B' }, etiquetas:true, tocable:true, quitados:S.quit10,
     impares:R.impares.filter(v => v !== 0 && v !== 11), ruta:S.ruta10 ? Object.assign({ prog:1 }, S.ruta10) : null },
-    lect:[L('ink', 'Alambres que quedan', `${R.quedan} de 20`), L('i', 'Impares de más i', String(R.impares.filter(v => v !== 0 && v !== 11).length)), L('r', 'De un tirón', R.sePuede ? `sí: ${R.longitud} m` : 'no')],
-    ley:[['i', 'i · impar que sobra', 'pt'], ['Q', 'Q · alambre quitado', 'dash'], ['r', 'r · el recorrido']], alCambiar:vivo10,
+    lect:[L('ink', 'Alambres que quedan', `${R.quedan} de 20`), L('i', 'Impares de más i', String(R.impares.filter(v => v !== 0 && v !== 11).length)), L('d', 'De un tirón', R.sePuede ? `sí: ${R.longitud} m` : 'no')],
+    ley:[['i', 'i · impar que sobra', 'pt'], ['Q', 'Q · alambre quitado', 'dash'], ['d', 'd · el recorrido']], alCambiar:vivo10,
     desc:'Dos cubitos de alambre de 1 m de arista, uno encima del otro: 20 alambres. Toca un alambre para quitarlo o ponerlo.' });
 }
 function tocar10(k){ S.ruta10 = null; if (S.quit10.has(k)) S.quit10.delete(k); else S.quit10.add(k); quitar10(); const s = $('sel10'); if (s) s.value = String(k); }
@@ -846,7 +863,7 @@ function vivo10(){
   let t;
   if (R.sePuede) t = `Lo que queda (${R.longitud} m) se recorre de un tirón de A a B.${R.longitud === M10.maximo ? ' ¡Es lo más largo posible!' : ` Se puede más: el máximo es ${M10.maximo} m.`}`;
   else if (!R.conexa) t = 'Lo que queda se partió en pedazos: no se recorre de un tirón.';
-  else t = `Todavía no: ${extra.length ? `sobran impares (${extra.map(v => 'P' + (v + 1)).join(', ')})` : ''}${extra.length && falta.length ? ' y ' : ''}${falta.length ? `${falta.map(v => v === 0 ? 'A' : 'B').join(' y ')} ya no ${falta.length > 1 ? 'son impares' : 'es impar'}` : ''}.`;
+  else t = `Todavía no: ${extra.length ? `sobran impares (${extra.map(v => nombreNodo(null, v)).join(', ')})` : ''}${extra.length && falta.length ? ' y ' : ''}${falta.length ? `${falta.map(v => v === 0 ? 'A' : 'B').join(' y ')} ya no ${falta.length > 1 ? 'son impares' : 'es impar'}` : ''}.`;
   d.innerHTML = `<p class="msg ${R.sePuede ? 'ok' : 'mal'}">${t}</p>`;
   if (R.sePuede && R.longitud === M10.maximo){ S.resuelto10 = true; const x = $('expl10'); if (x) x.hidden = false; }
 }
@@ -860,8 +877,10 @@ const steps = [
    body:() => `<p class="problem">Tres cubitos de alambre forman una L sobre la mesa. Una hormiga está en la esquina ${'A'} y quiere llegar al azúcar, en ${'B'}, caminando por los alambres. Solo avanza: ${x_('a la derecha')}, ${y_('al fondo')} o ${z_('hacia arriba')}, nunca de regreso.</p>
    <p>¿Cuántas rutas distintas puede seguir? Gira la estructura para verla bien.</p>${opcionesHTML(G1.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
-     <div class="eq">${N_('N')}(vértice) = suma de ${N_('N')} de los vértices que llegan a él</div>
-     <div class="eq">${N_('N')}(B) = 12 + 8 + 5 = ${N_(String(D1.total))}<span class="note">las tres esquinas que llegan a B</span></div></div>
+     <div class="eq">${N_('N')}(vértice) = suma de los ${N_('N')}</div>
+     <div class="eq"><span class="note">de los vértices que llegan a él</span></div>
+     <div class="eq">${N_('N')}(B) = 12 + 8 + 5</div>
+     <div class="eq">= ${N_(String(D1.total))}<span class="note">las tres esquinas que llegan a B</span></div></div>
    <p>A la salida le ponemos 1. Después, nivel por nivel (los vértices a 1 paso, a 2 pasos…), cada vértice recibe la suma de los vértices de atrás que lo tocan con un alambre. Así no se olvida ni se repite ninguna ruta.</p>
    <p class="fuente">Usar la fórmula de la caja completa cuando faltan cubitos y contar 3 opciones en cada paso son hipótesis nuestras. Dibujar las rutas una por una, sin un orden, y olvidar algunas es la enumeración sin sistema (AR18 del informe de aritmética y razonamiento): un estudio con 720 alumnos españoles de 14 y 15 años (Navarro-Pelayo, Batanero y Godino, 1996) encontró que fue el error más frecuente entre los que no habían estudiado combinatoria; la cifra está por confirmar y no se midió con rutas, por eso aquí es respaldo parcial.</p></div>` },
  { k:'Paso 2', t:'Numera los vértices', explora:'numerar',
@@ -871,7 +890,8 @@ const steps = [
    <div class="fila"><button type="button" class="btn chico" id="nivel2">Siguiente nivel</button><button type="button" class="btn chico" id="todo2">Llenar todo</button><button type="button" class="btn chico" id="borrar2">Borrar</button></div>
    <div class="eqs" id="vivo2"></div>
    <div id="visor2"></div>
-   <p>En la torre (dos cubitos, uno encima del otro) y en los dos en fila la estructura es una caja completa, y la cuenta coincide con ordenar los pasos: ${fr('4!', '1! · 1! · 2!')} = 12. En la L y en el escalón falta un cubito: ahí solo sirve numerar.</p>` },
+   <p>En la torre (dos cubitos, uno encima del otro) y en los dos en fila la estructura es una caja completa, y la cuenta coincide con ordenar los pasos: ${fr('4!', '1! · 1! · 2!')} = 12. En la L falta un cubito de la caja que va de A a B: ahí la fórmula de la caja se pasa (30 en vez de 25) y hay que numerar.</p>
+   <p class="aviso">En el escalón, la ruta de A a B queda dentro de la columna de dos cubitos, que está completa: por eso da lo mismo que la caja. El cubito de más no estorba.</p>` },
  { k:'Paso 3', t:'Predice: la araña en la pirámide', gate:G3,
    prep:() => E.config(piramide3(!!S.pred[G3.id])),
    anima:fin => { const o = piramide3(true); o.al.ruta = null; E.config(o); const A = E.al; let k = 0;
@@ -887,7 +907,7 @@ const steps = [
    <p class="fuente">Contar solo las más cortas y duplicar también las rutas del medio son hipótesis nuestras. Olvidar las que no tienen pareja al usar la simetría es una forma de enumerar sin sistema (AR18, respaldo parcial: ver el paso 1).</p></div>` },
  { k:'Paso 4', t:'Rutas por casos', explora:'casos',
    prep:() => { S.ruta4 = null; casos4(); },
-   body:() => `<p class="problem">Recorre las rutas una por una, ordenadas por cuántos alambres usan. Cambia de sólido y prueba qué pasa si se puede repetir un punto (pero no un alambre); la hormiga se queda en la llegada apenas llega.</p>
+   body:() => `<p class="problem">Recorre las rutas una por una, ordenadas por cuántos alambres usan. Cambia de sólido. En la pirámide, prueba también qué pasa si se puede repetir un punto (pero no un alambre); la hormiga se queda en la llegada apenas llega.</p>
    <div class="seg" id="sol4" role="group" aria-label="Sólido">${[['piramide', 'Pirámide'], ['tronco', 'Tronco de pirámide']].map(([k, t]) => `<button type="button" data-k="${k}" aria-pressed="${k === S.sol4}">${t}</button>`).join('')}</div>
    <div class="seg" id="rep4" role="group" aria-label="Qué no se repite">${[['punto', 'Sin repetir punto'], ['tramo', 'Sin repetir alambre']].map(([k, t]) => `<button type="button" data-k="${k}" aria-pressed="${k === S.rep4}">${t}</button>`).join('')}</div>
    <div class="eqs" id="vivo4"></div>
@@ -915,35 +935,47 @@ const steps = [
          E.animar(0, 1, nn === 1 ? 700 : 420, v => { Rr.prog = v; }, () => setTimeout(() => { if (E.al === A) una(); }, RM ? 0 : 90), true); };
        una(); };
      sig(); },
-   body:() => `<p class="problem">Una reja tiene ${n_('6')} cuadraditos en fila. Se va de A, la esquina de abajo a la izquierda, a B, la de arriba a la derecha, por las líneas de la reja, en cualquier dirección, sin pasar dos veces por el mismo punto. Con 1 cuadradito hay 2 rutas; con 2 cuadraditos, 4.</p>
-   <p>¿Cuántas rutas hay con ${n_('6')} cuadraditos?</p>${opcionesHTML(G6.opts, 'fb')}
+   body:() => `<p class="problem">Una reja tiene ${k_('6')} cuadraditos en fila. Se va de A, la esquina de abajo a la izquierda, a B, la de arriba a la derecha, por las líneas de la reja, en cualquier dirección, sin pasar dos veces por el mismo punto. Con 1 cuadradito hay 2 rutas; con 2 cuadraditos, 4.</p>
+   <p>¿Cuántas rutas hay con ${k_('6')} cuadraditos?</p>${opcionesHTML(G6.opts, 'fb')}
    <div id="tras" class="body" hidden>
-   <table class="tabla"><tr><th>${n_('n')}</th>${SUC6.valores.map((_, k) => `<td>${k + 1}</td>`).join('')}</tr><tr><th>${N_('rutas')}</th>${SUC6.valores.map(v => `<td>${v}</td>`).join('')}</tr></table>
-   <div class="eqs"><div class="eq">${N_('rutas')} = 2<sup>${n_('n')}</sup><span class="note">el motor contó cada caso por fuerza bruta: ${SUC6.formula === '2^n' ? 'la regla se cumple en todos' : 'no se cumple'}</span></div></div>
+   <table class="tabla"><tr><th>${k_('k')}</th>${SUC6.valores.map((_, k) => `<td>${k + 1}</td>`).join('')}</tr><tr><th>${N_('rutas')}</th>${SUC6.valores.map(v => `<td>${v}</td>`).join('')}</tr></table>
+   <div class="eqs"><div class="eq">${N_('rutas')} = 2<sup>${k_('k')}</sup><span class="note">el motor contó cada caso por fuerza bruta: ${SUC6.formula === '2^n' ? 'la regla se cumple en todos' : 'no se cumple'}</span></div></div>
    <p>La ruta nunca puede ir hacia la izquierda: quedaría encerrada. Solo decide en qué palitos verticales cambia de fila, y tiene que cambiar un número impar de veces. Al agregar un cuadradito, cada ruta anterior tiene dos formas de seguir: se duplica.</p>
    <div class="seg" id="n6" role="group" aria-label="Cuadraditos">${[1, 2, 3, 4, 5, 6].map(n => `<button type="button" data-k="${n}" aria-pressed="${n === S.n6}">${n}</button>`).join('')}</div>
    <div id="visor6"></div>
-   <p class="fuente">Seguir la regla de los dos primeros casos sin probar un tercero (2, 4, 6…) es una hipótesis nuestra, como 6 · 6 y 2⁷.</p></div>` },
+   <p class="fuente">Seguir la regla de los dos primeros casos sin probar un tercero (2, 4, 6…) es una hipótesis nuestra (RME167), como quedarse con las rutas que cambian de fila una sola vez (RME141) y contar 2⁷ (RME197).</p></div>` },
  { k:'Paso 7', t:'Predice: vueltas al tarro', gate:G7,
    prep:() => E.config(cil7(!!S.pred[G7.id])),
    anima:fin => { const o = cil7(true); o.cil.abrir = 0; o.cil.ruta = 0; E.config(o); const Q = E.cil;
      E.animar(0, 1, 1200, v => { Q.ruta = v; }, () => E.animar(0, 1, 1600, v => { Q.abrir = v; }, () => { E.config(cil7(true)); fin(); })); },
-   body:() => `<p class="problem">Un tarro mide 2 cm de radio y ${h_('12 cm')} de alto; su contorno mide ${C_('4π cm')}. Una hormiga sale de un punto del borde de abajo, camina por fuera dando 2 vueltas completas y llega al punto del borde de arriba que está justo encima del de salida.</p>
+   body:() => `<p class="problem">Un tarro mide 2 cm de radio y ${h_('12 cm')} de alto; el perímetro de su base mide ${P_('4π cm')}. Una hormiga sale de un punto del borde de abajo, camina por fuera dando 2 vueltas completas y llega al punto del borde de arriba que está justo encima del de salida.</p>
    <p>¿Cuánto mide, como mínimo, su recorrido?</p>${opcionesHTML(G7.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
-     <div class="eq">ancho = 2 · ${C_('4π')} = 8π; alto = ${h_('12')}</div>
-     <div class="eq">${r_('r')} = √(12² + (8π)²) = √(144 + 64π²) = ${r_(P7.exacto)} ≈ ${fmt(P7.L, 1)} cm</div></div>
+     <div class="eq">ancho = 2 · ${P_('4π')} = 8π; alto = ${h_('12')}</div>
+     <div class="eq">${d_('d')} = √(12² + (8π)²) = √(144 + 64π²) = ${d_(P7.exacto)} ≈ ${fmt(P7.L, 1)} cm</div></div>
    <p>Mira el desarrollo: se corta el tarro por la recta que une los dos puntos y se abre dos veces seguidas. En el plano, la ruta más corta es una recta: la diagonal del rectángulo. En cada vuelta sube 6 cm, la mitad.</p>
    <p class="fuente">Desarrollar una sola vuelta o medir por el borde es RME31; tomar cada vuelta con toda la altura, RME145. Las tres son hipótesis nuestras: no encontramos estudios con cifras sobre rutas en un cilindro.</p></div>` },
- { k:'Paso 8', t:'Desarrolla el cilindro', explora:'cilindro',
+ { k:'Paso 8', t:'Predice: las dos latas', gate:G8,
+   prep:() => E.config(latas8(!!S.pred[G8.id])),
+   anima:fin => { const o = latas8(true); o.cil.abrir = 0; o.cil.ruta = 0; E.config(o); const Q = E.cil;
+     E.animar(0, 1, 1200, v => { Q.ruta = v; }, () => E.animar(0, 1, 1600, v => { Q.abrir = v; }, () => { E.config(latas8(true)); fin(); })); },
+   body:() => `<p class="problem">Dos latas iguales, de 3 cm de radio y ${h_('8 cm')} de alto, están paradas y se tocan a lo largo de una recta. Una hormiga sale del borde de abajo de la primera, del lado opuesto al contacto, y llega al borde de arriba de la segunda, también del lado opuesto. Camina por la superficie de las latas.</p>
+   <p>¿Cuánto mide su camino más corto?</p>${opcionesHTML(G8.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">ancho = ${P_('P')}/2 + ${P_('P')}/2 = 3π + 3π = 6π</div>
+     <div class="eq">${d_('d')} = √(8² + (6π)²)</div>
+     <div class="eq">= ${d_(T8.exacto)} ≈ ${fmt(T8.L, 1)} cm</div></div>
+   <p>Se desarrolla media lata de cada una, pegadas por la recta de contacto: en el plano, el camino más corto es la diagonal del rectángulo.</p>
+   <p class="fuente">Desarrollar una sola lata es RME147; medir por el borde, RME31; la recta por el aire, otra hipótesis nuestra. No encontramos estudios con cifras sobre rutas en cilindros.</p></div>` },
+ { k:'Paso 9', t:'Desarrolla el cilindro', explora:'cilindro',
    prep:() => cil8(),
    body:() => `<p class="problem">Elige una situación y toca «Desarrollar». En el plano, la ruta más corta siempre es una recta.</p>
    <div class="seg" id="tipo8" role="group" aria-label="Situación">${[['helice', 'Vueltas'], ['tarro', 'Afuera y adentro'], ['tangentes', 'Dos latas']].map(([k, t]) => `<button type="button" data-k="${k}" aria-pressed="${k === S.tipo8}">${t}</button>`).join('')}</div>
    <div class="fila"><button type="button" class="btn chico" id="abrir8" aria-pressed="${S.abrir8 > 0}">Desarrollar</button><span id="k8" ${S.tipo8 === 'helice' ? '' : 'hidden'}>Vueltas: ${[1, 2, 3, 4].map(k => `<button type="button" class="btn chico" data-k="${k}" aria-pressed="${k === S.k8}">${k}</button>`).join(' ')}</span></div>
    <div class="eqs" id="vivo8"></div>
-   <p><b>Vueltas:</b> con k vueltas, el desarrollo tiene k contornos de ancho. <b>Afuera y adentro:</b> la pared de adentro se abre como reflejo de la de afuera, al otro lado del borde; por eso las dos distancias al borde se suman. <b>Dos latas:</b> la hormiga solo pasa de una lata a la otra por la recta en que se tocan; se abren media lata de cada una.</p>
+   <p><b>Vueltas:</b> con 3 vueltas, el desarrollo tiene 3 perímetros de ancho; con 4, cuatro. <b>Afuera y adentro:</b> la pared de adentro se abre como reflejo de la de afuera, al otro lado del borde; por eso las dos distancias al borde se suman. <b>Dos latas:</b> la hormiga solo pasa de una lata a la otra por la recta en que se tocan; se abren media lata de cada una.</p>
    <p class="aviso">Si el tarro tiene tapa y la hormiga va del borde de abajo al centro de la tapa, se abre la tapa pegada al borde: el camino más corto sube derecho y cruza al centro, altura + radio (con 12 y 2: ${MR.tapa({ radio:2, altura:12 }).L} cm).</p>` },
- { k:'Paso 9', t:'Predice: el paseo más largo', gate:G9,
+ { k:'Paso 10', t:'Predice: el paseo más largo', gate:G9,
    prep:() => E.config(cubo9(!!S.pred[G9.id])),
    anima:fin => { E.config(cubo9(true, 'impares'));
      E.animar(0, 1, 1100, () => {}, () => { E.config(cubo9(true, 'quitar'));
@@ -952,12 +984,14 @@ const steps = [
    body:() => `<p class="problem">Un cubo de alambre tiene 3 cm de arista. Una hormiga va de la esquina A a la esquina B, la más alejada, sin pasar dos veces por el mismo alambre (por las esquinas sí puede repetir).</p>
    <p>¿Cuál es el recorrido más largo que puede hacer?</p>${opcionesHTML(G9.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
-     <div class="eq">esquinas impares: 8; solo pueden quedar A y B → hay que arreglar ${i_('6')}</div>
-     <div class="eq">cada arista sin usar arregla 2 → ${Q_('3 aristas')} = ${Q_('9 cm')}</div>
-     <div class="eq">${r_('r')} = 36 − 9 = ${r_(P9.maximo + ' cm')}</div></div>
+     <div class="eq">esquinas impares: 8</div>
+     <div class="eq">quedan A y B → arreglar ${i_('6')}</div>
+     <div class="eq">cada arista sin usar arregla 2</div>
+     <div class="eq">${Q_('3 aristas')} = ${Q_('9 cm')}</div>
+     <div class="eq">${d_('d')} = 36 − 9 = ${d_(P9.maximo + ' cm')}</div></div>
    <p>Es la regla del trazo de un solo golpe, al revés: en vez de repetir líneas para unir los impares, se dejan sin usar. Las que se dejan no se tocan entre sí, y lo que queda sigue unido.</p>
    <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras. El motor buscó el recorrido más largo probando todos los recorridos posibles.</p></div>` },
- { k:'Paso 10', t:'Quita alambres', explora:'quitar',
+ { k:'Paso 11', t:'Quita alambres', explora:'quitar',
    prep:() => quitar10(),
    body:() => `<p class="problem">Dos cubitos de alambre de 1 m, uno encima del otro. Quita alambres (tócalos o elígelos en la lista) hasta que lo que queda se pueda recorrer de un tirón de A a B. ¿Cuánto es lo más largo?</p>
    <div class="fila"><select id="sel10" aria-label="Alambre">${EST.torre.tramos.map(([i, j], k) => `<option value="${k}">${nombreNodo({ 0:'A', 11:'B' }, i)}–${nombreNodo({ 0:'A', 11:'B' }, j)}</option>`).join('')}</select><button type="button" class="btn chico" id="poner10">Quitar o poner</button></div>
@@ -1009,10 +1043,15 @@ function montarVisor2(){
     (R, k) => `Ruta ${k + 1} de ${D.total}: <span class="pasos">${letras(R.pasos)}</span> · empieza ${DIRS[R.pasos[0]]} (${D.casos[R.pasos[0]]} rutas así)`);
 }
 function montar4(){
-  const pinta = () => { S.ruta4 = null; const R = casos4(); const pir = S.sol4 === 'piramide', mar = pir ? MAR_PIR : MAR_TRO, paso = S.step;
+  const pinta = () => {
+    // en el tronco solo «sin repetir punto»: sin repetir alambre es la pregunta del experimento 5
+    const tramo = $('rep4').querySelector('[data-k="tramo"]'), tro = S.sol4 === 'tronco';
+    if (tro && S.rep4 === 'tramo'){ S.rep4 = 'punto'; $('rep4').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x.dataset.k === 'punto')); }
+    tramo.disabled = tro; if (tro){ tramo.setAttribute('aria-disabled', 'true'); tramo.title = 'Solo con la pirámide'; } else { tramo.removeAttribute('aria-disabled'); tramo.removeAttribute('title'); }
+    S.ruta4 = null; const R = casos4(); const pir = S.sol4 === 'piramide', mar = pir ? MAR_PIR : MAR_TRO, paso = S.step;
     visor($('visor4'), R.rutas, Rr => { S.ruta4 = Rr; casos4(); subir(); animarRuta(paso); }, (Rr, k) => `Ruta ${k + 1} de ${R.total} · ${Rr.tramos.length} alambres: ${nomRuta(Rr, mar)}`); };
   $('sol4').querySelectorAll('button').forEach(b => b.onclick = () => { if (E.anim) return; S.sol4 = b.dataset.k; $('sol4').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b)); pinta(); });
-  $('rep4').querySelectorAll('button').forEach(b => b.onclick = () => { if (E.anim) return; S.rep4 = b.dataset.k; $('rep4').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b)); pinta(); });
+  $('rep4').querySelectorAll('button').forEach(b => b.onclick = () => { if (E.anim || b.disabled) return; S.rep4 = b.dataset.k; $('rep4').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b)); pinta(); });
   pinta();
 }
 function montar6(){
@@ -1094,7 +1133,7 @@ go(0);
 (function(){
 const $ = id => document.getElementById(id);
 const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2', 'giro2');
-const { x:x_, y:y_, z:z_, N:N_, r:r_, C:C_, a:a_, b:b_ } = W_;
+const { x:x_, y:y_, z:z_, N:N_, d:d_, P:P_, a:a_, b:b_ } = W_;
 const ROT = { yaw:-.62, pitch:.5 };
 const E1 = MR.soltarDireccion(EST.cubo, { desde:0, hasta:7 }), R1 = MR.rutasSinRepetir(EST.cubo, { desde:0, hasta:7 });
 const E2 = MR.pasoObligado(EST.unidosVertice, { desde:0, paso:7, hasta:18, dirigido:true }), D2 = MR.dirigidas(EST.unidosVertice, { desde:0, hasta:18 });
@@ -1114,89 +1153,89 @@ const EXPS = [
   { id:'sin-direccion', corto:'Sin la regla de avanzar',
     q:`En un cubo de alambre, una hormiga que solo avanza (${x_('a la derecha')}, ${y_('al fondo')} o ${z_('hacia arriba')}) tiene ${E1.dirigidas} rutas de una esquina A a la opuesta B. ¿Cuántas rutas tiene si puede ir en cualquier dirección, pero sin pasar dos veces por el mismo punto?`,
     opts:[['a', `${E1.errores.igual}: la regla no cambia nada, las rutas más largas no cuentan`, 'RME32', 'hipotesis'],
-          ['b', `${E1.errores.doble}: cada ruta puede hacerse también con una vuelta atrás`, 'sin-direccion-doble', 'hipotesis'],
+          ['b', `${E1.errores.doble}: cada ruta puede hacerse también con una vuelta atrás`, 'RME198', 'hipotesis'],
           ['c', `${E1.total}: a las de 3 alambres se suman las de 5 y las de 7`],
-          ['d', `${E1.errores.potencia}: 3 opciones en cada uno de los 3 pasos`, 'tres-a-la-n', 'hipotesis']],
+          ['d', `${E1.errores.potencia}: 3 opciones en cada uno de los 3 pasos`, 'RME189', 'hipotesis']],
     ok:'c',
     fb:{ a:`Sin la regla también valen las rutas que dan un rodeo sin repetir punto: de 5 alambres y de 7. Son ${R1.porPasos[3]} + ${R1.porPasos[5]} + ${R1.porPasos[7]} = ${E1.total}.`,
          b:`No todas las rutas largas son «una ruta corta con una vuelta atrás». El motor las contó: ${R1.porPasos[3]} de 3 alambres, ${R1.porPasos[5]} de 5 y ${R1.porPasos[7]} de 7: ${E1.total}.`,
          d:`3 · 3 · 3 cuenta caminos que se salen del cubo o vuelven a un punto. Sin repetir punto hay ${E1.total}.` },
-    antes:ya => cubo(ya, null, { lect:[L('ink', 'Solo avanzando', String(E1.dirigidas)), L('N', 'En cualquier dirección N', ya ? String(E1.total) : '?')], ley:[['x', 'x · a la derecha'], ['y', 'y · al fondo'], ['z', 'z · hacia arriba']].concat(ya ? [['r', 'r · una ruta']] : []),
+    antes:ya => cubo(ya, null, { lect:[L('ink', 'Solo avanzando', String(E1.dirigidas)), L('N', 'Sin la regla N', ya ? String(E1.total) : '?')], ley:[['x', 'x · a la derecha'], ['y', 'y · al fondo'], ['z', 'z · hacia arriba']].concat(ya ? [['d', 'd · una ruta']] : []),
       desc:'Un cubo de alambre con la hormiga en la esquina A y la llegada B en la esquina opuesta.' }),
-    despues:() => desfile(R1.rutas, R => cubo(true, R, { lect:[L('ink', 'Solo avanzando', String(E1.dirigidas)), L('N', 'En cualquier dirección N', String(E1.total)), L('r', 'Alambres de esta ruta', String(R.tramos.length))], ley:[['r', 'r · una ruta']] }), 320, () => cubo(true, R1.rutas[R1.total - 1], { lect:[L('ink', 'Solo avanzando', String(E1.dirigidas)), L('N', 'En cualquier dirección N', String(E1.total))], ley:[['r', 'r · una ruta']] })),
+    despues:() => desfile(R1.rutas, R => cubo(true, R, { lect:[L('ink', 'Solo avanzando', String(E1.dirigidas)), L('N', 'Sin la regla N', String(E1.total)), L('d', 'Alambres de esta ruta', String(R.tramos.length))], ley:[['d', 'd · una ruta']] }), 320, () => cubo(true, R1.rutas[R1.total - 1], { lect:[L('ink', 'Solo avanzando', String(E1.dirigidas)), L('N', 'Sin la regla N', String(E1.total))], ley:[['d', 'd · una ruta']] })),
     exp:() => `<div class="eqs"><div class="eq">3 alambres: ${R1.porPasos[3]} · 5 alambres: ${R1.porPasos[5]} · 7 alambres: ${R1.porPasos[7]} → ${N_(String(E1.total))}</div></div>
       <p>La condición del enunciado decide qué se cuenta: «solo avanzar» deja únicamente las rutas más cortas. Si se quita, aparecen rutas que dan un rodeo sin repetir punto.</p>
       <p class="fuente">Dejar fuera la condición de dirección (o no notar que cambió) es RME32, una hipótesis nuestra, como las otras dos.</p>` },
   { id:'unidos-vertice', corto:'Dos piezas y un punto',
-    q:`Un cubito de alambre y una pieza de dos cubitos en fila que lo toca solo en un vértice: P, la esquina de arriba, al fondo a la derecha del cubito. La hormiga va de A, la esquina de abajo del cubito, a B, la esquina más alejada de la pieza, y solo avanza (${x_('→')}, ${y_('↗')} o ${z_('↑')}). Hay ${E2.antes} rutas de A a P y ${E2.despues} de P a B. ¿Cuántas rutas hay de A a B?`,
+    q:`Un cubito de alambre y una pieza de dos cubitos en fila que lo toca solo en un vértice: M, la esquina de arriba, al fondo a la derecha del cubito. La hormiga va de A, la esquina de abajo del cubito, a B, la esquina más alejada de la pieza, y solo avanza (${x_('→')}, ${y_('↗')} o ${z_('↑')}). Hay ${E2.antes} rutas de A a P y ${E2.despues} de P a B. ¿Cuántas rutas hay de A a B?`,
     opts:[['a', `${E2.errores.suma}: ${E2.antes} + ${E2.despues}`, 'RME30', 'hipotesis'],
           ['b', `${E2.errores.soloMayor}: las de la pieza más grande`, 'paso-solo-mayor', 'hipotesis'],
           ['c', `${E2.errores.comoCaja}: los 7 pasos en cualquier orden, como en una caja`, 'RME140', 'hipotesis'],
           ['d', `${E2.total}: ${E2.antes} · ${E2.despues}`]],
     ok:'d',
-    fb:{ a:`Todas las rutas pasan por P: cada una de las ${E2.antes} primeras partes se puede seguir con cualquiera de las ${E2.despues} segundas. Eso es ${E2.antes} · ${E2.despues} = ${E2.total}.`,
+    fb:{ a:`Todas las rutas pasan por M: cada una de las ${E2.antes} primeras partes se puede seguir con cualquiera de las ${E2.despues} segundas. Eso es ${E2.antes} · ${E2.despues} = ${E2.total}.`,
          b:`Las de la pieza grande son solo el final del viaje: a cada una se le puede poner delante cualquiera de las ${E2.antes} primeras partes. ${E2.total}.`,
-         c:`La caja que encierra todo tiene muchos cubitos que no están: la hormiga solo puede pasar por P. ${E2.antes} · ${E2.despues} = ${E2.total}.` },
-    antes:ya => E.config({ modo:'alambre', girar:true, rot:{ yaw:-.7, pitch:.45 }, al:{ est:EST.unidosVertice, marcas:{ 0:'A', 7:'P', 18:'B' }, tripode:true, num: ya ? D2.tabla : null },
-      lect:[L('N', 'De A a P', String(E2.antes)), L('N', 'De P a B', String(E2.despues)), L('N', 'De A a B', ya ? String(E2.total) : '?')],
+         c:`La caja que encierra todo tiene muchos cubitos que no están: la hormiga solo puede pasar por M. ${E2.antes} · ${E2.despues} = ${E2.total}.` },
+    antes:ya => E.config({ modo:'alambre', girar:true, rot:{ yaw:-.7, pitch:.45 }, al:{ est:EST.unidosVertice, marcas:{ 0:'A', 7:'M', 18:'B' }, tripode:true, num: ya ? D2.tabla : null },
+      lect:[L('N', 'De A a M', String(E2.antes)), L('N', 'De M a B', String(E2.despues)), L('N', 'De A a B', ya ? String(E2.total) : '?')],
       ley:[['x', 'x · a la derecha'], ['y', 'y · al fondo'], ['z', 'z · hacia arriba']].concat(ya ? [['N', 'N · rutas que llegan al vértice']] : []),
-      desc:'Un cubito de alambre y una pieza de dos cubitos en fila que lo toca solo en el vértice P, arriba y al fondo a la derecha del cubito.' }),
+      desc:'Un cubito de alambre y una pieza de dos cubitos en fila que lo toca solo en el vértice M, arriba y al fondo a la derecha del cubito.' }),
     despues:() => { const x = EXPS[1]; x.antes(true); const A = E.al, n = D2.niveles.length; A.num = D2.tabla.map(() => null);
       E.animar(0, n - .001, 2600, v => { const ok = new Set(D2.niveles.slice(0, Math.floor(v) + 1).flat()); A.num = D2.tabla.map((t, k) => ok.has(k) ? t : null); }, () => x.antes(true), true); },
-    exp:() => `<div class="eqs"><div class="eq">${N_(String(E2.antes))} · ${N_(String(E2.despues))} = ${N_(String(E2.total))}<span class="note">el motor contó todas las de A a B: ${E2.todasPasan ? 'todas pasan por P' : 'no todas pasan por P'}</span></div></div>
-      <p>Al numerar los vértices, en P aparece ${E2.antes}; desde ahí, cada número de la pieza de arriba sale multiplicado por ${E2.antes}. Un punto de paso obligado parte el viaje en dos tramos seguidos: se multiplica.</p>
+    exp:() => `<div class="eqs"><div class="eq">${N_(String(E2.antes))} · ${N_(String(E2.despues))} = ${N_(String(E2.total))}<span class="note">el motor contó todas las de A a B: ${E2.todasPasan ? 'todas pasan por M' : 'no todas pasan por M'}</span></div></div>
+      <p>Al numerar los vértices, en M aparece ${E2.antes}; desde ahí, cada número de la pieza de arriba sale multiplicado por ${E2.antes}. Un punto de paso obligado parte el viaje en dos tramos seguidos: se multiplica.</p>
       <p class="fuente">Sumar en vez de multiplicar es RME30; usar la caja que encierra todo, RME140. Las tres son hipótesis nuestras.</p>` },
   { id:'todos-los-vertices', corto:'Por todos los vértices',
     q:'En un cubo de alambre, una hormiga va de la esquina A a la opuesta B pasando exactamente una vez por cada uno de los 8 vértices. ¿Cuántas rutas puede seguir?',
     opts:[['a', `${E3.errores.unaPorSalida}: una por cada alambre que sale de A`, 'AR18', 'parcial'],
           ['b', `${E3.total}: dos por cada alambre que sale de A`],
-          ['c', `${E3.errores.todasSimples}: todas las que no repiten punto`, 'todas-las-simples', 'hipotesis'],
-          ['d', `${E3.errores.ordenarTodos}: las formas de ordenar los 6 vértices de en medio`, 'ordenar-todos', 'hipotesis']],
+          ['c', `${E3.errores.todasSimples}: todas las que no repiten punto`, 'RME144', 'hipotesis'],
+          ['d', `${E3.errores.ordenarTodos}: las formas de ordenar los 6 vértices de en medio`, 'RME194', 'hipotesis']],
     ok:'b',
     fb:{ a:`Desde cada primer alambre hay dos formas de seguir que pasan por todos: al listarlas sin orden es fácil quedarse con una. Son ${E3.total}.`,
          c:`De esas ${E3.errores.todasSimples}, solo las de 7 alambres pasan por los 8 vértices: ${E3.total}.`,
          d:`La mayoría de esos órdenes salta entre vértices que no están unidos por un alambre. Solo ${E3.total} siguen los alambres.` },
-    antes:ya => cubo(ya, null, { lect:[L('ink', 'Vértices', '8'), L('N', 'Rutas por todos N', ya ? String(E3.total) : '?')], ley: ya ? [['r', 'r · una ruta']] : [], desc:'Un cubo de alambre con la hormiga en A y la llegada en la esquina opuesta B.' }),
-    despues:() => desfile(E3.rutas, R => cubo(true, R, { lect:[L('ink', 'Vértices', '8'), L('N', 'Rutas por todos N', String(E3.total))], ley:[['r', 'r · una ruta']] }), 900, () => cubo(true, E3.rutas[E3.total - 1], { lect:[L('ink', 'Vértices', '8'), L('N', 'Rutas por todos N', String(E3.total))], ley:[['r', 'r · una ruta']] })),
+    antes:ya => cubo(ya, null, { lect:[L('ink', 'Vértices', '8'), L('N', 'Rutas por todos N', ya ? String(E3.total) : '?')], ley: ya ? [['d', 'd · una ruta']] : [], desc:'Un cubo de alambre con la hormiga en A y la llegada en la esquina opuesta B.' }),
+    despues:() => desfile(E3.rutas, R => cubo(true, R, { lect:[L('ink', 'Vértices', '8'), L('N', 'Rutas por todos N', String(E3.total))], ley:[['d', 'd · una ruta']] }), 900, () => cubo(true, E3.rutas[E3.total - 1], { lect:[L('ink', 'Vértices', '8'), L('N', 'Rutas por todos N', String(E3.total))], ley:[['d', 'd · una ruta']] })),
     exp:() => `<div class="eqs"><div class="eq">3 salidas · 2 formas de seguir = ${N_(String(E3.total))}</div></div>
       <p>Para listarlas sin olvidar ninguna, fija el primer alambre y prueba cada continuación en orden: del segundo vértice hay dos caminos que todavía pueden visitar todo.</p>
       <p class="fuente">Olvidar rutas al listarlas sin orden es AR18 (respaldo parcial: ver el paso 1). Las otras dos son hipótesis nuestras.</p>` },
   { id:'tarro-abierto', corto:'El tarro abierto',
-    q:`Un tarro sin tapa tiene ${C_('24 cm')} de contorno. Una hormiga está por fuera, ${a_('3 cm')} debajo del borde. Por dentro, al otro lado del tarro, hay una gota de miel ${b_('6 cm')} debajo del borde. ¿Cuánto mide el camino más corto de la hormiga a la miel?`,
+    q:`En un tarro sin tapa, el perímetro de la base mide ${P_('24 cm')}. Una hormiga está por fuera, ${a_('3 cm')} debajo del borde. Por dentro, al otro lado del tarro, hay una gota de miel ${b_('6 cm')} debajo del borde. ¿Cuánto mide el camino más corto de la hormiga a la miel?`,
     opts:[['a', `${E4.exactos.porBorde} cm: sube 3, da media vuelta por el borde (12) y baja 6`, 'RME31', 'hipotesis'],
           ['b', `${E4.exacto} cm: la diagonal de un rectángulo de 12 por 3 + 6`],
           ['c', `${aprox(E4.exactos.sinReflejar, E4.errores.sinReflejar)} cm: la diagonal de un rectángulo de 12 por 6 − 3`, 'RME146', 'hipotesis'],
-          ['d', `${aprox(E4.exactos.vueltaEntera, E4.errores.vueltaEntera)} cm: la diagonal de un rectángulo de 24 por 9`, 'tarro-vuelta-entera', 'hipotesis']],
+          ['d', `${aprox(E4.exactos.vueltaEntera, E4.errores.vueltaEntera)} cm: la diagonal de un rectángulo de 24 por 9`, 'RME31', 'hipotesis']],
     ok:'b',
     fb:{ a:'Por el borde la hormiga dobla dos veces. Si se desarrollan las dos paredes, la ruta es una recta que cruza el borde en diagonal: 15 cm.',
          c:'La miel está del otro lado del borde: al desarrollar, la pared de adentro queda reflejada hacia arriba y las distancias al borde se suman (3 + 6 = 9), no se restan. 15 cm.',
          d:'Al otro lado hay media vuelta, 12 cm, no la vuelta entera. √(12² + 9²) = 15 cm.' },
-    antes:ya => E.config({ modo:'cilindro', cil:{ tipo:'tarro', contorno:24, alto:8, afuera:3, adentro:6, abrir: ya ? 1 : 0, ruta: ya ? 1 : 0, ver:{ a:'3', b:'6', C:'C/2 = 12', r: ya ? E4.exacto + ' cm' : null } },
-      lect:[L('C', 'Contorno C', '24 cm'), L('a', 'Afuera a', '3 cm'), L('b', 'Adentro b', '6 cm'), L('r', 'Ruta r', ya ? `${E4.exacto} cm` : '?')],
-      ley:[['a', 'a · afuera, bajo el borde'], ['b', 'b · adentro, bajo el borde']].concat(ya ? [['C', 'C/2 · media vuelta'], ['r', 'r · la ruta']] : []),
+    antes:ya => E.config({ modo:'cilindro', cil:{ tipo:'tarro', contorno:24, alto:8, afuera:3, adentro:6, abrir: ya ? 1 : 0, ruta: ya ? 1 : 0, ver:{ a:'3', b:'6', P:'P/2 = 12', d: ya ? E4.exacto + ' cm' : null } },
+      lect:[L('P', 'Perímetro P', '24 cm'), L('a', 'Afuera a', '3 cm'), L('b', 'Adentro b', '6 cm'), L('d', 'Ruta d', ya ? `${E4.exacto} cm` : '?')],
+      ley:[['a', 'a · afuera, bajo el borde'], ['b', 'b · adentro, bajo el borde']].concat(ya ? [['P', 'P/2 · media vuelta'], ['d', 'd · la ruta']] : []),
       desc:'Un tarro sin tapa: la hormiga por fuera, 3 cm bajo el borde; la miel por dentro, 6 cm bajo el borde, del otro lado.' }),
     despues:() => { const x = EXPS[3]; x.antes(true); const Q = E.cil; Q.abrir = 0; Q.ruta = 0;
       E.animar(0, 1, 1200, v => { Q.ruta = v; }, () => E.animar(0, 1, 1600, v => { Q.abrir = v; }, () => x.antes(true))); },
-    exp:() => `<div class="eqs"><div class="eq">ancho = ${C_('C')}/2 = 12; alto = ${a_('3')} + ${b_('6')} = 9</div>
-      <div class="eq">${r_('r')} = √(12² + 9²) = ${r_(E4.exacto + ' cm')}</div></div>
+    exp:() => `<div class="eqs"><div class="eq">ancho = ${P_('P')}/2 = 12; alto = ${a_('3')} + ${b_('6')} = 9</div>
+      <div class="eq">${d_('d')} = √(12² + 9²) = ${d_(E4.exacto + ' cm')}</div></div>
       <p>La pared de adentro se abre al otro lado del borde, como en un espejo. Así la miel queda 6 cm por encima del borde en el dibujo, y la hormiga 3 cm por debajo.</p>
       <p class="fuente">Medir por el borde es RME31; restar en vez de sumar (no reflejar), RME146. Las tres opciones incorrectas son hipótesis nuestras.</p>` },
   { id:'repetir-puntos', corto:'Repetir puntos',
     q:`En el tronco de pirámide de alambre hay ${E5.punto} rutas de la esquina A, abajo, a la esquina opuesta B, arriba, sin pasar dos veces por el mismo punto. ¿Cuántas hay si se puede pasar dos veces por un punto, pero no por un alambre? (La hormiga se queda en B apenas llega.)`,
-    opts:[['a', `${E5.errores.igual}: las mismas, porque repetir un punto obliga a repetir un alambre`, 'repetir-igual', 'hipotesis'],
+    opts:[['a', `${E5.errores.igual}: las mismas, porque repetir un punto obliga a repetir un alambre`, 'RME195', 'hipotesis'],
           ['b', `${E5.total}: aparecen rutas que dan una vuelta y vuelven a pasar por un punto`],
-          ['c', `${E5.errores.doble}: el doble, cada ruta con una vuelta extra`, 'repetir-doble', 'hipotesis'],
-          ['d', 'Infinitas: puede dar vueltas sin parar', 'repetir-infinitas', 'hipotesis']],
+          ['c', `${E5.errores.doble}: el doble, cada ruta con una vuelta extra`, 'RME198', 'hipotesis'],
+          ['d', 'Infinitas: puede dar vueltas sin parar', 'RME196', 'hipotesis']],
     ok:'b',
     fb:{ a:`Se puede volver a un punto por otro alambre: la hormiga da la vuelta a una cara y sigue. El motor encontró ${E5.nuevas} rutas así: ${E5.punto} + ${E5.nuevas} = ${E5.total}.`,
          c:`No todas las rutas admiten una vuelta extra, y algunas admiten más de una. El motor las contó: ${E5.total}.`,
          d:`Como no puede repetir alambres y hay solo 12, toda ruta se acaba: hay ${E5.total}.` },
     antes:ya => E.config({ modo:'alambre', girar:true, rot:ROT, al:{ est:EST.tronco, marcas:{ 0:'A', 6:'B' } },
-      lect:[L('ink', 'Sin repetir punto', String(E5.punto)), L('N', 'Sin repetir alambre N', ya ? String(E5.total) : '?')], ley: ya ? [['r', 'r · una ruta']] : [],
+      lect:[L('ink', 'Sin repetir punto', String(E5.punto)), L('N', 'Sin repetir alambre N', ya ? String(E5.total) : '?')], ley: ya ? [['d', 'd · una ruta']] : [],
       desc:'Un tronco de pirámide de alambre con A en una esquina de abajo y B en la esquina opuesta de arriba.' }),
     despues:() => { const nuevas = R5.rutas.filter(R => new Set(R.nodos).size < R.nodos.length);
       const armar = R => E.config({ modo:'alambre', girar:true, rot:E.rot, al:{ est:EST.tronco, marcas:{ 0:'A', 6:'B' }, etiquetas:true, ruta:Object.assign({ prog:1 }, R) },
-        lect:[L('ink', 'Sin repetir punto', String(E5.punto)), L('N', 'Sin repetir alambre N', String(E5.total)), L('r', 'Pasa dos veces por', R.nodos.filter((v, q) => R.nodos.indexOf(v) !== q).map(v => 'P' + (v + 1)).join(', ') || '—')], ley:[['r', 'r · una ruta que repite un punto']] });
+        lect:[L('ink', 'Sin repetir punto', String(E5.punto)), L('N', 'Sin repetir alambre N', String(E5.total)), L('d', 'Pasa dos veces por', R.nodos.filter((v, q) => R.nodos.indexOf(v) !== q).map(v => nombreNodo({ 0:'A', 6:'B' }, v)).join(', ') || '—')], ley:[['d', 'd · una ruta que repite un punto']] });
       desfile(nuevas, armar, 700); },
     exp:() => `<div class="eqs"><div class="eq">${E5.punto} sin repetir punto + ${E5.nuevas} que pasan dos veces por un punto = ${N_(String(E5.total))}</div>
       <div class="eq">por alambres: ${Object.entries(E5.porPasos).map(([k, v]) => `${k}: ${v}`).join(' · ')}</div></div>

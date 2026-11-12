@@ -60,20 +60,20 @@
  *                               rutas ([{ nodos, tramos, pasos (texto de letras 'x', 'y', 'z'), giros (cuántas veces cambia
  *                               de letra) }] por orden alfabético de pasos), casos ({ primera letra: cuántas rutas empiezan
  *                               así }), pasos (tramos de cada ruta), errores: cajaCompleta (el multinomial de los pasos de
- *                               cada dirección, como si la estructura fuera la caja entera: RME140), potencia (3^pasos),
+ *                               cada dirección, como si la estructura fuera la caja entera: RME140), potencia (3^pasos: RME189),
  *                               aMano (las rutas con a lo más pasos − 2 giros, las que salen primero al dibujarlas a mano:
  *                               AR18), sinDireccion (las rutas sin repetir punto, sin la regla de solo avanzar: RME32; no
  *                               se da si pasan de 100 000) }.
  *                               Con direcciones propias, las letras son 'd0', 'd1'… y cajaCompleta no se calcula.
  *   soltarDireccion(est, { desde, hasta })   { total (rutas sin repetir punto, en cualquier dirección), dirigidas (las que
- *                               solo avanzan), errores: igual (dirigidas: RME32), doble (2 · dirigidas), potencia (3^pasos
- *                               de las que avanzan) }.
+ *                               solo avanzan), errores: igual (dirigidas: RME32), doble (2 · dirigidas: RME198), potencia
+ *                               (3^pasos de las que avanzan: RME189) }.
  *   compararRepetir(est, { desde, hasta })   { total (rutas sin repetir tramo), punto (sin repetir punto), nuevas (las que
  *                               sin repetir tramo pasan dos veces por un punto), porPasos (de las de tramo), errores: igual
- *                               (punto), doble (2 · punto) }.
+ *                               (punto: RME195), doble (2 · punto: RME198) }.
  *   porTramos({ cadenas })      cadenas: lista de alternativas; cada una es la lista de cuántas formas hay en cada
  *                               tramo seguido. { total: Σ (Π de cada cadena), productos (de cada cadena), errores:
- *                               sumarTodo (Σ de todo: RME30), multiplicarTodo (Π de los productos: RME143), unaCadena (el
+ *                               sumarTodo (Σ de todo: RME30), multiplicarTodo (Π de los productos: RME186), unaCadena (el
  *                               producto mayor: AR18) }.
  *   pasoObligado(est, { desde, paso, hasta, dirigido })   rutas que van de 'desde' a 'hasta' pasando por 'paso'
  *                               (dirigido = true: solo avanzando; si no, sin repetir punto). { antes (de desde a paso),
@@ -82,9 +82,9 @@
  *                               (el mayor de los dos), y si es dirigido, comoCaja (el multinomial de los pasos de cada
  *                               dirección de 'desde' a 'hasta', medidos en tramos de la menor longitud: RME140) }.
  *   hamiltonianos(est, { desde, hasta })   rutas que pasan una vez por cada nodo, de 'desde' a 'hasta'. { total, rutas,
- *                               porInicio, errores: todasSimples (todas las rutas sin repetir punto, pasen o no por todos),
+ *                               porInicio, errores: todasSimples (todas las rutas sin repetir punto, pasen o no por todos: RME144),
  *                               unaPorSalida (una por cada primer tramo que usan: AR18), ordenarTodos ((nodos − 2)!: todos
- *                               los órdenes de los de en medio) }.
+ *                               los órdenes de los de en medio: RME194) }.
  *   franjaSucesion({ hasta, filas, desde, llegada })   en la franja de n = 1, 2, … 'hasta' (a lo más 10) cuenta por fuerza
  *                               bruta las rutas sin repetir punto entre dos esquinas ('abajo-izquierda', 'abajo-derecha',
  *                               'arriba-izquierda', 'arriba-derecha'; por defecto de 'abajo-izquierda' a 'arriba-derecha').
@@ -92,12 +92,13 @@
  *                               null), formula ('2^n' si valores[n − 1] = 2^n para todo n; si no, null) }.
  *   franjaPrediccion({ n, filas })   de la esquina de abajo a la izquierda a la de arriba a la derecha en la franja de n
  *                               (n ≥ 3). { total, sucesion (de 1 a n), errores: lineal (sigue de 2 en 2 desde los dos
- *                               primeros casos: valores[0] + (n − 1)(valores[1] − valores[0]): RME144), porPuntos (2^(n + 1):
- *                               una elección por cada columna de puntos), cuadrado (n²) }.
+ *                               primeros casos: valores[0] + (n − 1)(valores[1] − valores[0]): RME167), porPuntos (2^(n + 1):
+ *                               una elección por cada columna de puntos: RME197), cuadrado (n²) }, y aparte unPalito (las
+ *                               rutas que usan un solo palito vertical: n + 1; RME141).
  *   helice({ radio | contorno, altura, vueltas })   la hormiga sube por fuera de un cilindro dando 'vueltas' vueltas
  *                               (entero ≥ 1), de un punto del borde de abajo al que está justo encima en el borde de arriba.
  *                               { L (√(altura² + (vueltas · contorno)²)), exacto, ancho (vueltas · contorno), alto, anchoTexto,
- *                               errores: unaVuelta (√(altura² + contorno²): RME31), porBorde (altura + ancho: RME31),
+ *                               errores: unaVuelta (√(altura² + contorno²): RME199), porBorde (altura + ancho: RME31),
  *                               cadaVuelta (vueltas · √(altura² + contorno²): cada vuelta con toda la altura: RME145),
  *                               exactos }. Con 'radio', contorno = 2π·radio (los exactos llevan π); 'contorno' lo da directo.
  *   tarro({ radio | contorno, afuera, adentro, fraccion })   tarro sin tapa: la hormiga está por fuera, 'afuera' bajo el
@@ -105,23 +106,31 @@
  *                               por defecto 0,5: al otro lado). Al desarrollar, la pared de adentro se refleja sobre el
  *                               borde. { L (√((fraccion · contorno)² + (afuera + adentro)²)), exacto, ancho, alto, anchoTexto,
  *                               errores: porBorde (afuera + ancho + adentro: RME31), sinReflejar (√(ancho² + (afuera −
- *                               adentro)²): RME146), vueltaEntera (√(contorno² + (afuera + adentro)²)), exactos }.
+ *                               adentro)²): RME146), vueltaEntera (√(contorno² + (afuera + adentro)²): RME31), exactos }.
  *   tangentes({ radio, altura, radio2 })   dos cilindros parados, de la misma altura, tangentes a lo largo de una recta. La
  *                               hormiga sale del borde de abajo del primero, del lado opuesto a la recta de contacto, y
  *                               llega al borde de arriba del segundo, del lado opuesto. { L (√(altura² + (π·radio +
  *                               π·radio2)²)), exacto, ancho, anchoTexto, errores: porBorde (altura + ancho: RME31),
- *                               unCilindro (√(altura² + (π·radio)²): desarrolla uno solo: RME147), exactos }. radio2 = radio
- *                               si no se da.
+ *                               unCilindro (√(altura² + (π·radio)²): desarrolla uno solo: RME147), exactos, y aparte porElAire
+ *                               (√(altura² + (2·radio + 2·radio2)²): la recta por el aire entre los dos puntos) y
+ *                               porElAireExacto }. radio2 = radio si no se da.
  *   tapa({ radio, altura })     tarro con tapa: de un punto del borde de abajo al centro de la tapa, por fuera. Prueba,
  *                               desarrollando la tapa pegada al borde en 4001 puntos, cuál es la menor. { L (altura +
  *                               radio), exacto, errores: diagonal (√(altura² + radio²): por dentro) }.
+ *   tapaOpuesto({ radio, altura })   tarro con tapa: de un punto del borde de abajo al punto del borde de arriba
+ *                               diametralmente opuesto. Compara porTapa (altura + 2·radio: sube derecho y cruza la tapa por
+ *                               el diámetro) con porCostado (√(altura² + (π·radio)²): media vuelta por el costado) y barre
+ *                               en 20 001 pasos los caminos que suben por el costado hasta un punto del borde y cruzan la
+ *                               tapa en línea recta. { L (el menor), mejor ('tapa' | 'costado' | 'mixto', si la barrida
+ *                               encuentra uno más corto que los dos), porTapa, porCostado, exactoTapa, exactoCostado,
+ *                               errores: el de los dos que no es el menor (porTapa o porCostado) }.
  *   maximoSinRepetir(est, { desde, hasta })   el recorrido más largo de 'desde' a 'hasta' sin repetir tramo (puede pasar
  *                               por 'hasta' antes de terminar), por fuerza bruta (a lo más 24 tramos). { total (suma de
  *                               todos los tramos), maximo, quitado (total − maximo), ruta ({ nodos, tramos } de un recorrido
  *                               de ese largo), sobran (índices de los tramos que esa ruta no usa), impares (nodos de grado
  *                               impar), quitarMinimo (lo mínimo que hay que quitar para que solo 'desde' y 'hasta' queden
  *                               impares: empareja los nodos que deben cambiar de paridad por el camino más corto), errores:
- *                               todas (total), unaPorImpar (total − (nodos que deben cambiar de paridad) · el tramo más
+ *                               todas (total: RME143), unaPorImpar (total − (nodos que deben cambiar de paridad) · el tramo más
  *                               corto: RME148), sumar (total + quitarMinimo: el recorrido mínimo que pasa por todo: RME149) }.
  *   revisarQuitar(est, { desde, hasta, quitados })   se sacan los tramos 'quitados'. { impares (de lo que queda), conexa
  *                               (todos los tramos que quedan están unidos a 'desde'), sePuede (lo que queda se recorre entero
@@ -142,8 +151,10 @@
  *
  * Respaldos (docs/investigacion/razonamiento-espacial-ideas-erroneas.md y aritmetica-razonamiento-ideas-erroneas.md):
  * listar rutas al tanteo y olvidar algunas es AR18 (documentado con cifra por confirmar; aquí «parcial»). Los RME son
- * hipótesis nuestras: RME30 (sumar tramos en vez de multiplicarlos), RME31 (no desarrollar o desarrollar una sola
- * vuelta), RME32 (dejar fuera la condición de dirección) y los nuevos RME140 a RME149 de esta plantilla.
+ * hipótesis nuestras: RME30 (sumar tramos en vez de multiplicarlos), RME31 (no desarrollar la superficie: medir por el
+ * borde o con la vuelta entera), RME32 (dejar fuera la condición de dirección) y los de esta plantilla: RME140, RME141,
+ * RME142, RME143, RME144, RME145, RME146, RME147, RME148, RME149, RME167, RME186, RME189, RME194, RME195, RME197,
+ * RME198 y RME199.
  */
 (function (root, fabrica) {
   const motor = fabrica();
@@ -518,7 +529,10 @@
     const S = franjaSucesion({ hasta: n, filas: o.filas });
     const v = S.valores, total = v[n - 1];
     const lista = [['lineal', v[0] + (n - 1) * (v[1] - v[0])], ['porPuntos', Math.pow(2, n + 1)], ['cuadrado', n * n]];
-    return Object.assign({ total, sucesion: v }, separar(total, lista));
+    // las rutas que usan un solo palito vertical (contadas en la lista del motor)
+    const f = franja({ n, filas: o.filas }), verticales = new Set(f.tramos.map((t, k) => k).filter(k => f.nodos[f.tramos[k][0]][0] === f.nodos[f.tramos[k][1]][0]));
+    const unPalito = enumerar(f, 0, f.nodos.length - 1, 'punto').filter(r => r.tramos.filter(k => verticales.has(k)).length === 1).length;
+    return Object.assign({ total, sucesion: v, unPalito }, separar(total, lista));
   }
 
   // ---------- Cilindros ----------
@@ -571,7 +585,23 @@
     const exactos = {};
     if ('porBorde' in sep.errores) exactos.porBorde = `${fmtNum(h)} + ${b === 1 ? '' : fmtNum(b)}π`;
     if ('unCilindro' in sep.errores) exactos.unCilindro = exactoDe(h * h, r * r);
-    return Object.assign({ L, exacto: exactoDe(h * h, b * b), ancho, anchoTexto: `${b === 1 ? '' : fmtNum(b)}π` }, sep, { exactos });
+    const aire = Math.hypot(h, 2 * b);
+    return Object.assign({ L, exacto: exactoDe(h * h, b * b), ancho, anchoTexto: `${b === 1 ? '' : fmtNum(b)}π`, porElAire: aire, porElAireExacto: exactoDe(h * h + 4 * b * b, 0) }, sep, { exactos });
+  }
+  // Tarro con tapa: del borde de abajo al punto del borde de arriba diametralmente opuesto.
+  function tapaOpuesto(o) {
+    objeto(o, 'las opciones');
+    const r = numero(o.radio, 'el radio', { positivo: true }), h = numero(o.altura, 'la altura', { positivo: true });
+    const porTapa = h + 2 * r, porCostado = Math.hypot(h, Math.PI * r);
+    // sube por el costado hasta el punto del borde a φ (de 0 a π) y cruza la tapa en línea recta
+    let minimo = Infinity, phi = 0;
+    for (let k = 0; k <= 20000; k++) { const f = Math.PI * k / 20000, v = Math.hypot(h, r * f) + 2 * r * Math.sin((Math.PI - f) / 2); if (v < minimo - 1e-12) { minimo = v; phi = f; } }
+    const menor = Math.min(porTapa, porCostado);
+    const mejor = Math.abs(minimo - menor) > 1e-6 ? 'mixto' : (porTapa <= porCostado ? 'tapa' : 'costado');
+    const L = mejor === 'mixto' ? minimo : menor;
+    const exactoTapa = fmtNum(porTapa), exactoCostado = exactoDe(h * h, r * r);
+    const lista = mejor === 'tapa' ? [['porCostado', porCostado]] : mejor === 'costado' ? [['porTapa', porTapa]] : [['porTapa', porTapa], ['porCostado', porCostado]];
+    return Object.assign({ L, mejor, porTapa, porCostado, exactoTapa, exactoCostado }, separar(L, lista));
   }
   function tapa(o) {
     objeto(o, 'las opciones');
@@ -668,6 +698,6 @@
   };
 
   return { cubos, piramide, tronco, hexagono, franja, rutasSinRepetir, dirigidas, porTramos, pasoObligado, hamiltonianos, soltarDireccion, compararRepetir,
-    franjaSucesion, franjaPrediccion, helice, tarro, tangentes, tapa, maximoSinRepetir, revisarQuitar, longitud, multinomial,
+    franjaSucesion, franjaPrediccion, helice, tarro, tangentes, tapa, tapaOpuesto, maximoSinRepetir, revisarQuitar, longitud, multinomial,
     radical, exactoPi, estructuras, grados, distancias };
 });

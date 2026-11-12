@@ -2,7 +2,7 @@
  "plantilla": "rutas-espacio",
  "unidades": "Estructuras de alambre con nodos [x, y, z] (z hacia arriba) numerados desde 0 y tramos [i, j] (o [i, j, longitud]); los cubitos miden 1 salvo que se diga. Longitudes de cilindros en centímetros. Una franja de n tiene n cuadraditos de lado 1 en una fila.",
  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.potencia, rutas.0.pasos); las listas, objetos y textos se comparan completos; la clave '' es el resultado entero. 'tambien' son llamadas extra del mismo caso (con 'fn' propia si la traen). Un argumento {\"estructura\": \"ele\"} es la estructura motor.estructuras.ele (ver la cabecera de motor.js).",
- "verificacion": "",
+ "verificacion": "Verificador independiente (subagente, 12 nov 2026), sin leer el código del motor ni casos.json: armó los grafos a mano y contó por DFS propio (tabla dirigida por suma de predecesores, hamiltonianos por permutaciones, quitarMinimo por búsqueda exhaustiva) y desarrolló los cilindros con √ y π exactos. Los 137 campos de los 23 casos coinciden. Los casos 23 a 26 (tapaOpuesto, unPalito, porElAire y hamiltonianos en la pirámide), agregados tras la revisión, se verificaron aparte con el mismo método; en tapaOpuesto se barrió además el camino mixto √(h² + (rφ)²) + 2r·cos(φ/2) en φ ∈ [0, π] y nunca gana a los dos puros. Coinciden sus 25 campos.",
  "tolerancia": 1e-9,
  "casos": [
   {
@@ -1071,6 +1071,107 @@
      "todasSimples": 18,
      "unaPorSalida": 3,
      "ordenarTodos": 720
+    },
+    "coinciden": []
+   }
+  },
+  {
+   "nombre": "Tarro con tapa de radio 5 y altura 6, del borde de abajo al punto opuesto del borde de arriba: por la tapa 16, por el costado √(36 + 25π²) ≈ 16,8; con radio 4 gana el costado",
+   "fn": "tapaOpuesto",
+   "args": [
+    {
+     "radio": 5,
+     "altura": 6
+    }
+   ],
+   "espera": {
+    "L": 16,
+    "mejor": "tapa",
+    "porTapa": 16,
+    "porCostado": 16.814877639377396,
+    "exactoTapa": "16",
+    "exactoCostado": "√(36 + 25π²)",
+    "errores": {
+     "porCostado": 16.814877639377396
+    },
+    "coinciden": []
+   },
+   "tambien": [
+    {
+     "args": [
+      {
+       "radio": 4,
+       "altura": 6
+      }
+     ],
+     "espera": {
+      "L": 13.925288880932765,
+      "mejor": "costado",
+      "porTapa": 14,
+      "porCostado": 13.925288880932765,
+      "errores": {
+       "porTapa": 14
+      }
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Distractor de la franja de 6: las rutas que usan un solo palito vertical son 7",
+   "fn": "franjaPrediccion",
+   "args": [
+    {
+     "n": 6
+    }
+   ],
+   "espera": {
+    "unPalito": 7,
+    "total": 64
+   }
+  },
+  {
+   "nombre": "Predicción de las dos latas (radio 3, altura 8): la recta por el aire entre los dos puntos mide 4√13",
+   "fn": "tangentes",
+   "args": [
+    {
+     "radio": 3,
+     "altura": 8
+    }
+   ],
+   "espera": {
+    "L": 20.4769567670398,
+    "exacto": "2√(16 + 9π²)",
+    "porElAire": 14.422205101855958,
+    "porElAireExacto": "4√13",
+    "errores": {
+     "porBorde": 26.84955592153876,
+     "unCilindro": 12.362299123132567
+    },
+    "coinciden": []
+   }
+  },
+  {
+   "nombre": "Pirámide de hilos: de A a la esquina vecina B pasando una vez por los 5 puntos → 3 rutas",
+   "fn": "hamiltonianos",
+   "args": [
+    {
+     "estructura": "piramide"
+    },
+    {
+     "desde": 0,
+     "hasta": 1
+    }
+   ],
+   "espera": {
+    "total": 3,
+    "porInicio": {
+     "3": 2,
+     "4": 1
+    },
+    "errores": {
+     "todasSimples": 8,
+     "unaPorSalida": 2,
+     "ordenarTodos": 6
     },
     "coinciden": []
    }

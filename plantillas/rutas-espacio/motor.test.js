@@ -60,7 +60,7 @@ function comprobar(fn, args, espera, que) {
 // 1. casos.json
 test('casos.json: formato', () => {
   assert.equal(datos.plantilla, 'rutas-espacio');
-  assert.ok(datos.casos.length >= 16 && datos.casos.length <= 26);
+  assert.ok(datos.casos.length >= 16 && datos.casos.length <= 30);
   for (const c of datos.casos) assert.ok(c.nombre && c.fn && Array.isArray(c.args) && c.espera, JSON.stringify(c).slice(0, 80));
   assert.equal(datos.verificacion !== undefined, true);
 });
@@ -280,6 +280,18 @@ test('los distractores de las predicciones de la escena no coinciden con la resp
   for (const [r, k] of R) { sinChoques(r, r[k], k); assert.equal(r.coinciden.length, 0, 'ningún error de la escena coincide'); assert.equal(r.repetidos, undefined); }
   const P = motor.pasoObligado(S.unidosVertice, { desde: 0, paso: 7, hasta: 18, dirigido: true });
   assert.ok(P.todasPasan); assert.equal(P.producto, P.total);
+});
+
+test('franja: las de un solo palito son n + 1; tapa: el menor de los dos caminos y la barrida; latas: la recta por el aire', () => {
+  for (let n = 3; n <= 7; n++) { const P = motor.franjaPrediccion({ n }); assert.equal(P.unPalito, n + 1); assert.ok(P.unPalito !== P.total && !Object.values(P.errores).includes(P.unPalito)); }
+  for (let q = 0; q < 30; q++) {
+    const r = ent(1, 8), h = ent(1, 12), T = motor.tapaOpuesto({ radio: r, altura: h });
+    assert.ok(T.L <= Math.min(T.porTapa, T.porCostado) + 1e-9);
+    for (let k = 0; k <= 200; k++) { const f = Math.PI * k / 200; assert.ok(Math.hypot(h, r * f) + 2 * r * Math.sin((Math.PI - f) / 2) >= T.L - 1e-6); }
+    sinChoques(T, T.L, 'tapaOpuesto');
+  }
+  const G = motor.tangentes({ radio: 3, altura: 8 });
+  assert.ok(!casi(G.porElAire, G.L) && !Object.values(G.errores).some(v => casi(v, G.porElAire)));
 });
 
 test('exactos con π', () => {

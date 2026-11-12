@@ -144,3 +144,27 @@ RME3 (solo los cubitos visibles) se parece a GE13 de `geometria-ideas-erroneas.m
 | RME127 | Olvidar la mitad en blanco (el 0) del dominó. |
 | RME128 | En una cadena de dominó, elegir las fichas ocultas sin respetar que las mitades que se tocan son iguales. |
 | RME129 | Responder el otro extremo (el máximo por el mínimo). |
+
+### rutas-espacio
+
+| Código | Error |
+| --- | --- |
+| RME140 | Aplicar la fórmula de la caja completa (n!/(a!b!c!)) a una estructura a la que le faltan cubitos o aristas. |
+| RME141 | Contar solo las rutas más cortas cuando se piden todas las que no repiten punto. |
+| RME142 | Al usar la simetría, duplicar también las rutas que van sobre el eje. |
+| RME143 | En el recorrido máximo, creer que se recorren todas las aristas sin mirar los vértices impares. |
+| RME144 | No aplicar «pasa por todos los puntos»: contar todas las rutas simples. |
+| RME145 | En la hélice de k vueltas, tomar cada vuelta con toda la altura: k·√(h² + C²). |
+| RME146 | No reflejar la pared de adentro al desarrollar el tarro (restar las distancias al borde en vez de sumarlas). |
+| RME147 | Con dos cilindros tangentes, desarrollar uno solo. |
+| RME148 | En el recorrido máximo, quitar un tramo por cada vértice impar en vez de uno por cada par de impares. |
+| RME149 | Sumar lo que se repite en vez de quitarlo (confundir el máximo sin repetir con el mínimo que pasa por todo). |
+| RME194 | Permutar todos los vértices de en medio sin mirar si hay alambre entre ellos. |
+| RME195 | Tomar «sin repetir punto» como si fuera «sin repetir tramo» (o al revés) y dar el mismo número. |
+| RME196 | Creer que, si se pueden repetir puntos, las rutas son infinitas aunque no se repitan tramos. |
+| RME197 | En la franja, contar 2 opciones por punto (2^puntos) en vez de por columna. |
+| RME198 | Duplicar el total por una vuelta o un sentido extra. |
+| RME199 | Desarrollar una sola vuelta del cilindro cuando la hormiga da varias. |
+| RME201 | Medir el camino por el aire (la recta entre los puntos) en vez de sobre la superficie. |
+
+En rutas-espacio también se usan RME31, RME167 (seguir 2, 4, 6…), RME186 (multiplicar alternativas) y RME189 (tres opciones en cada paso: 3^n).
