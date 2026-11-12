@@ -1,0 +1,151 @@
+{
+  "id": "t112",
+  "version": 1,
+  "titulo": "Árboles para las alturas",
+  "tema": "Ambiente · reforestación en los Andes",
+  "grado": 3,
+  "dificultad": 1,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    { "id": "A", "desde": 0, "firma": "Una ingeniera forestal" },
+    { "id": "B", "desde": 1, "firma": "Un técnico agropecuario de Puno" }
+  ],
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "principal", "t": "Para reforestar las alturas andinas conviene sembrar árboles nativos, como la queñua, y no especies traídas de otros lugares." },
+      { "id": "o2", "rol": "apoyo", "t": "La queñua puede crecer a gran altura y soporta las heladas de la puna." },
+      { "id": "o3", "rol": "apoyo", "t": "Sus bosques guardan humedad y dan refugio a aves e insectos que dependen de ellos." },
+      { "id": "o4", "rol": "contraste", "t": "En cambio, un árbol traído de lejos puede crecer rápido, pero no ofrece el mismo refugio a los animales de la zona." },
+      { "id": "o5", "rol": "principal", "t": "Por eso, cada campaña de siembra en la sierra debería empezar por preguntarse qué árboles crecían allí antes." }
+    ],
+    [
+      { "id": "o6", "rol": "apoyo", "t": "Estoy de acuerdo en que la queñua y las otras especies nativas son la mejor elección para las alturas." },
+      { "id": "o7", "rol": "contraste", "t": "Pero he visto campañas que sembraron miles de plantones nativos y, al año siguiente, casi no quedaba ninguno." },
+      { "id": "o8", "rol": "apoyo", "t": "Algunos se secaron porque nadie los regó en los meses sin lluvia; a otros se los comieron las ovejas y las alpacas que pastaban en el mismo cerro." },
+      { "id": "o9", "rol": "principal", "t": "Sembrar es solo el comienzo: sin agua en la época seca y sin cercar el terreno mientras los árboles crecen, los plantones no sobreviven." },
+      { "id": "o10", "rol": "apoyo", "t": "Por eso, la comunidad que vive junto al cerro tiene que participar desde el principio, porque es ella la que cuidará los árboles." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "coincidencia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Para reforestar las alturas lo mejor es usar árboles nativos.",
+        "aceptada": "ambos",
+        "codigos": { "A": "RV61", "B": "RV61", "ninguno": null },
+        "explicacion": "Los dos lo sostienen: el texto A lo dice en la oración 1 y el texto B lo acepta en la oración 6 («estoy de acuerdo»).",
+        "explicaciones": {
+          "A": "El texto A lo dice, pero el B también: «estoy de acuerdo en que la queñua y las otras especies nativas son la mejor elección» (oración 6).",
+          "B": "El texto B lo dice en la oración 6, pero lo dice como acuerdo con el A, que lo sostiene en la oración 1.",
+          "ninguno": "Los dos lo sostienen: el texto A en la oración 1 y el B en la oración 6."
+        }
+      },
+      "enunciado": "¿En qué coinciden los autores de los dos textos?",
+      "alternativas": [
+        { "t": "En que las especies nativas son las más adecuadas para reforestar las alturas.", "correcta": true, "evidencia": ["o1", "o6"],
+          "explicacion": "El texto A lo defiende en la oración 1 y el B lo acepta en la oración 6 antes de añadir su advertencia." },
+        { "t": "En que hay que regar los plantones y cercar el terreno mientras los árboles crecen.", "codigo": "RV60", "origen": "o9",
+          "explicacion": "Eso lo dice solo el texto B (oración 9). El texto A no habla del agua ni del ganado." },
+        { "t": "En que conviene sembrar especies nativas y en que basta con sembrarlas.", "codigo": "RV62", "origen": "o9",
+          "explicacion": "La primera mitad es el punto en común, pero la segunda la niega el texto B: «sembrar es solo el comienzo» (oración 9)." },
+        { "t": "En que los bosques de queñua están desapareciendo de la sierra.", "codigo": "RV8",
+          "explicacion": "Ninguno de los dos textos dice eso. Puede sonar conocido, pero no sale de lo que se leyó." },
+        { "t": "En que ningún árbol traído de otro lugar debe sembrarse jamás en el Perú.", "codigo": "RV11", "origen": "o4",
+          "explicacion": "Dice mucho más que los textos: el A habla de las alturas andinas, no de todo el Perú, y no usa un «jamás»." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "postura",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Muchos plantones mueren porque nadie los riega ni los protege del ganado.",
+        "aceptada": "B",
+        "codigos": { "A": "RV59", "ambos": "RV60", "ninguno": null },
+        "explicacion": "Lo dice el texto B en la oración 8: unos se secaron sin riego y a otros se los comió el ganado. El texto A no habla de eso.",
+        "explicaciones": {
+          "A": "El texto A habla de qué árbol sembrar, no de por qué mueren los plantones. Eso lo cuenta el texto B (oración 8).",
+          "ambos": "Solo el texto B lo sostiene. El texto A no menciona el riego ni el ganado.",
+          "ninguno": "Sí lo sostiene alguien: el texto B, en la oración 8."
+        }
+      },
+      "enunciado": "¿Qué sostiene principalmente el autor del texto B?",
+      "alternativas": [
+        { "t": "Que los plantones nativos solo sobreviven si tienen agua y están protegidos del ganado.", "correcta": true, "evidencia": ["o9"],
+          "explicacion": "Es su idea central (oración 9): sembrar es solo el comienzo; sin agua y sin cerco, los plantones mueren." },
+        { "t": "Que cada siembra debe empezar por averiguar qué árboles crecían antes en el lugar.", "codigo": "RV59", "origen": "o5",
+          "explicacion": "Eso lo propone el texto A en la oración 5, no el B." },
+        { "t": "Que las ovejas y las alpacas se comen los plantones.", "codigo": "RV1", "origen": "o8",
+          "explicacion": "Es un ejemplo que el texto B usa para sostener su idea, no la idea misma." },
+        { "t": "Que la queñua no sirve para reforestar porque se seca en los meses sin lluvia.", "codigo": "RV33", "origen": "o8",
+          "explicacion": "El texto B dice lo contrario sobre la queñua: que es «la mejor elección» (oración 6). Lo que falla es el cuidado, no la especie." },
+        { "t": "Que es mejor no reforestar las alturas mientras no llueva durante todo el año en la sierra.", "codigo": "RV7",
+          "explicacion": "El texto B no pide dejar de reforestar: pide regar en la época seca y cercar el terreno." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "dialogo",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Después de leer el texto A, el autor del texto B probablemente le añadiría que",
+      "alternativas": [
+        { "t": "elegir bien la especie no basta si después nadie cuida los plantones.", "correcta": true, "evidencia": ["o6", "o9"],
+          "explicacion": "El texto B acepta la elección de especies nativas (oración 6), pero agrega que sin agua y sin cerco no sobreviven (oración 9)." },
+        { "t": "la queñua es una mala elección para las alturas.", "codigo": "RV61", "origen": "o6",
+          "explicacion": "En eso no discrepan: el texto B dice que las especies nativas son «la mejor elección»." },
+        { "t": "los bosques de queñua dan refugio a aves de la zona.", "codigo": "RV59", "origen": "o3",
+          "explicacion": "Ese argumento ya está en el texto A (oración 3); no es lo que el B le agregaría." },
+        { "t": "el cuidado del ambiente es una tarea de todos los peruanos.", "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto B habla del riego, del ganado y de la comunidad junto al cerro, no del ambiente en general." },
+        { "t": "un árbol traído de otro lugar crece más rápido que la queñua y además da más madera.", "codigo": "RV8", "origen": "o4",
+          "explicacion": "El texto B no habla de madera ni compara la rapidez de los árboles. Es un saber de fuera del texto." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto A, la palabra REFUGIO («dan refugio a aves e insectos») significa",
+      "alternativas": [
+        { "t": "un lugar donde vivir protegidos.", "correcta": true, "evidencia": ["o3"],
+          "explicacion": "Los bosques de queñua son el lugar donde esas aves e insectos viven y se protegen." },
+        { "t": "una casa para viajeros en la montaña.", "codigo": "RV18",
+          "explicacion": "Es un sentido común de «refugio», pero aquí no se habla de viajeros, sino de animales." },
+        { "t": "un nido de aves.", "codigo": "RV19",
+          "explicacion": "«Nido» es del mismo campo (las aves), pero el refugio del texto también es para insectos y es todo el bosque." },
+        { "t": "un terreno cercado para que no entre el ganado.", "codigo": "RV5", "origen": "o9",
+          "explicacion": "Toma palabras del texto B (oración 9), que habla de otra cosa: de cercar los plantones." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Del texto B se deduce que una campaña de reforestación",
+      "alternativas": [
+        { "t": "debería juzgarse por los árboles que siguen vivos, no por los que se sembraron.", "correcta": true, "evidencia": ["o7", "o9"],
+          "explicacion": "El texto B cuenta campañas de miles de plantones de las que casi no quedó ninguno (oración 7): sembrar muchos no es lograr un bosque." },
+        { "t": "siempre fracasa cuando se hace en cerros donde hay ganado.", "codigo": "RV11", "origen": "o8",
+          "explicacion": "El texto B no dice «siempre»: propone cercar el terreno para que el ganado no se coma los plantones." },
+        { "t": "fracasa sobre todo porque elige mal las especies que siembra.", "codigo": "RV7", "origen": "o7",
+          "explicacion": "El texto B cuenta campañas que sembraron especies nativas, la mejor elección para él (oración 6), y aun así fracasaron: lo que faltó fue el riego y el cerco." },
+        { "t": "debe elegir árboles que den refugio a las aves.", "codigo": "RV59", "origen": "o3",
+          "explicacion": "Esa razón para elegir especies es del texto A (oración 3), no algo que se deduzca del B." },
+        { "t": "no necesita a la comunidad si los técnicos que siembran conocen bien el cerro y el clima.", "codigo": "RV33", "origen": "o10",
+          "explicacion": "El texto B dice lo contrario: la comunidad tiene que participar desde el principio (oración 10)." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-08",
+  "hechos": [
+    { "afirmacion": "La queñua (género Polylepis) es un árbol nativo de los Andes que crece a gran altura y soporta heladas.", "fuente": "SERFOR (Servicio Nacional Forestal y de Fauna Silvestre), información sobre especies forestales nativas altoandinas del género Polylepis" }
+  ],
+  "revision": { "por": "subagente (revisor a ciegas)", "fecha": "2026-11-08", "veredicto": "aprobado", "notas": "Coincidí a ciegas en 7 de 7. Cambié en p5 un distractor débil (el dinero del Estado) por uno que confunde la especie con el cuidado; el hecho de la queñua (Polylepis) es correcto." }
+}

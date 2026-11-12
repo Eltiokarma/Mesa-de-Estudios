@@ -86,9 +86,9 @@ function vista(ctx, curso, fase) {
         <div class="stat"><div class="n">${b.minutos}</div><div class="l">minutos, más o menos</div></div></div>
       ${fase === 'entrada'
         ? `<p><b>No es nota.</b> Sirve para saber de dónde partes y, al final del curso, cuánto avanzaste. Tus respuestas se guardan sin tu nombre.</p>
-           <p>Si no sabes una, elige la que te parezca más razonable: no se descuenta nada. Esta vez no te diremos cuáles acertaste; lo verás al final, con la prueba de salida.</p>`
+           <p><b>Si no lo sabes, marca «No sé»:</b> nos ayuda más que adivinar. No se descuenta nada. Esta vez no te diremos cuáles acertaste; lo verás al final, con la prueba de salida.</p>`
         : `<div class="aviso">Tu profesor abrió la prueba de salida.</div>
-           <p>Son preguntas <b>parecidas</b> a las de la entrada, no las mismas. Se hace una sola vez.</p>
+           <p>Son preguntas <b>parecidas</b> a las de la entrada, no las mismas. Se hace una sola vez. Si no lo sabes, marca «No sé».</p>
            <p>Al terminar verás cuántas acertaste antes y ahora.</p>`}
       <div class="acciones-prueba"><button class="btn morado" id="empezar">Empezar</button>
         <button class="btn borde" id="luego">${fase === 'entrada' ? 'Ahora no' : 'Todavía no'}</button></div></div>`;
@@ -114,29 +114,32 @@ function vista(ctx, curso, fase) {
         <div class="etq-p">Pregunta ${k + 1} de ${lista.length}</div>
         <p class="enun">${esc(it.enunciado)}</p>
         <div class="alts" role="group" aria-label="Alternativas">${ops.map(o =>
-          `<button class="alt" data-letra="${o.letra}"><span class="letra">${o.letra}</span><span>${esc(o.texto)}</span></button>`).join('')}</div>
-        <p class="solo-teclado">Con teclado: <kbd>A</kbd>–<kbd>${ops[ops.length - 1].letra}</kbd> o <kbd>1</kbd>–<kbd>${ops.length}</kbd> para elegir.</p>
+          `<button class="alt" data-letra="${o.letra}"><span class="letra">${o.letra}</span><span>${esc(o.texto)}</span></button>`).join('')}
+          <button class="alt nose" data-nose="1">${Pruebas.NOSE_TEXTO}</button></div>
+        <p class="solo-teclado">Con teclado: <kbd>A</kbd>–<kbd>${ops[ops.length - 1].letra}</kbd> o <kbd>1</kbd>–<kbd>${ops.length}</kbd> para elegir, <kbd>0</kbd> o <kbd>N</kbd> para «No sé».</p>
       </article>`;
     $app.querySelectorAll('.alt').forEach(btn => btn.onclick = () => {
       if (btn.disabled) return;
       $app.querySelectorAll('.alt').forEach(x => { x.disabled = true; });
       btn.classList.add('elegida'); // solo marca la elegida: no dice si está bien
-      const o = ops.find(x => x.letra === btn.dataset.letra), r = Pruebas.corregir(o), ms = Date.now() - t0;
-      ec.respuestas.push({ item: it.id, par: it.par, indice: o.indice, letra: o.letra, correcta: r.correcta, error: r.error });
+      // «No sé»: sin opción, ni acierto ni error de un código (nucleo/pruebas.js).
+      const o = btn.dataset.nose ? null : ops.find(x => x.letra === btn.dataset.letra), r = Pruebas.corregir(o), ms = Date.now() - t0;
+      ec.respuestas.push(r.nose ? { item: it.id, par: it.par, indice: -1, letra: Pruebas.NOSE_MARCA, correcta: false, error: '', nose: true }
+        : { item: it.id, par: it.par, indice: o.indice, letra: o.letra, correcta: r.correcta, error: r.error });
       ec.ms += ms; guardar();
       registrar({ tipo: 'item', fase, curso, forma: ec.forma, orden: st.orden, banco: b.version, item: it.id, par: it.par,
-        plantilla: it.plantilla, unidad: it.unidad, opcion: r.opcion, correcta: r.correcta, error: r.error, ms });
+        plantilla: it.plantilla, unidad: it.unidad, opcion: r.opcion, correcta: r.correcta, error: r.error, ...(r.nose ? { nose: true } : {}), ms });
       setTimeout(pregunta, 180);
     });
     window.scrollTo(0, 0);
   }
 
   function terminar() {
-    const ec = st.enCurso, aciertos = ec.respuestas.filter(r => r.correcta).length, total = ec.respuestas.length;
+    const ec = st.enCurso, aciertos = ec.respuestas.filter(r => r.correcta).length, total = ec.respuestas.length, nose = ec.respuestas.filter(r => r.nose).length;
     const dias = fase === 'salida' && st.entrada ? Math.max(0, Math.round((Date.now() - Date.parse(st.entrada.fecha)) / 864e5)) : undefined;
     registrar({ tipo: 'prueba', fase, curso, forma: ec.forma, orden: st.orden, banco: b.version, aciertos, total,
-      respuestas: ec.respuestas.map(r => r.letra).join(''), ms: ec.ms, origen: ec.origen, previas: ec.previas, dias });
-    st[fase] = { forma: ec.forma, aciertos, total, fecha: new Date().toISOString(), respuestas: ec.respuestas, banco: b.version };
+      respuestas: ec.respuestas.map(r => r.letra).join(''), nose, ms: ec.ms, origen: ec.origen, previas: ec.previas, dias });
+    st[fase] = { forma: ec.forma, aciertos, total, nose, fecha: new Date().toISOString(), respuestas: ec.respuestas, banco: b.version };
     delete st.enCurso; guardar(); ctx.marcarDia();
     if (fase === 'salida') resultado(); else listo();
   }
@@ -169,17 +172,18 @@ function vista(ctx, curso, fase) {
     if (sol) {
       const porPar = l => Object.fromEntries((l || []).map(r => [r.par, r]));
       const pe = porPar(e && e.respuestas), ps = porPar(s.respuestas);
-      const marca = r => !r ? '<span class="sub">—</span>' : r.correcta ? '<span class="ok-t">✓ bien</span>' : '<span class="mal-t">✗</span>';
+      const marca = r => !r ? '<span class="sub">—</span>' : r.correcta ? '<span class="ok-t">✓ bien</span>' : r.nose ? '<span class="sub">No sé</span>' : '<span class="mal-t">✗</span>';
       const lista = Pruebas.items(b, s.forma);
       html += `<h2>Qué mide cada pregunta</h2>
       <div class="tabla card"><table><thead><tr><th>Tema</th><th>Entrada</th><th>Salida</th></tr></thead><tbody>${b.pares.map(p =>
         `<tr><td style="white-space:normal">${esc(p.mide)}</td><td>${marca(pe[p.par])}</td><td>${marca(ps[p.par])}</td></tr>`).join('')}</tbody></table></div>
       <h2>Tus respuestas de salida</h2>
       <div class="lista revision">${lista.map((it, k) => {
-        const r = ps[it.par], el = r ? it.opciones[r.indice] : null, ok = it.opciones.find(o => o.correcta), err = el && !el.correcta && b.errores[el.error];
-        return `<details class="card"${r && !r.correcta ? ' open' : ''}><summary>${k + 1}. ${r && r.correcta ? '✓' : '✗'} ${esc(it.mide)}</summary>
+        const r = ps[it.par], el = r && !r.nose ? it.opciones[r.indice] : null, ok = it.opciones.find(o => o.correcta), err = el && !el.correcta && b.errores[el.error];
+        return `<details class="card"${r && !r.correcta ? ' open' : ''}><summary>${k + 1}. ${r && r.correcta ? '✓' : r && r.nose ? '·' : '✗'} ${esc(it.mide)}</summary>
           <p>${esc(it.enunciado)}</p>
           ${el ? `<p>Elegiste: <b>${esc(el.texto)}</b>${el.correcta ? ' <span class="ok-t">¡Bien!</span>' : ''}</p>` : ''}
+          ${r && r.nose ? `<p>Marcaste «No sé». La correcta: <b>${esc(ok.texto)}</b></p>` : ''}
           ${el && !el.correcta ? `<p>La correcta: <b>${esc(ok.texto)}</b></p>${err ? `<p class="sub">Lo que suele pasar: ${esc(err.describe)}.</p>` : ''}` : ''}
         </details>`; }).join('')}</div>`;
     }
@@ -187,14 +191,15 @@ function vista(ctx, curso, fase) {
   }
 }
 
-// Teclado (laboratorio de cómputo): A–E o 1–5 eligen una alternativa de la prueba.
+// Teclado (laboratorio de cómputo): A–E o 1–5 eligen una alternativa de la prueba; 0 o N, «No sé».
 document.addEventListener('keydown', e => {
   if (!location.hash.startsWith('#/prueba') || e.ctrlKey || e.metaKey || e.altKey || e.repeat) return;
   if (e.target.closest && e.target.closest('input, textarea, select')) return;
   const k = e.key.toUpperCase();
   const letra = /^[A-E]$/.test(k) ? k : /^[1-5]$/.test(k) ? 'ABCDE'[+k - 1] : null;
-  if (!letra) return;
-  const b = document.querySelector(`.alt[data-letra="${letra}"]:not(:disabled)`);
+  const nose = k === '0' || k === 'N';
+  if (!letra && !nose) return;
+  const b = document.querySelector(nose ? '.alt.nose:not(:disabled)' : `.alt[data-letra="${letra}"]:not(:disabled)`);
   if (b) { e.preventDefault(); b.click(); }
 });
 

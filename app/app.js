@@ -385,7 +385,7 @@ function papelLectura(q) {
   const t = q.texto, figs = t.figuras || [];
   const fig = k => figs.filter(f => f.despues === k).map(papelFigura).join('');
   const cuerpo = t.lineas ? t.lineas.map(l => `<p>${esc(l)}</p>`).join('')
-    : fig(0) + (t.parrafos || []).map((par, k) => `<p>${par.map(o => `<sup class="n">${o.n}</sup>${esc(o.t)}`).join(' ')}</p>${fig(k + 1)}`).join('');
+    : fig(0) + (t.parrafos || []).map((par, k) => `${(a => a ? `<h4 class="papel-autor">${esc(a.titulo)}${a.firma ? ` · ${esc(a.firma)}` : ''}</h4>` : '')((t.autores || []).find(a => a.desde === k))}<p>${par.map(o => `<sup class="n">${o.n}</sup>${esc(o.t)}`).join(' ')}</p>${fig(k + 1)}`).join('');
   return `<div class="papel-texto"${t.idioma ? ` lang="${esc(t.idioma)}"` : ''}>${t.lineas ? '' : `<h3>${esc(t.titulo)}</h3>`}${cuerpo}</div>
     <ol class="papel-preg">${q.preguntas.map(p => `<li>${p.previo ? `<p class="papel-previo">${esc(p.previo)}</p>` : ''}<p>${esc(p.enunciado)}</p>
       <ol class="papel-alts">${p.alternativas.map(a => `<li><b>${esc(a.letra)})</b> ${esc(a.t)}</li>`).join('')}</ol></li>`).join('')}</ol>`;

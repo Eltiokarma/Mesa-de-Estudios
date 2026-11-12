@@ -1,0 +1,164 @@
+{
+  "id": "t108",
+  "version": 1,
+  "titulo": "¿Menos visitantes en Machu Picchu?",
+  "tema": "Patrimonio y turismo · el límite de visitantes de Machu Picchu",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    { "id": "A", "desde": 0, "firma": "Una especialista en conservación de monumentos" },
+    { "id": "B", "desde": 1, "firma": "Un guía de turismo del Cusco" }
+  ],
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "apoyo", "t": "Machu Picchu no es un parque de diversiones: es una ciudad de piedra con más de cinco siglos, levantada en lo alto de una montaña de laderas empinadas." },
+      { "id": "o2", "rol": "apoyo", "t": "Cada visitante suma un poco de desgaste: pisadas sobre los mismos escalones, manos que se apoyan en los muros, basura que alguien olvida." },
+      { "id": "o3", "rol": "apoyo", "t": "Uno solo no se nota; miles al día, durante años, gastan la piedra y erosionan los caminos." },
+      { "id": "o4", "rol": "principal", "t": "Por eso el límite diario de visitantes debería bajar, aunque eso signifique vender menos entradas." },
+      { "id": "o5", "rol": "apoyo", "t": "Un monumento que se deteriora no se arregla con dinero: lo que se pierde de una piedra tallada se pierde para siempre." }
+    ],
+    [
+      { "id": "o6", "rol": "apoyo", "t": "Nadie discute que Machu Picchu debe cuidarse; los que vivimos del turismo somos los primeros interesados en que dure." },
+      { "id": "o7", "rol": "contraste", "t": "Pero bajar el límite no es una medida neutral: cada entrada que no se vende es un almuerzo que no se sirve, un cuarto que queda vacío y un guía que no trabaja." },
+      { "id": "o8", "rol": "apoyo", "t": "En los pueblos cercanos, muchas familias no tienen otro ingreso." },
+      { "id": "o9", "rol": "apoyo", "t": "Además, el daño no viene solo de cuántos entran, sino de que entran casi todos a la misma hora y por los mismos lugares." },
+      { "id": "o10", "rol": "principal", "t": "Antes de recortar, conviene repartir a los visitantes en más horarios y en rutas distintas, para que ningún sector cargue con todos." },
+      { "id": "o11", "rol": "apoyo", "t": "Así se protege la piedra sin castigar a quienes la han mostrado por generaciones." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "controversia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "¿Cuál es el tema en controversia entre los dos textos?",
+      "alternativas": [
+        { "t": "Si para cuidar Machu Picchu hay que bajar el número de visitantes o repartirlos mejor.", "correcta": true, "evidencia": ["o4", "o10"],
+          "explicacion": "El texto A pide bajar el límite diario (oración 4) y el texto B propone, antes de recortar, repartir a los visitantes en horarios y rutas (oración 10)." },
+        { "t": "Si Machu Picchu debe protegerse del deterioro.", "codigo": "RV61", "origen": "o6",
+          "explicacion": "En eso los dos coinciden: el texto B dice «nadie discute que Machu Picchu debe cuidarse» (oración 6)." },
+        { "t": "Si lo que se pierde de una piedra tallada puede recuperarse con el dinero que dejan las entradas vendidas.", "codigo": "RV60", "origen": "o5",
+          "explicacion": "Es un argumento del texto A (oración 5); el texto B no toma posición sobre eso." },
+        { "t": "Si los visitantes dejan basura en el santuario.", "codigo": "RV1", "origen": "o2",
+          "explicacion": "Es un detalle de la oración 2, uno de los ejemplos de desgaste; no es lo que se discute." },
+        { "t": "Si el turismo es bueno para la economía del país.", "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos discuten una medida concreta, el límite de visitantes de Machu Picchu." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "postura",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "El problema no es solo cuánta gente entra, sino que se amontona en las mismas horas y en los mismos lugares.",
+        "aceptada": "B",
+        "codigos": { "A": "RV59", "ambos": "RV60", "ninguno": null },
+        "explicacion": "Lo dice el texto B en la oración 9. El texto A solo mira la cantidad de visitantes.",
+        "explicaciones": {
+          "A": "El texto A habla de cuántos entran («miles al día», oración 3), no de las horas ni de los lugares. La idea es del texto B (oración 9).",
+          "ambos": "Solo el texto B lo sostiene (oración 9). El texto A no menciona horarios ni rutas.",
+          "ninguno": "Sí lo sostiene alguien: el texto B, en la oración 9, dice que casi todos entran a la misma hora y por los mismos lugares."
+        }
+      },
+      "enunciado": "¿Qué sostiene el autor del texto B?",
+      "alternativas": [
+        { "t": "Que antes de bajar el límite conviene repartir a los turistas en horarios y rutas.", "correcta": true, "evidencia": ["o9", "o10"],
+          "explicacion": "Es su tesis (oración 10), apoyada en que el daño viene también de que todos entran a la misma hora y por los mismos lugares (oración 9)." },
+        { "t": "Que el límite debe bajar aunque se vendan menos entradas.", "codigo": "RV59", "origen": "o4",
+          "explicacion": "Eso lo sostiene el texto A (oración 4). El texto B advierte justamente lo que cuesta vender menos entradas." },
+        { "t": "Que hay que repartir los horarios y, además, bajar ya el límite.", "codigo": "RV62", "origen": "o10",
+          "explicacion": "La primera mitad es su propuesta, pero la segunda no: el texto B pide repartir «antes de recortar»." },
+        { "t": "Que los turistas nunca dañan el santuario.", "codigo": "RV11", "origen": "o9",
+          "explicacion": "El texto B acepta que hay daño: dice que «no viene solo de cuántos entran» (oración 9), no que no exista." },
+        { "t": "Que el Estado debería pagar a las familias de los pueblos cercanos por cada entrada que no se venda.", "codigo": "RV33", "origen": "o8",
+          "explicacion": "El texto B no propone ningún pago: menciona a las familias para mostrar lo que pierden si se recorta el límite." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "coincidencia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Habría que cerrar Machu Picchu a los turistas por algunos años.",
+        "aceptada": "ninguno",
+        "codigos": { "A": "RV7", "B": null, "ambos": "RV33" },
+        "explicacion": "Ninguno lo dice. El texto A pide bajar el límite diario, no cerrar el santuario; el texto B ni siquiera quiere recortar antes de repartir mejor.",
+        "explicaciones": {
+          "A": "El texto A pide que entren menos, no que no entre nadie (oración 4). Cerrar el santuario va mucho más allá de lo que propone.",
+          "B": "El texto B quiere lo contrario: que se siga vendiendo entradas y que los visitantes se repartan mejor (oración 10).",
+          "ambos": "Ninguno de los dos lo propone: el texto A pide un límite más bajo y el texto B, repartir horarios y rutas."
+        }
+      },
+      "enunciado": "Los dos autores coinciden en que",
+      "alternativas": [
+        { "t": "las visitas desgastan el santuario.", "correcta": true, "evidencia": ["o3", "o9"],
+          "explicacion": "El texto A dice que miles de visitantes gastan la piedra (oración 3), y el texto B acepta el daño, aunque lo atribuye también a que todos entran a la vez (oración 9)." },
+        { "t": "lo primero es repartir a los visitantes en horarios distintos.", "codigo": "RV60", "origen": "o10",
+          "explicacion": "Es la propuesta del texto B (oración 10). El texto A pide otra cosa: bajar el límite." },
+        { "t": "hay que cuidar el sitio, aunque se pierdan algunos empleos.", "codigo": "RV62", "origen": "o4",
+          "explicacion": "Los dos quieren cuidar el sitio, pero aceptar la pérdida de ingresos es solo del texto A; el texto B la rechaza (oraciones 7 y 11)." },
+        { "t": "Machu Picchu es una de las maravillas del mundo moderno.", "codigo": "RV8",
+          "explicacion": "Ninguno de los textos lo menciona; es un dato que se conoce por fuera de la lectura." },
+        { "t": "cada visitante, por sí solo, deja en la piedra un daño que se nota.", "codigo": "RV10", "origen": "o3",
+          "explicacion": "El texto A dice lo contrario: «uno solo no se nota» (oración 3); el daño aparece al sumarse miles de visitas." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "dialogo",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Ante la propuesta del texto B, la autora del texto A probablemente respondería que",
+      "alternativas": [
+        { "t": "aunque se repartan en horarios, al final del día las pisadas son las mismas.", "correcta": true, "evidencia": ["o3", "o10"],
+          "explicacion": "Para el texto A, lo que gasta la piedra es la suma de miles de visitantes al día (oración 3). Repartirlos no cambia ese total." },
+        { "t": "en los pueblos cercanos, muchas familias no tienen otro ingreso.", "codigo": "RV59", "origen": "o8",
+          "explicacion": "Ese es un argumento del texto B (oración 8), no una respuesta del texto A contra él." },
+        { "t": "se equivoca al decir que el santuario debe cuidarse.", "codigo": "RV61", "origen": "o6",
+          "explicacion": "En eso los dos están de acuerdo; el texto A es el que más insiste en cuidar el monumento." },
+        { "t": "el turismo debería prohibirse por completo hasta que la piedra se recupere del desgaste.", "codigo": "RV33",
+          "explicacion": "El texto A no pide prohibir el turismo, sino bajar el límite diario (oración 4)." },
+        { "t": "los guías son los que más dañan los muros.", "codigo": "RV7", "origen": "o7",
+          "explicacion": "El texto A no culpa a ningún grupo en especial: habla del desgaste que suman todos los visitantes." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto B, el adjetivo NEUTRAL («no es una medida neutral») significa",
+      "alternativas": [
+        { "t": "que no perjudica a nadie.", "correcta": true, "evidencia": ["o7"],
+          "explicacion": "El autor muestra enseguida a quiénes perjudica la medida: al que sirve el almuerzo, al dueño del cuarto y al guía." },
+        { "t": "ni ácida ni básica.", "codigo": "RV18",
+          "explicacion": "Es el sentido de «neutral» en química, pero aquí no se habla de sustancias, sino de que la medida tiene costos para alguien." },
+        { "t": "natural.", "codigo": "RV20",
+          "explicacion": "Se parece en la forma, pero no en el sentido." },
+        { "t": "barata.", "codigo": "RV19", "origen": "o7",
+          "explicacion": "Pertenece al mismo tema del dinero que recorre la oración 7, pero no significa lo mismo: el autor no habla de cuánto cuesta aplicar la medida." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-08",
+  "hechos": [
+    {
+      "afirmacion": "Machu Picchu fue construida en el siglo XV, en tiempos del Tahuantinsuyo, en lo alto de una montaña sobre el río Urubamba.",
+      "fuente": "UNESCO, Centro del Patrimonio Mundial: Santuario Histórico de Machu Picchu (inscrito en 1983)."
+    },
+    {
+      "afirmacion": "El Ministerio de Cultura fija un aforo diario de visitantes para la Llaqta de Machu Picchu y vende las entradas por horarios y circuitos.",
+      "fuente": "Ministerio de Cultura del Perú, normas sobre el aforo y los circuitos de visita de la Llaqta de Machu Picchu."
+    }
+  ],
+  "revision": {
+    "por": "subagente (revisor a ciegas)",
+    "fecha": "2026-11-08",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidió en 7 de 7, pero en p5 «imparcial» era defendible: se cambió por el sentido químico de «neutral». Se reforzó un distractor de p3 (RV10); el hecho del aforo y los circuitos del Ministerio de Cultura va sin cifras."
+  }
+}

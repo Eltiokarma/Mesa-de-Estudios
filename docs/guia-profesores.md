@@ -35,6 +35,12 @@ No se confundan con las **prácticas** de algunas unidades, que traen su propia 
 
 **Prueba de entrada.** Aparece sola la primera vez que el alumno entra a un curso. Los cursos de ciencias y matemática tienen 10 preguntas y toman de 15 a 17 minutos; razonamiento verbal usa un texto corto con 3 preguntas. En ciencias y matemática, el alumno puede tocar **Ahora no**, y la prueba vuelve a aparecer cuando cierre y vuelva a abrir el navegador. En razonamiento verbal no hay "Ahora no": la entrada aparece al abrir la primera lectura. **No se le dice qué acertó**, para no enseñarle las respuestas antes de la salida.
 
+**La opción «No sé».** Cada pregunta de las pruebas de entrada y salida trae, al final y sin letra, un botón **No sé**. Sirve para separar lo que el alumno sabe de lo que adivina: con 4 o 5 alternativas, un alumno que no sabe nada acierta, por suerte, 1 de cada 4 o 5 preguntas, y eso se confunde con conocimiento. «No sé» no descuenta nada: cuenta igual que una respuesta equivocada en el puntaje, pero no se anota como un error típico. Con teclado, es la tecla **0** o la **N**.
+
+Antes de la entrada, dígales algo así: *«Si no lo sabes, marca No sé: nos ayuda más que adivinar. No es nota y no te baja nada.»* Pídales que lo usen con honestidad: si dudan entre dos alternativas y tienen una razón para elegir una, que la elijan; si no tienen ninguna idea, que marquen «No sé». En la salida vale lo mismo.
+
+En las prácticas con problemas que se generan solos también está «No sé»: al tocarlo, el alumno ve la respuesta y la solución paso a paso, sin que se le marque error. En las escenas **no** hay «No sé», a propósito: ahí la idea es comprometerse con una predicción antes de ver qué pasa.
+
 **Prueba de salida.** Solo aparece cuando **usted la abre**, con un enlace que reparte en clase, en cada equipo:
 
 | Para abrir | Enlace |
@@ -103,6 +109,8 @@ Cómo leerlo:
 
 - **Solo cuentan los alumnos que hicieron las dos pruebas.** Así no se comparan grupos distintos.
 - **La ganancia normalizada ⟨g⟩** (de Hake) es la parte de lo que les faltaba que aprendieron: (salida − entrada) / (1 − entrada). Si un grupo pasa del 30 % al 67 %, aprendió 0,52 (algo más de la mitad) de lo que le faltaba. Como referencia, Hake (1998) midió 0,23 en cursos tradicionales de física y 0,48 en cursos con participación activa.
+- **«No sé» entrada / salida** es el porcentaje de preguntas que marcaron «No sé». Lo esperable es que baje de la entrada a la salida.
+- **La confianza calibrada** es cuántas acertaron de las que sí intentaron (sin contar los «No sé»). Si el acierto sube poco pero la confianza calibrada sube mucho, el grupo adivina menos y sabe mejor cuándo sabe. En la ganancia ⟨g⟩, «No sé» cuenta como no acierto.
 - **La tabla de errores** dice cuántos alumnos cometieron cada error típico antes y después. En el ejemplo, el primer error bajó y el segundo no: ese es el tema para reforzar en clase.
 - El informe completo trae más columnas (por ejemplo, el resultado de cada forma de la prueba, A y B). Para razonamiento verbal trae otra tabla: los errores de lectura con su código (por ejemplo, RV1 "elegir un detalle como idea principal"), contados en el paso previo y en la respuesta.
 - **Con pocos alumnos, las diferencias pueden ser azar.** Para sacar conclusiones, sirven más los datos de todo el grado que los de una sección.
@@ -113,7 +121,7 @@ Cómo leerlo:
 
 - cada predicción y cada respuesta de práctica, con el error elegido;
 - los pasos previos de lectura y el tiempo que se tardó en leer;
-- las pruebas de entrada y salida, pregunta por pregunta;
+- las pruebas de entrada y salida, pregunta por pregunta (incluido cuándo marcó «No sé»);
 - cuándo usted abrió la salida o las soluciones.
 
 **No guarda** el nombre del alumno ni ningún dato personal: solo el código anónimo del equipo, el grado y el código del colegio. **No envía sus respuestas ni ningún dato por internet**: los datos se quedan en el equipo hasta que alguien toca "Descargar".

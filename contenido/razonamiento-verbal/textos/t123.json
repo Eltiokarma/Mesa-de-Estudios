@@ -1,0 +1,295 @@
+{
+  "id": "t123",
+  "version": 1,
+  "titulo": "A Cold and Rich Sea",
+  "tema": "Lectura en inglés · la corriente de Humboldt y la riqueza del mar peruano",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "expositivo",
+  "idioma": "en",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "contraste",
+        "t": "Many visitors expect the sea in front of Lima to be warm, like the water of other tropical countries."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "In fact, it is surprisingly cold, even in summer."
+      },
+      {
+        "id": "o3",
+        "rol": "principal",
+        "t": "The reason is the Humboldt Current, and this cold water is also what makes the Peruvian sea one of the richest in fish in the world."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "The Humboldt Current carries cold water from the south towards the north, along the coasts of Chile and Peru."
+      },
+      {
+        "id": "o5",
+        "rol": "apoyo",
+        "t": "At the same time, winds that blow along the coast push the surface water away from the shore."
+      },
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "Cold water from the deep then rises to take its place, and it brings up nutrients that had sunk to the bottom."
+      },
+      {
+        "id": "o7",
+        "rol": "apoyo",
+        "t": "These nutrients feed tiny plants called phytoplankton, which are eaten by small fish such as the anchoveta."
+      },
+      {
+        "id": "o8",
+        "rol": "detalle",
+        "t": "The anchoveta, in turn, is food for larger fish, sea birds and sea lions, and it is also the base of an important fishing industry."
+      }
+    ],
+    [
+      {
+        "id": "o9",
+        "rol": "contraste",
+        "t": "However, this system does not work the same way every year."
+      },
+      {
+        "id": "o10",
+        "rol": "apoyo",
+        "t": "During an El Niño event, warm water reaches the coast, fewer nutrients come up from below, and the anchoveta becomes scarce."
+      },
+      {
+        "id": "o11",
+        "rol": "apoyo",
+        "t": "Then fishermen catch much less, and many sea birds have trouble finding food."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "dato",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "According to the text, what brings nutrients up to the surface of the sea?",
+      "alternativas": [
+        {
+          "t": "Cold water that rises from the deep.",
+          "correcta": true,
+          "evidencia": [
+            "o6"
+          ],
+          "explicacion": "La oración 6 lo dice: el agua fría del fondo sube a ocupar el lugar del agua de la superficie «and it brings up nutrients» (y trae hacia arriba los nutrientes)."
+        },
+        {
+          "t": "Tiny plants that carry the nutrients up from the bottom.",
+          "codigo": "RV16",
+          "origen": "o7",
+          "explicacion": "Invierte la relación: según la oración 7, los nutrientes alimentan al fitoplancton; no es el fitoplancton el que los sube."
+        },
+        {
+          "t": "The warm water that reaches the coast during El Niño.",
+          "codigo": "RV10",
+          "origen": "o10",
+          "explicacion": "La oración 10 dice lo contrario: con El Niño llega agua caliente y suben menos nutrientes («fewer nutrients come up»). Se pasa por alto ese «fewer»."
+        },
+        {
+          "t": "The rivers that come down from the Andes to the sea.",
+          "codigo": "RV8",
+          "explicacion": "El texto no habla de ríos. Puede sonar razonable por lo que uno sabe, pero la oración 6 atribuye los nutrientes al agua fría que sube del fondo."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "If the winds along the coast stopped blowing for a long time, then",
+      "alternativas": [
+        {
+          "t": "less deep water would rise, so there would probably be fewer anchovetas.",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "o6",
+            "o7"
+          ],
+          "explicacion": "Según las oraciones 5 y 6, el viento aparta el agua de la superficie y por eso sube el agua fría del fondo con sus nutrientes. Sin viento subiría menos agua y menos nutrientes, y habría menos fitoplancton para la anchoveta (oración 7)."
+        },
+        {
+          "t": "cold water from the deep would still rise and bring up the same nutrients.",
+          "codigo": "RV63",
+          "explicacion": "Repite lo que pasa con viento, cuando la condición lo quitó. El texto explica que el agua del fondo sube porque el viento aparta la de la superficie (oraciones 5 y 6): sin viento, eso ya no se puede afirmar."
+        },
+        {
+          "t": "the Humboldt Current would change direction and flow towards the south.",
+          "codigo": "RV7",
+          "explicacion": "El texto no relaciona el viento de la costa con la dirección de la corriente. Esa consecuencia no se apoya en nada de lo que dice."
+        },
+        {
+          "t": "every fish in the Peruvian sea would die and never come back.",
+          "codigo": "RV11",
+          "explicacion": "Exagera con «every» y «never». Lo que se puede esperar, según el texto, es que haya menos nutrientes y menos anchoveta, no que desaparezcan todos los peces para siempre."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "Which statement is NOT consistent with the text?",
+      "alternativas": [
+        {
+          "t": "The sea in front of Lima is warm, like a tropical sea.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o2"
+          ],
+          "explicacion": "Choca con las oraciones 1 y 2: eso es lo que esperan muchos visitantes, pero el texto dice que el mar de Lima es sorprendentemente frío, incluso en verano."
+        },
+        {
+          "t": "Not every year is good for the fishermen of Peru.",
+          "codigo": "RV10",
+          "explicacion": "Tiene un «not», pero es compatible: la oración 9 dice que el sistema no funciona igual todos los años, y la 11 que con El Niño se pesca mucho menos."
+        },
+        {
+          "t": "A cold sea can have more fish than a warm one.",
+          "codigo": "RV8",
+          "explicacion": "Va en contra de lo que mucha gente imagina, pero es lo que sostiene el texto: el agua fría es la que hace tan rico en peces al mar peruano (oración 3)."
+        },
+        {
+          "t": "Some of the anchoveta is sold in other countries.",
+          "codigo": "RV36",
+          "explicacion": "El texto no lo menciona, pero tampoco dice nada en contra: que algo no esté dicho no lo vuelve incompatible."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "In sentence 10, the word SCARCE can be replaced by",
+      "alternativas": [
+        {
+          "t": "hard to find.",
+          "correcta": true,
+          "evidencia": [
+            "o10",
+            "o11"
+          ],
+          "explicacion": "«Scarce» significa escaso, difícil de encontrar: con El Niño hay poca anchoveta, y por eso los pescadores pescan menos y las aves no encuentran comida (oración 11)."
+        },
+        {
+          "t": "frightened.",
+          "codigo": "RV20",
+          "explicacion": "Se confunde «scarce» con «scared» (asustado), que se escribe parecido. El texto habla de la cantidad de anchoveta, no de que tenga miedo."
+        },
+        {
+          "t": "smaller.",
+          "codigo": "RV19",
+          "explicacion": "Es del mismo campo (algo que disminuye), pero no es lo que dice la palabra: no se trata de que cada pez sea más pequeño, sino de que hay pocos."
+        },
+        {
+          "t": "warmer.",
+          "codigo": "RV5",
+          "origen": "o10",
+          "explicacion": "«Warm» aparece en la misma oración 10, pero describe el agua de El Niño, no a la anchoveta."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "When El Niño arrives, the fishing industry of Peru has a harder time.",
+        "clase": "se-deduce",
+        "codigos": {
+          "lo-dice": "RV58",
+          "no-se-sabe": "RV34",
+          "lo-contradice": null
+        },
+        "explicacion": "La oración 8 dice que la anchoveta es la base de una industria pesquera importante, y las oraciones 10 y 11, que con El Niño escasea y se pesca mucho menos. El texto no lo dice con esas palabras, pero se deduce.",
+        "explicaciones": {
+          "lo-dice": "El texto no habla de cómo le va a la industria durante El Niño: dice que escasea la anchoveta y que los pescadores pescan menos. Lo demás se deduce juntando las oraciones 8 y 11.",
+          "no-se-sabe": "Sí se puede saber: si la industria se basa en la anchoveta (oración 8) y con El Niño la anchoveta escasea (oración 10), la industria lo sufre.",
+          "lo-contradice": "Nada del texto dice que a la industria le vaya bien con El Niño; al contrario, se pesca mucho menos (oración 11)."
+        }
+      },
+      "enunciado": "What can be inferred from the text?",
+      "alternativas": [
+        {
+          "t": "Sea birds depend, indirectly, on the cold water that rises from the deep.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o7",
+            "o8",
+            "o11"
+          ],
+          "explicacion": "Hay que juntar la cadena: el agua fría que sube trae nutrientes (oración 6), los nutrientes alimentan al fitoplancton, que come la anchoveta (oración 7), y la anchoveta alimenta a las aves (oración 8). Por eso, cuando sube menos agua fría, las aves no encuentran comida (oración 11). El texto no lo dice así, pero se deduce."
+        },
+        {
+          "t": "Fishermen catch much less fish during an El Niño event.",
+          "codigo": "RV6",
+          "origen": "o11",
+          "explicacion": "Es verdad, pero no es una inferencia: la oración 11 lo dice casi con esas palabras."
+        },
+        {
+          "t": "El Niño happens every year in the Peruvian sea.",
+          "codigo": "RV7",
+          "explicacion": "El texto no dice cada cuánto ocurre El Niño. Habla de «an El Niño event» como de algo que cambia el sistema en algunos años (oración 9)."
+        },
+        {
+          "t": "The sea in front of Lima is cold only in winter.",
+          "codigo": "RV10",
+          "origen": "o2",
+          "explicacion": "Se pasa por alto «even in summer» de la oración 2: el mar es frío incluso en verano."
+        },
+        {
+          "t": "Phytoplankton is the only food that sea lions eat.",
+          "codigo": "RV11",
+          "explicacion": "Usa un término absoluto («only») y además cambia la cadena: según la oración 8, los lobos marinos comen anchoveta, no fitoplancton."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-08",
+  "hechos": [
+    {
+      "afirmacion": "La corriente de Humboldt (corriente peruana) lleva agua fría de sur a norte frente a las costas de Chile y el Perú; por eso el mar de Lima es frío.",
+      "fuente": "Instituto del Mar del Perú (IMARPE), información sobre el ecosistema de la corriente de Humboldt."
+    },
+    {
+      "afirmacion": "Los vientos que soplan a lo largo de la costa apartan el agua superficial y hacen subir agua fría y rica en nutrientes (afloramiento), que alimenta al fitoplancton y a la anchoveta.",
+      "fuente": "IMARPE; NOAA, «What is upwelling?» (National Ocean Service)."
+    },
+    {
+      "afirmacion": "El ecosistema de la corriente de Humboldt es uno de los más productivos en peces del mundo, y la anchoveta sostiene una de las pesquerías más grandes del planeta.",
+      "fuente": "FAO, The State of World Fisheries and Aquaculture (SOFIA), capítulo de principales especies capturadas; IMARPE."
+    },
+    {
+      "afirmacion": "Durante El Niño llega agua caliente a la costa, disminuye el afloramiento de nutrientes, escasea la anchoveta y las aves guaneras tienen dificultades para alimentarse.",
+      "fuente": "IMARPE; NOAA Climate.gov, «El Niño & La Niña»; Agro Rural (aves guaneras)."
+    }
+  ],
+  "revision": {
+    "por": "subagente (revisor a ciegas)",
+    "fecha": "2026-11-08",
+    "veredicto": "aprobado",
+    "notas": "A ciegas 6 de 6. La correcta de la inferencia se reescribió para que exija juntar la cadena (antes estaba casi dicha en la oración 8) y la de «scarce» pasó de «rare» a «hard to find», más exacta."
+  }
+}

@@ -1,6 +1,8 @@
 """Junta la clasificación de los exámenes de admisión, quita repetidas y mide cobertura.
 
 Uso: python3 -I herramientas/agregar_admision.py <carpeta_jsonl> <csv_salida> [<md_tablas>]
+     python3 -I herramientas/agregar_admision.py docs/datos/admision-unmsm.csv docs/datos/admision-unmsm.csv docs/datos/admision-unmsm-tablas.md
+     (desde el CSV: rehace las tablas después de marcar cobertura a mano; no vuelve a juntar repetidas)
 
 Lee todos los *.jsonl de la carpeta (una línea por pregunta, ver
 docs/clasificacion-unmsm-admision.md, sección «Cómo repetirlo»). Escribe un CSV
@@ -28,30 +30,36 @@ NOMBRE = {"fisica": "Física", "quimica": "Química", "aritmetica": "Aritmética
           "geometria": "Geometría", "trigonometria": "Trigonometría",
           "razonamiento-matematico": "Razonamiento matemático", "razonamiento-verbal": "Razonamiento verbal"}
 
-filas, malas = [], 0
-for p in sorted(d.glob("*.jsonl")):
-    for ln in p.read_text(encoding="utf-8").splitlines():
-        if not ln.strip(): continue
-        try: r = json.loads(ln)
-        except json.JSONDecodeError: malas += 1; continue
-        if r.get("curso") not in CURSOS: malas += 1; continue
-        r["numero"] = int(r.get("numero") or 0)
-        r["id"] = f'{r.get("archivo","")}#{r["numero"]}'
-        u = r.get("unidad", "")
-        if u.startswith("fuera-del-catalogo:"): r["unidad"] = "fuera-del-catalogo:" + u.split(":", 1)[1].replace("-", " ").strip().lower()
-        filas.append(r)
+desde_csv = d.suffix == ".csv"
+if desde_csv:
+    malas = 0
+    filas = list(csv.DictReader(d.open(encoding="utf-8")))
+    for r in filas: r["numero"] = int(r.get("numero") or 0)
+else:
+    filas, malas = [], 0
+    for p in sorted(d.glob("*.jsonl")):
+        for ln in p.read_text(encoding="utf-8").splitlines():
+            if not ln.strip(): continue
+            try: r = json.loads(ln)
+            except json.JSONDecodeError: malas += 1; continue
+            if r.get("curso") not in CURSOS: malas += 1; continue
+            r["numero"] = int(r.get("numero") or 0)
+            r["id"] = f'{r.get("archivo","")}#{r["numero"]}'
+            u = r.get("unidad", "")
+            if u.startswith("fuera-del-catalogo:"): r["unidad"] = "fuera-del-catalogo:" + u.split(":", 1)[1].replace("-", " ").strip().lower()
+            filas.append(r)
 
-# Las «preguntas adicionales» de otra área, al final de algunos solucionarios, reusan números:
-# si el número ya existe en ese archivo con otro enunciado, el id lleva sufijo «b».
-# Si el enunciado es el mismo, es la misma pregunta registrada dos veces y se queda la primera.
-vistas, tmp = {}, []
-for r in filas:
-    k = (r["id"], r["curso"])
-    if k in vistas:
-        if vistas[k] == r.get("inicio", ""): continue
-        r["id"] += "b"; k = (r["id"], r["curso"])
-    vistas[k] = r.get("inicio", ""); tmp.append(r)
-filas = tmp
+    # Las «preguntas adicionales» de otra área, al final de algunos solucionarios, reusan números:
+    # si el número ya existe en ese archivo con otro enunciado, el id lleva sufijo «b».
+    # Si el enunciado es el mismo, es la misma pregunta registrada dos veces y se queda la primera.
+    vistas, tmp = {}, []
+    for r in filas:
+        k = (r["id"], r["curso"])
+        if k in vistas:
+            if vistas[k] == r.get("inicio", ""): continue
+            r["id"] += "b"; k = (r["id"], r["curso"])
+        vistas[k] = r.get("inicio", ""); tmp.append(r)
+    filas = tmp
 
 # Familias de tema: los clasificadores escriben etiquetas finas («Certezas con suma»,
 # «Certezas (peor caso)»); para contar periodos se juntan en familias con reglas fijas.
@@ -92,21 +100,22 @@ def norm(s):
 # Pares que la regla junta pero que, revisados contra el PDF, son preguntas distintas
 # (mismo escenario con otros datos).
 NO_SON_REPETIDAS = {"unmsm-2021-solucionario-2021-09-12#29"}
-vistos = {}
-for r in sorted(filas, key=lambda r: (r["periodo"], r["archivo"], r["numero"])):
-    n = norm(r.get("inicio", ""))
-    r["repetida_de"] = ""
-    # En verbal los enunciados son fórmulas («Según el texto…») sobre textos distintos: no se junta.
-    if len(n.split()) < 6 or r["curso"] == "razonamiento-verbal": continue
-    k = (r["curso"], r["periodo"], n, r.get("tema", ""))
-    if r["id"] in NO_SON_REPETIDAS: continue
-    previo = vistos.get(k)
-    if previo and (not r.get("clave") or not previo.get("clave") or r["clave"] == previo["clave"]):
-        r["repetida_de"] = previo["id"]
-    else:
-        vistos.setdefault(k, r)
+if not desde_csv:
+    vistos = {}
+    for r in sorted(filas, key=lambda r: (r["periodo"], r["archivo"], r["numero"])):
+        n = norm(r.get("inicio", ""))
+        r["repetida_de"] = ""
+        # En verbal los enunciados son fórmulas («Según el texto…») sobre textos distintos: no se junta.
+        if len(n.split()) < 6 or r["curso"] == "razonamiento-verbal": continue
+        k = (r["curso"], r["periodo"], n, r.get("tema", ""))
+        if r["id"] in NO_SON_REPETIDAS: continue
+        previo = vistos.get(k)
+        if previo and (not r.get("clave") or not previo.get("clave") or r["clave"] == previo["clave"]):
+            r["repetida_de"] = previo["id"]
+        else:
+            vistos.setdefault(k, r)
 unicas = [r for r in filas if not r["repetida_de"]]
-for r in filas: r["familia"] = familia(r)
+for r in filas: r["familia"] = familia(r)  # desde el CSV se recalcula con las mismas reglas
 
 def pct(a, b): return f"{100*a/b:.0f} %" if b else "—"
 out = []

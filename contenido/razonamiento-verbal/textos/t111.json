@@ -1,0 +1,160 @@
+{
+  "id": "t111",
+  "version": 1,
+  "titulo": "¿Quién decide la cuota de anchoveta?",
+  "tema": "Ambiente y economía · la pesca de la anchoveta",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    { "id": "A", "desde": 0, "firma": "Una investigadora de ciencias del mar" },
+    { "id": "B", "desde": 1, "firma": "Un dirigente de pescadores de un puerto del norte" }
+  ],
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "apoyo", "t": "La anchoveta es la base de la vida en el mar peruano y de una industria que convierte casi toda su captura en harina y aceite de pescado." },
+      { "id": "o2", "rol": "apoyo", "t": "Su población sube y baja con la temperatura del agua: un mar más cálido, como en los años de El Niño, puede dispersarla o reducirla en pocos meses." },
+      { "id": "o3", "rol": "apoyo", "t": "Por eso, antes de cada temporada, el Instituto del Mar del Perú hace cruceros de evaluación para estimar cuánta anchoveta hay y qué parte son peces juveniles." },
+      { "id": "o4", "rol": "principal", "t": "La cuota debería decidirse solo con esos datos: si el cálculo dice que no se puede pescar más, ninguna presión económica justifica hacerlo." },
+      { "id": "o5", "rol": "apoyo", "t": "Un año de captura excesiva puede costar varios de recuperación, y entonces pierden todos: el mar, la industria y los trabajadores." }
+    ],
+    [
+      { "id": "o6", "rol": "apoyo", "t": "Sin los cruceros, la cuota sería una apuesta a ciegas; en eso no hay discusión." },
+      { "id": "o7", "rol": "contraste", "t": "Pero los datos dicen cuánta anchoveta hay, no cómo repartir lo que se puede pescar ni qué hacer con quienes se quedan sin trabajo cuando una temporada se suspende." },
+      { "id": "o8", "rol": "apoyo", "t": "Esas son decisiones públicas, y en ellas tienen que pesar también el empleo en los puertos y la pesca artesanal, de la que viven muchas familias de la costa." },
+      { "id": "o9", "rol": "principal", "t": "La ciencia debe fijar el límite que no se cruza; dentro de ese límite, la cuota y su reparto tienen que tomar en cuenta a la gente que vive del mar." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "controversia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "¿Cuál es el tema en controversia entre los dos textos?",
+      "alternativas": [
+        { "t": "Si la cuota de anchoveta debe fijarse solo con datos científicos o pesar también el empleo.", "correcta": true, "evidencia": ["o4", "o8", "o9"],
+          "explicacion": "El texto A quiere que la cuota se decida «solo con esos datos» (oración 4); el texto B pide que también pesen el empleo y la pesca artesanal (oraciones 8 y 9)." },
+        { "t": "Si hacen falta los cruceros de evaluación para fijar la cuota de pesca.", "codigo": "RV61", "origen": "o6",
+          "explicacion": "En eso coinciden: el texto B dice que sin los cruceros la cuota sería «una apuesta a ciegas; en eso no hay discusión» (oración 6)." },
+        { "t": "Si un mar más cálido, como el de los años de El Niño, puede dispersar o reducir la población de anchoveta.", "codigo": "RV60", "origen": "o2",
+          "explicacion": "Es un argumento del texto A (oración 2); el texto B no lo discute." },
+        { "t": "Si la industria convierte casi toda su captura en harina y aceite.", "codigo": "RV1", "origen": "o1",
+          "explicacion": "Es un detalle de la oración 1, que presenta el tema; no es lo que se discute." },
+        { "t": "Si el Perú es el país que más harina de pescado produce en el mundo.", "codigo": "RV8",
+          "explicacion": "Ninguno de los textos lo dice; es un dato que se trae de fuera de la lectura." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "coincidencia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "No se debe pescar más anchoveta de la que la evaluación científica considera posible.",
+        "aceptada": "ambos",
+        "codigos": { "A": "RV61", "B": "RV61", "ninguno": null },
+        "explicacion": "Los dos lo sostienen: el texto A dice que ninguna presión económica justifica pescar más de lo que indica el cálculo (oración 4) y el texto B, que la ciencia fija «el límite que no se cruza» (oración 9).",
+        "explicaciones": {
+          "A": "El texto A lo dice (oración 4), pero el B también: para él, la ciencia fija «el límite que no se cruza» (oración 9). Discrepan en lo que se decide dentro de ese límite.",
+          "B": "El texto B lo dice (oración 9), pero el A también: si el cálculo dice que no se puede pescar más, no hay que hacerlo (oración 4).",
+          "ninguno": "Los dos lo sostienen: el texto A en la oración 4 y el texto B en la oración 9."
+        }
+      },
+      "enunciado": "Los dos autores estarían de acuerdo en que",
+      "alternativas": [
+        { "t": "la captura no debe pasar del límite que indican los cruceros.", "correcta": true, "evidencia": ["o4", "o6", "o9"],
+          "explicacion": "El texto A no acepta presiones para pescar más de lo calculado (oración 4); el texto B dice que la ciencia fija el límite que no se cruza (oración 9)." },
+        { "t": "el reparto de la cuota debe tomar en cuenta a la pesca artesanal.", "codigo": "RV60", "origen": "o8",
+          "explicacion": "Es la propuesta del texto B (oraciones 8 y 9). El texto A quiere que la cuota se decida solo con los datos." },
+        { "t": "los cruceros son indispensables y bastan para decidir la cuota.", "codigo": "RV62", "origen": "o7",
+          "explicacion": "Los dos aceptan que los cruceros son indispensables, pero el texto B niega que basten: los datos no dicen cómo repartir la pesca (oración 7)." },
+        { "t": "la temporada de pesca no debería suspenderse jamás.", "codigo": "RV11", "origen": "o7",
+          "explicacion": "Ninguno lo dice: el texto B menciona que una temporada puede suspenderse y pide pensar en quienes se quedan sin trabajo, no que nunca se suspenda." },
+        { "t": "El Niño es la causa principal de la pérdida de empleos en los puertos.", "codigo": "RV7", "origen": "o2",
+          "explicacion": "El texto A dice que El Niño puede reducir la anchoveta, pero ninguno de los dos lo relaciona con la pérdida de empleos como causa principal." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "discrepancia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Cómo repartir lo que se pesca y cómo ayudar a quien se queda sin trabajo son asuntos que los datos no resuelven.",
+        "aceptada": "B",
+        "codigos": { "A": "RV59", "ambos": "RV60", "ninguno": null },
+        "explicacion": "Lo sostiene el texto B en las oraciones 7 y 8. El texto A no distingue esas decisiones: quiere que la cuota se decida solo con los datos.",
+        "explicaciones": {
+          "A": "El texto A dice lo contrario: que la cuota se decida «solo con esos datos» (oración 4). La idea es del texto B (oración 7).",
+          "ambos": "Solo el texto B lo sostiene (oraciones 7 y 8). El texto A no habla del reparto ni de quienes se quedan sin trabajo.",
+          "ninguno": "Sí lo sostiene alguien: el texto B dice que los datos no dicen cómo repartir la pesca ni qué hacer con quienes se quedan sin trabajo (oración 7)."
+        }
+      },
+      "enunciado": "A diferencia de la autora del texto A, el autor del texto B sostiene que",
+      "alternativas": [
+        { "t": "fijar la cuota exige decisiones que los datos no resuelven.", "correcta": true, "evidencia": ["o7", "o8"],
+          "explicacion": "Para el texto B, los datos dicen cuánta anchoveta hay, pero no cómo repartirla ni qué hacer con los que pierden su trabajo (oración 7): eso es una decisión pública (oración 8)." },
+        { "t": "un año de captura excesiva puede costar varios de recuperación.", "codigo": "RV59", "origen": "o5",
+          "explicacion": "Eso lo dice el texto A (oración 5), no el B." },
+        { "t": "sin los cruceros de evaluación, la cuota sería una apuesta.", "codigo": "RV61", "origen": "o6",
+          "explicacion": "Lo dice el texto B, pero no lo diferencia del A: la autora del texto A también funda la cuota en los cruceros (oraciones 3 y 4)." },
+        { "t": "la presión económica puede justificar pescar sobre el límite.", "codigo": "RV33", "origen": "o9",
+          "explicacion": "El texto B no dice eso: acepta que la ciencia fija «el límite que no se cruza» (oración 9)." },
+        { "t": "el empleo debe fijar el límite y la ciencia, solo el reparto.", "codigo": "RV44", "origen": "o9",
+          "explicacion": "Invierte la relación de la oración 9: para el texto B, la ciencia fija el límite y el empleo pesa en el reparto, dentro de ese límite." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Si un crucero mostrara que casi toda la anchoveta de una zona es juvenil y por eso se suspendiera la pesca allí, el autor del texto B probablemente pediría",
+      "alternativas": [
+        { "t": "apoyar a quienes se quedan sin ingreso, sin abrir la pesca.", "correcta": true, "evidencia": ["o7", "o9"],
+          "explicacion": "El texto B acepta el límite de la ciencia (oración 9) y pregunta qué hacer con quienes se quedan sin trabajo cuando se suspende una temporada (oración 7)." },
+        { "t": "abrir la pesca de todos modos para salvar los empleos.", "codigo": "RV33", "origen": "o8",
+          "explicacion": "El texto B no cruzaría el límite que fija la ciencia (oración 9); pide pensar en el empleo dentro de él." },
+        { "t": "aplicar los datos sin pensar en el empleo.", "codigo": "RV59", "origen": "o4",
+          "explicacion": "Se acerca a la postura del texto A, que quiere decidir solo con los datos. El texto B pide justamente que el empleo pese (oración 8)." },
+        { "t": "repetir el crucero hasta que dé una cifra mayor.", "codigo": "RV7",
+          "explicacion": "Nada en el texto B autoriza esa idea: confía en los cruceros y dice que sin ellos la cuota sería una apuesta a ciegas (oración 6)." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto B, el verbo PESAR («tienen que pesar también el empleo en los puertos») significa",
+      "alternativas": [
+        { "t": "influir.", "correcta": true, "evidencia": ["o8"],
+          "explicacion": "El autor pide que el empleo y la pesca artesanal cuenten en la decisión, que influyan en ella." },
+        { "t": "medir el peso.", "codigo": "RV18",
+          "explicacion": "Es el sentido más frecuente de «pesar», como cuando se pesa la pesca en una balanza; aquí el empleo no se pone en una balanza." },
+        { "t": "pensar.", "codigo": "RV20",
+          "explicacion": "Se parece en la forma, pero no en el sentido: el empleo no piensa." },
+        { "t": "costar.", "codigo": "RV19",
+          "explicacion": "Pertenece al mismo tema económico del texto, pero no significa lo mismo: el autor no habla de lo que cuesta el empleo." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-08",
+  "hechos": [
+    {
+      "afirmacion": "El Instituto del Mar del Perú (IMARPE) hace cruceros de evaluación de la anchoveta antes de las temporadas de pesca, en los que estima su biomasa y la proporción de juveniles; con esa información, el Ministerio de la Producción fija el límite de captura de cada temporada.",
+      "fuente": "IMARPE, informes de los cruceros de evaluación hidroacústica de recursos pelágicos; Ministerio de la Producción, resoluciones ministeriales que autorizan las temporadas de pesca de anchoveta."
+    },
+    {
+      "afirmacion": "Casi toda la captura industrial de anchoveta se destina a harina y aceite de pescado, y El Niño, al calentar el mar, dispersa o reduce la población de anchoveta.",
+      "fuente": "IMARPE; FAO, perfil de pesca y acuicultura del Perú."
+    }
+  ],
+  "revision": {
+    "por": "subagente (revisor a ciegas)",
+    "fecha": "2026-11-08",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidió en 7 de 7. Códigos y hechos revisados, sin cambios."
+  }
+}

@@ -1,6 +1,6 @@
 {
   "id": "t029",
-  "version": 1,
+  "version": 2,
   "titulo": "«Es solo una teoría»",
   "tema": "Ciencia · qué es una teoría científica",
   "grado": 5,
@@ -134,7 +134,7 @@
           "explicacion": "Es lo que dice la oración 8, que responde a quienes ven una debilidad en que las teorías puedan cambiar."
         },
         {
-          "t": "La teoría de la evolución es una de las explicaciones mejor comprobadas que existen.",
+          "t": "La teoría de la evolución no es una corazonada: es una de las explicaciones mejor comprobadas que existen.",
           "codigo": "RV1",
           "origen": "o4",
           "explicacion": "Es un ejemplo del texto, un detalle."
@@ -306,6 +306,6 @@
     "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
     "fecha": "2026-11-07",
     "veredicto": "aprobado",
-    "notas": "Cambios aplicados tras la revisión a ciegas; la segunda verificación pidió cuatro retoques de redacción (t025 p5, t026 p2, t027 p2 y la oración 8 de t028), ya aplicados."
+    "notas": "Cambios aplicados tras la revisión a ciegas; la segunda verificación pidió cuatro retoques de redacción (t025 p5, t026 p2, t027 p2 y la oración 8 de t028), ya aplicados. 8 nov 2026 (rutina no-se): una incorrecta tomó la forma de la correcta (justificación o dos puntos) para que la forma no delate la clave; mismo código y mismo sentido."
   }
 }

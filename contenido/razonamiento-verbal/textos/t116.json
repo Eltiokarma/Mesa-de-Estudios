@@ -1,0 +1,151 @@
+{
+  "id": "t116",
+  "version": 1,
+  "titulo": "La huaca: ¿reconstruir o conservar?",
+  "tema": "Patrimonio · sitios arqueológicos",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    { "id": "A", "desde": 0, "firma": "Una educadora de un museo de sitio" },
+    { "id": "B", "desde": 1, "firma": "Un arqueólogo" }
+  ],
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "apoyo", "t": "Quien visita una huaca sin preparación suele ver solo un cerro de tierra, y es difícil cuidar lo que no se entiende." },
+      { "id": "o2", "rol": "principal", "t": "Por eso defiendo que, en algunas zonas del sitio, se reconstruyan muros, rampas o relieves a partir de lo que los arqueólogos ya conocen." },
+      { "id": "o3", "rol": "apoyo", "t": "Ver un muro con su altura y su color permite imaginar cómo se vivía allí, y esa imagen convierte al visitante en alguien que defiende el lugar." },
+      { "id": "o4", "rol": "apoyo", "t": "Cuando los vecinos sienten que la huaca es suya, la protegen de invasiones y de basurales mejor que cualquier cerco." },
+      { "id": "o5", "rol": "detalle", "t": "Basta con que lo reconstruido se distinga a simple vista de lo original, para que nadie confunda una cosa con la otra." }
+    ],
+    [
+      { "id": "o6", "rol": "contraste", "t": "Comparto la meta: una huaca que nadie entiende está más expuesta al abandono." },
+      { "id": "o7", "rol": "contraste", "t": "Pero reconstruir obliga a decidir cosas que nadie sabe: qué altura tenía un muro derrumbado o qué color tenía un relieve del que quedan unos trazos." },
+      { "id": "o8", "rol": "apoyo", "t": "Además, lo que se agrega sobre el muro antiguo cubre las huellas que otro investigador, con mejores técnicas, podría estudiar mañana." },
+      { "id": "o9", "rol": "apoyo", "t": "La Carta de Venecia, que orienta la conservación de monumentos desde 1964, ya pedía detener la restauración allí donde empieza la conjetura." },
+      { "id": "o10", "rol": "principal", "t": "Lo prudente es conservar lo que hay tal como está y explicarlo con maquetas, dibujos y recorridos guiados, que ayudan a imaginar sin tocar la evidencia." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "postura",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Una reconstrucción es aceptable si lo nuevo se distingue a simple vista de lo antiguo.",
+        "aceptada": "A",
+        "codigos": { "B": "RV59", "ambos": "RV60", "ninguno": null },
+        "explicacion": "Lo sostiene el texto A en la oración 5: basta con que lo reconstruido se distinga de lo original.",
+        "explicaciones": {
+          "B": "El texto B no acepta reconstruir aunque se distinga: dice que lo agregado decide lo que nadie sabe y cubre las huellas (oraciones 7 y 8).",
+          "ambos": "Solo el texto A lo sostiene. El B propone conservar el sitio tal como está.",
+          "ninguno": "Sí lo sostiene alguien: el texto A, en la oración 5."
+        }
+      },
+      "enunciado": "¿Qué sostiene la autora del texto A?",
+      "alternativas": [
+        { "t": "Que reconstruir partes de una huaca ayuda a que la gente la entienda y la proteja.", "correcta": true, "evidencia": ["o2", "o3"],
+          "explicacion": "Es su tesis (oración 2) con su razón (oración 3): ver cómo era el lugar convierte al visitante en alguien que lo defiende." },
+        { "t": "Que lo agregado sobre un muro antiguo cubre huellas que podrían estudiarse luego.", "codigo": "RV59", "origen": "o8",
+          "explicacion": "Ese es un argumento del texto B (oración 8) contra la reconstrucción." },
+        { "t": "Que hay que reconstruir zonas de la huaca, aunque lo nuevo no se distinga de lo original.", "codigo": "RV62", "origen": "o5",
+          "explicacion": "La primera parte es su tesis, pero la segunda la contradice: el texto A pide que lo reconstruido se distinga a simple vista (oración 5)." },
+        { "t": "Que todas las huacas del Perú deben reconstruirse por completo.", "codigo": "RV11",
+          "explicacion": "El texto A habla de reconstruir «algunas zonas del sitio» (oración 2), no huacas enteras ni todas." },
+        { "t": "Que los vecinos protegen la huaca de invasiones y de basurales.", "codigo": "RV1", "origen": "o4",
+          "explicacion": "Es un apoyo de su argumento, no la postura que defiende." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "discrepancia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "¿En qué discrepan los autores?",
+      "alternativas": [
+        { "t": "A propone reconstruir partes del sitio; B, conservarlo como está y explicarlo.", "correcta": true, "evidencia": ["o2", "o10"],
+          "explicacion": "Cada mitad es la tesis de su autor: la oración 2 del texto A y la oración 10 del B." },
+        { "t": "A propone explicar el sitio con maquetas; B, reconstruir sus muros.", "codigo": "RV59",
+          "explicacion": "Cambia las posturas de lugar: las maquetas son la propuesta del texto B y la reconstrucción, la del A." },
+        { "t": "A quiere que la gente entienda las huacas; B considera que eso no importa.", "codigo": "RV61", "origen": "o6",
+          "explicacion": "En eso coinciden: el texto B dice «comparto la meta» (oración 6)." },
+        { "t": "A propone reconstruir partes del sitio; B, dejarlo sin ninguna explicación para no alterar la evidencia.", "codigo": "RV62", "origen": "o10",
+          "explicacion": "La primera mitad es correcta, pero el texto B sí quiere explicar el sitio: con maquetas, dibujos y recorridos guiados (oración 10)." },
+        { "t": "A defiende el turismo masivo; B, cerrar las huacas al público.", "codigo": "RV33",
+          "explicacion": "Ninguno toma esas posturas: el texto A no habla de turismo masivo y el B propone recorridos guiados." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto B, la palabra HUELLAS («cubre las huellas que otro investigador… podría estudiar») significa",
+      "alternativas": [
+        { "t": "vestigios.", "correcta": true, "evidencia": ["o8"],
+          "explicacion": "Son los restos que quedan del muro antiguo y que todavía pueden estudiarse." },
+        { "t": "pisadas.", "codigo": "RV18",
+          "explicacion": "Es el sentido más frecuente de «huella», pero sobre un muro no se habla de pies." },
+        { "t": "cimientos.", "codigo": "RV19",
+          "explicacion": "Es del mismo campo (la construcción), pero los cimientos son la base de un muro, no las marcas que quedan en él." },
+        { "t": "dibujos.", "codigo": "RV5", "origen": "o10",
+          "explicacion": "Toma una palabra de la oración 10, donde los dibujos son una forma de explicar el sitio, no lo que el muro conserva." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "dialogo",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Si la gente no entiende una huaca, es más fácil que la descuide.",
+        "aceptada": "ambos",
+        "codigos": { "A": "RV61", "B": "RV61", "ninguno": null },
+        "explicacion": "Los dos lo sostienen: el texto A dice que es difícil cuidar lo que no se entiende (oración 1) y el B, que una huaca que nadie entiende está más expuesta al abandono (oración 6).",
+        "explicaciones": {
+          "A": "El texto A lo dice en la oración 1, pero el B también: «comparto la meta» y la huaca que nadie entiende «está más expuesta al abandono» (oración 6).",
+          "B": "El texto B lo dice en la oración 6, pero como acuerdo con el A, que lo plantea en la oración 1.",
+          "ninguno": "Los dos lo sostienen: el texto A en la oración 1 y el B en la oración 6."
+        }
+      },
+      "enunciado": "Ante la oración 5 del texto A, el autor del texto B probablemente respondería que",
+      "alternativas": [
+        { "t": "aunque lo nuevo se distinga, igual cubre la evidencia original.", "correcta": true, "evidencia": ["o5", "o8"],
+          "explicacion": "Que se distinga resuelve la confusión, pero no su segunda objeción: lo agregado cubre las huellas que otro podría estudiar (oración 8)." },
+        { "t": "no hace falta que el visitante entienda lo que ve.", "codigo": "RV61", "origen": "o6",
+          "explicacion": "El texto B comparte la meta de que la gente entienda la huaca (oración 6)." },
+        { "t": "así se evita que el visitante confunda lo reconstruido con lo original.", "codigo": "RV59", "origen": "o5",
+          "explicacion": "Eso repite el argumento del texto A (oración 5); no es una respuesta del B." },
+        { "t": "las técnicas modernas permiten saber con exactitud la altura de los muros derrumbados.", "codigo": "RV8",
+          "explicacion": "El texto B dice lo contrario: que la altura de un muro derrumbado es algo que nadie sabe (oración 7). Es una idea de fuera del texto." },
+        { "t": "habría que demoler todo lo que ya se reconstruyó en las huacas.", "codigo": "RV12",
+          "explicacion": "Va más allá del texto B, que habla de cómo cuidar los sitios desde ahora, no de demoler lo hecho." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Si se supiera con certeza cómo era un muro derrumbado, el autor del texto B",
+      "alternativas": [
+        { "t": "aún objetaría que lo agregado cubriría las huellas del muro antiguo.", "correcta": true, "evidencia": ["o8", "o10"],
+          "explicacion": "La certeza elimina su primera objeción (oración 7), pero no la segunda: «además», lo agregado cubre la evidencia (oración 8). Y su propuesta sigue siendo conservar sin tocar (oración 10)." },
+        { "t": "seguiría rechazando la reconstrucción porque obliga a decidir lo que nadie sabe sobre ese muro.", "codigo": "RV63", "origen": "o7",
+          "explicacion": "Repite la objeción que el supuesto acaba de quitar: si se sabe con certeza cómo era el muro, ya no se decide lo que nadie sabe." },
+        { "t": "aceptaría reconstruir todas las huacas sin excepción.", "codigo": "RV11",
+          "explicacion": "El supuesto habla de un muro del que se sabe todo, no de todas las huacas; y su otra objeción (oración 8) sigue en pie." },
+        { "t": "dejaría de recomendar las maquetas y los dibujos.", "codigo": "RV7", "origen": "o10",
+          "explicacion": "Nada en el texto B ata las maquetas a lo que no se sabe: sirven para imaginar sin tocar la evidencia, y eso sigue valiendo." },
+        { "t": "lo reconstruiría para que los vecinos sientan que la huaca es suya.", "codigo": "RV59", "origen": "o4",
+          "explicacion": "Esa razón es del texto A (oración 4). El B sigue teniendo una objeción en pie: lo agregado cubre la evidencia." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-08",
+  "hechos": [
+    { "afirmacion": "La Carta de Venecia (Carta internacional sobre la conservación y la restauración de monumentos y sitios, 1964) dice que la restauración debe detenerse allí donde empieza la conjetura.", "fuente": "ICOMOS, Carta de Venecia (1964), artículo 9" }
+  ],
+  "revision": { "por": "subagente (revisor a ciegas)", "fecha": "2026-11-08", "veredicto": "aprobado", "notas": "Coincidí a ciegas en 7 de 7. Sin cambios; verificado que el artículo 9 de la Carta de Venecia (1964) pide detener la restauración donde empieza la conjetura." }
+}
