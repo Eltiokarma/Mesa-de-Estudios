@@ -13,7 +13,7 @@ La app es un sitio estático: no tiene servidor ni base de datos. Para que se in
 1. Entrar a vercel.com con la cuenta de GitHub y elegir **Add New → Project**.
 2. Importar el repo `Eltiokarma/Mesa-de-Estudios`.
 3. En **Framework Preset**, elegir **Other**. Dejar vacíos el comando de construcción y la carpeta de salida.
-4. Elegir la rama que se publica: en **Settings → Git → Production Branch**, la rama donde está la app al día. Hoy es `claude/awesome-wozniak-5etl1n`. Otra opción es fusionarla primero a `main`.
+4. Rama de producción: **`main`** (desde el 12 nov 2026, todo lo integrado se sube también a `main`). Nombre del proyecto: **`mesa-de-estudios`**, para que la dirección sea `mesa-de-estudios.vercel.app`, que es el origen que acepta el servidor de cuentas (`CORS_ORIGENES` en Railway). Si Vercel da otra dirección, hay que cambiar `CORS_ORIGENES` y `APP_URL` en Railway.
 5. Pulsar **Deploy**. Vercel da una dirección como `mesa-de-estudios.vercel.app`. Un dominio propio se agrega después en **Settings → Domains**.
 
 Desde ese momento, cada push a esa rama se publica solo en uno o dos minutos. Los celulares que ya tienen la app reciben la versión nueva la próxima vez que la abran con conexión, siempre que se haya subido `VERSION` en `app/sw.js`.
