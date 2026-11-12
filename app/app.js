@@ -378,7 +378,8 @@ function papelFigura(f) {
   else if (f.tipo === 'barras') {
     const max = Math.max(...f.barras.map(b => b.valor)) || 1;
     c = `<ul class="fig-barras">${f.barras.map(b => `<li><span class="et">${esc(b.etiqueta)}</span><span class="pista" aria-hidden="true"><span class="relleno" style="width:${(100 * b.valor / max).toFixed(1)}%"></span></span><span class="val">${esc(String(b.valor).replace('.', ','))}${f.unidad ? ` ${esc(f.unidad)}` : ''}</span></li>`).join('')}</ul>`;
-  } else c = `<div class="fig-recuadros">${(f.recuadros || []).map(r => `<div>${r.titulo ? `<b>${esc(r.titulo)}</b>` : ''}<p>${esc(r.t)}</p></div>`).join('')}</div>`;
+  } else if (f.tipo === 'imagen') c = `<div class="fig-imagen" role="img" aria-label="${esc(f.alt)}">${f.svg}</div><div class="fig-recuadros fig-partes">${(f.partes || []).map(r => `<div>${r.titulo ? `<b>${r.n ? `${esc(String(r.n))}. ` : ''}${esc(r.titulo)}</b>` : ''}<p>${esc(r.t)}</p></div>`).join('')}</div>`;
+  else c = `<div class="fig-recuadros">${(f.recuadros || []).map(r => `<div>${r.titulo ? `<b>${esc(r.titulo)}</b>` : ''}<p>${esc(r.t)}</p></div>`).join('')}</div>`;
   return `<figure class="lec-fig"><figcaption>${esc(f.titulo)}</figcaption>${c}${f.nota ? `<p class="fig-nota">${esc(f.nota)}</p>` : ''}</figure>`;
 }
 function papelLectura(q) {

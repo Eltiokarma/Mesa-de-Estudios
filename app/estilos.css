@@ -300,6 +300,8 @@ details[open] summary{margin-bottom:8px}
 .fig-recuadros{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
 .fig-recuadros>div{border:1.5px solid var(--line);border-radius:10px;padding:8px 10px}
 .fig-recuadros p{margin:4px 0 0}
+.fig-imagen{margin:0 0 10px;color:var(--ink);text-align:center}
+.fig-imagen svg{max-width:100%;height:auto;max-height:min(420px,60vh);font-family:inherit}
 .fig-el.pinta-ev,.fig-el.pinta-di,.fig-el.pinta-idea{outline:3px solid;outline-offset:1px}
 .fig-el.pinta-ev{outline-color:var(--c-i);background:color-mix(in srgb,var(--c-i) 12%,transparent)}
 .fig-el.pinta-di{outline-color:var(--c-o);background:color-mix(in srgb,var(--c-o) 12%,transparent)}

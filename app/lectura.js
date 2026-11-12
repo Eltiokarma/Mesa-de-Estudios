@@ -79,7 +79,7 @@ async function vista(ctx, id, unidad) {
       return a ? `<h2 class="lec-autor"><span>${esc(a.titulo)}</span>${a.firma ? ` <small>${esc(a.firma)}</small>` : ''}</h2>` : ''; };
     return figs(0) + pars.map(k => `${autor(k)}<p class="lec-par${modo === 'marcar' ? ' marcar' : ''}"><span class="lec-np" aria-hidden="true">${CIRC[k - 1] || k}</span> ${ors.filter(o => o.parrafo === k).map(o => oracionHTML(o, modo, pint, sel)).join(' ')}</p>${figs(k)}`).join('');
   }
-  // Textos discontinuos: tabla, barras horizontales (desde 0) o recuadros. Cada parte se pinta como una oración.
+  // Textos discontinuos: tabla, barras horizontales (desde 0), recuadros o imagen (svg propio + sus partes en texto). Cada parte se pinta como una oración.
   function figuraHTML(f, pint) {
     const cl = id => {
       const c = ['fig-el'];
@@ -94,6 +94,8 @@ async function vista(ctx, id, unidad) {
       const max = Math.max(...f.barras.map(x => x.valor)) || 1;
       cuerpo = `<ul class="fig-barras">${f.barras.map(x => `<li class="${cl(x.id)}" data-o="${esc(x.id)}"><span class="et">${esc(x.etiqueta)}</span>
         <span class="pista" aria-hidden="true"><span class="relleno" style="width:${(100 * x.valor / max).toFixed(1)}%"></span></span><span class="val">${esc(String(x.valor).replace('.', ','))}${f.unidad ? ` ${esc(f.unidad)}` : ''}</span></li>`).join('')}</ul>`;
+    } else if (f.tipo === 'imagen') {
+      cuerpo = `<div class="fig-imagen" role="img" aria-label="${esc(f.alt)}">${f.svg}</div><div class="fig-recuadros fig-partes">${f.partes.map(x => `<div class="${cl(x.id)}" data-o="${esc(x.id)}">${x.titulo ? `<b>${x.n ? `${esc(String(x.n))}. ` : ''}${esc(x.titulo)}</b>` : ''}<p>${esc(x.t)}</p></div>`).join('')}</div>`;
     } else {
       cuerpo = `<div class="fig-recuadros">${f.recuadros.map(x => `<div class="${cl(x.id)}" data-o="${esc(x.id)}">${x.titulo ? `<b>${esc(x.titulo)}</b>` : ''}<p>${esc(x.t)}</p></div>`).join('')}</div>`;
     }
