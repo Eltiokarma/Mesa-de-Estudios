@@ -5,7 +5,7 @@ const assert = require('node:assert/strict');
 const gen = require('./generador.js');
 const casos = require('./casos.json');
 const papel = require('./papel.json');
-const { probarGenerador } = require('../../nucleo/probar-generador.js');
+const { probarGenerador, topeEscala } = require('../../nucleo/probar-generador.js');
 
 function biseccion(g, a, b) {
   let ga = g(a);
@@ -180,7 +180,7 @@ test('incorrectas tan limpias como la correcta y de tamaño razonable (600 semil
       assert.ok(dec(a.texto) <= Math.max(dc, 1), `semilla ${s}: «${a.texto}» es menos limpia que «${c.texto}»`);
       if (c.valor !== 0) {
         const r = Math.abs(a.valor / c.valor);
-        assert.ok(r >= 1 / 20 && r <= 20, `semilla ${s}: «${a.texto}» frente a «${c.texto}» (${a.error.id})`);
+        assert.ok(r >= 1 / topeEscala(a) && r <= topeEscala(a), `semilla ${s}: «${a.texto}» frente a «${c.texto}» (${a.error.id})`);
       }
     }
   }

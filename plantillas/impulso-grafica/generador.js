@@ -69,7 +69,7 @@
 
   function cerrar(rng, semilla, o) {
     // Fuera los distractores de más de 20 veces la correcta (o menos de 1/20): no engañan a nadie.
-    const alternativas = P.armar({ correcta: o.correcta, errores: o.errores.filter(e => Number.isFinite(e.valor) && e.valor > 0 && e.valor / o.correcta <= 20 && e.valor / o.correcta >= 1 / 20), rng, texto: x => `${f(x)} ${o.unidad}` });
+    const alternativas = P.armar({ correcta: o.correcta, errores: o.errores.filter(e => Number.isFinite(e.valor) && e.valor > 0 && P.enEscala(e.valor, o.correcta, e.id)), rng, texto: x => `${f(x)} ${o.unidad}` });
     if (masLimpia(alternativas)) return null; // la correcta no debe ser la única redonda
     return {
       id: `${ID}#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',

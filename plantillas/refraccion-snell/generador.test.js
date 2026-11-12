@@ -11,7 +11,7 @@ const gen = require('./generador.js');
 const casos = require('./casos.json');
 const papel = require('./papel.json');
 const P = require('../../nucleo/predicciones.js');
-const { probarGenerador } = require('../../nucleo/probar-generador.js');
+const { probarGenerador, topeEscala } = require('../../nucleo/probar-generador.js');
 
 const S = { 30: 0.5, 37: 0.6, 45: Math.SQRT1_2, 53: 0.8, 60: Math.sqrt(3) / 2 };
 const C = { 30: Math.sqrt(3) / 2, 37: 0.8, 45: Math.SQRT1_2, 53: 0.6, 60: 0.5 };
@@ -163,7 +163,7 @@ test('distractores entre 1/20 y 20 veces la correcta; la correcta no se reconoce
     if (/^(n|x|sen):/.test(c.valor)) for (const a of alt) {
       if (!/^(n|x|sen):/.test(a.valor)) continue;
       const q = num(a) / num(c);
-      assert.ok(q >= 1 / 20 && q <= 20, `semilla ${s}: ${a.texto} frente a ${c.texto}`);
+      assert.ok(q >= 1 / topeEscala(a) && q <= topeEscala(a), `semilla ${s}: ${a.texto} frente a ${c.texto}`);
     }
     n++;
     const k = cifras(c.texto);

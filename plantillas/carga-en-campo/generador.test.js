@@ -5,7 +5,7 @@ const assert = require('node:assert/strict');
 const gen = require('./generador.js');
 const casos = require('./casos.json');
 const papel = require('./papel.json');
-const { probarGenerador } = require('../../nucleo/probar-generador.js');
+const { probarGenerador, topeEscala } = require('../../nucleo/probar-generador.js');
 
 // ---------- Camino independiente ----------
 // No se usan r = mv/(qB) ni T = 2πm/(qB): se integra la ley de fuerza F = q·(E + v × B) con RK4,
@@ -211,7 +211,7 @@ test('alternativas sin absurdos y con la misma limpieza que la correcta (600 sem
     assert.ok(textos.every(t => t.includes('π')) || textos.every(t => !t.includes('π')), `semilla ${s}: π disparejo (${textos})`);
     if (typeof c.valor === 'number') for (const a of p.alternativas) {
       const r = Math.abs(a.valor / c.valor);
-      assert.ok(r >= 1 / 20 - 1e-12 && r <= 20 + 1e-9, `semilla ${s}: «${a.texto}» frente a «${c.texto}»`);
+      assert.ok(r >= 1 / topeEscala(a) - 1e-12 && r <= topeEscala(a) + 1e-9, `semilla ${s}: «${a.texto}» frente a «${c.texto}»`);
     }
     if (cifras(c.texto) < Math.min(...p.alternativas.filter(a => !a.correcta).map(a => cifras(a.texto)))) redonda++;
   }

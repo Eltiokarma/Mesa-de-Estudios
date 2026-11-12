@@ -237,16 +237,16 @@
         "tipo": "carga",
         "sub": "invertir",
         "modo": "giro180",
-        "N": 10,
-        "A": 0.05,
+        "N": 500,
+        "A": 0.005,
         "cm2": true,
-        "B": 0.2,
-        "R": 4,
-        "dt": 0.5
+        "B": 0.4,
+        "R": 25,
+        "dt": 0.1
       },
       "esperado": {
-        "respuesta": 50,
-        "exacta": "50 mC"
+        "respuesta": 80,
+        "exacta": "80 mC"
       }
     },
     {
@@ -255,16 +255,16 @@
         "tipo": "femmedia",
         "sub": "campo",
         "modo": "invierte",
-        "N": 20,
-        "A": 0.008,
+        "N": 5,
+        "A": 0.04,
         "cm2": true,
-        "B1": 0.6,
-        "B2": 0.2,
-        "dt": 0.025
+        "B1": 0.4,
+        "B2": 0.4,
+        "dt": 0.01
       },
       "esperado": {
-        "respuesta": 5.12,
-        "exacta": "5,12 V"
+        "respuesta": 16,
+        "exacta": "16 V"
       }
     },
     {

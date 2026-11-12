@@ -1,6 +1,6 @@
 {
   "plantilla": "energia-potencia",
-  "tolerancia": 1e-06,
+  "tolerancia": 0.000001,
   "nota": "g = 10 m/s²; sen 37° = cos 53° = 0,6 y cos 37° = sen 53° = 0,8; 1 L de agua = 1 kg; 1 HP = 746 W. Unidades de la respuesta: kW en fv/horizontal y peso/grua; W en fv/subida, peso/escalera y bomba/util; kW o HP (campo unidad) en bomba/consumida; m/s en fv/velocidad y cuerda/rapidez; N en fv/eficiencia; kJ en pisos; m en rebotes; J en cuerda/trabajo. En bomba/util con contexto pozo, h es profundidad + altura del tanque. Los valores que no salen exactos (HP, algunas rapideces y alturas) se comparan con dos decimales en la alternativa.",
   "verificacion": "Verificación a ciegas (8 nov 2026, subagente verificador): se resolvieron 46 problemas del lote (los 16 de casos y 30 más) con un planteamiento propio en Python (P = F·v, P = W/t, pérdidas en cadena, W = F·ΔL en la cuerda). 46/46 letras y los 16 valores esperados coinciden (tolerancia 1e-6). Todos los distractores se recalcularon y calzan con su explicación.",
   "casos": [
@@ -74,7 +74,7 @@
         "vkmh": 54
       },
       "esperado": {
-        "respuesta": 800.0,
+        "respuesta": 800,
         "exacta": "800 N"
       }
     },
@@ -90,7 +90,7 @@
         "enKmh": false
       },
       "esperado": {
-        "respuesta": 5200.0,
+        "respuesta": 5200,
         "exacta": "5 200 W"
       }
     },
@@ -106,7 +106,7 @@
         "m": null
       },
       "esperado": {
-        "respuesta": 12.0,
+        "respuesta": 12,
         "exacta": "12 J"
       }
     },
@@ -129,13 +129,13 @@
       "entrada": {
         "tipo": "peso",
         "sub": "grua",
-        "m": 800,
-        "h": 24,
-        "t": 4
+        "m": 120,
+        "h": 20,
+        "t": 15
       },
       "esperado": {
-        "respuesta": 48.0,
-        "exacta": "48 kW"
+        "respuesta": 1.6,
+        "exacta": "1,6 kW"
       }
     },
     {
@@ -149,7 +149,7 @@
         "profundidad": null
       },
       "esperado": {
-        "respuesta": 3750.0,
+        "respuesta": 3750,
         "exacta": "3 750 W"
       }
     },
@@ -209,7 +209,7 @@
         "m": 3
       },
       "esperado": {
-        "respuesta": 2.0,
+        "respuesta": 2,
         "exacta": "2 m/s"
       }
     },
@@ -224,7 +224,7 @@
         "profundidad": 6
       },
       "esperado": {
-        "respuesta": 560.0,
+        "respuesta": 560,
         "exacta": "560 W"
       }
     },

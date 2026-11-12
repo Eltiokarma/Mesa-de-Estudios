@@ -166,5 +166,19 @@
   // Escapa texto para meterlo dentro de un SVG o HTML armado por el generador (figura del problema).
   const xml = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-  return { formatear, radical, pi, v, armar, LETRAS, frac, textoFraccion, combinacion, vector, armarTexto, xml };
+  /*
+   * Escala de los distractores (decisión de Gerson, 12 nov 2026): un distractor va de 1/tope a tope veces
+   * la correcta (20 por defecto), salvo las trampas de unidades, que llegan a topeUnidades (1000): su
+   * código es U1–U8 (física, docs/investigacion/fisica-calculo-transversal-ideas-erroneas.md), QU (química),
+   * AU (aritmética y geometría) o RU (razonamiento matemático), ver docs/investigacion/unidades-ideas-erroneas.md.
+   */
+  const CODIGO_UNIDADES = /^(U[1-8]|QU[1-9]|AU[1-9]|RU[1-9])(?![0-9])/;
+  const esUnidades = id => CODIGO_UNIDADES.test(String(id || ''));
+  function enEscala(valor, correcta, id, { tope = 20, topeUnidades = 1000 } = {}) {
+    if (!Number.isFinite(valor) || !Number.isFinite(correcta) || correcta === 0) return false;
+    const r = Math.abs(valor) / Math.abs(correcta), t = esUnidades(id) ? Math.max(tope, topeUnidades) : tope;
+    return r >= 1 / t && r <= t;
+  }
+
+  return { formatear, radical, pi, v, armar, LETRAS, frac, textoFraccion, combinacion, vector, armarTexto, xml, CODIGO_UNIDADES, esUnidades, enEscala };
 });

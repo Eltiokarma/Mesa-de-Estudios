@@ -11,7 +11,7 @@ const assert = require('node:assert/strict');
 const gen = require('./generador.js');
 const casos = require('./casos.json');
 const papel = require('./papel.json');
-const { probarGenerador } = require('../../nucleo/probar-generador.js');
+const { probarGenerador, topeEscala } = require('../../nucleo/probar-generador.js');
 
 const c = 3e8;
 function biseccion(g, a, b) {
@@ -111,7 +111,7 @@ test('distractores entre 1/20 y 20 veces la correcta; la correcta no se reconoce
   for (let s = 0; s < 600; s++) {
     const p = gen.generar(s), d = p._datos, alt = p.alternativas, c = alt.find(a => a.correcta);
     const base = d.sub === 'hora' ? d.inicio : 0;
-    for (const a of alt) { const q = (a.valor - base) / (c.valor - base); assert.ok(q >= 1 / 20 && q <= 20, `semilla ${s}: ${a.texto} frente a ${c.texto}`); }
+    for (const a of alt) { const q = (a.valor - base) / (c.valor - base); assert.ok(q >= 1 / topeEscala(a) && q <= topeEscala(a), `semilla ${s}: ${a.texto} frente a ${c.texto}`); }
     const k = cifras(c.texto);
     if (alt.every(a => a.correcta || cifras(a.texto) > k)) masCorta++;
   }

@@ -1,6 +1,6 @@
 {
   "plantilla": "fluidos-hidrodinamica",
-  "tolerancia": 1e-06,
+  "tolerancia": 0.000001,
   "nota": "g = 10 m/s², agua 1000 kg/m³, mercurio 13 600 kg/m³, π = 3 en las áreas con diámetro o radio. Presiones en kPa (las de bernoulli son absolutas). En torricelli, H es la altura del agua sobre el piso e y la del orificio; la profundidad del orificio es H − y. En barometro/comparar el aire tiene densidad media constante rhoAire = 1 kg/m³ (modelo declarado en el enunciado); h0_cm es la columna en la ciudad de partida. En torricelli/angulo la respuesta es tan θ = vy/vx bajo la horizontal. Los esperados se calcularon aparte, en Python, con las fórmulas cerradas (el generador y la prueba usan otros caminos).",
   "verificacion": "Verificación a ciegas (subagente verificador, 8 nov 2026): se resolvieron por cuenta propia, con fracciones exactas, las 46 semillas del lote (16 de casos.json y 30 extra), con Torricelli como caída desde la superficie más la cinemática del chorro y Bernoulli como energía por volumen. Coinciden 46 de 46 en letra y valor. Tras la revisión, el barómetro usa densidad media de 1 kg/m³ y los ángulos de llegada se corrigieron; esos casos los recalculó el constructor aparte. Los 16 casos regenerados tras la revisión se volvieron a resolver a ciegas (12 nov 2026): 16/16. Tras la regla de escala (12 nov) cambiaron algunos casos; los recalculó el constructor aparte.",
   "casos": [
@@ -13,7 +13,7 @@
         "V_cm3": 300
       },
       "esperado": {
-        "respuesta": 8000.0,
+        "respuesta": 8000,
         "exacta": "8 000 N/m³"
       }
     },
@@ -26,7 +26,7 @@
         "y": 0.5
       },
       "esperado": {
-        "respuesta": 2.0,
+        "respuesta": 2,
         "exacta": "2 m/s"
       }
     },
@@ -40,7 +40,7 @@
         "razonAreas": 2
       },
       "esperado": {
-        "respuesta": 6.0,
+        "respuesta": 6,
         "exacta": "6 m/s"
       }
     },
@@ -55,7 +55,7 @@
         "A2_cm2": 25
       },
       "esperado": {
-        "respuesta": 144.0,
+        "respuesta": 144,
         "exacta": "144 kPa"
       }
     },
@@ -85,7 +85,7 @@
         "pi": 3
       },
       "esperado": {
-        "respuesta": 6.0,
+        "respuesta": 6,
         "exacta": "6 min"
       }
     },
@@ -127,7 +127,7 @@
         "porDiametro": true
       },
       "esperado": {
-        "respuesta": 130.0,
+        "respuesta": 130,
         "exacta": "130 kPa"
       }
     },
@@ -137,13 +137,13 @@
         "tipo": "caudal",
         "sub": "ducto",
         "D_cm": 40,
-        "V_m3": 144,
+        "V_m3": 72,
         "t_min": 5,
         "pi": 3
       },
       "esperado": {
-        "respuesta": 4.0,
-        "exacta": "4 m/s"
+        "respuesta": 2,
+        "exacta": "2 m/s"
       }
     },
     {
@@ -170,7 +170,7 @@
         "rhoAire": 1
       },
       "esperado": {
-        "respuesta": 48.0,
+        "respuesta": 48,
         "exacta": "48 cm"
       }
     },
@@ -196,7 +196,7 @@
         "y": 1.25
       },
       "esperado": {
-        "respuesta": 4.0,
+        "respuesta": 4,
         "exacta": "4 m"
       }
     },
@@ -208,7 +208,7 @@
         "P_Pa": 65280
       },
       "esperado": {
-        "respuesta": 48.0,
+        "respuesta": 48,
         "exacta": "48 cm"
       }
     },
@@ -221,7 +221,7 @@
         "V_L": 4
       },
       "esperado": {
-        "respuesta": 900.0,
+        "respuesta": 900,
         "exacta": "900 kg/m³"
       }
     }

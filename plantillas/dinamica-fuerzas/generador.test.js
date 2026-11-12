@@ -5,7 +5,7 @@ const assert = require('node:assert/strict');
 const gen = require('./generador.js');
 const casos = require('./casos.json');
 const papel = require('./papel.json');
-const { probarGenerador } = require('../../nucleo/probar-generador.js');
+const { probarGenerador, topeEscala } = require('../../nucleo/probar-generador.js');
 
 // Camino independiente: no se copian las fórmulas despejadas del generador. Las condiciones límite se
 // buscan por bisección sobre la ecuación de fuerzas sin despejar; la escalera se resuelve con momentos
@@ -145,7 +145,7 @@ test('sin distractores absurdos: entre 1/20 y 20 veces la correcta, radios dentr
     if (typeof p.respuesta.valor !== 'number') continue;
     for (const a of p.alternativas.filter(x => !x.correcta)) {
       const r = a.valor / p.respuesta.valor;
-      assert.ok(r >= 1 / 20 && r <= 20, `semilla ${s}: ${a.texto} contra ${p.respuesta.valor}`);
+      assert.ok(r >= 1 / topeEscala(a) && r <= topeEscala(a), `semilla ${s}: ${a.texto} contra ${p.respuesta.valor}`);
       if (d.tipo === 'plataforma' && d.sub === 'radio') assert.ok(a.valor <= d.radioPlataforma + 1e-9, `semilla ${s}: radio ${a.texto} mayor que el plato`);
       if (d.tipo === 'plataforma' && d.sub === 'mu') assert.ok(a.valor <= 1.5, `semilla ${s}: μs = ${a.texto}`);
     }

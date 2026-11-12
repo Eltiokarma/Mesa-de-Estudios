@@ -53,7 +53,7 @@
   // Un distractor que es más de 20 veces la correcta (o menos de 1/20) no engaña a nadie: se deja fuera.
   const decimales = t => { const m = t.match(/,(\d+)/); return m ? m[1].length : 0; };
   const masLimpia = alt => { const c = alt.find(a => a.correcta); return decimales(c.texto) < Math.min(...alt.filter(a => !a.correcta).map(a => decimales(a.texto))); };
-  const razonable = (x, c) => Number.isFinite(x) && x > 0 && x / c <= 20 && x / c >= 1 / 20;
+  const razonable = (x, c, id) => Number.isFinite(x) && x > 0 && P.enEscala(x, c, id); // U1–U8 hasta 1000 veces
 
   const TIPOS = [['llegadas', 'sismo'], ['llegadas', 'sismo'], ['llegadas', 'sismo-tp'], ['llegadas', 'trueno'], ['llegadas', 'riel'], ['llegadas', 'riel'],
     ['medio', 'lambda'], ['medio', 'lambda'], ['medio', 'lambda'],
@@ -78,7 +78,7 @@
   }
 
   function cerrar(rng, semilla, o) {
-    const alternativas = P.armar({ correcta: o.correcta, errores: o.errores.filter(e => razonable(e.valor, o.correcta)), rng, texto: x => `${f(x)} ${o.unidad}` });
+    const alternativas = P.armar({ correcta: o.correcta, errores: o.errores.filter(e => razonable(e.valor, o.correcta, e.id)), rng, texto: x => `${f(x)} ${o.unidad}` });
     if (masLimpia(alternativas)) return null; // la correcta no debe ser la única redonda
     return {
       id: `${ID}#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',

@@ -5,7 +5,7 @@ const assert = require('node:assert/strict');
 const gen = require('./generador.js');
 const casos = require('./casos.json');
 const papel = require('./papel.json');
-const { probarGenerador } = require('../../nucleo/probar-generador.js');
+const { probarGenerador, topeEscala } = require('../../nucleo/probar-generador.js');
 
 // ---- Camino independiente ----
 // Llegadas: se busca por bisección la distancia d con la que d/vlenta − d/vrápida da el Δt medido
@@ -128,7 +128,7 @@ test('600 semillas: la correcta no es la única redonda y ningún distractor sal
     if (typeof p.respuesta.valor !== 'number') continue;
     const c = p.alternativas.find(a => a.correcta), otras = p.alternativas.filter(a => !a.correcta);
     assert.ok(dec(c.texto) >= Math.min(...otras.map(a => dec(a.texto))), `semilla ${s}: solo la correcta es redonda (${p.alternativas.map(a => a.texto)})`);
-    for (const a of otras) assert.ok(a.valor / c.valor <= 20 && a.valor / c.valor >= 1 / 20, `semilla ${s}: ${a.texto} es absurdo frente a ${c.texto}`);
+    for (const a of otras) assert.ok(a.valor / c.valor <= topeEscala(a) && a.valor / c.valor >= 1 / topeEscala(a), `semilla ${s}: ${a.texto} es absurdo frente a ${c.texto}`);
   }
 });
 

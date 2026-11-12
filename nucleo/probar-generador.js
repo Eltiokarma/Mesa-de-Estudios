@@ -98,4 +98,20 @@ function probarFugas(gen, { central = 0.4, extremo = 0.75, minimo = 15, ...opcio
   });
 }
 
-module.exports = { probarGenerador, probarFugas, medirFugas, distancia };
+/*
+ * Escala de los distractores (decisión de Gerson, 12 nov 2026). Un distractor va entre 1/tope y tope
+ * veces la correcta (por defecto 20), salvo que sea una trampa de unidades: su error tiene un código
+ * U1–U8 (docs/investigacion/fisica-calculo-transversal-ideas-erroneas.md) o QU1–QU4, AU1–AU4, RU1
+ * (química, aritmética y geometría, razonamiento matemático). Esas pueden llegar a topeUnidades
+ * veces (por defecto 1000): mT sin pasar a T, cm² entre 100, g por kg, minutos por segundos.
+ */
+const { CODIGO_UNIDADES } = require('./predicciones.js');
+const esTrampaDeUnidades = a => !!(a && a.error && CODIGO_UNIDADES.test(String(a.error.id)));
+const topeEscala = (a, { tope = 20, topeUnidades = 1000 } = {}) => (esTrampaDeUnidades(a) ? Math.max(tope, topeUnidades) : tope);
+function dentroDeEscala(a, correcta, { tope = 20, topeUnidades = 1000 } = {}) {
+  const r = Math.abs(a.valor) / Math.abs(correcta);
+  const t = topeEscala(a, { tope, topeUnidades });
+  return r >= 1 / t && r <= t;
+}
+
+module.exports = { probarGenerador, probarFugas, medirFugas, distancia, dentroDeEscala, topeEscala, esTrampaDeUnidades, CODIGO_UNIDADES };

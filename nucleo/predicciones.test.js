@@ -136,3 +136,11 @@ test('formatear redondea bien los valores que en binario quedan justo debajo de 
   assert.equal(P.formatear(1.0349), '1,03');
   assert.equal(P.formatear(0), '0');
 });
+
+test('enEscala: 20 veces en general y 1000 para las trampas de unidades', () => {
+  const P = require('./predicciones.js');
+  assert.ok(P.enEscala(20, 1, 'PR1') && !P.enEscala(21, 1, 'PR1') && P.enEscala(0.05, 1));
+  assert.ok(P.enEscala(1000, 1, 'U2-mT') && P.enEscala(0.001, 1, 'QU1-g-kg') && !P.enEscala(1001, 1, 'AU2'));
+  assert.ok(!P.enEscala(NaN, 1, 'U2') && !P.enEscala(1, 0, 'U2'));
+  assert.ok(P.esUnidades('U8-sumar-273') && P.esUnidades('RU1') && !P.esUnidades('U9') && !P.esUnidades('U12') && !P.esUnidades('RMP3') && !P.esUnidades(undefined));
+});

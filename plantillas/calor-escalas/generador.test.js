@@ -5,7 +5,7 @@ const assert = require('node:assert/strict');
 const gen = require('./generador.js');
 const casos = require('./casos.json');
 const papel = require('./papel.json');
-const { probarGenerador } = require('../../nucleo/probar-generador.js');
+const { probarGenerador, topeEscala } = require('../../nucleo/probar-generador.js');
 
 // Camino independiente: toda escala se trata como una recta que pasa por dos puntos fijos (hielo que se
 // derrite y agua que hierve), sin usar 1,8 ni 32; los cruces se buscan por bisección; la catarata se
@@ -124,7 +124,7 @@ test('sin distractores absurdos: escala, kelvin, «subió», mediodía, densidad
     if (typeof p.respuesta.valor !== 'number') continue;
     for (const a of p.alternativas.filter(x => !x.correcta)) {
       const r = Math.abs(a.valor) / Math.abs(p.respuesta.valor), msg = `semilla ${s} (${d.tipo}/${d.sub}): ${a.texto}`;
-      assert.ok(r >= 1 / 20 && r <= 20, msg);
+      assert.ok(r >= 1 / topeEscala(a) && r <= topeEscala(a), msg);
       if (p.respuesta.unidad === 'K') assert.ok(a.valor >= 0, msg);
       if (d.tipo === 'variacion') assert.ok(a.valor > 0, msg);
       if (d.sub === 'tanque') assert.ok(a.valor <= 60, msg);

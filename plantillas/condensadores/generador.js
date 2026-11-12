@@ -97,8 +97,8 @@
   function cerrar(rng, semilla, o) {
     const ok = o.ok || (x => limpio(x));
     // Sin distractores absurdos: fuera de 1/20 a 20 veces la correcta no entran.
-    const razonable = x => x === 0 || (Math.abs(x / o.correcta) <= 20 && Math.abs(x / o.correcta) >= 1 / 20);
-    const alternativas = P.armar({ correcta: o.correcta, errores: o.errores.filter(e => ok(e.valor) && razonable(e.valor)), rng, texto: o.texto });
+    const razonable = (x, id) => x === 0 || P.enEscala(x, o.correcta, id); // U1–U8 hasta 1000 veces
+    const alternativas = P.armar({ correcta: o.correcta, errores: o.errores.filter(e => ok(e.valor) && razonable(e.valor, e.id)), rng, texto: o.texto });
     return {
       id: `condensadores#${semilla}`, variables: o.variables || VAR, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
       alternativas, solucion: o.solucion, respuesta: { valor: o.correcta, unidad: o.unidad }, _datos: o.datos,

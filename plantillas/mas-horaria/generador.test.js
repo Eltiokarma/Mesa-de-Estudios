@@ -5,7 +5,7 @@ const assert = require('node:assert/strict');
 const gen = require('./generador.js');
 const casos = require('./casos.json');
 const papel = require('./papel.json');
-const { probarGenerador } = require('../../nucleo/probar-generador.js');
+const { probarGenerador, topeEscala } = require('../../nucleo/probar-generador.js');
 
 const PI = Math.PI, g = 10;
 const X = (A, w, fase) => t => A * Math.sin(w * t + fase * PI);
@@ -199,7 +199,7 @@ test('sin distractores absurdos y la correcta no se reconoce por redonda (600 se
     for (const a of p.alternativas.filter(x => !x.correcta)) {
       if (Math.abs(a.valor) < 1e-9) continue; // el cero, donde tiene sentido (equilibrio, reposo)
       const r = Math.abs(a.valor / c);
-      assert.ok(r >= 1 / 20 && r <= 20, `semilla ${s}: ${a.texto} frente a ${c} (${a.error.id})`);
+      assert.ok(r >= 1 / topeEscala(a) && r <= topeEscala(a), `semilla ${s}: ${a.texto} frente a ${c} (${a.error.id})`);
     }
     const correcta = p.alternativas.find(a => a.correcta), otras = p.alternativas.filter(a => !a.correcta);
     por[k] = por[k] || [0, 0]; por[k][0]++; total++;

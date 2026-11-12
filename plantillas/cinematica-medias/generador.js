@@ -83,8 +83,8 @@
     // Las incorrectas: tan limpias como la correcta (a lo más un decimal más si la correcta es entera) y
     // razonables (entre 1/20 y 20 veces la correcta); un error que da 0 o un número absurdo no entra.
     const ok = o.negativos ? limpio : corto, dc = decimales(f(o.correcta)), maxd = Math.max(dc, 1);
-    const razonable = x => o.correcta === 0 || (Math.abs(x) >= Math.abs(o.correcta) / 20 && Math.abs(x) <= Math.abs(o.correcta) * 20);
-    const errores = o.errores.filter(e => e && ok(e.valor) && decimales(f(e.valor)) <= maxd && razonable(e.valor));
+    const razonable = (x, id) => o.correcta === 0 || P.enEscala(x, o.correcta, id); // U1–U8 hasta 1000 veces
+    const errores = o.errores.filter(e => e && ok(e.valor) && decimales(f(e.valor)) <= maxd && razonable(e.valor, e.id));
     const alternativas = P.armar({ correcta: o.correcta, errores, rng, texto: o.texto, negativos: !!o.negativos });
     return {
       id: `cinematica-medias#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',

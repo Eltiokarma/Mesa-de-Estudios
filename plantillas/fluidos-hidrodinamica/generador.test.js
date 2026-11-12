@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const gen = require('./generador.js');
 const casos = require('./casos.json');
-const { probarGenerador } = require('../../nucleo/probar-generador.js');
+const { probarGenerador, topeEscala } = require('../../nucleo/probar-generador.js');
 
 const g = 10, AGUA = 1000, HG = 13600;
 // Camino independiente: no se usan las fórmulas cerradas del generador. El caudal se piensa como cuánto tarda el agua
@@ -170,7 +170,7 @@ test('escala: ninguna incorrecta fuera de 1/20 a 20 veces la correcta ni con má
   for (let s = 0; s < 600; s++) {
     const p = gen.generar(s), c = p.alternativas.find(a => a.correcta);
     for (const a of p.alternativas.filter(a => !a.correcta)) {
-      assert.ok(a.valor >= c.valor / 20 && a.valor <= c.valor * 20, `semilla ${s}: ${a.texto} fuera de escala contra ${c.texto}`);
+      assert.ok(a.valor >= c.valor / topeEscala(a) && a.valor <= c.valor * topeEscala(a), `semilla ${s}: ${a.texto} fuera de escala contra ${c.texto}`);
       assert.ok(decs(a.texto) <= decs(c.texto), `semilla ${s}: ${a.texto} tiene más decimales que ${c.texto}`);
     }
   }

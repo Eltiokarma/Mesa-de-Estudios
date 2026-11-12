@@ -1,6 +1,6 @@
 {
   "plantilla": "cargas-sistema",
-  "tolerancia": 1e-06,
+  "tolerancia": 0.000001,
   "nota": "k = 9 × 10⁹ N·m²/C². Energía en mJ con signo (q en µC; las distancias de pares en cm). En razon-nula, q en A, Q en B y m·q en C, con AB = a y BC = b en unidades de 10, 20 o 30 cm; la respuesta es Q/q. En grafica, r1 y r2 en m, v1 en V; la carga en nC. En campo, q en µC y a en m; la respuesta va en unidades de 10⁵ N/C; signo = +1 o −1 multiplica todas las cargas (el módulo no cambia).",
   "verificacion": "Verificación a ciegas (subagente verificador, 12 nov 2026): 44 problemas (14 de casos + 30 semillas 300-329) recalculados con suma de pares k·qi·qj/r y superposición vectorial en 3D, sin ver generador ni claves: 44/44 coinciden, incluidos los radicales del cubo y Q/q de la energía nula. Barrido de 4000 semillas limpio.",
   "casos": [
@@ -29,7 +29,7 @@
         "r2": 1.5
       },
       "esperado": {
-        "respuesta": 4.0,
+        "respuesta": 4,
         "exacta": "4 N/C"
       }
     },
@@ -155,7 +155,7 @@
         ]
       },
       "esperado": {
-        "respuesta": -504.0,
+        "respuesta": -504,
         "exacta": "−504 mJ"
       }
     },
@@ -164,12 +164,12 @@
       "entrada": {
         "tipo": "grafica",
         "sub": "carga",
-        "r1": 0.25,
-        "v1": 72
+        "r1": 0.9,
+        "v1": 90
       },
       "esperado": {
-        "respuesta": 2.0,
-        "exacta": "2 nC"
+        "respuesta": 9,
+        "exacta": "9 nC"
       }
     },
     {
@@ -197,7 +197,7 @@
         "r2": 2.4
       },
       "esperado": {
-        "respuesta": 45.0,
+        "respuesta": 45,
         "exacta": "45 V"
       }
     },
@@ -293,7 +293,7 @@
         ]
       },
       "esperado": {
-        "respuesta": -2250.0,
+        "respuesta": -2250,
         "exacta": "−2 250 mJ"
       }
     }

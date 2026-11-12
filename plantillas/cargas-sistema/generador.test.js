@@ -5,7 +5,7 @@ const assert = require('node:assert/strict');
 const gen = require('./generador.js');
 const casos = require('./casos.json');
 const papel = require('./papel.json');
-const { probarGenerador } = require('../../nucleo/probar-generador.js');
+const { probarGenerador, topeEscala } = require('../../nucleo/probar-generador.js');
 
 // Camino independiente: se ponen las cargas en coordenadas (en metros y coulombs, SI) y
 //   - la energía del sistema se calcula ARMÁNDOLO: se traen las cargas una por una desde lejos y se
@@ -122,7 +122,7 @@ test('sin distractores absurdos ni correcta reconocible por redonda (600 semilla
     const p = gen.generar(s), c = p.respuesta.valor;
     for (const a of p.alternativas) if (!a.correcta && a.valor !== 0) {
       const r = Math.abs(a.valor / c);
-      assert.ok(r <= 20 && r >= 1 / 20, `semilla ${s}: ${a.texto} es ${r} veces la correcta`);
+      assert.ok(r <= topeEscala(a) && r >= 1 / topeEscala(a), `semilla ${s}: ${a.texto} es ${r} veces la correcta`);
     }
     const ct = p.alternativas.find(a => a.correcta).texto;
     if (p.alternativas.filter(a => !a.correcta).every(a => dec(a.texto) > dec(ct))) redonda++;

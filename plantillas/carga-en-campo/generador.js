@@ -27,9 +27,9 @@
  * Convenciones: SI; los datos de cada partícula (masa y carga) se dan en el enunciado; µ0 = 4π × 10⁻⁷ T·m/A;
  * sen 37° = 3/5, sen 53° = 4/5. Números con tres cifras significativas y coma decimal; fuera de
  * 0,01 a 100 000 se escriben en notación científica. Los periodos y los pasos salen como múltiplos de π.
- * Distractores: solo los que quedan entre 1/20 y 20 veces la correcta (los mT tomados como T, los cm como m
- * o los µs como s dan factores de 100 o 1000 y se descartan por absurdos; esas conversiones quedan en la
- * solución). Errores: U2 (mT pasado entre 100), U7, PR1 a PR7 (hipótesis, docs/investigacion/fisica-calculo-transversal-ideas-erroneas.md);
+ * Distractores: entre 1/20 y 20 veces la correcta, salvo las trampas de unidades (los mT tomados como T,
+ * los cm como m), que llegan a 1000 veces (decisión de Gerson, 12 nov 2026; P.enEscala).
+ * Errores: U2 (mT pasado entre 100, mT como T, cm como m), U7, PR1 a PR7 (hipótesis, docs/investigacion/fisica-calculo-transversal-ideas-erroneas.md);
  * MG3 (parcial, docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md); las trampas de los
  * solucionarios de San Marcos (docs/clasificacion/trampas-admision-unmsm/fisica.md, hipótesis): radio
  * inversamente proporcional a la rapidez, rapidez total en la hélice, olvidar Ohm en el riel, fórmula del
@@ -111,7 +111,8 @@
   }
   const rapidez = (rng, exps) => rng.elegir([1, 1.5, 2, 2.5, 3, 4, 5, 6, 8]) * 10 ** rng.elegir(exps);
   const pasoMT = b => (b.mT ? [['El campo en teslas: ', c('B', `${b.texto} = ${num(b.B)} T`), '.']] : []);
-  // (Los mT tomados como T dan un factor 1000: esa opción sería absurda; la conversión queda en la solución.)
+  // Trampa de unidades (2027-I #84): los mT tomados como T, un factor 1000. Va como distractor U2 (P.enEscala la deja pasar).
+  const mTcomoT = (b, valor, que, f) => (b.mT ? [tr('U2-mT', valor * f, `Pusiste ${b.texto} como si fueran ${num(b.B * 1000)} T. Mili es una milésima: ${b.texto} = ${num(b.B)} T. Con el campo mil veces más grande, ${que} sale mil veces ${f < 1 ? 'más chico' : 'más grande'}.`)] : []);
 
   // ---------- Armado ----------
   function generar(semilla) {
@@ -144,7 +145,8 @@
   function cerrar(rng, semilla, o) {
     if (!exacto(o.correcta)) return null;
     // Sin distractores absurdos: de 1/20 a 20 veces la correcta.
-    const errores = o.errores.filter(e => Number.isFinite(e.valor) && e.valor > 0 && e.valor / o.correcta >= 1 / 20 && e.valor / o.correcta <= 20);
+    // Las trampas de unidades (U1–U8, como los mT tomados como T) llegan a 1000 veces (P.enEscala).
+    const errores = o.errores.filter(e => Number.isFinite(e.valor) && e.valor > 0 && P.enEscala(e.valor, o.correcta, e.id));
     // Formato parejo: si unas opciones salen como múltiplos de π y otras no, todas van en decimales.
     let texto = o.texto, solucion = o.solucion;
     if (texto !== razon) {
@@ -177,6 +179,7 @@
       tr('PR3-medio', rc / 2, 'Pusiste un ½ como en la energía cinética. La fuerza centrípeta es m·v²/r, sin ½: r = m·v/(|q|·B).'),
       h('MG-diametro', 2 * rc, 'Ese es el diámetro: la distancia entre el punto donde entra y el punto donde está después de media vuelta. El radio es m·v/(|q|·B), la mitad.'),
       h('MG-perimetro', 2 * PI * rc, 'Multiplicaste por 2π: eso es la longitud de la circunferencia, 2π·r. El radio es solo m·v/(|q|·B).'),
+      ...mTcomoT(b, rc, 'el radio', 1 / 1000),
     ];
     const solucion = [
       ['La fuerza magnética, |q|·', c('v', 'v'), '·', c('B', 'B'), ', es la fuerza centrípeta: |q|·v·B = m·v²/r, así que ', c('x', 'r'), ' = m·', c('v', 'v'), '/(|q|·', c('B', 'B'), ').'],
@@ -242,6 +245,7 @@
       tr('U7-sin-2pi', p.m / (p.q * b.B), 'Calculaste m/(|q|·B), que es 1/ω. Una vuelta son 2π rad: T = 2π/ω = 2π·m/(|q|·B).'),
       tr('PR7-medio', PI * p.m / (p.q * b.B), 'Ese es el tiempo de media vuelta, π·m/(|q|·B). El periodo es una vuelta completa: el doble.'),
       h('PR7-doble', 2 * T, 'Te salió el doble: contaste dos veces el 2 de la vuelta. Una vuelta son 2π rad, y T = 2π·m/(|q|·B).'),
+      ...mTcomoT(b, T, 'el periodo', 1 / 1000),
     ];
     const solucion = [
       ['De |q|·v·B = m·v²/r sale r = m·v/(|q|·B). Una vuelta mide 2π·r y se recorre con rapidez ', c('v', 'v'), ': T = 2π·r/v = 2π·m/(|q|·', c('B', 'B'), '). La rapidez se simplifica: el periodo no depende de ella.'],
@@ -498,6 +502,8 @@
         h('MG-sin-L', F / L, 'Te faltó el largo de la barra. La fuerza sobre el conductor es B·I·L: depende de cuánto mide el tramo dentro del campo.'),
         tr('PR4-ohm', b.B * eps * R * L, 'Multiplicaste la fem por la resistencia. La ley de Ohm dice I = ε/R: más resistencia, menos corriente.'),
         h('MG-mitad', F / 2, 'Dividiste entre 2. La fuerza sobre un tramo recto perpendicular al campo es B·I·L, sin ningún medio.'),
+        ...mTcomoT(b, F, 'la fuerza', 1000),
+        tr('U2-cm', F * 100, `Usaste el largo en centímetros (${Lcm}) como si fueran metros. En F = B·I·L el largo va en metros: ${Lcm} cm = ${num(L)} m.`),
       ];
       const solucion = [solI, ...pasoMT(b), solF, ['Para que la barra siga quieta hay que aplicar una fuerza igual y opuesta: ', c('x', `${num(F)} N`), '.']];
       return cerrar(rng, semilla, { correcta: F, errores, texto: x => txt(x, 'N'), unidad: 'N', variables, enunciado: base, pregunta, solucion,

@@ -98,8 +98,8 @@
 
   function cerrar(rng, semilla, o) {
     // Sin distractores absurdos: cada uno entre 1/20 y 20 veces la correcta (en la hora, el intervalo desde el cruce).
-    const base = o.base || 0, cerca20 = x => { const q = (x - base) / (o.correcta - base); return q >= 1 / 20 && q <= 20; };
-    const alternativas = P.armar({ correcta: o.correcta, errores: o.errores.filter(e => Number.isFinite(e.valor) && e.valor > 0 && cerca20(e.valor) && (!o.filtro || o.filtro(e.valor))), rng, texto: o.texto });
+    const base = o.base || 0, cerca20 = (x, id) => { const q = (x - base) / (o.correcta - base); return q > 0 && P.enEscala(q, 1, id); };
+    const alternativas = P.armar({ correcta: o.correcta, errores: o.errores.filter(e => Number.isFinite(e.valor) && e.valor > 0 && cerca20(e.valor, e.id) && (!o.filtro || o.filtro(e.valor))), rng, texto: o.texto });
     if (alternativas.length < 4) return null;
     return {
       id: `relatividad#${semilla}`, variables: o.variables || VAR, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',

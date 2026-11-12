@@ -82,7 +82,7 @@
     // quedan menos de tres errores, el problema se descarta y generar() prueba con otros datos.
     const txt = o.texto, decs = t => ((t.match(/,(\d+)/) || ['', ''])[1]).length, dCorr = decs(txt(o.correcta));
     const errores = o.errores.filter(e => Number.isFinite(e.valor) && e.valor > 0 && (o.cualquiera || limpio(e.valor, dec))
-      && e.valor >= o.correcta / 20 && e.valor <= o.correcta * 20 && decs(txt(e.valor)) <= dCorr);
+      && P.enEscala(e.valor, o.correcta, e.id) && decs(txt(e.valor)) <= dCorr);
     const alternativas = P.armar({ correcta: o.correcta, errores, rng, texto: o.texto });
     return {
       id: `fluidos-hidrodinamica#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',

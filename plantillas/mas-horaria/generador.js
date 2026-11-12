@@ -119,10 +119,10 @@
 
   // Sin distractores absurdos: entre 1/20 y 20 veces la correcta (en valor absoluto); el cero se deja
   // donde tiene sentido físico (parte del equilibrio, está quieto).
-  const creible = (x, c) => Number.isFinite(x) && (Math.abs(x) < 1e-9 || (Math.abs(x) >= Math.abs(c) / 20 * (1 + 1e-9) && Math.abs(x) <= Math.abs(c) * 20 * (1 - 1e-9)));
+  const creible = (x, c, id) => Number.isFinite(x) && (Math.abs(x) < 1e-9 || (P.enEscala(x, c, id, { tope: 20 * (1 - 1e-9), topeUnidades: 1000 }))); // U1–U8 hasta 1000 veces
 
   function cerrar(rng, semilla, o) {
-    const errores = o.errores.filter(e => e && creible(e.valor, o.correcta) && Number.isFinite(e.valor) && (o.negativos || e.valor > 0))
+    const errores = o.errores.filter(e => e && creible(e.valor, o.correcta, e.id) && Number.isFinite(e.valor) && (o.negativos || e.valor > 0))
       .map(e => (Math.abs(e.valor) < 1e-9 ? { ...e, valor: 0 } : e));
     const alternativas = P.armar({ correcta: o.correcta, errores, rng, unidad: o.unidad, texto: o.texto || null, negativos: !!o.negativos, formato: o.formato || null, qmax: o.qmax || 12 });
     return {

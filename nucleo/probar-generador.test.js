@@ -27,3 +27,14 @@ test('central: un solo rasgo cambiado por distractor se detecta', () => {
   const g = juguete(() => ({ _datos: { tipo: 't' }, alternativas: textos.map((t, i) => ({ letra: 'ABCDE'[i], valor: t, texto: t, correcta: i === 0 })) }));
   assert.equal(medirFugas(g, { semillas: 5 })['t/'].central, 5);
 });
+
+test('dentroDeEscala: tope 20 para cualquier distractor y 1000 para las trampas de unidades', () => {
+  const { dentroDeEscala, esTrampaDeUnidades } = require('./probar-generador.js');
+  const d = (valor, id) => ({ valor, error: id && { id } });
+  assert.ok(dentroDeEscala(d(20), 1) && dentroDeEscala(d(0.05), 1));
+  assert.ok(!dentroDeEscala(d(21), 1) && !dentroDeEscala(d(1000, 'PR2-raiz'), 1));
+  for (const id of ['U2-kilo', 'U3', 'U8-sumar-273', 'QU1-g-kg', 'AU2-cm2', 'RU1-h-min']) assert.ok(dentroDeEscala(d(1000, id), 1) && dentroDeEscala(d(-0.001, id), 1), id);
+  assert.ok(!dentroDeEscala(d(1001, 'U2-kilo'), 1));
+  assert.ok(!esTrampaDeUnidades(d(1, 'U12')) && !esTrampaDeUnidades(d(1, 'UX')) && !esTrampaDeUnidades(d(1, 'RMP3')) && !esTrampaDeUnidades(d(1)));
+  assert.ok(dentroDeEscala(d(50, 'U1-kmh'), 1, { topeUnidades: 100 }) && !dentroDeEscala(d(500, 'U1-kmh'), 1, { topeUnidades: 100 }));
+});

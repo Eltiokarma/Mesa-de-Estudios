@@ -95,7 +95,7 @@
       const errores = o.errores.filter(e => {
         if (!Number.isFinite(e.valor) || (!o.negativos && e.valor <= 0) || decs(e.valor) > maxDec) return false;
         const r = Math.abs(e.valor) / Math.abs(o.correcta);
-        if (!(r >= 1 / 20 && r <= 20)) return false;
+        if (!(r >= 1 / 20 && r <= 20) && !P.enEscala(e.valor, o.correcta, e.id)) return false; // U1–U8 hasta 1000 veces
         return !o.rango || (e.valor >= o.rango[0] && e.valor <= o.rango[1]);
       });
       // Primero las que tienen a lo más los decimales de la correcta: así casi nunca se nota cuál es.
