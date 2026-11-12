@@ -1,8 +1,8 @@
 {
   "plantilla": "rm-planteo",
-  "tolerancia": 1e-9,
+  "tolerancia": 1e-09,
   "nota": "Respuestas en unidades enteras (paquetes, votos, partidos, puntos, metros de la marca medida desde la salida en el sentido de Ana) o en soles. Los regalos no dan más regalos; en el canje no se prestan envases; un empate no es ganar.",
-  "verificacion": "",
+  "verificacion": "Verificador ciego (subagente, 8 nov 2026): resolvió los 29 casos sin ver el generador. Usó enumeración (cortes, torneo, diana con c > m > e ≥ 1), simulación (canje ronda por ronda, pista con fracciones exactas, peor y mejor caso de los votos) y búsqueda exhaustiva de las caras de las fichas. 29 de 29 coinciden. Tras las correcciones de la revisión (12 nov 2026) solo cambiaron textos de las semillas 9 y 59, con la misma respuesta.",
   "casos": [
     {
       "semilla": "entrada-1",
@@ -217,7 +217,7 @@
       },
       "esperado": {
         "respuesta": 24,
-        "texto": "24 cuadrados"
+        "texto": "24 hojas"
       }
     },
     {

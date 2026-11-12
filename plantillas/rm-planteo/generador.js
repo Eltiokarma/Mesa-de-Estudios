@@ -148,7 +148,7 @@
     if (pide === 'costo') variables.p = { nombre: 'precio del paquete', color: 'd' }; else variables.g = { nombre: 'unidades de cada uno', color: 'd' };
     const m = pide === 'costo' ? precio : 1;
     const base = [
-      h('RMP50-hacia-abajo', fl * m, `Redondeaste hacia abajo: con ${pl(fl, cx.uno, cx.cont)} tienes ${fl * k} ${cx.item} y todavía faltan ${M - fl * k}. Como no se venden ${cx.fem ? 'sueltas' : 'sueltos'}, hay que comprar ${cx.uno === 'bolsa' ? 'una bolsa' : 'un ' + cx.uno} más: se redondea hacia arriba.`),
+      h('RMP50-hacia-abajo', fl * m, `Redondeaste hacia abajo: con ${pl(fl, cx.uno, cx.cont)} tienes ${fl * k} ${cx.item} y todavía ${M - fl * k === 1 ? 'falta' : 'faltan'} ${M - fl * k}. Como no se venden ${cx.fem ? 'sueltas' : 'sueltos'}, hay que comprar ${cx.uno === 'bolsa' ? 'una bolsa' : 'un ' + cx.uno} más: se redondea hacia arriba.`),
       h('RMP51-sin-lo-que-hay', Math.ceil(N / k) * m, `Calculaste para ${cx.fem ? 'las' : 'los'} ${N} ${cx.item} que se necesitan, sin restar ${cx.fem ? 'las' : 'los'} ${s} que ya tienen.`),
       h('RMP51-sin-lo-que-hay-y-abajo', Math.floor(N / k) * m, `No restaste ${cx.fem ? 'las' : 'los'} ${s} que ya tienen y, además, redondeaste hacia abajo.`),
       h('RMP50-sin-redondear', M / k * m, pide === 'costo' ? `Pagaste solo la parte de ${cx.uno} que se usa, como si se vendieran ${cx.fem ? 'sueltas' : 'sueltos'}. Se compran ${cx.cont} complet${cx.uno === 'bolsa' ? 'as' : 'os'}: ${Pq} en total.` : `Dejaste el cociente con decimales. No se puede comprar una parte de ${cx.uno}: hay que redondear hacia arriba.`),
@@ -158,7 +158,7 @@
     const texto = pide === 'costo' ? (x => `S/ ${f(x)}`) : (x => (Number.isInteger(x) ? pl(x, cx.uno, cx.cont) : `${f(x)} ${cx.cont}`));
     const solucion = [
       ['Se necesitan ', v('n', n), ' × ', pide === 'paquetes' ? v('g', g) : String(g), ` = ${N} ${cx.item}; ya hay `, v('s', s), `, así que faltan ${N} − ${s} = ${M}.`],
-      [`${M} ÷ `, v('k', k), ` = ${fl} y sobran ${M - fl * k}: con ${fl} ${cx.cont} no alcanza. Hay que comprar ${Pq}, porque se redondea hacia arriba.`],
+      [`${M} ÷ `, v('k', k), ` = ${fl} y ${M - fl * k === 1 ? 'sobra' : 'sobran'} ${M - fl * k}: con ${fl} ${cx.cont} no alcanza. Hay que comprar ${Pq}, porque se redondea hacia arriba.`],
       ...(pide === 'costo' ? [[`Costo: ${Pq} × `, v('p', `S/ ${precio}`), ` = S/ ${f(correcta)}.`]] : []),
     ];
     return cerrar(rng, semilla, { correcta, errores: base, decimal: true, texto, variables, enunciado, solucion,
@@ -192,7 +192,7 @@
       let cadena = 0, b = r; while (b >= 1) { cadena += b; b = Math.floor(b / k); }
       const errores = [
         h('RMP52-regalo-de-regalo', C + cadena, `Hiciste que los regalos dieran más regalos. El enunciado dice que los regalos no cuentan: solo se cuentan los ${C} comprados.`),
-        h('RMP50-hacia-arriba', C + Math.ceil(C / k), `Redondeaste hacia arriba los regalos. Con ${C} comprados se completan ${r} grupos de ${k}; ${cx.fem ? "las" : "los"} ${C - r * k} que sobran no alcanzan para otro regalo.`),
+        h('RMP50-hacia-arriba', C + Math.ceil(C / k), `Redondeaste hacia arriba los regalos. Con ${C} comprados se completan ${r} grupos de ${k}; ${C - r * k === 1 ? `${cx.fem ? 'la' : 'el'} 1 que sobra no alcanza` : `${cx.fem ? 'las' : 'los'} ${C - r * k} que sobran no alcanzan`} para otro regalo.`),
         h('AR5-solo-regalos', r, `Esos son solo los regalos. La pregunta pide todo lo que recibes: lo comprado más lo regalado.`),
         ...(sub === 'dinero' ? [h('RMP51-sin-regalos', C, 'Esos son los que alcanzas a comprar. Falta sumar los regalos.'),
           h('RMP50-dinero-hacia-arriba', Math.ceil(D / precio) + Math.floor(Math.ceil(D / precio) / k), `Redondeaste hacia arriba lo que alcanzas a comprar. Con S/ ${D} no completas ${Math.ceil(D / precio)} ${cx.item}: solo puedes comprar ${C}.`)] : []),
@@ -200,7 +200,7 @@
       ];
       const enunciado = sub === 'total'
         ? [...regla, ' Rosa compra ', v('C', C), ` ${cx.item}.`]
-        : [...regla, ` Cada ${cx.uno} cuesta S/ ${precio} y Rosa tiene `, v('D', `S/ ${D}`), '.'];
+        : [...regla, ` Cada ${cx.uno} cuesta S/ ${precio}, y Rosa compra ${cx.fem ? 'todas las' : 'todos los'} ${cx.item} que le alcanzan con `, v('D', `S/ ${D}`), '.'];
       const solucion = [
         ...(sub === 'dinero' ? [['Con ', v('D', `S/ ${D}`), ` alcanza para ${D} ÷ ${precio} = ${f(D / precio)}, o sea, ${C} ${cx.item} (no se compra una parte).`]] : []),
         ['Regalos: ', sub === 'total' ? v('C', C) : String(C), ' ÷ ', v('k', k), ` = ${r} (${C - r * k === 1 ? 'sobra 1, que no completa' : `sobran ${C - r * k}, que no completan`} otro grupo).`],
@@ -408,16 +408,17 @@
   const RAZONES = [[2, 1], [3, 1], [3, 2], [4, 1], [4, 3], [5, 2], [5, 3], [5, 4], [7, 3], [7, 5]];
   function figuraPista(mismo) {
     const s = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 220" font-size="15" fill="currentColor">`
-      + `<circle cx="160" cy="105" r="80" fill="none" stroke="currentColor" stroke-width="3"/>`
+      + `<circle cx="160" cy="105" r="80" fill="none" style="stroke:var(--c-o)" stroke-width="3"/>`
       + `<line x1="160" y1="175" x2="160" y2="197" stroke="currentColor" stroke-width="3"/>`
       + `<text x="168" y="214">salida (marca 0 m)</text>`
       // Ana: antihorario, flecha a la derecha de la salida subiendo
-      + `<path d="M 205 170 A 80 80 0 0 0 236 132" fill="none" style="stroke:var(--c-o)" stroke-width="5"/>`
-      + `<path d="M 236 132 l -12 4 l 10 8 z" style="fill:var(--c-o)"/>`
-      + `<text x="246" y="160" style="fill:var(--c-o)">Ana</text>`
+      + `<path d="M 205 170 A 80 80 0 0 0 236 132" fill="none" style="stroke:var(--c-i)" stroke-width="5"/>`
+      + `<path d="M 236 132 l -12 4 l 10 8 z" style="fill:var(--c-i)"/>`
+      + `<text x="246" y="160">Ana</text>`
       + (mismo
-        ? `<path d="M 160 18 A 88 88 0 0 0 94 47" fill="none" style="stroke:var(--c-i)" stroke-width="5"/><path d="M 94 47 l 3 12 l 8 -10 z" style="fill:var(--c-i)"/><text x="40" y="40" style="fill:var(--c-i)">Beto</text>`
-        : `<path d="M 115 170 A 80 80 0 0 1 84 132" fill="none" style="stroke:var(--c-i)" stroke-width="5"/><path d="M 84 132 l 12 4 l -10 8 z" style="fill:var(--c-i)"/><text x="30" y="160" style="fill:var(--c-i)">Beto</text>`)
+        // Beto: también antihorario, por fuera (r = 92), desde la salida
+        ? `<path d="M 184 194 A 92 92 0 0 0 225 170" fill="none" style="stroke:var(--c-i)" stroke-width="5"/><path d="M 225 170 l -5 12 l -7 -7 z" style="fill:var(--c-i)"/><text x="238" y="192">Beto</text>`
+        : `<path d="M 115 170 A 80 80 0 0 1 84 132" fill="none" style="stroke:var(--c-i)" stroke-width="5"/><path d="M 84 132 l 12 4 l -10 8 z" style="fill:var(--c-i)"/><text x="30" y="160">Beto</text>`)
       + '</svg>';
     const alt = mismo
       ? 'Pista circular con la salida abajo (marca 0 m). Ana y Beto parten de la salida y corren los dos en sentido antihorario.'
@@ -434,11 +435,13 @@
     if (!ent(marca)) return null;
     const otro = mismo ? p + q : p - q;
     const errores = [
-      h('RMP1-salida-cuenta', calc.pista({ L, p, q, mismo, n: n - 1 }).marca, `Contaste la salida como el primer encuentro. La salida no cuenta: el ${ORDM[n]} encuentro es el ${n}.º después de partir.`, 'parcial', RM),
+      h('RMP1-salida-cuenta', calc.pista({ L, p, q, mismo, n: n - 1 }).marca, `Contaste la salida como el primer encuentro. La salida no cuenta: el ${ORDM[n]} encuentro es el ${n}.º después de partir.`),
       ...(n * L * p % otro === 0 ? [h('RM4-sentido', ((n * L * p / otro) % L), mismo
         ? 'Sumaste las rapideces, pero corren en el mismo sentido: se encuentran cuando Ana le saca una vuelta a Beto, y eso depende de la resta.'
         : 'Restaste las rapideces, pero corren en sentidos contrarios: se acercan los dos a la vez, y las rapideces se suman.', 'hipotesis', RM)] : []),
-      h('RMP51-otro-sentido', (L - marca) % L, 'Mediste la marca en el sentido en que corre Beto. Las marcas se cuentan desde la salida en el sentido de Ana.'),
+      h('RMP51-otro-sentido', (L - marca) % L, mismo
+        ? 'Mediste la marca en sentido horario, al revés de como corre Ana. Las marcas se cuentan desde la salida en el sentido de Ana.'
+        : 'Mediste la marca en el sentido en que corre Beto. Las marcas se cuentan desde la salida en el sentido de Ana.'),
       h('AR5-lo-que-corrio', recorrido, `Esos son los metros que corrió Ana en total. La pista mide ${L} m: la marca vuelve a 0 cada vez que Ana completa una vuelta.`),
       h('RMP1-un-encuentro-de-mas', calc.pista({ L, p, q, mismo, n: n + 1 }).marca, `Contaste un encuentro de más. Se pide el ${ORDM[n]} encuentro después de partir.`),
     ];
@@ -608,12 +611,17 @@
     const conv = x => (pide === 'cuadrados' ? x : Pz - x);
     const corteTxt = delta === 2 ? 'por una diagonal, de una esquina a la esquina opuesta' : 'desde una esquina hasta el punto medio de un lado que no toca esa esquina';
     const piezasTxt = delta === 2 ? 'dos triángulos' : 'un triángulo y un trapecio';
-    const errores = [
-      h('RMP1-piezas-como-cuadrados', Pz, pide === 'cuadrados' ? 'Tomaste las piezas como si fueran los cuadrados del inicio. Cada corte convierte una pieza en dos: hay más piezas que cuadrados.' : 'Tomaste cada pieza como un corte. Cada corte convierte una pieza en dos: las piezas son los cuadrados del inicio más los cortes.', 'parcial', RM),
+    const errores0 = [
+      h('RMP1-piezas-como-cuadrados', Pz, pide === 'cuadrados' ? 'Tomaste las piezas como si fueran los cuadrados del inicio. Cada corte convierte una pieza en dos: hay más piezas que cuadrados.' : 'Tomaste cada pieza como un corte. Cada corte convierte una pieza en dos: las piezas son los cuadrados del inicio más los cortes.'),
       h('RMP51-todos-cuadrados', conv(V / 4), 'Dividiste los vértices entre 4, como si todas las piezas fueran cuadrados. Las piezas cortadas tienen otra cantidad de vértices.'),
-      h('RMP51-otro-corte', conv(qOtro), `Contaste mal los vértices que deja cada corte: un cuadrado cortado así da ${piezasTxt}, con ${4 + delta} vértices en total, ${delta} más que el cuadrado.`),
+      h('RMP51-otro-corte', conv(qOtro), delta === 3
+        ? 'Contaste 2 vértices más por corte, como si el corte fuera por la diagonal. Este corte da un triángulo y un trapecio: 7 vértices, 3 más que el cuadrado.'
+        : 'Contaste 3 vértices más por corte, como si salieran un triángulo y un trapecio. Por la diagonal salen dos triángulos: 6 vértices, 2 más que el cuadrado.'),
       h('AR5-lo-otro', pide === 'cuadrados' ? c : q, pide === 'cuadrados' ? 'Esos son los cortes. La pregunta pide los cuadrados del inicio.' : 'Esos son los cuadrados del inicio. La pregunta pide los cortes.'),
     ];
+    // Un error que deja menos de 1 hoja o más cortes que hojas no se ofrece: se vería imposible.
+    const posible = e => { const qq = pide === 'cuadrados' ? e.valor : Pz - e.valor; return qq >= 1 && Pz - qq <= qq; };
+    const errores = errores0.filter(e => !e.id.startsWith('RMP51') || posible(e));
     const enunciado = ['Se tienen varias hojas cuadradas. Se escogen algunas y a cada una se le hace un solo corte recto ', corteTxt, ' (como en la figura); no se corta ninguna pieza más. Al final hay ',
       v('P', `${Pz} piezas`), ' y, contando los vértices de todas las piezas, ', v('V', `${V} vértices`), '.'];
     const solucion = [
@@ -621,7 +629,7 @@
       [`Un cuadrado cortado da ${piezasTxt}: 4 + ${delta} = ${4 + delta} vértices, ${delta} más que antes. Entonces 4q + ${delta}c = `, v('V', V), '.'],
       [`Restando ${delta} veces la primera: (4 − ${delta})q = ${V} − ${delta} × ${Pz} = ${V - delta * Pz}, q = `, v('q', q), ' y c = ', v('c', c), '.'],
     ];
-    return cerrar(rng, semilla, { correcta: pide === 'cuadrados' ? q : c, errores, texto: x => (pide === 'cuadrados' ? pl(x, 'cuadrado', 'cuadrados') : pl(x, 'corte', 'cortes')), enunciado, solucion,
+    return cerrar(rng, semilla, { correcta: pide === 'cuadrados' ? q : c, errores, texto: x => (pide === 'cuadrados' ? pl(x, 'hoja', 'hojas') : pl(x, 'corte', 'cortes')), enunciado, solucion,
       figura: figuraCorte(delta),
       variables: { P: { nombre: 'piezas', color: 'o' }, V: { nombre: 'vértices', color: 'i' }, q: { nombre: 'cuadrados', color: 'h' }, c: { nombre: 'cortes', color: 'd' } },
       pregunta: [pide === 'cuadrados' ? '¿Cuántas hojas cuadradas había al inicio?' : '¿Cuántos cortes se hicieron?'], datos: { tipo: 'cortes', q, c, delta, pide } });
