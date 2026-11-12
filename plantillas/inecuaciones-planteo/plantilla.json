@@ -1,0 +1,17 @@
+{
+  "id": "inecuaciones-planteo",
+  "titulo": "Inecuaciones y desigualdades en problemas",
+  "formato": "predicciones",
+  "unidades": [
+    "algebra.inecuaciones",
+    "algebra.numeros-reales",
+    "algebra.valor-absoluto-y-radicales",
+    "algebra.programacion-lineal"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

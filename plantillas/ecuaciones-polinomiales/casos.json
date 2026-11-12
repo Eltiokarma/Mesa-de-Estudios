@@ -1,0 +1,266 @@
+{
+  "plantilla": "ecuaciones-polinomiales",
+  "tolerancia": 0.000001,
+  "nota": "Respuestas racionales exactas (respuesta = su valor numérico; exacta = el texto que ve el alumno) o conjuntos (respuesta = clave set:… con los elementos en orden creciente). Una semilla por tipo y subtipo, más entrada-1 y salida-1.",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver el generador: resolvió los 18 casos con Python (Fraction y fuerza bruta sobre raíces racionales, ternas enteras y lados enteros); para las raíces conjugadas usó el factor cuadrático y para las sumas de potencias, las relaciones de Vieta. Los 18 valores coinciden con esperado; no hay discrepancias ni alternativas defendibles. Tras la revisión cambiaron tres casos (semillas 1, 39 y 62: 7 m, 6 y 440 cm²), recalculados aparte por la conversación principal.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "vieta",
+        "sub": "tercera",
+        "a": 2,
+        "c": -26,
+        "r1": -2,
+        "r2": 5
+      },
+      "esperado": {
+        "respuesta": -1,
+        "exacta": "−1"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "parametro",
+        "sub": "mayor",
+        "S": 13,
+        "R": 35,
+        "r": 1
+      },
+      "esperado": {
+        "respuesta": 7,
+        "exacta": "7 m"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "bicuadrada",
+        "sub": "imaginarias",
+        "B": 61,
+        "C": 900
+      },
+      "esperado": {
+        "respuesta": 22,
+        "exacta": "22"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "divisores",
+        "coef": [
+          3,
+          5,
+          -12,
+          -20
+        ]
+      },
+      "esperado": {
+        "respuesta": -1.6666666666666667,
+        "exacta": "−5/3"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "conjugada",
+        "sub": "irracional",
+        "a": 1,
+        "b": 7,
+        "p": -24
+      },
+      "esperado": {
+        "respuesta": -4,
+        "exacta": "−4"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "vieta",
+        "sub": "cuadrados",
+        "a": 3,
+        "b": -1,
+        "c": -4,
+        "d": -1
+      },
+      "esperado": {
+        "respuesta": 2.7777777777777777,
+        "exacta": "25/9"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "conjugada",
+        "sub": "compleja",
+        "a": -2,
+        "b": 1,
+        "p": 20
+      },
+      "esperado": {
+        "respuesta": -4,
+        "exacta": "−4"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "igualar",
+        "A": [
+          1,
+          5,
+          -4,
+          50
+        ],
+        "B": [
+          2,
+          6,
+          50
+        ]
+      },
+      "esperado": {
+        "respuesta": 2,
+        "exacta": "2 h"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "caja",
+        "sub": "dimensiones",
+        "al": 3,
+        "be": 5,
+        "V": 252
+      },
+      "esperado": {
+        "respuesta": 9,
+        "exacta": "9 cm"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "vieta",
+        "sub": "cubos",
+        "S": 11,
+        "Q": 36
+      },
+      "esperado": {
+        "respuesta": 251,
+        "exacta": "251"
+      }
+    },
+    {
+      "semilla": 17,
+      "entrada": {
+        "tipo": "multiple",
+        "A": -14,
+        "B": 72,
+        "C": -162
+      },
+      "esperado": {
+        "respuesta": 135,
+        "exacta": "135"
+      }
+    },
+    {
+      "semilla": 22,
+      "entrada": {
+        "tipo": "vieta",
+        "sub": "progresion",
+        "S": -9,
+        "R": 21
+      },
+      "esperado": {
+        "respuesta": 11,
+        "exacta": "11"
+      }
+    },
+    {
+      "semilla": 26,
+      "entrada": {
+        "tipo": "bicuadrada",
+        "sub": "precio",
+        "K": 1600,
+        "M": 89
+      },
+      "esperado": {
+        "respuesta": 3,
+        "exacta": "3 soles"
+      }
+    },
+    {
+      "semilla": 32,
+      "entrada": {
+        "tipo": "parametro",
+        "sub": "valor",
+        "b": 2,
+        "d": -25,
+        "r": -1
+      },
+      "esperado": {
+        "respuesta": "set:-6,0,4",
+        "exacta": "{−6; 0; 4}"
+      }
+    },
+    {
+      "semilla": 39,
+      "entrada": {
+        "tipo": "bicuadrada",
+        "sub": "consecutivos",
+        "K": 1552
+      },
+      "esperado": {
+        "respuesta": 6,
+        "exacta": "6"
+      }
+    },
+    {
+      "semilla": 62,
+      "entrada": {
+        "tipo": "caja",
+        "sub": "recorte",
+        "L": 30,
+        "W": 18,
+        "V": 800
+      },
+      "esperado": {
+        "respuesta": 440,
+        "exacta": "440 cm²"
+      }
+    },
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "conjugada",
+        "sub": "compleja",
+        "a": 3,
+        "b": 1,
+        "p": -20
+      },
+      "esperado": {
+        "respuesta": 2,
+        "exacta": "2"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "divisores",
+        "coef": [
+          3,
+          -7,
+          -22,
+          8
+        ]
+      },
+      "esperado": {
+        "respuesta": 0.3333333333333333,
+        "exacta": "1/3"
+      }
+    }
+  ]
+}

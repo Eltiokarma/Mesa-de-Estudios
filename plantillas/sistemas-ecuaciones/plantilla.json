@@ -1,0 +1,18 @@
+{
+  "id": "sistemas-ecuaciones",
+  "titulo": "Sistemas, raíces y potencias",
+  "formato": "predicciones",
+  "unidades": [
+    "algebra.sistemas-de-ecuaciones",
+    "algebra.ecuaciones-lineales-y-cuadraticas",
+    "algebra.exponentes-y-productos-notables",
+    "algebra.matrices-y-determinantes",
+    "algebra.valor-absoluto-y-radicales"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

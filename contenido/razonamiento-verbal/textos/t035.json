@@ -1,6 +1,6 @@
 {
   "id": "t035",
-  "version": 1,
+  "version": 2,
   "titulo": "La fibra que salvó a la vicuña",
   "tema": "Sierra · la vicuña y el chaccu",
   "grado": 3,
@@ -148,7 +148,7 @@
           "explicacion": "Es demasiado amplio: el texto no habla de la llama ni de la alpaca, solo de la vicuña."
         },
         {
-          "t": "La vicuña, una especie a punto de desaparecer",
+          "t": "La vicuña: una especie a punto de desaparecer",
           "codigo": "RV3",
           "origen": "o3",
           "explicacion": "Se queda con la primera parte. El texto cuenta también que la vicuña se recuperó, y por qué."
@@ -221,7 +221,7 @@
           "explicacion": "Cambia la relación: el texto dice que el vellón vuelve a crecer después de la esquila, no que se esquile para eso."
         },
         {
-          "t": "Las comunidades de las punas dejaron de ver a la vicuña como una presa.",
+          "t": "Las comunidades de las punas dejaron de ver a la vicuña como una presa, y por eso empezaron a cuidarla.",
           "codigo": "RV3",
           "origen": "o4",
           "explicacion": "Dice el cambio, pero deja fuera lo esencial del párrafo: por qué cambió la manera de verla."
@@ -262,6 +262,6 @@
     "por": "subagente (verificador a ciegas y revisor de contenido)",
     "fecha": "2026-11-07",
     "veredicto": "aprobado",
-    "notas": "A ciegas coincidió en todas las claves y en el previo. Cambio: «a mediados del siglo XX» pasa a «hacia la década de 1960» en la oración 3 y en los hechos."
+    "notas": "A ciegas coincidió en todas las claves y en el previo. Cambio: «a mediados del siglo XX» pasa a «hacia la década de 1960» en la oración 3 y en los hechos. 8 nov 2026 (rutina no-se): una incorrecta tomó la forma de la correcta (justificación o dos puntos) para que la forma no delate la clave; mismo código y mismo sentido."
   }
 }

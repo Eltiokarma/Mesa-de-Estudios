@@ -1305,7 +1305,8 @@
      "potencial_visual": "medio",
      "grado": 3,
      "plantillas": [
-      "numeros-reales"
+      "numeros-reales",
+      "inecuaciones-planteo"
      ]
     },
     {
@@ -1335,7 +1336,8 @@
      "potencial_visual": "bajo",
      "grado": 3,
      "plantillas": [
-      "cuadrado-crece"
+      "cuadrado-crece",
+      "sistemas-ecuaciones"
      ]
     },
     {
@@ -1363,7 +1365,8 @@
      "potencial_visual": "medio",
      "grado": 3,
      "plantillas": [
-      "traductor-enunciados"
+      "traductor-enunciados",
+      "sistemas-ecuaciones"
      ]
     },
     {
@@ -1392,7 +1395,8 @@
      "potencial_visual": "medio",
      "grado": 4,
      "plantillas": [
-      "grafica-perillas"
+      "grafica-perillas",
+      "inecuaciones-planteo"
      ]
     },
     {
@@ -1421,7 +1425,9 @@
      "potencial_visual": "medio",
      "grado": 4,
      "plantillas": [
-      "grafica-perillas"
+      "grafica-perillas",
+      "sistemas-ecuaciones",
+      "inecuaciones-planteo"
      ]
     },
     {
@@ -1478,7 +1484,8 @@
      "potencial_visual": "bajo",
      "grado": 3,
      "plantillas": [
-      "polinomios"
+      "polinomios",
+      "division-polinomios"
      ]
     },
     {
@@ -1506,7 +1513,9 @@
      "potencial_visual": "bajo",
      "grado": 3,
      "plantillas": [
-      "cuadrado-crece"
+      "cuadrado-crece",
+      "division-polinomios",
+      "ecuaciones-polinomiales"
      ]
     },
     {
@@ -1537,7 +1546,8 @@
      "potencial_visual": "medio",
      "grado": 4,
      "plantillas": [
-      "polinomios"
+      "polinomios",
+      "ecuaciones-polinomiales"
      ]
     },
     {
@@ -1568,7 +1578,8 @@
      "potencial_visual": "alto",
      "grado": 4,
      "plantillas": [
-      "grafica-perillas"
+      "grafica-perillas",
+      "funciones-dominio-rango"
      ]
     },
     {
@@ -1598,7 +1609,8 @@
      "grado": 5,
      "plantillas": [
       "grafica-perillas",
-      "exponenciales-logaritmos"
+      "exponenciales-logaritmos",
+      "funciones-dominio-rango"
      ]
     },
     {
@@ -1627,7 +1639,8 @@
      "potencial_visual": "alto",
      "grado": 5,
      "plantillas": [
-      "exponenciales-logaritmos"
+      "exponenciales-logaritmos",
+      "funciones-dominio-rango"
      ]
     },
     {
@@ -1656,7 +1669,8 @@
      "potencial_visual": "alto",
      "grado": 5,
      "plantillas": [
-      "numeros-complejos"
+      "numeros-complejos",
+      "ecuaciones-polinomiales"
      ]
     },
     {
@@ -1687,7 +1701,8 @@
      "potencial_visual": "bajo",
      "grado": 5,
      "plantillas": [
-      "matrices"
+      "matrices",
+      "sistemas-ecuaciones"
      ]
     },
     {
@@ -1718,7 +1733,8 @@
      "grado": 4,
      "plantillas": [
       "traductor-enunciados",
-      "matrices"
+      "matrices",
+      "sistemas-ecuaciones"
      ]
     },
     {
@@ -1747,7 +1763,8 @@
      "potencial_visual": "alto",
      "grado": 5,
      "plantillas": [
-      "programacion-lineal"
+      "programacion-lineal",
+      "inecuaciones-planteo"
      ]
     },
     {
@@ -1858,7 +1875,8 @@
      "potencial_visual": "alto",
      "grado": 3,
      "plantillas": [
-      "conjuntos"
+      "conjuntos",
+      "porcentajes-planteo"
      ]
     },
     {
@@ -1886,7 +1904,8 @@
      "potencial_visual": "medio",
      "grado": 3,
      "plantillas": [
-      "regla-de-tres"
+      "regla-de-tres",
+      "porcentajes-planteo"
      ]
     },
     {
@@ -1915,7 +1934,8 @@
      "potencial_visual": "alto",
      "grado": 3,
      "plantillas": [
-      "regla-de-tres"
+      "regla-de-tres",
+      "porcentajes-planteo"
      ]
     },
     {
@@ -1944,7 +1964,8 @@
      "potencial_visual": "medio",
      "grado": 3,
      "plantillas": [
-      "porcentajes-sucesivos"
+      "porcentajes-sucesivos",
+      "porcentajes-planteo"
      ]
     },
     {
@@ -2001,7 +2022,8 @@
      "potencial_visual": "medio",
      "grado": 4,
      "plantillas": [
-      "mezclas"
+      "mezclas",
+      "porcentajes-planteo"
      ]
     },
     {
@@ -2033,7 +2055,8 @@
      "potencial_visual": "alto",
      "grado": 4,
      "plantillas": [
-      "fracciones"
+      "fracciones",
+      "estadistica-datos"
      ]
     },
     {
@@ -2063,7 +2086,8 @@
      "potencial_visual": "medio",
      "grado": 5,
      "plantillas": [
-      "probabilidad-dados"
+      "probabilidad-dados",
+      "probabilidad-conteo"
      ]
     },
     {
@@ -2094,7 +2118,8 @@
      "potencial_visual": "medio",
      "grado": 5,
      "plantillas": [
-      "probabilidad-dados"
+      "probabilidad-dados",
+      "probabilidad-conteo"
      ]
     },
     {
@@ -2122,7 +2147,8 @@
      "potencial_visual": "medio",
      "grado": 3,
      "plantillas": [
-      "numeracion"
+      "numeracion",
+      "numeros-sucesiones"
      ]
     },
     {
@@ -2183,7 +2209,8 @@
      "potencial_visual": "bajo",
      "grado": 3,
      "plantillas": [
-      "divisores"
+      "divisores",
+      "numeros-sucesiones"
      ]
     },
     {
@@ -2214,7 +2241,8 @@
      "potencial_visual": "bajo",
      "grado": 3,
      "plantillas": [
-      "divisores"
+      "divisores",
+      "numeros-sucesiones"
      ]
     },
     {
@@ -2243,7 +2271,8 @@
      "potencial_visual": "medio",
      "grado": 3,
      "plantillas": [
-      "fracciones"
+      "fracciones",
+      "fracciones-problemas"
      ]
     },
     {
@@ -2275,7 +2304,8 @@
      "potencial_visual": "medio",
      "grado": 3,
      "plantillas": [
-      "fracciones"
+      "fracciones",
+      "fracciones-problemas"
      ]
     },
     {
@@ -2302,7 +2332,8 @@
      "potencial_visual": "bajo",
      "grado": 3,
      "plantillas": [
-      "potenciacion"
+      "potenciacion",
+      "numeros-sucesiones"
      ]
     },
     {
@@ -2330,7 +2361,9 @@
      "potencial_visual": "medio",
      "grado": 4,
      "plantillas": [
-      "sucesiones"
+      "sucesiones",
+      "estadistica-datos",
+      "numeros-sucesiones"
      ]
     },
     {
@@ -4223,7 +4256,8 @@
      "potencial_visual": "bajo",
      "grado": 3,
      "plantillas": [
-      "lectura-verbal"
+      "lectura-verbal",
+      "textos-dialecticos"
      ]
     },
     {
@@ -4862,6 +4896,23 @@
     "/plantillas/dinamica/papel.json"
    ]
   },
+  "division-polinomios": {
+   "id": "division-polinomios",
+   "titulo": "División de polinomios, cocientes notables, MCD y MCM",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "algebra.division-de-polinomios",
+    "algebra.factorizacion"
+   ],
+   "url": "#/practica/division-polinomios",
+   "papel": "/plantillas/division-polinomios/papel.json",
+   "archivos": [
+    "/plantillas/division-polinomios/generador.js",
+    "/plantillas/division-polinomios/papel.json"
+   ]
+  },
   "divisores": {
    "id": "divisores",
    "titulo": "El rectángulo de fichas: divisores, primos y restos",
@@ -4878,6 +4929,24 @@
     "/plantillas/divisores/index.html",
     "/plantillas/divisores/motor.js",
     "/plantillas/divisores/papel.json"
+   ]
+  },
+  "ecuaciones-polinomiales": {
+   "id": "ecuaciones-polinomiales",
+   "titulo": "Raíces y coeficientes de una ecuación",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "algebra.ecuaciones-polinomiales",
+    "algebra.factorizacion",
+    "algebra.numeros-complejos"
+   ],
+   "url": "#/practica/ecuaciones-polinomiales",
+   "papel": "/plantillas/ecuaciones-polinomiales/papel.json",
+   "archivos": [
+    "/plantillas/ecuaciones-polinomiales/generador.js",
+    "/plantillas/ecuaciones-polinomiales/papel.json"
    ]
   },
   "electrostatica": {
@@ -4946,6 +5015,23 @@
     "/plantillas/equilibrio-quimico/index.html",
     "/plantillas/equilibrio-quimico/motor.js",
     "/plantillas/equilibrio-quimico/papel.json"
+   ]
+  },
+  "estadistica-datos": {
+   "id": "estadistica-datos",
+   "titulo": "Promedios y estadística",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.estadistica",
+    "aritmetica.sucesiones-y-series"
+   ],
+   "url": "#/practica/estadistica-datos",
+   "papel": "/plantillas/estadistica-datos/papel.json",
+   "archivos": [
+    "/plantillas/estadistica-datos/generador.js",
+    "/plantillas/estadistica-datos/papel.json"
    ]
   },
   "estatica": {
@@ -5049,6 +5135,41 @@
     "/plantillas/fracciones/index.html",
     "/plantillas/fracciones/motor.js",
     "/plantillas/fracciones/papel.json"
+   ]
+  },
+  "fracciones-problemas": {
+   "id": "fracciones-problemas",
+   "titulo": "Fracciones, decimales periódicos y MCD en problemas",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.numeros-racionales",
+    "aritmetica.mcd-y-mcm"
+   ],
+   "url": "#/practica/fracciones-problemas",
+   "papel": "/plantillas/fracciones-problemas/papel.json",
+   "archivos": [
+    "/plantillas/fracciones-problemas/generador.js",
+    "/plantillas/fracciones-problemas/papel.json"
+   ]
+  },
+  "funciones-dominio-rango": {
+   "id": "funciones-dominio-rango",
+   "titulo": "Dominio, rango y composición de funciones",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "algebra.funciones",
+    "algebra.tipos-de-funciones-e-inversa",
+    "algebra.exponenciales-y-logaritmos"
+   ],
+   "url": "#/practica/funciones-dominio-rango",
+   "papel": "/plantillas/funciones-dominio-rango/papel.json",
+   "archivos": [
+    "/plantillas/funciones-dominio-rango/generador.js",
+    "/plantillas/funciones-dominio-rango/papel.json"
    ]
   },
   "funciones-organicas": {
@@ -5227,6 +5348,25 @@
     "/plantillas/induccion/papel.json"
    ]
   },
+  "inecuaciones-planteo": {
+   "id": "inecuaciones-planteo",
+   "titulo": "Inecuaciones y desigualdades en problemas",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "algebra.inecuaciones",
+    "algebra.numeros-reales",
+    "algebra.valor-absoluto-y-radicales",
+    "algebra.programacion-lineal"
+   ],
+   "url": "#/practica/inecuaciones-planteo",
+   "papel": "/plantillas/inecuaciones-planteo/papel.json",
+   "archivos": [
+    "/plantillas/inecuaciones-planteo/generador.js",
+    "/plantillas/inecuaciones-planteo/papel.json"
+   ]
+  },
   "interes": {
    "id": "interes",
    "titulo": "La alcancía que gana interés: interés simple y compuesto, tasas y descuento",
@@ -5249,7 +5389,7 @@
    "titulo": "Reading in English",
    "formato": "lectura",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "razonamiento-verbal.lectura-en-ingles"
    ],
@@ -5266,6 +5406,16 @@
     "/contenido/razonamiento-verbal/textos/t052.json",
     "/contenido/razonamiento-verbal/textos/t053.json",
     "/contenido/razonamiento-verbal/textos/t054.json",
+    "/contenido/razonamiento-verbal/textos/t122.json",
+    "/contenido/razonamiento-verbal/textos/t123.json",
+    "/contenido/razonamiento-verbal/textos/t124.json",
+    "/contenido/razonamiento-verbal/textos/t125.json",
+    "/contenido/razonamiento-verbal/textos/t126.json",
+    "/contenido/razonamiento-verbal/textos/t127.json",
+    "/contenido/razonamiento-verbal/textos/t128.json",
+    "/contenido/razonamiento-verbal/textos/t129.json",
+    "/contenido/razonamiento-verbal/textos/t130.json",
+    "/contenido/razonamiento-verbal/textos/t131.json",
     "/plantillas/lectura-ingles/papel.json"
    ]
   },
@@ -5628,6 +5778,26 @@
     "/plantillas/numeros-reales/papel.json"
    ]
   },
+  "numeros-sucesiones": {
+   "id": "numeros-sucesiones",
+   "titulo": "Sucesiones, divisores y numerales",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.sucesiones-y-series",
+    "aritmetica.divisibilidad",
+    "aritmetica.numeros-primos-y-divisores",
+    "aritmetica.numeracion",
+    "aritmetica.potenciacion-y-radicacion"
+   ],
+   "url": "#/practica/numeros-sucesiones",
+   "papel": "/plantillas/numeros-sucesiones/papel.json",
+   "archivos": [
+    "/plantillas/numeros-sucesiones/generador.js",
+    "/plantillas/numeros-sucesiones/papel.json"
+   ]
+  },
   "ondas": {
    "id": "ondas",
    "titulo": "Ondas en una cuerda y sonido",
@@ -5753,6 +5923,26 @@
     "/plantillas/polinomios/papel.json"
    ]
   },
+  "porcentajes-planteo": {
+   "id": "porcentajes-planteo",
+   "titulo": "Tanto por ciento, razones y conjuntos en problemas de planteo",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.porcentajes",
+    "aritmetica.razones-y-proporciones",
+    "aritmetica.magnitudes-proporcionales",
+    "aritmetica.mezclas-y-aleaciones",
+    "aritmetica.conjuntos"
+   ],
+   "url": "#/practica/porcentajes-planteo",
+   "papel": "/plantillas/porcentajes-planteo/papel.json",
+   "archivos": [
+    "/plantillas/porcentajes-planteo/generador.js",
+    "/plantillas/porcentajes-planteo/papel.json"
+   ]
+  },
   "porcentajes-sucesivos": {
    "id": "porcentajes-sucesivos",
    "titulo": "Aumentos y descuentos sucesivos",
@@ -5783,6 +5973,23 @@
     "/plantillas/potenciacion/index.html",
     "/plantillas/potenciacion/motor.js",
     "/plantillas/potenciacion/papel.json"
+   ]
+  },
+  "probabilidad-conteo": {
+   "id": "probabilidad-conteo",
+   "titulo": "Probabilidad y conteo con condiciones",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.probabilidades",
+    "aritmetica.analisis-combinatorio"
+   ],
+   "url": "#/practica/probabilidad-conteo",
+   "papel": "/plantillas/probabilidad-conteo/papel.json",
+   "archivos": [
+    "/plantillas/probabilidad-conteo/generador.js",
+    "/plantillas/probabilidad-conteo/papel.json"
    ]
   },
   "probabilidad-dados": {
@@ -5986,6 +6193,26 @@
     "/plantillas/simetria/papel.json"
    ]
   },
+  "sistemas-ecuaciones": {
+   "id": "sistemas-ecuaciones",
+   "titulo": "Sistemas, raíces y potencias",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "algebra.sistemas-de-ecuaciones",
+    "algebra.ecuaciones-lineales-y-cuadraticas",
+    "algebra.exponentes-y-productos-notables",
+    "algebra.matrices-y-determinantes",
+    "algebra.valor-absoluto-y-radicales"
+   ],
+   "url": "#/practica/sistemas-ecuaciones",
+   "papel": "/plantillas/sistemas-ecuaciones/papel.json",
+   "archivos": [
+    "/plantillas/sistemas-ecuaciones/generador.js",
+    "/plantillas/sistemas-ecuaciones/papel.json"
+   ]
+  },
   "solidos": {
    "id": "solidos",
    "titulo": "El sólido que se abre: prisma, pirámide, cilindro, cono y esfera",
@@ -6101,12 +6328,54 @@
     "/plantillas/texto-contexto/papel.json"
    ]
   },
+  "textos-dialecticos": {
+   "id": "textos-dialecticos",
+   "titulo": "Dos autores, dos posturas",
+   "formato": "lectura",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-verbal.textos-argumentativos-y-dialecticos"
+   ],
+   "url": "#/lectura/textos-dialecticos",
+   "banco": "/contenido/razonamiento-verbal/indice-textos-dialecticos.json",
+   "papel": "/plantillas/textos-dialecticos/papel.json",
+   "entrada": null,
+   "salida": null,
+   "archivos": [
+    "/contenido/razonamiento-verbal/indice-textos-dialecticos.json",
+    "/contenido/razonamiento-verbal/codigos.json",
+    "/contenido/razonamiento-verbal/frases.json",
+    "/contenido/razonamiento-verbal/textos/t102.json",
+    "/contenido/razonamiento-verbal/textos/t107.json",
+    "/contenido/razonamiento-verbal/textos/t112.json",
+    "/contenido/razonamiento-verbal/textos/t117.json",
+    "/contenido/razonamiento-verbal/textos/t101.json",
+    "/contenido/razonamiento-verbal/textos/t103.json",
+    "/contenido/razonamiento-verbal/textos/t104.json",
+    "/contenido/razonamiento-verbal/textos/t108.json",
+    "/contenido/razonamiento-verbal/textos/t109.json",
+    "/contenido/razonamiento-verbal/textos/t113.json",
+    "/contenido/razonamiento-verbal/textos/t114.json",
+    "/contenido/razonamiento-verbal/textos/t118.json",
+    "/contenido/razonamiento-verbal/textos/t119.json",
+    "/contenido/razonamiento-verbal/textos/t105.json",
+    "/contenido/razonamiento-verbal/textos/t106.json",
+    "/contenido/razonamiento-verbal/textos/t110.json",
+    "/contenido/razonamiento-verbal/textos/t111.json",
+    "/contenido/razonamiento-verbal/textos/t115.json",
+    "/contenido/razonamiento-verbal/textos/t116.json",
+    "/contenido/razonamiento-verbal/textos/t120.json",
+    "/contenido/razonamiento-verbal/textos/t121.json",
+    "/plantillas/textos-dialecticos/papel.json"
+   ]
+  },
   "textos-discontinuos": {
    "id": "textos-discontinuos",
    "titulo": "Tablas, gráficos e infografías",
    "formato": "lectura",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "razonamiento-verbal.textos-discontinuos"
    ],
@@ -6123,6 +6392,8 @@
     "/contenido/razonamiento-verbal/textos/t040.json",
     "/contenido/razonamiento-verbal/textos/t041.json",
     "/contenido/razonamiento-verbal/textos/t042.json",
+    "/contenido/razonamiento-verbal/textos/t132.json",
+    "/contenido/razonamiento-verbal/textos/t133.json",
     "/plantillas/textos-discontinuos/papel.json"
    ]
   },

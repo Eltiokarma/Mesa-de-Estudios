@@ -1,6 +1,6 @@
 {
   "id": "t011",
-  "version": 1,
+  "version": 2,
   "titulo": "El desierto junto al mar",
   "tema": "Perú costeño · clima",
   "grado": 4,
@@ -191,7 +191,7 @@
           "explicacion": "Tiene un \"no\", pero es compatible: es justo lo que muestra el texto con la costa peruana."
         },
         {
-          "t": "en los valles de la costa se cultivan espárragos y algodón.",
+          "t": "en los valles de la costa se cultivan espárragos y algodón porque se riegan con agua de los ríos.",
           "codigo": "RV36",
           "explicacion": "El texto no lo menciona, pero tampoco dice nada en contra: que algo no esté dicho no lo vuelve incompatible."
         },
@@ -248,6 +248,6 @@
     "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
     "fecha": "2026-11-06",
     "veredicto": "aprobado",
-    "notas": "A ciegas: 6 de 6. Cambios: código del distractor de los peces (RV8) y explicación del distractor de la corriente. Una segunda verificación de los ítems cambiados confirmó claves únicas; se ajustaron cuatro explicaciones y un enunciado."
+    "notas": "A ciegas: 6 de 6. Cambios: código del distractor de los peces (RV8) y explicación del distractor de la corriente. Una segunda verificación de los ítems cambiados confirmó claves únicas; se ajustaron cuatro explicaciones y un enunciado. 8 nov 2026 (rutina no-se): una incorrecta tomó la forma de la correcta (justificación o dos puntos) para que la forma no delate la clave; mismo código y mismo sentido."
   }
 }

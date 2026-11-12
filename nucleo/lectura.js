@@ -37,6 +37,13 @@
     { id: 'convencer', t: 'Convencer' },
     { id: 'narrar', t: 'Narrar' },
   ];
+  // Pares de textos A/B (rutina verbal A/B, 8 nov 2026): ¿quién sostiene la afirmación?
+  const ATRIBUCIONES = [
+    { id: 'A', t: 'El autor del texto A' },
+    { id: 'B', t: 'El autor del texto B' },
+    { id: 'ambos', t: 'Los dos autores' },
+    { id: 'ninguno', t: 'Ninguno de los dos' },
+  ];
   // Analogías: {a} y {b} se reemplazan por las palabras de la pareja base. Las que tienen dirección van en pares.
   const ANALOGIAS = [
     { id: 'a-produce-b', t: 'De {a} se obtiene {b}', inversa: 'b-produce-a' }, // material: de la vaca se obtiene leche; «causa» es causa y efecto (el virus no «se obtiene» fiebre)
@@ -53,7 +60,7 @@
     { id: 'contrarios', t: 'Son contrarios' },
   ];
   const CONCLUSION = /^\s*(así|por eso|por ello|por esas?\b|por lo tanto|en conclusión|en suma|en resumen)/i;
-  const TIPOS_PREVIO = ['marcar-oracion', 'clasificar', 'relacion', 'relacion-analogia', 'proposito', 'ordenar'];
+  const TIPOS_PREVIO = ['marcar-oracion', 'clasificar', 'relacion', 'relacion-analogia', 'proposito', 'ordenar', 'atribuir'];
   const ROL_CODIGO = { detalle: 'RV1', ejemplo: 'RV1', cita: 'RV1', general: 'RV2', apoyo: 'RV3', contraste: 'RV3' };
   const NOMBRE_EJERCICIO = { analogia: 'Analogía', 'termino-excluido': 'Término excluido', 'oracion-incompleta': 'Oración incompleta',
     conector: 'Conectores', 'plan-de-redaccion': 'Plan de redacción', eliminacion: 'Eliminación de oraciones' };
@@ -69,12 +76,31 @@
     return { id, version, titulo: titulo || NOMBRE_EJERCICIO[item.tipo] || 'Ejercicio', ejercicio: true, cuerpo: cuerpo || {}, parrafos: [], preguntas: [q] };
   }
 
-  // Oraciones con su número seguido en todo el texto (o1 es la oración 1) y su párrafo.
+  // Pares de textos A/B: item.autores = [{ id: 'A', desde: 0, titulo?, firma? }, { id: 'B', desde: 2 }].
+  // "desde" es el primer párrafo (contado desde 0) de cada texto; el texto A empieza en el 0.
+  // Las oraciones siguen numeradas de corrido en los dos textos, para que las explicaciones las citen igual.
+  const autores = item => (item && Array.isArray(item.autores)) ? item.autores.map(a => ({ ...a, titulo: a.titulo || `Texto ${a.id}` })) : [];
+  function autorDe(item, k) { // k: índice del párrafo, desde 0
+    let r = null;
+    for (const a of autores(item)) if (a.desde <= k) r = a.id;
+    return r;
+  }
+  function validarAutores(it, mal) {
+    if (it.autores === undefined) return;
+    const as = it.autores, npar = (it.parrafos || []).length;
+    if (!Array.isArray(as) || as.length !== 2) { mal('"autores" debe tener dos textos (A y B)'); return; }
+    if (as[0].id !== 'A' || as[1].id !== 'B') mal('los autores se llaman "A" y "B", en ese orden');
+    if (as[0].desde !== 0) mal('el texto A empieza en el párrafo 0');
+    if (!Number.isInteger(as[1].desde) || as[1].desde < 1 || as[1].desde >= npar) mal(`el texto B debe empezar en un párrafo de 1 a ${npar - 1}`);
+  }
+
+  // Oraciones con su número seguido en todo el texto (o1 es la oración 1) y su párrafo (y su autor, en un par A/B).
   // En los ejercicios de eliminación, las oraciones del cuerpo; su id es "id" o, si no tiene, su numeral "n".
   function oraciones(item) {
     if (item.parrafos && item.parrafos.length) {
       let n = 0;
-      return item.parrafos.flatMap((p, k) => p.map(o => ({ ...o, n: ++n, parrafo: k + 1 })));
+      const conAutor = autores(item).length > 0;
+      return item.parrafos.flatMap((p, k) => p.map(o => ({ ...o, n: ++n, parrafo: k + 1, ...(conAutor ? { autor: autorDe(item, k) } : {}) })));
     }
     const l = (item.cuerpo && item.cuerpo.oraciones) || [];
     return l.map((o, k) => ({ ...o, id: o.id || o.n, n: k + 1, parrafo: 1 }));
@@ -160,6 +186,7 @@
       case 'clasificar': return CLASES.map(c => c.id);
       case 'relacion': return RELACIONES.map(c => c.id);
       case 'proposito': return PROPOSITOS.map(c => c.id);
+      case 'atribuir': return ATRIBUCIONES.map(c => c.id);
       case 'relacion-analogia': return ANALOGIAS.map(c => c.id);
       default: return [];
     }
@@ -203,7 +230,7 @@
       if (opcion === previo.aceptada) return { correcta: true, error: null, opcion };
       return { correcta: false, error: a.inversa === previo.aceptada ? 'RV16' : 'RV17', opcion };
     }
-    if (t === 'clasificar' || t === 'relacion' || t === 'proposito') {
+    if (t === 'clasificar' || t === 'relacion' || t === 'proposito' || t === 'atribuir') {
       const aceptada = t === 'clasificar' ? previo.clase : previo.aceptada;
       if (!opcionesPrevio(previo, item).includes(opcion)) throw new Error(`Respuesta "${opcion}" no válida para ${t}`);
       if (opcion === aceptada) return { correcta: true, error: null, opcion };
@@ -244,6 +271,12 @@
     return { alternativa: a, correcta: a.correcta, error: a.correcta ? null : a.codigo, pos: a.pos, letra: a.letra, clave: correcta };
   }
 
+  // «No sé» en las pruebas de entrada y salida: no elige ninguna alternativa, no es acierto ni error de un código.
+  // En la cadena de respuestas de la prueba va como 0 (las posiciones del banco van de 1 a 5).
+  function noSe(pregunta) {
+    return { alternativa: null, correcta: false, error: null, pos: 0, letra: '', nose: true, clave: pregunta.alternativas.find(x => x.correcta) };
+  }
+
   // Respaldo de un código (codigos.json, generado del informe por herramientas/codigos-verbal.js).
   const respaldo = (codigo, codigos) => (codigo && codigos && codigos[codigo] ? codigos[codigo].respaldo : '');
 
@@ -267,6 +300,7 @@
       case 'clasificar': return (CLASES.find(c => c.id === opcion) || {}).t || opcion;
       case 'relacion': return (RELACIONES.find(c => c.id === opcion) || {}).t || opcion;
       case 'proposito': return (PROPOSITOS.find(c => c.id === opcion) || {}).t || opcion;
+      case 'atribuir': return (ATRIBUCIONES.find(c => c.id === opcion) || {}).t || opcion;
       case 'relacion-analogia': return textoAnalogia(opcion, it && it.cuerpo && it.cuerpo.base);
       case 'ordenar': return (Array.isArray(opcion) ? opcion : String(opcion).split('-')).join(' – ');
       default: return String(opcion);
@@ -372,12 +406,13 @@
     // Pruebas de entrada y salida: un 'item' por pregunta y una 'prueba' al final, con los campos de las pruebas
     // por curso (nucleo/medicion.js), para que resumirCursos dé la ganancia de Hake y los errores RV antes y después.
     item: ({ fase, curso, modulo, forma, orden, pregunta, resultado, codigos, ms }) => ({ tipo: 'item', fase, curso, forma, orden, banco: 'lectura',
-      item: pregunta.problema, par: pregunta.id, plantilla: modulo, unidad: pregunta.unidad, opcion: String(resultado.pos), correcta: resultado.correcta,
-      error: resultado.error || '', respaldo: respaldo(resultado.error, codigos), ms }),
-    // En "respuestas", la posición en el banco de cada respuesta, una por pregunta ("215").
+      item: pregunta.problema, par: pregunta.id, plantilla: modulo, unidad: pregunta.unidad, opcion: resultado.nose ? '' : String(resultado.pos), correcta: resultado.correcta,
+      error: resultado.error || '', respaldo: respaldo(resultado.error, codigos), ...(resultado.nose ? { nose: true } : {}), ms }),
+    // En "respuestas", la posición en el banco de cada respuesta, una por pregunta ("215"); «No sé» es 0 ("205").
     prueba: ({ fase, curso, forma, orden, modulo, unidad, item, resultados, ms }) => ({ tipo: 'prueba', fase, ...(curso ? { curso, forma, orden, banco: 'lectura' } : {}),
       modulo, unidad, problema: problemaTexto(item),
-      aciertos: resultados.filter(r => r.correcta).length, total: resultados.length, respuestas: resultados.map(r => r.pos).join(''), ms }),
+      aciertos: resultados.filter(r => r.correcta).length, total: resultados.length, respuestas: resultados.map(r => (r.nose ? 0 : r.pos)).join(''),
+      nose: resultados.filter(r => r.nose).length, ms }),
   };
 
   // ---------- Validación (lo que la app necesita para mostrar un ítem) ----------
@@ -392,6 +427,7 @@
     if (!it.ejercicio && !ors.length) mal('el texto no tiene oraciones');
     if (ids.size !== ors.length + elementos(it).length) mal('hay ids de oración o de figura repetidos');
     validarFiguras(it, mal);
+    validarAutores(it, mal);
     const codigoOk = c => !codigos || Object.prototype.hasOwnProperty.call(codigos, c);
     for (const q of it.preguntas) {
       const d = q.id || 'ítem';
@@ -417,6 +453,8 @@
         continue;
       }
       if (p.tipo === 'clasificar' && !p.sonda) mal(`${d}: clasificar necesita "sonda"`);
+      if (p.tipo === 'atribuir' && !p.sonda) mal(`${d}: atribuir necesita "sonda"`);
+      if (p.tipo === 'atribuir' && !autores(it).length) mal(`${d}: atribuir solo va en un par de textos A/B (con "autores")`);
       if (p.tipo === 'relacion-analogia' && !(it.cuerpo && Array.isArray(it.cuerpo.base) && it.cuerpo.base.length === 2)) mal(`${d}: la analogía necesita cuerpo.base con dos palabras`);
       const acept = respuestaAceptada(p);
       const opciones = opcionesPrevio(p, it);
@@ -435,7 +473,7 @@
     return errores;
   }
 
-  return { LETRAS, CLASES, RELACIONES, PROPOSITOS, ANALOGIAS, TIPOS_PREVIO, NOMBRE_EJERCICIO,
+  return { LETRAS, noSe, CLASES, RELACIONES, PROPOSITOS, ANALOGIAS, ATRIBUCIONES, autores, autorDe, TIPOS_PREVIO, NOMBRE_EJERCICIO,
     TIPOS_FIGURA, figuras, elementos, referencias, etiquetaRef, citas,
     normalizar, oraciones, numero, problema, problemaTexto, codigoOracion, opcionesPrevio, calificarPrevio,
     preparar, calificar, respaldo, pintura, etiquetaPrevio, textoAnalogia, correccionPrevio, FRASE_NO_APLICA, avisos, formaPrueba, lista, siguiente, ev, validar };

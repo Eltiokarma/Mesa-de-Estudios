@@ -1,6 +1,6 @@
 {
   "id": "t019",
-  "version": 1,
+  "version": 2,
   "titulo": "El pez pequeño que sostiene al mar",
   "tema": "Perú costeño · la anchoveta",
   "grado": 4,
@@ -93,7 +93,7 @@
           "explicacion": "Junta lo que dicen las oraciones 4 y 8: un pez pequeño sostiene a muchos animales, y cuidarlo es cuidar la cadena entera."
         },
         {
-          "t": "Frente a la costa, el viento empuja el agua de la superficie mar adentro y en su lugar sube agua fría del fondo.",
+          "t": "Frente a la costa, el viento empuja el agua de la superficie mar adentro, y por eso en su lugar sube agua fría del fondo.",
           "codigo": "RV1",
           "origen": "o1",
           "explicacion": "Es el punto de partida, un detalle de cómo llegan los nutrientes. El texto lo usa para llegar a una idea más amplia."
@@ -249,6 +249,6 @@
     "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
     "fecha": "2026-11-07",
     "veredicto": "aprobado",
-    "notas": "A ciegas: 9 de 9. Cambios: distractor RV3 que era un detalle reemplazado por un resumen a medias; fuente de la talla de la anchoveta. Una segunda verificación de los cambios corrigió la concordancia de t023 p2 y cuatro detalles."
+    "notas": "A ciegas: 9 de 9. Cambios: distractor RV3 que era un detalle reemplazado por un resumen a medias; fuente de la talla de la anchoveta. Una segunda verificación de los cambios corrigió la concordancia de t023 p2 y cuatro detalles. 8 nov 2026 (rutina no-se): una incorrecta tomó la forma de la correcta (justificación o dos puntos) para que la forma no delate la clave; mismo código y mismo sentido."
   }
 }

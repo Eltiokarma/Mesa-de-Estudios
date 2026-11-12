@@ -1,0 +1,155 @@
+{
+  "id": "t117",
+  "version": 1,
+  "titulo": "¿Libros de papel o libros digitales?",
+  "tema": "Educación · biblioteca escolar",
+  "grado": 3,
+  "dificultad": 1,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    { "id": "A", "desde": 0, "firma": "Una profesora de comunicación" },
+    { "id": "B", "desde": 1, "firma": "Un estudiante de quinto de secundaria" }
+  ],
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "principal", "t": "La biblioteca del colegio debería seguir comprando, sobre todo, libros de papel." },
+      { "id": "o2", "rol": "apoyo", "t": "Un libro impreso se puede leer sin electricidad, sin señal de internet y sin cargar ninguna batería." },
+      { "id": "o3", "rol": "apoyo", "t": "Además, en una pantalla los mensajes y los videos están a un toque de distancia, y distraen a quien intenta leer." },
+      { "id": "o4", "rol": "apoyo", "t": "Y un libro bien cuidado pasa por las manos de muchos alumnos durante años." },
+      { "id": "o5", "rol": "detalle", "t": "Las pantallas tienen su lugar en el colegio, pero no deberían reemplazar a los estantes." }
+    ],
+    [
+      { "id": "o6", "rol": "contraste", "t": "Muchas veces, el libro que necesito para un trabajo está en la biblioteca en un solo ejemplar, y otro compañero ya se lo llevó." },
+      { "id": "o7", "rol": "apoyo", "t": "Con libros digitales, todo el salón podría leer el mismo título a la vez, desde las computadoras del colegio." },
+      { "id": "o8", "rol": "apoyo", "t": "Además, un archivo no se rompe, no se moja y no se pierde en una mochila." },
+      { "id": "o9", "rol": "detalle", "t": "Es verdad que una pantalla puede distraer; por eso pediría que se lea en la sala de cómputo, con el profesor presente." },
+      { "id": "o10", "rol": "principal", "t": "Creo que la biblioteca debería gastar más en libros digitales que en ejemplares de papel." },
+      { "id": "o11", "rol": "apoyo", "t": "Así, ningún alumno se quedaría sin leer por llegar tarde a pedir el libro." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "controversia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "¿Cuál es el tema en controversia entre los dos textos?",
+      "alternativas": [
+        { "t": "En qué clase de libros debería gastar más la biblioteca del colegio.", "correcta": true, "evidencia": ["o1", "o10"],
+          "explicacion": "El texto A pide seguir comprando sobre todo libros de papel (oración 1) y el texto B, gastar más en libros digitales (oración 10): discuten en qué libros invertir." },
+        { "t": "Si leer en una pantalla puede distraer al lector.", "codigo": "RV61", "origen": "o9",
+          "explicacion": "En eso no discuten: el texto A habla de los mensajes y videos que distraen (oración 3) y el B dice «es verdad que una pantalla puede distraer» (oración 9)." },
+        { "t": "Si un libro impreso se puede leer sin electricidad.", "codigo": "RV60", "origen": "o2",
+          "explicacion": "Es un argumento del texto A. El tema en controversia tiene que ser algo sobre lo que los dos toman posición." },
+        { "t": "Si los archivos digitales se mojan o se pierden en la mochila.", "codigo": "RV1", "origen": "o8",
+          "explicacion": "Es un detalle que el texto B usa como razón; no es lo que se discute." },
+        { "t": "Si los escolares de hoy leen menos que los de antes y por qué ocurre eso.", "codigo": "RV2",
+          "explicacion": "Ninguno de los textos habla de cuánto leen los escolares: discuten qué libros debe comprar la biblioteca." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "postura",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Con libros en formato digital, varios alumnos podrían leer el mismo título al mismo tiempo.",
+        "aceptada": "B",
+        "codigos": { "A": "RV59", "ambos": "RV60", "ninguno": null },
+        "explicacion": "Lo dice el texto B en la oración 7: con libros digitales, todo el salón podría leer el mismo título a la vez. El texto A no lo menciona.",
+        "explicaciones": {
+          "A": "El texto A defiende los libros de papel; la idea de que muchos lean a la vez el mismo título es del texto B (oración 7).",
+          "ambos": "Solo el texto B lo sostiene. El texto A no habla de que varios alumnos lean el mismo libro a la vez.",
+          "ninguno": "Sí lo sostiene alguien: el texto B, en la oración 7."
+        }
+      },
+      "enunciado": "¿Qué propone el autor del texto B?",
+      "alternativas": [
+        { "t": "Que la biblioteca gaste más en libros digitales que en libros de papel.", "correcta": true, "evidencia": ["o10"],
+          "explicacion": "Es su propuesta, en la oración 10, y la sostiene con lo que dice en las oraciones 6, 7 y 11." },
+        { "t": "Que la biblioteca siga comprando sobre todo libros impresos.", "codigo": "RV59", "origen": "o1",
+          "explicacion": "Eso lo propone el texto A (oración 1). El texto B pide lo contrario." },
+        { "t": "Que se compren libros digitales para que cada alumno los lea en su casa, en su propio celular.", "codigo": "RV62", "origen": "o9",
+          "explicacion": "La primera parte es su propuesta, pero la segunda no: el texto B pide leer en la sala de cómputo, con el profesor presente (oración 9)." },
+        { "t": "Que la biblioteca elimine todos sus libros de papel.", "codigo": "RV11",
+          "explicacion": "El texto B pide gastar «más» en libros digitales, no eliminar todos los de papel. «Todos» dice mucho más que el texto." },
+        { "t": "Que los alumnos dejen de usar la biblioteca del colegio.", "codigo": "RV33",
+          "explicacion": "El texto B no dice eso: quiere que la biblioteca tenga libros que todos puedan leer." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "coincidencia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Leer en una pantalla puede hacer que uno se distraiga.",
+        "aceptada": "ambos",
+        "codigos": { "A": "RV61", "B": "RV61", "ninguno": null },
+        "explicacion": "Los dos lo sostienen: el texto A dice que en la pantalla los mensajes y videos distraen a quien intenta leer (oración 3), y el texto B admite que «una pantalla puede distraer» (oración 9).",
+        "explicaciones": {
+          "A": "El texto A lo dice en la oración 3, pero el B también lo admite en la oración 9. Discrepan en qué libros comprar, no en esto.",
+          "B": "El texto B lo admite en la oración 9, pero el A también lo dice en la oración 3.",
+          "ninguno": "Los dos lo sostienen: el texto A en la oración 3 y el B en la oración 9."
+        }
+      },
+      "enunciado": "¿En qué coinciden los dos autores?",
+      "alternativas": [
+        { "t": "En que la pantalla puede distraer a quien lee.", "correcta": true, "evidencia": ["o3", "o9"],
+          "explicacion": "El texto A lo usa a favor del papel (oración 3) y el texto B lo concede antes de proponer que se lea con el profesor presente (oración 9)." },
+        { "t": "En que un libro de papel bien cuidado dura años.", "codigo": "RV60", "origen": "o4",
+          "explicacion": "Eso lo dice solo el texto A (oración 4). El texto B no habla de cuánto dura un libro impreso." },
+        { "t": "En que las pantallas distraen y por eso no conviene comprar libros digitales.", "codigo": "RV62", "origen": "o9",
+          "explicacion": "La primera parte es el punto en común, pero la segunda es solo del texto A: el B quiere comprar más libros digitales." },
+        { "t": "En que los alumnos leen más cuando hay computadoras.", "codigo": "RV7",
+          "explicacion": "Ninguno de los dos textos dice eso; el B solo dice que con libros digitales todos podrían leer el mismo título a la vez." },
+        { "t": "En que los libros digitales cuestan menos que los de papel.", "codigo": "RV8",
+          "explicacion": "Ninguno de los textos habla de precios. Puede que lo hayas oído en otra parte, pero aquí no está." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto A, la palabra LUGAR («las pantallas tienen su lugar») significa",
+      "alternativas": [
+        { "t": "una utilidad.", "correcta": true, "evidencia": ["o5"],
+          "explicacion": "La autora admite que las pantallas sirven para algo en el colegio, aunque no deban reemplazar a los libros de papel." },
+        { "t": "un sitio en la sala.", "codigo": "RV18", "origen": "o5",
+          "explicacion": "Es el sentido más común de «lugar», pero aquí no se habla de dónde se ponen las pantallas, sino de para qué sirven." },
+        { "t": "un estante propio.", "codigo": "RV5", "origen": "o5",
+          "explicacion": "Repite la palabra «estantes» de la misma oración, que se usa para otra cosa: los libros de papel." },
+        { "t": "un reemplazo.", "codigo": "RV10", "origen": "o5",
+          "explicacion": "La oración dice que las pantallas «no deberían reemplazar» a los estantes: se pasa por alto el «no»." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Del texto B se deduce que su autor",
+      "alternativas": [
+        { "t": "a veces no consiguió a tiempo un libro de la biblioteca.", "correcta": true, "evidencia": ["o6"],
+          "explicacion": "En la oración 6 cuenta que muchas veces el único ejemplar que necesita ya se lo llevó otro compañero." },
+        { "t": "prefiere leer en papel porque las pantallas no lo dejan concentrarse en lo que lee.", "codigo": "RV59", "origen": "o3",
+          "explicacion": "Esa es la postura del texto A. El texto B admite que la pantalla puede distraer, pero prefiere los libros digitales." },
+        { "t": "nunca ha leído un libro de papel.", "codigo": "RV11",
+          "explicacion": "El texto B dice lo contrario: ha buscado libros de papel en la biblioteca. «Nunca» no tiene apoyo." },
+        { "t": "tiene una computadora en su casa.", "codigo": "RV7",
+          "explicacion": "El texto B habla de las computadoras del colegio, no de la suya; nada permite deducir qué tiene en casa." },
+        { "t": "quiere leer sin que el profesor esté cerca.", "codigo": "RV33", "origen": "o9",
+          "explicacion": "Dice lo contrario: pide leer en la sala de cómputo con el profesor presente (oración 9)." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-08",
+  "hechos": [],
+  "revision": {
+    "por": "subagente (revisor a ciegas)",
+    "fecha": "2026-11-08",
+    "veredicto": "aprobado",
+    "notas": "5 de 5 preguntas y 2 de 2 pasos previos coincidieron a ciegas. La oración 3 decía la distracción de la pantalla solo de forma implícita; se hizo explícita para que la coincidencia del paso previo de p3 sea indiscutible."
+  }
+}

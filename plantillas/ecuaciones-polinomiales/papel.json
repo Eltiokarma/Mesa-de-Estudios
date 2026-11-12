@@ -1,0 +1,118 @@
+{
+  "titulo": "Raíces y coeficientes de una ecuación: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Antes de hacer cuentas, pregúntate qué te dan los coeficientes (la suma, la suma de productos de dos en dos y el producto de las raíces, con sus signos y divididos entre el coeficiente principal) y qué te falta.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Sean x₁, x₂ y x₃ las raíces de x³ − 4x² + 2x + 5 = 0. Halla x₁² + x₂² + x₃².",
+      "respuesta": "12.",
+      "pasos": [
+        "Por Cardano-Vieta: x₁ + x₂ + x₃ = 4 y x₁x₂ + x₁x₃ + x₂x₃ = 2.",
+        "(x₁ + x₂ + x₃)² = x₁² + x₂² + x₃² + 2(x₁x₂ + x₁x₃ + x₂x₃), así que x₁² + x₂² + x₃² = 4² − 2·2 = 12.",
+        "Ojo: 4² = 16 no es la respuesta; al cuadrado de la suma le sobran los dobles productos."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "La ecuación 2x³ + mx² + 22x + n = 0, donde m y n son constantes, tiene entre sus raíces a 1 y a 3. Halla la tercera raíz.",
+      "respuesta": "2.",
+      "pasos": [
+        "Con m y n desconocidos, la relación útil es la suma de productos de dos en dos: x₁x₂ + x₁x₃ + x₂x₃ = 22/2 = 11.",
+        "1·3 + (1 + 3)·x₃ = 11, o sea 3 + 4x₃ = 11, y x₃ = 2.",
+        "Comprobación: 2(x − 1)(x − 2)(x − 3) = 2x³ − 12x² + 22x − 12 tiene el coeficiente de x pedido."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Una caja tiene aristas de x cm, (x + 2) cm y (x + 4) cm, y su volumen es 192 cm³. ¿Cuánto mide su arista mayor?",
+      "respuesta": "8 cm.",
+      "pasos": [
+        "x(x + 2)(x + 4) = 192, o sea x³ + 6x² + 8x − 192 = 0.",
+        "Se prueba con divisores de 192: x = 4 da 4·6·8 = 192. Para x > 0 el volumen crece con x, así que no hay otra medida.",
+        "La arista mayor es x + 4 = 8 cm (no x = 4, que es la menor)."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "De una lámina de cartón de 20 cm por 14 cm se recorta un cuadrado de x cm de lado (x entero) en cada esquina y se arma una caja sin tapa de 288 cm³. ¿Cuántos cm² de cartón tiene la caja?",
+      "respuesta": "216 cm².",
+      "pasos": [
+        "El fondo mide (20 − 2x) por (14 − 2x) y el alto es x: x(20 − 2x)(14 − 2x) = 288.",
+        "Se prueba con x = 1, 2, …, 6 (x < 7): da 216, 320, 336, 288, 200 y 96. Solo x = 4 cumple.",
+        "El cartón es la lámina menos los cuatro cuadrados: 20·14 − 4·4² = 280 − 64 = 216 cm².",
+        "Comprobación: fondo 12·6 = 72 más cuatro caras (2·4·12 + 2·4·6 = 144) dan 216. No lleva tapa."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Una vendedora dice: «Si elevas al cuadrado el precio en soles del kilo de habas y le sumas 144 dividido entre ese cuadrado, obtienes 25». Dos precios cumplen lo que dice. ¿Cuál es la diferencia entre el precio mayor y el menor?",
+      "respuesta": "1 sol.",
+      "pasos": [
+        "p² + 144/p² = 25 → p⁴ − 25p² + 144 = 0, una bicuadrada.",
+        "Con u = p²: (u − 9)(u − 16) = 0, así que p² = 9 o p² = 16, y p = ±3 o p = ±4.",
+        "Un precio no puede ser negativo: los precios son 3 y 4 soles, y la diferencia es 1 sol. Tomar −4 como el menor daría 8, que no tiene sentido."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Halla la suma de los módulos de las cuatro raíces de x⁴ + 10x² + 9 = 0.",
+      "respuesta": "8.",
+      "pasos": [
+        "Con u = x²: u² + 10u + 9 = 0 → (u + 1)(u + 9) = 0 → x² = −1 o x² = −9.",
+        "No hay raíces reales, pero sí cuatro imaginarias: ±i y ±3i.",
+        "Sus módulos son 1, 1, 3 y 3: la suma es 8. Decir «no tiene raíces» es el error: no tiene raíces reales."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "El polinomio P(x) = x³ − 7x² + kx − 4 tiene como raíz a x = 1. Halla k y el conjunto de valores de x para los que P(x) = −4.",
+      "respuesta": "k = 10; {0; 2; 5}.",
+      "pasos": [
+        "P(1) = 0: 1 − 7 + k − 4 = 0, así que k = 10.",
+        "P(x) = −4 → x³ − 7x² + 10x = 0 → x(x² − 7x + 10) = 0 → x(x − 2)(x − 5) = 0.",
+        "Las soluciones son 0, 2 y 5. Si divides entre x pierdes la solución x = 0; y x = 1 no va, porque ahí P vale 0, no −4."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "El polinomio P(x) = x⁴ − 2x³ − 12x² + 40x + m tiene una raíz triple entera. Halla m.",
+      "respuesta": "m = −32.",
+      "pasos": [
+        "P(x) = (x − r)³(x − s) = x⁴ − (3r + s)x³ + (3r² + 3rs)x² − (r³ + 3r²s)x + r³s.",
+        "De x³: 3r + s = 2, o sea s = 2 − 3r. De x²: 3r² + 3r(2 − 3r) = −12 → 6r² − 6r − 12 = 0 → r = 2 o r = −1.",
+        "Con r = −1 sería s = 5 y el coeficiente de x daría −(−1 + 15) = −14, no 40: no sirve. Con r = 2, s = −4 y −(8 − 48) = 40 sí cumple.",
+        "m = r³s = 8·(−4) = −32. En grado 4 el producto de las raíces es +m."
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "La ecuación x³ + mx² + nx − 30 = 0, con m y n enteros, tiene la raíz 1 + 2i. Halla su raíz real.",
+      "respuesta": "6.",
+      "pasos": [
+        "Con coeficientes reales, el conjugado 1 − 2i también es raíz (se cambia el signo de la parte imaginaria, no el de la real).",
+        "(1 + 2i)(1 − 2i) = 1 + 4 = 5.",
+        "El producto de las tres raíces es 30 (el término independiente con el signo cambiado): 5·c = 30, así que c = 6. El polinomio es (x² − 2x + 5)(x − 6) = x³ − 8x² + 17x − 30."
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Factoriza P(x) = 2x³ − 5x² − 4x + 3 y halla la raíz de P(x) = 0 que no es entera.",
+      "respuesta": "1/2; P(x) = (x + 1)(x − 3)(2x − 1).",
+      "pasos": [
+        "Candidatos a raíz racional: ±(1, 3)/(1, 2), es decir ±1, ±3, ±1/2 y ±3/2.",
+        "P(−1) = −2 − 5 + 4 + 3 = 0: por Ruffini queda 2x² − 7x + 3. Luego x = 3 da resto 0 y queda 2x − 1.",
+        "P(x) = (x + 1)(x − 3)(2x − 1): la raíz no entera es 1/2 (no 1, que es un candidato sin dividir entre el 2, ni 2, la fracción al revés)."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,312 @@
+{
+  "id": "t106",
+  "version": 1,
+  "titulo": "Más horas de colegio",
+  "tema": "Educación · jornada escolar completa",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    {
+      "id": "A",
+      "desde": 0,
+      "firma": "Una docente de secundaria"
+    },
+    {
+      "id": "B",
+      "desde": 1,
+      "firma": "Un especialista en evaluación educativa"
+    }
+  ],
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "apoyo",
+        "t": "Cuando termina la jornada a mediodía, unos alumnos se van a clases particulares o a una casa con libros y un adulto que pregunta por la tarea; otros, a cuidar a sus hermanos o a ayudar en el negocio familiar."
+      },
+      {
+        "id": "o2",
+        "rol": "apoyo",
+        "t": "Para los segundos, lo que no se aprendió en la mañana ya no se aprende."
+      },
+      {
+        "id": "o3",
+        "rol": "principal",
+        "t": "Por eso, alargar la jornada escolar es una forma de justicia: da a quienes no tienen apoyo en casa las horas de estudio guiado que otros ya reciben fuera del colegio."
+      },
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "En esas horas caben la tutoría, el refuerzo de lo que quedó flojo y actividades como el deporte o el arte, que muchas familias no pueden pagar."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "No es poco: es tiempo con un adulto que sabe y un espacio para trabajar."
+      }
+    ],
+    [
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "Estoy de acuerdo en que el colegio es, para muchos alumnos, el único lugar donde alguien les explica lo que no entendieron."
+      },
+      {
+        "id": "o7",
+        "rol": "contraste",
+        "t": "Pero una hora más de lo mismo no es una oportunidad, sino más cansancio."
+      },
+      {
+        "id": "o8",
+        "rol": "apoyo",
+        "t": "Si en la mañana el alumno copia de la pizarra sin entender, alargar la tarde con la misma rutina solo prolonga el problema."
+      },
+      {
+        "id": "o9",
+        "rol": "principal",
+        "t": "Lo que mejora el aprendizaje es cómo se usa el tiempo, no cuánto se pasa en el aula: clases donde el alumno practica, se equivoca y recibe una respuesta."
+      },
+      {
+        "id": "o10",
+        "rol": "apoyo",
+        "t": "Sin profesores preparados para eso y sin materiales, la jornada larga cambia el horario y deja intacta la enseñanza."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "controversia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "¿Cuál es el tema en controversia entre los dos textos?",
+      "alternativas": [
+        {
+          "t": "Si alargar la jornada escolar ayuda a aprender a quienes no tienen apoyo en casa.",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "o7"
+          ],
+          "explicacion": "El texto A ve en las horas extra una oportunidad para esos alumnos (oración 3) y el B responde que más horas de lo mismo no lo son (oraciones 7 y 9)."
+        },
+        {
+          "t": "Si el colegio es, para muchos alumnos, el único lugar donde alguien les explica lo que no entendieron.",
+          "codigo": "RV61",
+          "origen": "o6",
+          "explicacion": "En eso coinciden: el texto B lo dice con un «Estoy de acuerdo» (oración 6), y el A lo plantea en las oraciones 2 y 3."
+        },
+        {
+          "t": "Si las clases deben ser espacios donde el alumno practica, se equivoca y recibe una respuesta.",
+          "codigo": "RV60",
+          "origen": "o9",
+          "explicacion": "Es la tesis del texto B (oración 9). El texto A no toma posición sobre cómo deben ser las clases."
+        },
+        {
+          "t": "Si los alumnos deben ir a clases particulares por la tarde.",
+          "codigo": "RV1",
+          "origen": "o1",
+          "explicacion": "Es un detalle de la oración 1, con el que el texto A describe lo que hacen algunos alumnos; no es lo que se discute."
+        },
+        {
+          "t": "Cómo debe organizarse el sistema educativo del país.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos discuten la duración de la jornada y su efecto en el aprendizaje, no todo el sistema."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "discrepancia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Pasar más tiempo en el aula no sirve de nada si las clases siguen siendo iguales.",
+        "aceptada": "B",
+        "codigos": {
+          "A": "RV59",
+          "ambos": "RV60",
+          "ninguno": null
+        },
+        "explicacion": "Lo sostiene el texto B en las oraciones 7, 8 y 10: una hora más de lo mismo solo trae cansancio y deja intacta la enseñanza. El texto A ve las horas extra como una oportunidad.",
+        "explicaciones": {
+          "A": "El texto A defiende las horas extra como una forma de justicia (oración 3); la objeción de que sin cambios no sirven es del texto B (oraciones 7 y 8).",
+          "ambos": "Solo el texto B lo dice. El texto A no pone esa condición.",
+          "ninguno": "Sí lo sostiene alguien: el texto B, en las oraciones 7, 8 y 10."
+        }
+      },
+      "enunciado": "¿En qué discrepan los autores?",
+      "alternativas": [
+        {
+          "t": "A ve las horas extra como una oportunidad; B, que solo lo son si cambia la enseñanza.",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "o9",
+            "o10"
+          ],
+          "explicacion": "Las dos mitades son correctas: el texto A ve justicia en alargar la jornada (oración 3) y el B pone la condición de cambiar cómo se enseña (oraciones 9 y 10)."
+        },
+        {
+          "t": "A ve las horas extra como una oportunidad; B propone quitarle horas a la jornada escolar.",
+          "codigo": "RV62",
+          "origen": "o7",
+          "explicacion": "Lo de A es cierto, pero lo de B no: el texto B no pide menos horas, sino que se cambie cómo se usa el tiempo (oración 9)."
+        },
+        {
+          "t": "A sostiene que importa cómo se usa el tiempo; B, que la jornada larga es una forma de justicia.",
+          "codigo": "RV59",
+          "origen": "o9",
+          "explicacion": "Cruza las posturas: la jornada como justicia es del texto A (oración 3) y lo de cómo se usa el tiempo, del B (oración 9)."
+        },
+        {
+          "t": "A cree que el colegio ayuda a los alumnos sin apoyo en casa; B, que no los ayuda en nada.",
+          "codigo": "RV61",
+          "origen": "o6",
+          "explicacion": "En eso coinciden: el texto B acepta que el colegio es el único lugar donde muchos reciben explicaciones (oración 6)."
+        },
+        {
+          "t": "A defiende los colegios públicos; B, los colegios privados.",
+          "codigo": "RV33",
+          "explicacion": "Ninguno de los dos habla de colegios públicos o privados; es una postura que no toman."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "coincidencia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Hay alumnos que solo en el colegio encuentran a alguien que los ayude a aprender.",
+        "aceptada": "ambos",
+        "codigos": {
+          "A": "RV61",
+          "B": "RV61",
+          "ninguno": null
+        },
+        "explicacion": "Los dos lo sostienen: el texto A, al decir que para algunos lo que no se aprendió en el colegio ya no se aprende (oraciones 1 y 2), y el B, que lo acepta en la oración 6.",
+        "explicaciones": {
+          "A": "El texto A lo plantea en las oraciones 1 y 2, pero el B también: «Estoy de acuerdo en que el colegio es, para muchos alumnos, el único lugar…» (oración 6).",
+          "B": "El texto B lo dice en la oración 6, pero como acuerdo con el A, que ya lo había planteado en las oraciones 1 y 2.",
+          "ninguno": "Los dos lo sostienen: el texto A en las oraciones 1 y 2, y el B en la oración 6."
+        }
+      },
+      "enunciado": "Los dos autores aceptarían que",
+      "alternativas": [
+        {
+          "t": "muchos alumnos solo encuentran ayuda para estudiar en el colegio.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o6"
+          ],
+          "explicacion": "El texto A lo muestra con los alumnos que salen a cuidar hermanos o a trabajar (oraciones 1 y 2), y el B lo acepta en la oración 6."
+        },
+        {
+          "t": "la tutoría, el refuerzo, el deporte y el arte deben ocupar las horas de la tarde.",
+          "codigo": "RV60",
+          "origen": "o4",
+          "explicacion": "Es lo que propone el texto A (oración 4). El texto B no dice cómo llenar esas horas, sino que sin cambios no sirven."
+        },
+        {
+          "t": "ningún alumno puede aprender fuera del colegio.",
+          "codigo": "RV11",
+          "explicacion": "Los dos hablan de «muchos alumnos» o de «otros», no de todos; el texto A dice que algunos sí tienen apoyo en casa (oración 1)."
+        },
+        {
+          "t": "la jornada larga debe aplicarse en todos los colegios del país.",
+          "codigo": "RV12",
+          "explicacion": "El texto B no lo aceptaría sin cambios en la enseñanza (oración 10), y el A tampoco habla de todos los colegios. Es llevar la idea a un extremo."
+        },
+        {
+          "t": "los alumnos rinden menos en la tarde por el calor y el hambre.",
+          "codigo": "RV8",
+          "explicacion": "Ninguno de los textos habla del calor ni del hambre; es una idea de fuera de los textos."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Si un colegio alargara su jornada y, además, preparara a sus profesores para dar clases donde el alumno practica y recibe respuesta, el autor del texto B probablemente",
+      "alternativas": [
+        {
+          "t": "aceptaría que esas horas pueden mejorar el aprendizaje.",
+          "correcta": true,
+          "evidencia": [
+            "o9",
+            "o10"
+          ],
+          "explicacion": "Para el texto B, lo que falla es la enseñanza que no cambia (oración 10). Si cambia como pide la oración 9, desaparece su objeción."
+        },
+        {
+          "t": "seguiría diciendo que la jornada larga solo cambia el horario y deja la enseñanza igual.",
+          "codigo": "RV63",
+          "origen": "o10",
+          "explicacion": "La oración 10 dice eso de la jornada larga «sin profesores preparados». La situación supone justo lo contrario, así que esa conclusión ya no se sostiene."
+        },
+        {
+          "t": "diría que, ante todo, alargar la jornada es una forma de justicia social.",
+          "codigo": "RV59",
+          "origen": "o3",
+          "explicacion": "Esa manera de defender la jornada es del texto A (oración 3); el B la juzga por cómo se usa el tiempo."
+        },
+        {
+          "t": "pediría que el colegio abriera también los sábados y los domingos.",
+          "codigo": "RV12",
+          "explicacion": "Es un extremo: el texto B insiste en que lo que importa no es cuánto tiempo se pasa en el aula (oración 9)."
+        },
+        {
+          "t": "exigiría que se prohibieran las clases particulares por la tarde.",
+          "codigo": "RV7",
+          "explicacion": "El texto B no dice nada de las clases particulares; esa conclusión no sale de lo que plantea."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto A, la palabra FLOJO («el refuerzo de lo que quedó flojo») significa",
+      "alternativas": [
+        {
+          "t": "mal aprendido.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o4"
+          ],
+          "explicacion": "Se habla de reforzar lo que en la mañana no se aprendió bien (oración 2): lo que quedó débil."
+        },
+        {
+          "t": "perezoso.",
+          "codigo": "RV18",
+          "explicacion": "Es el sentido más común de «flojo» cuando se habla de una persona, pero aquí se habla de lo aprendido."
+        },
+        {
+          "t": "pendiente de entrega.",
+          "codigo": "RV19",
+          "explicacion": "Es del mismo campo (las tareas del colegio), pero el texto habla de lo que no se entendió, no de algo por entregar."
+        },
+        {
+          "t": "fluido, que sale con facilidad.",
+          "codigo": "RV20",
+          "explicacion": "Se parece en la forma (flojo, fluido), pero es casi lo contrario: lo que quedó flojo es lo que no se aprendió bien (oración 2) y por eso necesita refuerzo."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-08",
+  "hechos": [],
+  "revision": {
+    "por": "subagente (revisor a ciegas)",
+    "fecha": "2026-11-08",
+    "veredicto": "aprobado",
+    "notas": "5 de 5 a ciegas (con los previos). Se cambió «flotante», que caía solo, por «fluido, que sale con facilidad» en el sentido contextual."
+  }
+}
