@@ -48,25 +48,25 @@
       "entrada": {
         "tipo": "nombre",
         "familia": "tricarboxilico",
-        "semi": "HOOC-CH(OH)-CH(COOH)-CH2-CH2-COOH",
-        "smiles": "C(C(=O)O)(O)C(C(=O)O)CC(C(=O)O)"
+        "semi": "HOOC-CH(OH)-CH(COOH)-CH2-COOH",
+        "smiles": "C(C(=O)O)(O)C(C(=O)O)C(C(=O)O)"
       },
       "esperado": {
-        "clave": "nom:ácido 1-hidroxibutano-1,2,4-tricarboxílico",
-        "texto": "ácido 1-hidroxibutano-1,2,4-tricarboxílico"
+        "clave": "nom:ácido 1-hidroxipropano-1,2,3-tricarboxílico",
+        "texto": "ácido 1-hidroxipropano-1,2,3-tricarboxílico"
       }
     },
     {
       "semilla": 20,
       "entrada": {
         "tipo": "nombre",
-        "familia": "tricarboxilico",
-        "semi": "HOOC-CH2-C(COOH)(OH)-CH2-CH2-COOH",
-        "smiles": "C(C(=O)O)C(C(=O)O)(O)CC(C(=O)O)"
+        "familia": "aminoacido",
+        "semi": "HO-C6H4-CH2-CH(NH2)-COOH",
+        "smiles": "C(=O)(O)C(N)C(c1ccc(O)cc1)"
       },
       "esperado": {
-        "clave": "nom:ácido 2-hidroxibutano-1,2,4-tricarboxílico",
-        "texto": "ácido 2-hidroxibutano-1,2,4-tricarboxílico"
+        "clave": "nom:ácido 2-amino-3-(4-hidroxifenil)propanoico",
+        "texto": "ácido 2-amino-3-(4-hidroxifenil)propanoico"
       }
     },
     {
@@ -191,12 +191,12 @@
       "entrada": {
         "tipo": "cadena",
         "familia": "tricarboxilico",
-        "semi": "HOOC-CH2-CH2-C(COOH)(OH)-CH2-COOH",
-        "smiles": "C(C(=O)O)C(C(=O)O)(O)CC(C(=O)O)"
+        "semi": "HOOC-CH2-C(COOH)(OH)-CH2-COOH",
+        "smiles": "C(C(=O)O)C(C(=O)O)(O)C(C(=O)O)"
       },
       "esperado": {
-        "clave": 4,
-        "texto": "4 carbonos"
+        "clave": 3,
+        "texto": "3 carbonos"
       }
     },
     {
@@ -230,9 +230,9 @@
       "semilla": 18,
       "entrada": {
         "tipo": "sufijo",
-        "familia": "bifuncional",
-        "semi": "CH3-CH2-CH2-C(OH)(CH3)-CH2-CHO",
-        "smiles": "C(=O)CC(O)(C)CCC"
+        "familia": "azucar",
+        "semi": "OHC-CH(OH)-CH(OH)-CH(OH)-CH(OH)-CH2OH",
+        "smiles": "C(=O)C(O)C(O)C(O)C(O)C(O)"
       },
       "esperado": {
         "clave": "suf:aldehido",
@@ -323,7 +323,8 @@
         "tipo": "oxidacion",
         "sub": "dos",
         "n": 3,
-        "paso": "cambio",
+        "paso": "estado",
+        "j": 1,
         "secuencia": [
           "CH3-CH2-CH3",
           "HOCH2-CH2-CH2OH",
@@ -332,8 +333,8 @@
         ]
       },
       "esperado": {
-        "clave": "hib:2",
-        "texto": "de propano-1,3-diol a propanodial"
+        "clave": "eo:-1:sp3",
+        "texto": "−1 y sp³"
       }
     },
     {

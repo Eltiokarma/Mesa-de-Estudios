@@ -345,19 +345,24 @@ test('salen los seis tipos, las ocho familias, la línea con rama y los errores 
     assert.ok(ids.has(id), `no aparece ${id}`);
 });
 
-test('el ácido cítrico, la fenilalanina, la tirosina, la aldohexosa y el etano-1,2-diol no salen, y las opciones de nombre no se delatan por el largo', () => {
-  let n = 0, larga = 0;
-  for (let s = 0; s < 2000; s++) {
+// Regla 5 nueva (decisión de Gerson, 12 nov 2026): las moléculas reales del examen sí salen, con su nombre IUPAC.
+test('salen moléculas reales (cítrico, fenilalanina, tirosina, glucosa, fructosa, ribosa, salicílico, etano-1,2-diol) con su nombre, y las opciones de nombre no se delatan por el largo', () => {
+  const REALES = ['ácido 2-hidroxipropano-1,2,3-tricarboxílico', 'ácido 2-amino-3-fenilpropanoico', 'ácido 2-amino-3-(4-hidroxifenil)propanoico',
+    '2,3,4,5,6-pentahidroxihexanal', '1,3,4,5,6-pentahidroxihexan-2-ona', '2,3,4,5-tetrahidroxipentanal', 'ácido 2-hidroxibenzoico'];
+  const vistas = new Set();
+  let n = 0, larga = 0, etano = 0;
+  for (let s = 0; s < 6000; s++) {
     const p = gen.generar(s);
-    for (const x of ['ácido 2-hidroxipropano-1,2,3-tricarboxílico', 'ácido 2-amino-3-fenilpropanoico', 'ácido 2-amino-3-(4-hidroxifenil)propanoico', '2,3,4,5,6-pentahidroxihexanal'])
-      assert.ok(!p.alternativas.some(a => a.correcta && a.texto === x), `semilla ${s}: sale ${x}`);
-    if (p._datos.secuencia) assert.ok(!p._datos.secuencia.includes('HOCH2-CH2OH'), `semilla ${s}: sale la secuencia del etano-1,2-diol`);
-    if (p._datos.tipo !== 'nombre') continue;
+    for (const a of p.alternativas) if (a.correcta && REALES.includes(a.texto)) vistas.add(a.texto);
+    if (p._datos.secuencia && p._datos.secuencia.includes('HOCH2-CH2OH')) etano++;
+    if (s >= 2000 || p._datos.tipo !== 'nombre') continue;
     n++;
     const L = p.alternativas.map(a => [...a.texto].length), c = p.alternativas.findIndex(a => a.correcta);
     if (L.every((l, i) => i === c || l < L[c])) larga++;
   }
   assert.ok(larga / n <= 0.35, `la correcta es la más larga, sola, en el ${Math.round(100 * larga / n)} % de los nombres`);
+  assert.deepEqual(REALES.filter(x => !vistas.has(x)), [], 'moléculas reales que no salen');
+  assert.ok(etano > 0, 'no sale la secuencia del etano');
 });
 
 test('en pantalla la fórmula lleva subíndices y los grupos su color', () => {

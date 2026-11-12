@@ -49,12 +49,12 @@
  *      a los sustituyentes y, si empata, el más bajo al primero en orden alfabético: «ácido 5-hidroxi-2-metilbenzoico»
  *      (nombre retenido «benzoico», como en la IUPAC 2013 y en la academia; «bencenocarboxílico» no aparece).
  *   Lo que se evita a propósito: anillos (salvo el benceno), estereoquímica (cis/trans, R/S, D/L), varios grupos en
- *   competencia de cadenas iguales y moléculas que suelen salir tal cual en los exámenes (regla 5). No salen: el ácido
- *   cítrico y el isocítrico (el tricarboxílico tiene de 4 a 6 C en la cadena), la fenilalanina y la tirosina (ácido
- *   2-amino-3-fenil- y 2-amino-3-(4-hidroxifenil)propanoico), la aldohexosa y la aldopentosa completas
- *   (2,3,4,5,6-pentahidroxihexanal, 2,3,4,5-tetrahidroxipentanal), la cetohexosa completa (1,3,4,5,6-pentahidroxihexan-
- *   2-ona) y la secuencia de los dos carbonos del etano (etano-1,2-diol, etanodial). Sí pueden salir otros aminoácidos y
- *   ácidos conocidos (serina, homoserina, ácido aspártico, gliceraldehído, ácido 4-aminobenzoico…).
+ *   competencia de cadenas iguales. Las moléculas reales que salen en los exámenes sí salen (regla 5, decisión de
+ *   Gerson del 12 nov 2026): el ácido cítrico y el isocítrico (ácido 2- y 1-hidroxipropano-1,2,3-tricarboxílico), la
+ *   fenilalanina y la tirosina (ácido 2-amino-3-fenil- y 2-amino-3-(4-hidroxifenil)propanoico), la glucosa, la ribosa y
+ *   la fructosa de cadena abierta (2,3,4,5,6-pentahidroxihexanal, 2,3,4,5-tetrahidroxipentanal, 1,3,4,5,6-
+ *   pentahidroxihexan-2-ona), el ácido salicílico (ácido 2-hidroxibenzoico), la secuencia del etano (etano-1,2-diol,
+ *   etanodial, ácido etanodioico) y otros aminoácidos y ácidos conocidos (serina, ácido aspártico, gliceraldehído…).
  *
  * TIPOS de problema (_datos.tipo) y clave de la respuesta (respuesta.valor):
  *   nombre     «¿cuál es el nombre IUPAC?». Familias (_datos.familia): acidoSec (hidroxiácido u oxoácido, con rama
@@ -72,7 +72,7 @@
  *   ester      «¿de qué ácido y qué alcohol sale el éster?» R-COO-R′: el ácido lleva el C=O (y sus C), el alcohol el
  *              grupo unido al O del puente. Clave 'es:<ácido>|<alcohol>'.
  *   oxidacion  la secuencia alcano → alcohol → aldehído → ácido sobre el C de un extremo (sub 'terminal', cadenas de 1
- *              a 4 C) o sobre los dos C de los extremos del propano a la vez (sub 'dos', → diol → dial → diácido).
+ *              a 4 C) o sobre los dos C de los extremos del etano o del propano a la vez (sub 'dos', → diol → dial → diácido).
  *              _datos.paso: 'estado' (número de oxidación e hibridación del C que se oxida en el compuesto _datos.j,
  *              1 = alcohol, 2 = aldehído, 3 = ácido; clave 'eo:<n>:<sp3|sp2|sp>'), 'cambio' (en qué paso deja de ser
  *              sp³; clave 'hib:<j>', con j el compuesto en que ya es sp²: 2), 'serie' (los cuatro números de
@@ -438,7 +438,7 @@
     }, false);
   }
   function famTricarboxilico(rng) {
-    const m = rng.entero(4, 6), b = rng.entero(2, m - 1), h = rng.entero(1, m); // con m = 3 saldrían el cítrico y el isocítrico
+    const m = rng.entero(3, 6), b = rng.entero(2, m - 1), h = rng.entero(1, m); // con m = 3 salen el cítrico y el isocítrico
     const p = plan(m, true);
     p.g[1].push('COOH'); p.g[b].push('COOH'); p.g[m].push('COOH'); p.g[h].push('OH');
     // La línea escrita: los -COOH de los extremos como extremos de la línea (m + 2 carbonos).
@@ -513,7 +513,6 @@
     if (!cetosa) { p.g[1].push('O'); for (let i = 2; i <= n; i++) p.g[i].push('OH'); if (n >= 4 && rng.sig() < 0.3) p.g[rng.entero(2, n - 1)] = []; }
     else { p.g[2].push('O'); p.g[1].push('OH'); for (let i = 3; i <= n; i++) p.g[i].push('OH'); if (n >= 5 && rng.sig() < 0.3) p.g[rng.entero(3, n - 1)] = []; }
     const completa = cetosa ? p.g.slice(3).every(g => g.includes('OH')) : p.g.slice(2).every(g => g.includes('OH'));
-    if (completa && (cetosa ? n === 6 : n >= 5)) return null; // aldohexosa, aldopentosa y cetohexosa completas no salen
     if (!valido(p)) return null;
     return { p, dibujo: p, rama: false, alReves: rng.sig() < 0.3, familia: 'azucar', errores: (c, dirC) => {
       const l = [], r = rasgos(p, dirC);
@@ -545,7 +544,6 @@
     else if (lado === 'Me') s = rng.entero(2, n - 1);
     else s = rng.elegir([...Array(n - 1).keys()].map(x => x + 2).filter(x => x !== a));
     p.g[s].push(lado);
-    if (n === 3 && a === 2 && s === 3 && (lado === 'Ph' || lado === 'PhOH')) return null; // fenilalanina y tirosina no salen
     if (!valido(p)) return null;
     return conDibujo(p, rng, 'aminoacido', (c, dirC) => {
       const l = [], r = rasgos(p, dirC);
@@ -579,7 +577,6 @@
     const k = rng.sig() < 0.45 ? 1 : 2, R = [ 'COOH', null, null, null, null, null ];
     const pos = rng.barajar([1, 2, 3, 4, 5]).slice(0, k);
     pos.forEach(j => { R[j] = rng.elegir(['OH', 'N', 'Me']); });
-    if (k === 1 && R[1] === 'OH' || k === 1 && R[5] === 'OH') return null; // el ácido salicílico no sale
     return { anillo: R, familia: 'aromatico', errores: c => {
       const l = [];
       l.push({ t: nombrarAnillo(R, 0, { otroSentido: true }), e: H('AQ-sentido-del-anillo', 'Recorriste el anillo en el sentido que da números más altos. Desde el C del –COOH (C1) se va hacia el lado que da los localizadores más bajos a los sustituyentes.') });
@@ -875,7 +872,7 @@
   const HIB = { sp3: 'sp³', sp2: 'sp²', sp: 'sp' };
   const VAR_OX = { c: { nombre: 'carbono que se oxida', color: 'd' } };
   function tipoOxidacion(rng, semilla) {
-    const sub = rng.sig() < 0.3 ? 'dos' : 'terminal', n = sub === 'dos' ? 3 : rng.elegir([1, 2, 2, 3, 4]);
+    const sub = rng.sig() < 0.3 ? 'dos' : 'terminal', n = sub === 'dos' ? rng.elegir([2, 3]) : rng.elegir([1, 2, 2, 3, 4]);
     const S = secuencia(sub, n), paso = rng.elegir(['estado', 'estado', 'cambio', 'serie']);
     const linea = [];
     S.semis.forEach((s, j) => { if (j) linea.push(' → '); linea.push({ t: pantalla(s), formula: true }, ` (${S.nombres[j]})`); });
