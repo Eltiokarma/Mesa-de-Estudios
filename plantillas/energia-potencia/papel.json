@@ -73,6 +73,14 @@
       "respuesta": "4 m/s",
       "pasos": ["Tramo de cuerda entre polea y collarín: al inicio √(1,2² + 1,6²) = 2 m; al final 1,2 m.", "El extremo libre baja 2 − 1,2 = 0,8 m (el collarín avanza 1,6 m, pero eso no es lo que recorre la fuerza).", "Trabajo: 40 · 0,8 = 32 J. Todo va a energía cinética: ½ · 4 · v² = 32, v = 4 m/s."],
       "verificar": [{ "tipo": "cuerda", "args": { "b": 1.2, "x1": 1.6, "x2": 0, "F": 40, "m": 4 }, "espera": 4 }]
+    },
+    {
+      "id": "p10",
+      "nivel": "examen",
+      "enunciado": "(UNMSM 2023-II) El mecanismo de una pistola de juguete es un resorte que se comprime y, al apretar el gatillo, se libera e impulsa una esfera de masa m a una rapidez v. Si la masa efectiva del resorte es 3m, ¿cuál será la rapidez de una esfera de masa 2m impulsada por el mismo mecanismo? Da la respuesta en función de v y, para v = 10 m/s, en m/s.",
+      "respuesta": "v·√(4/5) = 2v/√5 ≈ 0,89·v; con v = 10 m/s, unos 8,94 m/s",
+      "pasos": ["El resorte se comprime igual: guarda la misma energía. Al soltarse, la energía se reparte entre la esfera y la masa efectiva del resorte, que se mueven juntas: E = ½·(m + 3m)·v² = 2m·v².", "Con la esfera de 2m: E = ½·(2m + 3m)·v₂² = 2,5m·v₂².", "Se igualan: v₂² = (4/5)·v², v₂ = v·√(4/5) ≈ 0,89·v. Si olvidas la masa efectiva sale v·√(1/2) ≈ 0,71·v, que no usa un dato del enunciado."],
+      "verificar": [{"tipo": "resorte", "args": {"m1": 1, "M": 3, "m2": 2, "v1": 10}, "espera": 8.94427191}]
     }
   ]
 }

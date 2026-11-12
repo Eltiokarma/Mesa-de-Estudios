@@ -1,8 +1,8 @@
 {
   "plantilla": "energia-potencia",
   "tolerancia": 1e-06,
-  "nota": "g = 10 m/s²; sen 37° = cos 53° = 0,6 y cos 37° = sen 53° = 0,8; 1 L de agua = 1 kg; 1 HP = 746 W. Unidades de la respuesta: kW en fv/horizontal y peso/grua; W en fv/subida, peso/escalera y bomba/util; kW o HP (campo unidad) en bomba/consumida; m/s en fv/velocidad y cuerda/rapidez; N en fv/eficiencia; kJ en pisos; m en rebotes; J en cuerda/trabajo. En bomba/util con contexto pozo, h es profundidad + altura del tanque. Los valores que no salen exactos (HP, algunas rapideces y alturas) se comparan con dos decimales en la alternativa.",
-  "verificacion": "Verificación a ciegas (8 nov 2026, subagente verificador): se resolvieron 46 problemas del lote (los 16 de casos y 30 más) con un planteamiento propio en Python (P = F·v, P = W/t, pérdidas en cadena, W = F·ΔL en la cuerda). 46/46 letras y los 16 valores esperados coinciden (tolerancia 1e-6). Todos los distractores se recalcularon y calzan con su explicación.",
+  "nota": "g = 10 m/s²; sen 37° = cos 53° = 0,6 y cos 37° = sen 53° = 0,8; 1 L de agua = 1 kg; 1 HP = 746 W. Unidades de la respuesta: kW en fv/horizontal y peso/grua; W en fv/subida, peso/escalera y bomba/util; kW o HP (campo unidad) en bomba/consumida; m/s en fv/velocidad y cuerda/rapidez; N en fv/eficiencia; kJ en pisos; m en rebotes; J en cuerda/trabajo. En bomba/util con contexto pozo, h es profundidad + altura del tanque. Los valores que no salen exactos (HP, algunas rapideces y alturas) se comparan con dos decimales en la alternativa. m/s en resorte/masa-efectiva (la energía del resorte se reparte en ½·(m + M)·v², con M la masa efectiva que da el enunciado).",
+  "verificacion": "Verificación a ciegas (8 nov 2026, subagente verificador): se resolvieron 46 problemas del lote (los 16 de casos y 30 más) con un planteamiento propio en Python (P = F·v, P = W/t, pérdidas en cadena, W = F·ΔL en la cuerda). 46/46 letras y los 16 valores esperados coinciden (tolerancia 1e-6). Todos los distractores se recalcularon y calzan con su explicación. Cierre-100 (12 nov 2026): los 2 casos de resorte/masa-efectiva (semillas 35 y 42) y el p10 de papel (UNMSM 2023-II) se resolvieron a ciegas con (m + M)·v² constante: 3 m/s, 10 m/s y 2v/√5; 3/3 coinciden y los distractores calzan con su error.",
   "casos": [
     {
       "semilla": 0,
@@ -240,6 +240,38 @@
       "esperado": {
         "respuesta": 16.5888,
         "exacta": "16,59 m"
+      }
+    },
+    {
+      "semilla": 35,
+      "nuevo": "cierre-100",
+      "entrada": {
+        "tipo": "resorte",
+        "sub": "masa-efectiva",
+        "m1": 45,
+        "M": 135,
+        "m2": 185,
+        "v1": 4
+      },
+      "esperado": {
+        "respuesta": 3,
+        "exacta": "3 m/s"
+      }
+    },
+    {
+      "semilla": 42,
+      "nuevo": "cierre-100",
+      "entrada": {
+        "tipo": "resorte",
+        "sub": "masa-efectiva",
+        "m1": 24,
+        "M": 48,
+        "m2": 114,
+        "v1": 15
+      },
+      "esperado": {
+        "respuesta": 10,
+        "exacta": "10 m/s"
       }
     }
   ]
