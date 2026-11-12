@@ -14,8 +14,8 @@
      C (A y B unidos)             fucsia    #c90eb4 / #fe3dd6   (y el anillo del choque eficaz: ahí se forma una C)
      T (temperatura)              rojo      #c0364a / #f17384   (el de docs/diseno.md)
      Ea (barrera)                 turquesa  #1c7170 / #79c6c5
-     ΔH (calor de reacción)       verde     #198036 / #4fb256
-     v (rapidez)                  mostaza   #856d02 / #d8c84a
+     ΔH (calor de reacción)       verde     #177732 / #4fb256   (0.3.0: un poco más oscuro, AA sobre el chip)
+     v (rapidez)                  mostaza   #7c6502 / #d8c84a   (0.3.0: un poco más oscuro, AA sobre el chip)
      choque sin energía (cruz)    gris      #434038 / #8c8f85   (y las barras del histograma bajo Ea)
      choque mal orientado (flecha que gira)  violeta  #4b06b9 / #9978fa
    Todos pueden salir a la vez (el explorador muestra todo), así que se revisaron todos contra todos y contra la
@@ -46,7 +46,7 @@
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
   --detras:#f6ece4; --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
-  --c-A:#1f5fbf; --c-B:#b55302; --c-C:#c90eb4; --c-T:#c0364a; --c-Ea:#1c7170; --c-dH:#198036; --c-v:#856d02;
+  --c-A:#1f5fbf; --c-B:#b55302; --c-C:#c90eb4; --c-T:#c0364a; --c-Ea:#1c7170; --c-dH:#177732; --c-v:#7c6502;
   --c-sinE:#434038; --c-malO:#4b06b9; --c-N:#652515; --c-int:#b31c05; --c-cat:#04708b; --c-F:#1c5f3f;
   --vidrio:#8e97a8;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
@@ -206,7 +206,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
     <header>
       <p class="eyebrow">Química · Cinética química · Problemas tipo admisión</p>
       <h1>Cinética química: choques que reaccionan</h1>
-      <p class="sub">Una caja donde A y B chocan y a veces forman C. Mira, predice y cuenta los choques.</p>
+      <p class="sub">Una caja donde A y B chocan y a veces forman C, reacciones que van por etapas y perfiles de energía. Mira, predice y cuenta.</p>
     </header>
     <nav class="tabs" aria-label="Modo de la escena">
       <a href="#paso-a-paso" id="tab1">Paso a paso</a>
@@ -1459,9 +1459,12 @@ const I_ = t => V('int', t), K_ = t => V('cat', t), F_ = t => V('F', t);
 // Nombres: H2O2 → H₂O₂, I- → I⁻.
 const nombre = sp => sp.replace(/\d/g, d => '₀₁₂₃₄₅₆₇₈₉'[d]).replace(/-$/, '⁻').replace(/\+$/, '⁺');
 const supN = n => (n === 1 ? '' : String(n).replace('-', '⁻').replace(/\d/g, d => '⁰¹²³⁴⁵⁶⁷⁸⁹'[d]));
-const leyTxt = (l, k) => `v = ${k || 'k'}·` + Object.entries(l.ordenes).map(([sp, m]) => `[${nombre(sp)}]${supN(m)}`).join('·');
+// Exponentes negativos al denominador: v = k·K₁·[O₃]²/[O₂].
+const leyTxt = (l, k) => { const e = Object.entries(l.ordenes), arr = e.filter(([, m]) => m > 0), aba = e.filter(([, m]) => m < 0);
+  const t = (l2, f) => l2.map(([sp, m]) => `[${nombre(sp)}]${supN(f*m)}`).join('·');
+  return `v = ${k || 'k'}·` + t(arr, 1) + (aba.length ? '/' + (aba.length > 1 ? `(${t(aba, -1)})` : t(aba, -1)) : ''); };
 const lado = o => Object.entries(o).map(([sp, n]) => (n === 1 ? '' : n + ' ') + nombre(sp)).join(' + ');
-const ecuacion = g => `${lado(g.r)} → ${lado(g.p)}`;
+const ecuacion = (g, flecha) => `${lado(g.r)} ${flecha || '→'} ${lado(g.p)}`;
 const nw = t => `<span style="white-space:nowrap">${t}</span>`;
 function cientifica(x){
   const a = Math.abs(x); if (a >= 1e-3 && a < 1e4) return fmt(x, 4);
@@ -1517,13 +1520,13 @@ function fichas(c, v){
     const ws = l => l.reduce((s, sp) => s + ctx.measureText(nombre(sp)).width + 14, 0) + Math.max(0, l.length - 1)*mas;
     return ws(fl.izq) + ws(fl.der) + 34; };
   while (fs > 10 && Math.max(...filas.map(fl => anchoFila(fl, fs))) > W - 2*pad) fs--;
-  const hT = fs + 14, rowH = hT + 26, y0 = 22, toks = [];
+  const hT = fs + 14, rowH = hT + 26, y0 = 22, toks = [], rotulos = [];
   ctx.font = `700 11px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
   ctx.fillText('Las etapas, ficha por ficha', pad, 4);
   filas.forEach((fl, i) => {
-    const y = y0 + i*rowH + 16;
+    const y = y0 + i*(rowH + 8) + 16;
     ctx.font = `800 11px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
-    ctx.fillText(`Etapa ${i + 1}${m.lenta ? (m.lenta === i + 1 ? ' · lenta' : ' · rápida') : ''}`, pad, y - 3);
+    rotulos.push([`Etapa ${i + 1}${m.lenta ? (m.lenta === i + 1 ? ' · lenta' : ' · rápida') : ''}`, y - 10]);   // se escriben al final, encima de las rayas
     if (v.ley && m.lenta === i + 1){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.setLineDash([5, 3]); rr(ctx, pad - 6, y - 18, W - 2*pad + 12, hT + 22, 12); ctx.stroke(); ctx.restore(); }
     let x = pad; ctx.font = `800 ${fs}px ${c.mono}`; const mas = ctx.measureText(' + ').width;
     const poner = (l, ladoT) => l.forEach((sp, k) => {
@@ -1561,8 +1564,9 @@ function fichas(c, v){
     ctx.save(); ctx.globalAlpha = g2; ctx.strokeStyle = col; ctx.lineWidth = 1.8; ctx.setLineDash([4, 3]);
     ctx.beginPath(); ctx.moveTo(xa, ya); ctx.bezierCurveTo(xa, (ya + yb)/2, xb, (ya + yb)/2, xb, yb); ctx.stroke(); ctx.restore();
   }
+  for (const [t, yl] of rotulos) rotulo(ctx, c, pad, yl, t, c.muted, 'left', 800, 11);
   // La suma (y la ley de la etapa lenta), solo después de responder.
-  const yG = y0 + filas.length*rowH + 14, hG = H - yG - 6;
+  const yG = y0 + filas.length*rowH + 8*(filas.length - 1) + 14, hG = H - yG - 6;
   if (!v.global){ placeholder(c, pad, yG, W - 2*pad, Math.min(hG, 46), 'Responde para ver la suma'); return; }
   const g3 = fase(0.75, 1);
   ctx.save(); ctx.globalAlpha = g3;
@@ -1612,15 +1616,16 @@ function perfil2(c, v){
   ctx.textAlign = 'right'; ctx.font = `700 ${chico ? 9 : 10}px ${c.font}`; ctx.fillText('avance (no es el tiempo) →', x1, bot + 18);
   if (v.ea){
     const g = fase(0, 0.7);
-    const ea = (x, de, a, txt, lenta) => {
+    const ea = (x, de, a, txt, lenta, der) => {   // der: rótulo a la derecha de la flecha (la segunda, en pantalla grande)
       const lw = (D3.hl === 'Ea' ? 1.6 : 1)*(lenta ? 3.6 : 2.2), yA = Y(de) + (Y(a) - Y(de))*g;
       ctx.save(); ctx.setLineDash([2, 3]); ctx.strokeStyle = c.Ea; ctx.lineWidth = 1; linea(ctx, x - 26, Y(de), x + 4, Y(de)); ctx.restore();
       flecha(ctx, x, Y(de), x, yA + 1, c.Ea, lw);
-      if (g >= 1){ rotulo(ctx, c, x - 6, (Y(de) + Y(a))/2 - (lenta ? 8 : 0), txt, c.Ea, 'right', 800, chico ? 10 : 11);
-        if (lenta) rotulo(ctx, c, x - 6, (Y(de) + Y(a))/2 + 10, 'la lenta', c.Ea, 'right', 800, chico ? 10 : 11); }
+      const xr = der ? x + 6 : x - 6, al = der ? 'left' : 'right';
+      if (g >= 1){ rotulo(ctx, c, xr, (Y(de) + Y(a))/2 - (lenta ? 8 : 0), txt, c.Ea, al, 800, chico ? 10 : 11);
+        if (lenta) rotulo(ctx, c, xr, (Y(de) + Y(a))/2 + 10, 'la lenta', c.Ea, al, 800, chico ? 10 : 11); }
     };
     ea(X.c1, p.R, p.TS1, `Ea₁ = ${fmt(P.Ea1, 0)}`, P.lenta === 1);
-    ea(X.c2, p.I, p.TS2, `Ea₂ = ${fmt(P.Ea2, 0)}`, P.lenta === 2);
+    ea(X.c2, p.I, p.TS2, `Ea₂ = ${fmt(P.Ea2, 0)}`, P.lenta === 2, !chico);
     if (g >= 1){
       const xh = X.p0 + (X.p1 - X.p0)*0.3;
       ctx.save(); ctx.setLineDash([2, 3]); ctx.strokeStyle = c.dH; ctx.lineWidth = 1; linea(ctx, X.r1, Y(p.R), xh + 4, Y(p.R)); ctx.restore();
@@ -1689,7 +1694,7 @@ function leyenda(v){
     if (v.ley) it.push(sw('v', 'v · ley de velocidad'));
   } else if (v.tipo === 'perfil'){
     it.push('<span>números del eje: energía en kJ/mol</span>');
-    if (v.ea) it.push(sw('Ea', 'Ea · desde el valle donde empieza cada etapa'), sw('dH', 'ΔH · de los reactivos a los productos'));
+    if (v.ea) it.push(sw('Ea', 'Ea · desde donde empieza cada etapa'), sw('dH', 'ΔH · de los reactivos a los productos'));
     if (v.nombres) it.push('<span>‡ complejo activado (cima)</span>', sw('int', 'intermediario (valle)'));
   } else {
     it.push(sw('F', 'c · concentración del medicamento'));
@@ -1718,24 +1723,24 @@ D3.describir = () => {
 
 /* ----- Los pasos ----- */
 const hip = 'Esta opción es una hipótesis nuestra, sin estudio que la mida.';
-const G1 = { id:'mecanismos-intermediario', ok:'b', opts:[
-  ['a', `${nombre(MP.errores.intercambio.intermediarios[0])}: entra en la etapa 1 y vuelve a salir en la 2`, 'QA-cat-por-intermediario', 'hipotesis'],
-  ['b', `${nombre(MP.intermediarios[0])}: sale en la etapa 1 y entra en la 2`],
-  ['c', `${nombre(MP.errores.enVariasEtapas[0])}: entra en las dos etapas`, 'QA-int-repetido', 'hipotesis'],
-  ['d', `${nombre(MP.errores.enVariasEtapas[1])}: sale en las dos etapas`, 'QA-int-producto', 'hipotesis']],
-  fb:{ b:`¡Bien! El IO⁻ aparece primero como producto y después como reactivo: se forma y se gasta. Por eso se tacha y no queda en la ecuación global.`,
-    a:`Elegiste la 1. El I⁻ entra primero y vuelve a salir después: eso es un catalizador. El intermediario va al revés: primero sale y después entra. ${hip} La correcta está marcada.`,
-    c:`Elegiste la 3. El H₂O₂ entra en las dos etapas, pero no vuelve a salir: se gasta, y es el reactivo de la global. Un intermediario tiene que formarse en una etapa y gastarse en otra. ${hip} La correcta está marcada.`,
-    d:`Elegiste la 4. El H₂O se forma en las dos etapas y no se gasta en ninguna: es un producto de la global. Un intermediario se forma y después se gasta. ${hip} La correcta está marcada.` } };
-const G2 = { id:'mecanismos-catalizador', ok:'b', opts:[
-  ['a', `${nombre(MO.errores.intercambio.catalizadores[0])}: sale en la etapa 1 y entra en la 2`, 'QA-int-por-catalizador', 'hipotesis'],
-  ['b', `${nombre(MO.catalizadores[0])}: entra en la etapa 1 y vuelve a salir en la 2`],
-  ['c', `${nombre(MO.errores.enVariasEtapas[0])}: sale en las dos etapas`, 'QA-cat-repetido', 'hipotesis'],
-  ['d', `O₃: entra en la etapa 1 y no vuelve a salir`, 'CI8-cat-se-gasta', 'hipotesis']],
-  fb:{ b:'¡Bien! El Cl se gasta en la etapa 1 y se regenera en la 2: sale igual que entró. Por eso un poco de cloro destruye muchísimo ozono.',
-    a:`Elegiste la 1. El ClO se forma en la etapa 1 y se gasta en la 2: es el intermediario. El catalizador va al revés: entra primero y se regenera después. ${hip} La correcta está marcada.`,
+const G1 = { id:'mecanismos-intermediario', ok:'c', opts:[
+  ['a', nombre(MP.errores.enVariasEtapas[0]), 'QA-int-repetido', 'hipotesis'],
+  ['b', nombre(MP.errores.intercambio.intermediarios[0]), 'QA-cat-por-intermediario', 'hipotesis'],
+  ['c', nombre(MP.intermediarios[0])],
+  ['d', nombre(MP.errores.enVariasEtapas[1]), 'QA-int-producto', 'hipotesis']],
+  fb:{ c:`¡Bien! El IO⁻ sale en la etapa 1 y entra en la 2: aparece primero como producto y después como reactivo. Se forma y se gasta; por eso se tacha y no queda en la ecuación global.`,
+    a:`Elegiste la 1. El H₂O₂ entra en las dos etapas, pero no vuelve a salir: se gasta, y es el reactivo de la global. Un intermediario tiene que formarse en una etapa y gastarse en otra. ${hip} La correcta está marcada.`,
+    b:`Elegiste la 2. El I⁻ entra en la etapa 1 y vuelve a salir en la 2: eso es un catalizador. El intermediario va al revés: primero sale y después entra. ${hip} La correcta está marcada.`,
+    d:`Elegiste la 4. El H₂O sale en las dos etapas y no se gasta en ninguna: es un producto de la global. Un intermediario se forma y después se gasta. ${hip} La correcta está marcada.` } };
+const G2 = { id:'mecanismos-catalizador', ok:'a', opts:[
+  ['a', nombre(MO.catalizadores[0])],
+  ['b', nombre(MO.errores.intercambio.catalizadores[0]), 'QA-int-por-catalizador', 'hipotesis'],
+  ['c', nombre(MO.errores.enVariasEtapas[0]), 'QA-cat-repetido', 'hipotesis'],
+  ['d', 'O₃', 'QA-cat-se-gasta', 'hipotesis']],
+  fb:{ a:'¡Bien! El Cl entra en la etapa 1 y vuelve a salir en la 2: se gasta y se regenera, sale igual que entró. Por eso un poco de cloro destruye muchísimo ozono.',
+    b:`Elegiste la 2. El ClO sale en la etapa 1 y entra en la 2: se forma y se gasta, es el intermediario. El catalizador va al revés: entra primero y se regenera después. ${hip} La correcta está marcada.`,
     c:`Elegiste la 3. El O₂ sale en las dos etapas y nunca entra: es el producto de la global. Un catalizador entra y vuelve a salir. ${hip} La correcta está marcada.`,
-    d:`Elegiste la 4. El O₃ se gasta y no vuelve: es un reactivo de la global. El catalizador no se gasta: se recupera entero al final. Creer que el catalizador se gasta sale de una idea descrita en Çakmakçı (2010), sin cifra verificada; esta opción es una hipótesis nuestra. La correcta está marcada.` } };
+    d:'Elegiste la 4. El O₃ entra en la etapa 1 y no vuelve a salir: se gasta, es un reactivo de la global. El catalizador no se gasta: se recupera entero al final. Esta opción es una hipótesis nuestra, relacionada con la idea de que el catalizador no participa (Çakmakçı, 2010, sin cifra verificada). La correcta está marcada.' } };
 const lOpc = e => `${leyTxt(e)}, orden ${fmt(e.ordenTotal, 0)}`;
 const G3 = { id:'mecanismos-ley', ok:'c', opts:[
   ['a', lOpc(LN.errores.coeficientes), 'CI9-coeficiente', 'parcial'],
@@ -1751,21 +1756,21 @@ const pOpc = e => `La etapa ${e.lenta}, con Ea = ${fmt(eaLenta(e), 0)} kJ/mol`;
 const G4 = { id:'mecanismos-perfil', ok:'b', opts:[
   ['a', pOpc(PP.errores.desdeCero), 'QA-Ea-desde-cero', 'hipotesis'],
   ['b', pOpc(PP)],
-  ['c', pOpc(PP.errores.desdeReactivos), 'QA-Ea-desde-reactivos', 'hipotesis'],
+  ['c', pOpc(PP.errores.desdeReactivos), 'QA-Ea-cima-mas-alta', 'hipotesis'],   // cubre dos errores: las dos Ea desde los reactivos y «la cima más alta es la lenta»
   ['d', pOpc(PP.errores.inversa), 'QA-Ea-inversa', 'hipotesis']],
   fb:{ b:`¡Bien! La segunda loma empieza en el valle (${fmt(PF.I, 0)}), no en los reactivos: Ea₂ = ${fmt(PF.TS2, 0)} − (${fmt(PF.I, 0)}) = ${fmt(PP.Ea2, 0)} kJ/mol, más que Ea₁ = ${fmt(PP.Ea1, 0)}. La segunda etapa es la lenta, aunque su cima esté más abajo.`,
     a:`Elegiste la 1. ${fmt(PF.TS1, 0)} es la altura de la primera cima en el eje, no su barrera: la Ea se mide desde donde empieza la etapa. ${hip} La correcta está marcada.`,
-    c:`Elegiste la 3. Mediste las dos lomas desde los reactivos. La segunda etapa no empieza ahí: empieza en el valle, a ${fmt(PF.I, 0)} kJ/mol, y desde ahí sube ${fmt(PP.Ea2, 0)}. ${hip} La correcta está marcada.`,
-    d:`Elegiste la 4. ${fmt(PP.EaInv2, 0)} es lo que se baja desde la segunda cima hasta los productos: la Ea de esa etapa al revés. La Ea de ida se mide desde el valle de la izquierda. ${hip} La correcta está marcada.` } };
-const G5 = { id:'mecanismos-valle', ok:'a', opts:[
-  ['a', 'En las cimas, complejos activados; en el valle, un intermediario'],
-  ['b', 'En las cimas, intermediarios; en el valle, un complejo activado', 'CI12-cimas-intermedios', 'parcial'],
-  ['c', 'En las cimas, los productos de cada etapa; en el valle, un intermediario', 'QA-complejo-producto', 'hipotesis'],
-  ['d', 'En las cimas, complejos activados; en el valle, el catalizador', 'QA-valle-catalizador', 'hipotesis']],
-  fb:{ a:'¡Bien! En cada cima está el complejo activado: los átomos a medio camino, un instante. En el valle, el intermediario: una especie que dura un rato, hasta que la segunda etapa la gasta.',
-    b:'Elegiste la 2. Es al revés: lo que dura un rato está en un valle; en lo más alto de la loma no se queda nada. Leer las cimas como intermediarios aparece en un estudio con universitarios de química orgánica: cerca de 10 de 17 lo hicieron (Popova y Bretz, 2018, citado vía buscador; cifra por verificar). La correcta está marcada.',
-    c:`Elegiste la 3. El complejo activado no es un producto: no se puede guardar ni separar, se deshace en un instante hacia un lado o hacia el otro. Los productos están al final, abajo a la derecha. ${hip} La correcta está marcada.`,
-    d:`Elegiste la 4. El catalizador no queda en un valle del perfil: en el valle está el intermediario, que la etapa 1 forma y la etapa 2 gasta. El catalizador, en cambio, se recupera al final. ${hip} La correcta está marcada.` } };
+    c:`Elegiste la 3. Mediste las dos lomas desde los reactivos, o tomaste la cima más alta como la lenta. Pero el valle está ${fmt(-PP.dH1, 0)} kJ/mol por debajo de los reactivos: casi todo baja hasta ahí y se queda, y para salir necesita subir ${fmt(PP.Ea2, 0)}. Esa barrera es la que frena. ${hip} La correcta está marcada.`,
+    d:`Elegiste la 4. ${fmt(PP.EaInv2, 0)} es lo que se baja desde la segunda cima hasta los productos: la Ea de esa etapa al revés. La Ea de ida se mide desde el valle donde empieza la etapa 2. ${hip} La correcta está marcada.` } };
+const G5 = { id:'mecanismos-valle', ok:'d', opts:[
+  ['a', 'En las cimas, intermediarios; en el valle, un complejo activado', 'CI12-cimas-intermedios', 'parcial'],
+  ['b', 'En las cimas, los productos de cada etapa; en el valle, un intermediario', 'QA-complejo-producto', 'hipotesis'],
+  ['c', 'En las cimas, complejos activados; en el valle, el catalizador', 'QA-valle-catalizador', 'hipotesis'],
+  ['d', 'En las cimas, complejos activados; en el valle, un intermediario']],
+  fb:{ d:'¡Bien! En cada cima está el complejo activado: los átomos a medio camino, un instante. En el valle, el intermediario: una especie que dura un rato, hasta que la segunda etapa la gasta.',
+    a:'Elegiste la 1. Es al revés: lo que dura un rato está en un valle; en lo más alto de la loma no se queda nada. Leer las cimas como intermediarios aparece en un estudio con universitarios de química orgánica: lo hicieron 10 de los 17 estudiantes que comentaron ese rasgo del diagrama, en una muestra de 36 (Popova y Bretz, 2018, citado vía buscador; cifra por verificar). La correcta está marcada.',
+    b:`Elegiste la 2. El complejo activado no es un producto: no se puede guardar ni separar, se deshace en un instante hacia un lado o hacia el otro. Los productos están al final, abajo a la derecha. ${hip} La correcta está marcada.`,
+    c:`Elegiste la 3. El catalizador no queda en un valle del perfil: en el valle está el intermediario, que la etapa 1 forma y la etapa 2 gasta. El catalizador, en cambio, se recupera al final. ${hip} La correcta está marcada.` } };
 const vOpc = x => `${cientifica(Math.abs(x))} kg/(m³·h)`;
 const G6 = { id:'mecanismos-velocidad-media', ok:'b', opts:[
   ['a', vOpc(VM.errores.soloMasa), 'QA-mg-a-kg-sin-volumen', 'hipotesis'],
@@ -1780,7 +1785,7 @@ const G6 = { id:'mecanismos-velocidad-media', ok:'b', opts:[
 const fichasV = (mec, r, extra) => ({ tipo:'fichas', mec, roles:r, tachar:r, global:r, ...(extra ? extra(r) : {}) });
 const steps = [
  { k:'Paso 1', t:'Etapas que se suman', vista:() => fichasV('peroxido', false),
-   body:() => `<p class="problem">El agua oxigenada (H₂O₂) se descompone sola muy despacio. Con un poco de yoduro (I⁻) disuelto, burbujea oxígeno mucho más rápido. Se propone que ocurre en dos etapas:</p>
+   body:() => `<p class="problem">El agua oxigenada (H₂O₂) se descompone sola muy despacio. Con yoduro (I⁻) disuelto, se propone que ocurre en dos etapas:</p>
    ${listaEtapas(MECS.peroxido)}
    <p>Un mecanismo es la lista de las etapas, cada una de un solo choque. Para hallar la reacción global se suman: todo lo de la izquierda junto, todo lo de la derecha junto, y se tacha lo que aparece igual a los dos lados.</p>
    <p>Entre lo que se tacha puede haber dos tipos de especie. Un <b>intermediario</b> se forma en una etapa y se gasta en otra posterior. Un <b>catalizador</b> se gasta en una etapa y se regenera en otra posterior. Ninguno de los dos queda en la ecuación global.</p>
@@ -1789,10 +1794,10 @@ const steps = [
    body:() => `<p>En el mecanismo del agua oxigenada con yoduro, ¿cuál es el intermediario?</p>${listaEtapas(MECS.peroxido)}${opcionesHTML(G1.opts, 'fb3')}<div id="res3" class="body"></div>`,
    res:() => `<div class="eqs">${sumaHTML(MECS.peroxido)}</div>
    <p>El ${I_('IO⁻')} es el intermediario: sale en la etapa 1 y entra en la 2. El ${K_('I⁻')} también se tacha, pero en el orden contrario: entra en la etapa 1 y vuelve a salir en la 2. Es el catalizador.</p>
-   <p>El catalizador sí participa: se combina con el H₂O₂ y abre otro camino, más rápido. Por eso no está en la ecuación global, pero se recupera entero al final.</p>
+   <p>El catalizador sí participa: se combina con el H₂O₂ y abre otro camino, más rápido. Por eso un poco de yoduro hace que burbujee oxígeno mucho más rápido. No está en la ecuación global, pero se recupera entero al final.</p>
    <p class="fuente">Que el catalizador no participa en la reacción es una idea descrita en Çakmakçı (2010), sin cifra verificada. Las opciones de esta pregunta son hipótesis nuestras.</p>` },
  { k:'Paso 3', t:'El catalizador: predice', gate:G2, vista:r => fichasV('ozono', r),
-   body:() => `<p>En la estratósfera, el cloro que sueltan algunos gases destruye el ozono en dos etapas. ¿Cuál es el catalizador?</p>${listaEtapas(MECS.ozono)}${opcionesHTML(G2.opts, 'fb3')}<div id="res3" class="body"></div>`,
+   body:() => `<p>En la estratósfera, el ozono se destruye en dos etapas en las que participa el cloro. ¿Cuál es el catalizador?</p>${listaEtapas(MECS.ozono)}${opcionesHTML(G2.opts, 'fb3')}<div id="res3" class="body"></div>`,
    res:() => `<div class="eqs">${sumaHTML(MECS.ozono)}</div>
    <p>El ${K_('Cl')} es el catalizador: entra en la etapa 1 y vuelve a salir en la 2. El ${I_('ClO')} es el intermediario: sale en la 1 y entra en la 2. Los dos se tachan; lo que los distingue es el orden.</p>
    <p>Como el cloro se recupera, vuelve a empezar: cada átomo de cloro destruye muchísimas moléculas de ozono antes de salir de la estratósfera.</p>
@@ -1804,7 +1809,7 @@ const steps = [
      <div class="eq"><span class="ex">${v_('v')} = ${leyTxt(LN).slice(4)}</span><span class="note">Orden ${fmt(LN.ordenes.NO2, 0)} en NO₂ y ${fmt(LN.ordenTotal, 0)} en total. El CO no aparece: su orden es cero, aunque es reactivo de la global.</span></div>
    </div>
    <p>Como el tramo más angosto de una tubería, la etapa lenta decide cuánto pasa por segundo. Es de un solo choque (dos NO₂), así que sus coeficientes son sus órdenes. El ${I_('NO₃')} que forma se gasta enseguida en la etapa rápida.</p>
-   <p>¿Y si la etapa lenta tuviera un intermediario? Como no se mide, se reemplaza con el equilibrio de la etapa rápida anterior. Por ejemplo, el ozono solo: ${nw(ecuacion(OZ[0]))} (rápida, en equilibrio) y ${nw(ecuacion(OZ[1]))} (lenta). Con [O] = K₁·[O₃]/[O₂] queda ${nw(leyTxt(LOZ, LOZ.constante))}, de orden ${fmt(LOZ.ordenTotal, 0)}.</p>
+   <p>¿Y si la etapa lenta tuviera un intermediario? Como no se mide, se reemplaza con el equilibrio de la etapa rápida anterior. Por ejemplo, el ozono solo: ${nw(ecuacion(OZ[0], '⇌'))} (rápida, en equilibrio) y ${nw(ecuacion(OZ[1]))} (lenta). Con [O] = K₁·[O₃]/[O₂] queda ${nw(leyTxt(LOZ, LOZ.constante))}, de orden ${fmt(LOZ.ordenTotal, 0)}.</p>
    <p class="fuente">Tomar los órdenes de los coeficientes de la ecuación es una idea documentada incluso en profesores (Kolomuç y Tekin, 2011, según Bain y Towns, 2016), sin cifra. Que la etapa lenta no fija la velocidad lo describe un estudio con futuros profesores (Taştan Kırık, Yalçınkaya y Boz, 2010), sin cifra verificada. La opción 4 es una hipótesis nuestra.</p>` },
  { k:'Paso 5', t:'Dos lomas: predice', gate:G4, vista:r => ({ tipo:'perfil', ea:r, nombres:false }),
    body:() => `<p>Otra reacción ocurre en dos etapas. Su perfil de energía tiene dos lomas; en el eje están las energías de los reactivos, de las dos cimas, del valle entre ellas y de los productos, en kJ/mol. ¿Qué etapa es la lenta, y cuál es su energía de activación?</p>${opcionesHTML(G4.opts, 'fb3')}<div id="res3" class="body"></div>`,
@@ -1813,16 +1818,16 @@ const steps = [
      <div class="eq"><span class="ex">${Ea_('Ea₂')} = ${fmt(PF.TS2, 0)} − (${fmt(PF.I, 0)}) = ${Ea_(fmt(PP.Ea2, 0))} kJ/mol</span><span class="note">Desde el valle, donde empieza la etapa 2.</span></div>
      <div class="eq"><span class="ex">${dH_('ΔH')} = ${fmt(PF.P, 0)} − ${fmt(PF.R, 0)} = ${dH_(fmt(PP.dH, 0))} kJ/mol</span><span class="note">De los reactivos a los productos: la reacción libera calor. No es la altura de los productos en el eje.</span></div>
    </div>
-   <p>La lenta es la de mayor barrera, medida desde su propio valle: la etapa ${PP.lenta}, aunque su cima está más abajo que la primera. Lo que queda en el valle, ${fmt(-PP.dH1, 0)} kJ/mol por debajo de los reactivos, tiene que subir ${fmt(PP.Ea2, 0)} kJ/mol para seguir.</p>
+   <p>La lenta es la de mayor barrera, medida desde su propio valle: la etapa ${PP.lenta}, aunque su cima está más abajo que la primera. Si el valle quedara por encima de los reactivos, mandaría la cima más alta. Lo que queda en el valle, ${fmt(-PP.dH1, 0)} kJ/mol por debajo de los reactivos, tiene que subir ${fmt(PP.Ea2, 0)} kJ/mol para seguir.</p>
    <p>El eje horizontal es el avance de la reacción, no el tiempo: de izquierda a derecha, los reactivos se van convirtiendo en productos.</p>
    <p class="fuente">Las opciones de esta pregunta son hipótesis nuestras: medir la Ea desde el cero del eje o leer la de vuelta no tienen un estudio que los mida. Leer el eje del perfil como tiempo está descrito en universitarios (Popova y Bretz, 2018), sin cifra verificada.</p>` },
  { k:'Paso 6', t:'Cimas y valle: predice', gate:G5, vista:r => ({ tipo:'perfil', ea:true, nombres:r }),
    body:() => `<p>En el mismo perfil, ¿qué hay en las dos cimas y qué hay en el valle entre ellas?</p>${opcionesHTML(G5.opts, 'fb3')}<div id="res3" class="body"></div>`,
    res:() => `<p>En cada cima está un <b>complejo activado</b> (se marca con ‡): los átomos a medio camino entre el antes y el después de esa etapa, con algunos enlaces medio rotos y otros medio formados. Dura un instante y no se puede guardar en un frasco.</p>
    <p>En el valle está el ${I_('intermediario')}: una especie de verdad, como el IO⁻ del paso 2, que dura un rato hasta que la segunda etapa la gasta. Un perfil con dos lomas tiene dos complejos activados y un intermediario.</p>
-   <p class="fuente">Leer las cimas como intermediarios aparece en un estudio con universitarios de química orgánica: cerca de 10 de 17 lo hicieron (Popova y Bretz, 2018, citado vía buscador; cifra por verificar). Las opciones 3 y 4 son hipótesis nuestras.</p>` },
+   <p class="fuente">Leer las cimas como intermediarios aparece en un estudio con universitarios de química orgánica: lo hicieron 10 de los 17 estudiantes que comentaron ese rasgo del diagrama, en una muestra de 36 (Popova y Bretz, 2018, citado vía buscador; cifra por verificar). Las opciones 2 y 3 son hipótesis nuestras.</p>` },
  { k:'Paso 7', t:'Velocidad media: predice', gate:G6, vista:r => ({ tipo:'curva', secante:r }),
-   body:() => `<p>Un medicamento tomado por la boca pasa a la sangre y después se elimina. La gráfica muestra su concentración en la sangre, en ${F_('mg/mL')}, medida cada hora. Entre las ${T1} h y las ${T2} h, ¿con qué velocidad media baja la concentración, en kg/(m³·h)?</p>${opcionesHTML(G6.opts, 'fb3')}<div id="res3" class="body"></div>`,
+   body:() => `<p>Un medicamento tomado por la boca pasa a la sangre y después se elimina. La gráfica muestra su concentración (${F_('c')}) en la sangre, en mg/mL, medida cada hora. Entre las ${T1} h y las ${T2} h, ¿con qué velocidad media baja la concentración, en kg/(m³·h)?</p>${opcionesHTML(G6.opts, 'fb3')}<div id="res3" class="body"></div>`,
    res:() => `<div class="eqs">
      <div class="eq"><span class="ex">${v_('v media')} = − ${fr('Δ' + F_('c'), 'Δt')} = − ${fr(F_(fmt(VM.c2, 2)) + ' − ' + F_(fmt(VM.c1, 2)), T2 + ' − ' + T1)} = ${v_(fmt(VM.rapidez, 2))} mg/(mL·h)</span><span class="note">El signo menos es porque la concentración baja: la velocidad se da positiva.</span></div>
      <div class="eq"><span class="ex">1 mg/mL = ${fr('10⁻⁶ kg', '10⁻⁶ m³')} = 1 kg/m³ = 1 g/L</span><span class="note">Los mg y los mL cambian por la misma potencia de diez: se cancelan.</span></div>

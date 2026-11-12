@@ -418,7 +418,7 @@
     {
       "id": "mec-01",
       "nuevo": "0.3.0",
-      "verificacion": "",
+      "verificacion": "Verificados a ciegas (8 nov 2026) con un script aparte en Python y fracciones, sin leer el motor: 134 de 134 campos coinciden, más el «tambien» de mec-09. Los mecanismos son de texto y están balanceados en masa y carga (H₂O₂/I⁻, Cl/O₃, NO₂/CO, O₃ con equilibrio previo, 2NO + O₂), con catalizador e intermediario bien llamados. Los perfiles tienen el valle por debajo de los reactivos, así que la etapa lenta por Ea desde su valle coincide con la barrera real.",
       "nombre": "Mecanismo del H₂O₂ con yoduro: H₂O₂ + I⁻ → H₂O + IO⁻ y H₂O₂ + IO⁻ → H₂O + O₂ + I⁻ suman 2 H₂O₂ → 2 H₂O + O₂; IO⁻ es intermediario (se forma y se gasta) e I⁻ catalizador (entra y se regenera)",
       "fn": "mecanismo",
       "args": [
@@ -494,7 +494,7 @@
     {
       "id": "mec-02",
       "nuevo": "0.3.0",
-      "verificacion": "",
+      "verificacion": "Verificados a ciegas (8 nov 2026) con un script aparte en Python y fracciones, sin leer el motor: 134 de 134 campos coinciden, más el «tambien» de mec-09. Los mecanismos son de texto y están balanceados en masa y carga (H₂O₂/I⁻, Cl/O₃, NO₂/CO, O₃ con equilibrio previo, 2NO + O₂), con catalizador e intermediario bien llamados. Los perfiles tienen el valle por debajo de los reactivos, así que la etapa lenta por Ea desde su valle coincide con la barrera real.",
       "nombre": "Ozono con cloro: Cl + O₃ → ClO + O₂ y ClO + O → Cl + O₂ suman O₃ + O → 2 O₂; Cl es catalizador y ClO intermediario; O₂ sale en las dos etapas sin cancelarse",
       "fn": "mecanismo",
       "args": [
@@ -554,7 +554,7 @@
     {
       "id": "mec-03",
       "nuevo": "0.3.0",
-      "verificacion": "",
+      "verificacion": "Verificados a ciegas (8 nov 2026) con un script aparte en Python y fracciones, sin leer el motor: 134 de 134 campos coinciden, más el «tambien» de mec-09. Los mecanismos son de texto y están balanceados en masa y carga (H₂O₂/I⁻, Cl/O₃, NO₂/CO, O₃ con equilibrio previo, 2NO + O₂), con catalizador e intermediario bien llamados. Los perfiles tienen el valle por debajo de los reactivos, así que la etapa lenta por Ea desde su valle coincide con la barrera real.",
       "nombre": "NO₂ + CO en dos etapas: 2 NO₂ → NO₃ + NO y NO₃ + CO → NO₂ + CO₂ suman NO₂ + CO → NO + CO₂; NO₃ es intermediario, no hay catalizador y se tacha un NO₂ a cada lado",
       "fn": "mecanismo",
       "args": [
@@ -607,7 +607,7 @@
     {
       "id": "mec-04",
       "nuevo": "0.3.0",
-      "verificacion": "",
+      "verificacion": "Verificados a ciegas (8 nov 2026) con un script aparte en Python y fracciones, sin leer el motor: 134 de 134 campos coinciden, más el «tambien» de mec-09. Los mecanismos son de texto y están balanceados en masa y carga (H₂O₂/I⁻, Cl/O₃, NO₂/CO, O₃ con equilibrio previo, 2NO + O₂), con catalizador e intermediario bien llamados. Los perfiles tienen el valle por debajo de los reactivos, así que la etapa lenta por Ea desde su valle coincide con la barrera real.",
       "nombre": "La suma del mecanismo del H₂O₂ no coincide con H₂O₂ → H₂O + O₂ (sin balancear): coincide = false",
       "fn": "mecanismo",
       "args": [
@@ -651,7 +651,7 @@
     {
       "id": "mec-05",
       "nuevo": "0.3.0",
-      "verificacion": "",
+      "verificacion": "Verificados a ciegas (8 nov 2026) con un script aparte en Python y fracciones, sin leer el motor: 134 de 134 campos coinciden, más el «tambien» de mec-09. Los mecanismos son de texto y están balanceados en masa y carga (H₂O₂/I⁻, Cl/O₃, NO₂/CO, O₃ con equilibrio previo, 2NO + O₂), con catalizador e intermediario bien llamados. Los perfiles tienen el valle por debajo de los reactivos, así que la etapa lenta por Ea desde su valle coincide con la barrera real.",
       "nombre": "Ley del mecanismo del H₂O₂ con la etapa 1 lenta: v = k[H₂O₂][I⁻], orden 2. Con los coeficientes de la global: k[H₂O₂]²; con la etapa rápida: k[H₂O₂][IO⁻]; sumando las etapas: k[H₂O₂]²[I⁻], orden 3; sin el catalizador: k[H₂O₂], orden 1",
       "fn": "leyVelocidad",
       "args": [
@@ -700,7 +700,7 @@
     {
       "id": "mec-06",
       "nuevo": "0.3.0",
-      "verificacion": "",
+      "verificacion": "Verificados a ciegas (8 nov 2026) con un script aparte en Python y fracciones, sin leer el motor: 134 de 134 campos coinciden, más el «tambien» de mec-09. Los mecanismos son de texto y están balanceados en masa y carga (H₂O₂/I⁻, Cl/O₃, NO₂/CO, O₃ con equilibrio previo, 2NO + O₂), con catalizador e intermediario bien llamados. Los perfiles tienen el valle por debajo de los reactivos, así que la etapa lenta por Ea desde su valle coincide con la barrera real.",
       "nombre": "Ley del NO₂ + CO con la etapa 1 lenta: v = k[NO₂]², orden 2 (no k[NO₂][CO], que dan los coeficientes de la global; ni k[NO₃][CO], de la etapa rápida; ni k[NO₂]²[CO], orden 3, sumando etapas)",
       "fn": "leyVelocidad",
       "args": [
@@ -742,7 +742,7 @@
     {
       "id": "mec-07",
       "nuevo": "0.3.0",
-      "verificacion": "",
+      "verificacion": "Verificados a ciegas (8 nov 2026) con un script aparte en Python y fracciones, sin leer el motor: 134 de 134 campos coinciden, más el «tambien» de mec-09. Los mecanismos son de texto y están balanceados en masa y carga (H₂O₂/I⁻, Cl/O₃, NO₂/CO, O₃ con equilibrio previo, 2NO + O₂), con catalizador e intermediario bien llamados. Los perfiles tienen el valle por debajo de los reactivos, así que la etapa lenta por Ea desde su valle coincide con la barrera real.",
       "nombre": "Ozono con equilibrio rápido previo: O₃ ⇌ O₂ + O (rápida) y O + O₃ → 2 O₂ (lenta). [O] = K₁[O₃]/[O₂], así que v = k·K₁·[O₃]²/[O₂]: orden 2 en O₃, −1 en O₂, total 1 (sin sustituir: k[O][O₃])",
       "fn": "leyVelocidad",
       "args": [
@@ -783,7 +783,7 @@
     {
       "id": "mec-08",
       "nuevo": "0.3.0",
-      "verificacion": "",
+      "verificacion": "Verificados a ciegas (8 nov 2026) con un script aparte en Python y fracciones, sin leer el motor: 134 de 134 campos coinciden, más el «tambien» de mec-09. Los mecanismos son de texto y están balanceados en masa y carga (H₂O₂/I⁻, Cl/O₃, NO₂/CO, O₃ con equilibrio previo, 2NO + O₂), con catalizador e intermediario bien llamados. Los perfiles tienen el valle por debajo de los reactivos, así que la etapa lenta por Ea desde su valle coincide con la barrera real.",
       "nombre": "2 NO ⇌ N₂O₂ (rápida) y N₂O₂ + O₂ → 2 NO₂ (lenta): [N₂O₂] = K₁[NO]², así que v = k·K₁·[NO]²·[O₂], orden 3",
       "fn": "leyVelocidad",
       "args": [
@@ -822,7 +822,7 @@
     {
       "id": "mec-09",
       "nuevo": "0.3.0",
-      "verificacion": "",
+      "verificacion": "Verificados a ciegas (8 nov 2026) con un script aparte en Python y fracciones, sin leer el motor: 134 de 134 campos coinciden, más el «tambien» de mec-09. Los mecanismos son de texto y están balanceados en masa y carga (H₂O₂/I⁻, Cl/O₃, NO₂/CO, O₃ con equilibrio previo, 2NO + O₂), con catalizador e intermediario bien llamados. Los perfiles tienen el valle por debajo de los reactivos, así que la etapa lenta por Ea desde su valle coincide con la barrera real.",
       "nombre": "La ley medida v = k[NO₂]² concuerda con el mecanismo del NO₂ + CO si la etapa 1 es la lenta, y no si lo es la etapa 2 (daría k[NO₃][CO])",
       "fn": "coincideLey",
       "args": [
@@ -917,7 +917,7 @@
     {
       "id": "mec-10",
       "nuevo": "0.3.0",
-      "verificacion": "",
+      "verificacion": "Verificados a ciegas (8 nov 2026) con un script aparte en Python y fracciones, sin leer el motor: 134 de 134 campos coinciden, más el «tambien» de mec-09. Los mecanismos son de texto y están balanceados en masa y carga (H₂O₂/I⁻, Cl/O₃, NO₂/CO, O₃ con equilibrio previo, 2NO + O₂), con catalizador e intermediario bien llamados. Los perfiles tienen el valle por debajo de los reactivos, así que la etapa lenta por Ea desde su valle coincide con la barrera real.",
       "nombre": "Perfil de dos etapas de la escena (kJ/mol): reactivos 40, cima 1 en 100, valle en −10, cima 2 en 75, productos −50. Ea₁ = 60 y Ea₂ = 85 (desde su valle): la lenta es la 2, aunque la cima 1 es la más alta; ΔH = −90",
       "fn": "perfilDosEtapas",
       "args": [
@@ -958,7 +958,7 @@
     {
       "id": "mec-11",
       "nuevo": "0.3.0",
-      "verificacion": "",
+      "verificacion": "Verificados a ciegas (8 nov 2026) con un script aparte en Python y fracciones, sin leer el motor: 134 de 134 campos coinciden, más el «tambien» de mec-09. Los mecanismos son de texto y están balanceados en masa y carga (H₂O₂/I⁻, Cl/O₃, NO₂/CO, O₃ con equilibrio previo, 2NO + O₂), con catalizador e intermediario bien llamados. Los perfiles tienen el valle por debajo de los reactivos, así que la etapa lenta por Ea desde su valle coincide con la barrera real.",
       "nombre": "Perfil endotérmico: reactivos 0, cima 1 en 70, valle en −20, cima 2 en 80, productos 30. Ea₁ = 70, Ea₂ = 100: la lenta es la 2; ΔH = +30; leída hacia abajo (inversa), daría 90 y 50 y la lenta sería la 1",
       "fn": "perfilDosEtapas",
       "args": [
@@ -987,7 +987,7 @@
     {
       "id": "mec-12",
       "nuevo": "0.3.0",
-      "verificacion": "",
+      "verificacion": "Verificados a ciegas (8 nov 2026) con un script aparte en Python y fracciones, sin leer el motor: 134 de 134 campos coinciden, más el «tambien» de mec-09. Los mecanismos son de texto y están balanceados en masa y carga (H₂O₂/I⁻, Cl/O₃, NO₂/CO, O₃ con equilibrio previo, 2NO + O₂), con catalizador e intermediario bien llamados. Los perfiles tienen el valle por debajo de los reactivos, así que la etapa lenta por Ea desde su valle coincide con la barrera real.",
       "nombre": "Curva de un medicamento en la sangre (mg/mL contra h): máximo 0,12 mg/mL a las 2 h; entre las 2 h y las 5 h baja de 0,12 a 0,06: −0,02 kg/(m³·h), porque 1 mg/mL = 1 kg/m³ (pasar solo los mg a kg da −2 × 10⁻⁸; solo los mL a m³, −2 × 10⁴; sin dividir entre el tiempo, −0,06)",
       "fn": "velocidadMedia",
       "args": [
@@ -1049,7 +1049,7 @@
     {
       "id": "mec-13",
       "nuevo": "0.3.0",
-      "verificacion": "",
+      "verificacion": "Verificados a ciegas (8 nov 2026) con un script aparte en Python y fracciones, sin leer el motor: 134 de 134 campos coinciden, más el «tambien» de mec-09. Los mecanismos son de texto y están balanceados en masa y carga (H₂O₂/I⁻, Cl/O₃, NO₂/CO, O₃ con equilibrio previo, 2NO + O₂), con catalizador e intermediario bien llamados. Los perfiles tienen el valle por debajo de los reactivos, así que la etapa lenta por Ea desde su valle coincide con la barrera real.",
       "nombre": "Entre puntos se interpola en línea recta: con 0, 40 y 30 mg/L a los 0, 10 y 20 min, de t = 5 a t = 15 min la concentración pasa de 20 a 35 mg/L: 1,5 mg/(L·min) = 2,5 × 10⁻⁵ g/(L·s)",
       "fn": "velocidadMedia",
       "args": [
@@ -1088,7 +1088,7 @@
     {
       "id": "mec-14",
       "nuevo": "0.3.0",
-      "verificacion": "",
+      "verificacion": "Verificados a ciegas (8 nov 2026) con un script aparte en Python y fracciones, sin leer el motor: 134 de 134 campos coinciden, más el «tambien» de mec-09. Los mecanismos son de texto y están balanceados en masa y carga (H₂O₂/I⁻, Cl/O₃, NO₂/CO, O₃ con equilibrio previo, 2NO + O₂), con catalizador e intermediario bien llamados. Los perfiles tienen el valle por debajo de los reactivos, así que la etapa lenta por Ea desde su valle coincide con la barrera real.",
       "nombre": "Curva del medicamento, subida: de 0 h a 2 h pasa de 0 a 0,12 mg/mL: 0,06 g/(L·h) = 0,001 g/(L·min)",
       "fn": "velocidadMedia",
       "args": [
