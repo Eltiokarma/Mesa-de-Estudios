@@ -2,7 +2,7 @@
   "plantilla": "geo-circunferencia-metrica",
   "tolerancia": 0.000001,
   "nota": "Ángulos con la convención de academia: tan(53°/2) = 1/2, tan(37°/2) = 1/3, cos 37° = 4/5. Los ángulos que son mitad de un entero se escriben «53°/2». Longitudes en la unidad u del enunciado. Cuando se pide el perímetro de la región semicircular, la respuesta es la clave 'pq:<coeficiente de π>|<término sin π>' (texto «(9π + 18) cm»).",
-  "verificacion": "",
+  "verificacion": "Verificador independiente (subagente, 12 nov 2026, tras la revisión): los 24 casos resueltos desde el enunciado con coordenadas (circunferencia construida con la potencia dada y secantes buscadas por bisección del ángulo, tangentes desde un punto, incírculo por pesos, radio de la semicircunferencia tangente por bisección, cuadrado con AM ∩ BN). Coinciden los 24 en respuesta y exacta, con la convención 53°/2 y 37°/2.",
   "casos": [
     {
       "semilla": 0,

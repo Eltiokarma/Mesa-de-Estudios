@@ -2,7 +2,7 @@
   "plantilla": "geo-relaciones-metricas",
   "tolerancia": 0.000001,
   "nota": "Ángulos con la convención de academia (cos 37° = 4/5, cos 53° = 3/5). Longitudes en la unidad u del enunciado; áreas en u².",
-  "verificacion": "",
+  "verificacion": "Verificador independiente (subagente, 12 nov 2026, tras la revisión): los 25 casos resueltos desde el enunciado con coordenadas (pies de perpendiculares, búsqueda por bisección del radio tangente, de la mediana y de la bisectriz, rectángulo de Marlen construido, heptágono regular con coordenadas) y la forma a√b a partir del cuadrado. Coinciden los 25 en respuesta y exacta (el caso 5 usa la convención de academia: 127° para un coseno de −3/5).",
   "casos": [
     {
       "semilla": 0,

@@ -2,7 +2,7 @@
   "plantilla": "geo-triangulos-notables",
   "tolerancia": 0.000001,
   "nota": "Longitudes en cm o m, ángulos en grados, costos en soles. Las respuestas de lados enteros son enteros; mitades usa tan 37° = 3/4, tan 53° = 4/3 y tan 74° = 24/7 (academia). Los _datos traen todos los datos del enunciado (u es la unidad).",
-  "verificacion": "",
+  "verificacion": "Verificador independiente (subagente, 12 nov 2026, tras la revisión): los 25 casos resueltos desde el enunciado; las desigualdades y los obtusángulos por fuerza bruta sobre los enteros; los ángulos con coordenadas, barriendo los ángulos libres; los perímetros mínimos con punto interior por búsqueda numérica del ínfimo; el arco con un triángulo construido. Coinciden los 25 en respuesta y exacta.",
   "casos": [
     {
       "semilla": 0,
