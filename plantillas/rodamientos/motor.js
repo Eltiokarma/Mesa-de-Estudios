@@ -19,7 +19,7 @@
  *     'errores') y 'repetidos' (un error que da lo mismo que otro anterior de la lista: { nombre: el anterior }).
  *
  * Funciones (argumentos entre llaves):
- *   recorridoCentro({ r, camino, cerrado })   una rueda de radio r rueda sin resbalar apoyada en un camino. Se camina
+ *   recorridoCentro({ r, camino, cerrado, rumbo })   una rueda de radio r rueda sin resbalar apoyada en un camino. Se camina
  *                    por el camino con la rueda a la IZQUIERDA (encima, si se va hacia la derecha). camino: lista de
  *                    tramos, en orden:
  *                      { tipo: 'recta', largo }
@@ -48,7 +48,8 @@
  *                    errores (para «¿cuánto recorre el centro?»): pista (el largo del camino), sinArcos (sin los arcos
  *                    de las esquinas que salen), sinAtajo (sin cortar en las esquinas que entran), arcoEnEntrante
  *                    (también un arco en cada esquina que entra, como si saliera), radioPista (los tramos curvos con el
- *                    radio R del camino), exactos, coinciden, repetidos }. El camino empieza en (0, 0) yendo hacia +x.
+ *                    radio R del camino), exactos, coinciden, repetidos }. El camino empieza en (0, 0) yendo hacia +x, o
+ *                    con el rumbo dado en grados (rumbo: 90 empieza hacia arriba, como al pie de una loma).
  *   puntoEnTrazo({ trazo, s })   el punto del camino del centro tras recorrer s desde el inicio. { x, y, pieza }.
  *   toquesPiso({ r, n, falta, cuentaInicial })   una rueda de radio r con un punto P pintado en su borde rueda sobre una
  *                    recta. falta: cuántos grados debe girar la rueda para que P baje al piso (0 si empieza tocándolo;
@@ -146,8 +147,8 @@
  *   ex(x)            reconoce un número como exacto (racional, o racional por √2, √3, √5, √6 o √7, con o sin π) y da su
  *                    texto; null si no lo reconoce.
  *
- * Caminos y figuras de la escena (datos): motor.caminos (bloque, dosBloques, escalera, canaleta, pizza, rampa: listas
- * de tramos para recorridoCentro; pizza es cerrado) y motor.figuras (trapecio60, rectangulo, trapecioRecto, escalera3:
+ * Caminos y figuras de la escena (datos): motor.caminos (bloque, dosBloques, escalera, canaleta, pizza, rampa, loma,
+ * dentroRectangulo: listas de tramos para recorridoCentro; pizza y dentroRectangulo son cerrados; loma va con rumbo 90) y motor.figuras (trapecio60, rectangulo, trapecioRecto, escalera3:
  * listas de vértices).
  */
 (function (root, fabrica) {
@@ -334,7 +335,8 @@
       const a = vecino(i, -1), b = vecino(i, 1);
       if (!a || !b || a.tipo !== 'recta' || b.tipo !== 'recta') throw new Error('una esquina que entra debe tener una recta a cada lado');
     }
-    let pos = [0, 0], h = 0;
+    const h0 = (o.rumbo === undefined ? 0 : numero(o.rumbo, 'el rumbo')) * GR;
+    let pos = [0, 0], h = h0;
     const trazo = [], piso = [], tramos = [];
     let largoX = X.cero(), pistaX = X.cero(), rectasX = X.cero(), arcosX = X.cero(), atajoX = X.cero(), salenX = X.cero(), entranArcoX = X.cero(), radioPistaX = X.cero();
     for (let i = 0; i < N; i++) {
@@ -383,7 +385,7 @@
         h = fuera ? h - th : h + th;
       }
     }
-    if (cerrado && (d2(pos, [0, 0]) > 1e-12 || Math.abs(mod(h + Math.PI, 2 * Math.PI) - Math.PI) > 1e-9)) throw new Error('el camino cerrado no vuelve a su inicio');
+    if (cerrado && (d2(pos, [0, 0]) > 1e-12 || Math.abs(mod(h - h0 + Math.PI, 2 * Math.PI) - Math.PI) > 1e-9)) throw new Error('el camino cerrado no vuelve a su inicio');
     // la rueda no debe chocar con otra parte del camino: cada punto del trazo queda a r o más de todo el piso
     for (const q of trazo) for (let i = 0; i <= 40; i++) {
       const f = i / 40, P = q.tipo === 'linea' ? [q.a[0] + (q.b[0] - q.a[0]) * f, q.a[1] + (q.b[1] - q.a[1]) * f]
@@ -1013,6 +1015,9 @@
       { tipo: 'recta', largo: 4 }, { tipo: 'esquina', angulo: 90, clase: 'sale' }],
     rampa: [{ tipo: 'recta', largo: 3 }, { tipo: 'esquina', angulo: 60, clase: 'entra' }, { tipo: 'recta', largo: 4 }, { tipo: 'esquina', angulo: 60, clase: 'sale' }, { tipo: 'recta', largo: 3 }],
   };
+  caminos.loma = [{ tipo: 'arco', R: 3, angulo: 180, lado: 'fuera' }];            // con rumbo 90
+  caminos.dentroRectangulo = [{ tipo: 'recta', largo: 8 }, { tipo: 'esquina', angulo: 90, clase: 'entra' }, { tipo: 'recta', largo: 6 }, { tipo: 'esquina', angulo: 90, clase: 'entra' },
+    { tipo: 'recta', largo: 8 }, { tipo: 'esquina', angulo: 90, clase: 'entra' }, { tipo: 'recta', largo: 6 }, { tipo: 'esquina', angulo: 90, clase: 'entra' }];   // cerrado
   caminos.dosBloques = caminos.bloque.slice(0, 8).concat([{ tipo: 'recta', largo: 3 }], caminos.bloque.slice(1, 8), [{ tipo: 'recta', largo: 4 }]);
   const figuras = {
     trapecio60: [[0, 0], [4, 0], [3, Math.sqrt(3)], [1, Math.sqrt(3)]],

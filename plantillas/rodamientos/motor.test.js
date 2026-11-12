@@ -107,8 +107,8 @@ function distPiso(piso, p) {
   }
   return m;
 }
-function revisarCamino(r, camino, cerrado, que) {
-  const R = motor.recorridoCentro({ r, camino, cerrado });
+function revisarCamino(r, camino, cerrado, que, rumbo) {
+  const R = motor.recorridoCentro({ r, camino, cerrado, rumbo });
   // largo medido sobre el trazo, punto por punto, y distancia al piso
   let largo = 0, ant = null;
   const N = 4000, total = R.trazo.reduce((s, p) => s + p.largo, 0), ss = [];
@@ -137,7 +137,7 @@ function revisarCamino(r, camino, cerrado, que) {
   return R;
 }
 test('recorrido del centro: los caminos de la escena, a distancia r del piso y con la cuenta por esquinas', () => {
-  for (const [k, c] of Object.entries(motor.caminos)) for (const r of [0.5, 1]) revisarCamino(r, c, k === 'pizza', `${k} con r = ${r}`);
+  for (const [k, c] of Object.entries(motor.caminos)) for (const r of [0.5, 1]) revisarCamino(r, c, k === 'pizza' || k === 'dentroRectangulo', `${k} con r = ${r}`, k === 'loma' ? 90 : 0);
 });
 test('recorrido del centro: caminos al azar de escalones, bloques y rampas', () => {
   for (let k = 0; k < 25; k++) {

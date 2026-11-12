@@ -13,9 +13,9 @@
    misma que barre la arista: es lo mismo, «lo que se barre»), ρ y θ como en los vuelcos; plano: la figura girada i
    magenta. Ningún color nombra dos cosas que salgan juntas.
    Mínimos de CIEDE2000 entre los que salen juntos (claro / oscuro): ruedas (r, d, n) 32,4 / 26,2; vuelcos (l, p, θ, ρ)
-   23,5 / 30,2; prisma (l, p, h, región) 23,5 / 31,8; láminas (ρ, θ, región, l) 30,0 / 28,2; marco (p, θ) 53,9 / 56,2;
+   23,5 / 27,2; prisma (l, p, h, región) 23,5 / 31,8; láminas (ρ, θ, región, l) 30,0 / 28,2; marco (p, θ) 53,9 / 56,2;
    plano (i, θ) 42,5 / 49,8. Contraste AA sobre el papel, la tarjeta y su chip (.v, fondo al 8 %): mínimo 4,56 (claro) y
-   4,87 (oscuro). Los tonos son los de arreglos-giros/ y trazos-rutas/, que ya pasaron esa revisión. */
+   5,47 (oscuro). ρ en oscuro (#ff9cab) va más clara para que su línea se lea sobre la región verde. Los tonos son los de arreglos-giros/ y trazos-rutas/, que ya pasaron esa revisión. */
 
 [hidden]{display:none!important}
 :root{
@@ -31,13 +31,13 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-r:#9f9bff; --c-d:#5fe06a; --c-n:#fdb4ce; --c-l:#25caf4; --c-p:#b49cff; --c-t:#ffc04d; --c-q:#f17384; --c-A:#a3d65e; --c-h:#f0a04a; --c-i:#ff86bd;
+  --c-r:#9f9bff; --c-d:#5fe06a; --c-n:#fdb4ce; --c-l:#25caf4; --c-p:#b49cff; --c-t:#ffc04d; --c-q:#ff9cab; --c-A:#a3d65e; --c-h:#f0a04a; --c-i:#ff86bd;
   color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-r:#9f9bff; --c-d:#5fe06a; --c-n:#fdb4ce; --c-l:#25caf4; --c-p:#b49cff; --c-t:#ffc04d; --c-q:#f17384; --c-A:#a3d65e; --c-h:#f0a04a; --c-i:#ff86bd;
+  --c-r:#9f9bff; --c-d:#5fe06a; --c-n:#fdb4ce; --c-l:#25caf4; --c-p:#b49cff; --c-t:#ffc04d; --c-q:#ff9cab; --c-A:#a3d65e; --c-h:#f0a04a; --c-i:#ff86bd;
   color-scheme:dark }
 
 *{box-sizing:border-box}
@@ -355,7 +355,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     E.tok++; E.anim = false;
     Object.assign(E, { modo:'camino', lect:[], ley:null, alCambiar:null, desc:'', cam:null, vol:null, bar:null, lam:null, mar:null, pla:null }, o);
     if (E.cam) E.cam = Object.assign({ s:0, traza:false, cerrado:false, clavo:null }, E.cam);
-    if (E.vol) E.vol = Object.assign({ t:0, traza:false, radios:false, punto:0, piso:'recta' }, E.vol);
+    if (E.vol) E.vol = Object.assign({ t:0, traza:false, radios:false, punto:0, piso:'recta', marcarPunto:true }, E.vol);
     if (E.bar) E.bar = Object.assign({ prog:0, ver:false, lado:null, sentido:'antihorario' }, E.bar);
     if (E.lam) E.lam = Object.assign({ etapa:0, f:0 }, E.lam);
     if (E.mar) E.mar = Object.assign({ t:0 }, E.mar);
@@ -393,13 +393,15 @@ function crearEscena(cv, idDesc, idLect, idLey){
     }
     let vx0 = cache.x0, vx1 = cache.x1;
     if (U.ventana){ const cx = MR.puntoEnTrazo({ trazo:R.trazo, s:Math.min(U.s, R.longitud) }).x; vx0 = Math.max(cache.x0, Math.min(cx - U.ventana*.35, cache.x1 - U.ventana)); vx1 = vx0 + U.ventana; }
+    else if (U.hasta) vx1 = Math.min(cache.x1, U.hasta);
     const { s, P } = vista(vx0, vx1, cache.y0, cache.y1, 14);
     // el suelo o la figura
     const pts = cache.piso.map(p => P(p[0], p[1]));
     ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = .08;
-    if (U.cerrado) poli(ctx, pts, true);
+    if (U.dentro){ ctx.beginPath(); ctx.rect(0, 0, W, Hh); pts.forEach((q, i) => i ? ctx.lineTo(q.x, q.y) : ctx.moveTo(q.x, q.y)); ctx.closePath(); ctx.fill('evenodd'); ctx.restore(); ctx.save(); }
+    else if (U.cerrado) poli(ctx, pts, true);
     else { poli(ctx, pts.concat([{ x:pts[pts.length - 1].x, y:Hh + 2 }, { x:pts[0].x, y:Hh + 2 }]), true); }
-    ctx.fill(); ctx.restore();
+    if (!U.dentro) ctx.fill(); ctx.restore();
     ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 3; ctx.lineJoin = 'round'; poli(ctx, pts, U.cerrado); ctx.stroke(); ctx.restore();
     // el camino del centro, hasta donde va
     if (U.traza && U.s > 0){
@@ -445,7 +447,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
       if (O.prisma || O.arista){ const k = (O.prisma ? O.prisma.h : 2)*.42; x1 += k*.8; y1 += k*.6; }
       cache = { est, N, x0, x1, y0:y0 - .2, y1 };
     }
-    const { s, P } = vista(cache.x0, cache.x1, cache.y0, cache.y1, 22);
+    const { s, P } = vista(cache.x0, cache.x1, cache.y0, cache.y1, 32);
     const prof = O.prisma || O.arista ? (O.prisma ? O.prisma.h : 2)*.42*s : 0, az = E.az*Math.PI/180;
     const D = { x:prof*Math.cos(az), y:-prof*Math.sin(az) };
     const k = Math.min(cache.N, Math.round(O.t/O.vuelcos*cache.N));
@@ -464,6 +466,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
       for (let i = 0; i < k; i++){ const a = P(...cache.est[i].punto), b = P(...cache.est[i + 1].punto);
         ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.lineTo(b.x + D.x, b.y + D.y); ctx.lineTo(a.x + D.x, a.y + D.y); ctx.closePath(); ctx.fill(); ctx.strokeStyle = zona; ctx.lineWidth = 1; ctx.stroke(); }
       ctx.restore();
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.6; poli(ctx, cache.est.slice(0, k + 1).map(e => { const q = P(...e.punto); return { x:q.x + D.x, y:q.y + D.y }; })); ctx.stroke(); ctx.restore();
     }
     if (O.arista && O.traza && k > 0){
       const [i0, j0] = O.arista;
@@ -503,11 +506,18 @@ function crearEscena(cv, idDesc, idLect, idLey){
     ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4; ctx.lineJoin = 'round'; poli(ctx, pts, true); ctx.stroke(); ctx.restore();
     if (O.arista){ const [i0, j0] = O.arista; ctx.save(); ctx.strokeStyle = c.l; ctx.globalAlpha = atenuar('l'); ctx.lineWidth = grosor('l', 4.5); ctx.beginPath(); ctx.moveTo(pts[i0].x, pts[i0].y); ctx.lineTo(pts[j0].x, pts[j0].y); ctx.stroke(); ctx.restore(); }
     else if (O.t === 0 && !O.prisma){ ctx.save(); ctx.strokeStyle = c.l; ctx.globalAlpha = atenuar('l'); ctx.lineWidth = grosor('l', 4); ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y); ctx.lineTo(pts[1].x, pts[1].y); ctx.stroke(); ctx.restore(); }
-    if (O.prisma){ const Q = P(...ahora.punto); ctx.save(); ctx.strokeStyle = c.p; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(Q.x, Q.y); ctx.lineTo(Q.x + D.x, Q.y + D.y); ctx.stroke(); ctx.restore(); }
+    if (O.prisma){
+      const Q = P(...ahora.punto), dentroCara = (x, y) => { let d = false; for (let i = 0, j = pts.length - 1; i < pts.length; j = i++){ const a = pts[i], b = pts[j]; if ((a.y > y) !== (b.y > y) && x < (b.x - a.x)*(y - a.y)/(b.y - a.y) + a.x) d = !d; } return d; };
+      // la arista va de Q a Q + D; el tramo que queda detrás de la cara de frente va a trazos
+      const N = 40; ctx.save(); ctx.strokeStyle = c.p; ctx.lineCap = 'round';
+      for (let i = 0; i < N; i++){ const f0 = i/N, f1 = (i + 1)/N, fm = (f0 + f1)/2, oculto = dentroCara(Q.x + D.x*fm, Q.y + D.y*fm);
+        ctx.lineWidth = oculto ? 2 : 4; ctx.globalAlpha = oculto ? (i % 2 ? 0 : .8) : 1;
+        ctx.beginPath(); ctx.moveTo(Q.x + D.x*f0, Q.y + D.y*f0); ctx.lineTo(Q.x + D.x*f1, Q.y + D.y*f1); ctx.stroke(); }
+      ctx.restore(); }
     // letras
     const cen = pts.reduce((a, q) => ({ x:a.x + q.x/pts.length, y:a.y + q.y/pts.length }), { x:0, y:0 });
     pts.forEach((q, i) => {
-      const dx = q.x - cen.x, dy = q.y - cen.y, d = Math.hypot(dx, dy) || 1, esP = i === O.punto;
+      const dx = q.x - cen.x, dy = q.y - cen.y, d = Math.hypot(dx, dy) || 1, esP = i === O.punto && O.marcarPunto !== false;
       if (esP) punto(ctx, q.x, q.y, 5, c.p);
       rotulo(ctx, c, q.x + dx/d*14, q.y + dy/d*14, 'ABCDEF'[i], esP ? c.p : c.ink, 'center', 800, 13);
     });
@@ -552,8 +562,8 @@ function crearEscena(cv, idDesc, idLect, idLey){
         const f0 = B.figura[idx], a0 = Math.atan2(f0[1] - O[1], f0[0] - O[0]), rho = Math.hypot(f0[0] - O[0], f0[1] - O[1])*s;
         ctx.save(); ctx.strokeStyle = c.q; ctx.globalAlpha = atenuar('q'); ctx.lineWidth = grosor('q', 3); ctx.beginPath();
         ctx.arc(o.x, o.y, rho, -a0, -(a0 + sg*ang*Math.PI/180), sg > 0); ctx.stroke();
-        ctx.setLineDash([5, 4]); ctx.lineWidth = 1.8; const fp = P(...f0); ctx.beginPath(); ctx.moveTo(o.x, o.y); ctx.lineTo(fp.x, fp.y); ctx.stroke(); ctx.restore();
-        const fp = P(...f0); rotulo(ctx, c, (o.x + fp.x)/2, (o.y + fp.y)/2, `ρ = ${B.datos.radioMayorExacto}`, c.q, 'center', 800, 12);
+        const fp = P(...f0); ctx.setLineDash([5, 4]); ctx.lineWidth = 1.8; ctx.beginPath(); ctx.moveTo(o.x, o.y); ctx.lineTo(fp.x, fp.y); ctx.stroke(); ctx.restore();
+        rotulo(ctx, c, (o.x + fp.x)/2, (o.y + fp.y)/2, `ρ = ${B.datos.radioMayorExacto}`, c.q, 'center', 800, 12);
       }
       const am = Math.atan2(B.figura[(B.centro + 1) % B.figura.length][1] - O[1], B.figura[(B.centro + 1) % B.figura.length][0] - O[0]);
       ctx.save(); ctx.strokeStyle = c.t; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(o.x, o.y, 22, -am, -(am + sg*ang*Math.PI/180), sg > 0); ctx.stroke(); ctx.restore();
@@ -571,7 +581,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     for (let k = 1; k < n; k++){ ctx.beginPath(); ctx.moveTo(k*cel, 0); ctx.lineTo(k*cel, cel*n); ctx.stroke(); ctx.beginPath(); ctx.moveTo(0, k*cel); ctx.lineTo(cel*n, k*cel); ctx.stroke(); }
     ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.strokeRect(0, 0, cel*n, cel*n);
     // una muesca en la esquina de arriba a la izquierda, para ver el giro
-    ctx.fillStyle = c.ink; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(cel*.45, 0); ctx.lineTo(0, cel*.45); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = c.paper; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(cel*.45, 0); ctx.lineTo(0, cel*.45); ctx.closePath(); ctx.fill(); ctx.stroke();
     ctx.restore();
   }
   function dibLaminas(c){
@@ -638,11 +648,11 @@ function crearEscena(cv, idDesc, idLect, idLey){
       const giro = MR.girarFigura({ puntos:Pl.puntos, centro:Pl.centro, angulo:Pl.angulo*Pl.prog }).map(p => P(...p));
       ctx.save(); ctx.globalAlpha = atenuar('i'); ctx.fillStyle = c.i; ctx.globalAlpha *= .14; poli(ctx, giro, true); ctx.fill(); ctx.restore();
       ctx.save(); ctx.globalAlpha = atenuar('i'); ctx.strokeStyle = c.i; ctx.lineWidth = grosor('i', 2.6); poli(ctx, giro, true); ctx.stroke(); ctx.restore();
-      if (Pl.ver) D.nuevos.forEach((p, k) => { const q = P(...p); rotulo(ctx, c, q.x + 6, q.y - 11, `(${String(p[0]).replace('-', '−')}, ${String(p[1]).replace('-', '−')})`, c.i, 'left', 800, 11); void k; });
+      if (Pl.ver) D.nuevos.forEach((p, k) => { const q = P(...p); rotulo(ctx, c, q.x + 6, q.y + 12, `(${String(p[0]).replace('-', '−')}, ${String(p[1]).replace('-', '−')})`, c.i, 'left', 800, 11); void k; });
     }
     const cc = P(...Pl.centro); punto(ctx, cc.x, cc.y, 5, c.ink);
-    rotulo(ctx, c, cc.x - 8, cc.y + 12, 'C', c.ink, 'right', 800, 13);
-    Pl.puntos.forEach((p, k) => { const q = P(...p); rotulo(ctx, c, q.x + 6, q.y + 11, 'ABC'[k], c.ink, 'left', 800, 12); });
+    rotulo(ctx, c, cc.x - 8, cc.y + 12, 'O', c.ink, 'right', 800, 13);
+    Pl.puntos.forEach((p, k) => { const q = P(...p); rotulo(ctx, c, q.x - 6, q.y - 11, 'ABC'[k], c.ink, 'right', 800, 12); });
     void s;
   }
 
@@ -708,7 +718,7 @@ const S = { step:0, max:0, pred:{}, ocupado:false, cam2:'bloque', r2:1, fig7:'re
 const C = MR.caminos;
 const R1 = MR.recorridoCentro({ r:1, camino:C.bloque });
 const R3 = MR.recorridoCentro({ r:1, camino:C.pizza, cerrado:true });
-const T4 = MR.toquesPiso({ r:2, n:5, falta:180 }), LP4 = 2*Math.PI*2*6;
+const T4 = MR.toquesPiso({ r:2, n:5, falta:180 }), LP4 = 76;
 const FIG5 = { regular:4, lado:2 }, PISO5 = { regular:6 }, V5 = MR.volcar({ figura:FIG5, piso:PISO5, vuelcos:4, punto:0 });
 const FIG6 = { vertices:MR.figuras.trapecio60 }, V6 = MR.volcar({ figura:FIG6, vuelcos:4, punto:0 });
 const TRAP8 = [[0, 0], [9, 0], [9, 12], [5, 12]], B8 = MR.barridoLamina({ figura:TRAP8, centro:0, angulo:90 });
@@ -739,7 +749,7 @@ const G4 = { id:'rodamientos-paso4', ok:'b', opts:[
   ['a', num(cm(T4.exactos.inicioComoToque)), 'RME131', 'hipotesis'],
   ['b', num(cm(T4.exacto))],
   ['c', num(cm(T4.exactos.vueltasN)), 'RME131', 'hipotesis'],
-  ['d', num(cm(T4.exactos.radioDiametro)), 'RME21', 'hipotesis']],
+  ['d', num(cm(T4.exactos.radioDiametro)), 'RME202', 'hipotesis']],
   fb:{ b:`¡Bien! P empieza arriba: toca el piso por primera vez tras media vuelta, y cada toque siguiente llega una vuelta después. El quinto toque llega tras ${n_('1/2 + 4 = 9/2')} vueltas, y en cada vuelta el centro avanza ${d_('2π · 2 = 4π')} cm.`,
     a:'Elegiste la A. 16π son 4 vueltas enteras. Pero P no empieza en el piso: empieza arriba y su primer toque llega tras media vuelta. Del primero al quinto hay 4 vueltas más: 4,5 vueltas. La correcta está marcada.',
     c:'Elegiste la C. 20π son 5 vueltas enteras, como si cada toque necesitara una vuelta completa desde el inicio. El primero llega tras media vuelta, porque P empieza arriba. La correcta está marcada.',
@@ -764,7 +774,7 @@ const G6 = { id:'rodamientos-paso6', ok:'a', opts:[
     d:'Elegiste la D. Usaste los ángulos del trapecio como giros, pero el giro es lo que le falta al ángulo para llegar a 180°: sobre B gira 180° − 60° = 120°, no 60°. La correcta está marcada.' } };
 const G8 = { id:'rodamientos-paso8', ok:'d', opts:[
   ['a', num(cm(B8.exactos.radioLado)), 'RME21', 'hipotesis'],
-  ['b', num(cm(B8.exactos.sector)), 'RME25', 'hipotesis'],
+  ['b', num(cm(B8.exactos.sector)), 'RME139', 'hipotesis'],
   ['c', num(cm(B8.exactos.sinArco)), 'RME25', 'hipotesis'],
   ['d', num(cm(B8.exacto))]],
   fb:{ d:`¡Bien! El borde de la región es el borde de la lámina (una parte al inicio y otra al final: 38 cm) más el arco que dibuja el punto más lejano de O: la esquina opuesta, a ${q_('ρ = 15 cm')}. Arco: ${fr('90', '360')} · 2π · 15 = 15π/2.`,
@@ -795,14 +805,16 @@ const G10 = { id:'rodamientos-paso10', ok:okDe10, opts:opts10,
 // ---- configuraciones ----
 function camino1(ya){
   return { modo:'camino', cam:{ R:R1, r:1, s: ya ? R1.longitud : 0, traza:ya },
-    lect: ya ? [L('r', 'Radio r', '1 cm'), L('ink', 'El camino mide', '15 cm'), L('d', 'Recorrido del centro d', cm(R1.exacto))] : [L('r', 'Radio r', '1 cm'), L('ink', 'El camino mide', '15 cm'), L('d', 'Recorrido del centro d', '?')],
+    lect: ya ? [L('r', 'Radio r', '1 cm'), L('ink', 'El camino mide', '15 cm'), L('d', 'Recorrido del centro d', cm(R1.exacto))] : [L('r', 'Radio r', '1 cm'), L('d', 'Recorrido del centro d', '?')],
     ley: ya ? [['r', 'r · la ficha'], ['d', 'd · camino de su centro']] : [['r', 'r · la ficha']],
     desc:'Una ficha circular de 1 cm de radio sobre un piso con un bloque de 2 cm de alto y 3 cm de ancho, entre dos tramos de 4 cm.' };
 }
-const PRESETS = { bloque:['Un bloque', C.bloque], dosBloques:['Dos bloques', C.dosBloques], escalera:['Escalera', C.escalera], rampa:['Rampa de 60°', C.rampa], canaleta:['Canaleta', C.canaleta] };
+const PRESETS = { bloque:['Un bloque', C.bloque], dosBloques:['Dos bloques', C.dosBloques], escalera:['Escalera', C.escalera], rampa:['Rampa de 60°', C.rampa], canaleta:['Canaleta', C.canaleta],
+  loma:['Loma semicircular', C.loma, { rumbo:90 }], dentro:['Por dentro de un rectángulo', C.dentroRectangulo, { cerrado:true }] };
 function camino2(){
-  const R = MR.recorridoCentro({ r:S.r2, camino:PRESETS[S.cam2][1] });
-  E.config({ modo:'camino', cam:{ R, r:S.r2, s:R.longitud, traza:true },
+  const extra = PRESETS[S.cam2][2] || {};
+  const R = MR.recorridoCentro(Object.assign({ r:S.r2, camino:PRESETS[S.cam2][1] }, extra));
+  E.config({ modo:'camino', cam:{ R, r:S.r2, s:R.longitud, traza:true, cerrado:!!extra.cerrado, dentro:!!extra.cerrado },
     lect:[L('r', 'Radio r', `${S.r2 === 1 ? '1' : '1/2'} cm`), L('ink', 'El camino mide', cm(R.pistaExacto)), L('d', 'Recorrido del centro d', cm(R.exacto))],
     ley:[['r', 'r · la ficha'], ['d', 'd · camino de su centro']], desc:`${PRESETS[S.cam2][0]}: la ficha rodó de un extremo al otro.` });
   return R;
@@ -820,13 +832,13 @@ function tablaTramos(R){
 }
 function camino3(ya){
   return { modo:'camino', cam:{ R:R3, r:1, s: ya ? R3.longitud : 0, traza:ya, cerrado:true },
-    lect: ya ? [L('r', 'Radio r', '1 cm'), L('ink', 'Perímetro de la porción', cm(R3.pistaExacto)), L('d', 'Recorrido del centro d', cm(R3.exacto))] : [L('r', 'Radio r', '1 cm'), L('ink', 'Perímetro de la porción', cm(R3.pistaExacto)), L('d', 'Recorrido del centro d', '?')],
+    lect: ya ? [L('r', 'Radio r', '1 cm'), L('ink', 'Perímetro de la porción', cm(R3.pistaExacto)), L('d', 'Recorrido del centro d', cm(R3.exacto))] : [L('r', 'Radio r', '1 cm'), L('d', 'Recorrido del centro d', '?')],
     ley: ya ? [['r', 'r · la rueda'], ['d', 'd · camino de su centro']] : [['r', 'r · la rueda']],
     desc:'Una porción de torta con forma de cuarto de círculo de 4 cm de radio, y una rueda de 1 cm de radio apoyada en uno de sus lados rectos.' };
 }
 const R4 = MR.recorridoCentro({ r:2, camino:[{ tipo:'recta', largo:LP4 }] });
 function camino4(ya){
-  return { modo:'camino', cam:{ R:R4, r:2, s: ya ? T4.recorrido : 0, traza:ya, ventana:22, clavo:{ falta:180, marcas: ya ? T4.marcas : null } },
+  return { modo:'camino', cam:{ R:R4, r:2, s: ya ? T4.recorrido : 0, traza:ya, ventana: ya ? null : 22, hasta: ya ? T4.recorrido + 6 : null, clavo:{ falta:180, marcas: ya ? T4.marcas : null } },
     lect: ya ? [L('r', 'Radio r', '2 cm'), E0 => ['n', 'Toques de P', String(T4.marcas.filter(m => m <= E0.cam.s + 1e-9).length)], L('d', 'Avance del centro', cm(T4.exacto))] : [L('r', 'Radio r', '2 cm'), L('n', 'Toques pedidos', '5'), L('d', 'Avance del centro', '?')],
     ley: ya ? [['r', 'r · la rueda'], ['n', 'n · cada toque de P', 'pt'], ['d', 'd · camino del centro']] : [['r', 'r · la rueda'], ['n', 'P · el clavo', 'pt']],
     desc:'Una rueda de 2 cm de radio sobre un piso recto, con un clavo P en lo más alto de su borde.' };
@@ -867,7 +879,7 @@ function laminas9(ya){
 }
 function marco10(t, ya){
   return { modo:'marco', mar:Object.assign({ t }, MAR10),
-    lect:[E0 => ['t', 'Giros hechos', String(Math.floor(E0.mar.t + 1e-9))], L('ink', 'Giros pedidos', '20')].concat(ya ? [L('p', 'Abajo a la izquierda', nomEsq[G10d.respuesta])] : []),
+    lect:[E0 => ['t', 'Giros hechos', String(Math.floor(E0.mar.t + 1e-9))], L('ink', 'Giros pedidos', '20')].concat(ya ? [L('ink', 'Abajo a la izquierda', nomEsq[G10d.respuesta])] : []),
     ley:[['p', 'A · el vértice de partida', 'pt']], desc:'Un triángulo equilátero ABC de 1 dm de lado dentro de un marco cuadrado de 1 dm de lado, con AB sobre el lado de abajo y A en la esquina de abajo a la izquierda.' };
 }
 
@@ -886,7 +898,7 @@ const steps = [
    <div class="seg" id="cams2" role="group" aria-label="Camino">${Object.entries(PRESETS).map(([k, v]) => `<button type="button" data-k="${k}" aria-pressed="${k === S.cam2}">${v[0]}</button>`).join('')}</div>
    <div class="seg" id="rs2" role="group" aria-label="Radio de la ficha"><button type="button" data-r="1" aria-pressed="${S.r2 === 1}">Radio 1</button><button type="button" data-r="0.5" aria-pressed="${S.r2 === .5}">Radio 1/2</button></div>
    <div id="tabla2"></div>
-   <p class="aviso">En la canaleta, lo que el centro gana en las dos esquinas de arriba lo pierde dentro de la curva (va a 3 − 1 = 2 del centro, no a 3): ahí el centro recorre lo mismo que el camino. En la rampa, el corte de una esquina de 60° es r · tan 30°.</p>` },
+   <p class="aviso">En la canaleta, lo que el centro gana en las dos esquinas de arriba lo pierde dentro de la curva (va a 3 − 1 = 2 del centro, no a 3): ahí el centro recorre lo mismo que el camino. En la rampa, el corte de una esquina de 60° es r · tan 30°. Por dentro de un rectángulo las cuatro esquinas entran: el centro recorre el perímetro menos 8r. En la loma, el centro va por un arco de radio 3 + r.</p>` },
  { k:'Paso 3', t:'Predice: la rueda alrededor de la porción', gate:G3,
    prep:() => E.config(camino3(!!S.pred[G3.id])),
    anima:fin => { E.config(camino3(true)); const U = E.cam; U.s = 0; E.animar(0, R3.longitud, 6000, v => { U.s = v; }, fin, true); },
@@ -897,14 +909,14 @@ const steps = [
    <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras (RME20 y RME21).</p></div>` },
  { k:'Paso 4', t:'Predice: el clavo que toca el piso', gate:G4,
    prep:() => E.config(camino4(!!S.pred[G4.id])),
-   anima:fin => { E.config(camino4(true)); const U = E.cam; U.s = 0; E.animar(0, T4.recorrido, 6000, v => { U.s = v; }, fin, true); },
-   body:() => `<p class="problem">Una rueda de ${r_('2 cm')} de radio tiene un clavo P en su borde. Al inicio P está en lo más alto. La rueda rueda sin resbalar por un piso recto.</p>
+   anima:fin => { E.config(camino4(true)); const U = E.cam; U.s = 0; U.ventana = 22; U.hasta = null; E.animar(0, T4.recorrido, 6000, v => { U.s = v; }, () => { U.ventana = null; U.hasta = T4.recorrido + 6; E.dibujar(); fin(); }, true); },
+   body:() => `<p class="problem">Una rueda de ${r_('2 cm')} de radio tiene un clavo P en su borde. Al inicio P está en lo más alto. La rueda avanza rodando sin resbalar por un piso recto.</p>
    <p>¿Cuánto avanzó el centro de la rueda cuando P toca el piso por ${n_('quinta vez')}?</p>${opcionesHTML(G4.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
      <div class="eq">vueltas = ${fr('1', '2')} + 4 = ${n_(T4.vueltasExacto)}<span class="note">media vuelta hasta el primer toque y una por cada toque siguiente</span></div>
      <div class="eq">avance = ${fr('9', '2')} · 2π · ${r_('2')} = ${d_(T4.exacto + ' cm')}</div></div>
    <p>Rodando sin resbalar, el centro avanza en cada vuelta lo que mide el borde de la rueda. Cuidado con la posición inicial: si P empezara en el piso, el quinto toque llegaría tras 5 vueltas (o tras 4, si se cuenta el del inicio).</p>
-   <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras (RME131 y RME21).</p></div>` },
+   <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras (RME131 y RME202).</p></div>` },
  { k:'Paso 5', t:'Predice: el cuadrado alrededor del hexágono', gate:G5,
    prep:() => E.config(vuelco5(!!S.pred[G5.id])),
    anima:fin => { const o = vuelco5(true); o.vol.t = 0; E.config(o); const O = E.vol; E.animar(0, 4, 5600, v => { O.t = v; }, fin, true); },
@@ -932,7 +944,7 @@ const steps = [
    <div class="seg" id="angs7" role="group" aria-label="Ángulo de giro">${[60, 90, 180].map(a => `<button type="button" data-a="${a}" aria-pressed="${a === S.ang7}">${a}°</button>`).join('')}</div>
    <div class="seg" id="lado7" role="group" aria-label="Qué barre"><button type="button" data-l="0" aria-pressed="${!S.lado7}">Toda la lámina</button><button type="button" data-l="1" aria-pressed="${S.lado7}">Solo el lado de arriba</button></div>
    <div class="eqs" id="vivo7"></div>
-   <p>Toda la lámina: el borde de la región es el borde de la lámina (una parte en la posición del inicio y la otra en la del final) más el arco que dibuja el punto más lejano de O. Un solo lado: ese lado al inicio y al final, el arco de su punta más lejana y el de su punta más cercana.</p>` },
+   <p>Toda la lámina: el borde de la región es el borde de la lámina (una parte en la posición del inicio y la otra en la del final) más el arco que dibuja el punto más lejano de O. Un solo lado: ese lado al inicio y al final, el arco de su punta más lejana de O y el arco de su punto más cercano a O.</p>` },
  { k:'Paso 8', t:'Predice: el trapecio que gira', gate:G8,
    prep:() => E.config(barrido8(!!S.pred[G8.id])),
    anima:fin => { const o = barrido8(true); o.bar.prog = 0; E.config(o); const B = E.bar; E.animar(0, 1, 3200, v => { B.prog = v; }, fin); },
@@ -942,7 +954,7 @@ const steps = [
      <div class="eq">${q_('ρ')} = √(9² + 12²) = ${q_('15')}<span class="note">la esquina opuesta a O es el punto más lejano</span></div>
      <div class="eq">perímetro = 38 + ${fr(t_('90'), '360')} · 2π · ${q_('15')} = ${A_(B8.exacto + ' cm')}</div></div>
    <p>La región tiene el borde de la lámina en dos partes: lo que queda atrás en la posición del inicio y lo que queda adelante en la del final. Entre las dos, el arco del punto más lejano. Su área es la de la lámina más la del sector: ${B8.areaExacto} cm².</p>
-   <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras (RME21 y RME25).</p></div>` },
+   <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras (RME21, RME139 y RME25).</p></div>` },
  { k:'Paso 9', t:'Predice: las láminas que se superponen', gate:G9,
    prep:() => E.config(laminas9(!!S.pred[G9.id])),
    anima:fin => { E.config(laminas9(false)); const M = E.lam;
@@ -1069,14 +1081,14 @@ const n = t => `<span class="num">${t}</span>`;
 
 const EXPS = [
   { id:'escalera', corto:'La escalera',
-    q:`La ficha de ${r_('1 cm')} de radio baja ahora una escalera: un descanso de 3 cm y tres peldaños de 2 cm de alto y 3 cm de fondo (el último termina en un piso de 3 cm). ¿Qué longitud recorre su centro?`,
+    q:`La ficha de ${r_('1 cm')} de radio baja una escalera de tres escalones de 2 cm de alto: arriba un descanso de 3 cm, luego dos huellas de 3 cm y abajo un piso de 3 cm. Nunca se separa de la escalera. ¿Qué longitud recorre su centro de un extremo al otro?`,
     opts:[['a', n(Q1.exactos.pista + ' cm'), 'RME20', 'hipotesis'], ['b', n(Q1.exactos.arcoEnEntrante + ' cm'), 'RME130', 'hipotesis'], ['c', n(Q1.exacto + ' cm')], ['d', n(Q1.exactos.sinAtajo + ' cm'), 'RME20', 'hipotesis']],
     ok:'c',
     fb:{ a:'18 cm es el borde de la escalera. El centro va a 1 cm de él: en los tres bordes de los peldaños da un cuarto de vuelta, y al pie de cada peldaño corta 1 cm en cada lado.',
          b:'Al pie de cada peldaño la esquina entra: la ficha no gira alrededor de ella, sino que toca el piso y la pared a la vez. Ahí no hay arco: el centro corta 1 cm en cada lado.',
          d:'Contaste los tres cuartos de vuelta de los bordes, pero al pie de cada peldaño el centro corta 1 cm en cada lado: 6 cm menos.' },
     antes:ya => E.config({ modo:'camino', cam:{ R:Q1, r:1, s: ya ? Q1.longitud : 0, traza:ya },
-      lect:[L('r', 'Radio r', '1 cm'), L('ink', 'Borde de la escalera', '18 cm'), L('d', 'Recorrido del centro d', ya ? Q1.exacto + ' cm' : '?')],
+      lect:[L('r', 'Radio r', '1 cm')].concat(ya ? [L('ink', 'Borde de la escalera', '18 cm')] : [], [L('d', 'Recorrido del centro d', ya ? Q1.exacto + ' cm' : '?')]),
       ley: ya ? [['r', 'r · la ficha'], ['d', 'd · camino del centro']] : [['r', 'r · la ficha']], desc:'Una escalera de tres peldaños que baja hacia la derecha, con una ficha arriba, en el descanso.' }),
     despues:() => { EXPS[0].antes(true); const U = E.cam; U.s = 0; E.animar(0, Q1.longitud, 5600, v => { U.s = v; }, null, true); },
     exp:() => `<div class="eqs"><div class="eq">${d_('d')} = 18 − 6 · ${r_('1')} + 3 · ${fr('π · ' + r_('1'), '2')} = ${d_(Q1.exacto + ' cm')}</div></div>
@@ -1087,7 +1099,7 @@ const EXPS = [
     opts:[['a', n(Q2.exactos.avance + ' cm²'), 'RME20', 'hipotesis'], ['b', n(Q2.superficieExacto + ' cm²')], ['c', n(Q2.exactos.radioLado + ' cm²'), 'RME21', 'hipotesis'], ['d', n(Q2.exactos.cuentaPivote + ' cm²'), 'RME133', 'hipotesis']],
     ok:'b',
     fb:{ a:'60 cm² sería la cara que queda en la mesa (12 × 5). La arista no avanza en línea recta: sube y baja por arcos de circunferencia, y barre una superficie curva.',
-         c:'No todos los radios miden 2 cm: de frente, el vértice está a 2, 2√3, 4, 2√3 y 2 cm de cada pivote. Solo los dos primeros y el último miden lo que el lado.',
+         c:'No todos los radios miden 2 cm: de frente, el vértice está a 2, 2√3, 4, 2√3 y 2 cm de cada pivote. Solo el primero y el último miden lo que el lado.',
          d:'En el último vuelco la arista es la que está apoyada: no se mueve y no barre nada.' },
     antes:ya => E.config({ modo:'vuelco', vol:{ fig:FIG2, vuelcos:6, t: ya ? 6 : 0, punto:0, traza:ya, radios:ya, datos:Q2, prisma:{ h:5 }, sinRotulos:false },
       lect:[L('l', 'Lado l', '2 cm'), L('h', 'Largo h', '5 cm'), L('A', 'Superficie barrida', ya ? Q2.superficieExacto + ' cm²' : '?')],
@@ -1098,13 +1110,13 @@ const EXPS = [
       <p>Mira el prisma de frente: es un hexágono que vuelca y la arista lateral es uno de sus vértices. La arista se mueve entera por el camino de ese vértice, así que barre una superficie curva de ${h_('h')} por el largo del camino.</p>
       <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras (RME20, RME21 y RME133).</p>` },
   { id:'cubo', corto:'El cubo que vuelca',
-    q:`Un cubo de ${l_('2 dm')} de arista vuelca una vez hacia la derecha sobre su arista de abajo. Mira su cara de frente: ABCD, con A abajo a la izquierda y B abajo a la derecha. ¿Qué perímetro tiene la región que barre la arista ${l_('DA')} (la de la izquierda)?`,
+    q:`Un cubo de ${l_('2 dm')} de arista vuelca una vez hacia la derecha sobre su arista de abajo a la derecha (la que pasa por B). Mira su cara de frente: ABCD, con A abajo a la izquierda y B abajo a la derecha. ¿Qué perímetro tiene la región que barre la arista ${l_('DA')} (la de la izquierda)?`,
     opts:[['a', n(Q3.exactos.radioLado + ' dm'), 'RME21', 'hipotesis'], ['b', n(Q3.exactos.sinArcoMenor + ' dm'), 'RME25', 'hipotesis'], ['c', n(Q3.exactos.sinRectos + ' dm'), 'RME25', 'hipotesis'], ['d', n(Q3.exacto + ' dm')]],
     ok:'d',
     fb:{ a:'D no está a 2 dm de B: está en la esquina opuesta, a la distancia de la diagonal, 2√2 dm. Su arco es de radio 2√2.',
          b:'Falta el arco de A: la punta de la arista más cercana a B también se mueve, y su arco (radio 2) es parte del borde.',
          c:'Faltan las dos posiciones de la arista: al inicio y al final, cada una de 2 dm, también son borde de la región.' },
-    antes:ya => E.config({ modo:'vuelco', vol:{ fig:FIG3, vuelcos:1, t: ya ? 1 : 0, punto:3, traza:ya, radios:false, datos:V3, arista:[3, 0] },
+    antes:ya => E.config({ modo:'vuelco', vol:{ fig:FIG3, vuelcos:1, t: ya ? 1 : 0, punto:3, traza:ya, radios:false, datos:V3, arista:[3, 0], marcarPunto:ya },
       lect:[L('l', 'Arista', '2 dm'), L('A', 'Perímetro de la región', ya ? Q3.exacto + ' dm' : '?')],
       ley: ya ? [['A', 'región que barre DA', 'zona'], ['l', 'la arista DA'], ['p', 'p · camino de D']] : [['l', 'la arista DA']], desc:'Un cubo sobre la mesa, visto en perspectiva; la arista DA de su cara de frente está a la izquierda.' }),
     despues:() => { EXPS[2].antes(true); const O = E.vol; O.t = 0; E.animar(0, 1, 2400, v => { O.t = v; }); },
@@ -1113,15 +1125,15 @@ const EXPS = [
       <p>La arista gira 90° alrededor de B. Su punta lejana, D, dibuja el arco de afuera; su punta cercana, A, el de adentro. Entre ellos, la arista al inicio y al final.</p>
       <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras (RME21 y RME25).</p>` },
   { id:'plano', corto:'Giro en el plano',
-    q:`El triángulo de vértices A(3, 1), B(6, 1) y C(3, 5) gira 810° en sentido horario alrededor del punto (2, 1). ¿Cuánto suman todas las coordenadas (las tres abscisas y las tres ordenadas) del triángulo ${i_('girado')}?`,
+    q:`El triángulo de vértices A(3, 1), B(6, 1) y C(3, 5) gira 810° en sentido horario alrededor del punto O(2, 1). ¿Cuánto suman todas las coordenadas (las tres abscisas y las tres ordenadas) del triángulo ${i_('girado')}?`,
     opts:[['a', n(String(Q4.errores.contrario)), 'RME23', 'hipotesis'], ['b', n(String(Q4.respuesta))], ['c', n(String(Q4.errores.origen).replace('-', '−')), 'RME135', 'hipotesis'], ['d', n(String(Q4.errores.intercambio)), 'RME136', 'hipotesis']],
     ok:'b',
     fb:{ a:'Ese es el giro de 90° en sentido antihorario. 810° horario son dos vueltas y 90° más en el sentido de las agujas del reloj.',
-         c:'Así sale si se gira alrededor del origen. El centro del giro es (2, 1): primero se mide cada punto desde (2, 1), se gira y se vuelve a sumar (2, 1).',
+         c:'Así sale si se gira alrededor del origen. El centro del giro es O(2, 1): primero se mide cada punto desde O, se gira y se vuelve a sumar (2, 1).',
          d:'Cambiar x por y no es girar: falta el cambio de signo. Un cuarto de vuelta horario lleva (x, y) a (y, −x), medido desde el centro.' },
     antes:ya => E.config({ modo:'plano', pla:{ puntos:PT4, centro:C4, datos:Q4, angulo:-90, prog: ya ? 1 : 0, ver:ya },
       lect:[L('t', 'Giro', ya ? '810° ↻ = 2 vueltas + 90° ↻' : '810° ↻'), L('i', 'Suma de coordenadas', ya ? String(Q4.respuesta) : '?')],
-      ley: ya ? [['i', 'i · el triángulo girado']] : [], desc:'Un plano cartesiano con el triángulo A(3, 1), B(6, 1), C(3, 5) y el centro de giro en (2, 1).' }),
+      ley: ya ? [['i', 'i · el triángulo girado']] : [], desc:'Un plano cartesiano con el triángulo A(3, 1), B(6, 1), C(3, 5) y el centro de giro O(2, 1).' }),
     despues:() => { EXPS[3].antes(true); const P = E.pla; P.prog = 0; P.ver = false; P.angulo = -810; E.animar(0, 1, 3600, v => { P.prog = v; }, () => { EXPS[3].antes(true); }); },
     exp:() => `<div class="eqs"><div class="eq">810° = 2 · 360° + ${t_('90°')} ↻</div>
       <div class="eq">desde el centro: (x − 2, y − 1) → (y − 1, −(x − 2))</div>
@@ -1134,14 +1146,14 @@ const EXPS = [
     ok:'a',
     fb:{ b:'La punta más lejana de O es la esquina opuesta, a la distancia de la diagonal, 5 cm: su arco es 5π. El lado mide 4, pero no es la distancia a O.',
          c:'La punta cercana del lado, a 3 cm de O, también dibuja un arco: el borde de adentro de la región, 3π.',
-         d:'La región no llega hasta O: el lado empieza a 3 cm de O, así que barre un medio anillo, no un medio círculo.' },
+         d:'La región no llega hasta O: el lado empieza a 3 cm de O, así que la región es una franja entre los radios 3 y 5, no un medio círculo.' },
     antes:ya => E.config({ modo:'barrido', bar:{ figura:RECT5, centro:0, angulo:180, prog: ya ? 1 : 0, lado:[2, 3], datos:Q5, ver:ya },
       lect:[L('t', 'Giro θ', '180°'), L('A', 'Perímetro de la región', ya ? Q5.exacto + ' cm' : '?')],
       ley: ya ? [['A', 'región que barre el lado', 'zona'], ['q', 'ρ · la punta más lejana'], ['l', 'el lado de arriba']] : [['l', 'el lado de arriba']], desc:'Un rectángulo de 4 por 3 con el vértice O abajo a la izquierda y su lado de arriba marcado.' }),
     despues:() => { EXPS[4].antes(true); const B = E.bar; B.prog = 0; B.ver = false; E.animar(0, 1, 3000, v => { B.prog = v; }, () => EXPS[4].antes(true)); },
     exp:() => `<div class="eqs"><div class="eq">${q_('ρ mayor')} = √(4² + 3²) = ${q_('5')}; ρ menor = 3</div>
       <div class="eq">perímetro = 4 + 4 + π · ${q_('5')} + π · 3 = ${A_(Q5.exacto + ' cm')}</div></div>
-      <p>El lado de arriba barre medio anillo: el de afuera lo dibuja la esquina opuesta a O y el de adentro la esquina de arriba a la izquierda. Su área es ${fr('1', '2')}π(5² − 3²) = ${Q5.areaExacto} cm².</p>
+      <p>El lado de arriba barre una franja curva entre el arco de radio 5 (la esquina opuesta a O) y el de radio 3 (la esquina de arriba a la izquierda), cerrada por el lado al inicio y al final. Su área es la de media corona circular: ${fr('1', '2')}π(5² − 3²) = ${Q5.areaExacto} cm².</p>
       <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras (RME21, RME25 y RME139).</p>` },
 ];
 const S = { k:0, pred:{}, t0:Date.now() };

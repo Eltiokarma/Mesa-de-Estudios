@@ -198,7 +198,7 @@
       "universidades": {"unmsm": {"temas": [13, 14, 15]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": ["arreglos-giros", "ampliadora", "cuadricula-piezas", "papel-doblado"],
+      "plantillas": ["arreglos-giros", "ampliadora", "cuadricula-piezas", "papel-doblado", "rodamientos"],
       "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {

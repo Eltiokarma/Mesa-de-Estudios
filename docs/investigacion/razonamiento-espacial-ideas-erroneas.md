@@ -199,3 +199,19 @@ En rutas-espacio también se usan RME31, RME167 (seguir 2, 4, 6…), RME186 (mul
 | RME119 | Creer que cada corte suelta dos piezas nuevas. |
 
 La escena usa además RME170 (quitar una sola capa), RME172 (volumen en vez de bloques) y RME173 (cruces de a pares), los mismos códigos del generador cubitos-conteo, para que la medición junte los datos. RME110 y RME115 quedaron libres.
+
+### rodamientos
+
+| Código | Error |
+| --- | --- |
+| RME130 | Tratar la esquina que entra como una que sale (sumar un arco donde el centro corta camino). |
+| RME131 | Contar mal los toques del punto pintado (n vueltas enteras, o contar el inicio), sin mirar dónde empieza el punto. |
+| RME132 | Sobre otro polígono, usar el giro de una recta (180° − α) en vez de 360° − α − β. |
+| RME133 | Creer que el vértice de apoyo también se mueve (sumar un arco cuando el punto es el pivote). |
+| RME134 | Suponer que un giro de muchas vueltas deja la lámina igual (olvidar el giro que sobra). |
+| RME135 | Girar respecto del origen cuando el centro es otro punto. |
+| RME136 | Intercambiar las coordenadas sin cambiar el signo. |
+| RME137 | Dar el período sin la rotación propia: cuando la figura vuelve al mismo lugar, y no cuando cada vértice vuelve a su sitio. |
+| RME138 | Usar el ángulo interior del pivote como ángulo de giro. |
+| RME139 | Tomar la región que barre un lado como un sector lleno. |
+| RME202 | Tomar 2π por vuelta sin multiplicar por el radio. |
