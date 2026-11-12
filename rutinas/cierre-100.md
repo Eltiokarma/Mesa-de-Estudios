@@ -8,7 +8,7 @@ Método, el de rm-procesos: un constructor por grupo de generadores y después u
 
 ## Resultado
 
-**35 de 35 filas quedan en «si»** (cobertura y módulo actualizados en el CSV; la nota de cada fila dice `cierre-100: <módulo>`). Una fila, la del alambre, depende de la segunda verificación de abajo.
+**35 de 35 filas quedan en «si»** (cobertura y módulo actualizados en el CSV; la nota de cada fila dice `cierre-100: <módulo>`).
 
 | Pieza | Commit | Filas | Generador o módulo | Verificación ciega |
 | --- | --- | --- | --- | --- |
@@ -20,7 +20,7 @@ Método, el de rm-procesos: un constructor por grupo de generadores y después u
 | Química: las 8 preguntas | 9e2738f | 8 | `quimica-conceptos` 0.2.0, `molecula-grande` 0.2.0 | 90 proposiciones, 18 problemas y 52 cálculos; coinciden todos (1 error del verificador) |
 | RM: color con suma, palomar con «ya», cajas, peso combinado y dados | 5356d17 | 5 | `rm-certezas`, `rm-balanzas`, `rm-deduccion` 0.2.0 | 14/14 |
 | RM: tubo con bocas y lecturas doble y en malla | 0aa406f | 4 | `rm-movimientos`, `rm-lectura-palabras` 0.2.0 | 8/8 |
-| RM: tablero de triángulos y alambre soldado | (abajo) | 2 | `rm-cortes` 0.2.0 | tablero 2/2; alambre, ver abajo |
+| RM: tablero de triángulos y alambre soldado | último commit | 2 | `rm-cortes` 0.2.0 | tablero 2/2; alambre 3/3 en la segunda vuelta |
 
 «Error del verificador» quiere decir que el verificador se equivocó y el generador tenía razón; se comprobó a mano en cada caso:
 - **Vasos 171 (24 × 11, d = 4):** caben 3 filas intercaladas, 4 + 2·2√3 = 10,93 ≤ 11.
@@ -48,7 +48,7 @@ Método, el de rm-procesos: un constructor por grupo de generadores y después u
   - **Fenton:** fen6 y fen12 se reformularon para hablar de cómo se escribe la reacción (flecha simple) y no de si es reversible.
   - **Cita visible:** la cita de las preguntas oficiales de química va en comentarios del código, no en el texto que ve el alumno.
 - **Verbal:** el tipo de figura nuevo es `imagen`: un SVG propio validado (sin script, `on…=`, `foreignObject` ni colores fijos) con `partes` que se pueden citar como recuadros. t134 (el Corpus del Cusco) es un texto y un dibujo propios, no los del examen. Por el revisor, «estandarte» pasó a «emblema». Queda opcional acercar el tambor al número 4 del dibujo.
-- **Alambre (rm-cortes):** el primer verificador leyó cada corte como una recta infinita. Así, dos estructuras de triángulos no tenían solución y la rejilla daba 2. El generador modela un tramo de sierra (un segmento) que no va a lo largo de un alambre, con el que la oficial da 4, igual que la clave. Se corrigió el enunciado para que diga ese modelo y se volvió a verificar (ver el resultado en «Pendientes»).
+- **Alambre (rm-cortes):** el primer verificador leyó cada corte como una recta infinita. Así, dos estructuras de triángulos no tenían solución y la rejilla daba 2. El generador modela un tramo de sierra (un segmento) que no va a lo largo de un alambre, con el que la oficial da 4, igual que la clave. Se corrigió el enunciado para que diga ese modelo, y la segunda verificación ciega dio 3/3 (rejilla 3, triángulos 4, oficial 4), con cota inferior.
 
 ## Lo que toca a la integración
 

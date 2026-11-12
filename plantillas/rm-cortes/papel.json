@@ -11,7 +11,21 @@
         "Cada corte, apilando todo, a lo más duplica el número de pedazos: 1 → 2 → 4 → 8 → 16.",
         "Con 3 cortes hay a lo más 8 pedazos, menos que 10. Con 4 cortes alcanza: por ejemplo 10 → 5 + 5, luego 5 → 2 + 3 en las dos, luego 3 → 1 + 2 y 2 → 1 + 1, y al final los 2 que quedan."
       ],
-      "verificar": [ { "fn": "plancha", "args": [{ "m": 1, "n": 10, "c": null }], "espera": { "respuesta": 4 } } ]
+      "verificar": [
+        {
+          "fn": "plancha",
+          "args": [
+            {
+              "m": 1,
+              "n": 10,
+              "c": null
+            }
+          ],
+          "espera": {
+            "respuesta": 4
+          }
+        }
+      ]
     },
     {
       "id": "p2",
@@ -22,7 +36,21 @@
         "Apilando: 2 cortes parten el lado de 4 en 4 tiras (4 → 2 + 2 → 1 + 1), y 2 cortes más parten las tiras en casillas: 2 + 2 = 4.",
         "Sin apilar, cada corte suelta una sola pieza nueva: de 1 pieza a 16 piezas hacen falta 15 cortes."
       ],
-      "verificar": [ { "fn": "plancha", "args": [{ "m": 4, "n": 4, "c": null }], "espera": { "respuesta": 4 } } ]
+      "verificar": [
+        {
+          "fn": "plancha",
+          "args": [
+            {
+              "m": 4,
+              "n": 4,
+              "c": null
+            }
+          ],
+          "espera": {
+            "respuesta": 4
+          }
+        }
+      ]
     },
     {
       "id": "p3",
@@ -33,7 +61,22 @@
         "Cada corte parte a lo más 3 piezas, o las que haya si son menos. Piezas que puede haber: 1 → 2 → 4 → 7 → 10 → 13. Con 4 cortes hay a lo más 10 piezas: no alcanza.",
         "Con 5 sí: por ejemplo, 2×6 → 2×1 + 2×5; luego 2×5 → 2×2 + 2×3 junto con 2×1 → 1 + 1; y se sigue apilando de a tres hasta separar todo."
       ],
-      "verificar": [ { "fn": "plancha", "args": [{ "m": 2, "n": 6, "c": 3 }], "espera": { "respuesta": 5, "cota": 5 } } ]
+      "verificar": [
+        {
+          "fn": "plancha",
+          "args": [
+            {
+              "m": 2,
+              "n": 6,
+              "c": 3
+            }
+          ],
+          "espera": {
+            "respuesta": 5,
+            "cota": 5
+          }
+        }
+      ]
     },
     {
       "id": "p4",
@@ -46,7 +89,33 @@
         "Corte 2: la línea horizontal separa ABC de EFG.",
         "Corte 3: se apilan ABC y EFG; un corte vertical separa AB de C y, a la vez, E de FG."
       ],
-      "verificar": [ { "fn": "arreglo", "args": [{ "celdas": [[0, 0, 1, 2], [3, 4, 4, 2]] }], "espera": { "respuesta": 3, "bloques": 5 } } ]
+      "verificar": [
+        {
+          "fn": "arreglo",
+          "args": [
+            {
+              "celdas": [
+                [
+                  0,
+                  0,
+                  1,
+                  2
+                ],
+                [
+                  3,
+                  4,
+                  4,
+                  2
+                ]
+              ]
+            }
+          ],
+          "espera": {
+            "respuesta": 3,
+            "bloques": 5
+          }
+        }
+      ]
     },
     {
       "id": "p5",
@@ -58,7 +127,24 @@
         "Tramos: 180 ÷ 18 = 10 (de 9, 11, 13, …, 27).",
         "Diez tramos de un listón abierto salen con 10 − 1 = 9 cortes."
       ],
-      "verificar": [ { "fn": "progresion", "args": [{ "pide": "cortes", "L": 180, "a": 9, "b": 27 }], "espera": { "respuesta": 9, "n": 10, "d": 2 } } ]
+      "verificar": [
+        {
+          "fn": "progresion",
+          "args": [
+            {
+              "pide": "cortes",
+              "L": 180,
+              "a": 9,
+              "b": 27
+            }
+          ],
+          "espera": {
+            "respuesta": 9,
+            "n": 10,
+            "d": 2
+          }
+        }
+      ]
     },
     {
       "id": "p6",
@@ -69,7 +155,22 @@
         "4 cortes dan 5 tramos; el promedio es 100 ÷ 5 = 20 cm.",
         "En una progresión, el promedio está a la mitad entre el menor y el mayor: mayor = 2 × 20 − 12 = 28 cm (tramos 12, 16, 20, 24, 28)."
       ],
-      "verificar": [ { "fn": "progresion", "args": [{ "pide": "mayor", "L": 100, "a": 12, "c": 4 }], "espera": { "respuesta": 28 } } ]
+      "verificar": [
+        {
+          "fn": "progresion",
+          "args": [
+            {
+              "pide": "mayor",
+              "L": 100,
+              "a": 12,
+              "c": 4
+            }
+          ],
+          "espera": {
+            "respuesta": 28
+          }
+        }
+      ]
     },
     {
       "id": "p7",
@@ -81,7 +182,23 @@
         "Hay 4 cercos de 60 m (con 60 ÷ 4 + 1 = 16 estacas cada uno) y 6 cercos de 36 m (con 10 cada uno): 64 + 60 = 124.",
         "Los 4 × 6 = 24 cruces se contaron dos veces: 124 − 24 = 100."
       ],
-      "verificar": [ { "fn": "estacas", "args": [{ "A": 60, "B": 36, "e": 4, "pide": "cada" }], "espera": { "respuesta": 100, "g": 12 } } ]
+      "verificar": [
+        {
+          "fn": "estacas",
+          "args": [
+            {
+              "A": 60,
+              "B": 36,
+              "e": 4,
+              "pide": "cada"
+            }
+          ],
+          "espera": {
+            "respuesta": 100,
+            "g": 12
+          }
+        }
+      ]
     },
     {
       "id": "p8",
@@ -93,7 +210,100 @@
         "Cada corte es la hipotenusa de un triángulo rectángulo isósceles de catetos 2: 2√2 cm. Son cuatro: 8√2 cm.",
         "Perímetro: 64 + 8√2 cm (unos 75,3 cm)."
       ],
-      "verificar": [ { "fn": "esquinas", "args": [{ "corte": "triangulo", "L": 20, "W": 20, "a": 2 }], "espera": { "respuesta": { "p": 64, "q": 8 } } } ]
+      "verificar": [
+        {
+          "fn": "esquinas",
+          "args": [
+            {
+              "corte": "triangulo",
+              "L": 20,
+              "W": 20,
+              "a": 2
+            }
+          ],
+          "espera": {
+            "respuesta": {
+              "p": 64,
+              "q": 8
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "intermedio",
+      "enunciado": "Una tira de madera está hecha de 7 triángulos equiláteros iguales de 20 cm de lado, pegados lado con lado en fila (punta abajo, punta arriba, punta abajo, …). Una sierra corta, a lo más, 40 cm en cada corte. Cada corte es recto, de borde a borde, y atraviesa todo lo que esté apilado; entre corte y corte se pueden mover y apilar las piezas. ¿Cuál es el mínimo número de cortes para separar los 7 triángulos?",
+      "respuesta": "3 cortes.",
+      "pasos": [
+        "Cada corte de la tira cruza un solo lado de 20 cm, así que la sierra de 40 cm alcanza.",
+        "Corte 1: se parte la tira entre el 4.º y el 5.º triángulo: quedan una pieza de 4 y una de 3.",
+        "Corte 2: se apilan las dos piezas y se cortan juntas: la de 4 en 2 y 2, la de 3 en 2 y 1. Quedan 4 piezas.",
+        "Corte 3: se apilan las tres piezas de 2 triángulos y se cortan juntas: quedan los 7 triángulos sueltos.",
+        "Con 2 cortes habría a lo más 4 piezas, pero se necesitan 7: no alcanza. Sin apilar harían falta 6 cortes."
+      ],
+      "verificar": [
+        {
+          "fn": "tablero",
+          "args": [
+            {
+              "cotas": {
+                "i": [
+                  -1,
+                  3
+                ],
+                "j": [
+                  0,
+                  1
+                ],
+                "s": [
+                  0,
+                  4
+                ]
+              },
+              "lado": 20,
+              "sierra": 40
+            }
+          ],
+          "espera": {
+            "respuesta": 3,
+            "N": 7,
+            "enSitio": 6
+          }
+        }
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Una rejilla de alambre de 2 × 2 cuadritos tiene 12 trozos de alambre unidos en 9 puntos de soldadura (los 4 vértices, los 4 puntos medios de los lados y el centro). Se quiere separar todos los trozos en todos los puntos. Cada corte es una recta que solo puede cruzar alambres en puntos de soldadura (sirven las diagonales de los cuadritos); entre corte y corte se pueden mover los trozos que ya quedaron sueltos para alinear puntos de trozos distintos. ¿Cuántos cortes, como mínimo, hacen falta?",
+      "respuesta": "3 cortes.",
+      "pasos": [
+        "Una diagonal grande pasa por 3 puntos (dos vértices opuestos y el centro) sin cruzar otros alambres: es el corte 1 (con las letras A B C arriba, D E F en medio y G H I abajo, pasa por C, E y G).",
+        "La rejilla queda partida en dos trozos grandes que ya se pueden mover. Con ellos se alinean otros puntos: el corte 2 puede llevar el vértice A y el vértice I juntos.",
+        "Quedan sueltos los cuatro puntos medios B, D, F y H, cada uno en un trozo distinto: se acomodan los trozos para que los cuatro queden en una recta y el corte 3 los separa.",
+        "Sin mover nada harían falta 4 cortes: dos diagonales (C-E-G y A-E-I) y dos cortes más para B-D y F-H. Cortar punto por punto serían 9."
+      ],
+      "verificar": [
+        {
+          "fn": "alambre",
+          "args": [
+            {
+              "forma": {
+                "clase": "rejilla",
+                "m": 2,
+                "n": 2
+              }
+            }
+          ],
+          "espera": {
+            "respuesta": 3,
+            "nodos": 9,
+            "trozos": 12,
+            "enSitio": 4
+          }
+        }
+      ]
     }
   ]
 }
