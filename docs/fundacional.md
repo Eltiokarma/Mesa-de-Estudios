@@ -171,6 +171,7 @@ Cada pase exige evidencia, no solo trabajo terminado. Las fases no tienen fechas
 
 - El pase 2 deja de ser una puerta antes de construir: se mide en el colegio, con el mismo criterio de abajo (cuenta el papel, no la opinión).
 - La app tiene que traer su propia medición, porque no habrá otra oportunidad de recoger datos antes. Debe registrar, de forma anónima, las predicciones y las pruebas de antes y después.
+- Las pruebas de entrada y salida, y la práctica con generadores, traen la opción «No sé» (8 nov 2026): un acierto de suerte no debe contar como conocimiento. Es una práctica conocida en evaluación: la puntuación por fórmula («corrección por adivinanza») existe porque, en opción múltiple, el azar infla los puntajes ([Frary, 1988](https://ncme.org/wp-content/uploads/2025/10/Module-4-Formula-Scoring-of-Multiple-choice-Tests-1.pdf)), y en física se separa el error conceptual de la falta de conocimiento preguntando además cuán seguro está el alumno ([Hasan, Bagayoko y Kelley, 1999](https://iopscience.iop.org/article/10.1088/0031-9120/34/5/304)). La app no descuenta puntos: «No sé» cuenta como no acierto en la ganancia de Hake y se reporta aparte, con la «confianza calibrada» (aciertos sobre lo intentado). Que los alumnos lo usen con honestidad y que eso haga más limpia la medición es una **hipótesis** que confirmarán los datos del colegio.
 - Sin datos previos, las opciones de predicción se apoyan en la investigación de `docs/investigacion/`. Las que hoy son hipótesis se confirman o se descartan con los datos del colegio.
 
 **Cómo se mide el pase 2.** De 3 a 5 postulantes reales, de academia o del entorno, resuelven en papel un problema del tema. Luego usan la plantilla unos 10 minutos y resuelven en papel un problema nuevo del mismo tipo. Pasa si la mayoría resuelve el segundo y no resolvía el primero. Lo que digan ("qué bonito") no cuenta; cuenta el papel.
@@ -186,6 +187,8 @@ Cada pase exige evidencia, no solo trabajo terminado. Las fases no tienen fechas
 - [Crouch, Fagen, Callan y Mazur (2004), *Classroom demonstrations: Learning tools or entertainment?*](https://www.compadre.org/IntroPhys/items/detail.cfm?ID=2329)
 - [Mayer (2020), *Multimedia Learning*, principios](https://ugc.futurelearn.com/uploads/files/7d/d6/7dd6188d-c343-4311-b064-ac98d2c95abc/Multimedia_Principles._R._E._Mayer__2020.pdf)
 - [Hake (1998), *Interactive-engagement versus traditional methods*](https://web.mit.edu/jrankin/www/Active_Learning/hake_active_phys.pdf)
+- [Frary (1988), *Formula scoring of multiple-choice tests (correction for guessing)*, NCME](https://ncme.org/wp-content/uploads/2025/10/Module-4-Formula-Scoring-of-Multiple-choice-Tests-1.pdf)
+- [Hasan, Bagayoko y Kelley (1999), *Misconceptions and the Certainty of Response Index (CRI)*, Physics Education 34(5)](https://iopscience.iop.org/article/10.1088/0031-9120/34/5/304)
 - [Wieman, Adams y Perkins (2008), *PhET: Simulations That Enhance Learning*](https://www.compadre.org/portal/items/detail.cfm?ID=8511)
 - [Reisslein, Atkinson, Seeling y Reisslein (2006), sobre ejemplos resueltos y desvanecimiento](https://faculty.engineering.asu.edu/mre/wp-content/uploads/sites/31/2020/02/Exp_Rev_LI06.pdf)
 - [Roediger y Karpicke (2018), *Reflections on the resurgence of interest in the testing effect*](https://moodle2.units.it/pluginfile.php/572734/mod_resource/content/1/testing.pdf)

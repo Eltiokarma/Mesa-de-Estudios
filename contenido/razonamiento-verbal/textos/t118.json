@@ -1,0 +1,159 @@
+{
+  "id": "t118",
+  "version": 1,
+  "titulo": "Sembrar agua en los Andes",
+  "tema": "Ambiente · agua en los Andes",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    { "id": "A", "desde": 0, "firma": "Una agrónoma de Ayacucho" },
+    { "id": "B", "desde": 1, "firma": "Un ingeniero sanitario" }
+  ],
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "contraste", "t": "En muchas zonas altas de los Andes, el problema no es solo que falte lluvia, sino que el agua de la temporada lluviosa baja por las laderas y se va sin que nadie la aproveche." },
+      { "id": "o2", "rol": "apoyo", "t": "Las comunidades conocen desde hace mucho una respuesta: sembrar el agua." },
+      { "id": "o3", "rol": "apoyo", "t": "Con qochas, pequeñas lagunas que se forman en las hondonadas, y con zanjas cavadas a lo largo de las laderas, la lluvia se detiene y entra en la tierra." },
+      { "id": "o4", "rol": "apoyo", "t": "Meses después, parte de esa agua reaparece más abajo, en manantiales y puquios, cuando ya no llueve." },
+      { "id": "o5", "rol": "principal", "t": "Por eso, recuperar estas prácticas debería ser una prioridad de los gobiernos regionales: cuestan poco y las cuidan quienes viven allí." }
+    ],
+    [
+      { "id": "o6", "rol": "detalle", "t": "Estoy de acuerdo en que las qochas y las zanjas merecen apoyo: en el campo, ayudan a que el agua dure hasta la época seca." },
+      { "id": "o7", "rol": "contraste", "t": "Pero una ciudad andina de cientos de miles de habitantes no puede abastecerse solo con lo que se infiltra en las laderas." },
+      { "id": "o8", "rol": "apoyo", "t": "Necesita también represas, plantas de tratamiento y redes que lleven el agua hasta cada casa." },
+      { "id": "o9", "rol": "apoyo", "t": "Y hay un problema que ninguna laguna resuelve: una parte importante del agua que ya se trató se escapa por las fugas de tuberías viejas antes de llegar a los caños." },
+      { "id": "o10", "rol": "principal", "t": "Sembrar agua en las alturas y reparar las tuberías de la ciudad no son caminos opuestos: hacen falta los dos." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "controversia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "¿Cuál es el asunto de fondo que se discute entre los dos textos?",
+      "alternativas": [
+        { "t": "Qué hacer para que haya agua suficiente en los Andes.", "correcta": true, "evidencia": ["o5", "o10"],
+          "explicacion": "El texto A propone sembrar el agua en las alturas (oración 5) y el B responde que, además, las ciudades necesitan obras grandes y tuberías sin fugas (oración 10): discuten qué hace falta para asegurar el agua." },
+        { "t": "Si las qochas y las zanjas merecen el apoyo de las autoridades.", "codigo": "RV61", "origen": "o6",
+          "explicacion": "En eso no discrepan: el texto B dice «estoy de acuerdo en que las qochas y las zanjas merecen apoyo» (oración 6)." },
+        { "t": "Si el agua tratada se escapa por las tuberías viejas de las ciudades.", "codigo": "RV60", "origen": "o9",
+          "explicacion": "Es un argumento del texto B (oración 9). El texto A no habla de tuberías." },
+        { "t": "Si el agua reaparece en los puquios cuando ya no llueve.", "codigo": "RV1", "origen": "o4",
+          "explicacion": "Es un detalle del texto A, que explica cómo funciona la siembra de agua; no es el asunto de los dos textos." },
+        { "t": "Cómo está cambiando el clima en todo el planeta.", "codigo": "RV2",
+          "explicacion": "Los textos no hablan del clima del planeta: tratan de cómo aprovechar y cuidar el agua en los Andes." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "discrepancia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Las prácticas de las comunidades no alcanzan, por sí solas, para dar agua a una ciudad grande.",
+        "aceptada": "B",
+        "codigos": { "A": "RV59", "ambos": "RV60", "ninguno": null },
+        "explicacion": "Lo dice el texto B en la oración 7: una ciudad grande no puede abastecerse solo con lo que se infiltra en las laderas. El texto A no habla de ciudades.",
+        "explicaciones": {
+          "A": "El texto A defiende las qochas y las zanjas y no habla de ciudades; el límite de estas prácticas lo señala el texto B (oración 7).",
+          "ambos": "Solo el texto B lo sostiene. El texto A no dice que la siembra de agua tenga límites.",
+          "ninguno": "Sí lo sostiene alguien: el texto B, en la oración 7."
+        }
+      },
+      "enunciado": "¿En qué se diferencian los dos textos?",
+      "alternativas": [
+        { "t": "El texto A se centra en sembrar agua en las alturas; el B añade que las ciudades necesitan también obras grandes.", "correcta": true, "evidencia": ["o5", "o8", "o10"],
+          "explicacion": "El texto A pide recuperar las qochas y las zanjas (oración 5); el B está de acuerdo, pero agrega represas, plantas, redes y tuberías reparadas (oraciones 8 a 10)." },
+        { "t": "El texto A defiende las qochas; el B las considera inútiles.", "codigo": "RV62", "origen": "o6",
+          "explicacion": "Lo del texto A es cierto, pero lo del B no: dice que las qochas merecen apoyo y que ayudan a que el agua dure (oración 6)." },
+        { "t": "El texto A pide represas y plantas de tratamiento; el B, recuperar las prácticas de las comunidades.", "codigo": "RV59", "origen": "o8",
+          "explicacion": "Se cruzan las posturas: las represas y plantas las pide el texto B (oración 8), y la siembra de agua es la propuesta del A." },
+        { "t": "El texto A cree que el agua del campo nunca se pierde; el B, que toda el agua de la ciudad se escapa por las fugas.", "codigo": "RV11", "origen": "o9",
+          "explicacion": "Ninguno dice eso: el A dice que el agua de lluvia se va sin aprovecharse (oración 1), y el B habla de «una parte importante», no de toda el agua." },
+        { "t": "El texto A desconfía de los ingenieros; el B, de las comunidades.", "codigo": "RV33",
+          "explicacion": "Ninguno de los dos expresa desconfianza hacia nadie: discuten qué soluciones hacen falta." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "coincidencia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Las qochas y las zanjas ayudan a que haya agua en los meses en que no llueve.",
+        "aceptada": "ambos",
+        "codigos": { "A": "RV61", "B": "RV61", "ninguno": null },
+        "explicacion": "Los dos lo sostienen: el texto A dice que el agua reaparece en manantiales y puquios cuando ya no llueve (oración 4), y el texto B, que estas prácticas ayudan a que el agua dure hasta la época seca (oración 6).",
+        "explicaciones": {
+          "A": "El texto A lo dice en la oración 4, pero el B también lo reconoce en la oración 6.",
+          "B": "El texto B lo dice en la oración 6, pero el A también: el agua reaparece en los puquios cuando ya no llueve (oración 4).",
+          "ninguno": "Los dos lo sostienen: el texto A en la oración 4 y el B en la oración 6."
+        }
+      },
+      "enunciado": "¿En qué coinciden los dos autores?",
+      "alternativas": [
+        { "t": "En que la siembra de agua merece apoyo.", "correcta": true, "evidencia": ["o5", "o6"],
+          "explicacion": "El texto A la pone como prioridad (oración 5) y el B dice que las qochas y las zanjas merecen apoyo (oración 6)." },
+        { "t": "En que una ciudad necesita represas y plantas de tratamiento.", "codigo": "RV60", "origen": "o8",
+          "explicacion": "Eso lo dice solo el texto B (oración 8). El texto A no habla de ciudades ni de represas." },
+        { "t": "En que las qochas merecen apoyo y bastan para abastecer a las ciudades.", "codigo": "RV62", "origen": "o7",
+          "explicacion": "La primera parte es el punto en común, pero la segunda la niega el texto B: una ciudad no puede abastecerse solo con lo que se infiltra (oración 7)." },
+        { "t": "En que los gobiernos regionales han abandonado a las comunidades.", "codigo": "RV7",
+          "explicacion": "El texto A pide que los gobiernos regionales den prioridad a estas prácticas, pero ninguno de los dos dice que hayan abandonado a nadie." },
+        { "t": "En que los glaciares de los Andes se están derritiendo.", "codigo": "RV8",
+          "explicacion": "Puede que lo sepas por otras fuentes, pero ninguno de los textos habla de glaciares." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "dialogo",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Ante la propuesta del texto A, el autor del texto B probablemente le diría que",
+      "alternativas": [
+        { "t": "sirve en el campo, pero no basta para dar agua a una ciudad grande.", "correcta": true, "evidencia": ["o6", "o7"],
+          "explicacion": "El texto B concede el valor de las qochas en el campo (oración 6) y pone su límite en la oración 7." },
+        { "t": "las qochas no ayudan a guardar el agua para la época seca.", "codigo": "RV61", "origen": "o6",
+          "explicacion": "El texto B dice lo contrario: que ayudan a que el agua dure hasta la época seca (oración 6). En eso coincide con el A." },
+        { "t": "estas prácticas cuestan poco y las cuidan quienes viven en las alturas.", "codigo": "RV59", "origen": "o5",
+          "explicacion": "Ese es un argumento del texto A (oración 5), no algo que el B le respondería." },
+        { "t": "en el campo conviene construir represas en lugar de qochas.", "codigo": "RV33",
+          "explicacion": "El texto B no propone reemplazar las qochas: dice que hacen falta las dos cosas (oración 10), y las represas las pide para las ciudades." },
+        { "t": "el cambio climático está secando los ríos de la sierra.", "codigo": "RV8",
+          "explicacion": "Puede ser un problema real, pero el texto B no habla del cambio climático ni de los ríos: lleva la discusión a las ciudades y a las tuberías." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto A, la expresión SEMBRAR EL AGUA significa",
+      "alternativas": [
+        { "t": "hacer que la lluvia entre en la tierra para usarla después.", "correcta": true, "evidencia": ["o3", "o4"],
+          "explicacion": "Las qochas y las zanjas detienen la lluvia y la hacen entrar en la tierra (oración 3), y esa agua reaparece meses después (oración 4)." },
+        { "t": "sembrar cultivos en las laderas durante la temporada de lluvias.", "codigo": "RV18",
+          "explicacion": "Es el sentido más común de «sembrar», poner semillas o cultivos; pero aquí lo que se siembra es el agua, que se guarda en la tierra para después." },
+        { "t": "regar las chacras con el agua de los ríos.", "codigo": "RV19",
+          "explicacion": "Regar es del mismo campo, la agricultura, pero no es lo que describe el texto: el agua se guarda en la tierra, no se echa sobre las chacras." },
+        { "t": "sacar el agua del subsuelo para llevarla a la superficie.", "codigo": "RV16",
+          "explicacion": "Invierte el sentido: sembrar el agua es hacerla entrar en la tierra, no sacarla de ella." },
+        { "t": "cuidar la naturaleza.", "codigo": "RV2",
+          "explicacion": "Es demasiado general: la expresión nombra una forma concreta de guardar la lluvia." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-08",
+  "hechos": [
+    { "afirmacion": "Las qochas (lagunas pequeñas en hondonadas) y las zanjas de infiltración en laderas son prácticas de siembra y cosecha de agua en los Andes peruanos, que favorecen la recarga de manantiales.", "fuente": "Ministerio de Desarrollo Agrario y Riego (MIDAGRI), Fondo Sierra Azul: proyectos de siembra y cosecha de agua" },
+    { "afirmacion": "En las empresas prestadoras de agua del Perú, una parte importante del agua producida no llega a facturarse, en buena medida por pérdidas físicas (fugas) en las redes.", "fuente": "SUNASS, Benchmarking regulatorio de las empresas prestadoras (indicador de agua no facturada)" }
+  ],
+  "revision": {
+    "por": "subagente (revisor a ciegas)",
+    "fecha": "2026-11-08",
+    "veredicto": "aprobado",
+    "notas": "5 de 5 preguntas y 2 de 2 pasos previos coincidieron a ciegas. p1 preguntaba sobre qué «toman posición» y así el apoyo a las qochas también valía; ahora pregunta qué se discute. Se reforzó el distractor literal de p5; hechos de MIDAGRI (Sierra Azul) y SUNASS (agua no facturada) comprobados como fuentes existentes."
+  }
+}

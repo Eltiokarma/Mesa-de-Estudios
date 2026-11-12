@@ -1,0 +1,148 @@
+{
+  "id": "t115",
+  "version": 1,
+  "titulo": "Después de la pantalla",
+  "tema": "Educación · clases virtuales y presenciales en la universidad",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    { "id": "A", "desde": 0, "firma": "Un profesor universitario" },
+    { "id": "B", "desde": 1, "firma": "Una egresada que estudió mientras trabajaba" }
+  ],
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "principal", "t": "La universidad no se reduce a transmitir contenidos, y por eso volver a las aulas después de la pandemia no fue un capricho." },
+      { "id": "o2", "rol": "apoyo", "t": "Lo que un estudiante aprende en un laboratorio, en una discusión que se alarga después de la clase o en la charla casual con alguien de otra carrera no cabe en una grabación." },
+      { "id": "o3", "rol": "apoyo", "t": "Frente a la pantalla, la cámara apagada permite estar sin estar, y el profesor le habla a una cuadrícula de nombres sin saber si alguien lo sigue." },
+      { "id": "o4", "rol": "apoyo", "t": "En el aula, en cambio, la duda se nota en un gesto antes de que alguien la formule." },
+      { "id": "o5", "rol": "principal", "t": "La presencialidad forma, además de un profesional, a alguien que aprende a pensar con otros, y eso ninguna plataforma lo reemplaza." }
+    ],
+    [
+      { "id": "o6", "rol": "contraste", "t": "Coincido en que una clase con cámaras apagadas y un profesor que lee diapositivas no forma a nadie." },
+      { "id": "o7", "rol": "contraste", "t": "Pero de ahí no se sigue que la virtualidad deba desaparecer: lo que fracasó fue una virtualidad improvisada, que llevó a la pantalla la clase expositiva sin cambiar nada más." },
+      { "id": "o8", "rol": "apoyo", "t": "Para quien trabaja de día o vive a horas de la ciudad universitaria, una buena clase virtual, con grupos pequeños, tareas que exigen participar y tutores que responden, es la única puerta abierta." },
+      { "id": "o9", "rol": "principal", "t": "Cerrar esa puerta en nombre de la experiencia del campus es defender una universidad pensada solo para quienes pueden estar en él." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "controversia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "¿Cuál es el eje de la controversia entre los dos textos?",
+      "alternativas": [
+        { "t": "Qué lugar debe tener la enseñanza virtual en la universidad.", "correcta": true, "evidencia": ["o5", "o7", "o9"],
+          "explicacion": "El texto A dice que ninguna plataforma reemplaza la presencialidad; el B, que la virtualidad no debe desaparecer porque es la única puerta para algunos." },
+        { "t": "Si una clase con las cámaras apagadas logra formar a los estudiantes.", "codigo": "RV61", "origen": "o6",
+          "explicacion": "En eso coinciden: el texto A critica la cámara apagada (oración 3) y el B dice que esa clase «no forma a nadie» (oración 6)." },
+        { "t": "Si la charla con alguien de otra carrera cabe en una grabación.", "codigo": "RV60", "origen": "o2",
+          "explicacion": "Es un argumento del texto A (oración 2); el B no lo discute. El eje tiene que ser algo en que los dos tomen posición." },
+        { "t": "Si los tutores de los cursos virtuales responden a tiempo.", "codigo": "RV1", "origen": "o8",
+          "explicacion": "Es un detalle del texto B, que lo da como rasgo de una buena clase virtual." },
+        { "t": "Si la pandemia cambió para siempre la manera en que vive y trabaja la sociedad peruana.", "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos discuten la enseñanza universitaria, no toda la vida social." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "coincidencia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Una clase a distancia en la que nadie participa no logra formar a los estudiantes.",
+        "aceptada": "ambos",
+        "codigos": { "A": "RV61", "B": "RV61", "ninguno": null },
+        "explicacion": "Los dos lo sostienen: el texto A describe la cámara apagada y al profesor que no sabe si alguien lo sigue (oración 3), y el B dice que esa clase «no forma a nadie» (oración 6).",
+        "explicaciones": {
+          "A": "El texto A lo dice, pero el B también lo concede: «coincido en que una clase con cámaras apagadas… no forma a nadie» (oración 6).",
+          "B": "El texto B lo dice en la oración 6, pero como coincidencia con el A, que critica esa misma clase en la oración 3.",
+          "ninguno": "Los dos lo sostienen: el texto A en la oración 3 y el B en la oración 6."
+        }
+      },
+      "enunciado": "¿En qué coinciden los dos autores?",
+      "alternativas": [
+        { "t": "En que la clase virtual sin participación real no forma a los estudiantes.", "correcta": true, "evidencia": ["o3", "o6"],
+          "explicacion": "El texto A la critica en la oración 3 y el B lo concede en la oración 6, antes de separar la mala virtualidad de la buena." },
+        { "t": "En que lo que fracasó fue una virtualidad improvisada.", "codigo": "RV60", "origen": "o7",
+          "explicacion": "Eso lo dice solo el texto B (oración 7). Para el A, lo que falta en la pantalla no depende de que se improvise." },
+        { "t": "En que las clases sin participación no forman y en que la presencialidad es insustituible.", "codigo": "RV62", "origen": "o5",
+          "explicacion": "La primera mitad es común, pero la segunda es solo del texto A (oración 5); el B defiende la buena clase virtual." },
+        { "t": "En que ninguna clase a distancia ha servido nunca para aprender.", "codigo": "RV11",
+          "explicacion": "El texto B defiende la buena clase virtual como puerta abierta, y el A tampoco usa un «nunca» tan amplio." },
+        { "t": "En que las universidades peruanas no tenían plataformas antes de la pandemia.", "codigo": "RV8",
+          "explicacion": "Ninguno de los dos textos habla de eso. Es una suposición de fuera del texto." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "dialogo",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Si se elimina lo virtual, quedan fuera quienes no pueden asistir al campus.",
+        "aceptada": "B",
+        "codigos": { "A": "RV59", "ambos": "RV60", "ninguno": null },
+        "explicacion": "Lo sostiene el texto B en las oraciones 8 y 9: para quien trabaja o vive lejos, la clase virtual es la única puerta abierta.",
+        "explicaciones": {
+          "A": "El texto A no habla de quienes no pueden ir al campus; esa es la objeción del texto B (oraciones 8 y 9).",
+          "ambos": "Solo el texto B lo sostiene. El A defiende la presencialidad sin hablar de quién puede asistir.",
+          "ninguno": "Sí lo sostiene alguien: el texto B, en las oraciones 8 y 9."
+        }
+      },
+      "enunciado": "¿Qué le objetaría la autora del texto B al autor del texto A?",
+      "alternativas": [
+        { "t": "Que juzga la virtualidad por su peor versión, la improvisada.", "correcta": true, "evidencia": ["o6", "o7"],
+          "explicacion": "El texto B acepta la crítica a la clase con cámaras apagadas, pero dice que eso fue la virtualidad improvisada, no toda la virtualidad (oración 7)." },
+        { "t": "Que la duda del estudiante se nota en un gesto antes de formularse.", "codigo": "RV59", "origen": "o4",
+          "explicacion": "Es un argumento del texto A (oración 4) a favor del aula, no una objeción del B." },
+        { "t": "Que una clase con cámaras apagadas sí puede formar a los estudiantes.", "codigo": "RV61", "origen": "o6",
+          "explicacion": "El texto B dice lo mismo que el A: esa clase «no forma a nadie» (oración 6)." },
+        { "t": "Que el laboratorio y la discusión después de clase no sirven para aprender.", "codigo": "RV33", "origen": "o2",
+          "explicacion": "El texto B no ataca lo que se aprende en el campus: critica que se cierre la puerta a quien no puede estar en él." },
+        { "t": "Que la universidad debería cerrar sus aulas y dictar todas sus clases por internet.", "codigo": "RV12",
+          "explicacion": "Exagera la postura del texto B, que pide no eliminar la virtualidad, no eliminar las aulas." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto A, la expresión «estar sin estar» alude a",
+      "alternativas": [
+        { "t": "figurar en la clase sin participar en ella.", "correcta": true, "evidencia": ["o3"],
+          "explicacion": "Con la cámara apagada, el nombre aparece en la cuadrícula, pero nadie sabe si el estudiante sigue la clase." },
+        { "t": "estar en la ciudad universitaria, cerca de la facultad, sin llegar a entrar al aula.", "codigo": "RV34",
+          "explicacion": "Lee la expresión al pie de la letra, como presencia física. El texto la usa para la clase por pantalla, con la cámara apagada." },
+        { "t": "faltar a clase sin justificación.", "codigo": "RV19",
+          "explicacion": "Es del mismo campo (la asistencia), pero el estudiante del texto sí está conectado: figura sin participar." },
+        { "t": "hablarle a una cuadrícula de nombres.", "codigo": "RV5", "origen": "o3",
+          "explicacion": "Repite palabras de la misma oración, pero se refieren a lo que hace el profesor, no a lo que hace el estudiante." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Del texto B se infiere que, para su autora, lo que separa una buena clase virtual de una mala es",
+      "alternativas": [
+        { "t": "su diseño, y no el hecho de ser a distancia.", "correcta": true, "evidencia": ["o7", "o8"],
+          "explicacion": "La mala llevó la clase expositiva a la pantalla sin cambiar nada (oración 7); la buena tiene grupos pequeños, participación y tutores (oración 8). Las dos son a distancia." },
+        { "t": "que nunca podrá reemplazar lo que se aprende en un laboratorio.", "codigo": "RV59", "origen": "o2",
+          "explicacion": "Esa es la idea del texto A (oración 2), no un criterio del B para distinguir clases virtuales." },
+        { "t": "que la buena cuesta menos a la universidad que la mala.", "codigo": "RV7",
+          "explicacion": "El texto B no habla de costos; esa comparación no se deduce de lo que dice." },
+        { "t": "que la buena lleva a la pantalla la clase expositiva sin cambiar nada más.", "codigo": "RV5", "origen": "o7",
+          "explicacion": "Repite palabras de la oración 7, pero ahí describen la virtualidad que fracasó, no la buena." },
+        { "t": "que la buena sirve por igual a todos los estudiantes, trabajen o no y vivan cerca o lejos.", "codigo": "RV11", "origen": "o8",
+          "explicacion": "El texto B habla de quienes trabajan o viven lejos, para quienes es la única puerta; no dice que sirva igual a todos." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-08",
+  "hechos": [],
+  "revision": { "por": "subagente (revisor a ciegas)", "fecha": "2026-11-08", "veredicto": "aprobado", "notas": "Coincidí a ciegas en 7 de 7. Sin cambios: alternativas únicas y códigos coherentes." }
+}

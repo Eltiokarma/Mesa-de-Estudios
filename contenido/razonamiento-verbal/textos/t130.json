@@ -1,0 +1,153 @@
+{
+  "id": "t130",
+  "version": 1,
+  "titulo": "Why We Fall for False News",
+  "tema": "Lectura en inglés · por qué se cree en noticias falsas en las redes y qué puede hacer el lector",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "expositivo",
+  "idioma": "en",
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "contraste", "t": "It is tempting to think that only careless or poorly informed people believe false news." },
+      { "id": "o2", "rol": "apoyo", "t": "The evidence suggests otherwise: almost anyone may accept a false story when it fits what they already think, or when it makes them feel strong emotions such as fear or anger." },
+      { "id": "o3", "rol": "detalle", "t": "Repetition seems to play a part as well." },
+      { "id": "o4", "rol": "detalle", "t": "When we see the same claim several times, it tends to feel familiar, and familiar ideas are easily mistaken for true ones." }
+    ],
+    [
+      { "id": "o5", "rol": "detalle", "t": "Social media may make these tendencies stronger." },
+      { "id": "o6", "rol": "detalle", "t": "Posts that provoke strong reactions are often shared more, and many users pass on a link after reading only its headline." },
+      { "id": "o7", "rol": "detalle", "t": "In this way, a story can reach a great many people before anyone checks whether it is accurate." }
+    ],
+    [
+      { "id": "o8", "rol": "principal", "t": "This does not mean that readers are helpless, since a few simple habits can probably reduce the risk." },
+      { "id": "o9", "rol": "detalle", "t": "Before sharing a post, a reader can pause and ask who published it and when." },
+      { "id": "o10", "rol": "detalle", "t": "It also helps to look for the same information in other sources, instead of reading the suspicious page again and again." },
+      { "id": "o11", "rol": "apoyo", "t": "None of these habits is perfect, but together they may give us enough time to realize that a story is false." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "In sentence 11, the word REALIZE can be replaced by",
+      "alternativas": [
+        { "t": "notice.", "correcta": true, "evidencia": ["o11"],
+          "explicacion": "«Realize» significa darse cuenta: los hábitos nos dan tiempo para notar que una historia es falsa." },
+        { "t": "carry out.", "codigo": "RV54",
+          "explicacion": "Es un falso amigo: «realize» se parece a «realizar» (llevar a cabo), pero en inglés significa darse cuenta. «Carry out» es realizar." },
+        { "t": "explain.", "codigo": "RV19",
+          "explicacion": "Explicar es del mismo campo (lo que se hace con una noticia falsa una vez descubierta), pero no significa lo mismo: el texto habla de darse cuenta, no de explicárselo a otros." },
+        { "t": "share.", "codigo": "RV5", "origen": "o9",
+          "explicacion": "Repite una palabra del párrafo («Before sharing a post», oración 9). Los hábitos sirven justo para no compartir lo falso: no es lo que significa «realize»." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "intencion",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "What is the author's main purpose?",
+      "alternativas": [
+        { "t": "To explain why people believe false news and what readers can do.", "correcta": true, "evidencia": ["o2", "o8"],
+          "explicacion": "Los dos primeros párrafos explican por qué se cree en noticias falsas (emociones, repetición, redes) y el tercero propone hábitos para el lector (oración 8)." },
+        { "t": "To show that only careless or poorly informed people believe false news on the internet.", "codigo": "RV53", "origen": "o1",
+          "explicacion": "Es la idea que el autor presenta en la oración 1 para rechazarla («The evidence suggests otherwise»), no su postura." },
+        { "t": "To demand that the government close the social media sites that spread lies.", "codigo": "RV33",
+          "explicacion": "El texto no pide nada al gobierno ni propone cerrar las redes: habla de lo que puede hacer cada lector." },
+        { "t": "To describe how a post reaches many people in a short time.", "codigo": "RV3", "origen": "o7",
+          "explicacion": "Se queda con una parte del segundo párrafo y deja fuera lo principal: por qué creemos y qué hábitos pueden ayudar." },
+        { "t": "To tell the story of a reader who shared a false headline.", "codigo": "RV13",
+          "explicacion": "El texto no cuenta la historia de nadie: explica un fenómeno y da consejos." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, lee esta afirmación y di qué relación tiene con el texto.",
+        "sonda": "A false claim seen only once would probably feel less familiar than one seen many times.",
+        "clase": "se-deduce",
+        "codigos": { "lo-dice": "RV58", "no-se-sabe": "RV34", "lo-contradice": "RV63" },
+        "explicacion": "La oración 4 dice que lo que se ve varias veces «tends to feel familiar». De ahí se deduce que lo que se ve una sola vez se siente menos conocido.",
+        "explicaciones": {
+          "lo-dice": "El texto habla de lo que pasa cuando se ve algo varias veces, no de lo que pasa cuando se ve una vez: eso se deduce, no está escrito.",
+          "no-se-sabe": "Sí se puede saber: si la repetición hace que algo se sienta conocido (oración 4), sin repetición se siente menos conocido.",
+          "lo-contradice": "El texto no dice que una sola vez baste para que algo se sienta igual de conocido; dice que es la repetición la que lo vuelve familiar."
+        }
+      },
+      "enunciado": "If a reader saw a false claim only once instead of many times, then, according to the text, the claim",
+      "alternativas": [
+        { "t": "might seem less familiar and less believable.", "correcta": true, "evidencia": ["o3", "o4"],
+          "explicacion": "La oración 4 une la repetición con la sensación de que algo es conocido, y lo conocido se confunde con lo verdadero. Sin repetición, la afirmación podría parecer menos conocida y menos creíble." },
+        { "t": "would seem just as familiar and believable as a claim seen many times.", "codigo": "RV63", "origen": "o4",
+          "explicacion": "Vuelve a confirmar lo que el condicional quita: el texto dice que lo familiar viene de ver la misma afirmación varias veces." },
+        { "t": "would never be believed by anyone.", "codigo": "RV11",
+          "explicacion": "«Never» y «anyone» son absolutos. La repetición es solo una de las causas: según la oración 2, una noticia que coincide con lo que uno piensa o que da miedo puede creerse igual." },
+        { "t": "would surely be checked in other sources before being shared.", "codigo": "RV7", "origen": "o10",
+          "explicacion": "El texto recomienda buscar otras fuentes, pero no dice que el lector lo hará con seguridad porque vio algo una sola vez." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, lee esta afirmación y di qué relación tiene con el texto.",
+        "sonda": "People with a good education cannot be fooled by false news.",
+        "clase": "lo-contradice",
+        "codigos": { "lo-dice": "RV53", "se-deduce": "RV7", "no-se-sabe": "RV9" },
+        "explicacion": "La oración 2 dice que casi cualquiera («almost anyone») puede aceptar una historia falsa; el autor rechaza la idea de que solo caen los descuidados o mal informados (oración 1).",
+        "explicaciones": {
+          "lo-dice": "Algo parecido aparece en la oración 1, pero como idea que el autor presenta para negarla enseguida («The evidence suggests otherwise»).",
+          "se-deduce": "No se deduce: el texto dice que casi cualquiera puede creer una noticia falsa.",
+          "no-se-sabe": "El texto sí lo trata: las oraciones 1 y 2 rechazan que solo caigan los mal informados."
+        }
+      },
+      "enunciado": "Which statement contradicts the text?",
+      "alternativas": [
+        { "t": "Well-educated people are not at risk of believing false news.", "correcta": true, "evidencia": ["o1", "o2"],
+          "explicacion": "Choca con la oración 2: «almost anyone may accept a false story». El autor rechaza la idea de que solo los mal informados caen (oración 1)." },
+        { "t": "Strong emotions such as fear can make a false story easier to accept.", "codigo": "RV10", "origen": "o2",
+          "explicacion": "Concuerda con la oración 2. Se pide la que contradice al texto." },
+        { "t": "Looking for the same information in other sources may help a reader.", "codigo": "RV9", "origen": "o10",
+          "explicacion": "Concuerda con la oración 10. Se pide la que choca con la oración 2." },
+        { "t": "False news spreads more during elections than during the rest of the year.", "codigo": "RV36",
+          "explicacion": "El texto no habla de elecciones, pero no mencionarlo no es contradecirlo." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "contexto",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "The text is mainly addressed to",
+      "alternativas": [
+        { "t": "ordinary users of social media.", "correcta": true, "evidencia": ["o8", "o9", "o11"],
+          "explicacion": "Habla de lo que puede hacer «a reader» antes de compartir (oración 9) y se incluye con «us» (oración 11): se dirige a cualquier persona que usa redes." },
+        { "t": "journalists who need to learn how to write better headlines.", "codigo": "RV51", "origen": "o6",
+          "explicacion": "Los titulares aparecen en la oración 6, pero los consejos son para quien lee y comparte, no para quien escribe noticias." },
+        { "t": "engineers who design the platforms where posts are shared.", "codigo": "RV7",
+          "explicacion": "El texto no da ninguna indicación técnica ni habla de cómo se diseñan las redes: sus consejos son para lectores." },
+        { "t": "only careless people who never check what they read online.", "codigo": "RV53", "origen": "o1",
+          "explicacion": "El autor rechaza que solo los descuidados caigan en noticias falsas (oraciones 1 y 2), así que no escribe solo para ellos." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-08",
+  "hechos": [
+    { "afirmacion": "Ver varias veces una misma afirmación hace que parezca más verdadera (efecto de verdad ilusoria).", "fuente": "Hasher, L., Goldstein, D. y Toppino, T. (1977). Frequency and the conference of referential validity. Journal of Verbal Learning and Verbal Behavior, 16(1), 107-112." },
+    { "afirmacion": "En redes sociales, las noticias falsas se difundieron más lejos y más rápido que las verdaderas; eran más novedosas y despertaban respuestas de sorpresa y rechazo.", "fuente": "Vosoughi, S., Roy, D. y Aral, S. (2018). The spread of true and false news online. Science, 359(6380), 1146-1151." },
+    { "afirmacion": "Muchas personas comparten enlaces sin haber leído más que el titular.", "fuente": "Gabielkov, M. y otros (2016). Social clicks: What and who gets read on Twitter? ACM SIGMETRICS." },
+    { "afirmacion": "Buscar la misma información en otras fuentes (lectura lateral) ayuda a detectar sitios poco fiables.", "fuente": "Wineburg, S. y McGrew, S. (2019). Lateral reading and the nature of expertise: Reading less and learning more when evaluating digital information. Teachers College Record, 121(11)." }
+  ],
+  "revision": {"por": "subagente (revisor a ciegas)", "fecha": "2026-11-08", "veredicto": "aprobado", "notas": "A ciegas coincidí en los 7 ítems. El p4 pasó de «NOT consistent» a «contradicts» para que el distractor de lo no mencionado no sea defendible, cambié el distractor débil del p1 («prove in court») por «explain» y ajusté el hecho de Vosoughi y otros; las cuatro referencias existen."}
+}

@@ -6,7 +6,7 @@
     "razonamiento-verbal.textos-discontinuos"
   ],
   "estado": "borrador",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "banco": "../../contenido/razonamiento-verbal/indice-textos-discontinuos.json",
   "pruebas": "../../contenido/razonamiento-verbal/banco.test.js",
   "papel": "papel.json"

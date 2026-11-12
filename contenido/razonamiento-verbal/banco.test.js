@@ -31,7 +31,12 @@ const TIPOS_TEXTO = ['expositivo', 'argumentativo', 'narrativo', 'descriptivo', 
 const TIPOS_PREGUNTA = ['idea-principal', 'inferencia', 'compatibilidad', 'incompatibilidad', 'extrapolacion',
   'intencion', 'sentido-contextual', 'referente', 'conector',
   // Unidades de la rutina verbal B (7 nov 2026): tipología, resumen, discontinuos, contexto.
-  'tipo-de-texto', 'estructura', 'resumen', 'titulo', 'dato', 'contexto'];
+  'tipo-de-texto', 'estructura', 'resumen', 'titulo', 'dato', 'contexto',
+  // Rutina verbal A/B (8 nov 2026): antónimo contextual y las preguntas de los pares de textos A/B.
+  'antonimo', 'controversia', 'postura', 'coincidencia', 'discrepancia', 'dialogo', 'sintesis'];
+// Estas solo van en un par de textos A/B (con "autores").
+const TIPOS_AB = ['controversia', 'postura', 'coincidencia', 'discrepancia', 'dialogo', 'sintesis'];
+const ATRIBUCIONES = Lectura.ATRIBUCIONES.map(c => c.id);
 // En estas preguntas, el previo marcar-oracion pide la oración que resume (las de rol principal).
 const TIPOS_MARCAR = ['idea-principal', 'resumen', 'titulo'];
 const IDIOMAS = ['en'];
@@ -93,6 +98,17 @@ function validarPrevio(q, t, donde) {
   } else if (p.tipo === 'relacion') {
     assert.equal(p.aceptada, 'oposicion', `${donde}: por ahora, el previo relacion solo se usa con la oposición`);
     revisar(p.codigos, ['suma', 'causa']);
+  } else if (p.tipo === 'atribuir') {
+    // Par A/B: ¿quién sostiene la sonda? Poner al otro autor es RV59; poner a los dos lo que dice uno, RV60;
+    // y ante algo que los dos sostienen, quedarse con uno solo es RV61 (no ver la coincidencia).
+    assert.ok(Lectura.autores(t).length === 2, `${donde}: atribuir solo va en un par de textos A/B`);
+    assert.ok(p.sonda && ATRIBUCIONES.includes(p.aceptada), `${donde}: atribuir necesita "sonda" y una "aceptada" válida`);
+    revisar(p.codigos, ATRIBUCIONES.filter(c => c !== p.aceptada));
+    if (p.aceptada === 'A' || p.aceptada === 'B') {
+      assert.equal(p.codigos[p.aceptada === 'A' ? 'B' : 'A'], 'RV59', `${donde}: atribuir al otro autor es RV59`);
+      assert.equal(p.codigos.ambos, 'RV60', `${donde}: dar como de los dos lo que dice uno es RV60`);
+    }
+    if (p.aceptada === 'ambos') for (const k of ['A', 'B']) assert.equal(p.codigos[k], 'RV61', `${donde}: no ver la coincidencia es RV61`);
   } else if (p.tipo === 'proposito') {
     assert.ok(PROPOSITOS.includes(p.aceptada), `${donde}: propósito "${p.aceptada}" no válido`);
     revisar(p.codigos, PROPOSITOS.filter(c => c !== p.aceptada));
@@ -158,6 +174,14 @@ for (const { archivo, t } of TEXTOS) {
     assert.ok(n >= MINIMO(t) && n <= 350, `${t.id}: tiene ${n} palabras (de ${MINIMO(t)} a 350)`);
     assert.ok(t.idioma === undefined || IDIOMAS.includes(t.idioma), `${t.id}: idioma "${t.idioma}" no válido (${IDIOMAS})`);
     assert.equal(t.tipo_texto === 'discontinuo', Lectura.figuras(t).length > 0, `${t.id}: un texto discontinuo, y solo él, lleva figuras`);
+    // Pares A/B: dos textos de un mismo tema, cada uno con su párrafo propio; al menos un previo atribuir.
+    const par = Lectura.autores(t).length > 0;
+    if (par) {
+      assert.equal(t.tipo_texto, 'argumentativo', `${t.id}: un par A/B es argumentativo`);
+      assert.ok(t.preguntas.some(q => q.previo && q.previo.tipo === 'atribuir'), `${t.id}: un par A/B lleva al menos un previo atribuir`);
+      for (const a of t.autores) assert.ok(!a.firma || typeof a.firma === 'string', `${t.id}: la firma del autor ${a.id} debe ser texto`);
+    }
+    for (const q of t.preguntas) assert.ok(par || !TIPOS_AB.includes(q.tipo), `${t.id}.${q.id}: una pregunta de tipo ${q.tipo} solo va en un par A/B`);
     assert.deepEqual(Lectura.validar(t, { codigos: CODIGOS_JSON, unidades: UNIDADES }), []);
     assert.ok(t.preguntas.length >= 3 && t.preguntas.length <= 5, `${t.id}: de 3 a 5 preguntas`);
     // Regla 5: oraciones con id único y rol válido.
@@ -170,6 +194,8 @@ for (const { archivo, t } of TEXTOS) {
       assert.ok(!idsP.has(q.id), `${donde}: id de pregunta repetido`); idsP.add(q.id);
       assert.ok(TIPOS_PREGUNTA.includes(q.tipo), `${donde}: tipo "${q.tipo}" no válido`);
       assert.ok(UNIDADES.has(q.unidad), `${donde}: la unidad ${q.unidad} no existe en el catálogo (regla 6)`);
+      // Preguntas en inglés (como en el examen de San Marcos): solo en un texto en inglés; las explicaciones siguen en español.
+      assert.ok(q.idioma === undefined || (IDIOMAS.includes(q.idioma) && q.idioma === t.idioma), `${donde}: "idioma" de la pregunta solo vale en un texto en ese idioma`);
       assert.ok(q.enunciado, `${donde}: falta el enunciado`);
       const alts = q.alternativas;
       assert.ok(alts.length >= 4 && alts.length <= 5, `${donde}: 4 o 5 alternativas (regla 1)`);

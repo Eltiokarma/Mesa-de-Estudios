@@ -1,0 +1,283 @@
+{
+  "id": "t126",
+  "version": 1,
+  "titulo": "Reading Evenings",
+  "tema": "Lectura en inglés · aviso de una biblioteca comunal de Arequipa sobre un programa de lectura para adultos",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "expositivo",
+  "idioma": "en",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "general",
+        "t": "Did you leave school before you could become a confident reader, or have you simply lost the habit of reading?"
+      },
+      {
+        "id": "o2",
+        "rol": "principal",
+        "t": "Starting next month, our community library in Arequipa will offer a free reading program for adults, called Reading Evenings."
+      }
+    ],
+    [
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "The group will meet on Tuesday and Thursday evenings, from seven to half past eight, so that people who work during the day can attend."
+      },
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "Each session will begin with a short text read aloud, and then participants will talk about it in small groups."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "No previous studies are required, and nobody will be asked to read in front of others unless they want to."
+      },
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "Volunteers, many of them retired teachers, will help anyone who finds reading difficult."
+      }
+    ],
+    [
+      {
+        "id": "o7",
+        "rol": "apoyo",
+        "t": "Our city is the birthplace of Mario Vargas Llosa, a winner of the Nobel Prize in Literature, but books should not belong only to famous writers."
+      },
+      {
+        "id": "o8",
+        "rol": "apoyo",
+        "t": "We believe that reading can help adults understand official documents, enjoy a good story and share books with their children and grandchildren."
+      }
+    ],
+    [
+      {
+        "id": "o9",
+        "rol": "detalle",
+        "t": "To sign up, come to the front desk with your ID card or call the library during opening hours."
+      },
+      {
+        "id": "o10",
+        "rol": "detalle",
+        "t": "Places are limited: we planned for twenty people, but more than forty have actually called already, so we recommend registering this week."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "contexto",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "The library itself wrote this text.",
+        "clase": "se-deduce",
+        "codigos": {
+          "lo-dice": "RV58",
+          "no-se-sabe": "RV34",
+          "lo-contradice": null
+        },
+        "explicacion": "El texto no dice quién lo escribió, pero habla de «our community library» (oración 2), de «our city» (oración 7) y de «we» (oraciones 8 y 10), y pide ir a su mostrador (oración 9): se deduce que lo escribe la propia biblioteca.",
+        "explicaciones": {
+          "lo-dice": "En ningún lugar dice «this text was written by the library»: se deduce de «our community library» y de «we».",
+          "no-se-sabe": "Sí se puede saber: quien escribe dice «our community library» y «we», y pide que vayan a su mostrador.",
+          "lo-contradice": "Nada del texto dice que lo escriba otra persona o institución; al contrario, habla como la biblioteca («our», «we»)."
+        }
+      },
+      "enunciado": "Where would this text most likely be published?",
+      "alternativas": [
+        {
+          "t": "On the library's notice board and in the neighborhood.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o9"
+          ],
+          "explicacion": "Es un aviso: la biblioteca habla de sí misma («our community library», oración 2), anuncia un programa que empezará el próximo mes y explica cómo inscribirse en su mostrador (oración 9). Un aviso así se pone donde lo vean los vecinos."
+        },
+        {
+          "t": "In a biography of the writer Mario Vargas Llosa.",
+          "codigo": "RV50",
+          "origen": "o7",
+          "explicacion": "Vargas Llosa aparece solo en la oración 7, como alguien que el aviso menciona; el texto no trata de su vida."
+        },
+        {
+          "t": "In a university textbook about the history of literature.",
+          "codigo": "RV51",
+          "explicacion": "Se elige por el tema (la lectura, un escritor famoso), no por las marcas del texto: invita a inscribirse, da horarios y pide llevar el DNI."
+        },
+        {
+          "t": "In a newspaper report about a program that already ended last year.",
+          "codigo": "RV55",
+          "origen": "o2",
+          "explicacion": "Los verbos están en futuro («will offer», «will meet»): el programa todavía no empieza, empieza el próximo mes (oración 2)."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "intencion",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "What is the main purpose of the text?",
+      "alternativas": [
+        {
+          "t": "To invite adults to join a free reading program.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o2",
+            "o9"
+          ],
+          "explicacion": "El aviso se dirige a adultos (oración 1), anuncia el programa gratuito (oración 2) y explica cómo inscribirse (oraciones 9 y 10): busca que la gente se inscriba."
+        },
+        {
+          "t": "To tell the life story of a famous writer who was born in Arequipa.",
+          "codigo": "RV1",
+          "origen": "o7",
+          "explicacion": "La mención de Vargas Llosa (oración 7) es un detalle que sirve para decir que los libros son de todos. El texto no cuenta su vida."
+        },
+        {
+          "t": "To explain to schoolchildren how they can borrow books from the library.",
+          "codigo": "RV51",
+          "explicacion": "El texto no se dirige a escolares ni habla de prestar libros: es un programa para adultos."
+        },
+        {
+          "t": "To ask the city to pay the retired teachers who work as volunteers.",
+          "codigo": "RV33",
+          "explicacion": "El aviso no le pide nada a la municipalidad. Los profesores jubilados aparecen como voluntarios (oración 6), sin que nadie pida pagarles."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "In sentence 10, the word ACTUALLY can be replaced by",
+      "alternativas": [
+        {
+          "t": "in fact.",
+          "correcta": true,
+          "evidencia": [
+            "o10"
+          ],
+          "explicacion": "«Actually» quiere decir en realidad, de hecho: la biblioteca esperaba veinte personas, pero de hecho ya llamaron más de cuarenta. Por eso recomienda inscribirse esta semana."
+        },
+        {
+          "t": "currently.",
+          "codigo": "RV54",
+          "explicacion": "Es un falso amigo: «actually» se parece a «actualmente», pero no significa eso. «Actualmente» en inglés es «currently» o «nowadays». Aquí la palabra marca que pasó algo distinto de lo esperado."
+        },
+        {
+          "t": "finally.",
+          "codigo": "RV19",
+          "explicacion": "«Finally» (por fin, al final) haría pensar que la biblioteca esperaba esas llamadas desde hace tiempo; «actually» marca que pasó algo distinto de lo que se esperaba."
+        },
+        {
+          "t": "this week.",
+          "codigo": "RV5",
+          "origen": "o10",
+          "explicacion": "Son las palabras que vienen después en la misma oración 10. Dicen cuándo inscribirse, no lo que significa «actually»."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "dato",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "According to the text, why will the group meet in the evening?",
+      "alternativas": [
+        {
+          "t": "So that people who work during the day can come.",
+          "correcta": true,
+          "evidencia": [
+            "o3"
+          ],
+          "explicacion": "La oración 3 lo dice: el grupo se reunirá de siete a ocho y media de la noche «so that people who work during the day can attend»."
+        },
+        {
+          "t": "Because the retired teachers are only free at night.",
+          "codigo": "RV7",
+          "origen": "o6",
+          "explicacion": "Los voluntarios aparecen en la oración 6, pero el texto no dice nada de sus horarios. Esa razón no está en el texto."
+        },
+        {
+          "t": "Because it is easier to read aloud when the city is quiet.",
+          "codigo": "RV8",
+          "explicacion": "Puede sonar razonable, pero el texto no da esa razón: la que da es el horario de trabajo de la gente (oración 3)."
+        },
+        {
+          "t": "Because participants must bring their ID card to sign up.",
+          "codigo": "RV5",
+          "origen": "o9",
+          "explicacion": "Toma palabras de la oración 9, que habla de cómo inscribirse, no de por qué las reuniones son de noche."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "titulo",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "Which title fits the text best?",
+      "alternativas": [
+        {
+          "t": "A Free Reading Program for Adults",
+          "correcta": true,
+          "evidencia": [
+            "o2"
+          ],
+          "explicacion": "La oración 2 dice lo principal del aviso: la biblioteca ofrecerá un programa de lectura gratuito para adultos. Lo demás da detalles."
+        },
+        {
+          "t": "Mario Vargas Llosa, Arequipa's Nobel Prize Winner",
+          "codigo": "RV1",
+          "origen": "o7",
+          "explicacion": "Es un detalle de la oración 7, que sirve para decir que los libros son de todos; el aviso no trata del escritor."
+        },
+        {
+          "t": "How to Get an ID Card in Arequipa",
+          "codigo": "RV5",
+          "origen": "o9",
+          "explicacion": "Toma «ID card» de la oración 9, donde solo se pide llevar el DNI para inscribirse. El texto no explica cómo sacarlo."
+        },
+        {
+          "t": "The Importance of Reading in the World",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto anuncia un programa concreto en una biblioteca de Arequipa."
+        },
+        {
+          "t": "Reading Lessons for Primary School Children",
+          "codigo": "RV51",
+          "explicacion": "Cambia a los destinatarios: el aviso se dirige a adultos (oraciones 1 y 2), no a niños de primaria."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-08",
+  "hechos": [
+    {
+      "afirmacion": "Mario Vargas Llosa nació en Arequipa en 1936 y recibió el Premio Nobel de Literatura en 2010.",
+      "fuente": "Fundación Nobel, «Mario Vargas Llosa – Facts», The Nobel Prize in Literature 2010 (nobelprize.org)."
+    },
+    {
+      "afirmacion": "La biblioteca comunal, el programa «Reading Evenings», sus horarios y sus voluntarios son inventados para el ejercicio; no se nombra ninguna institución real.",
+      "fuente": "Texto propio (dato inventado, sin fuente externa)."
+    }
+  ],
+  "revision": {
+    "por": "subagente (revisor a ciegas)",
+    "fecha": "2026-11-08",
+    "veredicto": "aprobado",
+    "notas": "A ciegas 6 de 6. La sonda del previo pasó a «quién escribe el texto» para que prepare la pregunta del lugar de publicación, y la oración 10 se reescribió para que «actually» se use con naturalidad (contraste con lo esperado)."
+  }
+}

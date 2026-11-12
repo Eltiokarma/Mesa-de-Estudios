@@ -1,6 +1,6 @@
 {
   "id": "t023",
-  "version": 1,
+  "version": 2,
   "titulo": "Lavarse las manos",
   "tema": "Ciencia e historia · Semmelweis",
   "grado": 5,
@@ -103,7 +103,7 @@
           "explicacion": "Es demasiado general: el texto habla de por qué tardó en aceptarse una medida concreta."
         },
         {
-          "t": "Semmelweis tenía razón, pero sus colegas no quisieron aceptarlo.",
+          "t": "Semmelweis tenía razón: sus colegas, sin embargo, no quisieron aceptarlo.",
           "codigo": "RV3",
           "origen": "o6",
           "explicacion": "Resume el caso, pero le falta lo que el autor saca de él: que además de tener razón hacía falta una explicación."
@@ -250,6 +250,6 @@
     "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
     "fecha": "2026-11-07",
     "veredicto": "aprobado",
-    "notas": "A ciegas: 6 de 6, pero un distractor de inferencia era defendible: se reescribió la pregunta («las parteras de ese hospital…»). Distractores más cercanos; dificultad bajada a 2 (no llegaba a tipo UNI). Una segunda verificación de los cambios corrigió la concordancia de t023 p2 y cuatro detalles."
+    "notas": "A ciegas: 6 de 6, pero un distractor de inferencia era defendible: se reescribió la pregunta («las parteras de ese hospital…»). Distractores más cercanos; dificultad bajada a 2 (no llegaba a tipo UNI). Una segunda verificación de los cambios corrigió la concordancia de t023 p2 y cuatro detalles. 8 nov 2026 (rutina no-se): una incorrecta tomó la forma de la correcta (justificación o dos puntos) para que la forma no delate la clave; mismo código y mismo sentido."
   }
 }

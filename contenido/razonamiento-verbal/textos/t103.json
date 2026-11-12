@@ -1,0 +1,312 @@
+{
+  "id": "t103",
+  "version": 1,
+  "titulo": "El celular en la carpeta",
+  "tema": "Educación · celulares en el aula",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    {
+      "id": "A",
+      "desde": 0,
+      "firma": "Un profesor de matemática de secundaria"
+    },
+    {
+      "id": "B",
+      "desde": 1,
+      "firma": "Una directora de colegio"
+    }
+  ],
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "contraste",
+        "t": "Se suele decir que el celular puede ser una herramienta de aprendizaje, y en teoría es cierto."
+      },
+      {
+        "id": "o2",
+        "rol": "apoyo",
+        "t": "En la práctica, sin embargo, basta que suene una notificación para que la atención de toda una fila se vaya a la pantalla."
+      },
+      {
+        "id": "o3",
+        "rol": "apoyo",
+        "t": "Un adolescente no compite en igualdad con aplicaciones hechas para que no deje de mirarlas, y el profesor tampoco puede vigilar treinta pantallas a la vez."
+      },
+      {
+        "id": "o4",
+        "rol": "principal",
+        "t": "Por eso, el celular debería quedarse guardado durante las horas de clase, salvo una emergencia."
+      },
+      {
+        "id": "o5",
+        "rol": "apoyo",
+        "t": "Lo que se gana es simple: una hora en la que el alumno solo tiene delante el problema y a sus compañeros."
+      }
+    ],
+    [
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "Es verdad que un celular sin reglas convierte la clase en una competencia contra las redes sociales."
+      },
+      {
+        "id": "o7",
+        "rol": "contraste",
+        "t": "Pero prohibirlo deja fuera de la escuela una herramienta que los alumnos usarán toda su vida y que, en muchos hogares, es la única conexión a internet."
+      },
+      {
+        "id": "o8",
+        "rol": "principal",
+        "t": "Prefiero que se use en clase con reglas claras: solo cuando el profesor lo pide, con un fin preciso y con la pantalla a la vista."
+      },
+      {
+        "id": "o9",
+        "rol": "ejemplo",
+        "t": "Así puede servir para consultar un diccionario, medir un ángulo con una aplicación o grabar un experimento."
+      },
+      {
+        "id": "o10",
+        "rol": "apoyo",
+        "t": "Si la escuela no enseña a usarlo con criterio, el alumno aprenderá solo, fuera del aula y sin nadie que lo guíe."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "postura",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Cuando el colegio no enseña a usar bien el celular, el alumno igual aprende a usarlo, pero sin orientación.",
+        "aceptada": "B",
+        "codigos": {
+          "A": "RV59",
+          "ambos": "RV60",
+          "ninguno": null
+        },
+        "explicacion": "Lo sostiene el texto B en la oración 10: si la escuela no enseña, el alumno aprenderá solo y «sin nadie que lo guíe». El texto A no lo menciona.",
+        "explicaciones": {
+          "A": "El texto A no habla de enseñar a usar el celular; quiere que quede guardado en clase (oración 4). La idea es del texto B (oración 10).",
+          "ambos": "Solo el texto B lo dice (oración 10). El texto A no trata de lo que el alumno aprende fuera del aula.",
+          "ninguno": "Sí lo sostiene alguien: el texto B, en la oración 10."
+        }
+      },
+      "enunciado": "¿Qué sostiene la autora del texto B?",
+      "alternativas": [
+        {
+          "t": "El celular debe usarse en clase con reglas claras y con un fin preciso.",
+          "correcta": true,
+          "evidencia": [
+            "o8"
+          ],
+          "explicacion": "Es su tesis (oración 8): usarlo solo cuando el profesor lo pide, para algo concreto y a la vista."
+        },
+        {
+          "t": "El celular debe quedarse guardado durante las horas de clase, salvo que haya una emergencia.",
+          "codigo": "RV59",
+          "origen": "o4",
+          "explicacion": "Esa es la tesis del texto A (oración 4), no la del B."
+        },
+        {
+          "t": "El celular debe usarse en clase y cada alumno debe decidir en qué momento sacarlo.",
+          "codigo": "RV62",
+          "origen": "o8",
+          "explicacion": "La primera mitad se acerca a su tesis, pero la segunda la contradice: para el texto B se usa «solo cuando el profesor lo pide» (oración 8)."
+        },
+        {
+          "t": "La escuela debería dictar todos sus cursos con el celular en lugar de usar libros y cuadernos.",
+          "codigo": "RV12",
+          "explicacion": "Lleva la propuesta a un extremo: el texto B pide usarlo con reglas y para fines precisos, no reemplazar todo lo demás."
+        },
+        {
+          "t": "El celular permite medir un ángulo con una aplicación.",
+          "codigo": "RV1",
+          "origen": "o9",
+          "explicacion": "Es uno de los ejemplos de la oración 9, que ilustra la tesis; no es lo que el texto B sostiene."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "coincidencia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Un celular que se usa en clase sin ningún límite le quita la atención a la lección.",
+        "aceptada": "ambos",
+        "codigos": {
+          "A": "RV61",
+          "B": "RV61",
+          "ninguno": null
+        },
+        "explicacion": "Los dos lo sostienen: el texto A, con la notificación que se lleva la atención de la fila (oración 2), y el B, que dice «es verdad» que sin reglas la clase compite contra las redes (oración 6).",
+        "explicaciones": {
+          "A": "El texto A lo dice en la oración 2, pero el B también lo concede en la oración 6.",
+          "B": "El texto B lo concede en la oración 6, pero el A lo dice antes: basta una notificación para perder la atención de la fila (oración 2).",
+          "ninguno": "Los dos lo sostienen: el texto A en la oración 2 y el B en la oración 6."
+        }
+      },
+      "enunciado": "¿En qué coinciden los autores de los dos textos?",
+      "alternativas": [
+        {
+          "t": "En que el celular sin control distrae de la clase.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o6"
+          ],
+          "explicacion": "El texto A lo dice en la oración 2 y el B lo acepta en la oración 6, antes de proponer reglas."
+        },
+        {
+          "t": "En que el celular debe quedarse guardado durante las clases.",
+          "codigo": "RV60",
+          "origen": "o4",
+          "explicacion": "Esa es solo la tesis del texto A (oración 4). El texto B prefiere usarlo con reglas."
+        },
+        {
+          "t": "En que el celular distrae y en que debe usarse para grabar experimentos.",
+          "codigo": "RV62",
+          "origen": "o9",
+          "explicacion": "La primera mitad es el punto en común, pero la segunda es solo del texto B (oración 9)."
+        },
+        {
+          "t": "En que ningún alumno puede concentrarse si tiene un celular cerca.",
+          "codigo": "RV11",
+          "explicacion": "Ninguno habla de «ningún alumno»: los dos hablan del celular usado sin reglas, y el B cree que con reglas sí sirve."
+        },
+        {
+          "t": "En que las redes sociales dañan la salud mental de los adolescentes.",
+          "codigo": "RV8",
+          "origen": "o6",
+          "explicacion": "Los textos hablan de la atención en clase, no de salud mental. Esa idea viene de fuera de los textos."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "discrepancia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "¿En qué discrepan los autores?",
+      "alternativas": [
+        {
+          "t": "A quiere el celular guardado en clase; B, que se use cuando el profesor lo pida.",
+          "correcta": true,
+          "evidencia": [
+            "o4",
+            "o8"
+          ],
+          "explicacion": "Las dos mitades son correctas: el texto A pide guardarlo salvo emergencias (oración 4) y el B, usarlo con reglas, solo cuando el profesor lo pide (oración 8)."
+        },
+        {
+          "t": "A quiere el celular guardado en clase; B, que cada alumno lo use cuando quiera hacerlo.",
+          "codigo": "RV62",
+          "origen": "o8",
+          "explicacion": "Lo de A es cierto, pero lo de B no: el texto B pide reglas claras y uso «solo cuando el profesor lo pide» (oración 8)."
+        },
+        {
+          "t": "A cree que el celular distrae en clase; B cree que nunca distrae a los alumnos.",
+          "codigo": "RV61",
+          "origen": "o6",
+          "explicacion": "En eso coinciden: el texto B acepta que un celular sin reglas convierte la clase en una competencia contra las redes (oración 6)."
+        },
+        {
+          "t": "A lo propone como herramienta de aprendizaje; B pide prohibirlo en clase.",
+          "codigo": "RV59",
+          "origen": "o1",
+          "explicacion": "Cruza las posturas: es el texto B el que lo ve como herramienta y el A el que pide guardarlo."
+        },
+        {
+          "t": "Discrepan sobre el lugar de la tecnología en la sociedad actual.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos discuten el celular en horas de clase, no la tecnología en la sociedad."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Del texto B se infiere que, para su autora, prohibir el celular en el colegio",
+      "alternativas": [
+        {
+          "t": "dejaría a los alumnos sin guía para usarlo bien.",
+          "correcta": true,
+          "evidencia": [
+            "o7",
+            "o10"
+          ],
+          "explicacion": "Si se prohíbe, la escuela no enseña a usarlo, y según la oración 10 el alumno aprende solo, «sin nadie que lo guíe»."
+        },
+        {
+          "t": "es la única forma de recuperar la atención de los alumnos en clase.",
+          "codigo": "RV59",
+          "origen": "o5",
+          "explicacion": "Así piensa el texto A, no el B. El texto B cree que con reglas claras se puede usar en clase."
+        },
+        {
+          "t": "haría que los alumnos dejaran de usar las redes sociales en su casa.",
+          "codigo": "RV7",
+          "explicacion": "El texto B no dice nada parecido: no habla de lo que pasaría con las redes en casa."
+        },
+        {
+          "t": "mejoraría el uso que los alumnos hacen del celular fuera del aula.",
+          "codigo": "RV44",
+          "origen": "o10",
+          "explicacion": "Invierte lo que dice la oración 10: sin enseñanza en la escuela, el alumno aprende solo y sin guía, no mejor."
+        },
+        {
+          "t": "aumentaría el gasto de las familias en planes de datos para sus hijos.",
+          "codigo": "RV8",
+          "explicacion": "El texto B no habla de gastos ni de planes de datos; es una idea de fuera del texto."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto B, la expresión A LA VISTA («con la pantalla a la vista») significa",
+      "alternativas": [
+        {
+          "t": "de modo que el profesor pueda verla.",
+          "correcta": true,
+          "evidencia": [
+            "o8"
+          ],
+          "explicacion": "Es una de las reglas: la pantalla queda donde el profesor ve en qué se usa el celular."
+        },
+        {
+          "t": "a punto de usarse.",
+          "codigo": "RV18",
+          "explicacion": "«A la vista» también se dice de algo cercano en el tiempo («un viaje a la vista»), pero aquí se habla de que la pantalla se vea."
+        },
+        {
+          "t": "con la pantalla encendida.",
+          "codigo": "RV19",
+          "explicacion": "Una pantalla puede estar encendida y escondida debajo de la carpeta; «a la vista» quiere decir que se pueda ver, para que el profesor controle el uso (oración 8)."
+        },
+        {
+          "t": "con la atención de toda la fila puesta en la pantalla.",
+          "codigo": "RV5",
+          "origen": "o2",
+          "explicacion": "Repite palabras de la oración 2 del texto A, que describe justo lo que las reglas del B buscan evitar."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-08",
+  "hechos": [],
+  "revision": {
+    "por": "subagente (revisor a ciegas)",
+    "fecha": "2026-11-08",
+    "veredicto": "aprobado",
+    "notas": "5 de 5 a ciegas (con los previos). Se cambió el distractor del brillo de la pantalla, que caía solo, por «con la pantalla encendida»."
+  }
+}

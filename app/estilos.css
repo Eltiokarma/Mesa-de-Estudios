@@ -120,9 +120,14 @@ input[type=text]:focus{outline:none;border-color:var(--brand)}
 .alt.mal{border-color:var(--warn);background:color-mix(in srgb,var(--warn) 10%,var(--card))}
 .alt.mal .letra{background:var(--warn);border-color:var(--warn);color:#fff}
 .alt:disabled{cursor:default;opacity:1;color:inherit}
+/* «No sé»: al final, sin letra, sobria (borde punteado y texto suave). Ocupa toda la fila. */
+.alt.nose{grid-column:1/-1;justify-content:center;border-style:dashed;background:transparent;color:var(--muted);font-weight:500;font-size:15px;padding:10px 14px}
+.alt.nose:not(:disabled):hover{border-color:var(--muted);color:var(--ink)}
+.alt.nose.elegida,.alt.nose.ok{border-color:var(--muted);background:var(--line);color:var(--ink)}
 .retro{margin-top:16px;border-radius:var(--radius-s);padding:14px 16px}
 .retro.bien{background:color-mix(in srgb,var(--ok) 14%,var(--card))}
 .retro.malo{background:color-mix(in srgb,var(--warn) 10%,var(--card))}
+.retro.nose{background:color-mix(in srgb,var(--muted) 10%,var(--card))}
 .retro p{margin:8px 0 0}
 .sol-t{font-size:16px;margin:18px 0 6px}
 .sol{margin:0 0 16px;padding-left:22px;display:grid;gap:8px}
@@ -255,6 +260,10 @@ details[open] summary{margin-bottom:8px}
 .lec-cuerpo{font-size:var(--lec-texto);line-height:1.6;max-width:65ch}
 .lec-par{margin:0 0 14px}
 .lec-np{color:var(--muted);font-weight:700;margin-right:2px}
+.lec-autor{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px;margin:18px 0 8px;font-size:15px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink);border-bottom:2px solid var(--brand-2);padding-bottom:4px}
+.lec-autor:first-child{margin-top:0}
+.lec-autor span{white-space:nowrap}
+.lec-autor small{text-transform:none;letter-spacing:0;color:var(--muted);font-weight:400;font-size:14px}
 .lec-cuerpo .n,.cita .n{font-size:11px;color:var(--muted);font-weight:700;margin-right:3px;vertical-align:super;line-height:0}
 .lec-hoja-barra{display:none}
 .lec-franja{display:none}

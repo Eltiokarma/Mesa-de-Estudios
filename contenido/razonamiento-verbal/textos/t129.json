@@ -1,0 +1,302 @@
+{
+  "id": "t129",
+  "version": 1,
+  "titulo": "Our Rivers Are Not a Trash Can",
+  "tema": "Lectura en inglés · carta de una profesora de Iquitos sobre el plástico en los ríos",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "idioma": "en",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "contraste",
+        "t": "I am a science teacher in Iquitos, and I am writing because many people in our city think that a plastic bottle thrown into the river simply disappears."
+      },
+      {
+        "id": "o2",
+        "rol": "apoyo",
+        "t": "It does not: plastic breaks into smaller and smaller pieces, but it stays in the water for many years."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "When I was a child, my friends and I used to swim in the Itaya River every weekend."
+      },
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "Today, after a heavy rain, its banks are covered with bags, bottles and food containers."
+      }
+    ],
+    [
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "Last month, my students and I spent a morning cleaning a small part of the bank near our school, and we filled more than forty bags with trash."
+      },
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "Their reaction surprised me: instead of complaining, they asked to do it again."
+      },
+      {
+        "id": "o7",
+        "rol": "apoyo",
+        "t": "Cleaning, however, is not enough if new plastic keeps arriving every day."
+      }
+    ],
+    [
+      {
+        "id": "o8",
+        "rol": "principal",
+        "t": "That is why I believe our city must reduce the plastic it uses, starting with the markets, where most products are still sold in single-use bags."
+      },
+      {
+        "id": "o9",
+        "rol": "apoyo",
+        "t": "Peru already has a law that limits single-use plastic, but a law works only if people and shops follow it."
+      },
+      {
+        "id": "o10",
+        "rol": "apoyo",
+        "t": "I invite your readers, and especially the market vendors, to try reusable bags for one month and see the difference in our rivers."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "intencion",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "previo": {
+        "tipo": "proposito",
+        "pide": "Antes de ver las alternativas: ¿qué busca sobre todo la autora de la carta?",
+        "aceptada": "convencer",
+        "codigos": {
+          "explicar": "RV14",
+          "narrar": "RV13"
+        },
+        "explicacion": "La autora da su opinión («I believe our city must reduce the plastic…», oración 8) y termina invitando a los lectores a cambiar (oración 10): busca convencer.",
+        "explicaciones": {
+          "explicar": "Explica que el plástico no desaparece (oración 2), pero lo usa como razón para su propuesta: deja de lado su punto de vista, que está en las oraciones 8 a 10.",
+          "narrar": "Cuenta una mañana de limpieza con sus alumnos (oraciones 5 y 6), pero es un ejemplo que sostiene su opinión; la carta no es un relato."
+        }
+      },
+      "enunciado": "What is the main purpose of the letter?",
+      "alternativas": [
+        {
+          "t": "To persuade people in Iquitos to use less plastic.",
+          "correcta": true,
+          "evidencia": [
+            "o8",
+            "o10"
+          ],
+          "explicacion": "La oración 8 dice la tesis (la ciudad debe reducir el plástico que usa) y la 10 invita a los lectores a probar bolsas reutilizables: la carta busca convencer."
+        },
+        {
+          "t": "To explain how plastic breaks into smaller and smaller pieces in the water.",
+          "codigo": "RV14",
+          "origen": "o2",
+          "explicacion": "La oración 2 lo explica, pero como razón para la propuesta. Deja de lado lo que la autora defiende: reducir el plástico."
+        },
+        {
+          "t": "To tell the story of a morning when a teacher and some students cleaned a river bank.",
+          "codigo": "RV13",
+          "origen": "o5",
+          "explicacion": "La limpieza es un ejemplo dentro de la carta, no su finalidad. La carta no es un relato: defiende una opinión."
+        },
+        {
+          "t": "To complain that Peru has no law about single-use plastic.",
+          "codigo": "RV33",
+          "origen": "o9",
+          "explicacion": "La oración 9 dice lo contrario: «Peru already has a law». La queja es que la ley no se cumple."
+        },
+        {
+          "t": "To describe the rivers of the Amazon.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general y además no es lo que busca: la carta habla de un problema (el plástico) y propone una solución."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "contexto",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "This text would most probably be published in",
+      "alternativas": [
+        {
+          "t": "the readers' letters section of a newspaper.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o10"
+          ],
+          "explicacion": "La autora dice «I am writing because…» (oración 1) y se dirige a «your readers» (oración 10): escribe a un medio para que la lean sus lectores, como en una carta al director."
+        },
+        {
+          "t": "a science textbook chapter about how plastic breaks down in water.",
+          "codigo": "RV51",
+          "origen": "o2",
+          "explicacion": "El tema del plástico en el agua hace pensar en un libro de ciencias, pero las marcas del texto (yo escribo, «your readers», la invitación final) son de una carta a un periódico."
+        },
+        {
+          "t": "a school report written by the teacher's students.",
+          "codigo": "RV50",
+          "origen": "o5",
+          "explicacion": "Los alumnos aparecen en la carta, pero quien escribe es la profesora («I am a science teacher», oración 1)."
+        },
+        {
+          "t": "an official document that explains Peru's law on plastic bags.",
+          "codigo": "RV7",
+          "origen": "o9",
+          "explicacion": "La ley solo se menciona en la oración 9; el texto no la explica ni es un documento del Estado: da una opinión personal."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "antonimo",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "In sentence 10, the opposite of REUSABLE is",
+      "alternativas": [
+        {
+          "t": "single-use.",
+          "correcta": true,
+          "evidencia": [
+            "o8",
+            "o10"
+          ],
+          "explicacion": "«Reusable» es lo que se usa varias veces. Su contrario es lo que se usa una sola vez: «single-use», como las bolsas de la oración 8, que la autora quiere cambiar."
+        },
+        {
+          "t": "used once more.",
+          "codigo": "RV19",
+          "explicacion": "«Used once more» (usado otra vez) dice casi lo mismo que «reusable»: es un sinónimo, no el contrario."
+        },
+        {
+          "t": "recycled.",
+          "codigo": "RV21",
+          "explicacion": "Reciclar es otra cosa que se hace con lo usado (convertirlo en material nuevo), pero no es lo contrario de reutilizable."
+        },
+        {
+          "t": "useful.",
+          "codigo": "RV20",
+          "explicacion": "Se parece en la forma («reusable», «useful»), pero significa útil, y no es el contrario."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "Which statement contradicts what the letter says?",
+      "alternativas": [
+        {
+          "t": "Plastic in the river disappears after a few months.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o2"
+          ],
+          "explicacion": "Es lo que cree mucha gente (oración 1), y la autora lo niega: «It does not», el plástico se rompe en pedazos pero se queda muchos años en el agua (oración 2)."
+        },
+        {
+          "t": "After the cleaning day, the students asked to clean the river bank again.",
+          "codigo": "RV10",
+          "origen": "o6",
+          "explicacion": "Es verdad: la oración 6 lo dice. Se pide la que contradice a la carta."
+        },
+        {
+          "t": "According to the teacher, cleaning the river bank is not enough by itself.",
+          "codigo": "RV9",
+          "origen": "o7",
+          "explicacion": "Concuerda con la oración 7: limpiar no basta si sigue llegando plástico."
+        },
+        {
+          "t": "Other cities in the Amazon have the same problem with plastic in their rivers.",
+          "codigo": "RV36",
+          "explicacion": "La carta no habla de otras ciudades, pero no decirlo no es contradecirlo. Se pide lo que la carta niega."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, lee esta afirmación y di qué relación tiene con el texto.",
+        "sonda": "For the teacher, less new plastic in the city would mean less plastic arriving at the rivers.",
+        "clase": "se-deduce",
+        "codigos": {
+          "lo-dice": "RV58",
+          "no-se-sabe": "RV34",
+          "lo-contradice": "RV63"
+        },
+        "explicacion": "La oración 7 dice que limpiar no basta si sigue llegando plástico nuevo, y la 8 propone reducir el plástico que usa la ciudad. De ahí se deduce que, para ella, menos plástico en la ciudad es menos plástico en los ríos.",
+        "explicaciones": {
+          "lo-dice": "Ninguna oración lo dice así: se saca de unir la oración 7 (sigue llegando plástico) con la propuesta de la oración 8.",
+          "no-se-sabe": "Sí se puede saber: por eso la autora propone reducir el plástico (oración 8), para que deje de llegar a los ríos (oración 7).",
+          "lo-contradice": "El texto no dice que reducir el plástico no sirva: es justo lo que la autora propone para cuidar los ríos."
+        }
+      },
+      "enunciado": "If the markets of Iquitos had stopped using single-use bags years ago, then, according to the teacher's reasoning,",
+      "alternativas": [
+        {
+          "t": "less plastic would probably reach the rivers today.",
+          "correcta": true,
+          "evidencia": [
+            "o7",
+            "o8"
+          ],
+          "explicacion": "La autora une la basura de los ríos al plástico que sigue llegando (oración 7) y propone empezar por los mercados (oración 8). Si los mercados lo hubieran dejado antes, lo probable es que llegara menos plástico."
+        },
+        {
+          "t": "the river banks would still be just as full of plastic after a heavy rain.",
+          "codigo": "RV63",
+          "origen": "o4",
+          "explicacion": "Vuelve a confirmar lo que el condicional cambia: si el plástico de los mercados se hubiera reducido, el razonamiento de la autora lleva a menos basura, no a la misma."
+        },
+        {
+          "t": "the river banks would have no plastic at all today, so no cleaning would ever be needed.",
+          "codigo": "RV11",
+          "explicacion": "«At all» y «ever» son absolutos: la autora habla de los mercados como un comienzo y menciona también botellas y envases; nada dice que eso solo deje las orillas sin nada de plástico."
+        },
+        {
+          "t": "the students would not have wanted to clean the bank again.",
+          "codigo": "RV7",
+          "origen": "o6",
+          "explicacion": "Nada en el texto une las bolsas de los mercados con las ganas de los alumnos de volver a limpiar. Es una inferencia que el texto no autoriza."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-08",
+  "hechos": [
+    {
+      "afirmacion": "El Perú tiene una ley que regula el plástico de un solo uso (Ley N.° 30884, de 2018).",
+      "fuente": "Ley N.° 30884, Ley que regula el plástico de un solo uso y los recipientes o envases descartables, El Peruano, 19 de diciembre de 2018."
+    },
+    {
+      "afirmacion": "El plástico no desaparece en el agua: se fragmenta en pedazos cada vez más pequeños (microplásticos) que duran muchos años.",
+      "fuente": "PNUMA (UNEP), From Pollution to Solution: A global assessment of marine litter and plastic pollution (2021)."
+    },
+    {
+      "afirmacion": "El río Itaya pasa por Iquitos.",
+      "fuente": "Gobierno Regional de Loreto / IGN, cartografía de la ciudad de Iquitos (ríos Amazonas, Itaya y Nanay)."
+    },
+    {
+      "afirmacion": "La profesora, sus alumnos y la jornada de limpieza son inventados para el ejercicio.",
+      "fuente": "Texto propio (carta ficticia)."
+    }
+  ],
+  "revision": {"por": "subagente (revisor a ciegas)", "fecha": "2026-11-08", "veredicto": "aprobado", "notas": "A ciegas coincidí en los 7 ítems. El p4 pasó de «false according to the letter» a «contradicts» para que lo no mencionado no sea defendible, reforcé el distractor absoluto del p5 y alineé los códigos del antónimo (sinónimo RV19, otro término RV21)."}
+}
