@@ -1,8 +1,8 @@
 {
   "plantilla": "rm-diofanticas",
-  "tolerancia": 1e-9,
+  "tolerancia": 1e-09,
   "nota": "Dinero en soles (las monedas, en céntimos en _datos: S y den). Todas las respuestas son enteras y salen de enumerar todas las soluciones.",
-  "verificacion": "",
+  "verificacion": "Verificador ciego (subagente, 8 nov 2026): resolvió los 27 casos sin ver el generador, por enumeración (compras, palitos, bodeguera), programación dinámica (dardos, alcancía, cifras que quedan), búsqueda recursiva (grupos de monedas), las 120 permutaciones con fracciones exactas (expresión) y la condición resto = n − f (caramelos). 27 de 27 coinciden. Las correcciones de la revisión (12 nov 2026) no cambiaron ningún caso.",
   "casos": [
     {
       "semilla": "entrada-1",

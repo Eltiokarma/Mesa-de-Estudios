@@ -159,3 +159,26 @@ test('ningún distractor es la respuesta y la figura de dardos no la revela', ()
     if (p._datos.tipo === 'dardos') for (const x of p._datos.sectores) assert.ok(p.figura.alt.includes(String(x)));
   }
 });
+
+test('reparto: en 2000 semillas, C + f tiene un solo divisor en el rango (una sola respuesta defendible)', () => {
+  let vistos = 0;
+  for (let s = 0; s < 2000; s++) {
+    const d = gen.generar(s)._datos;
+    if (d.tipo !== 'reparto') continue;
+    vistos++;
+    const N = d.C + d.f, enRango = [];
+    for (let n = d.lo + 1; n < d.hi; n++) if (N % n === 0) enRango.push(n);
+    assert.equal(enRango.length, 1, `semilla ${s}: divisores de ${N} entre ${d.lo} y ${d.hi}: ${enRango.join(', ')}`);
+  }
+  assert.ok(vistos > 50);
+});
+
+test('tres precios: «la compra con más cajas» solo se ofrece si es una sola', () => {
+  for (let s = 0; s < 2000; s++) {
+    const p = gen.generar(s), d = p._datos;
+    if (d.tipo !== 'tres-precios' || !p.alternativas.some(a => a.error && a.error.id === 'RMP2-mas-articulos')) continue;
+    const sol = gen.calc.tresPrecios(d.p, d.g, d.T, d.m).soluciones, cajas = x => x[0] + x[1] + x[2];
+    const max = Math.max(...sol.map(cajas));
+    assert.equal(sol.filter(x => cajas(x) === max).length, 1, `semilla ${s}`);
+  }
+});

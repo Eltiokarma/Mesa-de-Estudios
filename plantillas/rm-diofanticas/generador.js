@@ -27,7 +27,8 @@
  * Errores: RMP2 (primera solución sin optimizar, o el extremo equivocado), RMP51 (condición olvidada:
  * los mínimos por tipo, que sea exacto, los ceros, que sea entero), RMP53 (el borde cuenta: «no
  * alcanza» tomado como «alcanza justo»), RMP58 (jerarquía de operaciones), AR5 (dato intermedio),
- * AR18 (enumeración sin sistema, parcial) y RM1 (traducción: «faltan» leído como «sobran», hipótesis).
+ * RMP80 (das por posible uno más allá del óptimo sin comprobarlo: una moneda en dos grupos, un dardo
+ * menos), AR18 (enumeración sin sistema, parcial) y RM1 (traducción: «faltan» leído como «sobran», hipótesis).
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -339,7 +340,7 @@
       h('RMP51-sin-existencias', Math.floor(total / G), `Dividiste todo el dinero (S/ ${total}) entre S/ ${G}. No basta con que alcance el dinero: cada grupo tiene que sumar exacto con las monedas que hay.`),
       h('RMP2-voraz', voraz, 'Armaste cada grupo con todas las monedas grandes que pudiste. Así se gastan pronto las de S/ 5 o las de S/ 1 que hacen falta para cerrar otros grupos: hay que comparar repartos.'),
       h('RMP2-un-patron', unPatron, 'Armaste todos los grupos iguales. Combinando grupos de formas distintas se aprovechan mejor las monedas.'),
-      h('AR18-moneda-repetida', max + 1, `Armando los grupos al tanteo, usaste alguna moneda en dos grupos. Cuenta las monedas de cada tipo que gasta tu reparto: con las que hay no se llega a ${max + 1} grupos.`, 'parcial', RM),
+      h('RMP80-moneda-repetida', max + 1, `Armando los grupos al tanteo, usaste alguna moneda en dos grupos. Cuenta las monedas de cada tipo que gasta tu reparto: con las que hay no se llega a ${max + 1} grupos.`),
     ].filter(e => !(e.id === 'RMP2-voraz' && e.valor > max) && !(e.id === 'RMP2-un-patron' && e.valor > max));
     const enunciado = ['Juan tiene ', v('c1', `${cant[0]} monedas de S/ 1`), ', ', v('c2', `${cant[1]} de S/ 2`), ' y ', v('c5', `${cant[2]} de S/ 5`),
       '. Quiere formar grupos de monedas que sumen exactamente ', v('G', `S/ ${G}`), ' cada uno, sin que una moneda esté en dos grupos.'];
@@ -362,10 +363,13 @@
     const r = calc.tresPrecios(p, g, T, m);
     if (!r || r.soluciones.length < 3 || r.soluciones.length > 25) return null;
     const sin = calc.tresPrecios(p, g, T, 0);
-    const masArt = r.soluciones.reduce((b, s) => (s[0] + s[1] + s[2] > b[0] + b[1] + b[2] ? s : b));
+    const cajas = s => s[0] + s[1] + s[2];
+    const masArt = r.soluciones.reduce((b, s) => (cajas(s) > cajas(b) ? s : b));
+    const empateCajas = r.soluciones.filter(s => cajas(s) === cajas(masArt)).length > 1;
     const errores = [
       h('RMP51-sin-minimos', sin.ganancia, `Olvidaste que debe comprar al menos ${m} de cada tipo.`),
-      h('RMP2-mas-articulos', r.gan(masArt), 'Elegiste la compra con más cajas. Más cajas no es más ganancia: hay que calcular la ganancia de cada compra posible.'),
+      // Si dos compras empatan en el máximo de cajas, «la de más cajas» no es una sola: no se ofrece.
+      ...(empateCajas ? [] : [h('RMP2-mas-articulos', r.gan(masArt), 'Elegiste la compra con más cajas. Más cajas no es más ganancia: hay que calcular la ganancia de cada compra posible.')]),
       h('RMP2-primera', r.gan(r.soluciones[0]), 'Te quedaste con la primera compra que cumple. Hay que comparar la ganancia de todas.'),
       h('AR5-cajas', r.mejor[0] + r.mejor[1] + r.mejor[2], 'Ese es el número de cajas de la mejor compra. La pregunta pide la ganancia.'),
     ];
@@ -375,7 +379,7 @@
     const solucion = [
       [`Con x, y, z cajas: ${p[0]}x + ${p[1]}y + ${p[2]}z = `, v('T', T), ', con x, y, z ≥ ', v('m', m), '.'],
       [`Hay ${r.soluciones.length} compras posibles. Ganancia = ${g[0]}x + ${g[1]}y + ${g[2]}z en cada una; por ejemplo, ${r.soluciones.slice(0, 3).map(s => `(${s.join(', ')}) da S/ ${r.gan(s)}`).join('; ')}.`],
-      [`La mayor ganancia es con (${r.mejor.join(', ')}): ${g[0]}·${r.mejor[0]} + ${g[1]}·${r.mejor[1]} + ${g[2]}·${r.mejor[2]} = `, v('T', `S/ ${r.ganancia}`), '.'],
+      [`La mayor ganancia es con (${r.mejor.join(', ')}): ${g[0]}·${r.mejor[0]} + ${g[1]}·${r.mejor[1]} + ${g[2]}·${r.mejor[2]} = S/ ${r.ganancia}.`],
     ];
     return cerrar(rng, semilla, { correcta: r.ganancia, errores, texto: x => `S/ ${f(x)}`, enunciado, solucion,
       variables: { T: { nombre: 'gasto', color: 'h' }, p: { nombre: 'precios', color: 'o' }, g: { nombre: 'ganancias', color: 'i' }, m: { nombre: 'mínimo por tipo', color: 'd' } },
@@ -384,12 +388,13 @@
 
   // ---------------------------------------------------------------- dardos
   function figuraDardos(sect) {
-    const rad = [80, 62, 44, 26].slice(0, sect.length);
-    let s = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 190" font-size="16" fill="currentColor">`;
+    const rad = [88, 66, 44, 22].slice(0, sect.length), cy = 98;
+    let s = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" font-size="14" fill="currentColor">`;
     const cols = ['var(--card)', 'var(--line)', 'var(--card)', 'var(--line)'];
-    rad.forEach((r, i) => { s += `<circle cx="160" cy="92" r="${r}" style="fill:${cols[i]}" stroke="currentColor" stroke-width="2"/>`; });
+    rad.forEach((r, i) => { s += `<circle cx="160" cy="${cy}" r="${r}" style="fill:${cols[i]}" stroke="currentColor" stroke-width="2"/>`; });
     sect.forEach((x, i) => {
-      const y = i === sect.length - 1 ? 98 : 92 - (rad[i] + rad[i + 1]) / 2 + 6;
+      // Al centro de cada banda (el último, en el centro del círculo); +5 baja la línea base al medio del texto.
+      const y = (i === sect.length - 1 ? cy : cy - (rad[i] + rad[i + 1]) / 2) + 5;
       s += `<text x="160" y="${y}" text-anchor="middle" font-weight="bold">${P.xml(x)}</text>`;
     });
     return s + '</svg>';
@@ -415,7 +420,7 @@
       h('RMP2-voraz', vz * costo, `Tiraste primero todo lo que pudiste al ${sect[3]} y completaste con los demás: esa es la primera combinación que encuentras, no necesariamente la más corta. Hay que comparar.`),
       h('RMP51-sin-exacto', Math.ceil(S / sect[3]) * costo, `Dividiste ${S} entre ${sect[3]} y redondeaste, pero con esos dardos no se logra exactamente ${S}.`),
       ...(maxT ? [h('RMP2-al-reves', maxT * costo, `Esa es la combinación con más dardos (todos al ${sect[0]}). Se pide la que usa menos.`)] : []),
-      h('AR18-uno-menos', (best - 1) * costo, `Con ${best - 1} ${best - 1 === 1 ? 'dardo' : 'dardos'} no hay ninguna combinación que sume ${S}: revísalo probando con sistema.`, 'parcial', RM),
+      h('RMP80-uno-menos', (best - 1) * costo, `Con ${best - 1} ${best - 1 === 1 ? 'dardo' : 'dardos'} no hay ninguna combinación que sume ${S}: revísalo probando con sistema.`),
       ...(pide === 'costo' ? [h('AR5-tiros', best, 'Ese es el número de dardos. La pregunta pide cuánto se paga.')] : []),
     ];
     const enunciado = ['En la feria, una diana tiene anillos que valen ', ...sect.flatMap((x, i) => [v('s', x), i < sect.length - 2 ? ', ' : i === sect.length - 2 ? ' y ' : '']), ' puntos (ver la figura). Cada dardo cae en un anillo, y se puede repetir anillo. Para ganar el premio hay que sumar exactamente ',
@@ -476,6 +481,8 @@
     const ancho = rng.entero(6, 14), lo = rng.entero(n - ancho + 1, n - 1), hi = lo + ancho;
     const cand = calc.reparto({ C, f: falta, lo, hi });
     if (cand.length !== 1 || cand[0] !== n) return null;
+    // Solo un divisor de C + f en el rango, aunque no se mire que f < n: así no hay dos respuestas defendibles.
+    if (divisores(N).filter(x => x > lo && x < hi).length !== 1) return null;
     const enRango = M => divisores(M).filter(x => x > lo && x < hi);
     const dC = enRango(C), dR = C - falta > 0 ? enRango(C - falta) : [];
     const fuera = divisores(N).filter(x => x > 1 && x < N && (x <= lo || x >= hi)).sort((a, b) => Math.min(Math.abs(a - lo), Math.abs(a - hi)) - Math.min(Math.abs(b - lo), Math.abs(b - hi)));
@@ -483,8 +490,8 @@
       ...(dC.length === 1 ? [h('RMP51-sin-faltan', dC[0], `Buscaste un divisor de ${C}, pero con ${C} caramelos el reparto no es exacto: faltan ${falta}. Hay que trabajar con ${C} + ${falta} = ${N}.`)] : []),
       ...(dR.length === 1 ? [h('RM1-sobran', dR[0], `Restaste los ${falta} caramelos, como si sobraran. Faltan: hay que sumarlos, ${C} + ${falta} = ${N}.`)] : []),
       h('AR5-cada-uno', q, `Eso es lo que recibe cada alumno (${N} ÷ ${n}). La pregunta pide cuántos alumnos hay.`),
-      ...(fuera.length ? [h('RMP51-fuera-de-rango', fuera[0], `${fuera[0]} divide a ${N}, pero no está entre ${lo} y ${hi}.`)] : []),
-      ...(fuera.length > 1 ? [h('RMP51-fuera-de-rango-2', fuera[1], `${fuera[1]} divide a ${N}, pero no está entre ${lo} y ${hi}.`)] : []),
+      ...(fuera.length ? [h('RMP51-fuera-de-rango', fuera[0], `${fuera[0]} divide a ${N}, pero el aula tiene más de ${lo} y menos de ${hi} alumnos.`)] : []),
+      ...(fuera.length > 1 ? [h('RMP51-fuera-de-rango-2', fuera[1], `${fuera[1]} divide a ${N}, pero el aula tiene más de ${lo} y menos de ${hi} alumnos.`)] : []),
     ];
     const enunciado = ['Se quieren repartir ', v('C', `${C} caramelos`), ' en partes iguales entre los alumnos de un aula, sin que sobre ninguno. Para lograrlo faltan ', v('f', `${falta} ${falta === 1 ? 'caramelo' : 'caramelos'}`),
       ` (con ${falta === 1 ? 'uno' : falta} más el reparto sería exacto). En el aula hay `, v('r', `más de ${lo} y menos de ${hi} alumnos`), '.'];
