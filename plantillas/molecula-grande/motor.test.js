@@ -4,7 +4,7 @@
 // 2. Biblioteca: cada SMILES se lee, da la fórmula molecular que dio RDKit (herramienta de autor, coordenadas.py), y
 //    los carbonos quirales y los anillos aromáticos que cuenta RDKit; tiene coordenadas para cada átomo y los enlaces
 //    del dibujo miden cerca de 1.
-// 3. Propiedades en las 30 moléculas: sp + sp² + sp³ = carbonos; σ = enlaces entre átomos + H; electrones π = 2π;
+// 3. Propiedades en todas las moléculas de la biblioteca: sp + sp² + sp³ = carbonos; σ = enlaces entre átomos + H; electrones π = 2π;
 //    polares + apolares = σ + π; anillos = enlaces − átomos + 1; electrones de valencia = 2 × (pares libres + pares
 //    de enlace); todo carbono cumple el octeto; escribir la molécula y volver a leerla no cambia nada; hidrogenar
 //    suma 2 H y quita un π; en cada lupa hay cuatro opciones de valor distinto y una sola correcta, y ningún error da
@@ -38,7 +38,7 @@ function comprobar(fn, args, espera, que) {
 // 1. casos.json
 test('casos.json: formato', () => {
   assert.equal(datos.plantilla, 'molecula-grande');
-  assert.ok(datos.casos.length >= 25 && datos.casos.length <= 40, `${datos.casos.length} casos`);
+  assert.ok(datos.casos.length >= 25 && datos.casos.length <= 60, `${datos.casos.length} casos`);
   assert.equal(typeof datos.verificacion, 'string');
   for (const c of datos.casos) assert.ok(c.nombre && c.fn && Array.isArray(c.args) && c.espera, JSON.stringify(c).slice(0, 80));
   // Muchas moléculas distintas.
@@ -61,9 +61,13 @@ const RDKIT = {
   'curcumina': ['C21H20O6', 0, 2], 'capsaicina': ['C18H27NO3', 0, 1], 'cafeina': ['C8H10N4O2', 0, 2], 'adenina': ['C5H5N5', 0, 2],
   'tiroxina': ['C15H11I4NO4', 1, 2], 'alicina': ['C6H10OS2', 0, 0], 'acido-citrico': ['C6H8O7', 0, 0], 'acido-piruvico': ['C3H4O3', 0, 0],
   'acido-oleico': ['C18H34O2', 0, 0], 'acido-taririco': ['C18H32O2', 0, 0], 'penicilina-g': ['C16H18N2O4S', 3, 1],
+  // cierre-100 (12 nov 2026), con RDKit 2026.09
+  'acido-crotonico': ['C4H6O2', 0, 0], 'acido-3-hidroxibutanoico': ['C4H8O3', 1, 0], 'acido-acetoacetico': ['C4H6O3', 0, 0],
+  'acido-p-aminobenzoico': ['C7H7NO2', 0, 1], 'acido-gluconico': ['C6H12O7', 4, 0], 'gluconato-de-isopropilo': ['C9H18O7', 4, 0],
+  'sorbitol': ['C6H14O6', 4, 0], 'glucosa-6-fosfato': ['C6H13O9P', 5, 0], 'bilirrubina': ['C33H36N4O6', 0, 2],
 };
-test('biblioteca: de 20 a 30 moléculas, todas con su número de RDKit', () => {
-  assert.ok(BIB.LISTA.length >= 20 && BIB.LISTA.length <= 30);
+test('biblioteca: de 20 a 40 moléculas, todas con su número de RDKit', () => {
+  assert.ok(BIB.LISTA.length >= 20 && BIB.LISTA.length <= 40);
   assert.deepEqual(BIB.LISTA.map(m => m.id).sort(), Object.keys(RDKIT).sort());
 });
 for (const m of BIB.LISTA) test(`biblioteca: ${m.id}`, () => {
@@ -83,7 +87,7 @@ for (const m of BIB.LISTA) test(`biblioteca: ${m.id}`, () => {
 
 // 3. Propiedades
 const IDS = BIB.LISTA.map(m => m.id);
-const VE = { H: 1, C: 4, N: 5, O: 6, S: 6, I: 7 };
+const VE = { H: 1, C: 4, N: 5, O: 6, P: 5, S: 6, I: 7 };
 test('propiedades de los conteos en toda la biblioteca', () => {
   for (const id of IDS) {
     const mol = motor.molecula(motor.ficha(id).smiles), f = motor.formula(id), h = motor.hibridacion(id), e = motor.enlaces(id);
@@ -119,7 +123,7 @@ test('hidrogenar: entran 2 H y sale un enlace π; el doble enlace del C=C pasa a
   assert.ok(n > 50);
   assert.throws(() => motor.hidrogenar('acido-oleico', 0), /simple/);
 });
-const LUPAS = ['sp2', 'sp3', 'sp', 'pi', 'epi', 'pares', 'quirales', 'aromaticos', 'polares', 'octeto'];
+const LUPAS = ['sp2', 'sp3', 'sp', 'pi', 'epi', 'pares', 'quirales', 'aromaticos', 'polares', 'octeto', 'metilos'];
 test('opciones: cuatro valores distintos, una sola correcta, y ningún error da la correcta', () => {
   for (const id of IDS) for (const l of [...LUPAS, 'grupos']) {
     if (!motor.lupaDisponible(id, l)) continue;

@@ -4,15 +4,15 @@ Líneas descartadas: 0. Preguntas registradas: 2550; distintas: 2550.
 
 | Curso | Registradas | Distintas | Periodos con el curso | Cubre sí | A medias | No |
 | --- | --- | --- | --- | --- | --- | --- |
-| Física | 277 | 277 | 14 | 276 (100 %) | 1 (0 %) | 0 (0 %) |
-| Química | 307 | 307 | 14 | 299 (97 %) | 8 (3 %) | 0 (0 %) |
+| Física | 277 | 277 | 14 | 277 (100 %) | 0 (0 %) | 0 (0 %) |
+| Química | 307 | 307 | 14 | 307 (100 %) | 0 (0 %) | 0 (0 %) |
 | Aritmética | 184 | 184 | 14 | 184 (100 %) | 0 (0 %) | 0 (0 %) |
 | Álgebra | 160 | 160 | 14 | 160 (100 %) | 0 (0 %) | 0 (0 %) |
 | Geometría | 169 | 169 | 14 | 169 (100 %) | 0 (0 %) | 0 (0 %) |
 | Trigonometría | 113 | 113 | 14 | 113 (100 %) | 0 (0 %) | 0 (0 %) |
-| Razonamiento matemático | 650 | 650 | 14 | 625 (96 %) | 23 (4 %) | 2 (0 %) |
-| Razonamiento verbal | 690 | 690 | 14 | 689 (100 %) | 1 (0 %) | 0 (0 %) |
-| **Total** | 2550 | 2550 | | 2515 (99 %) | 33 (1 %) | 2 (0 %) |
+| Razonamiento matemático | 650 | 650 | 14 | 650 (100 %) | 0 (0 %) | 0 (0 %) |
+| Razonamiento verbal | 690 | 690 | 14 | 690 (100 %) | 0 (0 %) | 0 (0 %) |
+| **Total** | 2550 | 2550 | | 2550 (100 %) | 0 (0 %) | 0 (0 %) |
 
 ## Física (277 distintas)
 
@@ -20,7 +20,7 @@ Por unidad del catálogo:
 
 | Unidad | Preguntas | Periodos (de 14) | Sí / medio / no | Módulos que la cubren |
 | --- | --- | --- | --- | --- |
-| fisica.trabajo-y-energia | 24 | 12 | 23 / 1 / 0 | energia, energia-potencia |
+| fisica.trabajo-y-energia | 24 | 12 | 24 / 0 / 0 | energia, energia-potencia |
 | fisica.corriente-y-circuitos | 23 | 12 | 23 / 0 / 0 | circuitos-cc, circuitos-joule, circuitos-mallas |
 | fisica.oscilaciones | 23 | 12 | 23 / 0 / 0 | mas, mas-horaria |
 | fisica.temperatura-y-calor | 22 | 13 | 22 / 0 / 0 | calorimetria, calor-escalas |
@@ -70,7 +70,7 @@ Por tema (en razonamiento matemático y verbal, por familia de temas):
 | Bloques unidos por cuerda y polea | 2 | 2 | fisica.dinamica | dinamica | 2 / 0 / 0 |
 | Carga en campo magnético: periodo | 2 | 2 | fisica.magnetismo | carga-en-campo | 2 / 0 / 0 |
 | Choque plástico y conservación del momento | 2 | 2 | fisica.impulso-y-choques | choques | 2 / 0 / 0 |
-| Conservación de la energía con resorte | 2 | 2 | fisica.trabajo-y-energia | energia | 1 / 1 / 0 |
+| Conservación de la energía con resorte | 2 | 2 | fisica.trabajo-y-energia | energia-potencia | 2 / 0 / 0 |
 | Dilatación lineal | 2 | 2 | fisica.temperatura-y-calor | calorimetria | 2 / 0 / 0 |
 | Ecuación horaria del MRUV | 2 | 2 | fisica.movimiento-rectilineo | cinematica-medias | 2 / 0 / 0 |
 | Efecto fotoeléctrico | 2 | 2 | fisica.fisica-moderna | fisica-moderna | 2 / 0 / 0 |
@@ -244,11 +244,11 @@ Por unidad del catálogo:
 | Unidad | Preguntas | Periodos (de 14) | Sí / medio / no | Módulos que la cubren |
 | --- | --- | --- | --- | --- |
 | quimica.estequiometria | 34 | 14 | 34 / 0 / 0 | rendimiento-pureza, estequiometria-admision, limitante-particulas |
-| quimica.funciones-organicas | 32 | 13 | 29 / 3 / 0 | funciones-organicas, nombre-polifuncional, molecula-grande |
-| quimica.biomoleculas-y-productos-naturales | 27 | 9 | 26 / 1 / 0 | molecula-grande, quimica-conceptos, nombre-polifuncional |
-| quimica.reacciones-y-balance | 24 | 12 | 22 / 2 / 0 | balance-reacciones, clasificar-reacciones |
-| quimica.electroquimica | 21 | 14 | 20 / 1 / 0 | celda-galvanica, quimica-conceptos |
-| quimica.hidrocarburos | 21 | 11 | 20 / 1 / 0 | hidrocarburos, molecula-grande, quimica-conceptos |
+| quimica.funciones-organicas | 32 | 13 | 32 / 0 / 0 | funciones-organicas, nombre-polifuncional, quimica-conceptos |
+| quimica.biomoleculas-y-productos-naturales | 27 | 9 | 27 / 0 / 0 | molecula-grande, quimica-conceptos, nombre-polifuncional |
+| quimica.reacciones-y-balance | 24 | 12 | 24 / 0 / 0 | balance-reacciones, clasificar-reacciones, quimica-conceptos |
+| quimica.electroquimica | 21 | 14 | 21 / 0 / 0 | celda-galvanica, quimica-conceptos |
+| quimica.hidrocarburos | 21 | 11 | 21 / 0 / 0 | hidrocarburos, molecula-grande, quimica-conceptos |
 | quimica.acidos-y-bases | 15 | 10 | 15 / 0 / 0 | acidos-bases, quimica-conceptos |
 | quimica.soluciones | 14 | 9 | 14 / 0 / 0 | soluciones-meq-ppm, soluciones, quimica-conceptos |
 | quimica.enlace-quimico | 13 | 9 | 13 / 0 / 0 | enlace, quimica-conceptos, hidrocarburos |
@@ -278,7 +278,7 @@ Por tema (en razonamiento matemático y verbal, por familia de temas):
 | Balance y clasificación de reacciones | 2 | 2 | quimica.reacciones-y-balance | balance-reacciones | 2 / 0 / 0 |
 | Carotenoides y vitaminas: estructura y oxidación | 2 | 2 | quimica.biomoleculas-y-productos-naturales | molecula-grande | 2 / 0 / 0 |
 | Curva de titulación | 2 | 2 | quimica.acidos-y-bases | acidos-bases | 2 / 0 / 0 |
-| Dismutación redox | 2 | 2 | quimica.reacciones-y-balance | balance-reacciones | 1 / 1 / 0 |
+| Dismutación redox | 2 | 2 | quimica.reacciones-y-balance | balance-reacciones | 2 / 0 / 0 |
 | Electrólisis del agua y Faraday | 2 | 2 | quimica.electroquimica | celda-galvanica | 2 / 0 / 0 |
 | Estequiometría con soluciones | 2 | 2 | quimica.estequiometria | soluciones-meq-ppm | 2 / 0 / 0 |
 | Fuerzas intermoleculares y punto de ebullición | 2 | 2 | quimica.liquidos-y-solidos | liquidos-y-solidos | 2 / 0 / 0 |
@@ -299,7 +299,7 @@ Por tema (en razonamiento matemático y verbal, por familia de temas):
 | Neutralización con equivalentes | 2 | 1 | quimica.acidos-y-bases | acidos-bases | 2 / 0 / 0 |
 | Acumulador de plomo | 1 | 1 | quimica.electroquimica | quimica-conceptos | 1 / 0 / 0 |
 | Agente oxidante y reductor | 1 | 1 | quimica.reacciones-y-balance | balance-reacciones | 1 / 0 / 0 |
-| Agentes y especies en un redox con radicales | 1 | 1 | quimica.reacciones-y-balance | balance-reacciones | 0 / 1 / 0 |
+| Agentes y especies en un redox con radicales | 1 | 1 | quimica.reacciones-y-balance | quimica-conceptos | 1 / 0 / 0 |
 | Alcoholes y su oxidación | 1 | 1 | quimica.funciones-organicas | funciones-organicas | 1 / 0 / 0 |
 | Alcoholes, aldehídos y cetonas: fórmula e hibridación | 1 | 1 | quimica.funciones-organicas | funciones-organicas | 1 / 0 / 0 |
 | Alcoholes: mezclas, fase y puente de hidrógeno | 1 | 1 | quimica.funciones-organicas | funciones-organicas | 1 / 0 / 0 |
@@ -338,7 +338,7 @@ Por tema (en razonamiento matemático y verbal, por familia de temas):
 | Combustión, polimerización y aromáticos policíclicos | 1 | 1 | quimica.recursos-naturales | quimica-conceptos | 1 / 0 / 0 |
 | Composición centesimal | 1 | 1 | quimica.mol-y-composicion | mol-composicion | 1 / 0 / 0 |
 | Composición centesimal de sales hidratadas | 1 | 1 | quimica.mol-y-composicion | mol-composicion | 1 / 0 / 0 |
-| Compuestos aromáticos con dos funciones | 1 | 1 | quimica.funciones-organicas | funciones-organicas | 0 / 1 / 0 |
+| Compuestos aromáticos con dos funciones | 1 | 1 | quimica.funciones-organicas | quimica-conceptos | 1 / 0 / 0 |
 | Compuestos iónicos: propiedades | 1 | 1 | quimica.enlace-quimico | quimica-conceptos | 1 / 0 / 0 |
 | Compuestos polifuncionales: ésteres y aminas | 1 | 1 | quimica.funciones-organicas | nombre-polifuncional | 1 / 0 / 0 |
 | Configuración anómala del cromo | 1 | 1 | quimica.estructura-atomica | atomo-y-tabla | 1 / 0 / 0 |
@@ -358,7 +358,7 @@ Por tema (en razonamiento matemático y verbal, por familia de temas):
 | Contaminantes del aire, agua y suelo | 1 | 1 | quimica.ambiente-y-quimica-aplicada | quimica-conceptos | 1 / 0 / 0 |
 | Conversión de unidades de concentración | 1 | 1 | quimica.soluciones | soluciones | 1 / 0 / 0 |
 | Densidad de gases y ecuación de estado | 1 | 1 | quimica.gases | gases | 1 / 0 / 0 |
-| Diagrama de Pourbaix | 1 | 1 | quimica.electroquimica | celda-galvanica | 0 / 1 / 0 |
+| Diagrama de Pourbaix | 1 | 1 | quimica.electroquimica | quimica-conceptos | 1 / 0 / 0 |
 | Diagrama de fases del agua | 1 | 1 | quimica.liquidos-y-solidos | liquidos-y-solidos | 1 / 0 / 0 |
 | Dilución con miliequivalentes | 1 | 1 | quimica.soluciones | soluciones-meq-ppm | 1 / 0 / 0 |
 | Dilución desde ácido concentrado | 1 | 1 | quimica.soluciones | soluciones | 1 / 0 / 0 |
@@ -373,7 +373,7 @@ Por tema (en razonamiento matemático y verbal, por familia de temas):
 | Elementos frente a compuestos y oxoaniones | 1 | 1 | quimica.enlace-quimico | quimica-conceptos | 1 / 0 / 0 |
 | Elementos, compuestos y mezclas | 1 | 1 | quimica.materia-y-energia | materia-energia | 1 / 0 / 0 |
 | Enlace iónico y estructura de Lewis | 1 | 1 | quimica.enlace-quimico | enlace | 1 / 0 / 0 |
-| Enlaces pi y sustituyentes en polienos | 1 | 1 | quimica.hidrocarburos | hidrocarburos | 0 / 1 / 0 |
+| Enlaces pi y sustituyentes en polienos | 1 | 1 | quimica.hidrocarburos | quimica-conceptos | 1 / 0 / 0 |
 | Enlaces polares y octeto en moléculas orgánicas | 1 | 1 | quimica.enlace-quimico | molecula-grande | 1 / 0 / 0 |
 | Enlaces sigma y pi en alquenos | 1 | 1 | quimica.hidrocarburos | hidrocarburos | 1 / 0 / 0 |
 | Enlaces sigma y pi en aromáticos | 1 | 1 | quimica.hidrocarburos | hidrocarburos | 1 / 0 / 0 |
@@ -401,11 +401,11 @@ Por tema (en razonamiento matemático y verbal, por familia de temas):
 | Gases nobles | 1 | 1 | quimica.tabla-periodica | atomo-y-tabla | 1 / 0 / 0 |
 | Grupos funcionales en moléculas complejas | 1 | 1 | quimica.funciones-organicas | molecula-grande | 1 / 0 / 0 |
 | Grupos funcionales y propiedades | 1 | 1 | quimica.funciones-organicas | funciones-organicas | 1 / 0 / 0 |
-| Grupos funcionales y quiralidad en moléculas biológicas | 1 | 1 | quimica.funciones-organicas | funciones-organicas | 0 / 1 / 0 |
+| Grupos funcionales y quiralidad en moléculas biológicas | 1 | 1 | quimica.funciones-organicas | quimica-conceptos | 1 / 0 / 0 |
 | Grupos funcionales: aldehídos | 1 | 1 | quimica.funciones-organicas | funciones-organicas | 1 / 0 / 0 |
 | Grupos y periodos: propiedades | 1 | 1 | quimica.tabla-periodica | atomo-y-tabla | 1 / 0 / 0 |
 | Heterociclos: pares libres e hibridación | 1 | 1 | quimica.funciones-organicas | molecula-grande | 1 / 0 / 0 |
-| Hibridación e isomería en compuestos oxigenados | 1 | 1 | quimica.funciones-organicas | funciones-organicas | 0 / 1 / 0 |
+| Hibridación e isomería en compuestos oxigenados | 1 | 1 | quimica.funciones-organicas | quimica-conceptos | 1 / 0 / 0 |
 | Hibridación en aminas | 1 | 1 | quimica.funciones-organicas | funciones-organicas | 1 / 0 / 0 |
 | Hibridación en cicloalquenos | 1 | 1 | quimica.hidrocarburos | hidrocarburos | 1 / 0 / 0 |
 | Hibridación en hidrocarburos | 1 | 1 | quimica.hidrocarburos | hidrocarburos | 1 / 0 / 0 |
@@ -474,7 +474,7 @@ Por tema (en razonamiento matemático y verbal, por familia de temas):
 | Número de moléculas en una dosis | 1 | 1 | quimica.mol-y-composicion | mol-composicion | 1 / 0 / 0 |
 | Números de oxidación en redox | 1 | 1 | quimica.reacciones-y-balance | balance-reacciones | 1 / 0 / 0 |
 | Oxidación sucesiva de grupos funcionales | 1 | 1 | quimica.funciones-organicas | nombre-polifuncional | 1 / 0 / 0 |
-| Oxidación y reducción de azúcares | 1 | 1 | quimica.biomoleculas-y-productos-naturales | biomoleculas | 0 / 1 / 0 |
+| Oxidación y reducción de azúcares | 1 | 1 | quimica.biomoleculas-y-productos-naturales | quimica-conceptos | 1 / 0 / 0 |
 | Oxoaniones del cloro | 1 | 1 | quimica.nomenclatura-inorganica | nomenclatura-inorganica | 1 / 0 / 0 |
 | Pares libres y geometría molecular | 1 | 1 | quimica.enlace-quimico | enlace | 1 / 0 / 0 |
 | Partículas subatómicas | 1 | 1 | quimica.estructura-atomica | atomo-y-tabla | 1 / 0 / 0 |
@@ -1224,30 +1224,31 @@ Por unidad del catálogo:
 
 | Unidad | Preguntas | Periodos (de 14) | Sí / medio / no | Módulos que la cubren |
 | --- | --- | --- | --- | --- |
-| razonamiento-matematico.cronometria-y-calendarios | 66 | 13 | 64 / 2 / 0 | relojes-calendarios, rm-relojes |
-| razonamiento-matematico.cortes-y-pesadas | 55 | 13 | 52 / 3 / 0 | cortes-pesadas, rm-cortes, rm-balanzas |
-| razonamiento-matematico.rutas-y-visualizacion-espacial | 54 | 13 | 52 / 2 / 0 | rutas-espacio, rm-lectura-palabras, vistas-cubitos |
+| razonamiento-matematico.cronometria-y-calendarios | 66 | 13 | 66 / 0 / 0 | relojes-calendarios, rm-relojes |
+| razonamiento-matematico.cortes-y-pesadas | 55 | 13 | 55 / 0 / 0 | cortes-pesadas, rm-cortes, rm-balanzas |
+| razonamiento-matematico.rutas-y-visualizacion-espacial | 54 | 13 | 54 / 0 / 0 | rutas-espacio, rm-lectura-palabras, vistas-cubitos |
 | razonamiento-matematico.tablas-graficos-y-suficiencia | 43 | 13 | 43 / 0 / 0 | tablas-graficos, rm-planteo |
-| razonamiento-matematico.transformaciones-de-figuras | 41 | 14 | 40 / 1 / 0 | rodamientos, simetria, rm-fichas |
-| razonamiento-matematico.traslados-y-puntos-cardinales | 33 | 13 | 29 / 4 / 0 | rm-rumbos, traslados-sucesos, rm-trasvases |
-| razonamiento-matematico.trazos-y-perimetros | 33 | 12 | 32 / 1 / 0 | trazos-rutas, papel-doblado, rm-fichas |
-| razonamiento-matematico.razonamiento-deductivo | 32 | 14 | 31 / 1 / 0 | orden-informacion, rm-parentesco, rm-deduccion |
+| razonamiento-matematico.transformaciones-de-figuras | 41 | 14 | 41 / 0 / 0 | rodamientos, simetria, rm-fichas |
+| razonamiento-matematico.traslados-y-puntos-cardinales | 33 | 13 | 33 / 0 / 0 | rm-rumbos, rm-movimientos, rm-trasvases |
+| razonamiento-matematico.trazos-y-perimetros | 33 | 12 | 33 / 0 / 0 | trazos-rutas, papel-doblado, rm-fichas |
+| razonamiento-matematico.razonamiento-deductivo | 32 | 14 | 32 / 0 / 0 | orden-informacion, rm-parentesco, rm-deduccion |
 | razonamiento-matematico.arreglos-numericos | 30 | 14 | 30 / 0 / 0 | arreglos-giros, rm-arreglos |
-| razonamiento-matematico.certezas | 30 | 12 | 27 / 3 / 0 | rm-certezas, orden-informacion |
-| geometria.razonamiento-con-figuras | 26 | 11 | 25 / 1 / 0 | razonamiento-figuras, cubitos-pintados, cuadricula-piezas |
+| razonamiento-matematico.certezas | 30 | 12 | 30 / 0 / 0 | rm-certezas, orden-informacion |
+| geometria.razonamiento-con-figuras | 26 | 11 | 26 / 0 / 0 | razonamiento-figuras, cubitos-pintados, cuadricula-piezas |
 | razonamiento-matematico.razonamiento-inductivo | 26 | 13 | 26 / 0 / 0 | sucesiones, rm-ciclos, rm-fichas |
 | razonamiento-matematico.verdades-y-mentiras | 26 | 14 | 26 / 0 / 0 | orden-informacion, rm-relojes |
-| razonamiento-matematico.maximos-y-minimos | 25 | 12 | 23 / 2 / 0 | maximos-minimos, rm-diofanticas, rm-fichas |
-| razonamiento-matematico.juegos-recreativos | 23 | 10 | 20 / 3 / 0 | dados-domino, probabilidad-dados, rm-movimientos |
+| razonamiento-matematico.maximos-y-minimos | 25 | 12 | 25 / 0 / 0 | maximos-minimos, rm-diofanticas, rm-fichas |
+| razonamiento-matematico.juegos-recreativos | 23 | 10 | 23 / 0 / 0 | dados-domino, rm-planteo, rm-movimientos |
 | razonamiento-matematico.ordenamiento-de-informacion | 21 | 13 | 21 / 0 / 0 | orden-informacion, rm-parentesco |
 | razonamiento-matematico.planteo-de-ecuaciones | 21 | 9 | 21 / 0 / 0 | traductor-enunciados, rm-planteo, rm-diofanticas |
 | razonamiento-matematico.frecuencia-de-sucesos | 16 | 10 | 16 / 0 / 0 | traslados-sucesos, rm-ciclos |
-| fuera-del-catalogo:diagramas de flujo | 12 | 8 | 10 / 0 / 2 | rm-diagramas-flujo |
 | razonamiento-matematico.ruedas-poleas-engranajes | 12 | 7 | 12 / 0 / 0 | regla-de-tres, poleas-giros |
+| fuera-del-catalogo:diagramas de flujo | 10 | 8 | 10 / 0 / 0 | rm-diagramas-flujo |
 | geometria.simetria | 8 | 6 | 8 / 0 / 0 | simetria |
 | aritmetica.razonamiento-numerico | 7 | 5 | 7 / 0 / 0 | traductor-enunciados, cuatro-operaciones, rm-planteo |
 | fuera-del-catalogo:trasvases | 5 | 4 | 5 / 0 / 0 | rm-trasvases |
 | aritmetica.divisibilidad | 2 | 2 | 2 / 0 / 0 | rm-diofanticas |
+| razonamiento-matematico.diagramas-de-flujo | 2 | 2 | 2 / 0 / 0 | rm-diagramas-flujo |
 | aritmetica.analisis-combinatorio | 1 | 1 | 1 / 0 / 0 | cuadricula-piezas |
 | aritmetica.magnitudes-proporcionales | 1 | 1 | 1 / 0 / 0 | regla-de-tres |
 | fuera-del-catalogo:operadores matematicos | 1 | 1 | 1 / 0 / 0 | rm-diagramas-flujo |
@@ -1258,31 +1259,31 @@ Por tema (en razonamiento matemático y verbal, por familia de temas):
 | --- | --- | --- | --- | --- | --- |
 | Rutas y caminos mínimos | 36 | 14 | razonamiento-matematico.rutas-y-visualizacion-espacial | rutas-espacio | 36 / 0 / 0 |
 | Arreglos numéricos | 28 | 14 | razonamiento-matematico.arreglos-numericos | arreglos-giros | 28 / 0 / 0 |
-| Verdades y mentiras | 26 | 14 | razonamiento-matematico.verdades-y-mentiras | orden-informacion | 25 / 1 / 0 |
-| Relojes | 40 | 13 | razonamiento-matematico.cronometria-y-calendarios | relojes-calendarios | 38 / 2 / 0 |
+| Verdades y mentiras | 26 | 14 | razonamiento-matematico.verdades-y-mentiras | orden-informacion | 26 / 0 / 0 |
+| Relojes | 40 | 13 | razonamiento-matematico.cronometria-y-calendarios | relojes-calendarios | 40 / 0 / 0 |
 | Simetrías y giros | 29 | 13 | razonamiento-matematico.transformaciones-de-figuras | simetria | 29 / 0 / 0 |
 | Calendarios | 27 | 13 | razonamiento-matematico.cronometria-y-calendarios | relojes-calendarios | 27 / 0 / 0 |
 | Ordenamiento y parentesco | 26 | 13 | razonamiento-matematico.ordenamiento-de-informacion | orden-informacion | 26 / 0 / 0 |
-| Certezas | 31 | 12 | razonamiento-matematico.certezas | rm-certezas | 29 / 2 / 0 |
+| Certezas | 31 | 12 | razonamiento-matematico.certezas | rm-certezas | 31 / 0 / 0 |
 | Cubos, sólidos y vistas | 27 | 12 | razonamiento-matematico.rutas-y-visualizacion-espacial | vistas-cubitos | 27 / 0 / 0 |
 | Rodamientos, ruedas y poleas | 26 | 12 | razonamiento-matematico.ruedas-poleas-engranajes | rodamientos | 26 / 0 / 0 |
-| Traslados de fichas y juegos | 24 | 12 | razonamiento-matematico.juegos-recreativos | rm-fichas | 16 / 8 / 0 |
+| Traslados de fichas y juegos | 24 | 12 | razonamiento-matematico.juegos-recreativos | rm-fichas | 24 / 0 / 0 |
 | Inducción y series | 21 | 12 | razonamiento-matematico.razonamiento-inductivo | sucesiones | 21 / 0 / 0 |
-| Cuadro de doble entrada | 20 | 12 | razonamiento-matematico.razonamiento-deductivo | orden-informacion | 19 / 1 / 0 |
-| Planteo y otros | 41 | 11 | razonamiento-matematico.planteo-de-ecuaciones | traductor-enunciados | 40 / 1 / 0 |
-| Balanzas y pesadas | 31 | 11 | razonamiento-matematico.cortes-y-pesadas | cortes-pesadas | 30 / 1 / 0 |
+| Cuadro de doble entrada | 20 | 12 | razonamiento-matematico.razonamiento-deductivo | orden-informacion | 20 / 0 / 0 |
+| Planteo y otros | 41 | 11 | razonamiento-matematico.planteo-de-ecuaciones | traductor-enunciados | 41 / 0 / 0 |
+| Balanzas y pesadas | 31 | 11 | razonamiento-matematico.cortes-y-pesadas | cortes-pesadas | 31 / 0 / 0 |
 | Situaciones deportivas | 22 | 11 | razonamiento-matematico.tablas-graficos-y-suficiencia | tablas-graficos | 22 / 0 / 0 |
-| Cortes y estacas | 20 | 11 | razonamiento-matematico.cortes-y-pesadas | cortes-pesadas | 18 / 2 / 0 |
-| Máximos y mínimos | 19 | 10 | razonamiento-matematico.maximos-y-minimos | maximos-minimos | 18 / 1 / 0 |
+| Cortes y estacas | 20 | 11 | razonamiento-matematico.cortes-y-pesadas | rm-cortes | 20 / 0 / 0 |
+| Máximos y mínimos | 19 | 10 | razonamiento-matematico.maximos-y-minimos | maximos-minimos | 19 / 0 / 0 |
 | Frecuencia de sucesos | 18 | 10 | razonamiento-matematico.frecuencia-de-sucesos | traslados-sucesos | 18 / 0 / 0 |
 | Trazos de un solo golpe | 18 | 10 | razonamiento-matematico.trazos-y-perimetros | trazos-rutas | 18 / 0 / 0 |
-| Rumbos y desplazamientos | 16 | 10 | razonamiento-matematico.traslados-y-puntos-cardinales | rm-rumbos | 14 / 2 / 0 |
+| Rumbos y desplazamientos | 16 | 10 | razonamiento-matematico.traslados-y-puntos-cardinales | rm-rumbos | 16 / 0 / 0 |
 | Trasvases | 13 | 10 | razonamiento-matematico.traslados-y-puntos-cardinales | rm-trasvases | 13 / 0 / 0 |
 | Tablas, gráficos y suficiencia | 22 | 9 | razonamiento-matematico.tablas-graficos-y-suficiencia | tablas-graficos | 22 / 0 / 0 |
 | Dados y dominó | 15 | 8 | razonamiento-matematico.juegos-recreativos | dados-domino | 15 / 0 / 0 |
 | Conteo de figuras | 14 | 8 | geometria.razonamiento-con-figuras | razonamiento-figuras | 14 / 0 / 0 |
-| Lectura de palabras en arreglos | 14 | 8 | razonamiento-matematico.rutas-y-visualizacion-espacial | rm-lectura-palabras | 12 / 2 / 0 |
-| Diagramas de flujo | 12 | 8 | fuera-del-catalogo:diagramas de flujo | rm-diagramas-flujo | 10 / 0 / 2 |
+| Lectura de palabras en arreglos | 14 | 8 | razonamiento-matematico.rutas-y-visualizacion-espacial | rm-lectura-palabras | 14 / 0 / 0 |
+| Diagramas de flujo | 12 | 8 | fuera-del-catalogo:diagramas de flujo | rm-diagramas-flujo | 12 / 0 / 0 |
 | Perímetros, áreas y particiones | 8 | 7 | razonamiento-matematico.cortes-y-pesadas | cuadricula-piezas | 8 / 0 / 0 |
 | Papel doblado y cortado | 6 | 5 | razonamiento-matematico.trazos-y-perimetros | papel-doblado | 6 / 0 / 0 |
 - tipo: calculo 402 (62 %), mixta 190 (29 %), grafica 36 (6 %), conceptual 22 (3 %)
@@ -1299,7 +1300,7 @@ Por unidad del catálogo:
 | razonamiento-verbal.lectura-en-ingles | 210 | 14 | 210 / 0 / 0 | lectura-ingles |
 | razonamiento-verbal.inferencias | 110 | 14 | 110 / 0 / 0 | textos-dialecticos, lectura-verbal |
 | razonamiento-verbal.sentido-contextual | 82 | 14 | 82 / 0 / 0 | lectura-verbal, textos-dialecticos |
-| razonamiento-verbal.textos-discontinuos | 79 | 14 | 78 / 1 / 0 | textos-discontinuos |
+| razonamiento-verbal.textos-discontinuos | 79 | 14 | 79 / 0 / 0 | textos-discontinuos |
 | razonamiento-verbal.textos-argumentativos-y-dialecticos | 66 | 14 | 66 / 0 / 0 | textos-dialecticos |
 | razonamiento-verbal.compatibilidad | 58 | 14 | 58 / 0 / 0 | textos-dialecticos, lectura-verbal |
 | razonamiento-verbal.extrapolacion | 42 | 14 | 42 / 0 / 0 | textos-dialecticos, lectura-verbal, textos-discontinuos |
@@ -1312,7 +1313,7 @@ Por tema (en razonamiento matemático y verbal, por familia de temas):
 | Tema | Preguntas | Periodos (de 14) | Unidad | Módulo más usado | Sí / medio / no |
 | --- | --- | --- | --- | --- | --- |
 | Textos A/B (dos autores) | 240 | 14 | razonamiento-verbal.inferencias | textos-dialecticos | 240 / 0 / 0 |
-| Texto mixto o discontinuo | 225 | 14 | razonamiento-verbal.textos-discontinuos | lectura-verbal | 224 / 1 / 0 |
+| Texto mixto o discontinuo | 225 | 14 | razonamiento-verbal.textos-discontinuos | lectura-verbal | 225 / 0 / 0 |
 | Lectura en inglés | 210 | 14 | razonamiento-verbal.lectura-en-ingles | lectura-ingles | 210 / 0 / 0 |
 | Texto continuo (argumentativo, científico, filosófico) | 15 | 1 | razonamiento-verbal.inferencias | lectura-verbal | 15 / 0 / 0 |
 - tipo: inferencia 128 (19 %), sentido_contextual 79 (11 %), extrapolacion 50 (7 %), incompatibilidad 47 (7 %), tema_central 47 (7 %), ingles_inferencia 35 (5 %), ingles_sentido_contextual 33 (5 %), ingles_incompatibilidad 28 (4 %)
@@ -1326,23 +1327,11 @@ Ordenados por número de periodos en que salen y luego por número de preguntas.
 
 | # | Curso | Tema | Periodos | Preguntas sin cubrir (no + medio) | Unidad | Qué falta (lo más dicho) |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Química | Agentes y especies en un redox con radicales | 1 | 1 (0 + 1) | quimica.reacciones-y-balance | Radicales libres y su notación de Lewis en reacciones redox |
-| 2 | Química | Compuestos aromáticos con dos funciones | 1 | 1 (0 + 1) | quimica.funciones-organicas | Reacciones del anillo aromático y conteo de carbonos sp2 |
-| 3 | Química | Diagrama de Pourbaix | 1 | 1 (0 + 1) | quimica.electroquimica | Diagramas de Pourbaix potencial-pH |
-| 4 | Química | Enlaces pi y sustituyentes en polienos | 1 | 1 (0 + 1) | quimica.hidrocarburos | Contar enlaces pi y sustituyentes en moléculas grandes |
-| 5 | Química | Grupos funcionales y quiralidad en moléculas biológicas | 1 | 1 (0 + 1) | quimica.funciones-organicas | Heterociclos nitrogenados y carbonos quirales en moléculas grandes |
-| 6 | Química | Hibridación e isomería en compuestos oxigenados | 1 | 1 (0 + 1) | quimica.funciones-organicas | Hibridación de carbonos en ácidos con varias funciones |
-| 7 | Química | Oxidación y reducción de azúcares | 1 | 1 (0 + 1) | quimica.biomoleculas-y-productos-naturales | Oxidación y reducción de grupos funcionales en carbohidratos |
 
 ## Huecos por unidad: preguntas sin cubrir del todo (no + medio)
 
 | # | Curso | Unidad | Sin cubrir | De | Periodos con alguna sin cubrir | Lo que más falta |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Razonamiento matemático | razonamiento-matematico.traslados-y-puntos-cardinales | 4 | 33 | 3 | Rumbos y desplazamientos (2); Traslados de fichas y juegos (2) |
-| 2 | Razonamiento matemático | razonamiento-matematico.cortes-y-pesadas | 3 | 55 | 3 | Cortes y estacas (2); Balanzas y pesadas (1) |
-| 3 | Química | quimica.funciones-organicas | 3 | 32 | 3 | Hibridación e isomería en compuestos oxigenados (1); Compuestos aromáticos con dos funciones (1); Grupos funcionales y quiralidad en moléculas biológicas (1) |
-| 4 | Razonamiento matemático | razonamiento-matematico.certezas | 3 | 30 | 3 | Certezas (2); Verdades y mentiras (1) |
-| 5 | Razonamiento matemático | razonamiento-matematico.juegos-recreativos | 3 | 23 | 2 | Traslados de fichas y juegos (3) |
 
 ## Preguntas por examen (registradas, con repetidas)
 

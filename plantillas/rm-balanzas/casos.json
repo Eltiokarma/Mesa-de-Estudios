@@ -2,7 +2,7 @@
   "plantilla": "rm-balanzas",
   "tolerancia": 0,
   "nota": "Pesos enteros. Una balanza es { izq, der, estado }: lo que hay en cada platillo (figuras por cantidad; pesa en kg o g) y 'equilibrio', 'izq-baja' (el platillo izquierdo pesa más) o 'der-baja'. En una-pesada, base 10: pesas de 1, 10, 100, 1 000 y 10 000 g sin límite de cantidad; base 3: una pesa de 1, 3, 9, 27, 81 y 243 g. La respuesta es un número (kg, figuras o pesas).",
-  "verificacion": "Verificación ciega (12 nov 2026, subagente verificador): 24 casos resueltos sin ver el generador. Desigualdades por enumeración de pesos enteros (1 a 200) con las balanzas como restricciones estrictas; equivalencias por enumeración entera (razón única); pesas mínimas por DP; una pesada en base 10 por búsqueda exhaustiva de coeficientes con signo; base 3 por las 3⁶ colocaciones. 24/24 coinciden. Las correcciones de la revisión no cambiaron ninguna respuesta.",
+  "verificacion": "Verificación ciega (12 nov 2026, subagente verificador): 24 casos resueltos sin ver el generador. Desigualdades por enumeración de pesos enteros (1 a 200) con las balanzas como restricciones estrictas; equivalencias por enumeración entera (razón única); pesas mínimas por DP; una pesada en base 10 por búsqueda exhaustiva de coeficientes con signo; base 3 por las 3⁶ colocaciones. 24/24 coinciden. Las correcciones de la revisión no cambiaron ninguna respuesta. Cierre-100 (12 nov 2026): los casos nuevos se resolvieron a ciegas por fuerza bruta propia (enumeración de pesos enteros hasta 59): 3/3 coinciden, con un solo reparto cada uno.",
   "casos": [
     {
       "semilla": "entrada-1",
@@ -724,6 +724,154 @@
       "esperado": {
         "respuesta": 3
       }
+    },
+    {
+      "semilla": "cierre-3",
+      "entrada": {
+        "tipo": "combinado",
+        "balanzas": [
+          {
+            "izq": {
+              "triangulo": 1,
+              "circulo": 1
+            },
+            "der": {
+              "cuadrado": 1,
+              "pesa": 12
+            },
+            "estado": "equilibrio"
+          },
+          {
+            "izq": {
+              "cuadrado": 1,
+              "circulo": 1
+            },
+            "der": {
+              "triangulo": 1,
+              "pesa": 4
+            },
+            "estado": "equilibrio"
+          },
+          {
+            "izq": {
+              "cuadrado": 1,
+              "pesa": 8
+            },
+            "der": {
+              "cuadrado": 2,
+              "triangulo": 1
+            },
+            "estado": "izq-baja"
+          }
+        ],
+        "pide": {
+          "cuadrado": 1,
+          "circulo": 1
+        }
+      },
+      "esperado": {
+        "respuesta": 9
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "cierre-5",
+      "entrada": {
+        "tipo": "combinado",
+        "balanzas": [
+          {
+            "izq": {
+              "circulo": 1,
+              "pesa": 3
+            },
+            "der": {
+              "cuadrado": 1,
+              "triangulo": 1
+            },
+            "estado": "equilibrio"
+          },
+          {
+            "izq": {
+              "circulo": 1,
+              "triangulo": 1
+            },
+            "der": {
+              "cuadrado": 1,
+              "pesa": 5
+            },
+            "estado": "equilibrio"
+          },
+          {
+            "izq": {
+              "circulo": 1,
+              "cuadrado": 1,
+              "pesa": 4
+            },
+            "der": {
+              "circulo": 2,
+              "cuadrado": 2
+            },
+            "estado": "izq-baja"
+          }
+        ],
+        "pide": {
+          "cuadrado": 2,
+          "triangulo": 2
+        }
+      },
+      "esperado": {
+        "respuesta": 10
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "cierre-13",
+      "entrada": {
+        "tipo": "combinado",
+        "balanzas": [
+          {
+            "izq": {
+              "triangulo": 1,
+              "pesa": 6
+            },
+            "der": {
+              "circulo": 1,
+              "cuadrado": 1
+            },
+            "estado": "equilibrio"
+          },
+          {
+            "izq": {
+              "circulo": 1,
+              "pesa": 10
+            },
+            "der": {
+              "triangulo": 1,
+              "cuadrado": 1
+            },
+            "estado": "equilibrio"
+          },
+          {
+            "izq": {
+              "circulo": 2,
+              "cuadrado": 2
+            },
+            "der": {
+              "cuadrado": 1,
+              "pesa": 11
+            },
+            "estado": "der-baja"
+          }
+        ],
+        "pide": {
+          "triangulo": 1,
+          "circulo": 1
+        }
+      },
+      "esperado": {
+        "respuesta": 4
+      },
+      "nuevo": "cierre-100"
     }
   ]
 }

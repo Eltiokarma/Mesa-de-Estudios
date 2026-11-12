@@ -36,6 +36,15 @@
  *                           { t: 'no', o, c }, con lit = { o, c, neg } (o: persona, c: cosa).
  *                   Claves: 'as:o:c' («o lleva c») en 'afirmacion'; 'cosa:c' en 'quien'.
  *
+ *   puntajes        (nuevo, cierre-100) tres personas, tres dados de colores distintos, cada uno lanzado varias veces; con
+ *                   pistas de orden entre puntajes («X obtuvo más que el del dado c», «el del dado c obtuvo el menor»),
+ *                   de dados («X no usó el dado c») y de paridad («ninguno obtuvo puntaje par»), se pide el puntaje
+ *                   (el mayor posible para todos a la vez) de una persona y su dado.
+ *                   _datos: { tipo, personas, colores, lanz, pistas, persona, opciones }
+ *                   Pistas: { t: 'mayor', p, c } · { t: 'menor-todos', c } · { t: 'mayor-todos', c } · { t: 'no', p, c } ·
+ *                           { t: 'paridad', par: 'impar' | 'par' }. Claves: 'pt:puntaje:color' (índice de color).
+ *                   Solo con semillas de práctica y numéricas desde 400 (ver «generar»).
+ *
  * calc (funciones puras, para el papel y las pruebas):
  *   proposicion(f, s, p) → clave · modelosSilogismo(premisas, existencial) → [modelo (8 bits)]
  *   validaSilogismo(premisas, clave, existencial) → bool
@@ -43,6 +52,7 @@
  *   casosFrascos(pistas, n = 4, k = 3) → [[cosa de cada frasco]]
  *   necesaria(pistas, clave) → bool (cierta en todos los casos de casosFrascos)
  *   repartos(pistas, n = 4) → [[cosa de cada persona]] (permutaciones que cumplen las pistas)
+ *   puntajes({ lanz, pistas, persona }) → { respuesta: { color, puntaje } | null, repartos, maximos } (tipo puntajes)
  *
  * Errores (todos hipótesis: el informe de razonamiento no trae datos de lógica; las trampas salen
  * de docs/clasificacion/trampas-admision-unmsm/rm-a.md, filas 16 y 25):
@@ -52,6 +62,7 @@
  *   en vez de «ninguno», o generalizar un «algunos») · RMP75 «algunos son» leído como «solo algunos»
  *   · RMP76 encadenar por un término medio que no conecta · RMP77 posible pero no necesaria ·
  *   RMP78 creer que no se deduce nada · RMP79 contrafáctico con su primera parte tomada como dato.
+ *   Tipo puntajes (cierre-100): RMP72-… (una pista sin revisar o dado cruzado) y RMP2-sin-maximizar (puntaje posible, no el mayor).
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -814,13 +825,135 @@
     };
   }
 
+
   // =====================================================================================
+  // 4. Puntajes de dados (nuevo, cierre-100)
+  // =====================================================================================
+  const PERMS3 = [[0, 1, 2], [0, 2, 1], [1, 0, 2], [1, 2, 0], [2, 0, 1], [2, 1, 0]];
+  // col[p] = dado (índice) de la persona p; s[p] = su puntaje. holder(c) = quién tiene el dado c.
+  function cumplePuntajes(q, col, s) {
+    const dueno = c => col.indexOf(c);
+    if (q.t === 'no') return col[q.p] !== q.c;
+    if (q.t === 'paridad') return s.every(x => (x % 2 === 0) === (q.par === 'par'));
+    const d = dueno(q.c);
+    if (q.t === 'mayor') return q.p !== d && s[q.p] > s[d];
+    if (q.t === 'menor-todos') return s.every((x, p) => p === d || s[d] < x);
+    return s.every((x, p) => p === d || s[d] > x);
+  }
+  // Todas las parejas (reparto de dados, puntajes) que cumplen las pistas; los puntajes van de lanz a 6·lanz.
+  function puntajes({ lanz, pistas, persona }) {
+    const val = []; for (let x = lanz; x <= 6 * lanz; x++) val.push(x);
+    const porReparto = [];
+    for (const col of PERMS3) {
+      const ok = [];
+      for (const a of val) for (const b of val) for (const c of val) if (pistas.every(q => cumplePuntajes(q, col, [a, b, c]))) ok.push([a, b, c]);
+      if (ok.length) {
+        const maximos = [0, 1, 2].map(p => Math.max(...ok.map(t => t[p])));
+        porReparto.push({ col, maximos, valido: ok.some(t => t.every((x, p) => x === maximos[p])), distintos: [...new Set(ok.map(t => t[persona]))].sort((x, y) => y - x) });
+      }
+    }
+    const unico = porReparto.length === 1 && porReparto[0].valido;
+    const u = porReparto[0];
+    return { respuesta: unico ? { color: u.col[persona], puntaje: u.maximos[persona] } : null, repartos: porReparto, maximos: unico ? u.maximos : null };
+  }
+
+  // Solo la respuesta de puntajes: { color, puntaje } del máximo de la persona (null si el reparto no es único).
+  const puntajeMaximo = a => puntajes(a).respuesta;
+  const DADOS = ['azul', 'rojo', 'blanco', 'verde', 'amarillo', 'negro'];
+  function textoPistaPT(q, ps, cs) {
+    if (q.t === 'no') return [v(PV[q.p], ps[q.p]), ` no usó el dado ${cs[q.c]}`];
+    if (q.t === 'paridad') return [`Ninguno obtuvo un puntaje total ${q.par === 'impar' ? 'par' : 'impar'}`];
+    if (q.t === 'mayor') return [v(PV[q.p], ps[q.p]), ` obtuvo más puntos que quien usó el dado ${cs[q.c]}`];
+    return [`Quien usó el dado ${cs[q.c]} obtuvo el ${q.t === 'menor-todos' ? 'menor' : 'mayor'} puntaje de los tres`];
+  }
+  function construirPuntajes(rng, semilla) {
+    const ps = rng.barajar(NOMBRES).slice(0, 3), cs = rng.barajar(DADOS).slice(0, 3);
+    const lanz = rng.entero(4, 6), par = rng.sig() < 0.8 ? 'impar' : 'par';
+    // un mundo verdadero: cada persona con un dado y un lugar (0 = menor) entre los tres puntajes
+    const col = rng.barajar([0, 1, 2]), rango = rng.barajar([0, 1, 2]), dueno = c => col.indexOf(c);
+    const hechos = [];
+    for (let p = 0; p < 3; p++) for (let c = 0; c < 3; c++) {
+      if (col[p] !== c) hechos.push({ t: 'no', p, c });
+      if (p !== dueno(c) && rango[p] > rango[dueno(c)]) hechos.push({ t: 'mayor', p, c });
+    }
+    for (let c = 0; c < 3; c++) { if (rango[dueno(c)] === 0) hechos.push({ t: 'menor-todos', c }); if (rango[dueno(c)] === 2) hechos.push({ t: 'mayor-todos', c }); }
+    let pistas = rng.barajar(hechos).slice(0, rng.entero(3, 4)).concat([{ t: 'paridad', par }]);
+    const persona = rng.entero(0, 2);
+    const R = puntajes({ lanz, pistas, persona });
+    if (!R.respuesta) return null;
+    // Quitar pistas que no hacen falta (la paridad se queda): sin ellas la respuesta debe cambiar.
+    const clave = ps_ => { const z = puntajes({ lanz, pistas: ps_, persona }); return z.respuesta ? `${z.respuesta.puntaje}:${z.respuesta.color}` : 'x' + z.repartos.length; };
+    const base = clave(pistas);
+    for (const q of rng.barajar(pistas.filter(x => x.t !== 'paridad'))) {
+      const sin = pistas.filter(x => x !== q);
+      if (clave(sin) === base) pistas = sin;
+    }
+    if (pistas.length < 3 || new Set(pistas.map(q => JSON.stringify(q))).size !== pistas.length) return null;
+    if (!pistas.some(q => q.t === 'menor-todos' || q.t === 'mayor-todos' || q.t === 'mayor')) return null;
+    pistas = rng.barajar(pistas);
+    const sol = puntajes({ lanz, pistas, persona }), col0 = sol.repartos[0].col, max = sol.maximos;
+    const correcta = { clave: `pt:${sol.respuesta.puntaje}:${sol.respuesta.color}`, texto: `${sol.respuesta.puntaje} puntos, dado ${cs[sol.respuesta.color]}` };
+    const op = (puntaje, color) => ({ clave: `pt:${puntaje}:${color}`, texto: `${puntaje} puntos, dado ${cs[color]}` });
+    const errores = [];
+    const vistas = new Set([correcta.clave]);
+    const poner = (id, o, texto) => { if (!o || vistas.has(o.clave)) return; vistas.add(o.clave); errores.push(err(id, o, texto)); };
+    // 1. Una pista sin revisar: el puntaje y el dado que salen si se ignora esa pista (y no es el correcto).
+    const ROM = ROMANOS;
+    for (const i of rng.barajar([...pistas.keys()])) {
+      const z = puntajes({ lanz, pistas: pistas.filter((_, j) => j !== i), persona });
+      for (const rep of z.repartos) {
+        if (!rep.valido) continue;
+        const dicha = plano(textoPistaPT(pistas[i], ps, cs).map(x => (typeof x === 'string' ? x : x.t)));
+        poner('RMP72-pista-sin-revisar', op(rep.maximos[persona], rep.col[persona]),
+          `Con todas las pistas menos la ${ROM[i]} («${dicha}») también sale ${rep.maximos[persona]} puntos y el dado ${cs[rep.col[persona]]} para ${ps[persona]}, pero esa pista descarta esa posibilidad. Hay que usar todas.`);
+      }
+    }
+    // 2. Puntaje posible pero no el mayor: el siguiente puntaje permitido más abajo.
+    const dist = sol.repartos[0].distintos, menor = dist.find(x => x < sol.respuesta.puntaje);
+    if (menor !== undefined) poner('RMP2-sin-maximizar', op(menor, sol.respuesta.color), `${menor} puntos cumple las pistas, pero no es el mayor posible: ${sol.respuesta.puntaje} también las cumple. Se pide que cada uno saque el máximo.`);
+    // 3. El puntaje correcto con el dado de otra persona.
+    for (const q of rng.barajar([0, 1, 2].filter(x => x !== persona))) poner('RMP72-dado-cruzado', op(sol.respuesta.puntaje, col0[q]), `Ese puntaje es el de ${ps[persona]}, pero el dado ${cs[col0[q]]} lo usó ${ps[q]}: cruzaste los dados.`);
+    if (errores.length < 3) return null;
+    const alternativas = P.armarTexto({ correcta, errores, rng });
+    if (alternativas.length < 4) return null;
+    const enunciado = [];
+    enunciado.push(...conY(ps.map((p, i) => v(PV[i], p))), ` juegan con tres dados de colores: uno ${cs[0]}, uno ${cs[1]} y uno ${cs[2]}. Cada uno toma un dado de color distinto y lo lanza ${lanz} veces; después suma sus ${lanz} resultados. Se sabe que:`);
+    pistas.forEach((q, i) => enunciado.push(` ${ROMANOS[i]}. `, ...textoPistaPT(q, ps, cs), '.'));
+    enunciado.push(` Cada uno obtuvo el mayor puntaje que permiten estas pistas.`);
+    const pregunta = ['¿Qué puntaje obtuvo ', v(PV[persona], ps[persona]), ' y con qué dado?'];
+    // solución
+    const nom = p => ps[p], dado = p => cs[col0[p]];
+    const rel = [];
+    for (const q of pistas) {
+      if (q.t === 'mayor') rel.push(`${nom(q.p)} > ${nom(col0.indexOf(q.c))}`);
+      if (q.t === 'menor-todos') rel.push(`${nom(col0.indexOf(q.c))} es el menor`);
+      if (q.t === 'mayor-todos') rel.push(`${nom(col0.indexOf(q.c))} es el mayor`);
+    }
+    const orden = [0, 1, 2].sort((a, b) => max[b] - max[a]);
+    const tope = par === 'impar' ? 6 * lanz - (6 * lanz % 2 === 0 ? 1 : 0) : 6 * lanz - (6 * lanz % 2);
+    const solucion = [
+      [`Hay 6 maneras de repartir los tres dados. Con las pistas de dados y de orden, solo una cumple todas: ${[0, 1, 2].map(p => `${nom(p)} usó el dado ${dado(p)}`).join(', ')}.`],
+      [`Entonces las pistas de orden dicen: ${rel.join('; ')}.`],
+      [`Con ${lanz} lanzamientos el máximo posible es ${6 * lanz}; como ninguno obtuvo un puntaje ${par === 'impar' ? 'par' : 'impar'}, el mayor puntaje permitido es ${tope}. Cada uno saca lo máximo que deja el orden: ${orden.map(p => `${nom(p)}, ${max[p]}`).join('; ')}.`],
+      [`Respuesta: ${nom(persona)} obtuvo ${max[persona]} puntos con el dado ${dado(persona)}.`],
+    ];
+    const pintar = colorear(ps.map((p, i) => [p, PV[i]]));
+    for (let i = 0; i < solucion.length; i++) solucion[i] = solucion[i].flatMap(x => (typeof x === 'string' ? pintar(x) : [x]));
+    const variables = {}; ps.forEach((p, i) => { variables[PV[i]] = { nombre: p, color: ['o', 'i', 'h'][i] }; });
+    return { enunciado, pregunta, solucion, alternativas, correcta, variables,
+      datos: { tipo: 'puntajes', personas: ps, colores: cs, lanz, pistas, persona, opciones: alternativas.map(a => a.valor) } };
+  }
+
+  // =====================================================================================
+  const conNuevos = s => (typeof s === 'number' ? s >= 400 : !/^(entrada|salida)-/.test(s));
   function generar(semilla) {
     const rng = Azar.crear(`${ID}|${semilla}`);
     // Las pruebas de entrada y salida traen un problema de cada tipo (formas paralelas).
     const prueba = /^(entrada|salida)-(\d+)$/.exec(String(semilla));
-    const tipo = prueba ? TIPOS[(+prueba[2] - 1) % TIPOS.length] : rng.elegir(TIPOS);
-    const hacer = { silogismo: construirSilogismo, 'siempre-cierto': construirSiempre, asignacion: construirAsignacion }[tipo];
+    let tipo = prueba ? TIPOS[(+prueba[2] - 1) % TIPOS.length] : rng.elegir(TIPOS);
+    // Tipo nuevo (cierre-100): sorteo aparte, para que las semillas ya fijadas en casos.json no cambien.
+    if (!prueba && conNuevos(semilla) && Azar.crear(`${ID}+nuevos|${semilla}`).sig() < 0.25) tipo = 'puntajes';
+    const hacer = { silogismo: construirSilogismo, 'siempre-cierto': construirSiempre, asignacion: construirAsignacion, puntajes: construirPuntajes }[tipo];
     for (let intento = 0; intento < 4000; intento++) {
       const pr = hacer(rng, semilla);
       if (!pr) continue;
@@ -836,6 +969,6 @@
     throw new Error(`${ID}: no se pudo generar un problema (${tipo})`);
   }
 
-  const calc = { proposicion, modelosSilogismo, validaSilogismo, conclusionesValidas, casosFrascos, necesaria, repartos };
+  const calc = { proposicion, modelosSilogismo, validaSilogismo, conclusionesValidas, casosFrascos, necesaria, repartos, puntajes, puntajeMaximo };
   return { id: ID, titulo: 'Lo que se deduce: clases, frascos y condicionales', generar, calc };
 });

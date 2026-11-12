@@ -29,6 +29,14 @@
  *   potencias-div    { tipo, sub: 'base', N, b, orden } o { tipo, sub: 'mitades', N, regla: '3n+1'|'n+1' }
  *                    base: S ← S + resto de n ÷ b y n ← cociente de n ÷ b hasta ¿n = 0?; Imprimir S.
  *                    mitades: si n es par, n ← n ÷ 2; si no, n ← regla; S ← S + n, hasta ¿n = 1?; Imprimir S.
+ *   impresos         { tipo, n0, m, T, d, cond: 'par'|'mult3', pide: 'cifras'|'suma' }
+ *                    Leer N; repetir: N ← N × m, Imprimir N, ¿N > T? No → otra vuelta; Sí → N ← N ÷ d y ¿cond?
+ *                    (Sí → Fin; No → otra vuelta). Se pide la suma de lo impreso o la suma de sus cifras.
+ *                    (UNMSM 2023-I: n0 = 3, m = 10, T = 600, d = 5, par; semilla 'unmsm-2023-I-29'.)
+ *   bucles           { tipo, N0, T, c, p, q, m }
+ *                    Leer N; K ← N ÷ 2; ¿K > T? No → N ← K² y otra vez K ← N ÷ 2; Sí → K ← N − c y ¿K múltiplo de m?
+ *                    (No → N ← pK + q y otra vez K ← N − c; Sí → Imprimir K). Hay dos bucles que vuelven a cajas distintas.
+ *                    (UNMSM 2026-I: N0 = 16, T = 71, c = 73, p = 2, q = 3, m = 2; semilla 'unmsm-2026-I-24'.)
  *   operador         { tipo, regla, forma: 'izq'|'der'|'mixto', x, y, z, regla2 }
  *                    a ◇ b definido por una regla; se evalúa (x ◇ y) ◇ z, x ◇ (y ◇ z) o (x ◇ y) ∗ z.
  *
@@ -43,6 +51,11 @@
  *   RMP24 primalidad mal decidida (el 1 como primo, todo impar como primo)
  *   RMP25 operador mal leído (el paréntesis ignorado, los operandos conmutados, un operador por otro)
  *   AR1 (descuentos sumados, parcial) y AR5 (el monto descontado por el que se paga, hipótesis).
+ * Errores de «impresos» y «bucles» (cierre-100, 12 nov 2026; hipótesis):
+ *   RMP106 sumar también lo que no se imprime (el valor tras la división); RMP107 quedarse con la suma sin sumar
+ *   sus cifras; RMP108 salir sin probar la última condición (Fin apenas pasa de T; imprimir K sin ver si es
+ *   múltiplo); RMP109 contar el número que se ingresa como si se imprimiera; y de los viejos RMP20 (vueltas,
+ *   la flecha de vuelta a otra caja, la variable equivocada), RMP21 (borde) y RMP22 (imprimir N en vez de K).
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -144,7 +157,7 @@
         if (b.traza) traza.push({ ...s });
         i = b.sig; continue;
       }
-      if (b.tipo === 'imp') { impresos.push(redondo(evaluar(b.expr, s))); i = b.sig; continue; }
+      if (b.tipo === 'imp') { const val = redondo(evaluar(b.expr, s)); impresos.push(val); if (b.traza) traza.push({ ...s, _imp: val, _i: i }); i = b.sig; continue; }
       if (b.tipo === 'dec') {
         let r = evaluar(b.cond, s);
         if (b.sigue) {
@@ -155,7 +168,7 @@
           }
           if ((r ? 'si' : 'no') === b.sigue) vueltas[i] = c + 1;
         }
-        if (b.traza) traza.push({ ...s, _cond: r });
+        if (b.traza) traza.push({ ...s, _cond: r, _i: i });
         i = r ? b.si : b.no; continue;
       }
       throw new Error(`bloque desconocido: ${b.tipo}`);
@@ -371,6 +384,20 @@
         { tipo: 'imp', expr: 'S', sig: 8 }, F];
       return { bloques, bucle: 6, columnas: ['n', 'S'], vars: ['n', 'S'] };
     }
+    if (d.tipo === 'impresos') {
+      const cond = d.cond === 'par' ? ['par', 'N'] : ['mult', 'N', 3];
+      const bloques = [I(1), { tipo: 'leer', vars: ['N'], sig: 2 }, { tipo: 'asig', ops: [['N', ['*', 'N', d.m]]], sig: 3 },
+        { tipo: 'imp', expr: 'N', sig: 4, traza: true }, { tipo: 'dec', cond: ['>', 'N', d.T], si: 5, no: 2, sigue: 'no', traza: true },
+        { tipo: 'asig', ops: [['N', ['/', 'N', d.d]]], sig: 6 }, { tipo: 'dec', cond, si: 7, no: 2, traza: true }, F];
+      return { bloques, bucle: 4, columnas: ['N'], vars: ['N'], entrada: { N: d.n0 } };
+    }
+    if (d.tipo === 'bucles') {
+      const bloques = [I(1), { tipo: 'leer', vars: ['N'], sig: 2 }, { tipo: 'asig', ops: [['K', ['/', 'N', 2]]], sig: 3 },
+        { tipo: 'dec', cond: ['>', 'K', d.T], si: 5, no: 4, sigue: 'no', traza: true }, { tipo: 'asig', ops: [['N', ['^', 'K', 2]]], sig: 2 },
+        { tipo: 'asig', ops: [['K', ['-', 'N', d.c]]], sig: 6 }, { tipo: 'dec', cond: ['mult', 'K', d.m], si: 8, no: 7, traza: true },
+        { tipo: 'asig', ops: [['N', ['+', ['*', d.p, 'K'], d.q]]], sig: 5 }, { tipo: 'imp', expr: 'K', sig: 9 }, F];
+      return { bloques, bucle: 3, columnas: ['N', 'K'], vars: ['N', 'K'], entrada: { N: d.N0 } };
+    }
     throw new Error(`sin programa para ${d.tipo}`);
   }
 
@@ -398,23 +425,35 @@
   function resolver(d) {
     if (d.tipo === 'operador') return valorOperador(d);
     const prog = programa(d), r = ejecutar(prog, { entrada: prog.entrada });
+    if (d.tipo === 'impresos') { const t = r.impresos.reduce((a, b) => a + b, 0); return d.pide === 'cifras' ? sumaCifras(t) : t; }
     if (d.tipo === 'contador') return d.pide === 'cuantos' ? r.impresos.length : r.impresos.reduce((a, b) => a + b, 0);
     return ultimo(r);
   }
 
   // ---------------- Generación ----------------
+  // Preguntas oficiales reproducidas tal cual (UNMSM): semilla → [tipo, datos]; la figura y la solución son propias.
+  const OFICIAL = {
+    'unmsm-2023-I-29': ['impresos', { tipo: 'impresos', n0: 3, m: 10, T: 600, d: 5, cond: 'par', pide: 'cifras' }],
+    'unmsm-2026-I-24': ['bucles', { tipo: 'bucles', N0: 16, T: 71, c: 73, p: 2, q: 3, m: 2 }],
+  };
   function generar(semilla) {
     const rng = Azar.crear(`${ID}|${semilla}`);
-    const tipo = rng.elegir(['acumulador', 'acumulador', 'contador', 'dos-contadores', 'descuentos', 'cifras', 'potencias-div', 'operador', 'operador']);
+    const of = OFICIAL[semilla];
+    let tipo = rng.elegir(['acumulador', 'acumulador', 'contador', 'dos-contadores', 'descuentos', 'cifras', 'potencias-div', 'operador', 'operador']);
+    // Los tipos de cierre-100 salen de un sorteo aparte, para no mover lo que ya se había generado con cada semilla.
+    const lado = Azar.crear(`${ID}|nuevos|${semilla}`);
+    if (lado.sig() < 0.2) tipo = lado.elegir(['impresos', 'bucles']);
+    if (of) tipo = of[0];
     for (let intento = 0; intento < 400; intento++) {
-      const p = construir(rng, semilla, tipo);
+      const p = construir(rng, semilla, tipo, of && of[1]);
       if (p && p.alternativas.length >= 4) return p;
+      if (of) break;
     }
     throw new Error('No se pudo generar un problema con 4 alternativas distintas');
   }
   const CONSTR = {};
-  function construir(rng, semilla, tipo) {
-    const o = CONSTR[tipo](rng);
+  function construir(rng, semilla, tipo, fijo) {
+    const o = CONSTR[tipo](rng, fijo);
     if (!o) return null;
     const alternativas = P.armar({ correcta: o.correcta, errores: o.errores, rng, negativos: !!o.negativos, texto: o.texto });
     const p = {
@@ -730,6 +769,115 @@
     return {
       datos, correcta, errores, variables, enunciado: INTRO(prog), pregunta: ['¿Qué valor se imprime?'], solucion,
       figura: { svg: dibujar(prog, colores), alt: describir(prog) }, figuraSolucion: tablaTraza(prog.columnas, run.traza, colores, plano(partesCond(prog.bloques[prog.bucle].cond))),
+    };
+  };
+
+  // ---- suma de lo impreso (multiplicar, imprimir, dividir y probar) ----
+  // Recorre el diagrama y devuelve lo impreso, los valores tras cada división y si todo fue entero.
+  function correrImpresos(datos) {
+    const prog = programa(datos);
+    let r;
+    try { r = ejecutar(prog, { entrada: prog.entrada }); } catch (e) { return null; }
+    const divididos = r.traza.filter(x => x._i === 6).map(x => x.N);
+    return { prog, r, divididos, entero: divididos.every(Number.isInteger) };
+  }
+  CONSTR.impresos = function (rng, fijo) {
+    let datos = fijo;
+    if (!datos) {
+      const m = rng.elegir([2, 3, 5, 10, 10]), n0 = rng.entero(1, 9);
+      const cand = [60, 100, 150, 200, 250, 300, 400, 500, 600, 800, 1000, 1500].filter(T => n0 * m <= T && n0 * m ** 3 > T);
+      if (!cand.length) return null;
+      datos = { tipo: 'impresos', n0, m, T: rng.elegir(cand), d: rng.elegir([2, 3, 4, 5, 6, 8, 10]), cond: rng.elegir(['par', 'par', 'mult3']), pide: rng.elegir(['cifras', 'cifras', 'suma']) };
+    }
+    const c = correrImpresos(datos);
+    if (!c || !c.entero) return null;
+    const { prog, r, divididos } = c;
+    const total = r.impresos.reduce((a, b) => a + b, 0);
+    if (!fijo && (r.impresos.length < 3 || r.impresos.length > 7 || total > 99999 || r.traza.length > 13)) return null;
+    const g = x => (datos.pide === 'cifras' ? sumaCifras(x) : x);
+    const correcta = g(total);
+    const nNo = r.vueltas[4] || 0;
+    if (!fijo && nNo < 1) return null;
+    const pasa = r.impresos.findIndex(x => x > datos.T);
+    const corr = (cambio, op = {}) => { try { const q = copia(prog); if (cambio) cambio(q); return g(ejecutar(q, { entrada: prog.entrada, ...op }).impresos.reduce((a, b) => a + b, 0)); } catch (e) { return NaN; } };
+    const condT = datos.cond === 'par' ? 'es par' : 'es múltiplo de 3';
+    const errores = [
+      h('RMP106-cuenta-lo-no-impreso', g(total + divididos.reduce((a, b) => a + b, 0)),
+        `Sumaste también ${divididos.length === 1 ? 'el valor que sale de dividir' : 'los valores que salen de dividir'} (${divididos.map(f).join(', ')}). Esos valores solo se prueban en la pregunta «¿N ${condT}?»: lo único que se imprime es lo que sale del bloque «Imprimir N», justo después de multiplicar.`),
+      h('RMP108-sale-sin-probar', g(r.impresos.slice(0, pasa + 1).reduce((a, b) => a + b, 0)),
+        `Terminaste apenas N pasó de ${f(datos.T)}. Después de dividir falta probar «¿N ${condT}?»: si da «No», el diagrama vuelve a multiplicar y se imprimen más números.`),
+      h('RMP109-cuenta-el-ingreso', g(total + datos.n0), `Sumaste el ${datos.n0} que se ingresa. Ese número no se imprime: lo primero que se imprime es el resultado de multiplicarlo por ${datos.m}.`),
+      h('RMP20-una-vuelta-menos', corr(null, { delta: -1, bucle: 4 }), 'Dejaste de repetir una vuelta antes: con la pregunta «¿N > ' + f(datos.T) + '?» en «No» había que volver a multiplicar.'),
+      h('RMP20-una-vuelta-mas', corr(null, { delta: +1, bucle: 4 }), `Repetiste una vuelta de más: cuando N pasa de ${f(datos.T)} se sigue por «Sí» y no se multiplica otra vez.`),
+    ];
+    if (datos.pide === 'cifras') errores.unshift(h('RMP107-sin-sumar-cifras', total, 'Esa es la suma de los números impresos. Falta el último paso: la pregunta pide la suma de las cifras de esa suma.'));
+    const { variables, colores } = variablesDe(prog, { N: 'número que cambia' });
+    const imp = r.impresos;
+    const pasos = [];
+    r.traza.forEach(x => {
+      if (x._i === 4) pasos.push(x._cond ? `${f(x.N)} pasa de ${f(datos.T)}: se divide entre ${datos.d}` : `${f(x.N)} no pasa de ${f(datos.T)}: se vuelve a multiplicar`);
+      else if (x._i === 6) pasos.push(`${f(x.N)} ${datos.cond === 'par' ? (x._cond ? 'es par' : 'no es par') : (x._cond ? 'es múltiplo de 3' : 'no es múltiplo de 3')}: ${x._cond ? 'Fin' : 'se vuelve a multiplicar'}`);
+    });
+    const solucion = [
+      ['Se ingresa ', v('N', `N = ${datos.n0}`), `. En cada vuelta N se multiplica por ${datos.m} y recién después se imprime.`],
+      ['Paso a paso: ', pasos.join('; '), '.'],
+      ['Números impresos: ', imp.map(f).join(', '), '. Su suma es ', imp.map(f).join(' + '), ` = ${f(total)}.`],
+      datos.pide === 'cifras' ? [`Suma de las cifras de ${f(total)}: `, String(total).split('').join(' + '), ' = ', v('N', String(correcta)), '.'] : ['Respuesta: ', v('N', f(correcta)), '.'],
+    ];
+    const filas = r.traza.filter(x => x._imp !== undefined);
+    return {
+      datos, correcta, errores, variables,
+      enunciado: [...INTRO(prog), ' Se ingresa el número ', v('N', String(datos.n0)), '. «Imprimir N» muestra el valor que tiene N en ese momento.'],
+      pregunta: [datos.pide === 'cifras' ? 'Determina la suma de las cifras de la suma de todos los números impresos.' : '¿Cuál es la suma de todos los números impresos?'],
+      solucion, figura: { svg: dibujar(prog, colores), alt: describir(prog) }, figuraSolucion: tablaTraza(['N'], filas, colores, null),
+    };
+  };
+
+  // ---- dos bucles que vuelven a cajas distintas (potencias, divisiones y condiciones) ----
+  CONSTR.bucles = function (rng, fijo) {
+    let datos = fijo;
+    if (!datos) {
+      const K0 = rng.elegir([4, 6, 8, 10, 12, 14]), nA = rng.entero(1, 3);
+      const Ks = [K0]; for (let i = 0; i < 3; i++) Ks.push(Ks[i] * Ks[i] / 2);
+      const T = rng.moneda() ? Ks[nA - 1] : rng.entero(Ks[nA - 1] + 1, Ks[nA] - 1);
+      const c = rng.entero(11, 99);
+      datos = { tipo: 'bucles', N0: 2 * K0, T, c, p: rng.elegir([2, 3, 4, 5]), q: rng.elegir([1, 3, 5, 7, 9]), m: rng.elegir([2, 3, 4, 5]) };
+    }
+    const prog = programa(datos);
+    let run;
+    try { run = ejecutar(prog, { entrada: prog.entrada }); } catch (e) { return null; }
+    const filas = run.traza;
+    const ks = filas.map(x => x.K), ns = filas.map(x => x.N);
+    if (!ks.every(k => Number.isInteger(k) && k > 0) || !ns.every(Number.isInteger)) return null;
+    const correcta = ultimo(run), nA = filas.filter(x => x._i === 3 && !x._cond).length, nB = filas.filter(x => x._i === 6 && !x._cond).length;
+    if (!fijo && (nA < 1 || nB < 1 || nB > 3 || correcta > 99999 || filas.length > 9)) return null;
+    // K justo después de pasar la primera pregunta (K ← N − c), todavía sin probar si es múltiplo.
+    const primeraSi = filas.find(x => x._i === 3 && x._cond), Kc = primeraSi.N - datos.c;
+    const errores = [
+      h('RMP108-sale-sin-probar', Kc, `Imprimiste K apenas salió de la primera pregunta. Después de K ← N − ${datos.c} falta probar «¿K es múltiplo de ${datos.m}?»: con K = ${f(Kc)} la respuesta es «No» y hay que seguir.`),
+      h('RMP22-imprime-N', run.estado.N, 'Ese es el último valor de N, pero el bloque de salida dice «Imprimir K».'),
+      h('RMP20-flecha-de-vuelta', variante(prog, q => { q.bloques[7].sig = 2; }),
+        `La flecha que sale de N ← ${datos.p}K + ${datos.q} no vuelve a K ← N ÷ 2: entra en K ← N − ${datos.c}. La división entre 2 solo se repite en el primer bucle.`),
+      h('RMP20-variable', variante(prog, q => { q.bloques[5].ops[0][1] = ['-', 'K', datos.c]; }),
+        `Restaste ${datos.c} al K de antes. El bloque dice K ← N − ${datos.c}: se resta a N, el valor que se acaba de calcular.`),
+      h('RMP20-una-vuelta-menos', variante(prog, null, { delta: -1 }), 'Saliste del primer bucle una vuelta antes: con «¿K > ' + f(datos.T) + '?» en «No» había que elevar al cuadrado y volver a dividir entre 2.'),
+      h('RMP20-una-vuelta-mas', variante(prog, null, { delta: +1 }), `Elevaste al cuadrado una vez de más: apenas «¿K > ${f(datos.T)}?» da «Sí», se pasa al segundo bloque.`),
+      h('RMP21-borde', variante(prog, q => { q.bloques[3].cond[0] = '>='; }), `Leíste «K > ${f(datos.T)}» como «K ≥ ${f(datos.T)}». Con K = ${f(datos.T)} la pregunta da «No»: ${f(datos.T)} no es mayor que ${f(datos.T)}.`),
+    ];
+    const { variables, colores } = variablesDe(prog, { N: 'número que cambia', K: 'resultado parcial' });
+    const pasos = filas.map(x => (x._i === 3
+      ? `K = ${f(x.K)} (con N = ${f(x.N)}): ${x._cond ? `«K > ${f(datos.T)}» es Sí, sigue K ← N − ${datos.c} = ${f(x.N - datos.c)}` : `«K > ${f(datos.T)}» es No, N ← K² = ${f(x.K * x.K)} y se vuelve a dividir entre 2`}`
+      : `K = ${f(x.K)}: ${x._cond ? `es múltiplo de ${datos.m}, se imprime` : `no es múltiplo de ${datos.m}, N ← ${datos.p}K + ${datos.q} = ${f(datos.p * x.K + datos.q)} y se vuelve a K ← N − ${datos.c}`}`));
+    const solucion = [
+      ['Se ingresa ', v('N', `N = ${f(datos.N0)}`), ' y ', v('K', `K = ${f(datos.N0 / 2)}`), ' en la primera división. El primer bucle eleva al cuadrado y divide entre 2 mientras K no pase de ', f(datos.T), '; el segundo resta y prueba el múltiplo.'],
+      ['Paso a paso: ', pasos.join('; '), '.'],
+      ['Se imprime ', v('K', `K = ${f(correcta)}`), '.'],
+    ];
+    return {
+      datos, correcta, errores, variables,
+      enunciado: [...INTRO(prog), ' Se ingresa el número ', v('N', f(datos.N0)), '. «¿K es múltiplo de ' + datos.m + '?» pregunta si K se puede dividir exactamente entre ' + datos.m + '.'],
+      pregunta: ['¿Qué valor de ', v('K', 'K'), ' se imprime al final?'],
+      solucion, figura: { svg: dibujar(prog, colores), alt: describir(prog) }, figuraSolucion: tablaTraza(['N', 'K'], filas, colores, 'pregunta'),
     };
   };
 

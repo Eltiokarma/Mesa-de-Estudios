@@ -1,40 +1,56 @@
 {
   "plantilla": "quimica-conceptos",
   "nota": "Cada caso da la semilla, el tipo, el tema o conjunto y los ids que se muestran (en el orden I, II, III… o en el orden en que se eligieron), y la respuesta. vf: la secuencia de los valores de verdad de gen.BANCO en el orden de ids. incorrecta y correcta: el único id falso (o verdadero) entre los ids. relacionar: la letra de cada id de la izquierda es su posición (a, b, c, d) en derecha. Lo que se verifica a ciegas es el valor de verdad de cada proposición del banco y cada par de gen.PARES.",
-  "verificacion": "Verificado a ciegas (8 nov 2026): un verificador independiente decidió V o F en las 250 proposiciones sin ver la clave y coincidió en las 250, y en los 6 conjuntos de pares; las 124 «corregida» son verdaderas. Las proposiciones nuevas o reescritas tras la revisión las revisó la conversación principal. Temas agregados el 12 nov 2026: 98 proposiciones nuevas (52 V, 46 F) y el conjunto de pares «precursores» verificados a ciegas por otro subagente independiente: 98/98 y 6/6 coinciden, sin dudosas; las «corregida» de las falsas son verdaderas.",
+  "verificacion": "Verificado a ciegas (8 nov 2026): un verificador independiente decidió V o F en las 250 proposiciones sin ver la clave y coincidió en las 250, y en los 6 conjuntos de pares; las 124 «corregida» son verdaderas. Las proposiciones nuevas o reescritas tras la revisión las revisó la conversación principal. Temas agregados el 12 nov 2026: 98 proposiciones nuevas (52 V, 46 F) y el conjunto de pares «precursores» verificados a ciegas por otro subagente independiente: 98/98 y 6/6 coinciden, sin dudosas; las «corregida» de las falsas son verdaderas. Cierre 100 (12 nov 2026): 7 temas nuevos de proposiciones propias (hidratacion-oxidacion, acido-nitroso, carotenoide, paba, derivados-glucosa, fenton-lewis, bilirrubina; 85 proposiciones), el conjunto de pares «nitroso» y el tipo «pourbaix» (dos diagramas simplificados propios, lectura de la zona estable por E y pH, [H⁺] o pOH). Los casos con \"nuevo\": \"cierre-100\" esperan verificación a ciegas por otro agente (valor de verdad de cada proposición nueva, los 4 pares del conjunto y la especie de cada punto de Pourbaix). Como los temas nuevos entran con otra bolsa de azar, seis semillas anteriores (las que ahora caen en la bolsa nueva o en Pourbaix) dan otro problema y se recalcularon: entrada-1, entrada-2, salida-3, 4, 6, 22. Cierre-100 (12 nov 2026): a ciegas, con conocimiento propio y lectura de las figuras en PNG: 90 proposiciones nuevas (89/90 con el mismo valor de verdad; en fen9 el verificador marcó V, pero la proposición dice que el O del ·OH completa el octeto, que es falso, como dice el banco), los 4 pares del conjunto nitroso (4/4) y los 18 problemas con figura o sin ella, incluidos los recalculados y Pourbaix con pH, [H⁺] o pOH (18/18). Por su observación, fen6 y fen12 se reformularon para hablar de cómo se escribe la reacción (flecha simple) y no de si es reversible.",
   "casos": [
     {
       "semilla": "entrada-1",
       "entrada": {
-        "tipo": "correcta",
-        "tema": "oxidos",
-        "ids": [
-          "oxi13",
-          "oxi8",
-          "oxi4",
-          "oxi11"
-        ]
+        "tipo": "pourbaix",
+        "sub": "especie",
+        "diagrama": "metal-x",
+        "forma": "H",
+        "pH": 13,
+        "E": -0.1
       },
       "esperado": {
-        "respuesta": "p:oxi4",
-        "texto": "En la nomenclatura tradicional, el sufijo -ico indica el mayor de dos estados de oxidación."
-      }
+        "respuesta": "pb:XOH2",
+        "texto": "X(OH)₂(s) (hidróxido sólido)"
+      },
+      "nuevo": "cierre-100"
     },
     {
       "semilla": "entrada-2",
       "entrada": {
-        "tipo": "vf",
-        "tema": "radicales",
-        "ids": [
-          "rad1",
-          "rad2",
-          "rad12"
+        "tipo": "pourbaix",
+        "sub": "vf",
+        "diagrama": "metal-x",
+        "puntos": [
+          {
+            "pH": 1,
+            "E": 0.4,
+            "dicha": "Con [H⁺] = 10⁻¹ M y E = 0,4 V, el metal X está como X²⁺(ac).",
+            "verdad": true
+          },
+          {
+            "pH": 5,
+            "E": 0.8,
+            "dicha": "Con [H⁺] = 10⁻⁵ M y E = 0,8 V, el metal X está como X²⁺(ac).",
+            "verdad": true
+          },
+          {
+            "pH": 2.5,
+            "E": -0.4,
+            "dicha": "Con pH = 2,5 y E = −0,4 V, el metal X está como X(OH)₂(s).",
+            "verdad": false
+          }
         ]
       },
       "esperado": {
         "respuesta": "vf:VVF",
         "texto": "VVF"
-      }
+      },
+      "nuevo": "cierre-100"
     },
     {
       "semilla": "entrada-3",
@@ -92,17 +108,19 @@
       "semilla": "salida-3",
       "entrada": {
         "tipo": "vf",
-        "tema": "tendencia",
+        "tema": "carotenoide",
         "ids": [
-          "ten7",
-          "ten10",
-          "ten5"
+          "car6",
+          "car5",
+          "car8",
+          "car4"
         ]
       },
       "esperado": {
-        "respuesta": "vf:FVV",
-        "texto": "FVV"
-      }
+        "respuesta": "vf:VVFV",
+        "texto": "VVFV"
+      },
+      "nuevo": "cierre-100"
     },
     {
       "semilla": 0,
@@ -180,18 +198,19 @@
       "semilla": 4,
       "entrada": {
         "tipo": "incorrecta",
-        "tema": "sales-acidas",
+        "tema": "carotenoide",
         "ids": [
-          "hid7",
-          "hid9",
-          "hid5",
-          "hid16"
+          "car5",
+          "car1",
+          "car6",
+          "car7"
         ]
       },
       "esperado": {
-        "respuesta": "p:hid9",
-        "texto": "El NaHCO₃ es una sal básica, porque contiene grupos OH⁻."
-      }
+        "respuesta": "p:car7",
+        "texto": "Los sustituyentes que salen de la cadena y de los anillos del β-caroteno son 10 grupos etilo (CH₃–CH₂–)."
+      },
+      "nuevo": "cierre-100"
     },
     {
       "semilla": 5,
@@ -213,18 +232,19 @@
       "semilla": 6,
       "entrada": {
         "tipo": "vf",
-        "tema": "tipo-solido",
+        "tema": "acido-nitroso",
         "ids": [
-          "ts12",
-          "ts1",
-          "ts2",
-          "ts3"
+          "nit1",
+          "nit11",
+          "nit4",
+          "nit3"
         ]
       },
       "esperado": {
-        "respuesta": "vf:FVVV",
-        "texto": "FVVV"
-      }
+        "respuesta": "vf:VFVV",
+        "texto": "VFVV"
+      },
+      "nuevo": "cierre-100"
     },
     {
       "semilla": 7,
@@ -331,20 +351,35 @@
     {
       "semilla": 22,
       "entrada": {
-        "tipo": "incorrecta",
-        "tema": "ionicos",
-        "ids": [
-          "ion6",
-          "ion5",
-          "ion3",
-          "ion1",
-          "ion14"
+        "tipo": "pourbaix",
+        "sub": "vf",
+        "diagrama": "aluminio",
+        "puntos": [
+          {
+            "pH": 1,
+            "E": -1.4,
+            "dicha": "Con [H⁺] = 10⁻¹ M y E = −1,4 V, el aluminio está como AlO₂⁻(ac).",
+            "verdad": false
+          },
+          {
+            "pH": 2,
+            "E": -0.5,
+            "dicha": "Con [H⁺] = 10⁻² M y E = −0,5 V, el aluminio está como AlO₂⁻(ac).",
+            "verdad": false
+          },
+          {
+            "pH": 6,
+            "E": -0.4,
+            "dicha": "Con pOH = 8 y E = −0,4 V, el aluminio está como Al₂O₃(s).",
+            "verdad": true
+          }
         ]
       },
       "esperado": {
-        "respuesta": "p:ion14",
-        "texto": "El ion sulfato tiene la fórmula SO₃²⁻."
-      }
+        "respuesta": "vf:FFV",
+        "texto": "FFV"
+      },
+      "nuevo": "cierre-100"
     },
     {
       "semilla": 27,
@@ -362,6 +397,253 @@
         "respuesta": "p:pro11",
         "texto": "El enlace peptídico solo existe en las proteínas de origen animal."
       }
+    },
+    {
+      "semilla": "cierre-100-120",
+      "entrada": {
+        "tipo": "vf",
+        "tema": "hidratacion-oxidacion",
+        "ids": [
+          "hio2",
+          "hio12",
+          "hio1",
+          "hio5"
+        ]
+      },
+      "esperado": {
+        "respuesta": "vf:VFVV",
+        "texto": "VFVV"
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "cierre-100-67",
+      "entrada": {
+        "tipo": "vf",
+        "tema": "acido-nitroso",
+        "ids": [
+          "nit2",
+          "nit8",
+          "nit12",
+          "nit13"
+        ]
+      },
+      "esperado": {
+        "respuesta": "vf:VFFF",
+        "texto": "VFFF"
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "cierre-100-140",
+      "entrada": {
+        "tipo": "vf",
+        "tema": "carotenoide",
+        "ids": [
+          "car7",
+          "car3",
+          "car8",
+          "car6"
+        ]
+      },
+      "esperado": {
+        "respuesta": "vf:FVFV",
+        "texto": "FVFV"
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "cierre-100-22",
+      "entrada": {
+        "tipo": "incorrecta",
+        "tema": "paba",
+        "ids": [
+          "pab11",
+          "pab4",
+          "pab6",
+          "pab1",
+          "pab5"
+        ]
+      },
+      "esperado": {
+        "respuesta": "p:pab11",
+        "texto": "El anillo del ácido 4-aminobenzoico reacciona por adición, como un alqueno, y deja de ser aromático."
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "cierre-100-3",
+      "entrada": {
+        "tipo": "vf",
+        "tema": "derivados-glucosa",
+        "ids": [
+          "dgl15",
+          "dgl1",
+          "dgl6",
+          "dgl3"
+        ]
+      },
+      "esperado": {
+        "respuesta": "vf:FVVV",
+        "texto": "FVVV"
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "cierre-100-108",
+      "entrada": {
+        "tipo": "vf",
+        "tema": "fenton-lewis",
+        "ids": [
+          "fen7",
+          "fen12",
+          "fen3",
+          "fen11"
+        ]
+      },
+      "esperado": {
+        "respuesta": "vf:FFVF",
+        "texto": "FFVF"
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "cierre-100-71",
+      "entrada": {
+        "tipo": "vf",
+        "tema": "bilirrubina",
+        "ids": [
+          "bil3",
+          "bil6",
+          "bil7",
+          "bil10"
+        ]
+      },
+      "esperado": {
+        "respuesta": "vf:VVFF",
+        "texto": "VVFF"
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "cierre-100-23",
+      "entrada": {
+        "tipo": "relacionar",
+        "conjunto": "nitroso",
+        "ids": [
+          "ni-acido",
+          "ni-anion",
+          "ni-oxidada"
+        ],
+        "derecha": [
+          "ni-oxidada",
+          "ni-acido",
+          "ni-anion"
+        ]
+      },
+      "esperado": {
+        "respuesta": "rel:Ib, IIc, IIIa",
+        "texto": "Ib, IIc, IIIa"
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "cierre-100-88",
+      "entrada": {
+        "tipo": "pourbaix",
+        "sub": "especie",
+        "diagrama": "aluminio",
+        "forma": "H",
+        "pH": 11,
+        "E": -1.2
+      },
+      "esperado": {
+        "respuesta": "pb:AlO2",
+        "texto": "AlO₂⁻(ac) (anión disuelto)"
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "cierre-100-38",
+      "entrada": {
+        "tipo": "pourbaix",
+        "sub": "especie",
+        "diagrama": "metal-x",
+        "forma": "H",
+        "pH": 10,
+        "E": 0.5
+      },
+      "esperado": {
+        "respuesta": "pb:XOH2",
+        "texto": "X(OH)₂(s) (hidróxido sólido)"
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "cierre-100-33",
+      "entrada": {
+        "tipo": "pourbaix",
+        "sub": "vf",
+        "diagrama": "aluminio",
+        "puntos": [
+          {
+            "pH": 1,
+            "E": -0.3,
+            "dicha": "Con [H⁺] = 10⁻¹ M y E = −0,3 V, el aluminio está como Al³⁺(ac).",
+            "verdad": true
+          },
+          {
+            "pH": 1,
+            "E": -1.6,
+            "dicha": "Con pOH = 13 y E = −1,6 V, el aluminio está como AlO₂⁻(ac).",
+            "verdad": false
+          },
+          {
+            "pH": 12,
+            "E": -0.2,
+            "dicha": "Con pOH = 2 y E = −0,2 V, el aluminio está como Al³⁺(ac).",
+            "verdad": false
+          }
+        ]
+      },
+      "esperado": {
+        "respuesta": "vf:VFF",
+        "texto": "VFF"
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "cierre-100-32",
+      "entrada": {
+        "tipo": "pourbaix",
+        "sub": "vf",
+        "diagrama": "metal-x",
+        "puntos": [
+          {
+            "pH": 3,
+            "E": 1.1,
+            "dicha": "Con [H⁺] = 10⁻³ M y E = 1,1 V, el metal X está como XO₄²⁻(ac).",
+            "verdad": true
+          },
+          {
+            "pH": 5.5,
+            "E": -0.5,
+            "dicha": "Con pH = 5,5 y E = −0,5 V, el metal X está como X(OH)₂(s).",
+            "verdad": false
+          },
+          {
+            "pH": 9,
+            "E": 0.4,
+            "dicha": "Con pOH = 5 y E = 0,4 V, el metal X está como X(OH)₂(s).",
+            "verdad": true
+          }
+        ]
+      },
+      "esperado": {
+        "respuesta": "vf:VFV",
+        "texto": "VFV"
+      },
+      "nuevo": "cierre-100"
     }
   ]
 }

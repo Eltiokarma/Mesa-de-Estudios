@@ -54,6 +54,16 @@ function recalcular(p) {
     if (d.tipo === 'distancia') return dist;
     return clave(azDe(-e, -n), d.conDistancia ? dist : undefined);
   }
+  if (d.tipo === 'direccion') {
+    // El rumbo del punto final visto desde el inicio, con ángulos reales y vuelto a nombrar.
+    let e = 0, n = 0;
+    for (const t of d.tramos) { const [a, b] = paso(t.rumbo, t.largo); e += a; n += b; }
+    return clave(azDe(e, n), Math.hypot(e, n));
+  }
+  if (d.tipo === 'moviles-tramos') {
+    const [A, B] = d.recorridos.map(rc => rc.tramos.reduce((q, t) => { const [a, b] = paso(t.rumbo, t.largo); return [q[0] + a, q[1] + b]; }, [0, 0]));
+    return Math.hypot(A[0] - B[0], A[1] - B[1]);
+  }
   if (d.tipo === 'moviles') {
     const [A, B] = d.moviles.map(m => paso(m.rumbo, m.rapidez * d.t));
     return Math.hypot(A[0] - B[0], A[1] - B[1]);
@@ -79,7 +89,7 @@ function recalcular(p) {
 const igual = (a, b) => (typeof a === 'number' ? Math.abs(a - b) < 1e-7 : a === b);
 probarGenerador(gen, { semillas: 600, recalcular, igual });
 
-test('salen los seis tipos, con y sin distancia en el regreso, y las dos canchas', () => {
+test('salen los ocho tipos, con y sin distancia en el regreso, y las dos canchas', () => {
   const tipos = new Set(), extra = new Set();
   for (let s = 0; s < 200; s++) {
     const d = gen.generar(s)._datos; tipos.add(d.tipo);
@@ -87,8 +97,26 @@ test('salen los seis tipos, con y sin distancia en el regreso, y las dos canchas
     if (d.tipo === 'cuadrado') extra.add(d.forma);
     if (d.tipo === 'relativo') extra.add('relativo-' + d.pide);
   }
-  assert.deepEqual([...tipos].sort(), ['cuadrado', 'distancia', 'moviles', 'rapidez', 'regreso', 'relativo']);
+  assert.deepEqual([...tipos].sort(), ['cuadrado', 'direccion', 'distancia', 'moviles', 'moviles-tramos', 'rapidez', 'regreso', 'relativo']);
   for (const x of ['regreso-true', 'regreso-false', 'cuadrado', 'rectangulo', 'relativo-rumbo', 'relativo-distancia']) assert.ok(extra.has(x), `falta ${x}`);
+});
+
+test('moviles-tramos y direccion: salen con tramos con √3, la dirección es la del final visto desde el inicio y las oficiales de UNMSM dan 6 km y 1200 m al S 30° E', () => {
+  const v = { r3: 0, tramos: 0, dir: 0 };
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s), d = p._datos;
+    if (d.tipo === 'moviles-tramos') { v.tramos++; assert.ok(d.recorridos.every(rc => rc.tramos.length >= 2 && rc.tramos.length <= 3)); if (JSON.stringify(d).includes('√3"') && d.recorridos.some(rc => rc.tramos.some(t => /^\d*√3$/.test(t.largoTexto)))) v.r3++; }
+    if (d.tipo === 'direccion') {
+      v.dir++;
+      const c = p.alternativas.find(a => a.correcta), e = p.alternativas.find(a => a.error && a.error.id === 'RMP41-desde-el-destino');
+      if (e) { const az = k => Number(k.split('|')[0].slice(3)); assert.equal(((az(c.valor) + 180) % 360), az(e.valor), `semilla ${s}`); }
+    }
+  }
+  assert.ok(v.tramos >= 30 && v.dir >= 30, JSON.stringify(v));
+  const a = gen.generar('unmsm-2020-I-39'), b = gen.generar('unmsm-2024-I-25');
+  assert.equal(a.respuesta.valor, 6);
+  assert.equal(b.alternativas.find(x => x.correcta).texto, '1200 m al S 30° E');
+  assert.ok(b.alternativas.some(x => x.error && x.error.id === 'RMP41-desde-el-destino' && x.texto === '1200 m al N 30° O'));
 });
 
 test('la figura del enunciado no dibuja el recorrido: es la misma rosa en todos los problemas de un lugar', () => {
@@ -130,7 +158,8 @@ test('el 3-4-5 se puede usar: con 37° y 53° de verdad el resultado cambia a lo
   for (let s = 0; s < 1500; s++) {
     const p = gen.generar(s), d = p._datos;
     let A, R;
-    if (d.tipo === 'distancia' || d.tipo === 'regreso') [A, R] = [lit, real].map(f => d.tramos.reduce((q, t) => { const [x, y] = v(f, t.rumbo, t.largo); return [q[0] + x, q[1] + y]; }, [0, 0]));
+    if (d.tipo === 'distancia' || d.tipo === 'regreso' || d.tipo === 'direccion') [A, R] = [lit, real].map(f => d.tramos.reduce((q, t) => { const [x, y] = v(f, t.rumbo, t.largo); return [q[0] + x, q[1] + y]; }, [0, 0]));
+    else if (d.tipo === 'moviles-tramos') [A, R] = [lit, real].map(f => { const [a, b] = d.recorridos.map(rc => rc.tramos.reduce((q, t) => { const [x, y] = v(f, t.rumbo, t.largo); return [q[0] + x, q[1] + y]; }, [0, 0])); return [a[0] - b[0], a[1] - b[1]]; });
     else if (d.tipo === 'moviles') [A, R] = [lit, real].map(f => { const [a, b] = d.moviles.map(m => v(f, m.rumbo, m.rapidez * d.t)); return [a[0] - b[0], a[1] - b[1]]; });
     else if (d.tipo === 'relativo') [A, R] = [lit, real].map(f => { const [a, b] = d.lugares.map(l => v(f, l.rumbo, l.largo)); return [b[0] - a[0], b[1] - a[1]]; });
     else if (d.tipo === 'rapidez') {
@@ -147,7 +176,7 @@ test('el 3-4-5 se puede usar: con 37° y 53° de verdad el resultado cambia a lo
 test('la nota del rumbo nombra el triángulo notable que hace falta; rapidez y tiempo no comparten color', () => {
   for (let s = 0; s < 600; s++) {
     const p = gen.generar(s), d = p._datos, txt = p.enunciado.map(x => (typeof x === 'string' ? x : x.t)).join('');
-    const rumbos = d.tramos ? d.tramos.map(t => t.rumbo) : d.moviles ? d.moviles.map(m => m.rumbo) : d.lugares ? d.lugares.map(l => l.rumbo) : d.rumbos || [];
+    const rumbos = d.recorridos ? d.recorridos.flatMap(rc => rc.tramos.map(t => t.rumbo)) : d.tramos ? d.tramos.map(t => t.rumbo) : d.moviles ? d.moviles.map(m => m.rumbo) : d.lugares ? d.lugares.map(l => l.rumbo) : d.rumbos || [];
     if (rumbos.some(r => /\b(37|53)°/.test(r)) || d.forma === 'rectangulo') assert.match(txt, /3-4-5 para 37° y 53°/, `semilla ${s}`);
     if (rumbos.some(r => /\b45°/.test(r)) || d.forma === 'cuadrado') assert.match(txt, /1-1-√2 para 45°/, `semilla ${s}`);
     if (rumbos.some(r => /\b(30|60)°/.test(r))) assert.match(txt, /1-√3-2 para 30° y 60°/, `semilla ${s}`);

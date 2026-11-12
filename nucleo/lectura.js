@@ -112,9 +112,11 @@
   //   tabla:     columnas: ['Año', 'Toneladas'], filas: [{ id, celdas: ['2019', '150'] }]
   //   barras:    unidad: 'mm', barras: [{ id, etiqueta: 'Ene', valor: 120 }]   (barras horizontales desde 0)
   //   recuadros: recuadros: [{ id, titulo, t }]
+  //   imagen:    svg (dibujo propio con viewBox, sin código ni colores fijos), alt, partes: [{ id, n, titulo, t }]
+  //              (las partes son lo que se ve en el dibujo, descrito en texto; "n" es el número que el dibujo lleva como marca)
   // Cada fila, barra o recuadro (y la figura entera) tiene id propio, y "evidencia" u "origen" pueden apuntar a él.
-  const TIPOS_FIGURA = { tabla: 'filas', barras: 'barras', recuadros: 'recuadros' };
-  const NOMBRE_FIGURA = { tabla: 'la tabla', barras: 'el gráfico', recuadros: 'la infografía' };
+  const TIPOS_FIGURA = { tabla: 'filas', barras: 'barras', recuadros: 'recuadros', imagen: 'partes' };
+  const NOMBRE_FIGURA = { tabla: 'la tabla', barras: 'el gráfico', recuadros: 'la infografía', imagen: 'la imagen' };
   const figuras = item => (item && Array.isArray(item.figuras)) ? item.figuras : [];
   const textoParte = (f, x) => f.tipo === 'tabla' ? (x.celdas || []).map((c, k) => `${(f.columnas || [])[k] || ''}: ${c}`).join(' · ')
     : f.tipo === 'barras' ? `${x.etiqueta}: ${x.valor}${f.unidad ? ' ' + f.unidad : ''}`
@@ -137,13 +139,13 @@
     const e = elementos(item).find(x => x.id === id);
     if (!e) return String(id);
     if (!e.parte) return NOMBRE_FIGURA[e.tipo];
-    const parte = { tabla: 'la fila', barras: 'la barra', recuadros: 'el recuadro' }[e.tipo];
+    const parte = { tabla: 'la fila', barras: 'la barra', recuadros: 'el recuadro', imagen: 'el elemento' }[e.tipo];
     return `${parte}${e.nombre ? ` «${e.nombre}»` : ''} ${NOMBRE_FIGURA[e.tipo].replace(/^el /, 'del ').replace(/^la /, 'de la ')}`;
   }
   // Lo que se cita debajo de una explicación, en el orden del texto: { id, marca (número u otra etiqueta corta), t }.
   function citas(item, ids) {
     const ors = oraciones(item).filter(o => ids.includes(o.id)).map(o => ({ id: o.id, marca: String(item.ejercicio ? o.id : o.n), t: o.t }));
-    const els = elementos(item).filter(e => ids.includes(e.id)).map(e => ({ id: e.id, marca: { tabla: 'Tabla', barras: 'Gráfico', recuadros: 'Infografía' }[e.tipo], t: e.t }));
+    const els = elementos(item).filter(e => ids.includes(e.id)).map(e => ({ id: e.id, marca: { tabla: 'Tabla', barras: 'Gráfico', recuadros: 'Infografía', imagen: 'Imagen' }[e.tipo], t: e.t }));
     return [...ors, ...els];
   }
   function validarFiguras(it, mal) {
@@ -156,6 +158,13 @@
       if (!f || !f.id || !TIPOS_FIGURA[f.tipo]) { mal(`${d}: necesita id y un tipo (${Object.keys(TIPOS_FIGURA).join(', ')})`); continue; }
       if (!f.titulo) mal(`${d}: falta el título`);
       if (!Number.isInteger(f.despues) || f.despues < 0 || f.despues > npar) mal(`${d}: "despues" debe ser un entero de 0 a ${npar}`);
+      if (f.tipo === 'imagen') {
+        const sv = f.svg;
+        if (typeof sv !== 'string' || !/^<svg[\s>]/.test(sv) || !/viewBox=/.test(sv)) mal(`${d}: el svg debe empezar con <svg y tener viewBox`);
+        else if (/<script|\son[a-z]+\s*=|javascript:|<foreignObject/i.test(sv)) mal(`${d}: el svg trae código (script, on…=, javascript: o foreignObject)`);
+        else if (/#[0-9a-f]{3,6}\b/i.test(sv)) mal(`${d}: el svg trae colores fijos (usa var(--c-*) o currentColor)`);
+        if (typeof f.alt !== 'string' || f.alt.length <= 10) mal(`${d}: falta la descripción (alt) de la imagen`);
+      }
       const partes = f[TIPOS_FIGURA[f.tipo]];
       if (!Array.isArray(partes) || partes.length < 2) { mal(`${d}: necesita al menos 2 elementos en "${TIPOS_FIGURA[f.tipo]}"`); continue; }
       for (const x of partes) {
@@ -163,6 +172,7 @@
         if (f.tipo === 'tabla' && (!Array.isArray(x.celdas) || !Array.isArray(f.columnas) || x.celdas.length !== f.columnas.length)) mal(`${d}.${x.id}: la fila debe tener una celda por columna`);
         if (f.tipo === 'barras' && (!x.etiqueta || typeof x.valor !== 'number' || !Number.isFinite(x.valor) || x.valor < 0)) mal(`${d}.${x.id}: la barra necesita etiqueta y un valor no negativo`);
         if (f.tipo === 'recuadros' && !x.t) mal(`${d}.${x.id}: el recuadro necesita texto`);
+        if (f.tipo === 'imagen' && !x.t) mal(`${d}.${x.id}: la parte de la imagen necesita texto`);
       }
     }
   }

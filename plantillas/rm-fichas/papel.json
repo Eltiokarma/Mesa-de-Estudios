@@ -12,19 +12,19 @@
         "El mayor cuadrado perfecto que no pasa de 30 es 25: k = 5.",
         "Perímetro: 5 × (3 × 4) = 60 cm. Trampa: usar las 30 fichas, que no forman un triángulo."
       ],
-      "verificar": [ { "fn": "semejanza", "args": [{ "ficha": "triangulo", "N": 30, "L": 4 }], "espera": { "k": 5, "perimetro": 60 } } ]
+      "verificar": [ { "fn": "semejanza", "args": [{ "ficha": "triangulo", "N": 30, "L": 4}], "espera": { "k": 5, "perimetro": 60}} ]
     },
     {
       "id": "p2",
       "nivel": "intermedio",
-      "enunciado": "Una ficha es un trapecio formado por tres triángulos equiláteros de 2 cm de lado (sus lados miden 2, 2, 2 y 4 cm). Con 50 fichas iguales, ¿cuál es el perímetro del mayor trapecio semejante a la ficha que se puede armar?",
-      "respuesta": "70 cm.",
+      "enunciado": "En un tablero de 7 × 7 casillas están tapadas las 9 casillas que quedan en las filas 2, 4 y 6 y en las columnas 2, 4 y 6 (una sí, una no). Se ponen fichas de 5 casillas con forma de U, que se pueden girar, sin superponerse y sin cubrir las tapadas. ¿Cuántas fichas, como máximo, se pueden poner? (Pregunta de UNMSM 2025-I.)",
+      "respuesta": "8 fichas.",
       "pasos": [
-        "El trapecio de lado k veces el de la ficha tiene k² veces su área: usa k² fichas (y sí se puede armar, como se ve con 4 fichas para k = 2).",
-        "El mayor cuadrado perfecto que no pasa de 50 es 49: k = 7.",
-        "Perímetro de la ficha: 2 + 2 + 2 + 4 = 10 cm. El grande: 7 × 10 = 70 cm."
+        "Casillas libres: 49 − 9 = 40. Como cada ficha cubre 5, caben a lo más 40 ÷ 5 = 8.",
+        "Y 8 sí se pueden: dibuja el tablero y pon cada U abrazando una casilla tapada, girándola según haga falta.",
+        "Trampa: dividir las 49 casillas entre 5 y responder 9, sin quitar las tapadas."
       ],
-      "verificar": [ { "fn": "semejanza", "args": [{ "ficha": "trapecio", "N": 50, "L": 2 }], "espera": { "k": 7, "perimetro": 70 } } ]
+      "verificar": [ { "fn": "maxEmpaque", "args": [7, 7, [[0, 0], [1, 0], [2, 0], [0, 1], [2, 1]], [[1, 1], [3, 1], [5, 1], [1, 3], [3, 3], [5, 3], [1, 5], [3, 5], [5, 5]]], "espera": { "max": 8}} ]
     },
     {
       "id": "p3",
@@ -37,7 +37,7 @@
         "El de lado 7 necesitaría 49: con 3 hexágonos faltarían 31 triángulos y solo hay 20.",
         "Perímetro: 3 × 6 × 2 = 36 cm. Trampa: contar el hexágono como una ficha (20 + 3 = 23 → lado 4)."
       ],
-      "verificar": [ { "fn": "hexagonos", "args": [20, 3], "espera": { "k": 6, "h": 3, "t": 18 } } ]
+      "verificar": [ { "fn": "hexagonos", "args": [20, 3], "espera": { "k": 6, "h": 3, "t": 18}} ]
     },
     {
       "id": "p4",
@@ -49,7 +49,7 @@
         "Hay 3 contactos de 2 cm (dos entre las echadas y uno entre la parada y la de abajo). Cada contacto se resta dos veces: 56 − 2 × 6 = 44 cm.",
         "Comprobación: la L ocupa 15 cm de ancho y 7 de alto, y como sus bordes forman una escalera, su perímetro es el del rectángulo 15 × 7: 44 cm."
       ],
-      "verificar": [ { "fn": "perimetroCon", "args": [{ "forma": "L", "n": 4, "m": 3, "s": 0, "a": 2 }, 5, "bien"], "espera": 44 } ]
+      "verificar": [ { "fn": "perimetroCon", "args": [{ "forma": "L", "n": 4, "m": 3, "s": 0, "a": 2}, 5, "bien"], "espera": 44} ]
     },
     {
       "id": "p5",
@@ -61,7 +61,7 @@
         "Del primero al cuarto hay 3 pasos: 400 ÷ 2 ÷ 2 ÷ 2 = 50 cm².",
         "Trampa: dividir el lado a la mitad en cada paso (eso daría 400 ÷ 64)."
       ],
-      "verificar": [ { "fn": "medios", "args": [20, 4], "espera": { "area": 50 } } ]
+      "verificar": [ { "fn": "medios", "args": [20, 4], "espera": { "area": 50}} ]
     },
     {
       "id": "p6",
@@ -74,19 +74,19 @@
         "Hacen falta al menos 2 T y 1 L: 12 cuadraditos. Y el rectángulo de 3 × 4 sí se cubre. Filas de arriba abajo: L L T / L T T / L U T / U U U (T y U son las dos tes).",
         "Respuesta: 12 cuadraditos. Trampa: creer que basta con 4 + 4 = 8."
       ],
-      "verificar": [ {"fn": "minRectangulo", "args": [["L4", "T4"], "area"], "espera": {"w": 3, "h": 4}}, {"fn": "cotaRectangulo", "args": [["L4", "T4"], "area"], "espera": {"w": 3, "h": 4}}, {"fn": "embaldosar", "args": [2, 4, ["L4", "T4"]], "espera": null} ]
+      "verificar": [ { "fn": "minRectangulo", "args": [["L4", "T4"], "area"], "espera": { "w": 3, "h": 4}}, { "fn": "cotaRectangulo", "args": [["L4", "T4"], "area"], "espera": { "w": 3, "h": 4}}, { "fn": "embaldosar", "args": [2, 4, ["L4", "T4"]], "espera": null} ]
     },
     {
       "id": "p7",
       "nivel": "básico",
-      "enunciado": "Un cartón de 24 cm por 5 cm se corta en 4 tiras de 6 cm por 5 cm. Las tiras se ponen en fila, cada una pegada a la siguiente por un lado completo. ¿Cuál es el mayor perímetro posible?",
-      "respuesta": "58 cm.",
+      "enunciado": "Una ficha está formada por tres cuadraditos en forma de L (el de la esquina y uno a cada lado). Una figura es un rectángulo de 3 filas por 4 columnas de cuadraditos del mismo tamaño. Se cuentan todas las posiciones distintas de la ficha dentro del rectángulo, girándola, aunque unas se crucen con otras. ¿Cuántas son? (Basado en UNMSM 2025-II.)",
+      "respuesta": "24 fichas.",
       "pasos": [
-        "Separadas, las tiras suman 4 × 22 = 88 cm de borde. Hay 3 contactos y cada uno se resta dos veces.",
-        "Para perder lo menos se pegan por el lado corto (5 cm): 88 − 2 × 3 × 5 = 58 cm.",
-        "Pegándolas por el lado de 6 cm saldrían 88 − 36 = 52 cm."
+        "Todo cuadrado de 2 × 2 contiene 4 fichas en L: la que le falta una esquina distinta cada vez.",
+        "En 3 filas por 4 columnas hay 2 × 3 = 6 cuadrados de 2 × 2.",
+        "Total: 6 × 4 = 24. Trampa: contar solo la ficha como está dibujada (6) o dividir 12 ÷ 3 = 4."
       ],
-      "verificar": [ { "fn": "contorno", "args": [[[0, 0, 6, 5], [6, 0, 6, 5], [12, 0, 6, 5], [18, 0, 6, 5]]], "espera": 58 } ]
+      "verificar": [ { "fn": "conteo", "args": [{ "pieza": "L3", "reflejos": false, "celdas": [[0, 0], [1, 0], [2, 0], [3, 0], [0, 1], [1, 1], [2, 1], [3, 1], [0, 2], [1, 2], [2, 2], [3, 2]]}], "espera": { "n": 24, "sinGiros": 6, "dividir": 4}} ]
     },
     {
       "id": "p8",
@@ -98,7 +98,7 @@
         "Todas en la misma dirección entran 4 (por ejemplo, 2 filas de 2). Por área cabrían 35 ÷ 6 = 5 y algo.",
         "Mezclando direcciones entran 5: tres barras paradas de 2 × 3 a lo largo de un borde de 7 y dos echadas de 3 × 2 en la franja que queda. No pueden ser 6 porque 6 × 6 = 36 > 35."
       ],
-      "verificar": [ { "fn": "maxEmpaque", "args": [7, 5, [[0, 0], [1, 0], [0, 1], [1, 1], [0, 2], [1, 2]]], "espera": { "max": 5 } } ]
+      "verificar": [ { "fn": "maxEmpaque", "args": [7, 5, [[0, 0], [1, 0], [0, 1], [1, 1], [0, 2], [1, 2]]], "espera": { "max": 5}} ]
     },
     {
       "id": "p9",
@@ -110,19 +110,19 @@
         "La figura 8 es un rectángulo de 21 cm por 34 cm.",
         "Área: 21 × 34 = 714 cm². Trampa: seguir sumando lo mismo que de la figura 3 a la 4 (9 cm² cada vez)."
       ],
-      "verificar": [ { "fn": "fib", "args": [8], "espera": 21 }, { "fn": "fib", "args": [9], "espera": 34 } ]
+      "verificar": [ { "fn": "fib", "args": [8], "espera": 21}, { "fn": "fib", "args": [9], "espera": 34} ]
     },
     {
       "id": "p10",
-      "nivel": "básico",
-      "enunciado": "Una malla triangular tiene 10 filas de puntos (1, 2, 3, …, 10). Una hormiga empieza en el punto de arriba, camina por los segmentos entre puntos vecinos y tarda 2 s en cada uno. ¿Cuál es el menor tiempo para pasar por todos los puntos?",
-      "respuesta": "108 s.",
+      "nivel": "intermedio",
+      "enunciado": "Sobre el lado de arriba de un rectángulo de 12 cm de ancho y 9 cm de alto se apoya una semicircunferencia de 6 cm de radio, y la región incluye ese semicírculo. En las dos esquinas de abajo del rectángulo se quitan cuartos de círculo de 6 cm de radio (con centro en la esquina). ¿Cuál es el área de la región que queda? (Se parece a una pregunta de UNMSM 2025-I.)",
+      "respuesta": "108 cm².",
       "pasos": [
-        "Hay 1 + 2 + … + 10 = 55 puntos. Ya está en uno, y cada tramo la lleva a lo más a un punto nuevo: hacen falta al menos 54 tramos.",
-        "En zigzag (cada fila de punta a punta, cambiando de sentido) lo logra con 54 tramos.",
-        "Tiempo: 54 × 2 = 108 s. Trampa: contar 55 tramos, uno por punto."
+        "Los dos cuartos de círculo que se quitan abajo suman medio círculo de 6 cm de radio.",
+        "La media luna de arriba es medio círculo del mismo radio: se desliza hacia abajo y llena justo los dos huecos.",
+        "Queda un rectángulo de 12 × 9 = 108 cm². Trampa: restar un círculo completo, que no sale ni de arriba ni de abajo."
       ],
-      "verificar": [ { "fn": "malla", "args": [10], "espera": { "puntos": 55, "pasos": 54 } } ]
+      "verificar": [ { "fn": "petalo", "args": [{ "r": 6, "H": 9}], "espera": { "area": 108}} ]
     }
   ]
 }

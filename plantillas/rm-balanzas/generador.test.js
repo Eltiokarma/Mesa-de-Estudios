@@ -41,6 +41,12 @@ function recorrer(bs, tope, fn) {
 
 function recalcular(p) {
   const d = p._datos;
+  if (d.tipo === 'combinado') {
+    const r = new Set(), n = [];
+    recorrer(d.balanzas, 40, w => { n.push(w); r.add(Object.entries(d.pide).reduce((s, [k, c]) => s + c * w[k], 0)); });
+    assert.equal(n.length, 1, 'las balanzas deben fijar los tres pesos');
+    return [...r][0];
+  }
   if (d.tipo === 'desigualdad') {
     const vals = [];
     recorrer(d.balanzas, 200, w => vals.push(w[d.figura]));
@@ -87,6 +93,20 @@ probarGenerador(gen, { semillas: 600, recalcular });
 test('salen los cuatro tipos en 200 semillas', () => {
   const tipos = new Set(); for (let s = 0; s < 200; s++) tipos.add(gen.generar(s)._datos.tipo);
   assert.equal(tipos.size, 4);
+});
+
+test('combinado: sale con semillas de práctica, se recalcula y la tercera balanza hace falta', () => {
+  let vistos = 0;
+  for (let s = 1; s <= 600; s++) {
+    const p = gen.generar(`ana-${s}`); if (p._datos.tipo !== 'combinado') continue;
+    vistos++;
+    assert.equal(recalcular(p), p.respuesta.valor, `ana-${s}`);
+    const [b1, b2] = p._datos.balanzas;
+    assert.ok(gen.calc.combinado({ balanzas: [b1, b2], pide: p._datos.pide }).valores.length > 1, `ana-${s}: la balanza 3 no hace falta`);
+    assert.ok(p.figura && p.figura.svg);
+  }
+  assert.ok(vistos > 50, `solo ${vistos}`);
+  for (const pre of ['entrada', 'salida']) for (let s = 1; s <= 60; s++) assert.notEqual(gen.generar(`${pre}-${s}`)._datos.tipo, 'combinado');
 });
 
 test('desigualdad: hay al menos dos pesos posibles (la desigualdad importa) y la respuesta es múltiplo de su medida', () => {

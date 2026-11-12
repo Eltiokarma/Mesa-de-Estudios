@@ -104,7 +104,7 @@ function problema(item, k) {
     texto.parrafos = it.parrafos.map(par => par.map(o => ({ n: ++n, t: o.t })));
     const figs = Lectura.figuras(it).map(({ id, ...f }) => {
       const limpia = l => (l || []).map(({ id: _, ...x }) => x);
-      return f.tipo === 'tabla' ? { ...f, filas: limpia(f.filas) } : f.tipo === 'barras' ? { ...f, barras: limpia(f.barras) } : { ...f, recuadros: limpia(f.recuadros) };
+      return f.tipo === 'tabla' ? { ...f, filas: limpia(f.filas) } : f.tipo === 'barras' ? { ...f, barras: limpia(f.barras) } : f.tipo === 'imagen' ? { ...f, partes: limpia(f.partes) } : { ...f, recuadros: limpia(f.recuadros) };
     });
     if (figs.length) texto.figuras = figs;
     // Par A/B: el rótulo de cada texto va antes de su primer párrafo ("desde", contado desde 0).

@@ -18,6 +18,9 @@
  *   una-pesada    { tipo, base: 10 | 3, cantidad }                   una sola pesada con los dos platillos.
  *                 base 10: pesas de 1, 10, 100, 1000 y 10 000 g, tantas como haga falta; el menor número de pesas.
  *                 base 3: una pesa de cada una de 1, 3, 9, 27, 81 y 243 g; cuántas se usan.
+ *   combinado     { tipo, balanzas, pide: { figura: cantidad } }     (nuevo, cierre-100) dos balanzas en equilibrio con
+ *                 pesas de kg, una desequilibrada; con pesos enteros los tres pesos quedan fijos: el peso de una
+ *                 combinación de figuras (por ejemplo dos esferas y un cubo).
  *
  * calc (funciones puras):
  *   pesoBalanza(lado, pesos)              peso de un platillo con los pesos dados ({ circulo: 6, … })
@@ -25,12 +28,18 @@
  *   sustitucion({ balanzas, pregunta })        { respuesta, pesos (en la unidad de la figura pedida, fracciones [n, d]) }
  *   minimoPesas({ valores, carga })            { respuesta, uso: [x, y, z] }
  *   unaPesada({ base, cantidad })              { respuesta, otro: [pesas], junto: [pesas] }
+ *   combinado({ balanzas, pide })              { respuesta, soluciones, valores }
  *
  * Errores (todos hipótesis; docs/clasificacion/trampas-admision-unmsm/rm-a.md fila 13 y los huecos de balanzas):
  *   RMP2-…    quedarse con la primera solución que aparece, sin minimizar ni maximizar
  *   RMP38-…   plantear mal las balanzas (tomar la desigualdad como igualdad, olvidar los enteros, sustituir a medias,
  *             invertir una razón, responder por otra figura)
  *   RMP39-…   usar un solo platillo, sin restar pesas
+ *   RMP98-…   (cierre-100) ignorar la balanza desequilibrada y quedarse con una solución de las otras dos
+ *   RMP99-…   (cierre-100) tomar el borde de la desigualdad como si se alcanzara
+ *
+ * Los tipos nuevos solo salen con semillas de práctica (texto que no sea entrada-… ni salida-…) y con semillas
+ * numéricas desde 400, para que los casos ya verificados no cambien.
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -48,6 +57,7 @@
   const FIGS = ['circulo', 'triangulo', 'cuadrado', 'rombo'];
   const NOMBRE = { circulo: ['círculo', 'círculos'], triangulo: ['triángulo', 'triángulos'], cuadrado: ['cuadrado', 'cuadrados'], rombo: ['rombo', 'rombos'] };
   const COLOR = { circulo: 'o', triangulo: 'i', cuadrado: 'h', rombo: 'd' };
+  const peso = (lado, pesos) => pesoBalanza(lado, pesos);
   const mcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b) [a, b] = [b, a % b]; return a || 1; };
 
   // ======================= cálculo (regla 1) =======================
@@ -152,7 +162,26 @@
     return { respuesta: fin.n, otro: fin.otro.sort((a, b) => b - a), junto: fin.junto.sort((a, b) => b - a) };
   }
 
-  const calc = { pesoBalanza, desigualdad, sustitucion, minimoPesas, unaPesada, coeficientes };
+  // Todas las asignaciones de pesos enteros (1 a tope) a las figuras que cumplen las balanzas dadas.
+  function soluciones(balanzas, tope) {
+    const figs = FIGS.filter(k => balanzas.some(b => b.izq[k] || b.der[k])), res = [], w = {};
+    (function rec(i) {
+      if (i === figs.length) { if (balanzas.every(b => cumple(b, w))) res.push({ ...w }); return; }
+      for (let t = 1; t <= tope; t++) { w[figs[i]] = t; rec(i + 1); }
+    })(0);
+    return res;
+  }
+  // Peso de una combinación de figuras ({ esfera: 2, cubo: 1 }). La respuesta existe si todas las soluciones enteras
+  // dan el mismo valor y ninguna toca el tope (si no, el peso no estaría acotado).
+  function combinado({ balanzas, pide, tope = 40 }) {
+    const TOPE = tope, sols = soluciones(balanzas, TOPE);
+    const valor = w => Object.entries(pide).reduce((t, [k, n]) => t + n * w[k], 0);
+    const vals = [...new Set(sols.map(valor))];
+    const acotado = sols.every(w => Object.values(w).every(z => z < TOPE));
+    return { respuesta: sols.length && acotado && vals.length === 1 ? vals[0] : null, soluciones: sols, valores: vals };
+  }
+
+  const calc = { pesoBalanza, desigualdad, sustitucion, minimoPesas, unaPesada, coeficientes, soluciones, combinado };
 
   // ======================= figura =======================
   function forma(tipo, cx, base) {
@@ -225,9 +254,11 @@
 
   // ======================= redacción =======================
   const TIPOS = ['desigualdad', 'sustitucion', 'minimo-pesas', 'una-pesada'];
+  const conNuevos = s => (typeof s === 'number' ? s >= 400 : !/^(entrada|salida)-/.test(s));
   function generar(semilla) {
     const rng = Azar.crear(ID + '|' + semilla);
-    const tipo = rng.elegir(TIPOS);
+    let tipo = rng.elegir(TIPOS);
+    if (conNuevos(semilla)) { const lado = Azar.crear(ID + '+nuevos|' + semilla); if (lado.sig() < 0.3) tipo = 'combinado'; }
     for (let intento = 0; intento < 100; intento++) {
       const p = construir(rng, semilla, tipo);
       if (p && p.alternativas.length >= 4) return p;
@@ -235,7 +266,7 @@
     throw new Error('No se pudo generar un problema con 4 alternativas distintas');
   }
   function construir(rng, semilla, tipo) {
-    return { desigualdad: tDesigualdad, sustitucion: tSustitucion, 'minimo-pesas': tMinimoPesas, 'una-pesada': tUnaPesada }[tipo](rng, semilla);
+    return { desigualdad: tDesigualdad, sustitucion: tSustitucion, 'minimo-pesas': tMinimoPesas, 'una-pesada': tUnaPesada, combinado: tCombinado }[tipo](rng, semilla);
   }
   function cerrar(rng, semilla, o) {
     const u = o.unidad || '';
@@ -500,6 +531,72 @@
       [`Otro platillo: ${lista(R.otro.map(z => `${z} g`))}. Junto al azúcar: ${R.junto.length ? lista(R.junto.map(z => `${z} g`)) : 'ninguna'}. Comprobación: ${R.otro.reduce((a, b) => a + b, 0)} − ${R.junto.reduce((a, b) => a + b, 0)} = ${cantidad}. Se usan ${f(R.respuesta)} pesas.`],
     ];
     return cerrar(rng, semilla, { correcta: R.respuesta, errores, enunciado, pregunta, solucion, variables: vars, datos, unidad: 'pesas', singular: 'pesa' });
+  }
+
+  // ---------- peso combinado (nuevo) ----------
+  // Balanza 1: X + Y = Z + p1; balanza 2: Y + Z = X + p2 (al sumarlas, 2Y = p1 + p2); balanza 3, desequilibrada,
+  // acota X. Con pesos enteros positivos las tres figuras quedan fijas. Se sortean pesos hasta que así sea.
+  function tCombinado(rng, semilla) {
+    for (let i = 0; i < 400; i++) { const p = tCombinadoUno(rng, semilla); if (p && p.alternativas.length >= 4) return p; }
+    return null;
+  }
+  function tCombinadoUno(rng, semilla) {
+    const [fx, fy, fz] = rng.barajar(['circulo', 'triangulo', 'cuadrado']);
+    const wx = rng.entero(1, 7), wy = rng.entero(2, 9), wz = rng.entero(1, 9), W = { [fx]: wx, [fy]: wy, [fz]: wz };
+    const p1 = wx + wy - wz, p2 = wz + wy - wx;
+    if (p1 < 1 || p2 < 1 || wx === wz) return null;
+    const dos = (a, b) => (rng.moneda() ? { izq: a, der: b } : { izq: b, der: a });
+    const b1 = { ...dos({ [fx]: 1, [fy]: 1 }, { [fz]: 1, pesa: p1 }), estado: 'equilibrio' };
+    const b2 = { ...dos({ [fz]: 1, [fy]: 1 }, { [fx]: 1, pesa: p2 }), estado: 'equilibrio' };
+    // balanza 3: una pesa y algunas figuras en un lado, otras figuras (a veces repetidas) en el otro
+    const combo = () => { const c = {}; for (const k of rng.barajar([fx, fy, fz]).slice(0, rng.entero(1, 2))) c[k] = rng.entero(1, 2); return c; };
+    const L = combo(), R = combo();
+    if (rng.moneda()) L.pesa = rng.entero(1, 12); else R.pesa = rng.entero(1, 12);
+    const I = peso(L, W), D = peso(R, W);
+    if (I === D) return null;
+    const b3 = { izq: L, der: R, estado: I > D ? 'izq-baja' : 'der-baja' };
+    const bs = [b1, b2, b3];
+    const pide = {}; for (const k of rng.barajar([fx, fy, fz]).slice(0, 2)) pide[k] = rng.entero(1, 2);
+    if (!pide[fx] && !pide[fz]) return null;
+    const datos = { tipo: 'combinado', balanzas: bs, pide };
+    const R3 = combinado({ ...datos, tope: 16 }), r = R3.respuesta;
+    if (r === null || R3.soluciones.length !== 1) return null;
+    if (combinado(datos).respuesta !== r) return null;
+    const sin3 = combinado({ balanzas: [b1, b2], pide, tope: 16 });
+    if (sin3.valores.length < 2) return null;        // la balanza 3 tiene que hacer falta
+    // errores con nombre
+    const valor = w => Object.entries(pide).reduce((t, [k, n]) => t + n * w[k], 0);
+    const otras = sin3.soluciones.filter(w => !R3.soluciones.some(u => FIGS.every(k => u[k] === w[k]))).map(valor);
+    const sinTercera = otras.find(z => z !== r);
+    const igual = combinado({ balanzas: [b1, b2, { ...b3, estado: 'equilibrio' }], pide, tope: 16 });
+    const ult = Object.keys(pide).pop();
+    const nomPide = lista(Object.keys(pide).map(k => nf(k, pide[k])));
+    const errores = [
+      sinTercera !== undefined ? h('RMP98-sin-la-tercera', sinTercera, 'Resolviste solo con las dos balanzas en equilibrio y tomaste uno de los pesos que las cumplen. La tercera balanza, desequilibrada, descarta esos pesos: hay que usarla.') : null,
+      igual.respuesta !== null && igual.respuesta !== r ? h('RMP99-borde', igual.respuesta, 'Tomaste la balanza desequilibrada como si estuviera en equilibrio. Al bajar un platillo ese lado pesa más: es una desigualdad estricta y el borde no se alcanza.') : null,
+      h('RMP38-otra-combinacion', r - W[ult], `Ese es el peso de una combinación distinta: te faltó contar un ${NOMBRE[ult][0]} de los que se piden.`),
+      h('RMP38-una-sola', Object.keys(pide).reduce((t, k) => t + W[k], 0), `Contaste cada figura una sola vez: la pregunta pide ${nomPide}.`),
+      h('RMP38-suma-pesas', p1 + p2, 'Sumaste las dos pesas de las balanzas en equilibrio. Esos kilogramos no son el peso de lo que se pide: hay que hallar el peso de cada figura.'),
+    ];
+    const vars = varsFig([fx, fy, fz]);
+    const enunciado = ['Cada figura pesa un número entero de kilogramos, y figuras iguales pesan lo mismo. Mira las balanzas:'];
+    bs.forEach((b, i) => enunciado.push(` (${i + 1}) ${ESTADO[b.estado][0].toUpperCase() + ESTADO[b.estado].slice(1)}: a la izquierda, `, ...ladoV(b.izq, 'kg'), '; a la derecha, ', ...ladoV(b.der, 'kg'), '.'));
+    const pregunta = ['¿Cuántos kilogramos pesan juntos ', ...Object.keys(pide).flatMap((k, i, a) => [v(k, nf(k, pide[k])), i < a.length - 2 ? ', ' : i === a.length - 2 ? ' y ' : '']), '?'];
+    // la balanza 3 en términos de X: cada peso es αX + β (X = fx, Y = wy fijo por 2Y = p1 + p2, Z = X + Y − p1)
+    const ab = { [fx]: [1, 0], [fy]: [0, wy], [fz]: [1, wy - p1] };
+    const lin = lado => Object.entries(lado).reduce((t, [k, n]) => k === 'pesa' ? [t[0], t[1] + n] : [t[0] + n * ab[k][0], t[1] + n * ab[k][1]], [0, 0]);
+    const lI = lin(L), lD = lin(R), A = lI[0] - lD[0], B = lI[1] - lD[1];
+    const mayor = b3.estado === 'izq-baja' ? 1 : -1;   // (izq − der) debe ser > 0 si baja la izquierda
+    const termX = (a, b) => `${a === 0 ? '' : (a === 1 ? 'X' : a === -1 ? '−X' : `${a}X`)}${a === 0 ? `${b}` : b === 0 ? '' : b > 0 ? ` + ${b}` : ` − ${-b}`}`;
+    const nX = nf(fx, 1).split(' ')[1];
+    const solucion = [
+      [`Balanza 1: X + Y = Z + ${p1}. Balanza 2: Y + Z = X + ${p2}, con X = peso del ${nX}, Y = peso del ${NOMBRE[fy][0]} y Z = peso del ${NOMBRE[fz][0]}.`],
+      [`Al sumarlas, X y Z se cancelan: 2Y = ${p1} + ${p2} = ${p1 + p2}, así que Y = ${wy} kg. De la balanza 1, Z = X + ${wy} − ${p1} = ${termX(1, wy - p1)}.`],
+      [`Balanza 3: queda ${termX(A, B)} ${mayor > 0 ? '>' : '<'} 0 (${b3.estado === 'izq-baja' ? 'baja la izquierda' : 'baja la derecha'}). Con X entero y Z positivo, la única posibilidad es X = ${wx}, y entonces Z = ${wz}.`],
+      [`Pesos: ${NOMBRE[fx][0]} ${wx} kg, ${NOMBRE[fy][0]} ${wy} kg, ${NOMBRE[fz][0]} ${wz} kg. Piden ${nomPide}: ${Object.keys(pide).map(k => `${pide[k]} × ${W[k]}`).join(' + ')} = ${f(r)} kg.`],
+    ];
+    return cerrar(rng, semilla, { correcta: r, errores, enunciado, pregunta, solucion, variables: vars, datos, unidad: 'kg',
+      figura: { svg: figuraBalanzas(bs, 'kg'), alt: altBalanzas(bs, 'kg') } });
   }
 
   return { id: ID, titulo: 'Balanzas, figuras y pesas', generar, calc };

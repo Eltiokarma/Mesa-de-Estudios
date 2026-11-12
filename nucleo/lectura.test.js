@@ -354,6 +354,37 @@ test('figuras: validar acepta el texto y rechaza figuras mal armadas', () => {
   assert.ok(con(t => { delete t.figuras[0].titulo; }).some(e => /título/.test(e)));
 });
 
+// ---------- Figura «imagen» (svg propio + sus partes en texto) ----------
+const IMAGEN = { id: 't901', version: 1, titulo: 'Plaza', tipo_texto: 'discontinuo',
+  parrafos: [[{ id: 'o1', rol: 'principal', t: 'La plaza se llenaba en la fiesta.' }]],
+  figuras: [{ id: 'f1', tipo: 'imagen', despues: 1, titulo: 'La plaza', alt: 'Dibujo de una torre con una cruz y de unas andas.',
+    svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><circle cx="5" cy="5" r="3" fill="var(--c-i)" stroke="currentColor"/></svg>',
+    partes: [{ id: 'f1a', n: 1, titulo: 'Torre', t: 'Una torre con una cruz.' }, { id: 'f1b', n: 2, titulo: 'Andas', t: 'Unas andas con un santo.' }] }],
+  preguntas: [{ id: 'p1', tipo: 'dato', unidad: 'razonamiento-verbal.textos-discontinuos', enunciado: '¿Qué hay en la imagen?',
+    alternativas: [{ t: 'Una torre.', correcta: true, evidencia: ['f1a'], explicacion: 'El elemento 1.' }, { t: 'Un río.', codigo: 'RV5', origen: 'f1b', explicacion: 'No hay río.' }] }] };
+
+test('imagen: partes citables, etiquetas y citas', () => {
+  assert.deepEqual(L.elementos(IMAGEN).map(e => e.id), ['f1', 'f1a', 'f1b']);
+  assert.equal(L.elementos(IMAGEN).find(e => e.id === 'f1a').t, 'Torre: Una torre con una cruz.');
+  assert.equal(L.etiquetaRef(IMAGEN, 'f1'), 'la imagen');
+  assert.equal(L.etiquetaRef(IMAGEN, 'f1b'), 'el elemento «Andas» de la imagen');
+  assert.deepEqual(L.citas(IMAGEN, ['f1a']).map(c => c.marca), ['Imagen']);
+  assert.deepEqual(L.pintura(L.preparar(IMAGEN, 's').preguntas[0], 2).evidencia, ['f1a']);
+});
+
+test('imagen: validar acepta el texto y rechaza svg inseguro o partes incompletas', () => {
+  assert.deepEqual(L.validar(IMAGEN, { codigos: CODIGOS, unidades: UNIDADES }), []);
+  const con = cambio => { const t = JSON.parse(JSON.stringify(IMAGEN)); cambio(t); return L.validar(t); };
+  assert.ok(con(t => { t.figuras[0].svg = '<svg viewBox="0 0 1 1"><script>x()</script></svg>'; }).some(e => /código/.test(e)));
+  assert.ok(con(t => { t.figuras[0].svg = '<svg viewBox="0 0 1 1"><rect onclick="x()"/></svg>'; }).some(e => /código/.test(e)));
+  assert.ok(con(t => { t.figuras[0].svg = '<svg viewBox="0 0 1 1"><foreignObject/></svg>'; }).some(e => /código/.test(e)));
+  assert.ok(con(t => { t.figuras[0].svg = '<svg viewBox="0 0 1 1"><rect fill="#ff0000"/></svg>'; }).some(e => /colores fijos/.test(e)));
+  assert.ok(con(t => { t.figuras[0].svg = '<svg><rect/></svg>'; }).some(e => /viewBox/.test(e)));
+  assert.ok(con(t => { t.figuras[0].alt = 'corta'; }).some(e => /alt/.test(e)));
+  assert.ok(con(t => { t.figuras[0].partes.pop(); }).some(e => /al menos 2/.test(e)));
+  assert.ok(con(t => { delete t.figuras[0].partes[0].t; }).some(e => /necesita texto/.test(e)));
+});
+
 // ---------- Pares de textos A/B (rutina verbal A/B, 8 nov 2026) ----------
 const PAR = {
   id: 'tpar', version: 1, titulo: 'Par de muestra', tipo_texto: 'argumentativo',

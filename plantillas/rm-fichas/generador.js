@@ -33,13 +33,21 @@
  *   tablero       { tipo, r, c, bloqueadas: [[f, c]], pieza: 'I3'|'L3' } máximo de fichas de tres cuadraditos
  *                 en un tablero con casillas tapadas (búsqueda); solo si lo alcanza una cota explicable: casillas ÷ 3,
  *                 casillas donde no entra ninguna ficha, zonas separadas o un coloreo (cotaTablero).
+ *                 Con fichas de 5 cuadraditos (U5, P5, V5, T5 o W5; tablero de 5 a 7, a veces con las tapadas en rejilla como en
+ *                 UNMSM 2025-I) la cota es casillas ÷ 5, casillas inútiles o zonas (sin coloreo); RMP125 divide todo el tablero.
+ *   conteo        { tipo, pieza, reflejos, celdas: [[x, y]] } cuántas posiciones distintas de una ficha (L3, I3, L4, S4, T4, P5, U5;
+ *                 girada, y volteada si reflejos) caben en una figura de cuadraditos; se cuentan aunque se crucen (UNMSM 2025-II).
+ *                 Suma, por orientación distinta, las posiciones donde entra entera.
+ *   petalo        { tipo, r, H } rectángulo de 2r × H con dos cuartos de círculo (radio r) quitados abajo y una semicircunferencia
+ *                 sobre el lado de arriba: la media luna rellena los huecos y el área es 2r·H (π = 3,14 solo en las trampas;
+ *                 UNMSM 2025-I). Con r = H es el cuadrado de lado 2r de la pregunta oficial.
  *   fibonacci     { tipo, u, n, pide: 'area'|'perimetro' } figuras de cuadrados de lados 1, 1, 2, 3, 5, … (por u cm)
  *                 que se arman en espiral. Respuesta: área o perímetro de la figura n.
  *   malla         { tipo, n, t } puntos en n filas (1, 2, …, n) en una malla triangular; una hormiga recorre
  *                 los segmentos (t segundos cada uno). Respuesta: el menor tiempo para pasar por todos los puntos.
  *
  * calc:
- *   semejanza(d) → { k, fichas, perimetro }; medios(L, n) → { lado, area, perimetro }; orientaciones(celdas), embaldosar(w, h, ids, opciones), minRectangulo(ids, pide), maxEmpaque(w, h, celdas, bloq)
+ *   semejanza(d) → { k, fichas, perimetro }; medios(L, n) → { lado, area, perimetro }; conteo(d), petalo(d), giros(celdas), posiciones(figura, o), orientaciones(celdas), embaldosar(w, h, ids, opciones), minRectangulo(ids, pide), maxEmpaque(w, h, celdas, bloq)
  *   voraz(w, h, celdas, bloq), hmax(k), hexagonos(T, H), contorno(fichas), formaFichas(d, a, b), perimetroCon(d, b, modo),
  *   trapecioTeselado(k), malla(n), fib(n)
  *
@@ -54,6 +62,9 @@
  *   RMP63-*        no usar una condición (las casillas tapadas)
  *   RMP1-*         puntos contra intervalos: cuadrados contra pasos, puntos contra segmentos
  *   RMP2-*         quedarse con una opción que no es la extrema (juntar por el lado largo, una sola orientación, voraz)
+ *   RMP120 a RMP124  conteo de fichas: sin giros, dividir el área, no voltear (o voltear de más), cada giro aparte, caja completa
+ *   RMP125         tablero de fichas de 5: dividir las casillas de todo el tablero
+ *   RMP126 a RMP129  región con arcos: restar un círculo completo, sumar sin restar, olvidar la media luna, tomar toda la caja
  *   RMP61-*        responder un valor intermedio (el lado, el último cuadrado)
  */
 (function (root, fabrica) {
@@ -91,6 +102,9 @@
     S4: { celdas: [[0, 0], [1, 0], [1, 1], [2, 1]], nombre: 'ese de 4 cuadraditos' },
     P5: { celdas: [[0, 0], [1, 0], [0, 1], [1, 1], [0, 2]], nombre: 'pe de 5 cuadraditos' },
     V5: { celdas: [[0, 0], [0, 1], [0, 2], [1, 0], [2, 0]], nombre: 'ele grande de 5 cuadraditos' },
+    U5: { celdas: [[0, 0], [1, 0], [2, 0], [0, 1], [2, 1]], nombre: 'u de 5 cuadraditos' },
+    T5: { celdas: [[0, 0], [1, 0], [2, 0], [1, 1], [1, 2]], nombre: 'te grande de 5 cuadraditos' },
+    W5: { celdas: [[0, 0], [0, 1], [1, 1], [1, 2], [2, 2]], nombre: 'escalera de 5 cuadraditos' },
   };
   const normal = cs => { const mx = Math.min(...cs.map(c => c[0])), my = Math.min(...cs.map(c => c[1])); return cs.map(([x, y]) => [x - mx, y - my]).sort((a, b) => a[1] - b[1] || a[0] - b[0]); };
   function orientaciones(cs) {
@@ -231,15 +245,17 @@
     const cubL = [...cub].map(z => z.split(',').map(Number));
     for (const [conjunto, sinMuertas] of [[libres, false], [cubL, true]]) {
       if (sinMuertas && !muertas.length) continue;
+      if (pieza !== 'I3' && pieza !== 'L3') continue; // las fichas de 5 se explican por área, casillas inútiles o zonas
       if (pieza === 'I3') for (const [nom, fn] of [['fila + columna', (x, y) => (y + 1 + x + 1) % 3], ['fila + 2 × columna', (x, y) => (y + 1 + 2 * (x + 1)) % 3]]) {
         const t = cuenta(conjunto, fn, 3), k = t.indexOf(Math.min(...t)); colores.push({ n: t[k], forma: nom, resto: k, cuentas: t, sinMuertas });
       } else for (const [nom, fn] of [['columnas', (x) => (x + 1) % 2], ['filas', (x, y) => (y + 1) % 2]]) {
         const t = cuenta(conjunto, fn, 2), k = t.indexOf(Math.min(...t)); colores.push({ n: t[k], forma: nom, resto: k, cuentas: t, sinMuertas });
       }
     }
-    const cs = [{ tipo: 'dividir', n: Math.floor(libres.length / 3) }];
-    if (muertas.length) cs.push({ tipo: 'muertas', n: Math.floor(cub.size / 3) });
-    if (zonas.length > 1) cs.push({ tipo: 'zonas', n: zonas.reduce((t, z) => t + Math.floor(z / 3), 0) });
+    const A = PIEZAS[pieza].celdas.length;
+    const cs = [{ tipo: 'dividir', n: Math.floor(libres.length / A) }];
+    if (muertas.length) cs.push({ tipo: 'muertas', n: Math.floor(cub.size / A) });
+    if (zonas.length > 1) cs.push({ tipo: 'zonas', n: zonas.reduce((t, z) => t + Math.floor(z / A), 0) });
     colores.sort((A, B) => A.n - B.n).slice(0, 1).forEach(k => cs.push({ tipo: 'colores', ...k }));
     const min = Math.min(...cs.map(k => k.n));
     return { ...cs.find(k => k.n === min), libres: libres.length, muertas, zonas, cubribles: cub.size };
@@ -906,12 +922,15 @@
   // =====================================================================
   // 7. Fichas de tres cuadraditos en un tablero con casillas tapadas
   // =====================================================================
-  function construirTablero(rng, semilla) {
+  const FICHAS5 = ['U5', 'U5', 'P5', 'V5', 'T5', 'W5'];
+  // Con grande = true: ficha de cinco cuadraditos en un tablero de 5 a 7 (a veces con las tapadas en rejilla, como en el examen).
+  function construirTablero(rng, semilla, grande = false) {
     for (let intento = 0; intento < 300; intento++) {
-      const r = rng.entero(4, 6), c = rng.entero(4, 6), nb = rng.entero(2, 5);
-      const pieza = rng.elegir(['I3', 'L3']);
+      const r = grande ? rng.entero(5, 7) : rng.entero(4, 6), c = grande ? rng.entero(5, 7) : rng.entero(4, 6), nb = grande ? rng.entero(2, 7) : rng.entero(2, 5);
+      const pieza = grande ? rng.elegir(FICHAS5) : rng.elegir(['I3', 'L3']);
       const bloq = [];
-      while (bloq.length < nb) { const z = [rng.entero(0, c - 1), rng.entero(0, r - 1)]; if (!bloq.some(([x, y]) => x === z[0] && y === z[1])) bloq.push(z); }
+      if (grande && rng.sig() < 0.3) { for (let y = 1; y < r; y += 2) for (let x = 1; x < c; x += 2) bloq.push([x, y]); }
+      else while (bloq.length < nb) { const z = [rng.entero(0, c - 1), rng.entero(0, r - 1)]; if (!bloq.some(([x, y]) => x === z[0] && y === z[1])) bloq.push(z); }
       bloq.sort((p, q) => p[1] - q[1] || p[0] - q[0]);
       const d = { tipo: 'tablero', r, c, bloqueadas: bloq, pieza };
       const pr = armarTablero(d, rng, semilla);
@@ -923,31 +942,36 @@
     const { r, c, bloqueadas: bloq, pieza } = d;
     const cs = PIEZAS[pieza].celdas;
     const M = maxEmpaque(c, r, cs, bloq);
+    const A = cs.length;
     const libres = r * c - bloq.length;
     const correcta = M.max;
-    if (Math.floor(libres / 3) === correcta && rng.sig() < 0.75) return null; // casi siempre que no baste dividir
+    if (A === 3 && Math.floor(libres / 3) === correcta && rng.sig() < 0.75) return null; // casi siempre que no baste dividir
+    if (A === 5 && correcta < 2) return null; // con fichas de 5, que quepa al menos un par
     const cota = cotaTablero(r, c, bloq, pieza);
+    if (A === 5 && cota.muertas.length > 5) return null; // una lista larga de casillas inútiles no explica nada
     if (cota.n !== correcta) return null; // solo si una cota que el alumno puede seguir se alcanza
     const errores = [
-      h('RMP69-dividir', Math.floor(libres / 3), `Dividiste las ${libres} casillas libres entre 3. Las fichas tienen forma: no siempre caben tantas.`),
+      h('RMP69-dividir', Math.floor(libres / A), `Dividiste las ${libres} casillas libres entre ${A}. Las fichas tienen forma: no siempre caben tantas.`),
+      ...(A === 5 ? [h('RMP125-dividir-todo', Math.floor(r * c / A), `Dividiste las ${r * c} casillas del tablero entre ${A}, sin quitar las tapadas.`)] : []),
       h('RMP63-sin-tapadas', maxEmpaque(c, r, cs, []).max, `Contaste como si el tablero de ${r} × ${c} no tuviera casillas tapadas.`),
       h('RMP2-voraz', voraz(c, r, cs, bloq), 'Fuiste poniendo fichas donde entraban, fila por fila, sin volver atrás. Reacomodando entran más.'),
-      h('RMP69-redondeo', Math.ceil(libres / 3), `Redondeaste hacia arriba ${libres} ÷ 3. Una ficha no puede quedar incompleta.`),
+      h('RMP69-redondeo', Math.ceil(libres / A), `Redondeaste hacia arriba ${libres} ÷ ${A}. Una ficha no puede quedar incompleta.`),
     ];
     const alternativas = P.armar({ correcta, errores, rng }).map(x => ({ ...x, texto: x.texto + (x.valor === 1 ? ' ficha' : ' fichas') }));
     if (alternativas.length < 4) return null;
     const cp = Math.min(40, 240 / Math.max(r, c));
+    const anchoF = Math.max(...cs.map(q => q[0])) + 1;
     const tap = (x, y) => bloq.some(([a, b]) => a === x && b === y);
     let fig = dibujaCuadricula(c, r, cp, 10, 10, (x, y) => (tap(x, y) ? 'fill:currentColor' : 'fill:var(--card)'));
     const altoF = Math.max(...cs.map(q => q[1])) + 1;
-    fig += dibujaPieza(cs, cp, 10 + c * cp + 30, 10, 'o') + texto(10 + c * cp + 30 + 1.5 * cp, 10 + altoF * cp + 20, 'ficha', 14, 'fill:var(--c-o)');
+    fig += dibujaPieza(cs, cp, 10 + c * cp + 30, 10, 'o') + texto(10 + c * cp + 30 + anchoF * cp / 2, 10 + altoF * cp + 20, 'ficha', 14, 'fill:var(--c-o)');
     let figS = dibujaCuadricula(c, r, cp, 10, 10, (x, y) => (tap(x, y) ? 'fill:currentColor' : 'fill:var(--card)'));
     M.piezas.forEach((cel, i) => { figS += dibujaPieza(cel, cp, 10, 10, COLORES[i % 4]); });
     const fc = ([x, y]) => `(${y + 1}, ${x + 1})`;
-    const txtMuertas = cota.muertas.length ? `En ${cota.muertas.length === 1 ? 'la casilla' : 'las casillas'} ${lista(cota.muertas.map(fc))} (fila, columna) no entra ninguna ficha: no hay 3 casillas libres seguidas que ${cota.muertas.length === 1 ? 'la incluyan' : 'las incluyan'}. Quedan ${cota.cubribles} casillas aprovechables` : '';
+    const txtMuertas = cota.muertas.length ? `En ${cota.muertas.length === 1 ? 'la casilla' : 'las casillas'} ${lista(cota.muertas.map(fc))} (fila, columna) no entra ninguna ficha: no hay lugar para una ficha que ${cota.muertas.length === 1 ? 'la incluya' : 'las incluya'}. Quedan ${cota.cubribles} casillas aprovechables` : '';
     const razonTab = [];
-    if (cota.tipo === 'muertas') razonTab.push([`${txtMuertas}: caben a lo más ${cota.cubribles} ÷ 3, o sea ${cota.n}.`]);
-    if (cota.tipo === 'zonas') razonTab.push([`${txtMuertas ? txtMuertas + '. ' : ''}Las casillas aprovechables quedan en ${cota.zonas.length} zonas separadas, de ${lista(cota.zonas.map(String))} casillas; en cada zona caben a lo más sus casillas ÷ 3: ${cota.zonas.map(z => Math.floor(z / 3)).join(' + ')} = ${cota.n}.`]);
+    if (cota.tipo === 'muertas') razonTab.push([`${txtMuertas}: caben a lo más ${cota.cubribles} ÷ ${A}, o sea ${cota.n}.`]);
+    if (cota.tipo === 'zonas') razonTab.push([`${txtMuertas ? txtMuertas + '. ' : ''}Las casillas aprovechables quedan en ${cota.zonas.length} zonas separadas, de ${lista(cota.zonas.map(String))} casillas; en cada zona caben a lo más sus casillas ÷ ${A}: ${cota.zonas.map(z => Math.floor(z / A)).join(' + ')} = ${cota.n}.`]);
     if (cota.tipo === 'colores') {
       const pre = cota.sinMuertas ? `${txtMuertas}. ` : '';
       razonTab.push(pieza === 'I3'
@@ -958,12 +982,12 @@
     return {
       id: `rm-fichas#${semilla}`,
       variables: { x: { nombre: 'fichas', color: 'o' } },
-      enunciado: [`En el tablero de ${r} filas y ${c} columnas, las casillas negras están tapadas. Se ponen fichas iguales a la del dibujo (${PIEZAS[pieza].nombre}), que se pueden girar, cada una cubriendo 3 casillas libres, sin superponerse.`],
-      figura: { svg: SVG(c * cp + 40 + 3 * cp + 20, Math.max(r * cp, 3 * cp + 24) + 20, fig), alt: `Tablero de ${r} filas y ${c} columnas. Casillas tapadas (fila, columna): ${bloq.map(([x, y]) => `(${y + 1}, ${x + 1})`).join(', ')}. Al lado, la ficha: ${PIEZAS[pieza].nombre}.` },
+      enunciado: [`En el tablero de ${r} filas y ${c} columnas, las casillas negras están tapadas. Se ponen fichas iguales a la del dibujo (${PIEZAS[pieza].nombre}), que se pueden girar, cada una cubriendo ${A} casillas libres, sin superponerse.`],
+      figura: { svg: SVG(c * cp + 40 + anchoF * cp + 20, Math.max(r * cp, 3 * cp + 24) + 20, fig), alt: `Tablero de ${r} filas y ${c} columnas. Casillas tapadas (fila, columna): ${bloq.map(([x, y]) => `(${y + 1}, ${x + 1})`).join(', ')}. Al lado, la ficha: ${PIEZAS[pieza].nombre}.` },
       pregunta: ['¿Cuántas fichas, como máximo, se pueden poner?'],
       datos: '', alternativas,
       solucion: [
-        [`Hay ${libres} casillas libres y cada ficha cubre 3: caben a lo más ${Math.floor(libres / 3)}${cota.tipo === 'dividir' ? '.' : ', pero hay casillas que no se aprovechan.'}`],
+        [`Hay ${libres} casillas libres y cada ficha cubre ${A}: caben a lo más ${Math.floor(libres / A)}${cota.tipo === 'dividir' ? '.' : ', pero hay casillas que no se aprovechan.'}`],
         ...razonTab,
         [`Y ${correcta} sí se ponen, como en el dibujo de la solución: el máximo es `, v('x', String(correcta)), '.'],
       ],
@@ -1097,14 +1121,168 @@
   }
 
   // =====================================================================
+  // 9. Fichas de cuadraditos que se cuentan dentro de una figura (todas las posiciones, con giros)
+  // =====================================================================
+  const giros = cs => { const m = new Map(); let p = cs; for (let k = 0; k < 4; k++) { const n = normal(p); m.set(JSON.stringify(n), n); p = p.map(([x, y]) => [-y, x]); } return [...m.values()]; };
+  // Posiciones de una orientación (ya normalizada) dentro de la figura: cada una es el conjunto de casillas que cubre.
+  function posiciones(figura, o) {
+    const hay = new Set(figura.map(c => c.join(',')));
+    const mx = Math.max(...figura.map(c => c[0])), my = Math.max(...figura.map(c => c[1]));
+    const r = [];
+    for (let dy = 0; dy <= my; dy++) for (let dx = 0; dx <= mx; dx++) if (o.every(([x, y]) => hay.has(`${x + dx},${y + dy}`))) r.push(o.map(([x, y]) => [x + dx, y + dy]));
+    return r;
+  }
+  // d = { celdas: [[x, y]], pieza, reflejos } → cuántas posiciones distintas de la ficha caben, y los errores típicos.
+  function conteo(d) {
+    const cs = PIEZAS[d.pieza].celdas, fig = d.celdas, A = cs.length;
+    const O = d.reflejos ? orientaciones(cs) : giros(cs);
+    const porOrient = O.map(o => ({ celdas: o, n: posiciones(fig, o).length }));
+    const n = porOrient.reduce((t, q) => t + q.n, 0);
+    const sinGiros = posiciones(fig, normal(cs)).length;
+    const alterno = (d.reflejos ? giros(cs) : orientaciones(cs)).reduce((t, o) => t + posiciones(fig, o).length, 0);
+    // Cada giro de 90° (y cada volteo, si se permite) cuenta aparte, aunque la ficha quede igual que antes.
+    const imagenes = []; { let p = cs; for (let r = 0; r < 2; r++) { for (let k = 0; k < 4; k++) { imagenes.push(normal(p)); p = p.map(([x, y]) => [-y, x]); } p = p.map(([x, y]) => [-x, y]); if (!d.reflejos) break; } }
+    const repetido = imagenes.reduce((t, o) => t + posiciones(fig, o).length, 0);
+    const caja = O.reduce((t, o) => {
+      const w = Math.max(...o.map(c => c[0])) + 1, hh = Math.max(...o.map(c => c[1])) + 1;
+      return t + posiciones(fig, Array.from({ length: w * hh }, (_, i) => [i % w, Math.floor(i / w)])).length;
+    }, 0);
+    return { n, porOrient, sinGiros, alterno, repetido, caja, dividir: Math.floor(fig.length / A), orientaciones: O.length, imagenes: imagenes.length };
+  }
+  const CONTEO_PIEZAS = ['L3', 'L3', 'I3', 'L4', 'S4', 'T4', 'P5', 'U5'];
+  const QUIRAL = { L4: 1, S4: 1, P5: 0, U5: 0 };
+  function construirConteo(rng, semilla) {
+    for (let intento = 0; intento < 300; intento++) {
+      const w = rng.entero(3, 5), hh = rng.entero(3, 4), pieza = rng.elegir(CONTEO_PIEZAS);
+      const quiral = orientaciones(PIEZAS[pieza].celdas).length > giros(PIEZAS[pieza].celdas).length;
+      const reflejos = quiral && rng.sig() < 0.5;
+      let celdas = rectCeldas(w, hh);
+      const quita = rng.entero(0, 3);
+      for (let i = 0; i < quita; i++) { const z = rng.entero(0, celdas.length - 1); celdas = celdas.filter((_, j) => j !== z); }
+      celdas.sort((p, q) => p[1] - q[1] || p[0] - q[0]);
+      const d = { tipo: 'conteo', pieza, reflejos, celdas };
+      const pr = armarConteo(d, rng, semilla);
+      if (pr) return pr;
+    }
+    return null;
+  }
+  function armarConteo(d, rng, semilla) {
+    const c = conteo(d), fig = d.celdas, correcta = c.n, cs = PIEZAS[d.pieza].celdas;
+    if (correcta < 4 || correcta > 60) return null;
+    const errores = [
+      h('RMP120-sin-giros', c.sinGiros, 'Contaste la ficha solo como está dibujada, sin ponerla de lado ni boca abajo. Cada giro de la ficha da posiciones nuevas.'),
+      d.reflejos ? h('RMP122-sin-voltear', c.alterno, 'Solo giraste la ficha. Si también se puede voltear, aparecen posiciones nuevas.')
+        : h('RMP122-volteo-de-mas', c.alterno, 'Contaste también la ficha volteada, pero el enunciado solo permite girarla.'),
+      h('RMP123-giro-repetido', c.repetido, 'Contaste cada giro como una posición nueva aunque la ficha quede igual: dos giros que dan la misma ficha cubren las mismas casillas.'),
+      h('RMP121-dividir-area', c.dividir, `Dividiste las ${fig.length} casillas entre ${cs.length}. Eso cuenta fichas que no se tocan; aquí se cuentan todas las posiciones, también las que se cruzan.`),
+      h('RMP124-caja-completa', c.caja, 'Contaste solo donde entra el rectángulo completo que encierra a la ficha. La ficha tiene huecos y entra también donde falta una casilla de ese rectángulo.'),
+    ].filter(e => e.valor !== correcta);
+    const alternativas = P.armar({ correcta, errores, rng }).map(x => ({ ...x, texto: x.texto + (x.valor === 1 ? ' ficha' : ' fichas') }));
+    if (alternativas.length < 4) return null;
+    const w = Math.max(...fig.map(q => q[0])) + 1, hh = Math.max(...fig.map(q => q[1])) + 1, cp = 36;
+    const enFig = new Set(fig.map(q => q.join(',')));
+    const celdasSvg = (lista, x0, y0, c0, estilo) => lista.map(([x, y]) => `<rect x="${x0 + x * c0}" y="${y0 + y * c0}" width="${c0}" height="${c0}" style="${estilo}" stroke="currentColor" stroke-width="1.5"/>`).join('');
+    const aw = Math.max(...cs.map(q => q[0])) + 1, ah = Math.max(...cs.map(q => q[1])) + 1;
+    let svg = celdasSvg(fig, 10, 10, cp, 'fill:var(--card)') + celdasSvg(cs, 10 + w * cp + 30, 10, cp, 'fill:var(--c-o);fill-opacity:0.3')
+      + texto(10 + w * cp + 30 + aw * cp / 2, 10 + ah * cp + 20, 'ficha', 14, 'fill:var(--c-o)');
+    // Solución: cada orientación distinta con sus posiciones.
+    const pc = 16, sepX = 24;
+    let x0 = 10, sol = '', altoSol = 0;
+    c.porOrient.forEach((q, i) => {
+      const ow = Math.max(...q.celdas.map(z => z[0])) + 1, oh = Math.max(...q.celdas.map(z => z[1])) + 1;
+      sol += celdasSvg(q.celdas, x0, 10, pc, `fill:var(--c-${COLORES[i % 4]});fill-opacity:0.3`) + texto(x0 + ow * pc / 2, 10 + oh * pc + 18, '× ' + q.n, 14);
+      x0 += ow * pc + sepX; altoSol = Math.max(altoSol, oh * pc + 30);
+    });
+    const textoPieza = d.reflejos ? 'se puede girar y voltear' : 'se puede girar (no voltear)';
+    const lineas = c.porOrient.map((q, i) => `orientación ${i + 1}: ${q.n} ${q.n === 1 ? 'posición' : 'posiciones'}`);
+    return {
+      id: `rm-fichas#${semilla}`,
+      variables: { x: { nombre: 'fichas', color: 'o' } },
+      enunciado: [`La figura 1 es una ficha (${PIEZAS[d.pieza].nombre}) y la figura 2 está formada por ${fig.length} cuadraditos del mismo tamaño que los de la ficha. La ficha ${textoPieza}. Dos posiciones son distintas si cubren cuadraditos distintos; una posición cuenta aunque comparta cuadraditos con otra.`],
+      figura: { svg: SVG(w * cp + 30 + aw * cp + 30, Math.max(hh * cp, ah * cp + 24) + 20, svg), alt: `Figura 2: ${fig.length} cuadraditos en ${hh} filas y hasta ${w} columnas; casillas (fila, columna): ${fig.map(([x, y]) => `(${y + 1}, ${x + 1})`).join(' ')}. Al lado, la ficha: ${PIEZAS[d.pieza].nombre}.` },
+      pregunta: ['¿Cuántas posiciones distintas de la ficha se pueden contar en la figura 2?'],
+      datos: '', alternativas,
+      solucion: [
+        [`La ficha ${d.reflejos ? 'tiene' : 'tiene, girándola,'} ${c.orientaciones} ${c.orientaciones === 1 ? 'orientación distinta' : 'orientaciones distintas'}${d.reflejos ? ' (contando la ficha volteada)' : ''}. Para cada una, cuenta en cuántos lugares entra entera en la figura.`],
+        [lineas.join('; ') + '.'],
+        [`Se suman todas, porque son posiciones distintas: `, v('x', String(correcta)), '.'],
+      ],
+      figuraSolucion: { svg: SVG(Math.max(x0, 120), altoSol + 20, sol), alt: `Las ${c.orientaciones} orientaciones de la ficha con su número de posiciones: ${c.porOrient.map(q => q.n).join(', ')}.` },
+      respuesta: { valor: correcta, unidad: 'fichas' },
+      _datos: d,
+    };
+  }
+
+  // =====================================================================
+  // 10. Región con arcos que se reacomoda (la media luna que rellena los huecos)
+  // =====================================================================
+  const PI = 3.14;
+  // Rectángulo de 2r × H con dos huecos de cuarto de círculo (radio r) en las esquinas de abajo y una semicircunferencia
+  // de radio r sobre el lado de arriba. La media luna de arriba tiene el área de los dos huecos juntos: queda 2r × H.
+  function petalo(d) {
+    const { r, H } = d;
+    return { area: 2 * r * H, semicirculo: PI * r * r / 2, cuartos: PI * r * r / 2, caja: 2 * r * (H + r), circulo: PI * r * r };
+  }
+  function construirPetalo(rng, semilla) {
+    for (let intento = 0; intento < 50; intento++) {
+      const r = rng.entero(4, 12), H = rng.sig() < 0.4 ? r : rng.entero(r, 2 * r);
+      const pr = armarPetalo({ tipo: 'petalo', r, H }, rng, semilla);
+      if (pr) return pr;
+    }
+    return null;
+  }
+  function armarPetalo(d, rng, semilla) {
+    const { r, H } = d, p = petalo(d), correcta = p.area;
+    const errores = [
+      h('RMP126-circulo-completo', p.caja - p.circulo, `Al rectángulo que encierra la figura (${2 * r} × ${H + r}) le restaste un círculo completo. Pero lo que falta son solo los dos huecos de abajo, y arriba sobra una media luna.`),
+      h('RMP127-sumar-sin-restar', correcta + p.semicirculo, 'Sumaste la media luna de arriba al rectángulo sin quitar los dos huecos de abajo.'),
+      h('RMP128-olvidar-la-luna', correcta - p.cuartos, 'Al rectángulo le quitaste los dos huecos, pero olvidaste la media luna de arriba, que los rellena justo.'),
+      h('RMP129-toda-la-caja', p.caja, 'Tomaste todo el rectángulo que encierra a la figura: se pasa de la figura por los huecos de abajo y por lo que no alcanza la media luna.'),
+    ];
+    const alternativas = P.armar({ correcta, errores, rng, unidad: 'cm²' });
+    if (alternativas.length < 4) return null;
+    const s = 220 / Math.max(2 * r, H + r), ox = 40, oy = 16;
+    const X = x => f2(ox + x * s), Y = y => f2(oy + (H + r - y) * s), R = f2(r * s);
+    const trazo = `M ${X(0)} ${Y(H)} A ${R} ${R} 0 0 1 ${X(2 * r)} ${Y(H)} L ${X(2 * r)} ${Y(r)} A ${R} ${R} 0 0 0 ${X(r)} ${Y(0)} A ${R} ${R} 0 0 0 ${X(0)} ${Y(r)} Z`;
+    const base = `<rect x="${X(0)}" y="${Y(H + r)}" width="${f2(2 * r * s)}" height="${f2((H + r) * s)}" style="fill:none" stroke="currentColor" stroke-width="1" stroke-dasharray="4 4"/>`;
+    const fig = base + `<path d="${trazo}" style="fill:var(--c-o);fill-opacity:0.3" stroke="currentColor" stroke-width="2"/>`
+      + texto(X(r), f2(Y(0) + 18), `${2 * r} cm`, 13) + texto(f2(X(2 * r) + 28), f2((Y(0) + Y(H)) / 2), `${H} cm`, 13);
+    // Solución: la media luna girada cae sobre los huecos.
+    const figS = base + `<path d="${trazo}" style="fill:var(--c-o);fill-opacity:0.3" stroke="currentColor" stroke-width="2"/>`
+      + `<rect x="${X(0)}" y="${Y(H)}" width="${f2(2 * r * s)}" height="${f2(H * s)}" style="fill:none" stroke="var(--c-i)" stroke-width="2.5"/>`
+      + texto(X(r), f2(Y(H) - 6), 'la luna llena los huecos', 12, 'fill:var(--c-i)');
+    return {
+      id: `rm-fichas#${semilla}`,
+      variables: { x: { nombre: 'área', color: 'o' } },
+      enunciado: [`En el dibujo, la región sombreada está limitada por cuatro arcos de circunferencia de radio ${r} cm. Los dos de abajo tienen su centro en las esquinas inferiores de un rectángulo de ${2 * r} cm de ancho y ${H} cm de alto; los dos de arriba forman una semicircunferencia que se apoya en el lado superior del rectángulo. Usa π = 3,14.`],
+      figura: { svg: SVG(ox + 2 * r * s + 60, oy + (H + r) * s + 34, fig), alt: `Rectángulo de ${2 * r} cm de ancho y ${H} cm de alto. De cada esquina de abajo se quitó un cuarto de círculo de radio ${r} cm; sobre el lado de arriba hay una media luna de radio ${r} cm. La región sombreada es todo eso junto.` },
+      pregunta: ['¿Cuál es el área de la región sombreada?'],
+      datos: '', alternativas,
+      solucion: [
+        [`Los dos huecos de abajo son dos cuartos de círculo de radio ${r}: juntos hacen medio círculo. La parte de arriba es medio círculo del mismo radio.`],
+        [`Si se corta la media luna de arriba y se desliza hacia abajo, cae exacta sobre los dos huecos: la región es del mismo tamaño que el rectángulo de ${2 * r} por ${H}.`],
+        [`Área = ${2 * r} × ${H} = `, v('x', String(correcta)), ' cm².'],
+      ],
+      figuraSolucion: { svg: SVG(ox + 2 * r * s + 60, oy + (H + r) * s + 34, figS), alt: `La misma figura con el rectángulo de ${2 * r} por ${H} resaltado: la media luna de arriba rellena los dos huecos de abajo.` },
+      respuesta: { valor: correcta, unidad: 'cm²' },
+      _datos: d,
+    };
+  }
+
+  // =====================================================================
   const TIPOS = { semejanza: construirSemejanza, hexagonos: construirHexagonos, contorno: construirContorno, medios: construirMedios, rectangulo: construirRectangulo,
-    lineal: construirLineal, cajas: construirCajas, tablero: construirTablero, fibonacci: construirFibonacci, malla: construirMalla };
+    lineal: construirLineal, cajas: construirCajas, tablero: construirTablero, fibonacci: construirFibonacci, malla: construirMalla,
+    conteo: construirConteo, petalo: construirPetalo };
   const SORTEO = ['semejanza', 'semejanza', 'hexagonos', 'contorno', 'contorno', 'medios', 'rectangulo', 'lineal', 'cajas', 'tablero', 'fibonacci', 'malla'];
   function generar(semilla) {
     const rng = Azar.crear('rm-fichas|' + semilla);
-    const tipo = rng.elegir(SORTEO);
+    let tipo = rng.elegir(SORTEO), grande = false, r2 = null;
+    // Cierre de admisión: en parte de las semillas de tablero, cajas y medios salen las variantes nuevas (la semilla de
+    // los demás problemas no cambia). Usan su propio azar (la sal 175 se escogió para que no cambie ninguna semilla de casos.json).
+    const r1 = Azar.crear('rm-fichas-d1-175|' + semilla);
+    if (r1.sig() < 0.5) { r2 = r1; if (tipo === 'tablero') grande = true; else if (tipo === 'cajas') tipo = 'conteo'; else if (tipo === 'medios') tipo = 'petalo'; }
     for (let intento = 0; intento < 20; intento++) {
-      const p = TIPOS[tipo](rng, semilla);
+      const p = grande ? construirTablero(r2, semilla, true) : r2 && (tipo === 'conteo' || tipo === 'petalo') ? TIPOS[tipo](r2, semilla) : TIPOS[tipo](rng, semilla);
       if (p && p.alternativas.length >= 4) return p;
     }
     throw new Error('No se pudo generar un problema con 4 alternativas distintas');
@@ -1112,6 +1290,6 @@
 
   return {
     id: 'rm-fichas', titulo: 'Fichas, piezas y figuras que crecen', generar,
-    calc: { semejanza, medios, orientaciones, cotaRectangulo, cotaCajas, cotaTablero, embaldosar, minRectangulo, maxEmpaque, voraz, hmax, hexagonos, contorno, formaFichas, perimetroCon, trapecioTeselado, malla, fib, PIEZAS },
+    calc: { semejanza, medios, conteo, petalo, giros, posiciones, orientaciones, cotaRectangulo, cotaCajas, cotaTablero, embaldosar, minRectangulo, maxEmpaque, voraz, hmax, hexagonos, contorno, formaFichas, perimetroCon, trapecioTeselado, malla, fib, PIEZAS },
   };
 });

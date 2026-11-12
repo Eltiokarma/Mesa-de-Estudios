@@ -72,6 +72,23 @@ function recalcular(p) {
       do { n = n % 2 === 0 ? n / 2 : (d.regla === '3n+1' ? 3 * n + 1 : n + 1); S += n; } while (n !== 1);
       return S;
     }
+    case 'impresos': {
+      // El diagrama traducido a un bucle: multiplicar, imprimir, y solo si pasa de T, dividir y probar.
+      let N = d.n0, suma = 0, listo = false;
+      while (!listo) {
+        N *= d.m; suma += N;
+        if (N > d.T) { N /= d.d; listo = d.cond === 'par' ? N % 2 === 0 : N % 3 === 0; }
+      }
+      return d.pide === 'cifras' ? cifras(suma) : suma;
+    }
+    case 'bucles': {
+      // Primer bucle: K = N/2 hasta pasar de T. Segundo: K = N − c hasta que K sea múltiplo de m.
+      let N = d.N0, K = N / 2;
+      while (!(K > d.T)) { N = K * K; K = N / 2; }
+      K = N - d.c;
+      while (K % d.m !== 0) { N = d.p * K + d.q; K = N - d.c; }
+      return K;
+    }
     case 'operador': {
       const R = { '2a-b': (a, b) => 2 * a - b, 'a2-b': (a, b) => a ** 2 - b, '3a+b': (a, b) => 3 * a + b, 'ab-a': (a, b) => a * b - a,
         'a+2b': (a, b) => a + 2 * b, 'a2+b': (a, b) => a ** 2 + b, '2a+3b': (a, b) => 2 * a + 3 * b, 'a(a-b)': (a, b) => a * (a - b), 'ab+b': (a, b) => a * b + b };
@@ -85,8 +102,8 @@ function recalcular(p) {
 }
 probarGenerador(gen, { semillas: 600, recalcular: p => { const r = recalcular(p); return Math.abs(r - p.respuesta.valor) < 1e-6 ? p.respuesta.valor : r; } });
 
-const TIPOS = ['acumulador', 'contador', 'dos-contadores', 'descuentos', 'cifras', 'potencias-div', 'operador'];
-test('salen los siete tipos en 200 semillas', () => {
+const TIPOS = ['acumulador', 'contador', 'dos-contadores', 'descuentos', 'cifras', 'potencias-div', 'operador', 'impresos', 'bucles'];
+test('salen los nueve tipos en 200 semillas', () => {
   const vistos = new Set(); for (let s = 0; s < 200; s++) vistos.add(gen.generar(s)._datos.tipo);
   assert.deepEqual([...vistos].sort(), [...TIPOS].sort());
 });
@@ -121,9 +138,13 @@ test('el intérprete: una vuelta menos y una más cambian el número de vueltas 
     const p = gen.generar(s), d = p._datos;
     if (d.tipo === 'operador' || d.tipo === 'descuentos') continue;
     const prog = gen.calc.programa(d), b = prog.bucle;
-    const k = gen.calc.ejecutar(prog).vueltas[b];
-    assert.equal(gen.calc.ejecutar(prog, { delta: -1 }).vueltas[b] || 0, k - 1, `semilla ${s}`);
-    assert.ok(gen.calc.ejecutar(prog, { delta: +1 }).vueltas[b] >= k + 1, `semilla ${s}`);
+    const entrada = prog.entrada || {};
+    const k = gen.calc.ejecutar(prog, { entrada }).vueltas[b];
+    // En «impresos» y «bucles», cambiar las vueltas puede dar un diagrama que no termina: el generador lo descarta como error.
+    const corre = delta => { try { return gen.calc.ejecutar(prog, { entrada, delta }).vueltas[b] || 0; } catch (e) { return d.tipo === 'impresos' || d.tipo === 'bucles' ? null : Promise.reject(e); } };
+    const menos = corre(-1), mas = corre(+1);
+    if (menos !== null) assert.equal(menos, k - 1, `semilla ${s}`);
+    if (mas !== null) assert.ok(mas >= k + 1, `semilla ${s}`);
   }
 });
 
@@ -136,7 +157,7 @@ test('la figura del diagrama: todos los bloques en el alt y nada de la respuesta
     assert.ok((p.figura.svg.match(/<(rect|polygon) [^>]*stroke-width/g) || []).length >= prog.bloques.length, `semilla ${s}: faltan formas`);
     const w = +p.figura.svg.match(/viewBox="0 0 (\d+)/)[1];
     assert.ok(w >= 300 && w <= 420, `semilla ${s}: ancho ${w}`);
-    assert.ok(prog.bloques.length <= 9, `semilla ${s}: ${prog.bloques.length} bloques`);
+    assert.ok(prog.bloques.length <= 10, `semilla ${s}: ${prog.bloques.length} bloques`);
   }
 });
 
@@ -145,7 +166,7 @@ test('cada error da otro valor que la respuesta y las vueltas son pocas', () => 
     const p = gen.generar(s);
     for (const a of p.alternativas.filter(x => !x.correcta)) assert.notEqual(a.valor, p.respuesta.valor);
     if (p._datos.tipo !== 'operador' && p._datos.tipo !== 'descuentos') {
-      const r = gen.calc.ejecutar(gen.calc.programa(p._datos));
+      const pg = gen.calc.programa(p._datos), r = gen.calc.ejecutar(pg, { entrada: pg.entrada || {} });
       assert.ok(r.traza.length <= 13, `semilla ${s}: ${r.traza.length} filas de traza`);
     }
   }
@@ -160,6 +181,35 @@ test('el error «el 1 es primo» sale de verdad (en 1000 semillas) y solo cuando
     assert.equal(p._datos.a, 1, `semilla ${s}`);
   }
   assert.ok(veces >= 3, `salió ${veces} veces`);
+});
+
+test('impresos y bucles: se imprime lo que dice el diagrama, con valores enteros y pocas vueltas', () => {
+  const vistos = { impresos: 0, bucles: 0 };
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s), d = p._datos;
+    if (d.tipo !== 'impresos' && d.tipo !== 'bucles') continue;
+    vistos[d.tipo]++;
+    const r = gen.calc.ejecutar(gen.calc.programa(d), { entrada: gen.calc.programa(d).entrada });
+    assert.ok(r.traza.length <= 13, `semilla ${s}`);
+    if (d.tipo === 'impresos') {
+      assert.ok(r.impresos.length >= 3 && r.impresos.length <= 7 && r.vueltas[4] >= 1, `semilla ${s}`);
+      assert.ok(r.impresos.every(Number.isInteger), `semilla ${s}`);
+    } else {
+      assert.ok(r.estado.K > 0 && Number.isInteger(r.estado.K) && r.estado.K % d.m === 0, `semilla ${s}`);
+      assert.deepEqual(r.impresos, [r.estado.K]);
+      assert.ok(r.vueltas[3] >= 1, `semilla ${s}`);
+    }
+  }
+  assert.ok(vistos.impresos >= 30 && vistos.bucles >= 30, JSON.stringify(vistos));
+});
+
+test('las dos preguntas oficiales de UNMSM salen con su respuesta (9 y 1832) y su figura propia', () => {
+  const a = gen.generar('unmsm-2023-I-29'), b = gen.generar('unmsm-2026-I-24');
+  assert.equal(a.respuesta.valor, 9);
+  assert.equal(b.respuesta.valor, 1832);
+  for (const p of [a, b]) assert.ok(p.figura && p.figura.svg.includes('<svg') && p.figuraSolucion);
+  assert.ok(b.alternativas.some(x => x.error && x.error.id === 'RMP108-sale-sin-probar' && x.valor === 951));
+  assert.ok(a.alternativas.some(x => x.error && x.error.id === 'RMP107-sin-sumar-cifras' && x.valor === 3330));
 });
 
 test('operador: el valor del paréntesis nunca es la respuesta y los negativos van entre paréntesis', () => {

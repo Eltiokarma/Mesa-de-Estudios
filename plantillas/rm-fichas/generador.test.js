@@ -20,6 +20,7 @@ const { probarGenerador } = require('../../nucleo/probar-generador.js');
 const FORMAS = {
   D2: [[0, 0], [1, 0]], I3: [[0, 0], [1, 0], [2, 0]], L3: [[0, 0], [1, 0], [0, 1]], O4: [[0, 0], [1, 0], [0, 1], [1, 1]], I4: [[0, 0], [1, 0], [2, 0], [3, 0]],
   L4: [[0, 0], [0, 1], [0, 2], [1, 0]], T4: [[0, 0], [1, 0], [2, 0], [1, 1]], S4: [[0, 0], [1, 0], [1, 1], [2, 1]], P5: [[0, 0], [1, 0], [0, 1], [1, 1], [0, 2]], V5: [[0, 0], [0, 1], [0, 2], [1, 0], [2, 0]],
+  U5: [[0, 0], [2, 0], [0, 1], [1, 1], [2, 1]], T5: [[0, 0], [1, 0], [2, 0], [1, 1], [1, 2]], W5: [[0, 0], [0, 1], [1, 1], [1, 2], [2, 2]],
 };
 function variantes(cs) { // las 8 simetrías del cuadrado, normalizadas y sin repetir
   const res = new Map();
@@ -45,6 +46,11 @@ function cubre(w, h, tipos) {
     return false;
   };
   return rec();
+}
+function giros(cs) { // solo las 4 rotaciones (sin voltear), normalizadas y sin repetir
+  const res = new Map(); let q = cs;
+  for (let k = 0; k < 4; k++) { const mx = Math.min(...q.map(c => c[0])), my = Math.min(...q.map(c => c[1])); const n = q.map(([x, y]) => [x - mx, y - my]).sort((a, b) => a[0] - b[0] || a[1] - b[1]); res.set(JSON.stringify(n), n); q = q.map(([x, y]) => [-y, x]); }
+  return [...res.values()];
 }
 function empaca(w, h, cs, tapadas = []) {
   const V = variantes(cs), A = cs.length;
@@ -153,6 +159,31 @@ function recalcular(p) {
     assert.equal(area, (x1 - x0) * (y1 - y0), 'los cuadrados llenan el rectángulo');
     return d.pide === 'area' ? area * d.u * d.u : 2 * ((x1 - x0) + (y1 - y0)) * d.u;
   }
+  if (d.tipo === 'conteo') {
+    // Todos los subconjuntos de la figura con tantas casillas como la ficha, que son una ficha girada (y volteada si se permite).
+    const T = d.reflejos ? variantes(FORMAS[d.pieza]) : giros(FORMAS[d.pieza]);
+    const claves = new Set(T.map(q => JSON.stringify(q)));
+    const A = FORMAS[d.pieza].length, N = d.celdas.length;
+    let n = 0;
+    const rec = (i, elegidas) => {
+      if (elegidas.length === A) {
+        const mx = Math.min(...elegidas.map(c => c[0])), my = Math.min(...elegidas.map(c => c[1]));
+        if (claves.has(JSON.stringify(elegidas.map(([x, y]) => [x - mx, y - my]).sort((a, b) => a[0] - b[0] || a[1] - b[1])))) n++;
+        return;
+      }
+      for (let j = i; j < N; j++) rec(j + 1, elegidas.concat([d.celdas[j]]));
+    };
+    rec(0, []);
+    return n;
+  }
+  if (d.tipo === 'petalo') {
+    // Integral por columnas (Simpson): techo de la semicircunferencia menos el piso de los huecos.
+    const { r, H } = d, N = 20000, hh = 2 * r / N;
+    const alto = x => { const arriba = H + Math.sqrt(Math.max(0, r * r - (x - r) ** 2)); const piso = x < r ? Math.sqrt(Math.max(0, r * r - x * x)) : Math.sqrt(Math.max(0, r * r - (2 * r - x) ** 2)); return arriba - piso; };
+    let t = alto(0) + alto(2 * r);
+    for (let i = 1; i < N; i++) t += alto(i * hh) * (i % 2 ? 4 : 2);
+    return Math.round(t * hh / 3 * 1e6) / 1e6;
+  }
   // malla
   const M = gen.calc.malla(d.n);
   const vecinos = ([i, j], [a, b]) => (a === i && Math.abs(b - j) === 1) || (a === i + 1 && (b === j || b === j + 1)) || (a === i - 1 && (b === j || b === j - 1));
@@ -164,9 +195,9 @@ function recalcular(p) {
 }
 probarGenerador(gen, { semillas: 600, recalcular });
 
-test('salen los diez tipos en 200 semillas', () => {
-  const tipos = new Set(); for (let s = 0; s < 200; s++) tipos.add(gen.generar(s)._datos.tipo);
-  assert.equal(tipos.size, 10);
+test('salen los doce tipos en 400 semillas', () => {
+  const tipos = new Set(); for (let s = 0; s < 400; s++) tipos.add(gen.generar(s)._datos.tipo);
+  assert.equal(tipos.size, 12);
 });
 
 for (const c of casos.casos) {

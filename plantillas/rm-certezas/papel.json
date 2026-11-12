@@ -107,6 +107,18 @@
         "Quedan solo arroz y la mezcla. La bolsa «arroz» no puede tener arroz: tiene la mezcla, y la bolsa «azúcar» tiene el arroz."
       ],
       "verificar": [ { "fn": "cajas", "args": [{ "pide": "contenido", "sale": "B", "rotulo": "A" }], "espera": { "respuesta": "mezcla" } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "intermedio",
+      "enunciado": "En un club ya hay 250 socios inscritos y no se sabe cuándo cumple años cada uno. ¿Cuántos socios más deben inscribirse, como mínimo, para que haya con seguridad dos que cumplan años el mismo día?",
+      "respuesta": "117 socios más.",
+      "pasos": [
+        "Hay 366 fechas posibles (365 días y el 29 de febrero).",
+        "Peor caso: 366 personas, cada una con una fecha distinta. La siguiente repite fecha: hacen falta 367 en total.",
+        "Ya están 250: 367 − 250 = 117."
+      ],
+      "verificar": [ { "fn": "cumpleanos", "args": [{ "casilla": "fecha", "k": 2, "ya": 250 }], "espera": { "respuesta": 117 } } ]
     }
   ]
 }

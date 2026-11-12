@@ -82,6 +82,11 @@ function tuboIndep(d) {
   };
   return iddfs([d.inicio.join(''), ''], hijos, ([t, m]) => !m && t === d.meta.join(''), e => e.join('|'), 14);
 }
+// Bolos con bocas: cada boca saca el bolo de su lugar (se recorta la lista) y lo deja primero; profundidad iterativa.
+function bocasIndep(d) {
+  const hijos = e => d.bocas.map(q => e.slice(q - 1, q) + e.slice(0, q - 1) + e.slice(q));
+  return iddfs(d.inicio.join(''), hijos, e => e === d.meta.join(''), e => e, 12);
+}
 // Fichas: dos vecinas a dos vacías vecinas que no se tocan con las de origen.
 function cumplePares(s, meta) {
   const f = s.replace(/^_+/, '').replace(/_+$/, '');
@@ -107,9 +112,12 @@ function paresIndep(d) {
 }
 function recalcular(p) {
   const d = p._datos;
-  return { canoa: canoaIndep, caballo: caballoIndep, salto: saltoIndep, tubo: tuboIndep, pares: paresIndep }[d.tipo](d);
+  return { canoa: canoaIndep, caballo: caballoIndep, salto: saltoIndep, tubo: tuboIndep, pares: paresIndep, bocas: bocasIndep }[d.tipo](d);
 }
 probarGenerador(gen, { semillas: 600, recalcular });
+// Las semillas de texto (las de la app) también sacan los bolos con bocas.
+const genTexto = { ...gen, id: gen.id + ' (semillas de texto)', generar: s => gen.generar('p' + s) };
+probarGenerador(genTexto, { semillas: 600, recalcular });
 
 test('salen los cinco tipos y sus variantes en 200 semillas', () => {
   const vistos = new Set();
@@ -121,9 +129,22 @@ test('salen los cinco tipos y sus variantes en 200 semillas', () => {
     assert.ok(vistos.has(t), `no salió ${t}`);
 });
 
+test('salen los bolos con bocas y la variante de 2 y de 3 bocas', () => {
+  const vistos = new Set();
+  for (let s = 0; s < 300; s++) { const d = genTexto.generar(s)._datos; if (d.tipo === 'bocas') vistos.add(d.bocas.length); }
+  assert.ok(vistos.has(2) && vistos.has(3), [...vistos].join());
+});
+
+test('las preguntas oficiales (UNMSM 2024-I y 2025-II) dan 3 operaciones', () => {
+  for (const s of ['unmsm-2024-I-26', 'unmsm-2025-II-21']) {
+    const p = gen.generar(s);
+    assert.equal(p.respuesta.valor, 3); assert.equal(recalcular(p), 3); assert.match(p.datos, /UNMSM/);
+  }
+});
+
 test('la solución mostrada es válida paso a paso y su largo es la respuesta', () => {
-  for (let s = 0; s < 300; s++) {
-    const p = gen.generar(s), d = p._datos, sol = gen.calc.minimo(d);
+  for (let s = 0; s < 600; s++) {
+    const p = s < 300 ? gen.generar(s) : gen.generar('p' + s), d = p._datos, sol = gen.calc.minimo(d);
     assert.equal(sol.movs.length, p.respuesta.valor, `semilla ${s}`);
     if (d.tipo === 'canoa') {
       let izq = new Set(d.gente.map((g, i) => i)), lado = 'izq';
@@ -163,20 +184,27 @@ test('la solución mostrada es válida paso a paso y su largo es la respuesta', 
       assert.deepEqual(t, d.meta); assert.equal(m.length, 0);
     }
     if (d.tipo === 'pares') assert.ok(cumplePares(sol.camino[sol.camino.length - 1], d.meta));
+    if (d.tipo === 'bocas') {
+      let e = d.inicio.slice();
+      sol.movs.forEach(m => { assert.equal(d.bocas[m.boca], m.lugar); assert.equal(e[m.lugar - 1], m.bolo, `semilla ${s}: el bolo no está en la boca`); e.splice(m.lugar - 1, 1); e.unshift(m.bolo); });
+      assert.deepEqual(e, d.meta);
+    }
   }
 });
 
 test('los distractores dicen lo que dicen', () => {
-  for (let s = 0; s < 400; s++) {
-    const p = gen.generar(s), n = p.respuesta.valor;
+  for (let s = 0; s < 800; s++) {
+    const p = s < 400 ? gen.generar(s) : gen.generar('p' + s), n = p.respuesta.valor, d = p._datos;
     for (const a of p.alternativas.filter(x => !x.correcta)) {
       const id = a.error.id;
       if (id === 'RMP14-sin-regresos') assert.equal(a.valor, (n + 1) / 2);
       if (id === 'RMP14-regreso-final' || id === 'RMP1-estados') assert.equal(a.valor, n + 1);
       if (id === 'RMP18-sacar-y-meter') assert.equal(a.valor, n / 2);
-      if (id === 'RMP18-fichas') assert.equal(a.valor, 2 * n);
+      if (id === 'RMP18-fichas' || id === 'RMP112-sacar-e-introducir') assert.equal(a.valor, 2 * n);
+      if (id === 'RMP110-fuera-de-lugar') assert.equal(a.valor, d.inicio.filter((b, i) => b !== d.meta[i]).length);
+      if (id === 'RMP2-todos-menos-uno') assert.equal(a.valor, d.inicio.length - 1);
       if (/^RMP2-/.test(id)) assert.ok(a.valor > n, `semilla ${s}: ${id} debe ser una estrategia más larga`);
-      if (/^RMP19-|^RMP11-|^RMP15-(bloqueada|boca-cerrada|hija-cuida)/.test(id)) assert.ok(a.valor < n, `semilla ${s}: ${id} relaja una regla y debe salir menos`);
+      if (/^RMP19-|^RMP11-|^RMP15-(bloqueada|boca-cerrada|hija-cuida)|^RMP111-/.test(id)) assert.ok(a.valor < n, `semilla ${s}: ${id} relaja una regla y debe salir menos`);
     }
   }
 });

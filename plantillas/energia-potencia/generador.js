@@ -27,10 +27,13 @@
  *                   polea: W = F·(L1 − L2), lo que se acorta el tramo de cuerda entre polea y collarín.
  *   cuerda/rapidez  lo mismo, y desde el reposo la rapidez final: v = √(2W/m).
  *
- * Fuera a propósito: la masa efectiva del resorte (fila 2023-II, 2 abr, #82). La nota del CSV dice que
- * la clave de la academia ignora la masa efectiva; el modelo (m_resorte/3) no está en los temarios de
- * la UNI ni de San Marcos, y con la clave de la academia la respuesta sería otra. No enseñamos una
- * respuesta que depende de un supuesto que el enunciado no da.
+ *   resorte/masa-efectiva  la misma pistola de resorte, comprimida igual, dispara bolitas de masa
+ *                   distinta; el enunciado DA la masa efectiva M del resorte (la parte que se mueve
+ *                   con la bolita). La energía guardada se reparte en ½·(m + M)·v², así que
+ *                   v₂ = v₁·√((m₁ + M)/(m₂ + M)). Sale de la fila 2023-II (2 abr) #82 de San Marcos,
+ *                   donde la clave de la academia ignora la masa efectiva que el enunciado da (con
+ *                   ella la respuesta es otra). Este subtipo se elige con un azar aparte (1 de cada 24
+ *                   semillas) para no mover las semillas de los demás tipos.
  *
  * Convenciones: g = 10 m/s², sen 37° = cos 53° = 0,6 y cos 37° = sen 53° = 0,8, agua con 1 kg por litro.
  * Las potencias que se piden son a rapidez constante (sin arranques ni frenadas), salvo fv/eficiencia.
@@ -70,6 +73,14 @@
     ['rebotes', 'choque'], ['rebotes', 'tramo'], ['rebotes', 'rapidez'], ['cuerda', 'trabajo'], ['cuerda', 'rapidez']];
 
   function generar(semilla) {
+    if (Azar.crear('energia-potencia-resorte|' + semilla).entero(1, 24) === 1) {
+      const rr = Azar.crear('energia-potencia|resorte|' + semilla);
+      for (let intento = 0; intento < 5000; intento++) {
+        const pr = resorte(rr, semilla);
+        if (pr && pr.alternativas.length >= 4) return pr;
+      }
+      throw new Error('No se pudo generar un problema de resorte con 4 alternativas distintas');
+    }
     const rng = Azar.crear('energia-potencia|' + semilla);
     const [tipo, sub] = rng.elegir(TIPOS);
     for (let intento = 0; intento < 5000; intento++) {
@@ -475,6 +486,40 @@
     ];
     return cerrar(rng, semilla, { correcta, errores, unidad, variables: VAR, enunciado, pregunta, solucion,
       datos: { tipo: 'cuerda', sub, b, x1, x2, F, m } });
+  }
+
+  // ---------------- resorte con masa efectiva ----------------
+  // La masa efectiva M del resorte se mueve con la bolita al soltarse: la energía guardada (igual en los dos
+  // disparos, porque el resorte se comprime lo mismo) es ½·(m + M)·v². Se buscan masas con razón cuadrada.
+  function resorte(rng, semilla) {
+    const m1 = rng.elegir([10, 12, 15, 16, 20, 24, 25, 30, 36, 40, 45, 48, 50, 60]);
+    const M = m1 * rng.elegir([1, 2, 3, 3, 4, 5]);           // como en el examen: M es un múltiplo de m₁
+    const k = rng.elegir([[1, 2], [2, 3], [3, 4], [4, 5], [3, 5], [2, 5], [1, 3], [4, 3], [3, 2]]);
+    const [a, b] = k;                                     // v₂/v₁ = a/b ⇒ (m₁ + M)/(m₂ + M) = a²/b²
+    const m2 = (m1 + M) * b * b / (a * a) - M;
+    if (!(m2 > 0) || Math.abs(m2 - Math.round(m2)) > 1e-9 || m2 === m1 || m2 > 600) return null;
+    const v1 = rng.elegir([3, 4, 5, 6, 8, 9, 10, 12, 15, 18, 20, 24, 30]);
+    const correcta = v1 * a / b;
+    if (!limpio(correcta)) return null;
+    const VAR = { m: { nombre: 'masa de la bolita', color: 'o' }, M: { nombre: 'masa efectiva del resorte', color: 'h' }, vv: { nombre: 'rapidez de salida', color: 'i' }, x: { nombre: 'rapidez que se pide', color: 'd' } };
+    const enunciado = ['El mecanismo de una pistola de juguete es un resorte que se comprime y, al apretar el gatillo, se suelta y empuja una bolita. Una bolita de ',
+      v('m', `${f(m1)} g`), ' sale a ', v('vv', `${f(v1)} m/s`), '. La ', v('M', `masa efectiva del resorte es ${f(M)} g`),
+      ' (al soltarse, esa parte del resorte se mueve junto con la bolita). No hay rozamiento y el resorte se comprime siempre lo mismo.'];
+    const pregunta = ['¿Con qué ', v('x', 'rapidez'), ' saldría una bolita de ', v('m', `${f(m2)} g`), '?'];
+    const errores = [
+      h('EP-sin-masa-efectiva', v1 * Math.sqrt(m1 / m2), `Repartiste la energía solo entre las bolitas: ½·${f(m1)}·${f(v1)}² = ½·${f(m2)}·v². La masa efectiva del resorte (${f(M)} g) también se lleva energía cinética en los dos disparos: va sumada a cada bolita.`, TRA),
+      h('EP-sin-raiz', v1 * (m1 + M) / (m2 + M), `Te faltó la raíz: la energía va con v², así que la rapidez cambia con la raíz de la razón de masas, √(${f(m1 + M)}/${f(m2 + M)}).`),
+      h('EP-cantidad-movimiento', v1 * m1 / m2, `Igualaste cantidades de movimiento (${f(m1)}·${f(v1)} = ${f(m2)}·v). Lo que se conserva es la energía del resorte comprimido, que se reparte en ½·(m + M)·v².`),
+      h('EP-razon-al-reves', v1 * Math.sqrt((m2 + M) / (m1 + M)), `Invertiste la razón: con más masa total la rapidez baja. v₂ = v₁·√((m₁ + M)/(m₂ + M)).`),
+      h('EP-masa-efectiva-una-vez', v1 * Math.sqrt((m1 + M) / m2), `Sumaste la masa efectiva solo en el primer disparo. El resorte también se mueve en el segundo: es ${f(m2)} + ${f(M)} = ${f(m2 + M)} g.`),
+    ];
+    const solucion = [
+      ['El resorte se comprime lo mismo: guarda la misma energía en los dos disparos. Al soltarse, esa energía se va en la bolita y en la ', v('M', 'masa efectiva del resorte'), ', que se mueven juntas: E = ½·(m + M)·v².'],
+      ['Primer disparo: E = ½·(', v('m', f(m1)), ' + ', v('M', f(M)), ')·', v('vv', f(v1)), '². Segundo: E = ½·(', v('m', f(m2)), ' + ', v('M', f(M)), ')·', v('x', 'v'), '².'],
+      ['Se igualan: ', v('x', 'v'), ' = ', v('vv', f(v1)), `·√(${f(m1 + M)}/${f(m2 + M)}) = ${f(v1)}·${a}/${b} = `, v('x', `${f(correcta)} m/s`), '. (Las masas se pueden dejar en gramos: solo importa su razón).'],
+    ];
+    return cerrar(rng, semilla, { correcta, errores, unidad: 'm/s', variables: VAR, enunciado, pregunta, solucion,
+      datos: { tipo: 'resorte', sub: 'masa-efectiva', m1, M, m2, v1 } });
   }
 
   return { id: 'energia-potencia', titulo: 'La bomba y el ascensor', generar };

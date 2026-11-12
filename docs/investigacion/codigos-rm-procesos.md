@@ -126,3 +126,95 @@ Usan también AR7 (linealidad: escalar el perímetro como el área, usar todas l
 | RMP58 | Jerarquía de operaciones: de izquierda a derecha, o las sumas primero | huecos («olvidar la jerarquía») |
 | RMP59 | Puntos del empate mal contados (1 en total, o 0) | situaciones deportivas |
 | RMP80 | Dar por posible uno más allá del óptimo sin comprobarlo (una moneda en dos grupos, un dardo menos) | máximos con existencias |
+
+## Fichas: conteo con giros, tablero con fichas de 5 y la región de arcos (`rm-fichas`) (cierre-100, 12 nov 2026)
+
+| Código | Error | Trampa de la que sale |
+|---|---|---|
+| RMP120-sin-giros | Contar la ficha solo como está dibujada, sin ponerla de lado | UNMSM 2025-II p. 25 (olvidar las orientaciones giradas) |
+| RMP121-dividir-area | Dividir las casillas de la figura entre las de la ficha (fichas que no se tocan) en vez de contar todas las posiciones | UNMSM 2025-II p. 25 |
+| RMP122-sin-voltear / RMP122-volteo-de-mas | Solo girar cuando también se puede voltear, o voltear cuando el enunciado solo permite girar | conteo de fichas quirales (L4, S4, P5) |
+| RMP123-giro-repetido | Contar cada giro de 90° (y volteo) como posición nueva aunque la ficha quede igual | conteo con fichas simétricas (I3, T4, U5) |
+| RMP124-caja-completa | Contar solo donde entra el rectángulo que encierra a la ficha, sin ver que entra también donde falta una casilla de ese rectángulo | conteo con fichas con huecos en su caja |
+| RMP125-dividir-todo | Dividir las casillas de todo el tablero (con las tapadas) entre las de la ficha | UNMSM 2025-I p. 23 (49 ÷ 5 = 9) |
+| RMP126-circulo-completo | Al rectángulo que encierra la figura restarle un círculo completo | UNMSM 2025-I p. 30 (restar círculos completos) |
+| RMP127-sumar-sin-restar | Sumar la media luna de arriba sin quitar los dos huecos de abajo | UNMSM 2025-I p. 30 |
+| RMP128-olvidar-la-luna | Quitar los dos huecos y olvidar la media luna que los rellena | UNMSM 2025-I p. 30 |
+| RMP129-toda-la-caja | Tomar todo el rectángulo que encierra la figura | UNMSM 2025-I p. 30 |
+
+Se reutilizan RMP63-sin-tapadas, RMP69-dividir, RMP69-redondeo y RMP2-voraz en el tablero de fichas de 5.
+
+## Planteo: latas, fichas de dos caras, cometa y vasos (`rm-planteo`, cierre-100, 12 nov 2026)
+
+
+| Código | Sufijos (error) | Trampa de la que sale |
+|---|---|---|
+| RMP130 | una-por-lata (un golpe por lata gris); solo-grises (no golpear latas sin pintar que derriban varias grises); solo-la-de-encima (la caída arrastra solo a la lata justo encima); por-filas (un golpe por fila con grises); uno-de-mas | UNMSM 2026-I (4 oct 2025, áreas D/E) p. 22: pirámide de latas, golpes mínimos |
+| RMP131 | lata-doble-olvidada (ignorar la lata que faltó en las dos pirámides y se deduce con el puntaje); copiar-a-arturo (dar el puntaje de Arturo); union (sumar las caídas de ambos); comun-dos-veces | UNMSM 2026-I (11 oct 2025, área A) p. 28: dos pirámides numeradas que se completan |
+| RMP132 | sumar-las-vistas (sumar los números pedidos en vez de sus opuestos); como-dado (opuestas suman siempre lo mismo); misma-tirada (opuesto = otro número del mismo lanzamiento); solo-dos-lanzamientos (pareja que sirve con dos tiradas y la tercera descarta) | UNMSM 2023-I p. 25: tres fichas de dos caras |
+| RMP133 | solo-diagonales; medios-como-diagonales (cada pieza de puntos medios = una diagonal); dos-medias (solo dos de las cuatro piezas); todas-iguales; y, en la variante inversa, sin-duplicar, mitad-sin-restar, triple, otra-diagonal-mas-medias | UNMSM 2021 (4 sep 2021) p. 23: listón de una cometa |
+| RMP134 | solo-alineadas (sin intercalar); desfase-sin-perder (todas las filas intercaladas con n vasos); dividir-areas (área bandeja ÷ área circular); cuadrados (área bandeja ÷ d²) | UNMSM 2021 (4 sep 2021) p. 25: vasos en una bandeja |
+
+## Relojes con retraso y jornada; diagramas con impresos y bucles (`rm-relojes`, `rm-diagramas-flujo`, cierre-100, 12 nov 2026)
+
+Todos en hipótesis (sin dato publicado). Columnas: código · id en el generador · error · de qué trampa sale.
+
+| Código | Id en el generador | Error | Trampa de la pregunta oficial |
+| --- | --- | --- | --- |
+| RMP100 | RMP100-sin-retraso | Dar la hora en que empezó el examen y olvidar sumar el retraso (rm-relojes, tipo «retraso») | UNMSM 2019-II (10 mar 2019) p. 31: «olvidar sumar el retraso al inicio» |
+| RMP101 | RMP101-razon-invertida | Tomar el tiempo de antes como q veces el de después (leer «la cuarta parte de» al revés) (rm-relojes, «retraso») | misma pregunta: la razón entre el tiempo transcurrido y el por transcurrir |
+| RMP102 | RMP102-sin-duracion | Repartir todo el intervalo entre las partes sin quitar la duración del examen (rm-relojes, «retraso») | misma pregunta: 5x + 105 = 240, no 5x = 240 |
+| RMP103 | RMP103-retraso-restado | Restar el retraso en vez de sumarlo (rm-relojes, «retraso») | misma pregunta |
+| RMP104 | RMP104-falta-del-dia | Dar las horas que faltan para que termine el día (24 − t) cuando se pregunta por la jornada (rm-relojes, «jornada») | UNMSM 2024-II (10 mar 2024) p. 18: «responder la hora y no lo que falta» (da 3 en vez de 2) |
+| RMP105 | RMP105-ya-trabajadas | Dar las horas ya trabajadas (t − S) en vez de las que faltan (rm-relojes, «jornada») | misma pregunta |
+| RMP106 | RMP106-cuenta-lo-no-impreso | Sumar también los valores que salen de la división, que no se imprimen (rm-diagramas-flujo, «impresos») | UNMSM 2023-I (10 dic 2022) p. 29: suma de lo impreso |
+| RMP107 | RMP107-sin-sumar-cifras | Quedarse con la suma de lo impreso (3330) sin sumar sus cifras (rm-diagramas-flujo, «impresos») | misma pregunta: la respuesta es la suma de cifras de la suma |
+| RMP108 | RMP108-sale-sin-probar | Salir del bucle sin probar la última condición: «Fin» apenas N pasa de T, o imprimir K sin ver si es múltiplo (rm-diagramas-flujo, «impresos» y «bucles») | UNMSM 2026-I (4 oct 2025) p. 24: «salir del bucle antes de cumplir la condición» (951 en vez de 1832) |
+| RMP109 | RMP109-cuenta-el-ingreso | Contar como impreso el número que se ingresa (rm-diagramas-flujo, «impresos») | UNMSM 2023-I p. 29 |
+
+## Ids con código viejo, usados por los tipos nuevos (no son códigos nuevos)
+
+- rm-diagramas-flujo, «impresos» y «bucles»: RMP20-una-vuelta-menos, RMP20-una-vuelta-mas, RMP20-flecha-de-vuelta (la flecha de N ← pK + q vuelve a K ← N ÷ 2 en vez de a K ← N − c), RMP20-variable (restar al K de antes en vez de al N), RMP21-borde, RMP22-imprime-N.
+- rm-rumbos, «moviles-tramos» y «direccion»: RMP41-desde-el-destino (la trampa de UNMSM 2024-I p. 25: dar el rumbo del regreso, visto desde la tía y no desde la casa), RMP41-RMP40-al-reves-y-eje, RMP41-suma-de-posiciones, RMP41-tramo-invertido (un tramo tomado en sentido contrario), RMP40-eje, RMP40-345-al-reves, RMP42-suma-recorridos, RMP42-resta-recorridos, RMP42-sin-restar-opuestas, RMP42-suma-tramos, RMP43-angulo-recto, AR5-dato-intermedio (distancia de A o de B al punto de partida).
+- rm-relojes, «retraso» y «jornada»: AR5-hora-de-fin, AR5-la-hora, AR5-duracion-del-turno, RMP48-pasado-por-falta, RMP44-am-pm.
+
+Nota: RMP41-tramo-invertido y RMP41-suma-de-posiciones son ids nuevos dentro de la familia RMP41 (invertir el sentido); la sesión principal decide si les da fila propia en el informe.
+
+## Certezas con color, cumpleaños con «ya», cajas que se abren y balanzas con peso combinado (`rm-certezas`, `rm-balanzas`, `rm-deduccion`, cierre-100, 12 nov 2026)
+
+| Código | Error | Trampa de la que sale | Generador |
+| --- | --- | --- | --- |
+| RMP90-un-color | En el peor caso solo salen todos los de un color y el siguiente sirve (N + 1); se olvidan los números sin pareja del otro color | UNMSM 2023-I #28 | rm-certezas pareja-color |
+| RMP91-una-copia | Contar como si hubiera un solo bolo de cada número (ignora la copia del otro color) | UNMSM 2023-I #28 | rm-certezas pareja-color |
+| RMP92-sin-restar | Calcular el total de personas para el palomar y no restar las que ya hay | UNMSM 2024-II #21 | rm-certezas cumpleanos con ya |
+| RMP93-sin-bisiesto-ya | Usar 365 fechas (olvidar el 29 de febrero) en el «cuántos más» | UNMSM 2024-II #21 | rm-certezas cumpleanos con ya |
+| RMP94-sin-deducir-ultima | Abrir también la última caja rotulada «amarillo» (r + 1), sin deducirla | UNMSM 2025-II #30 | rm-certezas cajas-abrir |
+| RMP95-deduce-de-mas | Creer que se deducen dos cajas a la vez (r − 1) | UNMSM 2025-II #30 | rm-certezas cajas-abrir |
+| RMP96-una-por-color | Contar una caja por cada color distinto (c) | UNMSM 2025-II #30 | rm-certezas cajas-abrir |
+| RMP97-casi-todas | Abrir casi todas las cajas (n − 1), sin ver que las de rótulo de color ya se saben | UNMSM 2025-II #30 | rm-certezas cajas-abrir |
+| RMP98-sin-la-tercera | Resolver solo con las dos balanzas en equilibrio y tomar uno de los pesos que las cumplen, sin usar la desequilibrada | UNMSM 2024-I #20 | rm-balanzas combinado |
+| RMP99-borde | Tomar el borde de la desigualdad de la balanza desequilibrada como igualdad | UNMSM 2024-I #20 | rm-balanzas combinado |
+
+## Ids que cuelgan de códigos que ya existían (sin código nuevo)
+- rm-balanzas combinado: RMP38-otra-combinacion (falta contar una figura pedida), RMP38-una-sola (cada figura una vez), RMP38-suma-pesas (suma las pesas de las balanzas). Son variantes del RMP38 (plantear mal las balanzas).
+- rm-deduccion puntajes: RMP72-pista-sin-revisar (reparto o puntaje que sale al ignorar una pista), RMP72-dado-cruzado (puntaje de una persona con el dado de otra), RMP2-sin-maximizar (puntaje posible que no es el mayor). Variantes de RMP72 y RMP2.
+- rm-certezas: RM6-favorable, RMP34-sin-mas-uno, RMP34-mas-uno reutilizados en los tipos nuevos.
+
+## Bocas del tubo, lecturas dobles y en malla, tablero de triángulos y alambre (`rm-movimientos`, `rm-lectura-palabras`, `rm-cortes`, cierre-100, 12 nov 2026)
+
+| Código | Error | Trampa de la que sale | Generador |
+| --- | --- | --- | --- |
+| RMP110 (`-fuera-de-lugar`) | Contar una operación por cada bolo que no está en su lugar; no ve que al subir un bolo a P los demás bajan un lugar. | rm-movimientos, bolos con bocas laterales (UNMSM 2024-I p. 26, 2025-II p. 21) | rm-movimientos, tipo `bocas` |
+| RMP111 (`-bocas-libres`) | Suponer que se puede sacar el bolo de cualquier lugar, no solo del que está a la altura de una boca. | ídem (ignorar qué hace la boca) | rm-movimientos, `bocas` |
+| RMP112 (`-sacar-e-introducir`) | Contar por separado sacar el bolo y meterlo por P (2n en vez de n). | ídem | rm-movimientos, `bocas` |
+| RMP113 (`-un-caso`) | Leer una palabra que empieza con dos letras iguales solo con la primera L arriba y la segunda en la fila de abajo, y olvidar el comienzo con las dos L en la misma fila (vecinas horizontales). | rm-lectura-palabras, arreglo triangular con L repetida (UNMSM 2024-I p. 28) | rm-lectura-palabras, `doble` |
+| RMP114 (`-una-L`) | Tratar el arreglo como un triángulo común con una sola L arriba (la mitad del caso anterior). | ídem | rm-lectura-palabras, `doble` |
+| RMP115 (`-sin-volver`) | Contar solo las lecturas que no repiten casilla; olvidar que «ida y vuelta» por la misma letra cuenta. | rm-lectura-palabras, mallas LODO (UNMSM 2025-II p. 29) | rm-lectura-palabras, `malla` |
+| RMP116 (`-una-salida`) | Contar las lecturas que salen de una letra inicial y multiplicarlas por el número de letras iniciales (las vecindades de borde y de centro difieren). | ídem | rm-lectura-palabras, `malla` |
+| RMP117 (`-mitad`) | Pensar que cada corte separa solo dos triángulos (N ÷ 2), sin ver que lo apilado se corta junto. | rm-cortes, tablero hexagonal de triángulos con sierra corta (UNMSM 2024-II p. 23) | rm-cortes, `tablero` |
+| RMP118 (`-una-sola-recta`) | Creer que todos los puntos de soldadura se pueden alinear en una sola recta desde el principio; la estructura está rígida hasta que se sueltan trozos. | rm-cortes, estructura de alambre (UNMSM 2027-I p. 25) | rm-cortes, `alambre` |
+| RMP119 (`-de-a-dos`) | Pensar que cada corte atiende solo dos puntos (nodos ÷ 2), sin ver que trozos sueltos se alinean de a varios. | ídem | rm-cortes, `alambre` |
+
+Códigos ya existentes que reutilizan los tipos nuevos (no se crean):
+- RMP1-estados (n + 1), RMP2-todos-menos-uno (subir todos los bolos menos el de abajo), RMP45-vuelta-doble (lecturas que vuelven, contadas dos veces), RMP82-casillas, RMP83-suma-opciones, RMP84-solo-abajo (solo las lecturas que bajan).
+- RMP35-pieza-por-pieza (N − 1 cortes), RMP35-por-lineas (tablero: cada línea en tramos de la sierra, sin apilar), RMP35-sin-reacomodar y RMP35-punto-por-punto (alambre), RMP36-log-abajo, RMP36-ignora-sierra (tablero: como si la sierra cortara cualquier largo).

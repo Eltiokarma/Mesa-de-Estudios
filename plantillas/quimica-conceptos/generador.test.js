@@ -14,8 +14,40 @@ const ROM = ['I', 'II', 'III', 'IV'];
 
 // Camino independiente: se ignoran las alternativas y la respuesta del generador; solo se leen los ids
 // que se mostraron y el banco.
+// Pourbaix: las zonas con sus rectas, sin los polígonos del generador. El dato se lee del texto que vio el alumno.
+const REGION = {
+  aluminio: (pH, E) => { const L = pH <= 4 ? -1.8 : -1.8 - 0.06 * (pH - 4); if (E < L) return 'Al'; return pH < 4 ? 'Al3' : pH < 10 ? 'Al2O3' : 'AlO2'; },
+  'metal-x': (pH, E) => {
+    const L = pH <= 8 ? -0.6 : -0.6 - 0.06 * (pH - 8), U = pH <= 8 ? 1.0 : 1.0 - 0.06 * (pH - 8);
+    return E < L ? 'X' : E >= U ? 'XO4' : pH < 8 ? 'X2' : 'XOH2';
+  },
+};
+const num = t => Number(t.replace('−', '-').replace(',', '.'));
+const SUPD = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+function leerPH(t) {
+  let m;
+  if ((m = t.match(/^\[H⁺\] = 10⁻([¹²³⁰⁴-⁹]+) M$/))) return Number([...m[1]].map(c => SUPD.indexOf(c)).join(''));
+  if ((m = t.match(/^pOH = ([\d,]+)$/))) return 14 - num(m[1]);
+  if ((m = t.match(/^pH = ([\d,]+)$/))) return num(m[1]);
+  throw new Error('dato de acidez ilegible: ' + t);
+}
+const planoE = x => (Array.isArray(x) ? x.map(planoE).join('') : x && typeof x === 'object' ? x.t : String(x));
+const nombreEsp = (diag, id) => gen.POURBAIX.DIAGRAMAS.find(x => x.id === diag).especies.find(e => e.id === id).nombre;
+function recalcularPourbaix(p) {
+  const d = p._datos, txt = planoE(p.enunciado);
+  if (d.sub === 'especie') {
+    const m = txt.match(/potencial de (.+?) V y a (.+?)\.$/);
+    return 'pb:' + REGION[d.diagrama](leerPH(m[2]), num(m[1]));
+  }
+  const sec = [...txt.matchAll(/(?:^|\s)(I{1,3})\. Con (.+?) y E = (.+?) V, [^,]+? está como (.+?)\.(?= I|$)/g)].map(m => {
+    const id = REGION[d.diagrama](leerPH(m[2]), num(m[3]));
+    return nombreEsp(d.diagrama, id) === m[4] ? 'V' : 'F';
+  });
+  return 'vf:' + sec.join('');
+}
 function recalcular(p) {
   const d = p._datos;
+  if (d.tipo === 'pourbaix') return recalcularPourbaix(p);
   if (d.tipo === 'vf') return 'vf:' + d.ids.map(id => (banco[id].verdad ? 'V' : 'F')).join('');
   if (d.tipo === 'incorrecta' || d.tipo === 'correcta') {
     const buscada = d.tipo === 'correcta';
@@ -40,11 +72,11 @@ for (const c of casos.casos) {
 test('casos.json cubre los cuatro tipos', () => {
   const tipos = new Set(casos.casos.map(c => c.entrada.tipo));
   for (const t of ['vf', 'incorrecta', 'correcta', 'relacionar']) assert.ok(tipos.has(t), `falta ${t}`);
-  assert.ok(casos.casos.length >= 15 && casos.casos.length <= 20);
+  assert.ok(casos.casos.length >= 15 && casos.casos.length <= 40);
 });
 
 test('banco: ids únicos, textos sin repetir y campos completos', () => {
-  assert.ok(gen.BANCO.length >= 150 && gen.BANCO.length <= 360, `${gen.BANCO.length} proposiciones`);
+  assert.ok(gen.BANCO.length >= 150 && gen.BANCO.length <= 460, `${gen.BANCO.length} proposiciones`);
   const ids = new Set(), textos = new Set();
   const unidades = new Set(catalogo.unidades.map(u => u.id));
   const norm = t => t.toLowerCase().replace(/[^a-záéíóúñü0-9]/g, '');
@@ -84,6 +116,7 @@ test('errores: respaldo válido y fuente existente; todos los códigos se usan',
   const usados = new Set(['AQ-negar-verdadera']);
   for (const p of gen.BANCO) { if (p.error) usados.add(p.error); if (p.negar) usados.add(p.negar); }
   for (const c of gen.PARES) { usados.add(c.codigo); if (c.codigoFamilia) usados.add(c.codigoFamilia); }
+  for (const k of gen.POURBAIX.codigos) usados.add(k);
   for (const [k, e] of Object.entries(gen.ERRORES)) {
     assert.ok(['documentado', 'parcial', 'hipotesis'].includes(e.respaldo), k);
     if (k.startsWith('AQ-')) assert.equal(e.respaldo, 'hipotesis', `${k}: los códigos nuevos son hipótesis`);
@@ -107,10 +140,12 @@ test('pares: ids únicos, lados derechos distintos (salvo los tipos de sólido) 
 
 test('600 problemas: los textos coinciden con el banco y aparecen todos los tipos y temas', () => {
   const tipos = {}, temas = new Set(), conjuntos = new Set();
+  let pb = 0;
   for (let s = 0; s < 600; s++) {
     const p = gen.generar(s), d = p._datos;
     tipos[d.tipo] = (tipos[d.tipo] || 0) + 1;
     const enun = p.enunciado.map(x => (typeof x === 'string' ? x : x.t)).join('');
+    if (d.tipo === 'pourbaix') { pb++; continue; }
     if (d.tipo === 'relacionar') {
       conjuntos.add(d.conjunto);
       assert.ok(d.ids.length >= 3 && d.ids.length <= 4);
@@ -141,6 +176,7 @@ test('600 problemas: los textos coinciden con el banco y aparecen todos los tipo
     }
   }
   for (const t of ['vf', 'incorrecta', 'correcta', 'relacionar']) assert.ok(tipos[t] > 50, `${t}: ${tipos[t]}`);
+  assert.ok(pb >= 20 && pb <= 80, `pourbaix: ${pb} de 600`);
   for (const t of gen.TEMAS) assert.ok(temas.has(t.id), `el tema ${t.id} no salió`);
   for (const c of gen.PARES) assert.ok(conjuntos.has(c.id), `el conjunto ${c.id} no salió`);
 });
@@ -198,7 +234,7 @@ test('excluye: las proposiciones espejo no salen juntas (2000 problemas) y la re
   }
   for (let s = 0; s < 2000; s++) {
     const d = gen.generar(s)._datos;
-    if (d.tipo === 'relacionar') continue;
+    if (d.tipo === 'relacionar' || d.tipo === 'pourbaix') continue;
     for (const a of d.ids) for (const b of d.ids) assert.ok(!banco[a].excluye.includes(b), `semilla ${s}: ${a} con ${b}`);
   }
   for (const id of ['esf8', 'pro10', 'ts10', 'met8', 'con8', 'ten7', 'dal9']) assert.ok(banco[id].excluye.length > 0, id);
@@ -230,4 +266,61 @@ test('respaldo: cada código de informe está en su fuente; documentado solo en 
     assert.equal(p.respaldo, 'documentado');
   }
   assert.ok(!gen.ERRORES.BM8, 'BM8 ya no se usa');
+});
+
+// Pourbaix: los dos diagramas, sus zonas y las lecturas con error.
+test('pourbaix: las zonas del generador coinciden con las rectas en una cuadrícula fina', () => {
+  for (const d of gen.POURBAIX.DIAGRAMAS) {
+    let n = 0;
+    for (let pH = 0.05; pH < 14; pH += 0.1) for (let E = d.ejeE[0] + 0.005; E < d.ejeE[1]; E += 0.01) {
+      assert.equal(gen.POURBAIX.especieEn(d, pH, E).id, REGION[d.id](pH, E), `${d.id}: (${pH.toFixed(2)}; ${E.toFixed(3)})`);
+      n++;
+    }
+    assert.ok(n > 10000);
+    assert.equal(d.especies.length, 4);
+    // Las zonas se reparten todo el cuadro sin traslapes: el área de los polígonos suma el cuadro.
+    const area = poly => Math.abs(poly.reduce((t, [x, y], i) => { const [x2, y2] = poly[(i + 1) % poly.length]; return t + x * y2 - x2 * y; }, 0)) / 2;
+    const total = d.especies.reduce((t, e) => t + area(e.poly), 0);
+    assert.ok(Math.abs(total - 14 * (d.ejeE[1] - d.ejeE[0])) < 1e-9, `${d.id}: ${total}`);
+  }
+});
+
+test('pourbaix: figura con descripción, sin el punto en el problema y con el punto en la solución; los dos subtipos y las tres formas', () => {
+  const vistos = new Set(), formas = new Set(), diag = new Set();
+  for (let s = 0; s < 1500; s++) {
+    const p = gen.generar(s), d = p._datos;
+    if (d.tipo !== 'pourbaix') continue;
+    vistos.add(d.sub); diag.add(d.diagrama);
+    assert.ok(p.figura && p.figuraSolucion, `semilla ${s}: faltan las figuras`);
+    assert.ok(!/<circle/.test(p.figura.svg), `semilla ${s}: el problema no debe marcar el punto`);
+    assert.ok(/<circle/.test(p.figuraSolucion.svg), `semilla ${s}: la solución marca el punto`);
+    const plano = planoE(p.enunciado);
+    for (const f of ['[H⁺]', 'pOH', 'pH']) if (plano.includes(f)) formas.add(f);
+    if (d.sub === 'especie') {
+      assert.equal(p.alternativas.length, 4);
+      for (const a of p.alternativas.filter(a => !a.correcta)) assert.ok(a.error.id.startsWith('AQ-pourbaix-'), a.error.id);
+      // Las variables que se declaran son las que se usan (regla 4).
+      assert.deepEqual(Object.keys(p.variables).sort(), ['E', 'pH']);
+    } else {
+      assert.deepEqual(Object.keys(p.variables), []);
+      assert.equal(d.puntos.length, 3);
+    }
+  }
+  assert.deepEqual([...vistos].sort(), ['especie', 'vf']);
+  assert.deepEqual([...formas].sort(), ['[H⁺]', 'pH', 'pOH']);
+  assert.deepEqual([...diag].sort(), ['aluminio', 'metal-x']);
+});
+
+test('pourbaix: los errores de lectura (pH ↔ pOH y signo de E) dan lo que dice su explicación', () => {
+  for (let s = 0; s < 1500; s++) {
+    const p = gen.generar(s), d = p._datos;
+    if (d.tipo !== 'pourbaix' || d.sub !== 'especie') continue;
+    const dg = gen.POURBAIX.DIAGRAMAS.find(x => x.id === d.diagrama), m = planoE(p.enunciado).match(/potencial de (.+?) V y a (.+?)\.$/);
+    const pH = leerPH(m[2]), E = num(m[1]);
+    for (const a of p.alternativas.filter(x => !x.correcta)) {
+      const id = a.valor.slice(3);
+      if (/^AQ-pourbaix-(h-poh|poh-ph|ph-poh)$/.test(a.error.id)) assert.equal(REGION[d.diagrama](14 - pH, E), id, `semilla ${s}`);
+      if (a.error.id === 'AQ-pourbaix-signo-e') assert.equal(REGION[d.diagrama](pH, Math.max(dg.ejeE[0], Math.min(dg.ejeE[1], -E))), id, `semilla ${s}`);
+    }
+  }
 });

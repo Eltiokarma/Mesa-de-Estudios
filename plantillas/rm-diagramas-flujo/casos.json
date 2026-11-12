@@ -2,7 +2,7 @@
   "plantilla": "rm-diagramas-flujo",
   "tolerancia": 0.005,
   "nota": "Respuesta: el último valor impreso (en contador, cuántos números se imprimen o su suma; en operador, el valor de la expresión). Las entradas son el _datos del generador; ver la cabecera de generador.js.",
-  "verificacion": "Verificación ciega (subagente, 8 nov 2026): los 20 casos se resolvieron sin ver el generador, ejecutando a mano en Python cada diagrama tal como lo describe el alt (máquina de pasos con saltos), los operadores por evaluación directa y los descuentos con fracciones exactas; los casos de base 3 se contrastaron además con la suma de cifras en base 3. 20 de 20 coinciden. La semilla 10 cambió de datos tras la revisión (12 nov 2026) y se volvió a resolver a mano desde el alt: primos de 14 a 23, B − A = 4, coincide.",
+  "verificacion": "Verificación ciega (subagente, 8 nov 2026): los 20 casos se resolvieron sin ver el generador, ejecutando a mano en Python cada diagrama tal como lo describe el alt (máquina de pasos con saltos), los operadores por evaluación directa y los descuentos con fracciones exactas; los casos de base 3 se contrastaron además con la suma de cifras en base 3. 20 de 20 coinciden. La semilla 10 cambió de datos tras la revisión (12 nov 2026) y se volvió a resolver a mano desde el alt: primos de 14 a 23, B − A = 4, coincide. Cierre-100 (12 nov 2026): los casos nuevos y los reasignados se resolvieron a ciegas con un script propio. 8 casos (impresos: unmsm-2023-I-29, 12, 52 y 9; bucles: unmsm-2026-I-24, 35 y 2; potencias-div 26) simulando el SVG: 7/8 a la primera; en 52 el verificador sumó mal las cifras de 9990 (dio 36; son 27, lo que da el generador).",
   "casos": [
     {
       "semilla": 0,
@@ -40,17 +40,18 @@
     {
       "semilla": 2,
       "entrada": {
-        "tipo": "operador",
-        "regla": "3a+b",
-        "forma": "mixto",
-        "x": 2,
-        "y": 1,
-        "z": 3,
-        "regla2": "ab+b"
+        "tipo": "bucles",
+        "N0": 16,
+        "T": 32,
+        "c": 75,
+        "p": 2,
+        "q": 5,
+        "m": 2
       },
       "esperado": {
-        "respuesta": 24
-      }
+        "respuesta": 1828
+      },
+      "nuevo": "cierre-100"
     },
     {
       "semilla": 3,
@@ -114,15 +115,18 @@
     {
       "semilla": 9,
       "entrada": {
-        "tipo": "potencias-div",
-        "sub": "base",
-        "N": 53,
-        "b": 3,
-        "orden": "acum"
+        "tipo": "impresos",
+        "n0": 1,
+        "m": 10,
+        "T": 250,
+        "d": 4,
+        "cond": "par",
+        "pide": "suma"
       },
       "esperado": {
-        "respuesta": 7
-      }
+        "respuesta": 1110
+      },
+      "nuevo": "cierre-100"
     },
     {
       "semilla": 10,
@@ -309,6 +313,99 @@
       "esperado": {
         "respuesta": 8
       }
+    },
+    {
+      "semilla": "unmsm-2023-I-29",
+      "entrada": {
+        "tipo": "impresos",
+        "n0": 3,
+        "m": 10,
+        "T": 600,
+        "d": 5,
+        "cond": "par",
+        "pide": "cifras"
+      },
+      "esperado": {
+        "respuesta": 9
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "unmsm-2026-I-24",
+      "entrada": {
+        "tipo": "bucles",
+        "N0": 16,
+        "T": 71,
+        "c": 73,
+        "p": 2,
+        "q": 3,
+        "m": 2
+      },
+      "esperado": {
+        "respuesta": 1832
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "impresos",
+        "n0": 6,
+        "m": 5,
+        "T": 250,
+        "d": 10,
+        "cond": "mult3",
+        "pide": "suma"
+      },
+      "esperado": {
+        "respuesta": 930
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": 35,
+      "entrada": {
+        "tipo": "bucles",
+        "N0": 12,
+        "T": 30,
+        "c": 65,
+        "p": 4,
+        "q": 7,
+        "m": 2
+      },
+      "esperado": {
+        "respuesta": 978
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": 52,
+      "entrada": {
+        "tipo": "impresos",
+        "n0": 9,
+        "m": 10,
+        "T": 1000,
+        "d": 10,
+        "cond": "mult3",
+        "pide": "cifras"
+      },
+      "esperado": {
+        "respuesta": 27
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": 26,
+      "entrada": {
+        "tipo": "potencias-div",
+        "sub": "mitades",
+        "N": 17,
+        "regla": "n+1"
+      },
+      "esperado": {
+        "respuesta": 58
+      },
+      "nuevo": "cierre-100"
     }
   ]
 }

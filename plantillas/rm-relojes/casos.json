@@ -2,7 +2,7 @@
   "plantilla": "rm-relojes",
   "tolerancia": 1e-09,
   "nota": "Horas del día en minutos desde las 0:00 (texto «3:36 p. m.»); duraciones como 'dur:<min>'; fechas 'f:AAAA-MM-DD'; fecha y hora del año 'min:<minutos desde el 1 de enero a las 0:00>'; días de la semana 'dia:<0 = lunes … 6 = domingo>'. Un reloj de agujas vuelve a marcar bien con 720 min de desfase. Entrada-k y salida-k son del mismo tipo.",
-  "verificacion": "Verificación ciega (subagente, 12 nov 2026): los 42 casos resueltos aparte. Relojes simulados minuto a minuto con fechas reales (datetime, bisiestos) hasta el primer múltiplo de 720 min; mentirosos y días de la semana por fuerza bruta sobre los 7 días; horas barriendo el día con fracciones exactas. 42/42 coinciden. Barrido de 1500 semillas leyendo solo el enunciado: 1500/1500, sin casos con dos soluciones. Las correcciones de la revisión no cambiaron ninguna respuesta.",
+  "verificacion": "Verificación ciega (subagente, 12 nov 2026): los 42 casos resueltos aparte. Relojes simulados minuto a minuto con fechas reales (datetime, bisiestos) hasta el primer múltiplo de 720 min; mentirosos y días de la semana por fuerza bruta sobre los 7 días; horas barriendo el día con fracciones exactas. 42/42 coinciden. Barrido de 1500 semillas leyendo solo el enunciado: 1500/1500, sin casos con dos soluciones. Las correcciones de la revisión no cambiaron ninguna respuesta. Cierre-100 (12 nov 2026): los casos nuevos y los reasignados se resolvieron a ciegas con un script propio. 7 casos (retraso: unmsm-2019-II-10mar-31, 52 y 57; jornada: unmsm-2024-II-18, 87, 14 y 42). Retraso y 87 coinciden; en jornada 14, 42 y unmsm-2024-II-18 el verificador dio lo que falta del día (24 − t) en vez de lo que falta de la jornada, que es la trampa RMP104: se revisó a mano y el generador está bien (el solucionario oficial de 2024-II #18 también da 2 horas).",
   "casos": [
     {
       "semilla": 7,
@@ -155,36 +155,32 @@
     {
       "semilla": 42,
       "entrada": {
-        "tipo": "creciente",
-        "a1": 20,
-        "r": 4,
-        "pide": "dias",
-        "desde": null,
-        "hora": null
+        "tipo": "jornada",
+        "rel": "triple-unidades",
+        "S": 8,
+        "J": 22,
+        "pide": "falta"
       },
       "esperado": {
-        "respuesta": 15,
-        "texto": "15 días"
-      }
+        "respuesta": 1,
+        "texto": "1 hora"
+      },
+      "nuevo": "cierre-100"
     },
     {
       "semilla": 14,
       "entrada": {
-        "tipo": "creciente",
-        "a1": 30,
-        "r": 2,
-        "pide": "fecha",
-        "desde": {
-          "a": 2029,
-          "m": 8,
-          "d": 13
-        },
-        "hora": 420
+        "tipo": "jornada",
+        "rel": "doble-decenas",
+        "S": 15,
+        "J": 22,
+        "pide": "falta"
       },
       "esperado": {
-        "respuesta": "f:2029-08-29",
-        "texto": "29 de agosto de 2029"
-      }
+        "respuesta": 2,
+        "texto": "2 horas"
+      },
+      "nuevo": "cierre-100"
     },
     {
       "semilla": 27,
@@ -721,6 +717,84 @@
         "respuesta": "dia:5",
         "texto": "sábado"
       }
+    },
+    {
+      "semilla": "unmsm-2019-II-10mar-31",
+      "entrada": {
+        "tipo": "retraso",
+        "H0": 1080,
+        "Hf": 1320,
+        "D": 105,
+        "r": 25,
+        "q": 4
+      },
+      "esperado": {
+        "respuesta": 1132,
+        "texto": "6:52 p. m."
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "unmsm-2024-II-18",
+      "entrada": {
+        "tipo": "jornada",
+        "rel": "suma",
+        "S": 15,
+        "J": 23,
+        "pide": "falta"
+      },
+      "esperado": {
+        "respuesta": 2,
+        "texto": "2 horas"
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": 52,
+      "entrada": {
+        "tipo": "retraso",
+        "H0": 360,
+        "Hf": 660,
+        "D": 100,
+        "r": 25,
+        "q": 3
+      },
+      "esperado": {
+        "respuesta": 435,
+        "texto": "7:15 a. m."
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": 57,
+      "entrada": {
+        "tipo": "retraso",
+        "H0": 900,
+        "Hf": 1080,
+        "D": 75,
+        "r": 25,
+        "q": 4
+      },
+      "esperado": {
+        "respuesta": 946,
+        "texto": "3:46 p. m."
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": 87,
+      "entrada": {
+        "tipo": "jornada",
+        "rel": "producto",
+        "S": 13,
+        "J": 22,
+        "pide": "ya"
+      },
+      "esperado": {
+        "respuesta": 4,
+        "texto": "4 horas"
+      },
+      "nuevo": "cierre-100"
     }
   ]
 }

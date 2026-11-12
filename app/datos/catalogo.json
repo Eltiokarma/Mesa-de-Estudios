@@ -5421,7 +5421,7 @@
    "titulo": "La bomba y el ascensor",
    "formato": "predicciones",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "fisica.trabajo-y-energia"
    ],
@@ -6378,7 +6378,7 @@
    "titulo": "La lupa de las moléculas grandes",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "quimica.biomoleculas-y-productos-naturales",
     "quimica.funciones-organicas",
@@ -6835,7 +6835,7 @@
    "titulo": "Verdadero o falso de química",
    "formato": "predicciones",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "quimica.biomoleculas-y-productos-naturales",
     "quimica.enlace-quimico",
@@ -7027,7 +7027,7 @@
    "titulo": "Balanzas, figuras y pesas",
    "formato": "predicciones",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "razonamiento-matematico.cortes-y-pesadas"
    ],
@@ -7043,7 +7043,7 @@
    "titulo": "Sacar a ciegas: ¿cuántas para estar seguro?",
    "formato": "predicciones",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "razonamiento-matematico.certezas"
    ],
@@ -7076,7 +7076,7 @@
    "titulo": "Cortes, tramos y estacas",
    "formato": "predicciones",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "razonamiento-matematico.cortes-y-pesadas"
    ],
@@ -7092,7 +7092,7 @@
    "titulo": "Lo que se deduce: clases, frascos y condicionales",
    "formato": "predicciones",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "razonamiento-matematico.razonamiento-deductivo",
     "razonamiento-matematico.certezas"
@@ -7109,7 +7109,7 @@
    "titulo": "Diagramas de flujo y operadores",
    "formato": "predicciones",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "razonamiento-matematico.diagramas-de-flujo"
    ],
@@ -7142,7 +7142,7 @@
    "titulo": "Fichas, piezas y figuras que crecen",
    "formato": "predicciones",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "razonamiento-matematico.transformaciones-de-figuras",
     "razonamiento-matematico.maximos-y-minimos",
@@ -7160,7 +7160,7 @@
    "titulo": "Lecturas en un arreglo de letras",
    "formato": "predicciones",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "razonamiento-matematico.rutas-y-visualizacion-espacial"
    ],
@@ -7176,7 +7176,7 @@
    "titulo": "El menor número de movimientos: canoas, caballos, saltos y fichas",
    "formato": "predicciones",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "razonamiento-matematico.juegos-recreativos",
     "razonamiento-matematico.traslados-y-puntos-cardinales"
@@ -7210,7 +7210,7 @@
    "titulo": "Planteo de situaciones: compras, votos, pistas y torneos",
    "formato": "predicciones",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "razonamiento-matematico.planteo-de-ecuaciones",
     "razonamiento-matematico.maximos-y-minimos",
@@ -7228,7 +7228,7 @@
    "titulo": "Horas, relojes y calendarios",
    "formato": "predicciones",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "razonamiento-matematico.cronometria-y-calendarios"
    ],
@@ -7244,7 +7244,7 @@
    "titulo": "Rumbos con la brújula",
    "formato": "predicciones",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "razonamiento-matematico.traslados-y-puntos-cardinales"
    ],
@@ -7574,6 +7574,7 @@
     "/contenido/razonamiento-verbal/textos/t042.json",
     "/contenido/razonamiento-verbal/textos/t132.json",
     "/contenido/razonamiento-verbal/textos/t133.json",
+    "/contenido/razonamiento-verbal/textos/t134.json",
     "/plantillas/textos-discontinuos/papel.json"
    ]
   },

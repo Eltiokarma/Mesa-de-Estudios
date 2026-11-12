@@ -2,7 +2,7 @@
   "plantilla": "rm-cortes",
   "tolerancia": 0,
   "nota": "Cortes rectos que atraviesan todo lo apilado; entre corte y corte las piezas se mueven, giran y apilan sin doblarse. c: piezas que admite la sierra por corte (null, sin límite). En arreglo, celdas da el número de pieza de cada casilla (las casillas con el mismo número deben quedar juntas). En esquinas la respuesta es una clave: 'num:x' (perímetro x cm) o 'rad:p:q' (p + q√2 cm).",
-  "verificacion": "Verificación ciega (12 nov 2026, subagente verificador): 26 casos resueltos sin ver el generador. Planchas y cartulinas por BFS propio sobre los conjuntos de piezas (cada corte parte hasta c piezas, sin cortar piezas pedidas); estacas contando puntos de la cuadrícula; progresiones con fracciones exactas; octógonos en forma p + q√2. 26/26 coinciden. Tras la revisión solo cambiaron textos (sin límite de capas; largo como lado mayor), con las mismas respuestas.",
+  "verificacion": "Verificación ciega (12 nov 2026, subagente verificador): 26 casos resueltos sin ver el generador. Planchas y cartulinas por BFS propio sobre los conjuntos de piezas (cada corte parte hasta c piezas, sin cortar piezas pedidas); estacas contando puntos de la cuadrícula; progresiones con fracciones exactas; octógonos en forma p + q√2. 26/26 coinciden. Tras la revisión solo cambiaron textos (sin límite de capas; largo como lado mayor), con las mismas respuestas. Cierre-100 (12 nov 2026): a ciegas con scripts propios. Tablero de triángulos (unmsm-2024-II-23: 4; c32: 5), por BFS sobre los bordes cortados: 2/2. Alambre (unmsm-2027-I-25: 4, igual que la clave oficial; c15: 4; c12: 3): la primera vuelta leyó el corte como recta infinita y no coincidió. Se aclaró el enunciado (un tramo recto de sierra que no va a lo largo de un alambre) y una segunda verificación, con BFS sobre las soldaduras cortadas y coordenadas exactas, dio 3/3 con cota inferior.",
   "casos": [
     {
       "semilla": "entrada-1",
@@ -416,6 +416,110 @@
       "esperado": {
         "respuesta": "rad:-216:216"
       }
+    },
+    {
+      "semilla": "unmsm-2024-II-23",
+      "entrada": {
+        "tipo": "tablero",
+        "cotas": {
+          "i": [
+            -1,
+            2
+          ],
+          "j": [
+            0,
+            2
+          ],
+          "s": [
+            0,
+            3
+          ]
+        },
+        "lado": 30,
+        "sierra": 60
+      },
+      "esperado": {
+        "respuesta": 4,
+        "texto": "4 cortes"
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "unmsm-2027-I-25",
+      "entrada": {
+        "tipo": "alambre",
+        "forma": {
+          "clase": "triangulos",
+          "n": 2,
+          "hex": true,
+          "circ": true
+        }
+      },
+      "esperado": {
+        "respuesta": 4,
+        "texto": "4 cortes"
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "c32",
+      "entrada": {
+        "tipo": "tablero",
+        "cotas": {
+          "i": [
+            -1,
+            3
+          ],
+          "j": [
+            0,
+            3
+          ],
+          "s": [
+            0,
+            3
+          ]
+        },
+        "lado": 10,
+        "sierra": 20
+      },
+      "esperado": {
+        "respuesta": 5,
+        "texto": "5 cortes"
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "c12",
+      "entrada": {
+        "tipo": "alambre",
+        "forma": {
+          "clase": "rejilla",
+          "m": 2,
+          "n": 2
+        }
+      },
+      "esperado": {
+        "respuesta": 3,
+        "texto": "3 cortes"
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "c15",
+      "entrada": {
+        "tipo": "alambre",
+        "forma": {
+          "clase": "triangulos",
+          "n": 3,
+          "hex": false,
+          "circ": false
+        }
+      },
+      "esperado": {
+        "respuesta": 4,
+        "texto": "4 cortes"
+      },
+      "nuevo": "cierre-100"
     }
   ]
 }

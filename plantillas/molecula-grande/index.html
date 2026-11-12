@@ -722,8 +722,10 @@ go(0);
 const E = crearLienzo('cv2', 'desc2', 'm2', 'ley2');
 const GRUPOS = [['Aminoácidos', ['fenilalanina', 'tirosina', 'triptofano']], ['Glúcidos', ['glucosa-abierta', 'glucosa-ciclica', 'fructosa', 'sacarosa']],
   ['Vitaminas y carotenoides', ['retinol', 'retinal', 'acido-retinoico', 'beta-caroteno', 'vitamina-c', 'nicotinamida', 'vitamina-e', 'vitamina-d3']],
-  ['Esteroides y hormonas', ['colesterol', 'testosterona', 'estradiol', 'tiroxina']], ['Polifenoles, colorantes y picantes', ['quercetina', 'curcumina', 'capsaicina']],
-  ['Alcaloides, bases y antibióticos', ['cafeina', 'adenina', 'penicilina-g']], ['Ácidos y otros', ['acido-citrico', 'acido-piruvico', 'acido-oleico', 'acido-taririco', 'alicina']]];
+  ['Esteroides y hormonas', ['colesterol', 'testosterona', 'estradiol', 'tiroxina']], ['Polifenoles, colorantes y picantes', ['quercetina', 'curcumina', 'capsaicina', 'bilirrubina']],
+  ['Alcaloides, bases y antibióticos', ['cafeina', 'adenina', 'penicilina-g']], ['Ácidos y otros', ['acido-citrico', 'acido-piruvico', 'acido-oleico', 'acido-taririco', 'alicina', 'acido-p-aminobenzoico']],
+  ['Hidratar y oxidar un alqueno', ['acido-crotonico', 'acido-3-hidroxibutanoico', 'acido-acetoacetico']],
+  ['Derivados de la glucosa', ['acido-gluconico', 'sorbitol', 'gluconato-de-isopropilo', 'glucosa-6-fosfato']]];
 $('molSel').innerHTML = GRUPOS.map(([g, ids]) => `<optgroup label="${g}">${ids.map(id => `<option value="${id}">${MG.ficha(id).nombre}</option>`).join('')}</optgroup>`).join('');
 const ORDEN = ['ninguna', 'sp2', 'sp3', 'sp', 'pi', 'epi', 'pares', 'quirales', 'aromaticos', 'polares', 'octeto', 'grupos'];
 const S = { id:'capsaicina', lupa:'ninguna', pred:{}, t0:0 };

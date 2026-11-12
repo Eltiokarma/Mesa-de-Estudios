@@ -20,9 +20,17 @@
  *   cuadrado   cuatro personas en las esquinas de una cancha cuadrada o rectangular (A, B, C, D en ese
  *              orden); se dan los rumbos de B y de D vistos desde A; rumbo de una a otra o desde el centro.
  *              { tipo, forma: 'cuadrado'|'rectangulo', AB, AD, rumboB, rumboD, desde, hacia }
+ *   recorridos dos móviles salen a la vez del mismo punto y cada uno hace de 2 a 3 tramos con su rumbo; distancia
+ *              entre los dos al detenerse. { tipo: 'moviles-tramos', recorridos: [{ tramos }, { tramos }], unidad }
+ *              (UNMSM 2020-I, la de las cuatrimotos: semilla 'unmsm-2020-I-39'.)
+ *   direccion  el mismo recorrido de «distancia», pero se pide la distancia y el rumbo del punto final visto desde
+ *              el punto de partida. { tipo: 'direccion', tramos, unidad }
+ *              (UNMSM 2024-I, la visita a la tía: semilla 'unmsm-2024-I-25'.)
  *   relativo   desde un punto P se dan dos lugares con su rumbo y distancia; rumbo de uno visto desde el
  *              otro, o la distancia entre ellos. { tipo, lugares: [{ rumbo, largo }], pide: 'rumbo'|'distancia' }
  *   (rumbo: texto como 'N 37° E' o 'norte'; largo: número, el de k√2 ya como decimal.)
+ * Los tramos de «recorridos» y «direccion» pueden ser puros con largo k√3 (largoTexto '12√3'): comp lleva el
+ * √3 hacia el otro eje para que las posiciones se queden exactas aunque solo la diferencia sea entera.
  * La nota del rumbo dice qué triángulo notable usar (3-4-5, 1-1-√2, 1-√3-2). Se descartan los problemas cuyo
  * resultado cambia más de 2 % si 37° y 53° se toman como ángulos de verdad (desvioReal).
  *
@@ -35,6 +43,7 @@
  *   recorrido(tramos)          tramos [{ rumbo, largo }] (largo número o texto 'k√2'): { este, norte, distancia,
  *                              distanciaTexto, rumbo (del fin visto desde el inicio, o null), regreso }.
  *   separacion(a, b, angulo)   distancia entre los extremos de dos tramos que salen del mismo punto.
+ *   entreMoviles(tramosA, tramosB)  distancia entre los finales de dos recorridos con varios tramos, desde el mismo punto.
  *   rumboEnCancha({ forma, AB, AD, rumboB, rumboD, desde, hacia })  rumbo de 'hacia' visto desde 'desde'.
  *
  * Errores (todos hipótesis; códigos propios RMP40 a RMP43 y AR5 de
@@ -44,6 +53,8 @@
  *         en vez de restarlas); RMP42 sumar longitudes sin tener en cuenta la dirección (largos de los tramos,
  *         componentes sin restar las opuestas, en línea recta); RMP43 usar Pitágoras con un ángulo que no es
  *         recto; AR5 responder con un dato intermedio.
+ * En «recorridos» y «direccion» (cierre-100, 12 nov 2026) salen los mismos códigos: RMP41 (el rumbo de regreso, visto
+ * desde el destino, o sumar las posiciones en vez de restarlas), RMP40, RMP42 y RMP43. Sin códigos nuevos.
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -104,10 +115,10 @@
   const por = (k, x) => [k * x[0], k * x[1]];
   const absP = x => (val(x) < 0 ? por(-1, x) : x);
   // Componentes [este, norte] de un tramo: { th, sE, sN, k }.
-  function comp({ th, sE, sN, k }) {
+  function comp({ th, sE, sN, k, r3 }) {
     let e, n;
-    if (th === 0) { e = [0, 0]; n = [k, 0]; }
-    else if (th === 90) { e = [k, 0]; n = [0, 0]; }
+    if (th === 0) { e = [0, 0]; n = r3 ? [0, k] : [k, 0]; }
+    else if (th === 90) { e = r3 ? [0, k] : [k, 0]; n = [0, 0]; }
     else if (th === 37) { e = [3 * k, 0]; n = [4 * k, 0]; }
     else if (th === 53) { e = [4 * k, 0]; n = [3 * k, 0]; }
     else if (th === 45) { e = [k, 0]; n = [k, 0]; }
@@ -115,8 +126,8 @@
     else if (th === 60) { e = [0, k]; n = [k, 0]; }
     return { e: por(sE, e), n: por(sN, n) };
   }
-  const largoDe = ({ th, k }) => (th === 37 || th === 53 ? 5 * k : th === 45 ? k * S2 : th === 30 || th === 60 ? 2 * k : k);
-  const largoTxt = ({ th, k }) => (th === 37 || th === 53 ? `${5 * k}` : th === 45 ? `${k === 1 ? '' : k}√2` : th === 30 || th === 60 ? `${2 * k}` : `${k}`);
+  const largoDe = ({ th, k, r3 }) => (th === 37 || th === 53 ? 5 * k : th === 45 ? k * S2 : th === 30 || th === 60 ? 2 * k : r3 ? k * S3 : k);
+  const largoTxt = ({ th, k, r3 }) => (th === 37 || th === 53 ? `${5 * k}` : th === 45 ? `${k === 1 ? '' : k}√2` : th === 30 || th === 60 ? `${2 * k}` : r3 ? `${k === 1 ? '' : k}√3` : `${k}`);
   // Rumbo de un vector exacto con componentes puras: solo si el ángulo es notable (o puro).
   function rumboDe(e, n) {
     if (!puro(e) || !puro(n)) return null;
@@ -205,7 +216,7 @@
   }
 
   // ---------- datos de los tramos ----------
-  function tramoAzar(rng, maxK) {
+  function tramoAzar(rng, maxK, r3ok = false) {
     const tipoT = rng.elegir(['puro', 'puro', 'puro', '37', '37', '37', '45', '30']);
     let th, k;
     if (tipoT === 'puro') { th = rng.elegir([0, 90]); k = rng.entero(2, 20); }
@@ -215,6 +226,8 @@
     const sE = rng.moneda() ? 1 : -1, sN = rng.moneda() ? 1 : -1;
     const t = { th, sE: th === 0 ? 1 : sE, sN: th === 90 ? 1 : sN, k };
     if (th === 0) t.sN = sN; if (th === 90) t.sE = sE;
+    // Un tramo puro de largo k√3 (solo en los problemas de cierre-100; no mueve el azar de los demás).
+    if (r3ok && (th === 0 || th === 90) && rng.sig() < 0.3) { t.r3 = true; t.k = rng.entero(2, 9); }
     t.az = desdePartes(th, t.sE, t.sN);
     return t;
   }
@@ -297,15 +310,28 @@
     return lamina(pts, trazos, extra);
   }
 
+  // Tramo armado a mano (para las preguntas oficiales): th grados con el eje norte-sur, signos este/norte, k, y r3 si mide k√3.
+  const mkT = (th, sE, sN, k, r3) => ({ th, sE, sN, k, ...(r3 ? { r3: true } : {}), az: desdePartes(th, sE, sN) });
+  // Preguntas oficiales reproducidas tal cual (UNMSM): semilla → [tipo, datos]; la figura y la solución son propias.
+  const OFICIAL = {
+    'unmsm-2020-I-39': ['moviles-tramos', { A: [mkT(0, 1, 1, 12), mkT(45, 1, 1, 6), mkT(90, 1, 1, 12, true)], B: [mkT(90, 1, 1, 6), mkT(60, 1, 1, 12)], u: 'km' }],
+    'unmsm-2024-I-25': ['direccion', { tramos: [mkT(90, 1, 1, 500), mkT(30, 1, 1, 100), mkT(0, 1, -1, 700, true)], u: 'm' }],
+  };
   function generar(semilla) {
     const rng = Azar.crear(ID + '|' + semilla);
     // Las pruebas de entrada y salida usan formas paralelas: el mismo tipo en entrada-k y salida-k.
     const FIJO = { 1: 'distancia', 2: 'regreso', 3: 'cuadrado' };
     const m = /^(entrada|salida)-([123])$/.exec(String(semilla));
-    const tipo = m ? FIJO[m[2]] : rng.elegir(['distancia', 'distancia', 'regreso', 'regreso', 'moviles', 'rapidez', 'cuadrado', 'cuadrado', 'relativo']);
+    let tipo = m ? FIJO[m[2]] : rng.elegir(['distancia', 'distancia', 'regreso', 'regreso', 'moviles', 'rapidez', 'cuadrado', 'cuadrado', 'relativo']);
+    // Los tipos de cierre-100 salen de un sorteo aparte, para no mover lo que ya se había generado con cada semilla.
+    const lado = Azar.crear(`${ID}|nuevos|${semilla}`);
+    if (!m && lado.sig() < 0.15) tipo = lado.elegir(['moviles-tramos', 'direccion']);
+    const of = OFICIAL[semilla];
+    if (of) tipo = of[0];
     for (let intento = 0; intento < 4000; intento++) {
-      const pr = construir(rng, semilla, tipo);
+      const pr = construir(rng, semilla, tipo, of && of[1]);
       if (pr && pr.alternativas.length >= 4 && desvioReal(pr._datos) <= 0.02) return pr;
+      if (of) break;
     }
     throw new Error('No se pudo generar un problema con 4 alternativas distintas');
   }
@@ -315,7 +341,8 @@
     const pv = (r, L) => { const z = azimut(r) * Math.PI / 180; return [L * Math.sin(z), L * Math.cos(z)]; };
     const pa = (r, L) => vecRumbo(r, L);
     const dif = f => { const A = f(pa), R = f(pv), n = Math.hypot(A[0], A[1]); return n < 1e-9 ? 0 : Math.hypot(R[0] - A[0], R[1] - A[1]) / n; };
-    if (d.tipo === 'distancia' || d.tipo === 'regreso') return dif(g => d.tramos.reduce((s, t) => { const [x, y] = g(t.rumbo, t.largo); return [s[0] + x, s[1] + y]; }, [0, 0]));
+    if (d.tipo === 'distancia' || d.tipo === 'regreso' || d.tipo === 'direccion') return dif(g => d.tramos.reduce((s, t) => { const [x, y] = g(t.rumbo, t.largo); return [s[0] + x, s[1] + y]; }, [0, 0]));
+    if (d.tipo === 'moviles-tramos') return dif(g => { const [A, B] = d.recorridos.map(rc => rc.tramos.reduce((q, t) => { const [x, y] = g(t.rumbo, t.largo); return [q[0] + x, q[1] + y]; }, [0, 0])); return [A[0] - B[0], A[1] - B[1]]; });
     if (d.tipo === 'moviles') return dif(g => { const [A, B] = d.moviles.map(m => g(m.rumbo, m.rapidez * d.t)); return [A[0] - B[0], A[1] - B[1]]; });
     if (d.tipo === 'relativo') return dif(g => { const [A, B] = d.lugares.map(l => g(l.rumbo, l.largo)); return [B[0] - A[0], B[1] - A[1]]; });
     if (d.tipo === 'rapidez') {
@@ -327,8 +354,9 @@
     }
     return 0;
   }
-  function construir(rng, semilla, tipo) {
-    if (tipo === 'distancia' || tipo === 'regreso') return recorridoP(rng, semilla, tipo);
+  function construir(rng, semilla, tipo, fijo) {
+    if (tipo === 'distancia' || tipo === 'regreso' || tipo === 'direccion') return recorridoP(rng, semilla, tipo, fijo);
+    if (tipo === 'moviles-tramos') return movilesTramos(rng, semilla, fijo);
     if (tipo === 'moviles') return moviles(rng, semilla);
     if (tipo === 'rapidez') return rapidez(rng, semilla);
     if (tipo === 'cuadrado') return cancha(rng, semilla);
@@ -350,20 +378,22 @@
   const armarNum = (rng, correcta, errores, u) => P.armar({ correcta, errores: errores.filter(e => limpio(e.valor)), rng, texto: x => `${rad(x)} ${u}` });
 
   // ---------- distancia y regreso ----------
-  function recorridoP(rng, semilla, tipo) {
-    const m = rng.elegir([2, 2, 3, 3, 4, 5]);
-    const tramos = [];
-    for (let i = 0; i < m; i++) tramos.push(tramoAzar(rng, m > 3 ? 3 : 4));
-    // Tramos seguidos con el mismo rumbo o que se deshacen no aportan.
-    for (let i = 1; i < m; i++) if (tramos[i].az === tramos[i - 1].az || norm(tramos[i].az - tramos[i - 1].az) === 180) return null;
-    if (!tramos.some(t => t.th !== 0 && t.th !== 90)) return null;
+  function recorridoP(rng, semilla, tipo, fijo) {
+    const m = fijo ? fijo.tramos.length : rng.elegir([2, 2, 3, 3, 4, 5]);
+    const tramos = fijo ? fijo.tramos : [];
+    if (!fijo) {
+      for (let i = 0; i < m; i++) tramos.push(tramoAzar(rng, m > 3 ? 3 : 4, tipo === 'direccion'));
+      // Tramos seguidos con el mismo rumbo o que se deshacen no aportan.
+      for (let i = 1; i < m; i++) if (tramos[i].az === tramos[i - 1].az || norm(tramos[i].az - tramos[i - 1].az) === 180) return null;
+      if (!tramos.some(t => t.th !== 0 && t.th !== 90)) return null;
+    }
     const S = suma(tramos);
     const d = distExacta(S);
-    if (!limpio(d)) return null;
-    const suj = rng.elegir(SUJETOS), u = suj.u;
+    if (!fijo && !limpio(d)) return null;
+    const suj = rng.elegir(fijo ? SUJETOS.filter(x => x.u === fijo.u) : SUJETOS), u = suj.u;
     const E = S.e, N = S.n;
     const azFin0 = rumboDe(E, N);
-    const ths = tramos.map(t => t.th).concat(tipo === 'regreso' && azFin0 !== null ? [partes(azFin0).th] : []);
+    const ths = tramos.map(t => t.th).concat((tipo === 'regreso' || tipo === 'direccion') && azFin0 !== null ? [partes(azFin0).th] : []);
     const enunciado = [`${suj.quien} ${suj.sale}.`, ...enunTramos(tramos, u), convencion(ths)];
     const pasos = pasosTramos(tramos, u);
     pasos.push(['Suma con signo (este y norte positivos; oeste y sur, negativos): este-oeste ', `${sumaTxt(tramos.map(t => comp(t).e).filter(x => val(x) !== 0), u)} = ${signo(E, 'este', 'oeste', u)}; norte-sur `,
@@ -393,36 +423,144 @@
         datos: { tipo, tramos: datosTr, unidad: u },
       });
     }
-    // regreso: el rumbo de −(E, N)
+    // regreso: el rumbo de −(E, N); dirección: el rumbo de (E, N), visto desde el inicio.
     const azFin = rumboDe(E, N);
     if (azFin === null) return null;
-    const azR = norm(azFin + 180);
-    const conDistancia = rng.moneda();
+    const esDir = tipo === 'direccion';
+    if (esDir && (partes(azFin).th === 0 || partes(azFin).th === 90)) return null;
+    const azR = norm(azFin + 180), azC = esDir ? azFin : azR;
+    const conDistancia = esDir ? true : rng.moneda();
     const mk = (az, dd) => (az === null || az === undefined || !Number.isFinite(dd) ? null
       : conDistancia ? { clave: `az:${norm(az)}|d2:${Math.round(dd * dd)}`, texto: `${rad(dd)} ${u} al ${rumboTexto(az)}` } : dir(az));
-    const correcta = mk(azR, d);
-    const eje = otroEje(azR);
+    const correcta = mk(azC, d);
+    const eje = otroEje(azC);
     const az345 = rumboDe(S345.e, S345.n), azSin = rumboDe(sinRestar.e, sinRestar.n);
+    const vuelta = az => (esDir ? az : norm(az + 180));
     const errores = [
-      ht('RMP41-desde-el-inicio', mk(azFin, d), `Ese es el rumbo en que quedó el final visto desde el inicio. Para regresar hay que ir al revés: el rumbo opuesto, ${rumboTexto(azR)}.`),
-      eje === null ? null : ht('RMP40-eje', mk(eje, d), `Mediste el ángulo desde el eje equivocado. El rumbo se mide desde el norte o el sur: con ${ctxt(absP(E))} ${u} al ${val(E) > 0 ? 'oeste' : 'este'} y ${ctxt(absP(N))} ${u} al ${val(N) > 0 ? 'sur' : 'norte'} de regreso, el ángulo con el eje norte-sur es ${partes(azR).th}°.`),
-      eje === null ? null : ht('RMP41-RMP40-al-reves-y-eje', mk(otroEje(azFin), d), 'Diste el rumbo del final visto desde el inicio y, además, mediste el ángulo desde el eje este-oeste. Para volver se va al revés, y el ángulo se mide desde el norte o el sur.'),
-      hay345 && az345 !== null ? ht('RMP40-345-al-reves', mk(norm(az345 + 180), distExacta(S345)), 'Cambiaste el seno y el coseno en algún tramo: el cateto junto al ángulo del rumbo es la parte norte-sur, no la este-oeste.') : null,
-      azSin !== null ? ht('RMP42-sin-restar-opuestas', mk(norm(azSin + 180), distExacta(sinRestar)), 'Sumaste todas las partes como si fueran del mismo lado. Lo que se avanza al sur se resta de lo del norte, y lo del oeste, de lo del este.') : null,
+      esDir ? ht('RMP41-desde-el-destino', mk(azR, d), `Ese es el rumbo del regreso: el del punto de partida visto desde el punto final. La pregunta pide el punto final visto desde el punto de partida, que es el opuesto: ${rumboTexto(azFin)}.`)
+        : ht('RMP41-desde-el-inicio', mk(azFin, d), `Ese es el rumbo en que quedó el final visto desde el inicio. Para regresar hay que ir al revés: el rumbo opuesto, ${rumboTexto(azR)}.`),
+      eje === null ? null : ht('RMP40-eje', mk(eje, d), esDir
+        ? `Mediste el ángulo desde el eje equivocado. El rumbo se mide desde el norte o el sur: con ${ctxt(absP(E))} ${u} al ${val(E) > 0 ? 'este' : 'oeste'} y ${ctxt(absP(N))} ${u} al ${val(N) > 0 ? 'norte' : 'sur'}, el ángulo con el eje norte-sur es ${partes(azFin).th}°.`
+        : `Mediste el ángulo desde el eje equivocado. El rumbo se mide desde el norte o el sur: con ${ctxt(absP(E))} ${u} al ${val(E) > 0 ? 'oeste' : 'este'} y ${ctxt(absP(N))} ${u} al ${val(N) > 0 ? 'sur' : 'norte'} de regreso, el ángulo con el eje norte-sur es ${partes(azR).th}°.`),
+      eje === null ? null : ht('RMP41-RMP40-al-reves-y-eje', mk(otroEje(esDir ? azR : azFin), d), esDir
+        ? 'Diste el rumbo del regreso (el del punto de partida visto desde el final) y, además, mediste el ángulo desde el eje este-oeste. Se pide el final visto desde el inicio, y el ángulo se mide desde el norte o el sur.'
+        : 'Diste el rumbo del final visto desde el inicio y, además, mediste el ángulo desde el eje este-oeste. Para volver se va al revés, y el ángulo se mide desde el norte o el sur.'),
+      hay345 && az345 !== null ? ht('RMP40-345-al-reves', mk(vuelta(az345), distExacta(S345)), 'Cambiaste el seno y el coseno en algún tramo: el cateto junto al ángulo del rumbo es la parte norte-sur, no la este-oeste.') : null,
+      azSin !== null ? ht('RMP42-sin-restar-opuestas', mk(vuelta(azSin), distExacta(sinRestar)), 'Sumaste todas las partes como si fueran del mismo lado. Lo que se avanza al sur se resta de lo del norte, y lo del oeste, de lo del este.') : null,
     ];
     if (conDistancia) {
-      errores.push(limpio(sumaL) ? ht('RMP42-suma-tramos', mk(azR, sumaL), 'El rumbo está bien, pero sumaste los largos de los tramos. El camino más corto de regreso es la línea recta, más corta que todo lo recorrido.') : null);
+      errores.push(limpio(sumaL) ? ht('RMP42-suma-tramos', mk(azC, sumaL), `El rumbo está bien, pero sumaste los largos de los tramos. ${esDir ? 'La distancia en línea recta entre el punto final y el de partida' : 'El camino más corto de regreso es la línea recta, y'} es más corto que todo lo recorrido.`) : null);
     }
     const alternativas = P.armarTexto({ correcta, errores: errores.filter(Boolean), rng });
-    const pasoR = ['Para volver hay que deshacer lo neto: ir ', `${ctxt(absP(E))} ${u} al ${val(E) > 0 ? 'oeste' : 'este'}`.replace(/^0 .*/, ''), val(N) !== 0 && val(E) !== 0 ? ' y ' : '',
-      val(N) !== 0 ? `${ctxt(absP(N))} ${u} al ${val(N) > 0 ? 'sur' : 'norte'}` : '',
-      partes(azR).th % 90 === 0 ? '.' : `. El ángulo con el eje norte-sur sale del triángulo notable de esos catetos: ${partes(azR).th}°.`];
+    const pasoR = esDir
+      ? ['El avance neto es ', pos(E, N, u), partes(azFin).th % 90 === 0 ? '.' : `. El ángulo con el eje norte-sur sale del triángulo notable de esos catetos: ${partes(azFin).th}°.`]
+      : ['Para volver hay que deshacer lo neto: ir ', `${ctxt(absP(E))} ${u} al ${val(E) > 0 ? 'oeste' : 'este'}`.replace(/^0 .*/, ''), val(N) !== 0 && val(E) !== 0 ? ' y ' : '',
+        val(N) !== 0 ? `${ctxt(absP(N))} ${u} al ${val(N) > 0 ? 'sur' : 'norte'}` : '',
+        partes(azR).th % 90 === 0 ? '.' : `. El ángulo con el eje norte-sur sale del triángulo notable de esos catetos: ${partes(azR).th}°.`];
     return cerrar(semilla, {
-      enunciado, pregunta: [conDistancia ? '¿Qué distancia y qué rumbo debe seguir para regresar al punto de partida por el camino más corto?' : '¿Qué rumbo debe seguir para regresar al punto de partida por el camino más corto?'],
+      enunciado, pregunta: [esDir ? '¿A qué distancia y con qué rumbo queda el punto final, visto desde el punto de partida?' : conDistancia ? '¿Qué distancia y qué rumbo debe seguir para regresar al punto de partida por el camino más corto?' : '¿Qué rumbo debe seguir para regresar al punto de partida por el camino más corto?'],
       figura,
-      figuraSolucion: { svg: figuraRecorrido(tramos, u), alt: `Recorrido dibujado: ${descTr}. Las partes netas son ${pos(E, N, u)} (punteadas); la línea gruesa une el inicio con el fin. Para volver se recorre esa línea del fin al inicio: ${rad(d)} ${u} al ${rumboTexto(azR)}.` },
-      alternativas, solucion: [...pasos, ...(conDistancia ? [pasoD] : []), pasoR, ['Rumbo de regreso: ', v('x', conDistancia ? correcta.texto : rumboTexto(azR)), '.']],
-      valor: correcta.clave, datos: { tipo, tramos: datosTr, unidad: u, conDistancia },
+      figuraSolucion: { svg: figuraRecorrido(tramos, u), alt: `Recorrido dibujado: ${descTr}. Las partes netas son ${pos(E, N, u)} (punteadas); la línea gruesa une el inicio con el fin. ${esDir ? `El punto final queda a ${rad(d)} ${u} al ${rumboTexto(azFin)} del inicio.` : `Para volver se recorre esa línea del fin al inicio: ${rad(d)} ${u} al ${rumboTexto(azR)}.`}` },
+      alternativas, solucion: [...pasos, ...(conDistancia ? [pasoD] : []), pasoR, [esDir ? 'Distancia y rumbo desde el punto de partida: ' : 'Rumbo de regreso: ', v('x', conDistancia ? correcta.texto : rumboTexto(azR)), '.']],
+      valor: correcta.clave, datos: esDir ? { tipo, tramos: datosTr, unidad: u } : { tipo, tramos: datosTr, unidad: u, conDistancia },
+    });
+  }
+
+  // ---------- dos móviles con varios tramos cada uno ----------
+  // Un número a + b√3 escrito con signo propio: «6 + 12√3», «12√3», «6 − 2√3».
+  function txtAB([a, b]) {
+    const t = [];
+    if (a !== 0) t.push(`${a}`);
+    if (b !== 0) t.push(`${Math.abs(b) === 1 ? '' : Math.abs(b)}√3`);
+    if (b < 0 && a !== 0) return `${a} − ${t[1]}`;
+    if (b < 0) return `−${t[0]}`;
+    return t.join(' + ') || '0';
+  }
+  // Una parte de la posición (este-oeste o norte-sur) con su lado, aunque no sea un número «puro».
+  const signoG = (x, pos, neg, u) => (val(x) === 0 ? `0 ${u}` : `${txtAB(absP(x))} ${u} al ${val(x) > 0 ? pos : neg}`);
+  const posG = (e, n, u) => { const l = []; if (val(e) !== 0) l.push(signoG(e, 'este', 'oeste', u)); if (val(n) !== 0) l.push(signoG(n, 'norte', 'sur', u)); return l.length ? l.join(' y ') : 'en el mismo punto'; };
+  function frasesMovil(nombre, tramos, u) {
+    const seg = [`${nombre} recorre `];
+    tramos.forEach((t, i) => {
+      if (i > 0) seg.push(i === tramos.length - 1 ? ' y, por último, ' : ', luego ');
+      seg.push(v('L', `${largoTxt(t)} ${u}`), t.th === 0 || t.th === 90 ? ' hacia el ' : ' con rumbo ', v('r', rumboTexto(t.az)));
+    });
+    return seg;
+  }
+  const PAR_MOV = [
+    { par: 'Dos cuatrimotos', sale: 'parten a la vez de un mismo lugar de la pampa', lugar: 'el punto de partida' },
+    { par: 'Dos ciclistas', sale: 'salen a la vez de la plaza de Ayaviri', lugar: 'la plaza' },
+    { par: 'Dos lanchas', sale: 'salen a la vez del muelle de Puno', lugar: 'el muelle' },
+    { par: 'Dos drones', sale: 'despegan a la vez del patio del colegio', lugar: 'el colegio' },
+  ];
+  function movilesTramos(rng, semilla, fijo) {
+    let A, B;
+    if (fijo) { A = fijo.A; B = fijo.B; } else {
+      const lista = n => { const l = []; for (let i = 0; i < n; i++) l.push(tramoAzar(rng, 3, true)); return l; };
+      A = lista(rng.elegir([2, 3, 3])); B = lista(rng.elegir([2, 2, 3]));
+      // Tramos seguidos con el mismo rumbo o que se deshacen no aportan.
+      for (const L of [A, B]) for (let i = 1; i < L.length; i++) if (L[i].az === L[i - 1].az || norm(L[i].az - L[i - 1].az) === 180) return null;
+      if (![...A, ...B].some(t => t.th !== 0 && t.th !== 90)) return null;
+    }
+    const SA = suma(A), SB = suma(B);
+    const D = { e: mas(SA.e, por(-1, SB.e)), n: mas(SA.n, por(-1, SB.n)) };
+    const d = distExacta(D);
+    if (!fijo && !limpio(d)) return null;
+    if (!(d > 1e-9)) return null;
+    const u = fijo ? fijo.u : 'km';
+    const qq = rng.elegir(PAR_MOV);
+    const todos = [...A, ...B];
+    const sumaL = L => L.reduce((q, t) => q + largoDe(t), 0);
+    const S345 = { A: suma(A, intercambio), B: suma(B, intercambio) };
+    const D345 = { e: mas(S345.A.e, por(-1, S345.B.e)), n: mas(S345.A.n, por(-1, S345.B.n)) };
+    const hay345 = todos.some(t => [30, 37, 53, 60].includes(t.th));
+    const dA = distExacta(SA), dB = distExacta(SB);
+    const errores = [
+      h('RMP42-suma-recorridos', sumaL(A) + sumaL(B), 'Sumaste todo lo que recorrieron los dos, como si cada uno hubiera ido en línea recta y se alejaran en sentidos opuestos. La pregunta es por la distancia en línea recta entre sus posiciones finales.'),
+      h('RMP42-resta-recorridos', Math.abs(sumaL(A) - sumaL(B)), 'Restaste lo que recorrió cada uno, como si hubieran ido por la misma recta. Cada uno quedó en un lugar distinto: hay que comparar sus posiciones, parte por parte.'),
+      h('RMP41-suma-de-posiciones', distExacta({ e: mas(SA.e, SB.e), n: mas(SA.n, SB.n) }), 'Sumaste las posiciones de A y de B. Para saber cuánto los separa se restan: la diferencia entre sus partes este-oeste y entre sus partes norte-sur.'),
+      h('AR5-dato-intermedio', dA, 'Esa es la distancia de A al punto de partida, no la distancia entre A y B.', RM),
+      h('AR5-dato-intermedio-B', dB, 'Esa es la distancia de B al punto de partida, no la distancia entre A y B.', RM),
+      !Number.isNaN(dA) && !Number.isNaN(dB) ? h('RMP43-angulo-recto', Math.sqrt(dA * dA + dB * dB), 'Usaste Pitágoras con la distancia de cada uno al punto de partida, pero entre las dos direcciones no hay un ángulo recto.') : null,
+      hay345 ? h('RMP40-345-al-reves', distExacta(D345), 'Cambiaste el seno y el coseno en algún tramo: el cateto junto al ángulo del rumbo va sobre el eje norte-sur.') : null,
+    ].filter(Boolean);
+    // Un tramo tomado en el sentido contrario (norte como sur, este como oeste): una posición final equivocada.
+    [['A', A, SA, SB, 1], ['B', B, SB, SA, -1]].forEach(([nom, L, S0, S1, sg]) => L.forEach((t, i) => {
+      const c = comp(t), S2 = { e: mas(S0.e, por(-2, c.e)), n: mas(S0.n, por(-2, c.n)) };
+      const Dx = { e: mas(S2.e, por(-1, S1.e)), n: mas(S2.n, por(-1, S1.n)) };
+      errores.push(h('RMP41-tramo-invertido', distExacta(Dx), `Tomaste el tramo ${i + 1} de ${nom} (${largoTxt(t)} ${u} al ${rumboTexto(t.az)}) en el sentido contrario, hacia el ${rumboTexto(t.az + 180)}. Cada tramo se dibuja hacia el rumbo que dice el enunciado.`));
+    }));
+    const alternativas = armarNum(rng, d, errores, u);
+    const ths = todos.map(t => t.th);
+    const enunciado = [`${qq.par}, A y B, ${qq.sale}. `, ...frasesMovil('A', A, u), '. ', ...frasesMovil('B', B, u), '. Los dos se detienen al terminar su recorrido.', convencion(ths)];
+    const lineasT = (nom, L) => L.map((t, i) => {
+      const c = comp(t), partesT = [];
+      if (val(c.e) !== 0) partesT.push(`${txtAB(absP(c.e))} ${u} al ${val(c.e) > 0 ? 'este' : 'oeste'}`);
+      if (val(c.n) !== 0) partesT.push(`${txtAB(absP(c.n))} ${u} al ${val(c.n) > 0 ? 'norte' : 'sur'}`);
+      return [`${nom}, tramo ${i + 1}: `, v('L', `${largoTxt(t)} ${u}`), ' al ', v('r', rumboTexto(t.az)), ` → ${partesT.join(' y ')}.`];
+    });
+    const pasos = [
+      ['Cada uno queda en una posición: se descompone cada tramo en su parte este-oeste y su parte norte-sur (3-4-5 para 37° y 53°, 1-1-√2 para 45°, 1-√3-2 para 30° y 60°) y se suman con signo.'],
+      ...lineasT('A', A), ['Posición final de A: ', posG(SA.e, SA.n, u), '.'],
+      ...lineasT('B', B), ['Posición final de B: ', posG(SB.e, SB.n, u), '.'],
+      ['Diferencia de posiciones (de B hacia A): ', posG(D.e, D.n, u), '. Las partes con √3 se cancelan al restar.'],
+      val(D.e) === 0 || val(D.n) === 0 ? ['Solo queda una de las dos partes: la distancia es ', v('x', `${rad(d)} ${u}`), '.']
+        : ['Separación: √(', `${sq(D.e)} + ${sq(D.n)}`, ') = ', v('x', `${rad(d)} ${u}`), '.'],
+    ];
+    const rutas = L => { const q = [{ x: 0, y: 0 }]; let x = 0, y = 0; for (const t of L) { const c = comp(t); x += val(c.e); y += val(c.n); q.push({ x, y }); } return q; };
+    const rA = rutas(A), rB = rutas(B);
+    const pA = rA[rA.length - 1], pB = rB[rB.length - 1];
+    const trazos = [];
+    for (let i = 1; i < rA.length; i++) trazos.push({ a: rA[i - 1], b: rA[i], color: 'var(--c-o)' });
+    for (let i = 1; i < rB.length; i++) trazos.push({ a: rB[i - 1], b: rB[i], color: 'var(--c-i)' });
+    trazos.push({ a: pA, b: pB, color: 'var(--c-d)', grueso: true });
+    const puntos = [{ x: 0, y: 0, rotulo: 'salida' }, { ...pA, rotulo: 'A', color: 'var(--c-o)' }, { ...pB, rotulo: 'B', color: 'var(--c-i)' }];
+    const desc = (nom, L) => `${nom}: ${L.map(t => `${largoTxt(t)} ${u} al ${rumboTexto(t.az)}`).join(', luego ')}`;
+    return cerrar(semilla, {
+      enunciado, pregunta: ['Al detenerse, ¿a qué distancia queda B de A?'], figura: { svg: rosa(qq.lugar), alt: altRosa(`el punto de partida (${qq.lugar})`) },
+      figuraSolucion: { svg: lamina(puntos, trazos), alt: `Los dos salen del mismo punto. ${desc('A', A)}; ${desc('B', B)}. La línea gruesa une el final de A con el final de B y mide ${rad(d)} ${u}.` },
+      alternativas, solucion: pasos, valor: d, unidad: u,
+      datos: { tipo: 'moviles-tramos', recorridos: [A, B].map(L => ({ tramos: L.map(datoTramo) })), unidad: u },
     });
   }
 
@@ -722,5 +860,8 @@
   }
   const separacion = (a, b, angulo) => Math.sqrt(Math.max(0, a * a + b * b - 2 * a * b * (COS[angulo] ? COS[angulo][0] / COS[angulo][1] : Math.cos(angulo * Math.PI / 180))));
 
-  return { id: ID, titulo: 'Rumbos con la brújula', generar, calc: { azimut, rumboTexto, recorrido, separacion, rumboEnCancha } };
+  // Distancia entre los finales de dos recorridos que salen del mismo punto (cada uno, una lista de tramos).
+  const entreMoviles = (A, B) => { const a = recorrido(A), b = recorrido(B); return Math.hypot(a.este - b.este, a.norte - b.norte); };
+
+  return { id: ID, titulo: 'Rumbos con la brújula', generar, calc: { azimut, rumboTexto, recorrido, separacion, rumboEnCancha, entreMoviles } };
 });

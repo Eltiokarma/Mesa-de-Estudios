@@ -2,7 +2,7 @@
   "plantilla": "rm-movimientos",
   "tolerancia": 0,
   "nota": "Casillas del caballo como [columna, fila] desde 0 (a1 = [0, 0]). En canoa, gente en el orden del enunciado; choques con índices de gente; cada cruce es un viaje. En salto, casillas 1..n. En tubo, el primer elemento es la izquierda (2 bocas) o la boca de arriba (1 boca); un movimiento es sacar una bola a la mesa o meterla desde la mesa. En pares, '_' es una casilla vacía; se mueven dos fichas vecinas a dos vacías vecinas sin cambiar su orden.",
-  "verificacion": "Verificador ciego (subagente, 8 nov 2026): BFS propio por tipo (orillas y canoa con cupo o peso y quién rema, caballo por tramos, fila de saltos, tubo como pila o cola doble con la mesa, fichas de a dos con destino vacío). 26 de 26 coinciden; 800 semillas más sin discrepancias. Tras las correcciones de la revisión, un segundo verificador (12 nov 2026) volvió a resolver a ciegas los casos cambiados (entrada-1 a 3, salida-1 a 3 y semillas 2, 5, 8, 9, 10, 11, 21 y 61) con otro BFS, y coinciden.",
+  "verificacion": "Verificador ciego (subagente, 8 nov 2026): BFS propio por tipo (orillas y canoa con cupo o peso y quién rema, caballo por tramos, fila de saltos, tubo como pila o cola doble con la mesa, fichas de a dos con destino vacío). 26 de 26 coinciden; 800 semillas más sin discrepancias. Tras las correcciones de la revisión, un segundo verificador (12 nov 2026) volvió a resolver a ciegas los casos cambiados (entrada-1 a 3, salida-1 a 3 y semillas 2, 5, 8, 9, 10, 11, 21 y 61) con otro BFS, y coinciden. Cierre-100 (12 nov 2026): los casos nuevos se resolvieron a ciegas con scripts propios (BFS sobre los estados del tubo con las operaciones del enunciado): 4/4 coinciden (unmsm-2024-I-26, unmsm-2025-II-21, c1 y c25).",
   "casos": [
     {
       "semilla": "entrada-1",
@@ -733,6 +733,134 @@
         "respuesta": 7,
         "texto": "7 viajes"
       }
+    },
+    {
+      "semilla": "unmsm-2024-I-26",
+      "entrada": {
+        "tipo": "bocas",
+        "bocas": [
+          3,
+          5
+        ],
+        "inicio": [
+          2,
+          4,
+          3,
+          1,
+          5
+        ],
+        "meta": [
+          5,
+          4,
+          3,
+          2,
+          1
+        ]
+      },
+      "esperado": {
+        "respuesta": 3,
+        "texto": "3 operaciones"
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "unmsm-2025-II-21",
+      "entrada": {
+        "tipo": "bocas",
+        "bocas": [
+          3,
+          6,
+          9
+        ],
+        "inicio": [
+          6,
+          5,
+          7,
+          4,
+          3,
+          8,
+          2,
+          1,
+          9
+        ],
+        "meta": [
+          9,
+          8,
+          7,
+          6,
+          5,
+          4,
+          3,
+          2,
+          1
+        ]
+      },
+      "esperado": {
+        "respuesta": 3,
+        "texto": "3 operaciones"
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "c1",
+      "entrada": {
+        "tipo": "bocas",
+        "bocas": [
+          3,
+          6
+        ],
+        "inicio": [
+          3,
+          5,
+          2,
+          6,
+          1,
+          4
+        ],
+        "meta": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "esperado": {
+        "respuesta": 5,
+        "texto": "5 operaciones"
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "c25",
+      "entrada": {
+        "tipo": "bocas",
+        "bocas": [
+          3,
+          4,
+          5
+        ],
+        "inicio": [
+          5,
+          3,
+          2,
+          4,
+          1
+        ],
+        "meta": [
+          5,
+          4,
+          3,
+          2,
+          1
+        ]
+      },
+      "esperado": {
+        "respuesta": 4,
+        "texto": "4 operaciones"
+      },
+      "nuevo": "cierre-100"
     }
   ]
 }

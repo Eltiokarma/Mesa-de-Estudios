@@ -199,6 +199,42 @@
     'AQ-cation-anion': { nombre: 'Llamar anión a un catión (o al revés)' },
     'AQ-electrones-oxidacion': { nombre: 'Contar mal los electrones que cede el carbono' },
     'AQ-precursor-cruzado': { nombre: 'Cruzar una sustancia con lo que se forma de otra' },
+    // Cierre 100 (12 nov 2026, hipótesis nuestras).
+    'AQ-sp2-sin-carboxilo': { nombre: 'Olvidar el carbono del carboxilo al contar los carbonos sp²' },
+    'AQ-carboxilo-sp3': { nombre: 'Creer que el carbono del carboxilo es sp³' },
+    'AQ-isomero-por-grupos': { nombre: 'Llamar isómeros a moléculas parecidas que no tienen la misma fórmula' },
+    'AQ-quiral-no-ve': { nombre: 'No reconocer un carbono con cuatro grupos distintos' },
+    'AQ-quiral-en-CH2': { nombre: 'Ver un carbono quiral en un CH₂ o en un CH₃' },
+    'AQ-formula-olvida-O': { nombre: 'Olvidar el oxígeno del OH al escribir la fórmula de un hidroxiácido' },
+    'AQ-hidrogeno-en-el-nitrogeno': { nombre: 'Pegar el H al nitrógeno en un oxoácido (en vez de a un oxígeno)' },
+    'AQ-lewis-enlaces': { nombre: 'Contar mal los enlaces simples y dobles de la estructura de Lewis del HNO₂' },
+    'AQ-color-no-no2': { nombre: 'Cruzar el color del NO con el del NO₂' },
+    'AQ-dismutacion-una-via': { nombre: 'Creer que una sustancia no puede oxidarse y reducirse a la vez' },
+    'AQ-nox-hno2': { nombre: 'Dar al N del HNO₂ el número de oxidación del HNO₃' },
+    'AQ-escala-mal': { nombre: 'Escalar mal una cantidad (dividir cuando había que multiplicar)' },
+    'AQ-metilo-etilo': { nombre: 'Llamar etilo a un metilo' },
+    'AQ-pi-olvida-anillos': { nombre: 'Olvidar los dobles enlaces de los anillos al contar enlaces π' },
+    'AQ-hidrocarburo-solo-cadena': { nombre: 'Creer que un hidrocarburo no puede tener anillos' },
+    'AQ-metilos-solo-cadena': { nombre: 'Contar como metilos solo los de la cadena y olvidar los de los anillos' },
+    'AQ-aromatico-adicion': { nombre: 'Creer que el anillo aromático reacciona por adición, como un alqueno' },
+    'AQ-aromatico-inerte': { nombre: 'Creer que, por tener un anillo aromático, la molécula no reacciona con un hidróxido' },
+    'AQ-amina-clase': { nombre: 'Llamar alifática a una amina unida directamente a un anillo aromático' },
+    'AQ-ester-eter': { nombre: 'Confundir éster con éter' },
+    'AQ-cadena-insoluble': { nombre: 'Creer que una cadena de carbonos hace insoluble a una molécula con muchos OH' },
+    'AQ-ester-insoluble': { nombre: 'Creer que todo éster es insoluble en agua o no hace puentes de hidrógeno' },
+    'AQ-aldehido-carboxilo': { nombre: 'Confundir el aldehído con el carboxilo' },
+    'AQ-lewis-radical-anion': { nombre: 'Escribir igual el radical ·OH y el anión OH⁻' },
+    'AQ-fenton-reversible': { nombre: 'Creer que la reacción de Fenton es reversible' },
+    'AQ-lactama-carboxilo': { nombre: 'Contar como carboxilo el C=O de una lactama' },
+    'AQ-conteo-carboxilos': { nombre: 'Contar mal los carboxilos de una molécula grande' },
+    'AQ-hidrocarburo-muchos-C': { nombre: 'Creer que una molécula con muchos carbonos es un hidrocarburo' },
+    'AQ-cadena-sp2': { nombre: 'Creer que todos los carbonos de una cadena con un carboxilo son sp²' },
+    'AQ-dismutacion-cruzada': { nombre: 'Cruzar las especies que salen de la dismutación del ácido nitroso' },
+    'AQ-pourbaix-h-poh': { nombre: 'Pourbaix: tomar [H⁺] = 10⁻ᵏ como si el exponente fuera el pOH (pH = 14 − k)' },
+    'AQ-pourbaix-poh-ph': { nombre: 'Pourbaix: usar el pOH como si fuera el pH' },
+    'AQ-pourbaix-ph-poh': { nombre: 'Pourbaix: usar el pH como si fuera el pOH' },
+    'AQ-pourbaix-signo-e': { nombre: 'Pourbaix: leer el potencial con el signo cambiado' },
+    'AQ-pourbaix-lectura': { nombre: 'Pourbaix: ubicar mal el punto en el diagrama (pH en el eje horizontal, potencial en el vertical)' },
   };
   for (const k of Object.keys(ERRORES)) {
     ERRORES[k].respaldo = ERRORES[k].respaldo || 'hipotesis';
@@ -648,6 +684,125 @@
       F('cme9', 'En la oxidación del metanol a CO₂, cada átomo de carbono pierde 4 electrones.', 'AQ-electrones-oxidacion', 'El carbono pasa de −2 a +4: pierde 6 electrones.', 'En la oxidación del metanol a CO₂, cada átomo de carbono pierde 6 electrones.'),
       F('cme10', 'En una celda de combustible en medio ácido, los iones H⁺ que salen del ánodo son aniones.', 'AQ-cation-anion', 'El H⁺ tiene carga positiva: es un catión.', 'Los iones H⁺ que salen del ánodo son cationes.'),
     ] },
+    // ===== Cierre 100 (12 nov 2026): preguntas oficiales de UNMSM que faltaban (proposiciones propias) =====
+    // UNMSM 2023-I (23.10.2022, p. 90): hidratación de un alqueno y oxidación del alcohol.
+    { id: 'hidratacion-oxidacion', unidad: 'quimica.funciones-organicas', nombre: 'la secuencia hidratación, oxidación del ácido crotónico',
+      contexto: 'Un doble enlace C=C del ácido crotónico (CH₃–CH=CH–COOH) se hidrata y el alcohol secundario que resulta se oxida a cetona: crotónico → ácido 3-hidroxibutanoico → ácido acetoacético (3-oxobutanoico).', props: [
+      V('hio1', 'El ácido crotónico tiene tres carbonos sp²: los dos del C=C y el del carboxilo.', 'El carbono del –COOH tiene un doble enlace con el O, así que también es sp².', 'AQ-sp2-sin-carboxilo'),
+      V('hio2', 'Al hidratar el C=C del ácido crotónico se forma un hidroxiácido cuyo alcohol es secundario.', 'El OH queda en el carbono 3, unido a otros dos carbonos.', 'AQ-clase-alcohol'),
+      V('hio3', 'El ácido 3-hidroxibutanoico tiene un carbono quiral: el carbono 3.', 'Ese carbono tiene cuatro grupos distintos: H, OH, CH₃ y CH₂COOH.', 'AQ-quiral-no-ve'),
+      V('hio4', 'Al oxidar el alcohol secundario del hidroxiácido se obtiene un cetoácido.', 'Un alcohol secundario se oxida a cetona (C=O entre dos carbonos).', 'AQ-oxidacion-organica-invertida'),
+      V('hio5', 'El ácido 3-hidroxibutanoico (C₄H₈O₃) y el ácido acetoacético (C₄H₆O₃) no son isómeros.', 'No tienen la misma fórmula molecular: el cetoácido tiene 2 H menos.', 'AQ-isomero-por-grupos'),
+      V('hio6', 'El ácido acetoacético tiene dos carbonos sp² y dos sp³.', 'Son sp² el C=O de la cetona y el del carboxilo; son sp³ el CH₃ y el CH₂.', 'AQ-sp2-sin-carboxilo'),
+      F('hio7', 'El ácido crotónico tiene solo dos carbonos sp², los del doble enlace C=C.', 'AQ-sp2-sin-carboxilo', 'Falta el carbono del carboxilo, que también es sp² por su doble enlace con el O.', 'El ácido crotónico tiene tres carbonos sp²: los dos del C=C y el del carboxilo.'),
+      F('hio8', 'El carbono del carboxilo del ácido acetoacético es sp³, porque está unido a dos oxígenos.', 'AQ-carboxilo-sp3', 'Tiene un doble enlace C=O: por eso es sp².', 'El carbono del carboxilo del ácido acetoacético es sp², por su doble enlace con el oxígeno.'),
+      F('hio9', 'El ácido 3-hidroxibutanoico tiene un alcohol primario, porque el OH está en la cadena.', 'AQ-clase-alcohol', 'La clase depende de cuántos carbonos tiene unidos el carbono del OH: aquí, dos.', 'El ácido 3-hidroxibutanoico tiene un alcohol secundario.'),
+      F('hio10', 'El ácido 3-hidroxibutanoico y el ácido acetoacético son isómeros de compensación funcional.', 'AQ-isomero-por-grupos', 'Para ser isómeros deben tener la misma fórmula: C₄H₈O₃ contra C₄H₆O₃.', 'El hidroxiácido y el cetoácido no son isómeros: sus fórmulas moleculares son distintas.'),
+      F('hio11', 'Al oxidar el alcohol secundario del hidroxiácido se obtiene un ácido dicarboxílico.', 'AQ-oxidacion-organica-invertida', 'Un alcohol secundario se oxida solo hasta cetona; para llegar a ácido hace falta un alcohol primario.', 'Al oxidar el alcohol secundario del hidroxiácido se obtiene una cetona: el cetoácido.'),
+      F('hio12', 'El ácido 3-hidroxibutanoico no tiene ningún carbono quiral.', 'AQ-quiral-no-ve', 'El carbono 3 tiene H, OH, CH₃ y CH₂COOH: cuatro grupos distintos.', 'El ácido 3-hidroxibutanoico tiene un carbono quiral: el carbono 3.'),
+      F('hio13', 'La fórmula molecular del ácido 3-hidroxibutanoico es C₄H₈O₂.', 'AQ-formula-olvida-O', 'Tiene tres oxígenos: dos del carboxilo y uno del OH. La fórmula es C₄H₈O₃.', 'La fórmula molecular del ácido 3-hidroxibutanoico es C₄H₈O₃.'),
+    ] },
+    // UNMSM 2023-I (10.12.2022, p. 89): estructura de Lewis del HNO₂ en una dismutación.
+    { id: 'acido-nitroso', unidad: 'quimica.enlace-quimico', nombre: 'el ácido nitroso y su dismutación',
+      contexto: 'En medio acuoso, el ácido nitroso se dismuta: 2 HNO₂ → NO + NO₂ + H₂O.', props: [
+      V('nit1', 'En esa reacción, el NO₂ es la especie oxidada y el NO, la reducida.', 'El nitrógeno pasa de +3 (en el HNO₂) a +4 en el NO₂ (se oxida) y a +2 en el NO (se reduce).', 'EC9'),
+      V('nit2', 'El NO₂ es un gas pardo y el NO es un gas incoloro.', 'Así se reconocen en el laboratorio: el pardo rojizo es el NO₂.', 'AQ-color-no-no2'),
+      V('nit3', 'En la estructura de Lewis del HNO₂ (H–O–N=O) hay dos enlaces simples y uno doble.', 'Son simples H–O y O–N; el doble es N=O.', 'AQ-lewis-enlaces'),
+      V('nit4', 'En el HNO₂, el hidrógeno está unido a un oxígeno y no al nitrógeno.', 'El enlace O–H es el que se rompe al ionizarse el ácido.', 'AQ-hidrogeno-en-el-nitrogeno'),
+      V('nit5', 'En el HNO₂, el nitrógeno tiene un par de electrones libre.', 'De sus 5 electrones de valencia, 3 van en enlaces (uno simple y uno doble) y 2 quedan como par.', 'AQ-hidruro-sin-pares'),
+      V('nit6', 'El NO₂ tiene 17 electrones de valencia: un número impar, así que es un radical.', '5 del nitrógeno más 6 de cada oxígeno suman 17; uno queda sin pareja.', 'EN3'),
+      V('nit7', 'Las sales del ácido nitroso se llaman nitritos y tienen el ion NO₂⁻.', 'Del ácido -oso sale la sal en -ito.', 'NO2'),
+      F('nit8', 'En esa reacción, el NO₂ es la especie reducida y el NO, la oxidada.', 'EC9', 'El N del NO₂ (+4) tiene más oxidación que el del HNO₂ (+3): se oxidó. El del NO (+2) se redujo.', 'En esa reacción, el NO₂ es la especie oxidada y el NO, la reducida.'),
+      F('nit9', 'En el HNO₂, el hidrógeno está unido al nitrógeno, y los dos oxígenos, al nitrógeno.', 'AQ-hidrogeno-en-el-nitrogeno', 'En un oxoácido, el H va en un O: la estructura es H–O–N=O.', 'En el HNO₂, el hidrógeno está unido a un oxígeno, no al nitrógeno.'),
+      F('nit10', 'La estructura de Lewis del HNO₂ tiene tres enlaces simples y ninguno doble.', 'AQ-lewis-enlaces', 'Con tres simples, el O terminal quedaría sin completar su octeto: forma un doble enlace con el N.', 'La estructura de Lewis del HNO₂ tiene dos enlaces simples y uno doble.'),
+      F('nit11', 'El NO₂ es un gas incoloro y el NO es un gas pardo.', 'AQ-color-no-no2', 'Es al revés: el pardo es el NO₂; el NO es incoloro.', 'El NO₂ es un gas pardo y el NO es un gas incoloro.'),
+      F('nit12', 'Una misma sustancia no puede oxidarse y reducirse a la vez: el HNO₂ solo se oxida.', 'AQ-dismutacion-una-via', 'En una dismutación, parte del N se oxida (a NO₂) y parte se reduce (a NO).', 'En la dismutación del HNO₂, el nitrógeno se oxida y se reduce a la vez.'),
+      F('nit13', 'El NO₂ tiene todos sus electrones apareados, porque tiene dos átomos de oxígeno.', 'EN3', 'Con 17 electrones de valencia, un número impar, al menos uno queda sin pareja.', 'El NO₂ tiene un electrón desapareado: es un radical.'),
+      F('nit14', 'Las sales del ácido nitroso se llaman nitratos.', 'NO2', 'Del ácido -oso sale la sal en -ito: nitritos. Los nitratos vienen del ácido nítrico.', 'Las sales del ácido nitroso se llaman nitritos.'),
+      F('nit15', 'En el HNO₂, el nitrógeno tiene número de oxidación +5.', 'AQ-nox-hno2', 'H = +1 y 2 O = −4: el N queda en +3. El +5 es el del HNO₃.', 'En el HNO₂, el nitrógeno tiene número de oxidación +3.'),
+    ] },
+    // UNMSM 2023-II (25.03.2023, p. 95): contar enlaces π y metilos del β-caroteno y escalar su contenido en un fruto.
+    { id: 'carotenoide', unidad: 'quimica.biomoleculas-y-productos-naturales', nombre: 'el β-caroteno y su contenido en el arándano',
+      contexto: 'El β-caroteno (C₄₀H₅₆) es un hidrocarburo poliénico: una cadena larga de dobles enlaces alternados que une dos anillos de seis carbonos. El arándano trae 32 µg de β-caroteno por cada 100 g de fruto.', props: [
+      V('car1', 'La molécula de β-caroteno tiene 11 enlaces dobles carbono–carbono.', 'Dos están en los anillos y nueve, en la cadena que los une.', 'AQ-pi-olvida-anillos'),
+      V('car2', 'Los sustituyentes que salen de la cadena y de los anillos del β-caroteno son 10 grupos metilo (CH₃).', 'Seis están en los anillos (tres en cada uno) y cuatro, en la cadena.', 'AQ-metilo-etilo'),
+      V('car3', 'El β-caroteno es un hidrocarburo, porque solo tiene carbono e hidrógeno.', 'Su fórmula, C₄₀H₅₆, no tiene otros elementos; que tenga anillos no lo cambia.', 'AQ-hidrocarburo-solo-cadena'),
+      V('car4', 'Si 100 g de arándano contienen 32 µg de β-caroteno, 200 g contienen 64 µg.', 'La masa se duplica y la cantidad de β-caroteno también: 2 × 32 µg.', 'AQ-escala-mal'),
+      V('car5', 'Cada anillo del β-caroteno tiene tres grupos metilo: dos en un mismo carbono sp³ y uno en un carbono del doble enlace.', 'Con los dos anillos suman 6 metilos; los otros 4 están en la cadena.', 'AQ-metilos-solo-cadena'),
+      V('car6', 'Los dobles enlaces alternados con simples del β-caroteno deslocalizan electrones π, y de ello depende su color.', 'Una cadena larga de dobles y simples alternados (conjugada) absorbe luz visible.'),
+      F('car7', 'Los sustituyentes que salen de la cadena y de los anillos del β-caroteno son 10 grupos etilo (CH₃–CH₂–).', 'AQ-metilo-etilo', 'Un etilo tiene dos carbonos. Cada sustituyente de la estructura es un solo carbono con tres H: un metilo.', 'Los sustituyentes del β-caroteno son 10 grupos metilo (CH₃).'),
+      F('car8', 'El β-caroteno tiene 9 enlaces dobles carbono–carbono, todos en la cadena entre los anillos.', 'AQ-pi-olvida-anillos', 'Cada anillo tiene además un doble enlace: 9 + 2 = 11.', 'El β-caroteno tiene 11 enlaces dobles: nueve en la cadena y uno en cada anillo.'),
+      F('car9', 'Si 100 g de arándano contienen 32 µg de β-caroteno, 200 g contienen 16 µg.', 'AQ-escala-mal', 'Al duplicar la masa del fruto, se duplica la cantidad de β-caroteno: 64 µg, no la mitad.', 'Si 100 g de arándano contienen 32 µg de β-caroteno, 200 g contienen 64 µg.'),
+      F('car10', 'El β-caroteno no es un hidrocarburo, porque tiene anillos.', 'AQ-hidrocarburo-solo-cadena', 'Un hidrocarburo solo tiene C y H, con cadenas o con anillos.', 'El β-caroteno es un hidrocarburo: solo tiene carbono e hidrógeno.'),
+      F('car11', 'El β-caroteno tiene 4 grupos metilo: los de la cadena entre los anillos.', 'AQ-metilos-solo-cadena', 'Faltan los metilos de los anillos: tres en cada uno. En total hay 10.', 'El β-caroteno tiene 10 grupos metilo: 4 en la cadena y 6 en los anillos.'),
+    ] },
+    // UNMSM 2024-II, área A (16.03.2024, p. 90): ácido p-aminobenzoico.
+    { id: 'paba', unidad: 'quimica.funciones-organicas', nombre: 'el ácido 4-aminobenzoico',
+      contexto: 'El ácido 4-aminobenzoico (NH₂–C₆H₄–COOH) es precursor de un grupo de medicamentos.', props: [
+      V('pab1', 'Con un hidróxido como el NaOH, el ácido 4-aminobenzoico forma una sal: el 4-aminobenzoato de sodio.', 'El H del carboxilo se une al OH⁻ y sale como agua; queda el carboxilato con el Na⁺.', 'AQ-aromatico-inerte'),
+      V('pab2', 'El anillo del ácido 4-aminobenzoico puede sufrir reacciones de sustitución electrofílica.', 'En el anillo aromático un H se cambia por otro grupo, y el anillo se conserva.', 'AQ-aromatico-adicion'),
+      V('pab3', 'El ácido 4-aminobenzoico tiene siete carbonos sp²: los seis del anillo y el del carboxilo.', 'El C del –COOH tiene un doble enlace con el O: también es sp².', 'AQ-sp2-sin-carboxilo'),
+      V('pab4', 'El nitrógeno del grupo amino del ácido 4-aminobenzoico tiene un par de electrones sin compartir.', 'Tiene 3 enlaces (dos con H y uno con el anillo) y, de sus 5 electrones, 2 quedan como par.', 'AQ-hidruro-sin-pares'),
+      V('pab5', 'En el nombre ácido 4-aminobenzoico, el carboxilo manda y el amino queda como sustituyente en el carbono 4 del anillo.', 'El ácido carboxílico tiene más prioridad que la amina; se numera desde el carbono del anillo que lleva el carboxilo, que es el 1.', 'NO2'),
+      V('pab6', 'El ácido 4-aminobenzoico no tiene ningún carbono sp³.', 'Sus siete carbonos son sp²; no hay ninguno con cuatro enlaces simples.'),
+      F('pab7', 'El ácido 4-aminobenzoico tiene seis carbonos sp², los del anillo.', 'AQ-sp2-sin-carboxilo', 'Falta el del carboxilo: con su doble enlace al O también es sp². En total son siete.', 'El ácido 4-aminobenzoico tiene siete carbonos sp²: los seis del anillo y el del carboxilo.'),
+      F('pab8', 'El ácido 4-aminobenzoico no reacciona con un hidróxido, porque su anillo es aromático.', 'AQ-aromatico-inerte', 'El anillo no impide que el carboxilo ceda su H: forma una sal con el hidróxido.', 'El ácido 4-aminobenzoico reacciona con un hidróxido y forma una sal.'),
+      F('pab9', 'El ácido 4-aminobenzoico se llama 1-carboxi-4-aminobenceno, porque el amino manda sobre el carboxilo.', 'NO2', 'El carboxilo tiene más prioridad que el amino: da el sufijo -oico y el amino es un sustituyente.', 'El ácido 4-aminobenzoico se nombra con el carboxilo como grupo principal.'),
+      F('pab10', 'El nitrógeno del grupo amino del ácido 4-aminobenzoico no tiene pares libres, porque todos sus electrones están en enlaces.', 'AQ-hidruro-sin-pares', 'Solo 3 de sus 5 electrones forman enlaces; los otros 2 son un par libre.', 'El nitrógeno del grupo amino del ácido 4-aminobenzoico tiene un par de electrones libre.'),
+      F('pab11', 'El anillo del ácido 4-aminobenzoico reacciona por adición, como un alqueno, y deja de ser aromático.', 'AQ-aromatico-adicion', 'El anillo aromático prefiere sustituir un H y así conserva su nube de electrones π.', 'El anillo del ácido 4-aminobenzoico reacciona por sustitución y conserva su carácter aromático.'),
+      F('pab12', 'El ácido 4-aminobenzoico tiene una amina alifática, porque tiene un grupo NH₂.', 'AQ-amina-clase', 'El NH₂ está pegado directamente al anillo: es una amina aromática, como la anilina.', 'El ácido 4-aminobenzoico tiene una amina aromática, porque el NH₂ está unido al anillo.'),
+    ] },
+    // UNMSM 2024-II, medicina (17.03.2024, p. 90): derivados oxidados, reducidos y ésteres de la glucosa.
+    { id: 'derivados-glucosa', unidad: 'quimica.biomoleculas-y-productos-naturales', nombre: 'los derivados de la glucosa',
+      contexto: 'En la glucosa abierta, HOCH₂–(CHOH)₄–CHO, el carbono 1 es el del aldehído. Si ese carbono se oxida, se obtiene el ácido glucónico; si se reduce, el sorbitol.', props: [
+      V('dgl1', 'El carbono 1 del ácido glucónico es sp², igual que el carbono 1 de la glucosa abierta.', 'En los dos hay un doble enlace C=O (en el aldehído y en el carboxilo).', 'AQ-sp2-sin-carboxilo'),
+      V('dgl2', 'Al reducir el aldehído de la glucosa se obtiene sorbitol, un alcohol con seis grupos OH.', 'El C1 pasa de –CHO a –CH₂OH: el alcohol primario.', 'AQ-oxidacion-organica-invertida'),
+      V('dgl3', 'El sorbitol es muy soluble en agua, porque sus seis grupos OH forman puentes de hidrógeno con ella.', 'Cada OH hace puentes de hidrógeno con el agua.'),
+      V('dgl4', 'Al reaccionar un ácido carboxílico con un alcohol se forma un éster, y sale una molécula de agua.', 'El OH del carboxilo y el H del alcohol forman el agua; el resto queda unido como R–CO–O–R′.', 'AQ-ester-eter'),
+      V('dgl5', 'El gluconato de isopropilo es un éster: tiene un C=O unido a un O que se une a otro carbono.', 'Esa unión C(=O)–O–C es la del éster.', 'AQ-ester-eter'),
+      V('dgl6', 'La oxidación del C1 de la glucosa (aldehído) da un ácido carboxílico: el ácido glucónico.', 'El aldehído –CHO se oxida a –COOH.', 'AQ-oxidacion-organica-invertida'),
+      V('dgl7', 'El sorbitol no tiene ningún carbono sp²: todos sus carbonos tienen solo enlaces simples.', 'No hay C=O ni C=C; los seis carbonos son sp³.'),
+      V('dgl8', 'La glucosa 6-fosfato es un éster fosfórico: el OH del carbono 6 de la glucosa se une al ácido fosfórico.', 'El OH y el ácido sueltan agua y queda la unión C–O–P.', 'AQ-ester-eter'),
+      F('dgl9', 'El carbono 1 del ácido glucónico es sp³, porque forma enlaces simples con dos oxígenos.', 'AQ-carboxilo-sp3', 'Tiene un doble enlace con uno de los O (el del C=O): es sp².', 'El carbono 1 del ácido glucónico es sp², por su doble enlace C=O.'),
+      F('dgl10', 'El ácido glucónico reacciona con un alcohol y forma un éter.', 'AQ-ester-eter', 'Un carboxilo con un alcohol da un éster. El éter (R–O–R′) se forma entre dos alcoholes.', 'El ácido glucónico reacciona con un alcohol y forma un éster.'),
+      F('dgl11', 'El sorbitol se obtiene oxidando la glucosa.', 'AQ-oxidacion-organica-invertida', 'Pasar de aldehído a alcohol primario es reducir (entran H): el sorbitol sale de reducir.', 'El sorbitol se obtiene reduciendo la glucosa.'),
+      F('dgl12', 'El sorbitol es poco soluble en agua, porque tiene una cadena de seis carbonos.', 'AQ-cadena-insoluble', 'Cada carbono lleva un OH: hay seis OH que forman puentes de hidrógeno con el agua.', 'El sorbitol es muy soluble en agua, por sus seis grupos OH.'),
+      F('dgl13', 'El gluconato de isopropilo no puede formar puentes de hidrógeno con el agua, porque es un éster.', 'AQ-ester-insoluble', 'Conserva cinco grupos OH, que sí forman puentes de hidrógeno con el agua.', 'El gluconato de isopropilo tiene cinco grupos OH, que forman puentes de hidrógeno con el agua.'),
+      F('dgl14', 'El ácido glucónico y la glucosa tienen el mismo grupo funcional en el carbono 1.', 'AQ-aldehido-carboxilo', 'En la glucosa es un aldehído (–CHO); en el glucónico, un carboxilo (–COOH). Lo que comparten es la hibridación sp².', 'En el carbono 1, la glucosa tiene un aldehído y el ácido glucónico, un carboxilo.'),
+      F('dgl15', 'La glucosa 6-fosfato es un éter de la glucosa con el ácido fosfórico.', 'AQ-ester-eter', 'El OH de la glucosa y el ácido fosfórico sueltan agua: se forma un éster fosfórico, no un éter.', 'La glucosa 6-fosfato es un éster fosfórico de la glucosa.'),
+    ] },
+    // UNMSM 2026-I, medicina (12.10.2025, p. 89): Lewis del radical ·OH y la reacción de Fenton.
+    { id: 'fenton-lewis', unidad: 'quimica.enlace-quimico', nombre: 'la reacción de Fenton y el radical hidroxilo',
+      contexto: 'Los iones de hierro de algunas enzimas intervienen en la reacción de Fenton: Fe²⁺ + H₂O₂ → Fe³⁺ + OH⁻ + ·OH.', props: [
+      V('fen1', 'En la reacción de Fenton, el Fe²⁺ es el agente reductor, porque cede un electrón y pasa a Fe³⁺.', 'El agente reductor es la especie que se oxida.', 'EC9'),
+      V('fen2', 'En la reacción de Fenton, el Fe³⁺ es la especie oxidada.', 'El Fe²⁺ perdió un electrón; la forma que queda, Fe³⁺, es la especie oxidada.', 'EC9'),
+      V('fen3', 'En la reacción de Fenton, el H₂O₂ se reduce: uno de sus oxígenos pasa de −1 a −2 en el OH⁻.', 'El otro oxígeno queda en el radical ·OH, también con −1.', 'EC9'),
+      V('fen4', 'En la notación de Lewis del radical ·OH, el oxígeno tiene dos pares libres y un electrón desapareado.', 'De sus 6 electrones de valencia, 1 va al enlace con H y 5 quedan sin enlazar: 2 pares y 1 solo.', 'EN3'),
+      V('fen5', 'El OH⁻ y el ·OH no se escriben igual en Lewis: el anión tiene tres pares libres en el oxígeno.', 'El OH⁻ tiene un electrón más que el ·OH, que completa el tercer par.', 'AQ-lewis-radical-anion'),
+      V('fen6', 'La reacción de Fenton se escribe con una flecha simple, de reactivos a productos.', 'Así se escribe en los textos: el radical ·OH que se forma reacciona enseguida y no se plantea un equilibrio.', 'AQ-fenton-reversible'),
+      F('fen7', 'En la reacción de Fenton, el Fe³⁺ es el agente reductor.', 'EC9', 'El Fe³⁺ es el producto de oxidar al Fe²⁺: el agente reductor es el Fe²⁺.', 'En la reacción de Fenton, el agente reductor es el Fe²⁺.'),
+      F('fen8', 'En la reacción de Fenton, el H₂O₂ se oxida a anión hidróxido (OH⁻).', 'EC9', 'El O del OH⁻ tiene −2, menos que el −1 del H₂O₂: se redujo, no se oxidó.', 'En la reacción de Fenton, el H₂O₂ se reduce.'),
+      F('fen9', 'En el radical ·OH, el oxígeno completa el octeto con sus dos pares libres y su enlace con el H.', 'EN3', 'Quedan 7 electrones alrededor del O (2 pares, el enlace y un electrón solo): le falta uno para el octeto.', 'En el radical ·OH, el oxígeno tiene 7 electrones a su alrededor y no completa el octeto.'),
+      F('fen10', 'El radical ·OH y el anión OH⁻ tienen la misma notación de Lewis.', 'AQ-lewis-radical-anion', 'El OH⁻ tiene un electrón de más: tres pares libres en el O. El ·OH tiene dos pares y un electrón solo.', 'El radical ·OH y el anión OH⁻ tienen notaciones de Lewis distintas.'),
+      F('fen11', 'En la reacción de Fenton, el hierro pasa de Fe²⁺ a Fe³⁺ ganando un electrón.', 'EC9', 'Pasar de 2+ a 3+ es perder un electrón: se oxida.', 'En la reacción de Fenton, el hierro pasa de Fe²⁺ a Fe³⁺ perdiendo un electrón.'),
+      F('fen12', 'La reacción de Fenton se escribe con doble flecha, como un equilibrio.', 'AQ-fenton-reversible', 'Se escribe con flecha simple: el radical ·OH reacciona enseguida y no se plantea un equilibrio.', 'La reacción de Fenton se escribe con una flecha simple, de reactivos a productos.'),
+    ] },
+    // UNMSM 2026-II, área C (08.03.2026, p. 89): bilirrubina, un tetrapirrol lineal.
+    { id: 'bilirrubina', unidad: 'quimica.biomoleculas-y-productos-naturales', nombre: 'la bilirrubina',
+      contexto: 'La bilirrubina (C₃₃H₃₆N₄O₆) es un pigmento biliar: cuatro anillos con nitrógeno unidos en cadena por puentes de un carbono, con dos cadenas laterales –CH₂CH₂COOH.', props: [
+      V('bil1', 'La bilirrubina tiene dos grupos carboxilo (–COOH), uno al final de cada cadena lateral –CH₂CH₂COOH.', 'Son dos carboxilos; los C=O de los anillos de los extremos son de otro grupo.', 'AQ-conteo-carboxilos'),
+      V('bil2', 'La bilirrubina no tiene ningún carbono quiral.', 'Sus carbonos sp³ son CH₃ o CH₂: ninguno tiene cuatro grupos distintos.', 'AQ-quiral-en-CH2'),
+      V('bil3', 'Cada uno de los cuatro nitrógenos de la bilirrubina tiene un par de electrones libre.', 'Cada N forma tres enlaces y, de sus 5 electrones, 2 quedan como par.', 'AQ-hidruro-sin-pares'),
+      V('bil4', 'Los seis oxígenos de la bilirrubina son los de dos carboxilos (4 O) y los de dos grupos C=O de los anillos de los extremos (2 O).', 'Son cuatro O de los carboxilos más dos de las lactamas: 4 + 2 = 6.', 'AQ-lactama-carboxilo'),
+      V('bil5', 'En los dos anillos de los extremos de la bilirrubina hay un C=O unido a un N (una lactama).', 'Un C=O al lado de un N es el grupo de una amida; en un anillo, una lactama.', 'AQ-lactama-carboxilo'),
+      V('bil6', 'Entre los anillos de la bilirrubina hay un solo puente CH₂; los otros dos puentes son CH= con doble enlace.', 'El CH₂ (sp³) une los dos anillos del centro; los otros dos puentes, =CH–, son sp².'),
+      F('bil7', 'Los C=O de los anillos de los extremos son carboxilos, así que la bilirrubina tiene cuatro carboxilos.', 'AQ-lactama-carboxilo', 'Un carboxilo es C(=O)OH. El C=O de un anillo está unido a un N: es una lactama.', 'La bilirrubina tiene dos carboxilos; los C=O de los anillos de los extremos son lactamas.'),
+      F('bil8', 'La bilirrubina tiene un carbono quiral: el CH₂ del puente central.', 'AQ-quiral-en-CH2', 'Un CH₂ tiene dos H iguales: no puede tener cuatro grupos distintos.', 'La bilirrubina no tiene carbonos quirales.'),
+      F('bil9', 'Los nitrógenos de los anillos de la bilirrubina no tienen pares libres, porque cada uno está unido a un H.', 'AQ-hidruro-sin-pares', 'El N con un H y dos enlaces más aún conserva un par libre.', 'Cada nitrógeno de la bilirrubina tiene un par de electrones libre.'),
+      F('bil10', 'La bilirrubina es un hidrocarburo, porque tiene 33 carbonos.', 'AQ-hidrocarburo-muchos-C', 'Tiene N y O además de C y H (C₃₃H₃₆N₄O₆): no es un hidrocarburo.', 'La bilirrubina no es un hidrocarburo: tiene nitrógeno y oxígeno.'),
+      F('bil11', 'La bilirrubina tiene un solo grupo carboxilo, porque solo una cadena lateral termina en –COOH.', 'AQ-conteo-carboxilos', 'Las dos cadenas laterales –CH₂CH₂COOH terminan en carboxilo: son dos.', 'La bilirrubina tiene dos grupos carboxilo.'),
+      F('bil12', 'Los tres carbonos de cada cadena lateral –CH₂CH₂COOH de la bilirrubina son sp².', 'AQ-cadena-sp2', 'Solo el carbono del –COOH es sp²; los dos CH₂ tienen solo enlaces simples: son sp³.', 'En cada cadena lateral –CH₂CH₂COOH, solo el carbono del –COOH es sp².'),
+    ] },
   ];
 
 
@@ -689,6 +844,14 @@
     sue6: ['sue1'], sue7: ['sue2'], sue8: ['sue4'], sue9: ['sue3'], sue10: ['sue5'],
     alc6: ['alc1', 'alc2'], alc7: ['alc4'], alc8: ['alc5'], alc9: ['alc1', 'alc3'],
     cme6: ['cme1'], cme7: ['cme3'], cme8: ['cme4'], cme9: ['cme5'], cme10: ['cme2'],
+    // Cierre 100 (12 nov 2026)
+    hio7: ['hio1'], hio8: ['hio6'], hio9: ['hio2'], hio10: ['hio5'], hio11: ['hio4'], hio12: ['hio3'],
+    nit8: ['nit1'], nit9: ['nit4'], nit10: ['nit3'], nit11: ['nit2'], nit12: ['nit1'], nit13: ['nit6'], nit14: ['nit7'],
+    car7: ['car2'], car8: ['car1'], car9: ['car4'], car10: ['car3'], car11: ['car2', 'car5'],
+    pab7: ['pab3', 'pab6'], pab8: ['pab1'], pab9: ['pab5'], pab10: ['pab4'], pab11: ['pab2'],
+    dgl9: ['dgl1'], dgl10: ['dgl4', 'dgl5', 'dgl8'], dgl11: ['dgl2', 'dgl6'], dgl12: ['dgl3'], dgl14: ['dgl1', 'dgl6'], dgl15: ['dgl8', 'dgl4'],
+    fen7: ['fen1', 'fen2'], fen8: ['fen3'], fen9: ['fen4'], fen10: ['fen5'], fen11: ['fen1', 'fen2'], fen12: ['fen6'],
+    bil7: ['bil1', 'bil4', 'bil5'], bil8: ['bil2'], bil9: ['bil3'], bil11: ['bil1'],
   };
   // Proposiciones que preguntan lo mismo que el ítem con cifra del informe: documentado.
   const RESPALDO = {
@@ -781,13 +944,26 @@
         { id: 'sp-red', izq: 'funde a más de 1500 °C, es insoluble en agua y no conduce ni sólido ni fundido', izqCorto: 'el que funde a más de 1500 °C', der: 'covalente de red' },
         { id: 'sp-molecular', izq: 'funde por debajo de 150 °C y no conduce ni sólido ni fundido', izqCorto: 'el que funde por debajo de 150 °C', der: 'molecular' },
       ] },
+    // UNMSM 2023-I (10.12.2022, p. 89): las especies de la dismutación del ácido nitroso.
+    { id: 'nitroso', unidad: 'quimica.enlace-quimico', izqNombre: 'cada descripción', izqVar: 'descripción', derNombre: 'la especie que describe, en 2 HNO₂ → NO + NO₂ + H₂O',
+      codigo: 'AQ-dismutacion-cruzada', pares: [
+        { id: 'ni-oxidada', izq: 'la especie oxidada, un gas pardo', izqCorto: 'la especie oxidada', der: 'NO₂' },
+        { id: 'ni-reducida', izq: 'la especie reducida, un gas incoloro', izqCorto: 'la especie reducida', der: 'NO' },
+        { id: 'ni-acido', izq: 'el ácido, con dos enlaces simples y uno doble', izqCorto: 'el ácido', der: 'HNO₂' },
+        { id: 'ni-anion', izq: 'el anión de las sales llamadas nitritos', izqCorto: 'el anión de los nitritos', der: 'NO₂⁻' },
+      ] },
   ];
 
   // ---------- Armado ----------
+  // Lo agregado en el cierre 100 (12 nov 2026) va en su propia bolsa; ver generar().
+  const IDS_NUEVOS = new Set(['hidratacion-oxidacion', 'acido-nitroso', 'carotenoide', 'paba', 'derivados-glucosa', 'fenton-lewis', 'bilirrubina', 'nitroso']);
+  const BOLSA_VIEJA = { temas: TEMAS.filter(t => !IDS_NUEVOS.has(t.id)), pares: PARES.filter(c => !IDS_NUEVOS.has(c.id)) };
+  const BOLSA_NUEVA = { temas: TEMAS.filter(t => IDS_NUEVOS.has(t.id)), pares: PARES.filter(c => IDS_NUEVOS.has(c.id)) };
   const ROM = ['I', 'II', 'III', 'IV', 'V'];
   const LET = ['a', 'b', 'c', 'd', 'e'];
   const COLOR = ['o', 'i', 'h', 'd'];
   const v = P.v;
+  const xml = P.xml;
   const NEGAR = 'AQ-negar-verdadera';
   const err = (id, clave, texto, explicacion, respaldo = null) => ({ id, clave, texto, explicacion,
     respaldo: respaldo || ERRORES[id].respaldo, fuente: ERRORES[id].fuente });
@@ -823,9 +999,21 @@
 
   function generar(semilla) {
     const rng = Azar.crear('quimica-conceptos|' + semilla);
+    // Los diagramas de Pourbaix salen con un azar aparte (7 % de los problemas): el resto no cambia de semilla.
+    const aparte = Azar.crear('quimica-conceptos|pourbaix|' + semilla);
+    const u = aparte.sig();
+    if (u < 0.07) {
+      for (let intento = 0; intento < 50; intento++) {
+        const pr = pourbaix(aparte);
+        if (pr && pr.alternativas.length >= 4) { pr.id = `quimica-conceptos#${semilla}`; return pr; }
+      }
+    }
+    // Los temas y los conjuntos del cierre 100 salen en otro 17 % con su propia bolsa; en el resto, la bolsa de antes:
+    // así cada semilla que ya existía da el mismo problema que antes.
+    const bolsa = u < 0.24 ? BOLSA_NUEVA : BOLSA_VIEJA;
     const tipo = rng.elegir(['vf', 'vf', 'vf', 'vf', 'incorrecta', 'incorrecta', 'correcta', 'correcta', 'relacionar', 'relacionar']);
     for (let intento = 0; intento < 500; intento++) {
-      const pr = tipo === 'vf' ? secuencia(rng) : tipo === 'relacionar' ? relacionar(rng) : unaSola(rng, tipo);
+      const pr = tipo === 'vf' ? secuencia(rng, bolsa) : tipo === 'relacionar' ? relacionar(rng, bolsa) : unaSola(rng, tipo, bolsa);
       if (pr && pr.alternativas.length >= 4) {
         pr.id = `quimica-conceptos#${semilla}`;
         return pr;
@@ -839,17 +1027,24 @@
   function cierre(o) {
     const temas = new Set([o.datos.tema, ...(o.datos.ids || []).map(id => (BANCO.find(b => b.id === id) || {}).tema)]);
     const convenciones = [...new Set([...temas].map(t => CONVENCION_POR_TEMA[t]).filter(Boolean))];
-    return { id: '', variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '', alternativas: o.alternativas,
+    const r = { id: '', variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '', alternativas: o.alternativas,
       solucion: o.solucion, respuesta: { valor: o.correcta.clave, texto: o.correcta.texto }, _datos: o.datos,
       ...(convenciones.length ? { convenciones } : {}) };
+    if (o.figura) r.figura = o.figura;
+    if (o.figuraSolucion) r.figuraSolucion = o.figuraSolucion;
+    return r;
   }
 
   // ---- vf: secuencia de 3 o 4 proposiciones ----
-  function secuencia(rng) {
-    const tema = rng.elegir(TEMAS);
+  function secuencia(rng, bolsa) {
+    const tema = rng.elegir(bolsa.temas);
     const n = rng.elegir([3, 4]);
     const props = tomar(rng, tema.props, n);
-    if (props.length < n || !props.some(p => p.verdad) || !props.some(p => !p.verdad)) return null;
+    return secuenciaDe(rng, tema, props, { tipo: 'vf', tema: tema.id, ids: props.map(p => p.id) });
+  }
+  // El armado de una secuencia V/F a partir de proposiciones ya elegidas (las del banco o las de un diagrama de Pourbaix).
+  function secuenciaDe(rng, tema, props, datos) {
+    if (props.length < 3 || !props.some(p => p.verdad) || !props.some(p => !p.verdad)) return null;
     const buena = props.map(vf);
     const sec = buena.join('');
     const correcta = { clave: 'vf:' + sec, texto: sec };
@@ -876,15 +1071,14 @@
     props.forEach((p, k) => enunciado.push(` ${ROM[k]}. ${p.texto}`));
     const solucion = props.map((p, k) => [p.verdad ? `${ROM[k]} es V. ${p.explicacion}` : `${ROM[k]} es F. ${p.explicacion} ${corregir(p)}`]);
     solucion.push([`La secuencia es ${sec}.`]);
-    return cierre({ variables: {}, enunciado, pregunta: ['¿Cuál es la secuencia correcta?'], alternativas, solucion, correcta,
-      datos: { tipo: 'vf', tema: tema.id, ids: props.map(p => p.id) } });
+    return cierre({ variables: {}, enunciado, pregunta: ['¿Cuál es la secuencia correcta?'], alternativas, solucion, correcta, datos });
   }
 
   // ---- incorrecta / correcta: una sola falsa (o una sola verdadera) entre 4 o 5 ----
-  function unaSola(rng, tipo) {
+  function unaSola(rng, tipo, bolsa) {
     const buscada = tipo === 'correcta'; // valor de verdad de la que se busca
     let n = rng.elegir([4, 5]);
-    const tema = rng.elegir(TEMAS);
+    const tema = rng.elegir(bolsa.temas);
     const meta = rng.elegir(tema.props.filter(p => p.verdad === buscada));
     let otras = tomar(rng, tema.props.filter(p => p.verdad !== buscada), n - 1, [meta]);
     if (otras.length < n - 1) { n = 4; otras = otras.slice(0, 3); }
@@ -914,8 +1108,8 @@
   }
 
   // ---- relacionar: 3 o 4 pares ----
-  function relacionar(rng) {
-    const conj = rng.elegir(PARES);
+  function relacionar(rng, bolsa) {
+    const conj = rng.elegir(bolsa.pares);
     const n = rng.elegir([3, 4]);
     const elegidos = [];
     for (const p of rng.barajar(conj.pares)) {
@@ -969,5 +1163,164 @@
       datos: { tipo: 'relacionar', conjunto: conj.id, ids: elegidos.map(p => p.id), derecha: derecha.map(p => p.id) } });
   }
 
-  return { id: 'quimica-conceptos', generar, BANCO, TEMAS: TEMAS.map(({ props, ...t }) => ({ ...t, ids: props.map(p => p.id) })), PARES, ERRORES };
+
+  // ---- pourbaix: leer un diagrama de potencial contra pH (UNMSM 2026-II, medicina, 15.03.2026, p. 88) ----
+  // Dos diagramas SIMPLIFICADOS propios (no son el del zinc del examen): el del aluminio, con límites redondeados que
+  // sirven para el ejercicio y no para datos de laboratorio, y el de un metal inventado «X». Cada zona es un polígono
+  // en (pH, E); la figura se dibuja con esos mismos polígonos y la especie estable de un punto es el polígono que lo
+  // contiene (la prueba lo recalcula con las rectas, sin los polígonos). El dato de acidez llega como pH, como [H⁺] o
+  // como pOH; los errores típicos son tomar el exponente o el pOH como si fuera el pH (pH = 14 − dato) y cambiar el
+  // signo del potencial.
+  const DIAGRAMAS = [
+    { id: 'aluminio', metal: 'el aluminio', de: 'del aluminio', ejeE: [-2.6, 0.6], especies: [
+      { id: 'Al', nombre: 'Al(s)', desc: 'metal sólido', poly: [[0, -2.6], [14, -2.6], [14, -2.4], [10, -2.16], [4, -1.8], [0, -1.8]], et: [7, -2.3] },
+      { id: 'Al3', nombre: 'Al³⁺(ac)', desc: 'catión disuelto', poly: [[0, -1.8], [4, -1.8], [4, 0.6], [0, 0.6]], et: [2, -0.6] },
+      { id: 'Al2O3', nombre: 'Al₂O₃(s)', desc: 'óxido sólido', poly: [[4, -1.8], [10, -2.16], [10, 0.6], [4, 0.6]], et: [7, -0.6] },
+      { id: 'AlO2', nombre: 'AlO₂⁻(ac)', desc: 'anión disuelto', poly: [[10, -2.16], [14, -2.4], [14, 0.6], [10, 0.6]], et: [12, -0.6] },
+    ] },
+    { id: 'metal-x', metal: 'el metal X', de: 'del metal inventado X', ejeE: [-1.2, 1.6], especies: [
+      { id: 'X', nombre: 'X(s)', desc: 'metal sólido', poly: [[0, -1.2], [14, -1.2], [14, -0.96], [8, -0.6], [0, -0.6]], et: [7, -0.95] },
+      { id: 'X2', nombre: 'X²⁺(ac)', desc: 'catión disuelto', poly: [[0, -0.6], [8, -0.6], [8, 1.0], [0, 1.0]], et: [4, 0.2] },
+      { id: 'XOH2', nombre: 'X(OH)₂(s)', desc: 'hidróxido sólido', poly: [[8, -0.6], [14, -0.96], [14, 0.64], [8, 1.0]], et: [11, 0.0] },
+      { id: 'XO4', nombre: 'XO₄²⁻(ac)', desc: 'anión disuelto', poly: [[0, 1.0], [8, 1.0], [14, 0.64], [14, 1.6], [0, 1.6]], et: [7, 1.3] },
+    ] },
+  ];
+  const dentro = (poly, x, y) => {
+    let c = false;
+    for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+      const [xi, yi] = poly[i], [xj, yj] = poly[j];
+      if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) c = !c;
+    }
+    return c;
+  };
+  // Especie estable en (pH, E). Fuera del cuadro (el signo cambiado puede dejarlo fuera) se lee la zona más cercana al borde.
+  function especieEn(d, pH, E) {
+    const x = Math.min(13.999, Math.max(0.001, pH)), y = Math.min(d.ejeE[1] - 1e-6, Math.max(d.ejeE[0] + 1e-6, E));
+    const e = d.especies.find(s => dentro(s.poly, x, y));
+    if (!e) throw new Error(`especieEn: (${pH}, ${E}) no cae en ninguna zona de ${d.id}`);
+    return e;
+  }
+  // Un punto al que no le falte margen: la misma zona 0,4 de pH y 0,1 V alrededor.
+  const seguro = (d, pH, E) => {
+    const z = especieEn(d, pH, E);
+    for (const a of [-0.4, 0, 0.4]) for (const b of [-0.1, 0, 0.1]) if (especieEn(d, pH + a, E + b) !== z) return false;
+    return true;
+  };
+  const SUP = { 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹' };
+  const sup = n => String(n).split('').map(c => SUP[c]).join('');
+  const fEv = e => (e < 0 ? '−' : '') + Math.abs(e).toFixed(1).replace('.', ',');
+  const fpH = n => (Number.isInteger(n) ? String(n) : n.toFixed(1).replace('.', ','));
+  const datoPH = (forma, pH) => (forma === 'H' ? `[H⁺] = 10⁻${sup(pH)} M` : forma === 'pOH' ? `pOH = ${fpH(14 - pH)}` : `pH = ${fpH(pH)}`);
+  const convPH = (forma, pH) => (forma === 'H' ? `pH = −log[H⁺] = ${pH}` : forma === 'pOH' ? `pH = 14 − pOH = 14 − ${fpH(14 - pH)} = ${fpH(pH)}` : `pH = ${fpH(pH)} (el dato ya es el pH)`);
+  const CODIGO_PH = { H: 'AQ-pourbaix-h-poh', pOH: 'AQ-pourbaix-poh-ph', pH: 'AQ-pourbaix-ph-poh' };
+  const POURBAIX_CODIGOS = ['AQ-pourbaix-h-poh', 'AQ-pourbaix-poh-ph', 'AQ-pourbaix-ph-poh', 'AQ-pourbaix-signo-e', 'AQ-pourbaix-lectura'];
+  // Lo que da cada lectura equivocada de un punto.
+  function lecturas(d, forma, pH, E) {
+    const k = pH;
+    const cambio = especieEn(d, 14 - pH, E), signo = especieEn(d, pH, -E);
+    const expCambio = forma === 'H' ? `Tomaste el exponente (${k}) como si fuera el pOH: eso da pH = 14 − ${k} = ${14 - k}. Pero [H⁺] = 10⁻${sup(k)} M ya da pH = ${k}.`
+      : forma === 'pOH' ? `Usaste el pOH (${fpH(14 - pH)}) como si fuera el pH. Hay que pasarlo: pH = 14 − ${fpH(14 - pH)} = ${fpH(pH)}.`
+      : `Cambiaste el pH por 14 − pH = ${fpH(14 - pH)}, que sería el pOH.`;
+    return { cambio, signo, expCambio, expSigno: `Cambiaste el signo del potencial: el punto está en E = ${fEv(E)} V, no en ${fEv(-E)} V.`,
+      expLectura: 'Esa especie es la estable en otra zona del diagrama: ubica primero el pH en el eje horizontal y después el potencial en el eje vertical.' };
+  }
+  function puntoSeguro(rng, d, forma, trampa) {
+    let ultimo = null;
+    for (let i = 0; i < 400; i++) {
+      const pH = forma === 'H' ? rng.entero(1, 13) : rng.entero(1, 27) / 2;
+      const E = rng.entero(Math.ceil(d.ejeE[0] * 10) + 1, Math.floor(d.ejeE[1] * 10) - 1) / 10;
+      // También los puntos de las lecturas con error (pH cambiado por 14 − pH y potencial con el signo cambiado) deben tener margen.
+      const Ec = Math.min(d.ejeE[1] - 0.1, Math.max(d.ejeE[0] + 0.1, -E));
+      if (E === 0 || !seguro(d, pH, E) || !seguro(d, 14 - pH, E) || !seguro(d, pH, Ec)) continue;
+      ultimo = { pH, E };
+      if (!trampa || especieEn(d, 14 - pH, E) !== especieEn(d, pH, E)) return ultimo;
+    }
+    return ultimo;
+  }
+  function svgPourbaix(d, marcas) {
+    const W = 380, H = 266, x0 = 50, x1 = 366, y0 = 22, y1 = 222, [e0, e1] = d.ejeE;
+    const X = ph => x0 + (x1 - x0) * ph / 14, Y = e => y1 - (y1 - y0) * (e - e0) / (e1 - e0);
+    const nE = e => (e === 0 ? '0' : fEv(e));
+    let s = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" font-family="inherit" style="color:inherit">`;
+    d.especies.forEach((sp, k) => {
+      s += `<polygon points="${sp.poly.map(([a, b]) => `${X(a).toFixed(1)},${Y(b).toFixed(1)}`).join(' ')}" style="fill:currentColor;fill-opacity:${[0.05, 0.12, 0.18, 0.09][k]};stroke:var(--muted)" stroke-width="1.2"/>`;
+      s += `<text x="${X(sp.et[0]).toFixed(1)}" y="${(Y(sp.et[1]) + 4).toFixed(1)}" text-anchor="middle" font-size="13" style="fill:currentColor">${xml(sp.nombre)}</text>`;
+    });
+    s += `<rect x="${x0}" y="${y0}" width="${x1 - x0}" height="${y1 - y0}" style="fill:none;stroke:currentColor" stroke-width="1.6"/>`;
+    for (let ph = 0; ph <= 14; ph += 2) s += `<line x1="${X(ph)}" y1="${y1}" x2="${X(ph)}" y2="${y1 + 4}" style="stroke:currentColor"/><text x="${X(ph)}" y="${y1 + 17}" text-anchor="middle" font-size="12" style="fill:currentColor">${ph}</text>`;
+    for (let e = Math.ceil(e0 * 2) / 2; e <= e1 + 1e-9; e += 0.5) {
+      const ee = Math.round(e * 10) / 10;
+      s += `<line x1="${x0 - 4}" y1="${Y(ee).toFixed(1)}" x2="${x0}" y2="${Y(ee).toFixed(1)}" style="stroke:currentColor"/><text x="${x0 - 7}" y="${(Y(ee) + 4).toFixed(1)}" text-anchor="end" font-size="12" style="fill:currentColor">${nE(ee)}</text>`;
+    }
+    s += `<text x="${(x0 + x1) / 2}" y="${H - 6}" text-anchor="middle" font-size="13" style="fill:currentColor">pH</text>`;
+    s += `<text x="${x0}" y="13" text-anchor="middle" font-size="13" style="fill:currentColor">E (V)</text>`;
+    for (const m of marcas || []) {
+      const cx = X(m.pH).toFixed(1), cy = Y(m.E).toFixed(1), cH = m.colorPH || 'currentColor', cE = m.colorE || 'currentColor';
+      s += `<line x1="${cx}" y1="${cy}" x2="${cx}" y2="${y1}" style="stroke:${cH}" stroke-width="1.6" stroke-dasharray="4 3"/>`;
+      s += `<line x1="${cx}" y1="${cy}" x2="${x0}" y2="${cy}" style="stroke:${cE}" stroke-width="1.6" stroke-dasharray="4 3"/>`;
+      s += `<circle cx="${cx}" cy="${cy}" r="4.5" style="fill:var(--card);stroke:currentColor" stroke-width="2"/>`;
+      if (m.rotulo) s += `<text x="${(+cx + 8).toFixed(1)}" y="${(+cy - 7).toFixed(1)}" font-size="13" font-weight="700" style="fill:currentColor">${xml(m.rotulo)}</text>`;
+    }
+    return s + '</svg>';
+  }
+  const altPourbaix = (d, extra) => `Diagrama de Pourbaix simplificado ${d.de}: potencial en voltios contra pH, dividido en cuatro zonas: ${d.especies.map(e => `${e.nombre} (${e.desc})`).join(', ')}.${extra ? ' ' + extra : ''}`;
+
+  // Tipo A: ¿qué especie es estable en el punto (E, dato de acidez)?
+  function pourbaixEspecie(rng) {
+    const d = rng.elegir(DIAGRAMAS), forma = rng.elegir(['H', 'H', 'pOH', 'pH']);
+    const { pH, E } = puntoSeguro(rng, d, forma, true);
+    const verdad = especieEn(d, pH, E), L = lecturas(d, forma, pH, E);
+    const texto = e => `${e.nombre} (${e.desc})`;
+    const correcta = { clave: 'pb:' + verdad.id, texto: texto(verdad) };
+    const errores = d.especies.filter(e => e !== verdad).map(e => {
+      const [id, ex] = e === L.cambio ? [CODIGO_PH[forma], L.expCambio] : e === L.signo ? ['AQ-pourbaix-signo-e', L.expSigno] : ['AQ-pourbaix-lectura', L.expLectura];
+      return err(id, 'pb:' + e.id, texto(e), ex);
+    });
+    const alternativas = P.armarTexto({ correcta, errores: rng.barajar(errores), rng, total: 4 });
+    const variables = { pH: { nombre: 'acidez (pH)', color: 'i' }, E: { nombre: 'potencial E', color: 'o' } };
+    const enunciado = [`En el diagrama de Pourbaix simplificado ${d.de} de la figura, ${d.metal} se encuentra a un potencial de `, v('E', `${fEv(E)} V`), ' y a ', v('pH', datoPH(forma, pH)), '.'];
+    const solucion = [
+      ['Pasa el dato de acidez a pH: ', v('pH', convPH(forma, pH)), '.'],
+      ['Ubica el pH ', v('pH', fpH(pH)), ' en el eje horizontal y el potencial ', v('E', `${fEv(E)} V`), ' en el eje vertical.'],
+      [`El punto cae en la zona de ${verdad.nombre}: ${verdad.desc}.`],
+    ];
+    return cierre({ variables, enunciado, pregunta: [`¿Cuál es la especie estable ${d.de.replace(" inventado", "")}?`], alternativas, solucion, correcta,
+      datos: { tipo: 'pourbaix', sub: 'especie', diagrama: d.id, forma, pH, E },
+      figura: { svg: svgPourbaix(d, []), alt: altPourbaix(d) },
+      figuraSolucion: { svg: svgPourbaix(d, [{ pH, E, colorPH: 'var(--c-i)', colorE: 'var(--c-o)' }]), alt: altPourbaix(d, `El punto (pH ${fpH(pH)}; E ${fEv(E)} V) cae en la zona de ${verdad.nombre}.`) } });
+  }
+
+  // Tipo B: tres puntos, cada uno con la especie que se afirma; ¿cuáles afirmaciones son verdaderas?
+  function pourbaixVF(rng) {
+    const d = rng.elegir(DIAGRAMAS);
+    const props = [], marcas = [];
+    const quedan = rng.barajar([true, false, rng.moneda()]);
+    for (let k = 0; k < 3; k++) {
+      const forma = rng.elegir(['H', 'pOH', 'pH']);
+      let pt, intentos = 0;
+      do { pt = puntoSeguro(rng, d, forma, !quedan[k]); intentos++; } while (marcas.some(m => m.pH === pt.pH && m.E === pt.E) && intentos < 20);
+      const { pH, E } = pt, verdad = especieEn(d, pH, E), L = lecturas(d, forma, pH, E);
+      let dicha = verdad, error = null, nota = '';
+      if (!quedan[k]) {
+        const trampas = [[L.cambio, CODIGO_PH[forma], L.expCambio], [L.signo, 'AQ-pourbaix-signo-e', L.expSigno]].filter(t => t[0] !== verdad);
+        const t = trampas.length ? rng.elegir(trampas) : null;
+        if (t) { dicha = t[0]; error = t[1]; nota = ' ' + t[2]; }
+        else { dicha = rng.elegir(d.especies.filter(e => e !== verdad)); error = 'AQ-pourbaix-lectura'; nota = ' ' + L.expLectura; }
+      }
+      const frase = e => `Con ${datoPH(forma, pH)} y E = ${fEv(E)} V, ${d.metal} está como ${e.nombre}.`;
+      const base = `${convPH(forma, pH)}; con E = ${fEv(E)} V el punto cae en la zona de ${verdad.nombre}.`;
+      props.push({ id: 'pb' + k, texto: frase(dicha), verdad: dicha === verdad, error, negar: null, excluye: [], respaldo: null,
+        explicacion: dicha === verdad ? base : `${base}${nota}`, corregida: frase(verdad) });
+      marcas.push({ pH, E, rotulo: ROM[k] });
+    }
+    const tema = { id: 'pourbaix', nombre: `el diagrama de Pourbaix simplificado ${d.de} de la figura`, contexto: null };
+    const r = secuenciaDe(rng, tema, props, { tipo: 'pourbaix', sub: 'vf', diagrama: d.id, puntos: marcas.map((m, k) => ({ pH: m.pH, E: m.E, dicha: props[k].texto, verdad: props[k].verdad })) });
+    if (!r) return null;
+    r.figura = { svg: svgPourbaix(d, []), alt: altPourbaix(d) };
+    r.figuraSolucion = { svg: svgPourbaix(d, marcas), alt: altPourbaix(d, `Los puntos I, II y III caen en las zonas ${props.map((p, k) => `${ROM[k]}: ${especieEn(d, marcas[k].pH, marcas[k].E).nombre}`).join('; ')}.`) };
+    return r;
+  }
+  function pourbaix(rng) { return rng.sig() < 0.5 ? pourbaixEspecie(rng) : pourbaixVF(rng); }
+
+  return { id: 'quimica-conceptos', generar, BANCO, TEMAS: TEMAS.map(({ props, ...t }) => ({ ...t, ids: props.map(p => p.id) })), PARES, ERRORES, POURBAIX: { DIAGRAMAS, especieEn, codigos: POURBAIX_CODIGOS } };
 });

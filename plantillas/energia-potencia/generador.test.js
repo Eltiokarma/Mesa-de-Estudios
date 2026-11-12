@@ -78,6 +78,11 @@ function recalcular(p) {
     for (let j = 1; j <= T; j++) E += d.porPiso * d.carga * g * d.h * j;
     return E / 1000;
   }
+  if (d.tipo === 'resorte') {
+    // Energía guardada con el primer disparo (en g·m²/s², da igual la unidad) y rapidez del segundo por bisección.
+    const E = (d.m1 + d.M) * d.v1 * d.v1 / 2;
+    return biseccion(x => (d.m2 + d.M) * x * x / 2 - E, 0, 1000);
+  }
   if (d.tipo === 'rebotes') return rebote(d.h, d.p, d.n, d.sub);
   const W = trabajoCuerda(d.b, d.x1, d.x2, d.F);
   return d.sub === 'trabajo' ? W : Math.sqrt(2 * W / d.m);
@@ -98,7 +103,7 @@ for (const c of casos.casos) {
 }
 
 const SUBTIPOS = ['bomba/consumida', 'bomba/util', 'cuerda/rapidez', 'cuerda/trabajo', 'fv/eficiencia', 'fv/horizontal', 'fv/subida', 'fv/velocidad',
-  'peso/escalera', 'peso/grua', 'pisos', 'rebotes/choque', 'rebotes/rapidez', 'rebotes/tramo'];
+  'peso/escalera', 'peso/grua', 'pisos', 'rebotes/choque', 'rebotes/rapidez', 'rebotes/tramo', 'resorte/masa-efectiva'];
 
 test('salen todos los tipos y subtipos; las alternativas llevan la misma unidad', () => {
   const vistos = new Set();
@@ -191,6 +196,7 @@ const VERIFICAR = {
   eficiencia: ({ Pc, eta, vkmh }) => eta * Pc * 1000 / (vkmh * 1000 / 3600),
   pisos: ({ M, carga, cantidad, porPiso, h }) => recalcular({ _datos: { tipo: 'pisos', M, carga, cantidad, porPiso, h } }) * 1000,
   rebote: ({ h, queda, veces }) => { let x = h; for (let i = 0; i < veces; i++) x *= queda; return x; },
+  resorte: ({ m1, M, m2, v1 }) => recalcular({ _datos: { tipo: 'resorte', m1, M, m2, v1 } }),
   cuerda: ({ b, x1, x2, F, m }) => Math.sqrt(2 * trabajoCuerda(b, x1, x2, F) / m),
 };
 
