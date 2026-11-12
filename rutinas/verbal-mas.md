@@ -85,7 +85,7 @@ Los géneros son variados, como en el examen: aviso, divulgación, carta, blog, 
 
 ## Pruebas
 
-- **`npm test`:** 7730 en verde y **1 en rojo esperado**, «app/datos/catalogo.json está al día». Pasa en cuanto la integración corra `npm run catalogo`: lo comprobé armándolo en local y devolviendo `app/datos/` a como estaba. Cada commit de tanda se probó en un worktree limpio, sin los borradores de las tandas que seguían en curso.
+- **`npm test`:** 7735 en verde y **1 en rojo esperado**, «app/datos/catalogo.json está al día». Pasa en cuanto la integración corra `npm run catalogo`: lo comprobé armándolo en local y devolviendo `app/datos/` a como estaba. Cada commit de tanda se probó en un worktree limpio, sin los borradores de las tandas que seguían en curso.
 - **`herramientas/alternativas.test.js`:** en verde. En todo el banco de lectura, la correcta es la más larga, sola, en el 14 % de las preguntas. En las 200 nuevas, en 25 (12,5 %).
 - **Papel:** regenerado con `node herramientas/papel-lectura.js`.
 - **Núcleo:** no cambié nada de `nucleo/` ni de `app/`. Los textos usan el formato de la sección 5.8 tal cual.
@@ -98,7 +98,7 @@ Los géneros son variados, como en el examen: aviso, divulgación, carta, blog, 
 ## Lo que queda
 
 - **5 textos en inglés** para llegar a los 15 pedidos.
-- **Códigos en las incompatibilidades:** ahí los distractores compatibles con el texto llevan RV8, RV10 o RV34, porque no hay un código propio para «es compatible, no incompatible». Si se quiere medir ese error aparte, haría falta un código nuevo en el informe.
+- **Códigos en las incompatibilidades:** ahí los distractores compatibles con el texto llevan RV5, RV8, RV10, RV11 o RV34, porque no hay un código propio para «es compatible, no incompatible». Si se quiere medir ese error aparte, haría falta un código nuevo en el informe.
 - **Hechos de memoria** (anotados en cada `revision.notas`): conviene una pasada con las fuentes abiertas antes del piloto. Algunos hosts (elperuano.pe, whc.unesco.org, es.wikipedia.org) no están permitidos en la red de la sesión.
 - **Dificultad real:** que el revisor acierte todo dice que la clave es única, no que los ítems sean difíciles. Hay que mirar los datos del piloto.
 - **Formato de los JSON:** algunos revisores guardaron los JSON con sangría completa en lugar del estilo compacto. El contenido está bien; solo cambia cómo se ve el diff.
