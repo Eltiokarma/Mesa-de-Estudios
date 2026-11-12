@@ -25,7 +25,20 @@
  *   tapada      un triángulo, un rombo o una cuadrícula con una casilla tapada (■) por la que no se pasa:
  *               total − (llegan × salen). { base, ..., tapada: [fila, posición en la fila] (desde 1) }
  *
+ *   doble       palabra que empieza con dos letras iguales (LLOVIZNA) en un arreglo triangular de letras donde la fila k
+ *               tiene k + 1 casillas y trae la k-ésima letra (la fila 1 tiene dos casillas). Vecinas a igual distancia
+ *               mínima: las dos de al lado en la misma fila y las dos de arriba y las dos de abajo. Se puede volver a
+ *               pasar por una casilla. { palabra }  (UNMSM 2024-I; semilla 'unmsm-2024-I-28'.)
+ *   malla       dos mallas intercaladas: las letras de una palabra X Z Y Z (… ) con las de lugar par en una malla de
+ *               filas × columnas y la letra Z en todas las casillas de otra malla corrida media casilla a la derecha
+ *               y media hacia abajo. Vecinas a igual distancia mínima: las cuatro en diagonal. Se puede volver a pasar
+ *               por una casilla (ida y vuelta). { palabra, filas, columnas, letras: [[..]] }  (UNMSM 2025-II;
+ *               semilla 'unmsm-2025-II-29'.)
+ *
  * calc (puras, sin azar):
+ *   doble({ palabra }) → { total, soloAbajo (las lecturas que siempre bajan), numeros (por fila, lo que llega a cada
+ *                          letra), n }
+ *   malla({ palabra, filas, columnas, letras }) → { total, sinRepetir, soloAbajo, porInicio: [{ fila, columna, n }], … }
  *   arreglo(spec)  → { filas: [[{ c, l }]] (c: columna, en medias casillas si mov = 'diag'), mov }.
  *   lecturas(spec) → { total, numeros (por fila, lo que llega a cada letra de arriba abajo), llegan, salen }
  *                    (llegan y salen, solo si hay tapada: lecturas que llegan a la tapada y que salen de ella).
@@ -37,7 +50,9 @@
  * donde no va: 2 por paso aunque en los bordes haya una sola salida, o pasos por pasos), RMP82 (contar las
  * casillas en vez de los caminos), RMP83 (sumar opciones, tramos o caminos que se combinan, en vez de
  * multiplicarlos) y RMP84 (contar solo una parte: hasta la fila ancha, un tramo, solo el centro, una lectura
- * por letra final o un solo sentido).
+ * por letra final, un solo sentido o solo las lecturas que bajan). Nuevas (cierre-100): RMP113 (un solo caso de
+ * comienzo en las dos L), RMP114 (una sola L arriba), RMP115 (no volver a pasar por una casilla) y RMP116 (una
+ * sola letra de salida, multiplicada).
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -157,6 +172,173 @@
     return out;
   }
 
+  // ---------- doble: triángulo de k + 1 casillas por fila, con vecinas también en la misma fila ----------
+  function doble({ palabra }) {
+    const n = palabra.length, filas = [];
+    for (let k = 1; k <= n; k++) filas.push(Array.from({ length: k + 1 }, (_, j) => ({ c: 2 * j - k, l: palabra[k - 1] })));
+    // vecinas: misma fila a 2 medias casillas; filas seguidas a 1
+    const vec = (fi, c) => {
+      const out = [];
+      for (const [fj, r] of filas.entries()) r.forEach((y, q) => {
+        if ((fj === fi && Math.abs(y.c - c) === 2) || (Math.abs(fj - fi) === 1 && Math.abs(y.c - c) === 1)) out.push([fj, q]);
+      });
+      return out;
+    };
+    // pasos[t][fi][q]: lecturas de las t + 1 primeras letras que terminan en esa casilla
+    let act = filas.map(r => r.map(x => (x.l === palabra[0] ? 1 : 0)));
+    const porFila = [act];
+    for (let t = 1; t < n; t++) {
+      const sig = filas.map(r => r.map(() => 0));
+      filas.forEach((r, fi) => r.forEach((x, q) => {
+        if (!act[fi][q]) return;
+        for (const [fj, k] of vec(fi, x.c)) if (filas[fj][k].l === palabra[t]) sig[fj][k] += act[fi][q];
+      }));
+      act = sig; porFila.push(act);
+    }
+    const total = act.flat().reduce((a, b) => a + b, 0);
+    // numeros[fi]: lecturas de las fi + 1 primeras letras que terminan en cada casilla de la fila fi + 1
+    const numeros = filas.map((r, fi) => r.map((x, q) => (fi === 0 ? 0 : porFila[fi][fi][q])));
+    return { total, soloAbajo: 2 ** n, filas, numeros, n };
+  }
+
+  // ---------- malla: dos mallas intercaladas, vecinas en diagonal ----------
+  // Posiciones en medias casillas: las letras de la malla A en (2·columna, 2·fila), las de la B (todas Z) en
+  // (2·columna + 1, 2·fila + 1). Dos casillas son vecinas si están a una media casilla en cada eje.
+  function mallaCasillas(spec) {
+    const cs = [];
+    for (let r = 0; r < spec.filas; r++) for (let c = 0; c < spec.columnas; c++) {
+      cs.push({ x: 2 * c, y: 2 * r, l: spec.letras[r][c], tipo: 'A', fila: r, col: c });
+      cs.push({ x: 2 * c + 1, y: 2 * r + 1, l: spec.palabra[1], tipo: 'B', fila: r, col: c });
+    }
+    return cs;
+  }
+  function malla(spec) {
+    const w = spec.palabra, cs = mallaCasillas(spec);
+    const vec = cs.map(a => cs.map((b, j) => (Math.abs(a.x - b.x) === 1 && Math.abs(a.y - b.y) === 1 ? j : -1)).filter(j => j >= 0));
+    // lecturas: todas, las que no repiten casilla y las que siempre bajan
+    const total = (i, t) => (cs[i].l !== w[t] ? 0 : t === w.length - 1 ? 1 : vec[i].reduce((s, j) => s + total(j, t + 1), 0));
+    const sin = (i, t, usadas) => {
+      if (cs[i].l !== w[t] || usadas.has(i)) return 0;
+      if (t === w.length - 1) return 1;
+      usadas.add(i);
+      const r = vec[i].reduce((s, j) => s + sin(j, t + 1, usadas), 0);
+      usadas.delete(i);
+      return r;
+    };
+    const baja = (i, t) => (cs[i].l !== w[t] ? 0 : t === w.length - 1 ? 1 : vec[i].filter(j => cs[j].y > cs[i].y).reduce((s, j) => s + baja(j, t + 1), 0));
+    const porInicio = [];
+    cs.forEach((c, i) => { if (c.l === w[0] && c.tipo === 'A') porInicio.push({ fila: c.fila + 1, columna: c.col + 1, n: total(i, 0) }); });
+    const tot = porInicio.reduce((s, x) => s + x.n, 0);
+    let sinRepetir = 0, soloAbajo = 0;
+    cs.forEach((c, i) => { if (c.l === w[0] && c.tipo === 'A') { sinRepetir += sin(i, 0, new Set()); soloAbajo += baja(i, 0); } });
+    return { total: tot, sinRepetir, soloAbajo, porInicio, casillas: cs };
+  }
+  const PALABRAS_MALLA = {
+    4: { O: ['LODO', 'SOLO', 'TOPO', 'MOTO', 'LOBO', 'POZO', 'LOGO', 'TORO', 'POLO', 'COLO'], A: ['CASA', 'MASA', 'PATA', 'SALA', 'LAVA', 'LANA', 'MALA', 'TAPA', 'PALA', 'CAMA', 'MATA', 'RATA'] },
+    5: { O: ['SALAS', 'CASAS', 'PATAS', 'LANAS', 'MALAS', 'TAPAS', 'LOTOS'], A: ['MOTOS', 'LOBOS', 'POZOS', 'LOGOS', 'TOROS', 'POLOS', 'COLOS'] },
+  };
+
+  const figuraMalla = (spec, rotulo) => {
+    const cs = mallaCasillas(spec), u = 24, W = 2 * spec.columnas * u + 40, H = 2 * spec.filas * u + 36;
+    let s = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" font-family="inherit">`;
+    cs.forEach(c => {
+      const X = (24 + c.x * u).toFixed(1), Y = 28 + c.y * u;
+      if (rotulo) s += `<text x="${X}" y="${Y}" font-size="14" text-anchor="middle" font-weight="700" style="fill:var(--c-d)">${P.xml(rotulo(c))}</text>`;
+      else s += `<text x="${X}" y="${Y}" font-size="17" text-anchor="middle" ${c.tipo === 'B' ? 'style="fill:var(--c-i)"' : 'fill="currentColor"'}>${P.xml(c.l)}</text>`;
+    });
+    return s + '</svg>';
+  };
+  const altMalla = spec => {
+    const cs = mallaCasillas(spec);
+    const filas = [];
+    for (let y = 0; y < 2 * spec.filas; y++) {
+      const fila = cs.filter(c => c.y === y).sort((a, b) => a.x - b.x);
+      filas.push(`fila ${y + 1}: ${fila.map(c => `${c.l} (${c.x + 1})`).join(', ')}`);
+    }
+    return 'Letras en filas que se alternan: una fila de la primera malla, una fila de la segunda (la que está corrida media casilla a la derecha y media hacia abajo). Cada letra es vecina de las cuatro que están en diagonal. Entre paréntesis va la posición de cada letra contada en medias casillas desde la izquierda: dos letras de filas seguidas son vecinas si sus posiciones se diferencian en 1. De arriba abajo: ' + filas.join('; ') + '.';
+  };
+  const figuraDoble = (d, rotulo) => {
+    const A = { filas: d.filas, mov: 'diag' };
+    return svgArreglo(A, rotulo);
+  };
+  const altDoble = d => {
+    const minC = -d.n;
+    return 'Arreglo triangular de letras en filas; cada letra tiene como vecinas, a igual distancia, las dos de su misma fila (la de la izquierda y la de la derecha), las dos de la fila de arriba y las dos de la de abajo que están más cerca (en los bordes puede faltar alguna). Entre paréntesis va la posición de cada letra contada en medias casillas desde la izquierda: dos letras de la misma fila son vecinas si sus posiciones se diferencian en 2, y dos de filas seguidas si se diferencian en 1. De arriba abajo: '
+      + d.filas.map((r, i) => `fila ${i + 1}: ${r.map(x => `${x.l} (${x.c - minC + 1})`).join(', ')}`).join('; ') + '.';
+  };
+
+  // Errores y problema de los dos tipos nuevos
+  function construirDoble(rng, semilla, spec, fuente) {
+    const D = doble(spec), n = D.n, w = spec.palabra, correcta = D.total;
+    const errores = [
+      h('RMP113-un-caso', D.soloAbajo, 'Contaste solo las lecturas en que cada paso baja de fila (la primera L arriba y la segunda en la fila de abajo). Falta el otro comienzo: las dos L en la misma fila, una al lado de la otra.'),
+      h('RMP114-una-L', D.soloAbajo / 2, 'Contaste como si arriba hubiera una sola L, como en un triángulo común. En la fila de arriba hay dos L, y desde cualquiera de ellas se puede empezar.'),
+      h('RMP82-casillas', D.filas.flat().length, 'Contaste las casillas del arreglo, no los caminos que deletrean la palabra.'),
+      h('RMP83-suma-opciones', 2 * (n - 1), 'Sumaste las dos opciones de cada paso (2 + 2 + …). Las opciones de pasos seguidos se combinan entre sí: se multiplican.'),
+    ];
+    const alternativas = P.armar({ correcta, errores, rng, decimales: 0, texto: x => f(x) });
+    const nums = D.numeros;
+    const filaTxt = nums.map((r, i) => (i === 0 ? null : `fila ${i + 1}: ${r.join(', ')}`)).filter(Boolean).join('; ');
+    const enunciado = ['En el arreglo de la figura se quiere leer ', v('w', `la palabra ${w}`), '. Cada letra se lee pasando a una vecina a igual distancia mínima: las dos de su misma fila (la de la izquierda y la de la derecha) y las dos de la fila de arriba y las dos de la fila de abajo que están más cerca. Se puede empezar en cualquier letra.'];
+    const pregunta = [`¿De cuántas maneras diferentes se puede leer la palabra ${w}?`];
+    const solucion = [
+      [`Las dos primeras letras son iguales (${w[0]}), y la tercera (${w[2]}) solo aparece en la fila 3. Así que la segunda ${w[1]} tiene que estar en la fila 2, la única fila de ${w[0]} que toca la fila 3.`],
+      [`Comienzo A: la primera ${w[0]} en la fila 1 (2 casillas) y la segunda en la fila 2. Comienzo B: las dos en la fila 2, una al lado de la otra (2 parejas de vecinas, cada una en los dos órdenes). Las lecturas que llegan a las 3 casillas de la fila 2 son ${nums[1].join(', ')}.`],
+      ['Desde ahí cada letra recibe lo que llega de sus dos vecinas de la fila de arriba (triángulo de Pascal). Lecturas que llegan a cada casilla, de arriba abajo: ' + filaTxt + '.'],
+      [`En la última fila suman ${nums[n - 1].join(' + ')} = `, v('x', f(correcta)), `. Atajo: ${nums[1].reduce((a, b) => a + b, 0)} lecturas llegan a la fila 2 y cada una puede bajar de 2 formas en cada uno de los ${n - 2} pasos que quedan: ${nums[1].reduce((a, b) => a + b, 0)} · 2^${n - 2} = ${f(correcta)}.`],
+    ];
+    return {
+      id: `${ID}#${semilla}`, variables, enunciado, pregunta, datos: fuente || '',
+      figura: { svg: figuraDoble(D), alt: altDoble(D) },
+      figuraSolucion: { svg: figuraDoble(D, (fi, k) => (fi === 0 ? '·' : D.numeros[fi][k])), alt: `El mismo arreglo con el número de lecturas que llega a cada casilla, de arriba abajo (la fila 1 sin número): ${D.numeros.map((r, i) => (i === 0 ? null : `fila ${i + 1}: ${r.join(' ')}`)).filter(Boolean).join('; ')}.` },
+      alternativas, solucion, respuesta: { valor: correcta, unidad: 'lecturas' }, _datos: { tipo: 'doble', ...spec },
+    };
+  }
+
+  function construirMalla(rng, semilla, spec, fuente) {
+    const M = malla(spec), w = spec.palabra, correcta = M.total, k = M.porInicio.length;
+    const cs = M.casillas;
+    const errores = [];
+    if (M.sinRepetir !== correcta) errores.push(h('RMP115-sin-volver', M.sinRepetir, 'Contaste solo las lecturas que no pasan dos veces por la misma casilla. El enunciado dice que se puede volver a pasar: «ida y vuelta» también cuenta, y son lecturas distintas.'));
+    if (M.sinRepetir !== correcta) errores.push(h('RMP45-vuelta-doble', correcta + (correcta - M.sinRepetir), 'Contaste las lecturas que vuelven por la misma casilla dos veces: una vez con todas y otra aparte. Cada lectura es una sola, vuelva o no vuelva.'));
+    if (M.soloAbajo !== correcta) errores.push(h('RMP84-solo-abajo', M.soloAbajo, 'Contaste solo las lecturas que siempre bajan. También valen las que suben, porque cada paso puede ir a cualquiera de las cuatro vecinas en diagonal.'));
+    const una = M.porInicio[0].n * k;
+    if (una !== correcta) errores.push(h('RMP116-una-salida', una, `Contaste las lecturas que salen de la primera ${w[0]} (${M.porInicio[0].n}) y las multiplicaste por las ${k} letras ${w[0]}. Cada ${w[0]} tiene su propia cuenta: sus vecinas no son las mismas.`));
+    errores.push(h('RMP82-casillas', cs.length, 'Contaste las letras de la figura, no los caminos que deletrean la palabra.'));
+    const alternativas = P.armar({ correcta, errores, rng, decimales: 0, texto: x => f(x) });
+    const rot = c => (c.l === w[0] && c.tipo === 'A' ? String(M.porInicio.find(x => x.fila === c.fila + 1 && x.columna === c.col + 1).n) : '');
+    const enunciado = ['En el arreglo de la figura se quiere leer ', v('w', `la palabra ${w}`), '. Cada letra se lee pasando a una vecina a igual distancia mínima (las cuatro que están en diagonal). Se puede empezar en cualquier letra, y se puede volver a pasar por una letra ya usada: ir y volver por la misma casilla cuenta como otra lectura.'];
+    const pregunta = [`¿De cuántas maneras diferentes se puede leer la palabra ${w}?`];
+    const lista = M.porInicio.map(x => `${x.n} (fila ${x.fila}, columna ${x.columna})`).join('; ');
+    const solucion = [
+      [`Cada lectura va de una ${w[0]} a una ${w[1]} vecina, luego a la ${w[2]} vecina, luego a la ${w[3]} vecina${w.length > 4 ? ', y así hasta la última letra' : ''}. Para cada letra de salida se cuentan sus caminos: sus vecinas ${w[1]}, de cada una sus vecinas ${w[2]}, y así sucesivamente.`],
+      ['Una letra de un borde tiene menos vecinas en diagonal que una del centro, por eso cada letra de salida tiene su propia cuenta.'],
+      [`Lecturas que salen de cada ${w[0]} (hay ${k}): ${lista}.`],
+      [`Se suman: `, v('x', f(correcta)), '. En esas lecturas hay ', `${f(correcta - M.sinRepetir)} que repiten una casilla (ida y vuelta); si las dejaras fuera quedarían ${f(M.sinRepetir)}, pero el enunciado las acepta.`],
+    ];
+    return {
+      id: `${ID}#${semilla}`, variables, enunciado, pregunta, datos: fuente || '',
+      figura: { svg: figuraMalla(spec), alt: altMalla(spec) },
+      figuraSolucion: { svg: figuraMalla(spec, rot), alt: `Las mismas letras; sobre cada ${w[0]} de la primera malla, el número de lecturas que salen de ella: ${lista}.` },
+      alternativas, solucion, respuesta: { valor: correcta, unidad: 'lecturas' }, _datos: { tipo: 'malla', ...spec },
+    };
+  }
+  function datosMalla(rng) {
+    const filas = rng.entero(3, 4), columnas = rng.entero(3, 4);
+    const lg = rng.elegir([4, 4, 4, 5]);
+    const z = rng.elegir(['O', 'A']);
+    const palabra = rng.elegir(PALABRAS_MALLA[lg][z]);
+    const letras = [...new Set([...palabra].filter((_, i) => i % 2 === 0))];
+    if (letras.length < 2) return null;
+    // Cada letra de la malla A, al azar entre las de lugar par de la palabra; la primera letra sale en una de cada tres.
+    const g = [];
+    for (let r = 0; r < filas; r++) { const fila = []; for (let c = 0; c < columnas; c++) fila.push(rng.elegir(letras)); g.push(fila); }
+    const quedan = g.flat().filter(x => x === palabra[0]).length;
+    if (quedan < 2 || quedan > filas * columnas - 2) return null;
+    return { palabra, filas, columnas, letras: g };
+  }
+  const PALABRAS_DOBLE = ['LLAVES', 'LLANTO', 'LLUVIA', 'LLAVERO', 'LLUVIAS', 'LLOVIZNA', 'LLAVEROS'];
+
   // ---------- figura ----------
   const DX = 34, DY = 32;
   function svgArreglo(A, rotulo) {
@@ -204,11 +386,32 @@
     rd: 'en cada paso se avanza a la letra de la derecha o a la de abajo.',
   };
 
+  const OFICIALES = {
+    'unmsm-2024-I-28': { tipo: 'doble', spec: { palabra: 'LLOVIZNA' }, fuente: 'Pregunta de UNMSM 2024-I (examen de admisión, razonamiento matemático).' },
+    'unmsm-2025-II-29': { tipo: 'malla', spec: { palabra: 'LODO', filas: 4, columnas: 4, letras: [['L', 'L', 'L', 'L'], ['L', 'D', 'D', 'D'], ['L', 'D', 'L', 'D'], ['L', 'D', 'D', 'D']] }, fuente: 'Pregunta de UNMSM 2025-II (examen de admisión, razonamiento matemático).' },
+  };
   function generar(semilla) {
     const rng = Azar.crear(ID + '|' + semilla);
     const FIJO = { 1: 'triangulo', 2: 'rombo', 3: 'tapada' };
     const m = /^(entrada|salida)-([123])$/.exec(String(semilla));
-    const tipo = m ? FIJO[m[2]] : rng.elegir(['triangulo', 'rombo', 'rombo', 'palindromo', 'palindromo', 'cuadricula', 'cuadricula', 'bloques', 'bloques', 'tapada', 'tapada']);
+    // Las semillas numéricas (casos.json, pruebas) siguen dando los mismos problemas de siempre; las de texto
+    // (las de la app) también sacan los dos tipos de cierre-100: doble y malla.
+    const lista = ['triangulo', 'rombo', 'rombo', 'palindromo', 'palindromo', 'cuadricula', 'cuadricula', 'bloques', 'bloques', 'tapada', 'tapada'];
+    const of = OFICIALES[semilla];
+    if (of) return of.tipo === 'doble' ? construirDoble(rng, semilla, of.spec, of.fuente) : construirMalla(rng, semilla, of.spec, of.fuente);
+    const tipo = m ? FIJO[m[2]] : typeof semilla === 'number' ? rng.elegir(lista) : rng.elegir(lista.concat(['doble', 'malla', 'malla']));
+    if (tipo === 'doble') return construirDoble(rng, semilla, { palabra: rng.elegir(PALABRAS_DOBLE) });
+    if (tipo === 'malla') {
+      for (let intento = 0; intento < 2000; intento++) {
+        const spec = datosMalla(rng);
+        if (!spec) continue;
+        const t = malla(spec).total;
+        if (t < 12 || t > 900) continue;
+        const pr = construirMalla(rng, semilla, spec);
+        if (pr.alternativas.length >= 4) return pr;
+      }
+      throw new Error('No se pudo generar una malla con 4 alternativas distintas');
+    }
     for (let intento = 0; intento < 2000; intento++) {
       const pr = construir(rng, semilla, tipo);
       if (pr && pr.alternativas.length >= 4) return pr;
@@ -362,5 +565,5 @@
     };
   }
 
-  return { id: ID, titulo: 'Lecturas en un arreglo de letras', generar, calc: { arreglo, lecturas } };
+  return { id: ID, titulo: 'Lecturas en un arreglo de letras', generar, calc: { arreglo, lecturas, doble, malla } };
 });

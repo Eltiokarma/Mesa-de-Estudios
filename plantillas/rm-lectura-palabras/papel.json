@@ -12,7 +12,21 @@
         "Se lee PUNO terminando en cualquier O: 1 + 3 + 3 + 1 = 8.",
         "Atajo: 4 letras, 3 pasos con 2 opciones: 2³ = 8. Ojo: 4 (una por cada O) y 16 (2⁴) son los errores típicos."
       ],
-      "verificar": [ { "fn": "lecturas", "args": [{ "forma": "triangulo", "n": 4, "palabra": "PUNO" }], "espera": { "total": 8 } } ]
+      "verificar": [
+        {
+          "fn": "lecturas",
+          "args": [
+            {
+              "forma": "triangulo",
+              "n": 4,
+              "palabra": "PUNO"
+            }
+          ],
+          "espera": {
+            "total": 8
+          }
+        }
+      ]
     },
     {
       "id": "p2",
@@ -24,7 +38,22 @@
         "En la mitad de abajo el rombo se cierra: cada C recibe de dos S (1 + 2 = 3) y la O de las dos C (3 + 3 = 6).",
         "Atajo: de 4 pasos, 2 a la izquierda y 2 a la derecha en cualquier orden: C(4; 2) = 6."
       ],
-      "verificar": [ { "fn": "lecturas", "args": [{ "forma": "rombo", "a": 2, "b": 2, "palabra": "CUSCO" }], "espera": { "total": 6 } } ]
+      "verificar": [
+        {
+          "fn": "lecturas",
+          "args": [
+            {
+              "forma": "rombo",
+              "a": 2,
+              "b": 2,
+              "palabra": "CUSCO"
+            }
+          ],
+          "espera": {
+            "total": 6
+          }
+        }
+      ]
     },
     {
       "id": "p3",
@@ -36,7 +65,22 @@
         "Fila 2: 1, 2, 3, 4. Fila 3: 1, 3, 6, 10.",
         "Atajo: 5 pasos, 2 de ellos hacia abajo: C(5; 2) = 10."
       ],
-      "verificar": [ { "fn": "lecturas", "args": [{ "forma": "cuadricula", "filas": 3, "columnas": 4, "palabra": "ALPACA" }], "espera": { "total": 10 } } ]
+      "verificar": [
+        {
+          "fn": "lecturas",
+          "args": [
+            {
+              "forma": "cuadricula",
+              "filas": 3,
+              "columnas": 4,
+              "palabra": "ALPACA"
+            }
+          ],
+          "espera": {
+            "total": 10
+          }
+        }
+      ]
     },
     {
       "id": "p4",
@@ -49,8 +93,38 @@
         "a) Si cuentan como una sola, son 6 (12 sería contarlas dos veces). b) Si se cuentan aparte, 6 · 2 = 12."
       ],
       "verificar": [
-        { "fn": "lecturas", "args": [{ "forma": "rombo", "a": 2, "b": 2, "palabra": "RADAR", "sentidos": 2, "iguales": true }], "espera": { "total": 6 } },
-        { "fn": "lecturas", "args": [{ "forma": "rombo", "a": 2, "b": 2, "palabra": "RADAR", "sentidos": 2, "iguales": false }], "espera": { "total": 12 } }
+        {
+          "fn": "lecturas",
+          "args": [
+            {
+              "forma": "rombo",
+              "a": 2,
+              "b": 2,
+              "palabra": "RADAR",
+              "sentidos": 2,
+              "iguales": true
+            }
+          ],
+          "espera": {
+            "total": 6
+          }
+        },
+        {
+          "fn": "lecturas",
+          "args": [
+            {
+              "forma": "rombo",
+              "a": 2,
+              "b": 2,
+              "palabra": "RADAR",
+              "sentidos": 2,
+              "iguales": false
+            }
+          ],
+          "espera": {
+            "total": 12
+          }
+        }
       ]
     },
     {
@@ -63,7 +137,28 @@
         "Abajo (un rombo de dos pasos por lado): de la I salen 6 caminos hasta la última A (1; 1 1; 1 2 1; 3 3; 6).",
         "Toda lectura pasa por la I del centro: 8 × 6 = 48. Sumar los tramos (8 + 6 = 14) es el error típico."
       ],
-      "verificar": [ { "fn": "lecturas", "args": [{ "forma": "bloques", "arriba": { "tipo": "invertido", "k": 3 }, "abajo": { "tipo": "rombo", "k": 2 }, "palabra": "TITICACA" }], "espera": { "total": 48 } } ]
+      "verificar": [
+        {
+          "fn": "lecturas",
+          "args": [
+            {
+              "forma": "bloques",
+              "arriba": {
+                "tipo": "invertido",
+                "k": 3
+              },
+              "abajo": {
+                "tipo": "rombo",
+                "k": 2
+              },
+              "palabra": "TITICACA"
+            }
+          ],
+          "espera": {
+            "total": 48
+          }
+        }
+      ]
     },
     {
       "id": "p6",
@@ -75,7 +170,27 @@
         "A la A tapada llegan 2 lecturas, y desde ella salen 4 caminos hasta abajo: se pierden 2 × 4 = 8.",
         "16 − 8 = 8. Con Pascal y un 0 en la tapada: 1; 1 1; 1 0 1; 1 1 1 1; 1 2 2 2 1, que suman 8."
       ],
-      "verificar": [ { "fn": "lecturas", "args": [{ "forma": "triangulo", "n": 5, "palabra": "LLAMA", "tapada": [3, 2] }], "espera": { "total": 8, "llegan": 2, "salen": 4 } } ]
+      "verificar": [
+        {
+          "fn": "lecturas",
+          "args": [
+            {
+              "forma": "triangulo",
+              "n": 5,
+              "palabra": "LLAMA",
+              "tapada": [
+                3,
+                2
+              ]
+            }
+          ],
+          "espera": {
+            "total": 8,
+            "llegan": 2,
+            "salen": 4
+          }
+        }
+      ]
     },
     {
       "id": "p7",
@@ -87,7 +202,92 @@
         "Fila 3 (empieza en la segunda columna): la E recibe solo de arriba, 2; la S recibe 2 + 3 = 5.",
         "Con la cuadrícula completa habrían sido C(4; 2) = 6: falta el camino que bajaba por el borde izquierdo."
       ],
-      "verificar": [ { "fn": "lecturas", "args": [{ "forma": "cuadricula", "filas": 3, "columnas": 3, "palabra": "ANDES", "banda": [1, 2] }], "espera": { "total": 5 } } ]
+      "verificar": [
+        {
+          "fn": "lecturas",
+          "args": [
+            {
+              "forma": "cuadricula",
+              "filas": 3,
+              "columnas": 3,
+              "palabra": "ANDES",
+              "banda": [
+                1,
+                2
+              ]
+            }
+          ],
+          "espera": {
+            "total": 5
+          }
+        }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Un arreglo triangular tiene 2 L en la fila 1, 3 L en la fila 2, 4 A en la fila 3, 5 V en la fila 4 y 6 E en la fila 5, cada fila centrada y con las letras separadas lo mismo. Cada letra tiene como vecinas, a igual distancia, las dos de su misma fila (la de la izquierda y la de la derecha), las dos de arriba y las dos de abajo más cercanas. ¿De cuántas maneras se puede leer LLAVE?",
+      "respuesta": "64 maneras.",
+      "pasos": [
+        "La tercera letra, A, solo está en la fila 3, así que la segunda L tiene que estar en la fila 2.",
+        "Comienzo A: la primera L en la fila 1 y la segunda en la fila 2, por debajo: sobre las 3 L de la fila 2 llegan 1, 2 y 1 lecturas.",
+        "Comienzo B: las dos L en la fila 2, una al lado de la otra (en los dos órdenes): llegan otra vez 1, 2 y 1.",
+        "Juntos: 2, 4 y 2 lecturas llegan a la fila 2, 8 en total.",
+        "Fila 3: 2, 6, 6, 2 (cada letra suma las dos de arriba). Fila 4: 2, 8, 12, 8, 2. Fila 5: 2, 10, 20, 20, 10, 2. Suman 64.",
+        "Atajo: 8 lecturas llegan a la fila 2 y cada una baja de 2 formas en cada uno de los 3 pasos que quedan: 8 · 2³ = 64. Si solo cuentas el comienzo A, te salen 32."
+      ],
+      "verificar": [
+        {
+          "fn": "doble",
+          "args": [
+            {
+              "palabra": "LLAVE"
+            }
+          ],
+          "espera": {
+            "total": 64,
+            "soloAbajo": 32
+          }
+        }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "En una figura hay dos mallas de letras: la primera, de 2 × 2, tiene S L en la primera fila y L S en la segunda (con las letras separadas 2 unidades); la segunda tiene una O corrida 1 unidad a la derecha y 1 hacia abajo de cada letra de la primera. Cada letra es vecina de las cuatro que están en diagonal, y se puede volver a pasar por una letra ya usada. ¿De cuántas maneras se puede leer SOLO?",
+      "respuesta": "12 maneras.",
+      "pasos": [
+        "Llama o1, o2, o3 y o4 a las O. La o1 queda en el centro de las cuatro letras de la primera malla; la o2 toca a la L de arriba y a la S de abajo; la o3, a la L de abajo y a la S de abajo; la o4, a la S de abajo.",
+        "Desde la S de arriba a la izquierda: solo toca a o1; o1 toca a 2 L; cada L toca a 2 O. Son 1 · 2 · 2 = 4.",
+        "Desde la S de abajo a la derecha: toca a las 4 O. De o1 salen 2 L, de o2 y o3 sale 1 L cada una, de o4 ninguna: en total 4 pasos S-O-L; cada L tiene 2 O vecinas, así que 4 · 2 = 8.",
+        "Total: 4 + 8 = 12. Si no se pudiera pasar dos veces por la misma letra serían 6."
+      ],
+      "verificar": [
+        {
+          "fn": "malla",
+          "args": [
+            {
+              "palabra": "SOLO",
+              "filas": 2,
+              "columnas": 2,
+              "letras": [
+                [
+                  "S",
+                  "L"
+                ],
+                [
+                  "L",
+                  "S"
+                ]
+              ]
+            }
+          ],
+          "espera": {
+            "total": 12,
+            "sinRepetir": 6
+          }
+        }
+      ]
     }
   ]
 }

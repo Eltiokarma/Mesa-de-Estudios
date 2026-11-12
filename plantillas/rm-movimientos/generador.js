@@ -21,13 +21,20 @@
  *   pares    { tipo, meta: 'alternar' | 'separar', n, L, inicio: 'BBNN..' } fila de L casillas con n fichas
  *            blancas y n negras; un movimiento lleva dos fichas vecinas, sin cambiar su orden, a dos
  *            casillas vecinas vacías. Meta: fichas en casillas seguidas, alternadas o separadas por color.
+ *   bocas    { tipo, bocas: [lugares], inicio: [..], meta: [..] } recipiente abierto por arriba (P) con bolos
+ *            numerados apilados; tiene bocas laterales (Q, R, S…) a la altura de ciertos lugares, contados desde
+ *            arriba (1 = el de arriba). Una operación saca el bolo que está a la altura de una boca y lo mete
+ *            enseguida por P: queda encima de todos, y los que estaban arriba de la boca bajan un lugar. Los de
+ *            abajo no se mueven. (UNMSM 2024-I y 2025-II; semillas 'unmsm-2024-I-26' y 'unmsm-2025-II-21'.)
  *
  * calc: minimo(d) → { n, camino: [estados], movs: [..] }; relajado(d, cambio) → mínimo con una regla
- *       cambiada (lo usan los errores); y por tipo: canoa, caballo, salto, tubo, pares (→ { n }).
+ *       cambiada (lo usan los errores); y por tipo: canoa, caballo, salto, tubo, pares, bocas (→ { n }).
+ *       Solo en bocas, los estados son listas de bolos y movs[i] = { boca: índice, lugar, bolo }.
  *
  * Errores (todos hipótesis):
  *   RMP1-estados        contar las posiciones o casillas pisadas (incluida la de salida) en vez de los movimientos
- *   RMP2-*              quedarse con la primera estrategia que funciona (un solo remero, sacar todas las bolas)
+ *   RMP2-*              quedarse con la primera estrategia que funciona (un solo remero, sacar todas las bolas,
+ *                       subir todos los bolos menos el de abajo)
  *   RMP11-con-huecos    detenerse con las fichas alternadas pero con huecos entre ellas
  *   RMP14-sin-regresos  olvidar los viajes de regreso de la canoa; RMP14-regreso-final: contar uno de más
  *   RMP15-*             pasar por alto una restricción: el que no rema vuelve solo, los choques, la casilla
@@ -36,6 +43,9 @@
  *   RMP17-directo       ir directo, sin pasar por la casilla intermedia
  *   RMP18-*             contar fichas o bolas movidas (o sacar y meter como un solo movimiento)
  *   RMP19-bordes        olvidar los bordes del tablero o de la fila
+ *   RMP110-fuera-de-lugar   contar un movimiento por cada bolo que no está en su lugar (mover uno corre a los demás)
+ *   RMP111-bocas-libres     suponer que se puede sacar el bolo de cualquier lugar, no solo de las bocas
+ *   RMP112-sacar-e-introducir  contar por separado sacar el bolo y meterlo por P (dos por operación)
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -155,6 +165,19 @@
     return bfs({ t: d.inicio.slice(), m: [] }, vecinos, e => e.m.length === 0 && e.t.join('') === d.meta.join(''), clave);
   }
 
+  // ---------------- Bolos con bocas laterales ----------------
+  // Estado: lista de bolos de arriba (P) hacia abajo. La boca en el lugar q saca el bolo que hay en ese lugar
+  // y lo mete por P (queda primero). cambio.todasBocas: hay boca en todos los lugares del 2 al último.
+  function bocas(d, cambio = {}) {
+    const N = d.inicio.length;
+    const lugares = cambio.todasBocas ? [...Array(N - 1).keys()].map(i => i + 2) : d.bocas;
+    const vecinos = e => lugares.map((q, i) => {
+      const x = e.slice(), [b] = x.splice(q - 1, 1); x.unshift(b);
+      return { estado: x, mov: { boca: i, lugar: q, bolo: b } };
+    });
+    return bfs(d.inicio.slice(), vecinos, e => e.join() === d.meta.join(), e => e.join());
+  }
+
   // ---------------- Fichas de a dos ----------------
   function paresMeta(meta, n) {
     return s => {
@@ -189,10 +212,11 @@
     if (d.tipo === 'caballo') return caballo(d);
     if (d.tipo === 'salto') return salto(d);
     if (d.tipo === 'tubo') return tubo(d);
+    if (d.tipo === 'bocas') return bocas(d);
     return pares(d);
   }
   function relajado(d, cambio) {
-    const f = { canoa, caballo, salto, tubo, pares }[d.tipo];
+    const f = { canoa, caballo, salto, tubo, pares, bocas }[d.tipo];
     const r = f(d, cambio);
     return r ? r.n : NaN;
   }
@@ -275,6 +299,27 @@
     }
     return s + '</svg>';
   }
+  const NOMBRE_BOCA = ['Q', 'R', 'S', 'T'];
+  function figuraBocas(d) {
+    const N = d.inicio.length, r = 15, t = 2 * r + 2, y0 = 34;
+    let s = svgAbre(380, y0 + t * N + 20);
+    const tubo = (bolas, x, titulo, col, conBocas) => {
+      s += `<text x="${x + r + 6}" y="14" text-anchor="middle" font-size="14" style="fill:var(--muted)">${P.xml(titulo)}</text>`;
+      s += `<path d="M${x} ${y0 - 6} V${y0 + t * N + 4} H${x + 2 * r + 12} V${y0 - 6}" fill="none" stroke="currentColor" stroke-width="2"/>`;
+      if (conBocas) s += `<text x="${x + r + 6}" y="${y0 - 10}" text-anchor="middle" font-size="13" font-weight="bold" style="fill:var(--c-d)">P</text>`;
+      bolas.forEach((b, i) => {
+        const cy = y0 + t * i + r + 1;
+        s += `<circle cx="${x + r + 6}" cy="${cy}" r="${r - 2}" fill="none" stroke-width="2.5" style="stroke:var(--c-${col})"/><text x="${x + r + 6}" y="${cy + 5}" text-anchor="middle" font-weight="bold">${P.xml(b)}</text>`;
+      });
+      if (conBocas) d.bocas.forEach((q, i) => {
+        const cy = y0 + t * (q - 1) + r + 1;
+        s += `<path d="M${x + 2 * r + 12} ${cy - r + 4} h14 M${x + 2 * r + 12} ${cy + r - 4} h14" stroke="currentColor" stroke-width="2"/><text x="${x + 2 * r + 32}" y="${cy + 5}" font-size="14" font-weight="bold" style="fill:var(--c-h)">${NOMBRE_BOCA[i]}</text>`;
+      });
+    };
+    tubo(d.inicio, 60, 'figura 1', 'o', true);
+    tubo(d.meta, 240, 'figura 2', 'i', false);
+    return s + '</svg>';
+  }
   function figuraPares(estado, titulo) {
     const L = estado.length, t = Math.min(40, Math.floor(380 / L));
     let s = svgAbre(Math.max(300, 10 + t * L + 10), 90) + `<text x="10" y="16" font-size="14" style="fill:var(--muted)">${P.xml(titulo)}</text>`;
@@ -296,10 +341,23 @@
   const P2 = { tipo: 'caballo', ok: (d, n) => d.C && !d.bloqueadas.length && n === 5 };
   const P3 = { tipo: 'tubo', ok: (d, n) => d.bocas === 2 && d.inicio.length === 4 && n === 6 };
   const FIJOS = { 'entrada-1': P1, 'entrada-2': P2, 'entrada-3': P3, 'salida-1': P1, 'salida-2': P2, 'salida-3': P3 };
+  const OFICIALES = {
+    'unmsm-2024-I-26': { tipo: 'bocas', fuente: 'Pregunta de UNMSM 2024-I (examen de admisión, razonamiento matemático).', d: { tipo: 'bocas', bocas: [3, 5], inicio: [2, 4, 3, 1, 5], meta: [5, 4, 3, 2, 1] } },
+    'unmsm-2025-II-21': { tipo: 'bocas', fuente: 'Pregunta de UNMSM 2025-II (examen de admisión, razonamiento matemático).', d: { tipo: 'bocas', bocas: [3, 6, 9], inicio: [6, 5, 7, 4, 3, 8, 2, 1, 9], meta: [9, 8, 7, 6, 5, 4, 3, 2, 1] } },
+  };
   function generar(semilla) {
     const rng = Azar.crear('rm-movimientos|' + semilla);
     const fijo = FIJOS[semilla];
-    const tipo = fijo ? fijo.tipo : rng.elegir(['canoa', 'canoa', 'caballo', 'caballo', 'salto', 'tubo', 'tubo', 'pares']);
+    // Las semillas numéricas (casos.json, pruebas) siguen dando los mismos problemas de siempre; las de texto
+    // (las de la app) también sacan los bolos con bocas.
+    const lista = ['canoa', 'canoa', 'caballo', 'caballo', 'salto', 'tubo', 'tubo', 'pares'];
+    const oficial = OFICIALES[semilla];
+    const tipo = oficial ? oficial.tipo : fijo ? fijo.tipo : (typeof semilla === 'number' ? rng.elegir(lista) : rng.elegir(lista.concat(['bocas', 'bocas'])));
+    if (oficial) {
+      const p = CONSTRUIR[tipo](oficial.d, semilla, rng);
+      p.datos = oficial.fuente;
+      return p;
+    }
     for (let intento = 0; intento < 3000; intento++) {
       const d = DATOS[tipo](rng);
       if (!d) continue;
@@ -375,6 +433,16 @@
       const meta = [...Array(N).keys()].map(i => i + 1);
       const inicio = rng.barajar(meta);
       return { tipo: 'tubo', bocas: rng.elegir([1, 2, 2]), inicio, meta: rng.moneda() ? meta : meta.slice().reverse() };
+    },
+    bocas(rng) {
+      const N = rng.elegir([5, 6, 6, 7]);
+      const k = rng.elegir([2, 3]);
+      const lugares = rng.barajar([...Array(N - 1).keys()].map(i => i + 2)).slice(0, k);
+      if (rng.moneda() && !lugares.includes(N)) lugares[0] = N;
+      const orden = [...new Set(lugares)].sort((a, b) => a - b);
+      const meta = [...Array(N).keys()].map(i => i + 1);
+      if (rng.moneda()) meta.reverse();
+      return { tipo: 'bocas', bocas: orden, inicio: rng.barajar(meta.slice()), meta };
     },
     pares(rng) {
       // Una fila con n blancas, n negras y dos casillas vacías juntas, en cualquier lugar.
@@ -544,6 +612,32 @@
         figura: { svg: figuraTubo(d), alt: d.bocas === 2 ? `Tubo acostado, abierto por los dos extremos, con las bolas ${d.inicio.join(', ')} de izquierda a derecha. Debajo, cómo debe quedar: ${d.meta.join(', ')}.` : `Tubo de ensayo cerrado por abajo con las bolas ${d.inicio.join(', ')} de arriba hacia abajo. Al lado, cómo debe quedar: ${d.meta.join(', ')}.` },
       });
     },
+    bocas(d, semilla, rng) {
+      if (d.inicio.join() === d.meta.join()) return null;
+      const sol = bocas(d);
+      if (!sol || sol.n < 3 || sol.n > 9) return null;
+      const n = sol.n, N = d.inicio.length, errores = [];
+      const fuera = d.inicio.filter((b, i) => b !== d.meta[i]).length;
+      if (fuera !== n) errores.push(h('RMP110-fuera-de-lugar', fuera, 'Contaste una operación por cada bolo que no está en su lugar. Pero al subir un bolo a P los demás bajan un lugar y cambian de posición: hay que seguir la pila operación por operación.'));
+      const libre = relajado(d, { todasBocas: true });
+      if (Number.isFinite(libre) && libre < n) errores.push(h('RMP111-bocas-libres', libre, 'Sacaste bolos de lugares donde no hay boca. Solo se puede sacar el bolo que está justo a la altura de una boca lateral.'));
+      if (N - 1 > n) errores.push(h('RMP2-todos-menos-uno', N - 1, `Subiste ${N - 1} bolos, todos menos el de abajo. Eso podría servir, pero no es lo mínimo: hay bolos que ya quedan bien y no hace falta moverlos.`));
+      errores.push(h('RMP1-estados', n + 1, 'Contaste las posiciones por las que pasa la pila, incluida la inicial, en vez de las operaciones entre ellas.'));
+      errores.push(h('RMP112-sacar-e-introducir', 2 * n, 'Contaste por separado sacar el bolo y meterlo por P. El enunciado dice que cada operación incluye las dos cosas.'));
+      const alternativas = armar(n, errores, rng, 'operaciones', 'operación');
+      const variables = { I: { nombre: 'pila de la figura 1', color: 'o' }, M: { nombre: 'pila de la figura 2', color: 'i' }, B: { nombre: 'bocas laterales', color: 'h' } };
+      const ord = q => `${q}.º`;
+      const lugaresTxt = lista(d.bocas.map((q, i) => `${NOMBRE_BOCA[i]} (a la altura del ${ord(q)} bolo)`));
+      const enunciado = [`Un recipiente alto, abierto por arriba (P), guarda ${N} bolos numerados, uno sobre otro. De arriba hacia abajo están así: `, v('I', d.inicio.join(', ')), '. En el costado tiene ', v('B', 'bocas laterales'), ` ${lugaresTxt}, contando los lugares desde arriba. Una operación consiste en sacar solo el bolo que está a la altura de una de esas bocas e inmediatamente introducirlo por P, de modo que queda encima de todos; los bolos que estaban más arriba bajan un lugar y los de abajo no se mueven.`];
+      const pregunta = ['¿Cuántas operaciones, como mínimo, se necesitan para que los bolos queden, de arriba hacia abajo, como en la figura 2: ', v('M', d.meta.join(', ')), '?'];
+      const solucion = [['Se anota la pila (de arriba hacia abajo) después de cada operación. Con cada boca se saca el bolo de su lugar y se pone primero.']];
+      sol.movs.forEach((m, i) => solucion.push([`${i + 1}. Por la boca ${NOMBRE_BOCA[m.boca]} (lugar ${m.lugar}) sale el ${m.bolo} y entra por P: ${sol.camino[i + 1].join(', ')}.`]));
+      solucion.push([`Con ${n - 1} operaciones no se llega a la pila pedida: la búsqueda por todas las pilas posibles muestra que el mínimo es ${n}.`]);
+      return base('bocas', semilla, d, {
+        variables, enunciado, pregunta, alternativas, solucion, respuesta: { valor: n, unidad: 'operaciones' },
+        figura: { svg: figuraBocas(d), alt: `Dos recipientes verticales. Figura 1, con la boca P arriba y bocas laterales ${lugaresTxt}: bolos ${d.inicio.join(', ')} de arriba hacia abajo. Figura 2, cómo debe quedar: ${d.meta.join(', ')} de arriba hacia abajo.` },
+      });
+    },
     pares(d, semilla, rng) {
       const sol = pares(d);
       if (!sol || sol.n < 2 || sol.n > 6) return null;
@@ -574,5 +668,5 @@
     },
   };
 
-  return { id: 'rm-movimientos', titulo: 'El menor número de movimientos: canoas, caballos, saltos y fichas', generar, calc: { minimo, relajado, canoa, caballo, salto, tubo, pares } };
+  return { id: 'rm-movimientos', titulo: 'El menor número de movimientos: canoas, caballos, saltos y fichas', generar, calc: { minimo, relajado, canoa, caballo, salto, tubo, pares, bocas } };
 });

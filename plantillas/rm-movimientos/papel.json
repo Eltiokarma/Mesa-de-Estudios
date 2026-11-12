@@ -328,6 +328,51 @@
           }
         }
       ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Un recipiente alto, abierto por arriba (P), guarda 5 bolos numerados. De arriba hacia abajo están así: 2, 3, 5, 1, 4. En el costado hay dos bocas: Q, a la altura del 3.er lugar, y R, a la altura del 5.º (contando desde arriba). Una operación consiste en sacar el bolo que está a la altura de Q o de R e introducirlo enseguida por P, de modo que queda encima de todos; los bolos que estaban más arriba bajan un lugar y los de abajo no se mueven. ¿Cuántas operaciones, como mínimo, hacen falta para que los bolos queden, de arriba hacia abajo, 1, 2, 3, 4, 5?",
+      "respuesta": "4 operaciones.",
+      "pasos": [
+        "Anota la pila de arriba hacia abajo después de cada operación.",
+        "Por R sale el 4 (el del 5.º lugar): 4, 2, 3, 5, 1.",
+        "Por Q sale el 3: 3, 4, 2, 5, 1.",
+        "Por Q sale el 2: 2, 3, 4, 5, 1.",
+        "Por R sale el 1: 1, 2, 3, 4, 5. Son 4 operaciones.",
+        "Si cuentas una operación por cada bolo que no está en su lugar, te salen 5, pero al subir un bolo los otros se corren y algunos quedan bien solos."
+      ],
+      "verificar": [
+        {
+          "fn": "bocas",
+          "args": [
+            {
+              "tipo": "bocas",
+              "bocas": [
+                3,
+                5
+              ],
+              "inicio": [
+                2,
+                3,
+                5,
+                1,
+                4
+              ],
+              "meta": [
+                1,
+                2,
+                3,
+                4,
+                5
+              ]
+            }
+          ],
+          "espera": {
+            "n": 4
+          }
+        }
+      ]
     }
   ]
 }

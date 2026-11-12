@@ -199,3 +199,22 @@ Nota: RMP41-tramo-invertido y RMP41-suma-de-posiciones son ids nuevos dentro de 
 - rm-balanzas combinado: RMP38-otra-combinacion (falta contar una figura pedida), RMP38-una-sola (cada figura una vez), RMP38-suma-pesas (suma las pesas de las balanzas). Son variantes del RMP38 (plantear mal las balanzas).
 - rm-deduccion puntajes: RMP72-pista-sin-revisar (reparto o puntaje que sale al ignorar una pista), RMP72-dado-cruzado (puntaje de una persona con el dado de otra), RMP2-sin-maximizar (puntaje posible que no es el mayor). Variantes de RMP72 y RMP2.
 - rm-certezas: RM6-favorable, RMP34-sin-mas-uno, RMP34-mas-uno reutilizados en los tipos nuevos.
+
+## Bocas del tubo, lecturas dobles y en malla, tablero de triángulos y alambre (`rm-movimientos`, `rm-lectura-palabras`, `rm-cortes`, cierre-100, 12 nov 2026)
+
+| Código | Error | Trampa de la que sale | Generador |
+| --- | --- | --- | --- |
+| RMP110 (`-fuera-de-lugar`) | Contar una operación por cada bolo que no está en su lugar; no ve que al subir un bolo a P los demás bajan un lugar. | rm-movimientos, bolos con bocas laterales (UNMSM 2024-I p. 26, 2025-II p. 21) | rm-movimientos, tipo `bocas` |
+| RMP111 (`-bocas-libres`) | Suponer que se puede sacar el bolo de cualquier lugar, no solo del que está a la altura de una boca. | ídem (ignorar qué hace la boca) | rm-movimientos, `bocas` |
+| RMP112 (`-sacar-e-introducir`) | Contar por separado sacar el bolo y meterlo por P (2n en vez de n). | ídem | rm-movimientos, `bocas` |
+| RMP113 (`-un-caso`) | Leer una palabra que empieza con dos letras iguales solo con la primera L arriba y la segunda en la fila de abajo, y olvidar el comienzo con las dos L en la misma fila (vecinas horizontales). | rm-lectura-palabras, arreglo triangular con L repetida (UNMSM 2024-I p. 28) | rm-lectura-palabras, `doble` |
+| RMP114 (`-una-L`) | Tratar el arreglo como un triángulo común con una sola L arriba (la mitad del caso anterior). | ídem | rm-lectura-palabras, `doble` |
+| RMP115 (`-sin-volver`) | Contar solo las lecturas que no repiten casilla; olvidar que «ida y vuelta» por la misma letra cuenta. | rm-lectura-palabras, mallas LODO (UNMSM 2025-II p. 29) | rm-lectura-palabras, `malla` |
+| RMP116 (`-una-salida`) | Contar las lecturas que salen de una letra inicial y multiplicarlas por el número de letras iniciales (las vecindades de borde y de centro difieren). | ídem | rm-lectura-palabras, `malla` |
+| RMP117 (`-mitad`) | Pensar que cada corte separa solo dos triángulos (N ÷ 2), sin ver que lo apilado se corta junto. | rm-cortes, tablero hexagonal de triángulos con sierra corta (UNMSM 2024-II p. 23) | rm-cortes, `tablero` |
+| RMP118 (`-una-sola-recta`) | Creer que todos los puntos de soldadura se pueden alinear en una sola recta desde el principio; la estructura está rígida hasta que se sueltan trozos. | rm-cortes, estructura de alambre (UNMSM 2027-I p. 25) | rm-cortes, `alambre` |
+| RMP119 (`-de-a-dos`) | Pensar que cada corte atiende solo dos puntos (nodos ÷ 2), sin ver que trozos sueltos se alinean de a varios. | ídem | rm-cortes, `alambre` |
+
+Códigos ya existentes que reutilizan los tipos nuevos (no se crean):
+- RMP1-estados (n + 1), RMP2-todos-menos-uno (subir todos los bolos menos el de abajo), RMP45-vuelta-doble (lecturas que vuelven, contadas dos veces), RMP82-casillas, RMP83-suma-opciones, RMP84-solo-abajo (solo las lecturas que bajan).
+- RMP35-pieza-por-pieza (N − 1 cortes), RMP35-por-lineas (tablero: cada línea en tramos de la sierra, sin apilar), RMP35-sin-reacomodar y RMP35-punto-por-punto (alambre), RMP36-log-abajo, RMP36-ignora-sierra (tablero: como si la sierra cortara cualquier largo).

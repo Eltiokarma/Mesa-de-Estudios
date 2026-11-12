@@ -2,7 +2,7 @@
   "plantilla": "rm-lectura-palabras",
   "tolerancia": 1e-09,
   "nota": "Una lectura es un camino de casilla en casilla vecina que deletrea la palabra: en los arreglos en filas (cada letra entre dos de la fila de abajo; en los rombos con a ≠ b las filas no quedan centradas) se baja a la vecina de abajo a la izquierda o a la derecha; en la cuadrícula, a la derecha o abajo. En los palíndromos (sentidos = 2) también vale de abajo arriba; con iguales = true, una lectura y la misma al revés cuentan como una. tapada = [fila, posición en la fila], desde 1. Entrada-k y salida-k son del mismo tipo.",
-  "verificacion": "Verificación ciega (subagente, 12 nov 2026): los 24 casos contados por DFS sobre el arreglo; palíndromos por unión de conjuntos de casillas o suma de los dos sentidos, según el enunciado. 24/24 coinciden; barrido de 1500 semillas con DFS sobre las coordenadas del SVG: 1500/1500. Tras la revisión el alt da la posición de cada letra en medias casillas y una prueba reconstruye las vecindades solo desde el alt en 500 semillas; ninguna respuesta cambió.",
+  "verificacion": "Verificación ciega (subagente, 12 nov 2026): los 24 casos contados por DFS sobre el arreglo; palíndromos por unión de conjuntos de casillas o suma de los dos sentidos, según el enunciado. 24/24 coinciden; barrido de 1500 semillas con DFS sobre las coordenadas del SVG: 1500/1500. Tras la revisión el alt da la posición de cada letra en medias casillas y una prueba reconstruye las vecindades solo desde el alt en 500 semillas; ninguna respuesta cambió. Cierre-100 (12 nov 2026): los casos nuevos se resolvieron a ciegas con scripts propios (conteo de caminos sobre la cuadrícula transcrita de la figura): 4/4 coinciden (unmsm-2024-I-28: 512, unmsm-2025-II-29: 132, c25 y c22).",
   "casos": [
     {
       "semilla": 6,
@@ -387,6 +387,106 @@
         "respuesta": 4,
         "texto": "4"
       }
+    },
+    {
+      "semilla": "unmsm-2024-I-28",
+      "entrada": {
+        "tipo": "doble",
+        "palabra": "LLOVIZNA"
+      },
+      "esperado": {
+        "respuesta": 512,
+        "texto": "512"
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "unmsm-2025-II-29",
+      "entrada": {
+        "tipo": "malla",
+        "palabra": "LODO",
+        "filas": 4,
+        "columnas": 4,
+        "letras": [
+          [
+            "L",
+            "L",
+            "L",
+            "L"
+          ],
+          [
+            "L",
+            "D",
+            "D",
+            "D"
+          ],
+          [
+            "L",
+            "D",
+            "L",
+            "D"
+          ],
+          [
+            "L",
+            "D",
+            "D",
+            "D"
+          ]
+        ]
+      },
+      "esperado": {
+        "respuesta": 132,
+        "texto": "132"
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "c25",
+      "entrada": {
+        "tipo": "doble",
+        "palabra": "LLAVES"
+      },
+      "esperado": {
+        "respuesta": 128,
+        "texto": "128"
+      },
+      "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "c22",
+      "entrada": {
+        "tipo": "malla",
+        "palabra": "SOLO",
+        "filas": 4,
+        "columnas": 3,
+        "letras": [
+          [
+            "S",
+            "S",
+            "L"
+          ],
+          [
+            "S",
+            "L",
+            "S"
+          ],
+          [
+            "L",
+            "S",
+            "S"
+          ],
+          [
+            "L",
+            "S",
+            "S"
+          ]
+        ]
+      },
+      "esperado": {
+        "respuesta": 60,
+        "texto": "60"
+      },
+      "nuevo": "cierre-100"
     }
   ]
 }
