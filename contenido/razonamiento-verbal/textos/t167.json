@@ -90,8 +90,8 @@
           "explicacion": "La oración 9 propone justo esos paseos en bote, mirando a los delfines desde lejos, como una alternativa mejor." },
         { "t": "The author believes that the dolphins are not used to crowds.", "codigo": "RV9", "origen": "o4",
           "explicacion": "Concuerda con la oración 4. Se pide la que choca con el texto." },
-        { "t": "The author says that all the pink river dolphins will disappear soon.", "codigo": "RV36",
-          "explicacion": "La autora dice que la especie está en peligro (oración 6), pero no que vaya a desaparecer pronto. Es más fuerte que el texto; no lo contradice." }
+        { "t": "The author says that the pink river dolphin is considered an endangered species.", "codigo": "RV8", "origen": "o6",
+          "explicacion": "Concuerda con la oración 6. Se pide la que contradice al texto." }
       ]
     },
     {
@@ -139,5 +139,5 @@
     { "afirmacion": "La autora y el blog son inventados; la opinión es del texto, no de una persona real.",
       "fuente": "Texto propio de Mesa de Estudios." }
   ],
-  "revision": null
+  "revision": { "por": "subagente (revisor a ciegas, rutina verbal-mas)", "fecha": "2026-11-12", "veredicto": "aprobado", "notas": "A ciegas 6/6. Duda fuerte en p3: el distractor «all the dolphins will disappear soon» era defendible como incompatible; se reemplazó por una afirmación compatible (oración 6) y queda como única incompatible la de los paseos en bote. Verificado en la web: Inia geoffrensis, En peligro (Endangered) en la Lista Roja UICN, evaluación de Da Silva y otros 2018. Higham y otros 2014 de memoria." }
 }

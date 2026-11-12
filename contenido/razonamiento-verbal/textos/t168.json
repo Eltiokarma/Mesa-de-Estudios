@@ -10,7 +10,7 @@
   "parrafos": [
     [
       { "id": "o1", "rol": "principal", "t": "The Qhapaq Ñan, or Great Inca Road, was a network of roads that connected the many regions of the Inca Empire." },
-      { "id": "o2", "rol": "detalle", "t": "In total, it stretched for more than 30,000 kilometers across mountains, deserts and forests." },
+      { "id": "o2", "rol": "detalle", "t": "In total, it stretched for thousands of kilometers across mountains, deserts and forests." },
       { "id": "o3", "rol": "detalle", "t": "The Incas did not create all of these routes from nothing; they joined older paths built by earlier Andean peoples and improved them." }
     ],
     [
@@ -138,10 +138,10 @@
   "origen": "propio",
   "fecha": "2026-11-12",
   "hechos": [
-    { "afirmacion": "El Qhapaq Ñan (Sistema Vial Andino) fue inscrito en la Lista del Patrimonio Mundial de la UNESCO en 2014; es compartido por seis países (Argentina, Bolivia, Chile, Colombia, Ecuador y Perú) y la red superó los 30 000 km.",
+    { "afirmacion": "El Qhapaq Ñan (Sistema Vial Andino) fue inscrito en la Lista del Patrimonio Mundial de la UNESCO en 2014; es compartido por seis países (Argentina, Bolivia, Chile, Colombia, Ecuador y Perú) y la red cubría miles de kilómetros (la cifra de 30 000 km no se confirmó en fuente primaria; UNESCO da más de 6 000 km solo para los 273 sitios componentes).",
       "fuente": "UNESCO, Centro del Patrimonio Mundial, «Qhapaq Ñan, Andean Road System», n.º 1459 (whc.unesco.org/en/list/1459)." },
     { "afirmacion": "La red incluyó caminos más antiguos, escaleras de piedra, puentes colgantes de cuerda, tambos (posadas y depósitos) y mensajeros llamados chasquis; los incas no usaban vehículos con ruedas.",
       "fuente": "Hyslop, J. (1984). The Inka Road System. Academic Press." }
   ],
-  "revision": null
+  "revision": { "por": "subagente (revisor a ciegas, rutina verbal-mas)", "fecha": "2026-11-12", "veredicto": "aprobado", "notas": "A ciegas 6/6. Verificado en la web: Qhapaq Ñan inscrito en 2014, ficha 1459, seis países. No se pudo confirmar la cifra de 30 000 km (UNESCO da más de 6 000 km para 273 sitios componentes): el texto ahora dice «thousands of kilometers» y la fuente lo aclara. Hyslop (1984) de memoria. whc.unesco.org no se pudo abrir directo (red); se confirmó por resultados de búsqueda." }
 }

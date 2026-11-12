@@ -91,8 +91,8 @@
           "explicacion": "Concuerda con la oración 3. Se pide la que choca con el texto." },
         { "t": "Emma has been living in Juliaca for several months.", "correcta": true, "evidencia": ["o2"],
           "explicacion": "La oración 2 dice que lleva en Juliaca una semana («one week»), no varios meses." },
-        { "t": "Emma's school is close to Lake Titicaca.", "codigo": "RV36",
-          "explicacion": "El texto no menciona el lago, pero no decirlo no es contradecirlo. Se pide lo que choca con el texto." }
+        { "t": "Emma sleeps with several blankets at night.", "codigo": "RV8", "origen": "o6",
+          "explicacion": "Concuerda con la oración 6. Se pide la que contradice al texto." }
       ]
     },
     {
@@ -103,18 +103,18 @@
       "previo": {
         "tipo": "clasificar",
         "pide": "Antes de ver las alternativas, lee esta afirmación y di qué relación tiene con el texto.",
-        "sonda": "Emma's classmates are interested in her life in Canada.",
+        "sonda": "Emma's classmates know that her Spanish is not perfect yet.",
         "clase": "se-deduce",
         "codigos": {
           "lo-dice": "RV58",
           "no-se-sabe": "RV34",
           "lo-contradice": "RV63"
         },
-        "explicacion": "La oración 8 dice que le hacen muchas preguntas sobre el invierno en Canadá. De ahí se deduce que les interesa su vida allá.",
+        "explicacion": "La oración 8 dice que corrigen su español con paciencia. El texto no dice que lo sepan imperfecto, pero para corregirla tienen que notar sus errores: se deduce.",
         "explicaciones": {
-          "lo-dice": "El texto cuenta que le hacen preguntas, pero no usa la palabra «interés»: eso se deduce, no está escrito.",
-          "no-se-sabe": "Sí se puede saber: quien hace «many questions» (oración 8) muestra interés.",
-          "lo-contradice": "El texto no muestra desinterés: sus compañeros son curiosos y amables (oración 7)."
+          "lo-dice": "El texto cuenta que la corrigen, pero no dice que sepan que su español es imperfecto: eso se deduce, no está escrito.",
+          "no-se-sabe": "Sí se puede saber: quien corrige a otra persona (oración 8) ha notado sus errores.",
+          "lo-contradice": "Nada en el texto lo niega: al contrario, la corrigen (oración 8)."
         }
       },
       "enunciado": "What can be inferred about Emma's classmates?",
@@ -134,9 +134,9 @@
   "fecha": "2026-11-12",
   "hechos": [
     { "afirmacion": "Juliaca, en la región Puno, está a más de 3 800 metros sobre el nivel del mar.",
-      "fuente": "Instituto Nacional de Estadística e Informática (INEI) e Instituto Geográfico Nacional (IGN): altitud de la ciudad de Juliaca, 3 825 m s. n. m." },
+      "fuente": "Instituto Nacional de Estadística e Informática (INEI) e Instituto Geográfico Nacional (IGN): altitud de la ciudad de Juliaca, alrededor de 3 825 a 3 835 m s. n. m. según la fuente (búsqueda web: aeropuerto 3 825 m; ciudad 3 834 m)" },
     { "afirmacion": "Emma es un personaje inventado; el texto es un correo de ficción.",
       "fuente": "Texto propio de Mesa de Estudios (no se basa en una persona real)." }
   ],
-  "revision": null
+  "revision": { "por": "subagente (revisor a ciegas, rutina verbal-mas)", "fecha": "2026-11-12", "veredicto": "aprobado", "notas": "A ciegas 6/6. Cambios: previo de p5, la sonda «interesados en su vida en Canadá» admitía lo-dice o se-deduce; ahora «saben que su español aún no es perfecto» (se deduce de la oración 8). p4: el distractor del lago Titicaca (no se sabe) se cambió por una afirmación compatible (oración 6). Altitud verificada en la web: aeropuerto 3 825 m, ciudad ~3 834 m; «más de 3 800 m» se mantiene; fuente corregida." }
 }

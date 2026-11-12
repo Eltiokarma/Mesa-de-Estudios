@@ -1064,380 +1064,6 @@
       ]
     },
     {
-      "id": "t128",
-      "nivel": "intermedio",
-      "enunciado": "Lee el texto «Nazca from Above» y responde las 5 preguntas.",
-      "texto": {
-        "titulo": "Nazca from Above",
-        "idioma": "en",
-        "parrafos": [
-          [
-            {
-              "n": 1,
-              "t": "For a long time, the best way to see the Nazca lines was to fly over them in a small plane."
-            },
-            {
-              "n": 2,
-              "t": "These huge drawings on the desert floor of southern Peru were made more than a thousand years ago by people who moved the dark stones on the surface and uncovered the lighter ground below."
-            },
-            {
-              "n": 3,
-              "t": "Because it almost never rains there, many of the lines have survived until today."
-            }
-          ],
-          [
-            {
-              "n": 4,
-              "t": "Today, archaeologists also study them in a new way: with drones."
-            },
-            {
-              "n": 5,
-              "t": "A drone can fly low and slowly and take many photos, which are eventually joined into a detailed map of the ground."
-            },
-            {
-              "n": 6,
-              "t": "In these images, researchers can notice faint figures that are very hard to see from a plane or from the ground."
-            },
-            {
-              "n": 7,
-              "t": "In fact, in recent years some figures that nobody had noticed before have been found with the help of drones."
-            },
-            {
-              "n": 8,
-              "t": "Drones have another advantage: researchers do not need to walk on the fragile surface, so they leave no footprints on it."
-            }
-          ],
-          [
-            {
-              "n": 9,
-              "t": "However, drones do not replace archaeologists."
-            },
-            {
-              "n": 10,
-              "t": "A photo can show a shape, but only people who know the Nasca culture can suggest what that shape may have meant."
-            },
-            {
-              "n": 11,
-              "t": "The new technology, then, is a tool that helps researchers, not a machine that does their job."
-            }
-          ]
-        ]
-      },
-      "preguntas": [
-        {
-          "n": 1,
-          "enunciado": "In sentence 5, the word EVENTUALLY can be replaced by",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "quickly."
-            },
-            {
-              "letra": "B",
-              "t": "finally."
-            },
-            {
-              "letra": "C",
-              "t": "slowly."
-            },
-            {
-              "letra": "D",
-              "t": "occasionally."
-            }
-          ]
-        },
-        {
-          "n": 2,
-          "previo": "Antes de mirar las alternativas, lee esta afirmación y di qué relación tiene con el texto. «If it rained often in that desert, fewer lines would probably have survived.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
-          "enunciado": "If it rained often in the Nazca desert, then, according to the text, the lines",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "would certainly all have disappeared by now."
-            },
-            {
-              "letra": "B",
-              "t": "probably would not have lasted so well."
-            },
-            {
-              "letra": "C",
-              "t": "would have lasted just as well, because they are made of stones and ground."
-            },
-            {
-              "letra": "D",
-              "t": "would be easier to study with drones than from a plane."
-            }
-          ]
-        },
-        {
-          "n": 3,
-          "enunciado": "Which statement contradicts the text?",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "Some figures that nobody had noticed before were found with the help of drones."
-            },
-            {
-              "letra": "B",
-              "t": "Drones can now explain what each figure meant."
-            },
-            {
-              "letra": "C",
-              "t": "Many tourists from other countries visit the Nazca lines every year."
-            },
-            {
-              "letra": "D",
-              "t": "Thanks to drones, researchers can study the lines without walking on their fragile surface."
-            }
-          ]
-        },
-        {
-          "n": 4,
-          "enunciado": "According to the text, why can drones help find figures that were not noticed before?",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "Because it almost never rains in that part of southern Peru."
-            },
-            {
-              "letra": "B",
-              "t": "Because they fly much higher and faster than small planes do."
-            },
-            {
-              "letra": "C",
-              "t": "Because they fly low, and their images show faint figures."
-            },
-            {
-              "letra": "D",
-              "t": "Because, unlike archaeologists, they can tell what every shape meant."
-            }
-          ]
-        },
-        {
-          "n": 5,
-          "previo": "Antes de mirar las alternativas, escribe el número de la oración (en inglés) que mejor dice de qué trata el texto. Si ninguna lo dice completo, escribe «ninguna».",
-          "enunciado": "Which is the best title for the text?",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "The Deserts of Southern Peru"
-            },
-            {
-              "letra": "B",
-              "t": "Drones: A New Tool for Nazca Research"
-            },
-            {
-              "letra": "C",
-              "t": "Flying over Nazca in a Small Plane"
-            },
-            {
-              "letra": "D",
-              "t": "Drones Will Replace Archaeologists"
-            },
-            {
-              "letra": "E",
-              "t": "How the Ancient Nasca People Made Their Huge Drawings in the Desert"
-            }
-          ]
-        }
-      ],
-      "respuesta": "Clave: 1: B · 2: B · 3: B · 4: C · 5: B.",
-      "pasos": [
-        "Pregunta 1. Clave B. «Eventually» quiere decir al final, después de un proceso: primero el dron toma muchas fotos y, al final, se unen en un mapa.",
-        "Pregunta 2. Antes de las alternativas: Se deduce del texto. La oración 3 da la causa: muchas líneas sobrevivieron «because it almost never rains there». Si lloviera a menudo, faltaría esa causa: se deduce que habrían sobrevivido menos.",
-        "Pregunta 2. Clave B. La oración 3 dice que muchas líneas sobrevivieron porque casi nunca llueve. Sin esa causa, lo probable es que se hubieran conservado peor.",
-        "Pregunta 3. Clave B. Las oraciones 9 y 10 dicen lo contrario: los drones no reemplazan a los arqueólogos, y solo quienes conocen la cultura Nasca pueden proponer qué significaba una figura.",
-        "Pregunta 4. Clave C. Las oraciones 5 y 6 lo dicen: el dron vuela bajo y lento, toma muchas fotos, y en esas imágenes se ven figuras tenues, difíciles de ver desde un avión o desde el suelo.",
-        "Pregunta 5. Antes de las alternativas: la oración 4 o la oración 11. La oración 4 anuncia el tema (hoy las líneas también se estudian con drones) y la 11 lo completa: el dron es una herramienta que ayuda a los investigadores, no los reemplaza.",
-        "Pregunta 5. Clave B. Junta las oraciones 4 y 11: hoy las líneas también se estudian con drones, que ayudan a los investigadores sin reemplazarlos."
-      ]
-    },
-    {
-      "id": "t129",
-      "nivel": "intermedio",
-      "enunciado": "Lee el texto «Our Rivers Are Not a Trash Can» y responde las 5 preguntas.",
-      "texto": {
-        "titulo": "Our Rivers Are Not a Trash Can",
-        "idioma": "en",
-        "parrafos": [
-          [
-            {
-              "n": 1,
-              "t": "I am a science teacher in Iquitos, and I am writing because many people in our city think that a plastic bottle thrown into the river simply disappears."
-            },
-            {
-              "n": 2,
-              "t": "It does not: plastic breaks into smaller and smaller pieces, but it stays in the water for many years."
-            },
-            {
-              "n": 3,
-              "t": "When I was a child, my friends and I used to swim in the Itaya River every weekend."
-            },
-            {
-              "n": 4,
-              "t": "Today, after a heavy rain, its banks are covered with bags, bottles and food containers."
-            }
-          ],
-          [
-            {
-              "n": 5,
-              "t": "Last month, my students and I spent a morning cleaning a small part of the bank near our school, and we filled more than forty bags with trash."
-            },
-            {
-              "n": 6,
-              "t": "Their reaction surprised me: instead of complaining, they asked to do it again."
-            },
-            {
-              "n": 7,
-              "t": "Cleaning, however, is not enough if new plastic keeps arriving every day."
-            }
-          ],
-          [
-            {
-              "n": 8,
-              "t": "That is why I believe our city must reduce the plastic it uses, starting with the markets, where most products are still sold in single-use bags."
-            },
-            {
-              "n": 9,
-              "t": "Peru already has a law that limits single-use plastic, but a law works only if people and shops follow it."
-            },
-            {
-              "n": 10,
-              "t": "I invite your readers, and especially the market vendors, to try reusable bags for one month and see the difference in our rivers."
-            }
-          ]
-        ]
-      },
-      "preguntas": [
-        {
-          "n": 1,
-          "previo": "Antes de mirar las alternativas: ¿qué busca sobre todo la autora de la carta? Elige: «Explicar o informar», «Convencer», «Narrar».",
-          "enunciado": "What is the main purpose of the letter?",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "To tell the story of a morning when a teacher and some students cleaned a river bank."
-            },
-            {
-              "letra": "B",
-              "t": "To persuade people in Iquitos to use less plastic."
-            },
-            {
-              "letra": "C",
-              "t": "To explain how plastic breaks into smaller and smaller pieces in the water."
-            },
-            {
-              "letra": "D",
-              "t": "To describe the rivers of the Amazon."
-            },
-            {
-              "letra": "E",
-              "t": "To complain that Peru has no law about single-use plastic."
-            }
-          ]
-        },
-        {
-          "n": 2,
-          "enunciado": "This text would most probably be published in",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "an official document that explains Peru's law on plastic bags."
-            },
-            {
-              "letra": "B",
-              "t": "a science textbook chapter about how plastic breaks down in water."
-            },
-            {
-              "letra": "C",
-              "t": "the readers' letters section of a newspaper."
-            },
-            {
-              "letra": "D",
-              "t": "a school report written by the teacher's students."
-            }
-          ]
-        },
-        {
-          "n": 3,
-          "enunciado": "In sentence 10, the opposite of REUSABLE is",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "useful."
-            },
-            {
-              "letra": "B",
-              "t": "recycled."
-            },
-            {
-              "letra": "C",
-              "t": "single-use."
-            },
-            {
-              "letra": "D",
-              "t": "used once more."
-            }
-          ]
-        },
-        {
-          "n": 4,
-          "enunciado": "Which statement contradicts what the letter says?",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "Plastic in the river disappears after a few months."
-            },
-            {
-              "letra": "B",
-              "t": "After the cleaning day, the students asked to clean the river bank again."
-            },
-            {
-              "letra": "C",
-              "t": "Other cities in the Amazon have the same problem with plastic in their rivers."
-            },
-            {
-              "letra": "D",
-              "t": "According to the teacher, cleaning the river bank is not enough by itself."
-            }
-          ]
-        },
-        {
-          "n": 5,
-          "previo": "Antes de mirar las alternativas, lee esta afirmación y di qué relación tiene con el texto. «For the teacher, less new plastic in the city would mean less plastic arriving at the rivers.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
-          "enunciado": "If the markets of Iquitos had stopped using single-use bags years ago, then, according to the teacher's reasoning,",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "the students would not have wanted to clean the bank again."
-            },
-            {
-              "letra": "B",
-              "t": "the river banks would still be just as full of plastic after a heavy rain."
-            },
-            {
-              "letra": "C",
-              "t": "the river banks would have no plastic at all today, so no cleaning would ever be needed."
-            },
-            {
-              "letra": "D",
-              "t": "less plastic would probably reach the rivers today."
-            }
-          ]
-        }
-      ],
-      "respuesta": "Clave: 1: B · 2: C · 3: C · 4: A · 5: D.",
-      "pasos": [
-        "Pregunta 1. Antes de las alternativas: Convencer. La autora da su opinión («I believe our city must reduce the plastic…», oración 8) y termina invitando a los lectores a cambiar (oración 10): busca convencer.",
-        "Pregunta 1. Clave B. La oración 8 dice la tesis (la ciudad debe reducir el plástico que usa) y la 10 invita a los lectores a probar bolsas reutilizables: la carta busca convencer.",
-        "Pregunta 2. Clave C. La autora dice «I am writing because…» (oración 1) y se dirige a «your readers» (oración 10): escribe a un medio para que la lean sus lectores, como en una carta al director.",
-        "Pregunta 3. Clave C. «Reusable» es lo que se usa varias veces. Su contrario es lo que se usa una sola vez: «single-use», como las bolsas de la oración 8, que la autora quiere cambiar.",
-        "Pregunta 4. Clave A. Es lo que cree mucha gente (oración 1), y la autora lo niega: «It does not», el plástico se rompe en pedazos pero se queda muchos años en el agua (oración 2).",
-        "Pregunta 5. Antes de las alternativas: Se deduce del texto. La oración 7 dice que limpiar no basta si sigue llegando plástico nuevo, y la 8 propone reducir el plástico que usa la ciudad. De ahí se deduce que, para ella, menos plástico en la ciudad es menos plástico en los ríos.",
-        "Pregunta 5. Clave D. La autora une la basura de los ríos al plástico que sigue llegando (oración 7) y propone empezar por los mercados (oración 8). Si los mercados lo hubieran dejado antes, lo probable es que llegara menos plástico."
-      ]
-    },
-    {
       "id": "t130",
       "nivel": "avanzado (tipo UNI)",
       "enunciado": "Lee el texto «Why We Fall for False News» y responde las 5 preguntas.",
@@ -1813,6 +1439,376 @@
         "Pregunta 4. Clave A. La oración 1 avisa que Valeria es inventada, y su historia lleva a la idea de la oración 9: las variedades que guardaron las familias pueden ayudar ante la sequía.",
         "Pregunta 5. Antes de las alternativas: Se deduce del texto. La oración 8 dice que los agricultores compartieron semillas «that were not in any collection» y que Valeria las sumó a sus pruebas. Sin ellos, esas variedades no habrían estado: se deduce que habría probado menos.",
         "Pregunta 5. Clave D. La oración 8 dice que los agricultores le dieron semillas que no estaban en ninguna colección. Sin ellas, lo probable es que hubiera probado menos variedades."
+      ]
+    },
+    {
+      "id": "t167",
+      "nivel": "avanzado (tipo UNI)",
+      "enunciado": "Lee el texto «Look, but Do Not Touch» y responde las 5 preguntas.",
+      "texto": {
+        "titulo": "Look, but Do Not Touch",
+        "idioma": "en",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Every year, many visitors travel to the Amazon hoping to swim next to a pink river dolphin."
+            },
+            {
+              "n": 2,
+              "t": "The photos look magical: a smiling tourist, a curious animal and a river shining in the afternoon light."
+            },
+            {
+              "n": 3,
+              "t": "However, I believe that tourists should not be allowed to swim with wild river dolphins."
+            }
+          ],
+          [
+            {
+              "n": 4,
+              "t": "First, these animals are not pets, and they are not used to crowds."
+            },
+            {
+              "n": 5,
+              "t": "When boats and swimmers come close every day, the dolphins may become stressed, and some may leave the places where they feed or rest."
+            },
+            {
+              "n": 6,
+              "t": "Second, the pink river dolphin is considered an endangered species, so every disturbance matters more."
+            }
+          ],
+          [
+            {
+              "n": 7,
+              "t": "Some tour operators reply that these visits give local families a reason to protect the river."
+            },
+            {
+              "n": 8,
+              "t": "That argument deserves respect, since many communities need an income."
+            },
+            {
+              "n": 9,
+              "t": "Yet there are other ways to earn it: guided boat trips, in which visitors watch the dolphins from a distance, bring money without forcing any contact."
+            },
+            {
+              "n": 10,
+              "t": "In my view, seeing a dolphin from a quiet boat is a better memory than touching it, and it leaves the animal free."
+            },
+            {
+              "n": 11,
+              "t": "If we protect the dolphins today, the next visitors will be able to enjoy them too."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas: ¿qué busca sobre todo la autora? Elige: «Explicar o informar», «Convencer», «Narrar».",
+          "enunciado": "What is the main purpose of the text?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "To describe the pink river dolphin and explain how it lives in the Amazon."
+            },
+            {
+              "letra": "B",
+              "t": "To argue that tourism in the Amazon is bad for local families."
+            },
+            {
+              "letra": "C",
+              "t": "To invite tourists to visit Amazon communities and swim in the river."
+            },
+            {
+              "letra": "D",
+              "t": "To tell about a trip in which the author swam with a pink dolphin."
+            },
+            {
+              "letra": "E",
+              "t": "To persuade readers that swimming with wild river dolphins should not be allowed."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "In sentence 5, the word STRESSED means",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "crowded together."
+            },
+            {
+              "letra": "B",
+              "t": "uneasy."
+            },
+            {
+              "letra": "C",
+              "t": "stretched out."
+            },
+            {
+              "letra": "D",
+              "t": "emphasized."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "Which statement is incompatible with the text?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "The author recognizes that some communities need an income from tourism."
+            },
+            {
+              "letra": "B",
+              "t": "The author thinks that guided boat trips should also be banned."
+            },
+            {
+              "letra": "C",
+              "t": "The author says that the pink river dolphin is considered an endangered species."
+            },
+            {
+              "letra": "D",
+              "t": "The author believes that the dolphins are not used to crowds."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "If a study showed that swimmers never disturb the dolphins, then the author would probably",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "agree at once that tourists may swim with the dolphins."
+            },
+            {
+              "letra": "B",
+              "t": "lose one of the main supports of her opinion."
+            },
+            {
+              "letra": "C",
+              "t": "stop mentioning the income of the local families."
+            },
+            {
+              "letra": "D",
+              "t": "say that the reasons for her opinion stay exactly the same."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "enunciado": "What can be inferred about the author's attitude toward tour operators?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "The author listens to their argument but does not accept it."
+            },
+            {
+              "letra": "B",
+              "t": "The author thinks that all tour operators harm the dolphins."
+            },
+            {
+              "letra": "C",
+              "t": "The author agrees with them and would like more swimming tours."
+            },
+            {
+              "letra": "D",
+              "t": "The author thinks they are dishonest people who care only about money."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: E · 2: B · 3: B · 4: B · 5: A.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: Convencer. La autora da su opinión («I believe», oración 3; «In my view», oración 10), responde a quienes piensan distinto (oraciones 7 a 9) y llama a proteger a los delfines (oración 11): quiere convencer.",
+        "Pregunta 1. Clave E. La oración 3 dice la tesis y la 10 la refuerza con su punto de vista («In my view…»): el texto busca convencer.",
+        "Pregunta 2. Clave B. Con botes y bañistas cerca todos los días, los delfines pueden sentirse inquietos, y por eso algunos se van de sus zonas de alimentación (oración 5).",
+        "Pregunta 3. Clave B. La oración 9 propone justo esos paseos en bote, mirando a los delfines desde lejos, como una alternativa mejor.",
+        "Pregunta 4. Clave B. Las oraciones 4 y 5 explican que los bañistas pueden molestar a los delfines. Si no los molestaran, esa razón se debilita.",
+        "Pregunta 5. Clave A. Reconoce su argumento («deserves respect», oración 8), pero propone otra forma de obtener ingresos sin contacto (oración 9)."
+      ]
+    },
+    {
+      "id": "t168",
+      "nivel": "avanzado (tipo UNI)",
+      "enunciado": "Lee el texto «Qhapaq Ñan» y responde las 5 preguntas.",
+      "texto": {
+        "titulo": "Qhapaq Ñan",
+        "idioma": "en",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "The Qhapaq Ñan, or Great Inca Road, was a network of roads that connected the many regions of the Inca Empire."
+            },
+            {
+              "n": 2,
+              "t": "In total, it stretched for thousands of kilometers across mountains, deserts and forests."
+            },
+            {
+              "n": 3,
+              "t": "The Incas did not create all of these routes from nothing; they joined older paths built by earlier Andean peoples and improved them."
+            }
+          ],
+          [
+            {
+              "n": 4,
+              "t": "Where the land was steep, builders made stone stairs, and where rivers were deep, they built bridges of rope."
+            },
+            {
+              "n": 5,
+              "t": "Along the roads there were tambos, buildings where travelers could rest and where food and goods were kept."
+            },
+            {
+              "n": 6,
+              "t": "Because the Incas did not use wheeled vehicles, people traveled on foot, and llamas carried the loads."
+            },
+            {
+              "n": 7,
+              "t": "The roads were also used by the chasquis, runners who passed messages from one post to the next, so news could travel quickly across the empire."
+            },
+            {
+              "n": 8,
+              "t": "Thus, the road system allowed the state to move its armies, collect goods and keep control of distant lands."
+            }
+          ],
+          [
+            {
+              "n": 9,
+              "t": "In 2014, UNESCO recognized the Qhapaq Ñan as a World Heritage Site, shared by six countries, including Peru."
+            },
+            {
+              "n": 10,
+              "t": "Some stretches can still be walked today."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración (en inglés) que mejor dice de qué trata el texto. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "Which is the best title for the text?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "The Chasquis: Fast Runners of the Inca Empire"
+            },
+            {
+              "letra": "B",
+              "t": "UNESCO World Heritage Sites in Six Countries"
+            },
+            {
+              "letra": "C",
+              "t": "The Qhapaq Ñan: The Inca Road Network"
+            },
+            {
+              "letra": "D",
+              "t": "How the Incas Built Stairs and Bridges in the Mountains"
+            },
+            {
+              "letra": "E",
+              "t": "Great Roads of the Ancient World"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "This text would most probably be published in",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "a newspaper opinion column that criticizes the building of new roads."
+            },
+            {
+              "letra": "B",
+              "t": "an encyclopedia or reference book about the history of Peru."
+            },
+            {
+              "letra": "C",
+              "t": "a travel blog where a family tells about its trip to Cusco."
+            },
+            {
+              "letra": "D",
+              "t": "a school notice that invites the students to a walk in the mountains."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "According to the text, what were tambos?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Large carts with wheels that carried soldiers across the mountains."
+            },
+            {
+              "letra": "B",
+              "t": "Runners who passed messages from one post to the next."
+            },
+            {
+              "letra": "C",
+              "t": "Houses where the emperor lived while he visited the provinces."
+            },
+            {
+              "letra": "D",
+              "t": "Buildings where travelers could rest and goods were kept."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "In sentence 4, the opposite of STEEP is",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "narrow."
+            },
+            {
+              "letra": "B",
+              "t": "flat."
+            },
+            {
+              "letra": "C",
+              "t": "sloping."
+            },
+            {
+              "letra": "D",
+              "t": "deep."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "enunciado": "If a message had to reach a distant province quickly, then, according to the text, the Incas would most probably",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "send it with a single runner, who would never stop on the way."
+            },
+            {
+              "letra": "B",
+              "t": "pass it from one chasqui to the next along the road."
+            },
+            {
+              "letra": "C",
+              "t": "carry it on a wagon pulled by a team of llamas."
+            },
+            {
+              "letra": "D",
+              "t": "ask the villagers to keep it until the road was finished."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: C · 2: B · 3: D · 4: B · 5: B.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: la oración 1. La oración 1 presenta el tema: la Qhapaq Ñan, una red de caminos que unía las regiones del imperio inca. Las demás dan datos sobre ella.",
+        "Pregunta 1. Clave C. La oración 1 presenta el tema, la red de caminos del imperio inca, y el resto del texto explica cómo era y para qué servía.",
+        "Pregunta 2. Clave B. Describe el tema con datos, sin opinión personal ni trato directo al lector: la forma de un artículo de consulta.",
+        "Pregunta 3. Clave D. La oración 5 los define así: edificios a lo largo de los caminos donde los viajeros descansaban y se guardaban alimentos y bienes.",
+        "Pregunta 4. Clave B. «Steep» describe un terreno muy inclinado; su contrario es un terreno plano. Por eso en los lugares empinados hacían escaleras (oración 4).",
+        "Pregunta 5. Clave B. La oración 7 dice que los chasquis pasaban los mensajes de un puesto al siguiente para que las noticias viajaran rápido por el imperio."
       ]
     }
   ]

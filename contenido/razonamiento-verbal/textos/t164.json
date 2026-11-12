@@ -135,5 +135,5 @@
     { "afirmacion": "Perú se ubica en el Cinturón de Fuego del Pacífico, una zona de alta actividad sísmica, y el sur del país, incluida la región Arequipa, ha tenido sismos fuertes.",
       "fuente": "Instituto Geofísico del Perú (IGP), información sobre sismicidad en el Perú (igp.gob.pe)." }
   ],
-  "revision": null
+  "revision": { "por": "subagente (revisor a ciegas, rutina verbal-mas)", "fecha": "2026-11-12", "veredicto": "aprobado", "notas": "A ciegas 6/6 (incluye previo), sin dudas. Sin cambios. Texto y aviso inventados; sin hechos externos." }
 }

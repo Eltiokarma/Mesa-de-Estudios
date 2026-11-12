@@ -130,8 +130,8 @@
           "explicacion": "Es verdad: la oración 4 lo dice. Se pide la que choca con el texto." },
         { "t": "Water from the nets is safe to drink without any treatment.", "correcta": true, "evidencia": ["o10"],
           "explicacion": "La oración 10 dice que el agua debe tratarse antes de que la gente la beba." },
-        { "t": "Fog nets are used in every city and every town in Peru.", "codigo": "RV36",
-          "explicacion": "El texto no habla de otras ciudades, pero no decirlo no es contradecirlo. Se pide lo que choca con el texto." },
+        { "t": "Some communities use the water from the nets to grow plants on the dry slopes.", "codigo": "RV8", "origen": "o9",
+          "explicacion": "Concuerda con la oración 9. Se pide la que contradice al texto." },
         { "t": "Fog nets need wind to push the fog through the mesh.", "codigo": "RV9", "origen": "o7",
           "explicacion": "Concuerda con la oración 7. Se pide la que contradice al texto." }
       ]
@@ -149,5 +149,5 @@
     { "afirmacion": "Varias familias de las zonas altas de Lima no tienen conexión de agua potable y la compran a camiones cisterna, a un precio por litro mayor que el de la red pública.",
       "fuente": "SUNASS (Superintendencia Nacional de Servicios de Saneamiento), informes sobre acceso al agua en Lima." }
   ],
-  "revision": null
+  "revision": { "por": "subagente (revisor a ciegas, rutina verbal-mas)", "fecha": "2026-11-12", "veredicto": "aprobado", "notas": "A ciegas 6/6. Duda: en la pregunta de incompatibilidad (p5) el distractor «every city and every town in Peru» era un «no se sabe»; se reemplazó por una afirmación compatible (oración 9). Verificado en la web: Klemm y otros (2012), Ambio 41(3), 221-234 (DOI 10.1007/s13280-012-0247-8), malla pasiva, gotas que drenan a tanque. De memoria: clima de Lima (SENAMHI/IGP) y camiones cisterna (SUNASS)." }
 }
