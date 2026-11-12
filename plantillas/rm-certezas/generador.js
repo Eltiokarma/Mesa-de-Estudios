@@ -218,8 +218,12 @@
     const alternativas = o.texto
       ? P.armarTexto({ correcta: o.correcta, errores: o.errores, rng })
       : P.armar({ correcta: o.correcta, errores: o.errores, rng, decimales: 0, texto: x => f(x) + (unidad ? ' ' + (x === 1 ? singular(unidad) : unidad) : '') });
+    // Solo las variables que de verdad aparecen (regla 4).
+    const usadas = new Set(), marca = x => { if (Array.isArray(x)) x.forEach(marca); else if (x && typeof x === 'object' && x.v) usadas.add(x.v); };
+    marca(o.enunciado); marca(o.pregunta); marca(o.solucion);
+    const variables = {}; for (const k of Object.keys(o.variables)) if (usadas.has(k)) variables[k] = o.variables[k];
     return {
-      id: `${ID}#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
+      id: `${ID}#${semilla}`, variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
       alternativas, solucion: o.solucion, respuesta: { valor: o.texto ? o.correcta.clave : o.correcta, unidad }, _datos: o.datos,
     };
   }
@@ -273,7 +277,7 @@
         masDos(r),
       ];
       solucion = [
-        ['Peor caso: salen completos todos los colores menos el que tiene menos ', obj, ` (${cmn}): ${total} − ${mn} = ${f(r - 1)} ${obj}.`],
+        ['Peor caso: salen completos todos los colores menos el que tiene menos ', obj, ' (', v('u', `${mn} ${cmn}`), `): ${total} − `, v('u', `${mn}`), ` = ${f(r - 1)} ${obj}.`],
         [`Todavía falta el color ${cmn}. La siguiente tiene que ser ${SING[cmn]}: ${f(r - 1)} + 1 = ${f(r)}.`],
       ];
     } else {
@@ -288,7 +292,7 @@
         masDos(r),
       ];
       solucion = [
-        ['Peor caso: salen primero todas las que no son ', color, ': ', lista(otrosCs.map(c => `${urna[c]} ${c}`)), ` = ${otros}.`],
+        ['Peor caso: salen primero todas las que no son ', color, ': ', v('u', lista(otrosCs.map(c => `${urna[c]} ${c}`))), ` = ${otros}.`],
         ['Después ya solo quedan ', color, ': hay que sacar ', v('k', `${k}`), ` más. Total: ${otros} + ${k} = ${f(r)}.`],
       ];
     }
@@ -318,7 +322,7 @@
         masDos(r),
       ];
       solucion = [
-        [`Peor caso: salen solo ${cosa.n} izquierdos (de cada color, todos los izquierdos que hay): `, lista(cs.map(c => `${pares[c]}`)), ` = ${f(r - 1)}. Ninguno forma par con otro.`],
+        [`Peor caso: salen solo ${cosa.n} izquierdos (de cada color, todos los izquierdos que hay): `, v('u', lista(cs.map(c => `${pares[c]}`))), ` = ${f(r - 1)}. Ninguno forma par con otro.`],
         [`El siguiente tiene que ser derecho, y su izquierdo del mismo color ya salió: ${f(r - 1)} + 1 = ${f(r)}.`],
       ];
     } else {
@@ -331,8 +335,8 @@
         masDos(r),
       ];
       solucion = [
-        [`Peor caso: primero salen todos los ${cosa.n} que no son ${color}: 2 × (`, lista(otrosCs.map(c => `${pares[c]}`)), `) = ${R.otros}.`],
-        [`Luego salen todos los ${color} de un solo lado: ${pares[color]}. Van ${f(r - 1)} sin par usable.`],
+        [`Peor caso: primero salen todos los ${cosa.n} que no son ${color}: 2 × (`, v('u', lista(otrosCs.map(c => `${pares[c]}`))), `) = ${R.otros}.`],
+        [`Luego salen todos los ${color} de un solo lado: `, v('u', `${pares[color]}`), `. Van ${f(r - 1)} sin par usable.`],
         [`El siguiente es ${SING_M[color]} del otro lado y completa el par: ${f(r - 1)} + 1 = ${f(r)}.`],
       ];
     }
@@ -407,8 +411,9 @@
     const enunciado = ['En una caja hay ', v('N', copias === 1 ? `${N} fichas numeradas del 1 al ${N}` : `${copias * N} discos: ${copias} con cada número del 1 al ${N}`), '. Se sacan sin mirar.'];
     const pregunta = [`¿Cuántos ${copias === 1 ? 'fichas' : 'discos'} hay que sacar como mínimo ${SEGURO} tener dos cuyos números sumen `, v('S', `${S}`), '?'];
     if (copias === 1) pregunta[0] = `¿Cuántas fichas hay que sacar como mínimo ${SEGURO} tener dos cuyos números sumen `;
+    const sinPar = copias * R.parejas.length + (R.mitad ? 1 : 0) + 1;
     const errores = [
-      h('RMP30-sin-pareja', copias * R.parejas.length + (R.mitad ? 1 : 0) + 1, `Tomaste uno de cada pareja que suma ${S}, pero olvidaste ${R.solos.length === 1 ? 'el número que no tiene' : 'los números que no tienen'} pareja (${listaN(R.solos)}): también pueden salir antes.`),
+      sinPar === 2 ? null : h('RMP30-sin-pareja', sinPar, `Tomaste uno de cada pareja que suma ${S}, pero olvidaste ${R.solos.length === 1 ? 'el número que no tiene' : 'los números que no tienen'} pareja (${listaN(R.solos)}): también pueden salir antes.`),
       h('RM6-favorable', 2, 'Ese es el caso con suerte: que los dos primeros sumen lo pedido. Para estar seguro hay que pensar en la peor suerte.'),
       masUno(r, 'uno'),
       R.mitad && copias > 1 ? h('RMP30-la-mitad', r - 1 + copias, `Pusiste en el peor caso todos los ${R.mitad}, pero dos ${R.mitad} ya suman ${S}. De ese número solo puede salir uno.`) : null,
@@ -441,7 +446,7 @@
     ];
     const solucion = [
       ['Tríos de pesas distintas que suman ', v('S', `${S}`), ': ', lista(R.trios.map(t => t.join(' + '))), '.'],
-      [`Peor caso: se puede sacar este grupo de ${R.peor.length} pesas sin que tres sumen ${S}: ${listaN(R.peor)} (revisa cada trío: a cada uno le falta una pesa). No hay grupo más grande así.`],
+      [`Peor caso: se puede sacar este grupo de ${R.peor.length} pesas sin que tres sumen ${S}: ${listaN(R.peor)} (revisa cada trío: a cada uno le falta una pesa). No hay grupo más grande así (se comprueba probando todos los grupos de ${R.peor.length + 1} pesas: cada uno contiene algún trío).`],
       [`Con una más, la que sea, ya se completa un trío: ${f(r - 1)} + 1 = ${f(r)}.`],
     ];
     return cerrar(rng, semilla, { correcta: r, errores, enunciado, pregunta, solucion, variables, datos, unidad: 'pesas' });
@@ -628,16 +633,16 @@
     const sinSolos = R.malo - suma(solos.map(x => x.toma)) + 1;
     const conMin = 1 + suma(R.detalle.map(x => x.valores.length === 2 ? Math.min(B[x.valores[0]], B[x.valores[1]]) : x.toma));
     const errores = [
-      h('RMP30-sin-pareja', sinSolos, `No pusiste en el peor caso los billetes que no sirven para S/ ${M} (${lista(solos.map(x => `los de S/ ${x.valores[0]}`))}); la mala suerte los saca primero.`),
+      sinSolos === 2 ? null : h('RMP30-sin-pareja', sinSolos, `No pusiste en el peor caso los billetes que no sirven para S/ ${M} (${lista(solos.map(x => `los de S/ ${x.valores[0]}`))}); la mala suerte los saca primero.`),
       h('RM6-favorable', 2, 'Ese es el caso con suerte: que los dos primeros sumen lo pedido. Para estar seguro hay que pensar en la peor suerte.'),
       h('RMP31-el-menor', conMin, 'De cada pareja de billetes que suma el monto, tomaste el grupo con menos billetes. La mala suerte saca el grupo que tiene más.'),
       masUno(r, 'uno'),
       masDos(r),
-    ];
+    ].filter(Boolean);
     const paso = pares.map(x => x.valores.length === 2 ? `de S/ ${x.valores[0]} y S/ ${x.valores[1]}, solo los del grupo más grande (${x.toma})` : `de S/ ${x.valores[0]}, uno solo (dos ya suman S/ ${M})`);
     const solucion = [
       ['Formas de juntar ', v('M', `S/ ${M}`), ' con dos billetes: ', lista(pares.map(x => x.valores.length === 2 ? `${x.valores[0]} + ${x.valores[1]}` : `${x.valores[0]} + ${x.valores[0]}`)), '.'],
-      [`Peor caso: todos los que no sirven (${lista(solos.map(x => `${x.toma} de S/ ${x.valores[0]}`))}) y ${lista(paso)}. Total: ${f(r - 1)}.`],
+      ['Peor caso: todos los que no sirven (', v('b', lista(solos.map(x => `${x.toma} de S/ ${x.valores[0]}`))), `) y ${lista(paso)}. Total: ${f(r - 1)}.`],
       [`El siguiente completa alguna de las formas: ${f(r - 1)} + 1 = ${f(r)}.`],
     ];
     return cerrar(rng, semilla, { correcta: r, errores, enunciado, pregunta, solucion, variables, datos, unidad: 'billetes' });
@@ -698,21 +703,22 @@
 
   // ---------- llaves ----------
   function tLlaves(rng, semilla) {
-    const n = rng.entero(4, 12), cosa = rng.elegir([['candados', 'candado'], ['puertas', 'puerta'], ['casilleros', 'casillero']]);
+    const n = rng.entero(4, 12), cosa = rng.elegir([['candados', 'candado', 'un', 'el primero', 'el siguiente', 'Primer', 'Segundo', 'el último'], ['puertas', 'puerta', 'una', 'la primera', 'la siguiente', 'Primera', 'Segunda', 'la última'], ['casilleros', 'casillero', 'un', 'el primero', 'el siguiente', 'Primer', 'Segundo', 'el último']]);
+    const [, uno, art, primero, siguiente, Pri, Seg, ultimo] = cosa;
     const datos = { tipo: 'llaves', n };
     const r = llaves(datos).respuesta;
     const variables = { n: { nombre: 'llaves y ' + cosa[0], color: 'o' } };
-    const enunciado = ['Un portero tiene ', v('n', `${n} llaves`), ' mezcladas y ', v('n', `${n} ${cosa[0]}`), `; cada llave abre un solo ${cosa[1]} y cada ${cosa[1]} se abre con una sola llave. Un intento es probar una llave en un ${cosa[1]}.`];
+    const enunciado = ['Un portero tiene ', v('n', `${n} llaves`), ' mezcladas y ', v('n', `${n} ${cosa[0]}`), `; cada llave abre ${art === 'una' ? 'una sola' : 'un solo'} ${uno} y cada ${uno} se abre con una sola llave. Un intento es probar una llave en ${art} ${uno}.`];
     const pregunta = [`¿Cuántos intentos como mínimo debe hacer ${SEGURO} saber qué llave abre cada ${cosa[1]}?`];
     const errores = [
-      h('RMP34-ultimo-intento', n * (n + 1) / 2, `Contaste un intento de más en cada ${cosa[1]}: si ${n - 1} llaves no abren el primero, la que queda lo abre sin probarla. Igual con los demás.`),
+      h('RMP34-ultimo-intento', n * (n + 1) / 2, `Contaste un intento de más en cada ${cosa[1]}: si ${n - 1} llaves no abren ${primero}, la que queda ${art === 'una' ? 'la' : 'lo'} abre sin probarla. Igual con ${art === 'una' ? 'las demás' : 'los demás'}.`),
       h('RM6-favorable', n - 1, 'Ese es el caso con suerte: que cada llave abra al primer intento. Para estar seguro hay que pensar en la peor suerte.'),
-      h('RMP31-todas-con-todos', n * (n - 1), `Probaste cada llave en todos los demás ${cosa[0]}, pero una llave que ya abrió uno se aparta: el siguiente ${cosa[1]} tiene una llave menos que probar.`),
+      h('RMP31-todas-con-todos', n * (n - 1), `Probaste cada llave en ${art === 'una' ? 'todas las demás' : 'todos los demás'} ${cosa[0]}, pero una llave que ya abrió ${art === 'una' ? 'una' : 'uno'} se aparta: ${siguiente} ${uno} tiene una llave menos que probar.`),
       h('RMP31-n-por-n', n * n, `Multiplicaste ${n} × ${n}, como si cada ${cosa[1]} necesitara probar todas las llaves. Las llaves que ya abrieron se apartan, y la última de cada vez no se prueba.`),
     ];
     const solucion = [
-      [`Primer ${cosa[1]}: en el peor caso fallan `, v('n', `${n - 1}`), ' llaves; la que queda es la buena y no hace falta probarla.'],
-      [`Segundo ${cosa[1]}: quedan ${n - 1} llaves, fallan ${n - 2}. Y así hasta el último, que ya no necesita intentos.`],
+      [`${Pri} ${uno}: en el peor caso fallan `, v('n', `${n - 1}`), ' llaves; la que queda es la buena y no hace falta probarla.'],
+      [`${Seg} ${uno}: quedan ${n - 1} llaves, fallan ${n - 2}. Y así hasta ${ultimo}, que ya no necesita intentos.`],
       [`Total: ${rango(1, n - 1).reverse().join(' + ')} = ${f(r)}.`],
     ];
     return cerrar(rng, semilla, { correcta: r, errores, enunciado, pregunta, solucion, variables, datos, unidad: 'intentos' });
@@ -740,8 +746,8 @@
       if (R.respuesta !== 'mezcla') throw new Error('cajas: la caja que sirve debía ser la rotulada mezcla');
       correcta = t(R.respuesta, `De la rotulada «${pr.mezcla}»`);
       errores = [
-        { id: 'RM6-favorable', clave: 'A', texto: `De la rotulada «${pr.A}»`, explicacion: `Si de «${pr.A}» sale ${pr.uB}, esa caja puede tener solo ${pr.B} o la mezcla: no se sabe. Contaste con la suerte de que la ${pr.cosa} lo diga todo.`, respaldo: 'hipotesis', fuente: FUENTE },
-        { id: 'RM6-favorable', clave: 'B', texto: `De la rotulada «${pr.B}»`, explicacion: `Si de «${pr.B}» sale ${pr.uA}, esa caja puede tener solo ${pr.A} o la mezcla: no se sabe. Contaste con la suerte de que la ${pr.cosa} lo diga todo.`, respaldo: 'hipotesis', fuente: FUENTE },
+        { id: 'RM6-favorable-a', clave: 'A', texto: `De la rotulada «${pr.A}»`, explicacion: `Si de «${pr.A}» sale ${pr.uB}, esa caja puede tener solo ${pr.B} o la mezcla: no se sabe. Contaste con la suerte de que la ${pr.cosa} lo diga todo.`, respaldo: 'hipotesis', fuente: FUENTE },
+        { id: 'RM6-favorable-b', clave: 'B', texto: `De la rotulada «${pr.B}»`, explicacion: `Si de «${pr.B}» sale ${pr.uA}, esa caja puede tener solo ${pr.A} o la mezcla: no se sabe. Contaste con la suerte de que la ${pr.cosa} lo diga todo.`, respaldo: 'hipotesis', fuente: FUENTE },
         { id: 'RMP31-cualquiera', clave: 'cualquiera', texto: 'De cualquiera de las tres', explicacion: `No da igual: solo en la caja rotulada «${pr.mezcla}» se sabe que no hay mezcla, así que la ${pr.cosa} que sale dice qué tiene.`, respaldo: 'hipotesis', fuente: null },
         { id: 'RMP34-una-de-mas', clave: 'dos', texto: 'Una sola no basta: hay que sacar de dos cajas', explicacion: 'Basta una: al saber qué tiene la caja rotulada como mezcla, las otras dos quedan obligadas porque sus rótulos también están errados.', respaldo: 'hipotesis', fuente: null },
       ];

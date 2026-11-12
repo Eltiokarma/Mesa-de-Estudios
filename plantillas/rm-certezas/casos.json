@@ -2,7 +2,7 @@
   "plantilla": "rm-certezas",
   "tolerancia": 0,
   "nota": "La respuesta es el número mínimo de extracciones (o de intentos) para estar seguro: el mayor grupo que se puede sacar sin lograr lo pedido, más 1 (en llaves, la suma de los intentos que fallan en el peor caso). En cajas la respuesta es una clave: 'A', 'B' o 'mezcla' (el contenido o el rótulo de la caja) o 'no-se-sabe'.",
-  "verificacion": "",
+  "verificacion": "Verificación ciega (12 nov 2026, subagente verificador): 50 casos resueltos sin ver el generador. Peor caso por búsqueda exhaustiva propia (máximo subconjunto que no cumple, sobre pares y tríos) y enumeración de cantidades por color, lado o billete; cajas por enumeración de las 6 asignaciones; llaves por la suma (n−1)+…+1; fechas con 366 casillas. 50/50 coinciden. Las correcciones de la revisión no cambiaron ninguna respuesta.",
   "casos": [
     {
       "semilla": "entrada-1",
