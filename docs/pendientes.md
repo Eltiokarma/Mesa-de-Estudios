@@ -1,6 +1,6 @@
 # Pendientes y traspaso
 
-5 de noviembre de 2026 · Cierre de la sesión de trabajo con Gerson. La siguiente sesión empieza aquí, en otra ventana y con otra cuenta de Claude. Léelo después de `CLAUDE.md`.
+Actualizado el 12 de noviembre de 2026 al cerrar la conversación principal. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Estado al 12 nov y lo que sigue».
 
 ## Cómo arrancar una sesión nueva
 
@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 4126 pruebas.
+Deben pasar 7899 pruebas. El servidor tiene las suyas: `cd servidor && pip install -r requirements.txt && python -m pytest -q` (79).
 
 ```bash
 npm run dev
@@ -26,6 +26,105 @@ Si hay que hacer OCR, instala tesseract en español: `apt-get install -y tessera
 
 - **Si el servidor local muere:** se reinicia con `node herramientas/servidor.js`. También hay que reiniciarlo después de cambiar `herramientas/construir-catalogo.js`, porque guarda el módulo en memoria.
 - **Para verificar a mano:** Playwright y Chromium ya vienen instalados en el entorno en la nube (`require('playwright')`). Las capturas *fullPage* pierden la emulación táctil, así que lo que depende de `hover` se revisa con capturas normales.
+
+## Estado al 12 nov y lo que sigue (léelo primero)
+
+**Dónde está todo.**
+- **Publicado:** la app en https://mesa-de-estudios.vercel.app (Vercel) y el servidor de cuentas en https://mesa-de-estudios-production.up.railway.app (Railway), los dos desde `main`.
+- **Ramas:** la de trabajo es `claude/awesome-wozniak-5etl1n`. Todo lo integrado se sube también a `main` con `git push origin HEAD:main`, sin forzar; antes se fusiona `origin/main` si avanzó.
+- **Al integrar:** `npm run catalogo` y subir `VERSION` en `app/sw.js` (hoy v158).
+- **Cobertura:** 2550 de 2550 preguntas de la admisión real de San Marcos 2019–2027 (`docs/clasificacion-unmsm-admision.md`; las tablas se rehacen con `python3 -I herramientas/agregar_admision.py docs/datos/admision-unmsm.csv docs/datos/admision-unmsm.csv docs/datos/admision-unmsm-tablas.md`).
+
+**Lecciones de costo (8 al 12 nov).** La tanda para llegar al 100 % costó cerca de 1000 USD, frente a unos 300 estimados. Las causas fueron siete rutinas en paralelo sin tope, verificación a ciegas en todo y la pausa por el límite semanal. Desde ahí:
+- cada rutina lleva un tope en dólares y cierra con lo que tenga;
+- máximo 3 rutinas en paralelo;
+- verificación a ciegas completa solo en escenas y fórmulas nuevas;
+- se programa una revisión del gasto con `send_later`.
+
+Con esas reglas, las últimas cinco rutinas costaron entre 4 y 28 USD cada una.
+
+### A. Antes del piloto (diciembre)
+
+1. **Consentimiento (Ley 29733)** para cargar nombres y DNI de menores. Lo resuelve Gerson con el colegio o con un abogado. Bloquea cargar datos reales; mientras tanto, todo con datos inventados.
+2. **Prueba de punta a punta en producción, con datos inventados:**
+   - `python -m app.crear_admin --colegio "IE Prueba" …` en la consola de Railway;
+   - CSV de 3 alumnos y tarjetas en PDF;
+   - ingreso en un celular, práctica sin conexión y sincronización;
+   - panel del profesor: abrir la salida y reiniciar una contraseña.
+3. **Respaldos de PostgreSQL** activados en Railway. `DNI_CLAVE_FERNET` y `DNI_HMAC_CLAVE` guardadas en el gestor de Gerson: si se pierde la primera, los DNI no se leen; si cambia la segunda, la carga del CSV duplica alumnos.
+4. **Probar en los celulares y las PC reales del colegio.** Ver `rm-balanzas` (hasta 0,8 s por problema) y `rm-deduccion` en gama baja.
+5. **Decidir el alcance del piloto:** con el diseño actual o con el rediseño (B). El rediseño completo no entra en diciembre; un módulo prototipo, sí.
+
+### B. Diseño, animación y teoría (conversación del 12 nov, sin empezar)
+
+**Diagnóstico (Gerson: «el diseño está súper feo, los ejercicios parecen de libro, no hay teoría»).**
+- Las ~90 prácticas de generador son enunciado, alternativas y solución en texto.
+- Las ~100 escenas las hicieron rutinas distintas, sin una dirección de arte ni un sistema de animación comunes.
+- `docs/diseno.md` define colores y tarjetas, pero no un mundo visual.
+- No hay teoría: la app aplica «primero el problema» y nunca explica después.
+
+**Plan acordado: tres capas, y Gerson quiere las tres.**
+
+| Capa | Para qué | Herramienta | Quién |
+| --- | --- | --- | --- |
+| Alma | Mascota que reacciona según el código de error, retroalimentación, celebraciones, transiciones, onboarding | **Rive** (archivos `.riv` hechos en su editor; Gerson diseñará con el MCP de Vectorcraft e Ideogram para conceptualizar) | Gerson o un diseñador; Claude conecta los estados de la máquina de estados con la app (acierto, código de error, «No sé») |
+| Movimiento | Pasos de la solución que se arman, datos de color que viajan del enunciado a la ecuación, entradas y salidas suaves | **GSAP** (verificar su licencia antes de usarla; se cree gratis desde 2025) o Motion | Claude |
+| Escenas | Kit común de dibujo (trazos, flechas, ejes, sombras y tipografía iguales en todas), sobre Canvas/SVG, o PixiJS si hace falta | Kit propio en `nucleo/` | Claude |
+
+La regla 1 sigue: lo que sale del cálculo (rayos, trayectorias, circuitos) lo dibuja el motor, no Rive.
+
+**Para que las prácticas no parezcan de libro:**
+- solución animada paso a paso;
+- un dibujo mínimo por familia (plano inclinado, triángulo, balanza, recta);
+- respuestas que se manipulan cuando el tipo lo permite (arrastrar un valor, mover un punto);
+- retroalimentación con la mascota según el código de error.
+
+**Teoría: micro-lecciones de 1 a 3 minutos.**
+- Cada una trae una idea clave, una animación, un ejemplo resuelto y un «ahora tú».
+- Aparecen después de intentar, o al fallar dos veces («Explícame esto»), y hay además un índice para repasar.
+- Se diseñan con los ~4000 ejercicios que mandará Gerson, clasificados por tipo, con un «cómo se piensa» por tipo.
+- Cuidado con Mayer: la animación que distrae empeora el aprendizaje (detalles seductores).
+
+**Orden propuesto:**
+1. **Dirección de arte.** Gerson elige 3 palabras de cómo debe sentirse la app y 3 a 5 referencias que le gusten y 2 que no. Con eso Claude escribe `docs/direccion-de-arte.md`: estilo, mascota, colores, tipografía y movimiento.
+2. **Un módulo prototipo completo con el look nuevo,** por ejemplo MRUV: escena, práctica, solución animada, micro-lección y mascota. Se prueba con alumnos.
+3. Recién después se escala con rutinas, con tope de gasto.
+
+**Lecturas recomendadas a Gerson.** Cuando las consiga, van a `fuentes/por-conseguir.md`.
+- *Refactoring UI* (Wathan y Schoger): la primera.
+- *Multimedia Learning* (Mayer): cuándo la animación ayuda o estorba.
+- *The Illusion of Life* (Thomas y Johnston): los 12 principios de la animación.
+- *Designing Interface Animation* (Val Head).
+- *The Design of Everyday Things* (Norman).
+- Para gráficos: *The Visual Display of Quantitative Information* (Tufte).
+
+**Preguntas abiertas para Gerson:**
+- las referencias visuales;
+- si hay un ilustrador o presupuesto para uno;
+- si la mascota tiene identidad andina o puneña;
+- el alcance del piloto.
+
+### C. Lo que espera material de Gerson
+
+- **~4000 ejercicios** para alimentar los generadores y diseñar la teoría. Deben traer conversiones de unidades en geometría, aritmética y RM, que hoy no tienen dónde poner la trampa de unidades.
+- **El siguiente compendio Cuzcano: cantidad de movimiento.** Se sigue el método de `docs/clasificacion/LEEME.md`.
+- **Temarios de la UNA Puno, la UNSA y la UNSAAC,** para la taxonomía.
+
+### D. Decisiones pendientes de Gerson
+
+- Si se muestra al alumno la cita «UNMSM <periodo>» en las preguntas oficiales reproducidas. Recomendado: sí. Hoy va en `datos` en RM y solo en el código en química.
+- Si la lupa de metilos de `molecula-grande` aparece en la escena (pide el color `--c-met`).
+- `rm-fichas` quedó sin problema de papel de la malla.
+- Las decisiones viejas que siguen en la sección «Para Gerson» de abajo: cuadriláteros cóncavos, pares de reserva, GE13 y papel de lectura.
+
+### E. Cuentas: lo que falta (`docs/cuentas.md`, `servidor/LEEME.md`)
+
+- **C4:** resultados en el servidor (`/api/resultados`) y panel del administrador más completo.
+- Migraciones con Alembic: hoy las tablas se crean al arrancar.
+- Paginar `GET /api/colegio/eventos` y poder desactivar cuentas.
+- El límite de intentos vive en memoria: un solo proceso (`--workers 1`). Antes de escalar, pasarlo a la base de datos.
+- Tras un reinicio de contraseña, si el acceso de 15 minutos sigue vigente, el alumno ve «cambia tu contraseña» en vez del ingreso. Funciona igual, porque necesita la clave temporal.
+- `CORS_ORIGENES` y `APP_URL` en Railway apuntan a `https://mesa-de-estudios.vercel.app`. Si cambia el dominio, se cambian ahí.
 
 ## Qué hay hecho
 
