@@ -2,7 +2,7 @@
   "plantilla": "trig-angulos-verticales",
   "tolerancia": 0.000001,
   "nota": "Tangentes de academia (tan 37° = 3/4, tan 16° = 7/24, tan 8° = 1/7). En entrada, tA y tB son tangentes como número (0.333… es 1/3); angA y angB, cómo se nombró el ángulo (null: solo se dio la tangente).",
-  "verificacion": "",
+  "verificacion": "Verificado a ciegas el 12 nov 2026 por un subagente verificador: los 25 casos resueltos desde el enunciado, con coordenadas y bisección numérica sobre la geometría (no con la fórmula de cotangentes) y las expresiones simbólicas comprobadas con valores concretos. Los 25 coinciden con esperado.",
   "casos": [
     {
       "semilla": 3000,

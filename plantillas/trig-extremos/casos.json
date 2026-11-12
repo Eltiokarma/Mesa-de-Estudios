@@ -2,7 +2,7 @@
   "plantilla": "trig-extremos",
   "tolerancia": 0.000001,
   "nota": "Ángulos en grados en entrada. respuesta es un número, salvo en racional/simplifica (clave del intervalo int:inf:sup:cerradoIzq:cerradoDer) y en area-ct (clave area:c0|cs|cc|csc|ct).",
-  "verificacion": "",
+  "verificacion": "Verificado a ciegas el 12 nov 2026 por un subagente verificador: los 25 casos resueltos desde el enunciado por barrido numérico denso (máximos, mínimos, rangos con sus extremos abiertos o cerrados razonados aparte, senoides y horas por cruces) y las áreas en la C.T. por coordenadas en todo el cuadrante. Los 25 coinciden con esperado.",
   "casos": [
     {
       "semilla": 0,

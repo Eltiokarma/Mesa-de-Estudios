@@ -2,7 +2,7 @@
   "plantilla": "trig-ecuaciones",
   "tolerancia": 0.000001,
   "nota": "Ángulos en grados en entrada; respuesta en la unidad de modo (grados, radianes, horas, segundos, número de soluciones o m³). Intervalos semiabiertos: desde ≤ x < hasta.",
-  "verificacion": "",
+  "verificacion": "Verificado a ciegas el 12 nov 2026 por un subagente verificador: cada ecuación evaluada tal como se escribe en todos los candidatos 180°·n/q (q ≤ 72) del intervalo, respetando dónde existen tan, sec y csc, con un barrido fino de control; las claves se rehicieron a mano por factorización. Los 25 coinciden con esperado.",
   "casos": [
     {
       "semilla": 0,

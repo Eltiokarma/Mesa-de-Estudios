@@ -2,7 +2,7 @@
   "plantilla": "trig-oblicuangulos",
   "tolerancia": 0.000001,
   "nota": "Razones de academia (sen 37° = 3/5, sen 16° = 7/25, tan(53°/2) = 1/2). Ángulos en grados; en ceviana, b2 es CA²; en faro con depresión, tA y tB son las tangentes como número.",
-  "verificacion": "",
+  "verificacion": "Verificado a ciegas el 12 nov 2026 por un subagente verificador: los 25 casos resueltos desde el enunciado con coordenadas (faros, bisectriz, doblez, ceviana como intersección de circunferencias), barridos numéricos (lado mínimo, ley de tangentes) y Herón; las fórmulas en función de θ y las constantes k, comprobadas con triángulos concretos. Los 25 coinciden con esperado.",
   "casos": [
     {
       "semilla": 3000,

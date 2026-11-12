@@ -2,7 +2,7 @@
   "plantilla": "trig-polares",
   "tolerancia": 0,
   "nota": "Ángulos en grados en entrada. La respuesta es una clave (ver la cabecera de generador.js): pf/pl ecuación polar, cart ecuación cartesiana, pt punto (x; y), pp punto (r; θ en grados).",
-  "verificacion": "",
+  "verificacion": "Verificado el 12 nov 2026 por un subagente verificador: conversiones resueltas a mano desde el enunciado y comprobadas numéricamente en las dos direcciones (los puntos de la curva polar cumplen la cartesiana y al revés, con r negativo), y el foco de la trayectoria. Los 22 coinciden con esperado. Salvedad: el verificador vio casos.json antes de escribir su script de comprobación (las respuestas ya las tenía resueltas a mano); la verificación a ciegas anterior, del 8 nov, también cuadró 22 de 22.",
   "casos": [
     {
       "semilla": 0,
