@@ -7799,7 +7799,7 @@
    "titulo": "Ángulos verticales: dos visuales a la vez",
    "formato": "predicciones",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "trigonometria.triangulos-rectangulos",
     "trigonometria.arcos-compuestos"
