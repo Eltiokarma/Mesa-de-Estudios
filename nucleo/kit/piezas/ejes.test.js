@@ -101,3 +101,24 @@ test('la marca se dibuja donde dice su valor, y deX deshace aX (en el eje y en l
 test('alt cuenta la relación', () => {
   assert.equal(E.alt(IMPULSO), 'Gráfica de F (N) contra t (s): F; +80 N·s; −20 N·s');
 });
+
+test('«hasta»: un elemento se ve desde su corte hasta el suyo y luego deja su lugar', () => {
+  const d = { ...SALTO, puntos: [{ x: 1, y: 1, rotulo: 'vmax', desde: 0, hasta: 1 }, { x: 1, y: 1, rotulo: '3 m/s', desde: 2 }] };
+  assert.match(E.dibujar(d, { corte: 0 }), />vmax</);
+  assert.match(E.dibujar(d, { corte: 1 }), />vmax</);
+  const fin = E.dibujar(d, { corte: 2 });
+  assert.doesNotMatch(fin, />vmax</);
+  assert.match(fin, />3 m\/s</);
+});
+
+test('«cerrada»: la región entre dos gráficas se cierra sola, sin bajar al eje y sin borde de signo', () => {
+  const d = { ...SALTO, areas: [{ puntos: [[-2, 2], [-1, 1], [-1, -2], [-2, -2]], color: 'h', rotulo: '3,5', cerrada: true }] };
+  const svg = E.dibujar(d, { corte: 0 });
+  const g = E.geometria(d), X = v => 48 + 254 * (v + 3) / 6;
+  const path = svg.match(/<path class="kit-crece" d="([^"]+)" fill="var\(--c-h\)"[^>]*>/);
+  assert.ok(path, 'dibuja la región');
+  assert.equal((path[1].match(/[ML]/g) || []).length, 4, 'cuatro vértices, sin cerrar al eje');
+  assert.doesNotMatch(path[0], /stroke-dasharray/);
+  assert.ok(g && X(-2) > 0);
+  assert.match(svg, />3,5</);
+});

@@ -4,7 +4,8 @@
  *   probarViva(gen, { semillas, pieza, conEscena(p) → bool, final(p, svg), presupuestoSoloEscena })
  * Comprueba: la pieza existe; el final no tiene NaN y dibuja lo que pide final(); presupuesto de texto
  * (enunciado ≤ 40, paso ≤ 14, error ≤ 20); cada error con nombre tiene fantasma; si se arrastra, cada
- * alternativa cabe en la marca y la marca en su valor equivale a esa alternativa.
+ * alternativa cabe en la marca y la marca en su valor equivale a esa alternativa. Un id de error repetido dentro
+ * de un problema lleva fantasma vacío ({}): no se sabría cuál de los dos dibujar.
  */
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -72,7 +73,10 @@ function probarViva(gen, o = {}) {
         assert.ok(a.valor >= c.min - 1e-9 && a.valor <= c.max + 1e-9, `semilla ${s}: ${a.texto} no cabe`);
         const puesto = Kit.respuesta.ajustar(a.valor, r.paso, c.min, c.max);
         assert.equal(Kit.respuesta.clasificar(puesto, p.alternativas, r.tolerancia), a, `semilla ${s}: la marca en ${a.texto} no equivale`);
-        if (a.error) assert.equal(p.fantasmas[a.error.id].marca, a.valor);
+        // Un id que se repite en el problema no lleva fantasma (no se sabría cuál dibujar): su fantasma va vacío.
+        const veces = p.alternativas.filter(x => x.error && a.error && x.error.id === a.error.id).length;
+        if (a.error && veces > 1) assert.deepEqual(p.fantasmas[a.error.id], {}, `semilla ${s}: ${a.error.id} repetido con fantasma`);
+        else if (a.error) assert.equal(p.fantasmas[a.error.id].marca, a.valor);
       }
     }
   });

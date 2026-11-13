@@ -428,7 +428,7 @@
     if (S.some(p => p[1] >= yMin + filas.length)) return null; // las filas deben cubrir todas las soluciones
 
     const variables = { x: { nombre: `número de ${ctx.X}`, color: 'o' }, y: { nombre: `número de ${ctx.Y}`, color: 'i' }, r: { nombre: 'lo que se pide', color: 'd' } };
-    const enunciado = [`${ctx.lugar} `, v('x', 'x'), ` ${ctx.X} e `, v('y', 'y'), ` ${ctx.Y} (x, y ≥ 1): ${frase(I1)}; ${frase(I2)}; y ${frase(I3)}.`];
+    const enunciado = [`${ctx.lugar} `, v('x', 'x'), ` ${ctx.X} e `, v('y', 'y'), ` ${ctx.Y}. Se cumple que ${frase(I1)}, que ${frase(I2)} y que ${frase(I3)}.`];
     const pregunta = pedido === 'suma' ? ['¿Cuánto vale ', v('r', 'x + y'), '?']
       : pedido === 'producto' ? ['¿Cuánto vale ', v('r', 'x·y'), '?']
         : pedido === 'max-suma' ? ['¿Cuál es el mayor valor posible de ', v('r', 'x + y'), '?']
@@ -774,8 +774,9 @@
     if (!corto(t) || t > 6) return null;
     const variables = { p: { nombre: 'posición de A', color: 'o' }, q: { nombre: 'posición de B', color: 'i' }, t: { nombre: 'tiempo de encuentro', color: 'd' } };
     const e1 = pol([1, -(r1 + r2), r1 * r2]), e2 = pol([1, -(s1 + s2), s1 * s2]);
-    const enunciado = [`Dos ciclistas se acercan a ${vA} y ${vB} km/h. A, del km `, v('p', 'p'), `, el mayor x con ${e1} ≤ 0; B, del km `,
-      v('q', 'q'), `, el menor entero con ${e2} < 0.`];
+    // Frases completas (docs/escena-viva.md, regla 1): cada ciclista con su verbo y su condición.
+    const enunciado = [`Los ciclistas A y B se acercan, a ${vA} y ${vB} km/h. A sale del km `, v('p', 'p'), `, el mayor x que cumple ${e1} ≤ 0. B sale del km `,
+      v('q', 'q'), `, el menor entero que cumple ${e2} < 0.`];
     const pregunta = ['¿En cuántas horas se ', v('t', 'encuentran'), '?'];
     const solucion = [
       [`${factor(r1)}${factor(r2)} ≤ 0 → [${r1}; ${r2}]: `, v('p', `p = ${p}`), '.'],
@@ -784,10 +785,10 @@
     ];
     const S = vA + vB;
     const errores = [
-      hip('extremo-excluido-tomado', (p - s1) / S, `Tomaste q = ${s1}, pero ${s1} no está en ⟨${s1}; ${s2}⟩: el menor entero es ${q}.`),
-      err('otro-extremo', Math.abs(q - r1) / S, `Tomaste p = ${r1}, el menor de [${r1}; ${r2}]. Se pide el mayor.`),
-      err('otro-extremo', (p - (s2 - 1)) / S, `Tomaste q = ${s2 - 1}, el mayor entero de ⟨${s1}; ${s2}⟩. Se pide el menor.`),
-      err('encuentro-con-resta', d / Math.abs(vA - vB), `Restaste las rapideces. Van uno hacia el otro: se acercan a ${S} km/h.`),
+      hip('extremo-excluido-tomado', (p - s1) / S, `${s1} sería el menor si el intervalo fuera cerrado; en ⟨${s1}; ${s2}⟩ no entra: B sale del ${q}.`),
+      err('otro-extremo', Math.abs(q - r1) / S, `El intervalo [${r1}; ${r2}] está bien; ${r1} es su menor elemento y A sale del mayor, ${r2}.`),
+      err('otro-extremo', (p - (s2 - 1)) / S, `Los enteros de ⟨${s1}; ${s2}⟩ están bien; ${s2 - 1} es el mayor y B sale del menor, ${q}.`),
+      err('encuentro-con-resta', d / Math.abs(vA - vB), `Restar rapideces sirve si uno persigue al otro; aquí van de frente y se acercan a ${S} km/h.`),
     ];
     const fantasma = a => (a.error.id === 'extremo-excluido-tomado' ? { elementos: [{ tipo: 'punto', x: s1 }], rotulo: `B en ${s1}` } : null);
     const viva = (alts, resp) => escena(alts, resp, {
@@ -801,8 +802,8 @@
         { tipo: 'distancia', a: q, b: p, color: 'd', rotulo: `${d} km`, fila: 3, desde: 3 },
       ],
       pasos: [
-        paso(1, ['A está en el mayor elemento: ', v('p', `p = ${p}`), '.'], [`${factor(r1)}${factor(r2)} ≤ 0 → [${r1}; ${r2}]`]),
-        paso(2, ['B, en el menor entero del abierto: ', v('q', `q = ${q}`), '.'], [`${factor(s1)}${factor(s2)} < 0 → ⟨${s1}; ${s2}⟩`]),
+        paso(1, ['A sale del mayor elemento del intervalo: ', v('p', `p = ${p}`), '.'], [`${factor(r1)}${factor(r2)} ≤ 0 → [${r1}; ${r2}]`]),
+        paso(2, ['B sale del menor entero del intervalo abierto: ', v('q', `q = ${q}`), '.'], [`${factor(s1)}${factor(s2)} < 0 → ⟨${s1}; ${s2}⟩`]),
         paso(3, [`Los separan ${d} km y se acercan a ${S} km/h.`], ['t = ', v('t', `${d}/${S} = ${N(t)} h`)], true),
       ],
     });
@@ -1029,7 +1030,7 @@
     const ejes = Math.max(c * Math.floor(X1), d * Math.floor(Y1));
     const rx = Math.round(vx), ry = Math.round(vy);
     const variables = { x: { nombre: 'chompas', color: 'o' }, y: { nombre: 'chalinas', color: 'i' }, G: { nombre: 'ganancia', color: 'd' } };
-    const enunciado = ['Se tejen ', v('x', 'chompas'), ' y ', v('y', 'chalinas'), `. Chompa: ${s(a1, 'ovillo', 'ovillos')} y ${a2} h. Chalina: ${s(b1, 'ovillo', 'ovillos')} y ${b2} h. Hay ${R1} ovillos y ${R2} h. Chompa: S/ ${c}; chalina: S/ ${d}.`];
+    const enunciado = ['Cada ', v('x', 'chompa'), ` usa ${s(a1, 'ovillo', 'ovillos')} y ${a2} h de trabajo, y deja S/ ${c}. Cada `, v('y', 'chalina'), ` usa ${s(b1, 'ovillo', 'ovillos')} y ${b2} h, y deja S/ ${d}. Hay ${R1} ovillos y ${R2} h.`];
     const pregunta = ['¿Cuál es la mayor ', v('G', 'ganancia'), ' con prendas enteras?'];
     const solucion = [
       [`Condiciones: ${ineqTxt([a1, b1, '≤', R1])} y ${ineqTxt([a2, b2, '≤', R2])}, con `, v('x', 'x'), ' e ', v('y', 'y'), ' enteros.'],
@@ -1076,7 +1077,7 @@
     const Bud = 50 * Math.ceil((tope + 10) / 50);
     const rx = Math.round(vx), ry = Math.round(vy);
     const variables = { x: { nombre: 'cajas A', color: 'o' }, y: { nombre: 'cajas B', color: 'i' }, S: { nombre: 'sobrante', color: 'd' } };
-    const enunciado = ['Se compran ', v('x', 'cajas A'), ' y ', v('y', 'cajas B'), `. A: ${s(u1, 'pan', 'panes')} y ${s(u2, 'fruta', 'frutas')}; B: ${s(v1, 'pan', 'panes')} y ${s(v2, 'fruta', 'frutas')}. Mínimo: ${R1} panes y ${R2} frutas. Precios: A, S/ ${ca}; B, S/ ${cb}. Hay S/ ${Bud}.`];
+    const enunciado = ['La ', v('x', 'caja A'), ` trae ${s(u1, 'pan', 'panes')} y ${s(u2, 'fruta', 'frutas')}, y cuesta S/ ${ca}. La `, v('y', 'caja B'), ` trae ${s(v1, 'pan', 'panes')} y ${s(v2, 'fruta', 'frutas')}, y cuesta S/ ${cb}. Se necesitan ${R1} panes y ${R2} frutas como mínimo; hay S/ ${Bud}.`];
     const pregunta = ['¿Cuál es el mayor ', v('S', 'sobrante'), '?'];
     const solucion = [
       [`Condiciones: ${ineqTxt([u1, v1, '≥', R1])} y ${ineqTxt([u2, v2, '≥', R2])}, con `, v('x', 'x'), ' e ', v('y', 'y'), ' enteros.'],

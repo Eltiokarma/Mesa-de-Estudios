@@ -71,11 +71,57 @@
     // Fuera los distractores de más de 20 veces la correcta (o menos de 1/20): no engañan a nadie.
     const alternativas = P.armar({ correcta: o.correcta, errores: o.errores.filter(e => Number.isFinite(e.valor) && e.valor > 0 && P.enEscala(e.valor, o.correcta, e.id)), rng, texto: x => `${f(x)} ${o.unidad}` });
     if (masLimpia(alternativas)) return null; // la correcta no debe ser la única redonda
-    return {
+    const pr = {
       id: `${ID}#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
       alternativas, solucion: o.solucion, respuesta: { valor: o.correcta, unidad: o.unidad }, _datos: o.datos,
     };
+    return o.viva ? Object.assign(pr, o.viva(alternativas, pr.respuesta)) : pr;
   }
+
+  // ================= escena viva (docs/escena-viva.md): la gráfica F-t del kit =================
+  // Tipos «rapidez» y «trabajo» (nucleo/kit/piezas/ejes.js): la gráfica carga los vértices (con guías hasta los ejes),
+  // el impulso aparece como área en el primer paso y la respuesta se arrastra en una regla debajo. El rebote no tiene
+  // gráfica F-t: sigue con su solución de siempre.
+  const BONITOS = [0.01, 0.02, 0.05, 0.1, 0.2, 0.25, 0.5, 1, 2, 5, 10, 20, 25, 50, 100];
+  const pasoBonito = tope => BONITOS.reduce((q, b) => (b <= tope + 1e-12 ? b : q), BONITOS[0]);
+  function escala(hi) {
+    const tick = [1, 2, 5, 10, 20, 25, 50, 100, 200, 500, 1000].find(q => (hi * 1.08) / q <= 8) || 2000;
+    return { max: Math.ceil((hi * 1.08) / tick) * tick, tick };
+  }
+  function pasoArrastre(alts, max) {
+    const vals = alts.map(a => a.valor);
+    let hueco = Infinity;
+    for (let i = 0; i < vals.length; i++) for (let j = i + 1; j < vals.length; j++) hueco = Math.min(hueco, Math.abs(vals[i] - vals[j]));
+    return pasoBonito(Math.min(max / 150, hueco / 2));
+  }
+  const ROT = { 'IG-fmax-por-tiempo': 'fuerza máx. × t', 'G4-lee-eje': 'fuerza máxima', 'PR3-sin-medio': 'sin el ½', 'IG-solo-meseta': 'solo lo plano',
+    'IG-promedio-vertices': 'promedio', 'IG-sin-v0': 'sin v0', 'IG-v0-nula': 'desde el reposo', 'IG-sin-ec-inicial': 'solo Ec final',
+    'M2-sin-signo': 'sin el signo', 'IG-resta-cuadrado': '(vf − v0)²' };
+  const pasoV = (corte, texto, ecuacion, final) => ({ estado: final ? { corte, final: true } : { corte }, texto, ecuacion });
+  // o: { pts (en s), ut ('s' | 'ms'), J, regla: { nombre, unidad }, sufijo, pasos, alt }
+  function vivaFT(alts, resp, o) {
+    const sc = o.ut === 'ms' ? 1000 : 1, P2 = o.pts.map(([t, F]) => [Math.round(t * sc * 1e6) / 1e6, F]);
+    const T = P2[P2.length - 1][0], Fm = fmax(o.pts);
+    const er = escala(Math.max(...alts.map(a => a.valor)));
+    const paso = pasoArrastre(alts, er.max);
+    // Vértices con guías (sin repetir el origen ni el final en el eje).
+    const puntos = P2.filter(([, F]) => F > 0).map(([t, F]) => ({ x: t, y: F, color: 'o', guias: true, desde: 0 }));
+    const datos = {
+      x: { min: 0, max: T, paso: 1, nombre: 't', unidad: o.ut, decimales: 2 },
+      y: { min: 0, max: Fm * 1.1, paso: Fm / 4, nombre: 'F', unidad: 'N', decimales: 2 },
+      curvas: [{ puntos: P2, color: 'o', desde: 0 }],
+      areas: [{ puntos: P2, color: 'o', rotulo: `J = ${f(o.J)} N·s`, desde: 1 }],
+      puntos,
+      marca: { eje: 'regla', min: 0, max: er.max, inicio: 0, paso: er.tick, nombre: o.regla.nombre, unidad: o.regla.unidad, color: 'd' },
+      respuesta: resp.valor, sufijo: o.sufijo, decimales: 2,
+    };
+    const fantasmas = {};
+    const veces = id => alts.filter(a => a.error && a.error.id === id).length;
+    for (const a of alts) if (a.error) fantasmas[a.error.id] = veces(a.error.id) > 1 ? {} : { marca: a.valor, rotulo: ROT[a.error.id] || 'tu opción' };
+    return { escena: { pieza: 'ejes', datos, alt: o.alt }, fantasmas, pasos: o.pasos,
+      respuesta: { ...resp, tipo: 'arrastrar', control: 'marca', paso, tolerancia: paso } };
+  }
+  const altFT = (pts, ut) => `Gráfica F-t: ${vertices(pts, ut).replace(/ y \(/, '; (')}, unidos por rectas`;
 
   // ---- La gráfica F-t: vértices [t, F] ----
   // Área exacta por trapecios entre vértices consecutivos (un salto vertical aporta 0).
@@ -134,24 +180,33 @@
     const J = area(pts), v0 = sub === 'inicial' ? rng.elegir([1, 2, 3, 4, 5, 6, 8]) : 0, vf = v0 + J / m;
     if (!limpio(J / m) || J / m > 60 || J / m < 0.5) return null;
     const [quien, lugar] = rng.elegir([['Un bloque de ', 'sobre una pista de hielo sin roce'], ['Un carrito de ', 'sobre un riel horizontal sin roce'], ['Una caja de ', 'sobre un piso horizontal muy liso']]);
-    const enunciado = [quien, v('m', `${f(m)} kg`), ...(sub === 'inicial' ? [' se mueve a ', v('v0', `${f(v0)} m/s`), ` en el sentido +x ${lugar}.`] : [` está en reposo ${lugar}.`]),
-      ' Desde t = 0 recibe una fuerza horizontal, en el sentido +x, que cambia con el tiempo. ', describir(pts, forma, 's')];
-    const pregunta = ['¿Con qué ', v('x', 'rapidez'), ' queda cuando la fuerza deja de actuar?'];
+    // La gráfica carga la fuerza en cada instante: el enunciado no la narra.
+    const enunciado = [quien, v('m', `${f(m)} kg`), ...(sub === 'inicial' ? [' se mueve a ', v('v0', `${f(v0)} m/s`), ` hacia +x ${lugar}.`] : [` está en reposo ${lugar}.`]),
+      ' Desde t = 0 actúa, hacia +x, la fuerza horizontal de la gráfica.'];
+    const pregunta = ['¿Con qué ', v('x', 'rapidez'), ' queda al final del empuje?'];
     const Fm = fmax(pts), T = duracion(pts);
     const errores = [
-      h('IG-fmax-por-tiempo', v0 + Fm * T / m, `Multiplicaste la fuerza máxima por el tiempo total, como si la fuerza valiera ${f(Fm)} N todo el rato. El impulso es el área bajo la gráfica F-t, y la fuerza no se mantiene en su máximo.`),
-      pa('G4-lee-eje', v0 + Fm / m, `Usaste el valor más alto del eje vertical (${f(Fm)} N) como si fuera el impulso. Lo que cambia la cantidad de movimiento es el área bajo la gráfica F-t, en N·s.`, CIN),
-      tr('PR3-sin-medio', v0 + areaSinMedio(pts) / m, `Contaste cada tramo inclinado como un rectángulo con su fuerza mayor: te faltó el ½ del triángulo. Un tramo que sube de F1 a F2 aporta (F1 + F2)/2 · Δt.`),
-      ...(meseta(pts) > 0 && meseta(pts) < J - 1e-9 ? [h('IG-solo-meseta', v0 + meseta(pts) / m, `Contaste solo los tramos de fuerza constante y dejaste fuera las rampas. Mientras la fuerza sube o baja también empuja: su área (un triángulo) también es impulso.`)] : []),
-      h('IG-promedio-vertices', v0 + promedioVertices(pts) / m, `Promediaste las fuerzas de los vértices y multiplicaste por el tiempo total. Ese promedio no es la fuerza media: los tramos duran distinto. Suma el área tramo por tramo.`),
-      ...(sub === 'inicial' ? [h('IG-sin-v0', J / m, `Esa es solo la rapidez que gana, J/m. El cuerpo ya se movía a ${f(v0)} m/s en el mismo sentido: vf = v0 + J/m.`)] : []),
+      h('IG-fmax-por-tiempo', v0 + Fm * T / m, `Fuerza por tiempo vale si es constante; aquí no vale ${f(Fm)} N todo el rato: cuenta el área.`),
+      pa('G4-lee-eje', v0 + Fm / m, `${f(Fm)} N es la fuerza mayor, bien leída; el impulso no es una altura, es el área.`, CIN),
+      tr('PR3-sin-medio', v0 + areaSinMedio(pts) / m, 'Sumar tramo por tramo está bien; un tramo inclinado aporta (F1 + F2)/2 · Δt, no su fuerza mayor.'),
+      ...(meseta(pts) > 0 && meseta(pts) < J - 1e-9 ? [h('IG-solo-meseta', v0 + meseta(pts) / m, 'Los tramos planos están bien contados; las rampas también empujan, y su área también es impulso.')] : []),
+      h('IG-promedio-vertices', v0 + promedioVertices(pts) / m, 'Buscar una fuerza media está bien; pero los tramos duran distinto: el promedio de los vértices no la da.'),
+      ...(sub === 'inicial' ? [h('IG-sin-v0', J / m, `${f(J / m)} m/s es lo que gana, bien calculado; ya iba a ${f(v0)} m/s hacia +x: se suman.`)] : []),
     ];
     const solucion = [
       ['El impulso es el área bajo la gráfica F-t: ', v('J', 'J'), ` = ${pasosArea(pts, 's')} = `, v('J', `${f(J)} N·s`), '.'],
       ['Teorema del impulso: ', v('J', 'J'), ' = ', v('m', 'm'), '·(vf − ', v('v0', 'v0'), ').'],
       [v('x', 'vf'), ' = ', v('v0', f(v0)), ' + ', v('J', f(J)), '/', v('m', f(m)), ' = ', v('x', `${f(vf)} m/s`), '.'],
     ];
-    return cerrar(rng, semilla, { correcta: vf, unidad: 'm/s', errores, variables: VAR, enunciado, pregunta, solucion,
+    const viva = (alts, resp) => vivaFT(alts, resp, {
+      pts, ut: 's', J, regla: { nombre: 'vf', unidad: 'm/s' }, sufijo: ' m/s', alt: altFT(pts, 's'),
+      pasos: [
+        pasoV(1, ['El impulso es el área bajo la gráfica F-t.'], [v('J', 'J'), ` = ${pasosArea(pts, 's')} = `, v('J', `${f(J)} N·s`)]),
+        pasoV(2, ['El impulso cambia la cantidad de movimiento: J = m·(vf − v0).'],
+          [v('x', 'vf'), ' = ', v('v0', f(v0)), ' + ', v('J', f(J)), '/', v('m', f(m)), ' = ', v('x', `${f(vf)} m/s`)], true),
+      ],
+    });
+    return cerrar(rng, semilla, { correcta: vf, unidad: 'm/s', errores, variables: VAR, enunciado, pregunta, solucion, viva,
       datos: { tipo: 'rapidez', sub, puntos: pts, unidadT: 's', m, v0 } });
   }
 
@@ -169,17 +224,17 @@
     if (!limpio(W)) return null;
     const Fm = fmax(pts), T = duracion(pts);
     const enunciado = [`Una pelota de `, v('m', `${f(m)} kg`), contra ? ' viene rodando hacia un futbolista a ' : ' rueda alejándose de un futbolista a ', v('v0', `${f(v0)} m/s`),
-      contra ? '. Él la patea y la devuelve en sentido contrario, por el mismo camino. ' : '. Él corre detrás, la alcanza y la patea en el mismo sentido en que rodaba. ',
-      describir(pts, forma, 'ms').replace('fuerza-tiempo', 'fuerza-tiempo de la patada'), ' Desprecia el roce con el piso durante la patada.'];
-    const pregunta = ['¿Cuánto ', v('x', 'trabajo'), ' hizo el pie sobre la pelota?'];
+      contra ? '. Él la patea de vuelta, en sentido contrario. ' : '. Él la alcanza y la patea hacia el mismo lado. ',
+      'La gráfica muestra la fuerza del pie. Desprecia el roce con el piso.'];
+    const pregunta = ['¿Cuánto ', v('x', 'trabajo'), ' hizo el pie?'];
     const kin = (a, b) => m * (a * a - b * b) / 2;
     const errores = [
-      h('IG-v0-nula', m * dv * dv / 2, `Calculaste como si la pelota partiera del reposo: ½·m·(J/m)². Ya rodaba a ${f(v0)} m/s; el trabajo es el cambio de energía cinética, ½·m·(vf² − v0²).`),
-      h('IG-sin-ec-inicial', m * vf * vf / 2, `Calculaste la energía cinética final pero no le restaste la inicial. El trabajo es el cambio: W = ½·m·vf² − ½·m·v0².`),
-      tr('PR3-sin-medio', 2 * W, `Te faltó el ½ de la energía cinética: Ec = ½·m·v².`),
-      h('IG-fmax-por-tiempo', kin(contra ? Fm * T / m - v0 : v0 + Fm * T / m, v0), `Tomaste el impulso como la fuerza máxima por el tiempo total (${f(Fm)} N · ${f(T * 1000)} ms). El impulso es el área bajo la gráfica, que aquí es menor.`),
-      ...(contra ? [pa('M2-sin-signo', kin(dv + v0, v0), `Sumaste la rapidez inicial como si la pelota fuera en el mismo sentido de la patada. Venía en contra: con el eje en el sentido de la patada, v0 = −${f(v0)} m/s y vf = −${f(v0)} + J/m = ${f(vf)} m/s.`, MOM),
-        h('IG-resta-cuadrado', m * (vf - v0) ** 2 / 2, `Elevaste al cuadrado la diferencia de rapideces, ½·m·(vf − v0)². La energía cinética va con el cuadrado de cada rapidez: W = ½·m·vf² − ½·m·v0², que no es lo mismo.`)] : []),
+      h('IG-v0-nula', m * dv * dv / 2, `Ese trabajo valdría si partiera del reposo; ya rodaba a ${f(v0)} m/s, y esa energía se resta.`),
+      h('IG-sin-ec-inicial', m * vf * vf / 2, 'La energía cinética final está bien; el trabajo es su cambio: falta restar la inicial.'),
+      tr('PR3-sin-medio', 2 * W, 'Restar energías es el camino; a la energía cinética le falta el ½: Ec = ½·m·v².'),
+      h('IG-fmax-por-tiempo', kin(contra ? Fm * T / m - v0 : v0 + Fm * T / m, v0), `Fuerza por tiempo vale si es constante; aquí no vale ${f(Fm)} N todo el rato: cuenta el área.`),
+      ...(contra ? [pa('M2-sin-signo', kin(dv + v0, v0), `Sumar v0 valdría si rodara hacia donde va la patada; venía en contra: v0 = −${f(v0)} m/s.`, MOM),
+        h('IG-resta-cuadrado', m * (vf - v0) ** 2 / 2, 'Usar ½·m·v² está bien; se resta Ec final menos Ec inicial, no se eleva la resta al cuadrado.')] : []),
     ];
     const solucion = [
       ['Impulso = área bajo F-t (con t en segundos): ', v('J', 'J'), ` = ${pasosArea(pts, 'ms')} = ${f(J * 1000)} N·ms = `, v('J', `${f(J)} N·s`), '.'],
@@ -188,7 +243,17 @@
         : ['vf = ', v('v0', f(v0)), ' + ', v('J', f(J)), '/', v('m', f(m)), ` = ${f(vf)} m/s.`],
       ['El trabajo de la fuerza es el cambio de energía cinética: ', v('x', 'W'), ' = ½·', v('m', f(m)), `·(${f(vf)}² − `, v('v0', f(v0)), '²) = ', v('x', `${f(W)} J`), '.'],
     ];
-    return cerrar(rng, semilla, { correcta: W, unidad: 'J', errores, variables: VAR, enunciado, pregunta, solucion,
+    const viva = (alts, resp) => vivaFT(alts, resp, {
+      pts, ut: 'ms', J, regla: { nombre: 'W', unidad: 'J' }, sufijo: ' J', alt: altFT(pts, 'ms'),
+      pasos: [
+        pasoV(1, ['El impulso es el área bajo la gráfica; 1 ms es 0,001 s.'], [v('J', 'J'), ` = ${f(J * 1000)} N·ms = `, v('J', `${f(J)} N·s`)]),
+        contra
+          ? pasoV(1, ['Con el eje hacia la patada, la pelota llega con velocidad negativa.'], ['vf = −', v('v0', f(v0)), ' + ', v('J', f(J)), '/', v('m', f(m)), ` = ${f(vf)} m/s`])
+          : pasoV(1, ['El impulso le suma rapidez en el sentido en que rodaba.'], ['vf = ', v('v0', f(v0)), ' + ', v('J', f(J)), '/', v('m', f(m)), ` = ${f(vf)} m/s`]),
+        pasoV(1, ['El trabajo es el cambio de energía cinética.'], [v('x', 'W'), ' = ½·', v('m', f(m)), `·(${f(vf)}² − `, v('v0', f(v0)), '²) = ', v('x', `${f(W)} J`)], true),
+      ],
+    });
+    return cerrar(rng, semilla, { correcta: W, unidad: 'J', errores, variables: VAR, enunciado, pregunta, solucion, viva,
       datos: { tipo: 'trabajo', sub, puntos: pts, unidadT: 'ms', m, v0 } });
   }
 
@@ -200,25 +265,26 @@
     if (!limpio(hp)) return null;
     const [pelota, corto] = rng.elegir([['Una pelota de básquet', 'la pelota'], ['Una pelota de trapo', 'la pelota'], ['Una pelota de vóley', 'la pelota'], ['Una canica de vidrio', 'la canica']]);
     const variables = { H: { nombre: 'altura inicial', color: 'o' }, e: { nombre: 'coeficiente de restitución', color: 'i' }, p: { nombre: 'pérdida por el aire', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
-    const piso = [`. El coeficiente de restitución entre ${corto} y el piso es `, v('e', `e = ${f(e)}`), '.'];
+    // Sin gráfica F-t: sin escena; el texto, en frases completas dentro del presupuesto (docs/escena-viva.md).
+    const piso = ['. El coeficiente de restitución es ', v('e', `e = ${f(e)}`), '.'];
     const enunciado = sub === 'solo-e'
-      ? [`${pelota} se suelta desde `, v('H', `${f(H)} m`), ' de altura y bota en el piso. Desprecia el efecto del aire', ...piso]
+      ? [`${pelota} se suelta desde `, v('H', `${f(H)} m`), ' y bota en el piso. Desprecia el aire', ...piso]
       : sub === 'bajada'
-        ? [`${pelota} se suelta desde `, v('H', `${f(H)} m`), ' de altura. Durante la caída, el aire le quita el ', v('p', `${p} %`), ' de su energía mecánica; en la subida, el efecto del aire es despreciable', ...piso]
-        : [`${pelota} se suelta desde `, v('H', `${f(H)} m`), ' de altura. Durante la caída, el aire le quita el ', v('p', `${p} %`), ' de su energía mecánica, y durante la subida, el ',
-          v('p', `${q} %`), ' de la energía con que sale del piso', ...piso];
-    const pregunta = ['¿Hasta qué ', v('x', 'altura'), ' sube después del primer bote?'];
+        ? [`${pelota} se suelta desde `, v('H', `${f(H)} m`), '. Al caer, el aire le quita el ', v('p', `${p} %`), ' de su energía; al subir, nada', ...piso]
+        : [`${pelota} se suelta desde `, v('H', `${f(H)} m`), '. Al caer, el aire le quita el ', v('p', `${p} %`), ' de su energía; al subir, el ',
+          v('p', `${q} %`), ' de la que tiene al salir del piso', ...piso];
+    const pregunta = ['¿Qué ', v('x', 'altura'), ' alcanza tras el primer bote?'];
     const errores = [
-      h('CH-e-en-la-altura', e * H * kp * kq, `Aplicaste e a la altura. El coeficiente de restitución compara rapideces (v' = e·v), y la altura va con el cuadrado de la rapidez: la altura se multiplica por e² = ${f(e * e)}.`),
-      h('CH-e-como-perdida', (1 - e) * H * kp * kq, `Tomaste e como la fracción de la altura que se pierde. e es la razón entre la rapidez de salida y la de llegada: la altura se multiplica por e².`),
+      h('CH-e-en-la-altura', e * H * kp * kq, `e compara rapideces, bien; la altura va con el cuadrado de la rapidez: se multiplica por e² = ${f(e * e)}.`),
+      h('CH-e-como-perdida', (1 - e) * H * kp * kq, 'Usar e está bien; no es lo que se pierde, sino salida entre llegada: la altura va con e².'),
       ...(sub === 'solo-e' ? [
-        h('CH-e2-como-perdida', (1 - e * e) * H, `Tomaste e² como lo que se pierde. Es al revés: e² es la fracción de energía cinética que conserva la pelota al botar, así que h' = e²·H.`),
-        h('CH-raiz-de-e', Math.sqrt(e) * H, `Sacaste la raíz de e. La altura es proporcional a v², y v' = e·v: h' = e²·H.`),
+        h('CH-e2-como-perdida', (1 - e * e) * H, "Usar e² está bien; pero e² es lo que la pelota conserva, no lo que pierde: h' = e²·H."),
+        h('CH-raiz-de-e', Math.sqrt(e) * H, "Relacionar e con la altura está bien; la altura va con v², así que h' = e²·H."),
       ] : [
-        h('CH-sin-aire', e * e * H, `Olvidaste lo que quita el aire. Con solo la restitución subiría a e²·H; el aire le quita además energía${sub === 'ambas' ? ' en la bajada y en la subida' : ' en la bajada'}.`),
-        h('CH-aire-en-la-rapidez', e * e * H * kp * kp * kq * kq, `Aplicaste el porcentaje del aire a la rapidez. El enunciado habla de energía: si se pierde el ${p} % de la energía, queda el ${100 - p} % de la energía (no de la rapidez).`),
-        ...(sub === 'ambas' ? [h('CH-aire-una-vez', e * e * H * kp, `Contaste solo lo que quita el aire en la bajada. En la subida también le quita el ${q} % de la energía con que sale del piso.`)]
-          : [h('CH-resta-porcentaje-altura', e * e * H - p / 100, `Restaste el porcentaje como si fueran metros. El aire quita una fracción de la energía: se multiplica por ${f(kp)}.`)]),
+        h('CH-sin-aire', e * e * H, `e²·H está bien para el bote; falta lo que quita el aire${sub === 'ambas' ? ' al bajar y al subir' : ' al bajar'}.`),
+        h('CH-aire-en-la-rapidez', e * e * H * kp * kp * kq * kq, `El porcentaje está bien, pero se aplica a la energía: queda el ${100 - p} % de la energía, no de la rapidez.`),
+        ...(sub === 'ambas' ? [h('CH-aire-una-vez', e * e * H * kp, `La bajada está bien contada; al subir, el aire también le quita el ${q} %.`)]
+          : [h('CH-resta-porcentaje-altura', e * e * H - p / 100, `Descontar lo que quita el aire es la idea; es un porcentaje, no metros: se multiplica por ${f(kp)}.`)]),
       ]),
     ];
     const solucion = [

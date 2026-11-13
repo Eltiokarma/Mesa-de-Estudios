@@ -282,7 +282,9 @@ test('escena viva: los tipos que caben en la recta la traen; los otros siguen co
 
 test('escena viva: presupuesto de texto (enunciado ≤ 40, paso ≤ 14, error ≤ 20) en todos los tipos', () => {
   for (const [s, p] of VIVOS.entries()) {
-    assert.ok(Kit.palabras(p.enunciado) + Kit.palabras(p.pregunta) <= 40, `semilla ${s}: enunciado de ${Kit.palabras(p.enunciado) + Kit.palabras(p.pregunta)}`);
+    // Enunciado: palabras con al menos una letra (docs/escena-viva.md §4), como herramientas/validar-ejercicios.js.
+    const letras = x => Kit.plano(x).split(/\s+/).filter(w => /\p{L}/u.test(w)).length;
+    assert.ok(letras(p.enunciado) + letras(p.pregunta) <= 40, `semilla ${s}: enunciado de ${letras(p.enunciado) + letras(p.pregunta)}`);
     for (const q of p.pasos || p.solucion.map(t => ({ texto: t }))) assert.ok(Kit.palabras(q.texto) <= 14, `semilla ${s}: «${Kit.plano(q.texto)}»`);
     for (const a of p.alternativas.filter(x => x.error)) assert.ok(Kit.palabras(a.error.explicacion) <= 20, `semilla ${s}: «${a.error.explicacion}»`);
   }

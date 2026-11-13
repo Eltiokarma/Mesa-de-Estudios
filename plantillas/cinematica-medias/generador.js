@@ -86,10 +86,11 @@
     const razonable = (x, id) => o.correcta === 0 || P.enEscala(x, o.correcta, id); // U1–U8 hasta 1000 veces
     const errores = o.errores.filter(e => e && ok(e.valor) && decimales(f(e.valor)) <= maxd && razonable(e.valor, e.id));
     const alternativas = P.armar({ correcta: o.correcta, errores, rng, texto: o.texto, negativos: !!o.negativos });
-    return {
+    const pr = {
       id: `cinematica-medias#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
       alternativas, solucion: o.solucion, respuesta: { valor: o.correcta, unidad: o.unidad }, _datos: o.datos,
     };
+    return o.viva ? Object.assign(pr, o.viva(alternativas, pr.respuesta)) : pr;
   }
   const con = u => x => `${f(x)} ${u}`;
 
@@ -269,6 +270,52 @@
       datos: { tipo: 'idavuelta', sub, t: [0, ta, tb, tc], x: [x0, x1, x1, x2] } });
   }
 
+  // ================= escena viva (docs/escena-viva.md): la gráfica v-t del kit =================
+  // Solo el tipo «vt» (nucleo/kit/piezas/ejes.js). En vmax la gráfica carga la distancia (el área) y el tiempo, y la
+  // rapidez máxima se arrastra en una regla; en tmin y tope el alumno arrastra el instante de llegada sobre el eje t
+  // y la gráfica se arma en los pasos (verla antes regalaría la forma). Los demás tipos siguen con su solución de siempre.
+  const BONITOS = [0.01, 0.02, 0.05, 0.1, 0.2, 0.25, 0.5, 1, 2, 5, 10, 20, 25, 50, 100];
+  const pasoBonito = tope => BONITOS.reduce((q, b) => (b <= tope + 1e-12 ? b : q), BONITOS[0]);
+  // Escala «bonita» de 0 a un poco más que hi, con unas 4 a 8 rayitas.
+  function escala(hi) {
+    const tick = [1, 2, 5, 10, 20, 25, 50, 100, 200, 500, 1000].find(q => (hi * 1.08) / q <= 8) || 2000;
+    return { max: Math.ceil((hi * 1.08) / tick) * tick, tick };
+  }
+  // Paso del arrastre: cada alternativa se alcanza y queda más cerca de sí misma que de otra.
+  function pasoArrastre(alts, max) {
+    const vals = alts.map(a => a.valor);
+    let hueco = Infinity;
+    for (let i = 0; i < vals.length; i++) for (let j = i + 1; j < vals.length; j++) hueco = Math.min(hueco, Math.abs(vals[i] - vals[j]));
+    return pasoBonito(Math.min(max / 150, hueco / 2));
+  }
+  const ROT_VT = { 'G4-area-como-rectangulo': 'rapidez media', 'VT-tramo-constante': 'con tramo plano', 'VT-medio-triangulo': 'medio triángulo',
+    'VT-despeje': 'despeje', 'VT-sin-frenar': 'sin frenar', 'VT-mitad-camino': 'cambio a mitad', 'VT-todo-a-vmax': 'siempre a vmax',
+    'VT-un-tramo': 'un solo tramo', 'VT-sin-arranque': 'siempre al tope', 'VT-suma-tiempos': 'rampas dos veces', 'VT-ignora-tope': 'sin tope' };
+  const pasoVT = (corte, texto, ecuacion, final) => ({ estado: final ? { corte, final: true } : { corte }, texto, ecuacion });
+  // o: { tMax, y, curvas, areas, puntos, marca: 'x' | 'regla', regla: { nombre, unidad }, pasos, alt, sufijo }
+  function vivaVT(alts, resp, o) {
+    const ex = o.marca === 'x' ? escala(Math.max(o.tMax, ...alts.map(a => a.valor))) : escala(o.tMax);
+    const datos = {
+      x: { min: 0, max: ex.max, paso: o.marca === 'x' ? ex.tick : o.tMax / 2, nombre: 't', unidad: 's', decimales: 2 },
+      y: o.y, curvas: o.curvas, areas: o.areas, puntos: o.puntos, sufijo: o.sufijo, decimales: 2, respuesta: resp.valor,
+    };
+    let paso;
+    if (o.marca === 'x') {
+      paso = pasoArrastre(alts, ex.max);
+      datos.marca = { eje: 'x', min: 0, max: ex.max, inicio: 0 };
+    } else {
+      const er = escala(Math.max(...alts.map(a => a.valor)));
+      paso = pasoArrastre(alts, er.max);
+      datos.marca = { eje: 'regla', min: 0, max: er.max, inicio: 0, paso: er.tick, nombre: o.regla.nombre, unidad: o.regla.unidad, color: 'd' };
+    }
+    const fantasmas = {};
+    // Un id que se repite en el problema no lleva fantasma: no se sabría cuál de los dos dibujar.
+    const veces = id => alts.filter(a => a.error && a.error.id === id).length;
+    for (const a of alts) if (a.error) fantasmas[a.error.id] = veces(a.error.id) > 1 ? {} : { marca: a.valor, rotulo: ROT_VT[a.error.id] || 'tu opción' };
+    return { escena: { pieza: 'ejes', datos, alt: o.alt }, fantasmas, pasos: o.pasos,
+      respuesta: { ...resp, tipo: 'arrastrar', control: 'marca', paso, tolerancia: paso } };
+  }
+
   // ================= vt: tiempo mínimo con tramos acelerado y frenado =================
   const VAR_VT = { d: { nombre: 'distancia', color: 'o' }, a: { nombre: 'aceleraciones', color: 'i' }, t: { nombre: 'tiempo o rapidez tope', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
   const ACEL = [0.4, 0.5, 0.6, 0.8, 1, 1.2, 1.5, 2, 2.5, 3, 4, 5];
@@ -278,19 +325,35 @@
       const vm = rng.entero(5, 30), t = rng.elegir([20, 24, 30, 36, 40, 50, 60, 80, 100]);
       const d = vm * t / 2;
       if (!Number.isInteger(d)) return null;
-      const enunciado = [`${Quien} parte del reposo entre dos estaciones que están a `, v('d', `${d} m`), '. Acelera de manera uniforme y, apenas alcanza su rapidez máxima, frena de manera uniforme con una aceleración del mismo módulo hasta detenerse. Tarda ', v('t', `${t} s`), ' en total.'];
+      // La gráfica carga la distancia (el área) y el tiempo: el enunciado solo cuenta cómo se mueve.
+      const enunciado = [`${Quien} parte del reposo y se detiene en la otra estación. Acelera y, apenas llega a su rapidez máxima, frena con una aceleración del mismo módulo.`];
       const pregunta = ['¿Cuál es su ', v('x', 'rapidez máxima'), '?'];
       const errores = [
-        pa('G4-area-como-rectangulo', d / t, `Dividiste ${d} m entre ${t} s: esa es la rapidez media. ${quien[0].toUpperCase() + quien.slice(1)} no va siempre a la máxima: la gráfica v-t es un triángulo y su área es la mitad de base por altura.`),
-        h('VT-tramo-constante', 1.5 * d / t, 'Agregaste un tramo a rapidez constante (un tercio del tiempo). El enunciado dice que frena apenas llega a la máxima: no hay tramo plano, la gráfica es un triángulo.'),
-        h('VT-medio-triangulo', 4 * d / t, `Tomaste solo el triángulo del tramo acelerado (${f(t / 2)} s) como si cubriera los ${d} m. El triángulo completo, de base ${t} s, es el que da el recorrido.`),
-        h('VT-despeje', d / t / 2, 'Dividiste entre 2 en vez de multiplicar. De d = ½·t·vmax sale vmax = 2·d/t.'),
+        pa('G4-area-como-rectangulo', d / t, `${f(d / t)} m/s es la rapidez media, bien calculada; la máxima es el doble: la gráfica es un triángulo.`),
+        h('VT-tramo-constante', 1.5 * d / t, 'Un tramo plano valdría si mantuviera la máxima un rato; aquí frena apenas llega: la gráfica es un triángulo.'),
+        h('VT-medio-triangulo', 4 * d / t, `El triángulo de subida está bien visto; los ${d} m son el área del triángulo completo, de base ${t} s.`),
+        h('VT-despeje', d / t / 2, 'd = ½·t·vmax está bien planteado; al despejar, el 2 pasa multiplicando: vmax = 2·d/t.'),
       ];
+      const viva = (alts, resp) => vivaVT(alts, resp, {
+        tMax: t, marca: 'regla', regla: { nombre: 'vmax', unidad: 'm/s' }, sufijo: ' m/s',
+        y: { min: 0, max: vm * 1.35, paso: vm * 3, nombre: 'v', unidad: 'm/s' },
+        curvas: [{ puntos: [[0, 0], [t / 2, vm], [t, 0]], desde: 0 }],
+        areas: [{ puntos: [[0, 0], [t / 2, vm], [t, 0]], color: 'o', rotulo: `${d} m`, desde: 0 }],
+        puntos: [
+          { x: t / 2, y: vm, color: 'd', rotulo: 'vmax', desde: 0, hasta: 1 },
+          { x: t / 2, y: vm, color: 'd', rotulo: `${f(vm)} m/s`, guias: true, desde: 2 },
+        ],
+        alt: `Gráfica v-t en triángulo: parte de 0, sube hasta vmax a los ${f(t / 2)} s y baja a 0 a los ${t} s; el área es ${d} m`,
+        pasos: [
+          pasoVT(1, ['El recorrido es el área del triángulo.'], [v('d', `${d}`), ' = ½ · ', v('t', `${t}`), ' · ', v('x', 'vmax')]),
+          pasoVT(2, ['Se despeja la altura del triángulo.'], [`vmax = 2·${d}/${t} = `, v('x', `${f(vm)} m/s`)], true),
+        ],
+      });
       const solucion = [
         ['La gráfica v-t es un triángulo: sube hasta ', v('x', 'vmax'), ' en la mitad del tiempo y baja a cero.'],
         ['El recorrido es el área: ', v('d', `${d}`), ' = ½ · ', v('t', `${t}`), ' · ', v('x', 'vmax'), ' → ', v('x', `vmax = 2·${d}/${t} = ${f(vm)} m/s`), '.'],
       ];
-      return cerrar(rng, semilla, { correcta: vm, errores, texto: con('m/s'), unidad: 'm/s', variables: VAR_VT, enunciado, pregunta, solucion,
+      return cerrar(rng, semilla, { correcta: vm, errores, texto: con('m/s'), unidad: 'm/s', variables: VAR_VT, enunciado, pregunta, solucion, viva,
         datos: { tipo: 'vt', sub, d, t } });
     }
     const a = rng.elegir(ACEL), b = rng.elegir(ACEL);
@@ -298,22 +361,38 @@
       const vm = rng.entero(4, 30);
       const ta = vm / a, tb = vm / b, d = vm * (ta + tb) / 2, correcta = ta + tb;
       if (!Number.isInteger(d) || !limpio(correcta, 1) || d > 2000) return null;
-      const enunciado = [`${Quien} debe ir de una estación a otra, a `, v('d', `${d} m`), ', partiendo del reposo y llegando en reposo. Puede acelerar como máximo a ',
-        v('a', `${f(a)} m/s²`), ' y frenar como máximo a ', v('a', `${f(b)} m/s²`), '. No tiene límite de rapidez.'];
+      const enunciado = [`${Quien} va de una estación a otra, a `, v('d', `${d} m`), ', del reposo al reposo. Puede acelerar hasta ',
+        v('a', `${f(a)} m/s²`), ' y frenar hasta ', v('a', `${f(b)} m/s²`), ', sin límite de rapidez.'];
       const pregunta = ['¿Cuál es el ', v('x', 'tiempo mínimo'), ' del viaje?'];
       const errores = [
-        h('VT-sin-frenar', Math.sqrt(2 * d / a), `Supusiste que acelera todo el camino: d = ½·a·t². Así llegaría a toda velocidad. Tiene que frenar para llegar en reposo, y eso alarga el viaje.`),
-        a !== b ? h('VT-mitad-camino', Math.sqrt(d / a) + Math.sqrt(d / b), `Supusiste que cambia de acelerar a frenar en la mitad del camino. Eso solo pasa si a y frenado son iguales; aquí frena con otra aceleración, y el punto de cambio se corre.`) : null,
-        h('VT-todo-a-vmax', d / vm, `Dividiste ${d} m entre la rapidez máxima (${f(vm)} m/s), como si fuera siempre a esa rapidez. Va acelerando y frenando: su rapidez media es la mitad de la máxima.`),
-        h('VT-un-tramo', ta, `Ese es solo el tiempo en que acelera. Falta el tiempo de frenado: ${f(vm)}/${f(b)} = ${f(tb)} s.`),
-        a !== b ? h('VT-un-tramo', tb, `Ese es solo el tiempo en que frena. Falta el tiempo en que acelera: ${f(vm)}/${f(a)} = ${f(ta)} s.`) : null,
+        h('VT-sin-frenar', Math.sqrt(2 * d / a), 'd = ½·a·t² valdría si solo acelerara; para llegar en reposo también frena, y eso alarga el viaje.'),
+        a !== b ? h('VT-mitad-camino', Math.sqrt(d / a) + Math.sqrt(d / b), 'Cambiar a mitad del camino vale si acelera y frena igual; aquí no, y el punto de cambio se corre.') : null,
+        h('VT-todo-a-vmax', d / vm, `${d}/${f(vm)} da el tiempo yendo siempre a la máxima; acelerando y frenando, su rapidez media es la mitad.`),
+        h('VT-un-tramo', ta, `${f(ta)} s es el tiempo acelerando, bien calculado; falta sumar el de frenado, ${f(tb)} s.`),
+        a !== b ? h('VT-un-tramo', tb, `${f(tb)} s es el tiempo frenando, bien calculado; falta sumar el de arranque, ${f(ta)} s.`) : null,
       ].filter(Boolean);
+      const ey = escala(vm);
+      const viva = (alts, resp) => vivaVT(alts, resp, {
+        tMax: correcta, marca: 'x', sufijo: ' s',
+        y: { min: 0, max: ey.max, paso: ey.tick, nombre: 'v', unidad: 'm/s' },
+        curvas: [{ puntos: [[0, 0], [ta, vm]], color: 'i', desde: 1 }, { puntos: [[ta, vm], [correcta, 0]], color: 'i', desde: 1 }],
+        areas: [{ puntos: [[0, 0], [ta, vm], [correcta, 0]], color: 'o', rotulo: `${d} m`, desde: 1 }],
+        puntos: [{ x: ta, y: vm, color: 'd', rotulo: `${f(vm)} m/s`, guias: true, desde: 1 }, { x: ta, y: 0, rotulo: `${f(ta)} s`, desde: 2 },
+          { x: correcta, y: 0, color: 'd', desde: 3 }], // el instante de llegada lo rotula la marca con ✓
+        alt: `Gráfica v-t en triángulo: sube con pendiente ${f(a)} hasta ${f(vm)} m/s a los ${f(ta)} s y baja con pendiente ${f(b)} hasta 0 a los ${f(correcta)} s; el área es ${d} m`,
+        pasos: [
+          pasoVT(1, ['Lo más rápido: acelerar y frenar al máximo, sin tramo plano.'],
+            [v('d', `${d}`), ` = ½·vmax²·(1/${f(a)} + 1/${f(b)}) → vmax = ${f(vm)} m/s`]),
+          pasoVT(2, ['Acelera durante vmax/a y frena durante vmax/b.'], [`${f(vm)}/${f(a)} = ${f(ta)} s; ${f(vm)}/${f(b)} = ${f(tb)} s`]),
+          pasoVT(3, ['El viaje dura la suma de los dos tiempos.'], [v('x', 't'), ` = ${f(ta)} + ${f(tb)} = `, v('x', `${f(correcta)} s`)], true),
+        ],
+      });
       const solucion = [
         ['El tiempo mínimo se logra acelerando al máximo y frenando al máximo, sin tramo plano: la gráfica v-t es un triángulo.'],
         ['Si la cima es vmax: tiempos vmax/', v('a', f(a)), ' y vmax/', v('a', f(b)), '; área = ', v('d', `${d}`), ` = ½·vmax²·(1/${f(a)} + 1/${f(b)}) → vmax = ${f(vm)} m/s.`],
         [v('x', 't'), ` = ${f(ta)} + ${f(tb)} = `, v('x', `${f(correcta)} s`), '.'],
       ];
-      return cerrar(rng, semilla, { correcta, errores, texto: con('s'), unidad: 's', variables: VAR_VT, enunciado, pregunta, solucion,
+      return cerrar(rng, semilla, { correcta, errores, texto: con('s'), unidad: 's', variables: VAR_VT, enunciado, pregunta, solucion, viva,
         datos: { tipo: 'vt', sub, d, a, b } });
     }
     // tope
@@ -322,21 +401,41 @@
     const d = Math.round(dab + vt * rng.entero(2, 20) * rng.elegir([1, 2, 5]));
     const tc = (d - dab) / vt, correcta = ta + tc + tb;
     if (!limpio(dab) || !limpio(correcta, 1) || d > 3000) return null;
-    const enunciado = [`${Quien} debe ir de una estación a otra, a `, v('d', `${d} m`), ', partiendo del reposo y llegando en reposo. Puede acelerar como máximo a ',
-      v('a', `${f(a)} m/s²`), ', frenar como máximo a ', v('a', `${f(b)} m/s²`), ' y no debe pasar de ', v('t', `${f(vt)} m/s`), '.'];
+    const enunciado = [`${Quien} va de una estación a otra, a `, v('d', `${d} m`), ', del reposo al reposo. Puede acelerar hasta ',
+      v('a', `${f(a)} m/s²`), ', frenar hasta ', v('a', `${f(b)} m/s²`), ' y no debe pasar de ', v('t', `${f(vt)} m/s`), '.'];
     const pregunta = ['¿Cuál es el ', v('x', 'tiempo mínimo'), ' del viaje?'];
     const errores = [
-      h('VT-sin-arranque', d / vt, `Dividiste ${d} m entre ${f(vt)} m/s, como si fuera a la rapidez tope desde el inicio. Tiene que acelerar y frenar, y en esos tramos va más lento.`),
-      h('VT-suma-tiempos', d / vt + ta + tb, `Sumaste los tiempos de acelerar y frenar a ${d}/${f(vt)}, pero contaste ${f(dab)} m dos veces: los que avanza mientras acelera y frena no se recorren a la rapidez tope.`),
-      h('VT-ignora-tope', Math.sqrt(2 * d * (a + b) / (a * b)), `Ese es el tiempo sin límite de rapidez (gráfica en triángulo): para lograrlo pasaría de ${f(vt)} m/s. Con tope, la gráfica es un trapecio.`),
-      h('VT-un-tramo', d / vt + ta / 2, `Contaste el arranque pero no el frenado: así llegaría a la estación a ${f(vt)} m/s. Frenar toma ${f(tb)} s más, en los que avanza solo la mitad de lo que avanzaría a rapidez tope.`),
+      h('VT-sin-arranque', d / vt, `${d}/${f(vt)} valdría yendo al tope todo el viaje; al acelerar y al frenar va más lento.`),
+      h('VT-suma-tiempos', d / vt + ta + tb, 'Los tres tramos están bien vistos; pero las rampas ya recorren parte del camino, más lento que el tope.'),
+      h('VT-ignora-tope', Math.sqrt(2 * d * (a + b) / (a * b)), `Ese tiempo vale sin límite de rapidez; para lograrlo pasaría de ${f(vt)} m/s. Con tope, es un trapecio.`),
+      h('VT-un-tramo', d / vt + ta / 2, `Contar el arranque está bien; falta el frenado: así llegaría a la estación a ${f(vt)} m/s.`),
     ];
+    const T = correcta, ey = escala(vt * 1.25);
+    const viva = (alts, resp) => vivaVT(alts, resp, {
+      tMax: T, marca: 'x', sufijo: ' s',
+      y: { min: 0, max: ey.max, paso: ey.tick, nombre: 'v', unidad: 'm/s' },
+      curvas: [
+        { puntos: [[0, vt], [T * 1.04, vt]], color: 'h', rotulo: `tope ${f(vt)} m/s`, en: [0, vt], discontinua: true, desde: 0, hasta: 2 },
+        { puntos: [[0, 0], [ta, vt]], color: 'i', desde: 1 }, { puntos: [[T - tb, vt], [T, 0]], color: 'i', desde: 1 },
+        { puntos: [[ta, vt], [T - tb, vt]], color: 'h', desde: 3 },
+      ],
+      areas: [{ puntos: [[0, 0], [ta, vt]], color: 'i', desde: 2 }, { puntos: [[T - tb, vt], [T, 0]], color: 'i', desde: 2 },
+        { puntos: [[ta, vt], [T - tb, vt]], color: 'o', rotulo: `${f(d - dab)} m`, desde: 3 }],
+      puntos: [{ x: ta, y: 0, rotulo: `${f(ta)} s`, desde: 1, hasta: 3 }, { x: T, y: 0, color: 'd', desde: 4 }], // el instante de llegada lo rotula la marca con ✓
+      alt: `Gráfica v-t en trapecio: sube hasta ${f(vt)} m/s en ${f(ta)} s, sigue constante ${f(tc)} s y baja a 0 en ${f(tb)} s; el área es ${d} m`,
+      pasos: [
+        pasoVT(1, ['Acelera hasta el tope y frena desde el tope.'], [`${f(vt)}/${f(a)} = ${f(ta)} s; ${f(vt)}/${f(b)} = ${f(tb)} s`]),
+        pasoVT(2, ['En las dos rampas recorre su área: la mitad que a rapidez tope.'], [`½·${f(vt)}·(${f(ta)} + ${f(tb)}) = ${f(dab)} m`]),
+        pasoVT(3, ['El resto del camino lo hace a rapidez tope.'], ['(', v('d', `${d}`), ` − ${f(dab)})/${f(vt)} = ${f(tc)} s`]),
+        pasoVT(4, ['El viaje dura la suma de los tres tiempos.'], [v('x', 't'), ` = ${f(ta)} + ${f(tc)} + ${f(tb)} = `, v('x', `${f(T)} s`)], true),
+      ],
+    });
     const solucion = [
       ['La gráfica v-t es un trapecio: acelera hasta ', v('t', `${f(vt)} m/s`), ', sigue constante y frena.'],
       [`Acelerando: ${f(vt)}/${f(a)} = ${f(ta)} s; frenando: ${f(vt)}/${f(b)} = ${f(tb)} s. En esos tramos avanza ½·${f(vt)}·(${f(ta)} + ${f(tb)}) = ${f(dab)} m.`],
       [`Tramo constante: (${d} − ${f(dab)})/${f(vt)} = ${f(tc)} s. `, v('x', 't'), ` = ${f(ta)} + ${f(tc)} + ${f(tb)} = `, v('x', `${f(correcta)} s`), '.'],
     ];
-    return cerrar(rng, semilla, { correcta, errores, texto: con('s'), unidad: 's', variables: VAR_VT, enunciado, pregunta, solucion,
+    return cerrar(rng, semilla, { correcta, errores, texto: con('s'), unidad: 's', variables: VAR_VT, enunciado, pregunta, solucion, viva,
       datos: { tipo: 'vt', sub, d, a, b, vt } });
   }
 

@@ -147,9 +147,33 @@
       alternativas = P.armar({ correcta: o.correcta, errores: o.errores.filter(e => limpio(e.valor)), rng, unidad: o.unidad || '', negativos: !!o.negativos, texto: o.fmt || null });
       respuesta = { valor: o.correcta, unidad: o.unidad || '' };
     }
-    return { id: `${ID}#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
+    const pr = { id: `${ID}#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
       alternativas, solucion: o.solucion, respuesta, _datos: d };
+    return o.viva ? Object.assign(pr, o.viva(alternativas, respuesta)) : pr;
   }
+
+  // ================= escena viva (docs/escena-viva.md): el plano del kit (nucleo/kit/piezas/ejes.js) =================
+  // Solo «area-entero-abs» (la región entre |x| y ⟦x⟧, con el área en una regla) e «inyectiva-restringir/minimo» (la
+  // parábola aparece en los pasos y a se arrastra sobre el eje x). Los demás tipos siguen con su solución de siempre.
+  const BONITOS = [0.01, 0.02, 0.05, 0.1, 0.2, 0.25, 0.5, 1, 2, 5, 10];
+  const pasoBonito = tope => BONITOS.reduce((q, b) => (b <= tope + 1e-12 ? b : q), BONITOS[0]);
+  function pasoArrastre(alts, max) {
+    const vals = alts.map(a => a.valor);
+    let hueco = Infinity;
+    for (let i = 0; i < vals.length; i++) for (let j = i + 1; j < vals.length; j++) hueco = Math.min(hueco, Math.abs(vals[i] - vals[j]));
+    return pasoBonito(Math.min(max / 150, hueco / 2));
+  }
+  const ROT = { 'max-entero-hacia-cero': '⟦x⟧ hacia el 0', AL22: '|x| como x', 'olvida-bajo-el-eje': 'solo sobre el eje', 'solo-una-parte': 'solo la derecha',
+    'area-bajo-abs': 'área bajo |x|', 'raiz-como-extremo': 'una raíz', 'vertice-signo-cambiado': 'b/2', 'coeficiente-como-vertice': 'el coeficiente',
+    'desde-cero': 'en 0' };
+  // Un id que se repite en el problema no lleva fantasma: no se sabría cuál de los dos dibujar.
+  function fantasmasDe(alts) {
+    const out = {};
+    const veces = id => alts.filter(a => a.error && a.error.id === id).length;
+    for (const a of alts) if (a.error) out[a.error.id] = veces(a.error.id) > 1 ? {} : { marca: a.valor, rotulo: ROT[a.error.id] || 'tu opción' };
+    return out;
+  }
+  const pasoE = (corte, texto, ecuacion, final) => ({ estado: final ? { corte, final: true } : { corte }, texto, ecuacion });
 
   const SORTEO = {}, ARMAR = {};
 
@@ -211,19 +235,51 @@
     const izq = m * m + m / 2, der = n / 2;
     const correcta = tot ? izq + der : izq;
     const variables = { f: { nombre: 'f(x) = |x|', color: 'o' }, g: { nombre: 'g(x) = ⟦x⟧', color: 'i' }, A: { nombre: 'área pedida', color: 'h' } };
-    const enunciado = ['Se grafican ', v('f', 'f(x) = |x|'), ' y ', v('g', 'g(x) = ⟦x⟧'), ' (máximo entero: el mayor entero que no pasa de x) en ', tot ? `[−${m}; ${n}]` : `[−${m}; 0]`, '.'];
-    const pregunta = ['¿Cuál es el ', v('A', 'área'), ' de la región limitada por las dos gráficas', tot ? ` y las rectas x = −${m} y x = ${n}` : ` y las rectas x = −${m} y x = 0`, '?'];
+    // La figura carga las gráficas y los límites de la región: el enunciado no los narra.
+    const enunciado = ['La región sombreada queda entre ', v('f', 'f(x) = |x|'), ' y ', v('g', 'g(x) = ⟦x⟧'), ', el máximo entero: el mayor entero que no pasa de x.'];
+    const pregunta = ['¿Cuál es el ', v('A', 'área'), ' de la región?'];
     const ext = tot ? der : 0;
     const pasosIzq = [];
     for (let k = 1; k <= m; k++) pasosIzq.push(`en [−${k}; ${k === 1 ? 0 : '−' + (k - 1)}⟩, ⟦x⟧ = −${k} y la franja es un trapecio de bases ${k - 1} + ${k} = ${2 * k - 1} y ${k} + ${k} = ${2 * k}, área ${F(2 * k - 0.5)}`);
     return { variables, enunciado, pregunta, unidad: 'u²', correcta,
       errores: [
-        en('max-entero-hacia-cero', correcta - m, 'Tomaste ⟦x⟧ como si cortara los decimales (⟦−1,5⟧ = −1). El máximo entero baja: ⟦−1,5⟧ = −2, el escalón está un piso más abajo en los negativos.'),
-        en('AL22', ext + m / 2, 'Trataste |x| como x también en los negativos. Para x < 0, |x| = −x sube hacia la izquierda: la región se ensancha.', 'parcial', INFORME),
-        en('olvida-bajo-el-eje', ext + m * m / 2, 'Contaste solo la parte de la región que está sobre el eje x. En los negativos ⟦x⟧ está bajo el eje y la región también ocupa esa parte.'),
-        ...(tot ? [en('solo-una-parte', der, `Contaste solo la parte de la derecha (x ≥ 0). La región también va de x = −${m} a x = 0.`)] : []),
-        en('area-bajo-abs', (tot ? n * n / 2 : 0) + m * m / 2, 'Calculaste el área bajo |x| y no restaste nada por g. La región va de una gráfica a la otra: su altura es |x| − ⟦x⟧.'),
+        en('max-entero-hacia-cero', correcta - m, 'Contar por escalones está bien; pero en los negativos ⟦x⟧ baja: ⟦−1,5⟧ = −2, no −1.'),
+        en('AL22', ext + m / 2, 'Para x ≥ 0 está bien; para x < 0, |x| = −x sube hacia la izquierda y la región se ensancha.', 'parcial', INFORME),
+        en('olvida-bajo-el-eje', ext + m * m / 2, 'Lo de arriba del eje está bien contado; en los negativos ⟦x⟧ baja del eje, y la región también.'),
+        ...(tot ? [en('solo-una-parte', der, `La parte de la derecha está bien; la región también va de x = −${m} a x = 0.`)] : []),
+        en('area-bajo-abs', (tot ? n * n / 2 : 0) + m * m / 2, 'El área bajo |x| está bien; la región va de una gráfica a la otra: su altura es |x| − ⟦x⟧.'),
       ],
+      viva: (alts, resp) => {
+        const hi = tot ? n : 0, top = Math.max(m, hi), maxA = Math.max(...alts.map(a => a.valor));
+        const tick = [1, 2, 5, 10, 20].find(q => maxA * 1.08 / q <= 8), maxR = Math.ceil(maxA * 1.08 / tick) * tick;
+        // Escalones de ⟦x⟧ (cerrado a la izquierda, abierto a la derecha) y las piezas de la región, una por tramo.
+        const esc = [], pts = [], piezas = [];
+        for (let k = -m; k < hi; k++) {
+          esc.push([k, k], [k + 1, k], null);
+          pts.push({ x: k, y: k, color: 'i', desde: 0 }, { x: k + 1, y: k, color: 'i', abierto: true, desde: 0 });
+          const contorno = k >= 0 ? [[k, k], [k + 1, k + 1], [k + 1, k]] : [[k, -k], [k + 1, -k - 1], [k + 1, k], [k, k]];
+          piezas.push({ k, contorno, area: k >= 0 ? 0.5 : (-2 * k + (-2 * k - 1)) / 2 });
+        }
+        const areas = piezas.map(q => ({ puntos: q.contorno, color: 'h', cerrada: true, desde: 0 }))
+          .concat(piezas.map(q => ({ puntos: q.contorno, color: 'h', cerrada: true, rotulo: q.k >= 0 ? '½' : F(q.area), desde: q.k >= 0 ? 1 : (tot ? 2 : 1) })));
+        const datos = {
+          x: { min: -m, max: Math.max(hi, 1), paso: 1, nombre: 'x', decimales: 0 },
+          y: { min: -m, max: top + 1, paso: 1, nombre: 'y', decimales: 0 },
+          curvas: [{ puntos: [[-m, m], [0, 0], [hi, hi]], color: 'o', rotulo: '|x|', en: [-m, m], desde: 0 }, { puntos: esc, color: 'i', rotulo: '⟦x⟧', en: [-m, -m + 0.4], desde: 0 }],
+          areas, puntos: pts,
+          marca: { eje: 'regla', min: 0, max: maxR, inicio: 0, paso: tick, nombre: 'A', unidad: 'u²', color: 'h' },
+          respuesta: resp.valor, sufijo: ' u²', decimales: 2,
+        };
+        const paso = pasoArrastre(alts, maxR);
+        const sumaIzq = piezas.filter(q => q.k < 0).reverse().map(q => F(q.area)).join(' + ');
+        const pasos = [
+          ...(tot ? [pasoE(1, ['A la derecha, cada tramo es un triángulo de área ½.'], [`${n} · ½ = ${F(der)}`])] : []),
+          pasoE(tot ? 2 : 1, ['A la izquierda, cada tramo es un trapecio más alto.'], [`${sumaIzq} = ${F(izq)}`]),
+          pasoE(tot ? 2 : 1, [tot ? 'El área es la suma de las dos partes.' : 'El área es la suma de los trapecios.'], ['A = ', v('A', `${F(correcta)} u²`)], true),
+        ];
+        return { escena: { pieza: 'ejes', datos, alt: `Región entre y = |x| (arriba) y los escalones de y = ⟦x⟧ (abajo), de x = −${m} a x = ${hi}` },
+          fantasmas: fantasmasDe(alts), pasos, respuesta: { ...resp, tipo: 'arrastrar', control: 'marca', paso, tolerancia: paso } };
+      },
       solucion: [
         ['La altura de la región en cada x es ', v('f', '|x|'), ' − ', v('g', '⟦x⟧'), ': para x ≥ 0 es x − ⟦x⟧ y para x < 0 es −x − ⟦x⟧.'],
         ...(tot ? [[`A la derecha, en cada [k; k + 1⟩ la región es un triángulo de base 1 y altura 1 (área 1/2): ${n} · 1/2 = ${F(der)}.`]] : []),
@@ -484,12 +540,33 @@
       enunciado: ['La función ', v('f', `g(x) = ${poli([1, B, C])}`), ', con dominio ', dom, ', es inyectiva.'],
       pregunta: [`¿Cuál es el ${der ? 'menor' : 'mayor'} valor posible de `, v('X', 'a'), '?'],
       errores: [
-        en('raiz-como-extremo', der ? w : u, `${tn(der ? w : u)} es una raíz de g, no el vértice. g es inyectiva ${der ? 'desde' : 'hasta'} el vértice, x = ${tn(hv)}, aunque ahí no corte al eje.`),
-        en('raiz-como-extremo', der ? u : w, `${tn(der ? u : w)} es una raíz de g. g es inyectiva ${der ? 'desde' : 'hasta'} el vértice, x = ${tn(hv)}: es lo que separa la parte que baja de la que sube.`),
-        en('vertice-signo-cambiado', -hv, `Tomaste x = b/2 = ${tn(-hv)}; el vértice está en x = −b/2 = ${tn(hv)}.`),
-        en('coeficiente-como-vertice', B, `Ese es el coeficiente de x. El vértice está en x = −b/2 = ${tn(hv)}.`),
-        en('desde-cero', 0, 'La parábola no tiene por qué cambiar de sentido en x = 0. Cambia en su vértice.'),
+        en('raiz-como-extremo', der ? w : u, `${tn(der ? w : u)} es una raíz de g, bien hallada; pero bajada y subida las separa el vértice.`),
+        en('raiz-como-extremo', der ? u : w, `${tn(der ? u : w)} es una raíz de g, bien hallada; pero bajada y subida las separa el vértice.`),
+        en('vertice-signo-cambiado', -hv, `Buscar el vértice es el camino; está en x = −b/2 = ${tn(hv)}, no en b/2.`),
+        en('coeficiente-como-vertice', B, `Mirar el coeficiente de x va bien; el vértice está en −b/2 = ${tn(hv)}.`),
+        en('desde-cero', 0, 'Partir el dominio en un punto está bien; la parábola cambia de sentido en su vértice, no en 0.'),
       ],
+      viva: (alts, resp) => {
+        const g = x => x * x + B * x + C, xs = [u, w, ...alts.map(a => a.valor)];
+        const x0 = Math.min(...xs) - 1, x1 = Math.max(...xs) + 1, yv = g(hv), ymax = Math.max(4, -yv);
+        const curva = [];
+        for (let i = 0; i <= (x1 - x0) * 8; i++) { const x = x0 + i / 8, y = g(x); curva.push(y <= ymax + 1e-9 ? [x, y] : null); }
+        const datos = {
+          x: { min: x0, max: x1, paso: 1, nombre: 'x', decimales: 0 },
+          y: { min: Math.floor(yv) - 1, max: Math.ceil(ymax) + 1, paso: [1, 2, 5, 10].find(q => (ymax - yv) / q <= 8) || 20, nombre: 'y', decimales: 0 },
+          curvas: [{ puntos: curva, color: 'o', rotulo: 'g', desde: 1 }],
+          puntos: [{ x: u, y: 0, color: 'o', abierto: true, desde: 1 }, { x: w, y: 0, color: 'o', abierto: true, desde: 1 },
+            { x: hv, y: yv, color: 'i', rotulo: `vértice (${tn(hv)}; ${tn(yv)})`, guias: true, desde: 2 }],
+          marca: { eje: 'x', min: x0, max: x1, inicio: x0 }, respuesta: hv, sufijo: '', decimales: 2,
+        };
+        const pasos = [
+          pasoE(1, ['La parábola baja hasta su vértice y luego sube.'], [v('f', `g(x) = ${poli([1, B, C])}`)]),
+          pasoE(2, ['El vértice está en x = −b/2.'], [v('h', `x = −(${tn(B)})/2 = ${tn(hv)}`)]),
+          pasoE(2, [der ? 'Desde el vértice hacia la derecha, g solo sube.' : 'Hasta el vértice, g solo baja.'], [der ? 'El menor es ' : 'El mayor es ', v('X', `a = ${tn(hv)}`)], true),
+        ];
+        return { escena: { pieza: 'ejes', datos, alt: `Parábola g con raíces en x = ${tn(u)} y x = ${tn(w)} y vértice en (${tn(hv)}; ${tn(yv)})` },
+          fantasmas: fantasmasDe(alts), pasos, respuesta: { ...resp, tipo: 'arrastrar', control: 'marca', paso: 1, tolerancia: 0.5 } };
+      },
       solucion: [
         ['Una parábola baja hasta su vértice y luego sube: es inyectiva solo a un lado de él.'],
         ['Vértice: ', v('h', `x = −(${tn(B)})/2 = ${tn(hv)}`), '.'],

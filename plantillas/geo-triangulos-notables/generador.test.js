@@ -243,3 +243,19 @@ test('la trampa del valor límite y la de la condición de obtusángulo salen co
   }
   assert.ok(limite > 60 && sinObtuso > 20, `${limite} y ${sinObtuso}`);
 });
+
+// ---------- Escena viva (docs/escena-viva.md): el triángulo del kit en los ángulos con puntos notables ----------
+const { probarViva } = require('../../nucleo/kit/piezas/probar-viva.js');
+const SUBS_VIVOS = ['incentro', 'excentro', 'int-ext', 'ortocentro', 'circuncentro'];
+probarViva(gen, {
+  semillas: 400, pieza: 'triangulo', presupuestoSoloEscena: true,
+  conEscena: p => p._datos.tipo === 'angulos' && SUBS_VIVOS.includes(p._datos.sub),
+  final: (p, fin, s) => {
+    // El final rotula ∠A y el ángulo pedido con su valor; el ángulo dibujado en el punto mide lo que dice.
+    assert.ok(fin.includes(`>${p._datos.A}°<`) && fin.includes(`>${p.respuesta.valor}°<`), `semilla ${s}`);
+    const pt = id => p.escena.datos.puntos.find(q => q.id === id);
+    const P0 = pt('P'), B = pt('B'), C = pt('C');
+    const ang = Math.abs(Math.atan2(B.y - P0.y, B.x - P0.x) - Math.atan2(C.y - P0.y, C.x - P0.x)) * 180 / Math.PI;
+    assert.ok(Math.abs(Math.min(ang, 360 - ang) - p.respuesta.valor) < 1e-6, `semilla ${s}: el ángulo dibujado mide ${ang}`);
+  },
+});

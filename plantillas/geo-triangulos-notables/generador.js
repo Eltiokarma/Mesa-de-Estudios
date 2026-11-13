@@ -161,10 +161,67 @@
     if (alterno) o.errores = alterno.filter(Boolean);
     const errores = o.errores.filter(sirve);
     const alternativas = P.armar({ correcta: o.correcta, errores, rng, texto });
-    return {
+    const pr = {
       id: `geo-triangulos-notables#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
       alternativas, solucion: o.solucion, respuesta: { valor: o.correcta, unidad: o.unidad || '' }, _datos: o.datos,
     };
+    return o.viva ? Object.assign(pr, o.viva(alternativas)) : pr;
+  }
+
+  // ---------- escena viva (docs/escena-viva.md): el triángulo del kit (nucleo/kit/piezas/triangulo.js) ----------
+  // Solo los ángulos con incentro, excentros, ortocentro y circuncentro: el triángulo a escala con ∠A, las rectas
+  // que se cortan en el punto y el ángulo pedido. Se responde con alternativas; el error se muestra como fantasma.
+  // Los demás tipos siguen con su solución de siempre. B y C no se rotulan: el ángulo pedido no depende de ellos.
+  const ROT_G = { 'GT-formula-excentro': '90° − A/2', 'GT-formula-incentro': '90° + A/2', 'GT-formula-int-ext': 'A/2', 'GT-formula-ortocentro': '180° − A',
+    'GT-formula-circuncentro': '2A', 'GT-sin-mitad': 'sin la mitad', 'GT-igual-a-A': 'igual a A', 'GE15-central-igual-inscrito': 'igual al inscrito', 'GE15-mitad': 'la mitad' };
+  function fantasmasTri(alts) {
+    const out = {};
+    const veces = id => alts.filter(a => a.error && a.error.id === id).length;
+    for (const a of alts) if (a.error) out[a.error.id] = veces(a.error.id) > 1 ? {} : { rotulo: ROT_G[a.error.id] || 'tu opción', texto: a.texto };
+    return out;
+  }
+  function vivaAngulo(sub, A, correcta, pasosTxt) {
+    const rad = x => x * Math.PI / 180;
+    const Bg = (180 - A) * 0.55, Cg = 180 - A - Bg, L = 10;
+    const c = L * Math.sin(rad(Cg)) / Math.sin(rad(A)); // AB
+    const Pa = [c * Math.cos(rad(Bg)), c * Math.sin(rad(Bg))], Pb = [0, 0], Pc = [L, 0];
+    const la = L, lb = Math.hypot(Pa[0] - L, Pa[1]), lc = c;
+    const comb = (wa, wb, wc) => { const t = wa + wb + wc; return [(wa * Pa[0] + wb * Pb[0] + wc * Pc[0]) / t, (wa * Pa[1] + wb * Pb[1] + wc * Pc[1]) / t]; };
+    // Circuncentro: sobre la mediatriz de BC.
+    const ox = L / 2, oy = (Pa[0] * Pa[0] + Pa[1] * Pa[1] - L * Pa[0]) / (2 * Pa[1]);
+    const letra = { incentro: 'I', excentro: 'E', 'int-ext': 'E', ortocentro: 'H', circuncentro: 'O' }[sub];
+    const Q = sub === 'incentro' ? comb(la, lb, lc) : sub === 'excentro' ? comb(-la, lb, lc) : sub === 'int-ext' ? comb(la, -lb, lc)
+      : sub === 'ortocentro' ? [Pa[0] + Pb[0] + Pc[0] - 2 * ox, Pa[1] + Pb[1] + Pc[1] - 2 * oy] : [ox, oy];
+    const puntos = [{ id: 'A', x: Pa[0], y: Pa[1], rotulo: 'A' }, { id: 'B', x: 0, y: 0, rotulo: 'B' }, { id: 'C', x: L, y: 0, rotulo: 'C' }, { id: 'P', x: Q[0], y: Q[1], rotulo: letra }];
+    const lados = [{ de: 'A', a: 'B' }, { de: 'B', a: 'C' }, { de: 'C', a: 'A' },
+      { de: 'B', a: 'P', color: 'd', grosor: 'variable' }, { de: 'C', a: 'P', color: 'd', grosor: 'variable' }];
+    const angulos = [{ en: 'A', de: 'B', a: 'C', texto: `${A}°`, color: 'o' }, { en: 'P', de: 'B', a: 'C', texto: '?', final: `${correcta}°`, color: 'd' }];
+    const ext = (de, desde) => { const k = 0.45; return [de[0] + (de[0] - desde[0]) * k, de[1] + (de[1] - desde[1]) * k]; };
+    if (sub === 'excentro') {
+      const bx = ext(Pb, Pa), cx = ext(Pc, Pa);
+      puntos.push({ id: 'Bx', x: bx[0], y: bx[1] }, { id: 'Cx', x: cx[0], y: cx[1] });
+      lados.push({ de: 'B', a: 'Bx', horizontal: true }, { de: 'C', a: 'Cx', horizontal: true });
+    }
+    if (sub === 'int-ext') {
+      const cx = ext(Pc, Pb);
+      puntos.push({ id: 'Cx', x: cx[0], y: cx[1] });
+      lados.push({ de: 'C', a: 'Cx', horizontal: true });
+    }
+    if (sub === 'ortocentro') {
+      // Pies de las alturas desde B (sobre AC) y desde C (sobre AB): aparecen en el primer paso con sus rectos.
+      const pie = (P0, U, V) => { const dx = V[0] - U[0], dy = V[1] - U[1], t = ((P0[0] - U[0]) * dx + (P0[1] - U[1]) * dy) / (dx * dx + dy * dy); return [U[0] + t * dx, U[1] + t * dy]; };
+      const fb = pie(Pb, Pa, Pc), fc = pie(Pc, Pa, Pb);
+      puntos.push({ id: 'Fb', x: fb[0], y: fb[1], paso: 1 }, { id: 'Fc', x: fc[0], y: fc[1], paso: 1 });
+      lados.push({ de: 'P', a: 'Fb', color: 'd', visual: true, paso: 1 }, { de: 'P', a: 'Fc', color: 'd', visual: true, paso: 1 });
+      angulos.push({ en: 'Fb', de: 'C', a: 'B', texto: '', paso: 1 }, { en: 'Fc', de: 'B', a: 'C', texto: '', paso: 1 }); // el cuadradito ya dice «recto»
+    }
+    if (sub === 'incentro') angulos.push({ en: 'B', de: 'C', a: 'P', texto: 'B/2', color: 'i', paso: 1 }, { en: 'C', de: 'B', a: 'P', texto: 'C/2', color: 'i', paso: 1 });
+    if (sub === 'circuncentro') lados.push({ de: 'P', a: 'A', color: 'i', visual: true, paso: 1 });
+    const nombres = { incentro: 'el incentro I', excentro: 'el excentro E, donde se cortan las bisectrices exteriores de B y C', 'int-ext': 'E, donde se cortan la bisectriz de B y la exterior de C',
+      ortocentro: 'el ortocentro H', circuncentro: 'el circuncentro O' };
+    const pasos = pasosTxt.map((q, i) => ({ estado: i === pasosTxt.length - 1 ? { paso: 1, final: true } : { paso: 1 }, texto: q[0], ecuacion: q[1] }));
+    return alts => ({ escena: { pieza: 'triangulo', datos: { puntos, lados, angulos }, alt: `Triángulo ABC a escala con ∠A = ${A}° y ${nombres[sub]}; se pide ∠B${letra}C` },
+      pasos, fantasmas: fantasmasTri(alts) });
   }
 
   // ---------- desigualdad triangular ----------
@@ -524,36 +581,51 @@
         ortocentro: ['las alturas trazadas desde B y desde C se cortan en H', '∠BHC'],
         circuncentro: ['O es el centro de la circunferencia que pasa por A, B y C', '∠BOC'],
       }[sub];
-      const ctx = !agudo && rng.moneda();
+      const ctx = !agudo && rng.moneda() && false; // con la figura, el contexto del terreno sobra (el azar se consume igual)
       const enunciado = ctx
         ? ['Un terreno triangular ABC tiene en la esquina A un ángulo de ', v('A', g(A)), '. Dos caminos rectos parten en dos partes iguales ', sub === 'incentro' ? 'los ángulos B y C del terreno (bisectrices interiores) y se cruzan en I.' : sub === 'excentro' ? 'los ángulos exteriores en B y en C (bisectrices exteriores) y se cruzan en E, fuera del terreno.' : 'el ángulo B del terreno y el ángulo exterior en C, y se cruzan en E, fuera del terreno.']
         : [`En el triángulo ${agudo ? 'acutángulo ' : ''}ABC, `, v('A', `∠A = ${g(A)}`), ` y ${que[0]}.`];
       const pregunta = ['¿Cuánto mide el ángulo ', v('x', que[1]), '?'];
       const E = {
-        exc: h('GT-formula-excentro', 90 - A / 2, sub === 'incentro' ? 'Usaste la fórmula del excentro (90° − A/2). Con las bisectrices interiores el punto queda dentro del triángulo y el ángulo es obtuso: 90° + A/2.' : 'Usaste la fórmula del excentro (90° − A/2), que es para dos bisectrices exteriores.'),
-        inc: h('GT-formula-incentro', 90 + A / 2, 'Usaste la fórmula del incentro (90° + A/2), que es para dos bisectrices interiores.'),
-        ie: h('GT-formula-int-ext', A / 2, 'Usaste la fórmula de una bisectriz interior con una exterior (A/2).'),
-        orto: h('GT-formula-ortocentro', 180 - A, 'Usaste la fórmula del ortocentro (180° − A).'),
-        circ: h('GT-formula-circuncentro', 2 * A, 'Usaste la fórmula del circuncentro (2A): ese es un ángulo central, que vale el doble del inscrito.'),
+        exc: h('GT-formula-excentro', 90 - A / 2, sub === 'incentro' ? 'Usar una fórmula de bisectrices es el camino; 90° − A/2 es la del excentro, no la del incentro.' : 'Usar una fórmula de bisectrices es el camino; 90° − A/2 vale para dos bisectrices exteriores.'),
+        inc: h('GT-formula-incentro', 90 + A / 2, 'Usar una fórmula de bisectrices es el camino; 90° + A/2 vale para dos bisectrices interiores.'),
+        ie: h('GT-formula-int-ext', A / 2, 'Usar una fórmula de bisectrices es el camino; A/2 vale para una interior con una exterior.'),
+        orto: h('GT-formula-ortocentro', 180 - A, '180° − A vale para el ortocentro, donde se cortan las alturas; aquí las rectas son otras.'),
+        circ: h('GT-formula-circuncentro', 2 * A, '2A vale para el circuncentro, que da un ángulo central; aquí el punto es otro.'),
       };
-      let errores, solucion;
+      let errores, solucion, viva;
       if (sub === 'incentro') {
-        errores = [E.exc, h('GT-sin-mitad', 90 + A, 'Olvidaste la mitad: las bisectrices toman la mitad de B y de C, y por eso queda A/2.'), E.ie, E.orto, E.circ];
+        errores = [E.exc, h('GT-sin-mitad', 90 + A, 'Restar de 180° está bien; las bisectrices toman la mitad de B y de C: por eso queda A/2.'), E.ie, E.orto, E.circ];
+        viva = vivaAngulo(sub, A, correcta, [
+          [['I se queda con la mitad de B y la mitad de C.'], ['∠BIC = 180° − (B + C)/2']],
+          [['Como B + C = 180° − A, queda 90° + A/2.'], [v('x', '∠BIC'), ' = 90° + ', v('A', g(A)), '/2 = ', v('x', g(correcta))]]]);
         solucion = [['En el triángulo BIC: ∠BIC = 180° − B/2 − C/2 = 180° − (B + C)/2.'], ['Como B + C = 180° − A: ∠BIC = 180° − (180° − A)/2 = 90° + A/2.'], [v('x', '∠BIC'), ' = 90° + ', v('A', g(A)), '/2 = ', v('x', g(correcta)), '.']];
       } else if (sub === 'excentro') {
-        errores = [E.inc, h('GT-sin-mitad', 90 - A, 'Olvidaste la mitad: cada bisectriz exterior toma la mitad del ángulo exterior.'), E.ie, E.orto];
+        errores = [E.inc, h('GT-sin-mitad', 90 - A, 'Usar los ángulos exteriores está bien; cada bisectriz exterior toma solo la mitad de su ángulo.'), E.ie, E.orto];
+        viva = vivaAngulo(sub, A, correcta, [
+          [['E se queda con la mitad de cada ángulo exterior.'], ['∠BEC = 180° − (180° − B)/2 − (180° − C)/2']],
+          [['Eso se reduce a (B + C)/2, que es 90° − A/2.'], [v('x', '∠BEC'), ' = 90° − ', v('A', g(A)), '/2 = ', v('x', g(correcta))]]]);
         solucion = [['Los ángulos exteriores en B y C miden 180° − B y 180° − C; sus bisectrices toman la mitad.'], ['En el triángulo BEC: ∠BEC = 180° − (180° − B)/2 − (180° − C)/2 = (B + C)/2 = 90° − A/2.'], [v('x', '∠BEC'), ' = 90° − ', v('A', g(A)), '/2 = ', v('x', g(correcta)), '.']];
       } else if (sub === 'int-ext') {
-        errores = [h('GT-sin-mitad', A, 'Olvidaste la mitad: el ángulo exterior en C es A + B, y su mitad menos la mitad de B deja A/2.'), E.exc, E.inc, E.orto];
+        errores = [h('GT-sin-mitad', A, 'Usar el ángulo exterior A + B está bien; su mitad menos la mitad de B deja A/2.'), E.exc, E.inc, E.orto];
+        viva = vivaAngulo(sub, A, correcta, [
+          [['El ángulo exterior en C vale A + B.'], ['(A + B)/2 = ∠BEC + B/2']],
+          [['Se resta la mitad de B y queda A/2.'], [v('x', '∠BEC'), ' = ', v('A', g(A)), '/2 = ', v('x', g(correcta))]]]);
         solucion = [['Ángulo exterior en C: A + B. En el triángulo BEC, ese ángulo exterior partido en dos es (A + B)/2 = ∠BEC + B/2.'], ['∠BEC = (A + B)/2 − B/2 = A/2.'], [v('x', '∠BEC'), ' = ', v('A', g(A)), '/2 = ', v('x', g(correcta)), '.']];
       } else if (sub === 'ortocentro') {
-        errores = [E.inc, E.circ, h('GT-igual-a-A', A, 'Igualaste el ángulo en H con el ángulo A. Los dos suman 180°: el cuadrilátero que forman A, los pies de las alturas y H tiene dos ángulos rectos.'), E.exc];
+        errores = [E.inc, E.circ, h('GT-igual-a-A', A, 'Relacionar H con A está bien; no son iguales: suman 180°, por los dos ángulos rectos.'), E.exc];
+        viva = vivaAngulo(sub, A, correcta, [
+          [['Con los pies de las alturas hay un cuadrilátero con dos rectos.'], ['∠FHE = 360° − 90° − 90° − A = 180° − A']],
+          [['∠BHC es opuesto por el vértice a ese ángulo.'], [v('x', '∠BHC'), ' = 180° − ', v('A', g(A)), ' = ', v('x', g(correcta))]]]);
         solucion = [['Sean E y F los pies de las alturas desde B y C. El cuadrilátero AFHE tiene ángulos rectos en E y F.'], ['Entonces ∠FHE = 360° − 90° − 90° − A = 180° − A, y ∠BHC es su opuesto por el vértice.'], [v('x', '∠BHC'), ' = 180° − ', v('A', g(A)), ' = ', v('x', g(correcta)), '.']];
       } else {
-        errores = [hi('GE15-central-igual-inscrito', A, 'Igualaste el ángulo central con el inscrito. El central BOC abarca el mismo arco BC que el inscrito A, y vale el doble.'), hi('GE15-mitad', A / 2, 'Tomaste la mitad en vez del doble: el inscrito es la mitad del central, no al revés.'), E.orto, E.inc];
+        errores = [hi('GE15-central-igual-inscrito', A, 'BOC y A abarcan el mismo arco BC, bien visto; el central vale el doble del inscrito.'), hi('GE15-mitad', A / 2, 'Relacionar central e inscrito está bien; el central es el doble del inscrito, no la mitad.'), E.orto, E.inc];
+        viva = vivaAngulo(sub, A, correcta, [
+          [['El inscrito A y el central BOC abarcan el mismo arco BC.'], ['∠A inscrito, ∠BOC central']],
+          [['El central vale el doble del inscrito.'], [v('x', '∠BOC'), ' = 2·', v('A', g(A)), ' = ', v('x', g(correcta))]]]);
         solucion = [['El ángulo inscrito A y el ángulo central BOC abarcan el mismo arco BC.'], ['El central vale el doble del inscrito.'], [v('x', '∠BOC'), ' = 2·', v('A', g(A)), ' = ', v('x', g(correcta)), '.']];
       }
-      return { ...base, correcta, errores, variables, enunciado, pregunta, solucion, datos: { tipo: 'angulos', sub, A } };
+      return { ...base, correcta, errores, variables, enunciado, pregunta, solucion, viva, datos: { tipo: 'angulos', sub, A } };
     }
     if (sub === 'orto-incentro') {
       const A = 2 * rng.entero(16, 43), theta = 180 - A, correcta = calc.ortoIncentro(theta);

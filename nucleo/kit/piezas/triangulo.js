@@ -14,7 +14,7 @@
  *   suelo: true,                       // la línea del suelo (y = 0) con su rayado, de punta a punta de la figura
  *   lados: [{ de: 'P', a: 'T', color: 'h', texto: 'H = ?', final: 'H = 12 m', grosor: 'variable'|'contorno',
  *             visual: false, horizontal: false, paso }],   // visual: discontinua (línea de mira); horizontal: tenue
- *   angulos: [{ en: 'P', de: 'B', a: 'T', texto: '37°', color: 'o', paso }],   // el menor de los dos ángulos; 90° → cuadradito
+ *   angulos: [{ en: 'P', de: 'B', a: 'T', texto: '37°', final: '53°', color: 'o', paso }],   // el menor de los dos ángulos; 90° → cuadradito
  *   cotas: [{ de: 'P', a: 'Q', texto: '20 m', final, color: 'd', lado: 1|-1, dist: 24, paso }]  // medida paralela, a dist px
  * }
  * estado = { paso: 0..n, final: false, fantasma: null | { rotulo, texto } }
@@ -125,7 +125,7 @@
       if (t) e += rotuloLado(g, a, b, t, { color: l.color, lado: l.lado });
       s += `<g class="kit-aparece${final && l.final !== undefined ? ' kit-nuevo' : nuevo(l)}">${e}</g>`;
     }
-    for (const an of d.angulos || []) if (ve(an)) s += arco(g, an, `kit-aparece${nuevo(an)}`);
+    for (const an of d.angulos || []) if (ve(an)) s += arco(g, { ...an, texto: txt(an) }, `kit-aparece${final && an.final !== undefined ? ' kit-nuevo' : nuevo(an)}`);
     for (const c of d.cotas || []) if (ve(c)) s += cota(g, c, txt(c), `kit-aparece${final && c.final !== undefined ? ' kit-nuevo' : nuevo(c)}`);
     for (const q of d.puntos || []) if (ve(q)) {
       const [x, y] = g.P(q.id), L = Math.hypot(x - g.centro[0], y - g.centro[1]) || 1;
