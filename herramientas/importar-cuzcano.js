@@ -96,7 +96,10 @@ function convertir(e, ficha, { curso, temaId, unidad, libros, previo }) {
   const ej = { id: idDeUid(e.uid), lote: 'cuzcano', estado: 'crudo', origen };
   if (curso) ej.curso = curso;
   if (unidad) ej.unidad = unidad;
-  ej.enunciado = (ficha && typeof ficha.enunciado === 'string' && ficha.enunciado.trim()) || e.titulo || '(sin enunciado en la ficha)';
+  const texto = (ficha && typeof ficha.enunciado === 'string' && ficha.enunciado.trim()) || e.titulo || '(sin enunciado en la ficha)';
+  // Los enunciados de origen usan llaves literales para conjuntos y exponentes.
+  // El esquema reserva {clave} para datos interpolados solo en texto plano.
+  ej.enunciado = /\{[A-Za-z0-9_]+\}/.test(texto) ? [texto] : texto;
   if (ficha && (ficha.expresion_latex || ficha.expresion_texto)) {
     ej.expresion = {};
     if (ficha.expresion_latex) ej.expresion.latex = ficha.expresion_latex;
@@ -150,16 +153,29 @@ function importar({ desde, manifiesto, curso, temaId, unidad, libros, limite = I
   const nombre = temaId.includes('.') ? temaId.split('.').slice(1).join('.') : temaId;
   const archivo = path.join(destino, curso, `${nombre}.jsonl`);
   const actuales = leerJsonl(archivo);
-  const res = { archivo: path.relative(RAIZ, archivo), leidos: 0, nuevos: 0, actualizados: 0, iguales: 0, figuras: 0, sin_ficha: [], revisar: 0 };
+  const res = { archivo: path.relative(RAIZ, archivo), leidos: 0, nuevos: 0, actualizados: 0, iguales: 0, figuras: 0, sin_ficha: [], sin_enunciado: [], revisar: 0 };
   for (const e of m.ejercicios.slice(0, limite)) {
     res.leidos++;
     const rutaFicha = path.join(desde, e.ficha.split('#')[0]);
-    let ficha = null;
-    if (fs.existsSync(rutaFicha)) ficha = leer(rutaFicha); else res.sin_ficha.push(e.uid);
     const id = idDeUid(e.uid);
-    const ej = convertir(e, ficha, { curso, temaId, unidad, libros, previo: actuales.get(id) });
-    if (ej.banco.revisar_antes_de_integrar) res.revisar++;
     const antes = actuales.get(id);
+    if (!fs.existsSync(rutaFicha)) {
+      res.sin_ficha.push(e.uid);
+      continue;
+    }
+    const ficha = leer(rutaFicha);
+    if (typeof ficha.enunciado !== 'string' || !ficha.enunciado.trim()) {
+      // Una ficha piloto puede haberse completado después con el escaneo.
+      if (antes?.banco?.uid === e.uid && antes.banco.ficha?.enunciado) {
+        res.iguales++;
+        if (antes.banco.revisar_antes_de_integrar) res.revisar++;
+      } else {
+        res.sin_enunciado.push(e.uid);
+      }
+      continue;
+    }
+    const ej = convertir(e, ficha, { curso, temaId, unidad, libros, previo: antes });
+    if (ej.banco.revisar_antes_de_integrar) res.revisar++;
     if (!antes) res.nuevos++;
     else if (JSON.stringify(antes) === JSON.stringify(ej)) res.iguales++;
     else res.actualizados++;
@@ -173,7 +189,7 @@ function importar({ desde, manifiesto, curso, temaId, unidad, libros, limite = I
     }
   }
   res.total_en_archivo = actuales.size;
-  if (!seco) escribirJsonl(archivo, actuales);
+  if (!seco && (res.nuevos || res.actualizados)) escribirJsonl(archivo, actuales);
   return res;
 }
 
@@ -214,7 +230,8 @@ function main(argv) {
   console.log(`${seco ? '(seco) ' : ''}${trabajo.temaId} → ${res.archivo}${trabajo.unidad ? ` (unidad ${trabajo.unidad})` : ' (sin unidad: agrégala en cuzcano/temas.json)'}`);
   console.log(`  leídos ${res.leidos}: nuevos ${res.nuevos}, actualizados ${res.actualizados}, iguales ${res.iguales}; en el archivo ${res.total_en_archivo}`);
   console.log(`  figuras ${res.figuras}; por revisar antes de integrar ${res.revisar}${res.sin_ficha.length ? `; SIN FICHA ${res.sin_ficha.length}: ${res.sin_ficha.join(', ')}` : ''}`);
-  return res.sin_ficha.length ? 1 : 0;
+  if (res.sin_enunciado.length) console.error(`  SIN ENUNCIADO ${res.sin_enunciado.length}: ${res.sin_enunciado.join(', ')}`);
+  return res.sin_ficha.length || res.sin_enunciado.length ? 1 : 0;
 }
 
 module.exports = { idDeUid, armarCita, alternativasFuente, respuestaDe, claveDe, convertir, importar, leerJsonl };

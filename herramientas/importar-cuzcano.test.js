@@ -119,3 +119,26 @@ test('el banco versionado es válido, con cita y sin uid repetido', () => {
     if (x.ej.banco.figura) assert.ok(fs.existsSync(path.join(dir, x.ej.banco.figura)), `${x.ej.id}: falta ${x.ej.banco.figura}`);
   }
 });
+
+test('las llaves de conjuntos y exponentes conservan su significado literal', () => {
+  const texto = 'Para x ∈ ℝ∖{0}, compara x^{2} con x.';
+  const e = { uid: `${LIBRO}:problema:3`, ficha: 'lote/p3.json', paginas_pdf: [4] };
+  const ficha = { enunciado: texto };
+  const ej = I.convertir(e, ficha, { curso: 'algebra', temaId: 'algebra.tema', libros });
+  assert.deepEqual(ej.enunciado, [texto]);
+  assert.deepEqual(ej.banco.ficha, ficha);
+  assert.deepEqual(V.validarEjercicio(ej, V.cargarContexto()).errores, []);
+});
+
+test('conserva una ficha completada si el piloto de origen carece de enunciado', () => {
+  const t = traspaso();
+  correr(t);
+  const antes = fs.readFileSync(archivo(t), 'utf8');
+  const piloto = path.join(t.desde, 'lote', 'p1.json');
+  fs.writeFileSync(piloto, JSON.stringify({ interpretacion: 'Probar homogeneidad.' }));
+  assert.equal(correr(t).iguales, 2);
+  assert.equal(fs.readFileSync(archivo(t), 'utf8'), antes);
+  const nuevo = correr(t, { destino: path.join(t.desde, 'nuevo') });
+  assert.equal(nuevo.nuevos, 1);
+  assert.deepEqual(nuevo.sin_enunciado, [`${LIBRO}:problema:1`]);
+});
