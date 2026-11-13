@@ -16,7 +16,7 @@ La tanda anterior costó cerca de 1000 USD contra 300 estimados. Este plan está
 1. **Formato:** llegan en PDF o en HTML, con clave y **resueltos**. El cortador (`herramientas/cortar-ejercicios.js`) acepta los dos, además de texto. Las resoluciones de la fuente se guardan aparte (`soluciones.ndjson`, en `fuentes/`, que no se versiona) y solo sirven para contrastar la clave y el valor recalculado. No se publican: la solución se rehace (regla 5).
 2. **Ritmo: bloques de 100 ejercicios de un tema de un curso.** Cada bloque recorre todo el camino antes de abrir el siguiente: cortar, clasificar, contar, mapear, migrar o construir, verificar y publicar. Así cada bloque deja algo publicado y medible, y el costo se controla bloque a bloque.
 3. **Alcance:** todo lo que se pueda, priorizando 3.º, 4.º y 5.º de secundaria. Los bloques se ordenan por el grado de la unidad en el catálogo (primero 3.º, luego 4.º, luego 5.º) y, dentro de cada grado, por cantidad de ejercicios.
-4. **Sin respuesta todavía:** el tope total de gasto y la vía de clasificación (Batch API o rutinas). Mientras no haya cifra, cada bloque lleva su tope (sección 5) y se informa el gasto al cerrarlo.
+4. **Tope total y vía de clasificación: se deciden cuando llegue la tanda** (Gerson, 13 nov: «cuando llegue ese toro, lo toreamos»). Hasta entonces no se pregunta. Cuando llegue, cada bloque lleva su tope (sección 5) y se informa el gasto al cerrarlo.
 
 **Cómo se corre un bloque:**
 ```sh
