@@ -84,7 +84,17 @@ Decisiones que vienen de la revisión:
 - **Oposición junta contraste y concesión, y causa junta consecuencia.** Ante un "aunque", contraste y concesión son defendibles las dos, y la diferencia no es lo que se quiere medir. El error que importa es leer como causa o como suma lo que se opone (RV24 y RV26). Por eso, **por ahora, el previo `relacion` solo se usa cuando la relación aceptada es la oposición**: para el error contrario (ver oposición donde hay causa o suma) el informe no tiene código.
 - **Proposito tiene tres opciones.** "Criticar" es una forma de convencer, e "informar" y "explicar" no se distinguen bien en textos cortos.
 - **En el previo de analogías no se puede medir RV15** (la asociación con la palabra C), porque el alumno todavía no ve C. Lo que mide es si identificó la relación (RV17) y su sentido (RV16). "Produce" es para un ser y lo que da (vaca y leche); "causa", para hechos (sequía y hambruna).
-- **`clasificar`:** el límite entre "Lo dice" y "Se deduce" ante una paráfrasis es discutible. Por eso la sonda debe ser una paráfrasis clara (se deduce) o una cita casi literal (lo dice), y el revisor la clasifica a ciegas antes de publicarla. Si duda, se cambia la sonda.
+- **`clasificar`: la frontera entre "Lo dice" y "Se deduce"** (regla corregida el 13 nov 2026, decisión de Gerson). La frontera **no** es si la sonda repite las palabras del texto. Es cuánto hay que hacer para llegar a ella:
+  - **Lo dice el texto:** un solo pasaje la sostiene sin agregarle nada. Vale la cita y vale la misma información con otras palabras, en otro orden o en otra voz. *Prueba:* se puede señalar una oración (o un dato de la figura) y, cambiando solo palabras, sale la sonda.
+  - **Se deduce del texto:** hay que **unir dos o más datos** del texto, o **dar un paso que el texto no da**: una cuenta, una comparación, una causa o una consecuencia que no está escrita, o pasar de varios casos a una regla. *Prueba:* una sola oración no alcanza; se pueden nombrar los datos que se juntan y el paso.
+  - **El texto no lo dice ni se deduce:** puede ser cierto, pero con el texto no alcanza: haría falta un dato de fuera.
+  - **Lo contradice:** un pasaje dice lo contrario.
+  - **Ejemplo.** El texto dice «El fútbol fue otra vez el taller con más inscritos». La sonda «El taller de fútbol volvió a ser el más concurrido» es *lo dice*: es la misma oración con otras palabras. La sonda «En 2026 se inscribieron en fútbol 30 chicos más que en 2025» es *se deduce*: hay que restar dos datos del gráfico.
+  - **Cuando el cambio de palabras agrega o quita información** (la sonda es más general, más fuerte o más precisa que el pasaje), ya no es una paráfrasis: se clasifica por lo que haya que hacer para sostenerla.
+  - **Cómo se escriben las sondas.** Una sonda *lo dice* va como paráfrasis, no como cita: con la cita, el alumno acierta buscando palabras iguales. Una sonda *se deduce* anota en `explicacion` qué datos se unen y cuál es el paso. El revisor la clasifica a ciegas con las dos pruebas de arriba; si duda entre dos clases, se cambia la sonda.
+  - **Los códigos no cambian de sentido.** RV58 es marcar «lo dice» ante algo que exige unir datos; RV34 es marcar «no lo dice ni se deduce» ante algo que sí se deduce.
+  - **Queda sin efecto la regla anterior** («paráfrasis clara, se deduce; cita casi literal, lo dice»). Le ponía RV58 a quien reconocía bien una paráfrasis como dicha por el texto.
+  - **Pendiente:** revisar con esta regla las sondas de `clasificar` ya publicadas. Están en 24 textos de `contenido/razonamiento-verbal/textos/`; se corrigen solo las que cambien de clase.
 
 ## 4. La explicación: que se vea en el texto (regla 4)
 
