@@ -3,9 +3,9 @@
   "coleccion": "Cuzcano",
   "origen": "Escaneos cotejados con el OCR local",
   "meta": 1000,
-  "fichas_verificadas": 269,
-  "fichas_pendientes": 731,
-  "temas_completos": 2,
+  "fichas_verificadas": 500,
+  "fichas_pendientes": 500,
+  "temas_completos": 5,
   "temas": [
     {
       "id": "aritmetica.reparto-proporcional",
@@ -22,13 +22,13 @@
     {
       "id": "aritmetica.regla-de-descuento",
       "tema": "Regla de descuento",
-      "fichas": 69,
+      "fichas": 100,
       "meta": 100
     },
     {
       "id": "fisica.hidrostatica-e-hidrodinamica",
       "tema": "Hidrostática e hidrodinámica",
-      "fichas": 0,
+      "fichas": 100,
       "meta": 100
     },
     {
@@ -46,7 +46,7 @@
     {
       "id": "geometria.transformacion-de-coordenadas",
       "tema": "Transformación de coordenadas",
-      "fichas": 0,
+      "fichas": 100,
       "meta": 100
     },
     {
@@ -68,6 +68,6 @@
       "meta": 100
     }
   ],
-  "fichas_banco_local": 11871,
-  "sha256_fichas_locales": "e8bac101e509a59f61f9067d90293b1c6a2e3b127792eb344de0e07c805c66b2"
+  "fichas_banco_local": 12102,
+  "sha256_fichas_locales": "bc0189d199b3af0043ca4160545faae44a0a973a262c58869e53cc0075a48418"
 }
