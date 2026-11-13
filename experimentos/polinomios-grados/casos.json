@@ -1,0 +1,13 @@
+{
+  "origen": "Casos propios. Resultados calculados por agrupación y sumas de exponentes, contrastados con verificar_independiente.py.",
+  "polinomios": [
+    {"id":"grados-distintos","entrada":[{"c":4,"x":3,"y":2},{"c":-2,"x":1,"y":5},{"c":9,"x":0,"y":0}],"esperado":{"grado":6,"gradosRelativos":{"x":3,"y":5},"homogeneo":false,"completo":{"x":false,"y":false}}},
+    {"id":"cancelacion-del-mayor","entrada":[{"c":6,"x":4,"y":1},{"c":-6,"x":4,"y":1},{"c":2,"x":2,"y":2},{"c":-7,"x":1,"y":3}],"esperado":{"grado":4,"gradosRelativos":{"x":2,"y":3},"homogeneo":true,"completo":{"x":false,"y":false}}},
+    {"id":"cero","entrada":[{"c":3,"x":2,"y":1},{"c":-3,"x":2,"y":1}],"esperado":{"grado":null,"gradosRelativos":{"x":null,"y":null},"homogeneo":null,"completo":{"x":false,"y":false},"esCero":true}},
+    {"id":"constante","entrada":[{"c":-8,"x":0,"y":0}],"esperado":{"grado":0,"gradosRelativos":{"x":0,"y":0},"homogeneo":true,"completo":{"x":true,"y":true}}},
+    {"id":"completo-solo-x","entrada":[{"c":2,"x":2,"y":4},{"c":3,"x":1,"y":0},{"c":4,"x":0,"y":2}],"esperado":{"grado":6,"gradosRelativos":{"x":2,"y":4},"homogeneo":false,"completo":{"x":true,"y":false}}},
+    {"id":"coeficientes-en-y-no-se-anulan","entrada":[{"c":2,"x":1,"y":1},{"c":-2,"x":1,"y":0},{"c":1,"x":0,"y":0}],"esperado":{"grado":2,"gradosRelativos":{"x":1,"y":1},"homogeneo":false,"completo":{"x":true,"y":true}}},
+    {"id":"coeficiente-cero","entrada":[{"c":0,"x":9,"y":8},{"c":3,"x":1,"y":0}],"esperado":{"grado":1,"gradosRelativos":{"x":1,"y":0},"homogeneo":true,"completo":{"x":false,"y":true}}}
+  ],
+  "familia": {"desde":0,"hasta":12,"entrada":[{"c":2,"x":{"a":1,"b":-3,"d":1},"y":{"a":1,"b":0,"d":2}},{"c":1,"x":{"a":1,"b":-1,"d":1},"y":{"a":0,"b":1,"d":1}}],"valores":[4,6,8,10,12],"grados":[4,6,9,12,15]}
+}

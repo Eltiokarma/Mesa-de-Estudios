@@ -1,0 +1,28 @@
+{
+  "libro_id": "1EN0I_nCIO_ELsQ2nY_CKaKYCTbGDCRpl",
+  "paginas_pdf": [
+    9,
+    12,
+    13,
+    14,
+    22
+  ],
+  "paginas_ocr_leidas": 5,
+  "recortes_visuales_consultados": 5,
+  "ejercicios_interpretados": 5,
+  "ejercicios_con_verificacion": 5,
+  "paginas_integramente_validadas": 0,
+  "alternativas_confirmadas": 4,
+  "metodo": "Leer OCR, cotejar datos críticos en recortes, verificar cálculo o transferencia protónica con Python.",
+  "resultado": "Cinco fichas locales verificadas bajo los supuestos registrados; no inferir exactitud de las páginas completas.",
+  "limitacion_coste": "No se dispone de medición comparable de tokens o cuota; no se afirma ahorro porcentual.",
+  "decision": "El método produjo datos útiles para diseñar motores; requiere visión en todos los casos de esta muestra. No ampliar automáticamente a toda la colección.",
+  "familias": [
+    "cociente de reacción",
+    "transferencia protónica",
+    "equilibrio monoprótico",
+    "fracción disociada",
+    "mezcla de soluciones"
+  ],
+  "verificacion_integridad": "Incremental: hashes de cinco originales, cinco fichas, imágenes y cinco entradas de la cola. La auditoría global anterior conserva su fecha y alcance."
+}

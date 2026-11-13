@@ -1,0 +1,14 @@
+{
+  "fecha_utc": "2026-11-09T21:26:30.544430+00:00",
+  "ejercicios_indexados": 774,
+  "archivos_controlados": 2357,
+  "controles_fisica": 500,
+  "bloques_fisica": 17,
+  "controles_fisica_nuevos": 200,
+  "sha256_zip": "ab17c0b55c8a6691bdbd113e3124abc8fa6b9c4dffbcfae3112945445fdacc36",
+  "bytes_zip": 315746473,
+  "sin_pdf_ni_ocr_originales": true,
+  "extraccion_temporal_retirada": true,
+  "alcance": "Respaldo local acumulado tras añadir Física301–500; los 500 controles de Física se ejecutaron desde una copia restaurada.",
+  "limite": "La integridad no certifica todos los enunciados. Se conservan condiciones y discrepancias; el ZIP y los materiales de consulta permanecen locales."
+}

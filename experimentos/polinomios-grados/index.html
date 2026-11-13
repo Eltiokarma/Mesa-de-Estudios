@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="es">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Polinomios y grados · Prueba pequeña</title><link rel="stylesheet" href="estilos.css">
+<script src="motor.js" defer></script><script src="ejercicios.js" defer></script><script src="vista.js" defer></script></head>
+<body><main>
+  <header><p class="eyebrow">MESA DE ESTUDIOS · PRUEBA DE 6 ACTIVIDADES</p><h1>¿Qué grado tiene?</h1><p>Predice, reduce y comprueba. Los exponentes de <span class="x">x</span> y de <span class="y">y</span> conservan sus colores.</p></header>
+  <article>
+    <p id="progreso" class="eyebrow"></p><h2 id="titulo"></h2><p id="contexto"></p>
+    <div id="expresion" class="formula" aria-label="Polinomio del ejercicio"></div>
+    <form id="prediccion"><label id="pregunta" for="respuesta"></label>
+      <div class="entrada"><input id="respuesta" name="respuesta" type="number" min="0" step="1" required inputmode="numeric" autocomplete="off"><button type="submit">Comprobar mi predicción</button></div>
+    </form>
+    <p id="feedback" role="status" aria-live="polite"></p>
+    <section id="solucion" hidden>
+      <h3>Ahora lo comprobamos</h3><p id="explicacion"></p><div id="resultado"></div>
+    </section>
+    <nav aria-label="Actividades"><button id="anterior" type="button" class="secundario">Anterior</button><button id="siguiente" type="button">Siguiente actividad</button></nav>
+    <p id="instruccion" class="nota">Responde primero para ver la explicación y avanzar.</p>
+  </article>
+  <footer><a href="papel.html">Cinco ejercicios propios para lápiz y papel</a><p>Prueba pequeña con contenido propio. Funciona sin conexión y no envía tus respuestas.</p></footer>
+</main></body></html>

@@ -1,0 +1,1598 @@
+{
+  "generado_utc": "2026-11-08T16:01:08.339226+00:00",
+  "resumen": {
+    "libros_catalogados": 198,
+    "libros_descargados": 198,
+    "paginas_descargadas": 21522,
+    "paginas_procesadas": 21522,
+    "libros_procesados": 198,
+    "libros_con_error_ocr": 0,
+    "libros_revisados_integramente": 0
+  },
+  "libros": [
+    {
+      "id": "1GQxXnXKRDrb8SFKemkA-ggcOGep1KE44",
+      "titulo": "Álgebra",
+      "descargado": true,
+      "paginas": 364,
+      "paginas_procesadas": 364,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb",
+      "titulo": "Física",
+      "descargado": true,
+      "paginas": 471,
+      "paginas_procesadas": 471,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "13Ha3JNiQ_YwB_MUx6OIniThhMgfcRqvl",
+      "titulo": "Química",
+      "descargado": true,
+      "paginas": 451,
+      "paginas_procesadas": 451,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "180G0ufWjo0upKFwSWpMhNuOAqynExsll",
+      "titulo": "Solucionario 1",
+      "descargado": true,
+      "paginas": 27,
+      "paginas_procesadas": 27,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1wj1ykr6aGFFkO3GZue28CCt-jkcpNQVT",
+      "titulo": "Solucionario 2",
+      "descargado": true,
+      "paginas": 27,
+      "paginas_procesadas": 27,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "15kK8hXhYrHbEpAUHVnYzf4855ROhBFsn",
+      "titulo": "Solucionario 3",
+      "descargado": true,
+      "paginas": 29,
+      "paginas_procesadas": 29,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1EN0I_nCIO_ELsQ2nY_CKaKYCTbGDCRpl",
+      "titulo": "Solucionario 4",
+      "descargado": true,
+      "paginas": 29,
+      "paginas_procesadas": 29,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1b1gIlTeuWkCHor3xmq40yswoVTiEppas",
+      "titulo": "Solucionario 5",
+      "descargado": true,
+      "paginas": 27,
+      "paginas_procesadas": 27,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1l8_QvPBwxU8_OSYtVmllfdU0FQ61k4b2",
+      "titulo": "Solucionario 6",
+      "descargado": true,
+      "paginas": 27,
+      "paginas_procesadas": 27,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1PPyvmLQDo-_kaMlVxK91147aZDH_QBtV",
+      "titulo": "Solucionario 1",
+      "descargado": true,
+      "paginas": 27,
+      "paginas_procesadas": 27,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1iWZBvAQbVaDMNhcoNlOYKijQ-zqVd_G9",
+      "titulo": "Solucionario 2",
+      "descargado": true,
+      "paginas": 27,
+      "paginas_procesadas": 27,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1ZytfSLpbtV0APpgMM4wyf_a4JKuWUDEj",
+      "titulo": "Solucionario 3",
+      "descargado": true,
+      "paginas": 53,
+      "paginas_procesadas": 53,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1FAQE4NeOPpvDniucYUa1Xq-uQJx2A9P7",
+      "titulo": "Solucionario 4",
+      "descargado": true,
+      "paginas": 27,
+      "paginas_procesadas": 27,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1XkVfIGCk4Ntk7FyQKmfUWRRC4nWMQS8q",
+      "titulo": "Solucionario 5",
+      "descargado": true,
+      "paginas": 27,
+      "paginas_procesadas": 27,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "15NfYUMNgJxpc9TgHXSXQna7-eUS6B5un",
+      "titulo": "Solucionario 6",
+      "descargado": true,
+      "paginas": 27,
+      "paginas_procesadas": 27,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1VKgltzV7S4Cv61NhaNX5t9M70J49SVSJ",
+      "titulo": "Solucionario 1",
+      "descargado": true,
+      "paginas": 23,
+      "paginas_procesadas": 23,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1Ymx1iaGMFZFvm1rwoDaiIhGwXMirQuC2",
+      "titulo": "Solucionario 2",
+      "descargado": true,
+      "paginas": 23,
+      "paginas_procesadas": 23,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1EzLpeF5LAAXI5a13TkVi2yBsObmDf2F3",
+      "titulo": "Solucionario 3",
+      "descargado": true,
+      "paginas": 23,
+      "paginas_procesadas": 23,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1ntfbYjq6vjw7ULSfxSGZ6KSMAwMuC_BV",
+      "titulo": "Solucionario 4",
+      "descargado": true,
+      "paginas": 23,
+      "paginas_procesadas": 23,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1Rd8XRt8tsHV2mvD2JmCtP2kqle3Jkidi",
+      "titulo": "Solucionario 5",
+      "descargado": true,
+      "paginas": 23,
+      "paginas_procesadas": 23,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1D4cQ5hezU0lspCcTo-wvs7lCTPWIXRxN",
+      "titulo": "Solucionario 6",
+      "descargado": true,
+      "paginas": 23,
+      "paginas_procesadas": 23,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1PKJCS_HtBgi7zzbtOlIO6gzEQSRqko8r",
+      "titulo": "Material de estudio 1",
+      "descargado": true,
+      "paginas": 23,
+      "paginas_procesadas": 23,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1CceLWwUPFEMDssGhAe_OUo9g50mOInHe",
+      "titulo": "Aritmética",
+      "descargado": true,
+      "paginas": 343,
+      "paginas_procesadas": 343,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1kl9m1rcpPHti15E7oeKWq1niBOpp33El",
+      "titulo": "Geometría",
+      "descargado": true,
+      "paginas": 372,
+      "paginas_procesadas": 372,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "11vxcQ3FU0RxqE_2S0aSJtir5WSh9Gksj",
+      "titulo": "Trigonometría",
+      "descargado": true,
+      "paginas": 398,
+      "paginas_procesadas": 398,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1GcIkkRVsWbv5SCVGeUktgnDlHTDX4xZD",
+      "titulo": "Solucionario 1",
+      "descargado": true,
+      "paginas": 27,
+      "paginas_procesadas": 27,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1CSlIJdkogvxdpLeRNvXsQPXFInkvJUNp",
+      "titulo": "Solucionario 2",
+      "descargado": true,
+      "paginas": 26,
+      "paginas_procesadas": 26,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1Lxs7bdQCiNmSzTRCw7tN8trfZ42RsEwK",
+      "titulo": "Solucionario 3",
+      "descargado": true,
+      "paginas": 27,
+      "paginas_procesadas": 27,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1Gb720i_3nsJnzhxLF42vSwLrHFoz6LQr",
+      "titulo": "Solucionario 4",
+      "descargado": true,
+      "paginas": 26,
+      "paginas_procesadas": 26,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1bxL05hrWy_7bRYO1dePRSEYGduMmIidg",
+      "titulo": "Solucionario 5",
+      "descargado": true,
+      "paginas": 26,
+      "paginas_procesadas": 26,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1Xm5zigX-QaNr6d6064gqKil8zk0HEoi0",
+      "titulo": "Solucionario 6",
+      "descargado": true,
+      "paginas": 26,
+      "paginas_procesadas": 26,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1R83WlbJZDWwsyDXqLg0ESp8BacLfhhQK",
+      "titulo": "Solucionario 1",
+      "descargado": true,
+      "paginas": 23,
+      "paginas_procesadas": 23,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1onW2u9HVT3vs_DEtu-Homv6SGIafac4C",
+      "titulo": "Solucionario 2",
+      "descargado": true,
+      "paginas": 23,
+      "paginas_procesadas": 23,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1Em7LMvEh8B4nkWRM0SQbSZSQP1cvmOQ4",
+      "titulo": "Solucionario 3",
+      "descargado": true,
+      "paginas": 23,
+      "paginas_procesadas": 23,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1aBxjSBcH2tDloWnWaKY6TCiYPf5maTEC",
+      "titulo": "Solucionario 4",
+      "descargado": true,
+      "paginas": 23,
+      "paginas_procesadas": 23,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1pvKXSBsVkf7ISqsHJ-L0xHZ0NjECiSm_",
+      "titulo": "Solucionario 5",
+      "descargado": true,
+      "paginas": 23,
+      "paginas_procesadas": 23,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1-1n812R-VY1YwB7uOdmqUT1eCton8Yr4",
+      "titulo": "Solucionario 6",
+      "descargado": true,
+      "paginas": 23,
+      "paginas_procesadas": 23,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "18c02NWbmlln9C4GCUhS1SIrPbS5Ditn6",
+      "titulo": "Solucionario 1",
+      "descargado": true,
+      "paginas": 29,
+      "paginas_procesadas": 29,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1Sm3oNp06JcENoORsxcy8mbP8CbLvQ7R0",
+      "titulo": "Solucionario 2",
+      "descargado": true,
+      "paginas": 29,
+      "paginas_procesadas": 29,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "19Gt6mzvU1mMVI2FJYiMaNWYIWQBOZdU_",
+      "titulo": "Solucionario 3",
+      "descargado": true,
+      "paginas": 29,
+      "paginas_procesadas": 29,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1aSrtK86JHruGEeyYWWTOyNihgSsU1Llk",
+      "titulo": "Solucionario 4",
+      "descargado": true,
+      "paginas": 29,
+      "paginas_procesadas": 29,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "16dhMW7FI8E3SsplRJJseIt6fhXi_LqSl",
+      "titulo": "Solucionario 5",
+      "descargado": true,
+      "paginas": 29,
+      "paginas_procesadas": 29,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1LBGYqm7MOIKXyRSWCJCAeteHNenplehn",
+      "titulo": "Solucionario 6",
+      "descargado": true,
+      "paginas": 29,
+      "paginas_procesadas": 29,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1O4cBSioAQ1yFR_7h4e7RIFSrsnhny9tC",
+      "titulo": "Fascículo 1: Análisis dimensional",
+      "descargado": true,
+      "paginas": 44,
+      "paginas_procesadas": 44,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1Ot4JkySCtdDcyBV4sjvA0b4nV9yWjYbf",
+      "titulo": "Fascículo 2: Análisis vectorial",
+      "descargado": true,
+      "paginas": 64,
+      "paginas_procesadas": 64,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1kFY9irWVdV9vwjBSM_N66ReZhqtJR5Uk",
+      "titulo": "Fascículo 4: Cinemática II",
+      "descargado": true,
+      "paginas": 26,
+      "paginas_procesadas": 26,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1hDN04WCX2304ub2YptsRsDSKjFNdtt54",
+      "titulo": "Fascículo 5: Gráficas del movimiento mecánico",
+      "descargado": true,
+      "paginas": 42,
+      "paginas_procesadas": 42,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1kVRKh4BBZIvcr1-64O8XdbKCgLptLvof",
+      "titulo": "Fascículo 8: Dinámica",
+      "descargado": true,
+      "paginas": 158,
+      "paginas_procesadas": 158,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1t0O57suOk0lj0pU5nwpozCEzfgPexm5v",
+      "titulo": "Fascículo 9: Sistemas de referencia y gravitación universal",
+      "descargado": true,
+      "paginas": 150,
+      "paginas_procesadas": 150,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1MjMFIO8Y0M6TD8I_f4Qzgk5WUZ7PYQAD",
+      "titulo": "Fascículo 11: Cantidad de movimiento, impulsión y choques",
+      "descargado": true,
+      "paginas": 148,
+      "paginas_procesadas": 148,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1LiwSmLUHAYpFRHKc__n5ZaXl3jqBfaKr",
+      "titulo": "Fascículo 13: Ondas mecánicas",
+      "descargado": true,
+      "paginas": 212,
+      "paginas_procesadas": 212,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1EuNZlO9GW8BN_Bt9mkuuu_xexUCfC6Px",
+      "titulo": "Análisis dimensional",
+      "descargado": true,
+      "paginas": 113,
+      "paginas_procesadas": 113,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1zNo6sl3gzyrBdpQSDfw0F-nw8JdlEupX",
+      "titulo": "Análisis vectorial",
+      "descargado": true,
+      "paginas": 128,
+      "paginas_procesadas": 128,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i",
+      "titulo": "Cinemática I (MRU y MRUV)",
+      "descargado": true,
+      "paginas": 177,
+      "paginas_procesadas": 177,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK",
+      "titulo": "Cinemática II (MVCL y MPCL)",
+      "descargado": true,
+      "paginas": 191,
+      "paginas_procesadas": 191,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1",
+      "titulo": "Análisis de gráficas del movimiento mecánico",
+      "descargado": true,
+      "paginas": 167,
+      "paginas_procesadas": 167,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1hgtrWQyoC522F6N9fTap3ZJ6wf2UkPOM",
+      "titulo": "Movimiento circunferencial",
+      "descargado": true,
+      "paginas": 180,
+      "paginas_procesadas": 180,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1MJeqtWYXNOsvkW2vZJkkl8DaPAS0wEym",
+      "titulo": "Estática",
+      "descargado": true,
+      "paginas": 213,
+      "paginas_procesadas": 213,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1ZZh2gAD4UREhXMTwyhFFE0WYlXGjhLEb",
+      "titulo": "Dinámica",
+      "descargado": true,
+      "paginas": 218,
+      "paginas_procesadas": 218,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1HGPsNVTPafEaIIB6pjYeB24Kz0gRa0c4",
+      "titulo": "Gravitación universal",
+      "descargado": true,
+      "paginas": 157,
+      "paginas_procesadas": 157,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1MeJQ7JYmmpfE5_oFxVwDQN5vMfIWyHbJ",
+      "titulo": "Trabajo mecánico, energía y potencia",
+      "descargado": true,
+      "paginas": 164,
+      "paginas_procesadas": 164,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "131mLtvzNI6qUaVasTwk2hOiFg5aNxTTG",
+      "titulo": "Cantidad de movimiento, impulso y choques",
+      "descargado": true,
+      "paginas": 171,
+      "paginas_procesadas": 171,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1-KPdmc12ux3xfY_5IkgDm5rZ7EHlst8b",
+      "titulo": "Oscilaciones mecánicas",
+      "descargado": true,
+      "paginas": 154,
+      "paginas_procesadas": 154,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1088xstWyVL8UmHyMGX0_RyyCKhVySsDS",
+      "titulo": "Ondas mecánicas",
+      "descargado": true,
+      "paginas": 213,
+      "paginas_procesadas": 213,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1gIzvcBRjbIAY5B1A_xgfQSa6AtesRbme",
+      "titulo": "Mecánica de fluidos",
+      "descargado": true,
+      "paginas": 23,
+      "paginas_procesadas": 23,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1nV5SPoE5gwvmA424g7daGo2-KeEU7OX6",
+      "titulo": "Calor",
+      "descargado": true,
+      "paginas": 151,
+      "paginas_procesadas": 151,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1VEob-ekrzJ_R3Uub3AQV5d4zqhuo4NCS",
+      "titulo": "Termodinámica",
+      "descargado": true,
+      "paginas": 208,
+      "paginas_procesadas": 208,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1pFrF7WW44gFDfINYBsXfQZS3emQ4UB3g",
+      "titulo": "Electrostática",
+      "descargado": true,
+      "paginas": 250,
+      "paginas_procesadas": 250,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1GnvSEjr1gndPCcaYBQBTQJpl01GFfaPc",
+      "titulo": "Electrodinámica",
+      "descargado": true,
+      "paginas": 284,
+      "paginas_procesadas": 284,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1mP9CGMqyXDKEMlAIqIBWOJE9afVG9vVx",
+      "titulo": "Electromagnetismo",
+      "descargado": true,
+      "paginas": 270,
+      "paginas_procesadas": 270,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1JtNLsddpMNJ_JzpUtFWfoeczpkAk0_Rx",
+      "titulo": "Óptica",
+      "descargado": true,
+      "paginas": 212,
+      "paginas_procesadas": 212,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1HkP030a93NG5HLm_LXPzIAc7apVIoxvD",
+      "titulo": "Hidrostática",
+      "descargado": true,
+      "paginas": 150,
+      "paginas_procesadas": 150,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1fHZsH514PUbAcLZwCZisSuLEaUM-TuQ0",
+      "titulo": "Calor",
+      "descargado": true,
+      "paginas": 149,
+      "paginas_procesadas": 149,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1Fhk6_hQEOmne_DAFlchm9eCOu7UaIxjD",
+      "titulo": "Termodinámica",
+      "descargado": true,
+      "paginas": 29,
+      "paginas_procesadas": 29,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1_0S0TpyldUHunNEXsOe0LNWvnpf-hrU-",
+      "titulo": "Hidrostática e hidrodinámica",
+      "descargado": true,
+      "paginas": 154,
+      "paginas_procesadas": 154,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1XZHi26mc_VB0Ko8UGFbjq08u8OCH8UKm",
+      "titulo": "Estática",
+      "descargado": true,
+      "paginas": 199,
+      "paginas_procesadas": 199,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1rHM3QWGzIRQYmRIzqkWqa-dL2Hz6d2W-",
+      "titulo": "Condensadores",
+      "descargado": true,
+      "paginas": 135,
+      "paginas_procesadas": 135,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1-u8Lo79goClEw-VgMgv7_zQu7cGuXi-S",
+      "titulo": "Ondas electromagnéticas",
+      "descargado": true,
+      "paginas": 113,
+      "paginas_procesadas": 113,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1kBqOrTSBKIZbAjFP1gx_j8xRB4lH0PDN",
+      "titulo": "Física moderna",
+      "descargado": true,
+      "paginas": 362,
+      "paginas_procesadas": 362,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1SnglsLBxsYQSfSIxQETSboTzCI9a1buw",
+      "titulo": "Teoría de las ecuaciones",
+      "descargado": true,
+      "paginas": 72,
+      "paginas_procesadas": 72,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1hs1_5FLE2jr9bKHfVuFjzLsHHaOm2acQ",
+      "titulo": "Desigualdades e inecuaciones",
+      "descargado": true,
+      "paginas": 184,
+      "paginas_procesadas": 184,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1Kwr0awgPKLd6iP8aCEYrJAT1nt7L3gJq",
+      "titulo": "Relaciones y funciones I",
+      "descargado": true,
+      "paginas": 31,
+      "paginas_procesadas": 31,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1zjD8qtX1DHS1J1AhoHQv_kEp8kDfVVGm",
+      "titulo": "Relaciones y funciones I",
+      "descargado": true,
+      "paginas": 31,
+      "paginas_procesadas": 31,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1Vl8B7wo23MzGTU58WSmP2RaAif16cPh_",
+      "titulo": "Relaciones y funciones II",
+      "descargado": true,
+      "paginas": 29,
+      "paginas_procesadas": 29,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1FD6VVJj3IJEEeLIcsuEUoap-gc2DzPSc",
+      "titulo": "Logaritmos",
+      "descargado": true,
+      "paginas": 196,
+      "paginas_procesadas": 196,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1ZxWhs-nGsKQ4Qk8kmDkT2eeDSf7nyMN7",
+      "titulo": "Logaritmos",
+      "descargado": true,
+      "paginas": 30,
+      "paginas_procesadas": 30,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1N9QcaSHrsQ8lcmzJz-8cqqiT13quSHFl",
+      "titulo": "Matrices, determinantes y sistemas de ecuaciones lineales",
+      "descargado": true,
+      "paginas": 88,
+      "paginas_procesadas": 88,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1LbfwsQElTZuMEDxTt0QNYXjMIaYSOvsc",
+      "titulo": "Binomio de Newton",
+      "descargado": true,
+      "paginas": 155,
+      "paginas_procesadas": 155,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1BvswxsPjlJQyJs3JkSzLM-UGiexbyGWF",
+      "titulo": "Razonamiento lógico",
+      "descargado": true,
+      "paginas": 70,
+      "paginas_procesadas": 70,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1Aexs1HGuPakjuZPx6olqjCT4xePc2I6o",
+      "titulo": "Inductivo y deductivo",
+      "descargado": true,
+      "paginas": 73,
+      "paginas_procesadas": 73,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1fuIgQ721-InyMUxqcM2NQrU7KtYxtBfF",
+      "titulo": "Planteo de ecuaciones",
+      "descargado": true,
+      "paginas": 76,
+      "paginas_procesadas": 76,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1uYzQAAUkPJGBRly-aL8emOp4QDvraEG9",
+      "titulo": "Edades y móviles",
+      "descargado": true,
+      "paginas": 90,
+      "paginas_procesadas": 90,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1WOmnStgONQrcJ9-b5D36E_oyT1_Tvp1I",
+      "titulo": "Cronometría (relojes)",
+      "descargado": true,
+      "paginas": 71,
+      "paginas_procesadas": 71,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "156CP-4oWOzMFLDN6nbxGP5-Jfl9p5X_z",
+      "titulo": "Operaciones matemáticas",
+      "descargado": true,
+      "paginas": 83,
+      "paginas_procesadas": 83,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1R90ciBfEv2Ag6iOzw7HFS1RISV89TltS",
+      "titulo": "Comparación de magnitudes",
+      "descargado": true,
+      "paginas": 66,
+      "paginas_procesadas": 66,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1LiZP_28QThiIWhGjzMdpnF3UlHhDnR1S",
+      "titulo": "Fracciones",
+      "descargado": true,
+      "paginas": 70,
+      "paginas_procesadas": 70,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "17ISMXQ_vK6R4IjOy_NoaxlKrCq5_QUA6",
+      "titulo": "Tanto por ciento",
+      "descargado": true,
+      "paginas": 71,
+      "paginas_procesadas": 71,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1wleTpPn7ZB9L4iyAUDVMokTlKYurGt60",
+      "titulo": "Sucesiones",
+      "descargado": true,
+      "paginas": 67,
+      "paginas_procesadas": 67,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1XddMtDov7rABYep7dkio8rNdWXCiR794",
+      "titulo": "Series",
+      "descargado": true,
+      "paginas": 74,
+      "paginas_procesadas": 74,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "12szkZ06QNc_u_XotXmwArWpVIqTbNmoN",
+      "titulo": "Conteo de figuras y recorridos eulerianos",
+      "descargado": true,
+      "paginas": 75,
+      "paginas_procesadas": 75,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1hg5FzCpcHnGkrNKqRbly__5tB09MFJla",
+      "titulo": "Análisis combinatorio",
+      "descargado": true,
+      "paginas": 66,
+      "paginas_procesadas": 66,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1Kyc79hnxzn-VdnfogG95wMkwpEBa6z80",
+      "titulo": "Cálculo de probabilidades",
+      "descargado": true,
+      "paginas": 66,
+      "paginas_procesadas": 66,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1KF7gO2gApk2EFNuTKrtndmsVJPkWG8KR",
+      "titulo": "Razonamiento geométrico",
+      "descargado": true,
+      "paginas": 68,
+      "paginas_procesadas": 68,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1oF3Q2WZz1ucFMbmvHZ2Etnf3Tp2TmP52",
+      "titulo": "Línea recta y ángulos",
+      "descargado": true,
+      "paginas": 116,
+      "paginas_procesadas": 116,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1gbC3Wo-HqPygE9iIEnORDBa7VWCTn1gz",
+      "titulo": "Triángulos y congruencia",
+      "descargado": true,
+      "paginas": 118,
+      "paginas_procesadas": 118,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1l72XWAPu1zctLbrJKMvKMDMiy1onOc31",
+      "titulo": "Polígonos",
+      "descargado": true,
+      "paginas": 97,
+      "paginas_procesadas": 97,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1y8o_NmQCAwGxNNd2e1GFXC_awcJ_vrJo",
+      "titulo": "Cuadriláteros",
+      "descargado": true,
+      "paginas": 105,
+      "paginas_procesadas": 105,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1xxgmOrXSkn6YgTMOYy2CJwi9eo7GVqng",
+      "titulo": "Circunferencia",
+      "descargado": true,
+      "paginas": 113,
+      "paginas_procesadas": 113,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1Eajd3SVByjANZLFFR6YniTLw4KcPo614",
+      "titulo": "Puntos notables",
+      "descargado": true,
+      "paginas": 105,
+      "paginas_procesadas": 105,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1kIDLUYyFrhYnCMP7Y8VtOW9EOW3kUBVL",
+      "titulo": "Proporcionalidad y semejanza",
+      "descargado": true,
+      "paginas": 105,
+      "paginas_procesadas": 105,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1pcyzCDIvEwOD0aRRyXoW3jR0gLT9x30L",
+      "titulo": "Relaciones métricas",
+      "descargado": true,
+      "paginas": 133,
+      "paginas_procesadas": 133,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1QigyLtuMN4BQh3cmRhRVNuAtzzhTRA07",
+      "titulo": "Polígonos regulares",
+      "descargado": true,
+      "paginas": 105,
+      "paginas_procesadas": 105,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "13YKX8jKjZ_EQFgQ5EnhNLbOk1aczxLRn",
+      "titulo": "Áreas de regiones poligonales y circulares",
+      "descargado": true,
+      "paginas": 133,
+      "paginas_procesadas": 133,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1lQzONRTyrUcW_Opx6KjuMnThB_WayiDQ",
+      "titulo": "Rectas y planos",
+      "descargado": true,
+      "paginas": 105,
+      "paginas_procesadas": 105,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "titulo": "Prisma y cilindro",
+      "descargado": true,
+      "paginas": 98,
+      "paginas_procesadas": 98,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1F0RSVnmX30eTsDbWsJwNeirOGdSpy55l",
+      "titulo": "Pirámide y cono",
+      "descargado": true,
+      "paginas": 100,
+      "paginas_procesadas": 100,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1HNv4L4_fKaz-YA71iIOnAOdLkVNdtsko",
+      "titulo": "Esfera",
+      "descargado": true,
+      "paginas": 93,
+      "paginas_procesadas": 93,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1MpT0ff6DLOhmg11O9EorLVtz66AOV1Rt",
+      "titulo": "La recta",
+      "descargado": true,
+      "paginas": 94,
+      "paginas_procesadas": 94,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "194CdROPFH6LSsBuSzX_O6CIcz7Uy8LBm",
+      "titulo": "Circunferencia y parábola",
+      "descargado": true,
+      "paginas": 98,
+      "paginas_procesadas": 98,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1Jx6iNNEHGJczhZ7apSbDxZAYGPOILibJ",
+      "titulo": "Elipse e hipérbola",
+      "descargado": true,
+      "paginas": 101,
+      "paginas_procesadas": 101,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1D8_YP2Q25FmZpVBgX6Qip_GBPa2Ue3Db",
+      "titulo": "Triángulos",
+      "descargado": true,
+      "paginas": 265,
+      "paginas_procesadas": 265,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1TVm6_ggA6LRguEYLHlRL0a-j2h0phV8F",
+      "titulo": "Congruencia de triángulos",
+      "descargado": true,
+      "paginas": 177,
+      "paginas_procesadas": 177,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1sjIZ9lagOmOOAUJSCBn2uF25Jczm8kRM",
+      "titulo": "Cuadriláteros",
+      "descargado": true,
+      "paginas": 304,
+      "paginas_procesadas": 304,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1mKbwIKUZZGEtDiuMX2hGRednn1EzvNYs",
+      "titulo": "Circunferencia",
+      "descargado": true,
+      "paginas": 343,
+      "paginas_procesadas": 343,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1abepztIdr4FKnUv8BgOPJAeH7R14OxWr",
+      "titulo": "Puntos notables",
+      "descargado": true,
+      "paginas": 340,
+      "paginas_procesadas": 340,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "122112TjoS7L4GWaHyiTttNTzD-WVUJSc",
+      "titulo": "Proporcionalidad de segmentos y semejanza de triángulos",
+      "descargado": true,
+      "paginas": 312,
+      "paginas_procesadas": 312,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "19HCunUsf55YlGstD13zlaHQSLuUucN1t",
+      "titulo": "Relaciones métricas",
+      "descargado": true,
+      "paginas": 327,
+      "paginas_procesadas": 327,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1FE4KdJUv1e-LFs2knpVc7U3AAmUQwcwy",
+      "titulo": "Áreas de regiones planas",
+      "descargado": true,
+      "paginas": 354,
+      "paginas_procesadas": 354,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1KDKD6FexefQMqIdIn3f1DEg_88O73wTX",
+      "titulo": "Línea recta y ángulos",
+      "descargado": true,
+      "paginas": 43,
+      "paginas_procesadas": 43,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "11DRBIQrbGVVBXfHmwblmj3D2FFrhsUFE",
+      "titulo": "Triángulos",
+      "descargado": true,
+      "paginas": 40,
+      "paginas_procesadas": 40,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1Me2M5fuB7pnEsC_WAmitbHpIsn7i91aV",
+      "titulo": "Polígonos",
+      "descargado": true,
+      "paginas": 34,
+      "paginas_procesadas": 34,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1eujgopll599M9JUf4vIMqp36oVu2DCQ1",
+      "titulo": "Nociones generales",
+      "descargado": true,
+      "paginas": 47,
+      "paginas_procesadas": 47,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1qtm8yXLFENRa0Uh5F0pKotRn_5v26mfJ",
+      "titulo": "La línea recta",
+      "descargado": true,
+      "paginas": 45,
+      "paginas_procesadas": 45,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "17w3zBc5YZXjtuMhipibKILv2jJhik2HO",
+      "titulo": "Circunferencia y parábola",
+      "descargado": true,
+      "paginas": 63,
+      "paginas_procesadas": 63,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1HVlloW4C09NoRU6q-CxoMqTDzhtp2zKU",
+      "titulo": "Elipse e hipérbola",
+      "descargado": true,
+      "paginas": 62,
+      "paginas_procesadas": 62,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1i0bsRvX9gNwX3zs4ukTaPTCDSLOxVTsA",
+      "titulo": "Geometría vectorial",
+      "descargado": true,
+      "paginas": 50,
+      "paginas_procesadas": 50,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "15Hk-nyrMKQmLiPm8BkVShMqDe205cQ9n",
+      "titulo": "Transformación de coordenadas",
+      "descargado": true,
+      "paginas": 64,
+      "paginas_procesadas": 64,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1lLEy_lq9wVsF-jVCnjI1XnG3YEbw475x",
+      "titulo": "Geometría del espacio I",
+      "descargado": true,
+      "paginas": 99,
+      "paginas_procesadas": 99,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1t6jt4TYBbO4IAp07XesGDe2nKatJ6qxL",
+      "titulo": "Geometría del espacio II",
+      "descargado": true,
+      "paginas": 107,
+      "paginas_procesadas": 107,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1b0Codrz3HHq2hR42uE0hMhMQYOXHI85r",
+      "titulo": "Áreas de regiones poligonales y circulares",
+      "descargado": true,
+      "paginas": 18,
+      "paginas_procesadas": 18,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1eY8lZQwaof1GhnNeF6QZRIFul5m1Ew5a",
+      "titulo": "Prisma y cilindro",
+      "descargado": true,
+      "paginas": 14,
+      "paginas_procesadas": 14,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1mYDkK85haVG4aMEdEVhPCEzkwrHy8pDx",
+      "titulo": "Sistemas de medición angular y longitud de arco",
+      "descargado": true,
+      "paginas": 60,
+      "paginas_procesadas": 60,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "17SwFs9cEPKxMyr5aoWpf9A2JWsXWjC2p",
+      "titulo": "Razones trigonométricas de un ángulo agudo",
+      "descargado": true,
+      "paginas": 63,
+      "paginas_procesadas": 63,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "17oV6Nqu3psLv0PoWgYNWqL9xLu0ubPb3",
+      "titulo": "Razones trigonométricas de un ángulo en posición normal",
+      "descargado": true,
+      "paginas": 78,
+      "paginas_procesadas": 78,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1OB_Qmt_rnYIqz4EHNWBI9AgT0ffrPV06",
+      "titulo": "Circunferencia trigonométrica",
+      "descargado": true,
+      "paginas": 93,
+      "paginas_procesadas": 93,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1IPKJY3Wlm1Ws79onJ1Ckk14HbwCHABQj",
+      "titulo": "Identidades trigonométricas fundamentales",
+      "descargado": true,
+      "paginas": 56,
+      "paginas_procesadas": 56,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "17okmAXVcVmUDiXIskOkdieub5WoW25_u",
+      "titulo": "Identidades de arcos compuestos",
+      "descargado": true,
+      "paginas": 59,
+      "paginas_procesadas": 59,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1qODqmSr6hI-PLO8sDzDKokzhKCIxo0f0",
+      "titulo": "Identidades de arcos múltiples",
+      "descargado": true,
+      "paginas": 79,
+      "paginas_procesadas": 79,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1XNaOh4lMSXxIxw8lZUyNGPEt3jcpCBK4",
+      "titulo": "Transformaciones trigonométricas",
+      "descargado": true,
+      "paginas": 66,
+      "paginas_procesadas": 66,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1ne6aqiTwSDEDyjiFK8nU_GW8Mlh-aKsm",
+      "titulo": "Funciones trigonométricas directas",
+      "descargado": true,
+      "paginas": 130,
+      "paginas_procesadas": 130,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1ek9MxIJNzTlTp_BsShS8dgc-AOK2_jMz",
+      "titulo": "Funciones trigonométricas inversas",
+      "descargado": true,
+      "paginas": 138,
+      "paginas_procesadas": 138,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1KpLBzDT6hJ0NXkW5QBf092-NGJvDKFkF",
+      "titulo": "Ecuaciones e inecuaciones trigonométricas",
+      "descargado": true,
+      "paginas": 68,
+      "paginas_procesadas": 68,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1xhKMUXBu6I3Rpxdbj0Yus1vNywmicZxe",
+      "titulo": "Resolución de triángulos oblicuángulos",
+      "descargado": true,
+      "paginas": 198,
+      "paginas_procesadas": 198,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1Zjda6S3V359ZUYgsIFKLexIM_fe2QO2J",
+      "titulo": "Números complejos",
+      "descargado": true,
+      "paginas": 88,
+      "paginas_procesadas": 88,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1e2jkKptOdrNUloAF1b3wUD5WxBBwrkuN",
+      "titulo": "Circunferencia trigonométrica",
+      "descargado": true,
+      "paginas": 195,
+      "paginas_procesadas": 195,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1FBgIsZFe_TKvWOARdZJLK-b7mV07GqG3",
+      "titulo": "Funciones trigonométricas",
+      "descargado": true,
+      "paginas": 302,
+      "paginas_procesadas": 302,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "182MTfaVXa6VtOvQv_aduJzTtC_-45SpH",
+      "titulo": "Arcos múltiples: doble, mitad y triple",
+      "descargado": true,
+      "paginas": 19,
+      "paginas_procesadas": 19,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "15gtoPyKcTraE9CLtv7EWPb_mkKz_JsEM",
+      "titulo": "Teoría de conjuntos",
+      "descargado": true,
+      "paginas": 33,
+      "paginas_procesadas": 33,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "17CMpXWlubXXX9ij38v0s4iIklldij07U",
+      "titulo": "Numeración",
+      "descargado": true,
+      "paginas": 71,
+      "paginas_procesadas": 71,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1IVlHGJPjQC0CT1AKON8xemKLycpmqo2K",
+      "titulo": "Numeración",
+      "descargado": true,
+      "paginas": 38,
+      "paginas_procesadas": 38,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1yfBJqVdqHWIhUUiHKUpfkNEdhZi-tHhu",
+      "titulo": "Razones y proporciones",
+      "descargado": true,
+      "paginas": 74,
+      "paginas_procesadas": 74,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1gOyKtE3YOZZBAewN1Hf_GLzJjkLCh7Dg",
+      "titulo": "Magnitudes proporcionales",
+      "descargado": true,
+      "paginas": 27,
+      "paginas_procesadas": 27,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1mFLqR0d-ena0IbsmyY-2RPpuVelz8EaX",
+      "titulo": "Reparto proporcional",
+      "descargado": true,
+      "paginas": 33,
+      "paginas_procesadas": 33,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1ymDC3Q94sUQG855HCM-U06Ryz8DY34Gj",
+      "titulo": "Regla de tres",
+      "descargado": true,
+      "paginas": 64,
+      "paginas_procesadas": 64,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1TWZCLSsKY0qRlCP_eeCMchPKdbEBCpKi",
+      "titulo": "Tanto por ciento",
+      "descargado": true,
+      "paginas": 25,
+      "paginas_procesadas": 25,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1ZWLZBB-dNdvWSjImHwGoOr5eIJkiuNaz",
+      "titulo": "Regla de mezcla",
+      "descargado": true,
+      "paginas": 29,
+      "paginas_procesadas": 29,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1NB-KNEZZ0UxxrE_-VSDiqLahhSLonu9V",
+      "titulo": "Regla de mezcla y aleación",
+      "descargado": true,
+      "paginas": 54,
+      "paginas_procesadas": 54,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1A6z2QnUVFCtRaFrPvI1B0Ttdnpzgooe3",
+      "titulo": "Regla de interés",
+      "descargado": true,
+      "paginas": 25,
+      "paginas_procesadas": 25,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1lRpmOqj89cIwTGNLKqobGdgQAtz8vFVn",
+      "titulo": "Regla de interés",
+      "descargado": true,
+      "paginas": 45,
+      "paginas_procesadas": 45,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "14U2woUNzwuLOr2rNC0QURrwWlO5FnQhn",
+      "titulo": "Regla de descuento",
+      "descargado": true,
+      "paginas": 22,
+      "paginas_procesadas": 22,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1wHYFbIYJFKvsltDxi8mB5ZIBLC8PvjjO",
+      "titulo": "Divisibilidad",
+      "descargado": true,
+      "paginas": 80,
+      "paginas_procesadas": 80,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1aOHVp4-tKrBVjvvJMvH0zKo-ajpVuG3K",
+      "titulo": "Números primos",
+      "descargado": true,
+      "paginas": 132,
+      "paginas_procesadas": 132,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1ouxTBsC0-YxuAO2489v_HSZZs4Lv9gvf",
+      "titulo": "MCD y MCM",
+      "descargado": true,
+      "paginas": 33,
+      "paginas_procesadas": 33,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1Mme2TTvt6wE0lZl3njVn13qtXCTEALdx",
+      "titulo": "Potenciación y radicación",
+      "descargado": true,
+      "paginas": 64,
+      "paginas_procesadas": 64,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "187pckSkntGMy-qTK_u1Z7LOum5vsAwFx",
+      "titulo": "Lógica proposicional",
+      "descargado": true,
+      "paginas": 58,
+      "paginas_procesadas": 58,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1lFZCTumyI_Z54wHSsdrBzD-bPy4IKLSi",
+      "titulo": "Conteo y paginación",
+      "descargado": true,
+      "paginas": 49,
+      "paginas_procesadas": 49,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1eczODi0lNuNubOANBeNigAnyvRwI5UWW",
+      "titulo": "Números racionales",
+      "descargado": true,
+      "paginas": 49,
+      "paginas_procesadas": 49,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1c8VrK4blZpr4EXGM78eTT_CAaY8-5z4F",
+      "titulo": "Estadística",
+      "descargado": true,
+      "paginas": 133,
+      "paginas_procesadas": 133,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1yAWSsigXDyMsVjlZeElVoZZoJ-F-c86u",
+      "titulo": "Análisis combinatorio y teoría de probabilidades",
+      "descargado": true,
+      "paginas": 64,
+      "paginas_procesadas": 64,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1g5xP0XVxeqpUkbZpR8mR4oDbik_KrE1Q",
+      "titulo": "Estadística",
+      "descargado": true,
+      "paginas": 83,
+      "paginas_procesadas": 83,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1tPq0Up5gKEv-ON_LrawB7n7XESuwsfcA",
+      "titulo": "Unidades químicas de masa",
+      "descargado": true,
+      "paginas": 138,
+      "paginas_procesadas": 138,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1WBv_rYDk-0Hr0xJ3te9P0jRa10Wb0Ct5",
+      "titulo": "Estado gaseoso y mezcla gaseosa",
+      "descargado": true,
+      "paginas": 130,
+      "paginas_procesadas": 130,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1jJZF_8yB0jpqcyge4gvHYtwvklz7lpxC",
+      "titulo": "Ácidos y bases",
+      "descargado": true,
+      "paginas": 67,
+      "paginas_procesadas": 67,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1zRF5pCRuTv91slxspTgiOWmw7sIeGUBi",
+      "titulo": "Química I",
+      "descargado": true,
+      "paginas": 239,
+      "paginas_procesadas": 239,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1EALVDRdCLkZAxoFNtiCDQo8ZEyJgw_kQ",
+      "titulo": "Geometría I",
+      "descargado": true,
+      "paginas": 33,
+      "paginas_procesadas": 33,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1_ZCaYRXn8_CjDkLrUaZqv8MKCTKpoiV1",
+      "titulo": "Geometría II",
+      "descargado": true,
+      "paginas": 37,
+      "paginas_procesadas": 37,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1CCRwwojyUuhTm4wi3V0Ung-XsiTtVblc",
+      "titulo": "Trigonometría",
+      "descargado": true,
+      "paginas": 39,
+      "paginas_procesadas": 39,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1O70Ank24ypGrtJ33vDz2X_KOAasLF6Ka",
+      "titulo": "Trigonometría",
+      "descargado": true,
+      "paginas": 25,
+      "paginas_procesadas": 25,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1mzR3yovF3NC5x6n-xgu3c_WQuylk9BG1",
+      "titulo": "Aritmética I",
+      "descargado": true,
+      "paginas": 48,
+      "paginas_procesadas": 48,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "19ZaD9nO_VUcBIiB6wT0sr9wVdRqyR4ea",
+      "titulo": "Aritmética II",
+      "descargado": true,
+      "paginas": 33,
+      "paginas_procesadas": 33,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1np7cB2tXaO5pqfaRiCHz5_0aIQUnJve1",
+      "titulo": "Química I",
+      "descargado": true,
+      "paginas": 37,
+      "paginas_procesadas": 37,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1gwiXyWChtHi54xpcbRPy8UyQRLCgTj-u",
+      "titulo": "Química II",
+      "descargado": true,
+      "paginas": 98,
+      "paginas_procesadas": 98,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1EwhlT-QHVFGGjOpFhm-AsYc7pSumvD5W",
+      "titulo": "Solucionario de Física",
+      "descargado": true,
+      "paginas": 414,
+      "paginas_procesadas": 414,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1E3buiExU-xpBCX4QXAL19ZphhQ5hMz8e",
+      "titulo": "Solucionario de Química",
+      "descargado": true,
+      "paginas": 277,
+      "paginas_procesadas": 277,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1hW5EB9iA8eweTYIlYMzboBYIashRev2P",
+      "titulo": "Solucionario de Geometría",
+      "descargado": true,
+      "paginas": 140,
+      "paginas_procesadas": 140,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "14G16ZfehQ5g1_anfllbtSknEQzzb5MME",
+      "titulo": "Solucionario de Trigonometría",
+      "descargado": true,
+      "paginas": 233,
+      "paginas_procesadas": 233,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "1UrK4ZSSLWe51O-BLmFZ6HqyXmbasYv4d",
+      "titulo": "Solucionario de Álgebra",
+      "descargado": true,
+      "paginas": 213,
+      "paginas_procesadas": 213,
+      "revision_visual_completa": false
+    },
+    {
+      "id": "13Xzh_EV0raCTV2wkk2IG5tQ-Hea5zbzX",
+      "titulo": "Solucionario de Aritmética",
+      "descargado": true,
+      "paginas": 352,
+      "paginas_procesadas": 352,
+      "revision_visual_completa": false
+    }
+  ]
+}

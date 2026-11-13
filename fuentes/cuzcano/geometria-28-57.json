@@ -1,0 +1,59 @@
+{
+  "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+  "problemas": [
+    28,
+    57
+  ],
+  "paginas_pdf": [
+    39,
+    57
+  ],
+  "grupos": [
+    [
+      28,
+      37
+    ],
+    [
+      38,
+      47
+    ],
+    [
+      48,
+      57
+    ]
+  ],
+  "ejercicios_cotejados": 30,
+  "svg_redibujados": 30,
+  "sin_observaciones": 21,
+  "con_observaciones": [
+    32,
+    36,
+    40,
+    48,
+    50,
+    52,
+    53,
+    54,
+    55
+  ],
+  "requieren_aclaracion_para_producto": [
+    32,
+    36,
+    40,
+    50,
+    52,
+    53
+  ],
+  "validacion": "30 comprobaciones independientes aprobadas desde el respaldo restaurado.",
+  "paginas_completas_certificadas": 0,
+  "siguiente_problema": 58,
+  "limites": [
+    "Material de referencia local; no incorporado al producto.",
+    "Los casos ambiguos conservan sus condiciones; comprobar ejemplos no demuestra todas las generalizaciones."
+  ],
+  "lectores_locales": [
+    "fuentes/ocr-local/cuzcano/piloto-geometria-28-37/index.html",
+    "fuentes/ocr-local/cuzcano/piloto-geometria-38-47/index.html",
+    "fuentes/ocr-local/cuzcano/piloto-geometria-48-57/index.html"
+  ]
+}

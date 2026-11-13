@@ -1,0 +1,18 @@
+{
+  "libro_id": "1F0RSVnmX30eTsDbWsJwNeirOGdSpy55l",
+  "resueltos": [
+    31,
+    60
+  ],
+  "ejercicios": 30,
+  "graficos": 30,
+  "verificados": 21,
+  "con_observaciones": 9,
+  "controles_geometricos_aprobados": 30,
+  "verificacion_respaldo": "aprobada",
+  "siguiente": {
+    "resuelto": 61,
+    "pagina_pdf": 58
+  },
+  "alcance": "Revisión de ejercicios; páginas completas no certificadas."
+}

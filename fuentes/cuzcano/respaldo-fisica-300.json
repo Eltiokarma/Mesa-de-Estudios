@@ -1,0 +1,13 @@
+{
+  "fecha_utc": "2026-11-09T17:38:24.286231+00:00",
+  "ejercicios_indexados": 574,
+  "archivos_controlados": 1859,
+  "controles_fisica": 300,
+  "bloques_fisica": 10,
+  "sha256_zip": "6f190a60c420d6473ea905e23dfdd62d0313fb148bd18ec9b3c81e32251d3055",
+  "bytes_zip": 284663880,
+  "sin_pdf_ni_ocr_originales": true,
+  "extraccion_temporal_retirada": true,
+  "alcance": "Registro de la prueba de restauración del respaldo local; no incluye enunciados, figuras ni originales.",
+  "limite": "La integridad del respaldo no certifica la exactitud de todos los enunciados; se conservan condiciones y discrepancias."
+}

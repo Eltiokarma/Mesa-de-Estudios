@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "coleccion": "Cuzcano",
+  "origen": "Escaneos cotejados con el OCR local",
+  "meta": 1000,
+  "fichas_verificadas": 1000,
+  "fichas_pendientes": 0,
+  "temas_completos": 10,
+  "temas": [
+    {
+      "id": "razonamiento-matematico.cronometria-relojes",
+      "tema": "Cronometría (relojes)",
+      "fichas": 100,
+      "meta": 100
+    },
+    {
+      "id": "aritmetica.logica-proposicional",
+      "tema": "Lógica proposicional",
+      "fichas": 100,
+      "meta": 100
+    },
+    {
+      "id": "aritmetica.estadistica",
+      "tema": "Estadística",
+      "fichas": 100,
+      "meta": 100
+    },
+    {
+      "id": "aritmetica.regla-de-interes",
+      "tema": "Regla de interés",
+      "fichas": 100,
+      "meta": 100
+    },
+    {
+      "id": "aritmetica.analisis-combinatorio-y-teoria-de-probabilidades",
+      "tema": "Análisis combinatorio y teoría de probabilidades",
+      "fichas": 100,
+      "meta": 100
+    },
+    {
+      "id": "fisica.estatica",
+      "tema": "Estática",
+      "fichas": 100,
+      "meta": 100
+    },
+    {
+      "id": "fisica.electromagnetismo",
+      "tema": "Electromagnetismo",
+      "fichas": 100,
+      "meta": 100
+    },
+    {
+      "id": "fisica.optica",
+      "tema": "Óptica",
+      "fichas": 100,
+      "meta": 100
+    },
+    {
+      "id": "fisica.fisica-moderna",
+      "tema": "Física moderna",
+      "fichas": 100,
+      "meta": 100
+    },
+    {
+      "id": "geometria.triangulos-y-congruencia",
+      "tema": "Triángulos y congruencia",
+      "fichas": 100,
+      "meta": 100
+    }
+  ],
+  "fichas_banco_local": 11602,
+  "sha256_fichas_locales": "6dc478f08192b171e92abbe07084bf7a235306f05a5674f0313ac56f8e335f39"
+}

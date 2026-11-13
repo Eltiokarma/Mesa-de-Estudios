@@ -1,0 +1,117 @@
+{
+  "libro": "1EN0I_nCIO_ELsQ2nY_CKaKYCTbGDCRpl",
+  "alcance": "Piloto automático de 5 páginas; cotejo puntual de un fragmento de la página 13. No valida páginas ni modifica originales.",
+  "paginas": [
+    {
+      "pagina_pdf": 13,
+      "original": {
+        "palabras": 577,
+        "confianza_palabras": 70.38
+      },
+      "variantes": {
+        "300dpi": {
+          "palabras": 589,
+          "confianza_palabras": 69.23
+        },
+        "contraste": {
+          "palabras": 599,
+          "confianza_palabras": 67.93
+        },
+        "columnas": {
+          "palabras": 600,
+          "confianza_palabras": 67.27
+        }
+      }
+    },
+    {
+      "pagina_pdf": 14,
+      "original": {
+        "palabras": 485,
+        "confianza_palabras": 72.16
+      },
+      "variantes": {
+        "300dpi": {
+          "palabras": 482,
+          "confianza_palabras": 71.57
+        },
+        "contraste": {
+          "palabras": 484,
+          "confianza_palabras": 72.05
+        },
+        "columnas": {
+          "palabras": 463,
+          "confianza_palabras": 68.86
+        }
+      }
+    },
+    {
+      "pagina_pdf": 22,
+      "original": {
+        "palabras": 780,
+        "confianza_palabras": 75.53
+      },
+      "variantes": {
+        "300dpi": {
+          "palabras": 734,
+          "confianza_palabras": 79.37
+        },
+        "contraste": {
+          "palabras": 772,
+          "confianza_palabras": 77.19
+        },
+        "columnas": {
+          "palabras": 786,
+          "confianza_palabras": 75.02
+        }
+      }
+    },
+    {
+      "pagina_pdf": 12,
+      "original": {
+        "palabras": 660,
+        "confianza_palabras": 76.19
+      },
+      "variantes": {
+        "300dpi": {
+          "palabras": 665,
+          "confianza_palabras": 75.0
+        },
+        "contraste": {
+          "palabras": 662,
+          "confianza_palabras": 74.47
+        },
+        "columnas": {
+          "palabras": 683,
+          "confianza_palabras": 72.17
+        }
+      }
+    },
+    {
+      "pagina_pdf": 9,
+      "original": {
+        "palabras": 733,
+        "confianza_palabras": 76.2
+      },
+      "variantes": {
+        "300dpi": {
+          "palabras": 735,
+          "confianza_palabras": 75.98
+        },
+        "contraste": {
+          "palabras": 746,
+          "confianza_palabras": 75.69
+        },
+        "columnas": {
+          "palabras": 762,
+          "confianza_palabras": 73.97
+        }
+      }
+    }
+  ],
+  "paginas_con_mayor_confianza_en_alguna_variante": 1,
+  "observacion_visual": "Persisten errores de cargas y subíndices en el fragmento cotejado de la página 13.",
+  "decision": "No extender estos ajustes a toda la colección sin mejores evidencias.",
+  "originales_modificados": false,
+  "repeticion_verificada": "Las cinco páginas se reutilizaron sin nuevo OCR",
+  "pruebas_aprobadas": 13
+}

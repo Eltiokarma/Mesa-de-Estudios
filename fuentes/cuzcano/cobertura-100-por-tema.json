@@ -1,0 +1,1986 @@
+{
+  "schema_version": 1,
+  "fecha_utc": "2026-11-11T01:22:21.360323+00:00",
+  "criterio_activo": "100_por_tema",
+  "minimo_por_tema": 100,
+  "total_fichas": 4213,
+  "asignadas_a_un_tema_principal": 3681,
+  "sin_clasificacion_tematica_individual": 532,
+  "temas_inventariados": 123,
+  "temas_con_minimo_de_revision": 28,
+  "catalogo_temas_exhaustivo": false,
+  "todos_los_temas_completados": false,
+  "porcentaje_global": null,
+  "limites": [
+    "Mapa inicial de títulos monográficos y temas generales. Los cuadernos mixtos aún requieren desglose; no se declara un porcentaje global de toda la colección.",
+    "Un UID cuenta una vez en un tema principal. Los subtemas no vuelven a sumar ejercicios.",
+    "Identidad por fuente, tipo y número; no supone deduplicación semántica entre libros distintos.",
+    "La clasificación por cuaderno reutiliza revisiones anteriores; no declara un nuevo cotejo visual de esas fichas.",
+    "Cien revisados no equivalen a cien aptos para producto. Las observaciones y el dominio se conservan."
+  ],
+  "temas": [
+    {
+      "id": "algebra.binomio-de-newton",
+      "curso": "algebra",
+      "nombre": "Binomio de Newton",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1LbfwsQElTZuMEDxTt0QNYXjMIaYSOvsc"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "algebra.cocientes-notables",
+      "curso": "algebra",
+      "nombre": "Cocientes notables",
+      "objetivo_minimo": 100,
+      "libros_ids": [],
+      "revisados": 8,
+      "con_observaciones": 2,
+      "sin_observaciones_registradas": 6,
+      "faltan_para_minimo": 92,
+      "porcentaje_minimo": 8,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "algebra.desigualdades-e-inecuaciones",
+      "curso": "algebra",
+      "nombre": "Desigualdades e inecuaciones",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1hs1_5FLE2jr9bKHfVuFjzLsHHaOm2acQ"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "algebra.division-polinomica-y-restos",
+      "curso": "algebra",
+      "nombre": "División polinómica y restos",
+      "objetivo_minimo": 100,
+      "libros_ids": [],
+      "revisados": 23,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 23,
+      "faltan_para_minimo": 77,
+      "porcentaje_minimo": 23,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "algebra.factorizacion",
+      "curso": "algebra",
+      "nombre": "Factorización",
+      "objetivo_minimo": 100,
+      "libros_ids": [],
+      "revisados": 9,
+      "con_observaciones": 2,
+      "sin_observaciones_registradas": 7,
+      "faltan_para_minimo": 91,
+      "porcentaje_minimo": 9,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "algebra.logaritmos",
+      "curso": "algebra",
+      "nombre": "Logaritmos",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1FD6VVJj3IJEEeLIcsuEUoap-gc2DzPSc",
+        "1ZxWhs-nGsKQ4Qk8kmDkT2eeDSf7nyMN7"
+      ],
+      "revisados": 100,
+      "con_observaciones": 11,
+      "sin_observaciones_registradas": 89,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
+      "certificado_para_app": false
+    },
+    {
+      "id": "algebra.mcd-y-mcm-de-polinomios",
+      "curso": "algebra",
+      "nombre": "MCD y MCM de polinomios",
+      "objetivo_minimo": 100,
+      "libros_ids": [],
+      "revisados": 9,
+      "con_observaciones": 1,
+      "sin_observaciones_registradas": 8,
+      "faltan_para_minimo": 91,
+      "porcentaje_minimo": 9,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "algebra.matrices-determinantes-y-sistemas-de-ecuaciones-lineales",
+      "curso": "algebra",
+      "nombre": "Matrices, determinantes y sistemas de ecuaciones lineales",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1N9QcaSHrsQ8lcmzJz-8cqqiT13quSHFl"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "algebra.numeros-complejos",
+      "curso": "algebra",
+      "nombre": "Números complejos",
+      "objetivo_minimo": 100,
+      "libros_ids": [],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "algebra.polinomios-y-grados",
+      "curso": "algebra",
+      "nombre": "Polinomios y grados",
+      "objetivo_minimo": 100,
+      "libros_ids": [],
+      "revisados": 23,
+      "con_observaciones": 6,
+      "sin_observaciones_registradas": 17,
+      "faltan_para_minimo": 77,
+      "porcentaje_minimo": 23,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "algebra.potenciacion-y-ecuaciones-exponenciales",
+      "curso": "algebra",
+      "nombre": "Potenciación y ecuaciones exponenciales",
+      "objetivo_minimo": 100,
+      "libros_ids": [],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "algebra.productos-notables-e-identidades",
+      "curso": "algebra",
+      "nombre": "Productos notables e identidades",
+      "objetivo_minimo": 100,
+      "libros_ids": [],
+      "revisados": 10,
+      "con_observaciones": 2,
+      "sin_observaciones_registradas": 8,
+      "faltan_para_minimo": 90,
+      "porcentaje_minimo": 10,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "algebra.radicales-y-racionalizacion",
+      "curso": "algebra",
+      "nombre": "Radicales y racionalización",
+      "objetivo_minimo": 100,
+      "libros_ids": [],
+      "revisados": 11,
+      "con_observaciones": 1,
+      "sin_observaciones_registradas": 10,
+      "faltan_para_minimo": 89,
+      "porcentaje_minimo": 11,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "algebra.relaciones-y-funciones-i",
+      "curso": "algebra",
+      "nombre": "Relaciones y funciones I",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1Kwr0awgPKLd6iP8aCEYrJAT1nt7L3gJq",
+        "1zjD8qtX1DHS1J1AhoHQv_kEp8kDfVVGm"
+      ],
+      "revisados": 2,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 2,
+      "faltan_para_minimo": 98,
+      "porcentaje_minimo": 2,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "algebra.relaciones-y-funciones-ii",
+      "curso": "algebra",
+      "nombre": "Relaciones y funciones II",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1Vl8B7wo23MzGTU58WSmP2RaAif16cPh_"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "algebra.sucesiones-y-series",
+      "curso": "algebra",
+      "nombre": "Sucesiones y series",
+      "objetivo_minimo": 100,
+      "libros_ids": [],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "algebra.teoria-de-las-ecuaciones",
+      "curso": "algebra",
+      "nombre": "Teoría de las ecuaciones",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1SnglsLBxsYQSfSIxQETSboTzCI9a1buw"
+      ],
+      "revisados": 10,
+      "con_observaciones": 2,
+      "sin_observaciones_registradas": 8,
+      "faltan_para_minimo": 90,
+      "porcentaje_minimo": 10,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "aritmetica.analisis-combinatorio-y-teoria-de-probabilidades",
+      "curso": "aritmetica",
+      "nombre": "Análisis combinatorio y teoría de probabilidades",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1yAWSsigXDyMsVjlZeElVoZZoJ-F-c86u"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "aritmetica.conteo-y-paginacion",
+      "curso": "aritmetica",
+      "nombre": "Conteo y paginación",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1lFZCTumyI_Z54wHSsdrBzD-bPy4IKLSi"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "aritmetica.divisibilidad",
+      "curso": "aritmetica",
+      "nombre": "Divisibilidad",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1wHYFbIYJFKvsltDxi8mB5ZIBLC8PvjjO"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "aritmetica.estadistica",
+      "curso": "aritmetica",
+      "nombre": "Estadística",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1c8VrK4blZpr4EXGM78eTT_CAaY8-5z4F",
+        "1g5xP0XVxeqpUkbZpR8mR4oDbik_KrE1Q"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "aritmetica.logica-proposicional",
+      "curso": "aritmetica",
+      "nombre": "Lógica proposicional",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "187pckSkntGMy-qTK_u1Z7LOum5vsAwFx"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "aritmetica.mcd-y-mcm",
+      "curso": "aritmetica",
+      "nombre": "MCD y MCM",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1ouxTBsC0-YxuAO2489v_HSZZs4Lv9gvf"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "aritmetica.magnitudes-proporcionales",
+      "curso": "aritmetica",
+      "nombre": "Magnitudes proporcionales",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1gOyKtE3YOZZBAewN1Hf_GLzJjkLCh7Dg"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "aritmetica.numeracion",
+      "curso": "aritmetica",
+      "nombre": "Numeración",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "17CMpXWlubXXX9ij38v0s4iIklldij07U",
+        "1IVlHGJPjQC0CT1AKON8xemKLycpmqo2K"
+      ],
+      "revisados": 100,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 100,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
+      "certificado_para_app": false
+    },
+    {
+      "id": "aritmetica.numeros-primos",
+      "curso": "aritmetica",
+      "nombre": "Números primos",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1aOHVp4-tKrBVjvvJMvH0zKo-ajpVuG3K"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "aritmetica.numeros-racionales",
+      "curso": "aritmetica",
+      "nombre": "Números racionales",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1eczODi0lNuNubOANBeNigAnyvRwI5UWW"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "aritmetica.potenciacion-y-radicacion",
+      "curso": "aritmetica",
+      "nombre": "Potenciación y radicación",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1Mme2TTvt6wE0lZl3njVn13qtXCTEALdx"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "aritmetica.razones-y-proporciones",
+      "curso": "aritmetica",
+      "nombre": "Razones y proporciones",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1yfBJqVdqHWIhUUiHKUpfkNEdhZi-tHhu"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "aritmetica.regla-de-descuento",
+      "curso": "aritmetica",
+      "nombre": "Regla de descuento",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "14U2woUNzwuLOr2rNC0QURrwWlO5FnQhn"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "aritmetica.regla-de-interes",
+      "curso": "aritmetica",
+      "nombre": "Regla de interés",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1A6z2QnUVFCtRaFrPvI1B0Ttdnpzgooe3",
+        "1lRpmOqj89cIwTGNLKqobGdgQAtz8vFVn"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "aritmetica.regla-de-mezcla-y-aleacion",
+      "curso": "aritmetica",
+      "nombre": "Regla de mezcla y aleación",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1ZWLZBB-dNdvWSjImHwGoOr5eIJkiuNaz",
+        "1NB-KNEZZ0UxxrE_-VSDiqLahhSLonu9V"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "aritmetica.regla-de-tres",
+      "curso": "aritmetica",
+      "nombre": "Regla de tres",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1ymDC3Q94sUQG855HCM-U06Ryz8DY34Gj"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "aritmetica.reparto-proporcional",
+      "curso": "aritmetica",
+      "nombre": "Reparto proporcional",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1mFLqR0d-ena0IbsmyY-2RPpuVelz8EaX"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "aritmetica.tanto-por-ciento",
+      "curso": "aritmetica",
+      "nombre": "Tanto por ciento",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1TWZCLSsKY0qRlCP_eeCMchPKdbEBCpKi"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "aritmetica.teoria-de-conjuntos",
+      "curso": "aritmetica",
+      "nombre": "Teoría de conjuntos",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "15gtoPyKcTraE9CLtv7EWPb_mkKz_JsEM"
+      ],
+      "revisados": 100,
+      "con_observaciones": 14,
+      "sin_observaciones_registradas": 86,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
+      "certificado_para_app": false
+    },
+    {
+      "id": "fisica.analisis-de-graficas-del-movimiento-mecanico",
+      "curso": "fisica",
+      "nombre": "Análisis de gráficas del movimiento mecánico",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1hDN04WCX2304ub2YptsRsDSKjFNdtt54",
+        "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1"
+      ],
+      "revisados": 50,
+      "con_observaciones": 9,
+      "sin_observaciones_registradas": 41,
+      "faltan_para_minimo": 50,
+      "porcentaje_minimo": 50,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "fisica.analisis-dimensional",
+      "curso": "fisica",
+      "nombre": "Análisis dimensional",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1O4cBSioAQ1yFR_7h4e7RIFSrsnhny9tC",
+        "1EuNZlO9GW8BN_Bt9mkuuu_xexUCfC6Px"
+      ],
+      "revisados": 50,
+      "con_observaciones": 6,
+      "sin_observaciones_registradas": 44,
+      "faltan_para_minimo": 50,
+      "porcentaje_minimo": 50,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "fisica.analisis-vectorial",
+      "curso": "fisica",
+      "nombre": "Análisis vectorial",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1Ot4JkySCtdDcyBV4sjvA0b4nV9yWjYbf",
+        "1zNo6sl3gzyrBdpQSDfw0F-nw8JdlEupX"
+      ],
+      "revisados": 50,
+      "con_observaciones": 8,
+      "sin_observaciones_registradas": 42,
+      "faltan_para_minimo": 50,
+      "porcentaje_minimo": 50,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "fisica.calor",
+      "curso": "fisica",
+      "nombre": "Calor",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1nV5SPoE5gwvmA424g7daGo2-KeEU7OX6",
+        "1fHZsH514PUbAcLZwCZisSuLEaUM-TuQ0"
+      ],
+      "revisados": 139,
+      "con_observaciones": 24,
+      "sin_observaciones_registradas": 115,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
+      "certificado_para_app": false
+    },
+    {
+      "id": "fisica.cantidad-de-movimiento-impulso-y-choques",
+      "curso": "fisica",
+      "nombre": "Cantidad de movimiento, impulso y choques",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1MjMFIO8Y0M6TD8I_f4Qzgk5WUZ7PYQAD",
+        "131mLtvzNI6qUaVasTwk2hOiFg5aNxTTG"
+      ],
+      "revisados": 100,
+      "con_observaciones": 26,
+      "sin_observaciones_registradas": 74,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
+      "certificado_para_app": false
+    },
+    {
+      "id": "fisica.cinematica-i-mru-y-mruv",
+      "curso": "fisica",
+      "nombre": "Cinemática I (MRU y MRUV)",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i"
+      ],
+      "revisados": 100,
+      "con_observaciones": 20,
+      "sin_observaciones_registradas": 80,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
+      "certificado_para_app": false
+    },
+    {
+      "id": "fisica.cinematica-ii-mvcl-y-mpcl",
+      "curso": "fisica",
+      "nombre": "Cinemática II (MVCL y MPCL)",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1kFY9irWVdV9vwjBSM_N66ReZhqtJR5Uk",
+        "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK"
+      ],
+      "revisados": 100,
+      "con_observaciones": 21,
+      "sin_observaciones_registradas": 79,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
+      "certificado_para_app": false
+    },
+    {
+      "id": "fisica.condensadores",
+      "curso": "fisica",
+      "nombre": "Condensadores",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1rHM3QWGzIRQYmRIzqkWqa-dL2Hz6d2W-"
+      ],
+      "revisados": 56,
+      "con_observaciones": 6,
+      "sin_observaciones_registradas": 50,
+      "faltan_para_minimo": 44,
+      "porcentaje_minimo": 56,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "fisica.dinamica",
+      "curso": "fisica",
+      "nombre": "Dinámica",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1kVRKh4BBZIvcr1-64O8XdbKCgLptLvof",
+        "1ZZh2gAD4UREhXMTwyhFFE0WYlXGjhLEb"
+      ],
+      "revisados": 60,
+      "con_observaciones": 16,
+      "sin_observaciones_registradas": 44,
+      "faltan_para_minimo": 40,
+      "porcentaje_minimo": 60,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "fisica.electrodinamica",
+      "curso": "fisica",
+      "nombre": "Electrodinámica",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1GnvSEjr1gndPCcaYBQBTQJpl01GFfaPc"
+      ],
+      "revisados": 110,
+      "con_observaciones": 11,
+      "sin_observaciones_registradas": 99,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
+      "certificado_para_app": false
+    },
+    {
+      "id": "fisica.electromagnetismo",
+      "curso": "fisica",
+      "nombre": "Electromagnetismo",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1mP9CGMqyXDKEMlAIqIBWOJE9afVG9vVx"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "fisica.electrostatica",
+      "curso": "fisica",
+      "nombre": "Electrostática",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1pFrF7WW44gFDfINYBsXfQZS3emQ4UB3g"
+      ],
+      "revisados": 100,
+      "con_observaciones": 8,
+      "sin_observaciones_registradas": 92,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
+      "certificado_para_app": false
+    },
+    {
+      "id": "fisica.estatica",
+      "curso": "fisica",
+      "nombre": "Estática",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1MJeqtWYXNOsvkW2vZJkkl8DaPAS0wEym",
+        "1XZHi26mc_VB0Ko8UGFbjq08u8OCH8UKm"
+      ],
+      "revisados": 1,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 1,
+      "faltan_para_minimo": 99,
+      "porcentaje_minimo": 1,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "fisica.fisica-moderna",
+      "curso": "fisica",
+      "nombre": "Física moderna",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1kBqOrTSBKIZbAjFP1gx_j8xRB4lH0PDN"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "fisica.gravitacion-universal",
+      "curso": "fisica",
+      "nombre": "Gravitación universal",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1t0O57suOk0lj0pU5nwpozCEzfgPexm5v",
+        "1HGPsNVTPafEaIIB6pjYeB24Kz0gRa0c4"
+      ],
+      "revisados": 50,
+      "con_observaciones": 14,
+      "sin_observaciones_registradas": 36,
+      "faltan_para_minimo": 50,
+      "porcentaje_minimo": 50,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "fisica.hidrostatica",
+      "curso": "fisica",
+      "nombre": "Hidrostática",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1HkP030a93NG5HLm_LXPzIAc7apVIoxvD"
+      ],
+      "revisados": 100,
+      "con_observaciones": 21,
+      "sin_observaciones_registradas": 79,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
+      "certificado_para_app": false
+    },
+    {
+      "id": "fisica.hidrostatica-e-hidrodinamica",
+      "curso": "fisica",
+      "nombre": "Hidrostática e hidrodinámica",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1gIzvcBRjbIAY5B1A_xgfQSa6AtesRbme",
+        "1_0S0TpyldUHunNEXsOe0LNWvnpf-hrU-"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "fisica.movimiento-circunferencial",
+      "curso": "fisica",
+      "nombre": "Movimiento circunferencial",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1hgtrWQyoC522F6N9fTap3ZJ6wf2UkPOM"
+      ],
+      "revisados": 60,
+      "con_observaciones": 23,
+      "sin_observaciones_registradas": 37,
+      "faltan_para_minimo": 40,
+      "porcentaje_minimo": 60,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "fisica.ondas-electromagneticas",
+      "curso": "fisica",
+      "nombre": "Ondas electromagnéticas",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1-u8Lo79goClEw-VgMgv7_zQu7cGuXi-S"
+      ],
+      "revisados": 45,
+      "con_observaciones": 14,
+      "sin_observaciones_registradas": 31,
+      "faltan_para_minimo": 55,
+      "porcentaje_minimo": 45,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "fisica.ondas-mecanicas",
+      "curso": "fisica",
+      "nombre": "Ondas mecánicas",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1LiwSmLUHAYpFRHKc__n5ZaXl3jqBfaKr",
+        "1088xstWyVL8UmHyMGX0_RyyCKhVySsDS"
+      ],
+      "revisados": 50,
+      "con_observaciones": 11,
+      "sin_observaciones_registradas": 39,
+      "faltan_para_minimo": 50,
+      "porcentaje_minimo": 50,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "fisica.oscilaciones-mecanicas",
+      "curso": "fisica",
+      "nombre": "Oscilaciones mecánicas",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1-KPdmc12ux3xfY_5IkgDm5rZ7EHlst8b"
+      ],
+      "revisados": 50,
+      "con_observaciones": 13,
+      "sin_observaciones_registradas": 37,
+      "faltan_para_minimo": 50,
+      "porcentaje_minimo": 50,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "fisica.termodinamica",
+      "curso": "fisica",
+      "nombre": "Termodinámica",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1VEob-ekrzJ_R3Uub3AQV5d4zqhuo4NCS",
+        "1Fhk6_hQEOmne_DAFlchm9eCOu7UaIxjD"
+      ],
+      "revisados": 100,
+      "con_observaciones": 28,
+      "sin_observaciones_registradas": 72,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
+      "certificado_para_app": false
+    },
+    {
+      "id": "fisica.trabajo-mecanico-energia-y-potencia",
+      "curso": "fisica",
+      "nombre": "Trabajo mecánico, energía y potencia",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1MeJQ7JYmmpfE5_oFxVwDQN5vMfIWyHbJ"
+      ],
+      "revisados": 42,
+      "con_observaciones": 11,
+      "sin_observaciones_registradas": 31,
+      "faltan_para_minimo": 58,
+      "porcentaje_minimo": 42,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "fisica.optica",
+      "curso": "fisica",
+      "nombre": "Óptica",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1JtNLsddpMNJ_JzpUtFWfoeczpkAk0_Rx"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "geometria.circunferencia",
+      "curso": "geometria",
+      "nombre": "Circunferencia",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1xxgmOrXSkn6YgTMOYy2CJwi9eo7GVqng",
+        "1mKbwIKUZZGEtDiuMX2hGRednn1EzvNYs"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "geometria.circunferencia-y-parabola",
+      "curso": "geometria",
+      "nombre": "Circunferencia y parábola",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "194CdROPFH6LSsBuSzX_O6CIcz7Uy8LBm",
+        "17w3zBc5YZXjtuMhipibKILv2jJhik2HO"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "geometria.congruencia-de-triangulos",
+      "curso": "geometria",
+      "nombre": "Congruencia de triángulos",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1TVm6_ggA6LRguEYLHlRL0a-j2h0phV8F"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "geometria.cuadrilateros",
+      "curso": "geometria",
+      "nombre": "Cuadriláteros",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1y8o_NmQCAwGxNNd2e1GFXC_awcJ_vrJo",
+        "1sjIZ9lagOmOOAUJSCBn2uF25Jczm8kRM"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "geometria.elipse-e-hiperbola",
+      "curso": "geometria",
+      "nombre": "Elipse e hipérbola",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1Jx6iNNEHGJczhZ7apSbDxZAYGPOILibJ",
+        "1HVlloW4C09NoRU6q-CxoMqTDzhtp2zKU"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "geometria.esfera",
+      "curso": "geometria",
+      "nombre": "Esfera",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1HNv4L4_fKaz-YA71iIOnAOdLkVNdtsko"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "geometria.geometria-vectorial",
+      "curso": "geometria",
+      "nombre": "Geometría vectorial",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1i0bsRvX9gNwX3zs4ukTaPTCDSLOxVTsA"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "geometria.la-linea-recta",
+      "curso": "geometria",
+      "nombre": "La línea recta",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1MpT0ff6DLOhmg11O9EorLVtz66AOV1Rt",
+        "1qtm8yXLFENRa0Uh5F0pKotRn_5v26mfJ"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "geometria.linea-recta-y-angulos",
+      "curso": "geometria",
+      "nombre": "Línea recta y ángulos",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1oF3Q2WZz1ucFMbmvHZ2Etnf3Tp2TmP52",
+        "1KDKD6FexefQMqIdIn3f1DEg_88O73wTX"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "geometria.nociones-generales",
+      "curso": "geometria",
+      "nombre": "Nociones generales",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1eujgopll599M9JUf4vIMqp36oVu2DCQ1"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "geometria.piramide-y-cono",
+      "curso": "geometria",
+      "nombre": "Pirámide y cono",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1F0RSVnmX30eTsDbWsJwNeirOGdSpy55l"
+      ],
+      "revisados": 60,
+      "con_observaciones": 6,
+      "sin_observaciones_registradas": 54,
+      "faltan_para_minimo": 40,
+      "porcentaje_minimo": 60,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "geometria.poligonos",
+      "curso": "geometria",
+      "nombre": "Polígonos",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1l72XWAPu1zctLbrJKMvKMDMiy1onOc31",
+        "1Me2M5fuB7pnEsC_WAmitbHpIsn7i91aV"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "geometria.poligonos-regulares",
+      "curso": "geometria",
+      "nombre": "Polígonos regulares",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1QigyLtuMN4BQh3cmRhRVNuAtzzhTRA07"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "geometria.prisma-y-cilindro",
+      "curso": "geometria",
+      "nombre": "Prisma y cilindro",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+        "1eY8lZQwaof1GhnNeF6QZRIFul5m1Ew5a"
+      ],
+      "revisados": 200,
+      "con_observaciones": 38,
+      "sin_observaciones_registradas": 162,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
+      "certificado_para_app": false
+    },
+    {
+      "id": "geometria.proporcionalidad-de-segmentos-y-semejanza-de-triangulos",
+      "curso": "geometria",
+      "nombre": "Proporcionalidad de segmentos y semejanza de triángulos",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1kIDLUYyFrhYnCMP7Y8VtOW9EOW3kUBVL",
+        "122112TjoS7L4GWaHyiTttNTzD-WVUJSc"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "geometria.puntos-notables",
+      "curso": "geometria",
+      "nombre": "Puntos notables",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1Eajd3SVByjANZLFFR6YniTLw4KcPo614",
+        "1abepztIdr4FKnUv8BgOPJAeH7R14OxWr"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "geometria.rectas-y-planos",
+      "curso": "geometria",
+      "nombre": "Rectas y planos",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1lQzONRTyrUcW_Opx6KjuMnThB_WayiDQ"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "geometria.relaciones-metricas",
+      "curso": "geometria",
+      "nombre": "Relaciones métricas",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1pcyzCDIvEwOD0aRRyXoW3jR0gLT9x30L",
+        "19HCunUsf55YlGstD13zlaHQSLuUucN1t"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "geometria.transformacion-de-coordenadas",
+      "curso": "geometria",
+      "nombre": "Transformación de coordenadas",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "15Hk-nyrMKQmLiPm8BkVShMqDe205cQ9n"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "geometria.triangulos",
+      "curso": "geometria",
+      "nombre": "Triángulos",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1D8_YP2Q25FmZpVBgX6Qip_GBPa2Ue3Db",
+        "11DRBIQrbGVVBXfHmwblmj3D2FFrhsUFE"
+      ],
+      "revisados": 1,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 1,
+      "faltan_para_minimo": 99,
+      "porcentaje_minimo": 1,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "geometria.triangulos-y-congruencia",
+      "curso": "geometria",
+      "nombre": "Triángulos y congruencia",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1gbC3Wo-HqPygE9iIEnORDBa7VWCTn1gz"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "geometria.areas-de-regiones-poligonales-y-circulares",
+      "curso": "geometria",
+      "nombre": "Áreas de regiones poligonales y circulares",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "13YKX8jKjZ_EQFgQ5EnhNLbOk1aczxLRn",
+        "1FE4KdJUv1e-LFs2knpVc7U3AAmUQwcwy",
+        "1b0Codrz3HHq2hR42uE0hMhMQYOXHI85r"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "quimica.electroquimica",
+      "curso": "quimica",
+      "nombre": "Electroquímica",
+      "objetivo_minimo": 100,
+      "libros_ids": [],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "quimica.enlace-quimico",
+      "curso": "quimica",
+      "nombre": "Enlace químico",
+      "objetivo_minimo": 100,
+      "libros_ids": [],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "quimica.equilibrio-quimico",
+      "curso": "quimica",
+      "nombre": "Equilibrio químico",
+      "objetivo_minimo": 100,
+      "libros_ids": [],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "quimica.estado-gaseoso-y-mezcla-gaseosa",
+      "curso": "quimica",
+      "nombre": "Estado gaseoso y mezcla gaseosa",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1WBv_rYDk-0Hr0xJ3te9P0jRa10Wb0Ct5"
+      ],
+      "revisados": 100,
+      "con_observaciones": 25,
+      "sin_observaciones_registradas": 75,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
+      "certificado_para_app": false
+    },
+    {
+      "id": "quimica.estequiometria",
+      "curso": "quimica",
+      "nombre": "Estequiometría",
+      "objetivo_minimo": 100,
+      "libros_ids": [],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "quimica.estructura-atomica",
+      "curso": "quimica",
+      "nombre": "Estructura atómica",
+      "objetivo_minimo": 100,
+      "libros_ids": [],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "quimica.nomenclatura-inorganica",
+      "curso": "quimica",
+      "nombre": "Nomenclatura inorgánica",
+      "objetivo_minimo": 100,
+      "libros_ids": [],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "quimica.quimica-organica",
+      "curso": "quimica",
+      "nombre": "Química orgánica",
+      "objetivo_minimo": 100,
+      "libros_ids": [],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "quimica.reacciones-quimicas",
+      "curso": "quimica",
+      "nombre": "Reacciones químicas",
+      "objetivo_minimo": 100,
+      "libros_ids": [],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "quimica.soluciones",
+      "curso": "quimica",
+      "nombre": "Soluciones",
+      "objetivo_minimo": 100,
+      "libros_ids": [],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "quimica.tabla-periodica",
+      "curso": "quimica",
+      "nombre": "Tabla periódica",
+      "objetivo_minimo": 100,
+      "libros_ids": [],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "quimica.unidades-quimicas-de-masa",
+      "curso": "quimica",
+      "nombre": "Unidades químicas de masa",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1tPq0Up5gKEv-ON_LrawB7n7XESuwsfcA"
+      ],
+      "revisados": 100,
+      "con_observaciones": 15,
+      "sin_observaciones_registradas": 85,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
+      "certificado_para_app": false
+    },
+    {
+      "id": "quimica.acidos-y-bases",
+      "curso": "quimica",
+      "nombre": "Ácidos y bases",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1jJZF_8yB0jpqcyge4gvHYtwvklz7lpxC"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "razonamiento-matematico.analisis-combinatorio",
+      "curso": "razonamiento-matematico",
+      "nombre": "Análisis combinatorio",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1hg5FzCpcHnGkrNKqRbly__5tB09MFJla"
+      ],
+      "revisados": 100,
+      "con_observaciones": 19,
+      "sin_observaciones_registradas": 81,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
+      "certificado_para_app": false
+    },
+    {
+      "id": "razonamiento-matematico.comparacion-de-magnitudes",
+      "curso": "razonamiento-matematico",
+      "nombre": "Comparación de magnitudes",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1R90ciBfEv2Ag6iOzw7HFS1RISV89TltS"
+      ],
+      "revisados": 100,
+      "con_observaciones": 29,
+      "sin_observaciones_registradas": 71,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
+      "certificado_para_app": false
+    },
+    {
+      "id": "razonamiento-matematico.conteo-de-figuras-y-recorridos-eulerianos",
+      "curso": "razonamiento-matematico",
+      "nombre": "Conteo de figuras y recorridos eulerianos",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "12szkZ06QNc_u_XotXmwArWpVIqTbNmoN"
+      ],
+      "revisados": 2,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 2,
+      "faltan_para_minimo": 98,
+      "porcentaje_minimo": 2,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "razonamiento-matematico.cronometria-relojes",
+      "curso": "razonamiento-matematico",
+      "nombre": "Cronometría (relojes)",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1WOmnStgONQrcJ9-b5D36E_oyT1_Tvp1I"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "razonamiento-matematico.calculo-de-probabilidades",
+      "curso": "razonamiento-matematico",
+      "nombre": "Cálculo de probabilidades",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1Kyc79hnxzn-VdnfogG95wMkwpEBa6z80"
+      ],
+      "revisados": 100,
+      "con_observaciones": 31,
+      "sin_observaciones_registradas": 69,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
+      "certificado_para_app": false
+    },
+    {
+      "id": "razonamiento-matematico.edades-y-moviles",
+      "curso": "razonamiento-matematico",
+      "nombre": "Edades y móviles",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1uYzQAAUkPJGBRly-aL8emOp4QDvraEG9"
+      ],
+      "revisados": 100,
+      "con_observaciones": 25,
+      "sin_observaciones_registradas": 75,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
+      "certificado_para_app": false
+    },
+    {
+      "id": "razonamiento-matematico.fracciones",
+      "curso": "razonamiento-matematico",
+      "nombre": "Fracciones",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1LiZP_28QThiIWhGjzMdpnF3UlHhDnR1S"
+      ],
+      "revisados": 100,
+      "con_observaciones": 8,
+      "sin_observaciones_registradas": 92,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
+      "certificado_para_app": false
+    },
+    {
+      "id": "razonamiento-matematico.inductivo-y-deductivo",
+      "curso": "razonamiento-matematico",
+      "nombre": "Inductivo y deductivo",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1Aexs1HGuPakjuZPx6olqjCT4xePc2I6o"
+      ],
+      "revisados": 100,
+      "con_observaciones": 11,
+      "sin_observaciones_registradas": 89,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
+      "certificado_para_app": false
+    },
+    {
+      "id": "razonamiento-matematico.operaciones-matematicas",
+      "curso": "razonamiento-matematico",
+      "nombre": "Operaciones matemáticas",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "156CP-4oWOzMFLDN6nbxGP5-Jfl9p5X_z"
+      ],
+      "revisados": 100,
+      "con_observaciones": 21,
+      "sin_observaciones_registradas": 79,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
+      "certificado_para_app": false
+    },
+    {
+      "id": "razonamiento-matematico.planteo-de-ecuaciones",
+      "curso": "razonamiento-matematico",
+      "nombre": "Planteo de ecuaciones",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1fuIgQ721-InyMUxqcM2NQrU7KtYxtBfF"
+      ],
+      "revisados": 100,
+      "con_observaciones": 30,
+      "sin_observaciones_registradas": 70,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
+      "certificado_para_app": false
+    },
+    {
+      "id": "razonamiento-matematico.razonamiento-geometrico",
+      "curso": "razonamiento-matematico",
+      "nombre": "Razonamiento geométrico",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1KF7gO2gApk2EFNuTKrtndmsVJPkWG8KR"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "razonamiento-matematico.razonamiento-logico",
+      "curso": "razonamiento-matematico",
+      "nombre": "Razonamiento lógico",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1BvswxsPjlJQyJs3JkSzLM-UGiexbyGWF"
+      ],
+      "revisados": 100,
+      "con_observaciones": 14,
+      "sin_observaciones_registradas": 86,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
+      "certificado_para_app": false
+    },
+    {
+      "id": "razonamiento-matematico.series",
+      "curso": "razonamiento-matematico",
+      "nombre": "Series",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1XddMtDov7rABYep7dkio8rNdWXCiR794"
+      ],
+      "revisados": 100,
+      "con_observaciones": 14,
+      "sin_observaciones_registradas": 86,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
+      "certificado_para_app": false
+    },
+    {
+      "id": "razonamiento-matematico.sucesiones",
+      "curso": "razonamiento-matematico",
+      "nombre": "Sucesiones",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1wleTpPn7ZB9L4iyAUDVMokTlKYurGt60"
+      ],
+      "revisados": 100,
+      "con_observaciones": 17,
+      "sin_observaciones_registradas": 83,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
+      "certificado_para_app": false
+    },
+    {
+      "id": "razonamiento-matematico.tanto-por-ciento",
+      "curso": "razonamiento-matematico",
+      "nombre": "Tanto por ciento",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "17ISMXQ_vK6R4IjOy_NoaxlKrCq5_QUA6"
+      ],
+      "revisados": 100,
+      "con_observaciones": 9,
+      "sin_observaciones_registradas": 91,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
+      "certificado_para_app": false
+    },
+    {
+      "id": "trigonometria.circunferencia-trigonometrica",
+      "curso": "trigonometria",
+      "nombre": "Circunferencia trigonométrica",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1OB_Qmt_rnYIqz4EHNWBI9AgT0ffrPV06",
+        "1e2jkKptOdrNUloAF1b3wUD5WxBBwrkuN"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "trigonometria.ecuaciones-e-inecuaciones-trigonometricas",
+      "curso": "trigonometria",
+      "nombre": "Ecuaciones e inecuaciones trigonométricas",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1KpLBzDT6hJ0NXkW5QBf092-NGJvDKFkF"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "trigonometria.funciones-trigonometricas-directas",
+      "curso": "trigonometria",
+      "nombre": "Funciones trigonométricas directas",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1ne6aqiTwSDEDyjiFK8nU_GW8Mlh-aKsm",
+        "1FBgIsZFe_TKvWOARdZJLK-b7mV07GqG3"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "trigonometria.funciones-trigonometricas-inversas",
+      "curso": "trigonometria",
+      "nombre": "Funciones trigonométricas inversas",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1ek9MxIJNzTlTp_BsShS8dgc-AOK2_jMz"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "trigonometria.identidades-de-arcos-compuestos",
+      "curso": "trigonometria",
+      "nombre": "Identidades de arcos compuestos",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "17okmAXVcVmUDiXIskOkdieub5WoW25_u"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "trigonometria.identidades-de-arcos-multiples",
+      "curso": "trigonometria",
+      "nombre": "Identidades de arcos múltiples",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1qODqmSr6hI-PLO8sDzDKokzhKCIxo0f0",
+        "182MTfaVXa6VtOvQv_aduJzTtC_-45SpH"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "trigonometria.identidades-trigonometricas-fundamentales",
+      "curso": "trigonometria",
+      "nombre": "Identidades trigonométricas fundamentales",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1IPKJY3Wlm1Ws79onJ1Ckk14HbwCHABQj"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "trigonometria.numeros-complejos",
+      "curso": "trigonometria",
+      "nombre": "Números complejos",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1Zjda6S3V359ZUYgsIFKLexIM_fe2QO2J"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "trigonometria.razones-trigonometricas-de-un-angulo-agudo",
+      "curso": "trigonometria",
+      "nombre": "Razones trigonométricas de un ángulo agudo",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "17SwFs9cEPKxMyr5aoWpf9A2JWsXWjC2p"
+      ],
+      "revisados": 100,
+      "con_observaciones": 36,
+      "sin_observaciones_registradas": 64,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
+      "certificado_para_app": false
+    },
+    {
+      "id": "trigonometria.razones-trigonometricas-de-un-angulo-en-posicion-normal",
+      "curso": "trigonometria",
+      "nombre": "Razones trigonométricas de un ángulo en posición normal",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "17oV6Nqu3psLv0PoWgYNWqL9xLu0ubPb3"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "trigonometria.resolucion-de-triangulos-oblicuangulos",
+      "curso": "trigonometria",
+      "nombre": "Resolución de triángulos oblicuángulos",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1xhKMUXBu6I3Rpxdbj0Yus1vNywmicZxe"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    },
+    {
+      "id": "trigonometria.sistemas-de-medicion-angular-y-longitud-de-arco",
+      "curso": "trigonometria",
+      "nombre": "Sistemas de medición angular y longitud de arco",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1mYDkK85haVG4aMEdEVhPCEzkwrHy8pDx"
+      ],
+      "revisados": 100,
+      "con_observaciones": 17,
+      "sin_observaciones_registradas": 83,
+      "faltan_para_minimo": 0,
+      "porcentaje_minimo": 100,
+      "minimo_revision_alcanzado": true,
+      "certificado_para_app": false
+    },
+    {
+      "id": "trigonometria.transformaciones-trigonometricas",
+      "curso": "trigonometria",
+      "nombre": "Transformaciones trigonométricas",
+      "objetivo_minimo": 100,
+      "libros_ids": [
+        "1XNaOh4lMSXxIxw8lZUyNGPEt3jcpCBK4"
+      ],
+      "revisados": 0,
+      "con_observaciones": 0,
+      "sin_observaciones_registradas": 0,
+      "faltan_para_minimo": 100,
+      "porcentaje_minimo": 0,
+      "minimo_revision_alcanzado": false,
+      "certificado_para_app": false
+    }
+  ]
+}

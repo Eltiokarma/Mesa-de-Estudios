@@ -1,0 +1,125 @@
+{
+  "generado_utc": "2026-11-09T04:38:42.994964+00:00",
+  "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+  "problemas": [
+    58,
+    87
+  ],
+  "paginas_pdf": [
+    57,
+    74
+  ],
+  "grupos": [
+    [
+      58,
+      67
+    ],
+    [
+      68,
+      77
+    ],
+    [
+      78,
+      87
+    ]
+  ],
+  "ejercicios_cotejados": 30,
+  "svg_redibujados": 30,
+  "sin_observaciones": 16,
+  "con_observaciones": [
+    {
+      "numero": 60,
+      "estado": "correccion_resultado_y_aproximacion",
+      "requiere_aclaracion_para_producto": false
+    },
+    {
+      "numero": 63,
+      "estado": "correccion_unidad_editorial",
+      "requiere_aclaracion_para_producto": false
+    },
+    {
+      "numero": 64,
+      "estado": "correccion_orden_razon",
+      "requiere_aclaracion_para_producto": false
+    },
+    {
+      "numero": 71,
+      "estado": "datos_incompatibles",
+      "requiere_aclaracion_para_producto": true
+    },
+    {
+      "numero": 74,
+      "estado": "condicionado_inmersion_total",
+      "requiere_aclaracion_para_producto": true
+    },
+    {
+      "numero": 76,
+      "estado": "correccion_factor_editorial",
+      "requiere_aclaracion_para_producto": false
+    },
+    {
+      "numero": 77,
+      "estado": "condicionado_orientacion_bases",
+      "requiere_aclaracion_para_producto": true
+    },
+    {
+      "numero": 78,
+      "estado": "condicionado_altura_y_aproximacion",
+      "requiere_aclaracion_para_producto": true
+    },
+    {
+      "numero": 79,
+      "estado": "correccion_unidad_editorial",
+      "requiere_aclaracion_para_producto": false
+    },
+    {
+      "numero": 81,
+      "estado": "discrepancia_geometria_y_distancia",
+      "requiere_aclaracion_para_producto": true
+    },
+    {
+      "numero": 82,
+      "estado": "condicionado_simetria_axial",
+      "requiere_aclaracion_para_producto": true
+    },
+    {
+      "numero": 84,
+      "estado": "verificado_con_aproximacion_editorial",
+      "requiere_aclaracion_para_producto": false
+    },
+    {
+      "numero": 85,
+      "estado": "correccion_radical_y_terminologia",
+      "requiere_aclaracion_para_producto": true
+    },
+    {
+      "numero": 86,
+      "estado": "condicionado_direccion_inclinacion",
+      "requiere_aclaracion_para_producto": true
+    }
+  ],
+  "requieren_aclaracion_para_producto": [
+    71,
+    74,
+    77,
+    78,
+    81,
+    82,
+    85,
+    86
+  ],
+  "validacion": "30 controles de coordenadas, áreas, volúmenes, correcciones y contraejemplos aprobados desde la copia restaurada.",
+  "paginas_completas_certificadas": 0,
+  "paginas_nuevas_con_cotejo_parcial": 17,
+  "siguiente_problema": 88,
+  "limites": [
+    "Material de consulta local; no incorporado al producto.",
+    "Los controles no certifican los enunciados ambiguos ni el libro completo.",
+    "Se distingue el modelo de la figura de las condiciones efectivamente escritas."
+  ],
+  "lectores_locales": [
+    "fuentes/ocr-local/cuzcano/piloto-geometria-58-67/index.html",
+    "fuentes/ocr-local/cuzcano/piloto-geometria-68-77/index.html",
+    "fuentes/ocr-local/cuzcano/piloto-geometria-78-87/index.html"
+  ]
+}

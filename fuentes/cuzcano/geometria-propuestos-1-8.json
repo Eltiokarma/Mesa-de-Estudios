@@ -1,0 +1,42 @@
+{
+  "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+  "seccion": "Problemas propuestos",
+  "tipo": "propuesto",
+  "rango": [
+    1,
+    8
+  ],
+  "pagina_pdf": 83,
+  "ejercicios_nuevos": 8,
+  "verificados": 5,
+  "correcciones": 1,
+  "condicionados": 2,
+  "requieren_aclaracion": [
+    4,
+    6
+  ],
+  "estado_por_numero": {
+    "1": "verificado",
+    "2": "verificado",
+    "3": "verificado",
+    "4": "condicionado_puntos_medios_y_aproximacion",
+    "5": "correccion_factor_raiz",
+    "6": "condicionado_base_cuadrada",
+    "7": "verificado",
+    "8": "verificado"
+  },
+  "soluciones": "Desarrollos propios; la fuente sólo proporciona enunciados y claves.",
+  "graficos": "Ocho construcciones SVG con coordenadas reutilizables, conservadas localmente.",
+  "validacion": "Ocho comprobaciones geométricas, contraejemplos de falta de unicidad, inspección visual, lector móvil y restauración aprobados.",
+  "libro_completo_validado": false,
+  "pagina_completa_validada": false,
+  "siguiente": {
+    "tipo": "propuesto",
+    "numero": 9,
+    "paginas_pdf": [
+      83,
+      84
+    ]
+  },
+  "fuentes_y_fichas": "Solo locales; el repositorio recibe metadatos."
+}

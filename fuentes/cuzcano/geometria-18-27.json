@@ -1,0 +1,45 @@
+{
+  "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+  "tema": "Prisma y cilindro",
+  "problemas_revisados": [
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27
+  ],
+  "paginas_pdf": [
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39
+  ],
+  "ejercicios_cotejados": 10,
+  "graficos_vectoriales_reconstruidos": 10,
+  "coincidencias_exactas": 8,
+  "aproximaciones_editoriales_identificadas": [
+    21,
+    26
+  ],
+  "paginas_completas_certificadas": 0,
+  "siguiente_problema": 28,
+  "lector_local": "fuentes/ocr-local/cuzcano/piloto-geometria-18-27/index.html",
+  "verificacion": [
+    "Cotejo visual de originales y redibujos.",
+    "Cálculos por coordenadas, productos escalares, determinantes y descomposición en tetraedros.",
+    "Lector verificado en navegador y cálculos repetidos desde respaldo restaurado."
+  ],
+  "limites": [
+    "No certifica el libro completo.",
+    "Originales, fichas y redibujos de referencia permanecen locales.",
+    "No se repitió OCR ni se retiraron páginas parcialmente revisadas de la cola."
+  ]
+}

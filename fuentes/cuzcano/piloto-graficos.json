@@ -1,0 +1,51 @@
+{
+  "generado_utc": "2026-11-09T00:18:23.323260+00:00",
+  "alcance": "Dos ejercicios completos como unidades de revisión; cuatro páginas cotejadas sólo parcialmente.",
+  "ejercicios": 2,
+  "ejercicios_con_verificacion_satisfactoria": 1,
+  "ejercicios_con_aclaracion_pendiente": 1,
+  "fuentes": [
+    {
+      "libro_id": "1D8_YP2Q25FmZpVBgX6Qip_GBPa2Ue3Db",
+      "paginas_pdf": [
+        62,
+        107
+      ],
+      "sha256_ocr_por_pagina": {
+        "62": "b2274a88d5618f08419da86ab6c63336233d2749e7f815b8ab9535945a1a004d",
+        "107": "6793ce69f1e18e0a3179d58e27a9b7a95c6eabd3525f6349925adc3144adc4d8"
+      },
+      "estado_ejercicio": "verificado"
+    },
+    {
+      "libro_id": "1XZHi26mc_VB0Ko8UGFbjq08u8OCH8UKm",
+      "paginas_pdf": [
+        24,
+        25
+      ],
+      "sha256_ocr_por_pagina": {
+        "24": "7a6b57e28a38ce1d7309ee9d23ec66a9f46e04ba273754e1efe1703945d6c794",
+        "25": "0247cc3f72378117f6cdf123a26479a71d2f5247a0e8c6fe08ab281d11ea5521"
+      },
+      "estado_ejercicio": "requiere_aclaracion_geometrica"
+    }
+  ],
+  "cola_pendiente": 13722,
+  "entradas_cola_actualizadas": 2,
+  "entradas_retiradas": 0,
+  "formato_local": [
+    "HTML para lectura y comparación",
+    "JSON por ejercicio: enunciado, datos, figura, pasos y verificación",
+    "SVG de figuras reconstruidas",
+    "ZIP con evidencia y comprobador Python"
+  ],
+  "artefactos_locales": "fuentes/ocr-local/cuzcano/piloto-graficos/",
+  "validacion": {
+    "geometria": "Demostración cotejada y ocho triángulos numéricos; se comprueban pertenencias, paralelismo, bisectrices e igualdades.",
+    "estatica": "Fuerzas compensadas con trigonometría literal, pero residuo de momento distinto de cero. No se fuerza el resultado editorial ni se corrigen datos sin evidencia.",
+    "figuras": "SVG reconstruidos y rasterizados para inspección visual.",
+    "auditoria_global": "No repetida: se verificaron incrementalmente cuatro hashes y se conservó el resto de la cola."
+  },
+  "uso_en_producto": "Sólo metadatos en Git; los textos, recortes y reconstrucciones quedan locales. Crear ejercicios propios antes de publicar.",
+  "uso_cuota": "No se dispone de medición comparable para cuantificar ahorro en tokens."
+}

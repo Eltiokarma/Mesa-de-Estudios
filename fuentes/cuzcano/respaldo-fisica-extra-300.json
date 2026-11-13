@@ -1,0 +1,13 @@
+{
+  "fecha_utc": "2026-11-10T00:36:37.063898+00:00",
+  "ejercicios_indexados": 1074,
+  "archivos_controlados": 3063,
+  "controles_fisica": 800,
+  "bloques_fisica": 23,
+  "sha256_zip": "f00a6d61fd000aedca6458c1d60d869f899e1559fa43d37d43db91a317743d0e",
+  "bytes_zip": 474210568,
+  "sin_pdf_ni_ocr_originales": true,
+  "extraccion_temporal_retirada": true,
+  "controles_fisica_nuevos": 300,
+  "guias": 5
+}

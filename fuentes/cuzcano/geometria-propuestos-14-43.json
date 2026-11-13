@@ -1,0 +1,46 @@
+{
+  "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+  "seccion": "Problemas propuestos",
+  "tipo": "propuesto",
+  "rango": [
+    14,
+    43
+  ],
+  "paginas_pdf": [
+    84,
+    85,
+    86,
+    87,
+    88
+  ],
+  "ejercicios_nuevos": 30,
+  "verificados": 21,
+  "condicionados": [
+    16,
+    18,
+    38
+  ],
+  "datos_incompatibles": [
+    25,
+    26
+  ],
+  "claves_corregidas": [
+    29,
+    30
+  ],
+  "aproximaciones": [
+    28,
+    42
+  ],
+  "soluciones": "Desarrollos propios por pasos; claves y discrepancias conservadas por separado.",
+  "graficos": "Treinta SVG ampliables con modelos geométricos locales reutilizables.",
+  "validacion": "Comprobaciones independientes por coordenadas, productos escalares, áreas, integración y volúmenes de poliedros; contraejemplos y restauración aprobados.",
+  "libro_completo_validado": false,
+  "pagina_completa_validada": false,
+  "siguiente": {
+    "tipo": "propuesto",
+    "numero": 44,
+    "pagina_pdf": 88
+  },
+  "fuentes_y_fichas": "Solo locales; el repositorio recibe metadatos."
+}

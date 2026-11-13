@@ -1,0 +1,58 @@
+{
+  "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+  "seccion": "Problemas propuestos",
+  "tipo": "propuesto",
+  "rango": [
+    74,
+    100
+  ],
+  "paginas_pdf": [
+    93,
+    94,
+    95,
+    96,
+    97
+  ],
+  "ejercicios_nuevos": 27,
+  "verificados": 13,
+  "condicionados": [
+    79,
+    80,
+    81,
+    82,
+    90,
+    94,
+    96,
+    99
+  ],
+  "claves_corregidas": [
+    74,
+    76,
+    84,
+    87
+  ],
+  "aproximaciones": [
+    77,
+    78
+  ],
+  "nota": "El caso 74 también distingue la aproximación angular; el 76 exige unificar unidades.",
+  "soluciones": "Desarrollos propios por pasos; claves y discrepancias conservadas por separado.",
+  "graficos": "Veintisiete SVG ampliables y modelos geométricos locales.",
+  "validacion": "27 comprobaciones independientes de coordenadas, productos escalares, áreas, volúmenes, integración y contraejemplos. Inspección visual y lector móvil aprobados.",
+  "fin_seccion": true,
+  "cobertura_ejercicios_libro": {
+    "resueltos": 100,
+    "propuestos": 100
+  },
+  "libro_completo_validado": false,
+  "pagina_completa_validada": false,
+  "siguiente": {
+    "accion": "Revisión de contenido cerrada con erratas documentadas; siguiente cuaderno por seleccionar."
+  },
+  "fuentes_y_fichas": "Solo locales; el repositorio recibe metadatos.",
+  "revision_posterior": {
+    "registro": "cierre-prisma-cilindro.json",
+    "estado": "Teoría y observaciones con dictamen; se conservan condiciones y rechazos."
+  }
+}
+

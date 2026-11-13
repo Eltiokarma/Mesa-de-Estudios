@@ -1,0 +1,197 @@
+{
+  "fecha_utc": "2026-11-10T12:23:47.741479+00:00",
+  "criterio_activo": "100_por_tema",
+  "objetivo_minimo_por_tema": 100,
+  "nuevos_revisados": 25,
+  "con_observaciones_en_nuevos": 5,
+  "sin_observaciones_en_nuevos": 20,
+  "archivo_acumulado": 2299,
+  "fisica_acumulado": 1826,
+  "temas": [
+    {
+      "tema_id": "fisica.electrostatica",
+      "nombre": "Electrostática",
+      "revisados_antes": 90,
+      "agregados": 10,
+      "revisados": 100,
+      "faltan_para_minimo": 0,
+      "observaciones_en_nuevos": 1,
+      "observaciones_acumuladas": 8,
+      "sin_observaciones_registradas": 92,
+      "minimo_revision_alcanzado": true,
+      "app_certificada": false,
+      "cuaderno_completo": false
+    },
+    {
+      "tema_id": "fisica.termodinamica",
+      "nombre": "Termodinámica",
+      "revisados_antes": 85,
+      "agregados": 15,
+      "revisados": 100,
+      "faltan_para_minimo": 0,
+      "observaciones_en_nuevos": 4,
+      "observaciones_acumuladas": 28,
+      "sin_observaciones_registradas": 72,
+      "minimo_revision_alcanzado": true,
+      "app_certificada": false,
+      "cuaderno_completo": false
+    }
+  ],
+  "fuente": {
+    "electrostatica": {
+      "tipo": "resuelto",
+      "numeros": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "paginas_pdf": [
+        124,
+        125,
+        126,
+        127,
+        128,
+        129,
+        130,
+        131
+      ]
+    },
+    "termodinamica": {
+      "tipo": "resuelto",
+      "numeros": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "paginas_pdf": [
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ]
+    }
+  },
+  "paginas_con_fragmentos_cotejados": 17,
+  "graficos_nuevos": 25,
+  "controles_nuevos": 25,
+  "ocr_repetido": false,
+  "servicio_externo_para_calculo": false,
+  "formatos": [
+    "JSON",
+    "HTML",
+    "SVG"
+  ],
+  "cuadernos_completos": false,
+  "app_certificada": false,
+  "siguiente_por_cuaderno": [
+    {
+      "tema": "Electrostática",
+      "resuelto": 13,
+      "pagina_pdf": 131
+    },
+    {
+      "tema": "Termodinámica",
+      "resuelto": 16,
+      "pagina_pdf": 23
+    }
+  ],
+  "proxima_prioridad_tematica": {
+    "tema": "Cantidad de movimiento, impulso y choques",
+    "revisados_asignados": 66,
+    "faltan_para_minimo": 34
+  },
+  "lotes": [
+    {
+      "carpeta": "piloto-fisica-electrostatica-resueltos-3-12",
+      "libro_id": "1pFrF7WW44gFDfINYBsXfQZS3emQ4UB3g",
+      "libro": "Electrostática",
+      "tema_id": "fisica.electrostatica",
+      "tipo": "resuelto",
+      "numeros": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "cantidad": 10,
+      "paginas_pdf": [
+        124,
+        125,
+        126,
+        127,
+        128,
+        129,
+        130,
+        131
+      ],
+      "estado": "revisado_y_comprobado"
+    },
+    {
+      "carpeta": "piloto-fisica-termodinamica-resueltos-1-15",
+      "libro_id": "1VEob-ekrzJ_R3Uub3AQV5d4zqhuo4NCS",
+      "libro": "Termodinámica",
+      "tema_id": "fisica.termodinamica",
+      "tipo": "resuelto",
+      "numeros": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "cantidad": 15,
+      "paginas_pdf": [
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "estado": "revisado_y_comprobado"
+    }
+  ]
+}

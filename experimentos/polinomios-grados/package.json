@@ -1,0 +1,1 @@
+{"name":"prueba-polinomios-grados","private":true,"scripts":{"test":"node --test motor.test.js"}}

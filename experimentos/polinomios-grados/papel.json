@@ -1,0 +1,10 @@
+{
+  "origen":"Cinco ejercicios propios para esta prueba, no transcritos de las fuentes.",
+  "ejercicios":[
+    {"id":"papel-1","enunciado":"Determina el grado absoluto y los grados relativos de 5x²y⁴ + 2x⁵ − 3.","terminos":[{"c":5,"x":2,"y":4},{"c":2,"x":5,"y":0},{"c":-3,"x":0,"y":0}],"grado":6,"solucion":"Los grados de los términos son 6, 5 y 0. GA = 6; GRx = 5 y GRy = 4."},
+    {"id":"papel-2","enunciado":"Reduce 3x³ − 3x³ + 8xy − 2 y determina su grado absoluto.","terminos":[{"c":3,"x":3,"y":0},{"c":-3,"x":3,"y":0},{"c":8,"x":1,"y":1},{"c":-2,"x":0,"y":0}],"grado":2,"solucion":"Los términos cúbicos se anulan. Queda 8xy − 2; los grados son 2 y 0, así que GA = 2."},
+    {"id":"papel-3","enunciado":"¿Es homogéneo x² + xy + y²? ¿Es completo respecto de cada variable?","terminos":[{"c":1,"x":2,"y":0},{"c":1,"x":1,"y":1},{"c":1,"x":0,"y":2}],"grado":2,"solucion":"Todos los términos tienen grado 2: es homogéneo. En cada variable aparecen 2, 1 y 0: es completo en ambas."},
+    {"id":"papel-4","enunciado":"Reduce 5x²y − 2x²y + 7xy² + 4y³. Determina su grado y si es completo en x y en y.","terminos":[{"c":5,"x":2,"y":1},{"c":-2,"x":2,"y":1},{"c":7,"x":1,"y":2},{"c":4,"x":0,"y":3}],"grado":3,"solucion":"Queda 3x²y + 7xy² + 4y³. Es homogéneo de grado 3. Es completo en x (2,1,0), pero no en y: falta y⁰."},
+    {"id":"papel-5","enunciado":"Para n entero entre 0 y 10, ¿cuántos valores hacen que 3x^(n−2)y^(n/3) + 5y² sea un polinomio?","familia":[{"c":3,"x":{"a":1,"b":-2,"d":1},"y":{"a":1,"b":0,"d":3}},{"c":5,"x":{"a":0,"b":0,"d":1},"y":{"a":0,"b":2,"d":1}}],"desde":0,"hasta":10,"valores":[3,6,9],"solucion":"Se necesita n ≥ 2 y n divisible entre 3. Dentro del intervalo son 3, 6 y 9: tres valores."}
+  ]
+}

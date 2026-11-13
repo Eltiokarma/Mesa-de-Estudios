@@ -1,0 +1,20 @@
+{
+  "python": "3.12.14",
+  "sistema": "win32",
+  "paquetes": {
+    "PyMuPDF": "2.1",
+    "tesserocr": "2.12.0",
+    "Pillow": "13.0.0"
+  },
+  "motor": "tesseract 5.5.3",
+  "modelo_spa_sha256": "6f2e04d02774a18f01bed44b1111f2cd7f3ba7ac9dc4373cd3f898a40ea6b464",
+  "modelo_origen": "https://github.com/tesseract-ocr/tessdata_fast/blob/main/spa.traineddata",
+  "parametros_finales": {
+    "dpi_objetivo": 200,
+    "lado_maximo_px": 3500,
+    "idioma": "spa",
+    "psm": "AUTO",
+    "trabajadores": 6
+  },
+  "nota": "Las primeras páginas conservan sus dimensiones previas al límite de 3500 píxeles; cada JSON registra dimensiones reales."
+}

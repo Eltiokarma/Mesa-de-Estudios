@@ -1,0 +1,28 @@
+{
+  "generado_utc": "2026-11-09T01:04:56.204691+00:00",
+  "ejercicios": 4,
+  "libro_id": "1GQxXnXKRDrb8SFKemkA-ggcOGep1KE44",
+  "numeros": [
+    240,
+    241,
+    248,
+    249
+  ],
+  "paginas_pdf": [
+    44,
+    45
+  ],
+  "alcance": "Cuatro ejercicios cotejados; no páginas completas.",
+  "resoluciones": "Propias, diferenciadas de la fuente; no se cotejó solución editorial.",
+  "comprobaciones": [
+    "Identidad de escala sobre cada monomio de la base homogénea.",
+    "Igualdad de grados totales y diferencia de grados relativos.",
+    "Exponentes completos descendentes y máximo de sumas de exponentes.",
+    "Dominio exacto de exponentes y demostración del mínimo, complementada con aritmética racional."
+  ],
+  "formato": "Fichas versionadas con identidad de origen, datos estructurados, pasos, evidencia y resultados; HTML y ZIP locales.",
+  "entrega_local": "fuentes/ocr-local/cuzcano/polinomios-lote-4/",
+  "cola_pendiente": 13722,
+  "entradas_cola_actualizadas": 2,
+  "entradas_retiradas": 0
+}

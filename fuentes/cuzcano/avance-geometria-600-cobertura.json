@@ -1,0 +1,119 @@
+{
+  "schema_version": 1,
+  "estado": "completado",
+  "curso": "Geometría",
+  "meta": 600,
+  "fichas": 600,
+  "fichas_sin_observaciones": 497,
+  "fichas_con_observaciones": 103,
+  "temas": [
+    {
+      "id": "geometria.linea-recta-y-angulos",
+      "tema": "Línea recta y ángulos",
+      "fichas": 100,
+      "meta": 100
+    },
+    {
+      "id": "geometria.poligonos-regulares",
+      "tema": "Polígonos regulares",
+      "fichas": 100,
+      "meta": 100
+    },
+    {
+      "id": "geometria.areas-de-regiones-poligonales-y-circulares",
+      "tema": "Áreas de regiones poligonales y circulares",
+      "fichas": 100,
+      "meta": 100
+    },
+    {
+      "id": "geometria.rectas-y-planos",
+      "tema": "Rectas y planos",
+      "fichas": 100,
+      "meta": 100
+    },
+    {
+      "id": "geometria.circunferencia-y-parabola",
+      "tema": "Circunferencia y parábola",
+      "fichas": 100,
+      "meta": 100
+    },
+    {
+      "id": "geometria.elipse-e-hiperbola",
+      "tema": "Elipse e hipérbola",
+      "fichas": 100,
+      "meta": 100
+    }
+  ],
+  "banco": {
+    "fichas": 9382,
+    "cursos": [
+      {
+        "id": "algebra",
+        "curso": "Álgebra",
+        "fichas": 1205,
+        "temas": 17,
+        "temas_con_100": 10,
+        "porcentaje_temas_con_100": 58.8
+      },
+      {
+        "id": "aritmetica",
+        "curso": "Aritmética",
+        "fichas": 1200,
+        "temas": 19,
+        "temas_con_100": 12,
+        "porcentaje_temas_con_100": 63.2
+      },
+      {
+        "id": "fisica",
+        "curso": "Física",
+        "fichas": 1940,
+        "temas": 24,
+        "temas_con_100": 8,
+        "porcentaje_temas_con_100": 33.3
+      },
+      {
+        "id": "geometria",
+        "curso": "Geometría",
+        "fichas": 1548,
+        "temas": 22,
+        "temas_con_100": 7,
+        "porcentaje_temas_con_100": 31.8
+      },
+      {
+        "id": "quimica",
+        "curso": "Química",
+        "fichas": 1177,
+        "temas": 13,
+        "temas_con_100": 2,
+        "porcentaje_temas_con_100": 15.4
+      },
+      {
+        "id": "razonamiento-matematico",
+        "curso": "Razonamiento Matemático",
+        "fichas": 1202,
+        "temas": 15,
+        "temas_con_100": 12,
+        "porcentaje_temas_con_100": 80
+      },
+      {
+        "id": "trigonometria",
+        "curso": "Trigonometría",
+        "fichas": 1110,
+        "temas": 13,
+        "temas_con_100": 2,
+        "porcentaje_temas_con_100": 15.4
+      }
+    ],
+    "temas_geometria_sin_fichas": [
+      "Geometría vectorial",
+      "Nociones generales",
+      "Transformación de coordenadas",
+      "Triángulos y congruencia"
+    ]
+  },
+  "carpeta_local": "fuentes/ocr-local/cuzcano/lote-geometria-600-cobertura",
+  "indice_local": "fichas.json",
+  "lector_local": "index.html",
+  "bloques": 19,
+  "sha256_fichas": "4696ce0aa01726da658f989b4bd144ae6cdeec6cfae8258563372f66f12e5125"
+}

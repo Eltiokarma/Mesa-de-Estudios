@@ -1,0 +1,13 @@
+{
+  "entradas": 198,
+  "contenidos_pdf_unicos": 197,
+  "duplicados": [
+    {
+      "sha256": "def0a976f254a56a66cc45244631889569bc76aaed0facb9e47c928a8986a2b7",
+      "ids": [
+        "1VKgltzV7S4Cv61NhaNX5t9M70J49SVSJ",
+        "1PKJCS_HtBgi7zzbtOlIO6gzEQSRqko8r"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "libro_id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+  "tema": "Prisma y cilindro",
+  "problemas_revisados": [
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17
+  ],
+  "paginas_pdf": [
+    28,
+    29,
+    30,
+    31,
+    32,
+    33
+  ],
+  "ejercicios_verificados": 10,
+  "paginas_completas_certificadas": 0,
+  "siguiente_problema": 18,
+  "lector_local": "fuentes/ocr-local/cuzcano/piloto-geometria-lote-10/index.html",
+  "verificacion": [
+    "Resultados editoriales cotejados visualmente y comprobados con Python.",
+    "Problema 17: dominio geométrico explicitado y doce construcciones 3D independientes.",
+    "Diez fichas y sus imágenes verificadas en navegador; móvil sin desbordamiento.",
+    "Comprobación matemática repetida desde respaldo restaurado sin PDF ni OCR."
+  ],
+  "limites": [
+    "No certifica el libro completo.",
+    "Enunciados y figuras permanecen locales; no forman parte de la aplicación.",
+    "No se repitió el reconocimiento OCR."
+  ],
+  "graficos_vectoriales_reconstruidos": 10,
+  "graficos": "SVG locales con letras, cotas y secciones auxiliares; escaneos disponibles para contraste."
+}
