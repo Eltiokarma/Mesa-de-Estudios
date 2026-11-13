@@ -3,9 +3,9 @@
   "coleccion": "Cuzcano",
   "origen": "Escaneos cotejados con el OCR local",
   "meta": 1000,
-  "fichas_verificadas": 800,
-  "fichas_pendientes": 200,
-  "temas_completos": 8,
+  "fichas_verificadas": 900,
+  "fichas_pendientes": 100,
+  "temas_completos": 9,
   "temas": [
     {
       "id": "razonamiento-matematico.cronometria-relojes",
@@ -58,7 +58,7 @@
     {
       "id": "fisica.fisica-moderna",
       "tema": "Física moderna",
-      "fichas": 0,
+      "fichas": 100,
       "meta": 100
     },
     {
@@ -68,6 +68,6 @@
       "meta": 100
     }
   ],
-  "fichas_banco_local": 11402,
-  "sha256_fichas_locales": "856a69216fe196a60479d854a87a52bd3b7c0806d33f67866999cc406c3df161"
+  "fichas_banco_local": 11502,
+  "sha256_fichas_locales": "9a284024237e4343aa3a615810e6300a7acb15702b9f870b50c76e0d88328353"
 }
