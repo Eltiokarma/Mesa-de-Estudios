@@ -2,7 +2,7 @@
 
 13 de noviembre de 2026. Auditoría pedida por Gerson: «el diseño es hermoso; lo que no es hermoso es la forma de enseñar». Es un documento de evaluación y dirección: no trae código ni cambia nada de la app. Se hizo con los skills `diseno-y-animacion` y `estructura-visual-motion`, leyendo `docs/escena-viva.md`, `docs/pendientes.md` (sección B) y `docs/vision-pisa-agilidad-interaccion.md` (secciones 3 y 4), y midiendo las 99 escenas en una pantalla de celular. Si algo de aquí choca con `CLAUDE.md` o con `docs/escena-viva.md`, mandan ellos.
 
-**Ampliado el mismo día** cuatro veces. Cuarto, las progresiones: tramos, prerrequisitos y niveles de dominio, a partir de una tercera opinión (sección 5.7). Primero, tres unidades de química rediseñadas a pedido de Gerson: materia, tabla periódica y enlace (secciones 7.2 a 7.4). Tercero, más formas de explicar una misma unidad, empezando por razonamiento matemático (sección 5.6). Segundo, una segunda opinión que trajo Gerson (otra conversación, sobre unir Rive con POGIL y sobre otras formas de enseñar). Lo nuevo está en las secciones 5.3 a 5.5, en la columna «Ruta» del temario y en la fila de repaso de la sección 9. Corrige un error de la primera versión: aplicaba POGIL a las 152 unidades.
+**Ampliado el mismo día** cuatro veces. Cuarto, las progresiones: tramos, prerrequisitos y niveles de dominio, a partir de una tercera opinión (sección 5.7), y la pregunta de seguridad (5.8). Primero, tres unidades de química rediseñadas a pedido de Gerson: materia, tabla periódica y enlace (secciones 7.2 a 7.4). Tercero, más formas de explicar una misma unidad, empezando por razonamiento matemático (sección 5.6). Segundo, una segunda opinión que trajo Gerson (otra conversación, sobre unir Rive con POGIL y sobre otras formas de enseñar). Lo nuevo está en las secciones 5.3 a 5.5, en la columna «Ruta» del temario y en la fila de repaso de la sección 9. Corrige un error de la primera versión: aplicaba POGIL a las 152 unidades.
 
 ## 1. En corto
 
@@ -280,8 +280,8 @@ Una tercera opinión que trajo Gerson (otra conversación, que sí leyó el cat�
 
 Las dos últimas son correcciones concretas, no opiniones:
 
-- **Lectura.** Una paráfrasis puede decir algo que el texto dice de forma explícita. La frontera útil es otra: información explícita (literal o reformulada) contra conclusión que obliga a unir dos datos. Cambiar la regla toca los ítems de `clasificar` y el código RV58, así que lo decide Gerson y se revisan solo los ítems afectados.
-- **Medición.** El número sirve, pero el nombre promete otra cosa. O se renombra («acierto sobre lo intentado»), o se agrega la pregunta de seguridad («¿qué tan seguro estás?») y recién ahí se habla de calibración.
+- **Lectura.** Una paráfrasis puede decir algo que el texto dice de forma explícita. La frontera útil es otra: información explícita (literal o reformulada) contra conclusión que obliga a unir dos datos. **Decidido y hecho (13 nov):** la regla ya está corregida en `docs/formato-lectura.md`. Falta revisar las sondas de `clasificar` de 24 textos.
+- **Medición.** El número sirve, pero el nombre promete otra cosa. **Decidido (13 nov):** se agrega la pregunta de seguridad y el número de hoy se renombra. El plan está en 5.8.
 
 **Lo que se toma:**
 
@@ -335,6 +335,42 @@ Las dos últimas son correcciones concretas, no opiniones:
 - **Las dinámicas de pareja** (uno propone y otro comprueba). Son para el modo salón. En el celular a solas se convierten en dos preguntas seguidas, y eso pierde parte de lo que las hace funcionar.
 - **La ficha en las 152 unidades.** Es trabajo editorial grande. Se llena primero donde se va a construir.
 - **Sus fuentes.** Tampoco se pudieron abrir desde aquí. Dos coinciden con lo que el repo ya cita: el estudio de la PUCP con 4535 alumnos (`docs/investigacion/dinamica-ideas-erroneas.md`) y el de ejemplos que se retiran (Reisslein y otros 2006, en el fundacional). El resto queda por verificar.
+
+### 5.8 La pregunta de seguridad y la regla que mantiene al alumno aprendiendo
+
+Decisión de Gerson (13 nov): se agrega la pregunta de seguridad, para calibrar mejor al alumno, y con ella hace falta una buena regla para que siga aprendiendo sin trabarse. **Está planeado, no construido.**
+
+**La pregunta.** Después de responder y antes de ver si acertó: «¿Qué tan seguro estás?», con tres opciones: *Seguro*, *Más o menos* y *Adiviné*. Un toque. «No sé» sigue existiendo y es otra cosa: es no responder.
+
+**Qué mide.** Calibración de verdad: cuánto coincide lo seguro que dice estar con lo que acierta. El número de hoy se renombra «acierto sobre lo intentado» y el nombre «calibración» queda para este.
+
+**Las cuatro combinaciones.** Juntar acierto y seguridad dice más que cada uno por separado:
+
+| El alumno… | Qué es probable | Qué hace la app |
+| --- | --- | --- |
+| Está seguro y acierta | Lo domina | Avanza, le retira apoyos y aleja el repaso |
+| Está seguro y falla | Tiene una idea equivocada firme. Es el caso más valioso | Le muestra su respuesta en la figura junto a la correcta, le da un contraejemplo y vuelve pronto sobre el tema |
+| Duda y acierta | Lo sabe a medias, o adivinó | Otro del mismo tipo sin apoyo, y repaso pronto |
+| Duda y falla | Le falta base | Un ejemplo completo o el desvío del prerrequisito, con un nivel más de apoyo |
+
+**La regla.** Tiene que ser simple, siempre la misma ante lo mismo y explicable al alumno y al profesor; no un modelo opaco. Es el mismo espíritu de la regla 1.
+
+1. **Primero se ajusta el apoyo, no el tema.** Se sube o se baja entre los cuatro niveles de ayuda antes de mandar al alumno a otra unidad.
+2. **Hay una franja de acierto que se busca:** ni tan fácil que aburra ni tan difícil que frustre. Punto de partida, por ajustar con datos: que acierte entre 7 y 8 de cada 10.
+3. **Nunca dos fallos seguidos sin que algo cambie:** otra forma de explicarlo (5.6), más apoyo o el desvío.
+4. **Dos aciertos seguros seguidos** retiran un apoyo o llevan al problema de examen.
+5. **El repaso se programa con las dos señales:** seguro y acierta alarga el intervalo; cualquier otra combinación lo acorta.
+6. **Una señal sola no decide nada.** Hacen falta dos, igual que con los errores (5.3).
+7. **El alumno ve el porqué** en una línea: «Te pongo otro parecido porque dudaste».
+
+**Riesgos y lo que falta decidir:**
+
+- **Cansa.** Es un toque más en cada problema. Quizá se pregunta en uno de cada dos.
+- **Marcar siempre «Seguro».** La seguridad no puede tener premio ni castigo en puntos; si lo tiene, deja de ser sincera.
+- **Dónde se pregunta.** En la práctica y en el repaso, desde el inicio. En las pruebas de entrada y salida daría el dato más limpio, pero las aleja del examen: por decidir, quizá solo en una parte de los ítems.
+- **Quién ve la calibración.** El alumno, la suya. El profesor, por salón o por alumno: por decidir. Nunca como tabla de posiciones.
+- **Tres opciones o cuatro,** y el texto exacto de cada una, se prueban con alumnos.
+- Que esta regla mantenga al alumno aprendiendo es una hipótesis: se comprueba con el avance en los cuatro niveles de 5.7.
 
 ## 6. Dónde entra Rive y dónde no
 
@@ -788,6 +824,7 @@ Una variable por versión, como pide el skill. Cada versión tiene una decisión
 | **R. Cola de repaso** (en paralelo, no depende de las otras) | La app programa preguntas cortas de las unidades ya hechas, en días distintos | Aciertos en el repaso de la semana contra los del día | ¿El repaso cambia lo que el alumno recuerda? Se puede probar en el piloto con las escenas de hoy |
 | **T. La tabla viva** (en paralelo) | Primero solo la tabla plegada en el celular y el reordenamiento de las cartas | Que el símbolo se lea a 360 px; cuadros por segundo al reordenar | ¿Se construye la pieza completa? La reutilizan diez unidades de química |
 | **P. Avance en cuatro niveles** (después de R) | La barra del curso deja de contar unidades vistas y muestra los cuatro niveles de 5.7 | Que un alumno pueda decir qué le falta | ¿Los niveles le sirven al alumno y al profesor? |
+| **S. Pregunta de seguridad** (después de R) | «¿Qué tan seguro estás?» en la práctica y el repaso, y la regla de 5.8 | Si los alumnos la contestan con sinceridad y si la calibración mejora | ¿Se lleva a las pruebas de entrada y salida? |
 | **Los ocho puentes** (después de C) | Una unidad puente por curso con su ficha completa y sus prerrequisitos | Si el desvío corto arregla el fallo de base | El modelo editorial para las 152 |
 | **D. Escalar** | Física y química primero, por utilería compartida: las que usan vaso y mechero, después carrito, después foco | Pruebas de entrada y salida | Con tope de gasto por rutina, como siempre |
 
@@ -809,7 +846,7 @@ Una variable por versión, como pide el skill. Cada versión tiene una decisión
 - **Tiempo por unidad.** Los cinco tiempos pueden tardar más que el paso a paso. Si una unidad pasa de 10 minutos, se parte.
 - **Apilar técnicas.** Con cinco rutas es fácil querer usar las cinco en cada unidad. La regla es una principal y una de apoyo.
 - **La ruta puede estar mal asignada.** Si en la prueba con alumnos una unidad de ruta D se resuelve mejor con un ejemplo, se cambia la ruta y no se fuerza el gesto.
-- **Dos correcciones pendientes de decisión:** la regla de lectura sobre la paráfrasis y el nombre de la «confianza calibrada» (sección 5.7). Las dos cambian datos que ya se miden.
+- **Dos correcciones ya decididas** (sección 5.7): la regla de lectura está cambiada y falta revisar los ítems; la pregunta de seguridad está planeada (5.8). Las dos cambian datos que ya se miden: lo medido antes y después no se compara sin cuidado.
 - **No verificado:** nada se probó con alumnos, ni en un celular físico, ni con lector de pantalla. La detección de «se arrastra» es automática y aproximada. Las relaciones de la columna «lo que descubre» son propuestas sin contrastar con los informes de ideas erróneas. No se leyó material de pogil.org (sigue pendiente en la visión) ni se pudieron abrir las fuentes de la segunda opinión. Las cifras sobre animación del skill no se rastrearon a su fuente.
 
 ## Reporte de diseño
