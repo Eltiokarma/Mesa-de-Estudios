@@ -107,8 +107,9 @@ test('regla 1: el resultado del código debe ser la respuesta', () => {
 test('catálogo, tipos, mapeo y piezas', () => {
   const a = propio(); a.unidad = 'aritmetica.no-existe';
   assert.ok(tiene(errores(a), 'no está en catalogo'));
-  const b = propio(); b.unidad = 'fisica.movimiento-rectilineo';
-  assert.ok(tiene(errores(b), 'es de fisica'));
+  // Una unidad de otro curso vale: el curso es el del libro y la unidad, donde se estudia.
+  const b = propio(); b.unidad = 'fisica.movimiento-rectilineo'; delete b.tipo;
+  assert.ok(!errores(b).some(e => e.startsWith('unidad:')));
   const c = propio(); c.tipo = 'mezclas/otra-cosa';
   assert.ok(tiene(errores(c), 'debe empezar por «porcentajes/»'));
   const d = academia(); d.tipo = 'cortes-y-pesadas/sin-registro';

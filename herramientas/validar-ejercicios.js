@@ -172,8 +172,9 @@ function validarEjercicio(ej, ctx) {
   // Unidad y curso, contra el catálogo.
   if (ej.unidad) {
     const u = ctx.unidades.get(ej.unidad);
+    // La unidad puede ser de otro curso que la ficha (decisión de Gerson, 13 nov 2026): `curso` es el del libro
+    // y `unidad`, donde se estudia. Un libro de razonamiento matemático trae probabilidades, que viven en aritmética.
     if (!u) errores.push(`unidad: «${ej.unidad}» no está en catalogo/cursos/`);
-    else if (ej.curso && u.curso !== ej.curso) errores.push(`unidad: «${ej.unidad}» es de ${u.curso}, no de ${ej.curso}`);
     if (ej.tipo && ej.tipo.split('/')[0] !== ej.unidad.split('.')[1]) errores.push(`tipo: «${ej.tipo}» debe empezar por «${ej.unidad.split('.')[1]}/»`);
   }
   // Mapeo: el propio o el del registro.

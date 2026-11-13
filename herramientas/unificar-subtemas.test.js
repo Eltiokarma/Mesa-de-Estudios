@@ -38,12 +38,12 @@ test('una etiqueta conocida pasa a su nombre unificado y conserva la de origen',
   assert.equal(ej.unidad, 'fisica.movimiento-rectilineo');
 });
 
-test('la unidad es la del subtema cuando es del mismo curso, y la principal del tema cuando es de otro', () => {
+test('la unidad es la del subtema, aunque sea de otro curso', () => {
   const a = ficha('L:propuesto:2', 'tiro'); U.aplicar(a, tablas);
   assert.equal(a.unidad, 'fisica.movimiento-parabolico-y-circular');
   const b = ficha('L:propuesto:3', 'gases'); U.aplicar(b, tablas);
   assert.equal(b.banco.subtema, 'Mezclas de gases');
-  assert.equal(b.unidad, 'fisica.movimiento-rectilineo');   // quimica.gases no es de su curso: cae a la principal
+  assert.equal(b.unidad, 'quimica.gases');   // de otro curso: el curso es el del libro; la unidad, donde se estudia
 });
 
 test('la asignación por ficha manda: sin etiqueta y con etiqueta que juntaba cosas', () => {
@@ -95,7 +95,9 @@ test('el banco versionado está unificado: todo subtema es del vocabulario de su
         assert.ok(v, `${ej.id}: el tema ${ej.banco.tema} no tiene vocabulario`);
         assert.ok(v.canonicos.some(c => c.nombre === ej.banco.subtema), `${ej.id}: «${ej.banco.subtema}» no es un subtema de ${ej.banco.tema}`);
         assert.ok('subtema_fuente' in ej.banco, `${ej.id}: falta la etiqueta de origen`);
-        if (ej.unidad) assert.equal(ej.unidad.split('.')[0], ej.curso, `${ej.id}: unidad de otro curso`);
+        assert.ok(ej.unidad, `${ej.id}: sin unidad`);
+        const can = v.canonicos.find(c => c.nombre === ej.banco.subtema);
+        if (can.unidad && !ej.banco.revision_unidad) assert.equal(ej.unidad, can.unidad, `${ej.id}: la unidad no es la de su subtema`);
       }
     }
   }

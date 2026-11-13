@@ -10,8 +10,8 @@
 // En cada ficha:
 //   banco.subtema         pasa a ser el nombre del subtema unificado;
 //   banco.subtema_fuente  guarda la etiqueta tal como vino (null si no traía);
-//   unidad                es la unidad del subtema si es del mismo curso que la ficha (lo exige el validador);
-//                         si no, la unidad principal del tema (temas.json).
+//   unidad                es la unidad del subtema, aunque sea de otro curso que la ficha (el curso es el del
+//                         libro; la unidad, donde se estudia); si el subtema no trae, la principal del tema.
 // Es idempotente: al repetirlo parte siempre de banco.subtema_fuente. La importación (importar-cuzcano.js)
 // llama a `aplicar` con cada ficha, así que volver a importar no deshace la unificación.
 // Una etiqueta que no está en subtemas.json se deja como vino y se informa.
@@ -48,7 +48,7 @@ function aplicar(ej, tablas) {
   // La etiqueta de origen: la guardada, o la actual la primera vez.
   const fuente = Object.prototype.hasOwnProperty.call(b, 'subtema_fuente') ? b.subtema_fuente : (b.subtema === undefined ? null : b.subtema);
   if (!voc) {
-    if (principal && principal.split('.')[0] === ej.curso) ej.unidad = principal;
+    if (principal) ej.unidad = principal;
     return 'sin-vocabulario';
   }
   const clave = normalizar(fuente);
@@ -56,13 +56,13 @@ function aplicar(ej, tablas) {
   const id = (voc.fichas || {})[b.uid] || (clave === null ? undefined : (voc.etiquetas || {})[clave]);
   const can = id && voc.canonicos.find(c => c.id === id);
   if (!can) {
-    if (principal && principal.split('.')[0] === ej.curso) ej.unidad = principal;
+    if (principal) ej.unidad = principal;
     return 'sin-asignar';
   }
   b.subtema_fuente = fuente;
   b.subtema = can.nombre;
-  const unidad = can.unidad && can.unidad.split('.')[0] === ej.curso ? can.unidad : principal;
-  if (unidad && unidad.split('.')[0] === ej.curso) ej.unidad = unidad;
+  const unidad = can.unidad || principal;
+  if (unidad) ej.unidad = unidad;
   return 'unificado';
 }
 
