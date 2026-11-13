@@ -4,6 +4,81 @@
 
 **Ampliado el mismo día** cuatro veces. Cuarto, las progresiones: tramos, prerrequisitos y niveles de dominio, a partir de una tercera opinión (sección 5.7), y la pregunta de seguridad (5.8). Quinto, las correcciones de una investigación externa que verificó las fuentes (`docs/investigacion/verificacion-pogil-v2.md`): cifras de la sección 4, la tabla periódica, la regla de lectura y Rive. Primero, tres unidades de química rediseñadas a pedido de Gerson: materia, tabla periódica y enlace (secciones 7.2 a 7.4). Tercero, más formas de explicar una misma unidad, empezando por razonamiento matemático (sección 5.6). Segundo, una segunda opinión que trajo Gerson (otra conversación, sobre unir Rive con POGIL y sobre otras formas de enseñar). Lo nuevo está en las secciones 5.3 a 5.5, en la columna «Ruta» del temario y en la fila de repaso de la sección 9. Corrige un error de la primera versión: aplicaba POGIL a las 152 unidades.
 
+## 0. Estrategia final (13 nov, confirmada con el skill de diseño)
+
+Esta sección resume lo que quedó decidido después de la auditoría, las tres opiniones externas y la verificación de fuentes. Si algo de más abajo la contradice, manda esta sección. Quien llega nuevo lee esto y después la sección 7.5.
+
+**En una frase:** cada unidad pasa de «leer y pulsar Siguiente» a «hacer y registrar», con el motor de siempre haciendo las cuentas; Rive solo viste los pocos objetos que el alumno agarra.
+
+### Lo que está cerrado
+
+| Tema | Decisión |
+| --- | --- |
+| Alcance | Las 152 unidades entran al piloto con el formato nuevo. MRU y MRUV va primero y completa; sirve de molde (sección 7.5) |
+| Orden de trabajo | Tres capas: **formato** (las 152), **gesto** (las 83 de ruta descubrir, empezando por las 24 de física y química que hoy usan deslizador) y **utilería** (32). Es orden, no recorte |
+| Cómo se enseña | Cinco rutas (descubrir, seguir un ejemplo, comparar, recordar y argumentar), una principal y una de apoyo por unidad. Gerson revisa la asignación |
+| Quién dibuja qué | El texto y los controles, HTML. Todo lo que se mide, el motor y el kit. Lo que tiene material o actitud, Rive. El dedo lo lee la página, nunca Rive |
+| Rive | Catálogo cerrado de 15 archivos: la mascota, 8 objetos de utilería, 3 personajes y 3 piezas de interfaz. Sin scripts, sin texto adentro, runtime canvas, dos lienzos como máximo, uno moviéndose a la vez y respaldo SVG siempre |
+| Lo que no va en Rive | La tabla periódica (pieza mayor del kit), las partículas, las gráficas, las nubes y los globos de enlace, y todo razonamiento verbal |
+| Después de la lección | Repaso en días distintos y práctica mezclada. Es lo que más respaldo tiene de todo el plan |
+| Seguridad | «¿Qué tan seguro estás?» en la prueba de entrada y en los ejercicios; en la salida, no. Sus umbrales son hipótesis |
+| Medición | Cuatro niveles por unidad (la estudié, con ayuda, solo, la recuerdo) y tres resultados: comprensión, resolución sin pistas y retención |
+| Presupuesto | Tres planes de IA de 200 USD al mes durante tres meses. El costo no recorta. Limitan el calendario, los límites semanales y la calidad |
+
+### Cómo se produce cada objeto: primero SVG, después Rive
+
+Este orden sale del skill (la mascota y la utilería piden hoja de modelo antes de dibujar) y de la regla del respaldo:
+
+1. **Encargo.** Una ficha por objeto: para qué unidades, qué recibe del motor, qué partes se mueven, tamaño en pantalla y paleta (nunca los colores de las variables).
+2. **Hoja de modelo.** Rasgos que no cambian, proporciones y contorno. Se escribe una vez.
+3. **Vector en SVG.** Es la versión A de la unidad y, después, el respaldo del `.riv`. Se mira a su tamaño real y ampliado.
+4. **Prueba en el celular real** con la unidad funcionando.
+5. **Recién ahí, Rive,** con su contrato de entradas, menos de 100 KB, sin difuminados ni mallas, y la prueba de fidelidad (lo que se ve coincide con el motor dentro de 1 px).
+
+Así ninguna unidad espera a Rive para funcionar, y Rive solo se hace donde ya se vio que hace falta.
+
+### Dos avisos que el agente le hace a Gerson
+
+Son reglas de trabajo: el agente se detiene y pide; no improvisa.
+
+| Cuándo | Qué pide | Por qué |
+| --- | --- | --- |
+| **Cuando una unidad necesita un objeto dibujado** (el primero es el carrito de MRU y MRUV) | La lista de vectores de esa unidad, con el encargo de cada uno ya escrito. Gerson los hace con su MCP y con IA generativa | El arte final es de Gerson. El agente puede poner un trazo provisional del kit para no frenar la lógica, y lo dice |
+| **Cuando hace falta Rive de pago** | Que Gerson pague la suscripción. Con el plan gratis se puede probar: sí exporta, con la pantalla de inicio de Rive. Hay que pedir el plan Cadet antes de que un `.riv` llegue a alumnos, o cuando el plan gratis estorbe (permite 3 archivos y el catálogo tiene 15) | No gastar antes de que la versión A y la prueba de estrés digan que Rive vale la pena |
+
+### Los más de 10 000 ejercicios
+
+Van a entrar más de 10 000, no 7000 (Gerson, 13 nov). La filosofía no cambia y no se olvida (regla 5 de `CLAUDE.md`):
+
+- **Los de academia inspiran y se replican:** dicen qué se pregunta y cómo, y alimentan generadores propios. Nunca se copian sus enunciados, soluciones ni figuras.
+- **Los de examen oficial de universidad pública se usan tal cual y se citan** con universidad y periodo. La solución y la figura se rehacen.
+- **Dónde encajan en esta estrategia:** son el problema de examen del tiempo 5 (transferir), el material de la cola de repaso y de la práctica mezclada, y la base de los ejemplos que se completan (ruta E). Cada bloque se mapea a una unidad y a su ruta antes de construir.
+- El plan de la tanda está en `docs/ejercicios-7000.md`, que conserva su nombre.
+
+### Confirmación con el skill
+
+Las ocho leyes del skill, contra la estrategia:
+
+| Ley | ¿Se cumple? | Lo que hay que vigilar |
+| --- | --- | --- |
+| 1. Tarea antes que envoltura | Sí: el gesto y los cinco tiempos se deciden antes que el arte | Que ninguna unidad empiece por el dibujo |
+| 2. Todo declara su oficio | Sí: cada utilería responde «si se quita, ¿qué se pierde?» | El arte generado con IA tiende a traer adornos. Lo que no tiene oficio se quita |
+| 3. Fidelidad | Sí: lo medible lo dibuja el motor; hay prueba de fidelidad y casillas «sin dato» | Las interpolaciones de Rive sobre algo que se mide |
+| 4. Estado honesto | Planeado: cuatro niveles de dominio y «acierto sobre lo intentado» | Hoy el avance cuenta unidades vistas. Mientras no cambie, que diga «estudiada» y no «dominada» |
+| 5. El final se entiende solo | Sí: los registros quedan fijos y con movimiento reducido se ven los mismos estados | Probarlo de verdad en MRU y MRUV |
+| 6. Sistema cerrado | Sí: 13 gestos, 5 rutas, 15 archivos y los tiempos de `docs/escena-viva.md` | **El riesgo mayor.** Con 152 unidades hechas por rutinas en paralelo, cada una puede irse por su lado. Hace falta un validador del formato nuevo (palabras antes del primer toque, figura y tarea en una pantalla, alternativa sin arrastrar), como ya existe para los ejercicios |
+| 7. La dificultad vive en la idea | Sí: valores que se ajustan solos, sin puntería, con botones como alternativa | Que el ajuste se le diga al alumno |
+| 8. Usar no es comprender | Sí: todo va como hipótesis y con su forma de medirse | Se escala sin prueba previa con alumnos (decisión del 5 nov). La prueba con cinco alumnos de MRU y MRUV es la única red |
+
+Del skill salen además las reglas del gesto, que heredan todas las unidades: lo que se arrastra sigue al dedo uno a uno; la rapidez del empujón se mide sobre los últimos 100 ms; al soltar, el objeto se asienta sin rebote; siempre hay otra forma de hacerlo sin arrastrar; y la mascota descansa mientras el alumno manipula.
+
+**Lo que todavía no está claro** (se aclara construyendo, no pensando más):
+
+- Cuánto aguanta el celular de 4 GB: sale de la prueba de estrés.
+- Si Rive agrega algo sobre el mismo objeto en SVG: sale de comparar las versiones A y B.
+- Si los vectores hechos con IA pasan el peso y la cantidad de vértices.
+- Si la asignación de rutas aguanta la revisión de Gerson y la prueba con alumnos.
+
 ## 1. En corto
 
 - **Veredicto:** ¿se entiende? A medias: se entiende leyendo. ¿Se siente? No. La cáscara ya es acogedora; la lección sigue siendo una presentación de diapositivas con un dibujo al lado.
