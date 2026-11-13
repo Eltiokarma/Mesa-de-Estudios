@@ -265,3 +265,70 @@ test('papel.json: cada respuesta se recalcula por fuerza bruta', () => {
   const p10p = Math.max(...rango(0, 40).filter(x => x * x - 30 * x + 200 <= 0)), p10q = rango(-5, 40).find(x => x * x - 9 * x + 14 < 0);
   assert.equal((p10p - p10q) / (10 + 7), 1); assert.match(R.p10, /^1 hora/);
 });
+
+// ---------- Escena viva (docs/escena-viva.md): recta del kit, arrastre, línea de tiempo y fantasmas ----------
+const Kit = require('../../nucleo/kit/kit.js');
+const recta = require('../../nucleo/kit/piezas/recta.js');
+const LT = require('../../nucleo/kit/linea-tiempo.js');
+const SIN_ESCENA = new Set(['dos-enteros', 'medias', 'lineal-entera']);
+const VIVOS = Array.from({ length: 400 }, (_, s) => gen.generar(s));
+
+test('escena viva: los tipos que caben en la recta la traen; los otros siguen como siempre', () => {
+  const con = new Set(), sin = new Set();
+  for (const p of VIVOS) (p.escena ? con : sin).add(p._datos.tipo);
+  assert.deepEqual([...sin].sort(), [...SIN_ESCENA].sort());
+  assert.equal(con.size, 7);
+});
+
+test('escena viva: presupuesto de texto (enunciado ≤ 40, paso ≤ 14, error ≤ 20) en todos los tipos', () => {
+  for (const [s, p] of VIVOS.entries()) {
+    assert.ok(Kit.palabras(p.enunciado) + Kit.palabras(p.pregunta) <= 40, `semilla ${s}: enunciado de ${Kit.palabras(p.enunciado) + Kit.palabras(p.pregunta)}`);
+    for (const q of p.pasos || p.solucion.map(t => ({ texto: t }))) assert.ok(Kit.palabras(q.texto) <= 14, `semilla ${s}: «${Kit.plano(q.texto)}»`);
+    for (const a of p.alternativas.filter(x => x.error)) assert.ok(Kit.palabras(a.error.explicacion) <= 20, `semilla ${s}: «${a.error.explicacion}»`);
+  }
+});
+
+test('escena viva: cada paso se dibuja sin NaN y el final muestra la respuesta', () => {
+  for (const [s, p] of VIVOS.entries()) {
+    if (!p.escena) continue;
+    assert.equal(p.escena.pieza, 'recta'); assert.ok(Kit.piezas.recta);
+    assert.ok(p.pasos.length >= 2 && p.pasos[p.pasos.length - 1].estado.final, `semilla ${s}: el último paso es el resultado`);
+    for (let i = 1; i <= p.pasos.length; i++) {
+      const svg = recta.dibujar(p.escena.datos, LT.estado(p.pasos, i));
+      assert.ok(!/NaN|undefined|null|Infinity/.test(svg), `semilla ${s}, paso ${i}`);
+      assert.ok(!/NaN|undefined|null/.test(Kit.plano(p.pasos[i - 1].texto) + Kit.plano(p.pasos[i - 1].ecuacion)), `semilla ${s}, paso ${i}`);
+    }
+    const fin = recta.dibujar(p.escena.datos, LT.estado(p.pasos, p.pasos.length));
+    if (p.respuesta.tipo === 'arrastrar') assert.ok(fin.includes(`>${Kit.formatear(p.respuesta.valor)}${p.escena.datos.sufijo} ✓<`), `semilla ${s}: el final no dibuja la respuesta`);
+    for (const f of Object.values(p.fantasmas)) assert.ok(!/NaN|undefined|null/.test(recta.dibujar(p.escena.datos, { corte: 0, fantasma: f })));
+  }
+});
+
+test('escena viva: el entero que deja la recta es el de la respuesta (los rótulos dicen lo que valen)', () => {
+  const num = t => Number(t.replace('…', '').replace(',', '.').replace('−', '-').split('/').reduce((a, b) => a / b));
+  for (const [s, p] of VIVOS.entries()) {
+    if (!p.escena || p.respuesta.tipo !== 'arrastrar') continue;
+    const ent = p.escena.datos.elementos.find(e => e.tipo === 'enteros');
+    assert.equal(ent.b, p.respuesta.valor, `semilla ${s}`);
+    assert.ok(ent.rotulo.endsWith(String(p.respuesta.valor)), `semilla ${s}: «${ent.rotulo}»`);
+    for (const e of p.escena.datos.elementos.filter(x => x.tipo === 'intervalo' && /^[a-zA-Z]+ [<>] /.test(x.rotulo || ''))) {
+      const cota = e.a === null ? e.b : e.a;
+      assert.ok(Math.abs(num(e.rotulo.split(/[<>] /)[1]) - cota) < 0.01, `semilla ${s}: «${e.rotulo}» rotula ${cota}`);
+    }
+  }
+});
+
+test('escena viva: con arrastre, cada opción se alcanza con la marca y equivale a sí misma; su fantasma está en su valor', () => {
+  for (const [s, p] of VIVOS.entries()) {
+    if (!p.escena || p.respuesta.tipo !== 'arrastrar') continue;
+    const r = p.respuesta, c = recta.controles(p.escena.datos).marca;
+    assert.equal(r.control, 'marca');
+    const ids = p.alternativas.filter(a => a.error).map(a => a.error.id);
+    for (const a of p.alternativas) {
+      assert.ok(a.valor >= c.min && a.valor <= c.max, `semilla ${s}: ${a.texto} no cabe en la recta`);
+      const puesto = Kit.respuesta.ajustar(a.valor, r.paso, c.min, c.max);
+      assert.equal(Kit.respuesta.clasificar(puesto, p.alternativas, r.tolerancia), a, `semilla ${s}: ${a.texto}`);
+      if (a.error && ids.filter(i => i === a.error.id).length === 1) assert.equal(p.fantasmas[a.error.id].marca, a.valor);
+    }
+  }
+});

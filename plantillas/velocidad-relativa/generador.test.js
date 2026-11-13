@@ -175,3 +175,48 @@ test('incorrectas tan limpias como la correcta y de tamaño razonable (600 semil
   assert.ok(sola / n < 0.05, `la correcta es la única redonda en ${sola} de ${n}`);
   for (const s of [...Array(2001).keys(), 'entrada-1', 'entrada-2', 'salida-1', 'salida-3']) assert.doesNotThrow(() => gen.generar(s), `semilla ${s}`);
 });
+
+// ---------- Escena viva (docs/escena-viva.md): recta del kit, línea de tiempo y fantasmas ----------
+const Kit = require('../../nucleo/kit/kit.js');
+const recta = require('../../nucleo/kit/piezas/recta.js');
+const LT = require('../../nucleo/kit/linea-tiempo.js');
+const VIVOS = Array.from({ length: 600 }, (_, s) => gen.generar(s));
+
+test('escena viva: marco (combis y placas), encuentro y alcance traen la recta; los demás, no', () => {
+  const con = new Set();
+  for (const p of VIVOS) if (p.escena) con.add(`${p._datos.tipo}/${p._datos.sub}`);
+  assert.deepEqual([...con].sort(), ['cruce/alcance', 'cruce/encuentro', 'marco/combis', 'marco/placas']);
+});
+
+test('escena viva: presupuesto de texto (enunciado ≤ 40, paso ≤ 14, error ≤ 20) en todos los tipos', () => {
+  for (const [s, p] of VIVOS.entries()) {
+    assert.ok(Kit.palabras(p.enunciado) + Kit.palabras(p.pregunta) <= 40, `semilla ${s}: enunciado de ${Kit.palabras(p.enunciado) + Kit.palabras(p.pregunta)}`);
+    for (const q of p.pasos || p.solucion.map(t => ({ texto: t }))) assert.ok(Kit.palabras(q.texto) <= 14, `semilla ${s}: «${Kit.plano(q.texto)}»`);
+    for (const a of p.alternativas.filter(x => x.error)) assert.ok(Kit.palabras(a.error.explicacion) <= 20, `semilla ${s}: «${a.error.explicacion}»`);
+  }
+});
+
+test('escena viva: cada paso se dibuja sin NaN; los rótulos dicen lo que valen', () => {
+  for (const [s, p] of VIVOS.entries()) {
+    if (!p.escena) continue;
+    const d = p.escena.datos;
+    for (let i = 1; i <= p.pasos.length; i++) assert.ok(!/NaN|undefined|null|Infinity/.test(recta.dibujar(d, LT.estado(p.pasos, i))), `semilla ${s}, paso ${i}`);
+    for (const f of Object.values(p.fantasmas)) assert.ok(!/NaN|undefined|null/.test(recta.dibujar(d, { corte: 0, fantasma: f })));
+    const saltos = d.elementos.filter(e => e.tipo === 'salto');
+    if (p._datos.tipo === 'marco') {
+      // La flecha va de vB a vA y rotula |vA − vB|, la rapidez relativa.
+      assert.equal(saltos[0].a, p._datos.vB); assert.equal(saltos[0].b, p._datos.vA);
+      assert.ok(saltos[0].rotulo.startsWith(Kit.formatear(Math.abs(p._datos.vA - p._datos.vB))));
+    } else {
+      // Lo que recorre cada uno suma la distancia (encuentro) o la diferencia es la distancia (alcance), en el tiempo pedido.
+      const t = p.respuesta.valor, { v1, v2, D } = p._datos;
+      assert.ok(Math.abs(saltos[0].b - v1 * t) < 1e-9 && Math.abs(Math.abs(saltos[1].b - saltos[1].a) - Math.abs(v2) * t) < 1e-9);
+      assert.ok(Math.abs(saltos[0].b - saltos[1].b) < 1e-9, `semilla ${s}: los dos terminan en el mismo punto`);
+      assert.equal(saltos[1].a, D);
+      for (const [id, f] of Object.entries(p.fantasmas)) if (f.marca !== undefined) {
+        const a = p.alternativas.find(x => x.error && x.error.id === id);
+        assert.ok(Math.abs(f.marca - v1 * a.valor) < 1e-9 && f.marca >= d.min && f.marca <= d.max);
+      }
+    }
+  }
+});

@@ -251,3 +251,55 @@ test('papel.json: 5 a 10 problemas con sus campos, y las respuestas se recalcula
   // p10: con 6, 7, 10 y 21.
   assert.equal(recalcular({ _datos: { tipo: 'formar', numeros: [6, 7, 10, 21] } }), 'num:2/7'); con('p10', '2/7');
 });
+
+// ---------- Escena viva (docs/escena-viva.md): recta del kit, arrastre, línea de tiempo y fantasmas ----------
+const Kit = require('../../nucleo/kit/kit.js');
+const recta = require('../../nucleo/kit/piezas/recta.js');
+const LT = require('../../nucleo/kit/linea-tiempo.js');
+const VIVOS = Array.from({ length: 400 }, (_, s) => gen.generar(s));
+
+test('escena viva: acotada, stock y trabajo traen la recta; los de divisibilidad y cifras, no', () => {
+  const con = new Set();
+  for (const p of VIVOS) if (p.escena) con.add(p._datos.tipo);
+  assert.deepEqual([...con].sort(), ['acotada', 'stock', 'trabajo']);
+});
+
+test('escena viva: presupuesto de texto (enunciado ≤ 40, paso ≤ 14, error ≤ 20) en todos los tipos', () => {
+  for (const [s, p] of VIVOS.entries()) {
+    assert.ok(Kit.palabras(p.enunciado) + Kit.palabras(p.pregunta) <= 40, `semilla ${s}: enunciado de ${Kit.palabras(p.enunciado) + Kit.palabras(p.pregunta)}`);
+    for (const q of p.pasos || p.solucion.map(t => ({ texto: t }))) assert.ok(Kit.palabras(q.texto) <= 14, `semilla ${s}: «${Kit.plano(q.texto)}»`);
+    for (const a of p.alternativas.filter(x => x.error)) assert.ok(Kit.palabras(a.error.explicacion) <= 20, `semilla ${s}: «${a.error.explicacion}»`);
+  }
+});
+
+test('escena viva: cada paso se dibuja sin NaN; el final muestra la respuesta si es un punto de la recta', () => {
+  for (const [s, p] of VIVOS.entries()) {
+    if (!p.escena) continue;
+    assert.equal(p.escena.pieza, 'recta');
+    assert.ok(p.pasos[p.pasos.length - 1].estado.final);
+    for (let i = 1; i <= p.pasos.length; i++) {
+      const svg = recta.dibujar(p.escena.datos, LT.estado(p.pasos, i));
+      assert.ok(!/NaN|undefined|null|Infinity/.test(svg), `semilla ${s}, paso ${i}`);
+      assert.ok(!/NaN|undefined|null/.test(Kit.plano(p.pasos[i - 1].texto) + Kit.plano(p.pasos[i - 1].ecuacion)));
+    }
+    const fin = recta.dibujar(p.escena.datos, LT.estado(p.pasos, p.pasos.length));
+    if (p._datos.tipo !== 'acotada') assert.ok(fin.includes(`>${Kit.formatear(p.respuesta.valor)}${p.escena.datos.sufijo} ✓<`), `semilla ${s}`);
+    else assert.ok(fin.includes(`>${p.escena.datos.elementos[2].rotulo}<`) && !/✓/.test(fin), 'acotada cuenta valores: no hay un punto que marcar');
+  }
+});
+
+test('escena viva: en stock la respuesta se arrastra; cada opción se alcanza y su fantasma está en su valor', () => {
+  for (const [s, p] of VIVOS.entries()) {
+    if (!p.escena || p._datos.tipo !== 'stock') continue;
+    const r = p.respuesta, c = recta.controles(p.escena.datos).marca;
+    assert.equal(r.tipo, 'arrastrar');
+    const N = p.escena.datos.elementos.find(e => e.tipo === 'punto');
+    assert.equal(N.x, r.valor); assert.equal(N.rotulo, `N = ${r.valor}`);
+    const ids = p.alternativas.filter(a => a.error).map(a => a.error.id);
+    for (const a of p.alternativas) {
+      assert.ok(a.valor >= c.min && a.valor <= c.max, `semilla ${s}: ${a.texto} no cabe`);
+      assert.equal(Kit.respuesta.clasificar(Kit.respuesta.ajustar(a.valor, r.paso, c.min, c.max), p.alternativas, r.tolerancia), a);
+      if (a.error && ids.filter(i => i === a.error.id).length === 1) assert.equal(p.fantasmas[a.error.id].marca, a.valor);
+    }
+  }
+});
