@@ -3,9 +3,9 @@
   "coleccion": "Cuzcano",
   "origen": "Escaneos cotejados con el OCR local",
   "meta": 1000,
-  "fichas_verificadas": 635,
-  "fichas_pendientes": 365,
-  "temas_completos": 6,
+  "fichas_verificadas": 721,
+  "fichas_pendientes": 279,
+  "temas_completos": 7,
   "temas": [
     {
       "id": "razonamiento-matematico.cronometria-relojes",
@@ -46,13 +46,13 @@
     {
       "id": "fisica.electromagnetismo",
       "tema": "Electromagnetismo",
-      "fichas": 35,
+      "fichas": 100,
       "meta": 100
     },
     {
       "id": "fisica.optica",
       "tema": "Óptica",
-      "fichas": 0,
+      "fichas": 21,
       "meta": 100
     },
     {
@@ -68,6 +68,6 @@
       "meta": 100
     }
   ],
-  "fichas_banco_local": 11237,
-  "sha256_fichas_locales": "6a407785d0b3309b3a50cacefaa601ca455ebe9ee94ffc64e36020d88d18de41"
+  "fichas_banco_local": 11323,
+  "sha256_fichas_locales": "e5e5abdf70499b376caf2a63617679c9b7164ed22e4bc1ffe98a8cbbf5460897"
 }
