@@ -31,6 +31,7 @@ docs/temario-completo.md       las 152 unidades con ruta, gesto, tramo y campos 
 docs/escena-viva.md            contrato del rediseño: el ejercicio se cuenta solo (topes de texto, formato escena/pasos/fantasmas, kit, mascota Rive)
 nucleo/kit/                    kit común de escenas: trazo, línea de tiempo y piezas (barra-porcentaje)
 nucleo/mascota.js, app/mascotas/  hueco de mascotas Rive con respaldo SVG; probar.html para el diseñador
+nucleo/repaso.js, app/repaso.js  cola de repaso (versión R): preguntas de generadores en días distintos y mezcladas; estado en est.repaso
 docs/ejercicios-7000.md        plan de la tanda de ejercicios (serán más de 10 000); validador en herramientas/validar-ejercicios.js
 docs/diseno.md                 sistema de diseño: colores de marca y de variables, componentes, celular y pantalla grande
 catalogo/                      qué se enseña: cursos, unidades, en qué universidad entra cada una (JSON; ver catalogo/LEEME.md)

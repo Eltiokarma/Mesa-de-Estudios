@@ -1,6 +1,6 @@
 # Pendientes y traspaso
 
-Actualizado el 13 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Estado al 13 nov, tarde».
+Actualizado el 13 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Estado al 13 nov, tarde» (la cola de repaso, recién hecha, va justo antes).
 
 ## Cómo arrancar una sesión nueva
 
@@ -8,7 +8,7 @@ Actualizado el 13 de noviembre de 2026. La siguiente sesión empieza aquí: lée
 npm test
 ```
 
-Deben pasar 7899 pruebas. El servidor tiene las suyas: `cd servidor && pip install -r requirements.txt && python -m pytest -q` (79).
+Deben pasar 8059 pruebas. El servidor tiene las suyas: `cd servidor && pip install -r requirements.txt -r requirements-dev.txt && python -m pytest -q` (81).
 
 ```bash
 npm run dev
@@ -26,6 +26,60 @@ Si hay que hacer OCR, instala tesseract en español: `apt-get install -y tessera
 
 - **Si el servidor local muere:** se reinicia con `node herramientas/servidor.js`. También hay que reiniciarlo después de cambiar `herramientas/construir-catalogo.js`, porque guarda el módulo en memoria.
 - **Para verificar a mano:** Playwright y Chromium ya vienen instalados en el entorno en la nube (`require('playwright')`). Las capturas *fullPage* pierden la emulación táctil, así que lo que depende de `hover` se revisa con capturas normales.
+
+## Cola de repaso (versión R), 13 nov, en `main` (sw v170)
+
+**Qué hay.**
+- `nucleo/repaso.js` es la lógica pura, con pruebas en `nucleo/repaso.test.js`. Guarda en `est.repaso[unidad] = { desde, paso, toca, hechos, aciertos, ultimo }` y el tope del día en `est.repasoDia`.
+- `app/repaso.js` es la pantalla `#/repaso`. Hay una tarjeta «Repaso de hoy» en el inicio (solo si hay algo pendiente; si no, «Tu próximo repaso: …») y una línea en Progreso.
+
+**Reglas, decididas por Gerson el 13 nov. Las marcadas como hipótesis se ajustan con el piloto.**
+- **Cuándo entra una unidad.** Cuando el alumno **termina un ejercicio** de esa unidad: una predicción de escena o de práctica, o una pregunta del simulacro. Abrirla o marcarla no cuenta. Su *día 0* es el día de ese ejercicio.
+- **Intervalos (hipótesis).** 2, 7, 21 y 45 días. Un fallo o un «No sé» la devuelve a 2 días.
+- **Tope (hipótesis).** 4 preguntas por día.
+- **Mezcla.** Una pregunta por unidad, alternando cursos.
+- **Formato.** Sin escena y sin animación. La explicación y el enlace a la unidad solo aparecen si falla.
+- **De dónde salen las preguntas.** De los generadores, con semilla nueva (`repaso-<alumno>-<unidad>-<hechos>-<k>`). Nunca del banco Cuzcano ni de `catalogo/pruebas/` (regla 5).
+- **«¿Qué tipo de problema es?»** Va antes de resolver, con 3 unidades del mismo curso.
+
+**Dos decisiones mías, para que Gerson las confirme.**
+1. **Solo entran las unidades con un generador propio,** es decir, cuya unidad principal (`unidades[0]`) es esa: 64 de las 109 que tienen generador. Un generador que cubre varias unidades no cambia según la unidad. Por ejemplo, «Conjuntos» se habría repasado con un problema de porcentajes. Quedan fuera 88 de las 152: las 18 de razonamiento verbal y otras 70.
+2. **La pregunta del tipo solo sale cuando la respuesta es inequívoca:** si el generador cubre una sola unidad (32 unidades) o si el problema trae `p.unidadCatalogo`. En los 32 generadores mixtos se salta. Un ejemplo: `sistemas-ecuaciones` trae trazas de matrices, y responder «es de Sistemas de ecuaciones» enseñaría una etiqueta falsa.
+
+   **Para que el tipo salga en todas,** cada generador mixto tendría que devolver `unidadCatalogo` según su variante. Es un cambio chico por generador y aún no se hizo.
+
+**Medición.**
+- **Un evento `repaso-item` por pregunta,** con:
+  - `paso`, `dias`, `atraso` y `desde`;
+  - `tipoOpcion` y `tipoBien`, si hubo pregunta del tipo.
+- **Un evento `repaso` por tanda.**
+- **`Medicion.resumirRepaso`.** Compara el acierto del día 0 con el del repaso, por tramos de días (1–3, 4–10, 11–30, 31+), solo con pares alumno-unidad. Su informe está en `herramientas/analizar-medicion.js`.
+- **Ojo:** el acierto del día 0 junta escenas y prácticas, mientras que el repaso es siempre de generador. El día 0 se cuenta en hora del Perú.
+
+**Con cuenta.** `est.repaso` se une por unidad: gana la ficha con más `hechos`; si empatan, la del `ultimo` más reciente, y `desde` se queda con la fecha más antigua. Esa regla está en `nucleo/sesion.js` y en `servidor/app/union.py`, con prueba en pytest, y el contrato está en `docs/cuentas.md`.
+
+**Lo que se verificó.**
+- Playwright a 360 px, con el reloj del navegador fijado en hora de Lima:
+  - entra a la cola con ejercicios del 10 nov y aparece el 13;
+  - la unidad sin generador propio no entra;
+  - la tanda corre completa: tipo, alternativa, «No sé», retroalimentación y cierre;
+  - se guardan los eventos y la ficha;
+  - el mismo día el inicio dice «Tu próximo repaso: domingo, 15 de noviembre», y con el reloj en el 15 vuelve la tarjeta;
+  - no hay desborde horizontal ni errores de consola.
+- Las pruebas de Node y de pytest pasan.
+
+**Lo que no se verificó.**
+- El paso real de los días en un celular, que solo se simuló con el reloj.
+- La sincronización contra el servidor real de Railway: solo se probó la unión en pytest.
+- El modo sin conexión con el service worker activo. La prueba se hizo con el SW bloqueado; los generadores ya estaban en la caché de antes.
+- Un acierto dentro del navegador, que alarga el intervalo. Eso solo está cubierto por las pruebas de `nucleo/repaso.test.js`.
+- Nada se probó con alumnos.
+
+**Pendientes del repaso.**
+- Repaso de razonamiento verbal con los textos de lectura.
+- `unidadCatalogo` en los generadores mixtos.
+- La pregunta de seguridad (versión S), que también alarga o acorta el intervalo según 5.8.
+- Que el profesor vea el repaso de su sección en su panel.
 
 ## Estado al 13 nov, tarde: auditoría POGIL v2 y decisiones (léelo primero)
 
@@ -66,7 +120,7 @@ Sesión de **planificación**: no se construyó nada de la app. Lo que sigue se 
 2. **Versión A:** MRU y MRUV con los cinco tiempos y el gesto de soltar, sin Rive (sección 7.5). Es el molde para las demás.
 3. **Versión B:** la misma unidad con utilería de Rive, para comparar.
 4. **En paralelo, sin depender de lo anterior:**
-   - la cola de repaso (preguntas cortas de unidades ya hechas, en días distintos y mezcladas);
+   - ~~la cola de repaso~~ (hecha el 13 nov: ver «Cola de repaso (versión R)» arriba);
    - la tabla plegada en el celular (primer paso de la tabla viva);
    - revisar las sondas de `clasificar` con la regla nueva (24 textos de `contenido/razonamiento-verbal/textos/`);
    - validar con un subagente las fichas del banco Cuzcano (decisión 18): ~~las 894 sin `unidad`, el validador y edades y móviles~~ (hecho el 14 nov); falta el vocabulario de las unidades que se construyen primero, empezando por MRU y MRUV.
