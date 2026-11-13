@@ -11,10 +11,26 @@ Mandan dos reglas de `CLAUDE.md`:
 
 La tanda anterior costó cerca de 1000 USD contra 300 estimados. Este plan está hecho para no repetirlo: **se cuenta antes de construir, se construye por Pareto y cada rutina tiene tope.**
 
+## Decisiones de Gerson (13 nov 2026)
+
+1. **Formato:** llegan en PDF o en HTML, con clave y **resueltos**. El cortador (`herramientas/cortar-ejercicios.js`) acepta los dos, además de texto. Las resoluciones de la fuente se guardan aparte (`soluciones.ndjson`, en `fuentes/`, que no se versiona) y solo sirven para contrastar la clave y el valor recalculado. No se publican: la solución se rehace (regla 5).
+2. **Ritmo: bloques de 100 ejercicios de un tema de un curso.** Cada bloque recorre todo el camino antes de abrir el siguiente: cortar, clasificar, contar, mapear, migrar o construir, verificar y publicar. Así cada bloque deja algo publicado y medible, y el costo se controla bloque a bloque.
+3. **Alcance:** todo lo que se pueda, priorizando 3.º, 4.º y 5.º de secundaria. Los bloques se ordenan por el grado de la unidad en el catálogo (primero 3.º, luego 4.º, luego 5.º) y, dentro de cada grado, por cantidad de ejercicios.
+4. **Sin respuesta todavía:** el tope total de gasto y la vía de clasificación (Batch API o rutinas). Mientras no haya cifra, cada bloque lleva su tope (sección 5) y se informa el gasto al cerrarlo.
+
+**Cómo se corre un bloque:**
+```sh
+node herramientas/cortar-ejercicios.js fuentes/ejercicios/entrada/<archivo>.pdf     # o .html; crudo.jsonl + soluciones + no cortados
+node herramientas/validar-ejercicios.js --contar fuentes/ejercicios/<lote>         # tabla de conteo
+```
+- **PDF:** el cortador prueba tres lecturas (`layout`, por columnas con coordenadas y orden de lectura) y se queda con la que deja más enunciados limpios. Con un PDF de prueba a dos columnas, el modo por columnas cortó 24 de 24 con su clave; `layout` pegaba las columnas.
+- **Escaneados:** las páginas sin texto se avisan, para pasarlas por `herramientas/ocr_pdf.sh`.
+- **Nombres de archivo:** `unmsm-2025-I-area-A.pdf` se reconoce como oficial; cualquier otro nombre, como academia.
+
 ## 0. Antes de recibir nada
 
-1. Agregar `fuentes/ejercicios/` a `.gitignore`. Ahí viven los ejercicios de academia, con sus números y enunciados, fuera del repo. Hoy solo se ignoran los PDF.
-2. Que Gerson conteste las tres preguntas del final (sección 9).
+1. ~~Agregar `fuentes/ejercicios/` a `.gitignore`.~~ Hecho el 13 nov.
+2. ~~Que Gerson conteste las tres preguntas del final (sección 9).~~ Contestadas, salvo el tope total (ver «Decisiones de Gerson»).
 
 ## 1. Entrada: qué pedirle a Gerson
 
@@ -31,9 +47,9 @@ Del más barato al más caro de procesar:
 - un archivo por libro o por examen;
 - en el nombre del archivo, el origen: `unmsm-2025-I-area-A.pdf` o `academia-<libro>.pdf`;
 - con la clave de respuestas;
-- sin resoluciones, si se puede: no se usan (la solución se rehace) y triplican el texto que hay que leer.
+- ~~sin resoluciones, si se puede~~: vienen resueltos (decisión del 13 nov). El cortador separa la resolución del enunciado y la guarda aparte para verificar.
 
-El script de corte deja cada ejercicio como JSON `crudo` en una línea de `fuentes/ejercicios/<lote>/crudo.jsonl`, con:
+El script de corte (`herramientas/cortar-ejercicios.js`, 13 nov) deja cada ejercicio como JSON `crudo` en una línea de `fuentes/ejercicios/<lote>/crudo.jsonl`, con:
 - `id` estable: `<lote>-<número de 4 cifras>`;
 - `origen`;
 - `enunciado`, `alternativas_fuente` y `clave_fuente`.
