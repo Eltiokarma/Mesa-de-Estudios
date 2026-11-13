@@ -1,0 +1,15 @@
+{
+  "id": "ac-juguete-0003",
+  "lote": "juguete",
+  "estado": "mapeado",
+  "origen": { "tipo": "academia", "fuente": "compendio inventado para el ejemplo", "pagina": 1 },
+  "curso": "razonamiento-matematico",
+  "unidad": "razonamiento-matematico.cortes-y-pesadas",
+  "tipo": "cortes-y-pesadas/balanzas-sustitucion",
+  "dificultad": 1,
+  "enunciado": "Dos círculos pesan lo mismo que tres triángulos, y un triángulo pesa lo mismo que dos cuadrados. ¿Cuántos cuadrados equilibran cuatro círculos?",
+  "alternativas_fuente": ["6", "8", "12", "10", "16"],
+  "clave_fuente": "C",
+  "respuesta": { "valor": 12 },
+  "notas": "Ejemplo de juguete, inventado. Un ejercicio de academia nunca se publica: cuenta para el conteo y su tipo se sirve con el generador del registro (tipos.json)."
+}
