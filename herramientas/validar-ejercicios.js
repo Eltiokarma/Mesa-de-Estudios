@@ -15,7 +15,7 @@ const TIPOS = path.join(RAIZ, 'contenido', 'ejercicios', 'tipos.json');
 const PRESUPUESTO = { enunciado: 40, paso: 14, explicacion: 20 };
 const ESTADOS = ['crudo', 'clasificado', 'mapeado', 'verificado', 'publicado'];
 const rango = e => ESTADOS.indexOf(e);
-// Primeras piezas del contrato (docs/escena-viva.md, sección 5). Valen con aviso hasta que exista nucleo/kit/piezas/.
+// Primeras piezas del contrato (docs/escena-viva.md, sección 5). Cada una vale con aviso hasta que exista su archivo en nucleo/kit/piezas/.
 const PIEZAS_PREVISTAS = ['barra-porcentaje', 'recta', 'balanza', 'flechas', 'triangulo', 'ejes'];
 const leer = f => JSON.parse(fs.readFileSync(f, 'utf8'));
 
@@ -129,7 +129,7 @@ function cargarTipos(archivo) {
 }
 function estadoPieza(id, ctx) {
   if (ctx.piezas.has(id)) return 'existe';
-  if (ctx.piezas.size === 0 && PIEZAS_PREVISTAS.includes(id)) return 'prevista';
+  if (PIEZAS_PREVISTAS.includes(id)) return 'prevista'; // prevista mientras su archivo no exista, aunque ya haya otras
   return 'desconocida';
 }
 // El mapeo de un ejercicio: el suyo o el de su tipo en el registro.
