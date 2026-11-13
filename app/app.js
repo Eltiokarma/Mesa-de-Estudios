@@ -181,7 +181,7 @@ function vInicio() {
       <p>${conEscena.u.plantillas.length ? 'Predice antes de ver la respuesta.' : esc(conEscena.u.temas.slice(0, 3).join(' · '))}</p>
       ${conEscena.u.plantillas.length
         ? `<a class="btn tinta" href="${esc(enlace(cat.plantillas[conEscena.u.plantillas[0]], conEscena.u.id))}" data-abrir="${esc(conEscena.u.id)}">${VERBO[cat.plantillas[conEscena.u.plantillas[0]].formato] || 'Abrir'} ›</a>`
-        : `<a class="btn tinta" href="#/curso/${esc(conEscena.c.id)}">Ver unidad ›</a>`}
+        : `<a class="btn tinta" href="#/unidad/${esc(conEscena.u.id)}">Ver unidad ›</a>`}
     </div>` : `<div class="reto">${Ilus.gatoDormido('class="reto-gato"')}<h3>¡Terminaste todo el temario!</h3><p>Repasa lo que más te costó.</p></div>`;
   // Lo que sigue: solo unidades con módulo (las demás no tienen nada que abrir todavía), una por curso primero
   // para que no salgan cuatro del mismo curso, y luego el resto en el orden del temario.
@@ -228,29 +228,50 @@ function vCursos() {
     <div class="cursos aparece" style="margin-top:18px">${tarjetas}</div>`;
 }
 
+// La primera vez que entra a un curso (o a una de sus unidades) con banco de pruebas, va primero la prueba de
+// entrada. Curso de lectura: la entrada es el primer texto del módulo, una vez por sesión, para que el botón de volver
+// deje ver el curso (al abrir cualquier ejercicio, la entrada vuelve a ir primero). Devuelve true si redirigió.
+function llevarAEntrada(c) {
+  const PC = window.PruebaCurso;
+  if (PC && PC.pideEntrada(ctxPrueba(), c.id) && !(est.pruebas[c.id] || {}).enCurso) { sessionStorage.setItem('prueba-auto-' + c.id, '1'); ir(`#/prueba/${c.id}/entrada`); return true; }
+  const lec = lecturaConPrueba(c);
+  if (lec && !lecturaSt(lec).entrada && sessionStorage.getItem('lectura-auto-' + c.id) !== '1') { sessionStorage.setItem('lectura-auto-' + c.id, '1'); ir(lec.url); return true; }
+  return false;
+}
+
+// Dibujo esquemático de la unidad (app/dibujos/). Si su curso aún no tiene, va la viñeta del curso.
+function cargarDibujos(curso) {
+  return script('/app/dibujos/comun.js')
+    .then(() => (window.Dibujos.CURSOS.includes(curso) ? script(`/app/dibujos/${curso}.js`) : null)).catch(() => null);
+}
+const dibujo = (c, u) => (window.Dibujos && Dibujos.svg(c.id, u.id)) || Ilus.viñeta(c.id, 'class="dib dib-resp"');
+const modulosDe = u => u.plantillas.map(p => cat.plantillas[p]).filter(Boolean);
+const textoEjercicios = n => (n ? `${n} ${n === 1 ? 'ejercicio' : 'ejercicios'}` : 'En preparación');
+const reducido = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// Página del curso: las unidades son tarjetas con su dibujo, en filas deslizables por grado (3.º, 4.º y 5.º: cada unidad
+// trae su grado en el catálogo y así el alumno ve primero lo de su año). Dentro de cada fila, el orden del temario de su
+// universidad. Las filas son scroll nativo con imán (sigue al dedo y frena solo, también en gama baja); sin arrastrar,
+// las flechas de cada fila y, con teclado, Tab o ← → entre tarjetas.
 function vCurso(id) {
   const c = cat.cursos.find(x => x.id === id); if (!c) return ir('#/cursos');
-  // La primera vez que entra a un curso con banco de pruebas, va primero la prueba de entrada.
-  const PC = window.PruebaCurso;
-  if (PC && PC.pideEntrada(ctxPrueba(), id) && !(est.pruebas[id] || {}).enCurso) { sessionStorage.setItem('prueba-auto-' + id, '1'); return ir(`#/prueba/${id}/entrada`); }
-  // Curso de lectura: la entrada es el primer texto del módulo. Se lleva al alumno una vez por sesión, para que
-  // el botón de volver deje ver el curso (al abrir cualquier unidad, la entrada vuelve a ir primero).
-  const lec = lecturaConPrueba(c);
-  if (lec && !lecturaSt(lec).entrada && sessionStorage.getItem('lectura-auto-' + id) !== '1') { sessionStorage.setItem('lectura-auto-' + id, '1'); return ir(lec.url); }
+  if (llevarAEntrada(c)) return;
+  const PC = window.PruebaCurso, lec = lecturaConPrueba(c);
   const todas = sessionStorage.getItem('todas') === '1';
   const us = todas ? c.unidades : unidadesDe(c, est.uni);
   const ord = [...us].sort((a, b) => Math.min(...(ubic(a, est.uni) || [99])) - Math.min(...(ubic(b, est.uni) || [99])));
-  const filas = ord.map((u, i) => {
-    const pl = u.plantillas.map(p => cat.plantillas[p]).filter(Boolean);
-    const tags = tagAdelanto(u) + Object.keys(u.universidades).map(k => `<span class="tag">${esc(etiquetaUbic(u, k))}</span>`).join('');
-    return `<article class="unidad${visto(u.id) ? ' hecha' : ''}" style="${Ilus.tinte(c.id)}"><div class="fila">
-        <span class="num" aria-hidden="true">${visto(u.id) ? '✓' : i + 1}</span><span class="t">${esc(u.nombre)}</span>
-        <button class="check${visto(u.id) ? ' on' : ''}" data-ver="${esc(u.id)}" aria-pressed="${visto(u.id)}" aria-label="Marcar ${esc(u.nombre)} como estudiada">${visto(u.id) ? '✓' : ''}</button></div>
-      <div class="temas">${esc(u.temas.join(' · '))}</div>
-      <div class="acc">${tags}${pl.map(p => `<a class="btn morado" style="padding:8px 14px;font-size:14px" href="${esc(enlace(p, u.id))}" data-abrir="${esc(u.id)}">${esc(p.formato === 'lectura' ? VERBO.lectura : p.titulo)} ›</a>`
-          + (p.papel ? `<a class="btn borde" style="padding:7px 14px;font-size:14px" href="#/papel/${esc(p.id)}">✎ Papel</a>` : '')).join('')}
-        ${pl.length ? '' : '<span class="prep">Escena en preparación</span>'}</div></article>`;
-  }).join('');
+  // Orden de las filas: su grado primero; luego los anteriores, del más cercano (repaso); al final los adelantos.
+  const mio = Number(est.grado) || 0, peso = g => (!mio ? g : g === mio ? 0 : g < mio ? 10 - g : 20 + g);
+  const grados = [...new Set(ord.map(u => u.grado))].sort((a, b) => peso(a) - peso(b));
+  const tarjeta = u => `<a class="unidad-t${visto(u.id) ? ' hecha' : ''}" href="#/unidad/${esc(u.id)}" data-unidad="${esc(u.id)}">
+      <span class="lamina">${dibujo(c, u)}${visto(u.id) ? '<span class="hecho" title="Ya la estudiaste">✓<span class="lector"> Estudiada</span></span>' : ''}</span>
+      <span class="t">${esc(u.nombre)}</span><span class="d">${textoEjercicios(modulosDe(u).length)}</span></a>`;
+  const filas = grados.map(g => { const del = ord.filter(u => u.grado === g);
+    const marca = g === mio ? '<span class="tag acento">Tu grado</span>' : mio && g > mio ? '<span class="tag gris">Adelanto</span>' : mio ? '<span class="tag gris">Repaso</span>' : '';
+    return `<section class="fila-u" aria-labelledby="fg-${g}">
+      <div class="fila-cab"><h2 id="fg-${g}">${g}.º de secundaria ${marca}</h2>
+        <span class="flechas"><button type="button" class="flecha" data-mover="-1" aria-label="Unidades anteriores de ${g}.º">‹</button><button type="button" class="flecha" data-mover="1" aria-label="Más unidades de ${g}.º">›</button></span></div>
+      <div class="pista-u" data-pista>${del.map(tarjeta).join('')}</div></section>`; }).join('');
   const pc = Math.round(avance(c, todas ? '' : est.uni) * 100);
   $app.innerHTML = `<header class="curso-hero tinte" style="${Ilus.tinte(c.id)}">${Ilus.viñeta(c.id, 'class="vin vineta-flota"')}
     <a class="volver" href="#/cursos" aria-label="Volver">‹</a>
@@ -258,12 +279,32 @@ function vCurso(id) {
     <span class="barra" aria-hidden="true"><i style="width:${pc}%"></i></span>
     <div class="chips"><button class="chip${todas ? '' : ' on'}" data-todas="0">${esc(UNI_CORTA[est.uni] || 'Mi universidad')}</button><button class="chip${todas ? ' on' : ''}" data-todas="1">Todas las unidades</button></div></header>
     ${PC ? PC.tarjeta(ctxPrueba(), c.id) : ''}${lec ? tarjetaLectura(lec, c) : ''}
-    <div class="lista unidades aparece" style="margin-top:16px">${filas}</div>`;
+    <div class="filas-u" style="${Ilus.tinte(c.id)}">${filas}</div>`;
   $app.querySelectorAll('[data-todas]').forEach(b => b.onclick = () => { sessionStorage.setItem('todas', b.dataset.todas); vCurso(id); });
-  $app.querySelectorAll('[data-ver]').forEach(b => b.onclick = () => {
-    const k = b.dataset.ver; if (est.vistas[k]) delete est.vistas[k]; else { est.vistas[k] = hoy(); marcarDia(); }
-    guardar(); vCurso(id);
+  $app.querySelectorAll('.fila-u').forEach(armarFila);
+  // Al volver de una unidad, su tarjeta queda a la vista y con el foco (sin mover la página de golpe al entrar).
+  const ult = sessionStorage.getItem('ultima-unidad'), t = ult && $app.querySelector(`[data-unidad="${CSS.escape(ult)}"]`);
+  if (t) { const p = t.parentElement; p.scrollLeft = t.offsetLeft - p.offsetLeft - 16; t.focus({ preventScroll: true }); t.scrollIntoView({ block: 'center' }); }
+}
+
+// Una fila deslizable: flechas que avanzan una pantalla de tarjetas y se apagan en los extremos, y ← → con teclado.
+function armarFila(fila) {
+  const pista = fila.querySelector('[data-pista]'), [ant, sig] = fila.querySelectorAll('[data-mover]');
+  const paso = () => { const t = pista.querySelector('.unidad-t'); const w = t ? t.getBoundingClientRect().width + 12 : 160;
+    return Math.max(w, Math.floor(pista.clientWidth / w) * w); };
+  const extremos = () => { const fin = pista.scrollWidth - pista.clientWidth - 2;
+    ant.disabled = pista.scrollLeft <= 2; sig.disabled = pista.scrollLeft >= fin;
+    fila.classList.toggle('sin-flechas', fin <= 0); };
+  let pend = false;
+  pista.addEventListener('scroll', () => { if (!pend) { pend = true; requestAnimationFrame(() => { pend = false; extremos(); }); } }, { passive: true });
+  [ant, sig].forEach(b => b.onclick = () => pista.scrollBy({ left: Number(b.dataset.mover) * paso(), behavior: reducido() ? 'auto' : 'smooth' }));
+  pista.addEventListener('keydown', e => {
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    const ts = [...pista.querySelectorAll('.unidad-t')], i = ts.indexOf(document.activeElement); if (i < 0) return;
+    const j = Math.min(ts.length - 1, Math.max(0, i + (e.key === 'ArrowRight' ? 1 : -1)));
+    e.preventDefault(); ts[j].focus({ preventScroll: true }); ts[j].scrollIntoView({ inline: 'nearest', block: 'nearest', behavior: reducido() ? 'auto' : 'smooth' });
   });
+  extremos();
 }
 
 // Tarjeta de las pruebas del módulo de lectura en la página del curso (como la de PruebaCurso).
@@ -277,6 +318,96 @@ function tarjetaLectura(p, c) {
     : `<div class="card prueba-tarjeta"><div class="etq-p">Prueba de salida</div><p>La prueba de salida la abre tu profesor cuando terminen el curso.</p></div>`;
   return `<div class="card prueba-tarjeta"><div class="etq-p">Pruebas del curso</div>
     <p>Entrada ${st.entrada.aciertos} de ${st.entrada.total} · Salida <b>${st.salida.aciertos} de ${st.salida.total}</b></p></div>`;
+}
+
+// ---------- Página de la unidad: cuatro puertas (teoría, ejercicios, exámenes y dejar una pregunta) ----------
+// Íconos de trazo de 24 con currentColor (docs/diseno.md).
+const ICONO_PUERTA = {
+  teoria: '<path d="M12 6c-3-2-6-2-9-1v13c3-1 6-1 9 1 3-2 6-2 9-1V5c-3-1-6-1-9 1zM12 6v13"/>',
+  ejercicios: '<path d="M4 20l1-4L16 5l3 3L8 19zM14 7l3 3"/>',
+  examen: '<path d="M6 3h9l4 4v14H6zM14 3v5h5M9 13l2 2 4-4"/>',
+  pregunta: '<path d="M4 5h16v11H11l-5 4v-4H4zM10 9a2 2 0 1 1 2.6 1.9c-.4.2-.6.5-.6 1V12M12 14.2v.1"/>',
+};
+const iconoPuerta = k => `<svg class="ic-puerta" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">${ICONO_PUERTA[k]}</svg>`;
+const SUB_UNIDAD = { teoria: 'Teoría', ejercicios: 'Ejercicios', examen: 'Exámenes', pregunta: 'Dejar una pregunta' };
+const N_EXAMEN = 5;
+const generadoresDe = u => modulosDe(u).filter(p => p.formato === 'predicciones');
+
+function vUnidad(id, sub) {
+  const c = cursoDeUnidad(id), u = c && c.unidades.find(x => x.id === id);
+  if (!u) return ir('#/cursos');
+  if (llevarAEntrada(c)) return;
+  sessionStorage.setItem('ultima-unidad', id);
+  if (sub === 'teoria') return vTeoria(c, u);
+  if (sub === 'ejercicios') return vEjercicios(c, u);
+  if (sub === 'examen') return vExamen(c, u);
+  if (sub === 'pregunta') return vPregunta(c, u);
+  const n = modulosDe(u).length, gens = generadoresDe(u).length, ex = (est.examenes || {})[id];
+  const puerta = (k, d, principal) => `<a class="puerta${principal ? ' principal' : ''}" href="#/unidad/${esc(id)}/${k}">${iconoPuerta(k)}<span class="t">${SUB_UNIDAD[k]}</span><span class="d">${d}</span></a>`;
+  $app.innerHTML = `<header class="unidad-hero tinte" style="${Ilus.tinte(c.id)}">
+      <a class="volver" href="#/curso/${esc(c.id)}" aria-label="Volver a ${esc(c.nombre)}">‹</a>
+      <div class="uh-cuerpo"><span class="lamina">${dibujo(c, u)}</span>
+        <div><p class="sub">${esc(c.nombre)} · ${u.grado}.º de secundaria</p><h1>${esc(u.nombre)}</h1></div></div>
+      <p class="sub temas">${esc(u.temas.join(' · '))}</p>
+      <button type="button" class="marca-vista${visto(id) ? ' on' : ''}" data-ver aria-pressed="${visto(id)}"><span class="caja-v" aria-hidden="true">${visto(id) ? '✓' : ''}</span>${visto(id) ? 'Ya la estudié' : 'Marcar como estudiada'}</button>
+    </header>
+    <nav class="puertas aparece" aria-label="Qué hacer en esta unidad">
+      ${puerta('teoria', 'En preparación')}
+      ${puerta('ejercicios', textoEjercicios(n), n > 0)}
+      ${puerta('examen', gens ? (ex ? `Último: ${ex.ultimo.aciertos} de ${ex.ultimo.total}` : `${N_EXAMEN} preguntas tipo examen`) : 'En preparación')}
+      ${puerta('pregunta', 'Para tu profesor')}
+    </nav>`;
+  $app.querySelector('[data-ver]').onclick = () => {
+    if (est.vistas[id]) delete est.vistas[id]; else { est.vistas[id] = hoy(); marcarDia(); }
+    guardar(); vUnidad(id);
+  };
+}
+
+// Cabecera de las páginas dentro de una unidad: volver a la unidad, su dibujo chico y el título de la sección.
+const cabUnidad = (c, u, titulo) => `<header class="unidad-cab tinte" style="${Ilus.tinte(c.id)}">
+    <a class="volver" href="#/unidad/${esc(u.id)}" aria-label="Volver a ${esc(u.nombre)}">‹</a>
+    <span class="lamina">${dibujo(c, u)}</span><div><p class="sub">${esc(c.nombre)} · ${esc(u.nombre)}</p><h1>${esc(titulo)}</h1></div></header>`;
+
+// Teoría: todavía no hay micro-lecciones. Contrato para enchufarlas: la unidad del catálogo trae `teoria` (ruta a
+// contenido/teoria/<id-unidad>.json) y app/teoria.js define window.Teoria.vista(ctx, unidad); los dos van en MODULOS y
+// en la CASCARA de sw.js. Mientras no existan, esta pantalla dice qué vendrá y manda a lo que sí hay.
+function vTeoria(c, u) {
+  if (u.teoria && window.Teoria) return Teoria.vista({ $app, cat, est, esc, guardar, registrar, marcarDia }, u);
+  const n = modulosDe(u).length;
+  $app.innerHTML = `${cabUnidad(c, u, 'Teoría')}
+    <div class="card prep-teoria">${Ilus.gatoDormido('class="prep-gato" width="120"')}
+      <span class="tag gris">En preparación</span>
+      <h2>Estamos escribiendo esta teoría</h2>
+      <p>Van a ser lecciones cortas, de dos o tres minutos, con un dibujo que se mueve. Esta unidad tendrá:</p>
+      <ul class="temas-l">${u.temas.map(t => `<li>${esc(t)}</li>`).join('')}</ul>
+      <p class="sub">Mientras tanto, ${n ? 'los ejercicios te muestran la idea paso a paso y te explican cada error.' : 'puedes dejarle una pregunta a tu profesor.'}</p>
+      ${n ? `<a class="btn morado" href="#/unidad/${esc(u.id)}/ejercicios">Ir a los ejercicios ›</a>` : `<a class="btn morado" href="#/unidad/${esc(u.id)}/pregunta">Dejar una pregunta ›</a>`}
+    </div>`;
+}
+
+// Ejercicios: lo que antes era la pila de botones de la tarjeta, ordenado (escenas, prácticas, lectura) y con lo que
+// pide cada uno. Toda la tarjeta abre el ejercicio; «Lápiz y papel» es un enlace aparte, debajo.
+const ORDEN_FORMATO = { escena: 0, predicciones: 1, lectura: 2 };
+const QUE_ES = { escena: 'Predices y después lo ves moverse', predicciones: 'Preguntas que te explican tu error', lectura: 'Textos cortos con preguntas' };
+const ICONO_FORMATO = {
+  escena: '<path d="M8 5v14l11-7z"/>',
+  predicciones: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/>',
+  lectura: '<path d="M12 6c-3-2-6-2-9-1v13c3-1 6-1 9 1 3-2 6-2 9-1V5c-3-1-6-1-9 1zM12 6v13"/>',
+};
+function vEjercicios(c, u) {
+  const pl = modulosDe(u).sort((a, b) => ORDEN_FORMATO[a.formato] - ORDEN_FORMATO[b.formato]);
+  const fila = p => `<article class="ej" style="${Ilus.tinte(c.id)}">
+      <span class="ej-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24">${ICONO_FORMATO[p.formato] || ICONO_FORMATO.predicciones}</svg></span>
+      <span class="ej-tx"><span class="etq-f">${esc(ETIQUETA[p.formato] || 'Ejercicio')}</span>
+        <a class="t" href="${esc(enlace(p, u.id))}" data-abrir="${esc(u.id)}">${esc(p.formato === 'lectura' ? `Lectura: ${u.nombre}` : p.titulo)}</a>
+        <span class="d">${esc(QUE_ES[p.formato] || '')}</span></span>
+      <span class="ej-ir" aria-hidden="true"><span class="v">${esc(VERBO[p.formato] || "Abrir")}</span> ›</span>
+      ${p.papel ? `<a class="ej-papel" href="#/papel/${esc(p.id)}">✎ Lápiz y papel<span class="lector">: ${esc(p.titulo)}</span></a>` : ''}
+    </article>`;
+  $app.innerHTML = `${cabUnidad(c, u, 'Ejercicios')}
+    ${pl.length ? `<div class="lista ejercicios aparece">${pl.map(fila).join('')}</div>`
+      : `<div class="vacio">${Ilus.gatoDormido('width="140"')}<p>Esta unidad todavía no tiene ejercicios. Estamos haciéndolos; mientras, puedes dejarle una pregunta a tu profesor.</p>
+        <a class="btn morado" href="#/unidad/${esc(u.id)}/pregunta">Dejar una pregunta ›</a></div>`}`;
 }
 
 function vProgreso() {
@@ -705,7 +836,9 @@ async function vPapel(id) {
   $app.innerHTML = '<p class="vacio">Cargando…</p>';
   let d; try { d = await (await fetch(p.papel)).json(); } catch { $app.innerHTML = '<p class="vacio">No se pudieron cargar los problemas. Ábrelos una vez con internet para tenerlos sin conexión.</p>'; return; }
   if (location.hash !== `#/papel/${id}`) return; // el alumno ya se fue a otra pantalla
-  $app.innerHTML = `<a class="volver" href="#/curso/${esc(curso ? curso.id : '')}" aria-label="Volver">‹</a>
+  // Vuelve a los ejercicios de la unidad desde la que llegó (una plantilla puede servir a varias unidades).
+  const ult = sessionStorage.getItem('ultima-unidad'), deUnidad = ult && p.unidades.includes(ult) ? ult : null;
+  $app.innerHTML = `<a class="volver" href="${deUnidad ? `#/unidad/${esc(deUnidad)}/ejercicios` : `#/curso/${esc(curso ? curso.id : '')}`}" aria-label="Volver">‹</a>
     <p class="sub">${esc(curso ? curso.nombre : '')} · ${esc(p.titulo)}</p><h1>Lápiz y papel</h1>
     <p class="sub" style="margin-top:8px">${esc(d.indicacion)}</p>
     <div class="lista papel" style="margin-top:18px">${d.problemas.map((q, k) => `<article class="card">
@@ -767,7 +900,7 @@ function render() {
   if ((!est.uni || !est.grado) && ruta !== 'bienvenida') return ir('#/bienvenida');
   if (ruta === 'bienvenida') return vBienvenida();
   $nav.hidden = false; document.body.dataset.ruta = ruta; document.body.classList.add('con-nav');
-  $nav.querySelectorAll('a').forEach(a => a.classList.toggle('on', a.dataset.ruta === (['curso', 'papel', 'practica', 'prueba', 'lectura'].includes(ruta) ? 'cursos' : ruta === 'otro' ? 'perfil' : ruta)));
+  $nav.querySelectorAll('a').forEach(a => a.classList.toggle('on', a.dataset.ruta === (['curso', 'unidad', 'papel', 'practica', 'prueba', 'lectura'].includes(ruta) ? 'cursos' : ruta === 'otro' ? 'perfil' : ruta)));
   if (ruta === 'practica') {
     $nav.querySelectorAll('a').forEach(a => a.classList.toggle('on', a.dataset.ruta === 'cursos'));
     return cuandoListo(modulo('practica'), () => Practica.vista({ $app, cat, est, esc, guardar, registrar, marcarDia }, decodeURIComponent(arg || '')));
@@ -778,7 +911,11 @@ function render() {
   if (ruta === 'prueba') return cuandoListo(cargarBanco().then(() => { if (!window.PruebaCurso) throw new Error('sin prueba.js'); }),
     () => PruebaCurso.vista(ctxPrueba(), decodeURIComponent(arg || ''), location.hash.split('/')[3] || 'entrada'));
   // El curso decide si va primero la prueba de entrada: espera al banco (ya suele estar, porque se pide tras el primer pintado).
-  if (ruta === 'curso') return cuandoListo(cargarBanco(), () => vCurso(decodeURIComponent(arg || '')));
+  if (ruta === 'curso') return cuandoListo(Promise.all([cargarBanco(), cargarDibujos(decodeURIComponent(arg || ''))]), () => vCurso(decodeURIComponent(arg || '')));
+  if (ruta === 'unidad') {
+    const id = decodeURIComponent(arg || ''), c = cursoDeUnidad(id);
+    return cuandoListo(Promise.all([cargarBanco(), c ? cargarDibujos(c.id) : null]), () => vUnidad(id, location.hash.split('/')[3] || ''));
+  }
   ({ inicio: vInicio, otro: vOtro, cursos: vCursos, progreso: vProgreso, perfil: vPerfil, papel: () => vPapel(decodeURIComponent(arg || '')) }[ruta] || vInicio)();
   window.scrollTo(0, 0);
 }
