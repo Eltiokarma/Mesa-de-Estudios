@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="es" data-curso="fisica">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El carrito y la pista</title>
+<!--
+  MRU y MRUV, versión A (docs/pogil-v2-rive.md, sección 7.5): sesión 1, partes 1 (empujar), 1b (dos carritos)
+  y 2 (pisar). Sin Rive: el carrito es el provisional del kit (nucleo/kit/piezas/pista.js) hasta que llegue el
+  arte del encargo (docs/encargo-vectores.md, sección 9). La física es la del motor de siempre (motor.js) y la
+  lógica de la lección, la de leccion.js; esta página solo pinta, escucha el dedo y lleva el reloj.
+  Reloj de simulación lineal, en tiempo real (1 s del modelo = 1 s); con movimiento reducido, la corrida se
+  muestra ya terminada, con las marcas puestas.
+-->
+<link rel="stylesheet" href="../../nucleo/kit/kit.css">
+<style>
+[hidden]{display:none!important}
+:root{
+  /* Tokens de la cáscara (app/estilos.css) y de variable del kit: x turquesa (i), v rojo (h), a verde (d). */
+  --bg:#fbf3ec; --card:#fffaf6; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --borde:#e3d3c8;
+  --brand:#7f5ae0; --brand-ink:#ffffff; --brand-soft:#efe6ff;
+  --c-o:#b85a06; --c-i:#08807a; --c-h:#c0364a; --c-d:#4f7a17;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root{
+  --bg:#1d1626; --card:#2a2135; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --borde:#4a3d58;
+  --brand:#9b7ff2; --brand-ink:#ffffff; --brand-soft:#3a2d55;
+  --c-o:#f0a04a; --c-i:#3dcdc3; --c-h:#f17384; --c-d:#a3d65e; color-scheme:dark } }
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 var(--font);-webkit-text-size-adjust:100%}
+.marco{max-width:420px;margin:0 auto;padding:10px max(12px, env(safe-area-inset-left, 0px)) 92px}
+header{display:flex;align-items:center;gap:8px;min-height:44px}
+header h1{font-size:18px;margin:0;flex:1}
+.parte{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.volver{min-width:44px;min-height:44px;display:grid;place-items:center;color:var(--ink);text-decoration:none;font-weight:700}
+.tarjeta{background:var(--card);border:2px solid var(--borde);border-radius:16px;padding:12px}
+/* Alto reservado para la consigna (2 líneas) y para el aviso (2 líneas): ningún cambio de estado mueve la figura. */
+.consigna{margin:0 0 6px;font-weight:700;font-size:17px;min-height:calc(2 * 1.45em)}
+.lectura{margin:2px 0;min-height:1.45em;text-align:center;font-weight:700;font-variant-numeric:tabular-nums}
+.v-x{color:var(--c-i)} .v-v{color:var(--c-h)} .v-a{color:var(--c-d)}
+.kit-lienzo.agarrable{cursor:grab;touch-action:none}
+.fila{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;min-height:52px;align-items:center;margin-top:6px}
+.btn{min-height:44px;min-width:44px;padding:8px 14px;border-radius:12px;border:2px solid var(--borde);background:var(--card);
+  color:var(--ink);font:inherit;font-weight:600;box-shadow:0 3px 0 var(--borde);touch-action:manipulation}
+.btn:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.btn[aria-pressed="true"]{background:var(--brand-soft)}
+.btn.principal{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+.btn.pedal{min-width:120px;min-height:56px;-webkit-user-select:none;user-select:none}
+.pregunta{margin-top:6px}
+.pregunta p{margin:0 0 6px;font-weight:700}
+.opciones{display:flex;flex-wrap:wrap;gap:8px}
+.opcion{flex:1 1 auto}
+.opcion[aria-checked="true"]{border-color:var(--ink)}
+.aviso{min-height:calc(2 * 1.45em);margin:8px 0 0}
+.registro{margin:8px 0 0;padding-left:20px;font-variant-numeric:tabular-nums}
+/* La acción principal no se mueve: barra fija abajo. */
+.barra{position:fixed;left:0;right:0;bottom:0;padding:10px max(12px, env(safe-area-inset-left, 0px)) max(10px, env(safe-area-inset-bottom, 0px));
+  background:color-mix(in srgb, var(--bg) 92%, transparent);display:flex;justify-content:center}
+.barra .btn{min-width:240px}
+.kit-svg .kit-carrito{transition:none}
+#preg-texto:focus{outline:none}
+</style>
+</head>
+<body>
+<div class="marco">
+  <header>
+    <a class="volver" id="volver" href="/app/#/cursos" aria-label="Volver a la app" hidden>‹</a>
+    <h1>El carrito y la pista</h1>
+    <span class="parte" id="parte"></span>
+  </header>
+  <main class="tarjeta">
+    <p class="consigna" id="consigna"></p>
+    <div class="kit-lienzo" id="lienzo"></div>
+    <p class="lectura" id="lectura" aria-hidden="true"></p>
+    <div class="kit-lienzo" id="grafica"></div>
+    <div class="pregunta" id="pregunta" hidden>
+      <p id="preg-texto" tabindex="-1"></p>
+      <div class="opciones" id="opciones" role="radiogroup"></div>
+    </div>
+    <div class="fila" id="controles"></div>
+    <p class="aviso" id="aviso" role="status"></p>
+    <ol class="registro" id="registro" hidden></ol>
+  </main>
+</div>
+<div class="barra"><button class="btn principal" id="seguir" hidden></button></div>
+
+<script src="motor.js"></script>
+<script src="leccion.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/kit/kit.js"></script>
+<script src="../../nucleo/kit/trazo.js"></script>
+<script src="../../nucleo/kit/piezas/ejes.js"></script>
+<script src="../../nucleo/kit/piezas/pista.js"></script>
+<script>
+'use strict';
+const L = window.LeccionMRUV, M = window.MotorMRUV, Pista = Kit.piezas.pista, Ejes = Kit.piezas.ejes, F = Kit.formatear;
+const PLANTILLA = { id: 'mruv', unidad: 'fisica.movimiento-rectilineo', version: '0.2.0-a' };
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $ = id => document.getElementById(id);
+if (new URLSearchParams(location.search).get('desde') === 'app') $('volver').hidden = false;
+
+// ---------- Medición (anónima; solo guarda si se entró por la app, como el resto de las escenas) ----------
+function registrar(problema, r, t0) {
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion: r.opcion, correcta: r.correcta,
+    error: r.correcta ? '' : r.error, respaldo: '', ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+// ---------- Dibujo ----------
+let pista = {}, grafica = null;
+function pintarPista() { $('lienzo').innerHTML = Pista.dibujar(pista); }
+function pintarGrafica() { $('grafica').innerHTML = grafica ? Ejes.dibujar(grafica, { corte: 9 }) : ''; }
+// Mueve solo el carrito k (sin redibujar la pista): transform del grupo y giro de las ruedas.
+function moverCarrito(k, x, cabeceo = 0) {
+  const g = $('lienzo').querySelector('.kit-carrito-' + k);
+  if (!g) return;
+  const m = Pista.mover(pista, k, x, cabeceo);
+  g.setAttribute('transform', m.carrito);
+  g.querySelectorAll('.rueda-del,.rueda-tras').forEach(r => {
+    const base = r.getAttribute('data-base') || r.getAttribute('transform');
+    r.setAttribute('data-base', base);
+    r.setAttribute('transform', `${base} ${m.rueda}`);
+  });
+  pista.carriles[k].x = x;
+}
+const lectura = (t, x, v) => {
+  $('lectura').innerHTML = `t = ${F(t, 1)} s · <span class="v-x">x = ${F(x, 1)} m</span>` + (v === undefined ? '' : ` · <span class="v-v">v = ${F(v, 1)} m/s</span>`);
+};
+function curva(fn, t1, color, extra = {}) {
+  const pts = []; const n = Math.max(2, Math.ceil(t1 * 10));
+  for (let k = 0; k <= n; k++) { const t = t1 * k / n; pts.push([t, fn(t)]); }
+  return { puntos: pts, color, ...extra };
+}
+
+// ---------- Reloj de la simulación (lineal, con fin; nada pasa de unos 5 s salvo el pedal) ----------
+let corriendo = null;
+function correr({ dur, cada, fin, tiempoReal }) {
+  if (RM && !tiempoReal) { cada(dur(), true); fin(); return; }
+  const t0 = performance.now(); let ultimoSeg = -1;
+  corriendo = { pausa: false, acumulado: 0, desde: t0 };
+  const paso = ahora => {
+    if (!corriendo) return;
+    if (corriendo.pausa) { requestAnimationFrame(paso); return; }
+    const t = Math.min(dur(), corriendo.acumulado + (ahora - corriendo.desde) / 1000);
+    const seg = Math.floor(t + 1e-9);
+    cada(t, seg !== ultimoSeg); ultimoSeg = seg;
+    if (t >= dur() - 1e-9) { corriendo = null; fin(); return; }
+    requestAnimationFrame(paso);
+  };
+  requestAnimationFrame(paso);
+}
+function pausar(on) {
+  if (!corriendo) return;
+  const ahora = performance.now();
+  if (on && !corriendo.pausa) { corriendo.acumulado += (ahora - corriendo.desde) / 1000; corriendo.pausa = true; }
+  if (!on && corriendo.pausa) { corriendo.desde = ahora; corriendo.pausa = false; }
+}
+
+// ---------- Interfaz común ----------
+function consigna(t) { $('consigna').textContent = t; }
+function aviso(t) { $('aviso').textContent = t || ''; }
+function controles(lista) {
+  const c = $('controles'); c.innerHTML = '';
+  for (const b of lista) {
+    const e = document.createElement('button');
+    e.className = 'btn' + (b.clase ? ' ' + b.clase : ''); e.textContent = b.texto; e.type = 'button';
+    if (b.alClic) e.addEventListener('click', b.alClic);
+    if (b.alPulsar) {
+      const on = ev => { ev.preventDefault(); e.setAttribute('aria-pressed', 'true'); b.alPulsar(true); };
+      const off = () => { if (e.getAttribute('aria-pressed') !== 'true') return; e.setAttribute('aria-pressed', 'false'); b.alPulsar(false); };
+      e.setAttribute('aria-pressed', 'false');
+      e.addEventListener('pointerdown', on); e.addEventListener('pointerup', off); e.addEventListener('pointerleave', off); e.addEventListener('pointercancel', off);
+      e.addEventListener('keydown', ev => { if ((ev.key === ' ' || ev.key === 'Enter') && !ev.repeat) on(ev); });
+      e.addEventListener('keyup', ev => { if (ev.key === ' ' || ev.key === 'Enter') off(); });
+      e.addEventListener('contextmenu', ev => ev.preventDefault());
+    }
+    c.appendChild(e);
+  }
+}
+function seguir(texto, alClic) {
+  const b = $('seguir');
+  if (!texto) { b.hidden = true; b.onclick = null; return; }
+  b.textContent = texto; b.hidden = false; b.onclick = () => { b.hidden = true; alClic(); };
+}
+// Predicción que bloquea (regla 3): mientras está abierta, no hay otro control.
+function predecir(id, problema) {
+  return new Promise(res => {
+    const p = L.PREDICCIONES[id], t0 = Date.now();
+    $('preg-texto').textContent = p.pregunta; const o = $('opciones'); o.innerHTML = '';
+    // Orden al azar en cada vez: la posición no delata la correcta.
+    const ops = p.opciones.map(x => [Math.random(), x]).sort((a, b) => a[0] - b[0]).map(x => x[1]);
+    for (const op of ops) {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'btn opcion'; b.textContent = op.texto; b.setAttribute('role', 'radio'); b.setAttribute('aria-checked', 'false');
+      b.addEventListener('click', () => {
+        b.setAttribute('aria-checked', 'true');
+        const r = { ...L.responder(id, op.id), opcion: op.id };
+        registrar(problema, r, t0);
+        $('pregunta').hidden = true; $('controles').hidden = false;
+        res(r);
+      });
+      o.appendChild(b);
+    }
+    // La pregunta ocupa el lugar de los controles (que quedan vacíos mientras se predice).
+    $('controles').innerHTML = ''; $('controles').hidden = true; $('pregunta').hidden = false;
+    $('preg-texto').focus({ preventScroll: true });
+  });
+}
+const parte = (n, nombre) => { $('parte').textContent = `Parte ${n} · ${nombre}`; };
+
+// =============================== Parte 1: empujar (MRU) ===============================
+const P1 = { corridas: [], pred: null };
+function parte1() {
+  parte(1, 'Empujar');
+  pista = { largo: L.LARGO, cada: 5, carriles: [{ x: 0, marcas: [] }], registro: [], filas: 2 };
+  grafica = { compacto: true, x: { min: 0, max: 5, paso: 1, nombre: 't', unidad: 's' }, y: { min: 0, max: 30, paso: 10, nombre: 'x', unidad: 'm', color: 'i' }, curvas: [] };
+  pintarPista(); pintarGrafica(); lectura(0, 0);
+  pedirEmpujon();
+}
+function pedirEmpujon() {
+  const n = P1.corridas.length;
+  consigna(n === 0 ? 'Empuja el carrito con el dedo y suéltalo.' : P1.pred === 'separacionSuave' ? 'Ahora empújalo más suave.' : 'Ahora empújalo más fuerte.');
+  controles([
+    { texto: 'Suave', alClic: () => soltar(L.BOTONES.suave, pista.carriles[0].x) },
+    { texto: 'Medio', alClic: () => soltar(L.BOTONES.medio, pista.carriles[0].x) },
+    { texto: 'Fuerte', alClic: () => soltar(L.BOTONES.fuerte, pista.carriles[0].x) },
+  ]);
+  arrastre(true);
+}
+// El dedo: sigue uno a uno mientras arrastra (hasta 6 m); al soltar, rapidez de los últimos 100 ms.
+let arrastrando = null;
+function aMetros(clientX) {
+  const r = $('lienzo').getBoundingClientRect(), k = Pista.constantes;
+  const px = (clientX - r.left) * 320 / r.width;
+  return { m: (px - k.PX0) / (k.PX1 - k.PX0) * L.LARGO, escala: (320 / r.width) / ((k.PX1 - k.PX0) / L.LARGO) };
+}
+function arrastre(on) {
+  const el = $('lienzo');
+  el.classList.toggle('agarrable', on);
+  el.onpointerdown = on ? ev => {
+    ev.preventDefault(); el.setPointerCapture(ev.pointerId);
+    const a = aMetros(ev.clientX);
+    arrastrando = { id: ev.pointerId, x0: pista.carriles[0].x, m0: a.m, muestras: [{ t: ev.timeStamp, x: ev.clientX }] };
+    aviso('');
+  } : null;
+  el.onpointermove = on ? ev => {
+    if (!arrastrando || ev.pointerId !== arrastrando.id) return;
+    arrastrando.muestras.push({ t: ev.timeStamp, x: ev.clientX });
+    const x = Math.min(6, Math.max(0, arrastrando.x0 + aMetros(ev.clientX).m - arrastrando.m0));
+    moverCarrito(0, x);
+  } : null;
+  el.onpointerup = el.onpointercancel = on ? ev => {
+    if (!arrastrando || ev.pointerId !== arrastrando.id) return;
+    const a = arrastrando; arrastrando = null;
+    const vpx = L.rapidezDedo(a.muestras, ev.timeStamp);
+    const v = L.ajustarRapidez(vpx * aMetros(ev.clientX).escala);
+    if (v === null) { aviso('Suéltalo mientras lo mueves, como un empujón.'); return; }
+    soltar(v, pista.carriles[0].x);
+  } : null;
+}
+function soltar(v, x0) {
+  arrastre(false); controles([]); seguir(null);
+  const n = P1.corridas.length, antes = n ? P1.corridas[n - 1].v : null;
+  if (n === 1 && (P1.pred === 'separacion' ? v <= antes : v >= antes)) {
+    aviso(`Fue de ${F(v, 0)} m/s y el anterior, de ${F(antes, 0)} m/s. Empújalo ${P1.pred === 'separacion' ? 'más fuerte' : 'más suave'}.`);
+    moverCarrito(0, 0); pedirEmpujon(); return;
+  }
+  const c = L.corridaMRU(v, x0);
+  aviso(`Tu empujón: ${F(v, 0)} m/s. Lo redondeamos a 2, 4 o 6 m/s.`);
+  consigna('Mira las marcas: una por segundo.');
+  const marcas = [];
+  pista.carriles[0].marcas = marcas;
+  grafica.curvas = [...P1.corridas.map(k => ({ ...k.curva, discontinua: true, rotulo: `${F(k.v, 0)} m/s` }))];
+  correr({
+    dur: () => c.dur,
+    cada: (t, nuevoSeg) => {
+      if (nuevoSeg || RM) {
+        marcas.length = 0; marcas.push(...c.marcas.filter((m, k) => k <= Math.floor(t + 1e-9)));
+        pintarPista();
+      }
+      moverCarrito(0, c.x(t));
+      lectura(t, c.x(t), v);
+      grafica.curvas = [...grafica.curvas.filter(k => k.discontinua), curva(c.x, Math.max(t, 0.01), 'i')];
+      pintarGrafica();
+    },
+    fin: () => {
+      const k = { v, marcas: c.marcas, curva: curva(c.x, c.dur, 'i') };
+      P1.corridas.push(k);
+      pista.registro = P1.corridas.map(r => ({ marcas: r.marcas, rotulo: `${F(r.v, 0)} m/s` }));
+      pista.carriles[0] = { x: 0, marcas: [] };
+      grafica.curvas = P1.corridas.map((r, i) => ({ ...r.curva, discontinua: i < P1.corridas.length - 1, rotulo: `${F(r.v, 0)} m/s` }));
+      pintarPista(); pintarGrafica(); lectura(0, 0);
+      despuesDeCorrida();
+    },
+  });
+}
+async function despuesDeCorrida() {
+  if (P1.corridas.length === 1) {
+    consigna('Tu corrida quedó registrada abajo.');
+    P1.pred = P1.corridas[0].v === 6 ? 'separacionSuave' : 'separacion';
+    const r = await predecir(P1.pred, 'v2-' + P1.pred);
+    P1.respuesta = r;
+    aviso(r.correcta ? '' : r.explica);
+    pedirEmpujon();
+    return;
+  }
+  const [a, b] = P1.corridas;
+  consigna('Compara las dos tiras.');
+  aviso(`Cada segundo, ${F(a.v, 0)} m y ${F(b.v, 0)} m: más rápido es marcas más separadas y recta más empinada.`);
+  seguir('Siguiente: dos carritos', parte1b);
+}
+
+// =============================== Parte 1b: dos carritos ===============================
+const ORDEN_1B = ['alcance', 'cruce', 'nunca'];
+const P1B = { i: 0, hechos: [] };
+function parte1b() {
+  parte('1b', 'Dos carritos'); P1B.i = 0; $('registro').hidden = false; $('registro').innerHTML = '';
+  caso1b();
+}
+function caso1b() {
+  const caso = ORDEN_1B[P1B.i], d = L.dosCarritos(caso);
+  const rot = (k, o) => `${k} · ${F(Math.abs(o.v0), 0)} m/s ${o.v0 > 0 ? '→' : '←'}`;
+  pista = { largo: L.LARGO, cada: 5, carriles: [
+    { x: d.A.x0, variante: 'a', marcas: [], rotulo: rot('A', d.A) },
+    { x: d.B.x0, variante: 'b', marcas: [], rotulo: rot('B', d.B) }], bandera: { x: 28, rotulo: 'tu bandera' } };
+  grafica = { compacto: true, x: { min: 0, max: 5, paso: 1, nombre: 't', unidad: 's' }, y: { min: 0, max: 30, paso: 10, nombre: 'x', unidad: 'm', color: 'i' }, curvas: [] };
+  pintarPista(); pintarGrafica(); lectura(0, d.A.x0);
+  consigna('Pon la bandera donde crees que se encuentran.');
+  aviso('');
+  const mover = dx => { pista.bandera.x = Math.min(L.LARGO, Math.max(0, pista.bandera.x + dx)); pintarPista(); };
+  controles([
+    { texto: '−1 m', alClic: () => mover(-1) },
+    { texto: '+1 m', alClic: () => mover(1) },
+    { texto: 'No se encuentran', alClic: () => listo1b(d, null) },
+  ]);
+  seguir('Soltar los carritos', () => listo1b(d, pista.bandera.x));
+  // La bandera también se arrastra: tocar la pista la lleva ahí, de metro en metro.
+  const el = $('lienzo');
+  el.classList.add('agarrable');
+  const llevar = ev => { pista.bandera.x = Math.min(L.LARGO, Math.max(0, Math.round(aMetros(ev.clientX).m))); pintarPista(); };
+  el.onpointerdown = ev => { ev.preventDefault(); el.setPointerCapture(ev.pointerId); llevar(ev); el.onpointermove = llevar; };
+  el.onpointerup = el.onpointercancel = () => { el.onpointermove = null; };
+}
+async function listo1b(d, xBandera) {
+  const el = $('lienzo'); el.classList.remove('agarrable'); el.onpointerdown = el.onpointermove = el.onpointerup = el.onpointercancel = null;
+  seguir(null); controles([]);
+  if (xBandera === null) pista.bandera = null;
+  let k1 = null;
+  if (d.caso === 'alcance') { k1 = await predecir('k1', 'v2-k1-alcance'); }
+  pintarPista();
+  consigna('Míralos avanzar.');
+  const A = M.movil(d.A), B = M.movil(d.B);
+  pista.carriles[0].marcas = []; pista.carriles[1].marcas = [];
+  correr({
+    dur: () => d.dur,
+    cada: (t, nuevoSeg) => {
+      if (nuevoSeg || RM) {
+        const s = Math.floor(t + 1e-9);
+        pista.carriles[0].marcas = d.marcasA.slice(0, s + 1); pista.carriles[1].marcas = d.marcasB.slice(0, s + 1);
+        pintarPista();
+      }
+      moverCarrito(0, d.xA(t)); moverCarrito(1, d.xB(t));
+      lectura(t, d.xA(t));
+      grafica.curvas = [curva(d.xA, Math.max(t, 0.01), 'i', { rotulo: 'A' }), curva(d.xB, Math.max(t, 0.01), 'i', { rotulo: 'B', discontinua: true })];
+      pintarGrafica();
+    },
+    fin: () => {
+      const e = d.encuentro;
+      if (e) {
+        pista.encuentro = { x: e.x, rotulo: `${F(e.x, 0)} m` };
+        grafica.puntos = [{ x: e.t, y: e.x, color: 'i', guias: true }];
+        pintarPista(); pintarGrafica();
+      }
+      // Corto: la figura ya muestra la bandera junto al encuentro. Lo demás queda en el registro.
+      let t;
+      if (!e) t = xBandera === null ? 'No se encuentran: B se aleja de A.' : 'No se encuentran: B va más rápido y se aleja.';
+      else t = `${xBandera === null ? 'Sí se encuentran' : 'Se encuentran'} en ${F(e.x, 0)} m, a los ${F(e.t, 1)} s.`;
+      if (k1) t = `${k1.correcta ? '' : k1.explica + ' '}En ${F(e.x, 0)} m, A va a ${F(e.vA, 0)} m/s y B a ${F(e.vB, 0)} m/s.`;
+      aviso(t);
+      const li = document.createElement('li');
+      li.textContent = e ? `${nombreCaso(d.caso)}: se encuentran en ${F(e.x, 0)} m (${F(d.rapidezAcercamiento, 0)} m por segundo)` : `${nombreCaso(d.caso)}: nunca se encuentran`;
+      $('registro').appendChild(li);
+      P1B.i++;
+      if (P1B.i < ORDEN_1B.length) seguir('Otro caso', caso1b);
+      else { consigna('Lo que decide el encuentro'); seguir('Siguiente: pisar', parte2); aviso('El encuentro depende de cuánto se acercan por segundo, no de la rapidez de cada uno.'); }
+    },
+  });
+}
+const nombreCaso = c => ({ alcance: 'Uno alcanza al otro', cruce: 'Se cruzan', nunca: 'Uno se aleja' }[c]);
+
+// =============================== Parte 2: pisar (MRUV) ===============================
+const P2 = { eventos: [], predicho: false, tFin: Infinity, frenó: false };
+function parte2() {
+  parte(2, 'Pisar'); $('registro').hidden = true;
+  P2.eventos = [{ t: 0, pedal: 'suelto' }]; P2.predicho = false; P2.tFin = Infinity; P2.freno = false; P2.final = false;
+  pista = { largo: L.LARGO, cada: 5, carriles: [{ x: 0, marcas: [] }] };
+  grafica = { compacto: true, x: { min: 0, max: 10, paso: 2, nombre: 't', unidad: 's' }, y: { min: 0, max: 8, paso: 2, nombre: 'v', unidad: 'm/s', color: 'h' }, curvas: [] };
+  pintarPista(); pintarGrafica(); lectura(0, 0, 0);
+  consigna('Mantén apretado «Acelerar». Suelta cuando quieras.');
+  aviso('');
+  const pedal = (nombre, on) => {
+    if (!corriendo && P2.eventos.length === 1 && nombre === 'acelera' && on) arrancar2();
+    if (!corriendo) return;
+    const t = tiempo2();
+    P2.eventos.push({ t, pedal: on ? nombre : 'suelto' });
+  };
+  controles([
+    { texto: 'Frenar', clase: 'pedal', alPulsar: on => {
+      if (on && !P2.predicho) { frenarPrimero(); return; }
+      pedal('frena', on);
+    } },
+    { texto: 'Acelerar', clase: 'pedal', alPulsar: on => pedal('acelera', on) },
+  ]);
+}
+let reloj2 = null;
+const tiempo2 = () => reloj2 ? reloj2() : 0;
+function arrancar2() {
+  let tAhora = 0;
+  reloj2 = () => tAhora;
+  correr({
+    tiempoReal: true,      // el pedal se juega en tiempo real; con movimiento reducido, el carrito salta de segundo en segundo
+    dur: () => P2.tFin,
+    cada: (t, nuevoSeg) => {
+      tAhora = t;
+      const m = L.corridaPedal(P2.eventos).movil;
+      let x = m.x(t);
+      // La corrida no se acaba por tiempo: termina al llegar al final de la pista o al quedar quieto después de frenar.
+      if (x >= L.LARGO) { x = L.LARGO; P2.tFin = t; P2.final = true; }
+      if (m.tParada !== null && t > m.tParada + 0.6) P2.tFin = t;
+      const e = P2.eventos[P2.eventos.length - 1], a = L.PEDAL[e.pedal] && m.v(t) > 0 ? L.PEDAL[e.pedal] : 0;
+      pista.carriles[0].flecha = a ? { a } : null;
+      if (nuevoSeg || RM) {
+        pista.carriles[0].marcas = L.marcas(m, Math.min(t, P2.tFin)).filter(v => v <= L.LARGO);
+        pintarPista();
+      } else if (!!$('lienzo').querySelector('.kit-carrito-0 line[stroke="var(--c-d)"]') !== !!a) pintarPista();
+      if (!RM || nuevoSeg) moverCarrito(0, x, RM ? 0 : a < 0 ? 3 : a > 0 ? -3 : 0);
+      lectura(t, x, m.v(t));
+      grafica.curvas = [curva(m.v, Math.max(t, 0.01), 'h')];
+      pintarGrafica();
+    },
+    fin: () => {
+      controles([]);
+      const m = L.corridaPedal(P2.eventos).movil;
+      pista.carriles[0].flecha = null; pintarPista();
+      if (P2.final && !P2.eventos.some(e => e.pedal === 'frena')) {
+        consigna('Llegó al final sin frenar.'); aviso('Esta vez, frena antes del final.');
+        seguir('Otra vez', () => { reloj2 = null; parte2(); });
+        return;
+      }
+      consigna('Mira cómo cambian las marcas.');
+      aviso('Al acelerar, las marcas se abren y v sube. Al frenar, se cierran y v baja: la aceleración apunta hacia atrás.');
+      seguir('Volver a empezar', () => { P1.corridas = []; P1.pred = null; reloj2 = null; parte1(); });
+    },
+  });
+}
+async function frenarPrimero() {
+  if (!corriendo) { aviso('Primero acelera.'); return; }
+  pausar(true);
+  const r = await predecir('k3', 'v2-k3');
+  P2.predicho = true;
+  consigna('Mantén apretado «Frenar».');
+  aviso(r.correcta ? '' : r.explica);
+  parte2Controles();
+  pausar(false);
+}
+function parte2Controles() {
+  const pedal = (nombre, on) => { if (!corriendo) return; P2.eventos.push({ t: tiempo2(), pedal: on ? nombre : 'suelto' }); };
+  controles([
+    { texto: 'Frenar', clase: 'pedal', alPulsar: on => pedal('frena', on) },
+    { texto: 'Acelerar', clase: 'pedal', alPulsar: on => pedal('acelera', on) },
+  ]);
+}
+
+parte1();
+</script>
+</body>
+</html>
