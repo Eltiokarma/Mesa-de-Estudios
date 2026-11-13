@@ -175,9 +175,9 @@ function avisosSalida() {
 // Una unidad entra a la cola cuando el alumno termina un ejercicio suyo (también los de las escenas, que guardan sus
 // eventos por su cuenta); solo las que tienen generador, que es de donde salen las preguntas.
 const unidadPorId = id => { const c = cursoDeUnidad(id); return c ? c.unidades.find(u => u.id === id) : null; };
-// Generadores propios de la unidad (su unidad principal es esta). Un generador que cubre varias unidades no cambia
-// según la unidad: repasar «Conjuntos» con uno de porcentajes no sería repasar conjuntos. Por eso solo cuentan estos.
-const generadoresRepaso = u => generadoresDe(u).filter(p => p.unidades[0] === u.id);
+// Generadores que pueden dar problemas de la unidad: los de una sola unidad, y los mixtos con alguna variante suya
+// según nucleo/repaso-tipos.js (repasar «Conjuntos» con un problema de porcentajes no sería repasar conjuntos).
+const generadoresRepaso = u => (window.RepasoTipos ? generadoresDe(u).filter(p => RepasoTipos.cubre(p, u.id)) : []);
 function sembrarRepaso() {
   if (!window.Repaso) return;
   try {

@@ -1,10 +1,10 @@
 // Pantalla del repaso de hoy (versión R de docs/pogil-v2-rive.md; la lógica está en nucleo/repaso.js).
 // Preguntas cortas de unidades que el alumno ya trabajó, mezcladas entre cursos, sin escena y sin animación.
 // Cada una sale de un generador de la unidad con una semilla nueva (nunca de un banco de academia: regla 5).
-// Antes de resolver: «¿Qué tipo de problema es?», con tres unidades, solo si la respuesta es inequívoca: el generador
-// cubre una sola unidad, o el problema dice a cuál pertenece (campo opcional p.unidadCatalogo). Un generador que mezcla
-// unidades (sistemas-ecuaciones trae trazas de matrices) daría por buena una etiqueta falsa; ahí se salta. Si falla, recién ahí la explicación y el
-// enlace a la unidad. Se registra un 'repaso-item' por pregunta y un 'repaso' al terminar (nucleo/medicion.js).
+// Cada pregunta es de verdad de la unidad que se repasa: con un generador mixto (sistemas-ecuaciones trae trazas de
+// matrices) se buscan semillas hasta que la variante sea de esa unidad, según nucleo/repaso-tipos.js. Así, antes de
+// resolver se puede preguntar «¿Qué tipo de problema es?» con tres unidades sin dar por buena una etiqueta falsa.
+// Si falla, recién ahí la explicación y el enlace a la unidad. Se registra un 'repaso-item' por pregunta y un 'repaso' al terminar (nucleo/medicion.js).
 (function () {
 'use strict';
 const PARA_TIPO = 3;
@@ -36,20 +36,29 @@ async function vista(ctx) {
 
   $app.innerHTML = `${cab}<p class="vacio">Cargando preguntas…</p>`;
   const h = location.hash;
-  // Un generador por unidad, turnándose entre los suyos (con el número de repasos ya hechos).
+  // Un problema por unidad. Los generadores que la cubren se turnan (empieza el que toca según los repasos ya hechos);
+  // de cada uno se prueban hasta 400 semillas (unos 50 ms) hasta dar con una variante de la unidad. Si ninguna sale, se
+  // prueba con semillas del día, para que una unidad con mala suerte no quede bloqueada para siempre.
   const preguntas = [];
+  const delaUnidad = (pl, p, id) => p && Array.isArray(p.alternativas) && p.alternativas.length > 1 && RepasoTipos.unidadDe(pl, p) === id;
   for (const id of elegidas) {
-    const { c, u } = unidad(id), ficha = est.repaso[id], gens = generadoresDe(u);
-    const pl = gens[(Number(ficha.hechos) || 0) % gens.length];
-    let g = null;
-    try { await script(pl.archivos[0]); g = window.Generadores && window.Generadores[pl.id]; } catch { g = null; }
-    if (!g) continue; // sin conexión y sin la copia guardada: esa unidad queda para otro día
-    for (let k = 0; k < 4; k++) {
-      try {
-        const p = g.generar(R.semilla(est.alumno, id, ficha, k));
-        if (p && Array.isArray(p.alternativas) && p.alternativas.length > 1) { preguntas.push({ id, c, u, pl, p, ficha }); break; }
-      } catch { /* semilla sin problema válido: otra */ }
+    const { c, u } = unidad(id), ficha = est.repaso[id], gens = generadoresDe(u), n0 = (Number(ficha.hechos) || 0) % gens.length;
+    let hallado = null;
+    for (const ks of [[...Array(400).keys()], [...Array(100).keys()].map(j => `${hoy}.${j}`)]) {
+      for (let r = 0; r < gens.length && !hallado; r++) {
+        const pl = gens[(n0 + r) % gens.length];
+        let g = null;
+        try { await script(pl.archivos[0]); g = window.Generadores && window.Generadores[pl.id]; } catch { g = null; }
+        if (!g) continue; // sin conexión y sin la copia guardada
+        for (const k of ks) {
+          let p = null;
+          try { p = g.generar(R.semilla(est.alumno, id, ficha, k)); } catch { /* semilla sin problema válido: otra */ }
+          if (delaUnidad(pl, p, id)) { hallado = { id, c, u, pl, p, ficha }; break; }
+        }
+      }
+      if (hallado) break;
     }
+    if (hallado) preguntas.push(hallado); // si no, esa unidad queda para otro día
   }
   if (location.hash !== h) return;
   if (!preguntas.length) {
@@ -60,10 +69,9 @@ async function vista(ctx) {
   // Opciones de «¿Qué tipo de problema es?»: distractores del mismo curso, primero lo que ya estudió.
   const estudiadas = Object.keys(est.repaso || {}).filter(x => unidad(x));
   for (const q of preguntas) {
-    const propia = q.p.unidadCatalogo && unidad(q.p.unidadCatalogo) ? q.p.unidadCatalogo : q.pl.unidades.length === 1 ? q.id : null;
-    q.tipoOk = propia;
-    q.tipos = propia ? R.opcionesTipo(propia, { cursoDe: x => (cursoDeUnidad(x) || {}).id, estudiadas, delCurso: cid => (cat.cursos.find(c => c.id === cid) || { unidades: [] }).unidades.map(x => x.id),
-      excluir: q.pl.unidades.filter(x => x !== propia), rng: Azar.crear(`tipo-${R.semilla(est.alumno, q.id, q.ficha)}`), n: PARA_TIPO }) : null;
+    q.tipoOk = q.id;
+    q.tipos = R.opcionesTipo(q.id, { cursoDe: x => (cursoDeUnidad(x) || {}).id, estudiadas, delCurso: cid => (cat.cursos.find(c => c.id === cid) || { unidades: [] }).unidades.map(x => x.id),
+      rng: Azar.crear(`tipo-${R.semilla(est.alumno, q.id, q.ficha)}`), n: PARA_TIPO });
   }
 
   const t0 = Date.now();
