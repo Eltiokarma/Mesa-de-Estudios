@@ -650,6 +650,19 @@ input[type=file]{font:inherit;max-width:100%}
 .ex-rev details{margin-top:10px}.ex-rev summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center}
 @media (min-width:900px){ .ex-nav{bottom:16px} body[data-ruta="unidad"] #app>*{max-width:860px} }
 
+/* Dejar una pregunta: el estado tiene su lugar reservado (dos líneas) desde que se pinta, para que nada salte. */
+.form-preg{display:grid;gap:10px}
+.form-preg textarea{width:100%;font:16px/1.45 var(--font);color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:var(--radius-s);padding:12px 14px;resize:vertical;min-height:132px}
+.form-preg textarea:focus-visible{outline:3px solid var(--brand);outline-offset:2px;border-color:var(--brand)}
+.preg-pie{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.preg-pie .sub{margin:0}
+.cuenta-c{font-variant-numeric:tabular-nums;white-space:nowrap}
+.estado-preg{min-height:2.9em;margin:0;font-size:14px;color:var(--muted)}
+.estado-preg.ok{color:color-mix(in srgb,var(--ok) 72%,var(--ink));font-weight:700}
+.estado-preg.falta{color:color-mix(in srgb,var(--warn) 78%,var(--ink));font-weight:700}
+.form-preg .btn{justify-self:start;min-height:48px}
+.preg-hecha p{margin:0 0 6px;white-space:pre-wrap;overflow-wrap:anywhere}
+
 /* Teoría en preparación. */
 .prep-teoria{padding:20px}
 .prep-teoria .prep-gato{float:right;margin:-4px -4px 4px 8px}

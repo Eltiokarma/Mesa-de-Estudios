@@ -510,6 +510,53 @@ async function vExamen(c, u) {
   intro();
 }
 
+// Dejar una pregunta: la duda viaja con la medición como evento { tipo: 'pregunta', curso, unidad, texto }. Sin cuenta
+// queda en este equipo y sale en «Descargar datos para el profesor»; con cuenta se sube con la cola de eventos
+// (POST /api/eventos acepta cualquier tipo). La confirmación dice lo que de verdad pasó.
+const MAX_PREGUNTA = 500;
+function vPregunta(c, u) {
+  const mias = () => eventos().filter(e => e.tipo === 'pregunta' && e.unidad === u.id && e.alumno === est.alumno).reverse();
+  const descargado = localStorage.getItem(CLAVE_EXPORTADO) || '';
+  const estadoDe = e => (esAlumnoCuenta() ? (ses.info().pendientes ? 'Guardada en este equipo, por enviar' : 'Enviada')
+    : String(e.t) <= descargado ? 'Entregada en la descarga para el profesor' : 'Guardada en este equipo');
+  const lista = () => { const l = mias(); return l.length ? `<h2>Tus preguntas de esta unidad</h2><div class="lista">${l.map(e => `<article class="card preg-hecha">
+      <p>${esc(e.texto)}</p><span class="sub">${esc(new Date(e.t).toLocaleDateString('es-PE', { day: 'numeric', month: 'short' }))} · ${esc(estadoDe(e))}</span></article>`).join('')}</div>` : ''; };
+  $app.innerHTML = `${cabUnidad(c, u, 'Dejar una pregunta')}
+    <form class="card form-preg" id="fPreg" novalidate>
+      <label for="duda"><b>¿Qué no te quedó claro de «${esc(u.nombre)}»?</b></label>
+      <textarea id="duda" rows="5" maxlength="${MAX_PREGUNTA}" placeholder="Con tus palabras. Por ejemplo: «No entiendo el paso donde…»" aria-describedby="avisoPreg estadoPreg"></textarea>
+      <div class="preg-pie"><span class="sub" id="avisoPreg">Tu profesor la lee sin tu nombre. No escribas datos personales.</span><span class="sub cuenta-c" aria-hidden="true">0/${MAX_PREGUNTA}</span></div>
+      <p class="estado-preg" id="estadoPreg" role="status"></p>
+      <button class="btn morado" id="enviarPreg">${esAlumnoCuenta() ? 'Enviar pregunta' : 'Guardar pregunta'}</button>
+    </form><div id="misPreg">${lista()}</div>`;
+  const ta = document.getElementById('duda'), st = document.getElementById('estadoPreg'), cuenta = $app.querySelector('.cuenta-c');
+  const decir = (t, clase = '') => { st.textContent = t; st.className = 'estado-preg' + (clase ? ' ' + clase : ''); };
+  ta.oninput = () => { cuenta.textContent = `${ta.value.length}/${MAX_PREGUNTA}`; if (st.classList.contains('falta') && ta.value.trim()) decir(''); };
+  let quitar = null;
+  document.getElementById('fPreg').onsubmit = e => {
+    e.preventDefault();
+    const texto = ta.value.trim().slice(0, MAX_PREGUNTA);
+    if (!texto) { decir('Escribe tu pregunta antes de guardarla.', 'falta'); ta.focus(); return; }
+    if (!registrar({ tipo: 'pregunta', curso: c.id, unidad: u.id, texto })) {
+      decir('No se pudo guardar en este equipo (puede estar lleno o en modo privado). Copia tu pregunta y dísela a tu profesor.', 'falta'); return;
+    }
+    ta.value = ''; cuenta.textContent = `0/${MAX_PREGUNTA}`;
+    document.getElementById('misPreg').innerHTML = lista();
+    if (!esAlumnoCuenta()) { decir('Guardada en este equipo. Llega a tu profesor con la descarga de datos.', 'ok'); return; }
+    // Con cuenta: se intenta subir ya. «Enviada» solo cuando el servidor confirmó y no queda nada por subir.
+    decir(navigator.onLine === false ? 'Guardada en este equipo. Se enviará sola cuando vuelva la señal.' : 'Guardada en este equipo. Enviando…');
+    if (quitar) quitar();
+    const ver = i => {
+      if (!document.body.contains(st)) { if (quitar) quitar(); return; }
+      if (i.estado === 'guardado' && !i.pendientes) { decir(`Enviada a tu profesor (${new Date().toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' })})`, 'ok'); document.getElementById('misPreg').innerHTML = lista(); if (quitar) quitar(); }
+      else if (i.estado === 'vencida') decir('Guardada en este equipo. Vuelve a entrar con tu cuenta para enviarla.');
+      else if (i.estado !== 'subiendo') decir('Guardada en este equipo. Se enviará sola cuando vuelva la señal.');
+    };
+    quitar = ses.alCambiar(ver);
+    Promise.resolve().then(() => ses.sincronizar()).catch(() => {});
+  };
+}
+
 function vProgreso() {
   const q = cola(est.uni), hechas = q.filter(x => visto(x.u.id)).length, p = q.length ? hechas / q.length : 0;
   const R = 70, L = Math.PI * R; // medio anillo
