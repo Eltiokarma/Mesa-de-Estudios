@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="es" data-curso="aritmetica">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>¿Cuál pesa más? · calentamiento</title>
+<link rel="stylesheet" href="../../nucleo/mascota.css">
+<style>
+/* Prototipo de calentamiento estilo Peak (docs/vision-pisa-agilidad-interaccion.md, sección 2).
+   Cáscara acogedora de app/estilos.css. Tiempos del kit: micro 120, corto 200, medio 320, largo 480 ms. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --borde:#e4d3ca;
+  --brand:#7f5ae0; --brand-2:#a58cf0; --brand-ink:#fff; --brand-soft:#efe6ff;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1f9d6b; --ok-soft:#dff5ea; --warn:#e5484d; --warn-soft:#fde4e4;
+  --oro:#f5b301;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --font:"Nunito",ui-rounded,"SF Pro Rounded",Inter,system-ui,sans-serif;
+  --resorte:cubic-bezier(.34,1.56,.64,1);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 var(--font);overflow:hidden;
+  -webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
+button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}
+#juego{max-width:480px;height:100dvh;margin:0 auto;padding:max(14px,env(safe-area-inset-top)) 16px 18px;
+  display:flex;flex-direction:column;gap:12px;position:relative}
+
+/* ---------- Cabecera: tiempo, puntos, combo y nivel ---------- */
+.cab{display:flex;align-items:center;gap:10px}
+.titulo{font-weight:800;font-size:17px;flex:1;letter-spacing:-.01em}
+.nivel{font-size:13px;font-weight:800;background:var(--brand-soft);color:var(--brand);border-radius:999px;padding:5px 11px}
+.tiempo{position:relative;height:12px;background:var(--line);border-radius:999px;overflow:hidden}
+.tiempo i{position:absolute;inset:0;background:linear-gradient(90deg,var(--brand),var(--brand-2));border-radius:999px;transform-origin:left center}
+.tiempo.apuro i{background:linear-gradient(90deg,var(--warn),#ff8a7a)}
+.marcador{display:flex;align-items:flex-end;justify-content:space-between}
+.puntos{font-size:40px;font-weight:900;letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1}
+.puntos small{display:block;font-size:12px;font-weight:700;color:var(--muted);letter-spacing:0;margin-bottom:4px}
+.seg{font-size:22px;font-weight:900;font-variant-numeric:tabular-nums;color:var(--muted);min-width:3ch;text-align:right}
+.seg.apuro{color:var(--warn)}
+.combo{font-weight:900;font-size:18px;color:#fff;background:linear-gradient(135deg,#ff7a59,#ff3d7f);border-radius:999px;padding:4px 12px;
+  box-shadow:0 4px 0 #c2285c;opacity:0;transform:scale(.4)}
+.combo.on{opacity:1;transform:scale(1)}
+.racha{display:flex;gap:4px;height:8px;margin-top:-4px}
+.racha i{flex:1;border-radius:999px;background:var(--line);transition:background .2s}
+.racha i.on{background:var(--oro)}
+
+/* ---------- Mascota y globo ---------- */
+.charla{display:flex;align-items:center;gap:10px;min-height:76px}
+.globo{flex:1;background:var(--card);border-radius:18px;box-shadow:var(--shadow);padding:10px 14px;font-size:15px;font-weight:700;position:relative;min-height:46px;display:flex;align-items:center}
+.globo::before{content:"";position:absolute;left:-7px;top:50%;width:14px;height:14px;background:var(--card);transform:translateY(-50%) rotate(45deg);border-radius:3px}
+.globo b.ok{color:var(--ok)} .globo b.mal{color:var(--warn)}
+
+/* ---------- Tarjetas ---------- */
+.mesa{flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px;min-height:0}
+.pareja{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tarjeta{position:relative;aspect-ratio:1/1.05;border:0;border-radius:26px;background:var(--card);
+  box-shadow:0 6px 0 var(--borde),var(--shadow);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:10px}
+.tarjeta .ex{font-size:clamp(24px,8vw,34px);font-weight:900;letter-spacing:-.02em;text-align:center;line-height:1.1;font-variant-numeric:tabular-nums}
+.tarjeta .val{font-size:15px;font-weight:800;color:var(--muted);opacity:0;min-height:1.2em}
+.tarjeta.bien{background:var(--ok-soft);box-shadow:0 6px 0 var(--ok),var(--shadow)}
+.tarjeta.bien .val{color:var(--ok)}
+.tarjeta.mal{background:var(--warn-soft);box-shadow:0 6px 0 var(--warn),var(--shadow)}
+.tarjeta.mal .val{color:var(--warn)}
+.tarjeta.era{box-shadow:0 6px 0 var(--ok),0 0 0 4px var(--ok),var(--shadow)}
+.iguales{justify-self:center;border:0;border-radius:999px;background:var(--card);box-shadow:0 5px 0 var(--borde),var(--shadow);
+  padding:14px 36px;font-weight:900;font-size:19px;margin:0 auto;display:block}
+.iguales.bien{background:var(--ok-soft);box-shadow:0 5px 0 var(--ok)}
+.iguales.mal{background:var(--warn-soft);box-shadow:0 5px 0 var(--warn)}
+.iguales.era{box-shadow:0 5px 0 var(--ok),0 0 0 4px var(--ok)}
+.tarjeta:focus-visible,.iguales:focus-visible,.btn:focus-visible{outline:3px solid var(--brand);outline-offset:3px}
+
+/* ---------- Capas de efectos ---------- */
+#chispas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:5}
+.flota{position:fixed;z-index:6;pointer-events:none;font-weight:900;font-size:26px;color:var(--ok);
+  text-shadow:0 2px 0 #fff,0 0 12px rgba(255,255,255,.9);white-space:nowrap;transform:translate(-50%,-50%)}
+.toque{position:fixed;z-index:7;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;border:3px solid rgba(127,90,224,.55);pointer-events:none}
+.cartel{position:fixed;left:0;right:0;top:38%;z-index:8;text-align:center;pointer-events:none}
+.cartel span{display:inline-block;background:linear-gradient(135deg,var(--brand),#b06ff2);color:#fff;font-weight:900;font-size:34px;
+  padding:12px 30px;border-radius:22px;box-shadow:0 8px 0 #5b3cb8,0 20px 40px rgba(91,60,184,.35);letter-spacing:-.01em}
+.cartel small{display:block;font-size:14px;font-weight:800;opacity:.9;letter-spacing:0}
+
+/* ---------- Pantallas de inicio y fin ---------- */
+.pantalla{position:absolute;inset:0;z-index:4;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:16px;padding:24px;text-align:center}
+.pantalla h1{font-size:34px;line-height:1.05;margin:0;letter-spacing:-.03em}
+.pantalla p{margin:0;color:var(--muted);font-weight:700;max-width:30ch}
+.pantalla .mascota{width:112px;height:112px}
+.ficha{background:var(--card);border-radius:24px;box-shadow:var(--shadow);padding:18px;width:100%;max-width:340px}
+.ficha .grande{font-size:56px;font-weight:900;letter-spacing:-.04em;font-variant-numeric:tabular-nums;line-height:1}
+.ficha .etq{font-size:13px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.ficha .fila{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.ficha .fila div{background:var(--bg);border-radius:14px;padding:8px 4px}
+.ficha .fila b{display:block;font-size:22px;font-weight:900;font-variant-numeric:tabular-nums}
+.ficha .fila span{font-size:12px;font-weight:700;color:var(--muted)}
+.record{display:inline-block;background:var(--oro);color:#4a3300;font-weight:900;border-radius:999px;padding:6px 14px;margin-top:10px;box-shadow:0 4px 0 #c48d00}
+.btn{border:0;border-radius:999px;background:var(--brand);color:var(--brand-ink);font-weight:900;font-size:20px;padding:16px 44px;box-shadow:0 6px 0 #5b3cb8}
+.btn:active{transform:translateY(3px);box-shadow:0 3px 0 #5b3cb8}
+.mejor{font-size:14px;font-weight:800;color:var(--muted)}
+</style>
+</head>
+<body>
+<main id="juego" aria-live="polite">
+  <div class="cab">
+    <div class="titulo">¿Cuál pesa más?</div>
+    <div class="nivel" id="nivel">Nivel 1</div>
+  </div>
+  <div class="tiempo" id="tiempo" aria-hidden="true"><i></i></div>
+  <div class="marcador">
+    <div class="puntos"><small>Puntos</small><span id="puntos">0</span></div>
+    <div class="combo" id="combo" aria-label="multiplicador">x2</div>
+    <div class="seg" id="seg">60</div>
+  </div>
+  <div class="racha" id="racha" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+  <div class="charla">
+    <div class="mascota" data-mascota aria-hidden="true"></div>
+    <div class="globo" id="globo">Toca la tarjeta que vale más.</div>
+  </div>
+  <div class="mesa">
+    <div class="pareja">
+      <button class="tarjeta" id="izq" data-lado="izq"><span class="ex"></span><span class="val"></span></button>
+      <button class="tarjeta" id="der" data-lado="der"><span class="ex"></span><span class="val"></span></button>
+    </div>
+    <button class="iguales" id="iguales" data-lado="iguales">= Iguales</button>
+  </div>
+
+  <section class="pantalla" id="inicio">
+    <div class="mascota" data-mascota aria-hidden="true"></div>
+    <h1>¿Cuál pesa más?</h1>
+    <p>Toca la tarjeta con el valor más alto. Si valen lo mismo, toca «Iguales».</p>
+    <p>Un minuto. Cada acierto seguido multiplica tus puntos.</p>
+    <button class="btn" id="jugar">Jugar</button>
+    <div class="mejor" id="mejor"></div>
+  </section>
+
+  <section class="pantalla" id="fin" hidden>
+    <div class="mascota" data-mascota aria-hidden="true"></div>
+    <h1>¡Tiempo!</h1>
+    <div class="ficha">
+      <div class="etq">Puntos</div>
+      <div class="grande" id="fin-puntos">0</div>
+      <div id="fin-record"></div>
+      <div class="fila">
+        <div><b id="fin-aciertos">0</b><span>aciertos</span></div>
+        <div><b id="fin-racha">0</b><span>mejor racha</span></div>
+        <div><b id="fin-nivel">1</b><span>nivel máximo</span></div>
+      </div>
+    </div>
+    <button class="btn" id="otra">Otra vez</button>
+  </section>
+</main>
+<canvas id="chispas" aria-hidden="true"></canvas>
+<script src="../../nucleo/azar.js"></script>
+<script src="../../nucleo/mascota.js"></script>
+<script src="motor.js"></script>
+<script src="juego.js"></script>
+</body>
+</html>
