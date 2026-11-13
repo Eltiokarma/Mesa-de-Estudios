@@ -2,12 +2,16 @@
 
 13 de noviembre de 2026. Auditoría pedida por Gerson: «el diseño es hermoso; lo que no es hermoso es la forma de enseñar». Es un documento de evaluación y dirección: no trae código ni cambia nada de la app. Se hizo con los skills `diseno-y-animacion` y `estructura-visual-motion`, leyendo `docs/escena-viva.md`, `docs/pendientes.md` (sección B) y `docs/vision-pisa-agilidad-interaccion.md` (secciones 3 y 4), y midiendo las 99 escenas en una pantalla de celular. Si algo de aquí choca con `CLAUDE.md` o con `docs/escena-viva.md`, mandan ellos.
 
+**Ampliado el mismo día** con una segunda opinión que trajo Gerson (otra conversación, sobre unir Rive con POGIL y sobre otras formas de enseñar). Lo nuevo está en las secciones 5.3 a 5.5, en la columna «Ruta» del temario y en la fila de repaso de la sección 9. Corrige un error de la primera versión: aplicaba POGIL a las 152 unidades.
+
 ## 1. En corto
 
 - **Veredicto:** ¿se entiende? A medias: se entiende leyendo. ¿Se siente? No. La cáscara ya es acogedora; la lección sigue siendo una presentación de diapositivas con un dibujo al lado.
 - **Por qué se ve plano:** no falta profundidad ni acabado. Falta que el alumno haga algo. En 72 de las 99 escenas no se toca la figura: se pulsa «Siguiente» o se jala un deslizador. Las cosas se mueven (89 escenas tienen animación), pero no porque el alumno las mueva.
 - **Rive solo no lo arregla.** Poner un tubo de ensayo hermoso en una lección que avanza con «Siguiente» da una presentación más bonita. Primero se cambia el verbo del alumno; después se viste.
 - **La propuesta, POGIL v2:** el modelo del POGIL de papel se vuelve un objeto que responde, y las preguntas se contestan haciendo. Cada unidad declara **un gesto** (verter, soltar, colgar, conectar…) que es la acción real del fenómeno, y el alumno arma con sus propios intentos la tabla de datos de la que sale la regla.
+- **No todo se descubre.** POGIL v2 es la ruta principal de 80 de las 152 unidades, no de todas. Un procedimiento (Ruffini, balancear, nombrar un compuesto) se aprende mejor siguiendo un ejemplo que va perdiendo pasos; un concepto con frontera, comparando casos; un dato, recordándolo en días distintos. Cada unidad lleva una ruta principal y una de apoyo, de cinco posibles (sección 5.3).
+- **El hueco más grande después del gesto es el repaso.** La app enseña y no vuelve a preguntar días después. Arreglarlo no necesita Rive ni rediseño.
 - **Dónde entra Rive:** en la mascota, en unos 8 objetos de utilería con material (el vaso que se llena y cambia de color, el mechero, el émbolo, el foco, el carrito…), en 3 personajes y en 3 piezas de interfaz. Unos 15 archivos para toda la app, no uno por unidad. Todo lo que se mide lo sigue dibujando el motor.
 - **Dónde rinde más:** en física y química. Son los cursos de fenómenos y solo 5 de sus 40 unidades tienen algo que se arrastra. Geometría, trigonometría y álgebra ya tienen el gesto en la mayoría de sus unidades; a esas les falta el ciclo de descubrir la regla, no Rive.
 - **Primer paso:** una sola unidad completa (ácidos y bases), primero sin Rive y después con Rive, probada en un celular real y con alumnos. Recién con eso se decide el resto.
@@ -107,9 +111,9 @@ Lo que hicimos hasta ahora es eso mismo llevado a pantalla: figura, texto corto 
 - De ahí sale la regla de oro de este documento: **el material y el movimiento se gastan en el objeto que el alumno manipula y en la respuesta que tiene que observar. Todo lo demás se queda quieto.** Un tubo precioso que se llena solo es un detalle seductor (Mayer) y resta.
 - Que manipular enseñe más que mirar es, para nuestro caso, una **hipótesis**. La app ya puede comprobarla con las pruebas de entrada y salida (sección 9).
 
-## 5. POGIL v2: el modelo
+## 5. El modelo: POGIL v2 y las otras rutas
 
-### 5.1 Los cinco tiempos de una unidad
+### 5.1 Los cinco tiempos de una unidad que se descubre
 
 Es la secuencia del problema guiado de `docs/fundacional.md`, reordenada para que la mano vaya antes que el texto. La regla 3 no cambia: predecir es el único punto que bloquea.
 
@@ -158,6 +162,97 @@ Vocabulario cerrado de gestos. Una unidad nueva elige de aquí; un gesto nuevo s
 
 «Mirar con lupa» (pasar de lo que se ve a las partículas) no es un gesto: es un cambio de vista que acompaña a los de química y se usa después del ensayo, no durante.
 
+### 5.3 No todo se descubre: las cinco rutas
+
+La primera versión de este documento ponía los cinco tiempos en las 152 unidades. Estaba mal, y la segunda opinión lo dice bien: descubrir una propiedad, aprender un procedimiento, recordar una fórmula y sostener una respuesta con un texto son necesidades distintas. Nadie «descubre» Ruffini vertiendo algo; lo aprende viendo a alguien hacerlo y haciéndolo con menos ayuda cada vez.
+
+La pregunta que decide la ruta es: **¿qué clase de cosa hay que aprender en esta unidad?**
+
+| Ruta | Se usa cuando hay… | Secuencia | Qué hace la mano | Lo que ya existe en Mesa | Rive |
+| --- | --- | --- | --- | --- | --- |
+| **D · Descubrir** | Una relación entre cosas que cambian: un fenómeno o una figura | Los cinco tiempos de 5.1 | El gesto del fenómeno | Las escenas y sus motores | Utilería donde hay material |
+| **E · Seguir un ejemplo** | Un procedimiento con pasos y decisiones: dividir polinomios, balancear, nombrar, resolver | Ejemplo completo → ejemplo donde el alumno elige un paso → problema con pista a pedido → problema solo | Elige o arma el paso siguiente sobre la línea de tiempo | El paso a paso y la línea de tiempo del kit; el principio «ayuda que se retira» del fundacional | Solo la mascota |
+| **C · Comparar** | Un concepto con frontera: qué es y qué no es, tipos, definiciones | Casos típicos → casos que «parecen» y casos límite → el alumno fabrica un caso que no cumple | Clasifica, o deforma una figura hasta que deja de cumplir | Los casos límite del explorador; la trampa LLA de `congruencia` | Solo la mascota |
+| **R · Recordar** | Un dato, un valor o una convención que el examen da por sabido: notables, prefijos, valencias, fórmulas, vocabulario | Entenderlo una vez → recuperarlo sin apoyo → volver en días distintos, mezclado con otros temas | Toques rápidos | El prototipo de calentamiento `juegos/cual-pesa-mas` (rama `prototipo/cual-pesa-mas`); los problemas de papel | No: basta el movimiento del navegador |
+| **A · Argumentar** | Una respuesta que vale por su justificación: lectura, verdades y mentiras, suficiencia de datos | Responder solo → decir por qué, marcando la evidencia → contrastar con otra respuesta → responder otra vez | Marca en el texto o en la figura lo que sostiene su respuesta | El paso previo del formato lectura; el modo salón propuesto | Solo la mascota |
+
+Cada unidad lleva **una ruta principal y una de apoyo**, no las cinco. La columna «Ruta» del temario (sección 8) las da en ese orden: «D+E» quiere decir que la unidad se descubre y después se fija con un ejemplo. Reparto de la ruta principal:
+
+| Curso | Descubrir | Seguir un ejemplo | Comparar | Recordar | Argumentar |
+| --- | --- | --- | --- | --- | --- |
+| Física (20) | 19 | 0 | 1 | 0 | 0 |
+| Química (20) | 9 | 4 | 5 | 2 | 0 |
+| Aritmética (19) | 11 | 7 | 1 | 0 | 0 |
+| Álgebra (19) | 7 | 10 | 2 | 0 | 0 |
+| Geometría (18) | 13 | 2 | 3 | 0 | 0 |
+| Trigonometría (19) | 10 | 8 | 1 | 0 | 0 |
+| Razonamiento matemático (19) | 11 | 5 | 1 | 0 | 2 |
+| Razonamiento verbal (18) | 0 | 4 | 6 | 1 | 7 |
+| **Total (152)** | **80** | **40** | **20** | **3** | **9** |
+
+Lo que dice ese reparto:
+
+- **POGIL v2 lidera en 80 unidades:** 19 de 20 en física, 13 de 18 en geometría y 9 de 20 en química.
+- **En álgebra y trigonometría, casi la mitad de las unidades es de ejemplo** (18 de 38): identidades, reducción, división de polinomios, factorización. Ahí un gesto bonito sería adorno.
+- **Recordar casi nunca lidera (3 unidades) pero apoya a 36.** Es la ruta de los calentamientos: notables, productos notables, unidades, criterios de divisibilidad, valencias.
+- **Química es el curso más repartido:** fenómenos (D), procedimientos como nomenclatura y balance (E), clasificaciones como materia y funciones orgánicas (C) y memoria en los temas de recursos y ambiente (R).
+
+La asignación es una propuesta: se discute unidad por unidad con Gerson y con el informe de ideas erróneas de cada tema.
+
+**Cuatro capas que van en todas las unidades, sea cual sea la ruta:**
+
+1. **Predecir** (regla 3). En las rutas E y C la predicción es «¿qué paso sigue?» o «¿este caso cumple?».
+2. **El error se muestra y no se diagnostica de más.** El fantasma y el «sería cierto si…» se quedan. Pero una respuesta equivocada no prueba por qué se equivocó el alumno: puede ser un desliz. La explicación se ofrece como posibilidad («si pensaste que…»), y la medición guarda el código del error como hipótesis, no como diagnóstico.
+3. **Transferir** con formato de examen y sin apoyos.
+4. **Volver otro día** (sección 5.4).
+
+### 5.4 Dos piezas que le faltaban al modelo
+
+**El ejemplo que se completa.** Los cinco tiempos saltaban de «nombra la regla» a «resuelve uno de examen». Falta el puente: un problema de admisión resuelto en la línea de tiempo, con un paso que el alumno elige. Va al inicio del tiempo 5, antes del problema que resuelve solo. Así la experiencia del vaso queda amarrada al procedimiento que pide el examen. Cuidado con retirar la ayuda muy rápido: el fundacional ya cita que con alumnos de poca base rinde menos (Reisslein y otros 2006). Por eso los pasos se retiran cuando el alumno acierta, no por calendario.
+
+**El repaso de otro día.** Es lo que una buena exploración no garantiza: acordarse la semana siguiente. El fundacional ya tiene el principio («recordar en vez de releer», Roediger y Karpicke) y la arquitectura ya reserva el dato («repasos pendientes»), pero la app no programa ningún repaso: hoy el único es el papel. Propuesta:
+
+- Cada unidad terminada deja en cola tres preguntas cortas para otros días. Los intervalos (por ejemplo 2, 7 y 21 días) son un punto de partida, no un número mágico: se ajustan con los datos.
+- Cada repaso dura uno o dos minutos, va con formato de examen, **sin la escena y sin animación**, y mezcla unidades distintas.
+- Si falla, recién ahí se abre el modelo de esa unidad, como explicación.
+- Los calentamientos de la ruta R entran por la misma cola.
+
+Esto no pasa por Rive ni por el rediseño de las escenas, así que se puede hacer en paralelo.
+
+**Cuánto dura una unidad.** Con el ejemplo y el problema solo, una unidad de ruta D puede pasar de 10 minutos. Si pasa, se parte en dos sesiones: tiempos 1 a 4 en una y el 5 en otra.
+
+### 5.5 Las diez familias de la segunda opinión, contra lo que Mesa ya tiene
+
+La otra conversación lista diez formas de enseñar. Es un buen mapa, pero se escribió sin ver el repo: siete de las diez ya están en Mesa de alguna forma.
+
+| Familia | En Mesa hoy | Qué falta | ¿Se toma? |
+| --- | --- | --- | --- |
+| 1. Indagación guiada | Las escenas con su explorador | Que el alumno opere el modelo (toda esta auditoría) | Sí: es la ruta D |
+| 2. Predecir, observar y explicar | Regla 3, en las 99 escenas | El «explicar» del alumno: hoy predice pero no dice por qué | Sí. En algunas predicciones, una ficha con la razón |
+| 3. Ejemplos resueltos | El paso a paso | Que los pasos se retiren: hoy el ejemplo siempre está completo | Sí: es la ruta E |
+| 4. Aprendizaje basado en problemas | El modo PISA de la visión | Todo | No ahora. El examen de admisión pregunta problemas cerrados |
+| 5. Proyectos | Nada | Todo | No. No cabe en 10 minutos de celular ni apunta al examen |
+| 6. Aprender del error | Errores típicos, fantasmas y el tono nuevo | No diagnosticar con una sola respuesta | Sí, con ese cuidado (5.3) |
+| 7. Recuperación y repaso espaciado | El principio y los problemas de papel | Que la app programe los repasos | Sí: es el hueco más grande (5.4) |
+| 8. Comparar ejemplos y contraejemplos | Casos límite sueltos en algunas escenas | Que sea un formato y que el alumno fabrique el contraejemplo | Sí: es la ruta C |
+| 9. Explicar y discutir entre pares | El modo salón, propuesto y sin hacer | Casi todo | A medias: la ruta A y el modo salón. Una app individual no reemplaza la discusión |
+| 10. Simulaciones | Las 99 escenas con motor verificado | Nada de fondo | Ya es el corazón del producto |
+
+**Dónde acierta la segunda opinión:**
+
+- No casarse con una sola metodología. Este documento lo hacía.
+- La retención como medida aparte: entender hoy no es acordarse el día del examen.
+- No dar por diagnosticado al alumno por una respuesta.
+- Medir comprensión, resolución sin pistas y retención, no cuánto gustó la animación.
+
+**Dónde se queda corta para Mesa:**
+
+- Propone biología, historia y literatura; el catálogo tiene ocho cursos y esos quedan en `docs/vision-futura.md`.
+- POGIL de aula es trabajo en equipos con roles, y de ahí sale su evidencia. En un celular a solas se pierde esa mitad; solo el modo salón la recupera.
+- Un repertorio mal usado termina en lecciones de 20 minutos con siete técnicas apiladas. Por eso aquí son una ruta principal y una de apoyo.
+
+**Sus fuentes.** No se pudieron abrir desde este entorno (la red las bloquea), así que quedan **por verificar** antes de pasar al fundacional: la definición de pogil.org, el metaanálisis sobre la guía en la indagación (Universidad de Twente), el de retroalimentación en entornos digitales (Van der Kleij y otros), la guía de prácticas del IES y la investigación de PhET. El fundacional ya trae fuentes propias para cuatro de estos puntos: predecir (Crouch y otros 2004), ayuda que se retira (Reisslein y otros 2006), recordar (Roediger y Karpicke) y simulaciones con andamiaje (D'Angelo y otros 2014: guiar la simulación suma sobre la simulación sola).
+
 ## 6. Dónde entra Rive y dónde no
 
 ### 6.1 Regla de decisión
@@ -200,7 +295,7 @@ Unos 15 archivos para toda la app. Un objeto nuevo se agrega al catálogo con su
 | Sello de unidad | Interfaz | Nivel alcanzado | Caer y asentarse | Toda la app |
 | Camino del curso | Interfaz | Unidades hechas, racha | Avanzar al terminar una unidad | La página de cada curso |
 
-Con eso, **31 de las 152 unidades** llevan utilería o un personaje de escena (14 de física, 10 de química, 3 de aritmética y álgebra, 4 de razonamiento matemático), y las otras 121 llevan el gesto con el kit y la mascota. Es a propósito: en matemática el objeto es la figura, y la figura es del motor.
+Con eso, **31 de las 152 unidades** llevan utilería o un personaje de escena (14 de física, 10 de química, 3 de aritmética y álgebra, 4 de razonamiento matemático), y las otras 121 llevan el gesto con el kit y la mascota. Es a propósito: en matemática el objeto es la figura, y la figura es del motor. De esas 31, 26 son de ruta Descubrir; las otras cinco reutilizan utilería que ya existe, sin costo nuevo. **Las rutas E, C, R y A no piden ningún archivo de Rive aparte de la mascota:** el catálogo sigue en 15.
 
 **Honestidad sobre la utilería:** varias piezas (el vaso con nivel y color, el foco que brilla) se pueden hacer bien en SVG con el kit, sin Rive. Rive se gana su lugar cuando el objeto tiene varios estados que se mezclan (inclinarse mientras se vacía y la superficie se mece). Por eso la primera prueba compara las dos versiones (sección 9).
 
@@ -234,7 +329,7 @@ El plan de `docs/pendientes.md` (alma, movimiento, escenas) sigue en pie, con un
 
 **Hoy.** Ocho pasos. El paso 1 tiene unas 110 palabras y la deducción del pH escrita antes de que el alumno toque nada. La lupa muestra las partículas, pero el alumno no las toca. Para diluir se jala un deslizador. La relación que el examen pide (cada vez que diluyes 10 veces un ácido fuerte, el pH sube 1) el alumno la lee escrita; no la saca de algo que hizo.
 
-**Con POGIL v2.** Gesto: verter y gotear. Ficha de tarea:
+**Con POGIL v2.** Ruta: descubrir, con apoyo de un ejemplo (D+E). Gesto: verter y gotear. Ficha de tarea:
 
 - **Promesa:** el alumno descubre con tres vertidas que diluir 10 veces sube el pH en 1, y con una bureta que la neutralización es un salto y no una rampa.
 - **Persona y condiciones:** alumno de 4.º o 5.º de secundaria, celular de gama baja, sin conexión, quizá con el celular en una mano.
@@ -248,7 +343,8 @@ El plan de `docs/pendientes.md` (alma, movimiento, escenas) sigue en pie, con un
 | 3. Prueba y registra | El alumno vierte hasta 100 mL: queda un vasito registrado, «×10 → pH 3». Repite hasta 1000 mL: «×100 → pH 4». Tercer ensayo libre: lo que él quiera. Entre ensayos puede abrir la lupa y ver que hay las mismas partículas de H⁺ en más agua |
 | 4. Nombra la regla | Con los tres vasitos a la vista: «Cada vez que el volumen se multiplica por ___, el pH sube ___». Fichas: 2, 10, 100, 1, 2. Al completar, aparece pH = −log [H⁺] con el hilo de color hacia cada vasito |
 | 3 y 4 otra vez, con la bureta | Gotea base sobre el ácido. El color casi no cambia durante muchas gotas y vira de golpe. El registro es la curva que él mismo fue marcando. Regla: se neutraliza cuando los moles se igualan |
-| 5. Transfiere | Un problema de formato San Marcos, con figura quieta y alternativas. Después, los de lápiz y papel |
+| 5. Transfiere | Primero un problema de formato San Marcos resuelto en la línea de tiempo, donde el alumno elige un paso (qué hacer con el 10⁻²). Después otro que resuelve solo, con figura quieta y alternativas. Al final, los de lápiz y papel |
+| Otro día | A los 2, 7 y 21 días, una pregunta de dilución o de neutralización, sin vaso ni animación, mezclada con otras unidades. Si falla, se abre el vaso |
 
 **Qué hace cada medio:**
 
@@ -268,203 +364,204 @@ El plan de `docs/pendientes.md` (alma, movimiento, escenas) sigue en pie, con un
 Cómo leer las tablas:
 
 - **Hoy:** A = ya se arrastra algo de la figura; D = el control es un deslizador; B = solo botones; G = no tiene escena, solo práctica o lectura. Sale del barrido de la sección 2.
-- **Gesto:** el gesto principal de la unidad, del vocabulario de la sección 5.2.
+- **Ruta:** la ruta principal y la de apoyo (sección 5.3). D = descubrir, E = seguir un ejemplo, C = comparar, R = recordar, A = argumentar.
+- **Gesto:** el gesto principal de la unidad, del vocabulario de la sección 5.2. En las rutas E, C, R y A el gesto acompaña; no es el centro de la lección.
 - **Lo que descubre:** la relación que el alumno tiene que poder decir después de sus ensayos. Son propuestas para discutir con Gerson, no contenido verificado: cada una se contrasta con el motor y con el informe de ideas erróneas de su tema antes de construirla.
 - **Rive:** la utilería o el personaje de la sección 6.2. Una raya quiere decir kit y mascota, nada más.
 
 ### Física (20)
 
-| # | Unidad | Hoy | Gesto | Lo que descubre haciéndolo | Rive |
-| --- | --- | --- | --- | --- | --- |
-| 1 | Magnitudes y vectores | D | Estirar: mueve la punta de cada flecha y júntalas cola con punta | La resultante depende del ángulo: va desde la resta hasta la suma de los módulos | — |
-| 2 | MRU, MRUV y caída libre | D | Soltar: empuja el carrito con el dedo y pisa el freno | La gráfica v–t la dibuja su propio movimiento, y el área es lo que avanzó | Carrito |
-| 3 | Movimiento parabólico y circular | D | Lanzar: jala la honda y suelta; gira la rueda con el dedo | 30° y 60° caen en el mismo punto; la sombra horizontal avanza parejo | Pelota |
-| 4 | Estática | A | Colgar: cuelga pesas en la barra y mueve el apoyo | Lo que equilibra es peso por distancia, no el peso | — |
-| 5 | Dinámica | D | Colgar y soltar: jala el bloque con una cuerda; inclina el plano | La fuerza neta manda sobre la aceleración, no sobre la velocidad | Bloque |
-| 6 | Gravitación universal | D | Lanzar: suelta el satélite con más o menos rapidez | Hay una sola rapidez que cierra la órbita; más lejos, más lento | Satélite |
-| 7 | Trabajo, energía y potencia | D | Soltar: sube el carrito a la rampa y cámbiale la forma | La rapidez abajo depende de la altura, no del camino | Carrito |
-| 8 | Impulso y choques | D | Lanzar: manda dos carritos uno contra otro | La suma de m·v no cambia aunque la energía sí | Carrito |
-| 9 | Movimiento armónico simple | D | Estirar y soltar: jala la masa del resorte o el péndulo | Estirar más no cambia el período | Pelota (el resorte es del motor) |
-| 10 | Ondas mecánicas y sonido | D | Estirar: sacude el extremo de la cuerda con el dedo y ténsala | La mano decide la frecuencia; la cuerda, la rapidez | — |
-| 11 | Fluidos | D | Verter: llena vasos de formas distintas; hunde el bloque con el dedo | La presión depende de la profundidad; el empuje, de lo que se hunde | Vaso |
-| 12 | Temperatura y calor | D | Verter y calentar: mezcla dos vasos; acerca el mechero al hielo | La temperatura final no es el promedio; en el cambio de fase entra calor y T no sube | Vaso y mechero |
-| 13 | Termodinámica | D | Apretar: empuja el émbolo rápido o lento, con mechero o sin él | El trabajo es el área que él mismo dibuja en P–V | Émbolo y mechero |
-| 14 | Electrostática | B | Estirar: acerca una carga a otra que cuelga | Las dos fuerzas son iguales aunque las cargas no lo sean | — |
-| 15 | Corriente y circuitos | D | Conectar: arma el circuito con el dedo y saca un foco | En serie se reparten el voltaje; en paralelo cada foco brilla igual | Foco y pila |
-| 16 | Campo y fuerza magnética | B | Girar: pasea la brújula alrededor del cable; lanza la carga | La carga quieta no siente nada; la fuerza va de costado | Imán y brújula |
-| 17 | Inducción electromagnética | B | Estirar: mete y saca el imán de la espira, rápido o lento | El foquito prende solo mientras el flujo cambia | Imán y foco |
-| 18 | Ondas electromagnéticas | D | Ordenar: recorre el espectro; cruza el rayo a otro medio | Todas viajan a c; al cambiar de medio cambia λ, no f | — |
-| 19 | Óptica geométrica | A | Estirar: mueve el objeto y la lente; dobla la hoja en el espejo | La imagen cambia de lado al cruzar el foco | — |
-| 20 | Física moderna | D | Girar: dos perillas en la lámpara, una para el color y otra para el brillo | El brillo da más electrones; el color, más energía; bajo el umbral no sale nada | Foco |
+| # | Unidad | Hoy | Ruta | Gesto | Lo que descubre haciéndolo | Rive |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | Magnitudes y vectores | D | D+R | Estirar: mueve la punta de cada flecha y júntalas cola con punta | La resultante depende del ángulo: va desde la resta hasta la suma de los módulos | — |
+| 2 | MRU, MRUV y caída libre | D | D+E | Soltar: empuja el carrito con el dedo y pisa el freno | La gráfica v–t la dibuja su propio movimiento, y el área es lo que avanzó | Carrito |
+| 3 | Movimiento parabólico y circular | D | D+E | Lanzar: jala la honda y suelta; gira la rueda con el dedo | 30° y 60° caen en el mismo punto; la sombra horizontal avanza parejo | Pelota |
+| 4 | Estática | A | D+E | Colgar: cuelga pesas en la barra y mueve el apoyo | Lo que equilibra es peso por distancia, no el peso | — |
+| 5 | Dinámica | D | D+E | Colgar y soltar: jala el bloque con una cuerda; inclina el plano | La fuerza neta manda sobre la aceleración, no sobre la velocidad | Bloque |
+| 6 | Gravitación universal | D | D+R | Lanzar: suelta el satélite con más o menos rapidez | Hay una sola rapidez que cierra la órbita; más lejos, más lento | Satélite |
+| 7 | Trabajo, energía y potencia | D | D+E | Soltar: sube el carrito a la rampa y cámbiale la forma | La rapidez abajo depende de la altura, no del camino | Carrito |
+| 8 | Impulso y choques | D | D+E | Lanzar: manda dos carritos uno contra otro | La suma de m·v no cambia aunque la energía sí | Carrito |
+| 9 | Movimiento armónico simple | D | D+R | Estirar y soltar: jala la masa del resorte o el péndulo | Estirar más no cambia el período | Pelota (el resorte es del motor) |
+| 10 | Ondas mecánicas y sonido | D | D+R | Estirar: sacude el extremo de la cuerda con el dedo y ténsala | La mano decide la frecuencia; la cuerda, la rapidez | — |
+| 11 | Fluidos | D | D+E | Verter: llena vasos de formas distintas; hunde el bloque con el dedo | La presión depende de la profundidad; el empuje, de lo que se hunde | Vaso |
+| 12 | Temperatura y calor | D | D+E | Verter y calentar: mezcla dos vasos; acerca el mechero al hielo | La temperatura final no es el promedio; en el cambio de fase entra calor y T no sube | Vaso y mechero |
+| 13 | Termodinámica | D | D+E | Apretar: empuja el émbolo rápido o lento, con mechero o sin él | El trabajo es el área que él mismo dibuja en P–V | Émbolo y mechero |
+| 14 | Electrostática | B | D+E | Estirar: acerca una carga a otra que cuelga | Las dos fuerzas son iguales aunque las cargas no lo sean | — |
+| 15 | Corriente y circuitos | D | D+E | Conectar: arma el circuito con el dedo y saca un foco | En serie se reparten el voltaje; en paralelo cada foco brilla igual | Foco y pila |
+| 16 | Campo y fuerza magnética | B | D+C | Girar: pasea la brújula alrededor del cable; lanza la carga | La carga quieta no siente nada; la fuerza va de costado | Imán y brújula |
+| 17 | Inducción electromagnética | B | D+C | Estirar: mete y saca el imán de la espira, rápido o lento | El foquito prende solo mientras el flujo cambia | Imán y foco |
+| 18 | Ondas electromagnéticas | D | C+R | Ordenar: recorre el espectro; cruza el rayo a otro medio | Todas viajan a c; al cambiar de medio cambia λ, no f | — |
+| 19 | Óptica geométrica | A | D+E | Estirar: mueve el objeto y la lente; dobla la hoja en el espejo | La imagen cambia de lado al cruzar el foco | — |
+| 20 | Física moderna | D | D+R | Girar: dos perillas en la lámpara, una para el color y otra para el brillo | El brillo da más electrones; el color, más energía; bajo el umbral no sale nada | Foco |
 
 ### Química (20)
 
-| # | Unidad | Hoy | Gesto | Lo que descubre haciéndolo | Rive |
-| --- | --- | --- | --- | --- | --- |
-| 1 | Materia y energía | B | Verter y calentar: filtra, decanta y evapora una mezcla | Cada método separa por una propiedad; la masa no cambia | Vaso y mechero |
-| 2 | Estructura atómica | B | Poner fichas: llena los orbitales con electrones | El orden de llenado sale de «primero el más barato» | — |
-| 3 | Tabla periódica | B | Ordenar: acomoda cartas de elementos por una propiedad | La tendencia aparece al ordenar; los grupos se parecen | — |
-| 4 | Enlace químico | B | Conectar y girar: une átomos y gira la molécula | Los pares libres empujan; los dipolos se suman o se anulan | — |
-| 5 | Nomenclatura inorgánica | B | Clasificar y poner fichas: cruza las cargas | El nombre sale del estado de oxidación | — |
-| 6 | Mol y composición | D | Pesar: echa cucharadas a la balanza hasta juntar un mol | Un mol de cada sustancia pesa distinto y cuenta lo mismo | — (balanza del kit) |
-| 7 | Reacciones y balance | B | Poner fichas: agrega moléculas enteras a cada lado | Se cambian los coeficientes, nunca los subíndices | — |
-| 8 | Estequiometría | D | Poner fichas: junta 1 N₂ con 3 H₂ hasta que algo se acabe | El limitante es el que se acaba primero, no el que hay menos | — |
-| 9 | Estado gaseoso | D | Apretar y calentar: empuja el émbolo; acerca el mechero | Con T fija, P por V no cambia; con calor, los choques son más fuertes | Émbolo y mechero |
-| 10 | Líquidos y sólidos | D | Calentar: calienta el frasco, tápalo, súbelo de altitud | Hierve cuando su vapor iguala la presión de afuera | Vaso y mechero |
-| 11 | Soluciones | B | Verter: echa soluto, agrega agua, pasa una parte a otro vaso | Diluir no cambia los moles; sacar una parte no cambia la concentración | Vaso y gotero |
-| 12 | Cinética química | D | Calentar: calienta, muele y agita | Qué acelera la reacción y por qué: más choques que sirven | Vaso y mechero |
-| 13 | Equilibrio químico | D | Verter, apretar y calentar un sistema en equilibrio | El sistema responde en contra; K solo cambia con la temperatura | Vaso, émbolo y mechero |
-| 14 | Ácidos y bases | D | Verter y gotear: diluye; neutraliza gota a gota | Diluir 10 veces sube 1 de pH; la neutralización es un salto | Vaso y gotero |
-| 15 | Electroquímica | B | Conectar: arma la pila, pon el puente salino, cambia los metales | Quién se oxida lo decide la pareja; sin puente no hay corriente | Vaso y foco |
-| 16 | Hidrocarburos | A | Conectar: arma la cadena carbono por carbono | El nombre sale de la cadena más larga; mismos átomos, otra molécula | — |
-| 17 | Funciones orgánicas | A | Cortar y armar: quita un H y pon el grupo | El grupo decide la familia y cuánto se pegan las moléculas | — |
-| 18 | Biomoléculas | A | Conectar: junta dos piezas y sale agua | Toda unión suelta agua; la hidrólisis la devuelve | — |
-| 19 | Petróleo y recursos naturales | D | Calentar: destila subiendo la temperatura | Cada fracción sale a su temperatura | Mechero |
-| 20 | Contaminación y química aplicada | D | Gotear y clasificar: mide el pH de la lluvia; ordena contaminantes | Qué gas causa qué efecto | Vaso y gotero |
+| # | Unidad | Hoy | Ruta | Gesto | Lo que descubre haciéndolo | Rive |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | Materia y energía | B | C+R | Verter y calentar: filtra, decanta y evapora una mezcla | Cada método separa por una propiedad; la masa no cambia | Vaso y mechero |
+| 2 | Estructura atómica | B | E+R | Poner fichas: llena los orbitales con electrones | El orden de llenado sale de «primero el más barato» | — |
+| 3 | Tabla periódica | B | C+R | Ordenar: acomoda cartas de elementos por una propiedad | La tendencia aparece al ordenar; los grupos se parecen | — |
+| 4 | Enlace químico | B | C+D | Conectar y girar: une átomos y gira la molécula | Los pares libres empujan; los dipolos se suman o se anulan | — |
+| 5 | Nomenclatura inorgánica | B | E+R | Clasificar y poner fichas: cruza las cargas | El nombre sale del estado de oxidación | — |
+| 6 | Mol y composición | D | D+E | Pesar: echa cucharadas a la balanza hasta juntar un mol | Un mol de cada sustancia pesa distinto y cuenta lo mismo | — (balanza del kit) |
+| 7 | Reacciones y balance | B | E+D | Poner fichas: agrega moléculas enteras a cada lado | Se cambian los coeficientes, nunca los subíndices | — |
+| 8 | Estequiometría | D | D+E | Poner fichas: junta 1 N₂ con 3 H₂ hasta que algo se acabe | El limitante es el que se acaba primero, no el que hay menos | — |
+| 9 | Estado gaseoso | D | D+E | Apretar y calentar: empuja el émbolo; acerca el mechero | Con T fija, P por V no cambia; con calor, los choques son más fuertes | Émbolo y mechero |
+| 10 | Líquidos y sólidos | D | D+C | Calentar: calienta el frasco, tápalo, súbelo de altitud | Hierve cuando su vapor iguala la presión de afuera | Vaso y mechero |
+| 11 | Soluciones | B | D+E | Verter: echa soluto, agrega agua, pasa una parte a otro vaso | Diluir no cambia los moles; sacar una parte no cambia la concentración | Vaso y gotero |
+| 12 | Cinética química | D | D+C | Calentar: calienta, muele y agita | Qué acelera la reacción y por qué: más choques que sirven | Vaso y mechero |
+| 13 | Equilibrio químico | D | D+C | Verter, apretar y calentar un sistema en equilibrio | El sistema responde en contra; K solo cambia con la temperatura | Vaso, émbolo y mechero |
+| 14 | Ácidos y bases | D | D+E | Verter y gotear: diluye; neutraliza gota a gota | Diluir 10 veces sube 1 de pH; la neutralización es un salto | Vaso y gotero |
+| 15 | Electroquímica | B | D+E | Conectar: arma la pila, pon el puente salino, cambia los metales | Quién se oxida lo decide la pareja; sin puente no hay corriente | Vaso y foco |
+| 16 | Hidrocarburos | A | E+C | Conectar: arma la cadena carbono por carbono | El nombre sale de la cadena más larga; mismos átomos, otra molécula | — |
+| 17 | Funciones orgánicas | A | C+R | Cortar y armar: quita un H y pon el grupo | El grupo decide la familia y cuánto se pegan las moléculas | — |
+| 18 | Biomoléculas | A | C+R | Conectar: junta dos piezas y sale agua | Toda unión suelta agua; la hidrólisis la devuelve | — |
+| 19 | Petróleo y recursos naturales | D | R+C | Calentar: destila subiendo la temperatura | Cada fracción sale a su temperatura | Mechero |
+| 20 | Contaminación y química aplicada | D | R+C | Gotear y clasificar: mide el pH de la lluvia; ordena contaminantes | Qué gas causa qué efecto | Vaso y gotero |
 
 ### Aritmética (19)
 
-| # | Unidad | Hoy | Gesto | Lo que descubre haciéndolo | Rive |
-| --- | --- | --- | --- | --- | --- |
-| 1 | Lógica proposicional | B | Conectar: prende interruptores en serie y en paralelo | «Y» es serie, «o» es paralelo; el condicional solo falla en un caso | Foco |
-| 2 | Conjuntos | B | Poner fichas en los aros | Lo que está en la intersección se cuenta una vez | — |
-| 3 | Razones y proporciones | A | Estirar la tira | Al ampliar, la razón se conserva y la diferencia no | — |
-| 4 | Magnitudes proporcionales | A | Estirar un lado del taller de área fija | En la inversa, el producto no cambia | — |
-| 5 | Tanto por ciento | G | Cortar la barra (ya existe en la práctica viva) | El segundo descuento se aplica a lo que queda | — |
-| 6 | Interés y descuento | A | Poner fichas: agrega una capa por año | El compuesto gana interés sobre el interés | — |
-| 7 | Mezclas y aleaciones | B | Verter: junta dos vasos de precio o grado distinto | El promedio se acerca al que más cantidad puso | Vaso |
-| 8 | Estadística descriptiva | A | Estirar: mueve un dato del diagrama | Un dato extremo jala la media y no la mediana | — |
-| 9 | Análisis combinatorio | B | Ordenar fichas en casilleros | Si el orden no importa, varios arreglos son el mismo | — |
-| 10 | Probabilidades | B | Marcar los casos en la cuadrícula de los dos dados | El 7 sale más porque tiene más casillas | — |
-| 11 | Sistemas de numeración | B | Poner fichas: agrupa de a b | Cambiar de base es reagrupar las mismas fichas | — |
-| 12 | Las cuatro operaciones | B | Poner fichas y llevar | La llevada es un grupo que se muda de columna | — |
-| 13 | Divisibilidad | B | Poner fichas en filas iguales | El resto es lo que no entra en la última fila | — |
-| 14 | Números primos y divisores | B | Cortar y armar: haz rectángulos con n fichas | Un primo solo arma una fila | — |
-| 15 | MCD y MCM | A | Cortar cintas; soltar dos buses | El MCD es el corte más grande que sirve a las dos | — |
-| 16 | Números racionales | A | Cortar la barra | Dos fracciones equivalentes son el mismo corte | — |
-| 17 | Potenciación y radicación | B | Poner fichas: arma el cuadrado | Para pasar al cuadrado siguiente faltan 2k + 1 fichas | — |
-| 18 | Sucesiones y series | A | Poner fichas: agrega una fila a la figura | Lo que se agrega en cada paso es la razón | — |
-| 19 | Razonamiento numérico | B | Poner fichas: cambia una por otra | Cada cambio corrige una diferencia fija | — |
+| # | Unidad | Hoy | Ruta | Gesto | Lo que descubre haciéndolo | Rive |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | Lógica proposicional | B | E+C | Conectar: prende interruptores en serie y en paralelo | «Y» es serie, «o» es paralelo; el condicional solo falla en un caso | Foco |
+| 2 | Conjuntos | B | D+E | Poner fichas en los aros | Lo que está en la intersección se cuenta una vez | — |
+| 3 | Razones y proporciones | A | D+E | Estirar la tira | Al ampliar, la razón se conserva y la diferencia no | — |
+| 4 | Magnitudes proporcionales | A | D+E | Estirar un lado del taller de área fija | En la inversa, el producto no cambia | — |
+| 5 | Tanto por ciento | G | D+E | Cortar la barra (ya existe en la práctica viva) | El segundo descuento se aplica a lo que queda | — |
+| 6 | Interés y descuento | A | D+E | Poner fichas: agrega una capa por año | El compuesto gana interés sobre el interés | — |
+| 7 | Mezclas y aleaciones | B | D+E | Verter: junta dos vasos de precio o grado distinto | El promedio se acerca al que más cantidad puso | Vaso |
+| 8 | Estadística descriptiva | A | D+C | Estirar: mueve un dato del diagrama | Un dato extremo jala la media y no la mediana | — |
+| 9 | Análisis combinatorio | B | C+E | Ordenar fichas en casilleros | Si el orden no importa, varios arreglos son el mismo | — |
+| 10 | Probabilidades | B | D+C | Marcar los casos en la cuadrícula de los dos dados | El 7 sale más porque tiene más casillas | — |
+| 11 | Sistemas de numeración | B | E+D | Poner fichas: agrupa de a b | Cambiar de base es reagrupar las mismas fichas | — |
+| 12 | Las cuatro operaciones | B | E+R | Poner fichas y llevar | La llevada es un grupo que se muda de columna | — |
+| 13 | Divisibilidad | B | E+R | Poner fichas en filas iguales | El resto es lo que no entra en la última fila | — |
+| 14 | Números primos y divisores | B | D+R | Cortar y armar: haz rectángulos con n fichas | Un primo solo arma una fila | — |
+| 15 | MCD y MCM | A | E+D | Cortar cintas; soltar dos buses | El MCD es el corte más grande que sirve a las dos | — |
+| 16 | Números racionales | A | D+E | Cortar la barra | Dos fracciones equivalentes son el mismo corte | — |
+| 17 | Potenciación y radicación | B | E+R | Poner fichas: arma el cuadrado | Para pasar al cuadrado siguiente faltan 2k + 1 fichas | — |
+| 18 | Sucesiones y series | A | D+E | Poner fichas: agrega una fila a la figura | Lo que se agrega en cada paso es la razón | — |
+| 19 | Razonamiento numérico | B | E+C | Poner fichas: cambia una por otra | Cada cambio corrige una diferencia fija | — |
 
 ### Álgebra (19)
 
-| # | Unidad | Hoy | Gesto | Lo que descubre haciéndolo | Rive |
-| --- | --- | --- | --- | --- | --- |
-| 1 | Lógica, conjuntos y juegos lógicos | B | Conectar interruptores; poner fichas en aros | Lo mismo que en aritmética 1 y 2 | Foco |
-| 2 | Números reales e intervalos | B | Estirar los extremos de dos intervalos | Unión e intersección se ven; el extremo abierto no se alcanza | — |
-| 3 | Exponentes y productos notables | A | Cortar y armar el cuadrado de lado a + b | Además de a² y b² hay dos rectángulos | — |
-| 4 | Ecuaciones de 1.º y 2.º grado | A | Pesar: quita lo mismo de los dos platillos | Lo que se hace a un lado se hace al otro | — |
-| 5 | Inecuaciones | A | Reflejar: voltea la recta al multiplicar por −1 | El signo se invierte porque la recta se refleja | — |
-| 6 | Valor absoluto y radicales | A | Estirar: abre un compás desde el centro | El valor absoluto es una distancia | — |
-| 7 | Polinomios | A | Poner fichas en la máquina, con el cero que falta | El resto es la altura P(a) en la curva | — |
-| 8 | División de polinomios | A | Poner fichas en la máquina de Ruffini | Con divisor ax + b, el cociente sale multiplicado | — |
-| 9 | Factorización | A | Cortar y armar: haz un rectángulo con las piezas | Factorizar es hallar los lados | — |
-| 10 | Ecuaciones polinomiales | A | Estirar: mueve las raíces sobre el eje | La suma y el producto de las raíces son los coeficientes | — |
-| 11 | Funciones y sus gráficas | A | Girar las perillas | Cada perilla mueve la gráfica de una sola manera | — |
-| 12 | Tipos de funciones e inversa | A | Doblar el plano por y = x | La inversa es el reflejo; 1/f es otra cosa | — |
-| 13 | Exponenciales y logaritmos | A | Poner fichas: sube la escalera multiplicando | El logaritmo cuenta los escalones | — |
-| 14 | Números complejos | D | Girar la flecha | Multiplicar por i gira 90° | — |
-| 15 | Matrices y determinantes | B | Estirar las dos columnas | El determinante es el área con signo | — |
-| 16 | Sistemas de ecuaciones | A | Girar dos rectas | Una solución, ninguna o infinitas se ven | — |
-| 17 | Programación lineal | D | Estirar: desliza la recta de nivel con el dedo | El óptimo sale por un vértice | — |
-| 18 | Sucesiones y series | A | Poner fichas: agrega filas | La suma se ve como figura | — |
-| 19 | Binomio de Newton | D | Soltar bolitas en el tablero | Cada coeficiente cuenta caminos | — |
+| # | Unidad | Hoy | Ruta | Gesto | Lo que descubre haciéndolo | Rive |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | Lógica, conjuntos y juegos lógicos | B | E+C | Conectar interruptores; poner fichas en aros | Lo mismo que en aritmética 1 y 2 | Foco |
+| 2 | Números reales e intervalos | B | C+E | Estirar los extremos de dos intervalos | Unión e intersección se ven; el extremo abierto no se alcanza | — |
+| 3 | Exponentes y productos notables | A | D+R | Cortar y armar el cuadrado de lado a + b | Además de a² y b² hay dos rectángulos | — |
+| 4 | Ecuaciones de 1.º y 2.º grado | A | E+D | Pesar: quita lo mismo de los dos platillos | Lo que se hace a un lado se hace al otro | — |
+| 5 | Inecuaciones | A | E+C | Reflejar: voltea la recta al multiplicar por −1 | El signo se invierte porque la recta se refleja | — |
+| 6 | Valor absoluto y radicales | A | C+E | Estirar: abre un compás desde el centro | El valor absoluto es una distancia | — |
+| 7 | Polinomios | A | E+R | Poner fichas en la máquina, con el cero que falta | El resto es la altura P(a) en la curva | — |
+| 8 | División de polinomios | A | E+R | Poner fichas en la máquina de Ruffini | Con divisor ax + b, el cociente sale multiplicado | — |
+| 9 | Factorización | A | E+C | Cortar y armar: haz un rectángulo con las piezas | Factorizar es hallar los lados | — |
+| 10 | Ecuaciones polinomiales | A | E+D | Estirar: mueve las raíces sobre el eje | La suma y el producto de las raíces son los coeficientes | — |
+| 11 | Funciones y sus gráficas | A | D+C | Girar las perillas | Cada perilla mueve la gráfica de una sola manera | — |
+| 12 | Tipos de funciones e inversa | A | D+C | Doblar el plano por y = x | La inversa es el reflejo; 1/f es otra cosa | — |
+| 13 | Exponenciales y logaritmos | A | D+R | Poner fichas: sube la escalera multiplicando | El logaritmo cuenta los escalones | — |
+| 14 | Números complejos | D | D+E | Girar la flecha | Multiplicar por i gira 90° | — |
+| 15 | Matrices y determinantes | B | E+D | Estirar las dos columnas | El determinante es el área con signo | — |
+| 16 | Sistemas de ecuaciones | A | E+D | Girar dos rectas | Una solución, ninguna o infinitas se ven | — |
+| 17 | Programación lineal | D | D+E | Estirar: desliza la recta de nivel con el dedo | El óptimo sale por un vértice | — |
+| 18 | Sucesiones y series | A | D+E | Poner fichas: agrega filas | La suma se ve como figura | — |
+| 19 | Binomio de Newton | D | E+R | Soltar bolitas en el tablero | Cada coeficiente cuenta caminos | — |
 
 ### Geometría (18)
 
-| # | Unidad | Hoy | Gesto | Lo que descubre haciéndolo | Rive |
-| --- | --- | --- | --- | --- | --- |
-| 1 | Segmentos y ángulos | B | Girar la secante sobre las paralelas | Los ocho ángulos son solo dos valores | — |
-| 2 | Triángulos y líneas notables | A | Estirar el vértice | La altura sale fuera en el obtusángulo | — |
-| 3 | Congruencia | B | Cortar y armar: arma el triángulo con palitos y ángulos | Con LLA pueden salir dos triángulos | — |
-| 4 | Polígonos y cuadriláteros | A | Estirar los vértices | El nombre cambia cuando cambia una propiedad | — |
-| 5 | Circunferencia | A | Estirar el vértice sobre el arco | El inscrito no cambia: es la mitad del central | — |
-| 6 | Proporcionalidad y semejanza | A | Estirar: amplía la figura | El área crece con k² y el volumen con k³ | — |
-| 7 | Puntos notables | A | Estirar el vértice | Los cuatro puntos coinciden solo en el equilátero | — |
-| 8 | Relaciones métricas | A | Cortar y armar los cuadrados de los lados | Pitágoras es una igualdad de áreas | — |
-| 9 | Polígonos regulares | A | Girar: da la vuelta al polígono lado por lado | Los ángulos exteriores suman una vuelta | — |
-| 10 | Simetría | B | Reflejar: mueve el espejo | Dos reflexiones dan un giro o un traslado | — |
-| 11 | Áreas de regiones | A | Estirar el vértice en paralelo a la base | El área no cambia entre paralelas | — |
-| 12 | Longitud y áreas circulares | A | Girar: desenrolla la circunferencia; reacomoda los gajos | π es cuántos diámetros caben en la vuelta | — |
-| 13 | Rectas y planos en el espacio | A | Girar el cubo | Tres perpendiculares se ven al girar | — |
-| 14 | Poliedros | A | Doblar: despliega y vuelve a armar | Caras más vértices menos aristas da 2 | — |
-| 15 | Prisma y pirámide | A | Verter: llena el prisma con pirámides | La pirámide es un tercio del prisma | — |
-| 16 | Cilindro, cono y esfera | A | Girar la figura plana para generar el sólido | Tres conos llenan el cilindro | — |
-| 17 | Geometría analítica | A | Estirar puntos; tensar la cuerda del jardinero | La pendiente; la suma de distancias constante | — |
-| 18 | Razonamiento con figuras | B | Marcar cada figura que encuentre | Se cuenta por clases, no una por una | — |
+| # | Unidad | Hoy | Ruta | Gesto | Lo que descubre haciéndolo | Rive |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | Segmentos y ángulos | B | D+R | Girar la secante sobre las paralelas | Los ocho ángulos son solo dos valores | — |
+| 2 | Triángulos y líneas notables | A | D+C | Estirar el vértice | La altura sale fuera en el obtusángulo | — |
+| 3 | Congruencia | B | C+D | Cortar y armar: arma el triángulo con palitos y ángulos | Con LLA pueden salir dos triángulos | — |
+| 4 | Polígonos y cuadriláteros | A | C+D | Estirar los vértices | El nombre cambia cuando cambia una propiedad | — |
+| 5 | Circunferencia | A | D+R | Estirar el vértice sobre el arco | El inscrito no cambia: es la mitad del central | — |
+| 6 | Proporcionalidad y semejanza | A | D+E | Estirar: amplía la figura | El área crece con k² y el volumen con k³ | — |
+| 7 | Puntos notables | A | D+C | Estirar el vértice | Los cuatro puntos coinciden solo en el equilátero | — |
+| 8 | Relaciones métricas | A | D+E | Cortar y armar los cuadrados de los lados | Pitágoras es una igualdad de áreas | — |
+| 9 | Polígonos regulares | A | D+R | Girar: da la vuelta al polígono lado por lado | Los ángulos exteriores suman una vuelta | — |
+| 10 | Simetría | B | D+C | Reflejar: mueve el espejo | Dos reflexiones dan un giro o un traslado | — |
+| 11 | Áreas de regiones | A | D+E | Estirar el vértice en paralelo a la base | El área no cambia entre paralelas | — |
+| 12 | Longitud y áreas circulares | A | D+E | Girar: desenrolla la circunferencia; reacomoda los gajos | π es cuántos diámetros caben en la vuelta | — |
+| 13 | Rectas y planos en el espacio | A | C+D | Girar el cubo | Tres perpendiculares se ven al girar | — |
+| 14 | Poliedros | A | D+R | Doblar: despliega y vuelve a armar | Caras más vértices menos aristas da 2 | — |
+| 15 | Prisma y pirámide | A | D+E | Verter: llena el prisma con pirámides | La pirámide es un tercio del prisma | — |
+| 16 | Cilindro, cono y esfera | A | D+E | Girar la figura plana para generar el sólido | Tres conos llenan el cilindro | — |
+| 17 | Geometría analítica | A | E+D | Estirar puntos; tensar la cuerda del jardinero | La pendiente; la suma de distancias constante | — |
+| 18 | Razonamiento con figuras | B | E+C | Marcar cada figura que encuentre | Se cuenta por clases, no una por una | — |
 
 ### Trigonometría (19)
 
-| # | Unidad | Hoy | Gesto | Lo que descubre haciéndolo | Rive |
-| --- | --- | --- | --- | --- | --- |
-| 1 | Ángulo trigonométrico y sistemas | A | Girar: enrolla la cinta del radio | Un radián es un radio enrollado | — |
-| 2 | Longitud de arco y sector | A | Girar: haz rodar la rueda | El arco es ángulo por radio | — |
-| 3 | Razones de ángulos agudos | A | Estirar el triángulo sin cambiar el ángulo | La razón no depende del tamaño | — |
-| 4 | Resolución de triángulos rectángulos | A | Girar la línea de mira | Con un lado y un ángulo sale todo | — |
-| 5 | Plano cartesiano y la recta | A | Girar la recta | La pendiente es la tangente del ángulo | — |
-| 6 | Ángulos en posición normal | A | Girar el lado final | El signo lo decide el cuadrante | — |
-| 7 | Reducción al primer cuadrante | A | Reflejar el ángulo | Mismo valor; cambia el signo | — |
-| 8 | Circunferencia trigonométrica | A | Girar el punto | El seno es la altura y el coseno, la sombra | — |
-| 9 | Identidades fundamentales | A | Girar y mirar las áreas | sen² más cos² siempre arma el mismo cuadrado | — |
-| 10 | Suma y diferencia de ángulos | A | Girar dos veces seguidas | El seno de la suma no es la suma de los senos | — |
-| 11 | Ángulo doble, mitad y triple | A | Girar el doble | Duplicar el ángulo no duplica el seno | — |
-| 12 | Transformaciones y series | B | Estirar dos flechas en la circunferencia | La suma apunta a la semisuma | — |
-| 13 | Funciones trigonométricas | A | Girar el punto y desenrollar la gráfica | El período es una vuelta | — |
-| 14 | Funciones inversas | B | Estirar la ventana principal | Solo un corte cae dentro de la ventana | — |
-| 15 | Ecuaciones trigonométricas | A | Girar hasta que la altura valga k | Hay dos ángulos por vuelta | — |
-| 16 | Triángulos oblicuángulos | A | Girar el compás | Con LLA salen cero, uno o dos triángulos | — |
-| 17 | Áreas y líneas notables | A | Estirar un lado y el ángulo | El área es medio producto de dos lados por el seno | — |
-| 18 | Lugar geométrico y cónicas | D | Estirar: tensa la cuerda con el dedo | La suma de distancias a los focos no cambia | — |
-| 19 | Coordenadas polares y complejos | D | Girar el radar | Un r negativo cruza por el polo | — |
+| # | Unidad | Hoy | Ruta | Gesto | Lo que descubre haciéndolo | Rive |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | Ángulo trigonométrico y sistemas | A | D+R | Girar: enrolla la cinta del radio | Un radián es un radio enrollado | — |
+| 2 | Longitud de arco y sector | A | D+E | Girar: haz rodar la rueda | El arco es ángulo por radio | — |
+| 3 | Razones de ángulos agudos | A | D+R | Estirar el triángulo sin cambiar el ángulo | La razón no depende del tamaño | — |
+| 4 | Resolución de triángulos rectángulos | A | E+D | Girar la línea de mira | Con un lado y un ángulo sale todo | — |
+| 5 | Plano cartesiano y la recta | A | D+E | Girar la recta | La pendiente es la tangente del ángulo | — |
+| 6 | Ángulos en posición normal | A | D+R | Girar el lado final | El signo lo decide el cuadrante | — |
+| 7 | Reducción al primer cuadrante | A | E+R | Reflejar el ángulo | Mismo valor; cambia el signo | — |
+| 8 | Circunferencia trigonométrica | A | D+R | Girar el punto | El seno es la altura y el coseno, la sombra | — |
+| 9 | Identidades fundamentales | A | E+R | Girar y mirar las áreas | sen² más cos² siempre arma el mismo cuadrado | — |
+| 10 | Suma y diferencia de ángulos | A | E+R | Girar dos veces seguidas | El seno de la suma no es la suma de los senos | — |
+| 11 | Ángulo doble, mitad y triple | A | E+R | Girar el doble | Duplicar el ángulo no duplica el seno | — |
+| 12 | Transformaciones y series | B | E+R | Estirar dos flechas en la circunferencia | La suma apunta a la semisuma | — |
+| 13 | Funciones trigonométricas | A | D+C | Girar el punto y desenrollar la gráfica | El período es una vuelta | — |
+| 14 | Funciones inversas | B | C+D | Estirar la ventana principal | Solo un corte cae dentro de la ventana | — |
+| 15 | Ecuaciones trigonométricas | A | E+D | Girar hasta que la altura valga k | Hay dos ángulos por vuelta | — |
+| 16 | Triángulos oblicuángulos | A | D+E | Girar el compás | Con LLA salen cero, uno o dos triángulos | — |
+| 17 | Áreas y líneas notables | A | E+D | Estirar un lado y el ángulo | El área es medio producto de dos lados por el seno | — |
+| 18 | Lugar geométrico y cónicas | D | D+C | Estirar: tensa la cuerda con el dedo | La suma de distancias a los focos no cambia | — |
+| 19 | Coordenadas polares y complejos | D | D+E | Girar el radar | Un r negativo cruza por el polo | — |
 
 ### Razonamiento matemático (19)
 
-| # | Unidad | Hoy | Gesto | Lo que descubre haciéndolo | Rive |
-| --- | --- | --- | --- | --- | --- |
-| 1 | Deductivo y parentesco | A | Conectar: arma el árbol familiar | Solo una disposición cumple todas las pistas | — |
-| 2 | Trazos y perímetros | A | Conectar: traza sin levantar el dedo | Se puede con cero o dos vértices impares | Hormiga |
-| 3 | Ordenamiento de información | A | Ordenar fichas en la fila o en la mesa | Cada pista descarta posiciones | — |
-| 4 | Verdades y mentiras | A | Clasificar: voltea a cada personaje | Se supone, y la contradicción decide | — |
-| 5 | Traslados y puntos cardinales | B | Conectar: guía la combi por las cuadras | El desplazamiento no es lo caminado | Combi |
-| 6 | Arreglos numéricos | B | Poner fichas en el cuadrado | El centro es la suma mágica entre 3 | — |
-| 7 | Razonamiento inductivo | A | Poner fichas: agrega una fila y cuenta | El patrón sale de tres casos chicos | — |
-| 8 | Elementos recreativos | B | Girar el dado; mover palitos | Las caras opuestas suman 7 | — |
-| 9 | Relojes y calendarios | B | Girar el minutero | El horario también avanza | — |
-| 10 | Certezas | A | Soltar: saca bolas en el peor caso | La certeza llega con el peor caso más uno | — |
-| 11 | Frecuencia de sucesos | B | Soltar las combis del paradero | Coinciden en el MCM; hay un intervalo menos que sucesos | Combi |
-| 12 | Ruedas, poleas y engranajes | A | Girar la rueda con el dedo | Dientes por vueltas se conserva | — |
-| 13 | Máximos y mínimos | B | Estirar el cordel | Con el mismo cordel, el cuadrado encierra más | — |
-| 14 | Cortes, pesadas y balanzas | B | Cortar con la sierra; pesar | Hay un corte menos que pedazos | — (balanza del kit) |
-| 15 | Planteo de ecuaciones | A | Pesar y poner fichas: traduce el enunciado | Cada frase es una operación sobre la balanza | — |
-| 16 | Movimiento de figuras | A | Girar, voltear y rodar | Girar no es voltear | — |
-| 17 | Rutas y visualización espacial | A | Girar los cubitos; conectar aristas | Lo que no se ve se deduce de dos vistas | Hormiga |
-| 18 | Tablas, gráficos y suficiencia | B | Estirar el eje del gráfico | Un eje cortado exagera la diferencia | — |
-| 19 | Diagramas de flujo y operadores | G | Soltar un número por el diagrama | El operador es una máquina con una sola regla | — |
+| # | Unidad | Hoy | Ruta | Gesto | Lo que descubre haciéndolo | Rive |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | Deductivo y parentesco | A | E+A | Conectar: arma el árbol familiar | Solo una disposición cumple todas las pistas | — |
+| 2 | Trazos y perímetros | A | D+E | Conectar: traza sin levantar el dedo | Se puede con cero o dos vértices impares | Hormiga |
+| 3 | Ordenamiento de información | A | E+A | Ordenar fichas en la fila o en la mesa | Cada pista descarta posiciones | — |
+| 4 | Verdades y mentiras | A | A+E | Clasificar: voltea a cada personaje | Se supone, y la contradicción decide | — |
+| 5 | Traslados y puntos cardinales | B | D+E | Conectar: guía la combi por las cuadras | El desplazamiento no es lo caminado | Combi |
+| 6 | Arreglos numéricos | B | D+E | Poner fichas en el cuadrado | El centro es la suma mágica entre 3 | — |
+| 7 | Razonamiento inductivo | A | D+E | Poner fichas: agrega una fila y cuenta | El patrón sale de tres casos chicos | — |
+| 8 | Elementos recreativos | B | D+C | Girar el dado; mover palitos | Las caras opuestas suman 7 | — |
+| 9 | Relojes y calendarios | B | E+D | Girar el minutero | El horario también avanza | — |
+| 10 | Certezas | A | D+A | Soltar: saca bolas en el peor caso | La certeza llega con el peor caso más uno | — |
+| 11 | Frecuencia de sucesos | B | D+E | Soltar las combis del paradero | Coinciden en el MCM; hay un intervalo menos que sucesos | Combi |
+| 12 | Ruedas, poleas y engranajes | A | D+E | Girar la rueda con el dedo | Dientes por vueltas se conserva | — |
+| 13 | Máximos y mínimos | B | D+C | Estirar el cordel | Con el mismo cordel, el cuadrado encierra más | — |
+| 14 | Cortes, pesadas y balanzas | B | D+E | Cortar con la sierra; pesar | Hay un corte menos que pedazos | — (balanza del kit) |
+| 15 | Planteo de ecuaciones | A | E+D | Pesar y poner fichas: traduce el enunciado | Cada frase es una operación sobre la balanza | — |
+| 16 | Movimiento de figuras | A | C+D | Girar, voltear y rodar | Girar no es voltear | — |
+| 17 | Rutas y visualización espacial | A | D+C | Girar los cubitos; conectar aristas | Lo que no se ve se deduce de dos vistas | Hormiga |
+| 18 | Tablas, gráficos y suficiencia | B | A+C | Estirar el eje del gráfico | Un eje cortado exagera la diferencia | — |
+| 19 | Diagramas de flujo y operadores | G | E+D | Soltar un número por el diagrama | El operador es una máquina con una sola regla | — |
 
 ### Razonamiento verbal (18)
 
 Aquí el modelo es el texto y no hay fenómeno que animar. El gesto se hace sobre las palabras y Rive se limita a la mascota. El POGIL v2 de este curso es de lectura: el alumno marca, mueve o tacha, y el texto «responde» mostrando qué se sostiene y qué se cae.
 
-| # | Unidad | Hoy | Gesto | Lo que descubre haciéndolo |
-| --- | --- | --- | --- | --- |
-| 1 | Definiciones | G | Poner fichas: género y diferencia | Una definición buena deja fuera a los parecidos |
-| 2 | Analogías | G | Conectar pares y nombrar la relación con una ficha | Se compara la relación, no las palabras |
-| 3 | Sentido contextual | G | Poner fichas: cambia la palabra y relee | El contexto decide cuál acepción aguanta |
-| 4 | Conectores | G | Poner fichas entre dos ideas | El conector dice qué relación hay: causa, contraste o suma |
-| 5 | Eliminación de oraciones | G | Marcar: tacha una oración y relee | Sobra la que repite o se sale del tema |
-| 6 | Plan de redacción | G | Ordenar tarjetas | El orden va de lo general a lo particular o sigue el tiempo |
-| 7 | Cohesión y coherencia | G | Conectar cada pronombre con su referente | Un texto se sostiene por sus referencias |
-| 8 | El texto y sus tipos | G | Clasificar párrafos | El tipo lo delata el propósito, no el tema |
-| 9 | Tema e idea principal | G | Marcar: tapa una oración y mira si el texto se cae | La idea principal es la que no se puede quitar |
-| 10 | Resumen y síntesis | G | Marcar: tacha hasta dejar lo mínimo | Resumir es quitar sin cambiar lo que se afirma |
-| 11 | Textos discontinuos | G | Marcar en el gráfico de dónde sale el dato | La respuesta está en el cruce de fila y columna |
-| 12 | Inferencias | G | Marcar las dos frases que sostienen la conclusión | Inferir es unir dos cosas dichas, no adivinar |
-| 13 | Compatibilidad | G | Clasificar: lo dice, lo contradice o no lo dice | «No lo dice» no es «lo niega» |
-| 14 | Extrapolación | G | Poner fichas: cambia una condición del texto | Qué conclusión cambia y cuál se mantiene |
-| 15 | Argumentativos y dialécticos | G | Clasificar: tesis, argumento y contraargumento; quién lo dice | Dos autores pueden coincidir en el dato y no en la tesis |
-| 16 | Texto y contexto | G | Ordenar: sitúa el texto en su línea de tiempo | El sentido cambia con quién habla y cuándo |
-| 17 | Filosóficos y científicos | G | Marcar el término y armar su definición con el texto | El autor define sus palabras al usarlas |
-| 18 | Lectura en inglés | G | Conectar la palabra con su pista de contexto | El significado se saca de lo que la rodea |
+| # | Unidad | Hoy | Ruta | Gesto | Lo que descubre haciéndolo |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Definiciones | G | C+R | Poner fichas: género y diferencia | Una definición buena deja fuera a los parecidos |
+| 2 | Analogías | G | C+A | Conectar pares y nombrar la relación con una ficha | Se compara la relación, no las palabras |
+| 3 | Sentido contextual | G | C+A | Poner fichas: cambia la palabra y relee | El contexto decide cuál acepción aguanta |
+| 4 | Conectores | G | C+E | Poner fichas entre dos ideas | El conector dice qué relación hay: causa, contraste o suma |
+| 5 | Eliminación de oraciones | G | A+C | Marcar: tacha una oración y relee | Sobra la que repite o se sale del tema |
+| 6 | Plan de redacción | G | E+A | Ordenar tarjetas | El orden va de lo general a lo particular o sigue el tiempo |
+| 7 | Cohesión y coherencia | G | E+C | Conectar cada pronombre con su referente | Un texto se sostiene por sus referencias |
+| 8 | El texto y sus tipos | G | C+R | Clasificar párrafos | El tipo lo delata el propósito, no el tema |
+| 9 | Tema e idea principal | G | A+C | Marcar: tapa una oración y mira si el texto se cae | La idea principal es la que no se puede quitar |
+| 10 | Resumen y síntesis | G | E+A | Marcar: tacha hasta dejar lo mínimo | Resumir es quitar sin cambiar lo que se afirma |
+| 11 | Textos discontinuos | G | E+A | Marcar en el gráfico de dónde sale el dato | La respuesta está en el cruce de fila y columna |
+| 12 | Inferencias | G | A+E | Marcar las dos frases que sostienen la conclusión | Inferir es unir dos cosas dichas, no adivinar |
+| 13 | Compatibilidad | G | C+A | Clasificar: lo dice, lo contradice o no lo dice | «No lo dice» no es «lo niega» |
+| 14 | Extrapolación | G | A+C | Poner fichas: cambia una condición del texto | Qué conclusión cambia y cuál se mantiene |
+| 15 | Argumentativos y dialécticos | G | A+C | Clasificar: tesis, argumento y contraargumento; quién lo dice | Dos autores pueden coincidir en el dato y no en la tesis |
+| 16 | Texto y contexto | G | A+C | Ordenar: sitúa el texto en su línea de tiempo | El sentido cambia con quién habla y cuándo |
+| 17 | Filosóficos y científicos | G | A+E | Marcar el término y armar su definición con el texto | El autor define sus palabras al usarlas |
+| 18 | Lectura en inglés | G | R+A | Conectar la palabra con su pista de contexto | El significado se saca de lo que la rodea |
 
 ## 9. Orden de trabajo y cómo se comprueba
 
@@ -476,9 +573,12 @@ Una variable por versión, como pide el skill. Cada versión tiene una decisión
 | **A. Ácidos y bases con POGIL v2, sin Rive** | Los cinco tiempos, el gesto de verter y los registros, con el vaso en SVG del kit | Que la figura y la tarea quepan en una pantalla; palabras antes del primer toque; duración de un ensayo; que cinco alumnos cuenten qué hicieron | ¿El modelo de lección funciona? Esto no depende de Rive |
 | **B. La misma unidad con utilería Rive** | Solo el vaso, la jarra y la bureta pasan a Rive | Cuadros por segundo contra A; preferencia y comprensión contra A con otros cinco alumnos | ¿Rive agrega algo que justifique su costo de producción? |
 | **C. Una unidad de física y una de matemática** | MRUV con el carrito; `triangulo-estira`, que ya se arrastra, solo con registros y regla | Lo mismo que A | ¿El modelo aguanta fuera de la química? |
+| **R. Cola de repaso** (en paralelo, no depende de las otras) | La app programa preguntas cortas de las unidades ya hechas, en días distintos | Aciertos en el repaso de la semana contra los del día | ¿El repaso cambia lo que el alumno recuerda? Se puede probar en el piloto con las escenas de hoy |
 | **D. Escalar** | Física y química primero, por utilería compartida: las que usan vaso y mechero, después carrito, después foco | Pruebas de entrada y salida | Con tope de gasto por rutina, como siempre |
 
 **Guion para probar con un alumno** (sin anticiparle nada): se le da el celular con la unidad abierta y al terminar se le pregunta, en este orden: «¿Qué pasó?», «¿Qué hiciste tú?», «¿Cuándo lo entendiste?», «Si ahora tuvieras 1 L, ¿qué pH marcaría?». Se anota lo que intentó tocar y no respondía: eso dice qué gesto esperaba.
+
+**Qué se mide, en tres partes:** comprensión (los ítems de transferencia), resolución sin pistas (el problema del tiempo 5 que hace solo) y retención (el repaso de la semana siguiente). La app mide hoy las dos primeras con las pruebas de entrada y salida; la tercera llega con la cola de repaso. Cuánto le gustó la animación no cuenta como resultado.
 
 **La hipótesis de fondo y su prueba.** Hipótesis: en una misma unidad, POGIL v2 da mejor resultado en los ítems de transferencia que el paso a paso de hoy. La app ya tiene con qué comprobarlo: pruebas de entrada y salida con formas paralelas y ganancia de Hake. En el piloto, una sección usa la versión de hoy y otra la v2 de la misma unidad. Con un colegio y dos secciones el resultado es una señal, no una prueba.
 
@@ -492,12 +592,14 @@ Una variable por versión, como pide el skill. Cada versión tiene una decisión
 - **Detalles seductores.** Toda utilería nueva tiene que contestar: «si se quita, ¿qué se pierde?». Si la respuesta es «se ve menos bonito», no entra.
 - **Accesibilidad.** Un gesto que solo se puede hacer arrastrando deja fuera a alumnos y a las PC sin pantalla táctil del laboratorio. La alternativa sin arrastrar no es opcional.
 - **Tiempo por unidad.** Los cinco tiempos pueden tardar más que el paso a paso. Si una unidad pasa de 10 minutos, se parte.
-- **No verificado:** nada se probó con alumnos, ni en un celular físico, ni con lector de pantalla. La detección de «se arrastra» es automática y aproximada. Las relaciones de la columna «lo que descubre» son propuestas sin contrastar con los informes de ideas erróneas. No se leyó material de pogil.org (sigue pendiente en la visión). Las cifras sobre animación del skill no se rastrearon a su fuente.
+- **Apilar técnicas.** Con cinco rutas es fácil querer usar las cinco en cada unidad. La regla es una principal y una de apoyo.
+- **La ruta puede estar mal asignada.** Si en la prueba con alumnos una unidad de ruta D se resuelve mejor con un ejemplo, se cambia la ruta y no se fuerza el gesto.
+- **No verificado:** nada se probó con alumnos, ni en un celular físico, ni con lector de pantalla. La detección de «se arrastra» es automática y aproximada. Las relaciones de la columna «lo que descubre» son propuestas sin contrastar con los informes de ideas erróneas. No se leyó material de pogil.org (sigue pendiente en la visión) ni se pudieron abrir las fuentes de la segunda opinión. Las cifras sobre animación del skill no se rastrearon a su fuente.
 
 ## Reporte de diseño
 
 - **Ficha de tarea:** revisión de algo existente (las 99 escenas) y dirección para un sistema nuevo de lección. No se corrigió nada.
-- **Sistema:** el existente (`docs/diseno.md`, `docs/escena-viva.md`, kit y mascota). Decisiones nuevas que este documento propone y que quedan aquí escritas hasta que Gerson las apruebe: los cinco tiempos, el vocabulario de 13 gestos, la regla de decisión Rive contra motor y el catálogo de 15 archivos.
+- **Sistema:** el existente (`docs/diseno.md`, `docs/escena-viva.md`, kit y mascota). Decisiones nuevas que este documento propone y que quedan aquí escritas hasta que Gerson las apruebe: los cinco tiempos, el vocabulario de 13 gestos, las cinco rutas con su asignación por unidad, la cola de repaso, la regla de decisión Rive contra motor y el catálogo de 15 archivos.
 - **Carácter:** acogedora, viva y precisa (sin cambios). Firma: el hilo de color, que ahora llega también a los registros.
 - **Movimientos:** ninguno nuevo. La utilería se rige por las clases «gesto» y «simulación» del skill: sigue al dedo uno a uno y el reloj es el del motor.
 - **Verificación:** barrido con Playwright de 99 escenas a 390 × 780 (cifras en la sección 2); dos escenas revisadas a mano.
