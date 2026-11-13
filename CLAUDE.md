@@ -204,5 +204,6 @@ La lista vigente y detallada está en `docs/pendientes.md` y en la hoja de ruta 
 - Si cambia `catalogo/` o una `plantilla.json`: `npm run catalogo`. Si cambia la cáscara de la app: subir `VERSION` en `app/sw.js`.
 
 - Cambios chicos y revisables; un commit por plantilla o por cambio de documento.
+- **Presupuesto (Gerson, 13 nov 2026):** hay capital para tres planes de IA de 200 USD al mes durante tres meses, hasta el despliegue. El costo no es motivo para recortar el alcance. Lo que limita es el calendario, los límites semanales de los planes y la calidad.
 - Antes de afirmar algo sobre evidencia pedagógica, cita la fuente en `docs/fundacional.md`.
 - Si algo del documento fundacional cambia, actualiza también el doc vivo o avisa a Gerson para que lo haga.

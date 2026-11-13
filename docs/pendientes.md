@@ -53,9 +53,10 @@ Sesión de **planificación**: no se construyó nada de la app. Lo que sigue se 
 9. La tabla periódica llega hasta el último elemento con información completa en la IUPAC o en fuentes científicas verificables. Donde una propiedad no tiene valor medido, la casilla dice «sin dato»; no se estima.
 10. Al piloto entran 3.º, 4.º y 5.º de secundaria. Por grado, todo el catálogo queda dentro: 73 unidades de 3.º, 40 de 4.º y 39 de 5.º.
 11. **La primera unidad con el formato nuevo es MRU y MRUV** (sección 7.5 de la auditoría). Ácidos y bases, que es de 5.º, queda para después.
-12. **Todas las unidades entran al piloto con el formato nuevo.** Para que sea posible, la auditoría propone tres niveles (formato, gesto y utilería; sección 9): falta que Gerson diga cuál recibe cada unidad.
+12. **Todas las unidades entran al piloto con el formato nuevo.** Los tres niveles de la auditoría (formato, gesto y utilería; sección 9) son el orden de trabajo, no un recorte.
 13. **Los archivos de Rive se hacen con un MCP y con IA generativa.** Igual pasan por el contrato, el peso, la prueba de fidelidad y el respaldo SVG.
 14. Gerson revisa la columna «Ruta» del temario. Se probará en celular real. Lo demás queda por verse.
+15. **Presupuesto:** tres planes de IA de 200 USD al mes durante tres meses, hasta el despliegue. El costo no es motivo para recortar (ver «Presupuesto y mentalidad» más abajo).
 
 **Lo que sigue, en orden** (detalle en la sección 9 de la auditoría).
 1. **Estrés de Rive:** una página de prueba en el celular de 4 GB para fijar el presupuesto real.
@@ -69,9 +70,13 @@ Sesión de **planificación**: no se construyó nada de la app. Lo que sigue se 
 
 **Preguntas abiertas para Gerson.**
 - **La asignación de rutas.** La columna «Ruta» de `docs/temario-completo.md` es una propuesta hecha con el nombre y los temas de cada unidad. Le falta: que Gerson la revise, contrastarla con el informe de ideas erróneas de cada tema (solo se hizo en materia, tabla periódica y enlace) y probarla con alumnos. No hace falta cerrar las 152: basta decidir la ruta de las unidades que se van a construir. Las más dudosas: estructura atómica, hidrocarburos, recursos y ambiente (química); ondas electromagnéticas (física); combinatoria (aritmética); productos notables (álgebra); identidades y arcos compuestos (trigonometría); y todo razonamiento verbal, que no tiene escenas.
-- **Qué nivel del formato nuevo recibe cada unidad** (formato, gesto o utilería; sección 9 de la auditoría). Las 152 con gesto propio no caben antes de diciembre.
-- **Está en investigación externa** (ChatGPT, con el encargo del 13 nov): verificar las fuentes citadas, los datos de la tabla periódica, la evidencia sobre la pregunta de seguridad, la frontera explícito e inferencia en lectura, el estado actual de Rive y las rutas dudosas. Cuando llegue, se contrasta antes de pasar nada al fundacional.
-- **El plan de Rive:** el gratis exporta con su pantalla de inicio; para producción hace falta el de pago (confirmar precio y que incluya el enlace de datos).
+- **En qué orden se convierten las unidades** después de MRU y MRUV. Propuesta: primero las 24 de física y química que hoy usan deslizador, que es donde más se nota.
+- **La investigación externa ya llegó** (13 nov) y está resumida en `docs/investigacion/verificacion-pogil-v2.md`. Sus correcciones ya están aplicadas en la auditoría y en `docs/formato-lectura.md`. Falta:
+  - que alguien del proyecto abra las fuentes antes de pasar cifras al fundacional;
+  - revisar cómo citan a Sinha y Kapur `docs/investigacion/brilliant.md` y la visión (el g = 0,36 es de todo el metaanálisis, no solo de secundaria);
+  - revisar en el fundacional la frase sobre simulaciones: los efectos 0,62 y 0,60 de D'Angelo no se suman;
+  - renombrar la «confianza calibrada» a «acierto sobre lo intentado» en `nucleo/medicion.js` y en el reporte.
+- **El plan de Rive:** el gratis sí exporta, con la pantalla de inicio de Rive; Cadet (108 USD al año por asiento) la quita. Decidir si se paga.
 
 **Ramas que no están en `main`.**
 - `prototipo/cual-pesa-mas`: un calentamiento estilo Peak en `juegos/cual-pesa-mas/` (motor con pruebas, animación sin librerías). Sirve de base para la ruta «recordar». No está enlazado desde la app.
@@ -161,6 +166,8 @@ Rama `claude/hopeful-planck-h4701c` (no está en `main` todavía; sw v160). Se h
 - se programa una revisión del gasto con `send_later`.
 
 Con esas reglas, las últimas cinco rutinas costaron entre 4 y 28 USD cada una.
+
+**Presupuesto y mentalidad (Gerson, 13 nov).** Lo de esa tanda se pagó con un plan de 200 USD al mes, no con 1000 USD de bolsillo. Hoy se trabaja con dos planes y se puede sumar un tercero: hay capital para sostener tres planes de IA de 200 USD al mes durante tres meses, hasta el despliegue. **El dinero no es lo que limita el alcance, y no se recorta un plan por costo.** Lo que sí limita es el calendario, los límites semanales de cada plan y la calidad: pruebas en verde y verificación de escenas y fórmulas nuevas. Los topes por rutina siguen sirviendo, pero como freno para que una sola rutina no se coma el límite semanal.
 
 ### A. Antes del piloto (diciembre)
 
