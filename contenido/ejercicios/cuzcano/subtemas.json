@@ -10576,7 +10576,7 @@
     {
      "id": "series-telescopicas",
      "nombre": "Series telescópicas",
-     "unidad": "aritmetica.sucesiones-y-series",
+     "unidad": "algebra.sucesiones-y-series",
      "fichas": 6
     },
     {
@@ -11252,7 +11252,7 @@
     {
      "id": "series-telescopicas",
      "nombre": "Series telescópicas",
-     "unidad": "aritmetica.sucesiones-y-series",
+     "unidad": "algebra.sucesiones-y-series",
      "fichas": 10
     },
     {
@@ -11412,7 +11412,7 @@
     {
      "id": "sucesiones-literales",
      "nombre": "Sucesiones literales",
-     "unidad": "aritmetica.sucesiones-y-series",
+     "unidad": "razonamiento-matematico.razonamiento-inductivo",
      "fichas": 3
     },
     {
