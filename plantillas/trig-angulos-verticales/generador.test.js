@@ -148,3 +148,25 @@ for (const q of papel.problemas) test(`papel ${q.id}`, () => {
     else for (const [k, x] of Object.entries(vf.espera)) assert.ok(cerca(campo(r, k), x), `${q.id}: ${vf.fn}.${k} da ${campo(r, k)}`);
   }
 });
+
+// ---------- Escena viva (docs/escena-viva.md): dos visuales a escala, en mismo-lado y ambos-lados ----------
+const { probarViva } = require('../../nucleo/kit/piezas/probar-viva.js');
+const tri = require('../../nucleo/kit/piezas/triangulo.js');
+probarViva(gen, {
+  semillas: 400, pieza: 'triangulo', presupuestoSoloEscena: true,
+  conEscena: p => ['mismo-lado', 'ambos-lados'].includes(p._datos.tipo),
+  final: (p, fin, s) => {
+    const d = p._datos, e = p.escena.datos, g = tri.geometria(e);
+    const pt = id => e.puntos.find(q => q.id === id);
+    // Fidelidad: cada visual sube con la tangente de su ángulo, el tramo mide d y la respuesta está rotulada.
+    const T = pt('T');
+    const [ojoA, ojoB] = d.tipo === 'mismo-lado' ? [pt(d.h0 ? 'P1' : 'P'), pt(d.h0 ? 'Q1' : 'Q')] : [pt('A'), pt('B')];
+    assert.ok(Math.abs((T.y - ojoA.y) / Math.abs(T.x - ojoA.x) - d.tA) < 1e-9, `semilla ${s}: la visual de α no tiene tan α`);
+    assert.ok(Math.abs((T.y - ojoB.y) / Math.abs(T.x - ojoB.x) - d.tB) < 1e-9, `semilla ${s}: la visual de β no tiene tan β`);
+    const [u, w] = d.tipo === 'mismo-lado' ? [pt('Q'), pt('P')] : [pt('A'), pt('B')];
+    assert.ok(Math.abs(Math.abs(w.x - u.x) - d.d) < 1e-9);
+    const dib = Math.atan2(g.P(ojoA.id)[1] - g.P('T')[1], Math.abs(g.P('T')[0] - g.P(ojoA.id)[0]));
+    assert.ok(Math.abs(Math.tan(dib) - d.tA) < 0.01, 'en el SVG la visual sube con tan α');
+    assert.ok(fin.includes(`= ${p.alternativas.find(a => a.correcta).texto}<`), `semilla ${s}: el final no rotula la respuesta`);
+  },
+});

@@ -56,3 +56,24 @@ test('los módulos se escriben como entero o k√n, sin decimales', () => {
     for (const a of p.alternativas) assert.ok(!/,\d/.test(a.texto), `semilla ${s}: ${a.texto}`);
   }
 });
+
+// ---------- Escena viva (docs/escena-viva.md): ejes con î y ĵ, componentes, cola con punta y R ----------
+const { probarViva } = require('../../nucleo/kit/piezas/probar-viva.js');
+probarViva(gen, {
+  semillas: 300, pieza: 'flechas',
+  final: (p, fin, s) => {
+    const d = p.escena.datos, res = d.resultante;
+    assert.ok(fin.includes(`R = ${res.valor}`), `semilla ${s}: el final no rotula la resultante`);
+    assert.ok(fin.includes('>î<') && fin.includes('>ĵ<'), 'los ejes llevan î y ĵ');
+    // Fidelidad: cada vector dado mide su módulo, y R es la suma con coeficientes.
+    const dados = d.flechas.filter(f => !f.paso && !f.discontinua);
+    p._datos.vectores.forEach((w, i) => assert.ok(Math.abs(Math.hypot(...dados[i].a) - w.m) < 1e-9));
+    const sx = dados.reduce((a, f, i) => a + p._datos.coef[i] * f.a[0], 0), sy = dados.reduce((a, f, i) => a + p._datos.coef[i] * f.a[1], 0);
+    assert.ok(Math.abs(res.a[0] - sx) < 1e-9 && Math.abs(res.a[1] - sy) < 1e-9, `semilla ${s}: R no es la suma`);
+    if (p._datos.tipo === 'angulo') assert.ok(Math.abs(((Math.atan2(sy, sx) * 180 / Math.PI + 360) % 360) - p.respuesta.valor) < 1, 'R apunta al ángulo de la respuesta (con 37° de academia)');
+    else assert.ok(Math.abs(Math.hypot(sx, sy) - p.respuesta.valor) < 1e-9);
+    // La cadena cola con punta termina en el extremo de R.
+    const cadena = d.flechas.filter(f => f.paso === 2);
+    if (cadena.length) { const ult = cadena[cadena.length - 1].a; assert.ok(Math.abs(ult[0] - sx) < 1e-9 && Math.abs(ult[1] - sy) < 1e-9); }
+  },
+});

@@ -33,10 +33,10 @@
       "enunciado": "Dos vectores A y B tienen el mismo módulo, 20 u. Se sabe que |A − B| es √3 veces |A + B|. ¿Qué ángulo forman A y B? Alternativas: A) 120°   B) 60°   C) 30°   D) 90°",
       "respuesta": "A) 120°",
       "pasos": [
-        "Con módulos iguales: |A + B|² = 2A²(1 + cos θ) y |A − B|² = 2A²(1 − cos θ). El módulo 20 u se cancela al dividir.",
+        "Con módulos iguales, el módulo 20 u se cancela al dividir suma entre diferencia.",
         "(1 − cos θ)/(1 + cos θ) = √3² = 3.",
         "1 − cos θ = 3 + 3·cos θ → cos θ = −2/4 = −0,5.",
-        "θ = 120°. Comprobación con el rombo: la diagonal A + B parte el ángulo en dos de 60°."
+        "θ = 120°. La diagonal A + B lo parte en dos de 60°."
       ]
     },
     {
@@ -45,10 +45,10 @@
       "enunciado": "Dos vectores A y B tienen el mismo módulo, 10 u. Se sabe que |A − B| es 2 veces |A + B|. ¿Qué ángulo forman A y B? Alternativas: A) 63,5°   B) 37°   C) 90°   D) 53°   E) 127°",
       "respuesta": "E) 127°",
       "pasos": [
-        "Con módulos iguales: |A + B|² = 2A²(1 + cos θ) y |A − B|² = 2A²(1 − cos θ). El módulo 10 u se cancela al dividir.",
+        "Con módulos iguales, el módulo 10 u se cancela al dividir suma entre diferencia.",
         "(1 − cos θ)/(1 + cos θ) = 2² = 4.",
         "1 − cos θ = 4 + 4·cos θ → cos θ = −3/5 = −0,6.",
-        "θ = 127°. Comprobación con el rombo: la diagonal A + B parte el ángulo en dos de 63,5°."
+        "θ = 127°. La diagonal A + B lo parte en dos de 63,5°."
       ]
     },
     {
@@ -57,8 +57,8 @@
       "enunciado": "Tres vectores A, B y C suman cero: A + B + C = 0. Sus módulos son 8 u, 5 u y √129 u. ¿Qué ángulo forman A y B (puestos con el origen en el mismo punto)? Alternativas: A) 120°   B) 30°   C) 90°   D) 60°",
       "respuesta": "D) 60°",
       "pasos": [
-        "Si A + B + C = 0, entonces A + B = −C: la resultante de A y B mide lo mismo que C.",
-        "(√129)² = 129 = 8² + 5² + 2·8·5·cos θ → 129 = 89 + 80·cos θ.",
+        "Si A + B + C = 0, entonces A + B = −C: R mide como C.",
+        "(√129)² = 129 = 8² + 5² + 2·8·5·cos θ.",
         "cos θ = (129 − 89) / 80 = 0,5.",
         "θ = 60°."
       ]
@@ -81,9 +81,9 @@
       "enunciado": "Tres vectores A, B y C suman cero: A + B + C = 0. Sus módulos son 12 m, 15 m y 9 m. ¿Qué ángulo forman A y B (puestos con el origen en el mismo punto)? Alternativas: A) 143°   B) 37°   C) 53°   D) 90°",
       "respuesta": "A) 143°",
       "pasos": [
-        "Si A + B + C = 0, entonces A + B = −C: la resultante de A y B mide lo mismo que C.",
-        "9² = 81 = 12² + 15² + 2·12·15·cos θ → 81 = 369 + 360·cos θ.",
-        "cos θ = (81 − 369) / 360 = −0,8: es negativo, así que el ángulo es obtuso.",
+        "Si A + B + C = 0, entonces A + B = −C: R mide como C.",
+        "9² = 81 = 12² + 15² + 2·12·15·cos θ.",
+        "cos θ = (81 − 369) / 360 = −0,8: negativo, el ángulo es obtuso.",
         "θ = 143° (con el triángulo 3-4-5 de academia)."
       ]
     },
@@ -93,10 +93,10 @@
       "enunciado": "Dos vectores A y B tienen el mismo módulo, 20 N. Se sabe que |A + B| es 2 veces |A − B|. ¿Qué ángulo forman A y B? Alternativas: A) 53°   B) 127°   C) 26,5°   D) 90°   E) 37°",
       "respuesta": "A) 53°",
       "pasos": [
-        "Con módulos iguales: |A + B|² = 2A²(1 + cos θ) y |A − B|² = 2A²(1 − cos θ). El módulo 20 N se cancela al dividir.",
+        "Con módulos iguales, el módulo 20 N se cancela al dividir suma entre diferencia.",
         "(1 + cos θ)/(1 − cos θ) = 2² = 4.",
         "1 + cos θ = 4 − 4·cos θ → cos θ = 3/5 = 0,6.",
-        "θ = 53°. Comprobación con el rombo: la diagonal A + B parte el ángulo en dos de 26,5°."
+        "θ = 53°. La diagonal A + B lo parte en dos de 26,5°."
       ]
     }
   ]

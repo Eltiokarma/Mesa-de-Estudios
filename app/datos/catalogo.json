@@ -7799,7 +7799,7 @@
    "titulo": "Ángulos verticales: dos visuales a la vez",
    "formato": "predicciones",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "trigonometria.triangulos-rectangulos",
     "trigonometria.arcos-compuestos"
@@ -7951,7 +7951,7 @@
    "titulo": "Componentes con triángulos notables",
    "formato": "predicciones",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "fisica.magnitudes-y-vectores"
    ],
@@ -7983,7 +7983,7 @@
    "titulo": "Dos vectores: la ley de cosenos",
    "formato": "predicciones",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "fisica.magnitudes-y-vectores"
    ],
@@ -7999,7 +7999,7 @@
    "titulo": "Vectores en un polígono regular",
    "formato": "predicciones",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "fisica.magnitudes-y-vectores"
    ],

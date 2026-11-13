@@ -121,6 +121,8 @@
   // «… con un ángulo de elevación » + «de 37°» o «α (con tan α = 2/3)».
   const angulo = (clave, o, letra) => (o.txt ? ['de ', v(clave, o.txt)] : [v(clave, letra), ` (con tan ${letra} = ${o.frac})`]);
   const nombre = (o, letra) => o.txt || letra;
+  // Más corto, para los enunciados que acompañan una figura: «37°» o «α (tan α = 2/3)».
+  const anguloCorto = (clave, o, letra) => (o.txt ? [v(clave, o.txt)] : [v(clave, letra), ` (tan ${letra} = ${o.frac})`]);
   const sen = t => t / Math.sqrt(1 + t * t);
   const deEl = el => (el.startsWith('el ') ? 'del ' + el.slice(3) : 'de ' + el);
 
@@ -218,6 +220,7 @@
     return {
       id: `${ID}#${semilla}`, variables: r.variables, enunciado: r.enunciado, pregunta: r.pregunta, datos: '',
       alternativas: finales, solucion: r.solucion, respuesta: { valor: correcta, unidad }, _datos: { tipo, ...r.datos },
+      ...(r.viva ? r.viva(finales) : {}),
     };
   }
 
@@ -297,11 +300,11 @@
     const cA = 1 / tA, cB = 1 / tB, sA = sen(tA), sB = sen(tB);
     const otra = suma ? d / Math.abs(cA - cB) : d / (cA + cB);
     return [
-      suma ? h('AV-resta-cotangentes', otra + h0, 'Restaste las cotangentes. Eso va cuando los dos puntos están del mismo lado de la base; aquí la base queda entre los dos observadores, así que sus distancias a la base se suman: d = H(cot α + cot β).')
-           : h('AV-suma-cotangentes', otra + h0, 'Sumaste las cotangentes. Eso va cuando la base queda entre los dos puntos; aquí los dos puntos están del mismo lado, y d es la diferencia de sus distancias a la base: d = H(cot α − cot β).'),
-      p('TR9', d / (suma ? 1 / sA + 1 / sB : 1 / sA - 1 / sB) + h0, 'Usaste el seno donde va la tangente: tomaste la distancia por el suelo como si fuera la visual (la hipotenusa). La altura es el cateto opuesto y la distancia por el suelo es el adyacente: los une la tangente.'),
-      h('AV-angulo-en-otro-vertice', d / (suma ? tA + tB : Math.abs(tB - tA)) + h0, 'Pusiste el ángulo en el vértice de arriba, entre la visual y la vertical. Los ángulos de elevación y de depresión se miden desde la horizontal: en el triángulo, el ángulo queda en el vértice del suelo, y la distancia por el suelo es H·cot del ángulo, no H·tan.'),
-      h('AV-un-angulo', d * tA + h0, 'Usaste un solo triángulo, como si d fuera toda la distancia del primer punto a la base. d es solo un tramo: hace falta la segunda visual.'),
+      suma ? h('AV-resta-cotangentes', otra + h0, 'Bien con las cotangentes; restar va si están del mismo lado. Aquí la base queda entre ellos: se suman.')
+           : h('AV-suma-cotangentes', otra + h0, 'Bien con las cotangentes; sumar va si la base queda entre ellos. Aquí están del mismo lado: se restan.'),
+      p('TR9', d / (suma ? 1 / sA + 1 / sB : 1 / sA - 1 / sB) + h0, 'Bien el triángulo, pero la distancia por el suelo es el cateto adyacente: la une la tangente, no el seno.'),
+      h('AV-angulo-en-otro-vertice', d / (suma ? tA + tB : Math.abs(tB - tA)) + h0, 'Bien el triángulo, pero la elevación se mide desde la horizontal: la distancia por el suelo es H·cot.'),
+      h('AV-un-angulo', d * tA + h0, 'Bien un triángulo, pero d es solo un tramo: hace falta la segunda visual.'),
     ];
   }
 
@@ -320,23 +323,23 @@
       a: { nombre: 'primer ángulo de elevación', color: 'o' }, b: { nombre: 'segundo ángulo de elevación', color: 'i' },
       d: { nombre: 'tramo que camina', color: 'd' }, H: { nombre: pide === 'altura' ? 'altura' : 'distancia del punto Q a la base', color: 'h' },
     };
-    const enunciado = [`Desde un punto P del suelo, ${ctx.quien} ve ${ctx.punta} con un ángulo de elevación `, ...angulo('a', a, 'α'),
-      '. Camina ', v('d', `${d} m`), ` en línea recta hacia ${ctx.base} y, desde el punto Q al que llega, ${ctx.lo} ve con un ángulo de elevación `, ...angulo('b', b, 'β'), '.',
-      h0 ? ` Mide los ángulos con un teodolito cuyo visor está a ${h0} m del suelo. El suelo es horizontal.` : ' El suelo es horizontal y los ángulos se miden desde el nivel del suelo.'];
-    const pregunta = [pide === 'altura' ? `¿Cuál es la altura ${deEl(ctx.el)}?` : `¿A qué distancia ${deEl(ctx.base)} está el punto Q?`];
+    const enunciado = [`Desde P se ve ${ctx.punta} con elevación `, ...anguloCorto('a', a, 'α'),
+      '. Tras avanzar ', v('d', `${d} m`), ' hacia la base, desde Q se ve con elevación ', ...anguloCorto('b', b, 'β'), '.',
+      h0 ? ` Visor a ${h0} m del suelo.` : ''];
+    const pregunta = [pide === 'altura' ? `¿Qué altura tiene ${ctx.el}?` : '¿A qué distancia de la base está Q?'];
     let errores = erroresDos({ d, tA: a.t, tB: b.t, h0: pide === 'altura' ? h0 : 0 });
     if (pide === 'altura') {
-      errores.splice(1, 0, h('AV-resta-tangentes', d * (b.t - a.t) + h0, 'Restaste las tangentes y multiplicaste por d, como si las dos visuales salieran del mismo punto. Cada visual tiene su propia distancia a la base; se restan las cotangentes, que son las que miden distancias por el suelo.'));
-      if (h0) errores.unshift(h('AV-olvida-visor', Hv, `Esa es la altura sobre el visor del teodolito. Los ángulos se midieron desde ${h0} m del suelo: falta sumar esa altura.`));
-      errores.push(h('AV-distancia-por-altura', x, 'Ese número es la distancia del punto Q a la base, no la altura.'));
+      errores.splice(1, 0, h('AV-resta-tangentes', d * (b.t - a.t) + h0, 'Bien restar, pero cada visual tiene su distancia a la base: se restan las cotangentes, no las tangentes.'));
+      if (h0) errores.unshift(h('AV-olvida-visor', Hv, `Bien la altura sobre el visor; falta sumar los ${h0} m del visor al suelo.`));
+      errores.push(h('AV-distancia-por-altura', x, 'Ese número es la distancia de Q a la base; se pide la altura.'));
     } else {
       const Hs = d / (1 / a.t + 1 / b.t);
       errores = [
-        h('AV-distancia-desde-P', x + d, 'Esa es la distancia del primer punto P a la base. Se pide la del punto Q, que está d metros más cerca.'),
-        h('AV-distancia-por-altura', Hv, 'Ese número es la altura, no la distancia de Q a la base: falta multiplicar por cot β.'),
-        h('AV-suma-cotangentes', Hs / b.t, 'Sumaste las cotangentes. Los dos puntos están del mismo lado de la base: d es la diferencia de sus distancias, d = H(cot α − cot β).'),
-        h('AV-angulo-en-otro-vertice', Hv * b.t, 'Multiplicaste la altura por tan β. La distancia por el suelo es el cateto adyacente al ángulo de elevación: es H·cot β.'),
-        p('TR9', Hv / sen(b.t), 'Dividiste la altura entre el seno: así sale la visual de Q a la punta (la hipotenusa), no la distancia por el suelo.'),
+        h('AV-distancia-desde-P', x + d, 'Esa es la distancia de P a la base. Q está d metros más cerca.'),
+        h('AV-distancia-por-altura', Hv, 'Bien la altura; falta multiplicar por cot β para llegar a la distancia de Q.'),
+        h('AV-suma-cotangentes', Hs / b.t, 'Bien con las cotangentes; están del mismo lado de la base: d = H(cot α − cot β).'),
+        h('AV-angulo-en-otro-vertice', Hv * b.t, 'Bien la altura, pero la distancia por el suelo es el cateto adyacente: H·cot β, no H·tan β.'),
+        p('TR9', Hv / sen(b.t), 'Bien la altura; al dividir entre el seno sale la visual, no la distancia por el suelo.'),
       ];
     }
     const cA = ex(1 / a.t), cB = ex(1 / b.t), na = nombre(a, 'α'), nb = nombre(b, 'β');
@@ -348,7 +351,80 @@
         ? (h0 ? ['Se suma la altura del visor: ', v('H', `${ex(Hv)} + ${h0} = ${ex(correcta)} m`), '.'] : ['Altura: ', v('H', `${ex(correcta)} m`), '.'])
         : ['x = H·cot ', v('b', nb), ` = ${ex(Hv)} · ${cB} = `, v('H', `${ex(correcta)} m`), '.'],
     ];
-    return { correcta, errores, variables, enunciado, pregunta, solucion, datos: { d, tA: a.t, tB: b.t, angA: a.txt, angB: b.txt, h0, pide } };
+    const viva = alts => vivaMismoLado({ d, a, b, h0, pide, Hv, x, correcta, na, nb, cA, cB }, alts);
+    return { correcta, errores, variables, enunciado, pregunta, solucion, viva, datos: { d, tA: a.t, tB: b.t, angA: a.txt, angB: b.txt, h0, pide } };
+  }
+
+  /*
+   * Escena viva (docs/escena-viva.md, sección 4) de los dos tipos de dos visuales: la figura a escala
+   * (nucleo/kit/piezas/triangulo.js) con la torre, el suelo, las visuales y sus ángulos; la solución recorre
+   * los dos triángulos. Se responde con alternativas. Los otros tipos siguen con el formato de siempre.
+   */
+  const ROTULOS = {
+    'AV-resta-cotangentes': 'restando cot', 'AV-suma-cotangentes': 'sumando cot', TR9: 'con el seno', 'AV-angulo-en-otro-vertice': 'ángulo arriba',
+    'AV-un-angulo': 'un solo triángulo', 'AV-resta-tangentes': 'restando tan', 'AV-olvida-visor': 'sin el visor',
+    'AV-distancia-por-altura': 'otra medida', 'AV-distancia-desde-P': 'desde P', 'AV-distancia-de-B': 'desde B',
+  };
+  const fantasmasDe = alts => {
+    const f = {};
+    for (const x of alts) if (x.error) f[x.error.id] = { marca: x.valor, rotulo: ROTULOS[x.error.id] || '', texto: x.texto };
+    return f;
+  };
+
+  function vivaMismoLado(e, alts) {
+    const { d, a, b, h0, pide, Hv, x, correcta, na, nb, cA, cB } = e;
+    const H = Hv + h0, alto = pide === 'altura';
+    const puntos = [{ id: 'B', x: 0, y: 0, rotulo: '' }, { id: 'T', x: 0, y: H, rotulo: '' }, { id: 'Q', x, y: 0, rotulo: 'Q' }, { id: 'P', x: x + d, y: 0, rotulo: 'P' }];
+    const lados = [{ de: 'B', a: 'T', color: 'h', grosor: 'variable', texto: alto ? 'H = ?' : '', final: alto ? `H = ${ex(correcta)} m` : undefined }];
+    let ojoP = 'P', ojoQ = 'Q', pie = 'B';
+    if (h0) {
+      puntos.push({ id: 'P1', x: x + d, y: h0 }, { id: 'Q1', x, y: h0 }, { id: 'O', x: 0, y: h0 });
+      lados.push({ de: 'P', a: 'P1', texto: `${h0} m` }, { de: 'Q', a: 'Q1' }, { de: 'P1', a: 'O', horizontal: true });
+      ojoP = 'P1'; ojoQ = 'Q1'; pie = 'O';
+    }
+    lados.push({ de: ojoP, a: 'T', color: 'o', visual: true }, { de: ojoQ, a: 'T', color: 'i', visual: true });
+    const angulos = [{ en: ojoP, de: pie, a: 'T', texto: na, color: 'o' }, { en: ojoQ, de: pie, a: 'T', texto: nb, color: 'i' }, { en: pie, de: ojoQ, a: 'T' }];
+    const cotas = [{ de: 'Q', a: 'P', texto: `${d} m`, color: 'd' },
+      alto ? { de: 'B', a: 'Q', texto: 'x', paso: 1 } : { de: 'B', a: 'Q', texto: 'x = ?', final: `x = ${ex(correcta)} m`, color: 'h' }];
+    const datos = { suelo: true, puntos, lados, angulos, cotas };
+    const v = P.v;
+    const pasos = [
+      { estado: { paso: 1 }, texto: ['Triángulo de Q: x = H·cot ', v('b', nb), '.'], ecuacion: ['x = H·', cB] },
+      { estado: { paso: 2 }, texto: ['Triángulo de P: x + ', v('d', `${d}`), ' = H·cot ', v('a', na), '. Se restan.'],
+        ecuacion: [v('d', `${d}`), ` = H(${cA} − ${cB}) → H = ${ex(Hv)} m`] },
+      alto
+        ? (h0 ? { estado: { paso: 2, final: true }, texto: ['Se suma la altura del visor.'], ecuacion: [v('H', `${ex(Hv)} + ${h0} = ${ex(correcta)} m`)] }
+              : { estado: { paso: 2, final: true }, texto: ['Esa es la altura que se pide.'], ecuacion: ['H = ', v('H', `${ex(correcta)} m`)] })
+        : { estado: { paso: 2, final: true }, texto: ['La distancia de Q es x = H·cot ', v('b', nb), '.'], ecuacion: [`x = ${ex(Hv)} · ${cB} = `, v('H', `${ex(correcta)} m`)] },
+    ];
+    const alt = `Figura a escala: la ${alto ? 'altura H' : 'base'} vista desde P con elevación ${na} y desde Q, ${d} m más cerca, con elevación ${nb}`
+      + (h0 ? `; los ángulos se miden a ${h0} m del suelo` : '');
+    return { escena: { pieza: 'triangulo', datos, alt }, pasos, fantasmas: fantasmasDe(alts) };
+  }
+
+  function vivaAmbosLados(e, alts) {
+    const { d, a, b, pide, H, correcta, na, nb } = e;
+    const alto = pide === 'altura', xA = H / a.t, xB = H / b.t;
+    const puntos = [{ id: 'A', x: -xA, y: 0, rotulo: 'A' }, { id: 'O', x: 0, y: 0 }, { id: 'B', x: xB, y: 0, rotulo: 'B' }, { id: 'T', x: 0, y: H }];
+    const lados = [
+      { de: 'O', a: 'T', color: 'h', grosor: 'variable', texto: alto ? 'H = ?' : 'H', final: alto ? `H = ${ex(correcta)} m` : undefined },
+      { de: 'A', a: 'T', color: 'o', visual: true }, { de: 'B', a: 'T', color: 'i', visual: true },
+      // Las dos distancias a la base, con el color de su ángulo (paso 1); si se pide AO, va rotulada desde el inicio.
+      alto ? { de: 'A', a: 'O', color: 'o', grosor: 'variable', paso: 1 } : { de: 'A', a: 'O', texto: 'AO = ?', final: `AO = ${ex(correcta)} m`, color: 'h', grosor: 'variable' },
+      { de: 'O', a: 'B', color: 'i', grosor: 'variable', paso: 1 },
+    ];
+    const angulos = [{ en: 'A', de: 'O', a: 'T', texto: na, color: 'o' }, { en: 'B', de: 'O', a: 'T', texto: nb, color: 'i' }, { en: 'O', de: 'B', a: 'T' }];
+    const datos = { suelo: true, puntos, lados, angulos, cotas: [{ de: 'A', a: 'B', texto: `${d} m`, color: 'd', dist: 48 }] };
+    const v = P.v;
+    const pasos = [
+      { estado: { paso: 1 }, texto: ['La base queda entre A y B: sus distancias suman ', v('d', `${d}`), '.'],
+        ecuacion: [v('d', `${d}`), ' = H·cot ', v('a', na), ' + H·cot ', v('b', nb), ` = H·${ex(1 / a.t + 1 / b.t)}`] },
+      alto
+        ? { estado: { paso: 1, final: true }, texto: ['Se despeja la altura H.'], ecuacion: [`H = ${d} ÷ ${entreP(ex(1 / a.t + 1 / b.t))} = `, v('H', `${ex(correcta)} m`)] }
+        : { estado: { paso: 1, final: true }, texto: ['La distancia de A es H·cot ', v('a', na), '.'], ecuacion: [`H = ${ex(H)}; AO = ${ex(H)} · ${ex(1 / a.t)} = `, v('H', `${ex(correcta)} m`)] },
+    ];
+    const alt = `Figura a escala: la altura vista desde A con elevación ${na} y desde B, al otro lado, con elevación ${nb}; A y B separados ${d} m`;
+    return { escena: { pieza: 'triangulo', datos, alt }, pasos, fantasmas: fantasmasDe(alts) };
   }
 
   function ambosLados(rng) {
@@ -365,16 +441,16 @@
       a: { nombre: 'ángulo de elevación desde A', color: 'o' }, b: { nombre: 'ángulo de elevación desde B', color: 'i' },
       d: { nombre: 'distancia AB', color: 'd' }, H: { nombre: pide === 'altura' ? 'altura' : 'distancia de A a la base', color: 'h' },
     };
-    const enunciado = [`${quien[0]} están en el suelo horizontal, a ambos lados de ${ctx.obj}, y ${ctx.base} queda en el segmento AB. A y B están separados `, v('d', `${d} m`),
-      `. Desde A se ve ${ctx.punta} con un ángulo de elevación `, ...angulo('a', a, 'α'), ' y desde B con un ángulo de elevación ', ...angulo('b', b, 'β'), '. Los ángulos se miden desde el nivel del suelo.'];
-    const pregunta = [pide === 'altura' ? `¿Cuál es la altura ${deEl(ctx.el)}?` : `¿A qué distancia ${deEl(ctx.base)} está el punto A?`];
+    const enunciado = ['Desde A y B, a ', v('d', `${d} m`), ` entre sí, se ve ${ctx.punta} con elevaciones `,
+      ...anguloCorto('a', a, 'α'), ' y ', ...anguloCorto('b', b, 'β'), '. La base queda entre A y B.'];
+    const pregunta = [pide === 'altura' ? `¿Qué altura tiene ${ctx.el}?` : '¿A qué distancia de la base está A?'];
     let errores = erroresDos({ d, tA: a.t, tB: b.t, suma: true });
     if (pide === 'distancia') {
       errores = errores.map(e => ({ ...e, valor: e.valor / a.t }));
-      errores.unshift(h('AV-distancia-por-altura', H, 'Ese número es la altura, no la distancia de A a la base: falta multiplicar por cot α.'),
-        h('AV-distancia-de-B', H / b.t, 'Esa es la distancia de B a la base, no la de A.'));
+      errores.unshift(h('AV-distancia-por-altura', H, 'Bien la altura; falta multiplicar por cot α para llegar a la distancia de A.'),
+        h('AV-distancia-de-B', H / b.t, 'Bien el método; esa es la distancia de B a la base, no la de A.'));
     } else {
-      errores.push(h('AV-distancia-por-altura', H / a.t, 'Ese número es la distancia de A a la base, no la altura.'));
+      errores.push(h('AV-distancia-por-altura', H / a.t, 'Ese número es la distancia de A a la base; se pide la altura.'));
     }
     const na = nombre(a, 'α'), nb = nombre(b, 'β');
     const solucion = [
@@ -382,7 +458,8 @@
       [`${d} = H(cot ${na} + cot ${nb}) = H(${ex(1 / a.t)} + ${ex(1 / b.t)}) = H·${ex(1 / a.t + 1 / b.t)}.`],
       pide === 'altura' ? ['H = ', v('H', `${ex(H)} m`), '.'] : [`H = ${ex(H)} m; distancia de A a la base = H·cot ${na} = `, v('H', `${ex(correcta)} m`), '.'],
     ];
-    return { correcta, errores, variables, enunciado, pregunta, solucion, datos: { d, tA: a.t, tB: b.t, angA: a.txt, angB: b.txt, pide } };
+    const viva = alts => vivaAmbosLados({ d, a, b, pide, H, correcta, na, nb }, alts);
+    return { correcta, errores, variables, enunciado, pregunta, solucion, viva, datos: { d, tA: a.t, tB: b.t, angA: a.txt, angB: b.txt, pide } };
   }
 
   function movimiento(rng, pref) {
