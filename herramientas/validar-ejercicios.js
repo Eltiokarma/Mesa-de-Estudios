@@ -319,8 +319,11 @@ function tablaConteo(c, { maxFilas = 30 } = {}) {
     const filas = Object.entries(o);
     if (!filas.length) return;
     const ancho = Math.max(titulo.length, ...filas.slice(0, maxFilas).map(([k]) => k.length));
-    lineas.push('', `${titulo.padEnd(ancho)}  ${'n'.padStart(5)}  ${'%'.padStart(5)}`, `${'-'.repeat(ancho)}  -----  -----`);
-    for (const [k, n] of filas.slice(0, maxFilas)) lineas.push(`${k.padEnd(ancho)}  ${String(n).padStart(5)}  ${(c.total ? Math.round(100 * n / c.total) : 0).toString().padStart(4)}%`);
+    // acum: porcentaje acumulado (Pareto): cuántos tipos hacen falta para cubrir el 80 %.
+    lineas.push('', `${titulo.padEnd(ancho)}  ${'n'.padStart(5)}  ${'%'.padStart(5)}  ${'acum'.padStart(5)}`, `${'-'.repeat(ancho)}  -----  -----  -----`);
+    let acum = 0;
+    const pc = n => `${(c.total ? Math.round(100 * n / c.total) : 0).toString().padStart(4)}%`;
+    for (const [k, n] of filas.slice(0, maxFilas)) { acum += n; lineas.push(`${k.padEnd(ancho)}  ${String(n).padStart(5)}  ${pc(n)}  ${pc(acum)}`); }
     if (filas.length > maxFilas) lineas.push(`… y ${filas.length - maxFilas} más (usa --json para verlas todas)`);
   };
   for (const [k, t] of [['curso', 'Curso'], ['origen', 'Origen'], ['estado', 'Estado'], ['via', 'Vía'], ['pieza', 'Pieza'], ['unidad', 'Unidad'], ['tipo', 'Tipo']]) bloque(t, c.por[k]);
