@@ -20,6 +20,7 @@
  *   marca:  { eje: 'x', min, max, inicio } | { eje: 'regla', min, max, inicio, paso, cada, nombre, unidad, color },
  *   respuesta: número | null,   // lo que el estado final dibuja con ✓ (en el eje x o en la regla)
  *   prefijo, sufijo, decimales  // cómo se lee la marca («12,5 s», «40 N·s»)
+ *   compacto: true              // sin marca: plano de 96 px y sin espacio para fantasmas (va debajo de otra figura)
  * }
  * estado = { corte, final, marca, fantasma: null | { marca, rotulo } | { curvas, areas, puntos, rotulo } }
  * El dibujo es una función pura de (datos, estado). Todo número que se ve lo trae el generador.
@@ -33,12 +34,14 @@
   if (nodo) module.exports = api;
 })(typeof self !== 'undefined' ? self : this, function (Kit, T) {
   'use strict';
-  const W = 320, PX0 = 48, PX1 = 302, PY0 = 30, ALTO_PLANO = 170, R = 5;
+  const W = 320, PX0 = 48, PX1 = 302, PY0 = 30, ALTO_PLANO = 170, ALTO_COMPACTO = 96, R = 5;
 
   const dec = e => (e && e.decimales !== undefined ? e.decimales : 2);
   const nombreEje = e => (e.nombre ? `${e.nombre}${e.unidad ? ` (${e.unidad})` : ''}` : '');
+  // compacto (sin marca): plano más bajo y sin el espacio del fantasma, para ir debajo de otra figura a 360 px.
+  const esCompacto = d => !!d.compacto && !d.marca;
   function geometria(d) {
-    const PY1 = PY0 + ALTO_PLANO;
+    const PY1 = PY0 + (esCompacto(d) ? ALTO_COMPACTO : ALTO_PLANO);
     const sx = (d.x.max - d.x.min) || 1, sy = (d.y.max - d.y.min) || 1;
     const X = v => PX0 + (PX1 - PX0) * (v - d.x.min) / sx;
     const Y = v => PY1 - (PY1 - PY0) * (v - d.y.min) / sy;
@@ -50,7 +53,7 @@
     const m = d.marca || {};
     const RX = v => PX0 + (PX1 - PX0) * (v - m.min) / ((m.max - m.min) || 1);
     const ceroY = Y(Math.min(d.y.max, Math.max(d.y.min, 0)));
-    return { PY1, X, Y, ceroY, regla, reglaY, manija, fantasma, alto: fantasma + 16, RX };
+    return { PY1, X, Y, ceroY, regla, reglaY, manija, fantasma, alto: esCompacto(d) ? PY1 + 48 : fantasma + 16, RX };
   }
   const fmt = (d, v) => `${d.prefijo || ''}${Kit.formatear(v, d.decimales === undefined ? 2 : d.decimales)}${d.sufijo || ''}`;
   const lim = (v, a, b) => Math.min(b, Math.max(a, v));

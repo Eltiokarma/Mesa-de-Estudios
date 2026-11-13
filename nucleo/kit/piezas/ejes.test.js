@@ -122,3 +122,12 @@ test('«cerrada»: la región entre dos gráficas se cierra sola, sin bajar al e
   assert.ok(g && X(-2) > 0);
   assert.match(svg, />3,5</);
 });
+
+test('compacto: sin marca, el plano es más bajo y la figura no reserva lugar para fantasmas', () => {
+  const XT = { x: { min: 0, max: 5, paso: 1, nombre: 't', unidad: 's' }, y: { min: 0, max: 30, paso: 10, nombre: 'x', unidad: 'm', color: 'i' },
+    curvas: [{ puntos: [[0, 0], [5, 20]], color: 'i' }] };
+  const alto = d => +E.dibujar(d).match(/viewBox="0 0 320 ([\d.]+)"/)[1];
+  assert.ok(alto({ ...XT, compacto: true }) < alto(XT) - 60);
+  assert.equal(alto({ ...ENCUENTRO, compacto: true }), alto(ENCUENTRO), 'con marca, compacto no cambia nada');
+  assert.ok(!/NaN|undefined/.test(E.dibujar({ ...XT, compacto: true })));
+});
