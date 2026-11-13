@@ -147,7 +147,8 @@ function esHuerfano(ej, ctx) {
 function presupuestoEjercicio(ej) {
   const mal = [];
   if (ej.origen && ej.origen.tipo === 'academia') return mal; // no se publica: no paga presupuesto
-  if (!(ej.origen && ej.origen.tipo === 'oficial')) {
+  // Oficiales y de libro van tal cual, con su cita (regla 5): el enunciado no paga presupuesto; lo que escribimos nosotros, sí.
+  if (!(ej.origen && (ej.origen.tipo === 'oficial' || ej.origen.tipo === 'libro'))) {
     const n = palabras(ej.enunciado) + palabras(ej.pregunta);
     if (n > PRESUPUESTO.enunciado) mal.push(`enunciado de ${n} palabras (máximo ${PRESUPUESTO.enunciado} sin los datos con color)`);
   }
@@ -246,7 +247,7 @@ function leerCarpeta(dir) {
     for (const f of fs.readdirSync(d).sort()) {
       const p = path.join(d, f);
       if (fs.statSync(p).isDirectory()) { recorrer(p); continue; }
-      if (f === 'esquema.json' || f === 'tipos.json') continue;
+      if (f === 'esquema.json' || f === 'tipos.json' || f === 'temas.json') continue;
       const rel = path.relative(RAIZ, p);
       try {
         if (f.endsWith('.jsonl')) {

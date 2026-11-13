@@ -7,7 +7,7 @@
 
 Mandan dos reglas de `CLAUDE.md`:
 - **Regla 1.** El cálculo lo hace código. Un modelo de lenguaje solo lee, clasifica y redacta.
-- **Regla 5.** Los problemas de academia sirven para saber qué se pregunta y para alimentar generadores: nunca entran al repo ni a la app. Las preguntas de exámenes oficiales de universidades públicas sí pueden ir tal cual, citando universidad y periodo, con solución y figura propias.
+- **Regla 5** (cambiada por Gerson el 13 nov 2026). Los problemas de examen y de los libros que los recopilan entran al repo y a la app **con su cita**: libro, autor, editorial, problema y página, y universidad y periodo si se saben. Alimentan el motor de ejercicios, se presentan como exámenes pasados y sirven para medir nivel, profundidad y progresión. Lo que no se puede citar se queda en `fuentes/ejercicios/`. El banco Cuzcano entra por `herramientas/importar-cuzcano.js` (`contenido/ejercicios/LEEME.md`).
 
 La tanda anterior costó cerca de 1000 USD contra 300 estimados. Este plan está hecho para no repetirlo: **se cuenta antes de construir, se construye por Pareto y cada rutina tiene tope.**
 
@@ -89,9 +89,10 @@ El mapeo se hace por tipo en `contenido/ejercicios/tipos.json`, no por ejercicio
 
 **Orden por Pareto.** Se ordenan los tipos por cantidad de ejercicios, sin duplicados, y se atiende primero el grupo que cubre el 80 %. En la tanda anterior, 90 generadores cubrían 662 preguntas de admisión de San Marcos. Lo esperable es que pocos tipos junten la mayoría y que la cola larga sean huérfanos de 1 a 5 ejercicios cada uno, que esperan.
 
-**Los de academia** sirven de dos formas, sin salir de `fuentes/`:
+**Los de libro** (citados, en `contenido/ejercicios/<lote>/`) sirven de tres formas:
 - dicen qué subtipos faltan en un generador;
-- dan una prueba local barata: el `calc` del generador, corrido con los datos del ejercicio, debe dar su clave. Si no la da, o el generador tiene un hueco o la clave del libro está mal. Esa prueba no se versiona, porque lleva sus números.
+- dan una prueba barata: el `calc` del generador, corrido con los datos del ejercicio, debe dar su clave. Si no la da, o el generador tiene un hueco o la clave del libro está mal. Desde el 13 nov esa prueba sí se versiona, con la cita del ejercicio;
+- se muestran tal cual, con su cita, como banco o examen pasado.
 
 ## 4. Verificación (lección de costo)
 
@@ -135,7 +136,9 @@ El rango es ancho a propósito: **la cifra se rehace con la tabla de conteo** (s
 - los generadores, existentes o nuevos, con números nuestros, en formato vivo cuando estén migrados. Sin migrar siguen saliendo en el formato de hoy, y la app lee primero los campos nuevos (contrato, sección 4);
 - las instancias oficiales, con cita «UNMSM 2025-I» y solución y figura propias. Si la cita se muestra al alumno es una decisión pendiente de Gerson (`docs/pendientes.md`, D).
 
-**Nunca se publica** un ejercicio de academia, su enunciado ni sus números.
+- los ejercicios de libro, tal cual y con su `origen.cita` (regla 5, 13 nov 2026).
+
+**Nunca se publica** un ejercicio sin cita (`origen.tipo: "academia"`), su enunciado ni sus números.
 
 **Medición.** Sin cambios en el núcleo: cada respuesta de práctica es un evento `prediccion` de `nucleo/medicion.js`, con el `error` (código de la alternativa) que eligió el alumno, o `nose`. `herramientas/analizar-medicion.js` resume por módulo y por código de error. Así se ve:
 - qué errores se eligen de verdad (las hipótesis que se confirman o caen);
