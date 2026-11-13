@@ -42,6 +42,36 @@ Lo que hay que saber:
   - El bloque con más errores es «Razonamiento geométrico» de RM: el subtema del libro no sirve para elegir la unidad. Ahí caen lúnulas y sectores (van a áreas circulares), caza de ángulos en triángulos y problemas de congruencia o del teorema de la bisectriz.
   - 652 de las 894 no tienen unidad razonable en su propio curso: RM no tiene unidades de conteo, probabilidades, fracciones, porcentajes, series ni mezclas.
 - **Edades y móviles (100 fichas) quedan en los dos cursos:** principal en razonamiento matemático · planteo de ecuaciones, y en `unidades_tambien`, aritmética · razonamiento numérico.
+- **Vocabulario de 23 unidades de física y química revisado por modelo (13 nov, tarde).** Son las unidades cuya escena hoy usa deslizador: las 24 de la columna «Hoy» = D de la sección 8 de `docs/pogil-v2-rive.md`, menos MRU y MRUV, que se revisa aparte. Se revisaron 3024 fichas: las 2345 de esas unidades y 679 «de borde», que son de los mismos temas del libro pero estaban en otra unidad (óptica, electroquímica, estructura atómica, reacciones, orgánica y geometría vectorial). Las leyeron 15 subagentes, que dieron por ficha la unidad, el subtema y la familia de problema. Gerson vio el resultado antes de aplicarlo.
+  - **Unidad:** 2939 correctas, 27 incorrectas (toman la unidad del modelo) y 58 dudosas. De las dudosas, 22 toman la alternativa del modelo y 36 son **fichas rotas**: datos que no cuadran, una figura que no coincide con el texto o un problema sin respuesta única. Las rotas se quedan en su unidad con `ficha_rota` y `revisar_antes_de_integrar`; las 36 ya estaban marcadas para revisar desde la importación. Las dudosas quedan `por-revisar`.
+  - **Subtema:** 155 fichas cambian de subtema. Ningún subtema estaba mal en bloque; el vocabulario está sano. Los errores más repetidos:
+    - fichas que se resuelven por componentes estaban como «Suma por método gráfico» o «Resultante de dos vectores» (13);
+    - las que preguntan qué reacción es espontánea estaban como «Semirreacciones» (6);
+    - fichas de Kirchhoff estaban como «Fuerza electromotriz» (5);
+    - fichas de ρgh estaban como «Densidad y presión» (5);
+    - gráficas ω-t estaban como «MCUV» (4).
+  - **Cambios de unidad más frecuentes:**
+    - de física moderna a ondas electromagnéticas (6): fichas de «Radiación y fotones» de química que solo usan c = λν;
+    - de funciones orgánicas a hidrocarburos (6): nombres de alcanos y haloalcanos;
+    - entre vectores y geometría analítica (5 y 3);
+    - de estequiometría a mol y composición (3).
+  - **Subtemas nuevos (decisión de Gerson):** «Doppler relativista de la luz» (va a física moderna), «Propiedades de los estados de agregación», «Masa molecular y masa molar» y «Reacciones de funciones orgánicas». Otros seis nombres que ya existían en otro tema se copiaron al tema de la ficha: «Masa atómica promedio», «Perfil de energía de una reacción», «Termoquímica», «Teorías de Arrhenius, Brønsted-Lowry y Lewis», «Relaciones masa-masa, mol-mol y volumen-volumen» y «Longitud de onda, frecuencia y espectro».
+  - **Cómo quedó guardado:** `revision-unidades.json` (en la rama) guarda por ficha el veredicto, el `subtema` revisado, la `familia` y la nota, con `tanda: vocabulario-fyq`. En cada ficha, `banco.revision_unidad` dice `por: modelo` y guarda `subtema_previo` y `ficha_rota`.
+  - **Lo que vieron de paso:**
+    - varias fichas traen una clave del libro distinta de la que da la solución (anotado en la nota de cada una);
+    - en fluidos, los dos libros traen casi los mismos problemas con otra redacción, así que hay duplicados;
+    - en electroquímica hay dos pares de fichas duplicadas.
+  - **Cambios netos de fichas por unidad:**
+    - ondas electromagnéticas, 69 → 75;
+    - física moderna, 125 → 119;
+    - MAS, 73 → 77;
+    - estequiometría, 92 → 87;
+    - mol, 115 → 119;
+    - funciones orgánicas, 33 → 29;
+    - hidrocarburos, 76 → 79;
+    - las demás, ±3 o menos.
+    
+    Dos fichas de tiro pasaron a MRU y MRUV, que es la unidad que se revisa aparte. Las tablas de abajo son de antes de esta revisión, salvo la de unidades con menos de 10 fichas.
 
 ## Cobertura por curso
 
@@ -78,9 +108,9 @@ Dos de ellas tienen explicación: «Lógica, conjuntos y juegos lógicos» de á
 | --- | --- | --- |
 | Razonamiento matemático | Tablas, gráficos y suficiencia de datos | 1 |
 | Razonamiento matemático | Cortes, pesadas y balanzas | 2 |
-| Química | Contaminación ambiental y química aplicada | 3 |
+| Química | Contaminación ambiental y química aplicada | 2 |
 | Razonamiento matemático | Elementos recreativos | 4 |
-| Química | Petróleo y recursos naturales | 5 |
+| Química | Petróleo y recursos naturales | 7 |
 | Razonamiento matemático | Verdades y mentiras | 5 |
 | Razonamiento matemático | Traslados y puntos cardinales | 5 |
 | Razonamiento matemático | Frecuencia de sucesos | 5 |
