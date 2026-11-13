@@ -105,10 +105,11 @@ test('el informe incluye la tabla por curso y los errores con su descripción', 
   // unir no confunde dos ítems respondidos en el mismo milisegundo
   assert.equal(unir([[{ ...cursoEv[1], t: 'z' }, { ...cursoEv[2], t: 'z' }]]).length, 2);
   // el CSV lleva las columnas nuevas al final
-  assert.deepEqual(M.COLUMNAS.slice(-17, -5), ['curso', 'forma', 'orden', 'banco', 'item', 'par', 'plantilla', 'origen', 'previas', 'dias', 'que', 'accion']);
-  assert.deepEqual(M.COLUMNAS.slice(-5), ['respuestas', 'nose', 'texto', 'valor', 'via']);
+  const desde = k => M.COLUMNAS.indexOf(k);
+  assert.deepEqual(M.COLUMNAS.slice(desde('curso'), desde('curso') + 12), ['curso', 'forma', 'orden', 'banco', 'item', 'par', 'plantilla', 'origen', 'previas', 'dias', 'que', 'accion']);
+  assert.deepEqual(M.COLUMNAS.slice(desde('respuestas'), desde('respuestas') + 5), ['respuestas', 'nose', 'texto', 'valor', 'via']);
   assert.match(M.aCSV([cursoEv[0]]), /fisica,A,AB,,,,,,0,,,/);
-  assert.match(M.aCSV([{ t: 'p', tipo: 'pregunta', unidad: 'fisica.fluidos', texto: '¿Por qué flota el hielo?' }]).split('\n')[1], /¿Por qué flota el hielo\?,,$/);
+  assert.match(M.aCSV([{ t: 'p', tipo: 'pregunta', unidad: 'fisica.fluidos', texto: '¿Por qué flota el hielo?' }]).split('\n')[1], /¿Por qué flota el hielo\?,,,,,,,$/);
   // Las habilitaciones del profesor y el cambio de alumno no entran al resumen por curso.
   assert.equal(M.resumirCursos([...cursoEv, { t: 'h', alumno: 'a', tipo: 'habilitacion', que: 'salida', curso: 'fisica', origen: 'profesor' }])[0].alumnosEntrada, 3);
 });
@@ -248,4 +249,47 @@ test('resumirCursos: salida el mismo día fuera de Hake; preguntas repetidas o d
   assert.equal(r.pareadosMismoDia, 1);
   assert.ok(Math.abs(r.entradaPareados - 0.3) < 1e-9 && Math.abs(r.salidaPareados - 0.65) < 1e-9);
   assert.deepEqual(r.errores.map(e => e.id), []);
+});
+
+test('repaso: acierto del día 0 contra el del repaso, por tramo y solo pareados', () => {
+  const e = (alumno, tipo, unidad, t, extra = {}) => ({ alumno, tipo, unidad, t, ...extra });
+  const eventos = [
+    // a/u1: día 0 = 9 nov en Perú (las 03:00Z del 10 son las 22:00 del 9)
+    e('a', 'prediccion', 'u1', '2026-11-10T03:00:00Z', { correcta: true }),
+    e('a', 'prediccion', 'u1', '2026-11-09T20:00:00Z', { correcta: false }),
+    e('a', 'prediccion', 'u1', '2026-11-10T20:00:00Z', { correcta: true }),   // 10 nov: no es el día 0
+    e('a', 'prediccion', 'u1', '2026-11-09T20:00:00Z', { correcta: true, fase: 'entrada' }), // prueba: no cuenta
+    e('a', 'repaso-item', 'u1', '2026-11-11T15:00:00Z', { correcta: true, paso: 0, tipoBien: true }),  // 2 días
+    e('a', 'repaso-item', 'u1', '2026-11-16T15:00:00Z', { correcta: false, paso: 1, tipoBien: false }), // 7 días
+    // b/u2: sin día 0 registrado (no es par)
+    e('b', 'repaso-item', 'u2', '2026-11-16T15:00:00Z', { correcta: true, paso: 0, nose: true }),
+  ];
+  const r = M.resumirRepaso(eventos);
+  assert.equal(r.preguntas, 3);
+  assert.ok(Math.abs(r.acierto - 1 / 3) < 1e-12);
+  assert.ok(Math.abs(r.nose - 1 / 3) < 1e-12);
+  assert.deepEqual(r.tipo, { preguntas: 2, acierto: 0.5 });
+  const t = Object.fromEntries(r.tramos.map(x => [x.tramo, x]));
+  assert.equal(t['1-3'].pares, 1);
+  assert.equal(t['1-3'].delDia, 0.5); // 9 nov en Perú: el falso de las 20:00Z y el verdadero de las 03:00Z del 10
+  assert.equal(t['1-3'].repaso, 1);
+  assert.equal(t['4-10'].pares, 1); assert.equal(t['4-10'].repaso, 0);
+  assert.equal(t['11-30'].pares, 0); assert.equal(t['11-30'].delDia, null);
+  assert.deepEqual(r.porPaso.map(p => p.paso), [0, 1]);
+});
+
+test('repaso: las columnas nuevas van al final del CSV', () => {
+  const i = M.COLUMNAS.indexOf('via');
+  assert.deepEqual(M.COLUMNAS.slice(i + 1), ['paso', 'atraso', 'desde', 'tipoOpcion', 'tipoBien']);
+});
+
+test('repaso: el informe trae su tabla solo si hay preguntas de repaso', () => {
+  const { informeRepaso } = require('../herramientas/analizar-medicion.js');
+  assert.equal(informeRepaso([]), '');
+  const md = informeRepaso([
+    { alumno: 'a', tipo: 'prediccion', unidad: 'u', t: '2026-11-09T15:00:00Z', correcta: true },
+    { alumno: 'a', tipo: 'repaso-item', unidad: 'u', t: '2026-11-11T15:00:00Z', correcta: true, paso: 0, tipoBien: true },
+  ]);
+  assert.match(md, /# Cola de repaso/);
+  assert.match(md, /\| 1-3 \| 1 \| 100 % \| 100 % \|/);
 });

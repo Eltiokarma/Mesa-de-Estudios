@@ -32,6 +32,13 @@
  *   respuestas, un 0 en su lugar. Los eventos sin el campo (datos de antes) se leen como sin «No sé».
  *   Para la ganancia de Hake, «No sé» cuenta como no acierto. La «confianza calibrada» es la tasa de aciertos
  *   sobre lo intentado: aciertos / (respondidas − «No sé»).
+ * Cola de repaso (nucleo/repaso.js y app/repaso.js; versión R de docs/pogil-v2-rive.md):
+ *   { tipo: 'repaso-item', curso, unidad, plantilla, problema, opcion, correcta, error, respaldo, nose, ms,
+ *     paso, dias, atraso, desde, tipoOpcion, tipoBien }      una por pregunta
+ *   paso: el intervalo en que estaba la unidad (0 = primer repaso); dias: días desde su «día 0» (desde, el primer
+ *   ejercicio terminado); atraso: días después de la fecha que le tocaba; tipoOpcion y tipoBien: la unidad que eligió
+ *   en «¿Qué tipo de problema es?» y si acertó.
+ *   { tipo: 'repaso', aciertos, total, nose, tipoBien, ms }   una al terminar la tanda
  * Todos llevan además: t (fecha ISO), alumno (id anónimo), grado, colegio, version.
  */
 (function (root, fabrica) {
@@ -49,7 +56,9 @@
     // «No sé»: true en un item o una predicción; en una prueba, cuántas marcó.
     'nose',
     // «Dejar una pregunta» (13 nov 2026): la duda del alumno sobre una unidad; valor del arrastre en la práctica viva.
-    'texto', 'valor', 'via'];
+    'texto', 'valor', 'via',
+    // Cola de repaso (13 nov 2026).
+    'paso', 'atraso', 'desde', 'tipoOpcion', 'tipoBien'];
 
   // «No sé» de un evento: true o un número en los nuevos; nada en los de antes (cuenta como 0).
   const noseDe = e => (e.nose === true || e.nose === 'true' ? 1 : Number(e.nose) || 0);
@@ -224,6 +233,58 @@
     }));
   }
 
+  /*
+   * Cola de repaso: acierto del «día 0» contra el del repaso días después (la medida de la versión R).
+   * Por alumno y unidad: el día 0 es el primer día con un ejercicio terminado de la unidad ('prediccion' o
+   * 'examen-item', fuera de las pruebas de entrada y salida), contado en la hora del Perú (UTC−5, sin horario de
+   * verano); el acierto del día es la tasa de esos ejercicios ese día («No sé» cuenta como no acierto). Cada
+   * 'repaso-item' cae en un tramo según los días desde ese día 0. Solo entran los pares que tienen las dos cosas.
+   * Ojo: el día 0 junta predicciones de escenas y de prácticas; el repaso es siempre de generador.
+   */
+  const TRAMOS = [['1-3', 1, 3], ['4-10', 4, 10], ['11-30', 11, 30], ['31+', 31, Infinity]];
+  const diaPeru = t => { const ms = Date.parse(t); return Number.isFinite(ms) ? new Date(ms - 5 * 3600e3).toISOString().slice(0, 10) : null; };
+  const diasEntre = (a, b) => Math.round((Date.parse(b + 'T00:00:00Z') - Date.parse(a + 'T00:00:00Z')) / 864e5);
+  function resumirRepaso(eventos) {
+    const dia0 = {}, delDia = {}, rep = {};
+    const k = e => `${e.alumno}|${e.unidad}`;
+    const ejercicio = e => (e.tipo === 'prediccion' || e.tipo === 'examen-item') && e.unidad && !e.fase;
+    for (const e of eventos) {
+      if (!ejercicio(e)) continue;
+      const d = diaPeru(e.t); if (!d) continue;
+      if (!dia0[k(e)] || d < dia0[k(e)]) dia0[k(e)] = d;
+    }
+    const items = eventos.filter(e => e.tipo === 'repaso-item' && e.unidad);
+    for (const e of eventos) {
+      if (!ejercicio(e) || diaPeru(e.t) !== dia0[k(e)]) continue;
+      const x = (delDia[k(e)] = delDia[k(e)] || [0, 0]); x[1]++; if (e.correcta && !noseDe(e)) x[0]++;
+    }
+    let tipoN = 0, tipoBien = 0, total = 0, bien = 0, nose = 0;
+    const porPaso = {};
+    for (const e of items) {
+      total++; if (noseDe(e)) nose++; else if (e.correcta === true || e.correcta === 'true') bien++;
+      if (e.tipoBien !== undefined && e.tipoBien !== '') { tipoN++; if (e.tipoBien === true || e.tipoBien === 'true') tipoBien++; }
+      const p = (porPaso[e.paso] = porPaso[e.paso] || [0, 0]); p[1]++; if (!noseDe(e) && (e.correcta === true || e.correcta === 'true')) p[0]++;
+      const d0 = dia0[k(e)], d = diaPeru(e.t);
+      if (!d0 || !d || !delDia[k(e)]) continue;
+      const n = diasEntre(d0, d), tr = TRAMOS.find(([, a, b]) => n >= a && n <= b);
+      if (!tr) continue;
+      const r = ((rep[tr[0]] = rep[tr[0]] || {})[k(e)] = rep[tr[0]][k(e)] || [0, 0]);
+      r[1]++; if (!noseDe(e) && (e.correcta === true || e.correcta === 'true')) r[0]++;
+    }
+    const prom = l => (l.length ? l.reduce((a, b) => a + b, 0) / l.length : null);
+    return {
+      preguntas: total, acierto: tasa(bien, total), nose: tasa(nose, total),
+      tipo: { preguntas: tipoN, acierto: tasa(tipoBien, tipoN) },
+      porPaso: Object.keys(porPaso).sort().map(p => ({ paso: Number(p), preguntas: porPaso[p][1], acierto: tasa(porPaso[p][0], porPaso[p][1]) })),
+      tramos: TRAMOS.map(([id]) => {
+        const pares = Object.keys(rep[id] || {});
+        return { tramo: id, pares: pares.length,
+          delDia: prom(pares.map(p => delDia[p][0] / delDia[p][1])),
+          repaso: prom(pares.map(p => rep[id][p][0] / rep[id][p][1])) };
+      }),
+    };
+  }
+
   // Guardar un evento en el dispositivo (solo navegador). Lo usan la app y las escenas, que
   // comparten el mismo origen y por eso el mismo almacenamiento. perfil: { alumno, grado, colegio };
   // si no se pasa, se lee el de la app. Sin perfil (escena abierta sin pasar por la app) no se guarda:
@@ -249,5 +310,5 @@
     } catch { return false; } // sin almacenamiento o sin espacio: se pierde este evento, la app sigue
   }
 
-  return { COLUMNAS, aCSV, resumir, resumirCursos, resumirLectura, guardar, eventosGuardados };
+  return { COLUMNAS, aCSV, resumir, resumirCursos, resumirLectura, resumirRepaso, guardar, eventosGuardados };
 });
