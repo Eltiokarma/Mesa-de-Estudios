@@ -165,7 +165,7 @@ function importar({ desde, manifiesto, curso, temaId, unidad, libros, limite = I
     }
     const ficha = leer(rutaFicha);
     if (typeof ficha.enunciado !== 'string' || !ficha.enunciado.trim()) {
-      // Una ficha piloto puede haberse completado después con el escaneo.
+      // Una ficha piloto puede haberse completado y clasificado después con el escaneo.
       if (antes?.banco?.uid === e.uid && antes.banco.ficha?.enunciado) {
         res.iguales++;
         if (antes.banco.revisar_antes_de_integrar) res.revisar++;
@@ -221,7 +221,10 @@ function main(argv) {
     trabajo = { manifiesto: t.manifiesto, curso: curso.id, temaId: id, unidad: temas[id] || null };
   } else if (arg('--sin-tema')) {
     const curso = arg('--sin-tema');
-    trabajo = { manifiesto: `${curso}/sin-tema.json`, curso, temaId: `${curso}.sin-tema`, unidad: null };
+    const datos = indice.cursos.find(c => c.id === curso);
+    if (!datos) { console.error(`El curso «${curso}» no está en el índice.`); return 2; }
+    if (!datos.sin_tema) { console.log(`${curso}: sin fichas pendientes de tema.`); return 0; }
+    trabajo = { manifiesto: datos.sin_tema.manifiesto, curso, temaId: `${curso}.sin-tema`, unidad: null };
   } else {
     console.error('Uso: --tema <curso.tema> | --sin-tema <curso> | --listar   [--limite n] [--seco] [--desde carpeta]');
     return 2;
