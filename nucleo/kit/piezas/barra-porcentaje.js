@@ -110,8 +110,11 @@
       s += `<rect class="kit-crece${recien}" x="${T.n(g.x(d.total))}" y="${BARRA_Y}" width="${T.n(g.x(queda) - g.x(d.total))}" height="${BARRA_H}" fill="${T.color(t ? t.color : d.color)}" fill-opacity="0.3"/>`;
       s += `<rect x="${T.n(X0)}" y="${BARRA_Y}" width="${T.n(g.x(queda) - X0)}" height="${BARRA_H}" rx="4" fill="none" stroke="${T.color(d.color)}" stroke-width="${T.GROSOR.variable}" stroke-linejoin="round"/>`;
     }
-    // El total sigue a la vista: su rótulo, dentro de la barra, con el color de su variable (el hilo de color).
-    s += T.rotulo(X0 + 8, BARRA_Y + BARRA_H / 2 + 6, fmt(d, d.total), { color: d.color, peso: 700, max: g.x(d.total) - 4 });
+    // Rótulo dentro de la barra: lo que vale la barra ahora (fidelidad: una barra del 75 % no puede decir «S/ 1 000»).
+    // Antes del primer corte es el total, con el color de su variable (el hilo de color); después, el valor del momento, en tinta.
+    s += corte === 0
+      ? T.rotulo(X0 + 8, BARRA_Y + BARRA_H / 2 + 6, fmt(d, d.total), { color: d.color, peso: 700, max: g.x(d.total) - 4 })
+      : T.rotulo(X0 + 8, BARRA_Y + BARRA_H / 2 + 6, fmt(d, queda), { peso: 700, max: g.x(Math.min(queda, d.total)) - 4 });
     // Cada tramo aplicado deja su pedazo en su propia fila, bajo el lugar que ocupaba (rastro): lo que se quita cae
     // de la barra; lo que se suma se ve en la barra y su copia, en la fila.
     for (let i = 1; i <= corte; i++) {
