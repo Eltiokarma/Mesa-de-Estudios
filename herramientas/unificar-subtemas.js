@@ -15,6 +15,9 @@
 //                         libro; la unidad, donde se estudia); si el subtema no trae, la principal del tema.
 // revision-unidades.json, si existe, trae la unidad revisada ficha por ficha (por uid) y manda sobre la del
 // subtema; la ficha guarda la marca en banco.revision_unidad (quién la revisó, veredicto, estado y la propuesta).
+// Una revisión puede traer también `subtema` (nombre de un canónico del tema de la ficha): manda sobre el de la
+// etiqueta y la marca guarda el de antes en `subtema_previo`. Con `ficha_rota: true` (datos que no cuadran,
+// figura que no coincide, sin respuesta única) la marca lo dice y la ficha queda con revisar_antes_de_integrar.
 // Es idempotente: al repetirlo parte siempre de banco.subtema_fuente. La importación (importar-cuzcano.js)
 // llama a `aplicar` con cada ficha, así que volver a importar no deshace la unificación.
 // Una etiqueta que no está en subtemas.json se deja como vino y se informa.
@@ -61,7 +64,15 @@ function aplicar(ej, tablas) {
   const clave = normalizar(fuente);
   // Una ficha puede tener su subtema propio (las que vinieron sin etiqueta, o con una etiqueta que juntaba cosas distintas).
   const id = (voc.fichas || {})[b.uid] || (clave === null ? undefined : (voc.etiquetas || {})[clave]);
-  const can = id && voc.canonicos.find(c => c.id === id);
+  let can = id && voc.canonicos.find(c => c.id === id);
+  // El subtema revisado ficha por ficha manda sobre el de la etiqueta.
+  const r = (tablas.revision || {})[b.uid];
+  const previo = can ? can.nombre : null;
+  if (r && r.subtema) {
+    const rc = voc.canonicos.find(c => c.nombre === r.subtema);
+    if (!rc) throw new Error(`${b.uid}: el subtema revisado «${r.subtema}» no es de ${b.tema}`);
+    can = rc;
+  }
   if (!can) {
     if (principal) ej.unidad = principal;
     return 'sin-asignar';
@@ -70,7 +81,7 @@ function aplicar(ej, tablas) {
   b.subtema = can.nombre;
   const unidad = can.unidad || principal;
   if (unidad) ej.unidad = unidad;
-  revisar(ej, tablas);
+  revisar(ej, tablas, previo);
   // Un subtema puede servir también en unidades de otro curso (canónico con `tambien`).
   const tambien = (can.tambien || []).filter(t => t !== ej.unidad);
   if (tambien.length) ej.unidades_tambien = tambien; else delete ej.unidades_tambien;
@@ -78,12 +89,14 @@ function aplicar(ej, tablas) {
 }
 
 // La unidad revisada ficha por ficha manda sobre la del subtema.
-function revisar(ej, tablas) {
+function revisar(ej, tablas, previo) {
   const r = (tablas.revision || {})[ej.banco.uid];
   if (!r) { delete ej.banco.revision_unidad; return; }
   ej.unidad = r.unidad;
   const marca = { por: tablas.revisado_por || 'modelo', veredicto: r.veredicto, estado: r.estado };
   if (r.propuesta && r.propuesta !== r.unidad) marca.propuesta = r.propuesta;
+  if (r.subtema && previo !== r.subtema) marca.subtema_previo = previo;
+  if (r.ficha_rota) { marca.ficha_rota = true; ej.banco.revisar_antes_de_integrar = true; }
   if (r.nota) marca.nota = r.nota;
   ej.banco.revision_unidad = marca;
 }

@@ -118,6 +118,44 @@ test('la revisión por ficha manda sobre el subtema y deja su marca', () => {
   assert.ok(!('revision_unidad' in b.banco));   // si sale de la revisión, la marca se va
 });
 
+test('la revisión puede cambiar el subtema y marcar la ficha rota', () => {
+  const t = { ...tablas, revisado_por: 'modelo', revision: {
+    'L:propuesto:1': { veredicto: 'correcta', unidad: 'fisica.movimiento-rectilineo', subtema: 'Tiro parabólico', estado: 'revisada-por-modelo' },
+    'L:propuesto:2': { veredicto: 'dudosa', unidad: 'fisica.movimiento-parabolico-y-circular', estado: 'por-revisar', ficha_rota: true, nota: 'faltan datos' },
+    'L:propuesto:3': { veredicto: 'correcta', unidad: 'fisica.movimiento-rectilineo', subtema: 'No existe', estado: 'revisada-por-modelo' },
+  } };
+  const a = ficha('L:propuesto:1', 'encuentros y alcances'); U.aplicar(a, t);
+  assert.equal(a.banco.subtema, 'Tiro parabólico');
+  assert.equal(a.banco.subtema_fuente, 'encuentros y alcances');
+  assert.equal(a.unidad, 'fisica.movimiento-rectilineo');   // la unidad revisada manda sobre la del subtema nuevo
+  assert.equal(a.banco.revision_unidad.subtema_previo, 'Encuentros y alcances');
+  const antes = JSON.stringify(U.ordenar(a)); U.aplicar(a, t);
+  assert.equal(JSON.stringify(U.ordenar(a)), antes);   // idempotente
+  const b = ficha('L:propuesto:2', 'tiro'); U.aplicar(b, t);
+  assert.equal(b.banco.revision_unidad.ficha_rota, true);
+  assert.equal(b.banco.revisar_antes_de_integrar, true);
+  assert.ok(!('subtema_previo' in b.banco.revision_unidad));
+  assert.throws(() => U.aplicar(ficha('L:propuesto:3', 'tiro'), t), /no es de fisica.cinematica/);
+});
+
+test('subtemas.json: el conteo de fichas de cada canónico está al día', () => {
+  if (!fs.existsSync(path.join(DIR, 'subtemas.json'))) return;
+  const t = U.cargar(DIR);
+  const n = {};
+  for (const curso of fs.readdirSync(DIR)) {
+    const d = path.join(DIR, curso);
+    if (!fs.statSync(d).isDirectory() || curso === 'figuras') continue;
+    for (const f of fs.readdirSync(d).filter(x => x.endsWith('.jsonl'))) {
+      for (const l of fs.readFileSync(path.join(d, f), 'utf8').split('\n')) {
+        if (!l.trim()) continue;
+        const ej = JSON.parse(l); const k = `${ej.banco.tema}|${ej.banco.subtema}`;
+        n[k] = (n[k] || 0) + 1;
+      }
+    }
+  }
+  for (const [tema, v] of Object.entries(t.subtemas)) for (const c of v.canonicos) if ('fichas' in c) assert.equal(c.fichas, n[`${tema}|${c.nombre}`] || 0, `${tema}: ${c.nombre}`);
+});
+
 test('revision-unidades.json: unidades del catálogo, veredictos válidos y fichas al día', () => {
   const f = path.join(DIR, 'revision-unidades.json');
   if (!fs.existsSync(f)) return;
@@ -129,6 +167,7 @@ test('revision-unidades.json: unidades del catálogo, veredictos válidos y fich
     assert.ok(cat.has(r.unidad), `${uid}: unidad desconocida ${r.unidad}`);
     assert.ok(['correcta', 'incorrecta', 'dudosa'].includes(r.veredicto), `${uid}: veredicto ${r.veredicto}`);
     assert.equal(r.estado, r.veredicto === 'dudosa' ? 'por-revisar' : 'revisada-por-modelo', `${uid}: estado`);
+    if (r.ficha_rota) assert.equal(r.estado, 'por-revisar', `${uid}: una ficha rota queda por revisar`);
   }
   let vistas = 0;
   for (const curso of fs.readdirSync(DIR)) {
@@ -142,6 +181,8 @@ test('revision-unidades.json: unidades del catálogo, veredictos válidos y fich
         vistas++;
         assert.equal(ej.unidad, r.unidad, `${ej.id}: falta aplicar la revisión (node herramientas/unificar-subtemas.js)`);
         assert.equal(ej.banco.revision_unidad.estado, r.estado);
+        if (r.subtema) assert.equal(ej.banco.subtema, r.subtema, `${ej.id}: falta aplicar el subtema revisado`);
+        if (r.ficha_rota) assert.equal(ej.banco.revisar_antes_de_integrar, true, `${ej.id}: ficha rota sin marcar`);
       }
     }
   }
