@@ -70,7 +70,7 @@ Rama `claude/hopeful-planck-h4701c` (no está en `main` todavía; sw v160). Se h
 - **Exámenes:** las unidades sin generador muestran un estado vacío. Son las 18 de verbal y 21 de los demás cursos.
 
 **Pendientes de la segunda vuelta.**
-- Quedan unas 60 frases de investigación a la vista del alumno, escritas de otras formas: «En un estudio con 979 escolares de Singapur…», «(AR17 del informe…)», «Según Bilgin y otros (2003, ítems…)». Hay que revisarlas frase por frase. Para buscarlas: `grep -v fuente plantillas/*/index.html | grep -E "estudio|escolares|universitarios|[0-9]+ % (de [0-9]+|eligió)"`.
+- ~~Quedan unas 60 frases de investigación a la vista del alumno.~~ Hecho el 13 nov (rutina tono-escenas): 95 frases quitadas y 12 reescritas en 16 escenas. `herramientas/tono.test.js` vigila también las citas escritas a mano. En 5 escenas (átomo, biomoléculas, enlace, química ambiental, líquidos) el recorrido no llegó a todas las predicciones; ahí la garantía es la prueba.
 - `inecuaciones-planteo` (subtipo de los ciclistas) quedó telegráfico al recortarlo: rehacerlo con la regla nueva («el presupuesto no se cumple a costa de entender»).
 - Ids de error repetidos dentro de un problema impiden dibujar su fantasma (`redondeo-de-la-cota`, trabajo/propia): separarlos cambia la medición, así que lo decide Gerson.
 - Primitivas que tres rutinas duplicaron y conviene subir a `nucleo/kit/trazo.js`: arco de ángulo con cuadradito, rótulo junto a un segmento, cota oblicua, regla con paso «bonito», flecha discontinua, extremo lleno o hueco y fila de fichas.
