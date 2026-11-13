@@ -888,6 +888,7 @@ async function vPanel() {
       const cursos = Object.entries(todas).filter(([, x]) => x && (x.entrada || x.salida));
       return `<tr><th scope="row">${esc(a.nombre)}</th><td>${esc(a.usuario)}</td><td>${esc(a.dias_activos ?? a.dias ?? 0)}</td><td>${esc(a.unidades_vistas ?? a.modulos ?? 0)}</td>
         <td class="pruebas-al">${cursos.length ? cursos.map(([c, x]) => `<span>${esc(nombreCurso(c))}: ${pr(x.entrada)} → ${pr(x.salida)}</span>`).join('') : '<span class="sub">Sin pruebas</span>'}</td>
+        <td>${a.repaso && a.repaso.hechos ? `${esc(a.repaso.aciertos)}/${esc(a.repaso.hechos)}<br><span class="sub">${esc(a.repaso.unidades)} ${a.repaso.unidades == 1 ? 'unidad' : 'unidades'}</span>` : a.repaso && a.repaso.unidades ? `<span class="sub">${esc(a.repaso.unidades)} en cola</span>` : '—'}</td>
         <td><button class="btn borde chico" data-reiniciar="${esc(a.usuario)}">Reiniciar contraseña</button></td></tr>`; }).join('');
     $app.innerHTML = `<header class="panel-cab"><div><p class="sub">${esc(admin ? 'Administración del colegio' : 'Panel del profesor')}</p><h1>Hola, ${esc(u.nombre || '')}</h1></div>
         <span class="panel-acc"><a class="btn borde chico" href="#/contrasena">Cambiar contraseña</a><a class="btn morado chico" href="#/salir">Cerrar sesión</a></span></header>
@@ -902,8 +903,8 @@ async function vPanel() {
           ${filaHab('todas', 'Todos los cursos')}${cat.cursos.map(c => filaHab(c.id, c.nombre)).join('')}</tbody></table></div>
         </div><div>
         <h2>Avance por alumno</h2>
-        ${panel.avance === null ? '<p class="sub">Cargando…</p>' : `<div class="tabla card"><table><thead><tr><th>Alumno</th><th>Usuario</th><th>Días</th><th>Unidades</th><th>Entrada → salida</th><th></th></tr></thead>
-          <tbody>${filasAl || '<tr><td colspan="6" class="sub">Sin alumnos.</td></tr>'}</tbody></table></div>
+        ${panel.avance === null ? '<p class="sub">Cargando…</p>' : `<div class="tabla card"><table><thead><tr><th>Alumno</th><th>Usuario</th><th>Días</th><th>Unidades</th><th>Entrada → salida</th><th title="Preguntas del repaso de otros días: recordadas de respondidas">Repaso</th><th></th></tr></thead>
+          <tbody>${filasAl || '<tr><td colspan="7" class="sub">Sin alumnos.</td></tr>'}</tbody></table></div>
           <p><button class="btn borde chico" id="recargar">Actualizar</button></p>`}
       </div></div>` : ''}
       ${admin ? `<h2>Lista de alumnos</h2>

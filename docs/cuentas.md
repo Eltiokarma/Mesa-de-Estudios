@@ -168,7 +168,7 @@ El acceso dura 15 minutos. La renovación dura 30 días y en el servidor se guar
 **Profesor**
 
 - `GET /api/secciones` responde `[{ id, grado, letra, alumnos }]`.
-- `GET /api/secciones/{id}/avance` responde, por alumno: nombre, usuario, días activos, módulos vistos, y por curso la entrada y la salida (aciertos/total y fecha). No incluye el DNI.
+- `GET /api/secciones/{id}/avance` responde, por alumno: nombre, usuario, días activos, módulos vistos, y por curso la entrada y la salida (aciertos/total y fecha). También trae `repaso: { unidades, hechos, aciertos, ultimo }`, el resumen de su cola de repaso (agregado el 13 nov 2026). No incluye el DNI.
 - `POST /api/secciones/{id}/habilitar` envía `{ curso | "todas", que: "salida"|"soluciones", abierto: bool }`.
 - `POST /api/alumnos/{usuario}/reiniciar` responde `{ usuario, contrasena }` y deja `debe_cambiar` en verdadero.
 

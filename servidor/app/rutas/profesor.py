@@ -37,6 +37,16 @@ def _resultado(p):
     return {"aciertos": p.get("aciertos"), "total": p.get("total"), "fecha": p.get("fecha")}
 
 
+def _repaso(est: dict) -> dict:
+    """Cola de repaso (nucleo/repaso.js): cuántas unidades tiene y cómo le fue. Sin repaso, ceros."""
+    r = est.get("repaso") if isinstance(est.get("repaso"), dict) else {}
+    fichas = [f for f in r.values() if isinstance(f, dict)]
+    num = lambda x: x if isinstance(x, (int, float)) and not isinstance(x, bool) else 0
+    ultimos = [f["ultimo"] for f in fichas if isinstance(f.get("ultimo"), str)]
+    return {"unidades": len(fichas), "hechos": sum(num(f.get("hechos")) for f in fichas),
+            "aciertos": sum(num(f.get("aciertos")) for f in fichas), "ultimo": max(ultimos) if ultimos else None}
+
+
 def resumen_alumno(al: Alumno, est: dict) -> dict:
     pruebas = est.get("pruebas") if isinstance(est.get("pruebas"), dict) else {}
     practica = est.get("practica") if isinstance(est.get("practica"), dict) else {}
@@ -53,6 +63,7 @@ def resumen_alumno(al: Alumno, est: dict) -> dict:
                     for c, p in pruebas.items() if isinstance(p, dict)},
         "practica": {m: {"entrada": _resultado(p.get("entrada")), "salida": _resultado(p.get("salida"))}
                      for m, p in practica.items() if isinstance(p, dict) and (p.get("entrada") or p.get("salida"))},
+        "repaso": _repaso(est),
     }
 
 

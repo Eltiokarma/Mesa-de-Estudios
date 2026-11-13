@@ -147,4 +147,17 @@ def test_avance_por_alumno(e, dos):
     assert fila["dias_activos"] == 2 and fila["unidades_vistas"] == 2 and fila["modulos_practicados"] == ["mruv"]
     assert fila["pruebas"]["fisica"] == {"entrada": {"aciertos": 4, "total": 10, "fecha": "2026-11-10T10:00:00Z"},
                                          "salida": None}
+    assert fila["repaso"] == {"unidades": 0, "hechos": 0, "aciertos": 0, "ultimo": None}
     assert "dni" not in str(fila).lower()
+
+
+def test_avance_trae_el_repaso(e, dos):
+    d = dos
+    al = next(x for x in d["cr1"] if x["usuario"] == "qroman26")
+    t = e.alumno_listo(al)
+    rep = {"u1": {"desde": "2026-11-10", "paso": 1, "toca": "2026-11-20", "hechos": 2, "aciertos": 1, "ultimo": "2026-11-13"},
+           "u2": {"desde": "2026-11-11", "paso": 0, "toca": "2026-11-13", "hechos": 0, "aciertos": 0, "ultimo": None}}
+    e.c.put("/api/estado", json={"est": {"repaso": rep}}, headers=e.h(t))
+    av = e.c.get(f"/api/secciones/{d['s1']['3A']}/avance", headers=e.h(d["tp"])).json()
+    fila = next(x for x in av["alumnos"] if x["usuario"] == "qroman26")
+    assert fila["repaso"] == {"unidades": 2, "hechos": 2, "aciertos": 1, "ultimo": "2026-11-13"}
