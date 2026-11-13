@@ -6736,7 +6736,7 @@
    "titulo": "Tanto por ciento, razones y conjuntos en problemas de planteo",
    "formato": "predicciones",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "aritmetica.porcentajes",
     "aritmetica.razones-y-proporciones",
@@ -7052,7 +7052,7 @@
    "titulo": "Balanzas, figuras y pesas",
    "formato": "predicciones",
    "estado": "borrador",
-   "version": "0.2.0",
+   "version": "0.3.0",
    "unidades": [
     "razonamiento-matematico.cortes-y-pesadas"
    ],
@@ -7387,7 +7387,7 @@
    "titulo": "Sistemas, raíces y potencias",
    "formato": "predicciones",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "algebra.sistemas-de-ecuaciones",
     "algebra.ecuaciones-lineales-y-cuadraticas",

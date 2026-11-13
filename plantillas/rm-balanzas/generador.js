@@ -275,8 +275,61 @@
     const p = { id: `${ID}#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
       alternativas, solucion: o.solucion, respuesta: { valor: o.correcta, unidad: u }, _datos: o.datos };
     if (o.figura) p.figura = o.figura;
+    if (o.vivo) Object.assign(p, escenaViva(o.vivo, alternativas, o.correcta));
     return p;
   }
+
+  /*
+   * Escena viva (docs/escena-viva.md, sección 4): las balanzas con la pieza «balanza» (nucleo/kit/piezas/balanza.js),
+   * la solución como línea de tiempo y un fantasma por error con nombre. Todo número de la figura sale de aquí
+   * (regla 1); el color de cada figura es el de su variable (regla 4). Si algo no cabe en la pieza, el problema
+   * sigue sin escena, con su figura de siempre.
+   *   vivo = { datos, pasos, alt, fantasma(alternativa) → { … } , arrastrar?: true }
+   */
+  const ROTULOS = {
+    'RMP38-sin-enteros': 'sin los múltiplos', 'RMP38-igualdad': 'el borde', 'RMP2-sin-optimizar': 'no es el extremo',
+    'RMP38-otra-figura': 'otra figura', 'RMP38-razon-invertida': 'razón invertida', 'RMP38-sumar-sin-sustituir': 'sustitución a medias',
+    'RMP38-a-medio-camino': 'a medio camino', 'RMP38-sin-multiplicar': 'para uno solo', 'RMP38-uno-de-mas': 'uno de más',
+    'RMP2-primera': 'la primera que cierra', 'RMP38-sin-exactitud': 'redondeando', 'RMP2-sin-la-mayor': 'sin la mayor',
+    'RMP2-una-de-mas': 'una de más', 'RMP39-un-platillo': 'un solo platillo', 'RMP2-complemento': 'con el complemento',
+    'RMP39-cifra-por-cifra': 'sin lo que se lleva', 'RMP39-solo-otro': 'solo un platillo', 'RMP2-todas': 'todas',
+    'RMP98-sin-la-tercera': 'sin la balanza 3', 'RMP99-borde': 'el borde', 'RMP38-otra-combinacion': 'otra combinación',
+    'RMP38-una-sola': 'una de cada una', 'RMP38-suma-pesas': 'sumando pesas',
+  };
+  // ¿Caben las pesas en un platillo? El mismo ancho que la pieza (texto de 14 en negrita con la regla de
+  // nucleo/kit/trazo.js, más 1 de margen): a lo más cuatro filas de 114. Las pruebas lo comprueban con la pieza misma.
+  const anchoTxt = t => [...t].reduce((a, ch) => a + (/\s/.test(ch) ? 0.28 : /[0-9]/.test(ch) ? 0.56 : 0.55), 0) * 14 * 1.05 + 1;
+  function cabenPesas(grupos, unidad, extra = 0) {
+    const anchos = [];
+    if (extra) anchos.push(extra);
+    for (const [v, c] of grupos) { const w = anchoTxt(`${f(v, 0)} ${unidad}`) + 10; anchos.push(c === 1 ? w : w + anchoTxt(`×${c}`) + 4); }
+    let filas = 1, acc = 0;
+    for (const w of anchos) { if (w > 114) return false; if (acc + w > 114 && acc) { filas++; acc = 0; } acc += w; }
+    return filas <= 4;
+  }
+  function escenaViva(vivo, alternativas, correcta) {
+    if (!vivo) return {};
+    const datos = { colores: COLOR, ...vivo.datos };
+    const fantasmas = {};
+    for (const a of alternativas) if (a.error) fantasmas[a.error.id] = vivo.fantasma(a, ROTULOS[a.error.id] || '');
+    const r = { escena: { pieza: 'balanza', datos, alt: vivo.alt }, pasos: vivo.pasos, fantasmas };
+    // Se responde poniendo figuras en el platillo solo si cada alternativa es un número entero que cabe en la regla.
+    if (vivo.arrastrar && alternativas.every(a => Number.isInteger(a.valor) && a.valor >= 0 && a.valor <= datos.marca.max)) {
+      r.respuesta = { valor: correcta, unidad: datos.marca.nombre[1], tipo: 'arrastrar', control: 'marca', paso: 1, tolerancia: 0.5 };
+    } else if (datos.marca) delete datos.marca;
+    return r;
+  }
+  // Suma de platillos: { circulo: 1, pesas: [[5, 1]] } ⊕ { circulo: 2, pesa: 3 } (las pesas sueltas pasan a la lista).
+  function juntar(...ls) {
+    const r = {}, pesas = [];
+    for (const l of ls) for (const [k, n] of Object.entries(l)) {
+      if (k === 'pesa') pesas.push([n, 1]); else if (k === 'pesas') pesas.push(...n); else r[k] = (r[k] || 0) + n;
+    }
+    if (pesas.length) r.pesas = pesas;
+    return r;
+  }
+  const agrupar = l => { const m = new Map(); for (const z of l) m.set(z, (m.get(z) || 0) + 1); return [...m].sort((a, b) => b[0] - a[0]); };
+  const sumaL = l => l.reduce((a, b) => a + b, 0);
   const varsFig = figs => { const r = {}; for (const k of figs) r[k] = { nombre: 'peso del ' + NOMBRE[k][0], color: COLOR[k] }; return r; };
   // Texto de un platillo con cada figura en su color: «2 círculos, 1 cuadrado y una pesa de 40 kg».
   const ladoV = (lado, unidad) => {
@@ -331,16 +384,15 @@
     const otra = rng.elegir(['circulo', 'triangulo', 'cuadrado'].filter(k => k !== figura));
     const errores = [
       pide === 'max'
-        ? h('RMP38-sin-enteros', Math.ceil(borde) - 1, `Ese es el mayor entero por debajo de ${f(borde)}, pero el ${NOMBRE[figura][0]} siempre pesa un múltiplo de ${cF} (todas las figuras son múltiplos de una misma medida): ese valor no se puede.`)
-        : h('RMP38-sin-enteros', Math.floor(borde) + 1, `Ese es el menor entero por encima de ${f(borde)}, pero el ${NOMBRE[figura][0]} siempre pesa un múltiplo de ${cF} (todas las figuras son múltiplos de una misma medida): ese valor no se puede.`),
+        ? h('RMP38-sin-enteros', Math.ceil(borde) - 1, `El ${NOMBRE[figura][0]} siempre pesa un múltiplo de ${cF}: ese valor no se puede.`)
+        : h('RMP38-sin-enteros', Math.floor(borde) + 1, `El ${NOMBRE[figura][0]} siempre pesa un múltiplo de ${cF}: ese valor no se puede.`),
       // Si el borde no es entero se muestra «unos 65,1 kg»; si redondeado parece entero, se descarta (se confundiría).
-      Number.isInteger(borde) || Math.abs(borde - Math.round(borde)) >= 0.05 ? h('RMP38-igualdad', borde, 'Tomaste la balanza que no está en equilibrio como si lo estuviera. Al bajar un platillo, ese lado pesa más: es una desigualdad estricta, y el borde no se alcanza.') : null,
-      h('RMP2-sin-optimizar', cF * (pide === 'max' ? R.t[0] : R.t[1]), pide === 'max' ? 'Ese peso sí es posible, pero no es el mayor: hay valores más grandes que también cumplen todas las balanzas.' : 'Ese peso sí es posible, pero no es el menor: hay valores más chicos que también cumplen todas las balanzas.'),
+      Number.isInteger(borde) || Math.abs(borde - Math.round(borde)) >= 0.05 ? h('RMP38-igualdad', borde, 'Esa balanza no está en equilibrio: el lado que baja pesa más, y el borde no se alcanza.') : null,
+      h('RMP2-sin-optimizar', cF * (pide === 'max' ? R.t[0] : R.t[1]), pide === 'max' ? 'Ese peso es posible, pero no es el mayor: hay otros más grandes que cumplen todo.' : 'Ese peso es posible, pero no es el menor: hay otros más chicos que cumplen todo.'),
       h('RMP38-otra-figura', R.coef[otra] * (pide === 'max' ? R.t[1] : R.t[0]), `Ese es el ${pide === 'max' ? 'mayor' : 'menor'} peso del ${NOMBRE[otra][0]}, no del ${NOMBRE[figura][0]}.`),
     ];
     const vars = varsFig(['circulo', 'triangulo', 'cuadrado']);
-    const enunciado = ['Cada figura pesa un número entero de kilogramos, y figuras iguales pesan lo mismo. Mira las balanzas:'];
-    bs.forEach((b, i) => enunciado.push(` (${i + 1}) ${ESTADO[b.estado][0].toUpperCase() + ESTADO[b.estado].slice(1)}: a la izquierda, `, ...ladoV(b.izq, 'kg'), '; a la derecha, ', ...ladoV(b.der, 'kg'), '.'));
+    const enunciado = ['Cada figura pesa un número entero de kilogramos, y figuras iguales pesan lo mismo.'];
     const pregunta = [`¿Cuál es el ${pide === 'max' ? 'mayor' : 'menor'} peso posible de un `, v(figura, NOMBRE[figura][0]), '?'];
     const tt = 't';
     const lin = k => (R.coef[k] === 1 ? tt : `${R.coef[k]}${tt}`);
@@ -350,9 +402,30 @@
       ...desq.map(z => [`Balanza ${bs.indexOf(z.b) + 1}: las figuras pesan ${z.K}t y la pesa ${z.W} kg; ${z.arriba ? `baja la pesa, así que ${z.K}t < ${z.W} y t < ${f(z.W / z.K)}` : `bajan las figuras, así que ${z.K}t > ${z.W} y t > ${f(z.W / z.K)}`}.`]),
       [`Con t entero: t va de ${R.t[0]} a ${R.t[1]}. El ${pide === 'max' ? 'mayor' : 'menor'} peso del `, v(figura, NOMBRE[figura][0]), ` es ${cF} × ${pide === 'max' ? R.t[1] : R.t[0]} = ${f(res)} kg.`],
     ];
+    // Escena: los pesos de la solución extrema (t = el borde que se pide) deciden la inclinación; cumplen todas las balanzas.
+    const tE = pide === 'max' ? R.t[1] : R.t[0], pesosE = {}; for (const k in R.coef) pesosE[k] = R.coef[k] * tE;
+    const ft = k => ({ n: 1, f: k }), rast = {}, pasosV = [];
+    rast[0] = [ft('circulo'), ` = ${lin('circulo')}  `, ft('triangulo'), ` = ${lin('triangulo')}`];
+    pasosV.push({ estado: { usa: [0], rastros: { ...rast }, nuevo: ['r0'] }, texto: ['Figuras iguales: todas son partes de una misma medida t.'], ecuacion: [`${q} círculos = ${p} triángulos`] });
+    rast[1] = [ft('cuadrado'), ` = ${lin('cuadrado')}`];
+    pasosV.push({ estado: { usa: [1], rastros: { ...rast }, nuevo: ['r1'] }, texto: ['La balanza 2 da el cuadrado en partes t.'], ecuacion: [`cuadrado = ${lin('cuadrado')}`] });
+    for (const z of desq) {
+      const i = bs.indexOf(z.b), sg = z.arriba ? '<' : '>';
+      rast[i] = [`${z.K}t ${sg} ${z.W} kg → t ${sg} ${f(z.W / z.K)}`];
+      pasosV.push({ estado: { usa: [i], rastros: { ...rast }, nuevo: ['r' + i] },
+        texto: [z.arriba ? 'Baja la pesa: las figuras pesan menos que ella.' : 'Bajan las figuras: pesan más que la pesa.'], ecuacion: [`${z.K}t ${sg} ${z.W}`] });
+    }
+    pasosV.push({ estado: { vista: 1, rastros: { ...rast }, final: true },
+      texto: [`Con t entero, t va de ${R.t[0]} a ${R.t[1]}.`], ecuacion: [`${cF} × ${tE} = ${f(res)} kg`] });
+    const vivo = {
+      datos: { unidad: 'kg', pesos: pesosE, balanzas: bs,
+        trabajo: [{ izq: { [figura]: 1 }, der: {}, traba: true }, { izq: { [figura]: 1 }, der: { pesa: res }, rotulo: [`${pide === 'max' ? 'el mayor' : 'el menor'}: `, ft(figura), ` = ${f(res)} kg`] }] },
+      pasos: pasosV, alt: altBalanzas(bs, 'kg'),
+      fantasma: (a, r) => ({ der: { pesa: a.valor }, rotulo: `${r}: ${a.texto}` }),
+    };
     return cerrar(rng, semilla, { correcta: res, errores, enunciado, pregunta, solucion, variables: vars, datos, unidad: 'kg',
       formato: y => Number.isInteger(y) ? `${f(y)} kg` : `unos ${f(y, 1)} kg`,
-      figura: { svg: figuraBalanzas(bs, 'kg'), alt: altBalanzas(bs, 'kg') } });
+      figura: { svg: figuraBalanzas(bs, 'kg'), alt: altBalanzas(bs, 'kg') }, vivo });
   }
 
   // ---------- sustitución ----------
@@ -405,7 +478,7 @@
     if (razon) {
       const [X] = Object.keys(razon.izq), [Y] = Object.keys(razon.der), m = razon.izq[X], n = razon.der[Y];
       const mal = recalcPesos(bs.map(b => (b === razon ? { izq: { [X]: n }, der: { [Y]: m }, estado: 'equilibrio' } : b)));
-      if (mal) errores.push(h('RMP38-razon-invertida', enUnidades(mal), `Invertiste una razón: ${nf(X, m)} ${m === 1 ? 'equilibra' : 'equilibran'} a ${nf(Y, n)}, así que un ${NOMBRE[X][0]} pesa lo que ${P.textoFraccion(P.frac(n, m))} ${NOMBRE[Y][n === m ? 0 : 1]}, no lo que ${P.textoFraccion(P.frac(m, n))}.`));
+      if (mal) errores.push(h('RMP38-razon-invertida', enUnidades(mal), `Invertiste una razón: un ${NOMBRE[X][0]} pesa ${P.textoFraccion(P.frac(n, m))} ${NOMBRE[Y][n === m ? 0 : 1]}, no ${P.textoFraccion(P.frac(m, n))}.`));
     }
     // sustituir a medias: en una balanza con dos figuras de un lado, se olvida una
     const doble = bs.find(b => Object.keys(b.izq).length + Object.keys(b.der).length === 3);
@@ -417,18 +490,17 @@
         const lado = { ...doble[ladoDos] }; delete lado[quita];
         const mod = { ...doble, [ladoDos]: lado };
         const mal = recalcPesos(bs.map(b => (b === doble ? mod : b)));
-        if (mal) errores.push(h('RMP38-sumar-sin-sustituir', enUnidades(mal), `En una balanza hay dos clases de figuras en un platillo y reemplazaste solo una: el ${NOMBRE[quita][0]} también pesa y hay que sustituirlo.`));
+        if (mal) errores.push(h('RMP38-sumar-sin-sustituir', enUnidades(mal), `Sustituiste a medias: el ${NOMBRE[quita][0]} de ese platillo también pesa.`));
       }
     }
     // a medio camino: la respuesta en otra figura
     const intermedia = orden[1];
-    errores.push(h('RMP38-a-medio-camino', pesoBalanza(izq, W) / W[intermedia], `Ese es el número de ${NOMBRE[intermedia][1]} que equilibran, no de ${NOMBRE[liviana][1]}: falta un paso de sustitución.`));
-    errores.push(h('RMP38-sin-multiplicar', W[pesada] / W[liviana] + (Object.keys(izq).length > 1 ? pesoBalanza(Object.fromEntries(Object.entries(izq).filter(([kk]) => kk !== pesada)), W) / W[liviana] : 0), `Ese es el valor para un solo ${NOMBRE[pesada][0]}; en el platillo hay ${k}.`));
+    errores.push(h('RMP38-a-medio-camino', pesoBalanza(izq, W) / W[intermedia], `Esa cuenta es en ${NOMBRE[intermedia][1]}, no en ${NOMBRE[liviana][1]}: falta un paso.`));
+    errores.push(h('RMP38-sin-multiplicar', W[pesada] / W[liviana] + (Object.keys(izq).length > 1 ? pesoBalanza(Object.fromEntries(Object.entries(izq).filter(([kk]) => kk !== pesada)), W) / W[liviana] : 0), `Ese valor es para un solo ${NOMBRE[pesada][0]}; en el platillo hay ${k}.`));
     if (k === 1) errores.pop();
-    errores.push(h('RMP38-uno-de-mas', res + 1, 'Te pasaste por uno. Vuelve a sumar el peso de todo el platillo en unidades de la figura pedida.'));
+    errores.push(h('RMP38-uno-de-mas', res + 1, 'Te pasaste por uno. Suma otra vez todo el platillo.'));
     const vars = varsFig(FIGS);
-    const enunciado = ['Figuras iguales pesan lo mismo. Las tres balanzas están en equilibrio:'];
-    bsOrden.forEach((b, i) => enunciado.push(` (${i + 1}) a la izquierda, `, ...ladoV(b.izq, 'kg'), '; a la derecha, ', ...ladoV(b.der, 'kg'), '.'));
+    const enunciado = ['Figuras iguales pesan lo mismo. Las tres balanzas están en equilibrio.'];
     const pregunta = ['¿Cuántos ', v(liviana, NOMBRE[liviana][1]), ' equilibran a ', ...ladoV(izq, 'kg'), '?'];
     // solución: pesos relativos, de la más liviana a la más pesada
     const un = W[liviana];
@@ -439,8 +511,27 @@
       pasos.push([`Balanza ${ib}: `, ...ladoV(b.izq, 'kg'), ' = ', ...ladoV(b.der, 'kg'), ' → ', v(kk, `1 ${NOMBRE[kk][0]} = ${enL(kk)} ${NOMBRE[liviana][W[kk] === un ? 0 : 1]}`), '.']);
     }
     pasos.push(['Platillo pedido: ', ...ladoV(izq, 'kg'), ` = ${Object.keys(izq).map(kk => `${izq[kk]} × ${enL(kk)}`).join(' + ')} = `, v(liviana, `${res} ${NOMBRE[liviana][res === 1 ? 0 : 1]}`), '.']);
+    // Escena: cada balanza dice cuánto pesa una figura en la medida; la de trabajo recibe los que pone el alumno.
+    const rast = {}, pasosV = [];
+    for (let i = 1; i < 4; i++) {
+      const kk = orden[i], ib = bsOrden.indexOf(bs[i - 1]);
+      rast[ib] = [{ n: 1, f: kk }, ' = ', { n: enL(kk), f: liviana }];
+      pasosV.push({ estado: { vista: 0, usa: [ib], rastros: { ...rast }, nuevo: ['r' + ib] },
+        texto: [`La balanza ${ib + 1} da el `, v(kk, NOMBRE[kk][0]), ' en ', v(liviana, NOMBRE[liviana][1]), '.'],
+        ecuacion: [v(kk, `1 ${NOMBRE[kk][0]}`), ' = ', v(liviana, `${enL(kk)} ${NOMBRE[liviana][W[kk] === un ? 0 : 1]}`)] });
+    }
+    pasosV.push({ estado: { vista: 1, rastros: { ...rast }, final: true }, texto: ['Se suma el platillo pedido en ', v(liviana, NOMBRE[liviana][1]), '.'],
+      ecuacion: [`${Object.keys(izq).map(kk => `${izq[kk]} × ${enL(kk)}`).join(' + ')} = `, v(liviana, `${res}`)] });
+    const maxV = Math.max(10, Math.ceil((res + 3) / 5) * 5, ...errores.filter(e => Number.isFinite(e.valor)).map(e => Math.ceil((e.valor + 1) / 5) * 5));
+    const vivo = {
+      datos: { unidad: 'kg', pesos: W, balanzas: bsOrden,
+        trabajo: [{ izq, der: {}, traba: true }, { izq, der: { [liviana]: res }, rotulo: ['= ', { n: res, f: liviana }] }],
+        marca: { vista: 0, lado: 'der', figura: liviana, max: maxV, nombre: NOMBRE[liviana] } },
+      pasos: pasosV, alt: altBalanzas(bsOrden, 'kg'), arrastrar: true,
+      fantasma: (a, r) => ({ marca: a.valor, rotulo: r }),
+    };
     return cerrar(rng, semilla, { correcta: res, errores, enunciado, pregunta, solucion: pasos, variables: vars, datos, unidad: NOMBRE[liviana][1], singular: NOMBRE[liviana][0],
-      figura: { svg: figuraBalanzas(bsOrden, 'kg'), alt: altBalanzas(bsOrden, 'kg') } });
+      figura: { svg: figuraBalanzas(bsOrden, 'kg'), alt: altBalanzas(bsOrden, 'kg') }, vivo });
   }
   // La figura que cada balanza define (la más pesada de las que aparecen, según el orden).
   function conocidaNueva(b, orden) { const ks = Object.keys(b.izq).concat(Object.keys(b.der)); return ks.sort((a, c) => orden.indexOf(c) - orden.indexOf(a))[0]; }
@@ -464,13 +555,13 @@
     }
     const sinMayor = minimoPesas({ valores: [a, b], carga }).respuesta;
     const errores = [
-      primera ? h('RMP2-primera', primera[0] + primera[1] + primera[2], `Empezaste con todas las pesas de ${c} kg que caben y te quedaste con la primera combinación que cerró (${primera[2]} de ${c}, ${primera[1]} de ${b} y ${primera[0]} de ${a}). Hay otra con menos pesas.`) : null,
-      h('RMP38-sin-exactitud', Math.ceil(carga / c), `Dividiste ${carga} entre ${c} y redondeaste, pero con esa cantidad de pesas no se llega a ${carga} kg exactos con estos valores.`),
-      sinMayor !== null ? h('RMP2-sin-la-mayor', sinMayor, `Esa es la mejor forma sin usar la pesa de ${c} kg. Usándola se necesitan menos pesas.`) : null,
-      h('RMP2-una-de-mas', R.respuesta + 1, 'Encontraste una combinación que funciona, pero hay otra con una pesa menos.'),
+      primera ? h('RMP2-primera', primera[0] + primera[1] + primera[2], `Te quedaste con la primera combinación que cerró (${primera[2]} de ${c} kg, ${primera[1]} de ${b} y ${primera[0]} de ${a}). Hay otra con menos.`) : null,
+      h('RMP38-sin-exactitud', Math.ceil(carga / c), `Dividiste ${carga} entre ${c} y redondeaste, pero con tantas pesas no se llega justo a ${carga} kg.`),
+      sinMayor !== null ? h('RMP2-sin-la-mayor', sinMayor, `Eso es lo mejor sin la pesa de ${c} kg. Usándola, salen menos.`) : null,
+      h('RMP2-una-de-mas', R.respuesta + 1, 'Esa combinación funciona, pero hay otra con una pesa menos.'),
     ].filter(Boolean);
     const vars = { v: { nombre: 'valores de las pesas', color: 'o' }, W: { nombre: 'carga', color: 'i' } };
-    const enunciado = ['En una tienda de Puno hay pesas de ', v('v', `${a} kg, ${b} kg y ${c} kg`), ', tantas como se quiera de cada valor. En un platillo de la balanza se pone un saco de ', v('W', `${carga} kg`), ' y en el otro solo pesas.'];
+    const enunciado = ['En una tienda de Puno hay pesas de ', v('v', `${a} kg, ${b} kg y ${c} kg`), ', tantas como se quiera. Un saco de ', v('W', `${carga} kg`), ' está en un platillo; en el otro van solo pesas.'];
     const pregunta = ['¿Cuántas pesas se necesitan como mínimo para equilibrar la balanza?'];
     const [x0, y0, z0] = R.uso;
     const solucion = [
@@ -478,8 +569,22 @@
       [`Prueba con z (pesas de ${c}) de mayor a menor y, para cada una, completa con ${b} y ${a}; anota las que cierran y cuenta pesas en cada una.`],
       [`La mejor: ${z0} de ${c} kg, ${y0} de ${b} kg y ${x0} de ${a} kg: ${z0 * c} + ${y0 * b} + ${x0 * a} = ${carga}, con ${f(R.respuesta)} pesas. ${(R.respuesta - 1) * c < carga ? `No puede haber menos: ${R.respuesta - 1} pesas pesan a lo más ${R.respuesta - 1} × ${c} = ${(R.respuesta - 1) * c} kg, que no llega.` : `No puede haber menos: si revisas las combinaciones de ${R.respuesta - 1} pesas o menos, ninguna suma justo ${carga}.`}`],
     ];
+    // Escena: el saco y las pesas que se van poniendo, de la mayor a la menor; la balanza se inclina con el peso real.
+    const grupos = [[c, z0], [b, y0], [a, x0]], vistas = [{ izq: { saco: carga }, der: {} }];
+    grupos.forEach((_, i) => { const pesas = grupos.slice(0, i + 1).filter(g => g[1] > 0); vistas.push({ izq: { saco: carga }, der: pesas.length ? { pesas } : {} }); });
+    const pasosV = [
+      { estado: { vista: 1, nuevo: ['t'] }, texto: [`Primero, las pesas de ${c} kg que convienen.`], ecuacion: [`${z0} × ${c} = ${z0 * c} kg`] },
+      { estado: { vista: 2, nuevo: ['t'] }, texto: [`Luego, las de ${b} kg.`], ecuacion: [`${y0} × ${b} = ${y0 * b} kg`] },
+      { estado: { vista: 3, nuevo: ['t'] }, texto: [`Se completa con las de ${a} kg: queda en equilibrio.`], ecuacion: [`${z0 * c} + ${y0 * b} + ${x0 * a} = `, v('W', `${carga}`), ' kg'] },
+      { estado: { vista: 3, final: true }, texto: [`Con ${R.respuesta - 1} pesas o menos no se llega justo a ${carga} kg.`], ecuacion: [`mínimo: ${f(R.respuesta)} pesas`] },
+    ];
+    const vivo = {
+      datos: { unidad: 'kg', balanzas: [], trabajo: vistas },
+      pasos: pasosV, alt: `Balanza con un saco de ${carga} kg y pesas de ${a}, ${b} y ${c} kg`,
+      fantasma: (al, r) => ({ rotulo: `${r}: ${al.texto}` }),
+    };
     return cerrar(rng, semilla, { correcta: R.respuesta, errores, enunciado, pregunta, solucion, variables: vars, datos, unidad: 'pesas', singular: 'pesa',
-      figura: { svg: figuraBalanzas([{ izq: { pesa: carga }, der: {}, estado: 'izq-baja' }], 'kg'), alt: `Una balanza con un saco de ${carga} kg en el platillo izquierdo y el derecho vacío; baja el izquierdo.` } });
+      figura: { svg: figuraBalanzas([{ izq: { pesa: carga }, der: {}, estado: 'izq-baja' }], 'kg'), alt: `Una balanza con un saco de ${carga} kg en el platillo izquierdo y el derecho vacío; baja el izquierdo.` }, vivo });
   }
 
   // ---------- una sola pesada ----------
@@ -496,14 +601,14 @@
       const complemento = 1 + String(compl).split('').reduce((a, b) => a + +b, 0);
       const cifraXcifra = cifras.reduce((a, d) => a + Math.min(d, 10 - d), 0);
       const errores = [
-        h('RMP39-un-platillo', unPlatillo, `Pusiste todas las pesas en el otro platillo (una por cada unidad de cada cifra). Con pesas en el platillo del arroz, que restan, se ahorran muchas.`),
-        h('RMP2-complemento', complemento, `Pusiste una pesa de ${f(10 ** k, 0)} g y completaste con el resto (${f(compl, 0)} g) junto al arroz. Funciona, pero no es lo mínimo: conviene decidir cifra por cifra.`),
+        h('RMP39-un-platillo', unPlatillo, 'Pusiste todo en el otro platillo. Las pesas junto al arroz restan y ahorran muchas.'),
+        h('RMP2-complemento', complemento, `Una pesa de ${f(10 ** k, 0)} g y el resto junto al arroz funciona, pero no es lo mínimo.`),
         h('RMP39-cifra-por-cifra', cifraXcifra, cifraXcifra > R.respuesta
-          ? 'Elegiste en cada cifra lo menor entre sumar o restar, sin contar lo que te llevas. Aquí lo que se lleva ayuda: la cifra siguiente sube y se resta con menos pesas.'
-          : 'Elegiste en cada cifra lo menor entre sumar o restar, pero restar en una cifra cambia la cifra de al lado (te llevas 1). Hay que contarlo.'),
-        h('RMP2-una-de-mas', R.respuesta + 1, 'Encontraste una forma que funciona, pero hay otra con una pesa menos.'),
+          ? 'Decidiste cifra por cifra sin contar lo que te llevas: aquí llevarse 1 ahorra pesas.'
+          : 'Restar en una cifra le suma 1 a la siguiente: hay que contar lo que te llevas.'),
+        h('RMP2-una-de-mas', R.respuesta + 1, 'Esa forma funciona, pero hay otra con una pesa menos.'),
       ];
-      const enunciado = ['Se quiere pesar ', v('Q', `${f(cantidad, 0)} g`), ' de arroz en una sola pesada con una balanza de dos platillos. Hay pesas de 1 g, 10 g, 100 g, 1 000 g y 10 000 g, tantas como se quiera de cada una, y se pueden poner pesas en los dos platillos: en el platillo del arroz o en el otro.'];
+      const enunciado = ['Se quiere pesar ', v('Q', `${f(cantidad, 0)} g`), ' de arroz en una sola pesada. Hay pesas de 1, 10, 100, 1 000 y 10 000 g, tantas como se quiera, y pueden ir en cualquiera de los dos platillos.'];
       const pregunta = ['¿Cuántas pesas se necesitan como mínimo?'];
       const agrupa = l => { const m = {}; for (const z of l) m[z] = (m[z] || 0) + 1; return Object.keys(m).map(Number).sort((a, b) => b - a).map(z => `${m[z]} de ${f(z, 0)} g`); };
       const solucion = [
@@ -511,26 +616,44 @@
         ['Cifra por cifra, desde las unidades: con una cifra chica conviene sumar esas pesas; con una cifra grande (7, 8, 9) conviene poner 10 − cifra pesas junto al arroz y llevar 1 a la cifra siguiente. Se comparan las dos opciones contando lo que se lleva.'],
         [`Lo mejor: en el otro platillo ${lista(agrupa(R.otro)) || 'ninguna'}; junto al arroz ${lista(agrupa(R.junto)) || 'ninguna'}. Comprobación: ${f(R.otro.reduce((a, b) => a + b, 0), 0)} − ${f(R.junto.reduce((a, b) => a + b, 0), 0)} = ${f(cantidad, 0)}. Total: ${f(R.respuesta)} pesas.`],
       ];
-      return cerrar(rng, semilla, { correcta: R.respuesta, errores, enunciado, pregunta, solucion, variables: vars, datos, unidad: 'pesas', singular: 'pesa' });
+      return cerrar(rng, semilla, { correcta: R.respuesta, errores, enunciado, pregunta, solucion, variables: vars, datos, unidad: 'pesas', singular: 'pesa',
+        vivo: vivoPesada(cantidad, R, 'arroz') });
     }
     if (cantidad > 364) return null;
     const POT = [1, 3, 9, 27, 81, 243];
     const tern = []; for (let n = cantidad; n; n = Math.floor(n / 3)) tern.push(n % 3);
     const sumaCif = tern.reduce((a, b) => a + b, 0);
     const errores = [
-      h('RMP39-un-platillo', sumaCif, `Escribiste ${cantidad} en base 3 y contaste sus cifras como pesas en un solo platillo; pero hay una sola pesa de cada valor, y una cifra 2 pediría repetir. Con los dos platillos, un 2 se cambia por «3 − 1».`),
-      h('RMP39-solo-otro', R.otro.length, 'Contaste solo las pesas del otro platillo; las que van junto al objeto también se usan.'),
-      h('RMP2-todas', POT.indexOf(Math.max(...R.otro, ...R.junto)) + 1, 'Pensaste que se usan todas las pesas hasta la mayor que hace falta, pero algunas quedan fuera de la balanza.'),
-      h('RMP2-una-de-mas', R.respuesta + 1, 'Te sobró una pesa: cada pesa va en un platillo o queda fuera, y la forma es única.'),
+      h('RMP39-un-platillo', sumaCif, 'Contaste las cifras en base 3, pero hay una pesa de cada valor: un 2 se cambia por 3 − 1.'),
+      h('RMP39-solo-otro', R.otro.length, 'Contaste solo el otro platillo; las pesas junto al azúcar también se usan.'),
+      h('RMP2-todas', POT.indexOf(Math.max(...R.otro, ...R.junto)) + 1, 'No se usan todas hasta la mayor: algunas quedan fuera de la balanza.'),
+      h('RMP2-una-de-mas', R.respuesta + 1, 'Te sobró una: cada pesa va en un platillo o queda fuera, y la forma es única.'),
     ];
-    const enunciado = ['Se tiene una sola pesa de cada uno de estos valores: 1 g, 3 g, 9 g, 27 g, 81 g y 243 g. Se quiere pesar exactamente ', v('Q', `${cantidad} g`), ' de azúcar en una sola pesada; las pesas pueden ir en el otro platillo o en el mismo platillo que el azúcar.'];
+    const enunciado = ['Hay una sola pesa de cada valor: 1, 3, 9, 27, 81 y 243 g. Se quiere pesar ', v('Q', `${cantidad} g`), ' de azúcar en una sola pesada; las pesas pueden ir en cualquiera de los dos platillos.'];
     const pregunta = ['¿Cuántas pesas se usan en total en la balanza?'];
     const solucion = [
       ['Cada pesa va en el otro platillo (suma), junto al azúcar (resta) o fuera. Se escribe ', v('Q', `${cantidad}`), ' con cifras 1, 0 y −1 en base 3.'],
       [`Se divide entre 3 una y otra vez: resto 0 → la pesa queda fuera; resto 1 → va al otro platillo; resto 2 → va junto al azúcar (es 3 − 1) y se suma 1 al cociente.`],
       [`Otro platillo: ${lista(R.otro.map(z => `${z} g`))}. Junto al azúcar: ${R.junto.length ? lista(R.junto.map(z => `${z} g`)) : 'ninguna'}. Comprobación: ${R.otro.reduce((a, b) => a + b, 0)} − ${R.junto.reduce((a, b) => a + b, 0)} = ${cantidad}. Se usan ${f(R.respuesta)} pesas.`],
     ];
-    return cerrar(rng, semilla, { correcta: R.respuesta, errores, enunciado, pregunta, solucion, variables: vars, datos, unidad: 'pesas', singular: 'pesa' });
+    return cerrar(rng, semilla, { correcta: R.respuesta, errores, enunciado, pregunta, solucion, variables: vars, datos, unidad: 'pesas', singular: 'pesa',
+      vivo: vivoPesada(cantidad, R, 'azúcar') });
+  }
+  // Escena de una pesada: el objeto solo, las pesas del otro platillo y las que van junto al objeto (si caben).
+  function vivoPesada(cantidad, R, cosa) {
+    const otro = agrupar(R.otro), junto = agrupar(R.junto), so = sumaL(R.otro), sj = sumaL(R.junto);
+    const anchoSaco = anchoTxt(`${f(cantidad, 0)} g`) + 18;
+    if (!cabenPesas(otro, 'g') || !cabenPesas(junto, 'g', anchoSaco)) return null;
+    const v0 = { izq: { saco: cantidad }, der: {} }, v1 = { izq: { saco: cantidad }, der: { pesas: otro } };
+    const v2 = { izq: junto.length ? { saco: cantidad, pesas: junto } : { saco: cantidad }, der: { pesas: otro } };
+    const pasosV = [
+      { estado: { vista: 1, nuevo: ['t'] }, texto: ['Las pesas del otro platillo suman.'], ecuacion: [`otro platillo: ${f(so, 0)} g`] },
+      { estado: { vista: 2, nuevo: ['t'], final: true }, texto: [sj ? `Las que van junto al ${cosa} restan: queda en equilibrio.` : `No hace falta poner pesas junto al ${cosa}.`],
+        ecuacion: [`${f(so, 0)} − ${f(sj, 0)} = `, v('Q', f(cantidad, 0)), ` g con ${f(R.respuesta)} pesas`] },
+    ];
+    return { datos: { unidad: 'g', balanzas: [], trabajo: [v0, v1, v2] }, pasos: pasosV,
+      alt: `Balanza con ${f(cantidad, 0)} g de ${cosa}; ${R.otro.length} pesas en el otro platillo y ${R.junto.length} junto al ${cosa}`,
+      fantasma: (a, r) => ({ rotulo: `${r}: ${a.texto}` }) };
   }
 
   // ---------- peso combinado (nuevo) ----------
@@ -572,15 +695,14 @@
     const ult = Object.keys(pide).pop();
     const nomPide = lista(Object.keys(pide).map(k => nf(k, pide[k])));
     const errores = [
-      sinTercera !== undefined ? h('RMP98-sin-la-tercera', sinTercera, 'Resolviste solo con las dos balanzas en equilibrio y tomaste uno de los pesos que las cumplen. La tercera balanza, desequilibrada, descarta esos pesos: hay que usarla.') : null,
-      igual.respuesta !== null && igual.respuesta !== r ? h('RMP99-borde', igual.respuesta, 'Tomaste la balanza desequilibrada como si estuviera en equilibrio. Al bajar un platillo ese lado pesa más: es una desigualdad estricta y el borde no se alcanza.') : null,
-      h('RMP38-otra-combinacion', r - W[ult], `Ese es el peso de una combinación distinta: te faltó contar un ${NOMBRE[ult][0]} de los que se piden.`),
-      h('RMP38-una-sola', Object.keys(pide).reduce((t, k) => t + W[k], 0), `Contaste cada figura una sola vez: la pregunta pide ${nomPide}.`),
-      h('RMP38-suma-pesas', p1 + p2, 'Sumaste las dos pesas de las balanzas en equilibrio. Esos kilogramos no son el peso de lo que se pide: hay que hallar el peso de cada figura.'),
+      sinTercera !== undefined ? h('RMP98-sin-la-tercera', sinTercera, 'Usaste solo las dos balanzas en equilibrio. La tercera descarta esos pesos.') : null,
+      igual.respuesta !== null && igual.respuesta !== r ? h('RMP99-borde', igual.respuesta, 'La balanza 3 no está en equilibrio: el lado que baja pesa más, y el borde no vale.') : null,
+      h('RMP38-otra-combinacion', r - W[ult], `Te faltó contar un ${NOMBRE[ult][0]} de los que se piden.`),
+      h('RMP38-una-sola', Object.keys(pide).reduce((t, k) => t + W[k], 0), `Contaste cada figura una sola vez: piden ${nomPide}.`),
+      h('RMP38-suma-pesas', p1 + p2, 'Sumaste las pesas de las balanzas en equilibrio; falta hallar el peso de cada figura.'),
     ];
     const vars = varsFig([fx, fy, fz]);
-    const enunciado = ['Cada figura pesa un número entero de kilogramos, y figuras iguales pesan lo mismo. Mira las balanzas:'];
-    bs.forEach((b, i) => enunciado.push(` (${i + 1}) ${ESTADO[b.estado][0].toUpperCase() + ESTADO[b.estado].slice(1)}: a la izquierda, `, ...ladoV(b.izq, 'kg'), '; a la derecha, ', ...ladoV(b.der, 'kg'), '.'));
+    const enunciado = ['Cada figura pesa un número entero de kilogramos, y figuras iguales pesan lo mismo.'];
     const pregunta = ['¿Cuántos kilogramos pesan juntos ', ...Object.keys(pide).flatMap((k, i, a) => [v(k, nf(k, pide[k])), i < a.length - 2 ? ', ' : i === a.length - 2 ? ' y ' : '']), '?'];
     // la balanza 3 en términos de X: cada peso es αX + β (X = fx, Y = wy fijo por 2Y = p1 + p2, Z = X + Y − p1)
     const ab = { [fx]: [1, 0], [fy]: [0, wy], [fz]: [1, wy - p1] };
@@ -595,8 +717,26 @@
       [`Balanza 3: queda ${termX(A, B)} ${mayor > 0 ? '>' : '<'} 0 (${b3.estado === 'izq-baja' ? 'baja la izquierda' : 'baja la derecha'}). Con X entero y Z positivo, la única posibilidad es X = ${wx}, y entonces Z = ${wz}.`],
       [`Pesos: ${NOMBRE[fx][0]} ${wx} kg, ${NOMBRE[fy][0]} ${wy} kg, ${NOMBRE[fz][0]} ${wz} kg. Piden ${nomPide}: ${Object.keys(pide).map(k => `${pide[k]} × ${W[k]}`).join(' + ')} = ${f(r)} kg.`],
     ];
+    // Escena: se juntan las balanzas 1 y 2 en una sola, se quita lo mismo de los dos lados (queda 2Y = p1 + p2),
+    // la balanza 3 fija los otros pesos y al final se pesa lo que piden. Inclinaciones con los pesos reales.
+    const ft = k => ({ n: 1, f: k }), X = v(fx, 'X'), Y = v(fy, 'Y'), Z = v(fz, 'Z');
+    const vJunta = { izq: { [fx]: 1, [fy]: 2, [fz]: 1 }, der: { [fx]: 1, [fz]: 1, pesas: [[p1, 1], [p2, 1]] } };
+    const vQuita = { izq: { [fy]: 2 }, der: { pesas: [[p1, 1], [p2, 1]] }, quita: { izq: { [fx]: 1, [fz]: 1 }, der: { [fx]: 1, [fz]: 1 } }, rotulo: [ft(fy), ` = ${wy} kg`] };
+    const vFin = { izq: { ...pide }, der: { pesa: r }, rotulo: [`= ${f(r)} kg`] };
+    const r2 = { 2: [ft(fx), ` = ${wx} kg  `, ft(fz), ` = ${wz} kg`] };
+    const pasosV = [
+      { estado: { vista: 0, usa: [0, 1], nuevo: ['t'] }, texto: ['Se juntan las balanzas 1 y 2 en una sola.'], ecuacion: [X, ' + 2', Y, ' + ', Z, ' = ', X, ' + ', Z, ` + ${p1} + ${p2}`] },
+      { estado: { vista: 1, nuevo: ['t'] }, texto: ['Se quita lo mismo de los dos lados.'], ecuacion: ['2', Y, ` = ${p1 + p2}, `, Y, ` = ${wy} kg`] },
+      { estado: { vista: 1, usa: [2], rastros: r2, nuevo: ['r2'] }, texto: ['La balanza 3 deja un solo peso entero posible.'], ecuacion: [`${termX(A, B)} ${mayor > 0 ? '>' : '<'} 0, `, X, ` = ${wx} kg`] },
+      { estado: { vista: 2, rastros: r2, final: true }, texto: ['Se pesa lo que piden.'], ecuacion: [`${Object.keys(pide).map(k => `${pide[k]} × ${W[k]}`).join(' + ')} = ${f(r)} kg`] },
+    ];
+    const vivo = {
+      datos: { unidad: 'kg', pesos: W, balanzas: bs, trabajo: [vJunta, vQuita, vFin] },
+      pasos: pasosV, alt: altBalanzas(bs, 'kg'),
+      fantasma: (a, rot) => ({ der: { pesa: a.valor }, rotulo: `${rot}: ${a.texto}` }),
+    };
     return cerrar(rng, semilla, { correcta: r, errores, enunciado, pregunta, solucion, variables: vars, datos, unidad: 'kg',
-      figura: { svg: figuraBalanzas(bs, 'kg'), alt: altBalanzas(bs, 'kg') } });
+      figura: { svg: figuraBalanzas(bs, 'kg'), alt: altBalanzas(bs, 'kg') }, vivo });
   }
 
   return { id: ID, titulo: 'Balanzas, figuras y pesas', generar, calc };

@@ -550,10 +550,10 @@
     const pregunta = ['¿Cuántos litros ', v('X', `de ${cosa.replace(' puro', '').replace(' puro de', ' de')}`), ' quedan en el bidón?'];
     const lineal = V * (1 - n * fn / fd);
     const errores = [
-      E('extraccion-lineal', lineal, `Restaste ${fn}/${fd} del volumen inicial en cada vez. Desde la segunda extracción se saca ${fn}/${fd} de una mezcla que ya tiene agua: sale menos ${cosa.split(' ')[0]} cada vez.`, 'parcial'),
-      E('AR4-lo-que-se-quita', V - correcta, `Ese es el ${cosa.split(' ')[0]} que se sacó en total. La pregunta es por lo que queda.`),
-      E('una-extraccion-menos', V * (fd - fn) ** (n - 1) / fd ** (n - 1), `Hiciste una extracción menos. Son ${n} veces: el factor ${fd - fn}/${fd} se aplica ${n} veces.`),
-      E('AR4-queda-la-fraccion-sacada', V * fn ** n / fd ** n, `Multiplicaste por ${fn}/${fd}, que es lo que se saca. En cada vez queda ${fd - fn}/${fd} de lo que había.`),
+      E('extraccion-lineal', lineal, `Restaste lo mismo cada vez. Desde la segunda, se saca ${fn}/${fd} de una mezcla con agua: sale menos.`, 'parcial'),
+      E('AR4-lo-que-se-quita', V - correcta, `Ese es el ${cosa.split(' ')[0]} que se sacó. La pregunta es por lo que queda.`),
+      E('una-extraccion-menos', V * (fd - fn) ** (n - 1) / fd ** (n - 1), `Hiciste una extracción menos: el factor ${fd - fn}/${fd} va ${n} veces.`),
+      E('AR4-queda-la-fraccion-sacada', V * fn ** n / fd ** n, `Multiplicaste por ${fn}/${fd}, que es lo que se saca. Cada vez queda ${fd - fn}/${fd}.`),
     ];
     // extraccion-lineal: lleva la fuente del informe (ilusión de linealidad, vecina de AR7).
     errores[0].fuente = INF;
@@ -561,8 +561,38 @@
       ['En cada vez queda ', `${fd - fn}/${fd}`, ` del ${cosa.split(' ')[0]} que había (el agua que entra no lo repone).`],
       [v('V', `${V} L`), ` × (${fd - fn}/${fd})`, v('N', ['', '', '²', '³'][n]), ' = ', `${V} × ${qn}/${fd ** n} = `, v('X', `${f(correcta)} L`), '.'],
     ];
-    return cerrar(rng, semilla, { correcta, errores, texto: x => `${f(x)} L`, unidad: 'L', variables, enunciado, pregunta, solucion,
+    const p = cerrar(rng, semilla, { correcta, errores, texto: x => `${f(x)} L`, unidad: 'L', variables, enunciado, pregunta, solucion,
       datos: { tipo: 'extracciones', sub: 'sucesivas', V, f: [fn, fd], n } });
+    return Object.assign(p, escenaSucesivas({ V, fn, fd, n, correcta, cosa: cosa.split(' ')[0] }, p.alternativas));
+  }
+
+  /*
+   * Escena viva (docs/escena-viva.md): la barra del bidón que pierde la misma fracción de lo que queda en cada
+   * extracción (pieza «barra-porcentaje», sin cambios). Lo puro se responde arrastrando la marca. Los demás
+   * tipos de este generador todavía no tienen pieza: siguen con el formato de siempre.
+   */
+  const ROTULOS_SUC = { 'extraccion-lineal': 'restando igual', 'AR4-lo-que-se-quita': 'lo que salió', 'una-extraccion-menos': 'una vez menos', 'AR4-queda-la-fraccion-sacada': 'lo que se saca' };
+  const BONITOS = [0.01, 0.02, 0.05, 0.1, 0.2, 0.25, 0.5, 1, 2, 5, 10, 20, 25, 50, 100];
+  const pasoBonito = tope => BONITOS.reduce((q, b) => (b <= tope + 1e-12 ? b : q), BONITOS[0]);
+  function escenaSucesivas({ V, fn, fd, n, correcta, cosa }, alternativas) {
+    const pct = 100 * fn / fd, L = x => `${f(x)} L`, fr = `${fn}/${fd}`, queda = `${fd - fn}/${fd}`;
+    const tramos = Array.from({ length: n }, () => ({ tipo: 'descuento', pct, color: 'i' }));
+    const datos = { total: V, prefijo: '', sufijo: ' L', decimales: 2, color: 'o', tramos, marca: 'queda' };
+    const vals = [V]; for (let i = 0; i < n; i++) vals.push(vals[i] * (fd - fn) / fd);
+    const pasos = [];
+    for (let i = 1; i <= n; i++) pasos.push({ estado: { corte: i },
+      texto: i === 1 ? ['Se saca ', v('F', fr), ` del ${cosa}: queda ${queda}.`] : ['Otra vez se saca ', v('F', fr), ', pero de lo que quedó.'],
+      ecuacion: [i === 1 ? v('V', L(V)) : L(vals[i - 1]), ` × ${queda} = ${L(vals[i])}`] });
+    pasos.push({ estado: { corte: n, final: true }, texto: ['Cada vez se multiplica por el mismo factor.'],
+      ecuacion: [v('V', L(V)), ` × (${queda})`, v('N', ['', '', '²', '³'][n]), ' = ', v('X', L(correcta))] });
+    let hueco = Infinity;
+    for (let i = 0; i < alternativas.length; i++) for (let j = i + 1; j < alternativas.length; j++) hueco = Math.min(hueco, Math.abs(alternativas[i].valor - alternativas[j].valor));
+    const paso = pasoBonito(Math.min(V / 150, hueco / 2));
+    const fantasmas = {};
+    for (const a of alternativas) if (a.error) fantasmas[a.error.id] = { marca: a.valor, rotulo: ROTULOS_SUC[a.error.id] || '' };
+    const r = { escena: { pieza: 'barra-porcentaje', datos, alt: `Barra de ${f(V)} L que pierde ${n} veces ${fr} de lo que queda` }, pasos, fantasmas };
+    if (alternativas.every(a => a.valor >= 0 && a.valor <= V)) r.respuesta = { valor: correcta, unidad: 'L', tipo: 'arrastrar', control: 'marca', paso, tolerancia: paso };
+    return r;
   }
 
   // ======================= afín =======================

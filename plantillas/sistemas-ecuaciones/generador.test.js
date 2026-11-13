@@ -235,3 +235,35 @@ test('papel.json: cada respuesta se recalcula', () => {
   // p10: P(t) = 300 − a|t − 8|, P(2) = 252, P(13).
   assert.equal(recalcular({ _datos: { tipo: 'valor-absoluto', signo: -1, c: 300, k: 8, t1: 2, v1: 252, t2: 13 } }), 260); assert.equal(R.p10, '260 chompas.');
 });
+
+// ---------- Escena viva (docs/escena-viva.md): el intercambio de jornadas como tres balanzas ----------
+const Kit = require('../../nucleo/kit/kit.js');
+const balanza = require('../../nucleo/kit/piezas/balanza.js');
+const LT = require('../../nucleo/kit/linea-tiempo.js');
+const palabrasV = x => Kit.plano(x).split(/\s+/).filter(w => /\p{L}/u.test(w)).length; // como herramientas/validar-ejercicios.js
+
+test('escena viva: «trabajo, propia» trae tres balanzas en equilibrio y el final pesa la respuesta', () => {
+  let vistas = 0;
+  for (let s = 0; s < 1500; s++) {
+    const p = gen.generar(s), d = p._datos;
+    if (!(d.tipo === 'trabajo' && d.sub === 'propia')) { assert.ok(!p.escena, `semilla ${s}: escena inesperada`); continue; }
+    if (!p.escena) continue;
+    vistas++;
+    const e = p.escena.datos;
+    assert.equal(p.escena.pieza, 'balanza');
+    assert.ok(balanza.cabe(e));
+    for (const b of e.balanzas) assert.equal(balanza.inclinacion(e, b), 0, `semilla ${s}: una balanza del enunciado no está en equilibrio`);
+    for (const t of e.trabajo) assert.equal(balanza.inclinacion(e, t), 0, `semilla ${s}: un paso desequilibra la balanza`);
+    // Lo que queda más lo quitado es lo que había: quitar lo mismo de los dos lados.
+    for (const t of e.trabajo.filter(z => z.quita)) assert.equal(balanza.pesoLado(e, t.quita.izq), balanza.pesoLado(e, t.quita.der));
+    const fin = e.trabajo[e.trabajo.length - 1];
+    assert.equal(fin.der.pesa, p.respuesta.valor);
+    assert.equal(e.pesos.x, p.respuesta.valor);
+    for (let i = 1; i <= p.pasos.length; i++) assert.ok(!/NaN|undefined|null|Infinity/.test(balanza.dibujar(e, LT.estado(p.pasos, i))));
+    for (const q of p.pasos) assert.ok(palabrasV(q.texto) <= 14, `semilla ${s}: «${Kit.plano(q.texto)}»`);
+    assert.ok(palabrasV(p.enunciado) + palabrasV(p.pregunta) <= 40, `semilla ${s}: enunciado largo`);
+    for (const a of p.alternativas) if (a.error) assert.ok(palabrasV(a.error.explicacion) <= 20, `semilla ${s}: «${a.error.explicacion}»`);
+    for (const [id, f] of Object.entries(p.fantasmas)) assert.equal(f.der.pesa, p.alternativas.find(a => a.error && a.error.id === id).valor);
+  }
+  assert.ok(vistas > 20, `pocos problemas con escena: ${vistas}`);
+});
