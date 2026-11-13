@@ -39,7 +39,7 @@
   if (nodo) module.exports = api;
 })(typeof self !== 'undefined' ? self : this, function (Kit, T) {
   'use strict';
-  const W = 320, X0 = 18, X1 = 300, FILA = 34, ARRIBA = 30, R = 5;
+  const W = 320, X0 = 18, X1 = 300, FILA = 34, ARRIBA = 36, R = 5;
 
   // Geometría fija para todos los estados: filas arriba, la recta, sus números, la fila de la marca y la del fantasma.
   function geometria(d) {
@@ -86,7 +86,9 @@
       if (Math.round(v / paso) % cada !== 0) return;
       s += T.rotulo(marcas[i], g.eje + 22, Kit.formatear(v, d.decimales === undefined ? 2 : d.decimales), { ancla: 'middle', clase: 'kit-num' });
     });
-    if (d.variable) s += T.rotulo(W - 2, g.eje - 10, d.variable, { color: d.color, ancla: 'end', peso: 700 });
+    // El nombre de la variable va arriba a la izquierda, sobre todas las filas: junto a la flecha chocaba con los
+    // rótulos de los puntos cercanos al extremo.
+    if (d.variable) s += T.rotulo(2, 18, d.variable, { color: d.color, peso: 700 });
     return s;
   }
 
