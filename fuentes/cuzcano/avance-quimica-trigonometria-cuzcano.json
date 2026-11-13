@@ -1,16 +1,16 @@
 {
   "schema_version": 1,
-  "fecha_utc": "2026-11-13T01:10:52.112447+00:00",
+  "fecha_utc": "2026-11-13T03:28:50.913643+00:00",
   "estado": "en_curso",
   "origen": "Escaneos de Cuzcano",
   "objetivo_nuevas": 2000,
   "objetivo_temas": 20,
-  "fichas_nuevas": 920,
-  "fichas_pendientes": 1080,
-  "porcentaje_del_lote": 46,
-  "fichas_acumuladas_banco": 10302,
-  "temas_banco_con_100_acumuladas": 70,
-  "paginas_pdf_distintas_cotejadas": 173,
+  "fichas_nuevas": 1220,
+  "fichas_pendientes": 780,
+  "porcentaje_del_lote": 61,
+  "fichas_acumuladas_banco": 10602,
+  "temas_banco_con_100_acumuladas": 72,
+  "paginas_pdf_distintas_cotejadas": 280,
   "ocr_repetido": false,
   "lectura_local": "fuentes/ocr-local/cuzcano/cobertura-temas/avance-detallado.html",
   "cursos": [
@@ -18,57 +18,57 @@
       "id": "quimica",
       "curso": "Química",
       "meta": 1000,
-      "nuevas": 281,
-      "pendientes": 719,
-      "porcentaje_del_lote": 28.1,
+      "nuevas": 543,
+      "pendientes": 457,
+      "porcentaje_del_lote": 54.3,
       "temas_con_fichas_nuevas": 10,
-      "nuevas_con_observaciones": 66,
-      "acumuladas": 1458,
+      "nuevas_con_observaciones": 114,
+      "acumuladas": 1720,
       "temas_del_curso": 13,
-      "temas_del_curso_con_100_acumuladas": 10,
+      "temas_del_curso_con_100_acumuladas": 12,
       "indice_local": "fuentes/ocr-local/cuzcano/lote-quimica-1000-cuzcano/fichas.json",
-      "sha256_indice_local": "84d61ba667598a49f7074e05e681b51d611a5f0c7ed70246422141788145f081",
+      "sha256_indice_local": "e66723a097a77bee2d84bf8d7f68d4f27648b19c9eff5d665ee3cefd2a55eac9",
       "recursos_visuales": {
-        "tabla_propia": 68,
-        "grafica_cartesiana_propia": 31,
-        "tarjeta_relaciones_propias": 182
+        "tabla_propia": 109,
+        "grafica_cartesiana_propia": 43,
+        "tarjeta_relaciones_propias": 391
       },
       "temas": [
         {
           "id": "quimica.reacciones-quimicas",
           "tema": "Reacciones químicas",
-          "nuevas": 8,
+          "nuevas": 67,
           "meta": 100,
-          "pendientes": 92,
-          "porcentaje_del_lote": 8,
-          "acumuladas": 74
+          "pendientes": 33,
+          "porcentaje_del_lote": 67,
+          "acumuladas": 133
         },
         {
           "id": "quimica.nomenclatura-inorganica",
           "tema": "Nomenclatura inorgánica",
-          "nuevas": 5,
+          "nuevas": 44,
           "meta": 100,
-          "pendientes": 95,
-          "porcentaje_del_lote": 5,
-          "acumuladas": 77
+          "pendientes": 56,
+          "porcentaje_del_lote": 44,
+          "acumuladas": 116
         },
         {
           "id": "quimica.electroquimica",
           "tema": "Electroquímica",
-          "nuevas": 29,
+          "nuevas": 70,
           "meta": 100,
-          "pendientes": 71,
-          "porcentaje_del_lote": 29,
-          "acumuladas": 112
+          "pendientes": 30,
+          "porcentaje_del_lote": 70,
+          "acumuladas": 153
         },
         {
           "id": "quimica.equilibrio-quimico",
           "tema": "Equilibrio químico",
-          "nuevas": 29,
+          "nuevas": 56,
           "meta": 100,
-          "pendientes": 71,
-          "porcentaje_del_lote": 29,
-          "acumuladas": 112
+          "pendientes": 44,
+          "porcentaje_del_lote": 56,
+          "acumuladas": 139
         },
         {
           "id": "quimica.quimica-organica",
@@ -82,11 +82,11 @@
         {
           "id": "quimica.soluciones",
           "tema": "Soluciones",
-          "nuevas": 23,
+          "nuevas": 50,
           "meta": 100,
-          "pendientes": 77,
-          "porcentaje_del_lote": 23,
-          "acumuladas": 106
+          "pendientes": 50,
+          "porcentaje_del_lote": 50,
+          "acumuladas": 133
         },
         {
           "id": "quimica.tabla-periodica",
@@ -100,11 +100,11 @@
         {
           "id": "quimica.acidos-y-bases",
           "tema": "Ácidos y bases",
-          "nuevas": 26,
+          "nuevas": 57,
           "meta": 100,
-          "pendientes": 74,
-          "porcentaje_del_lote": 26,
-          "acumuladas": 110
+          "pendientes": 43,
+          "porcentaje_del_lote": 57,
+          "acumuladas": 141
         },
         {
           "id": "quimica.enlace-quimico",
@@ -118,11 +118,11 @@
         {
           "id": "quimica.estequiometria",
           "tema": "Estequiometría",
-          "nuevas": 27,
+          "nuevas": 65,
           "meta": 100,
-          "pendientes": 73,
-          "porcentaje_del_lote": 27,
-          "acumuladas": 111
+          "pendientes": 35,
+          "porcentaje_del_lote": 65,
+          "acumuladas": 149
         }
       ]
     },
@@ -130,21 +130,21 @@
       "id": "trigonometria",
       "curso": "Trigonometría",
       "meta": 1000,
-      "nuevas": 639,
-      "pendientes": 361,
-      "porcentaje_del_lote": 63.9,
+      "nuevas": 677,
+      "pendientes": 323,
+      "porcentaje_del_lote": 67.7,
       "temas_con_fichas_nuevas": 10,
-      "nuevas_con_observaciones": 109,
-      "acumuladas": 1749,
+      "nuevas_con_observaciones": 112,
+      "acumuladas": 1787,
       "temas_del_curso": 13,
       "temas_del_curso_con_100_acumuladas": 11,
       "indice_local": "fuentes/ocr-local/cuzcano/lote-trigonometria-1000-cuzcano/fichas.json",
-      "sha256_indice_local": "2025d8fd1308c491ccfc333d30d05bba451e514d0326637972d31e215177b54f",
+      "sha256_indice_local": "b74941141bdbc4f640fb964ecfc06096f7771c67ff95da32fa9fb9f5c9ca8ef9",
       "recursos_visuales": {
         "tabla_propia": 310,
-        "grafica_cartesiana_propia": 193,
+        "grafica_cartesiana_propia": 198,
         "recta_numerica_propia": 8,
-        "tarjeta_relaciones_propias": 128
+        "tarjeta_relaciones_propias": 161
       },
       "temas": [
         {
@@ -177,11 +177,11 @@
         {
           "id": "trigonometria.identidades-de-arcos-multiples",
           "tema": "Identidades de arcos múltiples",
-          "nuevas": 25,
+          "nuevas": 63,
           "meta": 100,
-          "pendientes": 75,
-          "porcentaje_del_lote": 25,
-          "acumuladas": 108
+          "pendientes": 37,
+          "porcentaje_del_lote": 63,
+          "acumuladas": 146
         },
         {
           "id": "trigonometria.razones-trigonometricas-de-un-angulo-en-posicion-normal",
@@ -255,14 +255,14 @@
     {
       "numero": 2,
       "meta": 400,
-      "nuevas": 363,
-      "pendientes": 37
+      "nuevas": 400,
+      "pendientes": 0
     },
     {
       "numero": 3,
       "meta": 400,
-      "nuevas": 0,
-      "pendientes": 400
+      "nuevas": 263,
+      "pendientes": 137
     },
     {
       "numero": 4,
