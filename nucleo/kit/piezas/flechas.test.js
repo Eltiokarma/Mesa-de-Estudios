@@ -27,6 +27,7 @@ const POLI = {
   flechas: [{ de: [0, 0], a: [4, 0], color: 'o', rotulo: 'AB' }, { de: [4, 0], a: [4, 4], color: 'o', rotulo: 'BC', paso: 1 }],
   resultante: { de: [0, 0], a: [4, 4], color: 'd', rotulo: 'R', valor: '4√2 cm' },
   ejes: true,
+  segmentos: [{ de: [4, 4], a: [0, 4], color: 'o', texto: 'L = 4 cm' }],
 };
 const NULA = { unidad: 'u', flechas: [{ de: [0, 0], a: [3, 0], color: 'o', rotulo: 'A' }, { de: [3, 0], a: [0, 0], color: 'i', rotulo: 'B', paso: 1 }],
   resultante: { de: [0, 0], a: [0, 0], color: 'd', rotulo: 'R', valor: '0 u' } };
@@ -50,6 +51,7 @@ test('el final dibuja la resultante con su valor, la copia en la regla y la marc
   const pf = puntas(s, 'd').find(q => Math.abs(q[1] - g.copiaY) < 0.01);
   assert.ok(Math.abs(pf[0] - 14 - SUMA.regla.respuesta * g.s) < 0.02, 'la copia mide R en la escala de la regla');
   assert.match(F.dibujar(POLI, { final: true }), /R = 4√2 cm/);
+  assert.match(F.dibujar(POLI, {}), />L = 4 cm</);
   assert.match(F.dibujar(NULA, { final: true }), /R = 0 u/);
 });
 

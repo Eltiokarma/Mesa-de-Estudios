@@ -15,6 +15,7 @@
  *               paso: 0, discontinua: false, grosor: 'variable'|'contorno' }],
  *   resultante: { de, a, color: 'd', rotulo: 'R', valor: '2√13 N', paso: (por defecto, solo en el final) },
  *   guias: [{ de, a, color, paso }],          // líneas discontinuas: lados del paralelogramo, proyecciones
+ *   segmentos: [{ de, a, color: 'o', texto: 'L = 6 cm', paso }],  // un dato que es un largo sin sentido (un lado)
  *   angulos: [{ en: [x, y], de: 0, a: 60, texto: '60°', color: 'h', paso }],  // de y a en grados, antihorario desde +x
  *   puntos: [{ x, y, rotulo: 'A', paso }],     // vértices con nombre
  *   contorno: [[x, y], …],                     // figura de fondo (polígono cerrado), tenue
@@ -45,7 +46,7 @@
     const ps = [];
     for (const f of d.flechas || []) ps.push(f.de, f.a);
     if (d.resultante) ps.push(d.resultante.de, d.resultante.a);
-    for (const g of d.guias || []) ps.push(g.de, g.a);
+    for (const g of [...(d.guias || []), ...(d.segmentos || [])]) ps.push(g.de, g.a);
     for (const p of d.contorno || []) ps.push(p);
     for (const p of d.puntos || []) ps.push([p.x, p.y]);
     for (const a of d.angulos || []) ps.push(a.en);
@@ -184,6 +185,10 @@
     }
     for (const gu of d.guias || []) if (ve(gu)) {
       s += `<g class="kit-aparece${nuevo(gu)}">${T.linea(g.X(gu.de[0]), g.Y(gu.de[1]), g.X(gu.a[0]), g.Y(gu.a[1]), { color: gu.color, grosor: 2, discontinua: true, opacidad: 0.7 })}</g>`;
+    }
+    for (const sg of d.segmentos || []) if (ve(sg)) {
+      const x1 = g.X(sg.de[0]), y1 = g.Y(sg.de[1]), x2 = g.X(sg.a[0]), y2 = g.Y(sg.a[1]);
+      s += `<g class="kit-aparece${nuevo(sg)}">${T.linea(x1, y1, x2, y2, { color: sg.color, grosor: 3 })}${sg.texto ? rotuloFlecha(g, x1, y1, x2, y2, sg.texto, { color: sg.color }) : ''}</g>`;
     }
     for (const an of d.angulos || []) if (ve(an)) s += arco(d, g, an, `kit-aparece${nuevo(an)}`);
     for (const f of d.flechas || []) if (ve(f)) {
