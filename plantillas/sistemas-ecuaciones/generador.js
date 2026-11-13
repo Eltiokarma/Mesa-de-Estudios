@@ -163,44 +163,88 @@
     const x = rng.entero(2, 12);          // jornadas de A en su propia casa
     const T = x + r, H = x + j;
     if (T > 40) return null;
-    const variables = { T: { nombre: `jornadas de ${A} en total`, color: 'o' }, H: { nombre: `jornadas en la casa de ${A}`, color: 'i' },
-      x: { nombre: 'lo que se pide', color: 'd' } };
-    const enunciado = [`${A} y ${B} son albañiles y se ayudaron a construir sus casas: cada uno trabajó algunas jornadas en su propia casa y otras en la casa del otro. ${A} trabajó `,
-      v('T', `${T} jornadas`), ` en total, entre las dos casas. En la casa de ${A} se trabajaron `, v('H', `${H} jornadas`),
-      ', sumando las de los dos. Por cada jornada en la casa del otro, ', `${A} cobra S/ ${a} y ${B} cobra S/ ${b}`,
-      `. Al hacer cuentas, lo que ${A} le debía a ${B} era justo lo que ${B} le debía a ${A}.`];
+    // Un color por incógnita (las tres que se ven en las balanzas); los datos T y H son pesas, en tinta.
+    const variables = { x: { nombre: 'lo que se pide', color: 'd' }, r: { nombre: `jornadas de ${A} en la casa de ${B}`, color: 'h' },
+      j: { nombre: `jornadas de ${B} en la casa de ${A}`, color: 'o' } };
+    // Las incógnitas se nombran en el enunciado con su color: son las cajas de las balanzas.
+    const enunciado = [`${A} trabajó ${T} jornadas: `, v('x', 'x'), ' en su casa y ', v('r', 'r'), ` en la de ${B}. En casa de ${A} hubo ${H}: `,
+      v('x', 'x'), ' suyas y ', v('j', 'j'), ` de ${B}. Por jornada ajena, ${A} cobra S/ ${a} y ${B}, S/ ${b}; quedaron a mano.`];
     const D = T - H, ra = b / g, ja = a / g;
     const solucion = [
-      [`Llama r a las jornadas de ${A} en la casa de ${B}, j a las de ${B} en la casa de ${A}, y x a las de ${A} en su propia casa.`],
-      [`${A} trabajó en total x + r = `, v('T', String(T)), `; en la casa de ${A} se trabajó x + j = `, v('H', String(H)), '. Restando: r − j = ', `${T} − ${H} = ${ent(D)}.`],
+      ['Llama ', v('r', 'r'), ` a las jornadas de ${A} en la casa de ${B}, `, v('j', 'j'), ` a las de ${B} en la casa de ${A}, y x a las de ${A} en su propia casa.`],
+      [`${A} trabajó en total x + r = ${T}; en la casa de ${A} se trabajó x + j = ${H}. Restando: r − j = `, `${T} − ${H} = ${ent(D)}.`],
       [`Deudas iguales: ${A} le debe a ${B} ${b}·j y ${B} le debe a ${A} ${a}·r. Entonces `, `${a}·r = ${b}·j, o sea r/j = ${ra}/${ja}: r = ${ra}k y j = ${ja}k.`],
       [`r − j = ${ra}k − ${ja}k = ${poli([[ra - ja, 'k']])} = ${ent(D)}, así que k = ${t}: r = ${r} y j = ${j}.`],
     ];
     let correcta, errores, pregunta;
     if (sub === 'propia') {
       correcta = x;
-      pregunta = ['¿Cuántas ', v('x', `jornadas trabajó ${A} en su propia casa`), '?'];
+      pregunta = ['¿Cuánto vale ', v('x', 'x'), '?'];
       solucion.push([`x = ${T} − ${r} = `, v('x', `${x} jornadas`), ` (comprueba: x + j = ${x} + ${j} = ${H}).`]);
       const r1 = b * H / a, r2 = a * T / b;
       errores = [
-        h('trabajo-sin-casa-propia', T - r1, `Tomaste las ${H} jornadas de la casa de ${A} como si todas fueran de ${B}. En esa casa también trabajó ${A}: esas ${H} jornadas son las de ${A} más las de ${B}.`),
-        h('trabajo-sin-casa-propia', H - r2, `Tomaste las ${T} jornadas de ${A} como si todas fueran en la casa de ${B}. ${A} también trabajó en su casa: sus ${T} jornadas se reparten entre las dos casas.`),
-        h('responde-otra-cantidad', r, `Esas son las jornadas de ${A} en la casa de ${B}. Se pregunta por las que trabajó en su propia casa.`),
-        h('responde-otra-cantidad', j, `Esas son las jornadas de ${B} en la casa de ${A}. Se pregunta por las de ${A} en su propia casa.`),
+        h('trabajo-sin-casa-propia', T - r1, `Las ${H} jornadas de la casa de ${A} no son todas de ${B}: ahí también trabajó ${A}.`),
+        h('trabajo-sin-casa-propia', H - r2, `Las ${T} jornadas de ${A} no son todas en la casa de ${B}: también trabajó en la suya.`),
+        h('responde-otra-cantidad', r, `Esas son las jornadas de ${A} en la casa de ${B}, no en la suya.`),
+        h('responde-otra-cantidad', j, `Esas son las jornadas de ${B} en la casa de ${A}, no las de ${A}.`),
       ];
     } else {
       correcta = b * j;
-      pregunta = ['¿Cuánto ', v('x', `le debía ${A} a ${B}`), ', en soles, antes de cancelar las cuentas?'];
+      pregunta = ['¿Cuántos soles ', v('x', `le debía ${A} a ${B}`), '?'];
       solucion.push([`${A} le debía a ${B} sus ${j} jornadas a S/ ${b}: ${b} · ${j} = `, v('x', `S/ ${b * j}`), ` (lo mismo que ${a} · ${r}).`]);
       errores = [
-        h('tarifa-cruzada', a * j, `Multiplicaste las jornadas de ${B} por la tarifa de ${A}. Cada jornada se paga con la tarifa de quien la trabaja: ${B} cobra S/ ${b}.`),
-        h('tarifa-cruzada', b * r, `Multiplicaste las jornadas de ${A} en la casa de ${B} por la tarifa de ${B}. Lo que ${A} debe son las jornadas de ${B} en su casa, a la tarifa de ${B}.`),
-        h('trabajo-sin-casa-propia', b * H, `Tomaste las ${H} jornadas de la casa de ${A} como si todas fueran de ${B}. En esa casa también trabajó ${A}, y esas jornadas no se le pagan a nadie.`),
+        h('tarifa-cruzada', a * j, `Cada jornada se paga con la tarifa de quien la trabaja: ${B} cobra S/ ${b}.`),
+        h('tarifa-cruzada', b * r, `${A} debe las jornadas de ${B} en su casa, no las suyas en la casa de ${B}.`),
+        h('trabajo-sin-casa-propia', b * H, `Las ${H} jornadas de la casa de ${A} no son todas de ${B}: ahí también trabajó ${A}.`),
         h('suma-de-deudas', 2 * b * j, `Sumaste las dos deudas. Se pregunta solo lo que ${A} le debía a ${B}.`),
       ];
     }
-    return cerrar(rng, semilla, { correcta, errores, enteros: true, texto: sub === 'pago' ? (y => `S/ ${f(y)}`) : (y => `${f(y)} ${y === 1 ? 'jornada' : 'jornadas'}`),
+    const p = cerrar(rng, semilla, { correcta, errores, enteros: true, texto: sub === 'pago' ? (y => `S/ ${f(y)}`) : (y => `${f(y)} ${y === 1 ? 'jornada' : 'jornadas'}`),
       unidad: sub === 'pago' ? 'soles' : 'jornadas', variables, enunciado, pregunta, solucion, datos: { tipo: 'trabajo', sub, a, b, T, H } });
+    return p && sub === 'propia' ? Object.assign(p, escenaTrabajo({ A, B, a, b, g, T, H, x, r, j }, p.alternativas)) : p;
+  }
+
+  /*
+   * Escena viva (docs/escena-viva.md): el sistema como tres balanzas en equilibrio con las incógnitas x, r y j
+   * (pieza «balanza»). Se juntan las balanzas 1 y 2 cruzadas, se quita lo mismo de los dos lados (queda r − j),
+   * la balanza 3 (deudas iguales, con la razón de las tarifas) fija r y j, y al final se despeja x. Solo el subtipo
+   * «propia»: lo que se pide es una cantidad de jornadas, que la balanza puede pesar. Los demás tipos de este
+   * generador siguen con el formato de siempre.
+   */
+  const ROT_TRABAJO = { 'trabajo-sin-casa-propia': 'sin la casa propia', 'responde-otra-cantidad': 'otra cantidad' };
+  function escenaTrabajo({ A, B, a, b, g, T, H, x, r, j }, alternativas) {
+    const D = T - H;
+    if (D === 0) return {};
+    const ra = a / g, rb = b / g;                  // ra·r = rb·j (deudas iguales, con la razón de las tarifas)
+    const pesos = { x, r, j }, colores = { x: 'd', r: 'h', j: 'o' };
+    const b1 = { izq: { x: 1, r: 1 }, der: { pesa: T }, estado: 'equilibrio' };
+    const b2 = { izq: { x: 1, j: 1 }, der: { pesa: H }, estado: 'equilibrio' };
+    const b3 = { izq: { r: ra }, der: { j: rb }, estado: 'equilibrio' };
+    const vJunta = { izq: { x: 1, r: 1, pesa: H }, der: { x: 1, j: 1, pesa: T } };
+    const vQuita = D > 0
+      ? { izq: { r: 1 }, der: { j: 1, pesa: D }, quita: { izq: { x: 1, pesa: H }, der: { x: 1, pesa: H } }, rotulo: [{ t: `r − j = ${D}`, c: 'h' }] }
+      : { izq: { r: 1, pesa: -D }, der: { j: 1 }, quita: { izq: { x: 1, pesa: T }, der: { x: 1, pesa: T } }, rotulo: [{ t: `j − r = ${-D}`, c: 'o' }] };
+    const vFin = { izq: { x: 1 }, der: { pesa: x }, quita: { izq: { r: 1 }, der: { pesa: r } }, rotulo: [{ t: `x = ${x} jornadas`, c: 'd' }] };
+    const r3 = { 2: [{ t: `r = ${r}`, c: 'h' }, '  ', { t: `j = ${j}`, c: 'o' }] };
+    const pasos = [
+      { estado: { vista: 0, usa: [0, 1], nuevo: ['t'] }, texto: ['Se juntan las balanzas 1 y 2, cruzadas.'],
+        ecuacion: [v('x', 'x'), ' + ', v('r', 'r'), ` + ${H} = `, v('x', 'x'), ' + ', v('j', 'j'), ` + ${T}`] },
+      { estado: { vista: 1, nuevo: ['t'] }, texto: ['Se quita lo mismo de los dos lados.'],
+        ecuacion: [v('r', 'r'), ' − ', v('j', 'j'), ` = ${T} − ${H} = ${D}`] },
+      { estado: { vista: 1, usa: [2], rastros: r3, nuevo: ['r2'] }, texto: ['Deudas iguales: r y j van en la razón de las tarifas.'],
+        ecuacion: [`${ra}`, v('r', 'r'), ` = ${rb}`, v('j', 'j'), ' → ', v('r', `r = ${r}`), ', ', v('j', `j = ${j}`)] },
+      { estado: { vista: 2, usa: [0], rastros: r3, final: true, nuevo: ['t'] }, texto: ['En la balanza 1 se quitan las r jornadas.'],
+        ecuacion: [v('x', 'x'), ` = ${T} − ${r} = `, v('x', `${x}`)] },
+    ];
+    const fantasmas = {};
+    // Dos errores comparten id (la medición los cuenta juntos): sin fantasma, porque un id no puede dibujar dos valores.
+    const veces = id => alternativas.filter(z => z.error && z.error.id === id).length;
+    for (const al of alternativas) if (al.error && veces(al.error.id) === 1) fantasmas[al.error.id] = { der: { pesa: al.valor }, rotulo: `${ROT_TRABAJO[al.error.id] || 'otra cuenta'}: ${al.texto}` };
+    return {
+      escena: { pieza: 'balanza', datos: { unidad: '', colores, incognitas: ['x', 'r', 'j'], pesos, balanzas: [b1, b2, b3], trabajo: [vJunta, vQuita, vFin] },
+        alt: `Tres balanzas en equilibrio: x + r contra ${T}; x + j contra ${H}; ${ra} r contra ${rb} j. x: jornadas de ${A} en su casa; r: de ${A} en la casa de ${B}; j: de ${B} en la casa de ${A}` },
+      pasos, fantasmas,
+    };
   }
 
   // ======================= enteros: dos ecuaciones, tres incógnitas enteras positivas =======================
