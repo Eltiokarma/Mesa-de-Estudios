@@ -112,3 +112,32 @@ El rediseño (`docs/escena-viva.md`) va a necesitar además, cada uno con su pro
 - **Íconos de la app:** 192, 512 y la versión *maskable*, si cambia la mascota.
 
 Para todos: solo los colores de marca y de la cáscara (`docs/diseno.md`), nunca los de las variables; SVG propio y liviano; nada copiado de manuales ni de bancos de imágenes (regla 5).
+
+## 9. MRU y MRUV: el carrito (primer objeto de utilería)
+
+14 de noviembre de 2026. Es el único objeto dibujado de la unidad (`docs/pogil-v2-rive.md`, sección 7.5). Mientras llega, la versión A usa un **carrito provisional** hecho con el trazo del kit: rectángulo, dos ruedas y nada más. Sirve para la lógica, no es arte final. Lo demás de la unidad lo dibuja el kit: pista, marcas de cada segundo, regla, gráficas, pelota y flechas de aceleración.
+
+**Para qué sirve.** El alumno lo empuja con el dedo y lo ve avanzar, acelerar y frenar. Si se quita, se pierde lo que se empuja: la marca de la pista sigue, pero no hay de qué es la marca.
+
+**Qué recibe del motor** (nunca lo decide el dibujo): la posición x, la velocidad v y la aceleración a en cada cuadro. Con eso la página gira las ruedas (ángulo = x / radio) y cabecea el cuerpo según a.
+
+| Pieza | Qué es | Cómo se mueve | Nombre del grupo en el SVG |
+| --- | --- | --- | --- |
+| Cuerpo | Carrito de juguete visto de costado, mirando a la derecha. Sin conductor ni texto | Cabecea: se inclina hasta 4° hacia adelante al frenar y hacia atrás al acelerar, con el pivote entre las dos ruedas | `cuerpo` |
+| Rueda delantera | Círculo con un rayo o una marca que deje ver que gira | Gira sobre su centro | `rueda-del` |
+| Rueda trasera | Igual a la delantera | Gira sobre su centro | `rueda-tras` |
+| Punto de apoyo | Marca invisible en el piso, al centro del carrito | No se mueve: es la posición x del motor. La prueba de fidelidad exige que coincida con la regla dentro de 1 px | `apoyo` |
+
+**Dos variantes, A y B,** para la parte de los dos carritos. Se distinguen por la **forma** (por ejemplo, uno con techo redondo y otro con alerón) y por un tono propio. Las dos tienen el mismo tamaño y las mismas piezas.
+
+**Tamaño y paleta.**
+- En pantalla mide unos 56 × 32 px a 360 px de ancho, porque en la pista tienen que caber seis marcas. Se tiene que reconocer a 40 px.
+- Lienzo de 112 × 64 unidades, con las ruedas tocando la línea y = 60. Los centros de las ruedas van en x = 26 y x = 86, con radio 10.
+- Paleta propia de 3 o 4 colores. **Nunca los colores de las variables:** naranja `--c-o`, turquesa `--c-i`, rojo `--c-h`, verde `--c-d` y morado `--c-f`. En la escena, x, v y a van en esos colores y el carrito no puede confundirse con una variable.
+- Contorno ciruela `#3b2a52`, como la mascota, de unos 2,5 px a tamaño real.
+
+**Reglas.**
+- SVG propio, sin degradados, filtros ni texto, con menos de 4 KB por variante.
+- Los cuatro grupos van separados, con esos `id`, para que la página los mueva sin tocar el dibujo.
+- La silueta se entiende sola, en un color.
+- Va en `app/utileria/carrito-a.svg` y `app/utileria/carrito-b.svg`. Después, si la versión B lo pide, en Rive con entradas `x`, `v` y `a` (sección 0 de la auditoría).
