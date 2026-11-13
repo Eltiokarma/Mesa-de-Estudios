@@ -65,7 +65,13 @@ Rama `claude/hopeful-planck-h4701c` (no está en `main` todavía; sw v160). Se h
 
 **Página del curso (13 nov, en `main`).**
 - La página del curso y la de la unidad están rediseñadas (`docs/diseno.md`, «Página del curso y de la unidad»).
-- Tienen dibujo las 38 unidades de trigonometría y aritmética; faltan 114, en los otros seis cursos.
+- Las 152 unidades de los 8 cursos tienen su dibujo (`app/dibujos/`; la prueba de `app/app.test.js` exige uno por unidad).
+- **Dibujos que quedaron flojos**, para revisar con alumnos:
+  - en geometría, seis unidades son triángulos que se distinguen por un detalle, que a 64 px pierde fuerza;
+  - en razonamiento matemático, trazos, tablas y gráficos, y recreativos;
+  - en química, la tabla periódica y electroquímica a 64 px;
+  - en álgebra se parecen cuadráticas, polinomiales y polinomios, y también exponentes y factorización.
+  - **Nadie de afuera los miró todavía:** probar con alumnos «¿de qué trata esta unidad?».
 - **Pendiente para el servidor:** una ruta para que el profesor lea las preguntas de su sección (por ejemplo `GET /api/secciones/<id>/preguntas`, filtrando `tipo == 'pregunta'`) y su vista en el panel. Hoy solo salen en la descarga de eventos.
 - **Exámenes:** las unidades sin generador muestran un estado vacío. Son las 18 de verbal y 21 de los demás cursos.
 
