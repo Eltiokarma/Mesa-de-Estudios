@@ -749,16 +749,16 @@ const P2 = { id:'atomo-paso5', unidad:U_TABLA, ok:'b', opts:[
   ['c', 'No se unen: el sodio solo pierde electrones, nunca los gana.', 'solo-pierde-electrones', RES('documentado', 'Tan y otros 2005, ítem 1, A1: 4,8 %')],
   ['d', 'Se unen, pero el átomo de Na es menos estable que el ion suelto.', 'TP1-ion-mas-estable', RES('parcial', 'Tan y otros 2005, ítem 3: 64 %, otra pregunta')]],
   fb:{ b:`¡Bien! El núcleo del Na⁺ tiene ${Z_('11 protones')} y solo ${e_(NAp.electrones + ' electrones')}: atrae al electrón libre. Al unirse se liberan ${EI_(NA.valores[0] + ' kJ/mol')}, lo mismo que cuesta quitárselo (la primera energía de ionización). El átomo neutro es el que tiene menos energía.`,
-    a:`El octeto no hace que el Na⁺ rechace al electrón: su núcleo tiene un protón más que sus electrones y lo atrae. En ${ESTUDIO_SG}, cerca del 44 % eligió esta idea.`,
-    c:`«El sodio pierde electrones» describe lo que suele pasar en sus reacciones, no una regla: un Na⁺ atrae a cualquier electrón libre. En ${ESTUDIO_SG}, cerca del 5 % eligió esta idea.`,
-    d:`Si el ion suelto fuera más estable, no se liberaría energía al unirse, y se liberan ${NA.valores[0]} kJ/mol: para separarlos hay que dar esa energía. En ${ESTUDIO_SG}, cerca del 64 % dijo que el Na⁺ con su electrón suelto es «más estable» que el átomo, por tener octeto; la pregunta era parecida, no esta.` } };
+    a:`El octeto no hace que el Na⁺ rechace al electrón: su núcleo tiene un protón más que sus electrones y lo atrae.`,
+    c:`«El sodio pierde electrones» describe lo que suele pasar en sus reacciones, no una regla: un Na⁺ atrae a cualquier electrón libre.`,
+    d:`Si el ion suelto fuera más estable, no se liberaría energía al unirse, y se liberan ${NA.valores[0]} kJ/mol: para separarlos hay que dar esa energía.` } };
 const P3 = { id:'atomo-paso6', unidad:U_TABLA, ok:'a', opts:[
   ['a', 'El segundo sale del nivel 2: está más cerca del núcleo y menos tapado.'],
   ['b', 'Los 11 protones reparten su atracción entre 10 electrones: a cada uno le toca más.', 'TP4-reparte-atraccion', RES('documentado', 'Tan y otros 2005, ítem 4: 18 %')],
   ['c', 'Se rompe el octeto del Na⁺, y un octeto es estable por sí solo, sin importar el nivel.', 'TP3-rompe-octeto', RES('parcial', 'Tan y otros 2005, ítem 4: 16 % "rompe el octeto"; variante nuestra')],
   ['d', 'El segundo sale de un nivel más lejano, y cuesta más llevarlo hasta afuera.', 'segundo-mas-lejos', RES('hipotesis', 'hipótesis nuestra')]],
   fb:{ a:`¡Bien! El primer electrón sale del nivel 3, el de afuera. El segundo ya sale del nivel 2: más cerca del núcleo y con menos electrones entre él y el núcleo que lo tapen (apantallen). Mira las barras: el gran salto llega justo al cambiar de nivel.`,
-    b:`La atracción no se reparte: cada electrón siente la carga del núcleo según su distancia y lo que lo tapa. Si se repartiera, la segunda costaría solo unos ${fmt(REP, 0)} kJ/mol (${NA.valores[0]} × 11/10), no ${fmt(NA.valores[1], 0)}: mira la barra punteada del recuadro ampliado. En ${ESTUDIO_SG}, cerca del 18 % explicó la segunda ionización así.`,
+    b:`La atracción no se reparte: cada electrón siente la carga del núcleo según su distancia y lo que lo tapa. Si se repartiera, la segunda costaría solo unos ${fmt(REP, 0)} kJ/mol (${NA.valores[0]} × 11/10), no ${fmt(NA.valores[1], 0)}: mira la barra punteada del recuadro ampliado.`,
     c:`Lo que hace caro quitar el segundo electrón es dónde está: en el nivel 2, mucho más cerca del núcleo y casi sin electrones que lo tapen. «Rompe el octeto» describe la configuración, pero no explica el costo: el que pesa es el nivel.`,
     d:`Es al revés: el segundo electrón está en el nivel 2, más cerca del núcleo que el primero (nivel 3).` } };
 const P4 = { id:'atomo-paso7', unidad:U_TABLA, ok:'c', opts:[
@@ -766,10 +766,10 @@ const P4 = { id:'atomo-paso7', unidad:U_TABLA, ok:'c', opts:[
   ['b', 'Sus electrones 3p están más lejos del núcleo que los del P.', 'TP7-mas-lejos', RES('documentado', 'Tan y otros 2005, ítem 9, A2: 3,9 %')],
   ['c', 'Comparte orbital con otro electrón, y la repulsión entre los dos lo empuja.'],
   ['d', 'El núcleo reparte su atracción entre más electrones que en el P.', 'TP4-reparte-entre-mas', RES('parcial', 'Tan y otros 2005, ítem 2: 50 %, otra pregunta')]],
-  fb:{ c:`¡Bien! El S tiene cuatro electrones 3p: tres solos en su caja y el cuarto apareado con otro. Es el primero que comparte orbital, y la repulsión entre los dos pesa más que el protón extra. Mira las cajas: el que sale está marcado. En ${ESTUDIO_SG}, solo cerca del 32 % dio esta razón.`,
-    a:`La subcapa semillena es la del P (3p³), no la del S (3p⁴). Y lo especial de una subcapa semillena es justamente que no tiene electrones apareados: en el S aparece el primer par. En ${ESTUDIO_SG}, cerca del 20 % explicó esta bajada con «el 3p del P está semilleno y es estable»: acierta el orden, pero no dice qué pasa en el S.`,
-    b:`Los dos electrones que salen están en la misma subcapa, la 3p, y el S es incluso un poco más pequeño que el P. En ${ESTUDIO_SG}, cerca del 4 % eligió una razón así.`,
-    d:`La atracción del núcleo no se reparte: con un protón más, el núcleo del S atrae más a cada electrón. En ${ESTUDIO_SG}, cerca de la mitad usó esta idea del reparto en otra pregunta, la del Na⁺.` } };
+  fb:{ c:`¡Bien! El S tiene cuatro electrones 3p: tres solos en su caja y el cuarto apareado con otro. Es el primero que comparte orbital, y la repulsión entre los dos pesa más que el protón extra. Mira las cajas: el que sale está marcado.`,
+    a:`La subcapa semillena es la del P (3p³), no la del S (3p⁴). Y lo especial de una subcapa semillena es justamente que no tiene electrones apareados: en el S aparece el primer par. «El 3p del P está semilleno» acierta el orden, pero no dice qué pasa en el S.`,
+    b:`Los dos electrones que salen están en la misma subcapa, la 3p, y el S es incluso un poco más pequeño que el P.`,
+    d:`La atracción del núcleo no se reparte: con un protón más, el núcleo del S atrae más a cada electrón.` } };
 
 // ----- Vistas -----
 const rotFe = r => r ? [[['⁵⁶Fe³⁺', 'ink', 800]], [[`${FE.protones} protones`, 'Z', 800], [' · ', 'muted'], [`${FE.neutrones} neutrones`, 'N', 800], [' · ', 'muted'], [`${FE.electrones} electrones`, 'e', 800]]]
@@ -1033,7 +1033,7 @@ const EXPS = [
           ['c', 'El Mg: el átomo de Al es más grande y su electrón queda más lejos del núcleo.', 'TP7-Al-mas-grande', RES('parcial', 'Tan y otros 2005, ítem 6: 48 % "el 3p está más lejos"; variante nuestra')],
           ['d', 'Iguales: los dos pierden un electrón del nivel 3, a la misma distancia.', 'misma-capa-iguales', RES('hipotesis', 'hipótesis nuestra')]],
     fb:{ a:'Un protón más sí atrae más, pero hay otro factor que pesa más: el electrón que sale del Al es el primero de una subcapa nueva, la 3p, de más energía y tapada por los dos electrones 3s. ',
-      c:`El átomo de Al es más pequeño que el de Mg (${MA.propiedad('Al', 'radio')} contra ${MA.propiedad('Mg', 'radio')} pm en radios calculados): avanza el período y el núcleo atrae más. En un estudio con 979 escolares de Singapur, cerca del 48 % explicó esta diferencia con «el 3p está más lejos»; esta opción es una variante nuestra de esa idea.`,
+      c:`El átomo de Al es más pequeño que el de Mg (${MA.propiedad('Al', 'radio')} contra ${MA.propiedad('Mg', 'radio')} pm en radios calculados): avanza el período y el núcleo atrae más.`,
       d:'Los dos salen del nivel 3, pero no de la misma subcapa: del Mg sale un 3s y del Al, un 3p.' },
     antes:() => ({ paneles:['atomos', 'tabla'], atomos:{ items:[{ Z:12, carga:0, rot:rotSp('Mg') }, { Z:13, carga:0, rot:rotSp('Al') }] }, tabla:{ prop:null, marcar:[12, 13] },
       pie:'Los dos átomos van del mismo tamaño hasta que respondas.', vars:['Z', 'e', 'n'], desc:'Magnesio y aluminio, del mismo tamaño en el dibujo, y su lugar en la tabla.' }),
@@ -1078,13 +1078,13 @@ const EXPS = [
           ['b', ISO.map(esp).join(' = '), 'mismos-electrones-mismo-tamano', RES('hipotesis', 'tabla de lo que no tiene respaldo')],
           ['c', ord(ORD.orden)],
           ['d', ord(ORD.errores['ordena-como-atomos']), 'ordena-como-atomos', RES('hipotesis', 'hipótesis nuestra')]],
-    fb:{ a:'Es al revés: con los mismos 10 electrones, el que tiene más protones los atrae más y queda más pequeño. «Más protones, más grande» está en nuestra lista de errores sin estudio que los mida.',
+    fb:{ a:'Los protones sí deciden el tamaño, pero al revés: con los mismos 10 electrones, el que tiene más protones los atrae más y queda más pequeño.',
       b:'Tener los mismos electrones no da el mismo tamaño: el núcleo de cada uno tiene distinta carga, y el que tiene más protones aprieta más su nube.',
       d:'Ese es el orden de los átomos neutros (el Na y el Mg son grandes porque tienen un nivel más). Los iones ya no tienen ese nivel: los cuatro tienen dos niveles, y manda la carga del núcleo.' },
     antes:() => ({ paneles:['atomos'], atomos:{ items:ISO.map(s => ({ ...MA.especie(s), rot:rotSp(s) })) },
       pie:'Los cuatro van del mismo tamaño hasta que respondas.', vars:['Z', 'e', 'n'], desc:'Cuatro iones de 10 electrones, del mismo tamaño en el dibujo.' }),
     despues:p => ({ paneles:['atomos'], atomos:{ items:ISO.map((s, i) => ({ ...MA.especie(s), escala:mezcla(1, ESC_ISO.escalas[i], p), rot:rotSp(s, [[`${fmt(ESC_ISO.pm[i], 1)} pm`, 'r', 800]]) })) },
-      pie:'A escala con los radios iónicos de Shannon (1976). Mismos electrones: más protones, más pequeño.', vars:['Z', 'e', 'n', 'r'],
+      pie:'A escala con radios iónicos medidos. Mismos electrones: más protones, más pequeño.', vars:['Z', 'e', 'n', 'r'],
       desc:`De mayor a menor: ${ORD.orden.join(', ')}. Radios ${ESC_ISO.pm.join(', ')} picómetros.` }),
     anima:true,
     exp:() => `<div class="eqs"><div class="eq"><span class="ex">${ORD.orden.map((s, i) => `${esp(s)} (${Z_(MA.especie(s).Z + '+')}): ${r_(fmt(ESC_ISO.pm[i], 1) + ' pm')}`).join(' &nbsp;>&nbsp; ')}</span>

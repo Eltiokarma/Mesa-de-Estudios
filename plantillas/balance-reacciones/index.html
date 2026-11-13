@@ -780,7 +780,7 @@ const P4 = { id:'balance-paso7', ok:'b', opts:[
   fb:{ b:'¡Bien! El Zn pasa de 0 a +2: pierde 2 electrones, se oxida y es el agente reductor. El cobre pasa de +2 a 0: gana esos 2 electrones, se reduce, y el CuCl₂ que lo trae es el agente oxidante. Mira las fichas.',
     a:'El Zn sí se oxida, pero por eso es el agente reductor: el agente oxidante es el que oxida al otro, y para eso se reduce él. ',
     c:'Oxidarse es perder electrones y reducirse es ganarlos. El Cu gana 2 electrones: se reduce. ',
-    d:'Oxidar no es ganar oxígeno: es perder electrones. Aquí no hay oxígeno y el Zn igual pasa de 0 a +2. Un estudio con 59 escolares turcos de 11.º grado, después de la enseñanza, encontró que cerca del 12 % sostenía que oxidar es agregar oxígeno (Şen y otros, 2016).' } };
+    d:'Oxidar no es ganar oxígeno: es perder electrones. Aquí no hay oxígeno y el Zn igual pasa de 0 a +2.' } };
 const P5 = { id:'balance-paso8', ok:'c', opts:[
   ['a', `${E_(SEMI.errores.numeroOxidacion + ' e⁻')} a la izquierda: el Mn tiene +7`, 'redox-electrones-numero-de-oxidacion', 'hipotesis'],
   ['b', `${E_(SEMI.electrones + ' e⁻')} a la derecha: el Mn pierde 5`, 'redox-electrones-lado-equivocado', 'hipotesis'],
@@ -991,7 +991,7 @@ const EXPS = [
     ok:'c',
     fb:{ a:`El gas sí pesa: en el frasco cerrado el H₂ se queda adentro y la balanza sigue en ${fmt2(CONS.cerrado)} g. `,
       b:`La masa se conserva, pero hay que contarla toda: en el frasco abierto el H₂ sale al aire y la balanza ya no lo pesa. Marca ${fmt2(CONS.masaGas)} g menos.`,
-      d:'Ningún átomo nuevo entra al frasco: el gas se forma con los átomos que ya estaban. La masa no sube. La idea contraria a la conservación está documentada (ES13), pero esta forma de verla no tiene un dato propio.' },
+      d:'Ningún átomo nuevo entra al frasco: el gas se forma con los átomos que ya estaban. La masa no sube.' },
     antes:() => ({ tipo:'conserv', r:CONS, fase:'antes' }), despues:p => ({ tipo:'conserv', r:CONS, fase:'despues', p }), anima:true,
     exp:() => `<div class="eqs"><div class="eq"><span class="ex">${EQ('Zn + 2HCl -> ZnCl2 + H2')}</span></div>
       <div class="eq"><span class="ex">0,65 g de ${Fh('Zn')} = 0,01 mol &nbsp;→&nbsp; 0,01 mol de ${Fh('H2')} = ${fmt2(CONS.masaGas)} g</span><span class="note">La masa del gas sale de la ecuación balanceada: 1 Zn da 1 H₂. Es la diferencia entre las dos balanzas.</span></div></div>

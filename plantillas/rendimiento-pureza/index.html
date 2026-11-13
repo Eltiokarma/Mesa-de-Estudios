@@ -522,7 +522,6 @@ const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => (
 const otraVez = `<button type="button" class="btn" data-repetir>Ver de nuevo</button>`;
 // La fuente queda escrita aquí para quien lea el código; la medición guarda solo la categoría.
 const RES = (cat, fuente) => cat;
-const HIPO = '';
 // Respuestas de «¿Qué pasa si…?»: la misma variable que abre los experimentos en orden. El explorador del paso 7 la lee
 // para no regalar ninguna respuesta de un experimento que aún no se respondió.
 const PRED_EXP = {};
@@ -611,18 +610,18 @@ const P0 = { id:'rendimiento-paso2', ok:'c', opts:[
   ['c', `${g(FE.real)} g: 160 g de Fe₂O₃ darían ${g(FE.teorico)} g de hierro, y el 90 % de ${g(FE.teorico)} g es ${g(FE.real)} g.`],
   ['d', `${g(FEe['suma-porcentajes'])} g: 80 % y 90 % dejan 70 % útil (80 + 90 − 100), y 140 g de Fe₂O₃ dan ${g(FEe['suma-porcentajes'])} g de hierro.`, 'suma-porcentajes', RES('hipotesis', 'tabla de lo que no tiene respaldo: pureza y rendimiento sumados')]],
   fb:{ c:`¡Bien! Primero la pureza: el 80 % de 200 g es ${Pu_('160 g de Fe₂O₃')} puro; los otros ${Im_('40 g')} son roca. Con la ecuación salen ${Te_(g(FE.teorico) + ' g de hierro teóricos')}, y el 90 % de rendimiento deja ${Re_(g(FE.real) + ' g reales')}.`,
-    a:`Los 200 g son de mineral, no de Fe₂O₃: solo el 80 %, ${Pu_('160 g')}, es Fe₂O₃; los otros ${Im_('40 g')} son roca y no dan hierro. Con 160 g salen ${Te_(g(FE.teorico) + ' g')} teóricos y ${Re_(g(FE.real) + ' g')} reales. ${HIPO}`,
-    b:`${Te_(g(FE.teorico) + ' g')} es el máximo que da la ecuación: el teórico. Con 90 % de rendimiento se obtiene solo el 90 % de eso: ${Re_(g(FE.real) + ' g')}. ${HIPO}`,
-    d:`Los porcentajes no se suman ni se restan: se aplican uno después del otro. El 80 % de 200 g da ${Pu_('160 g')} puros, que dan ${Te_(g(FE.teorico) + ' g')}, y el 90 % de eso es ${Re_(g(FE.real) + ' g')}. En una sola cuenta, 0,80 × 0,90 = 0,72, no 0,70. ${HIPO}` } };
+    a:`Los 200 g son de mineral, no de Fe₂O₃: solo el 80 %, ${Pu_('160 g')}, es Fe₂O₃; los otros ${Im_('40 g')} son roca y no dan hierro. Con 160 g salen ${Te_(g(FE.teorico) + ' g')} teóricos y ${Re_(g(FE.real) + ' g')} reales.`,
+    b:`${Te_(g(FE.teorico) + ' g')} es el máximo que da la ecuación: el teórico. Con 90 % de rendimiento se obtiene solo el 90 % de eso: ${Re_(g(FE.real) + ' g')}.`,
+    d:`Los porcentajes no se suman ni se restan: se aplican uno después del otro. El 80 % de 200 g da ${Pu_('160 g')} puros, que dan ${Te_(g(FE.teorico) + ' g')}, y el 90 % de eso es ${Re_(g(FE.real) + ' g')}. En una sola cuenta, 0,80 × 0,90 = 0,72, no 0,70.` } };
 const P1 = { id:'rendimiento-paso4', ok:'b', opts:[
   ['a', `${pct0(CALe['sobre-reactivo'])}: de los 50 g de CaCO₃, solo 21 g terminaron convertidos en CaO.`, 'sobre-reactivo', RES('hipotesis', 'tabla de lo que no tiene respaldo: rendimiento aplicado al reactivo')],
   ['b', `${pct0(CAL.porcentaje)}: con 50 g de CaCO₃ se podían formar ${g(CAL.teorico)} g de CaO, y se formaron 21 g.`],
   ['c', `${pct0(CALe['lo-que-falta'])}: de los ${g(CAL.teorico)} g de CaO que se podían formar, faltaron ${g(CAL.noFormado)} g.`, 'lo-que-falta', RES('hipotesis', 'hipótesis nuestra')],
   ['d', `${pct0(CALe['otro-producto'])}: con 50 g de CaCO₃ se podían formar ${g(CO2t)} g de CO₂, y se obtuvieron 21 g de CaO.`, 'otro-producto', RES('hipotesis', 'hipótesis nuestra')]],
   fb:{ b:`¡Bien! El rendimiento compara el ${Re_('producto real')} con el ${Te_('teórico')} del mismo producto: 21 ÷ ${g(CAL.teorico)} × 100 = ${pct0(CAL.porcentaje)}.`,
-    a:`21 ÷ 50 compara el CaO con el CaCO₃, dos sustancias distintas. Aunque todo el CaCO₃ reaccionara, nunca saldrían 50 g de CaO: el máximo es ${Te_(g(CAL.teorico) + ' g')}, porque parte de la masa se va como CO₂. Rendimiento = 21 ÷ ${g(CAL.teorico)} = ${pct0(CAL.porcentaje)}. ${HIPO}`,
-    c:`${pct0(CALe['lo-que-falta'])} es lo que no se formó. El rendimiento mide lo que sí se obtuvo: ${Re_('21 g')} de ${Te_(g(CAL.teorico) + ' g')}, ${pct0(CAL.porcentaje)}. ${HIPO}`,
-    d:`${g(CO2t)} g es el teórico del CO₂, el otro producto. Los 21 g son de CaO, y se comparan con el teórico del CaO: ${Te_(g(CAL.teorico) + ' g')}. ${HIPO}` } };
+    a:`21 ÷ 50 compara el CaO con el CaCO₃, dos sustancias distintas. Aunque todo el CaCO₃ reaccionara, nunca saldrían 50 g de CaO: el máximo es ${Te_(g(CAL.teorico) + ' g')}, porque parte de la masa se va como CO₂. Rendimiento = 21 ÷ ${g(CAL.teorico)} = ${pct0(CAL.porcentaje)}.`,
+    c:`${pct0(CALe['lo-que-falta'])} es lo que no se formó. El rendimiento mide lo que sí se obtuvo: ${Re_('21 g')} de ${Te_(g(CAL.teorico) + ' g')}, ${pct0(CAL.porcentaje)}.`,
+    d:`${g(CO2t)} g es el teórico del CO₂, el otro producto. Los 21 g son de CaO, y se comparan con el teórico del CaO: ${Te_(g(CAL.teorico) + ' g')}.` } };
 const fBal = (x, conTotal) => {
   const q = x.quedan.CaCO3, f = x.formados;
   return `${g(f.CaO)} g de CaO${q ? ', ' : ' y '}${g(f.CO2)} g de CO₂${q ? ` y ${g(q)} g de CaCO₃` : ''}, ${g(x.total)} g${conTotal ? ' en total' : ''}`;
@@ -642,9 +641,9 @@ const P3 = { id:'rendimiento-paso6', ok:'a', opts:[
   ['c', `${g(INVe['multiplica-pureza'])} g: ${g(INV.teorico)} g de CaO salen de ${g(INV.pura)} g de CaCO₃, y el 80 % de ${g(INV.pura)} g es ${g(INVe['multiplica-pureza'])} g.`, 'multiplica-pureza', RES('hipotesis', 'hipótesis nuestra')],
   ['d', `${g(INVe['multiplica-rendimiento'], 1)} g: el 75 % de 42 g es ${g(INV315)} g de CaO, que salen de ${g(INVpuro315)} g de CaCO₃ y ${g(INVe['multiplica-rendimiento'], 1)} g de caliza.`, 'multiplica-rendimiento', RES('hipotesis', 'tabla de lo que no tiene respaldo: dividir en vez de multiplicar, al revés')]],
   fb:{ a:`¡Bien! Al revés, se divide: si ${Re_('42 g')} son el 75 % del teórico, el ${Te_('teórico')} es 42 ÷ 0,75 = ${Te_(g(INV.teorico) + ' g')}. Salen de ${Pu_(g(INV.pura) + ' g de CaCO₃')}, y si eso es el 80 % de la caliza, la caliza pesa ${g(INV.pura)} ÷ 0,80 = ${g(INV.muestra)} g (${Im_(g(INV.impureza) + ' g')} de impureza).`,
-    b:`${Pu_(g(INV.pura) + ' g')} es el CaCO₃ puro. La caliza también trae impureza: si el CaCO₃ es el 80 %, la caliza pesa ${g(INV.pura)} ÷ 0,80 = ${g(INV.muestra)} g. ${HIPO}`,
-    c:`Hacia atrás se divide: la caliza tiene que pesar más que su CaCO₃, no menos. ${g(INV.pura)} ÷ 0,80 = ${g(INV.muestra)} g. Con 80 g de caliza solo habría 64 g de CaCO₃. ${HIPO}`,
-    d:`Multiplicar por el rendimiento sirve para ir del teórico al real. Aquí se va al revés, del real al teórico: 42 ÷ 0,75 = ${Te_(g(INV.teorico) + ' g')}, más que 42, porque el horno pierde una parte. ${HIPO}` } };
+    b:`${Pu_(g(INV.pura) + ' g')} es el CaCO₃ puro. La caliza también trae impureza: si el CaCO₃ es el 80 %, la caliza pesa ${g(INV.pura)} ÷ 0,80 = ${g(INV.muestra)} g.`,
+    c:`Hacia atrás se divide: la caliza tiene que pesar más que su CaCO₃, no menos. ${g(INV.pura)} ÷ 0,80 = ${g(INV.muestra)} g. Con 80 g de caliza solo habría 64 g de CaCO₃.`,
+    d:`Multiplicar por el rendimiento sirve para ir del teórico al real. Aquí se va al revés, del real al teórico: 42 ÷ 0,75 = ${Te_(g(INV.teorico) + ' g')}, más que 42, porque el horno pierde una parte.` } };
 
 // ----- Vistas -----
 const pieFe = 'La muestra es un solo montón: el Fe₂O₃ y la roca todavía no se separan. La caja del hierro se llena al responder.';
@@ -877,9 +876,9 @@ const EXPS = [
           ['b', `${pct0(CAD.total)}: 0,80 × 0,60 = 0,48`],
           ['c', `${pct0(CADe['el-menor'])}: el menor de 80 y 60 es 60`, 'el-menor', RES('hipotesis', 'hipótesis nuestra')],
           ['d', `${pct0(CADe['promedio'])}: (80 + 60) ÷ 2 = 70`, 'promedio', RES('hipotesis', 'hipótesis nuestra')]],
-    fb:{ a:`Restar puntos funciona solo si los dos porcentajes son del mismo total, y no lo son: el 60 % es de lo que salió del primer paso (80), no del máximo (100). El 60 % de 80 es ${g(CAD.total)}. ${HIPO}`,
-      c:`El paso que rinde menos no basta: el primero ya perdió el 20 %, y el segundo pierde el 40 % de lo que quedó. Juntos dejan ${pct0(CAD.total)}, menos que cualquiera de los dos. ${HIPO}`,
-      d:`El promedio no sigue a la masa: cada paso trabaja con lo que le deja el anterior. 0,80 × 0,60 = 0,48. ${HIPO}` },
+    fb:{ a:`Restar puntos funciona solo si los dos porcentajes son del mismo total, y no lo son: el 60 % es de lo que salió del primer paso (80), no del máximo (100). El 60 % de 80 es ${g(CAD.total)}.`,
+      c:`El paso que rinde menos no basta: el primero ya perdió el 20 %, y el segundo pierde el 40 % de lo que quedó. Juntos dejan ${pct0(CAD.total)}, menos que cualquiera de los dos.`,
+      d:`El promedio no sigue a la masa: cada paso trabaja con lo que le deja el anterior. 0,80 × 0,60 = 0,48.` },
     vista:(r, f) => { const t = r ? f : 0, fin = 80 - (80 - CAD.total)*t;
       return { paneles:[{ tipo:'barras', siempre:true, alto:44, max:100, filas:[
         { etq:[['lo que da la ecuación: ', 'ink', 700], ['100 %', 'teo', 800]], segs:[{ k:'teo', masa:100, punteado:true }] },
@@ -895,9 +894,9 @@ const EXPS = [
           ['b', `Dan lo mismo: en los dos casos un porcentaje sube a 100 y el otro no cambia.`, 'dan-lo-mismo', RES('hipotesis', 'hipótesis nuestra')],
           ['c', `El mineral puro: pasar de 80 a 100 multiplica por más que pasar de 90 a 100.`],
           ['d', `Depende de la masa: con más mineral, el horno al 100 % terminaría ganando.`, 'depende-de-la-masa', RES('hipotesis', 'hipótesis nuestra')]],
-    fb:{ a:`Los dos se multiplican en la misma cuenta: real = muestra × pureza × 0,7 × rendimiento. Da lo mismo dónde actúa cada uno; gana el que más crece. 80 → 100 es × ${g(MEJ.factorPureza)}; 90 → 100 es × ${g(MEJ.factorRendimiento)}. ${HIPO}`,
-      b:`Los dos llegan a 100, pero desde lugares distintos: la pureza sube de 80 a 100 (× ${g(MEJ.factorPureza)}) y el rendimiento de 90 a 100 (× ${g(MEJ.factorRendimiento)}). ${HIPO}`,
-      d:`Con más mineral crecen los dos casos en la misma proporción: si se duplica la muestra, se duplica el hierro en los dos. El que gana no cambia. ${HIPO}` },
+    fb:{ a:`Los dos se multiplican en la misma cuenta: real = muestra × pureza × 0,7 × rendimiento. Da lo mismo dónde actúa cada uno; gana el que más crece. 80 → 100 es × ${g(MEJ.factorPureza)}; 90 → 100 es × ${g(MEJ.factorRendimiento)}.`,
+      b:`Los dos llegan a 100, pero desde lugares distintos: la pureza sube de 80 a 100 (× ${g(MEJ.factorPureza)}) y el rendimiento de 90 a 100 (× ${g(MEJ.factorRendimiento)}).`,
+      d:`Con más mineral crecen los dos casos en la misma proporción: si se duplica la muestra, se duplica el hierro en los dos. El que gana no cambia.` },
     vista:(r, f) => { const t = r ? f : 0;
       return { paneles:[{ tipo:'barras', siempre:true, alto:44, max:T140, filas:[
         fila([['ahora (80 % y 90 %): ', 'ink', 700], [g(MEJ.real) + ' g', 'real', 800], [' de ', 'ink', 700], [g(MEJ.real/0.9) + ' g', 'teo', 800]], MEJ.real, MEJ.real/0.9, T140),
@@ -915,9 +914,9 @@ const EXPS = [
           ['b', `${g(GASpuro.V)} L: los 80 g de caliza son 0,8 mol de CaCO₃, y dan 0,8 mol de CO₂.`, 'muestra-pura', RES('hipotesis', 'tabla de lo que no tiene respaldo: muestra como si fuera pura')],
           ['c', `${g(GASe['masa-como-volumen'])} L: los 60 g de CaCO₃ dan ${g(GAS.real)} g de CO₂, que es lo que ocupa el gas.`, 'masa-como-volumen', RES('hipotesis', 'hipótesis nuestra')],
           ['d', `${g(GASe['coeficiente-como-moles'])} L: la ecuación da 1 mol de CO₂, y un mol de gas ocupa 22,4 L.`, 'coeficiente-como-moles', RES('hipotesis', 'hipótesis nuestra')]],
-    fb:{ b:`La caliza no es CaCO₃ puro: solo el 75 % de los 80 g, ${Pu_('60 g')}, se descompone; los ${Im_('20 g')} de impureza no dan gas. 60 g son 0,6 mol y dan ${Vo_(g(GAS.V) + ' L')}. ${HIPO}`,
-      c:`${Re_(g(GAS.real) + ' g')} es la masa del CO₂, no su volumen. Para el volumen se pasa a moles: 26,4 ÷ 44 = 0,6 mol, y 0,6 × 22,4 = ${Vo_(g(GAS.V) + ' L')}. ${HIPO}`,
-      d:`El coeficiente 1 dice la proporción (1 mol de CO₂ por cada mol de CaCO₃), no cuántos moles hay. Hay 0,6 mol de CaCO₃ puro: ${Vo_(g(GAS.V) + ' L')}. ${HIPO}` },
+    fb:{ b:`La caliza no es CaCO₃ puro: solo el 75 % de los 80 g, ${Pu_('60 g')}, se descompone; los ${Im_('20 g')} de impureza no dan gas. 60 g son 0,6 mol y dan ${Vo_(g(GAS.V) + ' L')}.`,
+      c:`${Re_(g(GAS.real) + ' g')} es la masa del CO₂, no su volumen. Para el volumen se pasa a moles: 26,4 ÷ 44 = 0,6 mol, y 0,6 × 22,4 = ${Vo_(g(GAS.V) + ' L')}.`,
+      d:`El coeficiente 1 dice la proporción (1 mol de CO₂ por cada mol de CaCO₃), no cuántos moles hay. Hay 0,6 mol de CaCO₃ puro: ${Vo_(g(GAS.V) + ' L')}.` },
     vista:(r, f) => r ? { ...vistaMuestra({ reac:'caliza', muestra:80, p:75, eta:100, producto:'CO2', reacciona:1, otro:'CaO', f }),
         pie:'El CaCO₃ se descompone todo: 33,6 g de CaO (gris) y 26,4 g de CO₂ (globo); la impureza queda.',
         desc:`Los 80 gramos de caliza se separan en 20 de impureza y 60 de carbonato puro, que dan ${g(GAS.real)} gramos de dióxido de carbono: ${g(GAS.V)} litros en condiciones normales.` }
@@ -931,9 +930,9 @@ const EXPS = [
           ['b', `${g(NEUe['masas-iguales'])} g: para neutralizar hace falta la misma masa de base que de ácido.`, 'masas-iguales', RES('hipotesis', 'hipótesis nuestra')],
           ['c', `${g(NEUe['theta-multiplica'])} g: el equivalente del H₂SO₄ pesa 196 g, y 98 g son medio equivalente.`, 'theta-multiplica', RES('hipotesis', 'hipótesis nuestra')],
           ['d', `${g(NEU.masaBase)} g: 98 g de H₂SO₄ son 2 equivalentes, y piden 2 equivalentes de NaOH.`]],
-    fb:{ a:`Con θ = 1, 98 g serían 1 equivalente, pero el H₂SO₄ tiene 2 H ácidos: θ = 2 y su equivalente pesa 98 ÷ 2 = 49 g. 98 g son ${Eq_('2 eq')}, y piden ${Eq_('2 eq')} de NaOH: 2 × 40 = ${g(NEU.masaBase)} g. ${HIPO}`,
-      b:`La neutralización iguala equivalentes, no gramos: cada H⁺ del ácido necesita un OH⁻ de la base. 98 g de H₂SO₄ son ${Eq_('2 eq')} y piden ${Eq_('2 eq')} de NaOH, ${g(NEU.masaBase)} g. ${HIPO}`,
-      c:`La masa equivalente se divide entre θ, no se multiplica: 98 ÷ 2 = 49 g por equivalente. 98 g son ${Eq_('2 eq')}. ${HIPO}` },
+    fb:{ a:`Con θ = 1, 98 g serían 1 equivalente, pero el H₂SO₄ tiene 2 H ácidos: θ = 2 y su equivalente pesa 98 ÷ 2 = 49 g. 98 g son ${Eq_('2 eq')}, y piden ${Eq_('2 eq')} de NaOH: 2 × 40 = ${g(NEU.masaBase)} g.`,
+      b:`La neutralización iguala equivalentes, no gramos: cada H⁺ del ácido necesita un OH⁻ de la base. 98 g de H₂SO₄ son ${Eq_('2 eq')} y piden ${Eq_('2 eq')} de NaOH, ${g(NEU.masaBase)} g.`,
+      c:`La masa equivalente se divide entre θ, no se multiplica: 98 ÷ 2 = 49 g por equivalente. 98 g son ${Eq_('2 eq')}.` },
     vista:(r, f) => ({ paneles:[{ tipo:'fichas', unir: r ? f : 0, grupos:[
         { x:0.27, etq:[['H₂SO₄: 98 g', 'ink', 800]], n:2, tapa:!r, bajo: r ? [['θ = 2 · 49 g por ', 'ink', 700], ['eq', 'eq', 800]] : [['equivalentes: ?', 'muted', 700]] },
         { x:0.73, etq: r ? [['NaOH: ', 'ink', 800], [g(NEU.masaBase*Math.min(1, f*1.5)) + ' g', 'ink', 800]] : [['NaOH: ? g', 'ink', 800]], n:2, tapa:!r, bajo: r ? [['θ = 1 · 40 g por ', 'ink', 700], ['eq', 'eq', 800]] : [['equivalentes: ?', 'muted', 700]] }] }],

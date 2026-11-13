@@ -858,7 +858,7 @@ const P0 = { id:'cinetica-paso2', ok:'c', opts:[
   ['d','Aumenta un rato y después para de golpe','sube-y-para', RES('hipotesis','hipótesis nuestra')]],
   fb:{ c:'¡Bien! Al principio hay muchas porciones de A y B, y chocan seguido. A medida que se gastan, los choques A–B se hacen más raros y C se forma cada vez más despacio. Mira la gráfica: la curva de C se va aplanando.',
     a:'La rapidez no se mantiene: depende de cuántas porciones de A y B quedan para chocar, y cada vez quedan menos.',
-    b:'Que haya cada vez más C no quiere decir que se forme más rápido: la rapidez es cuánto C se forma por segundo, y eso baja. Confundir la rapidez con la cantidad de producto es una idea documentada en Çakmakçı (2010), sin cifra verificada.',
+    b:'Que haya cada vez más C no quiere decir que se forme más rápido: la rapidez es cuánto C se forma por segundo, y eso baja.',
     d:'No para de golpe: se va frenando poco a poco, porque los choques A–B se hacen cada vez más raros.' } };
 const P1 = { id:'cinetica-paso5', ok:'b', opts:[
   ['a','Sí, porque al calentar baja la energía de activación','CI4-baja-Ea', RES('parcial','Çakmakçı 2010; sin cifra verificada')],
@@ -1291,7 +1291,7 @@ const EXPS = [
           ['c','La misma cantidad de C, en el mismo tiempo','cat-sin-efecto', RES('hipotesis','hipótesis nuestra')],
           ['d','Menos C, porque parte queda en el catalizador','cat-menos-producto', RES('hipotesis','hipótesis nuestra')]],
     ok:'a',
-    fb:{ b:'Con 30 de A y 30 de B solo se pueden formar 30 de C, con catalizador o sin él. Que el catalizador da más producto es una idea documentada: según Riddle y Lo-Fan-Hin (2023), el 40 % de 63 escolares ingleses de 15–16 años está de acuerdo en que el catalizador aumenta el rendimiento (encuesta no validada).',
+    fb:{ b:'El catalizador sí cambia algo: la rapidez. La cantidad no: con 30 de A y 30 de B solo se forman 30 de C, con catalizador o sin él.',
       c:'Se llega al mismo final, pero antes: el catalizador acelera la reacción.',
       d:'El catalizador no se gasta ni se queda con producto: se recupera al final.' },
     arma:() => { const s = caja({}); s.catalizador(EA_CAT); return s; }, vAntes:() => antes({ aviso:'detenida: con catalizador' }),
@@ -1307,9 +1307,9 @@ const EXPS = [
           ['c','La que libere más calor, sea cual sea su barrera','CI5-dH', RES('parcial','Çakmakçı 2010; sin cifra verificada')],
           ['d','La de barrera más baja']],
     ok:'d',
-    fb:{ a:'Con la barrera más alta, menos choques la alcanzan y la reacción va más lenta. Esta idea aparece en un estudio sobre diagramas de energía que todavía está por confirmar (quizá Popova y Bretz, 2018).',
+    fb:{ a:'La barrera sí decide la rapidez, pero al revés: con la barrera más alta, menos choques la alcanzan y la reacción va más lenta.',
       b:'A la misma temperatura, la energía de los choques se reparte igual, pero la parte que alcanza la barrera depende de la barrera.',
-      c:'El calor que libera una reacción (ΔH) no dice qué tan rápida es: eso lo dice la barrera. Confundir las dos cosas es una idea documentada en Çakmakçı (2010), sin cifra verificada.' },
+      c:'El calor que libera una reacción (ΔH) no dice qué tan rápida es: eso lo dice la barrera.' },
     arma:() => caja({ Ea:EA_ALTA }), vAntes:() => antes({ aviso:'detenida: Ea = 8000 J/mol', eaTxt:true }),
     medir:() => [tarea(contar(BASE, 6, 8), ['m2'], true), tarea(contar({ ...BASE, Ea:EA_ALTA }, 8, 14), ['m2'], true)],
     alResponder:() => { E.vista = despues({ eaTxt:true, otrasEa:[{ e:EA, t:'Ea = 5000' }] }); },
@@ -1769,7 +1769,7 @@ const G5 = { id:'mecanismos-valle', ok:'d', opts:[
   ['c', 'En las cimas, complejos activados; en el valle, el catalizador', 'AQ-valle-catalizador', 'hipotesis'],
   ['d', 'En las cimas, complejos activados; en el valle, un intermediario']],
   fb:{ d:'¡Bien! En cada cima está el complejo activado: los átomos a medio camino, un instante. En el valle, el intermediario: una especie que dura un rato, hasta que la segunda etapa la gasta.',
-    a:'Es al revés: lo que dura un rato está en un valle; en lo más alto de la loma no se queda nada. Leer las cimas como intermediarios aparece en un estudio con universitarios de química orgánica: lo hicieron 10 de los 17 estudiantes que comentaron ese rasgo del diagrama, en una muestra de 36 (Popova y Bretz, 2018, citado vía buscador; cifra por verificar).',
+    a:'En las cimas sí hay algo, pero dura un instante: lo que dura un rato está en un valle; en lo más alto de la loma no se queda nada.',
     b:`El complejo activado no es un producto: no se puede guardar ni separar, se deshace en un instante hacia un lado o hacia el otro. Los productos están al final, abajo a la derecha. ${hip}`,
     c:`El catalizador no queda en un valle del perfil: en el valle está el intermediario, que la etapa 1 forma y la etapa 2 gasta. El catalizador, en cambio, se recupera al final. ${hip}` } };
 const vOpc = x => `${cientifica(Math.abs(x))} kg/(m³·h)`;

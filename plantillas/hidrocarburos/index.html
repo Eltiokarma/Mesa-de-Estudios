@@ -669,7 +669,7 @@ const P1 = { id:'hc-pentano-torcido', ok:'b', opts:[
   ['d', `Sí: tienen la misma fórmula, ${F('C5H12')}, y eso basta para ser isómeros`, 'HC1-misma-formula-basta', 'hipotesis']],
   fb:{ b:'¡Bien! Los dos tienen los mismos átomos unidos de la misma forma: una fila de 5 carbonos. Mira cómo el dibujo B se endereza al girar un enlace simple.',
     a:'Un dibujo no es la molécula: lo que importa es quién está unido con quién. En los dos hay una fila de 5 C; el B solo tiene un enlace simple girado media vuelta.',
-    c:'El quinto carbono del dibujo B está en la punta de la fila, no a un costado: sigue la cadena, que tiene 5 C. Una rama cuelga de un carbono del medio. No ver la cadena en un dibujo torcido es la dificultad documentada al nombrar (HC3), sin porcentaje en lo que leímos.',
+    c:'El quinto carbono del dibujo B está en la punta de la fila, no a un costado: sigue la cadena, que tiene 5 C. Una rama cuelga de un carbono del medio.',
     d:`La misma fórmula es necesaria, pero no basta: los isómeros además tienen sus átomos unidos de otra forma. Aquí la unión es la misma: es una sola sustancia, el pentano.` } };
 const P2 = { id:'hc-cadena-escondida', ok:'c', opts:[
   ['a', N({ partes: NESC.erroresPartes.cadenaDibujada }), 'HC3-cadena-horizontal', 'parcial'],
@@ -677,7 +677,7 @@ const P2 = { id:'hc-cadena-escondida', ok:'c', opts:[
   ['c', N(NESC)],
   ['d', N({ partes: NESC.erroresPartes.todosLosC }), 'HC3-todos-los-C', 'hipotesis']],
   fb:{ c:'¡Bien! La cadena más larga no es la horizontal: sube por el etilo y tiene 5 carbonos. Queda un metilo en el carbono 3. Mira la cadena principal en azul y la numeración.',
-    a:`Tomaste la cadena horizontal, de 4 C, como principal. Pero hay una más larga: entra por el etilo y tiene 5 C. Una rama «etil» en el carbono 2 siempre alarga la cadena. No hallar la cadena principal es la dificultad documentada en escolares de Ghana, sin porcentaje en lo que leímos (Adu-Gyamfi, Ampiah y Appiah, 2017, por la descripción de otro artículo).`,
+    a:`La cadena horizontal, de 4 C, se ve como la principal, pero hay una más larga: entra por el etilo y tiene 5 C. Una rama «etil» en el carbono 2 siempre alarga la cadena.`,
     b:`Tomaste la cadena horizontal y, además, la numeraste desde el lado más lejano a la rama. La cadena más larga tiene 5 C y pasa por el etilo.`,
     d:`La molécula tiene 6 carbonos, pero no están todos en fila: uno queda como rama. El nombre sale de la cadena más larga, de 5.` } };
 const P3 = { id:'hc-contar-c5h12', ok:'b', opts:[
@@ -695,16 +695,16 @@ const P4 = { id:'hc-cis-trans', ok:'c', opts:[
   ['c', 'Solo el but-2-eno: cada carbono de su doble enlace tiene dos grupos distintos'],
   ['d', 'Ninguno: para cis y trans hacen falta halógenos en el doble enlace', 'HC4-solo-halogenos', 'parcial']],
   fb:{ c:'¡Bien! En el but-2-eno cada carbono del doble enlace tiene un H y un CH₃: los CH₃ pueden quedar del mismo lado (cis) o en lados opuestos (trans). En el 2-metilpropeno un carbono tiene dos CH₃: al cambiarlos de lado sale la misma molécula. Mira el dibujo.',
-    a:'El doble enlace es necesario, pero no basta: además, cada carbono del doble enlace tiene que tener dos grupos distintos. El carbono 2 del 2-metilpropeno tiene dos CH₃ iguales. Ver cis-trans en todo alqueno está descrito en futuros profesores de ciencias, sin porcentaje en lo que leímos (Şendur, 2012, por la descripción de un buscador).',
+    a:'El doble enlace es necesario, pero no basta: además, cada carbono del doble enlace tiene que tener dos grupos distintos. El carbono 2 del 2-metilpropeno tiene dos CH₃ iguales.',
     b:'Ser ramificado no da cis-trans: lo que importa es qué tiene cada carbono del doble enlace. En el 2-metilpropeno, uno tiene dos CH₃ iguales.',
-    d:'No hacen falta halógenos: basta que cada carbono del doble enlace tenga dos grupos distintos, como el H y el CH₃ del but-2-eno. Creer que hacen falta dos halógenos está descrito en futuros profesores de ciencias, sin porcentaje en lo que leímos (Şendur, 2012, por la descripción de un buscador).' } };
+    d:'No hacen falta halógenos: basta que cada carbono del doble enlace tenga dos grupos distintos, como el H y el CH₃ del but-2-eno.' } };
 const P5 = { id:'hc-ebullicion', ok:'b', opts:[
   ['a', 'A la misma temperatura: los dos tienen 5 carbonos', 'HC2-numero-de-carbonos', 'documentado'],
   ['b', 'El pentano: su cadena recta tiene más superficie de contacto con las moléculas vecinas'],
   ['c', 'El 2,2-dimetilpropano: es más compacto y sus moléculas se juntan más', 'HC2-compacto-hierve-mas', 'hipotesis'],
   ['d', 'El 2,2-dimetilpropano: tiene más ramas, y cada rama suma fuerza de atracción', 'HC2-ramas-suman', 'hipotesis']],
   fb:{ b:`¡Bien! El pentano hierve a ${fmt(EB.a.teb)} °C y el 2,2-dimetilpropano a ${fmt(EB.b.teb)} °C (de tabla). La molécula recta toca más a sus vecinas; la ramificada es casi una bola y se toca poco.`,
-    a:`La cantidad de carbonos cuenta, pero no lo es todo: con los mismos 5 C, la forma cambia cuánto se tocan las moléculas. En otra pregunta, con el butano, cerca de 1 de cada 5 de 246 escolares alemanes de 12.° y 13.° grado eligió su respuesta porque «el punto de ebullición depende del número de C» (Schmidt, 1996).`,
+    a:`La cantidad de carbonos cuenta, pero no lo es todo: con los mismos 5 C, la forma cambia cuánto se tocan las moléculas.`,
     c:'Más compacto quiere decir menos superficie para tocar a las vecinas: las fuerzas entre moléculas son más débiles y hierve antes.',
     d:'Las ramas no suman atracción: la quitan, porque la molécula se hace más redonda y toca menos a sus vecinas.' } };
 const P6 = { id:'hc-alqueno-numeracion', ok:'d', opts:[
@@ -987,7 +987,7 @@ const EXPS = [
     ok:'b',
     fb:{ a:'Un carbono en un extremo alarga la cadena; en el segundo carbono, queda como rama: la cadena más larga sigue teniendo 4.',
       c:'Se numera desde la punta más cercana a la rama: queda en el 2, no en el 3.',
-      d:'Al agregar un carbono cambia la fórmula (de C₄H₁₀ a C₅H₁₂): ya no es un isómero del butano. Reducir la isomería a «mover o poner una rama» aparece en escolares alemanes, sin porcentaje en lo que leímos (Schmidt, 1992, por su resumen).' },
+      d:'Al agregar un carbono cambia la fórmula (de C₄H₁₀ a C₅H₁₂): ya no es un isómero del butano.' },
     antes:() => { const it = mol(BUT, { rot:'butano', desc:'Butano: cuatro carbonos en zigzag; el segundo está marcado con un anillo punteado.' }); it.op.marca = 1; return { tipo:'mols', items:[it] }; },
     despues:() => { const it = { m: ARM.molecula, c: MH.coordenadas(ARM.molecula), op:{} }; return vMesa(it); },
     mesa:true,
@@ -1018,7 +1018,7 @@ const EXPS = [
           ['c', 'El but-1-eno: una rama cambió de lugar', 'HC1-rama-cambia', 'hipotesis'],
           ['d', 'La misma molécula: los dos grupos de ese carbono son iguales']],
     ok:'d',
-    fb:{ a:'Para que haya cis y trans, cada carbono del doble enlace necesita dos grupos distintos. Aquí uno tiene dos CH₃ y el otro dos H: al girar, todo queda igual. Ver cis-trans en todo alqueno está descrito en futuros profesores de ciencias, sin porcentaje en lo que leímos (Şendur, 2012, por la descripción de un buscador).',
+    fb:{ a:'Para que haya cis y trans, cada carbono del doble enlace necesita dos grupos distintos. Aquí uno tiene dos CH₃ y el otro dos H: al girar, todo queda igual.',
       b:'Girar no cambia qué átomo está unido con cuál: los dos CH₃ siguen en el mismo carbono.',
       c:'Girar no mueve ramas de un carbono a otro: solo las cambia de lado.' },
     antes:() => ({ tipo:'mols', items:[mol('CH2=C(CH3)2', { rot:'2-metilpropeno', desc:'2-metilpropeno: un doble enlace; el carbono de la izquierda tiene dos H y el de la derecha dos CH3.' })] }),
@@ -1040,7 +1040,7 @@ const EXPS = [
           ['d', 'No son isómeros: el anillo tiene dos H menos que la cadena', 'anillo-menos-H', 'hipotesis']],
     ok:'a',
     fb:{ b:'Tienen los mismos átomos, pero unidos de otra forma: uno es un anillo sin dobles enlaces y el otro, una cadena con uno. Son sustancias distintas.',
-      c:'Los isómeros pueden ser de clases distintas: basta la misma fórmula y otro grafo. Limitar la isomería a compuestos de la misma clase aparece en escolares alemanes, sin porcentaje en lo que leímos (Schmidt, 1992, por su resumen).',
+      c:'Los isómeros pueden ser de clases distintas: basta la misma fórmula y otro grafo.',
       d:'Cerrar el anillo quita 2 H, igual que un doble enlace: por eso los dos quedan en C₄H₈.' },
     antes:() => ({ tipo:'mols', items:[mol('C1CCC1', { rot:'ciclobutano', desc:'Ciclobutano: cuatro carbonos en un cuadrado, cada uno con dos H.' }), mol('CH2=CH-CH2-CH3', { rot:'but-1-eno', desc:'But-1-eno: cuatro carbonos en zigzag con un doble enlace en la punta.' })] }),
     despues:() => { const v = EXPS[3].antes(); v.items.forEach(it => { it.rot2 = MH.formula(it.m).texto.replace(/\d/g, d => SUBD[d]); it.rot2Color = 'ink'; }); return v; },

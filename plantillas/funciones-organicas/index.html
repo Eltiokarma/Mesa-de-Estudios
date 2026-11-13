@@ -676,7 +676,7 @@ const P1 = { id:'fo-etanol-eter-isomeros', ok:'b', opts:[
   ['c', 'No: al pasar el O al medio se pierde el H del –OH, y ya no tienen los mismos átomos', 'FO-pierde-el-H', 'hipotesis'],
   ['d', 'No: es la misma sustancia; solo cambió el lugar del O en el dibujo', 'FO-misma-sustancia', 'hipotesis']],
   fb:{ b:`¡Bien! Los dos son ${sub(ISO.formulaA)}: 2 C, 6 H y 1 O. Con los átomos unidos de otra forma son dos sustancias distintas, de dos familias: isómeros de función. Mira cómo se cuentan los átomos de cada uno.`,
-    a:`Los isómeros pueden ser de familias distintas: basta la misma fórmula molecular y otro orden de unión. El etanol y el metoximetano son los dos ${sub(ISO.formulaA)}. Que un alcohol y un éter «no pueden ser isómeros porque son de otra clase» está descrito en escolares (Schmidt, 1992, por su resumen), sin porcentaje en lo que leímos.`,
+    a:`Los isómeros pueden ser de familias distintas: basta la misma fórmula molecular y otro orden de unión. El etanol y el metoximetano son los dos ${sub(ISO.formulaA)}.`,
     c:`El H del –OH no se pierde: al mover el O, ese H queda en el carbono, que pasa de CH₂ a CH₃. Si se pierde un H, la fórmula sería ${sub(ISO.errores.pierdeH)}, y eso no cumple las valencias.`,
     d:'El lugar del O no es solo del dibujo: en el etanol el O está en una punta, unido a un C y a un H; en el otro, entre dos carbonos. Son uniones distintas: dos sustancias distintas.' } };
 const P2 = { id:'fo-ebullicion-puente-h', ok:'c', opts:[
@@ -686,7 +686,7 @@ const P2 = { id:'fo-ebullicion-puente-h', ok:'c', opts:[
   ['d', 'El metoximetano: su molécula es simétrica y se acomoda mejor con las vecinas', 'FO-eter-simetrico', 'hipotesis']],
   fb:{ c:`¡Bien! El etanol hierve a ${fmt(EB.a.teb)} °C y el metoximetano a ${fmt(EB.b.teb)} °C (de tabla). Mira la línea punteada: el H unido al O de un etanol apunta al O de otro. En el éter todos los H están en carbonos: no hay puente.`,
     a:`La misma fórmula no da la misma atracción entre moléculas: depende de cómo están unidos los átomos. Hay más de 100 °C de diferencia: ${fmt(EB.a.teb)} °C contra ${fmt(EB.b.teb)} °C (de tabla).`,
-    b:'Tener un O no basta: el puente de hidrógeno es un H unido a O (o a N) que se va hacia el O de otra molécula. En el metoximetano todos los H están en carbonos. En otra pregunta (cuál de NH₃, CH₃F y CH₃OCH₃ forma puentes), alrededor de un tercio de dos grupos de escolares alemanes (34 % de 112 y 31 % de 82) eligió solo el éter (Schmidt, 1996, tabla 1).',
+    b:'Tener un O no basta: el puente de hidrógeno es un H unido a O (o a N) que se va hacia el O de otra molécula. En el metoximetano todos los H están en carbonos.',
     d:'La simetría no le da atracción: el metoximetano no tiene ningún H unido al O, así que sus moléculas se atraen menos y hierve mucho antes.' } };
 const P3 = { id:'fo-aldehido-cetona', ok:'a', opts:[
   ['a', `A: ${NPAL.nombre}; B: ${NPONA.nombre}`],
@@ -1034,7 +1034,7 @@ const EXPS = [
           ['c', `${C3.errores.eteresPorEnlace}: dos alcoholes y un éter por cada enlace entre carbonos`, 'FO-eter-por-enlace', 'hipotesis'],
           ['d', `${C3.errores.porPosiciones}: el –OH en cada uno de los 3 carbonos y el O en cada uno de los 2 enlaces, sin quitar repetidos`, 'FO-cada-posicion', 'hipotesis']],
     ok:'b',
-    fb:{ a:'Un éter con la misma fórmula también es isómero: los isómeros pueden ser de familias distintas. Que un alcohol y un éter «no pueden ser isómeros» está descrito en escolares (Schmidt, 1992, por su resumen), sin porcentaje en lo que leímos.',
+    fb:{ a:'Un éter con la misma fórmula también es isómero: los isómeros pueden ser de familias distintas.',
       c:'El O entre el carbono 1 y el 2, o entre el 2 y el 3, da la misma molécula: un CH₃ de un lado y un CH₂–CH₃ del otro. Es un solo éter.',
       d:'Algunas posiciones se repiten: el –OH en el carbono 3 es el propan-1-ol visto desde la otra punta, y los dos lugares del O dan el mismo éter.' },
     antes:() => ({ tipo:'mols', items:[conNombre(mol('CH3-CH2-CH2-OH', { desc:'Uno de ellos: el propan-1-ol.' }), [])].map(it => { it.rot = 'uno de ellos: ' + it.rot; it.partes = null; return it; }) }),
@@ -1086,7 +1086,7 @@ const EXPS = [
           ['d', 'Ninguno: para formar puentes hace falta un grupo –OH', 'FO-solo-OH', 'hipotesis']],
     ok:'c',
     fb:{ a:'Tener O o N no basta: hace falta un H unido a ellos. En el metoximetano todos los H están en carbonos.',
-      b:'Tener O no basta: el puente necesita un H unido al O (o al N), y en el metoximetano todos los H están en carbonos. En otra pregunta (cuál de NH₃, CH₃F y CH₃OCH₃ forma puentes), alrededor de un tercio de dos grupos de escolares alemanes eligió solo el éter (Schmidt, 1996, tabla 1).',
+      b:'Tener O no basta: el puente necesita un H unido al O (o al N), y en el metoximetano todos los H están en carbonos.',
       d:'No solo el –OH: un H unido a N también forma puentes, como en las aminas, las amidas y el amoniaco.' },
     antes:() => { const a = mol('CH3-O-CH3', { rot:'metoximetano', teb:{ valor: TEE.teb, ver:false } }), b = mol('CH3-NH2', { rot:'metanamina', teb:{ valor: TEA.teb, ver:false } }); a.desc = 'Metoximetano: CH3–O–CH3.'; b.desc = 'Metanamina: CH3–NH2.'; return { tipo:'mols', items:[a, b], mismaEscala:true, rango:[-40, 100] }; },
     despues:p => {

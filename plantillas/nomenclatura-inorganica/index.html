@@ -613,7 +613,6 @@ const FE = MN.estado('Fe2O3', 'Fe'), NFE = MN.nombrar('Fe2O3'), AL = MN.formulaD
 const SO = MN.formar('oxacido', 'S', 6), NEU = MN.neutralizar('H2SO4', 'NaOH'), NNA = MN.nombrar('Na2SO4');
 const ERR_SAL = NNA.errores;
 const NO1 = '';
-const NO2 = 'Un estudio en Indonesia con estudiantes universitarios de pedagogía en química (solo leímos su resumen) encontró que cerca del 37 % de lo que respondieron en nomenclatura iónica eran ideas erróneas sostenidas con seguridad alta. Este error en particular no tiene un dato propio.';
 
 const P1 = { id:'nomenclatura-paso2', ok:'b', opts:[
   ['a', `${FE.errores.subindice}: el subíndice del ${Fh('Fe')} es 2, y cada uno de los 2 ${Fh('Fe')} lleva +2`, 'NO-subindice-como-estado', 'hipotesis'],
@@ -666,9 +665,9 @@ const P6 = { id:'nomenclatura-paso7', ok:'c', opts:[
   ['c', `${NNA.tradicional}: el ácido es sulfúrico (-ico) y la sal cambia -ico por -ato`],
   ['d', `${ERR_SAL.sinCambiar}: la sal guarda el nombre de su ácido`, 'NO-sal-sin-cambiar-terminacion', 'parcial']],
   fb:{ c:'¡Bien! -oso pasa a -ito e -ico pasa a -ato. El ácido sulfúrico da sulfatos. Mira el nombre abajo del dibujo, en las tres nomenclaturas.',
-    a:`Es al revés: -ico pasa a -ato y -oso a -ito. El sulfito viene del ácido sulfuroso (S con +4). ${NO2}`,
-    b:`-uro es para las sales sin oxígeno, las que vienen de un hidrácido: el sulfuro de sodio es Na₂S. Aquí hay 4 O. ${NO2}`,
-    d:`La sal cambia la terminación de su ácido: sulfúrico → sulfato. «Sulfúrico de sodio» no es el nombre de nada. ${NO2}` } };
+    a:`Es al revés: -ico pasa a -ato y -oso a -ito. El sulfito viene del ácido sulfuroso (S con +4).`,
+    b:`-uro es para las sales sin oxígeno, las que vienen de un hidrácido: el sulfuro de sodio es Na₂S. Aquí hay 4 O.`,
+    d:`La sal cambia la terminación de su ácido: sulfúrico → sulfato. «Sulfúrico de sodio» no es el nombre de nada.` } };
 
 // Vistas.
 const vFe = (r, tapaFe) => mesa([{ ion:'Fe^3+', n:2, tapa:tapaFe }, { ion:'O^2-', n:3 }], { suma: tapaFe ? 'tapa' : 'si', formula:'Fe2O3', formulaEt:'' });
@@ -829,7 +828,6 @@ const CL = MN.formar('oxacido', 'Cl', 7);
 const F3 = MN.estado('Fe3O4', 'Fe');
 const KH = MN.neutralizar('H2CO3', 'KOH', { quitar:1 });
 const HI = MN.hidratoDe('FeSO4', 7);
-const NO2 = 'Un estudio en Indonesia con estudiantes universitarios de pedagogía en química (solo leímos su resumen) encontró que cerca del 37 % de lo que respondieron en nomenclatura iónica eran ideas erróneas sostenidas con seguridad alta; este error en particular no tiene un dato propio.';
 const NA = { el:'Na', v:1 };
 const todo = ['m', 'mo', 'mh', 'n', 'no', 'na', 'sal'];
 
@@ -849,9 +847,9 @@ const EXPS = [
           ['c', `${N4.errores.hipoEnVezDeOso}: el +4 es menor que el +6, y el menor lleva hipo-`, 'NO-hipo-en-vez-de-oso', 'hipotesis'],
           ['d', `${N4.errores.terminacionUro}: el azufre está con su estado más bajo`, 'NO-sal-uro-sin-oxigeno', 'parcial']],
     ok:'b',
-    fb:{ a:`-ato es para las sales de un ácido -ico: el sulfato (S con +6). Con +4 el ácido es sulfuroso, y su sal, sulfito. ${NO2}`,
+    fb:{ a:`-ato es para las sales de un ácido -ico: el sulfato (S con +6). Con +4 el ácido es sulfuroso, y su sal, sulfito.`,
       c:'El azufre forma oxácidos con +2, +4 y +6: hipo-…-oso (+2), -oso (+4) e -ico (+6). El hiposulfito sería la sal del ácido hiposulfuroso, con el S en +2 (Na₂SO₂); con +4 el ácido es sulfuroso y su sal, sulfito. «Hiposulfito» también se usa como nombre comercial del tiosulfato de sodio, Na₂S₂O₃, que es otra sal.',
-      d:`-uro es para las sales sin oxígeno, como el sulfuro de sodio, Na₂S (S con −2). Aquí hay 3 O. ${NO2}` },
+      d:`-uro es para las sales sin oxígeno, como el sulfuro de sodio, Na₂S (S con −2). Aquí hay 3 O.` },
     antes:() => arbolV(NA, { el:'S', v:4 }, todo), despues:() => arbolV(NA, { el:'S', v:4 }, todo), nombresR:() => S4.sal, libre:'mesa',
     exp:() => `<div class="eqs"><div class="eq"><span class="ex">${EQ(S4.ecuacion)}</span><span class="note">${Nh('Na2SO3', 'tradicional')} (S con +4) y ${Nh('Na2SO4', 'tradicional')} (S con +6): el mismo azufre, dos estados, dos sales.</span></div></div>
       <p class="fuente">Cambiar -oso por -ato, o usar -uro en una sal con oxígeno: errores de nombres iónicos (NO2), sin dato propio. Hipo- en vez de -oso: hipótesis nuestra.</p>

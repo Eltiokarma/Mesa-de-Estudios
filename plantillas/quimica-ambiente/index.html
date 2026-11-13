@@ -736,8 +736,8 @@ const P0 = { id:'ambiente-paso2', unidad:RECURSOS, ok:'c', opts:[
   ['c', 'Lo mismo: los átomos solo cambian de compañero y ninguno sale del frasco.'],
   ['d', 'Más: al metano se le sumó el oxígeno, y los productos pesan más que él.', 'se-suma-oxigeno-cerrado', RES('hipotesis', 'informe: inversa de QA11, confunde cerrado con abierto')]],
   fb:{ c:`¡Bien! Los átomos de C, H y O que había al principio son los mismos del final: cambian de compañero, pero ninguno sale. La balanza marca ${m_(gr(FR.despues))} antes y después.`,
-    a:`Los gases sí pesan: el CO₂ y el vapor de agua que se formaron pesan ${gr(FR.gases)}, justo lo que pesaban el metano y el oxígeno que se gastaron. Como el frasco está cerrado, siguen adentro y la balanza los cuenta. En un estudio con 195 escolares de 8.º grado (Basheer y otros, 2018), cerca del 45 % respondió mal en el recipiente cerrado antes de la enseñanza, y cerca del 19 % después; esa cifra junta todas las respuestas erróneas, no solo esta.`,
-    b:`La energía de una combustión sale de romper y formar enlaces, no de que la materia desaparezca: los átomos del metano siguen ahí, en el CO₂ y en el agua. Si fuera así, la balanza marcaría ${gr(FR.errores['se-vuelve-energia'])}. Materiales de enseñanza basados en investigación la describen como una idea frecuente, sin porcentaje (Carbon TIME, de la Universidad Estatal de Michigan, y la Real Sociedad de Química).`,
+    a:`Los gases sí pesan: el CO₂ y el vapor de agua que se formaron pesan ${gr(FR.gases)}, justo lo que pesaban el metano y el oxígeno que se gastaron. Como el frasco está cerrado, siguen adentro y la balanza los cuenta.`,
+    b:`La energía de una combustión sale de romper y formar enlaces, no de que la materia desaparezca: los átomos del metano siguen ahí, en el CO₂ y en el agua. Si fuera así, la balanza marcaría ${gr(FR.errores['se-vuelve-energia'])}.`,
     d:`El oxígeno ya estaba dentro del frasco y la balanza ya lo contaba: pasa del O₂ al CO₂ y al agua, pero no entra nada nuevo. Si se sumara, marcaría ${gr(FR.errores['se-suma-oxigeno'])}. En un frasco abierto sí entra oxígeno del aire, pero entonces los gases se van.` } };
 const P1 = { id:'ambiente-paso3', unidad:RECURSOS, ok:'a', opts:[
   ['a', 'CO y H₂O: el oxígeno alcanza para el agua y para un O por cada C.'],
@@ -745,7 +745,7 @@ const P1 = { id:'ambiente-paso3', unidad:RECURSOS, ok:'a', opts:[
   ['c', 'CO₂ y H₂O, como siempre: solo que sale menos de cada uno.', 'incompleta-menos-de-lo-mismo', RES('hipotesis', 'informe, «Lo que no tiene respaldo»')],
   ['d', 'CO₂, H₂O y sobra metano: se quema por completo solo lo que alcanza.', 'incompleta-sobra-combustible', RES('hipotesis', 'informe; cercana al razonamiento de limitante, ES20')]],
   fb:{ a:`¡Bien! Los 8 H forman 4 H₂O, que usan 4 de los 6 átomos de O. Los otros 2 O alcanzan para un O por cada C: 2 CO. Para que salga CO₂ hacen falta 4 O₂ por cada 2 CH₄: un átomo de O más por cada C.`,
-    b:`Sí hay reacción: el metano arde con lo que hay. Lo que cambia es el producto: con poco oxígeno, cada C se queda con un solo O. La idea de que, si un reactivo no alcanza, no hay reacción está descrita en un estudio de Dahsah y otros (2006), sin porcentaje.`,
+    b:`Sí hay reacción: el metano arde con lo que hay. Lo que cambia es el producto: con poco oxígeno, cada C se queda con un solo O.`,
     c:`Para sacar CO₂ de todo el carbono harían falta 4 O₂ por cada 2 CH₄, y solo hay 3. Con menos oxígeno no sale «menos de lo mismo»: sale otra sustancia, el CO, con un solo O por cada C.`,
     d:`Así razonaríamos con un reactivo limitante, si la ecuación fuera siempre la completa. Pero el metano no se queda sin quemar: el oxígeno se reparte entre todos los C y forma CO.` } };
 const P2 = { id:'ambiente-paso4', unidad:RECURSOS, ok:'b', opts:[
@@ -763,8 +763,8 @@ const P3 = { id:'ambiente-paso5', ok:'d', opts:[
   ['c', 'Baja mucho la temperatura: el calor de la Tierra se escapa al espacio por el agujero.', 'QA1-calor-se-escapa', RES('hipotesis', 'inversa de QA1')],
   ['d', 'Llega más ultravioleta, que el ozono frenaba, pero la temperatura media casi no cambia.']],
   fb:{ d:`¡Bien! El ozono frena el ${UV_('ultravioleta')}: por el agujero llega más, unas ${fmt(C1.uv, 1)} veces lo de antes en el modelo. Pero el calor que sale de la Tierra es ${IR_('infrarrojo')}, y lo retienen otros gases, como el CO₂, que siguen igual: la ${T_('temperatura media')} casi no cambia.`,
-    a:`El ozono frena casi solo el ultravioleta, que trae muy poca de la energía que calienta el suelo. La luz visible, que es la que más calienta, pasa igual con o sin ozono. ${OZONO}`,
-    b:`El efecto invernadero no es un techo con un hueco: es el CO₂ y otros gases, repartidos en todo el aire, que devuelven parte del infrarrojo que emite la Tierra. El agujero de ozono no cambia ese CO₂. ${OZONO} Otro estudio encontró que cerca del 56 % de 256 futuros profesores de Turquía unía los dos problemas (Arslan y otros, 2012, por verificar).`,
+    a:`El ozono frena casi solo el ultravioleta, que trae muy poca de la energía que calienta el suelo. La luz visible, que es la que más calienta, pasa igual con o sin ozono.`,
+    b:`El efecto invernadero no es un techo con un hueco: es el CO₂ y otros gases, repartidos en todo el aire, que devuelven parte del infrarrojo que emite la Tierra. El agujero de ozono no cambia ese CO₂.`,
     c:`El ozono también absorbe un poco de infrarrojo, pero tan poco que al abrirse el agujero la temperatura media casi no cambia. El calor no sale por un hueco: sale como infrarrojo por todo el cielo.` } };
 const P4 = { id:'ambiente-paso7', ok:'c', opts:[
   ['a', 'El CO₂: se disuelve en las gotas y forma el ácido de la lluvia.', 'QA4-co2-lluvia-acida', RES('parcial', 'Boyes y Stanisstreet 1997b, resumen: «la mayoría», sin porcentaje')],
@@ -772,9 +772,9 @@ const P4 = { id:'ambiente-paso7', ok:'c', opts:[
   ['c', 'El SO₂: en el aire pasa a SO₃, que con el agua forma H₂SO₄.'],
   ['d', 'Todos por igual: cualquier gas de la chimenea contamina la lluvia.', 'QA7-una-sola-contaminacion', RES('parcial', 'Boyes y Stanisstreet 1993, resumen: no unen causa con efecto, sin porcentaje')]],
   fb:{ c:`¡Bien! El SO₂ se oxida a SO₃ en el aire, y el SO₃ con el agua de las gotas forma ácido sulfúrico, un ácido fuerte. En el modelo, el ${pH_('pH')} de la lluvia baja de 5,6 a ${pH_(fmt(LL.pH, 1))}.`,
-    a:`El CO₂ sí se disuelve y forma ácido carbónico, pero es débil y está en todo el aire: también en el lugar limpio, cuya lluvia ya tiene un pH cercano a 5,6. No explica la diferencia. Lo que baja el pH mucho más es el SO₂ de la chimenea (y, en las ciudades, los NOₓ). En escolares ingleses, la mitad unía los autos con la lluvia ácida, pero la mayoría culpaba al CO₂ y no a los NOₓ (según el resumen de un estudio de Boyes y Stanisstreet; sin porcentaje exacto, por verificar).`,
+    a:`El CO₂ sí se disuelve y forma ácido carbónico, pero es débil y está en todo el aire: también en el lugar limpio, cuya lluvia ya tiene un pH cercano a 5,6. No explica la diferencia. Lo que baja el pH mucho más es el SO₂ de la chimenea (y, en las ciudades, los NOₓ).`,
     b:`El CO es tóxico porque se une a la hemoglobina de la sangre, pero en el agua no forma ácidos. `,
-    d:`Cada gas hace su daño: el CO es tóxico, el CO₂ retiene calor y el SO₂ vuelve ácida la lluvia. Un resumen de Boyes y Stanisstreet (1993) dice que los escolares conocen muchos problemas del aire, pero no unen cada causa con su efecto; no da porcentaje.` } };
+    d:`Cada gas hace su daño: el CO es tóxico, el CO₂ retiene calor y el SO₂ vuelve ácida la lluvia.` } };
 
 // ----- Vistas -----
 const balTxt = v => [['m = ', 'ink', 700], [v, 'm', 800]];
@@ -1064,7 +1064,7 @@ const EXPS = [
           ['b', `En la bandeja de ${gc(250, 0)}: es la primera más fría que su punto de ebullición.`],
           ['c', 'En la de 30 °C, arriba: el calor sube y arrastra las moléculas más pesadas.', 'torre-el-calor-sube', RES('hipotesis', 'informe, «Lo que no tiene respaldo»')],
           ['d', 'En la de 350 °C: se queda en la bandeja que está más caliente que su punto de ebullición.', 'torre-invierte-la-regla', RES('hipotesis', 'hipótesis nuestra')]],
-    fb:{ a:'La torre no separa por densidad: separa por punto de ebullición. El hexadecano entra como vapor, porque el horno está a 400 °C, y sube hasta que encuentra una bandeja más fría que 287 °C. Materiales de enseñanza describen esta confusión, sin porcentaje; un artículo de 2022 dice que hay poca investigación sobre las ideas de los alumnos acerca de la destilación.',
+    fb:{ a:'La torre no separa por densidad: separa por punto de ebullición. El hexadecano entra como vapor, porque el horno está a 400 °C, y sube hasta que encuentra una bandeja más fría que 287 °C.',
       c:'El vapor sube, sí, pero cada sustancia se condensa apenas llega a una bandeja más fría que su punto de ebullición. Las moléculas grandes hierven más alto y se condensan antes, más abajo.',
       d:'En una bandeja más caliente que su punto de ebullición, el hexadecano sigue siendo vapor: no puede condensarse ahí. Sigue subiendo.' },
     antes:() => ({ paneles:['torre'], torre:{ t:T0, ver:false }, pie:'La torre por dentro. Dónde sale cada sustancia se ve al responder.', vars:['T'], desc:'Una torre de destilación con cuatro bandejas a 350, 250, 150 y 30 grados.' }),
@@ -1081,8 +1081,8 @@ const EXPS = [
           ['b', `${gr(OX.errores['no-cambia'], 0)}: la herrumbre sigue siendo el mismo hierro, con otro color.`, 'QA12-sigue-siendo-hierro', RES('parcial', 'Dávila Acedo y otros 2017: 25 % de 28 lo llama cambio físico, otra pregunta')],
           ['c', `${gr(OX.errores['uno-a-uno'], 0)}: cada átomo de hierro da una unidad de Fe₂O₃.`, 'corrosion-uno-a-uno', RES('hipotesis', 'hipótesis nuestra')],
           ['d', `${gr(OX.Fe2O3, 0)}: el hierro se unió al oxígeno del aire.`]],
-    fb:{ a:'Al oxidarse, el hierro no pierde átomos: gana los del oxígeno. 112 g de hierro se unen a 48 g de oxígeno. La revisión de Kind (2004) para la Real Sociedad de Química describe esta idea en alumnos de 15 años; las cifras que vimos se contradicen, así que no damos ninguna.',
-      b:'La herrumbre es otra sustancia, óxido de hierro, con los átomos de hierro y además los de oxígeno: por eso pesa más. En un grupo de 28 escolares de 3.º de ESO, cerca del 25 % llamó «cambio físico» a una reja que se oxida (Dávila Acedo y otros, 2017), una idea cercana.',
+    fb:{ a:'Al oxidarse, el hierro no pierde átomos: gana los del oxígeno. 112 g de hierro se unen a 48 g de oxígeno.',
+      b:'La herrumbre es otra sustancia, óxido de hierro, con los átomos de hierro y además los de oxígeno: por eso pesa más.',
       c:'En el Fe₂O₃ hay dos átomos de hierro: 112 g de hierro (2 mol) dan 1 mol de Fe₂O₃, no 2.' },
     antes:() => ({ paneles:['clavo'], clavo:{ re:REC, p:0, balanza:balClavo('112 g → ?') }, pie:'De cerca: átomos de hierro, moléculas de O₂ del aire y de agua.', vars:['m'], desc:'Un clavo de 112 gramos en agua sobre una balanza; la masa final está tapada.' }),
     anima:true,
@@ -1113,7 +1113,7 @@ const EXPS = [
           ['b', 'Los fertilizantes los envenenan: los nitratos y fosfatos son tóxicos para ellos.', 'eutrofizacion-nutriente-toxico', RES('hipotesis', 'hipótesis nuestra')],
           ['c', 'Las algas mueren, y las bacterias que las descomponen gastan el oxígeno del agua.'],
           ['d', 'Las algas gastan el oxígeno al hacer la fotosíntesis, mientras crecen y ponen verde el agua.', 'eutrofizacion-algas-gastan-al-crecer', RES('hipotesis', 'hipótesis nuestra')]],
-    fb:{ a:'Las algas no son el final: es una cadena. Los nutrientes hacen crecer las algas; cuando se acaban, las algas mueren, y las bacterias que las descomponen gastan el oxígeno disuelto. Un estudio con 224 escolares de 5.º y 6.º de primaria en España encontró dificultades para ver esas fases (Baños-González y otros, 2022, sin cifra). En otro, con 225 universitarios, solo cerca del 20 % de los de pesquería y del 5 % de los de biología nombró la eutrofización (Jescovitch y otros, 2020, por verificar).',
+    fb:{ a:'Las algas no son el final: es una cadena. Los nutrientes hacen crecer las algas; cuando se acaban, las algas mueren, y las bacterias que las descomponen gastan el oxígeno disuelto.',
       b:'En estas cantidades, los nitratos y fosfatos son abono, no veneno: por eso crecen tanto las algas. El daño viene después, cuando falta el oxígeno.',
       d:'La fotosíntesis produce oxígeno. De noche las algas respiran, pero lo que deja la laguna sin oxígeno una semana después es la descomposición de las algas muertas.' },
     antes:() => Object.assign(graficaLaguna(false, 1), { pie:'Modelo de juguete del motor: las algas, día a día.', vars:[], desc:`Las algas de la laguna crecen durante ${LAG.diaMaxAlgas} días. El oxígeno y los peces están tapados.` }),
