@@ -178,10 +178,17 @@ const unidadPorId = id => { const c = cursoDeUnidad(id); return c ? c.unidades.f
 // Generadores que pueden dar problemas de la unidad: los de una sola unidad, y los mixtos con alguna variante suya
 // según nucleo/repaso-tipos.js (repasar «Conjuntos» con un problema de porcentajes no sería repasar conjuntos).
 const generadoresRepaso = u => (window.RepasoTipos ? generadoresDe(u).filter(p => RepasoTipos.cubre(p, u.id)) : []);
+// De dónde salen las preguntas de repaso de una unidad (orden de Gerson, 14 nov 2026): primero sus generadores; si no
+// tiene, los problemas de lápiz y papel de sus escenas (autoevaluación, ver app/repaso.js).
+function fuentesRepaso(u) {
+  const gens = generadoresRepaso(u);
+  const papeles = gens.length || !window.RepasoTipos ? [] : modulosDe(u).filter(p => p.formato !== 'lectura' && RepasoTipos.papelCubre(p, u.id));
+  return { gens, papeles, hay: gens.length + papeles.length > 0 };
+}
 function sembrarRepaso() {
   if (!window.Repaso) return;
   try {
-    const nuevas = Repaso.sembrar(est, eventos(), id => { const u = unidadPorId(id); return !!(u && generadoresRepaso(u).length); });
+    const nuevas = Repaso.sembrar(est, eventos(), id => { const u = unidadPorId(id); return !!(u && fuentesRepaso(u).hay); });
     if (nuevas.length) guardar();
   } catch { /* el repaso nunca rompe la app */ }
 }
@@ -1095,7 +1102,7 @@ function render() {
   }
   if (ruta === 'repaso') {
     sembrarRepaso();
-    return cuandoListo(modulo('repaso'), () => RepasoVista.vista({ $app, cat, est, esc, guardar, registrar, marcarDia, cursoDeUnidad, generadoresDe: generadoresRepaso, script }));
+    return cuandoListo(modulo('repaso'), () => RepasoVista.vista({ $app, cat, est, esc, guardar, registrar, marcarDia, cursoDeUnidad, fuentesDe: fuentesRepaso, script }));
   }
   if (ruta === 'lectura') {
     return cuandoListo(modulo('lectura'), () => LecturaVista.vista({ $app, cat, est, esc, guardar, registrar, marcarDia }, decodeURIComponent(arg || ''), decodeURIComponent(location.hash.split('/')[3] || '')));

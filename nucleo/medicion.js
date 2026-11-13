@@ -38,6 +38,9 @@
  *   paso: el intervalo en que estaba la unidad (0 = primer repaso); dias: días desde su «día 0» (desde, el primer
  *   ejercicio terminado); atraso: días después de la fecha que le tocaba; tipoOpcion y tipoBien: la unidad que eligió
  *   en «¿Qué tipo de problema es?» y si acertó.
+ *   fuente: 'generador', 'papel', 'ejercicio' (verbal suelto) o 'lectura'. En 'papel' no hay alternativas: el alumno
+ *   marca autoevaluacion 'si' (me salió), 'no' o 'nose', y el evento NO lleva correcta. No es acierto medido y
+ *   resumirRepaso lo cuenta aparte.
  *   { tipo: 'repaso', aciertos, total, nose, tipoBien, ms }   una al terminar la tanda
  * Todos llevan además: t (fecha ISO), alumno (id anónimo), grado, colegio, version.
  */
@@ -58,7 +61,9 @@
     // «Dejar una pregunta» (13 nov 2026): la duda del alumno sobre una unidad; valor del arrastre en la práctica viva.
     'texto', 'valor', 'via',
     // Cola de repaso (13 nov 2026).
-    'paso', 'atraso', 'desde', 'tipoOpcion', 'tipoBien'];
+    'paso', 'atraso', 'desde', 'tipoOpcion', 'tipoBien',
+    // De dónde salió la pregunta del repaso y, en los problemas de papel, lo que marcó el alumno (14 nov 2026).
+    'fuente', 'autoevaluacion'];
 
   // «No sé» de un evento: true o un número en los nuevos; nada en los de antes (cuenta como 0).
   const noseDe = e => (e.nose === true || e.nose === 'true' ? 1 : Number(e.nose) || 0);
@@ -253,7 +258,9 @@
       const d = diaPeru(e.t); if (!d) continue;
       if (!dia0[k(e)] || d < dia0[k(e)]) dia0[k(e)] = d;
     }
-    const items = eventos.filter(e => e.tipo === 'repaso-item' && e.unidad);
+    const todos = eventos.filter(e => e.tipo === 'repaso-item' && e.unidad);
+    const autoeval = todos.filter(e => e.autoevaluacion);
+    const items = todos.filter(e => !e.autoevaluacion);
     for (const e of eventos) {
       if (!ejercicio(e) || diaPeru(e.t) !== dia0[k(e)]) continue;
       const x = (delDia[k(e)] = delDia[k(e)] || [0, 0]); x[1]++; if (e.correcta && !noseDe(e)) x[0]++;
@@ -272,7 +279,18 @@
       r[1]++; if (!noseDe(e) && (e.correcta === true || e.correcta === 'true')) r[0]++;
     }
     const prom = l => (l.length ? l.reduce((a, b) => a + b, 0) / l.length : null);
+    // Autoevaluación (papel): cuántas marcó «me salió», «no me salió» y «no sé», en total y por tramo de días.
+    const au = { preguntas: autoeval.length, si: 0, no: 0, nose: 0, tramos: TRAMOS.map(([id]) => ({ tramo: id, n: 0, si: 0 })) };
+    for (const e of autoeval) {
+      const v = e.autoevaluacion === 'si' || e.autoevaluacion === 'no' ? e.autoevaluacion : 'nose';
+      au[v]++;
+      const d0 = dia0[k(e)], d = diaPeru(e.t);
+      if (!d0 || !d) continue;
+      const n = diasEntre(d0, d), i = TRAMOS.findIndex(([, a, b]) => n >= a && n <= b);
+      if (i >= 0) { au.tramos[i].n++; if (v === 'si') au.tramos[i].si++; }
+    }
     return {
+      autoevaluacion: au,
       preguntas: total, acierto: tasa(bien, total), nose: tasa(nose, total),
       tipo: { preguntas: tipoN, acierto: tasa(tipoBien, tipoN) },
       porPaso: Object.keys(porPaso).sort().map(p => ({ paso: Number(p), preguntas: porPaso[p][1], acierto: tasa(porPaso[p][0], porPaso[p][1]) })),

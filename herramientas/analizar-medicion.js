@@ -48,7 +48,7 @@ function informe(eventos) {
 // Cola de repaso (versión R): ¿el alumno recuerda días después lo que acertaba el día que lo estudió?
 function informeRepaso(eventos) {
   const r = Medicion.resumirRepaso(eventos);
-  if (!r.preguntas) return '';
+  if (!r.preguntas && !(r.autoevaluacion && r.autoevaluacion.preguntas)) return '';
   const pct = x => x === null ? '—' : `${Math.round(x * 100)} %`;
   let md = '\n# Cola de repaso\n\n';
   md += `${r.preguntas} preguntas de repaso: acierto ${pct(r.acierto)}, «No sé» ${pct(r.nose)}. «¿Qué tipo de problema es?»: ${pct(r.tipo.acierto)} de ${r.tipo.preguntas}.\n\n`;
@@ -56,6 +56,11 @@ function informeRepaso(eventos) {
   for (const t of r.tramos) md += `| ${t.tramo} | ${t.pares} | ${pct(t.delDia)} | ${pct(t.repaso)} |\n`;
   md += '\n| Intervalo (paso) | Preguntas | Acierto |\n| --- | --- | --- |\n';
   for (const p of r.porPaso) md += `| ${p.paso} | ${p.preguntas} | ${pct(p.acierto)} |\n`;
+  const a = r.autoevaluacion;
+  if (a && a.preguntas) {
+    md += `\nProblemas de papel (autoevaluación, no es acierto medido): ${a.preguntas}; «me salió» ${a.si}, «no me salió» ${a.no}, «no sé» ${a.nose}.\n\n| Días desde el día 0 | Problemas | «Me salió» |\n| --- | --- | --- |\n`;
+    for (const t of a.tramos) md += `| ${t.tramo} | ${t.n} | ${t.n ? Math.round(100 * t.si / t.n) + ' %' : '—'} |\n`;
+  }
   md += '\nEl día 0 es el primer día (hora del Perú) con un ejercicio terminado de la unidad. Su acierto junta escenas y prácticas; el repaso es siempre de generador y sin escena. Los intervalos (2, 7, 21 y 45 días) son hipótesis.\n';
   return md;
 }

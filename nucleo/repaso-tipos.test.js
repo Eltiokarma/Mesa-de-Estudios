@@ -55,3 +55,31 @@ test('cada unidad que la tabla cubre consigue un problema suyo con las semillas 
   }
   assert.ok(Object.keys(porUnidad).length >= 100, `solo ${Object.keys(porUnidad).length} unidades con repaso`);
 });
+
+test('papel: cada fila apunta a un problema que existe y a una unidad de su escena', () => {
+  const fs = require('fs');
+  for (const [id, m] of Object.entries(RT.PAPEL)) {
+    const pl = cat.plantillas[id];
+    assert.ok(pl && pl.papel && pl.unidades.length > 1, `${id}: no es una escena de varias unidades con papel`);
+    const ids = new Set(JSON.parse(fs.readFileSync(path.join(RAIZ, pl.papel), 'utf8')).problemas.map(q => q.id));
+    for (const [pid, v] of Object.entries(m)) {
+      assert.ok(ids.has(pid), `${id}: no hay problema ${pid}`);
+      for (const u of (Array.isArray(v) ? v : [v])) assert.ok(pl.unidades.includes(u), `${id}.${pid}: ${u} no es de la escena`);
+    }
+  }
+  assert.deepEqual(RT.unidadesPapel(cat.plantillas.termodinamica, 'p1'), ['fisica.termodinamica']);
+  assert.deepEqual(RT.unidadesPapel(cat.plantillas.polinomios, 'p9'), ['algebra.ecuaciones-polinomiales']);
+  assert.ok(RT.papelCubre(cat.plantillas.solidos, 'geometria.poliedros'));
+  assert.ok(!RT.papelCubre(cat.plantillas['orden-informacion'], 'razonamiento-matematico.no-existe'));
+});
+
+test('cobertura: generador o papel en todas las unidades que no son de razonamiento verbal', () => {
+  const sin = [];
+  for (const cu of cat.cursos) for (const u of cu.unidades) {
+    if (cu.id === 'razonamiento-verbal') continue;
+    const pls = u.plantillas.map(p => cat.plantillas[p]).filter(Boolean);
+    if (!pls.some(p => (p.formato === 'predicciones' && RT.cubre(p, u.id)) || RT.papelCubre(p, u.id))) sin.push(u.id);
+  }
+  assert.deepEqual(sin, []);
+  assert.ok(!RT.papelCubre(cat.plantillas['tipologia-textual'], 'razonamiento-verbal.tipologia-textual'));
+});

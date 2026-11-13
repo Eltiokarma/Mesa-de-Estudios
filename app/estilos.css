@@ -699,3 +699,7 @@ input[type=file]{font:inherit;max-width:100%}
 #resolver .preg{margin-top:16px}
 .rp-fin{text-align:center}
 .rp-fin .acciones-prueba{justify-content:center}
+.rp-papel-acc{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.rp-papel-acc>*{flex:1 1 140px;justify-content:center}
+.rp-respuesta{margin:12px 0 4px;padding:12px 14px;border-radius:var(--radius-s);background:var(--brand-soft)}
+.rp-datos{margin:8px 0}

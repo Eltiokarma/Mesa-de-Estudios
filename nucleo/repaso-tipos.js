@@ -89,6 +89,50 @@
     'velocidad-relativa': { ...todo(F + 'movimiento-rectilineo', ['cruce', 'marco', 'idavuelta']), botes: F + 'impulso-y-choques', bote: F + 'magnitudes-y-vectores' },
   };
 
+  /*
+   * Problemas de lápiz y papel (plantillas/<id>/papel.json) de las escenas que cubren varias unidades: a qué unidad
+   * (o unidades) pertenece cada uno. Las escenas de una sola unidad no necesitan fila. También CLASIFICADO POR UN
+   * MODELO (13 nov 2026) leyendo cada enunciado; lo dudoso quedó fuera. El repaso usa el papel solo en las unidades que
+   * no tienen generador (orden de Gerson, 14 nov 2026).
+   */
+  const lista = (u, ids) => Object.fromEntries(ids.map(k => [k, u]));
+  const ps = (...n) => n.map(x => 'p' + x);
+  const PAPEL = {
+    conjuntos: lista([AR + 'conjuntos', AL + 'logica-y-conjuntos'], ps(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)),
+    logica: lista([AR + 'logica-proposicional', AL + 'logica-y-conjuntos'], ps(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)),
+    polinomios: { ...lista(AL + 'polinomios', ps(1, 2, 3, 4)), ...lista(AL + 'division-de-polinomios', ps(5, 6, 7, 8, 10)), p9: AL + 'ecuaciones-polinomiales' },
+    sucesiones: { ...lista([AL + 'sucesiones-y-series', AR + 'sucesiones-y-series'], ps(1, 2, 4, 5, 6, 7, 8)), ...lista(RM + 'razonamiento-inductivo', ps(3, 9)) },
+    'regla-de-tres': { ...lista(AR + 'razones-y-proporciones', ps(1, 2, 3)), ...lista(AR + 'magnitudes-proporcionales', ps(4, 5, 6, 7, 8, 9)), p10: RM + 'ruedas-poleas-engranajes' },
+    solidos: { ...lista(G + 'prisma-y-piramide', ps(1, 2)), ...lista(G + 'solidos-de-revolucion', ps(3, 4, 5, 6, 7, 8, 10)), p9: G + 'poliedros' },
+    'cinta-radio': { ...lista(T + 'angulo-trigonometrico', ps(1, 2, 4, 10)), ...lista(T + 'longitud-de-arco-y-sector', ps(3, 5, 6, 7, 8, 9)) },
+    'circunferencia-trig': { ...lista(T + 'razones-trigonometricas-agudas', ps(1, 2, 4, 10)), p3: T + 'triangulos-rectangulos',
+      ...lista([T + 'reduccion-al-primer-cuadrante', T + 'angulos-en-posicion-normal'], ps(5, 6)), p7: T + 'funciones-trigonometricas',
+      ...lista(T + 'ecuaciones-trigonometricas', ps(8, 9)) },
+    'geometria-analitica': { ...lista(G + 'geometria-analitica', ps(1, 2, 3, 9, 10)), ...lista(T + 'recta-en-el-plano', ps(4, 5, 6, 7, 8)) },
+    conicas: lista(T + 'conicas', ps(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)),
+    'trazos-rutas': { ...lista(RM + 'trazos-y-perimetros', ps(1, 2, 3, 4, 5, 6, 7)), ...lista(RM + 'rutas-y-visualizacion-espacial', ps(8, 9, 10)) },
+    'cuadricula-piezas': { ...lista(RM + 'transformaciones-de-figuras', ps(1, 2, 3, 6, 7)), ...lista(RM + 'trazos-y-perimetros', ps(4, 5)) },
+    'rutas-espacio': lista(RM + 'rutas-y-visualizacion-espacial', ps(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)),
+    'papel-doblado': lista(RM + 'transformaciones-de-figuras', ps(1, 2, 3, 4, 5, 6, 7, 10)),
+    'orden-informacion': { ...lista(RM + 'ordenamiento-de-informacion', ps(1, 2, 3, 4, 5)), p6: RM + 'razonamiento-deductivo',
+      ...lista(RM + 'verdades-y-mentiras', ps(7, 8)), ...lista(RM + 'certezas', ps(9, 10)) },
+    'ondas-electromagneticas': { ...lista(F + 'ondas-electromagneticas', ps(1, 3, 4, 6, 7, 8, 9, 10)), ...lista(F + 'optica-geometrica', ps(11, 12)) },
+  };
+  // Unidades de un problema de papel (lista vacía si no se sabe).
+  function unidadesPapel(pl, id) {
+    if (!pl || !pl.papel || pl.formato === 'lectura') return [];
+    if (pl.unidades.length === 1) return [pl.unidades[0]];
+    const v = (PAPEL[pl.id] || {})[id];
+    return (Array.isArray(v) ? v : v ? [v] : []).filter(u => pl.unidades.includes(u));
+  }
+  // ¿El papel de esta plantilla tiene problemas de la unidad?
+  function papelCubre(pl, unidad) {
+    // El papel de los módulos de lectura trae textos enteros: la lectura entra al repaso por otro camino.
+    if (!pl || !pl.papel || pl.formato === 'lectura' || !pl.unidades.includes(unidad)) return false;
+    if (pl.unidades.length === 1) return true;
+    return Object.values(PAPEL[pl.id] || {}).some(v => (Array.isArray(v) ? v : [v]).includes(unidad));
+  }
+
   // Unidad de un problema ya generado, o null si no se sabe. pl: { id, unidades } (la ficha del catálogo).
   function unidadDe(pl, p) {
     if (!pl || !p) return null;
@@ -106,5 +150,5 @@
     return Object.values(TABLA[pl.id] || {}).includes(unidad);
   }
 
-  return { TABLA, unidadDe, cubre };
+  return { TABLA, unidadDe, cubre, PAPEL, unidadesPapel, papelCubre };
 });

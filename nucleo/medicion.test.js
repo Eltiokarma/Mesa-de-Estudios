@@ -109,7 +109,7 @@ test('el informe incluye la tabla por curso y los errores con su descripción', 
   assert.deepEqual(M.COLUMNAS.slice(desde('curso'), desde('curso') + 12), ['curso', 'forma', 'orden', 'banco', 'item', 'par', 'plantilla', 'origen', 'previas', 'dias', 'que', 'accion']);
   assert.deepEqual(M.COLUMNAS.slice(desde('respuestas'), desde('respuestas') + 5), ['respuestas', 'nose', 'texto', 'valor', 'via']);
   assert.match(M.aCSV([cursoEv[0]]), /fisica,A,AB,,,,,,0,,,/);
-  assert.match(M.aCSV([{ t: 'p', tipo: 'pregunta', unidad: 'fisica.fluidos', texto: '¿Por qué flota el hielo?' }]).split('\n')[1], /¿Por qué flota el hielo\?,,,,,,,$/);
+  assert.match(M.aCSV([{ t: 'p', tipo: 'pregunta', unidad: 'fisica.fluidos', texto: '¿Por qué flota el hielo?' }]).split('\n')[1], /¿Por qué flota el hielo\?,+$/);
   // Las habilitaciones del profesor y el cambio de alumno no entran al resumen por curso.
   assert.equal(M.resumirCursos([...cursoEv, { t: 'h', alumno: 'a', tipo: 'habilitacion', que: 'salida', curso: 'fisica', origen: 'profesor' }])[0].alumnosEntrada, 3);
 });
@@ -280,7 +280,8 @@ test('repaso: acierto del día 0 contra el del repaso, por tramo y solo pareados
 
 test('repaso: las columnas nuevas van al final del CSV', () => {
   const i = M.COLUMNAS.indexOf('via');
-  assert.deepEqual(M.COLUMNAS.slice(i + 1), ['paso', 'atraso', 'desde', 'tipoOpcion', 'tipoBien']);
+  assert.deepEqual(M.COLUMNAS.slice(i + 1, i + 6), ['paso', 'atraso', 'desde', 'tipoOpcion', 'tipoBien']);
+  assert.deepEqual(M.COLUMNAS.slice(i + 6), ['fuente', 'autoevaluacion']);
 });
 
 test('repaso: el informe trae su tabla solo si hay preguntas de repaso', () => {
@@ -292,4 +293,22 @@ test('repaso: el informe trae su tabla solo si hay preguntas de repaso', () => {
   ]);
   assert.match(md, /# Cola de repaso/);
   assert.match(md, /\| 1-3 \| 1 \| 100 % \| 100 % \|/);
+});
+
+test('repaso: la autoevaluación del papel va aparte y no entra al acierto medido', () => {
+  const e = (tipo, t, extra) => ({ alumno: 'a', unidad: 'u', tipo, t, ...extra });
+  const r = M.resumirRepaso([
+    e('prediccion', '2026-11-09T15:00:00Z', { correcta: true }),
+    e('repaso-item', '2026-11-11T15:00:00Z', { correcta: true, paso: 0, fuente: 'generador' }),
+    e('repaso-item', '2026-11-12T15:00:00Z', { fuente: 'papel', autoevaluacion: 'si', paso: 0 }),
+    e('repaso-item', '2026-11-20T15:00:00Z', { fuente: 'papel', autoevaluacion: 'no', paso: 0 }),
+    e('repaso-item', '2026-11-20T16:00:00Z', { fuente: 'papel', autoevaluacion: 'nose', paso: 0 }),
+  ]);
+  assert.equal(r.preguntas, 1);
+  assert.equal(r.acierto, 1);
+  assert.equal(r.autoevaluacion.preguntas, 3);
+  assert.deepEqual([r.autoevaluacion.si, r.autoevaluacion.no, r.autoevaluacion.nose], [1, 1, 1]);
+  assert.deepEqual(r.autoevaluacion.tramos.slice(0, 3), [{ tramo: '1-3', n: 1, si: 1 }, { tramo: '4-10', n: 0, si: 0 }, { tramo: '11-30', n: 2, si: 0 }]);
+  const { informeRepaso } = require('../herramientas/analizar-medicion.js');
+  assert.match(informeRepaso([e('prediccion', '2026-11-09T15:00:00Z', {}), e('repaso-item', '2026-11-12T15:00:00Z', { fuente: 'papel', autoevaluacion: 'si' })]), /autoevaluación, no es acierto medido/);
 });
