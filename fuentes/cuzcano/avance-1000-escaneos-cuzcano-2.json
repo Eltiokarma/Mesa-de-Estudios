@@ -3,8 +3,8 @@
   "coleccion": "Cuzcano",
   "origen": "Escaneos cotejados con el OCR local",
   "meta": 1000,
-  "fichas_verificadas": 722,
-  "fichas_pendientes": 278,
+  "fichas_verificadas": 750,
+  "fichas_pendientes": 250,
   "temas_completos": 7,
   "temas": [
     {
@@ -52,7 +52,7 @@
     {
       "id": "razonamiento-matematico.razonamiento-geometrico",
       "tema": "Razonamiento geométrico",
-      "fichas": 22,
+      "fichas": 50,
       "meta": 100
     },
     {
@@ -68,6 +68,6 @@
       "meta": 100
     }
   ],
-  "fichas_banco_local": 12324,
-  "sha256_fichas_locales": "bebbcff5298e39ee57a891d38b80c0e91bb23af8c35b527af6ec2d2a9e63309c"
+  "fichas_banco_local": 12352,
+  "sha256_fichas_locales": "33e3f46d7b484b5bfee2e12ce1c4791ec69a8ed70a892ea2f448f69bfdc498f4"
 }
