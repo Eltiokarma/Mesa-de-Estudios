@@ -5330,6 +5330,12 @@
      "fichas": 5
     },
     {
+     "id": "doppler-relativista-de-la-luz",
+     "nombre": "Doppler relativista de la luz",
+     "unidad": "fisica.fisica-moderna",
+     "fichas": 0
+    },
+    {
      "id": "otros",
      "nombre": "Otros",
      "unidad": "fisica.ondas-mecanicas",
@@ -8234,6 +8240,12 @@
      "nombre": "Hidrólisis de sales",
      "unidad": "quimica.acidos-y-bases",
      "fichas": 6
+    },
+    {
+     "id": "relaciones-masa-masa-mol-mol-y-volumen-volumen",
+     "nombre": "Relaciones masa-masa, mol-mol y volumen-volumen",
+     "unidad": "quimica.estequiometria",
+     "fichas": 0
     }
    ],
    "etiquetas": {
@@ -8535,6 +8547,18 @@
      "nombre": "Velocidad y orden de reacción",
      "unidad": "quimica.cinetica-quimica",
      "fichas": 4
+    },
+    {
+     "id": "teorias-de-arrhenius-brnsted-lowry-y-lewis",
+     "nombre": "Teorías de Arrhenius, Brønsted-Lowry y Lewis",
+     "unidad": "quimica.acidos-y-bases",
+     "fichas": 0
+    },
+    {
+     "id": "perfil-de-energia-de-una-reaccion",
+     "nombre": "Perfil de energía de una reacción",
+     "unidad": "quimica.cinetica-quimica",
+     "fichas": 0
     }
    ],
    "etiquetas": {
@@ -8644,6 +8668,12 @@
      "nombre": "Estequiometría con gases",
      "unidad": "quimica.gases",
      "fichas": 5
+    },
+    {
+     "id": "propiedades-de-los-estados-de-agregacion",
+     "nombre": "Propiedades de los estados de agregación",
+     "unidad": "quimica.liquidos-y-solidos",
+     "fichas": 0
     }
    ],
    "etiquetas": {
@@ -8851,6 +8881,18 @@
      "fichas": 17
     },
     {
+     "id": "masa-atomica-promedio",
+     "nombre": "Masa atómica promedio",
+     "unidad": "quimica.mol-y-composicion",
+     "fichas": 0
+    },
+    {
+     "id": "termoquimica",
+     "nombre": "Termoquímica",
+     "unidad": "quimica.reacciones-y-balance",
+     "fichas": 0
+    },
+    {
      "id": "otros",
      "nombre": "Otros",
      "unidad": "quimica.estequiometria",
@@ -8979,6 +9021,18 @@
      "nombre": "Configuración electrónica de átomos e iones",
      "unidad": "quimica.estructura-atomica",
      "fichas": 8
+    },
+    {
+     "id": "masa-molecular-y-masa-molar",
+     "nombre": "Masa molecular y masa molar",
+     "unidad": "quimica.mol-y-composicion",
+     "fichas": 0
+    },
+    {
+     "id": "longitud-de-onda-frecuencia-y-espectro",
+     "nombre": "Longitud de onda, frecuencia y espectro",
+     "unidad": "fisica.ondas-electromagneticas",
+     "fichas": 0
     }
    ],
    "etiquetas": {
@@ -9172,6 +9226,12 @@
      "nombre": "Petróleo y combustión",
      "unidad": "quimica.recursos-naturales",
      "fichas": 5
+    },
+    {
+     "id": "reacciones-de-funciones-organicas",
+     "nombre": "Reacciones de funciones orgánicas",
+     "unidad": "quimica.funciones-organicas",
+     "fichas": 0
     },
     {
      "id": "otros",
@@ -9564,6 +9624,12 @@
      "nombre": "Densidad y masa molar de gases",
      "unidad": "quimica.gases",
      "fichas": 3
+    },
+    {
+     "id": "masa-molecular-y-masa-molar",
+     "nombre": "Masa molecular y masa molar",
+     "unidad": "quimica.mol-y-composicion",
+     "fichas": 0
     }
    ],
    "etiquetas": {
