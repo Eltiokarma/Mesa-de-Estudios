@@ -244,7 +244,7 @@ function cargarDibujos(curso) {
   return script('/app/dibujos/comun.js')
     .then(() => (window.Dibujos.CURSOS.includes(curso) ? script(`/app/dibujos/${curso}.js`) : null)).catch(() => null);
 }
-const dibujo = (c, u) => (window.Dibujos && Dibujos.svg(c.id, u.id)) || Ilus.viñeta(c.id, 'class="dib dib-resp"');
+const dibujo = (c, u) => (window.Dibujos && Dibujos.svg(c.id, u.id)) || Ilus.viñeta(c.id, 'class="dib-resp"');
 const modulosDe = u => u.plantillas.map(p => cat.plantillas[p]).filter(Boolean);
 const textoEjercicios = n => (n ? `${n} ${n === 1 ? 'ejercicio' : 'ejercicios'}` : 'En preparación');
 const reducido = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
