@@ -7052,7 +7052,7 @@
    "titulo": "Balanzas, figuras y pesas",
    "formato": "predicciones",
    "estado": "borrador",
-   "version": "0.2.0",
+   "version": "0.3.0",
    "unidades": [
     "razonamiento-matematico.cortes-y-pesadas"
    ],

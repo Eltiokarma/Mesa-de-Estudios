@@ -147,3 +147,68 @@ for (const q of papel.problemas) {
     }
   });
 }
+
+// ---------- Escena viva (docs/escena-viva.md): pieza balanza, línea de tiempo, fantasmas y arrastre ----------
+const Kit = require('../../nucleo/kit/kit.js');
+const pieza = require('../../nucleo/kit/piezas/balanza.js');
+const LT = require('../../nucleo/kit/linea-tiempo.js');
+const palabras = x => Kit.plano(x).split(/\s+/).filter(w => /\p{L}/u.test(w)).length; // como herramientas/validar-ejercicios.js
+
+test('escena viva: todos los tipos traen la pieza balanza, y lo que sale cabe y se dibuja sin NaN', () => {
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s);
+    assert.equal(p.escena && p.escena.pieza, 'balanza', `semilla ${s} (${p._datos.tipo}) sin escena`);
+    assert.ok(pieza.cabe(p.escena.datos), `semilla ${s}: no cabe en la pieza`);
+    assert.ok(typeof p.escena.alt === 'string' && p.escena.alt.length > 20);
+    for (let i = 1; i <= p.pasos.length; i++) {
+      const svg = pieza.dibujar(p.escena.datos, LT.estado(p.pasos, i));
+      assert.ok(!/NaN|undefined|null|Infinity/.test(svg), `semilla ${s}, paso ${i}`);
+    }
+    assert.ok(p.pasos[p.pasos.length - 1].estado.final, 'el último paso es el resultado');
+  }
+});
+
+test('escena viva: con los pesos reales, las balanzas del enunciado se inclinan como dice su estado', () => {
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s), d = p.escena.datos;
+    for (const b of d.balanzas) {
+      const a = pieza.inclinacion(d, b);
+      assert.equal(Math.sign(a), b.estado === 'izq-baja' ? 1 : b.estado === 'der-baja' ? -1 : 0, `semilla ${s}`);
+    }
+    // Lo que se ve al final queda en equilibrio.
+    const fin = d.trabajo[LT.estado(p.pasos, p.pasos.length).vista || 0];
+    assert.equal(pieza.inclinacion(d, fin), 0, `semilla ${s}: el final no está en equilibrio`);
+  }
+});
+
+test('escena viva: presupuesto de texto (enunciado ≤ 40, paso ≤ 14, error ≤ 20)', () => {
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s);
+    assert.ok(palabras(p.enunciado) + palabras(p.pregunta) <= 40, `semilla ${s}: enunciado largo`);
+    for (const q of p.pasos) {
+      assert.ok(palabras(q.texto) <= 14, `semilla ${s}: «${Kit.plano(q.texto)}»`);
+      assert.ok(Array.isArray(q.ecuacion) && q.ecuacion.length && !/NaN|undefined|null/.test(Kit.plano(q.texto) + Kit.plano(q.ecuacion)));
+    }
+    for (const a of p.alternativas.filter(x => x.error)) assert.ok(palabras(a.error.explicacion) <= 20, `semilla ${s}: «${a.error.explicacion}»`);
+  }
+});
+
+test('escena viva: cada error tiene fantasma; en sustitución se arrastra y la marca en cada valor da esa alternativa', () => {
+  let arrastres = 0;
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s);
+    for (const a of p.alternativas) if (a.error) assert.ok(p.fantasmas[a.error.id], `semilla ${s}: ${a.error.id} sin fantasma`);
+    if (p.respuesta.tipo !== 'arrastrar') { assert.ok(!p.escena.datos.marca); continue; }
+    arrastres++;
+    assert.equal(p._datos.tipo, 'sustitucion');
+    const c = pieza.controles(p.escena.datos);
+    assert.equal(c.respuesta, p.respuesta.valor, `semilla ${s}: la balanza no se equilibra con la respuesta`);
+    for (const a of p.alternativas) {
+      const puesto = Kit.respuesta.ajustar(a.valor, p.respuesta.paso, c.marca.min, c.marca.max);
+      assert.equal(Kit.respuesta.clasificar(puesto, p.alternativas, p.respuesta.tolerancia), a, `semilla ${s}`);
+      if (a.error) assert.equal(p.fantasmas[a.error.id].marca, a.valor);
+    }
+    assert.match(pieza.dibujar(p.escena.datos, LT.estado(p.pasos, p.pasos.length)), new RegExp(`${p.respuesta.valor} \\S+ ✓`));
+  }
+  assert.ok(arrastres > 30, `pocas sustituciones con arrastre: ${arrastres}`);
+});
