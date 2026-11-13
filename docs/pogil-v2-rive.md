@@ -2,7 +2,7 @@
 
 13 de noviembre de 2026. Auditoría pedida por Gerson: «el diseño es hermoso; lo que no es hermoso es la forma de enseñar». Es un documento de evaluación y dirección: no trae código ni cambia nada de la app. Se hizo con los skills `diseno-y-animacion` y `estructura-visual-motion`, leyendo `docs/escena-viva.md`, `docs/pendientes.md` (sección B) y `docs/vision-pisa-agilidad-interaccion.md` (secciones 3 y 4), y midiendo las 99 escenas en una pantalla de celular. Si algo de aquí choca con `CLAUDE.md` o con `docs/escena-viva.md`, mandan ellos.
 
-**Ampliado el mismo día** cuatro veces. Cuarto, las progresiones: tramos, prerrequisitos y niveles de dominio, a partir de una tercera opinión (sección 5.7), y la pregunta de seguridad (5.8). Primero, tres unidades de química rediseñadas a pedido de Gerson: materia, tabla periódica y enlace (secciones 7.2 a 7.4). Tercero, más formas de explicar una misma unidad, empezando por razonamiento matemático (sección 5.6). Segundo, una segunda opinión que trajo Gerson (otra conversación, sobre unir Rive con POGIL y sobre otras formas de enseñar). Lo nuevo está en las secciones 5.3 a 5.5, en la columna «Ruta» del temario y en la fila de repaso de la sección 9. Corrige un error de la primera versión: aplicaba POGIL a las 152 unidades.
+**Ampliado el mismo día** cuatro veces. Cuarto, las progresiones: tramos, prerrequisitos y niveles de dominio, a partir de una tercera opinión (sección 5.7), y la pregunta de seguridad (5.8). Quinto, las correcciones de una investigación externa que verificó las fuentes (`docs/investigacion/verificacion-pogil-v2.md`): cifras de la sección 4, la tabla periódica, la regla de lectura y Rive. Primero, tres unidades de química rediseñadas a pedido de Gerson: materia, tabla periódica y enlace (secciones 7.2 a 7.4). Tercero, más formas de explicar una misma unidad, empezando por razonamiento matemático (sección 5.6). Segundo, una segunda opinión que trajo Gerson (otra conversación, sobre unir Rive con POGIL y sobre otras formas de enseñar). Lo nuevo está en las secciones 5.3 a 5.5, en la columna «Ruta» del temario y en la fila de repaso de la sección 9. Corrige un error de la primera versión: aplicaba POGIL a las 152 unidades.
 
 ## 1. En corto
 
@@ -90,7 +90,7 @@ Cada hoja depende de las anteriores: corregir la 5 sin la 1 es pulir una diaposi
 
 ## 4. Por qué el POGIL de papel no alcanza en pantalla
 
-El POGIL de papel le da al alumno un **modelo** (una figura con datos) y una secuencia de preguntas que lo llevan de mirar a formular la regla y a aplicarla. Funciona porque en papel el modelo está quieto: el texto y la figura tienen que ir juntos y el alumno «opera» el modelo con los ojos.
+POGIL, tal como lo define su proyecto, es más que una hoja: tiene un ciclo de tres fases (exploración, formación del concepto y aplicación), equipos con roles y un docente que facilita. Lo que Mesa tomó hasta ahora es una parte: darle al alumno un **modelo** (una figura con datos) y una secuencia de preguntas que lo llevan de mirar a formular la regla y a aplicarla. En esa versión, que aquí se llama «POGIL de papel» para abreviar, el modelo está quieto: el texto y la figura tienen que ir juntos y el alumno «opera» el modelo con los ojos.
 
 Lo que hicimos hasta ahora es eso mismo llevado a pantalla: figura, texto corto y pregunta. Está bien hecho y por eso se parece a los exámenes, donde el texto es simple y la imagen guía. Pero la pantalla permite algo que el papel no: **que el modelo responda**. Ahí está la multiplicación que pide Gerson. No es «POGIL con animaciones»; es que el alumno produzca los datos del modelo con sus manos.
 
@@ -105,17 +105,20 @@ Lo que hicimos hasta ahora es eso mismo llevado a pantalla: figura, texto corto 
 
 **Evidencia, sin exagerar** (regla de `CLAUDE.md`: nada de esto se afirma como probado):
 
-- POGIL contra clase expositiva: efecto pequeño en las notas, pero 38 % menos riesgo de desaprobar (Walker y Warfa 2017, ya citado en la visión). Es evidencia del POGIL de aula, con grupos y profesor; no de una app.
-- Primero el problema: g = 0,36 a favor en secundaria (Sinha y Kapur 2021, en `docs/investigacion/brilliant.md`).
-- Animar contra imagen fija: según el skill de diseño, la ventaja es pequeña en promedio, casi nula cuando lo que se mueve no es lo que hay que aprender y clara cuando el cambio es complejo y es justo lo que hay que inferir. Las cifras del skill hay que rastrearlas a su fuente antes de pasarlas a `docs/fundacional.md`.
-- De ahí sale la regla de oro de este documento: **el material y el movimiento se gastan en el objeto que el alumno manipula y en la respuesta que tiene que observar. Todo lo demás se queda quieto.** Un tubo precioso que se llena solo es un detalle seductor (Mayer) y resta.
+- POGIL contra clase expositiva: efecto pequeño en las notas (g = 0,29) y 38 % menos riesgo relativo de desaprobar (Walker y Warfa 2017). Es evidencia del POGIL de aula, con grupos y profesor, y 19 de sus 21 estudios son universitarios; no de una app.
+- Primero el problema: g = 0,36 en el conjunto del metaanálisis, que va de primaria a adultos (Sinha y Kapur 2021). No es un dato solo de secundaria, como decía la primera versión de este documento; conviene revisar cómo lo citan `docs/investigacion/brilliant.md` y la visión.
+- Guiar la indagación: dar guía mejora el aprendizaje frente a dejar al alumno solo (d = 0,50 en 72 estudios; Lazonder y Harmsen 2016). Respalda las preguntas escalonadas, no que descubrir le gane siempre a explicar.
+- Explicar el error: la retroalimentación elaborada rinde mucho más que decir solo «bien» o «mal» (0,49 contra 0,05; Van der Kleij y otros 2015, sobre todo con universitarios).
+- Animar contra imagen fija: la ventaja media es pequeña (g = 0,23; Berney y Bétrancourt 2016). Es casi nula cuando lo que se anima no es lo que se evalúa (g = 0,04) y mayor cuando el cambio animado es lo que hay que aprender (g = 0,34 con rasgos simples y 0,65 con complejos; Ploetzner, Berney y Bétrancourt 2020). Nada de esto prueba que manipular sea mejor que mirar.
+- De ahí sale la regla de oro de este documento: **el material y el movimiento se gastan en el objeto que el alumno manipula y en la respuesta que tiene que observar. Todo lo demás se queda quieto.** Un tubo precioso que se llena solo gasta atención en algo que no es lo que hay que aprender: no está probado que reste, pero la evidencia dice que casi no suma.
+- Las cifras de esta lista las verificó una investigación externa (`docs/investigacion/verificacion-pogil-v2.md`); nadie del proyecto abrió todavía las fuentes.
 - Que manipular enseñe más que mirar es, para nuestro caso, una **hipótesis**. La app ya puede comprobarla con las pruebas de entrada y salida (sección 9).
 
 ## 5. El modelo: POGIL v2 y las otras rutas
 
 ### 5.1 Los cinco tiempos de una unidad que se descubre
 
-Es la secuencia del problema guiado de `docs/fundacional.md`, reordenada para que la mano vaya antes que el texto. La regla 3 no cambia: predecir es el único punto que bloquea.
+Es la secuencia del problema guiado de `docs/fundacional.md`, reordenada para que la mano vaya antes que el texto. La regla 3 no cambia: predecir es el único punto que bloquea. Los cinco tiempos, su duración y el número de ensayos son una adaptación propia del ciclo de tres fases de POGIL: ninguna de esas cifras sale de un estudio.
 
 | Tiempo | Qué hace el alumno | Qué pone la app | Texto en pantalla | Mascota |
 | --- | --- | --- | --- | --- |
@@ -212,7 +215,7 @@ La asignación es una propuesta: se discute unidad por unidad con Gerson y con e
 
 **El repaso de otro día.** Es lo que una buena exploración no garantiza: acordarse la semana siguiente. El fundacional ya tiene el principio («recordar en vez de releer», Roediger y Karpicke) y la arquitectura ya reserva el dato («repasos pendientes»), pero la app no programa ningún repaso: hoy el único es el papel. Propuesta:
 
-- Cada unidad terminada deja en cola tres preguntas cortas para otros días. Los intervalos (por ejemplo 2, 7 y 21 días) son un punto de partida, no un número mágico: se ajustan con los datos.
+- Cada unidad terminada deja en cola tres preguntas cortas para otros días. Los intervalos (por ejemplo 2, 7 y 21 días) son un punto de partida, no un número mágico: se ajustan con los datos. Espaciar el repaso tiene respaldo; ese calendario en particular, no, y el intervalo que conviene depende de cuánto falta para el examen.
 - Cada repaso dura uno o dos minutos, va con formato de examen, **sin la escena y sin animación**, y mezcla unidades distintas.
 - Si falla, recién ahí se abre el modelo de esa unidad, como explicación.
 - Los calentamientos de la ruta R entran por la misma cola.
@@ -251,7 +254,7 @@ La otra conversación lista diez formas de enseñar. Es un buen mapa, pero se es
 - POGIL de aula es trabajo en equipos con roles, y de ahí sale su evidencia. En un celular a solas se pierde esa mitad; solo el modo salón la recupera.
 - Un repertorio mal usado termina en lecciones de 20 minutos con siete técnicas apiladas. Por eso aquí son una ruta principal y una de apoyo.
 
-**Sus fuentes.** No se pudieron abrir desde este entorno (la red las bloquea), así que quedan **por verificar** antes de pasar al fundacional: la definición de pogil.org, el metaanálisis sobre la guía en la indagación (Universidad de Twente), el de retroalimentación en entornos digitales (Van der Kleij y otros), la guía de prácticas del IES y la investigación de PhET. El fundacional ya trae fuentes propias para cuatro de estos puntos: predecir (Crouch y otros 2004), ayuda que se retira (Reisslein y otros 2006), recordar (Roediger y Karpicke) y simulaciones con andamiaje (D'Angelo y otros 2014: guiar la simulación suma sobre la simulación sola).
+**Sus fuentes.** Desde este entorno no se pudieron abrir. Después las verificó una investigación externa encargada por Gerson: el detalle, con citas y límites, está en `docs/investigacion/verificacion-pogil-v2.md`. Falta que alguien del proyecto las abra antes de pasarlas al fundacional, que ya trae fuentes propias para cuatro de estos puntos: predecir (Crouch y otros 2004), ayuda que se retira (Reisslein y otros 2006), recordar (Roediger y Karpicke) y simulaciones con andamiaje (D'Angelo y otros 2014; ojo: sus dos efectos, 0,62 y 0,60, no se suman).
 
 ### 5.6 Más de una forma de explicar lo mismo
 
@@ -280,7 +283,7 @@ Una tercera opinión que trajo Gerson (otra conversación, que sí leyó el cat�
 
 Las dos últimas son correcciones concretas, no opiniones:
 
-- **Lectura.** Una paráfrasis puede decir algo que el texto dice de forma explícita. La frontera útil es otra: información explícita (literal o reformulada) contra conclusión que obliga a unir dos datos. **Decidido y hecho (13 nov):** la regla ya está corregida en `docs/formato-lectura.md`. Falta revisar las sondas de `clasificar` de 24 textos.
+- **Lectura.** Una paráfrasis puede decir algo que el texto dice de forma explícita. La frontera útil es otra: información que el texto expresa (literal o reformulada) contra una relación o conclusión que el texto no expresa. Así la definen el Minedu y PISA. **Decidido y hecho (13 nov):** la regla ya está corregida en `docs/formato-lectura.md`. Falta revisar las sondas de `clasificar` de 24 textos.
 - **Medición.** El número sirve, pero el nombre promete otra cosa. **Decidido (13 nov):** se agrega la pregunta de seguridad y el número de hoy se renombra. El plan está en 5.8.
 
 **Lo que se toma:**
@@ -334,7 +337,7 @@ Las dos últimas son correcciones concretas, no opiniones:
 - **Ocho unidades de arranque, una por curso.** La selección por «puentes» es buena (fracciones hacia proporcionalidad, partículas hacia mol), porque prueba justo los prerrequisitos. Pero ocho fichas completas no entran antes del piloto. Orden propuesto: primero una unidad entera con su ficha (ácidos y bases, sección 9), después los ocho puentes.
 - **Las dinámicas de pareja** (uno propone y otro comprueba). Son para el modo salón. En el celular a solas se convierten en dos preguntas seguidas, y eso pierde parte de lo que las hace funcionar.
 - **La ficha en las 152 unidades.** Es trabajo editorial grande. Se llena primero donde se va a construir.
-- **Sus fuentes.** Tampoco se pudieron abrir desde aquí. Dos coinciden con lo que el repo ya cita: el estudio de la PUCP con 4535 alumnos (`docs/investigacion/dinamica-ideas-erroneas.md`) y el de ejemplos que se retiran (Reisslein y otros 2006, en el fundacional). El resto queda por verificar.
+- **Sus fuentes.** Desde aquí no se pudieron abrir; la investigación externa las verificó (`docs/investigacion/verificacion-pogil-v2.md`). La de práctica mezclada es sólida: un ensayo con 54 aulas de 7.º grado dio 61 % contra 38 % un mes después (Rohrer y otros 2020).
 
 ### 5.8 La pregunta de seguridad y la regla que mantiene al alumno aprendiendo
 
@@ -346,12 +349,19 @@ Decisión de Gerson (13 nov): se agrega la pregunta de seguridad, para calibrar 
 
 **Las cuatro combinaciones.** Juntar acierto y seguridad dice más que cada uno por separado:
 
-| El alumno… | Qué es probable | Qué hace la app |
+| El alumno… | Con qué es compatible (no es un diagnóstico) | Qué hace la app |
 | --- | --- | --- |
-| Está seguro y acierta | Lo domina | Avanza, le retira apoyos y aleja el repaso |
-| Está seguro y falla | Tiene una idea equivocada firme. Es el caso más valioso | Le muestra su respuesta en la figura junto a la correcta, le da un contraejemplo y vuelve pronto sobre el tema |
-| Duda y acierta | Lo sabe a medias, o adivinó | Otro del mismo tipo sin apoyo, y repaso pronto |
-| Duda y falla | Le falta base | Un ejemplo completo o el desvío del prerrequisito, con un nivel más de apoyo |
+| Está seguro y acierta | Con que lo domine, aunque un acierto seguro no prueba que lo recuerde después | Avanza, le retira apoyos y aleja el repaso |
+| Está seguro y falla | Con una idea equivocada firme, o con un desliz. Es el caso que más conviene atender | Le muestra su respuesta en la figura junto a la correcta, le da un contraejemplo y vuelve pronto sobre el tema |
+| Duda y acierta | Con saberlo a medias, o con haber adivinado | Otro del mismo tipo sin apoyo, y repaso pronto |
+| Duda y falla | Con que le falte base, entre otras causas | Un ejemplo completo o el desvío del prerrequisito, con un nivel más de apoyo |
+
+**Lo que dice la evidencia** (`docs/investigacion/verificacion-pogil-v2.md`, bloque C):
+
+- Preguntar la seguridad **no mejora el aprendizaje por sí solo** (un estudio con alumnos de 11 a 13 años no halló efecto) y tampoco lo empeora. Sirve por lo que la app hace con el dato.
+- Los errores hechos con mucha seguridad se corrigen mejor cuando se les da una explicación. Eso respalda atender primero el caso «seguro y falla».
+- No hay estudio que diga si conviene una escala de tres niveles o de cuatro.
+- La franja de acierto, los dos fallos, los dos aciertos y los intervalos de repaso **no tienen estudio detrás**: son hipótesis de trabajo y se ajustan con los datos del piloto.
 
 **La regla.** Tiene que ser simple, siempre la misma ante lo mismo y explicable al alumno y al profesor; no un modelo opaco. Es el mismo espíritu de la regla 1.
 
@@ -430,7 +440,7 @@ Amplía las reglas de la otra conversación; el celular de 4 GB sigue siendo el 
 | Tamaño | La utilería ocupa una parte de la figura, no la pantalla entera |
 | Peso | Solo vectores, menos de 100 KB por archivo, pocos vértices (ojo con vectores generados o calcados) |
 | Efectos | Sin modos de fusión, sin difuminados, sin mallas ni huesos en la utilería |
-| Runtime | Es `@rive-app/canvas` 2.50.0: 684 KB de JS y 2,2 MB de wasm sin comprimir. Se baja una vez y solo si la escena trae `.riv`. Falta confirmar que `sw.js` lo deja disponible sin conexión |
+| Runtime | Es `@rive-app/canvas` 2.50.0: 684 KB de JS y 2,2 MB de wasm sin comprimir. Se baja una vez y solo si la escena trae `.riv`. Falta confirmar que `sw.js` lo deja disponible sin conexión. Ojo: hay un reporte de que las versiones 2.44.x iban a la mitad de velocidad que la 2.43.1 en una tableta Android barata; no se sabe si la 2.50 lo arregló, así que la prueba de estrés compara también con la 2.43.1 |
 | Canvas contra WebGL2 | Se queda canvas: no tiene límite de lienzos y no paga por las fusiones. Se pierde el difuminado fino, que igual no se usa |
 | Si el celular no puede | La escena detecta cuadros lentos y cambia al respaldo SVG. Hay que definir el umbral con la prueba de estrés |
 | Movimiento reducido | Estados fijos: el vaso aparece ya vertido, sin el vaivén |
@@ -531,11 +541,11 @@ Pedido de Gerson: la tabla tiene mucha historia, comparar los tipos de tabla con
 | 1. Toca | Recibe unas veinte cartas, cada una con su masa, la fórmula de su óxido y si es metal. Las ordena en fila por masa |
 | 2. Predice | «Si sigues la fila, ¿cada cuántas cartas vuelve a aparecer un metal que reacciona con el agua?» |
 | 3. Prueba y registra | Corta la fila donde las propiedades se repiten y apila los trozos: aparecen las columnas. Queda un hueco debajo del silicio. Con las cartas vecinas estima la masa y la densidad de la que falta |
-| 4. Nombra la regla | La app destapa la carta: el germanio, hallado en 1886, contra lo que Mendeléyev anunció en 1871 (masa de unos 72 y densidad de unos 5,5 g/cm³). Regla con fichas: las propiedades se repiten de forma periódica |
-| 3 y 4 otra vez | Dos cartas quedan mal por masa: el telurio y el yodo. Al reordenar por número atómico (Moseley, 1913) cada una cae en su columna. La ley periódica moderna ordena por número atómico |
+| 4. Nombra la regla | La app destapa la carta: el germanio. Winkler lo halló en 1886 y midió un peso atómico de 72,32 y una densidad de 5,469; Mendeléyev había anunciado en 1871 unos 72 y unos 5,5 g/cm³. Regla con fichas: las propiedades se repiten de forma periódica |
+| 3 y 4 otra vez | Dos cartas quedan mal por masa: el telurio y el yodo (el propio Mendeléyev sospechaba del peso del telurio). Al reordenar por número atómico (Moseley, 1913 y 1914) cada una cae en su columna. La ley periódica moderna ordena por número atómico |
 | 5. Transfiere | Un problema de ubicación de formato San Marcos |
 
-Las tríadas de Döbereiner y las octavas de Newlands entran como dos arreglos más de las mismas cartas, cada uno con el punto exacto donde deja de funcionar. Los datos de 1871 y 1886 ya están en el informe de ganchos de historia con su estado de verificación; se revisan otra vez antes de publicarlos.
+Las tríadas de Döbereiner (1829) y las octavas de Newlands (1864 y 1865) entran como dos arreglos más de las mismas cartas, cada uno con el punto exacto donde deja de funcionar. **Tres fechas que no se mezclan:** la tabla de 1869 solo dejaba el hueco («? = 70»); la predicción detallada es de 1871; el germanio llega en 1886. Y la inversión cobalto–níquel no se usa para 1869, porque en esa tabla los dos figuran con 59: sale con masas modernas. Las fuentes están en `docs/investigacion/verificacion-pogil-v2.md`, bloque B, y se contrastan con el informe de ganchos de historia antes de publicar.
 
 **La lección de propiedades: caminar por la tabla.** El alumno predice («¿quién es más grande, el sodio o el magnesio?»), camina con el dedo por el periodo y ve el perfil dibujarse. Registra tres tramos y arma la regla. Lo importante es la explicación con dos factores, porque el informe de ideas erróneas dice que los alumnos explican con uno solo (TP7) o con «subcapa llena es estable» (TP5, TP6). Por eso al caminar se ve el átomo: en un periodo entra un protón más y el radio se cierra; al bajar por un grupo entra una capa más.
 
@@ -543,7 +553,11 @@ Las tríadas de Döbereiner y las octavas de Newlands entran como dos arreglos m
 
 **Dónde va el gasto «sin ahorrar»:**
 
-- **Los datos.** La escena de hoy (`atomo-y-tabla`) llega hasta el elemento 36 y sus valores se contrastaron solo en parte con fuentes secundarias. **Decidido por Gerson (13 nov):** la tabla llega hasta el último elemento del que haya información completa en la IUPAC o en fuentes científicas verificables. En la práctica son dos reglas. Primera: las casillas son las de la tabla de la IUPAC, con símbolo, nombre, número atómico y masa atómica estándar. Segunda: cada propiedad (radio, energía de ionización, electronegatividad, afinidad) llega hasta donde exista un valor medido y citado; donde no lo hay, la casilla dice «sin dato» y no se pone una estimación. Cada valor guarda su fuente. Desde este entorno no se pudo abrir iupac.org: la verificación se hace en una sesión con acceso.
+- **Los datos.** La escena de hoy (`atomo-y-tabla`) llega hasta el elemento 36 y sus valores se contrastaron solo en parte con fuentes secundarias. **Decidido por Gerson (13 nov):** la tabla llega hasta donde haya información completa en la IUPAC o en fuentes científicas verificables. La investigación externa mostró que no hay un solo «hasta qué elemento»: cada propiedad tiene su alcance y su tipo. Quedan cuatro reglas:
+  1. Las casillas son las 118 de la tabla de la IUPAC, con símbolo, nombre y número atómico.
+  2. La masa es el peso atómico estándar donde existe. Los elementos sin isótopos estables no lo tienen: ahí va el número másico entre corchetes, rotulado como tal.
+  3. Cada propiedad dice de qué tipo es su valor: **medido** (energía de ionización, hasta el lawrencio; afinidad electrónica, con huecos, hasta el uranio), **derivado de una escala** (la electronegatividad no se mide: se usa la escala de Pauling, que es la que nombra la UNI) o **calculado** (parte de los radios; hay que decir además qué radio es).
+  4. Donde no hay valor medido o derivado con fuente, la casilla dice «sin dato». Nunca una estimación disfrazada. Cada valor guarda su fuente.
 - **La carta en tres tamaños:** casilla de 20 px, casilla de 45 px y carta completa.
 - **Las transiciones entre arreglos,** que son la lección de historia.
 
@@ -581,7 +595,7 @@ Costos y límites:
 - **Son tres sesiones,** no una: actos 1 y 2, acto 3 y actos 4 y 5.
 - **Rive:** solo utilería que ya existe (el foco, el mechero y el gotero para el chorrito). La nube, la cuerda y los globos se calculan y los dibuja el kit. Una nube con bordes suaves en Rive pide difuminado, que es justo lo que se descartó para gama baja.
 - **Hay que verificar** la curva del acto 1, los valores de electronegatividad y los puntos de ebullición contra fuentes primarias, y decidir qué escala de electronegatividad se usa (la que use el examen).
-- **Que formar el enlace suelta energía** como idea errónea frecuente no está en el informe del repo: se busca su fuente antes de usarla como argumento.
+- **«Romper un enlace libera energía»** es la idea errónea, y está documentada (Galley 2004: más del 80 % de universitarios atribuía el calor de una combustión a romper enlaces). Lo correcto es lo que muestra el acto 1: formar el enlace libera energía y romperlo cuesta. Una versión anterior de esta línea lo decía al revés.
 
 ### 7.5 MRU y MRUV: el carrito y la pista (la primera unidad que se construye)
 
@@ -649,7 +663,7 @@ Cómo leer las tablas:
 | 15 | Corriente y circuitos | D | D+E | Conectar: arma el circuito con el dedo y saca un foco | En serie se reparten el voltaje; en paralelo cada foco brilla igual | Foco y pila |
 | 16 | Campo y fuerza magnética | B | D+C | Girar: pasea la brújula alrededor del cable; lanza la carga | La carga quieta no siente nada; la fuerza va de costado | Imán y brújula |
 | 17 | Inducción electromagnética | B | D+C | Estirar: mete y saca el imán de la espira, rápido o lento | El foquito prende solo mientras el flujo cambia | Imán y foco |
-| 18 | Ondas electromagnéticas | D | C+R | Ordenar: recorre el espectro; cruza el rayo a otro medio | Todas viajan a c; al cambiar de medio cambia λ, no f | — |
+| 18 | Ondas electromagnéticas | D | C+R | Ordenar: recorre el espectro; cruza el rayo a otro medio | En el vacío todas viajan a c; al cambiar de medio cambia λ, no f | — |
 | 19 | Óptica geométrica | A | D+E | Estirar: mueve el objeto y la lente; dobla la hoja en el espejo | La imagen cambia de lado al cruzar el foco | — |
 | 20 | Física moderna | D | D+R | Girar: dos perillas en la lámpara, una para el color y otra para el brillo | El brillo da más electrones; el color, más energía; bajo el umbral no sale nada | Foco |
 
@@ -838,7 +852,7 @@ Aquí el modelo es el texto y no hay fenómeno que animar. El gesto se hace sobr
 | 9 | Tema e idea principal | G | A+C | Marcar: tapa una oración y mira si el texto se cae | La idea principal es la que no se puede quitar |
 | 10 | Resumen y síntesis | G | E+A | Marcar: tacha hasta dejar lo mínimo | Resumir es quitar sin cambiar lo que se afirma |
 | 11 | Textos discontinuos | G | E+A | Marcar en el gráfico de dónde sale el dato | La respuesta está en el cruce de fila y columna |
-| 12 | Inferencias | G | A+E | Marcar las dos frases que sostienen la conclusión | Inferir es unir dos cosas dichas, no adivinar |
+| 12 | Inferencias | G | A+E | Marcar en el texto lo que sostiene la conclusión | Inferir es sacar una conclusión que el texto sostiene pero no dice; no es adivinar |
 | 13 | Compatibilidad | G | C+A | Clasificar: lo dice, lo contradice o no lo dice | «No lo dice» no es «lo niega» |
 | 14 | Extrapolación | G | A+C | Poner fichas: cambia una condición del texto | Qué conclusión cambia y cuál se mantiene |
 | 15 | Argumentativos y dialécticos | G | A+C | Clasificar: tesis, argumento y contraargumento; quién lo dice | Dos autores pueden coincidir en el dato y no en la tesis |
@@ -869,22 +883,22 @@ Una variable por versión, como pide el skill. Cada versión tiene una decisión
 
 **La hipótesis de fondo y su prueba.** Hipótesis: en una misma unidad, POGIL v2 da mejor resultado en los ítems de transferencia que el paso a paso de hoy. La app ya tiene con qué comprobarlo: pruebas de entrada y salida con formas paralelas y ganancia de Hake. En el piloto, una sección usa la versión de hoy y otra la v2 de la misma unidad. Con un colegio y dos secciones el resultado es una señal, no una prueba.
 
-**Alcance del piloto.** Decidido por Gerson (13 nov): **todas las unidades entran con el formato nuevo,** empezando por MRU y MRUV. Lo digo de frente: rehacer 152 unidades con gesto propio antes de diciembre no es realista, y la tanda del 8 al 12 de noviembre ya mostró lo que cuesta escalar sin tope. Para que la decisión se pueda cumplir, propongo entender «formato nuevo» en tres niveles y decidir cuál recibe cada unidad:
+**Alcance del piloto.** Decidido por Gerson (13 nov): **todas las unidades entran con el formato nuevo,** empezando por MRU y MRUV. En una versión anterior de este párrafo objeté el alcance por costo, y estaba mal informado: Gerson aclaró que hay capital para tres planes de IA de 200 USD al mes durante tres meses, hasta el despliegue. El dinero no limita. Lo que sí hay que cuidar es el calendario, los límites semanales de cada plan y que nada se publique sin sus pruebas. Las tres capas de abajo quedan como **orden de trabajo**, no como recorte: toda unidad pasa por la primera, y las que corresponde siguen hasta la segunda y la tercera.
 
-| Nivel | Qué cambia | A cuántas unidades | Costo |
+| Nivel | Qué cambia | A cuántas unidades | Cuánto trabajo |
 | --- | --- | --- | --- |
-| 1. Formato | Una pantalla, una pregunta; presupuesto de texto; predicción neutra; registro de lo que el alumno probó; problema de examen al final. La escena y su control siguen siendo los de hoy | Las 152 | El más bajo: es reordenar, no rehacer |
-| 2. Gesto | Además, el control pasa a ser el gesto de la unidad | Las 83 de ruta descubrir, empezando por las 24 de física y química que hoy usan deslizador | Medio: toca la escena |
-| 3. Utilería | Además, el objeto que se agarra va en Rive | Las 32 del catálogo de la sección 6.2 | El más alto: dibujo y animación |
+| 1. Formato | Una pantalla, una pregunta; presupuesto de texto; predicción neutra; registro de lo que el alumno probó; problema de examen al final. La escena y su control siguen siendo los de hoy | Las 152 | El trabajo más corto: es reordenar, no rehacer |
+| 2. Gesto | Además, el control pasa a ser el gesto de la unidad | Las 83 de ruta descubrir, empezando por las 24 de física y química que hoy usan deslizador | Mediano: toca la escena |
+| 3. Utilería | Además, el objeto que se agarra va en Rive | Las 32 del catálogo de la sección 6.2 | El más largo: dibujo y animación |
 
-MRU y MRUV se hace completa, en los tres niveles, y sirve de molde. Después se escala con rutinas, con tope de gasto y máximo tres en paralelo, como manda `docs/pendientes.md`.
+MRU y MRUV se hace completa, en los tres niveles, y sirve de molde. Después se escala con rutinas en paralelo, hasta donde den los planes.
 
 **La unidad de la versión A.** Decidido: MRU y MRUV, que es de 3.º. Ácidos y bases es de 5.º y pasa a ser una de las siguientes.
 
 ## 10. Riesgos y lo que no se verificó
 
 - **Costo de producción.** Decidido por Gerson (13 nov): los archivos de Rive se harán con un MCP y con IA generativa. Eso baja el costo de dibujar, pero no quita los controles: cada archivo tiene que cumplir su contrato (nombres de entradas), pesar menos de 100 KB, no llevar difuminados ni mallas, pasar la prueba de fidelidad y tener su respaldo SVG. Ojo con los vectores generados: suelen traer miles de vértices, y la documentación de Rive los señala como causa de lentitud. Sin esa vía, cada utilería es dibujo y animación a mano en el editor de Rive, más su contrato, su respaldo SVG y su prueba de fidelidad. Quince archivos bien hechos son varias semanas de alguien. Existe además la línea de comandos de Rive, con la que un agente escribe la escena como texto; desde este entorno no se pudo probar porque el servidor de descarga está bloqueado.
-- **Plan de Rive.** El plan gratis exporta con la pantalla de inicio de Rive. Para producción hace falta Cadet (108 USD al año según su documentación; confirmar en su web). Hay que confirmar también que el enlace de datos funciona en el runtime 2.50.0 que ya está en `app/vendor/rive/`.
+- **Plan de Rive.** El plan gratis sí exporta para usar en la app, con la pantalla de inicio de Rive, e incluye máquinas de estados y enlace de datos. Cadet (17 USD al mes o 108 al año por asiento) quita esa pantalla. Según la documentación, el enlace de datos funciona en el runtime web desde la versión 2.26.6, así que la 2.50.0 de `app/vendor/rive/` lo trae; falta probarlo con un archivo de Mesa.
 - **El gesto puede volverse un juguete.** Verter es divertido; si el alumno vierte veinte veces y no llega a la regla, el gesto se comió la lección. Por eso los ensayos son 3 o 4 y la regla es un tiempo aparte.
 - **Detalles seductores.** Toda utilería nueva tiene que contestar: «si se quita, ¿qué se pierde?». Si la respuesta es «se ve menos bonito», no entra.
 - **Accesibilidad.** Un gesto que solo se puede hacer arrastrando deja fuera a alumnos y a las PC sin pantalla táctil del laboratorio. La alternativa sin arrastrar no es opcional.
@@ -892,7 +906,7 @@ MRU y MRUV se hace completa, en los tres niveles, y sirve de molde. Después se 
 - **Apilar técnicas.** Con cinco rutas es fácil querer usar las cinco en cada unidad. La regla es una principal y una de apoyo.
 - **La ruta puede estar mal asignada.** Si en la prueba con alumnos una unidad de ruta D se resuelve mejor con un ejemplo, se cambia la ruta y no se fuerza el gesto.
 - **Dos correcciones ya decididas** (sección 5.7): la regla de lectura está cambiada y falta revisar los ítems; la pregunta de seguridad está planeada (5.8). Las dos cambian datos que ya se miden: lo medido antes y después no se compara sin cuidado.
-- **No verificado:** nada se probó con alumnos, ni en un celular físico, ni con lector de pantalla. La detección de «se arrastra» es automática y aproximada. Las relaciones de la columna «lo que descubre» son propuestas sin contrastar con los informes de ideas erróneas. No se leyó material de pogil.org (sigue pendiente en la visión) ni se pudieron abrir las fuentes de la segunda opinión. Las cifras sobre animación del skill no se rastrearon a su fuente.
+- **No verificado:** nada se probó con alumnos, ni en un celular físico, ni con lector de pantalla. La detección de «se arrastra» es automática y aproximada. Las relaciones de la columna «lo que descubre» son propuestas sin contrastar con los informes de ideas erróneas. Las fuentes las verificó una investigación externa (`docs/investigacion/verificacion-pogil-v2.md`), pero nadie del proyecto las abrió todavía.
 
 ## Reporte de diseño
 

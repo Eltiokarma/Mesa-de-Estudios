@@ -71,7 +71,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 2. MRU, MRUV y caída libre
 
@@ -90,7 +90,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 3. Movimiento parabólico y circular
 
@@ -108,7 +108,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 4. Estática: equilibrio y torque
 
@@ -126,7 +126,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 5. Dinámica
 
@@ -144,7 +144,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 6. Gravitación universal
 
@@ -162,7 +162,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 7. Trabajo, energía y potencia
 
@@ -180,7 +180,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 8. Impulso, cantidad de movimiento y choques
 
@@ -198,7 +198,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 9. Movimiento armónico simple
 
@@ -216,7 +216,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 10. Ondas mecánicas y sonido
 
@@ -234,7 +234,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 11. Fluidos
 
@@ -252,7 +252,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 12. Temperatura y calor
 
@@ -270,7 +270,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 13. Termodinámica
 
@@ -288,7 +288,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 14. Electrostática
 
@@ -306,7 +306,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 15. Corriente eléctrica y circuitos
 
@@ -324,7 +324,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 16. Campo y fuerza magnética
 
@@ -342,7 +342,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 17. Inducción electromagnética
 
@@ -360,7 +360,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 18. Ondas electromagnéticas
 
@@ -372,13 +372,13 @@
 - **Hoy:** el control es un deslizador.
 - **Ruta:** comparar, con apoyo de recordar.
 - **Gesto:** Ordenar: recorre el espectro; cruza el rayo a otro medio.
-- **Lo que descubre:** Todas viajan a c; al cambiar de medio cambia λ, no f.
+- **Lo que descubre:** En el vacío todas viajan a c; al cambiar de medio cambia λ, no f.
 - **Rive:** — (kit y mascota).
 - **Ideas erróneas:** `docs/investigacion/ondas-electromagneticas-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** Indicio parcial: un tutorial con analogías mejoró un concepto de onda. Error documentado: confundir las ondas de radio con el sonido. «Todas viajan a c» lleva siempre «en el vacío». Detalle y fuentes: `docs/investigacion/verificacion-pogil-v2.md`, bloque F.
 
 ### 19. Óptica geométrica
 
@@ -396,7 +396,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 20. Física moderna
 
@@ -414,7 +414,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 
 ## Química (20 unidades)
@@ -452,7 +452,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 2. Estructura atómica
 
@@ -470,7 +470,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** Indicio parcial: una intervención de indagación le ganó a la enseñanza tradicional en partículas subatómicas (45 alumnos de 14 y 15 años). En orbitales, recordar el llenado no demuestra entender el modelo. La ruta propuesta no queda confirmada ni descartada. Detalle y fuentes: `docs/investigacion/verificacion-pogil-v2.md`, bloque F.
 
 ### 3. Tabla periódica
 
@@ -489,7 +489,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 4. Enlace químico y fuerzas intermoleculares
 
@@ -508,7 +508,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 5. Nomenclatura inorgánica
 
@@ -526,7 +526,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 6. Mol, masa molar y composición
 
@@ -544,7 +544,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 7. Reacciones químicas y balance
 
@@ -562,7 +562,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 8. Estequiometría
 
@@ -580,7 +580,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 9. Estado gaseoso
 
@@ -598,7 +598,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 10. Líquidos, sólidos y cambios de estado
 
@@ -616,7 +616,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 11. Soluciones y coloides
 
@@ -634,7 +634,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 12. Cinética química
 
@@ -652,7 +652,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 13. Equilibrio químico
 
@@ -670,7 +670,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 14. Ácidos y bases
 
@@ -689,7 +689,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 15. Electroquímica
 
@@ -707,7 +707,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 16. Química orgánica: hidrocarburos
 
@@ -725,7 +725,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** Indicio parcial: los modelos físicos y virtuales mejoraron la lectura espacial y la isomería. Error documentado: creer que solo hay isómeros dentro de la misma función. Detalle y fuentes: `docs/investigacion/verificacion-pogil-v2.md`, bloque F.
 
 ### 17. Funciones orgánicas oxigenadas y nitrogenadas
 
@@ -743,7 +743,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 18. Biomoléculas y productos naturales
 
@@ -761,7 +761,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 19. Petróleo y recursos naturales
 
@@ -779,7 +779,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 20. Contaminación ambiental y química aplicada
 
@@ -797,7 +797,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 
 ## Aritmética (19 unidades)
@@ -831,7 +831,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 2. Conjuntos
 
@@ -849,7 +849,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 3. Razones y proporciones
 
@@ -867,7 +867,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 4. Magnitudes proporcionales y reparto
 
@@ -885,7 +885,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 5. Tanto por ciento y operaciones comerciales
 
@@ -903,7 +903,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 6. Interés y descuento
 
@@ -921,7 +921,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 7. Mezclas y aleaciones
 
@@ -939,7 +939,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 8. Estadística descriptiva
 
@@ -957,7 +957,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 9. Análisis combinatorio
 
@@ -975,7 +975,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** Indicio parcial (115 alumnos de 15 a 18 años): las dificultades son enumerar incompleto, elegir la fórmula y decidir qué cuenta como resultado distinto. Detalle y fuentes: `docs/investigacion/verificacion-pogil-v2.md`, bloque F.
 
 ### 10. Probabilidades
 
@@ -993,7 +993,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 11. Sistemas de numeración
 
@@ -1011,7 +1011,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 12. Las cuatro operaciones
 
@@ -1029,7 +1029,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 13. Divisibilidad
 
@@ -1047,7 +1047,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 14. Números primos y divisores
 
@@ -1065,7 +1065,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 15. MCD y MCM
 
@@ -1083,7 +1083,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 16. Números racionales, fracciones y decimales
 
@@ -1101,7 +1101,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 17. Potenciación y radicación
 
@@ -1119,7 +1119,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 18. Sucesiones y series numéricas
 
@@ -1137,7 +1137,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 19. Problemas de razonamiento numérico
 
@@ -1155,7 +1155,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 
 ## Álgebra (19 unidades)
@@ -1189,7 +1189,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 2. Números reales e intervalos
 
@@ -1207,7 +1207,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 3. Exponentes, radicales y productos notables
 
@@ -1225,7 +1225,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** Ojo con el gesto: en una comparación, las baldosas algebraicas no le ganaron a la enseñanza convencional y el cuadro de multiplicar sí (estudio débil). El cuadro de multiplicar es candidato a «otra forma de explicarla». Error documentado: omitir el término cruzado. Detalle y fuentes: `docs/investigacion/verificacion-pogil-v2.md`, bloque F.
 
 ### 4. Ecuaciones de primer y segundo grado
 
@@ -1243,7 +1243,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 5. Inecuaciones
 
@@ -1261,7 +1261,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 6. Valor absoluto y ecuaciones con radicales
 
@@ -1279,7 +1279,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 7. Polinomios
 
@@ -1297,7 +1297,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 8. División de polinomios y cocientes notables
 
@@ -1315,7 +1315,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 9. Factorización
 
@@ -1333,7 +1333,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 10. Ecuaciones polinomiales
 
@@ -1351,7 +1351,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 11. Funciones y sus gráficas
 
@@ -1369,7 +1369,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 12. Tipos de funciones y función inversa
 
@@ -1387,7 +1387,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 13. Exponenciales y logaritmos
 
@@ -1405,7 +1405,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 14. Números complejos
 
@@ -1423,7 +1423,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 15. Matrices y determinantes
 
@@ -1441,7 +1441,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 16. Sistemas de ecuaciones
 
@@ -1459,7 +1459,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 17. Inecuaciones con dos variables y programación lineal
 
@@ -1477,7 +1477,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 18. Sucesiones y series
 
@@ -1495,7 +1495,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 19. Binomio de Newton
 
@@ -1513,7 +1513,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 
 ## Geometría (18 unidades)
@@ -1547,7 +1547,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 2. Triángulos y líneas notables
 
@@ -1565,7 +1565,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 3. Congruencia de triángulos
 
@@ -1583,7 +1583,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 4. Polígonos y cuadriláteros
 
@@ -1601,7 +1601,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 5. Circunferencia y ángulos en ella
 
@@ -1619,7 +1619,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 6. Proporcionalidad y semejanza
 
@@ -1637,7 +1637,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 7. Puntos notables del triángulo
 
@@ -1655,7 +1655,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 8. Relaciones métricas
 
@@ -1673,7 +1673,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 9. Polígonos regulares
 
@@ -1691,7 +1691,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 10. Simetría en el plano y en el espacio
 
@@ -1709,7 +1709,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 11. Áreas de regiones triangulares y cuadrangulares
 
@@ -1727,7 +1727,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 12. Longitud de la circunferencia y áreas circulares
 
@@ -1745,7 +1745,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 13. Rectas y planos en el espacio
 
@@ -1763,7 +1763,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 14. Poliedros
 
@@ -1781,7 +1781,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 15. Prisma y pirámide
 
@@ -1799,7 +1799,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 16. Cilindro, cono y esfera
 
@@ -1817,7 +1817,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 17. Geometría analítica
 
@@ -1835,7 +1835,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 18. Razonamiento con figuras
 
@@ -1853,7 +1853,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 
 ## Trigonometría (19 unidades)
@@ -1888,7 +1888,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 2. Longitud de arco y sector circular
 
@@ -1906,7 +1906,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 3. Razones trigonométricas de ángulos agudos
 
@@ -1924,7 +1924,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 4. Resolución de triángulos rectángulos
 
@@ -1942,7 +1942,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 5. Plano cartesiano y la recta
 
@@ -1960,7 +1960,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 6. Ángulos en posición normal
 
@@ -1978,7 +1978,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 7. Reducción al primer cuadrante
 
@@ -1996,7 +1996,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 8. Circunferencia trigonométrica
 
@@ -2014,7 +2014,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 9. Identidades trigonométricas fundamentales
 
@@ -2032,7 +2032,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** Indicio parcial: apoyar las reglas en la circunferencia favoreció la transferencia frente a las reglas formales (universitarios). Sugiere no dejar esta unidad solo en ejemplo y memoria. Detalle y fuentes: `docs/investigacion/verificacion-pogil-v2.md`, bloque F.
 
 ### 10. Suma y diferencia de ángulos
 
@@ -2050,7 +2050,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 11. Ángulo doble, mitad y triple
 
@@ -2068,7 +2068,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 12. Transformaciones y series trigonométricas
 
@@ -2086,7 +2086,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 13. Funciones trigonométricas
 
@@ -2104,7 +2104,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 14. Funciones trigonométricas inversas
 
@@ -2122,7 +2122,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 15. Ecuaciones trigonométricas
 
@@ -2140,7 +2140,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 16. Resolución de triángulos oblicuángulos
 
@@ -2158,7 +2158,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 17. Áreas y líneas notables con trigonometría
 
@@ -2176,7 +2176,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 18. Lugar geométrico y cónicas
 
@@ -2194,7 +2194,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 19. Coordenadas polares y números complejos
 
@@ -2212,7 +2212,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 
 ## Razonamiento matemático (19 unidades)
@@ -2246,7 +2246,7 @@
 - **Otras formas de explicarla:** Armar el árbol familiar · Cuadro de doble entrada con descarte · «Una persona, varios papeles» (padre e hijo a la vez) para hallar el mínimo de personas.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 2. Trazos de figuras y perímetros
 
@@ -2264,7 +2264,7 @@
 - **Otras formas de explicarla:** Contar cuántas líneas llegan a cada vértice (pares e impares) · Probar con el dedo y ver dónde se traba · La historia de los puentes de Königsberg · Para perímetros: correr los lados de la escalera hasta formar un rectángulo.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 3. Ordenamiento de información
 
@@ -2282,7 +2282,7 @@
 - **Otras formas de explicarla:** Fichas en una fila o alrededor de la mesa · Cuadro de doble entrada · Empezar por la pista que fija más (el dato ancla) · Probar un caso y descartar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 4. Verdades y mentiras
 
@@ -2300,7 +2300,7 @@
 - **Otras formas de explicarla:** Suponer y buscar la contradicción · Tabla de quién dice qué · Buscar dos frases que se contradicen: una es verdad y la otra no · Personajes que se voltean.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 5. Traslados y puntos cardinales
 
@@ -2318,7 +2318,7 @@
 - **Otras formas de explicarla:** Camino sobre la cuadrícula · Sumar por separado norte-sur y este-oeste · La flecha del inicio al final (Pitágoras) · El plano de una ciudad conocida.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 6. Arreglos numéricos y cuadrados mágicos
 
@@ -2336,7 +2336,7 @@
 - **Otras formas de explicarla:** Suma total entre el número de filas · Parejas que suman lo mismo · Girar y reflejar el cuadrado para ver que es el mismo · Contar dos veces las casillas de las esquinas.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 7. Razonamiento inductivo
 
@@ -2354,7 +2354,7 @@
 - **Otras formas de explicarla:** Tres casos chicos en una tabla · La figura que crece: mirar qué se agrega · Contar lo mismo de dos maneras · Proponer la fórmula y probarla con el caso 4.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 8. Elementos recreativos
 
@@ -2372,7 +2372,7 @@
 - **Otras formas de explicarla:** El dado desplegado en cruz · Palitos: mover uno y contar · Buscar lo que no cambia (pares e impares) · Resolver de atrás hacia adelante.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 9. Relojes y calendarios
 
@@ -2390,7 +2390,7 @@
 - **Otras formas de explicarla:** Las agujas como dos corredores en una pista redonda · Tabla de adelanto y atraso por hora · Calendario: el resto de dividir entre 7 · Línea de tiempo.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 10. Certezas
 
@@ -2408,7 +2408,7 @@
 - **Otras formas de explicarla:** El peor caso: la mala suerte máxima y uno más · Casilleros y palomas · Jugar contra alguien que siempre te da lo peor · Tabla de lo que ya salió.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 11. Frecuencia de sucesos
 
@@ -2426,7 +2426,7 @@
 - **Otras formas de explicarla:** Línea de tiempo con marcas: hay un intervalo menos que marcas · MCM para saber cuándo coinciden · Campanadas: se cuentan los silencios, no los golpes · Dos tiras de papel con marcas.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 12. Ruedas, poleas y engranajes
 
@@ -2444,7 +2444,7 @@
 - **Otras formas de explicarla:** Contar los dientes que pasan por el contacto · Proporción inversa entre dientes y vueltas · Sentido de giro: ruedas pares e impares de la cadena · Misma faja, misma rapidez en el borde.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 13. Máximos y mínimos
 
@@ -2462,7 +2462,7 @@
 - **Otras formas de explicarla:** Tabla de valores y buscar el pico · Con el mismo cordel, comparar figuras · El reflejo para el camino más corto · Completar cuadrados · Probar los casos extremos.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 14. Cortes, pesadas y balanzas
 
@@ -2480,7 +2480,7 @@
 - **Otras formas de explicarla:** Cortar de verdad: en una soga, un corte menos que pedazos; en un aro, igual número · Estacas en fila · La balanza tiene tres resultados: por eso salen potencias de 3 · Doblar antes de cortar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 15. Planteo de ecuaciones
 
@@ -2498,7 +2498,7 @@
 - **Otras formas de explicarla:** La balanza · Barras o segmentos para cada cantidad · Cuadro de antes, ahora y después (edades) · Falsa suposición · La ecuación al final.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 16. Movimiento y comparación de figuras
 
@@ -2516,7 +2516,7 @@
 - **Otras formas de explicarla:** Papel calco que gira · Marcar una esquina y seguirla · El espejo: voltear cambia la mano de la figura · Rodar con una marca para contar vueltas.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 17. Rutas y visualización espacial
 
@@ -2534,7 +2534,7 @@
 - **Otras formas de explicarla:** Sumar en cada cruce los caminos que llegan · Tres vistas: frente, lado y arriba · Desarmar el cubo por capas · Desplegar la caja para el camino de la hormiga.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 18. Tablas, gráficos y suficiencia de datos
 
@@ -2552,7 +2552,7 @@
 - **Otras formas de explicarla:** Leer primero los ejes y las unidades · Pasar el gráfico a tabla · Suficiencia: probar con cada dato solo y luego con los dos · Fabricar un caso donde el dato no alcanza.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 19. Diagramas de flujo y operadores
 
@@ -2570,7 +2570,7 @@
 - **Otras formas de explicarla:** La máquina de entrada y salida · Seguir un número con el dedo · Tabla de pasadas cuando hay un ciclo · El operador como receta que se aplica dos veces.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 
 ## Razonamiento verbal (18 unidades)
@@ -2604,7 +2604,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 2. Analogías
 
@@ -2622,7 +2622,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 3. Precisión léxica y sentido contextual
 
@@ -2640,7 +2640,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 4. Conectores lógico-textuales
 
@@ -2658,7 +2658,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 5. Eliminación de oraciones
 
@@ -2676,7 +2676,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 6. Plan de redacción
 
@@ -2694,7 +2694,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 7. Cohesión y coherencia textual
 
@@ -2712,7 +2712,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 8. El texto y sus tipos
 
@@ -2730,7 +2730,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 9. Tema central e idea principal
 
@@ -2748,7 +2748,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 10. Resumen y síntesis
 
@@ -2766,7 +2766,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 11. Textos discontinuos e infografías
 
@@ -2784,7 +2784,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 12. Inferencias
 
@@ -2795,14 +2795,14 @@
 - **Prácticas que ya existen:** `lectura-verbal`.
 - **Hoy:** sin escena: solo práctica o lectura.
 - **Ruta:** argumentar, con apoyo de seguir un ejemplo.
-- **Gesto:** Marcar las dos frases que sostienen la conclusión.
-- **Lo que descubre:** Inferir es unir dos cosas dichas, no adivinar.
+- **Gesto:** Marcar en el texto lo que sostiene la conclusión.
+- **Lo que descubre:** Inferir es sacar una conclusión que el texto sostiene pero no dice; no es adivinar.
 - **Rive:** — (kit y mascota).
 - **Ideas erróneas:** `docs/investigacion/razonamiento-verbal-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 13. Compatibilidad e incompatibilidad
 
@@ -2820,7 +2820,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 14. Extrapolación y lectura crítica
 
@@ -2838,7 +2838,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 15. Textos argumentativos, dialécticos y debate
 
@@ -2856,7 +2856,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 16. Texto y contexto
 
@@ -2874,7 +2874,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 17. Textos filosóficos y científicos
 
@@ -2892,7 +2892,7 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
 
 ### 18. Lectura en inglés
 
@@ -2910,4 +2910,4 @@
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.
-- **Notas de investigación:**
+- **Notas de investigación:** 
