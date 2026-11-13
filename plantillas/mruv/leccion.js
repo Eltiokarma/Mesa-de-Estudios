@@ -52,10 +52,11 @@
   const redondo = x => Math.round(x * 1e6) / 1e6;
 
   // Parte 1: una corrida de MRU desde x = 0. Dura hasta llegar al final de la pista o hasta TMAX.
-  function corridaMRU(v) {
-    const o = { x0: 0, v0: v, a: 0 };
+  // x0: donde el alumno soltó el carrito (lo arrastra unos metros antes de soltarlo).
+  function corridaMRU(v, x0 = 0) {
+    const o = { x0, v0: v, a: 0 };
     const m = M.movil(o);
-    const dur = Math.min(TMAX, LARGO / v);
+    const dur = Math.min(TMAX, (LARGO - x0) / v);
     return { tipo: 'mru', v, motor: o, dur, marcas: marcas(m, dur), x: t => m.x(Math.min(t, dur)), vel: () => v };
   }
 
@@ -128,6 +129,15 @@
       opciones: [
         { id: 'mas-separadas', texto: 'más separadas', correcta: true },
         { id: 'mas-juntas', texto: 'más juntas', error: 'rapidez-junta', explica: 'Juntas sería cierto si en cada segundo avanzara menos.' },
+        { id: 'igual', texto: 'igual que antes', error: 'marca-tiempo', explica: 'Igual sería cierto si el empujón no cambiara la rapidez.' },
+      ],
+    },
+    // La misma, si el primer empujón ya fue el más fuerte (6 m/s): se compara con uno más suave.
+    separacionSuave: {
+      pregunta: 'Con un empujón más suave, las marcas de cada segundo quedarán…',
+      opciones: [
+        { id: 'mas-juntas', texto: 'más juntas', correcta: true },
+        { id: 'mas-separadas', texto: 'más separadas', error: 'rapidez-junta', explica: 'Separadas sería cierto si en cada segundo avanzara más.' },
         { id: 'igual', texto: 'igual que antes', error: 'marca-tiempo', explica: 'Igual sería cierto si el empujón no cambiara la rapidez.' },
       ],
     },

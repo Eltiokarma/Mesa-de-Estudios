@@ -11,7 +11,8 @@
  *   carriles: [{ x, variante: 'a' | 'b', marcas: [x, …], flecha: { a } , rotulo }],   // uno o dos
  *   bandera: { x, rotulo } | null,  // la predicción del alumno (dónde se encuentran)
  *   encuentro: { x, rotulo } | null,// dónde se encontraron de verdad (lo calcula el motor)
- *   registro: [{ marcas: [x, …], rotulo }],   // corridas anteriores, una tira por corrida (máximo 3)
+ *   registro: [{ marcas: [x, …], rotulo }],   // corridas anteriores, una tira por corrida
+ *   filas: 3,                       // cuántas tiras reserva el registro (las últimas; el alto no cambia)
  * }
  * Todo número que se ve lo trae quien llama: la pieza solo convierte metros a píxeles.
  *
@@ -30,7 +31,7 @@
 })(typeof self !== 'undefined' ? self : this, function (Kit, T) {
   'use strict';
   const W = 320, PX0 = 28, PX1 = 292;          // la regla: de 0 a largo metros entre PX0 y PX1
-  const CARRIL0 = 58, ENTRE = 54;              // piso del primer carril y separación entre carriles
+  const CARRIL0 = 50, ENTRE = 54;              // piso del primer carril y separación entre carriles
   const CW = 48, CH = 26, RR = 6;              // carrito provisional: ancho, alto y radio de rueda (px)
   const COLOR = { x: 'i', a: 'd' };            // x turquesa, a verde (tokens de variable del kit)
 
@@ -41,9 +42,9 @@
   function geometria(d) {
     const n = Math.max(1, (d.carriles || []).length);
     const regla = pisoDe(n - 1) + 22;
-    const registro = regla + 46;
+    const registro = regla + 64;
     // Con registro, el alto reserva siempre las 3 tiras: que aparezca una corrida nueva no mueve nada.
-    const filas = Array.isArray(d.registro) ? 3 : 0;
+    const filas = Array.isArray(d.registro) ? (d.filas > 0 ? d.filas : 3) : 0;
     return { regla, registro, alto: registro + filas * 24 + (filas ? 4 : 0), X: x => X(d, x), piso: pisoDe };
   }
 
@@ -86,7 +87,7 @@
       rr += T.linea(X(d, m), g.regla, X(d, m), g.regla + (grande ? 8 : 4), { grosor: T.GROSOR.cuadricula, opacidad: grande ? 1 : 0.6 });
       if (grande) rr += T.rotulo(X(d, m), g.regla + 24, Kit.formatear(m, 0), { ancla: 'middle', clase: 'kit-num' });
     }
-    rr += T.rotulo(PX1 + 26, g.regla + 24, 'x (m)', { color: COLOR.x, peso: 700, ancla: 'end' });
+    rr += T.rotulo(PX1 + 26, g.regla + 42, 'x (m)', { color: COLOR.x, peso: 700, ancla: 'end' });
     s += `<g class="kit-regla">${rr}</g>`;
     // Marcas de cada segundo: puntos sobre el piso del carril, en el color de x (son posiciones).
     carriles.forEach((c, k) => { for (const m of c.marcas || []) s += punto(X(d, m), pisoDe(k) + 6, COLOR.x); });
@@ -114,7 +115,7 @@
       s += `<g class="kit-carrito kit-carrito-${k}" transform="${m.carrito}">${carrito(c.variante)}${fl}</g>`;
     });
     // Registro: una tira por corrida anterior, con su rótulo a la izquierda de la tira.
-    (d.registro || []).slice(-3).forEach((r, i) => {
+    (d.registro || []).slice(-(d.filas > 0 ? d.filas : 3)).forEach((r, i) => {
       const y = g.registro + i * 24;
       s += T.linea(PX0, y, PX1, y, { grosor: T.GROSOR.cuadricula, opacidad: 0.35 });
       for (const m of r.marcas || []) s += punto(X(d, m), y, COLOR.x, 3);

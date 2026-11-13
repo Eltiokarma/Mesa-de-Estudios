@@ -88,3 +88,9 @@ test('predicciones: una sola correcta, errores con nombre y explicación que emp
   assert.deepEqual(L.responder('k1', 'iguales'), { correcta: false, error: 'K1', explica: L.PREDICCIONES.k1.opciones[1].explica });
   assert.equal(L.responder('k3', 'atras').correcta, true);
 });
+
+test('MRU desde donde se soltó: la corrida termina al final de la pista', () => {
+  const c = L.corridaMRU(6, 3);
+  assert.equal(c.dur, 4.5);                    // (30 − 3) / 6
+  assert.deepEqual(c.marcas, [3, 9, 15, 21, 27]);
+});
