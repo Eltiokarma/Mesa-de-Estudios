@@ -19,7 +19,7 @@
 - **Gesto:** lo que hace la mano del alumno. Sale de un vocabulario cerrado de trece: verter y gotear, calentar y enfriar, apretar, soltar y lanzar, colgar y pesar, conectar, estirar, girar, cortar y armar, doblar y reflejar, poner fichas, ordenar y clasificar, y marcar.
 - **Lo que descubre:** la relación que el alumno debería poder decir al terminar.
 - **Rive:** la utilería o el personaje animado que usa. Una raya quiere decir que basta el kit de dibujo y la mascota.
-- **Ejercicios en el banco Cuzcano:** cuántas fichas del banco le corresponden (`docs/clasificacion/banco-cuzcano.md`). El reparto es por nombre del tema y aproximado.
+- **Ejercicios en el banco Cuzcano:** cuántas fichas del banco le corresponden (`docs/clasificacion/banco-cuzcano.md`). El reparto es por subtema unificado; lo clasificó un modelo y es aproximado.
 - **Ideas erróneas:** el informe de `docs/investigacion/` con los errores típicos del tema.
 - **Tramo:** el grupo de unidades al que pertenece dentro del curso, en orden de construcción. Los tramos, la dinámica central y la prueba de transferencia de cada curso vienen de una tercera opinión (sección 5.7 de la auditoría) y están por validar.
 - **Otras formas de explicarla:** llenado en razonamiento matemático; en los demás cursos, por investigar.
@@ -68,7 +68,7 @@
 - **Gesto:** Estirar: mueve la punta de cada flecha y júntalas cola con punta.
 - **Lo que descubre:** La resultante depende del ángulo: va desde la resta hasta la suma de los módulos.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 130 fichas, de los temas `fisica.analisis-dimensional`, `fisica.analisis-vectorial`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 151 fichas. Subtemas con más fichas: Principio de homogeneidad dimensional (24); Suma de vectores por método gráfico (24); Resultante de dos vectores (15); Magnitudes fundamentales y derivadas (14); Producto escalar y vectorial (13). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -87,7 +87,7 @@
 - **Gesto:** Soltar: empuja el carrito con el dedo y pisa el freno (sección 7.5).
 - **Lo que descubre:** La gráfica v–t la dibuja su propio movimiento, y el área es lo que avanzó.
 - **Rive:** Carrito.
-- **Ejercicios en el banco Cuzcano:** unas 236 fichas, de los temas `fisica.analisis-de-graficas-del-movimiento-mecanico`, `fisica.cinematica-i-mru-y-mruv`, `fisica.cinematica-ii-mvcl-y-mpcl`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 250 fichas. Subtemas con más fichas: Caída libre (54); Encuentros y alcances (38); Velocidad relativa (27); MRUV (23); MRU (21). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/cinematica-ideas-erroneas.md`.
 - **Desarrollo completo:** sección 7.5 de `docs/pogil-v2-rive.md`.
 - **Otras formas de explicarla:** por investigar.
@@ -107,7 +107,7 @@
 - **Gesto:** Lanzar: jala la honda y suelta; gira la rueda con el dedo.
 - **Lo que descubre:** 30° y 60° caen en el mismo punto; la sombra horizontal avanza parejo.
 - **Rive:** Pelota.
-- **Ejercicios en el banco Cuzcano:** unas 132 fichas, de los temas `fisica.cinematica-ii-mvcl-y-mpcl`, `fisica.movimiento-circunferencial`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 127 fichas. Subtemas con más fichas: Tiro parabólico (29); Movimiento en dos dimensiones (19); MCUV (18); Aceleración tangencial y centrípeta (13); Magnitudes angulares (11). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/cinematica-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -126,7 +126,7 @@
 - **Gesto:** Colgar: cuelga pesas en la barra y mueve el apoyo.
 - **Lo que descubre:** Lo que equilibra es peso por distancia, no el peso.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 120 fichas, de los temas `fisica.estatica`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 120 fichas. Subtemas con más fichas: Equilibrio de una partícula (38); Equilibrio del cuerpo rígido (37); Rozamiento estático y cinético (12); Equilibrio con poleas (10); Diagrama de cuerpo libre (8). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/estatica-energia-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -145,7 +145,7 @@
 - **Gesto:** Colgar y soltar: jala el bloque con una cuerda; inclina el plano.
 - **Lo que descubre:** La fuerza neta manda sobre la aceleración, no sobre la velocidad.
 - **Rive:** Bloque.
-- **Ejercicios en el banco Cuzcano:** unas 81 fichas, de los temas `fisica.dinamica`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 82 fichas. Subtemas con más fichas: Dinámica circular (26); Rozamiento en movimiento (18); Bloques, poleas y planos inclinados (12); Peso aparente y sistemas acelerados (9); Movimiento relativo y sistemas inerciales (9). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/dinamica-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -164,7 +164,7 @@
 - **Gesto:** Lanzar: suelta el satélite con más o menos rapidez.
 - **Lo que descubre:** Hay una sola rapidez que cierra la órbita; más lejos, más lento.
 - **Rive:** Satélite.
-- **Ejercicios en el banco Cuzcano:** unas 63 fichas, de los temas `fisica.gravitacion-universal`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 53 fichas. Subtemas con más fichas: Leyes de Kepler (20); Campo gravitatorio (13); Satélites y órbitas circulares (9); Ley de gravitación universal (5); Energía gravitatoria y velocidad de escape (4). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -183,7 +183,7 @@
 - **Gesto:** Soltar: sube el carrito a la rampa y cámbiale la forma.
 - **Lo que descubre:** La rapidez abajo depende de la altura, no del camino.
 - **Rive:** Carrito.
-- **Ejercicios en el banco Cuzcano:** unas 74 fichas, de los temas `fisica.trabajo-mecanico-energia-y-potencia`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 74 fichas. Subtemas con más fichas: Trabajo de fuerzas constantes y variables (23); Conservación de la energía mecánica (18); Teorema trabajo-energía cinética (10); Energía con fuerzas no conservativas (7); Potencia y eficiencia (6). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/estatica-energia-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -202,7 +202,7 @@
 - **Gesto:** Lanzar: manda dos carritos uno contra otro.
 - **Lo que descubre:** La suma de m·v no cambia aunque la energía sí.
 - **Rive:** Carrito.
-- **Ejercicios en el banco Cuzcano:** unas 125 fichas, de los temas `fisica.cantidad-de-movimiento-impulso-y-choques`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 125 fichas. Subtemas con más fichas: Impulso y fuerza media (30); Impulso de fuerzas variables (21); Conservación de la cantidad de movimiento (18); Centro de masa (16); Choques elásticos e inelásticos (15). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -221,7 +221,7 @@
 - **Gesto:** Estirar y soltar: jala la masa del resorte o el péndulo.
 - **Lo que descubre:** Estirar más no cambia el período.
 - **Rive:** Pelota (el resorte es del motor).
-- **Ejercicios en el banco Cuzcano:** unas 73 fichas, de los temas `fisica.oscilaciones-mecanicas`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 73 fichas. Subtemas con más fichas: Ecuaciones y gráficas del MAS (27); Péndulo simple (13); Energía en el MAS (13); Masa-resorte horizontal y vertical (11); Sistemas oscilantes compuestos (9). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -240,7 +240,7 @@
 - **Gesto:** Estirar: sacude el extremo de la cuerda con el dedo y ténsala.
 - **Lo que descubre:** La mano decide la frecuencia; la cuerda, la rapidez.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 71 fichas, de los temas `fisica.ondas-mecanicas`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 71 fichas. Subtemas con más fichas: Función de onda (22); Ondas estacionarias (11); Intensidad y nivel de intensidad sonora (9); Reflexión y transmisión de ondas (7); Energía transportada por una onda (7). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -259,7 +259,7 @@
 - **Gesto:** Verter: llena vasos de formas distintas; hunde el bloque con el dedo.
 - **Lo que descubre:** La presión depende de la profundidad; el empuje, de lo que se hunde.
 - **Rive:** Vaso.
-- **Ejercicios en el banco Cuzcano:** unas 221 fichas, de los temas `fisica.hidrostatica-e-hidrodinamica`, `fisica.hidrostatica`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 219 fichas. Subtemas con más fichas: Principio de Arquímedes (42); Flotación (27); Bernoulli y Torricelli (27); Presión hidrostática y atmosférica (22); Caudal y continuidad (22). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/fluidos-calor-termodinamica-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -278,7 +278,7 @@
 - **Gesto:** Verter y calentar: mezcla dos vasos; acerca el mechero al hielo.
 - **Lo que descubre:** La temperatura final no es el promedio; en el cambio de fase entra calor y T no sube.
 - **Rive:** Vaso y mechero.
-- **Ejercicios en el banco Cuzcano:** unas 170 fichas, de los temas `fisica.calor`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 171 fichas. Subtemas con más fichas: Dilatación (38); Calorimetría (33); Cambios de fase y calor latente (32); Conducción, convección y radiación (25); Calor específico y capacidad calorífica (18). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/fluidos-calor-termodinamica-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -297,7 +297,7 @@
 - **Gesto:** Apretar: empuja el émbolo rápido o lento, con mechero o sin él.
 - **Lo que descubre:** El trabajo es el área que él mismo dibuja en P–V.
 - **Rive:** Émbolo y mechero.
-- **Ejercicios en el banco Cuzcano:** unas 121 fichas, de los temas `fisica.termodinamica`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 120 fichas. Subtemas con más fichas: Máquinas térmicas y ciclo de Carnot (26); Procesos y diagrama P-V (22); Primera ley (22); Gases ideales y ecuación de estado (18); Procesos adiabáticos (13). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/fluidos-calor-termodinamica-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -316,7 +316,7 @@
 - **Gesto:** Estirar: acerca una carga a otra que cuelga.
 - **Lo que descubre:** Las dos fuerzas son iguales aunque las cargas no lo sean.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 206 fichas, de los temas `fisica.condensadores`, `fisica.electrostatica`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 206 fichas. Subtemas con más fichas: Energía potencial y potencial eléctrico (33); Ley de Coulomb (29); Campo eléctrico y líneas de fuerza (19); Redes de condensadores con puentes (17); Carga en campo uniforme (16). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -335,7 +335,7 @@
 - **Gesto:** Conectar: arma el circuito con el dedo y saca un foco.
 - **Lo que descubre:** En serie se reparten el voltaje; en paralelo cada foco brilla igual.
 - **Rive:** Foco y pila.
-- **Ejercicios en el banco Cuzcano:** unas 156 fichas, de los temas `fisica.electrodinamica`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 156 fichas. Subtemas con más fichas: Resistencia, resistividad y ley de Ohm (29); Resistencias en serie y en paralelo (21); Puentes, simetrías y redes infinitas (20); Intensidad y densidad de corriente (19); Fuerza electromotriz (19). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -354,7 +354,7 @@
 - **Gesto:** Girar: pasea la brújula alrededor del cable; lanza la carga.
 - **Lo que descubre:** La carga quieta no siente nada; la fuerza va de costado.
 - **Rive:** Imán y brújula.
-- **Ejercicios en el banco Cuzcano:** unas 74 fichas, de los temas `fisica.electromagnetismo`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 61 fichas. Subtemas con más fichas: Fuerza magnética sobre una carga (22); Campo magnético de corrientes (17); Fuerza sobre un conductor (17); Fuerza entre cables paralelos (5). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -373,7 +373,7 @@
 - **Gesto:** Estirar: mete y saca el imán de la espira, rápido o lento.
 - **Lo que descubre:** El foquito prende solo mientras el flujo cambia.
 - **Rive:** Imán y foco.
-- **Ejercicios en el banco Cuzcano:** unas 74 fichas, de los temas `fisica.electromagnetismo`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 87 fichas. Subtemas con más fichas: Transformador (16); Flujo magnético (15); Ley de Faraday (14); Corriente alterna y valores eficaces (14); Ley de Lenz (11). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -392,7 +392,7 @@
 - **Gesto:** Ordenar: recorre el espectro; cruza el rayo a otro medio.
 - **Lo que descubre:** En el vacío todas viajan a c; al cambiar de medio cambia λ, no f.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 59 fichas, de los temas `fisica.ondas-electromagneticas`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 69 fichas. Subtemas con más fichas: Características de las ondas electromagnéticas (13); Campos y ecuación de la onda (13); Rapidez de la luz (13); Espectro electromagnético (12); Interferencia, difracción y polarización (11). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/ondas-electromagneticas-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -411,7 +411,7 @@
 - **Gesto:** Estirar: mueve el objeto y la lente; dobla la hoja en el espejo.
 - **Lo que descubre:** La imagen cambia de lado al cruzar el foco.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 139 fichas, de los temas `fisica.optica`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 128 fichas. Subtemas con más fichas: Espejos planos (30); Espejos esféricos (29); Lentes delgadas (26); Refracción y ley de Snell (24); Ecuación del fabricante de lentes (11). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/optica-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -430,7 +430,7 @@
 - **Gesto:** Girar: dos perillas en la lámpara, una para el color y otra para el brillo.
 - **Lo que descubre:** El brillo da más electrones; el color, más energía; bajo el umbral no sale nada.
 - **Rive:** Foco.
-- **Ejercicios en el banco Cuzcano:** unas 115 fichas, de los temas `fisica.fisica-moderna`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 125 fichas. Subtemas con más fichas: Efecto fotoeléctrico (27); Rayos X (22); Fotones: potencia e intensidad (18); Modelo de Bohr y espectros atómicos (13); Efecto Compton (11). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -488,7 +488,7 @@
 - **Gesto:** Poner fichas: llena los orbitales con electrones.
 - **Lo que descubre:** El orden de llenado sale de «primero el más barato».
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 84 fichas, de los temas `quimica.estructura-atomica`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 72 fichas. Subtemas con más fichas: Modelo de Bohr y espectros atómicos (20); Modelos atómicos de Dalton a Bohr (11); Núclidos e isótopos (10); Iones y especies isoelectrónicas (10); Configuración electrónica de átomos e iones (8). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/atomo-enlace-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -507,7 +507,7 @@
 - **Gesto:** Ordenar y estirar: acomoda las cartas por masa y córtalas donde se repiten; después camina por la tabla (sección 7.3).
 - **Lo que descubre:** Las propiedades se repiten cada cierto número de elementos, y eso permite predecir el que falta.
 - **Rive:** — (la tabla viva es del kit).
-- **Ejercicios en el banco Cuzcano:** unas 107 fichas, de los temas `quimica.tabla-periodica`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 101 fichas. Subtemas con más fichas: Ubicación de un elemento (18); Periodos, grupos y bloques (17); Tendencias periódicas (15); Metales, no metales y semimetales (14); Energía de ionización y afinidad electrónica (11). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/atomo-enlace-ideas-erroneas.md`.
 - **Desarrollo completo:** sección 7.3 de `docs/pogil-v2-rive.md`.
 - **Otras formas de explicarla:** por investigar.
@@ -527,7 +527,7 @@
 - **Gesto:** Estirar y poner fichas: acerca dos átomos y mira quién atrae más el par; agrega globos al átomo central (sección 7.4).
 - **Lo que descubre:** El tipo de enlace es una sola escala de atracción; la forma sale de pares que se repelen.
 - **Rive:** Foco, mechero y gotero.
-- **Ejercicios en el banco Cuzcano:** unas 155 fichas, de los temas `quimica.enlace-quimico`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 155 fichas. Subtemas con más fichas: Enlace iónico (27); Hibridación y geometría molecular (23); Fuerzas intermoleculares (21); Tipos de enlace y propiedades (18); Polaridad (15). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/atomo-enlace-ideas-erroneas.md`.
 - **Desarrollo completo:** sección 7.4 de `docs/pogil-v2-rive.md`.
 - **Otras formas de explicarla:** por investigar.
@@ -547,7 +547,7 @@
 - **Gesto:** Clasificar y poner fichas: cruza las cargas.
 - **Lo que descubre:** El nombre sale del estado de oxidación.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 116 fichas, de los temas `quimica.nomenclatura-inorganica`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 122 fichas. Subtemas con más fichas: Estados de oxidación (23); Óxidos, peróxidos e hidruros (23); Sales oxisales y haloideas (15); Funciones inorgánicas (14); Nomenclatura de iones (12). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/quimica-materia-nomenclatura-organica-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -566,7 +566,7 @@
 - **Gesto:** Pesar: echa cucharadas a la balanza hasta juntar un mol.
 - **Lo que descubre:** Un mol de cada sustancia pesa distinto y cuenta lo mismo.
 - **Rive:** — (balanza del kit).
-- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `quimica.unidades-quimicas-de-masa`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 115 fichas. Subtemas con más fichas: Número de Avogadro y mol (50); Relaciones molares en una fórmula (32); Composición centesimal (12); Fórmula empírica y molecular (12); Masa atómica promedio (6). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/estequiometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -585,7 +585,7 @@
 - **Gesto:** Poner fichas: agrega moléculas enteras a cada lado.
 - **Lo que descubre:** Se cambian los coeficientes, nunca los subíndices.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 133 fichas, de los temas `quimica.reacciones-quimicas`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 116 fichas. Subtemas con más fichas: Balance redox por ion-electrón (43); Clasificación de las reacciones (28); Oxidación, reducción y agentes (17); Balance por tanteo (14); Termoquímica (8). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/estequiometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -604,7 +604,7 @@
 - **Gesto:** Poner fichas: junta 1 N₂ con 3 H₂ hasta que algo se acabe.
 - **Lo que descubre:** El limitante es el que se acaba primero, no el que hay menos.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 149 fichas, de los temas `quimica.estequiometria`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 92 fichas. Subtemas con más fichas: Reactivos impuros (23); Reactivo limitante y en exceso (21); Rendimiento de una reacción (17); Equivalente químico y masa equivalente (16); Relaciones masa-masa, mol-mol y volumen-volumen (12). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/estequiometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -623,7 +623,7 @@
 - **Gesto:** Apretar y calentar: empuja el émbolo; acerca el mechero.
 - **Lo que descubre:** Con T fija, P por V no cambia; con calor, los choques son más fuertes.
 - **Rive:** Émbolo y mechero.
-- **Ejercicios en el banco Cuzcano:** unas 183 fichas, de los temas `quimica.estado-gaseoso-y-mezcla-gaseosa`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 190 fichas. Subtemas con más fichas: Mezclas: Dalton y Amagat (42); Leyes de Boyle, Charles y Gay-Lussac (29); Ecuación de estado (28); Densidad y masa molar de gases (23); Estequiometría con gases (18). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/gases-soluciones-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -642,7 +642,7 @@
 - **Gesto:** Calentar: calienta el frasco, tápalo, súbelo de altitud.
 - **Lo que descubre:** Hierve cuando su vapor iguala la presión de afuera.
 - **Rive:** Vaso y mechero.
-- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
+- **Ejercicios en el banco Cuzcano:** unas 23 fichas. Subtemas con más fichas: Gases húmedos y humedad relativa (23). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/gases-soluciones-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -661,7 +661,7 @@
 - **Gesto:** Verter: echa soluto, agrega agua, pasa una parte a otro vaso.
 - **Lo que descubre:** Diluir no cambia los moles; sacar una parte no cambia la concentración.
 - **Rive:** Vaso y gotero.
-- **Ejercicios en el banco Cuzcano:** unas 134 fichas, de los temas `quimica.soluciones`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 151 fichas. Subtemas con más fichas: Estequiometría en soluciones (29); Solubilidad y curvas de solubilidad (27); Dilución y mezcla de soluciones (22); Sistemas dispersos: soluciones, coloides y suspensiones (21); Conversión entre unidades de concentración (20). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/gases-soluciones-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -680,7 +680,7 @@
 - **Gesto:** Calentar: calienta, muele y agita.
 - **Lo que descubre:** Qué acelera la reacción y por qué: más choques que sirven.
 - **Rive:** Vaso y mechero.
-- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
+- **Ejercicios en el banco Cuzcano:** unas 21 fichas. Subtemas con más fichas: Velocidad y orden de reacción (13); Factores que afectan la velocidad (5); Perfil de energía de una reacción (3). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/cinetica-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -699,7 +699,7 @@
 - **Gesto:** Verter, apretar y calentar un sistema en equilibrio.
 - **Lo que descubre:** El sistema responde en contra; K solo cambia con la temperatura.
 - **Rive:** Vaso, émbolo y mechero.
-- **Ejercicios en el banco Cuzcano:** unas 140 fichas, de los temas `quimica.equilibrio-quimico`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 128 fichas. Subtemas con más fichas: Kc y Kp (28); Composición en el equilibrio (26); Principio de Le Chatelier (22); Reacciones reversibles y equilibrio dinámico (19); Equilibrio heterogéneo (15). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -718,7 +718,7 @@
 - **Gesto:** Verter y gotear: diluye; neutraliza gota a gota.
 - **Lo que descubre:** Diluir 10 veces sube 1 de pH; la neutralización es un salto.
 - **Rive:** Vaso y gotero.
-- **Ejercicios en el banco Cuzcano:** unas 144 fichas, de los temas `quimica.acidos-y-bases`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 152 fichas. Subtemas con más fichas: Ka, Kb y Kw (42); pH y pOH (34); Neutralización y titulación (29); Teorías de Arrhenius, Brønsted-Lowry y Lewis (19); Pares conjugados y fuerza relativa (13). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md`.
 - **Desarrollo completo:** sección 7.1 de `docs/pogil-v2-rive.md`.
 - **Otras formas de explicarla:** por investigar.
@@ -738,7 +738,7 @@
 - **Gesto:** Conectar: arma la pila, pon el puente salino, cambia los metales.
 - **Lo que descubre:** Quién se oxida lo decide la pareja; sin puente no hay corriente.
 - **Rive:** Vaso y foco.
-- **Ejercicios en el banco Cuzcano:** unas 153 fichas, de los temas `quimica.electroquimica`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 150 fichas. Subtemas con más fichas: Leyes de Faraday (37); Semirreacciones y potenciales de reducción (33); Electrólisis (24); Celdas galvánicas y fem (23); Ecuación de Nernst (17). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -757,7 +757,7 @@
 - **Gesto:** Conectar: arma la cadena carbono por carbono.
 - **Lo que descubre:** El nombre sale de la cadena más larga; mismos átomos, otra molécula.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 41 fichas, de los temas `quimica.quimica-organica`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 76 fichas. Subtemas con más fichas: El carbono e hibridación (14); Isomería estructural y geométrica (14); Tipos de fórmulas y cadenas (12); Alcanos, alquenos y alquinos (12); Nomenclatura de hidrocarburos (11). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/quimica-materia-nomenclatura-organica-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -776,7 +776,7 @@
 - **Gesto:** Cortar y armar: quita un H y pon el grupo.
 - **Lo que descubre:** El grupo decide la familia y cuánto se pegan las moléculas.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 41 fichas, de los temas `quimica.quimica-organica`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 33 fichas. Subtemas con más fichas: Nomenclatura de compuestos monofuncionales (21); Grupos funcionales (12). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/quimica-materia-nomenclatura-organica-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -795,7 +795,7 @@
 - **Gesto:** Conectar: junta dos piezas y sale agua.
 - **Lo que descubre:** Toda unión suelta agua; la hidrólisis la devuelve.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 41 fichas, de los temas `quimica.quimica-organica`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 8 fichas. Subtemas con más fichas: Carbohidratos (8). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/biomoleculas-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -814,7 +814,7 @@
 - **Gesto:** Calentar: destila subiendo la temperatura.
 - **Lo que descubre:** Cada fracción sale a su temperatura.
 - **Rive:** Mechero.
-- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
+- **Ejercicios en el banco Cuzcano:** unas 5 fichas. Subtemas con más fichas: Petróleo y combustión (5). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/quimica-ambiente-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -833,7 +833,7 @@
 - **Gesto:** Gotear y clasificar: mide el pH de la lluvia; ordena contaminantes.
 - **Lo que descubre:** Qué gas causa qué efecto.
 - **Rive:** Vaso y gotero.
-- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
+- **Ejercicios en el banco Cuzcano:** unas 3 fichas. Subtemas con más fichas: Corrosión (3). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/quimica-ambiente-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -868,7 +868,7 @@
 - **Gesto:** Conectar: prende interruptores en serie y en paralelo.
 - **Lo que descubre:** «Y» es serie, «o» es paralelo; el condicional solo falla en un caso.
 - **Rive:** Foco.
-- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `aritmetica.logica-proposicional`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 103 fichas. Subtemas con más fichas: Valores de verdad (29); Leyes lógicas (19); Inferencia lógica (13); Tablas de verdad (10); Operadores lógicos definidos (8). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -887,7 +887,7 @@
 - **Gesto:** Poner fichas en los aros.
 - **Lo que descubre:** Lo que está en la intersección se cuenta una vez.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `aritmetica.teoria-de-conjuntos`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 105 fichas. Subtemas con más fichas: Diagramas de Venn con tres conjuntos (34); Diagramas de Venn con dos conjuntos (11); Leyes del álgebra de conjuntos (10); Diagramas de Carroll (10); Producto cartesiano (9). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -906,7 +906,7 @@
 - **Gesto:** Estirar la tira.
 - **Lo que descubre:** Al ampliar, la razón se conserva y la diferencia no.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `aritmetica.razones-y-proporciones`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 91 fichas. Subtemas con más fichas: Serie de razones geométricas equivalentes (34); Proporciones continuas (21); Razón aritmética y geométrica (16); Proporciones aritméticas y geométricas (14); Medias aritmética, geométrica y armónica (6). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -925,7 +925,7 @@
 - **Gesto:** Estirar un lado del taller de área fija.
 - **Lo que descubre:** En la inversa, el producto no cambia.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 400 fichas, de los temas `aritmetica.magnitudes-proporcionales`, `aritmetica.regla-de-tres`, `aritmetica.reparto-proporcional`, `razonamiento-matematico.comparacion-de-magnitudes`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 370 fichas. Subtemas con más fichas: Magnitudes directa e inversamente proporcionales (51); Obras con retiros y refuerzos (33); Reparto directo (32); Obras con cambios de personal (27); Proporcionalidad compuesta (24). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -944,7 +944,7 @@
 - **Gesto:** Cortar la barra (ya existe en la práctica viva).
 - **Lo que descubre:** El segundo descuento se aplica a lo que queda.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 200 fichas, de los temas `aritmetica.tanto-por-ciento`, `razonamiento-matematico.tanto-por-ciento`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 177 fichas. Subtemas con más fichas: Variación porcentual (41); Ganancia y pérdida (32); Precios de costo, lista y venta (24); Aumentos y descuentos sucesivos (22); Porcentajes de grupos y subgrupos (17). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -963,7 +963,7 @@
 - **Gesto:** Poner fichas: agrega una capa por año.
 - **Lo que descubre:** El compuesto gana interés sobre el interés.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 200 fichas, de los temas `aritmetica.regla-de-descuento`, `aritmetica.regla-de-interes`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 200 fichas. Subtemas con más fichas: Varios capitales a distintas tasas (33); Descuento comercial y racional (24); Interés y monto simple (23); Capital, tasa y tiempo (23); Valor actual y valor nominal (15). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -982,7 +982,7 @@
 - **Gesto:** Verter: junta dos vasos de precio o grado distinto.
 - **Lo que descubre:** El promedio se acerca al que más cantidad puso.
 - **Rive:** Vaso.
-- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `aritmetica.regla-de-mezcla-y-aleacion`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 145 fichas. Subtemas con más fichas: Aleaciones, ley y quilates (36); Precio medio (30); Mezclas alcohólicas y concentración (30); Mezclas y reemplazos (29); Dilución y extracciones sucesivas (20). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1001,7 +1001,7 @@
 - **Gesto:** Estirar: mueve un dato del diagrama.
 - **Lo que descubre:** Un dato extremo jala la media y no la mediana.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `aritmetica.estadistica`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 100 fichas. Subtemas con más fichas: Tablas de frecuencias (23); Media aritmética (18); Mediana y moda (18); Medidas de dispersión (13); Interpolación y percentiles (10). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1020,7 +1020,7 @@
 - **Gesto:** Ordenar fichas en casilleros.
 - **Lo que descubre:** Si el orden no importa, varios arreglos son el mismo.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 150 fichas, de los temas `aritmetica.analisis-combinatorio-y-teoria-de-probabilidades`, `razonamiento-matematico.analisis-combinatorio`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 131 fichas. Subtemas con más fichas: Combinaciones y números combinatorios (34); Principios de adición y multiplicación (23); Variaciones (15); Permutaciones lineales y circulares (15); Permutaciones con repetición (11). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1039,7 +1039,7 @@
 - **Gesto:** Marcar los casos en la cuadrícula de los dos dados.
 - **Lo que descubre:** El 7 sale más porque tiene más casillas.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 150 fichas, de los temas `aritmetica.analisis-combinatorio-y-teoria-de-probabilidades`, `razonamiento-matematico.calculo-de-probabilidades`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 131 fichas. Subtemas con más fichas: Extracciones con y sin reposición (23); Probabilidad clásica y frecuencial (17); Eventos y álgebra de eventos (17); Probabilidad con técnicas de conteo (15); Eventos independientes (14). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1058,7 +1058,7 @@
 - **Gesto:** Poner fichas: agrupa de a b.
 - **Lo que descubre:** Cambiar de base es reagrupar las mismas fichas.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 200 fichas, de los temas `aritmetica.conteo-y-paginacion`, `aritmetica.numeracion`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 244 fichas. Subtemas con más fichas: Base desconocida (37); Conteo en otras bases (34); Conteo de números (28); Conteo de cifras (26); Descomposición polinómica (23). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1096,7 +1096,7 @@
 - **Gesto:** Poner fichas en filas iguales.
 - **Lo que descubre:** El resto es lo que no entra en la última fila.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `aritmetica.divisibilidad`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 131 fichas. Subtemas con más fichas: Criterios de divisibilidad (44); Ecuaciones diofánticas (19); Restos potenciales (18); Conteo de múltiplos (13); Cifras terminales (12). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1115,7 +1115,7 @@
 - **Gesto:** Cortar y armar: haz rectángulos con n fichas.
 - **Lo que descubre:** Un primo solo arma una fila.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `aritmetica.numeros-primos`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 100 fichas. Subtemas con más fichas: Cantidad de divisores (31); Divisores que cumplen una condición (16); Numerales con cantidad de divisores dada (16); Suma y producto de divisores (12); Primos y compuestos (7). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1134,7 +1134,7 @@
 - **Gesto:** Cortar cintas; soltar dos buses.
 - **Lo que descubre:** El MCD es el corte más grande que sirve a las dos.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `aritmetica.mcd-y-mcm`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 104 fichas. Subtemas con más fichas: Relación entre MCD y MCM (32); MCD y MCM por descomposición canónica (18); Algoritmo de Euclides (16); Aplicaciones del MCD y MCM (13); MCD y MCM con cifras desconocidas (12). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1153,7 +1153,7 @@
 - **Gesto:** Cortar la barra.
 - **Lo que descubre:** Dos fracciones equivalentes son el mismo corte.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 200 fichas, de los temas `aritmetica.numeros-racionales`, `razonamiento-matematico.fracciones`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 157 fichas. Subtemas con más fichas: Decimales exactos y periódicos (37); Fracción de una cantidad (22); Fracciones equivalentes e irreducibles (17); Problemas con fracciones (15); Caños y tanques (15). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1172,7 +1172,7 @@
 - **Gesto:** Poner fichas: arma el cuadrado.
 - **Lo que descubre:** Para pasar al cuadrado siguiente faltan 2k + 1 fichas.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `aritmetica.potenciacion-y-radicacion`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 100 fichas. Subtemas con más fichas: Criterios de inclusión y exclusión (37); Raíz cuadrada y cúbica entera (28); Cuadrados perfectos (21); Cubos perfectos (8); Potencias perfectas (6). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1191,7 +1191,7 @@
 - **Gesto:** Poner fichas: agrega una fila a la figura.
 - **Lo que descubre:** Lo que se agrega en cada paso es la razón.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 200 fichas, de los temas `razonamiento-matematico.series`, `razonamiento-matematico.sucesiones`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 211 fichas. Subtemas con más fichas: Serie aritmética (26); Progresión aritmética (24); Sumas notables (23); Sucesiones de orden superior (22); Serie geométrica (18). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1210,7 +1210,7 @@
 - **Gesto:** Poner fichas: cambia una por otra.
 - **Lo que descubre:** Cada cambio corrige una diferencia fija.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
+- **Ejercicios en el banco Cuzcano:** unas 34 fichas. Subtemas con más fichas: Criptoaritmética (16); Método regresivo (10); Móviles (4); Edades (4). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1264,7 +1264,7 @@
 - **Gesto:** Estirar los extremos de dos intervalos.
 - **Lo que descubre:** Unión e intersección se ven; el extremo abierto no se alcanza.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
+- **Ejercicios en el banco Cuzcano:** unas 21 fichas. Subtemas con más fichas: Desigualdad de medias y cotas (8); Intervalos y sus operaciones (7); Desigualdades (6). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1283,7 +1283,7 @@
 - **Gesto:** Cortar y armar el cuadrado de lado a + b.
 - **Lo que descubre:** Además de a² y b² hay dos rectángulos.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 121 fichas, de los temas `algebra.potenciacion-y-ecuaciones-exponenciales`, `algebra.productos-notables-e-identidades`, `algebra.radicales-y-racionalizacion`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 53 fichas. Subtemas con más fichas: Leyes de exponentes (17); Habilidad operativa con productos notables (12); Identidades condicionales (5); Racionalización (5); Propiedades de radicales (4). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/algebra-funciones-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1302,7 +1302,7 @@
 - **Gesto:** Pesar: quita lo mismo de los dos platillos.
 - **Lo que descubre:** Lo que se hace a un lado se hace al otro.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 55 fichas, de los temas `algebra.teoria-de-las-ecuaciones`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 30 fichas. Subtemas con más fichas: Ecuación de primer grado (8); Ecuación cuadrática y discriminante (8); Ecuaciones equivalentes y clasificación (7); Ecuaciones fraccionarias (7). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/algebra-funciones-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1321,7 +1321,7 @@
 - **Gesto:** Reflejar: voltea la recta al multiplicar por −1.
 - **Lo que descubre:** El signo se invierte porque la recta se refleja.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `algebra.desigualdades-e-inecuaciones`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 32 fichas. Subtemas con más fichas: Inecuaciones lineales (9); Inecuaciones fraccionarias (9); Inecuaciones cuadráticas (8); Inecuaciones de grado superior (6). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/algebra-funciones-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1340,7 +1340,7 @@
 - **Gesto:** Estirar: abre un compás desde el centro.
 - **Lo que descubre:** El valor absoluto es una distancia.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
+- **Ejercicios en el banco Cuzcano:** unas 51 fichas. Subtemas con más fichas: Ecuaciones e inecuaciones con valor absoluto (23); Inecuaciones con radicales (19); Ecuaciones con radicales (9). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/algebra-funciones-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1359,7 +1359,7 @@
 - **Gesto:** Poner fichas en la máquina, con el cero que falta.
 - **Lo que descubre:** El resto es la altura P(a) en la curva.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 23 fichas, de los temas `algebra.polinomios-y-grados`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 23 fichas. Subtemas con más fichas: Polinomios homogéneos (7); Grado absoluto y relativo (5); Polinomios completos y ordenados (4); Reconocimiento de polinomios (3); Igualdad de polinomios (3). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1378,7 +1378,7 @@
 - **Gesto:** Poner fichas en la máquina de Ruffini.
 - **Lo que descubre:** Con divisor ax + b, el cociente sale multiplicado.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 31 fichas, de los temas `algebra.cocientes-notables`, `algebra.division-polinomica-y-restos`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 31 fichas. Subtemas con más fichas: Teorema del resto (6); Algoritmo de la división (5); Divisibilidad de polinomios (5); Restos especiales (4); Condición de cociente notable (3). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1397,7 +1397,7 @@
 - **Gesto:** Cortar y armar: haz un rectángulo con las piezas.
 - **Lo que descubre:** Factorizar es hallar los lados.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 18 fichas, de los temas `algebra.factorizacion`, `algebra.mcd-y-mcm-de-polinomios`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 18 fichas. Subtemas con más fichas: MCM de polinomios (5); MCD de polinomios (4); Factor común e identidades (3); Factorización por cambio de variable (3); Factores primos y su conteo (3). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/algebra-funciones-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1416,7 +1416,7 @@
 - **Gesto:** Estirar: mueve las raíces sobre el eje.
 - **Lo que descubre:** La suma y el producto de las raíces son los coeficientes.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 55 fichas, de los temas `algebra.teoria-de-las-ecuaciones`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 65 fichas. Subtemas con más fichas: Ecuaciones bicuadradas y recíprocas (17); Relaciones entre raíces y coeficientes (15); Ecuaciones de grado superior (11); Transformación de ecuaciones (9); Paridad de raíces irracionales y complejas (8). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1435,7 +1435,7 @@
 - **Gesto:** Girar las perillas.
 - **Lo que descubre:** Cada perilla mueve la gráfica de una sola manera.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 102 fichas, de los temas `algebra.relaciones-y-funciones-i`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 122 fichas. Subtemas con más fichas: Rango de una función (27); Operaciones con funciones (19); Composición de funciones (19); Funciones lineal y cuadrática (16); Relaciones binarias (11). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/algebra-funciones-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1454,7 +1454,7 @@
 - **Gesto:** Doblar el plano por y = x.
 - **Lo que descubre:** La inversa es el reflejo; 1/f es otra cosa.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `algebra.relaciones-y-funciones-ii`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 60 fichas. Subtemas con más fichas: Inyectiva, sobreyectiva y biyectiva (21); Función inversa (20); Funciones monótonas y acotadas (9); Funciones par e impar (7); Funciones periódicas (2). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/algebra-funciones-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1473,7 +1473,7 @@
 - **Gesto:** Poner fichas: sube la escalera multiplicando.
 - **Lo que descubre:** El logaritmo cuenta los escalones.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 200 fichas, de los temas `algebra.logaritmos`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 283 fichas. Subtemas con más fichas: Ecuaciones logarítmicas (50); Logaritmo y propiedades (37); Inecuaciones exponenciales y logarítmicas (35); Ecuaciones exponenciales (24); Sistemas exponenciales y logarítmicos (22). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/algebra-funciones-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1492,7 +1492,7 @@
 - **Gesto:** Girar la flecha.
 - **Lo que descubre:** Multiplicar por i gira 90°.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `algebra.numeros-complejos`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 113 fichas. Subtemas con más fichas: Forma polar y exponencial (27); Representación en el plano complejo (22); Conjugado y módulo (16); Potencias de números complejos (15); Regiones en el plano complejo (13). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/algebra-funciones-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1511,7 +1511,7 @@
 - **Gesto:** Estirar las dos columnas.
 - **Lo que descubre:** El determinante es el área con signo.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 50 fichas, de los temas `algebra.matrices-determinantes-y-sistemas-de-ecuaciones-lineales`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 83 fichas. Subtemas con más fichas: Operaciones con matrices (17); Determinantes y propiedades (17); Tipos de matrices (15); Potencias de matrices (10); Matriz inversa y adjunta (7). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1530,7 +1530,7 @@
 - **Gesto:** Girar dos rectas.
 - **Lo que descubre:** Una solución, ninguna o infinitas se ven.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 50 fichas, de los temas `algebra.matrices-determinantes-y-sistemas-de-ecuaciones-lineales`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 17 fichas. Subtemas con más fichas: Método de Gauss (11); Matriz ampliada y sistemas equivalentes (5); Regla de Cramer (1). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/algebra-funciones-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1549,7 +1549,7 @@
 - **Gesto:** Estirar: desliza la recta de nivel con el dedo.
 - **Lo que descubre:** El óptimo sale por un vértice.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
+- **Ejercicios en el banco Cuzcano:** unas 21 fichas. Subtemas con más fichas: Inecuaciones con dos variables (21). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1568,7 +1568,7 @@
 - **Gesto:** Poner fichas: agrega filas.
 - **Lo que descubre:** La suma se ve como figura.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `algebra.sucesiones-y-series`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 102 fichas. Subtemas con más fichas: Límite de sucesiones (27); Progresión aritmética (15); Serie geométrica (15); Sumas notables y series telescópicas (14); Convergencia de series (12). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1587,7 +1587,7 @@
 - **Gesto:** Soltar bolitas en el tablero.
 - **Lo que descubre:** Cada coeficiente cuenta caminos.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `algebra.binomio-de-newton`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 100 fichas. Subtemas con más fichas: Término general (19); Desarrollo del binomio (17); Sumas con números combinatorios (15); Término independiente (13); Potencia de un polinomio (12). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1622,7 +1622,7 @@
 - **Gesto:** Girar la secante sobre las paralelas.
 - **Lo que descubre:** Los ocho ángulos son solo dos valores.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 200 fichas, de los temas `geometria.linea-recta-y-angulos`, `geometria.nociones-generales`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 102 fichas. Subtemas con más fichas: Puntos medios de segmentos (17); Segmentos y su medida (16); Rectas paralelas y una secante (16); Máximos, mínimos y rangos (12); Razones y productos de segmentos (10). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/geometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1641,7 +1641,7 @@
 - **Gesto:** Estirar el vértice.
 - **Lo que descubre:** La altura sale fuera en el obtusángulo.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 135 fichas, de los temas `geometria.triangulos-y-congruencia`, `geometria.triangulos`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 98 fichas. Subtemas con más fichas: Triángulos isósceles y equiláteros (27); Líneas notables (23); Ángulos formados por bisectrices (17); Triángulos y líneas notables (13); Ángulos del triángulo (9). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/geometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1660,7 +1660,7 @@
 - **Gesto:** Cortar y armar: arma el triángulo con palitos y ángulos.
 - **Lo que descubre:** Con LLA pueden salir dos triángulos.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 108 fichas, de los temas `geometria.congruencia-de-triangulos`, `geometria.triangulos-y-congruencia`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 117 fichas. Subtemas con más fichas: Triángulos rectángulos notables (40); Teoremas de la bisectriz y mediatriz (33); Criterios LAL, ALA y LLL (23); Teorema de la base media (20); Otros (1). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/geometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1679,7 +1679,7 @@
 - **Gesto:** Estirar los vértices.
 - **Lo que descubre:** El nombre cambia cuando cambia una propiedad.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 167 fichas, de los temas `geometria.cuadrilateros`, `geometria.poligonos`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 163 fichas. Subtemas con más fichas: Rectángulos y cuadrados (32); Número de diagonales (23); Trapecios (21); Ángulos de polígonos regulares (20); Paralelogramos (16). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/geometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1698,7 +1698,7 @@
 - **Gesto:** Estirar el vértice sobre el arco.
 - **Lo que descubre:** El inscrito no cambia: es la mitad del central.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 84 fichas, de los temas `geometria.circunferencia`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 93 fichas. Subtemas con más fichas: Elementos y teoremas de tangencia (21); Posiciones relativas de dos circunferencias (20); Cuadrilátero inscrito e inscriptible (14); Cuerdas, arcos y diámetros (11); Ángulos central e inscrito (9). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/geometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1717,7 +1717,7 @@
 - **Gesto:** Estirar: amplía la figura.
 - **Lo que descubre:** El área crece con k² y el volumen con k³.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 12 fichas, de los temas `geometria.proporcionalidad-de-segmentos-y-semejanza-de-triangulos`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 19 fichas. Subtemas con más fichas: Semejanza de triángulos (7); Semejanza en circunferencias (6); Criterios de semejanza de triángulos (3); Teoremas de la bisectriz e incentro (3). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/geometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1736,7 +1736,7 @@
 - **Gesto:** Estirar el vértice.
 - **Lo que descubre:** Los cuatro puntos coinciden solo en el equilátero.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 32 fichas, de los temas `geometria.puntos-notables`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 37 fichas. Subtemas con más fichas: Incentro e inradio (14); Ortocentro y baricentro (10); Circuncentro (6); Excentro (4); Recta y circunferencia de Euler (3). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/geometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1755,7 +1755,7 @@
 - **Gesto:** Cortar y armar los cuadrados de los lados.
 - **Lo que descubre:** Pitágoras es una igualdad de áreas.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 83 fichas, de los temas `geometria.relaciones-metricas`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 86 fichas. Subtemas con más fichas: Cuerdas, secantes y tangente (36); Relaciones en el triángulo rectángulo (13); Teorema de Euclides y proyecciones (13); Teoremas de Stewart y la mediana (6); Teorema de Herón (5). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/geometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1774,7 +1774,7 @@
 - **Gesto:** Girar: da la vuelta al polígono lado por lado.
 - **Lo que descubre:** Los ángulos exteriores suman una vuelta.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `geometria.poligonos-regulares`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 86 fichas. Subtemas con más fichas: Pentágono y decágono regulares (26); Hexágono, octógono y dodecágono regulares (18); Cuerdas y arcos notables (15); Cuadrado y triángulo equilátero inscritos (9); Figuras con polígonos regulares (8). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/geometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1793,7 +1793,7 @@
 - **Gesto:** Reflejar: mueve el espejo.
 - **Lo que descubre:** Dos reflexiones dan un giro o un traslado.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
+- **Ejercicios en el banco Cuzcano:** unas 18 fichas. Subtemas con más fichas: Simetría y rotaciones (16); Simetría respecto de una recta (2). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/geometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1812,7 +1812,7 @@
 - **Gesto:** Estirar el vértice en paralelo a la base.
 - **Lo que descubre:** El área no cambia entre paralelas.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 50 fichas, de los temas `geometria.areas-de-regiones-poligonales-y-circulares`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 99 fichas. Subtemas con más fichas: Área del triángulo con distintos datos (32); Áreas de regiones sombreadas (24); Relación entre áreas de triángulos (14); Áreas con circunferencias tangentes (11); Área de cuadrados y rectángulos (7). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/geometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1831,7 +1831,7 @@
 - **Gesto:** Girar: desenrolla la circunferencia; reacomoda los gajos.
 - **Lo que descubre:** π es cuántos diámetros caben en la vuelta.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 50 fichas, de los temas `geometria.areas-de-regiones-poligonales-y-circulares`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 30 fichas. Subtemas con más fichas: Área del círculo y sector circular (15); Segmento y corona circular (7); Lúnulas y otras regiones circulares (5); Longitud de arco (3). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/geometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1850,7 +1850,7 @@
 - **Gesto:** Girar el cubo.
 - **Lo que descubre:** Tres perpendiculares se ven al girar.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `geometria.rectas-y-planos`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 103 fichas. Subtemas con más fichas: Ángulo diedro (27); Distancia entre rectas cruzadas (20); Proyección ortogonal (13); Ángulos y distancias en prismas (11); Ángulo entre rectas cruzadas (8). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/geometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1869,7 +1869,7 @@
 - **Gesto:** Doblar: despliega y vuelve a armar.
 - **Lo que descubre:** Caras más vértices menos aristas da 2.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
+- **Ejercicios en el banco Cuzcano:** unas 18 fichas. Subtemas con más fichas: Poliedros regulares (12); Elementos y clasificación de poliedros (6). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/geometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1888,7 +1888,7 @@
 - **Gesto:** Verter: llena el prisma con pirámides.
 - **Lo que descubre:** La pirámide es un tercio del prisma.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 130 fichas, de los temas `geometria.piramide-y-cono`, `geometria.prisma-y-cilindro`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 106 fichas. Subtemas con más fichas: Secciones planas de prismas (30); Otros (16); Áreas y volúmenes de prismas (13); Prisma oblicuo y sección recta (11); Tronco de prisma (11). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/geometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1907,7 +1907,7 @@
 - **Gesto:** Girar la figura plana para generar el sólido.
 - **Lo que descubre:** Tres conos llenan el cilindro.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 213 fichas, de los temas `geometria.esfera`, `geometria.piramide-y-cono`, `geometria.prisma-y-cilindro`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 216 fichas. Subtemas con más fichas: Cilindro oblicuo y tronco de cilindro (35); Sólidos inscritos y combinados (31); Sólidos y superficies de revolución (22); Áreas y volúmenes de cilindros (21); Esferas inscritas y circunscritas (15). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/geometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1926,7 +1926,7 @@
 - **Gesto:** Estirar puntos; tensar la cuerda del jardinero.
 - **Lo que descubre:** La pendiente; la suma de distancias constante.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 484 fichas, de los temas `geometria.circunferencia-y-parabola`, `geometria.elipse-e-hiperbola`, `geometria.geometria-vectorial`, `geometria.la-linea-recta`, `geometria.transformacion-de-coordenadas`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 356 fichas. Subtemas con más fichas: Líneas notables con coordenadas (30); Ecuación vectorial de la recta (29); Punto medio y división de segmentos (26); Ecuación de la circunferencia (25); Tangencia de recta y circunferencia (24). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1945,7 +1945,7 @@
 - **Gesto:** Marcar cada figura que encuentre.
 - **Lo que descubre:** Se cuenta por clases, no una por una.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 59 fichas, de los temas `razonamiento-matematico.razonamiento-geometrico`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 9 fichas. Subtemas con más fichas: Sucesiones gráficas (4); Conteo de figuras (3); Perímetros de figuras (2). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/geometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1981,7 +1981,7 @@
 - **Gesto:** Girar: enrolla la cinta del radio.
 - **Lo que descubre:** Un radián es un radio enrollado.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 50 fichas, de los temas `trigonometria.sistemas-de-medicion-angular-y-longitud-de-arco`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 51 fichas. Subtemas con más fichas: Conversión entre sistemas (51). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/trigonometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2000,7 +2000,7 @@
 - **Gesto:** Girar: haz rodar la rueda.
 - **Lo que descubre:** El arco es ángulo por radio.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 50 fichas, de los temas `trigonometria.sistemas-de-medicion-angular-y-longitud-de-arco`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 49 fichas. Subtemas con más fichas: Longitud de arco (18); Ruedas, poleas y engranajes (18); Sector y trapecio circular (13). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/trigonometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2019,7 +2019,7 @@
 - **Gesto:** Estirar el triángulo sin cambiar el ángulo.
 - **Lo que descubre:** La razón no depende del tamaño.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 68 fichas, de los temas `trigonometria.razones-trigonometricas-de-un-angulo-agudo`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 92 fichas. Subtemas con más fichas: Razones en figuras geométricas (45); Definición en el triángulo rectángulo (19); Ángulos notables y aproximados (16); Razones recíprocas y complementarias (12). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/trigonometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2038,7 +2038,7 @@
 - **Gesto:** Girar la línea de mira.
 - **Lo que descubre:** Con un lado y un ángulo sale todo.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 68 fichas, de los temas `trigonometria.razones-trigonometricas-de-un-angulo-agudo`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 24 fichas. Subtemas con más fichas: Ángulos de elevación y depresión (24). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/trigonometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2057,7 +2057,7 @@
 - **Gesto:** Girar la recta.
 - **Lo que descubre:** La pendiente es la tangente del ángulo.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
+- **Ejercicios en el banco Cuzcano:** unas 142 fichas. Subtemas con más fichas: Área con coordenadas (39); Paralelas, perpendiculares y distancias (35); Pendiente e inclinación (25); Ecuaciones de la recta (22); Puntos notables con coordenadas (21). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2076,7 +2076,7 @@
 - **Gesto:** Girar el lado final.
 - **Lo que descubre:** El signo lo decide el cuadrante.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 72 fichas, de los temas `trigonometria.razones-trigonometricas-de-un-angulo-en-posicion-normal`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 62 fichas. Subtemas con más fichas: Razones en posición normal (24); Signos por cuadrante (19); Ángulos medidos desde otro eje (10); Ángulos coterminales y cuadrantales (9). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/trigonometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2095,7 +2095,7 @@
 - **Gesto:** Reflejar el ángulo.
 - **Lo que descubre:** Mismo valor; cambia el signo.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 72 fichas, de los temas `trigonometria.razones-trigonometricas-de-un-angulo-en-posicion-normal`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/trigonometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2114,7 +2114,7 @@
 - **Gesto:** Girar el punto.
 - **Lo que descubre:** El seno es la altura y el coseno, la sombra.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 84 fichas, de los temas `trigonometria.circunferencia-trigonometrica`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 84 fichas. Subtemas con más fichas: Áreas en la circunferencia trigonométrica (35); Rango y extremos (20); Variación de las líneas por cuadrante (15); Líneas trigonométricas y segmentos (14). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/trigonometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2133,7 +2133,7 @@
 - **Gesto:** Girar y mirar las áreas.
 - **Lo que descubre:** sen² más cos² siempre arma el mismo cuadrado.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 174 fichas, de los temas `trigonometria.identidades-trigonometricas-fundamentales`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 174 fichas. Subtemas con más fichas: Identidades recíprocas y por división (37); Simplificación y demostración (36); Identidades pitagóricas (27); Eliminación de la variable angular (21); Radicales y signos por cuadrante (19). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/trigonometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2152,7 +2152,7 @@
 - **Gesto:** Girar dos veces seguidas.
 - **Lo que descubre:** El seno de la suma no es la suma de los senos.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 183 fichas, de los temas `trigonometria.identidades-de-arcos-compuestos`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 180 fichas. Subtemas con más fichas: Aplicaciones geométricas (48); Tangente y cotangente de arcos compuestos (46); Seno y coseno de arcos compuestos (39); Identidades auxiliares (20); Rango y extremos (11). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/trigonometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2171,7 +2171,7 @@
 - **Gesto:** Girar el doble.
 - **Lo que descubre:** Duplicar el ángulo no duplica el seno.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 146 fichas, de los temas `trigonometria.identidades-de-arcos-multiples`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 157 fichas. Subtemas con más fichas: Identidades del ángulo doble (53); Ángulo mitad (34); Ángulo triple (25); Degradación de potencias (21); Sumas y productos telescópicos (9). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/trigonometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2190,7 +2190,7 @@
 - **Gesto:** Estirar dos flechas en la circunferencia.
 - **Lo que descubre:** La suma apunta a la semisuma.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 120 fichas, de los temas `trigonometria.transformaciones-trigonometricas`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 112 fichas. Subtemas con más fichas: Suma a producto (47); Sumatorias de senos y cosenos (23); Producto a suma (20); Identidades condicionales (17); Rango y extremos (3). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/trigonometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2209,7 +2209,7 @@
 - **Gesto:** Girar el punto y desenrollar la gráfica.
 - **Lo que descubre:** El período es una vuelta.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 178 fichas, de los temas `trigonometria.funciones-trigonometricas-directas`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 178 fichas. Subtemas con más fichas: Rango y extremos (104); Dominio (40); Gráficas e intersecciones (17); Amplitud, periodo y frecuencia (9); Asíntotas y discontinuidades (8). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/trigonometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2228,7 +2228,7 @@
 - **Gesto:** Estirar la ventana principal.
 - **Lo que descubre:** Solo un corte cae dentro de la ventana.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 165 fichas, de los temas `trigonometria.funciones-trigonometricas-inversas`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 177 fichas. Subtemas con más fichas: Ecuaciones con funciones inversas (39); Gráficas y transformaciones (36); Dominio y rango (31); Propiedades de las funciones inversas (18); Composición de funciones directas e inversas (14). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/trigonometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2247,7 +2247,7 @@
 - **Gesto:** Girar hasta que la altura valga k.
 - **Lo que descubre:** Hay dos ángulos por vuelta.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 129 fichas, de los temas `trigonometria.ecuaciones-e-inecuaciones-trigonometricas`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 117 fichas. Subtemas con más fichas: Ecuaciones no elementales (38); Inecuaciones trigonométricas (37); Sistemas de ecuaciones trigonométricas (23); Ecuaciones con ángulos múltiples (12); Ecuaciones elementales (7). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/trigonometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2266,7 +2266,7 @@
 - **Gesto:** Girar el compás.
 - **Lo que descubre:** Con LLA salen cero, uno o dos triángulos.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 82 fichas, de los temas `trigonometria.resolucion-de-triangulos-oblicuangulos`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 150 fichas. Subtemas con más fichas: Ley de senos (58); Ángulos horizontales y rumbos (47); Ley de cosenos (23); Relaciones entre lados y ángulos (13); Leyes de proyecciones y de tangentes (9). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/trigonometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2285,7 +2285,7 @@
 - **Gesto:** Estirar un lado y el ángulo.
 - **Lo que descubre:** El área es medio producto de dos lados por el seno.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 82 fichas, de los temas `trigonometria.resolucion-de-triangulos-oblicuangulos`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 71 fichas. Subtemas con más fichas: Inradio, circunradio y exradios (26); Longitud de cevianas, bisectrices y medianas (18); Área del triángulo (14); Fórmula de Herón y semiángulos (7); Cuadriláteros inscritos y circunscritos (6). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/trigonometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2304,7 +2304,7 @@
 - **Gesto:** Estirar: tensa la cuerda con el dedo.
 - **Lo que descubre:** La suma de distancias a los focos no cambia.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
+- **Ejercicios en el banco Cuzcano:** unas 144 fichas. Subtemas con más fichas: Rotación de ejes (36); Hipérbola (35); Traslación de ejes (27); Recta tangente a una cónica (11); Lugar geométrico (10). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2323,7 +2323,7 @@
 - **Gesto:** Girar el radar.
 - **Lo que descubre:** Un r negativo cruza por el polo.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 64 fichas, de los temas `trigonometria.numeros-complejos`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 51 fichas. Subtemas con más fichas: Logaritmo y funciones complejas (15); Forma exponencial (13); Teorema de De Moivre (12); Forma trigonométrica de un complejo (11). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2358,7 +2358,7 @@
 - **Gesto:** Conectar: arma el árbol familiar.
 - **Lo que descubre:** Solo una disposición cumple todas las pistas.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 50 fichas, de los temas `razonamiento-matematico.inductivo-y-deductivo`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 23 fichas. Subtemas con más fichas: Cuadros de doble entrada (14); Deducción lógica (6); Parentesco (3). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** Armar el árbol familiar · Cuadro de doble entrada con descarte · «Una persona, varios papeles» (padre e hijo a la vez) para hallar el mínimo de personas.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2377,7 +2377,7 @@
 - **Gesto:** Conectar: traza sin levantar el dedo.
 - **Lo que descubre:** Se puede con cero o dos vértices impares.
 - **Rive:** Hormiga.
-- **Ejercicios en el banco Cuzcano:** unas 2 fichas, de los temas `razonamiento-matematico.conteo-de-figuras-y-recorridos-eulerianos`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** Contar cuántas líneas llegan a cada vértice (pares e impares) · Probar con el dedo y ver dónde se traba · La historia de los puentes de Königsberg · Para perímetros: correr los lados de la escalera hasta formar un rectángulo.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2396,7 +2396,7 @@
 - **Gesto:** Ordenar fichas en la fila o en la mesa.
 - **Lo que descubre:** Cada pista descarta posiciones.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 50 fichas, de los temas `razonamiento-matematico.razonamiento-logico`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 35 fichas. Subtemas con más fichas: Ordenamiento lineal (23); Ordenamiento circular (12). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** Fichas en una fila o alrededor de la mesa · Cuadro de doble entrada · Empezar por la pista que fija más (el dato ancla) · Probar un caso y descartar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2415,7 +2415,7 @@
 - **Gesto:** Clasificar: voltea a cada personaje.
 - **Lo que descubre:** Se supone, y la contradicción decide.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 50 fichas, de los temas `razonamiento-matematico.razonamiento-logico`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 5 fichas. Subtemas con más fichas: Verdades y mentiras (5). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** Suponer y buscar la contradicción · Tabla de quién dice qué · Buscar dos frases que se contradicen: una es verdad y la otra no · Personajes que se voltean.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2434,7 +2434,7 @@
 - **Gesto:** Conectar: guía la combi por las cuadras.
 - **Lo que descubre:** El desplazamiento no es lo caminado.
 - **Rive:** Combi.
-- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
+- **Ejercicios en el banco Cuzcano:** unas 5 fichas. Subtemas con más fichas: Traslados y cruces (5). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** Camino sobre la cuadrícula · Sumar por separado norte-sur y este-oeste · La flecha del inicio al final (Pitágoras) · El plano de una ciudad conocida.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2453,7 +2453,7 @@
 - **Gesto:** Poner fichas en el cuadrado.
 - **Lo que descubre:** El centro es la suma mágica entre 3.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
+- **Ejercicios en el banco Cuzcano:** unas 7 fichas. Subtemas con más fichas: Arreglos numéricos (7). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** Suma total entre el número de filas · Parejas que suman lo mismo · Girar y reflejar el cuadrado para ver que es el mismo · Contar dos veces las casillas de las esquinas.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2472,7 +2472,7 @@
 - **Gesto:** Poner fichas: agrega una fila y cuenta.
 - **Lo que descubre:** El patrón sale de tres casos chicos.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 50 fichas, de los temas `razonamiento-matematico.inductivo-y-deductivo`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 45 fichas. Subtemas con más fichas: Inducción numérica (20); Inducción con figuras (14); Inducción en arreglos numéricos (11). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** Tres casos chicos en una tabla · La figura que crece: mirar qué se agrega · Contar lo mismo de dos maneras · Proponer la fórmula y probarla con el caso 4.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2491,7 +2491,7 @@
 - **Gesto:** Girar el dado; mover palitos.
 - **Lo que descubre:** Las caras opuestas suman 7.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
+- **Ejercicios en el banco Cuzcano:** unas 4 fichas. Subtemas con más fichas: Juegos con fichas y dados (4). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** El dado desplegado en cruz · Palitos: mover uno y contar · Buscar lo que no cambia (pares e impares) · Resolver de atrás hacia adelante.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2510,7 +2510,7 @@
 - **Gesto:** Girar el minutero.
 - **Lo que descubre:** El horario también avanza.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `razonamiento-matematico.cronometria-relojes`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 112 fichas. Subtemas con más fichas: Adelantos y atrasos (36); Ángulo entre las agujas del reloj (32); Tiempo transcurrido y por transcurrir (18); Campanadas (16); Calendarios (10). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** Las agujas como dos corredores en una pista redonda · Tabla de adelanto y atraso por hora · Calendario: el resto de dividir entre 7 · Línea de tiempo.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2529,7 +2529,7 @@
 - **Gesto:** Soltar: saca bolas en el peor caso.
 - **Lo que descubre:** La certeza llega con el peor caso más uno.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
+- **Ejercicios en el banco Cuzcano:** unas 10 fichas. Subtemas con más fichas: Certezas (10). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** El peor caso: la mala suerte máxima y uno más · Casilleros y palomas · Jugar contra alguien que siempre te da lo peor · Tabla de lo que ya salió.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2548,7 +2548,7 @@
 - **Gesto:** Soltar las combis del paradero.
 - **Lo que descubre:** Coinciden en el MCM; hay un intervalo menos que sucesos.
 - **Rive:** Combi.
-- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
+- **Ejercicios en el banco Cuzcano:** unas 5 fichas. Subtemas con más fichas: Intervalos y campanadas (5). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** Línea de tiempo con marcas: hay un intervalo menos que marcas · MCM para saber cuándo coinciden · Campanadas: se cuentan los silencios, no los golpes · Dos tiras de papel con marcas.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2567,7 +2567,7 @@
 - **Gesto:** Girar la rueda con el dedo.
 - **Lo que descubre:** Dientes por vueltas se conserva.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
+- **Ejercicios en el banco Cuzcano:** unas 12 fichas. Subtemas con más fichas: Ruedas y engranajes (12). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** Contar los dientes que pasan por el contacto · Proporción inversa entre dientes y vueltas · Sentido de giro: ruedas pares e impares de la cadena · Misma faja, misma rapidez en el borde.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2586,7 +2586,7 @@
 - **Gesto:** Estirar el cordel.
 - **Lo que descubre:** Con el mismo cordel, el cuadrado encierra más.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
+- **Ejercicios en el banco Cuzcano:** unas 12 fichas. Subtemas con más fichas: Máximos y mínimos (9); Recorridos mínimos con reflejos (3). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** Tabla de valores y buscar el pico · Con el mismo cordel, comparar figuras · El reflejo para el camino más corto · Completar cuadrados · Probar los casos extremos.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2605,7 +2605,7 @@
 - **Gesto:** Cortar con la sierra; pesar.
 - **Lo que descubre:** Hay un corte menos que pedazos.
 - **Rive:** — (balanza del kit).
-- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
+- **Ejercicios en el banco Cuzcano:** unas 2 fichas. Subtemas con más fichas: Cortes y pesadas (2). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** Cortar de verdad: en una soga, un corte menos que pedazos; en un aro, igual número · Estacas en fila · La balanza tiene tres resultados: por eso salen potencias de 3 · Doblar antes de cortar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2624,7 +2624,7 @@
 - **Gesto:** Pesar y poner fichas: traduce el enunciado.
 - **Lo que descubre:** Cada frase es una operación sobre la balanza.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 200 fichas, de los temas `razonamiento-matematico.edades-y-moviles`, `razonamiento-matematico.planteo-de-ecuaciones`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 164 fichas. Subtemas con más fichas: Encuentros y alcances (27); Edades en distintos tiempos (17); Ecuaciones lineales (17); Sistemas de ecuaciones (13); Rapidez media y por tramos (12). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** La balanza · Barras o segmentos para cada cantidad · Cuadro de antes, ahora y después (edades) · Falsa suposición · La ecuación al final.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2662,7 +2662,7 @@
 - **Gesto:** Girar los cubitos; conectar aristas.
 - **Lo que descubre:** Lo que no se ve se deduce de dos vistas.
 - **Rive:** Hormiga.
-- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
+- **Ejercicios en el banco Cuzcano:** unas 8 fichas. Subtemas con más fichas: Rutas en el plano (8). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** Sumar en cada cruce los caminos que llegan · Tres vistas: frente, lado y arriba · Desarmar el cubo por capas · Desplegar la caja para el camino de la hormiga.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2681,7 +2681,7 @@
 - **Gesto:** Estirar el eje del gráfico.
 - **Lo que descubre:** Un eje cortado exagera la diferencia.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
+- **Ejercicios en el banco Cuzcano:** unas 1 fichas. Subtemas con más fichas: Situaciones deportivas (1). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** Leer primero los ejes y las unidades · Pasar el gráfico a tabla · Suficiencia: probar con cada dato solo y luego con los dos · Fabricar un caso donde el dato no alcanza.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2700,7 +2700,7 @@
 - **Gesto:** Soltar un número por el diagrama.
 - **Lo que descubre:** El operador es una máquina con una sola regla.
 - **Rive:** — (kit y mascota).
-- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `razonamiento-matematico.operaciones-matematicas`. Son de academia: inspiran generadores, no se copian.
+- **Ejercicios en el banco Cuzcano:** unas 100 fichas. Subtemas con más fichas: Composición e iteración de operadores (25); Operadores con potencias y radicales (21); Operadores definidos por una regla (14); Operadores definidos por recurrencia (12); Operadores en sumas y productos (10). Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/codigos-rm-procesos.md`.
 - **Otras formas de explicarla:** La máquina de entrada y salida · Seguir un número con el dedo · Tabla de pasadas cuando hay un ciclo · El operador como receta que se aplica dos veces.
 - **Desempeño final (algo que se pueda observar):** por definir.

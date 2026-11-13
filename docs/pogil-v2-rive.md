@@ -54,7 +54,7 @@ Van a entrar más de 10 000, no 7000 (Gerson, 13 nov). La filosofía no cambia y
 - **Los de examen oficial de universidad pública se usan tal cual y se citan** con universidad y periodo. La solución y la figura se rehacen.
 - **Dónde encajan en esta estrategia:** son el problema de examen del tiempo 5 (transferir), el material de la cola de repaso y de la práctica mezclada, y la base de los ejemplos que se completan (ruta E). Cada bloque se mapea a una unidad y a su ruta antes de construir.
 - El plan de la tanda está en `docs/ejercicios-7000.md`, que conserva su nombre.
-- **El banco ya existe y se contó** (`docs/clasificacion/banco-cuzcano.md`): 12 361 fichas de 125 libros de la Editorial Cuzcano, en la rama `banco/cuzcano`. Todas son de academia y ninguna de examen oficial, así que sus enunciados no van al producto: alimentan generadores. Cubre 108 de las 152 unidades; no cubre razonamiento verbal ni 11 de las 19 de razonamiento matemático. Casi todas las fichas traen una solución propia con pasos, que es la materia prima de los ejemplos que se completan.
+- **El banco ya existe y se contó** (`docs/clasificacion/banco-cuzcano.md`): 12 361 fichas de 125 libros de la Editorial Cuzcano, en la rama `banco/cuzcano`. Todas son de academia y ninguna de examen oficial, así que sus enunciados no van al producto: alimentan generadores. Con los subtemas ya unificados y asignados a su unidad, cubre 128 de las 152 unidades; no cubre razonamiento verbal ni otras seis unidades sueltas, y doce más tienen menos de 10 fichas. Casi todas las fichas traen una solución propia con pasos, que es la materia prima de los ejemplos que se completan.
 
 ### Confirmación con el skill
 
