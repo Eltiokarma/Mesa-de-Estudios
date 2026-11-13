@@ -35,7 +35,13 @@ Veredicto en dos ejes: **¿se entiende?** a medias (se entiende leyendo); **¿se
 6. **El error se muestra.** La opción elegida se dibuja como fantasma sobre la misma figura, junto a la correcta, con una línea de texto. Por ejemplo: la barra del 45 % (sumar descuentos) frente a la del 40,5 % (multiplicar lo que queda).
 7. **Rótulos pegados a lo que nombran.** Nada de leyendas lejanas. Una lectura en vivo (valor con unidad, cifras tabulares) no cuenta como texto.
 8. **Nada de investigación en pantalla.** Fuentes, porcentajes de estudios y códigos de error van a `docs/` y a la medición, nunca al alumno.
-9. **Movimiento con oficio.** Se anima el cambio que hay que inferir y se congela lo que hay que comparar. La interfaz usa `micro` 120, `corto` 200, `medio` 320 y `largo` 480 ms, y cada paso de explicación, `paso` 900 ms con pausa estable. Con `prefers-reduced-motion`, los mismos estados sin traslados.
+10. **Predecir no es caer en una trampa** (pedido de Gerson, 13 nov 2026: «empieza por hacer sentir sonso al estudiante; nosotros fallamos»).
+   - Ningún título, enunciado ni paso empuja hacia el error. Ejemplo: «Predice: 3 más 4» cuando la respuesta no es 7 pasó a «Predice: la resultante a 90°». El error típico sigue entre las opciones (regla 3), pero el texto es neutro.
+   - La explicación del error empieza por lo que el alumno pensó bien y en qué caso sería cierto: «3 + 4 = 7 sería cierto si a y b apuntaran al mismo lado». Nunca «Elegiste la A» ni «La correcta está marcada», porque las dos cosas ya se ven en pantalla.
+   - El texto va en tinta, no en rojo; el borde de la opción dice el estado.
+   - `herramientas/pasada-tono.py` limpia las escenas viejas y `herramientas/tono.test.js` vigila que no vuelva.
+   - En vectores, los ejes llevan sus unitarios î, ĵ (y k̂ en 3D) y los vectores se escriben con ellos: a = 3î.
+11. **Movimiento con oficio.** Se anima el cambio que hay que inferir y se congela lo que hay que comparar. La interfaz usa `micro` 120, `corto` 200, `medio` 320 y `largo` 480 ms, y cada paso de explicación, `paso` 900 ms con pausa estable. Con `prefers-reduced-motion`, los mismos estados sin traslados.
 
 ## 4. Formato del ejercicio (amplía el formato «predicciones»)
 
