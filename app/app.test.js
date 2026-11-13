@@ -112,3 +112,30 @@ test('el service worker descarga el catálogo con una sola dirección', () => {
   const sw = fs.readFileSync(path.join(__dirname, 'sw.js'), 'utf8');
   assert.match(sw, /fetch\('\/app\/datos\/catalogo\.json', \{ cache: 'no-store' \}\)/);
 });
+
+// Dibujos de unidad (app/dibujos/): cada curso de Dibujos.CURSOS tiene su archivo guardado sin conexión y un dibujo
+// por cada unidad; los dibujos son SVG cerrados, sin colores de variables (son de las escenas) ni hex sueltos.
+test('los dibujos de unidad están completos, guardados sin conexión y con los colores de la cáscara', () => {
+  const vm = require('node:vm');
+  const ctx = { self: {} }; vm.createContext(ctx);
+  const leer = f => vm.runInContext(fs.readFileSync(path.join(__dirname, 'dibujos', f), 'utf8'), ctx);
+  leer('comun.js');
+  const D = ctx.self.Dibujos;
+  const sw = fs.readFileSync(path.join(__dirname, 'sw.js'), 'utf8');
+  const lista = JSON.parse(sw.match(/const CASCARA = (\[[\s\S]*?\]);/)[1].replace(/'/g, '"'));
+  assert.ok(lista.includes('/app/dibujos/comun.js'), 'sw.js no guarda app/dibujos/comun.js');
+  const cat = JSON.parse(fs.readFileSync(SALIDA, 'utf8'));
+  for (const c of D.CURSOS) {
+    assert.ok(lista.includes(`/app/dibujos/${c}.js`), `sw.js no guarda app/dibujos/${c}.js`);
+    leer(`${c}.js`);
+    const curso = cat.cursos.find(x => x.id === c);
+    assert.ok(curso, `Dibujos.CURSOS nombra ${c}, que no está en el catálogo`);
+    for (const u of curso.unidades) {
+      const svg = D.svg(c, u.id);
+      assert.ok(svg, `falta el dibujo de ${u.id}`);
+      assert.match(svg, /^<svg class="dib" viewBox="0 0 160 120"[^>]*>[\s\S]*<\/svg>$/);
+      assert.doesNotMatch(svg, /--c-[oihdf]|#[0-9a-f]{3,6}\b|NaN|undefined/i, `${u.id}: color de variable, hex suelto o número roto`);
+    }
+    for (const id of Object.keys(D.porCurso[c])) assert.ok(curso.unidades.some(u => u.id === id), `dibujo de ${id}, que no es una unidad de ${c}`);
+  }
+});
