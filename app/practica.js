@@ -90,7 +90,8 @@ async function vista(ctx, id) {
   est.practica = est.practica || {};
   // Con valores por defecto: «Borrar mi avance» deja solo { entrada, salida } y sin esto hechos quedaba en NaN.
   const st = est.practica[id] = Object.assign({ hechos: 0, aciertos: 0, entrada: null, salida: null }, est.practica[id] || {});
-  const volver = `<a class="volver" href="#/curso/${esc(curso ? curso.id : '')}" aria-label="Volver">‹</a>`;
+  // Vuelve a la unidad (13 nov 2026: la página del curso ya no lista ejercicios; están en #/unidad/<id>/ejercicios).
+  const volver = `<a class="volver" href="#/unidad/${esc(unidad)}/ejercicios" aria-label="Volver">‹</a>`;
   const cabecera = sub => `${volver}<p class="sub">${esc(curso ? curso.nombre : '')}</p><h1>${esc(pl.titulo)}</h1><p class="sub">${sub}</p>`;
 
   function problemaHTML(p, n, total, etiqueta, conMascota) {

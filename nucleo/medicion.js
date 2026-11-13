@@ -47,7 +47,9 @@
     // Respuestas de cada prueba (letras en predicciones, posiciones en el banco en lectura).
     'respuestas',
     // «No sé»: true en un item o una predicción; en una prueba, cuántas marcó.
-    'nose'];
+    'nose',
+    // «Dejar una pregunta» (13 nov 2026): la duda del alumno sobre una unidad; valor del arrastre en la práctica viva.
+    'texto', 'valor', 'via'];
 
   // «No sé» de un evento: true o un número en los nuevos; nada en los de antes (cuenta como 0).
   const noseDe = e => (e.nose === true || e.nose === 'true' ? 1 : Number(e.nose) || 0);
