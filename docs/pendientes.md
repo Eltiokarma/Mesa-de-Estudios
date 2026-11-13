@@ -54,6 +54,24 @@ Rama `claude/hopeful-planck-h4701c` (no está en `main` todavía; sw v160). Se h
 4. Piezas siguientes, por cobertura: `recta`, `balanza`, `flechas`, `triangulo` y `ejes`. El orden de migración de generadores está en `docs/ejercicios-7000.md`, con `quimica-conceptos` y `rm-certezas` primero.
 5. Las escenas grandes (MRUV y las demás) también pasan a la línea de tiempo. En MRUV hay que sacar el dato de Beichner que ve el alumno y poner la explicación junto a la gráfica.
 
+**Avance del 13 nov, segunda vuelta (en `main`, sw v164).**
+- **Piezas del kit:** `recta`, `ejes`, `balanza`, `flechas` y `triangulo`, más `barra-porcentaje`. La API de cada una está en el comentario de cabecera de su archivo, y `nucleo/kit/piezas/probar-viva.js` revisa los generadores migrados.
+- **Generadores migrados:**
+  - completos y dentro del presupuesto: `porcentajes-sucesivos`, `rm-balanzas`, `vectores-ley-cosenos`, `vectores-poligono`, `vectores-componentes`, `inecuaciones-planteo`, `fracciones-problemas` y `velocidad-relativa`;
+  - a medias: `trig-angulos-verticales`, `porcentajes-planteo` y `sistemas-ecuaciones`;
+  - por hacer: `ejes`, que no usa ningún generador todavía (`cinematica-medias`, `impulso-grafica`, `funciones-dominio-rango`), y `geo-triangulos-notables`, `vectores-unitario` y `rm-planteo`.
+- **Tono (pedido de Gerson):** `herramientas/pasada-tono.py` limpió 98 escenas, sin «Elegiste», sin «La correcta está marcada» y sin el texto del error en rojo, y `herramientas/tono.test.js` lo vigila. Los párrafos `.fuente` quedan ocultos al alumno. La escena de vectores lleva î, ĵ y un título neutro.
+- **Tanda de 7000:** el cortador `herramientas/cortar-ejercicios.js` lee PDF (también a dos columnas), HTML y texto. Las decisiones de Gerson están en `docs/ejercicios-7000.md`.
+
+**Pendientes de la segunda vuelta.**
+- Quedan unas 60 frases de investigación a la vista del alumno, escritas de otras formas: «En un estudio con 979 escolares de Singapur…», «(AR17 del informe…)», «Según Bilgin y otros (2003, ítems…)». Hay que revisarlas frase por frase. Para buscarlas: `grep -v fuente plantillas/*/index.html | grep -E "estudio|escolares|universitarios|[0-9]+ % (de [0-9]+|eligió)"`.
+- `inecuaciones-planteo` (subtipo de los ciclistas) quedó telegráfico al recortarlo: rehacerlo con la regla nueva («el presupuesto no se cumple a costa de entender»).
+- Ids de error repetidos dentro de un problema impiden dibujar su fantasma (`redondeo-de-la-cota`, trabajo/propia): separarlos cambia la medición, así que lo decide Gerson.
+- Primitivas que tres rutinas duplicaron y conviene subir a `nucleo/kit/trazo.js`: arco de ángulo con cuadradito, rótulo junto a un segmento, cota oblicua, regla con paso «bonito», flecha discontinua, extremo lleno o hueco y fila de fichas.
+- `--c-f` no existe en la cáscara de la app: la práctica solo tiene 4 colores de variable.
+- Con la marca al tope, el fantasma de `barra-porcentaje` se sale por la derecha (`porcentajes-planteo` a 390 px).
+- `article.card.practica` puede correrse 40 px tras usar el teclado: probar `overflow: clip` en `app/estilos.css`. Va después de la rutina de la página del curso, que tiene ese archivo.
+
 **Pendientes chicos.**
 - La línea de la marca cruza el rótulo de un pedazo cuando caen en la misma columna.
 - `app/lectura.js` todavía tiene `PREMIOS` con emoji y el gato en la retroalimentación: pasarlo a la mascota.

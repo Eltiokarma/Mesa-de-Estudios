@@ -28,6 +28,7 @@ Veredicto en dos ejes: **¿se entiende?** a medias (se entiende leyendo); **¿se
    - la explicación de un error, 20 palabras como máximo: el resto lo dice el dibujo;
    - en pantalla nunca hay más de 60 palabras fuera del enunciado.
    Los exámenes oficiales reproducidos (regla 5) conservan su enunciado tal cual: el presupuesto se aplica a lo que escribimos nosotros.
+   **El presupuesto no se cumple a costa de entender** (13 nov). Un enunciado telegráfico («A, del km p, el mayor x con x² − 61x + 888 ≤ 0») pasa el conteo y falla la regla. Si un subtipo no cabe en 40 palabras con frases completas, la figura tiene que cargar más (los datos van en el dibujo, no en el texto) o el subtipo se divide en dos problemas. Si nada de eso sirve, se queda como está y se anota.
 2. **Figura primero.** Todo ejercicio trae una figura armada con una pieza del kit (sección 5). El enunciado no narra lo que la figura ya muestra.
 3. **La respuesta se manipula cuando el tipo lo permite.** Arrastrar un valor sobre una barra o una recta, mover un punto o una flecha, poner fichas. Las alternativas A–E quedan para lo que no se puede manipular y para las pruebas de entrada y salida, que se parecen al examen. Toda manipulación tiene alternativa sin arrastrar (botones − y +, o escribir el valor).
 4. **Predecir sigue bloqueando (regla 3).** Es el único punto que bloquea. Después, nada depende de «Siguiente».
