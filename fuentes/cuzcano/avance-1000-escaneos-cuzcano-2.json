@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "coleccion": "Cuzcano",
+  "origen": "Escaneos cotejados con el OCR local",
+  "meta": 1000,
+  "fichas_verificadas": 200,
+  "fichas_pendientes": 800,
+  "temas_completos": 2,
+  "temas": [
+    {
+      "id": "aritmetica.reparto-proporcional",
+      "tema": "Reparto proporcional",
+      "fichas": 100,
+      "meta": 100
+    },
+    {
+      "id": "aritmetica.regla-de-mezcla-y-aleacion",
+      "tema": "Regla de mezcla y aleación",
+      "fichas": 100,
+      "meta": 100
+    },
+    {
+      "id": "aritmetica.regla-de-descuento",
+      "tema": "Regla de descuento",
+      "fichas": 0,
+      "meta": 100
+    },
+    {
+      "id": "fisica.hidrostatica-e-hidrodinamica",
+      "tema": "Hidrostática e hidrodinámica",
+      "fichas": 0,
+      "meta": 100
+    },
+    {
+      "id": "geometria.nociones-generales",
+      "tema": "Nociones generales",
+      "fichas": 0,
+      "meta": 100
+    },
+    {
+      "id": "geometria.geometria-vectorial",
+      "tema": "Geometría vectorial",
+      "fichas": 0,
+      "meta": 100
+    },
+    {
+      "id": "geometria.transformacion-de-coordenadas",
+      "tema": "Transformación de coordenadas",
+      "fichas": 0,
+      "meta": 100
+    },
+    {
+      "id": "razonamiento-matematico.razonamiento-geometrico",
+      "tema": "Razonamiento geométrico",
+      "fichas": 0,
+      "meta": 100
+    },
+    {
+      "id": "razonamiento-matematico.conteo-de-figuras-y-recorridos-eulerianos",
+      "tema": "Conteo de figuras y recorridos eulerianos",
+      "fichas": 0,
+      "meta": 100
+    },
+    {
+      "id": "geometria.proporcionalidad-de-segmentos-y-semejanza-de-triangulos",
+      "tema": "Proporcionalidad de segmentos y semejanza de triángulos",
+      "fichas": 0,
+      "meta": 100
+    }
+  ],
+  "fichas_banco_local": 11802,
+  "sha256_fichas_locales": "77dca8f14246896596ab9294e7a1760a2f941c0ca58321c1ada8e9b54707ed96"
+}
