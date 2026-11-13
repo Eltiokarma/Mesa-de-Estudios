@@ -183,7 +183,9 @@ const generadoresRepaso = u => (window.RepasoTipos ? generadoresDe(u).filter(p =
 function fuentesRepaso(u) {
   const gens = generadoresRepaso(u);
   const papeles = gens.length || !window.RepasoTipos ? [] : modulosDe(u).filter(p => p.formato !== 'lectura' && RepasoTipos.papelCubre(p, u.id));
-  return { gens, papeles, hay: gens.length + papeles.length > 0 };
+  // Razonamiento verbal: los ejercicios sueltos y los textos de sus módulos de lectura (app/repaso.js elige).
+  const lecturas = modulosDe(u).filter(p => p.formato === 'lectura' && p.banco);
+  return { gens, papeles, lecturas, hay: gens.length + papeles.length + lecturas.length > 0 };
 }
 function sembrarRepaso() {
   if (!window.Repaso) return;
@@ -1050,7 +1052,7 @@ const MODULOS = {
   // Exámenes de una unidad: lo que necesitan los generadores (después se carga el de cada práctica de la unidad).
   examen: ['/nucleo/azar.js', '/nucleo/predicciones.js', '/nucleo/convencion.js'],
   // Repaso de hoy: lo mismo que el examen más su pantalla (nucleo/repaso.js ya viene con el inicio).
-  repaso: ['/nucleo/azar.js', '/nucleo/predicciones.js', '/nucleo/convencion.js', '/app/repaso.js'],
+  repaso: ['/nucleo/azar.js', '/nucleo/predicciones.js', '/nucleo/convencion.js', '/nucleo/lectura.js', '/app/lectura.js', '/app/repaso.js'],
 };
 const scripts = {};
 // async = false: se bajan en paralelo pero corren en el orden en que se insertan (azar antes que pruebas, etc.).

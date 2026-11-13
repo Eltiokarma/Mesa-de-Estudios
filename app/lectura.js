@@ -32,35 +32,9 @@ async function cargarBanco(pl) {
   return banco;
 }
 
-async function vista(ctx, id, unidad) {
-  const { $app, cat, est, esc, guardar, registrar, marcarDia } = ctx;
-  const pl = cat.plantillas[id];
-  if (!pl || pl.formato !== 'lectura') { location.hash = '#/cursos'; return; }
-  // La entrada de razonamiento verbal vive en lectura-verbal: si el alumno abre otro módulo de lectura sin
-  // haberla hecho, va primero a esa entrada (si no, practicaría antes y la entrada ya no sería en frío).
-  const verbal = cat.plantillas['lectura-verbal'];
-  if (id !== 'lectura-verbal' && verbal && !((est.practica || {})['lectura-verbal'] || {}).entrada) {
-    location.hash = '#/lectura/lectura-verbal'; return;
-  }
-  document.body.style.overflow = '';
-  actual = null;
-  const ruta = location.hash;
-  const pideSalida = unidad === 'salida';
-  // La unidad que abrió el alumno filtra los textos (cualquiera del catálogo: un ejercicio puede tocar otra).
-  const unidadAbierta = cat.cursos.some(c => c.unidades.some(u => u.id === unidad)) ? unidad : '';
-  const curso = cat.cursos.find(c => c.unidades.some(u => u.id === (unidadAbierta || pl.unidades[0])));
-  const nombreUnidad = unidadAbierta && curso ? (curso.unidades.find(u => u.id === unidadAbierta) || {}).nombre : '';
-  $app.innerHTML = '<p class="vacio">Cargando…</p>';
-  let b;
-  try { b = await cargarBanco(pl); } catch {
-    $app.innerHTML = '<p class="vacio">No se pudieron cargar los textos. Ábrelos una vez con internet para tenerlos sin conexión.</p>'; return;
-  }
-  if (location.hash !== ruta) return; // el alumno ya se fue a otra pantalla
-  est.practica = est.practica || {};
-  const st = est.practica[id] = Object.assign({ hechos: {}, textos: 0, preguntas: 0, aciertos: 0, previos: 0, previosBien: 0, entrada: null, salida: null }, est.practica[id]);
-  const volver = `<a class="volver" href="#/curso/${esc(curso ? curso.id : '')}" aria-label="Volver">‹</a>`;
-  const subCurso = `${esc(curso ? curso.nombre : '')}${nombreUnidad ? ` · ${esc(nombreUnidad)}` : ''}`;
-
+// Dibujo del texto, sus figuras y el cuerpo de un ejercicio suelto. Fuera de la vista para que el repaso
+// (app/repaso.js) muestre los mismos textos sin copiar este código: window.LecturaVista.pintor(esc).
+function pintor(esc) {
   // ---------- Dibujo del texto ----------
   // pint: { evidencia, distractor, idea } (listas de ids). modo 'marcar': cada oración es un botón.
   function oracionHTML(o, modo, pint, sel) {
@@ -107,13 +81,6 @@ async function vista(ctx, id, unidad) {
     }
     return `<figure class="lec-fig ${cl(f.id)}" data-o="${esc(f.id)}"><figcaption>${esc(f.titulo)}</figcaption>${cuerpo}${f.nota ? `<p class="fig-nota">${esc(f.nota)}</p>` : ''}</figure>`;
   }
-  // Fragmento citado en la explicación, con el color de su rol (una línea por oración o parte de figura).
-  function citaHTML(it, ids, rol) {
-    const cs = L().citas(it, ids);
-    if (!cs.length) return '';
-    return `<div class="cita"${it.idioma ? ` lang="${esc(it.idioma)}"` : ''}>${cs.map(o => `<p><span class="o ${rol}"><sup class="n">${esc(o.marca)}</sup>${esc(o.t)}</span></p>`).join('')}</div>`;
-  }
-  const mayuscula = t => { const x = String(t || ''); return x.charAt(0).toUpperCase() + x.slice(1); };
   function cuerpoEjercicioHTML(it) {
     const c = it.cuerpo || {};
     const t = it.preguntas[0].tipo;
@@ -124,6 +91,47 @@ async function vista(ctx, id, unidad) {
     return '';
   }
 
+  return { oracionHTML, textoHTML, figuraHTML, cuerpoEjercicioHTML };
+}
+
+async function vista(ctx, id, unidad) {
+  const { $app, cat, est, esc, guardar, registrar, marcarDia } = ctx;
+  const pl = cat.plantillas[id];
+  if (!pl || pl.formato !== 'lectura') { location.hash = '#/cursos'; return; }
+  // La entrada de razonamiento verbal vive en lectura-verbal: si el alumno abre otro módulo de lectura sin
+  // haberla hecho, va primero a esa entrada (si no, practicaría antes y la entrada ya no sería en frío).
+  const verbal = cat.plantillas['lectura-verbal'];
+  if (id !== 'lectura-verbal' && verbal && !((est.practica || {})['lectura-verbal'] || {}).entrada) {
+    location.hash = '#/lectura/lectura-verbal'; return;
+  }
+  document.body.style.overflow = '';
+  actual = null;
+  const ruta = location.hash;
+  const pideSalida = unidad === 'salida';
+  // La unidad que abrió el alumno filtra los textos (cualquiera del catálogo: un ejercicio puede tocar otra).
+  const unidadAbierta = cat.cursos.some(c => c.unidades.some(u => u.id === unidad)) ? unidad : '';
+  const curso = cat.cursos.find(c => c.unidades.some(u => u.id === (unidadAbierta || pl.unidades[0])));
+  const nombreUnidad = unidadAbierta && curso ? (curso.unidades.find(u => u.id === unidadAbierta) || {}).nombre : '';
+  $app.innerHTML = '<p class="vacio">Cargando…</p>';
+  let b;
+  try { b = await cargarBanco(pl); } catch {
+    $app.innerHTML = '<p class="vacio">No se pudieron cargar los textos. Ábrelos una vez con internet para tenerlos sin conexión.</p>'; return;
+  }
+  if (location.hash !== ruta) return; // el alumno ya se fue a otra pantalla
+  est.practica = est.practica || {};
+  const st = est.practica[id] = Object.assign({ hechos: {}, textos: 0, preguntas: 0, aciertos: 0, previos: 0, previosBien: 0, entrada: null, salida: null }, est.practica[id]);
+  const volver = `<a class="volver" href="#/curso/${esc(curso ? curso.id : '')}" aria-label="Volver">‹</a>`;
+  const subCurso = `${esc(curso ? curso.nombre : '')}${nombreUnidad ? ` · ${esc(nombreUnidad)}` : ''}`;
+
+  const { textoHTML, figuraHTML, cuerpoEjercicioHTML } = pintor(esc);
+
+  // Fragmento citado en la explicación, con el color de su rol (una línea por oración o parte de figura).
+  function citaHTML(it, ids, rol) {
+    const cs = L().citas(it, ids);
+    if (!cs.length) return '';
+    return `<div class="cita"${it.idioma ? ` lang="${esc(it.idioma)}"` : ''}>${cs.map(o => `<p><span class="o ${rol}"><sup class="n">${esc(o.marca)}</sup>${esc(o.t)}</span></p>`).join('')}</div>`;
+  }
+  const mayuscula = t => { const x = String(t || ''); return x.charAt(0).toUpperCase() + x.slice(1); };
   // ---------- Armazón de la pantalla ----------
   function armar(it, sub, etiqueta) {
     const conTexto = !it.ejercicio;
@@ -614,5 +622,5 @@ document.addEventListener('keydown', e => {
   }
 });
 
-window.LecturaVista = { vista };
+window.LecturaVista = { vista, pintor };
 })();

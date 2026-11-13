@@ -7,6 +7,8 @@
 //   papel      si la unidad no tiene generador: un problema de lápiz y papel de su escena (papel.json), distinto en
 //              cada visita. No trae alternativas: el alumno lo resuelve, ve la respuesta y marca «Me salió», «No me
 //              salió» o «No sé». Se guarda como autoevaluación, aparte del acierto medido (nucleo/medicion.js).
+//   ejercicio  razonamiento verbal: un ejercicio suelto de la unidad (contenido/razonamiento-verbal/ejercicios/, con
+//              alternativas), distinto en cada visita. Sin el paso previo de la práctica: el repaso es corto.
 // Antes de resolver: «¿Qué tipo de problema es?», con tres unidades del mismo curso; solo sale con preguntas cuya
 // unidad es segura, y todas las de aquí lo son. Si falla, recién ahí la explicación y el enlace a la unidad.
 // Se registra un 'repaso-item' por pregunta y un 'repaso' al terminar.
@@ -91,12 +93,43 @@ async function vista(ctx) {
       respuesta: q.respuesta, solucionHTML: `<ol class="sol">${(q.pasos || []).map(x => `<li>${esc(x)}</li>`).join('')}</ol>` };
   }
 
+  // ---- Verbal: el banco de cada módulo de lectura (su índice y los ítems que hagan falta, de a uno) ----
+  const L = window.Lectura, pintor = window.LecturaVista && LecturaVista.pintor ? LecturaVista.pintor(esc) : null;
+  const jsonDe = u => cargarPapel(u); // misma caché: un JSON por dirección
+  async function itemsDe(pls, carpeta) {
+    const out = [];
+    for (const pl of pls) {
+      let ind = null;
+      try { ind = await jsonDe(pl.banco); } catch { ind = null; }
+      if (!ind) continue;
+      const dir = pl.banco.replace(/\/[^/]*$/, '');
+      for (const iid of ind[carpeta] || []) {
+        if (out.some(x => x.raw.id === iid)) continue;
+        try { out.push({ pl, raw: await jsonDe(`${dir}/${carpeta}/${iid}.json`) }); } catch { /* sin ese ítem */ }
+      }
+    }
+    return out;
+  }
+  async function deEjercicio(id, ficha, pls) {
+    if (!L || !pintor) return null;
+    const pool = (await itemsDe(pls, 'ejercicios')).filter(x => L.normalizar(x.raw).preguntas.some(q => q.unidad === id))
+      .sort((a, b) => (a.raw.id < b.raw.id ? -1 : 1));
+    if (!pool.length) return null;
+    const { pl, raw } = pool[(Number(ficha.hechos) || 0) % pool.length];
+    const it = L.preparar(raw, `repaso-${est.alumno}`, Number(ficha.hechos) || 0), q = it.preguntas[0];
+    return { fuente: 'ejercicio', plantilla: pl.id, problema: q.problema,
+      enunHTML: pintor.cuerpoEjercicioHTML(it), preguntaHTML: esc(q.enunciado),
+      alts: q.alternativas.map(a => ({ letra: a.letra, texto: a.t, correcta: !!a.correcta, explicacion: a.correcta ? '' : (a.explicacion || ''), error: a.correcta ? '' : (a.codigo || ''), respaldo: '' })),
+      solucionHTML: (() => { const ok = q.alternativas.find(a => a.correcta); return ok && ok.explicacion ? `<p>${esc(ok.explicacion)}</p>` : ''; })() };
+  }
+
   const preguntas = [];
   for (const id of elegidas) {
     const { c, u } = unidad(id), ficha = est.repaso[id], f = fuentesDe(u);
     let q = null;
     if (f.gens.length) q = await deGenerador(id, ficha, f.gens);
     if (!q && f.papeles.length) q = await dePapel(id, ficha, f.papeles);
+    if (!q && f.lecturas.length) q = await deEjercicio(id, ficha, f.lecturas);
     if (q) preguntas.push(Object.assign(q, { id, c, u, ficha })); // si no, esa unidad queda para otro día
   }
   if (location.hash !== h) return;
@@ -171,7 +204,7 @@ async function vista(ctx) {
           <b>${bien ? `¡Bien! Es la ${ok.letra}. Lo recuerdas.` : `La respuesta es la ${ok.letra}: ${esc(ok.texto)}.`}</b>
           ${!bien && a && a.explicacion ? `<p>${esc(a.explicacion)}</p>` : ''}
           ${bien ? '' : '<p>Te lo vamos a preguntar otra vez en dos días.</p>'}</div>`;
-        $app.querySelector('#sol').innerHTML = `${!bien && q.solucionHTML ? `<details open><summary>Solución paso a paso</summary>${q.solucionHTML}</details>` : ''}
+        $app.querySelector('#sol').innerHTML = `${!bien && q.solucionHTML ? `<details open><summary>${q.fuente === 'generador' ? 'Solución paso a paso' : 'Por qué'}</summary>${q.solucionHTML}</details>` : ''}
           ${bien ? '' : volverUnidad}${botonSeguir}`;
         conectarSeguir();
         $app.querySelector('#retro').scrollIntoView({ behavior: suave(), block: 'start' });
