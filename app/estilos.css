@@ -559,3 +559,13 @@ input[type=file]{font:inherit;max-width:100%}
 .col2.panel .tabla .chip{padding:6px 11px}
 .form-cuenta code,.card code{overflow-wrap:anywhere}
 .form-cuenta>*{min-width:0;max-width:100%}
+
+/* ---------- Dibujos de unidad (app/dibujos/): esquemas de 160 × 120 sobre la lámina del curso ----------
+   La lámina es el pastel del curso (--cf) también en oscuro, así el trazo ciruela se lee igual en los dos temas.
+   Trazo del kit: 3 para la idea, 2 para contornos y ejes, 1,5 fino. Acento: la base del curso (--cb), encamisada. */
+.dib{display:block;width:100%;height:auto;fill:none;stroke:#3b2a52;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.dib .d{stroke-width:2}.dib .g{stroke-width:2;stroke-dasharray:4 5}.dib .f{stroke-width:1.5}
+.dib .b{fill:#fff}.dib .a{fill:var(--cb)}.dib .m{fill:color-mix(in srgb,var(--cb) 38%,#fff)}.dib .tn{fill:#3b2a52;stroke-width:2}
+.dib .caja{stroke-width:7.5}.dib .acl{stroke:var(--cb);stroke-width:3.5}
+.dib text{fill:#3b2a52;stroke:none;font-family:var(--font-r);font-weight:800;font-variant-numeric:tabular-nums}
+.lamina{background:var(--cf);border:2px solid var(--borde);border-radius:16px;overflow:hidden}
