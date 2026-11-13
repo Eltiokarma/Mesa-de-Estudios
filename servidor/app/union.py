@@ -7,7 +7,7 @@ Reglas:
 - `vistas`: unión con la fecha más antigua por unidad; `dias`: unión sin repetir.
 - `uni`, `grado`, `tema`, `nombre`: gana el cliente.
 - `repaso` (cola de repaso, nucleo/repaso.js): por unidad gana la ficha con más `hechos`; si empatan, la de `ultimo`
-  más reciente; si también, la del cliente. `desde` se queda con la fecha más antigua.
+  más reciente; si también, la del cliente. `desde` se queda con la fecha más antigua y `leidos` se junta.
 - `alumno`: siempre el id seudónimo de la cuenta.
 Lo que el contrato no nombra: gana el cliente si lo trae; si no, se conserva el del servidor.
 """
@@ -114,6 +114,13 @@ def _unir_repaso(srv, cli) -> dict:
         ds = sorted(d for d in (a.get("desde"), b.get("desde")) if isinstance(d, str) and d)
         if ds:
             f["desde"] = ds[0]
+        la, lb = a.get("leidos"), b.get("leidos")
+        if isinstance(la, list) or isinstance(lb, list):  # textos de lectura usados en el repaso: se juntan
+            vistos = []
+            for x in (la if isinstance(la, list) else []) + (lb if isinstance(lb, list) else []):
+                if x not in vistos:
+                    vistos.append(x)
+            f["leidos"] = vistos[-60:]
         out[k] = f
     return out
 

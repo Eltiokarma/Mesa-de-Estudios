@@ -83,3 +83,28 @@ test('cobertura: generador o papel en todas las unidades que no son de razonamie
   assert.deepEqual(sin, []);
   assert.ok(!RT.papelCubre(cat.plantillas['tipologia-textual'], 'razonamiento-verbal.tipologia-textual'));
 });
+
+test('cobertura del repaso: las 152 unidades tienen de dónde sacar una pregunta', () => {
+  const fs = require('fs');
+  const L = require('./lectura.js');
+  const unidadesVerbal = new Set();
+  for (const pl of Object.values(cat.plantillas)) {
+    if (pl.formato !== 'lectura' || !pl.banco) continue;
+    const ind = JSON.parse(fs.readFileSync(path.join(RAIZ, pl.banco), 'utf8')), dir = path.dirname(pl.banco);
+    for (const [carpeta, ids] of [['textos', ind.textos || []], ['ejercicios', ind.ejercicios || []]]) {
+      for (const id of ids) {
+        const it = L.normalizar(JSON.parse(fs.readFileSync(path.join(RAIZ, dir, carpeta, id + '.json'), 'utf8')));
+        for (const q of it.preguntas) if (pl.unidades.includes(q.unidad)) unidadesVerbal.add(q.unidad);
+      }
+    }
+  }
+  const fuente = {};
+  for (const cu of cat.cursos) for (const u of cu.unidades) {
+    const pls = u.plantillas.map(p => cat.plantillas[p]).filter(Boolean);
+    fuente[u.id] = pls.some(p => p.formato === 'predicciones' && RT.cubre(p, u.id)) ? 'generador'
+      : pls.some(p => RT.papelCubre(p, u.id)) ? 'papel' : unidadesVerbal.has(u.id) ? 'verbal' : null;
+  }
+  const sin = Object.keys(fuente).filter(u => !fuente[u]);
+  assert.deepEqual(sin, []);
+  assert.equal(Object.keys(fuente).length, 152);
+});

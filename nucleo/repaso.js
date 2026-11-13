@@ -141,7 +141,7 @@
   /*
    * unir(servidor, cliente) → est.repaso unido (la misma regla está en servidor/app/union.py).
    * Por unidad: gana la ficha con más hechos; si empatan, la de ultimo más reciente; si también, la del cliente.
-   * desde se queda con la fecha más antigua de las dos.
+   * desde se queda con la fecha más antigua de las dos; leidos (textos de lectura usados en el repaso) se juntan.
    */
   function unir(s, c) {
     const obj = x => (x && typeof x === 'object' && !Array.isArray(x) ? x : {});
@@ -156,6 +156,8 @@
       const f = JSON.parse(JSON.stringify(gana));
       const ds = [a.desde, b.desde].filter(esFecha).sort();
       if (ds.length) f.desde = ds[0];
+      // Textos de lectura ya usados en el repaso: se juntan los de los dos lados.
+      if (Array.isArray(a.leidos) || Array.isArray(b.leidos)) f.leidos = [...new Set([...(a.leidos || []), ...(b.leidos || [])])].slice(-60);
       out[u] = f;
     }
     return out;

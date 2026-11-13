@@ -9,6 +9,8 @@
 //              salió» o «No sé». Se guarda como autoevaluación, aparte del acierto medido (nucleo/medicion.js).
 //   ejercicio  razonamiento verbal: un ejercicio suelto de la unidad (contenido/razonamiento-verbal/ejercicios/, con
 //              alternativas), distinto en cada visita. Sin el paso previo de la práctica: el repaso es corto.
+//   lectura    las 12 unidades verbales de lectura: un texto con una pregunta de esa unidad que el alumno no haya leído
+//              (ni en la práctica ni en el repaso), el más corto. Cuenta como un ítem del día.
 // Antes de resolver: «¿Qué tipo de problema es?», con tres unidades del mismo curso; solo sale con preguntas cuya
 // unidad es segura, y todas las de aquí lo son. Si falla, recién ahí la explicación y el enlace a la unidad.
 // Se registra un 'repaso-item' por pregunta y un 'repaso' al terminar.
@@ -123,6 +125,29 @@ async function vista(ctx) {
       solucionHTML: (() => { const ok = q.alternativas.find(a => a.correcta); return ok && ok.explicacion ? `<p>${esc(ok.explicacion)}</p>` : ''; })() };
   }
 
+  // Textos ya leídos: los de la práctica de cualquier módulo de lectura y los del repaso (est.repaso[u].leidos).
+  const leidos = new Set([...Object.values(est.practica || {}).flatMap(st => (st && st.hechos && typeof st.hechos === 'object' ? Object.keys(st.hechos).filter(k => st.hechos[k]) : [])),
+    ...Object.values(est.repaso || {}).flatMap(f => (f && Array.isArray(f.leidos) ? f.leidos : []))]);
+  const palabras = it => L.oraciones(it).map(o => o.t).join(' ').split(/\s+/).filter(Boolean).length
+    + L.elementos(it).reduce((n, e) => n + String(e.t || '').split(/\s+/).filter(Boolean).length, 0);
+  async function deLectura(id, ficha, pls) {
+    if (!L || !pintor) return null;
+    const pool = (await itemsDe(pls, 'textos')).map(x => ({ ...x, it: L.normalizar(x.raw) }))
+      .filter(x => x.it.preguntas.some(q => q.unidad === id)).map(x => ({ ...x, n: palabras(x.it) }))
+      .sort((a, b) => a.n - b.n || (a.raw.id < b.raw.id ? -1 : 1));
+    if (!pool.length) return null;
+    // El más corto sin leer; si ya leyó todos, se turnan desde el más corto.
+    const x = pool.find(y => !leidos.has(y.raw.id)) || pool[(Number(ficha.hechos) || 0) % pool.length];
+    const it = L.preparar(x.raw, `repaso-${est.alumno}`, Number(ficha.hechos) || 0);
+    const qs = it.preguntas.filter(q => q.unidad === id), q = qs[(Number(ficha.hechos) || 0) % qs.length];
+    const lang = it.idioma ? ` lang="${esc(it.idioma)}"` : '';
+    return { fuente: 'lectura', plantilla: x.pl.id, problema: q.problema, texto: x.raw.id,
+      enunHTML: `<h2 class="rp-titulo"${lang}>${esc(it.titulo)}</h2><div class="lec-cuerpo rp-texto"${lang}>${pintor.textoHTML(it)}</div>`,
+      preguntaHTML: `<span${lang}>${esc(q.enunciado)}</span>`,
+      alts: q.alternativas.map(a => ({ letra: a.letra, texto: a.t, correcta: !!a.correcta, explicacion: a.correcta ? '' : (a.explicacion || ''), error: a.correcta ? '' : (a.codigo || ''), respaldo: '' })),
+      solucionHTML: (() => { const ok = q.alternativas.find(a => a.correcta); return ok && ok.explicacion ? `<p>${esc(ok.explicacion)}</p>` : ''; })() };
+  }
+
   const preguntas = [];
   for (const id of elegidas) {
     const { c, u } = unidad(id), ficha = est.repaso[id], f = fuentesDe(u);
@@ -130,6 +155,7 @@ async function vista(ctx) {
     if (f.gens.length) q = await deGenerador(id, ficha, f.gens);
     if (!q && f.papeles.length) q = await dePapel(id, ficha, f.papeles);
     if (!q && f.lecturas.length) q = await deEjercicio(id, ficha, f.lecturas);
+    if (!q && f.lecturas.length) q = await deLectura(id, ficha, f.lecturas);
     if (q) preguntas.push(Object.assign(q, { id, c, u, ficha })); // si no, esa unidad queda para otro día
   }
   if (location.hash !== h) return;
@@ -198,10 +224,12 @@ async function vista(ctx) {
           if (x.dataset.letra === ok.letra) x.classList.add('ok'); else if (x === b) x.classList.add(esNose ? 'elegida' : 'mal');
         });
         medidas++; if (bien) aciertos++; if (esNose) nose++;
-        R.anotar(est, q.id, { correcta: bien, nose: esNose }, hoy); guardar(); marcarDia();
+        R.anotar(est, q.id, { correcta: bien, nose: esNose }, hoy);
+        if (q.texto) { const f = est.repaso[q.id]; f.leidos = [...new Set([...(f.leidos || []), q.texto])].slice(-60); }
+        guardar(); marcarDia();
         registrar(Object.assign(base(), { opcion: a ? a.letra : '', correcta: bien, error: a && !bien ? a.error : '', respaldo: a && !bien ? a.respaldo : '' }, esNose ? { nose: true } : {}));
         $app.querySelector('#retro').innerHTML = `<div class="retro ${esNose ? 'nose' : bien ? 'bien' : 'malo'}">
-          <b>${bien ? `¡Bien! Es la ${ok.letra}. Lo recuerdas.` : `La respuesta es la ${ok.letra}: ${esc(ok.texto)}.`}</b>
+          <b>${bien ? `¡Bien! Es la ${ok.letra}. Lo recuerdas.` : `La respuesta es la ${ok.letra}: ${esc(ok.texto)}${/[.!?…]$/.test(ok.texto) ? '' : '.'}`}</b>
           ${!bien && a && a.explicacion ? `<p>${esc(a.explicacion)}</p>` : ''}
           ${bien ? '' : '<p>Te lo vamos a preguntar otra vez en dos días.</p>'}</div>`;
         $app.querySelector('#sol').innerHTML = `${!bien && q.solucionHTML ? `<details open><summary>${q.fuente === 'generador' ? 'Solución paso a paso' : 'Por qué'}</summary>${q.solucionHTML}</details>` : ''}

@@ -703,3 +703,6 @@ input[type=file]{font:inherit;max-width:100%}
 .rp-papel-acc>*{flex:1 1 140px;justify-content:center}
 .rp-respuesta{margin:12px 0 4px;padding:12px 14px;border-radius:var(--radius-s);background:var(--brand-soft)}
 .rp-datos{margin:8px 0}
+.rp-titulo{font-size:18px;margin:4px 0 8px}
+.rp-texto{font-size:16px;line-height:1.55}
+.rp-texto .lec-par{margin:0 0 10px}

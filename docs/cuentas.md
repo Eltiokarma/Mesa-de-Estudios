@@ -158,7 +158,7 @@ El acceso dura 15 minutos. La renovación dura 30 días y en el servidor se guar
   - Si `enCurso` existe de un solo lado, se toma ese; si existe en los dos, el que tenga más respuestas.
   - `vistas` se une quedándose con la fecha más antigua de cada unidad; `dias` se une sin repetir.
   - `uni`, `grado`, `tema` y `nombre`: gana el cliente.
-  - En `repaso[unidad]` (cola de repaso, `nucleo/repaso.js`; agregado el 13 nov 2026), gana la ficha con más `hechos`; si empatan, la de `ultimo` más reciente; si también, la del cliente. `desde` se queda con la fecha más antigua. `repasoDia` (el tope diario) gana el cliente, como todo lo que el contrato no nombra.
+  - En `repaso[unidad]` (cola de repaso, `nucleo/repaso.js`; agregado el 13 nov 2026), gana la ficha con más `hechos`; si empatan, la de `ultimo` más reciente; si también, la del cliente. `desde` se queda con la fecha más antigua y `leidos` (textos de lectura usados en el repaso) se junta sin repetir. `repasoDia` (el tope diario) gana el cliente, como todo lo que el contrato no nombra.
   - El campo `alumno` lo pone siempre el servidor, con el id seudónimo de la cuenta.
 - `POST /api/eventos`
   - Envía `{ eventos: [...] }`, con hasta 500 eventos por vez.

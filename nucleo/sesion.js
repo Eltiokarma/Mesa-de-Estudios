@@ -73,6 +73,7 @@
       const f = copia(ha > hb || (ha === hb && String(a.ultimo || '') > String(b.ultimo || '')) ? a : b);
       const ds = [a.desde, b.desde].filter(x => typeof x === 'string' && x).sort();
       if (ds.length) f.desde = ds[0];
+      if (Array.isArray(a.leidos) || Array.isArray(b.leidos)) f.leidos = [...new Set([...(a.leidos || []), ...(b.leidos || [])])].slice(-60);
       u[k] = f;
     }
     return u;

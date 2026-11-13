@@ -132,5 +132,10 @@ def test_repaso_gana_la_ficha_con_mas_hechos_y_desde_el_mas_antiguo():
     assert u["u3"] == cli["repaso"]["u3"]
 
 
+def test_repaso_junta_los_textos_leidos():
+    u = unir({"repaso": {"v": {"hechos": 2, "leidos": ["t1", "t2"]}}}, {"repaso": {"v": {"hechos": 1, "leidos": ["t3", "t1"]}}}, "x")
+    assert u["repaso"]["v"]["leidos"] == ["t1", "t2", "t3"]
+
+
 def test_sin_repaso_no_aparece():
     assert "repaso" not in unir({}, {}, "x")

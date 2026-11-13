@@ -124,4 +124,6 @@ test('unir: más hechos gana; empate, el último más reciente; desde el más an
   assert.deepEqual(u.u3, s.u3);
   assert.deepEqual(u.u4, c.u4);
   assert.deepEqual(R.unir(null, undefined), {});
+  const l = R.unir({ v: { hechos: 2, leidos: ['t1', 't2'] } }, { v: { hechos: 1, leidos: ['t3', 't1'] } });
+  assert.deepEqual(l.v.leidos, ['t1', 't2', 't3']);
 });
