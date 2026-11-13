@@ -270,3 +270,26 @@ test('600 semillas: cada segmento de enunciado, pregunta y solución es texto o 
     }
   }
 });
+
+// ---------- Escena viva (docs/escena-viva.md): el plano del kit en el área entre |x| y ⟦x⟧ y en el vértice ----------
+const { probarViva } = require('../../nucleo/kit/piezas/probar-viva.js');
+const KitV = require('../../nucleo/kit/kit.js');
+probarViva(gen, {
+  semillas: 400, pieza: 'ejes', presupuestoSoloEscena: true,
+  conEscena: p => p._datos.tipo === 'area-entero-abs' || (p._datos.tipo === 'inyectiva-restringir' && p._datos.sub === 'minimo'),
+  final: (p, fin, s) => {
+    const d = p.escena.datos;
+    assert.ok(fin.includes(`>${d.prefijo || ''}${KitV.formatear(p.respuesta.valor)}${d.sufijo} ✓<`), `semilla ${s}: el final no dibuja la respuesta`);
+    if (p._datos.tipo === 'area-entero-abs') {
+      // Las piezas rotuladas suman la respuesta (el área se recalcula aquí por la fórmula del polígono).
+      const area = pts => Math.abs(pts.reduce((a, q, i) => { const r = pts[(i + 1) % pts.length]; return a + q[0] * r[1] - r[0] * q[1]; }, 0)) / 2;
+      const rot = d.areas.filter(a => a.rotulo);
+      assert.ok(Math.abs(rot.reduce((t, a) => t + area(a.puntos), 0) - p.respuesta.valor) < 1e-9, `semilla ${s}`);
+      for (const a of rot) assert.equal(a.rotulo === '½' ? 0.5 : Number(a.rotulo.replace(',', '.')), area(a.puntos));
+    } else {
+      const { u, w } = p._datos;
+      assert.equal(p.respuesta.valor, (u + w) / 2);
+      assert.ok(fin.includes(`vértice (${KitV.formatear((u + w) / 2).replace(/^−/, '−')};`), `semilla ${s}: el vértice no está rotulado`);
+    }
+  },
+});
