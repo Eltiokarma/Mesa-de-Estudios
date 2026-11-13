@@ -3,9 +3,9 @@
   "coleccion": "Cuzcano",
   "origen": "Escaneos cotejados con el OCR local",
   "meta": 1000,
-  "fichas_verificadas": 900,
-  "fichas_pendientes": 100,
-  "temas_completos": 9,
+  "fichas_verificadas": 1000,
+  "fichas_pendientes": 0,
+  "temas_completos": 10,
   "temas": [
     {
       "id": "razonamiento-matematico.cronometria-relojes",
@@ -64,10 +64,10 @@
     {
       "id": "geometria.triangulos-y-congruencia",
       "tema": "Triángulos y congruencia",
-      "fichas": 0,
+      "fichas": 100,
       "meta": 100
     }
   ],
-  "fichas_banco_local": 11502,
-  "sha256_fichas_locales": "9a284024237e4343aa3a615810e6300a7acb15702b9f870b50c76e0d88328353"
+  "fichas_banco_local": 11602,
+  "sha256_fichas_locales": "6dc478f08192b171e92abbe07084bf7a235306f05a5674f0313ac56f8e335f39"
 }
