@@ -13,7 +13,7 @@
 (function (root) {
 'use strict';
 const D = root.Dibujos = root.Dibujos || {};
-D.CURSOS = ['trigonometria', 'aritmetica'];
+D.CURSOS = ['trigonometria', 'aritmetica', 'fisica'];
 D.porCurso = D.porCurso || {};
 D.registrar = (curso, mapa) => { D.porCurso[curso] = Object.assign(D.porCurso[curso] || {}, mapa); };
 
