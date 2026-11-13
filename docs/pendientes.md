@@ -52,10 +52,14 @@ Sesión de **planificación**: no se construyó nada de la app. Lo que sigue se 
 8. La pregunta de seguridad va en la **prueba de entrada y en los ejercicios**; en la prueba de salida, no.
 9. La tabla periódica llega hasta el último elemento con información completa en la IUPAC o en fuentes científicas verificables. Donde una propiedad no tiene valor medido, la casilla dice «sin dato»; no se estima.
 10. Al piloto entran 3.º, 4.º y 5.º de secundaria. Por grado, todo el catálogo queda dentro: 73 unidades de 3.º, 40 de 4.º y 39 de 5.º.
+11. **La primera unidad con el formato nuevo es MRU y MRUV** (sección 7.5 de la auditoría). Ácidos y bases, que es de 5.º, queda para después.
+12. **Todas las unidades entran al piloto con el formato nuevo.** Para que sea posible, la auditoría propone tres niveles (formato, gesto y utilería; sección 9): falta que Gerson diga cuál recibe cada unidad.
+13. **Los archivos de Rive se hacen con un MCP y con IA generativa.** Igual pasan por el contrato, el peso, la prueba de fidelidad y el respaldo SVG.
+14. Gerson revisa la columna «Ruta» del temario. Se probará en celular real. Lo demás queda por verse.
 
 **Lo que sigue, en orden** (detalle en la sección 9 de la auditoría).
 1. **Estrés de Rive:** una página de prueba en el celular de 4 GB para fijar el presupuesto real.
-2. **Versión A:** ácidos y bases con los cinco tiempos y el gesto de verter, sin Rive (sección 7.1).
+2. **Versión A:** MRU y MRUV con los cinco tiempos y el gesto de soltar, sin Rive (sección 7.5). Es el molde para las demás.
 3. **Versión B:** la misma unidad con utilería de Rive, para comparar.
 4. **En paralelo, sin depender de lo anterior:**
    - la cola de repaso (preguntas cortas de unidades ya hechas, en días distintos y mezcladas);
@@ -65,8 +69,8 @@ Sesión de **planificación**: no se construyó nada de la app. Lo que sigue se 
 
 **Preguntas abiertas para Gerson.**
 - **La asignación de rutas.** La columna «Ruta» de `docs/temario-completo.md` es una propuesta hecha con el nombre y los temas de cada unidad. Le falta: que Gerson la revise, contrastarla con el informe de ideas erróneas de cada tema (solo se hizo en materia, tabla periódica y enlace) y probarla con alumnos. No hace falta cerrar las 152: basta decidir la ruta de las unidades que se van a construir. Las más dudosas: estructura atómica, hidrocarburos, recursos y ambiente (química); ondas electromagnéticas (física); combinatoria (aritmética); productos notables (álgebra); identidades y arcos compuestos (trigonometría); y todo razonamiento verbal, que no tiene escenas.
-- **Con qué unidad arranca la versión A.** Ácidos y bases es de 5.º. Para que los tres grados del piloto prueben el formato nuevo conviene una de 3.º: materia y energía (ya diseñada, sección 7.2 de la auditoría) o MRU y MRUV.
-- **Cuántas unidades con el formato nuevo entran al piloto.** El rediseño completo no cabe en diciembre; el resto va con las escenas de hoy.
+- **Qué nivel del formato nuevo recibe cada unidad** (formato, gesto o utilería; sección 9 de la auditoría). Las 152 con gesto propio no caben antes de diciembre.
+- **Está en investigación externa** (ChatGPT, con el encargo del 13 nov): verificar las fuentes citadas, los datos de la tabla periódica, la evidencia sobre la pregunta de seguridad, la frontera explícito e inferencia en lectura, el estado actual de Rive y las rutas dudosas. Cuando llegue, se contrasta antes de pasar nada al fundacional.
 - **El plan de Rive:** el gratis exporta con su pantalla de inicio; para producción hace falta el de pago (confirmar precio y que incluya el enlace de datos).
 
 **Ramas que no están en `main`.**

@@ -82,10 +82,11 @@
 - **Prácticas que ya existen:** `cinematica-medias`, `velocidad-relativa`.
 - **Hoy:** el control es un deslizador.
 - **Ruta:** descubrir, con apoyo de seguir un ejemplo.
-- **Gesto:** Soltar: empuja el carrito con el dedo y pisa el freno.
+- **Gesto:** Soltar: empuja el carrito con el dedo y pisa el freno (sección 7.5).
 - **Lo que descubre:** La gráfica v–t la dibuja su propio movimiento, y el área es lo que avanzó.
 - **Rive:** Carrito.
 - **Ideas erróneas:** `docs/investigacion/cinematica-ideas-erroneas.md`.
+- **Desarrollo completo:** sección 7.5 de `docs/pogil-v2-rive.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
 - **Prerrequisitos (dos o tres capacidades concretas):** por definir.

@@ -583,6 +583,41 @@ Costos y límites:
 - **Hay que verificar** la curva del acto 1, los valores de electronegatividad y los puntos de ebullición contra fuentes primarias, y decidir qué escala de electronegatividad se usa (la que use el examen).
 - **Que formar el enlace suelta energía** como idea errónea frecuente no está en el informe del repo: se busca su fuente antes de usarla como argumento.
 
+### 7.5 MRU y MRUV: el carrito y la pista (la primera unidad que se construye)
+
+Decisión de Gerson (13 nov): el formato nuevo arranca con esta unidad. Es de 3.º, así que los tres grados del piloto la estudian como propia. Además es la que `docs/escena-viva.md` ya diagnosticó: entre 112 y 231 palabras por paso, con las gráficas fuera de la pantalla mientras se lee. Ruta: **descubrir, con apoyo de un ejemplo (D+E)**. Gesto: **soltar**.
+
+Ficha de tarea:
+
+- **Promesa:** el alumno ve nacer las gráficas de su propio movimiento y descubre que el área bajo v–t es lo que avanzó el carrito.
+- **Persona y condiciones:** alumno de 3.º a 5.º, celular de gama baja en vertical, sin conexión.
+- **Resultado observable:** dada una gráfica v–t nueva, dice cuánto avanzó el móvil y hacia dónde apunta la aceleración en cada tramo.
+- **Orden de atención:** primero el carrito, después las marcas que deja en la pista, después la gráfica que se dibuja; la ecuación, al final.
+
+| Parte | Lo que hace el alumno | Lo que descubre | Idea errónea que ataca |
+| --- | --- | --- | --- |
+| 1. Empujar (MRU) | Empuja el carrito con el dedo. El carrito deja una marca en la pista cada segundo y, al lado, se dibuja x–t. Repite con un empujón más fuerte. Cada corrida queda registrada como una tira de marcas | Marcas a la misma distancia quieren decir rapidez constante. Más rápido es marcas más separadas y una recta más empinada | K1: «misma posición, misma velocidad» (se ve cuando un carrito pasa al otro) |
+| 2. Pisar (MRUV) | Mantiene presionado el acelerador y después el freno. Antes de frenar, predice hacia dónde apunta la aceleración. Las marcas se abren o se cierran y v–t sube o baja | La aceleración es cuánto cambia la velocidad, no hacia dónde va el carrito: al frenar apunta hacia atrás aunque el carrito siga avanzando | K3: «la aceleración va hacia donde se mueve»; K4: dividir v entre t sin restar |
+| 3. Pintar el área | Con la gráfica v–t de su propia corrida, pasa el dedo y pinta lo que hay debajo. Cuenta los cuadritos y compara con la regla de la pista | El área bajo v–t es la distancia que avanzó. La regla con fichas se arma aquí | Calcular la pendiente cuando se pide el área. Solo el 23 % sacó el cambio de velocidad del área en el test de Beichner (1994) |
+| 4. Parar la pista (caída libre) | Gira la pista hasta ponerla vertical y lanza la pelota hacia arriba. Predice cuánto vale la aceleración en el punto más alto. Después suelta dos pelotas de distinta masa | Es el mismo movimiento con otra aceleración: g apunta hacia abajo todo el tiempo, también arriba | C1: «aceleración cero en la cima»; C2: «el más pesado cae primero» |
+| 5. Transferir | Un problema de admisión resuelto en la línea de tiempo, con un paso por elegir (qué área calcular). Después, uno solo, con la gráfica quieta y alternativas | El procedimiento del examen sale de lo que ya vio | — |
+| Otro día | Una pregunta de gráfica v–t sin pista ni carrito, mezclada con otras unidades | — | — |
+
+Qué hace cada medio:
+
+- **El motor de `mruv` no cambia.** Ya calcula por tramos, con frenado sin retroceso y lanzamiento vertical.
+- **La pista, las marcas y las gráficas** son del kit (la pieza `ejes` existe y todavía no la usa ningún generador).
+- **El carrito** es la única utilería: recibe posición y velocidad del motor, gira las ruedas y cabecea al frenar. En la versión A va en SVG; en la B, en Rive.
+- **El reloj es el del motor,** lineal y con pausa. Con movimiento reducido, la corrida avanza por pasos y las marcas aparecen ya puestas.
+
+Cuidados:
+
+- **El empujón del dedo es ruidoso.** La rapidez inicial se ajusta a valores limpios (2, 4 o 6 m/s) y eso se le dice al alumno. Para quien no puede arrastrar: tres botones, «suave», «medio» y «fuerte».
+- **Una corrida no debe pasar de unos 5 segundos.** Más que eso y la tercera aburre.
+- **La pista en un celular vertical es corta.** Hay que decidir la escala para que quepan seis marcas a 360 px, y probarlo.
+- **Son tres sesiones:** partes 1 y 2, parte 3, y partes 4 y 5.
+- **Lo que hay que sacar de la escena de hoy:** el dato de Beichner que ve el alumno (va a `docs/investigacion/`, como ya manda `escena-viva.md`) y los nueve pasos de texto.
+
 ## 8. El temario completo: las 152 unidades
 
 Cómo leer las tablas:
@@ -598,7 +633,7 @@ Cómo leer las tablas:
 | # | Unidad | Hoy | Ruta | Gesto | Lo que descubre haciéndolo | Rive |
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | Magnitudes y vectores | D | D+R | Estirar: mueve la punta de cada flecha y júntalas cola con punta | La resultante depende del ángulo: va desde la resta hasta la suma de los módulos | — |
-| 2 | MRU, MRUV y caída libre | D | D+E | Soltar: empuja el carrito con el dedo y pisa el freno | La gráfica v–t la dibuja su propio movimiento, y el área es lo que avanzó | Carrito |
+| 2 | MRU, MRUV y caída libre | D | D+E | Soltar: empuja el carrito con el dedo y pisa el freno (sección 7.5) | La gráfica v–t la dibuja su propio movimiento, y el área es lo que avanzó | Carrito |
 | 3 | Movimiento parabólico y circular | D | D+E | Lanzar: jala la honda y suelta; gira la rueda con el dedo | 30° y 60° caen en el mismo punto; la sombra horizontal avanza parejo | Pelota |
 | 4 | Estática | A | D+E | Colgar: cuelga pesas en la barra y mueve el apoyo | Lo que equilibra es peso por distancia, no el peso | — |
 | 5 | Dinámica | D | D+E | Colgar y soltar: jala el bloque con una cuerda; inclina el plano | La fuerza neta manda sobre la aceleración, no sobre la velocidad | Bloque |
@@ -818,9 +853,9 @@ Una variable por versión, como pide el skill. Cada versión tiene una decisión
 | Versión | Qué cambia | Qué se mide | Decisión |
 | --- | --- | --- | --- |
 | **0. Estrés de Rive** | Nada de la app: una página de prueba con 1, 2 y 3 animaciones, chicas y grandes, siguiendo el dedo | Cuadros por segundo y memoria en el celular de 4 GB | El presupuesto real de la sección 6.3 |
-| **A. Ácidos y bases con POGIL v2, sin Rive** | Los cinco tiempos, el gesto de verter y los registros, con el vaso en SVG del kit | Que la figura y la tarea quepan en una pantalla; palabras antes del primer toque; duración de un ensayo; que cinco alumnos cuenten qué hicieron | ¿El modelo de lección funciona? Esto no depende de Rive |
-| **B. La misma unidad con utilería Rive** | Solo el vaso, la jarra y la bureta pasan a Rive | Cuadros por segundo contra A; preferencia y comprensión contra A con otros cinco alumnos | ¿Rive agrega algo que justifique su costo de producción? |
-| **C. Una unidad de física y una de matemática** | MRUV con el carrito; `triangulo-estira`, que ya se arrastra, solo con registros y regla | Lo mismo que A | ¿El modelo aguanta fuera de la química? |
+| **A. MRU y MRUV con POGIL v2, sin Rive** (sección 7.5) | Los cinco tiempos, el gesto de soltar y los registros, con el carrito en SVG del kit | Que la figura y la tarea quepan en una pantalla; palabras antes del primer toque; duración de una corrida; que cinco alumnos cuenten qué hicieron | ¿El modelo de lección funciona? Esto no depende de Rive |
+| **B. La misma unidad con utilería Rive** | Solo el carrito pasa a Rive | Cuadros por segundo contra A; preferencia y comprensión contra A con otros cinco alumnos | ¿Rive agrega algo que justifique su costo de producción? |
+| **C. Una unidad de química y una de matemática** | Materia y energía (7.2) o ácidos y bases (7.1); `triangulo-estira`, que ya se arrastra, solo con registros y regla | Lo mismo que A | ¿El modelo aguanta fuera de la física? |
 | **R. Cola de repaso** (en paralelo, no depende de las otras) | La app programa preguntas cortas de las unidades ya hechas, en días distintos | Aciertos en el repaso de la semana contra los del día | ¿El repaso cambia lo que el alumno recuerda? Se puede probar en el piloto con las escenas de hoy |
 | **T. La tabla viva** (en paralelo) | Primero solo la tabla plegada en el celular y el reordenamiento de las cartas | Que el símbolo se lea a 360 px; cuadros por segundo al reordenar | ¿Se construye la pieza completa? La reutilizan diez unidades de química |
 | **P. Avance en cuatro niveles** (después de R) | La barra del curso deja de contar unidades vistas y muestra los cuatro niveles de 5.7 | Que un alumno pueda decir qué le falta | ¿Los niveles le sirven al alumno y al profesor? |
@@ -834,13 +869,21 @@ Una variable por versión, como pide el skill. Cada versión tiene una decisión
 
 **La hipótesis de fondo y su prueba.** Hipótesis: en una misma unidad, POGIL v2 da mejor resultado en los ítems de transferencia que el paso a paso de hoy. La app ya tiene con qué comprobarlo: pruebas de entrada y salida con formas paralelas y ganancia de Hake. En el piloto, una sección usa la versión de hoy y otra la v2 de la misma unidad. Con un colegio y dos secciones el resultado es una señal, no una prueba.
 
-**Lo que conviene decidir antes del piloto de diciembre.** El rediseño completo no entra. Entra la versión A, quizá la B. Lo demás del piloto va con las escenas de hoy, que funcionan.
+**Alcance del piloto.** Decidido por Gerson (13 nov): **todas las unidades entran con el formato nuevo,** empezando por MRU y MRUV. Lo digo de frente: rehacer 152 unidades con gesto propio antes de diciembre no es realista, y la tanda del 8 al 12 de noviembre ya mostró lo que cuesta escalar sin tope. Para que la decisión se pueda cumplir, propongo entender «formato nuevo» en tres niveles y decidir cuál recibe cada unidad:
 
-**Ojo con la unidad de la versión A.** El piloto es con 3.º, 4.º y 5.º (confirmado por Gerson el 13 nov), y en el catálogo ácidos y bases es de 5.º: solo ese grado la estudiaría como propia. Si se quiere que los tres grados prueben el formato nuevo, la primera unidad debería ser de 3.º. Dos candidatas ya diseñadas aquí: materia y energía (sección 7.2) y, en física, MRU y MRUV con el carrito. Ácidos y bases quedaría como segunda unidad, para 5.º.
+| Nivel | Qué cambia | A cuántas unidades | Costo |
+| --- | --- | --- | --- |
+| 1. Formato | Una pantalla, una pregunta; presupuesto de texto; predicción neutra; registro de lo que el alumno probó; problema de examen al final. La escena y su control siguen siendo los de hoy | Las 152 | El más bajo: es reordenar, no rehacer |
+| 2. Gesto | Además, el control pasa a ser el gesto de la unidad | Las 83 de ruta descubrir, empezando por las 24 de física y química que hoy usan deslizador | Medio: toca la escena |
+| 3. Utilería | Además, el objeto que se agarra va en Rive | Las 32 del catálogo de la sección 6.2 | El más alto: dibujo y animación |
+
+MRU y MRUV se hace completa, en los tres niveles, y sirve de molde. Después se escala con rutinas, con tope de gasto y máximo tres en paralelo, como manda `docs/pendientes.md`.
+
+**La unidad de la versión A.** Decidido: MRU y MRUV, que es de 3.º. Ácidos y bases es de 5.º y pasa a ser una de las siguientes.
 
 ## 10. Riesgos y lo que no se verificó
 
-- **Costo de producción.** Cada utilería es dibujo y animación a mano en el editor de Rive, más su contrato, su respaldo SVG y su prueba de fidelidad. Quince archivos bien hechos son varias semanas de alguien. Existe además la línea de comandos de Rive, con la que un agente escribe la escena como texto; desde este entorno no se pudo probar porque el servidor de descarga está bloqueado.
+- **Costo de producción.** Decidido por Gerson (13 nov): los archivos de Rive se harán con un MCP y con IA generativa. Eso baja el costo de dibujar, pero no quita los controles: cada archivo tiene que cumplir su contrato (nombres de entradas), pesar menos de 100 KB, no llevar difuminados ni mallas, pasar la prueba de fidelidad y tener su respaldo SVG. Ojo con los vectores generados: suelen traer miles de vértices, y la documentación de Rive los señala como causa de lentitud. Sin esa vía, cada utilería es dibujo y animación a mano en el editor de Rive, más su contrato, su respaldo SVG y su prueba de fidelidad. Quince archivos bien hechos son varias semanas de alguien. Existe además la línea de comandos de Rive, con la que un agente escribe la escena como texto; desde este entorno no se pudo probar porque el servidor de descarga está bloqueado.
 - **Plan de Rive.** El plan gratis exporta con la pantalla de inicio de Rive. Para producción hace falta Cadet (108 USD al año según su documentación; confirmar en su web). Hay que confirmar también que el enlace de datos funciona en el runtime 2.50.0 que ya está en `app/vendor/rive/`.
 - **El gesto puede volverse un juguete.** Verter es divertido; si el alumno vierte veinte veces y no llega a la regla, el gesto se comió la lección. Por eso los ensayos son 3 o 4 y la regla es un tiempo aparte.
 - **Detalles seductores.** Toda utilería nueva tiene que contestar: «si se quita, ¿qué se pierde?». Si la respuesta es «se ve menos bonito», no entra.
