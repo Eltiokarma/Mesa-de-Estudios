@@ -118,3 +118,19 @@ def test_no_modifica_las_entradas():
 def test_basura_no_rompe():
     out = unir({"practica": "x", "vistas": [], "dias": "no"}, {"practica": {"m": 3}, "pruebas": None, "dias": [1, "2026-11-12"]}, A)
     assert out["practica"] == {"m": 3} and out["vistas"] == {} and out["dias"] == ["2026-11-12"]
+
+
+def test_repaso_gana_la_ficha_con_mas_hechos_y_desde_el_mas_antiguo():
+    srv = {"repaso": {"u1": {"desde": "2026-11-02", "paso": 2, "toca": "2026-12-01", "hechos": 2, "aciertos": 2, "ultimo": "2026-11-10"},
+                      "u2": {"desde": "2026-11-03", "paso": 0, "hechos": 1, "ultimo": "2026-11-05"}}}
+    cli = {"repaso": {"u1": {"desde": "2026-11-01", "paso": 0, "toca": "2026-11-03", "hechos": 0, "aciertos": 0, "ultimo": None},
+                      "u2": {"desde": "2026-11-03", "paso": 1, "hechos": 1, "ultimo": "2026-11-06"},
+                      "u3": {"desde": "2026-11-05", "paso": 0, "hechos": 0, "ultimo": None}}}
+    u = unir(srv, cli, "x")["repaso"]
+    assert u["u1"]["paso"] == 2 and u["u1"]["desde"] == "2026-11-01"
+    assert u["u2"]["paso"] == 1  # empate en hechos: el último más reciente
+    assert u["u3"] == cli["repaso"]["u3"]
+
+
+def test_sin_repaso_no_aparece():
+    assert "repaso" not in unir({}, {}, "x")

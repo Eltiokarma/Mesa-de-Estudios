@@ -61,6 +61,22 @@
     for (const k of new Set([...Object.keys(s || {}), ...Object.keys(c || {})])) u[k] = unirFicha((s || {})[k], (c || {})[k]);
     return u;
   }
+  // Cola de repaso (nucleo/repaso.js, misma regla que Repaso.unir y servidor/app/union.py): por unidad gana la ficha
+  // con más hechos; si empatan, la de ultimo más reciente; si también, la del cliente. desde: la fecha más antigua.
+  function unirRepaso(s, c) {
+    s = esObj(s) ? s : {}; c = esObj(c) ? c : {};
+    const u = {};
+    for (const k of new Set([...Object.keys(s), ...Object.keys(c)])) {
+      const a = esObj(s[k]) ? s[k] : null, b = esObj(c[k]) ? c[k] : null;
+      if (!a || !b) { u[k] = copia(b || a); continue; }
+      const ha = Number(a.hechos) || 0, hb = Number(b.hechos) || 0;
+      const f = copia(ha > hb || (ha === hb && String(a.ultimo || '') > String(b.ultimo || '')) ? a : b);
+      const ds = [a.desde, b.desde].filter(x => typeof x === 'string' && x).sort();
+      if (ds.length) f.desde = ds[0];
+      u[k] = f;
+    }
+    return u;
+  }
   // servidor y cliente son dos est; la respuesta es otro objeto (no toca los de entrada).
   function unirEst(servidor, cliente) {
     const s = esObj(servidor) ? servidor : {}, c = esObj(cliente) ? cliente : {};
@@ -74,6 +90,7 @@
       u.vistas[k] = a && b ? (String(a) < String(b) ? a : b) : (a || b);
     }
     u.dias = [...new Set([...(s.dias || []), ...(c.dias || [])])].sort();
+    if (s.repaso || c.repaso) u.repaso = unirRepaso(s.repaso, c.repaso);
     if (s.alumno) u.alumno = s.alumno;
     return u;
   }

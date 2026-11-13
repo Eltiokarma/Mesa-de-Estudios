@@ -6,6 +6,8 @@ Reglas:
 - `enCurso`: si está de un solo lado, ese; si está en los dos, el que tenga más respuestas.
 - `vistas`: unión con la fecha más antigua por unidad; `dias`: unión sin repetir.
 - `uni`, `grado`, `tema`, `nombre`: gana el cliente.
+- `repaso` (cola de repaso, nucleo/repaso.js): por unidad gana la ficha con más `hechos`; si empatan, la de `ultimo`
+  más reciente; si también, la del cliente. `desde` se queda con la fecha más antigua.
 - `alumno`: siempre el id seudónimo de la cuenta.
 Lo que el contrato no nombra: gana el cliente si lo trae; si no, se conserva el del servidor.
 """
@@ -96,6 +98,26 @@ def _unir_dias(srv, cli) -> list:
     return sorted(set(todos))[-400:]  # la app guarda los últimos 400
 
 
+def _unir_repaso(srv, cli) -> dict:
+    srv = srv if isinstance(srv, dict) else {}
+    cli = cli if isinstance(cli, dict) else {}
+    out = {}
+    for k in {**srv, **cli}:
+        a = srv.get(k) if isinstance(srv.get(k), dict) else None
+        b = cli.get(k) if isinstance(cli.get(k), dict) else None
+        if a is None or b is None:
+            out[k] = copy.deepcopy(b if b is not None else a)
+            continue
+        ha, hb = (x.get("hechos") if _num(x.get("hechos")) else 0 for x in (a, b))
+        gana_srv = ha > hb or (ha == hb and str(a.get("ultimo") or "") > str(b.get("ultimo") or ""))
+        f = copy.deepcopy(a if gana_srv else b)
+        ds = sorted(d for d in (a.get("desde"), b.get("desde")) if isinstance(d, str) and d)
+        if ds:
+            f["desde"] = ds[0]
+        out[k] = f
+    return out
+
+
 def unir(servidor: dict | None, cliente: dict | None, alumno: str) -> dict:
     srv = copy.deepcopy(servidor) if isinstance(servidor, dict) else {}
     cli = copy.deepcopy(cliente) if isinstance(cliente, dict) else {}
@@ -107,5 +129,7 @@ def unir(servidor: dict | None, cliente: dict | None, alumno: str) -> dict:
     out["pruebas"] = _unir_mapa(srv.get("pruebas"), cli.get("pruebas"), FIJOS_PRUEBA, ())
     out["vistas"] = _unir_vistas(srv.get("vistas"), cli.get("vistas"))
     out["dias"] = _unir_dias(srv.get("dias"), cli.get("dias"))
+    if "repaso" in srv or "repaso" in cli:
+        out["repaso"] = _unir_repaso(srv.get("repaso"), cli.get("repaso"))
     out["alumno"] = alumno
     return out

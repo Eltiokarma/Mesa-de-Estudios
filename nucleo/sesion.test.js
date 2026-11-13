@@ -331,3 +331,15 @@ test('profesor y administrador: secciones, avance, reinicio y carga de la lista'
     assert.ok(Array.isArray(await p.pedir('GET', '/api/colegio/eventos')));
   } finally { await m.cerrar(); }
 });
+
+test('unirEst: la cola de repaso se une por unidad (más hechos, después el último más reciente)', () => {
+  const s = { repaso: { u1: { desde: '2026-11-02', paso: 2, toca: '2026-12-01', hechos: 2, aciertos: 2, ultimo: '2026-11-10' }, u2: { desde: '2026-11-03', hechos: 0, ultimo: null } } };
+  const c = { repaso: { u1: { desde: '2026-11-01', paso: 0, toca: '2026-11-03', hechos: 0, aciertos: 0, ultimo: null }, u3: { desde: '2026-11-05', hechos: 0 } } };
+  const u = Sesion.unirEst(s, c);
+  assert.equal(u.repaso.u1.paso, 2);
+  assert.equal(u.repaso.u1.desde, '2026-11-01');
+  assert.deepEqual(Object.keys(u.repaso).sort(), ['u1', 'u2', 'u3']);
+  const Repaso = require('./repaso.js');
+  assert.deepEqual(u.repaso, Repaso.unir(s.repaso, c.repaso)); // la misma regla en los dos archivos
+  assert.equal(Sesion.unirEst({}, {}).repaso, undefined);
+});
