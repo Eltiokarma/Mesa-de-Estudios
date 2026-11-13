@@ -54,3 +54,27 @@ test('salen los cinco tipos y la correcta se escribe como sus distractores', () 
   }
   assert.equal(tipos.size, 5);
 });
+
+// ---------- Escena viva (docs/escena-viva.md): flechas a escala, paralelogramo y regla ----------
+const { probarViva } = require('../../nucleo/kit/piezas/probar-viva.js');
+probarViva(gen, {
+  semillas: 300, pieza: 'flechas',
+  conEscena: p => ['resultante', 'diferencia', 'desde-max-min'].includes(p._datos.tipo),
+  final: (p, fin, s) => {
+    const d = p.escena.datos, res = d.resultante;
+    assert.ok(fin.includes(`${res.rotulo} = ${res.valor}`), `semilla ${s}: el final no rotula la resultante`);
+    if (d.regla) assert.ok(fin.includes(`${d.regla.texto} ✓`));
+    // Fidelidad: la diagonal dibujada mide la respuesta, y A y B miden sus módulos.
+    assert.ok(Math.abs(Math.hypot(res.a[0] - res.de[0], res.a[1] - res.de[1]) - p.respuesta.valor) < 1e-9, `semilla ${s}`);
+    const [A, B] = d.flechas, dd = p._datos;
+    const a = dd.a !== undefined ? dd.a : (dd.M + dd.m) / 2, b = dd.b !== undefined ? dd.b : (dd.M - dd.m) / 2;
+    assert.ok(Math.abs(Math.hypot(...A.a) - a) < 1e-9 && Math.abs(Math.hypot(...B.a) - b) < 1e-9);
+    assert.ok(fin.includes(`>${dd.t}°<`), 'el ángulo está rotulado');
+  },
+});
+
+test('escena viva: los tipos de longitud se arrastran casi siempre', () => {
+  let con = 0, arr = 0;
+  for (let s = 0; s < 300; s++) { const p = gen.generar(s); if (p.escena) { con++; if (p.respuesta.tipo === 'arrastrar') arr++; } }
+  assert.ok(arr / con > 0.6, `${arr} de ${con}`);
+});
