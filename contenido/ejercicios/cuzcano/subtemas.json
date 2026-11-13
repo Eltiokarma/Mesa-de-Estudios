@@ -10208,61 +10208,91 @@
      "id": "edades-en-distintos-tiempos",
      "nombre": "Edades en distintos tiempos",
      "unidad": "razonamiento-matematico.planteo-de-ecuaciones",
-     "fichas": 17
+     "fichas": 17,
+     "tambien": [
+      "aritmetica.razonamiento-numerico"
+     ]
     },
     {
      "id": "edades-y-ano-de-nacimiento",
      "nombre": "Edades y año de nacimiento",
      "unidad": "razonamiento-matematico.planteo-de-ecuaciones",
-     "fichas": 6
+     "fichas": 6,
+     "tambien": [
+      "aritmetica.razonamiento-numerico"
+     ]
     },
     {
      "id": "edades-con-condiciones-numericas",
      "nombre": "Edades con condiciones numéricas",
      "unidad": "razonamiento-matematico.planteo-de-ecuaciones",
-     "fichas": 7
+     "fichas": 7,
+     "tambien": [
+      "aritmetica.razonamiento-numerico"
+     ]
     },
     {
      "id": "encuentros-y-alcances",
      "nombre": "Encuentros y alcances",
      "unidad": "razonamiento-matematico.planteo-de-ecuaciones",
-     "fichas": 27
+     "fichas": 27,
+     "tambien": [
+      "aritmetica.razonamiento-numerico"
+     ]
     },
     {
      "id": "rapidez-media-y-por-tramos",
      "nombre": "Rapidez media y por tramos",
      "unidad": "razonamiento-matematico.planteo-de-ecuaciones",
-     "fichas": 12
+     "fichas": 12,
+     "tambien": [
+      "aritmetica.razonamiento-numerico"
+     ]
     },
     {
      "id": "retrasos-y-averias",
      "nombre": "Retrasos y averías",
      "unidad": "razonamiento-matematico.planteo-de-ecuaciones",
-     "fichas": 7
+     "fichas": 7,
+     "tambien": [
+      "aritmetica.razonamiento-numerico"
+     ]
     },
     {
      "id": "moviles-en-corrientes",
      "nombre": "Móviles en corrientes",
      "unidad": "razonamiento-matematico.planteo-de-ecuaciones",
-     "fichas": 4
+     "fichas": 4,
+     "tambien": [
+      "aritmetica.razonamiento-numerico"
+     ]
     },
     {
      "id": "trenes-tuneles-y-filas",
      "nombre": "Trenes, túneles y filas",
      "unidad": "razonamiento-matematico.planteo-de-ecuaciones",
-     "fichas": 7
+     "fichas": 7,
+     "tambien": [
+      "aritmetica.razonamiento-numerico"
+     ]
     },
     {
      "id": "moviles-en-pistas-circulares",
      "nombre": "Móviles en pistas circulares",
      "unidad": "razonamiento-matematico.planteo-de-ecuaciones",
-     "fichas": 7
+     "fichas": 7,
+     "tambien": [
+      "aritmetica.razonamiento-numerico"
+     ]
     },
     {
      "id": "sombras-y-sonido",
      "nombre": "Sombras y sonido",
      "unidad": "razonamiento-matematico.planteo-de-ecuaciones",
-     "fichas": 6
+     "fichas": 6,
+     "tambien": [
+      "aritmetica.razonamiento-numerico"
+     ]
     }
    ],
    "etiquetas": {

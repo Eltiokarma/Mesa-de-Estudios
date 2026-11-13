@@ -10,6 +10,7 @@
 // En cada ficha:
 //   banco.subtema         pasa a ser el nombre del subtema unificado;
 //   banco.subtema_fuente  guarda la etiqueta tal como vino (null si no traía);
+//   unidades_tambien      las del campo `tambien` del subtema: otras unidades donde la ficha también sirve;
 //   unidad                es la unidad del subtema, aunque sea de otro curso que la ficha (el curso es el del
 //                         libro; la unidad, donde se estudia); si el subtema no trae, la principal del tema.
 // revision-unidades.json, si existe, trae la unidad revisada ficha por ficha (por uid) y manda sobre la del
@@ -70,6 +71,9 @@ function aplicar(ej, tablas) {
   const unidad = can.unidad || principal;
   if (unidad) ej.unidad = unidad;
   revisar(ej, tablas);
+  // Un subtema puede servir también en unidades de otro curso (canónico con `tambien`).
+  const tambien = (can.tambien || []).filter(t => t !== ej.unidad);
+  if (tambien.length) ej.unidades_tambien = tambien; else delete ej.unidades_tambien;
   return 'unificado';
 }
 
@@ -88,7 +92,7 @@ function revisar(ej, tablas) {
 function ordenar(ej) {
   const out = {};
   for (const k of Object.keys(ej)) {
-    if (k === 'unidad') continue;
+    if (k === 'unidad' || k === 'unidades_tambien') continue;
     if (k === 'banco') {
       const nb = {};
       for (const kb of Object.keys(ej.banco)) {
@@ -99,8 +103,10 @@ function ordenar(ej) {
       out.banco = nb;
     } else out[k] = ej[k];
     if (k === 'curso' && ej.unidad) out.unidad = ej.unidad;
+    if (k === 'curso' && ej.unidades_tambien) out.unidades_tambien = ej.unidades_tambien;
   }
   if (ej.unidad && !out.unidad) out.unidad = ej.unidad;
+  if (ej.unidades_tambien && !out.unidades_tambien) out.unidades_tambien = ej.unidades_tambien;
   return out;
 }
 

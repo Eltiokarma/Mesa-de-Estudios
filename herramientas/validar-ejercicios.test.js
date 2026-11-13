@@ -110,6 +110,10 @@ test('catálogo, tipos, mapeo y piezas', () => {
   // Una unidad de otro curso vale: el curso es el del libro y la unidad, donde se estudia.
   const b = propio(); b.unidad = 'fisica.movimiento-rectilineo'; delete b.tipo;
   assert.ok(!errores(b).some(e => e.startsWith('unidad:')));
+  const b2 = propio(); b2.unidades_tambien = ['razonamiento-matematico.planteo-de-ecuaciones', 'aritmetica.no-existe', b2.unidad];
+  assert.ok(tiene(errores(b2), '«aritmetica.no-existe» no está en catalogo'));
+  assert.ok(tiene(errores(b2), 'repite la unidad principal'));
+  assert.ok(!tiene(errores(b2), 'planteo-de-ecuaciones'));
   const c = propio(); c.tipo = 'mezclas/otra-cosa';
   assert.ok(tiene(errores(c), 'debe empezar por «porcentajes/»'));
   const d = academia(); d.tipo = 'cortes-y-pesadas/sin-registro';

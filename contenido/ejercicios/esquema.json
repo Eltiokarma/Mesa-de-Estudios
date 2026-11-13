@@ -44,9 +44,14 @@
       "enum": ["fisica", "quimica", "aritmetica", "algebra", "geometria", "trigonometria", "razonamiento-matematico", "razonamiento-verbal"]
     },
     "unidad": {
-      "description": "Id de unidad del catálogo (catalogo/cursos/<curso>.json). El validador comprueba que exista y que empiece por el curso.",
+      "description": "Id de unidad del catálogo (catalogo/cursos/<curso>.json), la principal: donde se estudia. Puede ser de otro curso que el de la ficha (el curso es el del libro). El validador comprueba que exista.",
       "type": "string",
       "pattern": "^[a-z-]+\\.[a-z0-9-]+$"
+    },
+    "unidades_tambien": {
+      "description": "Otras unidades, de este curso o de otro, donde la ficha también sirve (p. ej. edades y móviles: razonamiento matemático y aritmética). El validador comprueba que existan y que no repitan la principal.",
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[a-z-]+\\.[a-z0-9-]+$" }
     },
     "tipo": {
       "description": "Tipo de problema, el que se cuenta y se mapea: <unidad sin curso>/<tipo>, p. ej. «porcentajes/descuentos-sucesivos». Se mapea una vez en tipos.json y vale para todos sus ejercicios.",

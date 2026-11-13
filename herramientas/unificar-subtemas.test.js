@@ -78,6 +78,7 @@ test('el banco versionado está unificado: todo subtema es del vocabulario de su
     assert.ok(v.canonicos.length >= 1 && v.canonicos.length <= 14, `${tema}: ${v.canonicos.length} subtemas`);
     assert.equal(new Set(v.canonicos.map(c => c.id)).size, v.canonicos.length, `${tema}: ids repetidos`);
     for (const c of v.canonicos) assert.ok(cat.has(c.unidad), `${tema}: unidad desconocida ${c.unidad}`);
+    for (const c of v.canonicos) for (const u of c.tambien || []) assert.ok(cat.has(u), `${tema}: unidad desconocida en tambien ${u}`);
     const ids = new Set(v.canonicos.map(c => c.id));
     for (const [k, id] of Object.entries(v.etiquetas)) assert.ok(ids.has(id), `${tema}: la etiqueta «${k}» apunta a ${id}, que no existe`);
     for (const [uid, id] of Object.entries(v.fichas)) assert.ok(ids.has(id), `${tema}: la ficha ${uid} apunta a ${id}, que no existe`);
@@ -145,4 +146,25 @@ test('revision-unidades.json: unidades del catálogo, veredictos válidos y fich
     }
   }
   assert.equal(vistas, Object.keys(rev.fichas).length, 'hay fichas en la revisión que no están en el banco');
+});
+
+test('un subtema con `tambien` deja la ficha en esas unidades además de la principal', () => {
+  const t = JSON.parse(JSON.stringify(tablas));
+  t.subtemas['fisica.cinematica'].canonicos[0].tambien = ['razonamiento-matematico.planteo-de-ecuaciones', 'fisica.movimiento-rectilineo'];
+  const a = ficha('L:propuesto:1', 'encuentros y alcances'); U.aplicar(a, t);
+  assert.deepEqual(a.unidades_tambien, ['razonamiento-matematico.planteo-de-ecuaciones']);   // sin repetir la principal
+  assert.deepEqual(Object.keys(U.ordenar(a)).slice(0, 4), ['id', 'curso', 'unidad', 'unidades_tambien']);
+  const b = ficha('L:propuesto:2', 'tiro'); b.unidades_tambien = ['x.y']; U.aplicar(b, t);
+  assert.ok(!('unidades_tambien' in b));
+});
+
+test('edades y móviles quedan en razonamiento matemático y en aritmética', () => {
+  let n = 0;
+  for (const l of fs.readFileSync(path.join(DIR, 'razonamiento-matematico', 'edades-y-moviles.jsonl'), 'utf8').split('\n')) {
+    if (!l.trim()) continue;
+    const ej = JSON.parse(l); n++;
+    assert.equal(ej.unidad.split('.')[0], 'razonamiento-matematico', ej.id);
+    assert.ok((ej.unidades_tambien || []).some(u => u.startsWith('aritmetica.')), `${ej.id}: falta la unidad de aritmética`);
+  }
+  assert.ok(n > 0);
 });
