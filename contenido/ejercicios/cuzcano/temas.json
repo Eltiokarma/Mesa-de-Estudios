@@ -1,0 +1,6 @@
+{
+  "descripcion": "Tema del banco Cuzcano (id del índice del traspaso) → unidad de catalogo/cursos/. Lo usa herramientas/importar-cuzcano.js; un tema sin entrada entra sin unidad. Se llena un tema a la vez, al importarlo.",
+  "temas": {
+    "algebra.polinomios-y-grados": "algebra.polinomios"
+  }
+}
