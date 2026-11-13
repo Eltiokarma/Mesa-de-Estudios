@@ -1,16 +1,16 @@
 {
   "schema_version": 1,
-  "fecha_utc": "2026-11-12T23:13:24.172422+00:00",
+  "fecha_utc": "2026-11-13T01:10:52.112447+00:00",
   "estado": "en_curso",
   "origen": "Escaneos de Cuzcano",
   "objetivo_nuevas": 2000,
   "objetivo_temas": 20,
-  "fichas_nuevas": 620,
-  "fichas_pendientes": 1380,
-  "porcentaje_del_lote": 31,
-  "fichas_acumuladas_banco": 10002,
-  "temas_banco_con_100_acumuladas": 68,
-  "paginas_pdf_distintas_cotejadas": 124,
+  "fichas_nuevas": 920,
+  "fichas_pendientes": 1080,
+  "porcentaje_del_lote": 46,
+  "fichas_acumuladas_banco": 10302,
+  "temas_banco_con_100_acumuladas": 70,
+  "paginas_pdf_distintas_cotejadas": 173,
   "ocr_repetido": false,
   "lectura_local": "fuentes/ocr-local/cuzcano/cobertura-temas/avance-detallado.html",
   "cursos": [
@@ -18,20 +18,20 @@
       "id": "quimica",
       "curso": "Química",
       "meta": 1000,
-      "nuevas": 180,
-      "pendientes": 820,
-      "porcentaje_del_lote": 18,
+      "nuevas": 281,
+      "pendientes": 719,
+      "porcentaje_del_lote": 28.1,
       "temas_con_fichas_nuevas": 10,
-      "nuevas_con_observaciones": 48,
-      "acumuladas": 1357,
+      "nuevas_con_observaciones": 66,
+      "acumuladas": 1458,
       "temas_del_curso": 13,
-      "temas_del_curso_con_100_acumuladas": 8,
+      "temas_del_curso_con_100_acumuladas": 10,
       "indice_local": "fuentes/ocr-local/cuzcano/lote-quimica-1000-cuzcano/fichas.json",
-      "sha256_indice_local": "9db379f38614d6e9acc9f6808d25478c0bf3f667265bbde98eeed82273e93492",
+      "sha256_indice_local": "84d61ba667598a49f7074e05e681b51d611a5f0c7ed70246422141788145f081",
       "recursos_visuales": {
-        "tabla_propia": 61,
-        "grafica_cartesiana_propia": 22,
-        "tarjeta_relaciones_propias": 97
+        "tabla_propia": 68,
+        "grafica_cartesiana_propia": 31,
+        "tarjeta_relaciones_propias": 182
       },
       "temas": [
         {
@@ -73,11 +73,11 @@
         {
           "id": "quimica.quimica-organica",
           "tema": "Química orgánica",
-          "nuevas": 19,
+          "nuevas": 39,
           "meta": 100,
-          "pendientes": 81,
-          "porcentaje_del_lote": 19,
-          "acumuladas": 102
+          "pendientes": 61,
+          "porcentaje_del_lote": 39,
+          "acumuladas": 122
         },
         {
           "id": "quimica.soluciones",
@@ -109,20 +109,20 @@
         {
           "id": "quimica.enlace-quimico",
           "tema": "Enlace químico",
-          "nuevas": 11,
+          "nuevas": 71,
           "meta": 100,
-          "pendientes": 89,
-          "porcentaje_del_lote": 11,
-          "acumuladas": 95
+          "pendientes": 29,
+          "porcentaje_del_lote": 71,
+          "acumuladas": 155
         },
         {
           "id": "quimica.estequiometria",
           "tema": "Estequiometría",
-          "nuevas": 6,
+          "nuevas": 27,
           "meta": 100,
-          "pendientes": 94,
-          "porcentaje_del_lote": 6,
-          "acumuladas": 90
+          "pendientes": 73,
+          "porcentaje_del_lote": 27,
+          "acumuladas": 111
         }
       ]
     },
@@ -130,21 +130,21 @@
       "id": "trigonometria",
       "curso": "Trigonometría",
       "meta": 1000,
-      "nuevas": 440,
-      "pendientes": 560,
-      "porcentaje_del_lote": 44,
+      "nuevas": 639,
+      "pendientes": 361,
+      "porcentaje_del_lote": 63.9,
       "temas_con_fichas_nuevas": 10,
-      "nuevas_con_observaciones": 79,
-      "acumuladas": 1550,
+      "nuevas_con_observaciones": 109,
+      "acumuladas": 1749,
       "temas_del_curso": 13,
       "temas_del_curso_con_100_acumuladas": 11,
       "indice_local": "fuentes/ocr-local/cuzcano/lote-trigonometria-1000-cuzcano/fichas.json",
-      "sha256_indice_local": "50ae0e0abe839dc33e75480fa4a35a422436aef1b0b22430201ff968478ce404",
+      "sha256_indice_local": "2025d8fd1308c491ccfc333d30d05bba451e514d0326637972d31e215177b54f",
       "recursos_visuales": {
-        "tabla_propia": 309,
-        "grafica_cartesiana_propia": 118,
-        "recta_numerica_propia": 1,
-        "tarjeta_relaciones_propias": 12
+        "tabla_propia": 310,
+        "grafica_cartesiana_propia": 193,
+        "recta_numerica_propia": 8,
+        "tarjeta_relaciones_propias": 128
       },
       "temas": [
         {
@@ -159,11 +159,11 @@
         {
           "id": "trigonometria.funciones-trigonometricas-inversas",
           "tema": "Funciones trigonométricas inversas",
-          "nuevas": 22,
+          "nuevas": 82,
           "meta": 100,
-          "pendientes": 78,
-          "porcentaje_del_lote": 22,
-          "acumuladas": 105
+          "pendientes": 18,
+          "porcentaje_del_lote": 82,
+          "acumuladas": 165
         },
         {
           "id": "trigonometria.identidades-de-arcos-compuestos",
@@ -195,11 +195,11 @@
         {
           "id": "trigonometria.resolucion-de-triangulos-oblicuangulos",
           "tema": "Resolución de triángulos oblicuángulos",
-          "nuevas": 17,
+          "nuevas": 80,
           "meta": 100,
-          "pendientes": 83,
-          "porcentaje_del_lote": 17,
-          "acumuladas": 100
+          "pendientes": 20,
+          "porcentaje_del_lote": 80,
+          "acumuladas": 163
         },
         {
           "id": "trigonometria.transformaciones-trigonometricas",
@@ -222,11 +222,11 @@
         {
           "id": "trigonometria.funciones-trigonometricas-directas",
           "tema": "Funciones trigonométricas directas",
-          "nuevas": 18,
+          "nuevas": 94,
           "meta": 100,
-          "pendientes": 82,
-          "porcentaje_del_lote": 18,
-          "acumuladas": 102
+          "pendientes": 6,
+          "porcentaje_del_lote": 94,
+          "acumuladas": 178
         },
         {
           "id": "trigonometria.identidades-trigonometricas-fundamentales",
@@ -240,6 +240,11 @@
       ]
     }
   ],
+  "ultimo_lote": {
+    "meta": 300,
+    "nuevas": 300,
+    "pendientes": 0
+  },
   "tandas_de_esta_continuacion": [
     {
       "numero": 1,
@@ -250,8 +255,8 @@
     {
       "numero": 2,
       "meta": 400,
-      "nuevas": 63,
-      "pendientes": 337
+      "nuevas": 363,
+      "pendientes": 37
     },
     {
       "numero": 3,
