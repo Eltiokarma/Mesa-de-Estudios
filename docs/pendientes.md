@@ -8,7 +8,7 @@ Actualizado el 13 de noviembre de 2026. La siguiente sesión empieza aquí: lée
 npm test
 ```
 
-Deben pasar 8059 pruebas. El servidor tiene las suyas: `cd servidor && pip install -r requirements.txt -r requirements-dev.txt && python -m pytest -q` (81).
+Deben pasar 8062 pruebas. El servidor tiene las suyas: `cd servidor && pip install -r requirements.txt -r requirements-dev.txt && python -m pytest -q` (81).
 
 ```bash
 npm run dev
@@ -27,7 +27,7 @@ Si hay que hacer OCR, instala tesseract en español: `apt-get install -y tessera
 - **Si el servidor local muere:** se reinicia con `node herramientas/servidor.js`. También hay que reiniciarlo después de cambiar `herramientas/construir-catalogo.js`, porque guarda el módulo en memoria.
 - **Para verificar a mano:** Playwright y Chromium ya vienen instalados en el entorno en la nube (`require('playwright')`). Las capturas *fullPage* pierden la emulación táctil, así que lo que depende de `hover` se revisa con capturas normales.
 
-## Cola de repaso (versión R), 13 nov, en `main` (sw v170)
+## Cola de repaso (versión R), 13 nov, en `main` (sw v171)
 
 **Qué hay.**
 - `nucleo/repaso.js` es la lógica pura, con pruebas en `nucleo/repaso.test.js`. Guarda en `est.repaso[unidad] = { desde, paso, toca, hechos, aciertos, ultimo }` y el tope del día en `est.repasoDia`.
@@ -42,11 +42,17 @@ Si hay que hacer OCR, instala tesseract en español: `apt-get install -y tessera
 - **De dónde salen las preguntas.** De los generadores, con semilla nueva (`repaso-<alumno>-<unidad>-<hechos>-<k>`). Nunca del banco Cuzcano ni de `catalogo/pruebas/` (regla 5).
 - **«¿Qué tipo de problema es?»** Va antes de resolver, con 3 unidades del mismo curso.
 
-**Dos decisiones mías, para que Gerson las confirme.**
-1. **Solo entran las unidades con un generador propio,** es decir, cuya unidad principal (`unidades[0]`) es esa: 64 de las 109 que tienen generador. Un generador que cubre varias unidades no cambia según la unidad. Por ejemplo, «Conjuntos» se habría repasado con un problema de porcentajes. Quedan fuera 88 de las 152: las 18 de razonamiento verbal y otras 70.
-2. **La pregunta del tipo solo sale cuando la respuesta es inequívoca:** si el generador cubre una sola unidad (32 unidades) o si el problema trae `p.unidadCatalogo`. En los 32 generadores mixtos se salta. Un ejemplo: `sistemas-ecuaciones` trae trazas de matrices, y responder «es de Sistemas de ecuaciones» enseñaría una etiqueta falsa.
-
-   **Para que el tipo salga en todas,** cada generador mixto tendría que devolver `unidadCatalogo` según su variante. Es un cambio chico por generador y aún no se hizo.
+**Cada pregunta es de la unidad que se repasa (decisión mía; actualizado el mismo 13 nov). Gerson tiene que confirmarla.**
+- **El problema.** 38 de los 90 generadores cubren varias unidades y no cambian según la unidad. Si no se hace nada, «Conjuntos» se repasaría con un problema de porcentajes, y «Sistemas de ecuaciones» con una traza de matrices.
+- **Lo que se hizo.** Se agregó `nucleo/repaso-tipos.js`, una tabla que asigna cada variante de esos generadores (`_datos.tipo`; en `quimica-conceptos`, `tema` o `conjunto`) a una unidad del catálogo.
+  - El repaso prueba semillas hasta que la variante es de la unidad: hasta 400 por generador, más un segundo intento con semillas del día.
+  - Así, la pregunta «¿Qué tipo de problema es?» sale siempre y nunca da por buena una etiqueta falsa.
+  - Un generador también puede devolver `p.unidadCatalogo`, y ese dato manda sobre la tabla.
+- **Ojo: la tabla la clasificó un modelo** leyendo un enunciado de muestra por variante. Nadie la revisó.
+  - Asigné 315 variantes (en `quimica-conceptos` cuentan sus temas y conjuntos). Las dudosas quedaron fuera; por ejemplo, los trasvases no son ni juegos recreativos ni traslados.
+  - `nucleo/repaso-tipos.test.js` comprueba que cada variante exista, que cada unidad sea de su generador y que cada unidad cubierta consiga un problema suyo.
+- **Resultado.** 104 unidades tienen repaso. Quedan fuera las 18 de razonamiento verbal y otras 30: las que no tienen generador o cuyas variantes quedaron sin asignar.
+- **Por revisar.** Una persona del proyecto debería recorrer la tabla, sobre todo `quimica-conceptos`, `rm-planteo`, `rm-ciclos` y `rm-fichas`, donde dejé más variantes fuera.
 
 **Medición.**
 - **Un evento `repaso-item` por pregunta,** con:
