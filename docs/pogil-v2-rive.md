@@ -2,7 +2,7 @@
 
 13 de noviembre de 2026. Auditoría pedida por Gerson: «el diseño es hermoso; lo que no es hermoso es la forma de enseñar». Es un documento de evaluación y dirección: no trae código ni cambia nada de la app. Se hizo con los skills `diseno-y-animacion` y `estructura-visual-motion`, leyendo `docs/escena-viva.md`, `docs/pendientes.md` (sección B) y `docs/vision-pisa-agilidad-interaccion.md` (secciones 3 y 4), y midiendo las 99 escenas en una pantalla de celular. Si algo de aquí choca con `CLAUDE.md` o con `docs/escena-viva.md`, mandan ellos.
 
-**Ampliado el mismo día** con una segunda opinión que trajo Gerson (otra conversación, sobre unir Rive con POGIL y sobre otras formas de enseñar). Lo nuevo está en las secciones 5.3 a 5.5, en la columna «Ruta» del temario y en la fila de repaso de la sección 9. Corrige un error de la primera versión: aplicaba POGIL a las 152 unidades.
+**Ampliado el mismo día** tres veces. Primero, tres unidades de química rediseñadas a pedido de Gerson: materia, tabla periódica y enlace (secciones 7.2 a 7.4). Tercero, más formas de explicar una misma unidad, empezando por razonamiento matemático (sección 5.6). Segundo, una segunda opinión que trajo Gerson (otra conversación, sobre unir Rive con POGIL y sobre otras formas de enseñar). Lo nuevo está en las secciones 5.3 a 5.5, en la columna «Ruta» del temario y en la fila de repaso de la sección 9. Corrige un error de la primera versión: aplicaba POGIL a las 152 unidades.
 
 ## 1. En corto
 
@@ -10,7 +10,7 @@
 - **Por qué se ve plano:** no falta profundidad ni acabado. Falta que el alumno haga algo. En 72 de las 99 escenas no se toca la figura: se pulsa «Siguiente» o se jala un deslizador. Las cosas se mueven (89 escenas tienen animación), pero no porque el alumno las mueva.
 - **Rive solo no lo arregla.** Poner un tubo de ensayo hermoso en una lección que avanza con «Siguiente» da una presentación más bonita. Primero se cambia el verbo del alumno; después se viste.
 - **La propuesta, POGIL v2:** el modelo del POGIL de papel se vuelve un objeto que responde, y las preguntas se contestan haciendo. Cada unidad declara **un gesto** (verter, soltar, colgar, conectar…) que es la acción real del fenómeno, y el alumno arma con sus propios intentos la tabla de datos de la que sale la regla.
-- **No todo se descubre.** POGIL v2 es la ruta principal de 80 de las 152 unidades, no de todas. Un procedimiento (Ruffini, balancear, nombrar un compuesto) se aprende mejor siguiendo un ejemplo que va perdiendo pasos; un concepto con frontera, comparando casos; un dato, recordándolo en días distintos. Cada unidad lleva una ruta principal y una de apoyo, de cinco posibles (sección 5.3).
+- **No todo se descubre.** POGIL v2 es la ruta principal de 83 de las 152 unidades, no de todas. Un procedimiento (Ruffini, balancear, nombrar un compuesto) se aprende mejor siguiendo un ejemplo que va perdiendo pasos; un concepto con frontera, comparando casos; un dato, recordándolo en días distintos. Cada unidad lleva una ruta principal y una de apoyo, de cinco posibles (sección 5.3).
 - **El hueco más grande después del gesto es el repaso.** La app enseña y no vuelve a preguntar días después. Arreglarlo no necesita Rive ni rediseño.
 - **Dónde entra Rive:** en la mascota, en unos 8 objetos de utilería con material (el vaso que se llena y cambia de color, el mechero, el émbolo, el foco, el carrito…), en 3 personajes y en 3 piezas de interfaz. Unos 15 archivos para toda la app, no uno por unidad. Todo lo que se mide lo sigue dibujando el motor.
 - **Dónde rinde más:** en física y química. Son los cursos de fenómenos y solo 5 de sus 40 unidades tienen algo que se arrastra. Geometría, trigonometría y álgebra ya tienen el gesto en la mayoría de sus unidades; a esas les falta el ciclo de descubrir la regla, no Rive.
@@ -181,21 +181,21 @@ Cada unidad lleva **una ruta principal y una de apoyo**, no las cinco. La column
 | Curso | Descubrir | Seguir un ejemplo | Comparar | Recordar | Argumentar |
 | --- | --- | --- | --- | --- | --- |
 | Física (20) | 19 | 0 | 1 | 0 | 0 |
-| Química (20) | 9 | 4 | 5 | 2 | 0 |
+| Química (20) | 12 | 4 | 2 | 2 | 0 |
 | Aritmética (19) | 11 | 7 | 1 | 0 | 0 |
 | Álgebra (19) | 7 | 10 | 2 | 0 | 0 |
 | Geometría (18) | 13 | 2 | 3 | 0 | 0 |
 | Trigonometría (19) | 10 | 8 | 1 | 0 | 0 |
 | Razonamiento matemático (19) | 11 | 5 | 1 | 0 | 2 |
 | Razonamiento verbal (18) | 0 | 4 | 6 | 1 | 7 |
-| **Total (152)** | **80** | **40** | **20** | **3** | **9** |
+| **Total (152)** | **83** | **40** | **17** | **3** | **9** |
 
 Lo que dice ese reparto:
 
-- **POGIL v2 lidera en 80 unidades:** 19 de 20 en física, 13 de 18 en geometría y 9 de 20 en química.
+- **POGIL v2 lidera en 83 unidades:** 19 de 20 en física, 13 de 18 en geometría y 12 de 20 en química.
 - **En álgebra y trigonometría, casi la mitad de las unidades es de ejemplo** (18 de 38): identidades, reducción, división de polinomios, factorización. Ahí un gesto bonito sería adorno.
-- **Recordar casi nunca lidera (3 unidades) pero apoya a 36.** Es la ruta de los calentamientos: notables, productos notables, unidades, criterios de divisibilidad, valencias.
-- **Química es el curso más repartido:** fenómenos (D), procedimientos como nomenclatura y balance (E), clasificaciones como materia y funciones orgánicas (C) y memoria en los temas de recursos y ambiente (R).
+- **Recordar casi nunca lidera (3 unidades) pero apoya a 35.** Es la ruta de los calentamientos: notables, productos notables, unidades, criterios de divisibilidad, valencias.
+- **Química es el curso más repartido:** fenómenos (D), procedimientos como nomenclatura y balance (E), clasificaciones como funciones orgánicas y biomoléculas (C) y memoria en los temas de recursos y ambiente (R).
 
 La asignación es una propuesta: se discute unidad por unidad con Gerson y con el informe de ideas erróneas de cada tema.
 
@@ -253,6 +253,18 @@ La otra conversación lista diez formas de enseñar. Es un buen mapa, pero se es
 
 **Sus fuentes.** No se pudieron abrir desde este entorno (la red las bloquea), así que quedan **por verificar** antes de pasar al fundacional: la definición de pogil.org, el metaanálisis sobre la guía en la indagación (Universidad de Twente), el de retroalimentación en entornos digitales (Van der Kleij y otros), la guía de prácticas del IES y la investigación de PhET. El fundacional ya trae fuentes propias para cuatro de estos puntos: predecir (Crouch y otros 2004), ayuda que se retira (Reisslein y otros 2006), recordar (Roediger y Karpicke) y simulaciones con andamiaje (D'Angelo y otros 2014: guiar la simulación suma sobre la simulación sola).
 
+### 5.6 Más de una forma de explicar lo mismo
+
+La ruta dice cómo entra el alumno a la unidad. No dice que haya una sola explicación. Cuando alguien no entiende, repetirle lo mismo más despacio casi nunca sirve; sirve cambiar de representación: del dibujo a la tabla, de la tabla a un caso con números chicos, del caso a la regla.
+
+- **Cada unidad lleva su entrada principal y al menos dos entradas más,** escritas de antemano: otra representación, un caso más simple o un camino distinto de solución.
+- **Aparecen a pedido** («explícamelo de otra forma») **o al fallar dos veces,** que es cuando `docs/pendientes.md` ya preveía abrir la micro-lección. No se muestran todas juntas.
+- **Todas llegan a la misma regla y lo dicen:** al final se ve que el árbol y el cuadro de descarte dan la misma respuesta. Varias representaciones sueltas confunden; amarradas, enseñan.
+- **La medición guarda con cuál entrada acertó cada alumno.** Con eso se sabe qué explicación funciona mejor para cada unidad, y la que nadie usa se quita.
+- **Dónde importa más:** en razonamiento matemático (casi todo problema tiene varios caminos), en álgebra (el mismo ejercicio sale por gráfica, por tabla o por despeje) y en aritmética (barras, tabla o ecuación).
+
+La tabla de formas de razonamiento matemático está en la sección 8, después de la de ese curso. Para los demás cursos queda por investigar: el archivo `docs/temario-completo.md` trae el campo vacío en cada unidad, listo para llenarse. Que variar la representación ayude es una hipótesis razonable, no un dato de este proyecto.
+
 ## 6. Dónde entra Rive y dónde no
 
 ### 6.1 Regla de decisión
@@ -281,10 +293,10 @@ Unos 15 archivos para toda la app. Un objeto nuevo se agrega al catálogo con su
 | --- | --- | --- | --- | --- |
 | Mascota (ya contratada) | Personaje de marco | `pose`, `reducido`; a futuro, hacia dónde mirar | Las 8 poses | Toda la app |
 | Vaso y tubo | Utilería | Nivel, color, turbidez, inclinación, si burbujea | La superficie que se mece y se asienta | 11: física 11 y 12; química 1, 10, 11, 12, 13, 14, 15 y 20; aritmética 7 |
-| Gotero y bureta | Utilería | Gotas por soltar, gotas soltadas | La gota que se forma y cae | 3: química 11, 14 y 20 |
-| Mechero y hielo | Utilería | Intensidad, encendido | La llama; el hielo que suda | 8: física 12 y 13; química 1, 9, 10, 12, 13 y 19 |
+| Gotero y bureta | Utilería | Gotas por soltar, gotas soltadas | La gota que se forma y cae | 4: química 4, 11, 14 y 20 |
+| Mechero y hielo | Utilería | Intensidad, encendido | La llama; el hielo que suda | 9: física 12 y 13; química 1, 4, 9, 10, 12, 13 y 19 |
 | Émbolo | Utilería | Posición, presión para el manómetro | La resistencia al empujar | 3: física 13; química 9 y 13 |
-| Foco, pila e interruptor | Utilería | Brillo, abierto o cerrado | El filamento que prende y se apaga | 6: física 15, 17 y 20; química 15; aritmética 1; álgebra 1 |
+| Foco, pila e interruptor | Utilería | Brillo, abierto o cerrado | El filamento que prende y se apaga | 7: física 15, 17 y 20; química 4 y 15; aritmética 1; álgebra 1 |
 | Imán y brújula | Utilería | Posición, ángulo de la aguja | La aguja que oscila al asentarse | 2: física 16 y 17 |
 | Carrito y bloque | Utilería | Posición y velocidad | Ruedas que giran, cabeceo al frenar o chocar | 4: física 2, 5, 7 y 8 |
 | Pelota | Utilería | Posición | Aplastarse al rebotar | 2: física 3 y 9 |
@@ -295,7 +307,7 @@ Unos 15 archivos para toda la app. Un objeto nuevo se agrega al catálogo con su
 | Sello de unidad | Interfaz | Nivel alcanzado | Caer y asentarse | Toda la app |
 | Camino del curso | Interfaz | Unidades hechas, racha | Avanzar al terminar una unidad | La página de cada curso |
 
-Con eso, **31 de las 152 unidades** llevan utilería o un personaje de escena (14 de física, 10 de química, 3 de aritmética y álgebra, 4 de razonamiento matemático), y las otras 121 llevan el gesto con el kit y la mascota. Es a propósito: en matemática el objeto es la figura, y la figura es del motor. De esas 31, 26 son de ruta Descubrir; las otras cinco reutilizan utilería que ya existe, sin costo nuevo. **Las rutas E, C, R y A no piden ningún archivo de Rive aparte de la mascota:** el catálogo sigue en 15.
+Con eso, **32 de las 152 unidades** llevan utilería o un personaje de escena (14 de física, 11 de química, 3 de aritmética y álgebra, 4 de razonamiento matemático), y las otras 120 llevan el gesto con el kit y la mascota. Es a propósito: en matemática el objeto es la figura, y la figura es del motor. De esas 32, 28 son de ruta Descubrir; las otras cuatro reutilizan utilería que ya existe, sin costo nuevo. **Las rutas E, C, R y A no piden ningún archivo de Rive aparte de la mascota:** el catálogo sigue en 15.
 
 **Honestidad sobre la utilería:** varias piezas (el vaso con nivel y color, el foco que brilla) se pueden hacer bien en SVG con el kit, sin Rive. Rive se gana su lugar cuando el objeto tiene varios estados que se mezclan (inclinarse mientras se vacía y la superficie se mece). Por eso la primera prueba compara las dos versiones (sección 9).
 
@@ -325,7 +337,9 @@ El plan de `docs/pendientes.md` (alma, movimiento, escenas) sigue en pie, con un
 2. **Movimiento:** la línea de tiempo y los tokens ya definidos; no hace falta una librería nueva para esto.
 3. **Alma:** Rive, en los 15 archivos de arriba.
 
-## 7. Un ejemplo completo: ácidos y bases
+## 7. Ejemplos completos
+
+### 7.1 Ácidos y bases
 
 **Hoy.** Ocho pasos. El paso 1 tiene unas 110 palabras y la deducción del pH escrita antes de que el alumno toque nada. La lupa muestra las partículas, pero el alumno no las toca. Para diluir se jala un deslizador. La relación que el examen pide (cada vez que diluyes 10 veces un ácido fuerte, el pH sube 1) el alumno la lee escrita; no la saca de algo que hizo.
 
@@ -358,6 +372,109 @@ El plan de `docs/pendientes.md` (alma, movimiento, escenas) sigue en pie, con un
 
 - El paso a paso de hoy enseña la deducción completa (fuerte contra débil, la cuadrática). Eso no desaparece: pasa a ser la solución en línea de tiempo del tiempo 5 y la micro-lección de teoría. Lo que cambia es el orden: primero la experiencia, después la deducción.
 - Verter es más lento que jalar un deslizador. Si un ensayo toma más de unos 5 segundos, el alumno se aburre a la tercera. Hay que medirlo.
+
+### 7.2 Materia y energía: la muestra y la mesa
+
+Pedido de Gerson (13 nov): la unidad tiene más potencial, puede llevar más ejemplos y le faltan las propiedades de la materia. Tiene razón: la había puesto como «comparar y recordar» y eso la dejaba en una clasificación de memoria. Ruta nueva: **descubrir, con apoyo de comparar (D+C)**, y un tramo corto de ejemplo para la cuenta de masa y energía.
+
+La idea que ordena todo: **una muestra sobre una mesa de laboratorio y cuatro cosas que se le pueden hacer.** Las propiedades no se listan; salen de medir.
+
+| Parte | Gesto | Qué hace el alumno | Lo que descubre | Idea errónea que ataca |
+| --- | --- | --- | --- | --- |
+| 1. Propiedades | **Cortar** y medir | Tiene un bloque de cobre (o un vaso de agua), una balanza, una probeta y un termómetro. Mide, parte la muestra por la mitad y vuelve a medir | La masa y el volumen se parten; la densidad, el color y la temperatura a la que hierve no. Unas propiedades dicen cuánto hay y otras dicen qué es. Recién ahí llegan los nombres: extensivas e intensivas | — |
+| 1b. Hasta el fondo | Cortar, con la lupa | Sigue cortando hasta que la lupa muestra unos pocos átomos | Un átomo solo no tiene densidad ni punto de fusión: esas propiedades son del conjunto | AT1: «un átomo tiene las propiedades de la sustancia» |
+| 2. Cambios | **Calentar, verter, cortar**: «hazle algo» | Doce casos de la casa y de la calle: hervir agua, disolver sal, el clavo que se oxida, quemar papel, fermentar chicha, el vaso frío que se empaña. Predice si es físico o químico, hace el cambio y mira con la lupa y con la balanza | La pregunta que decide es una sola: ¿las partículas siguen siendo las mismas? La masa total no cambia en ninguno | AT3: el cambio de estado leído como reacción (33 % de 358 universitarios, Salame y Casino 2021) |
+| 3. Qué es | **Clasificar** y **poner fichas** | Unos treinta ejemplos reales (aire, bronce, oro de 18 quilates, agua del lago, leche) con su lupa de partículas. Después fabrica él uno: «arma una mezcla homogénea de dos elementos» | Elemento, compuesto y mezcla se distinguen por las partículas, no por el aspecto | Clasificar por la apariencia (Sanger 2000) |
+| 3b. Separar | Verter y calentar | Filtra, decanta, destila o acerca un imán | Cada método aprovecha una propiedad de la parte 1: tamaño, densidad, punto de ebullición | — |
+| 4. Energía | Ejemplo que se completa | Un problema de equivalencia masa y energía resuelto, con un paso por elegir | El orden de magnitud: muy poca masa es muchísima energía | — |
+
+Lo que la hace visual sin gastar de más:
+
+- **La parte 3b usa lo que se descubrió en la parte 1.** Por eso la unidad se siente como una sola historia y no como siete temas del sílabo.
+- **Los ejemplos son el contenido.** Treinta sustancias y doce cambios, cada uno con su dibujo de partículas calculado y verificado. Ahí está el trabajo, no en la animación.
+- **Rive:** el vaso y el mechero que ya están en el catálogo. Nada nuevo.
+- **Para el repaso:** un calentamiento de un minuto, «¿físico o químico?» y «¿intensiva o extensiva?», lanzando cada caso a un lado.
+
+### 7.3 Tabla periódica: la tabla viva
+
+Pedido de Gerson: la tabla tiene mucha historia, comparar los tipos de tabla con animación puede servir, y para las propiedades hay que animar una tabla periódica «sin ahorrar», porque sirve para muchas cosas. De acuerdo en todo, con una precisión: **se gasta en la tabla, no en Rive.**
+
+**Por qué la tabla no va en Rive:**
+
+- Son 118 casillas con texto que se tiene que leer, ampliar y buscar. El texto dentro de Rive no lo lee un lector de pantalla ni se puede seleccionar.
+- Cada número de la tabla es un dato (regla 1): sale de un archivo verificado, no de un dibujo.
+- Va a tener muchos modos (historia, propiedades, bloques, valencias). En Rive cada modo nuevo se dibuja a mano en el editor; como pieza del kit, es una regla más sobre los mismos datos.
+- Lo que hay que animar es mover y hacer crecer cajas. Eso el navegador lo hace con poco costo incluso con 118 a la vez.
+
+**La tabla viva es una pieza mayor del kit, con seis comportamientos:**
+
+| Comportamiento | Qué hace | Para qué sirve |
+| --- | --- | --- |
+| **Se reordena** | Las mismas cartas pasan de un arreglo a otro: en fila por masa, en tríadas, en octavas, en la tabla de 1869 con sus huecos, en la moderna por número atómico, en bloques | La historia: cada transición muestra qué cambió cada persona |
+| **Se levanta** | Cada casilla crece como barra o como círculo según una magnitud: radio, energía de ionización, electronegatividad, afinidad, carácter metálico | Las propiedades periódicas, de un vistazo |
+| **Se recorre** | El dedo camina por un periodo o por un grupo y abajo se dibuja el perfil de la propiedad. Al lado, el átomo cambia: un protón más o una capa más | Explicar la tendencia con sus dos factores, carga del núcleo y distancia |
+| **Se ilumina** | Metales, no metales y semimetales; bloques; familias; estados de oxidación | Ubicar y clasificar |
+| **Responde** | Tocar dos elementos da su diferencia de electronegatividad; tocar varios suma la masa molar | Enlace, mol, nomenclatura |
+| **Está siempre a mano** | Se abre desde cualquier pantalla de química, como la tabla de cartulina que pedían en el colegio | Consulta, también sin conexión |
+
+**La lección de historia: el solitario de Mendeléyev.** Mendeléyev trabajó con fichas de los elementos (`docs/investigacion/historia-ganchos.md`; lo del sueño es dudoso). El alumno hace lo mismo:
+
+| Tiempo | Lo que pasa |
+| --- | --- |
+| 1. Toca | Recibe unas veinte cartas, cada una con su masa, la fórmula de su óxido y si es metal. Las ordena en fila por masa |
+| 2. Predice | «Si sigues la fila, ¿cada cuántas cartas vuelve a aparecer un metal que reacciona con el agua?» |
+| 3. Prueba y registra | Corta la fila donde las propiedades se repiten y apila los trozos: aparecen las columnas. Queda un hueco debajo del silicio. Con las cartas vecinas estima la masa y la densidad de la que falta |
+| 4. Nombra la regla | La app destapa la carta: el germanio, hallado en 1886, contra lo que Mendeléyev anunció en 1871 (masa de unos 72 y densidad de unos 5,5 g/cm³). Regla con fichas: las propiedades se repiten de forma periódica |
+| 3 y 4 otra vez | Dos cartas quedan mal por masa: el telurio y el yodo. Al reordenar por número atómico (Moseley, 1913) cada una cae en su columna. La ley periódica moderna ordena por número atómico |
+| 5. Transfiere | Un problema de ubicación de formato San Marcos |
+
+Las tríadas de Döbereiner y las octavas de Newlands entran como dos arreglos más de las mismas cartas, cada uno con el punto exacto donde deja de funcionar. Los datos de 1871 y 1886 ya están en el informe de ganchos de historia con su estado de verificación; se revisan otra vez antes de publicarlos.
+
+**La lección de propiedades: caminar por la tabla.** El alumno predice («¿quién es más grande, el sodio o el magnesio?»), camina con el dedo por el periodo y ve el perfil dibujarse. Registra tres tramos y arma la regla. Lo importante es la explicación con dos factores, porque el informe de ideas erróneas dice que los alumnos explican con uno solo (TP7) o con «subcapa llena es estable» (TP5, TP6). Por eso al caminar se ve el átomo: en un periodo entra un protón más y el radio se cierra; al bajar por un grupo entra una capa más.
+
+**El problema del celular, de frente.** La tabla larga tiene 18 columnas. En 360 px de ancho cada casilla mide 20 px y el símbolo no se lee. Propuesta: en el celular la vista de partida es la **tabla plegada**, con los ocho grupos representativos (casillas de unos 45 px), y un pliegue entre el segundo y el tercer grupo que se abre para mostrar los metales de transición. Con el celular echado se ve entera. Hay que probarlo en un celular real antes de construir lo demás.
+
+**Dónde va el gasto «sin ahorrar»:**
+
+- **Los datos.** La escena de hoy (`atomo-y-tabla`) llega hasta el elemento 36 y sus valores se contrastaron solo en parte con fuentes secundarias. Hay que decidir hasta dónde llega (lo que pregunta la admisión son los representativos y la primera serie de transición) y verificar cada valor con una fuente primaria.
+- **La carta en tres tamaños:** casilla de 20 px, casilla de 45 px y carta completa.
+- **Las transiciones entre arreglos,** que son la lección de historia.
+
+**Unidades que la reutilizan** (por eso conviene hacerla pronto): estructura atómica (los bloques se encienden al llenar la configuración), tabla periódica, enlace (la diferencia de electronegatividad), nomenclatura (estados de oxidación), mol (masa molar), balance, estequiometría, electroquímica, hidrocarburos y materia (elemento contra compuesto). Son diez de las veinte de química.
+
+**Para el repaso:** un calentamiento, «¿dónde vive?»: sale un elemento o una familia y se toca su casilla, un minuto, con racha. Es ruta recordar pura.
+
+**Rive en esta unidad:** ninguno. Si se quiere una viñeta de Mendeléyev con sus fichas para abrir la lección, basta una ilustración quieta.
+
+### 7.4 Enlace químico: la cuerda y los globos
+
+Pedido de Gerson: «se leía aburrido, inventa algo más visual». Lo de antes era «une átomos y gira la molécula». La propuesta nueva cuenta toda la unidad con dos objetos que se entienden sin leer: **una cuerda** (quién atrae más los electrones) y **unos globos** (los pares de electrones que se empujan). Ruta: **descubrir, con apoyo de comparar (D+C)**.
+
+Un cuidado antes de empezar: el informe de ideas erróneas dice que los alumnos creen que los átomos «quieren» completar su octeto (EN2, TP1). Por eso los átomos no llevan cara ni deseos y el texto dice «atrae», nunca «quiere». La cuerda es una fuerza, no una voluntad.
+
+| Acto | Gesto | Qué hace el alumno | Lo que descubre | Idea errónea que ataca |
+| --- | --- | --- | --- | --- |
+| 1. El valle | **Estirar**: acerca dos átomos de hidrógeno | Mientras los acerca, una bolita recorre una curva de energía que él mismo va dibujando: baja, toca fondo y sube de golpe si los aprieta | El enlace es el fondo del valle. Formarlo suelta energía; romperlo cuesta | TP1: «el octeto da estabilidad por sí solo» |
+| 2. La cuerda | Elige dos átomos en la tabla viva y los pone frente a frente | El par de electrones es un nudo en la cuerda. Con H–H queda al centro; con H–Cl se corre hacia el cloro; con Na–Cl pasa entero al otro lado y quedan dos iones. Cada pareja probada queda marcada en una regla de diferencia de electronegatividad | No hay tres enlaces sino una sola escala: apolar, polar e iónico son zonas de la misma regla | EN5: clasificar el enlace al revés; TP8: «electronegativo es tener carga negativa» |
+| 2b. La red | **Soltar** más iones | Suelta más sodios y cloros: no forman parejas, se acomodan alternados en una red | El cloruro de sodio no tiene moléculas: cada ion atrae a todos sus vecinos | EN1: «el NaCl está hecho de moléculas» |
+| 3. Los globos | **Poner fichas**: agrega globos al átomo central | Cada globo es un par de electrones. Al agregar uno, todos se reacomodan solos lo más lejos posible: dos en línea, tres en triángulo, cuatro en tetraedro. Después cambia un globo por un par libre: el arreglo sigue y el nombre de la forma cambia | La forma no se memoriza: sale de que los pares se repelen. La molécula se gira para verla | EN8: leer la geometría del dibujo plano; EN9: los pares libres «no cuentan» |
+| 4. El equipo | **Girar** la molécula | Cada enlace polar es una cuerda que jala el átomo central. Gira la molécula y mira si los tirones se anulan: CO₂ contra H₂O, CCl₄ contra CH₂Cl₂. Prueba final: acerca una regla cargada a un chorrito de cada líquido | Polar es tener enlaces polares que no se anulan en tres dimensiones. Hacen falta las dos condiciones | EN10 y EN11: polaridad leída en el dibujo plano o con un solo factor |
+| 5. Lo que se pega | **Calentar** y golpear | Calienta agua, H₂S y metano: las moléculas se separan enteras, las cuerdas de adentro no se rompen. Registra a qué temperatura hierve cada uno. Después golpea un cristal de sal y un trozo de metal, y les acerca el foco | Hervir separa moléculas, no rompe enlaces. La sal se parte, el metal se dobla, y la sal conduce solo fundida o disuelta | EN13 y EN14: «al hervir se rompen los enlaces covalentes» |
+
+Lewis, resonancia e hibridación son procedimientos: van como **ejemplo que se completa** (ruta E) dentro de los actos 2 y 3. En resonancia, ojo con la animación: el informe dice que los alumnos creen que la molécula cambia de forma (EN6). No se animan átomos moviéndose; se muestra la nube repartida por igual.
+
+Lo que la hace visual:
+
+- **Profundidad de verdad.** En los actos 3 y 4 la forma es el argumento, así que aquí sí hace falta volumen: lo de atrás se ve más chico y más oscuro y lo de adelante lo tapa. Es el único lugar de esta auditoría donde «se ve plano» se arregla con profundidad.
+- **Respuesta física.** Los globos se empujan y se asientan; la cuerda se tensa. Son posiciones que calcula el motor: los ángulos solo se rotulan cuando todo está quieto.
+- **Un hilo entre actos.** La cuerda del acto 2 es la misma del acto 4 y la que no se rompe en el acto 5.
+
+Costos y límites:
+
+- **Son tres sesiones,** no una: actos 1 y 2, acto 3 y actos 4 y 5.
+- **Rive:** solo utilería que ya existe (el foco, el mechero y el gotero para el chorrito). La nube, la cuerda y los globos se calculan y los dibuja el kit. Una nube con bordes suaves en Rive pide difuminado, que es justo lo que se descartó para gama baja.
+- **Hay que verificar** la curva del acto 1, los valores de electronegatividad y los puntos de ebullición contra fuentes primarias, y decidir qué escala de electronegatividad se usa (la que use el examen).
+- **Que formar el enlace suelta energía** como idea errónea frecuente no está en el informe del repo: se busca su fuente antes de usarla como argumento.
 
 ## 8. El temario completo: las 152 unidades
 
@@ -398,10 +515,10 @@ Cómo leer las tablas:
 
 | # | Unidad | Hoy | Ruta | Gesto | Lo que descubre haciéndolo | Rive |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Materia y energía | B | C+R | Verter y calentar: filtra, decanta y evapora una mezcla | Cada método separa por una propiedad; la masa no cambia | Vaso y mechero |
+| 1 | Materia y energía | B | D+C | Cortar y calentar: parte la muestra y vuelve a medir; hazle algo y mírala con la lupa (sección 7.2) | Unas propiedades dicen cuánto hay y otras qué es; en un cambio físico las partículas son las mismas | Vaso y mechero |
 | 2 | Estructura atómica | B | E+R | Poner fichas: llena los orbitales con electrones | El orden de llenado sale de «primero el más barato» | — |
-| 3 | Tabla periódica | B | C+R | Ordenar: acomoda cartas de elementos por una propiedad | La tendencia aparece al ordenar; los grupos se parecen | — |
-| 4 | Enlace químico | B | C+D | Conectar y girar: une átomos y gira la molécula | Los pares libres empujan; los dipolos se suman o se anulan | — |
+| 3 | Tabla periódica | B | D+R | Ordenar y estirar: acomoda las cartas por masa y córtalas donde se repiten; después camina por la tabla (sección 7.3) | Las propiedades se repiten cada cierto número de elementos, y eso permite predecir el que falta | — (la tabla viva es del kit) |
+| 4 | Enlace químico | B | D+C | Estirar y poner fichas: acerca dos átomos y mira quién atrae más el par; agrega globos al átomo central (sección 7.4) | El tipo de enlace es una sola escala de atracción; la forma sale de pares que se repelen | Foco, mechero y gotero |
 | 5 | Nomenclatura inorgánica | B | E+R | Clasificar y poner fichas: cruza las cargas | El nombre sale del estado de oxidación | — |
 | 6 | Mol y composición | D | D+E | Pesar: echa cucharadas a la balanza hasta juntar un mol | Un mol de cada sustancia pesa distinto y cuenta lo mismo | — (balanza del kit) |
 | 7 | Reacciones y balance | B | E+D | Poner fichas: agrega moléculas enteras a cada lado | Se cambian los coeficientes, nunca los subíndices | — |
@@ -538,6 +655,30 @@ Cómo leer las tablas:
 | 18 | Tablas, gráficos y suficiencia | B | A+C | Estirar el eje del gráfico | Un eje cortado exagera la diferencia | — |
 | 19 | Diagramas de flujo y operadores | G | E+D | Soltar un número por el diagrama | El operador es una máquina con una sola regla | — |
 
+**Más formas de explicar cada unidad** (pedido de Gerson, 13 nov: «hay muchas formas de explicar un tema»). En razonamiento matemático casi ningún problema tiene un solo camino, y eso es parte de lo que se enseña. La columna «Gesto» de arriba da la entrada principal; esta tabla da las otras entradas, para el botón «explícamelo de otra forma» de la sección 5.6. Son propuestas para ampliar.
+
+| # | Unidad | Otras formas de explicarla |
+| --- | --- | --- |
+| 1 | Deductivo y parentesco | Armar el árbol familiar · Cuadro de doble entrada con descarte · «Una persona, varios papeles» (padre e hijo a la vez) para hallar el mínimo de personas |
+| 2 | Trazos y perímetros | Contar cuántas líneas llegan a cada vértice (pares e impares) · Probar con el dedo y ver dónde se traba · La historia de los puentes de Königsberg · Para perímetros: correr los lados de la escalera hasta formar un rectángulo |
+| 3 | Ordenamiento de información | Fichas en una fila o alrededor de la mesa · Cuadro de doble entrada · Empezar por la pista que fija más (el dato ancla) · Probar un caso y descartar |
+| 4 | Verdades y mentiras | Suponer y buscar la contradicción · Tabla de quién dice qué · Buscar dos frases que se contradicen: una es verdad y la otra no · Personajes que se voltean |
+| 5 | Traslados y puntos cardinales | Camino sobre la cuadrícula · Sumar por separado norte-sur y este-oeste · La flecha del inicio al final (Pitágoras) · El plano de una ciudad conocida |
+| 6 | Arreglos numéricos | Suma total entre el número de filas · Parejas que suman lo mismo · Girar y reflejar el cuadrado para ver que es el mismo · Contar dos veces las casillas de las esquinas |
+| 7 | Razonamiento inductivo | Tres casos chicos en una tabla · La figura que crece: mirar qué se agrega · Contar lo mismo de dos maneras · Proponer la fórmula y probarla con el caso 4 |
+| 8 | Elementos recreativos | El dado desplegado en cruz · Palitos: mover uno y contar · Buscar lo que no cambia (pares e impares) · Resolver de atrás hacia adelante |
+| 9 | Relojes y calendarios | Las agujas como dos corredores en una pista redonda · Tabla de adelanto y atraso por hora · Calendario: el resto de dividir entre 7 · Línea de tiempo |
+| 10 | Certezas | El peor caso: la mala suerte máxima y uno más · Casilleros y palomas · Jugar contra alguien que siempre te da lo peor · Tabla de lo que ya salió |
+| 11 | Frecuencia de sucesos | Línea de tiempo con marcas: hay un intervalo menos que marcas · MCM para saber cuándo coinciden · Campanadas: se cuentan los silencios, no los golpes · Dos tiras de papel con marcas |
+| 12 | Ruedas, poleas y engranajes | Contar los dientes que pasan por el contacto · Proporción inversa entre dientes y vueltas · Sentido de giro: ruedas pares e impares de la cadena · Misma faja, misma rapidez en el borde |
+| 13 | Máximos y mínimos | Tabla de valores y buscar el pico · Con el mismo cordel, comparar figuras · El reflejo para el camino más corto · Completar cuadrados · Probar los casos extremos |
+| 14 | Cortes, pesadas y balanzas | Cortar de verdad: en una soga, un corte menos que pedazos; en un aro, igual número · Estacas en fila · La balanza tiene tres resultados: por eso salen potencias de 3 · Doblar antes de cortar |
+| 15 | Planteo de ecuaciones | La balanza · Barras o segmentos para cada cantidad · Cuadro de antes, ahora y después (edades) · Falsa suposición · La ecuación al final |
+| 16 | Movimiento y comparación de figuras | Papel calco que gira · Marcar una esquina y seguirla · El espejo: voltear cambia la mano de la figura · Rodar con una marca para contar vueltas |
+| 17 | Rutas y visualización espacial | Sumar en cada cruce los caminos que llegan · Tres vistas: frente, lado y arriba · Desarmar el cubo por capas · Desplegar la caja para el camino de la hormiga |
+| 18 | Tablas, gráficos y suficiencia de datos | Leer primero los ejes y las unidades · Pasar el gráfico a tabla · Suficiencia: probar con cada dato solo y luego con los dos · Fabricar un caso donde el dato no alcanza |
+| 19 | Diagramas de flujo y operadores | La máquina de entrada y salida · Seguir un número con el dedo · Tabla de pasadas cuando hay un ciclo · El operador como receta que se aplica dos veces |
+
 ### Razonamiento verbal (18)
 
 Aquí el modelo es el texto y no hay fenómeno que animar. El gesto se hace sobre las palabras y Rive se limita a la mascota. El POGIL v2 de este curso es de lectura: el alumno marca, mueve o tacha, y el texto «responde» mostrando qué se sostiene y qué se cae.
@@ -574,6 +715,7 @@ Una variable por versión, como pide el skill. Cada versión tiene una decisión
 | **B. La misma unidad con utilería Rive** | Solo el vaso, la jarra y la bureta pasan a Rive | Cuadros por segundo contra A; preferencia y comprensión contra A con otros cinco alumnos | ¿Rive agrega algo que justifique su costo de producción? |
 | **C. Una unidad de física y una de matemática** | MRUV con el carrito; `triangulo-estira`, que ya se arrastra, solo con registros y regla | Lo mismo que A | ¿El modelo aguanta fuera de la química? |
 | **R. Cola de repaso** (en paralelo, no depende de las otras) | La app programa preguntas cortas de las unidades ya hechas, en días distintos | Aciertos en el repaso de la semana contra los del día | ¿El repaso cambia lo que el alumno recuerda? Se puede probar en el piloto con las escenas de hoy |
+| **T. La tabla viva** (en paralelo) | Primero solo la tabla plegada en el celular y el reordenamiento de las cartas | Que el símbolo se lea a 360 px; cuadros por segundo al reordenar | ¿Se construye la pieza completa? La reutilizan diez unidades de química |
 | **D. Escalar** | Física y química primero, por utilería compartida: las que usan vaso y mechero, después carrito, después foco | Pruebas de entrada y salida | Con tope de gasto por rutina, como siempre |
 
 **Guion para probar con un alumno** (sin anticiparle nada): se le da el celular con la unidad abierta y al terminar se le pregunta, en este orden: «¿Qué pasó?», «¿Qué hiciste tú?», «¿Cuándo lo entendiste?», «Si ahora tuvieras 1 L, ¿qué pH marcaría?». Se anota lo que intentó tocar y no respondía: eso dice qué gesto esperaba.
