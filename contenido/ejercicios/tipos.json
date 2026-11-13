@@ -1,0 +1,24 @@
+{
+  "descripcion": "Registro de tipos de problema de la tanda: cada tipo se mapea una sola vez y vale para todos sus ejercicios (contenido/ejercicios/LEEME.md). via: generador (existe en plantillas/), pieza (pieza del kit + generador por hacer), instancia (ejercicio fijo, solo oficial o propio) o nuevo (falta todo: cuenta como huérfano).",
+  "tipos": {
+    "porcentajes/descuentos-sucesivos": {
+      "unidad": "aritmetica.porcentajes",
+      "via": "generador",
+      "generador": "porcentajes-sucesivos",
+      "subtipo": "dos-descuentos",
+      "pieza": "barra-porcentaje"
+    },
+    "cortes-y-pesadas/balanzas-sustitucion": {
+      "unidad": "razonamiento-matematico.cortes-y-pesadas",
+      "via": "generador",
+      "generador": "rm-balanzas",
+      "subtipo": "sustitucion",
+      "pieza": "balanza"
+    },
+    "movimiento-rectilineo/frenado-distancia": {
+      "unidad": "fisica.movimiento-rectilineo",
+      "via": "pieza",
+      "pieza": "ejes"
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "id": "of-juguete-2099-I-0007",
+  "lote": "juguete",
+  "estado": "clasificado",
+  "origen": { "tipo": "oficial", "universidad": "unmsm", "periodo": "2099-I", "area": "A", "numero": 7, "fuente": "juguete (no existe)" },
+  "curso": "fisica",
+  "unidad": "fisica.movimiento-rectilineo",
+  "tipo": "movimiento-rectilineo/frenado-distancia",
+  "figura_fuente": false,
+  "enunciado": "Un auto que va a 20 m/s frena con desaceleración constante de 4 m/s² hasta detenerse. Determine la distancia que recorre mientras frena.",
+  "alternativas_fuente": ["25 m", "50 m", "100 m", "40 m", "80 m"],
+  "clave_fuente": "B",
+  "respuesta": { "valor": 50, "unidad": "m" },
+  "notas": "Ejemplo de juguete, inventado: el periodo 2099-I no existe. Muestra cómo entra una pregunta oficial antes de mapearla (su enunciado no paga presupuesto de texto)."
+}

@@ -1,0 +1,49 @@
+{
+  "id": "pr-juguete-0001",
+  "lote": "juguete",
+  "estado": "verificado",
+  "origen": { "tipo": "propio", "autor": "rutina ejercicios-7000" },
+  "curso": "aritmetica",
+  "unidad": "aritmetica.porcentajes",
+  "tipo": "porcentajes/descuentos-sucesivos",
+  "dificultad": 1,
+  "enunciado": "Una casaca cuesta {P}. Le rebajan {a} y, sobre el nuevo precio, otro {b}.",
+  "pregunta": "¿Cuánto se paga al final?",
+  "datos": {
+    "P": { "valor": 300, "unidad": "S/", "texto": "S/ 300", "color": "o", "nombre": "precio inicial" },
+    "a": { "valor": 10, "unidad": "%", "texto": "10 %", "color": "i", "nombre": "primer descuento" },
+    "b": { "valor": 30, "unidad": "%", "texto": "30 %", "color": "h", "nombre": "segundo descuento" }
+  },
+  "respuesta": { "valor": 189, "unidad": "S/", "tipo": "arrastrar", "control": "marca", "tolerancia": 0.5 },
+  "verificacion": {
+    "por": "generador",
+    "funcion": "porcentajes-sucesivos (dos-descuentos): P × (1 − a/100) × (1 − b/100)",
+    "resultado": 189,
+    "coincide": true,
+    "a_ciegas": false,
+    "fecha": "2026-11-13"
+  },
+  "escena": {
+    "pieza": "barra-porcentaje",
+    "datos": { "total": 300, "tramos": [10, 30], "unidad": "S/" },
+    "alt": "Barra de S/ 300 que pierde primero el 10 % y luego el 30 % de lo que queda"
+  },
+  "pasos": [
+    { "estado": { "corte": 1 }, "texto": "Tras el primer descuento queda el 90 %.", "ecuacion": [{ "v": "P", "t": "300" }, " × 0,9 = 270"] },
+    { "estado": { "corte": 2 }, "texto": "El 30 % se quita de lo que quedó.", "ecuacion": ["270 × 0,7 = 189"] }
+  ],
+  "alternativas": [
+    { "texto": "S/ 189", "valor": 189, "correcta": true, "error": null },
+    { "texto": "S/ 180", "valor": 180, "correcta": false, "error": { "id": "suma-descuentos", "explicacion": "Sumaste 10 % y 30 %. El segundo se quita de un precio ya rebajado.", "respaldo": "hipotesis", "fuente": null } },
+    { "texto": "S/ 111", "valor": 111, "correcta": false, "error": { "id": "monto-descuento", "explicacion": "Eso es lo que se descuenta; la pregunta pide lo que se paga.", "respaldo": "hipotesis", "fuente": null } },
+    { "texto": "S/ 210", "valor": 210, "correcta": false, "error": { "id": "un-solo-descuento", "explicacion": "Aplicaste un solo descuento. Van los dos, uno tras otro.", "respaldo": "hipotesis", "fuente": null } },
+    { "texto": "S/ 240", "valor": 240, "correcta": false, "error": { "id": "promedio", "explicacion": "Promediaste los porcentajes. Los descuentos sucesivos se multiplican.", "respaldo": "hipotesis", "fuente": null } }
+  ],
+  "fantasmas": {
+    "suma-descuentos": { "marca": 60 },
+    "monto-descuento": { "marca": 37 },
+    "un-solo-descuento": { "marca": 70 },
+    "promedio": { "marca": 80 }
+  },
+  "notas": "Ejemplo de juguete, inventado. La barra marca en % del precio inicial: la correcta queda en 63 %."
+}
