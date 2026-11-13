@@ -1,6 +1,6 @@
 # Pendientes y traspaso
 
-Actualizado el 12 de noviembre de 2026 al cerrar la conversación principal. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Estado al 12 nov y lo que sigue».
+Actualizado el 13 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Estado al 13 nov».
 
 ## Cómo arrancar una sesión nueva
 
@@ -27,7 +27,41 @@ Si hay que hacer OCR, instala tesseract en español: `apt-get install -y tessera
 - **Si el servidor local muere:** se reinicia con `node herramientas/servidor.js`. También hay que reiniciarlo después de cambiar `herramientas/construir-catalogo.js`, porque guarda el módulo en memoria.
 - **Para verificar a mano:** Playwright y Chromium ya vienen instalados en el entorno en la nube (`require('playwright')`). Las capturas *fullPage* pierden la emulación táctil, así que lo que depende de `hover` se revisa con capturas normales.
 
-## Estado al 12 nov y lo que sigue (léelo primero)
+## Estado al 13 nov: rediseño «escena viva» (léelo primero)
+
+Rama `claude/hopeful-planck-h4701c` (no está en `main` todavía; sw v160). Se hizo con tres rutinas en paralelo (el máximo) y la integración del coordinador. `npm test` en verde.
+
+**Qué hay.**
+- **Contrato:** `docs/escena-viva.md`. Incluye el diagnóstico medido, las reglas del ejercicio vivo, los topes de texto (enunciado 40, paso 14 y error 20 palabras), el formato `escena`/`pasos`/`fantasmas`/`respuesta`, el kit y la mascota. Manda sobre todo lo nuevo.
+- **Kit:** `nucleo/kit/` (trazo, línea de tiempo y la pieza `barra-porcentaje`). La receta para agregar una pieza está en el reporte del kit, resumida en `docs/escena-viva.md` §5.
+- **Prototipo:** `porcentajes-sucesivos` 0.2.0. Se responde arrastrando una marca, el error se dibuja como fantasma y la solución se recorre con un cursor de pasos. Los otros 89 generadores siguen con el formato de siempre hasta migrarlos.
+- **Mascota:**
+  - `nucleo/mascota.js` y `app/mascotas/` (registro por curso, el gato como respaldo con 8 poses);
+  - runtime de Rive en `app/vendor/rive/` (MIT, 2.50.0), que solo se baja si hay un `.riv`;
+  - página de prueba en `app/mascotas/probar.html`;
+  - encargo de vectores en `docs/encargo-vectores.md`.
+- **Tanda de 7000:**
+  - plan en `docs/ejercicios-7000.md`;
+  - esquema y ejemplos en `contenido/ejercicios/`;
+  - validador `herramientas/validar-ejercicios.js` (`--validar`, `--contar` y `--auditar`).
+  
+  La auditoría dio que 0 de 90 generadores cumplen los topes de texto. Lo que más falla son los pasos y las explicaciones de error.
+
+**Lo que sigue, en orden.**
+1. Gerson prueba la práctica de porcentajes en un celular real y decide si el patrón sirve antes de escalarlo.
+2. Gerson pasa el vector y el `.riv` de la mascota (contrato: máquina `Mesa`, entradas `pose` 0–7 y `reducido`) y lo prueba en `probar.html`. Falta ver un `.riv` real cambiando de pose.
+3. Gerson contesta las 3 preguntas de `docs/ejercicios-7000.md` antes de mandar la tanda: formato y origen, tope de gasto y qué entra al piloto.
+4. Piezas siguientes, por cobertura: `recta`, `balanza`, `flechas`, `triangulo` y `ejes`. El orden de migración de generadores está en `docs/ejercicios-7000.md`, con `quimica-conceptos` y `rm-certezas` primero.
+5. Las escenas grandes (MRUV y las demás) también pasan a la línea de tiempo. En MRUV hay que sacar el dato de Beichner que ve el alumno y poner la explicación junto a la gráfica.
+
+**Pendientes chicos.**
+- La línea de la marca cruza el rótulo de un pedazo cuando caen en la misma columna.
+- `app/lectura.js` todavía tiene `PREMIOS` con emoji y el gato en la retroalimentación: pasarlo a la mascota.
+- La figura se redibuja entera en cada cuadro del arrastre: medirlo en gama baja.
+- El kit todavía no está en `MODULOS` de `app/app.js` (se carga solo cuando un problema trae `escena`); sí está en la caché del service worker.
+- El evento `prediccion` no lleva el subtipo del problema; la rutina de los 7000 lo pide para medir por tipo.
+
+## Estado al 12 nov y lo que sigue
 
 **Dónde está todo.**
 - **Publicado:** la app en https://mesa-de-estudios.vercel.app (Vercel) y el servidor de cuentas en https://mesa-de-estudios-production.up.railway.app (Railway), los dos desde `main`.
