@@ -187,3 +187,19 @@ test('incorrectas tan limpias como la correcta y de tamaño razonable (600 semil
   assert.ok(sola / n < 0.05, `la correcta es la única redonda en ${sola} de ${n}`);
   for (const s of [...Array(2001).keys(), 'entrada-1', 'entrada-2', 'salida-1', 'salida-3']) assert.doesNotThrow(() => gen.generar(s), `semilla ${s}`);
 });
+
+// ---------- Escena viva (docs/escena-viva.md): la gráfica v-t del kit en el tipo «vt» ----------
+const { probarViva } = require('../../nucleo/kit/piezas/probar-viva.js');
+const KitV = require('../../nucleo/kit/kit.js');
+probarViva(gen, {
+  semillas: 300, pieza: 'ejes', presupuestoSoloEscena: true,
+  conEscena: p => p._datos.tipo === 'vt',
+  final: (p, fin, s) => {
+    // El final dibuja la respuesta con su ✓, y lo que se lee en la gráfica es lo que vale.
+    assert.ok(fin.includes(`>${KitV.formatear(p.respuesta.valor)}${p.escena.datos.sufijo} ✓<`), `semilla ${s}: el final no dibuja la respuesta`);
+    const d = p._datos;
+    // En vmax la gráfica carga d (el área) y t (el último número del eje t).
+    if (d.sub === 'vmax') assert.ok(fin.includes(`>${d.d} m<`) && fin.includes(`>${KitV.formatear(d.t)}<`), `semilla ${s}: la gráfica no carga d y t`);
+  },
+});
+
