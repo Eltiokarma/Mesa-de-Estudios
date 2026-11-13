@@ -1,0 +1,150 @@
+/*
+ * La mascota (docs/escena-viva.md, sección 6; nucleo/mascota.js).
+ * El hueco mide 72 × 72 desde la primera pintura: que llegue o no la mascota no mueve nada.
+ * Poses del respaldo SVG: cada parte tiene una capa de pose (transición) y una de gesto (.m-g, animación).
+ * Actuación en tres golpes (references/mascota.md del skill de diseño): anticipación micro 120 ms,
+ * acción corto 200 ms y asentamiento medio 320 ms con la curva resorte: 640 ms (el hito, 840 ms; tope: paso 900).
+ * Cola y orejas salen 40 ms después del cuerpo. Con movimiento reducido, la pose cambia sin animación.
+ * data-pose va sin tilde ni ñ (senala, acompana): así el selector no depende de la codificación del CSS.
+ */
+.mascota {
+  display: inline-block; position: relative; flex: none;
+  /* Sin contain: paint, a propósito: el brinco de celebra e hito sale unos px por arriba sin mover nada. */
+  width: 72px; height: 72px; contain: size layout;
+  line-height: 0; pointer-events: none; user-select: none;
+}
+.mascota > svg, .mascota > canvas { display: block; width: 100%; height: 100%; }
+.mascota > svg { overflow: visible; }
+.mascota > canvas { position: absolute; inset: 0; }
+.mascota.m-con-rive > svg { visibility: hidden; }
+.mascota[data-mira="izquierda"] > svg, .mascota[data-mira="izquierda"] > canvas { transform: scaleX(-1); }
+
+/* Centros de giro, en unidades del viewBox (0 0 120 120). */
+.mascota .m-svg g { transform-box: view-box; }
+.mascota .m-salto, .mascota .m-todo { transform-origin: 60px 108px; }
+.mascota .m-cola, .mascota .m-cola > .m-g { transform-origin: 88px 100px; }
+.mascota .m-cabeza, .mascota .m-cabeza > .m-g { transform-origin: 60px 74px; }
+.mascota .m-oreja-i, .mascota .m-oreja-i > .m-g { transform-origin: 44px 34px; }
+.mascota .m-oreja-d, .mascota .m-oreja-d > .m-g { transform-origin: 76px 34px; }
+.mascota .m-ojos-abiertos, .mascota .m-ojos-abiertos > .m-g { transform-origin: 60px 50px; }
+
+/* Ojos: felices (cerrados) en reposo, celebra e hito; abiertos en las poses que miran. */
+.mascota .m-ojos-abiertos { opacity: 0; }
+.mascota:is([data-pose="saluda"], [data-pose="senala"], [data-pose="espera"], [data-pose="acompana"], [data-pose="ayuda"]) .m-ojos-abiertos { opacity: 1; }
+.mascota:is([data-pose="saluda"], [data-pose="senala"], [data-pose="espera"], [data-pose="acompana"], [data-pose="ayuda"]) .m-ojos-felices { opacity: 0; }
+
+/* Poses (estado final; es lo único que se ve con movimiento reducido). El mensaje está a la derecha:
+   señala, acompaña y ayuda se inclinan hacia allá (data-mira="izquierda" lo refleja). */
+.mascota[data-pose="saluda"] .m-cabeza { transform: rotate(-7deg); }
+.mascota[data-pose="saluda"] .m-cola { transform: rotate(-10deg); }
+.mascota[data-pose="saluda"] .m-oreja-i { transform: rotate(4deg); }
+.mascota[data-pose="saluda"] .m-oreja-d { transform: rotate(-4deg); }
+
+.mascota[data-pose="senala"] .m-todo { transform: rotate(4deg); }
+.mascota[data-pose="senala"] .m-cabeza { transform: rotate(6deg); }
+.mascota[data-pose="senala"] .m-oreja-d { transform: rotate(-8deg); }
+.mascota[data-pose="senala"] .m-ojos-abiertos { transform: translate(2.5px, 0); }
+
+.mascota[data-pose="espera"] .m-cabeza { transform: rotate(-4deg); }
+.mascota[data-pose="espera"] .m-cola { transform: rotate(-4deg); }
+.mascota[data-pose="espera"] .m-oreja-i { transform: rotate(4deg); }
+.mascota[data-pose="espera"] .m-oreja-d { transform: rotate(-4deg); }
+
+.mascota[data-pose="celebra"] .m-cabeza { transform: rotate(-6deg); }
+.mascota[data-pose="celebra"] .m-cola { transform: rotate(-12deg); }
+.mascota[data-pose="celebra"] .m-oreja-i { transform: rotate(6deg); }
+.mascota[data-pose="celebra"] .m-oreja-d { transform: rotate(-6deg); }
+
+.mascota[data-pose="acompana"] .m-todo { transform: rotate(2deg); }
+.mascota[data-pose="acompana"] .m-cabeza { transform: rotate(9deg); }
+.mascota[data-pose="acompana"] .m-cola { transform: rotate(6deg); }
+.mascota[data-pose="acompana"] .m-oreja-i { transform: rotate(-8deg); }
+.mascota[data-pose="acompana"] .m-oreja-d { transform: rotate(8deg); }
+.mascota[data-pose="acompana"] .m-ojos-abiertos { transform: translate(1.5px, 1px) scale(1, .82); }
+
+.mascota[data-pose="ayuda"] .m-todo { transform: rotate(4deg); }
+.mascota[data-pose="ayuda"] .m-cabeza { transform: rotate(-10deg); }
+.mascota[data-pose="ayuda"] .m-cola { transform: rotate(-6deg); }
+.mascota[data-pose="ayuda"] .m-oreja-d { transform: rotate(-10deg); }
+.mascota[data-pose="ayuda"] .m-ojos-abiertos { transform: translate(2px, 0); }
+
+.mascota[data-pose="hito"] .m-cabeza { transform: rotate(6deg); }
+.mascota[data-pose="hito"] .m-cola { transform: rotate(-14deg); }
+.mascota[data-pose="hito"] .m-oreja-i { transform: rotate(8deg); }
+.mascota[data-pose="hito"] .m-oreja-d { transform: rotate(-8deg); }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Acción: el cuerpo llega después de la anticipación (micro); cola y orejas, 40 ms más tarde. */
+  .mascota .m-todo, .mascota .m-cabeza, .mascota .m-ojos-abiertos {
+    transition: transform 200ms cubic-bezier(0, 0, .2, 1) 120ms, opacity 0s linear 120ms;
+  }
+  /* Los ojos se cambian de golpe al terminar la anticipación: un fundido cruzado dejaba cuatro ojos a la vez. */
+  .mascota .m-ojos-felices { transition: opacity 0s linear 120ms; }
+  .mascota .m-cola, .mascota .m-oreja-i, .mascota .m-oreja-d {
+    transition: transform 200ms cubic-bezier(0, 0, .2, 1) 160ms;
+  }
+
+  /* El golpe de cada pose: empieza y termina en la identidad, así el cuadro 0 es el estado de partida. */
+  .mascota.m-actua:is([data-pose="saluda"], [data-pose="senala"], [data-pose="espera"], [data-pose="ayuda"]) .m-salto { animation: m-golpe 640ms both; }
+  .mascota.m-actua[data-pose="celebra"] .m-salto { animation: m-brinco 640ms both; }
+  .mascota.m-actua[data-pose="hito"] .m-salto { animation: m-hito 840ms both; }
+  .mascota.m-actua[data-pose="acompana"] .m-salto { animation: m-suave 640ms both; }
+
+  .mascota.m-actua[data-pose="saluda"] .m-cola > .m-g { animation: m-ola 640ms 40ms both; }
+  .mascota.m-actua:is([data-pose="celebra"], [data-pose="hito"]) .m-oreja-i > .m-g { animation: m-oreja-i 640ms 40ms both; }
+  .mascota.m-actua:is([data-pose="celebra"], [data-pose="hito"]) .m-oreja-d > .m-g,
+  .mascota.m-actua[data-pose="senala"] .m-oreja-d > .m-g { animation: m-oreja-d 640ms 40ms both; }
+  .mascota.m-actua[data-pose="ayuda"] .m-cabeza > .m-g { animation: m-asiente 640ms 40ms both; }
+
+  /* Vida en reposo: un solo gesto en los 5 s que siguen a una pose (lo pide mascota.js, una vez).
+     Con los ojos abiertos, un parpadeo; con los ojos felices, un tic de oreja. */
+  .mascota.m-vida:is([data-pose="saluda"], [data-pose="senala"], [data-pose="espera"], [data-pose="acompana"], [data-pose="ayuda"]) .m-ojos-abiertos > .m-g { animation: m-parpadeo 200ms linear; }
+  .mascota.m-vida:not([data-pose="saluda"], [data-pose="senala"], [data-pose="espera"], [data-pose="acompana"], [data-pose="ayuda"]) .m-oreja-d > .m-g { animation: m-tic 320ms cubic-bezier(.4, 0, .2, 1); }
+}
+
+/* Pestaña oculta o pausa pedida: todo se queda donde está. Movimiento reducido forzado (probar.html). */
+.mascota[data-pausada] * { animation-play-state: paused !important; }
+.mascota[data-reducido] * { animation: none !important; transition: none !important; }
+
+/* Anticipación (trasladar) → acción (llegar) → asentamiento (resorte). */
+@keyframes m-golpe {
+  0% { transform: none; animation-timing-function: cubic-bezier(.4, 0, .2, 1); }
+  18.75% { transform: scale(1.03, .96); animation-timing-function: cubic-bezier(0, 0, .2, 1); }
+  50% { transform: translateY(-2px) scale(.98, 1.03); animation-timing-function: cubic-bezier(.34, 1.56, .64, 1); }
+  100% { transform: none; }
+}
+@keyframes m-brinco {
+  0% { transform: none; animation-timing-function: cubic-bezier(.4, 0, .2, 1); }
+  18.75% { transform: scale(1.06, .9); animation-timing-function: cubic-bezier(0, 0, .2, 1); }
+  50% { transform: translateY(-10px) scale(.96, 1.05); animation-timing-function: cubic-bezier(.34, 1.56, .64, 1); }
+  100% { transform: none; }
+}
+@keyframes m-hito {
+  0% { transform: none; animation-timing-function: cubic-bezier(.4, 0, .2, 1); }
+  14.3% { transform: scale(1.08, .88); animation-timing-function: cubic-bezier(0, 0, .2, 1); }
+  38.1% { transform: translateY(-14px) scale(.95, 1.06); animation-timing-function: cubic-bezier(.4, 0, .2, 1); }
+  57.1% { transform: translateY(-12px) rotate(3deg); animation-timing-function: cubic-bezier(.34, 1.56, .64, 1); }
+  100% { transform: none; }
+}
+@keyframes m-suave {
+  0% { transform: none; animation-timing-function: cubic-bezier(.4, 0, .2, 1); }
+  25% { transform: scale(1.01, .98); animation-timing-function: cubic-bezier(.4, 0, .2, 1); }
+  100% { transform: none; }
+}
+@keyframes m-ola {
+  0%, 18.75% { transform: none; }
+  40% { transform: rotate(-14deg); }
+  60% { transform: rotate(8deg); }
+  80% { transform: rotate(-5deg); }
+  100% { transform: none; }
+}
+@keyframes m-oreja-i { 0%, 18.75% { transform: none; } 50% { transform: rotate(6deg); } 100% { transform: none; } }
+@keyframes m-oreja-d { 0%, 18.75% { transform: none; } 50% { transform: rotate(-6deg); } 100% { transform: none; } }
+@keyframes m-asiente {
+  0%, 18.75% { transform: none; }
+  45% { transform: rotate(-4deg); }
+  70% { transform: rotate(2deg); }
+  100% { transform: none; }
+}
+@keyframes m-parpadeo { 0%, 100% { transform: none; } 45% { transform: scale(1, .1); } }
+@keyframes m-tic { 0% { transform: none; } 40% { transform: rotate(-12deg); } 100% { transform: none; } }

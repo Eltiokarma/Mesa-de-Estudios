@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Probar una mascota · Laboratorio de Admisión</title>
+<link rel="stylesheet" href="../../nucleo/mascota.css">
+<style>
+  :root { --crema: #fbf3ec; --tarjeta: #fffaf5; --tinta: #2d2340; --suave: #5e5270; --borde: #3b2a52; --marca: #7f5ae0; --bien: #1f7a55; --mal: #b3261e; color-scheme: light; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--crema); color: var(--tinta); font: 16px/1.5 system-ui, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 1.5rem; line-height: 1.2; margin: 8px 0 4px; }
+  h2 { font-size: 1.1rem; margin: 0 0 8px; }
+  p { margin: 0 0 8px; }
+  .chico { color: var(--suave); font-size: .9rem; }
+  .tarjeta { background: var(--tarjeta); border: 2px solid var(--borde); border-radius: 16px; box-shadow: 0 4px 0 #e6d9cc; padding: 16px; margin: 16px 0; }
+  .tamanos { display: flex; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
+  .tamanos figure { margin: 0; text-align: center; }
+  .tamanos figcaption { font-size: .85rem; color: var(--suave); line-height: 1.2; margin-top: 4px; }
+  .junto { display: flex; align-items: center; gap: 12px; background: #fff; border: 2px dashed #cbbfd9; border-radius: 12px; padding: 8px 12px; margin-top: 16px; }
+  .junto p { margin: 0; }
+  .poses { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  button, .boton { min-height: 44px; font: inherit; font-weight: 600; color: var(--tinta); background: #fff; border: 2px solid var(--borde); border-radius: 12px; padding: 8px 10px; cursor: pointer; box-shadow: 0 3px 0 #d8cbe8; }
+  button:active { transform: translateY(2px); box-shadow: 0 1px 0 #d8cbe8; }
+  button[aria-pressed="true"] { background: var(--marca); color: #fff; }
+  button:focus-visible, .boton:focus-within, select:focus-visible { outline: 2px solid var(--marca); outline-offset: 2px; }
+  .fila { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 8px; }
+  select { min-height: 44px; font: inherit; border: 2px solid var(--borde); border-radius: 12px; padding: 0 10px; background: #fff; color: var(--tinta); }
+  #soltar { display: block; position: relative; cursor: pointer; border: 2px dashed var(--borde); border-radius: 16px; padding: 24px 16px; text-align: center; background: #fff; }
+  #soltar.encima { background: #efe7ff; }
+  #soltar input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+  #informe { min-height: 3em; }
+  #informe ul { margin: 8px 0 0; padding-left: 20px; }
+  .ok { color: var(--bien); font-weight: 700; } .no { color: var(--mal); font-weight: 700; }
+  code { background: #f1e9f9; border-radius: 6px; padding: 0 4px; }
+  @media (max-width: 420px) { .poses { grid-template-columns: repeat(2, 1fr); } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Probar una mascota</h1>
+  <p class="chico">Para quien diseña la mascota en Rive. Suelta tu <code>.riv</code> aquí y revisa que tenga la máquina <code>Mesa</code> y sus dos entradas antes de subirlo. El archivo no sale de tu navegador. Encargo completo: <code>docs/encargo-vectores.md</code>.</p>
+
+  <section class="tarjeta" aria-labelledby="t-archivo">
+    <h2 id="t-archivo">1. Tu archivo</h2>
+    <label id="soltar">
+      <strong>Arrastra un archivo .riv aquí</strong><br>
+      <span class="chico">o toca para elegirlo</span>
+      <input type="file" id="archivo" accept=".riv">
+    </label>
+    <div id="informe" role="status" aria-live="polite"><p class="chico">Sin archivo: se ve el respaldo SVG de la mascota elegida.</p></div>
+    <div class="fila">
+      <label for="mascota">Respaldo de</label>
+      <select id="mascota"></select>
+    </div>
+  </section>
+
+  <section class="tarjeta" aria-labelledby="t-vista">
+    <h2 id="t-vista">2. Así se ve</h2>
+    <div class="tamanos" id="vista"></div>
+    <div class="junto" id="junto"></div>
+  </section>
+
+  <section class="tarjeta" aria-labelledby="t-poses">
+    <h2 id="t-poses">3. Poses</h2>
+    <div class="poses" id="poses"></div>
+    <div class="fila">
+      <button type="button" id="reducido" aria-pressed="false">Movimiento reducido</button>
+      <span class="chico" id="pose-actual">Pose: reposo (0)</span>
+    </div>
+  </section>
+</main>
+<script src="../../nucleo/mascota.js"></script>
+<script>
+'use strict';
+const $ = s => document.querySelector(s);
+const ROTULO = { reposo: 'Reposo', saluda: 'Saluda', 'señala': 'Señala', espera: 'Espera', celebra: 'Celebra', 'acompaña': 'Acompaña', ayuda: 'Ayuda', hito: 'Hito' };
+const PARA = { reposo: 'mientras el alumno piensa', saluda: 'al llegar', 'señala': 'consigna nueva', espera: 'espera la respuesta', celebra: 'acierto', 'acompaña': 'error', ayuda: '«No sé»', hito: 'fin de la práctica' };
+let rivUrl = null;
+
+// Botones de pose
+for (const p of Mascota.POSES) {
+  const b = document.createElement('button');
+  b.type = 'button'; b.dataset.pose = p;
+  b.innerHTML = `${ROTULO[p]}<br><span class="chico">${Mascota.numeroPose(p)} · ${PARA[p]}</span>`;
+  b.addEventListener('click', () => {
+    Mascota.pose(p);
+    $('#pose-actual').textContent = `Pose: ${p} (${Mascota.numeroPose(p)})`;
+  });
+  $('#poses').appendChild(b);
+}
+$('#reducido').addEventListener('click', e => {
+  const v = e.currentTarget.getAttribute('aria-pressed') !== 'true';
+  e.currentTarget.setAttribute('aria-pressed', String(v));
+  Mascota.forzarReducido(v);
+});
+
+// Vista en tres tamaños (40 px es el mínimo de lectura) y junto a un mensaje, como en la práctica.
+function vista() {
+  const id = $('#mascota').value;
+  const caja = (lado, texto) => `<figure><div class="mascota" style="width:${lado}px;height:${lado}px" aria-hidden="true"></div><figcaption>${texto}</figcaption></figure>`;
+  $('#vista').innerHTML = caja(40, '40 px<br>mínimo') + caja(72, '72 px<br>en la app') + caja(144, '144 px<br>detalle');
+  $('#junto').innerHTML = '<div class="mascota" aria-hidden="true"></div><p>¡Bien! El 30 % se quita de lo que quedó: S/ 178,50.</p>';
+  for (const el of document.querySelectorAll('#vista .mascota, #junto .mascota')) Mascota.montar(el, { mascota: id, riv: rivUrl || undefined });
+}
+
+fetch('registro.json').then(r => r.json()).then(reg => {
+  const r = Mascota.leerRegistro(reg);
+  $('#mascota').innerHTML = r.mascotas.map(m => `<option value="${m}"${m === r.porDefecto ? ' selected' : ''}>${m}</option>`).join('');
+  vista();
+}).catch(() => { $('#mascota').innerHTML = '<option>gato</option>'; vista(); });
+$('#mascota').addEventListener('change', vista);
+
+// Revisión del archivo: qué artboards, máquinas y entradas trae, contra el contrato.
+const NOMBRE_TIPO = t => t === Mascota.TIPO.numero ? 'número' : t === Mascota.TIPO.booleano ? 'booleana' : t === Mascota.TIPO.disparo ? 'disparo' : String(t);
+async function revisar(archivo) {
+  const informe = $('#informe');
+  if (!/\.riv$/i.test(archivo.name)) { informe.innerHTML = `<p class="no">«${archivo.name}» no es un .riv.</p>`; return; }
+  informe.innerHTML = `<p>Abriendo «${archivo.name}» (${Math.round(archivo.size / 1024)} KB)…</p>`;
+  if (rivUrl) URL.revokeObjectURL(rivUrl);
+  rivUrl = URL.createObjectURL(archivo);
+  let R;
+  try { R = await Mascota._cargarRuntime(); } catch (e) { informe.innerHTML = `<p class="no">No cargó el runtime de Rive: ${e.message}</p>`; return; }
+  const lienzo = document.createElement('canvas');
+  const r = new R.Rive({
+    src: rivUrl, canvas: lienzo, autoplay: false,
+    onLoadError: () => { informe.innerHTML = `<p class="no">Rive no pudo abrir «${archivo.name}». ¿Es un .riv exportado del editor?</p>`; },
+    onLoad: () => {
+      const c = r.contents || { artboards: [] };
+      r.cleanup();
+      const ab = c.artboards[0];
+      const maquinas = ab ? ab.stateMachines.map(m => m.name) : [];
+      const mesa = ab && ab.stateMachines.find(m => m.name === Mascota.CONTRATO.maquina);
+      const rev = Mascota.revisarContrato(maquinas, mesa ? mesa.inputs : []);
+      const peso = archivo.size <= 150 * 1024 ? `<span class="ok">${Math.round(archivo.size / 1024)} KB</span>` : `<span class="no">${Math.round(archivo.size / 1024)} KB (más de 150 KB)</span>`;
+      informe.innerHTML = `<p>${rev.ok ? '<span class="ok">Cumple el contrato.</span> Así se verá en la app.' : '<span class="no">No cumple el contrato:</span> en la app se verá el respaldo SVG.'} Peso: ${peso}.</p>
+        <ul>${rev.problemas.map(p => `<li class="no">${p}</li>`).join('')}
+        ${c.artboards.map((a, i) => `<li>Artboard${i ? ' (no se usa)' : ''} «${a.name}»: ${a.stateMachines.map(m => `máquina «${m.name}» con ${m.inputs.map(x => `${x.name} (${NOMBRE_TIPO(x.type)})`).join(', ') || 'sin entradas'}`).join('; ') || 'sin máquinas de estados'}</li>`).join('')}</ul>`;
+      vista();
+    },
+  });
+}
+const zona = $('#soltar');
+$('#archivo').addEventListener('change', e => e.target.files[0] && revisar(e.target.files[0]));
+zona.addEventListener('dragover', e => { e.preventDefault(); zona.classList.add('encima'); });
+zona.addEventListener('dragleave', () => zona.classList.remove('encima'));
+zona.addEventListener('drop', e => { e.preventDefault(); zona.classList.remove('encima'); const f = e.dataTransfer.files[0]; if (f) revisar(f); });
+</script>
+</body>
+</html>

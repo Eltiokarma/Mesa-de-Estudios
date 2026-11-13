@@ -1,0 +1,9 @@
+{
+  "id": "gato",
+  "nombre": "Gato",
+  "nota": "El gatito de la app (Ilus.gato en app/ilustraciones.js), separado en partes para las poses. Cuando llegue su .riv, se copia en esta carpeta y se pone su nombre en riv (por ejemplo \"gato.riv\").",
+  "riv": null,
+  "maquina": "Mesa",
+  "entradas": { "pose": "pose", "reducido": "reducido" },
+  "respaldo": "respaldo.svg"
+}

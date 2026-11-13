@@ -178,6 +178,15 @@ Algunas respuestas del examen siguen una convención de academia que la química
 - **Forma**: crema `#fff4cc` con contorno ciruela y base ámbar `#e0a21b` (en oscuro, ámbar `#3b2e0c` con texto crema); el sello es una píldora de alto contraste; el lado de la universidad va en un recuadro a trazos. Contraste de 7:1 o más en claro y en oscuro (prueba). Dos columnas cuando la tarjeta mide 600 px o más (container query); si no, una. El estilo se inyecta solo, así que la tarjeta se ve igual en la cáscara y en las escenas. `role="note"` con `aria-label`.
 - **Probado** con Playwright a 390 y 1366 px, en claro y en oscuro, en las tres escenas y en la práctica: sin desbordes ni errores de consola.
 
+## Mascota (13 nov 2026): hueco para Rive
+
+- **Dónde:** `<div class="mascota" data-mascota aria-hidden="true"></div>`, 72 × 72 desde la primera pintura (`nucleo/mascota.css`), junto al mensaje de retroalimentación y fuera de la figura. Se monta sola (`nucleo/mascota.js`); la app solo llama `Mascota.pose(nombre)`.
+- **Repertorio cerrado:** `reposo`, `saluda`, `señala`, `espera`, `celebra`, `acompaña`, `ayuda` e `hito`; qué comunica cada una y la hoja de modelo por llenar, en `docs/encargo-vectores.md`.
+- **Varias mascotas:** `app/mascotas/registro.json` dice cuál usa cada curso; hoy todos usan `gato` (el gatito de `Ilus.gato`, separado en partes) con `riv: null`, así que se ve su respaldo SVG.
+- **Actuación del respaldo:** anticipación `micro` 120 ms, acción `corto` 200 ms y asentamiento `medio` 320 ms con la curva `resorte` (640 ms; el hito, 840). Cola y orejas, 40 ms después del cuerpo. Los ojos cambian de golpe al terminar la anticipación (un fundido dejaba cuatro ojos). Un solo gesto de vida (parpadeo u oreja) 2,4 s después de cada pose; después, quieta. Con movimiento reducido, la pose cambia sin animación. El brinco sale unos px por arriba del hueco sin mover nada.
+- **Mira al mensaje** que está a su derecha; con `data-mira="izquierda"` se refleja.
+- **Rive:** el runtime (`app/vendor/rive/`) se pide solo si la mascota trae `.riv`. Quien lo diseñe lo prueba en `app/mascotas/probar.html`.
+
 ## Dos pantallas: celular y laboratorio de cómputo
 
 - **Celular (lo primero).** Una columna de hasta 560 px y una barra de navegación abajo, al alcance del pulgar.
