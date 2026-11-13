@@ -6,7 +6,7 @@
     {
       "id": "p1",
       "nivel": "básico",
-      "enunciado": "Se tienen los vectores A = 6 u (150° con el eje x positivo), B = 6 u (90° con el eje x positivo) y C = 6 u (330° con el eje x positivo). ¿Cuánto mide |A + 2B + C|? Alternativas: A) 12 u   B) 6 u   C) 144 u   D) 12√3 u   E) 24 u",
+      "enunciado": "Se tienen los vectores A = 6 u (150° con +x), B = 6 u (90° con +x) y C = 6 u (330° con +x). ¿Cuánto mide |A + 2B + C|? Alternativas: A) 12 u   B) 6 u   C) 144 u   D) 12√3 u   E) 24 u",
       "respuesta": "A) 12 u",
       "pasos": [
         "Cada vector se pasa a componentes: x = módulo·cos θ e y = módulo·sen θ, con θ medido desde +x (sen 30° = 1/2, cos 30° = √3/2).",
@@ -20,7 +20,7 @@
     {
       "id": "p2",
       "nivel": "básico",
-      "enunciado": "Se tienen los vectores A = 4 u (0° con el eje x positivo), B = 8 u (300° con el eje x positivo) y C = 4 u (240° con el eje x positivo). ¿Qué ángulo forma la resultante con el eje x positivo (medido en sentido antihorario)? Alternativas: A) 120°   B) 300°   C) 60°   D) 330°",
+      "enunciado": "Se tienen los vectores A = 4 u (0° con +x), B = 8 u (300° con +x) y C = 4 u (240° con +x). ¿Qué ángulo forma la resultante con +x, en sentido antihorario? Alternativas: A) 120°   B) 300°   C) 60°   D) 330°",
       "respuesta": "B) 300°",
       "pasos": [
         "Cada vector se pasa a componentes: x = módulo·cos θ e y = módulo·sen θ, con θ medido desde +x (cos 60° = 1/2, sen 60° = √3/2).",
@@ -34,7 +34,7 @@
     {
       "id": "p3",
       "nivel": "básico",
-      "enunciado": "Sobre un anillo actúan las fuerzas A = 6 N (240° con el eje x positivo), B = 6 N (120° con el eje x positivo) y C = 4 N (0° con el eje x positivo). Se agrega una fuerza más para que el anillo quede en equilibrio. ¿Cuánto mide esa fuerza? Alternativas: A) 4√13 N   B) 2 N   C) 4 N   D) 16 N",
+      "enunciado": "Sobre un anillo actúan las fuerzas A = 6 N (240° con +x), B = 6 N (120° con +x) y C = 4 N (0° con +x). Otra fuerza lo deja en equilibrio. ¿Cuánto mide esa fuerza? Alternativas: A) 4√13 N   B) 2 N   C) 4 N   D) 16 N",
       "respuesta": "B) 2 N",
       "pasos": [
         "Cada vector se pasa a componentes: x = módulo·cos θ e y = módulo·sen θ, con θ medido desde +x (cos 60° = 1/2, sen 60° = √3/2).",
@@ -48,7 +48,7 @@
     {
       "id": "p4",
       "nivel": "intermedio",
-      "enunciado": "Se tienen los vectores A = 2 u (150° con el eje x positivo) y B = 6 u (330° con el eje x positivo). ¿Qué ángulo forma la resultante con el eje x positivo (medido en sentido antihorario)? Alternativas: A) 30°   B) 150°   C) 300°   D) 330°",
+      "enunciado": "Se tienen los vectores A = 2 u (150° con +x) y B = 6 u (330° con +x). ¿Qué ángulo forma la resultante con +x, en sentido antihorario? Alternativas: A) 30°   B) 150°   C) 300°   D) 330°",
       "respuesta": "D) 330°",
       "pasos": [
         "Cada vector se pasa a componentes: x = módulo·cos θ e y = módulo·sen θ, con θ medido desde +x (sen 30° = 1/2, cos 30° = √3/2).",
@@ -61,7 +61,7 @@
     {
       "id": "p5",
       "nivel": "intermedio",
-      "enunciado": "Una persona camina, en este orden: 10 m hacia el este, 5 m en la dirección 53° al este del sur y 10 m hacia el norte. Toma el norte como +y y el este como +x. ¿A qué distancia queda del punto de partida (módulo del desplazamiento)? Alternativas: A) 25 m   B) 245 m   C) 21 m   D) √365 m   E) 7√5 m",
+      "enunciado": "Una persona camina, en este orden: 10 m hacia el este, 5 m 53° al este del sur y 10 m hacia el norte. Toma norte = +y y este = +x. ¿A qué distancia queda del punto de partida? Alternativas: A) 25 m   B) 245 m   C) 21 m   D) √365 m   E) 7√5 m",
       "respuesta": "E) 7√5 m",
       "pasos": [
         "Cada vector se pasa a componentes: x = módulo·cos θ e y = módulo·sen θ, con θ medido desde +x (sen 37° = 3/5, cos 37° = 4/5); norte = +y, este = +x.",
@@ -75,7 +75,7 @@
     {
       "id": "p6",
       "nivel": "intermedio",
-      "enunciado": "Una persona camina, en este orden: 6√2 m hacia el noreste, 4√2 m hacia el sureste y 6√2 m hacia el noroeste. Toma el norte como +y y el este como +x. ¿A qué distancia queda del punto de partida (módulo del desplazamiento)? Alternativas: A) 16√2 m   B) 12 m   C) 80 m   D) 4√5 m",
+      "enunciado": "Una persona camina, en este orden: 6√2 m hacia el noreste, 4√2 m hacia el sureste y 6√2 m hacia el noroeste. Toma norte = +y y este = +x. ¿A qué distancia queda del punto de partida? Alternativas: A) 16√2 m   B) 12 m   C) 80 m   D) 4√5 m",
       "respuesta": "D) 4√5 m",
       "pasos": [
         "Cada vector se pasa a componentes: x = módulo·cos θ e y = módulo·sen θ, con θ medido desde +x (cos 45° = sen 45° = √2/2); norte = +y, este = +x.",
@@ -89,7 +89,7 @@
     {
       "id": "p7",
       "nivel": "avanzado",
-      "enunciado": "Se tienen los vectores A = 8 u (270° con el eje x positivo) y B = 8 u (210° con el eje x positivo). ¿Qué ángulo forma la resultante con el eje x positivo (medido en sentido antihorario)? Alternativas: A) 210°   B) 240°   C) 60°   D) 120°",
+      "enunciado": "Se tienen los vectores A = 8 u (270° con +x) y B = 8 u (210° con +x). ¿Qué ángulo forma la resultante con +x, en sentido antihorario? Alternativas: A) 210°   B) 240°   C) 60°   D) 120°",
       "respuesta": "B) 240°",
       "pasos": [
         "Cada vector se pasa a componentes: x = módulo·cos θ e y = módulo·sen θ, con θ medido desde +x (sen 30° = 1/2, cos 30° = √3/2).",
@@ -102,7 +102,7 @@
     {
       "id": "p8",
       "nivel": "avanzado",
-      "enunciado": "Sobre un anillo actúan las fuerzas A = 6 N (30° con el eje x positivo), B = 6 N (150° con el eje x positivo), C = 6 N (90° con el eje x positivo) y D = 6 N (210° con el eje x positivo). Se agrega una fuerza más para que el anillo quede en equilibrio. ¿Cuánto mide esa fuerza? Alternativas: A) 6√3 N   B) 24 N   C) 108 N   D) 6√13 N",
+      "enunciado": "Sobre un anillo actúan las fuerzas A = 6 N (30° con +x), B = 6 N (150° con +x), C = 6 N (90° con +x) y D = 6 N (210° con +x). Otra fuerza lo deja en equilibrio. ¿Cuánto mide esa fuerza? Alternativas: A) 6√3 N   B) 24 N   C) 108 N   D) 6√13 N",
       "respuesta": "A) 6√3 N",
       "pasos": [
         "Cada vector se pasa a componentes: x = módulo·cos θ e y = módulo·sen θ, con θ medido desde +x (sen 30° = 1/2, cos 30° = √3/2).",
