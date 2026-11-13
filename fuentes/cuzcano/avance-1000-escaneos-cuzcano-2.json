@@ -3,9 +3,9 @@
   "coleccion": "Cuzcano",
   "origen": "Escaneos cotejados con el OCR local",
   "meta": 1000,
-  "fichas_verificadas": 500,
-  "fichas_pendientes": 500,
-  "temas_completos": 5,
+  "fichas_verificadas": 700,
+  "fichas_pendientes": 300,
+  "temas_completos": 7,
   "temas": [
     {
       "id": "aritmetica.reparto-proporcional",
@@ -34,13 +34,13 @@
     {
       "id": "geometria.nociones-generales",
       "tema": "Nociones generales",
-      "fichas": 0,
+      "fichas": 100,
       "meta": 100
     },
     {
       "id": "geometria.geometria-vectorial",
       "tema": "Geometría vectorial",
-      "fichas": 0,
+      "fichas": 100,
       "meta": 100
     },
     {
@@ -68,6 +68,6 @@
       "meta": 100
     }
   ],
-  "fichas_banco_local": 12102,
-  "sha256_fichas_locales": "bc0189d199b3af0043ca4160545faae44a0a973a262c58869e53cc0075a48418"
+  "fichas_banco_local": 12302,
+  "sha256_fichas_locales": "3278eef90fb9342b6eb4659f11d73206b4eb41bc533e206f656678acb7a6f8be"
 }
