@@ -15,7 +15,7 @@
  *   lados: [{ de: 'P', a: 'T', color: 'h', texto: 'H = ?', final: 'H = 12 m', grosor: 'variable'|'contorno',
  *             visual: false, horizontal: false, paso }],   // visual: discontinua (línea de mira); horizontal: tenue
  *   angulos: [{ en: 'P', de: 'B', a: 'T', texto: '37°', color: 'o', paso }],   // el menor de los dos ángulos; 90° → cuadradito
- *   cotas: [{ de: 'P', a: 'Q', texto: '20 m', final, color: 'd', lado: 1|-1, paso }]  // medida paralela, a 22 px
+ *   cotas: [{ de: 'P', a: 'Q', texto: '20 m', final, color: 'd', lado: 1|-1, dist: 24, paso }]  // medida paralela, a dist px
  * }
  * estado = { paso: 0..n, final: false, fantasma: null | { rotulo, texto } }
  * El dibujo es una función pura de (datos, estado): sin ids, sin azar, sin reloj. Alto fijo para unos datos.
@@ -39,7 +39,7 @@
     const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys, d.suelo ? 0 : Infinity), y1 = Math.max(...ys);
     const sx = Math.max(x1 - x0, 1e-9), sy = Math.max(y1 - y0, 1e-9);
     // Abajo, lugar para las cotas del suelo; la escala es una sola para x e y.
-    const abajo = (d.cotas || []).length ? COTA + 18 : 0;
+    const abajo = (d.cotas || []).length ? Math.max(...d.cotas.map(c => c.dist || COTA)) + 18 : 0;
     const s = Math.min((W - 2 * MARGEN) / sx, (FIG_MAX - 2 * MARGEN - abajo) / sy);
     const figH = sy * s + 2 * MARGEN + abajo;
     const X = x => (W - sx * s) / 2 + (x - x0) * s, Y = y => MARGEN + (y1 - y) * s;
@@ -79,8 +79,8 @@
     if (an.texto) {
       // Sobre la bisectriz, lo bastante lejos para que el rótulo entero quepa entre los dos lados.
       const mitad = Math.max(rad(6), Math.min(rad(90), Math.abs(dt) / 2));
-      const rr = Math.max(r + 16, (T.ancho(an.texto, T.TEXTO, 700) / 2 + 8) / Math.sin(mitad));
-      const [tx, ty] = pt(t1 + dt / 2, Math.min(rr, 140));
+      const rr = Math.max(r + 16, (T.ancho(an.texto, T.TEXTO, 700) / 2 + 4) / Math.sin(mitad));
+      const [tx, ty] = pt(t1 + dt / 2, Math.min(rr, 64));
       s += T.rotulo(tx, ty + 6, an.texto, { color: an.color, ancla: 'middle', peso: 700 });
     }
     return `<g class="${clase}">${s}</g>`;
@@ -94,7 +94,7 @@
     const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2;
     if ((mx - g.centro[0]) * nx + (my - g.centro[1]) * ny < 0) { nx = -nx; ny = -ny; }
     if (c.lado === -1) { nx = -nx; ny = -ny; }
-    const o = [nx * COTA, ny * COTA], A = [a[0] + o[0], a[1] + o[1]], B = [b[0] + o[0], b[1] + o[1]];
+    const k = c.dist || COTA, o = [nx * k, ny * k], A = [a[0] + o[0], a[1] + o[1]], B = [b[0] + o[0], b[1] + o[1]];
     const tope = p => T.linea(p[0] - nx * 6, p[1] - ny * 6, p[0] + nx * 6, p[1] + ny * 6, { color: c.color });
     let s = T.linea(A[0], A[1], B[0], B[1], { color: c.color }) + tope(A) + tope(B)
       + T.linea(a[0] + nx * 4, a[1] + ny * 4, A[0], A[1], { grosor: 1, opacidad: 0.5 }) + T.linea(b[0] + nx * 4, b[1] + ny * 4, B[0], B[1], { grosor: 1, opacidad: 0.5 });

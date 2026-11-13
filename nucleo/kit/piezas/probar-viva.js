@@ -1,7 +1,7 @@
 /*
  * Pruebas comunes de la escena viva de un generador (docs/escena-viva.md, sección 4), para los que usan las
  * piezas «flechas» y «triangulo». Se llama desde el generador.test.js de cada uno:
- *   probarViva(gen, { semillas, pieza, conEscena(p) → bool, final(p, svg) })
+ *   probarViva(gen, { semillas, pieza, conEscena(p) → bool, final(p, svg), presupuestoSoloEscena })
  * Comprueba: la pieza existe; el final no tiene NaN y dibuja lo que pide final(); presupuesto de texto
  * (enunciado ≤ 40, paso ≤ 14, error ≤ 20); cada error con nombre tiene fantasma; si se arrastra, cada
  * alternativa cabe en la marca y la marca en su valor equivale a esa alternativa.
@@ -38,6 +38,7 @@ function probarViva(gen, o = {}) {
   test(`${gen.id}: presupuesto de texto (enunciado ≤ 40, paso ≤ 14, error ≤ 20)`, () => {
     for (let s = 0; s < N; s++) {
       const p = gen.generar(s);
+      if (o.presupuestoSoloEscena && !p.escena) continue; // migración a medias: los tipos sin escena siguen como antes
       // Enunciado: palabras con al menos una letra, como herramientas/validar-ejercicios.js (los datos no cuentan).
       const letras = x => Kit.plano(x).split(/\s+/).filter(w => /\p{L}/u.test(w)).length;
       const n = letras(p.enunciado) + letras(p.pregunta);
