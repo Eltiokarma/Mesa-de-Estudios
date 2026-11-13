@@ -1,5 +1,5 @@
 {
- "descripcion": "Revisión de la unidad de las 894 fichas que quedaban sin unidad (13 nov 2026). La hizo un modelo leyendo enunciado y solución, no una persona: todas van marcadas como revisadas por modelo hasta que alguien del proyecto las mire. veredicto: correcta (la unidad del subtema es la buena), incorrecta (se cambia por la del modelo) o dudosa (se toma la alternativa del modelo y queda por revisar). propuesta es la unidad que traía el subtema. Lo aplica herramientas/unificar-subtemas.js y manda sobre la unidad del subtema. Segunda tanda (13 nov 2026, «tanda»: «vocabulario-fyq»): las 3024 fichas de las 23 unidades de física y química que hoy usan deslizador (sin MRU y MRUV), más las de borde, leídas por un modelo. Además de la unidad puede traer «subtema» (el revisado, que manda sobre el de la etiqueta), «familia» (tipo de problema) y «ficha_rota» (datos, figura o respuesta que no cuadran: quedan por revisar y con revisar_antes_de_integrar).",
+ "descripcion": "Revisión de la unidad de las 894 fichas que quedaban sin unidad (13 nov 2026). La hizo un modelo leyendo enunciado y solución, no una persona: todas van marcadas como revisadas por modelo hasta que alguien del proyecto las mire. veredicto: correcta (la unidad del subtema es la buena), incorrecta (se cambia por la del modelo) o dudosa (se toma la alternativa del modelo y queda por revisar). propuesta es la unidad que traía el subtema. Lo aplica herramientas/unificar-subtemas.js y manda sobre la unidad del subtema. Segunda tanda (13 nov 2026, «tanda»: «vocabulario-fyq»): las 3024 fichas de las 23 unidades de física y química que hoy usan deslizador (sin MRU y MRUV), más las de borde, leídas por un modelo. Además de la unidad puede traer «subtema» (el revisado, que manda sobre el de la etiqueta), «familia» (tipo de problema) y «ficha_rota» (datos, figura o respuesta que no cuadran: quedan por revisar y con revisar_antes_de_integrar). Tercera tanda (14 nov 2026, «vocabulario-mru»): las 303 fichas de MRU, MRUV y caída libre y su borde con parabólico, leídas por un modelo; «k1» marca las fichas donde aparece la idea «misma posición, misma velocidad» o su inversa. Las 7 de «Recta y parábola como gráficas» pasan a matemática y la ficha del vagón se queda en MRU por decisión de Gerson.",
  "revisado_por": "modelo",
  "fecha": "2026-11-13",
  "fichas": {
@@ -14133,12 +14133,13 @@
    "familia": "área de paralelogramo entre paralelas"
   },
   "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:36": {
-   "veredicto": "correcta",
+   "veredicto": "dudosa",
    "unidad": "fisica.movimiento-parabolico-y-circular",
    "propuesta": "fisica.movimiento-parabolico-y-circular",
-   "estado": "revisada-por-modelo",
+   "estado": "por-revisar",
    "tanda": "vocabulario-fyq",
-   "familia": "lluvia vista desde móvil"
+   "familia": "lluvia vista desde móvil",
+   "nota": "Dos revisiones por modelo no coinciden: la de MRU la manda a fisica.movimiento-rectilineo (gráficas v-t)."
   },
   "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:37": {
    "veredicto": "correcta",
@@ -30064,6 +30065,2094 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "familia": "combustión completa e incompleta"
+  },
+  "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:31": {
+   "veredicto": "incorrecta",
+   "unidad": "trigonometria.recta-en-el-plano",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "otro",
+   "nota": "Decisión de Gerson (14 nov): es matemática pura, no cinemática."
+  },
+  "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:32": {
+   "veredicto": "incorrecta",
+   "unidad": "trigonometria.recta-en-el-plano",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "otro",
+   "nota": "Decisión de Gerson (14 nov): es matemática pura, no cinemática."
+  },
+  "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:33": {
+   "veredicto": "incorrecta",
+   "unidad": "algebra.funciones",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "otro",
+   "nota": "Decisión de Gerson (14 nov): es matemática pura, no cinemática."
+  },
+  "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:34": {
+   "veredicto": "incorrecta",
+   "unidad": "algebra.funciones",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "otro",
+   "nota": "Decisión de Gerson (14 nov): es matemática pura, no cinemática."
+  },
+  "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:35": {
+   "veredicto": "incorrecta",
+   "unidad": "algebra.funciones",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "otro",
+   "nota": "Decisión de Gerson (14 nov): es matemática pura, no cinemática."
+  },
+  "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:36": {
+   "veredicto": "incorrecta",
+   "unidad": "trigonometria.recta-en-el-plano",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "otro",
+   "nota": "Decisión de Gerson (14 nov): es matemática pura, no cinemática."
+  },
+  "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:37": {
+   "veredicto": "incorrecta",
+   "unidad": "algebra.funciones",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "otro",
+   "nota": "Decisión de Gerson (14 nov): es matemática pura, no cinemática."
+  },
+  "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:38": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "otro"
+  },
+  "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:39": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "velocidad-media"
+  },
+  "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:40": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "velocidad-media"
+  },
+  "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:41": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "velocidad-media"
+  },
+  "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:42": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "subtema": "Aceleración media",
+   "familia": "otro",
+   "nota": "Pide aceleración media, no velocidad media."
+  },
+  "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:43": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "subtema": "Velocidad y rapidez media",
+   "familia": "velocidad-media",
+   "nota": "Las proposiciones son sobre velocidad y rapidez media."
+  },
+  "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:44": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "subtema": "Velocidad relativa",
+   "familia": "movimiento-relativo",
+   "nota": "Perro y batallón: ida y vuelta con velocidad relativa, no encuentro de dos móviles."
+  },
+  "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:45": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mru-simple"
+  },
+  "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:46": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances"
+  },
+  "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:47": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances"
+  },
+  "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:48": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "graficas"
+  },
+  "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:49": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances"
+  },
+  "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:50": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "subtema": "Encuentros y alcances",
+   "familia": "encuentros-alcances",
+   "nota": "Igualar posiciones de dos móviles: es encuentro con MRUV."
+  },
+  "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:51": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mruv-simple"
+  },
+  "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:52": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mruv-simple"
+  },
+  "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:53": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "graficas"
+  },
+  "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:54": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "graficas"
+  },
+  "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:55": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "subtema": "Encuentros y alcances",
+   "familia": "encuentros-alcances",
+   "k1": true,
+   "nota": "Pregunta por encuentro y separación inicial de dos móviles. K1 inversa: v-t se cruzan en 10 s."
+  },
+  "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:56": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "graficas"
+  },
+  "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:57": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:58": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:59": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:60": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "subtema": "Encuentros en caída libre",
+   "familia": "encuentros-alcances",
+   "nota": "Dos cuerpos que se encuentran en la vertical."
+  },
+  "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:61": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:62": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:86": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "movimiento-relativo"
+  },
+  "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:88": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "movimiento-relativo"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:aplicacion:1": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:aplicacion:12": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:aplicacion:13": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:aplicacion:14": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:aplicacion:15": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:aplicacion:16": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:aplicacion:17": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:aplicacion:18": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:aplicacion:19": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:aplicacion:2": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:aplicacion:20": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:aplicacion:21": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:aplicacion:22": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:aplicacion:23": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:aplicacion:24": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:aplicacion:25": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:aplicacion:26": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:aplicacion:27": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:aplicacion:28": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:aplicacion:29": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:aplicacion:3": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:aplicacion:30": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:aplicacion:31": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:aplicacion:32": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:aplicacion:33": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "subtema": "Encuentros en caída libre",
+   "familia": "encuentros-alcances",
+   "nota": "Dos cuerpos en la misma vertical: encuentro o separación."
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:aplicacion:34": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "subtema": "Encuentros en caída libre",
+   "familia": "encuentros-alcances",
+   "nota": "Dos cuerpos en la misma vertical: encuentro o separación."
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:aplicacion:35": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "subtema": "Encuentros en caída libre",
+   "familia": "encuentros-alcances",
+   "nota": "Dos cuerpos que coinciden en posición y velocidad; encuentro en caída libre."
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:aplicacion:36": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "subtema": "Encuentros en caída libre",
+   "familia": "encuentros-alcances",
+   "k1": true,
+   "nota": "Encuentro con igual rapidez; velocidades opuestas, no iguales."
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:aplicacion:37": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "subtema": "Encuentros en caída libre",
+   "familia": "encuentros-alcances",
+   "nota": "Dos cuerpos en la misma vertical: encuentro o separación."
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:aplicacion:38": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "subtema": "Encuentros en caída libre",
+   "familia": "encuentros-alcances",
+   "nota": "Dos cuerpos en la misma vertical: encuentro o separación."
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:aplicacion:39": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "subtema": "Encuentros en caída libre",
+   "familia": "encuentros-alcances",
+   "nota": "Dos cuerpos en la misma vertical: encuentro o separación."
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:aplicacion:4": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:aplicacion:40": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "subtema": "Encuentros en caída libre",
+   "familia": "encuentros-alcances",
+   "nota": "Dos cuerpos en la misma vertical: encuentro o separación."
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:aplicacion:5": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:propuesto:1": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:propuesto:10": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mruv-simple",
+   "nota": "MRUV en rampa lisa y tramo horizontal."
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:propuesto:11": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:propuesto:12": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:propuesto:13": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:propuesto:14": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:propuesto:15": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:propuesto:16": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:propuesto:17": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:propuesto:18": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:propuesto:19": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:propuesto:2": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:propuesto:20": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:propuesto:21": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:propuesto:22": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:propuesto:23": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mruv-simple",
+   "nota": "MRUV en plano liso; usa a=g senθ, roza dinámica."
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:propuesto:24": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mruv-simple",
+   "nota": "MRUV en plano liso; usa a=g senθ, roza dinámica."
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:propuesto:25": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:propuesto:36": {
+   "veredicto": "dudosa",
+   "unidad": "fisica.movimiento-parabolico-y-circular",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "por-revisar",
+   "tanda": "vocabulario-mru",
+   "familia": "movimiento-relativo",
+   "nota": "Desde tierra el objeto describe una parábola (15i+30j)."
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:propuesto:4": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:propuesto:49": {
+   "veredicto": "incorrecta",
+   "unidad": "fisica.movimiento-parabolico-y-circular",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "subtema": "Tiro parabólico",
+   "familia": "otro",
+   "nota": "Trayectoria parabólica y=x−x²/100: es tiro parabólico."
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:propuesto:58": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "movimiento-relativo"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:propuesto:59": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "movimiento-relativo"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:propuesto:6": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:propuesto:60": {
+   "veredicto": "dudosa",
+   "unidad": "fisica.movimiento-parabolico-y-circular",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "por-revisar",
+   "tanda": "vocabulario-mru",
+   "familia": "movimiento-relativo",
+   "nota": "Cruce acelerado con corriente: trayectoria curva en 2D, como sus pares en parabólico."
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:propuesto:7": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre",
+   "nota": "Caída libre con tiempo del sonido; también sonido-eco."
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:propuesto:8": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:propuesto:9": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "caida-libre"
+  },
+  "1HGPsNVTPafEaIIB6pjYeB24Kz0gRa0c4:propuesto:10": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "movimiento-relativo"
+  },
+  "1HGPsNVTPafEaIIB6pjYeB24Kz0gRa0c4:propuesto:2": {
+   "veredicto": "dudosa",
+   "unidad": "fisica.movimiento-parabolico-y-circular",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "por-revisar",
+   "tanda": "vocabulario-mru",
+   "familia": "movimiento-relativo",
+   "nota": "Visto por el observador móvil la trayectoria es parabólica."
+  },
+  "1HGPsNVTPafEaIIB6pjYeB24Kz0gRa0c4:propuesto:3": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "movimiento-relativo",
+   "nota": "Decisión de Gerson (14 nov): se queda en MRU; el mismo problema está en parabólico y salen dos ejercicios."
+  },
+  "1HGPsNVTPafEaIIB6pjYeB24Kz0gRa0c4:propuesto:4": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "movimiento-relativo"
+  },
+  "1HGPsNVTPafEaIIB6pjYeB24Kz0gRa0c4:propuesto:5": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "movimiento-relativo"
+  },
+  "1HGPsNVTPafEaIIB6pjYeB24Kz0gRa0c4:propuesto:6": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "movimiento-relativo"
+  },
+  "1HGPsNVTPafEaIIB6pjYeB24Kz0gRa0c4:propuesto:7": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "movimiento-relativo"
+  },
+  "1HGPsNVTPafEaIIB6pjYeB24Kz0gRa0c4:propuesto:8": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "movimiento-relativo"
+  },
+  "1HGPsNVTPafEaIIB6pjYeB24Kz0gRa0c4:propuesto:9": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "movimiento-relativo"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:1": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "velocidad-media"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:10": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "velocidad-media"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:11": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "velocidad-media"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:12": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "velocidad-media"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:13": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "velocidad-media"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:14": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "otro"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:15": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "otro"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:16": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "velocidad-media"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:17": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "velocidad-media"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:18": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "otro"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:19": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "otro"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:2": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "velocidad-media"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:20": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mru-simple"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:21": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "sonido-eco"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:22": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "sonido-eco"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:23": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "sonido-eco"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:24": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "sonido-eco"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:25": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mru-simple"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:26": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mru-simple"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:27": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mru-simple"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:28": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mru-simple"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:29": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mru-simple"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:3": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "otro"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:30": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "movimiento-relativo"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:31": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:32": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:33": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:34": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:35": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:36": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mru-simple"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:37": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "movimiento-relativo"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:38": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mru-simple"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:39": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mru-simple"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:4": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mru-simple"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:40": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mru-simple"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:5": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:6": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "frenado"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:7": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mruv-simple"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:8": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances",
+   "nota": "Separación entre dos móviles; MRUV aceptable como subtema."
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:aplicacion:9": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "aceleracion-variable"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:1": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "otro"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:10": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:11": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mru-simple"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:12": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mru-simple"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:13": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:14": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "sonido-eco"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:15": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mru-simple"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:16": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:17": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:18": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:19": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mru-simple"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:2": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "subtema": "Conceptos de velocidad y aceleración",
+   "familia": "otro",
+   "nota": "Proposiciones conceptuales (v tangente, a y rapidez); no es velocidad media."
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:20": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "movimiento-relativo"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:21": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "movimiento-relativo"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:22": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:23": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "sonido-eco"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:24": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "sonido-eco"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:25": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mruv-simple"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:26": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "frenado"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:27": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mruv-simple"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:28": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:29": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mruv-simple"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:3": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "otro"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:30": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mruv-simple"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:31": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mruv-simple"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:32": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mruv-simple"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:33": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "subtema": "Encuentros y alcances",
+   "familia": "encuentros-alcances",
+   "k1": true,
+   "nota": "Dos MRUV que se alcanzan; se pregunta la diferencia de velocidades al alcanzarse."
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:34": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:35": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mruv-simple"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:36": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mruv-simple"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:37": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mruv-simple"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:38": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mruv-simple"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:39": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances",
+   "nota": "Adelantamiento de tren con frenado; MRUV aceptable, también velocidad relativa."
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:4": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "otro"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:40": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:41": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:42": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:43": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mruv-simple"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:44": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mruv-simple"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:45": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:46": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances",
+   "k1": true,
+   "nota": "K1 inversa: con v iguales la separación es máxima, no hay encuentro."
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:47": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "subtema": "MRUV",
+   "familia": "mruv-simple",
+   "nota": "v=10√x implica a constante (50 m/s²): es MRUV, no aceleración variable."
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:48": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "movimiento-relativo"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:49": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "movimiento-relativo"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:5": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "otro"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:50": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "subtema": "Velocidad relativa",
+   "familia": "movimiento-relativo",
+   "nota": "Composición de velocidades tren-ciclista-muchacho; no hay encuentro."
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:51": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "movimiento-relativo"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:52": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "movimiento-relativo"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:53": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "movimiento-relativo"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:54": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "movimiento-relativo"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:55": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "subtema": "Velocidad relativa",
+   "familia": "movimiento-relativo",
+   "nota": "Pide rapidez relativa entre dos intersecciones."
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:56": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "movimiento-relativo"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:57": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "movimiento-relativo"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:58": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "aceleracion-variable"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:59": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "aceleracion-variable"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:6": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "otro"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:60": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "aceleracion-variable"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:7": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mru-simple"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:8": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mru-simple"
+  },
+  "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i:propuesto:9": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "mru-simple"
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:1": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "subtema": "Gráficas de posición y tiempo",
+   "familia": "graficas",
+   "nota": "La gráfica dada es x-t, no v-t."
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:10": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "graficas"
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:11": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "graficas"
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:12": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "graficas"
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:13": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "graficas"
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:14": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "graficas"
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:15": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "graficas"
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:16": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "subtema": "Gráficas de velocidad y aceleración",
+   "familia": "graficas",
+   "nota": "La gráfica dada es v-t; se pide rapidez media por áreas."
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:17": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "graficas"
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:18": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "graficas"
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:19": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "graficas"
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:2": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "subtema": "Gráficas de posición y tiempo",
+   "familia": "graficas",
+   "nota": "La gráfica dada es x-t."
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:20": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "graficas"
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:21": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "graficas"
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:22": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "subtema": "Gráficas de velocidad y aceleración",
+   "familia": "graficas",
+   "k1": true,
+   "nota": "Dos gráficas v-t: se pide igualdad de velocidades, no encuentro. K1 inversa."
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:23": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances"
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:24": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances"
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:25": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "subtema": "Gráficas de velocidad y aceleración",
+   "familia": "graficas",
+   "k1": true,
+   "nota": "Se pide aceleración con v-t de dos móviles, no encuentro. K1 inversa: igual v no es igual x."
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:26": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances",
+   "k1": true,
+   "nota": "K1 inversa: el cruce de v-t (13 s) no es el alcance."
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:27": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances"
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:28": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances",
+   "k1": true,
+   "nota": "K1 inversa: el cruce de v-t no es el alcance."
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:29": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances",
+   "k1": true,
+   "nota": "K1 inversa: con v iguales la distancia es mínima, no se encuentran."
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:3": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "graficas"
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:30": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances"
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:31": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "graficas"
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:32": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "graficas"
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:33": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "graficas"
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:34": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "graficas"
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:35": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "graficas"
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:38": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "graficas"
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:39": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "subtema": "Gráficas de velocidad y aceleración",
+   "familia": "graficas",
+   "nota": "La gráfica es v-t (recta con v0=-4)."
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:4": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "graficas"
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:40": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "subtema": "Gráficas de velocidad y aceleración",
+   "familia": "graficas",
+   "nota": "Se resuelve con área bajo v-t; no hay gráfica x-t."
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:41": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances"
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:45": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances",
+   "k1": true,
+   "nota": "K1 inversa: v-t se cruzan en 2 s, el encuentro es en 10,2 s."
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:46": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "graficas"
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:47": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "graficas"
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:48": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "graficas"
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:49": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "graficas"
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:5": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "subtema": "Gráficas de posición y tiempo",
+   "familia": "graficas",
+   "nota": "La gráfica dada es x-t."
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:50": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "graficas"
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:6": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances"
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:7": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "graficas"
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:8": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances"
+  },
+  "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1:propuesto:9": {
+   "veredicto": "correcta",
+   "unidad": "fisica.movimiento-rectilineo",
+   "propuesta": "fisica.movimiento-rectilineo",
+   "estado": "revisada-por-modelo",
+   "tanda": "vocabulario-mru",
+   "familia": "encuentros-alcances"
   }
  }
 }

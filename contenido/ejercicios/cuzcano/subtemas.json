@@ -2939,19 +2939,19 @@
      "id": "graficas-de-velocidad-y-aceleracion",
      "nombre": "Gráficas de velocidad y aceleración",
      "unidad": "fisica.movimiento-rectilineo",
-     "fichas": 20
+     "fichas": 21
     },
     {
      "id": "recta-y-parabola-como-graficas",
      "nombre": "Recta y parábola como gráficas",
-     "unidad": "fisica.movimiento-rectilineo",
+     "unidad": "algebra.funciones",
      "fichas": 7
     },
     {
      "id": "encuentros-y-alcances",
      "nombre": "Encuentros y alcances",
      "unidad": "fisica.movimiento-rectilineo",
-     "fichas": 14
+     "fichas": 13
     },
     {
      "id": "movimiento-en-dos-dimensiones",
@@ -3576,25 +3576,25 @@
      "id": "posicion-desplazamiento-y-distancia",
      "nombre": "Posición, desplazamiento y distancia",
      "unidad": "fisica.movimiento-rectilineo",
-     "fichas": 5
+     "fichas": 4
     },
     {
      "id": "velocidad-y-rapidez-media",
      "nombre": "Velocidad y rapidez media",
      "unidad": "fisica.movimiento-rectilineo",
-     "fichas": 13
+     "fichas": 12
     },
     {
      "id": "aceleracion-media",
      "nombre": "Aceleración media",
      "unidad": "fisica.movimiento-rectilineo",
-     "fichas": 7
+     "fichas": 8
     },
     {
      "id": "mru",
      "nombre": "MRU",
      "unidad": "fisica.movimiento-rectilineo",
-     "fichas": 21
+     "fichas": 20
     },
     {
      "id": "sonido-y-eco-en-mru",
@@ -3612,7 +3612,7 @@
      "id": "velocidad-relativa",
      "nombre": "Velocidad relativa",
      "unidad": "fisica.movimiento-rectilineo",
-     "fichas": 14
+     "fichas": 16
     },
     {
      "id": "mruv",
@@ -3624,7 +3624,13 @@
      "id": "movimiento-con-aceleracion-variable",
      "nombre": "Movimiento con aceleración variable",
      "unidad": "fisica.movimiento-rectilineo",
-     "fichas": 5
+     "fichas": 4
+    },
+    {
+     "id": "conceptos-de-velocidad-y-aceleracion",
+     "nombre": "Conceptos de velocidad y aceleración",
+     "unidad": "fisica.movimiento-rectilineo",
+     "fichas": 1
     }
    ],
    "etiquetas": {
@@ -3750,19 +3756,19 @@
      "id": "caida-libre",
      "nombre": "Caída libre",
      "unidad": "fisica.movimiento-rectilineo",
-     "fichas": 56
+     "fichas": 46
     },
     {
      "id": "encuentros-en-caida-libre",
      "nombre": "Encuentros en caída libre",
      "unidad": "fisica.movimiento-rectilineo",
-     "fichas": 7
+     "fichas": 16
     },
     {
      "id": "tiro-parabolico",
      "nombre": "Tiro parabólico",
      "unidad": "fisica.movimiento-parabolico-y-circular",
-     "fichas": 25
+     "fichas": 26
     },
     {
      "id": "tiro-sobre-planos-y-rebotes",
