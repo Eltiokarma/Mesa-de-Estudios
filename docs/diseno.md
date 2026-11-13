@@ -207,3 +207,23 @@ La forma de la página la decide la clase `con-nav` y el atributo `data-ruta` de
 
 - Probar en computadoras como las del colegio (tarea `la2` de la hoja de ruta): resolución, navegador y velocidad.
 - Escenas en pantalla grande: el Banco Óptico ya ocupa todo el ancho. Las escenas nuevas se diseñan primero para el celular y se revisan a 1366 × 768.
+
+## Página del curso y de la unidad (13 nov 2026)
+
+Pedido de Gerson: que den ganas de tocar los cursos.
+
+- **El curso** muestra sus unidades como tarjetas con dibujo, en filas deslizables por grado: primero la del alumno («Tu grado»), luego las de grados anteriores («Repaso») y al final los adelantos («Adelanto»). Cada fila es scroll nativo con imán (`scroll-snap`). Tiene flechas de 44 px y ← → como alternativa al dedo. En el celular la tarjeta mide 152 px y la siguiente se asoma. Ya no hay ejercicios en la página del curso.
+- **La unidad** (`#/unidad/<id>`) tiene el dibujo, el nombre, los temas y «Marcar como estudiada», y cuatro puertas: Teoría, Ejercicios, Exámenes y Dejar una pregunta. La principal (tinta llena) es Ejercicios. Nada se deshabilita sin explicar: lo que falta dice «En preparación» y lleva a lo que sí hay.
+- **Teoría:** hoy es un estado honesto. Para enchufar las micro-lecciones:
+  1. agregar el campo `teoria` en la unidad del catálogo (y sumarlo a la lista de campos que copia `herramientas/construir-catalogo.js`);
+  2. crear `app/teoria.js` con `window.Teoria.vista(ctx, unidad)`;
+  3. sumarlo a `MODULOS` y a la `CASCARA`.
+- **Exámenes:** 5 preguntas nuevas por intento, armadas con los generadores de la unidad, sin pistas y sin colores, como en el examen. Al final se ven la nota, la explicación y la solución. Eventos `examen-item` y `examen`, fuera del resumen de predicciones.
+- **Dejar una pregunta:** evento `pregunta` (hasta 500 caracteres). El mensaje dice «guardada en este equipo» o «enviada a tu profesor (hh:mm)» según lo que de verdad pasó.
+
+**Dibujos de unidad (`app/dibujos/`).**
+- **Formato:** 160 × 120 sobre la lámina pastel del curso (`--cf`), igual en claro y en oscuro.
+- **Trazo:** ciruela de 3, 2 y 1,5.
+- **Color:** blanco, una mezcla media y un solo acento, la base del curso (`--cb`), encamisada en ciruela cuando es línea. Nunca colores de variables.
+- **Contenido:** cada dibujo dice la idea de su unidad en una frase. Lleva texto solo si es la clave, y de 14 unidades o más. Si un curso no tiene dibujos, va su viñeta.
+- **Receta:** `app/dibujos/comun.js` y un archivo por curso. `app/app.test.js` comprueba que haya un dibujo por unidad, que esté en la caché y que no use colores prohibidos.

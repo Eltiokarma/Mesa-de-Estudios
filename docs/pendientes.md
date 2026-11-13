@@ -63,6 +63,12 @@ Rama `claude/hopeful-planck-h4701c` (no está en `main` todavía; sw v160). Se h
 - **Tono (pedido de Gerson):** `herramientas/pasada-tono.py` limpió 98 escenas, sin «Elegiste», sin «La correcta está marcada» y sin el texto del error en rojo, y `herramientas/tono.test.js` lo vigila. Los párrafos `.fuente` quedan ocultos al alumno. La escena de vectores lleva î, ĵ y un título neutro.
 - **Tanda de 7000:** el cortador `herramientas/cortar-ejercicios.js` lee PDF (también a dos columnas), HTML y texto. Las decisiones de Gerson están en `docs/ejercicios-7000.md`.
 
+**Página del curso (13 nov, en `main`).**
+- La página del curso y la de la unidad están rediseñadas (`docs/diseno.md`, «Página del curso y de la unidad»).
+- Tienen dibujo las 38 unidades de trigonometría y aritmética; faltan 114, en los otros seis cursos.
+- **Pendiente para el servidor:** una ruta para que el profesor lea las preguntas de su sección (por ejemplo `GET /api/secciones/<id>/preguntas`, filtrando `tipo == 'pregunta'`) y su vista en el panel. Hoy solo salen en la descarga de eventos.
+- **Exámenes:** las unidades sin generador muestran un estado vacío. Son las 18 de verbal y 21 de los demás cursos.
+
 **Pendientes de la segunda vuelta.**
 - Quedan unas 60 frases de investigación a la vista del alumno, escritas de otras formas: «En un estudio con 979 escolares de Singapur…», «(AR17 del informe…)», «Según Bilgin y otros (2003, ítems…)». Hay que revisarlas frase por frase. Para buscarlas: `grep -v fuente plantillas/*/index.html | grep -E "estudio|escolares|universitarios|[0-9]+ % (de [0-9]+|eligió)"`.
 - `inecuaciones-planteo` (subtipo de los ciclistas) quedó telegráfico al recortarlo: rehacerlo con la regla nueva («el presupuesto no se cumple a costa de entender»).
