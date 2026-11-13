@@ -685,3 +685,17 @@ input[type=file]{font:inherit;max-width:100%}
   .ej-ir{font-size:15px}.ej-ir .v{display:inline}
   .lista.ejercicios{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}
 }
+/* Cola de repaso (app/repaso.js): la tarjeta del inicio y la pregunta del tipo. */
+.repaso-hoy{display:flex;align-items:center;gap:12px;background:var(--brand);color:var(--brand-ink);border-radius:var(--radius-s);box-shadow:var(--shadow);padding:14px 16px;margin:0 0 16px;text-decoration:none}
+.repaso-hoy .rh-ic{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:24px;font-weight:700;flex:none;background:rgba(255,255,255,.2)}
+.repaso-hoy .rh-tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.repaso-hoy .etq{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;opacity:.85}
+.repaso-hoy .d{font-size:13px;opacity:.9}
+.repaso-hoy .rh-ir{font-weight:700;white-space:nowrap}
+.card .repaso-hoy{margin:12px 0 0}
+.repaso-prox{margin:0 0 12px}
+.rp-tipos .alt .letra{font-size:14px}
+.rp-tipo-dice{margin:8px 0 0;font-size:14px}
+#resolver .preg{margin-top:16px}
+.rp-fin{text-align:center}
+.rp-fin .acciones-prueba{justify-content:center}

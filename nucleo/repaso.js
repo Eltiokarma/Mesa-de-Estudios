@@ -97,19 +97,21 @@
   }
 
   /*
-   * opcionesTipo(unidad, { cursoDe, estudiadas, delCurso, rng, n }) → n ids de unidad, barajados, con la correcta.
-   * «¿Qué tipo de problema es?»: los distractores son unidades que el alumno ya estudió (primero del mismo curso,
-   * que es donde se confunde de verdad), y si faltan, otras unidades del mismo curso del catálogo.
+   * opcionesTipo(unidad, { cursoDe, estudiadas, delCurso, excluir, rng, n }) → n ids de unidad, barajados, con la correcta.
+   * «¿Qué tipo de problema es?»: los distractores son del mismo curso, que es donde se confunde de verdad: primero
+   * unidades que el alumno ya estudió, después otras del catálogo. De otro curso, solo si el curso no alcanza
+   * (con una unidad de física entre dos de aritmética, el tipo se adivina por el curso). excluir: unidades
+   * que también serían correctas (las otras que cubre el mismo generador); nunca salen de distractor.
    */
-  function opcionesTipo(unidad, { cursoDe, estudiadas = [], delCurso = () => [], rng, n = 3 }) {
+  function opcionesTipo(unidad, { cursoDe, estudiadas = [], delCurso = () => [], excluir = [], rng, n = 3 }) {
     const c = cursoDe(unidad);
-    const vistas = new Set([unidad]);
+    const vistas = new Set([unidad, ...excluir]);
     const otras = [];
     const tomar = l => { for (const u of l) { if (otras.length >= n - 1) return; if (!vistas.has(u)) { vistas.add(u); otras.push(u); } } };
     const est = [...estudiadas].sort();
     tomar(rng.barajar(est.filter(u => cursoDe(u) === c)));
-    tomar(rng.barajar(est.filter(u => cursoDe(u) !== c)));
     tomar(rng.barajar([...delCurso(c)].sort()));
+    tomar(rng.barajar(est.filter(u => cursoDe(u) !== c))); // solo si el curso no alcanza
     return rng.barajar([unidad, ...otras]);
   }
 

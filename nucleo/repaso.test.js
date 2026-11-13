@@ -93,6 +93,19 @@ test('opciones del tipo: la correcta más dos, primero estudiadas del mismo curs
   assert.deepEqual(solo, otra);
 });
 
+test('opciones del tipo: antes el catálogo del mismo curso que una estudiada de otro curso', () => {
+  const curso = { f1: 'fis', f2: 'fis', f3: 'fis', q1: 'qui' };
+  const ops = R.opcionesTipo('f1', { cursoDe: u => curso[u], estudiadas: ['f1', 'q1'], delCurso: () => ['f1', 'f2', 'f3'], rng: Azar.crear('z') });
+  assert.deepEqual([...ops].sort(), ['f1', 'f2', 'f3']);
+  const pocas = R.opcionesTipo('f1', { cursoDe: u => curso[u], estudiadas: ['f1', 'q1'], delCurso: () => ['f1', 'f2'], rng: Azar.crear('z') });
+  assert.deepEqual([...pocas].sort(), ['f1', 'f2', 'q1']);
+});
+
+test('opciones del tipo: no pone de distractor una unidad que el mismo generador también cubre', () => {
+  const ops = R.opcionesTipo('a1', { cursoDe: () => 'alg', estudiadas: ['a1', 'a2', 'a3', 'a4'], excluir: ['a2', 'a3'], delCurso: () => ['a1', 'a2', 'a3', 'a4', 'a5'], rng: Azar.crear('x') });
+  assert.deepEqual([...ops].sort(), ['a1', 'a4', 'a5']);
+});
+
 test('semilla distinta en cada repaso de la unidad', () => {
   assert.notEqual(R.semilla('a', 'u', { hechos: 0 }), R.semilla('a', 'u', { hechos: 1 }));
   assert.match(R.semilla('a', 'u', { hechos: 3 }, 2), /^repaso-a-u-3-2$/);

@@ -171,7 +171,32 @@ function avisosSalida() {
   return salidas;
 }
 
+// ---------- Cola de repaso (nucleo/repaso.js, app/repaso.js) ----------
+// Una unidad entra a la cola cuando el alumno termina un ejercicio suyo (también los de las escenas, que guardan sus
+// eventos por su cuenta); solo las que tienen generador, que es de donde salen las preguntas.
+const unidadPorId = id => { const c = cursoDeUnidad(id); return c ? c.unidades.find(u => u.id === id) : null; };
+// Generadores propios de la unidad (su unidad principal es esta). Un generador que cubre varias unidades no cambia
+// según la unidad: repasar «Conjuntos» con uno de porcentajes no sería repasar conjuntos. Por eso solo cuentan estos.
+const generadoresRepaso = u => generadoresDe(u).filter(p => p.unidades[0] === u.id);
+function sembrarRepaso() {
+  if (!window.Repaso) return;
+  try {
+    const nuevas = Repaso.sembrar(est, eventos(), id => { const u = unidadPorId(id); return !!(u && generadoresRepaso(u).length); });
+    if (nuevas.length) guardar();
+  } catch { /* el repaso nunca rompe la app */ }
+}
+function tarjetaRepaso() {
+  if (!window.Repaso || !est.repaso || !Object.keys(est.repaso).length) return '';
+  const h = Repaso.fechaLocal(Date.now()), n = Math.min(Repaso.pendientes(est, h).length, Repaso.quedanHoy(est, h));
+  if (n) return `<a class="repaso-hoy" href="#/repaso"><span class="rh-ic" aria-hidden="true">↻</span>
+      <span class="rh-tx"><span class="etq">Repaso de hoy</span><b>${n} ${n === 1 ? 'pregunta' : 'preguntas'} de lo que ya estudiaste</b>
+      <span class="d">Unos ${Math.max(1, Math.round(n / 2))} min · para que no se te olvide</span></span><span class="rh-ir">Repasar ›</span></a>`;
+  const prox = Repaso.proxima(est, h);
+  return prox ? `<p class="sub repaso-prox">Tu próximo repaso: ${esc(new Date(prox + 'T12:00:00').toLocaleDateString('es-PE', { weekday: 'long', day: 'numeric', month: 'long' }))}.</p>` : '';
+}
+
 function vInicio() {
+  sembrarRepaso();
   const q = cola(est.uni), pend = q.filter(x => !visto(x.u.id));
   const conEscena = pend.find(x => !x.a && x.u.plantillas.length) || pend[0];
   const totalU = q.length, hechas = q.length - pend.length;
@@ -202,6 +227,7 @@ function vInicio() {
       <span class="pildora-racha" title="Racha de estudio">${Ilus.mini.llama}${racha()}<span class="lector"> ${racha() === 1 ? 'día seguido' : 'días seguidos'}</span></span>
       ${esAlumnoCuenta() ? `${pildoraSync()}<a class="btn borde solo-grande" href="#/salir">Cerrar sesión</a>` : '<a class="btn borde solo-grande" href="#/otro">Otro alumno en esta PC</a>'}</header>
     <div class="col2 inicio"><div>
+    ${tarjetaRepaso()}
     ${reto}
     <h2>Hoy</h2>
     <div class="stats aparece">
@@ -558,6 +584,7 @@ function vPregunta(c, u) {
 }
 
 function vProgreso() {
+  sembrarRepaso();
   const q = cola(est.uni), hechas = q.filter(x => visto(x.u.id)).length, p = q.length ? hechas / q.length : 0;
   const R = 70, L = Math.PI * R; // medio anillo
   const dias = [...Array(7)].map((_, i) => { const d = new Date(); d.setDate(d.getDate() - 6 + i); const f = d.toLocaleDateString('en-CA');
@@ -572,6 +599,7 @@ function vProgreso() {
         <div style="margin-top:-46px;text-align:center"><div class="n">${Math.round(p * 100)}<span style="font-size:20px">%</span></div><div class="l">${hechas} de ${q.length} unidades</div></div></div>
       ${q.length - hechas ? `<div class="aviso">🍫 Te faltan ${q.length - hechas} unidades. Una por día también cuenta.</div>` : ''}
     </div>
+    ${repasoProgreso()}
     <h2>Últimos 7 días</h2>
     <div class="card"><div style="display:flex;gap:10px;align-items:flex-end;height:110px">
       ${dias.map(d => `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px">
@@ -584,6 +612,14 @@ function vProgreso() {
     <div class="lista">${cat.cursos.filter(c => unidadesDe(c, est.uni).length).map(c => { const a = avance(c, est.uni);
       return `<a class="item" style="${Ilus.tinte(c.id)}" href="#/curso/${esc(c.id)}">${icono(c.id)}<span class="tx"><span class="t">${esc(c.nombre)}</span>
         <span class="barra" style="display:block;margin-top:8px"><i style="width:${Math.round(a * 100)}%"></i></span></span><span class="der">${Math.round(a * 100)} %</span></a>`; }).join('')}</div></div></div>`;
+}
+
+// Una línea con la cola de repaso: cuántas unidades están en ella y cómo le fue.
+function repasoProgreso() {
+  const r = Object.values(est.repaso || {}); if (!r.length) return '';
+  const hechos = r.reduce((a, x) => a + (Number(x.hechos) || 0), 0), bien = r.reduce((a, x) => a + (Number(x.aciertos) || 0), 0);
+  return `<h2>Repaso</h2><div class="card"><p style="margin:0"><b>${r.length}</b> ${r.length === 1 ? 'unidad está' : 'unidades están'} en tu repaso.
+    ${hechos ? `En los repasos recordaste <b>${bien} de ${hechos}</b>.` : 'El primero llega dos días después de tu primer ejercicio.'}</p>${tarjetaRepaso()}</div>`;
 }
 
 function resumenHTML() {
@@ -1005,6 +1041,8 @@ const MODULOS = {
   lectura: ['/nucleo/azar.js', '/nucleo/pruebas.js', '/nucleo/lectura.js', '/app/prueba.js', '/app/lectura.js'],
   // Exámenes de una unidad: lo que necesitan los generadores (después se carga el de cada práctica de la unidad).
   examen: ['/nucleo/azar.js', '/nucleo/predicciones.js', '/nucleo/convencion.js'],
+  // Repaso de hoy: lo mismo que el examen más su pantalla (nucleo/repaso.js ya viene con el inicio).
+  repaso: ['/nucleo/azar.js', '/nucleo/predicciones.js', '/nucleo/convencion.js', '/app/repaso.js'],
 };
 const scripts = {};
 // async = false: se bajan en paralelo pero corren en el orden en que se insertan (azar antes que pruebas, etc.).
@@ -1053,6 +1091,10 @@ function render() {
   if (ruta === 'practica') {
     $nav.querySelectorAll('a').forEach(a => a.classList.toggle('on', a.dataset.ruta === 'cursos'));
     return cuandoListo(modulo('practica'), () => Practica.vista({ $app, cat, est, esc, guardar, registrar, marcarDia }, decodeURIComponent(arg || '')));
+  }
+  if (ruta === 'repaso') {
+    sembrarRepaso();
+    return cuandoListo(modulo('repaso'), () => RepasoVista.vista({ $app, cat, est, esc, guardar, registrar, marcarDia, cursoDeUnidad, generadoresDe: generadoresRepaso, script }));
   }
   if (ruta === 'lectura') {
     return cuandoListo(modulo('lectura'), () => LecturaVista.vista({ $app, cat, est, esc, guardar, registrar, marcarDia }, decodeURIComponent(arg || ''), decodeURIComponent(location.hash.split('/')[3] || '')));
