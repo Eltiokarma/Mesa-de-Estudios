@@ -59,6 +59,7 @@ Sesión de **planificación**: no se construyó nada de la app. Lo que sigue se 
 15. **Presupuesto:** tres planes de IA de 200 USD al mes durante tres meses, hasta el despliegue. El costo no es motivo para recortar (ver «Presupuesto y mentalidad» más abajo).
 16. **Dos avisos que el agente le hace a Gerson** (sección 0 de la auditoría): cuando una unidad necesita un objeto dibujado, pide la lista de vectores con su encargo y Gerson los hace; cuando hace falta Rive de pago, pide la suscripción. No improvisa ninguna de las dos cosas.
 17. **Van a entrar más de 10 000 ejercicios, no 7000.** La filosofía es la de la regla 5: los de academia inspiran y se replican con generadores propios; los de examen oficial se usan tal cual y se citan.
+18. **El banco Cuzcano ya se contó** (`docs/clasificacion/banco-cuzcano.md`): 12 361 fichas en la rama `banco/cuzcano`, todas de academia (sus enunciados no van al producto), que cubren 108 de las 152 unidades. Falta: asignar cada tema a su unidad en `temas.json` (el informe trae la propuesta), unificar las etiquetas de subtema y decidir de dónde salen los ejercicios de las 44 unidades sin fichas.
 
 **Lo que sigue, en orden** (detalle en la sección 9 de la auditoría).
 1. **Estrés de Rive:** una página de prueba en el celular de 4 GB para fijar el presupuesto real.

@@ -54,6 +54,7 @@ Van a entrar más de 10 000, no 7000 (Gerson, 13 nov). La filosofía no cambia y
 - **Los de examen oficial de universidad pública se usan tal cual y se citan** con universidad y periodo. La solución y la figura se rehacen.
 - **Dónde encajan en esta estrategia:** son el problema de examen del tiempo 5 (transferir), el material de la cola de repaso y de la práctica mezclada, y la base de los ejemplos que se completan (ruta E). Cada bloque se mapea a una unidad y a su ruta antes de construir.
 - El plan de la tanda está en `docs/ejercicios-7000.md`, que conserva su nombre.
+- **El banco ya existe y se contó** (`docs/clasificacion/banco-cuzcano.md`): 12 361 fichas de 125 libros de la Editorial Cuzcano, en la rama `banco/cuzcano`. Todas son de academia y ninguna de examen oficial, así que sus enunciados no van al producto: alimentan generadores. Cubre 108 de las 152 unidades; no cubre razonamiento verbal ni 11 de las 19 de razonamiento matemático. Casi todas las fichas traen una solución propia con pasos, que es la materia prima de los ejemplos que se completan.
 
 ### Confirmación con el skill
 
@@ -685,7 +686,8 @@ Ficha de tarea:
 
 | Parte | Lo que hace el alumno | Lo que descubre | Idea errónea que ataca |
 | --- | --- | --- | --- |
-| 1. Empujar (MRU) | Empuja el carrito con el dedo. El carrito deja una marca en la pista cada segundo y, al lado, se dibuja x–t. Repite con un empujón más fuerte. Cada corrida queda registrada como una tira de marcas | Marcas a la misma distancia quieren decir rapidez constante. Más rápido es marcas más separadas y una recta más empinada | K1: «misma posición, misma velocidad» (se ve cuando un carrito pasa al otro) |
+| 1. Empujar (MRU) | Empuja el carrito con el dedo. El carrito deja una marca en la pista cada segundo y, al lado, se dibuja x–t. Repite con un empujón más fuerte. Cada corrida queda registrada como una tira de marcas | Marcas a la misma distancia quieren decir rapidez constante. Más rápido es marcas más separadas y una recta más empinada | — |
+| 1b. Dos carritos | Suelta dos carritos, uno detrás del otro o uno contra el otro, y predice dónde se encuentran. Registra tres casos: se cruzan, uno alcanza al otro y nunca lo alcanza | El encuentro depende de la rapidez con que se acercan, no de la de cada uno. En el instante en que uno pasa al otro están en el mismo lugar con rapideces distintas | K1: «misma posición, misma velocidad». Es de los tipos que más se preguntan: unas 39 de las 236 fichas del banco Cuzcano de esta unidad |
 | 2. Pisar (MRUV) | Mantiene presionado el acelerador y después el freno. Antes de frenar, predice hacia dónde apunta la aceleración. Las marcas se abren o se cierran y v–t sube o baja | La aceleración es cuánto cambia la velocidad, no hacia dónde va el carrito: al frenar apunta hacia atrás aunque el carrito siga avanzando | K3: «la aceleración va hacia donde se mueve»; K4: dividir v entre t sin restar |
 | 3. Pintar el área | Con la gráfica v–t de su propia corrida, pasa el dedo y pinta lo que hay debajo. Cuenta los cuadritos y compara con la regla de la pista | El área bajo v–t es la distancia que avanzó. La regla con fichas se arma aquí | Calcular la pendiente cuando se pide el área. Solo el 23 % sacó el cambio de velocidad del área en el test de Beichner (1994) |
 | 4. Parar la pista (caída libre) | Gira la pista hasta ponerla vertical y lanza la pelota hacia arriba. Predice cuánto vale la aceleración en el punto más alto. Después suelta dos pelotas de distinta masa | Es el mismo movimiento con otra aceleración: g apunta hacia abajo todo el tiempo, también arriba | C1: «aceleración cero en la cima»; C2: «el más pesado cae primero» |
@@ -704,7 +706,8 @@ Cuidados:
 - **El empujón del dedo es ruidoso.** La rapidez inicial se ajusta a valores limpios (2, 4 o 6 m/s) y eso se le dice al alumno. Para quien no puede arrastrar: tres botones, «suave», «medio» y «fuerte».
 - **Una corrida no debe pasar de unos 5 segundos.** Más que eso y la tercera aburre.
 - **La pista en un celular vertical es corta.** Hay que decidir la escala para que quepan seis marcas a 360 px, y probarlo.
-- **Son tres sesiones:** partes 1 y 2, parte 3, y partes 4 y 5.
+- **Son tres sesiones:** partes 1, 1b y 2; parte 3; y partes 4 y 5.
+- **Lo que pregunta el banco de esta unidad** (`docs/clasificacion/banco-cuzcano.md`): gráficas, caída libre, encuentros y alcances, movimiento relativo y frenado. El movimiento relativo (río, bote, escalera) queda para el ejemplo que se completa y la práctica; no tiene parte propia.
 - **Lo que hay que sacar de la escena de hoy:** el dato de Beichner que ve el alumno (va a `docs/investigacion/`, como ya manda `escena-viva.md`) y los nueve pasos de texto.
 
 ## 8. El temario completo: las 152 unidades

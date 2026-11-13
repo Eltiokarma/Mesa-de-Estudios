@@ -19,6 +19,7 @@
 - **Gesto:** lo que hace la mano del alumno. Sale de un vocabulario cerrado de trece: verter y gotear, calentar y enfriar, apretar, soltar y lanzar, colgar y pesar, conectar, estirar, girar, cortar y armar, doblar y reflejar, poner fichas, ordenar y clasificar, y marcar.
 - **Lo que descubre:** la relación que el alumno debería poder decir al terminar.
 - **Rive:** la utilería o el personaje animado que usa. Una raya quiere decir que basta el kit de dibujo y la mascota.
+- **Ejercicios en el banco Cuzcano:** cuántas fichas del banco le corresponden (`docs/clasificacion/banco-cuzcano.md`). El reparto es por nombre del tema y aproximado.
 - **Ideas erróneas:** el informe de `docs/investigacion/` con los errores típicos del tema.
 - **Tramo:** el grupo de unidades al que pertenece dentro del curso, en orden de construcción. Los tramos, la dinámica central y la prueba de transferencia de cada curso vienen de una tercera opinión (sección 5.7 de la auditoría) y están por validar.
 - **Otras formas de explicarla:** llenado en razonamiento matemático; en los demás cursos, por investigar.
@@ -67,6 +68,7 @@
 - **Gesto:** Estirar: mueve la punta de cada flecha y júntalas cola con punta.
 - **Lo que descubre:** La resultante depende del ángulo: va desde la resta hasta la suma de los módulos.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 130 fichas, de los temas `fisica.analisis-dimensional`, `fisica.analisis-vectorial`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -85,6 +87,7 @@
 - **Gesto:** Soltar: empuja el carrito con el dedo y pisa el freno (sección 7.5).
 - **Lo que descubre:** La gráfica v–t la dibuja su propio movimiento, y el área es lo que avanzó.
 - **Rive:** Carrito.
+- **Ejercicios en el banco Cuzcano:** unas 236 fichas, de los temas `fisica.analisis-de-graficas-del-movimiento-mecanico`, `fisica.cinematica-i-mru-y-mruv`, `fisica.cinematica-ii-mvcl-y-mpcl`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/cinematica-ideas-erroneas.md`.
 - **Desarrollo completo:** sección 7.5 de `docs/pogil-v2-rive.md`.
 - **Otras formas de explicarla:** por investigar.
@@ -104,6 +107,7 @@
 - **Gesto:** Lanzar: jala la honda y suelta; gira la rueda con el dedo.
 - **Lo que descubre:** 30° y 60° caen en el mismo punto; la sombra horizontal avanza parejo.
 - **Rive:** Pelota.
+- **Ejercicios en el banco Cuzcano:** unas 132 fichas, de los temas `fisica.cinematica-ii-mvcl-y-mpcl`, `fisica.movimiento-circunferencial`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/cinematica-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -122,6 +126,7 @@
 - **Gesto:** Colgar: cuelga pesas en la barra y mueve el apoyo.
 - **Lo que descubre:** Lo que equilibra es peso por distancia, no el peso.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 120 fichas, de los temas `fisica.estatica`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/estatica-energia-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -140,6 +145,7 @@
 - **Gesto:** Colgar y soltar: jala el bloque con una cuerda; inclina el plano.
 - **Lo que descubre:** La fuerza neta manda sobre la aceleración, no sobre la velocidad.
 - **Rive:** Bloque.
+- **Ejercicios en el banco Cuzcano:** unas 81 fichas, de los temas `fisica.dinamica`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/dinamica-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -158,6 +164,7 @@
 - **Gesto:** Lanzar: suelta el satélite con más o menos rapidez.
 - **Lo que descubre:** Hay una sola rapidez que cierra la órbita; más lejos, más lento.
 - **Rive:** Satélite.
+- **Ejercicios en el banco Cuzcano:** unas 63 fichas, de los temas `fisica.gravitacion-universal`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -176,6 +183,7 @@
 - **Gesto:** Soltar: sube el carrito a la rampa y cámbiale la forma.
 - **Lo que descubre:** La rapidez abajo depende de la altura, no del camino.
 - **Rive:** Carrito.
+- **Ejercicios en el banco Cuzcano:** unas 74 fichas, de los temas `fisica.trabajo-mecanico-energia-y-potencia`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/estatica-energia-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -194,6 +202,7 @@
 - **Gesto:** Lanzar: manda dos carritos uno contra otro.
 - **Lo que descubre:** La suma de m·v no cambia aunque la energía sí.
 - **Rive:** Carrito.
+- **Ejercicios en el banco Cuzcano:** unas 125 fichas, de los temas `fisica.cantidad-de-movimiento-impulso-y-choques`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -212,6 +221,7 @@
 - **Gesto:** Estirar y soltar: jala la masa del resorte o el péndulo.
 - **Lo que descubre:** Estirar más no cambia el período.
 - **Rive:** Pelota (el resorte es del motor).
+- **Ejercicios en el banco Cuzcano:** unas 73 fichas, de los temas `fisica.oscilaciones-mecanicas`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -230,6 +240,7 @@
 - **Gesto:** Estirar: sacude el extremo de la cuerda con el dedo y ténsala.
 - **Lo que descubre:** La mano decide la frecuencia; la cuerda, la rapidez.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 71 fichas, de los temas `fisica.ondas-mecanicas`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -248,6 +259,7 @@
 - **Gesto:** Verter: llena vasos de formas distintas; hunde el bloque con el dedo.
 - **Lo que descubre:** La presión depende de la profundidad; el empuje, de lo que se hunde.
 - **Rive:** Vaso.
+- **Ejercicios en el banco Cuzcano:** unas 221 fichas, de los temas `fisica.hidrostatica-e-hidrodinamica`, `fisica.hidrostatica`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/fluidos-calor-termodinamica-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -266,6 +278,7 @@
 - **Gesto:** Verter y calentar: mezcla dos vasos; acerca el mechero al hielo.
 - **Lo que descubre:** La temperatura final no es el promedio; en el cambio de fase entra calor y T no sube.
 - **Rive:** Vaso y mechero.
+- **Ejercicios en el banco Cuzcano:** unas 170 fichas, de los temas `fisica.calor`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/fluidos-calor-termodinamica-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -284,6 +297,7 @@
 - **Gesto:** Apretar: empuja el émbolo rápido o lento, con mechero o sin él.
 - **Lo que descubre:** El trabajo es el área que él mismo dibuja en P–V.
 - **Rive:** Émbolo y mechero.
+- **Ejercicios en el banco Cuzcano:** unas 121 fichas, de los temas `fisica.termodinamica`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/fluidos-calor-termodinamica-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -302,6 +316,7 @@
 - **Gesto:** Estirar: acerca una carga a otra que cuelga.
 - **Lo que descubre:** Las dos fuerzas son iguales aunque las cargas no lo sean.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 206 fichas, de los temas `fisica.condensadores`, `fisica.electrostatica`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -320,6 +335,7 @@
 - **Gesto:** Conectar: arma el circuito con el dedo y saca un foco.
 - **Lo que descubre:** En serie se reparten el voltaje; en paralelo cada foco brilla igual.
 - **Rive:** Foco y pila.
+- **Ejercicios en el banco Cuzcano:** unas 156 fichas, de los temas `fisica.electrodinamica`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -338,6 +354,7 @@
 - **Gesto:** Girar: pasea la brújula alrededor del cable; lanza la carga.
 - **Lo que descubre:** La carga quieta no siente nada; la fuerza va de costado.
 - **Rive:** Imán y brújula.
+- **Ejercicios en el banco Cuzcano:** unas 74 fichas, de los temas `fisica.electromagnetismo`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -356,6 +373,7 @@
 - **Gesto:** Estirar: mete y saca el imán de la espira, rápido o lento.
 - **Lo que descubre:** El foquito prende solo mientras el flujo cambia.
 - **Rive:** Imán y foco.
+- **Ejercicios en el banco Cuzcano:** unas 74 fichas, de los temas `fisica.electromagnetismo`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -374,6 +392,7 @@
 - **Gesto:** Ordenar: recorre el espectro; cruza el rayo a otro medio.
 - **Lo que descubre:** En el vacío todas viajan a c; al cambiar de medio cambia λ, no f.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 59 fichas, de los temas `fisica.ondas-electromagneticas`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/ondas-electromagneticas-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -392,6 +411,7 @@
 - **Gesto:** Estirar: mueve el objeto y la lente; dobla la hoja en el espejo.
 - **Lo que descubre:** La imagen cambia de lado al cruzar el foco.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 139 fichas, de los temas `fisica.optica`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/optica-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -410,6 +430,7 @@
 - **Gesto:** Girar: dos perillas en la lámpara, una para el color y otra para el brillo.
 - **Lo que descubre:** El brillo da más electrones; el color, más energía; bajo el umbral no sale nada.
 - **Rive:** Foco.
+- **Ejercicios en el banco Cuzcano:** unas 115 fichas, de los temas `fisica.fisica-moderna`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -447,6 +468,7 @@
 - **Gesto:** Cortar y calentar: parte la muestra y vuelve a medir; hazle algo y mírala con la lupa (sección 7.2).
 - **Lo que descubre:** Unas propiedades dicen cuánto hay y otras qué es; en un cambio físico las partículas son las mismas.
 - **Rive:** Vaso y mechero.
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/atomo-enlace-ideas-erroneas.md`.
 - **Desarrollo completo:** sección 7.2 de `docs/pogil-v2-rive.md`.
 - **Otras formas de explicarla:** por investigar.
@@ -466,6 +488,7 @@
 - **Gesto:** Poner fichas: llena los orbitales con electrones.
 - **Lo que descubre:** El orden de llenado sale de «primero el más barato».
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 84 fichas, de los temas `quimica.estructura-atomica`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/atomo-enlace-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -484,6 +507,7 @@
 - **Gesto:** Ordenar y estirar: acomoda las cartas por masa y córtalas donde se repiten; después camina por la tabla (sección 7.3).
 - **Lo que descubre:** Las propiedades se repiten cada cierto número de elementos, y eso permite predecir el que falta.
 - **Rive:** — (la tabla viva es del kit).
+- **Ejercicios en el banco Cuzcano:** unas 107 fichas, de los temas `quimica.tabla-periodica`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/atomo-enlace-ideas-erroneas.md`.
 - **Desarrollo completo:** sección 7.3 de `docs/pogil-v2-rive.md`.
 - **Otras formas de explicarla:** por investigar.
@@ -503,6 +527,7 @@
 - **Gesto:** Estirar y poner fichas: acerca dos átomos y mira quién atrae más el par; agrega globos al átomo central (sección 7.4).
 - **Lo que descubre:** El tipo de enlace es una sola escala de atracción; la forma sale de pares que se repelen.
 - **Rive:** Foco, mechero y gotero.
+- **Ejercicios en el banco Cuzcano:** unas 155 fichas, de los temas `quimica.enlace-quimico`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/atomo-enlace-ideas-erroneas.md`.
 - **Desarrollo completo:** sección 7.4 de `docs/pogil-v2-rive.md`.
 - **Otras formas de explicarla:** por investigar.
@@ -522,6 +547,7 @@
 - **Gesto:** Clasificar y poner fichas: cruza las cargas.
 - **Lo que descubre:** El nombre sale del estado de oxidación.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 116 fichas, de los temas `quimica.nomenclatura-inorganica`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/quimica-materia-nomenclatura-organica-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -540,6 +566,7 @@
 - **Gesto:** Pesar: echa cucharadas a la balanza hasta juntar un mol.
 - **Lo que descubre:** Un mol de cada sustancia pesa distinto y cuenta lo mismo.
 - **Rive:** — (balanza del kit).
+- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `quimica.unidades-quimicas-de-masa`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/estequiometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -558,6 +585,7 @@
 - **Gesto:** Poner fichas: agrega moléculas enteras a cada lado.
 - **Lo que descubre:** Se cambian los coeficientes, nunca los subíndices.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 133 fichas, de los temas `quimica.reacciones-quimicas`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/estequiometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -576,6 +604,7 @@
 - **Gesto:** Poner fichas: junta 1 N₂ con 3 H₂ hasta que algo se acabe.
 - **Lo que descubre:** El limitante es el que se acaba primero, no el que hay menos.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 149 fichas, de los temas `quimica.estequiometria`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/estequiometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -594,6 +623,7 @@
 - **Gesto:** Apretar y calentar: empuja el émbolo; acerca el mechero.
 - **Lo que descubre:** Con T fija, P por V no cambia; con calor, los choques son más fuertes.
 - **Rive:** Émbolo y mechero.
+- **Ejercicios en el banco Cuzcano:** unas 183 fichas, de los temas `quimica.estado-gaseoso-y-mezcla-gaseosa`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/gases-soluciones-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -612,6 +642,7 @@
 - **Gesto:** Calentar: calienta el frasco, tápalo, súbelo de altitud.
 - **Lo que descubre:** Hierve cuando su vapor iguala la presión de afuera.
 - **Rive:** Vaso y mechero.
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/gases-soluciones-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -630,6 +661,7 @@
 - **Gesto:** Verter: echa soluto, agrega agua, pasa una parte a otro vaso.
 - **Lo que descubre:** Diluir no cambia los moles; sacar una parte no cambia la concentración.
 - **Rive:** Vaso y gotero.
+- **Ejercicios en el banco Cuzcano:** unas 134 fichas, de los temas `quimica.soluciones`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/gases-soluciones-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -648,6 +680,7 @@
 - **Gesto:** Calentar: calienta, muele y agita.
 - **Lo que descubre:** Qué acelera la reacción y por qué: más choques que sirven.
 - **Rive:** Vaso y mechero.
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/cinetica-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -666,6 +699,7 @@
 - **Gesto:** Verter, apretar y calentar un sistema en equilibrio.
 - **Lo que descubre:** El sistema responde en contra; K solo cambia con la temperatura.
 - **Rive:** Vaso, émbolo y mechero.
+- **Ejercicios en el banco Cuzcano:** unas 140 fichas, de los temas `quimica.equilibrio-quimico`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -684,6 +718,7 @@
 - **Gesto:** Verter y gotear: diluye; neutraliza gota a gota.
 - **Lo que descubre:** Diluir 10 veces sube 1 de pH; la neutralización es un salto.
 - **Rive:** Vaso y gotero.
+- **Ejercicios en el banco Cuzcano:** unas 144 fichas, de los temas `quimica.acidos-y-bases`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md`.
 - **Desarrollo completo:** sección 7.1 de `docs/pogil-v2-rive.md`.
 - **Otras formas de explicarla:** por investigar.
@@ -703,6 +738,7 @@
 - **Gesto:** Conectar: arma la pila, pon el puente salino, cambia los metales.
 - **Lo que descubre:** Quién se oxida lo decide la pareja; sin puente no hay corriente.
 - **Rive:** Vaso y foco.
+- **Ejercicios en el banco Cuzcano:** unas 153 fichas, de los temas `quimica.electroquimica`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -721,6 +757,7 @@
 - **Gesto:** Conectar: arma la cadena carbono por carbono.
 - **Lo que descubre:** El nombre sale de la cadena más larga; mismos átomos, otra molécula.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 41 fichas, de los temas `quimica.quimica-organica`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/quimica-materia-nomenclatura-organica-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -739,6 +776,7 @@
 - **Gesto:** Cortar y armar: quita un H y pon el grupo.
 - **Lo que descubre:** El grupo decide la familia y cuánto se pegan las moléculas.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 41 fichas, de los temas `quimica.quimica-organica`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/quimica-materia-nomenclatura-organica-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -757,6 +795,7 @@
 - **Gesto:** Conectar: junta dos piezas y sale agua.
 - **Lo que descubre:** Toda unión suelta agua; la hidrólisis la devuelve.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 41 fichas, de los temas `quimica.quimica-organica`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/biomoleculas-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -775,6 +814,7 @@
 - **Gesto:** Calentar: destila subiendo la temperatura.
 - **Lo que descubre:** Cada fracción sale a su temperatura.
 - **Rive:** Mechero.
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/quimica-ambiente-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -793,6 +833,7 @@
 - **Gesto:** Gotear y clasificar: mide el pH de la lluvia; ordena contaminantes.
 - **Lo que descubre:** Qué gas causa qué efecto.
 - **Rive:** Vaso y gotero.
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/quimica-ambiente-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -827,6 +868,7 @@
 - **Gesto:** Conectar: prende interruptores en serie y en paralelo.
 - **Lo que descubre:** «Y» es serie, «o» es paralelo; el condicional solo falla en un caso.
 - **Rive:** Foco.
+- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `aritmetica.logica-proposicional`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -845,6 +887,7 @@
 - **Gesto:** Poner fichas en los aros.
 - **Lo que descubre:** Lo que está en la intersección se cuenta una vez.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `aritmetica.teoria-de-conjuntos`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -863,6 +906,7 @@
 - **Gesto:** Estirar la tira.
 - **Lo que descubre:** Al ampliar, la razón se conserva y la diferencia no.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `aritmetica.razones-y-proporciones`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -881,6 +925,7 @@
 - **Gesto:** Estirar un lado del taller de área fija.
 - **Lo que descubre:** En la inversa, el producto no cambia.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 400 fichas, de los temas `aritmetica.magnitudes-proporcionales`, `aritmetica.regla-de-tres`, `aritmetica.reparto-proporcional`, `razonamiento-matematico.comparacion-de-magnitudes`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -899,6 +944,7 @@
 - **Gesto:** Cortar la barra (ya existe en la práctica viva).
 - **Lo que descubre:** El segundo descuento se aplica a lo que queda.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 200 fichas, de los temas `aritmetica.tanto-por-ciento`, `razonamiento-matematico.tanto-por-ciento`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -917,6 +963,7 @@
 - **Gesto:** Poner fichas: agrega una capa por año.
 - **Lo que descubre:** El compuesto gana interés sobre el interés.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 200 fichas, de los temas `aritmetica.regla-de-descuento`, `aritmetica.regla-de-interes`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -935,6 +982,7 @@
 - **Gesto:** Verter: junta dos vasos de precio o grado distinto.
 - **Lo que descubre:** El promedio se acerca al que más cantidad puso.
 - **Rive:** Vaso.
+- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `aritmetica.regla-de-mezcla-y-aleacion`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -953,6 +1001,7 @@
 - **Gesto:** Estirar: mueve un dato del diagrama.
 - **Lo que descubre:** Un dato extremo jala la media y no la mediana.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `aritmetica.estadistica`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -971,6 +1020,7 @@
 - **Gesto:** Ordenar fichas en casilleros.
 - **Lo que descubre:** Si el orden no importa, varios arreglos son el mismo.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 150 fichas, de los temas `aritmetica.analisis-combinatorio-y-teoria-de-probabilidades`, `razonamiento-matematico.analisis-combinatorio`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -989,6 +1039,7 @@
 - **Gesto:** Marcar los casos en la cuadrícula de los dos dados.
 - **Lo que descubre:** El 7 sale más porque tiene más casillas.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 150 fichas, de los temas `aritmetica.analisis-combinatorio-y-teoria-de-probabilidades`, `razonamiento-matematico.calculo-de-probabilidades`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1007,6 +1058,7 @@
 - **Gesto:** Poner fichas: agrupa de a b.
 - **Lo que descubre:** Cambiar de base es reagrupar las mismas fichas.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 200 fichas, de los temas `aritmetica.conteo-y-paginacion`, `aritmetica.numeracion`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1025,6 +1077,7 @@
 - **Gesto:** Poner fichas y llevar.
 - **Lo que descubre:** La llevada es un grupo que se muda de columna.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1043,6 +1096,7 @@
 - **Gesto:** Poner fichas en filas iguales.
 - **Lo que descubre:** El resto es lo que no entra en la última fila.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `aritmetica.divisibilidad`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1061,6 +1115,7 @@
 - **Gesto:** Cortar y armar: haz rectángulos con n fichas.
 - **Lo que descubre:** Un primo solo arma una fila.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `aritmetica.numeros-primos`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1079,6 +1134,7 @@
 - **Gesto:** Cortar cintas; soltar dos buses.
 - **Lo que descubre:** El MCD es el corte más grande que sirve a las dos.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `aritmetica.mcd-y-mcm`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1097,6 +1153,7 @@
 - **Gesto:** Cortar la barra.
 - **Lo que descubre:** Dos fracciones equivalentes son el mismo corte.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 200 fichas, de los temas `aritmetica.numeros-racionales`, `razonamiento-matematico.fracciones`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1115,6 +1172,7 @@
 - **Gesto:** Poner fichas: arma el cuadrado.
 - **Lo que descubre:** Para pasar al cuadrado siguiente faltan 2k + 1 fichas.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `aritmetica.potenciacion-y-radicacion`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1133,6 +1191,7 @@
 - **Gesto:** Poner fichas: agrega una fila a la figura.
 - **Lo que descubre:** Lo que se agrega en cada paso es la razón.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 200 fichas, de los temas `razonamiento-matematico.series`, `razonamiento-matematico.sucesiones`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1151,6 +1210,7 @@
 - **Gesto:** Poner fichas: cambia una por otra.
 - **Lo que descubre:** Cada cambio corrige una diferencia fija.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1185,6 +1245,7 @@
 - **Gesto:** Conectar interruptores; poner fichas en aros.
 - **Lo que descubre:** Lo mismo que en aritmética 1 y 2.
 - **Rive:** Foco.
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1203,6 +1264,7 @@
 - **Gesto:** Estirar los extremos de dos intervalos.
 - **Lo que descubre:** Unión e intersección se ven; el extremo abierto no se alcanza.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1221,6 +1283,7 @@
 - **Gesto:** Cortar y armar el cuadrado de lado a + b.
 - **Lo que descubre:** Además de a² y b² hay dos rectángulos.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 121 fichas, de los temas `algebra.potenciacion-y-ecuaciones-exponenciales`, `algebra.productos-notables-e-identidades`, `algebra.radicales-y-racionalizacion`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/algebra-funciones-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1239,6 +1302,7 @@
 - **Gesto:** Pesar: quita lo mismo de los dos platillos.
 - **Lo que descubre:** Lo que se hace a un lado se hace al otro.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 55 fichas, de los temas `algebra.teoria-de-las-ecuaciones`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/algebra-funciones-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1257,6 +1321,7 @@
 - **Gesto:** Reflejar: voltea la recta al multiplicar por −1.
 - **Lo que descubre:** El signo se invierte porque la recta se refleja.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `algebra.desigualdades-e-inecuaciones`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/algebra-funciones-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1275,6 +1340,7 @@
 - **Gesto:** Estirar: abre un compás desde el centro.
 - **Lo que descubre:** El valor absoluto es una distancia.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/algebra-funciones-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1293,6 +1359,7 @@
 - **Gesto:** Poner fichas en la máquina, con el cero que falta.
 - **Lo que descubre:** El resto es la altura P(a) en la curva.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 23 fichas, de los temas `algebra.polinomios-y-grados`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1311,6 +1378,7 @@
 - **Gesto:** Poner fichas en la máquina de Ruffini.
 - **Lo que descubre:** Con divisor ax + b, el cociente sale multiplicado.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 31 fichas, de los temas `algebra.cocientes-notables`, `algebra.division-polinomica-y-restos`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1329,6 +1397,7 @@
 - **Gesto:** Cortar y armar: haz un rectángulo con las piezas.
 - **Lo que descubre:** Factorizar es hallar los lados.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 18 fichas, de los temas `algebra.factorizacion`, `algebra.mcd-y-mcm-de-polinomios`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/algebra-funciones-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1347,6 +1416,7 @@
 - **Gesto:** Estirar: mueve las raíces sobre el eje.
 - **Lo que descubre:** La suma y el producto de las raíces son los coeficientes.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 55 fichas, de los temas `algebra.teoria-de-las-ecuaciones`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1365,6 +1435,7 @@
 - **Gesto:** Girar las perillas.
 - **Lo que descubre:** Cada perilla mueve la gráfica de una sola manera.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 102 fichas, de los temas `algebra.relaciones-y-funciones-i`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/algebra-funciones-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1383,6 +1454,7 @@
 - **Gesto:** Doblar el plano por y = x.
 - **Lo que descubre:** La inversa es el reflejo; 1/f es otra cosa.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `algebra.relaciones-y-funciones-ii`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/algebra-funciones-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1401,6 +1473,7 @@
 - **Gesto:** Poner fichas: sube la escalera multiplicando.
 - **Lo que descubre:** El logaritmo cuenta los escalones.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 200 fichas, de los temas `algebra.logaritmos`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/algebra-funciones-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1419,6 +1492,7 @@
 - **Gesto:** Girar la flecha.
 - **Lo que descubre:** Multiplicar por i gira 90°.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `algebra.numeros-complejos`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/algebra-funciones-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1437,6 +1511,7 @@
 - **Gesto:** Estirar las dos columnas.
 - **Lo que descubre:** El determinante es el área con signo.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 50 fichas, de los temas `algebra.matrices-determinantes-y-sistemas-de-ecuaciones-lineales`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1455,6 +1530,7 @@
 - **Gesto:** Girar dos rectas.
 - **Lo que descubre:** Una solución, ninguna o infinitas se ven.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 50 fichas, de los temas `algebra.matrices-determinantes-y-sistemas-de-ecuaciones-lineales`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/algebra-funciones-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1473,6 +1549,7 @@
 - **Gesto:** Estirar: desliza la recta de nivel con el dedo.
 - **Lo que descubre:** El óptimo sale por un vértice.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1491,6 +1568,7 @@
 - **Gesto:** Poner fichas: agrega filas.
 - **Lo que descubre:** La suma se ve como figura.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `algebra.sucesiones-y-series`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1509,6 +1587,7 @@
 - **Gesto:** Soltar bolitas en el tablero.
 - **Lo que descubre:** Cada coeficiente cuenta caminos.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `algebra.binomio-de-newton`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1543,6 +1622,7 @@
 - **Gesto:** Girar la secante sobre las paralelas.
 - **Lo que descubre:** Los ocho ángulos son solo dos valores.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 200 fichas, de los temas `geometria.linea-recta-y-angulos`, `geometria.nociones-generales`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/geometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1561,6 +1641,7 @@
 - **Gesto:** Estirar el vértice.
 - **Lo que descubre:** La altura sale fuera en el obtusángulo.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 135 fichas, de los temas `geometria.triangulos-y-congruencia`, `geometria.triangulos`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/geometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1579,6 +1660,7 @@
 - **Gesto:** Cortar y armar: arma el triángulo con palitos y ángulos.
 - **Lo que descubre:** Con LLA pueden salir dos triángulos.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 108 fichas, de los temas `geometria.congruencia-de-triangulos`, `geometria.triangulos-y-congruencia`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/geometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1597,6 +1679,7 @@
 - **Gesto:** Estirar los vértices.
 - **Lo que descubre:** El nombre cambia cuando cambia una propiedad.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 167 fichas, de los temas `geometria.cuadrilateros`, `geometria.poligonos`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/geometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1615,6 +1698,7 @@
 - **Gesto:** Estirar el vértice sobre el arco.
 - **Lo que descubre:** El inscrito no cambia: es la mitad del central.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 84 fichas, de los temas `geometria.circunferencia`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/geometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1633,6 +1717,7 @@
 - **Gesto:** Estirar: amplía la figura.
 - **Lo que descubre:** El área crece con k² y el volumen con k³.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 12 fichas, de los temas `geometria.proporcionalidad-de-segmentos-y-semejanza-de-triangulos`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/geometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1651,6 +1736,7 @@
 - **Gesto:** Estirar el vértice.
 - **Lo que descubre:** Los cuatro puntos coinciden solo en el equilátero.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 32 fichas, de los temas `geometria.puntos-notables`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/geometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1669,6 +1755,7 @@
 - **Gesto:** Cortar y armar los cuadrados de los lados.
 - **Lo que descubre:** Pitágoras es una igualdad de áreas.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 83 fichas, de los temas `geometria.relaciones-metricas`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/geometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1687,6 +1774,7 @@
 - **Gesto:** Girar: da la vuelta al polígono lado por lado.
 - **Lo que descubre:** Los ángulos exteriores suman una vuelta.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `geometria.poligonos-regulares`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/geometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1705,6 +1793,7 @@
 - **Gesto:** Reflejar: mueve el espejo.
 - **Lo que descubre:** Dos reflexiones dan un giro o un traslado.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/geometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1723,6 +1812,7 @@
 - **Gesto:** Estirar el vértice en paralelo a la base.
 - **Lo que descubre:** El área no cambia entre paralelas.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 50 fichas, de los temas `geometria.areas-de-regiones-poligonales-y-circulares`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/geometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1741,6 +1831,7 @@
 - **Gesto:** Girar: desenrolla la circunferencia; reacomoda los gajos.
 - **Lo que descubre:** π es cuántos diámetros caben en la vuelta.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 50 fichas, de los temas `geometria.areas-de-regiones-poligonales-y-circulares`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/geometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1759,6 +1850,7 @@
 - **Gesto:** Girar el cubo.
 - **Lo que descubre:** Tres perpendiculares se ven al girar.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `geometria.rectas-y-planos`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/geometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1777,6 +1869,7 @@
 - **Gesto:** Doblar: despliega y vuelve a armar.
 - **Lo que descubre:** Caras más vértices menos aristas da 2.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/geometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1795,6 +1888,7 @@
 - **Gesto:** Verter: llena el prisma con pirámides.
 - **Lo que descubre:** La pirámide es un tercio del prisma.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 130 fichas, de los temas `geometria.piramide-y-cono`, `geometria.prisma-y-cilindro`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/geometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1813,6 +1907,7 @@
 - **Gesto:** Girar la figura plana para generar el sólido.
 - **Lo que descubre:** Tres conos llenan el cilindro.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 213 fichas, de los temas `geometria.esfera`, `geometria.piramide-y-cono`, `geometria.prisma-y-cilindro`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/geometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1831,6 +1926,7 @@
 - **Gesto:** Estirar puntos; tensar la cuerda del jardinero.
 - **Lo que descubre:** La pendiente; la suma de distancias constante.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 484 fichas, de los temas `geometria.circunferencia-y-parabola`, `geometria.elipse-e-hiperbola`, `geometria.geometria-vectorial`, `geometria.la-linea-recta`, `geometria.transformacion-de-coordenadas`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1849,6 +1945,7 @@
 - **Gesto:** Marcar cada figura que encuentre.
 - **Lo que descubre:** Se cuenta por clases, no una por una.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 59 fichas, de los temas `razonamiento-matematico.razonamiento-geometrico`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/geometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1884,6 +1981,7 @@
 - **Gesto:** Girar: enrolla la cinta del radio.
 - **Lo que descubre:** Un radián es un radio enrollado.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 50 fichas, de los temas `trigonometria.sistemas-de-medicion-angular-y-longitud-de-arco`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/trigonometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1902,6 +2000,7 @@
 - **Gesto:** Girar: haz rodar la rueda.
 - **Lo que descubre:** El arco es ángulo por radio.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 50 fichas, de los temas `trigonometria.sistemas-de-medicion-angular-y-longitud-de-arco`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/trigonometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1920,6 +2019,7 @@
 - **Gesto:** Estirar el triángulo sin cambiar el ángulo.
 - **Lo que descubre:** La razón no depende del tamaño.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 68 fichas, de los temas `trigonometria.razones-trigonometricas-de-un-angulo-agudo`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/trigonometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1938,6 +2038,7 @@
 - **Gesto:** Girar la línea de mira.
 - **Lo que descubre:** Con un lado y un ángulo sale todo.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 68 fichas, de los temas `trigonometria.razones-trigonometricas-de-un-angulo-agudo`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/trigonometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1956,6 +2057,7 @@
 - **Gesto:** Girar la recta.
 - **Lo que descubre:** La pendiente es la tangente del ángulo.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1974,6 +2076,7 @@
 - **Gesto:** Girar el lado final.
 - **Lo que descubre:** El signo lo decide el cuadrante.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 72 fichas, de los temas `trigonometria.razones-trigonometricas-de-un-angulo-en-posicion-normal`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/trigonometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -1992,6 +2095,7 @@
 - **Gesto:** Reflejar el ángulo.
 - **Lo que descubre:** Mismo valor; cambia el signo.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 72 fichas, de los temas `trigonometria.razones-trigonometricas-de-un-angulo-en-posicion-normal`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/trigonometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2010,6 +2114,7 @@
 - **Gesto:** Girar el punto.
 - **Lo que descubre:** El seno es la altura y el coseno, la sombra.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 84 fichas, de los temas `trigonometria.circunferencia-trigonometrica`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/trigonometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2028,6 +2133,7 @@
 - **Gesto:** Girar y mirar las áreas.
 - **Lo que descubre:** sen² más cos² siempre arma el mismo cuadrado.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 174 fichas, de los temas `trigonometria.identidades-trigonometricas-fundamentales`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/trigonometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2046,6 +2152,7 @@
 - **Gesto:** Girar dos veces seguidas.
 - **Lo que descubre:** El seno de la suma no es la suma de los senos.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 183 fichas, de los temas `trigonometria.identidades-de-arcos-compuestos`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/trigonometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2064,6 +2171,7 @@
 - **Gesto:** Girar el doble.
 - **Lo que descubre:** Duplicar el ángulo no duplica el seno.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 146 fichas, de los temas `trigonometria.identidades-de-arcos-multiples`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/trigonometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2082,6 +2190,7 @@
 - **Gesto:** Estirar dos flechas en la circunferencia.
 - **Lo que descubre:** La suma apunta a la semisuma.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 120 fichas, de los temas `trigonometria.transformaciones-trigonometricas`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/trigonometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2100,6 +2209,7 @@
 - **Gesto:** Girar el punto y desenrollar la gráfica.
 - **Lo que descubre:** El período es una vuelta.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 178 fichas, de los temas `trigonometria.funciones-trigonometricas-directas`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/trigonometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2118,6 +2228,7 @@
 - **Gesto:** Estirar la ventana principal.
 - **Lo que descubre:** Solo un corte cae dentro de la ventana.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 165 fichas, de los temas `trigonometria.funciones-trigonometricas-inversas`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/trigonometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2136,6 +2247,7 @@
 - **Gesto:** Girar hasta que la altura valga k.
 - **Lo que descubre:** Hay dos ángulos por vuelta.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 129 fichas, de los temas `trigonometria.ecuaciones-e-inecuaciones-trigonometricas`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/trigonometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2154,6 +2266,7 @@
 - **Gesto:** Girar el compás.
 - **Lo que descubre:** Con LLA salen cero, uno o dos triángulos.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 82 fichas, de los temas `trigonometria.resolucion-de-triangulos-oblicuangulos`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/trigonometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2172,6 +2285,7 @@
 - **Gesto:** Estirar un lado y el ángulo.
 - **Lo que descubre:** El área es medio producto de dos lados por el seno.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 82 fichas, de los temas `trigonometria.resolucion-de-triangulos-oblicuangulos`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/trigonometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2190,6 +2304,7 @@
 - **Gesto:** Estirar: tensa la cuerda con el dedo.
 - **Lo que descubre:** La suma de distancias a los focos no cambia.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2208,6 +2323,7 @@
 - **Gesto:** Girar el radar.
 - **Lo que descubre:** Un r negativo cruza por el polo.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 64 fichas, de los temas `trigonometria.numeros-complejos`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2242,6 +2358,7 @@
 - **Gesto:** Conectar: arma el árbol familiar.
 - **Lo que descubre:** Solo una disposición cumple todas las pistas.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 50 fichas, de los temas `razonamiento-matematico.inductivo-y-deductivo`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** Armar el árbol familiar · Cuadro de doble entrada con descarte · «Una persona, varios papeles» (padre e hijo a la vez) para hallar el mínimo de personas.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2260,6 +2377,7 @@
 - **Gesto:** Conectar: traza sin levantar el dedo.
 - **Lo que descubre:** Se puede con cero o dos vértices impares.
 - **Rive:** Hormiga.
+- **Ejercicios en el banco Cuzcano:** unas 2 fichas, de los temas `razonamiento-matematico.conteo-de-figuras-y-recorridos-eulerianos`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** Contar cuántas líneas llegan a cada vértice (pares e impares) · Probar con el dedo y ver dónde se traba · La historia de los puentes de Königsberg · Para perímetros: correr los lados de la escalera hasta formar un rectángulo.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2278,6 +2396,7 @@
 - **Gesto:** Ordenar fichas en la fila o en la mesa.
 - **Lo que descubre:** Cada pista descarta posiciones.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 50 fichas, de los temas `razonamiento-matematico.razonamiento-logico`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** Fichas en una fila o alrededor de la mesa · Cuadro de doble entrada · Empezar por la pista que fija más (el dato ancla) · Probar un caso y descartar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2296,6 +2415,7 @@
 - **Gesto:** Clasificar: voltea a cada personaje.
 - **Lo que descubre:** Se supone, y la contradicción decide.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 50 fichas, de los temas `razonamiento-matematico.razonamiento-logico`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** Suponer y buscar la contradicción · Tabla de quién dice qué · Buscar dos frases que se contradicen: una es verdad y la otra no · Personajes que se voltean.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2314,6 +2434,7 @@
 - **Gesto:** Conectar: guía la combi por las cuadras.
 - **Lo que descubre:** El desplazamiento no es lo caminado.
 - **Rive:** Combi.
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** Camino sobre la cuadrícula · Sumar por separado norte-sur y este-oeste · La flecha del inicio al final (Pitágoras) · El plano de una ciudad conocida.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2332,6 +2453,7 @@
 - **Gesto:** Poner fichas en el cuadrado.
 - **Lo que descubre:** El centro es la suma mágica entre 3.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** Suma total entre el número de filas · Parejas que suman lo mismo · Girar y reflejar el cuadrado para ver que es el mismo · Contar dos veces las casillas de las esquinas.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2350,6 +2472,7 @@
 - **Gesto:** Poner fichas: agrega una fila y cuenta.
 - **Lo que descubre:** El patrón sale de tres casos chicos.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 50 fichas, de los temas `razonamiento-matematico.inductivo-y-deductivo`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** Tres casos chicos en una tabla · La figura que crece: mirar qué se agrega · Contar lo mismo de dos maneras · Proponer la fórmula y probarla con el caso 4.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2368,6 +2491,7 @@
 - **Gesto:** Girar el dado; mover palitos.
 - **Lo que descubre:** Las caras opuestas suman 7.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** El dado desplegado en cruz · Palitos: mover uno y contar · Buscar lo que no cambia (pares e impares) · Resolver de atrás hacia adelante.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2386,6 +2510,7 @@
 - **Gesto:** Girar el minutero.
 - **Lo que descubre:** El horario también avanza.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `razonamiento-matematico.cronometria-relojes`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** Las agujas como dos corredores en una pista redonda · Tabla de adelanto y atraso por hora · Calendario: el resto de dividir entre 7 · Línea de tiempo.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2404,6 +2529,7 @@
 - **Gesto:** Soltar: saca bolas en el peor caso.
 - **Lo que descubre:** La certeza llega con el peor caso más uno.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** El peor caso: la mala suerte máxima y uno más · Casilleros y palomas · Jugar contra alguien que siempre te da lo peor · Tabla de lo que ya salió.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2422,6 +2548,7 @@
 - **Gesto:** Soltar las combis del paradero.
 - **Lo que descubre:** Coinciden en el MCM; hay un intervalo menos que sucesos.
 - **Rive:** Combi.
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** Línea de tiempo con marcas: hay un intervalo menos que marcas · MCM para saber cuándo coinciden · Campanadas: se cuentan los silencios, no los golpes · Dos tiras de papel con marcas.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2440,6 +2567,7 @@
 - **Gesto:** Girar la rueda con el dedo.
 - **Lo que descubre:** Dientes por vueltas se conserva.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** Contar los dientes que pasan por el contacto · Proporción inversa entre dientes y vueltas · Sentido de giro: ruedas pares e impares de la cadena · Misma faja, misma rapidez en el borde.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2458,6 +2586,7 @@
 - **Gesto:** Estirar el cordel.
 - **Lo que descubre:** Con el mismo cordel, el cuadrado encierra más.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** Tabla de valores y buscar el pico · Con el mismo cordel, comparar figuras · El reflejo para el camino más corto · Completar cuadrados · Probar los casos extremos.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2476,6 +2605,7 @@
 - **Gesto:** Cortar con la sierra; pesar.
 - **Lo que descubre:** Hay un corte menos que pedazos.
 - **Rive:** — (balanza del kit).
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** Cortar de verdad: en una soga, un corte menos que pedazos; en un aro, igual número · Estacas en fila · La balanza tiene tres resultados: por eso salen potencias de 3 · Doblar antes de cortar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2494,6 +2624,7 @@
 - **Gesto:** Pesar y poner fichas: traduce el enunciado.
 - **Lo que descubre:** Cada frase es una operación sobre la balanza.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 200 fichas, de los temas `razonamiento-matematico.edades-y-moviles`, `razonamiento-matematico.planteo-de-ecuaciones`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** La balanza · Barras o segmentos para cada cantidad · Cuadro de antes, ahora y después (edades) · Falsa suposición · La ecuación al final.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2512,6 +2643,7 @@
 - **Gesto:** Girar, voltear y rodar.
 - **Lo que descubre:** Girar no es voltear.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/geometria-ideas-erroneas.md`.
 - **Otras formas de explicarla:** Papel calco que gira · Marcar una esquina y seguirla · El espejo: voltear cambia la mano de la figura · Rodar con una marca para contar vueltas.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2530,6 +2662,7 @@
 - **Gesto:** Girar los cubitos; conectar aristas.
 - **Lo que descubre:** Lo que no se ve se deduce de dos vistas.
 - **Rive:** Hormiga.
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** Sumar en cada cruce los caminos que llegan · Tres vistas: frente, lado y arriba · Desarmar el cubo por capas · Desplegar la caja para el camino de la hormiga.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2548,6 +2681,7 @@
 - **Gesto:** Estirar el eje del gráfico.
 - **Lo que descubre:** Un eje cortado exagera la diferencia.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
 - **Otras formas de explicarla:** Leer primero los ejes y las unidades · Pasar el gráfico a tabla · Suficiencia: probar con cada dato solo y luego con los dos · Fabricar un caso donde el dato no alcanza.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2566,6 +2700,7 @@
 - **Gesto:** Soltar un número por el diagrama.
 - **Lo que descubre:** El operador es una máquina con una sola regla.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** unas 100 fichas, de los temas `razonamiento-matematico.operaciones-matematicas`. Son de academia: inspiran generadores, no se copian.
 - **Ideas erróneas:** `docs/investigacion/codigos-rm-procesos.md`.
 - **Otras formas de explicarla:** La máquina de entrada y salida · Seguir un número con el dedo · Tabla de pasadas cuando hay un ciclo · El operador como receta que se aplica dos veces.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2600,6 +2735,7 @@
 - **Gesto:** Poner fichas: género y diferencia.
 - **Lo que descubre:** Una definición buena deja fuera a los parecidos.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** sin informe propio.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2618,6 +2754,7 @@
 - **Gesto:** Conectar pares y nombrar la relación con una ficha.
 - **Lo que descubre:** Se compara la relación, no las palabras.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/razonamiento-verbal-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2636,6 +2773,7 @@
 - **Gesto:** Poner fichas: cambia la palabra y relee.
 - **Lo que descubre:** El contexto decide cuál acepción aguanta.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/razonamiento-verbal-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2654,6 +2792,7 @@
 - **Gesto:** Poner fichas entre dos ideas.
 - **Lo que descubre:** El conector dice qué relación hay: causa, contraste o suma.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/razonamiento-verbal-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2672,6 +2811,7 @@
 - **Gesto:** Marcar: tacha una oración y relee.
 - **Lo que descubre:** Sobra la que repite o se sale del tema.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/razonamiento-verbal-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2690,6 +2830,7 @@
 - **Gesto:** Ordenar tarjetas.
 - **Lo que descubre:** El orden va de lo general a lo particular o sigue el tiempo.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/razonamiento-verbal-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2708,6 +2849,7 @@
 - **Gesto:** Conectar cada pronombre con su referente.
 - **Lo que descubre:** Un texto se sostiene por sus referencias.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/razonamiento-verbal-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2726,6 +2868,7 @@
 - **Gesto:** Clasificar párrafos.
 - **Lo que descubre:** El tipo lo delata el propósito, no el tema.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/razonamiento-verbal-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2744,6 +2887,7 @@
 - **Gesto:** Marcar: tapa una oración y mira si el texto se cae.
 - **Lo que descubre:** La idea principal es la que no se puede quitar.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/razonamiento-verbal-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2762,6 +2906,7 @@
 - **Gesto:** Marcar: tacha hasta dejar lo mínimo.
 - **Lo que descubre:** Resumir es quitar sin cambiar lo que se afirma.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/razonamiento-verbal-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2780,6 +2925,7 @@
 - **Gesto:** Marcar en el gráfico de dónde sale el dato.
 - **Lo que descubre:** La respuesta está en el cruce de fila y columna.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/razonamiento-verbal-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2798,6 +2944,7 @@
 - **Gesto:** Marcar en el texto lo que sostiene la conclusión.
 - **Lo que descubre:** Inferir es sacar una conclusión que el texto sostiene pero no dice; no es adivinar.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/razonamiento-verbal-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2816,6 +2963,7 @@
 - **Gesto:** Clasificar: lo dice, lo contradice o no lo dice.
 - **Lo que descubre:** «No lo dice» no es «lo niega».
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/razonamiento-verbal-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2834,6 +2982,7 @@
 - **Gesto:** Poner fichas: cambia una condición del texto.
 - **Lo que descubre:** Qué conclusión cambia y cuál se mantiene.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/razonamiento-verbal-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2852,6 +3001,7 @@
 - **Gesto:** Clasificar: tesis, argumento y contraargumento; quién lo dice.
 - **Lo que descubre:** Dos autores pueden coincidir en el dato y no en la tesis.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/razonamiento-verbal-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2870,6 +3020,7 @@
 - **Gesto:** Ordenar: sitúa el texto en su línea de tiempo.
 - **Lo que descubre:** El sentido cambia con quién habla y cuándo.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/razonamiento-verbal-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2888,6 +3039,7 @@
 - **Gesto:** Marcar el término y armar su definición con el texto.
 - **Lo que descubre:** El autor define sus palabras al usarlas.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/razonamiento-verbal-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
@@ -2906,6 +3058,7 @@
 - **Gesto:** Conectar la palabra con su pista de contexto.
 - **Lo que descubre:** El significado se saca de lo que la rodea.
 - **Rive:** — (kit y mascota).
+- **Ejercicios en el banco Cuzcano:** ninguno. Hay que buscarlos en los exámenes oficiales o en otro material.
 - **Ideas erróneas:** `docs/investigacion/razonamiento-verbal-ideas-erroneas.md`.
 - **Otras formas de explicarla:** por investigar.
 - **Desempeño final (algo que se pueda observar):** por definir.
