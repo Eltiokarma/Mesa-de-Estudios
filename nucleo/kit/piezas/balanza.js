@@ -88,7 +88,7 @@
       } else if (k === 'pesa' && n > 0) out.push({ k: 'pesa', v: n, ancho: anchoPesa(d, n), quitado });
       else if (k === 'saco' && n > 0) out.push({ k: 'saco', v: n, ancho: T.ancho(conUnidad(d, n), TAM, 700) + 18, quitado });
       else if (k === 'pesas') for (const [v, c] of n) if (c > 0) {
-        if (c <= 2) for (let i = 0; i < c; i++) out.push({ k: 'pesa', v, ancho: anchoPesa(d, v), quitado });
+        if (c === 1) out.push({ k: 'pesa', v, ancho: anchoPesa(d, v), quitado });
         else out.push({ k: 'pesa', v, n: c, ancho: anchoPesa(d, v) + T.ancho(`×${c}`, TAM, 700) + 4, quitado });
       }
     }
@@ -113,8 +113,8 @@
     if (d.marca) { const v = d.trabajo[d.marca.vista || 0]; ver({ ...v, [d.marca.lado]: { ...v[d.marca.lado], [d.marca.figura]: d.marca.max } }); }
     return m;
   }
-  // ¿Cabe todo? Un platillo no puede pasar de dos filas (si no, el generador no usa la pieza).
-  const cabe = d => filasMax(d) <= 2 && [...(d.balanzas || []), ...(d.trabajo || [])].every(b => lados(b).every(l => objetos(d, l).every(o => o.ancho <= 2 * PLATO + 6)));
+  // ¿Cabe todo? Un platillo no puede pasar de cuatro filas (si no, el generador no usa la pieza).
+  const cabe = d => filasMax(d) <= 4 && [...(d.balanzas || []), ...(d.trabajo || [])].every(b => lados(b).every(l => objetos(d, l).every(o => o.ancho <= 2 * PLATO + 6)));
 
   // Dibujo de una figura con su base en (cx, yb). El trazo es del color de su variable; el relleno, tenue.
   function figura(d, k, cx, yb, o = {}) {
@@ -163,8 +163,8 @@
 
   // ---------- geometría fija ----------
   function geometria(d) {
-    const nf = filasMax(d), cuerda = 32 + (nf - 1) * FILA_ITEM;
-    const filaH = 18 + 20 + cuerda + 48;            // número, brazo inclinado, cuerdas, platillo y rótulo
+    const nf = filasMax(d), cuerda = 36 + (nf - 1) * FILA_ITEM;
+    const filaH = 18 + 20 + cuerda + 52;            // número, brazo inclinado, cuerdas, platillo y rótulo
     const n = (d.balanzas || []).length + ((d.trabajo || []).length ? 1 : 0);
     const reglaY = n * filaH + 24, fantasmaY = d.marca ? reglaY + 44 : n * filaH + 16;
     return { cuerda, filaH, n, reglaY, fantasmaY, alto: fantasmaY + 16 };
@@ -200,7 +200,7 @@
   // Un rótulo hecho de fichas, centrado en x; las figuras se dibujan en chico junto a su cantidad.
   function fichasSVG(d, fichas, x, y, clase) {
     const piezas = (fichas || []).map(f => (typeof f === 'string' ? { t: f } : f));
-    const anchoDe = f => (f.f ? T.ancho(String(f.n === undefined ? '' : f.n), TAM, 700) + 2 + 15 : T.ancho(f.t, TAM, 700));
+    const anchoDe = f => 1.1 * (f.f ? T.ancho(String(f.n === undefined ? '' : f.n), TAM, 700) + 2 + 15 : T.ancho(f.t, TAM, 700));
     const w = piezas.reduce((a, f) => a + anchoDe(f) + 3, 0);
     let xx = Math.max(4, Math.min(W - 4 - w, x - w / 2)), s = '';
     for (const f of piezas) {
@@ -283,7 +283,7 @@
       if (f && (Number.isFinite(f.marca) || f.der)) {
         let fv = null;
         if (Number.isFinite(f.marca) && d.marca) { const b0 = d.trabajo[d.marca.vista || 0]; fv = { ...b0, traba: false, [d.marca.lado]: { ...b0[d.marca.lado], [d.marca.figura]: Math.max(0, f.marca) } }; }
-        else if (f.der) fv = { ...d.trabajo[d.trabajo.length - 1], traba: false, der: f.der, quita: null };
+        else if (f.der && k === d.trabajo.length - 1) fv = { ...d.trabajo[d.trabajo.length - 1], traba: false, der: f.der, quita: null };
         if (fv && pesoLado(d, fv.izq) !== null && pesoLado(d, fv.der) !== null) s += balanzaSVG(d, g, i, fv, { fantasma: true });
       }
     }
