@@ -36,7 +36,12 @@ Cómo se hizo:
 Lo que hay que saber:
 
 - **La clasificó un modelo, no una persona.** Se hizo sobre etiquetas y títulos, y solo se leyeron enunciados en las etiquetas grandes. Nadie la revisó ficha por ficha. En «Otros» quedaron 51 fichas.
-- **894 fichas quedan sin `unidad` en la ficha.** Su subtema pertenece a una unidad de otro curso (casi todas son de razonamiento matemático que en el catálogo viven en aritmética o geometría) y el validador exige que la unidad sea del mismo curso. La unidad correcta sí está en `subtemas.json`. Es una decisión abierta (más abajo).
+- **Las 894 fichas de otro curso ya tienen `unidad` (14 nov).** Su subtema pertenece a una unidad de otro curso (casi todas son de razonamiento matemático que en el catálogo viven en aritmética o geometría). Un modelo leyó el enunciado y la solución de cada una: **815 correctas, 32 incorrectas y 47 dudosas**. Las incorrectas tomaron la unidad del modelo; las dudosas, la alternativa del modelo, marcadas `por-revisar`. Todas llevan `banco.revision_unidad` con `por: modelo` hasta que las mire una persona (`revision-unidades.json` en la rama). Gerson decidió que el validador acepte una unidad de otro curso: `curso` es el del libro y `unidad`, donde se estudia. Lo que se vio al revisar:
+  - Probabilidades (100 de 100), mezclas (26 de 26), productos notables (12 de 12) y cónicas (93 de 96) estaban bien.
+  - Estaban mal dos subtemas enteros, y se corrigieron en `subtemas.json`: «Series telescópicas» va a álgebra · sucesiones y series, y «Sucesiones literales» a razonamiento matemático · razonamiento inductivo.
+  - El bloque con más errores es «Razonamiento geométrico» de RM: el subtema del libro no sirve para elegir la unidad. Ahí caen lúnulas y sectores (van a áreas circulares), caza de ángulos en triángulos y problemas de congruencia o del teorema de la bisectriz.
+  - 652 de las 894 no tienen unidad razonable en su propio curso: RM no tiene unidades de conteo, probabilidades, fracciones, porcentajes, series ni mezclas.
+- **Edades y móviles (100 fichas) quedan en los dos cursos:** principal en razonamiento matemático · planteo de ecuaciones, y en `unidades_tambien`, aritmética · razonamiento numérico.
 
 ## Cobertura por curso
 
@@ -284,7 +289,7 @@ Nueve de cada diez figuras son de dos tipos generales, «tarjeta de relaciones»
 
 ## Decisiones abiertas
 
-- **Unidad de otro curso.** El validador rechaza una ficha cuya `unidad` no sea de su curso. Eso deja 894 fichas sin `unidad`, sobre todo las de razonamiento matemático que el catálogo enseña en aritmética (porcentajes, fracciones, sucesiones, combinatoria) o en geometría. Opciones: permitir la unidad de otro curso en el validador, o dejarlo como está y leer la unidad en `subtemas.json`.
+- ~~**Unidad de otro curso.**~~ Resuelto el 14 nov: el validador la acepta (ver arriba).
 - **Edades y móviles** (100 fichas de razonamiento matemático) quedaron en planteo de ecuaciones, que es donde la app los enseña. El sílabo de aritmética también los nombra, en razonamiento numérico.
 - **Recta y cónicas** aparecen en tres unidades del catálogo (geometría analítica, recta en el plano y cónicas, las dos últimas en trigonometría). Las fichas se repartieron entre las tres según lo que nombra el sílabo de cada una; si se prefiere todo en un solo lado, es un cambio corto.
 - **Revisión por una persona.** Conviene que alguien que conozca los cursos mire el vocabulario de `subtemas.json`, al menos en las unidades que se van a construir primero.
