@@ -3025,7 +3025,7 @@
      "id": "sistema-internacional",
      "nombre": "Sistema Internacional",
      "unidad": "fisica.magnitudes-y-vectores",
-     "fichas": 8
+     "fichas": 7
     },
     {
      "id": "magnitudes-fundamentales-y-derivadas",
@@ -3037,7 +3037,7 @@
      "id": "principio-de-homogeneidad-dimensional",
      "nombre": "Principio de homogeneidad dimensional",
      "unidad": "fisica.magnitudes-y-vectores",
-     "fichas": 24
+     "fichas": 25
     },
     {
      "id": "formulas-empiricas-y-exponentes",
@@ -3115,31 +3115,31 @@
      "id": "suma-de-vectores-por-metodo-grafico",
      "nombre": "Suma de vectores por método gráfico",
      "unidad": "fisica.magnitudes-y-vectores",
-     "fichas": 24
+     "fichas": 16
     },
     {
      "id": "resultante-de-dos-vectores",
      "nombre": "Resultante de dos vectores",
      "unidad": "fisica.magnitudes-y-vectores",
-     "fichas": 15
+     "fichas": 9
     },
     {
      "id": "componentes-y-vector-unitario",
      "nombre": "Componentes y vector unitario",
      "unidad": "fisica.magnitudes-y-vectores",
-     "fichas": 10
+     "fichas": 21
     },
     {
      "id": "combinacion-lineal-de-vectores",
      "nombre": "Combinación lineal de vectores",
      "unidad": "fisica.magnitudes-y-vectores",
-     "fichas": 7
+     "fichas": 9
     },
     {
      "id": "producto-escalar-y-vectorial",
      "nombre": "Producto escalar y vectorial",
      "unidad": "fisica.magnitudes-y-vectores",
-     "fichas": 13
+     "fichas": 14
     }
    ],
    "etiquetas": {
@@ -3211,31 +3211,31 @@
      "id": "escalas-termometricas",
      "nombre": "Escalas termométricas",
      "unidad": "fisica.temperatura-y-calor",
-     "fichas": 10
+     "fichas": 11
     },
     {
      "id": "dilatacion",
      "nombre": "Dilatación",
      "unidad": "fisica.temperatura-y-calor",
-     "fichas": 38
+     "fichas": 37
     },
     {
      "id": "calor-especifico-y-capacidad-calorifica",
      "nombre": "Calor específico y capacidad calorífica",
      "unidad": "fisica.temperatura-y-calor",
-     "fichas": 18
+     "fichas": 17
     },
     {
      "id": "calorimetria",
      "nombre": "Calorimetría",
      "unidad": "fisica.temperatura-y-calor",
-     "fichas": 33
+     "fichas": 31
     },
     {
      "id": "cambios-de-fase-y-calor-latente",
      "nombre": "Cambios de fase y calor latente",
      "unidad": "fisica.temperatura-y-calor",
-     "fichas": 31
+     "fichas": 33
     },
     {
      "id": "conduccion-conveccion-y-radiacion",
@@ -3247,7 +3247,7 @@
      "id": "energia-mecanica-convertida-en-calor",
      "nombre": "Energía mecánica convertida en calor",
      "unidad": "fisica.temperatura-y-calor",
-     "fichas": 11
+     "fichas": 12
     }
    ],
    "etiquetas": {
@@ -3405,25 +3405,25 @@
      "id": "cantidad-de-movimiento",
      "nombre": "Cantidad de movimiento",
      "unidad": "fisica.impulso-y-choques",
-     "fichas": 10
+     "fichas": 11
     },
     {
      "id": "impulso-y-fuerza-media",
      "nombre": "Impulso y fuerza media",
      "unidad": "fisica.impulso-y-choques",
-     "fichas": 30
+     "fichas": 31
     },
     {
      "id": "impulso-de-fuerzas-variables",
      "nombre": "Impulso de fuerzas variables",
      "unidad": "fisica.impulso-y-choques",
-     "fichas": 21
+     "fichas": 20
     },
     {
      "id": "conservacion-de-la-cantidad-de-movimiento",
      "nombre": "Conservación de la cantidad de movimiento",
      "unidad": "fisica.impulso-y-choques",
-     "fichas": 18
+     "fichas": 17
     },
     {
      "id": "explosiones-y-retroceso",
@@ -3435,13 +3435,13 @@
      "id": "choques-elasticos-e-inelasticos",
      "nombre": "Choques elásticos e inelásticos",
      "unidad": "fisica.impulso-y-choques",
-     "fichas": 15
+     "fichas": 14
     },
     {
      "id": "coeficiente-de-restitucion",
      "nombre": "Coeficiente de restitución",
      "unidad": "fisica.impulso-y-choques",
-     "fichas": 7
+     "fichas": 8
     },
     {
      "id": "centro-de-masa",
@@ -3750,7 +3750,7 @@
      "id": "caida-libre",
      "nombre": "Caída libre",
      "unidad": "fisica.movimiento-rectilineo",
-     "fichas": 54
+     "fichas": 56
     },
     {
      "id": "encuentros-en-caida-libre",
@@ -3762,19 +3762,19 @@
      "id": "tiro-parabolico",
      "nombre": "Tiro parabólico",
      "unidad": "fisica.movimiento-parabolico-y-circular",
-     "fichas": 29
+     "fichas": 25
     },
     {
      "id": "tiro-sobre-planos-y-rebotes",
      "nombre": "Tiro sobre planos y rebotes",
      "unidad": "fisica.movimiento-parabolico-y-circular",
-     "fichas": 8
+     "fichas": 9
     },
     {
      "id": "movimiento-en-dos-dimensiones",
      "nombre": "Movimiento en dos dimensiones",
      "unidad": "fisica.movimiento-parabolico-y-circular",
-     "fichas": 11
+     "fichas": 12
     },
     {
      "id": "velocidad-relativa",
@@ -4006,19 +4006,19 @@
      "id": "segunda-ley-de-newton",
      "nombre": "Segunda ley de Newton",
      "unidad": "fisica.dinamica",
-     "fichas": 6
+     "fichas": 10
     },
     {
      "id": "rozamiento-en-movimiento",
      "nombre": "Rozamiento en movimiento",
      "unidad": "fisica.dinamica",
-     "fichas": 18
+     "fichas": 13
     },
     {
      "id": "bloques-poleas-y-planos-inclinados",
      "nombre": "Bloques, poleas y planos inclinados",
      "unidad": "fisica.dinamica",
-     "fichas": 12
+     "fichas": 15
     },
     {
      "id": "dinamica-circular",
@@ -4036,7 +4036,7 @@
      "id": "movimiento-relativo-y-sistemas-inerciales",
      "nombre": "Movimiento relativo y sistemas inerciales",
      "unidad": "fisica.dinamica",
-     "fichas": 8
+     "fichas": 6
     },
     {
      "id": "interacciones-fundamentales",
@@ -4126,31 +4126,31 @@
      "id": "resistencia-resistividad-y-ley-de-ohm",
      "nombre": "Resistencia, resistividad y ley de Ohm",
      "unidad": "fisica.corriente-y-circuitos",
-     "fichas": 29
+     "fichas": 28
     },
     {
      "id": "resistencias-en-serie-y-en-paralelo",
      "nombre": "Resistencias en serie y en paralelo",
      "unidad": "fisica.corriente-y-circuitos",
-     "fichas": 21
+     "fichas": 23
     },
     {
      "id": "puentes-simetrias-y-redes-infinitas",
      "nombre": "Puentes, simetrías y redes infinitas",
      "unidad": "fisica.corriente-y-circuitos",
-     "fichas": 20
+     "fichas": 22
     },
     {
      "id": "fuerza-electromotriz",
      "nombre": "Fuerza electromotriz",
      "unidad": "fisica.corriente-y-circuitos",
-     "fichas": 19
+     "fichas": 11
     },
     {
      "id": "leyes-de-kirchhoff",
      "nombre": "Leyes de Kirchhoff",
      "unidad": "fisica.corriente-y-circuitos",
-     "fichas": 11
+     "fichas": 16
     },
     {
      "id": "potencia-y-efecto-joule",
@@ -4642,7 +4642,7 @@
      "id": "principio-de-incertidumbre",
      "nombre": "Principio de incertidumbre",
      "unidad": "fisica.fisica-moderna",
-     "fichas": 10
+     "fichas": 9
     },
     {
      "id": "modelo-de-bohr-y-espectros-atomicos",
@@ -4654,7 +4654,7 @@
      "id": "ondas-de-materia-de-de-broglie",
      "nombre": "Ondas de materia de De Broglie",
      "unidad": "fisica.fisica-moderna",
-     "fichas": 6
+     "fichas": 7
     },
     {
      "id": "efecto-compton",
@@ -4684,19 +4684,19 @@
      "id": "ley-de-gravitacion-universal",
      "nombre": "Ley de gravitación universal",
      "unidad": "fisica.gravitacion",
-     "fichas": 5
+     "fichas": 3
     },
     {
      "id": "campo-gravitatorio",
      "nombre": "Campo gravitatorio",
      "unidad": "fisica.gravitacion",
-     "fichas": 13
+     "fichas": 10
     },
     {
      "id": "variacion-de-g-con-la-altura",
      "nombre": "Variación de g con la altura",
      "unidad": "fisica.gravitacion",
-     "fichas": 2
+     "fichas": 5
     },
     {
      "id": "leyes-de-kepler",
@@ -4708,7 +4708,7 @@
      "id": "satelites-y-orbitas-circulares",
      "nombre": "Satélites y órbitas circulares",
      "unidad": "fisica.gravitacion",
-     "fichas": 9
+     "fichas": 11
     },
     {
      "id": "energia-gravitatoria-y-velocidad-de-escape",
@@ -4792,13 +4792,13 @@
      "id": "densidad-y-presion",
      "nombre": "Densidad y presión",
      "unidad": "fisica.fluidos",
-     "fichas": 9
+     "fichas": 4
     },
     {
      "id": "presion-hidrostatica-y-atmosferica",
      "nombre": "Presión hidrostática y atmosférica",
      "unidad": "fisica.fluidos",
-     "fichas": 10
+     "fichas": 16
     },
     {
      "id": "manometro-barometro-y-vasos-comunicantes",
@@ -4810,13 +4810,13 @@
      "id": "principio-de-pascal",
      "nombre": "Principio de Pascal",
      "unidad": "fisica.fluidos",
-     "fichas": 9
+     "fichas": 10
     },
     {
      "id": "principio-de-arquimedes",
      "nombre": "Principio de Arquímedes",
      "unidad": "fisica.fluidos",
-     "fichas": 24
+     "fichas": 23
     },
     {
      "id": "flotacion",
@@ -4828,13 +4828,13 @@
      "id": "fuerza-hidrostatica-sobre-superficies",
      "nombre": "Fuerza hidrostática sobre superficies",
      "unidad": "fisica.fluidos",
-     "fichas": 2
+     "fichas": 1
     },
     {
      "id": "tension-superficial",
      "nombre": "Tensión superficial",
      "unidad": "fisica.fluidos",
-     "fichas": 10
+     "fichas": 11
     },
     {
      "id": "capilaridad",
@@ -4846,13 +4846,13 @@
      "id": "caudal-y-continuidad",
      "nombre": "Caudal y continuidad",
      "unidad": "fisica.fluidos",
-     "fichas": 12
+     "fichas": 10
     },
     {
      "id": "bernoulli-y-torricelli",
      "nombre": "Bernoulli y Torricelli",
      "unidad": "fisica.fluidos",
-     "fichas": 14
+     "fichas": 15
     },
     {
      "id": "procesos-y-diagrama-p-v",
@@ -5063,25 +5063,25 @@
      "id": "magnitudes-angulares",
      "nombre": "Magnitudes angulares",
      "unidad": "fisica.movimiento-parabolico-y-circular",
-     "fichas": 11
+     "fichas": 7
     },
     {
      "id": "mcu",
      "nombre": "MCU",
      "unidad": "fisica.movimiento-parabolico-y-circular",
-     "fichas": 5
+     "fichas": 7
     },
     {
      "id": "mcuv",
      "nombre": "MCUV",
      "unidad": "fisica.movimiento-parabolico-y-circular",
-     "fichas": 18
+     "fichas": 14
     },
     {
      "id": "aceleracion-tangencial-y-centripeta",
      "nombre": "Aceleración tangencial y centrípeta",
      "unidad": "fisica.movimiento-parabolico-y-circular",
-     "fichas": 13
+     "fichas": 15
     },
     {
      "id": "transmision-de-movimientos",
@@ -5093,7 +5093,7 @@
      "id": "encuentros-en-movimiento-circular",
      "nombre": "Encuentros en movimiento circular",
      "unidad": "fisica.movimiento-parabolico-y-circular",
-     "fichas": 5
+     "fichas": 6
     },
     {
      "id": "rodadura-y-rotacion-de-solidos",
@@ -5105,19 +5105,19 @@
      "id": "movimiento-circular-y-caida-combinados",
      "nombre": "Movimiento circular y caída combinados",
      "unidad": "fisica.movimiento-parabolico-y-circular",
-     "fichas": 6
+     "fichas": 7
     },
     {
      "id": "graficas-del-movimiento-circular",
      "nombre": "Gráficas del movimiento circular",
      "unidad": "fisica.movimiento-parabolico-y-circular",
-     "fichas": 3
+     "fichas": 6
     },
     {
      "id": "movimiento-en-dos-dimensiones",
      "nombre": "Movimiento en dos dimensiones",
      "unidad": "fisica.movimiento-parabolico-y-circular",
-     "fichas": 3
+     "fichas": 2
     }
    ],
    "etiquetas": {
@@ -5194,25 +5194,25 @@
      "id": "caracteristicas-de-las-ondas-electromagneticas",
      "nombre": "Características de las ondas electromagnéticas",
      "unidad": "fisica.ondas-electromagneticas",
-     "fichas": 13
+     "fichas": 10
     },
     {
      "id": "campos-y-ecuacion-de-la-onda",
      "nombre": "Campos y ecuación de la onda",
      "unidad": "fisica.ondas-electromagneticas",
-     "fichas": 13
+     "fichas": 14
     },
     {
      "id": "longitud-de-onda-frecuencia-y-periodo",
      "nombre": "Longitud de onda, frecuencia y período",
      "unidad": "fisica.ondas-electromagneticas",
-     "fichas": 7
+     "fichas": 8
     },
     {
      "id": "rapidez-de-la-luz",
      "nombre": "Rapidez de la luz",
      "unidad": "fisica.ondas-electromagneticas",
-     "fichas": 13
+     "fichas": 15
     },
     {
      "id": "espectro-electromagnetico",
@@ -5224,7 +5224,7 @@
      "id": "fotones-potencia-e-intensidad",
      "nombre": "Fotones: potencia e intensidad",
      "unidad": "fisica.fisica-moderna",
-     "fichas": 1
+     "fichas": 0
     }
    ],
    "etiquetas": {
@@ -5285,13 +5285,13 @@
      "id": "ondas-transversales-y-longitudinales",
      "nombre": "Ondas transversales y longitudinales",
      "unidad": "fisica.ondas-mecanicas",
-     "fichas": 6
+     "fichas": 5
     },
     {
      "id": "funcion-de-onda",
      "nombre": "Función de onda",
      "unidad": "fisica.ondas-mecanicas",
-     "fichas": 22
+     "fichas": 23
     },
     {
      "id": "rapidez-de-onda-en-una-cuerda",
@@ -5327,13 +5327,13 @@
      "id": "efecto-doppler",
      "nombre": "Efecto Doppler",
      "unidad": "fisica.ondas-mecanicas",
-     "fichas": 5
+     "fichas": 4
     },
     {
      "id": "doppler-relativista-de-la-luz",
      "nombre": "Doppler relativista de la luz",
      "unidad": "fisica.fisica-moderna",
-     "fichas": 0
+     "fichas": 1
     },
     {
      "id": "otros",
@@ -5414,13 +5414,13 @@
      "id": "refraccion-y-ley-de-snell",
      "nombre": "Refracción y ley de Snell",
      "unidad": "fisica.optica-geometrica",
-     "fichas": 24
+     "fichas": 22
     },
     {
      "id": "reflexion-total",
      "nombre": "Reflexión total",
      "unidad": "fisica.optica-geometrica",
-     "fichas": 8
+     "fichas": 10
     },
     {
      "id": "espejos-esfericos",
@@ -5566,7 +5566,7 @@
      "id": "gases-ideales-y-ecuacion-de-estado",
      "nombre": "Gases ideales y ecuación de estado",
      "unidad": "fisica.termodinamica",
-     "fichas": 18
+     "fichas": 16
     },
     {
      "id": "modelo-cinetico-y-energia-interna",
@@ -5578,13 +5578,13 @@
      "id": "primera-ley",
      "nombre": "Primera ley",
      "unidad": "fisica.termodinamica",
-     "fichas": 22
+     "fichas": 23
     },
     {
      "id": "procesos-y-diagrama-p-v",
      "nombre": "Procesos y diagrama P-V",
      "unidad": "fisica.termodinamica",
-     "fichas": 20
+     "fichas": 18
     },
     {
      "id": "procesos-adiabaticos",
@@ -5596,13 +5596,13 @@
      "id": "ciclos-termodinamicos",
      "nombre": "Ciclos termodinámicos",
      "unidad": "fisica.termodinamica",
-     "fichas": 10
+     "fichas": 13
     },
     {
      "id": "maquinas-termicas-y-ciclo-de-carnot",
      "nombre": "Máquinas térmicas y ciclo de Carnot",
      "unidad": "fisica.termodinamica",
-     "fichas": 26
+     "fichas": 27
     },
     {
      "id": "refrigeradores-y-bombas-de-calor",
@@ -5620,7 +5620,7 @@
      "id": "cambios-de-fase-y-calor-latente",
      "nombre": "Cambios de fase y calor latente",
      "unidad": "fisica.temperatura-y-calor",
-     "fichas": 1
+     "fichas": 0
     }
    ],
    "etiquetas": {
@@ -5746,7 +5746,7 @@
      "id": "conservacion-de-la-energia-mecanica",
      "nombre": "Conservación de la energía mecánica",
      "unidad": "fisica.trabajo-y-energia",
-     "fichas": 18
+     "fichas": 16
     },
     {
      "id": "energia-con-fuerzas-no-conservativas",
@@ -5764,7 +5764,7 @@
      "id": "energia-con-dinamica-circular",
      "nombre": "Energía con dinámica circular",
      "unidad": "fisica.trabajo-y-energia",
-     "fichas": 6
+     "fichas": 8
     }
    ],
    "etiquetas": {
@@ -6578,7 +6578,7 @@
      "id": "ecuacion-vectorial-de-la-recta",
      "nombre": "Ecuación vectorial de la recta",
      "unidad": "geometria.geometria-analitica",
-     "fichas": 29
+     "fichas": 34
     },
     {
      "id": "area-con-coordenadas",
@@ -6590,7 +6590,7 @@
      "id": "paralelas-y-perpendiculares",
      "nombre": "Paralelas y perpendiculares",
      "unidad": "geometria.geometria-analitica",
-     "fichas": 9
+     "fichas": 7
     },
     {
      "id": "interseccion-de-rectas",
@@ -6608,19 +6608,19 @@
      "id": "producto-escalar-y-proyecciones",
      "nombre": "Producto escalar y proyecciones",
      "unidad": "fisica.magnitudes-y-vectores",
-     "fichas": 10
+     "fichas": 7
     },
     {
      "id": "operaciones-con-vectores",
      "nombre": "Operaciones con vectores",
      "unidad": "fisica.magnitudes-y-vectores",
-     "fichas": 11
+     "fichas": 12
     },
     {
      "id": "lineas-notables-con-coordenadas",
      "nombre": "Líneas notables con coordenadas",
      "unidad": "geometria.geometria-analitica",
-     "fichas": 6
+     "fichas": 5
     },
     {
      "id": "simetria-respecto-de-una-recta",
@@ -8221,19 +8221,19 @@
      "id": "ka-kb-y-kw",
      "nombre": "Ka, Kb y Kw",
      "unidad": "quimica.acidos-y-bases",
-     "fichas": 34
+     "fichas": 35
     },
     {
      "id": "ph-y-poh",
      "nombre": "pH y pOH",
      "unidad": "quimica.acidos-y-bases",
-     "fichas": 34
+     "fichas": 35
     },
     {
      "id": "neutralizacion-y-titulacion",
      "nombre": "Neutralización y titulación",
      "unidad": "quimica.acidos-y-bases",
-     "fichas": 29
+     "fichas": 26
     },
     {
      "id": "hidrolisis-de-sales",
@@ -8245,7 +8245,7 @@
      "id": "relaciones-masa-masa-mol-mol-y-volumen-volumen",
      "nombre": "Relaciones masa-masa, mol-mol y volumen-volumen",
      "unidad": "quimica.estequiometria",
-     "fichas": 0
+     "fichas": 1
     }
    ],
    "etiquetas": {
@@ -8309,7 +8309,7 @@
      "id": "semirreacciones-y-potenciales-de-reduccion",
      "nombre": "Semirreacciones y potenciales de reducción",
      "unidad": "quimica.electroquimica",
-     "fichas": 33
+     "fichas": 27
     },
     {
      "id": "celdas-galvanicas-y-fem",
@@ -8321,7 +8321,7 @@
      "id": "espontaneidad-redox",
      "nombre": "Espontaneidad redox",
      "unidad": "quimica.electroquimica",
-     "fichas": 5
+     "fichas": 12
     },
     {
      "id": "ecuacion-de-nernst",
@@ -8351,7 +8351,7 @@
      "id": "corrosion",
      "nombre": "Corrosión",
      "unidad": "quimica.ambiente-y-quimica-aplicada",
-     "fichas": 3
+     "fichas": 2
     }
    ],
    "etiquetas": {
@@ -8498,19 +8498,19 @@
      "id": "reacciones-reversibles-y-equilibrio-dinamico",
      "nombre": "Reacciones reversibles y equilibrio dinámico",
      "unidad": "quimica.equilibrio-quimico",
-     "fichas": 19
+     "fichas": 14
     },
     {
      "id": "kc-y-kp",
      "nombre": "Kc y Kp",
      "unidad": "quimica.equilibrio-quimico",
-     "fichas": 28
+     "fichas": 30
     },
     {
      "id": "composicion-en-el-equilibrio",
      "nombre": "Composición en el equilibrio",
      "unidad": "quimica.equilibrio-quimico",
-     "fichas": 26
+     "fichas": 27
     },
     {
      "id": "grado-de-reaccion",
@@ -8534,13 +8534,13 @@
      "id": "principio-de-le-chatelier",
      "nombre": "Principio de Le Chatelier",
      "unidad": "quimica.equilibrio-quimico",
-     "fichas": 22
+     "fichas": 23
     },
     {
      "id": "ka-kb-y-kw",
      "nombre": "Ka, Kb y Kw",
      "unidad": "quimica.acidos-y-bases",
-     "fichas": 8
+     "fichas": 7
     },
     {
      "id": "velocidad-y-orden-de-reaccion",
@@ -8552,13 +8552,13 @@
      "id": "teorias-de-arrhenius-brnsted-lowry-y-lewis",
      "nombre": "Teorías de Arrhenius, Brønsted-Lowry y Lewis",
      "unidad": "quimica.acidos-y-bases",
-     "fichas": 0
+     "fichas": 1
     },
     {
      "id": "perfil-de-energia-de-una-reaccion",
      "nombre": "Perfil de energía de una reacción",
      "unidad": "quimica.cinetica-quimica",
-     "fichas": 0
+     "fichas": 1
     }
    ],
    "etiquetas": {
@@ -8613,7 +8613,7 @@
      "id": "leyes-de-boyle-charles-y-gay-lussac",
      "nombre": "Leyes de Boyle, Charles y Gay-Lussac",
      "unidad": "quimica.gases",
-     "fichas": 29
+     "fichas": 30
     },
     {
      "id": "graficas-de-procesos-gaseosos",
@@ -8625,7 +8625,7 @@
      "id": "ecuacion-de-estado",
      "nombre": "Ecuación de estado",
      "unidad": "quimica.gases",
-     "fichas": 28
+     "fichas": 27
     },
     {
      "id": "densidad-y-masa-molar-de-gases",
@@ -8643,7 +8643,7 @@
      "id": "mezclas-dalton-y-amagat",
      "nombre": "Mezclas: Dalton y Amagat",
      "unidad": "quimica.gases",
-     "fichas": 42
+     "fichas": 41
     },
     {
      "id": "difusion-y-efusion-graham",
@@ -8661,19 +8661,19 @@
      "id": "gases-humedos-y-humedad-relativa",
      "nombre": "Gases húmedos y humedad relativa",
      "unidad": "quimica.liquidos-y-solidos",
-     "fichas": 23
+     "fichas": 24
     },
     {
      "id": "estequiometria-con-gases",
      "nombre": "Estequiometría con gases",
      "unidad": "quimica.gases",
-     "fichas": 5
+     "fichas": 4
     },
     {
      "id": "propiedades-de-los-estados-de-agregacion",
      "nombre": "Propiedades de los estados de agregación",
      "unidad": "quimica.liquidos-y-solidos",
-     "fichas": 0
+     "fichas": 1
     }
    ],
    "etiquetas": {
@@ -8836,13 +8836,13 @@
      "id": "relaciones-molares-en-una-formula",
      "nombre": "Relaciones molares en una fórmula",
      "unidad": "quimica.mol-y-composicion",
-     "fichas": 5
+     "fichas": 6
     },
     {
      "id": "relaciones-masa-masa-mol-mol-y-volumen-volumen",
      "nombre": "Relaciones masa-masa, mol-mol y volumen-volumen",
      "unidad": "quimica.estequiometria",
-     "fichas": 12
+     "fichas": 11
     },
     {
      "id": "reactivo-limitante-y-en-exceso",
@@ -8854,13 +8854,13 @@
      "id": "rendimiento-de-una-reaccion",
      "nombre": "Rendimiento de una reacción",
      "unidad": "quimica.estequiometria",
-     "fichas": 17
+     "fichas": 18
     },
     {
      "id": "reactivos-impuros",
      "nombre": "Reactivos impuros",
      "unidad": "quimica.estequiometria",
-     "fichas": 23
+     "fichas": 22
     },
     {
      "id": "equivalente-quimico-y-masa-equivalente",
@@ -8884,19 +8884,19 @@
      "id": "masa-atomica-promedio",
      "nombre": "Masa atómica promedio",
      "unidad": "quimica.mol-y-composicion",
-     "fichas": 0
+     "fichas": 2
     },
     {
      "id": "termoquimica",
      "nombre": "Termoquímica",
      "unidad": "quimica.reacciones-y-balance",
-     "fichas": 0
+     "fichas": 1
     },
     {
      "id": "otros",
      "nombre": "Otros",
      "unidad": "quimica.estequiometria",
-     "fichas": 3
+     "fichas": 0
     }
    ],
    "etiquetas": {
@@ -8978,7 +8978,7 @@
      "id": "masa-atomica-promedio",
      "nombre": "Masa atómica promedio",
      "unidad": "quimica.mol-y-composicion",
-     "fichas": 3
+     "fichas": 2
     },
     {
      "id": "iones-y-especies-isoelectronicas",
@@ -9008,7 +9008,7 @@
      "id": "radiacion-electromagnetica-y-fotones",
      "nombre": "Radiación electromagnética y fotones",
      "unidad": "fisica.fisica-moderna",
-     "fichas": 9
+     "fichas": 4
     },
     {
      "id": "numeros-cuanticos-y-orbitales",
@@ -9026,13 +9026,13 @@
      "id": "masa-molecular-y-masa-molar",
      "nombre": "Masa molecular y masa molar",
      "unidad": "quimica.mol-y-composicion",
-     "fichas": 0
+     "fichas": 1
     },
     {
      "id": "longitud-de-onda-frecuencia-y-espectro",
      "nombre": "Longitud de onda, frecuencia y espectro",
      "unidad": "fisica.ondas-electromagneticas",
-     "fichas": 0
+     "fichas": 5
     }
    ],
    "etiquetas": {
@@ -9183,13 +9183,13 @@
      "id": "alcanos-alquenos-y-alquinos",
      "nombre": "Alcanos, alquenos y alquinos",
      "unidad": "quimica.hidrocarburos",
-     "fichas": 12
+     "fichas": 10
     },
     {
      "id": "nomenclatura-de-hidrocarburos",
      "nombre": "Nomenclatura de hidrocarburos",
      "unidad": "quimica.hidrocarburos",
-     "fichas": 11
+     "fichas": 17
     },
     {
      "id": "cicloalcanos",
@@ -9207,13 +9207,13 @@
      "id": "grupos-funcionales",
      "nombre": "Grupos funcionales",
      "unidad": "quimica.funciones-organicas",
-     "fichas": 12
+     "fichas": 13
     },
     {
      "id": "nomenclatura-de-compuestos-monofuncionales",
      "nombre": "Nomenclatura de compuestos monofuncionales",
      "unidad": "quimica.funciones-organicas",
-     "fichas": 21
+     "fichas": 15
     },
     {
      "id": "carbohidratos",
@@ -9225,19 +9225,19 @@
      "id": "petroleo-y-combustion",
      "nombre": "Petróleo y combustión",
      "unidad": "quimica.recursos-naturales",
-     "fichas": 5
+     "fichas": 6
     },
     {
      "id": "reacciones-de-funciones-organicas",
      "nombre": "Reacciones de funciones orgánicas",
      "unidad": "quimica.funciones-organicas",
-     "fichas": 0
+     "fichas": 1
     },
     {
      "id": "otros",
      "nombre": "Otros",
      "unidad": "quimica.hidrocarburos",
-     "fichas": 1
+     "fichas": 0
     }
    ],
    "etiquetas": {
@@ -9297,19 +9297,19 @@
      "id": "balance-por-tanteo",
      "nombre": "Balance por tanteo",
      "unidad": "quimica.reacciones-y-balance",
-     "fichas": 14
+     "fichas": 10
     },
     {
      "id": "oxidacion-reduccion-y-agentes",
      "nombre": "Oxidación, reducción y agentes",
      "unidad": "quimica.reacciones-y-balance",
-     "fichas": 17
+     "fichas": 18
     },
     {
      "id": "balance-redox-por-ion-electron",
      "nombre": "Balance redox por ion-electrón",
      "unidad": "quimica.reacciones-y-balance",
-     "fichas": 43
+     "fichas": 46
     },
     {
      "id": "termoquimica",
@@ -9593,7 +9593,7 @@
      "id": "numero-de-avogadro-y-mol",
      "nombre": "Número de Avogadro y mol",
      "unidad": "quimica.mol-y-composicion",
-     "fichas": 50
+     "fichas": 49
     },
     {
      "id": "relaciones-molares-en-una-formula",
@@ -9629,7 +9629,7 @@
      "id": "masa-molecular-y-masa-molar",
      "nombre": "Masa molecular y masa molar",
      "unidad": "quimica.mol-y-composicion",
-     "fichas": 0
+     "fichas": 1
     }
    ],
    "etiquetas": {

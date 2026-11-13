@@ -5685,7 +5685,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Evalúa signos de las reglas de Kirchhoff.",
-   "familia": "signos en leyes de Kirchhoff"
+   "familia": "signos en leyes de Kirchhoff",
+   "subtema": "Leyes de Kirchhoff"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:396": {
    "veredicto": "correcta",
@@ -5694,7 +5695,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Varias fuentes resueltas por nodos: Kirchhoff.",
-   "familia": "nodos con fuentes paralelas"
+   "familia": "nodos con fuentes paralelas",
+   "subtema": "Leyes de Kirchhoff"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:397": {
    "veredicto": "correcta",
@@ -5703,7 +5705,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Circuito de dos fuentes resuelto por nodos.",
-   "familia": "circuito de dos mallas"
+   "familia": "circuito de dos mallas",
+   "subtema": "Leyes de Kirchhoff"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:398": {
    "veredicto": "correcta",
@@ -5712,7 +5715,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Circuito de dos fuentes resuelto por nodos.",
-   "familia": "circuito de dos fuentes"
+   "familia": "circuito de dos fuentes",
+   "subtema": "Leyes de Kirchhoff"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:399": {
    "veredicto": "correcta",
@@ -5721,7 +5725,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Es reducción de red con una sola fuente ideal, no fuerza electromotriz.",
-   "familia": "rama directa a la fuente"
+   "familia": "rama directa a la fuente",
+   "subtema": "Resistencias en serie y en paralelo"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:400": {
    "veredicto": "correcta",
@@ -5738,7 +5743,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Se resuelve con ley de nodos.",
-   "familia": "resistencias por ley de nodos"
+   "familia": "resistencias por ley de nodos",
+   "subtema": "Leyes de Kirchhoff"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:402": {
    "veredicto": "correcta",
@@ -5747,7 +5753,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Condición de puente equilibrado.",
-   "familia": "puente equilibrado divisor"
+   "familia": "puente equilibrado divisor",
+   "subtema": "Puentes, simetrías y redes infinitas"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:403": {
    "veredicto": "correcta",
@@ -6173,7 +6180,8 @@
    "tanda": "vocabulario-fyq",
    "ficha_rota": true,
    "nota": "Datos incompatibles: la corriente exige 9 Ω y la red da máximo 3 Ω. Es equivalente de red.",
-   "familia": "red con datos incompatibles"
+   "familia": "red con datos incompatibles",
+   "subtema": "Resistencias en serie y en paralelo"
   },
   "1GnvSEjr1gndPCcaYBQBTQJpl01GFfaPc:propuesto:42": {
    "veredicto": "correcta",
@@ -6454,7 +6462,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Lo central es la simetría de la red, no la ley de Ohm.",
-   "familia": "red simétrica con gráfica óhmica"
+   "familia": "red simétrica con gráfica óhmica",
+   "subtema": "Puentes, simetrías y redes infinitas"
   },
   "1GnvSEjr1gndPCcaYBQBTQJpl01GFfaPc:propuesto:74": {
    "veredicto": "correcta",
@@ -6723,7 +6732,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "No hay rozamiento; son fuerzas de contacto entre bloques.",
-   "familia": "contacto entre bloques acelerados"
+   "familia": "contacto entre bloques acelerados",
+   "subtema": "Bloques, poleas y planos inclinados"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:118": {
    "veredicto": "correcta",
@@ -6740,7 +6750,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Atwood ideal, sin rozamiento.",
-   "familia": "máquina de Atwood"
+   "familia": "máquina de Atwood",
+   "subtema": "Bloques, poleas y planos inclinados"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:120": {
    "veredicto": "correcta",
@@ -6749,7 +6760,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Segunda ley vertical, sin rozamiento.",
-   "familia": "tensiones en cadena acelerada"
+   "familia": "tensiones en cadena acelerada",
+   "subtema": "Segunda ley de Newton"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:121": {
    "veredicto": "correcta",
@@ -6758,7 +6770,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Segunda ley vectorial, sin rozamiento.",
-   "familia": "fuerza desde aceleración vectorial"
+   "familia": "fuerza desde aceleración vectorial",
+   "subtema": "Segunda ley de Newton"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:122": {
    "veredicto": "correcta",
@@ -6767,7 +6780,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Polea con dos masas, sin rozamiento.",
-   "familia": "soporte de polea fija"
+   "familia": "soporte de polea fija",
+   "subtema": "Bloques, poleas y planos inclinados"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:123": {
    "veredicto": "correcta",
@@ -6872,7 +6886,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Es tercera ley, no marcos inerciales.",
-   "familia": "tercera ley de Newton"
+   "familia": "tercera ley de Newton",
+   "subtema": "Segunda ley de Newton"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:96": {
    "veredicto": "correcta",
@@ -6881,7 +6896,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Es tercera ley, no marcos inerciales.",
-   "familia": "pares de acción y reacción"
+   "familia": "pares de acción y reacción",
+   "subtema": "Segunda ley de Newton"
   },
   "1ZZh2gAD4UREhXMTwyhFFE0WYlXGjhLEb:propuesto:1": {
    "veredicto": "correcta",
@@ -7549,7 +7565,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Es partícula en caja con λ=2L; no usa la relación de incertidumbre.",
-   "familia": "momento en pozo infinito"
+   "familia": "momento en pozo infinito",
+   "subtema": "Ondas de materia de De Broglie"
   },
   "1kBqOrTSBKIZbAjFP1gx_j8xRB4lH0PDN:resuelto:11": {
    "veredicto": "correcta",
@@ -8311,7 +8328,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Lo central es f constante y λ menor al cambiar de medio; solo III toca fotones.",
-   "familia": "onda que cambia de medio"
+   "familia": "onda que cambia de medio",
+   "subtema": "Longitud de onda, frecuencia y período"
   },
   "13Ha3JNiQ_YwB_MUx6OIniThhMgfcRqvl:seminario-1:27": {
    "veredicto": "correcta",
@@ -8600,7 +8618,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Solo usa c=λν, sin fotones; es de ondas electromagnéticas.",
-   "familia": "λ por frecuencia c=λν"
+   "familia": "λ por frecuencia c=λν",
+   "subtema": "Longitud de onda, frecuencia y espectro"
   },
   "13Ha3JNiQ_YwB_MUx6OIniThhMgfcRqvl:seminario-1:64": {
    "veredicto": "correcta",
@@ -8817,7 +8836,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Solo usa c=λν, sin fotones; es de ondas electromagnéticas.",
-   "familia": "frecuencia por c=λν"
+   "familia": "frecuencia por c=λν",
+   "subtema": "Longitud de onda, frecuencia y espectro"
   },
   "1zRF5pCRuTv91slxspTgiOWmw7sIeGUBi:seminario-2005-ii-1:34": {
    "veredicto": "correcta",
@@ -8842,7 +8862,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Orden de bandas y rapidez en el vacío; es espectro electromagnético, no fotones.",
-   "familia": "orden del espectro y rapidez"
+   "familia": "orden del espectro y rapidez",
+   "subtema": "Longitud de onda, frecuencia y espectro"
   },
   "1zRF5pCRuTv91slxspTgiOWmw7sIeGUBi:seminario-2005-ii-1:37": {
    "veredicto": "correcta",
@@ -8859,7 +8880,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Solo usa c=λν, sin fotones; es de ondas electromagnéticas.",
-   "familia": "frecuencia por c=λν"
+   "familia": "frecuencia por c=λν",
+   "subtema": "Longitud de onda, frecuencia y espectro"
   },
   "1zRF5pCRuTv91slxspTgiOWmw7sIeGUBi:seminario-2005-ii-1:39": {
    "veredicto": "incorrecta",
@@ -8868,7 +8890,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Propagación sin medio y sombras; características de las ondas EM, no fotones.",
-   "familia": "propiedades de propagación de la luz"
+   "familia": "propiedades de propagación de la luz",
+   "subtema": "Longitud de onda, frecuencia y espectro"
   },
   "1zRF5pCRuTv91slxspTgiOWmw7sIeGUBi:seminario-2005-ii-1:40": {
    "veredicto": "correcta",
@@ -9800,7 +9823,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Es presión hidrostática ρgh leída de gráfica.",
-   "familia": "gráfica presión-profundidad"
+   "familia": "gráfica presión-profundidad",
+   "subtema": "Presión hidrostática y atmosférica"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:248": {
    "veredicto": "correcta",
@@ -9809,7 +9833,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Es presión hidrostática ρgh leída de gráfica.",
-   "familia": "gráfica presión-profundidad"
+   "familia": "gráfica presión-profundidad",
+   "subtema": "Presión hidrostática y atmosférica"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:249": {
    "veredicto": "correcta",
@@ -9818,7 +9843,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Es presión hidrostática ρgh leída de gráfica.",
-   "familia": "gráfica presión-profundidad"
+   "familia": "gráfica presión-profundidad",
+   "subtema": "Presión hidrostática y atmosférica"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:250": {
    "veredicto": "correcta",
@@ -9827,7 +9853,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Es diferencia de presión hidrostática con profundidad.",
-   "familia": "presión absoluta con profundidad"
+   "familia": "presión absoluta con profundidad",
+   "subtema": "Presión hidrostática y atmosférica"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:251": {
    "veredicto": "correcta",
@@ -9836,7 +9863,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Es diferencia de presión hidrostática entre capas.",
-   "familia": "presión con capas de líquidos"
+   "familia": "presión con capas de líquidos",
+   "subtema": "Presión hidrostática y atmosférica"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:252": {
    "veredicto": "correcta",
@@ -9853,7 +9881,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Es ρgh directo, no hay manómetro.",
-   "familia": "presión mínima para elevar agua"
+   "familia": "presión mínima para elevar agua",
+   "subtema": "Presión hidrostática y atmosférica"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:254": {
    "veredicto": "correcta",
@@ -10110,7 +10139,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Es prensa hidráulica con cables, no fuerza sobre compuerta.",
-   "familia": "prensa hidráulica y fuerzas"
+   "familia": "prensa hidráulica y fuerzas",
+   "subtema": "Principio de Pascal"
   },
   "1HkP030a93NG5HLm_LXPzIAc7apVIoxvD:propuesto:29": {
    "veredicto": "correcta",
@@ -10390,7 +10420,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Émbolo levantado por desnivel en tubo en U; no hay empuje.",
-   "familia": "émbolo levantado por columna"
+   "familia": "émbolo levantado por columna",
+   "subtema": "Manómetro, barómetro y vasos comunicantes"
   },
   "1HkP030a93NG5HLm_LXPzIAc7apVIoxvD:propuesto:60": {
    "veredicto": "correcta",
@@ -10415,7 +10446,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Necesita Torricelli para la rapidez de salida.",
-   "familia": "Torricelli y caudal de orificio"
+   "familia": "Torricelli y caudal de orificio",
+   "subtema": "Bernoulli y Torricelli"
   },
   "1HkP030a93NG5HLm_LXPzIAc7apVIoxvD:propuesto:63": {
    "veredicto": "correcta",
@@ -10432,7 +10464,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Pide la presión con Bernoulli, no solo continuidad.",
-   "familia": "Bernoulli en tubería horizontal"
+   "familia": "Bernoulli en tubería horizontal",
+   "subtema": "Bernoulli y Torricelli"
   },
   "1HkP030a93NG5HLm_LXPzIAc7apVIoxvD:propuesto:65": {
    "veredicto": "correcta",
@@ -10569,7 +10602,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Es presión hidrostática estática, no hay flujo.",
-   "familia": "presión en ramas inclinadas"
+   "familia": "presión en ramas inclinadas",
+   "subtema": "Presión hidrostática y atmosférica"
   },
   "1HkP030a93NG5HLm_LXPzIAc7apVIoxvD:propuesto:80": {
    "veredicto": "correcta",
@@ -10634,7 +10668,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "La clave es el salto de presión de Laplace en la burbuja.",
-   "familia": "burbuja que asciende isotérmica"
+   "familia": "burbuja que asciende isotérmica",
+   "subtema": "Tensión superficial"
   },
   "1HkP030a93NG5HLm_LXPzIAc7apVIoxvD:propuesto:88": {
    "veredicto": "correcta",
@@ -10811,7 +10846,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Es órbita circular con fuerza gravitatoria, no ley de Kepler.",
-   "familia": "estrellas binarias iguales"
+   "familia": "estrellas binarias iguales",
+   "subtema": "Satélites y órbitas circulares"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:138": {
    "veredicto": "correcta",
@@ -10828,7 +10864,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Es variación de g con la altura.",
-   "familia": "altura con g reducida"
+   "familia": "altura con g reducida",
+   "subtema": "Variación de g con la altura"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:140": {
    "veredicto": "correcta",
@@ -10837,7 +10874,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Es variación de g con la distancia al centro.",
-   "familia": "distancia con g dada"
+   "familia": "distancia con g dada",
+   "subtema": "Variación de g con la altura"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:141": {
    "veredicto": "correcta",
@@ -10846,7 +10884,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Es variación de g con la altura.",
-   "familia": "altura con g reducida"
+   "familia": "altura con g reducida",
+   "subtema": "Variación de g con la altura"
   },
   "1HGPsNVTPafEaIIB6pjYeB24Kz0gRa0c4:propuesto:11": {
    "veredicto": "correcta",
@@ -10855,7 +10894,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Trata modelos geocéntrico y heliocéntrico; la pregunta es ambigua, con dos respuestas defendibles.",
-   "familia": "historia de modelos planetarios"
+   "familia": "historia de modelos planetarios",
+   "subtema": "Leyes de Kepler"
   },
   "1HGPsNVTPafEaIIB6pjYeB24Kz0gRa0c4:propuesto:12": {
    "veredicto": "correcta",
@@ -11096,7 +11136,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Pregunta por el periodo orbital; es de satélites, no de la ley de fuerza.",
-   "familia": "periodo y masa del satélite"
+   "familia": "periodo y masa del satélite",
+   "subtema": "Satélites y órbitas circulares"
   },
   "1HGPsNVTPafEaIIB6pjYeB24Kz0gRa0c4:propuesto:42": {
    "veredicto": "correcta",
@@ -11493,7 +11534,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Se usa K=p²/2m, no impulso de fuerza variable",
-   "familia": "energía cinética desde momento"
+   "familia": "energía cinética desde momento",
+   "subtema": "Cantidad de movimiento"
   },
   "131mLtvzNI6qUaVasTwk2hOiFg5aNxTTG:propuesto:15": {
    "veredicto": "correcta",
@@ -11978,7 +12020,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Hay fuerza externa (corriente); es impulso desde cambio de velocidad, no conservación",
-   "familia": "impulso desde cinemática"
+   "familia": "impulso desde cinemática",
+   "subtema": "Impulso y fuerza media"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:174": {
    "veredicto": "correcta",
@@ -12141,7 +12184,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Rebote contra el piso: es restitución pura",
-   "familia": "alturas en rebotes sucesivos"
+   "familia": "alturas en rebotes sucesivos",
+   "subtema": "Coeficiente de restitución"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:194": {
    "veredicto": "correcta",
@@ -12622,7 +12666,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Trata de homogeneidad en sumas y productos, no de lectura de unidades SI.",
-   "familia": "dimensiones contra unidades"
+   "familia": "dimensiones contra unidades",
+   "subtema": "Principio de homogeneidad dimensional"
   },
   "1EuNZlO9GW8BN_Bt9mkuuu_xexUCfC6Px:propuesto:5": {
    "veredicto": "correcta",
@@ -12704,7 +12749,8 @@
    "tanda": "vocabulario-fyq",
    "ficha_rota": true,
    "nota": "Ficha con datos tachados y respuesta ambigua; unidad bien, revisar enunciado.",
-   "familia": "resultante por componentes"
+   "familia": "resultante por componentes",
+   "subtema": "Componentes y vector unitario"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:16": {
    "veredicto": "correcta",
@@ -12713,7 +12759,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Se resuelve con módulo de componentes, no con método gráfico.",
-   "familia": "componentes ortogonales por razón"
+   "familia": "componentes ortogonales por razón",
+   "subtema": "Componentes y vector unitario"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:17": {
    "veredicto": "correcta",
@@ -12730,7 +12777,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Lo central es el vector unitario por componentes.",
-   "familia": "unitario de una suma"
+   "familia": "unitario de una suma",
+   "subtema": "Componentes y vector unitario"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:19": {
    "veredicto": "correcta",
@@ -12739,7 +12787,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Lo central es el vector unitario por componentes.",
-   "familia": "unitario del vector que cierra"
+   "familia": "unitario del vector que cierra",
+   "subtema": "Componentes y vector unitario"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:20": {
    "veredicto": "correcta",
@@ -12748,7 +12797,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Vectores en 3D por componentes y unitario.",
-   "familia": "unitario en el cubo"
+   "familia": "unitario en el cubo",
+   "subtema": "Componentes y vector unitario"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:21": {
    "veredicto": "correcta",
@@ -12845,7 +12895,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Es ley de cosenos con dos vectores de igual módulo.",
-   "familia": "ángulo con suma y diferencia"
+   "familia": "ángulo con suma y diferencia",
+   "subtema": "Resultante de dos vectores"
   },
   "1zNo6sl3gzyrBdpQSDfw0F-nw8JdlEupX:propuesto:11": {
    "veredicto": "correcta",
@@ -12862,7 +12913,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Se pide x = mA + nB: combinación lineal.",
-   "familia": "vector en función de otros dos"
+   "familia": "vector en función de otros dos",
+   "subtema": "Combinación lineal de vectores"
   },
   "1zNo6sl3gzyrBdpQSDfw0F-nw8JdlEupX:propuesto:13": {
    "veredicto": "correcta",
@@ -12903,7 +12955,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Se resuelve leyendo coordenadas y sumando componentes.",
-   "familia": "suma por componentes en el plano"
+   "familia": "suma por componentes en el plano",
+   "subtema": "Componentes y vector unitario"
   },
   "1zNo6sl3gzyrBdpQSDfw0F-nw8JdlEupX:propuesto:18": {
    "veredicto": "correcta",
@@ -13000,7 +13053,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Tres vectores por componentes notables y su unitario.",
-   "familia": "unitario de suma por componentes"
+   "familia": "unitario de suma por componentes",
+   "subtema": "Componentes y vector unitario"
   },
   "1zNo6sl3gzyrBdpQSDfw0F-nw8JdlEupX:propuesto:29": {
    "veredicto": "dudosa",
@@ -13019,7 +13073,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Son tres vectores sumados por componentes, no dos.",
-   "familia": "resultante de tres vectores en cuadrado"
+   "familia": "resultante de tres vectores en cuadrado",
+   "subtema": "Componentes y vector unitario"
   },
   "1zNo6sl3gzyrBdpQSDfw0F-nw8JdlEupX:propuesto:30": {
    "veredicto": "dudosa",
@@ -13046,7 +13101,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Seis vectores; se cancelan por componentes notables.",
-   "familia": "resultante de varios vectores"
+   "familia": "resultante de varios vectores",
+   "subtema": "Componentes y vector unitario"
   },
   "1zNo6sl3gzyrBdpQSDfw0F-nw8JdlEupX:propuesto:33": {
    "veredicto": "correcta",
@@ -13055,7 +13111,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Cuatro vectores; condición de suma nula por componentes.",
-   "familia": "suma nula por componentes"
+   "familia": "suma nula por componentes",
+   "subtema": "Componentes y vector unitario"
   },
   "1zNo6sl3gzyrBdpQSDfw0F-nw8JdlEupX:propuesto:34": {
    "veredicto": "correcta",
@@ -13064,7 +13121,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Tres vectores resueltos por componentes en ejes rotados.",
-   "familia": "resultante de tres vectores"
+   "familia": "resultante de tres vectores",
+   "subtema": "Componentes y vector unitario"
   },
   "1zNo6sl3gzyrBdpQSDfw0F-nw8JdlEupX:propuesto:35": {
    "veredicto": "correcta",
@@ -13073,7 +13131,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Triángulo de fuerzas cerrado con tres vectores; mínimo por perpendicular.",
-   "familia": "fuerza mínima para equilibrio"
+   "familia": "fuerza mínima para equilibrio",
+   "subtema": "Suma de vectores por método gráfico"
   },
   "1zNo6sl3gzyrBdpQSDfw0F-nw8JdlEupX:propuesto:36": {
    "veredicto": "correcta",
@@ -13122,7 +13181,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Se resuelve por componentes, no por método gráfico.",
-   "familia": "sistema de ecuaciones vectoriales"
+   "familia": "sistema de ecuaciones vectoriales",
+   "subtema": "Componentes y vector unitario"
   },
   "1zNo6sl3gzyrBdpQSDfw0F-nw8JdlEupX:propuesto:41": {
    "veredicto": "correcta",
@@ -13147,7 +13207,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "M = αA + βB es combinación lineal; alternativas de la fuente no coinciden.",
-   "familia": "descomposición en base no ortogonal"
+   "familia": "descomposición en base no ortogonal",
+   "subtema": "Combinación lineal de vectores"
   },
   "1zNo6sl3gzyrBdpQSDfw0F-nw8JdlEupX:propuesto:44": {
    "veredicto": "correcta",
@@ -13173,7 +13234,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Diferencia en 3D por componentes y su unitario.",
-   "familia": "unitario de una diferencia"
+   "familia": "unitario de una diferencia",
+   "subtema": "Componentes y vector unitario"
   },
   "1zNo6sl3gzyrBdpQSDfw0F-nw8JdlEupX:propuesto:47": {
    "veredicto": "correcta",
@@ -13182,7 +13244,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "El ángulo sale del producto escalar.",
-   "familia": "ángulo por producto escalar"
+   "familia": "ángulo por producto escalar",
+   "subtema": "Producto escalar y vectorial"
   },
   "1zNo6sl3gzyrBdpQSDfw0F-nw8JdlEupX:propuesto:48": {
    "veredicto": "correcta",
@@ -13264,7 +13327,8 @@
    "estado": "por-revisar",
    "tanda": "vocabulario-fyq",
    "nota": "Es pertenencia a recta dada por normal; pesa más la recta que el producto escalar.",
-   "familia": "recta con vector normal"
+   "familia": "recta con vector normal",
+   "subtema": "Ecuación vectorial de la recta"
   },
   "1i0bsRvX9gNwX3zs4ukTaPTCDSLOxVTsA:propuesto:11": {
    "veredicto": "correcta",
@@ -13289,7 +13353,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Son vectores libres, no rectas: operaciones y paralelismo vectorial.",
-   "familia": "paralelismo de combinación de vectores"
+   "familia": "paralelismo de combinación de vectores",
+   "subtema": "Operaciones con vectores"
   },
   "1i0bsRvX9gNwX3zs4ukTaPTCDSLOxVTsA:propuesto:15": {
    "veredicto": "correcta",
@@ -13570,7 +13635,8 @@
    "estado": "por-revisar",
    "tanda": "vocabulario-fyq",
    "nota": "La proyección es un paso; lo pedido son ecuaciones de rectas.",
-   "familia": "rectas en triángulo con proyección"
+   "familia": "rectas en triángulo con proyección",
+   "subtema": "Ecuación vectorial de la recta"
   },
   "1i0bsRvX9gNwX3zs4ukTaPTCDSLOxVTsA:propuesto:49": {
    "veredicto": "correcta",
@@ -13703,7 +13769,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Paralelismo entre vectores libres, no entre rectas.",
-   "familia": "paralelismo de dos vectores"
+   "familia": "paralelismo de dos vectores",
+   "subtema": "Operaciones con vectores"
   },
   "1i0bsRvX9gNwX3zs4ukTaPTCDSLOxVTsA:propuesto:7": {
    "veredicto": "incorrecta",
@@ -13712,7 +13779,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Es ecuación paramétrica de un segmento, propio de la recta.",
-   "familia": "parametrizar un segmento"
+   "familia": "parametrizar un segmento",
+   "subtema": "Ecuación vectorial de la recta"
   },
   "1i0bsRvX9gNwX3zs4ukTaPTCDSLOxVTsA:propuesto:70": {
    "veredicto": "correcta",
@@ -13729,7 +13797,8 @@
    "estado": "por-revisar",
    "tanda": "vocabulario-fyq",
    "nota": "Descomposición vectorial como paso; lo pedido es la recta BD.",
-   "familia": "diagonal de rectángulo por descomposición"
+   "familia": "diagonal de rectángulo por descomposición",
+   "subtema": "Ecuación vectorial de la recta"
   },
   "1i0bsRvX9gNwX3zs4ukTaPTCDSLOxVTsA:propuesto:73": {
    "veredicto": "correcta",
@@ -13770,7 +13839,8 @@
    "estado": "por-revisar",
    "tanda": "vocabulario-fyq",
    "nota": "Pertenencia a recta dada por normal; pesa la recta.",
-   "familia": "recta con vector normal"
+   "familia": "recta con vector normal",
+   "subtema": "Ecuación vectorial de la recta"
   },
   "1i0bsRvX9gNwX3zs4ukTaPTCDSLOxVTsA:resuelto:12": {
    "veredicto": "correcta",
@@ -13907,7 +13977,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Se pide un vector, no una recta: suma de unitarios y norma.",
-   "familia": "vector en la bisectriz"
+   "familia": "vector en la bisectriz",
+   "subtema": "Operaciones con vectores"
   },
   "1i0bsRvX9gNwX3zs4ukTaPTCDSLOxVTsA:resuelto:32": {
    "veredicto": "correcta",
@@ -14166,7 +14237,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Proyectil que cae sobre un plano inclinado.",
-   "familia": "lanzamiento horizontal sobre plano inclinado"
+   "familia": "lanzamiento horizontal sobre plano inclinado",
+   "subtema": "Tiro sobre planos y rebotes"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:71": {
    "veredicto": "correcta",
@@ -14175,7 +14247,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Vuelo con ejes del plano inclinado.",
-   "familia": "tiro normal a plano inclinado"
+   "familia": "tiro normal a plano inclinado",
+   "subtema": "Tiro sobre planos y rebotes"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:87": {
    "veredicto": "correcta",
@@ -14274,7 +14347,8 @@
    "estado": "por-revisar",
    "tanda": "vocabulario-fyq",
    "nota": "Solo pide componente vertical; es caída libre unidimensional.",
-   "familia": "lanzamiento vertical desde edificio"
+   "familia": "lanzamiento vertical desde edificio",
+   "subtema": "Caída libre"
   },
   "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:propuesto:30": {
    "veredicto": "correcta",
@@ -14429,7 +14503,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Solo usa v²=2gH en vertical; no hay tiro.",
-   "familia": "rebote vertical y altura"
+   "familia": "rebote vertical y altura",
+   "subtema": "Caída libre"
   },
   "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:propuesto:50": {
    "veredicto": "correcta",
@@ -14462,7 +14537,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Es movimiento relativo, no tiro clásico.",
-   "familia": "separación de dos proyectiles"
+   "familia": "separación de dos proyectiles",
+   "subtema": "Movimiento en dos dimensiones"
   },
   "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK:propuesto:54": {
    "veredicto": "correcta",
@@ -14527,7 +14603,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Dos móviles con ω relativa: es encuentro angular.",
-   "familia": "ángulo entre velocidades de dos móviles"
+   "familia": "ángulo entre velocidades de dos móviles",
+   "subtema": "Encuentros en movimiento circular"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:76": {
    "veredicto": "correcta",
@@ -14544,7 +14621,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Rapidez constante en pista circular: es MCU.",
-   "familia": "período y radio en MCU"
+   "familia": "período y radio en MCU",
+   "subtema": "MCU"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:78": {
    "veredicto": "correcta",
@@ -14553,7 +14631,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Usa componente normal de la aceleración.",
-   "familia": "radio de curvatura instantáneo"
+   "familia": "radio de curvatura instantáneo",
+   "subtema": "Aceleración tangencial y centrípeta"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:79": {
    "veredicto": "correcta",
@@ -14570,7 +14649,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Es lectura de gráfica θ-t.",
-   "familia": "lectura de gráfica θ-t"
+   "familia": "lectura de gráfica θ-t",
+   "subtema": "Gráficas del movimiento circular"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:81": {
    "veredicto": "correcta",
@@ -14620,7 +14700,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Falta sentido de giro; respuesta condicionada.",
-   "familia": "velocidad vectorial en MCU"
+   "familia": "velocidad vectorial en MCU",
+   "subtema": "MCU"
   },
   "1hgtrWQyoC522F6N9fTap3ZJ6wf2UkPOM:propuesto:10": {
    "veredicto": "correcta",
@@ -14773,7 +14854,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Compara aceleraciones normal y tangencial a rapidez constante.",
-   "familia": "aceleración normal en espiral"
+   "familia": "aceleración normal en espiral",
+   "subtema": "Aceleración tangencial y centrípeta"
   },
   "1hgtrWQyoC522F6N9fTap3ZJ6wf2UkPOM:propuesto:28": {
    "veredicto": "correcta",
@@ -14972,7 +15054,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Combina caída libre con giro del disco.",
-   "familia": "caída y disco con agujero"
+   "familia": "caída y disco con agujero",
+   "subtema": "Movimiento circular y caída combinados"
   },
   "1hgtrWQyoC522F6N9fTap3ZJ6wf2UkPOM:propuesto:5": {
    "veredicto": "correcta",
@@ -15046,7 +15129,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Se resuelve leyendo área de gráfica ω-t.",
-   "familia": "área bajo gráfica ω-t"
+   "familia": "área bajo gráfica ω-t",
+   "subtema": "Gráficas del movimiento circular"
   },
   "1hgtrWQyoC522F6N9fTap3ZJ6wf2UkPOM:propuesto:58": {
    "veredicto": "correcta",
@@ -15055,7 +15139,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Gráfica ω-t; texto contradice el gráfico.",
-   "familia": "recorrido angular desde gráfica ω-t"
+   "familia": "recorrido angular desde gráfica ω-t",
+   "subtema": "Gráficas del movimiento circular"
   },
   "1hgtrWQyoC522F6N9fTap3ZJ6wf2UkPOM:propuesto:59": {
    "veredicto": "correcta",
@@ -15064,7 +15149,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Se lee de gráfica α-t.",
-   "familia": "ángulo desde gráfica α-t"
+   "familia": "ángulo desde gráfica α-t",
+   "subtema": "Gráficas del movimiento circular"
   },
   "1hgtrWQyoC522F6N9fTap3ZJ6wf2UkPOM:propuesto:6": {
    "veredicto": "correcta",
@@ -15082,7 +15168,8 @@
    "tanda": "vocabulario-fyq",
    "ficha_rota": true,
    "nota": "Texto y gráfico incompatibles; se resuelve por texto como MCUV.",
-   "familia": "MCUV desde reposo"
+   "familia": "MCUV desde reposo",
+   "subtema": "MCUV"
   },
   "1hgtrWQyoC522F6N9fTap3ZJ6wf2UkPOM:propuesto:7": {
    "veredicto": "correcta",
@@ -15505,7 +15592,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Se resuelve leyendo la ecuación de onda; clave depende de lectura del escaneo.",
-   "familia": "V/F ecuación de onda e índice"
+   "familia": "V/F ecuación de onda e índice",
+   "subtema": "Campos y ecuación de la onda"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:465": {
    "veredicto": "correcta",
@@ -15522,7 +15610,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Es cambio de λ con índice, no características generales.",
-   "familia": "cambio porcentual de λ"
+   "familia": "cambio porcentual de λ",
+   "subtema": "Rapidez de la luz"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:467": {
    "veredicto": "correcta",
@@ -15531,7 +15620,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Es v=c/n y tiempo de recorrido.",
-   "familia": "tiempo de luz en lámina"
+   "familia": "tiempo de luz en lámina",
+   "subtema": "Rapidez de la luz"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:468": {
    "veredicto": "correcta",
@@ -16230,7 +16320,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Es cálculo directo de ángulo crítico.",
-   "familia": "ángulo crítico"
+   "familia": "ángulo crítico",
+   "subtema": "Reflexión total"
   },
   "1JtNLsddpMNJ_JzpUtFWfoeczpkAk0_Rx:propuesto:4": {
    "veredicto": "correcta",
@@ -16255,7 +16346,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Se resuelve con el ángulo crítico.",
-   "familia": "disco que tapa la luz"
+   "familia": "disco que tapa la luz",
+   "subtema": "Reflexión total"
   },
   "1JtNLsddpMNJ_JzpUtFWfoeczpkAk0_Rx:propuesto:42": {
    "veredicto": "correcta",
@@ -16712,7 +16804,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Se leen f, vmax y sentido desde la ecuación de onda",
-   "familia": "lectura de función de onda"
+   "familia": "lectura de función de onda",
+   "subtema": "Función de onda"
   },
   "1088xstWyVL8UmHyMGX0_RyyCKhVySsDS:propuesto:11": {
    "veredicto": "correcta",
@@ -17069,7 +17162,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Usa la fórmula relativista para luz; no es sonido ni onda mecánica",
-   "familia": "Doppler relativista de la luz"
+   "familia": "Doppler relativista de la luz",
+   "subtema": "Doppler relativista de la luz"
   },
   "1088xstWyVL8UmHyMGX0_RyyCKhVySsDS:propuesto:6": {
    "veredicto": "correcta",
@@ -17965,7 +18059,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Calor generado por fricción, no capacidad calorífica.",
-   "familia": "energía disipada por rozamiento"
+   "familia": "energía disipada por rozamiento",
+   "subtema": "Energía mecánica convertida en calor"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:277": {
    "veredicto": "correcta",
@@ -18022,7 +18117,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Solo fusión con calor dado; no hay mezcla calorimétrica.",
-   "familia": "hielo parcialmente fundido"
+   "familia": "hielo parcialmente fundido",
+   "subtema": "Cambios de fase y calor latente"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:284": {
    "veredicto": "correcta",
@@ -18039,7 +18135,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Se pide el calor latente de vaporización desde la meseta.",
-   "familia": "calor latente desde curva"
+   "familia": "calor latente desde curva",
+   "subtema": "Cambios de fase y calor latente"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:286": {
    "veredicto": "correcta",
@@ -18528,7 +18625,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Es conversión de incrementos entre °F, K y °R; no hay dilatación.",
-   "familia": "incrementos en escalas distintas"
+   "familia": "incrementos en escalas distintas",
+   "subtema": "Escalas termométricas"
   },
   "1nV5SPoE5gwvmA424g7daGo2-KeEU7OX6:propuesto:20": {
    "veredicto": "correcta",
@@ -19233,7 +19331,8 @@
    "estado": "por-revisar",
    "tanda": "vocabulario-fyq",
    "nota": "No hay fusión, solo calor sensible; la eficiencia de máquina lo acerca a termodinámica.",
-   "familia": "calentamiento con eficiencia de máquina"
+   "familia": "calentamiento con eficiencia de máquina",
+   "subtema": "Máquinas térmicas y ciclo de Carnot"
   },
   "1_0S0TpyldUHunNEXsOe0LNWvnpf-hrU-:propuesto:54": {
    "veredicto": "correcta",
@@ -19314,7 +19413,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Trabajo neto de un ciclo: subtema de ciclos.",
-   "familia": "trabajo de ciclo triangular"
+   "familia": "trabajo de ciclo triangular",
+   "subtema": "Ciclos termodinámicos"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:303": {
    "veredicto": "correcta",
@@ -19355,7 +19455,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Área del ciclo: subtema de ciclos.",
-   "familia": "área de ciclo triangular"
+   "familia": "área de ciclo triangular",
+   "subtema": "Ciclos termodinámicos"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:308": {
    "veredicto": "correcta",
@@ -19628,7 +19729,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Trabajo sobre el pistón, no ecuación de estado.",
-   "familia": "trabajo de fuerza sobre pistón"
+   "familia": "trabajo de fuerza sobre pistón",
+   "subtema": "Procesos y diagrama P-V"
   },
   "1VEob-ekrzJ_R3Uub3AQV5d4zqhuo4NCS:propuesto:33": {
    "veredicto": "correcta",
@@ -19905,7 +20007,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Compara trabajos de ciclos cerrados.",
-   "familia": "comparar trabajos de ciclos"
+   "familia": "comparar trabajos de ciclos",
+   "subtema": "Ciclos termodinámicos"
   },
   "1VEob-ekrzJ_R3Uub3AQV5d4zqhuo4NCS:propuesto:64": {
    "veredicto": "correcta",
@@ -19930,7 +20033,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Es primera ley en expansión isobárica, no Carnot.",
-   "familia": "ΔU en expansión isobárica"
+   "familia": "ΔU en expansión isobárica",
+   "subtema": "Primera ley"
   },
   "1VEob-ekrzJ_R3Uub3AQV5d4zqhuo4NCS:propuesto:67": {
    "veredicto": "correcta",
@@ -19939,7 +20043,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Usa W=Q−ΔU; no es ecuación de estado.",
-   "familia": "altura de pistón con primera ley"
+   "familia": "altura de pistón con primera ley",
+   "subtema": "Primera ley"
   },
   "1VEob-ekrzJ_R3Uub3AQV5d4zqhuo4NCS:propuesto:68": {
    "veredicto": "correcta",
@@ -19956,7 +20061,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Balance ΔU=Q−W con fricción.",
-   "familia": "primera ley con fricción"
+   "familia": "primera ley con fricción",
+   "subtema": "Primera ley"
   },
   "1VEob-ekrzJ_R3Uub3AQV5d4zqhuo4NCS:propuesto:7": {
    "veredicto": "correcta",
@@ -19973,7 +20079,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Relación Qc/Qh=Tc/Th de Carnot.",
-   "familia": "calor rechazado por Carnot"
+   "familia": "calor rechazado por Carnot",
+   "subtema": "Máquinas térmicas y ciclo de Carnot"
   },
   "1VEob-ekrzJ_R3Uub3AQV5d4zqhuo4NCS:propuesto:71": {
    "veredicto": "correcta",
@@ -20392,7 +20499,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Exige tensión nula en la cima; es energía con dinámica circular.",
-   "familia": "vuelta completa con cuerda"
+   "familia": "vuelta completa con cuerda",
+   "subtema": "Energía con dinámica circular"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:165": {
    "veredicto": "correcta",
@@ -20425,7 +20533,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Exige normal nula en la cima del rizo; es energía con dinámica circular.",
-   "familia": "altura mínima para rizo"
+   "familia": "altura mínima para rizo",
+   "subtema": "Energía con dinámica circular"
   },
   "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb:problema:169": {
    "veredicto": "correcta",
@@ -21200,7 +21309,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Es estequiometría con gas (Fe + H₂SO₄ → H₂); no hay neutralización ácido-base.",
-   "familia": "metal y ácido con gas"
+   "familia": "metal y ácido con gas",
+   "subtema": "Relaciones masa-masa, mol-mol y volumen-volumen"
   },
   "1jJZF_8yB0jpqcyge4gvHYtwvklz7lpxC:propuesto:26": {
    "veredicto": "correcta",
@@ -21689,7 +21799,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Exige plantear Ka del ácido débil y resolver el nuevo equilibrio.",
-   "familia": "ácido débil diluido"
+   "familia": "ácido débil diluido",
+   "subtema": "Ka, Kb y Kw"
   },
   "1jJZF_8yB0jpqcyge4gvHYtwvklz7lpxC:resuelto:49": {
    "veredicto": "correcta",
@@ -21906,7 +22017,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "No hay neutralización: se suman OH⁻ de dos bases para un pH dado.",
-   "familia": "proporción de bases fuertes"
+   "familia": "proporción de bases fuertes",
+   "subtema": "pH y pOH"
   },
   "1jJZF_8yB0jpqcyge4gvHYtwvklz7lpxC:resuelto:78": {
    "veredicto": "correcta",
@@ -21915,7 +22027,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "No hay neutralización: se suman OH⁻ de dos bases fuertes.",
-   "familia": "pH de mezcla de bases fuertes"
+   "familia": "pH de mezcla de bases fuertes",
+   "subtema": "pH y pOH"
   },
   "1jJZF_8yB0jpqcyge4gvHYtwvklz7lpxC:resuelto:79": {
    "veredicto": "correcta",
@@ -21972,7 +22085,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Es identificación de roles Brønsted, no cálculo con constantes.",
-   "familia": "anfiprótico Brønsted"
+   "familia": "anfiprótico Brønsted",
+   "subtema": "Teorías de Arrhenius, Brønsted-Lowry y Lewis"
   },
   "1zRF5pCRuTv91slxspTgiOWmw7sIeGUBi:seminario-5:50": {
    "veredicto": "correcta",
@@ -22101,7 +22215,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Pregunta central: qué reacción es espontánea.",
-   "familia": "espontaneidad por signo de E°"
+   "familia": "espontaneidad por signo de E°",
+   "subtema": "Espontaneidad redox"
   },
   "13Ha3JNiQ_YwB_MUx6OIniThhMgfcRqvl:propuesto:480": {
    "veredicto": "correcta",
@@ -22110,7 +22225,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Pregunta central: qué reacción es espontánea.",
-   "familia": "espontaneidad por signo de E°"
+   "familia": "espontaneidad por signo de E°",
+   "subtema": "Espontaneidad redox"
   },
   "13Ha3JNiQ_YwB_MUx6OIniThhMgfcRqvl:propuesto:481": {
    "veredicto": "correcta",
@@ -22489,7 +22605,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Pregunta central: qué reacción es espontánea.",
-   "familia": "espontaneidad por signo de E°"
+   "familia": "espontaneidad por signo de E°",
+   "subtema": "Espontaneidad redox"
   },
   "1b1gIlTeuWkCHor3xmq40yswoVTiEppas:propuesto:12": {
    "veredicto": "correcta",
@@ -22570,7 +22687,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Pregunta central: qué reacción es espontánea.",
-   "familia": "espontaneidad por signo de E°"
+   "familia": "espontaneidad por signo de E°",
+   "subtema": "Espontaneidad redox"
   },
   "1b1gIlTeuWkCHor3xmq40yswoVTiEppas:propuesto:24": {
    "veredicto": "correcta",
@@ -22579,7 +22697,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Pregunta central: qué reacción es espontánea.",
-   "familia": "espontaneidad por signo de E°"
+   "familia": "espontaneidad por signo de E°",
+   "subtema": "Espontaneidad redox"
   },
   "1b1gIlTeuWkCHor3xmq40yswoVTiEppas:propuesto:25": {
    "veredicto": "correcta",
@@ -23182,7 +23301,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Pregunta central: qué reacción es espontánea.",
-   "familia": "espontaneidad por signo de E°"
+   "familia": "espontaneidad por signo de E°",
+   "subtema": "Espontaneidad redox"
   },
   "1np7cB2tXaO5pqfaRiCHz5_0aIQUnJve1:repaso-vallejo-i-electroquimica:20": {
    "veredicto": "correcta",
@@ -23207,7 +23327,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Es desplazamiento Fe/Cu²⁺ con cambio de masa; la corrosión es solo una afirmación.",
-   "familia": "desplazamiento Fe en CuSO₄"
+   "familia": "desplazamiento Fe en CuSO₄",
+   "subtema": "Espontaneidad redox"
   },
   "1np7cB2tXaO5pqfaRiCHz5_0aIQUnJve1:repaso-vallejo-i-electroquimica:25": {
    "veredicto": "correcta",
@@ -23449,7 +23570,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Se resuelve igualando electrones de un sistema redox; no es tanteo.",
-   "familia": "balance redox en medio ácido"
+   "familia": "balance redox en medio ácido",
+   "subtema": "Balance redox por ion-electrón"
   },
   "13Ha3JNiQ_YwB_MUx6OIniThhMgfcRqvl:propuesto:241": {
    "veredicto": "correcta",
@@ -23482,7 +23604,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Comproporción en medio básico con igualación de electrones; no es tanteo.",
-   "familia": "balance redox en medio básico"
+   "familia": "balance redox en medio básico",
+   "subtema": "Balance redox por ion-electrón"
   },
   "13Ha3JNiQ_YwB_MUx6OIniThhMgfcRqvl:propuesto:245": {
    "veredicto": "correcta",
@@ -23499,7 +23622,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Balance iónico redox en medio ácido; no es tanteo.",
-   "familia": "balance redox en medio ácido"
+   "familia": "balance redox en medio ácido",
+   "subtema": "Balance redox por ion-electrón"
   },
   "13Ha3JNiQ_YwB_MUx6OIniThhMgfcRqvl:propuesto:247": {
    "veredicto": "correcta",
@@ -23508,7 +23632,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Balance iónico redox en medio básico; no es tanteo.",
-   "familia": "balance redox en medio básico"
+   "familia": "balance redox en medio básico",
+   "subtema": "Balance redox por ion-electrón"
   },
   "13Ha3JNiQ_YwB_MUx6OIniThhMgfcRqvl:seminario-3:209": {
    "veredicto": "correcta",
@@ -24254,7 +24379,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Pregunta conceptual sobre quién cede y recibe electrones; no balancea.",
-   "familia": "concepto de oxidante y reductor"
+   "familia": "concepto de oxidante y reductor",
+   "subtema": "Oxidación, reducción y agentes"
   },
   "1np7cB2tXaO5pqfaRiCHz5_0aIQUnJve1:repaso-vallejo-i-balance:17": {
    "veredicto": "correcta",
@@ -24537,7 +24663,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Ea y ΔH desde un perfil energético; es cinética. Unidades del eje confusas.",
-   "familia": "perfil de energía de reacción"
+   "familia": "perfil de energía de reacción",
+   "subtema": "Perfil de energía de una reacción"
   },
   "13Ha3JNiQ_YwB_MUx6OIniThhMgfcRqvl:seminario-5:370": {
    "veredicto": "correcta",
@@ -24562,7 +24689,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Características generales del equilibrio; lo heterogéneo es solo un distractor.",
-   "familia": "características del equilibrio"
+   "familia": "características del equilibrio",
+   "subtema": "Reacciones reversibles y equilibrio dinámico"
   },
   "13Ha3JNiQ_YwB_MUx6OIniThhMgfcRqvl:seminario-5:373": {
    "veredicto": "correcta",
@@ -24587,7 +24715,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Propiedades de Kc y Kp, no cálculo de composición.",
-   "familia": "propiedades de Kc y Kp"
+   "familia": "propiedades de Kc y Kp",
+   "subtema": "Kc y Kp"
   },
   "13Ha3JNiQ_YwB_MUx6OIniThhMgfcRqvl:seminario-5:376": {
    "veredicto": "correcta",
@@ -24724,7 +24853,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Qué variable cambia K; no hay composición.",
-   "familia": "qué modifica K"
+   "familia": "qué modifica K",
+   "subtema": "Kc y Kp"
   },
   "13Ha3JNiQ_YwB_MUx6OIniThhMgfcRqvl:seminario-5:394": {
    "veredicto": "correcta",
@@ -24797,7 +24927,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Cálculo de cantidades de equilibrio leídas de una gráfica.",
-   "familia": "composición desde curva"
+   "familia": "composición desde curva",
+   "subtema": "Composición en el equilibrio"
   },
   "1E3buiExU-xpBCX4QXAL19ZphhQ5hMz8e:resuelto-capitulo-21:16": {
    "veredicto": "correcta",
@@ -24806,7 +24937,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Calcula Kc con tabla de avance desde la gráfica.",
-   "familia": "Kc desde curvas de concentración"
+   "familia": "Kc desde curvas de concentración",
+   "subtema": "Composición en el equilibrio"
   },
   "1E3buiExU-xpBCX4QXAL19ZphhQ5hMz8e:resuelto-capitulo-21:17": {
    "veredicto": "correcta",
@@ -24919,7 +25051,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Clasificar equilibrios homogéneos y heterogéneos.",
-   "familia": "homogéneo contra heterogéneo"
+   "familia": "homogéneo contra heterogéneo",
+   "subtema": "Equilibrio heterogéneo"
   },
   "1E3buiExU-xpBCX4QXAL19ZphhQ5hMz8e:resuelto-capitulo-21:5": {
    "veredicto": "correcta",
@@ -24960,7 +25093,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Calcula Kc con tabla de avance desde la gráfica.",
-   "familia": "Kc desde curvas de concentración"
+   "familia": "Kc desde curvas de concentración",
+   "subtema": "Composición en el equilibrio"
   },
   "1EN0I_nCIO_ELsQ2nY_CKaKYCTbGDCRpl:ejercicio:86": {
    "veredicto": "correcta",
@@ -25097,7 +25231,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Identificar la perturbación (temperatura) desde las curvas.",
-   "familia": "perturbación en curvas de concentración"
+   "familia": "perturbación en curvas de concentración",
+   "subtema": "Principio de Le Chatelier"
   },
   "1EN0I_nCIO_ELsQ2nY_CKaKYCTbGDCRpl:propuesto:84": {
    "veredicto": "correcta",
@@ -25651,7 +25786,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "No hay muestra impura: es pérdida de reactivo (rendimiento) y porcentaje en masa.",
-   "familia": "pérdida de reactivo y porcentaje en masa"
+   "familia": "pérdida de reactivo y porcentaje en masa",
+   "subtema": "Rendimiento de una reacción"
   },
   "13Ha3JNiQ_YwB_MUx6OIniThhMgfcRqvl:seminarios-3-4:364": {
    "veredicto": "correcta",
@@ -25700,7 +25836,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Masa atómica promedio de isótopos; no es estequiometría.",
-   "familia": "abundancia isotópica"
+   "familia": "abundancia isotópica",
+   "subtema": "Masa atómica promedio"
   },
   "15kK8hXhYrHbEpAUHVnYzf4855ROhBFsn:propuesto:19": {
    "veredicto": "incorrecta",
@@ -25709,7 +25846,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Masa atómica promedio de isótopos; no es estequiometría.",
-   "familia": "abundancia isotópica"
+   "familia": "abundancia isotópica",
+   "subtema": "Masa atómica promedio"
   },
   "15kK8hXhYrHbEpAUHVnYzf4855ROhBFsn:propuesto:25": {
    "veredicto": "incorrecta",
@@ -25718,7 +25856,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Sin reacción: átomos por molécula en una mezcla.",
-   "familia": "moles en mezcla de gases"
+   "familia": "moles en mezcla de gases",
+   "subtema": "Relaciones molares en una fórmula"
   },
   "1E3buiExU-xpBCX4QXAL19ZphhQ5hMz8e:resuelto-capitulo-17:1": {
    "veredicto": "correcta",
@@ -25783,7 +25922,8 @@
    "estado": "por-revisar",
    "tanda": "vocabulario-fyq",
    "nota": "Termoquímica estequiométrica; el catálogo no tiene unidad de termoquímica clara.",
-   "familia": "calor según cantidad de producto"
+   "familia": "calor según cantidad de producto",
+   "subtema": "Termoquímica"
   },
   "1E3buiExU-xpBCX4QXAL19ZphhQ5hMz8e:resuelto-capitulo-17:2": {
    "veredicto": "correcta",
@@ -26882,7 +27022,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Es reparto de presiones parciales tras disociación, sin Kp; más Dalton que estequiometría.",
-   "familia": "presiones parciales con disociación"
+   "familia": "presiones parciales con disociación",
+   "subtema": "Mezclas: Dalton y Amagat"
   },
   "1WBv_rYDk-0Hr0xJ3te9P0jRa10Wb0Ct5:propuesto:79": {
    "veredicto": "dudosa",
@@ -27351,7 +27492,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Mezcla con vapor de agua y desecante: es gas húmedo; además datos impresos incompatibles.",
-   "familia": "gas secado con desecante"
+   "familia": "gas secado con desecante",
+   "subtema": "Gases húmedos y humedad relativa"
   },
   "1WBv_rYDk-0Hr0xJ3te9P0jRa10Wb0Ct5:resuelto:47": {
    "veredicto": "correcta",
@@ -27440,7 +27582,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Un solo gas que se expande isotérmicamente: es Boyle, no mezcla.",
-   "familia": "expansión a ampolla vacía"
+   "familia": "expansión a ampolla vacía",
+   "subtema": "Leyes de Boyle, Charles y Gay-Lussac"
   },
   "1WBv_rYDk-0Hr0xJ3te9P0jRa10Wb0Ct5:resuelto:57": {
    "veredicto": "dudosa",
@@ -27449,7 +27592,8 @@
    "estado": "por-revisar",
    "tanda": "vocabulario-fyq",
    "nota": "Volumen molecular en un líquido; no usa leyes de gases.",
-   "familia": "fracción vacía en líquido"
+   "familia": "fracción vacía en líquido",
+   "subtema": "Propiedades de los estados de agregación"
   },
   "1WBv_rYDk-0Hr0xJ3te9P0jRa10Wb0Ct5:resuelto:58": {
    "veredicto": "correcta",
@@ -28219,7 +28363,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Trata masa molecular y molar, no promedio isotópico.",
-   "familia": "V/F masa molecular y molar"
+   "familia": "V/F masa molecular y molar",
+   "subtema": "Masa molecular y masa molar"
   },
   "1zRF5pCRuTv91slxspTgiOWmw7sIeGUBi:seminario-2005-ii-1:22": {
    "veredicto": "correcta",
@@ -28412,7 +28557,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Solo calcula masa molecular; no hay subtema de masa molar.",
-   "familia": "masa molecular de un ácido"
+   "familia": "masa molecular de un ácido",
+   "subtema": "Masa molecular y masa molar"
   },
   "1tPq0Up5gKEv-ON_LrawB7n7XESuwsfcA:propuesto-basico:30": {
    "veredicto": "correcta",
@@ -29116,7 +29262,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Es un alcano sin grupo funcional; su nombre se estudia en hidrocarburos.",
-   "familia": "nombrar hidrocarburos ramificados"
+   "familia": "nombrar hidrocarburos ramificados",
+   "subtema": "Nomenclatura de hidrocarburos"
   },
   "13Ha3JNiQ_YwB_MUx6OIniThhMgfcRqvl:propuesto:523": {
    "veredicto": "correcta",
@@ -29133,7 +29280,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Nombre de un dieno y propiedades de alquenos y alquinos; es de hidrocarburos.",
-   "familia": "nombrar hidrocarburos ramificados"
+   "familia": "nombrar hidrocarburos ramificados",
+   "subtema": "Nomenclatura de hidrocarburos"
   },
   "13Ha3JNiQ_YwB_MUx6OIniThhMgfcRqvl:propuesto:525": {
    "veredicto": "correcta",
@@ -29150,7 +29298,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Halociclohexano: halógenos como sustituyentes de hidrocarburo, sin función oxigenada ni nitrogenada.",
-   "familia": "nombrar hidrocarburos ramificados"
+   "familia": "nombrar hidrocarburos ramificados",
+   "subtema": "Nomenclatura de hidrocarburos"
   },
   "13Ha3JNiQ_YwB_MUx6OIniThhMgfcRqvl:propuesto:528": {
    "veredicto": "correcta",
@@ -29543,7 +29692,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Valida nombres de alqueno, alquino y cicloalcano; pertenece a hidrocarburos.",
-   "familia": "nombrar hidrocarburos ramificados"
+   "familia": "nombrar hidrocarburos ramificados",
+   "subtema": "Nomenclatura de hidrocarburos"
   },
   "13Ha3JNiQ_YwB_MUx6OIniThhMgfcRqvl:seminario-6:487": {
    "veredicto": "correcta",
@@ -29728,7 +29878,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Nombra un alcano ramificado; no hay grupo funcional.",
-   "familia": "nombrar hidrocarburos ramificados"
+   "familia": "nombrar hidrocarburos ramificados",
+   "subtema": "Nomenclatura de hidrocarburos"
   },
   "1b1gIlTeuWkCHor3xmq40yswoVTiEppas:propuesto:75": {
    "veredicto": "correcta",
@@ -29745,7 +29896,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Nombres de alcanos y un alquino; pertenece a hidrocarburos.",
-   "familia": "nombrar hidrocarburos ramificados"
+   "familia": "nombrar hidrocarburos ramificados",
+   "subtema": "Nomenclatura de hidrocarburos"
   },
   "1l8_QvPBwxU8_OSYtVmllfdU0FQ61k4b2:propuesto:12": {
    "veredicto": "correcta",
@@ -29866,7 +30018,8 @@
    "estado": "por-revisar",
    "tanda": "vocabulario-fyq",
    "nota": "Esterificación con conversión parcial; podría ir a estequiometría. El subtema Otros no describe nada.",
-   "familia": "estequiometría de esterificación"
+   "familia": "estequiometría de esterificación",
+   "subtema": "Reacciones de funciones orgánicas"
   },
   "1l8_QvPBwxU8_OSYtVmllfdU0FQ61k4b2:propuesto:28": {
    "veredicto": "incorrecta",
@@ -29875,7 +30028,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Compara ebullición de alcoholes, aldehídos y éteres; es de funciones oxigenadas.",
-   "familia": "ebullición según función orgánica"
+   "familia": "ebullición según función orgánica",
+   "subtema": "Grupos funcionales"
   },
   "1l8_QvPBwxU8_OSYtVmllfdU0FQ61k4b2:propuesto:29": {
    "veredicto": "correcta",
@@ -29900,7 +30054,8 @@
    "estado": "revisada-por-modelo",
    "tanda": "vocabulario-fyq",
    "nota": "Octanaje de gasolinas es tema de petróleo y recursos naturales.",
-   "familia": "interpretar número de octano"
+   "familia": "interpretar número de octano",
+   "subtema": "Petróleo y combustión"
   },
   "1l8_QvPBwxU8_OSYtVmllfdU0FQ61k4b2:propuesto:9": {
    "veredicto": "correcta",
