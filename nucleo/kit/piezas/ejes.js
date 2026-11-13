@@ -12,9 +12,11 @@
  *   y: { min, max, paso, cada, nombre: 'F', unidad: 'N', decimales, color },   // eje vertical
  *   curvas: [{ puntos: [[x, y], …, null, …], color, rotulo, en: [x, y], discontinua, desde }],
  *            // null corta la línea (saltos); `en`: dónde va el rótulo (por defecto, junto al último punto)
- *   areas:  [{ puntos: [[x, y], …], color, rotulo, desde }],  // región entre la poligonal y el eje y = 0;
+ *   areas:  [{ puntos: [[x, y], …], color, rotulo, desde, cerrada }],  // región entre la poligonal y el eje y = 0;
+ *            // con cerrada, los puntos son el contorno de la región (entre dos gráficas), sin signo;
  *            // por debajo del eje es negativa: relleno más tenue y borde discontinuo (el signo se ve)
  *   puntos: [{ x, y, color, rotulo, abierto, guias, desde }], // guias: líneas tenues hasta los dos ejes
+ *            // curvas, áreas y puntos aceptan además `hasta`: se ven solo mientras corte ≤ hasta
  *   marca:  { eje: 'x', min, max, inicio } | { eje: 'regla', min, max, inicio, paso, cada, nombre, unidad, color },
  *   respuesta: número | null,   // lo que el estado final dibuja con ✓ (en el eje x o en la regla)
  *   prefijo, sufijo, decimales  // cómo se lee la marca («12,5 s», «40 N·s»)
@@ -130,9 +132,10 @@
   function areaSVG(g, a, clase, disc) {
     const pts = (a.puntos || []).filter(Boolean);
     if (pts.length < 2) return '';
-    const poli = [[pts[0][0], 0], ...pts, [pts[pts.length - 1][0], 0]];
+    // cerrada: el polígono es la región entre dos gráficas (se cierra solo, sin bajar al eje y sin signo).
+    const poli = a.cerrada ? pts : [[pts[0][0], 0], ...pts, [pts[pts.length - 1][0], 0]];
     const media = pts.reduce((m, p) => m + p[1], 0) / pts.length;
-    const neg = media < 0, c = disc ? 'currentColor' : T.color(a.color);
+    const neg = !a.cerrada && media < 0, c = disc ? 'currentColor' : T.color(a.color);
     const d = 'M' + poli.map(p => P(g, [p[0], lim(p[1], -1e12, 1e12)])).join('L') + 'Z';
     let s = `<path class="kit-crece${clase}" d="${d}" fill="${c}" fill-opacity="${disc ? 0.08 : neg ? 0.12 : 0.24}" stroke="${c}" stroke-width="${T.GROSOR.cuadricula}"${neg || disc ? ' stroke-dasharray="4 3"' : ''}/>`;
     if (a.rotulo && !disc) {
@@ -195,7 +198,7 @@
   function dibujar(d, estado = {}) {
     const g = geometria(d);
     const final = !!estado.final, corte = Math.max(0, estado.corte || 0);
-    const ve = e => (e.desde || 0) <= corte;
+    const ve = e => (e.desde || 0) <= corte && !(e.hasta < corte); // hasta: el rótulo provisional («vmax») deja su lugar al valor
     const nuevo = e => ((e.desde || 0) === corte && corte > 0 ? ' kit-nuevo' : '');
     let s = plano(d, g);
     for (const a of d.areas || []) if (ve(a)) s += areaSVG(g, a, nuevo(a), false);

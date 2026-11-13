@@ -83,3 +83,13 @@ test('sin NaN ni colores fijos; texto de 14 o más dentro del lienzo; alto fijo'
 test('alt cuenta la figura', () => {
   assert.match(Tr.alt(TORRE), /^Figura a escala con los puntos B, T, Q, P; BT: H = \?; QP: 7 m; ángulos de 37° en P y 53° en Q$/);
 });
+
+test('un ángulo con «final» muestra su texto hasta el final y su valor en el final', () => {
+  const Tr = require('./triangulo.js');
+  const d = { puntos: [{ id: 'B', x: 0, y: 0, rotulo: 'B' }, { id: 'C', x: 4, y: 0, rotulo: 'C' }, { id: 'A', x: 1, y: 3, rotulo: 'A' }],
+    lados: [{ de: 'A', a: 'B' }, { de: 'B', a: 'C' }, { de: 'C', a: 'A' }], angulos: [{ en: 'A', de: 'B', a: 'C', texto: '?', final: '45°', color: 'd' }] };
+  assert.match(Tr.dibujar(d, { paso: 0 }), />\?</);
+  const fin = Tr.dibujar(d, { paso: 1, final: true });
+  assert.match(fin, />45°</);
+  assert.doesNotMatch(fin, />\?</);
+});
