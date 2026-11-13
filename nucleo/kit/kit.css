@@ -4,7 +4,7 @@
 
 /* ---------- Figura ---------- */
 .kit-escena{margin:12px 0 4px}
-.kit-lienzo{color:var(--ink);max-width:440px;margin:0 auto;border-radius:12px;touch-action:pan-y;
+.kit-lienzo{color:var(--ink);max-width:380px;margin:0 auto;border-radius:12px;touch-action:pan-y;
   -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
 .kit-lienzo[role="slider"]{cursor:ew-resize}
 .kit-lienzo:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
@@ -50,13 +50,15 @@
 .retro-fila>#retro{flex:1;min-width:0;min-height:72px}
 .retro-fila .retro{margin-top:0}
 .retro-fila .retro.bien{padding-right:16px;min-height:0}
-.kit-consigna{margin:0;padding:14px 4px;color:var(--muted);font-size:15px}
+.kit-pie .kit-consigna{margin:4px 0 0;color:var(--muted);font-size:15px}
 
 /* ---------- Movimiento: se anima lo nuevo del paso al avanzar (oficio «Explicación») ---------- */
 @media (prefers-reduced-motion:no-preference){
-  .kit-anima .kit-nuevo.kit-corte{animation:kit-barre-izq 900ms cubic-bezier(.4,0,.2,1) both}
-  .kit-anima .kit-nuevo.kit-crece{animation:kit-barre-der 900ms cubic-bezier(.4,0,.2,1) both}
-  .kit-anima .kit-nuevo.kit-aparece{animation:kit-aparece 200ms cubic-bezier(0,0,.2,1) 700ms both}
+  /* Un paso dura «paso» (900 ms): lo que cae o crece se mueve en «largo» (480, trasladar) y su rótulo llega
+     después, en «corto» (200, llegar). Lo que se quita cae desde la barra a su fila (--kit-dy, en px del lienzo). */
+  .kit-anima .kit-nuevo.kit-cae{animation:kit-cae 480ms cubic-bezier(.4,0,.2,1) both}
+  .kit-anima .kit-nuevo.kit-crece{animation:kit-barre-der 480ms cubic-bezier(.4,0,.2,1) both}
+  .kit-anima .kit-nuevo.kit-aparece{animation:kit-aparece 200ms cubic-bezier(0,0,.2,1) 480ms both}
   .kit-btn,.kit-play{transition:transform 120ms linear,box-shadow 120ms linear}
   .kit-btn:active,.kit-play:active{transform:translateY(3px);box-shadow:0 0 0 var(--borde)}
 }
@@ -64,7 +66,7 @@
 @media (prefers-reduced-motion:reduce){
   .kit-anima .kit-nuevo{animation:kit-funde 200ms linear both}
 }
-@keyframes kit-barre-izq{from{clip-path:inset(0 0 0 100%)}to{clip-path:inset(0 0 0 0)}}
+@keyframes kit-cae{from{transform:translateY(var(--kit-dy,0))}to{transform:none}}
 @keyframes kit-barre-der{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
 @keyframes kit-aparece{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 @keyframes kit-funde{from{opacity:0}to{opacity:1}}
