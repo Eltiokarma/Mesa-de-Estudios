@@ -750,8 +750,8 @@ const P1 = { id:'materia-cajas', ok:'c', opts:[
   ['c', `La caja 2: cada partícula une átomos de dos elementos distintos`],
   ['d', `La caja 3: muchos átomos juntos forman un compuesto`, 'MA9-atomo-es-sustancia', 'hipotesis']],
   fb:{ c:'¡Bien! En la caja 2 todas las partículas son iguales (una sola sustancia) y cada una tiene átomos de H y de O unidos: es un compuesto, H₂O. Mira los rótulos de las cajas.',
-    a:`En la caja 4 hay H y O, pero no están unidos entre sí: son moléculas de H₂ y moléculas de O₂ revueltas. Dos sustancias sin unirse forman una ${C4.nombre}. Confundir compuesto y mezcla al leer dibujos de partículas está documentado en universitarios, sin porcentaje en lo que leímos (Stains y Talanquer, 2007, por su resumen).`,
-    b:'Los átomos de la caja 1 están unidos, pero todos son de oxígeno: el O₂ es un elemento. Un compuesto necesita átomos de elementos distintos unidos. Esta confusión está documentada, sin porcentaje en lo que leímos (Stains y Talanquer, 2007, por su resumen).',
+    a:`En la caja 4 hay H y O, pero no están unidos entre sí: son moléculas de H₂ y moléculas de O₂ revueltas. Dos sustancias sin unirse forman una ${C4.nombre}.`,
+    b:'Los átomos de la caja 1 están unidos, pero todos son de oxígeno: el O₂ es un elemento. Un compuesto necesita átomos de elementos distintos unidos.',
     d:'Juntar muchos átomos iguales no forma un compuesto: el hierro de la caja 3 es un elemento, con una sola clase de átomo.' } };
 const P2 = { id:'materia-fases', ok:'d', opts:[
   ['a', `${fc(VASO.errores.cadaCosaUnaFase, VASO.errores.cadaCosaUnComponente)}: cada cosa nombrada cuenta una vez`, 'fases-cada-cosa', 'hipotesis'],
@@ -786,9 +786,9 @@ const P5 = { id:'materia-disolver-oxidar', ok:'c', opts:[
   ['c', `Solo en el del clavo: el óxido es una sustancia nueva, de ${F('Fe')} y ${F('O')} unidos`],
   ['d', 'En ninguno: el óxido es hierro sucio, y el hierro sigue siendo hierro', 'MA2-oxidar-es-fisico', 'parcial']],
   fb:{ c:'¡Bien! El azúcar se reparte entre las moléculas de agua sin cambiar: si se evapora el agua, vuelve a aparecer. En el clavo, los átomos de hierro se unen con los de oxígeno y forman Fe₂O₃, una sustancia con otras propiedades (rojiza y quebradiza). Mira las lupas.',
-    a:'Disolver no es reaccionar: las moléculas de azúcar siguen siendo de azúcar, solo repartidas entre las de agua. Que al disolverse se forma otra sustancia está documentado, sin porcentaje en lo que leímos (citado por Smith y Nakhleh, 2011).',
-    b:'El azúcar no desaparece: ya no se ve porque sus moléculas se separaron, pero el agua sabe dulce y, al evaporarla, queda el azúcar. Usar «derretir» por «disolver» aparece en entrevistas con escolares, con una cifra que no pudimos revisar.',
-    d:'El óxido no es hierro con suciedad encima: los átomos de hierro se unieron con oxígeno y forman otra sustancia, con otro color y otra dureza. En un estudio con 28 escolares españoles, cerca de 1 de cada 4 llamó cambio físico a una reja que se oxida (Dávila Acedo y otros, 2017; solo vimos fragmentos del artículo).' } };
+    a:'Disolver no es reaccionar: las moléculas de azúcar siguen siendo de azúcar, solo repartidas entre las de agua.',
+    b:'El azúcar no desaparece: ya no se ve porque sus moléculas se separaron, pero el agua sabe dulce y, al evaporarla, queda el azúcar.',
+    d:'El óxido no es hierro con suciedad encima: los átomos de hierro se unieron con oxígeno y forman otra sustancia, con otro color y otra dureza.' } };
 const P6 = { id:'materia-separar', ok:'c', opts:[
   ['a', 'Filtrar: el papel de filtro retiene la sal', 'separar-filtrar-lo-disuelto', 'hipotesis'],
   ['b', 'Decantar: dejar reposar hasta que la sal se asiente', 'separar-decantar-lo-disuelto', 'hipotesis'],
@@ -797,7 +797,7 @@ const P6 = { id:'materia-separar', ok:'c', opts:[
   fb:{ c:`¡Bien! El agua se va al aire como vapor y la sal, que hierve a ${MM.MEZCLAS['agua-sal'].partes[1].tEb} °C, se queda. Abajo puedes probar cada método con cada mezcla, también los equivocados.`,
     a:`${FIL.razon[0].toUpperCase() + FIL.razon.slice(1)}: no se separa nada. Pruébalo abajo. `,
     b:'Lo disuelto no se asienta: sus partículas se mueven entre las del agua y no caen al fondo, por más que esperes.',
-    d:'La sal no se volvió agua: sus iones siguen ahí, repartidos, y se recuperan al evaporar. Creer que al disolverse se forma otra sustancia está documentado, sin porcentaje en lo que leímos (citado por Smith y Nakhleh, 2011).' } };
+    d:'La sal no se volvió agua: sus iones siguen ahí, repartidos, y se recuperan al evaporar.' } };
 const P7 = { id:'materia-emc2', ok:'b', opts:[
   ['a', `${VE(cien(EMC.errores.gramosSinConvertir) + ' J')}`, 'emc2-gramos-sin-convertir', 'hipotesis'],
   ['b', `${VE(cien(EMC.E) + ' J')}`],
@@ -1119,7 +1119,7 @@ const EXPS = [
           ['d', 'Mezcla de dos elementos: el O₂ y el O₃ son elementos distintos', 'alotropo-otro-elemento', 'hipotesis']],
     ok:'c',
     fb:{ a:'Un solo elemento no quiere decir una sola sustancia: las moléculas de O₂ y de O₃ son distintas (el ozono huele fuerte y es tóxico; el oxígeno, no).',
-      b:'El O₃ tiene sus átomos unidos, pero todos son de oxígeno: es un elemento, no un compuesto. Confundir «unido» con «compuesto» está documentado, sin porcentaje en lo que leímos (Stains y Talanquer, 2007, por su resumen).',
+      b:'El O₃ tiene sus átomos unidos, pero todos son de oxígeno: es un elemento, no un compuesto.',
       d:'El O₂ y el O₃ son el mismo elemento, oxígeno, en dos formas (alótropos). Un elemento se define por su clase de átomo, no por la molécula.' },
     antes:() => ({ tipo:'ozono' }), despues:() => ({ tipo:'ozono', r:true }),
     exp:() => `<div class="eqs"><div class="eq"><span class="ex">Sustancias: ${OZ.sustancias.map(F).join(' y ')} = ${OZ.nSustancias} · elementos: ${OZ.elementos.map(F).join('')} = ${OZ.nElementos}</span><span class="note">${OZ.nombre[0].toUpperCase() + OZ.nombre.slice(1)}: dos sustancias sin unirse, repartidas por igual. Lo mismo vale para el diamante y el grafito: los dos son carbono puro.</span></div></div>

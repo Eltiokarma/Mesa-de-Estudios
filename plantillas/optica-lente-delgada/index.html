@@ -556,10 +556,10 @@ function unlock(n){ if (n > S.max){ S.max = n; } }
 // Una retroalimentación por opción: qué error refleja y por qué falla. Las tres incorrectas no tienen
 // datos de cuántos alumnos las eligen (docs/investigacion/optica-ideas-erroneas.md): son hipótesis nuestras.
 const FB1 = {
-  a: 'No es ahí. Con un objeto real, una lente convergente nunca forma la imagen entre la lente y F′: aun de un objeto lejanísimo, cuyos rayos llegan casi paralelos al eje, la imagen cae apenas pasando F′. A 30 cm el objeto no está tan lejos: con 1/i = 1/10 − 1/30, i = 15 cm, entre F′ y 2F′. ',
+  a: 'Con un objeto real, una lente convergente nunca forma la imagen entre la lente y F′: aun de un objeto lejanísimo, cuyos rayos llegan casi paralelos al eje, la imagen cae apenas pasando F′. A 30 cm el objeto no está tan lejos: con 1/i = 1/10 − 1/30, i = 15 cm, entre F′ y 2F′. ',
   b: 'Bien. Con el objeto más allá de 2F, la imagen cae entre F′ y 2F′. Ahora veamos por qué con los rayos.',
-  c: 'No es ahí. Más allá de 2F′ cae la imagen cuando el objeto está entre F y 2F; aquí está más lejos que 2F, así que la imagen queda más cerca de la lente: i = 15 cm, entre F′ y 2F′. Tampoco se copia la distancia del objeto, como en un espejo plano. (Hipótesis nuestra sobre el error: no hay datos de cuántos lo cometen.)',
-  d: 'No es ahí. Del lado del objeto solo cae la imagen virtual, cuando el objeto está más cerca que F (una lupa). A 30 cm los rayos sí se cruzan detrás de la lente: la imagen es real. (Hipótesis nuestra sobre el error: no hay datos de cuántos lo cometen.)'
+  c: 'Más allá de 2F′ cae la imagen cuando el objeto está entre F y 2F; aquí está más lejos que 2F, así que la imagen queda más cerca de la lente: i = 15 cm, entre F′ y 2F′. Tampoco se copia la distancia del objeto, como en un espejo plano.',
+  d: 'Del lado del objeto solo cae la imagen virtual, cuando el objeto está más cerca que F (una lupa). A 30 cm los rayos sí se cruzan detrás de la lente: la imagen es real.'
 };
 function setupPred(){
   const btns = [...$('stepBody').querySelectorAll('.opt')];
@@ -1021,10 +1021,10 @@ function updateNav(){
 // Una retroalimentación por opción. Ninguna de las incorrectas tiene datos de cuántos la eligen
 // (docs/investigacion/optica-ideas-erroneas.md): son hipótesis nuestras.
 const FB2 = {
-  a: 'No es esa. Es pensar que «la lente voltea la imagen» y quedarse con una sola vuelta. Aquí la luz pasa por dos lentes que forman imagen real, y cada una la invierte: dos inversiones se cancelan y la imagen final queda derecha. (Hipótesis nuestra, a partir de una idea errónea descrita sin cifras: la imagen como algo que la lente voltea.)',
+  a: 'Una lente sí voltea la imagen, pero aquí hay dos que forman imagen real: cada una la invierte, las dos vueltas se cancelan y la imagen final queda derecha.',
   b: 'Bien. Cada lente invierte la imagen y dos inversiones se cancelan. Veamos el tamaño con los números.',
-  c: 'No es esa. Invertida y más pequeña es lo que da una sola lente con el objeto lejos, más allá de 2F. Aquí el objeto está entre F y 2F de la primera lente, así que I₁ sale más grande (el doble), y la segunda, con I₁ justo en su 2F, la deja del mismo tamaño y la vuelve a voltear: la imagen final queda derecha y más grande. (Hipótesis nuestra sobre el error: no hay datos de cuántos lo cometen.)',
-  d: 'No es esa. Que salga derecha es correcto: dos inversiones se cancelan. Pero el tamaño no vuelve al del objeto: los aumentos se multiplican, y con el primero de −2 y el segundo de −1, la imagen final mide el doble. (Hipótesis nuestra sobre el error: no hay datos de cuántos lo cometen.)'
+  c: 'Invertida y más pequeña es lo que da una sola lente con el objeto lejos, más allá de 2F. Aquí el objeto está entre F y 2F de la primera lente, así que I₁ sale más grande (el doble), y la segunda, con I₁ justo en su 2F, la deja del mismo tamaño y la vuelve a voltear: la imagen final queda derecha y más grande.',
+  d: 'Que salga derecha es correcto: dos inversiones se cancelan. Pero el tamaño no vuelve al del objeto: los aumentos se multiplican, y con el primero de −2 y el segundo de −1, la imagen final mide el doble.'
 };
 function setupPred(){
   const btns = [...$('body2').querySelectorAll('.opt')];
@@ -1124,8 +1124,7 @@ const EXPS = [
             'No. Es pensar que la lente solo funciona entera. La mitad que queda libre sigue desviando los rayos hacia los mismos puntos: la imagen se forma completa, con la mitad de la luz. ']],
     ok:'c', aplicar:() => { E.tapa = 'arriba'; },
     ctrl:() => `<div class="seg" role="group" aria-label="Cartón"><button type="button" data-tapa="arriba">Lente tapada a medias</button><button type="button" data-tapa="">Lente destapada</button></div>`,
-    exp:`<p>Fíjate en los rayos: salen de la punta del objeto hacia <b>toda</b> la lente. Los que chocan con el cartón se pierden, pero los que pasan por la mitad de abajo llegan exactamente al mismo punto de la imagen. Lo mismo pasa con cada punto del objeto, así que la imagen queda <b>entera</b>. Solo llega la mitad de la luz: se ve <b>más tenue</b>.</p>
-      <p class="hint">Es una idea errónea muy frecuente, descrita por Goldberg y McDermott (1987). </p>` },
+    exp:`<p>Fíjate en los rayos: salen de la punta del objeto hacia <b>toda</b> la lente. Los que chocan con el cartón se pierden, pero los que pasan por la mitad de abajo llegan exactamente al mismo punto de la imagen. Lo mismo pasa con cada punto del objeto, así que la imagen queda <b>entera</b>. Solo llega la mitad de la luz: se ve <b>más tenue</b>.</p>` },
   { id:'pantalla', corto:'Quitar la pantalla',
     q:'La imagen se ve nítida en la pantalla. Si <b>quitas la pantalla</b>, ¿qué pasa con la imagen?',
     opts:[['a','Desaparece','E2-sin-pantalla','documentado',
@@ -1136,8 +1135,7 @@ const EXPS = [
             'No. Es pensar que la pantalla decide dónde queda la imagen. Los rayos de cada punto se cruzan siempre en el mismo lugar, a 15 cm, haya o no pantalla: la imagen sigue ahí, en el aire. ']],
     ok:'b', aplicar:() => { E.pantalla = false; },
     ctrl:() => `<div class="seg" role="group" aria-label="Pantalla"><button type="button" data-pant="0">Sin pantalla</button><button type="button" data-pant="1">Con pantalla</button></div>`,
-    exp:`<p>Los rayos se cruzan en el mismo punto haya o no pantalla: la imagen real está ahí, en el aire. La pantalla no la «atrapa»; solo desvía la luz hacia todos lados para que la veas desde cualquier lugar. Sin pantalla, la ves si pones el ojo más allá de la imagen, mirando hacia la lente, donde llegan esos rayos.</p>
-      <p class="hint">La idea ya la habían descrito Galili, Bendall y Goldberg (1993).</p>` },
+    exp:`<p>Los rayos se cruzan en el mismo punto haya o no pantalla: la imagen real está ahí, en el aire. La pantalla no la «atrapa»; solo desvía la luz hacia todos lados para que la veas desde cualquier lugar. Sin pantalla, la ves si pones el ojo más allá de la imagen, mirando hacia la lente, donde llegan esos rayos.</p>` },
   { id:'correr', corto:'Correr la pantalla',
     q:'La imagen se ve nítida con la pantalla a 15 cm de la lente. Si <b>alejas la pantalla</b> hasta 25 cm, ¿qué ves en ella?',
     opts:[['a','La misma imagen, más grande y nítida','E5-pantalla-cualquier-lado','parcial',
@@ -1148,8 +1146,7 @@ const EXPS = [
             'Bien. Los rayos de cada punto se juntan solo a 15 cm. A 25 cm ya se separaron: cada punto deja una mancha y la imagen se ve borrosa.']],
     ok:'c', aplicar:() => { E.xp = 25; },
     ctrl:() => `<div class="slider"><label for="xp3"><span>Pantalla a</span><output id="xp3-out"></output></label><input id="xp3" type="range" min="6" max="36" step="0.5" value="${E.xp}"></div><p id="xp3-info" class="hint"></p>`,
-    exp:`<p>Hay una sola distancia donde todos los rayos de un punto se juntan: la que da la ecuación (i = 15 cm). Antes o después, los rayos de cada punto llegan separados y dejan una mancha; las manchas de todos los puntos se enciman y la imagen se ve <b>borrosa</b>. Mueve la pantalla (con el deslizador o arrastrándola en el dibujo) y busca el punto nítido.</p>
-      <p class="hint">La idea de que la pantalla puede ir en cualquier lado la describen Galili, Bendall y Goldberg (1993) y Galili y Hazan (2000), pero sin decir cuántos alumnos la tienen.</p>` },
+    exp:`<p>Hay una sola distancia donde todos los rayos de un punto se juntan: la que da la ecuación (i = 15 cm). Antes o después, los rayos de cada punto llegan separados y dejan una mancha; las manchas de todos los puntos se enciman y la imagen se ve <b>borrosa</b>. Mueve la pantalla (con el deslizador o arrastrándola en el dibujo) y busca el punto nítido.</p>` },
   { id:'ancha', corto:'Lente más ancha',
     q:'Cambias la lente por otra con la <b>misma distancia focal</b> pero el <b>doble de ancha</b>. ¿Qué pasa con la imagen?',
     opts:[['a','Sale más grande','E4-mas-grande','documentado',

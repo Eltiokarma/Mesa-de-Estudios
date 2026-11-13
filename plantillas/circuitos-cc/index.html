@@ -1187,7 +1187,7 @@ const EXPS = [
     fb:{ d:'¡Bien pensado! Cada pila mantiene sus 6 V: mira cómo brillan las cinco.',
       a:'Cada pila no da siempre la misma corriente: mantiene su voltaje. Mira la escena: las de serie brillan menos. En Barcelona, según los autores, la mayoría de las respuestas a esta pregunta se explican con la idea de que la pila da una corriente fija.',
       b:'D y E no se reparten una corriente fija: cada una tiene los 6 V completos y la pila da el doble de corriente. Mira la escena. Es la misma idea de la pila de corriente fija, que explica la mayoría de las respuestas en Barcelona.',
-      c:'En serie, B y C brillan igual: la corriente no se gasta en B. Cerca del 58 % de 184 estudiantes de ingeniería dijo que, de dos bombillas iguales en serie, brilla más una.' },
+      c:'En serie, B y C brillan igual: la corriente no se gasta en B.' },
     antes:() => {},
     paneles:(resp) => {
       const m = M.mcdermott({ fem:6, R:12 }), x = { encendido: !!resp, mostrar:{ I:false, P: !!resp } };
@@ -1210,7 +1210,7 @@ const EXPS = [
           ['c','Brillan igual, porque por las dos pasa la misma corriente',null]],
     ok:'c',
     fb:{ c:'¡Bien pensado! Mira los números de corriente antes, entre y después de las bombillas.',
-      a:'La corriente no se gasta en B1: es la misma en todo el circuito en serie. Cerca del 58 % de 184 estudiantes de ingeniería dijo que, de dos bombillas iguales en serie, brilla más una de ellas.',
+      a:'La corriente no se gasta en B1: es la misma en todo el circuito en serie.',
       b:'No sobra corriente: la que pasa por B1 es la misma que pasa por B2, y brillan igual.' },
     antes:() => Object.assign(E, { inv:false }),
     paneles:(resp) => {
@@ -1251,8 +1251,8 @@ const EXPS = [
           ['d','Pasa corriente, como con una pila de 12 V','C10-suma-siempre','hipotesis']],
     ok:'c',
     fb:{ c:'¡Bien pensado! Mira la escena: las fem se restan.',
-      a:'Las pilas no se anulan: sus fem se restan y quedan 6 V netos. El 21 % de 184 estudiantes de ingeniería dio esta respuesta.',
-      b:'Si hay voltaje en un circuito cerrado, pasa corriente: 0,5 A por la bombilla. Cerca de un tercio de 184 estudiantes de ingeniería (31,5 %) dio esta respuesta.',
+      a:'Las pilas sí se oponen, pero no se anulan: sus fem se restan y quedan 6 V netos.',
+      b:'Si hay voltaje en un circuito cerrado, pasa corriente: 0,5 A por la bombilla.',
       d:'Al revés, las fem se restan: 9 − 3 = 6 V, no 12 V.' },
     antes:() => Object.assign(E, { modo:'oposicion' }),
     paneles:(resp) => [panel(LAY.pilasDe[E.modo], M.pilas({ modo:E.modo, fem1:9, fem2:3, R:12 }), { encendido: !!resp, Pref:3, iRef:0.5, mostrar:{ I:true, P:true } })],
@@ -1805,8 +1805,8 @@ const PREDS = {
           ['c', `B1 brilla igual y marca más de ${A(I1)}, porque mide la corriente antes de que B1 la gaste`, 'C2-corriente-se-gasta', 'parcial'],
           ['d', 'Se apagan las tres, porque para ponerlo hay que cortar el cable', 'MED-cortar-abre', 'hipotesis']],
     fb:{ a:`Bien. Por dentro del amperímetro pasa la misma corriente que por B1: ${A(I1)}. Un amperímetro ideal no tiene resistencia, así que no cambia nada.`,
-      b:`Un amperímetro no gasta corriente: la que entra es la que sale. Uno ideal no tiene resistencia y no cambia nada: B1 brilla igual y marca ${A(I1)}. Si consumiera como otra bombilla de 12 Ω, la corriente bajaría a ${A(PR.M0.errores.b.lectura)}. Esta idea aparece en un estudio con escolares, sin un porcentaje medido.`,
-      c:`La corriente no se gasta en B1: antes y después de B1 hay ${A(I1)}. Arrástralo al otro lado y compruébalo. Cerca de 4 de cada 10 estudiantes de ingeniería de un estudio en Barcelona dijeron que la corriente se gasta al pasar por una bombilla.`,
+      b:`Un amperímetro no gasta corriente: la que entra es la que sale. Uno ideal no tiene resistencia y no cambia nada: B1 brilla igual y marca ${A(I1)}. Si consumiera como otra bombilla de 12 Ω, la corriente bajaría a ${A(PR.M0.errores.b.lectura)}.`,
+      c:`La corriente no se gasta en B1: antes y después de B1 hay ${A(I1)}. Arrástralo al otro lado y compruébalo.`,
       d:`Se corta el cable, pero el amperímetro cierra el camino: la corriente pasa por dentro de él y marca ${A(I1)}.` },
     exp: () => `<p>El amperímetro quedó en el camino y marca ${w('I', A(I1))}, lo mismo que pasa por B1 sin él.</p>
       <p class="hint">Arrástralo al otro lado de B1 o al cable de regreso: marca lo mismo, porque la corriente no se gasta.</p>

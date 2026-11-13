@@ -824,7 +824,7 @@ const steps = [
  { k:'Paso 5', t:'Tramo 2: el hielo se derrite, y su temperatura no cambia', est:{ q:250, h:250 }, anim:{ a:250, b:4250, sigue:{ h:true } },
    body:() => `<div class="eqs"><div class="eq">${V('Q','Q₂')} = ${V('m','m')}·${V('L','L<sub>f</sub>')} = ${V('m','50')}·${V('L','80')} = ${V('Q','4000 cal')}<span class="note">El tramo más caro, por lejos</span></div></div>
    <p>Mira el termómetro del hielo: entran 4000 cal y se queda en 0 °C. Ese calor no sube la temperatura; rompe el orden del hielo para volverlo líquido. En la gráfica es la ${V('L','meseta')}.</p>
-   <p class="aviso">Entre cerca de un tercio y la mitad de los universitarios de primer año cree que agregar calor siempre sube la temperatura (Georgiou y Sharma, 2010, con 858 estudiantes en Sídney). En el examen, ese error es olvidar el término m·L.</p>` },
+   <p class="aviso">Casi siempre, agregar calor sube la temperatura; mientras el hielo se derrite, no. En el examen, ese tramo es el término m·L.</p>` },
  { k:'Paso 6', t:'¿Le alcanza el calor al agua?', est:{ q:4250, h:4250, a:0 }, anim:{ a:0, b:10000, sigue:{ a:true }, q:false },
    body:() => `<div class="eqs">
      <div class="eq">Lo que pide el hielo para ser agua a 0 °C: ${V('Q','250 + 4000 = 4250 cal')}</div>
