@@ -110,6 +110,11 @@ test('los números de la recta no chocan: se ralean si no caben', () => {
   assert.ok(nums.length >= 3 && nums.length <= 11, `rótulos: ${nums.join(' ')}`);
 });
 
+test('enteros con cada: solo los múltiplos', () => {
+  const d = { min: 0, max: 60, paso: 10, elementos: [{ tipo: 'enteros', a: 7, b: 50, cada: 12, color: 'o' }] };
+  assert.equal((R.dibujar(d, {}).match(/r="4"/g) || []).length, 4, '12, 24, 36 y 48');
+});
+
 test('alt cuenta la relación', () => {
   assert.equal(R.alt(COTAS), 'Recta de x de 0 a 8: x > 3,5; x < 6; enteros: 4 y 5');
   assert.match(R.dibujar(MOVIL, {}), /role="img" aria-label="Recta de x \(m\) de 0 m a 120 m/);

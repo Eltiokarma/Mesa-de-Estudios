@@ -14,7 +14,7 @@
  *   elementos: [                      // en orden; cada uno aparece en el paso `desde` (0: desde el principio)
  *     { tipo: 'punto', x, color, rotulo, abierto, fila, desde },
  *     { tipo: 'intervalo', a, b, ca, cb, color, rotulo, fila, desde },  // a o b null: −∞ o +∞; ca, cb: cerrado
- *     { tipo: 'enteros', a, b, color, rotulo, fila, desde },            // un punto en cada entero de [a, b]
+ *     { tipo: 'enteros', a, b, cada, color, rotulo, fila, desde },      // un punto en cada entero (o múltiplo de cada) de [a, b]
  *     { tipo: 'distancia', a, b, color, rotulo, fila, desde },          // cota entre dos valores
  *     { tipo: 'salto', a, b, color, rotulo, fila, desde },              // flecha de a hasta b
  *   ],
@@ -119,8 +119,9 @@
       return `<g class="kit-aparece${clase}">${s}</g>${rot}`;
     }
     if (e.tipo === 'enteros') {
-      const a = Math.ceil(Math.max(d.min, e.a) - 1e-9), b = Math.floor(Math.min(d.max, e.b) + 1e-9);
-      for (let k = a; k <= b; k++) s += `<circle cx="${T.n(g.x(k))}" cy="${T.n(y)}" r="4" fill="${T.color(c)}"/>`;
+      const m = e.cada > 0 ? e.cada : 1;
+      const a = Math.ceil((Math.max(d.min, e.a) - 1e-9) / m) * m, b = Math.floor((Math.min(d.max, e.b) + 1e-9) / m) * m;
+      for (let k = a; k <= b + 1e-9; k += m) s += `<circle cx="${T.n(g.x(k))}" cy="${T.n(y)}" r="4" fill="${T.color(c)}"/>`;
       if (e.rotulo && !disc && b >= a) rot = rotuloSobre(g.x(a), g.x(b), y, e.rotulo, op);
       return `<g class="kit-aparece${clase}">${s}</g>${rot}`;
     }
