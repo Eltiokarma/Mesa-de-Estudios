@@ -8,7 +8,7 @@ Actualizado el 13 de noviembre de 2026. La siguiente sesión empieza aquí: lée
 npm test
 ```
 
-Deben pasar 8062 pruebas. El servidor tiene las suyas: `cd servidor && pip install -r requirements.txt -r requirements-dev.txt && python -m pytest -q` (82).
+Deben pasar 8066 pruebas. El servidor tiene las suyas: `cd servidor && pip install -r requirements.txt -r requirements-dev.txt && python -m pytest -q` (83).
 
 ```bash
 npm run dev
@@ -27,7 +27,7 @@ Si hay que hacer OCR, instala tesseract en español: `apt-get install -y tessera
 - **Si el servidor local muere:** se reinicia con `node herramientas/servidor.js`. También hay que reiniciarlo después de cambiar `herramientas/construir-catalogo.js`, porque guarda el módulo en memoria.
 - **Para verificar a mano:** Playwright y Chromium ya vienen instalados en el entorno en la nube (`require('playwright')`). Las capturas *fullPage* pierden la emulación táctil, así que lo que depende de `hover` se revisa con capturas normales.
 
-## Cola de repaso (versión R), 13 nov, en `main` (sw v172)
+## Cola de repaso (versión R), 13 y 14 nov, en `main` (sw v175)
 
 **Qué hay.**
 - `nucleo/repaso.js` es la lógica pura, con pruebas en `nucleo/repaso.test.js`. Guarda en `est.repaso[unidad] = { desde, paso, toca, hechos, aciertos, ultimo }` y el tope del día en `est.repasoDia`.
@@ -81,13 +81,36 @@ Si hay que hacer OCR, instala tesseract en español: `apt-get install -y tessera
 - Un acierto dentro del navegador, que alarga el intervalo. Eso solo está cubierto por las pruebas de `nucleo/repaso.test.js`.
 - Nada se probó con alumnos.
 
+**Las 152 unidades, 14 nov (orden de Gerson).** La restricción «solo generadores» venía del encargo, no de una regla. Cada unidad saca su pregunta de una fuente que ya existe. `nucleo/repaso-tipos.test.js` exige que las 152 tengan alguna.
+
+| Fuente | Unidades | Qué ve el alumno | Cómo se mide |
+| --- | --- | --- | --- |
+| Generador | 104 | Un problema con números nuevos y alternativas | Acierto medido (`correcta`) |
+| Lápiz y papel de la escena (`papel.json`) | 30 | Lo resuelve en el cuaderno, ve la respuesta y los pasos, y marca «Me salió», «No me salió» o «No sé». Cada visita trae un problema distinto | **Autoevaluación** (`autoevaluacion`, sin `correcta`), aparte del acierto: `Medicion.resumirRepaso().autoevaluacion` |
+| Ejercicio suelto de verbal (`contenido/razonamiento-verbal/ejercicios/`) | 6 | Uno de los 21, con alternativas, sin el paso previo. Distinto en cada visita | Acierto medido |
+| Texto de lectura | 12 | El texto más corto que no leyó (ni en la práctica ni en el repaso), con una sola pregunta de la unidad. Cuenta como un ítem del día | Acierto medido |
+
+- **Cada evento dice de dónde salió la pregunta:** `fuente` ('generador', 'papel', 'ejercicio' o 'lectura'). Los textos usados en el repaso quedan en `est.repaso[u].leidos`, que se junta al unir el estado entre equipos.
+- **La pregunta del tipo** sale siempre, porque la unidad de cada pregunta es segura. Esa seguridad depende de dos tablas que **clasificó un modelo y nadie revisó todavía**, las dos en `nucleo/repaso-tipos.js`:
+  - la de variantes de los generadores mixtos;
+  - `PAPEL`, que asigna los problemas de las 16 escenas con varias unidades. Algunos problemas sirven a dos unidades; por ejemplo, conjuntos sirve a aritmética y a álgebra.
+- **El dibujo del texto** sale de `app/lectura.js` (`LecturaVista.pintor`), sin copiarlo.
+
 **Pendientes del repaso.**
-- **Repaso de razonamiento verbal: lo decide Gerson.** Un texto de lectura no cabe en uno o dos minutos. Los 15 ejercicios sueltos (analogías, conectores, término excluido) son pocos y se repetirían tal cual. Hay dos caminos: generadores de ejercicios sueltos, o textos muy cortos hechos para el repaso.
-- **Revisar la tabla `nucleo/repaso-tipos.js`.** La clasificó un modelo (ver arriba).
-- **La pregunta de seguridad (versión S).** Según 5.8, también alarga o acorta el intervalo. Necesita diseño aprobado.
+- **Paso 4: alternativas para los problemas de papel.** Los valores los calcula el motor de la plantilla y se verifican como el resto (reglas 1 y 2). Mientras un problema no las tenga, se repasa como autoevaluación. Falta el diseño del formato: qué error representa cada alternativa y cómo se calcula con `verificar`.
+- **Revisar las dos tablas de `nucleo/repaso-tipos.js`**, que las clasificó un modelo.
+- **La pregunta de seguridad (versión S).** Va después de la versión A de MRU y necesita diseño aprobado. No se empezó.
+- **Una unidad entra a la cola por los eventos que registran las escenas.** Si una escena de varias unidades anota siempre su unidad principal, las demás unidades no entran por esa escena.
 - ~~Que el profesor vea el repaso de su sección en su panel.~~ **Hecho:** `GET /api/secciones/{id}/avance` trae `repaso { unidades, hechos, aciertos, ultimo }` y el panel tiene la columna «Repaso».
   - Se probó con la API simulada en Playwright, no contra Railway.
   - En el celular, la tabla se desplaza de costado: la columna queda a la derecha.
+
+**Lo que no se verificó del repaso.**
+- El paso real de los días en un celular: se simuló con el reloj del navegador.
+- La sincronización contra Railway: solo se probaron la unión en pytest y la API simulada.
+- El modo sin conexión con el service worker activo, para el papel, los textos y los generadores.
+- Un acierto en el navegador que alargue el intervalo. Eso lo cubren las pruebas de `nucleo/repaso.test.js`.
+- Nada se probó con alumnos.
 
 ## Estado al 13 nov, tarde: auditoría POGIL v2 y decisiones (léelo primero)
 
