@@ -106,7 +106,7 @@ canvas{display:block; width:100%; touch-action:pan-y; -webkit-user-select:none; 
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:999px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -644,27 +644,27 @@ const P1 = { id:'soluciones-paso2', ok:'b', anima:animarAzucar, opts:[
   ['c','Menos puntos, porque el agua disolvió más azúcar y algunos granos desaparecen','SO11-agua-disuelve-mas','documentado'],
   ['d','Ningún punto: el azúcar disuelta no se ve','SO2-no-se-ve-no-esta','parcial']],
   fb:{ b:'¡Bien! El azúcar es la misma, pero ahora se reparte en el doble de volumen: en cada volumen pequeño hay la mitad.',
-    a:'Elegiste la A. En todo el vaso sí hay los mismos puntos, pero la lupa mira siempre el mismo volumen pequeño, y ahora ese azúcar se reparte en el doble de volumen. La correcta está marcada.',
-    c:'Elegiste la C. El agua no disuelve "más" azúcar ni hace desaparecer granos: el azúcar ya estaba disuelta. Solo se reparte en más volumen. La correcta está marcada.',
-    d:'Elegiste la D. Que no se vea a simple vista no quiere decir que no esté: las moléculas de azúcar siguen ahí, sueltas entre las de agua. La correcta está marcada.' } };
+    a:'En todo el vaso sí hay los mismos puntos, pero la lupa mira siempre el mismo volumen pequeño, y ahora ese azúcar se reparte en el doble de volumen.',
+    c:'El agua no disuelve "más" azúcar ni hace desaparecer granos: el azúcar ya estaba disuelta. Solo se reparte en más volumen.',
+    d:'Que no se vea a simple vista no quiere decir que no esté: las moléculas de azúcar siguen ahí, sueltas entre las de agua.' } };
 const P2 = { id:'soluciones-paso4', ok:'c', anima:animarJarra, opts:[
   ['a','Aumenta, porque se sacó solo agua','SO10-sube-al-sacar','documentado'],
   ['b','Baja a 0,75 M, porque queda menos soluto','SO7-baja-como-cantidad','documentado'],
   ['c','Sigue siendo 1 M'],
   ['d','Lo que queda sigue en 1 M, pero lo que se sacó tiene 0,25 M','SO7-regla-de-tres','parcial']],
   fb:{ c:'¡Bien! Lo que se saca se lleva soluto y agua en la misma proporción. Queda menos solución, pero igual de concentrada.',
-    a:'Elegiste la A. La solución es pareja: el cuarto que se saca tiene soluto y agua, no solo agua. Mira los cuadros: cada uno sigue con 2 puntos. La correcta está marcada.',
-    b:'Elegiste la B. Queda menos soluto (1,5 mol en vez de 2), pero también menos volumen (1,5 L en vez de 2). La concentración es soluto entre volumen, y esa razón no cambió. La correcta está marcada.',
-    d:'Elegiste la D. Lo que queda sí sigue en 1 M, y lo que se sacó también: es un cuarto del soluto (0,5 mol) en un cuarto del volumen (0,5 L). El 0,25 sale de multiplicar 1 M por un cuarto, como si la concentración se repartiera; lo que se reparte es el soluto. La correcta está marcada.' } };
+    a:'La solución es pareja: el cuarto que se saca tiene soluto y agua, no solo agua. Mira los cuadros: cada uno sigue con 2 puntos.',
+    b:'Queda menos soluto (1,5 mol en vez de 2), pero también menos volumen (1,5 L en vez de 2). La concentración es soluto entre volumen, y esa razón no cambió.',
+    d:'Lo que queda sí sigue en 1 M, y lo que se sacó también: es un cuarto del soluto (0,5 mol) en un cuarto del volumen (0,5 L). El 0,25 sale de multiplicar 1 M por un cuarto, como si la concentración se repartiera; lo que se reparte es el soluto.' } };
 const P3 = { id:'soluciones-paso5', ok:'d', anima:animarMezcla, opts:[
   ['a','1,5 M: el promedio de 2 y 1','mezcla-promedio-simple','hipotesis'],
   ['b','3 M: 2 + 1','SO7-suma-concentraciones','parcial'],
   ['c','0,5 M','SO7-moles-como-concentracion','documentado'],
   ['d','1,25 M']],
   fb:{ d:'¡Bien! Se suman los moles (0,2 + 0,3 = 0,5) y los volúmenes (0,4 L): 0,5/0,4 = 1,25 M.',
-    a:'Elegiste la A. El promedio simple solo sirve si los dos volúmenes son iguales. Aquí hay el triple de la solución 1 M, así que la mezcla queda más cerca de 1 M. La correcta está marcada.',
-    b:'Elegiste la B. Las concentraciones no se suman: la mezcla no puede ser más concentrada que la más concentrada de las dos. Lo que se suma son los moles y los volúmenes. La correcta está marcada.',
-    c:'Elegiste la C. 0,5 son los moles de soluto de la mezcla, no su concentración. Falta dividir entre el volumen, 0,4 L. La correcta está marcada.' } };
+    a:'El promedio simple solo sirve si los dos volúmenes son iguales. Aquí hay el triple de la solución 1 M, así que la mezcla queda más cerca de 1 M.',
+    b:'Las concentraciones no se suman: la mezcla no puede ser más concentrada que la más concentrada de las dos. Lo que se suma son los moles y los volúmenes.',
+    c:'0,5 son los moles de soluto de la mezcla, no su concentración. Falta dividir entre el volumen, 0,4 L.' } };
 
 const opciones = P => `<div class="opts">${P.opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="fb"></p>`;
 const n = t => V('n', t), Vv = t => V('V', t), Mm = t => V('M', t);
@@ -1264,9 +1264,9 @@ const EXPS = [
           ['c','Los mismos 16',null],
           ['d','Ninguno: la sal se termina de disolver y ya no está','SO2-no-se-ve-no-esta','parcial']],
     ok:'c',
-    fb:{ a:'Elegiste la A. La sal ya estaba disuelta: el agua no la "termina de disolver" ni hace desaparecer puntos. Siguen los 16; solo se reparten en el doble de cuadros. La correcta está marcada.',
-      b:'Elegiste la B. Lo que baja a la mitad es la concentración (puntos por cuadro), no la cantidad de sal: siguen los 16 puntos. La correcta está marcada.',
-      d:'Elegiste la D. Que la sal disuelta no se vea no quiere decir que no esté: sus partículas siguen en el agua. La correcta está marcada.' },
+    fb:{ a:'La sal ya estaba disuelta: el agua no la "termina de disolver" ni hace desaparecer puntos. Siguen los 16; solo se reparten en el doble de cuadros.',
+      b:'Lo que baja a la mitad es la concentración (puntos por cuadro), no la cantidad de sal: siguen los 16 puntos.',
+      d:'Que la sal disuelta no se vea no quiere decir que no esté: sus partículas siguen en el agua.' },
     antes:ver => E.config({ esc:ESC_AGUA, vasos:[{ id:'s', cap:4, n:AGUA.n, mL: ver ? 400 : 200, etiqueta:'Salmuera', sem:91 }],
       lupas:[{ id:'ls', vaso:'s', cuenta:MS.lupa(ver ? AGUA.M2 : 1, ESC_AGUA), sub:fM(ver ? AGUA.M2 : 1) }] }),
     despues:() => { const s = E.vaso('s'); s.mL = 400; E.nivel('s', 400, () => E.reubicar('s', 93, () => { E.lupaA('ls', MS.lupa(AGUA.M2, ESC_AGUA)); E.lupa('ls').sub = fM(AGUA.M2); })); },
@@ -1308,9 +1308,9 @@ const EXPS = [
           ['c',`Cristalizan unos ${fmt(ENF.errores.laSolubilidad, 0)} g; el líquido que queda está saturado`,'cristaliza-la-solubilidad','hipotesis'],
           ['d',`Cristalizan unos ${fmt(ENF.cristaliza, 0)} g; el líquido que queda está saturado`,null]],
     ok:'d',
-    fb:{ a:`Elegiste la A. La cantidad está bien, pero el líquido que queda sobre los cristales está saturado: tiene justo lo que cabe a 20 °C (${fmt(ENF.cabe2, 1)} g). Saturada quiere decir que ya no admite más a esa temperatura, haya poco o mucho soluto; diluida solo dice que hay poco. La correcta está marcada.`,
-      b:`Elegiste la B. Lo disuelto sí vuelve a ser sólido: a 20 °C, en 100 g de agua solo caben ${fmt(ENF.cabe2, 1)} g, y con el cristalito y la agitación lo que sobra se separa como cristales. La correcta está marcada.`,
-      c:`Elegiste la C. ${fmt(ENF.cabe2, 1)} g es lo que marca la curva a 20 °C: lo que se queda disuelto, no lo que cristaliza. Cristaliza lo que sobra. La correcta está marcada.` },
+    fb:{ a:`La cantidad está bien, pero el líquido que queda sobre los cristales está saturado: tiene justo lo que cabe a 20 °C (${fmt(ENF.cabe2, 1)} g). Saturada quiere decir que ya no admite más a esa temperatura, haya poco o mucho soluto; diluida solo dice que hay poco.`,
+      b:`Lo disuelto sí vuelve a ser sólido: a 20 °C, en 100 g de agua solo caben ${fmt(ENF.cabe2, 1)} g, y con el cristalito y la agitación lo que sobra se separa como cristales.`,
+      c:`${fmt(ENF.cabe2, 1)} g es lo que marca la curva a 20 °C: lo que se queda disuelto, no lo que cristaliza. Cristaliza lo que sobra.` },
     antes:ver => { vsIniciar(ver); E.config({ vasos:[], lupas:[], extra:dibujarCristal, descr:descCristal,
       leyenda:leyCristal(ver) }); },
     despues:() => { $('leyenda2').innerHTML = leyCristal(true); VS.ver = true; VS.hist = [[VS.T, VS.eq.disuelto]]; vsIrA(CR.T2, vsLeer); },
@@ -1330,9 +1330,9 @@ const EXPS = [
           ['c','Igual en las dos: con la misma presión, la temperatura no cuenta','gas-solo-presion','hipotesis'],
           ['d','En ninguna: el CO₂ no se disuelve, solo forma las burbujas','gas-no-se-disuelve','hipotesis']],
     ok:'a',
-    fb:{ b:`Elegiste la B. Con muchos sólidos pasa eso, pero con los gases es al revés: al calentar, las moléculas de gas escapan más fácil del líquido. A ${GAS.T[0]} °C quedan ${fmt(CMP.g1, 2)} g disueltos y a ${GAS.T[1]} °C, ${fmt(CMP.g2, 2)} g. La correcta está marcada.`,
-      c:`Elegiste la C. La presión importa (más presión, más gas disuelto), pero la temperatura también: con la misma presión, la botella fría retiene casi el doble de CO₂ que la de ${GAS.T[1]} °C. La correcta está marcada.`,
-      d:'Elegiste la D. Las burbujas salen del CO₂ que estaba disuelto: en la botella cerrada el gas está repartido entre las moléculas de agua, sin verse. La correcta está marcada.' },
+    fb:{ b:`Con muchos sólidos pasa eso, pero con los gases es al revés: al calentar, las moléculas de gas escapan más fácil del líquido. A ${GAS.T[0]} °C quedan ${fmt(CMP.g1, 2)} g disueltos y a ${GAS.T[1]} °C, ${fmt(CMP.g2, 2)} g.`,
+      c:`La presión importa (más presión, más gas disuelto), pero la temperatura también: con la misma presión, la botella fría retiene casi el doble de CO₂ que la de ${GAS.T[1]} °C.`,
+      d:'Las burbujas salen del CO₂ que estaba disuelto: en la botella cerrada el gas está repartido entre las moléculas de agua, sin verse.' },
     antes:ver => { gsIniciar(ver); E.config({ vasos:[], lupas:[], extra:dibujarGaseosa, descr:descGaseosa,
       leyenda:`<span><i class="pt" style="background:var(--c-g)"></i>CO₂ disuelto (cada punto: ${fmt(GAS.gPunto, 1)} g)</span><span><i style="background:var(--c-solv)"></i>agua (cada cuadro: 125 g)</span><span><i class="pt" style="background:var(--c-P)"></i>P · CO₂ gaseoso sobre el líquido (más puntos, más presión)</span>` }); },
     despues:() => { GS.ver = true; gsAjustar(true); E.dibujar(); },
@@ -1377,7 +1377,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : (x.fb && x.fb[p]) || `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira la escena para ver por qué.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : (x.fb && x.fb[p]) || `; mira la escena para ver por qué.`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = (x.ctrl ? x.ctrl() : '') + x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     $('res2').querySelectorAll('[data-uni]').forEach(b => b.onclick = () => { U.unidad = b.dataset.uni; $('res2').querySelectorAll('[data-uni]').forEach(y => y.setAttribute('aria-pressed', String(y === b))); pintarUnidad(); E.dibujar(); });

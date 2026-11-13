@@ -133,7 +133,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -764,43 +764,43 @@ const P1 = { id:'poligonos-paso2', ok:'a', opts:[
   ['c', `${fmt(HEX.errores.sumaInteriores.siempre360, 0)}°`, 'suma-siempre-360', 'hipotesis'],
   ['d', `${fmt(HEX.errores.sumaInteriores.conNmenos1, 0)}°`, 'suma-n-menos-1-triangulos', 'hipotesis']],
   fb:{ a:'¡Bien! Desde un vértice, el hexágono se parte en 4 triángulos, y cada uno aporta 180°: 4 · 180° = 720°.',
-    b:'Elegiste la B. 180° · 6 sería un triángulo por lado. Pero desde un vértice salen solo 4 triángulos: los dos lados que tocan ese vértice no forman triángulo nuevo. La correcta está marcada.',
-    c:'Elegiste la C. 360° es lo que suman los ángulos de un cuadrilátero, o los exteriores de cualquier polígono convexo. Los interiores crecen con el número de lados. La correcta está marcada.',
-    d:'Elegiste la D. 900° serían 5 triángulos, uno menos que los lados. Desde un vértice salen 6 − 2 = 4. La correcta está marcada.' } };
+    b:'180° · 6 sería un triángulo por lado. Pero desde un vértice salen solo 4 triángulos: los dos lados que tocan ese vértice no forman triángulo nuevo.',
+    c:'360° es lo que suman los ángulos de un cuadrilátero, o los exteriores de cualquier polígono convexo. Los interiores crecen con el número de lados.',
+    d:'900° serían 5 triángulos, uno menos que los lados. Desde un vértice salen 6 − 2 = 4.' } };
 const P2 = { id:'poligonos-paso3', ok:'c', opts:[
   ['a', fmt(OCT.errores.diagonales.conLados, 0), 'GE23-diagonales-con-lados', 'hipotesis'],
   ['b', fmt(OCT.errores.diagonales.sinDividir, 0), 'diagonales-contadas-dos-veces', 'hipotesis'],
   ['c', fmt(OCT.diagonales, 0)],
   ['d', fmt(OCT.errores.diagonales.soloDesdeUnVertice, 0), 'diagonales-de-un-vertice', 'hipotesis']],
   fb:{ c:'¡Bien! Desde cada vértice salen 8 − 3 = 5 diagonales. 8 · 5 = 40 cuenta cada una dos veces, una desde cada extremo: 40 / 2 = 20.',
-    a:'Elegiste la A. 8 · 7 / 2 = 28 cuenta todos los segmentos que unen dos vértices, también los 8 lados: 28 − 8 = 20. La correcta está marcada.',
-    b:'Elegiste la B. 8 · 5 = 40 cuenta cada diagonal dos veces: la que va de un vértice a otro es la misma que vuelve. Falta dividir entre 2. La correcta está marcada.',
-    d:'Elegiste la D. 5 son las que salen de un solo vértice. Cada uno de los 8 vértices traza las suyas. La correcta está marcada.' } };
+    a:'8 · 7 / 2 = 28 cuenta todos los segmentos que unen dos vértices, también los 8 lados: 28 − 8 = 20.',
+    b:'8 · 5 = 40 cuenta cada diagonal dos veces: la que va de un vértice a otro es la misma que vuelve. Falta dividir entre 2.',
+    d:'5 son las que salen de un solo vértice. Cada uno de los 8 vértices traza las suyas.' } };
 const P3 = { id:'poligonos-paso4', ok:'b', unidad:U_REG, opts:[
   ['a', `Tiene ${fmt(A150.errores.con180, 0)} lados`, 'exteriores-suman-180', 'hipotesis'],
   ['b', `Tiene ${fmt(A150.n, 0)} lados`],
   ['c', 'No existe ese polígono', 'interior-como-central', 'hipotesis']],
   fb:{ b:'¡Bien! Si el interior mide 150°, el exterior mide 180° − 150° = 30°. Los exteriores suman 360°: 360° / 30° = 12 lados.',
-    a:'Elegiste la A. 180° / 30° = 6 usa 180°, pero los exteriores dan una vuelta completa: suman 360°. Con 6 lados, cada interior mediría 120°. La correcta está marcada.',
-    c:'Elegiste la C. Sí existe. 360° / 150° no es entero, pero 150° no es el ángulo central ni el exterior: es el interior. El exterior mide 30°, y 360° / 30° = 12 sí es entero. La correcta está marcada.' } };
+    a:'180° / 30° = 6 usa 180°, pero los exteriores dan una vuelta completa: suman 360°. Con 6 lados, cada interior mediría 120°.',
+    c:'Sí existe. 360° / 150° no es entero, pero 150° no es el ángulo central ni el exterior: es el interior. El exterior mide 30°, y 360° / 30° = 12 sí es entero.' } };
 const P4 = { id:'poligonos-paso5', ok:'c', opts:[
   ['a', 'No: un rombo no tiene ángulos rectos', 'GE10-cuadrado-no-es-rombo', 'parcial'],
   ['b', 'Solo si se apoya en un vértice, como se dibuja un rombo', 'GE9-depende-de-la-posicion', 'parcial'],
   ['c', 'Sí: tiene sus cuatro lados iguales'],
   ['d', 'No: las diagonales de un rombo tienen que ser distintas', 'GE10-propiedad-del-dibujo', 'parcial']],
   fb:{ c:'¡Bien! El rombo es el paralelogramo con los cuatro lados iguales. El cuadrado los tiene: es un rombo que además tiene los ángulos rectos.',
-    a:'Elegiste la A. La definición del rombo pide cuatro lados iguales, y nada más. No prohíbe los ángulos rectos: el cuadrado es el rombo que los tiene. La correcta está marcada.',
-    b:'Elegiste la B. Girar una figura no cambia sus lados ni sus ángulos. El cuadrado es rombo en cualquier posición, porque tiene los cuatro lados iguales. La correcta está marcada.',
-    d:'Elegiste la D. Las diagonales del rombo son perpendiculares; no tienen por qué ser distintas. En el cuadrado son perpendiculares e iguales. La correcta está marcada.' } };
+    a:'La definición del rombo pide cuatro lados iguales, y nada más. No prohíbe los ángulos rectos: el cuadrado es el rombo que los tiene.',
+    b:'Girar una figura no cambia sus lados ni sus ángulos. El cuadrado es rombo en cualquier posición, porque tiene los cuatro lados iguales.',
+    d:'Las diagonales del rombo son perpendiculares; no tienen por qué ser distintas. En el cuadrado son perpendiculares e iguales.' } };
 const P5 = { id:'poligonos-paso7', ok:'d', opts:[
   ['a', fmt(TT.errores.mediana.resta, 0), 'mediana-como-resta', 'hipotesis'],
   ['b', fmt(TT.errores.mediana.suma, 0), 'mediana-sin-dividir', 'hipotesis'],
   ['c', fmt(TT.errores.mediana.mitadDeLaResta, 0), 'mediana-como-semidiferencia', 'hipotesis'],
   ['d', fmt(TT.mediana, 0)]],
   fb:{ d:'¡Bien! La mediana es la semisuma de las bases: (10 + 4) / 2 = 7. Queda entre las dos bases, más larga que la menor y más corta que la mayor.',
-    a:'Elegiste la A. 10 − 4 = 6 no es la mediana. La mediana es el promedio de las dos bases, (10 + 4) / 2. La correcta está marcada.',
-    b:'Elegiste la B. 14 es la suma de las bases: es más larga que la base mayor, y la mediana queda entre las dos. Falta dividir entre 2. La correcta está marcada.',
-    c:'Elegiste la C. (10 − 4) / 2 = 3 es el segmento que une los puntos medios de las diagonales, que está sobre la mediana. La mediana es la semisuma, (10 + 4) / 2. La correcta está marcada.' } };
+    a:'10 − 4 = 6 no es la mediana. La mediana es el promedio de las dos bases, (10 + 4) / 2.',
+    b:'14 es la suma de las bases: es más larga que la base mayor, y la mediana queda entre las dos. Falta dividir entre 2.',
+    c:'(10 − 4) / 2 = 3 es el segmento que une los puntos medios de las diagonales, que está sobre la mediana. La mediana es la semisuma, (10 + 4) / 2.' } };
 
 const LEY_POL = [['i', 'i · ángulo interior', true]];
 const steps = [
@@ -1181,7 +1181,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

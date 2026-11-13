@@ -106,7 +106,7 @@ canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .chips{display:flex; flex-wrap:wrap; gap:6px}
 .chip{font-size:.86rem; padding:4px 12px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); font-weight:700}
@@ -538,51 +538,51 @@ const P1 = { id:'si-paso1-letra-f', ok:'b',
   opts:[['a', lado(B1.errores.copia.apunta, B1.errores.copia.larga), 'refleja-copiando-sin-invertir', 'hipotesis'], ['b', lado(B1.apunta, B1.larga)],
         ['c', lado(B1.errores.giro180.apunta, B1.errores.giro180.larga), 'reflexion-como-media-vuelta', 'hipotesis'], ['d', lado(B1.errores.horizontal.apunta, B1.errores.horizontal.larga), 'voltea-de-arriba-abajo', 'hipotesis']],
   fb:{ b:'¡Bien! Cada punto pasa al otro lado del espejo a la misma distancia, por una perpendicular. La punta de la barra larga estaba 5 cm a la derecha de L: queda 5 cm a la izquierda. Lo de arriba sigue arriba.',
-       a:'Elegiste la A. Así sería una copia corrida al otro lado, sin voltear. En el espejo, lo que está más lejos (la punta de las barras) queda también más lejos del otro lado: las barras salen hacia la izquierda. La correcta está marcada.',
-       c:'Elegiste la C. Eso sería dar media vuelta a la F alrededor de un punto del espejo: la barra larga bajaría. Un espejo vertical solo cambia izquierda por derecha; las alturas no cambian. La correcta está marcada.',
-       d:'Elegiste la D. Así se reflejaría en un espejo horizontal (el piso de un lago). Este espejo es vertical: cambia izquierda por derecha y deja las alturas como están. La correcta está marcada.' } };
+       a:'Así sería una copia corrida al otro lado, sin voltear. En el espejo, lo que está más lejos (la punta de las barras) queda también más lejos del otro lado: las barras salen hacia la izquierda.',
+       c:'Eso sería dar media vuelta a la F alrededor de un punto del espejo: la barra larga bajaría. Un espejo vertical solo cambia izquierda por derecha; las alturas no cambian.',
+       d:'Así se reflejaría en un espejo horizontal (el piso de un lago). Este espejo es vertical: cambia izquierda por derecha y deja las alturas como están.' } };
 const P2 = { id:'si-paso3-coordenadas', ok:'a',
   opts:[['a', `${V('I',"P′")}${pt(D3.P)}`], ['b', `${V('I',"P′")}${pt(D3.errores.pie)}`, 'se-queda-en-el-pie', 'hipotesis'],
         ['c', `${V('I',"P′")}${pt(D3.errores.vertical)}`, 'refleja-en-vertical', 'hipotesis'], ['d', `${V('I',"P′")}${pt(D3.errores.intercambia)}`, 'intercambia-coordenadas', 'hipotesis']],
   fb:{ a:`¡Bien! La perpendicular por P llega a L en H${pt(D3.H)}; P′ está otro tanto más allá: P′ = 2H − P = ${pt(D3.P)}.`,
-       b:`Elegiste la B. ${pt(D3.H)} es el pie H: ahí se llega a mitad de camino. P′ está otro tanto más allá de L: P′ = 2H − P. La correcta está marcada.`,
-       c:`Elegiste la C. Subiste en vertical hasta L y seguiste otro tanto. Pero el camino al espejo tiene que ser perpendicular a L, y L está inclinada: por eso la perpendicular va en diagonal. La correcta está marcada.`,
-       d:`Elegiste la D. Cambiar x por y es el reflejo en y = x. Esta recta es y = x + 2: está corrida 2 unidades, y el resultado cambia. La correcta está marcada.` } };
+       b:`${pt(D3.H)} es el pie H: ahí se llega a mitad de camino. P′ está otro tanto más allá de L: P′ = 2H − P.`,
+       c:`Subiste en vertical hasta L y seguiste otro tanto. Pero el camino al espejo tiene que ser perpendicular a L, y L está inclinada: por eso la perpendicular va en diagonal.`,
+       d:`Cambiar x por y es el reflejo en y = x. Esta recta es y = x + 2: está corrida 2 unidades, y el resultado cambia.` } };
 const P3p = { id:'si-paso4-central', ok:'a',
   opts:[['a', 'Da media vuelta alrededor de O; A′, B′ y C′ siguen en sentido antihorario'], ['b', 'Se voltea como en un espejo; A′, B′ y C′ quedan en sentido horario', 'central-como-reflexion', 'hipotesis'],
         ['c', 'Da media vuelta alrededor de O; A′, B′ y C′ quedan en sentido horario', 'media-vuelta-invierte-sentido', 'hipotesis'], ['d', 'Da un cuarto de vuelta alrededor de O; A′, B′ y C′ siguen en sentido antihorario', 'central-como-cuarto-de-vuelta', 'hipotesis']],
   fb:{ a:'¡Bien! O es el punto medio de AA′, de BB′ y de CC′: cada vértice pasa por O y sigue otro tanto. Eso es girar media vuelta (180°), y un giro no voltea la figura: el sentido no cambia.',
-       b:'Elegiste la B. Un espejo voltea la figura, pero aquí no hay espejo: hay un punto O que es el punto medio de AA′, BB′ y CC′. Eso es una media vuelta, que no voltea. La correcta está marcada.',
-       c:'Elegiste la C. Es media vuelta, sí, pero girar no voltea: si lees A, B, C en sentido antihorario, A′, B′, C′ también. Solo un espejo cambia el sentido. La correcta está marcada.',
-       d:'Elegiste la D. Si O es el punto medio de AA′, entonces A, O y A′ están en línea recta: el giro es de 180°, no de 90°. La correcta está marcada.' } };
+       b:'Un espejo voltea la figura, pero aquí no hay espejo: hay un punto O que es el punto medio de AA′, BB′ y CC′. Eso es una media vuelta, que no voltea.',
+       c:'Es media vuelta, sí, pero girar no voltea: si lees A, B, C en sentido antihorario, A′, B′, C′ también. Solo un espejo cambia el sentido.',
+       d:'Si O es el punto medio de AA′, entonces A, O y A′ están en línea recta: el giro es de 180°, no de 90°.' } };
 const n = x => `${x} ${x === 1 ? 'eje' : 'ejes'}`;
 const P4 = { id:'si-paso5-rectangulo', ok:'b',
   opts:[['a', n(D5.errores.conDiagonales), 'diagonales-del-rectangulo-como-ejes', 'hipotesis'], ['b', n(D5.ejes)], ['c', n(D5.errores.soloVertical), 'solo-el-eje-vertical', 'hipotesis'], ['d', n(D5.errores.ninguno), 'rectangulo-sin-ejes', 'hipotesis']],
   fb:{ b:'¡Bien! Dos ejes: la recta horizontal y la vertical que pasan por el centro. Las diagonales parten al rectángulo en dos triángulos iguales, pero al doblar por una diagonal las esquinas no caen una sobre otra.',
-       a:'Elegiste la A. Contaste también las diagonales. Una diagonal parte al rectángulo en dos triángulos iguales, pero un eje pide más: que al doblar, cada punto caiga sobre otro. Al doblar por la diagonal, la figura no cae sobre sí misma. La correcta está marcada.',
-       c:'Elegiste la C. El eje vertical sirve, pero la recta horizontal por el centro también: doblando por ella, el lado de arriba cae sobre el de abajo. La correcta está marcada.',
-       d:'Elegiste la D. Doblando el rectángulo por la mitad, a lo largo o a lo ancho, una mitad cae justo sobre la otra: tiene ejes. La correcta está marcada.' } };
+       a:'Contaste también las diagonales. Una diagonal parte al rectángulo en dos triángulos iguales, pero un eje pide más: que al doblar, cada punto caiga sobre otro. Al doblar por la diagonal, la figura no cae sobre sí misma.',
+       c:'El eje vertical sirve, pero la recta horizontal por el centro también: doblando por ella, el lado de arriba cae sobre el de abajo.',
+       d:'Doblando el rectángulo por la mitad, a lo largo o a lo ancho, una mitad cae justo sobre la otra: tiene ejes.' } };
 const P5 = { id:'si-paso6-cuadrado-girado', ok:'c',
   opts:[['a', n(D6.errores.soloRectos), 'GE9-cuadrado-girado-como-rombo', 'hipotesis'], ['b', n(D6.errores.dobleCuenta), 'cuenta-cada-eje-dos-veces', 'hipotesis'], ['c', n(D6.ejes)], ['d', n(D6.errores.ninguno), 'figura-girada-sin-ejes', 'hipotesis']],
   fb:{ c:'¡Bien! Sigue siendo un cuadrado: 4 ejes. Girar la figura gira también sus ejes; las dos diagonales ahora están derechas y las dos medianas, inclinadas.',
-       a:'Elegiste la A. Así de costado parece un rombo, que tiene 2 ejes (sus diagonales). Pero es un cuadrado: además de las diagonales, las rectas que unen los puntos medios de los lados opuestos también son ejes, aunque ahora estén inclinadas. La correcta está marcada.',
-       b:'Elegiste la B. Cada eje cruza la figura de lado a lado y se cuenta una sola vez: son 4 rectas. La correcta está marcada.',
-       d:'Elegiste la D. Girar no rompe la simetría: los ejes giran con la figura. Siguen siendo 4, solo que en otra posición. La correcta está marcada.' } };
+       a:'Así de costado parece un rombo, que tiene 2 ejes (sus diagonales). Pero es un cuadrado: además de las diagonales, las rectas que unen los puntos medios de los lados opuestos también son ejes, aunque ahora estén inclinadas.',
+       b:'Cada eje cruza la figura de lado a lado y se cuenta una sola vez: son 4 rectas.',
+       d:'Girar no rompe la simetría: los ejes giran con la figura. Siguen siendo 4, solo que en otra posición.' } };
 const P6 = { id:'si-paso7-dos-espejos', ok:'c',
   opts:[['a', `Corrida ${fmt(D7.errores.sinDuplicar)} cm hacia la derecha, sin voltear`, 'traslada-la-distancia-sin-duplicar', 'hipotesis'], ['b', `Corrida ${fmt(D7.modulo)} cm hacia la derecha, pero volteada`, 'dos-reflexiones-son-otra-reflexion', 'hipotesis'],
         ['c', `Corrida ${fmt(D7.modulo)} cm hacia la derecha, sin voltear`], ['d', `Corrida ${fmt(D7.errores.vuelveAlInicio)} cm (en su lugar), sin voltear`, 'dos-reflexiones-se-cancelan', 'hipotesis']],
   fb:{ c:`¡Bien! La primera reflexión la voltea y la segunda la vuelve a voltear: queda derecha. Y avanza el doble de la distancia entre los espejos: 2 · 3 = ${fmt(D7.modulo)} cm.`,
-       a:`Elegiste la A. Los espejos están a 3 cm, pero la F avanza más: el tallo está 2 cm antes de L₁ y su primera imagen queda 2 cm después, a 1 cm de L₂; L₂ la pasa 1 cm más allá. En total, 2 + 2 + 1 + 1 = ${fmt(D7.modulo)} cm, el doble de 3. La correcta está marcada.`,
-       b:'Elegiste la B. La distancia sí es 6 cm, pero cada espejo voltea la figura y dos volteos seguidos la dejan derecha otra vez: las barras de la F salen hacia la derecha, como al inicio. El resultado no es un reflejo, es una traslación. La correcta está marcada.',
-       d:'Elegiste la D. La segunda reflexión deshace el volteo, pero no devuelve la F a su lugar: queda corrida. Solo volvería al inicio si los dos espejos fueran el mismo. La correcta está marcada.' } };
+       a:`Los espejos están a 3 cm, pero la F avanza más: el tallo está 2 cm antes de L₁ y su primera imagen queda 2 cm después, a 1 cm de L₂; L₂ la pasa 1 cm más allá. En total, 2 + 2 + 1 + 1 = ${fmt(D7.modulo)} cm, el doble de 3.`,
+       b:'La distancia sí es 6 cm, pero cada espejo voltea la figura y dos volteos seguidos la dejan derecha otra vez: las barras de la F salen hacia la derecha, como al inicio. El resultado no es un reflejo, es una traslación.',
+       d:'La segunda reflexión deshace el volteo, pero no devuelve la F a su lugar: queda corrida. Solo volvería al inicio si los dos espejos fueran el mismo.' } };
 const pl = x => `${x} planos`;
 const P7 = { id:'si-paso8-cubo', ok:'d',
   opts:[['a', pl(D8.errores.soloCaras), 'cubo-solo-planos-paralelos-a-caras', 'hipotesis'], ['b', pl(D8.errores.unoPorCara), 'cubo-un-plano-por-cara', 'hipotesis'],
         ['c', pl(D8.errores.unoPorArista), 'cubo-un-plano-por-arista', 'hipotesis'], ['d', pl(D8.planos)]],
   fb:{ d:'¡Bien! 3 planos paralelos a las caras (por la mitad de cada dirección) y 6 que contienen dos aristas opuestas, como un corte en diagonal. Total: 9.',
-       a:'Elegiste la A. Los 3 planos paralelos a las caras sí son de simetría, pero faltan los 6 que cortan el cubo en diagonal, por dos aristas opuestas: el corte es un rectángulo y cada mitad es el reflejo de la otra. La correcta está marcada.',
-       b:'Elegiste la B. Si pensaste en un plano por cara: una cara no es un plano de simetría, porque deja todo el cubo de un solo lado. Si contaste solo los 6 en diagonal (por dos aristas opuestas), faltan los 3 paralelos a las caras. Son 3 + 6 = 9. La correcta está marcada.',
-       c:'Elegiste la C. Cada plano diagonal usa dos aristas opuestas a la vez, así que las 12 aristas dan 6 planos, no 12. Con los 3 paralelos a las caras: 9. La correcta está marcada.' } };
+       a:'Los 3 planos paralelos a las caras sí son de simetría, pero faltan los 6 que cortan el cubo en diagonal, por dos aristas opuestas: el corte es un rectángulo y cada mitad es el reflejo de la otra.',
+       b:'Si pensaste en un plano por cara: una cara no es un plano de simetría, porque deja todo el cubo de un solo lado. Si contaste solo los 6 en diagonal (por dos aristas opuestas), faltan los 3 paralelos a las caras. Son 3 + 6 = 9.',
+       c:'Cada plano diagonal usa dos aristas opuestas a la vez, así que las 12 aristas dan 6 planos, no 12. Con los 3 paralelos a las caras: 9.' } };
 
 // ---- Vistas de cada paso ----
 function vista1(resuelto, t){
@@ -880,7 +880,7 @@ function animar(dur, cada, fin){
   anim = requestAnimationFrame(tick);
 }
 const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
-const NOHAY = '<p class="fuente">Hipótesis nuestra: las opciones incorrectas son errores que suponemos; el informe de geometría no cubre la simetría y no encontramos un estudio con porcentajes.</p>';
+const NOHAY = '<p class="fuente"></p>';
 const n = x => `${x} ${x === 1 ? 'eje' : 'ejes'}`, pl = x => `${x} planos`;
 
 // Experimento 1: espejos que se cortan en Q a 40°
@@ -939,9 +939,9 @@ const EXPS = [
     opts:[['a', `Girada ${gr(E1.errores.sinDuplicar)} alrededor de Q, sin voltear`, 'giro-del-angulo-sin-duplicar', 'hipotesis'], ['b', `Girada ${gr(E1.angulo)} alrededor de Q, sin voltear`],
           ['c', `Girada ${gr(E1.errores.mitad)} alrededor de Q, sin voltear`, 'giro-de-la-mitad-del-angulo', 'hipotesis'], ['d', `Girada ${gr(E1.angulo)} alrededor de Q, pero volteada`, 'dos-reflexiones-son-otra-reflexion', 'hipotesis']],
     ok:'b',
-    fb:{ a:'Elegiste la A. 40° es el ángulo entre los espejos, pero cada espejo aporta: el primero lleva la F a un lado de L₁ y el segundo la pasa al otro lado de L₂. El giro es el doble: 80°. La correcta está marcada.',
-         c:'Elegiste la C. 20° es la mitad del ángulo entre los espejos; el giro va al revés: es el doble, 80°. La correcta está marcada.',
-         d:'Elegiste la D. El giro sí es de 80°, pero cada espejo voltea la F y dos volteos seguidos la dejan derecha: las barras siguen del mismo lado del tallo. La correcta está marcada.' },
+    fb:{ a:'40° es el ángulo entre los espejos, pero cada espejo aporta: el primero lleva la F a un lado de L₁ y el segundo la pasa al otro lado de L₂. El giro es el doble: 80°.',
+         c:'20° es la mitad del ángulo entre los espejos; el giro va al revés: es el doble, 80°.',
+         d:'El giro sí es de 80°, pero cada espejo voltea la F y dos volteos seguidos la dejan derecha: las barras siguen del mismo lado del tallo.' },
     antes:() => vistaE1(false), despues:() => vistaE1(true),
     desc:v => v._c ? `Los espejos forman ${gr(v.espejos[1].angulo)}: la imagen final es la F girada ${gr(v._c.angulo)} alrededor de Q, sin voltear.` : 'Dos espejos que se cortan en Q: L₁ horizontal y L₂ a 40°. Entre los dos espejos, apoyada en L₁, una letra F.',
     vivo:v => !v._c ? '' : `<div class="eqs"><div class="eq">ángulo entre ${V('E','L₁')} y ${V('S','L₂')} = ${gr(v.espejos[1].angulo)} → ${V('J','giro')} = 2 · ${gr(v.espejos[1].angulo)} = ${V('J', gr(v._c.angulo))}</div></div>`,
@@ -952,9 +952,9 @@ const EXPS = [
     opts:[['a', `${n(E2.errores.conDiagonales)} y sí tiene centro`, 'diagonales-del-romboide-como-ejes', 'hipotesis'], ['b', `${n(E2.ejes)} y no tiene centro`, 'sin-ejes-no-hay-simetria', 'hipotesis'],
           ['c', '2 ejes y no tiene centro', 'romboide-como-rectangulo', 'hipotesis'], ['d', `${n(E2.ejes)} y sí tiene centro`]],
     ok:'d',
-    fb:{ a:'Elegiste la A. Las diagonales parten al romboide en dos triángulos iguales, pero al doblar por una diagonal las puntas no caen una sobre otra: no son ejes. El centro sí lo tiene. La correcta está marcada.',
-         b:'Elegiste la B. Es cierto que no tiene ejes, pero eso no le quita la simetría central: después de media vuelta alrededor de O cae justo encima. La correcta está marcada.',
-         c:'Elegiste la C. Así sería un rectángulo, pero este no lo es: al doblarlo por la recta que une los puntos medios de los lados, las esquinas inclinadas no coinciden. Y sí tiene centro. La correcta está marcada.' },
+    fb:{ a:'Las diagonales parten al romboide en dos triángulos iguales, pero al doblar por una diagonal las puntas no caen una sobre otra: no son ejes. El centro sí lo tiene.',
+         b:'Es cierto que no tiene ejes, pero eso no le quita la simetría central: después de media vuelta alrededor de O cae justo encima.',
+         c:'Así sería un rectángulo, pero este no lo es: al doblarlo por la recta que une los puntos medios de los lados, las esquinas inclinadas no coinciden. Y sí tiene centro.' },
     antes:() => vistaE2(false), despues:() => vistaE2(true, 0),
     anima:v => animar(1600, f => { Object.assign(v, vistaE2(true, v.espejos[0].angulo, suave(f))); }),
     desc:v => v.espejos ? `Un espejo pasa por el centro O del romboide, a ${gr(v.espejos[0].angulo)}: el reflejo ${v._ok ? 'cae encima' : 'no cae encima'}. Después de media vuelta alrededor de O, el romboide sí queda igual.` : 'Un romboide: los lados de abajo y de arriba miden 5 y los inclinados se corren 2 hacia la derecha.',
@@ -965,9 +965,9 @@ const EXPS = [
     q:'Una caja de zapatos tiene largo 4, ancho 3 y alto 2 (las tres aristas distintas). ¿Cuántos planos de simetría tiene?',
     opts:[['a', pl(E3.errores.comoCubo), 'caja-como-cubo', 'hipotesis'], ['b', pl(E3.planos)], ['c', pl(E3.errores.unoPorCara), 'un-plano-por-cara', 'hipotesis'], ['d', pl(E3.errores.comoPrisma), 'caja-como-prisma-de-base-cuadrada', 'hipotesis']],
     ok:'b',
-    fb:{ a:'Elegiste la A. 9 tiene el cubo, porque sus tres medidas son iguales. En esta caja un plano en diagonal llevaría el largo (4) sobre el ancho (3), y no encajan. La correcta está marcada.',
-         c:'Elegiste la C. Una cara no es un plano de simetría: deja toda la caja de un solo lado. Los planos de simetría pasan por el centro. La correcta está marcada.',
-         d:'Elegiste la D. 5 tiene un prisma de base cuadrada: el plano horizontal más 4 verticales, 2 de ellos por las diagonales de la base. Aquí la base es de 4 por 3, no cuadrada, y las diagonales ya no sirven. La correcta está marcada.' },
+    fb:{ a:'9 tiene el cubo, porque sus tres medidas son iguales. En esta caja un plano en diagonal llevaría el largo (4) sobre el ancho (3), y no encajan.',
+         c:'Una cara no es un plano de simetría: deja toda la caja de un solo lado. Los planos de simetría pasan por el centro.',
+         d:'5 tiene un prisma de base cuadrada: el plano horizontal más 4 verticales, 2 de ellos por las diagonales de la base. Aquí la base es de 4 por 3, no cuadrada, y las diagonales ya no sirven.' },
     antes:() => ({ tipo:'3d', poli:CAJA, yaw:-32, pitch:24 }),
     despues:() => ({ tipo:'3d', poli:CAJA, yaw:-32, pitch:24, plano:E3.lista[0], todos:E3.lista }),
     desc:v => v.plano ? `La caja con sus ${E3.planos} planos de simetría, todos paralelos a las caras. Los planos en diagonal del cubo ya no sirven.` : 'Una caja de 4 de largo, 3 de ancho y 2 de alto.',
@@ -980,9 +980,9 @@ const EXPS = [
     opts:[['a', `P′${p3t(E4.errores.pie)}`, 'se-queda-en-el-plano', 'hipotesis'], ['b', `P′${p3t(E4.errores.centralOrigen)}`, 'simetria-central-respecto-del-origen', 'hipotesis'],
           ['c', `P′${p3t(E4.P)}`], ['d', `P′${p3t(E4.errores.ejeNormal)}`, 'simetria-respecto-del-eje-z', 'hipotesis']],
     ok:'c',
-    fb:{ a:`Elegiste la A. ${p3t(E4.H)} es el pie H: el punto del plano más cercano a P. El simétrico está otro tanto más allá, del otro lado del plano. La correcta está marcada.`,
-         b:'Elegiste la B. Cambiar el signo de las tres coordenadas es la simetría respecto del origen (un punto). Respecto del plano xy solo cambia lo que mide la distancia al plano: la z. La correcta está marcada.',
-         d:'Elegiste la D. Así sería el simétrico respecto del eje z (una recta): cambian x e y. Respecto del plano xy, x e y se quedan y solo cambia el signo de z. La correcta está marcada.' },
+    fb:{ a:`${p3t(E4.H)} es el pie H: el punto del plano más cercano a P. El simétrico está otro tanto más allá, del otro lado del plano.`,
+         b:'Cambiar el signo de las tres coordenadas es la simetría respecto del origen (un punto). Respecto del plano xy solo cambia lo que mide la distancia al plano: la z.',
+         d:'Así sería el simétrico respecto del eje z (una recta): cambian x e y. Respecto del plano xy, x e y se quedan y solo cambia el signo de z.' },
     antes:() => vistaE4(false), despues:() => vistaE4(true),
     desc:v => v.puntos3.length > 1 ? `P${p3t(P4e)} está a ${fmt(E4.d)} unidades sobre el plano xy. La perpendicular baja hasta H${p3t(E4.H)} y sigue otro tanto: P′${p3t(E4.P)}.` : `Los ejes x, y, z y el plano xy. El punto P${p3t(P4e)} está encima del plano.`,
     vivo:() => '',
@@ -992,9 +992,9 @@ const EXPS = [
     q:'Un heptágono regular tiene 7 lados iguales y 7 ángulos iguales. ¿Cuántos ejes de simetría tiene?',
     opts:[['a', n(E5.errores.soloVertical), 'solo-el-eje-vertical', 'hipotesis'], ['b', n(E5.errores.ninguno), 'impar-sin-ejes', 'hipotesis'], ['c', n(E5.errores.dobleCuenta), 'cuenta-vertices-y-lados-aparte', 'hipotesis'], ['d', n(E5.ejes)]],
     ok:'d',
-    fb:{ a:'Elegiste la A. El eje vertical sirve, pero el heptágono es regular: lo mismo pasa por cada uno de sus 7 vértices. La correcta está marcada.',
-         b:'Elegiste la B. Que tenga un número impar de lados no le quita ejes: cada eje va de un vértice al punto medio del lado de enfrente. La correcta está marcada.',
-         c:'Elegiste la C. Con 7 lados, el eje que sale de un vértice es el mismo que llega al punto medio del lado de enfrente: no se cuentan por separado. Son 7. La correcta está marcada.' },
+    fb:{ a:'El eje vertical sirve, pero el heptágono es regular: lo mismo pasa por cada uno de sus 7 vértices.',
+         b:'Que tenga un número impar de lados no le quita ejes: cada eje va de un vértice al punto medio del lado de enfrente.',
+         c:'Con 7 lados, el eje que sale de un vértice es el mismo que llega al punto medio del lado de enfrente: no se cuentan por separado. Son 7.' },
     antes:() => vistaFigura(E5f, false), despues:() => vistaFigura(E5f, true),
     anima:v => { const ejes = v.segs.slice(); animar(1800, f => { v.segs = ejes.slice(0, Math.ceil(f*ejes.length)); }); },
     desc:v => v.segs && v.segs.length ? `El heptágono regular con sus ${E5.ejes} ejes: cada uno va de un vértice al punto medio del lado de enfrente. No tiene centro de simetría.` : 'Un heptágono regular con un vértice arriba.',
@@ -1037,7 +1037,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el dibujo para ver por qué.' : (x.fb && x.fb[p]) || `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira el dibujo para ver por qué.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el dibujo para ver por qué.' : (x.fb && x.fb[p]) || `; mira el dibujo para ver por qué.`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = `<div id="vivo2" class="body">${x.montar ? x.vivo(S.vista) : ''}</div>` + x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     if (x.montar) x.montar();

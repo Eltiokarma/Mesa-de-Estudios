@@ -114,7 +114,7 @@ table.tramos th:first-child, table.tramos td:first-child{text-align:left; font-f
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
 .fb:focus{outline:none}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap:12px; align-items:end}
 .slider{display:grid; gap:4px}
@@ -633,38 +633,38 @@ const P1 = { id:'termo-trabajo-isobarico', ok:'b',
   opts:[['a','6000 J','trabajo-P-por-V-final','hipotesis'], ['b','4000 J',null,''],
         ['c','−4000 J','T9-signo-del-trabajo','parcial'], ['d','0 J','trabajo-cero-a-presion-constante','hipotesis']],
   fb:{ b:'¡Bien! El trabajo es el área bajo la curva: 200 kPa por un cambio de volumen de 20 L, 4000 J. Es positivo porque el gas se expande.',
-       a:'Elegiste la A. 6000 J es la presión por el volumen final, P·V. El trabajo usa el cambio de volumen, P·ΔV: el área bajo la curva va de 10 L a 30 L, no de 0 a 30 L. La correcta está marcada.',
-       c:'Elegiste la C. Ese es el valor con el signo cambiado: −4000 J sería el trabajo que hace el émbolo sobre el gas. El gas se expande y empuja el émbolo, así que el trabajo que hace el gas es positivo. La correcta está marcada.',
-       d:'Elegiste la D. Que la presión no cambie no quiere decir que no haya trabajo: el gas empuja el émbolo con una fuerza constante mientras lo mueve. Lo que hace falta para que haya trabajo es que el volumen cambie. La correcta está marcada.' } };
+       a:'6000 J es la presión por el volumen final, P·V. El trabajo usa el cambio de volumen, P·ΔV: el área bajo la curva va de 10 L a 30 L, no de 0 a 30 L.',
+       c:'Ese es el valor con el signo cambiado: −4000 J sería el trabajo que hace el émbolo sobre el gas. El gas se expande y empuja el émbolo, así que el trabajo que hace el gas es positivo.',
+       d:'Que la presión no cambie no quiere decir que no haya trabajo: el gas empuja el émbolo con una fuerza constante mientras lo mueve. Lo que hace falta para que haya trabajo es que el volumen cambie.' } };
 const P2 = { id:'termo-energia-interna', ok:'d',
   opts:[['a','14 000 J','T9-suma-el-trabajo','parcial'], ['b','10 000 J','T8-todo-el-calor-a-energia-interna','documentado'],
         ['c','0 J','dU-cero-a-presion-constante','hipotesis'], ['d','6000 J',null,'']],
   fb:{ d:'¡Bien! De los 10 000 J que entran, 4000 J salen como trabajo sobre el émbolo: en el gas se quedan 6000 J.',
-       a:'Elegiste la A. 14 000 J suma el trabajo al calor, como si el gas hubiera recibido el trabajo. Pero el gas lo entregó: lo que sale se resta. La correcta está marcada.',
-       b:'Elegiste la B. No todo el calor se queda en el gas: mientras se expande, entrega 4000 J al émbolo como trabajo. La correcta está marcada.',
-       c:'Elegiste la C. La presión no cambia, pero la temperatura sí: el gas se calienta, y la energía interna de un gas ideal crece con su temperatura. La correcta está marcada.' } };
+       a:'14 000 J suma el trabajo al calor, como si el gas hubiera recibido el trabajo. Pero el gas lo entregó: lo que sale se resta.',
+       b:'No todo el calor se queda en el gas: mientras se expande, entrega 4000 J al émbolo como trabajo.',
+       c:'La presión no cambia, pero la temperatura sí: el gas se calienta, y la energía interna de un gas ideal crece con su temperatura.' } };
 const P3 = { id:'termo-otro-camino', ok:'c',
   opts:[['a','W y Q son los mismos que antes: los dos caminos empiezan y terminan en los mismos estados.','T5-trabajo-no-depende-del-camino','documentado'],
         ['b','W es mayor, pero Q es el mismo: los dos caminos empiezan y terminan en los mismos estados.','T6-calor-no-depende-del-camino','documentado'],
         ['c','W y Q son mayores: el área bajo el camino nuevo es mayor y ΔU es la misma.',null,''],
         ['d','W es el mismo y Q es mayor: el camino nuevo pasa por presiones más altas.','T5-y-T7-mas-presion-mas-calor','parcial']],
   fb:{ c:'¡Bien! El camino nuevo tiene más área debajo: 8000 J de trabajo. Como ΔU es la misma, hace falta más calor: 14 000 J.',
-       a:'Elegiste la A. Lo que solo depende de los estados es ΔU. El trabajo es el área bajo la curva, y el camino nuevo, que va a 400 kPa, tiene más área debajo. La correcta está marcada.',
-       b:'Elegiste la B. El trabajo sí es mayor, pero el calor también cambia: Q = ΔU + W, con la misma ΔU y más trabajo. El calor no es una propiedad del estado. La correcta está marcada.',
-       d:'Elegiste la D. El trabajo no es el mismo: es el área bajo la curva, y a 400 kPa el rectángulo es el doble de alto. La correcta está marcada.' } };
+       a:'Lo que solo depende de los estados es ΔU. El trabajo es el área bajo la curva, y el camino nuevo, que va a 400 kPa, tiene más área debajo.',
+       b:'El trabajo sí es mayor, pero el calor también cambia: Q = ΔU + W, con la misma ΔU y más trabajo. El calor no es una propiedad del estado.',
+       d:'El trabajo no es el mismo: es el área bajo la curva, y a 400 kPa el rectángulo es el doble de alto.' } };
 const P4 = { id:'termo-ciclo-trabajo-neto', ok:'c',
   opts:[['a','0 J','T10-trabajo-neto-cero','documentado'], ['b','8000 J','solo-el-tramo-de-arriba','hipotesis'],
         ['c','4000 J',null,''], ['d','12 000 J','suma-las-areas-sin-signo','hipotesis']],
   fb:{ c:'¡Bien! A 400 kPa el gas hace 8000 J al expandirse; a 200 kPa recibe 4000 J al comprimirse. Queda el área encerrada: 4000 J.',
-       a:'Elegiste la A. El gas vuelve al estado inicial, así que ΔU = 0 en la vuelta. Pero el trabajo no es cero: se expande a presión alta y se comprime a presión baja. La correcta está marcada.',
-       b:'Elegiste la B. 8000 J es el trabajo de la expansión a 400 kPa. Al volver, el gas se comprime a 200 kPa y recibe 4000 J: hay que restarlos. La correcta está marcada.',
-       d:'Elegiste la D. 12 000 J suma las dos áreas, pero el trabajo de la compresión es negativo: se resta. La correcta está marcada.' } };
+       a:'El gas vuelve al estado inicial, así que ΔU = 0 en la vuelta. Pero el trabajo no es cero: se expande a presión alta y se comprime a presión baja.',
+       b:'8000 J es el trabajo de la expansión a 400 kPa. Al volver, el gas se comprime a 200 kPa y recibe 4000 J: hay que restarlos.',
+       d:'12 000 J suma las dos áreas, pero el trabajo de la compresión es negativo: se resta.' } };
 const P5 = { id:'termo-carnot', ok:'a',
   opts:[['a','40 %',null,''], ['b','88 %','carnot-con-celsius','hipotesis'], ['c','60 %','carnot-invertida','hipotesis'], ['d','100 %','T14-sin-rozamiento-cien','parcial']],
   fb:{ a:'¡Bien! En kelvin: 500 K y 300 K. η = 1 − 300/500 = 0,4.',
-       b:'Elegiste la B. Ese número sale de 1 − 27/227, con grados Celsius. La fórmula de Carnot pide kelvin: 1 − 300/500 = 40 %. La correcta está marcada.',
-       c:'Elegiste la C. 60 % es Tf/Tc = 300/500: la fracción del calor que va al foco frío. La eficiencia es lo que queda: 1 − 0,6. La correcta está marcada.',
-       d:'Elegiste la D. Aun sin rozamiento, una máquina que da vueltas tiene que entregar calor al foco frío para volver a empezar: es la segunda ley. Entre estos focos, el máximo es 40 %. La correcta está marcada.' } };
+       b:'Ese número sale de 1 − 27/227, con grados Celsius. La fórmula de Carnot pide kelvin: 1 − 300/500 = 40 %.',
+       c:'60 % es Tf/Tc = 300/500: la fracción del calor que va al foco frío. La eficiencia es lo que queda: 1 − 0,6.',
+       d:'Aun sin rozamiento, una máquina que da vueltas tiene que entregar calor al foco frío para volver a empezar: es la segunda ley. Entre estos focos, el máximo es 40 %.' } };
 
 // Lo que se dibuja: dibujo() da la configuración del paso; antes y después de responder cambia.
 const flechasDe = (n, k) => Array.from({ length: n }, (_, i) => Math.round(k*(i + 0.5)));
@@ -974,9 +974,9 @@ const EXPS = [
     ok:'b',
     antes:() => Object.assign(E, { tipo:'adiab', V2:8, f:0 }),
     despues:() => correr(1600),
-    fb:{ a:'Elegiste la A. Aislado quiere decir Q = 0, no que la temperatura se quede igual. La mano hace trabajo sobre el gas y esa energía se queda adentro. La correcta está marcada.',
-         c:'Elegiste la C. Al comprimirlo, el gas no pierde energía: la recibe, como trabajo de la mano. Sin calor que salga, toda se queda en el gas. La correcta está marcada.',
-         d:'Elegiste la D. La temperatura sí sube, pero no como la presión: el volumen también cambia, y P·V = nRT obliga a mirar las tres. Aquí P se multiplica por casi 7,6 y T, por 2,25. La correcta está marcada.' },
+    fb:{ a:'Aislado quiere decir Q = 0, no que la temperatura se quede igual. La mano hace trabajo sobre el gas y esa energía se queda adentro.',
+         c:'Al comprimirlo, el gas no pierde energía: la recibe, como trabajo de la mano. Sin calor que salga, toda se queda en el gas.',
+         d:'La temperatura sí sube, pero no como la presión: el volumen también cambia, y P·V = nRT obliga a mirar las tres. Aquí P se multiplica por casi 7,6 y T, por 2,25.' },
     ctrl:() => `<div class="ctrls"><div class="slider"><label for="q-v"><span>Volumen final (${V('V','V')})</span><output id="q-v-o"></output></label><input id="q-v" class="r-V" type="range" min="6" max="27" step="0.5" value="${E.V2}"></div></div><div class="chips" id="chips2"></div><p><button type="button" class="btn" id="repetir">Repetir</button></p>`,
     vivo:() => { const r = M.proceso({ tipo:'adiabatico', P1:100, V1:27, V2:E.V2, T1:300 });
       $('q-v-o').textContent = `${fmt(E.V2, 1)} L`;
@@ -996,9 +996,9 @@ const EXPS = [
     ok:'c',
     antes:() => Object.assign(E, { tipo:'iso', V2:20, f:0 }),
     despues:() => correr(1500),
-    fb:{ a:'Elegiste la A. Que la temperatura no cambie quiere decir ΔU = 0, no Q = 0. El gas hace trabajo al expandirse y esa energía tiene que venir de algún lado: del baño, como calor. La correcta está marcada.',
-         b:'Elegiste la B. Si el calor se quedara como energía interna, la temperatura subiría. Pero no cambia: el calor sale entero como trabajo sobre el émbolo. La correcta está marcada.',
-         d:'Elegiste la D. Al expandirse, el gas entrega energía como trabajo y, si nadie se la repusiera, se enfriaría. El baño se la repone: el calor va del baño al gas. La correcta está marcada.' },
+    fb:{ a:'Que la temperatura no cambie quiere decir ΔU = 0, no Q = 0. El gas hace trabajo al expandirse y esa energía tiene que venir de algún lado: del baño, como calor.',
+         b:'Si el calor se quedara como energía interna, la temperatura subiría. Pero no cambia: el calor sale entero como trabajo sobre el émbolo.',
+         d:'Al expandirse, el gas entrega energía como trabajo y, si nadie se la repusiera, se enfriaría. El baño se la repone: el calor va del baño al gas.' },
     ctrl:() => `<div class="ctrls"><div class="slider"><label for="q-v"><span>Volumen final (${V('V','V')})</span><output id="q-v-o"></output></label><input id="q-v" class="r-V" type="range" min="5" max="30" step="0.5" value="${E.V2}"></div></div><div class="chips" id="chips2"></div><p><button type="button" class="btn" id="repetir">Repetir</button></p>`,
     vivo:() => { const r = M.proceso({ tipo:'isotermico', P1:200, V1:10, V2:E.V2, T1:300 });
       $('q-v-o').textContent = `${fmt(E.V2, 1)} L`;
@@ -1017,9 +1017,9 @@ const EXPS = [
     ok:'a',
     antes:() => Object.assign(E, { tipo:'reves', f:0 }),
     despues:() => correr(3000),
-    fb:{ b:'Elegiste la B. Al volver al inicio, solo ΔU es cero. El trabajo neto es el área encerrada, con un signo que depende del sentido. La correcta está marcada.',
-         c:'Elegiste la C. El área es la misma, pero el sentido cambia el signo: ahora el gas se expande a la presión baja y se comprime a la alta. Recibe más trabajo del que hace. La correcta está marcada.',
-         d:'Elegiste la D. Las dos áreas no se suman: una es positiva (la expansión) y la otra negativa (la compresión). Queda la diferencia. La correcta está marcada.' },
+    fb:{ b:'Al volver al inicio, solo ΔU es cero. El trabajo neto es el área encerrada, con un signo que depende del sentido.',
+         c:'El área es la misma, pero el sentido cambia el signo: ahora el gas se expande a la presión baja y se comprime a la alta. Recibe más trabajo del que hace.',
+         d:'Las dos áreas no se suman: una es positiva (la expansión) y la otra negativa (la compresión). Queda la diferencia.' },
     ctrl:() => `<p><button type="button" class="btn" id="repetir">Repetir</button></p>`,
     vivo:() => {},
     exp:(() => { const r = M.rectangulo({ Pa:200, Pb:400, Va:10, Vb:30, T1:300, sentido:'antihorario' });
@@ -1037,9 +1037,9 @@ const EXPS = [
     ok:'d',
     antes:() => Object.assign(E, { tipo:'focos', W:300 }),
     despues:() => {},
-    fb:{ a:'Elegiste la A. Cumplir la primera ley no basta: entre dos focos, la segunda ley pone un tope más bajo, el de Carnot. La correcta está marcada.',
-         b:'Elegiste la B. La fórmula de Carnot pide kelvin: 400 K y 300 K dan un límite del 25 %, y la máquina dice dar 30 %. La correcta está marcada.',
-         c:'Elegiste la C. No hay un tope fijo del 50 %: el límite depende de las temperaturas de los focos. Entre 1000 K y 300 K sería del 70 %. Aquí es del 25 %. La correcta está marcada.' },
+    fb:{ a:'Cumplir la primera ley no basta: entre dos focos, la segunda ley pone un tope más bajo, el de Carnot.',
+         b:'La fórmula de Carnot pide kelvin: 400 K y 300 K dan un límite del 25 %, y la máquina dice dar 30 %.',
+         c:'No hay un tope fijo del 50 %: el límite depende de las temperaturas de los focos. Entre 1000 K y 300 K sería del 70 %. Aquí es del 25 %.' },
     ctrl:() => `<div class="ctrls"><div class="slider"><label for="q-w"><span>Trabajo que promete (${V('W','W')})</span><output id="q-w-o"></output></label><input id="q-w" class="r-W" type="range" min="0" max="600" step="10" value="${E.W}"></div></div><div class="chips" id="chips2"></div>`,
     vivo:() => { const r = M.juzgar({ Tc:127, Tf:27, Qc:1000, W:E.W, unidad:'C' });
       $('q-w-o').textContent = `${fmt(E.W, 0)} J`;
@@ -1058,9 +1058,9 @@ const EXPS = [
     ok:'a',
     antes:() => Object.assign(E, { tipo:'dos', Q:3000, f:0 }),
     despues:() => correr(1400),
-    fb:{ b:'Elegiste la B. El calor es el mismo, pero con el émbolo libre parte de él sale como trabajo: queda menos para la energía interna. La correcta está marcada.',
-         c:'Elegiste la C. Con el émbolo libre, el gas gasta parte del calor en empujar el émbolo. Le queda menos energía interna y su temperatura sube menos. La correcta está marcada.',
-         d:'Elegiste la D. Para saber cuánto sube haría falta más, pero para comparar basta la primera ley: con el émbolo libre, parte del calor sale como trabajo. La correcta está marcada.' },
+    fb:{ b:'El calor es el mismo, pero con el émbolo libre parte de él sale como trabajo: queda menos para la energía interna.',
+         c:'Con el émbolo libre, el gas gasta parte del calor en empujar el émbolo. Le queda menos energía interna y su temperatura sube menos.',
+         d:'Para saber cuánto sube haría falta más, pero para comparar basta la primera ley: con el émbolo libre, parte del calor sale como trabajo.' },
     ctrl:() => `<div class="ctrls"><div class="slider"><label for="q-q"><span>Calor (${V('Q','Q')})</span><output id="q-q-o"></output></label><input id="q-q" class="r-Q" type="range" min="500" max="5000" step="100" value="${E.Q}"></div></div><div class="chips" id="chips2"></div><p><button type="button" class="btn" id="repetir">Repetir</button></p>`,
     vivo:() => { const a = M.proceso({ tipo:'isocorico', P1:200, V1:10, Q:E.Q, T1:300 }), b = M.proceso({ tipo:'isobarico', P1:200, V1:10, Q:E.Q, T1:300 });
       $('q-q-o').textContent = `${fmt(E.Q, 0)} J`;
@@ -1161,7 +1161,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : (x.fb && x.fb[p]) || `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira la escena para ver por qué.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : (x.fb && x.fb[p]) || `; mira la escena para ver por qué.`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.ctrl() + x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     const inp = $('res2').querySelector('input[type=range]');

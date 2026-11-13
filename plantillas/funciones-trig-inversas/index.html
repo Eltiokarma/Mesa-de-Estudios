@@ -113,7 +113,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -477,72 +477,72 @@ const P1 = { id:'funciones-trig-inversas-paso1', ok:'b', opts:[
   ['c', C1.errores.sinSigno.texto, 'TR12-seno-sin-signo', 'parcial'],
   ['d', C1.errores.comoCoseno.texto, 'IN7-confunde-seno-y-coseno', 'hipotesis']],
   fb:{ b:'¡Bien! La recta de altura 1/2 corta la onda dos veces en una vuelta: en π/6 (subiendo) y en 5π/6 (bajando).',
-    a:'Elegiste la A. π/6 es la que da la calculadora, pero hay otro ángulo de la primera vuelta con seno 1/2: 5π/6, en el segundo cuadrante. La correcta está marcada.',
-    c:'Elegiste la C. En 7π/6 y en 11π/6 el seno vale −1/2: la onda está bajo el eje. Son los de seno 1/2 si se olvida el signo. La correcta está marcada.',
-    d:'Elegiste la D. π/3 y 5π/3 son los ángulos con coseno 1/2, no con seno 1/2: sen(π/3) = √3/2. La correcta está marcada.' } };
+    a:'π/6 es la que da la calculadora, pero hay otro ángulo de la primera vuelta con seno 1/2: 5π/6, en el segundo cuadrante.',
+    c:'En 7π/6 y en 11π/6 el seno vale −1/2: la onda está bajo el eje. Son los de seno 1/2 si se olvida el signo.',
+    d:'π/3 y 5π/3 son los ángulos con coseno 1/2, no con seno 1/2: sen(π/3) = √3/2.' } };
 const P2 = { id:'funciones-trig-inversas-paso2', ok:'c', opts:[
   ['a', A2.errores.fueraDelRango.texto, 'IN1-fuera-del-rango', 'hipotesis'],
   ['b', A2.errores.vueltaPositiva.texto, 'IN4-una-vuelta-positiva', 'hipotesis'],
   ['c', A2.texto],
   ['d', A2.errores.sinSigno.texto, 'TR12-quita-el-signo', 'hipotesis']],
   fb:{ c:'¡Bien! Dentro de la ventana [−π/2; π/2] la recta de altura −1/2 corta una sola vez: en −π/6.',
-    a:'Elegiste la A. 7π/6 tiene seno −1/2, pero está fuera de la ventana: arcsen solo devuelve ángulos entre −π/2 y π/2. La correcta está marcada.',
-    b:'Elegiste la B. 11π/6 es −π/6 más una vuelta: mismo lado terminal, pero fuera de la ventana. arcsen devuelve el de la ventana. La correcta está marcada.',
-    d:'Elegiste la D. sen(π/6) = +1/2. Con k negativo, el corte está bajo el eje: el ángulo es negativo. La correcta está marcada.' } };
+    a:'7π/6 tiene seno −1/2, pero está fuera de la ventana: arcsen solo devuelve ángulos entre −π/2 y π/2.',
+    b:'11π/6 es −π/6 más una vuelta: mismo lado terminal, pero fuera de la ventana. arcsen devuelve el de la ventana.',
+    d:'sen(π/6) = +1/2. Con k negativo, el corte está bajo el eje: el ángulo es negativo.' } };
 const P3 = { id:'funciones-trig-inversas-paso3', ok:'b', opts:[
   ['a', D3.errores.siempre.texto, 'IN3-se-cancelan-siempre', 'hipotesis'],
   ['b', D3.texto],
   ['c', D3.errores.complemento.texto, 'TR14-cambia-de-funcion', 'hipotesis'],
   ['d', D3.errores.signo.texto, 'IN24-signo-al-reducir', 'hipotesis']],
   fb:{ b:'¡Bien! sen 150° = 1/2, y el ángulo de la ventana con seno 1/2 es 30°: arcsen(sen 150°) = 30°.',
-    a:'Elegiste la A. arcsen y sen se deshacen solo si el ángulo ya está en la ventana. 150° no está en [−90°; 90°]: arcsen no puede devolverlo. La correcta está marcada.',
-    c:'Elegiste la C. 60° saldría de sen 150° = cos 60°: es verdad, pero arcsen pide el ángulo cuyo seno es 1/2, y sen 60° = √3/2. La correcta está marcada.',
-    d:'Elegiste la D. sen(180° − 30°) = +sen 30°: el seno del segundo cuadrante es positivo, así que el ángulo de la ventana también. La correcta está marcada.' } };
+    a:'arcsen y sen se deshacen solo si el ángulo ya está en la ventana. 150° no está en [−90°; 90°]: arcsen no puede devolverlo.',
+    c:'60° saldría de sen 150° = cos 60°: es verdad, pero arcsen pide el ángulo cuyo seno es 1/2, y sen 60° = √3/2.',
+    d:'sen(180° − 30°) = +sen 30°: el seno del segundo cuadrante es positivo, así que el ángulo de la ventana también.' } };
 const P4 = { id:'funciones-trig-inversas-paso4', ok:'a', opts:[
   ['a', A4.texto],
   ['b', A4.errores.negativo.texto, 'IN2-arccos-impar', 'hipotesis'],
   ['c', A4.errores.fueraDelRango.texto, 'IN1-fuera-del-rango', 'hipotesis'],
   ['d', A4.errores.sinSigno.texto, 'TR12-quita-el-signo', 'hipotesis']],
   fb:{ a:'¡Bien! La vertical de abscisa −1/2 corta la circunferencia arriba en 2π/3: el ángulo de arriba.',
-    b:'Elegiste la B. −π/3 tiene coseno +1/2 y está abajo. arccos no es impar: arccos(−k) = π − arccos k. La correcta está marcada.',
-    c:'Elegiste la C. 4π/3 tiene coseno −1/2, pero está abajo: arccos solo devuelve ángulos de [0; π]. La correcta está marcada.',
-    d:'Elegiste la D. π/3 tiene coseno +1/2: el punto queda a la derecha del eje vertical. Con −1/2, el punto está a la izquierda. La correcta está marcada.' } };
+    b:'−π/3 tiene coseno +1/2 y está abajo. arccos no es impar: arccos(−k) = π − arccos k.',
+    c:'4π/3 tiene coseno −1/2, pero está abajo: arccos solo devuelve ángulos de [0; π].',
+    d:'π/3 tiene coseno +1/2: el punto queda a la derecha del eje vertical. Con −1/2, el punto está a la izquierda.' } };
 const P5 = { id:'funciones-trig-inversas-paso5', ok:'d', opts:[
   ['a', Q5.errores.cancela.texto, 'IN8-cancela-funciones-distintas', 'hipotesis'],
   ['b', Q5.errores.sinRaiz.texto, 'IN9-olvida-la-raiz', 'hipotesis'],
   ['c', Q5.errores.reciproca.texto, 'IN10-usa-la-reciproca', 'hipotesis'],
   ['d', Q5.texto]],
   fb:{ d:'¡Bien! Con cateto opuesto 3 e hipotenusa 5, el adyacente mide 4: cos θ = 4/5.',
-    a:'Elegiste la A. 3/5 es sen θ. cos y arcsen no se cancelan: son funciones distintas. La correcta está marcada.',
-    b:'Elegiste la B. 16/25 = 1 − (3/5)² es cos²θ: falta sacar la raíz. La correcta está marcada.',
-    c:'Elegiste la C. 5/4 es hipotenusa entre adyacente: es sec θ, la recíproca. Un coseno nunca pasa de 1. La correcta está marcada.' } };
+    a:'3/5 es sen θ. cos y arcsen no se cancelan: son funciones distintas.',
+    b:'16/25 = 1 − (3/5)² es cos²θ: falta sacar la raíz.',
+    c:'5/4 es hipotenusa entre adyacente: es sec θ, la recíproca. Un coseno nunca pasa de 1.' } };
 const P6 = { id:'funciones-trig-inversas-paso6', ok:'b', opts:[
   ['a', A6.errores.arctanInverso.texto, 'IN19-arccot-como-arctan-del-inverso', 'hipotesis'],
   ['b', A6.texto],
   ['c', A6.errores.sinSigno.texto, 'TR12-quita-el-signo', 'hipotesis'],
   ['d', A6.errores.fueraDelRango.texto, 'IN1-fuera-del-rango', 'hipotesis']],
   fb:{ b:'¡Bien! El punto de la recta de arriba con lectura −1 está a la izquierda: el rayo apunta a 3π/4, dentro de ⟨0; π⟩.',
-    a:'Elegiste la A. −π/4 = arctan(−1): la regla arccot k = arctan(1/k) vale con k positivo. Con k negativo da un ángulo de abajo, y arccot devuelve ángulos de arriba. La correcta está marcada.',
-    c:'Elegiste la C. π/4 tiene cotangente +1: su punto en la recta de arriba está a la derecha. La correcta está marcada.',
-    d:'Elegiste la D. 7π/4 tiene cotangente −1, pero está abajo, fuera de ⟨0; π⟩. La correcta está marcada.' } };
+    a:'−π/4 = arctan(−1): la regla arccot k = arctan(1/k) vale con k positivo. Con k negativo da un ángulo de abajo, y arccot devuelve ángulos de arriba.',
+    c:'π/4 tiene cotangente +1: su punto en la recta de arriba está a la derecha.',
+    d:'7π/4 tiene cotangente −1, pero está abajo, fuera de ⟨0; π⟩.' } };
 const P7 = { id:'funciones-trig-inversas-paso7', ok:'c', opts:[
   ['a', S7.errores.suplementarios.decimal, 'IN11-suplementarios', 'hipotesis'],
   ['b', S7.errores.seAnulan.decimal, 'IN12-se-anulan', 'hipotesis'],
   ['c', S7.decimal],
   ['d', S7.errores.iguales.decimal, 'IN13-arccos-igual-a-arcsen', 'hipotesis']],
   fb:{ c:`¡Bien! Es π/2 (${S7.decimal}): los dos ángulos son los agudos de un mismo triángulo rectángulo, y suman 90°.`,
-    a:'Elegiste la A. ≈ 3,14 es π: los ángulos no son suplementarios. arccos(−k) = π − arccos k es otra regla, la del número con el signo cambiado. La correcta está marcada.',
-    b:'Elegiste la B. arccos k no es −arcsen k: con k = 0,3 los dos ángulos son positivos (están en el primer cuadrante). La correcta está marcada.',
-    d:'Elegiste la D. ≈ 0,61 es 2 · arcsen(0,3): arccos k no es igual a arcsen k. Uno lee la altura y el otro la abscisa. La correcta está marcada.' } };
+    a:'≈ 3,14 es π: los ángulos no son suplementarios. arccos(−k) = π − arccos k es otra regla, la del número con el signo cambiado.',
+    b:'arccos k no es −arcsen k: con k = 0,3 los dos ángulos son positivos (están en el primer cuadrante).',
+    d:'≈ 0,61 es 2 · arcsen(0,3): arccos k no es igual a arcsen k. Uno lee la altura y el otro la abscisa.' } };
 const P8 = { id:'funciones-trig-inversas-paso8', ok:'a', opts:[
   ['a', D8.texto],
   ['b', D8.errores.copia.texto, 'IN14-copia-el-dominio', 'hipotesis'],
   ['c', D8.errores.signoB.texto, 'IN15-signo-de-b', 'hipotesis'],
   ['d', D8.errores.sinDividir.texto, 'IN16-no-divide', 'hipotesis']],
   fb:{ a:'¡Bien! −1 ≤ 2x − 1 ≤ 1 ⟹ 0 ≤ 2x ≤ 2 ⟹ 0 ≤ x ≤ 1.',
-    b:'Elegiste la B. [−1; 1] es lo que debe cumplir k = 2x − 1, no x. Con x = 1, k = 1, bien; pero con x = −1, k = −3, y arcsen(−3) no existe. La correcta está marcada.',
-    c:'Elegiste la C. [−1; 0] sale de restar 1 en lugar de sumarlo: con x = −1, k = −3, fuera. La correcta está marcada.',
-    d:'Elegiste la D. [0; 2] olvida dividir entre 2: con x = 2, k = 3, fuera. La correcta está marcada.' } };
+    b:'[−1; 1] es lo que debe cumplir k = 2x − 1, no x. Con x = 1, k = 1, bien; pero con x = −1, k = −3, y arcsen(−3) no existe.',
+    c:'[−1; 0] sale de restar 1 en lugar de sumarlo: con x = −1, k = −3, fuera.',
+    d:'[0; 2] olvida dividir entre 2: con x = 2, k = 3, fuera.' } };
 
 // ---------- piezas ----------
 const NOT = ['0', '1/2', '√2/2', '√3/2', '1', '-1/2', '-√2/2', '-√3/2', '-1'];
@@ -979,7 +979,7 @@ const T3 = MI.arco({ fn:'tan', k:1000 });
 const N4 = MI.notacion({ fn:'sen', k:'0,5' });
 const S5 = MI.sumaTan({ a:'1/2', b:'1/3' }), A5 = MI.arco({ fn:'tan', k:'1/2' }), B5 = MI.arco({ fn:'tan', k:'1/3' });
 const kv = k => MI.exacto(k).valor;
-const hip = 'El informe de trigonometría no trata este error; es una hipótesis nuestra que se confirma con lo que marquen los alumnos.';
+const hip = '';
 
 // 1. Otra ventana: la banda de largo π se arrastra por la onda
 function cfg1(libre){
@@ -1167,7 +1167,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + `<div class="nav"><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     tramos($('res2'));

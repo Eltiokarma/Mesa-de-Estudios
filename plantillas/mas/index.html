@@ -115,7 +115,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
 .fb:focus{outline:none}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 210px), 1fr)); gap:12px; align-items:end}
 .slider{display:grid; gap:4px}
@@ -650,27 +650,27 @@ const P1 = { id:'mas-amplitud', ok:'b',
         ['c', `${V('T','T/2')}: la mitad, porque estirado el doble tira el doble de fuerte`, 'mas-amplitud-menos-periodo', 'hipotesis'],
         ['d', `${V('T','1,4·T')}: un poco más, porque va más rápido pero no lo suficiente`, 'O1-mas-amplitud-un-poco-mas', 'parcial']],
   fb:{ b:'¡Bien! Los dos tardan lo mismo. Mira las dos curvas de x: cruzan el cero en los mismos instantes.',
-       a:'Elegiste la A. Recorre el doble de camino, sí, pero también va el doble de rápido en cada punto que le corresponde: llegan juntos. La correcta está marcada.',
-       c:'Elegiste la C. Tira el doble de fuerte, pero también tiene el doble de camino: se compensa justo. La correcta está marcada.',
-       d:'Elegiste la D. La compensación es exacta, no a medias: con el doble de distancia hay el doble de fuerza y el doble de rapidez. La correcta está marcada.' } };
+       a:'Recorre el doble de camino, sí, pero también va el doble de rápido en cada punto que le corresponde: llegan juntos.',
+       c:'Tira el doble de fuerte, pero también tiene el doble de camino: se compensa justo.',
+       d:'La compensación es exacta, no a medias: con el doble de distancia hay el doble de fuerza y el doble de rapidez.' } };
 const P2 = { id:'mas-masa', ok:'b',
   opts:[['a', `Lo mismo: ${V('T', tPi(T0*cmp2.errores.TsinM))}`, 'resorte-T-sin-masa', 'hipotesis'],
         ['b', `El doble: ${V('T', tPi(T0*cmp2.razonT))}`, null, ''],
         ['c', `Cuatro veces: ${V('T', tPi(T0*cmp2.errores.TproporcionalM))}`, 'resorte-T-proporcional-m', 'hipotesis'],
         ['d', `La mitad: ${V('T', tPi(T0*cmp2.errores.Tinvertido))}`, 'resorte-T-invertido', 'hipotesis']],
   fb:{ b:'¡Bien! Cuatro veces la masa da el doble de período: T crece con la raíz de m.',
-       a:'Elegiste la A. Eso vale para el péndulo, no para el resorte: aquí la fuerza la pone el resorte, que no cambia, y el bloque más pesado cuesta más moverlo. La correcta está marcada.',
-       c:'Elegiste la C. T no crece en proporción a m sino a su raíz: √4 = 2. La correcta está marcada.',
-       d:'Elegiste la D. Con más masa el bloque es más difícil de acelerar: tarda más, no menos. La raíz va como √(m/k), no √(k/m). La correcta está marcada.' } };
+       a:'Eso vale para el péndulo, no para el resorte: aquí la fuerza la pone el resorte, que no cambia, y el bloque más pesado cuesta más moverlo.',
+       c:'T no crece en proporción a m sino a su raíz: √4 = 2.',
+       d:'Con más masa el bloque es más difícil de acelerar: tarda más, no menos. La raíz va como √(m/k), no √(k/m).' } };
 const P3 = { id:'mas-donde', ok:'a',
   opts:[['a', `Más ${V('v','rapidez')} en el centro y más ${V('a','aceleración')} en los extremos`, null, ''],
         ['b', `Más ${V('v','rapidez')} en los extremos y más ${V('a','aceleración')} en el centro`, 'vmax-en-extremos', 'hipotesis'],
         ['c', `Más ${V('v','rapidez')} en el centro y más ${V('a','aceleración')} también en el centro`, 'amax-en-centro', 'hipotesis'],
         ['d', `Más ${V('v','rapidez')} en el centro; en los extremos ${V('a','a = 0')}, porque se detiene`, 'C1-a-cero-en-extremos', 'parcial']],
   fb:{ a:'¡Bien! En el centro va más rápido; en los extremos, donde el resorte está más estirado o comprimido, la aceleración es la mayor.',
-       b:'Elegiste la B. En los extremos el bloque se detiene un instante para dar la vuelta: ahí v = 0. Y en el centro el resorte no está estirado: no empuja. La correcta está marcada.',
-       c:'Elegiste la C. En el centro el resorte tiene su largo natural y no hace fuerza: a = 0 justo donde va más rápido. La correcta está marcada.',
-       d:'Elegiste la D. Quieto un instante no es sin aceleración: en el extremo el resorte tira más fuerte que nunca, y por eso el bloque da la vuelta. La correcta está marcada.' } };
+       b:'En los extremos el bloque se detiene un instante para dar la vuelta: ahí v = 0. Y en el centro el resorte no está estirado: no empuja.',
+       c:'En el centro el resorte tiene su largo natural y no hace fuerza: a = 0 justo donde va más rápido.',
+       d:'Quieto un instante no es sin aceleración: en el extremo el resorte tira más fuerte que nunca, y por eso el bloque da la vuelta.' } };
 const fr4 = x => `${fmt(x*rB.E, 2)} J`;
 const P4 = { id:'mas-energia', ok:'b',
   opts:[['a', `${V('Ec', fr4(enMedio.errores.fEcLineal))}, la mitad de E`, 'Ec-mitad-en-media-amplitud', 'hipotesis'],
@@ -678,9 +678,9 @@ const P4 = { id:'mas-energia', ok:'b',
         ['c', `${V('Ec', fr4(enMedio.errores.fEcIntercambiada))}, un cuarto de E`, 'Ec-Ep-intercambiadas', 'hipotesis'],
         ['d', `${V('Ec', fr4(enMedio.errores.fEcComoV))}, √3/2 de E (la fracción de la rapidez máxima)`, 'Ec-como-fraccion-de-rapidez', 'hipotesis']],
   fb:{ b:'¡Bien! A la mitad de la amplitud, la potencial es solo un cuarto: crece con el cuadrado de x.',
-       a:'Elegiste la A. La energía potencial no crece en línea recta con x sino con x²: a la mitad de la distancia, un cuarto de potencial. La correcta está marcada.',
-       c:'Elegiste la C. Ese cuarto es la potencial, no la cinética. La correcta está marcada.',
-       d:'Elegiste la D. 0,87 es la fracción de la rapidez máxima que lleva (√3/2), pero la energía cinética va con v²: (√3/2)² = 3/4. La correcta está marcada.' } };
+       a:'La energía potencial no crece en línea recta con x sino con x²: a la mitad de la distancia, un cuarto de potencial.',
+       c:'Ese cuarto es la potencial, no la cinética.',
+       d:'0,87 es la fracción de la rapidez máxima que lleva (√3/2), pero la energía cinética va con v²: (√3/2)² = 3/4.' } };
 
 const ex = () => S.ex;
 function rEx(){ const e = ex(); return M.resorte({ m:e.m, k:e.k, A:e.A, phi:e.phi, orientacion: e.vert ? 'vertical' : 'horizontal' }); }
@@ -951,9 +951,9 @@ const EXPS = [
           ['c', `Lo mismo, unos ${V('T', fmt(Tp*c1.razonT, 1) + ' s')}: pesa más, pero también cuesta más moverla`, null, ''],
           ['d', `El doble, unos ${V('T', fmt(Tp*c1.errores.formulaResorte, 1) + ' s')}: como en el resorte, T crece con √m`, 'pendulo-T-raiz-m-como-resorte', 'hipotesis']],
     ok:'c',
-    fb:{ a:'Elegiste la A. La esfera pesada sufre más fuerza de gravedad, pero tiene más masa que acelerar: las dos cosas crecen igual y se cancelan.',
-         b:'Elegiste la B. Sin aire, todos los cuerpos caen igual de rápido, y en el péndulo pasa lo mismo: la masa no cambia el período.',
-         d:'Elegiste la D. En el resorte la fuerza la pone el resorte, que no depende de la masa; en el péndulo la pone la gravedad, que crece con la masa. Por eso aquí la masa se cancela.' },
+    fb:{ a:'La esfera pesada sufre más fuerza de gravedad, pero tiene más masa que acelerar: las dos cosas crecen igual y se cancelan.',
+         b:'Sin aire, todos los cuerpos caen igual de rápido, y en el péndulo pasa lo mismo: la masa no cambia el período.',
+         d:'En el resorte la fuerza la pone el resorte, que no depende de la masa; en el péndulo la pone la gravedad, que crece con la masa. Por eso aquí la masa se cancela.' },
     antes:() => Object.assign(E, { osc:[pend(PA, '100 g'), pend(PB, '400 g')], disp:'columnas', m2:0.4 }),
     ctrl:() => `<div class="slider"><label for="q-m"><span>Masa de la segunda esfera (${V('m','m')})</span><output id="q-m-o"></output></label><input id="q-m" type="range" min="50" max="1000" step="50" value="${E.m2*1000}"></div>`,
     vivo:() => { $('q-m-o').textContent = `${N(E.m2*1000)} g`; },
@@ -971,9 +971,9 @@ const EXPS = [
           ['c', `${V('T', tPi(Tp*c2.errores.TsinL))}: lo mismo`, 'pendulo-T-sin-L', 'hipotesis'],
           ['d', `${V('T', tPi(Tp*c2.errores.Tinvertido))}: la mitad`, 'pendulo-T-invertido', 'hipotesis']],
     ok:'a',
-    fb:{ b:'Elegiste la B. El período no crece en proporción al largo sino a su raíz: √4 = 2.',
-         c:'Elegiste la C. El largo sí importa: el péndulo largo recorre un arco mayor con la misma fuerza hacia el centro en cada ángulo.',
-         d:'Elegiste la D. El péndulo largo es más lento, no más rápido: T = 2π·√(L/g), con L arriba.' },
+    fb:{ b:'El período no crece en proporción al largo sino a su raíz: √4 = 2.',
+         c:'El largo sí importa: el péndulo largo recorre un arco mayor con la misma fuerza hacia el centro en cada ángulo.',
+         d:'El péndulo largo es más lento, no más rápido: T = 2π·√(L/g), con L arriba.' },
     antes:() => Object.assign(E, { osc:[pend({ L:2.5, theta0:10 }, '2,5 m', { vueltas:0 }), pend({ L:10, theta0:10 }, '10 m', { vueltas:0 })], disp:'columnas', L2:10, contar:true }),
     ctrl:() => `<div class="slider"><label for="q-L"><span>Largo del segundo (${V('L','L')})</span><output id="q-L-o"></output></label><input id="q-L" type="range" min="0.5" max="10" step="0.5" value="${E.L2}"></div>`,
     vivo:() => { $('q-L-o').textContent = `${N(E.L2)} m`; },
@@ -991,9 +991,9 @@ const EXPS = [
           ['c', 'Menor: la gravedad ayuda al bloque a bajar más rápido', 'vertical-gravedad-ayuda', 'hipotesis'],
           ['d', 'Ya no tiene un período fijo: la gravedad lo frena al subir y lo empuja al bajar', 'vertical-no-es-mas', 'hipotesis']],
     ok:'a',
-    fb:{ b:'Elegiste la B. El resorte no se vuelve más blando por estar estirado: su k es la misma. La gravedad solo baja el punto de equilibrio.',
-         c:'Elegiste la C. Al bajar la gravedad ayuda, pero al subir frena lo mismo: en total, alrededor del nuevo equilibrio la fuerza neta sigue siendo −k·x.',
-         d:'Elegiste la D. Medida desde el nuevo equilibrio, la fuerza neta (resorte más peso) es −k·x, igual que en la mesa: es un MAS con el mismo período.' },
+    fb:{ b:'El resorte no se vuelve más blando por estar estirado: su k es la misma. La gravedad solo baja el punto de equilibrio.',
+         c:'Al bajar la gravedad ayuda, pero al subir frena lo mismo: en total, alrededor del nuevo equilibrio la fuerza neta sigue siendo −k·x.',
+         d:'Medida desde el nuevo equilibrio, la fuerza neta (resorte más peso) es −k·x, igual que en la mesa: es un MAS con el mismo período.' },
     antes:() => Object.assign(E, { osc:[{ tipo:'v', r:M.resorte({ m:0.4, k:40, A:0.05, phi:270, orientacion:'vertical' }), m:0.4, nombre:'colgado' }, { tipo:'h', r:M.resorte({ m:0.4, k:40, A:0.05, phi:270 }), m:0.4, nombre:'en la mesa' }], disp:'columnas', marcas:true }),
     ctrl:() => '', vivo:() => {}, alCambiar:() => {},
     exp:() => `<div class="eqs">
@@ -1011,9 +1011,9 @@ const EXPS = [
           ['c', `Unos ${V('T', fmt(asc.errores.gSinCambio, 1) + ' s')}: la gravedad sigue siendo 10 m/s²`, 'ascensor-g-sin-cambio', 'hipotesis'],
           ['d', `Unos ${V('T', fmt(asc.errores.gSinRaiz, 1) + ' s')}: baja en la misma proporción en que sube la gravedad`, 'ascensor-sin-raiz', 'hipotesis']],
     ok:'a',
-    fb:{ b:'Elegiste la B. Si el ascensor acelera hacia arriba, el piso te empuja más: te sientes más pesado. Para el péndulo, la gravedad efectiva sube a 10 + 2,5, no baja.',
-         c:'Elegiste la C. La gravedad de la Tierra no cambia, pero dentro del ascensor que acelera todo se comporta como si fuera mayor: el péndulo sí lo nota.',
-         d:'Elegiste la D. La gravedad entra bajo una raíz: T = 2π·√(L/g). Con 1,25 veces la gravedad, el período baja √1,25 veces, no 1,25 veces.' },
+    fb:{ b:'Si el ascensor acelera hacia arriba, el piso te empuja más: te sientes más pesado. Para el péndulo, la gravedad efectiva sube a 10 + 2,5, no baja.',
+         c:'La gravedad de la Tierra no cambia, pero dentro del ascensor que acelera todo se comporta como si fuera mayor: el péndulo sí lo nota.',
+         d:'La gravedad entra bajo una raíz: T = 2π·√(L/g). Con 1,25 veces la gravedad, el período baja √1,25 veces, no 1,25 veces.' },
     antes:() => Object.assign(E, { osc:[pend({ L:2.5, theta0:10 }, 'en el suelo'), pend({ L:2.5, ay:2.5, theta0:10 }, 'en el ascensor', { ascensor:{ sube:true, texto:'2,5 m/s²' } })], disp:'columnas', ay:2.5 }),
     ctrl:() => `<div class="slider"><label for="q-ay"><span>Aceleración del ascensor (+ hacia arriba)</span><output id="q-ay-o"></output></label><input id="q-ay" type="range" min="-7.5" max="10" step="2.5" value="${E.ay}"></div><p class="hint" id="q-ay-t"></p>`,
     vivo:() => { $('q-ay-o').textContent = `${fmt(E.ay, 1)} m/s²`; const r = E.osc[1].r; $('q-ay-t').textContent = `Gravedad efectiva: ${fmt(r.gef, 1)} m/s². Período: ${fmt(r.T, 2)} s.`; },
@@ -1032,9 +1032,9 @@ const EXPS = [
           ['c', V('T', `${fmt(rS.errores.TsinRaiz, 2)} s`), 'serie-sin-raiz', 'hipotesis'],
           ['d', V('T', `${fmt(rS.Tcon.unSolo, 2)} s`), 'serie-como-uno', 'hipotesis']],
     ok:'a',
-    fb:{ b:'Elegiste la B. Sumar las k vale cuando los resortes están uno al lado del otro (en paralelo). Uno tras otro, cada uno se estira con la fuerza entera: el par es más blando, no más duro.',
-         c:'Elegiste la C. El par es la mitad de duro (k = 20 N/m), pero el período va con la raíz: √2 veces, no el doble.',
-         d:'Elegiste la D. Con dos resortes uno tras otro, la misma fuerza los estira a los dos: el conjunto se estira el doble y es más blando.' },
+    fb:{ b:'Sumar las k vale cuando los resortes están uno al lado del otro (en paralelo). Uno tras otro, cada uno se estira con la fuerza entera: el par es más blando, no más duro.',
+         c:'El par es la mitad de duro (k = 20 N/m), pero el período va con la raíz: √2 veces, no el doble.',
+         d:'Con dos resortes uno tras otro, la misma fuerza los estira a los dos: el conjunto se estira el doble y es más blando.' },
     antes:() => Object.assign(E, { osc:[{ tipo:'v', r:M.resorte({ m:0.4, k:40, A:0.04, phi:270, orientacion:'vertical' }), m:0.4, nombre:'un resorte' }, { tipo:'serie', r:M.resorte({ m:0.4, k:rS.keq, A:0.04, phi:270, orientacion:'vertical' }), m:0.4, nombre:'dos, en serie' }], disp:'columnas', modo:'serie' }),
     ctrl:() => `<div class="seg" id="q-modo" role="group" aria-label="Cómo se unen los dos resortes"><button type="button" data-m="serie">uno tras otro</button><button type="button" data-m="paralelo">uno al lado del otro</button></div>`,
     vivo:() => { const b = $('q-modo'); if (!b) return; b.querySelectorAll('button').forEach(x => { x.setAttribute('aria-pressed', String(x.dataset.m === E.modo)); x.onclick = () => { E.modo = x.dataset.m; const r = M.resortes({ k:[40, 40], modo:E.modo, m:0.4 });
@@ -1099,7 +1099,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.ctrl() + x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     $('res2').querySelectorAll('input').forEach(inp => inp.addEventListener('input', () => { x.alCambiar(); x.vivo(); if (E.contar) E.t = 0; draw(); correr(); }));

@@ -119,7 +119,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -838,9 +838,9 @@ const G1 = { id:'maximos-paso1', ok:'b', opts:[
   ['c', `${dims(R1(P1.errores.intermedio))}: ni muy largo ni muy angosto`, 'rectangulo-intermedio', 'hipotesis'],
   ['d', 'Todos encierran lo mismo: el cordel mide lo mismo', 'GE5-mismo-perimetro-misma-area', 'parcial']],
   fb:{ b:`¡Bien! Con el mismo cordel, el cuadrado de 6 × 6 encierra ${fmt(R1(6).area)} m²; el de 8 × 4, ${fmt(R1(8).area)} m², y el de 11 × 1, solo ${fmt(R1(11).area)} m². Mismo perímetro, áreas distintas.`,
-    a:`Elegiste la A. El de 11 × 1 es el más largo, pero tan angosto que encierra solo ${fmt(R1(11).area)} m²: una fila de 11 cuadraditos. El cuadrado de 6 × 6 encierra ${fmt(R1(6).area)}. La correcta está marcada.`,
-    c:`Elegiste la C. El de 8 × 4 encierra ${fmt(R1(8).area)} m², bastante, pero el cuadrado de 6 × 6 encierra ${fmt(R1(6).area)}. Cuanto más parejos los lados, más área. La correcta está marcada.`,
-    d:`Elegiste la D. El cordel (el perímetro) es el mismo, pero el área no: ${fmt(R1(11).area)} m², ${fmt(R1(8).area)} m² y ${fmt(R1(6).area)} m². El perímetro mide el borde; el área, lo que queda adentro. La correcta está marcada.` } };
+    a:`El de 11 × 1 es el más largo, pero tan angosto que encierra solo ${fmt(R1(11).area)} m²: una fila de 11 cuadraditos. El cuadrado de 6 × 6 encierra ${fmt(R1(6).area)}.`,
+    c:`El de 8 × 4 encierra ${fmt(R1(8).area)} m², bastante, pero el cuadrado de 6 × 6 encierra ${fmt(R1(6).area)}. Cuanto más parejos los lados, más área.`,
+    d:`El cordel (el perímetro) es el mismo, pero el área no: ${fmt(R1(11).area)} m², ${fmt(R1(8).area)} m² y ${fmt(R1(6).area)} m². El perímetro mide el borde; el área, lo que queda adentro.` } };
 const dimP = r => `${frTxt(r.x)} m de fondo y ${frTxt(r.paralelo)} m junto a la pared`;
 const G3 = { id:'maximos-paso3', ok:'c', opts:[
   ['a', `${MM.fraccion(P3.errores.cuadrado.x).texto} m (unos ${fmt(P3.errores.cuadrado.x, 1)} m) por lado: un cuadrado, como con el cordel`, 'pared-cuadrado-sin-mirar-que-se-suma', 'hipotesis'],
@@ -848,36 +848,36 @@ const G3 = { id:'maximos-paso3', ok:'c', opts:[
   ['c', `${dimP(P3)}: la mitad de la malla va junto a la pared`],
   ['d', `${dimP(P3.errores.comoCorralLibre)}: el mejor corral de 40 m`, 'pared-regla-del-corral-libre', 'hipotesis']],
   fb:{ c:`¡Bien! Lo que se suma es x + x + y = 40. El producto es máximo cuando las dos partes, 2x e y, valen lo mismo: 20 y 20. Fondo de 10 m y 20 m junto a la pared: ${fmt(P3.area)} m².`,
-    a:`Elegiste la A. El cuadrado de 40/3 m (unos 13,3 m) por lado encierra 1600/9 ≈ ${fmt(P3.errores.cuadrado.area, 1)} m². Con la pared, x e y ya no se suman por igual: x va dos veces. El mejor es 10 × 20 = ${fmt(P3.area)} m². La correcta está marcada.`,
-    b:`Elegiste la B. 16 m de fondo y 8 m junto a la pared encierran ${fmt(P3.errores.alReves.area)} m². Es al revés: conviene alargar el lado junto a la pared, porque su malla se pone una sola vez. La correcta está marcada.`,
-    d:`Elegiste la D. 10 × 10 es el mejor corral de 40 m sin pared, pero aquí usa solo 30 m de malla y le sobran 10. Con toda la malla: 10 × 20 = ${fmt(P3.area)} m². La correcta está marcada.` } };
+    a:`El cuadrado de 40/3 m (unos 13,3 m) por lado encierra 1600/9 ≈ ${fmt(P3.errores.cuadrado.area, 1)} m². Con la pared, x e y ya no se suman por igual: x va dos veces. El mejor es 10 × 20 = ${fmt(P3.area)} m².`,
+    b:`16 m de fondo y 8 m junto a la pared encierran ${fmt(P3.errores.alReves.area)} m². Es al revés: conviene alargar el lado junto a la pared, porque su malla se pone una sola vez.`,
+    d:`10 × 10 es el mejor corral de 40 m sin pared, pero aquí usa solo 30 m de malla y le sobran 10. Con toda la malla: 10 × 20 = ${fmt(P3.area)} m².` } };
 const G5 = { id:'maximos-paso5', ok:'c', opts:[
   ['a', `${R5.exactos.sumaPerpendiculares} m: 3 m para bajar a la orilla y 5 m para subir a B`, 'rio-suma-de-distancias-a-la-orilla', 'hipotesis'],
   ['b', `${R5.exactos.perpendicularA} ≈ ${fmt(R5.errores.perpendicularA, 1)} m: bajando derecho desde A`, 'rio-perpendicular-desde-A', 'hipotesis'],
   ['c', `${R5.exacto} m: tocando la orilla más cerca del pie de A que del de B`],
   ['d', `${R5.exactos.porLaOrilla} m: bajar, caminar 6 m por la orilla y subir`, 'rio-por-la-orilla', 'hipotesis']],
   fb:{ c:`¡Bien! Refleja B al otro lado de la orilla: B' queda 5 m dentro del agua. Cualquier camino A–P–B mide lo mismo que A–P–B'. El más corto es la recta A–B', con catetos 6 y 3 + 5 = 8: mide ${R5.exacto} m.`,
-    a:'Elegiste la A. 3 y 5 son las distancias de A y de B a la orilla, pero bajan a dos puntos distintos de la orilla, separados 6 m. Un camino que toca la orilla una sola vez mide más: el menor es 10 m. La correcta está marcada.',
-    b:`Elegiste la B. Bajar derecho es lo más corto para llegar a la orilla, pero después queda un tramo largo hasta B: ${R5.exactos.perpendicularA} ≈ ${fmt(R5.errores.perpendicularA, 1)} m. Conviene tocar la orilla un poco más adelante. La correcta está marcada.`,
-    d:'Elegiste la D. Ese camino baja, recorre la orilla y sube: 3 + 6 + 5 = 14 m. Ir en diagonal ahorra mucho: el mejor mide 10 m. La correcta está marcada.' } };
+    a:'3 y 5 son las distancias de A y de B a la orilla, pero bajan a dos puntos distintos de la orilla, separados 6 m. Un camino que toca la orilla una sola vez mide más: el menor es 10 m.',
+    b:`Bajar derecho es lo más corto para llegar a la orilla, pero después queda un tramo largo hasta B: ${R5.exactos.perpendicularA} ≈ ${fmt(R5.errores.perpendicularA, 1)} m. Conviene tocar la orilla un poco más adelante.`,
+    d:'Ese camino baja, recorre la orilla y sube: 3 + 6 + 5 = 14 m. Ir en diagonal ahorra mucho: el mejor mide 10 m.' } };
 const G7 = { id:'maximos-paso7', ok:'b', opts:[
   ['a', `${sol(I7.errores.noCambiar)}: cada sol de más le quita clientes`, 'precio-no-cambiar', 'hipotesis'],
   ['b', `${sol(I7.precio)}: sube un poco y pierde pocos clientes`],
   ['c', `${sol(I7.errores.hastaLaMitad)}: a la mitad del camino hasta S/ 32, cuando ya nadie compra`, 'precio-mitad-hasta-el-cero', 'hipotesis'],
   ['d', `${sol(I7.errores.igualarFactores)}: el precio igual al número de menús, como en el cuadrado`, 'precio-iguala-factores-sin-suma-fija', 'hipotesis']],
   fb:{ b:`¡Bien! El ingreso es precio × menús: (10 + n)(66 − 3n). Se hace cero en n = −10 (gratis) y en n = 22 (S/ 32, nadie compra). El máximo está a la mitad de los dos ceros: n = 6. ${sol(I7.precio)} × ${I7.cantidad} menús = ${sol(I7.ingreso)}.`,
-    a:`Elegiste la A. Hoy gana 10 × 66 = ${sol(I7.erroresIngreso.noCambiar)}. Si sube a S/ 16 pierde 18 clientes, pero cada uno de los 48 que quedan paga más: ${sol(I7.ingreso)}. La correcta está marcada.`,
-    c:`Elegiste la C. A S/ 21 vende 33 menús: ${sol(I7.erroresIngreso.hastaLaMitad)}, más que hoy pero menos que el máximo. La curva sube y baja igual a los dos lados del máximo: S/ 11 y S/ 21 dan lo mismo, y el mejor está en medio, en S/ 16. La correcta está marcada.`,
-    d:`Elegiste la D. Igualar los factores funciona cuando su suma es fija. Aquí precio + menús cambia: (10 + n) + (66 − 3n) baja 2 por cada sol. A ${sol(I7.errores.igualarFactores)} vende 24 menús: ${sol(I7.erroresIngreso.igualarFactores)}. La correcta está marcada.` } };
+    a:`Hoy gana 10 × 66 = ${sol(I7.erroresIngreso.noCambiar)}. Si sube a S/ 16 pierde 18 clientes, pero cada uno de los 48 que quedan paga más: ${sol(I7.ingreso)}.`,
+    c:`A S/ 21 vende 33 menús: ${sol(I7.erroresIngreso.hastaLaMitad)}, más que hoy pero menos que el máximo. La curva sube y baja igual a los dos lados del máximo: S/ 11 y S/ 21 dan lo mismo, y el mejor está en medio, en S/ 16.`,
+    d:`Igualar los factores funciona cuando su suma es fija. Aquí precio + menús cambia: (10 + n) + (66 − 3n) baja 2 por cada sol. A ${sol(I7.errores.igualarFactores)} vende 24 menús: ${sol(I7.erroresIngreso.igualarFactores)}.` } };
 const G8 = { id:'maximos-paso8', ok:'c', opts:[
   ['a', `${M8.errores.alternarDos} colores: se alternan alrededor del centro`, 'mapa-alternar-dos', 'hipotesis'],
   ['b', `${M8.errores.tresBastan} colores: el centro de uno y los jardines de alrededor alternando otros dos`, 'mapa-tres-bastan', 'hipotesis'],
   ['c', `${M8.colores} colores: el centro de uno y los jardines de alrededor con otros tres`],
   ['d', `${M8.errores.unoPorRegion} colores: uno por zona, porque todas se tocan`, 'mapa-uno-por-region', 'hipotesis']],
   fb:{ c:'¡Bien! Con 5 jardines en ronda, dos colores no alcanzan para alternar: al dar la vuelta, el quinto choca con el primero. La ronda pide 3 colores, y el jardín del centro, que toca a los cinco, uno más: 4.',
-    a:'Elegiste la A. Alternar dos colores funciona con un número par de jardines. Con 5, el último queda junto al primero con el mismo color. Y el jardín del centro toca a todos. La correcta está marcada.',
-    b:`Elegiste la B. Con 5 jardines, alternar dos colores falla al cerrar la vuelta: la ronda ya necesita 3, y el jardín del centro toca a los cinco, así que necesita un cuarto color. El motor probó las ${fmt(M8.probadas, 0)} formas de pintar con 3 colores: todas tienen un choque. La correcta está marcada.`,
-    d:'Elegiste la D. No todas las zonas se tocan: el jardín 1 y el 3, por ejemplo, no comparten borde y pueden llevar la misma flor. Bastan 4. La correcta está marcada.' } };
+    a:'Alternar dos colores funciona con un número par de jardines. Con 5, el último queda junto al primero con el mismo color. Y el jardín del centro toca a todos.',
+    b:`Con 5 jardines, alternar dos colores falla al cerrar la vuelta: la ronda ya necesita 3, y el jardín del centro toca a los cinco, así que necesita un cuarto color. El motor probó las ${fmt(M8.probadas, 0)} formas de pintar con 3 colores: todas tienen un choque.`,
+    d:'No todas las zonas se tocan: el jardín 1 y el 3, por ejemplo, no comparten borde y pueden llevar la misma flor. Bastan 4.' } };
 
 // ---- configuraciones ----
 const lectCorral = verS => [E0 => ['x', 'Ancho x', m(E0.cor.x)], E0 => ['y', 'Largo y', m(MM.rectangulo({ perimetro:24, ancho:E0.cor.x }).largo)]]
@@ -1238,7 +1238,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

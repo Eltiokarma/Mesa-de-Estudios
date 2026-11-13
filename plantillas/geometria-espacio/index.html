@@ -132,7 +132,7 @@ table.formulas td{font-family:var(--mono); font-variant-numeric:tabular-nums}
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -597,45 +597,45 @@ const P1 = { id:'espacio-varilla', ok:'b', opts:[
   ['c', 'Con dos, perpendiculares entre sí', 'ESP-dos-rectas', 'hipotesis'],
   ['d', 'Con todas', 'ESP-basta-una-recta', 'hipotesis']],
   fb:{ b:'¡Bien! Inclinada, la varilla forma 90° con una sola recta del piso que pasa por O: la recta L, perpendicular a su sombra. Mira la recta que gira: el ángulo cambia.',
-    a:'Elegiste la A. Aunque esté inclinada, hay una recta del piso con la que forma 90°: la recta L, perpendicular a su sombra. Mira la recta que gira. La correcta está marcada.',
-    c:`Elegiste la C. Forma 90° con L, pero la recta del piso perpendicular a L es la de su sombra, y con ella forma ${gr0(VAR.respuestas.conM)}. Mira la recta que gira. La correcta está marcada.`,
-    d:'Elegiste la D. Con todas solo si estuviera vertical. Inclinada, el ángulo cambia al girar la recta del piso, y es 90° una sola vez. La correcta está marcada.' } };
+    a:'Aunque esté inclinada, hay una recta del piso con la que forma 90°: la recta L, perpendicular a su sombra. Mira la recta que gira.',
+    c:`Forma 90° con L, pero la recta del piso perpendicular a L es la de su sombra, y con ella forma ${gr0(VAR.respuestas.conM)}. Mira la recta que gira.`,
+    d:'Con todas solo si estuviera vertical. Inclinada, el ángulo cambia al girar la recta del piso, y es 90° una sola vez.' } };
 const P2 = { id:'espacio-diagonal-piso', ok:'c', opts:[
   ['a', gr1(DG.errores.angulo.conArista), 'ESP-angulo-con-otra-recta', 'hipotesis'],
   ['b', gr1(DG.errores.angulo.diagonalCara), 'ESP-diagonal-de-cara', 'hipotesis'],
   ['c', gr1(DG.respuestas.angulo)],
   ['d', gr1(DG.errores.angulo.hipotenusa), 'ESP-hipotenusa-como-cateto', 'hipotesis']],
   fb:{ c:'¡Bien! El ángulo con el piso se mide con la sombra AC: tan θ = 6/(6√2) = √2/2.',
-    a:'Elegiste la A. Ese es el ángulo de AG con la arista AB. AB está en el piso, pero no es la sombra de AG: el ángulo con un plano se mide con la proyección. La correcta está marcada.',
-    b:'Elegiste la B. 45° es el ángulo de la diagonal AF de la cara del frente con el piso. AG sube lo mismo (6), pero avanza más por el piso (6√2): queda más echada. La correcta está marcada.',
-    d:'Elegiste la D. Sale con tan θ = 6/AG, usando la diagonal AG como cateto. En el triángulo AGC, AG es la hipotenusa; los catetos son GC = 6 y AC = 6√2. La correcta está marcada.' } };
+    a:'Ese es el ángulo de AG con la arista AB. AB está en el piso, pero no es la sombra de AG: el ángulo con un plano se mide con la proyección.',
+    b:'45° es el ángulo de la diagonal AF de la cara del frente con el piso. AG sube lo mismo (6), pero avanza más por el piso (6√2): queda más echada.',
+    d:'Sale con tan θ = 6/AG, usando la diagonal AG como cateto. En el triángulo AGC, AG es la hipotenusa; los catetos son GC = 6 y AC = 6√2.' } };
 const P3 = { id:'espacio-tres-perpendiculares', ok:'a', opts:[
   ['a', `${raiz(TP.respuestas.distancia)} u`],
   ['b', `${raiz(TP.errores.distancia.alPlano)} u`, 'ESP-distancia-al-plano', 'hipotesis'],
   ['c', `${raiz(TP.errores.distancia.alMedio)} u`, 'ESP-pie-en-el-medio', 'hipotesis'],
   ['d', `${raiz(TP.errores.distancia.alExtremo)} u`, 'ESP-al-extremo', 'hipotesis']],
   fb:{ a:'¡Bien! EA ⊥ piso y AB ⊥ L, así que EB ⊥ L: la distancia es EB = √(6² + 6²) = 6√2.',
-    b:'Elegiste la B. 6 es EA, la distancia de E al piso, no a la recta L. La perpendicular de E a L llega a L en B. La correcta está marcada.',
-    c:'Elegiste la C. 9 es la distancia de E al punto medio de BC. El pie de la perpendicular está en B, no en el medio. La correcta está marcada.',
-    d:'Elegiste la D. 6√3 es EC, la diagonal del cubo. La distancia a una recta es la más corta: la perpendicular EB. La correcta está marcada.' } };
+    b:'6 es EA, la distancia de E al piso, no a la recta L. La perpendicular de E a L llega a L en B.',
+    c:'9 es la distancia de E al punto medio de BC. El pie de la perpendicular está en B, no en el medio.',
+    d:'6√3 es EC, la diagonal del cubo. La distancia a una recta es la más corta: la perpendicular EB.' } };
 const P4 = { id:'espacio-diedro', ok:'d', opts:[
   ['a', gr1(DI.errores.diedro.oblicuas), 'ESP-diedro-con-oblicuas', 'hipotesis'],
   ['b', gr1(DI.errores.diedro.unaOblicua), 'ESP-diedro-una-oblicua', 'hipotesis'],
   ['c', gr1(DI.errores.diedro.recto), 'ESP-diedro-recto', 'hipotesis'],
   ['d', gr1(DI.respuestas.diedro)]],
   fb:{ d:'¡Bien! AD y AH son perpendiculares a la arista AB, una en cada plano: el diedro es el ángulo DAH = 45°.',
-    a:'Elegiste la A. Es el ángulo CAG, medido con la diagonal del piso y la diagonal de la puerta. Ninguna de las dos es perpendicular a la arista AB, y por eso no miden el diedro. La correcta está marcada.',
-    b:'Elegiste la B. Es el ángulo entre AC y AH. AH sí es perpendicular a la arista AB, pero AC no: las dos tienen que serlo. La correcta está marcada.',
-    c:'Elegiste la C. El plano ABGH sube desde el piso, pero no es una pared: la pared ABFE sí forma 90°. Mira la puerta abrirse. La correcta está marcada.' } };
+    a:'Es el ángulo CAG, medido con la diagonal del piso y la diagonal de la puerta. Ninguna de las dos es perpendicular a la arista AB, y por eso no miden el diedro.',
+    b:'Es el ángulo entre AC y AH. AH sí es perpendicular a la arista AB, pero AC no: las dos tienen que serlo.',
+    c:'El plano ABGH sube desde el piso, pero no es una pared: la pared ABFE sí forma 90°. Mira la puerta abrirse.' } };
 const P5 = { id:'espacio-cruzadas', ok:'b', opts:[
   ['a', `${raiz(CR.errores.distancia.entreExtremos)} u`, 'ESP-entre-extremos', 'hipotesis'],
   ['b', `${raiz(CR.respuestas.distancia)} u`],
   ['c', `${raiz(CR.errores.distancia.mitadDeR1)} u`, 'ESP-mitad-diagonal', 'hipotesis'],
   ['d', `${raiz(CR.errores.distancia.perpendicularAUna)} u`, 'ESP-perpendicular-a-una', 'hipotesis']],
   fb:{ b:'¡Bien! La perpendicular común va del centro del cubo al punto medio de BF y mide 3√2.',
-    a:'Elegiste la A. 6 es la distancia entre dos extremos (A y B, o G y F). Entre dos rectas se mide con la perpendicular común a las dos, y es más corta. La correcta está marcada.',
-    c:'Elegiste la C. 3√3 es la mitad de la diagonal AG: un largo de una de las rectas, no la separación entre las dos. La correcta está marcada.',
-    d:'Elegiste la D. 2√6 es la distancia de B a la diagonal AG. Ese segmento es perpendicular a AG, pero no a BF. La distancia entre rectas cruzadas va por la perpendicular a las dos. La correcta está marcada.' } };
+    a:'6 es la distancia entre dos extremos (A y B, o G y F). Entre dos rectas se mide con la perpendicular común a las dos, y es más corta.',
+    c:'3√3 es la mitad de la diagonal AG: un largo de una de las rectas, no la separación entre las dos.',
+    d:'2√6 es la distancia de B a la diagonal AG. Ese segmento es perpendicular a AG, pero no a BF. La distancia entre rectas cruzadas va por la perpendicular a las dos.' } };
 
 // ----- piezas de dibujo de cada paso -----
 function dibVarilla(L, E){
@@ -1141,7 +1141,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     const sig = $('sig2'); if (sig) sig.onclick = () => { if (E.ocupado) return; ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

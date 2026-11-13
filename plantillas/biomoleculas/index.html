@@ -123,7 +123,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 /* En la retroalimentación correcta (verde), la Mp verde se confundiría con el texto: va en el color del texto, subrayada en el suyo. */
 .fb.ok .v-Mp{color:inherit; text-decoration-color:var(--c-Mp)}
 
@@ -683,36 +683,36 @@ const P0 = { id:'biomoleculas-paso2', ok:'b', opts:[
   ['c', '324: al unirse, cada una suelta una molécula de agua.', 'resta-dos-aguas', RES('hipotesis', 'informe, P1')],
   ['d', '180: las dos se funden en un azúcar del mismo tamaño.', 'BM5-se-funden', RES('hipotesis', 'BM5, sin porcentaje')]],
   fb:{ b:`¡Bien! Al juntarse, la glucosa pone un H y la fructosa un OH: forman una molécula de agua, que cae al vaso. La sacarosa pesa ${M_('342')} = ${Mp_('360')} − ${Ma_('18')}. Su fórmula lo dice: C₁₂H₂₂O₁₁, no C₁₂H₂₄O₁₂.`,
-    a:`Las dos piezas suman 360, pero al unirse sale una molécula de agua (18), que ya no es parte de la sacarosa: queda 342. Se ve en la fórmula, C₁₂H₂₂O₁₁: tiene 2 H y 1 O menos que las dos piezas juntas. Que este sea un error frecuente es una hipótesis nuestra; ${ATP}. La correcta está marcada.`,
-    c:`Sale una sola molécula de agua por unión, no una por pieza: la glucosa pone el H y la fructosa el OH, y juntos forman un solo H₂O. Hay una unión: 360 − 18 = 342. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
-    d:`La sacarosa no es una glucosa más: es una molécula más grande, con las dos piezas adentro, y pesa casi el doble: 360 − 18 = 342. Que se confunda la pieza con la molécula armada es una hipótesis nuestra; un estudio con universitarios de biología de Estados Unidos describe que confunden la glucosa con los carbohidratos complejos, sin dar porcentaje (lo vimos solo en una descripción del buscador). La correcta está marcada.` } };
+    a:`Las dos piezas suman 360, pero al unirse sale una molécula de agua (18), que ya no es parte de la sacarosa: queda 342. Se ve en la fórmula, C₁₂H₂₂O₁₁: tiene 2 H y 1 O menos que las dos piezas juntas. `,
+    c:`Sale una sola molécula de agua por unión, no una por pieza: la glucosa pone el H y la fructosa el OH, y juntos forman un solo H₂O. Hay una unión: 360 − 18 = 342.`,
+    d:`La sacarosa no es una glucosa más: es una molécula más grande, con las dos piezas adentro, y pesa casi el doble: 360 − 18 = 342. ` } };
 const P1 = { id:'biomoleculas-paso4', ok:'d', opts:[
   ['a', '3 enlaces y 3 aguas: un enlace y un agua por cada aminoácido.', 'BMH6-n-enlaces', RES('hipotesis', 'BMH6')],
   ['b', '2 enlaces y ninguna agua: los aminoácidos solo se enganchan.', 'BM9-sin-agua', RES('hipotesis', 'BMH7; apoyo indirecto en BM9')],
   ['c', '3 enlaces y 2 aguas: un enlace por pieza y un agua por unión.', 'mezcla-enlaces-aguas', RES('hipotesis', 'informe, P2')],
   ['d', '2 enlaces y 2 aguas: un enlace y un agua por cada unión.']],
   fb:{ d:`¡Bien! Tres piezas en fila se tocan en dos lugares: ${k_('2')} uniones. Cada unión es un enlace peptídico y suelta un agua. La cadena pesa ${M_('233')} = ${Mp_('269')} − ${Ma_('18')} · ${k_('2')}.`,
-    a:`Hay tres aminoácidos, pero se tocan en solo dos lugares: entre Gly y Ala, y entre Ala y Ser. La primera y la última pieza tienen un extremo libre. Con n piezas en fila hay n − 1 uniones. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
-    b:`Los aminoácidos no solo se enganchan: como en la sacarosa, en cada unión uno pone un OH y el otro un H, y sale una molécula de agua. Dos uniones, dos aguas. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
-    c:`Enlaces y aguas van juntos: cada unión es un enlace peptídico y suelta un agua. Dos uniones: 2 enlaces y 2 aguas. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
+    a:`Hay tres aminoácidos, pero se tocan en solo dos lugares: entre Gly y Ala, y entre Ala y Ser. La primera y la última pieza tienen un extremo libre. Con n piezas en fila hay n − 1 uniones.`,
+    b:`Los aminoácidos no solo se enganchan: como en la sacarosa, en cada unión uno pone un OH y el otro un H, y sale una molécula de agua. Dos uniones, dos aguas.`,
+    c:`Enlaces y aguas van juntos: cada unión es un enlace peptídico y suelta un agua. Dos uniones: 2 enlaces y 2 aguas.` } };
 const P2 = { id:'biomoleculas-paso5', ok:'a', opts:[
   ['a', 'Las atracciones débiles que la pliegan; la cadena sigue entera.'],
   ['b', 'Los enlaces peptídicos: el calor corta la cadena en pedazos más cortos.', 'BMH1-rompe-peptidicos', RES('hipotesis', 'BMH1: solo guías de repaso')],
   ['c', 'Todo: el calor separa la proteína en los aminoácidos que la forman.', 'BMH1-separa-aminoacidos', RES('parcial', 'BM6: Fisher 1985, cualitativo')],
   ['d', 'Nada: la proteína es una cadena rígida; con el calor solo cambia de color.', 'BM7-proteina-rigida', RES('parcial', 'BM7 y BM8: Owusu y otros 2025, Robic 2010, cualitativos')]],
   fb:{ a:`¡Bien! El calor sacude la cadena y rompe las atracciones débiles (puentes de hidrógeno y otras) que la mantenían doblada: la proteína se despliega y se enreda con sus vecinas, y por eso la clara se vuelve blanca y firme. Los ${k_(fmt(DES.despues.peptidicos))} enlaces peptídicos siguen ahí, y la masa no cambia.`,
-    b:`Para cortar enlaces peptídicos hace falta una hidrólisis: las enzimas de la digestión, o un ácido fuerte y caliente durante horas. Al cocer, la cadena sigue entera; lo que se rompe son las atracciones débiles que la doblaban. Esta opción es una hipótesis nuestra: la vimos como «error frecuente» en guías de repaso, sin estudio que la mida. La correcta está marcada.`,
-    c:`Si la proteína se separara en sus aminoácidos, un huevo cocido sería una sopa de piezas sueltas. Separarla así es lo que hace la digestión, con agua y enzimas. Que se confunda la proteína con el aminoácido lo describe un estudio con universitarios de biología (Fisher, 1985), sin porcentaje; esta opción es una hipótesis nuestra. La correcta está marcada.`,
-    d:`La proteína no es una cadena fija: se dobla y se mueve todo el tiempo, y su forma la sostienen atracciones débiles que el calor rompe. Por eso la clara pasa de transparente a blanca y firme, y no vuelve atrás. Ver la proteína como una cadena rígida y quieta lo describen, sin porcentaje, un estudio con universitarios de bioquímica (Owusu y otros, 2025, según su resumen) y el ensayo de una profesora (Robic, 2010). La correcta está marcada.` } };
+    b:`Para cortar enlaces peptídicos hace falta una hidrólisis: las enzimas de la digestión, o un ácido fuerte y caliente durante horas. Al cocer, la cadena sigue entera; lo que se rompe son las atracciones débiles que la doblaban.`,
+    c:`Si la proteína se separara en sus aminoácidos, un huevo cocido sería una sopa de piezas sueltas. Separarla así es lo que hace la digestión, con agua y enzimas. `,
+    d:`La proteína no es una cadena fija: se dobla y se mueve todo el tiempo, y su forma la sostienen atracciones débiles que el calor rompe. Por eso la clara pasa de transparente a blanca y firme, y no vuelve atrás. ` } };
 const P3 = { id:'biomoleculas-paso6', ok:'c', opts:[
   ['a', 'Sí: las dos son cadenas de glucosa, y el cuerpo las corta de la misma forma.', 'BMH2-misma-glucosa', RES('hipotesis', 'BMH2')],
   ['b', 'No: la celulosa es una cadena de otra pieza distinta, no de glucosa.', 'BM3-celulosa-no-es-glucosa', RES('hipotesis', 'cercana a BM3, Koç y Sönmez 2018')],
   ['c', 'No: sus glucosas van unidas con otro enlace que no sabemos cortar.'],
   ['d', 'No: la celulosa tiene muchas más glucosas y es demasiado pesada para digerirla.', 'BM5-por-tamano', RES('hipotesis', 'BM5, sin porcentaje')]],
   fb:{ c:`¡Bien! Las dos son cadenas de glucosa. En el almidón, cada glucosa se une a la siguiente con un enlace α y todas miran al mismo lado; en la celulosa el enlace es β, y cada glucosa va girada media vuelta. Nuestra amilasa corta el enlace α y no el β. La vaca sí aprovecha el pasto: los microbios de su estómago tienen celulasa.`,
-    a:`Las dos son cadenas de glucosa, pero unidas de otra forma: en el almidón con enlaces α y en la celulosa con enlaces β, con cada glucosa girada. Nuestras enzimas, las amilasas, solo cortan el α. Por eso comer papel no alimenta. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
-    b:`La celulosa también es glucosa: la misma pieza que el almidón, unida con otro enlace. Según la descripción de un estudio con 35 futuros profesores de ciencias de Turquía (Koç y Sönmez, 2018), solo 10 pusieron la celulosa junto al almidón y el glucógeno entre los polisacáridos; es un error cercano, y la cifra está por verificar. Esta opción, tal como está, es una hipótesis nuestra. La correcta está marcada.`,
-    d:`El tamaño no es la razón: la amilopectina del almidón puede tener muchas más glucosas que una celulosa, y la digerimos. Lo que cambia es el enlace entre glucosas, que nuestras enzimas no saben cortar. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
+    a:`Las dos son cadenas de glucosa, pero unidas de otra forma: en el almidón con enlaces α y en la celulosa con enlaces β, con cada glucosa girada. Nuestras enzimas, las amilasas, solo cortan el α. Por eso comer papel no alimenta.`,
+    b:`La celulosa también es glucosa: la misma pieza que el almidón, unida con otro enlace. `,
+    d:`El tamaño no es la razón: la amilopectina del almidón puede tener muchas más glucosas que una celulosa, y la digerimos. Lo que cambia es el enlace entre glucosas, que nuestras enzimas no saben cortar.` } };
 
 // ----- Vistas -----
 const balM = (r, v) => r ? [['M = ', 'ink', 700], [`${fmt(v)} g/mol`, 'M', 800]] : [['M = ?', 'muted', 800]];
@@ -956,7 +956,7 @@ function prediccion(s){
   const pintar = () => {
     const p = S.pred[P.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
-    const fb = $('fb'); fb.innerHTML = (p === P.ok ? '' : `Elegiste la ${LETRAS.indexOf(p) + 1}. `) + P.fb[p].replace(/ tabindex="0"/g, ''); fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    const fb = $('fb'); fb.innerHTML = (p === P.ok ? '' : ``) + P.fb[p].replace(/ tabindex="0"/g, ''); fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
     const tras = $('tras'); if (tras) tras.hidden = false;
   };
   const t0 = Date.now();
@@ -1004,9 +1004,9 @@ const EXPS = [
           ['b', '162 g: al separarse, las piezas sueltan otra vez una molécula de agua.', 'hidrolisis-resta-agua', RES('hipotesis', 'hipótesis nuestra')],
           ['c', '180 g: entra una molécula de agua y cada pieza recupera su masa.'],
           ['d', '342 g: toda la sacarosa se vuelve glucosa, que es el azúcar.', 'BM5-todo-glucosa', RES('hipotesis', 'BM5, sin porcentaje')]],
-    fb:{ a:'La sacarosa no se parte en dos mitades de lo que pesa: para separar las piezas entra una molécula de agua, que devuelve a cada una el H y el OH que perdió. Salen 180 g de glucosa y 180 g de fructosa: 360 g en total. Que se olvide el agua es una hipótesis nuestra; según el resumen de un estudio de 2025, cerca de dos tercios de las figuras de libros de biología que muestran la hidrólisis del ATP no dibujan el agua (dato de libros, no de alumnos, por verificar).',
-      b:'Al unir piezas sale agua; al separarlas, entra. Es el camino de vuelta: se llama hidrólisis («romper con agua»). Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      d:'La sacarosa trae dos piezas distintas: al separarse sale una glucosa y una fructosa, 180 g de cada una. Y la masa total sube a 360 g por el agua que entra. Que se confunda «azúcar» con «glucosa» es una hipótesis nuestra, cercana a lo que se describe sin porcentaje en universitarios.' },
+    fb:{ a:'La sacarosa no se parte en dos mitades de lo que pesa: para separar las piezas entra una molécula de agua, que devuelve a cada una el H y el OH que perdió. Salen 180 g de glucosa y 180 g de fructosa: 360 g en total. ',
+      b:'Al unir piezas sale agua; al separarlas, entra. Es el camino de vuelta: se llama hidrólisis («romper con agua»).',
+      d:'La sacarosa trae dos piezas distintas: al separarse sale una glucosa y una fructosa, 180 g de cada una. Y la masa total sube a 360 g por el agua que entra. ' },
     antes:() => ({ paneles:['taller'], taller:{ piezas:['glucosa', 'fructosa'], u:unidas(2), masas:[[['?', 'muted', 800]], [['?', 'muted', 800]]],
         balanza:[['sacarosa: ', 'ink', 700], ['342 g', 'M', 800]], vaso:{ n:'?', max:4, etq:[['vaso de agua', 'muted', 700]] }, cuenta:[['1 mol de sacarosa', 'ink', 800]] },
       pie:'La sacarosa, a punto de separarse. Lo que pesa cada pieza se ve al responder.', vars:['k', 'M'], desc:'Un mol de sacarosa, 342 gramos, a punto de separarse en sus dos piezas.' }),
@@ -1025,9 +1025,9 @@ const EXPS = [
           ['b', `1000 aguas; ${fmt(MIL.errores['n-aguas'].M)} g: una por cada glucosa de la cadena.`, 'BMH6-n-aguas', RES('hipotesis', 'BMH6')],
           ['c', `Ninguna; ${fmt(MIL.errores['sin-agua'].M)} g: las glucosas solo se enganchan unas a otras.`, 'BMH8-sin-agua', RES('hipotesis', 'BMH8; apoyo indirecto en BM9')],
           ['d', `Una sola; ${fmt(MIL.errores['un-agua'].M)} g: como en la sacarosa, se suelta un agua.`, 'BMH7-un-agua', RES('hipotesis', 'BMH7')]],
-    fb:{ b:'Mil glucosas en fila se tocan en 999 lugares: la primera y la última tienen un extremo libre. Por eso salen 999 aguas, y la cadena pesa 180 · 1000 − 18 · 999 = 162 018 g. Con la fórmula (C₆H₁₀O₅)ₙ sale 162 000: es la aproximación de cadena larga, no la cuenta exacta. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      c:'Las glucosas no solo se enganchan: cada unión suelta una molécula de agua, como en la sacarosa. Con 1000 glucosas, 999 aguas. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      d:'La sacarosa tiene una sola unión; esta cadena tiene 999, y cada una suelta su agua. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    fb:{ b:'Mil glucosas en fila se tocan en 999 lugares: la primera y la última tienen un extremo libre. Por eso salen 999 aguas, y la cadena pesa 180 · 1000 − 18 · 999 = 162 018 g. Con la fórmula (C₆H₁₀O₅)ₙ sale 162 000: es la aproximación de cadena larga, no la cuenta exacta.',
+      c:'Las glucosas no solo se enganchan: cada unión suelta una molécula de agua, como en la sacarosa. Con 1000 glucosas, 999 aguas.',
+      d:'La sacarosa tiene una sola unión; esta cadena tiene 999, y cada una suelta su agua.' },
     antes:() => ({ paneles:['taller'], taller:{ piezas:['glucosa'], cadena:{ total:1000, vis:6 }, conectorGris:true, balanza:[['M = ?', 'muted', 800]], vaso:{ n:'?', etq:[['vaso de agua', 'muted', 700]] },
         cuenta:[['n = 1000', 'n', 800], [' glucosas en cadena (se dibujan 7)', 'ink', 700]] },
       pie:'Lo que cae al vaso y lo que marca la balanza se ve al responder.', vars:['n'], desc:'Una cadena de mil glucosas; el vaso y la balanza están tapados.' }),
@@ -1046,9 +1046,9 @@ const EXPS = [
           ['b', 'La tripalmitina: es más liviana, y en 1 g caben más moléculas.'],
           ['c', 'Iguales: cada molécula de las dos gasta 3 KOH, ni más ni menos.', 'iguales-por-mol', RES('hipotesis', 'hipótesis nuestra')],
           ['d', 'Ninguna: sin dobles enlaces, estas grasas no gastan nada de KOH.', 'confunde-con-yodo', RES('hipotesis', 'hipótesis nuestra')]],
-    fb:{ a:'Cada molécula gasta 3 KOH, sea grande o chica: una por cada éster que se rompe. Pero el índice se mide por gramo, y en 1 g hay más moléculas de la grasa más liviana. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      c:'Por molécula, sí: las dos gastan 3 KOH. Pero el índice es por gramo, y 1 g de tripalmitina tiene más moléculas que 1 g de triestearina. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      d:'Los dobles enlaces cuentan en el índice de yodo, no en el de saponificación. El KOH rompe los tres enlaces éster de cualquier triglicérido. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    fb:{ a:'Cada molécula gasta 3 KOH, sea grande o chica: una por cada éster que se rompe. Pero el índice se mide por gramo, y en 1 g hay más moléculas de la grasa más liviana.',
+      c:'Por molécula, sí: las dos gastan 3 KOH. Pero el índice es por gramo, y 1 g de tripalmitina tiene más moléculas que 1 g de triestearina.',
+      d:'Los dobles enlaces cuentan en el índice de yodo, no en el de saponificación. El KOH rompe los tres enlaces éster de cualquier triglicérido.' },
     antes:() => ({ paneles:['grasa', 'barras'], grasa:{ items:[{ acidos:['palmitico', 'palmitico', 'palmitico'], etq:[['tripalmitina · ', 'ink', 800], [`${fmt(TPa.M)} g/mol`, 'M', 800]] },
         { acidos:['estearico', 'estearico', 'estearico'], etq:[['triestearina · ', 'ink', 800], [`${fmt(TEs.M)} g/mol`, 'M', 800]] }] },
       barras:{ titulo:[['mg de KOH por g de grasa', 'muted', 700]], max:240, items:[{ etq:[['tripalmitina', 'ink', 700]], oculto:true }, { etq:[['triestearina', 'ink', 700]], oculto:true }] },
@@ -1066,9 +1066,9 @@ const EXPS = [
           ['b', 'Gana 3 H₂ y su índice de yodo casi no cambia: la masa apenas sube.', 'BMH9-yodo-mide-masa', RES('hipotesis', 'BMH9')],
           ['c', 'Gana 3 H₂ y su índice de yodo sube, porque ahora la grasa pesa más.', 'BMH9-yodo-sube-con-masa', RES('hipotesis', 'BMH9')],
           ['d', 'Gana 3 H₂, uno por doble enlace, y su índice de yodo baja a 0.']],
-    fb:{ a:'Cada doble enlace gana dos átomos de H, que son una sola molécula de H₂. Tres dobles enlaces, 3 H₂: la masa sube 6, de 884 a 890. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      b:'El índice de yodo no mide la masa: cuenta dobles enlaces, porque cada C=C suma un I₂. Sin dobles enlaces, no entra yodo: el índice baja a 0, aunque la masa casi no cambie. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      c:'El índice de yodo cuenta dobles enlaces, no masa. Al hidrogenar, los dobles enlaces desaparecen y el índice baja a 0. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    fb:{ a:'Cada doble enlace gana dos átomos de H, que son una sola molécula de H₂. Tres dobles enlaces, 3 H₂: la masa sube 6, de 884 a 890.',
+      b:'El índice de yodo no mide la masa: cuenta dobles enlaces, porque cada C=C suma un I₂. Sin dobles enlaces, no entra yodo: el índice baja a 0, aunque la masa casi no cambie.',
+      c:'El índice de yodo cuenta dobles enlaces, no masa. Al hidrogenar, los dobles enlaces desaparecen y el índice baja a 0.' },
     antes:() => ({ paneles:['grasa', 'barras'], grasa:{ items:[{ acidos:['oleico', 'oleico', 'oleico'], codo:1, etq:[['trioleína', 'ink', 800]], balanza:[['M = ', 'ink', 700], [`${fmt(HG.Mantes)} g/mol`, 'M', 800]] }] },
       barras:{ titulo:[['índice de yodo (g de I₂ por 100 g)', 'muted', 700]], max:100, items:[{ etq:[['antes', 'ink', 700]], valor:HG.yodoAntes, texto:fmt(HG.yodoAntes, 1) }, { etq:[['después', 'ink', 700]], oculto:true }] },
       pie:'Cada codo es un doble enlace C=C. Lo que pasa al agregar hidrógeno se ve al responder.', vars:['M'], desc:'La trioleína, con un codo en cada una de sus tres cadenas; el índice de yodo después está tapado.' }),
@@ -1088,8 +1088,8 @@ const EXPS = [
           ['c', 'No: una tableta es muy chica; con unas 50 tabletas sí tendrías la energía de la cucharadita de azúcar.', 'energia-por-masa', RES('hipotesis', 'hipótesis nuestra')],
           ['d', 'Sí: son proteínas, y las proteínas dan 4 kcal por cada gramo.', 'vitaminas-son-proteinas', RES('hipotesis', 'hipótesis nuestra, cercana a BM4')]],
     fb:{ a:'Las vitaminas no se usan como combustible: el cuerpo saca energía de los carbohidratos, las grasas y las proteínas. Muchas vitaminas del complejo B son coenzimas, ayudantes de las enzimas que sacan esa energía; por eso la etiqueta confunde. Según el resumen de un estudio con 894 ingresantes a una universidad de São Paulo (dos Santos y Barros Filho, 2002), cerca de 7 de cada 10 creía que las vitaminas son una fuente de energía (cifra por verificar; el estudio mide creencias de salud, no química).',
-      c:'Aunque tomaras muchas, las vitaminas no se usan como combustible: el cuerpo no saca energía de ellas, se tome una o cincuenta. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      d:'Las vitaminas no son proteínas: son moléculas pequeñas de formas muy distintas, y el cuerpo las necesita en miligramos. No se cuentan como fuente de energía. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+      c:'Aunque tomaras muchas, las vitaminas no se usan como combustible: el cuerpo no saca energía de ellas, se tome una o cincuenta.',
+      d:'Las vitaminas no son proteínas: son moléculas pequeñas de formas muy distintas, y el cuerpo las necesita en miligramos. No se cuentan como fuente de energía.' },
     antes:() => ({ paneles:['barras'], barras:{ titulo:[['energía que da al cuerpo (kcal)', 'muted', 700]], max:24, items:[{ etq:[['cucharadita de azúcar (5 g)', 'ink', 700]], valor:AZU.kcal, texto:`${fmt(AZU.kcal)} kcal` }, { etq:[['tableta de complejo B', 'ink', 700]], oculto:true }] },
       pie:'Lo que aporta la tableta se ve al responder.', vars:[], desc:'Una cucharadita de azúcar da 20 kilocalorías; lo que da la tableta está tapado.' }),
     despues:() => ({ paneles:['barras'], barras:{ titulo:[['energía que da al cuerpo (kcal)', 'muted', 700]], max:24, items:[{ etq:[['cucharadita de azúcar (5 g)', 'ink', 700]], valor:AZU.kcal, texto:`${fmt(AZU.kcal)} kcal` }, { etq:[['tableta de complejo B', 'ink', 700]], valor:VIT.kcal, texto:'casi 0 kcal' }] },
@@ -1148,7 +1148,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el dibujo y la explicación para ver por qué.' : `Elegiste la ${LETRAS.indexOf(p) + 1}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el dibujo y la explicación para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     explicar();
   };

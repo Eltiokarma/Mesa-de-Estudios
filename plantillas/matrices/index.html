@@ -116,7 +116,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
 .seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
@@ -583,63 +583,63 @@ const P2 = { id:'matrices-paso2', ok:'b', opts:[
   ['c', R2.errores.porColumnas.texto, 'MT12-escribe-por-columnas', 'hipotesis'],
   ['d', R2.errores.ordenAlReves.texto, 'MT11-orden-al-reves', 'hipotesis']],
   fb:{ b:`¡Bien! Dos filas y tres columnas; en cada casilla, i es la fila y j la columna: ${aij(1, 1)} = 2 − 1 = 1, ${aij(2, 3)} = 4 − 3 = 1.`,
-    a:`Elegiste la A. Esa matriz usa 2j − i: toma i como columna y j como fila. En aᵢⱼ, la primera letra es la fila. La correcta está marcada.`,
-    c:`Elegiste la C. Los números están bien calculados, pero escritos en 3 filas y 2 columnas: es la transpuesta. El orden 2 × 3 pide 2 filas. La correcta está marcada.`,
-    d:`Elegiste la D. Esa matriz tiene 3 filas y 2 columnas: el orden 2 × 3 se leyó al revés. Primero van las filas. La correcta está marcada.` } };
+    a:`Esa matriz usa 2j − i: toma i como columna y j como fila. En aᵢⱼ, la primera letra es la fila.`,
+    c:`Los números están bien calculados, pero escritos en 3 filas y 2 columnas: es la transpuesta. El orden 2 × 3 pide 2 filas.`,
+    d:`Esa matriz tiene 3 filas y 2 columnas: el orden 2 × 3 se leyó al revés. Primero van las filas.` } };
 const P3 = { id:'matrices-paso3', ok:'c', opts:[
   ['a', R3.errores.elementoAElemento.texto, 'MT1-multiplica-elemento-a-elemento', 'hipotesis'],
   ['b', R3.errores.alReves.texto, 'MT2-calcula-ba', 'hipotesis'],
   ['c', R3.texto],
   ['d', R3.errores.filaPorFila.texto, 'MT14-fila-por-fila', 'hipotesis']],
   fb:{ c:`¡Bien! Cada casilla de AB junta una fila de A con una columna de B: casilla (1; 1) = 1 · 2 + 2 · 1 = 4.`,
-    a:`Elegiste la A. Esa matriz multiplica cada elemento por el de su misma posición. Así se suma, pero no se multiplica: el producto empareja la fila de A con la columna de B. La correcta está marcada.`,
-    b:`Elegiste la B. Esa es BA: fila de B por columna de A. En general AB y BA no son iguales; aquí se pidió AB. La correcta está marcada.`,
-    d:`Elegiste la D. Esa cuenta empareja la fila de A con la fila de B. Se recorre la fila de A y la columna de B. La correcta está marcada.` } };
+    a:`Esa matriz multiplica cada elemento por el de su misma posición. Así se suma, pero no se multiplica: el producto empareja la fila de A con la columna de B.`,
+    b:`Esa es BA: fila de B por columna de A. En general AB y BA no son iguales; aquí se pidió AB.`,
+    d:`Esa cuenta empareja la fila de A con la fila de B. Se recorre la fila de A y la columna de B.` } };
 const P4 = { id:'matrices-paso4', ok:'a', opts:[
   ['a', R4.texto],
   ['b', R4.errores.alReves.texto, 'MT34-composicion-en-orden-de-accion', 'hipotesis'],
   ['c', R4.errores.suma.texto, 'MT17-composicion-como-suma', 'hipotesis'],
   ['d', R4.errores.escalar.texto, 'MT33-composicion-como-escalar', 'hipotesis']],
   fb:{ a:`¡Bien! La que actúa primero va a la derecha: «primero B, luego A» es A · B. Las columnas de AB son a dónde llegan (1; 0) y (0; 1) después de las dos cosas.`,
-    b:`Elegiste la B. Esa es BA: primero gira y después estira. Mira la flecha u: estirada y girada termina en (0; 2), no en (0; 1). La correcta está marcada.`,
-    c:`Elegiste la C. Hacer una cosa y luego otra no es sumar las matrices: es multiplicarlas. A + B no gira ni estira. La correcta está marcada.`,
-    d:`Elegiste la D. Esa es 2A: estira al doble en todas las direcciones; B solo estira a lo ancho. La correcta está marcada.` } };
+    b:`Esa es BA: primero gira y después estira. Mira la flecha u: estirada y girada termina en (0; 2), no en (0; 1).`,
+    c:`Hacer una cosa y luego otra no es sumar las matrices: es multiplicarlas. A + B no gira ni estira.`,
+    d:`Esa es 2A: estira al doble en todas las direcciones; B solo estira a lo ancho.` } };
 const P5 = { id:'matrices-paso5', ok:'d', opts:[
   ['a', R5.errores.sumaDiagonales.texto, 'MT5-det-suma-diagonales', 'hipotesis'],
   ['b', R5.errores.alReves.texto, 'MT18-det-resta-al-reves', 'hipotesis'],
   ['c', R5.errores.filas.texto, 'MT19-det-por-filas', 'hipotesis'],
   ['d', R5.texto]],
   fb:{ d:`¡Bien! det M = 2 · 3 − 2 · 1 = 6 − 2 = 4: diagonal principal menos diagonal secundaria.`,
-    a:`Elegiste la A. 8 = 6 + 2 suma los productos de las dos diagonales. El determinante los resta: ad − bc. La correcta está marcada.`,
-    b:`Elegiste la B. −4 = 2 − 6 resta al revés: primero va la diagonal principal (a·d), luego se resta b·c. La correcta está marcada.`,
-    c:`Elegiste la C. 1 = 2 · 2 − 1 · 3 multiplica a lo largo de las filas. Las diagonales cruzan de una fila a la otra. La correcta está marcada.` } };
+    a:`8 = 6 + 2 suma los productos de las dos diagonales. El determinante los resta: ad − bc.`,
+    b:`−4 = 2 − 6 resta al revés: primero va la diagonal principal (a·d), luego se resta b·c.`,
+    c:`1 = 2 · 2 − 1 · 3 multiplica a lo largo de las filas. Las diagonales cruzan de una fila a la otra.` } };
 const P6 = { id:'matrices-paso6', ok:'c', opts:[
   ['a', R6.errores.sinSigno.texto, 'MT20-det-sin-signo', 'hipotesis'],
   ['b', R6.errores.sumaDiagonales.texto, 'MT5-det-suma-diagonales', 'hipotesis'],
   ['c', R6.texto],
   ['d', R6.errores.filas.texto, 'MT19-det-por-filas', 'hipotesis']],
   fb:{ c:`¡Bien! det N = 1 · 3 − 4 · 2 = 3 − 8 = −5. El signo dice algo: el giro de u a v va al revés.`,
-    a:`Elegiste la A. El área del paralelogramo sí es 5, pero el determinante guarda además el sentido: 1 · 3 − 4 · 2 = −5. La correcta está marcada.`,
-    b:`Elegiste la B. 11 = 3 + 8 suma las dos diagonales. Se restan: 3 − 8. La correcta está marcada.`,
-    d:`Elegiste la D. −2 = 1 · 4 − 2 · 3 multiplica por filas. Las diagonales van de la esquina de arriba a la de abajo. La correcta está marcada.` } };
+    a:`El área del paralelogramo sí es 5, pero el determinante guarda además el sentido: 1 · 3 − 4 · 2 = −5.`,
+    b:`11 = 3 + 8 suma las dos diagonales. Se restan: 3 − 8.`,
+    d:`−2 = 1 · 4 − 2 · 3 multiplica por filas. Las diagonales van de la esquina de arriba a la de abajo.` } };
 const P7 = { id:'matrices-paso7', ok:'b', opts:[
   ['a', R7.errores.filas.texto, 'MT19-det-por-filas', 'hipotesis'],
   ['b', R7.texto],
   ['c', R7.errores.sumaDiagonales.texto, 'MT5-det-suma-diagonales', 'hipotesis'],
   ['d', R7.errores.cero.texto, 'MT21-sin-inversa-si-hay-un-cero', 'hipotesis']],
   fb:{ b:`¡Bien! Sin inversa ⟺ det = 0: 3k − 12 = 0 da k = 4. Con k = 4 las columnas (4; 2) y (6; 3) apuntan en la misma dirección.`,
-    a:`Elegiste la A. Esa cuenta iguala a 0 el producto por filas, 6k − 6. El determinante es 3k − 12. La correcta está marcada.`,
-    c:`Elegiste la C. Esa cuenta iguala a 0 la suma 3k + 12. El determinante resta: 3k − 12. La correcta está marcada.`,
-    d:`Elegiste la D. Con k = 0 el determinante es −12, no 0: la matriz sí tiene inversa. Un cero suelto no la impide; lo que la impide es det = 0. La correcta está marcada.` } };
+    a:`Esa cuenta iguala a 0 el producto por filas, 6k − 6. El determinante es 3k − 12.`,
+    c:`Esa cuenta iguala a 0 la suma 3k + 12. El determinante resta: 3k − 12.`,
+    d:`Con k = 0 el determinante es −12, no 0: la matriz sí tiene inversa. Un cero suelto no la impide; lo que la impide es det = 0.` } };
 const P8 = { id:'matrices-paso8', ok:'a', opts:[
   ['a', R8.texto],
   ['b', R8.errores.sinDividir.texto, 'MT7-inversa-sin-dividir', 'hipotesis'],
   ['c', R8.errores.sinIntercambiar.texto, 'MT22-inversa-sin-intercambiar', 'hipotesis'],
   ['d', R8.errores.sinSignos.texto, 'MT13-inversa-sin-cambiar-signos', 'hipotesis']],
   fb:{ a:`¡Bien! det A = 8 − 6 = 2; se intercambian a₁₁ = 4 y a₂₂ = 2, se cambia el signo de a₁₂ = 3 y a₂₁ = 2, y todo se divide entre 2.`,
-    b:`Elegiste la B. Esa es la adjunta, adj A: falta dividir entre det A = 2. Multiplicada por A da 2 veces la identidad. La correcta está marcada.`,
-    c:`Elegiste la C. Esa cambia los signos de 3 y 2 pero deja el 4 y el 2 de la diagonal en su sitio: hay que intercambiarlos. La correcta está marcada.`,
-    d:`Elegiste la D. Esa intercambia la diagonal pero no cambia el signo de los otros dos. La correcta está marcada.` } };
+    b:`Esa es la adjunta, adj A: falta dividir entre det A = 2. Multiplicada por A da 2 veces la identidad.`,
+    c:`Esa cambia los signos de 3 y 2 pero deja el 4 y el 2 de la diagonal en su sitio: hay que intercambiarlos.`,
+    d:`Esa intercambia la diagonal pero no cambia el signo de los otros dos.` } };
 // Lecturas
 const tipoTexto = M => { const t = ME.tipos({ M }), l = [];
   if (t.nula) l.push('nula'); if (t.identidad) l.push('identidad'); else if (t.escalar) l.push('escalar'); else if (t.diagonal) l.push('diagonal');
@@ -877,7 +877,7 @@ const M4 = [[2, 1, 3], [0, 4, 1], [1, 2, 5]], D4 = ME.det3({ M:M4 });
 const A5 = [[2, 1], [1, 2]], W5 = [5, 4], D5 = ME.cramer2({ A:A5, b:W5 });
 const D6 = ME.kSistema({ A:[['k', 2], [2, 1]], b:[3, 5] });
 const fuente = t => `<p class="fuente">${t}</p>`;
-const HIP = 'Buscamos este error en estudios publicados y no encontramos datos; las opciones incorrectas son hipótesis nuestras, que se confirman con lo que marquen los alumnos.';
+const HIP = '';
 const LEY_DET = [['u', 'u: columna 1', 'linea'], ['v', 'v: columna 2', 'linea'], ['d', 'área con signo: det']];
 const EXPS = [
   { id:'el-triple', corto:'El triple',
@@ -1035,7 +1035,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + `<div class="nav"><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     tramos($('res2'));

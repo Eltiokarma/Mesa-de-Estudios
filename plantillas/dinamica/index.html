@@ -118,7 +118,7 @@ canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap:12px; align-items:end}
 .slider{display:grid; gap:4px}
@@ -858,23 +858,23 @@ const P1 = { id:'dinamica-fuerzas', ok:'b',
         ['c','Cuatro: su peso, la normal, el roce y la fuerza del movimiento, que lo lleva hacia abajo.','D1-fuerza-del-movimiento','documentado'],
         ['d','Dos: la normal y el roce. El peso no es una fuerza: es lo que el saco «tiende» a hacer.','D8-gravedad-no-es-fuerza','parcial']],
   fb:{ b:'¡Bien! Tres fuerzas, y cada una tiene quién la ejerce: la Tierra, y la rampa dos veces (empuja hacia afuera y frena a lo largo).',
-       a:'Elegiste la A. La rampa no solo está en el camino: empuja al saco hacia afuera (la normal) y lo frena (el roce). Si no empujara, el saco la atravesaría. La correcta está marcada.',
-       c:'Elegiste la C. Ninguna cosa ejerce una «fuerza del movimiento»: busca quién la haría y no hay nadie. El saco baja porque su peso tira de él y nada lo equilibra a lo largo de la rampa. La correcta está marcada.',
-       d:'Elegiste la D. El peso es una fuerza de verdad: la Tierra tira del saco, esté quieto, cayendo o apoyado. La correcta está marcada.' } };
+       a:'La rampa no solo está en el camino: empuja al saco hacia afuera (la normal) y lo frena (el roce). Si no empujara, el saco la atravesaría.',
+       c:'Ninguna cosa ejerce una «fuerza del movimiento»: busca quién la haría y no hay nadie. El saco baja porque su peso tira de él y nada lo equilibra a lo largo de la rampa.',
+       d:'El peso es una fuerza de verdad: la Tierra tira del saco, esté quieto, cayendo o apoyado.' } };
 const P2 = { id:'dinamica-normal', ok:'b',
   opts:[['a','100 N','N-igual-mg','hipotesis'], ['b','80 N',null,''],
         ['c','60 N','sen-cos-cambiados','hipotesis'], ['d','0 N','normal-cero-si-se-mueve','hipotesis']],
   fb:{ b:'¡Bien! La normal equilibra solo la parte del peso que aprieta la rampa: 100·cos 37° = 80 N.',
-       a:'Elegiste la A. La normal no es el peso al revés: la rampa solo sostiene la parte del peso perpendicular a ella. La correcta está marcada.',
-       c:'Elegiste la C. 60 N es la parte del peso a lo largo de la rampa (con el seno). La perpendicular va con el coseno. La correcta está marcada.',
-       d:'Elegiste la D. 0 N sería una rampa que no empuja. Que el saco se mueva a lo largo de la rampa no cambia lo que pasa en la dirección perpendicular: ahí no se hunde ni se despega, así que la rampa sí empuja. La correcta está marcada.' } };
+       a:'La normal no es el peso al revés: la rampa solo sostiene la parte del peso perpendicular a ella.',
+       c:'60 N es la parte del peso a lo largo de la rampa (con el seno). La perpendicular va con el coseno.',
+       d:'0 N sería una rampa que no empuja. Que el saco se mueva a lo largo de la rampa no cambia lo que pasa en la dirección perpendicular: ahí no se hunde ni se despega, así que la rampa sí empuja.' } };
 const P3 = { id:'dinamica-roce', ok:'a',
   opts:[['a','40 N',null,''], ['b','50 N','roce-con-peso','hipotesis'],
         ['c','60 N','roce-igual-componente','hipotesis'], ['d','0 N','sin-roce-en-movimiento','hipotesis']],
   fb:{ a:'¡Bien! El roce cinético es μ·N = 0,5·80 = 40 N, con la normal y no con el peso.',
-       b:'Elegiste la B. 0,5·100 usa el peso en lugar de la normal. El roce depende de cuánto se aprietan las superficies, y eso es N = 80 N. La correcta está marcada.',
-       c:'Elegiste la C. 60 N es la parte del peso que lo jala a lo largo de la rampa. Si el roce valiera 60 N, las fuerzas a lo largo de la rampa se cancelarían y el saco no aceleraría. Mientras desliza, el roce vale μ·N. La correcta está marcada.',
-       d:'Elegiste la D. Que ya se mueva no apaga el roce: mientras desliza, el roce sigue actuando: es el cinético, μ·N. La correcta está marcada.' } };
+       b:'0,5·100 usa el peso en lugar de la normal. El roce depende de cuánto se aprietan las superficies, y eso es N = 80 N.',
+       c:'60 N es la parte del peso que lo jala a lo largo de la rampa. Si el roce valiera 60 N, las fuerzas a lo largo de la rampa se cancelarían y el saco no aceleraría. Mientras desliza, el roce vale μ·N.',
+       d:'Que ya se mueva no apaga el roce: mientras desliza, el roce sigue actuando: es el cinético, μ·N.' } };
 
 // Qué se dibuja en cada paso. 'antes' es antes de responder; 'despues', después.
 const steps = [
@@ -1162,7 +1162,7 @@ function montarExperimentos(o){
       const p = S.pred[x.id]; if (!p) return;
       btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
       const fb = $('fb' + suf);
-      fb.textContent = x.fb ? x.fb[p] : p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira la escena para ver por qué.`;
+      fb.textContent = x.fb ? x.fb[p] : p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `; mira la escena para ver por qué.`;
       fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
       const res = $('res' + suf);
       res.innerHTML = x.ctrl() + x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig${suf}">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
@@ -1251,9 +1251,9 @@ const EXPS = [
     opts:[['a','64 N','roce-estatico-siempre-maximo','hipotesis'], ['b','60 N',null], ['c','0 N','sin-movimiento-sin-roce','hipotesis'], ['d','40 N','roce-cinetico-en-reposo','hipotesis']],
     ok:'b',
     fb:{ b:'¡Bien! El saco no se mueve: el roce vale justo lo que jala la parte del peso a lo largo de la rampa, 100·sen 37° = 60 N.',
-         a:'Elegiste la A. 64 N es μs·N, el máximo que puede dar el roce estático, no lo que da siempre. Con 64 N hacia arriba, las fuerzas a lo largo de la rampa no se cancelarían. La correcta está marcada.',
-         c:'Elegiste la C. Sin roce, la parte del peso a lo largo de la rampa (60 N) lo haría bajar. Si no se mueve, algo la equilibra: el roce estático. La correcta está marcada.',
-         d:'Elegiste la D. μk·N = 40 N es el roce cinético, el de cuando ya desliza. Con 40 N no alcanzaría para equilibrar los 60 N. La correcta está marcada.' },
+         a:'64 N es μs·N, el máximo que puede dar el roce estático, no lo que da siempre. Con 64 N hacia arriba, las fuerzas a lo largo de la rampa no se cancelarían.',
+         c:'Sin roce, la parte del peso a lo largo de la rampa (60 N) lo haría bajar. Si no se mueve, algo la equilibra: el roce estático.',
+         d:'μk·N = 40 N es el roce cinético, el de cuando ya desliza. Con 40 N no alcanzaría para equilibrar los 60 N.' },
     antes:() => Object.assign(E, { tipo:'plano', ang:37, mus:0.8, muk:0.5, m:10, ver:{ P:'si', N:'si', f:'oculta' } }),
     despues:() => { E.ver = { P:'si', N:'si', f:'nueva', comp:'nueva' }; crecer(); },
     ctrl:() => `<div class="slider"><label for="q-ang"><span>Ángulo de la rampa</span><output id="q-ang-o"></output></label><input id="q-ang" type="range" min="0" max="60" step="1" value="${E.ang}"></div><div class="chips" id="chips2"></div>`,
@@ -1271,9 +1271,9 @@ const EXPS = [
           ['c','78 kg, porque a g hay que sumarle la velocidad','suma-velocidad-a-g','hipotesis'], ['d','Menos de 60 kg, porque al moverse se siente más liviana','normal-menor-si-se-mueve','hipotesis']],
     ok:'b',
     fb:{ b:'¡Bien! A velocidad constante no hay aceleración: la normal equilibra el peso y la balanza marca 60 kg.',
-         a:'Elegiste la A. Para subir a velocidad constante no hace falta fuerza neta. La balanza marca más solo si el ascensor acelera hacia arriba. La correcta está marcada.',
-         c:'Elegiste la C. La velocidad no se suma a g: son cosas distintas (m/s y m/s²). La balanza no ve la velocidad; ve la aceleración. La correcta está marcada.',
-         d:'Elegiste la D. Moverse a velocidad constante se siente igual que estar quieto. Marca menos solo si el ascensor acelera hacia abajo. La correcta está marcada.' },
+         a:'Para subir a velocidad constante no hace falta fuerza neta. La balanza marca más solo si el ascensor acelera hacia arriba.',
+         c:'La velocidad no se suma a g: son cosas distintas (m/s y m/s²). La balanza no ve la velocidad; ve la aceleración.',
+         d:'Moverse a velocidad constante se siente igual que estar quieto. Marca menos solo si el ascensor acelera hacia abajo.' },
     antes:() => Object.assign(E, { tipo:'ascensor', a:0, verN:'oculta', y:0 }),
     despues:() => { E.verN = 'nueva'; crecer(() => B && B.despertar()); },
     ctrl:() => `<div class="slider"><label for="q-a"><span>Aceleración del ascensor (${V('a','a')}, + hacia arriba)</span><output id="q-a-o"></output></label><input id="q-a" class="r-a" type="range" min="-4" max="4" step="1" value="${E.a}"></div><div class="chips" id="chips2"></div>`,
@@ -1292,9 +1292,9 @@ const EXPS = [
           ['c','Se detiene apenas lo sueltas: sin fuerza no hay movimiento','D1-movimiento-necesita-fuerza','documentado'], ['d','Sigue acelerando un rato más: le queda algo del empujón','sigue-acelerando','hipotesis']],
     ok:'b',
     fb:{ b:'¡Bien! Sobre el hielo, al soltarlo ya no actúa ninguna fuerza horizontal: su velocidad no cambia y sigue a 10 m/s.',
-         a:'Elegiste la A. El empujón no se guarda dentro del bloque para irse gastando. Sin roce, nada lo frena. La correcta está marcada.',
-         c:'Elegiste la C. Para seguir moviéndose no hace falta una fuerza: la fuerza cambia la velocidad, no la mantiene. La correcta está marcada.',
-         d:'Elegiste la D. Apenas lo sueltas, la fuerza desaparece y con ella la aceleración. No le queda «algo del empujón». La correcta está marcada.' },
+         a:'El empujón no se guarda dentro del bloque para irse gastando. Sin roce, nada lo frena.',
+         c:'Para seguir moviéndose no hace falta una fuerza: la fuerza cambia la velocidad, no la mantiene.',
+         d:'Apenas lo sueltas, la fuerza desaparece y con ella la aceleración. No le queda «algo del empujón».' },
     antes:() => Object.assign(E, { tipo:'empujon', roce:false, t:2 }),
     despues:() => { empujar(2); },
     ctrl:() => `<label class="check"><input type="checkbox" id="q-roce" ${E.roce ? 'checked' : ''}> Con roce (μ = 0,25)</label><div class="chips" id="chips2"></div><p><button type="button" class="btn" id="repetir2">Empujar otra vez</button></p>`,
@@ -1309,9 +1309,9 @@ const EXPS = [
     opts:[['a','100 N','N-igual-mg','hipotesis'], ['b','70 N',null], ['c','130 N','N-suma-Fy','hipotesis'], ['d','50 N','resta-sin-descomponer','hipotesis']],
     ok:'b',
     fb:{ b:'¡Bien! La soga jala un poco hacia arriba (50·sen 37° = 30 N) y ayuda a sostener el bloque: N = 100 − 30 = 70 N.',
-         a:'Elegiste la A. La normal no siempre es el peso: aquí la soga también tira hacia arriba, así que el piso empuja menos. La correcta está marcada.',
-         c:'Elegiste la C. Sumaste la parte vertical de la soga al peso, pero la soga jala hacia arriba, no hacia abajo. La correcta está marcada.',
-         d:'Elegiste la D. Restaste los 50 N enteros, pero solo una parte de la soga apunta hacia arriba: 50·sen 37° = 30 N. La correcta está marcada.' },
+         a:'La normal no siempre es el peso: aquí la soga también tira hacia arriba, así que el piso empuja menos.',
+         c:'Sumaste la parte vertical de la soga al peso, pero la soga jala hacia arriba, no hacia abajo.',
+         d:'Restaste los 50 N enteros, pero solo una parte de la soga apunta hacia arriba: 50·sen 37° = 30 N.' },
     antes:() => Object.assign(E, { tipo:'tiron', ang:37, F:50, verN:'oculta', comp:false }),
     despues:() => { E.verN = 'nueva'; E.comp = true; E.verA = true; crecer(); },
     ctrl:() => `<div class="slider"><label for="q-ang"><span>Ángulo de la soga</span><output id="q-ang-o"></output></label><input id="q-ang" class="r-F" type="range" min="0" max="80" step="1" value="${E.ang}"></div><div class="chips" id="chips2"></div>`,
@@ -1332,9 +1332,9 @@ const EXPS = [
           ['d','Tres: su peso, la tensión de las cadenas y la fuerza del movimiento, hacia adelante.','D1-fuerza-del-movimiento','parcial']],
     ok:'b',
     fb:{ b:'¡Bien! Solo la Tierra y las cadenas jalan a la niña. La «fuerza centrípeta» no es una tercera fuerza: es el nombre de la resultante, que aquí apunta al centro.',
-         a:'Elegiste la A. Nadie ejerce una fuerza «centrífuga»: busca quién la haría y no hay nadie. Lo que se siente al pasar por abajo es que las cadenas jalan más fuerte que el peso. La correcta está marcada.',
-         c:'Elegiste la C. La centrípeta no se suma a las demás: es lo que queda al sumar el peso y la tensión. Si la dibujas aparte, la cuentas dos veces. La correcta está marcada.',
-         d:'Elegiste la D. Para seguir moviéndose hacia adelante no hace falta una fuerza hacia adelante. En el punto más bajo, ninguna fuerza apunta en esa dirección. La correcta está marcada.' },
+         a:'Nadie ejerce una fuerza «centrífuga»: busca quién la haría y no hay nadie. Lo que se siente al pasar por abajo es que las cadenas jalan más fuerte que el peso.',
+         c:'La centrípeta no se suma a las demás: es lo que queda al sumar el peso y la tensión. Si la dibujas aparte, la cuentas dos veces.',
+         d:'Para seguir moviéndose hacia adelante no hace falta una fuerza hacia adelante. En el punto más bajo, ninguna fuerza apunta en esa dirección.' },
     antes:() => Object.assign(E, { tipo:'columpio', v:5, th:0, verF:false }),
     despues:() => { E.verF = true; crecer(() => X.pausa(500, balancear)); },
     ctrl:() => `<div class="slider"><label for="q-v"><span>Rapidez en el punto más bajo</span><output id="q-v-o"></output></label><input id="q-v" type="range" min="0" max="7" step="0.5" value="${E.v}"></div><div class="chips" id="chips2"></div><p><button type="button" class="btn" id="repetir2">Balancear otra vez</button></p>`,
@@ -1356,9 +1356,9 @@ const EXPS = [
     opts:[['a','8000 N','N-igual-mg','hipotesis'], ['b','6000 N',null], ['c','10 000 N','N-suma-centripeta','hipotesis'], ['d','2000 N','N-igual-centripeta','hipotesis']],
     ok:'b',
     fb:{ b:'¡Bien! En la cima, el centro de la loma está abajo: la resultante debe apuntar hacia abajo, así que la normal es menor que el peso. 8000 − N = 800·10²/40 = 2000.',
-         a:'Elegiste la A. Si la normal valiera lo mismo que el peso, no habría resultante y el auto seguiría en línea recta, despegándose de la loma. La correcta está marcada.',
-         c:'Elegiste la C. Sumaste la centrípeta al peso como si fuera otra fuerza hacia abajo que la pista tiene que aguantar. La centrípeta es la resultante: P − N. La correcta está marcada.',
-         d:'Elegiste la D. 2000 N es la resultante, m·v²/r, no la normal. La normal es lo que falta para llegar al peso: 8000 − 2000. La correcta está marcada.' },
+         a:'Si la normal valiera lo mismo que el peso, no habría resultante y el auto seguiría en línea recta, despegándose de la loma.',
+         c:'Sumaste la centrípeta al peso como si fuera otra fuerza hacia abajo que la pista tiene que aguantar. La centrípeta es la resultante: P − N.',
+         d:'2000 N es la resultante, m·v²/r, no la normal. La normal es lo que falta para llegar al peso: 8000 − 2000.' },
     antes:() => Object.assign(E, { tipo:'loma', v:10, verN:'oculta', verX:false, pos:null }),
     despues:() => { E.verN = 'nueva'; E.verX = true; crecer(() => X.pausa(700, cruzar)); },
     ctrl:() => `<div class="slider"><label for="q-vl"><span>Rapidez en la cima</span><output id="q-vl-o"></output></label><input id="q-vl" type="range" min="0" max="25" step="1" value="${E.v}"></div><div class="chips" id="chips2"></div><p><button type="button" class="btn" id="repetir2">Pasar otra vez</button></p>`,
@@ -1448,9 +1448,9 @@ const EXPS = [
     opts:[['a','20 N','T-igual-mg-liviano','hipotesis'], ['b','30 N','T-igual-mg-pesado','hipotesis'], ['c','24 N',null], ['d','50 N','T-suma-de-pesos','hipotesis']],
     ok:'c',
     fb:{ c:'¡Bien! La tensión queda entre los dos pesos: 30 − T = 3·2 y T − 20 = 2·2 dan T = 24 N.',
-         a:'Elegiste la A. Con T = 20 N, el bloque de 2 kg no aceleraría hacia arriba, y sí lo hace. La correcta está marcada.',
-         b:'Elegiste la B. Con T = 30 N, el bloque de 3 kg no aceleraría hacia abajo, y sí lo hace. La correcta está marcada.',
-         d:'Elegiste la D. La cuerda no carga los dos pesos como un gancho que los sostiene quietos: con 50 N, los dos bloques subirían. La correcta está marcada.' },
+         a:'Con T = 20 N, el bloque de 2 kg no aceleraría hacia arriba, y sí lo hace.',
+         b:'Con T = 30 N, el bloque de 3 kg no aceleraría hacia abajo, y sí lo hace.',
+         d:'La cuerda no carga los dos pesos como un gancho que los sostiene quietos: con 50 N, los dos bloques subirían.' },
     antes:() => Object.assign(E, { tipo:'atwood', m1:3, m2:2, s:0, ver:{ T:'oculta' } }),
     despues:() => { E.ver = { T:'nueva', a:'nueva' }; crecer(() => correrAtwood()); },
     ctrl:() => `<div class="slider"><label for="r-m1"><span>Masa del bloque de la izquierda</span><output id="r-m1-o"></output></label><input id="r-m1" type="range" min="1" max="8" step="1" value="${E.m1}"></div><div class="chips" id="chips3"></div><p><button type="button" class="btn" id="repetir3">Soltar otra vez</button></p>`,
@@ -1470,9 +1470,9 @@ const EXPS = [
           ['c','La pequeña a la grande, porque la frena','la-de-adelante-empuja-mas','hipotesis'], ['d','Se empujan igual y por eso se anulan: las cajas no aceleran','D11-accion-reaccion-se-anulan','parcial']],
     ok:'b',
     fb:{ b:'¡Bien! Son un par de acción y reacción: 10 N cada una, en sentidos opuestos, aunque las masas sean distintas.',
-         a:'Elegiste la A. Tener más masa no hace empujar más fuerte: las dos fuerzas del par son siempre iguales. Lo distinto es lo que cada caja hace con ellas. La correcta está marcada.',
-         c:'Elegiste la C. La pequeña sí frena a la grande, pero con la misma fuerza con la que la grande la empuja a ella. La correcta está marcada.',
-         d:'Elegiste la D. Son iguales, pero no se anulan: actúan sobre cajas distintas. Las dos cajas aceleran. La correcta está marcada.' },
+         a:'Tener más masa no hace empujar más fuerte: las dos fuerzas del par son siempre iguales. Lo distinto es lo que cada caja hace con ellas.',
+         c:'La pequeña sí frena a la grande, pero con la misma fuerza con la que la grande la empuja a ella.',
+         d:'Son iguales, pero no se anulan: actúan sobre cajas distintas. Las dos cajas aceleran.' },
     antes:() => Object.assign(E, { tipo:'contacto', x:0, verC:'oculta' }),
     despues:() => { E.verC = 'nueva'; E.verA = true; crecer(() => correrContacto()); },
     ctrl:() => `<div class="chips" id="chips3"></div><p><button type="button" class="btn" id="repetir3">Empujar otra vez</button></p>`,
@@ -1487,9 +1487,9 @@ const EXPS = [
     opts:[['a','50 N','T-igual-F','hipotesis'], ['b','25 N','F-repartida-entre-cuerdas','hipotesis'], ['c','10 N',null], ['d','20 N','T-masa-de-adelante','hipotesis']],
     ok:'c',
     fb:{ c:'¡Bien! Al último carrito solo lo jala esa cuerda: T₂ = 2·5 = 10 N. Cada cuerda jala todo lo que tiene detrás.',
-         a:'Elegiste la A. Los 50 N jalan los 10 kg. La última cuerda solo jala 2 kg, así que necesita mucho menos. La correcta está marcada.',
-         b:'Elegiste la B. Las cuerdas no se reparten la fuerza en partes iguales: la primera jala 6 kg y la segunda, 2 kg. La correcta está marcada.',
-         d:'Elegiste la D. 4·5 usa el carrito de adelante de la cuerda, pero la cuerda acelera al que tiene detrás. La correcta está marcada.' },
+         a:'Los 50 N jalan los 10 kg. La última cuerda solo jala 2 kg, así que necesita mucho menos.',
+         b:'Las cuerdas no se reparten la fuerza en partes iguales: la primera jala 6 kg y la segunda, 2 kg.',
+         d:'4·5 usa el carrito de adelante de la cuerda, pero la cuerda acelera al que tiene detrás.' },
     antes:() => Object.assign(E, { tipo:'tren', orden:'442', F:50, roce:false, x:0, verT:'oculta', verA:false }),
     despues:() => { E.verT = 'nueva'; E.verA = true; crecer(() => avanzar()); },
     ctrl:() => `<div class="seg" role="group" aria-label="Orden de los carritos, del primero al último"><button type="button" data-acc="orden" data-v="442" aria-pressed="${E.orden === '442'}">orden 4-4-2</button><button type="button" data-acc="orden" data-v="244" aria-pressed="${E.orden === '244'}">orden 2-4-4</button></div>
@@ -1521,9 +1521,9 @@ const EXPS = [
           ['d','El de arriba resbala: los 15 N son más que los 8 N que puede dar el roce.','compara-F-con-roce-maximo','hipotesis']],
     ok:'b',
     fb:{ b:'¡Bien! Juntos aceleran 15/5 = 3 m/s². Al de arriba solo lo empuja el roce: 2·3 = 6 N, menos que los 8 N de máximo.',
-         a:'Elegiste la A. 8 N es el máximo del roce estático, no lo que da siempre. Con 8 N, el de arriba aceleraría 4 m/s² y se adelantaría al de abajo. La correcta está marcada.',
-         c:'Elegiste la C. El roce se opone a que las superficies resbalen entre sí, no al movimiento. El de abajo arrastra al de arriba hacia adelante. La correcta está marcada.',
-         d:'Elegiste la D. Los 15 N no actúan sobre el de arriba: se los haces al de abajo. Lo que hay que comparar es el roce que necesita el de arriba (6 N) con su máximo (8 N). La correcta está marcada.' },
+         a:'8 N es el máximo del roce estático, no lo que da siempre. Con 8 N, el de arriba aceleraría 4 m/s² y se adelantaría al de abajo.',
+         c:'El roce se opone a que las superficies resbalen entre sí, no al movimiento. El de abajo arrastra al de arriba hacia adelante.',
+         d:'Los 15 N no actúan sobre el de arriba: se los haces al de abajo. Lo que hay que comparar es el roce que necesita el de arriba (6 N) con su máximo (8 N).' },
     antes:() => Object.assign(E, { tipo:'apilados', F:15, en:'abajo', x:0, dx:0, verF:'oculta', verA:false }),
     despues:() => { E.verF = 'nueva'; E.verA = true; crecer(() => deslizar()); },
     ctrl:() => `<div class="seg" role="group" aria-label="Qué bloque jala la mano"><button type="button" data-acc="en" data-v="abajo" aria-pressed="${E.en === 'abajo'}">jalo el de abajo</button><button type="button" data-acc="en" data-v="arriba" aria-pressed="${E.en === 'arriba'}">jalo el de arriba</button></div>
@@ -1552,9 +1552,9 @@ const EXPS = [
           ['d','Baja el de 3 kg y sube el de 4 kg, el doble de rápido, porque la polea móvil duplica todo.','polea-movil-doble','hipotesis']],
     ok:'c',
     fb:{ c:'¡Bien! El de 4 kg cuelga de dos tramos: 2T = 45 N > 40 N y sube. Cuando el de 3 kg baja 1 m, cada tramo se acorta 0,5 m: sube la mitad, en el mismo tiempo.',
-         a:'Elegiste la A. El de 4 kg está sostenido por dos tramos de la misma cuerda. Con la misma tensión en los dos, 2T le gana a su peso. La correcta está marcada.',
-         b:'Elegiste la B. Es una sola cuerda, pero el de 4 kg no cuelga de su punta: cuelga de una polea que toma dos tramos. Si la punta baja 1 m, la polea sube 0,5 m. La correcta está marcada.',
-         d:'Elegiste la D. La polea móvil duplica la fuerza, no la rapidez: el bloque sube la mitad de lo que baja el otro. La correcta está marcada.' },
+         a:'El de 4 kg está sostenido por dos tramos de la misma cuerda. Con la misma tensión en los dos, 2T le gana a su peso.',
+         b:'Es una sola cuerda, pero el de 4 kg no cuelga de su punta: cuelga de una polea que toma dos tramos. Si la punta baja 1 m, la polea sube 0,5 m.',
+         d:'La polea móvil duplica la fuerza, no la rapidez: el bloque sube la mitad de lo que baja el otro.' },
     antes:() => Object.assign(E, { tipo:'poleaMovil', m2:3, y1:0, y2:0, verT:null, verA:false }),
     despues:() => { E.verT = 'nueva'; E.verA = true; crecer(() => soltarPolea()); },
     ctrl:() => `<div class="slider"><label for="r-m2"><span>Masa del bloque del extremo</span><output id="r-m2-o"></output></label><input id="r-m2" type="range" min="1" max="6" step="1" value="${E.m2}"></div><div class="chips" id="chips3"></div><p><button type="button" class="btn" id="repetir3">Soltar otra vez</button></p>`,

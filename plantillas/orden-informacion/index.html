@@ -132,7 +132,7 @@ ol.lista{margin:0; padding-left:1.4em; display:grid; gap:2px; max-width:66ch}
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:40px}
@@ -730,7 +730,7 @@ const COD = { olvidaNegativa:'olvida-pista-negativa', leeSinNo:'lee-sin-el-no', 
   posibleComoSeguro:'posible-como-seguro', comoSiSobrara:'quitar-pista-no-cambia', culpableEsMentiroso:'culpable-como-mentiroso', otroDelPar:'otro-del-par',
   acusadoMiente:'acusado-como-mentiroso', mejorCaso:'RM6-mejor-caso', sinMasUno:'peor-caso-sin-la-ultima', porColores:'k-de-cada-color' };
 
-const FUENTE_RM = 'Para el orden de información y las verdades y mentiras no encontramos estudios de errores con cifras: son acertijos de examen. Las opciones incorrectas son hipótesis nuestras, armadas con lecturas equivocadas de las pistas; los datos del colegio dirán cuáles se dan.';
+const FUENTE_RM = 'Para el orden de información y las verdades y mentiras no encontramos estudios de errores con cifras: son acertijos de examen. ';
 
 const P1 = { id:'orden-informacion-paso1', ok:'c', opts:[
   ['a', nom(Q1.errores.olvidaNegativa), COD.olvidaNegativa, 'hipotesis'],
@@ -738,45 +738,45 @@ const P1 = { id:'orden-informacion-paso1', ok:'c', opts:[
   ['c', nom(Q1.respuesta)],
   ['d', nom(Q1.errores.leeSinNo), COD.leeSinNo, 'hipotesis']],
   fb:{ c:'¡Bien! Flor está en la 2. Hugo no puede ir en un extremo, así que va en la 3 o en la 4. Si fuera en la 4, Gael (a la derecha de Flor) caería en la 3 o en la 5, siempre junto a Hugo. Entonces Hugo va al centro.',
-    a:`Elegiste la A. Gael podría ir en la 3 si no existieran las pistas con «no». Pero «Gael no se sienta junto a Hugo» y «Hugo no se sienta en ningún extremo» también quitan lugares. La correcta está marcada.`,
-    b:`Elegiste la B. Iris podría quedar al centro si Flor estuviera a la derecha de Gael, al revés de la pista 1. Izquierda y derecha son las de ellos, que miran a la pantalla igual que tú. La correcta está marcada.`,
-    d:`Elegiste la D. Juan podría quedar al centro leyendo las pistas sin el «no»: con Hugo en un extremo y junto a Gael. La pista dice lo contrario. La correcta está marcada.` } };
+    a:`Gael podría ir en la 3 si no existieran las pistas con «no». Pero «Gael no se sienta junto a Hugo» y «Hugo no se sienta en ningún extremo» también quitan lugares.`,
+    b:`Iris podría quedar al centro si Flor estuviera a la derecha de Gael, al revés de la pista 1. Izquierda y derecha son las de ellos, que miran a la pantalla igual que tú.`,
+    d:`Juan podría quedar al centro leyendo las pistas sin el «no»: con Hugo en un extremo y junto a Gael. La pista dice lo contrario.` } };
 const P3 = { id:'orden-informacion-paso3', ok:'b', opts:[
   ['a', texto(AF[0], CINE), COD[N3.errorDe[0]], 'hipotesis'],
   ['b', texto(AF[1], CINE)],
   ['c', texto(AF[2], CINE), COD[N3.errorDe[2]], 'hipotesis'],
   ['d', texto(AF[3], CINE), COD[N3.errorDe[3]], 'hipotesis']],
   fb:{ b:'¡Bien! En una solución Iris está en la 1 y Juan en la 4; en la otra, al revés. En las dos quedan separados: eso es necesariamente cierto.',
-    a:'Elegiste la A. Iris está en un extremo en una de las dos soluciones, pero en la otra está en la 4. Es posible, no seguro. La correcta está marcada.',
-    c:'Elegiste la C. Hugo está junto a Juan en una de las dos soluciones, pero en la otra Juan está en la 1. Es posible, no seguro. La correcta está marcada.',
-    d:'Elegiste la D. Gael está en la 5, a la derecha de todos: no puede estar a la izquierda de Juan. Sería cierto si Flor estuviera a la derecha de Gael, al revés de la pista 1. La correcta está marcada.' } };
+    a:'Iris está en un extremo en una de las dos soluciones, pero en la otra está en la 4. Es posible, no seguro.',
+    c:'Hugo está junto a Juan en una de las dos soluciones, pero en la otra Juan está en la 1. Es posible, no seguro.',
+    d:'Gael está en la 5, a la derecha de todos: no puede estar a la izquierda de Juan. Sería cierto si Flor estuviera a la derecha de Gael, al revés de la pista 1.' } };
 const P4 = { id:'orden-informacion-paso4', ok:'c', opts:[
   ['a', `${S4.errores.comoSiSobrara} soluciones`, COD.comoSiSobrara, 'hipotesis'],
   ['b', `${S4.errores.olvidaNegativa} soluciones`, COD.olvidaNegativa, 'hipotesis'],
   ['c', `${S4.total} soluciones`],
   ['d', `${S4.errores.inmediata} soluciones`, COD.inmediata, 'hipotesis']],
   fb:{ c:`¡Bien! Sin la pista 4, Hugo puede ir también en la 1 o en la 5, y aparecen más maneras: ${S4.total} en total.`,
-    a:`Elegiste la A. La pista 4 no sobraba: quitarla deja a Hugo ir a los extremos, y salen más arreglos. La correcta está marcada.`,
-    b:`Elegiste la B. ${S4.errores.olvidaNegativa} es lo que queda si además se olvida la pista 2, «Gael no se sienta junto a Hugo». Esa sigue en pie. La correcta está marcada.`,
-    d:`Elegiste la D. ${S4.errores.inmediata} sale si Gael tuviera que estar inmediatamente a la derecha de Flor. La pista 1 solo dice «a la izquierda»: Gael puede estar más lejos. La correcta está marcada.` } };
+    a:`La pista 4 no sobraba: quitarla deja a Hugo ir a los extremos, y salen más arreglos.`,
+    b:`${S4.errores.olvidaNegativa} es lo que queda si además se olvida la pista 2, «Gael no se sienta junto a Hugo». Esa sigue en pie.`,
+    d:`${S4.errores.inmediata} sale si Gael tuviera que estar inmediatamente a la derecha de Flor. La pista 1 solo dice «a la izquierda»: Gael puede estar más lejos.` } };
 const P6 = { id:'orden-informacion-paso6', unidad:U_VM, ok:'c', opts:[
   ['a', nom('Flor'), COD.culpableEsMentiroso, 'hipotesis'],
   ['b', nom('Gael'), COD.acusadoMiente, 'hipotesis'],
   ['c', nom('Hugo')],
   ['d', nom('Iris'), COD.otroDelPar, 'hipotesis']],
   fb:{ c:'¡Bien! Hugo dice «Fue Gael» e Iris dice «No fue Gael»: uno de los dos miente. Entonces Flor y Gael dicen la verdad, y fue Flor. Así, Iris dice la verdad y el que miente es Hugo.',
-    a:'Elegiste la A. Flor dejó abierta la ventana, pero no miente: dice «Fui yo». Ser culpable no es lo mismo que mentir. La correcta está marcada.',
-    b:'Elegiste la B. A Gael lo acusan, pero él no dice nada falso: «Fue Flor» es verdad. Que te acusen no te vuelve mentiroso. La correcta está marcada.',
-    d:'Elegiste la D. Iris y Hugo se contradicen, así que uno de los dos miente. Pero si mintiera Iris, habría sido Gael, y entonces Flor y Gael también mentirían: serían tres. La correcta está marcada.' } };
+    a:'Flor dejó abierta la ventana, pero no miente: dice «Fui yo». Ser culpable no es lo mismo que mentir.',
+    b:'A Gael lo acusan, pero él no dice nada falso: «Fue Flor» es verdad. Que te acusen no te vuelve mentiroso.',
+    d:'Iris y Hugo se contradicen, así que uno de los dos miente. Pero si mintiera Iris, habría sido Gael, y entonces Flor y Gael también mentirían: serían tres.' } };
 const P8 = { id:'orden-informacion-paso8', unidad:U_CE, ok:'c', opts:[
   ['a', `${U8.errores.mejorCaso} bolas`, COD.mejorCaso, 'hipotesis'],
   ['b', `${U8.errores.sinMasUno} bolas`, COD.sinMasUno, 'hipotesis'],
   ['c', `${U8.n} bolas`],
   ['d', `${U8.errores.porColores} bolas`, COD.porColores, 'hipotesis']],
   fb:{ c:'¡Bien! Con la peor suerte salen una roja, una azul y una verde. La cuarta, sea del color que sea, repite uno.',
-    a:'Elegiste la A. Con 2 bolas puedes tener suerte, pero no seguridad: pueden salir de colores distintos. La correcta está marcada.',
-    b:'Elegiste la B. Con 3 todavía puede salir una de cada color, sin repetir. Hace falta una más. La correcta está marcada.',
-    d:'Elegiste la D. 6 sería sacar 2 de cada color, como si hicieran falta dos de cada uno. Aquí basta con que un color se repita: alcanzan 4. La correcta está marcada.' } };
+    a:'Con 2 bolas puedes tener suerte, pero no seguridad: pueden salir de colores distintos.',
+    b:'Con 3 todavía puede salir una de cada color, sin repetir. Hace falta una más.',
+    d:'6 sería sacar 2 de cada color, como si hicieran falta dos de cada uno. Aquí basta con que un color se repita: alcanzan 4.' } };
 
 // Estados de lectura
 const LT = {
@@ -1159,7 +1159,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el tablero para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el tablero para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

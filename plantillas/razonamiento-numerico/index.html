@@ -126,7 +126,7 @@ canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -685,7 +685,7 @@ const CAD4 = [{ op:'por', k:3 }, { op:'menos', k:8 }, { op:'entre', k:2 }, { op:
 const CAD5 = [{ op:'gasta', parte:[1, 2], mas:5 }, { op:'gasta', parte:[1, 2], mas:3 }], P5 = M.mercado(CAD5, 12), B5 = M.barras(CAD5, P5.respuesta);
 const N6 = [1, 2, 3, 4, 5, 6], P6 = M.menorSuma('triangulo3', N6);
 const N7 = [1, 2, 3, 4, 5, 6, 7, 8, 9], P7 = M.centroMagico();
-const fb = (letra, ok, txt) => (letra === ok ? txt : `Elegiste la ${letra.toUpperCase()}. ${txt} La correcta está marcada.`);
+const fb = (letra, ok, txt) => (letra === ok ? txt : `${txt}`);
 
 console.assert(P2.respuesta === 12 && Object.keys(P2.errores).length === 3, 'paso 2: revisar las opciones');
 console.assert(P3.respuesta === 38 && Object.keys(P3.errores).length === 3, 'paso 3: revisar las opciones');
@@ -1159,7 +1159,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const f = $('fb2');
-    ponerFb(f, p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`);
+    ponerFb(f, p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`);
     f.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = glifos(x.exp()) + FUENTE + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

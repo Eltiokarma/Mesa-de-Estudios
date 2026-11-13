@@ -125,7 +125,7 @@ canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:20px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 12px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:40px}
 .seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
@@ -267,10 +267,10 @@ const num = n => (n < 0 ? '−' + Math.abs(n) : n > 0 ? '+' + n : '0');
 const V = (k, t) => `<span class="v v-${k}">${t}</span>`;
 const LETRAS = 'abcd';
 const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}" aria-label="Opción ${LETRAS.indexOf(k) + 1}: ${t.replace(/<[^>]+>/g, '')}"><span class="l">${LETRAS.indexOf(k) + 1}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
-const HIPO = 'Esta opción es una hipótesis nuestra, sin estudio que la mida.';
+const HIPO = '';
 const CITA = {
-  'EN12-sp2-sin-carbonilo': 'En un estudio con 88 universitarios, el tipo de hibridación fue de lo que más se dejó en blanco o se respondió mal (Uyulgan y Akkuzu, 2016, según nuestro informe); que se olvide justo el carbono del C=O es una hipótesis nuestra.',
-  'EN12-sp-con-doble': 'En un estudio con 88 universitarios, el tipo de hibridación fue de lo que más se dejó en blanco o se respondió mal (Uyulgan y Akkuzu, 2016, según nuestro informe); que se cuente el C con doble enlace como sp es una hipótesis nuestra.',
+  'EN12-sp2-sin-carbonilo': '',
+  'EN12-sp-con-doble': '',
   'EN3-octeto-ley': 'Antes de un curso, solo cerca de 1 de cada 4 universitarios de un grupo de 200 acertó una pregunta de octeto expandido (Karonen y otros, 2021, según nuestro informe).',
   'FO4-funcion-secundaria': 'No reconocer el grupo funcional que da el nombre está descrito en escolares de Ghana, sin porcentaje en lo que leímos (Adu-Gyamfi, Ampiah y Appiah, 2017, citado por Adu-Gyamfi y Asaki, 2023).',
 };
@@ -692,7 +692,7 @@ function prediccion(s){
     const p = S.pred[s.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === s.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const o = s.opts.find(q => q[0] === p), fb = $('fb');
-    fb.textContent = p === s.ok ? '¡Bien! Mira lo que ilumina la lupa.' : `Elegiste la ${LETRAS.indexOf(p) + 1}. ${s.fb[p]} ${respaldoTexto(o[2], o[3])} La correcta está marcada.`;
+    fb.textContent = p === s.ok ? '¡Bien! Mira lo que ilumina la lupa.' : `${s.fb[p]} ${respaldoTexto(o[2], o[3])}`;
     fb.className = 'fb ' + (p === s.ok ? 'ok' : 'mal');
     $('stepBody').querySelector('.tras').hidden = false;
     enlazar(s);
@@ -764,7 +764,7 @@ function pintar(){
     const q = S.pred[k]; if (!q) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === okK) b.classList.add('correct'); else if (b.dataset.k === q) b.classList.add('wrong'); });
     const o = opts.find(z => z[0] === q), fb = $('fb2');
-    fb.textContent = q === okK ? '¡Bien contado! La lupa marca cada uno.' : `Elegiste la ${LETRAS.indexOf(q) + 1}. ${o[4].explicacion} ${respaldoTexto(o[2], o[3])}`;
+    fb.textContent = q === okK ? '¡Bien contado! La lupa marca cada uno.' : `${o[4].explicacion} ${respaldoTexto(o[2], o[3])}`;
     fb.className = 'fb ' + (q === okK ? 'ok' : 'mal');
     $('res2').innerHTML = `<p class="hint">Prueba otra lupa u otra molécula: cada par molécula y lupa es una pregunta nueva.</p>`;
   };
@@ -852,7 +852,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const o = x.opts.find(q => q[0] === p), fb = $('fb3');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el dibujo.' : `Elegiste la ${LETRAS.indexOf(p) + 1}. ${x.fb[p]} ${respaldoTexto(o[2], o[3])} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el dibujo.' : `${x.fb[p]} ${respaldoTexto(o[2], o[3])}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res3').innerHTML = x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig3">Siguiente: ${EXPS[k + 1].corto}</button></div>` : '');
     const sig = $('sig3'); if (sig) sig.onclick = () => { ir(k + 1); $('m3').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

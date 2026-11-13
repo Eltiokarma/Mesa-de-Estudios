@@ -130,7 +130,7 @@ b.v-I{color:var(--c-I)} b.v-V{color:var(--c-V)} b.v-R{color:var(--c-R)} b.v-P{co
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap:12px; align-items:end}
 .slider{display:grid; gap:4px}
@@ -952,17 +952,17 @@ const OPS1 = [['a', 'B1, la que está sola en su tramo'], ['b', 'Las tres igual,
 const ERR1 = { b:['C1-iguales-brillan-igual', 'hipotesis'], c:['CIR-paralelo-brilla-mas', 'hipotesis'] };
 const FB1 = {
   a: '¡Bien! Toda la corriente pasa por B1; después se divide entre B2 y B3. Mira el brillo.',
-  b: 'Elegiste la B. Son iguales, pero no reciben la misma corriente: toda pasa por B1 y luego se divide entre B2 y B3. La correcta está marcada. Hipótesis nuestra: pensar que bombillas iguales brillan igual en cualquier lugar del circuito.',
-  c: 'Elegiste la C. Estar en paralelo no da más brillo: B2 y B3 se reparten la corriente que ya pasó por B1. La correcta está marcada. Hipótesis nuestra: pensar que el paralelo brilla más porque tiene dos bombillas.',
+  b: 'Son iguales, pero no reciben la misma corriente: toda pasa por B1 y luego se divide entre B2 y B3.',
+  c: 'Estar en paralelo no da más brillo: B2 y B3 se reparten la corriente que ya pasó por B1.',
 };
 // Tabla del informe: opción, error y respaldo (Periago y Bohigas, 2005, 184 estudiantes).
 const OPS2 = [['a', 'B2 brilla más y B1 sigue igual'], ['b', 'B1 y B2 siguen igual'], ['c', 'B1 y B2 brillan más'], ['d', 'B2 brilla más y B1 brilla menos']];
 const ERR2 = { a:['C5-toda-la-corriente-a-B2', 'documentado'], b:['C5-bombilla-independiente', 'documentado'], c:['C1-sobra-corriente', 'documentado'] };
 const FB2 = {
-  d: '¡Muy bien! Es la respuesta que casi nadie da. Pasa al siguiente paso para verlo en todo el circuito.',
-  a: 'Elegiste la A: es la respuesta más común (46 % de 184 estudiantes de ingeniería). La correcta está marcada; en el siguiente paso quitamos B3 y lo ves.',
-  b: 'Elegiste la B (la eligió el 19 % de 184 estudiantes de ingeniería). La correcta está marcada; en el siguiente paso quitamos B3 y lo ves.',
-  c: 'Elegiste la C (la eligió el 5 % de 184 estudiantes de ingeniería). La correcta está marcada; en el siguiente paso quitamos B3 y lo ves.',
+  d: '¡Muy bien! Pasa al siguiente paso para verlo en todo el circuito.',
+  a: 'Bien visto que B2 brilla más. B1 también cambia: sin B3 sale menos corriente de la pila. En el siguiente paso quitamos B3 y lo ves.',
+  b: 'Parece que quitar B3 no toca a las otras, pero cambia la corriente que sale de la pila. En el siguiente paso quitamos B3 y lo ves.',
+  c: 'B2 sí brilla más, pero sale menos corriente de la pila, así que B1 brilla menos. En el siguiente paso quitamos B3 y lo ves.',
 };
 const opciones = (ops) => `<div class="opts">${ops.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="fb"></p>`;
 
@@ -1185,9 +1185,9 @@ const EXPS = [
           ['d','A, D y E brillan igual; B y C, menos',null]],
     ok:'d',
     fb:{ d:'¡Bien pensado! Cada pila mantiene sus 6 V: mira cómo brillan las cinco.',
-      a:'Elegiste la A. Cada pila no da siempre la misma corriente: mantiene su voltaje. Mira la escena: las de serie brillan menos. En Barcelona, según los autores, la mayoría de las respuestas a esta pregunta se explican con la idea de que la pila da una corriente fija.',
-      b:'Elegiste la B. D y E no se reparten una corriente fija: cada una tiene los 6 V completos y la pila da el doble de corriente. Mira la escena. Es la misma idea de la pila de corriente fija, que explica la mayoría de las respuestas en Barcelona.',
-      c:'Elegiste la C. En serie, B y C brillan igual: la corriente no se gasta en B. Cerca del 58 % de 184 estudiantes de ingeniería dijo que, de dos bombillas iguales en serie, brilla más una.' },
+      a:'Cada pila no da siempre la misma corriente: mantiene su voltaje. Mira la escena: las de serie brillan menos. En Barcelona, según los autores, la mayoría de las respuestas a esta pregunta se explican con la idea de que la pila da una corriente fija.',
+      b:'D y E no se reparten una corriente fija: cada una tiene los 6 V completos y la pila da el doble de corriente. Mira la escena. Es la misma idea de la pila de corriente fija, que explica la mayoría de las respuestas en Barcelona.',
+      c:'En serie, B y C brillan igual: la corriente no se gasta en B. Cerca del 58 % de 184 estudiantes de ingeniería dijo que, de dos bombillas iguales en serie, brilla más una.' },
     antes:() => {},
     paneles:(resp) => {
       const m = M.mcdermott({ fem:6, R:12 }), x = { encendido: !!resp, mostrar:{ I:false, P: !!resp } };
@@ -1210,8 +1210,8 @@ const EXPS = [
           ['c','Brillan igual, porque por las dos pasa la misma corriente',null]],
     ok:'c',
     fb:{ c:'¡Bien pensado! Mira los números de corriente antes, entre y después de las bombillas.',
-      a:'Elegiste la A. La corriente no se gasta en B1: es la misma en todo el circuito en serie. Cerca del 58 % de 184 estudiantes de ingeniería dijo que, de dos bombillas iguales en serie, brilla más una de ellas.',
-      b:'Elegiste la B. No sobra corriente: la que pasa por B1 es la misma que pasa por B2, y brillan igual. Hipótesis nuestra: pensar que la segunda recibe lo que la primera no usó.' },
+      a:'La corriente no se gasta en B1: es la misma en todo el circuito en serie. Cerca del 58 % de 184 estudiantes de ingeniería dijo que, de dos bombillas iguales en serie, brilla más una de ellas.',
+      b:'No sobra corriente: la que pasa por B1 es la misma que pasa por B2, y brillan igual.' },
     antes:() => Object.assign(E, { inv:false }),
     paneles:(resp) => {
       const c = M.mcdermott({ fem:6, R:12 }).serie;
@@ -1232,8 +1232,8 @@ const EXPS = [
           ['c','Menos: las dos pilas se reparten la bombilla','C6-paralelo-reparte','hipotesis']],
     ok:'b',
     fb:{ b:'¡Bien pensado! Mira la escena y prueba también dos pilas en serie.',
-      a:'Elegiste la A. En paralelo, el voltaje de la bombilla es el de una sola pila: brilla igual. En un test con 692 alumnos, el 21 % creyó que dos pilas en paralelo dan más voltaje.',
-      c:'Elegiste la C. Las pilas no se reparten la bombilla: cada una da la mitad de la corriente y la bombilla sigue con 1,5 V, así que brilla igual. Hipótesis nuestra: pensar que dos pilas en paralelo se dividen el trabajo y la bombilla recibe menos.' },
+      a:'En paralelo, el voltaje de la bombilla es el de una sola pila: brilla igual. En un test con 692 alumnos, el 21 % creyó que dos pilas en paralelo dan más voltaje.',
+      c:'Las pilas no se reparten la bombilla: cada una da la mitad de la corriente y la bombilla sigue con 1,5 V, así que brilla igual.' },
     antes:() => Object.assign(E, { modo:'una' }),
     despues:() => Object.assign(E, { modo:'paralelo' }),
     paneles:() => [panel(LAY.pilasDe[E.modo], M.pilas({ modo:E.modo, fem1:1.5, fem2:1.5, R:3 }), { Pref:0.75, iRef:0.5, mostrar:{ I:true, P:true } })],
@@ -1251,9 +1251,9 @@ const EXPS = [
           ['d','Pasa corriente, como con una pila de 12 V','C10-suma-siempre','hipotesis']],
     ok:'c',
     fb:{ c:'¡Bien pensado! Mira la escena: las fem se restan.',
-      a:'Elegiste la A. Las pilas no se anulan: sus fem se restan y quedan 6 V netos. El 21 % de 184 estudiantes de ingeniería dio esta respuesta.',
-      b:'Elegiste la B. Si hay voltaje en un circuito cerrado, pasa corriente: 0,5 A por la bombilla. Cerca de un tercio de 184 estudiantes de ingeniería (31,5 %) dio esta respuesta.',
-      d:'Elegiste la D. Al revés, las fem se restan: 9 − 3 = 6 V, no 12 V. Hipótesis nuestra: sumar las pilas sin mirar hacia dónde apuntan.' },
+      a:'Las pilas no se anulan: sus fem se restan y quedan 6 V netos. El 21 % de 184 estudiantes de ingeniería dio esta respuesta.',
+      b:'Si hay voltaje en un circuito cerrado, pasa corriente: 0,5 A por la bombilla. Cerca de un tercio de 184 estudiantes de ingeniería (31,5 %) dio esta respuesta.',
+      d:'Al revés, las fem se restan: 9 − 3 = 6 V, no 12 V.' },
     antes:() => Object.assign(E, { modo:'oposicion' }),
     paneles:(resp) => [panel(LAY.pilasDe[E.modo], M.pilas({ modo:E.modo, fem1:9, fem2:3, R:12 }), { encendido: !!resp, Pref:3, iRef:0.5, mostrar:{ I:true, P:true } })],
     nombres:[['B','Bombilla']],
@@ -1271,9 +1271,9 @@ const EXPS = [
           ['d','La corriente sube, porque la bombilla pide más','C1-mas-resistencia-mas-corriente','hipotesis']],
     ok:'b',
     fb:{ b:'¡Bien pensado! Mueve el deslizador y mira qué cambia y qué no.',
-      a:'Elegiste la A. La pila no da una corriente fija: mantiene su voltaje, y con el doble de resistencia pasa la mitad de la corriente. Es la idea que más aparece en las entrevistas del test DIRECT.',
-      c:'Elegiste la C. V = I·R vale para la bombilla, no decide el voltaje de la pila: sigue en 6 V. En el test DIRECT, cerca de la mitad de 1135 alumnos creyó que, si se duplica la corriente por una pila, se duplica su voltaje.',
-      d:'Elegiste la D. Con más resistencia pasa menos corriente, no más: 6 / 24 = 0,25 A. Hipótesis nuestra: pensar que la bombilla de más ohmios pide más corriente.' },
+      a:'La pila no da una corriente fija: mantiene su voltaje, y con el doble de resistencia pasa la mitad de la corriente. Es la idea que más aparece en las entrevistas del test DIRECT.',
+      c:'V = I·R vale para la bombilla, no decide el voltaje de la pila: sigue en 6 V. En el test DIRECT, cerca de la mitad de 1135 alumnos creyó que, si se duplica la corriente por una pila, se duplica su voltaje.',
+      d:'Con más resistencia pasa menos corriente, no más: 6 / 24 = 0,25 A.' },
     antes:() => Object.assign(E, { R:12 }),
     despues:() => Object.assign(E, { R:24 }),
     paneles:() => [panel(LAY.pilasDe.una, M.pilas({ modo:'una', fem1:6, R:E.R }), { Pref:3, iRef:0.5, mostrar:{ I:true, P:true, R:true } })],
@@ -1295,9 +1295,9 @@ const EXPS = [
           ['d','Se apagan las dos','C12-corto-apaga-todo','hipotesis']],
     ok:'b',
     fb:{ b:'¡Bien pensado! Mira cuánto sube la corriente de B1.',
-      a:'Elegiste la A. El cable no tiene resistencia: la corriente se va por él y B2 se apaga. En el test DIRECT, cerca de 1 de cada 6 alumnos no identificó un corto de la pila; aquí el corto es de una bombilla.',
-      c:'Elegiste la C. Al quedar B2 en corto, la resistencia total baja y pasa más corriente: B1 brilla más. Hipótesis nuestra: pensar que lo que no se tocó sigue igual.',
-      d:'Elegiste la D. El cable solo deja sin voltaje a B2; B1 sigue en el circuito y brilla más. Hipótesis nuestra: pensar que un corto apaga todo.' },
+      a:'El cable no tiene resistencia: la corriente se va por él y B2 se apaga. En el test DIRECT, cerca de 1 de cada 6 alumnos no identificó un corto de la pila; aquí el corto es de una bombilla.',
+      c:'Al quedar B2 en corto, la resistencia total baja y pasa más corriente: B1 brilla más.',
+      d:'El cable solo deja sin voltaje a B2; B1 sigue en el circuito y brilla más.' },
     antes:() => Object.assign(E, { k:false, kp:false }),
     despues:() => Object.assign(E, { k:true }),
     paneles:() => [panel(LAY.dosCorto, { tierra:'n', ramas:[
@@ -1368,7 +1368,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = x.fb[p] + (p === x.ok ? '' : ' La correcta está marcada.');
+    fb.textContent = x.fb[p] + (p === x.ok ? '' : '');
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.ctrl() + x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     if (x.conectar) x.conectar();
@@ -1797,7 +1797,7 @@ function terminarTween(){ S.tween = null; }
 const I1 = PR.M0.correcta.lectura, I2 = PR.M1.correcta.lectura, V1 = PR.M3.errores.a.lectura;
 const A = n => fmt(n) + ' A', Vv = n => fmt(n, 2) + ' V', W = n => fmt(n) + ' W';
 const fuente = t => `<p class="fuente">${t}</p>`;
-const F_C2 = 'Cerca de 4 de cada 10 estudiantes de ingeniería de un estudio en Barcelona (44 % de 184) dijeron que la corriente se gasta al pasar por una bombilla (Periago y Bohigas, 2005).';
+const F_C2 = '';
 const PREDS = {
   M0: { q:`Pones un amperímetro ideal en el camino de la corriente, entre la pila y B1 (el círculo a trazos). ¿Qué pasa con B1 y qué marca el amperímetro?`,
     opts:[['a', `B1 brilla igual y marca ${A(I1)}, porque un amperímetro ideal deja pasar la corriente sin quitarle nada`, null],
@@ -1807,7 +1807,7 @@ const PREDS = {
     fb:{ a:`Bien. Por dentro del amperímetro pasa la misma corriente que por B1: ${A(I1)}. Un amperímetro ideal no tiene resistencia, así que no cambia nada.`,
       b:`Un amperímetro no gasta corriente: la que entra es la que sale. Uno ideal no tiene resistencia y no cambia nada: B1 brilla igual y marca ${A(I1)}. Si consumiera como otra bombilla de 12 Ω, la corriente bajaría a ${A(PR.M0.errores.b.lectura)}. Esta idea aparece en un estudio con escolares, sin un porcentaje medido.`,
       c:`La corriente no se gasta en B1: antes y después de B1 hay ${A(I1)}. Arrástralo al otro lado y compruébalo. Cerca de 4 de cada 10 estudiantes de ingeniería de un estudio en Barcelona dijeron que la corriente se gasta al pasar por una bombilla.`,
-      d:`Se corta el cable, pero el amperímetro cierra el camino: la corriente pasa por dentro de él y marca ${A(I1)}. Hipótesis nuestra: pensar que, al cortar el cable para ponerlo, el circuito queda abierto.` },
+      d:`Se corta el cable, pero el amperímetro cierra el camino: la corriente pasa por dentro de él y marca ${A(I1)}.` },
     exp: () => `<p>El amperímetro quedó en el camino y marca ${w('I', A(I1))}, lo mismo que pasa por B1 sin él.</p>
       <p class="hint">Arrástralo al otro lado de B1 o al cable de regreso: marca lo mismo, porque la corriente no se gasta.</p>
       ${fuente('La idea de que el amperímetro gasta corriente, como una bombilla, aparece en un estudio con escolares griegos de 14 y 15 años, sin un porcentaje medido (Psillos, Koumaras y Valassiades, 1987, citado por Engelhardt y Beichner, 2004). ' + F_C2)}` },
@@ -1817,8 +1817,8 @@ const PREDS = {
           ['c', 'En el cable de regreso a la pila, porque por ahí vuelve toda la corriente', 'MED-linea-principal', 'hipotesis'],
           ['d', 'Antes de B1, porque ahí la corriente todavía no se gastó', 'C2-corriente-se-gasta', 'parcial']],
     fb:{ a:`Bien: marca ${A(I2)} y el circuito no cambia.`,
-      b:`Mira lo que pasó: sin resistencia, el amperímetro se volvió un atajo. B2 y B3 se apagan, B1 brilla más y marca ${A(PR.M1.errores.b.lectura)}, que no es la corriente de B2. Hipótesis nuestra: conectarlo como si fuera un voltímetro.`,
-      c:`Marca ${A(PR.M1.errores.c.lectura)}: es toda la corriente de la pila. En el nudo se divide entre B2 y B3, y por B2 pasa la mitad, ${A(I2)}. Hipótesis nuestra: medir en la línea principal lo que pasa por una rama.`,
+      b:`Mira lo que pasó: sin resistencia, el amperímetro se volvió un atajo. B2 y B3 se apagan, B1 brilla más y marca ${A(PR.M1.errores.b.lectura)}, que no es la corriente de B2.`,
+      c:`Marca ${A(PR.M1.errores.c.lectura)}: es toda la corriente de la pila. En el nudo se divide entre B2 y B3, y por B2 pasa la mitad, ${A(I2)}.`,
       d:`Antes de B1 marca ${A(PR.M1.errores.d.lectura)}, igual que después: la corriente no se gasta, y ese valor es el total. Por B2 pasa la mitad, ${A(I2)}. ${F_C2.replace(/ \(Periago.*$/, '.')}` },
     exp: k => `<p>Pusimos el amperímetro donde elegiste: ${PUESTO[DONDE_M1[k]].nombre}.</p>
       ${k === 'a' ? '' : '<div class="nav"><button type="button" class="btn chico" id="aB2">Ponerlo en serie con B2</button></div>'}
@@ -1830,9 +1830,9 @@ const PREDS = {
           ['c', `B1 se apaga, B2 y B3 brillan más y marca ${A(PR.M2.correcta.lectura)}, porque la corriente se va por el amperímetro`, null],
           ['d', 'Se apagan las tres y marca 0 A, porque un corto apaga todo el circuito', 'C12-corto-apaga-todo', 'hipotesis']],
     fb:{ c:`Bien. Sin resistencia, el amperímetro es un atajo: B1 queda en corto, con 0 V. Ahora solo B2 y B3 frenan la corriente (6 Ω): la pila da ${A(PR.M2.correcta.pila)}, y B2 y B3 tienen los 6 V completos; cada una pasa de ${W(PR.M2.errores.a.P2)} a ${W(PR.M2.correcta.P2)}.`,
-      a:`Mira el dibujo: no siguió todo igual. Sin resistencia, el amperímetro es un atajo: B1 quedó en corto y se apagó, B2 y B3 brillan más, y marca ${A(PR.M2.correcta.lectura)}, no ${A(I1)}. Un amperímetro mide lo que pasa por dentro de él. Hipótesis nuestra: pensar que mide la bombilla que tiene al lado.`,
-      b:`Al revés: la corriente prefiere el camino sin resistencia. Pasa toda por el amperímetro (${A(PR.M2.correcta.lectura)}) y nada por B1, que se apaga. Hipótesis nuestra: tratarlo como un voltímetro, que no deja pasar corriente.`,
-      d:`No se apagan todas: el amperímetro no corta nada, es como un cable. B1 queda en corto y se apaga, pero B2 y B3 siguen en el circuito y brillan más; marca ${A(PR.M2.correcta.lectura)}. Hipótesis nuestra: pensar que un corto apaga todo.` },
+      a:`Mira el dibujo: no siguió todo igual. Sin resistencia, el amperímetro es un atajo: B1 quedó en corto y se apagó, B2 y B3 brillan más, y marca ${A(PR.M2.correcta.lectura)}, no ${A(I1)}. Un amperímetro mide lo que pasa por dentro de él.`,
+      b:`Al revés: la corriente prefiere el camino sin resistencia. Pasa toda por el amperímetro (${A(PR.M2.correcta.lectura)}) y nada por B1, que se apaga.`,
+      d:`No se apagan todas: el amperímetro no corta nada, es como un cable. B1 queda en corto y se apaga, pero B2 y B3 siguen en el circuito y brillan más; marca ${A(PR.M2.correcta.lectura)}.` },
     exp: () => `<p>Un amperímetro en paralelo no mide lo que pasa por la bombilla: la deja sin corriente y cambia todo el circuito.</p>
       <div class="nav"><button type="button" class="btn chico" id="aPila">¿Y en paralelo con la pila?</button></div><div id="extra3"></div>
       ${fuente('No encontramos estudios que midan cuántos estudiantes creen que un amperímetro en paralelo no cambia nada: las opciones incorrectas de esta pregunta son hipótesis nuestras.')}`,
@@ -1846,8 +1846,8 @@ const PREDS = {
           ['d', `Se apagan las tres y marca ${Vv(PR.M3.correcta.lectura)}, porque el voltímetro no deja pasar corriente y sus puntas quedan a los dos lados de la pila`, null]],
     fb:{ d:`Bien. Sin corriente, ninguna bombilla baja el potencial: una punta queda a 6 V y la otra a 0 V. Con un voltímetro real pasa una corriente pequeñísima y marca casi 6 V: lo puedes probar en el paso 8 con uno de 60 000 Ω.`,
       c:'No pasa corriente, es cierto, pero sí hay voltaje: la pila sigue teniendo sus 6 V, y el voltímetro queda entre sus dos lados. En un test con más de 1000 alumnos, más de la mitad dijo que entre dos puntos de un tramo sin corriente hay 0 V.',
-      a:`No sigue todo igual: el voltímetro ideal no deja pasar corriente, así que, puesto en el camino, abre el circuito y se apagan las tres. Marca ${Vv(PR.M3.correcta.lectura)}, el voltaje de la pila, no los ${Vv(V1)} de B1. Hipótesis nuestra: pensar que mide la bombilla que tiene al lado.`,
-      b:`Un voltímetro ideal no deja pasar corriente: no es un cable. En el camino abre el circuito: se apagan las tres y marca ${Vv(PR.M3.correcta.lectura)}. Hipótesis nuestra: creer que el voltímetro deja pasar la corriente.` },
+      a:`No sigue todo igual: el voltímetro ideal no deja pasar corriente, así que, puesto en el camino, abre el circuito y se apagan las tres. Marca ${Vv(PR.M3.correcta.lectura)}, el voltaje de la pila, no los ${Vv(V1)} de B1.`,
+      b:`Un voltímetro ideal no deja pasar corriente: no es un cable. En el camino abre el circuito: se apagan las tres y marca ${Vv(PR.M3.correcta.lectura)}.` },
     exp: () => `<p class="hint">Pásalo en serie con B2: B1 y B3 siguen encendidas y marca ${w('V', Vv(PR.M3.enB2))}. Marca el voltaje del hueco que deja, no siempre la fem.</p>
       <div class="nav"><button type="button" class="btn chico" id="vB2">Ponerlo en serie con B2</button></div>
       ${fuente('En el test DIRECT, con 1135 alumnos de secundaria y universidad de Estados Unidos, el 56 % dijo que entre dos puntos de un tramo sin corriente hay 0 V (Engelhardt y Beichner, 2004). La pregunta no era con un voltímetro en serie: lo contamos como un dato vecino.')}`,
@@ -1858,9 +1858,9 @@ const PREDS = {
           ['c', `Más de ${Vv(V1)}, porque su resistencia se suma a la de B1`, 'DIRECT-paralelo-como-serie', 'parcial'],
           ['d', `${Vv(PR.M4.errores.d.lectura)}, porque B1 y el voltímetro se reparten el voltaje en partes iguales`, 'C11v-reparto-mitades', 'hipotesis']],
     fb:{ b:`Bien: marca ${Vv(PR.M4.correcta.lectura)}. B1 y el voltímetro forman un tramo de ${fmt(PR.M4.correcta.Rtramo)} Ω: la resistencia total baja de 18 a ${fmt(6/PR.M4.correcta.pila)} Ω, la pila da ${A(PR.M4.correcta.pila)} y a ese tramo le toca menos voltaje. Un voltímetro es mejor cuanto más resistencia tiene: con 60 000 Ω marcaría ${fmt(PR.M4.tablaRV[3].lectura, 4)} V.`,
-      a:`Marcaría ${Vv(V1)} solo si no dejara pasar corriente. Este deja pasar un poco (${A(PR.M4.correcta.I)}) y baja la resistencia del tramo: marca ${Vv(PR.M4.correcta.lectura)}. Un voltímetro real sí cambia algo el circuito. Hipótesis nuestra: pensar que medir no cambia nada.`,
+      a:`Marcaría ${Vv(V1)} solo si no dejara pasar corriente. Este deja pasar un poco (${A(PR.M4.correcta.I)}) y baja la resistencia del tramo: marca ${Vv(PR.M4.correcta.lectura)}. Un voltímetro real sí cambia algo el circuito.`,
       c:`Si su resistencia se sumara a la de B1 (12 + 60 = 72 Ω), marcaría unos ${Vv(PR.M4.errores.c.lectura)}. Pero está en paralelo: el tramo queda con 12 · 60 / (12 + 60) = ${fmt(PR.M4.correcta.Rtramo)} Ω, menos que B1 sola, y marca ${Vv(PR.M4.correcta.lectura)}. Sumar en paralelo como si fuera en serie aparece en entrevistas del test DIRECT, sin un porcentaje medido.`,
-      d:`B1 y el voltímetro están en paralelo: tienen el mismo voltaje, no se lo reparten. Marca ${Vv(PR.M4.correcta.lectura)}, lo mismo que tiene B1. Hipótesis nuestra: repartir el voltaje por mitades, como si estuvieran en serie.` },
+      d:`B1 y el voltímetro están en paralelo: tienen el mismo voltaje, no se lo reparten. Marca ${Vv(PR.M4.correcta.lectura)}, lo mismo que tiene B1.` },
     exp: () => `<div class="slider"><label for="rv3"><span>${w('R','Rᵥ')}, resistencia interna del voltímetro</span><output id="rv3-out"></output></label>
         <input id="rv3" class="r-R" type="range" min="0" max="${RVS.length - 1}" step="1" value="${S.iRV7}"></div>
       <div class="tabla-wrap"><table class="tabla"><thead><tr><th>Voltímetro</th><th>Marca</th><th>Diferencia con 4 V</th></tr></thead><tbody>
@@ -1993,7 +1993,7 @@ function prediccion(s){
   const marcar = () => {
     const p = S.pred[g]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
-    const fb = $('fb3'); fb.textContent = P.fb[p] + (p === ok ? '' : ' La correcta está marcada.'); fb.className = 'fb ' + (p === ok ? 'ok' : 'mal');
+    const fb = $('fb3'); fb.textContent = P.fb[p] + (p === ok ? '' : ''); fb.className = 'fb ' + (p === ok ? 'ok' : 'mal');
     $('res3').innerHTML = P.exp(p);
     if (P.extras) P.extras();
   };

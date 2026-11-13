@@ -140,7 +140,7 @@ table.formulas td{font-family:var(--mono); font-variant-numeric:tabular-nums}
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -622,54 +622,54 @@ const P1 = { id:'cubitos-dos-caras', ok:'b', opts:[
   ['c', `${C4.errores.k.restaUna} cubitos`, 'RME170', 'hipotesis'],
   ['d', `${C4.errores.k.sinRestar} cubitos`, 'RME4', 'hipotesis']],
   fb:{ b:'¡Bien! En cada una de las 12 aristas hay 4 cubitos, pero los 2 de los extremos son esquinas (tres caras): quedan 2 por arista, 12 × 2 = 24.',
-    a:'Elegiste la A. 32 junta los 24 de las aristas con las 8 esquinas. Las esquinas tienen tres caras pintadas, no dos. La correcta está marcada.',
-    c:'Elegiste la C. 36 sale de restar una sola esquina por arista (4 − 1 = 3). Cada arista tiene dos extremos, y los dos son esquinas: 4 − 2 = 2. La correcta está marcada.',
-    d:'Elegiste la D. 48 cuenta las aristas enteras, 12 × 4, con sus esquinas. Las esquinas tienen tres caras pintadas. La correcta está marcada.' } };
+    a:'32 junta los 24 de las aristas con las 8 esquinas. Las esquinas tienen tres caras pintadas, no dos.',
+    c:'36 sale de restar una sola esquina por arista (4 − 1 = 3). Cada arista tiene dos extremos, y los dos son esquinas: 4 − 2 = 2.',
+    d:'48 cuenta las aristas enteras, 12 × 4, con sus esquinas. Las esquinas tienen tres caras pintadas.' } };
 const P2 = { id:'cubitos-mesa-pared', ok:'d', opts:[
   ['a', `${MP.errores.k.olvidaPared} cubitos`, 'RME1', 'hipotesis'],
   ['b', `${MP.errores.k.olvidaMesa} cubitos`, 'RME1', 'hipotesis'],
   ['c', `${MP.errores.k.conTodas} cubitos`, 'RME1', 'hipotesis'],
   ['d', `${MP.respuestas.k} cubitos`]],
   fb:{ d:'¡Bien! Abajo y atrás no se pinta, así que no se quita esa capa: (5 − 2) × (4 − 1) × (3 − 1) = 3 × 3 × 2 = 18.',
-    a:'Elegiste la A. 12 sale de quitar la capa de atrás, como si la pared también se pintara. Pero la cara pegada a la pared no recibe pintura. La correcta está marcada.',
-    c:'Elegiste la C. 6 sería si se pintara todo, también abajo y atrás: (5 − 2)(4 − 2)(3 − 2). La mesa y la pared tapan esas caras. La correcta está marcada.',
-    b:'Elegiste la B. 9 sale de quitar la capa de abajo, como si se pintara la base. La base está sobre la mesa y no se pinta. La correcta está marcada.' } };
+    a:'12 sale de quitar la capa de atrás, como si la pared también se pintara. Pero la cara pegada a la pared no recibe pintura.',
+    c:'6 sería si se pintara todo, también abajo y atrás: (5 − 2)(4 − 2)(3 − 2). La mesa y la pared tapan esas caras.',
+    b:'9 sale de quitar la capa de abajo, como si se pintara la base. La base está sobre la mesa y no se pinta.' } };
 const P3 = { id:'cubitos-caras-solido', ok:'a', opts:[
   ['a', `${AR.respuestas.caras} caras`],
   ['b', `${AR.errores.caras.pegadas} caras`, 'RME1', 'hipotesis'],
   ['c', `${AR.errores.caras.conTodas} caras`, 'RME1', 'hipotesis'],
   ['d', `${AR.errores.caras.todas} caras`, 'RME1', 'hipotesis']],
   fb:{ a:`¡Bien! Hay ${AR.expuestas} caras al aire y ${AR.expuestas - AR.caras} de ellas tocan la mesa: ${AR.caras} pintadas.`,
-    b:`Elegiste la B. ${AR.errores.caras.pegadas} cuenta todas las caras menos la base, también las ${6*AR.cubitos - AR.expuestas} que quedan pegadas entre cubitos, donde no entra la pintura. La correcta está marcada.`,
-    c:`Elegiste la C. ${AR.errores.caras.conTodas} son todas las caras al aire, con las ${AR.expuestas - AR.caras} de la base, que tocan la mesa y no se pintan. La correcta está marcada.`,
-    d:`Elegiste la D. ${AR.errores.caras.todas} es 6 × ${AR.cubitos}: las seis caras de cada cubito. Las pegadas y las de la base no se pintan. La correcta está marcada.` } };
+    b:`${AR.errores.caras.pegadas} cuenta todas las caras menos la base, también las ${6*AR.cubitos - AR.expuestas} que quedan pegadas entre cubitos, donde no entra la pintura.`,
+    c:`${AR.errores.caras.conTodas} son todas las caras al aire, con las ${AR.expuestas - AR.caras} de la base, que tocan la mesa y no se pintan.`,
+    d:`${AR.errores.caras.todas} es 6 × ${AR.cubitos}: las seis caras de cada cubito. Las pegadas y las de la base no se pintan.` } };
 const P4 = { id:'cubitos-tuneles', ok:'b', opts:[
   ['a', `${TU.errores.quedan.sinCruces} cubitos`, 'RME2', 'hipotesis'],
   ['b', `${TU.respuestas.quedan} cubitos`],
   ['c', `${TU.errores.quedan.parejas} cubitos`, 'RME173', 'hipotesis'],
   ['d', `${TU.errores.quedan.soloVisibles} cubitos`, 'RME3', 'hipotesis']],
   fb:{ b:`¡Bien! Cada túnel pasa por 5 cubitos, pero el del centro está en los tres y se quita una sola vez: 15 − 2 = ${TU.quitados} quitados, quedan ${TU.quedan}.`,
-    a:`Elegiste la A. ${TU.errores.quedan.sinCruces} resta 3 × 5 = 15, como si el cubito del centro se quitara tres veces. Se quita una vez. La correcta está marcada.`,
-    c:`Elegiste la C. ${TU.errores.quedan.parejas} descuenta un cruce por cada par de túneles (tres pares), pero los tres pares se cruzan en el mismo cubito: hay que descontar 2, no 3. La correcta está marcada.`,
-    d:`Elegiste la D. ${TU.errores.quedan.soloVisibles} resta solo los 6 huecos que se ven en las caras. Los túneles siguen por dentro. La correcta está marcada.` } };
+    a:`${TU.errores.quedan.sinCruces} resta 3 × 5 = 15, como si el cubito del centro se quitara tres veces. Se quita una vez.`,
+    c:`${TU.errores.quedan.parejas} descuenta un cruce por cada par de túneles (tres pares), pero los tres pares se cruzan en el mismo cubito: hay que descontar 2, no 3.`,
+    d:`${TU.errores.quedan.soloVisibles} resta solo los 6 huecos que se ven en las caras. Los túneles siguen por dentro.` } };
 const P5 = { id:'cubitos-barras', ok:'d', opts:[
   ['a', `${BA.errores.caras.cubos} caras`, 'RME6', 'hipotesis'],
   ['b', `${BA.errores.caras.paredes} caras`, 'RME111', 'hipotesis'],
   ['c', `${BA.errores.caras.cruceDos} caras`, 'RME117', 'hipotesis'],
   ['d', `${BA.respuestas.caras} caras`]],
   fb:{ d:`¡Bien! Cada barra entra y sale de cada cubito por dos caras: 2 × (4 + 3 + 3) = ${BA.respuestas.caras}. En el cubito del cruce pasan las tres: tiene 6 caras atravesadas.`,
-    a:`Elegiste la A. ${BA.errores.caras.cubos} son los cubitos atravesados, no las caras. Cada cubito atravesado tiene al menos dos caras atravesadas. La correcta está marcada.`,
-    b:`Elegiste la B. ${BA.errores.caras.paredes} cuenta una sola vez las dos caras que se tocan entre dos cubitos vecinos (4 + 1, 3 + 1, 3 + 1). Son dos caras, una de cada cubito. La correcta está marcada.`,
-    c:`Elegiste la C. ${BA.errores.caras.cruceDos} da dos caras a cada cubito atravesado, también al del cruce. Por ese cubito pasan tres barras: tiene seis. La correcta está marcada.` } };
+    a:`${BA.errores.caras.cubos} son los cubitos atravesados, no las caras. Cada cubito atravesado tiene al menos dos caras atravesadas.`,
+    b:`${BA.errores.caras.paredes} cuenta una sola vez las dos caras que se tocan entre dos cubitos vecinos (4 + 1, 3 + 1, 3 + 1). Son dos caras, una de cada cubito.`,
+    c:`${BA.errores.caras.cruceDos} da dos caras a cada cubito atravesado, también al del cruce. Por ese cubito pasan tres barras: tiene seis.` } };
 const P6 = { id:'cubitos-escalera', ok:'c', opts:[
   ['a', `${ES.errores.area.objetoEntero} cuadraditos`, 'RM2', 'parcial'],
   ['b', `${ES.errores.area.lineal} cuadraditos`, 'RME112', 'hipotesis'],
   ['c', `${ES.respuestas.area} cuadraditos`],
   ['d', `${ES.errores.area.otraBase} cuadraditos`, 'RME1', 'hipotesis']],
   fb:{ c:`¡Bien! Adelante y atrás crecen como 1 + 2 + … + n; arriba, izquierda y derecha, como n. Con n = 20: 2 × 210 + 3 × 20 = ${ES.respuestas.area}.`,
-    a:`Elegiste la A. ${ES.errores.area.objetoEntero} duplica la figura 10. Pero la figura 20 no es dos figuras 10 juntas: sus columnas son el doble de altas y la escalera crece más rápido. La correcta está marcada.`,
-    b:`Elegiste la B. ${ES.errores.area.lineal} supone que cada figura suma lo mismo que de la 1 a la 2 (7). De la 2 a la 3 ya suma 9: el crecimiento no es parejo. La correcta está marcada.`,
-    d:`Elegiste la D. ${ES.errores.area.otraBase} cuenta también los 20 cuadraditos de la base, que tocan la mesa y no se pintan. La correcta está marcada.` } };
+    a:`${ES.errores.area.objetoEntero} duplica la figura 10. Pero la figura 20 no es dos figuras 10 juntas: sus columnas son el doble de altas y la escalera crece más rápido.`,
+    b:`${ES.errores.area.lineal} supone que cada figura suma lo mismo que de la 1 a la 2 (7). De la 2 a la 3 ya suma 9: el crecimiento no es parejo.`,
+    d:`${ES.errores.area.otraBase} cuenta también los 20 cuadraditos de la base, que tocan la mesa y no se pintan.` } };
 
 // ----- piezas de dibujo -----
 const manijaAbrir = (k, et) => ({ etiqueta:et || 'Abrir', min:0, max:100, paso:1, fmt:v => `${Math.round(v)} %`, leer:E => Math.round((E.prog[k] || 0)*100), poner:(E, v) => { E.prog[k] = v/100; } });
@@ -1216,7 +1216,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     const sig = $('sig2'); if (sig) sig.onclick = () => { if (E.ocupado) return; ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

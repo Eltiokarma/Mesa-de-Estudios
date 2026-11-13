@@ -114,7 +114,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -846,27 +846,27 @@ const P1 = { id:'magnetismo-paso1', ok:'c', opts:[
   ['c', 'No sufre fuerza magnética, porque está quieto'],
   ['d', 'Lo hace girar alrededor del imán, porque las líneas del campo son curvas', 'MG-quieta-gira-con-las-lineas', 'hipotesis']],
   fb:{ c:'¡Bien! La fuerza magnética necesita que la carga se mueva: con v = 0, F = 0, por fuerte que sea el campo.',
-    a:'Elegiste la A. Un imán no atrae ni repele a una carga quieta: la fuerza magnética es |q|·v·B·sen θ, y con v = 0 vale cero. La correcta está marcada.',
-    b:'Elegiste la B. El polo N no es una carga positiva: un imán no atrae ni repele a una carga quieta. La correcta está marcada.',
-    d:'Elegiste la D. Las líneas dicen hacia dónde apunta B, pero sin velocidad no hay fuerza magnética: el protón no se mueve. La correcta está marcada.' } };
+    a:'Un imán no atrae ni repele a una carga quieta: la fuerza magnética es |q|·v·B·sen θ, y con v = 0 vale cero.',
+    b:'El polo N no es una carga positiva: un imán no atrae ni repele a una carga quieta.',
+    d:'Las líneas dicen hacia dónde apunta B, pero sin velocidad no hay fuerza magnética: el protón no se mueve.' } };
 const P2 = { id:'magnetismo-paso2', ok:'a', opts:[
   ['a', 'Sigue en línea recta con la misma rapidez'],
   ['b', 'Sigue en línea recta, pero se va frenando', 'MG2-paralela-se-frena', 'parcial'],
   ['c', 'Se desvía hacia arriba', 'MG-paralela-se-desvia-arriba', 'hipotesis'],
   ['d', 'Se desvía hacia abajo', 'MG-paralela-se-desvia-abajo', 'hipotesis']],
   fb:{ a:'¡Bien! Con v contraria a B, θ = 180° y sen 180° = 0: no hay fuerza magnética.',
-    b:'Elegiste la B. La fuerza magnética no va a lo largo del campo, así que no lo frena. Con v paralela (o contraria) a B, sen θ = 0 y F = 0. La correcta está marcada.',
-    c:'Elegiste la C. Para desviarlo haría falta una fuerza, y con v contraria a B no la hay: sen 180° = 0. La correcta está marcada.',
-    d:'Elegiste la D. No hay hacia dónde desviarse: con v contraria a B, F = |q|·v·B·sen 180° = 0. La correcta está marcada.' } };
+    b:'La fuerza magnética no va a lo largo del campo, así que no lo frena. Con v paralela (o contraria) a B, sen θ = 0 y F = 0.',
+    c:'Para desviarlo haría falta una fuerza, y con v contraria a B no la hay: sen 180° = 0.',
+    d:'No hay hacia dónde desviarse: con v contraria a B, F = |q|·v·B·sen 180° = 0.' } };
 const P3 = { id:'magnetismo-paso3', ok:'b', opts:[
   ['a', 'Hacia abajo de la pantalla', 'MG-mano-derecha-invertida', 'parcial'],
   ['b', 'Hacia arriba de la pantalla'],
   ['c', 'Hacia adentro de la pantalla, como B', 'MG2-fuerza-en-la-direccion-del-campo', 'parcial'],
   ['d', 'Hacia la derecha, como v', 'MG-fuerza-hacia-donde-va', 'hipotesis']],
   fb:{ b:'¡Bien! Pulgar en el sentido de v (derecha), los otros dedos en el de B (adentro): la palma empuja hacia arriba.',
-    a:'Elegiste la A. Así sale si se cambian los papeles de los dedos y el pulgar. Con el pulgar en v y los dedos en B, la palma de la mano derecha empuja hacia arriba. La correcta está marcada.',
-    c:'Elegiste la C. La fuerza magnética no va en la dirección del campo: es perpendicular a B y también a v. La correcta está marcada.',
-    d:'Elegiste la D. La fuerza magnética es perpendicular a v: no la empuja hacia adelante, la desvía. La correcta está marcada.' } };
+    a:'Así sale si se cambian los papeles de los dedos y el pulgar. Con el pulgar en v y los dedos en B, la palma de la mano derecha empuja hacia arriba.',
+    c:'La fuerza magnética no va en la dirección del campo: es perpendicular a B y también a v.',
+    d:'La fuerza magnética es perpendicular a v: no la empuja hacia adelante, la desvía.' } };
 const sci13 = x => `${fmt(x/1e-13, 1)} × 10⁻¹³ N`;
 const P4 = { id:'magnetismo-paso4', ok:'c', opts:[
   ['a', `F = ${sci13(F4.errores.sinSeno)}`, 'MG-olvida-el-seno', 'hipotesis'],
@@ -874,45 +874,45 @@ const P4 = { id:'magnetismo-paso4', ok:'c', opts:[
   ['c', `F = ${sci13(F4.modulo)}`],
   ['d', 'F = 0', 'MG-fuerza-solo-a-90', 'hipotesis']],
   fb:{ c:'¡Bien! El ángulo entre v y B es 90° − 37° = 53°: F = |q|·v·B·sen 53°.',
-    a:'Elegiste la A. Falta el sen θ: v y B no son perpendiculares. Entre ellas hay 53°, y F = |q|·v·B·sen 53°. La correcta está marcada.',
-    b:'Elegiste la B. Los 37° se miden desde la horizontal, pero B es vertical: el ángulo entre v y B es 53°. La correcta está marcada.',
-    d:'Elegiste la D. Hay fuerza aunque v y B no formen 90°: solo es cero si son paralelas. Aquí vale |q|·v·B·sen 53°. La correcta está marcada.' } };
+    a:'Falta el sen θ: v y B no son perpendiculares. Entre ellas hay 53°, y F = |q|·v·B·sen 53°.',
+    b:'Los 37° se miden desde la horizontal, pero B es vertical: el ángulo entre v y B es 53°.',
+    d:'Hay fuerza aunque v y B no formen 90°: solo es cero si son paralelas. Aquí vale |q|·v·B·sen 53°.' } };
 const P5 = { id:'magnetismo-paso5', ok:'d', opts:[
   ['a', 'Hacia arriba de la pantalla', 'MG-olvida-el-signo-de-la-carga', 'hipotesis'],
   ['b', 'Hacia adentro de la pantalla', 'MG2-fuerza-en-la-direccion-del-campo', 'parcial'],
   ['c', 'No sufre fuerza magnética', 'MG-electron-sin-fuerza', 'hipotesis'],
   ['d', 'Hacia abajo de la pantalla']],
   fb:{ d:'¡Bien! F = q·v×B con q negativa: la regla de la mano derecha da arriba y el signo menos la da vuelta.',
-    a:'Elegiste la A. Así sería para un protón. El electrón tiene carga negativa: F = q·v×B apunta al revés, hacia abajo. La correcta está marcada.',
-    b:'Elegiste la B. La fuerza magnética es perpendicular a B, sea cual sea el signo de la carga. La correcta está marcada.',
-    c:'Elegiste la C. El electrón tiene carga y se mueve: sí siente fuerza, del mismo tamaño que el protón (|q| es igual). La correcta está marcada.' } };
+    a:'Así sería para un protón. El electrón tiene carga negativa: F = q·v×B apunta al revés, hacia abajo.',
+    b:'La fuerza magnética es perpendicular a B, sea cual sea el signo de la carga.',
+    c:'El electrón tiene carga y se mueve: sí siente fuerza, del mismo tamaño que el protón (|q| es igual).' } };
 const P6 = { id:'magnetismo-paso6', ok:'b', opts:[
   ['a', `B = ${sci(H6.errores.cuadrado)} T`, 'MG-hilo-uno-sobre-d2', 'hipotesis'],
   ['b', `B = ${sci(H6.B1)} T`],
   ['c', `B = ${sci(H6.errores.sinCambio)} T`, 'MG-hilo-no-depende-de-d', 'hipotesis'],
   ['d', `B = ${sci(H6.errores.alReves)} T`, 'MG-hilo-crece-con-d', 'hipotesis']],
   fb:{ b:'¡Bien! El campo de un hilo va con 1/d: el doble de distancia, la mitad del campo.',
-    a:'Elegiste la A. Es la cuarta parte: así sería con 1/d², como en la ley de Coulomb. El campo del hilo va con 1/d. La correcta está marcada.',
-    c:'Elegiste la C. La corriente es la misma, pero el campo depende de la distancia: B = 2 × 10⁻⁷ · I / d. La correcta está marcada.',
-    d:'Elegiste la D. Más lejos del cable el campo es más débil, no más fuerte. La correcta está marcada.' } };
+    a:'Es la cuarta parte: así sería con 1/d², como en la ley de Coulomb. El campo del hilo va con 1/d.',
+    c:'La corriente es la misma, pero el campo depende de la distancia: B = 2 × 10⁻⁷ · I / d.',
+    d:'Más lejos del cable el campo es más débil, no más fuerte.' } };
 const P7 = { id:'magnetismo-paso7', ok:'c', opts:[
   ['a', 'B = 0 T', 'MG5-opuestas-se-anulan', 'documentado'],
   ['b', `B = ${sci(PM7.errores.distanciaEntreCables)} T`, 'MG-usa-la-distancia-entre-cables', 'hipotesis'],
   ['c', `B = ${sci(PM7.B)} T`],
   ['d', `B = ${sci(PM7.errores.unoSobreD2)} T`, 'MG-hilo-uno-sobre-d2', 'hipotesis']],
   fb:{ c:'¡Bien! Con corrientes opuestas, en el medio los dos campos apuntan hacia el mismo lado y se suman.',
-    a:'Elegiste la A. Las corrientes son opuestas, pero sus campos en el medio no: los dos apuntan hacia arriba y se suman. La correcta está marcada.',
-    b:'Elegiste la B. El punto medio está a 0,1 m de cada cable, no a 0,2 m: cada uno da 2 × 10⁻⁵ T. La correcta está marcada.',
-    d:'Elegiste la D. El campo de un hilo va con 1/d, no con 1/d². La correcta está marcada.' } };
+    a:'Las corrientes son opuestas, pero sus campos en el medio no: los dos apuntan hacia arriba y se suman.',
+    b:'El punto medio está a 0,1 m de cada cable, no a 0,2 m: cada uno da 2 × 10⁻⁵ T.',
+    d:'El campo de un hilo va con 1/d, no con 1/d².' } };
 const P8 = { id:'magnetismo-paso8', ok:'a', opts:[
   ['a', 'Se repelen, con la misma fuerza sobre cada cable'],
   ['b', 'Se atraen, con la misma fuerza sobre cada cable', 'MG4-opuestas-se-atraen', 'parcial'],
   ['c', 'Se repelen, y el cable de 10 A recibe el doble de fuerza', 'MG6-mas-corriente-empuja-mas', 'parcial'],
   ['d', 'Se atraen, y el cable de 20 A recibe el doble de fuerza', 'MG-mas-corriente-recibe-mas', 'hipotesis']],
   fb:{ a:'¡Bien! Corrientes opuestas se repelen, y las dos fuerzas son iguales (tercera ley): F/L = 2 × 10⁻⁷ · I₁ · I₂ / d.',
-    b:'Elegiste la B. Las corrientes no son cargas: corrientes opuestas se repelen y las del mismo sentido se atraen. La correcta está marcada.',
-    c:'Elegiste la C. Sí se repelen, pero la fórmula usa el producto I₁ · I₂: es la misma fuerza sobre los dos. La correcta está marcada.',
-    d:'Elegiste la D. Corrientes opuestas se repelen, y la fuerza es la misma sobre los dos cables. La correcta está marcada.' } };
+    b:'Las corrientes no son cargas: corrientes opuestas se repelen y las del mismo sentido se atraen.',
+    c:'Sí se repelen, pero la fórmula usa el producto I₁ · I₂: es la misma fuerza sobre los dos.',
+    d:'Corrientes opuestas se repelen, y la fuerza es la misma sobre los dos cables.' } };
 
 // ----- configuraciones -----
 const proton = (o) => ({ q:QP, m:MP, n:'protón', lv:46, lf:44, ...o });
@@ -1252,7 +1252,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la opción ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

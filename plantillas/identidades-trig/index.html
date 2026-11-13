@@ -124,7 +124,7 @@ sup .v, sub .v{padding:0 1px}
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -680,63 +680,63 @@ const P2 = { id:'identidades-trig-paso2', ok:'c', unidad:U_ID, opts:[
   ['c', C30.texto],
   ['d', C30.errores.senDoble.texto, 'ID10-cuadrado-como-angulo-doble', 'hipotesis']],
   fb:{ c:`¡Bien! sen²30° es (sen 30°)² = (1/2)² = 1/4: el cuadrado sobre el lado sen 30° ocupa uno de los cuatro cuadritos.`,
-    a:`Elegiste la A. 0 sale de sen(30²) = sen 900° = sen 180°: el 2 se le puso al ángulo. En sen²30° el 2 eleva el seno: (sen 30°)². La correcta está marcada.`,
-    b:`Elegiste la B. 1 es 2 · sen 30°: elevar al cuadrado no es multiplicar por 2. (1/2)² = 1/2 · 1/2 = 1/4. La correcta está marcada.`,
-    d:`Elegiste la D. √3/2 es sen 60° = sen(2 · 30°): el 2 no duplica el ángulo, eleva el seno al cuadrado. La correcta está marcada.` } };
+    a:`0 sale de sen(30²) = sen 900° = sen 180°: el 2 se le puso al ángulo. En sen²30° el 2 eleva el seno: (sen 30°)².`,
+    b:`1 es 2 · sen 30°: elevar al cuadrado no es multiplicar por 2. (1/2)² = 1/2 · 1/2 = 1/4.`,
+    d:`√3/2 es sen 60° = sen(2 · 30°): el 2 no duplica el ángulo, eleva el seno al cuadrado.` } };
 const P3 = { id:'identidades-trig-paso3', ok:'b', unidad:U_ID, opts:[
   ['a', PI3.errores.lineal.texto, 'ID1-pitagorica-sin-cuadrados', 'hipotesis'],
   ['b', PI3.texto],
   ['c', PI3.errores.sinRaiz.texto, 'ID2-olvida-la-raiz', 'hipotesis'],
   ['d', PI3.errores.reciproca.texto, 'ID3-reciproca-cruzada', 'hipotesis']],
   fb:{ b:`¡Bien! De los 25 cuadritos de la hipotenusa, 9 son de sen²x; quedan 16 para cos²x, un cuadrado de 4 × 4: cos x = 4/5.`,
-    a:`Elegiste la A. 2/5 = 1 − 3/5 usa sen x + cos x = 1. Pero lo que suma 1 son los cuadrados (las áreas), no los lados. La correcta está marcada.`,
-    c:`Elegiste la C. 16/25 es cos²x, el área del cuadrado. El lado es su raíz: √(16/25) = 4/5. La correcta está marcada.`,
-    d:`Elegiste la D. 5/3 = 1/sen x es csc x, la recíproca del seno. Además, un coseno nunca pasa de 1. La correcta está marcada.` } };
+    a:`2/5 = 1 − 3/5 usa sen x + cos x = 1. Pero lo que suma 1 son los cuadrados (las áreas), no los lados.`,
+    c:`16/25 es cos²x, el área del cuadrado. El lado es su raíz: √(16/25) = 4/5.`,
+    d:`5/3 = 1/sen x es csc x, la recíproca del seno. Además, un coseno nunca pasa de 1.` } };
 const P4 = { id:'identidades-trig-paso4', ok:'a', unidad:U_AC, opts:[
   ['a', S75.texto],
   ['b', S75.errores.lineal.texto, 'TR16-seno-de-la-suma-lineal', 'parcial'],
   ['c', S75.errores.signo.texto, 'ID4-signo-cambiado', 'hipotesis'],
   ['d', S75.errores.producto.texto, 'ID6-producto-de-senos', 'hipotesis']],
   fb:{ a:`¡Bien! sen 75° ≈ ${fmt(S75.valor)}: es la altura del punto de 75°, menor que 1.`,
-    b:`Elegiste la B. (√2 + 1)/2 = sen 45° + sen 30° ≈ ${fmt(S75.errores.lineal.valor)}: pasa de 1, y ninguna altura de la circunferencia de radio 1 pasa de 1. La correcta está marcada.`,
-    c:`Elegiste la C. (√6 − √2)/4 sale de sen a cos b − cos a sen b, que es sen(45° − 30°) = sen 15°. Para la suma el signo del medio es +. La correcta está marcada.`,
-    d:`Elegiste la D. √2/4 = sen 45° · sen 30° multiplica las alturas. La fórmula mezcla senos y cosenos: sen a cos b + cos a sen b. La correcta está marcada.` } };
+    b:`(√2 + 1)/2 = sen 45° + sen 30° ≈ ${fmt(S75.errores.lineal.valor)}: pasa de 1, y ninguna altura de la circunferencia de radio 1 pasa de 1.`,
+    c:`(√6 − √2)/4 sale de sen a cos b − cos a sen b, que es sen(45° − 30°) = sen 15°. Para la suma el signo del medio es +.`,
+    d:`√2/4 = sen 45° · sen 30° multiplica las alturas. La fórmula mezcla senos y cosenos: sen a cos b + cos a sen b.` } };
 const P5 = { id:'identidades-trig-paso5', ok:'c', unidad:U_AC, opts:[
   ['a', S53.errores.lineal.texto, 'TR16-seno-de-la-suma-lineal', 'parcial'],
   ['b', S53.errores.formulaCoseno.texto, 'ID5-formula-del-coseno', 'hipotesis'],
   ['c', S53.texto],
   ['d', S53.errores.signo.texto, 'ID4-signo-cambiado', 'hipotesis']],
   fb:{ c:`¡Bien! (3/5)(24/25) + (4/5)(7/25) = 72/125 + 28/125 = 100/125 = 4/5: es sen 53°, porque 37° + 16° = 53°.`,
-    a:`Elegiste la A. 22/25 = 3/5 + 7/25 suma las alturas de 37° y de 16°. La altura del punto de 53° no es esa suma. La correcta está marcada.`,
-    b:`Elegiste la B. 3/5 sale de cos a cos b − sen a sen b: esa es la fórmula del coseno, cos 53°, la abscisa del punto. La altura es la del seno. La correcta está marcada.`,
-    d:`Elegiste la D. 44/125 = 72/125 − 28/125 resta las dos piezas: es sen(37° − 16°). En la suma, las dos piezas se apilan. La correcta está marcada.` } };
+    a:`22/25 = 3/5 + 7/25 suma las alturas de 37° y de 16°. La altura del punto de 53° no es esa suma.`,
+    b:`3/5 sale de cos a cos b − sen a sen b: esa es la fórmula del coseno, cos 53°, la abscisa del punto. La altura es la del seno.`,
+    d:`44/125 = 72/125 − 28/125 resta las dos piezas: es sen(37° − 16°). En la suma, las dos piezas se apilan.` } };
 const P6 = { id:'identidades-trig-paso6', ok:'d', unidad:U_AM, opts:[
   ['a', D37.senDoble.errores.lineal.texto, 'TR16-doble-lineal', 'parcial'],
   ['b', D37.senDoble.errores.formulaCoseno.texto, 'ID5-formula-del-coseno', 'hipotesis'],
   ['c', D37.senDoble.errores.dosSenCuadrado.texto, 'ID9-dos-sen-cuadrado', 'hipotesis'],
   ['d', D37.senDoble.texto]],
   fb:{ d:`¡Bien! sen 2x = 2 sen x cos x = 2 (3/5)(4/5) = 24/25: un poco menos que 1, la altura del punto de 74°.`,
-    a:`Elegiste la A. 6/5 = 2 · 3/5 duplica la altura, y pasa de 1. Duplicar el arco no duplica la altura. La correcta está marcada.`,
-    b:`Elegiste la B. 7/25 = cos²x − sen²x es cos 2x, la abscisa del punto de 74°, no su altura. La correcta está marcada.`,
-    c:`Elegiste la C. 18/25 = 2 sen²x usa sen x · sen x. La fórmula es 2 sen x · cos x: un seno y un coseno. La correcta está marcada.` } };
+    a:`6/5 = 2 · 3/5 duplica la altura, y pasa de 1. Duplicar el arco no duplica la altura.`,
+    b:`7/25 = cos²x − sen²x es cos 2x, la abscisa del punto de 74°, no su altura.`,
+    c:`18/25 = 2 sen²x usa sen x · sen x. La fórmula es 2 sen x · cos x: un seno y un coseno.` } };
 const P7 = { id:'identidades-trig-paso7', ok:'b', unidad:U_AM, opts:[
   ['a', D13.cosDoble.errores.pitagorica.texto, 'ID7-cos-doble-como-pitagorica', 'hipotesis'],
   ['b', D13.cosDoble.texto],
   ['c', D13.cosDoble.errores.sinDos.texto, 'ID8-olvida-el-dos', 'hipotesis'],
   ['d', D13.cosDoble.errores.sinCuadrado.texto, 'ID15-olvida-el-cuadrado', 'hipotesis']],
   fb:{ b:`¡Bien! De 9 cuadritos, 8 son de cos²x y 1 de sen²x: cos²x − sen²x = 8/9 − 1/9 = 7/9.`,
-    a:`Elegiste la A. 1 = cos²x + sen²x es la pitagórica. En cos 2x el signo del medio es −: cos²x − sen²x. La correcta está marcada.`,
-    c:`Elegiste la C. 8/9 = 1 − sen²x es cos²x. La forma con el seno lleva un 2: 1 − 2 sen²x = 1 − 2/9. La correcta está marcada.`,
-    d:`Elegiste la D. 1/3 = 1 − 2 · (1/3) usa sen x en lugar de sen²x. Con el cuadrado: 1 − 2 · (1/9) = 7/9. La correcta está marcada.` } };
+    a:`1 = cos²x + sen²x es la pitagórica. En cos 2x el signo del medio es −: cos²x − sen²x.`,
+    c:`8/9 = 1 − sen²x es cos²x. La forma con el seno lleva un 2: 1 − 2 sen²x = 1 − 2/9.`,
+    d:`1/3 = 1 − 2 · (1/3) usa sen x en lugar de sen²x. Con el cuadrado: 1 − 2 · (1/9) = 7/9.` } };
 const P8 = { id:'identidades-trig-paso8', ok:'a', unidad:U_AM, opts:[
   ['a', M74.texto],
   ['b', M74.errores.lineal.texto, 'TR16-mitad-lineal', 'parcial'],
   ['c', M74.errores.sinRaiz.texto, 'ID2-olvida-la-raiz', 'hipotesis'],
   ['d', M74.errores.formulaSeno.texto, 'ID14-formula-del-seno', 'hipotesis']],
   fb:{ a:`¡Bien! cos(x/2) = √((1 + 7/25)/2) = √(16/25) = 4/5: x/2 es el ángulo de 37°.`,
-    b:`Elegiste la B. 7/50 es la mitad de cos x. Partir el ángulo por la mitad acerca el punto al eje x: su coseno crece, no se parte. La correcta está marcada.`,
-    c:`Elegiste la C. 16/25 = (1 + cos x)/2 es cos²(x/2): falta la raíz. La correcta está marcada.`,
-    d:`Elegiste la D. 3/5 = √((1 − cos x)/2) es sen(x/2): con el signo − adentro sale el seno. La correcta está marcada.` } };
+    b:`7/50 es la mitad de cos x. Partir el ángulo por la mitad acerca el punto al eje x: su coseno crece, no se parte.`,
+    c:`16/25 = (1 + cos x)/2 es cos²(x/2): falta la raíz.`,
+    d:`3/5 = √((1 − cos x)/2) es sen(x/2): con el signo − adentro sale el seno.` } };
 
 // ----- piezas de la circunferencia -----
 const arco = (de, a, color, r, texto, o) => Object.assign({ de, a, color, r: r || .22, texto }, o || {});
@@ -1288,7 +1288,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + `<div class="nav"><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     tramos($('res2'));

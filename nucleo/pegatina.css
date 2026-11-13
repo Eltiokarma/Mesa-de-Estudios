@@ -45,3 +45,6 @@
   .btn:not(:disabled):active,.opt:not(:disabled):active{transform:translateY(3px);box-shadow:0 0 0 var(--borde)}
   .opt:not(:disabled):hover{transform:translateY(-1px)}
 }
+/* Fuentes y respaldo de las opciones: son para quien diseña y para el profesor (docs/investigacion/), no para el alumno
+   (docs/escena-viva.md, regla 8). Siguen en el HTML; aquí solo se ocultan. */
+.fuente{display:none !important}

@@ -122,7 +122,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
 .fb:focus{outline:none}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap:12px; align-items:end}
 .slider{display:grid; gap:4px}
@@ -745,49 +745,49 @@ const P1 = { id:'fluidos-fondo', ok:'d',
         ['c','En el angosto, porque sus paredes aprietan más el agua.','paredes-cerca','parcial'],
         ['d','Igual en los tres, porque los tres fondos están 2 m bajo la superficie.',null,'']],
   fb:{ d:'¡Bien! En un líquido quieto, la presión solo depende de cuán hondo está el punto. Los tres fondos marcan 20 000 Pa.',
-       a:'Elegiste la A. El ancho tiene más agua, pero ese peso se reparte en un fondo más grande. La presión del fondo es la misma en los tres. La correcta está marcada.',
-       b:'Elegiste la B. Estar bajo un techo no agrega presión: lo que cuenta es la profundidad hasta el nivel de la superficie libre, 2 m en los tres. La correcta está marcada.',
-       c:'Elegiste la C. Las paredes no aprietan más por estar cerca: empujan el agua de costado y no cambian la presión del fondo. La correcta está marcada.' } };
+       a:'El ancho tiene más agua, pero ese peso se reparte en un fondo más grande. La presión del fondo es la misma en los tres.',
+       b:'Estar bajo un techo no agrega presión: lo que cuenta es la profundidad hasta el nivel de la superficie libre, 2 m en los tres.',
+       c:'Las paredes no aprietan más por estar cerca: empujan el agua de costado y no cambian la presión del fondo.' } };
 const P2 = { id:'fluidos-bajo-techo', ok:'c',
   opts:[['a','3000 Pa','F4-h-hasta-el-techo','documentado'], ['b','5000 Pa','h-desde-el-fondo','hipotesis'],
         ['c','15 000 Pa',null,''], ['d','20 000 Pa','F7-igual-en-todo','documentado']],
   fb:{ c:'¡Bien! h se mide en vertical hasta el nivel de la superficie libre: 2 − 0,5 = 1,5 m, aunque en el camino haya un techo.',
-       a:'Elegiste la A. 3000 Pa sale de medir h solo hasta el techo (0,3 m). Pero el agua bajo el techo está conectada con la del cuello: su h llega hasta el nivel de la superficie libre. La correcta está marcada.',
-       b:'Elegiste la B. 5000 Pa sale de medir h desde el fondo (0,5 m). La profundidad se mide desde arriba, desde la superficie libre. La correcta está marcada.',
-       d:'Elegiste la D. 20 000 Pa es la presión del fondo. Dentro del agua la presión no es la misma en todas partes: crece hacia abajo. La correcta está marcada.' } };
+       a:'3000 Pa sale de medir h solo hasta el techo (0,3 m). Pero el agua bajo el techo está conectada con la del cuello: su h llega hasta el nivel de la superficie libre.',
+       b:'5000 Pa sale de medir h desde el fondo (0,5 m). La profundidad se mide desde arriba, desde la superficie libre.',
+       d:'20 000 Pa es la presión del fondo. Dentro del agua la presión no es la misma en todas partes: crece hacia abajo.' } };
 const P3 = { id:'fluidos-dinamometro', ok:'b',
   opts:[['a','20 N','dinamometro-sin-cambio','hipotesis'], ['b','15 N',null,''], ['c','5 N','lectura-igual-al-empuje','hipotesis'], ['d','25 N','el-agua-empuja-hacia-abajo','hipotesis']],
   fb:{ b:'¡Bien! El agua empuja el bloque hacia arriba con 5 N, así que el hilo solo tiene que sostener 20 − 5 = 15 N.',
-       a:'Elegiste la A. El bloque pesa lo mismo, pero ya no lo sostiene solo el hilo: el agua lo empuja hacia arriba y el hilo jala menos. La correcta está marcada.',
-       c:'Elegiste la C. 5 N es el empuje del agua, no lo que marca el dinamómetro. El hilo sostiene lo que falta: 20 − 5. La correcta está marcada.',
-       d:'Elegiste la D. El agua no empuja el bloque hacia abajo en total: lo empuja más fuerte por abajo que por arriba, así que la suma va hacia arriba. La correcta está marcada.' } };
+       a:'El bloque pesa lo mismo, pero ya no lo sostiene solo el hilo: el agua lo empuja hacia arriba y el hilo jala menos.',
+       c:'5 N es el empuje del agua, no lo que marca el dinamómetro. El hilo sostiene lo que falta: 20 − 5.',
+       d:'El agua no empuja el bloque hacia abajo en total: lo empuja más fuerte por abajo que por arriba, así que la suma va hacia arriba.' } };
 const P4 = { id:'fluidos-balanza', ok:'b',
   opts:[['a','40 N, porque el bloque cuelga del hilo y no se apoya en el vaso.','balanza-sin-cambio','hipotesis'],
         ['b','45 N, porque el bloque empuja el agua hacia abajo tanto como el agua lo empuja a él hacia arriba.',null,''],
         ['c','60 N, porque ahora el bloque entero está dentro del vaso.','balanza-peso-entero','hipotesis'],
         ['d','35 N, porque el empuje del agua aligera todo lo que hay sobre la balanza.','balanza-resta','hipotesis']],
   fb:{ b:'¡Bien! El empuje tiene su pareja, como toda fuerza: el bloque empuja el agua hacia abajo con 5 N, y eso llega a la balanza.',
-       a:'Elegiste la A. El bloque no toca el vaso, pero sí empuja el agua: si el agua lo empuja hacia arriba con 5 N, él empuja el agua hacia abajo con 5 N. La correcta está marcada.',
-       c:'Elegiste la C. La balanza no carga el peso entero del bloque: 15 N los sigue sosteniendo el hilo. Solo le llegan los 5 N del empuje. La correcta está marcada.',
-       d:'Elegiste la D. El empuje aligera al bloque, no al vaso: el bloque empuja el agua hacia abajo con la misma fuerza. La correcta está marcada.' } };
+       a:'El bloque no toca el vaso, pero sí empuja el agua: si el agua lo empuja hacia arriba con 5 N, él empuja el agua hacia abajo con 5 N.',
+       c:'La balanza no carga el peso entero del bloque: 15 N los sigue sosteniendo el hilo. Solo le llegan los 5 N del empuje.',
+       d:'El empuje aligera al bloque, no al vaso: el bloque empuja el agua hacia abajo con la misma fuerza.' } };
 const P5 = { id:'fluidos-mas-hondo', ok:'c',
   opts:[['a','Baja, porque más hondo hay más presión y el empuje crece.','F12-empuje-crece-con-profundidad','documentado'],
         ['b','Sube, porque ahora hay más agua encima del bloque que lo empuja hacia abajo.','agua-de-encima-tension','documentado'],
         ['c','No cambia, porque el empuje depende del volumen sumergido, que ya es todo el bloque.',null,''],
         ['d','Baja hasta 0 N, porque a esa profundidad el bloque encuentra dónde flotar.','F11-profundidad-propia','parcial']],
   fb:{ c:'¡Bien! Más hondo, la presión crece arriba y abajo del bloque por igual: la diferencia, que es el empuje, no cambia.',
-       a:'Elegiste la A. La presión sí crece, pero sobre la cara de arriba y sobre la de abajo por igual. El empuje es la diferencia, y esa no cambia. La correcta está marcada.',
-       b:'Elegiste la B. Es cierto que el agua de encima empuja más fuerte hacia abajo, pero el agua de abajo también empuja más fuerte hacia arriba, y en la misma cantidad. La correcta está marcada.',
-       d:'Elegiste la D. Un bloque que pesa más que su empuje no flota a ninguna profundidad: sin el hilo, se iría al fondo. La correcta está marcada.' } };
+       a:'La presión sí crece, pero sobre la cara de arriba y sobre la de abajo por igual. El empuje es la diferencia, y esa no cambia.',
+       b:'Es cierto que el agua de encima empuja más fuerte hacia abajo, pero el agua de abajo también empuja más fuerte hacia arriba, y en la misma cantidad.',
+       d:'Un bloque que pesa más que su empuje no flota a ninguna profundidad: sin el hilo, se iría al fondo.' } };
 const P6 = { id:'fluidos-otro-bloque', ok:'c',
   opts:[['a','2,5 N, porque tiene la mitad de masa.','F10-mas-masa-mas-empuje','documentado'],
         ['b','10 N, porque al ser más liviano el agua lo empuja más.','F10-mas-liviano-mas-empuje','hipotesis'],
         ['c','5 N, porque desaloja la misma cantidad de agua.',null,''],
         ['d','0 N, porque el hilo lo sostiene y el agua no tiene que empujarlo.','empuje-ligado-al-hilo','parcial']],
   fb:{ c:'¡Bien! El empuje sale del volumen sumergido y del líquido, no del cuerpo: 0,5 L de agua desalojada pesan 5 N.',
-       a:'Elegiste la A. El empuje no depende de la masa del bloque: depende del volumen sumergido y del líquido. Los dos bloques desalojan 0,5 L. La correcta está marcada.',
-       b:'Elegiste la B. El agua no sabe cuánto pesa el bloque: empuja igual a todo lo que ocupa 0,5 L sumergidos. Al más liviano le basta con menos ayuda del hilo, nada más. La correcta está marcada.',
-       d:'Elegiste la D. El hilo y el agua actúan a la vez. El empuje existe aunque haya un hilo: el dinamómetro marca menos por eso. La correcta está marcada.' } };
+       a:'El empuje no depende de la masa del bloque: depende del volumen sumergido y del líquido. Los dos bloques desalojan 0,5 L.',
+       b:'El agua no sabe cuánto pesa el bloque: empuja igual a todo lo que ocupa 0,5 L sumergidos. Al más liviano le basta con menos ayuda del hilo, nada más.',
+       d:'El hilo y el agua actúan a la vez. El empuje existe aunque haya un hilo: el dinamómetro marca menos por eso.' } };
 
 const LIQNOM = { agua:'agua', aceite:'aceite', salmuera:'salmuera' };
 const verBal = (T, E, N) => ({ T, E, N });
@@ -1067,9 +1067,9 @@ const EXPS = [
           ['c','A la misma altura que en la angosta, porque sobre las dos superficies solo hay aire a la misma presión.',null],
           ['d','Depende de cuánta agua se echó: con poca queda más abajo; con mucha, igual.','depende-de-la-cantidad','hipotesis']],
     ok:'c',
-    fb:{ a:'Elegiste la A. El agua de la rama ancha pesa más, pero ese peso se reparte en un fondo más ancho: la presión abajo depende solo de la altura. La correcta está marcada; mira la escena.',
-         b:'Elegiste la B. Que quepa más agua no la hace subir más: el agua se mueve hasta que la presión abajo es la misma en las dos ramas, y eso pasa a la misma altura. La correcta está marcada; mira la escena.',
-         d:'Elegiste la D. Con poca o con mucha agua, las dos superficies quedan a la misma altura. La correcta está marcada; mira la escena.' },
+    fb:{ a:'El agua de la rama ancha pesa más, pero ese peso se reparte en un fondo más ancho: la presión abajo depende solo de la altura.; mira la escena.',
+         b:'Que quepa más agua no la hace subir más: el agua se mueve hasta que la presión abajo es la misma en las dos ramas, y eso pasa a la misma altura.; mira la escena.',
+         d:'Con poca o con mucha agua, las dos superficies quedan a la misma altura.; mira la escena.' },
     antes:() => Object.assign(E, { tipo:'vasos', V:0.0015, lleno:0, ver:'antes' }),
     despues:() => { E.ver = 'despues'; E.lleno = 0; mover(1400, f => { E.lleno = f; }); },
     fin:() => { E.ver = 'despues'; E.lleno = 1; },
@@ -1084,9 +1084,9 @@ const EXPS = [
     q:`En una prensa hidráulica, el émbolo chico tiene 0,01 m² y el grande, 0,5 m². Una mano empuja el chico hacia abajo con ${V('F','F = 200 N')}. ¿Qué ${V('W','peso W')} de carga puede sostener el émbolo grande? Desprecia el peso de los émbolos y del aceite.`,
     opts:[['a','200 N','fuerza-se-transmite-igual','hipotesis'], ['b','10 000 N',null], ['c','4 N','razon-de-areas-invertida','hipotesis'], ['d','1414 N','razon-de-diametros','hipotesis']],
     ok:'b',
-    fb:{ a:'Elegiste la A. Lo que se transmite igual a todo el aceite es la presión, no la fuerza. El émbolo grande tiene 50 veces más área, así que recibe 50 veces más fuerza. La correcta está marcada; mira la escena.',
-         c:'Elegiste la C. 4 N sale de dividir entre 50 en vez de multiplicar. El émbolo grande, con más área, recibe más fuerza, no menos. La correcta está marcada; mira la escena.',
-         d:'Elegiste la D. 1414 N sale de multiplicar por la razón de los diámetros (√50 ≈ 7,07). La fuerza crece con la razón de las áreas, 50. La correcta está marcada; mira la escena.' },
+    fb:{ a:'Lo que se transmite igual a todo el aceite es la presión, no la fuerza. El émbolo grande tiene 50 veces más área, así que recibe 50 veces más fuerza.; mira la escena.',
+         c:'4 N sale de dividir entre 50 en vez de multiplicar. El émbolo grande, con más área, recibe más fuerza, no menos.; mira la escena.',
+         d:'1414 N sale de multiplicar por la razón de los diámetros (√50 ≈ 7,07). La fuerza crece con la razón de las áreas, 50.; mira la escena.' },
     antes:() => Object.assign(E, { tipo:'prensa', F:200, A2:0.5, ver:'antes', mov:0 }),
     despues:() => { E.ver = 'despues'; E.mov = 0; mover(1600, f => { E.mov = f; }); },
     fin:() => { E.ver = 'despues'; E.mov = 1; },
@@ -1106,9 +1106,9 @@ const EXPS = [
     q:`Un tubo en U de sección pareja tiene mercurio (13 600 kg/m³). Por la rama izquierda se echa agua hasta formar una columna de ${V('h','h = 27,2 cm')} sobre el mercurio. ¿Cuánto más arriba queda el mercurio de la rama derecha que la frontera entre el agua y el mercurio de la izquierda?`,
     opts:[['a','0 cm','sin-desnivel','hipotesis'], ['b','2 cm',null], ['c','27,2 cm','superficies-parejas','hipotesis'], ['d','370 cm','densidades-invertidas','hipotesis']],
     ok:'b',
-    fb:{ a:'Elegiste la A. Si quedaran parejos, la rama izquierda tendría 27,2 cm de agua de más empujando hacia abajo, y el mercurio se movería. La correcta está marcada; mira la escena.',
-         c:'Elegiste la C. Con un solo líquido, las superficies quedan parejas. Con dos líquidos no: solo se iguala la presión dentro del mismo líquido, a la misma altura. La correcta está marcada; mira la escena.',
-         d:'Elegiste la D. 370 cm sale de invertir las densidades. El mercurio es 13,6 veces más denso: le basta una columna 13,6 veces más baja. La correcta está marcada; mira la escena.' },
+    fb:{ a:'Si quedaran parejos, la rama izquierda tendría 27,2 cm de agua de más empujando hacia abajo, y el mercurio se movería.; mira la escena.',
+         c:'Con un solo líquido, las superficies quedan parejas. Con dos líquidos no: solo se iguala la presión dentro del mismo líquido, a la misma altura.; mira la escena.',
+         d:'370 cm sale de invertir las densidades. El mercurio es 13,6 veces más denso: le basta una columna 13,6 veces más baja.; mira la escena.' },
     antes:() => Object.assign(E, { tipo:'tubo', h1:0.272, ver:'antes', crece:0 }),
     despues:() => { E.ver = 'despues'; E.crece = 0; mover(1000, f => { E.crece = f; }); },
     fin:() => { E.ver = 'despues'; E.crece = 1; },
@@ -1128,9 +1128,9 @@ const EXPS = [
           ['c','Los cinco van al fondo, porque todos son sólidos y el agua no puede sostenerlos.','todos-al-fondo','hipotesis'],
           ['d','Los cinco quedan donde se soltaron, porque todos reciben el mismo empuje.','quedan-donde-se-sueltan','hipotesis']],
     ok:'b',
-    fb:{ a:'Elegiste la A. Un bloque solo puede quedar quieto a media agua si su empuje es igual a su peso, y el empuje de un bloque sumergido no cambia con la profundidad. Así que no hay "su" profundidad. La correcta está marcada; mira la escena.',
-         c:'Elegiste la C. El agua sí puede sostener un sólido: si pesa menos que el agua que desaloja, el empuje lo sube. La correcta está marcada; mira la escena.',
-         d:'Elegiste la D. Es cierto que sumergidos reciben el mismo empuje, 5 N, pero no pesan lo mismo: los que pesan más bajan, los que pesan menos suben. La correcta está marcada; mira la escena.' },
+    fb:{ a:'Un bloque solo puede quedar quieto a media agua si su empuje es igual a su peso, y el empuje de un bloque sumergido no cambia con la profundidad. Así que no hay "su" profundidad.; mira la escena.',
+         c:'El agua sí puede sostener un sólido: si pesa menos que el agua que desaloja, el empuje lo sube.; mira la escena.',
+         d:'Es cierto que sumergidos reciben el mismo empuje, 5 N, pero no pesan lo mismo: los que pesan más bajan, los que pesan menos suben.; mira la escena.' },
     antes:() => Object.assign(E, { tipo:'bloques', f:0, ver:'antes' }),
     despues:() => { E.ver = 'despues'; E.f = 0; mover(1600, f => { E.f = f; }); },
     fin:() => { E.ver = 'despues'; E.f = 1; },
@@ -1147,9 +1147,9 @@ const EXPS = [
           ['c','Igual en los dos, porque en los dos sostiene el mismo peso.',null],
           ['d','En ninguno, porque un cuerpo que flota no recibe empuje: se apoya en la superficie.','flota-sin-empuje','hipotesis']],
     ok:'c',
-    fb:{ a:'Elegiste la A. Flota más alto porque el agua es más densa: le basta menos volumen sumergido para dar el mismo empuje. La correcta está marcada; mira la escena.',
-         b:'Elegiste la B. Tiene más volumen sumergido en el aceite, pero el aceite es menos denso: ρ·g·V da lo mismo. La correcta está marcada; mira la escena.',
-         d:'Elegiste la D. La superficie del líquido no es un piso: lo que sostiene al cubo es el empuje del líquido sobre su parte hundida. La correcta está marcada; mira la escena.' },
+    fb:{ a:'Flota más alto porque el agua es más densa: le basta menos volumen sumergido para dar el mismo empuje.; mira la escena.',
+         b:'Tiene más volumen sumergido en el aceite, pero el aceite es menos denso: ρ·g·V da lo mismo.; mira la escena.',
+         d:'La superficie del líquido no es un piso: lo que sostiene al cubo es el empuje del líquido sobre su parte hundida.; mira la escena.' },
     antes:() => Object.assign(E, { tipo:'dos', rhoAc:800, ver:'antes', crece:0 }),
     despues:() => { E.ver = 'despues'; E.crece = 0; mover(700, f => { E.crece = f; }); },
     fin:() => { E.ver = 'despues'; E.crece = 1; },
@@ -1229,7 +1229,7 @@ function ir(k, enfocar){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : (x.fb && x.fb[p]) || `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira la escena para ver por qué.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : (x.fb && x.fb[p]) || `; mira la escena para ver por qué.`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.ctrl() + x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     $('res2').querySelectorAll('input').forEach(inp => inp.addEventListener('input', () => { parar(); parar = () => {}; x.alCambiar(); x.vivo(); draw(); }));
@@ -1283,18 +1283,18 @@ const PV = { id:'tubo-rapidez', ok:'b',
         ['c','0,125 m/s, porque por lo angosto cabe menos agua y pasa cuatro veces más lenta.','PR4-invertida','hipotesis'],
         ['d','0,5 m/s, porque el agua no se comprime y va igual en todo el tubo.','FH-misma-rapidez','hipotesis']],
   fb:{ b:'¡Bien! El mismo caudal pasa por un área cuatro veces menor: tiene que ir cuatro veces más rápido.',
-       a:'Elegiste la A. La rapidez no va con el radio sino con el área, que va con el radio al cuadrado: con la mitad del radio, la cuarta parte del área. La correcta está marcada.',
-       c:'Elegiste la C. Es al revés: el agua que entra por lo ancho tiene que salir por lo angosto en el mismo tiempo, así que ahí corre más rápido. La correcta está marcada.',
-       d:'Elegiste la D. Que el agua no se comprima es justo lo que obliga a que corra más rápido: el mismo volumen por segundo pasa por un hueco más chico. La correcta está marcada.' } };
+       a:'La rapidez no va con el radio sino con el área, que va con el radio al cuadrado: con la mitad del radio, la cuarta parte del área.',
+       c:'Es al revés: el agua que entra por lo ancho tiene que salir por lo angosto en el mismo tiempo, así que ahí corre más rápido.',
+       d:'Que el agua no se comprima es justo lo que obliga a que corra más rápido: el mismo volumen por segundo pasa por un hueco más chico.' } };
 const PP = { id:'tubo-tubitos', ok:'c',
   opts:[['a','En el del tramo angosto, porque ahí el agua va más rápido y empuja con más fuerza.','FH-mas-rapido-mas-presion','hipotesis'],
         ['b','Sube lo mismo en los dos, porque es el mismo tubo y pasa el mismo caudal.','FH-presion-igual','hipotesis'],
         ['c','En el del tramo ancho, porque el agua necesita más presión detrás para acelerar.',null,''],
         ['d','En el del tramo angosto, porque ahí las paredes aprietan más el agua.','F3-encerrado','parcial']],
   fb:{ c:'¡Bien! El agua acelera al entrar en lo angosto, y lo que la empuja hacia adelante es que detrás hay más presión que delante. Por eso el tubito del tramo angosto queda más bajo.',
-       a:'Elegiste la A. Que el agua vaya más rápido no quiere decir que empuje más hacia los costados. Para acelerar, la empujan desde atrás, donde hay más presión: en lo angosto la presión es menor. La correcta está marcada.',
-       b:'Elegiste la B. El caudal sí es el mismo, pero la presión no: cuando el agua corre, cambia de un tramo a otro. La correcta está marcada.',
-       d:'Elegiste la D. Las paredes no aprietan más por estar más cerca; en un líquido quieto, la presión no depende del ancho. Y aquí el agua corre: en lo angosto la presión baja. La correcta está marcada.' } };
+       a:'Que el agua vaya más rápido no quiere decir que empuje más hacia los costados. Para acelerar, la empujan desde atrás, donde hay más presión: en lo angosto la presión es menor.',
+       b:'El caudal sí es el mismo, pero la presión no: cuando el agua corre, cambia de un tramo a otro.',
+       d:'Las paredes no aprietan más por estar más cerca; en un líquido quieto, la presión no depende del ancho. Y aquí el agua corre: en lo angosto la presión baja.' } };
 
 const steps = [
  { k:'Paso 1', t:'¿Qué tan rápido en lo angosto?', gate:PV, ley:['v'],

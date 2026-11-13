@@ -118,7 +118,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
 .btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
@@ -538,54 +538,54 @@ const P1 = { id:'programacion-lineal-paso1', ok:'b', opts:[
   ['c', TEJ.errores.sentido.texto, 'PL15-a-lo-mas-como-al-menos', 'hipotesis'],
   ['d', TEJ.errores.igualdad.texto, 'PL12-inecuacion-como-ecuacion', 'parcial']],
   fb:{ b:'¡Bien! Cada chompa suma 3 horas y cada chalina 1: x chompas y y chalinas usan 3x + y horas, y eso no puede pasar de 21.',
-    a:'Elegiste la A. x + 3y le pone las 3 horas a la chalina. El 3 va con la letra de lo que tarda 3 horas: la chompa, x. La correcta está marcada.',
-    c:'Elegiste la C. «A lo más 21» quiere decir 21 o menos: ≤. Con ≥ el taller tendría que usar al menos 21 horas. La correcta está marcada.',
-    d:'Elegiste la D. Con = el taller tendría que usar las 21 horas justas. «A lo más» deja usar menos: ≤. La correcta está marcada.' } };
+    a:'x + 3y le pone las 3 horas a la chalina. El 3 va con la letra de lo que tarda 3 horas: la chompa, x.',
+    c:'«A lo más 21» quiere decir 21 o menos: ≤. Con ≥ el taller tendría que usar al menos 21 horas.',
+    d:'Con = el taller tendría que usar las 21 horas justas. «A lo más» deja usar menos: ≤.' } };
 const P2 = { id:'programacion-lineal-paso2', ok:'c', opts:[
   ['a', 'El lado opuesto al origen, con la recta continua', 'PL1-lado-contrario', 'hipotesis'],
   ['b', 'El lado del origen, con la recta punteada', 'PL2-recta-punteada', 'hipotesis'],
   ['c', 'El lado del origen, con la recta continua'],
   ['d', 'Solo los puntos de la recta 3x + y = 21', 'PL12-inecuacion-como-ecuacion', 'parcial']],
   fb:{ c:`¡Bien! El origen cumple: ${PR0.texto}. Y como el signo es ≤, los puntos de la recta (las 21 horas justas) también valen: continua.`,
-    a:`Elegiste la A. Prueba un punto: el origen da ${PR0.texto}, que es cierto. Así que el lado que cumple es el del origen. La correcta está marcada.`,
-    b:'Elegiste la B. El lado está bien, pero ≤ incluye el igual: los planes que usan las 21 horas justas también sirven. Punteada es para < o >. La correcta está marcada.',
-    d:'Elegiste la D. La recta son solo los planes que usan 21 horas justas. ≤ también deja usar menos horas: es todo un lado del plano. La correcta está marcada.' } };
+    a:`Prueba un punto: el origen da ${PR0.texto}, que es cierto. Así que el lado que cumple es el del origen.`,
+    b:'El lado está bien, pero ≤ incluye el igual: los planes que usan las 21 horas justas también sirven. Punteada es para < o >.',
+    d:'La recta son solo los planes que usan 21 horas justas. ≤ también deja usar menos horas: es todo un lado del plano.' } };
 const P3 = { id:'programacion-lineal-paso4', ok:'a', opts:[
   ['a', IN.texto],
   ['b', IN.errores.intercambiada.texto, 'PL10-coordenadas-cruzadas', 'hipotesis'],
   ['c', IN.errores.cortesMezclados.texto, 'PL10-cortes-mezclados', 'hipotesis'],
   ['d', IN.errores.signoDespeje.texto, 'PL10-signo-al-despejar', 'hipotesis']],
   fb:{ a:'¡Bien! Restando las ecuaciones, (3x + y) − (x + y) = 21 − 11: 2x = 10, x = 5. Y con x + y = 11, y = 6.',
-    b:'Elegiste la B. (6; 5) tiene las coordenadas al revés: 3·6 + 5 = 23, que pasa de 21. Comprueba siempre en las dos ecuaciones. La correcta está marcada.',
-    c:'Elegiste la C. 7 es donde el tejido corta el eje x y 11 donde la feria corta el eje y: son puntos de rectas distintas. El cruce tiene que cumplir las dos ecuaciones a la vez. La correcta está marcada.',
-    d:'Elegiste la D. De x + y = 11 sale y = 11 − x, no 11 + x: al pasar x al otro lado cambia de signo. Con x = 5, y = 6. La correcta está marcada.' } };
+    b:'(6; 5) tiene las coordenadas al revés: 3·6 + 5 = 23, que pasa de 21. Comprueba siempre en las dos ecuaciones.',
+    c:'7 es donde el tejido corta el eje x y 11 donde la feria corta el eje y: son puntos de rectas distintas. El cruce tiene que cumplir las dos ecuaciones a la vez.',
+    d:'De x + y = 11 sale y = 11 − x, no 11 + x: al pasar x al otro lado cambia de signo. Con x = 5, y = 6.' } };
 const P4 = { id:'programacion-lineal-paso5', ok:'d', opts:[
   ['a', `Pendiente ${NV.errores.invertida.texto}; al subir k se aleja del origen`, 'PL11-pendiente-invertida', 'hipotesis'],
   ['b', `Pendiente ${NV.errores.signo.texto}; al subir k se aleja del origen`, 'PL11-pendiente-sin-signo', 'hipotesis'],
   ['c', `Pendiente ${NV.pendienteTexto}; al subir k se acerca al origen`, 'PL19-direccion-al-reves', 'hipotesis'],
   ['d', `Pendiente ${NV.pendienteTexto}; al subir k se aleja del origen`]],
   fb:{ d:'¡Bien! De 40x + 20y = k sale y = −2x + k/20: pendiente −40/20 = −2, y el corte k/20 sube cuando sube k.',
-    a:'Elegiste la A. −1/2 sale de dividir al revés, 20/40. Al despejar y, se divide entre el número que acompaña a y: −40/20 = −2. La correcta está marcada.',
-    b:'Elegiste la B. Si x crece, para que 40x + 20y siga igual, y tiene que bajar: la recta baja hacia la derecha y su pendiente es negativa, −2. La correcta está marcada.',
-    c:'Elegiste la C. La pendiente está bien, pero con k más grande hacen falta más chompas o más chalinas: la recta se va más lejos del origen. La correcta está marcada.' } };
+    a:'−1/2 sale de dividir al revés, 20/40. Al despejar y, se divide entre el número que acompaña a y: −40/20 = −2.',
+    b:'Si x crece, para que 40x + 20y siga igual, y tiene que bajar: la recta baja hacia la derecha y su pendiente es negativa, −2.',
+    c:'La pendiente está bien, pero con k más grande hacen falta más chompas o más chalinas: la recta se va más lejos del origen.' } };
 const P5 = { id:'programacion-lineal-paso6', ok:'b', opts:[
   ['a', `En el vértice ${O1.errores.mayorX.texto}`, 'PL5-vertice-de-mayor-x', 'hipotesis'],
   ['b', `En el vértice ${O1.optimoTexto}`],
   ['c', `En el vértice ${O1.errores.masLejano.texto}`, 'PL4-vertice-mas-lejano', 'hipotesis'],
   ['d', 'En un punto del interior de la región', 'PL3-optimo-interior', 'hipotesis']],
   fb:{ b:`¡Bien! La recta de pendiente −2 avanza y lo último que toca es la esquina ${O1.optimoTexto}, con z = ${O1.texto}.`,
-    a:`Elegiste la A. ${O1.errores.mayorX.texto} es el vértice con más chompas, pero ahí la ganancia es ${sol(O1.errores.mayorX.valor)}. La recta todavía puede avanzar: aún toca la región. La correcta está marcada.`,
-    c:`Elegiste la C. ${O1.errores.masLejano.texto} es el vértice más lejano del origen, pero la ganancia no mide distancia: ahí z = ${O1.errores.masLejano.valor}. La correcta está marcada.`,
-    d:'Elegiste la D. Desde un punto del interior siempre se puede empujar un poco más la recta sin salir de la región: lo último que toca es un borde, y en un borde, una esquina. La correcta está marcada.' } };
+    a:`${O1.errores.mayorX.texto} es el vértice con más chompas, pero ahí la ganancia es ${sol(O1.errores.mayorX.valor)}. La recta todavía puede avanzar: aún toca la región.`,
+    c:`${O1.errores.masLejano.texto} es el vértice más lejano del origen, pero la ganancia no mide distancia: ahí z = ${O1.errores.masLejano.valor}.`,
+    d:'Desde un punto del interior siempre se puede empujar un poco más la recta sin salir de la región: lo último que toca es un borde, y en un borde, una esquina.' } };
 const P6 = { id:'programacion-lineal-paso7', ok:'c', opts:[
   ['a', `${sol(O2.errores.anterior.valor)}, en ${O2.errores.anterior.texto}`, 'PL21-optimo-no-cambia', 'hipotesis'],
   ['b', `${sol(O2.errores.mayorX.valor)}, en ${O2.errores.mayorX.texto}`, 'PL5-vertice-de-mayor-x', 'hipotesis'],
   ['c', `${sol(O2.valor)}, en ${O2.optimoTexto}`],
   ['d', `${sol(O2.errores.soloEjes.valor)}, en ${O2.errores.soloEjes.texto}`, 'PL7-solo-vertices-de-los-ejes', 'hipotesis']],
   fb:{ c:`¡Bien! La tabla completa da 0, 140, 280, 310 y 270: el mayor es ${O2.valor}, en ${O2.optimoTexto}.`,
-    a:`Elegiste la A. ${O2.errores.anterior.texto} era el mejor con los precios de antes. Con los nuevos da ${O2.errores.anterior.valor}, pero ${O2.optimoTexto} da ${O2.valor}. Cada vez que cambia z hay que volver a evaluar todos los vértices. La correcta está marcada.`,
-    b:`Elegiste la B. ${O2.errores.mayorX.texto} da solo ${O2.errores.mayorX.valor}: ahora la chalina paga más que la chompa. La correcta está marcada.`,
-    d:`Elegiste la D. ${O2.errores.soloEjes.texto} es el mejor de los vértices de los ejes, pero faltó evaluar las esquinas del medio: ${O2.optimoTexto} da ${O2.valor}. La correcta está marcada.` } };
+    a:`${O2.errores.anterior.texto} era el mejor con los precios de antes. Con los nuevos da ${O2.errores.anterior.valor}, pero ${O2.optimoTexto} da ${O2.valor}. Cada vez que cambia z hay que volver a evaluar todos los vértices.`,
+    b:`${O2.errores.mayorX.texto} da solo ${O2.errores.mayorX.valor}: ahora la chalina paga más que la chompa.`,
+    d:`${O2.errores.soloEjes.texto} es el mejor de los vértices de los ejes, pero faltó evaluar las esquinas del medio: ${O2.optimoTexto} da ${O2.valor}.` } };
 
 // ----- dibujos -----
 function ejesTaller(D, rx, ry){ ejes(D, 'chompas', 'chalinas', rx, ry); }
@@ -1043,7 +1043,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

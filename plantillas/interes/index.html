@@ -124,7 +124,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -634,45 +634,45 @@ const G1 = { id:'interes-paso1', ok:'b', opts:[
   ['c', soles(P1.errores.daElMonto), 'AR5-da-el-monto', 'hipotesis'],
   ['d', soles(P1.errores.unPeriodo), 'interes-de-un-anio', 'hipotesis']],
   fb:{ b:'¡Bien! 8 meses son 8/12 de año. Al 15 % anual, cada mes gana el 15/12 = 1,25 % de S/ 2400, que es S/ 30. En 8 meses: S/ 240.',
-    a:'Elegiste la A. Esa cuenta usa los 8 meses como si fueran 8 años con la tasa anual. La tasa y el tiempo tienen que estar en la misma unidad. La correcta está marcada.',
-    c:'Elegiste la C. S/ 2640 es lo que hay en la alcancía al final: el monto, capital más interés. La pregunta es solo por el interés. La correcta está marcada.',
-    d:'Elegiste la D. S/ 360 es el interés de un año entero (el 15 % de 2400). Pero el dinero estuvo solo 8 meses. La correcta está marcada.' } };
+    a:'Esa cuenta usa los 8 meses como si fueran 8 años con la tasa anual. La tasa y el tiempo tienen que estar en la misma unidad.',
+    c:'S/ 2640 es lo que hay en la alcancía al final: el monto, capital más interés. La pregunta es solo por el interés.',
+    d:'S/ 360 es el interés de un año entero (el 15 % de 2400). Pero el dinero estuvo solo 8 meses.' } };
 const G3 = { id:'interes-paso3', ok:'c', opts:[
   ['a', soles(P3.errores.comoSimple), 'AR16-compuesto-como-simple', 'parcial'],
   ['b', soles(P3.errores.factorPorTiempo), 'factor-por-tiempo', 'hipotesis'],
   ['c', soles(P3.M)],
   ['d', soles(P3.errores.unPeriodoMenos), 'cuenta-un-periodo-menos', 'hipotesis']],
   fb:{ c:'¡Bien! El primer año gana S/ 100 y llega a S/ 1100. El segundo gana el 10 % de 1100, que es S/ 110. El tercero, el 10 % de 1210, que es S/ 121. Total: S/ 1331.',
-    a:'Elegiste la A. Así sería con interés simple: S/ 100 cada año. En el compuesto, desde el segundo año el interés también gana interés, y cada ficha es más grande que la anterior. La correcta está marcada.',
-    b:'Elegiste la B. Esa cuenta multiplica 1000 · 1,1 por 3. Pero el factor 1,1 se aplica tres veces seguidas: 1000 · 1,1 · 1,1 · 1,1. La correcta está marcada.',
-    d:'Elegiste la D. S/ 1210 es lo que hay al final del segundo año. Falta un año más de interés. La correcta está marcada.' } };
+    a:'Así sería con interés simple: S/ 100 cada año. En el compuesto, desde el segundo año el interés también gana interés, y cada ficha es más grande que la anterior.',
+    b:'Esa cuenta multiplica 1000 · 1,1 por 3. Pero el factor 1,1 se aplica tres veces seguidas: 1000 · 1,1 · 1,1 · 1,1.',
+    d:'S/ 1210 es lo que hay al final del segundo año. Falta un año más de interés.' } };
 const G5 = { id:'interes-paso5', ok:'a', opts:[
   ['a', pct(P5.efectiva)],
   ['b', pct(P5.errores.proporcional), 'tasa-equivalente-como-proporcional', 'hipotesis'],
   ['c', pct(P5.errores.factorComoTasa), 'AR4-factor-como-tasa', 'parcial'],
   ['d', pct(P5.errores.alReves), 'convierte-al-reves', 'hipotesis']],
   fb:{ a:'¡Bien! Cada mes el dinero se multiplica por 1,02. En 12 meses, por 1,02 elevado a 12, que es casi 1,2682: gana un 26,82 % en el año.',
-    b:'Elegiste la B. 12 · 2 % = 24 % sería si cada mes ganara solo sobre el capital (interés simple). Con capitalización mensual, desde el segundo mes también gana sobre el interés. La correcta está marcada.',
-    c:'Elegiste la C. 1,2682 es el factor: por cuánto se multiplica el dinero. El interés es lo que pasa de 1, o sea 0,2682: un 26,82 %. La correcta está marcada.',
-    d:'Elegiste la D. Esa cuenta divide 2 % entre 12, como si se pasara de anual a mensual. Es al revés: un año tiene 12 meses, así que la tasa anual es mayor que la mensual. La correcta está marcada.' } };
+    b:'12 · 2 % = 24 % sería si cada mes ganara solo sobre el capital (interés simple). Con capitalización mensual, desde el segundo mes también gana sobre el interés.',
+    c:'1,2682 es el factor: por cuánto se multiplica el dinero. El interés es lo que pasa de 1, o sea 0,2682: un 26,82 %.',
+    d:'Esa cuenta divide 2 % entre 12, como si se pasara de anual a mensual. Es al revés: un año tiene 12 meses, así que la tasa anual es mayor que la mensual.' } };
 const G7 = { id:'interes-paso7', ok:'a', opts:[
   ['a', soles(P7.C)],
   ['b', soles(P7.errores.interesSobreMonto), 'AR3-porcentaje-del-monto', 'parcial'],
   ['c', soles(P7.errores.sinTiempo), 'olvida-el-tiempo', 'hipotesis'],
   ['d', soles(P7.errores.restaTasa), 'AR3-resta-la-tasa-del-monto', 'parcial']],
   fb:{ a:'¡Bien! En 18 meses (1,5 años) al 10 % anual gana el 15 % del capital. Entonces el monto es el 115 % del capital: 3450 ÷ 1,15 = 3000.',
-    b:'Elegiste la B. Esa cuenta saca el 15 % de S/ 3450 y lo resta. Pero el 15 % es del capital, no del monto: el interés salió de lo que se depositó. Comprueba: 2932,50 más su 15 % da 3372,38, no 3450. La correcta está marcada.',
-    c:'Elegiste la C. Esa cuenta divide entre 1,10, como si el dinero hubiera estado un año. Estuvo 18 meses: el interés total es el 15 %. La correcta está marcada.',
-    d:'Elegiste la D. Esa cuenta resta el 10 % del monto: olvida el tiempo y además saca el porcentaje del monto. La correcta está marcada.' } };
+    b:'Esa cuenta saca el 15 % de S/ 3450 y lo resta. Pero el 15 % es del capital, no del monto: el interés salió de lo que se depositó. Comprueba: 2932,50 más su 15 % da 3372,38, no 3450.',
+    c:'Esa cuenta divide entre 1,10, como si el dinero hubiera estado un año. Estuvo 18 meses: el interés total es el 15 %.',
+    d:'Esa cuenta resta el 10 % del monto: olvida el tiempo y además saca el porcentaje del monto.' } };
 const G8 = { id:'interes-paso8', ok:'b', opts:[
   ['a', soles(P8.racional.errores.comoComercial), 'racional-como-comercial', 'hipotesis'],
   ['b', soles(P8.racional.D)],
   ['c', soles(P8.racional.errores.sobreVaComercial), 'racional-sobre-va-comercial', 'hipotesis'],
   ['d', soles(P8.racional.errores.vaComoDescuento), 'valor-actual-como-descuento', 'hipotesis']],
   fb:{ b:'¡Bien! En 4 meses al 15 % anual, r · t = 5 %. El valor actual más su 5 % tiene que dar 6300: Va = 6300 ÷ 1,05 = 6000. El descuento racional es 6300 − 6000 = S/ 300.',
-    a:'Elegiste la A. S/ 315 es el 5 % de 6300: así se calcula el descuento comercial, sobre el valor nominal. El racional se calcula sobre el valor actual, que es menor. La correcta está marcada.',
-    c:'Elegiste la C. Esa cuenta saca el 5 % de 5985, el valor actual del descuento comercial. El racional usa su propio valor actual: el que, sumado a su 5 %, da 6300. Ese es 6000, y su 5 % es 300. La correcta está marcada.',
-    d:'Elegiste la D. S/ 6000 es lo que recibes hoy, el valor actual. El descuento es lo que se queda el banco: la diferencia con 6300. La correcta está marcada.' } };
+    a:'S/ 315 es el 5 % de 6300: así se calcula el descuento comercial, sobre el valor nominal. El racional se calcula sobre el valor actual, que es menor.',
+    c:'Esa cuenta saca el 5 % de 5985, el valor actual del descuento comercial. El racional usa su propio valor actual: el que, sumado a su 5 %, da 6300. Ese es 6000, y su 5 % es 300.',
+    d:'S/ 6000 es lo que recibes hoy, el valor actual. El descuento es lo que se queda el banco: la diferencia con 6300.' } };
 
 // ---- configuraciones de la escena ----
 const torreP1 = ya => ({ modo:'torre', torre:{ C:2400, r:1.25, tipo:'simple', tmax:8, prog: ya ? 8 : 0, ocultos:!ya, imax:300, etiqueta:etMeses, unidad:'meses' },
@@ -1046,7 +1046,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

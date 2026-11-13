@@ -113,7 +113,7 @@ canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -575,7 +575,7 @@ const $ = id => document.getElementById(id);
 const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
 const S = { step:0, max:0, pred:{}, ocupado:false, e1:{ op:'y', valores:{ p:true, q:false }, vistas:new Set() }, e8:{ texto:'(p → q) ∧ ~r', valores:{ p:true, q:true, r:true, s:true } } };
 const p_ = t => V('p', t), q_ = t => V('q', t), r_ = t => V('r', t), res_ = t => V('res', t);
-const fb = (letra, ok, txt) => (letra === ok ? txt : `Elegiste la ${letra.toUpperCase()}. ${txt} La correcta está marcada.`);
+const fb = (letra, ok, txt) => (letra === ok ? txt : `${txt}`);
 const FUENTE = '<p class="fuente">Todavía no revisamos estudios sobre estos errores: las opciones incorrectas son hipótesis nuestras, y la app las medirá en el colegio.</p>';
 const LEY_VARS = vars => vars.map(x => [x, `interruptor ${x}`]);
 const LEY_FOCO = [['res', 'foco de la fórmula: encendido V, apagado F'], ['ink', 'cable con corriente']];
@@ -1040,7 +1040,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const f = $('fb2');
-    decir(f, p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`);
+    decir(f, p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`);
     f.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + x.fuente + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

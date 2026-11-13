@@ -109,7 +109,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -796,44 +796,44 @@ const P1 = { id:'angulo-inscrito-paso2', ok:'b', opts:[
   ['b','50°'],
   ['c','200°: el doble del central','GE15-inscrito-doble','hipotesis']],
   fb:{ b:'¡Bien! El ángulo inscrito mide la mitad del arco que abarca: 100° / 2 = 50°.',
-    a:'Elegiste la A. El central tiene su vértice en O; el inscrito, en la circunferencia, y mide la mitad del arco: 50°. La correcta está marcada.',
-    c:'Elegiste la C. Es al revés: el central es el doble del inscrito, no el inscrito el doble del central. El inscrito mide 100° / 2 = 50°. La correcta está marcada.' } };
+    a:'El central tiene su vértice en O; el inscrito, en la circunferencia, y mide la mitad del arco: 50°.',
+    c:'Es al revés: el central es el doble del inscrito, no el inscrito el doble del central. El inscrito mide 100° / 2 = 50°.' } };
 const P2 = { id:'angulo-inscrito-paso3', ok:'b', opts:[
   ['a','Crece cuando P se acerca a A o a B','GE12-crece-cerca-de-A','hipotesis'],
   ['b','No cambia'],
   ['c','Disminuye cuando P se acerca a A o a B','GE12-disminuye-cerca-de-A','hipotesis'],
   ['d','Cambia; solo se quedaría fijo si AB fuera un diámetro','GE12-solo-en-diametro','parcial']],
   fb:{ b:'¡Bien! Mientras P esté en el arco mayor, ∠APB abarca el mismo arco AB, y mide siempre la mitad: 50°.',
-    a:'Elegiste la A. Cerca de A, el triángulo APB se ve muy distinto, pero el ángulo en P sigue abarcando el mismo arco AB: no cambia. La correcta está marcada.',
-    c:'Elegiste la C. Cerca de A el ángulo parece cerrarse, pero lo que se acorta es el lado PA, no la abertura: sigue abarcando el mismo arco AB y mide lo mismo. La correcta está marcada.',
-    d:'Elegiste la D. El diámetro es solo un caso (el de 90°). Con cualquier cuerda AB, todos los ángulos inscritos que abarcan el mismo arco miden lo mismo. La correcta está marcada.' } };
+    a:'Cerca de A, el triángulo APB se ve muy distinto, pero el ángulo en P sigue abarcando el mismo arco AB: no cambia.',
+    c:'Cerca de A el ángulo parece cerrarse, pero lo que se acorta es el lado PA, no la abertura: sigue abarcando el mismo arco AB y mide lo mismo.',
+    d:'El diámetro es solo un caso (el de 90°). Con cualquier cuerda AB, todos los ángulos inscritos que abarcan el mismo arco miden lo mismo.' } };
 const P3 = { id:'angulo-inscrito-paso5', ok:'b', opts:[
   ['a','70°: la mitad de 110° + 30°','GE16-exterior-suma','hipotesis'],
   ['b','40°'],
   ['c','80°: 110° − 30°','GE16-exterior-sin-dividir','hipotesis'],
   ['d','140°: 110° + 30°','GE16-exterior-suma-sin-dividir','hipotesis']],
   fb:{ b:'¡Bien! Con el vértice fuera, el ángulo mide la semidiferencia de los arcos: (110° − 30°) / 2 = 40°.',
-    a:'Elegiste la A. Con el vértice fuera, el arco cercano no se suma: le quita abertura al ángulo, así que se resta. (110° − 30°) / 2 = 40°. La correcta está marcada.',
-    c:'Elegiste la C. La resta va bien, pero falta dividir entre 2, como en el ángulo inscrito: (110° − 30°) / 2 = 40°. La correcta está marcada.',
-    d:'Elegiste la D. Fuera los arcos se restan y luego se divide entre 2: (110° − 30°) / 2 = 40°. La correcta está marcada.' } };
+    a:'Con el vértice fuera, el arco cercano no se suma: le quita abertura al ángulo, así que se resta. (110° − 30°) / 2 = 40°.',
+    c:'La resta va bien, pero falta dividir entre 2, como en el ángulo inscrito: (110° − 30°) / 2 = 40°.',
+    d:'Fuera los arcos se restan y luego se divide entre 2: (110° − 30°) / 2 = 40°.' } };
 const P4 = { id:'angulo-inscrito-paso6', ok:'b', opts:[
   ['a','40°: igual que afuera, se restan','GE16-interior-resta','hipotesis'],
   ['b','70°'],
   ['c','140°: 110° + 30°','GE16-interior-sin-dividir','hipotesis'],
   ['d','55°: la mitad del arco AB, como un inscrito','interior-solo-un-arco','hipotesis']],
   fb:{ b:'¡Bien! Con el vértice dentro, el ángulo mide la semisuma: (110° + 30°) / 2 = 70°.',
-    a:'Elegiste la A. Dentro, los dos arcos están "del lado" del ángulo (uno entre sus lados y otro entre los lados de su opuesto por el vértice): se suman. (110° + 30°) / 2 = 70°. La correcta está marcada.',
-    c:'Elegiste la C. La suma va bien, pero falta dividir entre 2: (110° + 30°) / 2 = 70°. La correcta está marcada.',
-    d:'Elegiste la D. 55° sería el ángulo si Q estuviera sobre la circunferencia. Dentro, el ángulo se abre más y también cuenta el arco CD: (110° + 30°) / 2 = 70°. La correcta está marcada.' } };
+    a:'Dentro, los dos arcos están "del lado" del ángulo (uno entre sus lados y otro entre los lados de su opuesto por el vértice): se suman. (110° + 30°) / 2 = 70°.',
+    c:'La suma va bien, pero falta dividir entre 2: (110° + 30°) / 2 = 70°.',
+    d:'55° sería el ángulo si Q estuviera sobre la circunferencia. Dentro, el ángulo se abre más y también cuenta el arco CD: (110° + 30°) / 2 = 70°.' } };
 const P5 = { id:'angulo-inscrito-paso7', ok:'b', opts:[
   ['a','4π cm','GE19-diametro-como-radio','hipotesis'],
   ['b','2π cm'],
   ['c','6π cm','GE19-area-por-longitud','hipotesis'],
   ['d','12π cm','GE19-sin-fraccion','hipotesis']],
   fb:{ b:'¡Bien! 60° es la sexta parte de la vuelta: ℓ = (60/360) · 2π · 6 = 2π cm.',
-    a:'Elegiste la A. Así sale si se usa el diámetro, 12, en lugar del radio: (60/360) · 2π · 12 = 4π cm. Con r = 6, ℓ = 2π cm. La correcta está marcada.',
-    c:'Elegiste la C. 6π es el área del sector, (60/360) · π · 6², que se mide en cm². La longitud del arco usa 2πr: (60/360) · 2π · 6 = 2π cm. La correcta está marcada.',
-    d:'Elegiste la D. 12π cm es la longitud de la circunferencia entera, 2π · 6. El arco de 60° es un sexto de la vuelta: su longitud es 2π cm. La correcta está marcada.' } };
+    a:'Así sale si se usa el diámetro, 12, en lugar del radio: (60/360) · 2π · 12 = 4π cm. Con r = 6, ℓ = 2π cm.',
+    c:'6π es el área del sector, (60/360) · π · 6², que se mide en cm². La longitud del arco usa 2πr: (60/360) · 2π · 6 = 2π cm.',
+    d:'12π cm es la longitud de la circunferencia entera, 2π · 6. El arco de 60° es un sexto de la vuelta: su longitud es 2π cm.' } };
 
 const steps = [
  { k:'Paso 1', t:'El ángulo desde P', prep:() => cfgIns({ ver:{ arco:true, medArco:true, central:true, medCen:true, ins:true }, mover:['P'], lect:['arco','cen'] }),
@@ -1179,7 +1179,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

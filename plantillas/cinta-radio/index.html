@@ -113,7 +113,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -761,54 +761,54 @@ const P_RAD = { id:'cinta-radio-paso2', unidad:UNIDAD_ANGULO, ok:'b', opts:[
   ['c','60°: la sexta parte de la vuelta','TR2-radian-60','hipotesis'],
   ['d','180°: un radián es π','TR1-pi-rad-igual-1-rad','parcial']],
   fb:{ b:`¡Bien! La cinta doblada abarca un radián: 180°/π, unos ${fmt(UN_RAD.S, 1)}°.`,
-    a:`Elegiste la A. Un grado es un ángulo muy chico (1/360 de la vuelta); una cinta del largo del radio cubre mucho más. Un radián mide 180°/π, unos ${fmt(UN_RAD.S, 1)}°. La correcta está marcada.`,
-    c:`Elegiste la C. Casi: a 60°, la cuerda (el segmento recto de Q a P) mide un radio, como en el hexágono. Pero el arco es más largo que la cuerda, así que la cinta doblada llega antes: a unos ${fmt(UN_RAD.S, 1)}°. La correcta está marcada.`,
-    d:`Elegiste la D. 180° son π radianes: unas 3,14 cintas, media vuelta. Una sola cinta abarca 180°/π, unos ${fmt(UN_RAD.S, 1)}°. La correcta está marcada.` } };
+    a:`Un grado es un ángulo muy chico (1/360 de la vuelta); una cinta del largo del radio cubre mucho más. Un radián mide 180°/π, unos ${fmt(UN_RAD.S, 1)}°.`,
+    c:`Casi: a 60°, la cuerda (el segmento recto de Q a P) mide un radio, como en el hexágono. Pero el arco es más largo que la cuerda, así que la cinta doblada llega antes: a unos ${fmt(UN_RAD.S, 1)}°.`,
+    d:`180° son π radianes: unas 3,14 cintas, media vuelta. Una sola cinta abarca 180°/π, unos ${fmt(UN_RAD.S, 1)}°.` } };
 const P_ARCO = { id:'cinta-radio-paso3', ok:'c', opts:[
   ['a',`${fmt(S60.errores.arcoConGrados, 0)} cm`,'TR4-arco-con-grados','hipotesis'],
   ['b',`${fmt(S60.errores.arcoIgualRadio, 0)} cm: el arco de 60° mide un radio`,'TR2-arco-igual-radio','hipotesis'],
   ['c',`2π cm, unos ${fmt(S60.L, 2)} cm`],
   ['d',`π/3 cm, unos ${fmt(S60.errores.arcoSinRadio, 2)} cm`,'arco-sin-radio','hipotesis']],
   fb:{ c:'¡Bien! 60° son π/3 rad, y el arco mide θ·r = (π/3)·6 = 2π cm: un poco más de una cinta.',
-    a:'Elegiste la A. Esa cuenta usa 60 (los grados) en L = θ·r. La fórmula pide θ en radianes: 60° = π/3 rad. Con 60, el arco mediría 3,6 metros en una rueda de 6 cm. La correcta está marcada.',
-    b:'Elegiste la B. El arco de un radio corresponde a 1 rad, unos 57,3°, no a 60°. A 60° el arco es un poco más largo: 2π ≈ 6,28 cm. La correcta está marcada.',
-    d:'Elegiste la D. π/3 es el ángulo en radianes: cuántos radios caben en el arco. Falta multiplicar por el radio: L = (π/3)·6 = 2π cm. La correcta está marcada.' } };
+    a:'Esa cuenta usa 60 (los grados) en L = θ·r. La fórmula pide θ en radianes: 60° = π/3 rad. Con 60, el arco mediría 3,6 metros en una rueda de 6 cm.',
+    b:'El arco de un radio corresponde a 1 rad, unos 57,3°, no a 60°. A 60° el arco es un poco más largo: 2π ≈ 6,28 cm.',
+    d:'π/3 es el ángulo en radianes: cuántos radios caben en el arco. Falta multiplicar por el radio: L = (π/3)·6 = 2π cm.' } };
 const P_DOBLE = { id:'cinta-radio-paso4', ok:'b', opts:[
   ['a',`El doble: unas ${fmt(DOBLE.errores.cintasProporcionales, 1)}`,'TR6-angulo-depende-del-lado','parcial'],
   ['b',`Las mismas: unas ${fmt(DOBLE.cintasAntes, 1)}`],
   ['c',`La mitad: unas ${fmt(DOBLE.errores.cintasInversas, 1)}`,'TR2-radian-depende-del-radio','hipotesis'],
   ['d','Depende de cuánto valga π','TR1-pi-como-angulo','parcial']],
   fb:{ b:'¡Bien! El arco se duplica, pero la cinta también: caben las mismas. El radián no depende del tamaño de la circunferencia.',
-    a:'Elegiste la A. El arco sí se duplica, pero cada cinta también se duplica, porque se corta del largo del nuevo radio. Caben las mismas. La correcta está marcada.',
-    c:'Elegiste la C. El ángulo no se "reparte": es el mismo. El arco y la cinta crecen juntos, así que caben las mismas cintas. La correcta está marcada.',
-    d:'Elegiste la D. π es un número fijo, unos 3,14; no cambia con el dibujo. El arco y la cinta se duplican juntos: caben las mismas cintas. La correcta está marcada.' } };
+    a:'El arco sí se duplica, pero cada cinta también se duplica, porque se corta del largo del nuevo radio. Caben las mismas.',
+    c:'El ángulo no se "reparte": es el mismo. El arco y la cinta crecen juntos, así que caben las mismas cintas.',
+    d:'π es un número fijo, unos 3,14; no cambia con el dibujo. El arco y la cinta se duplican juntos: caben las mismas cintas.' } };
 const P_AREA = { id:'cinta-radio-paso5', ok:'d', opts:[
   ['a',`${MT.textoPi(S60.errores.areaSinMitad/PI)} cm²`,'area-sin-mitad','hipotesis'],
   ['b',`${fmt(S60.errores.areaConGrados, 0)} cm²`,'TR4-area-con-grados','hipotesis'],
   ['c',`${MT.textoPi(S60.errores.areaIgualArco/PI)} cm²: lo mismo que el arco`,'area-igual-arco','hipotesis'],
   ['d',`${MT.textoPi(S60.Api)} cm², unos ${fmt(S60.A, 1)} cm²`]],
   fb:{ d:'¡Bien! A = θ·r²/2 = (π/3)·36/2 = 6π cm². También A = L·r/2 = 2π·6/2.',
-    a:'Elegiste la A. θ·r² = 12π es el doble del sector: falta dividir entre 2. Cada rebanada del sector es casi un triángulo, y el área de un triángulo lleva el ½. La correcta está marcada.',
-    b:'Elegiste la B. Esa cuenta usa 60 (los grados) en vez de π/3. Con θ en radianes, A = (π/3)·36/2 = 6π cm². La correcta está marcada.',
-    c:'Elegiste la C. 2π cm es el largo del arco, una longitud; el área se mide en cm² y depende también del radio: A = L·r/2 = 6π cm². La correcta está marcada.' } };
+    a:'θ·r² = 12π es el doble del sector: falta dividir entre 2. Cada rebanada del sector es casi un triángulo, y el área de un triángulo lleva el ½.',
+    b:'Esa cuenta usa 60 (los grados) en vez de π/3. Con θ en radianes, A = (π/3)·36/2 = 6π cm².',
+    c:'2π cm es el largo del arco, una longitud; el área se mide en cm² y depende también del radio: A = L·r/2 = 6π cm².' } };
 const P_VUELTA = { id:'cinta-radio-paso6', unidad:UNIDAD_ANGULO, ok:'d', opts:[
   ['a','1: la vuelta entera es un radián','TR5-vuelta-un-radian','parcial'],
   ['b','360','TR3-grados-como-radianes','hipotesis'],
   ['c','π, unas 3,14','TR1-pi-es-la-vuelta','hipotesis'],
   ['d',`2π, unas ${fmt(VUELTA.R, 2)}`]],
   fb:{ d:'¡Bien! Caben 6 cintas enteras y un pedacito: 2π ≈ 6,28. Una vuelta mide 2π rad.',
-    a:'Elegiste la A. Un radián es solo el pedazo de una cinta; la vuelta entera tiene más de seis. La correcta está marcada.',
-    b:'Elegiste la B. 360 son los grados de la vuelta. Las cintas son mucho más largas que un grado: caben unas 6,28. La correcta está marcada.',
-    c:'Elegiste la C. π cintas (unas 3,14) cubren media vuelta, 180°. La vuelta entera tiene el doble: 2π ≈ 6,28. La correcta está marcada.' } };
+    a:'Un radián es solo el pedazo de una cinta; la vuelta entera tiene más de seis.',
+    b:'360 son los grados de la vuelta. Las cintas son mucho más largas que un grado: caben unas 6,28.',
+    c:'π cintas (unas 3,14) cubren media vuelta, 180°. La vuelta entera tiene el doble: 2π ≈ 6,28.' } };
 const P_RUEDA = { id:'cinta-radio-paso7', ok:'b', opts:[
   ['a',`6π, unas ${fmt(V7.errores.sinDosPi, 1)}`,'vueltas-sin-2pi','hipotesis'],
   ['b',`${fmt(V7.n, 0)}`],
   ['c',`${fmt(V7.errores.conPiR, 0)}`,'vueltas-perimetro-pi-r','hipotesis'],
   ['d',`${fmt(V7.errores.conDiametro, 1)}`,'vueltas-con-diametro','hipotesis']],
   fb:{ b:'¡Bien! En cada vuelta la rueda avanza su perímetro, 2π·30 = 60π cm. 180π / 60π = 3 vueltas.',
-    a:'Elegiste la A. 180π / 30 = 6π es el ángulo que giró la rueda en radianes (cintas), no las vueltas: cada vuelta tiene 2π rad. La correcta está marcada.',
-    c:'Elegiste la C. Esa cuenta toma el perímetro como π·30. El perímetro de la rueda es 2π·30 = 60π cm, así que da 3 vueltas. La correcta está marcada.',
-    d:'Elegiste la D. Esa cuenta pone el diámetro (60 cm) en lugar del radio en 2πr. El perímetro es 2π·30 = 60π cm: 3 vueltas. La correcta está marcada.' } };
+    a:'180π / 30 = 6π es el ángulo que giró la rueda en radianes (cintas), no las vueltas: cada vuelta tiene 2π rad.',
+    c:'Esa cuenta toma el perímetro como π·30. El perímetro de la rueda es 2π·30 = 60π cm, así que da 3 vueltas.',
+    d:'Esa cuenta pone el diámetro (60 cm) en lugar del radio en 2πr. El perímetro es 2π·30 = 60π cm: 3 vueltas.' } };
 
 // Ecuaciones en vivo
 function vivoArco(){
@@ -1140,7 +1140,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     const ex = $('extra2'); if (ex && x.extra) ex.onclick = () => { if (E.anim) return; const chico = innerWidth < 900; if (chico) $('cv2').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' }); esperar(chico ? 380 : 0, () => { if (S.k === k) x.extra(); }); };

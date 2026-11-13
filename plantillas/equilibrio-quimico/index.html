@@ -131,7 +131,7 @@ input.r-T{accent-color:var(--c-T)}
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap:12px; align-items:end}
 .slider{display:grid; gap:4px}
@@ -647,27 +647,27 @@ const P0 = { id:'equilibrio-quimico-paso2', ok:'c', opts:[
   ['c','Sigue cambiando: tantas de A a B como de B a A.'],
   ['d','Sigue cambiando, pero más de A a B que de B a A.','EQ4', RES('documentado','Bilgin y otros 2003, ítem 7: 40 % de 216')]],
   fb:{ c:'¡Bien! Las porciones siguen cambiando en los dos sentidos, tantas de ida como de vuelta: por eso las cantidades no se mueven. Mira los contadores.',
-    a:'Elegiste la 1. La reacción no se detiene: mira los contadores, siguen cambiando porciones en los dos sentidos. Según Riddle y Lo-Fan-Hin (2023), el 6 % de 63 estudiantes de secundaria y el 13 % de 16 de último año creen que en el equilibrio la reacción terminó. La correcta está marcada.',
-    b:'Elegiste la 2. No va y viene: las dos reacciones ocurren a la vez, todo el tiempo, y por eso las cantidades no se mueven. Según Bilgin y otros (2003), el 51 % de 216 estudiantes piensa en ese vaivén. La correcta está marcada.',
-    d:'Elegiste la 4. Si pasaran más porciones de A a B que de B a A, el número de B subiría, y no sube. Según Bilgin y otros (2003), el 40 % de 216 cree que en el equilibrio las dos rapideces no son iguales. La correcta está marcada.' } };
+    a:'La reacción no se detiene: mira los contadores, siguen cambiando porciones en los dos sentidos.',
+    b:'No va y viene: las dos reacciones ocurren a la vez, todo el tiempo, y por eso las cantidades no se mueven.',
+    d:'Si pasaran más porciones de A a B que de B a A, el número de B subiría, y no sube.' } };
 const P1 = { id:'equilibrio-quimico-paso4', ok:'d', opts:[
   ['a','12 A y 8 B: no pasa nada, ya estaba en equilibrio','EQ3', RES('documentado','Riddle y Lo-Fan-Hin 2023: 6 % de 63 y 13 % de 16')],
   ['b','2 A y 18 B: se gasta todo lo agregado','EQ6', RES('parcial','Bilgin y otros 2003, ítem 11 (parcial): 53 % de 216 cree que las rapideces vuelven a las iniciales')],
   ['c','10 A y 10 B: quedan iguales','EQ1', RES('documentado','Bilgin y otros 2003: 36 % de 216; Riddle y Lo-Fan-Hin 2023: 48 % de 63')],
   ['d','4 A y 16 B: parte de lo agregado pasa a B']],
   fb:{ d:'¡Bien! Quedan 4 A y 16 B: [B]/[A] vuelve a ser 4. Mira cómo llega la caja; en el paso 6 está la cuenta.',
-    a:'Elegiste la 1. Al agregar A, el equilibrio se rompe: la reacción directa se acelera y parte del A pasa a B. Según Riddle y Lo-Fan-Hin (2023), el 6 % de 63 y el 13 % de 16 creen que en el equilibrio la reacción terminó. La correcta está marcada.',
-    b:'Elegiste la 2. No se gasta todo lo agregado: solo 8 de las 10 porciones pasan a B, y el sistema llega a un equilibrio nuevo, no al de antes. Según Bilgin y otros (2003, ítem 11), el 53 % de 216 cree que las rapideces vuelven a las de antes; que las cantidades vuelvan es una extensión nuestra. La correcta está marcada.',
-    c:'Elegiste la 3. En el equilibrio las cantidades quedan constantes, no iguales: su relación la fija K. Según Bilgin y otros (2003), el 36 % de 216 cree que quedan iguales; según Riddle y Lo-Fan-Hin (2023), el 48 % de 63. La correcta está marcada.' } };
+    a:'Al agregar A, el equilibrio se rompe: la reacción directa se acelera y parte del A pasa a B.',
+    b:'No se gasta todo lo agregado: solo 8 de las 10 porciones pasan a B, y el sistema llega a un equilibrio nuevo, no al de antes. Según Bilgin y otros (2003, ítem 11), el 53 % de 216 cree que las rapideces vuelven a las de antes; que las cantidades vuelvan es una extensión nuestra.',
+    c:'En el equilibrio las cantidades quedan constantes, no iguales: su relación la fija K.' } };
 const P2 = { id:'equilibrio-quimico-paso7', ok:'c', opts:[
   ['a','No cambia: K es constante','EQ9', RES('documentado','Bilgin y otros 2003, ítem 19: 44 % de 216')],
   ['b','Sube: con más temperatura todo reacciona más','EQ8', RES('documentado','Bilgin y otros 2003, ítem 18: 22 % de 216')],
   ['c','Baja: se favorece la reacción que absorbe calor'],
   ['d','Depende: de cuánto A y B haya en la caja','EQ10', RES('parcial','Tagle Barrios 2024 (UNAM), sin porcentaje')]],
   fb:{ c:'¡Bien! La directa libera calor; al calentar se favorece la inversa, que lo absorbe. K baja.',
-    a:'Elegiste la 1. K es constante solo mientras no cambie la temperatura. Según Bilgin y otros (2003), el 44 % de 216 cree que K no cambia al calentar. La correcta está marcada.',
-    b:'Elegiste la 2. Al calentar, las dos reacciones se aceleran, pero la inversa (la que absorbe calor) se acelera más, y K baja. Según Bilgin y otros (2003), el 22 % de 216 cree que K sube. La correcta está marcada.',
-    d:'Elegiste la 4. K no depende de cuánto A y B haya: solo de la temperatura. Esta idea aparece en estudiantes de la UNAM (Tagle Barrios, 2024), sin porcentaje. La correcta está marcada.' } };
+    a:'K es constante solo mientras no cambie la temperatura.',
+    b:'Al calentar, las dos reacciones se aceleran, pero la inversa (la que absorbe calor) se acelera más, y K baja.',
+    d:'K no depende de cuánto A y B haya: solo de la temperatura. ' } };
 
 // Vistas: qué se ve en cada paso. 'r' = ya respondió la predicción del paso.
 const VISTA = {
@@ -691,7 +691,7 @@ const steps = [
      <div class="eq">${K_('Kc')} = ${fr(B_('[B]'), A_('[A]'))} = ${fr(B_('8'), A_('2'))} = ${K_('4')}<span class="note">[A] es la concentración de A: porciones por litro. La caja es de 1 L, así que es el mismo número.</span></div>
    </div>
    <p>Las concentraciones quedan constantes, no iguales: hay 4 veces más ${B_('B')} que ${A_('A')}. Esa razón es la constante de equilibrio, ${K_('Kc')}.</p>
-   <p class="fuente">Según Bilgin y otros (2003), el 36 % de 216 estudiantes cree que en el equilibrio las concentraciones son iguales; el 51 %, que la reacción va y viene.</p>` },
+   <p class="fuente"></p>` },
  { k:'Paso 4', t:'Se agregan 10 de A: predice', gate:P1, arma:agregado,
    vista:r => r ? VISTA.adentro() : { lupa:true, congelada:true, contadores:false, graf:null, qk:false, K:false, aviso:'detenida en el instante en que entran', ph:'Responde para ver los contadores', phGraf:'Responde para ver la gráfica' },
    body:() => `<p>Se agregan ${A_('10 porciones de A')} de golpe. En este instante hay ${A_('12 de A')} y ${B_('8 de B')}: la caja está detenida en ese instante. Cuando vuelva al equilibrio, ¿cuánto habrá de cada uno?</p>${opcionesHTML(P1.opts, 'fb')}` },
@@ -699,7 +699,7 @@ const steps = [
    body:() => `<p>En el instante en que entran las 10 porciones, solo sube la rapidez directa: hay más ${A_('A')} que puede pasar a ${B_('B')}, y salta de 2 a unos 12 cambios por segundo. La inversa sigue en 2, porque todavía hay las mismas 8 porciones de ${B_('B')}.</p>
    <p>Mientras la directa gane, ${A_('A')} baja y ${B_('B')} sube; la directa se frena y la inversa se acelera, hasta que vuelven a ser iguales: 4 cambios por segundo cada una, más que antes. Quedan ${A_('4 A')} y ${B_('16 B')}.</p>
    <div class="nav">${segGraf(S.graf[4] || 'rap')}${otraVez}</div>
-   <p class="fuente">Según Bilgin y otros (2003), el 49 % de 216 estudiantes cree que al agregar un reactivo la reacción inversa se frena al instante, y el 53 %, que las rapideces vuelven a las de antes.</p>` },
+   <p class="fuente"></p>` },
  { k:'Paso 6', t:'La cuenta: Q contra K', arma:agregado, vista:() => ({ ...VISTA.adentro(), qk:true }),
    body:() => `<p>Justo después de agregar, el cociente de reacción ${Q_('Q')} se calcula igual que K, pero con lo que hay en ese instante:</p>
    <div class="eqs">
@@ -716,7 +716,7 @@ const steps = [
    <p class="answer">Respuesta: quedan 4 porciones de A y 16 de B.</p>
    <div class="nav"><span></span>${otraVez}</div>
    <p>De las 10 porciones agregadas, solo 8 pasan a ${B_('B')}: las otras 2 se quedan como ${A_('A')}. En el dibujo, el rombo de ${Q_('Q')} se acerca a la raya de ${K_('K')} hasta llegar.</p>
-   <p class="aviso">Comparar Q con K funciona siempre; la regla de Le Chatelier memorizada a veces falla (Quílez, 2017).</p>` },
+   <p class="aviso"></p>` },
  { k:'Paso 7', t:'Al calentar: predice', gate:P2, arma:() => base(4, 16),
    vista:r => ({ lupa:true, congelada:!r, contadores:!!r, graf:r ? 'rap' : null, qk:!!r, K:true, termo:true, aviso:r ? '' : 'detenida a 300 K', ph:'Responde para ver los contadores', phGraf:'Responde para ver la gráfica', phQK:r ? '' : 'Responde para ver Q y K' }),
    body:() => `<p>La caja quedó en equilibrio con ${A_('4 A')} y ${B_('16 B')}, a ${T_('300 K')}. La reacción directa (A → B) libera calor. Se calienta la caja de ${T_('300 K')} a ${T_('400 K')}. ¿Qué pasa con ${K_('K')}?</p>${opcionesHTML(P2.opts, 'fb')}` },
@@ -728,7 +728,7 @@ const steps = [
    </div>
    <p>${K_('K')} bajó de 4 a 1,5. La temperatura es lo único que cambia K: agregar o quitar sustancia, o cambiar el volumen, no la cambia.</p>
    <div class="nav">${segGraf(S.graf[7] || 'rap')}${otraVez}</div>
-   <p class="fuente">Según Bilgin y otros (2003), el 51 % de 216 estudiantes cree que al calentar una reacción que libera calor la directa se hace más rápida que la inversa.</p>
+   <p class="fuente"></p>
    <p class="hint">En la escena, K a 400 K sale de una ecuación (van 't Hoff) con un calor de reacción elegido para que los números salgan redondos.</p>` },
  { k:'Paso 9', t:'Ahora explora tú', explora:true, graf:true, arma:() => base(2, 8), vista:() => ({ ...VISTA.adentro(S.graf[8] || 'conc'), qk:true, termo:true }),
    body:() => `<div class="ctrls">
@@ -865,14 +865,14 @@ const EXPS = [
           ['c','Nada en las cantidades: las dos rapideces suben igual'],
           ['d','Se acelera solo la directa: se forma más B','EQ12-solo-directa', RES('documentado','Bilgin y otros 2003, ítem 28: 40 % de 216 cree que acelera una u otra según cuál favorezca')]],
     ok:'c',
-    fb:{ a:'Un catalizador no da más producto: acelera las dos reacciones por igual. Según Riddle y Lo-Fan-Hin (2023), el 40 % de 63 estudiantes cree que sí aumenta el rendimiento.',
+    fb:{ a:'Un catalizador no da más producto: acelera las dos reacciones por igual.',
       b:'K no cambia con un catalizador: solo con la temperatura. Según Bilgin y otros (2003, ítems 27 a 29), el 25 % de 216 cree que sí cambia.',
       d:'Acelera las dos por igual. Según Bilgin y otros (2003, ítems 27 a 29), el 40 % de 216 cree que acelera una u otra, según cuál favorezca.' },
     arma:() => AB(4, 16, 5), vAntes:() => antes(),
     alResponder:() => { E.sim.catalizador(true); E.extra = curvasCatalizador(); E.vista = despues({ cat:true, graf:'cat' }); },
     exp:() => `<p>Con el catalizador, los dos contadores se triplican: de unos 4 a unos 12 cambios por segundo en cada sentido. Las cantidades no se mueven: siguen ${A_('4 A')} y ${B_('16 B')}, y ${K_('K')} sigue en 4.</p>
       <p>La gráfica parte de 12 A y 8 B, como en el paso a paso: con catalizador (línea gruesa) el equilibrio llega antes, pero a la misma altura que sin catalizador (línea fina y clara).</p>
-      <p class="fuente">Según Bilgin y otros (2003, ítems 27 a 29), el 25 % de 216 estudiantes cree que el catalizador cambia K y el 40 %, que acelera una u otra reacción según cuál favorezca. Según Riddle y Lo-Fan-Hin (2023), el 40 % de 63 cree que da más producto.</p>` },
+      <p class="fuente">Según Bilgin y otros (2003, ítems 27 a 29), el 25 % de 216 estudiantes cree que el catalizador cambia K y el 40 %, que acelera una u otra reacción según cuál favorezca.</p>` },
   { id:'comprimir-2x', corto:'Comprimir 2 X ⇌ Y', tipo:'A2B',
     q:`Otra reacción: 2 ${X_('X')} ⇌ ${Y_('Y')}, con ${K_('Kc = 1/8')}. Cada círculo pequeño es una porción de ${X_('X')}; cada pareja es una porción de ${Y_('Y')}, no una molécula (dos porciones de X se juntan en una de Y). En una caja de ${V_('1 L')} hay ${X_('8 X')} y ${Y_('8 Y')} en equilibrio. Se reduce el volumen a la mitad. ¿Qué pasa?`,
     opts:[['a','Nada: quedan 8 X y 8 Y','EQ11-no-afecta', RES('documentado','Riddle y Lo-Fan-Hin 2023: 33 % de 63 y 63 % de 16')],
@@ -880,16 +880,16 @@ const EXPS = [
           ['c','Más X: quedan 10 X y 7 Y','EQ11-hacia-X', RES('documentado','Bilgin y otros 2003, ítems 20 a 22: en dos preguntas, el 40 % y el 24 % de 216 predicen mal el nuevo equilibrio')],
           ['d','K sube: la constante cambia con el volumen','EQ10', RES('documentado','Bilgin y otros 2003, ítem 26: 20 % de 216')]],
     ok:'b',
-    fb:{ a:'El volumen sí importa cuando los dos lados tienen distinto número de porciones de gas. Según Riddle y Lo-Fan-Hin (2023), el 33 % de 63 y el 63 % de 16 creen que el volumen no afecta al equilibrio.',
+    fb:{ a:'El volumen sí importa cuando los dos lados tienen distinto número de porciones de gas.',
       c:'Se forma más Y, no más X: el sistema se corre hacia el lado con menos porciones de gas. Según Bilgin y otros (2003, ítems 20 a 22), en dos preguntas, el 40 % y el 24 % de 216 predicen mal el nuevo equilibrio.',
-      d:'K no cambia al comprimir: solo con la temperatura. Según Bilgin y otros (2003), el 20 % de 216 cree que K sube.' },
+      d:'K no cambia al comprimir: solo con la temperatura.' },
     arma:() => { const s = ME.caja({ tipo:'A2B', nA:8, nB:8, T:300, semilla:9 }); adelantar(s, 4); return s; },
     vAntes:() => antes({ embolo:true, conc:true }),
     alResponder:() => { comprimir(); E.vista = despues({ embolo:true, conc:true }); },
     exp:() => { const Q = ME.cociente('2 X(g) = Y(g)', { X:16, Y:16 }); return `<p>Al comprimir, todas las concentraciones suben al instante: [${X_('X')}] = [${Y_('Y')}] = 8/0,5 = 16 porciones por litro.</p>
       <div class="eqs"><div class="eq">${Q_('Q')} = ${fr(Y_('[Y]'), X_('[X]') + '²')} = ${fr(Y_('16'), X_('16') + '²')} = ${Q_(fmtK(Q))} &lt; ${K_('Kc')} = ${K_('1/8')}</div></div>
       <p>Avanza la directa: el sistema se corre hacia el lado con menos porciones de gas (2 X → 1 Y). Quedan ${X_('6 X')} y ${Y_('9 Y')} en ${V_('0,5 L')}: [Y]/[X]² = 18/12² = 1/8.</p>
-      <p class="fuente">Según Bilgin y otros (2003, ítems 20 a 22), en dos preguntas, el 40 % y el 24 % de 216 estudiantes predicen mal el nuevo equilibrio al comprimir; el 20 % cree que K sube. Según Riddle y Lo-Fan-Hin (2023), el 33 % de 63 y el 63 % de 16 creen que el volumen no afecta al equilibrio.</p>`; } },
+      <p class="fuente">Según Bilgin y otros (2003, ítems 20 a 22), en dos preguntas, el 40 % y el 24 % de 216 estudiantes predicen mal el nuevo equilibrio al comprimir; el 20 % cree que K sube.</p>`; } },
   { id:'comprimir-ab', corto:'Comprimir A ⇌ B', tipo:'AB',
     q:`Volvemos a A ⇌ B (${K_('Kc = 4')}), con ${A_('4 A')} y ${B_('16 B')} en ${V_('1 L')}, en equilibrio. Se reduce el volumen a la mitad. ¿Qué pasa?`,
     opts:[['a','Se forma más B: el equilibrio se corre hacia B','comprimir-dn0', RES('hipotesis','hipótesis nuestra (sale de EQ11)')],
@@ -899,13 +899,13 @@ const EXPS = [
     ok:'c',
     fb:{ a:'Con A ⇌ B hay una porción de gas a cada lado: comprimir sube las dos concentraciones por igual y Q no cambia. Es un error que suponemos: aplicar "comprimir corre el equilibrio" donde no corresponde.',
       b:'Con A ⇌ B hay una porción de gas a cada lado: comprimir sube las dos concentraciones por igual y Q no cambia. Es un error que suponemos: aplicar "comprimir corre el equilibrio" donde no corresponde.',
-      d:'Al comprimir, la misma cantidad queda en menos espacio: las concentraciones suben, no bajan. Según Bilgin y otros (2003), el 27 % de 216 cree que bajan.' },
+      d:'Al comprimir, la misma cantidad queda en menos espacio: las concentraciones suben, no bajan.' },
     arma:() => AB(4, 16, 13), vAntes:() => antes({ embolo:true, conc:true }),
     alResponder:() => { comprimir(); E.vista = despues({ embolo:true, conc:true }); },
     exp:() => `<p>[${A_('A')}] = 4/0,5 = 8 y [${B_('B')}] = 16/0,5 = 32 porciones por litro: las dos se duplican.</p>
       <div class="eqs"><div class="eq">${Q_('Q')} = ${fr(B_('32'), A_('8'))} = ${Q_(fmtK(ME.cociente('A(g) = B(g)', { A:8, B:32 })))} = ${K_('Kc')}</div></div>
       <p>Ya está en equilibrio y no se corre. Los contadores siguen iguales entre sí: comprimir solo corre el equilibrio cuando un lado tiene más porciones de gas que el otro.</p>
-      <p class="fuente">Según Bilgin y otros (2003), el 27 % de 216 estudiantes cree que al comprimir las concentraciones bajan. Que A ⇌ B se corra al comprimir es un error que suponemos, sin estudio con porcentaje.</p>` },
+      <p class="fuente"> Que A ⇌ B se corra al comprimir es un error que suponemos, sin estudio con porcentaje.</p>` },
   { id:'quitar-b', corto:'Quitar B', tipo:'AB',
     q:`En la caja de 1 L hay ${A_('4 A')} y ${B_('16 B')} en equilibrio (${K_('Kc = 4')}). Se sacan ${B_('10 porciones de B')}. ¿Qué pasa?`,
     opts:[['a','K baja a 1,5: quedan 4 A y 6 B','EQ10', RES('parcial','Tagle Barrios 2024 (UNAM), sin porcentaje')],
@@ -913,9 +913,9 @@ const EXPS = [
           ['c','Parte del A pasa a B: quedan 2 A y 8 B'],
           ['d','No pasa nada: quedan 4 A y 6 B','EQ3', RES('documentado','Riddle y Lo-Fan-Hin 2023: 6 % de 63 y 13 % de 16')]],
     ok:'c',
-    fb:{ a:'K no cambia al quitar sustancia: solo con la temperatura. Esta idea aparece en estudiantes de la UNAM (Tagle Barrios, 2024), sin porcentaje.',
+    fb:{ a:'K no cambia al quitar sustancia: solo con la temperatura. ',
       b:'No pasa todo: solo lo necesario para que [B]/[A] vuelva a 4. Es un error que suponemos, sin estudio con porcentaje.',
-      d:'Al quitar B se rompe el equilibrio: la inversa se frena y la directa gana un rato. Según Riddle y Lo-Fan-Hin (2023), el 6 % de 63 y el 13 % de 16 creen que en el equilibrio la reacción terminó.' },
+      d:'Al quitar B se rompe el equilibrio: la inversa se frena y la directa gana un rato.' },
     arma:() => AB(4, 16, 21), vAntes:() => antes(),
     alResponder:() => { E.sim.quitar('B', 10); E.vista = despues(); },
     exp:() => `<p>Al sacar 10 porciones de ${B_('B')} quedan ${A_('4 A')} y ${B_('6 B')}:</p>
@@ -932,7 +932,7 @@ const EXPS = [
     ok:'c',
     fb:{ a:'Se agregó reactivo, pero también producto: la regla "se agregó reactivo, se corre hacia los productos" aquí falla. Lo seguro es comparar Q con K. Quílez (2017) describe que la regla se aplica a ciegas, sin porcentaje.',
       b:'Contar cuánto se agregó de cada uno no basta: lo seguro es comparar Q con K. Quílez (2017) describe que la regla de Le Chatelier se aplica a ciegas, sin porcentaje.',
-      d:'K no cambia al agregar sustancia: solo con la temperatura. Esta idea aparece en estudiantes de la UNAM (Tagle Barrios, 2024), sin porcentaje.' },
+      d:'K no cambia al agregar sustancia: solo con la temperatura. ' },
     arma:() => AB(4, 16, 27), vAntes:() => antes(),
     alResponder:() => { E.sim.agregar('A', 5); E.sim.agregar('B', 20); E.vista = despues(); },
     exp:() => `<p>Quedan ${A_('9 A')} y ${B_('36 B')}:</p>
@@ -948,7 +948,7 @@ const EXPS = [
     ok:'b',
     fb:{ a:'La presión total sube, pero el gas que entra no cambia ni los moles de X y de Y ni el volumen: sus concentraciones siguen iguales y Q sigue igual a K. "Más presión, gana el lado de menos porciones" vale al comprimir, no aquí. Es un error que suponemos, sin estudio que lo mida.',
       c:'Con la caja rígida el volumen no cambia: [X] e [Y] siguen en 8 por litro. Ese gas no diluye nada si no hay más espacio. Es un error que suponemos, sin estudio que lo mida.',
-      d:'K no cambia con la presión: solo con la temperatura. Según Bilgin y otros (2003), el 20 % de 216 cree que K sube al comprimir; aquí ni siquiera se comprime.' },
+      d:'K no cambia con la presión: solo con la temperatura.' },
     arma:() => { const s = ME.caja({ tipo:'A2B', nA:8, nB:8, T:300, semilla:31 }); adelantar(s, 4); return s; },
     vAntes:() => antes({ conc:true, rigida:true }),
     alResponder:() => { E.vista = despues({ conc:true, rigida:true, p0:E.sim.gasPorLitro() }); E.sim.inerte(30); },
@@ -965,7 +965,7 @@ const EXPS = [
     ok:'d',
     fb:{ a:'El gas no reacciona, pero ocupa lugar: el émbolo se corre, el volumen crece y [X] e [Y] bajan a la vez. Q cambia porque [X] va al cuadrado. Quílez (2017) pone este caso, un gas agregado a presión constante, entre los que la regla memorizada resuelve mal; no da porcentaje.',
       b:'No se comprime: con el émbolo libre, entra gas y la caja crece. Todo se diluye, al revés que al comprimir. Quílez (2017) pone este caso entre los que la regla memorizada resuelve mal; no da porcentaje.',
-      c:'K no cambia: solo con la temperatura. Lo que cambia es Q, porque las concentraciones bajan. La idea de que K cambia sin cambiar la temperatura aparece en estudiantes de la UNAM (Tagle Barrios, 2024), sin porcentaje.' },
+      c:'K no cambia: solo con la temperatura. Lo que cambia es Q, porque las concentraciones bajan. ' },
     arma:() => { const s = ME.caja({ tipo:'A2B', nA:8, nB:8, T:300, semilla:37 }); adelantar(s, 4); return s; },
     vAntes:() => antes({ embolo:true, conc:true, escalaV:3 }),
     alResponder:() => { E.sim.presionFija(true); E.sim.inerte(30); E.vista = despues({ embolo:true, conc:true, escalaV:3, sigueV:true }); },
@@ -1022,7 +1022,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la caja para ver por qué.' : `Elegiste la ${'abcd'.indexOf(p) + 1}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la caja para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

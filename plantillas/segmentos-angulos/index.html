@@ -113,7 +113,7 @@ canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .chips{display:flex; flex-wrap:wrap; gap:6px}
 .chip{font-size:.86rem; padding:4px 12px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); font-weight:700}
@@ -609,36 +609,36 @@ const P1 = { id:'sa-paso1-solapados', ok:'b',
   opts:[['a', `${V('BC','BC')} = ${fmt(D1.errores.sumaSolapados)} cm`, 'suma-segmentos-solapados', 'hipotesis'], ['b', `${V('BC','BC')} = ${fmt(D1.BC)} cm`],
         ['c', `${V('BC','BC')} = ${fmt(D1.errores.restaConAD)} cm`, 'resta-da-otro-segmento', 'hipotesis'], ['d', `${V('BC','BC')} = ${fmt(D1.errores.promedio)} cm`, 'promedia-los-datos', 'hipotesis']],
   fb:{ b:`¡Bien! AC y BD se pisan justo en BC. Al sumarlos, BC se cuenta dos veces: AC + BD = AD + BC, así que BC = 14 + 18 − 24 = ${fmt(D1.BC)} cm.`,
-       a:`Elegiste la A. 14 + 18 = 32 sería la suma si AC y BD no se tocaran. Pero se pisan en BC, y al sumar ese tramo se cuenta dos veces. Además, BC no puede medir más que AD (24 cm), que va de punta a punta. La correcta está marcada.`,
-       c:`Elegiste la C. 24 − 14 = 10 es CD: lo que le falta a AC para llegar a D. BC es el tramo que AC y BD tienen en común. La correcta está marcada.`,
-       d:`Elegiste la D. 16 es el promedio de 14 y 18, pero un promedio no corresponde a ningún tramo del dibujo. La correcta está marcada.` } };
+       a:`14 + 18 = 32 sería la suma si AC y BD no se tocaran. Pero se pisan en BC, y al sumar ese tramo se cuenta dos veces. Además, BC no puede medir más que AD (24 cm), que va de punta a punta.`,
+       c:`24 − 14 = 10 es CD: lo que le falta a AC para llegar a D. BC es el tramo que AC y BD tienen en común.`,
+       d:`16 es el promedio de 14 y 18, pero un promedio no corresponde a ningún tramo del dibujo.` } };
 const P2 = { id:'sa-paso3-medios', ok:'a',
   opts:[['a', `${V('MN','MN')} = ${fmt(D3.MN)} cm`], ['b', `${V('MN','MN')} = ${fmt(D3.errores.sinMitad)} cm`, 'medios-sin-dividir', 'hipotesis'],
         ['c', `${V('MN','MN')} = ${fmt(D3.errores.cuarto)} cm`, 'medios-divide-entre-4', 'hipotesis'], ['d', 'No se puede saber', 'cree-que-falta-un-dato', 'hipotesis']],
   fb:{ a:`¡Bien! MN es la mitad de AB, más BC, más la mitad de CD. Y AC + BD es AB + 2·BC + CD: justo el doble. Por eso MN = 30/2 = ${fmt(D3.MN)} cm, estén donde estén B y C.`,
-       b:`Elegiste la B. AC + BD tiene a BC dos veces y a AB y CD enteros; MN tiene a BC una vez y solo las mitades de AB y CD. Es justo la mitad: ${fmt(D3.MN)} cm. La correcta está marcada.`,
-       c:`Elegiste la C. Dividir entre 4 sería sacar la mitad dos veces. AC + BD ya es exactamente el doble de MN: basta dividir entre 2. La correcta está marcada.`,
-       d:`Elegiste la D. Parece que hace falta saber AC y BD por separado, pero no: MN siempre es la mitad de AC + BD. Arrastra B o C y compruébalo. La correcta está marcada.` } };
+       b:`AC + BD tiene a BC dos veces y a AB y CD enteros; MN tiene a BC una vez y solo las mitades de AB y CD. Es justo la mitad: ${fmt(D3.MN)} cm.`,
+       c:`Dividir entre 4 sería sacar la mitad dos veces. AC + BD ya es exactamente el doble de MN: basta dividir entre 2.`,
+       d:`Parece que hace falta saber AC y BD por separado, pero no: MN siempre es la mitad de AC + BD. Arrastra B o C y compruébalo.` } };
 const P3 = { id:'sa-paso4-cadena', ok:'a',
   opts:[['a', gr(D4.valor)], ['b', gr(D4.errores.soloElPrimero), 'hace-solo-una-operacion', 'hipotesis'],
         ['c', gr(D4.errores.seCancelan), 'complemento-y-suplemento-se-cancelan', 'hipotesis'], ['d', 'No existe', 'orden-invertido', 'hipotesis']],
   fb:{ a:'¡Bien! Se empieza por lo de adentro: el complemento de 30° es 60°, y el suplemento de 60° es 120°.',
-       b:'Elegiste la B. 150° es el suplemento de 30°: hiciste solo la primera palabra. Primero va lo de adentro, el complemento de 30° (60°), y después su suplemento. La correcta está marcada.',
-       c:'Elegiste la C. Parece que el suplemento «deshace» al complemento, pero usan números distintos (180 y 90): no se cancelan. 180 − (90 − 30) = 120. La correcta está marcada.',
-       d:'Elegiste la D. Saldría «no existe» si haces primero el suplemento (150°) y después buscas el complemento de 150°. Pero se lee de adentro hacia afuera: complemento de 30° = 60°; suplemento de 60° = 120°. La correcta está marcada.' } };
+       b:'150° es el suplemento de 30°: hiciste solo la primera palabra. Primero va lo de adentro, el complemento de 30° (60°), y después su suplemento.',
+       c:'Parece que el suplemento «deshace» al complemento, pero usan números distintos (180 y 90): no se cancelan. 180 − (90 − 30) = 120.',
+       d:'Saldría «no existe» si haces primero el suplemento (150°) y después buscas el complemento de 150°. Pero se lee de adentro hacia afuera: complemento de 30° = 60°; suplemento de 60° = 120°.' } };
 const P4 = { id:'sa-paso6-alternos', ok:'b',
   opts:[['a', `x = ${fmt(D6.errores.otraRelacion.x)}`, 'GE17-suplementa-alternos', 'hipotesis'], ['b', `x = ${fmt(D6.x)}`],
         ['c', `x = ${fmt(D6.errores.despejeSigno)}`, 'despeje-signo', 'hipotesis'], ['d', `x = ${fmt(D6.errores.xEsElAngulo)}`, 'da-el-angulo-y-no-x', 'hipotesis']],
   fb:{ b:`¡Bien! Entre paralelas, los alternos internos son iguales: 3x + 10 = 5x − 30, de donde 40 = 2x y x = ${fmt(D6.x)}. Cada uno mide ${gr(D6.angulos[0])}.`,
-       a:`Elegiste la A. Los sumaste a 180°: eso vale para los conjugados internos, que están del mismo lado de la secante. Los alternos internos, en lados opuestos, son iguales. Con x = 25 medirían 85° y 95°, y no serían iguales. La correcta está marcada.`,
-       c:`Elegiste la C. Al pasar un término al otro lado cambia de signo: el +10 pasa como −10 y el −30 como +30, y queda 2x = 40. La correcta está marcada.`,
-       d:`Elegiste la D. ${gr(D6.angulos[0])} es lo que mide cada ángulo, pero la pregunta es x: 3·20 + 10 = 70. La correcta está marcada.` } };
+       a:`Los sumaste a 180°: eso vale para los conjugados internos, que están del mismo lado de la secante. Los alternos internos, en lados opuestos, son iguales. Con x = 25 medirían 85° y 95°, y no serían iguales.`,
+       c:`Al pasar un término al otro lado cambia de signo: el +10 pasa como −10 y el −30 como +30, y queda 2x = 40.`,
+       d:`${gr(D6.angulos[0])} es lo que mide cada ángulo, pero la pregunta es x: 3·20 + 10 = 70.` } };
 const P5 = { id:'sa-paso8-quiebre', ok:'a',
   opts:[['a', gr(D8.angulo)], ['b', gr(D8.errores.suplementa), 'quiebre-suplementa', 'hipotesis'], ['c', gr(D8.errores.resta), 'quiebre-resta', 'hipotesis'], ['d', gr(D8.errores.promedio, 1), 'quiebre-promedia', 'hipotesis']],
   fb:{ a:'¡Bien! Traza por P una paralela a L₁ y L₂: parte el ángulo APB en dos. Arriba queda un alterno interno del ángulo en A (35°) y abajo uno del ángulo en B (50°): m∠APB = 35° + 50° = 85°.',
-       b:'Elegiste la B. 95° es lo que le falta a 85° para 180°, pero el quiebre no es un suplemento. Con una paralela por P, el ángulo APB se parte en 35° y 50°, que se suman. La correcta está marcada.',
-       c:'Elegiste la C. Restar daría la diferencia entre las dos inclinaciones, pero el quiebre junta las dos: con una paralela por P, el ángulo APB se parte en 35° y 50°. La correcta está marcada.',
-       d:'Elegiste la D. El promedio no aparece en el dibujo: con una paralela por P, el ángulo APB tiene adentro un ángulo de 35° y otro de 50°, completos. La correcta está marcada.' } };
+       b:'95° es lo que le falta a 85° para 180°, pero el quiebre no es un suplemento. Con una paralela por P, el ángulo APB se parte en 35° y 50°, que se suman.',
+       c:'Restar daría la diferencia entre las dos inclinaciones, pero el quiebre junta las dos: con una paralela por P, el ángulo APB se parte en 35° y 50°.',
+       d:'El promedio no aparece en el dibujo: con una paralela por P, el ángulo APB tiene adentro un ángulo de 35° y otro de 50°, completos.' } };
 
 // ---- Vistas de cada paso ----
 const rec1 = () => ({ tipo:'recta', puntos:Object.assign({}, D1.puntos), rango:[-1, 25] });
@@ -870,8 +870,8 @@ const E3 = M.noParalelas(72, 70, 4);
 const Q4 = M.construirQuebrada({ x:0, y:10 }, [{ dir:-30, largo:6 }, { dir:-150, largo:4 }, { dir:-10, largo:8 }, { dir:-145 }], 0);
 const R4 = M.reglaSerrucho({ derecha:[30, 40, 35], izquierda:[60], incognita:'izquierda', vecinos:[40, 35] });
 const E5 = M.ecuacionPar('conjugados internos', [3, 15], [1, 45]);
-const NOHAY = '<p class="fuente">Hipótesis nuestra: las opciones incorrectas son errores que suponemos; no encontramos un estudio con porcentajes. El informe de geometría deja los errores entre paralelas (GE17) como hipótesis.</p>';
-const NOHAY_SIN = '<p class="fuente">Hipótesis nuestra: las opciones incorrectas son errores que suponemos; no encontramos un estudio con porcentajes.</p>';
+const NOHAY = '<p class="fuente"> El informe de geometría deja los errores entre paralelas (GE17) como hipótesis.</p>';
+const NOHAY_SIN = '<p class="fuente"></p>';
 
 function vistaBis(a, b, resuelto){
   const r = M.bisectrices(a, b), x = r.rayos;
@@ -986,7 +986,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el dibujo para ver por qué.' : `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira el dibujo para ver por qué.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el dibujo para ver por qué.' : `; mira el dibujo para ver por qué.`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = `<div id="vivo2" class="body"></div>` + x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     vivo();

@@ -120,7 +120,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -745,9 +745,9 @@ const G1 = { id:'cortes-paso1', ok:'b', opts:[
   ['c', `${min(P1.erroresTiempo.masUno)}: un corte en cada marca de 2 m, de 0 a 12`, 'corta-tambien-los-extremos', 'hipotesis'],
   ['d', `${min(P1.erroresTiempo.dosPorCorte)}: cada corte suelta dos piezas`, 'dos-piezas-por-corte', 'hipotesis']],
   fb:{ b:`¡Bien! Salen 12 ÷ 2 = 6 piezas, pero la última queda sola sin cortarla: entre 6 piezas en fila hay 5 uniones, y cada unión es un corte. 5 × 3 = ${min(P1.tiempo)}.`,
-    a:`Elegiste la A. Son 6 piezas, pero no 6 cortes: el último corte ya suelta dos piezas a la vez, la quinta y la sexta. 5 cortes × 3 min = ${min(P1.tiempo)}. La correcta está marcada.`,
-    c:`Elegiste la C. Las marcas de 0 m y de 12 m son los extremos de la varilla: ahí no hay nada que cortar. Quedan 5 cortes: ${min(P1.tiempo)}. La correcta está marcada.`,
-    d:`Elegiste la D. Cada corte suelta una sola pieza nueva: 1 corte da 2 piezas, 2 cortes dan 3, 3 cortes dan 4… Para 6 piezas hacen falta 5 cortes: ${min(P1.tiempo)}. La correcta está marcada.` } };
+    a:`Son 6 piezas, pero no 6 cortes: el último corte ya suelta dos piezas a la vez, la quinta y la sexta. 5 cortes × 3 min = ${min(P1.tiempo)}.`,
+    c:`Las marcas de 0 m y de 12 m son los extremos de la varilla: ahí no hay nada que cortar. Quedan 5 cortes: ${min(P1.tiempo)}.`,
+    d:`Cada corte suelta una sola pieza nueva: 1 corte da 2 piezas, 2 cortes dan 3, 3 cortes dan 4… Para 6 piezas hacen falta 5 cortes: ${min(P1.tiempo)}.` } };
 const par = (a, b) => `${a} postes y ${b} estacas`;
 const G3 = { id:'cortes-paso3', ok:'b', opts:[
   ['a', `${par(...P3.errores.sinMasUno)}: 60 ÷ 5 en los dos`, 'estacas-sin-mas-uno-en-linea', 'hipotesis'],
@@ -755,9 +755,9 @@ const G3 = { id:'cortes-paso3', ok:'b', opts:[
   ['c', `${par(...P3.errores.cerradaMasUno)}: 60 ÷ 5 + 1 en los dos`, 'estacas-mas-uno-en-cerrada', 'hipotesis'],
   ['d', `${par(...P3.errores.alReves)}: el corral da la vuelta y suma una`, 'estacas-al-reves', 'hipotesis']],
   fb:{ b:'¡Bien! En los dos hay 60 ÷ 5 = 12 tramos. En la avenida, cada tramo tiene un poste al inicio y sobra el de la punta final: 13. En el corral, la estaca del final es la misma del inicio: 12.',
-    a:'Elegiste la A. En el corral, 12 está bien. En la avenida hay 12 tramos, pero los postes van en las dos puntas de cada tramo: el último tramo deja un poste más al final. Son 13. La correcta está marcada.',
-    c:'Elegiste la C. En la avenida, 13 está bien. En el corral, si das la vuelta clavando una estaca cada 5 m, la número 13 caería encima de la primera: son 12. La correcta está marcada.',
-    d:'Elegiste la D. Es al revés: la línea abierta es la que lleva una más (13), porque tiene dos puntas; el contorno cerrado lleva una por tramo (12). La correcta está marcada.' } };
+    a:'En el corral, 12 está bien. En la avenida hay 12 tramos, pero los postes van en las dos puntas de cada tramo: el último tramo deja un poste más al final. Son 13.',
+    c:'En la avenida, 13 está bien. En el corral, si das la vuelta clavando una estaca cada 5 m, la número 13 caería encima de la primera: son 12.',
+    d:'Es al revés: la línea abierta es la que lleva una más (13), porque tiene dos puntas; el contorno cerrado lleva una por tramo (12).' } };
 const ped = v => `${v} pedazos`;
 const G4 = { id:'cortes-paso4', ok:'c', opts:[
   ['a', `${ped(P4.errores.sinCapas)}: 2 cortes, como en una soga estirada`, 'soga-sin-contar-capas', 'hipotesis'],
@@ -765,9 +765,9 @@ const G4 = { id:'cortes-paso4', ok:'c', opts:[
   ['c', `${ped(P4.piezas)}: se cuentan los cortes en la soga estirada`],
   ['d', `${ped(P4.errores.cadaCapaAparte)}: cada capa queda en 3 pedazos`, 'soga-cada-capa-aparte', 'hipotesis']],
   fb:{ c:`¡Bien! Cada corte atraviesa las 3 capas, así que corta la soga en 3 lugares. Con 2 cortes, la soga estirada tiene ${P4.puntos.length} cortes, y una soga abierta con ${P4.puntos.length} cortes queda en ${P4.piezas} pedazos.`,
-    a:`Elegiste la A. Con la soga estirada, 2 cortes darían 3 pedazos. Pero doblada, cada corte pasa por las 3 capas: son ${P4.puntos.length} cortes en la soga y ${P4.piezas} pedazos. La correcta está marcada.`,
-    b:`Elegiste la B. Los cortes sí son 3 × 2 = ${P4.puntos.length}. Pero en una soga abierta, ${P4.puntos.length} cortes dan un pedazo más: ${P4.piezas}. La correcta está marcada.`,
-    d:`Elegiste la D. Las capas no son sogas sueltas: siguen unidas por los dobleces. Los pedazos de una capa que tocan un doblez se juntan con los de la capa vecina. Quedan ${P4.piezas}. La correcta está marcada.` } };
+    a:`Con la soga estirada, 2 cortes darían 3 pedazos. Pero doblada, cada corte pasa por las 3 capas: son ${P4.puntos.length} cortes en la soga y ${P4.piezas} pedazos.`,
+    b:`Los cortes sí son 3 × 2 = ${P4.puntos.length}. Pero en una soga abierta, ${P4.puntos.length} cortes dan un pedazo más: ${P4.piezas}.`,
+    d:`Las capas no son sogas sueltas: siguen unidas por los dobleces. Los pedazos de una capa que tocan un doblez se juntan con los de la capa vecina. Quedan ${P4.piezas}.` } };
 const mas = (v, t) => `${v} masas distintas: ${t}`;
 const G5 = { id:'cortes-paso5', ok:'c', opts:[
   ['a', mas(P5.errores.unaPorPesa, 'una por cada pesa'), 'balanza-una-por-pesa', 'hipotesis'],
@@ -775,9 +775,9 @@ const G5 = { id:'cortes-paso5', ok:'c', opts:[
   ['c', mas(P5.cuantas, 'todas las de 1 kg a 13 kg')],
   ['d', mas(P5.errores.cadaAcomodo, 'cada pesa tiene 3 lugares: 3 × 3 × 3 − 1'), 'balanza-cuenta-acomodos', 'hipotesis']],
   fb:{ c:'¡Bien! Una pesa junto a la papa resta: 2 = 3 − 1, 5 = 9 − 3 − 1, 6 = 9 − 3, 7 = 9 + 1 − 3… Así se llenan los huecos entre las sumas, y sale todo de 1 a 13 kg.',
-    a:'Elegiste la A. Cada pesa sola pesa una masa, pero juntas pesan más: 1 + 3 = 4, 9 + 3 + 1 = 13. Y una pesa junto a la papa resta: 3 − 1 = 2. Salen 13 masas. La correcta está marcada.',
-    b:`Elegiste la B. Con las pesas solo enfrente salen ${P5.unPlatillo.join(', ')}: ${P5.unPlatillo.length} masas. Pero una pesa también puede ir junto a la papa y restar: 3 − 1 = 2, 9 − 3 − 1 = 5… Salen las 13 de 1 a 13 kg. La correcta está marcada.`,
-    d:'Elegiste la D. Hay 27 acomodos, pero uno no pesa nada (todas fuera) y, de los otros 26, la mitad pondría más pesas junto a la papa que enfrente: pedirían una masa negativa. Quedan 13. La correcta está marcada.' } };
+    a:'Cada pesa sola pesa una masa, pero juntas pesan más: 1 + 3 = 4, 9 + 3 + 1 = 13. Y una pesa junto a la papa resta: 3 − 1 = 2. Salen 13 masas.',
+    b:`Con las pesas solo enfrente salen ${P5.unPlatillo.join(', ')}: ${P5.unPlatillo.length} masas. Pero una pesa también puede ir junto a la papa y restar: 3 − 1 = 2, 9 − 3 − 1 = 5… Salen las 13 de 1 a 13 kg.`,
+    d:'Hay 27 acomodos, pero uno no pesa nada (todas fuera) y, de los otros 26, la mitad pondría más pesas junto a la papa que enfrente: pedirían una masa negativa. Quedan 13.' } };
 const pes = (v, t) => `${v} pesadas: ${t}`;
 const G7 = { id:'cortes-paso7', ok:'a', opts:[
   ['a', pes(P7.pesadas, 'en tres grupos de 3')],
@@ -785,9 +785,9 @@ const G7 = { id:'cortes-paso7', ok:'a', opts:[
   ['c', pes(P7.errores.parejas, 'de dos en dos, 1 con 2, 3 con 4…'), 'pesadas-de-dos-en-dos', 'hipotesis'],
   ['d', pes(P7.errores.unaPorUna, 'la moneda 1 contra cada una de las demás'), 'pesadas-una-por-una', 'hipotesis']],
   fb:{ a:'¡Bien! Pon 3 en cada platillo y deja 3 fuera. Si un platillo sube, la falsa está ahí; si se equilibran, está entre las de fuera. Quedan 3, y con otra pesada (1 contra 1, una fuera) la encuentras.',
-    b:'Elegiste la B. Partir en mitades solo usa dos de los tres resultados posibles de la balanza. Con tres grupos, el equilibrio también dice algo: señala el grupo de fuera. Bastan 2 pesadas. La correcta está marcada.',
-    c:'Elegiste la C. De dos en dos, con mala suerte la falsa sale en la cuarta pesada. Con tres grupos de 3 se descartan 6 monedas de una vez: bastan 2. La correcta está marcada.',
-    d:'Elegiste la D. Comparar una por una puede tomar 7 pesadas. Con tres grupos, cada pesada deja solo la tercera parte de las sospechosas: 9 → 3 → 1. La correcta está marcada.' } };
+    b:'Partir en mitades solo usa dos de los tres resultados posibles de la balanza. Con tres grupos, el equilibrio también dice algo: señala el grupo de fuera. Bastan 2 pesadas.',
+    c:'De dos en dos, con mala suerte la falsa sale en la cuarta pesada. Con tres grupos de 3 se descartan 6 monedas de una vez: bastan 2.',
+    d:'Comparar una por una puede tomar 7 pesadas. Con tres grupos, cada pesada deja solo la tercera parte de las sospechosas: 9 → 3 → 1.' } };
 
 // ---- configuraciones ----
 const lectVarilla = ya => [L('L', 'Largo L', '12 m'), L('d', 'Cada pieza d', '2 m')]
@@ -1162,7 +1162,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

@@ -113,7 +113,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -737,48 +737,48 @@ const G1 = { id:'graficos-paso1', ok:'b', opts:[
   ['c', `${fmt(R1.errores.sobranteDibujado)} veces: ${R1.diferencia} contra ${R1.altoB}`, 'eje-truncado-sobrante-dibujado', 'hipotesis'],
   ['d', `${fmt(R1.errores.invertida)} veces: 40 contra 50`, 'razon-invertida', 'hipotesis']],
   fb:{ b:`¡Bien! Hay que leer los números del eje: 50/40 = 5/4 = ${fmt(R1.razon)}. Rosita vendió ${R1.diferencia} cajas más, un ${pc(R1.porcentajeMas)} más. Mira lo que pasa cuando el eje baja hasta 0.`,
-    a:`Elegiste la A. Las barras se ven ${R1.altoA} contra ${R1.altoB}, pero el eje empieza en 35: a las dos les cortaron las primeras 35 cajas. Con los números, 50/40 = ${fmt(R1.razon)}. La correcta está marcada.`,
-    c:`Elegiste la C. Lo que una barra le saca a la otra (10 cajas) comparado con lo que se ve de la otra (5) es otra trampa del eje cortado. Rosita vendió 50 y El Sol 40: ${fmt(R1.razon)} veces. La correcta está marcada.`,
-    d:`Elegiste la D. 40/50 = ${fmt(R1.errores.invertida)} dice cuántas veces lo de Rosita vendió El Sol: es al revés. Rosita vendió 50/40 = ${fmt(R1.razon)} veces lo de El Sol. La correcta está marcada.` } };
+    a:`Las barras se ven ${R1.altoA} contra ${R1.altoB}, pero el eje empieza en 35: a las dos les cortaron las primeras 35 cajas. Con los números, 50/40 = ${fmt(R1.razon)}.`,
+    c:`Lo que una barra le saca a la otra (10 cajas) comparado con lo que se ve de la otra (5) es otra trampa del eje cortado. Rosita vendió 50 y El Sol 40: ${fmt(R1.razon)} veces.`,
+    d:`40/50 = ${fmt(R1.errores.invertida)} dice cuántas veces lo de Rosita vendió El Sol: es al revés. Rosita vendió 50/40 = ${fmt(R1.razon)} veces lo de El Sol.` } };
 const G3 = { id:'graficos-paso3', ok:'b', opts:[
   ['a', `De ${MES[M3.masEmpinado.tramo]} a ${MES[M3.masEmpinado.tramo + 1]}: sube ${M3.masEmpinado.cambio} cajas, la subida más empinada`, 'tramo-mas-empinado', 'hipotesis'],
   ['b', `De ${MES[C3.mayor]} a ${MES[C3.mayor + 1]}: sube ${C3.cambio} sobre ${T3[C3.mayor].de}, el ${pc(C3.porcentaje)}`],
   ['c', `De ${MES[M3.baseFinal.tramo]} a ${MES[M3.baseFinal.tramo + 1]}: sube ${T3[M3.baseFinal.tramo].cambio} sobre ${T3[M3.baseFinal.tramo].a}, el ${pc(M3.baseFinal.porcentaje)}`, 'AR3-porcentaje-sobre-el-valor-final', 'hipotesis'],
   ['d', `En ${MES[M3.puntoMasAlto.indice]}: es el punto más alto, con ${M3.puntoMasAlto.valor} cajas`, 'punto-mas-alto-en-vez-del-cambio', 'hipotesis']],
   fb:{ b:`¡Bien! El porcentaje compara lo que sube con el valor de partida: de noviembre a diciembre, 20 sobre 100 es ${pc(T3[0].porcentaje)}; de febrero a marzo, 10 sobre 40 es ${pc(C3.porcentaje)}. Sube menos cajas, pero desde mucho más abajo.`,
-    a:`Elegiste la A. De noviembre a diciembre suben más cajas (20), pero sobre 100: ${pc(T3[0].porcentaje)}. De febrero a marzo suben 10 sobre 40: ${pc(C3.porcentaje)}. Lo empinado mide el cambio en cajas, no en porcentaje. La correcta está marcada.`,
-    c:`Elegiste la C. El tramo es el correcto, pero el porcentaje se calcula sobre el valor de partida (40), no sobre el de llegada (50): 10/40 = ${pc(C3.porcentaje)}. La correcta está marcada.`,
-    d:`Elegiste la D. Diciembre es el mes que más vendió, pero la pregunta es cuánto creció de un mes al siguiente. Lo dicen las subidas, no la altura de un punto. La correcta está marcada.` } };
+    a:`De noviembre a diciembre suben más cajas (20), pero sobre 100: ${pc(T3[0].porcentaje)}. De febrero a marzo suben 10 sobre 40: ${pc(C3.porcentaje)}. Lo empinado mide el cambio en cajas, no en porcentaje.`,
+    c:`El tramo es el correcto, pero el porcentaje se calcula sobre el valor de partida (40), no sobre el de llegada (50): 10/40 = ${pc(C3.porcentaje)}.`,
+    d:`Diciembre es el mes que más vendió, pero la pregunta es cuánto creció de un mes al siguiente. Lo dicen las subidas, no la altura de un punto.` } };
 const G4 = { id:'graficos-paso4', ok:'c', opts:[
   ['a', `${fmt(S4.errores.sobre100)}: el 72 % de 200`, 'circular-vuelta-de-100', 'hipotesis'],
   ['b', `${fmt(S4.errores.gradosComoCantidad)}: un alumno por cada grado`, 'circular-grados-como-cantidad', 'hipotesis'],
   ['c', `${fmt(S4.cantidad)}: 72° es la quinta parte de los 360°`],
   ['d', `${fmt(S4.errores.porcentajeComoCantidad)}: 72° de 360° es el 20 %`, 'circular-porcentaje-como-cantidad', 'hipotesis']],
   fb:{ c:`¡Bien! La vuelta entera, 360°, son los 200 alumnos. 72/360 = ${S4.fraccion}: la quinta parte. Un quinto de 200 son ${fmt(S4.cantidad)} alumnos, el ${pc(S4.porcentaje)}.`,
-    a:`Elegiste la A. La vuelta no mide 100 sino 360°. 72° es el ${pc(S4.porcentaje)} de la vuelta, y el ${pc(S4.porcentaje)} de 200 son ${fmt(S4.cantidad)}. La correcta está marcada.`,
-    b:`Elegiste la B. Un grado sería un alumno solo si fueran 360 alumnos. Aquí son 200: cada alumno ocupa 360/200 = 1,8°, y 72/1,8 = ${fmt(S4.cantidad)}. La correcta está marcada.`,
-    d:`Elegiste la D. El ${pc(S4.porcentaje)} está bien, pero se pregunta por alumnos: el ${pc(S4.porcentaje)} de 200 son ${fmt(S4.cantidad)}. La correcta está marcada.` } };
+    a:`La vuelta no mide 100 sino 360°. 72° es el ${pc(S4.porcentaje)} de la vuelta, y el ${pc(S4.porcentaje)} de 200 son ${fmt(S4.cantidad)}.`,
+    b:`Un grado sería un alumno solo si fueran 360 alumnos. Aquí son 200: cada alumno ocupa 360/200 = 1,8°, y 72/1,8 = ${fmt(S4.cantidad)}.`,
+    d:`El ${pc(S4.porcentaje)} está bien, pero se pregunta por alumnos: el ${pc(S4.porcentaje)} de 200 son ${fmt(S4.cantidad)}.` } };
 const G6 = { id:'graficos-paso6', ok:'b', opts:[
   ['a', `${E6.errores.porEquipo}: 7, 4, 4 y 1 dejan resto 1 al dividirlos entre 3, un empate por equipo`, 'empates-contados-por-equipo', 'hipotesis'],
   ['b', `${E6.empates}: faltan ${E6.maximo - E6.total} puntos y cada empate resta 1`],
   ['c', `${fmt(E6.errores.faltanEntreDos)}: faltan ${E6.maximo - E6.total} puntos y cada empate resta 2`, 'empate-reparte-dos-puntos', 'hipotesis'],
   ['d', 'No se puede saber: faltan los resultados de cada partido', 'tabla-no-se-puede-sin-resultados', 'hipotesis']],
   fb:{ b:`¡Bien! Se jugaron 4 · 3/2 = ${E6.partidos} partidos. Un partido con ganador reparte 3 puntos; un empate, 2. Sin empates habría ${E6.maximo}; hay ${E6.total}: cada empate «pierde» un punto, así que hubo ${E6.empates}.`,
-    a:`Elegiste la A. Cada equipo sí tiene un empate, pero un empate lo juegan DOS equipos: aparece en dos filas. Los 4 empates de los equipos son ${E6.empates} partidos. La correcta está marcada.`,
-    c:`Elegiste la C. Un empate reparte 2 puntos y un partido con ganador, 3: cada empate resta 1 punto al total, no 2. Faltan 2 puntos (${E6.maximo} posibles, hay ${E6.total}): hubo ${E6.empates} empates. La correcta está marcada.`,
-    d:`Elegiste la D. No hace falta saber quién le ganó a quién: basta contar los puntos. ${E6.partidos} partidos darían ${E6.maximo} puntos sin empates; hay ${E6.total}, así que hubo ${E6.empates}. La correcta está marcada.` } };
+    a:`Cada equipo sí tiene un empate, pero un empate lo juegan DOS equipos: aparece en dos filas. Los 4 empates de los equipos son ${E6.empates} partidos.`,
+    c:`Un empate reparte 2 puntos y un partido con ganador, 3: cada empate resta 1 punto al total, no 2. Faltan 2 puntos (${E6.maximo} posibles, hay ${E6.total}): hubo ${E6.empates} empates.`,
+    d:`No hace falta saber quién le ganó a quién: basta contar los puntos. ${E6.partidos} partidos darían ${E6.maximo} puntos sin empates; hay ${E6.total}, así que hubo ${E6.empates}.` } };
 const G7 = { id:'graficos-paso7', ok:letraDe(F7.clave), opts:opcionesSD(F7),
   fb:{ a:`¡Bien! Con la I: edad + 5 = 17, así que Ana tiene 12, una sola edad. Con la II: de 3 a 15 años caben todas. La I sola basta; no hace falta usar la II.`,
-    b:'Elegiste la B. Con la II, Ana podría tener cualquier edad de 3 a 15. La que deja una sola edad es la I: 17 − 5 = 12. La correcta está marcada.',
-    c:'Elegiste la C. Usar las dos da 12, pero la I sola ya lo daba. En suficiencia se marca la que usa menos información: la I sola. La correcta está marcada.',
-    d:'Elegiste la D. La I basta, pero la II deja 13 edades posibles (de 3 a 15): no basta sola. La correcta está marcada.',
-    e:'Elegiste la E. Sí hay datos suficientes: dentro de 5 años tendrá 17, así que hoy tiene 12. La correcta está marcada.' } };
+    b:'Con la II, Ana podría tener cualquier edad de 3 a 15. La que deja una sola edad es la I: 17 − 5 = 12.',
+    c:'Usar las dos da 12, pero la I sola ya lo daba. En suficiencia se marca la que usa menos información: la I sola.',
+    d:'La I basta, pero la II deja 13 edades posibles (de 3 a 15): no basta sola.',
+    e:'Sí hay datos suficientes: dentro de 5 años tendrá 17, así que hoy tiene 12.' } };
 const G8 = { id:'graficos-paso8', ok:letraDe(F8.clave), opts:opcionesSD(F8),
   fb:{ c:`¡Bien! Con la I quedan dos compras: 1 cuaderno y 7 lapiceros (4 + 21 = 25) o 4 cuadernos y 3 lapiceros (16 + 9 = 25). Con la II quedan ${F8.valores.II.length}. Las dos juntas dejan solo la de 4 cuadernos.`,
-    a:'Elegiste la A. Con la I, 4 cuadernos y 3 lapiceros cuestan 25, pero también 1 cuaderno y 7 lapiceros: 4 + 21 = 25. Quedan dos respuestas, así que la I sola no basta. La correcta está marcada.',
-    b:'Elegiste la B. Con 7 artículos se puede tener de 1 a 6 cuadernos. La II sola no basta. La correcta está marcada.',
-    d:'Elegiste la D. Ninguna basta sola: la I deja 1 o 4 cuadernos y la II, de 1 a 6. La correcta está marcada.',
-    e:'Elegiste la E. Las dos juntas sí bastan: de las dos compras de la I, solo 4 + 3 suma 7 artículos. La correcta está marcada.' } };
+    a:'Con la I, 4 cuadernos y 3 lapiceros cuestan 25, pero también 1 cuaderno y 7 lapiceros: 4 + 21 = 25. Quedan dos respuestas, así que la I sola no basta.',
+    b:'Con 7 artículos se puede tener de 1 a 6 cuadernos. La II sola no basta.',
+    d:'Ninguna basta sola: la I deja 1 o 4 cuadernos y la II, de 1 a 6.',
+    e:'Las dos juntas sí bastan: de las dos compras de la I, solo 4 + 3 suma 7 artículos.' } };
 
 // ---- configuraciones ----
 const barras1 = (ya, inicio) => ({ modo:'barras', bar:{ a:50, b:40, inicio: inicio === undefined ? 35 : inicio, tope:55, verValores:ya, marcarInicio:ya },
@@ -1124,7 +1124,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

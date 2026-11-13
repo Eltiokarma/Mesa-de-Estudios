@@ -121,7 +121,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -640,7 +640,7 @@ const D2160 = M.menorDivisor(2160, 2), F2160 = M.fichasFactores(2160, 2);
 const Q49 = M.cuadradosEntre(49, 400), Q50 = M.cuadradosEntre(50, 399);
 // Lo que da cada distractor, también del motor (para las retroalimentaciones)
 const X72 = m => M.menorMultiplicador(72 * m, 3), X2160 = d => M.menorDivisor(2160 / d, 2);
-const fb = (letra, ok, txt) => (letra === ok ? txt : `Elegiste la ${letra.toUpperCase()}. ${txt} La correcta está marcada.`);
+const fb = (letra, ok, txt) => (letra === ok ? txt : `${txt}`);
 const FUENTE = '<p class="fuente">No encontramos estudios con datos sobre estos errores en potenciación y radicación; las opciones incorrectas son hipótesis nuestras, y la app las medirá en el colegio.</p>';
 const LEY_CUAD = [['N', 'fichas'], ['k', 'lado k'], ['r', 'residuo por defecto r'], ['rp', 'residuo por exceso rₑ'], ['muted', 'sobran o faltan con otro lado']];
 const corto = c => { const r = c.razones[0]; return r.id === 'ultima-cifra' ? `termina en ${c.N % 10}` : r.id === 'ceros-impares' ? `${c.ceros} ${pl(c.ceros, 'cero', 'ceros')} al final` : r.id === 'termina-en-5' ? 'termina en 5, no en 25' : r.id === 'entre-4' ? `entre 4 deja ${c.resto4}` : `cifras: suma ${c.sumaCifras}`; };
@@ -1129,7 +1129,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const f = $('fb2');
-    f.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    f.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     f.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

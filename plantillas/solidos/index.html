@@ -141,7 +141,7 @@ table.formulas td{font-family:var(--mono); font-variant-numeric:tabular-nums}
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -1035,54 +1035,54 @@ const P1 = { id:'solidos-cubitos', ok:'c', opts:[
   ['c', `${n0(BQ.total)} cubitos`],
   ['d', `${n0(BQ.errores.total.areaTotal)} cubitos`, 'GE14-volumen-como-area-total', 'parcial']],
   fb:{ c:`¡Bien! Son 4 capas de 3 · 2 = 6 cubitos: ${n0(BQ.total)}. Mira cómo se separan las capas.`,
-    a:`Elegiste la A. ${n0(BQ.carasDibujo)} son las caritas que se ven en el dibujo (6 + 8 + 12), no los cubitos: un cubito de la esquina muestra tres caritas y los de atrás no muestran ninguna. La correcta está marcada.`,
-    b:`Elegiste la B. ${n0(BQ.visiblesDibujo)} son los cubitos que asoman en el dibujo; atrás y abajo quedan ${n0(BQ.ocultosDibujo)} que no se ven. La correcta está marcada.`,
-    d:`Elegiste la D. ${n0(BQ.areaTotal)} es la suma de las seis caras: el área total, en u². El volumen cuenta cubitos, no caritas. La correcta está marcada.` } };
+    a:`${n0(BQ.carasDibujo)} son las caritas que se ven en el dibujo (6 + 8 + 12), no los cubitos: un cubito de la esquina muestra tres caritas y los de atrás no muestran ninguna.`,
+    b:`${n0(BQ.visiblesDibujo)} son los cubitos que asoman en el dibujo; atrás y abajo quedan ${n0(BQ.ocultosDibujo)} que no se ven.`,
+    d:`${n0(BQ.areaTotal)} es la suma de las seis caras: el área total, en u². El volumen cuenta cubitos, no caritas.` } };
 const P2 = { id:'solidos-piramide-lateral', ok:'b', opts:[
   ['a', `${n0(PI_.errores.lateral.conAltura)} u²`, 'GE21-lateral-con-altura', 'hipotesis'],
   ['b', `${n0(PI_.lateral)} u²`],
   ['c', `${n0(PI_.errores.lateral.sinMitad)} u²`, 'lateral-piramide-sin-mitad', 'hipotesis'],
   ['d', `${n0(PI_.errores.lateral.conBase)} u²`, 'lateral-piramide-con-base', 'hipotesis']],
   fb:{ b:`¡Bien! Cada triángulo tiene base 6 y altura ap = ${n0(PI_.ap)}, no 4: cuatro triángulos de ${n0(6*PI_.ap/2)} u².`,
-    a:`Elegiste la A. ${n0(PI_.errores.lateral.conAltura)} usa la altura h = 4 como si fuera la altura de cada triángulo. Pero h va por dentro; la altura de la cara es la apotema, que es más larga. La correcta está marcada.`,
-    c:`Elegiste la C. ${n0(PI_.errores.lateral.sinMitad)} multiplica el perímetro (24) por la apotema: cada triángulo es la mitad de base por altura. Se multiplica el semiperímetro (12). La correcta está marcada.`,
-    d:`Elegiste la D. ${n0(PI_.errores.lateral.conBase)} suma también la base cuadrada (36): eso es el área total. La lateral son solo los cuatro triángulos. La correcta está marcada.` } };
+    a:`${n0(PI_.errores.lateral.conAltura)} usa la altura h = 4 como si fuera la altura de cada triángulo. Pero h va por dentro; la altura de la cara es la apotema, que es más larga.`,
+    c:`${n0(PI_.errores.lateral.sinMitad)} multiplica el perímetro (24) por la apotema: cada triángulo es la mitad de base por altura. Se multiplica el semiperímetro (12).`,
+    d:`${n0(PI_.errores.lateral.conBase)} suma también la base cuadrada (36): eso es el área total. La lateral son solo los cuatro triángulos.` } };
 const P3 = { id:'solidos-piramide-volumen', ok:'d', opts:[
   ['a', `${n0(PI_.errores.volumen.sinTercio)} u³`, 'GE20-sin-tercio', 'hipotesis'],
   ['b', `${n0(PI_.errores.volumen.mitad)} u³`, 'piramide-mitad-del-prisma', 'hipotesis'],
   ['c', `${n0(PI_.errores.volumen.comoArea)} u³`, 'GE14-volumen-como-area-total', 'parcial'],
   ['d', `${n0(PI_.volumen)} u³`]],
   fb:{ d:`¡Bien! La pirámide es la tercera parte de la caja de igual base y altura: 144/3 = ${n0(PI_.volumen)}. Mira cómo tres pirámides llenan la caja.`,
-    a:`Elegiste la A. ${n0(PI_.errores.volumen.sinTercio)} es 36 · 4: el volumen de la caja entera de base 6 × 6 y altura 4. A la pirámide le falta el tercio. La correcta está marcada.`,
-    b:`Elegiste la B. ${n0(PI_.errores.volumen.mitad)} divide entre 2, como en el área del triángulo. Pero la pirámide se angosta en dos direcciones: es un tercio de la caja, no la mitad. La correcta está marcada.`,
-    c:`Elegiste la C. ${n0(PI_.errores.volumen.comoArea)} es el área total del paso anterior (60 + 36), en u². El volumen se mide en cubitos de adentro. La correcta está marcada.` } };
+    a:`${n0(PI_.errores.volumen.sinTercio)} es 36 · 4: el volumen de la caja entera de base 6 × 6 y altura 4. A la pirámide le falta el tercio.`,
+    b:`${n0(PI_.errores.volumen.mitad)} divide entre 2, como en el área del triángulo. Pero la pirámide se angosta en dos direcciones: es un tercio de la caja, no la mitad.`,
+    c:`${n0(PI_.errores.volumen.comoArea)} es el área total del paso anterior (60 + 36), en u². El volumen se mide en cubitos de adentro.` } };
 const P4 = { id:'solidos-lata', ok:'a', opts:[
   ['a', `${piT(CI.pi.largo)} cm`],
   ['b', `${piT(CI.errores.largo.conArea)} cm`, 'GE19-circunferencia-con-area', 'hipotesis'],
   ['c', `${piT(CI.errores.largo.conDiametro)} cm`, 'GE19-diametro-como-radio', 'hipotesis'],
   ['d', `${piT(CI.errores.largo.mitad)} cm`, 'circunferencia-pi-r', 'hipotesis']],
   fb:{ a:`¡Bien! La etiqueta da una vuelta: su largo es la circunferencia de la base, 2π · 3 = ${piT(CI.pi.largo)} cm.`,
-    b:`Elegiste la B. ${piT(CI.errores.largo.conArea)} es π · 3²: el área del círculo de la tapa, en cm². El largo de la etiqueta es una longitud: 2πr. La correcta está marcada.`,
-    c:`Elegiste la C. ${piT(CI.errores.largo.conDiametro)} usa el diámetro (6) en 2πr. Con el diámetro la fórmula es π · d = 6π. La correcta está marcada.`,
-    d:`Elegiste la D. ${piT(CI.errores.largo.mitad)} es π · r: solo media vuelta. La vuelta completa es 2πr. La correcta está marcada.` } };
+    b:`${piT(CI.errores.largo.conArea)} es π · 3²: el área del círculo de la tapa, en cm². El largo de la etiqueta es una longitud: 2πr.`,
+    c:`${piT(CI.errores.largo.conDiametro)} usa el diámetro (6) en 2πr. Con el diámetro la fórmula es π · d = 6π.`,
+    d:`${piT(CI.errores.largo.mitad)} es π · r: solo media vuelta. La vuelta completa es 2πr.` } };
 const P5 = { id:'solidos-cono', ok:'c', opts:[
   ['a', `${piT(CO.errores.lateral.conAltura)} cm²`, 'GE21-lateral-con-altura', 'hipotesis'],
   ['b', `${piT(CO.errores.lateral.conDiametro)} cm²`, 'GE19-diametro-como-radio', 'hipotesis'],
   ['c', `${piT(CO.pi.lateral)} cm²`],
   ['d', `${piT(CO.errores.lateral.conBase)} cm²`, 'lateral-cono-con-base', 'hipotesis']],
   fb:{ c:`¡Bien! A_L = π · r · g, con la generatriz g = 5 (no la altura): π · 3 · 5 = ${piT(CO.pi.lateral)} cm².`,
-    a:`Elegiste la A. ${piT(CO.errores.lateral.conAltura)} es π · 3 · 4: usa la altura h. Pero la superficie del cono va por fuera, por la generatriz g = 5. La correcta está marcada.`,
-    b:`Elegiste la B. ${piT(CO.errores.lateral.conDiametro)} es π · 6 · 5: usa el diámetro en lugar del radio. La correcta está marcada.`,
-    d:`Elegiste la D. ${piT(CO.errores.lateral.conBase)} suma también el círculo de la base (9π): es el área total. La correcta está marcada.` } };
+    a:`${piT(CO.errores.lateral.conAltura)} es π · 3 · 4: usa la altura h. Pero la superficie del cono va por fuera, por la generatriz g = 5.`,
+    b:`${piT(CO.errores.lateral.conDiametro)} es π · 6 · 5: usa el diámetro en lugar del radio.`,
+    d:`${piT(CO.errores.lateral.conBase)} suma también el círculo de la base (9π): es el área total.` } };
 const P6 = { id:'solidos-esfera', ok:'b', opts:[
   ['a', '1/3 del cilindro', 'esfera-como-cono', 'hipotesis'],
   ['b', `${ES.fraccionTexto} del cilindro`],
   ['c', '1/2 del cilindro', 'esfera-mitad-del-cilindro', 'hipotesis'],
   ['d', '3/4 del cilindro', 'esfera-tres-cuartos', 'hipotesis']],
   fb:{ b:`¡Bien! La esfera ocupa 2/3 del cilindro: ${piT(ES.pi.volumen)} de ${piT(ES.pi.cilVolumen)}. Lo descubrió Arquímedes.`,
-    a:`Elegiste la A. Un tercio es lo que ocupa el cono de igual base y altura. La esfera es mucho más gorda que el cono: ocupa 2/3. La correcta está marcada.`,
-    c:`Elegiste la C. La esfera ocupa más de la mitad: 36π de 54π, o sea 2/3. La correcta está marcada.`,
-    d:`Elegiste la D. Las cuatro esquinas que deja la esfera arriba y abajo son más grandes de lo que parecen: ocupa 2/3, no 3/4. La correcta está marcada.` } };
+    a:`Un tercio es lo que ocupa el cono de igual base y altura. La esfera es mucho más gorda que el cono: ocupa 2/3.`,
+    c:`La esfera ocupa más de la mitad: 36π de 54π, o sea 2/3.`,
+    d:`Las cuatro esquinas que deja la esfera arriba y abajo son más grandes de lo que parecen: ocupa 2/3, no 3/4.` } };
 
 // Configuraciones del dibujo de cada paso
 const cfgCaja = r => ({ modo:'solido', tipo:'prisma', d:CAJA, cuadricula:true, marcas:['h', 'dims'], et:{ h:'h = 4', largo:'3', ancho:'2' },
@@ -1490,7 +1490,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
@@ -1537,45 +1537,45 @@ const Q1 = { id:'solidos-vaso-mitad', ok:'c', opts:[
   ['c', `${piT(VA.pi.agua)} cm³`],
   ['d', `${piT(VA.errores.agua.k3AlTronco)} cm³`, 'k3-aplicado-al-tronco', 'hipotesis']],
   fb:{ c:`¡Bien! A media altura el radio es ${fmt(VA.rNivel)} (el promedio de 2 y 6). El agua es un tronco de radios 2 y ${fmt(VA.rNivel)} y altura 3: ${piT(VA.pi.agua)}, poco más de la cuarta parte del vaso.`,
-    a:`Elegiste la A. ${piT(VA.errores.agua.mitadDeVolumen)} es la mitad de ${piT(VA.pi.vaso)}: valdría si el vaso fuera un cilindro. Este se abre hacia arriba: la mitad de abajo es la angosta y guarda mucho menos que la de arriba. La correcta está marcada.`,
-    b:`Elegiste la B. ${piT(VA.errores.agua.radioComoParte)} usa radio 3 a media altura (la mitad de 6) y arma un tronco de radios 2 y 3. La mitad de R solo vale si el radio empieza en 0, en un cono con la punta en el fondo; este vaso tiene fondo de radio 2, así que a media altura el radio es (2 + 6)/2 = 4. La correcta está marcada.`,
-    d:`Elegiste la D. ${piT(VA.errores.agua.k3AlTronco)} es ${piT(VA.pi.vaso)}/8: la regla del cubo vale entre conos que comparten la punta, y este vaso no tiene punta en el fondo. El agua no es un vaso más chico semejante al lleno. La correcta está marcada.` } };
+    a:`${piT(VA.errores.agua.mitadDeVolumen)} es la mitad de ${piT(VA.pi.vaso)}: valdría si el vaso fuera un cilindro. Este se abre hacia arriba: la mitad de abajo es la angosta y guarda mucho menos que la de arriba.`,
+    b:`${piT(VA.errores.agua.radioComoParte)} usa radio 3 a media altura (la mitad de 6) y arma un tronco de radios 2 y 3. La mitad de R solo vale si el radio empieza en 0, en un cono con la punta en el fondo; este vaso tiene fondo de radio 2, así que a media altura el radio es (2 + 6)/2 = 4.`,
+    d:`${piT(VA.errores.agua.k3AlTronco)} es ${piT(VA.pi.vaso)}/8: la regla del cubo vale entre conos que comparten la punta, y este vaso no tiene punta en el fondo. El agua no es un vaso más chico semejante al lleno.` } };
 const Q2 = { id:'solidos-bola-agua', ok:'b', opts:[
   ['a', `${fmt(BO.errores.dh.subeLoQueMide)} cm`, 'sube-lo-que-mide-la-pieza', 'hipotesis'],
   ['b', `${fmt(BO.dh)} cm`],
   ['c', `${fmt(BO.errores.dh.conDiametro)} cm`, 'GE19-diametro-como-radio', 'hipotesis'],
   ['d', `${fmt(BO.errores.dh.sinTercio)} cm`, 'esfera-sin-tercio', 'hipotesis']],
   fb:{ b:`¡Bien! El agua que sube forma un cilindro de radio 6 y alto Δh con el mismo volumen que la bola: 36π · Δh = 36π, así que Δh = ${fmt(BO.dh)} cm.`,
-    a:`Elegiste la A. ${fmt(BO.errores.dh.subeLoQueMide)} cm es lo que mide la bola de alto (su diámetro). El agua no sube lo que mide la pieza: sube lo justo para que el agua de más, πR² · Δh, ocupe lo mismo que la bola. El vaso es ancho, así que sube poco. La correcta está marcada.`,
-    c:`Elegiste la C. ${fmt(BO.errores.dh.conDiametro)} cm usa el diámetro del vaso (12) en πR². El área del fondo es π · 6² = 36π. La correcta está marcada.`,
-    d:`Elegiste la D. ${fmt(BO.errores.dh.sinTercio)} cm sale de usar 4πr³ sin el 1/3 (o de dividir entre la circunferencia 2πR en lugar del área πR²). La bola mide 4π · 27/3 = 36π. La correcta está marcada.` } };
+    a:`${fmt(BO.errores.dh.subeLoQueMide)} cm es lo que mide la bola de alto (su diámetro). El agua no sube lo que mide la pieza: sube lo justo para que el agua de más, πR² · Δh, ocupe lo mismo que la bola. El vaso es ancho, así que sube poco.`,
+    c:`${fmt(BO.errores.dh.conDiametro)} cm usa el diámetro del vaso (12) en πR². El área del fondo es π · 6² = 36π.`,
+    d:`${fmt(BO.errores.dh.sinTercio)} cm sale de usar 4πr³ sin el 1/3 (o de dividir entre la circunferencia 2πR en lugar del área πR²). La bola mide 4π · 27/3 = 36π.` } };
 const Q3 = { id:'solidos-trapecio-gira', ok:'b', opts:[
   ['a', `${piT(TM.errores.volumen.rectangulo)} cm³`, 'GE20-cono-sin-tercio-o-rectangulo-completo', 'hipotesis'],
   ['b', `${piT(TM.pi.volumen)} cm³`],
   ['c', `${piT(TM.errores.volumen.ejePerpendicular)} cm³`, 'revolucion-gira-sobre-otro-lado', 'hipotesis'],
   ['d', `${piT(TM.errores.volumen.ejeMenor)} cm³`, 'revolucion-resta-el-cono', 'hipotesis']],
   fb:{ b:`¡Bien! El lado de 3 da la vuelta como radio: la parte de 6 de alto barre un cilindro (π · 9 · 6 = ${piT(TM.piezas[0].piVolumen)}) y la punta, un cono de alto 10 − 6 = 4 (π · 9 · 4/3 = ${piT(TM.piezas[1].piVolumen)}). Juntos, ${piT(TM.pi.volumen)}.`,
-    a:`Elegiste la A. ${piT(TM.errores.volumen.rectangulo)} es π · 3² · 10: un cilindro de todo el largo, como si la región fuera un rectángulo (o el cono sin su 1/3, que da lo mismo). La punta es un cono y lleva el tercio. La correcta está marcada.`,
-    c:`Elegiste la C. ${piT(TM.errores.volumen.ejePerpendicular)} es el tronco de cono que sale al girar sobre el lado de 3. Aquí el eje es la base mayor: el lado de 3 hace de radio, no de altura. La correcta está marcada.`,
-    d:`Elegiste la D. ${piT(TM.errores.volumen.ejeMenor)} resta el cono (90π − 12π): eso sale al girar sobre la base menor, que deja un hueco con forma de cono. Girando sobre la mayor, la punta llena un cono que se suma. La correcta está marcada.` } };
+    a:`${piT(TM.errores.volumen.rectangulo)} es π · 3² · 10: un cilindro de todo el largo, como si la región fuera un rectángulo (o el cono sin su 1/3, que da lo mismo). La punta es un cono y lleva el tercio.`,
+    c:`${piT(TM.errores.volumen.ejePerpendicular)} es el tronco de cono que sale al girar sobre el lado de 3. Aquí el eje es la base mayor: el lado de 3 hace de radio, no de altura.`,
+    d:`${piT(TM.errores.volumen.ejeMenor)} resta el cono (90π − 12π): eso sale al girar sobre la base menor, que deja un hueco con forma de cono. Girando sobre la mayor, la punta llena un cono que se suma.` } };
 const Q4 = { id:'solidos-globo-cono', ok:'d', opts:[
   ['a', '8/3 cm', 'incentro-como-baricentro', 'hipotesis'],
   ['b', `${fmt(GL.errores.rho.poncelet)} cm`, 'inradio-de-la-mitad-rectangula', 'hipotesis'],
   ['c', '3/2 cm', 'inradio-con-perimetro-entero', 'hipotesis'],
   ['d', `${fmt(GL.rho)} cm`]],
   fb:{ d:`¡Bien! En el corte por el eje, el globo es la circunferencia inscrita en un triángulo de lados 10, 10 y 12: ρ = área / semiperímetro = 48/16 = ${fmt(GL.rho)} cm.`,
-    a:`Elegiste la A. 8/3 es un tercio de la altura: ahí está el baricentro, donde se cruzan las medianas. El centro del globo es el incentro, donde se cruzan las bisectrices, y en este triángulo no coinciden. La correcta está marcada.`,
-    b:`Elegiste la B. ${fmt(GL.errores.rho.poncelet)} sale de la fórmula del triángulo rectángulo, (6 + 8 − 10)/2, aplicada a la mitad del corte. Esa circunferencia cabe en la mitad y no llega al otro lado: el globo toca todo el triángulo isósceles. La correcta está marcada.`,
-    c:`Elegiste la C. 3/2 divide el área (48) entre el perímetro entero (32). El área del triángulo es semiperímetro por inradio, S = p · ρ, con p = 16. La correcta está marcada.` } };
+    a:`8/3 es un tercio de la altura: ahí está el baricentro, donde se cruzan las medianas. El centro del globo es el incentro, donde se cruzan las bisectrices, y en este triángulo no coinciden.`,
+    b:`${fmt(GL.errores.rho.poncelet)} sale de la fórmula del triángulo rectángulo, (6 + 8 − 10)/2, aplicada a la mitad del corte. Esa circunferencia cabe en la mitad y no llega al otro lado: el globo toca todo el triángulo isósceles.`,
+    c:`3/2 divide el área (48) entre el perímetro entero (32). El área del triángulo es semiperímetro por inradio, S = p · ρ, con p = 16.` } };
 const Q5 = { id:'solidos-casquete', ok:'c', opts:[
   ['a', `${piT(CQ.errores.area.disco)} cm²`, 'casquete-como-disco-del-corte', 'hipotesis'],
   ['b', `${piT(CQ.errores.area.escalaK2)} cm²`, 'casquete-con-escala-k2', 'hipotesis'],
   ['c', `${piT(CQ.pi.area)} cm²`],
   ['d', `${piT(CQ.errores.area.conDiametro)} cm²`, 'GE19-diametro-como-radio', 'hipotesis']],
   fb:{ c:`¡Bien! El casquete mide lo mismo que la franja de igual altura del cilindro que envuelve a la esfera: 2π · 6 · 3 = ${piT(CQ.pi.area)} cm², la cuarta parte de la esfera (3 de sus 12 cm de alto).`,
-    a:`Elegiste la A. ${piT(CQ.errores.area.disco)} es el área del círculo del corte, la tapa plana (su radio al cuadrado es 3 · 9 = 27). El casquete es la parte curva, que se abomba encima y mide más. La correcta está marcada.`,
-    b:`Elegiste la B. ${piT(CQ.errores.area.escalaK2)} usa la regla de semejanza k² con k = 3/12. Pero el casquete no es una esfera chica semejante a la grande: su área crece parejo con su altura, no con su cuadrado. La correcta está marcada.`,
-    d:`Elegiste la D. ${piT(CQ.errores.area.conDiametro)} usa el diámetro (12) en la franja: 2π · 12 · 3. La franja del cilindro tiene radio r = 6. La correcta está marcada.` } };
+    a:`${piT(CQ.errores.area.disco)} es el área del círculo del corte, la tapa plana (su radio al cuadrado es 3 · 9 = 27). El casquete es la parte curva, que se abomba encima y mide más.`,
+    b:`${piT(CQ.errores.area.escalaK2)} usa la regla de semejanza k² con k = 3/12. Pero el casquete no es una esfera chica semejante a la grande: su área crece parejo con su altura, no con su cuadrado.`,
+    d:`${piT(CQ.errores.area.conDiametro)} usa el diámetro (12) en la franja: 2π · 12 · 3. La franja del cilindro tiene radio r = 6.` } };
 
 // ----- configuraciones -----
 const cfgVaso = r => ({ modo:'vaso', R:VA.R, r:VA.r, h:VA.h, hChico:VA.conoCompleto.hChico, kNivel:VA.k, marca:true, etPunta:'la punta que le falta', el:20,

@@ -106,7 +106,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -662,43 +662,43 @@ const P1 = { id:'triangulo-estira-paso2', ok:'c', opts:[
   ['c','Fuera del triángulo, sobre la prolongación de BC, más allá de C'],
   ['d','En C: el lado AC es la altura','GE7-lado-como-altura','documentado']],
   fb:{ c:'¡Bien! La altura es perpendicular a la recta que contiene la base. Con el ángulo en C obtuso, esa perpendicular cae fuera: hay que prolongar BC.',
-    a:'Elegiste la A. La altura no tiene por qué llegar al punto medio: eso lo hace la mediana. La altura cae donde la perpendicular desde A toca la recta BC. La correcta está marcada.',
-    b:'Elegiste la B. Una línea inclinada hasta BC no es perpendicular a la base, así que no es la altura. Con el ángulo en C obtuso, la perpendicular cae fuera de BC. La correcta está marcada.',
-    d:'Elegiste la D. El lado AC no es perpendicular a BC: forma con ella un ángulo obtuso. La altura es otra línea, más corta, que cae fuera. La correcta está marcada.' } };
+    a:'La altura no tiene por qué llegar al punto medio: eso lo hace la mediana. La altura cae donde la perpendicular desde A toca la recta BC.',
+    b:'Una línea inclinada hasta BC no es perpendicular a la base, así que no es la altura. Con el ángulo en C obtuso, la perpendicular cae fuera de BC.',
+    d:'El lado AC no es perpendicular a BC: forma con ella un ángulo obtuso. La altura es otra línea, más corta, que cae fuera.' } };
 const P3 = { id:'triangulo-estira-paso3', ok:'b', opts:[
   ['a',`2√13 ≈ ${fmt(T3.errores.areaConAB, 1)}: base 4 y altura AB`,'GE7-lado-como-altura','documentado'],
   ['b','6'],
   ['c','12','area-sin-dividir-entre-2','hipotesis'],
   ['d',`6√5 ≈ ${fmt(T3.errores.areaConAC, 1)}: base 4 y altura AC`,'GE7-lado-como-altura','documentado']],
   fb:{ b:'¡Bien! La base es 4 y la altura es 3, la distancia de A a la recta BC, aunque caiga fuera: S = 4 · 3 / 2 = 6.',
-    a:'Elegiste la A. AB es un lado inclinado, no la altura: no es perpendicular a BC. La altura es la distancia de A a la recta BC, que mide 3. La correcta está marcada.',
-    c:'Elegiste la C. 4 · 3 = 12 es el área del rectángulo de base 4 y altura 3. El triángulo es la mitad: falta dividir entre 2. La correcta está marcada.',
-    d:'Elegiste la D. AC es un lado inclinado, no la altura: no es perpendicular a BC. La altura es la distancia de A a la recta BC, que mide 3. La correcta está marcada.' } };
+    a:'AB es un lado inclinado, no la altura: no es perpendicular a BC. La altura es la distancia de A a la recta BC, que mide 3.',
+    c:'4 · 3 = 12 es el área del rectángulo de base 4 y altura 3. El triángulo es la mitad: falta dividir entre 2.',
+    d:'AC es un lado inclinado, no la altura: no es perpendicular a BC. La altura es la distancia de A a la recta BC, que mide 3.' } };
 const P2 = { id:'triangulo-estira-paso4', ok:'d', opts:[
   ['a','Crece: el triángulo se estira y sus lados se alargan','GE6-acostado-mas-area','parcial'],
   ['b','Disminuye: el triángulo se ve cada vez más delgado','GE6-acostado-menos-area','parcial'],
   ['c','Es mayor cuando A está justo encima del medio de BC (el triángulo isósceles)','GE6-isosceles-mas-area','parcial'],
   ['d','No cambia']],
   fb:{ d:'¡Bien! Sobre la paralela, A está siempre a la misma distancia de BC: la misma base y la misma altura dan la misma área.',
-    a:'Elegiste la A. Los lados AB y AC sí se alargan, pero el área no depende de ellos: depende de la base y de la altura, y la altura no cambia sobre la paralela. La correcta está marcada.',
-    b:'Elegiste la B. Se ve más delgado, pero también más largo. Base y altura no cambian, y el área tampoco. La correcta está marcada.',
-    c:'Elegiste la C. El isósceles se ve más "completo", pero su altura es la misma que la de los demás triángulos de la paralela. Misma base y misma altura: misma área. La correcta está marcada.' } };
+    a:'Los lados AB y AC sí se alargan, pero el área no depende de ellos: depende de la base y de la altura, y la altura no cambia sobre la paralela.',
+    b:'Se ve más delgado, pero también más largo. Base y altura no cambian, y el área tampoco.',
+    c:'El isósceles se ve más "completo", pero su altura es la misma que la de los demás triángulos de la paralela. Misma base y misma altura: misma área.' } };
 const P4 = { id:'triangulo-estira-paso5', ok:'c', opts:[
   ['a','5 y 5: la bisectriz llega al punto medio','GE8-bisectriz-al-punto-medio','parcial'],
   ['b','3,6 y 6,4','GE8-bisectriz-como-altura','parcial'],
   ['c','30/7 y 40/7 (unos 4,3 y 5,7)']],
   fb:{ c:'¡Bien! La bisectriz corta la hipotenusa en la razón de los catetos: BD / DC = 6 / 8.',
-    a:'Elegiste la A. La que llega al punto medio es la mediana. La bisectriz parte el ángulo en dos, no el lado: lo corta en la razón de los otros dos lados, 6 a 8. La correcta está marcada.',
-    b:'Elegiste la B. 3,6 y 6,4 son los segmentos que deja la altura (las proyecciones de los catetos). La bisectriz es otra línea y corta en otro punto. La correcta está marcada.' } };
+    a:'La que llega al punto medio es la mediana. La bisectriz parte el ángulo en dos, no el lado: lo corta en la razón de los otros dos lados, 6 a 8.',
+    b:'3,6 y 6,4 son los segmentos que deja la altura (las proyecciones de los catetos). La bisectriz es otra línea y corta en otro punto.' } };
 const P5 = { id:'triangulo-estira-paso6', ok:'b', opts:[
   ['a','7: el promedio de los catetos','GE18-promedio-catetos','hipotesis'],
   ['b','4,8'],
   ['c','5: llega al punto medio de la hipotenusa','GE8-altura-como-mediana','parcial'],
   ['d','6: la altura es el cateto','GE7-lado-como-altura','documentado']],
   fb:{ b:'¡Bien! Con la hipotenusa como base, 10 · h / 2 tiene que dar el área, 6 · 8 / 2 = 24. Entonces h = 48/10 = 4,8.',
-    a:'Elegiste la A. Promediar los catetos no tiene que ver con la altura. Con la hipotenusa como base, el área 24 = 10 · h / 2 da h = 4,8. La correcta está marcada.',
-    c:'Elegiste la C. 5 es la mediana: va al punto medio de la hipotenusa. La altura es perpendicular a la hipotenusa y cae en otro punto. La correcta está marcada.',
-    d:'Elegiste la D. Los catetos son alturas, pero la del otro cateto, no la de la hipotenusa. La altura relativa a la hipotenusa es la perpendicular trazada desde el vértice del ángulo recto. La correcta está marcada.' } };
+    a:'Promediar los catetos no tiene que ver con la altura. Con la hipotenusa como base, el área 24 = 10 · h / 2 da h = 4,8.',
+    c:'5 es la mediana: va al punto medio de la hipotenusa. La altura es perpendicular a la hipotenusa y cae en otro punto.',
+    d:'Los catetos son alturas, pero la del otro cateto, no la de la hipotenusa. La altura relativa a la hipotenusa es la perpendicular trazada desde el vértice del ángulo recto.' } };
 
 const steps = [
  { k:'Paso 1', t:'El triángulo que se estira', prep:() => cfgLibre({ x:1, y:3 }, { h:true }),
@@ -1020,7 +1020,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

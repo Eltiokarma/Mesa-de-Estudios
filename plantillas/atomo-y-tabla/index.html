@@ -128,7 +128,7 @@ canvas.tocable{cursor:pointer}
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap:12px; align-items:end}
 select{font:700 .95rem var(--font); padding:9px 12px; border-radius:12px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); min-height:44px; max-width:100%}
@@ -731,45 +731,45 @@ const P0 = { id:'atomo-paso2', unidad:PLANTILLA.unidad, ok:'c', opts:[
   ['c', `${Z_(pFe(FE.protones, 'protones'))}, ${N_(pFe(FE.neutrones, 'neutrones'))} y ${e_(pFe(FE.electrones, 'electrones'))}`],
   ['d', `${Z_(pFe(FE.protones, 'protones'))}, ${N_(pFe(FE.neutrones, 'neutrones'))} y ${e_(pFe(FE.errores['ignora-la-carga'], 'electrones'))}`, 'ignora-la-carga', RES('hipotesis', 'hipótesis nuestra')]],
   fb:{ c:`¡Bien! Los protones son Z = ${FE.protones} y no cambian. Los neutrones son A − Z = 56 − 26 = ${FE.neutrones}. La carga 3+ dice que el átomo perdió 3 electrones: 26 − 3 = ${FE.electrones}. Mira el dibujo: 3 electrones se van.`,
-    a:`Elegiste la 1. Restaste la carga a los neutrones: 56 − 26 − 3 = ${FE.errores['resta-carga-a-neutrones']}. Pero la carga del ion viene de los electrones que perdió; los neutrones no tienen carga y siguen siendo A − Z = ${FE.neutrones}. Este error es una hipótesis nuestra: no encontramos un estudio que lo mida. La correcta está marcada.`,
-    b:`Elegiste la 2. Sumaste la carga: 26 + 3 = ${FE.errores['suma-carga-a-electrones']}. Un ion positivo tiene menos electrones que protones, no más: perdió 3. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
-    d:`Elegiste la 4. Con ${FE.errores['ignora-la-carga']} electrones el hierro sería neutro. La carga 3+ dice que tiene 3 electrones menos que protones. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
+    a:`Restaste la carga a los neutrones: 56 − 26 − 3 = ${FE.errores['resta-carga-a-neutrones']}. Pero la carga del ion viene de los electrones que perdió; los neutrones no tienen carga y siguen siendo A − Z = ${FE.neutrones}. `,
+    b:`Sumaste la carga: 26 + 3 = ${FE.errores['suma-carga-a-electrones']}. Un ion positivo tiene menos electrones que protones, no más: perdió 3.`,
+    d:`Con ${FE.errores['ignora-la-carga']} electrones el hierro sería neutro. La carga 3+ dice que tiene 3 electrones menos que protones.` } };
 const P1 = { id:'atomo-paso3', unidad:PLANTILLA.unidad, ok:'d', opts:[
   ['a', cfgH(CFE3.errores['quita-los-ultimos-en-llenarse']), 'quita-los-ultimos-en-llenarse', RES('hipotesis', 'tabla de lo que no tiene respaldo')],
   ['b', cfgH(CFE3.errores['quita-uno-de-s']), 'quita-uno-de-4s', RES('hipotesis', 'informe, propuesta de cajas')],
   ['c', cfgH(CFE3.errores['quita-solo-uno']), 'quita-solo-uno', RES('hipotesis', 'hipótesis nuestra')],
   ['d', cfgH(CFE3.abreviada)]],
   fb:{ d:`¡Bien! Salen primero los electrones del nivel más alto: los dos 4s (${n_('n = 4')}) y luego uno 3d (${n_('n = 3')}). Queda ${cfg(CFE3.abreviada)}. Mira cómo se van en las cajas y en el átomo.`,
-    a:`Elegiste la 1. Quitaste los últimos en llenarse, los 3d. Pero al formar un catión salen primero los del nivel más alto: el 4s está en el nivel 4, más afuera que el 3d. Que este error sea frecuente es una hipótesis nuestra: no encontramos un estudio que lo mida. La correcta está marcada.`,
-    b:`Elegiste la 2. Sacaste un 4s y dos 3d. Los dos electrones 4s están en el nivel más alto: salen los dos antes que cualquier 3d. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
-    c:`Elegiste la 3. Quitaste un solo electrón (un 4s), como si fuera Fe⁺. El Fe³⁺ pierde 3: los dos 4s y uno 3d. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
+    a:`Quitaste los últimos en llenarse, los 3d. Pero al formar un catión salen primero los del nivel más alto: el 4s está en el nivel 4, más afuera que el 3d. `,
+    b:`Sacaste un 4s y dos 3d. Los dos electrones 4s están en el nivel más alto: salen los dos antes que cualquier 3d.`,
+    c:`Quitaste un solo electrón (un 4s), como si fuera Fe⁺. El Fe³⁺ pierde 3: los dos 4s y uno 3d.` } };
 const P2 = { id:'atomo-paso5', unidad:U_TABLA, ok:'b', opts:[
   ['a', 'No se unen: el Na⁺ ya tiene octeto y no quiere perderlo.', 'TP2-octeto-no-recombina', RES('documentado', 'Tan y otros 2005, ítem 1: 44 % de 979')],
   ['b', 'Se unen y forman el átomo de Na; al unirse se libera energía.'],
   ['c', 'No se unen: el sodio solo pierde electrones, nunca los gana.', 'solo-pierde-electrones', RES('documentado', 'Tan y otros 2005, ítem 1, A1: 4,8 %')],
   ['d', 'Se unen, pero el átomo de Na es menos estable que el ion suelto.', 'TP1-ion-mas-estable', RES('parcial', 'Tan y otros 2005, ítem 3: 64 %, otra pregunta')]],
   fb:{ b:`¡Bien! El núcleo del Na⁺ tiene ${Z_('11 protones')} y solo ${e_(NAp.electrones + ' electrones')}: atrae al electrón libre. Al unirse se liberan ${EI_(NA.valores[0] + ' kJ/mol')}, lo mismo que cuesta quitárselo (la primera energía de ionización). El átomo neutro es el que tiene menos energía.`,
-    a:`Elegiste la 1. El octeto no hace que el Na⁺ rechace al electrón: su núcleo tiene un protón más que sus electrones y lo atrae. En ${ESTUDIO_SG}, cerca del 44 % eligió esta idea. La correcta está marcada.`,
-    c:`Elegiste la 3. «El sodio pierde electrones» describe lo que suele pasar en sus reacciones, no una regla: un Na⁺ atrae a cualquier electrón libre. En ${ESTUDIO_SG}, cerca del 5 % eligió esta idea. La correcta está marcada.`,
-    d:`Elegiste la 4. Si el ion suelto fuera más estable, no se liberaría energía al unirse, y se liberan ${NA.valores[0]} kJ/mol: para separarlos hay que dar esa energía. En ${ESTUDIO_SG}, cerca del 64 % dijo que el Na⁺ con su electrón suelto es «más estable» que el átomo, por tener octeto; la pregunta era parecida, no esta. La correcta está marcada.` } };
+    a:`El octeto no hace que el Na⁺ rechace al electrón: su núcleo tiene un protón más que sus electrones y lo atrae. En ${ESTUDIO_SG}, cerca del 44 % eligió esta idea.`,
+    c:`«El sodio pierde electrones» describe lo que suele pasar en sus reacciones, no una regla: un Na⁺ atrae a cualquier electrón libre. En ${ESTUDIO_SG}, cerca del 5 % eligió esta idea.`,
+    d:`Si el ion suelto fuera más estable, no se liberaría energía al unirse, y se liberan ${NA.valores[0]} kJ/mol: para separarlos hay que dar esa energía. En ${ESTUDIO_SG}, cerca del 64 % dijo que el Na⁺ con su electrón suelto es «más estable» que el átomo, por tener octeto; la pregunta era parecida, no esta.` } };
 const P3 = { id:'atomo-paso6', unidad:U_TABLA, ok:'a', opts:[
   ['a', 'El segundo sale del nivel 2: está más cerca del núcleo y menos tapado.'],
   ['b', 'Los 11 protones reparten su atracción entre 10 electrones: a cada uno le toca más.', 'TP4-reparte-atraccion', RES('documentado', 'Tan y otros 2005, ítem 4: 18 %')],
   ['c', 'Se rompe el octeto del Na⁺, y un octeto es estable por sí solo, sin importar el nivel.', 'TP3-rompe-octeto', RES('parcial', 'Tan y otros 2005, ítem 4: 16 % "rompe el octeto"; variante nuestra')],
   ['d', 'El segundo sale de un nivel más lejano, y cuesta más llevarlo hasta afuera.', 'segundo-mas-lejos', RES('hipotesis', 'hipótesis nuestra')]],
   fb:{ a:`¡Bien! El primer electrón sale del nivel 3, el de afuera. El segundo ya sale del nivel 2: más cerca del núcleo y con menos electrones entre él y el núcleo que lo tapen (apantallen). Mira las barras: el gran salto llega justo al cambiar de nivel.`,
-    b:`Elegiste la 2. La atracción no se reparte: cada electrón siente la carga del núcleo según su distancia y lo que lo tapa. Si se repartiera, la segunda costaría solo unos ${fmt(REP, 0)} kJ/mol (${NA.valores[0]} × 11/10), no ${fmt(NA.valores[1], 0)}: mira la barra punteada del recuadro ampliado. En ${ESTUDIO_SG}, cerca del 18 % explicó la segunda ionización así. La correcta está marcada.`,
-    c:`Elegiste la 3. Lo que hace caro quitar el segundo electrón es dónde está: en el nivel 2, mucho más cerca del núcleo y casi sin electrones que lo tapen. «Rompe el octeto» describe la configuración, pero no explica el costo: el que pesa es el nivel. La correcta está marcada.`,
-    d:`Elegiste la 4. Es al revés: el segundo electrón está en el nivel 2, más cerca del núcleo que el primero (nivel 3). Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
+    b:`La atracción no se reparte: cada electrón siente la carga del núcleo según su distancia y lo que lo tapa. Si se repartiera, la segunda costaría solo unos ${fmt(REP, 0)} kJ/mol (${NA.valores[0]} × 11/10), no ${fmt(NA.valores[1], 0)}: mira la barra punteada del recuadro ampliado. En ${ESTUDIO_SG}, cerca del 18 % explicó la segunda ionización así.`,
+    c:`Lo que hace caro quitar el segundo electrón es dónde está: en el nivel 2, mucho más cerca del núcleo y casi sin electrones que lo tapen. «Rompe el octeto» describe la configuración, pero no explica el costo: el que pesa es el nivel.`,
+    d:`Es al revés: el segundo electrón está en el nivel 2, más cerca del núcleo que el primero (nivel 3).` } };
 const P4 = { id:'atomo-paso7', unidad:U_TABLA, ok:'c', opts:[
   ['a', 'Está en una subcapa 3p semillena, que suelta fácil sus electrones.', 'TP6-semillena-en-S', RES('parcial', 'Tan y otros 2005, ítem 9, A3: 20 % "el 3p del P semilleno"; variante nuestra')],
   ['b', 'Sus electrones 3p están más lejos del núcleo que los del P.', 'TP7-mas-lejos', RES('documentado', 'Tan y otros 2005, ítem 9, A2: 3,9 %')],
   ['c', 'Comparte orbital con otro electrón, y la repulsión entre los dos lo empuja.'],
   ['d', 'El núcleo reparte su atracción entre más electrones que en el P.', 'TP4-reparte-entre-mas', RES('parcial', 'Tan y otros 2005, ítem 2: 50 %, otra pregunta')]],
   fb:{ c:`¡Bien! El S tiene cuatro electrones 3p: tres solos en su caja y el cuarto apareado con otro. Es el primero que comparte orbital, y la repulsión entre los dos pesa más que el protón extra. Mira las cajas: el que sale está marcado. En ${ESTUDIO_SG}, solo cerca del 32 % dio esta razón.`,
-    a:`Elegiste la 1. La subcapa semillena es la del P (3p³), no la del S (3p⁴). Y lo especial de una subcapa semillena es justamente que no tiene electrones apareados: en el S aparece el primer par. En ${ESTUDIO_SG}, cerca del 20 % explicó esta bajada con «el 3p del P está semilleno y es estable»: acierta el orden, pero no dice qué pasa en el S. La correcta está marcada.`,
-    b:`Elegiste la 2. Los dos electrones que salen están en la misma subcapa, la 3p, y el S es incluso un poco más pequeño que el P. En ${ESTUDIO_SG}, cerca del 4 % eligió una razón así. La correcta está marcada.`,
-    d:`Elegiste la 4. La atracción del núcleo no se reparte: con un protón más, el núcleo del S atrae más a cada electrón. En ${ESTUDIO_SG}, cerca de la mitad usó esta idea del reparto en otra pregunta, la del Na⁺. La correcta está marcada.` } };
+    a:`La subcapa semillena es la del P (3p³), no la del S (3p⁴). Y lo especial de una subcapa semillena es justamente que no tiene electrones apareados: en el S aparece el primer par. En ${ESTUDIO_SG}, cerca del 20 % explicó esta bajada con «el 3p del P está semilleno y es estable»: acierta el orden, pero no dice qué pasa en el S.`,
+    b:`Los dos electrones que salen están en la misma subcapa, la 3p, y el S es incluso un poco más pequeño que el P. En ${ESTUDIO_SG}, cerca del 4 % eligió una razón así.`,
+    d:`La atracción del núcleo no se reparte: con un protón más, el núcleo del S atrae más a cada electrón. En ${ESTUDIO_SG}, cerca de la mitad usó esta idea del reparto en otra pregunta, la del Na⁺.` } };
 
 // ----- Vistas -----
 const rotFe = r => r ? [[['⁵⁶Fe³⁺', 'ink', 800]], [[`${FE.protones} protones`, 'Z', 800], [' · ', 'muted'], [`${FE.neutrones} neutrones`, 'N', 800], [' · ', 'muted'], [`${FE.electrones} electrones`, 'e', 800]]]
@@ -1032,9 +1032,9 @@ const EXPS = [
           ['b', 'El Mg: el electrón del Al es el primero del 3p, de más energía y tapado por los 3s.'],
           ['c', 'El Mg: el átomo de Al es más grande y su electrón queda más lejos del núcleo.', 'TP7-Al-mas-grande', RES('parcial', 'Tan y otros 2005, ítem 6: 48 % "el 3p está más lejos"; variante nuestra')],
           ['d', 'Iguales: los dos pierden un electrón del nivel 3, a la misma distancia.', 'misma-capa-iguales', RES('hipotesis', 'hipótesis nuestra')]],
-    fb:{ a:'Un protón más sí atrae más, pero hay otro factor que pesa más: el electrón que sale del Al es el primero de una subcapa nueva, la 3p, de más energía y tapada por los dos electrones 3s. Mirar un solo factor es una idea documentada en un estudio con 979 escolares de Singapur (Tan y otros, 2005), pero no tenemos el porcentaje de esta opción.',
+    fb:{ a:'Un protón más sí atrae más, pero hay otro factor que pesa más: el electrón que sale del Al es el primero de una subcapa nueva, la 3p, de más energía y tapada por los dos electrones 3s. ',
       c:`El átomo de Al es más pequeño que el de Mg (${MA.propiedad('Al', 'radio')} contra ${MA.propiedad('Mg', 'radio')} pm en radios calculados): avanza el período y el núcleo atrae más. En un estudio con 979 escolares de Singapur, cerca del 48 % explicó esta diferencia con «el 3p está más lejos»; esta opción es una variante nuestra de esa idea.`,
-      d:'Los dos salen del nivel 3, pero no de la misma subcapa: del Mg sale un 3s y del Al, un 3p. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+      d:'Los dos salen del nivel 3, pero no de la misma subcapa: del Mg sale un 3s y del Al, un 3p.' },
     antes:() => ({ paneles:['atomos', 'tabla'], atomos:{ items:[{ Z:12, carga:0, rot:rotSp('Mg') }, { Z:13, carga:0, rot:rotSp('Al') }] }, tabla:{ prop:null, marcar:[12, 13] },
       pie:'Los dos átomos van del mismo tamaño hasta que respondas.', vars:['Z', 'e', 'n'], desc:'Magnesio y aluminio, del mismo tamaño en el dibujo, y su lugar en la tabla.' }),
     despues:p => ({ paneles:['atomos', 'cajas', 'barras'],
@@ -1043,7 +1043,7 @@ const EXPS = [
       cajas:{ filas:[{ Z:12, carga:0, marcarSale:true }, { Z:13, carga:0, marcarSale:true }] },
       barras:{ titulo:[['Primera ', 'ink', 800], ['energía de ionización', 'EI', 800], [' (kJ/mol)', 'ink', 800]], max:MGAL.valores.Mg*1.1,
         items:[{ etq:'Mg', valor:MGAL.valores.Mg, marcar:true }, { etq:'Al', valor:MGAL.valores.Al, marcar:true }] },
-      pie:'Átomos a escala. Radios calculados (Clementi, 1967); tu libro usa radios medidos, con otros números y el mismo orden. En ámbar, el electrón que sale de cada uno.', vars:['Z', 'e', 'sale', 'n', 'r', 'EI'],
+      pie:'Átomos a escala. En ámbar, el electrón que sale de cada uno.', vars:['Z', 'e', 'sale', 'n', 'r', 'EI'],
       desc:`Magnesio ${MGAL.valores.Mg} y aluminio ${MGAL.valores.Al} kilojoules por mol. Del Al sale el primer electrón 3p.` }),
     anima:true,
     exp:() => `<div class="eqs"><div class="eq"><span class="ex">Mg: ${cfgH(MA.configuracion('Mg').abreviada)} → ${EI_(MGAL.valores.Mg + ' kJ/mol')} &nbsp; · &nbsp; Al: ${cfgH(MA.configuracion('Al').abreviada)} → ${EI_(MGAL.valores.Al + ' kJ/mol')}</span>
@@ -1056,9 +1056,9 @@ const EXPS = [
           ['b', 'Cl⁻ más pequeño que Cl, y Na⁺ más pequeño que Na', 'anion-mas-pequeno', RES('hipotesis', 'tabla de lo que no tiene respaldo')],
           ['c', 'Cl⁻ más grande que Cl, y Na⁺ más grande que Na', 'ion-siempre-mas-grande', RES('hipotesis', 'hipótesis nuestra')],
           ['d', 'Cl⁻ igual que Cl, y Na⁺ igual que Na', 'mismo-nucleo-mismo-tamano', RES('hipotesis', 'hipótesis nuestra')]],
-    fb:{ b:'Al ganar un electrón, el Cl⁻ tiene los mismos 17 protones para 18 electrones, que se repelen más: la nube crece. «Un anión es más pequeño que su átomo» está en nuestra lista de errores sin estudio que los mida: es una hipótesis nuestra.',
-      c:'El Na⁺ perdió su único electrón del nivel 3: se quedó con dos niveles y es mucho más pequeño. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      d:'El núcleo es el mismo, pero los electrones no: el tamaño depende de cuántos electrones hay y de cuánto los atrae el núcleo. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    fb:{ b:'Al ganar un electrón, el Cl⁻ tiene los mismos 17 protones para 18 electrones, que se repelen más: la nube crece. ',
+      c:'El Na⁺ perdió su único electrón del nivel 3: se quedó con dos niveles y es mucho más pequeño.',
+      d:'El núcleo es el mismo, pero los electrones no: el tamaño depende de cuántos electrones hay y de cuánto los atrae el núcleo.' },
     antes:() => ({ paneles:['atomos'], atomos:{ items:['Cl', 'Cl-', 'Na', 'Na+'].map(s => ({ ...MA.especie(s), rot:rotSp(s) })) },
       pie:'Los cuatro van del mismo tamaño hasta que respondas.', vars:['Z', 'e', 'n'], desc:'Cloro, cloruro, sodio e ion sodio, del mismo tamaño en el dibujo.' }),
     despues:p => ({ paneles:['atomos'], atomos:{ items:[
@@ -1079,8 +1079,8 @@ const EXPS = [
           ['c', ord(ORD.orden)],
           ['d', ord(ORD.errores['ordena-como-atomos']), 'ordena-como-atomos', RES('hipotesis', 'hipótesis nuestra')]],
     fb:{ a:'Es al revés: con los mismos 10 electrones, el que tiene más protones los atrae más y queda más pequeño. «Más protones, más grande» está en nuestra lista de errores sin estudio que los mida.',
-      b:'Tener los mismos electrones no da el mismo tamaño: el núcleo de cada uno tiene distinta carga, y el que tiene más protones aprieta más su nube. Esta opción es una hipótesis nuestra (ordenar por número de electrones).',
-      d:'Ese es el orden de los átomos neutros (el Na y el Mg son grandes porque tienen un nivel más). Los iones ya no tienen ese nivel: los cuatro tienen dos niveles, y manda la carga del núcleo. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+      b:'Tener los mismos electrones no da el mismo tamaño: el núcleo de cada uno tiene distinta carga, y el que tiene más protones aprieta más su nube.',
+      d:'Ese es el orden de los átomos neutros (el Na y el Mg son grandes porque tienen un nivel más). Los iones ya no tienen ese nivel: los cuatro tienen dos niveles, y manda la carga del núcleo.' },
     antes:() => ({ paneles:['atomos'], atomos:{ items:ISO.map(s => ({ ...MA.especie(s), rot:rotSp(s) })) },
       pie:'Los cuatro van del mismo tamaño hasta que respondas.', vars:['Z', 'e', 'n'], desc:'Cuatro iones de 10 electrones, del mismo tamaño en el dibujo.' }),
     despues:p => ({ paneles:['atomos'], atomos:{ items:ISO.map((s, i) => ({ ...MA.especie(s), escala:mezcla(1, ESC_ISO.escalas[i], p), rot:rotSp(s, [[`${fmt(ESC_ISO.pm[i], 1)} pm`, 'r', 800]]) })) },
@@ -1096,9 +1096,9 @@ const EXPS = [
           ['b', `Cr ${cfgH(CR.abreviada)} y Ni ${cfgH(NI.errores['excepcion-generalizada'])}`, 'Ni-excepcion-generalizada', RES('hipotesis', 'tabla de lo que no tiene respaldo; cercana a TP5 y TP6')],
           ['c', `Cr ${cfgH(CR.errores['sin-excepcion'])} y Ni ${cfgH(NI.errores['excepcion-generalizada'])}`, 'excepcion-al-reves', RES('hipotesis', 'hipótesis nuestra')],
           ['d', `Cr ${cfgH(CR.abreviada)} y Ni ${cfgH(NI.abreviada)}`]],
-    fb:{ a:`El Cr es una de las dos excepciones del período 4: un electrón del 4s pasa al 3d y queda ${cfg(CR.abreviada)}. No aplicarla es una hipótesis nuestra, sin estudio que la mida.`,
-      b:`El Cr sí es una excepción, pero el Ni no: es ${cfg(NI.abreviada)}. Aplicar la «excepción» a otros elementos, de memoria, es una hipótesis nuestra que saldría de la regla «subcapa llena o semillena es estable» (TP5 y TP6 en nuestro informe); no tenemos un estudio que la mida.`,
-      c:'Es la excepción puesta en el elemento equivocado: el Cr la tiene y el Ni no. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    fb:{ a:`El Cr es una de las dos excepciones del período 4: un electrón del 4s pasa al 3d y queda ${cfg(CR.abreviada)}. `,
+      b:`El Cr sí es una excepción, pero el Ni no: es ${cfg(NI.abreviada)}. `,
+      c:'Es la excepción puesta en el elemento equivocado: el Cr la tiene y el Ni no.' },
     antes:() => ({ paneles:['tabla', 'cajas'], tabla:{ prop:null, marcar:[24, 28] }, cajas:{ tapa:'Las cajas del Cr y del Ni se ven al responder' },
       pie:'', vars:[], desc:'El cromo y el níquel marcados en la tabla.' }),
     despues:() => ({ paneles:['cajas', 'atomos', 'tabla'],
@@ -1115,9 +1115,9 @@ const EXPS = [
           ['b', 'Que en un enlace, el F atrae hacia sí los electrones compartidos.'],
           ['c', 'Que el F forma siempre enlaces iónicos, nunca covalentes.', 'electronegativo-siempre-ionico', RES('hipotesis', 'hipótesis nuestra')],
           ['d', 'Que el F es el átomo al que más cuesta quitarle un electrón.', 'confunde-ionizacion', RES('hipotesis', 'tabla de lo que no tiene respaldo')]],
-    fb:{ a:'El átomo de F neutro tiene 9 protones y 9 electrones: no tiene carga. La electronegatividad es una tendencia dentro de un enlace. En un estudio con 88 futuros profesores de Turquía (Uyulgan y Akkuzu, 2016), cerca del 25 % la definió como tener carga negativa o más electrones que protones.',
-      c:'El F forma enlaces covalentes, como en el F₂ o el HF: ahí comparte electrones, aunque en el HF los atrae más que el H. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      d:`Eso es la energía de ionización, y el F no es el más alto: el He (${MA.propiedad('He', 'ei')} kJ/mol) y el Ne (${MA.propiedad('Ne', 'ei')}) cuestan más que el F (${MA.propiedad('F', 'ei')}). Confundir las dos propiedades es una hipótesis nuestra, sin estudio que la mida.` },
+    fb:{ a:'El átomo de F neutro tiene 9 protones y 9 electrones: no tiene carga. La electronegatividad es una tendencia dentro de un enlace. ',
+      c:'El F forma enlaces covalentes, como en el F₂ o el HF: ahí comparte electrones, aunque en el HF los atrae más que el H.',
+      d:`Eso es la energía de ionización, y el F no es el más alto: el He (${MA.propiedad('He', 'ei')} kJ/mol) y el Ne (${MA.propiedad('Ne', 'ei')}) cuestan más que el F (${MA.propiedad('F', 'ei')}). ` },
     antes:() => ({ paneles:['tabla'], tabla:{ prop:null, marcar:[9] }, pie:'El flúor marcado en la tabla.', vars:[], desc:'El flúor marcado en la tabla.' }),
     despues:() => ({ paneles:['tabla', 'enlace', 'atomos'], tabla:{ prop:'en', sel:9 }, enlace:{},
       atomos:{ items:[{ Z:9, carga:0, rot:[[['F suelto: ', 'ink', 800], ['9+', 'Z', 800], [' y ', 'ink'], ['9 e⁻', 'e', 800], [': carga 0', 'ink', 800]]] }] },
@@ -1166,7 +1166,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el dibujo y la explicación para ver por qué.' : `Elegiste la ${LETRAS.indexOf(p) + 1}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el dibujo y la explicación para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     explicar();
   };

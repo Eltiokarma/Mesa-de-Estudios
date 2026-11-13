@@ -114,7 +114,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -505,63 +505,63 @@ const P2 = { id:'transformaciones-trig-paso2', ok:'b', opts:[
   ['c', R75.direccion.errores.primera.texto, 'TT10-suma-como-la-primera-flecha', 'hipotesis'],
   ['d', R75.direccion.errores.intercambia.texto, 'TT2-semidiferencia-por-semisuma', 'hipotesis']],
   fb:{ b:`¡Bien! Las dos flechas miden 1: al poner una a continuación de la otra se forma un rombo, y la diagonal de un rombo parte el ángulo en dos mitades iguales. Apunta a (75° + 15°)/2 = 45°.`,
-    a:`Elegiste la A. 90° = 75° + 15° suma los ángulos sin dividir entre 2. La suma de las flechas queda entre las dos, no más allá de la de 75°. La correcta está marcada.`,
-    c:`Elegiste la C. 75° es la dirección de la primera flecha; al poner la segunda a continuación, la suma gira hacia ella. Como las dos miden 1, queda justo en el medio. La correcta está marcada.`,
-    d:`Elegiste la D. 30° = (75° − 15°)/2 es la semidiferencia: lo que la suma se separa de cada flecha, no su dirección. La correcta está marcada.` } };
+    a:`90° = 75° + 15° suma los ángulos sin dividir entre 2. La suma de las flechas queda entre las dos, no más allá de la de 75°.`,
+    c:`75° es la dirección de la primera flecha; al poner la segunda a continuación, la suma gira hacia ella. Como las dos miden 1, queda justo en el medio.`,
+    d:`30° = (75° − 15°)/2 es la semidiferencia: lo que la suma se separa de cada flecha, no su dirección.` } };
 const P3 = { id:'transformaciones-trig-paso3', ok:'c', opts:[
   ['a', R120.largoExacto.errores.sumaLargos.texto, 'TT11-suma-de-los-largos', 'hipotesis'],
   ['b', R120.largoExacto.errores.funcion.texto, 'TT3-seno-por-coseno', 'hipotesis'],
   ['c', R120.largoExacto.texto],
   ['d', R120.largoExacto.errores.sinDos.texto, 'TT1-olvida-el-2', 'hipotesis']],
   fb:{ c:`¡Bien! Con 120° entre ellas, las dos flechas y la suma forman un triángulo equilátero: la suma mide 1. En general mide 2 cos D, con D = (A − B)/2 = 60°: 2 · 1/2 = 1.`,
-    a:`Elegiste la A. 2 = 1 + 1 sería el largo si las dos flechas apuntaran al mismo lado. Cuanto más se abren, más corta es la suma: mide 2 cos D. La correcta está marcada.`,
-    b:`Elegiste la B. √3 = 2 sen 60° usa el seno de D. La mitad de la diagonal es el cateto pegado al ángulo D, así que va con coseno: 2 cos 60° = 1. La correcta está marcada.`,
-    d:`Elegiste la D. 1/2 = cos 60° es solo la mitad de la diagonal: falta el 2. La correcta está marcada.` } };
+    a:`2 = 1 + 1 sería el largo si las dos flechas apuntaran al mismo lado. Cuanto más se abren, más corta es la suma: mide 2 cos D.`,
+    b:`√3 = 2 sen 60° usa el seno de D. La mitad de la diagonal es el cateto pegado al ángulo D, así que va con coseno: 2 cos 60° = 1.`,
+    d:`1/2 = cos 60° es solo la mitad de la diagonal: falta el 2.` } };
 const P4 = { id:'transformaciones-trig-paso4', ok:'c', opts:[
   ['a', S75.errores.lineal.texto, 'TR16-suma-de-senos-lineal', 'hipotesis'],
   ['b', S75.errores.intercambia.texto, 'TT2-semidiferencia-por-semisuma', 'hipotesis'],
   ['c', S75.texto],
   ['d', S75.errores.sinDos.texto, 'TT1-olvida-el-2', 'hipotesis']],
   fb:{ c:`¡Bien! La punta de la flecha suma está a la altura sen 75° + sen 15°. Esa flecha mide 2 cos 30° = √3 y apunta a 45°: su altura es √3 · sen 45° = √6/2 ≈ ${fmt(S75.valor)}.`,
-    a:`Elegiste la A. 1 = sen 90° = sen(75° + 15°). Pero las alturas apiladas pasan de 1: sen 75° ≈ 0,97 más sen 15° ≈ 0,26. La suma de senos no es el seno de la suma. La correcta está marcada.`,
-    b:`Elegiste la B. √2/2 = 2 sen 30° cos 45° cambia de lugar la semisuma y la semidiferencia. El seno va con la dirección de la suma, M = 45°, y el coseno con D = 30°. La correcta está marcada.`,
-    d:`Elegiste la D. √6/4 = sen 45° cos 30° olvida el 2: es la altura de la mitad de la diagonal. La correcta está marcada.` } };
+    a:`1 = sen 90° = sen(75° + 15°). Pero las alturas apiladas pasan de 1: sen 75° ≈ 0,97 más sen 15° ≈ 0,26. La suma de senos no es el seno de la suma.`,
+    b:`√2/2 = 2 sen 30° cos 45° cambia de lugar la semisuma y la semidiferencia. El seno va con la dirección de la suma, M = 45°, y el coseno con D = 30°.`,
+    d:`√6/4 = sen 45° cos 30° olvida el 2: es la altura de la mitad de la diagonal.` } };
 const P5 = { id:'transformaciones-trig-paso5', ok:'d', opts:[
   ['a', R75r.errores.intercambia.texto, 'TT2-semidiferencia-por-semisuma', 'hipotesis'],
   ['b', R75r.errores.sinDos.texto, 'TT1-olvida-el-2', 'hipotesis'],
   ['c', R75r.errores.lineal.texto, 'TR16-resta-de-senos-lineal', 'hipotesis'],
   ['d', R75r.texto]],
   fb:{ d:`¡Bien! La resta de flechas es la cuerda que va de PB a PA: mide 2 sen 30° = 1 y apunta a 45° + 90° = 135°. Su subida es 1 · sen 135° = √2/2.`,
-    a:`Elegiste la A. √6/2 = 2 sen 45° cos 30° es la fórmula de la suma. En la resta, la cuerda es perpendicular a la diagonal y el seno y el coseno cambian de lugar: 2 cos M sen D. La correcta está marcada.`,
-    b:`Elegiste la B. √2/4 = cos 45° sen 30° olvida el 2: es la subida de media cuerda. La correcta está marcada.`,
-    c:`Elegiste la C. √3/2 = sen 60° = sen(75° − 15°): la resta de senos no es el seno de la resta. La correcta está marcada.` } };
+    a:`√6/2 = 2 sen 45° cos 30° es la fórmula de la suma. En la resta, la cuerda es perpendicular a la diagonal y el seno y el coseno cambian de lugar: 2 cos M sen D.`,
+    b:`√2/4 = cos 45° sen 30° olvida el 2: es la subida de media cuerda.`,
+    c:`√3/2 = sen 60° = sen(75° − 15°): la resta de senos no es el seno de la resta.` } };
 const P6 = { id:'transformaciones-trig-paso6', ok:'b', opts:[
   ['a', C105.errores.signo.texto, 'TT5-olvida-el-signo-menos', 'hipotesis'],
   ['b', C105.texto],
   ['c', C105.errores.funcion.texto, 'TT3-coseno-por-seno', 'hipotesis'],
   ['d', C105.errores.sinDos.texto, 'TT1-olvida-el-2', 'hipotesis']],
   fb:{ b:`¡Bien! PA está a la izquierda de PB: la cuerda que va de PB a PA corre hacia la izquierda, y su avance horizontal es negativo. cos 105° − cos 15° = −2 sen 60° sen 45° = −√6/2.`,
-    a:`Elegiste la A. √6/2 tiene el tamaño correcto y el signo cambiado. Con 0° ≤ B < A ≤ 180°, el punto de A está más a la izquierda que el de B: cos A − cos B es negativo. Por eso la fórmula lleva el menos delante. La correcta está marcada.`,
-    c:`Elegiste la C. −√2/2 = −2 cos 60° sen 45° pone un coseno donde va un seno. En la resta de cosenos los dos factores son senos: −2 sen M sen D. La correcta está marcada.`,
-    d:`Elegiste la D. −√6/4 = −sen 60° sen 45° olvida el 2: es lo que avanza media cuerda. La correcta está marcada.` } };
+    a:`√6/2 tiene el tamaño correcto y el signo cambiado. Con 0° ≤ B < A ≤ 180°, el punto de A está más a la izquierda que el de B: cos A − cos B es negativo. Por eso la fórmula lleva el menos delante.`,
+    c:`−√2/2 = −2 cos 60° sen 45° pone un coseno donde va un seno. En la resta de cosenos los dos factores son senos: −2 sen M sen D.`,
+    d:`−√6/4 = −sen 60° sen 45° olvida el 2: es lo que avanza media cuerda.` } };
 const P7 = { id:'transformaciones-trig-paso7', ok:'c', opts:[
   ['a', P75.errores.unTermino.texto, 'TT6-un-solo-termino', 'hipotesis'],
   ['b', P75.errores.dobla.texto, 'TT13-el-2-de-mas', 'hipotesis'],
   ['c', P75.texto],
   ['d', P75.errores.funcion.texto, 'TT7-formula-de-otro-producto', 'hipotesis']],
   fb:{ c:`¡Bien! 2 sen 75° cos 45° es la altura de una flecha de largo 2 cos 45° que apunta a 75°: la suma de las flechas de 120° y 30°. Su altura es sen 120° + sen 30° = √3/2 + 1/2.`,
-    a:`Elegiste la A. √3/2 = sen 120° se queda con una sola flecha. Son dos: la de 75° + 45° y la de 75° − 45°. La correcta está marcada.`,
-    b:`Elegiste la B. 1 + √3 = 2 (sen 120° + sen 30°) pone el 2 dos veces: ya está en la fórmula 2 sen α cos β = sen(α + β) + sen(α − β). La correcta está marcada.`,
-    d:`Elegiste la D. (√3 − 1)/2 = cos 120° + cos 30° suma las abscisas de las dos flechas; 2 sen α cos β es una altura, y las alturas van con senos. La correcta está marcada.` } };
+    a:`√3/2 = sen 120° se queda con una sola flecha. Son dos: la de 75° + 45° y la de 75° − 45°.`,
+    b:`1 + √3 = 2 (sen 120° + sen 30°) pone el 2 dos veces: ya está en la fórmula 2 sen α cos β = sen(α + β) + sen(α − β).`,
+    d:`(√3 − 1)/2 = cos 120° + cos 30° suma las abscisas de las dos flechas; 2 sen α cos β es una altura, y las alturas van con senos.` } };
 const P8 = { id:'transformaciones-trig-paso8', ok:'d', opts:[
   ['a', Q53.errores.sinDividir.texto, 'TT4-no-divide-entre-2', 'hipotesis'],
   ['b', Q53.errores.funcion.texto, 'TT3-cot-por-tan', 'hipotesis'],
   ['c', Q53.errores.intercambia.texto, 'TT2-semidiferencia-por-semisuma', 'hipotesis'],
   ['d', Q53.texto]],
   fb:{ d:`¡Bien! Arriba está la altura de la flecha suma y abajo lo que avanza: el cociente es la pendiente de una flecha que apunta a (5x + 3x)/2 = 4x. Vale tan 4x con cualquier x.`,
-    a:`Elegiste la A. tan 8x usa 5x + 3x sin dividir entre 2. La suma apunta a la mitad, 4x. La correcta está marcada.`,
-    b:`Elegiste la B. cot 4x es avance entre altura. Arriba van los senos, que son la altura: altura entre avance es la tangente. La correcta está marcada.`,
-    c:`Elegiste la C. tan x usa la semidiferencia, (5x − 3x)/2. Arriba y abajo aparece cos x, que se cancela; queda la semisuma. La correcta está marcada.` } };
+    a:`tan 8x usa 5x + 3x sin dividir entre 2. La suma apunta a la mitad, 4x.`,
+    b:`cot 4x es avance entre altura. Arriba van los senos, que son la altura: altura entre avance es la tangente.`,
+    c:`tan x usa la semidiferencia, (5x − 3x)/2. Arriba y abajo aparece cos x, que se cancela; queda la semisuma.` } };
 
 // ----- configuraciones del dibujo -----
 const CAJA_DRAG = { x0:-1.15, x1:2.08, y0:-1.1, y1:2.08 };   // con la circunferencia entera (y hasta −1)
@@ -1001,7 +1001,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + `<div class="nav"><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     tramos($('res2'));

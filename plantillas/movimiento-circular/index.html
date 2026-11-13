@@ -119,7 +119,7 @@ canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap:12px; align-items:end}
 .slider{display:grid; gap:4px}
@@ -538,7 +538,7 @@ function montar(cfg){
       const r = S.pred[p.id]; if (!r) return;
       btns.forEach(b => { b.disabled = true; if (b.dataset.k === p.ok) b.classList.add('correct'); else if (b.dataset.k === r) b.classList.add('wrong'); });
       const fb = cuerpo.querySelector('.fb');
-      fb.textContent = r === p.ok ? '¡Bien! ' + p.fb[r] : `Elegiste la ${r.toUpperCase()}. ${p.fb[r]} La correcta está marcada.`;
+      fb.textContent = r === p.ok ? '¡Bien! ' + p.fb[r] : `${p.fb[r]}`;
       fb.className = 'fb ' + (r === p.ok ? 'ok' : 'mal');
     };
     btns.forEach(b => b.onclick = () => {
@@ -580,7 +580,7 @@ const enGrados = th => fmt(th*180/PI, 0) + '°';
    Disco de 40 cm de diámetro (R = 0,2 m) que parte del reposo con α = 4π rad/s² (2 vueltas/s²). */
 (function(){
 const R0 = 0.2, AL0 = 4*PI;
-const HIP = 'Las opciones incorrectas son hipótesis nuestras: errores que se repiten en las alternativas de los problemas de academia, sin un estudio con porcentaje.';
+const HIP = '';
 // Zonas del lienzo: el disco y, si hace falta, una zona extra (a la derecha en pantalla grande, abajo en el celular).
 function zonas(L, extra, parte){
   const { W, H } = L;
@@ -799,7 +799,7 @@ montar({ n:1, modo:'m1', pasos });
 /* ================= Pestaña 2: «Flechas» (C6, C12 y C2) =================
    MCU en el plano cartesiano: r, v y acp con sus componentes en î y ĵ. */
 (function(){
-const HIP = 'Las opciones incorrectas son hipótesis nuestras: errores que se repiten en las alternativas de los problemas de academia, sin un estudio con porcentaje.';
+const HIP = '';
 // Plano con el origen en el centro de la circunferencia. Devuelve X(x), Y(y) (metros → píxeles).
 function plano(L, c, rango, radio){
   const { ctx, W, H } = L, [x0, x1, y0, y1] = rango, s = Math.min((W - 20)/(x1 - x0), (H - 20)/(y1 - y0));
@@ -956,7 +956,7 @@ montar({ n:2, modo:'m2', pasos });
 /* ================= Pestaña 3: «Gráficas» (C11 y C13) =================
    θ-t, ω-t y α-t con el mismo eje de tiempo, y el disco al lado. */
 (function(){
-const HIP = 'Las opciones incorrectas son hipótesis nuestras: errores que se repiten en las alternativas de los problemas de academia, sin un estudio con porcentaje.';
+const HIP = '';
 const NOMBRE = { theta:['θ (rad)', 'th'], omega:['ω (rad/s)', 'w'], alfa:['α (rad/s²)', 'alfa'] };
 /* G = { tmax, t, paneles:[{ clave, rango:[a,b], curvas:[{ f, dash, txt }], sombras:[{ f, g, t0, t1, alpha, txt, tx, ty }], tangente:{ f, df } }],
          discos:[{ theta, txt }], ecuacion } */
@@ -1110,7 +1110,7 @@ Celular.arrastre(m3.L.cv, {
 <script>
 /* ================= Pestaña 4: «Ruedas y poleas» (C3 y C7) ================= */
 (function(){
-const HIP = 'Las opciones incorrectas son hipótesis nuestras: errores que se repiten en las alternativas de los problemas de academia, sin un estudio con porcentaje.';
+const HIP = '';
 // Tangentes exteriores de dos circunferencias (faja abierta): puntos de contacto arriba y abajo.
 function tangentes(x1, y1, r1, x2, y2, r2){
   const b = Math.atan2(y2 - y1, x2 - x1), d = Math.hypot(x2 - x1, y2 - y1), g = Math.acos((r1 - r2)/d);
@@ -1294,7 +1294,7 @@ montar({ n:4, modo:'m4', pasos });
 /* ================= Pestaña 5: «¿Qué pasa si…?» (C5, C4 y C8) =================
    Pastillas con la regla de Gerson: un experimento se abre cuando todos los anteriores tienen respuesta. */
 (function(){
-const HIP = 'Las opciones incorrectas son hipótesis nuestras: errores que se repiten en las alternativas de los problemas de academia, sin un estudio con porcentaje.';
+const HIP = '';
 const B19 = M.atraviesa({ L:1, v:200, modo:'cascaron' });
 const G20 = M.gotaDeRueda({ r:0.5, g:10 });
 const D21 = M.despegaDelDisco({ R:0.4, d:0.2, omega:3 });

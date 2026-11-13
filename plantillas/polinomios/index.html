@@ -106,7 +106,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
 .seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
@@ -669,61 +669,61 @@ const P2 = { id:'polinomios-paso2', ok:'c', opts:[
   ['c', PC.texto],
   ['d', PC.errores.cero.texto, 'PO34-p0-es-cero', 'hipotesis']],
   fb:{ c:`¡Bien! Con x = 0 todos los términos que llevan x valen 0: solo queda el término independiente, −6.`,
-    a:`Elegiste la A. −4 es la suma de coeficientes: eso es T(1), porque con x = 1 cada potencia vale 1. Con x = 0, cada término con x se anula. La correcta está marcada.`,
-    b:`Elegiste la B. 3 es el coeficiente principal, el del término de mayor grado. Pero 3 · 0⁴ = 0. La correcta está marcada.`,
-    d:`Elegiste la D. Los términos con x sí se anulan, pero el término independiente, −6, no lleva x: queda. La correcta está marcada.` } };
+    a:`−4 es la suma de coeficientes: eso es T(1), porque con x = 1 cada potencia vale 1. Con x = 0, cada término con x se anula.`,
+    b:`3 es el coeficiente principal, el del término de mayor grado. Pero 3 · 0⁴ = 0.`,
+    d:`Los términos con x sí se anulan, pero el término independiente, −6, no lleva x: queda.` } };
 const P3 = { id:'polinomios-paso3', ok:'b', opts:[
   ['a', GM.errores.sumaTodos.texto, 'PO11-ga-suma-todos-los-exponentes', 'hipotesis'],
   ['b', GM.texto],
   ['c', GM.errores.relativo.texto, 'PO10-ga-como-grado-relativo', 'hipotesis'],
   ['d', GM.errores.sumaRelativos.texto, 'PO28-ga-suma-de-relativos', 'hipotesis']],
   fb:{ b:`¡Bien! Cada término tiene su grado (la suma de sus exponentes): 5, 6 y 5. El grado absoluto es el mayor: 6.`,
-    a:`Elegiste la A. 16 suma los exponentes de todos los términos. El grado se mide término por término: cada fila de bloques por separado. La correcta está marcada.`,
-    c:`Elegiste la C. 5 es el mayor exponente de x: el grado relativo a x. El absoluto cuenta x e y juntos en cada término. La correcta está marcada.`,
-    d:`Elegiste la D. 9 = 5 + 4 suma los dos grados relativos, pero el 5 de x y el 4 de y están en términos distintos: ningún término tiene 9 factores. La correcta está marcada.` } };
+    a:`16 suma los exponentes de todos los términos. El grado se mide término por término: cada fila de bloques por separado.`,
+    c:`5 es el mayor exponente de x: el grado relativo a x. El absoluto cuenta x e y juntos en cada término.`,
+    d:`9 = 5 + 4 suma los dos grados relativos, pero el 5 de x y el 4 de y están en términos distintos: ningún término tiene 9 factores.` } };
 const P4 = { id:'polinomios-paso4', ok:'c', opts:[
   ['a', GP.errores.producto.texto, 'PO5-grado-producto-multiplica', 'hipotesis'],
   ['b', GP.errores.mayor.texto, 'PO23-grado-producto-el-mayor', 'hipotesis'],
   ['c', GP.texto]],
   fb:{ c:`¡Bien! x³ · x⁴ = x⁷: al multiplicar se juntan los factores, así que los exponentes se suman.`,
-    a:`Elegiste la A. 12 = 3 · 4 multiplica los grados. Pero x³ · x⁴ es poner 3 factores x y luego 4 más: 7. La correcta está marcada.`,
-    b:`Elegiste la B. 4 es el grado de la suma F + G, no del producto: al multiplicar, los factores x se juntan. La correcta está marcada.` } };
+    a:`12 = 3 · 4 multiplica los grados. Pero x³ · x⁴ es poner 3 factores x y luego 4 más: 7.`,
+    b:`4 es el grado de la suma F + G, no del producto: al multiplicar, los factores x se juntan.` } };
 const P5 = { id:'polinomios-paso5', ok:'d', unidad:U_DIV, opts:[
   ['a', R5.errores.sinCero.texto, 'PO1-ruffini-sin-el-cero', 'hipotesis'],
   ['b', R5.errores.signo.texto, 'PO2-ruffini-signo-del-divisor', 'hipotesis'],
   ['c', R5.errores.todaLaFila.texto, 'PO18-cociente-con-el-resto', 'hipotesis'],
   ['d', R5.texto]],
   fb:{ d:`¡Bien! Con el 0 en la casilla del x², la fila de abajo da 2, 4, 1 y el resto 6: el cociente es de grado 2.`,
-    a:`Elegiste la A. Esa cuenta usa solo 2, −7 y 4: falta la ficha del x², que es 0. Sin ella, cada número cae en la casilla de otro grado. La correcta está marcada.`,
-    b:`Elegiste la B. Esa cuenta baja −2. Pero el número que va en la máquina es el que anula el divisor: x − 2 = 0 da x = 2. La correcta está marcada.`,
-    c:`Elegiste la C. El último número de la fila, 6, es el resto, no un coeficiente: el cociente tiene un grado menos que el dividendo. La correcta está marcada.` } };
+    a:`Esa cuenta usa solo 2, −7 y 4: falta la ficha del x², que es 0. Sin ella, cada número cae en la casilla de otro grado.`,
+    b:`Esa cuenta baja −2. Pero el número que va en la máquina es el que anula el divisor: x − 2 = 0 da x = 2.`,
+    c:`El último número de la fila, 6, es el resto, no un coeficiente: el cociente tiene un grado menos que el dividendo.` } };
 const P6b = { id:'polinomios-paso6', ok:'b', unidad:U_DIV, opts:[
   ['a', TR.errores.signo.texto, 'PO8-resto-con-el-signo-del-divisor', 'hipotesis'],
   ['b', TR.texto],
   ['c', TR.errores.independiente.texto, 'PO27-resto-es-el-independiente', 'hipotesis'],
   ['d', TR.errores.parNegativo.texto, 'PO15-potencia-par-de-negativo', 'hipotesis']],
   fb:{ b:`¡Bien! x + 2 = 0 da x = −2, y P(−2) = −8 − 16 + 2 + 4 = ${TR.texto}. El resto es el valor de P en ese número.`,
-    a:`Elegiste la A. ${TR.errores.signo.texto} es P(2). Pero x + 2 se anula en x = −2: el resto es P(−2). La correcta está marcada.`,
-    c:`Elegiste la C. ${TR.errores.independiente.texto} es el término independiente: eso sería el resto de dividir entre x, que se anula en 0. La correcta está marcada.`,
-    d:`Elegiste la D. Esa cuenta usa (−2)² = −4 y da ${TR.errores.parNegativo.texto}. Pero (−2)² = (−2)(−2) = 4: una potencia par de un negativo es positiva. La correcta está marcada.` } };
+    a:`${TR.errores.signo.texto} es P(2). Pero x + 2 se anula en x = −2: el resto es P(−2).`,
+    c:`${TR.errores.independiente.texto} es el término independiente: eso sería el resto de dividir entre x, que se anula en 0.`,
+    d:`Esa cuenta usa (−2)² = −4 y da ${TR.errores.parNegativo.texto}. Pero (−2)² = (−2)(−2) = 4: una potencia par de un negativo es positiva.` } };
 const P7 = { id:'polinomios-paso7', ok:'c', unidad:U_DIV, opts:[
   ['a', br(R7.errores.sinDividir.par), 'PO3-no-divide-el-cociente-entre-a', 'hipotesis'],
   ['b', br(R7.errores.signo.par), 'PO2-ruffini-signo-del-divisor', 'hipotesis'],
   ['c', br(R7.par)],
   ['d', br(R7.errores.restoDividido.par), 'PO4-divide-tambien-el-resto', 'hipotesis']],
   fb:{ c:`¡Bien! Con 1/2 la fila da 4, 0, 6 y el resto 4. Como 2x − 1 = 2(x − 1/2), el cociente se divide entre 2; el resto no.`,
-    a:`Elegiste la A. 4x² + 6 es el cociente de dividir entre x − 1/2. El divisor es 2x − 1, el doble: el cociente tiene que ser la mitad. La correcta está marcada.`,
-    b:`Elegiste la B. Esa cuenta usa −1/2. Pero 2x − 1 = 0 da x = 1/2. La correcta está marcada.`,
-    d:`Elegiste la D. El cociente sí se divide entre 2, pero el resto no: es lo que sobra, y sobra lo mismo. Mira el rectángulo: cambia de forma, la tira del resto no. La correcta está marcada.` } };
+    a:`4x² + 6 es el cociente de dividir entre x − 1/2. El divisor es 2x − 1, el doble: el cociente tiene que ser la mitad.`,
+    b:`Esa cuenta usa −1/2. Pero 2x − 1 = 0 da x = 1/2.`,
+    d:`El cociente sí se divide entre 2, pero el resto no: es lo que sobra, y sobra lo mismo. Mira el rectángulo: cambia de forma, la tira del resto no.` } };
 const P8 = { id:'polinomios-paso8', ok:'d', unidad:U_DIV, opts:[
   ['a', FK.errores.signo.texto, 'PO17-factor-con-el-signo-cambiado', 'hipotesis'],
   ['b', FK.errores.despeje.texto, 'AL16-despeje-con-signo-cambiado', 'hipotesis'],
   ['c', FK.errores.sumaCoef.texto, 'PO33-factor-con-suma-de-coeficientes', 'hipotesis'],
   ['d', FK.texto]],
   fb:{ d:`¡Bien! x − 2 es factor si el resto es 0, o sea P(2) = 0: 8 − 12 + 2k + 6 = 0 da 2k = −2 y k = −1.`,
-    a:`Elegiste la A. Esa cuenta iguala a 0 P(−2): sería para el factor x + 2. El factor x − 2 se anula en x = 2. La correcta está marcada.`,
-    b:`Elegiste la B. 2k + 2 = 0 da 2k = −2: al pasar el 2 al otro lado cambia de signo. Con k = 1 el resto sale 4. La correcta está marcada.`,
-    c:`Elegiste la C. Esa cuenta iguala a 0 la suma de coeficientes, P(1): eso diría que x − 1 es factor, no x − 2. La correcta está marcada.` } };
+    a:`Esa cuenta iguala a 0 P(−2): sería para el factor x + 2. El factor x − 2 se anula en x = 2.`,
+    b:`2k + 2 = 0 da 2k = −2: al pasar el 2 al otro lado cambia de signo. Con k = 1 el resto sale 4.`,
+    c:`Esa cuenta iguala a 0 la suma de coeficientes, P(1): eso diría que x − 1 es factor, no x − 2.` } };
 
 // Lecturas
 const lectA = (coefs, nombre) => [() => ['a', 'a', fq(E.graf.a)], () => ['r', `${nombre}(a)`, fq(ME.evaluar({ coefs, x:E.graf.a }).valor)]];
@@ -941,7 +941,7 @@ const C5 = [2, -3, -11, 6], D5 = ME.raicesRacionales({ coefs:C5 });
 const huecos = p => p.map(c => (c === 0 ? null : c));
 const sumaF = ME.sumar({ p:F3, q:G3 }).coefs;
 const fuente = t => `<p class="fuente">${t}</p>`;
-const HIP = 'No encontramos estudios con cifras sobre este error; las opciones incorrectas son hipótesis nuestras.';
+const HIP = '';
 
 const EXPS = [
   { id:'p-de-uno', corto:'P(1)',
@@ -1048,7 +1048,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + `<div class="nav"><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     tramos($('res2'));

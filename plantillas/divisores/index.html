@@ -118,7 +118,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -775,7 +775,7 @@ const S = { step:0, max:0, pred:{}, ocupado:false, n2:12, f2:1, hall:{}, e5:[3, 
 const R12 = M.rectangulos(12), CR = M.criba(30), D72 = M.divisores(72), T72 = M.tabla(72);
 const D360 = M.divisoresMultiplosDe(360, 6), T360 = M.tabla(360), C9 = [4812, 5129, 3726, 4627].map(n => M.criterio(n, 9));
 const RP = M.restoProducto(38, 47, 5);
-const fb = (letra, ok, txt) => (letra === ok ? txt : `Elegiste la ${letra.toUpperCase()}. ${txt} La correcta está marcada.`);
+const fb = (letra, ok, txt) => (letra === ok ? txt : `${txt}`);
 const FUENTE = '<p class="fuente">No encontramos estudios con cifras sobre estos errores en divisores y divisibilidad; las opciones incorrectas son hipótesis nuestras, y la app las medirá en el colegio.</p>';
 
 const P_FICHAS = { id:'divisores-paso1', ok:'c', opts:[
@@ -1240,7 +1240,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const f = $('fb2');
-    f.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    f.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     f.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     if (x.luego) x.luego();

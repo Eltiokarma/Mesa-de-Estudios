@@ -124,7 +124,7 @@ canvas.sin-scroll{touch-action:none}
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap:12px; align-items:end}
 .slider{display:grid; gap:4px}
@@ -550,16 +550,16 @@ const P1 = { id:'energia-paso3', ok:'a',
   opts:[['a','Es la misma', null, ''], ['b','Es mayor, porque su peso le da más aceleración','W9-mas-pesado-mas-rapido','documentado'],
         ['c','Es menor, porque lo liviano se acelera más fácil','W9-al-reves','parcial'], ['d','Es mayor, porque tarda menos en bajar','W9-por-el-tiempo','parcial']],
   fb:{ a:'¡Bien! La masa se cancela: con el doble de masa, el peso es el doble, pero también hay el doble que mover. Ahora lo vemos con la energía.',
-       b:'Elegiste la B, la idea más común (el 31 % de 336 universitarios después del curso, en el test EMCS). El peso es el doble, pero también hay el doble de masa que acelerar: la correcta está marcada.',
-       c:'Elegiste la C. Lo liviano no se acelera más: sin roce, todo cae igual. La correcta está marcada.',
-       d:'Elegiste la D. Los dos bajan juntos, sin adelantarse: tardan lo mismo y llegan igual de rápido. La correcta está marcada.' } };
+       b:'Tiene sentido pensar que lo más pesado gana. El peso es el doble, pero también hay el doble de masa que acelerar: llegan igual.',
+       c:'Lo liviano no se acelera más: sin roce, todo cae igual.',
+       d:'Los dos bajan juntos, sin adelantarse: tardan lo mismo y llegan igual de rápido.' } };
 const P2 = { id:'energia-paso6', ok:'a',
   opts:[['a','√2 veces más (unas 1,4 veces)', null, ''], ['b','El doble','doble-altura-doble-compresion','parcial'],
         ['c','Cuatro veces más','cuadrado-al-reves','hipotesis'], ['d','Lo mismo, porque el resorte es el mismo','compresion-fija','hipotesis']],
   fb:{ a:'¡Bien! El doble de altura da el doble de energía, y como la energía del resorte va con x², la compresión crece √2 veces.',
-       b:'Elegiste la B. El doble de altura da el doble de energía, pero la energía del resorte va con x²: para guardar el doble, x crece √2 veces, no el doble. La correcta está marcada.',
-       c:'Elegiste la C. Cuatro veces más compresión pediría dieciséis veces más energía, porque la energía del resorte va con x². Aquí la energía solo se duplica, así que x crece √2 veces. La correcta está marcada.',
-       d:'Elegiste la D. El resorte no tiene una compresión fija: se comprime hasta guardar toda la energía que trae el bloque. La correcta está marcada.' } };
+       b:'El doble de altura da el doble de energía, pero la energía del resorte va con x²: para guardar el doble, x crece √2 veces, no el doble.',
+       c:'Cuatro veces más compresión pediría dieciséis veces más energía, porque la energía del resorte va con x². Aquí la energía solo se duplica, así que x crece √2 veces.',
+       d:'El resorte no tiene una compresión fija: se comprime hasta guardar toda la energía que trae el bloque.' } };
 const opciones = P => `<div class="opts">${P.opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="fb"></p>`;
 const steps = [
  { k:'Paso 1', t:'El problema',
@@ -1007,7 +1007,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira la escena para ver por qué.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `; mira la escena para ver por qué.`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.ctrl() + x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     controles(x);
@@ -1071,30 +1071,30 @@ const P1 = { id:'energia-fx-area', ok:'b',
   opts:[['a', J(e1.FfinalPorD), 'G4-F-final-por-d', 'parcial'], ['b', J(rA.W), null, ''],
         ['c', J(e1.pendiente), 'G4-pendiente', 'parcial'], ['d', J(e1.FinicialPorD), 'G4-F-inicial-por-d', 'parcial']],
   fb:{ b:'¡Bien! La fuerza no vale 10 N ni 40 N todo el camino: el trabajo es el área bajo la gráfica, un trapecio. Mira cómo se pinta.',
-       a:`Elegiste la A. 40 N × 4 m supone que la fuerza vale 40 N desde el inicio, pero al inicio valía 10 N. Ese rectángulo se pasa justo en el triángulo de arriba. La correcta está marcada.`,
-       c:`Elegiste la C. ${fmt(e1.pendiente, 1)} es la pendiente de la recta (cuántos newtons sube por cada metro), no el trabajo, y sus unidades son N/m, no J. El trabajo es el área. La correcta está marcada.`,
-       d:'Elegiste la D. 10 N × 4 m deja fuera todo lo que la fuerza crece en el camino. La correcta está marcada.' } };
+       a:`40 N × 4 m supone que la fuerza vale 40 N desde el inicio, pero al inicio valía 10 N. Ese rectángulo se pasa justo en el triángulo de arriba.`,
+       c:`${fmt(e1.pendiente, 1)} es la pendiente de la recta (cuántos newtons sube por cada metro), no el trabajo, y sus unidades son N/m, no J. El trabajo es el área.`,
+       d:'10 N × 4 m deja fuera todo lo que la fuerza crece en el camino.' } };
 const P2 = { id:'energia-fx-masas', ok:'c',
   opts:[['a', 'El de 2 kg', 'W6-liviano-mas-Ec', 'documentado'], ['b', 'El de 8 kg', 'W6-pesado-mas-Ec', 'documentado'],
         ['c', 'Los dos tienen la misma', null, ''], ['d', 'No se puede saber con estos datos', 'W6-faltan-datos', 'documentado']],
   fb:{ c:`¡Bien! El área es la misma para los dos: ${J(rA.W)}. Ese trabajo se vuelve la misma energía cinética, aunque uno vaya más rápido que el otro.`,
-       a:`Elegiste la A. Quizá pensaste que el de 2 kg tiene más porque va más rápido; sí va más rápido, pero tiene menos masa: ½·2·${fmt(rA.v, 0)}² = ½·8·${fmt(rA8.v, 0)}² = ${J(rA.Ec)}. La correcta está marcada.`,
-       b:'Elegiste la B. Quizá pensaste en su masa, pero más masa no da más energía si el trabajo es el mismo: el de 8 kg va más lento y le toca la misma energía cinética. La correcta está marcada.',
-       d:'Elegiste la D. Sí alcanza: la fuerza y la distancia son las mismas, así que el área (el trabajo) es la misma. El tiempo cambia (el de 8 kg tarda el doble), pero el trabajo no depende del tiempo. La correcta está marcada.' } };
+       a:`Quizá pensaste que el de 2 kg tiene más porque va más rápido; sí va más rápido, pero tiene menos masa: ½·2·${fmt(rA.v, 0)}² = ½·8·${fmt(rA8.v, 0)}² = ${J(rA.Ec)}.`,
+       b:'Quizá pensaste en su masa, pero más masa no da más energía si el trabajo es el mismo: el de 8 kg va más lento y le toca la misma energía cinética.',
+       d:'Sí alcanza: la fuerza y la distancia son las mismas, así que el área (el trabajo) es la misma. El tiempo cambia (el de 8 kg tarda el doble), pero el trabajo no depende del tiempo.' } };
 const P3 = { id:'energia-fx-signo', ok:'d',
   opts:[['a', J(e3.sumaSinSigno), 'signo-suma-areas', 'hipotesis'], ['b', J(e3.soloPositiva), 'signo-ignora-negativa', 'hipotesis'],
         ['c', J(e3.FfinalPorD), 'G4-F-final-por-d', 'parcial'], ['d', J(rC.W), null, '']],
   fb:{ d:`¡Bien! Bajo el eje la fuerza va contra el movimiento: esa parte del área resta. +${fmt(rC.positiva, 0)} − ${fmt(-rC.negativa, 0)} = ${J(rC.W)}.`,
-       a:`Elegiste la A. Sumaste las dos áreas como si fueran positivas. Mientras la fuerza empuja hacia atrás, su trabajo es negativo: le quita ${J(-rC.negativa)} al carrito. ${fmt(rC.positiva, 0)} − ${fmt(-rC.negativa, 0)} = ${J(rC.W)}. La correcta está marcada.`,
-       b:'Elegiste la B. La parte bajo el eje también cuenta, con signo menos: en los primeros 4 m la fuerza frena al carrito. La correcta está marcada.',
-       c:'Elegiste la C. 20 N × 8 m supone que la fuerza vale 20 N hacia adelante todo el camino; al inicio valía 8 N hacia atrás. La correcta está marcada.' } };
+       a:`Sumaste las dos áreas como si fueran positivas. Mientras la fuerza empuja hacia atrás, su trabajo es negativo: le quita ${J(-rC.negativa)} al carrito. ${fmt(rC.positiva, 0)} − ${fmt(-rC.negativa, 0)} = ${J(rC.W)}.`,
+       b:'La parte bajo el eje también cuenta, con signo menos: en los primeros 4 m la fuerza frena al carrito.',
+       c:'20 N × 8 m supone que la fuerza vale 20 N hacia adelante todo el camino; al inicio valía 8 N hacia atrás.' } };
 const P4 = { id:'energia-fx-resorte', ok:'c',
   opts:[['a', J(e4.mitadDeltaCuadrado), 'W13-mitad-delta-cuadrado', 'parcial'], ['b', J(e4.FfinalPorDelta), 'G4-F-final-por-d', 'parcial'],
         ['c', J(rk.W), null, ''], ['d', J(e4.desdeCero), 'resorte-desde-cero', 'hipotesis']],
   fb:{ c:`¡Bien! Es el área de un trapecio: el triángulo grande, de 0 a 0,3 m (${J(rk.grande)}), menos el chico, de 0 a 0,1 m (${J(rk.chico)}), que ya estaba hecho.`,
-       a:`Elegiste la A. ½·600·0,2² = ${J(e4.mitadDeltaCuadrado)} es lo que cuesta estirarlo 0,2 m desde su largo natural, donde la fuerza empieza en 0. Aquí la fuerza ya empezaba en ${fmt(rk.F1, 0)} N. La correcta está marcada.`,
-       b:`Elegiste la B. ${fmt(rk.F2, 0)} N × 0,2 m usa la fuerza del final todo el camino; al inicio solo hacías ${fmt(rk.F1, 0)} N. El rectángulo se pasa en el triángulo de arriba (${J(e4.FfinalPorDelta - rk.W)}). La correcta está marcada.`,
-       d:`Elegiste la D. ½·600·0,3² = ${J(e4.desdeCero)} es el trabajo desde el largo natural, pero los primeros 0,1 m ya estaban estirados: esos ${J(rk.chico)} no los hiciste tú. La correcta está marcada.` } };
+       a:`½·600·0,2² = ${J(e4.mitadDeltaCuadrado)} es lo que cuesta estirarlo 0,2 m desde su largo natural, donde la fuerza empieza en 0. Aquí la fuerza ya empezaba en ${fmt(rk.F1, 0)} N.`,
+       b:`${fmt(rk.F2, 0)} N × 0,2 m usa la fuerza del final todo el camino; al inicio solo hacías ${fmt(rk.F1, 0)} N. El rectángulo se pasa en el triángulo de arriba (${J(e4.FfinalPorDelta - rk.W)}).`,
+       d:`½·600·0,3² = ${J(e4.desdeCero)} es el trabajo desde el largo natural, pero los primeros 0,1 m ya estaban estirados: esos ${J(rk.chico)} no los hiciste tú.` } };
 const opciones = P => `<div class="opts">${P.opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="fb3" tabindex="-1"></p>`;
 const W_ = V('F', 'W');
 const G = t => `<span>${t}</span>`; // agrupa un término de la ecuación (.eq es flex: sin esto, ² y los subíndices se separan)

@@ -120,7 +120,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -826,72 +826,72 @@ const P1 = { id:'fisica-moderna-paso1', ok:'b', opts:[
   ['c', 'Marca cero, pero marcaría corriente si además se sube el voltaje de la pila', 'FM1-cero-pero-con-voltaje-si', 'documentado'],
   ['d', 'Marca corriente, pero de electrones que salen más lentos', 'FM2-FM4-salen-lentos', 'hipotesis']],
   fb:{ b:'¡Bien! La luz llega en paquetes, los fotones. Duplicar la intensidad duplica cuántos llegan, pero cada uno trae lo mismo: 2 eV, y no alcanza para sacar un electrón.',
-    a:'Elegiste la A. Llega el doble de energía, sí, pero repartida en el doble de fotones de 2 eV cada uno. Un electrón recibe la energía de un solo fotón, y 2 eV no alcanzan. La correcta está marcada.',
-    c:'Elegiste la C. Sí marca cero, pero el voltaje tampoco lo arregla: la pila no puede arrancar electrones del metal. Eso es justo el paso siguiente. La correcta está marcada.',
-    d:'Elegiste la D. No salen electrones lentos: no sale ninguno. Cada fotón de 2 eV no alcanza los 2,5 eV que cuesta sacar un electrón. La correcta está marcada.' } };
+    a:'Llega el doble de energía, sí, pero repartida en el doble de fotones de 2 eV cada uno. Un electrón recibe la energía de un solo fotón, y 2 eV no alcanzan.',
+    c:'Sí marca cero, pero el voltaje tampoco lo arregla: la pila no puede arrancar electrones del metal. Eso es justo el paso siguiente.',
+    d:'No salen electrones lentos: no sale ninguno. Cada fotón de 2 eV no alcanza los 2,5 eV que cuesta sacar un electrón.' } };
 const P2 = { id:'fisica-moderna-paso2', ok:'d', opts:[
   ['a', 'Marca corriente, porque la pila ahora arranca electrones del metal', 'FM1-pila-arranca-electrones', 'documentado'],
   ['b', 'Marca corriente desde unos 0,5 V, porque la pila pone los 0,5 eV que le faltan a cada fotón', 'FM1-pila-vence-funcion-trabajo', 'parcial'],
   ['c', 'Marca cero, porque la pila frena a los electrones que salen', 'FM-pila-a-favor-frena', 'hipotesis'],
   ['d', 'Marca cero, porque la pila no arranca electrones: solo mueve a los que ya salieron']],
   fb:{ d:'¡Bien! La pila actúa sobre electrones que ya están fuera del metal. Si la luz no saca ninguno, no hay nada que mover: la corriente es cero con cualquier voltaje.',
-    a:'Elegiste la A. Esto no es un resistor: no vale V = IR. La pila no saca electrones del metal; solo acelera o frena a los que la luz ya arrancó. La correcta está marcada.',
-    b:'Elegiste la B. La energía para salir del metal tiene que venir de un solo fotón, de una vez. La pila no se suma a esa cuenta: actúa recién afuera. La correcta está marcada.',
-    c:'Elegiste la C. Sí marca cero, pero no porque la pila frene: con el positivo en el colector, la pila atrae a los electrones hacia él. Marca cero porque no sale ninguno. La correcta está marcada.' } };
+    a:'Esto no es un resistor: no vale V = IR. La pila no saca electrones del metal; solo acelera o frena a los que la luz ya arrancó.',
+    b:'La energía para salir del metal tiene que venir de un solo fotón, de una vez. La pila no se suma a esa cuenta: actúa recién afuera.',
+    c:'Sí marca cero, pero no porque la pila frene: con el positivo en el colector, la pila atrae a los electrones hacia él. Marca cero porque no sale ninguno.' } };
 const P3 = { id:'fisica-moderna-paso3', ok:'a', opts:[
   ['a', `Kmax = ${fmt(F3.Kmax, 1)} eV y V₀ = ${fmt(F3.V0, 1)} V`],
   ['b', `Kmax = ${fmt(F3.errores.sinRestarPhi.Kmax, 0)} eV y V₀ = ${fmt(F3.errores.sinRestarPhi.V0, 0)} V`, 'FM-kmax-sin-restar-phi', 'hipotesis'],
   ['c', `Kmax = ${fmt(F3.Kmax, 1)} eV y V₀ = ${sci(F3.errores.mezclaJeV.V0, 1)} V`, 'FM-mezcla-joules-y-eV', 'hipotesis'],
   ['d', `Kmax = ${fmt(F3.errores.sumaPhi.Kmax, 1)} eV y V₀ = ${fmt(F3.errores.sumaPhi.V0, 1)} V`, 'FM-kmax-suma-phi', 'hipotesis']],
   fb:{ a:'¡Bien! Cada fotón trae 1240/310 = 4 eV; 2,5 eV se gastan en salir del metal y al electrón más rápido le quedan 1,5 eV. Para frenarlo hacen falta 1,5 V.',
-    b:'Elegiste la B. Falta restar la función trabajo: de los 4 eV del fotón, 2,5 eV se gastan en sacar al electrón del metal. La correcta está marcada.',
-    c:'Elegiste la C. Kmax está bien, pero 2,4 × 10⁻¹⁹ es Kmax en joules. El voltaje es la energía dividida entre la carga: 2,4 × 10⁻¹⁹ J / 1,6 × 10⁻¹⁹ C = 1,5 V. La correcta está marcada.',
-    d:'Elegiste la D. La función trabajo se resta, no se suma: es lo que cuesta salir del metal. La correcta está marcada.' } };
+    b:'Falta restar la función trabajo: de los 4 eV del fotón, 2,5 eV se gastan en sacar al electrón del metal.',
+    c:'Kmax está bien, pero 2,4 × 10⁻¹⁹ es Kmax en joules. El voltaje es la energía dividida entre la carga: 2,4 × 10⁻¹⁹ J / 1,6 × 10⁻¹⁹ C = 1,5 V.',
+    d:'La función trabajo se resta, no se suma: es lo que cuesta salir del metal.' } };
 const P4 = { id:'fisica-moderna-paso4', ok:'c', opts:[
   ['a', 'V₀ sube y la corriente de saturación se duplica', 'FM2-intensidad-sube-V0', 'parcial'],
   ['b', 'V₀ sube y la corriente de saturación no cambia', 'FM2-intensidad-es-energia', 'parcial'],
   ['c', 'V₀ no cambia y la corriente de saturación se duplica'],
   ['d', 'V₀ no cambia y la corriente de saturación tampoco', 'FM4-corriente-por-rapidez', 'parcial']],
   fb:{ c:'¡Bien! El doble de fotones arranca el doble de electrones por segundo: la corriente de saturación se duplica. Pero cada fotón sigue trayendo 4 eV, así que Kmax y V₀ no cambian.',
-    a:'Elegiste la A. La corriente sí se duplica, pero V₀ depende de la energía de cada fotón, que no cambió. Las dos curvas se anulan en el mismo −V₀. La correcta está marcada.',
-    b:'Elegiste la B. La intensidad no cambia la energía de cada fotón (V₀ queda igual); cambia cuántos fotones llegan, y con ellos cuántos electrones. La correcta está marcada.',
-    d:'Elegiste la D. V₀ no cambia, cierto, pero la corriente no depende de lo rápido que vayan los electrones: depende de cuántos llegan por segundo, y ahora salen el doble. La correcta está marcada.' } };
+    a:'La corriente sí se duplica, pero V₀ depende de la energía de cada fotón, que no cambió. Las dos curvas se anulan en el mismo −V₀.',
+    b:'La intensidad no cambia la energía de cada fotón (V₀ queda igual); cambia cuántos fotones llegan, y con ellos cuántos electrones.',
+    d:'V₀ no cambia, cierto, pero la corriente no depende de lo rápido que vayan los electrones: depende de cuántos llegan por segundo, y ahora salen el doble.' } };
 const P5 = { id:'fisica-moderna-paso5', ok:'d', opts:[
   ['a', 'Una recta que sale del origen (f = 0, Kmax = 0), con pendiente h', 'FM3-sin-frecuencia-de-corte', 'parcial'],
   ['b', `Una recta que sale de f₀ ≈ ${sci(FE.f0, 1)} Hz, con pendiente φ`, 'FM-pendiente-es-phi', 'hipotesis'],
   ['c', `Una recta que sale de f = 0 con Kmax = ${fmt(PHI0, 1)} eV, con pendiente h`, 'FM-kmax-suma-phi-grafica', 'hipotesis'],
   ['d', `Una recta que sale de f₀ ≈ ${sci(FE.f0, 1)} Hz, con pendiente h`]],
   fb:{ d:'¡Bien! Kmax = h·f − φ: una recta de pendiente h. Por debajo de f₀ = φ/h no sale ningún electrón, así que la gráfica empieza recién en f₀.',
-    a:'Elegiste la A. Con luz de frecuencia muy baja no sale ningún electrón (lo viste con la luz roja): la recta no puede salir del origen. Empieza en la frecuencia umbral f₀. La correcta está marcada.',
-    b:'Elegiste la B. f₀ está bien, pero la pendiente es h: por cada hertz más, el fotón trae h más de energía. φ es cuánto se resta, no la pendiente. La correcta está marcada.',
-    c:'Elegiste la C. La función trabajo se resta: Kmax = h·f − φ. Por eso la recta, si se prolonga, cortaría el eje en −2,5 eV, no en +2,5 eV. La correcta está marcada.' } };
+    a:'Con luz de frecuencia muy baja no sale ningún electrón (lo viste con la luz roja): la recta no puede salir del origen. Empieza en la frecuencia umbral f₀.',
+    b:'f₀ está bien, pero la pendiente es h: por cada hertz más, el fotón trae h más de energía. φ es cuánto se resta, no la pendiente.',
+    c:'La función trabajo se resta: Kmax = h·f − φ. Por eso la recta, si se prolonga, cortaría el eje en −2,5 eV, no en +2,5 eV.' } };
 const P6 = { id:'fisica-moderna-paso6', ok:'a', opts:[
   ['a', `N ≈ ${sci(N6.N, 1)} fotones por segundo`],
   ['b', `N ≈ ${sci(N6.errores.porCargaE, 1)} fotones por segundo`, 'FM-cada-foton-de-1-eV', 'hipotesis'],
   ['c', `N ≈ ${sci(N6.errores.enEv, 0)} fotones por segundo`, 'FM-N-con-E-en-eV', 'hipotesis'],
   ['d', `N ≈ ${sci(N6.errores.multiplica, 1)} fotones por segundo`, 'FM-N-multiplica-P-por-E', 'hipotesis']],
   fb:{ a:'¡Bien! Cada fotón trae 2 eV = 3,2 × 10⁻¹⁹ J, y el láser entrega 10⁻³ J por segundo: N = P/E ≈ 3,1 × 10¹⁵. Por eso no se notan los paquetes: son muchísimos.',
-    b:'Elegiste la B. Dividiste entre 1,6 × 10⁻¹⁹ J, que es 1 eV; pero cada fotón trae 2 eV. La correcta está marcada.',
-    c:'Elegiste la C. P está en joules por segundo; la energía del fotón también tiene que ir en joules: 2 eV = 3,2 × 10⁻¹⁹ J. La correcta está marcada.',
-    d:'Elegiste la D. Hay que dividir: la energía de cada segundo repartida entre la energía de un fotón, N = P/E. La correcta está marcada.' } };
+    b:'Dividiste entre 1,6 × 10⁻¹⁹ J, que es 1 eV; pero cada fotón trae 2 eV.',
+    c:'P está en joules por segundo; la energía del fotón también tiene que ir en joules: 2 eV = 3,2 × 10⁻¹⁹ J.',
+    d:'Hay que dividir: la energía de cada segundo repartida entre la energía de un fotón, N = P/E.' } };
 const P7 = { id:'fisica-moderna-paso7', ok:'c', opts:[
   ['a', `λ ≈ ${nm(T7.errores.nivelLlegada.lambda)}: ultravioleta, no se ve`, 'FM-bohr-nivel-de-llegada', 'hipotesis'],
   ['b', `λ ≈ ${nm(T7.errores.unNivel.lambda)}: infrarrojo, no se ve`, 'FM-bohr-un-solo-nivel', 'hipotesis'],
   ['c', `λ ≈ ${nm(T7.lambda)}: luz roja`],
   ['d', `λ ≈ ${nm(T7.errores.sumaNiveles.lambda)}: ultravioleta, no se ve`, 'FM-bohr-suma-niveles', 'hipotesis']],
   fb:{ c:'¡Bien! E3 = −13,6/9 ≈ −1,51 eV y E2 = −13,6/4 = −3,4 eV: el fotón se lleva la diferencia, 17/9 ≈ 1,89 eV, y λ = 1240/1,89 ≈ 656 nm, roja.',
-    a:'Elegiste la A. Usaste la energía del nivel de llegada, 3,4 eV; pero el fotón se lleva la DIFERENCIA entre los dos niveles: −1,51 − (−3,4) ≈ 1,89 eV. La correcta está marcada.',
-    b:'Elegiste la B. El fotón no se lleva la energía de un nivel: se lleva la DIFERENCIA entre los dos niveles. La correcta está marcada.',
-    d:'Elegiste la D. Las energías de los niveles se restan, no se suman: el fotón se lleva lo que el electrón baja. La correcta está marcada.' } };
+    a:'Usaste la energía del nivel de llegada, 3,4 eV; pero el fotón se lleva la DIFERENCIA entre los dos niveles: −1,51 − (−3,4) ≈ 1,89 eV.',
+    b:'El fotón no se lleva la energía de un nivel: se lleva la DIFERENCIA entre los dos niveles.',
+    d:'Las energías de los niveles se restan, no se suman: el fotón se lleva lo que el electrón baja.' } };
 const P8 = { id:'fisica-moderna-paso8', ok:'b', opts:[
   ['a', `λmin ≈ ${fmt(X8.errores.sinKilo, 0)} nm`, 'FM-rayosX-sin-kilo', 'hipotesis'],
   ['b', `λmin ≈ ${fmt(X8.lambdaMin, 2)} nm`],
   ['c', `λmin ≈ ${sci(X8.errores.sinE, 1)} nm`, 'FM-rayosX-sin-carga-e', 'hipotesis'],
   ['d', `λmin ≈ ${sci(X8.errores.joulesConEv, 1)} nm`, 'FM-rayosX-joules-con-eV-nm', 'hipotesis']],
   fb:{ b:'¡Bien! Cada electrón llega con 31 000 eV. El fotón más energético se lleva todo eso: λmin = 1240/31 000 = 0,04 nm.',
-    a:'Elegiste la A. Son 31 kV = 31 000 V, no 31 V: cada electrón llega con 31 000 eV. La correcta está marcada.',
-    c:'Elegiste la C. La energía del electrón es e·V = 1,6 × 10⁻¹⁹ · 31 000 J: falta la carga. h·c/(e·V) da 4 × 10⁻¹¹ m = 0,04 nm. La correcta está marcada.',
-    d:'Elegiste la D. Mezclaste unidades: con hc = 1240 eV·nm la energía va en eV (31 000 eV), no en joules. La correcta está marcada.' } };
+    a:'Son 31 kV = 31 000 V, no 31 V: cada electrón llega con 31 000 eV.',
+    c:'La energía del electrón es e·V = 1,6 × 10⁻¹⁹ · 31 000 J: falta la carga. h·c/(e·V) da 4 × 10⁻¹¹ m = 0,04 nm.',
+    d:'Mezclaste unidades: con hc = 1240 eV·nm la energía va en eV (31 000 eV), no en joules.' } };
 
 const LECT_TODO = ['lam', 'P', 'E', 'phi', 'K', 'V', 'I'];
 const ctlTodo = { lambda:true, P:true, V:true };
@@ -1192,7 +1192,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la opción ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = sinCorte(x.exp()) + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

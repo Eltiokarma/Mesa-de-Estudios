@@ -114,7 +114,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
 .btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
@@ -524,58 +524,58 @@ const P1 = { id:'numeros-reales-paso1', ok:'a', opts:[
   ['a', frase(EX.texto)], ['b', frase(EX.errores.alReves.texto), 'NR1-corchetes-al-reves', 'hipotesis'],
   ['c', frase(EX.errores.todos.texto), 'NR2-los-extremos-siempre-entran', 'hipotesis'], ['d', frase(EX.errores.ninguno.texto), 'NR2-los-extremos-nunca-entran', 'hipotesis']],
   fb:{ a:'¡Bien! El corchete [ abraza al −2: entra. El ⟩ deja afuera al 3: no entra, aunque 2,9; 2,99; 2,999… sí entran.',
-    b:'Elegiste la B. Es al revés: [ (cerrado) dice que el −2 entra y ⟩ (abierto) dice que el 3 no entra. La correcta está marcada.',
-    c:'Elegiste la C. Los extremos entran solo si su corchete es cerrado, [ o ]. El ⟩ del 3 es abierto: el 3 se queda afuera. La correcta está marcada.',
-    d:'Elegiste la D. El ⟩ deja afuera al 3, pero el [ del −2 es cerrado: el −2 sí entra. La correcta está marcada.' } };
+    b:'Es al revés: [ (cerrado) dice que el −2 entra y ⟩ (abierto) dice que el 3 no entra.',
+    c:'Los extremos entran solo si su corchete es cerrado, [ o ]. El ⟩ del 3 es abierto: el 3 se queda afuera.',
+    d:'El ⟩ deja afuera al 3, pero el [ del −2 es cerrado: el −2 sí entra.' } };
 const P2 = { id:'numeros-reales-paso2', ok:'b', opts:[
   ['a', M_(INT.errores.comoUnion.texto), 'NR3-interseccion-como-union', 'hipotesis'], ['b', M_(INT.texto)],
   ['c', M_(INT.errores.corchetes.texto), 'NR4-cierra-un-extremo-de-un-solo-trozo', 'hipotesis'], ['d', M_(INT.errores.abiertos.texto), 'NR4-abre-los-extremos', 'hipotesis']],
   fb:{ b:'¡Bien! A ∩ B es lo que está en A y también en B: de 1 a 3. El 1 está en los dos; el 3 está en B, pero no en A.',
-    a:`Elegiste la A. ${INT.errores.comoUnion.texto} es A ∪ B: lo que está en alguno de los dos. ∩ pide estar en los dos a la vez. La correcta está marcada.`,
-    c:'Elegiste la C. El 3 está en B, pero no en A (su corchete en A es ⟩): no está en los dos, así que en A ∩ B va abierto. La correcta está marcada.',
-    d:'Elegiste la D. El 1 sí está en los dos: en A (de −2 a 3) y en B, que empieza en [1. Por eso va cerrado. La correcta está marcada.' } };
+    a:`${INT.errores.comoUnion.texto} es A ∪ B: lo que está en alguno de los dos. ∩ pide estar en los dos a la vez.`,
+    c:'El 3 está en B, pero no en A (su corchete en A es ⟩): no está en los dos, así que en A ∩ B va abierto.',
+    d:'El 1 sí está en los dos: en A (de −2 a 3) y en B, que empieza en [1. Por eso va cerrado.' } };
 const P3 = { id:'numeros-reales-paso3', ok:'c', opts:[
   ['a', M_(AB.errores.sinBarras.texto), 'AL22-quitar-las-barras', 'parcial'], ['b', M_(AB.errores.alReves.texto), 'NR5-dentro-por-fuera', 'hipotesis'],
   ['c', M_(AB.texto)], ['d', M_(AB.errores.otroCentro.texto), 'NR6-distancia-desde-menos-a', 'hipotesis']],
   fb:{ c:'¡Bien! |x − 2| es la distancia de x a 2. A lo más 3 de 2: desde −1 hasta 5, con los extremos.',
-    a:'Elegiste la A. Quitar las barras deja x − 2 ≤ 3, o sea x ≤ 5, y se cuelan números lejanos: −10 cumple x ≤ 5, pero está a 12 de 2. Falta la otra mitad: −3 ≤ x − 2. La correcta está marcada.',
-    b:'Elegiste la B. Esos son los que están a 3 o más de 2 (|x − 2| ≥ 3). ≤ 3 pide los cercanos: un solo trozo alrededor del 2. La correcta está marcada.',
-    d:'Elegiste la D. |x − 2| mide desde 2, no desde −2: el centro es el número que se resta. [−5; 1] es |x + 2| ≤ 3. La correcta está marcada.' } };
+    a:'Quitar las barras deja x − 2 ≤ 3, o sea x ≤ 5, y se cuelan números lejanos: −10 cumple x ≤ 5, pero está a 12 de 2. Falta la otra mitad: −3 ≤ x − 2.',
+    b:'Esos son los que están a 3 o más de 2 (|x − 2| ≥ 3). ≤ 3 pide los cercanos: un solo trozo alrededor del 2.',
+    d:'|x − 2| mide desde 2, no desde −2: el centro es el número que se resta. [−5; 1] es |x + 2| ≤ 3.' } };
 const P4 = { id:'numeros-reales-paso4', ok:'d', opts:[
   ['a', M_(IM4.errores.sinVoltear.texto), 'AL20-no-invertir-con-negativo', 'hipotesis'], ['b', M_(IM4.errores.corchetesSinVoltear.texto), 'NR20-ordena-sin-voltear-corchetes', 'hipotesis'],
   ['c', M_(IM4.errores.sinSumar.texto), 'NR22-olvida-sumar', 'hipotesis'], ['d', M_(IM4.texto)]],
   fb:{ d:'¡Bien! Al multiplicar por −2 todo se da vuelta: el −2, que entraba, va a parar al 5 (cerrado), y el 3, que no entraba, al −5 (abierto).',
-    a:'Elegiste la A. [5; −5⟩ no es un intervalo: el primer número tiene que ser el menor. Al multiplicar por un negativo, el sentido de la desigualdad se invierte. La correcta está marcada.',
-    b:'Elegiste la B. Los números están bien ordenados, pero los corchetes se quedaron donde estaban. El 5 sale del −2, que sí entraba: el 5 va cerrado. La correcta está marcada.',
-    c:'Elegiste la C. Ese es el intervalo de −2x. Falta sumar 1 a los dos extremos. La correcta está marcada.' } };
+    a:'[5; −5⟩ no es un intervalo: el primer número tiene que ser el menor. Al multiplicar por un negativo, el sentido de la desigualdad se invierte.',
+    b:'Los números están bien ordenados, pero los corchetes se quedaron donde estaban. El 5 sale del −2, que sí entraba: el 5 va cerrado.',
+    c:'Ese es el intervalo de −2x. Falta sumar 1 a los dos extremos.' } };
 const P5 = { id:'numeros-reales-paso5', ok:'b', opts:[
   ['a', M_(IM5.errores.extremos.texto), 'NR7-elevar-solo-los-extremos', 'hipotesis'], ['b', M_(IM5.texto)],
   ['c', M_(IM5.errores.signo.texto), 'NR8-cuadrado-con-signo', 'hipotesis'], ['d', M_(IM5.errores.cerrados.texto), 'NR4-cierra-un-extremo-que-no-se-alcanza', 'hipotesis']],
   fb:{ b:'¡Bien! Mientras x va de −2 a 0, x² baja de 4 a 0; después sube hasta casi 9. El 9 no se alcanza: haría falta x = 3 o x = −3.',
-    a:'Elegiste la A. Elevar solo los extremos olvida que x pasa por 0: con x = 0, x² = 0, y 0 no está en [4; 9⟩. La correcta está marcada.',
-    c:'Elegiste la C. (−2)² = 4, no −4: un cuadrado nunca es negativo. La correcta está marcada.',
-    d:'Elegiste la D. Para que x² = 9, x tendría que ser 3 o −3, y ninguno está en A. El 9 va abierto. La correcta está marcada.' } };
+    a:'Elevar solo los extremos olvida que x pasa por 0: con x = 0, x² = 0, y 0 no está en [4; 9⟩.',
+    c:'(−2)² = 4, no −4: un cuadrado nunca es negativo.',
+    d:'Para que x² = 9, x tendría que ser 3 o −3, y ninguno está en A. El 9 va abierto.' } };
 const P6 = { id:'numeros-reales-paso6', ok:'d', opts:[
   ['a', M_(SG.errores.unaCifraMas.texto), 'NR9-hay-un-siguiente', 'hipotesis'], ['b', M_(SG.errores.siguienteEntero.texto), 'NR9-hay-un-siguiente', 'hipotesis'],
   ['c', M_(SG.errores.infinitosCeros.texto), 'NR10-infinitos-ceros-y-un-uno', 'hipotesis'], ['d', 'No existe']],
   fb:{ d:`¡Bien! Para cualquier candidato mayor que 0,9 hay otro más cerca: el promedio. Por ejemplo, ${SG.errores.unaCifraMas.contraejemplo} está entre 0,9 y 0,91.`,
-    a:`Elegiste la A. Entre 0,9 y 0,91 todavía hay números: ${SG.errores.unaCifraMas.contraejemplo}, por ejemplo. La correcta está marcada.`,
-    b:`Elegiste la B. Entre 0,9 y 1 hay muchísimos números: ${SG.errores.siguienteEntero.contraejemplo}, ${EN.racionales[0]}… La correcta está marcada.`,
-    c:'Elegiste la C. 0,9000…1 no es un número: si los ceros no se acaban, el 1 nunca llega. La correcta está marcada.' } };
+    a:`Entre 0,9 y 0,91 todavía hay números: ${SG.errores.unaCifraMas.contraejemplo}, por ejemplo.`,
+    b:`Entre 0,9 y 1 hay muchísimos números: ${SG.errores.siguienteEntero.contraejemplo}, ${EN.racionales[0]}…`,
+    c:'0,9000…1 no es un número: si los ceros no se acaban, el 1 nunca llega.' } };
 const P7 = { id:'numeros-reales-paso7', ok:'c', opts:[
   ['a', `Es ${COT.errores.supremoComoMaximo.texto}`, 'NR11-supremo-como-maximo', 'hipotesis'], ['b', `Es ${COT.errores.ultimoAntes.texto}`, 'NR12-el-ultimo-antes-de-1', 'hipotesis'],
   ['c', `No tiene máximo; su supremo es ${COT.supremoTexto}`], ['d', 'No tiene máximo ni supremo', 'NR12-sin-maximo-no-hay-supremo', 'hipotesis']],
   fb:{ c:'¡Bien! El 1 es la menor cota superior, pero no está en ⟨0; 1⟩. Y ningún elemento es el mayor: siempre hay uno más cerca de 1.',
-    a:'Elegiste la A. El 1 no está en ⟨0; 1⟩ (el ⟩ lo deja afuera), y el máximo tiene que ser un elemento del conjunto. 1 es el supremo. La correcta está marcada.',
-    b:'Elegiste la B. No hay un número justo antes de 1: si x < 1, (x + 1)/2 está entre x y 1. La correcta está marcada.',
-    d:'Elegiste la D. Aunque no tenga máximo, ⟨0; 1⟩ está acotado: las cotas superiores son [1; +∞⟩, y la menor, 1, es el supremo. La correcta está marcada.' } };
+    a:'El 1 no está en ⟨0; 1⟩ (el ⟩ lo deja afuera), y el máximo tiene que ser un elemento del conjunto. 1 es el supremo.',
+    b:'No hay un número justo antes de 1: si x < 1, (x + 1)/2 está entre x y 1.',
+    d:'Aunque no tenga máximo, ⟨0; 1⟩ está acotado: las cotas superiores son [1; +∞⟩, y la menor, 1, es el supremo.' } };
 const P8 = { id:'numeros-reales-paso8', ok:'b', opts:[
   ['a', M_(OT.errores.diagonal.texto), 'NR13-neutro-buscado-en-la-diagonal', 'hipotesis'], ['b', M_(OT.neutro)],
   ['c', M_(OT.errores.primero.texto), 'NR14-neutro-el-primero', 'hipotesis'], ['d', 'No tiene', 'NR23-no-tiene-neutro', 'hipotesis']],
   fb:{ b:'¡Bien! La fila del 2 y la columna del 2 repiten la cabecera: 2 ∗ x = x y x ∗ 2 = x para los cuatro.',
-    a:'Elegiste la A. El 4 sale en la diagonal (1 ∗ 1 = 4 y 3 ∗ 3 = 4), pero eso no lo hace neutro: 4 ∗ 1 = 3, no 1. El 4 no deja igual a nadie. La correcta está marcada.',
-    c:'Elegiste la C. El 1 es el primero de la cabecera, pero 1 ∗ 1 = 4: no deja igual al 1. La correcta está marcada.',
-    d:'Elegiste la D. Busca una fila que repita la cabecera 1, 2, 3, 4: la del 2. Su columna también. La correcta está marcada.' } };
+    a:'El 4 sale en la diagonal (1 ∗ 1 = 4 y 3 ∗ 3 = 4), pero eso no lo hace neutro: 4 ∗ 1 = 3, no 1. El 4 no deja igual a nadie.',
+    c:'El 1 es el primero de la cabecera, pero 1 ∗ 1 = 4: no deja igual al 1.',
+    d:'Busca una fila que repita la cabecera 1, 2, 3, 4: la del 2. Su columna también.' } };
 
 // ----- dibujos -----
 const VISTA = [-4, 6, 1];
@@ -1085,7 +1085,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

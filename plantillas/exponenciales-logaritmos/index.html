@@ -114,7 +114,7 @@ sup .v, sub .v{padding:0 1px}
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -720,70 +720,70 @@ const P2 = { id:'exponenciales-logaritmos-paso2', ok:'c', opts:[
   ['c', P8.texto],
   ['d', P8.errores.precedencia.texto, 'EL2-log-solo-del-primer-factor', 'hipotesis']],
   fb:{ c:`¡Bien! Multiplicar por 8 son 3 saltos y multiplicar por 4 son 2 más: 5 saltos, y se llega a ${n0(P8.producto)}.`,
-    a:`Elegiste la A. 3 · 2 = ${P8.errores.productoDeLogs.texto} multiplica los saltos. Pero los saltos de 8 y los de 4 se dan uno tras otro: se suman. La correcta está marcada.`,
-    b:`Elegiste la B. 8 · 4 = ${P8.errores.numero.texto} es el número al que se llega; el logaritmo es cuántos saltos hay hasta él. La correcta está marcada.`,
-    d:`Elegiste la D. (log₂ 8) · 4 = ${P8.errores.precedencia.texto} toma el logaritmo solo del 8. El paréntesis dice que es el logaritmo del producto entero, 8 · 4. La correcta está marcada.` } };
+    a:`3 · 2 = ${P8.errores.productoDeLogs.texto} multiplica los saltos. Pero los saltos de 8 y los de 4 se dan uno tras otro: se suman.`,
+    b:`8 · 4 = ${P8.errores.numero.texto} es el número al que se llega; el logaritmo es cuántos saltos hay hasta él.`,
+    d:`(log₂ 8) · 4 = ${P8.errores.precedencia.texto} toma el logaritmo solo del 8. El paréntesis dice que es el logaritmo del producto entero, 8 · 4.` } };
 const P3 = { id:'exponenciales-logaritmos-paso3', ok:'b', opts:[
   ['a', S8.errores.sumaDeLogs.texto, 'AL10-log-de-la-suma', 'parcial'],
   ['b', S8.texto],
   ['c', S8.errores.numero.texto, 'EL1-log-da-el-numero', 'hipotesis'],
   ['d', S8.errores.productoDeLogs.texto, 'AL10-log-de-la-suma-como-producto', 'parcial']],
   fb:{ b:`¡Bien! 8 + 8 = ${n0(S8.suma)}, y 16 está a 4 saltos. Sumar 8 + 8 es duplicar el 8: un solo salto más.`,
-    a:`Elegiste la A. 3 + 3 = ${S8.errores.sumaDeLogs.texto} saltos llevan a ${n0(S8.sumaDeLogsEs)}, que es 8 · 8, no 8 + 8. La correcta está marcada.`,
-    c:`Elegiste la C. ${S8.errores.numero.texto} es el número 8 + 8; su logaritmo es cuántos saltos hay hasta él. La correcta está marcada.`,
-    d:`Elegiste la D. 3 · 3 = ${S8.errores.productoDeLogs.texto} multiplica los logaritmos, y 9 saltos llevan a 512. La correcta está marcada.` } };
+    a:`3 + 3 = ${S8.errores.sumaDeLogs.texto} saltos llevan a ${n0(S8.sumaDeLogsEs)}, que es 8 · 8, no 8 + 8.`,
+    c:`${S8.errores.numero.texto} es el número 8 + 8; su logaritmo es cuántos saltos hay hasta él.`,
+    d:`3 · 3 = ${S8.errores.productoDeLogs.texto} multiplica los logaritmos, y 9 saltos llevan a 512.` } };
 const P4 = { id:'exponenciales-logaritmos-paso4', ok:'b', opts:[
   ['a', C64.errores.logDelCociente.texto, 'AL31-log-del-cociente', 'parcial'],
   ['b', C64.texto],
   ['c', C64.errores.invertido.texto, 'AL31-base-y-argumento-invertidos', 'parcial'],
   ['d', C64.errores.cociente.texto, 'EL24-divide-los-numeros', 'hipotesis']],
   fb:{ b:`¡Bien! Hasta 64 hay 6 saltos de ×2; de 3 en 3, son 2 saltos de ×8.`,
-    a:`Elegiste la A. ${C64.errores.logDelCociente.texto} es log₂(64/8) = log₂ 8. Ese es el logaritmo de una división, que se calcula con una resta: 6 − 3. Aquí se dividen los logaritmos: 6/3. La correcta está marcada.`,
-    c:`Elegiste la C. 3/6 = ${C64.errores.invertido.texto} es el cociente al revés: sería log₆₄ 8, cuántos saltos de ×64 hay hasta 8. La correcta está marcada.`,
-    d:`Elegiste la D. 64/8 = ${C64.errores.cociente.texto} divide los números, no los logaritmos. La correcta está marcada.` } };
+    a:`${C64.errores.logDelCociente.texto} es log₂(64/8) = log₂ 8. Ese es el logaritmo de una división, que se calcula con una resta: 6 − 3. Aquí se dividen los logaritmos: 6/3.`,
+    c:`3/6 = ${C64.errores.invertido.texto} es el cociente al revés: sería log₆₄ 8, cuántos saltos de ×64 hay hasta 8.`,
+    d:`64/8 = ${C64.errores.cociente.texto} divide los números, no los logaritmos.` } };
 const P5 = { id:'exponenciales-logaritmos-paso5', ok:'c', unidad:U_INV, opts:[
   ['a', INV.errores.reciproco.texto, 'AL29-inversa-como-reciproco', 'parcial'],
   ['b', INV.errores.reflejoY.texto, 'EL17-reflejo-en-eje-y', 'hipotesis'],
   ['c', INV.texto],
   ['d', INV.errores.reflejoX.texto, 'EL18-reflejo-en-eje-x', 'hipotesis']],
   fb:{ c:`¡Bien! 2³ = 8 y, al revés, log₂ 8 = 3: la inversa cambia la entrada por la salida.`,
-    a:`Elegiste la A. 1/8 es 1/2³: el «−1» de f⁻¹ no es un exponente. La inversa devuelve el 3 cuando se le da el 8. La correcta está marcada.`,
-    b:`Elegiste la B. (−3; 8) es el reflejo en el eje y: es la gráfica de 2⁻ˣ, no la del logaritmo. La correcta está marcada.`,
-    d:`Elegiste la D. (3; −8) es el reflejo en el eje x: es la gráfica de −2ˣ, no la del logaritmo. La correcta está marcada.` } };
+    a:`1/8 es 1/2³: el «−1» de f⁻¹ no es un exponente. La inversa devuelve el 3 cuando se le da el 8.`,
+    b:`(−3; 8) es el reflejo en el eje y: es la gráfica de 2⁻ˣ, no la del logaritmo.`,
+    d:`(3; −8) es el reflejo en el eje x: es la gráfica de −2ˣ, no la del logaritmo.` } };
 const P6 = { id:'exponenciales-logaritmos-paso6', ok:'b', opts:[
   ['a', xTx(EB.errores.igualaExponentes.texto), 'AL32-iguala-exponentes-con-bases-distintas', 'hipotesis'],
   ['b', xTx(EB.texto)],
   ['c', xTx(EB.errores.porBase.texto), 'EL8-cuatro-a-la-n-como-dos-por-dos-a-la-n', 'hipotesis'],
   ['d', xTx(EB.errores.potenciaComoSuma.texto), 'EL7-potencia-de-potencia-suma', 'hipotesis']],
   fb:{ b:`¡Bien! 4 = 2², así que 4^(x + 1) = 2^(2x + 2). Con la misma base, 2x + 2 = 3x y x = 2.`,
-    a:`Elegiste la A. x + 1 = 3x iguala los exponentes de dos bases distintas. Con x = 1/2: 4^(3/2) = ${EB_chk.i.texto}, pero 2^(3/2) ≈ ${EB_chk.d.texto}. La correcta está marcada.`,
-    c:`Elegiste la C. Esa cuenta usa 4^(x + 1) = 2 · 2^(x + 1) = 2^(x + 2). Pero cada salto de ×4 son dos de ×2: se duplican todos los saltos, no se agrega uno. La correcta está marcada.`,
-    d:`Elegiste la D. Esa cuenta usa (2²)^(x + 1) = 2^(2 + x + 1). En una potencia de potencia los exponentes se multiplican: 2^(2x + 2). La correcta está marcada.` } };
+    a:`x + 1 = 3x iguala los exponentes de dos bases distintas. Con x = 1/2: 4^(3/2) = ${EB_chk.i.texto}, pero 2^(3/2) ≈ ${EB_chk.d.texto}.`,
+    c:`Esa cuenta usa 4^(x + 1) = 2 · 2^(x + 1) = 2^(x + 2). Pero cada salto de ×4 son dos de ×2: se duplican todos los saltos, no se agrega uno.`,
+    d:`Esa cuenta usa (2²)^(x + 1) = 2^(2 + x + 1). En una potencia de potencia los exponentes se multiplican: 2^(2x + 2).` } };
 const P7 = { id:'exponenciales-logaritmos-paso7', ok:'b', opts:[
   ['a', xTx(CV.errores.seQuedaEnU.texto), 'EL3-se-queda-en-u', 'hipotesis'],
   ['b', xTx(CV.texto)],
   ['c', xTx(CV.errores.descartaUno.texto), 'EL4-descarta-potencia-igual-a-uno', 'hipotesis']],
   fb:{ b:`¡Bien! u = 2ˣ vale 1 o 2. En la escalera, 1 está en el salto 0 y 2 en el salto 1.`,
-    a:`Elegiste la A. 1 y 2 son los valores de u = 2ˣ, los números de la escalera. Falta volver a x: cuántos saltos hay hasta cada uno. La correcta está marcada.`,
-    c:`Elegiste la C. 2ˣ = 1 sí tiene solución: x = 0, cero saltos. Todo número distinto de 0 elevado a 0 da 1. La correcta está marcada.` } };
+    a:`1 y 2 son los valores de u = 2ˣ, los números de la escalera. Falta volver a x: cuántos saltos hay hasta cada uno.`,
+    c:`2ˣ = 1 sí tiene solución: x = 0, cero saltos. Todo número distinto de 0 elevado a 0 da 1.` } };
 const P8b = { id:'exponenciales-logaritmos-paso8', ok:'c', opts:[
   ['a', xTx(EL.errores.sumaArgumentos.texto), 'AL10-log-de-la-suma-de-argumentos', 'parcial'],
   ['b', xTx(EL.errores.sinVerificar.texto), 'EL5-no-descarta-la-raiz-extrana', 'hipotesis'],
   ['c', xTx(EL.texto)],
   ['d', xTx(EL.errores.sinElevar.texto), 'EL14-no-eleva-la-base', 'hipotesis']],
   fb:{ c:`¡Bien! x(x − 2) = 8 da x = 4 o x = −2, pero con −2 los argumentos salen negativos: solo queda 4.`,
-    a:`Elegiste la A. Esa cuenta junta log₂ x + log₂(x − 2) en log₂(2x − 2). La suma de logaritmos es el logaritmo del producto, x(x − 2), no de la suma. La correcta está marcada.`,
-    b:`Elegiste la B. x = −2 sale de la ecuación x(x − 2) = 8, pero log₂(−2) no existe: no hay número de saltos de ×2 que lleve de 1 a un negativo. Hay que descartarla. La correcta está marcada.`,
-    d:`Elegiste la D. Esa cuenta usa x(x − 2) = 3. Pero el 3 es un logaritmo, el número de saltos: el producto vale 2³ = 8. La correcta está marcada.` } };
+    a:`Esa cuenta junta log₂ x + log₂(x − 2) en log₂(2x − 2). La suma de logaritmos es el logaritmo del producto, x(x − 2), no de la suma.`,
+    b:`x = −2 sale de la ecuación x(x − 2) = 8, pero log₂(−2) no existe: no hay número de saltos de ×2 que lleve de 1 a un negativo. Hay que descartarla.`,
+    d:`Esa cuenta usa x(x − 2) = 3. Pero el 3 es un logaritmo, el número de saltos: el producto vale 2³ = 8.` } };
 const P9 = { id:'exponenciales-logaritmos-paso9', ok:'c', opts:[
   ['a', CU.errores.cuadratico.texto, 'AL33-exponencial-como-cuadrado', 'hipotesis'],
   ['b', CU.errores.unPeriodoMenos.texto, 'EL10-un-periodo-de-menos', 'hipotesis'],
   ['c', CU.texto],
   ['d', CU.errores.proporcional.texto, 'EL9-regla-de-tres-en-crecimiento', 'hipotesis']],
   fb:{ c:`¡Bien! Cada hora se multiplica por 2: 8, 16, 32, 64. Seis duplicaciones desde 1.`,
-    a:`Elegiste la A. 6² = ${CU.errores.cuadratico.texto} es t², que crece de otra manera. El cultivo no suma: se multiplica por 2 cada hora, y eso es 2⁶. La correcta está marcada.`,
-    b:`Elegiste la B. ${CU.errores.unPeriodoMenos.texto} es 2⁵: son las 5 h. De la hora 0 a la hora 6 hay 6 duplicaciones. La correcta está marcada.`,
-    d:`Elegiste la D. ${CU.errores.proporcional.texto} es una regla de tres: el doble del tiempo, el doble de bacterias. Pero de 3 h a 6 h hay 3 duplicaciones más: 8 · 2 · 2 · 2. La correcta está marcada.` } };
+    a:`6² = ${CU.errores.cuadratico.texto} es t², que crece de otra manera. El cultivo no suma: se multiplica por 2 cada hora, y eso es 2⁶.`,
+    b:`${CU.errores.unPeriodoMenos.texto} es 2⁵: son las 5 h. De la hora 0 a la hora 6 hay 6 duplicaciones.`,
+    d:`${CU.errores.proporcional.texto} es una regla de tres: el doble del tiempo, el doble de bacterias. Pero de 3 h a 6 h hay 3 duplicaciones más: 8 · 2 · 2 · 2.` } };
 
 const fuenteAL10 = `<p class="fuente">Escribir log(a + b) = log a + log b o log(ab) = log a · log b aparece descrito en Singapur, en estudios con 89 y 81 escolares, como una sobregeneralización de las reglas y no como falta de conocimiento (Chua y Wood, 2005; Ganesan y Dindyal, 2014, según resúmenes); no dan el porcentaje del ítem. Las demás opciones son hipótesis nuestras.</p>`;
 
@@ -1201,7 +1201,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + `<div class="nav"><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     tramos($('res2'));

@@ -116,7 +116,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .frac > span{white-space:nowrap}
 .aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
 .msg{margin:0; font-weight:700; min-height:1.5em}
-.msg.mal{color:var(--warn)} .msg.ok{color:var(--ok)}
+.msg.mal{color:inherit} .msg.ok{color:var(--ok)}
 
 .opts{display:grid; grid-template-columns:1fr; gap:8px}
 @media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
@@ -131,7 +131,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -697,63 +697,63 @@ const G1 = { id:'rutas-espacio-paso1', ok:'b', opts:[
   ['c', `${D1.errores.aMano}: las que encuentro dibujándolas una por una`, 'AR18', 'parcial'],
   ['d', `${D1.errores.potencia}: en cada uno de los 5 pasos hay 3 direcciones`, 'RME189', 'hipotesis']],
   fb:{ b:`¡Bien! A cada vértice se llega desde los vértices de atrás que lo tocan con un alambre. Escribiendo en cada uno la suma de los que llegan a él, en el azúcar sale ${N_(String(D1.total))}.`,
-    a:`Elegiste la A. Esa cuenta (5! ÷ (2! · 2! · 1!) = ${D1.errores.cajaCompleta}) vale para una caja de 2 × 2 × 1 completa. A la L le falta un cubito: las rutas que pasaban por sus alambres ya no existen. Numerando vértices salen ${D1.total}. La correcta está marcada.`,
-    c:`Elegiste la C. Al dibujarlas a mano salen primero las que doblan poco y las demás se escapan. Con un orden (vértice por vértice, sumando) salen ${D1.total}. La correcta está marcada.`,
-    d:`Elegiste la D. No siempre hay 3 alambres hacia adelante: en los bordes hay menos, y 3⁵ cuenta caminos que se salen de la estructura. Numerando vértices salen ${D1.total}. La correcta está marcada.` } };
+    a:`Esa cuenta (5! ÷ (2! · 2! · 1!) = ${D1.errores.cajaCompleta}) vale para una caja de 2 × 2 × 1 completa. A la L le falta un cubito: las rutas que pasaban por sus alambres ya no existen. Numerando vértices salen ${D1.total}.`,
+    c:`Al dibujarlas a mano salen primero las que doblan poco y las demás se escapan. Con un orden (vértice por vértice, sumando) salen ${D1.total}.`,
+    d:`No siempre hay 3 alambres hacia adelante: en los bordes hay menos, y 3⁵ cuenta caminos que se salen de la estructura. Numerando vértices salen ${D1.total}.` } };
 const G3 = { id:'rutas-espacio-paso3', ok:'c', opts:[
   ['a', `${P3.errores.soloCortas}: las más cortas, por ${'B'}, por ${'D'} o por la punta ${'V'}`, 'RME141', 'hipotesis'],
   ['b', `${P3.errores.unLado}: las que salen de A hacia B, por dos (por simetría)`, 'AR18', 'parcial'],
   ['c', `${P3.total}: por casos, según cuántos hilos usa: 2, 3 o 4`],
   ['d', `${P3.errores.ejeDoble}: las que salen hacia B y las que suben a V, todo por dos`, 'RME142', 'hipotesis']],
   fb:{ c:`¡Bien! Con 2 hilos hay ${P3.porPasos[2]}, con 3 hay ${P3.porPasos[3]} y con 4 hay ${P3.porPasos[4]}: ${N_(String(P3.total))} en total. El motor probó todas y no encontró más.`,
-    a:`Elegiste la A. Esas son las de 2 hilos, pero también valen las más largas mientras no repitan punto: A → B → V → C, A → B → V → D → C… En total, ${P3.total}. La correcta está marcada.`,
-    b:`Elegiste la B. B y D son espejo: las que salen hacia B y las que salen hacia D son las mismas reflejadas (3 y 3). Pero también hay rutas que salen de A hacia la punta V, y esas no tienen pareja: son ${P3.porInicio[4]}. Total: 3 + 3 + 3 = ${P3.total}. La correcta está marcada.`,
-    d:`Elegiste la D. Las que suben primero a V están justo sobre el espejo: no se duplican, porque su reflejo es otra de ellas. Se cuentan 3 hacia B, 3 hacia D y 3 por V: ${P3.total}. La correcta está marcada.` } };
+    a:`Esas son las de 2 hilos, pero también valen las más largas mientras no repitan punto: A → B → V → C, A → B → V → D → C… En total, ${P3.total}.`,
+    b:`B y D son espejo: las que salen hacia B y las que salen hacia D son las mismas reflejadas (3 y 3). Pero también hay rutas que salen de A hacia la punta V, y esas no tienen pareja: son ${P3.porInicio[4]}. Total: 3 + 3 + 3 = ${P3.total}.`,
+    d:`Las que suben primero a V están justo sobre el espejo: no se duplican, porque su reflejo es otra de ellas. Se cuentan 3 hacia B, 3 hacia D y 3 por V: ${P3.total}.` } };
 const G5 = { id:'rutas-espacio-paso5', ok:'c', opts:[
   ['a', `${T5.errores.sumarTodo}: 2 + 2 + 2 por arriba, 2 + 2 + 2 por abajo y 1 por el diámetro`, 'RME30', 'hipotesis'],
   ['b', `${H5.errores.unLado}: 2 · 2 · 2 por arriba y 2 · 2 · 2 por abajo`, 'AR18', 'parcial'],
   ['c', `${T5.total}: 2 · 2 · 2 por arriba, 2 · 2 · 2 por abajo y 1 por el diámetro`],
   ['d', `${T5.errores.multiplicarTodo}: 2 · 2 · 2 por arriba, por 2 · 2 · 2 por abajo, por 1`, 'RME186', 'hipotesis']],
   fb:{ c:`¡Bien! Por arriba hay tres tramos seguidos (A–B, B–C, C–D) y en cada uno se elige recto o arco: se multiplica, 2 · 2 · 2 = 8. Por abajo, otras 8. Arriba, abajo o el diámetro son caminos distintos que no se juntan: se suman. 8 + 8 + 1 = ${N_(String(T5.total))}.`,
-    a:`Elegiste la A. En una cadena de tramos, cada elección del primero se combina con cada una del segundo: 2 · 2 = 4, no 2 + 2. Por arriba hay 8, no 6. Total: ${T5.total}. La correcta está marcada.`,
-    b:`Elegiste la B. Faltó el diámetro A–O–D: también es una ruta de A a D que no repite punto. 8 + 8 + 1 = ${T5.total}. La correcta está marcada.`,
-    d:`Elegiste la D. Multiplicar es para tramos seguidos (y después). Ir por arriba o por abajo es elegir uno u otro camino: eso se suma. 8 + 8 + 1 = ${T5.total}. La correcta está marcada.` } };
+    a:`En una cadena de tramos, cada elección del primero se combina con cada una del segundo: 2 · 2 = 4, no 2 + 2. Por arriba hay 8, no 6. Total: ${T5.total}.`,
+    b:`Faltó el diámetro A–O–D: también es una ruta de A a D que no repite punto. 8 + 8 + 1 = ${T5.total}.`,
+    d:`Multiplicar es para tramos seguidos (y después). Ir por arriba o por abajo es elegir uno u otro camino: eso se suma. 8 + 8 + 1 = ${T5.total}.` } };
 const G6 = { id:'rutas-espacio-paso6', ok:'c', opts:[
   ['a', `${F6.errores.lineal}: crece de 2 en 2 (2, 4, 6, …)`, 'RME167', 'hipotesis'],
   ['b', `${F6.unPalito}: las que suben por un solo palito vertical, uno por cada palito`, 'RME141', 'hipotesis'],
   ['c', `${F6.total}: cada cuadradito nuevo duplica las rutas (2, 4, 8, …)`],
   ['d', `${F6.errores.porPuntos}: en cada uno de los 7 palitos verticales se elige cambiar de fila o no (2⁷)`, 'RME197', 'hipotesis']],
   fb:{ c:`¡Bien! El motor las contó una por una para 1, 2, 3, … 6 cuadraditos: ${SUC6.valores.join(', ')}. Cada cuadradito nuevo duplica las rutas: con ${k_('6')} hay 2⁶ = ${N_(String(F6.total))}.`,
-    a:`Elegiste la A. Con dos casos (2 y 4) no basta para ver la regla. Con 3 cuadraditos ya hay 8, no 6: las rutas se duplican. Con 6 hay ${F6.total}. La correcta está marcada.`,
-    b:`Elegiste la B. Esas son solo las rutas más simples: van por una fila y cambian de fila una sola vez. También valen las que cambian 3, 5 o más veces (siempre un número impar). Con todas, ${F6.total}. La correcta está marcada.`,
-    d:`Elegiste la D. Casi: la ruta sí elige en qué palitos verticales cambia de fila, pero tiene que cambiar un número impar de veces para terminar arriba. Eso deja la mitad de las 2⁷ elecciones: ${F6.total}. La correcta está marcada.` } };
+    a:`Con dos casos (2 y 4) no basta para ver la regla. Con 3 cuadraditos ya hay 8, no 6: las rutas se duplican. Con 6 hay ${F6.total}.`,
+    b:`Esas son solo las rutas más simples: van por una fila y cambian de fila una sola vez. También valen las que cambian 3, 5 o más veces (siempre un número impar). Con todas, ${F6.total}.`,
+    d:`Casi: la ruta sí elige en qué palitos verticales cambia de fila, pero tiene que cambiar un número impar de veces para terminar arriba. Eso deja la mitad de las 2⁷ elecciones: ${F6.total}.` } };
 const G7 = { id:'rutas-espacio-paso7', ok:'b', opts:[
   ['a', `${aprox(P7.exactos.unaVuelta, P7.errores.unaVuelta)} cm: la diagonal del desarrollo de una vuelta, de 4π por 12`, 'RME199', 'hipotesis'],
   ['b', `${aprox(P7.exacto, P7.L)} cm: la diagonal de dos desarrollos seguidos, de 8π por 12`],
   ['c', `${aprox(P7.exactos.porBorde, P7.errores.porBorde)} cm: subir los 12 cm y dar las dos vueltas por el borde`, 'RME31', 'hipotesis'],
   ['d', `${aprox(P7.exactos.cadaVuelta, P7.errores.cadaVuelta)} cm: dos veces la diagonal de una vuelta, de 4π por 12`, 'RME145', 'hipotesis']],
   fb:{ b:`¡Bien! Al cortar el tarro por la recta que une los dos puntos y desarrollarlo dos veces seguidas, queda un rectángulo de ${P_('8π')} por ${h_('12')}. La ruta más corta es su diagonal: √(12² + (8π)²) = ${d_(P7.exacto)} ≈ ${fmt(P7.L, 1)} cm.`,
-    a:`Elegiste la A. Eso mide una sola vuelta. Con dos vueltas, la hormiga recorre dos perímetros a lo ancho: el rectángulo es de 8π por 12 y su diagonal mide ${P7.exacto} ≈ ${fmt(P7.L, 1)} cm. La correcta está marcada.`,
-    c:`Elegiste la C. Por el borde la hormiga dobla en una esquina. Si sube mientras gira, va en línea recta sobre el desarrollo: ${P7.exacto} ≈ ${fmt(P7.L, 1)} cm. La correcta está marcada.`,
-    d:`Elegiste la D. En cada vuelta la hormiga sube solo la mitad, 6 cm, no los 12. Dos diagonales de 4π por 6 juntas son la diagonal de 8π por 12: ${P7.exacto} ≈ ${fmt(P7.L, 1)} cm. La correcta está marcada.` } };
+    a:`Eso mide una sola vuelta. Con dos vueltas, la hormiga recorre dos perímetros a lo ancho: el rectángulo es de 8π por 12 y su diagonal mide ${P7.exacto} ≈ ${fmt(P7.L, 1)} cm.`,
+    c:`Por el borde la hormiga dobla en una esquina. Si sube mientras gira, va en línea recta sobre el desarrollo: ${P7.exacto} ≈ ${fmt(P7.L, 1)} cm.`,
+    d:`En cada vuelta la hormiga sube solo la mitad, 6 cm, no los 12. Dos diagonales de 4π por 6 juntas son la diagonal de 8π por 12: ${P7.exacto} ≈ ${fmt(P7.L, 1)} cm.` } };
 const G8 = { id:'rutas-espacio-paso8', ok:'b', opts:[
   ['a', `${aprox(T8.exactos.porBorde, T8.errores.porBorde)} cm: subir los 8 cm y rodear las dos latas por el borde`, 'RME31', 'hipotesis'],
   ['b', `${aprox(T8.exacto, T8.L)} cm: la diagonal de media lata más media lata, de 6π por 8`],
   ['c', `${aprox(T8.exactos.unCilindro, T8.errores.unCilindro)} cm: la diagonal de media vuelta de una lata, de 3π por 8`, 'RME147', 'hipotesis'],
   ['d', `${aprox(T8.porElAireExacto, T8.porElAire)} cm: la recta entre los dos puntos, de 12 por 8`, 'RME201-por-el-aire', 'hipotesis']],
   fb:{ b:`¡Bien! La hormiga solo pasa de una lata a la otra por la recta en que se tocan. Media lata de cada una forma un rectángulo de ${P_('3π')} + ${P_('3π')} = 6π por ${h_('8')}: la ruta es su diagonal, ${d_(T8.exacto)} ≈ ${fmt(T8.L, 1)} cm.`,
-    a:`Elegiste la A. Por el borde la hormiga dobla dos veces. Si sube mientras rodea, va en línea recta sobre el desarrollo: ${T8.exacto} ≈ ${fmt(T8.L, 1)} cm. La correcta está marcada.`,
-    c:`Elegiste la C. Esa es solo la primera lata: después falta otra media vuelta en la segunda. Las dos medias latas juntas dan 6π de ancho: ${T8.exacto} ≈ ${fmt(T8.L, 1)} cm. La correcta está marcada.`,
-    d:`Elegiste la D. Esa recta va por el aire, entre las latas; la hormiga camina por la superficie. Desarrollando, ${T8.exacto} ≈ ${fmt(T8.L, 1)} cm. La correcta está marcada.` } };
+    a:`Por el borde la hormiga dobla dos veces. Si sube mientras rodea, va en línea recta sobre el desarrollo: ${T8.exacto} ≈ ${fmt(T8.L, 1)} cm.`,
+    c:`Esa es solo la primera lata: después falta otra media vuelta en la segunda. Las dos medias latas juntas dan 6π de ancho: ${T8.exacto} ≈ ${fmt(T8.L, 1)} cm.`,
+    d:`Esa recta va por el aire, entre las latas; la hormiga camina por la superficie. Desarrollando, ${T8.exacto} ≈ ${fmt(T8.L, 1)} cm.` } };
 const G9 = { id:'rutas-espacio-paso10', ok:'b', unidad:U_TRAZOS, opts:[
   ['a', `${P9.errores.todas} cm: las 12 aristas, si empieza bien`, 'RME143', 'hipotesis'],
   ['b', `${P9.maximo} cm: se quedan sin usar 3 aristas que no se tocan`],
   ['c', `${P9.errores.unaPorImpar} cm: se deja una arista por cada esquina impar, menos A y B`, 'RME148', 'hipotesis'],
   ['d', `${P9.errores.sumar} cm: hay que repetir 3 aristas, 36 + 9`, 'RME149', 'hipotesis']],
   fb:{ b:`¡Bien! Las 8 esquinas tienen 3 aristas: son impares. Para un recorrido de un tirón solo pueden ser impares A y B. Las otras ${i_('6')} se arreglan dejando sin usar ${Q_('3 aristas')} que no se tocan: cada una arregla dos esquinas a la vez. 36 − 9 = ${d_(P9.maximo + ' cm')}.`,
-    a:`Elegiste la A. Para pasar por todas sin repetir, solo podrían ser impares la salida y la llegada, y aquí son impares las 8 esquinas. Lo más largo deja 3 aristas sin usar: ${P9.maximo} cm. La correcta está marcada.`,
-    c:`Elegiste la C. Una arista que no se usa le quita una a cada uno de sus dos extremos: arregla dos esquinas impares a la vez. Bastan 3 aristas, no 6: ${P9.maximo} cm. La correcta está marcada.`,
-    d:`Elegiste la D. Repetir aristas es para el recorrido más corto que pasa por todo. Aquí no se puede repetir: hay que dejar algunas sin usar. ${P9.maximo} cm. La correcta está marcada.` } };
+    a:`Para pasar por todas sin repetir, solo podrían ser impares la salida y la llegada, y aquí son impares las 8 esquinas. Lo más largo deja 3 aristas sin usar: ${P9.maximo} cm.`,
+    c:`Una arista que no se usa le quita una a cada uno de sus dos extremos: arregla dos esquinas impares a la vez. Bastan 3 aristas, no 6: ${P9.maximo} cm.`,
+    d:`Repetir aristas es para el recorrido más corto que pasa por todo. Aquí no se puede repetir: hay que dejar algunas sin usar. ${P9.maximo} cm.` } };
 
 // ---- configuraciones ----
 const leyDir = [['x', 'x · a la derecha'], ['y', 'y · al fondo'], ['z', 'z · hacia arriba']];
@@ -1267,7 +1267,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

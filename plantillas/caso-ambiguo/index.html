@@ -120,7 +120,7 @@ table.regla th{font-size:.8rem; color:var(--muted); text-transform:uppercase; le
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -803,54 +803,54 @@ const P_DOS = { id:'caso-ambiguo-paso2', ok:'a', opts:[
   ['c','Ninguno: como a es menor que b, el brazo no llega a la base','a-menor-que-b-no-alcanza','hipotesis'],
   ['d',`1: el rectángulo en B, con c = √39 ≈ ${fmt(K5.errores.rectanguloEnB.c, 2)}`,'TR25-rectangulo','parcial']],
   fb:{ a:'¡Bien! El brazo de 5 corta la base dos veces delante de A: hay dos triángulos con los mismos datos.',
-    b:'Elegiste la B. La calculadora (arco seno) da solo el ángulo agudo, 53°. Pero 127° tiene el mismo seno, 4/5, y también cabe: 30° + 127° es menos de 180°. El brazo toca la base en dos puntos. La correcta está marcada.',
-    c:'Elegiste la C. El brazo no tiene que llegar hasta b: tiene que llegar a la base, que está a la distancia h = 4 de C. Como 5 es más que 4, la alcanza, y dos veces. La correcta está marcada.',
-    d:'Elegiste la D. Nada dice que el ángulo en B sea recto: ese triángulo tendría a = 5, b = 8 y c ≈ 6,24, pero su ángulo en A no sería 30°. Con razones de triángulo rectángulo no se resuelve un oblicuángulo. La correcta está marcada.' } };
+    b:'La calculadora (arco seno) da solo el ángulo agudo, 53°. Pero 127° tiene el mismo seno, 4/5, y también cabe: 30° + 127° es menos de 180°. El brazo toca la base en dos puntos.',
+    c:'El brazo no tiene que llegar hasta b: tiene que llegar a la base, que está a la distancia h = 4 de C. Como 5 es más que 4, la alcanza, y dos veces.',
+    d:'Nada dice que el ángulo en B sea recto: ese triángulo tendría a = 5, b = 8 y c ≈ 6,24, pero su ángulo en A no sería 30°. Con razones de triángulo rectángulo no se resuelve un oblicuángulo.' } };
 const P_TOCA = { id:'caso-ambiguo-paso3', ok:'b', opts:[
   ['a','2: uno a cada lado del pie de la altura, como con a = 5','TR23-siempre-dos','hipotesis'],
   ['b','1: el brazo apenas toca la base y el ángulo B es recto'],
   ['c','Ninguno: si el brazo solo toca la recta, sin cruzarla, no se forma triángulo','tocar-no-es-cortar','hipotesis'],
   ['d','2: a sigue siendo menor que b, y con a menor que b siempre hay dos','regla-a-menor-b-dos','hipotesis']],
   fb:{ b:'¡Bien! Con a = h = 4 el brazo cae justo sobre la altura: un solo triángulo, rectángulo en B.',
-    a:'Elegiste la A. Con a = 4 el brazo apenas llega: toca la base en un solo punto, el pie de la altura. Los "dos lados" se juntan en uno. La correcta está marcada.',
-    c:'Elegiste la C. Tocar la base basta: el punto donde toca es el vértice B, y el triángulo existe, con el ángulo recto en B. La correcta está marcada.',
-    d:'Elegiste la D. Ser menor que b no alcanza: también hay que mirar la altura h = 4. Con a = 4 el brazo toca la base en un solo punto. La correcta está marcada.' } };
+    a:'Con a = 4 el brazo apenas llega: toca la base en un solo punto, el pie de la altura. Los "dos lados" se juntan en uno.',
+    c:'Tocar la base basta: el punto donde toca es el vértice B, y el triángulo existe, con el ángulo recto en B.',
+    d:'Ser menor que b no alcanza: también hay que mirar la altura h = 4. Con a = 4 el brazo toca la base en un solo punto.' } };
 const P_NO = { id:'caso-ambiguo-paso4', ok:'c', opts:[
   ['a','2: como con a = 5, porque a sigue siendo menor que b','regla-a-menor-b-dos','hipotesis'],
   ['b',`1: el rectángulo en B, con c = √55 ≈ ${fmt(K3.errores.rectanguloEnB.c, 2)}`,'TR25-rectangulo','parcial'],
   ['c','Ninguno: el brazo es más corto que la altura y no llega a la base'],
   ['d','1: sen B = 4/3 da un ángulo B agudo','seno-mayor-que-uno','hipotesis']],
   fb:{ c:'¡Bien! El brazo de 3 no llega a la base, que está a 4 de C. No hay triángulo.',
-    a:'Elegiste la A. Ser menor que b no basta: el brazo tiene que llegar a la base, que está a la distancia h = 4 de C, y 3 no llega. La correcta está marcada.',
-    b:'Elegiste la B. Para ser rectángulo en B, el brazo tendría que medir lo mismo que la altura, 4. Con 3 no llega a la base. La correcta está marcada.',
-    d:'Elegiste la D. Ningún seno pasa de 1. Si la ley de senos da sen B = 4/3, la cuenta está avisando que el triángulo no existe. La correcta está marcada.' } };
+    a:'Ser menor que b no basta: el brazo tiene que llegar a la base, que está a la distancia h = 4 de C, y 3 no llega.',
+    b:'Para ser rectángulo en B, el brazo tendría que medir lo mismo que la altura, 4. Con 3 no llega a la base.',
+    d:'Ningún seno pasa de 1. Si la ley de senos da sen B = 4/3, la cuenta está avisando que el triángulo no existe.' } };
 const P_C60 = { id:'caso-ambiguo-paso5', ok:'a', opts:[
   ['a',`a = ${fmt(L60.a, 0)}`],
   ['b',`a = √129 ≈ ${fmt(L60.errores.signoCambiado.a, 1)}`,'TR24-signo','hipotesis'],
   ['c',`a = √89 ≈ ${fmt(L60.errores.sinTermino.a, 1)}`,'TR24-sin-termino','hipotesis'],
   ['d',`a = ${fmt(L60.errores.sumaLados.a, 0)}`,'suma-de-lados','hipotesis']],
   fb:{ a:'¡Bien! a² = 25 + 64 − 40 = 49, así que a = 7.',
-    b:'Elegiste la B. Esa cuenta suma el término: 25 + 64 + 40 = 129. En la ley de cosenos va un menos: a² = b² + c² − 2bc·cos A. Con 60° el término se quita. La correcta está marcada.',
-    c:'Elegiste la C. √89 es lo que daría Pitágoras, pero el ángulo no es recto: falta el término 2bc·cos A = 40, que con 60° se resta. La correcta está marcada.',
-    d:'Elegiste la D. Si a midiera b + c = 13, los tres vértices estarían en una línea recta: no habría triángulo. Un lado siempre es menor que la suma de los otros dos. La correcta está marcada.' } };
+    b:'Esa cuenta suma el término: 25 + 64 + 40 = 129. En la ley de cosenos va un menos: a² = b² + c² − 2bc·cos A. Con 60° el término se quita.',
+    c:'√89 es lo que daría Pitágoras, pero el ángulo no es recto: falta el término 2bc·cos A = 40, que con 60° se resta.',
+    d:'Si a midiera b + c = 13, los tres vértices estarían en una línea recta: no habría triángulo. Un lado siempre es menor que la suma de los otros dos.' } };
 const P_C90 = { id:'caso-ambiguo-paso6', ok:'a', opts:[
   ['a',`Desaparece: queda a² = b² + c² = ${fmt(L90.a2, 0)}, el teorema de Pitágoras`],
   ['b',`Vale 2bc = 80 y se resta: a² = ${fmt(L90.errores.cosenoComoSeno.a2, 0)}`,'cos90-como-uno','hipotesis'],
   ['c',`Sigue igual que con 60°: a² = ${fmt(L60.a2, 0)}`,'termino-fijo','hipotesis'],
   ['d',`Ahora se suma entero: a² = 89 + 80 = ${fmt(L90.errores.sumaLados.a2, 0)}`,'suma-entero','hipotesis']],
   fb:{ a:'¡Bien! cos 90° = 0: el término vale cero y la ley de cosenos se vuelve Pitágoras.',
-    b:'Elegiste la B. cos 90° vale 0, no 1 (el que vale 1 es sen 90°). El término desaparece y queda Pitágoras. La correcta está marcada.',
-    c:'Elegiste la C. El término depende del ángulo: 2bc·cos A. Al abrir A, cos A baja; en 90° llega a cero. La correcta está marcada.',
-    d:'Elegiste la D. En 90° el término no se suma ni se resta: vale cero, porque cos 90° = 0. Recién al pasar de 90° empieza a sumarse. La correcta está marcada.' } };
+    b:'cos 90° vale 0, no 1 (el que vale 1 es sen 90°). El término desaparece y queda Pitágoras.',
+    c:'El término depende del ángulo: 2bc·cos A. Al abrir A, cos A baja; en 90° llega a cero.',
+    d:'En 90° el término no se suma ni se resta: vale cero, porque cos 90° = 0. Recién al pasar de 90° empieza a sumarse.' } };
 const P_C120 = { id:'caso-ambiguo-paso7', ok:'d', opts:[
   ['a',`a² = ${fmt(L120.errores.signoCambiado.a2, 0)}: el término 40 se resta, como con 60°`,'TR24-signo','hipotesis'],
   ['b',`a² = ${fmt(L120.errores.sinTermino.a2, 0)}: con un ángulo obtuso ya no hay término`,'sin-termino-obtuso','hipotesis'],
   ['c',`a² ≈ ${fmt(L120.errores.conRadianes.a2, 1)}: cos 120 en la calculadora da 0,81`,'calculadora-en-radianes','hipotesis'],
   ['d',`a² = ${fmt(L120.a2, 0)}: cos 120° = −1/2 y el término se suma`]],
   fb:{ d:'¡Bien! cos 120° = −1/2, así que −2bc·cos A = +40: a² = 89 + 40 = 129 y a = √129 ≈ 11,4.',
-    a:'Elegiste la A. cos 120° es negativo, −1/2. El "menos" de la fórmula por un coseno negativo da "más": el término se suma. Restar daría un lado más corto que con 90°, y al abrir el ángulo el lado opuesto crece. La correcta está marcada.',
-    b:'Elegiste la B. El término sigue ahí: 2bc·cos 120° = −40. Lo que cambia es el signo: ahora se suma. La correcta está marcada.',
-    c:'Elegiste la C. La calculadora estaba en radianes y leyó 120 como 120 rad. En grados, cos 120° = −1/2. Revisa siempre que diga DEG. La correcta está marcada.' } };
+    a:'cos 120° es negativo, −1/2. El "menos" de la fórmula por un coseno negativo da "más": el término se suma. Restar daría un lado más corto que con 90°, y al abrir el ángulo el lado opuesto crece.',
+    b:'El término sigue ahí: 2bc·cos 120° = −40. Lo que cambia es el signo: ahora se suma.',
+    c:'La calculadora estaba en radianes y leyó 120 como 120 rad. En grados, cos 120° = −1/2. Revisa siempre que diga DEG.' } };
 
 function cfgCompas(o){ E.config(Object.assign({ modo:'compas', A:30, b:8, caja:CJ }, o)); }
 function cfgCos(o){ E.config(Object.assign({ modo:'cosenos', b:5, c:8, caja:CJC }, o)); }
@@ -1196,7 +1196,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

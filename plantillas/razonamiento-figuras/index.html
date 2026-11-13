@@ -105,7 +105,7 @@ canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .chips{display:flex; flex-wrap:wrap; gap:6px}
 .chip{font-size:.86rem; padding:4px 12px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); font-weight:700}
@@ -493,44 +493,44 @@ const P1 = { id:'rf-paso1-recta', ok:'b',
   opts:[['a', seg(D1.errores.soloPiezas), 'AR18-solo-piezas-simples', 'hipotesis'], ['b', seg(D1.total)],
         ['c', seg(D1.errores.conOrden), 'AR17-cuenta-con-orden', 'parcial'], ['d', seg(D1.errores.piezasYTotal), 'piezas-y-el-total', 'hipotesis']],
   fb:{ b:'¡Bien! Desde A salen 5 segmentos (AB, AC, AD, AE y AF), desde B 4 nuevos, desde C 3, desde D 2 y desde E 1: 5 + 4 + 3 + 2 + 1 = 15.',
-       a:'Elegiste la A. Esos son los 5 tramos que se ven sueltos, de un punto al siguiente. Pero AC también es un segmento: va de A a C y pasa por B. Faltan los de 2, 3, 4 y 5 tramos. La correcta está marcada.',
-       c:'Elegiste la C. Así contaste AB y también BA, que son el mismo segmento: cada uno quedó dos veces. La mitad de 30 es la respuesta. La correcta está marcada.',
-       d:'Elegiste la D. Los 5 tramos y el segmento entero AF sí cuentan, pero también AC, BD, CF y todos los que van de un punto a otro saltando puntos. La correcta está marcada.' } };
+       a:'Esos son los 5 tramos que se ven sueltos, de un punto al siguiente. Pero AC también es un segmento: va de A a C y pasa por B. Faltan los de 2, 3, 4 y 5 tramos.',
+       c:'Así contaste AB y también BA, que son el mismo segmento: cada uno quedó dos veces. La mitad de 30 es la respuesta.',
+       d:'Los 5 tramos y el segmento entero AF sí cuentan, pero también AC, BD, CF y todos los que van de un punto a otro saltando puntos.' } };
 const P2 = { id:'rf-paso2-abanico', ok:'c',
   opts:[['a', tri(D2.errores.soloPiezas), 'AR18-solo-piezas-simples', 'hipotesis'], ['b', tri(D2.errores.piezasYTotal), 'piezas-y-el-total', 'hipotesis'],
         ['c', tri(D2.total)], ['d', tri(D2.errores.dobleCuenta), 'cuenta-dos-veces', 'hipotesis']],
   fb:{ c:'¡Bien! 4 de una pieza, 3 de dos piezas, 2 de tres y 1 de cuatro: 4 + 3 + 2 + 1 = 10.',
-       a:'Elegiste la A. Esas son las 4 piezas que se ven sueltas. Dos piezas vecinas juntas también forman un triángulo con el vértice O, y lo mismo tres o cuatro. La correcta está marcada.',
-       b:'Elegiste la B. Contaste las 4 piezas y el triángulo grande, pero hay más en el medio: dos piezas vecinas juntas forman un triángulo, y tres también. La correcta está marcada.',
-       d:'Elegiste la D. Cada triángulo se cuenta una sola vez, aunque lo mires desde la izquierda o desde la derecha: queda fijo por sus dos puntos de la base. La correcta está marcada.' } };
+       a:'Esas son las 4 piezas que se ven sueltas. Dos piezas vecinas juntas también forman un triángulo con el vértice O, y lo mismo tres o cuatro.',
+       b:'Contaste las 4 piezas y el triángulo grande, pero hay más en el medio: dos piezas vecinas juntas forman un triángulo, y tres también.',
+       d:'Cada triángulo se cuenta una sola vez, aunque lo mires desde la izquierda o desde la derecha: queda fijo por sus dos puntos de la base.' } };
 const P4 = { id:'rf-paso4-diagonales', ok:'d',
   opts:[['a', tri(D4.errores.unaDiagonal), 'AR18-compuestas-incompletas', 'hipotesis'], ['b', tri(D4.errores.soloPiezas), 'AR18-solo-piezas-simples', 'hipotesis'],
         ['c', tri(D4.errores.compuestasDosVeces), 'compuestas-dos-veces', 'hipotesis'], ['d', tri(D4.total)]],
   fb:{ d:'¡Bien! 4 triángulos de una pieza alrededor del centro y 4 de dos piezas: cada diagonal parte el cuadrado en dos mitades, y son dos diagonales. 4 + 4 = 8.',
-       a:'Elegiste la A. Contaste las 4 piezas y las 2 mitades que deja una diagonal. La otra diagonal también parte el cuadrado en dos mitades: son 2 más. La correcta está marcada.',
-       b:'Elegiste la B. Esas son las 4 piezas que se ven sueltas. Dos piezas vecinas juntas forman un triángulo más grande, la mitad del cuadrado. La correcta está marcada.',
-       c:'Elegiste la C. Cada mitad del cuadrado se cuenta una sola vez. Hay 4 mitades (2 por cada diagonal), no 8. La correcta está marcada.' } };
+       a:'Contaste las 4 piezas y las 2 mitades que deja una diagonal. La otra diagonal también parte el cuadrado en dos mitades: son 2 más.',
+       b:'Esas son las 4 piezas que se ven sueltas. Dos piezas vecinas juntas forman un triángulo más grande, la mitad del cuadrado.',
+       c:'Cada mitad del cuadrado se cuenta una sola vez. Hay 4 mitades (2 por cada diagonal), no 8.' } };
 const P5 = { id:'rf-paso5-tablero', ok:'a',
   opts:[['a', cua(D5.total)], ['b', cua(D5.errores.soloPiezas), 'AR18-solo-piezas-simples', 'hipotesis'],
         ['c', cua(D5.errores.piezasYGrande), 'piezas-y-el-total', 'hipotesis'], ['d', cua(D5.errores.soloDiagonal), 'AR18-compuestas-incompletas', 'hipotesis']],
   fb:{ a:'¡Bien! 16 de 1 × 1, 9 de 2 × 2, 4 de 3 × 3 y 1 de 4 × 4: 16 + 9 + 4 + 1 = 30.',
-       b:'Elegiste la B. 4 × 4 = 16 son las casillas, los cuadrados de 1 × 1. Pero cuatro casillas juntas forman un cuadrado de 2 × 2, y también hay de 3 × 3 y el de 4 × 4. La correcta está marcada.',
-       c:'Elegiste la C. Las 16 casillas y el cuadrado grande, sí; pero en el medio hay cuadrados de 2 × 2 y de 3 × 3. La correcta está marcada.',
-       d:'Elegiste la D. Contaste los cuadrados grandes solo a lo largo de una diagonal (3 de 2 × 2, 2 de 3 × 3 y el de 4 × 4). Un cuadrado de 2 × 2 cabe también fuera de esa diagonal: en 3 posiciones por fila y 3 por columna, 3 · 3 = 9. La correcta está marcada.' } };
+       b:'4 × 4 = 16 son las casillas, los cuadrados de 1 × 1. Pero cuatro casillas juntas forman un cuadrado de 2 × 2, y también hay de 3 × 3 y el de 4 × 4.',
+       c:'Las 16 casillas y el cuadrado grande, sí; pero en el medio hay cuadrados de 2 × 2 y de 3 × 3.',
+       d:'Contaste los cuadrados grandes solo a lo largo de una diagonal (3 de 2 × 2, 2 de 3 × 3 y el de 4 × 4). Un cuadrado de 2 × 2 cabe también fuera de esa diagonal: en 3 posiciones por fila y 3 por columna, 3 · 3 = 9.' } };
 const P6 = { id:'rf-paso6-tira', ok:'c',
   opts:[['a', rec(D6.errores.soloPiezas), 'AR18-solo-piezas-simples', 'hipotesis'], ['b', rec(D6.errores.soloFilas), 'compuestas-incompletas', 'hipotesis'],
         ['c', rec(D6.total)], ['d', rec(D6.errores.suma), 'suma-en-vez-de-producto', 'hipotesis']],
   fb:{ c:'¡Bien! Un rectángulo queda fijo al elegir 2 de las 3 rectas horizontales (3 maneras) y 2 de las 4 verticales (6 maneras): 3 · 6 = 18.',
-       a:'Elegiste la A. Esos son los 6 cuadritos sueltos. Dos o más cuadritos juntos que forman un rectángulo también cuentan. La correcta está marcada.',
-       b:'Elegiste la B. Contaste los rectángulos de cada fila (6 arriba y 6 abajo), pero faltan los que ocupan las dos filas a la vez, como una columna de 2 × 1 o el cuadrado de 2 × 2: son 6 más. La correcta está marcada.',
-       d:'Elegiste la D. 3 maneras de elegir las horizontales y 6 de elegir las verticales, sí; pero cada elección de unas va con cada elección de las otras: se multiplica, 3 · 6. La correcta está marcada.' } };
+       a:'Esos son los 6 cuadritos sueltos. Dos o más cuadritos juntos que forman un rectángulo también cuentan.',
+       b:'Contaste los rectángulos de cada fila (6 arriba y 6 abajo), pero faltan los que ocupan las dos filas a la vez, como una columna de 2 × 1 o el cuadrado de 2 × 2: son 6 más.',
+       d:'3 maneras de elegir las horizontales y 6 de elegir las verticales, sí; pero cada elección de unas va con cada elección de las otras: se multiplica, 3 · 6.' } };
 const P7p = { id:'rf-paso7-pila', ok:'b',
   opts:[['a', cub(P7.errores.soloVisibles), 'GE13-solo-cubos-visibles', 'parcial'], ['b', cub(P7.total)],
         ['c', cub(P7.errores.carasVisibles), 'GE13-cuenta-caras-visibles', 'parcial'], ['d', cub(P7.errores.caja), 'cuenta-la-caja-entera', 'hipotesis']],
   fb:{ b:'¡Bien! Capa por capa: 9 abajo, 4 en el medio y 1 arriba. 9 + 4 + 1 = 14, aunque solo se vean 9.',
-       a:'Elegiste la A. Esos son los cubitos que asoman. Debajo de la capa del medio y del cubito de arriba hay cubitos que no se ven, pero están: sin ellos, la pila se caería. La correcta está marcada.',
-       c:'Elegiste la C. Contaste las caras que se ven: un cubito de la orilla muestra dos o tres caras y quedó contado varias veces, y los de adentro no se contaron. La correcta está marcada.',
-       d:'Elegiste la D. 3 × 3 × 3 sería un cubo lleno. La pila es una escalera: arriba de la capa de 3 × 3 hay una de 2 × 2, no otra de 3 × 3. La correcta está marcada.' } };
+       a:'Esos son los cubitos que asoman. Debajo de la capa del medio y del cubito de arriba hay cubitos que no se ven, pero están: sin ellos, la pila se caería.',
+       c:'Contaste las caras que se ven: un cubito de la orilla muestra dos o tres caras y quedó contado varias veces, y los de adentro no se contaron.',
+       d:'3 × 3 × 3 sería un cubo lleno. La pila es una escalera: arriba de la capa de 3 × 3 hay una de 2 × 2, no otra de 3 × 3.' } };
 
 // ---- Vistas de cada paso ----
 function cuentaDe(i, n, k){ return { t: `${i + 1} de ${n}`, k }; }
@@ -900,7 +900,7 @@ const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
 const R = crearReflector();
 const n0 = x => fmt(x);
 const tri = x => `${n0(x)} triángulos`, cua = x => `${n0(x)} cuadriláteros`, cdr = x => `${n0(x)} cuadrados`, cub = x => `${n0(x)} cubitos`;
-const NOTA_AR18 = 'Contar solo las piezas sueltas se parece a la enumeración sin sistema (AR18 del informe de aritmética y razonamiento), que según resúmenes fue el error más frecuente en un estudio de combinatoria con 720 alumnos españoles sin instrucción (Navarro-Pelayo, Batanero y Godino, 1996, según la tesis de Roa, 2000; cifra por confirmar). Ese estudio no tenía figuras; las demás opciones incorrectas son hipótesis nuestras.';
+const NOTA_AR18 = 'Contar solo las piezas sueltas se parece a la enumeración sin sistema (AR18 del informe de aritmética y razonamiento), que según resúmenes fue el error más frecuente en un estudio de combinatoria con 720 alumnos españoles sin instrucción (Navarro-Pelayo, Batanero y Godino, 1996, según la tesis de Roa, 2000; cifra por confirmar). ';
 const fuente = t => `<p class="fuente">${t}</p>`;
 
 const FA = M.abanico(3, 2), GA = M.armar(FA), E1 = M.triangulosAbanico(3, 2), LA = M.contar(FA, 'triangulos');
@@ -924,9 +924,9 @@ const EXPS = [
     opts:[['a', tri(E1.errores.unNivel), 'un-solo-nivel', 'hipotesis'], ['b', tri(E1.errores.soloPiezas), 'AR18-solo-piezas-simples', 'hipotesis'],
           ['c', tri(E1.total)], ['d', tri(E1.errores.unNivelYPiezas), 'un-nivel-y-piezas', 'hipotesis']],
     ok:'c',
-    fb:{ a:'Elegiste la A. Esos 6 son los triángulos que llegan a la base. La cuerda forma con los rayos otro abanico, más chico, con sus propios 6 triángulos. La correcta está marcada.',
-         b:'Elegiste la B. Esas son las 3 piezas triangulares de arriba. Las piezas juntas también forman triángulos, y la base forma los suyos. La correcta está marcada.',
-         d:'Elegiste la D. Contaste los 6 que llegan a la base y las 3 piezas de arriba, pero arriba también hay triángulos de dos y de tres piezas: el abanico chico tiene 6. La correcta está marcada.' },
+    fb:{ a:'Esos 6 son los triángulos que llegan a la base. La cuerda forma con los rayos otro abanico, más chico, con sus propios 6 triángulos.',
+         b:'Esas son las 3 piezas triangulares de arriba. Las piezas juntas también forman triángulos, y la base forma los suyos.',
+         d:'Contaste los 6 que llegan a la base y las 3 piezas de arriba, pero arriba también hay triángulos de dos y de tres piezas: el abanico chico tiene 6.' },
     lista:() => { R.lista = LA.lista; R.tipo = 'triangulos'; R.conK = false; },
     antes:() => ({ tipo:'plano', G:GA, rotulos:[{ P:FA.O, t:'O', dy:-16 }] }),
     despues:() => vistaLuz(GA, { rotulos:[{ P:FA.O, t:'O', dy:-16 }] }),
@@ -938,9 +938,9 @@ const EXPS = [
     opts:[['a', cua(E2.total)], ['b', cua(E2.errores.soloPiezas), 'AR18-solo-piezas-simples', 'hipotesis'],
           ['c', cua(E2.errores.comoTriangulos), 'como-los-triangulos', 'hipotesis'], ['d', cua(E2.errores.piezasYTotal), 'piezas-y-el-total', 'hipotesis']],
     ok:'a',
-    fb:{ b:'Elegiste la B. Esas son las 3 piezas de abajo, entre la cuerda y la base. Dos o tres piezas vecinas juntas también forman un cuadrilátero. La correcta está marcada.',
-         c:'Elegiste la C. Así se cuentan los triángulos, que salen de cada línea horizontal. Un cuadrilátero necesita dos líneas horizontales a la vez, y aquí hay un solo par: la cuerda y la base. La correcta está marcada.',
-         d:'Elegiste la D. Las 3 piezas y el trapecio grande, sí; pero también los de dos piezas vecinas: hay 2 más. La correcta está marcada.' },
+    fb:{ b:'Esas son las 3 piezas de abajo, entre la cuerda y la base. Dos o tres piezas vecinas juntas también forman un cuadrilátero.',
+         c:'Así se cuentan los triángulos, que salen de cada línea horizontal. Un cuadrilátero necesita dos líneas horizontales a la vez, y aquí hay un solo par: la cuerda y la base.',
+         d:'Las 3 piezas y el trapecio grande, sí; pero también los de dos piezas vecinas: hay 2 más.' },
     lista:() => { R.lista = LQ.lista; R.tipo = 'cuadrilateros'; R.conK = false; },
     antes:() => ({ tipo:'plano', G:GA, rotulos:[{ P:FA.O, t:'O', dy:-16 }] }),
     despues:() => vistaLuz(GA, { rotulos:[{ P:FA.O, t:'O', dy:-16 }] }),
@@ -952,9 +952,9 @@ const EXPS = [
     opts:[['a', cdr(E3.errores.soloPiezas), 'AR18-solo-piezas-simples', 'hipotesis'], ['b', cdr(E3.errores.comoCuadrada), 'como-cuadricula-cuadrada', 'hipotesis'],
           ['c', cdr(E3.errores.ladoLargo), 'con-el-lado-largo', 'hipotesis'], ['d', cdr(E3.total)]],
     ok:'d',
-    fb:{ a:'Elegiste la A. Esas son las 15 casillas. Cuatro casillas juntas forman un cuadrado de 2 × 2, y nueve, uno de 3 × 3. La correcta está marcada.',
-         b:'Elegiste la B. 1² + 2² + 3² vale para un tablero de 3 × 3. Este es más largo: cada cuadrado tiene más lugares hacia la derecha. La correcta está marcada.',
-         c:'Elegiste la C. Con el lado largo, 1² + … + 5² contaría cuadrados de 4 × 4 y 5 × 5, que no caben en 3 filas. La correcta está marcada.' },
+    fb:{ a:'Esas son las 15 casillas. Cuatro casillas juntas forman un cuadrado de 2 × 2, y nueve, uno de 3 × 3.',
+         b:'1² + 2² + 3² vale para un tablero de 3 × 3. Este es más largo: cada cuadrado tiene más lugares hacia la derecha.',
+         c:'Con el lado largo, 1² + … + 5² contaría cuadrados de 4 × 4 y 5 × 5, que no caben en 3 filas.' },
     lista:() => { R.lista = LT.lista; R.tipo = 'cuadrados'; R.conK = false; },
     antes:() => ({ tipo:'plano', G:GT, sinPuntos:true }),
     despues:() => vistaLuz(GT, { sinPuntos:true }),
@@ -966,9 +966,9 @@ const EXPS = [
     opts:[['a', cub(E4.errores.soloVisibles), 'GE13-solo-cubos-visibles', 'parcial'], ['b', cub(E4.errores.carasVisibles), 'GE13-cuenta-caras-visibles', 'parcial'],
           ['c', cub(E4.total)], ['d', cub(E4.errores.caja), 'cuenta-la-caja-entera', 'hipotesis']],
     ok:'c',
-    fb:{ a:'Elegiste la A. Esos son los cubitos que asoman. En la fila de atrás, debajo de cada escalón, hay cubitos tapados por la fila de adelante. La correcta está marcada.',
-         b:'Elegiste la B. Contaste caras: un cubito de la orilla muestra dos o tres caras y quedó contado varias veces, y los tapados no se contaron. La correcta está marcada.',
-         d:'Elegiste la D. 4 · 2 · 4 sería la caja entera. La escalera tiene columnas de 4, 3, 2 y 1 cubitos, no todas de 4. La correcta está marcada.' },
+    fb:{ a:'Esos son los cubitos que asoman. En la fila de atrás, debajo de cada escalón, hay cubitos tapados por la fila de adelante.',
+         b:'Contaste caras: un cubito de la orilla muestra dos o tres caras y quedó contado varias veces, y los tapados no se contaron.',
+         d:'4 · 2 · 4 sería la caja entera. La escalera tiene columnas de 4, 3, 2 y 1 cubitos, no todas de 4.' },
     antes:() => ({ tipo:'cubos', pila:E4, separar:0, colorear:false }),
     despues:() => ({ tipo:'cubos', pila:E4, separar:1, colorear:true, eje:'y' }),
     anima:() => animar(1300, f => { S.vista = { tipo:'cubos', pila:E4, separar:suave(f), colorear:true, eje:'y' }; }),
@@ -981,9 +981,9 @@ const EXPS = [
     opts:[['a', tri(E5.errores.piezasYTotal), 'piezas-y-el-total', 'hipotesis'], ['b', tri(E5.total)],
           ['c', tri(E5.errores.soloPiezas), 'AR18-solo-piezas-simples', 'hipotesis'], ['d', tri(E5.errores.dobleCuenta), 'cuenta-dos-veces', 'hipotesis']],
     ok:'b',
-    fb:{ a:'Elegiste la A. Las 3 piezas triangulares y el triángulo ABC, sí; pero hay 4 de dos piezas: ABD, ABE, ADC y BEC. La correcta está marcada.',
-         c:'Elegiste la C. Esas son las 3 piezas triangulares (ABP, AEP y BDP). Una pieza no triangular, como PDCE, junto con otra puede formar un triángulo. La correcta está marcada.',
-         d:'Elegiste la D. Cada triángulo se cuenta una vez: ABD es el mismo que DBA. La correcta está marcada.' },
+    fb:{ a:'Las 3 piezas triangulares y el triángulo ABC, sí; pero hay 4 de dos piezas: ABD, ABE, ADC y BEC.',
+         c:'Esas son las 3 piezas triangulares (ABP, AEP y BDP). Una pieza no triangular, como PDCE, junto con otra puede formar un triángulo.',
+         d:'Cada triángulo se cuenta una vez: ABD es el mismo que DBA.' },
     lista:() => { R.lista = LC.lista; R.tipo = 'triangulos'; R.conK = false; },
     antes:() => ({ tipo:'plano', G:GC, rotulos:rotC }),
     despues:() => vistaLuz(GC, { rotulos:rotC }),
@@ -1023,7 +1023,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el dibujo para ver por qué.' : (x.fb && x.fb[p]) || `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira el dibujo para ver por qué.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el dibujo para ver por qué.' : (x.fb && x.fb[p]) || `; mira el dibujo para ver por qué.`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = (x.lista ? htmlReflector('r2') : '') + x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     if (x.lista) R.montar($('r2'), () => S.k === k);

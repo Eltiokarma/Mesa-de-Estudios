@@ -124,7 +124,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 select{font:700 .95rem var(--font); padding:9px 12px; border-radius:12px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); min-height:44px; max-width:100%}
 .campo{display:grid; gap:4px; font-weight:700}
@@ -751,45 +751,45 @@ const P1 = { id:'balance-paso2', ok:'b', opts:[
   ['c', `Cambiar ${Fh(sO.formula)} por ${Fh(sO.cambiada)}: así queda 1 O a cada lado`, 'ES11-cambia-subindice-reactivo', 'parcial'],
   ['d', `Poner ${C_(SOLO.coefs[2])} delante del ${Fh('H2O')}: así quedan 2 O a cada lado`, 'ES12-un-solo-coeficiente', 'parcial']],
   fb:{ b:'¡Bien! Los coeficientes dicen cuántas moléculas hay; la fórmula de cada sustancia no se toca. Mira el tablero: aparecen una molécula de H₂ y una de H₂O más, y quedan 4 H y 2 O a cada lado.',
-    a:'Elegiste la 1. Los átomos cuadran, pero H₂O₂ ya no es agua: es agua oxigenada, otra sustancia (blanquea y no se toma). El subíndice dice cuántos átomos tiene una molécula; si lo cambias, cambias la molécula. Confundir subíndices con coeficientes está documentado: en otra pregunta, cerca del 40 % de 79 escolares argentinos juntó todos los átomos en una sola fórmula (Casado y Raviolo, 2005). Cambiar un subíndice para balancear no tiene un dato propio. La correcta está marcada.',
-    c:'Elegiste la 3. Así cuadran los átomos, pero el oxígeno del aire no viene en átomos sueltos: viene en moléculas de O₂. Cambiar el subíndice cambia la sustancia. Confundir subíndices con coeficientes está documentado: en otra pregunta, cerca del 40 % de 79 escolares argentinos juntó todos los átomos en una sola fórmula (Casado y Raviolo, 2005). Cambiar un subíndice para balancear no tiene un dato propio. La correcta está marcada.',
-    d:'Elegiste la 4. El O quedó bien, pero ahora hay 2 H a la izquierda y 4 a la derecha. Después de cada cambio hay que volver a contar todos los elementos. Balancear sin contar cada elemento a los dos lados aparece en un estudio con 32 escolares de Indonesia: cerca de 1 de cada 5 lo sostuvo con confianza alta (Christianto y otros, 2025). La correcta está marcada.' } };
+    a:'Los átomos cuadran, pero H₂O₂ ya no es agua: es agua oxigenada, otra sustancia (blanquea y no se toma). El subíndice dice cuántos átomos tiene una molécula; si lo cambias, cambias la molécula. Cambiar un subíndice para balancear no tiene un dato propio.',
+    c:'Así cuadran los átomos, pero el oxígeno del aire no viene en átomos sueltos: viene en moléculas de O₂. Cambiar el subíndice cambia la sustancia. Cambiar un subíndice para balancear no tiene un dato propio.',
+    d:'El O quedó bien, pero ahora hay 2 H a la izquierda y 4 a la derecha. Después de cada cambio hay que volver a contar todos los elementos. ' } };
 const P2 = { id:'balance-paso4', ok:'b', opts:[
   ['a', EQ(FR.errores.conSobrante), 'ES9-sobrante-en-la-ecuacion', 'documentado'],
   ['b', EQ(FR.ecuacion)],
   ['c', EQ(FR.errores.juntaTodo), 'ES11-junta-todo-en-una-formula', 'documentado'],
   ['d', EQ(FR.errores.conCantidades), 'ES9-cantidades-del-frasco', 'documentado']],
   fb:{ b:'¡Bien! La ecuación dice qué reacciona y en qué proporción: 2 moléculas de H₂ por cada una de O₂. Pasó dos veces, y una molécula de H₂ no encontró pareja. Mira cómo se reacomodan los átomos.',
-    a:'Elegiste la 1. Esa ecuación copia el frasco, pero dice que se forma H₂, y el H₂ que sobra no se formó: estaba desde el principio y no reaccionó. Lo que sobra es un dato del problema, no de la ecuación. Con 42 universitarios argentinos, cerca del 79 % eligió escribir lo que sobra dentro de la ecuación (Raviolo y Lerzo, 2016). La correcta está marcada.',
-    c:'Elegiste la 3. En el frasco no se formó una molécula gigante H₁₀O₄: se formaron moléculas de agua. Juntar todos los átomos en una sola fórmula es confundir subíndices con coeficientes. En un estudio con 79 escolares argentinos, cerca del 40 % eligió una opción así (Casado y Raviolo, 2005). La correcta está marcada.',
-    d:'Elegiste la 4. Esa ecuación usa las cantidades del frasco y no está balanceada: tiene 10 H a la izquierda y 8 a la derecha. En un problema numérico, el 17 % de 42 universitarios escribió la ecuación con las cantidades del enunciado (Raviolo y Lerzo, 2016). La correcta está marcada.' } };
+    a:'Esa ecuación copia el frasco, pero dice que se forma H₂, y el H₂ que sobra no se formó: estaba desde el principio y no reaccionó. Lo que sobra es un dato del problema, no de la ecuación. ',
+    c:'En el frasco no se formó una molécula gigante H₁₀O₄: se formaron moléculas de agua. Juntar todos los átomos en una sola fórmula es confundir subíndices con coeficientes. ',
+    d:'Esa ecuación usa las cantidades del frasco y no está balanceada: tiene 10 H a la izquierda y 8 a la derecha. ' } };
 const P3 = { id:'balance-paso6', ok:'b', opts:[
   ['a', String(BP.errores.olvida.O.suma), 'ES12-olvida-el-oxigeno', 'parcial'],
   ['b', String(BP.suma)],
   ['c', String(BP.errores.sinContarUnos), 'suma-sin-contar-el-1', 'hipotesis'],
   ['d', String(BP.errores.doble), 'no-simplifica', 'hipotesis']],
   fb:{ b:`¡Bien! 1 + 5 + 3 + 4 = ${BP.suma}. Mira el tablero: primero el C, después el H y al final el O.`,
-    a:`Elegiste la 1. Salió de balancear el C y el H y no volver a contar el O: con ${txtEc(BP.errores.olvida.O.ecuacion)} hay 2 O a la izquierda y 10 a la derecha. Balancear sin contar cada elemento aparece en un estudio con 32 escolares de Indonesia: cerca de 1 de cada 5 lo sostuvo con confianza alta (Christianto y otros, 2025). La correcta está marcada.`,
-    c:`Elegiste la 3. El coeficiente del C₃H₈ es 1: no se escribe, pero sí se suma. ${BP.suma} − 1 = ${BP.errores.sinContarUnos}. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
-    d:`Elegiste la 4. 2, 10, 6 y 8 también balancean, pero no son los menores enteros: todos se dividen entre 2. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
+    a:`Salió de balancear el C y el H y no volver a contar el O: con ${txtEc(BP.errores.olvida.O.ecuacion)} hay 2 O a la izquierda y 10 a la derecha. `,
+    c:`El coeficiente del C₃H₈ es 1: no se escribe, pero sí se suma. ${BP.suma} − 1 = ${BP.errores.sinContarUnos}.`,
+    d:`2, 10, 6 y 8 también balancean, pero no son los menores enteros: todos se dividen entre 2.` } };
 const P4 = { id:'balance-paso7', ok:'b', opts:[
   ['a', `Se oxida el ${Fh('Zn')} y el agente oxidante es el ${Fh('Zn')}: el que se oxida es el oxidante`, 'agente-es-el-que-se-oxida', 'hipotesis'],
   ['b', `Se oxida el ${Fh('Zn')} y el agente oxidante es el ${Fh(RX.agenteOxidante[0])}: su cobre le quita 2 electrones al Zn`],
   ['c', `Se oxida el ${Fh(RX.errores.alReves.seOxida[0])} y el agente oxidante es el ${Fh(RX.errores.alReves.agenteOxidante[0])}: el Cu gana 2 electrones`, 'EC9-definiciones-al-reves', 'parcial'],
   ['d', 'No se oxida nadie y no hay agente oxidante: ningún elemento gana ni pierde oxígeno', 'EC9-oxidar-es-ganar-oxigeno', 'documentado']],
   fb:{ b:'¡Bien! El Zn pasa de 0 a +2: pierde 2 electrones, se oxida y es el agente reductor. El cobre pasa de +2 a 0: gana esos 2 electrones, se reduce, y el CuCl₂ que lo trae es el agente oxidante. Mira las fichas.',
-    a:'Elegiste la 1. El Zn sí se oxida, pero por eso es el agente reductor: el agente oxidante es el que oxida al otro, y para eso se reduce él. Confundir el que se oxida con el agente oxidante es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.',
-    c:'Elegiste la 3. Oxidarse es perder electrones y reducirse es ganarlos. El Cu gana 2 electrones: se reduce. Hay alumnos que leen "reducir" como "perder", porque en el lenguaje diario reducir es disminuir; en São Paulo se encontró en varios estudiantes, sin porcentaje (Caramel y Pacca, 2011). La correcta está marcada.',
-    d:'Elegiste la 4. Oxidar no es ganar oxígeno: es perder electrones. Aquí no hay oxígeno y el Zn igual pasa de 0 a +2. Un estudio con 59 escolares turcos de 11.º grado, después de la enseñanza, encontró que cerca del 12 % sostenía que oxidar es agregar oxígeno (Şen y otros, 2016). La correcta está marcada.' } };
+    a:'El Zn sí se oxida, pero por eso es el agente reductor: el agente oxidante es el que oxida al otro, y para eso se reduce él. ',
+    c:'Oxidarse es perder electrones y reducirse es ganarlos. El Cu gana 2 electrones: se reduce. ',
+    d:'Oxidar no es ganar oxígeno: es perder electrones. Aquí no hay oxígeno y el Zn igual pasa de 0 a +2. Un estudio con 59 escolares turcos de 11.º grado, después de la enseñanza, encontró que cerca del 12 % sostenía que oxidar es agregar oxígeno (Şen y otros, 2016).' } };
 const P5 = { id:'balance-paso8', ok:'c', opts:[
   ['a', `${E_(SEMI.errores.numeroOxidacion + ' e⁻')} a la izquierda: el Mn tiene +7`, 'redox-electrones-numero-de-oxidacion', 'hipotesis'],
   ['b', `${E_(SEMI.electrones + ' e⁻')} a la derecha: el Mn pierde 5`, 'redox-electrones-lado-equivocado', 'hipotesis'],
   ['c', `${E_(SEMI.electrones + ' e⁻')} a la izquierda: el Mn gana 5`],
   ['d', `${E_(SEMI.errores.cargaDelIon + ' e⁻')} a la izquierda: la carga pasa de −1 a +2`, 'redox-carga-sin-los-H', 'hipotesis']],
   fb:{ c:'¡Bien! A la izquierda la carga es −1 + 8 = +7; a la derecha, +2. Con 5 e⁻ a la izquierda queda +2 a cada lado. Y el Mn pasa de +7 a +2: gana 5 electrones, se reduce. Mira la carga en la cuenta.',
-    a:'Elegiste la 1. +7 es el número de oxidación del Mn, pero no todos esos electrones se ganan: el Mn llega a +2, así que gana 7 − 2 = 5. Con 7 e⁻ la carga quedaría 0 contra +2. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.',
-    b:'Elegiste la 2. El número es el correcto, pero el lado no: el Mn baja de +7 a +2, así que gana electrones y van a la izquierda, con los reactivos. Con 5 e⁻ a la derecha la carga queda +7 contra −3. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.',
-    d:'Elegiste la 4. −1 y +2 son las cargas de los iones, pero los 8 H⁺ también tienen carga: la izquierda suma +7, no −1. Primero se igualan los átomos y después se cuenta la carga de todo. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
+    a:'+7 es el número de oxidación del Mn, pero no todos esos electrones se ganan: el Mn llega a +2, así que gana 7 − 2 = 5. Con 7 e⁻ la carga quedaría 0 contra +2.',
+    b:'El número es el correcto, pero el lado no: el Mn baja de +7 a +2, así que gana electrones y van a la izquierda, con los reactivos. Con 5 e⁻ a la derecha la carga queda +7 contra −3.',
+    d:'−1 y +2 son las cargas de los iones, pero los 8 H⁺ también tienen carga: la izquierda suma +7, no −1. Primero se igualan los átomos y después se cuenta la carga de todo.' } };
 
 // Vistas de cada paso (r: true si ya respondió; false si está por responder).
 const vAgua = (coefs, r, alpha) => tablero(AGUA, coefs, { aparte: r ? { de:'H2O', a:'H2O2' } : null });
@@ -971,9 +971,9 @@ const EXPS = [
           ['c', String(BN.coefs[1])],
           ['d', String(BN.coefs[1]*2), 'cuenta-atomos-no-moleculas', 'hipotesis']],
     ok:'c',
-    fb:{ a:`Salió de poner 2 delante del NH₃ para igualar el N y no volver a contar el H: con ${txtEc(SOLO_N.ecuacion)} hay 2 H a la izquierda y 6 a la derecha. Balancear sin contar cada elemento aparece en un estudio con 32 escolares de Indonesia: cerca de 1 de cada 5 lo sostuvo con confianza alta (Christianto y otros, 2025).`,
-      b:'2 es el subíndice del H₂ (cuántos átomos tiene una molécula), no cuántas moléculas hacen falta. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      d:'6 son los átomos de H que hacen falta, pero cada molécula de H₂ trae 2: son 3 moléculas. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    fb:{ a:`Salió de poner 2 delante del NH₃ para igualar el N y no volver a contar el H: con ${txtEc(SOLO_N.ecuacion)} hay 2 H a la izquierda y 6 a la derecha. `,
+      b:'2 es el subíndice del H₂ (cuántos átomos tiene una molécula), no cuántas moléculas hacen falta.',
+      d:'6 son los átomos de H que hacen falta, pero cada molécula de H₂ trae 2: son 3 moléculas.' },
     antes:() => tablero(AMO, [1, 1, 1]), despues:() => tablero(X.ec, X.coefs),
     exp:() => `<div class="eqs"><div class="eq"><span class="ex">${EQ(BN.ecuacion)}</span><span class="note">${Fh('N')}: 2 → ${C_(2)} × 1 = 2 · ${Fh('H')}: ${C_(3)} × 2 = 6 → ${C_(2)} × 3 = 6.</span></div></div>
       <p>Ahora el tablero es tuyo. Elige una reacción, sube y baja los ${C_('coeficientes')} y mira la cuenta de abajo. Las fórmulas no se tocan.</p>
@@ -989,8 +989,8 @@ const EXPS = [
           ['c', `El cerrado ${fmt2(CONS.cerrado)} g y el abierto ${fmt2(CONS.abierto)} g: el gas se escapa del abierto`],
           ['d', `El cerrado ${fmt2(CONS.errores.gana)} g y el abierto ${fmt2(CONS.cerrado)} g: el gas nuevo agrega masa`, 'ES13-la-masa-sube', 'parcial']],
     ok:'c',
-    fb:{ a:`El gas sí pesa: en el frasco cerrado el H₂ se queda adentro y la balanza sigue en ${fmt2(CONS.cerrado)} g. Solo el 38 % de 79 escolares argentinos aceptó que la masa se conserva en un recipiente cerrado (Casado y Raviolo, 2005).`,
-      b:`La masa se conserva, pero hay que contarla toda: en el frasco abierto el H₂ sale al aire y la balanza ya no lo pesa. Marca ${fmt2(CONS.masaGas)} g menos. Esta opción es una hipótesis nuestra, sin estudio que la mida.`,
+    fb:{ a:`El gas sí pesa: en el frasco cerrado el H₂ se queda adentro y la balanza sigue en ${fmt2(CONS.cerrado)} g. `,
+      b:`La masa se conserva, pero hay que contarla toda: en el frasco abierto el H₂ sale al aire y la balanza ya no lo pesa. Marca ${fmt2(CONS.masaGas)} g menos.`,
       d:'Ningún átomo nuevo entra al frasco: el gas se forma con los átomos que ya estaban. La masa no sube. La idea contraria a la conservación está documentada (ES13), pero esta forma de verla no tiene un dato propio.' },
     antes:() => ({ tipo:'conserv', r:CONS, fase:'antes' }), despues:p => ({ tipo:'conserv', r:CONS, fase:'despues', p }), anima:true,
     exp:() => `<div class="eqs"><div class="eq"><span class="ex">${EQ('Zn + 2HCl -> ZnCl2 + H2')}</span></div>
@@ -1004,9 +1004,9 @@ const EXPS = [
           ['c', 'Doble desplazamiento: hay dos productos', 'doble-desplazamiento-por-dos-productos', 'hipotesis'],
           ['d', 'Descomposición: una sola sustancia da dos']],
     ok:'d',
-    fb:{ a:'En una combustión algo arde con el O₂: el O₂ es reactivo y salen CO₂ y H₂O. Aquí el O₂ es un producto. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      b:'En una adición dos o más reactivos se juntan en un solo producto. Aquí pasa lo contrario: un solo reactivo se parte en dos. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      c:'En un doble desplazamiento dos compuestos intercambian sus partes: hacen falta dos reactivos. Aquí hay uno solo. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    fb:{ a:'En una combustión algo arde con el O₂: el O₂ es reactivo y salen CO₂ y H₂O. Aquí el O₂ es un producto.',
+      b:'En una adición dos o más reactivos se juntan en un solo producto. Aquí pasa lo contrario: un solo reactivo se parte en dos.',
+      c:'En un doble desplazamiento dos compuestos intercambian sus partes: hacen falta dos reactivos. Aquí hay uno solo.' },
     antes:() => tablero(PER, BPER.coefs, { tapa:true }), despues:() => tablero(PER, BPER.coefs, { ox: oxDe(PER, ['O']) }),
     exp:() => `<div class="eqs"><div class="eq"><span class="ex">${EQ(BPER.ecuacion)} &nbsp;·&nbsp; ${TIPO.tipo}</span><span class="note">Se clasifica por la forma: adición (A + B → AB), descomposición (AB → A + B), desplazamiento simple (A + BC → AC + B), doble desplazamiento (AB + CD → AD + CB) y combustión (algo con C y H arde con O₂ y da CO₂ y H₂O).</span></div>
       <div class="eq"><span class="ex">${Fh('O')}: −1 en ${Fh('H2O2')} → −2 en ${Fh('H2O')} y 0 en ${Fh('O2')}</span><span class="note">Además es redox: unos O se reducen y otros se oxidan (en la academia se llama dismutación o desproporción). Mira los números sobre los átomos.</span></div></div>
@@ -1018,9 +1018,9 @@ const EXPS = [
           ['c', EQ(BAS.errores.sinElectrones.texto), 'ion-electron-sin-igualar-carga', 'hipotesis'],
           ['d', EQ(BAS.errores.electronesAlReves.texto), 'ion-electron-electrones-al-reves', 'hipotesis']],
     ok:'b',
-    fb:{ a:'Átomos y carga cuadran, pero en medio básico casi no hay H⁺: hay OH⁻. Esta es la de medio ácido. Esta opción es una hipótesis nuestra, de la lista de errores sin respaldo del informe.',
-      c:`Los átomos cuadran, pero la carga no: ${conSigno(BAS.errores.sinElectrones.cargaIzq)} a la izquierda y ${conSigno(BAS.errores.sinElectrones.cargaDer)} a la derecha. Faltan los electrones. Esta opción es una hipótesis nuestra, de la lista de errores sin respaldo del informe.`,
-      d:`El Mn baja de +7 a +4: gana electrones, y los electrones ganados van a la izquierda. Con ellos a la derecha la carga queda ${conSigno(BAS.errores.electronesAlReves.cargaIzq)} contra ${conSigno(BAS.errores.electronesAlReves.cargaDer)}. Esta opción es una hipótesis nuestra, de la lista de errores sin respaldo del informe.` },
+    fb:{ a:'Átomos y carga cuadran, pero en medio básico casi no hay H⁺: hay OH⁻. Esta es la de medio ácido.',
+      c:`Los átomos cuadran, pero la carga no: ${conSigno(BAS.errores.sinElectrones.cargaIzq)} a la izquierda y ${conSigno(BAS.errores.sinElectrones.cargaDer)} a la derecha. Faltan los electrones.`,
+      d:`El Mn baja de +7 a +4: gana electrones, y los electrones ganados van a la izquierda. Con ellos a la derecha la carga queda ${conSigno(BAS.errores.electronesAlReves.cargaIzq)} contra ${conSigno(BAS.errores.electronesAlReves.cargaDer)}.` },
     antes:() => vBas(false), despues:p => vBas(true, Math.round((p === undefined ? 1 : p)*BAS.electrones)), anima:true,
     exp:() => `<div class="eqs"><div class="eq"><span class="ex">${EQ(BAS.texto)}</span><span class="note">Sobran 2 O a la izquierda: por cada O que sobra va 1 H₂O del mismo lado y 2 OH⁻ del otro. Después, la carga: −1 a la izquierda y −4 a la derecha; con 3 e⁻ a la izquierda queda −4 a cada lado.</span></div>
       <div class="eq"><span class="ex">${Fh('Mn')}: +7 → +4 &nbsp;(gana ${E_(BAS.electrones + ' e⁻')}: se reduce)</span></div></div>
@@ -1032,9 +1032,9 @@ const EXPS = [
           ['c', String(DIC.errores.sinContarUnos), 'suma-sin-contar-el-1', 'hipotesis'],
           ['d', String(DIC.suma)]],
     ok:'d',
-    fb:{ a:`Salió de sumar las dos semirreacciones sin igualar los electrones: el Cr₂O₇²⁻ gana ${DIC.reduccion.electrones} y cada Fe²⁺ pierde 1, así que hacen falta ${DIC.factores[0]} Fe²⁺. Esta opción es una hipótesis nuestra, sin estudio que la mida.`,
-      b:`Salió de contar ${DIC.reduccion.electronesPorAtomo} electrones (los de un Cr) y no ${DIC.reduccion.electrones} (los de los 2 Cr del Cr₂O₇²⁻). Esta opción es una hipótesis nuestra, sin estudio que la mida.`,
-      c:`El coeficiente del Cr₂O₇²⁻ es 1: no se escribe, pero sí se suma. Esta opción es una hipótesis nuestra, sin estudio que la mida.` },
+    fb:{ a:`Salió de sumar las dos semirreacciones sin igualar los electrones: el Cr₂O₇²⁻ gana ${DIC.reduccion.electrones} y cada Fe²⁺ pierde 1, así que hacen falta ${DIC.factores[0]} Fe²⁺.`,
+      b:`Salió de contar ${DIC.reduccion.electronesPorAtomo} electrones (los de un Cr) y no ${DIC.reduccion.electrones} (los de los 2 Cr del Cr₂O₇²⁻).`,
+      c:`El coeficiente del Cr₂O₇²⁻ es 1: no se escribe, pero sí se suma.` },
     antes:() => vDic(false), despues:() => vDic(true),
     exp:() => `<div class="eqs"><div class="eq"><span class="ex">Reducción: ${EQ(DIC.reduccion.texto)}</span><span class="note">Primero el Cr (2 a cada lado), después 7 H₂O y 14 H⁺; la carga pasa de +12 a +6: 6 e⁻, 3 por cada Cr.</span></div>
       <div class="eq"><span class="ex">Oxidación: ${EQ(DIC.oxidacion.texto)} &nbsp; × ${C_(DIC.factores[0])}</span></div>
@@ -1103,7 +1103,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el dibujo y la cuenta para ver por qué.' : `Elegiste la ${'abcd'.indexOf(p) + 1}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el dibujo y la cuenta para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     explicar();
   };

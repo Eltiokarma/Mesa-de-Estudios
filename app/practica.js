@@ -182,7 +182,7 @@ async function vista(ctx, id) {
       document.getElementById('retro').innerHTML = `
         <div class="retro ${nose ? 'nose' : a.correcta ? 'bien' : 'malo'}">
           <b>${nose ? `Gracias por decirlo. La respuesta es la ${correcta.letra}: ${esc(correcta.texto)}.`
-            : a.correcta ? `¡Bien! Es la ${correcta.letra}.` : `Elegiste la ${a.letra}. La correcta es la ${correcta.letra}: ${esc(correcta.texto)}.`}</b>
+            : a.correcta ? `¡Bien! Es la ${correcta.letra}.` : `La respuesta es la ${correcta.letra}: ${esc(correcta.texto)}.`}</b>
           ${nose ? '<p>Mira la solución paso a paso y prueba con el siguiente.</p>' : a.correcta ? '' : `<p>${esc(a.error.explicacion)}</p>`}
         </div>`;
       document.getElementById('sol').innerHTML = `
@@ -357,7 +357,7 @@ async function vista(ctx, id) {
       const titulo = nose ? `Es ${nb(correcta.texto)}.`
         : acierto ? `¡Bien! Es ${nb(correcta.texto)}.`
           : arrastra ? `Marcaste ${nb(cm.texto(valor))}; es ${nb(correcta.texto)}.`
-            : `Elegiste la ${a.letra}; es la ${correcta.letra}: ${nb(correcta.texto)}.`;
+            : `Es la ${correcta.letra}: ${nb(correcta.texto)}.`;
       const detalle = nose ? 'Mira cómo se llega, paso a paso.' : acierto ? '' : a && a.error ? a.error.explicacion : 'Recorre los pasos sobre la barra.';
       $('#retro').innerHTML = `<div class="retro ${nose ? 'nose' : acierto ? 'bien' : 'malo'}"><b>${titulo}</b>${detalle ? `<p>${esc(detalle)}</p>` : ''}</div>`;
       // La figura deja de ser un control: pasa a ser la imagen de la solución.

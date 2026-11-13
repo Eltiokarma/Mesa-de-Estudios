@@ -116,7 +116,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -517,7 +517,7 @@ const K4 = MP.aCartesianas({ r:4, theta:150 });
 const P5 = MP.aPolares({ x:-2, y:-2 });
 const T6 = MP.rectaTheta({ k:60 });
 const C7 = MP.circuloEje({ a:4, f:'cos' }), CE7 = MP.cartesianaEje({ a:4, f:'cos' });
-const hipT = 'Buscamos estos errores en estudios publicados sobre coordenadas polares y no encontramos datos: estas opciones son hipótesis nuestras, armadas con errores que creemos frecuentes, y se confirman con lo que marquen los alumnos.';
+const hipT = '';
 const hip = `<p class="fuente">${hipT}</p>`;
 const G1 = { id:'coordenadas-polares-paso1', ok:'c', opts:[
   ['a', C1.errores.cociente.texto, 'CP1-cuadrante-por-cociente', 'hipotesis'],
@@ -525,63 +525,63 @@ const G1 = { id:'coordenadas-polares-paso1', ok:'c', opts:[
   ['c', C1.texto],
   ['d', C1.errores.referencia.texto, 'CP2-reduce-al-primero', 'hipotesis']],
   fb:{ c:'¡Bien! 210° pasa los 180° y no llega a 270°: el barco está abajo a la izquierda, en el III cuadrante.',
-    a:'Elegiste la A. 210 ÷ 90 da 2 y algo: ya se pasaron dos cuadrantes completos y el barco está en el tercero. La correcta está marcada.',
-    b:'Elegiste la B. El ángulo se gira desde el eje polar, la semirrecta horizontal hacia la derecha, no desde la vertical. La correcta está marcada.',
-    d:'Elegiste la D. 30° es el ángulo con el eje horizontal, pero el barco no está en el I cuadrante: se giraron 210° completos. La correcta está marcada.' } };
+    a:'210 ÷ 90 da 2 y algo: ya se pasaron dos cuadrantes completos y el barco está en el tercero.',
+    b:'El ángulo se gira desde el eje polar, la semirrecta horizontal hacia la derecha, no desde la vertical.',
+    d:'30° es el ángulo con el eje horizontal, pero el barco no está en el I cuadrante: se giraron 210° completos.' } };
 const G2 = { id:'coordenadas-polares-paso2', ok:'b', opts:[
   ['a', N2.errores.reflejaY.texto, 'CP5-refleja-en-el-eje-y', 'hipotesis'],
   ['b', N2.texto],
   ['c', N2.errores.ignoraSigno.texto, 'CP3-ignora-el-signo-de-r', 'parcial'],
   ['d', N2.errores.reflejaX.texto, 'CP4-refleja-en-el-eje-x', 'hipotesis']],
   fb:{ b:'¡Bien! Se mira hacia 30° y se caminan 2 hacia atrás: se cruza el polo y se llega al lado opuesto, a 30° + 180° = 210°.',
-    a:'Elegiste la A. (2; 150°) es el reflejo de (2; 30°) en el eje vertical. Con r negativo no se refleja: se camina hacia atrás, pasando por el polo. La correcta está marcada.',
-    c:'Elegiste la C. (2; 30°) deja el signo de lado. El signo de r dice hacia qué lado se camina: con −2 se camina hacia atrás. La correcta está marcada.',
-    d:'Elegiste la D. (2; 330°) es el reflejo de (2; 30°) en el eje horizontal. Con r negativo no se refleja: se camina hacia atrás, pasando por el polo. La correcta está marcada.' } };
+    a:'(2; 150°) es el reflejo de (2; 30°) en el eje vertical. Con r negativo no se refleja: se camina hacia atrás, pasando por el polo.',
+    c:'(2; 30°) deja el signo de lado. El signo de r dice hacia qué lado se camina: con −2 se camina hacia atrás.',
+    d:'(2; 330°) es el reflejo de (2; 30°) en el eje horizontal. Con r negativo no se refleja: se camina hacia atrás, pasando por el polo.' } };
 const G3 = { id:'coordenadas-polares-paso3', ok:'d', opts:[
   ['a', Q3.errores.mismoAngulo.texto, 'CP7-deja-el-angulo', 'hipotesis'],
   ['b', Q3.errores.anguloOpuesto.texto, 'CP8-cambia-el-signo-del-angulo', 'hipotesis'],
   ['c', Q3.errores.suma90.texto, 'CP6-suma-90', 'hipotesis'],
   ['d', Q3.texto]],
   fb:{ d:'¡Bien! Para llegar al punto caminando hacia atrás hay que mirar al lado contrario: 60° + 180° = 240°.',
-    a:'Elegiste la A. Desde 60°, caminar 3 hacia atrás lleva al punto opuesto, en el III cuadrante. Hay que mirar al lado contrario. La correcta está marcada.',
-    b:'Elegiste la B. 300° = −60°. Mirando hacia 300° y caminando hacia atrás se llega a (3; 120°), no a (3; 60°). La correcta está marcada.',
-    c:'Elegiste la C. Sumar 90° es girar un cuarto de vuelta: el lado contrario está a media vuelta, 180°. La correcta está marcada.' } };
+    a:'Desde 60°, caminar 3 hacia atrás lleva al punto opuesto, en el III cuadrante. Hay que mirar al lado contrario.',
+    b:'300° = −60°. Mirando hacia 300° y caminando hacia atrás se llega a (3; 120°), no a (3; 60°).',
+    c:'Sumar 90° es girar un cuarto de vuelta: el lado contrario está a media vuelta, 180°.' } };
 const G4 = { id:'coordenadas-polares-paso4', ok:'a', opts:[
   ['a', K4.texto],
   ['b', K4.errores.cruza.texto, 'TR11-cruza-seno-y-coseno', 'parcial'],
   ['c', K4.errores.sinR.texto, 'CP14-olvida-r', 'hipotesis'],
   ['d', K4.errores.sinSigno.texto, 'TR12-sin-signo', 'parcial']],
   fb:{ a:'¡Bien! x = 4 cos 150° = 4 · (−√3/2) = −2√3 e y = 4 sen 150° = 4 · 1/2 = 2.',
-    b:'Elegiste la B. (2; −2√3) usa el seno para x y el coseno para y. La x es la sombra horizontal: x = r cos θ. La correcta está marcada.',
-    c:'Elegiste la C. (−√3/2; 1/2) son cos 150° y sen 150°: es el punto a distancia 1. El barco está a distancia 4. La correcta está marcada.',
-    d:'Elegiste la D. (2√3; 2) está en el I cuadrante, pero 150° está en el II, a la izquierda: ahí la x es negativa. La correcta está marcada.' } };
+    b:'(2; −2√3) usa el seno para x y el coseno para y. La x es la sombra horizontal: x = r cos θ.',
+    c:'(−√3/2; 1/2) son cos 150° y sen 150°: es el punto a distancia 1. El barco está a distancia 4.',
+    d:'(2√3; 2) está en el I cuadrante, pero 150° está en el II, a la izquierda: ahí la x es negativa.' } };
 const G5 = { id:'coordenadas-polares-paso5', ok:'c', opts:[
   ['a', P5.errores.arctanDirecto.texto, 'CP10-arctan-de-la-calculadora', 'hipotesis'],
   ['b', P5.errores.sumaPartes.texto, 'AL9-r-suma-partes', 'parcial'],
   ['c', P5.texto],
   ['d', P5.errores.sinRaiz.texto, 'CP13-sin-raiz', 'hipotesis']],
   fb:{ c:'¡Bien! r = √(4 + 4) = 2√2, y el punto (−2; −2) está en el III cuadrante: θ = 180° + 45° = 225°.',
-    a:'Elegiste la A. arctan((−2)/(−2)) = arctan 1 = 45° es lo que da la calculadora, pero 45° apunta al I cuadrante. El punto (−2; −2) está abajo a la izquierda. La correcta está marcada.',
-    b:'Elegiste la B. 4 = 2 + 2 sería ir por los dos catetos. La distancia en línea recta es la hipotenusa, más corta: √(4 + 4). La correcta está marcada.',
-    d:'Elegiste la D. 8 = 4 + 4 es r². La distancia es su raíz, 2√2. La correcta está marcada.' } };
+    a:'arctan((−2)/(−2)) = arctan 1 = 45° es lo que da la calculadora, pero 45° apunta al I cuadrante. El punto (−2; −2) está abajo a la izquierda.',
+    b:'4 = 2 + 2 sería ir por los dos catetos. La distancia en línea recta es la hipotenusa, más corta: √(4 + 4).',
+    d:'8 = 4 + 4 es r². La distancia es su raíz, 2√2.' } };
 const G6 = { id:'coordenadas-polares-paso6', ok:'a', frase:true, opts:[
   ['a', T6.texto],
   ['b', T6.errores.semirrecta.texto, 'CP25-semirrecta', 'hipotesis'],
   ['c', T6.errores.horizontal.texto, 'CP27-recta-horizontal', 'hipotesis'],
   ['d', T6.errores.circunferencia.texto, 'CP26-circunferencia', 'hipotesis']],
   fb:{ a:'¡Bien! Con r positivo se dibuja la mitad que mira hacia 60°; con r negativo, la otra mitad, hacia 240°. Juntas forman la recta completa.',
-    b:'Elegiste la B. La semirrecta sale solo con r ≥ 0. Aquí r también es negativo: esos puntos quedan del otro lado del polo. La correcta está marcada.',
-    c:'Elegiste la C. Todos los puntos están en la dirección de 60° o en la contraria, así que la figura pasa por el polo y está inclinada. La correcta está marcada.',
-    d:'Elegiste la D. Una circunferencia con centro en el polo es r = constante. Aquí lo constante es el ángulo. La correcta está marcada.' } };
+    b:'La semirrecta sale solo con r ≥ 0. Aquí r también es negativo: esos puntos quedan del otro lado del polo.',
+    c:'Todos los puntos están en la dirección de 60° o en la contraria, así que la figura pasa por el polo y está inclinada.',
+    d:'Una circunferencia con centro en el polo es r = constante. Aquí lo constante es el ángulo.' } };
 const G7 = { id:'coordenadas-polares-paso7', ok:'b', opts:[
   ['a', C7.errores.centroPolo.texto, 'CP15-centro-en-el-polo', 'hipotesis'],
   ['b', C7.texto],
   ['c', C7.errores.ejeCruzado.texto, 'CP17-cruza-coseno-y-seno', 'hipotesis'],
   ['d', C7.errores.centroEnA.texto, 'CP16-centro-en-a', 'hipotesis']],
   fb:{ b:'¡Bien! En θ = 0°, r = 4: el punto (4; 0). En θ = 90°, r = 0: el polo. Es la circunferencia de diámetro 4 entre el polo y (4; 0).',
-    a:'Elegiste la A. Con centro en el polo, r valdría siempre 4. Pero en θ = 90° r = 4 cos 90° = 0: la curva pasa por el polo. La correcta está marcada.',
-    c:'Elegiste la C. Con coseno, el punto más lejano está en θ = 0°, sobre el eje horizontal: (4; 0). El centro queda en ese eje. La correcta está marcada.',
-    d:'Elegiste la D. Si el radio fuera 4 y el centro (4; 0), la curva llegaría hasta x = 8. Pero r nunca pasa de 4. La correcta está marcada.' } };
+    a:'Con centro en el polo, r valdría siempre 4. Pero en θ = 90° r = 4 cos 90° = 0: la curva pasa por el polo.',
+    c:'Con coseno, el punto más lejano está en θ = 0°, sobre el eje horizontal: (4; 0). El centro queda en ese eje.',
+    d:'Si el radio fuera 4 y el centro (4; 0), la curva llegaría hasta x = 8. Pero r nunca pasa de 4.' } };
 
 /* ----- configuraciones del dibujo ----- */
 const BOXR = R => ({ x0:-R - .9, x1:R + .9, y0:-R - .9, y1:R + .9 });
@@ -938,7 +938,7 @@ const C2 = MP.circuloEje({ a:-6, f:'sen' });
 const K3 = MP.cartesianaEje({ a:10, f:'cos' });
 const R4 = MP.petalos({ a:2, n:3, f:'sen' });
 const R5 = MP.petalos({ a:3, n:2, f:'cos' });
-const hip = 'Buscamos estos errores en estudios publicados sobre coordenadas polares y no encontramos datos; estas opciones son hipótesis nuestras que se confirman con lo que marquen los alumnos.';
+const hip = '';
 const BOXR = R => ({ x0:-R - .9, x1:R + .9, y0:-R - .9, y1:R + .9 });
 
 // 1. Un punto sobre un eje
@@ -1102,7 +1102,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + `<div class="nav"><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     tramos($('res2'));

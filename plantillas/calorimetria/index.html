@@ -135,7 +135,7 @@ canvas.sin-scroll{touch-action:none}
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap:12px; align-items:end}
 .slider{display:grid; gap:4px}
@@ -650,7 +650,7 @@ function mostrarTitulo(t, modo){
 }
 const opcionesHTML = (opts, idfb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idfb}"></p>`;
 // Retroalimentación por opción: la correcta empieza con «¡Bien!»; cada incorrecta dice cuál eligió y cuál es la correcta.
-const textoFb = (g, p) => p === g.ok ? `¡Bien! ${g.fb[p]}` : `Elegiste la ${p.toUpperCase()}. ${g.fb[p]} La correcta es la ${g.ok.toUpperCase()}.`;
+const textoFb = (g, p) => p === g.ok ? `¡Bien! ${g.fb[p]}` : `${g.fb[p]} La correcta es la ${g.ok.toUpperCase()}.`;
 // En las pestañas nuevas los datos de color no resaltan nada en el dibujo: no son paradas del tabulador.
 const sinParada = el => el.querySelectorAll('.v').forEach(e => { e.removeAttribute('tabindex'); e.style.cursor = 'default'; });
 
@@ -794,9 +794,9 @@ const OPS = [['a', `${fmt(PM.errores['Q7-olvida-calor-latente'])} °C`], ['b', `
 const ERR = { a:['Q7-olvida-calor-latente', 'parcial'], c:['Q4-promedio-simple', 'hipotesis'], d:['Q8-no-revisa-si-alcanza', 'hipotesis'] };
 const FB = {
   b: '¡Bien! Sale 23 °C. Ahora veamos de dónde sale, tramo por tramo.',
-  a: 'Elegiste la A. 39 °C es lo que sale si olvidas que derretir el hielo cuesta calor (el calor latente): 4000 cal que entran sin que el hielo cambie de temperatura. La correcta es la B; mira la meseta que aparece en la gráfica.',
-  c: 'Elegiste la C. 20 °C es el promedio de −10 y 50, y el promedio no sirve: hay cuatro veces más agua que hielo, y además derretir el hielo cuesta calor. La correcta es la B.',
-  d: 'Elegiste la D. Quedaría hielo a 0 °C si al agua no le alcanzara el calor para derretirlo, pero aquí sí le alcanza; lo revisamos en el paso 6. La correcta es la B.',
+  a: '39 °C es lo que sale si olvidas que derretir el hielo cuesta calor (el calor latente): 4000 cal que entran sin que el hielo cambie de temperatura. La correcta es la B; mira la meseta que aparece en la gráfica.',
+  c: '20 °C es el promedio de −10 y 50, y el promedio no sirve: hay cuatro veces más agua que hielo, y además derretir el hielo cuesta calor. La correcta es la B.',
+  d: 'Quedaría hielo a 0 °C si al agua no le alcanzara el calor para derretirlo, pero aquí sí le alcanza; lo revisamos en el paso 6. La correcta es la B.',
 };
 const steps = [
  { k:'Paso 1', t:'El problema', est:{ q:0 },
@@ -1419,7 +1419,7 @@ const D1 = riel(24, 45), D1ref = riel(12, 45);
 const D2 = placa(1), D3 = M.agujero({ D0:5, alfa:MA.aluminio.alfa, dT:50 }), D4 = tira(120);
 const D5min = M.minimoFrasco({ m:1000, liquido:'agua', alfaFrasco:MA.cuarzo.alfa, T0:0, Tmax:10 });
 const mm = x => fmt(x*1000, 2);
-const hip = 'Las opciones incorrectas son hipótesis nuestras: no encontramos un estudio que mida estos errores.';
+const hip = '';
 
 const pasos = [
  { k:'Paso 1', t:'El riel y su junta',
@@ -1809,7 +1809,7 @@ const T3 = M.serie(SERIE);
 const NOCHE = { desp:M.perdidaNocturna({ Tsuelo:283, Tcielo:233, e:1 }), nub:M.perdidaNocturna({ Tsuelo:283, Tcielo:263, e:1 }) };
 const T6 = M.razonRadiacion(27, 327);
 const VENTANA = M.conduccion({ k:MA.vidrio.k, A:1.5, ell:0.005, T1:20, T2:5 });
-const hip = 'Las opciones incorrectas son hipótesis nuestras: no encontramos un estudio que mida estos errores.';
+const hip = '';
 const MATS = [['cobre','Cobre'], ['aluminio','Aluminio'], ['laton','Latón'], ['acero','Acero'], ['vidrio','Vidrio']];
 const E4 = { m1:'cobre', m2:'acero', l1:0.2, T1:100, T2:0 };
 const LARGO = 0.4, A_EX = 1e-4;

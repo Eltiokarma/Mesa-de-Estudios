@@ -118,7 +118,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .frac > span{white-space:nowrap}
 .aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
 .msg{margin:0; font-weight:700; min-height:1.5em}
-.msg.mal{color:var(--warn)} .msg.ok{color:var(--ok)}
+.msg.mal{color:inherit} .msg.ok{color:var(--ok)}
 
 .opts{display:grid; grid-template-columns:1fr; gap:8px}
 @media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
@@ -133,7 +133,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -805,45 +805,45 @@ const G1 = { id:'arreglos-paso1', ok:'c', opts:[
   ['c', `${C1.centro}: el único que deja iguales las cuatro líneas que pasan por el centro`],
   ['d', 'Cualquiera: después se acomodan los demás números alrededor', 'magico-cualquiera-al-centro', 'hipotesis']],
   fb:{ c:`¡Bien! Las tres filas usan cada número una vez: cada línea suma ${K_('45 ÷ 3 = 15')}. Por el centro pasan cuatro líneas, que juntas suman 4 · 15 = 60: son los nueve números (45) más el del centro, contado tres veces de más. Centro: (60 − 45) ÷ 3 = ${c_(String(C1.centro))}.`,
-    a:'Elegiste la A. Es cierto que el centro está en cuatro líneas, más que cualquier otra casilla, pero justo por eso no puede ser el mayor: con el 9 al centro, la línea que pasa por el 9 y el 8 ya suma 17 sin su tercer número, y cada línea debe sumar 45 ÷ 3 = 15. La correcta está marcada.',
-    b:'Elegiste la B. Con el 1 al centro, la línea que pasa por el 1 y el 2 suma a lo más 1 + 2 + 9 = 12 y no llega a 15, lo que debe sumar cada línea (45 ÷ 3). La correcta está marcada.',
-    d:`Elegiste la D. No cualquiera sirve: el motor probó todas las formas de llenar las casillas y encontró ${C1.cuantas} cuadrados mágicos, y en todos el centro es el ${C1.centro}. La correcta está marcada.` } };
+    a:'Es cierto que el centro está en cuatro líneas, más que cualquier otra casilla, pero justo por eso no puede ser el mayor: con el 9 al centro, la línea que pasa por el 9 y el 8 ya suma 17 sin su tercer número, y cada línea debe sumar 45 ÷ 3 = 15.',
+    b:'Con el 1 al centro, la línea que pasa por el 1 y el 2 suma a lo más 1 + 2 + 9 = 12 y no llega a 15, lo que debe sumar cada línea (45 ÷ 3).',
+    d:`No cualquiera sirve: el motor probó todas las formas de llenar las casillas y encontró ${C1.cuantas} cuadrados mágicos, y en todos el centro es el ${C1.centro}.` } };
 const G3 = { id:'arreglos-paso3', ok:'a', opts:[
   ['a', `${T3.respuesta}: 3S = 21 + ${T3.V}`],
   ['b', `${T3.errores.unaVez}: 21 ÷ 3`, 'arreglo-vertices-una-vez', 'hipotesis'],
   ['c', `${T3.errores.sumaVertices}: 1 + 2 + 3`, 'arreglo-suma-de-vertices', 'hipotesis'],
   ['d', `${T3.errores.alReves}: 3S = 21 + ${MA.sumaLado({ extremo:'maximo' }).V}`, 'arreglo-grandes-en-vertices', 'hipotesis']],
   fb:{ a:`¡Bien! Cada vértice es la punta de dos lados: al sumar los tres lados, se cuenta dos veces. ${S_('S')} + ${S_('S')} + ${S_('S')} = 21 + ${V_('V')}. La suma es menor cuanto menores sean los vértices: con 1, 2 y 3 en ellos, ${V_('V')} = 6 y queda 3S = 27 y ${S_('S')} = ${S_(String(T3.respuesta))}.`,
-    b:'Elegiste la B. 21 ÷ 3 = 7 sería la suma por lado si cada número estuviera en un solo lado. Pero los vértices están en dos lados a la vez y se cuentan dos veces: 3S = 21 + V. Con 1, 2 y 3 en los vértices, S = 9. La correcta está marcada.',
-    c:'Elegiste la C. 6 es lo que suman los vértices (V), no un lado: cada lado tiene además el número del medio. 3S = 21 + 6 = 27, así que S = 9. La correcta está marcada.',
-    d:'Elegiste la D. Con 4, 5 y 6 en los vértices sale la mayor suma, no la menor: 3S = 21 + 15 = 36 y S = 12. Para la menor, en los vértices van los más chicos: S = 9. La correcta está marcada.' } };
+    b:'21 ÷ 3 = 7 sería la suma por lado si cada número estuviera en un solo lado. Pero los vértices están en dos lados a la vez y se cuentan dos veces: 3S = 21 + V. Con 1, 2 y 3 en los vértices, S = 9.',
+    c:'6 es lo que suman los vértices (V), no un lado: cada lado tiene además el número del medio. 3S = 21 + 6 = 27, así que S = 9.',
+    d:'Con 4, 5 y 6 en los vértices sale la mayor suma, no la menor: 3S = 21 + 15 = 36 y S = 12. Para la menor, en los vértices van los más chicos: S = 9.' } };
 const G5 = { id:'arreglos-paso5', ok:letra(CP5.correcta), unidad:U_TRANS, opts:[0, 1, 2, 3].map(k => {
     const err = Object.entries(CP5.errores).find(([, v]) => v === k);
     const cod = err ? { espejo:'giro-espejo-parece-giro', espejoGirado:'giro-espejo-girado', otraPieza:'giro-otra-forma' }[err[0]] : null;
     return cod ? [letra(k), `La pieza ${k + 1}`, cod, 'hipotesis'] : [letra(k), `La pieza ${k + 1}`];
   }),
   fb:{ b:`¡Bien! La pieza 2 es la original ${g_('girada')} un cuarto de vuelta, en el sentido de las agujas del reloj. Las piezas 1 y 4 son su imagen en un ${e_('espejo')}: para ponerlas así habría que darle la vuelta a la cartulina.`,
-    a:'Elegiste la A. La pieza 1 es la original vista en un espejo: la bandera quedó al otro lado del asta. Tiene la misma forma y el mismo tamaño (es congruente), pero girándola sobre la mesa nunca coincide con la original: habría que darle la vuelta. La 2 es la original girada un cuarto de vuelta. La correcta está marcada.',
-    c:'Elegiste la C. La pieza 3 tiene 5 cuadraditos, como la original, pero otra forma: ni girándola ni dándole la vuelta coincide con ella. La 2 es la original girada un cuarto de vuelta. La correcta está marcada.',
-    d:'Elegiste la D. La pieza 4 es la original vista en un espejo y además girada media vuelta: para ponerla así habría que darle la vuelta a la cartulina. La 2 es la original girada un cuarto de vuelta. La correcta está marcada.' } };
+    a:'La pieza 1 es la original vista en un espejo: la bandera quedó al otro lado del asta. Tiene la misma forma y el mismo tamaño (es congruente), pero girándola sobre la mesa nunca coincide con la original: habría que darle la vuelta. La 2 es la original girada un cuarto de vuelta.',
+    c:'La pieza 3 tiene 5 cuadraditos, como la original, pero otra forma: ni girándola ni dándole la vuelta coincide con ella. La 2 es la original girada un cuarto de vuelta.',
+    d:'La pieza 4 es la original vista en un espejo y además girada media vuelta: para ponerla así habría que darle la vuelta a la cartulina. La 2 es la original girada un cuarto de vuelta.' } };
 const G7 = { id:'arreglos-paso7', ok:'d', unidad:U_TRANS, opts:[
   ['a', `${vueltasTxt(R7.errores.contacto)}: rueda sobre un borde que mide lo mismo que el suyo`, 'rueda-solo-el-borde-que-toca', 'hipotesis'],
   ['b', `${vueltasTxt(R7.errores.mismoLado)}: va pegada a la otra moneda, así que no llega a girar`, 'rueda-no-gira', 'hipotesis'],
   ['c', `${vueltasTxt(R7.errores.bordeExterior)}: la circunferencia que pasa por su borde de afuera es tres veces la suya`, 'rueda-borde-exterior', 'hipotesis'],
   ['d', `${vueltasTxt(R7.vueltas)}: su centro recorre un camino del doble de largo que su borde`]],
   fb:{ d:`¡Bien! Rodando sin resbalar, la moneda da una vuelta cada vez que su centro avanza 2πr. Su centro va a ${R_('R')} + ${r_('r')} = 2r del centro de la fija y recorre ${d_('2π · 2r = 4πr')}, el doble de su borde: ${n_('n')} = 4πr ÷ 2πr = ${n_(String(R7.vueltas))}.`,
-    a:'Elegiste la A. Es cierto que el borde que toca mide lo mismo que el suyo, y eso daría 1 vuelta si rodara sobre una recta de ese largo. Pero además da la vuelta entera alrededor de la otra moneda, y eso suma otra vuelta: mira cuántas veces la flecha vuelve a apuntar arriba. La correcta está marcada.',
-    b:'Elegiste la B. Si no girara, tocaría a la otra moneda siempre con el mismo punto de su borde, y eso es resbalar. Rodando sin resbalar la flecha gira: mira cómo da 2 vueltas. La correcta está marcada.',
-    c:'Elegiste la C. Esa circunferencia, de radio 3r, sí mide tres veces el borde de la moneda, pero las vueltas se cuentan con el camino del centro, que mide el doble del borde: 2 vueltas. La correcta está marcada.' } };
+    a:'Es cierto que el borde que toca mide lo mismo que el suyo, y eso daría 1 vuelta si rodara sobre una recta de ese largo. Pero además da la vuelta entera alrededor de la otra moneda, y eso suma otra vuelta: mira cuántas veces la flecha vuelve a apuntar arriba.',
+    b:'Si no girara, tocaría a la otra moneda siempre con el mismo punto de su borde, y eso es resbalar. Rodando sin resbalar la flecha gira: mira cómo da 2 vueltas.',
+    c:'Esa circunferencia, de radio 3r, sí mide tres veces el borde de la moneda, pero las vueltas se cuentan con el camino del centro, que mide el doble del borde: 2 vueltas.' } };
 const G8 = { id:'arreglos-paso8', ok:'c', unidad:U_TRANS, opts:[
   ['a', `${V8.exactos.avance} m: lo que avanza el cuadrado en los 4 vuelcos`, 'vuelco-avance-recto', 'hipotesis'],
   ['b', `${V8.exactos.todosLado} ≈ ${fmt(V8.errores.todosLado, 1)} m: cuatro cuartos de circunferencia de 2 m de radio`, 'vuelco-todos-radio-lado', 'hipotesis'],
   ['c', `${V8.exacto} ≈ ${fmt(V8.longitud, 1)} m: tres cuartos de circunferencia, uno de ellos con la diagonal como radio`],
   ['d', `${V8.exactos.sinPivote} ≈ ${fmt(V8.errores.sinPivote, 1)} m: cuatro cuartos de circunferencia, uno de ellos con la diagonal como radio`, 'vuelco-cuenta-el-pivote', 'hipotesis']],
   fb:{ c:`¡Bien! En cada vuelco, A gira 90° alrededor de la esquina de apoyo: recorre un cuarto de circunferencia cuyo radio es su distancia a esa esquina: ${l_('2')}, la diagonal 2√2 y otra vez ${l_('2')}. En el último vuelco A es la esquina de apoyo y no se mueve. ${p_('p')} = (π/2)(2 + 2√2 + 2) = ${p_(V8.exacto)}.`,
-    a:`Elegiste la A. 8 m es lo que avanza el cuadrado, pero A no va en línea recta: sube y baja por arcos de circunferencia, que suman ${V8.exacto} ≈ ${fmt(V8.longitud, 1)} m. La correcta está marcada.`,
-    b:`Elegiste la B. No todos los radios miden 2 m: en el segundo vuelco el apoyo es la esquina opuesta a A y el radio es la diagonal, 2√2 m. Y en el cuarto, A es el apoyo y no se mueve. Total: ${V8.exacto} ≈ ${fmt(V8.longitud, 1)} m. La correcta está marcada.`,
-    d:`Elegiste la D. En el cuarto vuelco A es la esquina sobre la que gira el cuadrado: se queda quieta. Hay solo tres arcos: ${V8.exacto} ≈ ${fmt(V8.longitud, 1)} m. La correcta está marcada.` } };
+    a:`8 m es lo que avanza el cuadrado, pero A no va en línea recta: sube y baja por arcos de circunferencia, que suman ${V8.exacto} ≈ ${fmt(V8.longitud, 1)} m.`,
+    b:`No todos los radios miden 2 m: en el segundo vuelco el apoyo es la esquina opuesta a A y el radio es la diagonal, 2√2 m. Y en el cuarto, A es el apoyo y no se mueve. Total: ${V8.exacto} ≈ ${fmt(V8.longitud, 1)} m.`,
+    d:`En el cuarto vuelco A es la esquina sobre la que gira el cuadrado: se queda quieta. Hay solo tres arcos: ${V8.exacto} ≈ ${fmt(V8.longitud, 1)} m.` } };
 
 // ---- configuraciones ----
 const vacio = n => new Array(n).fill(null);
@@ -1279,7 +1279,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

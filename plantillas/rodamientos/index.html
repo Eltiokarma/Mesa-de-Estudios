@@ -109,7 +109,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .frac > span{white-space:nowrap}
 .aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
 .msg{margin:0; font-weight:700; min-height:1.5em}
-.msg.mal{color:var(--warn)} .msg.ok{color:var(--ok)}
+.msg.mal{color:inherit} .msg.ok{color:var(--ok)}
 
 .opts{display:grid; grid-template-columns:1fr; gap:8px}
 @media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
@@ -126,7 +126,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt svg{flex:none; width:64px; height:64px}
 .opt .num{font-family:var(--mono); font-weight:700; font-variant-numeric:tabular-nums}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -733,61 +733,61 @@ const G1 = { id:'rodamientos-paso1', ok:'c', opts:[
   ['c', num(cm(R1.exacto))],
   ['d', num(cm(R1.exactos.sinAtajo)), 'RME20', 'hipotesis']],
   fb:{ c:`¡Bien! El centro va siempre a ${r_('1 cm')} del camino. En las esquinas de arriba (las que salen) da un cuarto de vuelta alrededor de la esquina; en las de abajo (las que entran) toca el piso y la pared a la vez y corta camino.`,
-    a:'Elegiste la A. 15 cm es lo que mide el camino. El centro no va pegado al camino: en las esquinas de arriba da un cuarto de vuelta alrededor de la esquina y en las de abajo corta 1 cm en cada lado. La correcta está marcada.',
-    b:'Elegiste la B. Ese número sí descuenta los cortes de las esquinas de abajo, pero en las dos esquinas de arriba la ficha gira sin avanzar por ningún lado: su centro da dos cuartos de circunferencia de radio 1, que suman π. La correcta está marcada.',
-    d:'Elegiste la D. Sumaste bien los dos cuartos de vuelta de arriba, pero en las esquinas de abajo la ficha no llega al rincón: cuando toca el piso y la pared a la vez, su centro está a 1 cm de cada uno y ahí corta 1 cm en cada lado. La correcta está marcada.' } };
+    a:'15 cm es lo que mide el camino. El centro no va pegado al camino: en las esquinas de arriba da un cuarto de vuelta alrededor de la esquina y en las de abajo corta 1 cm en cada lado.',
+    b:'Ese número sí descuenta los cortes de las esquinas de abajo, pero en las dos esquinas de arriba la ficha gira sin avanzar por ningún lado: su centro da dos cuartos de circunferencia de radio 1, que suman π.',
+    d:'Sumaste bien los dos cuartos de vuelta de arriba, pero en las esquinas de abajo la ficha no llega al rincón: cuando toca el piso y la pared a la vez, su centro está a 1 cm de cada uno y ahí corta 1 cm en cada lado.' } };
 const G3 = { id:'rodamientos-paso3', ok:'d', opts:[
   ['a', num(cm(R3.exactos.radioPista)), 'RME21', 'hipotesis'],
   ['b', num(cm(R3.exactos.pista)), 'RME20', 'hipotesis'],
   ['c', num(cm(R3.exactos.sinArcos)), 'RME20', 'hipotesis'],
   ['d', num(cm(R3.exacto))]],
   fb:{ d:`¡Bien! Junto al arco, el centro va por un arco más grande: radio 4 + ${r_('1')} = 5, no 4. En las tres esquinas gira alrededor de cada una. En total, el perímetro de la porción más una vuelta entera de radio ${r_('1')}: 8 + 2π + 2π.`,
-    a:'Elegiste la A. Contaste las tres esquinas, pero junto al borde curvo el centro no va a 4 cm del centro de la porción: va a 4 + 1 = 5 cm. Ese arco mide 5π/2, no 2π. La correcta está marcada.',
-    b:'Elegiste la B. 8 + 2π es el perímetro de la porción. El centro de la rueda va 1 cm afuera de él: en las tres esquinas da vueltas pequeñas y junto al arco va por un arco más grande. La correcta está marcada.',
-    c:'Elegiste la C. Agrandaste bien el arco (radio 5), pero faltan las tres esquinas: en cada una el centro gira alrededor de la esquina un cuarto de circunferencia de radio 1. La correcta está marcada.' } };
+    a:'Contaste las tres esquinas, pero junto al borde curvo el centro no va a 4 cm del centro de la porción: va a 4 + 1 = 5 cm. Ese arco mide 5π/2, no 2π.',
+    b:'8 + 2π es el perímetro de la porción. El centro de la rueda va 1 cm afuera de él: en las tres esquinas da vueltas pequeñas y junto al arco va por un arco más grande.',
+    c:'Agrandaste bien el arco (radio 5), pero faltan las tres esquinas: en cada una el centro gira alrededor de la esquina un cuarto de circunferencia de radio 1.' } };
 const G4 = { id:'rodamientos-paso4', ok:'b', opts:[
   ['a', num(cm(T4.exactos.inicioComoToque)), 'RME131', 'hipotesis'],
   ['b', num(cm(T4.exacto))],
   ['c', num(cm(T4.exactos.vueltasN)), 'RME131', 'hipotesis'],
   ['d', num(cm(T4.exactos.radioDiametro)), 'RME202', 'hipotesis']],
   fb:{ b:`¡Bien! P empieza arriba: toca el piso por primera vez tras media vuelta, y cada toque siguiente llega una vuelta después. El quinto toque llega tras ${n_('1/2 + 4 = 9/2')} vueltas, y en cada vuelta el centro avanza ${d_('2π · 2 = 4π')} cm.`,
-    a:'Elegiste la A. 16π son 4 vueltas enteras. Pero P no empieza en el piso: empieza arriba y su primer toque llega tras media vuelta. Del primero al quinto hay 4 vueltas más: 4,5 vueltas. La correcta está marcada.',
-    c:'Elegiste la C. 20π son 5 vueltas enteras, como si cada toque necesitara una vuelta completa desde el inicio. El primero llega tras media vuelta, porque P empieza arriba. La correcta está marcada.',
-    d:'Elegiste la D. Contaste bien las 4,5 vueltas, pero en cada vuelta el centro avanza lo que mide el borde de la rueda, 2π · 2 = 4π cm, no 2π. La correcta está marcada.' } };
+    a:'16π son 4 vueltas enteras. Pero P no empieza en el piso: empieza arriba y su primer toque llega tras media vuelta. Del primero al quinto hay 4 vueltas más: 4,5 vueltas.',
+    c:'20π son 5 vueltas enteras, como si cada toque necesitara una vuelta completa desde el inicio. El primero llega tras media vuelta, porque P empieza arriba.',
+    d:'Contaste bien las 4,5 vueltas, pero en cada vuelta el centro avanza lo que mide el borde de la rueda, 2π · 2 = 4π cm, no 2π.' } };
 const G5 = { id:'rodamientos-paso5', ok:'c', opts:[
   ['a', num(V5.exactos.anguloInterior + ' dm'), 'RME132', 'hipotesis'],
   ['b', num(V5.exactos.radioLado + ' dm'), 'RME21', 'hipotesis'],
   ['c', num(V5.exacto + ' dm')],
   ['d', num(V5.exactos.cuentaPivote + ' dm'), 'RME133', 'hipotesis']],
   fb:{ c:`¡Bien! En cada esquina del hexágono el cuadrado gira ${t_('360° − 90° − 120° = 150°')}: los ángulos de las dos figuras se quedan sin girar. A recorre arcos de 150° con radios ${q_('2, 2√2 y 2')}, y en el cuarto vuelco es el pivote.`,
-    a:'Elegiste la A. Así sería sobre una recta, con giros de 90°. Sobre el hexágono el piso dobla en cada esquina: el cuadrado gira 360° − 90° − 120° = 150°. La correcta está marcada.',
-    b:'Elegiste la B. En el segundo vuelco el pivote es la esquina opuesta a A: el radio es la diagonal, 2√2 dm, no el lado. La correcta está marcada.',
-    d:'Elegiste la D. En el cuarto vuelco A es el vértice sobre el que gira el cuadrado: se queda quieto y no suma ningún arco. La correcta está marcada.' } };
+    a:'Así sería sobre una recta, con giros de 90°. Sobre el hexágono el piso dobla en cada esquina: el cuadrado gira 360° − 90° − 120° = 150°.',
+    b:'En el segundo vuelco el pivote es la esquina opuesta a A: el radio es la diagonal, 2√2 dm, no el lado.',
+    d:'En el cuarto vuelco A es el vértice sobre el que gira el cuadrado: se queda quieto y no suma ningún arco.' } };
 const G6 = { id:'rodamientos-paso6', ok:'a', opts:[
   ['a', num(V6.exacto + ' m')],
   ['b', num(V6.exactos.mismoAngulo + ' m'), 'RME22', 'hipotesis'],
   ['c', num(V6.exactos.radioLado + ' m'), 'RME21', 'hipotesis'],
   ['d', num(V6.exactos.anguloInterior + ' m'), 'RME138', 'hipotesis']],
   fb:{ a:`¡Bien! Sobre B y sobre A (ángulos de 60°) el trapecio gira ${t_('120°')}; sobre C y D (ángulos de 120°) gira solo ${t_('60°')}. Los radios de A son ${q_('4, 2√3 y 2')}.`,
-    b:'Elegiste la B. No todos los vuelcos son de 120°: el trapecio gira 180° menos el ángulo del vértice de apoyo. Sobre C y D, que miden 120°, gira solo 60°. La correcta está marcada.',
-    c:'Elegiste la C. Los radios no son siempre el lado que sigue: A está a 4 m de B (la base) y a 2√3 m de C (la diagonal). La correcta está marcada.',
-    d:'Elegiste la D. Usaste los ángulos del trapecio como giros, pero el giro es lo que le falta al ángulo para llegar a 180°: sobre B gira 180° − 60° = 120°, no 60°. La correcta está marcada.' } };
+    b:'No todos los vuelcos son de 120°: el trapecio gira 180° menos el ángulo del vértice de apoyo. Sobre C y D, que miden 120°, gira solo 60°.',
+    c:'Los radios no son siempre el lado que sigue: A está a 4 m de B (la base) y a 2√3 m de C (la diagonal).',
+    d:'Usaste los ángulos del trapecio como giros, pero el giro es lo que le falta al ángulo para llegar a 180°: sobre B gira 180° − 60° = 120°, no 60°.' } };
 const G8 = { id:'rodamientos-paso8', ok:'d', opts:[
   ['a', num(cm(B8.exactos.radioLado)), 'RME21', 'hipotesis'],
   ['b', num(cm(B8.exactos.sector)), 'RME139', 'hipotesis'],
   ['c', num(cm(B8.exactos.sinArco)), 'RME25', 'hipotesis'],
   ['d', num(cm(B8.exacto))]],
   fb:{ d:`¡Bien! El borde de la región es el borde de la lámina (una parte al inicio y otra al final: 38 cm) más el arco que dibuja el punto más lejano de O: la esquina opuesta, a ${q_('ρ = 15 cm')}. Arco: ${fr('90', '360')} · 2π · 15 = 15π/2.`,
-    a:'Elegiste la A. El arco lo dibuja el punto de la lámina más lejano de O, que es la esquina opuesta: a √(81 + 144) = 15 cm. El lado de 13 cm no es el más lejano. La correcta está marcada.',
-    b:'Elegiste la B. Ese es el borde de un sector de radio 15. Pero la región no es un sector: su borde sigue la lámina en sus posiciones del inicio y del final, que suman 38 cm. La correcta está marcada.',
-    c:'Elegiste la C. 38 cm es el perímetro de la lámina. La región barrida tiene además el arco que dibuja la esquina más lejana de O. La correcta está marcada.' } };
+    a:'El arco lo dibuja el punto de la lámina más lejano de O, que es la esquina opuesta: a √(81 + 144) = 15 cm. El lado de 13 cm no es el más lejano.',
+    b:'Ese es el borde de un sector de radio 15. Pero la región no es un sector: su borde sigue la lámina en sus posiciones del inicio y del final, que suman 38 cm.',
+    c:'38 cm es el perímetro de la lámina. La región barrida tiene además el arco que dibuja la esquina más lejana de O.' } };
 const letraOpt = { ok:null };
 const opts9 = [['a', D9.errores.sinFinal, 'RME134'], ['b', D9.resultado, null], ['c', D9.errores.finalContrario, 'RME23'], ['d', D9.errores.todasContrarias, 'RME23']];
 const G9 = { id:'rodamientos-paso9', ok:'b', opts:opts9.map(([k, cs, cod], i) => cod ? [k, `${svgLamina(cs, 3)}<span>Figura ${i + 1}<span class="sr">: casillas pintadas en ${nombreCeldas(cs)}</span></span>`, cod, 'hipotesis'] : [k, `${svgLamina(cs, 3)}<span>Figura ${i + 1}<span class="sr">: casillas pintadas en ${nombreCeldas(cs)}</span></span>`]),
   fb:{ b:`¡Bien! Sin vueltas enteras: 450° horario es ${t_('90° horario')}; 540° antihorario, ${t_('180°')}; 1170° horario, ${t_('90° horario')}; y 630° antihorario, ${t_('270° antihorario = 90° horario')}.`,
-    a:'Elegiste la A. Así quedan las láminas superpuestas, antes del último giro. 630° no deja la lámina igual: son una vuelta y 270° antihorario, que es un cuarto de vuelta horario. La correcta está marcada.',
-    c:'Elegiste la C. El último giro es 630° antihorario: una vuelta y 270° antihorario, que equivale a 90° horario, no antihorario. La correcta está marcada.',
-    d:'Elegiste la D. Giraste todo al revés: 450° horario es una vuelta y 90° en el sentido de las agujas del reloj, no en el contrario. La correcta está marcada.' } };
+    a:'Así quedan las láminas superpuestas, antes del último giro. 630° no deja la lámina igual: son una vuelta y 270° antihorario, que es un cuarto de vuelta horario.',
+    c:'El último giro es 630° antihorario: una vuelta y 270° antihorario, que equivale a 90° horario, no antihorario.',
+    d:'Giraste todo al revés: 450° horario es una vuelta y 90° en el sentido de las agujas del reloj, no en el contrario.' } };
 void letraOpt;
 const nomEsq = { A:'A', B:'B', C:'C', ninguno:'Ningún vértice' };
 const opts10 = ['A', 'B', 'C', 'ninguno'].map((x, i) => {
@@ -798,9 +798,9 @@ const opts10 = ['A', 'B', 'C', 'ninguno'].map((x, i) => {
 const okDe10 = 'abcd'[['A', 'B', 'C', 'ninguno'].indexOf(G10d.respuesta)];
 const G10 = { id:'rodamientos-paso10', ok:okDe10, opts:opts10,
   fb:{ c:`¡Bien! Cada giro es de ${t_('30°')}. Cada 4 giros vuelve a estar abajo, pero girado 120°: las letras cambian de lugar. Recién a los 12 giros vuelve con cada letra en su sitio. 20 = 12 + 8, y tras 8 giros (dos veces 4) C está en esa esquina.`,
-    a:'Elegiste la A. Es cierto que cada 4 giros el triángulo vuelve a apoyarse abajo, pero girado 120°: no con A en su lugar. Para eso hacen falta 12 giros. 20 = 12 + 8: queda como tras 8 giros. La correcta está marcada.',
-    b:'Elegiste la B. Así quedaría si girara hacia el otro lado. Aquí gira sobre la esquina de abajo a la derecha, en el sentido de las agujas del reloj. La correcta está marcada.',
-    d:'Elegiste la D. Si las letras se repitieran cada 3 giros, 20 = 18 + 2 dejaría el triángulo como tras 2 giros, apoyado arriba. Pero el ciclo es de 12 giros: 20 = 12 + 8, y tras 8 giros el triángulo está abajo, con C en esa esquina. La correcta está marcada.' } };
+    a:'Es cierto que cada 4 giros el triángulo vuelve a apoyarse abajo, pero girado 120°: no con A en su lugar. Para eso hacen falta 12 giros. 20 = 12 + 8: queda como tras 8 giros.',
+    b:'Así quedaría si girara hacia el otro lado. Aquí gira sobre la esquina de abajo a la derecha, en el sentido de las agujas del reloj.',
+    d:'Si las letras se repitieran cada 3 giros, 20 = 18 + 2 dejaría el triángulo como tras 2 giros, apoyado arriba. Pero el ciclo es de 12 giros: 20 = 12 + 8, y tras 8 giros el triángulo está abajo, con C en esa esquina.' } };
 
 // ---- configuraciones ----
 function camino1(ya){
@@ -1181,7 +1181,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

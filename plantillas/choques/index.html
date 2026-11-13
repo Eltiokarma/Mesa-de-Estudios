@@ -117,7 +117,7 @@ canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
 .fb:focus{outline:none}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap:12px; align-items:end}
 .slider{display:grid; gap:4px}
@@ -534,36 +534,36 @@ const P1 = { id:'choques-paso2', ok:'c',
         ['c','La del 1 baja y la del 2 sube lo mismo',null,''],
         ['d','La del 1 baja y la del 2 sube menos','p-total-baja','hipotesis']],
   fb:{ c:'¡Bien! El 2 empuja al 1 hacia atrás y el 1 empuja al 2 hacia adelante con fuerzas iguales, durante el mismo tiempo. Lo que el 1 pierde de cantidad de movimiento, el 2 lo gana: el total no cambia.',
-       a:'Elegiste la A. Si el carrito 2 gana cantidad de movimiento, alguien tiene que perderla: la fuerza del 2 sobre el 1 frena al 1. Cada carrito por separado cambia; lo que se conserva es el total del sistema. La correcta está marcada.',
-       b:'Elegiste la B. Eso pasaría en un choque con resorte entre carritos de la misma masa. Aquí el 2 tiene la mitad de la masa del 1 y quedan enganchados: el 1 no se detiene. La correcta está marcada.',
-       d:'Elegiste la D. Las fuerzas entre el 1 y el 2 son iguales y opuestas y duran lo mismo: lo que el 1 pierde, el 2 lo gana entero. El total no baja. La correcta está marcada.' } };
+       a:'Si el carrito 2 gana cantidad de movimiento, alguien tiene que perderla: la fuerza del 2 sobre el 1 frena al 1. Cada carrito por separado cambia; lo que se conserva es el total del sistema.',
+       b:'Eso pasaría en un choque con resorte entre carritos de la misma masa. Aquí el 2 tiene la mitad de la masa del 1 y quedan enganchados: el 1 no se detiene.',
+       d:'Las fuerzas entre el 1 y el 2 son iguales y opuestas y duran lo mismo: lo que el 1 pierde, el 2 lo gana entero. El total no baja.' } };
 const P2 = { id:'choques-paso3', ok:'a',
   opts:[['a',`${N(RG.v1f)} m/s`,null,''],
         ['b',`${N(RG.errores.sigueIgual)} m/s`,'M1-sigue-igual','parcial'],
         ['c',`${N(RG.errores.promedioSinMasas)} m/s`,'promedio-sin-masas','hipotesis'],
         ['d',`${fmt(RG.errores.conservaEc, 1)} m/s`,'M5-conserva-ec-plastico','parcial']],
   fb:{ a:`¡Bien! La cantidad de movimiento del sistema es ${N(RG.pAntes)} kg·m/s antes y después. Juntos tienen 3 kg: 12/3 = 4 m/s.`,
-       b:'Elegiste la B. Si el 1 siguiera a 6 m/s arrastrando al 2, el total sería 3·6 = 18 kg·m/s: aparecería cantidad de movimiento de la nada. La correcta está marcada.',
-       c:'Elegiste la C. 3 m/s es el promedio de 6 y 0, como si los dos carritos tuvieran la misma masa. El 1 tiene el doble de masa que el 2 y cuenta el doble. La correcta está marcada.',
-       d:`Elegiste la D. ${fmt(RG.errores.conservaEc, 1)} m/s sale de conservar la energía cinética (½·3·v'² = 36 J) en vez de la cantidad de movimiento. Con esa velocidad, el total sería 3·${fmt(RG.errores.conservaEc, 1)} ≈ ${fmt(RG.errores.pSiConservaEc, 1)} kg·m/s, más de los 12 que había. La correcta está marcada.` } };
+       b:'Si el 1 siguiera a 6 m/s arrastrando al 2, el total sería 3·6 = 18 kg·m/s: aparecería cantidad de movimiento de la nada.',
+       c:'3 m/s es el promedio de 6 y 0, como si los dos carritos tuvieran la misma masa. El 1 tiene el doble de masa que el 2 y cuenta el doble.',
+       d:`${fmt(RG.errores.conservaEc, 1)} m/s sale de conservar la energía cinética (½·3·v'² = 36 J) en vez de la cantidad de movimiento. Con esa velocidad, el total sería 3·${fmt(RG.errores.conservaEc, 1)} ≈ ${fmt(RG.errores.pSiConservaEc, 1)} kg·m/s, más de los 12 que había.` } };
 const P3 = { id:'choques-paso4', ok:'d',
   opts:[['a',`${N(RG.errores.EcSiSeConservara)} J`,'M5-ec-se-conserva','parcial'],
         ['b',`${N(RG.errores.EcSoloDe1)} J`,'ec-de-un-carrito','hipotesis'],
         ['c',`${N(RG.errores.perdidaComoFinal)} J`,'perdida-como-final','hipotesis'],
         ['d',`${N(RG.EcDespues)} J`,null,'']],
   fb:{ d:`¡Bien! Ec después = ½·3·4² = ${N(RG.EcDespues)} J. Había ${N(RG.EcAntes)} J: se pierden ${N(RG.EcPerdida)} J en el choque.`,
-       a:`Elegiste la A. Con 3 kg a 4 m/s, la energía cinética es ½·3·4² = ${N(RG.EcDespues)} J, no 36 J. Cuando quedan enganchados, parte de la energía cinética se va en deformar el enganche, en calor y en ruido. La correcta está marcada.`,
-       b:`Elegiste la B. ${N(RG.Ec1f)} J es la energía cinética del 1 solo (½·2·4²). El 2 también se mueve a 4 m/s y tiene ${N(RG.Ec2f)} J. La correcta está marcada.`,
-       c:`Elegiste la C. ${N(RG.EcPerdida)} J es lo que se pierde, no lo que queda: 36 − 24 = 12. La correcta está marcada.` } };
+       a:`Con 3 kg a 4 m/s, la energía cinética es ½·3·4² = ${N(RG.EcDespues)} J, no 36 J. Cuando quedan enganchados, parte de la energía cinética se va en deformar el enganche, en calor y en ruido.`,
+       b:`${N(RG.Ec1f)} J es la energía cinética del 1 solo (½·2·4²). El 2 también se mueve a 4 m/s y tiene ${N(RG.Ec2f)} J.`,
+       c:`${N(RG.EcPerdida)} J es lo que se pierde, no lo que queda: 36 − 24 = 12.` } };
 const P4 = { id:'choques-paso6', ok:'c',
   opts:[['a',`El 1 se queda quieto y el 2 sale a ${N(RE.errores.intercambian2)} m/s`,'intercambian-velocidades','hipotesis'],
         ['b',`El 1 sigue a ${N(RE.errores.comoPlastico)} m/s y el 2 sale a ${N(RE.errores.comoPlastico)} m/s`,'elastico-como-plastico','hipotesis'],
         ['c',`El 1 rebota a ${N(-RE.v1f)} m/s y el 2 sale a ${N(RE.v2f)} m/s`,null,''],
         ['d',`El 1 rebota a ${N(-RE.errores.rebotaComoPared1)} m/s y el 2 se queda quieto`,'rebota-como-pared','hipotesis']],
   fb:{ c:'¡Bien! El carrito liviano rebota y el pesado sale hacia adelante. Cantidad de movimiento: 1·6 = 1·(−2) + 2·4 = 6 kg·m/s. Energía cinética: 18 J = 2 J + 16 J.',
-       a:'Elegiste la A. Intercambian velocidades solo si las masas son iguales. Si el 2, de 2 kg, saliera a 6 m/s, tendría 12 kg·m/s: el doble de los 6 que había. La correcta está marcada.',
-       b:'Elegiste la B. Eso pasaría si quedaran pegados (6/3 = 2 m/s). Con un resorte se separan y, en un choque elástico, la energía cinética también se conserva: con 2 m/s cada uno tendrían solo 6 J de los 18. La correcta está marcada.',
-       d:'Elegiste la D. Así rebotaría contra una pared fija. El 2 no es una pared: el resorte lo empuja y el 2 sale con cantidad de movimiento. Si el 1 rebotara a 6 m/s y el 2 no se moviera, el total pasaría de +6 a −6 kg·m/s. La correcta está marcada.' } };
+       a:'Intercambian velocidades solo si las masas son iguales. Si el 2, de 2 kg, saliera a 6 m/s, tendría 12 kg·m/s: el doble de los 6 que había.',
+       b:'Eso pasaría si quedaran pegados (6/3 = 2 m/s). Con un resorte se separan y, en un choque elástico, la energía cinética también se conserva: con 2 m/s cada uno tendrían solo 6 J de los 18.',
+       d:'Así rebotaría contra una pared fija. El 2 no es una pared: el resorte lo empuja y el 2 sale con cantidad de movimiento. Si el 1 rebotara a 6 m/s y el 2 no se moviera, el total pasaría de +6 a −6 kg·m/s.' } };
 
 /* Cada paso dice qué se ve: esc (guiado/elastico), cuando ('inicio'|'contacto'|'final'), y qué se muestra antes
    y después de responder (antes/despues). ver = { pDesp, eDesp, vFin, fuerzas, sistema, cm } */
@@ -850,9 +850,9 @@ const EXPS = [
           ['d','La de plastilina, porque la de goma rebota y no le pasa su cantidad de movimiento','M4-rebote-no-transmite','parcial']],
     ok:'c',
     fb:{ c:'¡Bien! La de goma cambia su cantidad de movimiento de +5 a −5 kg·m/s: el doble que la de plastilina, que va de +5 a 0.',
-         a:'Elegiste la A. Llegan igual, pero no salen igual: a la de goma la pared tiene que frenarla y además lanzarla de vuelta. Su cambio de cantidad de movimiento es el doble.',
-         b:'Elegiste la B. La fuerza no depende de cuánta energía «se queda», sino de cuánto cambia la cantidad de movimiento. La de plastilina cambia 5 kg·m/s; la de goma, 10.',
-         d:'Elegiste la D. Al rebotar, la de goma cambia más su cantidad de movimiento, no menos: de +5 a −5. Para eso la pared la empuja el doble, y ella empuja a la pared el doble.' },
+         a:'Llegan igual, pero no salen igual: a la de goma la pared tiene que frenarla y además lanzarla de vuelta. Su cambio de cantidad de movimiento es el doble.',
+         b:'La fuerza no depende de cuánta energía «se queda», sino de cuánto cambia la cantidad de movimiento. La de plastilina cambia 5 kg·m/s; la de goma, 10.',
+         d:'Al rebotar, la de goma cambia más su cantidad de movimiento, no menos: de +5 a −5. Para eso la pared la empuja el doble, y ella empuja a la pared el doble.' },
     exp:`<div class="eqs">
         <div class="eq">goma: ${V('p','Δp')} = 0,5·(−10) − 0,5·10 = ${V('p','−10 N·s')} → ${V('F','F')} = ${fr('10', V('t','0,02'))} = ${V('F','500 N')}</div>
         <div class="eq">plastilina: ${V('p','Δp')} = 0 − 0,5·10 = ${V('p','−5 N·s')} → ${V('F','F')} = ${fr('5', V('t','0,02'))} = ${V('F','250 N')}</div></div>
@@ -870,9 +870,9 @@ const EXPS = [
           ['d','Ninguno, porque los dos terminan quietos','impulso-cero-si-para','hipotesis']],
     ok:'b',
     fb:{ b:'¡Bien! El impulso es el cambio de la cantidad de movimiento: de 10 kg·m/s a 0 en los dos. Lo que cambia es la fuerza.',
-         a:'Elegiste la A. La fuerza de la pared es mayor, pero dura menos. El impulso, fuerza media por tiempo, sale igual: 10 N·s en los dos.',
-         c:'Elegiste la C. El costal empuja más tiempo, pero con mucha menos fuerza. Fuerza media por tiempo da lo mismo en los dos: 10 N·s.',
-         d:'Elegiste la D. Terminar quieto no es lo mismo que no cambiar: los dos pasaron de 10 kg·m/s a 0, y ese cambio es el impulso.' },
+         a:'La fuerza de la pared es mayor, pero dura menos. El impulso, fuerza media por tiempo, sale igual: 10 N·s en los dos.',
+         c:'El costal empuja más tiempo, pero con mucha menos fuerza. Fuerza media por tiempo da lo mismo en los dos: 10 N·s.',
+         d:'Terminar quieto no es lo mismo que no cambiar: los dos pasaron de 10 kg·m/s a 0, y ese cambio es el impulso.' },
     exp:`<div class="eqs">
         <div class="eq">${V('p','Δp')} = 0 − 2·5 = ${V('p','−10 N·s')}<span class="note">en los dos</span></div>
         <div class="eq">pared: ${V('F','F')} = ${fr('10', V('t','0,05'))} = ${V('F','200 N')} · costal: ${V('F','F')} = ${fr('10', V('t','0,5'))} = ${V('F','20 N')}</div></div>
@@ -889,9 +889,9 @@ const EXPS = [
           ['d','Avanza hacia la derecha con el carrito pesado, que tiene más masa','cm-sigue-al-pesado','hipotesis']],
     ok:'b',
     fb:{ b:'¡Bien! Antes, todo estaba quieto: p = 0. El resorte es interno y no cambia la cantidad de movimiento del sistema, así que el centro de masa sigue quieto.',
-         a:'Elegiste la A. El carrito liviano sale más rápido, pero tiene menos masa: su cantidad de movimiento (−6) y la del pesado (+6) se anulan. El centro de masa no se mueve.',
-         c:'Elegiste la C. El punto medio no pesa las masas: se va hacia el carrito rápido, a −2 m/s. El centro de masa sí las pesa y se queda quieto.',
-         d:'Elegiste la D. El pesado tiene más masa, pero va más lento: 3·2 = 6, lo mismo que 1·6 hacia el otro lado. El centro de masa no se mueve.' },
+         a:'El carrito liviano sale más rápido, pero tiene menos masa: su cantidad de movimiento (−6) y la del pesado (+6) se anulan. El centro de masa no se mueve.',
+         c:'El punto medio no pesa las masas: se va hacia el carrito rápido, a −2 m/s. El centro de masa sí las pesa y se queda quieto.',
+         d:'El pesado tiene más masa, pero va más lento: 3·2 = 6, lo mismo que 1·6 hacia el otro lado. El centro de masa no se mueve.' },
     exp:`<div class="eqs">
         <div class="eq">${V('p','p')} antes = 0 = ${V('m','1')}·${V('v','v<sub>1</sub>')} + ${V('m','3')}·${V('v','2')} → ${V('v','v<sub>1</sub> = −6 m/s')}</div>
         <div class="eq">${V('v','v')}<sub>cm</sub> = ${fr(V('p','p') + ' total', 'masa total')} = ${fr('0', '4')} = 0</div>
@@ -909,9 +909,9 @@ const EXPS = [
           ['d',`${N(PEN.h)} m`,null,'']],
     ok:'d',
     fb:{ d:'¡Bien! Primero el choque, con cantidad de movimiento: salen juntos a 2 m/s. Después la subida, con energía: h = 2²/(2·10) = 0,2 m.',
-         a:'Elegiste la A. 20 m sale de usar solo energía: toda la energía cinética de la bala (400 J) subiendo los 2 kg. Pero al incrustarse se pierde casi toda: quedan 4 J. El choque se resuelve con cantidad de movimiento.',
-         b:'Elegiste la B. 2 es la velocidad con que salen juntos, en m/s, no la altura. Falta usar la energía: ½·v² = g·h.',
-         c:'Elegiste la C. 0,4 m sale de olvidar el ½: la energía cinética es ½·m·v². Con él, h = 4/20 = 0,2 m.' },
+         a:'20 m sale de usar solo energía: toda la energía cinética de la bala (400 J) subiendo los 2 kg. Pero al incrustarse se pierde casi toda: quedan 4 J. El choque se resuelve con cantidad de movimiento.',
+         b:'2 es la velocidad con que salen juntos, en m/s, no la altura. Falta usar la energía: ½·v² = g·h.',
+         c:'0,4 m sale de olvidar el ½: la energía cinética es ½·m·v². Con él, h = 4/20 = 0,2 m.' },
     exp:`<div class="eqs">
         <div class="eq">choque (${V('p','p')}): 0,02·${V('v','200')} = 2·${V('v',"v'")} → ${V('v',"v' = 2 m/s")}</div>
         <div class="eq">subida (energía): ½·${V('v',"v'")}² = 10·${V('h','h')} → ${V('h','h = 0,2 m')}</div>
@@ -929,9 +929,9 @@ const EXPS = [
           ['d',`${N(REB.errores.FSinDividir)} N`,'impulso-como-fuerza','hipotesis']],
     ok:'c',
     fb:{ c:'¡Bien! Con signo: Δp = 0,5·(−6) − 0,5·10 = −8 N·s. La fuerza media es 8/0,02 = 400 N, hacia atrás.',
-         a:'Elegiste la A. 100 N sale de restar las rapideces, 10 − 6, como si la cantidad de movimiento no tuviera sentido. Va hacia adelante y vuelve hacia atrás: hay que restar con signo, 10 − (−6) = 16.',
-         b:'Elegiste la B. 250 N es lo que cuesta solo frenarlo, de 10 m/s a 0. Pero además el tope lo lanza de vuelta a 6 m/s.',
-         d:'Elegiste la D. 8 es el impulso en N·s, no la fuerza. Falta dividir entre el tiempo de contacto: 8/0,02 = 400 N.' },
+         a:'100 N sale de restar las rapideces, 10 − 6, como si la cantidad de movimiento no tuviera sentido. Va hacia adelante y vuelve hacia atrás: hay que restar con signo, 10 − (−6) = 16.',
+         b:'250 N es lo que cuesta solo frenarlo, de 10 m/s a 0. Pero además el tope lo lanza de vuelta a 6 m/s.',
+         d:'8 es el impulso en N·s, no la fuerza. Falta dividir entre el tiempo de contacto: 8/0,02 = 400 N.' },
     exp:`<div class="eqs">
         <div class="eq">${V('p','Δp')} = ${V('m','0,5')}·(${V('v','−6')}) − ${V('m','0,5')}·${V('v','10')} = −3 − 5 = ${V('p','−8 N·s')}</div>
         <div class="eq">${V('F','F')} media = ${fr('8', V('t','0,02'))} = ${V('F','400 N')}<span class="note">hacia atrás</span></div></div>
@@ -1101,7 +1101,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = x.fb[p] + (p === x.ok ? '' : ' La correcta está marcada.');
+    fb.textContent = x.fb[p] + (p === x.ok ? '' : '');
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp + `<p><button type="button" class="btn" id="repetir">Ver otra vez</button></p>` + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     $('repetir').onclick = () => x.despues();

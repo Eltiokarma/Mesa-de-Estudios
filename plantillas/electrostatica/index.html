@@ -116,7 +116,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -930,72 +930,72 @@ const P1 = { id:'electrostatica-paso1', ok:'c', opts:[
   ['c', 'Las dos reciben la misma fuerza, porque la fórmula usa el producto q₁·q₂'],
   ['d', 'Solo q₂ empuja, porque q₁ es muy chica para empujar', 'EL1-solo-empuja-la-mayor', 'hipotesis']],
   fb:{ c:'¡Bien! La fórmula tiene q₁·q₂: no distingue cuál es cuál. Las dos flechas miden lo mismo.',
-    a:'Elegiste la A. Es la idea errónea más común. La fórmula usa el producto q₁·q₂, igual para las dos: q₂ empuja a q₁ con la misma fuerza con que q₁ empuja a q₂. La correcta está marcada.',
-    b:'Elegiste la B. Sobre las dos actúa la misma fuerza: F = k·q₁·q₂/r² no cambia si cambias el orden. La correcta está marcada.',
-    d:'Elegiste la D. Si q₂ empuja a q₁, q₁ empuja a q₂ con la misma fuerza (tercera ley de Newton). La correcta está marcada.' } };
+    a:'Es la idea errónea más común. La fórmula usa el producto q₁·q₂, igual para las dos: q₂ empuja a q₁ con la misma fuerza con que q₁ empuja a q₂.',
+    b:'Sobre las dos actúa la misma fuerza: F = k·q₁·q₂/r² no cambia si cambias el orden.',
+    d:'Si q₂ empuja a q₁, q₁ empuja a q₂ con la misma fuerza (tercera ley de Newton).' } };
 const P2 = { id:'electrostatica-paso2', ok:'a', opts:[
   ['a', 'Se separan el mismo ángulo de la vertical, porque la fuerza y el peso son iguales en las dos'],
   ['b', 'La de carga q se aparta más, porque la de 2q la empuja más', 'EL3-menor-se-aparta-mas', 'documentado'],
   ['c', 'La de carga 2q se aparta más, porque tiene más carga', 'EL3-mayor-se-aparta-mas', 'documentado'],
   ['d', 'Solo se aparta la de carga q, porque la de 2q es la que empuja', 'EL3-mayor-queda-vertical', 'hipotesis']],
   fb:{ a:'¡Bien! Cada esfera siente la misma fuerza F y tiene el mismo peso: tan θ = F/(mg) sale igual para las dos.',
-    b:'Elegiste la B. La de 2q no empuja más: las dos fuerzas son iguales (paso 1). Con el mismo peso, se apartan lo mismo. La correcta está marcada.',
-    c:'Elegiste la C. Tener más carga no hace que reciba más fuerza: las dos reciben la misma. La correcta está marcada.',
-    d:'Elegiste la D. Las dos se empujan con la misma fuerza: ninguna queda vertical. La correcta está marcada.' } };
+    b:'La de 2q no empuja más: las dos fuerzas son iguales (paso 1). Con el mismo peso, se apartan lo mismo.',
+    c:'Tener más carga no hace que reciba más fuerza: las dos reciben la misma.',
+    d:'Las dos se empujan con la misma fuerza: ninguna queda vertical.' } };
 const P3 = { id:'electrostatica-paso3', ok:'b', opts:[
   ['a', `F = ${fmt(D3.errores.lineal, 2)} N`, 'CO-uno-sobre-r', 'hipotesis'],
   ['b', `F = ${fmt(D3.F1, 2)} N`],
   ['c', `F = ${fmt(D3.errores.sinCambio, 2)} N`, 'CO-no-depende-de-r', 'hipotesis'],
   ['d', `F = ${fmt(D3.errores.alRevesCuadrado, 2)} N`, 'CO-cuadrado-al-reves', 'hipotesis']],
   fb:{ b:'¡Bien! F depende de 1/r²: el doble de distancia da la cuarta parte de la fuerza.',
-    a:'Elegiste la A. Es la mitad: así sería si F dependiera de 1/r. Va con 1/r²: el doble de distancia, la cuarta parte. La correcta está marcada.',
-    c:'Elegiste la C. Las cargas son las mismas, pero la distancia está en la fórmula, y al cuadrado. La correcta está marcada.',
-    d:'Elegiste la D. Al alejarlas la fuerza baja, no sube: se divide entre 2² = 4. La correcta está marcada.' } };
+    a:'Es la mitad: así sería si F dependiera de 1/r. Va con 1/r²: el doble de distancia, la cuarta parte.',
+    c:'Las cargas son las mismas, pero la distancia está en la fórmula, y al cuadrado.',
+    d:'Al alejarlas la fuerza baja, no sube: se divide entre 2² = 4.' } };
 const P4 = { id:'electrostatica-paso4', ok:'b', opts:[
   ['a', `F = ${fmt(F4.errores.sumaModulos, 0)} N`, 'CO-suma-como-numeros', 'hipotesis'],
   ['b', `F = ${fmt(F4.modulo, 0)} N`],
   ['c', `F = ${fmt(F4.errores.restaModulos, 0)} N`, 'CO-resta-como-numeros', 'hipotesis'],
   ['d', `F = √7 ≈ ${fmt(F4.errores.sinCuadrados, 1)} N`, 'CO-raiz-sin-cuadrados', 'hipotesis']],
   fb:{ b:'¡Bien! Son perpendiculares: F = √(3² + 4²) = 5 N.',
-    a:'Elegiste la A. 3 + 4 = 7 solo si las dos fuerzas apuntaran hacia el mismo lado. Forman 90°: se suman como flechas. La correcta está marcada.',
-    c:'Elegiste la C. Restar vale solo si apuntan en sentidos opuestos. Aquí forman 90°. La correcta está marcada.',
-    d:'Elegiste la D. Pitágoras suma los cuadrados: 3² + 4² = 25, no 3 + 4. La correcta está marcada.' } };
+    a:'3 + 4 = 7 solo si las dos fuerzas apuntaran hacia el mismo lado. Forman 90°: se suman como flechas.',
+    c:'Restar vale solo si apuntan en sentidos opuestos. Aquí forman 90°.',
+    d:'Pitágoras suma los cuadrados: 3² + 4² = 25, no 3 + 4.' } };
 const P5q = { id:'electrostatica-paso5', ok:'a', opts:[
   ['a', 'La fuerza se invierte; el campo sigue igual'],
   ['b', 'La fuerza y el campo se invierten', 'EL4-campo-sigue-a-la-prueba', 'documentado'],
   ['c', 'Nada cambia: la fuerza la pone el campo', 'EL5-fuerza-solo-del-campo', 'parcial'],
   ['d', 'El campo se invierte; la fuerza sigue igual', 'EL4-se-invierte-el-campo', 'hipotesis']],
   fb:{ a:'¡Bien! El campo es de Q y no depende de q₀. La fuerza es q₀·E: con q₀ negativa, va contra el campo.',
-    b:'Elegiste la B. El campo lo crea Q, haya o no carga de prueba y sea cual sea su signo. Solo la fuerza, q₀·E, cambia de sentido. La correcta está marcada.',
-    c:'Elegiste la C. La fuerza depende del campo y también de la carga que lo siente: F = q₀·E. Con q₀ negativa, F va al revés. La correcta está marcada.',
-    d:'Elegiste la D. Es al revés: el campo es de Q y no cambia; la fuerza q₀·E cambia de sentido con el signo de q₀. La correcta está marcada.' } };
+    b:'El campo lo crea Q, haya o no carga de prueba y sea cual sea su signo. Solo la fuerza, q₀·E, cambia de sentido.',
+    c:'La fuerza depende del campo y también de la carga que lo siente: F = q₀·E. Con q₀ negativa, F va al revés.',
+    d:'Es al revés: el campo es de Q y no cambia; la fuerza q₀·E cambia de sentido con el signo de q₀.' } };
 const P6 = { id:'electrostatica-paso6', ok:'b', opts:[
   ['a', 'E = 0 y V = 0', 'EP-todo-se-anula', 'hipotesis'],
   ['b', `E = ${sci(M6.E.modulo)} ${NC} y V = 0`],
   ['c', `E = 0 y V = ${sci(M6.errores.nadaSeAnula.V)} V`, 'EP-campo-y-potencial-cambiados', 'hipotesis'],
   ['d', `E = ${sci(M6.E.modulo)} ${NC} y V = ${sci(M6.errores.nadaSeAnula.V)} V`, 'EP-potencial-sin-signo', 'hipotesis']],
   fb:{ b:'¡Bien! Los dos campos apuntan hacia q₂ y se suman; los dos potenciales tienen signos opuestos y se anulan.',
-    a:'Elegiste la A. Los potenciales se anulan, pero los campos no: el de +q se aleja de ella y el de −q va hacia ella, así que en el medio apuntan igual. La correcta está marcada.',
-    c:'Elegiste la C. Es al revés: el campo es una flecha y aquí las dos apuntan igual; el potencial es un número con signo y aquí se anula. La correcta está marcada.',
-    d:'Elegiste la D. El campo está bien, pero el potencial lleva el signo de la carga: +1,2 × 10⁵ V y −1,2 × 10⁵ V suman cero. La correcta está marcada.' } };
+    a:'Los potenciales se anulan, pero los campos no: el de +q se aleja de ella y el de −q va hacia ella, así que en el medio apuntan igual.',
+    c:'Es al revés: el campo es una flecha y aquí las dos apuntan igual; el potencial es un número con signo y aquí se anula.',
+    d:'El campo está bien, pero el potencial lleva el signo de la carga: +1,2 × 10⁵ V y −1,2 × 10⁵ V suman cero.' } };
 const P7 = { id:'electrostatica-paso7', ok:'a', opts:[
   ['a', `W = ${fmt(T7.W, 2)} J, lo mismo que en línea recta`],
   ['b', `W ≈ ${fmt(T7.errores.caminoLargoMas, 2)} J, más, porque el camino es más largo`, 'EP-camino-largo-mas-trabajo', 'hipotesis'],
   ['c', `W ≈ ${fmt(T7.errores.caminoLargoMenos, 2)} J, menos, porque la fuerza se reparte en más camino`, 'EP-camino-largo-menos-trabajo', 'hipotesis'],
   ['d', 'W = 0 J, porque casi todo el camino va por equipotenciales', 'EP-camino-largo-cero', 'hipotesis']],
   fb:{ a:'¡Bien! El trabajo del campo solo depende de los potenciales de A y de B.',
-    b:'Elegiste la B. En los tramos por las equipotenciales el campo es perpendicular al movimiento y no hace trabajo: el camino largo no suma nada. La correcta está marcada.',
-    c:'Elegiste la C. El trabajo no se reparte: en los tramos por las equipotenciales es cero y en el tramo de una a otra es el mismo de la recta. La correcta está marcada.',
-    d:`Elegiste la D. En las equipotenciales el trabajo es cero, pero falta el tramo que va de una a la otra: ahí el campo hace los ${fmt(T7.W, 2)} J. La correcta está marcada.` } };
+    b:'En los tramos por las equipotenciales el campo es perpendicular al movimiento y no hace trabajo: el camino largo no suma nada.',
+    c:'El trabajo no se reparte: en los tramos por las equipotenciales es cero y en el tramo de una a otra es el mismo de la recta.',
+    d:`En las equipotenciales el trabajo es cero, pero falta el tramo que va de una a la otra: ahí el campo hace los ${fmt(T7.W, 2)} J.` } };
 const P8 = { id:'electrostatica-paso8', ok:'b', opts:[
   ['a', `C equivalente = ${fmt(S8.errores.sumaCapacidades, 1)} µF`, 'CC-serie-suma-capacidades', 'hipotesis'],
   ['b', `C equivalente = ${fmt(S8.Ceq, 1)} µF`],
   ['c', `C equivalente = ${fmt(S8.errores.promedio, 1)} µF`, 'CC-serie-promedio', 'hipotesis'],
   ['d', `C equivalente = ${fmt(S8.errores.menor, 1)} µF`, 'CC-serie-la-menor', 'hipotesis']],
   fb:{ b:'¡Bien! En serie: 1/C = 1/3 + 1/6 = 1/2, así que C = 2 µF, menos que el más chico.',
-    a:'Elegiste la A. Así se suman las resistencias en serie, pero los condensadores en serie se suman al revés: 1/C = 1/3 + 1/6. Las capacidades se suman en paralelo. La correcta está marcada.',
-    c:'Elegiste la C. No es un promedio: en serie la carga es la misma en los dos y los voltajes se suman, así que 1/C = 1/3 + 1/6. La correcta está marcada.',
-    d:'Elegiste la D. En serie la equivalente es todavía menor que la más chica: 1/C = 1/3 + 1/6 = 1/2. La correcta está marcada.' } };
+    a:'Así se suman las resistencias en serie, pero los condensadores en serie se suman al revés: 1/C = 1/3 + 1/6. Las capacidades se suman en paralelo.',
+    c:'No es un promedio: en serie la carga es la misma en los dos y los voltajes se suman, así que 1/C = 1/3 + 1/6.',
+    d:'En serie la equivalente es todavía menor que la más chica: 1/C = 1/3 + 1/6 = 1/2.' } };
 
 // Lecturas de cada paso (todas con el motor)
 const lF = (F, t) => ['F', t || 'Fuerza F', `${fmt(F, 2)} N`];
@@ -1234,7 +1234,7 @@ go(0);
 <script>
 /* ================= MODO 2: ¿qué pasa si…? =================
    Respaldos: EL6 (parcial: ≈50 % sobre polarización, no sobre condensadores), EL7 (parcial: solo 1 de cada 8 acierta; sin cifra de cuántos responden C = 0) y EL8 (parcial: «la mayoría», sin
-   porcentaje), de docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md. Lo demás, hipótesis nuestras.
+   porcentaje), de docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md. 
    La escena cambia recién después de responder. */
 (function(){
 const $ = id => document.getElementById(id);
@@ -1398,7 +1398,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la opción ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     if (x.enlazar) x.enlazar();

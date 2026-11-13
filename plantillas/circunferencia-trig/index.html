@@ -121,7 +121,7 @@ table.signos th{color:var(--muted); font-weight:700}
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -827,45 +827,45 @@ const P_TRI = { id:'circunferencia-trig-paso1', unidad:U.agudas, ok:'b', opts:[
   ['c',`Pasa a ${fmt(ESC.errores.senoComoLongitud, 0)}: es el nuevo cateto opuesto`,'TR7-seno-es-longitud','parcial'],
   ['d','Baja: la hipotenusa crece más que el cateto','TR8-seno-baja','hipotesis']],
   fb:{ b:`¡Bien! El cateto y la hipotenusa se duplican juntos: 6/10 = 3/5. El seno es una razón y no depende del tamaño.`,
-    a:`Elegiste la A. El cateto opuesto sí se duplica, pero la hipotenusa también: 6/10 = 3/5. Además, ${frac(ESC.errores.senoPorK)} es mayor que 1, y ningún seno pasa de 1. La correcta está marcada.`,
-    c:'Elegiste la C. 6 es el largo del cateto, no el seno. El seno es el cateto dividido entre la hipotenusa: 6/10 = 3/5. La correcta está marcada.',
-    d:'Elegiste la D. Los tres lados se multiplican por el mismo número, 2: ninguno crece más que otro. El cociente queda igual, 6/10 = 3/5. La correcta está marcada.' } };
+    a:`El cateto opuesto sí se duplica, pero la hipotenusa también: 6/10 = 3/5. Además, ${frac(ESC.errores.senoPorK)} es mayor que 1, y ningún seno pasa de 1.`,
+    c:'6 es el largo del cateto, no el seno. El seno es el cateto dividido entre la hipotenusa: 6/10 = 3/5.',
+    d:'Los tres lados se multiplican por el mismo número, 2: ninguno crece más que otro. El cociente queda igual, 6/10 = 3/5.' } };
 const P_210 = { id:'circunferencia-trig-paso3', unidad:U.reduccion, ok:'a', opts:[
   ['a',R210.texto],
   ['b',R210.erroresTexto.sinSigno,'TR12-seno-sin-signo','parcial'],
   ['c',R210.erroresTexto.otraCoordenada,'TR11-toma-la-abscisa','parcial'],
   ['d',R210.erroresTexto.otraCoordenadaSinSigno,'TR11-TR12-abscisa-sin-signo','parcial']],
   fb:{ a:'¡Bien! P queda en el tercer cuadrante, por debajo del eje x: su altura es la de 30°, pero hacia abajo. sen 210° = −1/2.',
-    b:'Elegiste la B. El tamaño es el de sen 30°, pero P quedó por debajo del eje x: el seno es la altura con su signo, y ahí es negativa. La correcta está marcada.',
-    c:'Elegiste la C. −√3/2 es la abscisa de P, es decir, cos 210°. El seno es la altura (la línea roja), no la distancia horizontal. La correcta está marcada.',
-    d:'Elegiste la D. √3/2 es el largo de la abscisa sin signo: cruza el seno con el coseno y además olvida el signo. El seno es la altura de P, −1/2. La correcta está marcada.' } };
+    b:'El tamaño es el de sen 30°, pero P quedó por debajo del eje x: el seno es la altura con su signo, y ahí es negativa.',
+    c:'−√3/2 es la abscisa de P, es decir, cos 210°. El seno es la altura (la línea roja), no la distancia horizontal.',
+    d:'√3/2 es el largo de la abscisa sin signo: cruza el seno con el coseno y además olvida el signo. El seno es la altura de P, −1/2.' } };
 const P_SUMA = { id:'circunferencia-trig-paso4', unidad:U.circ, ok:'a', opts:[
   ['a',`No: la suma pasa de 1 y sen 90° = ${SU.textoDeLaSuma}`],
   ['b','Sí: los dos valen 1','TR16-linealidad','parcial'],
   ['c',`Sí: los dos valen unos ${fmt(SU.errores.lineal, 2)}`,'TR16-suma-igual','hipotesis'],
   ['d','No se sabe: hace falta calculadora','TR13-sin-estimar','parcial']],
   fb:{ a:`¡Bien! La suma de las dos alturas, unos ${fmt(SU.sumaDe, 2)}, pasa de 1: ya no puede ser el seno de nada. sen 90° = 1.`,
-    b:`Elegiste la B. sen 90° sí es 1, pero sen 30° + sen 60° = 1/2 + √3/2 ≈ ${fmt(SU.sumaDe, 2)}. El seno de una suma no es la suma de los senos. La correcta está marcada.`,
-    c:`Elegiste la C. Un seno nunca pasa de 1, porque es la altura de un punto de una circunferencia de radio 1. sen 90° = 1 y la suma es ${fmt(SU.sumaDe, 2)}: no son iguales. La correcta está marcada.`,
-    d:`Elegiste la D. Con la circunferencia se ve sin calculadora: sen 90° es la altura del punto más alto, 1, y las dos alturas juntas pasan de 1. La correcta está marcada.` } };
+    b:`sen 90° sí es 1, pero sen 30° + sen 60° = 1/2 + √3/2 ≈ ${fmt(SU.sumaDe, 2)}. El seno de una suma no es la suma de los senos.`,
+    c:`Un seno nunca pasa de 1, porque es la altura de un punto de una circunferencia de radio 1. sen 90° = 1 y la suma es ${fmt(SU.sumaDe, 2)}: no son iguales.`,
+    d:`Con la circunferencia se ve sin calculadora: sen 90° es la altura del punto más alto, 1, y las dos alturas juntas pasan de 1.` } };
 const P_PER = { id:'circunferencia-trig-paso6', unidad:U.funciones, ok:'b', opts:[
   ['a',`${MC.textoPi(F23.errores.periodoPorB/PI)}`,'TR18-periodo-por-B','hipotesis'],
   ['b',`${F23.periodoTexto}`],
   ['c',`${fmt(F23.errores.periodoIgualB, 0)}`,'TR18-periodo-igual-B','hipotesis'],
   ['d',`${MC.textoPi(F23.errores.periodoConAmplitud/PI)}`,'periodo-con-amplitud','hipotesis']],
   fb:{ b:'¡Bien! Con 3x, el punto P da tres vueltas mientras x avanza 2π: la onda se repite cada 2π/3. El 2 la estira hacia arriba y hacia abajo, pero no cambia el periodo.',
-    a:'Elegiste la A. Esa cuenta multiplica 2π por 3. El 3 hace que P gire el triple de rápido, así que la onda se repite antes, no después: 2π/3. La correcta está marcada.',
-    c:'Elegiste la C. 3 es el número que multiplica a x, no el periodo. El periodo es 2π dividido entre ese número: 2π/3. La correcta está marcada.',
-    d:'Elegiste la D. Esa cuenta usa el 2, que es la amplitud: estira la onda hacia arriba y hacia abajo, pero no la alarga. El periodo sale del 3: 2π/3. La correcta está marcada.' } };
+    a:'Esa cuenta multiplica 2π por 3. El 3 hace que P gire el triple de rápido, así que la onda se repite antes, no después: 2π/3.',
+    c:'3 es el número que multiplica a x, no el periodo. El periodo es 2π dividido entre ese número: 2π/3.',
+    d:'Esa cuenta usa el 2, que es la amplitud: estira la onda hacia arriba y hacia abajo, pero no la alarga. El periodo sale del 3: 2π/3.' } };
 const P_SOL = { id:'circunferencia-trig-paso7', unidad:U.ecuaciones, ok:'b', opts:[
   ['a',`${EQ.errores.cantidadSoloPrincipal}: x = ${grados(EQ.errores.soloPrincipal[0])}`,'TR22-una-solucion','hipotesis'],
   ['b',`${EQ.cantidad}: x = ${EQ.soluciones.map(grados).join(' y x = ')}`],
   ['c',`${EQ.errores.unaPorCuadrante.length}: una en cada cuadrante`,'una-por-cuadrante','hipotesis'],
   ['d','Infinitas: una en cada vuelta','confunde-con-la-general','hipotesis']],
   fb:{ b:'¡Bien! La recta y = 1/2 corta la circunferencia en dos puntos: 30° y 150°. En una vuelta, la onda la cruza dos veces.',
-    a:'Elegiste la A. 30° es la que da la calculadora o la tabla, pero hay otro punto de la circunferencia a la misma altura: 150°, en el segundo cuadrante. La correcta está marcada.',
-    c:'Elegiste la C. En el tercer y el cuarto cuadrante el seno es negativo: ahí P está por debajo del eje x y no puede tener altura 1/2. Solo quedan 30° y 150°. La correcta está marcada.',
-    d:'Elegiste la D. Si x puede dar muchas vueltas, sí hay infinitas; pero en una sola vuelta, [0°, 360°⟩, hay solo dos: 30° y 150°. La correcta está marcada.' } };
+    a:'30° es la que da la calculadora o la tabla, pero hay otro punto de la circunferencia a la misma altura: 150°, en el segundo cuadrante.',
+    c:'En el tercer y el cuarto cuadrante el seno es negativo: ahí P está por debajo del eje x y no puede tener altura 1/2. Solo quedan 30° y 150°.',
+    d:'Si x puede dar muchas vueltas, sí hay infinitas; pero en una sola vuelta, [0°, 360°⟩, hay solo dos: 30° y 150°.' } };
 
 function vivo(){
   const d = $('vivo'); if (!d) return;
@@ -1217,7 +1217,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

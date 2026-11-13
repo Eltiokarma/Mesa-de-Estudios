@@ -105,7 +105,7 @@ canvas.sin-scroll{touch-action:none}
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap:12px; align-items:end}
 .slider{display:grid; gap:4px}
@@ -505,16 +505,16 @@ const P1 = { id:'mruv-paso2', ok:'b',
   opts:[['a','Una recta que sube','recta','G3-xt-como-vt','documentado'], ['b','Una curva que sube cada vez más empinada','curva',null,''],
         ['c','Una recta horizontal','horizontal','G3-aceleracion-constante-posicion-constante','documentado'], ['d','Una loma: sube y después baja','cerro','G1-grafica-como-foto','documentado']],
   fb:{ b:'¡Bien! Cada segundo avanza más que el anterior, así que la posición sube cada vez más rápido: una curva (un trozo de parábola).',
-       a:'Elegiste la A. Una recta en x-t sería avanzar lo mismo cada segundo (velocidad constante). Aquí la velocidad crece: es la gráfica v-t la que sale recta. La correcta está marcada.',
-       c:'Elegiste la C. Una recta horizontal en x-t quiere decir que no se mueve. Lo que es constante aquí es la aceleración, no la posición. La correcta está marcada.',
-       d:'Elegiste la D. La gráfica no es un dibujo del camino: la pista es plana y el eje vertical es la posición, no la altura. La combi siempre avanza, así que su posición nunca baja. La correcta está marcada.' } };
+       a:'Una recta en x-t sería avanzar lo mismo cada segundo (velocidad constante). Aquí la velocidad crece: es la gráfica v-t la que sale recta.',
+       c:'Una recta horizontal en x-t quiere decir que no se mueve. Lo que es constante aquí es la aceleración, no la posición.',
+       d:'La gráfica no es un dibujo del camino: la pista es plana y el eje vertical es la posición, no la altura. La combi siempre avanza, así que su posición nunca baja.' } };
 const P2 = { id:'mruv-paso6', ok:'b',
   opts:[['a','Cuando se cruzan, a los 6 s',null,'K1-misma-posicion-misma-velocidad','documentado'], ['b','A los 3 s',null,null,''],
         ['c','Nunca: la combi va más lenta hasta que lo alcanza',null,'nunca-igual-velocidad','hipotesis'], ['d','Al inicio, porque salen juntos del paradero',null,'K1-misma-posicion-misma-velocidad','documentado']],
   fb:{ b:'¡Bien! 4 + 2t = 10 da t = 3 s. En ese instante van igual de rápido, pero el mototaxi va adelante.',
-       a:'Elegiste la A. Estar en el mismo lugar no quiere decir ir igual de rápido: cuando se cruzan, la combi va a 16 m/s y el mototaxi a 10 m/s. La correcta está marcada.',
-       c:'Elegiste la C. La combi acelera: a los 3 s ya va tan rápido como el mototaxi, y después más rápido. La correcta está marcada.',
-       d:'Elegiste la D. Salen del mismo lugar, pero la combi a 4 m/s y el mototaxi a 10 m/s. La correcta está marcada.' } };
+       a:'Estar en el mismo lugar no quiere decir ir igual de rápido: cuando se cruzan, la combi va a 16 m/s y el mototaxi a 10 m/s.',
+       c:'La combi acelera: a los 3 s ya va tan rápido como el mototaxi, y después más rápido.',
+       d:'Salen del mismo lugar, pero la combi a 4 m/s y el mototaxi a 10 m/s.' } };
 const opciones = P => `<div class="opts">${P.opts.map(([k, t, dib]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span>${dib ? bosquejo(dib) : ''}<span>${t}</span></button>`).join('')}</div><p class="fb" id="fb"></p>`;
 const steps = [
  { k:'Paso 1', t:'El problema', ver:[],
@@ -531,14 +531,14 @@ const steps = [
      <div class="eq">${V('v','v')} = ${V('v','v₀')} + ${V('a','a')}·${V('t','t')} = 4 + 2·5 = ${V('v','14 m/s')}</div>
    </div>
    <p>La pendiente de la gráfica v-t es la aceleración, y es la misma en cualquier tramo de la recta. La velocidad final se lee en la gráfica: a los 5 s, la recta llega a 14 m/s.</p>
-   <p class="aviso">Ojo: 14/5 no es la aceleración. La recta no empieza en cero (empieza en 4 m/s): hay que restar. Cuando la recta no pasa por el origen, solo entre el 21 % y el 25 % calcula bien la pendiente (Beichner, 1994).</p>` },
+   <p class="aviso">Ojo: 14/5 no es la aceleración. La recta no empieza en cero (empieza en 4 m/s): hay que restar. </p>` },
  { k:'Paso 5', t:'El área bajo v-t es lo que avanzó', fin:true, extra:() => ({ sombra:{ g:'v', t1:0, t2:5, todo:true, texto:'área = 45 m' } }),
    body:() => `<div class="eqs">
      <div class="eq">Δ${V('x','x')} = área = ${fr('(' + V('v','4') + ' + ' + V('v','14') + ')', '2')}·${V('t','5')} = ${V('x','45 m')}<span class="note">Un trapecio</span></div>
      <div class="eq">${V('x','x')} = ${V('v','v₀')}·${V('t','t')} + ½·${V('a','a')}·${V('t','t')}² = 4·5 + ½·2·25 = ${V('x','45 m')}<span class="note">La fórmula dice lo mismo</span></div>
    </div>
    <p>La zona sombreada bajo la recta de ${V('v','velocidad')} está en azul, el color de ${V('x','x')}, porque mide en metros lo que avanzó la combi. Por eso la gráfica de ${V('x','x')} llega a 45 m a los 5 s.</p>
-   <p class="aviso">Si usas d = v·t con la velocidad final te sale 70 m, y con la inicial, 20 m: ninguna es la velocidad que tuvo todo el tiempo. El objetivo más difícil del test de Beichner (1994) fue sacar el cambio de velocidad del área de una gráfica a-t: solo el 23 % lo logró.</p>` },
+   <p class="aviso">Si usas d = v·t con la velocidad final te sale 70 m, y con la inicial, 20 m: ninguna es la velocidad que tuvo todo el tiempo.</p>` },
  { k:'Paso 6', t:'Llega un mototaxi: predice', dos:true, ver:[], gate:P2,
    body:() => `<p>Justo cuando la combi pasa por el paradero a 4 m/s, un mototaxi pasa por el mismo lugar a ${V('v','10 m/s')} constantes. La combi sigue acelerando a 2 m/s². ¿En qué momento van <b>igual de rápido</b>?</p>${opciones(P2)}` },
  { k:'Paso 7', t:'Igual de rápido no es estar juntos', dos:true, anim:[0, 8], extra:() => ({ marcas:[{ g:'v', t:3, texto:'igual v (3 s)' }, { g:'x', t:6, texto:'se cruzan (6 s)' }] }),
@@ -807,7 +807,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira la escena para ver por qué.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `; mira la escena para ver por qué.`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.ctrl() + x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     const tq = $('tq'); if (tq) tq.oninput = () => { cancelAnimationFrame(anim); E.t = +tq.value; sincronizar(); };

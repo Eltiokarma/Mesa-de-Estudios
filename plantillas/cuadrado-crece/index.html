@@ -115,7 +115,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -985,54 +985,54 @@ const P1 = { id:'cuadrado-crece-paso2', ok:'c', opts:[
   ['c', n0(B1.valor)],
   ['d', n0(B1.errores.unSoloAB.valor), 'cuadrado-un-solo-rectangulo', 'hipotesis']],
   fb:{ c:`¡Bien! El lado mide 5 y el cuadrado tiene 5 · 5 = ${n0(B1.valor)} cuadraditos: ${B1.cuenta}.`,
-    a:`Elegiste la A. 3² + 2² = ${n0(B1.errores.sinDoble.valor)} cuenta solo los dos cuadrados de las esquinas. Faltan los dos rectángulos de 3 por 2, que suman ${n0(B1.terminos.dobleAB)}. La correcta está marcada.`,
-    b:`Elegiste la B. 2 · (3 + 2) = ${n0(B1.errores.porDos.valor)} es el doble del lado, no el lado por sí mismo. El área es lado por lado: 5 · 5. La correcta está marcada.`,
-    d:`Elegiste la D. 9 + 6 + 4 = ${n0(B1.errores.unSoloAB.valor)} cuenta un solo rectángulo de 3 por 2, pero el cuadrado tiene dos. La correcta está marcada.` } };
+    a:`3² + 2² = ${n0(B1.errores.sinDoble.valor)} cuenta solo los dos cuadrados de las esquinas. Faltan los dos rectángulos de 3 por 2, que suman ${n0(B1.terminos.dobleAB)}.`,
+    b:`2 · (3 + 2) = ${n0(B1.errores.porDos.valor)} es el doble del lado, no el lado por sí mismo. El área es lado por lado: 5 · 5.`,
+    d:`9 + 6 + 4 = ${n0(B1.errores.unSoloAB.valor)} cuenta un solo rectángulo de 3 por 2, pero el cuadrado tiene dos.` } };
 const P2 = { id:'cuadrado-crece-paso4', ok:'b', opts:[
   ['a', X2.errores.sinDoble.texto, 'AL8-resta-sin-doble-producto', 'parcial'],
   ['b', X2.texto],
   ['c', X2.errores.signoB2.texto, 'resta-quita-tambien-la-esquina', 'hipotesis'],
   ['d', X2.errores.unSoloAB.texto, 'resta-un-solo-rectangulo', 'hipotesis']],
   fb:{ b:`¡Bien! Del cuadrado x² se quitan dos tiras de 3x; la esquina de 9 se quitó dos veces, así que se devuelve una vez: ${X2.texto}.`,
-    a:`Elegiste la A. ${X2.errores.sinDoble.texto} quita solo la esquina. Para dejar el cuadrado de lado x − 3 hay que quitar dos tiras de 3 por x. La correcta está marcada.`,
-    c:`Elegiste la C. Las dos tiras de 3x se montan en la esquina: esos 9 se quitaron dos veces. Hay que devolverlos, no restarlos otra vez. La correcta está marcada.`,
-    d:`Elegiste la D. ${X2.errores.unSoloAB.texto} quita una sola tira. Para que el lado baje de x a x − 3 por arriba y por la derecha hacen falta dos tiras. La correcta está marcada.` } };
+    a:`${X2.errores.sinDoble.texto} quita solo la esquina. Para dejar el cuadrado de lado x − 3 hay que quitar dos tiras de 3 por x.`,
+    c:`Las dos tiras de 3x se montan en la esquina: esos 9 se quitaron dos veces. Hay que devolverlos, no restarlos otra vez.`,
+    d:`${X2.errores.unSoloAB.texto} quita una sola tira. Para que el lado baje de x a x − 3 por arriba y por la derecha hacen falta dos tiras.` } };
 const P3 = { id:'cuadrado-crece-paso5', ok:'d', opts:[
   ['a', C3.errores.reparte.desarrollo, 'AL11-cubo-reparte-el-exponente', 'hipotesis'],
   ['b', C3.errores.unaDeCada.desarrollo, 'cubo-una-pieza-de-cada-forma', 'hipotesis'],
   ['c', C3.errores.copiaCuadrado.desarrollo, 'cubo-copia-el-doble-producto', 'hipotesis'],
   ['d', C3.desarrollo]],
   fb:{ d:`¡Bien! Al cortar el cubo salen ocho piezas: un cubo a³, tres bloques a²b, tres bloques ab² y un cubo b³.`,
-    a:`Elegiste la A. a³ + b³ son solo los dos cubos de las esquinas. Con a = 2 y b = 3 da ${n0(C3.errores.reparte.valor)}, pero el cubo tiene ${n0(C3.valor)} cubitos. La correcta está marcada.`,
-    b:`Elegiste la B. Las formas son esas cuatro, pero de las del medio hay tres de cada una. Con a = 2 y b = 3, una de cada una da ${n0(C3.errores.unaDeCada.valor)}, no ${n0(C3.valor)}. La correcta está marcada.`,
-    c:`Elegiste la C. 2ab es un área: viene del cuadrado, no del cubo. En el cubo las piezas del medio son bloques a²b y ab². Con a = 2 y b = 3, tu expresión da ${n0(C3.errores.copiaCuadrado.valor)}. La correcta está marcada.` } };
+    a:`a³ + b³ son solo los dos cubos de las esquinas. Con a = 2 y b = 3 da ${n0(C3.errores.reparte.valor)}, pero el cubo tiene ${n0(C3.valor)} cubitos.`,
+    b:`Las formas son esas cuatro, pero de las del medio hay tres de cada una. Con a = 2 y b = 3, una de cada una da ${n0(C3.errores.unaDeCada.valor)}, no ${n0(C3.valor)}.`,
+    c:`2ab es un área: viene del cuadrado, no del cubo. En el cubo las piezas del medio son bloques a²b y ab². Con a = 2 y b = 3, tu expresión da ${n0(C3.errores.copiaCuadrado.valor)}.` } };
 const P4 = { id:'cuadrado-crece-paso6', ok:'c', opts:[
   ['a', F4.errores.cuadradoDeResta.expresion, 'AL8-factoriza-como-cuadrado-de-resta', 'hipotesis'],
   ['b', F4.errores.sinRaiz.expresion, 'factoriza-sin-sacar-la-raiz', 'hipotesis'],
   ['c', F4.texto],
   ['d', F4.errores.factorComunFalso.expresion, 'factor-comun-sin-x', 'hipotesis']],
   fb:{ c:`¡Bien! La pieza de arriba se gira y se pega al costado: queda un rectángulo de x + 3 por x − 3.`,
-    a:`Elegiste la A. ${F4.errores.cuadradoDeResta.expresion} es ${F4.errores.cuadradoDeResta.texto}, como viste en el paso 4: no es x² − 9. La correcta está marcada.`,
-    b:`Elegiste la B. ${F4.errores.sinRaiz.expresion} es ${F4.errores.sinRaiz.texto}. El 9 es 3²: la esquina mide 3 de lado, no 9. La correcta está marcada.`,
-    d:`Elegiste la D. ${F4.errores.factorComunFalso.expresion} es ${F4.errores.factorComunFalso.texto}. El 9 no tiene x, así que x no es factor común. La correcta está marcada.` } };
+    a:`${F4.errores.cuadradoDeResta.expresion} es ${F4.errores.cuadradoDeResta.texto}, como viste en el paso 4: no es x² − 9.`,
+    b:`${F4.errores.sinRaiz.expresion} es ${F4.errores.sinRaiz.texto}. El 9 es 3²: la esquina mide 3 de lado, no 9.`,
+    d:`${F4.errores.factorComunFalso.expresion} es ${F4.errores.factorComunFalso.texto}. El 9 no tiene x, así que x no es factor común.` } };
 const P5 = { id:'cuadrado-crece-paso7', ok:'a', opts:[
   ['a', n0(R5.valor)],
   ['b', n0(R5.errores.sumaDeRaices.valor), 'AL9-raiz-de-suma-como-suma-de-raices', 'parcial'],
   ['c', n0(R5.errores.sinRaiz.valor), 'raiz-olvidada', 'hipotesis'],
   ['d', n0(R5.errores.productoDeRaices.valor), 'raiz-mezcla-con-producto', 'hipotesis']],
   fb:{ a:'¡Bien! Primero se suma: 9 + 16 = 25; después se saca la raíz: √25 = 5. Es la hipotenusa del triángulo 3-4-5.',
-    b:`Elegiste la B. √9 + √16 = 3 + 4 = ${n0(R5.errores.sumaDeRaices.valor)} es el camino por los dos catetos. La hipotenusa va en línea recta y es más corta. La correcta está marcada.`,
-    c:`Elegiste la C. 9 + 16 = ${n0(R5.errores.sinRaiz.valor)} es el área del cuadrado de la hipotenusa. Falta sacar la raíz para tener su lado. La correcta está marcada.`,
-    d:`Elegiste la D. √9 · √16 = ${n0(R5.errores.productoDeRaices.valor)} sería √(9 · 16), la raíz de un producto. Aquí hay una suma dentro de la raíz. La correcta está marcada.` } };
+    b:`√9 + √16 = 3 + 4 = ${n0(R5.errores.sumaDeRaices.valor)} es el camino por los dos catetos. La hipotenusa va en línea recta y es más corta.`,
+    c:`9 + 16 = ${n0(R5.errores.sinRaiz.valor)} es el área del cuadrado de la hipotenusa. Falta sacar la raíz para tener su lado.`,
+    d:`√9 · √16 = ${n0(R5.errores.productoDeRaices.valor)} sería √(9 · 16), la raíz de un producto. Aquí hay una suma dentro de la raíz.` } };
 const P6 = { id:'cuadrado-crece-paso8', ok:'b', opts:[
   ['a', n0(S6.errores.sinDoble.valor), 'AL8-suma-de-cuadrados-como-cuadrado-de-suma', 'parcial'],
   ['b', n0(S6.valor)],
   ['c', n0(S6.errores.sumaDoble.valor), 'suma-2ab-en-vez-de-restar', 'hipotesis'],
   ['d', n0(S6.errores.unSoloAB.valor), 'resta-un-solo-ab', 'hipotesis']],
   fb:{ b:`¡Bien! (a + b)² = 49 tiene los dos rectángulos ab; sin ellos quedan las dos esquinas: ${S6.cuenta}.`,
-    a:`Elegiste la A. ${n0(S6.errores.sinDoble.valor)} es (a + b)², el cuadrado entero. a² + b² son solo dos de sus piezas: faltan quitar los dos rectángulos ab. La correcta está marcada.`,
-    c:`Elegiste la C. Los rectángulos ya están dentro de 49: hay que quitarlos, no sumarlos otra vez. La correcta está marcada.`,
-    d:`Elegiste la D. 49 − 12 quita un solo rectángulo ab, pero el cuadrado tiene dos. La correcta está marcada.` } };
+    a:`${n0(S6.errores.sinDoble.valor)} es (a + b)², el cuadrado entero. a² + b² son solo dos de sus piezas: faltan quitar los dos rectángulos ab.`,
+    c:`Los rectángulos ya están dentro de 49: hay que quitarlos, no sumarlos otra vez.`,
+    d:`49 − 12 quita un solo rectángulo ab, pero el cuadrado tiene dos.` } };
 
 const fuenteAL8 = `<p class="fuente">Elevar cada término por separado ((a + b)² = a² + b²) es el error típico del binomio en las pruebas SIMCE de Chile (Agencia de Calidad de la Educación) y aparece entre los más comunes en ingresantes de Guadalajara y de Costa Rica (Universidad de Guadalajara, 2015; Gamboa, Castillo e Hidalgo, 2019); ninguna de esas fuentes da el porcentaje. Matz (1982) lo llamó extrapolación lineal: se aplica una regla que se parece. Las otras opciones son hipótesis nuestras.</p>`;
 
@@ -1380,7 +1380,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

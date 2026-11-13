@@ -122,7 +122,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -818,52 +818,52 @@ const P2 = { id:'grafica-perillas-paso2', ok:'b', opts:[
   ['c',`En ${par(VX.errores.hComoVertical)}: el «− 2» la baja 2 y el «+ 1» la sube 1`,'h-como-vertical','hipotesis'],
   ['d',`En ${par(VX.errores.hkCruzados)}: el «+ 1» la corre 1 a la derecha y el 2 de adentro la sube 2`,'h-k-cruzados','hipotesis']],
   fb:{ b:'¡Bien! (x − 2)² vale 0 cuando x = 2: el vértice está en x = 2. La parábola se corrió 2 a la derecha y 1 hacia arriba.',
-    a:'Elegiste la A. Es la trampa más común: «menos» parece «izquierda». Pero (x − 2)² vale 0 cuando x = 2, no cuando x = −2: el vértice se va a la derecha. La correcta está marcada.',
-    c:'Elegiste la C. El «− 2» está dentro del paréntesis, junto a la x: mueve la gráfica a los lados, no hacia arriba ni hacia abajo. Lo de afuera (+ 1) es lo único que la sube. La correcta está marcada.',
-    d:'Elegiste la D. Es al revés: lo de adentro, junto a la x, corre la gráfica a los lados; lo de afuera la sube o la baja. (x − 2)² vale 0 cuando x = 2, y ahí la altura es 1. La correcta está marcada.' } };
+    a:'Es la trampa más común: «menos» parece «izquierda». Pero (x − 2)² vale 0 cuando x = 2, no cuando x = −2: el vértice se va a la derecha.',
+    c:'El «− 2» está dentro del paréntesis, junto a la x: mueve la gráfica a los lados, no hacia arriba ni hacia abajo. Lo de afuera (+ 1) es lo único que la sube.',
+    d:'Es al revés: lo de adentro, junto a la x, corre la gráfica a los lados; lo de afuera la sube o la baja. (x − 2)² vale 0 cuando x = 2, y ahí la altura es 1.' } };
 const P3 = { id:'grafica-perillas-paso3', ok:'c', opts:[
   ['a',`${fmt(SUMA.errores.sumaFuera, 0)}: f(3) + 2`,'AL27-suma-fuera','hipotesis'],
   ['b',`${fmt(SUMA.errores.sumaDePartes, 0)}: f(3) + f(2)`,'AL27-suma-de-partes','hipotesis'],
   ['c',`${fmt(SUMA.valor, 0)}: f(5)`],
   ['d',`${fmt(SUMA.errores.cuadradoPorPartes, 0)}: 3² + 2² + 1`,'AL8-cuadrado-por-partes','parcial']],
   fb:{ c:'¡Bien! Primero se suma: 3 + 2 = 5. Después se aplica f: f(5) = 5² + 1 = 26.',
-    a:'Elegiste la A. f(3) + 2 es otra cosa: primero aplica f y después suma 2, lo que sube la gráfica 2 en x = 3. f(3 + 2) pide el valor de f en x = 5. La correcta está marcada.',
-    b:'Elegiste la B. f no es una multiplicación: f(3 + 2) no se reparte en f(3) + f(2). Se suma primero, 3 + 2 = 5, y se aplica f una vez. La correcta está marcada.',
-    d:'Elegiste la D. (3 + 2)² no es 3² + 2²: es 5² = 25. El cuadrado de una suma no se reparte. La correcta está marcada.' } };
+    a:'f(3) + 2 es otra cosa: primero aplica f y después suma 2, lo que sube la gráfica 2 en x = 3. f(3 + 2) pide el valor de f en x = 5.',
+    b:'f no es una multiplicación: f(3 + 2) no se reparte en f(3) + f(2). Se suma primero, 3 + 2 = 5, y se aplica f una vez.',
+    d:'(3 + 2)² no es 3² + 2²: es 5² = 25. El cuadrado de una suma no se reparte.' } };
 const P4 = { id:'grafica-perillas-paso4', ok:'b', opts:[
   ['a','1/26: 1/f(10)','AL29-inversa-como-reciproco','parcial'],
   ['b',`${fmt(EN4.valor, 0)}: el x con f(x) = 10`],
   ['c',`${fmt(EN4.errores.directo, 0)}: f(10)`,'inversa-calcula-f','hipotesis'],
   ['d',`${fmt(EN4.errores.despejeAlReves, 0)}: (10 − 6) · 2`,'inversa-despeje-al-reves','hipotesis']],
   fb:{ b:'¡Bien! f⁻¹(10) es el número que f convierte en 10: 2x + 6 = 10 da x = 2. Comprobación: f(2) = 10.',
-    a:'Elegiste la A. El −1 de f⁻¹ no es un exponente: f⁻¹ no es 1/f. f⁻¹(10) es el número que f convierte en 10, y ese es 2, porque f(2) = 10. La correcta está marcada.',
-    c:'Elegiste la C. 26 es f(10): lo que f hace con el 10. La inversa hace lo contrario: busca qué número da 10 al aplicarle f. La correcta está marcada.',
-    d:'Elegiste la D. Para deshacer «multiplicar por 2 y sumar 6» se resta 6 y se DIVIDE entre 2: (10 − 6)/2 = 2. Multiplicar otra vez no deshace nada. La correcta está marcada.' } };
+    a:'El −1 de f⁻¹ no es un exponente: f⁻¹ no es 1/f. f⁻¹(10) es el número que f convierte en 10, y ese es 2, porque f(2) = 10.',
+    c:'26 es f(10): lo que f hace con el 10. La inversa hace lo contrario: busca qué número da 10 al aplicarle f.',
+    d:'Para deshacer «multiplicar por 2 y sumar 6» se resta 6 y se DIVIDE entre 2: (10 − 6)/2 = 2. Multiplicar otra vez no deshace nada.' } };
 const P5 = { id:'grafica-perillas-paso5', ok:'c', opts:[
   ['a','Sí: es la inversa de una función, y toda función tiene inversa','inversa-siempre-funcion','hipotesis'],
   ['b','Sí: se puede escribir con una fórmula, y = ±√x','AL26-funcion-es-formula','parcial'],
   ['c','No: hay rectas verticales que la cortan dos veces'],
   ['d','No: una función no puede tomar valores negativos de y','funcion-sin-negativos','hipotesis']],
   fb:{ c:'¡Bien! Para cada x tiene que haber una sola y. La recta x = 4 la corta en y = −2 y en y = 2: a x = 4 le tocan dos valores.',
-    a:'Elegiste la A. No toda función tiene inversa: x² manda a −2 y a 2 al mismo 4. Al reflejarla, a x = 4 le tocan dos valores de y. La correcta está marcada.',
-    b:'Elegiste la B. Tener una fórmula no la vuelve función: el «±» dice justo que a cada x le tocan dos y. Lo que decide es la recta vertical. La correcta está marcada.',
-    d:'Elegiste la D. Una función sí puede tomar valores negativos (y = x lo hace). Lo que falla aquí es otra cosa: a x = 4 le tocan dos valores, −2 y 2. La correcta está marcada.' } };
+    a:'No toda función tiene inversa: x² manda a −2 y a 2 al mismo 4. Al reflejarla, a x = 4 le tocan dos valores de y.',
+    b:'Tener una fórmula no la vuelve función: el «±» dice justo que a cada x le tocan dos y. Lo que decide es la recta vertical.',
+    d:'Una función sí puede tomar valores negativos (y = x lo hace). Lo que falla aquí es otra cosa: a x = 4 le tocan dos valores, −2 y 2.' } };
 const P6 = { id:'grafica-perillas-paso6', ok:'b', opts:[
   ['a','L₁, porque en x = 2 está más arriba','AL25-altura-como-pendiente','documentado'],
   ['b','L₂: por cada paso a la derecha sube más'],
   ['c','Las dos igual, porque se cruzan en x = 4','intervalo-punto-cruce','parcial']],
   fb:{ b:'¡Bien! Rápido es cuánto sube por cada paso a la derecha (la pendiente): L₂ sube 2 por paso y L₁ solo 1/2. Estar más arriba es otra cosa.',
-    a:'Elegiste la A. L₁ está más arriba, pero eso es la altura, no la rapidez. L₂ sube 2 por cada paso a la derecha y L₁ solo 1/2: por eso L₂ la alcanza en x = 4. La correcta está marcada.',
-    c:'Elegiste la C. Que se crucen en x = 4 dice que ahí tienen la misma altura, no la misma pendiente. L₂ sube 2 por paso y L₁, 1/2. La correcta está marcada.' } };
+    a:'L₁ está más arriba, pero eso es la altura, no la rapidez. L₂ sube 2 por cada paso a la derecha y L₁ solo 1/2: por eso L₂ la alcanza en x = 4.',
+    c:'Que se crucen en x = 4 dice que ahí tienen la misma altura, no la misma pendiente. L₂ sube 2 por paso y L₁, 1/2.' } };
 const P7 = { id:'grafica-perillas-paso7', ok:'c', opts:[
   ['a',INEC.errores.sinInvertir.textoX,'AL20-no-invierte','hipotesis'],
   ['b',INEC.errores.transponeMal.textoX,'AL16-transpone-mal','hipotesis'],
   ['c',INEC.textoX],
   ['d',INEC.errores.comoEcuacion.textoX,'AL19-como-ecuacion','parcial']],
   fb:{ c:'¡Bien! Al dividir entre −2 el sentido se invierte: −2x > 8 da x < −4. Mira la recta: al multiplicar por −1, da media vuelta.',
-    a:'Elegiste la A. Al dividir entre −2 hay que invertir el sentido. Prueba con x = 0: −2 · 0 + 3 = 3, que no es mayor que 11, y sin embargo 0 > −4. La correcta está marcada.',
-    b:'Elegiste la B. El + 3 pasa al otro lado restando: −2x > 11 − 3 = 8, no 14. La correcta está marcada.',
-    d:'Elegiste la D. x = −4 es solo la frontera: ahí −2x + 3 vale 11, que no es mayor que 11. La solución es todo un tramo de la recta. La correcta está marcada.' } };
+    a:'Al dividir entre −2 hay que invertir el sentido. Prueba con x = 0: −2 · 0 + 3 = 3, que no es mayor que 11, y sin embargo 0 > −4.',
+    b:'El + 3 pasa al otro lado restando: −2x > 11 − 3 = 8, no 14.',
+    d:'x = −4 es solo la frontera: ahí −2x + 3 vale 11, que no es mayor que 11. La solución es todo un tramo de la recta.' } };
 
 const steps = [
  { k:'Paso 1', t:'La gráfica con perillas',
@@ -1289,7 +1289,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

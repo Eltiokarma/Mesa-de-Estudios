@@ -132,7 +132,7 @@ canvas{display:block; width:100%; touch-action:pan-y; -webkit-user-select:none; 
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap:12px; align-items:end}
 .slider{display:grid; gap:4px}
@@ -773,36 +773,36 @@ const P0 = { id:'mol-paso2', ok:'c', opts:[
   ['c', 'Igual en los dos: los dos son 1 mol'],
   ['d', 'No se sabe: el agua no ocupa 22,4 L', 'ES5-22-L-para-todo', RES('documentado', 'Dahsah y otros 2006: 11 % de 97')]],
   fb:{ c:'¡Bien! Un mol es siempre el mismo número de partículas: 6,02 × 10²³. Mira la lupa: los dos montones tienen el mismo número de figuras, aunque la balanza se incline.',
-    a:'Elegiste la 1. Que pese más no quiere decir que tenga más moléculas: cada molécula de O₂ pesa más que una de H₂O. Un mol cuenta partículas, no mide gramos. Según Dahsah y otros (2006), solo el 33 % de 97 escolares razonó bien esta pregunta. La correcta está marcada.',
-    b:'Elegiste la 2. El H₂O tiene más átomos, pero no más moléculas: 1 mol de cada uno tiene 6,02 × 10²³ moléculas. Confundir moléculas con átomos es una idea documentada (Dahsah y otros, 2006), sin porcentaje. La correcta está marcada.',
-    d:'Elegiste la 4. 22,4 L es el volumen de 1 mol de gas en condiciones normales, pero el mol no es un volumen: cuenta partículas, y eso no depende de si es líquido o gas. Según Dahsah y otros (2006), el 11 % de 97 escolares creía que todo mol ocupa 22,4 L. La correcta está marcada.' } };
+    a:'Que pese más no quiere decir que tenga más moléculas: cada molécula de O₂ pesa más que una de H₂O. Un mol cuenta partículas, no mide gramos.',
+    b:'El H₂O tiene más átomos, pero no más moléculas: 1 mol de cada uno tiene 6,02 × 10²³ moléculas. ',
+    d:'22,4 L es el volumen de 1 mol de gas en condiciones normales, pero el mol no es un volumen: cuenta partículas, y eso no depende de si es líquido o gas.' } };
 const P1 = { id:'mol-paso4', ok:'c', opts:[
   ['a', '10', 'ES4-misma-cantidad', RES('documentado', 'León Vega y López González 2020: 13 de 28')],
   ['b', '5', 'ES4-al-reves', RES('documentado', 'León Vega y López González 2020: 10 de 28')],
   ['c', '20'],
   ['d', '2', 'divide-masas-atomicas', RES('hipotesis', 'hipótesis nuestra')]],
   fb:{ c:'¡Bien! Cada átomo de C pesa la mitad que uno de Mg: hacen falta el doble de átomos, 20, para la misma masa. Mira cómo caen al platillo.',
-    a:'Elegiste la 1. A igual masa no hay igual número de átomos: los de C pesan la mitad, así que hacen falta más. Según León Vega y López González (2020), 13 de 28 escolares eligieron "la misma cantidad" en una pregunta parecida. La correcta está marcada.',
-    b:'Elegiste la 2. Es al revés: el átomo más liviano necesita más compañeros para pesar lo mismo, no menos. Según León Vega y López González (2020), 10 de 28 escolares respondieron así en una pregunta parecida. La correcta está marcada.',
-    d:'Elegiste la 4. 2 es cuántas veces pesa un Mg más que un C, no cuántos átomos de C hacen falta. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
+    a:'A igual masa no hay igual número de átomos: los de C pesan la mitad, así que hacen falta más.',
+    b:'Es al revés: el átomo más liviano necesita más compañeros para pesar lo mismo, no menos.',
+    d:'2 es cuántas veces pesa un Mg más que un C, no cuántos átomos de C hacen falta.' } };
 const P2 = { id:'mol-paso6', ok:'b', opts:[
   ['a', Fh('C3H'), 'ES16-razon-de-masas', RES('documentado', 'Christianto y otros 2025: entre 16 % y 25 % de 32')],
   ['b', Fh('CH4')],
   ['c', Fh('CH3'), 'redondea-mal-CH3', RES('hipotesis', 'hipótesis nuestra')],
   ['d', Fh('C2H8'), 'no-simplifica-C2H8', RES('hipotesis', 'hipótesis nuestra')]],
   fb:{ b:'¡Bien! Hay que comparar moles, no gramos: 75 g de C son 6,25 mol y 25 g de H son 25 mol, de 1 a 4. Mira la lupa: las porciones se juntan en grupos CH₄.',
-    a:'Elegiste la 1. 75 a 25 es la razón de las masas, no la de los átomos: un átomo de C pesa 12 veces más que uno de H. Antes de comparar hay que pasar a moles. Según Christianto y otros (2025), entre el 16 % y el 25 % de 32 escolares, según la pregunta, eligió esta idea con confianza alta. La correcta está marcada.',
-    c:'Elegiste la 3. Con los moles, la razón sale exacta: 25 entre 6,25 es 4, no 3. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.',
-    d:'Elegiste la 4. C₂H₈ tiene la misma proporción que CH₄, pero la fórmula empírica es la más simple: se divide entre 2. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
+    a:'75 a 25 es la razón de las masas, no la de los átomos: un átomo de C pesa 12 veces más que uno de H. Antes de comparar hay que pasar a moles.',
+    c:'Con los moles, la razón sale exacta: 25 entre 6,25 es 4, no 3.',
+    d:'C₂H₈ tiene la misma proporción que CH₄, pero la fórmula empírica es la más simple: se divide entre 2.' } };
 const P3 = { id:'mol-paso8', ok:'b', opts:[
   ['a', Fh('CH2O'), 'ES17-empirica-es-molecular', RES('documentado', 'Christianto y otros 2025: 16 % de 32')],
   ['b', Fh(GLU.formula)],
   ['c', Fh(SOLO_C), 'multiplica-solo-el-C', RES('hipotesis', 'hipótesis nuestra')],
   ['d', Fh(MITAD), 'k-equivocado', RES('hipotesis', 'hipótesis nuestra')]],
   fb:{ b:`¡Bien! CH₂O pesa 30 g/mol, y ${MMOL} entre 30 es ${GLU.k}: la molécula tiene ${GLU.k} veces la fórmula empírica. Mira la balanza: ${GLU.k} mol de CH₂O pesan lo mismo que 1 mol del compuesto.`,
-    a:`Elegiste la 1. CH₂O es la proporción más simple, pero pesa 30 g/mol y el compuesto pesa ${MMOL}: la molécula es ${GLU.k} veces más grande. La empírica y la molecular coinciden solo a veces. Según Christianto y otros (2025), el 16 % de 32 escolares eligió esta idea con confianza alta. La correcta está marcada.`,
-    c:`Elegiste la 3. Se multiplicó solo el carbono. Al multiplicar la fórmula empírica por ${GLU.k}, se multiplica cada subíndice: el del C, el del H y el del O. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
-    d:`Elegiste la 4. ${sub(MITAD)} pesa 90 g/mol, no ${MMOL}. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
+    a:`CH₂O es la proporción más simple, pero pesa 30 g/mol y el compuesto pesa ${MMOL}: la molécula es ${GLU.k} veces más grande. La empírica y la molecular coinciden solo a veces.`,
+    c:`Se multiplicó solo el carbono. Al multiplicar la fórmula empírica por ${GLU.k}, se multiplica cada subíndice: el del C, el del H y el del O.`,
+    d:`${sub(MITAD)} pesa 90 g/mol, no ${MMOL}.` } };
 
 // ----- Vistas -----
 const NUM = 10; // en los pasos 2 y 3, cada figura es 0,1 mol de moléculas
@@ -861,7 +861,7 @@ const steps = [
      <div class="eq"><span class="ex">${N_('partículas')} = ${n_('n')} × 6,02 × 10²³ = ${n_('1')} × 6,02 × 10²³ = ${N_(NA_TXT + ' moléculas')}, en los dos</span><span class="note">6,02 × 10²³ por mol es el número de Avogadro (Nₐ): cuántas partículas hay en un paquete.</span></div>
    </div>
    <p>Ahora cambia la cuenta a <b>átomos</b> (debajo del dibujo). Cada molécula de ${Fh('H2O')} tiene 3 átomos y cada una de ${Fh('O2')}, 2. Con las mismas moléculas, el agua tiene más átomos: ${N_(sci(3*MM.NA))} contra ${N_(sci(2*MM.NA))}. Por eso siempre hay que decir qué se cuenta: moléculas de ${Fh('H2O')} o átomos de ${Fh('H')}.</p>
-   <p class="fuente">Según Dahsah y otros (2006), solo el 33 % de 97 escolares razonó bien que 1 mol de O₂ y 1 mol de H₂O tienen el mismo número de moléculas. Confundir moléculas con átomos está documentado en el mismo estudio, sin porcentaje. Que todo mol ocupa 22,4 L lo sostuvo el 11 % de 97.</p>` },
+   <p class="fuente"> Confundir moléculas con átomos está documentado en el mismo estudio, sin porcentaje. Que todo mol ocupa 22,4 L lo sostuvo el 11 % de 97.</p>` },
  { k:'Paso 4', t:'Átomos que pesan distinto: predice', gate:P1, vista:r => vMg(r ? MG10.valor : 0, !!r),
    body:() => `<p>Ahora no hay moles: en un platillo hay 10 átomos sueltos de ${Fh('Mg')}. Un átomo de ${Fh('Mg')} pesa ${m_('24 u')} y uno de ${Fh('C')}, ${m_('12 u')} (u es la unidad de masa atómica). ¿Cuántos átomos de ${Fh('C')} pesan lo mismo que los 10 de ${Fh('Mg')}?</p>${opcionesHTML(P1.opts, 'fb')}` },
  { k:'Paso 5', t:'Del átomo al mol', vista:() => vMg(MG10.valor, true),
@@ -876,7 +876,7 @@ const steps = [
    </div>
    <p>El mol convierte las u en gramos. "Un átomo de carbono pesa 12 g" es un error: pesa 12 u; los 12 g son de un mol de átomos.</p>
    <div class="nav"><span></span>${otraVez}</div>
-   <p class="fuente">Según Dahsah y otros (2006), solo el 10 % de 97 escolares razonó bien qué es la masa atómica. Que a igual masa hay igual número de átomos (13 de 28) y la razón al revés (10 de 28) salen de León Vega y López González (2020), en una pregunta parecida.</p>` },
+   <p class="fuente"> Que a igual masa hay igual número de átomos (13 de 28) y la razón al revés (10 de 28) salen de León Vega y López González (2020), en una pregunta parecida.</p>` },
  { k:'Paso 6', t:'La composición: predice', gate:P2, vista:r => vComp(!!r, r ? 1 : 0),
    body:() => `<p class="problem">Un compuesto tiene 75 % de ${Fh('C')} y 25 % de ${Fh('H')} en masa. ¿Cuál es su fórmula empírica?</p>
    <p>Se toma una muestra de 100 g: la balanza muestra ${m_('75 g')} de ${Fh('C')} y ${m_('25 g')} de ${Fh('H')}. La fórmula empírica es la proporción más simple de átomos.</p>${opcionesHTML(P2.opts, 'fb')}` },
@@ -1059,9 +1059,9 @@ const EXPS = [
           ['c', `En el ${Fh('H2')}: 16 veces más`],
           ['d', `En el ${Fh('H2')}: 2 veces más`, 'H2-solo-el-doble', RES('hipotesis', 'hipótesis nuestra')]],
     ok:'c',
-    fb:{ a:'A igual masa no hay igual número: cada molécula de H₂ pesa 2 u y cada una de O₂, 32 u. Según León Vega y López González (2020), 13 de 28 escolares eligieron "la misma cantidad" en una pregunta parecida.',
-      b:'Es al revés: como cada molécula de O₂ pesa más, en 1 g caben menos. Esta opción es una hipótesis nuestra, cercana a ideas documentadas que confunden la masa con la cantidad de partículas (ES3 y ES4), pero sin estudio que mida esta pregunta.',
-      d:'El H₂ tiene más, pero no solo el doble: 32 entre 2 es 16. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    fb:{ a:'A igual masa no hay igual número: cada molécula de H₂ pesa 2 u y cada una de O₂, 32 u.',
+      b:'Es al revés: como cada molécula de O₂ pesa más, en 1 g caben menos.',
+      d:'El H₂ tiene más, pero no solo el doble: 32 entre 2 es 16.' },
     antes:() => ({ bal:{ izq:[{ f:'H2', m:1 }], der:[{ f:'O2', m:1 }], u:'g' }, lupa:{ tapa:'Responde para ver la lupa' },
       cuenta:{ cols:[{ f:'H2', m:1, M:2, n:null, N:null }, { f:'O2', m:1, M:32, n:null, N:null }] }, vars:['masa', 'Mm'] }),
     despues:() => ({ bal:{ izq:[{ f:'H2', m:1 }], der:[{ f:'O2', m:1 }], u:'g' },
@@ -1078,9 +1078,9 @@ const EXPS = [
           ['c', Fh(FE.formula)],
           ['d', Fh('FeO'), 'redondea-a-1', RES('hipotesis', 'hipótesis nuestra')]],
     ok:'c',
-    fb:{ a:'Salió de redondear 1,5 a 2. Una razón de 1,5 no se redondea: se multiplica todo por 2. Es una hipótesis nuestra, sin estudio que la mida.',
-      b:'70 a 30 es la razón de las masas, no la de los átomos. Según Christianto y otros (2025), usar la razón de masas es una idea documentada en escolares.',
-      d:'Salió de redondear 1,5 a 1. Una razón de 1,5 no se redondea: se multiplica todo por 2. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    fb:{ a:'Salió de redondear 1,5 a 2. Una razón de 1,5 no se redondea: se multiplica todo por 2. ',
+      b:'70 a 30 es la razón de las masas, no la de los átomos.',
+      d:'Salió de redondear 1,5 a 1. Una razón de 1,5 no se redondea: se multiplica todo por 2.' },
     antes:() => ({ bal:{ izq:[{ f:'Fe', m:70, etq:[...pzF('Fe'), [' en la muestra', 'ink']] }], der:[{ f:'O', m:30, etq:[...pzF('O'), [' en la muestra', 'ink']] }], u:'g' }, lupa:{ tapa:'Responde para ver la lupa' },
       cuenta:{ lineas:[[['En 100 g: ', 'ink'], ...pzF('Fe'), [' ', 'ink'], ['70 g', 'masa', 800], ['  y  ', 'ink'], ...pzF('O'), [' ', 'ink'], ['30 g', 'masa', 800]], [['¿Cuál es la fórmula empírica?', 'muted']]] }, vars:['masa'] }),
     despues:(p) => ({ bal:{ izq:[{ f:'Fe', m:70, etq:[...pzF('Fe'), [' en la muestra', 'ink']] }], der:[{ f:'O', m:30, etq:[...pzF('O'), [' en la muestra', 'ink']] }], u:'g' },
@@ -1101,9 +1101,9 @@ const EXPS = [
           ['c', '60 %', 'cuenta-atomos-3-de-5', RES('hipotesis', 'hipótesis nuestra')],
           ['d', '16 %', 'masa-atomica-como-porcentaje', RES('hipotesis', 'hipótesis nuestra')]],
     ok:'a',
-    fb:{ b:`Salió de sumar un solo O: 16 entre 40 + 12 + 16 = 68 da ${sinSubO} %. Cada masa atómica va por su subíndice: el O cuenta 3 veces. Según Christianto y otros (2025), el 19 % de 32 escolares olvidó el subíndice, con confianza alta.`,
-      c:'3 de los 5 átomos son O, pero no pesan lo mismo que el Ca: el porcentaje en masa no es el de átomos. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      d:'16 es la masa atómica del O, no su porcentaje. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    fb:{ b:`Salió de sumar un solo O: 16 entre 40 + 12 + 16 = 68 da ${sinSubO} %. Cada masa atómica va por su subíndice: el O cuenta 3 veces.`,
+      c:'3 de los 5 átomos son O, pero no pesan lo mismo que el Ca: el porcentaje en masa no es el de átomos.',
+      d:'16 es la masa atómica del O, no su porcentaje.' },
     antes:() => ({ bal:{ izq:[{ f:'CaCO3', m:100 }], der:[{ f:'pesa', tipo:'pesa', m:100, etq:[['pesa de ', 'muted'], ['100 g', 'masa', 800]] }], u:'g' }, lupa:{ tapa:'Responde para ver la lupa' },
       cuenta:{ lineas:[[['M de ', 'ink'], ...pzF('CaCO3'), [' = ', 'ink'], ['100 g/mol', 'Mm', 800], ['  ·  muestra: ', 'ink'], ['100 g', 'masa', 800]], [['¿Qué parte de la masa es oxígeno?', 'muted']]] }, vars:['masa', 'Mm'] }),
     despues:() => ({ bal:{ izq:[{ f:'Ca', m:40 }, { f:'C', m:12 }, { f:'O', m:48 }], der:[{ f:'pesa', tipo:'pesa', m:100, etq:[['pesa de ', 'muted'], ['100 g', 'masa', 800]] }], u:'g' },
@@ -1120,9 +1120,9 @@ const EXPS = [
           ['c', `${fmt(PROUST.H, 1)} g`],
           ['d', '2 g', 'proust-subindice-como-gramos', RES('hipotesis', 'hipótesis nuestra')]],
     ok:'c',
-    fb:{ a:'Salió de repartir 9 g en 2 a 1, como los subíndices. Pero los subíndices cuentan átomos, no gramos: el O pesa 16 veces más que el H. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      b:'Los elementos de un compuesto no están en igual masa. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      d:'2 es el número de átomos de H en cada molécula, no los gramos. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    fb:{ a:'Salió de repartir 9 g en 2 a 1, como los subíndices. Pero los subíndices cuentan átomos, no gramos: el O pesa 16 veces más que el H.',
+      b:'Los elementos de un compuesto no están en igual masa.',
+      d:'2 es el número de átomos de H en cada molécula, no los gramos.' },
     antes:() => ({ bal:{ izq:[{ f:'H2O', m:9 }], der:[{ f:'pesa', tipo:'pesa', m:9, etq:[['pesa de ', 'muted'], ['9 g', 'masa', 800]] }], u:'g' }, lupa:{ tapa:'Responde para ver la lupa' },
       cuenta:{ lineas:[[['Muestra: ', 'ink'], ['9 g', 'masa', 800], [' de ', 'ink'], ...pzF('H2O')], [['¿Cuántos gramos son de hidrógeno?', 'muted']]] }, vars:['masa'] }),
     despues:() => ({ bal:{ izq:[{ f:'H', m:PROUST.H }, { f:'O', m:PROUST.O }], der:[{ f:'pesa', tipo:'pesa', m:9, etq:[['pesa de ', 'muted'], ['9 g', 'masa', 800]] }], u:'g' },
@@ -1139,9 +1139,9 @@ const EXPS = [
           ['c', '18 L', 'confunde-mL-con-L', RES('hipotesis', 'hipótesis nuestra')],
           ['d', '1 L', 'un-mol-un-litro', RES('hipotesis', 'hipótesis nuestra')]],
     ok:'b',
-    fb:{ a:'22,4 L es lo que ocupa 1 mol de gas en condiciones normales. El agua líquida ocupa lo que dice su densidad: 18 g en 1 g/mL son 18 mL, es decir, 0,018 L. Según Dahsah y otros (2006), el 11 % de 97 escolares creía que todo mol ocupa 22,4 L.',
-      c:'Con 1 g/mL, 18 g son 18 mL (0,018 L), mil veces menos que 18 L. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      d:'El mol no dice el volumen: depende de la sustancia y de si es sólido, líquido o gas. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    fb:{ a:'22,4 L es lo que ocupa 1 mol de gas en condiciones normales. El agua líquida ocupa lo que dice su densidad: 18 g en 1 g/mL son 18 mL, es decir, 0,018 L.',
+      c:'Con 1 g/mL, 18 g son 18 mL (0,018 L), mil veces menos que 18 L.',
+      d:'El mol no dice el volumen: depende de la sustancia y de si es sólido, líquido o gas.' },
     antes:() => ({ bal:{ izq:[{ f:'H2O', m:18, etq:[['agua líquida', 'ink']], nombre:'agua líquida' }], der:[{ f:'pesa', tipo:'pesa', m:18, etq:[['pesa de ', 'muted'], ['18 g', 'masa', 800]] }], u:'g' }, lupa:{ tapa:'Responde para ver el volumen' },
       cuenta:{ lineas:[[...pzF('H2O'), [' líquida: ', 'ink'], ['18 g', 'masa', 800], [' = ', 'ink'], ['1 mol', 'mol', 800], ['   densidad 1 g/mL', 'muted']], [['¿Qué volumen ocupa?', 'muted']]] }, vars:['masa', 'mol'] }),
     despues:() => ({ bal:{ izq:[{ f:'H2O', m:18, etq:[['agua líquida', 'ink']], nombre:'agua líquida' }], der:[{ f:'pesa', tipo:'pesa', m:18, etq:[['pesa de ', 'muted'], ['18 g', 'masa', 800]] }], u:'g' },
@@ -1187,7 +1187,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la lupa y la cuenta para ver por qué.' : `Elegiste la ${'abcd'.indexOf(p) + 1}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la lupa y la cuenta para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     explicar();
   };

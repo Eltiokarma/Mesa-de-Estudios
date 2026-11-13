@@ -121,7 +121,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -940,72 +940,72 @@ const P1 = { id:'induccion-paso1', ok:'c', opts:[
   ['c', 'Marca cero, porque el campo en la bobina ya no cambia'],
   ['d', 'Marca cero, porque a esa distancia el imán no es lo bastante fuerte', 'MG-cero-solo-si-esta-lejos', 'parcial']],
   fb:{ c:'¡Bien! La corriente aparece solo mientras el campo que atraviesa la bobina cambia. Con el imán quieto, nada cambia: cero.',
-    a:'Elegiste la A. El campo es fuerte, pero ya no cambia: con el imán quieto no hay corriente. La correcta está marcada.',
-    b:'Elegiste la B. No queda «un poco» de corriente: con el imán quieto el campo no cambia nada y la corriente es cero. La correcta está marcada.',
-    d:'Elegiste la D. Sí marca cero, pero no por la distancia: aunque el imán estuviera pegado a la bobina, quieto no induce corriente. La correcta está marcada.' } };
+    a:'El campo es fuerte, pero ya no cambia: con el imán quieto no hay corriente.',
+    b:'No queda «un poco» de corriente: con el imán quieto el campo no cambia nada y la corriente es cero.',
+    d:'Sí marca cero, pero no por la distancia: aunque el imán estuviera pegado a la bobina, quieto no induce corriente.' } };
 const P2 = { id:'induccion-paso2', ok:'b', opts:[
   ['a', 'En t₁ = 0,95 s', 'MG-fem-con-la-rapidez-del-iman', 'hipotesis'],
   ['b', 'En t₂ = 1,5 s'],
   ['c', 'En t₃ = 1,7 s', 'MG10-fem-en-la-altura-del-flujo', 'parcial'],
   ['d', 'En t₄ = 2,4 s', 'MG10-fem-con-el-flujo-mayor-quieto', 'parcial']],
   fb:{ b:'¡Bien! La corriente sigue a la PENDIENTE de la curva del flujo: en t₂ el flujo sube más rápido que en cualquier otro momento.',
-    a:'Elegiste la A. En t₁ el imán va más rápido, pero está lejos: el flujo casi no cambia. Lo que cuenta es lo rápido que cambia el flujo. La correcta está marcada.',
-    c:'Elegiste la C. En t₃ el imán acaba de detenerse: el flujo ya es el mayor, pero dejó de cambiar y la corriente es cero. La correcta está marcada.',
-    d:'Elegiste la D. En t₄ el flujo es el mayor, pero no cambia: la curva es horizontal y la corriente es cero. La correcta está marcada.' } };
+    a:'En t₁ el imán va más rápido, pero está lejos: el flujo casi no cambia. Lo que cuenta es lo rápido que cambia el flujo.',
+    c:'En t₃ el imán acaba de detenerse: el flujo ya es el mayor, pero dejó de cambiar y la corriente es cero.',
+    d:'En t₄ el flujo es el mayor, pero no cambia: la curva es horizontal y la corriente es cero.' } };
 const P3 = { id:'induccion-paso3', ok:'d', opts:[
   ['a', `ε = ${V(F3.errores.sinN)} V e I = ${fmt(F3.errores.IsinN, 3)} A`, 'MG-faraday-olvida-N', 'hipotesis'],
   ['b', `ε = ${V(F3.femModulo)} V e I = ${V(F3.errores.IporR)} A`, 'MG-ohm-multiplica-por-R', 'hipotesis'],
   ['c', `ε = ${V(F3.errores.conFlujoInicial)} V e I = ${fmt(F3.errores.conFlujoInicial/8, 3)} A`, 'MG10-faraday-flujo-en-vez-de-cambio', 'parcial'],
   ['d', `ε = ${V(F3.femModulo)} V e I = ${V(F3.I)} A`]],
   fb:{ d:'¡Bien! ε = N·|ΔΦ|/Δt con el CAMBIO del flujo de cada vuelta, multiplicado por las 100 vueltas; después, I = ε/R.',
-    a:'Elegiste la A. Falta multiplicar por N: cada una de las 100 vueltas aporta su fem, y se suman. La correcta está marcada.',
-    b:'Elegiste la B. La fem está bien, pero la corriente es ε/R, no ε·R: 4/8 = 0,5 A. La correcta está marcada.',
-    c:'Elegiste la C. Usaste el flujo del principio, 0,01 Wb, en lugar de su cambio, 0,008 Wb. La fem depende de cuánto cambia el flujo. La correcta está marcada.' } };
+    a:'Falta multiplicar por N: cada una de las 100 vueltas aporta su fem, y se suman.',
+    b:'La fem está bien, pero la corriente es ε/R, no ε·R: 4/8 = 0,5 A.',
+    c:'Usaste el flujo del principio, 0,01 Wb, en lugar de su cambio, 0,008 Wb. La fem depende de cuánto cambia el flujo.' } };
 const P4 = { id:'induccion-paso4', ok:'c', opts:[
   ['a', 'Horaria, y la bobina atrae al imán', 'MG8-lenz-sentido-contrario', 'parcial'],
   ['b', 'Antihoraria, y la bobina atrae al imán', 'MG-bobina-atrae-como-al-hierro', 'hipotesis'],
   ['c', 'Antihoraria, y la bobina repele al imán'],
   ['d', 'Horaria, y la bobina repele al imán', 'MG-mano-derecha-invertida', 'parcial']],
   fb:{ c:'¡Bien! El flujo aumenta, así que el campo inducido apunta hacia el imán, contra ese aumento: la corriente es antihoraria vista desde el imán y la cara que lo mira se comporta como un polo norte, que lo repele.',
-    a:'Elegiste la A. Al revés: el campo inducido se opone al aumento del flujo, así que apunta hacia el imán. Esa corriente es antihoraria vista desde el imán y repele. La correcta está marcada.',
-    b:'Elegiste la B. El sentido está bien, pero esa corriente hace que la cara que mira al imán se comporte como un polo norte, y dos polos norte se repelen. La bobina frena el acercamiento. La correcta está marcada.',
-    d:'Elegiste la D. Sí repele, pero una corriente horaria vista desde el imán crearía un campo que se aleja del imán, y eso lo atraería. Repeler pide una corriente antihoraria. La correcta está marcada.' } };
+    a:'Al revés: el campo inducido se opone al aumento del flujo, así que apunta hacia el imán. Esa corriente es antihoraria vista desde el imán y repele.',
+    b:'El sentido está bien, pero esa corriente hace que la cara que mira al imán se comporte como un polo norte, y dos polos norte se repelen. La bobina frena el acercamiento.',
+    d:'Sí repele, pero una corriente horaria vista desde el imán crearía un campo que se aleja del imán, y eso lo atraería. Repeler pide una corriente antihoraria.' } };
 const P5 = { id:'induccion-paso5', ok:'b', opts:[
   ['a', 'Antihoraria, y su campo inducido apunta hacia el imán, contra el del imán', 'MG8-MG9-contra-el-campo', 'documentado'],
   ['b', 'Horaria, y su campo inducido apunta alejándose del imán, como el del imán'],
   ['c', 'Horaria, y su campo inducido apunta hacia el imán, contra el del imán', 'MG-mano-derecha-invertida', 'parcial'],
   ['d', 'No circula, y no hay campo inducido: el imán se está alejando', 'MG8-sin-corriente-al-alejar', 'parcial']],
   fb:{ b:'¡Bien! Ahora el flujo disminuye. El campo inducido se opone a esa disminución: refuerza el campo que se va. Por eso la bobina atrae al imán.',
-    a:'Elegiste la A. La corriente inducida no va contra el campo: va contra el CAMBIO del flujo. Aquí el flujo disminuye, así que el campo inducido lo refuerza. La correcta está marcada.',
-    c:'Elegiste la C. Una corriente horaria vista desde el imán crea un campo que se aleja del imán, no que apunta hacia él. La correcta está marcada.',
-    d:'Elegiste la D. Alejarse también cambia el flujo: hay corriente mientras el imán se mueve, ahora en el otro sentido. La correcta está marcada.' } };
+    a:'La corriente inducida no va contra el campo: va contra el CAMBIO del flujo. Aquí el flujo disminuye, así que el campo inducido lo refuerza.',
+    c:'Una corriente horaria vista desde el imán crea un campo que se aleja del imán, no que apunta hacia él.',
+    d:'Alejarse también cambia el flujo: hay corriente mientras el imán se mueve, ahora en el otro sentido.' } };
 const P6 = { id:'induccion-paso6', ok:'a', opts:[
   ['a', `ε = ${V(B6.fem)} V, y la fuerza magnética frena la barra`],
   ['b', `ε = ${V(B6.fem)} V, y la fuerza magnética empuja la barra hacia adelante`, 'MG-la-corriente-ayuda-a-la-barra', 'hipotesis'],
   ['c', `ε = ${V(B6.errores.sinL)} V, y la fuerza magnética frena la barra`, 'MG-barra-olvida-L', 'hipotesis'],
   ['d', 'ε = 0 V, y no hay fuerza magnética sobre la barra', 'MG10-campo-constante-sin-fem', 'parcial']],
   fb:{ a:'¡Bien! B no cambia, pero el área del circuito crece: el flujo aumenta y ε = B·L·v. La corriente inducida hace que el campo frene a la barra.',
-    b:'Elegiste la B. Si la fuerza empujara hacia adelante, la barra se aceleraría sola y prendería el foquito gratis. Lenz dice lo contrario: la fuerza se opone al movimiento. La correcta está marcada.',
-    c:'Elegiste la C. Falta el largo de la barra: ε = B·L·v = 0,5 · 0,4 · 10. La correcta está marcada.',
-    d:'Elegiste la D. B es constante, pero el área encerrada crece al avanzar la barra, y con ella el flujo. Cambiar el área también induce. La correcta está marcada.' } };
+    b:'Si la fuerza empujara hacia adelante, la barra se aceleraría sola y prendería el foquito gratis. Lenz dice lo contrario: la fuerza se opone al movimiento.',
+    c:'Falta el largo de la barra: ε = B·L·v = 0,5 · 0,4 · 10.',
+    d:'B es constante, pero el área encerrada crece al avanzar la barra, y con ella el flujo. Cambiar el área también induce.' } };
 const P7 = { id:'induccion-paso7', ok:'d', opts:[
   ['a', `εmax = ${fmt(G7.femMax, 0)} V y ε eficaz = ${fmt(G7.errores.eficazMitad, 0)} V`, 'MG-eficaz-entre-2', 'hipotesis'],
   ['b', `εmax = ${fmt(G7.errores.sinN, 0)} V y ε eficaz ≈ ${fmt(G7.errores.sinNEficaz, 1)} V`, 'MG-generador-olvida-N', 'hipotesis'],
   ['c', `εmax = ${fmt(G7.femMax, 0)} V y ε eficaz ≈ ${fmt(G7.errores.eficazPorRaiz, 0)} V`, 'MG-eficaz-por-raiz-de-2', 'hipotesis'],
   ['d', `εmax = ${fmt(G7.femMax, 0)} V y ε eficaz ≈ ${fmt(G7.eficaz, 0)} V`]],
   fb:{ d:'¡Bien! εmax = N·B·A·ω y, para una fem senoidal, el valor eficaz es εmax/√2.',
-    a:'Elegiste la A. El valor eficaz no es la mitad del máximo: es εmax/√2 ≈ 0,71·εmax. La correcta está marcada.',
-    b:'Elegiste la B. Falta multiplicar por las 50 vueltas: εmax = N·B·A·ω. La correcta está marcada.',
-    c:'Elegiste la C. El eficaz es menor que el máximo: se divide entre √2, no se multiplica. La correcta está marcada.' } };
+    a:'El valor eficaz no es la mitad del máximo: es εmax/√2 ≈ 0,71·εmax.',
+    b:'Falta multiplicar por las 50 vueltas: εmax = N·B·A·ω.',
+    c:'El eficaz es menor que el máximo: se divide entre √2, no se multiplica.' } };
 const P8 = { id:'induccion-paso8', ok:'a', opts:[
   ['a', `Vs = ${fmt(T8.Vs, 0)} V e Is = ${fmt(T8.Is, 0)} A`],
   ['b', `Vs = ${fmt(T8.errores.razonInvertida.Vs, 0)} V e Is = ${fmt(T8.errores.razonInvertida.Is, 3)} A`, 'MG-trafo-razon-invertida', 'hipotesis'],
   ['c', `Vs = ${fmt(T8.Vs, 0)} V e Is = ${fmt(T8.errores.corrienteComoVoltaje.Is, 3)} A`, 'MG-trafo-corriente-como-voltaje', 'hipotesis'],
   ['d', `Vs = ${fmt(T8.errores.sinCambio.Vs, 0)} V e Is = ${fmt(T8.errores.sinCambio.Is, 1)} A`, 'MG-trafo-no-cambia-nada', 'hipotesis']],
   fb:{ a:'¡Bien! Vs/Vp = Ns/Np = 50/200: el voltaje baja a la cuarta parte. La potencia se conserva, así que la corriente sube 4 veces.',
-    b:'Elegiste la B. Invertiste la razón: con menos vueltas en la secundaria, el voltaje BAJA. Vs = 220 · 50/200. La correcta está marcada.',
-    c:'Elegiste la C. El voltaje está bien, pero la corriente cambia al revés: Vp·Ip = Vs·Is, así que si el voltaje baja 4 veces, la corriente sube 4 veces. La correcta está marcada.',
-    d:'Elegiste la D. El transformador sí cambia el voltaje: en la razón de las vueltas, Ns/Np. La correcta está marcada.' } };
+    b:'Invertiste la razón: con menos vueltas en la secundaria, el voltaje BAJA. Vs = 220 · 50/200.',
+    c:'El voltaje está bien, pero la corriente cambia al revés: Vp·Ip = Vs·Is, así que si el voltaje baja 4 veces, la corriente sube 4 veces.',
+    d:'El transformador sí cambia el voltaje: en la razón de las vueltas, Ns/Np.' } };
 
 // ----- configuraciones -----
 const graf = o => ({ tFin:TFIN, phiMax:PHI_MAX*1.15, femMax:SER.femMax*1.25, series:[{ puntos:SER.puntos }], picos:[{ t:SER.tMax, v:-SER.femMax, n:`pico ≈ ${fmt(SER.femMax*1000, 0)} mV` }], ...o });
@@ -1344,7 +1344,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la opción ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

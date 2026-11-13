@@ -102,7 +102,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .frac > span{white-space:nowrap}
 .aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
 .msg{margin:0; font-weight:700; min-height:1.5em}
-.msg.mal{color:var(--warn)} .msg.ok{color:var(--ok)}
+.msg.mal{color:inherit} .msg.ok{color:var(--ok)}
 
 .opts{display:grid; grid-template-columns:1fr; gap:8px}
 @media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
@@ -117,7 +117,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -737,54 +737,54 @@ const G1 = { id:'traslados-paso1', ok:'b', unidad:U_FREC, opts:[
   ['c', `${T1.errores.menosUno} pastillas`, 'pastillas-menos-uno', 'hipotesis'],
   ['d', `${T1.errores.deMas} pastillas`, 'pastillas-extremos-de-mas', 'hipotesis']],
   fb:{ b:`¡Bien! En ${t_('48 h')} caben 48 ÷ 6 = ${T1.intervalos} intervalos de ${k_('6 h')}. Cada intervalo empieza con una toma, y al final del último hay una toma más: ${n_('n')} = ${T1.intervalos} + 1 = ${n_(String(T1.tomas))}.`,
-    a:`Elegiste la A. 48 ÷ 6 = ${T1.intervalos} cuenta los intervalos de 6 horas, no las tomas. La primera toma es al empezar y la última al cumplirse los 2 días: hay una toma más que intervalos. La correcta está marcada.`,
-    c:`Elegiste la C. ${T1.errores.menosUno} son solo las tomas de en medio: deja fuera las dos de los extremos (el lunes y el miércoles a las 8:00), y las dos se toman. La correcta está marcada.`,
-    d:`Elegiste la D. ${T1.errores.deMas} cuenta una toma de más: a los ${T1.intervalos} intervalos se les sumó una toma por cada extremo, pero la del inicio ya es la que abre el primer intervalo. La correcta está marcada.` } };
+    a:`48 ÷ 6 = ${T1.intervalos} cuenta los intervalos de 6 horas, no las tomas. La primera toma es al empezar y la última al cumplirse los 2 días: hay una toma más que intervalos.`,
+    c:`${T1.errores.menosUno} son solo las tomas de en medio: deja fuera las dos de los extremos (el lunes y el miércoles a las 8:00), y las dos se toman.`,
+    d:`${T1.errores.deMas} cuenta una toma de más: a los ${T1.intervalos} intervalos se les sumó una toma por cada extremo, pero la del inicio ya es la que abre el primer intervalo.` } };
 const G3 = { id:'traslados-paso3', ok:'d', unidad:U_FREC, opts:[
   ['a', C3.horas.mcd, 'AR13-mcd-en-vez-de-mcm', 'parcial'],
   ['b', C3.horas.suma, 'coincidencia-suma-de-intervalos', 'hipotesis'],
   ['c', C3.horas.producto, 'coincidencia-producto', 'hipotesis'],
   ['d', C3.hora]],
   fb:{ d:`¡Bien! La combi A sale a los 16, 32, ${M_(String(C3.mcm))}, … minutos y la B a los 24, ${M_(String(C3.mcm))}, …: el primer número que está en las dos listas es el menor múltiplo común de 16 y 24, ${M_('M')} = ${M_(String(C3.mcm))}. 6:00 + ${C3.mcm} min = ${C3.hora}.`,
-    a:`Elegiste la A. ${C3.mcd} es el mayor divisor común de 16 y 24 (el MCD). Pero a los ${C3.mcd} minutos todavía no sale ninguna combi: la primera A sale a las 6:16. Para que salgan juntas tiene que pasar un número de minutos que sea múltiplo de 16 y también de 24. La correcta está marcada.`,
-    b:`Elegiste la B. A los ${C3.suma} minutos (16 + 24) no sale ninguna: la A sale a las 6:32 y luego a las 6:48; la B, a las 6:24 y luego a las 6:48. La correcta está marcada.`,
-    c:`Elegiste la C. 16 · 24 = ${C3.producto} minutos (${C3.horas.producto}) es un momento en que sí salen juntas, pero no el primero: antes ya coincidieron varias veces. El producto es un múltiplo común, no el menor. La correcta está marcada.` } };
+    a:`${C3.mcd} es el mayor divisor común de 16 y 24 (el MCD). Pero a los ${C3.mcd} minutos todavía no sale ninguna combi: la primera A sale a las 6:16. Para que salgan juntas tiene que pasar un número de minutos que sea múltiplo de 16 y también de 24.`,
+    b:`A los ${C3.suma} minutos (16 + 24) no sale ninguna: la A sale a las 6:32 y luego a las 6:48; la B, a las 6:24 y luego a las 6:48.`,
+    c:`16 · 24 = ${C3.producto} minutos (${C3.horas.producto}) es un momento en que sí salen juntas, pero no el primero: antes ya coincidieron varias veces. El producto es un múltiplo común, no el menor.` } };
 const G4 = { id:'traslados-paso4', ok:'a', unidad:U_FREC, opts:[
   ['a', `${C4.veces} veces`],
   ['b', `${C4.errores.sinLaPrimera} veces`, 'coincidencias-sin-la-primera', 'hipotesis'],
   ['c', `${C4.errores.sinExtremos} veces`, 'coincidencias-sin-extremos', 'hipotesis'],
   ['d', `${C4.errores.conMcd} veces`, 'AR13-mcd-en-vez-de-mcm', 'parcial']],
   fb:{ a:`¡Bien! Salen juntas cada ${M_(String(C4.mcm))} min. En los ${C4.lapso} minutos de 6:00 a 10:00 caben ${C4.lapso} ÷ ${C4.mcm} = ${C4.veces - 1} intervalos, y hay una salida juntas más que intervalos: ${s_('s')} = ${C4.veces - 1} + 1 = ${s_(String(C4.veces))}, con la de las 6:00 y la de las 10:00.`,
-    b:`Elegiste la B. ${C4.lapso} ÷ ${C4.mcm} = ${C4.veces - 1} cuenta los intervalos; falta la salida de las 6:00, con la que empieza todo. La correcta está marcada.`,
-    c:`Elegiste la C. ${C4.errores.sinExtremos} deja fuera las dos puntas: la salida de las 6:00 y la de las 10:00 también cuentan, porque las dos caen dentro del horario. La correcta está marcada.`,
-    d:`Elegiste la D. ${C4.errores.conMcd} sería si salieran juntas cada ${C3.mcd} minutos (el MCD de 16 y 24), pero en ${C3.mcd} minutos ninguna combi vuelve a salir. La correcta está marcada.` } };
+    b:`${C4.lapso} ÷ ${C4.mcm} = ${C4.veces - 1} cuenta los intervalos; falta la salida de las 6:00, con la que empieza todo.`,
+    c:`${C4.errores.sinExtremos} deja fuera las dos puntas: la salida de las 6:00 y la de las 10:00 también cuentan, porque las dos caen dentro del horario.`,
+    d:`${C4.errores.conMcd} sería si salieran juntas cada ${C3.mcd} minutos (el MCD de 16 y 24), pero en ${C3.mcd} minutos ninguna combi vuelve a salir.` } };
 const G5 = { id:'traslados-paso5', ok:'c', unidad:U_FREC, opts:[
   ['a', 'El viernes', 'turno-un-ciclo-de-mas', 'hipotesis'],
   ['b', 'El lunes', 'turno-siempre-el-mismo-dia', 'hipotesis'],
   ['c', 'El sábado'],
   ['d', 'El miércoles', 'turno-cuenta-hacia-atras', 'hipotesis']],
   fb:{ c:`¡Bien! Del primer descanso al décimo hay 9 saltos de 6 días: ${D_('D')} = 9 · 6 = ${D_(String(D5.dias))} días. ${D5.dias} = 7 · ${D5.semanas} + ${r_(String(D5.resto))}: ${D5.semanas} semanas justas, que dejan el lunes como lunes, y ${r_(String(D5.resto))} días más: lunes + ${D5.resto} = ${D5.dia}.`,
-    a:`Elegiste la A. ${D5.errores.unCicloDeMas[0].toUpperCase() + D5.errores.unCicloDeMas.slice(1)} sale de contar 10 saltos de 6 días (60 días) en vez de 9: el primer descanso ya es el lunes, y del 1.º al 10.º hay 9 saltos. También sale viernes si, al avanzar los días que sobran, se cuenta el lunes como el primero. La correcta está marcada.`,
-    b:'Elegiste la B. Los descansos se repiten cada 6 días, pero la semana tiene 7: cada descanso cae un día antes en la semana que el anterior (lunes, domingo, sábado…). La correcta está marcada.',
-    d:'Elegiste la D. Miércoles sale de contar hacia atrás los días que sobran después de las semanas completas. Los días van hacia adelante desde el lunes. La correcta está marcada.' } };
+    a:`${D5.errores.unCicloDeMas[0].toUpperCase() + D5.errores.unCicloDeMas.slice(1)} sale de contar 10 saltos de 6 días (60 días) en vez de 9: el primer descanso ya es el lunes, y del 1.º al 10.º hay 9 saltos. También sale viernes si, al avanzar los días que sobran, se cuenta el lunes como el primero.`,
+    b:'Los descansos se repiten cada 6 días, pero la semana tiene 7: cada descanso cae un día antes en la semana que el anterior (lunes, domingo, sábado…).',
+    d:'Miércoles sale de contar hacia atrás los días que sobran después de las semanas completas. Los días van hacia adelante desde el lunes.' } };
 const G6 = { id:'traslados-paso6', ok:'b', opts:[
   ['a', `${M6.errores.dosPuntas} jugadas`, 'monedas-dos-puntas', 'hipotesis'],
   ['b', `${M6.minimo} jugadas`],
   ['c', `${M6.errores.filaMasLarga} jugadas`, 'monedas-fila-larga', 'hipotesis'],
   ['d', `${M6.errores.mitad} jugadas`, 'monedas-la-mitad', 'hipotesis']],
   fb:{ b:`¡Bien! Basta con mover las tres puntas: las 7 monedas del medio ya forman parte del triángulo invertido. Cada moneda que no está en su lugar final se mueve al menos una vez, y el motor probó todos los lugares posibles del triángulo invertido: como mucho comparte 7 monedas con el de partida, así que hacen falta ${m_(`m = 10 − 7 = ${M6.minimo}`)} jugadas.`,
-    a:'Elegiste la A. Con 2 jugadas quedarían 8 monedas quietas, y en ningún lugar el triángulo invertido comparte 8 monedas con el de partida: como mucho comparte 7. La correcta está marcada.',
-    c:'Elegiste la C. Con 4 jugadas se puede, pero no es lo mínimo: 7 de las 10 monedas pueden quedarse quietas. La correcta está marcada.',
-    d:'Elegiste la D. Mover la mitad de las monedas es más de lo necesario: 7 de las 10 ya están donde las necesita el triángulo invertido. La correcta está marcada.' } };
+    a:'Con 2 jugadas quedarían 8 monedas quietas, y en ningún lugar el triángulo invertido comparte 8 monedas con el de partida: como mucho comparte 7.',
+    c:'Con 4 jugadas se puede, pero no es lo mínimo: 7 de las 10 monedas pueden quedarse quietas.',
+    d:'Mover la mitad de las monedas es más de lo necesario: 7 de las 10 ya están donde las necesita el triángulo invertido.' } };
 const G8 = { id:'traslados-paso8', ok:'d', opts:[
   ['a', `${fmt(R8.errores.sinRestar)} cuadras`, 'cardinal-no-resta-el-sur', 'hipotesis'],
   ['b', `${R8.errores.sumaTodo} cuadras`, 'cardinal-suma-todo-el-camino', 'hipotesis'],
   ['c', `${R8.errores.sumaCatetos} cuadras`, 'cardinal-suma-los-catetos', 'hipotesis'],
   ['d', `${R8.exacto} cuadras`]],
   fb:{ d:`¡Bien! Hacia el este: ${x_('x')} = 4 + 8 = ${x_(String(R8.x))}. Hacia el norte: ${y_('y')} = 7 − 2 = ${y_(String(R8.y))}. La recta al punto de partida es la hipotenusa: ${d_('d')} = √(${R8.x}² + ${R8.y}²) = √${R8.d2} = ${d_(R8.exacto)} cuadras, hacia el ${R8.direccion}.`,
-    a:`Elegiste la A. ${fmt(R8.errores.sinRestar)} sale de sumar las 2 cuadras al sur a las 7 al norte: √(12² + 9²). Pero al ir al sur Lucía retrocede. La correcta está marcada.`,
-    b:`Elegiste la B. ${R8.errores.sumaTodo} es todo lo que caminó (7 + 4 + 2 + 8). La pregunta es la distancia en línea recta, y el camino da vueltas. La correcta está marcada.`,
-    c:`Elegiste la C. ${R8.x} + ${R8.y} = ${R8.errores.sumaCatetos} es lo que caminaría para volver por las calles. En línea recta se corta en diagonal: es la hipotenusa de un triángulo rectángulo. La correcta está marcada.` } };
+    a:`${fmt(R8.errores.sinRestar)} sale de sumar las 2 cuadras al sur a las 7 al norte: √(12² + 9²). Pero al ir al sur Lucía retrocede.`,
+    b:`${R8.errores.sumaTodo} es todo lo que caminó (7 + 4 + 2 + 8). La pregunta es la distancia en línea recta, y el camino da vueltas.`,
+    c:`${R8.x} + ${R8.y} = ${R8.errores.sumaCatetos} es lo que caminaría para volver por las calles. En línea recta se corta en diagonal: es la hipotenusa de un triángulo rectángulo.` } };
 
 // ---- configuraciones ----
 const MARCAS1 = [{ h:0, texto:'lun 8:00' }, { h:24, texto:'mar 8:00' }, { h:48, texto:'mié 8:00' }];
@@ -1149,7 +1149,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

@@ -120,7 +120,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -663,52 +663,52 @@ const G1 = { id:'relojes-paso1', ok:'b', opts:[
   ['c', grados(P1.errores.signoCambiado), 'formula-signo-cambiado', 'hipotesis'],
   ['d', grados(P1.errores.noMenor), 'no-toma-el-menor-angulo', 'hipotesis']],
   fb:{ b:'¡Bien! A las 3:30 el horario ya no está en el 3: en media hora avanzó 30 · 0,5° = 15°, hasta la mitad entre el 3 y el 4. El minutero está en el 6 (180°) y el horario en 105°: forman 75°.',
-    a:'Elegiste la A. Así sería si el horario se quedara clavado en el 3 hasta las 4. Pero el horario camina 0,5° por minuto: a las 3:30 está a mitad de camino entre el 3 y el 4. La correcta está marcada.',
-    c:'Elegiste la C. Esa cuenta suma 90 + 165 = 255° y toma 360 − 255. En la fórmula los minutos se restan: α = |30H − 11M/2| = |90 − 165| = 75°. La correcta está marcada.',
-    d:'Elegiste la D. 285° es el ángulo que da la vuelta por fuera. La pregunta pide el menor ángulo, y 285° pasa de 180°: el menor es 360 − 285 = 75°. La correcta está marcada.' } };
+    a:'Así sería si el horario se quedara clavado en el 3 hasta las 4. Pero el horario camina 0,5° por minuto: a las 3:30 está a mitad de camino entre el 3 y el 4.',
+    c:'Esa cuenta suma 90 + 165 = 255° y toma 360 − 255. En la fórmula los minutos se restan: α = |30H − 11M/2| = |90 − 165| = 75°.',
+    d:'285° es el ángulo que da la vuelta por fuera. La pregunta pide el menor ángulo, y 285° pasa de 180°: el menor es 360 − 285 = 75°.' } };
 const G3 = { id:'relojes-paso3', ok:'c', opts:[
   ['a', hm(3, P3.errores.horarioQuieto.fraccion), 'AR7-horario-quieto', 'hipotesis'],
   ['b', hm(3, P3.errores.sinElMedio.fraccion), 'formula-sin-el-medio', 'hipotesis'],
   ['c', hm(3, P3.primera.fraccion)],
   ['d', hm(3, P3.errores.conElSuplemento.fraccion), 'superpuestas-como-opuestas', 'hipotesis']],
   fb:{ c:'¡Bien! A las 3:00 el minutero está 90° detrás del horario. Cada minuto le descuenta 6° − 0,5° = 5,5°. Lo alcanza en 90/5,5 = 180/11 = 16 4/11 min.',
-    a:'Elegiste la A. A las 3:15 el minutero llega al 3, pero el horario ya no está ahí: avanzó 7,5° en esos 15 minutos. El minutero todavía tiene que alcanzarlo. La correcta está marcada.',
-    b:'Elegiste la B. Esa cuenta resuelve 11M = 90: se olvidó dividir el 11 entre 2. El minutero le gana al horario 5,5° por minuto, no 11°: tarda el doble, 180/11 min. La correcta está marcada.',
-    d:'Elegiste la D. A las 3 h 49 1/11 min las agujas están en línea, pero en sentidos opuestos (forman 180°). Juntas quiere decir α = 0°. La correcta está marcada.' } };
+    a:'A las 3:15 el minutero llega al 3, pero el horario ya no está ahí: avanzó 7,5° en esos 15 minutos. El minutero todavía tiene que alcanzarlo.',
+    b:'Esa cuenta resuelve 11M = 90: se olvidó dividir el 11 entre 2. El minutero le gana al horario 5,5° por minuto, no 11°: tarda el doble, 180/11 min.',
+    d:'A las 3 h 49 1/11 min las agujas están en línea, pero en sentidos opuestos (forman 180°). Juntas quiere decir α = 0°.' } };
 const G4 = { id:'relojes-paso4', ok:'d', opts:[
   ['a', `${P4.errores.unaPorHora} veces`, 'una-superposicion-por-hora', 'hipotesis'],
   ['b', `${P4.errores.contarExtremos} veces`, 'cuenta-los-dos-extremos', 'hipotesis'],
   ['c', `${P4.errores.mitad} veces`, 'cuenta-solo-12-horas', 'hipotesis'],
   ['d', `${P4.veces} veces`]],
   fb:{ d:'¡Bien! Entre una vez y la siguiente pasan 720/11 min, un poco más de una hora (1 h 5 5/11 min). Por eso en 12 horas se juntan 11 veces, no 12, y en un día 22.',
-    a:'Elegiste la A. Parece que cada hora se juntan una vez, pero entre las 11 y la 1 se juntan una sola vez (a las 12:00). Cada encuentro tarda un poco más de una hora. La correcta está marcada.',
-    b:'Elegiste la B. Esa cuenta incluye las 12:00 del inicio y también las 12:00 del final. Pero la medianoche siguiente ya es parte del otro día. La correcta está marcada.',
-    c:'Elegiste la C. 11 veces es lo que pasa en 12 horas. El día tiene 24: las agujas dan dos vueltas de horario. La correcta está marcada.' } };
+    a:'Parece que cada hora se juntan una vez, pero entre las 11 y la 1 se juntan una sola vez (a las 12:00). Cada encuentro tarda un poco más de una hora.',
+    b:'Esa cuenta incluye las 12:00 del inicio y también las 12:00 del final. Pero la medianoche siguiente ya es parte del otro día.',
+    c:'11 veces es lo que pasa en 12 horas. El día tiene 24: las agujas dan dos vueltas de horario.' } };
 const G5 = { id:'relojes-paso5', ok:'a', opts:[
   ['a', dias(P5.dias)],
   ['b', dias(P5.erroresDias.dia24), 'adelanto-hasta-24-horas', 'hipotesis'],
   ['c', dias(P5.erroresDias.sinCada), 'adelanto-por-hora-sin-el-cada', 'hipotesis'],
   ['d', dias(P5.erroresDias.unaHora), 'adelanto-hasta-una-hora', 'hipotesis']],
   fb:{ a:'¡Bien! Un reloj de agujas vuelve a marcar la hora correcta cuando se adelanta 12 horas (720 min). A 5 min cada 4 h necesita 720/5 = 144 periodos de 4 h: 576 horas, que son 24 días.',
-    b:'Elegiste la B. Esa cuenta espera que se adelante 24 horas. Pero las agujas dan una vuelta completa cada 12 horas: con 12 horas de adelanto ya marcan lo mismo. La correcta está marcada.',
-    c:'Elegiste la C. Esa cuenta toma 720/5 = 144 como si fueran horas. Son 144 periodos de 4 horas cada uno. La correcta está marcada.',
-    d:'Elegiste la D. Con una hora de adelanto (60 min) el reloj marca las 4 cuando son las 3: todavía no coincide. Tiene que adelantarse 12 horas. La correcta está marcada.' } };
+    b:'Esa cuenta espera que se adelante 24 horas. Pero las agujas dan una vuelta completa cada 12 horas: con 12 horas de adelanto ya marcan lo mismo.',
+    c:'Esa cuenta toma 720/5 = 144 como si fueran horas. Son 144 periodos de 4 horas cada uno.',
+    d:'Con una hora de adelanto (60 min) el reloj marca las 4 cuando son las 3: todavía no coincide. Tiene que adelantarse 12 horas.' } };
 const G6 = { id:'relojes-paso6', ok:'b', opts:[
   ['a', seg(P6.errores.proporcional), 'AR7-campanadas-proporcionales', 'hipotesis'],
   ['b', seg(P6.tiempo)],
   ['c', seg(P6.errores.intervalosComoCampanadas), 'campanadas-como-intervalos', 'hipotesis']],
   fb:{ b:'¡Bien! 6 campanadas dejan 5 intervalos: cada uno dura 1 s. 12 campanadas dejan 11 intervalos: 11 s.',
-    a:'Elegiste la A. Esa cuenta es una regla de tres: el doble de campanadas, el doble de tiempo. Pero el tiempo no se mide en campanadas sino en los espacios entre ellas: 5 espacios en el dato, 11 en la pregunta. La correcta está marcada.',
-    c:'Elegiste la C. Usaste bien el intervalo de 1 s, pero 12 campanadas no dejan 12 intervalos: dejan 11. La primera campanada suena en el segundo 0. La correcta está marcada.' } };
+    a:'Esa cuenta es una regla de tres: el doble de campanadas, el doble de tiempo. Pero el tiempo no se mide en campanadas sino en los espacios entre ellas: 5 espacios en el dato, 11 en la pregunta.',
+    c:'Usaste bien el intervalo de 1 s, pero 12 campanadas no dejan 12 intervalos: dejan 11. La primera campanada suena en el segundo 0.' } };
 const G8 = { id:'relojes-paso8', ok:'b', opts:[
   ['a', P8.errores.sinBisiestos, 'calendario-sin-29-de-febrero', 'hipotesis'],
   ['b', P8.nombre],
   ['c', P8.errores.contarPartida, 'calendario-cuenta-el-dia-de-partida', 'hipotesis'],
   ['d', P8.errores.alReves, 'calendario-resto-al-reves', 'hipotesis']].map(o => [o[0], o[1][0].toUpperCase() + o[1].slice(1), o[2], o[3]]),
   fb:{ b:`¡Bien! Entre esas dos fechas está el 29 de febrero de 2028: son 366 días, 52 semanas y 2 días. El lunes avanza 2: miércoles.`,
-    a:'Elegiste la A. Así sería con un año de 365 días (52 semanas y 1 día). Pero 2028 es bisiesto y su 29 de febrero queda entre las dos fechas. La correcta está marcada.',
-    c:'Elegiste la C. Esa cuenta suma un día más, como si el 15 de marzo de 2027 también hubiera que contarlo. Pero ese día es el punto de partida: lo que se cuenta son los días que pasan. La correcta está marcada.',
-    d:'Elegiste la D. Esa cuenta retrocede 2 días desde el lunes. Si la fecha buscada va después, el día de la semana avanza. La correcta está marcada.' } };
+    a:'Así sería con un año de 365 días (52 semanas y 1 día). Pero 2028 es bisiesto y su 29 de febrero queda entre las dos fechas.',
+    c:'Esa cuenta suma un día más, como si el 15 de marzo de 2027 también hubiera que contarlo. Pero ese día es el punto de partida: lo que se cuenta son los días que pasan.',
+    d:'Esa cuenta retrocede 2 días desde el lunes. Si la fecha buscada va después, el día de la semana avanza.' } };
 
 // ---- configuraciones ----
 const reloj1 = ya => ({ modo:'reloj', relojes:[{ t: ya ? 210 : 210, horario:!!ya, arco: ya ? 'ver' : 'oculto', fantasmas: ya ? [{ k:'H', t:180 }] : [] }],
@@ -1067,7 +1067,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

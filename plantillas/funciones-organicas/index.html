@@ -127,7 +127,7 @@ canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .opt.correct .v, .opt.wrong .v{background:none}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:20px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:40px}
 .seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
@@ -676,63 +676,63 @@ const P1 = { id:'fo-etanol-eter-isomeros', ok:'b', opts:[
   ['c', 'No: al pasar el O al medio se pierde el H del –OH, y ya no tienen los mismos átomos', 'FO-pierde-el-H', 'hipotesis'],
   ['d', 'No: es la misma sustancia; solo cambió el lugar del O en el dibujo', 'FO-misma-sustancia', 'hipotesis']],
   fb:{ b:`¡Bien! Los dos son ${sub(ISO.formulaA)}: 2 C, 6 H y 1 O. Con los átomos unidos de otra forma son dos sustancias distintas, de dos familias: isómeros de función. Mira cómo se cuentan los átomos de cada uno.`,
-    a:`Elegiste la 1. Los isómeros pueden ser de familias distintas: basta la misma fórmula molecular y otro orden de unión. El etanol y el metoximetano son los dos ${sub(ISO.formulaA)}. Que un alcohol y un éter «no pueden ser isómeros porque son de otra clase» está descrito en escolares (Schmidt, 1992, por su resumen), sin porcentaje en lo que leímos. La correcta está marcada.`,
-    c:`Elegiste la 3. El H del –OH no se pierde: al mover el O, ese H queda en el carbono, que pasa de CH₂ a CH₃. Si se pierde un H, la fórmula sería ${sub(ISO.errores.pierdeH)}, y eso no cumple las valencias. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
-    d:'Elegiste la 4. El lugar del O no es solo del dibujo: en el etanol el O está en una punta, unido a un C y a un H; en el otro, entre dos carbonos. Son uniones distintas: dos sustancias distintas. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
+    a:`Los isómeros pueden ser de familias distintas: basta la misma fórmula molecular y otro orden de unión. El etanol y el metoximetano son los dos ${sub(ISO.formulaA)}. Que un alcohol y un éter «no pueden ser isómeros porque son de otra clase» está descrito en escolares (Schmidt, 1992, por su resumen), sin porcentaje en lo que leímos.`,
+    c:`El H del –OH no se pierde: al mover el O, ese H queda en el carbono, que pasa de CH₂ a CH₃. Si se pierde un H, la fórmula sería ${sub(ISO.errores.pierdeH)}, y eso no cumple las valencias.`,
+    d:'El lugar del O no es solo del dibujo: en el etanol el O está en una punta, unido a un C y a un H; en el otro, entre dos carbonos. Son uniones distintas: dos sustancias distintas.' } };
 const P2 = { id:'fo-ebullicion-puente-h', ok:'c', opts:[
   ['a', 'A la misma temperatura: tienen la misma fórmula y la misma masa', 'FO-misma-formula-igual', 'hipotesis'],
   ['b', 'El metoximetano: su O forma puentes de hidrógeno con las moléculas vecinas', 'FO2-puente-por-tener-O', 'documentado'],
   ['c', 'El etanol: su H unido al O forma puentes de hidrógeno con las moléculas vecinas'],
   ['d', 'El metoximetano: su molécula es simétrica y se acomoda mejor con las vecinas', 'FO-eter-simetrico', 'hipotesis']],
   fb:{ c:`¡Bien! El etanol hierve a ${fmt(EB.a.teb)} °C y el metoximetano a ${fmt(EB.b.teb)} °C (de tabla). Mira la línea punteada: el H unido al O de un etanol apunta al O de otro. En el éter todos los H están en carbonos: no hay puente.`,
-    a:`Elegiste la 1. La misma fórmula no da la misma atracción entre moléculas: depende de cómo están unidos los átomos. Hay más de 100 °C de diferencia: ${fmt(EB.a.teb)} °C contra ${fmt(EB.b.teb)} °C (de tabla). Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
-    b:'Elegiste la 2. Tener un O no basta: el puente de hidrógeno es un H unido a O (o a N) que se va hacia el O de otra molécula. En el metoximetano todos los H están en carbonos. En otra pregunta (cuál de NH₃, CH₃F y CH₃OCH₃ forma puentes), alrededor de un tercio de dos grupos de escolares alemanes (34 % de 112 y 31 % de 82) eligió solo el éter (Schmidt, 1996, tabla 1). La correcta está marcada.',
-    d:'Elegiste la 4. La simetría no le da atracción: el metoximetano no tiene ningún H unido al O, así que sus moléculas se atraen menos y hierve mucho antes. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
+    a:`La misma fórmula no da la misma atracción entre moléculas: depende de cómo están unidos los átomos. Hay más de 100 °C de diferencia: ${fmt(EB.a.teb)} °C contra ${fmt(EB.b.teb)} °C (de tabla).`,
+    b:'Tener un O no basta: el puente de hidrógeno es un H unido a O (o a N) que se va hacia el O de otra molécula. En el metoximetano todos los H están en carbonos. En otra pregunta (cuál de NH₃, CH₃F y CH₃OCH₃ forma puentes), alrededor de un tercio de dos grupos de escolares alemanes (34 % de 112 y 31 % de 82) eligió solo el éter (Schmidt, 1996, tabla 1).',
+    d:'La simetría no le da atracción: el metoximetano no tiene ningún H unido al O, así que sus moléculas se atraen menos y hierve mucho antes.' } };
 const P3 = { id:'fo-aldehido-cetona', ok:'a', opts:[
   ['a', `A: ${NPAL.nombre}; B: ${NPONA.nombre}`],
   ['b', `A: ${NPONA.nombre}; B: ${NPAL.nombre}`, 'FO3-al-reves', 'hipotesis'],
   ['c', `A: ${NPAL.nombre}; B: ${NPONA.errores.comoAldehido}`, 'FO3-no-distingue-posicion', 'hipotesis'],
   ['d', `A: ${NPAL.errores.sufijoOl}; B: ${NPONA.nombre}`, 'FO-al-por-ol', 'hipotesis']],
   fb:{ a:`¡Bien! Con el C=O en la punta (–CHO) es un aldehído: ${NPAL.nombre}. Con el C=O entre dos carbonos es una cetona: ${NPONA.nombre}. Los dos son ${sub(ISO3.formulaA)}: isómeros de función.`,
-    b:`Elegiste la 2: los nombres van al revés. La -al es del aldehído, con el C=O en la punta; la -ona, de la cetona, con el C=O en el medio. Agrupar por un solo rasgo de superficie, y cambiar de rasgo, está descrito en estudiantes (Domin, Al-Masum y Mensah, 2008, por la descripción de Graulich y Bhattacharyya, 2017), sin porcentaje; esta confusión es una hipótesis nuestra que sale de ahí. La correcta está marcada.`,
-    c:`Elegiste la 3. Que los dos tengan un C=O no los hace iguales: el lugar del C=O cambia la familia. En el medio, entre dos C, ya no hay un H en ese carbono: es una cetona (-ona). Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
-    d:`Elegiste la 4. La -ol es del alcohol, el grupo –OH. La molécula A no tiene –OH: tiene C=O en la punta, y eso es -al. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
+    b:`los nombres van al revés. La -al es del aldehído, con el C=O en la punta; la -ona, de la cetona, con el C=O en el medio. `,
+    c:`Que los dos tengan un C=O no los hace iguales: el lugar del C=O cambia la familia. En el medio, entre dos C, ya no hay un H en ese carbono: es una cetona (-ona).`,
+    d:`La -ol es del alcohol, el grupo –OH. La molécula A no tiene –OH: tiene C=O en la punta, y eso es -al.` } };
 const P4 = { id:'fo-clase-alcohol', ok:'b', opts:[
   ['a', `${ALC.errores.porLocalizador[0].toUpperCase() + ALC.errores.porLocalizador.slice(1)}: el –OH está en el carbono 2`, 'FO4-por-localizador', 'hipotesis'],
   ['b', `${ALC.clase[0].toUpperCase() + ALC.clase.slice(1)}: el carbono del –OH está unido a otros 3 carbonos`],
   ['c', `${ALC.errores.contandoElO[0].toUpperCase() + ALC.errores.contandoElO.slice(1)}: el carbono del –OH tiene 4 vecinos que no son H`, 'FO-cuenta-el-O', 'hipotesis'],
   ['d', `${ALC.errores.porNumeroDeOH[0].toUpperCase() + ALC.errores.porNumeroDeOH.slice(1)}: la molécula tiene un solo grupo –OH`, 'FO-por-numero-de-OH', 'hipotesis']],
   fb:{ b:'¡Bien! Se cuentan los carbonos unidos al carbono que lleva el –OH: aquí son 3. Mira los tres alcoholes: 1 carbono vecino (primario), 2 (secundario) y 3 (terciario).',
-    a:'Elegiste la 1. El número 2 del nombre dice dónde está el –OH en la cadena, no qué tipo de alcohol es. El carbono del –OH tiene 3 carbonos unidos: terciario. No reconocer el grupo ni nombrar alcoholes con su localizador está documentado en escolares de Ghana, sin porcentaje en lo que leímos (Adu-Gyamfi, Ampiah y Appiah, 2017, por la descripción de otro artículo); clasificarlos por el localizador es una hipótesis nuestra que sale de ahí. La correcta está marcada.',
-    c:'Elegiste la 3. El O no se cuenta: la clase se fija solo con los carbonos unidos al carbono del –OH. Son 3: terciario. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.',
-    d:'Elegiste la 4. Primario, secundario y terciario no dicen cuántos –OH hay, sino cuántos carbonos tiene unidos el carbono del –OH. Aquí son 3. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
+    a:'El número 2 del nombre dice dónde está el –OH en la cadena, no qué tipo de alcohol es. El carbono del –OH tiene 3 carbonos unidos: terciario. ',
+    c:'El O no se cuenta: la clase se fija solo con los carbonos unidos al carbono del –OH. Son 3: terciario.',
+    d:'Primario, secundario y terciario no dicen cuántos –OH hay, sino cuántos carbonos tiene unidos el carbono del –OH. Aquí son 3.' } };
 const P5 = { id:'fo-nombre-ester', ok:'c', opts:[
   ['a', nP(NEST.errores.partesAlReves), 'FO-ester-al-reves', 'hipotesis'],
   ['b', nP(NEST.errores.comoAcido), 'FO-ester-como-acido', 'hipotesis'],
   ['c', nP(NEST.nombre)],
   ['d', nP(NEST.errores.eterMasCetona), 'FO-ester-eter-mas-cetona', 'hipotesis']],
   fb:{ c:`¡Bien! La parte con el C=O viene del ácido etanoico y da «${NEST.ester.parteAcido}»; la que está unida al O del puente viene del metanol y da «de ${NEST.ester.alquilo}». Mira la reacción con las dos partes de colores.`,
-    a:`Elegiste la 1: las partes van al revés. La parte que lleva el C=O (aquí, 2 C) es la del ácido y va primero, con ‑ato; la del alcohol (1 C), unida al O del puente, va después con ‑ilo. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
-    b:`Elegiste la 2. El ${NEST.errores.comoAcido} tiene la misma fórmula, ${sub(MF.formula(EST).texto)}, pero es otra sustancia: su –COOH tiene un H unido al O. Aquí el O del medio está entre dos carbonos: es un éster. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
-    d:'Elegiste la 4. El –COO– es un solo grupo, el éster: no se parte en un éter (–O–) y una cetona (C=O). Leer un grupo como la suma de otros dos es una hipótesis nuestra que sale de lo descrito en el informe. La correcta está marcada.' } };
+    a:`las partes van al revés. La parte que lleva el C=O (aquí, 2 C) es la del ácido y va primero, con ‑ato; la del alcohol (1 C), unida al O del puente, va después con ‑ilo.`,
+    b:`El ${NEST.errores.comoAcido} tiene la misma fórmula, ${sub(MF.formula(EST).texto)}, pero es otra sustancia: su –COOH tiene un H unido al O. Aquí el O del medio está entre dos carbonos: es un éster.`,
+    d:'El –COO– es un solo grupo, el éster: no se parte en un éter (–O–) y una cetona (C=O). ' } };
 const P6 = { id:'fo-clase-amina', ok:'a', opts:[
   ['a', `${cap(TAM.clase)}: el N está unido a un solo carbono`],
   ['b', `${cap(TAM.errores.comoAlcohol)}: el carbono unido al N tiene otros 3 carbonos, como en el alcohol del paso 5`, 'FO-amina-como-alcohol', 'hipotesis'],
   ['c', `${cap(TAM.errores.porLocalizador)}: el –NH₂ está en el carbono 2`, 'FO-amina-por-localizador', 'hipotesis'],
   ['d', `${cap(TAM.errores.contandoElN)}: el carbono unido al N tiene 4 vecinos que no son H`, 'FO-amina-cuenta-el-N', 'hipotesis']],
   fb:{ a:'¡Bien! En las aminas se cuentan los carbonos unidos al N, no al carbono: aquí el N tiene uno solo. Mira la amina junto al alcohol con el mismo esqueleto: el alcohol es terciario y la amina, primaria.',
-    b:'Elegiste la 2. Así se clasifican los alcoholes (por el carbono del –OH), pero las aminas se clasifican por el N: cuántos carbonos tiene unidos. Aquí, uno: primaria. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.',
-    c:'Elegiste la 3. El 2 del nombre dice dónde está el –NH₂ en la cadena, no la clase. El N tiene un solo carbono unido: primaria. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.',
-    d:'Elegiste la 4. En las aminas se mira el N, no el carbono: el N está unido a un solo carbono y a dos H. Primaria. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
+    b:'Así se clasifican los alcoholes (por el carbono del –OH), pero las aminas se clasifican por el N: cuántos carbonos tiene unidos. Aquí, uno: primaria.',
+    c:'El 2 del nombre dice dónde está el –NH₂ en la cadena, no la clase. El N tiene un solo carbono unido: primaria.',
+    d:'En las aminas se mira el N, no el carbono: el N está unido a un solo carbono y a dos H. Primaria.' } };
 const P7 = { id:'fo-numeracion-cetona', ok:'b', opts:[
   ['a', nP(NCET.errores.numeracionContraria), 'FO-numeracion-contraria', 'hipotesis'],
   ['b', nP(NCET.nombre)],
   ['c', nP(NCET.errores.comoAldehido), 'FO3-cetona-como-aldehido', 'hipotesis'],
   ['d', nP(NCET.errores.sufijoOl), 'FO-ona-por-ol', 'hipotesis']],
   fb:{ b:`¡Bien! La cadena tiene 5 carbonos y se numera desde el lado más cercano al C=O: queda en el carbono 2. Forma anterior: ${NCET.antiguo}.`,
-    a:`Elegiste la 1 (${NCET.errores.numeracionContraria}). Numeraste desde el lado más lejano al grupo. Se numera desde el extremo que le da al grupo el número más bajo: 2. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
-    c:`Elegiste la 3 (${NCET.errores.comoAldehido}). Un aldehído tiene el C=O en la punta de la cadena; aquí está entre dos carbonos: es una cetona (-ona). Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
-    d:`Elegiste la 4 (${NCET.errores.sufijoOl}). La -ol es del –OH, que aquí no hay. El C=O entre dos carbonos da -ona. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
+    a:`Numeraste desde el lado más lejano al grupo. Se numera desde el extremo que le da al grupo el número más bajo: 2.`,
+    c:`Un aldehído tiene el C=O en la punta de la cadena; aquí está entre dos carbonos: es una cetona (-ona).`,
+    d:`La -ol es del –OH, que aquí no hay. El C=O entre dos carbonos da -ona.` } };
 function cap(t){ return t[0].toUpperCase() + t.slice(1); }
 
 // Vistas de cada paso (r: ya respondió).
@@ -1020,9 +1020,9 @@ const EXPS = [
           ['c', `${cap(BAL.nombre)} otra vez: sigue teniendo un C=O`, 'FO3-no-distingue-posicion', 'hipotesis'],
           ['d', 'Una sustancia nueva: distinta del butanal y de la butanona', 'FO-posicion-equivalente', 'hipotesis']],
     ok:'b',
-    fb:{ a:'Contado desde la otra punta, ese carbono es el 2: se numera desde el lado que le da al grupo el número más bajo. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      c:'El C=O dejó la punta: ahora está entre dos carbonos, y eso ya no es un aldehído sino una cetona. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      d:'El carbono 3 de una cadena de 4 es el carbono 2 visto desde la otra punta: sale la misma butanona. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    fb:{ a:'Contado desde la otra punta, ese carbono es el 2: se numera desde el lado que le da al grupo el número más bajo.',
+      c:'El C=O dejó la punta: ahora está entre dos carbonos, y eso ya no es un aldehído sino una cetona.',
+      d:'El carbono 3 de una cadena de 4 es el carbono 2 visto desde la otra punta: sale la misma butanona.' },
     antes:() => { const it = conNombre(deResumen(BAL), []); it.op.marca = it.c.atomos[2]; it.desc = 'Butanal: cuatro carbonos en fila; el de la punta tiene el C=O. El tercer carbono está marcado con un anillo punteado.'; return { tipo:'mols', items:[it] }; },
     caja:{ grupos:['CO'], inicio:{ n:4, g:'CO', pos:3 } },
     exp:() => `<p>Ahora mueve tú el C=O por el esqueleto. En una punta es un ${V('gf', 'aldehído')} (-al); en el medio, una ${V('gf', 'cetona')} (-ona). Con 4 carbonos, el C=O en el carbono 2 o en el 3 da la misma cetona: la butanona.</p>${controlesCaja(['CO'])}
@@ -1035,8 +1035,8 @@ const EXPS = [
           ['d', `${C3.errores.porPosiciones}: el –OH en cada uno de los 3 carbonos y el O en cada uno de los 2 enlaces, sin quitar repetidos`, 'FO-cada-posicion', 'hipotesis']],
     ok:'b',
     fb:{ a:'Un éter con la misma fórmula también es isómero: los isómeros pueden ser de familias distintas. Que un alcohol y un éter «no pueden ser isómeros» está descrito en escolares (Schmidt, 1992, por su resumen), sin porcentaje en lo que leímos.',
-      c:'El O entre el carbono 1 y el 2, o entre el 2 y el 3, da la misma molécula: un CH₃ de un lado y un CH₂–CH₃ del otro. Es un solo éter. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      d:'Algunas posiciones se repiten: el –OH en el carbono 3 es el propan-1-ol visto desde la otra punta, y los dos lugares del O dan el mismo éter. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+      c:'El O entre el carbono 1 y el 2, o entre el 2 y el 3, da la misma molécula: un CH₃ de un lado y un CH₂–CH₃ del otro. Es un solo éter.',
+      d:'Algunas posiciones se repiten: el –OH en el carbono 3 es el propan-1-ol visto desde la otra punta, y los dos lugares del O dan el mismo éter.' },
     antes:() => ({ tipo:'mols', items:[conNombre(mol('CH3-CH2-CH2-OH', { desc:'Uno de ellos: el propan-1-ol.' }), [])].map(it => { it.rot = 'uno de ellos: ' + it.rot; it.partes = null; return it; }) }),
     despues:() => {
       const vistos = [];
@@ -1060,9 +1060,9 @@ const EXPS = [
           ['c', `${F(ES.formula)}: la suma menos una molécula de agua`],
           ['d', `${F(ES.errores.quitaDosAguas)}: la suma menos dos moléculas de agua, una de cada uno`, 'FO-ester-dos-aguas', 'hipotesis']],
     ok:'c',
-    fb:{ a:'Si el éster tuviera todos los átomos, ¿de dónde saldría el agua? El agua se lleva 2 H y 1 O de la suma. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      b:'Lo que sale no es H₂ sino H₂O: el –OH del ácido y el H del –OH del alcohol. Falta quitar también un O. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      d:'Sale una sola molécula de agua por cada enlace nuevo: el ácido pone el –OH y el alcohol pone el H. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    fb:{ a:'Si el éster tuviera todos los átomos, ¿de dónde saldría el agua? El agua se lleva 2 H y 1 O de la suma.',
+      b:'Lo que sale no es H₂ sino H₂O: el –OH del ácido y el H del –OH del alcohol. Falta quitar también un O.',
+      d:'Sale una sola molécula de agua por cada enlace nuevo: el ácido pone el –OH y el alcohol pone el H.' },
     antes:() => { const a = mol('CH3-COOH', { rot:'ácido etanoico' }), b = mol('CH3-CH2-OH', { rot:'etanol' }); a.desc = 'Ácido etanoico.'; b.desc = 'Etanol.'; return { tipo:'mols', items:[a, b], reaccion:true, mismaEscala:true, signos:['+'] }; },
     despues:p => {
       const f = p === undefined ? 1 : p;
@@ -1077,7 +1077,7 @@ const EXPS = [
     },
     anima:true,
     exp:() => `<div class="eqs"><div class="eq"><span class="ex">${F(ES.formulaAcido)} + ${F(ES.formulaAlcohol)} = ${F(ES.sumaReactivos)}; menos ${F('H2O')}: ${F(ES.formula)}</span><span class="note">${N({ partes: ES.partes })}: la ${V('ac', 'parte del ácido')} (con el C=O) y la ${V('al', 'parte del alcohol')} (unida al O del puente). Nombre común: acetato de etilo, el olor de algunos quitaesmaltes.</span></div></div>
-      <p>Con oxígeno-18 en el alcohol (Roberts y Urey, 1938) se comprobó que el O del puente viene del alcohol y el del agua, del ácido, como en el dibujo. La reacción se acelera con un ácido fuerte (H₂SO₄) como catalizador y llega a un equilibrio.</p>` },
+      <p>La reacción se acelera con un ácido fuerte (H₂SO₄) como catalizador y llega a un equilibrio.</p>` },
   { id:'h-que-falta', corto:'El H que falta',
     q:`El metoximetano, ${F('CH3–O–CH3')}, y la metanamina (metilamina), ${F('CH3–NH2')}, son gases a 20 °C. ¿Cuál forma puentes de hidrógeno entre sus propias moléculas?`,
     opts:[['a', 'Los dos: uno tiene O y el otro N, y eso basta para formar puentes', 'FO-basta-O-o-N', 'hipotesis'],
@@ -1085,9 +1085,9 @@ const EXPS = [
           ['c', 'Solo la metanamina: tiene H unidos directamente al N'],
           ['d', 'Ninguno: para formar puentes hace falta un grupo –OH', 'FO-solo-OH', 'hipotesis']],
     ok:'c',
-    fb:{ a:'Tener O o N no basta: hace falta un H unido a ellos. En el metoximetano todos los H están en carbonos. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+    fb:{ a:'Tener O o N no basta: hace falta un H unido a ellos. En el metoximetano todos los H están en carbonos.',
       b:'Tener O no basta: el puente necesita un H unido al O (o al N), y en el metoximetano todos los H están en carbonos. En otra pregunta (cuál de NH₃, CH₃F y CH₃OCH₃ forma puentes), alrededor de un tercio de dos grupos de escolares alemanes eligió solo el éter (Schmidt, 1996, tabla 1).',
-      d:'No solo el –OH: un H unido a N también forma puentes, como en las aminas, las amidas y el amoniaco. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+      d:'No solo el –OH: un H unido a N también forma puentes, como en las aminas, las amidas y el amoniaco.' },
     antes:() => { const a = mol('CH3-O-CH3', { rot:'metoximetano', teb:{ valor: TEE.teb, ver:false } }), b = mol('CH3-NH2', { rot:'metanamina', teb:{ valor: TEA.teb, ver:false } }); a.desc = 'Metoximetano: CH3–O–CH3.'; b.desc = 'Metanamina: CH3–NH2.'; return { tipo:'mols', items:[a, b], mismaEscala:true, rango:[-40, 100] }; },
     despues:p => {
       const f = p === undefined ? 1 : p;
@@ -1106,9 +1106,9 @@ const EXPS = [
           ['c', `Con ${F('–COOH')}: su –OH forma puentes de hidrógeno y su C=O los recibe`],
           ['d', `Con ${F('–NH2')}: el N tiene dos H para formar puentes`, 'FO-mas-H-mas-puentes', 'hipotesis']],
     ok:'c',
-    fb:{ a:'El –COOH también tiene un –OH, y además un C=O que recibe puentes: el ácido forma pares de moléculas muy unidas. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      b:'El C=O es polar, pero sin un H unido a O no forma puentes entre moléculas: el propanal hierve más bajo que el alcohol y que el ácido. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      d:'El N atrae menos que el O: los puentes N–H···N son más débiles que los O–H···O. La amina hierve mucho más bajo que el alcohol. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    fb:{ a:'El –COOH también tiene un –OH, y además un C=O que recibe puentes: el ácido forma pares de moléculas muy unidas.',
+      b:'El C=O es polar, pero sin un H unido a O no forma puentes entre moléculas: el propanal hierve más bajo que el alcohol y que el ácido.',
+      d:'El N atrae menos que el O: los puentes N–H···N son más débiles que los O–H···O. La amina hierve mucho más bajo que el alcohol.' },
     antes:() => { const it = conNombre(mol('CCC'), []); it.rot = 'el esqueleto de 3 carbonos'; it.partes = null; it.desc = 'El esqueleto: tres carbonos en fila, sin grupo.'; return { tipo:'mols', items:[it] }; },
     caja:{ grupos:Object.keys(MF.CAJA), inicio:{ n:3, g:'COOH', pos:1 } },
     exp:() => `<div class="eqs"><div class="eq"><span class="ex">${CJ.map(r => `${N(r)}: ${V('T', fmt(r.teb) + ' °C')}`).join(' · ')}</span><span class="note">De tabla. El más alto: ${esc(mayorCJ.nombre)}. La amina forma puentes y aun así hierve casi igual que el propanal: el N forma puentes más débiles que el O; con masas parecidas, la diferencia puede ser chica.</span></div></div>
@@ -1153,7 +1153,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el dibujo para ver por qué.' : `Elegiste la ${LETRAS.indexOf(p) + 1}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el dibujo para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     explicar();
   };

@@ -127,7 +127,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .opt.correct .v, .opt.wrong .v{background:none}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:20px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:40px}
 .seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
@@ -750,63 +750,63 @@ const P1 = { id:'materia-cajas', ok:'c', opts:[
   ['c', `La caja 2: cada partícula une átomos de dos elementos distintos`],
   ['d', `La caja 3: muchos átomos juntos forman un compuesto`, 'MA9-atomo-es-sustancia', 'hipotesis']],
   fb:{ c:'¡Bien! En la caja 2 todas las partículas son iguales (una sola sustancia) y cada una tiene átomos de H y de O unidos: es un compuesto, H₂O. Mira los rótulos de las cajas.',
-    a:`Elegiste la 1. En la caja 4 hay H y O, pero no están unidos entre sí: son moléculas de H₂ y moléculas de O₂ revueltas. Dos sustancias sin unirse forman una ${C4.nombre}. Confundir compuesto y mezcla al leer dibujos de partículas está documentado en universitarios, sin porcentaje en lo que leímos (Stains y Talanquer, 2007, por su resumen). La correcta está marcada.`,
-    b:'Elegiste la 2. Los átomos de la caja 1 están unidos, pero todos son de oxígeno: el O₂ es un elemento. Un compuesto necesita átomos de elementos distintos unidos. Esta confusión está documentada, sin porcentaje en lo que leímos (Stains y Talanquer, 2007, por su resumen). La correcta está marcada.',
-    d:'Elegiste la 4. Juntar muchos átomos iguales no forma un compuesto: el hierro de la caja 3 es un elemento, con una sola clase de átomo. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
+    a:`En la caja 4 hay H y O, pero no están unidos entre sí: son moléculas de H₂ y moléculas de O₂ revueltas. Dos sustancias sin unirse forman una ${C4.nombre}. Confundir compuesto y mezcla al leer dibujos de partículas está documentado en universitarios, sin porcentaje en lo que leímos (Stains y Talanquer, 2007, por su resumen).`,
+    b:'Los átomos de la caja 1 están unidos, pero todos son de oxígeno: el O₂ es un elemento. Un compuesto necesita átomos de elementos distintos unidos. Esta confusión está documentada, sin porcentaje en lo que leímos (Stains y Talanquer, 2007, por su resumen).',
+    d:'Juntar muchos átomos iguales no forma un compuesto: el hierro de la caja 3 es un elemento, con una sola clase de átomo.' } };
 const P2 = { id:'materia-fases', ok:'d', opts:[
   ['a', `${fc(VASO.errores.cadaCosaUnaFase, VASO.errores.cadaCosaUnComponente)}: cada cosa nombrada cuenta una vez`, 'fases-cada-cosa', 'hipotesis'],
   ['b', `${fc(VASO.nFases, VASO.errores.hieloOtroComponente)}: el hielo y el agua son componentes distintos`, 'fases-hielo-otro-componente', 'hipotesis'],
   ['c', `${fc(VASO.errores.disueltoEsFase, VASO.nComponentes)}: la sal disuelta es una fase aparte`, 'fases-disuelto-es-fase', 'hipotesis'],
   ['d', `${fc(VASO.nFases, VASO.nComponentes)}: la sal está dentro de la fase del agua, y el hielo es agua`]],
   fb:{ d:'¡Bien! Fases: aceite, hielo, agua con sal y arena. Componentes: agua (líquida y sólida, la misma sustancia), sal, aceite y arena. Mira la lupa: la sal está repartida entre las moléculas de agua.',
-    a:'Elegiste la 1. Las cosas nombradas no son lo mismo que las fases ni que los componentes: la sal disuelta no forma una zona aparte, y el hielo y el agua son la misma sustancia. Esta opción es una hipótesis nuestra, de la tabla de lo que no tiene respaldo del informe. La correcta está marcada.',
-    b:'Elegiste la 2. Las fases están bien, pero el hielo es H₂O igual que el agua: un componente es una sustancia, no un estado. Son 4. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.',
-    c:'Elegiste la 3. Los componentes están bien, pero la sal disuelta no forma una zona aparte: sus iones se reparten entre las moléculas de agua y todo se ve igual. Agua con sal es una sola fase. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
+    a:'Las cosas nombradas no son lo mismo que las fases ni que los componentes: la sal disuelta no forma una zona aparte, y el hielo y el agua son la misma sustancia.',
+    b:'Las fases están bien, pero el hielo es H₂O igual que el agua: un componente es una sustancia, no un estado. Son 4.',
+    c:'Los componentes están bien, pero la sal disuelta no forma una zona aparte: sus iones se reparten entre las moléculas de agua y todo se ve igual. Agua con sal es una sola fase.' } };
 const P3 = { id:'materia-burbujas', ok:'b', opts:[
   ['a', `Hidrógeno y oxígeno (${F('H2')} y ${F('O2')}): el calor separa el agua en sus elementos`, 'MA1-cambio-de-estado-es-reaccion', 'parcial'],
   ['b', `Moléculas de agua (${F('H2O')}): las mismas, solo que separadas unas de otras`],
   ['c', 'Aire que estaba disuelto en el agua: el calor lo saca', 'MA1-burbujas-de-aire', 'hipotesis'],
   ['d', 'Nada: son huecos vacíos que se abren en el agua caliente', 'MA1-burbujas-vacias', 'hipotesis']],
   fb:{ b:'¡Bien! Hervir es un cambio físico: las moléculas de H₂O se separan unas de otras y forman vapor, pero ninguna se rompe. Mira la lupa: dentro de la burbuja hay las mismas moléculas, más sueltas.',
-    a:'Elegiste la 1. Para separar el agua en hidrógeno y oxígeno hace falta una reacción química (la electrólisis, con corriente eléctrica), no una cocina. Al hervir, las moléculas de H₂O no se rompen. En una pregunta parecida, sobre el agua que aparece afuera de un vaso frío, cerca de un tercio de 358 universitarios de química general creyó que se forma con el hidrógeno y el oxígeno del aire, antes y después del curso (Salame y Casino, 2021). La correcta está marcada.',
-    c:'Elegiste la 3. Las primeras burbujitas sí son aire, pero salen al principio. El agua lleva minutos hirviendo: las burbujas grandes son de vapor de agua. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.',
-    d:'Elegiste la 4. La burbuja no está vacía: tiene vapor de agua, moléculas de H₂O muy separadas. Por eso sube y empuja el agua. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
+    a:'Para separar el agua en hidrógeno y oxígeno hace falta una reacción química (la electrólisis, con corriente eléctrica), no una cocina. Al hervir, las moléculas de H₂O no se rompen. ',
+    c:'Las primeras burbujitas sí son aire, pero salen al principio. El agua lleva minutos hirviendo: las burbujas grandes son de vapor de agua.',
+    d:'La burbuja no está vacía: tiene vapor de agua, moléculas de H₂O muy separadas. Por eso sube y empuja el agua.' } };
 const P4 = { id:'materia-frasco-cerrado', ok:'a', opts:[
   ['a', `${Vm(fmt2(EV.despues) + ' g')}: el vapor sigue dentro del frasco, y pesa`],
   ['b', `${Vm(fmt2(EV.errores.vaporNoPesa) + ' g')}: el vapor de alcohol no pesa`, 'MA4-el-gas-no-pesa', 'parcial'],
   ['c', `Entre ${Vm(fmt2(EV.errores.vaporPesaMenos[0]))} y ${Vm(fmt2(EV.errores.vaporPesaMenos[1]) + ' g')}: el vapor pesa, pero menos que el líquido`, 'MA4-el-gas-pesa-menos', 'hipotesis'],
   ['d', `Más de ${Vm(fmt2(EV.antes) + ' g')}: el vapor ocupa más lugar y empuja hacia abajo`, 'MA4-el-gas-empuja', 'hipotesis']],
   fb:{ a:`¡Bien! Las moléculas de alcohol no salen del frasco: solo se separan. La balanza sigue en ${fmt2(EV.despues)} g. Ahora prueba a quitar la tapa.`,
-    b:`Elegiste la 2. El gas pesa: son las mismas moléculas de alcohol, solo más separadas, y siguen dentro del frasco. Que el gas no pesa aparece en un estudio con escolares israelíes (Stavy, 1990); un resumen secundario dice que cerca de la mitad de los de 15 años no conservaba la materia al evaporarse, cifra que no pudimos verificar. La correcta está marcada.`,
-    c:'Elegiste la 3. Cada molécula pesa lo mismo en el líquido que en el vapor; están más separadas, nada más. La masa de vapor es la masa de líquido que se evaporó. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.',
-    d:'Elegiste la 4. Ocupar más lugar no es tener más masa: no entró nada al frasco. El vapor empuja la tapa y las paredes por igual, no hacia la balanza. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
+    b:`El gas pesa: son las mismas moléculas de alcohol, solo más separadas, y siguen dentro del frasco. `,
+    c:'Cada molécula pesa lo mismo en el líquido que en el vapor; están más separadas, nada más. La masa de vapor es la masa de líquido que se evaporó.',
+    d:'Ocupar más lugar no es tener más masa: no entró nada al frasco. El vapor empuja la tapa y las paredes por igual, no hacia la balanza.' } };
 const P5 = { id:'materia-disolver-oxidar', ok:'c', opts:[
   ['a', 'En los dos: el azúcar y el clavo se convierten en otra cosa', 'MA3-disolver-es-reaccionar', 'parcial'],
   ['b', 'Solo en el del azúcar: el azúcar desaparece y se forma «agua azucarada»', 'MA3-disolver-es-desaparecer', 'parcial'],
   ['c', `Solo en el del clavo: el óxido es una sustancia nueva, de ${F('Fe')} y ${F('O')} unidos`],
   ['d', 'En ninguno: el óxido es hierro sucio, y el hierro sigue siendo hierro', 'MA2-oxidar-es-fisico', 'parcial']],
   fb:{ c:'¡Bien! El azúcar se reparte entre las moléculas de agua sin cambiar: si se evapora el agua, vuelve a aparecer. En el clavo, los átomos de hierro se unen con los de oxígeno y forman Fe₂O₃, una sustancia con otras propiedades (rojiza y quebradiza). Mira las lupas.',
-    a:'Elegiste la 1. Disolver no es reaccionar: las moléculas de azúcar siguen siendo de azúcar, solo repartidas entre las de agua. Que al disolverse se forma otra sustancia está documentado, sin porcentaje en lo que leímos (citado por Smith y Nakhleh, 2011). La correcta está marcada.',
-    b:'Elegiste la 2. El azúcar no desaparece: ya no se ve porque sus moléculas se separaron, pero el agua sabe dulce y, al evaporarla, queda el azúcar. Usar «derretir» por «disolver» aparece en entrevistas con escolares, con una cifra que no pudimos revisar. La correcta está marcada.',
-    d:'Elegiste la 4. El óxido no es hierro con suciedad encima: los átomos de hierro se unieron con oxígeno y forman otra sustancia, con otro color y otra dureza. En un estudio con 28 escolares españoles, cerca de 1 de cada 4 llamó cambio físico a una reja que se oxida (Dávila Acedo y otros, 2017; solo vimos fragmentos del artículo). La correcta está marcada.' } };
+    a:'Disolver no es reaccionar: las moléculas de azúcar siguen siendo de azúcar, solo repartidas entre las de agua. Que al disolverse se forma otra sustancia está documentado, sin porcentaje en lo que leímos (citado por Smith y Nakhleh, 2011).',
+    b:'El azúcar no desaparece: ya no se ve porque sus moléculas se separaron, pero el agua sabe dulce y, al evaporarla, queda el azúcar. Usar «derretir» por «disolver» aparece en entrevistas con escolares, con una cifra que no pudimos revisar.',
+    d:'El óxido no es hierro con suciedad encima: los átomos de hierro se unieron con oxígeno y forman otra sustancia, con otro color y otra dureza. En un estudio con 28 escolares españoles, cerca de 1 de cada 4 llamó cambio físico a una reja que se oxida (Dávila Acedo y otros, 2017; solo vimos fragmentos del artículo).' } };
 const P6 = { id:'materia-separar', ok:'c', opts:[
   ['a', 'Filtrar: el papel de filtro retiene la sal', 'separar-filtrar-lo-disuelto', 'hipotesis'],
   ['b', 'Decantar: dejar reposar hasta que la sal se asiente', 'separar-decantar-lo-disuelto', 'hipotesis'],
   ['c', 'Evaporar el agua: la sal se queda en el plato'],
   ['d', 'No se puede: la sal se volvió parte del agua', 'MA3-la-sal-ya-no-esta', 'parcial']],
   fb:{ c:`¡Bien! El agua se va al aire como vapor y la sal, que hierve a ${MM.MEZCLAS['agua-sal'].partes[1].tEb} °C, se queda. Abajo puedes probar cada método con cada mezcla, también los equivocados.`,
-    a:`Elegiste la 1. ${FIL.razon[0].toUpperCase() + FIL.razon.slice(1)}: no se separa nada. Pruébalo abajo. Filtrar una mezcla homogénea es una hipótesis nuestra, de la tabla de lo que no tiene respaldo del informe. La correcta está marcada.`,
-    b:'Elegiste la 2. Lo disuelto no se asienta: sus partículas se mueven entre las del agua y no caen al fondo, por más que esperes. Esta opción es una hipótesis nuestra, de la tabla de lo que no tiene respaldo del informe. La correcta está marcada.',
-    d:'Elegiste la 4. La sal no se volvió agua: sus iones siguen ahí, repartidos, y se recuperan al evaporar. Creer que al disolverse se forma otra sustancia está documentado, sin porcentaje en lo que leímos (citado por Smith y Nakhleh, 2011). La correcta está marcada.' } };
+    a:`${FIL.razon[0].toUpperCase() + FIL.razon.slice(1)}: no se separa nada. Pruébalo abajo. `,
+    b:'Lo disuelto no se asienta: sus partículas se mueven entre las del agua y no caen al fondo, por más que esperes.',
+    d:'La sal no se volvió agua: sus iones siguen ahí, repartidos, y se recuperan al evaporar. Creer que al disolverse se forma otra sustancia está documentado, sin porcentaje en lo que leímos (citado por Smith y Nakhleh, 2011).' } };
 const P7 = { id:'materia-emc2', ok:'b', opts:[
   ['a', `${VE(cien(EMC.errores.gramosSinConvertir) + ' J')}`, 'emc2-gramos-sin-convertir', 'hipotesis'],
   ['b', `${VE(cien(EMC.E) + ' J')}`],
   ['c', `${VE(cien(EMC.errores.cEnKmPorS) + ' J')}`, 'emc2-c-en-km-s', 'hipotesis'],
   ['d', `${VE(cien(EMC.errores.sinCuadrado) + ' J')}`, 'emc2-sin-cuadrado', 'hipotesis']],
   fb:{ b:`¡Bien! E = 0,001 kg × (3 × 10⁸ m/s)² = ${cien(EMC.E)} J. Mira la escala: las otras tres opciones caen lejísimos.`,
-    a:`Elegiste la 1. Salió de poner 1 (los gramos) en la fórmula: en E = mc² la masa va en kilogramos, y 1 g = 0,001 kg. El resultado queda 1000 veces más grande. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
-    c:`Elegiste la 3. Salió de usar c = 3 × 10⁵ (km/s): con J, la rapidez va en m/s, 3 × 10⁸. Al elevar al cuadrado, el error es de un millón de veces. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
-    d:`Elegiste la 4. Salió de multiplicar por c sin elevarla al cuadrado: E = mc², c por c. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
+    a:`Salió de poner 1 (los gramos) en la fórmula: en E = mc² la masa va en kilogramos, y 1 g = 0,001 kg. El resultado queda 1000 veces más grande.`,
+    c:`Salió de usar c = 3 × 10⁵ (km/s): con J, la rapidez va en m/s, 3 × 10⁸. Al elevar al cuadrado, el error es de un millón de veces.`,
+    d:`Salió de multiplicar por c sin elevarla al cuadrado: E = mc², c por c.` } };
 
 // Vistas.
 const vCajas = r => ({ tipo:'cajas', r });
@@ -1101,9 +1101,9 @@ const EXPS = [
           ['c', 'Baja: al arder, parte del hierro se va como humo', 'MA5-arder-pierde-masa', 'parcial'],
           ['d', 'Sube: el calor del fuego queda guardado en el polvo, y el calor pesa', 'calor-pesa', 'hipotesis']],
     ok:'a',
-    fb:{ b:`La masa se conserva, pero hay que contarla toda: aquí entra oxígeno del aire, que la balanza abierta no pesaba al principio. Esta opción es una hipótesis nuestra, sin estudio que la mida.`,
-      c:'El hierro no se va: se queda en el plato, unido con oxígeno. Por eso el polvo pesa más que la lana. Creer que la masa cambia cuando algo arde está documentado: en 195 escolares de Israel, las respuestas erróneas sobre la masa en una combustión en recipiente cerrado bajaron de cerca del 45 % al 19 % al enseñar el tema (Basheer y otros, 2018).',
-      d:'Acertaste que sube, pero no por el calor: el calor es energía y no se pesa en una balanza. Sube por el oxígeno que se unió al hierro. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    fb:{ b:`La masa se conserva, pero hay que contarla toda: aquí entra oxígeno del aire, que la balanza abierta no pesaba al principio.`,
+      c:'El hierro no se va: se queda en el plato, unido con oxígeno. Por eso el polvo pesa más que la lana. ',
+      d:'Acertaste que sube, pero no por el calor: el calor es energía y no se pesa en una balanza. Sube por el oxígeno que se unió al hierro.' },
     antes:() => ({ tipo:'lana' }), despues:p => ({ tipo:'lana', r:true, p }), anima:true,
     exp:() => `<div class="eqs"><div class="eq"><span class="ex">${F('Fe')} → ${F('Fe2O3')}: ${Vm(fmt2(LANA.antes) + ' g')} → ${Vm(fmt2(LANA.despues) + ' g')}</span><span class="note">${fmt(LANA.moles, 2)} mol de Fe × 3/2 × 16 g = ${fmt(LANA.oxigeno, 2)} g de oxígeno que vinieron del aire.</span></div>
       <div class="eq"><span class="ex">En un frasco cerrado: ${Vm(fmt2(LANAC.antes) + ' g')} → ${Vm(fmt2(LANAC.despues) + ' g')}</span><span class="note">Un frasco grande, con aire de sobra: el oxígeno ya estaba adentro y la balanza no se mueve.</span></div></div>
@@ -1118,9 +1118,9 @@ const EXPS = [
           ['c', 'Mezcla: hay dos sustancias distintas, del mismo elemento'],
           ['d', 'Mezcla de dos elementos: el O₂ y el O₃ son elementos distintos', 'alotropo-otro-elemento', 'hipotesis']],
     ok:'c',
-    fb:{ a:'Un solo elemento no quiere decir una sola sustancia: las moléculas de O₂ y de O₃ son distintas (el ozono huele fuerte y es tóxico; el oxígeno, no). Esta opción es una hipótesis nuestra, de la tabla de lo que no tiene respaldo del informe.',
+    fb:{ a:'Un solo elemento no quiere decir una sola sustancia: las moléculas de O₂ y de O₃ son distintas (el ozono huele fuerte y es tóxico; el oxígeno, no).',
       b:'El O₃ tiene sus átomos unidos, pero todos son de oxígeno: es un elemento, no un compuesto. Confundir «unido» con «compuesto» está documentado, sin porcentaje en lo que leímos (Stains y Talanquer, 2007, por su resumen).',
-      d:'El O₂ y el O₃ son el mismo elemento, oxígeno, en dos formas (alótropos). Un elemento se define por su clase de átomo, no por la molécula. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+      d:'El O₂ y el O₃ son el mismo elemento, oxígeno, en dos formas (alótropos). Un elemento se define por su clase de átomo, no por la molécula.' },
     antes:() => ({ tipo:'ozono' }), despues:() => ({ tipo:'ozono', r:true }),
     exp:() => `<div class="eqs"><div class="eq"><span class="ex">Sustancias: ${OZ.sustancias.map(F).join(' y ')} = ${OZ.nSustancias} · elementos: ${OZ.elementos.map(F).join('')} = ${OZ.nElementos}</span><span class="note">${OZ.nombre[0].toUpperCase() + OZ.nombre.slice(1)}: dos sustancias sin unirse, repartidas por igual. Lo mismo vale para el diamante y el grafito: los dos son carbono puro.</span></div></div>
       <p class="fuente">MA9 (elemento, compuesto y mezcla en dibujos de partículas): documentado sin porcentaje en lo que leímos (Stains y Talanquer, 2007). Que un elemento nunca forme moléculas, o que O₂ y O₃ sean compuestos, está en la tabla de hipótesis del informe.</p>` },
@@ -1131,9 +1131,9 @@ const EXPS = [
           ['c', 'Sin color ni temperatura de fusión: eso es de muchos átomos juntos'],
           ['d', 'Del color del dibujo, añil: ese es el color real del átomo', 'color-del-dibujo', 'hipotesis']],
     ok:'c',
-    fb:{ a:'Ser amarillo, quebrarse o fundirse a 113 °C son propiedades del conjunto: dependen de cómo se ordenan y se mueven muchísimas moléculas juntas. Un átomo solo tiene masa y su forma de combinarse. Entre 358 universitarios, cerca del 40 % antes del curso y del 46 % después eligió que un átomo tendría todas las propiedades de la sustancia (Salame y Casino, 2021).',
-      b:'El color tampoco es del átomo: sale de cómo muchos átomos juntos devuelven la luz. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      d:'El añil es solo la clave del azufre en este dibujo, para distinguirlo de otros elementos. Un átomo solo no tiene color. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    fb:{ a:'Ser amarillo, quebrarse o fundirse a 113 °C son propiedades del conjunto: dependen de cómo se ordenan y se mueven muchísimas moléculas juntas. Un átomo solo tiene masa y su forma de combinarse. ',
+      b:'El color tampoco es del átomo: sale de cómo muchos átomos juntos devuelven la luz.',
+      d:'El añil es solo la clave del azufre en este dibujo, para distinguirlo de otros elementos. Un átomo solo no tiene color.' },
     antes:() => ({ tipo:'azufre' }), despues:() => ({ tipo:'azufre', r:true }),
     exp:() => `<div class="eqs"><div class="eq"><span class="ex">Un átomo de ${F('S')} tiene: ${AZU.tiene.join(', ')} (y su forma de combinarse). No tiene: ${AZU.noTiene.join(', ')}.</span><span class="note">Por eso un cambio de estado no cambia las partículas: fundir el azufre cambia cómo están juntas las moléculas, no las moléculas.</span></div></div>
       <p class="fuente">MA11 (AT1 del informe de átomo y enlace): Salame y Casino (2021), ítem 22 del Chemical Concepts Inventory, 358 universitarios de química general.</p>` },
@@ -1144,9 +1144,9 @@ const EXPS = [
           ['c', `${VT(fmt(JUL.errores.sigueSubiendo, 0) + ' °C')}: sigue subiendo mientras haya fuego`, 'MA7-sigue-subiendo', 'documentado'],
           ['d', `Menos de ${VT('87 °C')}: el vapor se lleva el calor y el agua se enfría`, 'vapor-enfria', 'hipotesis']],
     ok:'b',
-    fb:{ a:'A 3825 m la presión del aire es menor y el agua hierve antes, a unos 87 °C. Y una vez que hierve, no sube más. Con 858 universitarios de Sídney, entre un tercio y algo más de 4 de cada 10, según el grupo, dijo que el agua hierve siempre a la misma temperatura (Georgiou y Sharma, 2010).',
-      c:`Salió de sumar todo el calor como si calentara: 87 + 10 000/500 = ${fmt(JUL.errores.sigueSubiendo, 0)}. Pero mientras hierve, ese calor separa moléculas y forma vapor. Con 858 universitarios de Sídney, entre el 19 % y el 25 %, según el grupo, creyó que el agua sigue calentándose mientras hierve; y entre el 30 % y el 48 %, que agregar calor siempre sube la temperatura (Georgiou y Sharma, 2010).`,
-      d:'El vapor sí se lleva energía, pero la cocina la repone: el agua se queda en 87 °C mientras haya líquido. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    fb:{ a:'A 3825 m la presión del aire es menor y el agua hierve antes, a unos 87 °C. Y una vez que hierve, no sube más. ',
+      c:`Salió de sumar todo el calor como si calentara: 87 + 10 000/500 = ${fmt(JUL.errores.sigueSubiendo, 0)}. Pero mientras hierve, ese calor separa moléculas y forma vapor. `,
+      d:'El vapor sí se lleva energía, pero la cocina la repone: el agua se queda en 87 °C mientras haya líquido.' },
     antes:() => ({ tipo:'juliaca' }), despues:p => ({ tipo:'juliaca', r:true, p }), anima:true,
     exp:() => `<div class="eqs"><div class="eq"><span class="ex">Calor: 2000 cal/min × 5 min = ${fmt(JUL.Q, 0)} cal → se vuelven vapor ${fmt(JUL.Q, 0)} ÷ 540 ≈ ${fmt(JUL.vapor, 1)} g de agua</span><span class="note">La temperatura se queda en ${VT('87 °C')}: es la meseta de la ebullición. La escena del calor y los cambios de fase está en <a href="../calorimetria/">calorimetría</a>.</span></div></div>
       <p class="fuente">MA6 y MA7: Georgiou y Sharma (2010), 858 universitarios de primer año en Sídney, preguntas 6 y 8. «Sigue subiendo mientras hierve»: entre 2 y 2,5 de cada 10, según el grupo.</p>` },
@@ -1157,9 +1157,9 @@ const EXPS = [
           ['c', `${Vm(fmt(NUC.baja, 0) + ' g')}`],
           ['d', `${Vm(cien(NUC.errores.cEnKmPorS) + ' g')}`, 'emc2-c-en-km-s', 'hipotesis']],
     ok:'c',
-    fb:{ a:'En una reacción nuclear la masa sí baja de forma que se puede medir: es el defecto de masa. Lo que se conserva es la energía total. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      b:'Salió de calcular 1,8 × 10¹⁴ ÷ 9 × 10¹⁶ = 0,002 y leerlo como gramos: la fórmula da kilogramos. 0,002 kg = 2 g. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      d:'Salió de usar c = 3 × 10⁵ (km/s): al cuadrado, el resultado sale un millón de veces más grande. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    fb:{ a:'En una reacción nuclear la masa sí baja de forma que se puede medir: es el defecto de masa. Lo que se conserva es la energía total.',
+      b:'Salió de calcular 1,8 × 10¹⁴ ÷ 9 × 10¹⁶ = 0,002 y leerlo como gramos: la fórmula da kilogramos. 0,002 kg = 2 g.',
+      d:'Salió de usar c = 3 × 10⁵ (km/s): al cuadrado, el resultado sale un millón de veces más grande.' },
     antes:() => ({ tipo:'nuclear' }), despues:p => ({ tipo:'nuclear', r:true, p }), anima:true,
     exp:() => `<div class="eqs"><div class="eq"><span class="ex">${Vm('Δm')} = ${VE('E')} ÷ ${Vc('c')}² = 1,8 × 10¹⁴ ÷ (${Vc('3 × 10⁸')})² = ${Vm('2 × 10⁻³ kg')} = ${Vm(fmt(NUC.baja, 0) + ' g')}</span></div>
       <div class="eq"><span class="ex">Química: arder 1 mol de metano libera unos 890 000 J → ${Vm('Δm')} ≈ ${cien(MET.g)} g</span><span class="note">También baja, pero menos de una cienmillonésima de gramo: ninguna balanza lo nota. Por eso en química decimos que la masa se conserva.</span></div></div>
@@ -1203,7 +1203,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el dibujo para ver por qué.' : `Elegiste la ${LETRAS.indexOf(p) + 1}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el dibujo para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     explicar();
   };

@@ -102,7 +102,7 @@ canvas:focus-visible{outline:3px solid var(--c-k); outline-offset:-3px}
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:999px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -774,40 +774,40 @@ const P1 = { id:'ampliadora-terreno', ok:'b', opts:[
   ['b','18 horas'],
   ['c','54 horas: 3 · 3 · 3 veces','GE2-cubo-en-area','hipotesis']],
   fb:{ b:'¡Bien! El abono cubre el área. Con el triple de lado caben 3 · 3 = 9 terrenos chicos, y cada uno toma 2 horas.',
-    a:'Elegiste la A. El triple vale para el lado y para el borde (el perímetro), pero el abono cubre todo el terreno. Mira el dibujo: caben 9 terrenos chicos, no 3. La correcta está marcada.',
-    c:'Elegiste la C. El cubo, 3 · 3 · 3, sería para un volumen (por ejemplo, si el terreno fuera una caja que se llena). Un terreno es una superficie: se multiplica por 3 · 3 = 9. La correcta está marcada.' } };
+    a:'El triple vale para el lado y para el borde (el perímetro), pero el abono cubre todo el terreno. Mira el dibujo: caben 9 terrenos chicos, no 3.',
+    c:'El cubo, 3 · 3 · 3, sería para un volumen (por ejemplo, si el terreno fuera una caja que se llena). Un terreno es una superficie: se multiplica por 3 · 3 = 9.' } };
 const P2 = { id:'ampliadora-triangulo', ok:'c', opts:[
   ['a','2 veces: el lado es el doble','GE1-area-como-lado','documentado'],
   ['b','3 veces: una en cada esquina','teselado-sin-centro','hipotesis'],
   ['c','4 veces'],
   ['d','8 veces','GE2-cubo-en-area','hipotesis']],
   fb:{ c:'¡Bien! Caben 3 en las esquinas y 1 más en el centro, de cabeza: 4 = 2². El área se multiplica por k².',
-    a:'Elegiste la A. El doble vale para cada lado, pero el triángulo crece a lo largo y a lo alto a la vez. Mira el dibujo: caben 4. La correcta está marcada.',
-    b:'Elegiste la B. Las tres esquinas están bien, pero queda un hueco en el centro con la forma del triángulo chico, de cabeza: también es una copia. Son 4. La correcta está marcada.',
-    d:'Elegiste la D. El 8 = 2³ sería para un sólido (un tetraedro o un cubo de lado doble). El triángulo es plano: 2² = 4. La correcta está marcada.' } };
+    a:'El doble vale para cada lado, pero el triángulo crece a lo largo y a lo alto a la vez. Mira el dibujo: caben 4.',
+    b:'Las tres esquinas están bien, pero queda un hueco en el centro con la forma del triángulo chico, de cabeza: también es una copia. Son 4.',
+    d:'El 8 = 2³ sería para un sólido (un tetraedro o un cubo de lado doble). El triángulo es plano: 2² = 4.' } };
 const P3 = { id:'ampliadora-cubitos', ok:'d', opts:[
   ['a','3 cubitos: la arista es el triple','GE2-volumen-como-arista','parcial'],
   ['b','9 cubitos: 3 · 3','GE2-volumen-como-area','parcial'],
   ['c','19 cubitos: los que asoman en el dibujo','GE13-cuenta-visibles','parcial'],
   ['d','27 cubitos']],
   fb:{ d:'¡Bien! En cada arista caben 3 cubitos, hay 3 · 3 = 9 en cada capa y 3 capas: 27 = 3³.',
-    a:'Elegiste la A. Tres cubitos solo forman una fila a lo largo de la arista. El cubo crece a lo largo, a lo ancho y a lo alto: 3 · 3 · 3 = 27. La correcta está marcada.',
-    b:'Elegiste la B. 9 es una sola capa (el área de una cara). Hay 3 capas como esa: 27. La correcta está marcada.',
-    c:'Elegiste la C. En el dibujo asoman 19 cubitos, pero detrás quedan 8 que no se ven, entre ellos el del centro. El volumen cuenta también los escondidos: 27. La correcta está marcada.' } };
+    a:'Tres cubitos solo forman una fila a lo largo de la arista. El cubo crece a lo largo, a lo ancho y a lo alto: 3 · 3 · 3 = 27.',
+    b:'9 es una sola capa (el área de una cara). Hay 3 capas como esa: 27.',
+    c:'En el dibujo asoman 19 cubitos, pero detrás quedan 8 que no se ven, entre ellos el del centro. El volumen cuenta también los escondidos: 27.' } };
 const P4 = { id:'ampliadora-maqueta', ok:'b', opts:[
   ['a','150 cm²: 3 · 50','GE1-area-como-lado','documentado'],
   ['b','7500 cm²'],
   ['c','375 000 cm²: 3 · 50 · 50 · 50','GE2-cubo-en-area','hipotesis']],
   fb:{ b:'¡Bien! La ventana real es 50 veces más ancha y 50 veces más alta: caben 50 · 50 = 2500 ventanitas de 3 cm². Son 7500 cm², unos 0,75 m².',
-    a:'Elegiste la A. Con 150 cm² solo tendrías una fila de 50 ventanitas. La ventana también es 50 veces más alta: son 50 filas. La correcta está marcada.',
-    c:'Elegiste la C. 50³ sería para un volumen (el aire de una habitación, el concreto de una columna). El vidrio es una superficie: 50². La correcta está marcada.' } };
+    a:'Con 150 cm² solo tendrías una fila de 50 ventanitas. La ventana también es 50 veces más alta: son 50 filas.',
+    c:'50³ sería para un volumen (el aire de una habitación, el concreto de una columna). El vidrio es una superficie: 50².' } };
 const P5 = { id:'ampliadora-cono', ok:'c', opts:[
   ['a','1: tienen la misma base y la misma altura','GE20-sin-tercio','hipotesis'],
   ['b','2: el cono es la mitad del cilindro','cono-mitad','hipotesis'],
   ['c','3']],
   fb:{ c:'¡Bien! El cono guarda un tercio del cilindro: V = π·r²·h/3. Mira los tres vertidos.',
-    a:'Elegiste la A. La misma base y la misma altura no dan el mismo volumen: el cono se angosta hasta la punta. Mira cuántas veces hay que vaciarlo. La correcta está marcada.',
-    b:'Elegiste la B. El cono "parece" la mitad, pero se angosta muy rápido: guarda solo un tercio. Mira los tres vertidos. La correcta está marcada.' } };
+    a:'La misma base y la misma altura no dan el mismo volumen: el cono se angosta hasta la punta. Mira cuántas veces hay que vaciarlo.',
+    b:'El cono "parece" la mitad, pero se angosta muy rápido: guarda solo un tercio. Mira los tres vertidos.' } };
 
 const opciones = P => `<div class="opts">${P.opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="fb"></p>`;
 
@@ -1083,7 +1083,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira la escena para ver por qué.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `; mira la escena para ver por qué.`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

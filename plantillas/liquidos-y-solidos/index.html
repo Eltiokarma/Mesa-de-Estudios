@@ -127,7 +127,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 /* En la retroalimentación correcta (verde), la T verde se confundiría con el texto: va en el color del texto, subrayada en el de T. */
 .fb.ok .v-T{color:inherit; text-decoration-color:var(--c-T)}
 
@@ -930,45 +930,45 @@ const P0 = { id:'liquidos-paso2', ok:'c', opts:[
   ['c', 'Igual en los dos: se evapora hasta que vuelven tantas moléculas como salen.'],
   ['d', 'Ninguna: en un frasco cerrado el agua no se evapora, porque el vapor no tiene adónde ir.', 'cerrado-no-evapora', RES('hipotesis', 'hipótesis nuestra')]],
   fb:{ c:`¡Bien! Mira los dos frascos: en B se evapora el doble de moléculas, pero tiene el doble de espacio. El vapor queda igual de apretado y empuja lo mismo: ${Pv_(mm(FR.P[0]))} en los dos. Es la presión de vapor del agua a 25 °C.`,
-    a:`Es cierto que en B se evapora más agua, el doble; pero también tiene el doble de volumen, así que el vapor queda igual de apretado y empuja lo mismo. En un estudio con 6 futuros profesores de química de Turquía (Dindar, Bektaş y Çelik, 2010), 4 dijeron que en el recipiente más grande la presión de vapor es mayor. Es una muestra mínima: solo dice que el error existe. La correcta está marcada.`,
-    b:`Eso pasaría si B solo tuviera el vapor de A, sin líquido (la ley de Boyle). Pero queda líquido, y sigue evaporándose hasta que vuelven tantas moléculas como salen. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
-    d:`En el frasco cerrado el agua sí se evapora: las moléculas más rápidas escapan del líquido. Lo que pasa es que también vuelven, y llega un momento en que vuelven tantas como salen. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
+    a:`Es cierto que en B se evapora más agua, el doble; pero también tiene el doble de volumen, así que el vapor queda igual de apretado y empuja lo mismo. Es una muestra mínima: solo dice que el error existe.`,
+    b:`Eso pasaría si B solo tuviera el vapor de A, sin líquido (la ley de Boyle). Pero queda líquido, y sigue evaporándose hasta que vuelven tantas moléculas como salen.`,
+    d:`En el frasco cerrado el agua sí se evapora: las moléculas más rápidas escapan del líquido. Lo que pasa es que también vuelven, y llega un momento en que vuelven tantas como salen.` } };
 const P1 = ordenar({ id:'liquidos-paso4', ok:'c', opts:[
   ['a', 'Hidrógeno y oxígeno: el calor rompió las moléculas de agua en sus átomos.', 'EN13-hervir-rompe-enlaces', RES('parcial', 'Schmidt, Kaufmann y Treagust 2009: «la más destacada», sin porcentaje')],
   ['b', 'Aire: es el aire que estaba disuelto en el agua y el calor lo saca.', 'burbujas-de-aire-disuelto', RES('hipotesis', 'informe, propuesta de ebullición')],
   ['c', 'Vapor de agua: moléculas de agua enteras, separadas unas de otras.'],
   ['d', 'Nada: es un espacio vacío que deja el agua al calentarse.', 'burbuja-vacia', RES('hipotesis', 'informe, propuesta de ebullición')]],
   fb:{ c:`¡Bien! En la burbuja hay moléculas de agua enteras, mucho más separadas que en el líquido: es vapor. Al hervir no se rompe ningún enlace O–H; lo que se separa son las moléculas, unas de otras.`,
-    a:`Al hervir, las moléculas de agua se separan unas de otras, pero cada una sigue entera: sus enlaces O–H no se rompen. Separar el agua en hidrógeno y oxígeno pide mucha más energía, como en la electrólisis. Un estudio con escolares alemanes de 16 a 19 años la describe como la idea errónea más destacada sobre la ebullición (Schmidt, Kaufmann y Treagust, 2009); en lo que leímos no hay porcentaje. La correcta está marcada.`,
-    b:`Las burbujitas que aparecen al principio, cuando el agua apenas se entibia, sí son de aire disuelto. Pero ese aire se acaba pronto; las burbujas grandes del hervor siguen saliendo mientras haya agua, y son de vapor. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
-    d:`Una burbuja vacía la aplastaría al instante el agua de alrededor. La sostiene el vapor de adentro, que empuja tanto como el aire de afuera. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } }, 'abdc');
+    a:`Al hervir, las moléculas de agua se separan unas de otras, pero cada una sigue entera: sus enlaces O–H no se rompen. Separar el agua en hidrógeno y oxígeno pide mucha más energía, como en la electrólisis. `,
+    b:`Las burbujitas que aparecen al principio, cuando el agua apenas se entibia, sí son de aire disuelto. Pero ese aire se acaba pronto; las burbujas grandes del hervor siguen saliendo mientras haya agua, y son de vapor.`,
+    d:`Una burbuja vacía la aplastaría al instante el agua de alrededor. La sostiene el vapor de adentro, que empuja tanto como el aire de afuera.` } }, 'abdc');
 const P2 = { id:'liquidos-paso5', ok:'b', opts:[
   ['a', 'A 100 °C, como en Lima: el agua hierve cuando llega a 100 °C, esté donde esté.', 'Q9-siempre-hierve-a-100', RES('documentado', 'Georgiou y Sharma 2010: 44 % y 34 %')],
   ['b', 'A menos de 100 °C: allí el aire empuja menos, y la presión de vapor del agua lo iguala antes.'],
   ['c', 'A menos de 100 °C: en la altura hace más frío, y por eso la presión de vapor del agua es menor.', 'frio-baja-la-pv', RES('hipotesis', 'hipótesis nuestra')],
   ['d', 'A más de 100 °C: el aire frío de la altura le quita calor y hay que calentarla más.', 'altura-hierve-mas', RES('hipotesis', 'hipótesis nuestra')]],
   fb:{ b:`¡Bien! En Puno, el aire empuja unos ${Pe_(mm(PUNO.mmHg, 0))}. El agua hierve cuando su ${Pv_('presión de vapor')} llega a eso, y eso pasa cerca de ${T_(gc(PUNO.T))}. Mira la curva: la presión de vapor sube con la temperatura y corta antes la línea de Puno que la de Lima.`,
-    a:`100 °C es la temperatura a la que el agua hierve con 1 atm (760 mmHg) encima. Hervir es que se formen burbujas de vapor dentro del líquido, y una burbuja solo crece si su vapor empuja tanto como el aire de afuera. En Puno el aire empuja menos, así que basta menos temperatura: unos ${fmt(PUNO.T, 0)} °C. Que el agua siempre hierve a la misma temperatura lo eligió cerca del 44 % y del 34 % de dos grupos de universitarios de primer año en Sídney (Georgiou y Sharma, 2010). La correcta está marcada.`,
-    c:`La temperatura es la correcta, pero la razón no. La presión de vapor del agua depende solo de la temperatura del agua: a 87 °C es la misma en Lima y en Puno, y la curva no cambia. El frío del aire no la baja. Lo que baja en la altura es la presión de afuera, la que el vapor tiene que igualar para hervir. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
-    d:`El aire frío hace que el agua tarde más en calentarse, pero no cambia a qué temperatura hierve: eso lo fija la presión de afuera, y en la altura es menor. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
+    a:`100 °C es la temperatura a la que el agua hierve con 1 atm (760 mmHg) encima. Hervir es que se formen burbujas de vapor dentro del líquido, y una burbuja solo crece si su vapor empuja tanto como el aire de afuera. En Puno el aire empuja menos, así que basta menos temperatura: unos ${fmt(PUNO.T, 0)} °C. `,
+    c:`La temperatura es la correcta, pero la razón no. La presión de vapor del agua depende solo de la temperatura del agua: a 87 °C es la misma en Lima y en Puno, y la curva no cambia. El frío del aire no la baja. Lo que baja en la altura es la presión de afuera, la que el vapor tiene que igualar para hervir.`,
+    d:`El aire frío hace que el agua tarde más en calentarse, pero no cambia a qué temperatura hierve: eso lo fija la presión de afuera, y en la altura es menor.` } };
 const P3 = { id:'liquidos-paso6', ok:'b', opts:[
   ['a', 'Porque el enlace O–H es más fuerte que el S–H, y cuesta más separar las moléculas.', 'EN14-enlace-interno', RES('documentado', 'Kumpha y otros 2014: 36 % de 102')],
   ['b', 'Porque entre moléculas de agua hay puentes de hidrógeno, y entre las de H₂S casi no.'],
   ['c', 'Porque la molécula de agua es polar y la de H₂S no.', 'H2S-apolar', RES('hipotesis', 'hipótesis nuestra')],
   ['d', 'Porque el oxígeno tiene más electrones que el azufre, y atrae más a las otras moléculas.', 'O-mas-electrones', RES('hipotesis', 'informe, propuesta de ebullición')]],
-  fb:{ b:`¡Bien! Las líneas punteadas son los ${pu_('puentes de hidrógeno')}: el H de una molécula de agua atrae un par libre del O de otra. El H₂S casi no los forma, y sus moléculas se separan fácil. Al hervir se rompen esos puentes, no los enlaces O–H. En un estudio con 102 escolares tailandeses (Kumpha y otros, 2014), solo cerca del 11 % acertó la respuesta y la razón.`,
-    a:`El enlace O–H sí es más fuerte que el S–H, pero está dentro de cada molécula, y al hervir no se rompe. Lo que decide si es líquido o gas es la atracción entre moléculas. En un estudio con 102 escolares tailandeses (Kumpha y otros, 2014), cerca del 36 % eligió esta razón. La correcta está marcada.`,
-    c:`El H₂S también es polar: es angular, como el agua, y su momento dipolar es de unos 0,97 D (el del agua, unos 1,85 D). Esa diferencia no basta para que uno sea líquido y el otro gas: lo que tiene el agua y le falta al H₂S son los puentes de hidrógeno. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
-    d:`Es al revés: el azufre tiene más electrones que el oxígeno (16 contra 8). Y aun así su compuesto es gas: lo que le falta al H₂S son los puentes de hidrógeno. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
+  fb:{ b:`¡Bien! Las líneas punteadas son los ${pu_('puentes de hidrógeno')}: el H de una molécula de agua atrae un par libre del O de otra. El H₂S casi no los forma, y sus moléculas se separan fácil. Al hervir se rompen esos puentes, no los enlaces O–H. `,
+    a:`El enlace O–H sí es más fuerte que el S–H, pero está dentro de cada molécula, y al hervir no se rompe. Lo que decide si es líquido o gas es la atracción entre moléculas. `,
+    c:`El H₂S también es polar: es angular, como el agua, y su momento dipolar es de unos 0,97 D (el del agua, unos 1,85 D). Esa diferencia no basta para que uno sea líquido y el otro gas: lo que tiene el agua y le falta al H₂S son los puentes de hidrógeno.`,
+    d:`Es al revés: el azufre tiene más electrones que el oxígeno (16 contra 8). Y aun así su compuesto es gas: lo que le falta al H₂S son los puentes de hidrógeno.` } };
 const P4 = { id:'liquidos-paso7', ok:'a', opts:[
   ['a', 'Solo el NH₃: tiene un H unido directamente al N.'],
   ['b', 'Solo el CH₃OCH₃: es el único que tiene H y O.', 'EN15-tener-oxigeno', RES('documentado', 'Schmidt 1996, tabla 1: 34 % y 31 %')],
   ['c', 'El NH₃ y el CH₃F: el N y el F son muy electronegativos.', 'EN15-tener-F-o-N', RES('documentado', 'Schmidt 1996, tabla 1: 22 % y 29 %')],
   ['d', 'Los tres: los tres tienen H y un átomo muy electronegativo.', 'EN15-H-y-electronegativo', RES('hipotesis', 'hipótesis nuestra')]],
   fb:{ a:`¡Bien! En el NH₃, cada H está unido al N, y el N tiene un par libre: una molécula presta el H y la otra pone el par. En el CH₃F y en el éter, los H están unidos al C. En ${SCHMIDT}, solo cerca del 27 % y del 20 % de dos grupos acertó.`,
-    b:`El éter tiene O, pero sus H están unidos a C, y un H unido a C casi no tiene carga positiva para atraer el par de otro O. Su O sí puede recibir un puente, pero de otra molécula que ponga el H, como el agua. En ${SCHMIDT}, cerca del 34 % y del 31 % de dos grupos eligió solo el éter. La correcta está marcada.`,
-    c:`El F del CH₃F es muy electronegativo, pero sus H están unidos al C, no al F: no hay H que prestar. Hace falta el H pegado al F, O o N. En ${SCHMIDT}, cerca del 22 % y del 29 % de dos grupos eligió el NH₃ y el CH₃F. La correcta está marcada.`,
-    d:`Tener H y un átomo electronegativo no basta: el H tiene que estar unido directamente a ese átomo. En el CH₃F y en el éter, los H están unidos al C. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
+    b:`El éter tiene O, pero sus H están unidos a C, y un H unido a C casi no tiene carga positiva para atraer el par de otro O. Su O sí puede recibir un puente, pero de otra molécula que ponga el H, como el agua. En ${SCHMIDT}, cerca del 34 % y del 31 % de dos grupos eligió solo el éter.`,
+    c:`El F del CH₃F es muy electronegativo, pero sus H están unidos al C, no al F: no hay H que prestar. Hace falta el H pegado al F, O o N. En ${SCHMIDT}, cerca del 22 % y del 29 % de dos grupos eligió el NH₃ y el CH₃F.`,
+    d:`Tener H y un átomo electronegativo no basta: el H tiene que estar unido directamente a ese átomo. En el CH₃F y en el éter, los H están unidos al C.` } };
 
 // ----- Vistas -----
 const lectP = (cj, d) => () => [['P ≈ ', 'ink', 700], [mm(ML.lecturaCaja(cj).presionMedia, d === undefined ? 1 : d), 'Pv', 800]];
@@ -1216,7 +1216,7 @@ function prediccion(s){
   const pintar = () => {
     const p = S.pred[P.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
-    const fb = $('fb'); fb.innerHTML = (p === P.ok ? '' : `Elegiste la ${LETRAS.indexOf(p) + 1}. `) + P.fb[p].replace(/ tabindex="0"/g, ''); fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    const fb = $('fb'); fb.innerHTML = (p === P.ok ? '' : ``) + P.fb[p].replace(/ tabindex="0"/g, ''); fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
     const tras = $('tras'); if (tras) tras.hidden = false;
   };
   const t0 = Date.now();
@@ -1251,7 +1251,7 @@ go(0);
 /* ================= MODO 2: ¿qué pasa si…? =================
    atomo-enlace-ideas-erroneas.md (EN16: butano contra isobutano), gases-soluciones-ideas-erroneas.md (gas recogido sobre
    agua, de «Lo que no tiene respaldo»; GQ16: el gas que condensa) y fluidos-calor-termodinamica-ideas-erroneas.md (Q9 en
-   la olla a presión). El hielo seco y sus opciones incorrectas son hipótesis nuestras. */
+   la olla a presión). */
 (function(){
 const $ = id => document.getElementById(id);
 const E = crearEscena($('cv2'), 'desc2', 'm2', 'ley2');
@@ -1265,9 +1265,9 @@ const EXPS = [
           ['b', 'El butano: su cadena recta toca a sus vecinas a lo largo, y se atraen más.'],
           ['c', 'El isobutano: sus ramas lo hacen más compacto, y sus moléculas quedan más unidas.', 'ramificada-mas-unida', RES('hipotesis', 'hipótesis nuestra')],
           ['d', 'El butano: los enlaces C–C de su cadena son más fuertes que los del isobutano.', 'enlace-interno-alcanos', RES('hipotesis', 'hipótesis nuestra, cercana a EN14')]],
-    fb:{ a:'El número de carbonos no los distingue: los dos tienen 4. Lo que cambia es la forma. En un estudio con escolares alemanes de los dos últimos años del colegio (Schmidt, 1996), cerca del 20 % de 246 eligió por el número de carbonos al buscar el compuesto de mayor punto de ebullición, en otra pregunta parecida.',
-      c:'Compacto no es más unido: una molécula casi esférica solo toca a sus vecinas en pocos puntos. La atracción entre moléculas sin puentes de hidrógeno crece con la superficie de contacto. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      d:'El butano sí hierve más alto, pero no por sus enlaces de adentro: al hervir, ningún enlace C–C se rompe, y los de las dos moléculas son casi iguales. Lo que cambia es cuánto se tocan las moléculas vecinas. Esta opción es una hipótesis nuestra, cercana a confundir la fuerza del enlace de adentro con la atracción entre moléculas.' },
+    fb:{ a:'El número de carbonos no los distingue: los dos tienen 4. Lo que cambia es la forma. ',
+      c:'Compacto no es más unido: una molécula casi esférica solo toca a sus vecinas en pocos puntos. La atracción entre moléculas sin puentes de hidrógeno crece con la superficie de contacto.',
+      d:'El butano sí hierve más alto, pero no por sus enlaces de adentro: al hervir, ningún enlace C–C se rompe, y los de las dos moléculas son casi iguales. Lo que cambia es cuánto se tocan las moléculas vecinas.' },
     antes:() => ({ paneles:['moleculas'], moleculas:{ contacto:[{ s:'butano' }, { s:'isobutano' }] }, // separadas y sin orientar
       pie:'Dos moléculas de cada uno. Cada bolita es un grupo CH₃, CH₂ o CH.', vars:[], desc:'Dos moléculas de butano y dos de isobutano, juntas.' }),
     despues:() => ({ paneles:['moleculas', 'termos'], moleculas:{ contacto:[{ s:'butano', ver:true }, { s:'isobutano', ver:true }] },
@@ -1283,9 +1283,9 @@ const EXPS = [
           ['b', `${mm(GA.Pgas)}: al total se le resta lo que empuja el vapor del agua.`],
           ['c', `${mm(GA.errores['suma-el-vapor'])}: al total se le suma lo que empuja el vapor del agua.`, 'gas-agua-suma-el-vapor', RES('hipotesis', 'hipótesis nuestra')],
           ['d', `${mm(GA.errores['reparte-a-medias'], 0)}: la presión total se reparte por igual entre los dos gases.`, 'gas-agua-reparte-a-medias', RES('hipotesis', 'hipótesis nuestra')]],
-    fb:{ a:'En el tubo no hay solo hidrógeno: el agua de abajo se evapora y su vapor también empuja. Los 760 mmHg son la suma de los dos. Que no restar la presión de vapor sea un error frecuente es una hipótesis nuestra: no encontramos un estudio que lo mida.',
-      c:'El vapor ya está dentro de los 760 mmHg: es parte del total, no algo que se agregue. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      d:'Cada gas empuja según cuántas moléculas tiene, no por partes iguales; y el vapor de agua, a 25 °C, solo llega a su presión de vapor. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    fb:{ a:'En el tubo no hay solo hidrógeno: el agua de abajo se evapora y su vapor también empuja. Los 760 mmHg son la suma de los dos. ',
+      c:'El vapor ya está dentro de los 760 mmHg: es parte del total, no algo que se agregue.',
+      d:'Cada gas empuja según cuántas moléculas tiene, no por partes iguales; y el vapor de agua, a 25 °C, solo llega a su presión de vapor.' },
     antes:() => ({ paneles:['tubo'], tubo:{ nGas:15, nVapor:1 },
       pie:'Los dos gases del tubo: 15 moléculas de H₂ y 1 de agua, muchas menos de las que hay. La línea punteada marca los niveles iguales.', vars:['Pext'], desc:'Un tubo invertido con hidrógeno y vapor de agua sobre agua; la presión total es 760 milímetros de mercurio.' }),
     despues:() => ({ paneles:['tubo', 'barras'], tubo:{ nGas:15, nVapor:1, ver:true },
@@ -1301,9 +1301,9 @@ const EXPS = [
           ['b', `A unos ${fmt(OL.T, 0)} °C: su vapor tiene que llegar a empujar 2 atm.`],
           ['c', `A unos ${fmt(OL.errores['doble-presion-doble-T'], 0)} °C: con el doble de presión, el agua hierve al doble de temperatura.`, 'olla-doble-presion-doble-T', RES('hipotesis', 'hipótesis nuestra')],
           ['d', 'A menos de 100 °C: la presión de adentro ayuda a que las moléculas escapen del líquido.', 'olla-presion-ayuda-a-escapar', RES('hipotesis', 'hipótesis nuestra')]],
-    fb:{ a:'Si siguiera en 100 °C, la olla a presión no cocinaría más rápido. A 100 °C, la presión de vapor del agua es 760 mmHg: no alcanza para formar burbujas contra 1520 mmHg. Que el agua siempre hierve a la misma temperatura lo eligió cerca del 44 % y del 34 % de dos grupos de universitarios de primer año en Sídney (Georgiou y Sharma, 2010), en una pregunta sobre otra situación.',
-      c:'La presión de vapor no crece en proporción a la temperatura en °C: sube mucho más rápido. Para llegar a 2 atm basta pasar de 100 °C a unos 121 °C. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      d:'Es al revés: la presión de afuera aplasta las burbujas. Para que crezcan, el vapor tiene que empujar más, y eso pide más temperatura. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    fb:{ a:'Si siguiera en 100 °C, la olla a presión no cocinaría más rápido. A 100 °C, la presión de vapor del agua es 760 mmHg: no alcanza para formar burbujas contra 1520 mmHg. ',
+      c:'La presión de vapor no crece en proporción a la temperatura en °C: sube mucho más rápido. Para llegar a 2 atm basta pasar de 100 °C a unos 121 °C.',
+      d:'Es al revés: la presión de afuera aplasta las burbujas. Para que crezcan, el vapor tiene que empujar más, y eso pide más temperatura.' },
     antes:() => ({ paneles:['olla'], olla:{ burbuja:{ p:1, ver:true }, aire:[['dentro de la olla: ', 'ink', 700], ['1520 mmHg', 'Pext', 800]], rot:[[['hierve a ', 'ink', 700], ['T = ?', 'T', 800]]] },
       pie:'La olla a presión por dentro. La temperatura se ve al responder.', vars:['Pext', 'T'], desc:'Una olla a presión con 1520 milímetros de mercurio adentro; la temperatura está tapada.' }),
     anima:true,
@@ -1322,9 +1322,9 @@ const EXPS = [
           ['b', 'Pasa directo a gas: a 1 atm, el CO₂ líquido no puede existir.'],
           ['c', 'Se descompone: la nube blanca que sale es carbono y oxígeno que se separan.', 'co2-se-descompone', RES('hipotesis', 'hipótesis nuestra, cercana a EN13')],
           ['d', 'Se derrite, pero el líquido hierve tan rápido que no alcanzamos a verlo.', 'co2-liquido-fugaz', RES('hipotesis', 'hipótesis nuestra')]],
-    fb:{ a:`En el diagrama de fases del CO₂, la zona del líquido empieza en el punto triple, a ${fmt(TRIP.P, 1)} atm. A 1 atm no hay líquido: el sólido pasa directo a gas. Esta opción es una hipótesis nuestra, sin estudio que la mida.`,
-      c:'Las moléculas de CO₂ salen enteras: sublimar no rompe enlaces. La nube blanca son gotitas del agua del aire, que se condensa al enfriarse junto al gas frío. Esta opción es una hipótesis nuestra, cercana a la idea de que al hervir se rompen los enlaces.',
-      d:'No es que el líquido dure poco: a 1 atm no se forma nunca. Haría falta más de 5,1 atm para verlo. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    fb:{ a:`En el diagrama de fases del CO₂, la zona del líquido empieza en el punto triple, a ${fmt(TRIP.P, 1)} atm. A 1 atm no hay líquido: el sólido pasa directo a gas.`,
+      c:'Las moléculas de CO₂ salen enteras: sublimar no rompe enlaces. La nube blanca son gotitas del agua del aire, que se condensa al enfriarse junto al gas frío.',
+      d:'No es que el líquido dure poco: a 1 atm no se forma nunca. Haría falta más de 5,1 atm para verlo.' },
     antes:() => ({ paneles:['fases'], fases:{ s:'co2', Tmin:-120, Tmax:50, Plo:0.1, Phi:300, oculto:true }, pie:'', vars:[], desc:'El diagrama de fases del CO2, tapado hasta que respondas.' }),
     anima:true,
     despues:p => ({ paneles:['fases'], fases:{ s:'co2', Tmin:-120, Tmax:50, Plo:0.1, Phi:300, linea1:true, recorrido:{ P:1, T1:-110, T2:20, p: p === undefined ? 1 : p } },
@@ -1339,9 +1339,9 @@ const EXPS = [
           ['b', 'Se juntan y se atraen, pero cada una sigue del mismo tamaño.'],
           ['c', 'Se juntan y se quedan quietas: en el líquido, las moléculas ya no se mueven.', 'liquido-quieto', RES('hipotesis', 'hipótesis nuestra')],
           ['d', 'Se vuelven más pesadas: el agua líquida pesa más que el mismo vapor.', 'liquido-pesa-mas', RES('hipotesis', 'hipótesis nuestra')]],
-    fb:{ a:'El líquido ocupa menos espacio porque las moléculas quedan juntas, no porque se achiquen: cada una tiene el mismo tamaño. En un estudio con 104 futuros profesores de primaria de Turquía (Köksal, 2018), el texto dice que cerca del 65 % eligió que en un cambio de estado cambian el tamaño, la energía y la distancia de las partículas; la tabla del artículo salió mal impresa, así que tomamos la cifra con reserva.',
-      c:'En el líquido las moléculas siguen moviéndose: se deslizan unas junto a otras, sin separarse. Por eso un líquido se evapora aunque no hierva. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      d:'Son las mismas moléculas: la masa no cambia al condensar. Lo que cambia es cuánto espacio ocupan. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    fb:{ a:'El líquido ocupa menos espacio porque las moléculas quedan juntas, no porque se achiquen: cada una tiene el mismo tamaño. ',
+      c:'En el líquido las moléculas siguen moviéndose: se deslizan unas junto a otras, sin separarse. Por eso un líquido se evapora aunque no hierva.',
+      d:'Son las mismas moléculas: la masa no cambia al condensar. Lo que cambia es cuánto espacio ocupan.' },
     antes:() => ({ paneles:['condensa'], condensa:{ n:18, p:0, rot:[['vapor de agua caliente', 'ink', 800]] }, pie:'Cada figura es una molécula de agua.', vars:[], desc:'Una caja con 18 moléculas de agua en estado gaseoso.' }),
     anima:true,
     despues:p => ({ paneles:['condensa'], condensa:{ n:18, p: p === undefined ? 1 : p, rot:[[p >= 1 || p === undefined ? 'agua líquida: las mismas 18 moléculas, del mismo tamaño' : 'se enfría…', 'ink', 800]] },
@@ -1386,7 +1386,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el dibujo y la explicación para ver por qué.' : `Elegiste la ${LETRAS.indexOf(p) + 1}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el dibujo y la explicación para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     explicar();
   };

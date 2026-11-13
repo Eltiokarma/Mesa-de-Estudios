@@ -119,7 +119,7 @@ canvas:focus-visible{box-shadow:inset 0 0 0 3px var(--ink)}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .opt b.f{font-family:var(--mono); font-weight:800}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -734,54 +734,54 @@ const P_AULA = { id:'aula-ecuacion', ok:'b', opts:[
   ['c',`${F(AULA.errores.suma.ecuacion)}: hay 6 estudiantes más que profesores`,'AL3-por-cada-como-suma','hipotesis'],
   ['d',`${F('S = 6')}: S son los 6 estudiantes que van con cada profesor`,'AL3-letra-como-objeto','parcial']],
   fb:{ b:'¡Bien! Con el aula del dibujo: 12 estudiantes y 2 profesores dan 12 = 6 · 2.',
-    a:`Elegiste la A. Es el error más estudiado: se copia el orden de las palabras. Pero S y P son números, no etiquetas. Con el aula del dibujo, 6S = P dice ${AULA.errores.invertida.comprobacion.sustituida}, o sea ${AULA.errores.invertida.comprobacion.resultado}. La correcta está marcada.`,
-    c:`Elegiste la C. «Por cada» no es «más que». Con 2 profesores habría 8 estudiantes, pero hay 12. La correcta está marcada.`,
-    d:'Elegiste la D. S no es un valor fijo ni el número de un grupo: es el número de estudiantes de toda el aula, y cambia cuando cambia el número de profesores. Con 3 profesores, S vale 18. La correcta está marcada.' } };
+    a:`Es el error más estudiado: se copia el orden de las palabras. Pero S y P son números, no etiquetas. Con el aula del dibujo, 6S = P dice ${AULA.errores.invertida.comprobacion.sustituida}, o sea ${AULA.errores.invertida.comprobacion.resultado}.`,
+    c:`«Por cada» no es «más que». Con 2 profesores habría 8 estudiantes, pero hay 12.`,
+    d:'S no es un valor fijo ni el número de un grupo: es el número de estudiantes de toda el aula, y cambia cuando cambia el número de profesores. Con 3 profesores, S vale 18.' } };
 const P_DOBLE = { id:'doble-disminuido', ok:'b', opts:[
   ['a',`${F(DOBLE.errores.agrupado)}: al número se le quita 3 y después se duplica`,'disminuido-agrupado','hipotesis'],
   ['b',`${F(DOBLE.expresion)}: se duplica el número y al resultado se le quita 3`],
   ['c',`${F(DOBLE.errores.alReves)}: «disminuido en 3» es 3 menos el doble`,'disminuido-al-reves','hipotesis'],
   ['d',`${F('x² − 3')}: el doble de x es x por x, y luego se quita 3`,'doble-como-cuadrado','hipotesis']],
   fb:{ b:`¡Bien! Con x = 5: el doble es 10 y, disminuido en 3, queda ${MT.evaluar(DOBLE.expresion, { x:5 }).valor}.`,
-    a:`Elegiste la A. La coma cierra «el doble de un número»: primero se duplica y después se quita 3. Con x = 5, 2(x − 3) da ${MT.evaluar(DOBLE.errores.agrupado, { x:5 }).valor} y la frase pide ${MT.evaluar(DOBLE.expresion, { x:5 }).valor}. La correcta está marcada.`,
-    c:`Elegiste la C. «Disminuido en 3» quiere decir «menos 3»: se le quita 3 a lo anterior. Con x = 5, 3 − 2x da ${MT.evaluar(DOBLE.errores.alReves, { x:5 }).valor}. La correcta está marcada.`,
-    d:`Elegiste la D. El doble es «dos veces»: 2x = x + x. El cuadrado es x · x. Con x = 5, el doble es 10, no 25. La correcta está marcada.` } };
+    a:`La coma cierra «el doble de un número»: primero se duplica y después se quita 3. Con x = 5, 2(x − 3) da ${MT.evaluar(DOBLE.errores.agrupado, { x:5 }).valor} y la frase pide ${MT.evaluar(DOBLE.expresion, { x:5 }).valor}.`,
+    c:`«Disminuido en 3» quiere decir «menos 3»: se le quita 3 a lo anterior. Con x = 5, 3 − 2x da ${MT.evaluar(DOBLE.errores.alReves, { x:5 }).valor}.`,
+    d:`El doble es «dos veces»: 2x = x + x. El cuadrado es x · x. Con x = 5, el doble es 10, no 25.` } };
 const P_B = { id:'x2-igual-5x', unidad:U_ECUACIONES, ok:'a', opts:[
   ['a',`${F('Dos: x = 0 y x = 5')}: con las dos los platos pesan lo mismo`],
   ['b',`${F('Una: x = 5')}: se dividen los dos lados entre x`,'AL15-dividir-entre-x','hipotesis'],
   ['c',`${F('Ninguna')}: x² y 5x son cosas distintas, nunca pesan igual`,'AL4-expresiones-distintas','parcial'],
   ['d',`${F('Infinitas')}: x² es x · x, así que siempre se cumple`,'AL6-igual-como-identidad','hipotesis']],
   fb:{ a:'¡Bien! Con x = 0 los dos platos pesan 0, y con x = 5 pesan 25.',
-    b:'Elegiste la B. Dividir entre x solo vale si x no es 0, y x = 0 sí es solución: los dos platos pesan 0. Al dividir, esa solución se pierde. La correcta está marcada.',
-    c:'Elegiste la C. Que se escriban distinto no quiere decir que nunca valgan lo mismo: con x = 5, x² = 25 y 5x = 25. La correcta está marcada.',
-    d:'Elegiste la D. Una ecuación pregunta para qué valores los dos lados pesan igual. Con x = 2, x² = 4 y 5x = 10: no se cumple siempre. La correcta está marcada.' } };
+    b:'Dividir entre x solo vale si x no es 0, y x = 0 sí es solución: los dos platos pesan 0. Al dividir, esa solución se pierde.',
+    c:'Que se escriban distinto no quiere decir que nunca valgan lo mismo: con x = 5, x² = 25 y 5x = 25.',
+    d:'Una ecuación pregunta para qué valores los dos lados pesan igual. Con x = 2, x² = 4 y 5x = 10: no se cumple siempre.' } };
 const P_C = { id:'producto-igual-8', unidad:U_ECUACIONES, ok:'d', opts:[
   ['a',`${F(yLista(RC.errores.cadaFactorIgualK.map(String)))}: x − 3 = 8 o x − 5 = 8`,'AL14-producto-no-cero','parcial'],
   ['b',`${F(yLista(RC.errores.ignoraK.map(String)))}: los valores que vuelven 0 cada paréntesis`,'ignora-el-8','hipotesis'],
   ['c',`${F('−1 y 7')}: 4 · 2 = 8 y (−4)(−2) = 8, así que x − 3 = 4 o x − 3 = −4`,'tanteo-signo','hipotesis'],
   ['d',`${F(yLista(RC.solucionesTexto))}: se resta 8 a los dos lados y se factoriza`]],
   fb:{ d:'¡Bien! (1 − 3)(1 − 5) = (−2)(−4) = 8 y (7 − 3)(7 − 5) = 4 · 2 = 8.',
-    a:`Elegiste la A. «Uno de los factores vale…» solo sirve cuando el producto es 0. Con x = 11, (11 − 3)(11 − 5) = 8 · 6 = ${MT.comprobar(EC_C, { x:11 }).izq}, no 8. La correcta está marcada.`,
-    b:'Elegiste la B. Con x = 3 el producto vale 0, no 8: esos valores resolverían (x − 3)(x − 5) = 0. La correcta está marcada.',
-    c:`Elegiste la C. El 7 sí funciona, pero con x = −1 los factores son −4 y −6: ${MT.comprobar(EC_C, { x:-1 }).sustituida}, o sea ${MT.comprobar(EC_C, { x:-1 }).resultado}. Si x − 3 = −4, x − 5 no es −2 sino −6. El par negativo correcto es (−2)(−4), con x = 1. La correcta está marcada.` } };
+    a:`«Uno de los factores vale…» solo sirve cuando el producto es 0. Con x = 11, (11 − 3)(11 − 5) = 8 · 6 = ${MT.comprobar(EC_C, { x:11 }).izq}, no 8.`,
+    b:'Con x = 3 el producto vale 0, no 8: esos valores resolverían (x − 3)(x − 5) = 0.',
+    c:`El 7 sí funciona, pero con x = −1 los factores son −4 y −6: ${MT.comprobar(EC_C, { x:-1 }).sustituida}, o sea ${MT.comprobar(EC_C, { x:-1 }).resultado}. Si x − 3 = −4, x − 5 no es −2 sino −6. El par negativo correcto es (−2)(−4), con x = 1.` } };
 const P_ED = { id:'edades-hace-4', ok:'c', opts:[
   ['a',`${F(fmt(ED.errores.sinTiempo) + ' años')}: 30 = 2B`,'RM3-sin-tiempo','hipotesis'],
   ['b',`${F(fmt(ED.errores.soloConocida) + ' años')}: 30 − 4 = 2B`,'RM1-tiempo-a-uno','hipotesis'],
   ['c',`${F(fmt(ED.B) + ' años')}: 30 − 4 = 2(B − 4)`],
   ['d',`${F(fmt(ED.errores.soloIncognita) + ' años')}: 30 = 2(B − 4)`,'RM1-tiempo-solo-incognita','hipotesis']],
   fb:{ c:`¡Bien! Hace 4 años Mara tenía 26 y Beto 13: 26 = 2 · 13. Hoy Beto tiene 17.`,
-    a:`Elegiste la A. «Hace 4 años» cambia las dos edades: hay que restar 4 a Mara y a Beto. Con 15, hace 4 años Beto tenía 11, y 26 no es el doble de 11. La correcta está marcada.`,
-    b:`Elegiste la B. 13 es la edad que Beto tenía hace 4 años: a esa ecuación le falta restarle 4 a Beto. Hoy tiene 13 + 4 = 17. La correcta está marcada.`,
-    d:'Elegiste la D. Ahí se le quitó 4 a Beto pero no a Mara: hace 4 años las dos edades eran 4 menos. Con 19, hace 4 años Beto tenía 15, y 26 no es el doble. La correcta está marcada.' } };
+    a:`«Hace 4 años» cambia las dos edades: hay que restar 4 a Mara y a Beto. Con 15, hace 4 años Beto tenía 11, y 26 no es el doble de 11.`,
+    b:`13 es la edad que Beto tenía hace 4 años: a esa ecuación le falta restarle 4 a Beto. Hoy tiene 13 + 4 = 17.`,
+    d:'Ahí se le quitó 4 a Beto pero no a Mara: hace 4 años las dos edades eran 4 menos. Con 19, hace 4 años Beto tenía 15, y 26 no es el doble.' } };
 const P_MOV = { id:'moviles-encuentro', ok:'b', opts:[
   ['a',`${F(fmt(RMOV.errores.restaRapideces) + ' h')}: 300/(70 − 50)`,'RM4-resta-en-encuentro','hipotesis'],
   ['b',`${F(fmt(RMOV.tiempo) + ' h')}: 300/(70 + 50)`],
   ['c',`${F(fmt(RMOV.errores.promedio) + ' h')}: 300/60, con la rapidez promedio`,'promedio-rapideces','hipotesis'],
   ['d',`${F(fmt(RMOV.errores.soloLento) + ' h')}: 300/50, lo que tarda el más lento`,'solo-un-movil','hipotesis']],
   fb:{ b:`¡Bien! Cada hora se acercan 70 + 50 = 120 km: 300/120 = 2,5 h.`,
-    a:'Elegiste la A. Restar las rapideces sirve cuando uno persigue al otro. Aquí van uno hacia el otro: cada hora se acercan 70 + 50 = 120 km. La correcta está marcada.',
-    c:'Elegiste la C. Con la rapidez promedio, 60 km/h, se cuenta un solo móvil recorriendo los 300 km. Pero los dos se mueven a la vez: se acercan 120 km cada hora. La correcta está marcada.',
-    d:'Elegiste la D. 6 h sería si solo se moviera el más lento. Como los dos avanzan, se encuentran antes: 300/120 = 2,5 h. La correcta está marcada.' } };
+    a:'Restar las rapideces sirve cuando uno persigue al otro. Aquí van uno hacia el otro: cada hora se acercan 70 + 50 = 120 km.',
+    c:'Con la rapidez promedio, 60 km/h, se cuenta un solo móvil recorriendo los 300 km. Pero los dos se mueven a la vez: se acercan 120 km cada hora.',
+    d:'6 h sería si solo se moviera el más lento. Como los dos avanzan, se encuentran antes: 300/120 = 2,5 h.' } };
 
 // Lecturas
 const lecAula = [x => ['S', 'S (estudiantes)', String(x.cuenta('S'))], x => ['P', 'P (profesores)', String(x.cuenta('P'))]];
@@ -1182,7 +1182,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

@@ -107,7 +107,7 @@ canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:20px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -658,7 +658,7 @@ function leerCortes(m, n, cortes){
 }
 const NOTA_AR18 = 'Quedarse con el mejor de unos pocos casos probados al tanteo, u olvidar algunos al contar, es la enumeración sin sistema (AR18 del informe de aritmética y razonamiento): según resúmenes, en un estudio con 720 alumnos españoles de 14 y 15 años (Navarro-Pelayo, Batanero y Godino, 1996, según la tesis de Roa, 2000) fue el error más frecuente entre los que no habían estudiado combinatoria; la cifra está por confirmar en el original. Ese estudio no tenía figuras: que pase lo mismo aquí es una suposición nuestra.';
 const NOTA_AR17 = 'Contar ABC y BAC como triángulos distintos es el error de orden (AR17 del informe de aritmética y razonamiento): en un estudio con 720 alumnos españoles fue el error más frecuente entre los que ya habían estudiado combinatoria (Navarro-Pelayo, Batanero y Godino, 1996, según la tesis de Roa, 2000; cifra por confirmar).';
-const NOTA_HIP = 'Las demás opciones incorrectas salen de las trampas que dejan ver las alternativas de exámenes de admisión; no tienen dato publicado: son hipótesis nuestras.';
+const NOTA_HIP = '';
 const fuente = t => `<p class="fuente">${t}</p>`;
 function opcionesHTML(opts){ return `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div>`; }
 </script>
@@ -698,72 +698,72 @@ const P1 = { id:'cp-paso1-dos-piezas', ok:'c',
   opts:[['a', `${n0(D1.errores.corteRecto)} lados`, 'RME42-corte-recto', 'hipotesis'], ['b', `${n0(D1.errores.segundo)} lados`, 'AR18-mejor-de-unos-pocos', 'parcial'],
         ['c', `${n0(D1.maximo)} lados`], ['d', `${n0(D1.errores.mitadTablero)} lados`, 'RME165-reparte-el-borde', 'hipotesis']],
   fb:{ c:'¡Bien! Cada pieza se lleva la mitad del borde del tablero (8 lados) y todo el corte. El corte más largo que deja dos piezas iguales mide 10: 8 + 10 = 18.',
-       a:'Elegiste la A. Ese es el corte recto por la mitad: 8 lados de borde más 4 de corte. Un corte en zigzag, simétrico respecto del centro, es más largo y también deja dos piezas iguales. La correcta está marcada.',
-       b:'Elegiste la B. Ese corte en escalera mide 8 y sí deja piezas iguales, pero hay cortes todavía más quebrados, de 10 lados. Para estar seguro hay que revisar todas las particiones posibles: son 22. La correcta está marcada.',
-       d:'Elegiste la D. 8 es la mitad del borde del tablero, pero el corte también queda en el borde de cada pieza: hay que sumarlo. La correcta está marcada.' } };
+       a:'Ese es el corte recto por la mitad: 8 lados de borde más 4 de corte. Un corte en zigzag, simétrico respecto del centro, es más largo y también deja dos piezas iguales.',
+       b:'Ese corte en escalera mide 8 y sí deja piezas iguales, pero hay cortes todavía más quebrados, de 10 lados. Para estar seguro hay que revisar todas las particiones posibles: son 22.',
+       d:'8 es la mitad del borde del tablero, pero el corte también queda en el borde de cada pieza: hay que sumarlo.' } };
 const P2 = { id:'cp-paso2-terreno', ok:'b',
   opts:[['a', `${n0(PER2/4*15)} m`, 'RME165-reparte-el-borde', 'hipotesis'], ['b', `${n0(D2.formas[0].metros)} m`],
         ['c', `${n0(3*4*15)} m`, 'RME165-suma-lados-pegados', 'hipotesis'], ['d', `${n0(3*15)} m`, 'RME160-cuenta-parcelas', 'hipotesis']],
   fb:{ b:'¡Bien! A cada parte le tocan 12/4 = 3 parcelas. Tres parcelas en L tienen 8 lados de parcela en su borde: 8 · 15 = 120 m.',
-       a:'Elegiste la A. Repartiste el borde del terreno (16 lados) entre las 4 partes. Pero cada parte también tiene borde por dentro, donde va la cerca que la separa de las otras. La correcta está marcada.',
-       c:'Elegiste la C. Contaste los 4 lados de cada una de las 3 parcelas: 12 lados. Los lados que pegan dos parcelas de la misma parte quedan adentro y no son borde. La correcta está marcada.',
-       d:'Elegiste la D. 3 · 15 cuenta parcelas, no lados: eso tiene que ver con el área. El perímetro es lo que mide la cerca alrededor. La correcta está marcada.' } };
+       a:'Repartiste el borde del terreno (16 lados) entre las 4 partes. Pero cada parte también tiene borde por dentro, donde va la cerca que la separa de las otras.',
+       c:'Contaste los 4 lados de cada una de las 3 parcelas: 12 lados. Los lados que pegan dos parcelas de la misma parte quedan adentro y no son borde.',
+       d:'3 · 15 cuenta parcelas, no lados: eso tiene que ver con el área. El perímetro es lo que mide la cerca alrededor.' } };
 const P3 = { id:'cp-paso3-lado', ok:'a',
   opts:[['a', `${n0(D3.lado)} casillas`], ['b', `${fmt(D3.errores.mismoPerimetro, 1)} casillas`, 'RME160-conserva-perimetro', 'hipotesis'],
         ['c', `${n0(D3.errores.cuartoDelArea)} casillas`, 'RME160-cuarto-del-area', 'hipotesis'], ['d', `${n0(16*9)} casillas`, 'RME160-area-como-lado', 'hipotesis']],
   fb:{ a:'¡Bien! Al rearmar no sobra ni falta ninguna casilla: el cuadrado tiene 16 · 9 = 144 casillas, y su lado es √144 = 12.',
-       b:'Elegiste la B. Así el cuadrado tendría el mismo perímetro que el rectángulo (50). Pero al cortar y rearmar lo que se conserva es el área: con lado 12,5 harían falta 156,25 casillas, y solo hay 144. La correcta está marcada.',
-       c:'Elegiste la C. 144/4 = 36 sería el lado si 144 fuera el perímetro. 144 es el área: el lado es el número que multiplicado por sí mismo da 144. La correcta está marcada.',
-       d:'Elegiste la D. 144 es el área, las casillas que hay; el lado es √144. La correcta está marcada.' } };
+       b:'Así el cuadrado tendría el mismo perímetro que el rectángulo (50). Pero al cortar y rearmar lo que se conserva es el área: con lado 12,5 harían falta 156,25 casillas, y solo hay 144.',
+       c:'144/4 = 36 sería el lado si 144 fuera el perímetro. 144 es el área: el lado es el número que multiplicado por sí mismo da 144.',
+       d:'144 es el área, las casillas que hay; el lado es √144.' } };
 const P4 = { id:'cp-paso4-trozos', ok:'b',
   opts:[['a', 'Con 3 trozos', 'RME161-tira-y-mitades', 'hipotesis'], ['b', 'Con 2 trozos'],
         ['c', 'Con 4 trozos', 'RME161-tiras-rectas', 'hipotesis'], ['d', 'No se puede: 16 y 9 no se reparten bien', 'RME161-no-se-puede', 'hipotesis']],
   fb:{ b:'¡Bien! Un solo corte en escalera, de 3 escalones de 4 de ancho y 3 de alto, parte el rectángulo en 2 trozos iguales. Se corre uno un escalón y queda el cuadrado.',
-       a:'Elegiste la A. Una franja y dos mitades sirve para otros rectángulos, como el de 9 × 4. Aquí, con cortes rectos, la franja de 4 × 9 tiene que partirse en 3 tiras. Y hay una manera con menos trozos. La correcta está marcada.',
-       c:'Elegiste la C. Con cortes rectos sí salen 4 trozos: la franja de 4 × 9 partida en 3 tiras de 4 × 3. Pero un corte en escalera lo hace con solo 2. La correcta está marcada.',
-       d:'Elegiste la D. Sí se puede: el área es 144 = 12 · 12, y un corte en escalera lo logra. La correcta está marcada.' } };
+       a:'Una franja y dos mitades sirve para otros rectángulos, como el de 9 × 4. Aquí, con cortes rectos, la franja de 4 × 9 tiene que partirse en 3 tiras. Y hay una manera con menos trozos.',
+       c:'Con cortes rectos sí salen 4 trozos: la franja de 4 × 9 partida en 3 tiras de 4 × 3. Pero un corte en escalera lo hace con solo 2.',
+       d:'Sí se puede: el área es 144 = 12 · 12, y un corte en escalera lo logra.' } };
 const P5 = { id:'cp-paso5-escalera', ok:'d',
   opts:[['a', pago(D5.errores.sinCostados), 'RME162-sin-costados', 'hipotesis'], ['b', pago(D5.errores.unCostado), 'RME162-un-costado', 'hipotesis'],
         ['c', pago(D5.errores.costadoRectangulo), 'RME163-costado-rectangulo', 'hipotesis'], ['d', pago(D5.costo)]],
   fb:{ d:'¡Bien! Huellas 1,2 m², contrahuellas 0,8 m² y dos costados de 0,6 m²: 3,2 m² · S/ 50 = S/ 160.',
-       a:'Elegiste la A. Sumaste las huellas y las contrahuellas, pero los dos costados también se enchapan. La correcta está marcada.',
-       b:'Elegiste la B. Contaste un solo costado, el que se ve en el dibujo. La escalera tiene dos: gira el dibujo para ver el otro. La correcta está marcada.',
-       c:'Elegiste la C. Tomaste cada costado como el rectángulo de 1,2 m × 0,8 m. El costado es escalonado: le falta el triángulo de escalones de arriba. La correcta está marcada.' } };
+       a:'Sumaste las huellas y las contrahuellas, pero los dos costados también se enchapan.',
+       b:'Contaste un solo costado, el que se ve en el dibujo. La escalera tiene dos: gira el dibujo para ver el otro.',
+       c:'Tomaste cada costado como el rectángulo de 1,2 m × 0,8 m. El costado es escalonado: le falta el triángulo de escalones de arriba.' } };
 const P6 = { id:'cp-paso6-arcos', ok:'a',
   opts:[['a', pi(D6.suma)], ['b', pi(D6.errores.compartidoUnaVez), 'RME43-arco-compartido-una-vez', 'hipotesis'],
         ['c', pi(D6.errores.sinRectos), 'RME43-sin-tramos-rectos', 'hipotesis'], ['d', pi(D6.errores.sinRectosNiCompartido), 'RME43-sin-rectos-ni-compartido', 'hipotesis']],
   fb:{ a:'¡Bien! Zona 1: 2π + 4. Zona 2: 4π + 2π + 4. El arco chico está en el borde de las dos zonas y se suma dos veces: 8 + 8π.',
-       b:'Elegiste la B. Sumaste el arco chico una sola vez, pero es borde de las dos zonas: entra en los dos perímetros. La correcta está marcada.',
-       c:'Elegiste la C. Sumaste los arcos, pero el borde de cada zona también tiene un tramo recto: AM en la zona 1 y MB en la zona 2. La correcta está marcada.',
-       d:'Elegiste la D. Faltan los tramos rectos AM y MB, y el arco chico se suma dos veces, una por cada zona. La correcta está marcada.' } };
+       b:'Sumaste el arco chico una sola vez, pero es borde de las dos zonas: entra en los dos perímetros.',
+       c:'Sumaste los arcos, pero el borde de cada zona también tiene un tramo recto: AM en la zona 1 y MB en la zona 2.',
+       d:'Faltan los tramos rectos AM y MB, y el arco chico se suma dos veces, una por cada zona.' } };
 const P7 = { id:'cp-paso7-fraccion', ok:'c',
   opts:[['a', fq(D7.errores.olvidaUna), 'RME168-olvida-la-esquina-chica', 'hipotesis'], ['b', fq(D7.errores.todasIguales), 'RME168-esquinas-iguales', 'hipotesis'],
         ['c', fq(D7)], ['d', fq(D7.errores.loQueSobra), 'RME168-lo-que-sobra', 'hipotesis']],
   fb:{ c:'¡Bien! Fuera del triángulo quedan tres triángulos: ABM y ADN de 1/4 cada uno, y MCN de 1/8. 1 − 1/4 − 1/4 − 1/8 = 3/8.',
-       a:'Elegiste la A. Restaste los dos triángulos grandes, de 1/4, pero falta el chico de la esquina C, que mide 1/8. La correcta está marcada.',
-       b:'Elegiste la B. Restaste tres triángulos de 1/4. El de la esquina C es más chico: tiene la mitad del ancho y la mitad del alto, y mide 1/8. La correcta está marcada.',
-       d:'Elegiste la D. 5/8 es lo que queda fuera del triángulo: los tres triángulos de las esquinas. El triángulo AMN es el resto. La correcta está marcada.' } };
+       a:'Restaste los dos triángulos grandes, de 1/4, pero falta el chico de la esquina C, que mide 1/8.',
+       b:'Restaste tres triángulos de 1/4. El de la esquina C es más chico: tiene la mitad del ancho y la mitad del alto, y mide 1/8.',
+       d:'5/8 es lo que queda fuera del triángulo: los tres triángulos de las esquinas. El triángulo AMN es el resto.' } };
 const P8 = { id:'cp-paso8-ubicaciones', ok:'d',
   opts:[['a', `${n0(D8.errores.comoDibujo)} ubicaciones`, 'RME45-solo-como-el-dibujo', 'hipotesis'], ['b', `${n0(D8.errores.soloGiros)} ubicaciones`, 'RME45-sin-reflejos', 'hipotesis'],
         ['c', `${n0(D8.errores.marcos)} ubicaciones`, 'RME190-cuenta-marcos', 'hipotesis'], ['d', `${n0(D8.total)} ubicaciones`]],
   fb:{ d:'¡Bien! La L tiene 8 posiciones distintas (4 giros, y otros 4 al voltearla), y cada una cabe de 2 maneras en el tablero: 8 · 2 = 16.',
-       a:'Elegiste la A. Así, como en el dibujo, la L cabe en 2 lugares. Pero se puede girar y voltear. La correcta está marcada.',
-       b:'Elegiste la B. Contaste los 4 giros, cada uno en 2 lugares. Al voltear la L salen otras 4 posiciones que no se logran girando. La correcta está marcada.',
-       c:'Elegiste la C. Contaste los lugares del rectángulo de 3 × 2 (acostado o parado) donde entra la L. En cada rectángulo la L cabe de 4 maneras distintas. La correcta está marcada.' } };
+       a:'Así, como en el dibujo, la L cabe en 2 lugares. Pero se puede girar y voltear.',
+       b:'Contaste los 4 giros, cada uno en 2 lugares. Al voltear la L salen otras 4 posiciones que no se logran girando.',
+       c:'Contaste los lugares del rectángulo de 3 × 2 (acostado o parado) donde entra la L. En cada rectángulo la L cabe de 4 maneras distintas.' } };
 const P9 = { id:'cp-paso9-triangulos', ok:'b',
   opts:[['a', `${n0(D9.errores.sinRestar)} triángulos`, 'RME169-no-resta-alineadas', 'hipotesis'], ['b', `${n0(D9.total)} triángulos`],
         ['c', `${n0(D9.errores.unaPorRecta)} triángulos`, 'RME169-una-por-recta', 'hipotesis'], ['d', `${n0(D9.errores.conOrden)} triángulos`, 'AR17-cuenta-con-orden', 'parcial']],
   fb:{ b:'¡Bien! C(7, 3) = 35 ternas; las de una misma recta no forman triángulo: C(4, 3) = 4 arriba y C(3, 3) = 1 abajo. 35 − 4 − 1 = 30.',
-       a:'Elegiste la A. 35 son todas las ternas de puntos. Tres puntos de una misma recta no forman triángulo: hay que restarlas. La correcta está marcada.',
-       c:'Elegiste la C. Restaste una terna por cada recta. En la recta de 4 puntos hay C(4, 3) = 4 ternas alineadas, no una. La correcta está marcada.',
-       d:'Elegiste la D. Así contaste cada triángulo 6 veces, una por cada orden de sus vértices. ABC y BCA son el mismo triángulo. La correcta está marcada.' } };
+       a:'35 son todas las ternas de puntos. Tres puntos de una misma recta no forman triángulo: hay que restarlas.',
+       c:'Restaste una terna por cada recta. En la recta de 4 puntos hay C(4, 3) = 4 ternas alineadas, no una.',
+       d:'Así contaste cada triángulo 6 veces, una por cada orden de sus vértices. ABC y BCA son el mismo triángulo.' } };
 const P10 = { id:'cp-paso10-sombra', ok:'a',
   opts:[['a', `${n0(D10.total)} cuadrados`], ['b', `${n0(D10.errores.patronDoble)} cuadrados`, 'RME167-patron-sin-comprobar', 'hipotesis'],
         ['c', `${n0(D10.errores.todos)} cuadrados`, 'RME166-cuenta-los-que-tienen-sombra', 'hipotesis'], ['d', `${n0(D10.errores.soloCasillas)} cuadrados`, 'AR18-solo-casillas', 'parcial']],
   fb:{ a:'¡Bien! 20 casillas sin sombra y 6 cuadrados de 2 × 2 en las dos esquinas libres (3 arriba a la derecha y 3 abajo a la izquierda). Los de 3 × 3 o más siempre tocan la diagonal: 20 + 6 = 26.',
-       b:'Elegiste la B. Las diferencias de 0, 2, 6 y 14 son 2, 4 y 8, y parecen duplicarse, pero eso no está garantizado: hay que contar en la figura 5. Ahí la diferencia es 12, no 16. La correcta está marcada.',
-       c:'Elegiste la C. 55 son todos los cuadrados del tablero de 5 × 5, también los que tienen casillas sombreadas. La correcta está marcada.',
-       d:'Elegiste la D. Esas son las casillas sin sombra, los cuadrados de 1 × 1. También hay cuadrados de 2 × 2 sin sombra. La correcta está marcada.' } };
+       b:'Las diferencias de 0, 2, 6 y 14 son 2, 4 y 8, y parecen duplicarse, pero eso no está garantizado: hay que contar en la figura 5. Ahí la diferencia es 12, no 16.',
+       c:'55 son todos los cuadrados del tablero de 5 × 5, también los que tienen casillas sombreadas.',
+       d:'Esas son las casillas sin sombra, los cuadrados de 1 × 1. También hay cuadrados de 2 × 2 sin sombra.' } };
 
 // ---- Vistas de cada paso ----
 const cuentaDe = (k) => (R.i >= 0 && R.lista.length ? { t:`${R.i + 1} de ${R.lista.length}`, k } : null);
@@ -1123,9 +1123,9 @@ const EXPS = [
     opts:[['a', `${n0(E1.total)} casillas`], ['b', `${n0(E1.errores.esquinasDosVeces)} casillas`, 'RME44-esquinas-dos-veces', 'hipotesis'],
           ['c', `${n0(E1.errores.sinEsquinas)} casillas`, 'RME44-sin-esquinas', 'hipotesis'], ['d', `${n0(E1.errores.anillosIguales)} casillas`, 'RME44-anillos-iguales', 'hipotesis']],
     ok:'a',
-    fb:{ b:'Elegiste la B. Sumaste dos filas por cada lado: 2 · 9 + 2 · 9 + 2 · 7 + 2 · 7 = 64. Pero los bloques de 2 × 2 de las esquinas quedaron contados dos veces. La correcta está marcada.',
-         c:'Elegiste la C. Quitaste las esquinas del todo. Las esquinas sí se pintan: solo no hay que contarlas dos veces. La correcta está marcada.',
-         d:'Elegiste la D. Contaste dos anillos de 28. El de adentro es más chico, de 5 × 7: tiene 20 casillas. 28 + 20 = 48. La correcta está marcada.' },
+    fb:{ b:'Sumaste dos filas por cada lado: 2 · 9 + 2 · 9 + 2 · 7 + 2 · 7 = 64. Pero los bloques de 2 × 2 de las esquinas quedaron contados dos veces.',
+         c:'Quitaste las esquinas del todo. Las esquinas sí se pintan: solo no hay que contarlas dos veces.',
+         d:'Contaste dos anillos de 28. El de adentro es más chico, de 5 × 7: tiene 20 casillas. 28 + 20 = 48.' },
     antes:() => ({ tipo:'tablero', m:7, n:9, maxEscala:50 }),
     despues:() => ({ tipo:'tablero', m:7, n:9, maxEscala:50, piezas:[{ celdas:MARCO.lados, k:'A', sinContorno:true }], esquinas:MARCO.esquinas }),
     desc:() => 'Un tablero de 7 por 9 casillas.' + (S.pred.marco ? ' El marco de 2 casillas de grosor está pintado; los cuatro bloques de las esquinas, de otro color.' : ''),
@@ -1137,9 +1137,9 @@ const EXPS = [
     opts:[['a', `${n0(E2.errores.ochoVeces)} ubicaciones`, 'RME164-ocho-posiciones', 'hipotesis'], ['b', `${n0(E2.errores.comoDibujo)} ubicaciones`, 'RME45-solo-como-el-dibujo', 'hipotesis'],
           ['c', `${n0(E2.total)} ubicaciones`], ['d', `${n0(E2.errores.marcos)} ubicaciones`, 'RME190-cuenta-marcos', 'hipotesis']],
     ok:'c',
-    fb:{ a:'Elegiste la A. Contaste 8 posiciones, como en la L. Pero la T es simétrica: volteada queda igual que girada. Solo tiene 4 posiciones distintas, y cada ubicación quedó contada dos veces. La correcta está marcada.',
-         b:'Elegiste la B. Así, como en el dibujo, la T cabe en 4 lugares. Girada cabe en otros. La correcta está marcada.',
-         d:'Elegiste la D. Contaste los rectángulos de 3 × 2 y de 2 × 3 donde entra la T. En cada uno la T cabe de 2 maneras. La correcta está marcada.' },
+    fb:{ a:'Contaste 8 posiciones, como en la L. Pero la T es simétrica: volteada queda igual que girada. Solo tiene 4 posiciones distintas, y cada ubicación quedó contada dos veces.',
+         b:'Así, como en el dibujo, la T cabe en 4 lugares. Girada cabe en otros.',
+         d:'Contaste los rectángulos de 3 × 2 y de 2 × 3 donde entra la T. En cada uno la T cabe de 2 maneras.' },
     lista:() => { R.lista = E2.lista; R.etiqueta = u => NOMBRE_ISO[ORT.nombres[u.orientacion]]; },
     antes:() => ({ tipo:'tablero', m:3, n:4, aparte:{ celdas:PT }, maxEscala:64 }),
     despues:() => { const u = R.lista[R.i], V = { tipo:'tablero', m:3, n:4, aparte:{ celdas:PT }, maxEscala:64 }; if (u){ V.piezas = [{ celdas:u.celdas, k: u.comoDibujo ? 'A' : 'B', a:.4 }]; V.cuenta = { t:`${R.i + 1} de ${R.lista.length}`, k: u.comoDibujo ? 'A' : 'B' }; } return V; },
@@ -1151,9 +1151,9 @@ const EXPS = [
     opts:[['a', `${n0(E3.errores.compartidoUnaVez.b)}π`, 'RME43-arco-compartido-una-vez', 'hipotesis'], ['b', '10π', 'RME43-sin-la-s', 'hipotesis'],
           ['c', '40π', 'RME191-semicircunferencia-como-circunferencia', 'hipotesis'], ['d', `${n0(E3.suma.b)}π`]],
     ok:'d',
-    fb:{ a:'Elegiste la A. Sumaste la circunferencia (10π) y la S una sola vez (5π). La S es borde de las dos gotas: entra en los dos perímetros. La correcta está marcada.',
-         b:'Elegiste la B. 10π es la circunferencia grande. Falta la S, que es borde de las dos gotas. La correcta está marcada.',
-         c:'Elegiste la C. Tomaste cada semicircunferencia como si fuera la circunferencia entera (π · d). Una semicircunferencia de diámetro d mide πd/2. La correcta está marcada.' },
+    fb:{ a:'Sumaste la circunferencia (10π) y la S una sola vez (5π). La S es borde de las dos gotas: entra en los dos perímetros.',
+         b:'10π es la circunferencia grande. Falta la S, que es borde de las dos gotas.',
+         c:'Tomaste cada semicircunferencia como si fuera la circunferencia entera (π · d). Una semicircunferencia de diámetro d mide πd/2.' },
     antes:() => ({ tipo:'arcos', forma:'s', AB:10, AM:6 }),
     despues:() => ({ tipo:'arcos', forma:'s', AB:10, AM:S.am, colorear:true }),
     desc:() => `Un círculo de diámetro AB = 10 partido por una S que pasa por M, con AM = ${S.pred.ese ? S.am : 6}.` + (S.pred.ese ? ` Cada gota mide ${pi(M.curvaS(10, S.am).zonas[0])}.` : ''),
@@ -1168,9 +1168,9 @@ const EXPS = [
     opts:[['a', `${n0(E4.errores.sinRestar)} triángulos`, 'RME169-no-resta-alineadas', 'hipotesis'], ['b', `${n0(E4.total)} triángulos`],
           ['c', `${n0(E4.errores.soloFilasColumnas)} triángulos`, 'AR18-olvida-diagonales', 'parcial'], ['d', `${n0(E4.errores.conOrden)} triángulos`, 'AR17-cuenta-con-orden', 'parcial']],
     ok:'b',
-    fb:{ a:'Elegiste la A. 84 son todas las ternas. Las de tres puntos alineados no son triángulos: 3 filas, 3 columnas y 2 diagonales. La correcta está marcada.',
-         c:'Elegiste la C. Restaste las 3 filas y las 3 columnas, pero las 2 diagonales también tienen 3 puntos alineados. La correcta está marcada.',
-         d:'Elegiste la D. Contaste cada triángulo 6 veces, una por cada orden de sus vértices. La correcta está marcada.' },
+    fb:{ a:'84 son todas las ternas. Las de tres puntos alineados no son triángulos: 3 filas, 3 columnas y 2 diagonales.',
+         c:'Restaste las 3 filas y las 3 columnas, pero las 2 diagonales también tienen 3 puntos alineados.',
+         d:'Contaste cada triángulo 6 veces, una por cada orden de sus vértices.' },
     lista:() => { R.lista = E4.lista; R.etiqueta = () => 'un triángulo'; },
     antes:() => ({ tipo:'puntos', pts:RED }),
     despues:() => { const V = { tipo:'puntos', pts:RED, rectas:RECTAS_RED }, t = R.lista[R.i]; if (t){ V.luz = t; V.cuenta = { t:`${R.i + 1} de ${R.lista.length}`, k:'A' }; } return V; },
@@ -1182,9 +1182,9 @@ const EXPS = [
     opts:[['a', `${n0(E5.errores.corteRecto)} lados`, 'RME42-corte-recto', 'hipotesis'], ['b', `${n0(E5.errores.mitadTablero)} lados`, 'RME165-reparte-el-borde', 'hipotesis'],
           ['c', `${n0(E5.errores.segundo)} lados`, 'AR18-mejor-de-unos-pocos', 'parcial'], ['d', `${n0(E5.maximo)} lados`]],
     ok:'d',
-    fb:{ a:'Elegiste la A. Ese es el corte recto que parte el 6 por la mitad: 9 lados de borde más 3 de corte. Un corte quebrado, simétrico respecto del centro, es más largo. La correcta está marcada.',
-         b:'Elegiste la B. 9 es la mitad del borde del tablero; falta sumar el corte, que también es borde de cada pieza. La correcta está marcada.',
-         c:'Elegiste la C. Hay cortes de 9 lados que dejan piezas iguales; el más largo mide 11. La correcta está marcada.' },
+    fb:{ a:'Ese es el corte recto que parte el 6 por la mitad: 9 lados de borde más 3 de corte. Un corte quebrado, simétrico respecto del centro, es más largo.',
+         b:'9 es la mitad del borde del tablero; falta sumar el corte, que también es borde de cada pieza.',
+         c:'Hay cortes de 9 lados que dejan piezas iguales; el más largo mide 11.' },
     lista:() => { R.lista = E5.lista; R.alReves = true; R.etiqueta = p => `perímetro ${p.perimetro}; corte de ${p.corte}`; },
     antes:() => ({ tipo:'tablero', m:3, n:6, maxEscala:60 }),
     despues:() => {

@@ -115,7 +115,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -717,52 +717,52 @@ const P_TOTAL = { id:'dados-paso2', ok:'c', opts:[
   ['c',`${DIST2.total}: cada cara del rojo va con las 6 del azul`],
   ['d',`${DIST2.sumas}: las sumas del 2 al 12`,'sumas-como-resultados','hipotesis']],
   fb:{ c:`¡Bien! Por cada cara del rojo hay 6 del azul: 6 · 6 = ${DIST2.total}.`,
-    a:`Elegiste la A. Sumar 6 + 6 serviría si se lanzara un dado o el otro. Aquí salen los dos a la vez: por cada cara del rojo hay 6 del azul, 6 · 6 = ${DIST2.total}. La correcta está marcada.`,
-    b:`Elegiste la B. Con dados de colores distintos, rojo 1 y azul 2 no es lo mismo que rojo 2 y azul 1: son dos casillas. Contarlas como una da ${SIN_ORDEN}, pero son ${DIST2.total}. La correcta está marcada.`,
-    d:`Elegiste la D. Las sumas son ${DIST2.sumas}, pero una suma no es un resultado: la suma 7 sale con seis pares distintos. Los resultados son ${DIST2.total}. La correcta está marcada.` } };
+    a:`Sumar 6 + 6 serviría si se lanzara un dado o el otro. Aquí salen los dos a la vez: por cada cara del rojo hay 6 del azul, 6 · 6 = ${DIST2.total}.`,
+    b:`Con dados de colores distintos, rojo 1 y azul 2 no es lo mismo que rojo 2 y azul 1: son dos casillas. Contarlas como una da ${SIN_ORDEN}, pero son ${DIST2.total}.`,
+    d:`Las sumas son ${DIST2.sumas}, pero una suma no es un resultado: la suma 7 sale con seis pares distintos. Los resultados son ${DIST2.total}.` } };
 const P_SUMAS = { id:'dados-paso3', ok:'b', opts:[
   ['a',`Igual de probables: cada suma, del 2 al 12, tiene ${txF(P7.errores.sumasEquiprobables)}`,'AR20-sumas-equiprobables','documentado'],
   ['b','La suma 7: se arma con más pares que el 12'],
   ['c','La suma 12: el 6 es la cara más grande','suma-12-mayor','hipotesis'],
   ['d','No se puede saber: es pura suerte','azar-no-se-sabe','hipotesis']],
   fb:{ b:`¡Bien! La suma 7 sale con ${P7.favorables} casillas y la 12 con ${P12.favorables} sola.`,
-    a:`Elegiste la A. Las 11 sumas no son igual de probables: los ${DIST2.total} pares sí lo son. El 7 se forma con ${P7.favorables} pares y el 12 con ${P12.favorables}. La correcta está marcada.`,
-    c:`Elegiste la C. Que el 6 sea la cara más grande no lo hace más probable. Para sumar 12 hace falta 6 y 6: una sola casilla. El 7 tiene ${P7.favorables}. La correcta está marcada.`,
-    d:`Elegiste la D. No se sabe qué saldrá en un lanzamiento, pero sí cuál es más probable: el 7 tiene ${P7.favorables} casillas de ${DIST2.total} y el 12, ${P12.favorables}. La correcta está marcada.` } };
+    a:`Las 11 sumas no son igual de probables: los ${DIST2.total} pares sí lo son. El 7 se forma con ${P7.favorables} pares y el 12 con ${P12.favorables}.`,
+    c:`Que el 6 sea la cara más grande no lo hace más probable. Para sumar 12 hace falta 6 y 6: una sola casilla. El 7 tiene ${P7.favorables}.`,
+    d:`No se sabe qué saldrá en un lanzamiento, pero sí cuál es más probable: el 7 tiene ${P7.favorables} casillas de ${DIST2.total} y el 12, ${P12.favorables}.` } };
 const P_LEC = { id:'dados-paso4', ok:'a', opts:[
   ['a','Un 5 y un 6: cualquiera de los dos dados puede dar el 5'],
   ['b','Igual de probables: cada uno es un solo resultado','AR20-equiprobabilidad-lecoutre','documentado'],
   ['c','Dos 6: es el par más alto','dos-seis-mas-probable','hipotesis']],
   fb:{ a:`¡Bien! Un 5 y un 6 sale de ${P56.favorables} maneras (rojo 5 y azul 6, o rojo 6 y azul 5); dos 6, de ${P66.favorables}.`,
-    b:`Elegiste la B. Si los dados se ven distintos, rojo 5 y azul 6 no es lo mismo que rojo 6 y azul 5: un 5 y un 6 ocupa ${P56.favorables} casillas, y dos 6, ${P66.favorables}. La correcta está marcada.`,
-    c:`Elegiste la C. Dos 6 se forma de una sola manera: rojo 6 y azul 6. Un 5 y un 6 se forma de ${P56.favorables}. La correcta está marcada.` } };
+    b:`Si los dados se ven distintos, rojo 5 y azul 6 no es lo mismo que rojo 6 y azul 5: un 5 y un 6 ocupa ${P56.favorables} casillas, y dos 6, ${P66.favorables}.`,
+    c:`Dos 6 se forma de una sola manera: rojo 6 y azul 6. Un 5 y un 6 se forma de ${P56.favorables}.` } };
 const P_HISTO = { id:'dados-paso5', ok:'b', opts:[
   ['a','Plano: todas las barras más o menos iguales','AR20-histograma-plano','parcial'],
   ['b','Una montaña con la cima en el 7, que baja hacia el 2 y el 12'],
   ['c','Una U: altas en el 2 y el 12, bajas al centro','histograma-en-u','hipotesis'],
   ['d','Sin forma: con el azar, cada vez sale distinto','azar-sin-patron','hipotesis']],
   fb:{ b:'¡Bien! Cada barra crece según cuántas casillas tiene su suma: 1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1.',
-    a:'Elegiste la A. Las sumas no son igual de probables: el 7 tiene 6 casillas y el 2, una. Con 1000 lanzamientos, eso se nota. La correcta está marcada.',
-    c:'Elegiste la C. Es al revés: los extremos (2 y 12) tienen una sola casilla cada uno, y el centro (7) tiene seis. La correcta está marcada.',
-    d:'Elegiste la D. Cada lanzamiento es impredecible, pero con muchos la forma se repite: las barras se acercan a las probabilidades exactas. La correcta está marcada.' } };
+    a:'Las sumas no son igual de probables: el 7 tiene 6 casillas y el 2, una. Con 1000 lanzamientos, eso se nota.',
+    c:'Es al revés: los extremos (2 y 12) tienen una sola casilla cada uno, y el centro (7) tiene seis.',
+    d:'Cada lanzamiento es impredecible, pero con muchos la forma se repite: las barras se acercan a las probabilidades exactas.' } };
 const P_RACHA = { id:'dados-paso6', ok:'b', opts:[
   ['a','Menos de 1/6: ya salió mucho, ahora toca otro número','AR22-recencia-negativa','parcial'],
   ['b',`${txF(SIG.p)}: el dado no recuerda lo que salió antes`],
   ['c','Más de 1/6: el dado está en racha','recencia-positiva','hipotesis'],
   ['d',`Casi cero: seis 6 seguidos pasa 1 vez en ${ent(SIG.errores.rachaCompleta.den)}`,'racha-completa','hipotesis']],
   fb:{ b:'¡Bien! El dado no recuerda lo que salió: cada lanzamiento vale 1/6 para el 6.',
-    a:'Elegiste la A. El dado no sabe lo que salió antes: no hay nada que lo «compense». El próximo 6 sigue valiendo 1/6. La correcta está marcada.',
-    c:'Elegiste la C. Con un dado equilibrado no hay rachas que empujen: el próximo 6 sigue valiendo 1/6. La correcta está marcada.',
-    d:`Elegiste la D. ${ent(SIG.errores.rachaCompleta.den)} es para seis 6 seguidos contados desde antes del primero. Cinco ya salieron: solo falta uno, y ese vale 1/6. La correcta está marcada.` } };
+    a:'El dado no sabe lo que salió antes: no hay nada que lo «compense». El próximo 6 sigue valiendo 1/6.',
+    c:'Con un dado equilibrado no hay rachas que empujen: el próximo 6 sigue valiendo 1/6.',
+    d:`${ent(SIG.errores.rachaCompleta.den)} es para seis 6 seguidos contados desde antes del primero. Cinco ya salieron: solo falta uno, y ese vale 1/6.` } };
 const P_COMITE = { id:'dados-paso7', unidad:UNIDAD_CONTEO, ok:'c', opts:[
   ['a',`${COM.errores.variacion}: 5 · 4 · 3`,'AR17-variacion-en-vez-de-combinacion','documentado'],
   ['b',`${COM.errores.conRepeticion}: 5 · 5 · 5`,'AR19-con-repeticion','parcial'],
   ['c',`${COM.valor}: 5 · 4 · 3 entre 3 · 2 · 1`],
   ['d',`${COM.errores.producto}: 5 · 3`,'producto-n-por-k','hipotesis']],
   fb:{ c:`¡Bien! Con orden serían ${COM.ordenes}, pero cada comité aparece ${COM.ordenesPorComite} veces: ${COM.ordenes}/${COM.ordenesPorComite} = ${COM.valor}.`,
-    a:`Elegiste la A. ${COM.ordenes} cuenta los órdenes: Gina-Hugo-Iris y Hugo-Gina-Iris salen como dos, pero son el mismo comité. Cada comité se repite ${COM.ordenesPorComite} veces: ${COM.ordenes}/${COM.ordenesPorComite} = ${COM.valor}. La correcta está marcada.`,
-    b:`Elegiste la B. 5 · 5 · 5 deja elegir a la misma persona dos o tres veces, y además cuenta órdenes. Son ${COM.valor} comités. La correcta está marcada.`,
-    d:`Elegiste la D. Multiplicar 5 por 3 no cuenta comités. Con orden serían 5 · 4 · 3 = ${COM.ordenes}, y cada comité se repite ${COM.ordenesPorComite} veces: ${COM.valor}. La correcta está marcada.` } };
+    a:`${COM.ordenes} cuenta los órdenes: Gina-Hugo-Iris y Hugo-Gina-Iris salen como dos, pero son el mismo comité. Cada comité se repite ${COM.ordenesPorComite} veces: ${COM.ordenes}/${COM.ordenesPorComite} = ${COM.valor}.`,
+    b:`5 · 5 · 5 deja elegir a la misma persona dos o tres veces, y además cuenta órdenes. Son ${COM.valor} comités.`,
+    d:`Multiplicar 5 por 3 no cuenta comités. Con orden serían 5 · 4 · 3 = ${COM.ordenes}, y cada comité se repite ${COM.ordenesPorComite} veces: ${COM.valor}.` } };
 
 // Lecturas
 const LD = { rojo: x => ['R', 'Dado rojo', String(x.dados.vals[0])], azul: x => ['B', 'Dado azul', String(x.dados.vals[1])], suma: x => ['ink', 'Suma', String(x.dados.vals[0] + x.dados.vals[1])],
@@ -1220,7 +1220,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     const ex = $('extra2'); if (ex && x.extra) ex.onclick = () => { if (E.anim) return; const chico = innerWidth < 900; if (chico) $('cv2').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' }); esperar(chico ? 380 : 0, () => { if (S.k === k) x.extra(); }); };

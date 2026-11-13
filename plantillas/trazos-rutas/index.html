@@ -117,7 +117,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .frac > span{white-space:nowrap}
 .aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
 .msg{margin:0; font-weight:700; min-height:1.5em}
-.msg.mal{color:var(--warn)} .msg.ok{color:var(--ok)}
+.msg.mal{color:inherit} .msg.ok{color:var(--ok)}
 
 .opts{display:grid; grid-template-columns:1fr; gap:8px}
 @media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
@@ -132,7 +132,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -804,45 +804,45 @@ const G1 = { id:'trazos-paso1', ok:'c', opts:[
   ['c', `${nom(P1.correcta)[0].toUpperCase() + nom(P1.correcta).slice(1)}: sus líneas se encadenan de una esquina de abajo a la otra`],
   ['d', 'Las tres: cualquiera sale si se empieza en el punto justo', 'trazo-todas-si-se-empieza-bien', 'hipotesis']],
   fb:{ c:`¡Bien! Cuenta cuántas líneas llegan a cada punto. En la casita solo hay ${i_('2')} puntos impares, las dos esquinas de abajo: se empieza en una y se termina en la otra. El sobre y las ventanas tienen ${i_('4')} impares cada uno: con un solo trazo no se puede.`,
-    a:`Elegiste la A. El sobre tiene menos líneas (4 lados y 2 diagonales), pero sus cuatro esquinas tienen 3 líneas cada una. Cada vez que el lápiz pasa por un punto, entra por una línea y sale por otra: un punto con número impar de líneas tiene que ser el inicio o el final. Cuatro puntos así no caben en un solo trazo. La correcta está marcada.`,
-    b:'Elegiste la B. Los cruces no estorban: el lápiz pasa por un cruce entrando por una línea y saliendo por otra. Lo que estorba son los puntos con un número impar de líneas: las tres ventanas tienen cuatro (las uniones en forma de T). La correcta está marcada.',
-    d:`Elegiste la D. Empezar bien ayuda, pero no siempre alcanza. El motor probó todos los caminos en el sobre y en las ventanas: el lápiz quedó trabado ${U1[0].probados} y ${U1[2].probados} veces, y nunca pasó por todas las líneas. La correcta está marcada.` } };
+    a:`El sobre tiene menos líneas (4 lados y 2 diagonales), pero sus cuatro esquinas tienen 3 líneas cada una. Cada vez que el lápiz pasa por un punto, entra por una línea y sale por otra: un punto con número impar de líneas tiene que ser el inicio o el final. Cuatro puntos así no caben en un solo trazo.`,
+    b:'Los cruces no estorban: el lápiz pasa por un cruce entrando por una línea y saliendo por otra. Lo que estorba son los puntos con un número impar de líneas: las tres ventanas tienen cuatro (las uniones en forma de T).',
+    d:`Empezar bien ayuda, pero no siempre alcanza. El motor probó todos los caminos en el sobre y en las ventanas: el lápiz quedó trabado ${U1[0].probados} y ${U1[2].probados} veces, y nunca pasó por todas las líneas.` } };
 const G3 = { id:'trazos-paso3', ok:'b', opts:[
   ['a', `${C3.errores.sinRepetir} m: lo que suman todos los senderos`, 'cartero-sin-repetir', 'hipotesis'],
   ['b', `${C3.minimo} m: repite uno de los lados cortos`],
   ['c', `${C3.errores.cerrar} m: repite dos de los lados cortos`, 'cartero-empareja-todos', 'hipotesis'],
   ['d', `${C3.errores.todoDoble} m: pasa por cada sendero de ida y de vuelta`, 'cartero-todo-doble', 'hipotesis']],
   fb:{ b:`¡Bien! Las cuatro esquinas son impares. Dos pueden ser el inicio y el final; las otras dos hay que unirlas repitiendo el camino más corto entre ellas: un lado de ${R_('6 m')}. Total: 48 + 6 = ${C3.minimo} m.`,
-    a:'Elegiste la A. Para no repetir nada, la figura tendría que salir de un solo trazo, y el parque tiene cuatro esquinas impares: hay que pasar dos veces por algún tramo. Lo mínimo es repetir un lado de 6 m: 54 m. La correcta está marcada.',
-    c:'Elegiste la C. Repetir dos lados cortos sirve para volver al punto de partida, pero aquí puede terminar donde quiera: dos esquinas impares pueden quedar como inicio y final. Basta repetir un lado: 54 m. La correcta está marcada.',
-    d:'Elegiste la D. Así recorre todo, pero camina el doble. Solo hace falta repetir lo necesario para que no queden impares sueltos: un lado de 6 m. Total: 54 m. La correcta está marcada.' } };
+    a:'Para no repetir nada, la figura tendría que salir de un solo trazo, y el parque tiene cuatro esquinas impares: hay que pasar dos veces por algún tramo. Lo mínimo es repetir un lado de 6 m: 54 m.',
+    c:'Repetir dos lados cortos sirve para volver al punto de partida, pero aquí puede terminar donde quiera: dos esquinas impares pueden quedar como inicio y final. Basta repetir un lado: 54 m.',
+    d:'Así recorre todo, pero camina el doble. Solo hace falta repetir lo necesario para que no queden impares sueltos: un lado de 6 m. Total: 54 m.' } };
 const G4 = { id:'trazos-paso4', ok:'d', opts:[
   ['a', `${P4.errores.soloConNumero} m: 8 + 6, los dos lados que tienen medida`, 'perimetro-solo-lados-con-numero', 'hipotesis'],
   ['b', `${P4.errores.diagonal} m: 8 + 6 y los escalones, que van como la diagonal de 10 m`, 'perimetro-escalera-como-diagonal', 'hipotesis'],
   ['c', `${P4.errores.area} m: los cuadraditos de 1 m que hay adentro`, 'GE4-area-por-perimetro', 'parcial'],
   ['d', `${P4.perimetro} m: los escalones suman lo mismo que la base y el lado izquierdo`]],
   fb:{ d:`¡Bien! Corre los tramos horizontales de los escalones hacia arriba: juntos cubren justo ${b_('8 m')}, como la base. Corre los verticales hacia la derecha: cubren ${h_('6 m')}. El perímetro es el del rectángulo: 2(8 + 6) = ${P4.perimetro} m.`,
-    a:'Elegiste la A. 8 + 6 son solo dos lados. Los escalones también son borde: sus tramos horizontales suman otros 8 m y los verticales otros 6 m. Total: 28 m. La correcta está marcada.',
-    b:'Elegiste la B. Los escalones van cerca de la diagonal, pero no la siguen: van en zigzag, horizontal y vertical. Ese zigzag mide 8 + 6 = 14 m, más que los 10 m de la diagonal, por pequeños que sean los escalones. Total: 28 m. La correcta está marcada.',
-    c:'Elegiste la C. 34 son los cuadraditos de adentro: eso es el área, en m². El perímetro mide solo el borde: 28 m. La correcta está marcada.' } };
+    a:'8 + 6 son solo dos lados. Los escalones también son borde: sus tramos horizontales suman otros 8 m y los verticales otros 6 m. Total: 28 m.',
+    b:'Los escalones van cerca de la diagonal, pero no la siguen: van en zigzag, horizontal y vertical. Ese zigzag mide 8 + 6 = 14 m, más que los 10 m de la diagonal, por pequeños que sean los escalones. Total: 28 m.',
+    c:'34 son los cuadraditos de adentro: eso es el área, en m². El perímetro mide solo el borde: 28 m.' } };
 const G6 = { id:'trazos-paso6', ok:'a', unidad:U_RUTAS, opts:[
   ['a', `${C6.caminos}: cada cruce suma los caminos de su izquierda y los de abajo`],
   ['b', `${C6.errores.producto}: 4 · 3, las cuadras de un lado por las del otro`, 'caminos-producto', 'hipotesis'],
   ['c', `${C6.errores.aMano}: los que salen al dibujarlos uno por uno`, 'AR18-enumeracion-sin-sistema', 'documentado'],
   ['d', `${C6.errores.potencia}: en cada una de las 7 cuadras hay 2 opciones`, 'caminos-dos-a-la-n', 'hipotesis']],
   fb:{ a:`¡Bien! A cada cruce se llega desde el de la izquierda o desde el de abajo, así que sus caminos son la suma de los de esos dos. Llenando la cuadrícula, al colegio llegan ${N_(String(C6.caminos))}.`,
-    b:'Elegiste la B. 4 · 3 = 12 son las manzanas, no los caminos. Cada camino tiene 7 cuadras, y hay muchas formas de ordenar las 4 de la derecha y las 3 hacia arriba: 35. La correcta está marcada.',
-    c:`Elegiste la C. Al dibujarlos uno por uno salen primero los de pocos giros (los que tienen 3 giros o menos son ${C6.errores.aMano}), y los demás se escapan. Con un orden, llenando la cuadrícula cruce por cruce, salen ${C6.caminos}. La correcta está marcada.`,
-    d:'Elegiste la D. No siempre hay 2 opciones: al llegar al borde de arriba o al de la derecha, solo queda una. Y cada camino tiene justo 4 cuadras a la derecha y 3 hacia arriba; 2⁷ cuenta también los que se pasan. Son 35. La correcta está marcada.' } };
+    b:'4 · 3 = 12 son las manzanas, no los caminos. Cada camino tiene 7 cuadras, y hay muchas formas de ordenar las 4 de la derecha y las 3 hacia arriba: 35.',
+    c:`Al dibujarlos uno por uno salen primero los de pocos giros (los que tienen 3 giros o menos son ${C6.errores.aMano}), y los demás se escapan. Con un orden, llenando la cuadrícula cruce por cruce, salen ${C6.caminos}.`,
+    d:'No siempre hay 2 opciones: al llegar al borde de arriba o al de la derecha, solo queda una. Y cada camino tiene justo 4 cuadras a la derecha y 3 hacia arriba; 2⁷ cuenta también los que se pasan. Son 35.' } };
 const G8 = { id:'trazos-paso8', ok:'c', unidad:U_RUTAS, opts:[
   ['a', `${aprox(H8.exactos.diagonalInterior, H8.errores.diagonalInterior)} cm: la recta que une las dos esquinas`, 'hormiga-diagonal-interior', 'hipotesis'],
   ['b', `${H8.errores.porAristas} cm: por las aristas, 8 + 4 + 2`, 'hormiga-por-aristas', 'hipotesis'],
   ['c', `${H8.exacto} cm: subiendo en diagonal por el frente y siguiendo por la tapa`],
   ['d', `${aprox(H8.exactos.caraYArista, H8.errores.caraYArista)} cm: por la diagonal de la base y subiendo 2 cm`, 'hormiga-cara-y-arista', 'hipotesis']],
   fb:{ c:`¡Bien! Abre la caja: el frente (8 × 2) y la tapa (8 × 4) quedan juntos en un rectángulo de ${x_('8')} por ${y_('4')} + ${z_('2')} = 6. La ruta más corta es su diagonal: √(8² + 6²) = ${d_('10 cm')}.`,
-    a:`Elegiste la A. Esa recta (${H8.diagonalExacta} ≈ ${fmt(H8.diagonal, 1)} cm) atraviesa la caja por dentro, y la hormiga camina por la superficie. Abriendo el frente y la tapa sobre el plano, la ruta es una recta de 10 cm. La correcta está marcada.`,
-    b:'Elegiste la B. Por las aristas mide 14 cm, pero cortar en diagonal por las caras ahorra mucho. Abriendo el frente y la tapa, la ruta es una recta de 10 cm. La correcta está marcada.',
-    d:`Elegiste la D. Ir en diagonal por la base y después subir (${H8.exactos.caraYArista} ≈ ${fmt(H8.errores.caraYArista, 1)} cm) es mejor que las aristas (${H8.errores.porAristas} cm), pero no es una sola recta: dobla en la esquina. Abriendo el frente y la tapa, la ruta es una recta de 10 cm. La correcta está marcada.` } };
+    a:`Esa recta (${H8.diagonalExacta} ≈ ${fmt(H8.diagonal, 1)} cm) atraviesa la caja por dentro, y la hormiga camina por la superficie. Abriendo el frente y la tapa sobre el plano, la ruta es una recta de 10 cm.`,
+    b:'Por las aristas mide 14 cm, pero cortar en diagonal por las caras ahorra mucho. Abriendo el frente y la tapa, la ruta es una recta de 10 cm.',
+    d:`Ir en diagonal por la base y después subir (${H8.exactos.caraYArista} ≈ ${fmt(H8.errores.caraYArista, 1)} cm) es mejor que las aristas (${H8.errores.porAristas} cm), pero no es una sola recta: dobla en la esquina. Abriendo el frente y la tapa, la ruta es una recta de 10 cm.` } };
 
 // ---- configuraciones ----
 const leyFig = conImp => conImp ? [['i', 'i · punto impar (llega un número impar de líneas)', 'pt'], ['t', 't · el trazo']] : [['t', 't · el trazo']];
@@ -1300,7 +1300,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

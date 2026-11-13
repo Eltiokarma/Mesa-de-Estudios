@@ -498,7 +498,7 @@ async function vista(ctx, id, unidad) {
     return new Promise(listo => {
       const a = r.alternativa, c = r.clave;
       const marca = rol => `<span class="marca ${rol}" aria-hidden="true"></span>`;
-      const veredicto = r.correcta ? `¡Bien! Es la ${c.letra}.` : `Elegiste la ${a.letra}. La correcta es la ${c.letra}: ${c.t}`;
+      const veredicto = r.correcta ? `¡Bien! Es la ${c.letra}.` : `La respuesta es la ${c.letra}: ${c.t}`;
       vivo(veredicto);
       const mixto = !r.correcta && a.origen && (c.evidencia || []).includes(a.origen);
       const fraseAlt = !r.correcta ? b.frases[a.codigo] || '' : '';

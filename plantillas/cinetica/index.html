@@ -159,7 +159,7 @@ sup{font-size:.72em; line-height:0}
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap:12px; align-items:end}
 .slider{display:grid; gap:4px}
@@ -857,27 +857,27 @@ const P0 = { id:'cinetica-paso2', ok:'c', opts:[
   ['c','Disminuye, porque quedan menos A y B para chocar'],
   ['d','Aumenta un rato y después para de golpe','sube-y-para', RES('hipotesis','hipótesis nuestra')]],
   fb:{ c:'¡Bien! Al principio hay muchas porciones de A y B, y chocan seguido. A medida que se gastan, los choques A–B se hacen más raros y C se forma cada vez más despacio. Mira la gráfica: la curva de C se va aplanando.',
-    a:'Elegiste la 1. La rapidez no se mantiene: depende de cuántas porciones de A y B quedan para chocar, y cada vez quedan menos. Es una idea documentada en Jusniar y otros (2020), sin cifra verificada. La correcta está marcada.',
-    b:'Elegiste la 2. Que haya cada vez más C no quiere decir que se forme más rápido: la rapidez es cuánto C se forma por segundo, y eso baja. Confundir la rapidez con la cantidad de producto es una idea documentada en Çakmakçı (2010), sin cifra verificada. La correcta está marcada.',
-    d:'Elegiste la 4. No para de golpe: se va frenando poco a poco, porque los choques A–B se hacen cada vez más raros. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
+    a:'La rapidez no se mantiene: depende de cuántas porciones de A y B quedan para chocar, y cada vez quedan menos.',
+    b:'Que haya cada vez más C no quiere decir que se forme más rápido: la rapidez es cuánto C se forma por segundo, y eso baja. Confundir la rapidez con la cantidad de producto es una idea documentada en Çakmakçı (2010), sin cifra verificada.',
+    d:'No para de golpe: se va frenando poco a poco, porque los choques A–B se hacen cada vez más raros.' } };
 const P1 = { id:'cinetica-paso5', ok:'b', opts:[
   ['a','Sí, porque al calentar baja la energía de activación','CI4-baja-Ea', RES('parcial','Çakmakçı 2010; sin cifra verificada')],
   ['b','Sí, porque más choques alcanzan la energía de activación'],
   ['c','Sí, pero solo porque hay muchos más choques por segundo','solo-mas-choques', RES('hipotesis','hipótesis nuestra')],
   ['d','No, porque la reacción ya libera calor por su cuenta','CI3-exotermica', RES('parcial','Çakmakçı 2010; Kolomuç y Tekin 2011; sin cifra verificada')]],
   fb:{ b:'¡Bien! A 400 K los choques A–B son solo un poco más seguidos, pero muchos más alcanzan la energía de activación. Mira el histograma: se aplana y se estira hacia la derecha, y la línea de Ea no se mueve.',
-    a:'Elegiste la 1. La energía de activación es la altura de la barrera y no cambia al calentar: mira la línea de Ea, se queda en su sitio. Lo que cambia es cuántos choques la alcanzan. Es una idea documentada en Çakmakçı (2010), sin cifra verificada. La correcta está marcada.',
-    c:'Elegiste la 3. Al calentar sí hay más choques por segundo, pero solo unos pocos más. Lo que más pesa es que muchos más choques alcanzan la energía de activación. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.',
-    d:'Elegiste la 4. Calentar acelera toda reacción, libere calor o lo absorba. Lo que depende del calor de reacción es el equilibrio, no la rapidez. Es una idea documentada en Çakmakçı (2010) y en Kolomuç y Tekin (2011), sin cifra verificada. La correcta está marcada.' } };
+    a:'La energía de activación es la altura de la barrera y no cambia al calentar: mira la línea de Ea, se queda en su sitio. Lo que cambia es cuántos choques la alcanzan.',
+    c:'Al calentar sí hay más choques por segundo, pero solo unos pocos más. Lo que más pesa es que muchos más choques alcanzan la energía de activación.',
+    d:'Calentar acelera toda reacción, libere calor o lo absorba. Lo que depende del calor de reacción es el equilibrio, no la rapidez.' } };
 const P2 = { id:'cinetica-paso7', ok:'d', opts:[
   ['a','Les da más energía a las porciones de A y B','CI7-energia', RES('parcial','según revisiones: Kurt y Ayas 2012, entre otros; sin cifra verificada')],
   ['b','Sube la energía de activación de la reacción','CI7b-sube-Ea', RES('parcial','Kolomuç y Tekin 2011 y otros, según revisiones; sin cifra verificada')],
   ['c','Hace que la reacción libere más calor','cat-cambia-dH', RES('hipotesis','hipótesis nuestra')],
   ['d','Abre otro camino, con una barrera más baja']],
   fb:{ d:'¡Bien! El catalizador abre otro camino, con una barrera más baja. La temperatura no cambia, así que el histograma queda igual: lo que se mueve es la línea de Ea.',
-    a:'Elegiste la 1. El catalizador no cambia la energía de las porciones: la temperatura sigue en 300 K y el histograma no se mueve. Lo que baja es la barrera. Es una idea documentada según revisiones (Kurt y Ayas, 2012, entre otros), sin cifra verificada. La correcta está marcada.',
-    b:'Elegiste la 2. Si la barrera subiera, la reacción iría más lenta. El catalizador la baja. Es una idea documentada en Kolomuç y Tekin (2011) y otros, según una revisión, sin cifra verificada. La correcta está marcada.',
-    c:'Elegiste la 3. El catalizador no cambia ΔH: en el perfil, los reactivos y el producto quedan a la misma altura, con catalizador y sin él. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
+    a:'El catalizador no cambia la energía de las porciones: la temperatura sigue en 300 K y el histograma no se mueve. Lo que baja es la barrera.',
+    b:'Si la barrera subiera, la reacción iría más lenta. El catalizador la baja.',
+    c:'El catalizador no cambia ΔH: en el perfil, los reactivos y el producto quedan a la misma altura, con catalizador y sin él.' } };
 
 // Vistas: qué se ve en cada paso. 'r' = ya respondió la predicción del paso.
 const PH = { phCont:'Responde para ver los contadores', phHist:'Responde para ver el histograma', phGraf:'Responde para ver la gráfica' };
@@ -1252,9 +1252,9 @@ const EXPS = [
           ['c','Se duplica'],
           ['d','Se cuadruplica','orden-cuadrado', RES('hipotesis','hipótesis nuestra')]],
     ok:'c',
-    fb:{ a:'La rapidez no baja: con más A hay más choques A–B. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      b:'Sí cambia: con el doble de A, cada B choca con A el doble de veces. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      d:'Se cuadruplicaría si se duplicaran A y B a la vez. Aquí solo se duplica A. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    fb:{ a:'La rapidez no baja: con más A hay más choques A–B.',
+      b:'Sí cambia: con el doble de A, cada B choca con A el doble de veces.',
+      d:'Se cuadruplicaría si se duplicaran A y B a la vez. Aquí solo se duplica A.' },
     arma:() => caja({ nA:60, nB:30, radio:CHICO }), vAntes:() => antes({ aviso:'detenida: 60 de A y 30 de B' }),
     medir:() => [tarea(contar({ ...BASE, radio:CHICO }, 4, 4), ['m2'], true), tarea(contar({ ...BASE, nA:60, radio:CHICO }, 4, 4), ['m2'], true)],
     alResponder:() => { E.vista = despues(); },
@@ -1272,9 +1272,9 @@ const EXPS = [
           ['c','Se cuadruplica'],
           ['d','Se multiplica por 8','orden-cubo', RES('hipotesis','hipótesis nuestra')]],
     ok:'c',
-    fb:{ a:'La proporción es la misma, pero hay más de cada una y chocan más seguido. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      b:'Duplicar A duplica la rapidez, y duplicar B la vuelve a duplicar: los factores se multiplican, no se suman. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      d:'Sería × 8 si la rapidez dependiera de tres concentraciones. Aquí son dos: × 2 · 2 = × 4. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    fb:{ a:'La proporción es la misma, pero hay más de cada una y chocan más seguido.',
+      b:'Duplicar A duplica la rapidez, y duplicar B la vuelve a duplicar: los factores se multiplican, no se suman.',
+      d:'Sería × 8 si la rapidez dependiera de tres concentraciones. Aquí son dos: × 2 · 2 = × 4.' },
     arma:() => caja({ nA:60, nB:60, radio:CHICO }), vAntes:() => antes({ aviso:'detenida: 60 de A y 60 de B' }),
     medir:() => [tarea(contar({ ...BASE, radio:CHICO }, 4, 4), ['m2'], true), tarea(contar({ ...BASE, nA:60, nB:60, radio:CHICO }, 4, 4), ['m2'], true)],
     alResponder:() => { E.vista = despues(); },
@@ -1292,8 +1292,8 @@ const EXPS = [
           ['d','Menos C, porque parte queda en el catalizador','cat-menos-producto', RES('hipotesis','hipótesis nuestra')]],
     ok:'a',
     fb:{ b:'Con 30 de A y 30 de B solo se pueden formar 30 de C, con catalizador o sin él. Que el catalizador da más producto es una idea documentada: según Riddle y Lo-Fan-Hin (2023), el 40 % de 63 escolares ingleses de 15–16 años está de acuerdo en que el catalizador aumenta el rendimiento (encuesta no validada).',
-      c:'Se llega al mismo final, pero antes: el catalizador acelera la reacción. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      d:'El catalizador no se gasta ni se queda con producto: se recupera al final. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+      c:'Se llega al mismo final, pero antes: el catalizador acelera la reacción.',
+      d:'El catalizador no se gasta ni se queda con producto: se recupera al final.' },
     arma:() => { const s = caja({}); s.catalizador(EA_CAT); return s; }, vAntes:() => antes({ aviso:'detenida: con catalizador' }),
     alResponder:() => { E.vista = despues({ graf:'cat', perfil:'cat', otrasEa:[{ e:EA, t:'sin catalizador' }] }); },
     exp:() => `<p>La gráfica muestra el ${C_('C')} de las dos cajas, cada una como promedio de 3 cajas iguales. Con catalizador, la curva sube mucho más rápido; sin catalizador, sigue subiendo despacio. Las dos van hacia la misma altura: 30.</p>
@@ -1308,7 +1308,7 @@ const EXPS = [
           ['d','La de barrera más baja']],
     ok:'d',
     fb:{ a:'Con la barrera más alta, menos choques la alcanzan y la reacción va más lenta. Esta idea aparece en un estudio sobre diagramas de energía que todavía está por confirmar (quizá Popova y Bretz, 2018).',
-      b:'A la misma temperatura, la energía de los choques se reparte igual, pero la parte que alcanza la barrera depende de la barrera. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      b:'A la misma temperatura, la energía de los choques se reparte igual, pero la parte que alcanza la barrera depende de la barrera.',
       c:'El calor que libera una reacción (ΔH) no dice qué tan rápida es: eso lo dice la barrera. Confundir las dos cosas es una idea documentada en Çakmakçı (2010), sin cifra verificada.' },
     arma:() => caja({ Ea:EA_ALTA }), vAntes:() => antes({ aviso:'detenida: Ea = 8000 J/mol', eaTxt:true }),
     medir:() => [tarea(contar(BASE, 6, 8), ['m2'], true), tarea(contar({ ...BASE, Ea:EA_ALTA }, 8, 14), ['m2'], true)],
@@ -1327,9 +1327,9 @@ const EXPS = [
           ['c','Igual de rápido: solo habrá más C al final','orientacion-mas-C', RES('hipotesis','hipótesis nuestra')],
           ['d','Más lento: los choques A–B se reparten más','orientacion-lento', RES('hipotesis','hipótesis nuestra')]],
     ok:'b',
-    fb:{ a:'Los choques por segundo son los mismos, pero ahora sirven también los que llegaban por el lado equivocado. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      c:'Al final hay los mismos 30 de C: lo que cambia es qué tan rápido se llega. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      d:'Nada se reparte: los choques que ya servían siguen sirviendo, y se suman los que antes fallaban por la orientación. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    fb:{ a:'Los choques por segundo son los mismos, pero ahora sirven también los que llegaban por el lado equivocado.',
+      c:'Al final hay los mismos 30 de C: lo que cambia es qué tan rápido se llega.',
+      d:'Nada se reparte: los choques que ya servían siguen sirviendo, y se suman los que antes fallaban por la orientación.' },
     arma:() => caja({ orientacion:false }), vAntes:() => antes({ aviso:'detenida: cualquier lado sirve' }),
     medir:() => [tarea(contar(BASE, 5, 6), ['m2'], true), tarea(contar({ ...BASE, orientacion:false }, 5, 6), ['m2'], true)],
     alResponder:() => { E.vista = despues(); },
@@ -1346,9 +1346,9 @@ const EXPS = [
           ['c','v = k·[N₂O₅]'],
           ['d','v = k·[NO₂]⁴·[O₂]/[N₂O₅]²','ley-como-K', RES('hipotesis','hipótesis nuestra, cercana a CI10')]],
     ok:'c', bien:'¡Bien leído! Mira las barras para ver por qué.',
-    fb:{ a:'El 2 es el coeficiente de la ecuación, pero el orden se mide. Del frasco 1 al 2, [N₂O₅] se triplica y v también se triplica (3¹); con orden 2 se habría multiplicado por 9 (3²). Tomar los órdenes de los coeficientes es una idea documentada incluso en profesores (Kolomuç y Tekin, 2011, según Bain y Towns, 2016), sin cifra.',
-      b:'El 3 es por cuánto se multiplicó v, no el orden. El orden es el exponente: 3 elevado al orden da 3, así que el orden es 1. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      d:'Esa expresión, con los productos arriba, se parece a la de la constante de equilibrio, pero no es una ley de velocidad: la velocidad inicial depende de los reactivos, con exponentes que se miden. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    fb:{ a:'El 2 es el coeficiente de la ecuación, pero el orden se mide. Del frasco 1 al 2, [N₂O₅] se triplica y v también se triplica (3¹); con orden 2 se habría multiplicado por 9 (3²). ',
+      b:'El 3 es por cuánto se multiplicó v, no el orden. El orden es el exponente: 3 elevado al orden da 3, así que el orden es 1.',
+      d:'Esa expresión, con los productos arriba, se parece a la de la constante de equilibrio, pero no es una ley de velocidad: la velocidad inicial depende de los reactivos, con exponentes que se miden.' },
     arma:() => caja({}), vAntes:() => antes({}),
     alResponder:() => {},
     exp:() => { const p = TABLA_N.pares.N2O5, o3 = MC.factor({ N2O5:TABLA_N.ordenes.N2O5 }, { N2O5:FRASCOS[2].conc.N2O5/FRASCOS[0].conc.N2O5 }).valor;
@@ -1368,9 +1368,9 @@ const EXPS = [
           ['c',`${fmt(QUEDA_N.errores.restando, 0)} mol/L`,'se-acaba-en-dos', RES('hipotesis','hipótesis nuestra')],
           ['d',`${dec(QUEDA_N.errores.dividiendo, 2)} mol/L`,'un-sexto', RES('hipotesis','hipótesis nuestra')]],
     ok:'b', bien:'¡Bien pensado! Mira la gráfica para ver por qué.',
-    fb:{ a:`Saldría ${dec(QUEDA_N.errores.vidaMediaCrece, 2)} si cada vida media durara el doble que la anterior (10 minutos y luego 20), como en segundo orden. En primer orden la vida media no depende de cuánto quede: las tres primeras duran 10 minutos cada una. Esta opción es una hipótesis nuestra, sin estudio que la mida.`,
-      c:'En la segunda vida media no se gasta otra vez 0,40 mol/L, sino la mitad de lo que queda: de 0,40 a 0,20. No se acaba en dos vidas medias. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
-      d:`30 minutos son 3 vidas medias, pero no queda 1/(2 · 3) = 1/6 de lo inicial (${dec(QUEDA_N.errores.dividiendo, 2)} mol/L): queda (1/2)³ = 1/8. Esta opción es una hipótesis nuestra, sin estudio que la mida.` },
+    fb:{ a:`Saldría ${dec(QUEDA_N.errores.vidaMediaCrece, 2)} si cada vida media durara el doble que la anterior (10 minutos y luego 20), como en segundo orden. En primer orden la vida media no depende de cuánto quede: las tres primeras duran 10 minutos cada una.`,
+      c:'En la segunda vida media no se gasta otra vez 0,40 mol/L, sino la mitad de lo que queda: de 0,40 a 0,20. No se acaba en dos vidas medias.',
+      d:`30 minutos son 3 vidas medias, pero no queda 1/(2 · 3) = 1/6 de lo inicial (${dec(QUEDA_N.errores.dividiendo, 2)} mol/L): queda (1/2)³ = 1/8.` },
     arma:() => caja({}), vAntes:() => antes({}),
     alResponder:() => {},
     exp:() => `<p>Cada 10 minutos queda la mitad de lo que había: ${VIDAS1.slice(0, 3).map(q => dec(q.C, 2)).join(' → ')} → ${dec(QUEDA_N.valor, 2)} mol/L. En la gráfica, las vidas medias de primer orden (en tinta) duran todas lo mismo: ${fmt(VIDAS1[0].dura, 0)} minutos.</p>
@@ -1420,7 +1420,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? (x.bien || '¡Bien pensado! Mira la caja y las cuentas para ver por qué.') : `Elegiste la ${'abcd'.indexOf(p) + 1}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? (x.bien || '¡Bien pensado! Mira la caja y las cuentas para ver por qué.') : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     explicar();
   };
@@ -1723,25 +1723,25 @@ D3.describir = () => {
 };
 
 /* ----- Los pasos ----- */
-const hip = 'Esta opción es una hipótesis nuestra, sin estudio que la mida.';
+const hip = '';
 const G1 = { id:'mecanismos-intermediario', ok:'c', opts:[
   ['a', nombre(MP.errores.enVariasEtapas[0]), 'AQ-int-repetido', 'hipotesis'],
   ['b', nombre(MP.errores.intercambio.intermediarios[0]), 'AQ-cat-por-intermediario', 'hipotesis'],
   ['c', nombre(MP.intermediarios[0])],
   ['d', nombre(MP.errores.enVariasEtapas[1]), 'AQ-int-producto', 'hipotesis']],
   fb:{ c:`¡Bien! El IO⁻ sale en la etapa 1 y entra en la 2: aparece primero como producto y después como reactivo. Se forma y se gasta; por eso se tacha y no queda en la ecuación global.`,
-    a:`Elegiste la 1. El H₂O₂ entra en las dos etapas, pero no vuelve a salir: se gasta, y es el reactivo de la global. Un intermediario tiene que formarse en una etapa y gastarse en otra. ${hip} La correcta está marcada.`,
-    b:`Elegiste la 2. El I⁻ entra en la etapa 1 y vuelve a salir en la 2: eso es un catalizador. El intermediario va al revés: primero sale y después entra. ${hip} La correcta está marcada.`,
-    d:`Elegiste la 4. El H₂O sale en las dos etapas y no se gasta en ninguna: es un producto de la global. Un intermediario se forma y después se gasta. ${hip} La correcta está marcada.` } };
+    a:`El H₂O₂ entra en las dos etapas, pero no vuelve a salir: se gasta, y es el reactivo de la global. Un intermediario tiene que formarse en una etapa y gastarse en otra. ${hip}`,
+    b:`El I⁻ entra en la etapa 1 y vuelve a salir en la 2: eso es un catalizador. El intermediario va al revés: primero sale y después entra. ${hip}`,
+    d:`El H₂O sale en las dos etapas y no se gasta en ninguna: es un producto de la global. Un intermediario se forma y después se gasta. ${hip}` } };
 const G2 = { id:'mecanismos-catalizador', ok:'a', opts:[
   ['a', nombre(MO.catalizadores[0])],
   ['b', nombre(MO.errores.intercambio.catalizadores[0]), 'AQ-int-por-catalizador', 'hipotesis'],
   ['c', nombre(MO.errores.enVariasEtapas[0]), 'AQ-cat-repetido', 'hipotesis'],
   ['d', 'O₃', 'AQ-cat-se-gasta', 'hipotesis']],
   fb:{ a:'¡Bien! El Cl entra en la etapa 1 y vuelve a salir en la 2: se gasta y se regenera, sale igual que entró. Por eso un poco de cloro destruye muchísimo ozono.',
-    b:`Elegiste la 2. El ClO sale en la etapa 1 y entra en la 2: se forma y se gasta, es el intermediario. El catalizador va al revés: entra primero y se regenera después. ${hip} La correcta está marcada.`,
-    c:`Elegiste la 3. El O₂ sale en las dos etapas y nunca entra: es el producto de la global. Un catalizador entra y vuelve a salir. ${hip} La correcta está marcada.`,
-    d:'Elegiste la 4. El O₃ entra en la etapa 1 y no vuelve a salir: se gasta, es un reactivo de la global. El catalizador no se gasta: se recupera entero al final. Esta opción es una hipótesis nuestra, relacionada con la idea de que el catalizador no participa (Çakmakçı, 2010, sin cifra verificada). La correcta está marcada.' } };
+    b:`El ClO sale en la etapa 1 y entra en la 2: se forma y se gasta, es el intermediario. El catalizador va al revés: entra primero y se regenera después. ${hip}`,
+    c:`El O₂ sale en las dos etapas y nunca entra: es el producto de la global. Un catalizador entra y vuelve a salir. ${hip}`,
+    d:'El O₃ entra en la etapa 1 y no vuelve a salir: se gasta, es un reactivo de la global. El catalizador no se gasta: se recupera entero al final.' } };
 const lOpc = e => `${leyTxt(e)}, orden ${fmt(e.ordenTotal, 0)}`;
 const G3 = { id:'mecanismos-ley', ok:'c', opts:[
   ['a', lOpc(LN.errores.coeficientes), 'CI9-coeficiente', 'parcial'],
@@ -1749,9 +1749,9 @@ const G3 = { id:'mecanismos-ley', ok:'c', opts:[
   ['c', lOpc(LN)],
   ['d', lOpc(LN.errores.sumaEtapas), 'AQ-ley-suma-etapas', 'hipotesis']],
   fb:{ c:'¡Bien! La etapa lenta fija la velocidad, y sus coeficientes son los órdenes: es una etapa elemental, un solo choque.',
-    a:`Elegiste la 1. Esa ley usa los coeficientes de la ecuación global, que no es una etapa: en una reacción de varias etapas los órdenes no se leen de la global. Tomar los órdenes de los coeficientes es una idea documentada incluso en profesores (Kolomuç y Tekin, 2011, según Bain y Towns, 2016), sin cifra. La correcta está marcada.`,
-    b:`Elegiste la 2. Esa es la ley de la etapa rápida: espera a que la lenta le dé NO₃, así que no decide la velocidad. Que la etapa lenta no es la que fija la velocidad lo describe un estudio con futuros profesores (Taştan Kırık, Yalçınkaya y Boz, 2010), sin cifra verificada. La correcta está marcada.`,
-    d:`Elegiste la 4. No se suman las etapas: la velocidad la fija solo la lenta. El CO entra después, en la etapa rápida, y no cambia lo rápido que va la lenta. ${hip} La correcta está marcada.` } };
+    a:`Esa ley usa los coeficientes de la ecuación global, que no es una etapa: en una reacción de varias etapas los órdenes no se leen de la global. `,
+    b:`Esa es la ley de la etapa rápida: espera a que la lenta le dé NO₃, así que no decide la velocidad. `,
+    d:`No se suman las etapas: la velocidad la fija solo la lenta. El CO entra después, en la etapa rápida, y no cambia lo rápido que va la lenta. ${hip}` } };
 const eaLenta = e => (e.lenta === 1 ? e.Ea1 : e.Ea2);
 const pOpc = e => `La etapa ${e.lenta}, con Ea = ${fmt(eaLenta(e), 0)} kJ/mol`;
 const G4 = { id:'mecanismos-perfil', ok:'b', opts:[
@@ -1760,18 +1760,18 @@ const G4 = { id:'mecanismos-perfil', ok:'b', opts:[
   ['c', pOpc(PP.errores.desdeReactivos), 'AQ-Ea-cima-mas-alta', 'hipotesis'],   // cubre dos errores: las dos Ea desde los reactivos y «la cima más alta es la lenta»
   ['d', pOpc(PP.errores.inversa), 'AQ-Ea-inversa', 'hipotesis']],
   fb:{ b:`¡Bien! La segunda loma empieza en el valle (${fmt(PF.I, 0)}), no en los reactivos: Ea₂ = ${fmt(PF.TS2, 0)} − (${fmt(PF.I, 0)}) = ${fmt(PP.Ea2, 0)} kJ/mol, más que Ea₁ = ${fmt(PP.Ea1, 0)}. La segunda etapa es la lenta, aunque su cima esté más abajo.`,
-    a:`Elegiste la 1. ${fmt(PF.TS1, 0)} es la altura de la primera cima en el eje, no su barrera: la Ea se mide desde donde empieza la etapa. ${hip} La correcta está marcada.`,
-    c:`Elegiste la 3. Mediste las dos lomas desde los reactivos, o tomaste la cima más alta como la lenta. Pero el valle está ${fmt(-PP.dH1, 0)} kJ/mol por debajo de los reactivos: casi todo baja hasta ahí y se queda, y para salir necesita subir ${fmt(PP.Ea2, 0)}. Esa barrera es la que frena. ${hip} La correcta está marcada.`,
-    d:`Elegiste la 4. ${fmt(PP.EaInv2, 0)} es lo que se baja desde la segunda cima hasta los productos: la Ea de esa etapa al revés. La Ea de ida se mide desde el valle donde empieza la etapa 2. ${hip} La correcta está marcada.` } };
+    a:`${fmt(PF.TS1, 0)} es la altura de la primera cima en el eje, no su barrera: la Ea se mide desde donde empieza la etapa. ${hip}`,
+    c:`Mediste las dos lomas desde los reactivos, o tomaste la cima más alta como la lenta. Pero el valle está ${fmt(-PP.dH1, 0)} kJ/mol por debajo de los reactivos: casi todo baja hasta ahí y se queda, y para salir necesita subir ${fmt(PP.Ea2, 0)}. Esa barrera es la que frena. ${hip}`,
+    d:`${fmt(PP.EaInv2, 0)} es lo que se baja desde la segunda cima hasta los productos: la Ea de esa etapa al revés. La Ea de ida se mide desde el valle donde empieza la etapa 2. ${hip}` } };
 const G5 = { id:'mecanismos-valle', ok:'d', opts:[
   ['a', 'En las cimas, intermediarios; en el valle, un complejo activado', 'CI12-cimas-intermedios', 'parcial'],
   ['b', 'En las cimas, los productos de cada etapa; en el valle, un intermediario', 'AQ-complejo-producto', 'hipotesis'],
   ['c', 'En las cimas, complejos activados; en el valle, el catalizador', 'AQ-valle-catalizador', 'hipotesis'],
   ['d', 'En las cimas, complejos activados; en el valle, un intermediario']],
   fb:{ d:'¡Bien! En cada cima está el complejo activado: los átomos a medio camino, un instante. En el valle, el intermediario: una especie que dura un rato, hasta que la segunda etapa la gasta.',
-    a:'Elegiste la 1. Es al revés: lo que dura un rato está en un valle; en lo más alto de la loma no se queda nada. Leer las cimas como intermediarios aparece en un estudio con universitarios de química orgánica: lo hicieron 10 de los 17 estudiantes que comentaron ese rasgo del diagrama, en una muestra de 36 (Popova y Bretz, 2018, citado vía buscador; cifra por verificar). La correcta está marcada.',
-    b:`Elegiste la 2. El complejo activado no es un producto: no se puede guardar ni separar, se deshace en un instante hacia un lado o hacia el otro. Los productos están al final, abajo a la derecha. ${hip} La correcta está marcada.`,
-    c:`Elegiste la 3. El catalizador no queda en un valle del perfil: en el valle está el intermediario, que la etapa 1 forma y la etapa 2 gasta. El catalizador, en cambio, se recupera al final. ${hip} La correcta está marcada.` } };
+    a:'Es al revés: lo que dura un rato está en un valle; en lo más alto de la loma no se queda nada. Leer las cimas como intermediarios aparece en un estudio con universitarios de química orgánica: lo hicieron 10 de los 17 estudiantes que comentaron ese rasgo del diagrama, en una muestra de 36 (Popova y Bretz, 2018, citado vía buscador; cifra por verificar).',
+    b:`El complejo activado no es un producto: no se puede guardar ni separar, se deshace en un instante hacia un lado o hacia el otro. Los productos están al final, abajo a la derecha. ${hip}`,
+    c:`El catalizador no queda en un valle del perfil: en el valle está el intermediario, que la etapa 1 forma y la etapa 2 gasta. El catalizador, en cambio, se recupera al final. ${hip}` } };
 const vOpc = x => `${cientifica(Math.abs(x))} kg/(m³·h)`;
 const G6 = { id:'mecanismos-velocidad-media', ok:'b', opts:[
   ['a', vOpc(VM.errores.soloMasa), 'AQ-mg-a-kg-sin-volumen', 'hipotesis'],
@@ -1779,9 +1779,9 @@ const G6 = { id:'mecanismos-velocidad-media', ok:'b', opts:[
   ['c', vOpc(VM.errores.sinTiempo), 'AQ-vmedia-sin-tiempo', 'hipotesis'],
   ['d', vOpc(VM.errores.soloVolumen), 'AQ-mL-a-m3-sin-masa', 'hipotesis']],
   fb:{ b:`¡Bien! Baja ${fmt(-VM.dc, 2)} mg/mL en ${fmt(VM.dt, 0)} h: ${fmt(VM.rapidez, 2)} mg/(mL·h). Y 1 mg/mL es lo mismo que 1 kg/m³.`,
-    a:`Elegiste la 1. Pasaste los miligramos a kilogramos (× 10⁻⁶), pero los mililitros también cambian: 1 mL = 10⁻⁶ m³. Las dos potencias de diez se cancelan. ${hip} La correcta está marcada.`,
-    c:`Elegiste la 3. ${fmt(-VM.dc, 2)} es lo que bajó la concentración, no la velocidad: falta dividir entre las ${fmt(VM.dt, 0)} horas. ${hip} La correcta está marcada.`,
-    d:`Elegiste la 4. Pasaste los mililitros a metros cúbicos (÷ 10⁻⁶), pero los miligramos también cambian: 1 mg = 10⁻⁶ kg. Las dos potencias de diez se cancelan. ${hip} La correcta está marcada.` } };
+    a:`Pasaste los miligramos a kilogramos (× 10⁻⁶), pero los mililitros también cambian: 1 mL = 10⁻⁶ m³. Las dos potencias de diez se cancelan. ${hip}`,
+    c:`${fmt(-VM.dc, 2)} es lo que bajó la concentración, no la velocidad: falta dividir entre las ${fmt(VM.dt, 0)} horas. ${hip}`,
+    d:`Pasaste los mililitros a metros cúbicos (÷ 10⁻⁶), pero los miligramos también cambian: 1 mg = 10⁻⁶ kg. Las dos potencias de diez se cancelan. ${hip}` } };
 
 const fichasV = (mec, r, extra) => ({ tipo:'fichas', mec, roles:r, tachar:r, global:r, ...(extra ? extra(r) : {}) });
 const steps = [

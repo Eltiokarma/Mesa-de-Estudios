@@ -115,7 +115,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap:12px; align-items:end}
 .slider{display:grid; gap:4px}
@@ -582,41 +582,41 @@ const P1 = { id:'estatica-peso-en-A', ok:'b',
   opts:[['a','100 N','E1-mismo-peso-a-cada-lado','parcial'], ['b','150 N',null,''],
         ['c','300 N','igualar-pesos-sin-distancias','hipotesis'], ['d','600 N','peso-de-la-barra-en-su-extremo','hipotesis']],
   fb:{ b:'¡Bien! Lo que se iguala es el giro: 150 N con 2 m de brazo hacen girar tanto como los 300 N de la barra con 1 m.',
-       a:'Elegiste la A. Con 100 N habría el mismo peso a cada lado del apoyo (100 N de barra más 100 N colgados, contra 200 N de barra), pero lo que tiene que ser igual es el giro, no el peso. La barra giraría hacia B. La correcta está marcada.',
-       c:'Elegiste la C. 300 N iguala el peso de la barra, pero sin mirar las distancias: el bloque cuelga a 2 m del apoyo y el peso de la barra actúa a 1 m. La correcta está marcada.',
-       d:'Elegiste la D. 600 N sale de poner el peso de la barra en su extremo B, a 4 m del apoyo. Pero el peso de una barra pareja actúa en su centro, a 1 m del apoyo. La correcta está marcada.' } };
+       a:'Con 100 N habría el mismo peso a cada lado del apoyo (100 N de barra más 100 N colgados, contra 200 N de barra), pero lo que tiene que ser igual es el giro, no el peso. La barra giraría hacia B.',
+       c:'300 N iguala el peso de la barra, pero sin mirar las distancias: el bloque cuelga a 2 m del apoyo y el peso de la barra actúa a 1 m.',
+       d:'600 N sale de poner el peso de la barra en su extremo B, a 4 m del apoyo. Pero el peso de una barra pareja actúa en su centro, a 1 m del apoyo.' } };
 const P2 = { id:'estatica-reaccion', ok:'d',
   opts:[['a','0 N','E4-sin-giro-sin-fuerza','parcial'], ['b','150 N','restar-las-fuerzas','hipotesis'],
         ['c','300 N','reaccion-sin-la-carga','hipotesis'], ['d','450 N',null,'']],
   fb:{ d:'¡Bien! El apoyo sostiene todo lo que cuelga y todo lo que pesa: 300 + 150 = 450 N hacia arriba.',
-       a:'Elegiste la A. Que los giros se cancelen no quiere decir que el apoyo no haga fuerza: sin él, la barra caería entera. Giro y fuerza son cosas distintas. La correcta está marcada.',
-       b:'Elegiste la B. 300 − 150 resta las dos fuerzas, pero las dos tiran hacia abajo: se suman. La correcta está marcada.',
-       c:'Elegiste la C. 300 N es solo el peso de la barra; el apoyo también sostiene los 150 N del bloque. La correcta está marcada.' } };
+       a:'Que los giros se cancelen no quiere decir que el apoyo no haga fuerza: sin él, la barra caería entera. Giro y fuerza son cosas distintas.',
+       b:'300 − 150 resta las dos fuerzas, pero las dos tiran hacia abajo: se suman.',
+       c:'300 N es solo el peso de la barra; el apoyo también sostiene los 150 N del bloque.' } };
 const P3 = { id:'estatica-inclinada', ok:'c',
   opts:[['a','Vuelve sola a quedar horizontal, porque solo así está en equilibrio.','E3-equilibrio-es-horizontal','parcial'],
         ['b','Baja el lado de A hasta el suelo, porque el extremo que queda más bajo gana.','el-lado-bajo-gana','hipotesis'],
         ['c','Se queda quieta e inclinada, porque los dos giros siguen siendo iguales.',null,''],
         ['d','Baja el lado de B, porque al inclinarla su brazo largo pesa más.','al-inclinar-gana-el-brazo-largo','hipotesis']],
   fb:{ c:'¡Bien! Al inclinarla, los dos brazos se acortan en la misma proporción, así que los giros siguen siendo iguales. Equilibrio no es estar horizontal: es no girar.',
-       a:'Elegiste la A. Un cuerpo en reposo que no gira está en equilibrio, esté horizontal o inclinado. Aquí nada la empuja a volver. La correcta está marcada.',
-       b:'Elegiste la B. Que A quede más abajo no le da más giro: los brazos se miden en horizontal y se acortan igual a los dos lados. La correcta está marcada.',
-       d:'Elegiste la D. Al inclinarla, el brazo de cada fuerza se acorta, y se acorta en la misma proporción a los dos lados. La correcta está marcada.' } };
+       a:'Un cuerpo en reposo que no gira está en equilibrio, esté horizontal o inclinado. Aquí nada la empuja a volver.',
+       b:'Que A quede más abajo no le da más giro: los brazos se miden en horizontal y se acortan igual a los dos lados.',
+       d:'Al inclinarla, el brazo de cada fuerza se acorta, y se acorta en la misma proporción a los dos lados.' } };
 const P4 = { id:'estatica-bate', ok:'c',
   opts:[['a','Pesan lo mismo, porque el bate estaba en equilibrio.','E1-mismo-peso-a-cada-lado','documentado'],
         ['b','La del mango, porque es más larga.','mas-largo-mas-masa','hipotesis'],
         ['c','La de la punta, porque su peso actúa más cerca del corte.',null,''],
         ['d','La del mango, porque su peso actúa más lejos del corte y hace más giro.','giro-mayor-mas-peso','hipotesis']],
   fb:{ c:'¡Bien! El equilibrio iguala los giros, no las masas. La punta, que es gruesa, tiene su peso más cerca del corte, así que necesita más peso para girar lo mismo.',
-       a:'Elegiste la A. En equilibrio se igualan los giros respecto al corte, no los pesos. La parte del mango tiene su peso lejos del corte y le basta con menos. La correcta está marcada.',
-       b:'Elegiste la B. Más larga no es más pesada: el mango es delgado. Y al ser larga, su peso actúa lejos del corte, así que le basta con menos peso para equilibrar. La correcta está marcada.',
-       d:'Elegiste la D. Respecto al corte, las dos partes giran lo mismo: por eso el bate estaba en equilibrio. El mango tiene su peso lejos del corte, así que le basta con menos masa. La correcta está marcada.' } };
+       a:'En equilibrio se igualan los giros respecto al corte, no los pesos. La parte del mango tiene su peso lejos del corte y le basta con menos.',
+       b:'Más larga no es más pesada: el mango es delgado. Y al ser larga, su peso actúa lejos del corte, así que le basta con menos peso para equilibrar.',
+       d:'Respecto al corte, las dos partes giran lo mismo: por eso el bate estaba en equilibrio. El mango tiene su peso lejos del corte, así que le basta con menos masa.' } };
 const P5 = { id:'estatica-fuerza-inclinada', ok:'b',
   opts:[['a','30 N·m','olvidar-la-distancia','hipotesis'], ['b','60 N·m',null,''],
         ['c','80 N·m','coseno-en-vez-de-seno','hipotesis'], ['d','100 N·m','sin-el-seno','hipotesis']],
   fb:{ b:'¡Bien! El brazo es la distancia perpendicular del eje a la línea de la fuerza: 2·sen 37° = 1,2 m. Y 50·1,2 = 60 N·m.',
-       a:'Elegiste la A. 30 N es la parte de la fuerza que hace girar, pero falta multiplicarla por su distancia al eje, 2 m. La correcta está marcada.',
-       c:'Elegiste la C. 80 N·m usa el coseno: esa parte de la fuerza va a lo largo de la barra, sobre una línea que pasa por el eje, así que no gira nada. La correcta está marcada.',
-       d:'Elegiste la D. 50·2 = 100 N·m valdría si la fuerza fuera perpendicular a la barra. Inclinada, gira menos. La correcta está marcada.' } };
+       a:'30 N es la parte de la fuerza que hace girar, pero falta multiplicarla por su distancia al eje, 2 m.',
+       c:'80 N·m usa el coseno: esa parte de la fuerza va a lo largo de la barra, sobre una línea que pasa por el eje, así que no gira nada.',
+       d:'50·2 = 100 N·m valdría si la fuerza fuera perpendicular a la barra. Inclinada, gira menos.' } };
 
 const fuente = t => `<p class="fuente">${t}</p>`;
 // Qué se dibuja en cada paso: vista() da la configuración; antes y después de responder cambian 'ver'.
@@ -1087,9 +1087,9 @@ const EXPS = [
           ['c','No se puede saber, porque depende de cuánta cuerda hay a cada lado.','E7-tension-depende-del-largo','parcial'],
           ['d','El balde pesa más, porque está más cerca de la rueda, donde la cuerda está más tensa.','E6-tension-cambia-en-la-cuerda','parcial']],
     ok:'b',
-    fb:{ a:'Elegiste la A. Estar más abajo no cambia el peso: en equilibrio, cada uno pesa lo que jala la cuerda, y la cuerda jala igual a los dos. La correcta está marcada; mira la escena.',
-         c:'Elegiste la C. Cuánta cuerda hay a cada lado no importa: una cuerda ligera en una polea sin roce tiene la misma tensión en todos sus puntos. La correcta está marcada; mira la escena.',
-         d:'Elegiste la D. La tensión no crece cerca de la rueda: es la misma en toda la cuerda, a los dos lados. La correcta está marcada; mira la escena.' },
+    fb:{ a:'Estar más abajo no cambia el peso: en equilibrio, cada uno pesa lo que jala la cuerda, y la cuerda jala igual a los dos.; mira la escena.',
+         c:'Cuánta cuerda hay a cada lado no importa: una cuerda ligera en una polea sin roce tiene la misma tensión en todos sus puntos.; mira la escena.',
+         d:'La tensión no crece cerca de la rueda: es la misma en toda la cuerda, a los dos lados.; mira la escena.' },
     antes:() => Object.assign(E, { tipo:'polea', off:0, ver:'oculta' }),
     despues:() => { E.ver = 'nueva'; E.puntos = true; crecer(); },
     ctrl:() => `<div class="slider"><label for="q-off"><span>Mueve la cuerda (sube el bloque, baja el balde)</span><output id="q-off-o"></output></label><input id="q-off" type="range" min="-50" max="50" step="5" value="${E.off}"></div><div class="chips" id="chips2"></div>`,
@@ -1098,7 +1098,7 @@ const EXPS = [
     alCambiar:() => { E.off = +$('q-off').value; },
     exp:`<p>Sobre cada cuerpo actúan dos fuerzas: su ${V('P','peso')} hacia abajo y la ${V('T','tensión')} de la cuerda hacia arriba. Como están quietos, en cada uno la tensión es igual al peso. Y una cuerda ligera que pasa por una polea sin roce tiene la misma tensión en todos sus puntos, a los dos lados (mira los tres puntos rojos). Entonces los dos pesos son iguales.</p>
       <p>Mueve la cuerda: el bloque sube, el balde baja, y siguen quietos donde los dejes. La altura no cambia nada.</p>
-      ${fuente('Según Flores-García y otros (2009), que citan un estudio de Gunstone y White con 463 alumnos, alrededor de un cuarto dijo que el bloque pesa más, sobre todo porque está más cerca del suelo. En otra pregunta de su estudio, al ordenar la tensión en cinco puntos de una cuerda, acertó el 42 % de 90 alumnos en Nuevo México y el 34 % de 105 en Ciudad Juárez; alrededor de un tercio razona según la cercanía al peso o a la polea; con esta polea no está medido. Que la tensión dependa del largo de la cuerda está documentado con dos cuerdas distintas, tampoco con esta polea.')}` },
+      ${fuente(' En otra pregunta de su estudio, al ordenar la tensión en cinco puntos de una cuerda, acertó el 42 % de 90 alumnos en Nuevo México y el 34 % de 105 en Ciudad Juárez; alrededor de un tercio razona según la cercanía al peso o a la polea; con esta polea no está medido. Que la tensión dependa del largo de la cuerda está documentado con dos cuerdas distintas, tampoco con esta polea.')}` },
   { id:'roce', corto:'La caja en el piso', ley:['P','Nn','f','F'],
     q:`Una caja de 20 kg está sobre un piso con coeficiente de rozamiento estático μs = 0,5. La empujas horizontalmente con ${V('F','30 N')} y no se mueve. ¿Cuánto vale el ${V('f','roce')} del piso?`,
     opts:[['a','0 N','sin-movimiento-sin-roce','hipotesis'], ['b','30 N',null], ['c','70 N','lo-que-falta-para-el-maximo','hipotesis'], ['d','100 N','E10-roce-estatico-siempre-maximo','parcial']],
@@ -1183,7 +1183,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : (x.fb && x.fb[p]) || `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira la escena para ver por qué.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : (x.fb && x.fb[p]) || `; mira la escena para ver por qué.`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.ctrl() + x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     $('res2').querySelectorAll('input').forEach(inp => inp.addEventListener('input', () => { if (E.tipo !== 'par') parar(); E.crece = 1; x.alCambiar(); x.vivo(); draw(); }));

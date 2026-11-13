@@ -120,7 +120,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -753,45 +753,45 @@ const P_ALTO = { id:'regla-de-tres-paso1', unidad:UNIDAD_RAZONES, ok:'a', opts:[
   ['c', `${fmt(ALTO.errores.invierteRazon, 0)} clips`, 'invierte-la-razon', 'hipotesis'],
   ['d', `${fmt(ALTO.errores.doble, 0)} clips`, 'AR7-dobla', 'hipotesis']],
   fb:{ a:'¡Bien! Cada 2 botones del Sr. Bajo valen 3 clips. El Sr. Alto mide 3 veces 2 botones, así que mide 3 veces 3 clips: 9.',
-    b:'Elegiste la B. Así se conserva la diferencia (2 clips más que botones), pero un clip es más corto que un botón: lo que se mantiene es la razón, 6 clips por cada 4 botones. Mira cómo se apilan los clips. La correcta está marcada.',
-    c:'Elegiste la C. Esa cuenta usa la razón al revés (4 por cada 6). Como un clip es más corto que un botón, siempre hacen falta más clips que botones: 9. La correcta está marcada.',
-    d:'Elegiste la D. El doble valdría si cada botón midiera dos clips, pero 4 botones son 6 clips: cada botón mide un clip y medio. 6 · 1,5 = 9. La correcta está marcada.' } };
+    b:'Así se conserva la diferencia (2 clips más que botones), pero un clip es más corto que un botón: lo que se mantiene es la razón, 6 clips por cada 4 botones. Mira cómo se apilan los clips.',
+    c:'Esa cuenta usa la razón al revés (4 por cada 6). Como un clip es más corto que un botón, siempre hacen falta más clips que botones: 9.',
+    d:'El doble valdría si cada botón midiera dos clips, pero 4 botones son 6 clips: cada botón mide un clip y medio. 6 · 1,5 = 9.' } };
 const P_INV = { id:'regla-de-tres-paso3', ok:'b', opts:[
   ['a', `${fmt(INV.errores.comoDirecta, 0)} días`, 'AR8-inversa-como-directa', 'hipotesis'],
   ['b', `${fmt(INV.b2, 0)} días`],
   ['c', `${fmt(INV.errores.aditiva, 0)} día`, 'AR6-resta-lo-que-aumenta', 'hipotesis'],
   ['d', `${fmt(INV.errores.sinCambio, 0)} días`, 'no-cambia', 'hipotesis']],
   fb:{ b:'¡Bien! El muro necesita 6 × 10 = 60 obrero-días de trabajo. Entre 15 obreros: 60/15 = 4 días.',
-    a:'Elegiste la A. Esa es la regla de tres directa: 10 · 15/6. Pero con más obreros el muro se termina antes, no después. La correcta está marcada.',
-    c:'Elegiste la C. Restar lo que aumentó no sirve: la relación es de multiplicar. Con 15 obreros, que son 2,5 veces 6, los días se dividen entre 2,5. La correcta está marcada.',
-    d:'Elegiste la D. El muro es el mismo, pero se reparte entre más obreros: cada uno hace menos y se termina antes. La correcta está marcada.' } };
+    a:'Esa es la regla de tres directa: 10 · 15/6. Pero con más obreros el muro se termina antes, no después.',
+    c:'Restar lo que aumentó no sirve: la relación es de multiplicar. Con 15 obreros, que son 2,5 veces 6, los días se dividen entre 2,5.',
+    d:'El muro es el mismo, pero se reparte entre más obreros: cada uno hace menos y se termina antes.' } };
 const P_ANTES = { id:'regla-de-tres-paso5', ok:'c', opts:[
   ['a', `${fmt(ANTES.errores.comoDirecta, 0)} obreros`, 'AR8-inversa-como-directa', 'hipotesis'],
   ['b', `${fmt(ANTES.errores.aditiva, 0)} obreros`, 'AR6-suma-lo-que-baja', 'hipotesis'],
   ['c', `${fmt(ANTES.b2, 0)} obreros`],
   ['d', `${fmt(ANTES.errores.sinCambio, 0)} obreros`, 'no-cambia', 'hipotesis']],
   fb:{ c:'¡Bien! La obra necesita 12 × 9 = 108 obrero-días de trabajo. En 6 días: 108/6 = 18 obreros.',
-    a:'Elegiste la A. Suena bien («menos días, menos de todo»), pero para acabar antes hace falta más gente, no menos. Es inversa. La correcta está marcada.',
-    b:'Elegiste la B. Son 3 días menos, pero sumar 3 obreros no conserva nada. Lo que no cambia es el producto obreros × días: 12 × 9 = 18 × 6. La correcta está marcada.',
-    d:'Elegiste la D. El problema dice que trabajan igual: con el mismo ritmo, los mismos obreros tardan los mismos 9 días. La correcta está marcada.' } };
+    a:'Suena bien («menos días, menos de todo»), pero para acabar antes hace falta más gente, no menos. Es inversa.',
+    b:'Son 3 días menos, pero sumar 3 obreros no conserva nada. Lo que no cambia es el producto obreros × días: 12 × 9 = 18 × 6.',
+    d:'El problema dice que trabajan igual: con el mismo ritmo, los mismos obreros tardan los mismos 9 días.' } };
 const P_COMP = { id:'regla-de-tres-paso6', ok:'c', opts:[
   ['a', `${fmt(COMP.errores.olvidaHoras, 0)} días`, 'AR9-olvida-horas', 'hipotesis'],
   ['b', `${fmt(COMP.errores.horasDirectas, 0)} días`, 'AR9-horas-como-directa', 'hipotesis'],
   ['c', `${fmt(COMP.valor, 0)} días`],
   ['d', `${fmt(COMP.errores.todoDirecta, 0)} días`, 'AR8-todo-directo', 'hipotesis']],
   fb:{ c:'¡Bien! La zanja necesita 4 · 6 · 12 = 288 horas-hombre. Con 8 obreros de 4 horas diarias salen 32 horas-hombre por día: 288/32 = 9 días.',
-    a:'Elegiste la A. Esa cuenta solo mira a los obreros (el doble, la mitad de días) y se olvida de que ahora trabajan menos horas cada día. La correcta está marcada.',
-    b:'Elegiste la B. Esa cuenta trata las horas diarias como directas: menos horas, menos días. Es al revés: si trabajan menos horas cada día, necesitan más días. La correcta está marcada.',
-    d:'Elegiste la D. Esa cuenta multiplica todo derecho, como si fuera directa. Más obreros dan menos días y menos horas diarias dan más días. La correcta está marcada.' } };
+    a:'Esa cuenta solo mira a los obreros (el doble, la mitad de días) y se olvida de que ahora trabajan menos horas cada día.',
+    b:'Esa cuenta trata las horas diarias como directas: menos horas, menos días. Es al revés: si trabajan menos horas cada día, necesitan más días.',
+    d:'Esa cuenta multiplica todo derecho, como si fuera directa. Más obreros dan menos días y menos horas diarias dan más días.' } };
 const P_REP = { id:'regla-de-tres-paso7', ok:'c', opts:[
   ['a', `S/ ${fmt(REP.errores.comoDirecto[2], 0)}`, 'AR10-inverso-como-directo', 'hipotesis'],
   ['b', `S/ ${fmt(REP.errores.iguales[2], 0)}`, 'reparto-en-partes-iguales', 'hipotesis'],
   ['c', `S/ ${fmt(REP.partes[2], 0)}`],
   ['d', `S/ ${fmt(REP.partes[0], 0)}`, 'toma-la-parte-del-mayor', 'hipotesis']],
   fb:{ c:'¡Bien! Inverso a 2, 3 y 6 es directo a 1/2, 1/3 y 1/6; por 6, a 3, 2 y 1. Son 6 partes de S/ 330: al del 6 le toca 1 parte.',
-    a:'Elegiste la A. Así se reparte en forma directa: al de más tardanzas le tocaría más. En el reparto inverso, al índice más grande le toca menos. La correcta está marcada.',
-    b:'Elegiste la B. En partes iguales, las tardanzas no cuentan para nada. El reparto inverso premia al que tuvo menos. La correcta está marcada.',
-    d:'Elegiste la D. S/ 990 es lo que recibe el de 2 tardanzas, el que tuvo menos. Al de 6 le toca la parte más chica. La correcta está marcada.' } };
+    a:'Así se reparte en forma directa: al de más tardanzas le tocaría más. En el reparto inverso, al índice más grande le toca menos.',
+    b:'En partes iguales, las tardanzas no cuentan para nada. El reparto inverso premia al que tuvo menos.',
+    d:'S/ 990 es lo que recibe el de 2 tardanzas, el que tuvo menos. Al de 6 le toca la parte más chica.' } };
 
 // Ecuaciones en vivo
 function vivoTira(){
@@ -1110,7 +1110,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

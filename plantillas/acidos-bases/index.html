@@ -113,7 +113,7 @@ canvas{display:block; width:100%; touch-action:pan-y; -webkit-user-select:none; 
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:999px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -719,18 +719,18 @@ const P1 = { id:'acidos-bases-paso2', ok:'c', anima:animar1, opts:[
   ['c','4'],
   ['d','7: con tanta agua se vuelve neutro','pH-diluir-hasta-7','hipotesis']],
   fb:{ c:'¡Bien! Hay 100 veces menos H⁺ en cada volumen: [H⁺] pasa de 10⁻² a 10⁻⁴ M, y el pH, de 2 a 4.',
-    a:'Elegiste la A. Sigue siendo HCl y sigue siendo fuerte (todo roto), pero ahora hay 100 veces menos en cada mililitro. El pH mide cuántos H⁺ hay por litro, no qué tan fuerte es el ácido. La correcta está marcada.',
-    b:'Elegiste la B. Al diluir hay menos H⁺ por volumen, así que el pH sube, no baja: más H⁺, menor pH. La correcta está marcada.',
-    d:'Elegiste la D. Con 100 veces más agua el pH sube 2 unidades, de 2 a 4. Por más agua que agregues, se acerca a 7 sin llegar ni pasarlo. La correcta está marcada.' } };
+    a:'Sigue siendo HCl y sigue siendo fuerte (todo roto), pero ahora hay 100 veces menos en cada mililitro. El pH mide cuántos H⁺ hay por litro, no qué tan fuerte es el ácido.',
+    b:'Al diluir hay menos H⁺ por volumen, así que el pH sube, no baja: más H⁺, menor pH.',
+    d:'Con 100 veces más agua el pH sube 2 unidades, de 2 a 4. Por más agua que agregues, se acerca a 7 sin llegar ni pasarlo.' } };
 const P2 = { id:'acidos-bases-paso5', ok:'b', anima:animar5, opts:[
   ['a','4,7: sube 2, como el ácido fuerte','debil-sube-como-fuerte','hipotesis'],
   ['b','Cerca de 3,7'],
   ['c','2,7: no cambia, porque Ka es la misma','debil-pH-no-cambia-por-Ka','hipotesis'],
   ['d','Menos de 2,7: al diluir se ioniza más, así que hay más H⁺','debil-diluir-mas-H','hipotesis']],
   fb:{ b:'¡Bien! Al diluir, el ácido débil se ioniza más (de 1 % a casi 10 %) y repone parte de los H⁺: el pH sube cerca de 1, no 2.',
-    a:'Elegiste la A. Así sería con un ácido fuerte. El débil, al diluirse, rompe más moléculas y suelta H⁺ nuevos: el pH sube menos, cerca de 1. La correcta está marcada.',
-    c:'Elegiste la C. Ka no cambia, pero la concentración sí: hay 100 veces menos ácido por litro, y eso deja menos H⁺. El pH sube. La correcta está marcada.',
-    d:'Elegiste la D. Se ionizan más moléculas, pero hay 100 veces menos ácido por litro: [H⁺] baja de 2 × 10⁻³ a 2 × 10⁻⁴ M y el pH sube. La correcta está marcada.' } };
+    a:'Así sería con un ácido fuerte. El débil, al diluirse, rompe más moléculas y suelta H⁺ nuevos: el pH sube menos, cerca de 1.',
+    c:'Ka no cambia, pero la concentración sí: hay 100 veces menos ácido por litro, y eso deja menos H⁺. El pH sube.',
+    d:'Se ionizan más moléculas, pero hay 100 veces menos ácido por litro: [H⁺] baja de 2 × 10⁻³ a 2 × 10⁻⁴ M y el pH sube.' } };
 
 const opciones = P => `<div class="opts">${P.opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="fb"></p>`;
 const steps = [
@@ -797,7 +797,7 @@ const steps = [
      <div class="eq">Al diluir, ${Nn('los moles')} no cambian; la ${Cc('concentración')} baja</div>
      <div class="eq">Por más agua que se agregue, un ácido no pasa de ${H('pH 7')}</div></div>
    <p>Antes de usar una fórmula, pregúntate dos cosas: ¿cuántas moléculas de ácido hay por volumen (${Cc('concentración')})? ¿Qué parte se rompe (${Ka('fuerza')})? El ${H('pH')} depende de las dos.</p>
-   <p class="fuente">Según Furió, Calatayud y Bárcenas (2000), los alumnos mezclan tres niveles: lo que se ve, las partículas y la fórmula. Por eso esta escena dibuja siempre las partículas que hay en el agua.</p>` },
+   <p class="fuente"> Por eso esta escena dibuja siempre las partículas que hay en el agua.</p>` },
  { k:'Paso 8', t:'Ahora explora tú', explora:true,
    body:() => `<p>Elige un ácido y diluye. La lupa sigue siempre a las mismas moléculas de ácido (enteras o rotas): 40, o 10 cuando queda muy diluido. Cuanto más diluido, más ${Vv('volumen')} tiene que mirar para encontrarlas.</p>
    <div class="control"><p class="hint">Concentración inicial (${Cc('C')}):</p>
@@ -1086,7 +1086,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira la escena para ver por qué.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `; mira la escena para ver por qué.`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = (x.ctrl ? x.ctrl() : '') + x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     $('res2').querySelectorAll('[data-sust]').forEach(b => b.onclick = () => { U.s = +b.dataset.sust; $('res2').querySelectorAll('[data-sust]').forEach(y => y.setAttribute('aria-pressed', String(y === b))); pintarSust(); });

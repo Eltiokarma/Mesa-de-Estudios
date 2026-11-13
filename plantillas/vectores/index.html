@@ -147,7 +147,7 @@ table.barrido th{font-family:var(--font); text-align:left}
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -515,6 +515,21 @@ function crearEscena(cv, idDesc, idLect, idLey){
       ctx.font = `700 12px ${c.font}`; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom'; ctx.fillText('x', W - 6, O.y - 3);
       ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText('y', O.x + 5, 4);
       ctx.restore();
+    }
+    // Unitarios de los ejes, î y ĵ (pedido de Gerson, 13 nov): con ejes, en el origen y de largo 1 en la escala;
+    // sin ejes, como referencia en la esquina de arriba a la derecha, para leer a = 3î y b = 4ĵ.
+    {
+      const k = E.ver.ejes ? s.k : Math.min(s.k, 30);
+      const B0 = E.ver.ejes ? O : { x:W - 30 - k, y:22 + k };
+      if (!E.ver.ejes){
+        ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1; ctx.globalAlpha = .7;
+        linea(ctx, { x:B0.x - 6, y:B0.y }, { x:B0.x + k + 4, y:B0.y }); linea(ctx, { x:B0.x, y:B0.y + 6 }, { x:B0.x, y:B0.y - k - 4 });
+        ctx.restore();
+      }
+      flecha(B0, { x:B0.x + k, y:B0.y }, c.ink, 2);
+      flecha(B0, { x:B0.x, y:B0.y - k }, c.ink, 2);
+      rotulo(ctx, c, B0.x + k + 8, B0.y + 1, 'î', c.ink, 'left', 700, 16);
+      rotulo(ctx, c, B0.x - 9, B0.y - k + 2, 'ĵ', c.ink, 'center', 700, 16);
     }
     // círculo de las puntas posibles de R (b gira con su módulo alrededor de la punta de a)
     if (E.ver.circulo){
@@ -912,54 +927,54 @@ const P1 = { id:'vectores-paso2', ok:'c', opts:[
   ['c', `R = ${fmt(R1.R, 0)}`],
   ['d', `R = √7 ≈ ${fmt(R1.errores.sinCuadrados, 1)}`, 'VE-raiz-sin-cuadrados', 'hipotesis']],
   fb:{ c:'¡Bien! Cola de b en la punta de a: queda un triángulo rectángulo de catetos 3 y 4, y R es la hipotenusa.',
-    a:'Elegiste la A. 3 + 4 = 7 sería cierto si a y b apuntaran hacia el mismo lado. Aquí forman 90°: R es la hipotenusa de un triángulo de catetos 3 y 4. La correcta está marcada.',
-    b:'Elegiste la B. Restar los módulos solo vale si apuntan en sentidos opuestos. Con 90°, R es la hipotenusa de un triángulo de catetos 3 y 4. La correcta está marcada.',
-    d:'Elegiste la D. Pitágoras suma los cuadrados: 3² + 4² = 25, no 3 + 4. R = √25. La correcta está marcada.' } };
+    a:'3 + 4 = 7 sería cierto si a y b apuntaran hacia el mismo lado. Aquí forman 90°: R es la hipotenusa de un triángulo de catetos 3 y 4.',
+    b:'Restar los módulos solo vale si apuntan en sentidos opuestos. Con 90°, R es la hipotenusa de un triángulo de catetos 3 y 4.',
+    d:'Pitágoras suma los cuadrados: 3² + 4² = 25, no 3 + 4. R = √25.' } };
 const P2 = { id:'vectores-paso4', ok:'c', opts:[
   ['a', `R = ${fmt(R2.errores.sumaModulos, 0)}`, 'VE-suma-modulos', 'parcial'],
   ['b', `R = √19 ≈ ${fmt(R2.errores.cosenoMenos, 1)}`, 'VE-coseno-con-menos', 'hipotesis'],
   ['c', `R = ${fmt(R2.R, 0)}`],
   ['d', `R = √34 ≈ ${fmt(R2.errores.pitagoras, 1)}`, 'VE-pitagoras-siempre', 'hipotesis']],
   fb:{ c:'¡Bien! R² = 25 + 9 + 2 · 5 · 3 · cos 60° = 34 + 15 = 49, así que R = 7.',
-    a:'Elegiste la A. 5 + 3 = 8 es el máximo, cuando a y b apuntan igual (θ = 0°). Con 60° la resultante es menor. La correcta está marcada.',
-    b:'Elegiste la B. Ese es el signo de la ley de cosenos del triángulo, con el ángulo de adentro. Aquí θ es el ángulo entre las flechas que salen del mismo punto, y con él el término va con más: R² = 25 + 9 + 15. La correcta está marcada.',
-    d:'Elegiste la D. √(25 + 9) vale solo si las flechas forman 90°. Con 60° falta el término 2ab·cos θ = 15. La correcta está marcada.' } };
+    a:'5 + 3 = 8 es el máximo, cuando a y b apuntan igual (θ = 0°). Con 60° la resultante es menor.',
+    b:'Ese es el signo de la ley de cosenos del triángulo, con el ángulo de adentro. Aquí θ es el ángulo entre las flechas que salen del mismo punto, y con él el término va con más: R² = 25 + 9 + 15.',
+    d:'√(25 + 9) vale solo si las flechas forman 90°. Con 60° falta el término 2ab·cos θ = 15.' } };
 const P3 = { id:'vectores-paso5', ok:'a', opts:[
   ['a', `Entre ${fmt(RG.minimo, 0)} y ${fmt(RG.maximo, 0)}`],
   ['b', `Entre ${fmt(RG.errores.minimoCero, 0)} y ${fmt(RG.maximo, 0)}`, 'VE-minimo-cero', 'hipotesis'],
   ['c', `Entre ${fmt(RG.errores.entreModulos[0], 0)} y ${fmt(RG.errores.entreModulos[1], 0)}`, 'VE-entre-modulos', 'hipotesis'],
   ['d', `Entre ${fmt(RG.minimo, 0)} y √34 ≈ ${fmt(RG.errores.maximoPerpendicular, 1)}`, 'VE-maximo-perpendicular', 'hipotesis']],
   fb:{ a:'¡Bien! La mayor es 5 + 3 = 8 (θ = 0°) y la menor, 5 − 3 = 2 (θ = 180°).',
-    b:'Elegiste la B. R vale 0 solo si los dos vectores miden lo mismo y apuntan en sentidos opuestos. Con 5 y 3, lo menos es 5 − 3 = 2. La correcta está marcada.',
-    c:'Elegiste la C. R puede ser más chica que los dos vectores (con θ = 180° vale 2) y más grande (con θ = 0° vale 8). La correcta está marcada.',
-    d:'Elegiste la D. √34 es R con 90°, pero no es la mayor: cerrando el ángulo, R crece hasta 5 + 3 = 8. La correcta está marcada.' } };
+    b:'R vale 0 solo si los dos vectores miden lo mismo y apuntan en sentidos opuestos. Con 5 y 3, lo menos es 5 − 3 = 2.',
+    c:'R puede ser más chica que los dos vectores (con θ = 180° vale 2) y más grande (con θ = 0° vale 8).',
+    d:'√34 es R con 90°, pero no es la mayor: cerrando el ángulo, R crece hasta 5 + 3 = 8.' } };
 const P4 = { id:'vectores-paso6', ok:'a', opts:[
   ['a', `a<sub>x</sub> = ${fmt(C4.x, 0)}`],
   ['b', `a<sub>x</sub> = ${fmt(C4.errores.cambiados.x, 0)}`, 'VE-sen-cos-cambiados', 'hipotesis'],
   ['c', `a<sub>x</sub> = ${fmt(C4.errores.vectorEntero, 0)}`, 'VE-sombra-igual-al-vector', 'hipotesis'],
   ['d', `a<sub>x</sub> = ${fmt(C4.errores.sumanModulo.x, 0)}`, 'VE-componentes-suman-modulo', 'hipotesis']],
   fb:{ a:'¡Bien! La sombra sobre el eje x es el cateto junto al ángulo: 10 · cos 37° = 8.',
-    b:'Elegiste la B. 6 es la sombra sobre el eje y, el cateto opuesto a los 37°: 10 · sen 37°. La de x es el cateto junto al ángulo, 10 · cos 37° = 8. La correcta está marcada.',
-    c:'Elegiste la C. La sombra de una flecha inclinada siempre es más corta que la flecha. Es el cateto de un triángulo cuya hipotenusa es a. La correcta está marcada.',
-    d:'Elegiste la D. Las sombras no suman el módulo: lo que se cumple es a<sub>x</sub>² + a<sub>y</sub>² = a². La correcta está marcada.' } };
+    b:'6 es la sombra sobre el eje y, el cateto opuesto a los 37°: 10 · sen 37°. La de x es el cateto junto al ángulo, 10 · cos 37° = 8.',
+    c:'La sombra de una flecha inclinada siempre es más corta que la flecha. Es el cateto de un triángulo cuya hipotenusa es a.',
+    d:'Las sombras no suman el módulo: lo que se cumple es a<sub>x</sub>² + a<sub>y</sub>² = a².' } };
 const P5 = { id:'vectores-paso7', ok:'b', opts:[
   ['a', `[Q] = ${K5.errores.igualAlMiembro}`, 'AD-constante-igual-al-miembro', 'hipotesis'],
   ['b', `[Q] = ${K5.texto}`],
   ['c', `[Q] = ${K5.errores.exponenteUno}`, 'AD-sin-exponente', 'hipotesis'],
   ['d', `[Q] = ${K5.errores.multiplica}`, 'AD-multiplica', 'hipotesis']],
   fb:{ b:'¡Bien! Q · t² tiene que pesar L. Como t² pesa T², Q pesa L / T² = LT⁻².',
-    a:'Elegiste la A. El que pesa L es el término entero, Q · t², no Q solo. A Q le toca lo que le falta a t² para llegar a L. La correcta está marcada.',
-    c:'Elegiste la C. Se dividió entre t y no entre t². El término es Q · t²: Q pesa L / T². La correcta está marcada.',
-    d:'Elegiste la D. Se multiplicó en vez de dividir: con Q = LT², el término Q · t² pesaría LT⁴, no L. La correcta está marcada.' } };
+    a:'El que pesa L es el término entero, Q · t², no Q solo. A Q le toca lo que le falta a t² para llegar a L.',
+    c:'Se dividió entre t y no entre t². El término es Q · t²: Q pesa L / T².',
+    d:'Se multiplicó en vez de dividir: con Q = LT², el término Q · t² pesaría LT⁴, no L.' } };
 const P6 = { id:'vectores-paso8', ok:'a', opts:[
   ['a', `γ = ${X6.textos['γ']}`],
   ['b', `γ = ${fmt(X6.errores.todosUno['γ'], 0)}`, 'AD-todos-uno', 'hipotesis'],
   ['c', 'γ = −1', 'C2-depende-de-la-masa', 'parcial'],
   ['d', `γ = ${X6.textos['α']}`, 'AD-copia-exponente', 'hipotesis']],
   fb:{ a:'¡Bien! Ningún otro factor trae M, y el tiempo no pesa M: el exponente de m tiene que ser 0. La masa no influye.',
-    b:'Elegiste la B. Si γ = 1, a la derecha quedaría un M sin nada que lo anule, y el tiempo no pesa M. La correcta está marcada.',
-    c:'Elegiste la C. Si pensaste que lo pesado cae antes (doble masa, mitad de tiempo), eso da γ = −1. Pero quedaría un M sin pareja: la balanza no cuadra. La correcta está marcada.',
-    d:'Elegiste la D. 1/2 es el exponente de h. Cada exponente sale de su propia letra: M solo lo trae m. La correcta está marcada.' } };
+    b:'Si γ = 1, a la derecha quedaría un M sin nada que lo anule, y el tiempo no pesa M.',
+    c:'Si pensaste que lo pesado cae antes (doble masa, mitad de tiempo), eso da γ = −1. Pero quedaría un M sin pareja: la balanza no cuadra.',
+    d:'1/2 es el exponente de h. Cada exponente sale de su propia letra: M solo lo trae m.' } };
 
 function vivoLey(){
   const d = $('vivo'); if (!d) return;
@@ -973,11 +988,11 @@ const steps = [
    <p>Un vector es una flecha. Su <b>módulo</b> es el largo, su <b>dirección</b> es la recta sobre la que está y su <b>sentido</b> es hacia dónde apunta. Aquí hay dos, ${a_('a')} y ${b_('b')}, que salen del mismo punto O. El ángulo ${th_('θ')} es el que forman entre ellas.</p>
    <p>Una magnitud que se describe con un vector (fuerza, velocidad, desplazamiento) no se suma como un número. En los pasos que siguen vas a ver cómo se suma.</p>
    <p class="hint">Con teclado: toca el dibujo y usa las flechas; con Mayúsculas mueves b.</p>` },
- { k:'Paso 2', t:'Predice: 3 más 4', gate:P1,
+ { k:'Paso 2', t:'Predice: la resultante a 90°', gate:P1,
    prep:() => E.config({ a:{ x:3, y:0 }, b:{ x:0, y:4 }, caja:{ x0:-1.2, x1:5.5, y0:-1.2, y1:5 }, ver:{ th:true, cola:!!S.pred[P1.id], R:!!S.pred[P1.id] }, lado:{ a:-1, R:1 },
      lect: S.pred[P1.id] ? ['a','b','th','R'] : ['a','b','th'] }),
    anima:fin => { E.ver.cola = true; E.ver.th = false; E.leyenda(); E.crecer('cola', 900, () => { E.ver.R = true; E.lect = ['a','b','th','R']; E.leyenda(); E.crecer('R', 700, () => { E.ver.th = true; E.dibujar(); E.avisar(); fin(); }); }); },
-   body:() => `<p>El vector ${a_('a')} mide 3 y apunta a la derecha; ${b_('b')} mide 4 y apunta hacia arriba: forman ${th_('θ = 90°')}. La <b>resultante</b> ${R_('R')} = ${a_('a')} + ${b_('b')} es lo que hacen los dos juntos. ¿Cuánto mide ${R_('R')}?</p>${opcionesHTML(P1.opts, 'fb')}
+   body:() => `<p>${a_('a')} = ${a_('3')}î (3 hacia la derecha, como el eje x) y ${b_('b')} = ${b_('4')}ĵ (4 hacia arriba, como el eje y): forman ${th_('θ = 90°')}. La <b>resultante</b> ${R_('R')} = ${a_('a')} + ${b_('b')} es lo que hacen los dos juntos. ¿Cuánto mide ${R_('R')}?</p>${opcionesHTML(P1.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <p><b>Método del polígono:</b> se pone la cola de ${b_('b')} en la punta de ${a_('a')}. ${R_('R')} va desde la cola de la primera hasta la punta de la última.</p>
    <div class="eqs"><div class="eq">${R_('R')}² = ${a_('3')}² + ${b_('4')}² = 9 + 16 = 25 → ${R_('R')} = ${R_(fmt(R1.R, 0))}</div></div>
@@ -1295,7 +1310,7 @@ function ir(k){
   const marcar = (bs, P, p, idFb) => {
     bs.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $(idFb);
-    fb.textContent = p === P.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la opción ${p.toUpperCase()}. ${P.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === P.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${P.fb[p]}`;
     fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
   };
   // la segunda pregunta
@@ -1574,7 +1589,7 @@ function crearPasos(n, pasos){
     const r = S.pred[P.id]; if (!r) return;
     document.querySelectorAll(`#stepBody${n} .opt[data-p="${P.id}"]`).forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === r) b.classList.add('wrong'); });
     const fb = $('fb-' + P.id);
-    fb.innerHTML = mat(r === P.ok ? '¡Bien! ' + P.fb[P.ok] : `Elegiste la ${r.toUpperCase()}. ${P.fb[r]} La correcta está marcada.`);
+    fb.innerHTML = mat(r === P.ok ? '¡Bien! ' + P.fb[P.ok] : `${P.fb[r]}`);
     fb.className = 'fb ' + (r === P.ok ? 'ok' : 'mal');
     $('tras-' + P.id).hidden = false;
   }

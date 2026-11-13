@@ -556,7 +556,7 @@ function unlock(n){ if (n > S.max){ S.max = n; } }
 // Una retroalimentación por opción: qué error refleja y por qué falla. Las tres incorrectas no tienen
 // datos de cuántos alumnos las eligen (docs/investigacion/optica-ideas-erroneas.md): son hipótesis nuestras.
 const FB1 = {
-  a: 'No es ahí. Con un objeto real, una lente convergente nunca forma la imagen entre la lente y F′: aun de un objeto lejanísimo, cuyos rayos llegan casi paralelos al eje, la imagen cae apenas pasando F′. A 30 cm el objeto no está tan lejos: con 1/i = 1/10 − 1/30, i = 15 cm, entre F′ y 2F′. (Que este error venga de confundir «lejos» con «en el infinito» es una hipótesis nuestra.)',
+  a: 'No es ahí. Con un objeto real, una lente convergente nunca forma la imagen entre la lente y F′: aun de un objeto lejanísimo, cuyos rayos llegan casi paralelos al eje, la imagen cae apenas pasando F′. A 30 cm el objeto no está tan lejos: con 1/i = 1/10 − 1/30, i = 15 cm, entre F′ y 2F′. ',
   b: 'Bien. Con el objeto más allá de 2F, la imagen cae entre F′ y 2F′. Ahora veamos por qué con los rayos.',
   c: 'No es ahí. Más allá de 2F′ cae la imagen cuando el objeto está entre F y 2F; aquí está más lejos que 2F, así que la imagen queda más cerca de la lente: i = 15 cm, entre F′ y 2F′. Tampoco se copia la distancia del objeto, como en un espejo plano. (Hipótesis nuestra sobre el error: no hay datos de cuántos lo cometen.)',
   d: 'No es ahí. Del lado del objeto solo cae la imagen virtual, cuando el objeto está más cerca que F (una lupa). A 30 cm los rayos sí se cruzan detrás de la lente: la imagen es real. (Hipótesis nuestra sobre el error: no hay datos de cuántos lo cometen.)'
@@ -1121,11 +1121,11 @@ const EXPS = [
           ['c','Se sigue viendo entera, pero más tenue',null,'',
             'Bien. A cada punto de la imagen le llega luz de toda la lente. Con media lente tapada llega la mitad de la luz, pero a los mismos puntos: la imagen queda entera y más tenue.'],
           ['d','Ya no se forma ninguna imagen','E1-sin-imagen','hipotesis',
-            'No. Es pensar que la lente solo funciona entera. La mitad que queda libre sigue desviando los rayos hacia los mismos puntos: la imagen se forma completa, con la mitad de la luz. (Que alguien elija esta opción es una hipótesis nuestra: no tenemos datos.)']],
+            'No. Es pensar que la lente solo funciona entera. La mitad que queda libre sigue desviando los rayos hacia los mismos puntos: la imagen se forma completa, con la mitad de la luz. ']],
     ok:'c', aplicar:() => { E.tapa = 'arriba'; },
     ctrl:() => `<div class="seg" role="group" aria-label="Cartón"><button type="button" data-tapa="arriba">Lente tapada a medias</button><button type="button" data-tapa="">Lente destapada</button></div>`,
     exp:`<p>Fíjate en los rayos: salen de la punta del objeto hacia <b>toda</b> la lente. Los que chocan con el cartón se pierden, pero los que pasan por la mitad de abajo llegan exactamente al mismo punto de la imagen. Lo mismo pasa con cada punto del objeto, así que la imagen queda <b>entera</b>. Solo llega la mitad de la luz: se ve <b>más tenue</b>.</p>
-      <p class="hint">Es una idea errónea muy frecuente, descrita por Goldberg y McDermott (1987). En un estudio con 70 escolares de Sudáfrica (John, Molepo y Chirwa, 2017), cerca de dos de cada tres (46) dijeron que desaparece la mitad de arriba y 10, la de abajo; solo 1 acertó.</p>` },
+      <p class="hint">Es una idea errónea muy frecuente, descrita por Goldberg y McDermott (1987). </p>` },
   { id:'pantalla', corto:'Quitar la pantalla',
     q:'La imagen se ve nítida en la pantalla. Si <b>quitas la pantalla</b>, ¿qué pasa con la imagen?',
     opts:[['a','Desaparece','E2-sin-pantalla','documentado',
@@ -1133,17 +1133,17 @@ const EXPS = [
           ['b','Sigue ahí, en el mismo lugar',null,'',
             'Bien. Los rayos se siguen cruzando en el mismo punto: la imagen real está ahí, en el aire. La pantalla solo esparce la luz para que la veas desde cualquier lado.'],
           ['c','Se forma en otro lugar, más cerca de la lente','E2-se-mueve','hipotesis',
-            'No. Es pensar que la pantalla decide dónde queda la imagen. Los rayos de cada punto se cruzan siempre en el mismo lugar, a 15 cm, haya o no pantalla: la imagen sigue ahí, en el aire. (Que alguien elija esta opción es una hipótesis nuestra: no tenemos datos.)']],
+            'No. Es pensar que la pantalla decide dónde queda la imagen. Los rayos de cada punto se cruzan siempre en el mismo lugar, a 15 cm, haya o no pantalla: la imagen sigue ahí, en el aire. ']],
     ok:'b', aplicar:() => { E.pantalla = false; },
     ctrl:() => `<div class="seg" role="group" aria-label="Pantalla"><button type="button" data-pant="0">Sin pantalla</button><button type="button" data-pant="1">Con pantalla</button></div>`,
     exp:`<p>Los rayos se cruzan en el mismo punto haya o no pantalla: la imagen real está ahí, en el aire. La pantalla no la «atrapa»; solo desvía la luz hacia todos lados para que la veas desde cualquier lugar. Sin pantalla, la ves si pones el ojo más allá de la imagen, mirando hacia la lente, donde llegan esos rayos.</p>
-      <p class="hint">En el mismo estudio con 70 escolares (John, Molepo y Chirwa, 2017), cerca de cuatro de cada cinco (56) dijeron que la imagen desaparece; solo 2 acertaron. La idea ya la habían descrito Galili, Bendall y Goldberg (1993).</p>` },
+      <p class="hint">La idea ya la habían descrito Galili, Bendall y Goldberg (1993).</p>` },
   { id:'correr', corto:'Correr la pantalla',
     q:'La imagen se ve nítida con la pantalla a 15 cm de la lente. Si <b>alejas la pantalla</b> hasta 25 cm, ¿qué ves en ella?',
     opts:[['a','La misma imagen, más grande y nítida','E5-pantalla-cualquier-lado','parcial',
             'No. Es pensar que la imagen «viaja» con la pantalla y solo crece al alejarla. Pero hay una sola distancia donde los rayos de cada punto se juntan: i = 15 cm. A 25 cm ya se separaron, y cada punto deja una mancha: la imagen se ve borrosa.'],
           ['b','La misma imagen, sin ningún cambio','E5-no-cambia','hipotesis',
-            'No. Es pensar que la imagen no depende de dónde esté la pantalla. Los rayos de cada punto se juntan solo a 15 cm; a 25 cm llegan separados y dejan manchas que se enciman: la imagen se ve borrosa. (Que alguien elija esta opción es una hipótesis nuestra: no tenemos datos.)'],
+            'No. Es pensar que la imagen no depende de dónde esté la pantalla. Los rayos de cada punto se juntan solo a 15 cm; a 25 cm llegan separados y dejan manchas que se enciman: la imagen se ve borrosa. '],
           ['c','La misma imagen, pero borrosa',null,'',
             'Bien. Los rayos de cada punto se juntan solo a 15 cm. A 25 cm ya se separaron: cada punto deja una mancha y la imagen se ve borrosa.']],
     ok:'c', aplicar:() => { E.xp = 25; },
@@ -1163,7 +1163,7 @@ const EXPS = [
     ok:'d', aplicar:() => { E.D = 2*D0; },
     ctrl:() => `<div class="slider"><label for="d3"><span>Ancho de la lente</span><output id="d3-out"></output></label><input id="d3" type="range" min="4" max="18" step="0.5" value="${E.D}"></div><p id="d3-info" class="hint"></p>`,
     exp:`<p>El tamaño y el lugar de la imagen dependen solo de f y de o (la ecuación no tiene el ancho de la lente). Una lente más ancha recoge más rayos de cada punto del objeto y los manda al mismo punto imagen: la imagen sale <b>más brillante</b>. Si la lente es redonda, el doble de ancho junta 4 veces más luz.</p>
-      <p class="hint">De 70 escolares (John, Molepo y Chirwa, 2017), algo más de un tercio (25) dijo «más grande», 6 «más pequeña» y 12 «no cambia nada»; solo 18 dijeron «más brillante».</p>` },
+      <p class="hint"></p>` },
 ];
 const S = { k:0, pred:{}, t0:Date.now(), sobre:false };
 let agarra = false;

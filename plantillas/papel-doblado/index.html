@@ -106,7 +106,7 @@ canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:999px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -528,66 +528,66 @@ const P1 = { id:'pd-paso1-desdoblar', ok:'c', figs:true,
         ['c', svgHoja(H8, R1.celdas.flatMap(c => c.huecos)), '', '', '4 triángulos, uno por cuarto, con el ángulo recto hacia la esquina de la hoja que tiene cerca'],
         ['d', svgHoja(H8, R1.dibujoErrores.soloDoblez[1]), 'RME153', H, '2 triángulos, en los dos cuartos de la izquierda']],
   fb:{ c:`¡Bien! El paquete tiene ${R1.capas} capas y la perforación pasa por todas: salen ${R1.agujeros} triángulos. Cada doblez es un espejo, así que cada triángulo es el reflejo del de al lado: el ángulo recto mira siempre hacia la esquina de la hoja.`,
-       a:'Elegiste la opción A. Así sería si solo se perforara una capa. Pero el paquete tiene 4 capas encimadas y la perforación las atraviesa todas: salen 4 triángulos. La correcta está marcada.',
-       b:'Elegiste la opción B. El número está bien, pero las copias no se copian corridas: cada doblez es un espejo y voltea el triángulo. Al otro lado de un doblez, el ángulo recto queda al otro lado. La correcta está marcada.',
-       d:'Elegiste la opción D. Eso sale si se deshace solo el último doblez. Falta abrir el primero, que vuelve a reflejar los dos triángulos al lado derecho. La correcta está marcada.' } };
+       a:'Así sería si solo se perforara una capa. Pero el paquete tiene 4 capas encimadas y la perforación las atraviesa todas: salen 4 triángulos.',
+       b:'El número está bien, pero las copias no se copian corridas: cada doblez es un espejo y voltea el triángulo. Al otro lado de un doblez, el ángulo recto queda al otro lado.',
+       d:'Eso sale si se deshace solo el último doblez. Falta abrir el primero, que vuelve a reflejar los dos triángulos al lado derecho.' } };
 const P2 = { id:'pd-paso2-sobre-doblez', ok:'b',
   opts:[['a', `${R2.copias[0]} medios círculos, separados`, 'RME158', H], ['b', `${R2.agujeros} círculos enteros`],
         ['c', `${R2.errores.enteroPorCapa.agujeros} círculos enteros`, 'RME159', H], ['d', `${R2.errores.soloDoblez[0].agujeros} círculo entero`, 'RME153', H]],
   fb:{ b:`¡Bien! El medio círculo está sobre el doblez vertical: al abrirlo, las dos capas de cada lado forman un círculo entero. El doblez horizontal lo refleja arriba: ${R2.agujeros} círculos enteros.`,
-       a:'Elegiste la opción A. Hay 4 capas con un medio círculo cada una, pero sobre el doblez no hay borde: las dos mitades de cada lado son el mismo papel y se juntan en un círculo. Quedan 2 círculos, no 4 mitades. La correcta está marcada.',
-       c:'Elegiste la opción C. Cada capa no da un círculo entero: da medio. Dos medios, uno a cada lado del doblez, forman un círculo; con 4 capas salen 2 círculos. La correcta está marcada.',
-       d:'Elegiste la opción D. Al abrir el doblez vertical sale un círculo, sí, pero falta abrir el horizontal, que lo copia arriba. La correcta está marcada.' } };
+       a:'Hay 4 capas con un medio círculo cada una, pero sobre el doblez no hay borde: las dos mitades de cada lado son el mismo papel y se juntan en un círculo. Quedan 2 círculos, no 4 mitades.',
+       c:'Cada capa no da un círculo entero: da medio. Dos medios, uno a cada lado del doblez, forman un círculo; con 4 capas salen 2 círculos.',
+       d:'Al abrir el doblez vertical sale un círculo, sí, pero falta abrir el horizontal, que lo copia arriba.' } };
 const P3 = { id:'pd-paso3-perimetro-borde', ok:'d',
   opts:[['a', ex(R3.errores.sinRestarBorde.exacto), 'RME43', H], ['b', ex(R3.errores.unaCapa.perimetro.exacto), 'RME40', H],
         ['c', ex(R3.errores.soloDoblez[1].perimetro.exacto), 'RME153', H], ['d', ex(R3.perimetro.exacto)]],
   fb:{ d:`¡Bien! Salen 4 muescas de medio círculo en los bordes de la hoja. Cada una pone un arco de π cm y quita 2 cm de borde recto: 32 + 4(π − 2) = ${R3.perimetro.exacto} cm.`,
-       a:'Elegiste la opción A. Sumaste los 4 arcos, pero cada muesca también se lleva 2 cm del borde recto de la hoja. Hay que restarlos: 32 − 8 + 4π. La correcta está marcada.',
-       b:'Elegiste la opción B. Así sería con una sola capa. El paquete tiene 4 y el corte las atraviesa todas: al abrir hay 4 muescas. La correcta está marcada.',
-       c:'Elegiste la opción C. Eso sale abriendo un solo doblez (2 muescas). Abiertos los dos, hay 4. La correcta está marcada.' } };
+       a:'Sumaste los 4 arcos, pero cada muesca también se lleva 2 cm del borde recto de la hoja. Hay que restarlos: 32 − 8 + 4π.',
+       b:'Así sería con una sola capa. El paquete tiene 4 y el corte las atraviesa todas: al abrir hay 4 muescas.',
+       c:'Eso sale abriendo un solo doblez (2 muescas). Abiertos los dos, hay 4.' } };
 const P4 = { id:'pd-paso4-rombo', ok:'a',
   opts:[['a', ex(R4.perimetro.exacto)], ['b', ex(R4.errores.unaCapa.perimetro.exacto), 'RME40', H],
         ['c', ex(R4.errores.tramosDelDoblez.exacto), 'RME158', H], ['d', ex(R4.errores.soloDoblez[0].perimetro.exacto), 'RME153', H]],
   fb:{ a:`¡Bien! La esquina cortada es el centro de la hoja, donde se juntan los dos dobleces: las 4 capas se unen en un solo rombo de lado √(2² + 1²) = √5. Su borde mide 4√5 y la hoja queda con ${R4.perimetro.exacto} cm.`,
-       b:'Elegiste la opción B. Así sería con una sola capa: el agujero sería el triángulo que se ve, con su lado de √5 y sus catetos de 2 y 1 como borde. Pero hay 4 capas y los catetos están sobre los dobleces: al abrir, los cuatro lados de √5 forman el rombo y los catetos desaparecen. La correcta está marcada.',
-       c:'Elegiste la opción C. Contaste cada pedazo como un triángulo con sus catetos. Pero los catetos están sobre los dobleces: ahí el papel se quitó de los dos lados y no queda borde. Solo cuentan los 4 lados de √5. La correcta está marcada.',
-       d:'Elegiste la opción D. Contaste solo dos de los cuatro lados de √5: los de las capas que se abren con un doblez, y los tramos del otro doblez quedan como borde. Abiertos los dos dobleces, el rombo tiene los cuatro y esos tramos desaparecen. La correcta está marcada.' } };
+       b:'Así sería con una sola capa: el agujero sería el triángulo que se ve, con su lado de √5 y sus catetos de 2 y 1 como borde. Pero hay 4 capas y los catetos están sobre los dobleces: al abrir, los cuatro lados de √5 forman el rombo y los catetos desaparecen.',
+       c:'Contaste cada pedazo como un triángulo con sus catetos. Pero los catetos están sobre los dobleces: ahí el papel se quitó de los dos lados y no queda borde. Solo cuentan los 4 lados de √5.',
+       d:'Contaste solo dos de los cuatro lados de √5: los de las capas que se abren con un doblez, y los tramos del otro doblez quedan como borde. Abiertos los dos dobleces, el rombo tiene los cuatro y esos tramos desaparecen.' } };
 const P5 = { id:'pd-paso5-piezas', ok:'c',
   opts:[['a', `${R5.errores.sinUniones} piezas`, 'RME41', H], ['b', `${R5.errores.cortesComoPiezas} piezas`, 'RME157', H],
         ['c', `${R5.piezas} piezas`], ['d', `${R5.errores.unaCapa.piezas} piezas`, 'RME40', H]],
   fb:{ c:`¡Bien! Al abrir hay ${R5.errores.cortesComoPiezas} tajos, y tres tajos parten la tira en ${R5.piezas}. Las dos del medio tienen un doblez adentro: no se separaron y son cuadrados de 2 × 2.`,
-       a:'Elegiste la opción A. Así sería si cada capa fuera una hoja suelta (3 capas × 2). Pero las capas están unidas por los dobleces: las mitades que tocan un doblez siguen pegadas. La correcta está marcada.',
-       b:'Elegiste la opción B. Hay 3 tajos, pero las piezas son una más que los tajos en una tira: 3 tajos dan 4 piezas. La correcta está marcada.',
-       d:'Elegiste la opción D. El paquete se ve en 2 mitades, pero tiene 3 capas: al abrir, el corte aparece 3 veces. La correcta está marcada.' } };
+       a:'Así sería si cada capa fuera una hoja suelta (3 capas × 2). Pero las capas están unidas por los dobleces: las mitades que tocan un doblez siguen pegadas.',
+       b:'Hay 3 tajos, pero las piezas son una más que los tajos en una tira: 3 tajos dan 4 piezas.',
+       d:'El paquete se ve en 2 mitades, pero tiene 3 capas: al abrir, el corte aparece 3 veces.' } };
 const P6 = { id:'pd-paso6-doblez', ok:'d',
   opts:[['a', `${fmt(E6.errores.diagonal)} cm`, 'RME150', H], ['b', `${fmt(E6.errores.ladoCorto)} cm`, 'RME151', H],
         ['c', `${fmt(E6.errores.mitadDiagonal)} cm`, 'RME150', H], ['d', `${fmt(E6.doblez)} cm`]],
   fb:{ d:`¡Bien! El doblez es la mediatriz de AC: E queda a la misma distancia de A y de C. Con x = AE, x² = (8 − x)² + 6², x = ${fmt(E6.x)}, y el doblez mide ${fmt(E6.doblez)} cm.`,
-       a:'Elegiste la opción A. 10 cm es la diagonal AC, la que une los dos vértices que se juntan. El doblez la corta en su punto medio y es perpendicular a ella: es más corto. La correcta está marcada.',
-       b:'Elegiste la opción B. El doblez no es paralelo al lado corto: tiene que ser perpendicular a la diagonal AC, así que va inclinado y mide más que 6. La correcta está marcada.',
-       c:'Elegiste la opción C. 5 cm es la mitad de la diagonal. El doblez pasa por el centro, pero sus extremos E y F no están a 2,5 cm de él. La correcta está marcada.' } };
+       a:'10 cm es la diagonal AC, la que une los dos vértices que se juntan. El doblez la corta en su punto medio y es perpendicular a ella: es más corto.',
+       b:'El doblez no es paralelo al lado corto: tiene que ser perpendicular a la diagonal AC, así que va inclinado y mide más que 6.',
+       c:'5 cm es la mitad de la diagonal. El doblez pasa por el centro, pero sus extremos E y F no están a 2,5 cm de él.' } };
 const P7 = { id:'pd-paso7-loseta', ok:'b', figs:true,
   opts:[['a', svgLoseta(L7.original, L7.errores.ejeVertical, O7, VEN7), 'RME24', H, 'la loseta a la derecha de O, arriba, con el triángulo en su esquina de arriba a la derecha'],
         ['b', svgLoseta(L7.original, L7.correcta, O7, VEN7), '', '', 'la loseta abajo a la derecha de O, con el triángulo en su esquina de abajo a la derecha'],
         ['c', svgLoseta(L7.original, L7.errores.trasladada, O7, VEN7), 'RME152', H, 'la loseta abajo a la derecha de O, con el triángulo en su esquina de arriba a la izquierda'],
         ['d', svgLoseta(L7.original, L7.errores.ejeHorizontal, O7, VEN7), 'RME24', H, 'la loseta debajo de la original, a la izquierda de O, con el triángulo en su esquina de abajo a la izquierda']],
   fb:{ b:'¡Bien! Reflejar respecto de un punto es mandar cada punto al otro lado de O, a la misma distancia: O queda en el medio. Eso es lo mismo que girar media vuelta (180°) alrededor de O: el triángulo pasa de arriba a la izquierda a abajo a la derecha.',
-       a:'Elegiste la opción A. Eso es reflejar en la recta vertical que pasa por O (un espejo), no en el punto O. En la simetría respecto de un punto, la loseta también baja: cada punto va al otro lado de O. La correcta está marcada.',
-       c:'Elegiste la opción C. La loseta va al lugar correcto, pero corrida: el triángulo sigue arriba a la izquierda. Reflejar respecto de O la gira media vuelta, así que el triángulo queda abajo a la derecha. La correcta está marcada.',
-       d:'Elegiste la opción D. Eso es reflejar en la recta horizontal que pasa por O. En la simetría respecto de O la loseta también pasa a la derecha. La correcta está marcada.' } };
+       a:'Eso es reflejar en la recta vertical que pasa por O (un espejo), no en el punto O. En la simetría respecto de un punto, la loseta también baja: cada punto va al otro lado de O.',
+       c:'La loseta va al lugar correcto, pero corrida: el triángulo sigue arriba a la izquierda. Reflejar respecto de O la gira media vuelta, así que el triángulo queda abajo a la derecha.',
+       d:'Eso es reflejar en la recta horizontal que pasa por O. En la simetría respecto de O la loseta también pasa a la derecha.' } };
 const P8 = { id:'pd-paso8-cartas', ok:'c',
   opts:[['a', `${F8.errores.dividir} jugadas`, 'RME155', H], ['b', `${F8.errores.unoPorUno} jugadas`, 'RME154', H],
         ['c', `${F8.minimo} jugadas`], ['d', `${F8.errores.cadaGrupo} jugadas`, 'RME155', H]],
   fb:{ c:`¡Bien! Las cartas 1 y 2 se voltean juntas. Las 4 y 6 no son vecinas: hay que voltear 4-5 y luego 5-6 (la 5 se voltea dos veces y queda como estaba). Total: ${F8.minimo}.`,
-       a:'Elegiste la opción A. Hay 4 cartas boca arriba y cada jugada voltea 2, pero solo si son vecinas. La 4 y la 6 no lo son: para juntarlas hace falta voltear la 5 dos veces. La correcta está marcada.',
-       b:'Elegiste la opción B. Contaste una jugada por carta, pero cada jugada voltea dos a la vez: la 1 y la 2 salen juntas en una sola. La correcta está marcada.',
-       d:'Elegiste la opción D. Voltear cada par de vecinas una vez no lleva a la meta: las cartas del medio se voltean dos veces y quedan como estaban. La correcta está marcada.' } };
+       a:'Hay 4 cartas boca arriba y cada jugada voltea 2, pero solo si son vecinas. La 4 y la 6 no lo son: para juntarlas hace falta voltear la 5 dos veces.',
+       b:'Contaste una jugada por carta, pero cada jugada voltea dos a la vez: la 1 y la 2 salen juntas en una sola.',
+       d:'Voltear cada par de vecinas una vez no lleva a la meta: las cartas del medio se voltean dos veces y quedan como estaban.' } };
 const P9 = { id:'pd-paso9-paridad', ok:'b',
   opts:[['a', `${F9.errores.dividir} jugadas`, 'RME155', H], ['b', 'No se puede'], ['c', `${F9.errores.cadaGrupo} jugadas`, 'RME155', H], ['d', `${F9.errores.unoPorUno} jugadas`, 'RME154', H]],
   fb:{ b:'¡Bien! Cada jugada cambia el número de cartas boca arriba en +2, −2 o 0: siempre en un número par. De 0 (par) nunca se llega a 5 (impar).',
-       a:'Elegiste la opción A. 5 ÷ 2 redondeado da 3, pero con 3 jugadas se hacen 6 volteos y alguna carta se voltea dos veces (queda como estaba). En realidad no se puede: el número de boca arriba cambia de dos en dos y 5 es impar. La correcta está marcada.',
-       c:'Elegiste la opción C. Voltear los 4 pares vecinos deja boca arriba solo las dos de las puntas: las del medio se voltean dos veces. Y ninguna otra serie sirve: de 0 boca arriba (par) no se llega a 5 (impar). La correcta está marcada.',
-       d:'Elegiste la opción D. Cada jugada voltea dos cartas, no una. Y no hay manera: el número de boca arriba cambia de dos en dos y no pasa de 0 a 5. La correcta está marcada.' } };
+       a:'5 ÷ 2 redondeado da 3, pero con 3 jugadas se hacen 6 volteos y alguna carta se voltea dos veces (queda como estaba). En realidad no se puede: el número de boca arriba cambia de dos en dos y 5 es impar.',
+       c:'Voltear los 4 pares vecinos deja boca arriba solo las dos de las puntas: las del medio se voltean dos veces. Y ninguna otra serie sirve: de 0 boca arriba (par) no se llega a 5 (impar).',
+       d:'Cada jugada voltea dos cartas, no una. Y no hay manera: el número de boca arriba cambia de dos en dos y no pasa de 0 a 5.' } };
 
 // ---- Vistas ----
 const vh = (R, hoja, dobleces, o) => Object.assign({ tipo:'hoja', hoja, dobleces, dib:R, prog:dobleces.length, huecos:true, separar:0, zoom:0, ventana:ventanaHoja(hoja, R.caja), ventanaPaq:[R.caja[0] - 0.9, R.caja[1] + 0.9, R.caja[2] - 0.9, R.caja[3] + 0.9] }, o || {});
@@ -887,8 +887,8 @@ const EXPS = [
   { id:'tira-a-lo-largo', corto:'Cortar a lo largo', ok:'a', leg:['F','D','C','P'], legAntes:['F','D','C'],
     q:`La misma tira de 6 × 2 doblada en tres como acordeón, pero ahora el ${V('C','corte')} va a lo largo: de izquierda a derecha, por la mitad de la altura del paquete. ¿Cuántas ${V('P','piezas')} quedan al abrir?`,
     opts:[['a', `${E1.piezas} piezas`], ['b', `${E1.errores.sinUniones} piezas`, 'RME41', H], ['c', `${E1.errores.cortesComoPiezas} piezas`, 'RME157', H]],
-    fb:{ b:'Elegiste la opción B. Así sería con 3 hojas sueltas. Al abrir, los 3 tajos quedan uno tras otro, en la misma línea: forman un solo corte de punta a punta. La correcta está marcada.',
-         c:'Elegiste la opción C. Hay 3 tajos, pero están alineados: al abrir son un solo corte largo que parte la tira en dos. La correcta está marcada.' },
+    fb:{ b:'Así sería con 3 hojas sueltas. Al abrir, los 3 tajos quedan uno tras otro, en la misma línea: forman un solo corte de punta a punta.',
+         c:'Hay 3 tajos, pero están alineados: al abrir son un solo corte largo que parte la tira en dos.' },
     antes:() => vh(E1, T, DT, { zoom:1 }), despues:() => vh(E1, T, DT, { zoom:1 }),
     anima:() => abrir(() => AN.correr(700, f => { S.vista.separar = suave(f); }, () => { S.vista.etiquetas = [{ P:{ x:3, y:2.45 }, t:`${E1.piezas} piezas`, k:'P' }]; draw(); describir(); })),
     desc:v => v.separar > 0 ? `La tira abierta: ${E1.piezas} piezas de 6 × 1.` : (S.pred['tira-a-lo-largo'] && v.prog < 2 ? 'La tira se está abriendo.' : 'Una tira de 6 × 2 doblada en tres, con un corte horizontal que cruza el paquete.'),
@@ -896,9 +896,9 @@ const EXPS = [
   { id:'vasos', corto:'Vasos de tres en tres', ok:'c', leg:[], legAntes:[],
     q:'Cinco vasos en fila, todos boca arriba. En cada jugada se voltean <b>tres vasos cualesquiera</b> (no hace falta que estén juntos). ¿Cuál es el menor número de jugadas para dejarlos todos boca abajo?',
     opts:[['a', `${E2.errores.dividir} jugadas`, 'RME155', H], ['b', `${E2.errores.unoPorUno} jugadas`, 'RME154', H], ['c', `${E2.minimo} jugadas`], ['d', 'No se puede', 'RME200', H]],
-    fb:{ a:'Elegiste la opción A. 5 ÷ 3 redondeado da 2, pero 2 jugadas son 6 volteos y cada vaso necesita un número impar: 5 impares suman un número impar, nunca 6. La correcta está marcada.',
-         b:'Elegiste la opción B. Cada jugada voltea 3 vasos, no uno. La correcta está marcada.',
-         d:'Elegiste la opción D. Sí se puede: los vasos 1 y 2 se voltean en las tres jugadas (quedan boca abajo, 3 es impar) y cada uno de los otros, en una. La correcta está marcada.' },
+    fb:{ a:'5 ÷ 3 redondeado da 2, pero 2 jugadas son 6 volteos y cada vaso necesita un número impar: 5 impares suman un número impar, nunca 6.',
+         b:'Cada jugada voltea 3 vasos, no uno.',
+         d:'Sí se puede: los vasos 1 y 2 se voltean en las tres jugadas (quedan boca abajo, 3 es impar) y cada uno de los otros, en una.' },
     antes:() => ({ tipo:'fichas', vasos:true, filas:[{ t:'Ahora', estado:'11111' }, { t:'Meta', estado:'00000' }], sel:null, k:3 }),
     despues:() => ({ tipo:'fichas', vasos:true, filas:[{ t:'Ahora', estado:'11111' }, { t:'Meta', estado:'00000' }], sel:null, k:3, volteos:[0, 0, 0, 0, 0] }),
     anima:() => { const v = S.vista, cam = E2.camino; let e = '11111', i = 0;
@@ -909,17 +909,17 @@ const EXPS = [
   { id:'diagonales', corto:'Doblar por las diagonales', ok:'b', leg:['F','D','C'], legAntes:['F','D','C'],
     q:`Una hoja cuadrada de 6 × 6 se dobla por una diagonal y luego por la otra: queda un triángulo de 4 capas. Se le ${V('C','corta la punta')} (el centro de la hoja) con un corte recto a 1 cm de ella. ¿Cuál es el perímetro de la hoja abierta?`,
     opts:[['a', `${E3.errores.unaCapa.perimetro.exacto} cm`, 'RME40', H], ['b', `${E3.perimetro.exacto} cm`], ['c', `${E3.errores.tramosDelDoblez.exacto} cm`, 'RME158', H], ['d', `${E3.errores.soloDoblez[1].perimetro.exacto} cm`, 'RME153', H]],
-    fb:{ a:'Elegiste la opción A. Así sería con una sola capa: un agujero triangular de lados 2, √2 y √2. Hay 4 capas: al abrir, los 4 tajos de 2 cm forman un cuadrado de 2 × 2 y los lados inclinados desaparecen. La correcta está marcada.',
-         c:'Elegiste la opción C. Contaste cada pedazo como un triángulo con sus lados inclinados, pero esos lados están sobre las diagonales dobladas: al abrir desaparecen. Queda un cuadrado de borde 8. La correcta está marcada.',
-         d:'Elegiste la opción D. Abriendo un solo doblez sale medio cuadrado: un triángulo de lados 2, 2 y 2√2. Con los dos abiertos, los 4 tajos forman el cuadrado entero y la diagonal desaparece. La correcta está marcada.' },
+    fb:{ a:'Así sería con una sola capa: un agujero triangular de lados 2, √2 y √2. Hay 4 capas: al abrir, los 4 tajos de 2 cm forman un cuadrado de 2 × 2 y los lados inclinados desaparecen.',
+         c:'Contaste cada pedazo como un triángulo con sus lados inclinados, pero esos lados están sobre las diagonales dobladas: al abrir desaparecen. Queda un cuadrado de borde 8.',
+         d:'Abriendo un solo doblez sale medio cuadrado: un triángulo de lados 2, 2 y 2√2. Con los dos abiertos, los 4 tajos forman el cuadrado entero y la diagonal desaparece.' },
     antes:() => vh(E3, H6, DD, { zoom:1 }), despues:() => vh(E3, H6, DD, { zoom:1 }), anima:() => abrir(),
     desc:v => S.pred.diagonales && v.prog === 0 ? `La hoja abierta: un agujero cuadrado de 2 × 2 en el centro; perímetro ${E3.perimetro.exacto} cm.` : 'Una hoja de 6 × 6 doblada por sus dos diagonales: un triángulo con la punta cortada.',
     exp:`<p>Los dobleces por las diagonales también son espejos. El tajo de 2 cm se refleja en las ${V('K','4 capas')} y forma un ${V('C','cuadrado')} alrededor del centro: 24 + 4 · 2 = ${E3.perimetro.exacto} cm. Los lados inclinados del pedazo cortado estaban sobre los ${V('D','dobleces')}: no son borde.</p>` + NOHAY },
   { id:'doblez-al-lado', corto:'Del doblez al lado', ok:'a', leg:['F','A','B','D'], legAntes:['B'], leyTextos:{ F:'la hoja', A:'el lado a (AB)', B:'el lado b = 6 (BC)', D:'el doblez = 7,5' },
     q:`Una hoja rectangular de ${V('B','6 cm')} de ancho se dobla haciendo coincidir dos vértices opuestos, y el ${V('D','doblez')} mide 7,5 cm. ¿Cuánto mide el ${V('A','largo a')} de la hoja?`,
     opts:[['a', `${fmt(E4.a)} cm`], ['b', `${fmt(E4.errores.comoDiagonal)} cm`, 'RME150', H], ['c', '7,5 cm', 'RME151', H]],
-    fb:{ b:'Elegiste la opción B. Usaste el doblez como si fuera la diagonal (√(7,5² − 6²) = 4,5). Pero el doblez es perpendicular a la diagonal, no es ella; además el largo no puede ser menor que el ancho. La correcta está marcada.',
-         c:'Elegiste la opción C. El doblez no es paralelo al largo: es la mediatriz de la diagonal, inclinado. La correcta está marcada.' },
+    fb:{ b:'Usaste el doblez como si fuera la diagonal (√(7,5² − 6²) = 4,5). Pero el doblez es perpendicular a la diagonal, no es ella; además el largo no puede ser menor que el ancho.',
+         c:'El doblez no es paralelo al largo: es la mediatriz de la diagonal, inclinado.' },
     antes:() => ({ tipo:'plano', ventana:[-1, 11, -1, 7], oculto:true, nota:'El largo es la pregunta: se dibuja al responder.' }),
     despues:() => vh(R4, { ancho:E4.a, alto:6 }, E4b.dobleces, { prog:0, huecos:false, colorBorde:(A, B) => (Math.abs(A.y) < 1e-7 && Math.abs(B.y) < 1e-7 ? 'A' : Math.abs(A.x - E4.a) < 1e-7 && Math.abs(B.x - E4.a) < 1e-7 ? 'B' : 'ink') }),
     anima:() => { const v = S.vista; v.segs = []; AN.serie([[1300, f => { v.prog = suave(f); }], [600, () => {}], [900, f => { v.prog = 1 - suave(f); }]], () => { v.prog = 0; v.segs = [{ P:E4b.E, Q:E4b.F, k:'D', ancho:3.2, dash:[8, 5], t:'7,5', dx:-18 }, { P:{ x:0, y:-0.35 }, Q:{ x:E4.a, y:-0.35 }, k:'A', ancho:2, t:`a = ${fmt(E4.a)}`, dy:12 }]; draw(); describir(); }); },
@@ -928,8 +928,8 @@ const EXPS = [
   { id:'dos-dobleces-por-o', corto:'Dos dobleces por O', ok:'a', leg:['D','I'], legAntes:['D'], leyTextos:{ D:'los dos espejos (dobleces) y O, donde se cruzan' },
     q:`La loseta se refleja primero en la recta vertical que pasa por su vértice O y después en la recta horizontal que pasa por O (dos ${V('D','dobleces')} seguidos). ¿Cómo queda?`,
     opts:[['a', 'Como en la simetría respecto de O: girada media vuelta'], ['b', 'Como al inicio, en su lugar: los dos reflejos se anulan entre sí', 'RME156', H], ['c', 'Como en un solo espejo: volteada, con la cara al revés', 'RME24', H]],
-    fb:{ b:'Elegiste la opción B. Dos reflejos seguidos se anulan solo si son en la misma recta. En dos rectas perpendiculares, el resultado es un giro de 180° alrededor del punto donde se cruzan. La correcta está marcada.',
-         c:'Elegiste la opción C. Cada reflejo voltea la loseta; dos volteos la dejan derecha otra vez, pero girada: es media vuelta alrededor de O. La correcta está marcada.' },
+    fb:{ b:'Dos reflejos seguidos se anulan solo si son en la misma recta. En dos rectas perpendiculares, el resultado es un giro de 180° alrededor del punto donde se cruzan.',
+         c:'Cada reflejo voltea la loseta; dos volteos la dejan derecha otra vez, pero girada: es media vuelta alrededor de O.' },
     antes:() => ({ tipo:'plano', ventana:VEN5, losetas:[{ L:L5.original, k:'ink' }], rectas:[{ x:2, k:'D' }, { y:0, k:'D' }], puntos:[{ P:O5, k:'D', t:'O', dx:12, dy:12 }] }),
     despues:() => ({ tipo:'plano', ventana:VEN5, losetas:[{ L:L5.original, k:'ink', alpha:.45, dash:[5, 4] }], rectas:[{ x:2, k:'D' }, { y:0, k:'D' }], puntos:[{ P:O5, k:'D', t:'O', dx:12, dy:12 }] }),
     anima:() => { const v = S.vista, uno = L5.errores.ejeVertical;
@@ -971,7 +971,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el dibujo para ver por qué.' : (x.fb && x.fb[p]) || `Elegiste la opción ${p.toUpperCase()}. La correcta está marcada; mira el dibujo para ver por qué.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el dibujo para ver por qué.' : (x.fb && x.fb[p]) || `; mira el dibujo para ver por qué.`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

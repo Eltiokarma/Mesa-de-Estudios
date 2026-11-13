@@ -116,7 +116,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
 .fb:focus{outline:none}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 210px), 1fr)); gap:12px; align-items:end}
 .slider{display:grid; gap:4px}
@@ -495,45 +495,45 @@ const P1 = { id:'grav-estacion', ok:'c',
         ['c', `Cerca del ${pct(gEE.fraccion)} de la del suelo: la gravedad sigue ahí, y flota por otra razón`, null, ''],
         ['d', `La misma que en el suelo, pero la estación hace una fuerza hacia arriba que la anula`, 'G1-la-nave-la-anula', 'documentado']],
   fb:{ c:'¡Bien! A 400 km la gravedad de la Tierra todavía es casi el 90 % de la del suelo. Flota porque ella y la estación caen juntas.',
-       a:'Elegiste la A. La gravedad no se apaga al salir del aire: a 400 km todavía es casi el 90 % de la del suelo. La correcta está marcada.',
-       b:'Elegiste la B. 400 km parece mucho, pero es poco frente a los 6400 km que hay hasta el centro de la Tierra: la gravedad casi no baja. La correcta está marcada.',
-       d:'Elegiste la D. Si la estación la empujara hacia arriba, ella sentiría el piso como en la Tierra. Nada la empuja: ella y la estación caen juntas. La correcta está marcada.' } };
+       a:'La gravedad no se apaga al salir del aire: a 400 km todavía es casi el 90 % de la del suelo.',
+       b:'400 km parece mucho, pero es poco frente a los 6400 km que hay hasta el centro de la Tierra: la gravedad casi no baja.',
+       d:'Si la estación la empujara hacia arriba, ella sentiría el piso como en la Tierra. Nada la empuja: ella y la estación caen juntas.' } };
 const P2 = { id:'grav-tercera-ley', ok:'a',
   opts:[['a', `Con la misma ${V('F','F')}, unos ${cien(fEE.F, 1)} N, hacia la estación`, null, ''],
         ['b', `Con una ${V('F','F')} de unos ${cien(fEE.errores.segunPropiaMasa, 1)} N, mucho menor, porque la estación tiene mucha menos masa`, 'G5-el-masivo-atrae-mas', 'parcial'],
         ['c', `Con ninguna: un cuerpo tan pequeño como la estación no atrae a un planeta`, 'G5-lo-pequeno-no-atrae', 'parcial'],
         ['d', `Con una ${V('F','F')} mayor, porque la estación va muy rápido y su movimiento la hace tirar más fuerte`, 'tercera-ley-el-que-gira', 'hipotesis']],
   fb:{ a:'¡Bien! Es la tercera ley de Newton: la Tierra tira de la estación y la estación tira de la Tierra con la misma fuerza.',
-       b:'Elegiste la B. La fórmula multiplica las dos masas: m de la estación y M de la Tierra están en las dos fuerzas por igual. La correcta está marcada.',
-       c:'Elegiste la C. Toda masa atrae a toda masa, también la pequeña. Y lo hace con la misma fuerza con que la atraen. La correcta está marcada.',
-       d:'Elegiste la D. Ir rápido no cambia la atracción: depende solo de las masas y la distancia, y las dos fuerzas son iguales y opuestas. La correcta está marcada.' } };
+       b:'La fórmula multiplica las dos masas: m de la estación y M de la Tierra están en las dos fuerzas por igual.',
+       c:'Toda masa atrae a toda masa, también la pequeña. Y lo hace con la misma fuerza con que la atraen.',
+       d:'Ir rápido no cambia la atracción: depende solo de las masas y la distancia, y las dos fuerzas son iguales y opuestas.' } };
 const P3 = { id:'grav-altura-cuarto', ok:'a',
   opts:[['a', `A ${V('h', km(cuarto.h))} de altura: al doble de distancia del centro, la gravedad baja a (1/2)²`, null, ''],
         ['b', `A ${V('h', km(cuarto.errores.lineal))} de altura: hay que estar al cuádruple de distancia del centro, porque la gravedad es inversamente proporcional a la distancia, sin el cuadrado`, 'G3-g-lineal', 'parcial'],
         ['c', `A ${V('h', km(cuarto.errores.desdeSuperficie))} de altura: la altura debe ser el doble del radio, porque (R/h)² = 1/4`, 'G4-distancia-desde-el-suelo', 'parcial'],
         ['d', `A ${V('h', km(cuarto.errores.desdeSuperficieLineal))} de altura: la altura debe ser cuatro radios, porque R/h = 1/4`, 'desde-el-suelo-y-lineal', 'hipotesis']],
   fb:{ a:'¡Bien! A 6400 km de altura la distancia al centro es 2R, el doble: la gravedad es (1/2)² = 1/4 de la del suelo.',
-       b:'Elegiste la B. La gravedad no baja en proporción a la distancia sino a su cuadrado: con el doble de distancia ya es un cuarto. La correcta está marcada.',
-       c:'Elegiste la C. La distancia de la ley va al centro de la Tierra, no al suelo: r = R + h. La correcta está marcada.',
-       d:'Elegiste la D. Aquí hay dos errores juntos: medir desde el suelo y olvidar el cuadrado. La correcta está marcada.' } };
+       b:'La gravedad no baja en proporción a la distancia sino a su cuadrado: con el doble de distancia ya es un cuarto.',
+       c:'La distancia de la ley va al centro de la Tierra, no al suelo: r = R + h.',
+       d:'Aquí hay dos errores juntos: medir desde el suelo y olvidar el cuadrado.' } };
 const P4 = { id:'grav-masa-satelite', ok:'a',
   opts:[['a', `Los dos a unos ${V('v', kms(o1.v))}: la masa no cambia la rapidez de la órbita`, null, ''],
         ['b', `El de 2000 kg a unos ${V('v', kms(o1.v*k3m.errores.kvConMasa))}, el doble: pesa el doble y necesita el doble de rapidez para no caer`, 'G7-rapidez-segun-masa', 'parcial'],
         ['c', `El de 2000 kg a unos ${V('v', kms(o1.v*k3m.errores.kvConRaizMasa))}: necesita más rapidez, pero solo √2 veces, porque la masa va bajo la raíz`, 'rapidez-raiz-de-la-masa', 'hipotesis'],
         ['d', `El de 2000 kg a unos ${V('v', kms(o1.v/k3m.km))}, la mitad: cuesta el doble moverlo y va más despacio`, 'pesado-mas-lento', 'hipotesis']],
   fb:{ a:'¡Bien! El de 2000 kg recibe el doble de fuerza, pero también tiene el doble de masa que mover: las dos cosas se cancelan.',
-       b:'Elegiste la B. El más pesado necesita el doble de fuerza para girar igual, y la Tierra se la da: lo atrae el doble. La correcta está marcada.',
-       c:'Elegiste la C. En v = √(G·M/r), M es la masa de la Tierra, no la del satélite: la del satélite no aparece. La correcta está marcada.',
-       d:'Elegiste la D. Cuesta el doble moverlo, sí, pero también lo atraen con el doble de fuerza: se compensa justo. La correcta está marcada.' } };
+       b:'El más pesado necesita el doble de fuerza para girar igual, y la Tierra se la da: lo atrae el doble.',
+       c:'En v = √(G·M/r), M es la masa de la Tierra, no la del satélite: la del satélite no aparece.',
+       d:'Cuesta el doble moverlo, sí, pero también lo atraen con el doble de fuerza: se compensa justo.' } };
 const P5 = { id:'grav-kepler3', ok:'a',
   opts:[['a', `Unas ${V('T', horas(oRas.T*k3.kT))}, 8 veces más: ${V('T','T')}² crece como ${V('r','r')}³`, null, ''],
         ['b', `Unas ${V('T', horas(oRas.T*k3.errores.Tlineal))}, 4 veces más: el período crece en proporción al radio de la órbita`, 'G3-kepler-T-lineal', 'hipotesis'],
         ['c', `Unas ${V('T', horas(oRas.T*k3.errores.Tcuadrado))}, 16 veces más: el período crece con el cuadrado del radio`, 'kepler-T-cuadrado', 'hipotesis'],
         ['d', `Unas ${V('T', horas(oRas.T*k3.errores.Traiz))}, 2 veces más: el período crece con la raíz del radio`, 'kepler-T-raiz', 'hipotesis']],
   fb:{ a:'¡Bien! Con 4 veces el radio, T² crece 4³ = 64 veces y T crece √64 = 8 veces.',
-       b:'Elegiste la B. El de afuera recorre 4 veces más camino, pero además va más lento (la mitad de rapidez): tarda 4 · 2 = 8 veces. La correcta está marcada.',
-       c:'Elegiste la C. La tercera ley de Kepler dice T² ∝ r³, no T ∝ r²: con 4 veces el radio, T crece √64 = 8 veces. La correcta está marcada.',
-       d:'Elegiste la D. El de afuera recorre más camino y además va más lento: tarda mucho más que el doble. La correcta está marcada.' } };
+       b:'El de afuera recorre 4 veces más camino, pero además va más lento (la mitad de rapidez): tarda 4 · 2 = 8 veces.',
+       c:'La tercera ley de Kepler dice T² ∝ r³, no T ∝ r²: con 4 veces el radio, T crece √64 = 8 veces.',
+       d:'El de afuera recorre más camino y además va más lento: tarda mucho más que el doble.' } };
 
 // Escala de tiempo de las animaciones: la órbita de la estación (92 min) se ve en unos 10 s.
 const K_EE = oEE.T/10;
@@ -936,9 +936,9 @@ const EXPS = [
           ['c', `${V('F','F/8')}: se debilita el doble de lo que se aleja`, 'G3-ocho-veces', 'documentado'],
           ['d', `${V('F','F/2')}: la fuerza baja con la raíz de la distancia`, 'F-raiz-de-r', 'hipotesis']],
     ok:'a',
-    fb:{ b:'Elegiste la B. La fuerza no baja en proporción a la distancia sino a su cuadrado: 4² = 16.',
-         c:'Elegiste la C. No es el doble de 4: es 4 al cuadrado. Con la distancia multiplicada por 4, la fuerza se divide entre 16.',
-         d:'Elegiste la D. Al alejarse, la fuerza baja mucho más que con la raíz: con el cuadrado de la distancia.' },
+    fb:{ b:'La fuerza no baja en proporción a la distancia sino a su cuadrado: 4² = 16.',
+         c:'No es el doble de 4: es 4 al cuadrado. Con la distancia multiplicada por 4, la fuerza se divide entre 16.',
+         d:'Al alejarse, la fuerza baja mucho más que con la raíz: con el cuadrado de la distancia.' },
     antes:() => Object.assign(E, { kr:4, dib:dibLuna }),
     ctrl:() => `<div class="slider"><label for="q-kr"><span>Distancia de la Luna (en veces ${V('r','r')})</span><output id="q-kr-o"></output></label><input id="q-kr" type="range" min="1" max="5" step="0.5" value="${E.kr}"></div>`,
     vivo:() => { $('q-kr-o').textContent = `${fmt(E.kr, 1)}·r`; },
@@ -956,9 +956,9 @@ const EXPS = [
           ['c', `${V('F', fmt(60*pl.errores.radioLineal, 0) + ' N')}: cuatro veces la masa, pero el doble de lejos del centro lo reduce a la mitad`, 'G3-radio-sin-cuadrado', 'parcial'],
           ['d', `${V('F', fmt(60*pl.errores.masaPorRadio, 0) + ' N')}: con más masa y más tamaño, atrae más por las dos cosas`, 'mas-grande-atrae-mas', 'hipotesis']],
     ok:'a',
-    fb:{ b:'Elegiste la B. El radio también cuenta: en el suelo del planeta estás el doble de lejos de su centro, y eso divide la gravedad entre 2² = 4.',
-         c:'Elegiste la C. El radio va al cuadrado: el doble de lejos divide entre 4, no entre 2. Cuatro veces la masa entre cuatro da lo mismo.',
-         d:'Elegiste la D. Un planeta más grande te deja más lejos de su centro, y eso debilita la gravedad.' },
+    fb:{ b:'El radio también cuenta: en el suelo del planeta estás el doble de lejos de su centro, y eso divide la gravedad entre 2² = 4.',
+         c:'El radio va al cuadrado: el doble de lejos divide entre 4, no entre 2. Cuatro veces la masa entre cuatro da lo mismo.',
+         d:'Un planeta más grande te deja más lejos de su centro, y eso debilita la gravedad.' },
     antes:() => Object.assign(E, { kM:4, kR:2, dib:dibPlaneta }),
     ctrl:() => `<div class="ctrls"><div class="slider"><label for="q-kM"><span>Masa del planeta (en Tierras)</span><output id="q-kM-o"></output></label><input id="q-kM" type="range" min="0.5" max="9" step="0.5" value="${E.kM}"></div>
       <div class="slider"><label for="q-kR"><span>Radio del planeta (en Tierras)</span><output id="q-kR-o"></output></label><input id="q-kR" type="range" min="0.5" max="3" step="0.5" value="${E.kR}"></div></div>`,
@@ -978,9 +978,9 @@ const EXPS = [
           ['c', 'Más de 500 N: al caer, la persona aprieta más la balanza', 'G8-aumenta', 'documentado'],
           ['d', '500 N: la Tierra la sigue atrayendo igual que antes', 'G8-no-cambia', 'parcial']],
     ok:'a',
-    fb:{ b:'Elegiste la B. La balanza no mide el peso: mide cuánto la aprietas. Si caen con la misma aceleración, no la aprietas nada.',
-         c:'Elegiste la C. Para apretar más la balanza, tendrías que caer más rápido que ella; caen juntas.',
-         d:'Elegiste la D. La Tierra la sigue atrayendo con 500 N, es verdad. Pero la balanza mide cuánto la aprietas, y al caer juntas no la aprietas.' },
+    fb:{ b:'La balanza no mide el peso: mide cuánto la aprietas. Si caen con la misma aceleración, no la aprietas nada.',
+         c:'Para apretar más la balanza, tendrías que caer más rápido que ella; caen juntas.',
+         d:'La Tierra la sigue atrayendo con 500 N, es verdad. Pero la balanza mide cuánto la aprietas, y al caer juntas no la aprietas.' },
     antes:() => Object.assign(E, { a:10, dib:dibAscensor }),
     ctrl:() => `<div class="slider"><label for="q-a"><span>Aceleración del ascensor hacia abajo (a)</span><output id="q-a-o"></output></label><input id="q-a" type="range" min="0" max="10" step="1" value="${E.a}"></div>`,
     vivo:() => { $('q-a-o').textContent = `${fmt(E.a, 0)} m/s²`; },
@@ -999,9 +999,9 @@ const EXPS = [
           ['c', `${V('v', kms(esc.errores.orbital))}: con la rapidez de la órbita ya no cae, así que ya escapó`, 'escape-igual-orbital', 'hipotesis'],
           ['d', `Ninguna: la gravedad llega hasta el infinito, así que tarde o temprano la frena y vuelve`, 'escape-imposible', 'hipotesis']],
     ok:'a',
-    fb:{ b:'Elegiste la B. Basta con que la energía cinética iguale lo que falta de energía potencial: eso da √2 veces, menos que el doble.',
-         c:'Elegiste la C. En la órbita circular la bala sigue atada: da vueltas para siempre. Para irse hace falta más.',
-         d:'Elegiste la D. La gravedad llega lejísimos, pero se debilita tan rápido (1/r²) que una rapidez finita alcanza para no volver.' },
+    fb:{ b:'Basta con que la energía cinética iguale lo que falta de energía potencial: eso da √2 veces, menos que el doble.',
+         c:'En la órbita circular la bala sigue atada: da vueltas para siempre. Para irse hace falta más.',
+         d:'La gravedad llega lejísimos, pero se debilita tan rápido (1/r²) que una rapidez finita alcanza para no volver.' },
     antes:() => Object.assign(E, { v0:esc.ve, k: M.orbita({ h:RT }).T/5, dib:dibCanon }),
     ctrl:() => `<div class="slider"><label for="q-v"><span>Rapidez del disparo (${V('v','v₀')})</span><output id="q-v-o"></output></label><input id="q-v" type="range" min="3000" max="10000" step="250" value="${E.v0}"></div>`,
     vivo:() => { $('q-v-o').textContent = kms(E.v0); },
@@ -1021,9 +1021,9 @@ const EXPS = [
           ['c', 'Más rápido lejos del Sol, porque ahí la atracción es menor y no lo retiene', 'kepler2-al-reves', 'hipotesis'],
           ['d', 'Más rápido en los costados de la elipse, porque ahí la curva es más suave', 'kepler2-costados', 'hipotesis']],
     ok:'a',
-    fb:{ b:'Elegiste la B. El Sol lo atrae todo el tiempo: mientras se acerca, la fuerza lo acelera; mientras se aleja, lo frena.',
-         c:'Elegiste la C. Lejos del Sol llega frenado: subió «cuesta arriba» contra la atracción. Va más lento.',
-         d:'Elegiste la D. Lo que manda es la distancia al Sol: cuanto más cerca, más rápido.' },
+    fb:{ b:'El Sol lo atrae todo el tiempo: mientras se acerca, la fuerza lo acelera; mientras se aleja, lo frena.',
+         c:'Lejos del Sol llega frenado: subió «cuesta arriba» contra la atracción. Va más lento.',
+         d:'Lo que manda es la distancia al Sol: cuanto más cerca, más rápido.' },
     antes:() => Object.assign(E, { e:0.6, Tvis:8, dib:dibElipse }),
     ctrl:() => `<div class="seg" id="q-e" role="group" aria-label="Qué órbita mostrar"><button type="button" data-e="0.6">muy alargada</button><button type="button" data-e="0.0167">la de la Tierra</button></div>`,
     vivo:() => { const b = $('q-e'); if (!b) return; b.querySelectorAll('button').forEach(x => { x.setAttribute('aria-pressed', String(+x.dataset.e === E.e)); x.onclick = () => { E.e = +x.dataset.e; E.t = 0; EXPS[S.k].vivo(); draw(); }; }); },
@@ -1090,7 +1090,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.ctrl() + x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     $('res2').querySelectorAll('input').forEach(inp => inp.addEventListener('input', () => { x.alCambiar(); x.vivo(); draw(); }));

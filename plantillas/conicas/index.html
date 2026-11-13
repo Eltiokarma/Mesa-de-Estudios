@@ -130,7 +130,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -540,63 +540,63 @@ const P2 = { id:'conicas-paso2', ok:'b', opts:[
   ['c', ER(E54.semiejeMenor, 'resta'), 'CO3-b-igual-a-menos-c', 'hipotesis'],
   ['d', ER(E54.semiejeMenor, 'sinRaiz'), 'CO4-olvida-la-raiz', 'hipotesis']],
   fb:{ b:`¡Bien! Encima del centro, el lápiz está a la misma distancia de los dos clavos: cada mitad de la cuerda mide a = 5. Con c = 4 abajo, el triángulo rectángulo da b² = a² − c² = 25 − 16 = 9, así que b = 3.`,
-    a:`Elegiste la A. √41 sale de b² = a² + c², la relación de la hipérbola. En la elipse, la mitad de la cuerda (a) es la hipotenusa del triángulo: el lado más largo. Por eso b tiene que ser menor que 5. La correcta está marcada.`,
-    c:`Elegiste la C. 1 = 5 − 4 resta los lados sin elevar al cuadrado. Pitágoras pide los cuadrados: b² = 25 − 16 = 9. La correcta está marcada.`,
-    d:`Elegiste la D. 9 es b²: falta sacar la raíz. La correcta está marcada.` } };
+    a:`√41 sale de b² = a² + c², la relación de la hipérbola. En la elipse, la mitad de la cuerda (a) es la hipotenusa del triángulo: el lado más largo. Por eso b tiene que ser menor que 5.`,
+    c:`1 = 5 − 4 resta los lados sin elevar al cuadrado. Pitágoras pide los cuadrados: b² = 25 − 16 = 9.`,
+    d:`9 es b²: falta sacar la raíz.` } };
 const P3 = { id:'conicas-paso3', ok:'c', opts:[
   ['a', ER(E54.excentricidad, 'invertida'), 'CO5-excentricidad-invertida', 'hipotesis'],
   ['b', ER(E54.excentricidad, 'otroSemieje'), 'CO6-excentricidad-con-b', 'hipotesis'],
   ['c', T(E54.excentricidad)],
   ['d', ER(E54.excentricidad, 'dosC'), 'CO24-excentricidad-con-2c', 'hipotesis']],
   fb:{ c:`¡Bien! e = c/a = 4/5. Como en la elipse c < a, su excentricidad está entre 0 y 1. Ahora arrastra el clavo F₂: cuanto más se separan los clavos, más aplastada queda y más se acerca e a 1.`,
-    a:`Elegiste la A. 5/4 = a/c está invertida: da más que 1. En la elipse c < a (los clavos quedan dentro de la curva), así que e = c/a es menor que 1. La correcta está marcada.`,
-    b:`Elegiste la B. 3/5 = b/a usa el otro semieje. La excentricidad compara la distancia del centro a un foco, c, con a. La correcta está marcada.`,
-    d:`Elegiste la D. 8/5 = 2c/a usa la distancia completa entre los clavos. c es la mitad: del centro a un clavo. La correcta está marcada.` } };
+    a:`5/4 = a/c está invertida: da más que 1. En la elipse c < a (los clavos quedan dentro de la curva), así que e = c/a es menor que 1.`,
+    b:`3/5 = b/a usa el otro semieje. La excentricidad compara la distancia del centro a un foco, c, con a.`,
+    d:`8/5 = 2c/a usa la distancia completa entre los clavos. c es la mitad: del centro a un clavo.` } };
 const P4 = { id:'conicas-paso4', ok:'a', opts:[
   ['a', T(E4.focos)],
   ['b', ER(E4.focos, 'signos'), 'CO8-centro-con-signos-cambiados', 'hipotesis'],
   ['c', ER(E4.focos, 'ejeCambiado'), 'CO7-a2-siempre-bajo-x', 'hipotesis'],
   ['d', ER(E4.focos, 'vertices'), 'CO18-focos-en-los-vertices', 'hipotesis']],
   fb:{ a:`¡Bien! El centro es (2; −1): los signos cambian al salir del paréntesis. El denominador mayor, 25, está bajo y: el eje mayor es vertical, con a = 5 y b = 3. Entonces c = √(25 − 9) = 4, y los focos quedan 4 arriba y 4 abajo del centro.`,
-    b:`Elegiste la B. Esos focos salen de un centro (−2; 1). (x − 2)² dice h = 2, y (y + 1)², que es (y − (−1))², dice k = −1. La correcta está marcada.`,
-    c:`Elegiste la C. Pusiste los focos en una recta horizontal, como si a² estuviera siempre bajo x. Aquí el denominador mayor, 25, está bajo y: el eje mayor es vertical. La correcta está marcada.`,
-    d:`Elegiste la D. Esos son los vértices, a a = 5 del centro. Los focos están más adentro, a c = 4. La correcta está marcada.` } };
+    b:`Esos focos salen de un centro (−2; 1). (x − 2)² dice h = 2, y (y + 1)², que es (y − (−1))², dice k = −1.`,
+    c:`Pusiste los focos en una recta horizontal, como si a² estuviera siempre bajo x. Aquí el denominador mayor, 25, está bajo y: el eje mayor es vertical.`,
+    d:`Esos son los vértices, a a = 5 del centro. Los focos están más adentro, a c = 4.` } };
 const P5p = { id:'conicas-paso5', ok:'d', opts:[
   ['a', ER(P5.foco, 'signo'), 'CO11-ignora-el-signo-de-p', 'hipotesis'],
   ['b', ER(P5.foco, 'cuatroP'), 'CO12-toma-4p-como-p', 'hipotesis'],
   ['c', ER(P5.foco, 'eje'), 'CO13-foco-en-el-otro-eje', 'hipotesis'],
   ['d', T(P5.foco)]],
   fb:{ d:`¡Bien! El vértice es (2; 1). 4p = −8, así que p = −2: el foco está 2 a la izquierda del vértice, en (0; 1), y la directriz 2 a la derecha, en x = 4. La parábola abre hacia el foco, a la izquierda.`,
-    a:`Elegiste la A. (4; 1) toma p = 2 sin su signo. Con 4p = −8, p es negativo y el foco va a la izquierda del vértice. En x = 4 queda la directriz. La correcta está marcada.`,
-    b:`Elegiste la B. (−6; 1) corre el foco 8 unidades, lo que vale 4p. p es la cuarta parte: 2 unidades. La correcta está marcada.`,
-    c:`Elegiste la C. (2; −1) corre el foco hacia abajo. La que va al cuadrado es y: la parábola abre hacia los lados y su eje es horizontal, la recta y = 1. La correcta está marcada.` } };
+    a:`(4; 1) toma p = 2 sin su signo. Con 4p = −8, p es negativo y el foco va a la izquierda del vértice. En x = 4 queda la directriz.`,
+    b:`(−6; 1) corre el foco 8 unidades, lo que vale 4p. p es la cuarta parte: 2 unidades.`,
+    c:`(2; −1) corre el foco hacia abajo. La que va al cuadrado es y: la parábola abre hacia los lados y su eje es horizontal, la recta y = 1.` } };
 const P6 = { id:'conicas-paso6', ok:'b', opts:[
   ['a', ER(P5.lr, 'conSigno'), 'CO14-lado-recto-con-signo', 'hipotesis'],
   ['b', T(P5.lr)],
   ['c', ER(P5.lr, 'dosP'), 'CO15-lado-recto-2p', 'hipotesis'],
   ['d', ER(P5.lr, 'soloP'), 'CO16-lado-recto-p', 'hipotesis']],
   fb:{ b:`¡Bien! En la punta de arriba del lado recto, PF = PD. PD es lo que hay del foco a la directriz: 2|p| = 4. Entonces PF = 4, y el lado recto mide 2 · 4 = 8, que es 4|p|.`,
-    a:`Elegiste la A. −8 es 4p con su signo. Una longitud no es negativa: LR = |4p| = 8. La correcta está marcada.`,
-    c:`Elegiste la C. 4 = 2|p| es solo la mitad, del foco a una punta. La correcta está marcada.`,
-    d:`Elegiste la D. 2 = |p| es la distancia del vértice al foco. La correcta está marcada.` } };
+    a:`−8 es 4p con su signo. Una longitud no es negativa: LR = |4p| = 8.`,
+    c:`4 = 2|p| es solo la mitad, del foco a una punta.`,
+    d:`2 = |p| es la distancia del vértice al foco.` } };
 const P7 = { id:'conicas-paso7', ok:'c', opts:[
   ['a', ER(H7.focos, 'cElipse'), 'CO2-hiperbola-con-c2-igual-a2-menos-b2', 'hipotesis'],
   ['b', ER(H7.focos, 'aMayor'), 'CO17-a2-el-denominador-mayor', 'hipotesis'],
   ['c', T(H7.focos)],
   ['d', ER(H7.focos, 'vertices'), 'CO18-focos-en-los-vertices', 'hipotesis']],
   fb:{ c:`¡Bien! El término positivo es el de x: a² = 9, b² = 16 y el eje focal es horizontal. En la hipérbola c² = a² + b² = 25, así que c = 5: la diagonal del rectángulo de lados 2a y 2b.`,
-    a:`Elegiste la A. c² = 16 − 9 = 7 es la relación de la elipse. En la hipérbola los focos quedan más afuera que los vértices: c² = a² + b². La correcta está marcada.`,
-    b:`Elegiste la B. Tomaste a² = 16, el mayor, como en la elipse, y eso te llevó al eje y. En la hipérbola, a² es el del término positivo: aquí 9, bajo x. La correcta está marcada.`,
-    d:`Elegiste la D. Esos son los vértices (a = 3). Los focos están más lejos del centro: c = 5. La correcta está marcada.` } };
+    a:`c² = 16 − 9 = 7 es la relación de la elipse. En la hipérbola los focos quedan más afuera que los vértices: c² = a² + b².`,
+    b:`Tomaste a² = 16, el mayor, como en la elipse, y eso te llevó al eje y. En la hipérbola, a² es el del término positivo: aquí 9, bajo x.`,
+    d:`Esos son los vértices (a = 3). Los focos están más lejos del centro: c = 5.` } };
 const P8 = { id:'conicas-paso8', ok:'d', opts:[
   ['a', ER(G8, 'cambiaSigno'), 'CO19-elipse-por-hiperbola', 'hipotesis'],
   ['b', ER(G8, 'dosCuadrados'), 'CO20-dos-cuadrados-circunferencia', 'hipotesis'],
   ['c', ER(G8, 'lineales'), 'CO28-parabola-por-los-lineales', 'hipotesis'],
   ['d', T(G8)]],
   fb:{ d:`¡Bien! A = −4 y C = −9 tienen el mismo signo: es una elipse (y como A ≠ C, no es circunferencia). Al multiplicar por −1 y completar cuadrados queda 4(x − 1)² + 9(y + 2)² = 36.`,
-    a:`Elegiste la A. Los dos signos menos no la vuelven hipérbola. Lo que importa es si A y C tienen el mismo signo o signos distintos; aquí los dos son negativos, y al multiplicar por −1 los dos quedan positivos. La correcta está marcada.`,
-    b:`Elegiste la B. Para que sea circunferencia hace falta A = C, y aquí −4 ≠ −9. La correcta está marcada.`,
-    c:`Elegiste la C. En la parábola falta x² o y²; aquí están los dos. Los términos en x y en y solo corren el centro. La correcta está marcada.` } };
+    a:`Los dos signos menos no la vuelven hipérbola. Lo que importa es si A y C tienen el mismo signo o signos distintos; aquí los dos son negativos, y al multiplicar por −1 los dos quedan positivos.`,
+    b:`Para que sea circunferencia hace falta A = C, y aquí −4 ≠ −9.`,
+    c:`En la parábola falta x² o y²; aquí están los dos. Los términos en x y en y solo corren el centro.` } };
 
 // ----- configuraciones del dibujo -----
 const LEY_CUERDA = [['f1', 'PF₁ y la estaca F₁'], ['f2', 'PF₂ y la estaca F₂']];
@@ -1076,7 +1076,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + `<div class="nav"><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     tramos($('res2'));

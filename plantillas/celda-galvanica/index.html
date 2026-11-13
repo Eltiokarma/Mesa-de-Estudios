@@ -133,7 +133,7 @@ canvas{display:block; width:100%; touch-action:pan-y; -webkit-user-select:none; 
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:999px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -891,27 +891,27 @@ const P1 = { id:'celda-paso2', ok:'a', anima:() => { E.cfg.roles = true; E.solta
   ['c','Del Zn al Cu, por el puente salino','EC2-electrones-por-la-disolucion','documentado'],
   ['d','Del electrodo de la izquierda al de la derecha, sea cual sea','EC4-anodo-a-la-izquierda','documentado']],
   fb:{ a:'¡Bien! El zinc se oxida y suelta electrones; estos van por el alambre hasta el cobre, donde los toman los Cu²⁺.',
-    b:'Elegiste la B. Los electrones salen del metal que se oxida, el zinc (el de menor potencial), y van al cobre. La correcta está marcada.',
-    c:'Elegiste la C. Los electrones no pueden andar sueltos en el agua: solo van por los metales y el alambre. Por el puente pasan iones. La correcta está marcada.',
-    d:'Elegiste la D. El lado del dibujo no decide nada: aquí el zinc está a la derecha y los electrones van de derecha a izquierda. La correcta está marcada.' } };
+    b:'Los electrones salen del metal que se oxida, el zinc (el de menor potencial), y van al cobre.',
+    c:'Los electrones no pueden andar sueltos en el agua: solo van por los metales y el alambre. Por el puente pasan iones.',
+    d:'El lado del dibujo no decide nada: aquí el zinc está a la derecha y los electrones van de derecha a izquierda.' } };
 const P2 = { id:'celda-paso4', ok:'c', anima:() => E.cambiarPuente('alambre'), opts:[
   ['a','Sí, igual: los electrones pasan por el alambre igual que por el puente','EC1-puente-lleva-electrones','documentado'],
   ['b','Sí, igual: el metal conduce iones y electrones','EC1-metal-conduce-iones','documentado'],
   ['c','No: por el alambre no pueden pasar iones; sin iones entre los vasos, cada disolución se carga y la pila de zinc y cobre se detiene.'],
   ['d','Funciona mejor, porque ahora hay dos caminos para los electrones','EC1-dos-caminos','hipotesis']],
   fb:{ c:'¡Bien! El puente no lleva electrones: lleva iones que mantienen neutra cada disolución. Sin ellos, la pila de zinc y cobre se frena enseguida.',
-    a:'Elegiste la A. Por el puente salino nunca pasaron electrones: pasaban iones. Un alambre no deja pasar iones, así que cada vaso se carga y la pila de zinc y cobre se detiene. La correcta está marcada.',
-    b:'Elegiste la B. Un metal conduce electrones, pero no iones: los iones no pueden entrar al alambre. La correcta está marcada.',
-    d:'Elegiste la D. El circuito de los electrones ya estaba cerrado por arriba; lo que se rompe es el camino de los iones. La correcta está marcada.' } };
+    a:'Por el puente salino nunca pasaron electrones: pasaban iones. Un alambre no deja pasar iones, así que cada vaso se carga y la pila de zinc y cobre se detiene.',
+    b:'Un metal conduce electrones, pero no iones: los iones no pueden entrar al alambre.',
+    d:'El circuito de los electrones ya estaba cerrado por arriba; lo que se rompe es el camino de los iones.' } };
 const P3 = { id:'celda-paso5', ok:'c', anima:() => { E.cfg.ocultarV = false; E.soltar(); }, opts:[
   ['a','1,26 V: 2 · 0,80 − 0,34','fem-multiplica-coeficientes','hipotesis'],
   ['b','1,14 V: 0,80 + 0,34','fem-suma-sin-cambiar-signo','hipotesis'],
   ['c','0,46 V: 0,80 − 0,34'],
   ['d','−0,46 V: 0,34 − 0,80','fem-resta-al-reves','hipotesis']],
   fb:{ c:'¡Bien! El potencial no se multiplica por el 2 de la plata: depende de qué metales son, no de cuántos átomos escribes.',
-    a:'Elegiste la A. El 2 de "2 Ag⁺" sirve para igualar electrones, no para el potencial: E° no depende de cuánta sustancia reacciona. La correcta está marcada.',
-    b:'Elegiste la B. Los dos valores de la tabla son de reducción. Al cobre, que se oxida, se le resta: E°(cátodo) − E°(ánodo). La correcta está marcada.',
-    d:'Elegiste la D. Restaste al revés: una pila que funciona tiene fem positiva. Es E°(cátodo) − E°(ánodo), y el cátodo es la plata. La correcta está marcada.' } };
+    a:'El 2 de "2 Ag⁺" sirve para igualar electrones, no para el potencial: E° no depende de cuánta sustancia reacciona.',
+    b:'Los dos valores de la tabla son de reducción. Al cobre, que se oxida, se le resta: E°(cátodo) − E°(ánodo).',
+    d:'Restaste al revés: una pila que funciona tiene fem positiva. Es E°(cátodo) − E°(ánodo), y el cátodo es la plata.' } };
 
 const opciones = P => `<div class="opts">${P.opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="fb"></p>`;
 const tabla = (ids, celda) => `<div class="tabla" role="table" aria-label="Potenciales estándar de reducción"><div class="fila cab" role="row"><span>semirreacción de reducción</span><span>E°</span><span></span></div>`
@@ -1122,9 +1122,9 @@ const EXPS = [
           ['c','Iones, pero solo los negativos','EC5-solo-iones-negativos','documentado'],
           ['d','Iones: los aniones van hacia el cobre, porque es el polo positivo','aniones-al-polo-positivo','hipotesis']],
     ok:'b',
-    fb:{ a:'Elegiste la A. Por el puente no pasa ni un electrón: mira el dibujo, los electrones solo van por el alambre. La correcta está marcada.',
-      c:'Elegiste la C. Se mueven los dos: los aniones hacia el zinc y los cationes hacia el cobre, en sentidos opuestos. La correcta está marcada.',
-      d:'Elegiste la D. Lo que mueve a los aniones no es el polo de la lámina, sino la carga de la disolución: alrededor del zinc aparecen Zn²⁺ y sobra carga positiva. Los aniones van hacia allá. La correcta está marcada.' },
+    fb:{ a:'Por el puente no pasa ni un electrón: mira el dibujo, los electrones solo van por el alambre.',
+      c:'Se mueven los dos: los aniones hacia el zinc y los cationes hacia el cobre, en sentidos opuestos.',
+      d:'Lo que mueve a los aniones no es el polo de la lámina, sino la carga de la disolución: alrededor del zinc aparecen Zn²⁺ y sobra carga positiva. Los aniones van hacia allá.' },
     antes:ver => E.config({ izq:'Zn', der:'Cu', semilla:21, pausa:!ver }),
     despues:() => E.soltar(),
     exp:() => `<p>Por el puente solo pasan iones: ${N('NO₃⁻')} hacia el vaso del ${Zn('zinc')}, donde aparecen ${Zn('Zn²⁺')}, y ${K('K⁺')} hacia el del ${Cu('cobre')}, donde desaparecen ${Cu('Cu²⁺')}. Así cada disolución sigue neutra y la reacción puede continuar. Los ${e('electrones')} van por arriba, por el alambre.</p>
@@ -1136,9 +1136,9 @@ const EXPS = [
           ['c','Nada cambia: el puente solo sirve para que no se mezclen las disoluciones','puente-solo-separa','hipotesis'],
           ['d','El vaso del zinc queda negativo y el del cobre positivo','vaso-zinc-negativo','hipotesis']],
     ok:'a',
-    fb:{ b:'Elegiste la B. Los electrones no entran a la disolución: se quedan en los metales. La carga de cada vaso solo la pueden compensar iones, y sin puente no llegan. La correcta está marcada.',
-      c:'Elegiste la C. El puente sí separa las disoluciones, pero su trabajo es dejar pasar iones. Sin él, la reacción se frena. La correcta está marcada.',
-      d:'Elegiste la D. Al vaso del zinc llegan Zn²⁺ (carga positiva) y del vaso del cobre se van Cu²⁺: el del zinc queda positivo y el del cobre, negativo. La correcta está marcada.' },
+    fb:{ b:'Los electrones no entran a la disolución: se quedan en los metales. La carga de cada vaso solo la pueden compensar iones, y sin puente no llegan.',
+      c:'El puente sí separa las disoluciones, pero su trabajo es dejar pasar iones. Sin él, la reacción se frena.',
+      d:'Al vaso del zinc llegan Zn²⁺ (carga positiva) y del vaso del cobre se van Cu²⁺: el del zinc queda positivo y el del cobre, negativo.' },
     antes:ver => E.config({ izq:'Zn', der:'Cu', puente:'ninguno', semilla:22, pausa:!ver, ocultarV:!ver }),
     despues:() => { E.cfg.ocultarV = false; E.soltar(); },
     exp:() => `<p>Mira los contadores: se disuelven dos puntos de ${Zn('zinc')} y se depositan dos de ${Cu('cobre')}; el vaso del zinc queda con +4 y el del cobre con −4, y ya no pasa ningún ${e('electrón')} más. En una pila real basta que reaccione una cantidad que ninguna balanza detecta: la carga que se acumula frena la reacción. Sin puente, el voltímetro marca ${Ev('0 V')}.</p>
@@ -1150,9 +1150,9 @@ const EXPS = [
           ['c','0,55 V: la mitad, porque se reparte entre más átomos','fem-mitad','hipotesis'],
           ['d','Depende de cuánta masa de zinc haya','fem-depende-de-cantidad','hipotesis']],
     ok:'b',
-    fb:{ a:'Elegiste la A. Duplicar la reacción duplica cuánto reacciona y cuánta carga puede dar la pila, pero no la fem: cada electrón sale con el mismo "empuje". La correcta está marcada.',
-      c:'Elegiste la C. La fem no se reparte entre los átomos: depende de qué metales son. La correcta está marcada.',
-      d:'Elegiste la D. Más zinc hace que la pila dure más, no que empuje más fuerte. La correcta está marcada.' },
+    fb:{ a:'Duplicar la reacción duplica cuánto reacciona y cuánta carga puede dar la pila, pero no la fem: cada electrón sale con el mismo "empuje".',
+      c:'La fem no se reparte entre los átomos: depende de qué metales son.',
+      d:'Más zinc hace que la pila dure más, no que empuje más fuerte.' },
     antes:ver => E.config({ izq:'Zn', der:'Cu', semilla:23, grande:true, pausa:!ver, ocultarV:!ver }),
     despues:() => { E.cfg.ocultarV = false; E.soltar(); },
     exp:() => `<div class="eqs"><div class="eq">${Ev('E°')} = ${Ev('0,34')} − (${Ev('−0,76')}) = ${Ev(fV(DUP.E))}<span class="note">con 1, 2 o 100 átomos de zinc</span></div></div>
@@ -1165,9 +1165,9 @@ const EXPS = [
           ['c','8 de cobre y 4 de plata','faraday-carga-al-reves','hipotesis'],
           ['d','16 de cobre y 8 de plata','faraday-multiplica-la-carga','hipotesis']],
     ok:'b',
-    fb:{ a:'Elegiste la A. Los electrones son los mismos, pero cada Cu²⁺ necesita dos y cada Ag⁺ solo uno. La correcta está marcada.',
-      c:'Elegiste la C. Al revés: el que necesita más electrones por átomo, el cobre, deposita menos átomos. La correcta está marcada.',
-      d:'Elegiste la D. La carga del ion divide, no multiplica: con 8 electrones alcanzan para 4 Cu²⁺. La correcta está marcada.' },
+    fb:{ a:'Los electrones son los mismos, pero cada Cu²⁺ necesita dos y cada Ag⁺ solo uno.',
+      c:'Al revés: el que necesita más electrones por átomo, el cobre, deposita menos átomos.',
+      d:'La carga del ion divide, no multiplica: con 8 electrones alcanzan para 4 Cu²⁺.' },
     antes:ver => E.config({ tipo:'faraday', especies:['Cu', 'Ag'], meta:8, semilla:4, corriendo:false, aviso:'Responde para hacer pasar la corriente' }),
     despues:() => E.correr(),
     exp:() => `<div class="eqs"><div class="eq">${Cu('Cu²⁺')} + 2 ${e('e⁻')} → ${Cu('Cu')} · ${Ag('Ag⁺')} + ${e('e⁻')} → ${Ag('Ag')}</div>
@@ -1181,9 +1181,9 @@ const EXPS = [
           ['c','La plata, porque el ánodo es el polo positivo','EC3-anodo-positivo','documentado'],
           ['d','Depende de dónde se ubiquen las semiceldas','EC4-depende-de-la-ubicacion','documentado']],
     ok:'b',
-    fb:{ a:'Elegiste la A. Es una costumbre de los libros dibujar el ánodo a la izquierda, no una regla: el ánodo es donde ocurre la oxidación. La correcta está marcada.',
-      c:'Elegiste la C. En una pila, el ánodo es el polo negativo: de ahí salen los electrones. La correcta está marcada.',
-      d:'Elegiste la D. Moviendo los vasos no cambia nada: el zinc se oxida esté donde esté. La correcta está marcada.' },
+    fb:{ a:'Es una costumbre de los libros dibujar el ánodo a la izquierda, no una regla: el ánodo es donde ocurre la oxidación.',
+      c:'En una pila, el ánodo es el polo negativo: de ahí salen los electrones.',
+      d:'Moviendo los vasos no cambia nada: el zinc se oxida esté donde esté.' },
     antes:ver => E.config({ izq:'Ag', der:'Zn', semilla:25, pausa:!ver, roles:ver }),
     despues:() => { E.cfg.roles = true; E.soltar(); },
     exp:() => `<div class="eqs"><div class="eq">${Zn('Zn')} → ${Zn('Zn²⁺')} + 2 ${e('e⁻')}<span class="note">oxidación: ánodo, polo −</span></div>
@@ -1198,9 +1198,9 @@ const EXPS = [
           ['c','Cátodo (−): H₂; ánodo (+): O₂, con el doble de volumen de O₂','agua-doble-de-oxigeno','hipotesis'],
           ['d','Cátodo (−): H₂; ánodo (+): O₂, con el doble de volumen de H₂',null]],
     ok:'d',
-    fb:{ a:'Elegiste la A. Los gases sí son H₂ y O₂, pero no salen iguales: cada H₂ necesita 2 electrones y cada O₂ suelta 4. Con los mismos electrones sale el doble de H₂, como en la fórmula H₂O. La correcta está marcada.',
-      b:'Elegiste la B. Al cátodo, el polo −, llegan los electrones y ahí ocurre la reducción: el agua gana electrones y suelta H₂. El O₂ sale en el ánodo, donde el agua pierde electrones. La correcta está marcada.',
-      c:'Elegiste la C. Al revés: para cada O₂ tienen que salir 4 electrones y para cada H₂ basta que lleguen 2, así que con los mismos electrones se junta el doble de H₂. La correcta está marcada.' },
+    fb:{ a:'Los gases sí son H₂ y O₂, pero no salen iguales: cada H₂ necesita 2 electrones y cada O₂ suelta 4. Con los mismos electrones sale el doble de H₂, como en la fórmula H₂O.',
+      b:'Al cátodo, el polo −, llegan los electrones y ahí ocurre la reducción: el agua gana electrones y suelta H₂. El O₂ sale en el ánodo, donde el agua pierde electrones.',
+      c:'Al revés: para cada O₂ tienen que salir 4 electrones y para cada H₂ basta que lleguen 2, así que con los mismos electrones se junta el doble de H₂.' },
     antes:ver => { E.config({ tipo:'gases', sistemas:['agua-sulfato'], meta:24, semilla:6, mostrar:ver }); if (ver) E.terminarGases(); },
     despues:() => { E.cfg.mostrar = true; E.leyenda(); E.correrGases(); },
     exp:() => `<div class="eqs"><div class="eq">${pintaEc(AGUA.catodo.semirreaccion)}<span class="note">cátodo (−): reducción</span></div>
@@ -1216,9 +1216,9 @@ const EXPS = [
           ['c','En la salmuera, H₂; en la sal fundida, sodio',null],
           ['d','En la salmuera, H₂; en la sal fundida, H₂','nacl-fundido-sale-hidrogeno','hipotesis']],
     ok:'c',
-    fb:{ a:'Elegiste la A. En la salmuera hay muchísima agua, y al agua le cuesta menos ganar electrones que al Na⁺: en el cátodo se reduce el agua y sale H₂. Solo sale sodio si no hay agua, en la sal fundida. La correcta está marcada.',
-      b:'Elegiste la B. Los iones Na⁺ y Cl⁻ ya estaban separados desde que la sal se disolvió, sin corriente. La electrólisis forma sustancias nuevas en los electrodos: aquí, H₂ y Cl₂. La correcta está marcada.',
-      d:'Elegiste la D. En la sal fundida no hay agua ni ningún otro hidrógeno: lo único que puede ganar electrones es el Na⁺, y sale sodio metálico. La correcta está marcada.' },
+    fb:{ a:'En la salmuera hay muchísima agua, y al agua le cuesta menos ganar electrones que al Na⁺: en el cátodo se reduce el agua y sale H₂. Solo sale sodio si no hay agua, en la sal fundida.',
+      b:'Los iones Na⁺ y Cl⁻ ya estaban separados desde que la sal se disolvió, sin corriente. La electrólisis forma sustancias nuevas en los electrodos: aquí, H₂ y Cl₂.',
+      d:'En la sal fundida no hay agua ni ningún otro hidrógeno: lo único que puede ganar electrones es el Na⁺, y sale sodio metálico.' },
     antes:ver => { E.config({ tipo:'gases', sistemas:['nacl-acuoso', 'nacl-fundido'], meta:12, semilla:7, mostrar:ver }); if (ver) E.terminarGases(); },
     despues:() => { E.cfg.mostrar = true; E.leyenda(); E.correrGases(); },
     exp:() => `<div class="eqs"><div class="eq">${pintaEc(SALA.catodo.semirreaccion)}<span class="note">salmuera, cátodo (−)</span></div>
@@ -1261,7 +1261,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : (x.fb && x.fb[p]) || `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira la escena para ver por qué.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : (x.fb && x.fb[p]) || `; mira la escena para ver por qué.`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

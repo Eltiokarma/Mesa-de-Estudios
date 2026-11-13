@@ -112,7 +112,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -533,72 +533,72 @@ const P1 = { id:'binomio-newton-paso1', ok:'c', opts:[
   ['c', C1.texto],
   ['d', C1.errores.todas.texto, 'BN14-cuenta-todos-los-caminos', 'hipotesis']],
   fb:{ c:'¡Bien! Basta elegir en cuáles 3 de los 5 clavos la bolita va a la derecha: C(5, 3) = 10 maneras.',
-    a:'Elegiste la A. 60 = 5 · 4 · 3 cuenta las b como si fueran distintas (primera, segunda y tercera b). Las tres b son iguales: cada camino se contó 3! = 6 veces, y 60/6 = 10. La correcta está marcada.',
-    b:'Elegiste la B. 20 = 5!/3! olvida dividir también entre 2!, las maneras de ordenar las dos a. La correcta está marcada.',
-    d:'Elegiste la D. 32 = 2⁵ son todos los caminos de 5 filas, lleguen donde lleguen. Solo cuentan los que terminan con 3 letras b. La correcta está marcada.' } };
+    a:'60 = 5 · 4 · 3 cuenta las b como si fueran distintas (primera, segunda y tercera b). Las tres b son iguales: cada camino se contó 3! = 6 veces, y 60/6 = 10.',
+    b:'20 = 5!/3! olvida dividir también entre 2!, las maneras de ordenar las dos a.',
+    d:'32 = 2⁵ son todos los caminos de 5 filas, lleguen donde lleguen. Solo cuentan los que terminan con 3 letras b.' } };
 const P2 = { id:'binomio-newton-paso2', ok:'b', opts:[
   ['a', P2c.errores.desfase.texto, 'BN2-desfase-del-indice', 'hipotesis'],
   ['b', P2c.texto],
   ['c', P2c.errores.soloUno.texto, 'BN16-copia-sin-sumar', 'hipotesis'],
   ['d', P2c.errores.multiplica.texto, 'BN15-multiplica-los-de-arriba', 'hipotesis']],
   fb:{ b:'¡Bien! 35 + 35 = 70: cada camino que llega al casillero viene de uno de sus dos vecinos de arriba.',
-    a:'Elegiste la A. 56 = C(8, 3) es el casillero de al lado. El marcado está debajo de 35 y 35, entre los dos: es C(8, 4). La correcta está marcada.',
-    c:'Elegiste la C. 35 copia uno solo de los dos de arriba. Al casillero llegan los caminos de los dos: se suman. La correcta está marcada.',
-    d:'Elegiste la D. 1225 = 35 · 35. Un camino llega por un vecino o por el otro, no por los dos a la vez: se suma, no se multiplica. La correcta está marcada.' } };
+    a:'56 = C(8, 3) es el casillero de al lado. El marcado está debajo de 35 y 35, entre los dos: es C(8, 4).',
+    c:'35 copia uno solo de los dos de arriba. Al casillero llegan los caminos de los dos: se suman.',
+    d:'1225 = 35 · 35. Un camino llega por un vecino o por el otro, no por los dos a la vez: se suma, no se multiplica.' } };
 const P3 = { id:'binomio-newton-paso3', ok:'d', opts:[
   ['a', F3.errores.sumaN.texto, 'BN5-suma-de-la-fila-es-n', 'hipotesis'],
   ['b', F3.errores.doble.texto, 'BN6-suma-de-la-fila-es-2n', 'hipotesis'],
   ['c', F3.errores.cuadrado.texto, 'BN18-suma-de-la-fila-es-n2', 'hipotesis'],
   ['d', F3.texto]],
   fb:{ d:'¡Bien! Cada casillero manda sus caminos a los dos de abajo, así que cada fila suma el doble que la de arriba: 1, 2, 4, …, 64 = 2⁶.',
-    a:'Elegiste la A. 6 es el número de la fila. La suma cuenta todos los caminos de 6 filas: con dos opciones en cada clavo son 2 · 2 · 2 · 2 · 2 · 2. La correcta está marcada.',
-    b:'Elegiste la B. 12 = 2 · 6 suma 2 por cada fila; en realidad cada fila multiplica por 2: 2⁶. La correcta está marcada.',
-    c:'Elegiste la C. 36 = 6². Suma la fila 6 en el dibujo (1 + 6 + 15 + 20 + 15 + 6 + 1) y compruébalo: es 2⁶, no 6². La correcta está marcada.' } };
+    a:'6 es el número de la fila. La suma cuenta todos los caminos de 6 filas: con dos opciones en cada clavo son 2 · 2 · 2 · 2 · 2 · 2.',
+    b:'12 = 2 · 6 suma 2 por cada fila; en realidad cada fila multiplica por 2: 2⁶.',
+    c:'36 = 6². Suma la fila 6 en el dibujo (1 + 6 + 15 + 20 + 15 + 6 + 1) y compruébalo: es 2⁶, no 6².' } };
 const P4 = { id:'binomio-newton-paso4', ok:'a', opts:[
   ['a', T4.texto],
   ['b', T4.errores.nTerminos.texto, 'BN1-n-terminos', 'hipotesis'],
   ['c', T4.errores.reparte.texto, 'AL11-reparte-el-exponente', 'hipotesis'],
   ['d', T4.errores.sinJuntar.texto, 'BN17-no-junta-semejantes', 'hipotesis']],
   fb:{ a:'¡Bien! Los caminos de 7 filas terminan en 8 casilleros, con k = 0, 1, …, 7 letras b: (a + b)⁷ tiene 7 + 1 = 8 términos.',
-    b:'Elegiste la B. 7 deja fuera un casillero: k va de 0 a 7, y eso son 8 valores (a⁷, con k = 0, también es un término). La correcta está marcada.',
-    c:'Elegiste la C. 2 es pensar que (a + b)⁷ = a⁷ + b⁷, como si el exponente se repartiera. Esos son solo los caminos de los dos bordes: los del medio dan a⁶b, a⁵b², … La correcta está marcada.',
-    d:'Elegiste la D. 128 = 2⁷ son los caminos antes de juntar los que llegan al mismo casillero: abb… y bab… dan el mismo término. La correcta está marcada.' } };
+    b:'7 deja fuera un casillero: k va de 0 a 7, y eso son 8 valores (a⁷, con k = 0, también es un término).',
+    c:'2 es pensar que (a + b)⁷ = a⁷ + b⁷, como si el exponente se repartiera. Esos son solo los caminos de los dos bordes: los del medio dan a⁶b, a⁵b², …',
+    d:'128 = 2⁷ son los caminos antes de juntar los que llegan al mismo casillero: abb… y bab… dan el mismo término.' } };
 const P5 = { id:'binomio-newton-paso5', ok:'c', opts:[
   ['a', T5.errores.desfase.texto, 'BN2-desfase-del-indice', 'hipotesis'],
   ['b', T5.errores.kCompleto.texto, 'BN10-k-igual-al-lugar', 'hipotesis'],
   ['c', T5.texto],
   ['d', T5.errores.alReves.texto, 'BN11-exponentes-al-reves', 'hipotesis']],
   fb:{ c:'¡Bien! t₄ es el cuarto casillero: k = 3 letras b y 9 − 3 = 6 letras a. t₄ = C(9, 3)a⁶b³ = 84a⁶b³.',
-    a:'Elegiste la A. Los exponentes están bien, pero C(9, 4) = 126 es el casillero de al lado: en t₄ va C(9, 3), con el mismo 3 que el exponente de b. La correcta está marcada.',
-    b:'Elegiste la B. 126a⁵b⁴ tiene 4 letras b: es t₅. Se cuenta desde t₁ = a⁹, que tiene k = 0; por eso t₄ tiene k = 3. La correcta está marcada.',
-    d:'Elegiste la D. 84a³b⁶ cambia los exponentes: en t₄ se eligió b solo 3 veces, así que b va al cubo y a, a la sexta. La correcta está marcada.' } };
+    a:'Los exponentes están bien, pero C(9, 4) = 126 es el casillero de al lado: en t₄ va C(9, 3), con el mismo 3 que el exponente de b.',
+    b:'126a⁵b⁴ tiene 4 letras b: es t₅. Se cuenta desde t₁ = a⁹, que tiene k = 0; por eso t₄ tiene k = 3.',
+    d:'84a³b⁶ cambia los exponentes: en t₄ se eligió b solo 3 veces, así que b va al cubo y a, a la sexta.' } };
 const P6 = { id:'binomio-newton-paso6', ok:'b', opts:[
   ['a', K6.errores.sinElevar.texto, 'BN4-no-eleva-el-coeficiente', 'hipotesis'],
   ['b', K6.texto],
   ['c', K6.errores.desfase.texto, 'BN2-desfase-del-indice', 'hipotesis'],
   ['d', K6.errores.sinCoef.texto, 'BN3-olvida-el-combinatorio', 'hipotesis']],
   fb:{ b:'¡Bien! x⁴ sale de elegir 2x cuatro veces y 1 dos veces: k = 2. C(6, 2) · (2x)⁴ · 1² = 15 · 16x⁴ = 240x⁴.',
-    a:'Elegiste la A. 30 = 15 · 2 multiplica por 2 una sola vez. Cada una de las cuatro veces que se elige 2x entra un 2: (2x)⁴ = 16x⁴, no 2x⁴. La correcta está marcada.',
-    c:'Elegiste la C. 320 = 20 · 16 usa C(6, 3). Para x⁴ se eligió 1 dos veces: k = 2, y va C(6, 2) = 15. La correcta está marcada.',
-    d:'Elegiste la D. 16 = 2⁴ olvida contar los caminos: hay C(6, 2) = 15 maneras de elegir en qué dos paréntesis va el 1. La correcta está marcada.' } };
+    a:'30 = 15 · 2 multiplica por 2 una sola vez. Cada una de las cuatro veces que se elige 2x entra un 2: (2x)⁴ = 16x⁴, no 2x⁴.',
+    c:'320 = 20 · 16 usa C(6, 3). Para x⁴ se eligió 1 dos veces: k = 2, y va C(6, 2) = 15.',
+    d:'16 = 2⁴ olvida contar los caminos: hay C(6, 2) = 15 maneras de elegir en qué dos paréntesis va el 1.' } };
 const P7 = { id:'binomio-newton-paso7', ok:'b', opts:[
   ['a', T7.errores.sinSigno.texto, 'BN8-olvida-el-signo', 'hipotesis'],
   ['b', T7.texto],
   ['c', T7.errores.sinElevar.texto, 'BN4-no-eleva-el-coeficiente', 'hipotesis'],
   ['d', T7.errores.desfase.texto, 'BN2-desfase-del-indice', 'hipotesis']],
   fb:{ b:'¡Bien! t₄ tiene k = 3: tres veces −2. C(5, 3) · x² · (−2)³ = 10 · x² · (−8) = −80x².',
-    a:'Elegiste la A. 80x² olvida el signo: (−2)³ = −8 es negativo porque el exponente es impar. En (x − 2)⁵ los signos de los términos se alternan. La correcta está marcada.',
-    c:'Elegiste la C. −20x² = 10 · (−2) · x² pone el −2 una sola vez; entra tres veces: (−2)³ = −8. La correcta está marcada.',
-    d:'Elegiste la D. −40x² = 5 · (−8)x² usa C(5, 4). En t₄ va C(5, 3) = 10, con el mismo 3 del exponente de −2. La correcta está marcada.' } };
+    a:'80x² olvida el signo: (−2)³ = −8 es negativo porque el exponente es impar. En (x − 2)⁵ los signos de los términos se alternan.',
+    c:'−20x² = 10 · (−2) · x² pone el −2 una sola vez; entra tres veces: (−2)³ = −8.',
+    d:'−40x² = 5 · (−8)x² usa C(5, 4). En t₄ va C(5, 3) = 10, con el mismo 3 del exponente de −2.' } };
 const P8 = { id:'binomio-newton-paso8', ok:'b', frase:true, opts:[
   ['a', `${K8.errores.desfase.texto}: el exponente es cero en t₅, así que va C(6, 5)`, 'BN2-desfase-del-indice', 'hipotesis'],
   ['b', `${K8.texto}: el exponente 12 − 3k vale cero cuando k = 4`],
   ['c', `${K8.errores.central.texto}: el término sin x siempre es el central, t₄`, 'BN19-independiente-es-el-central', 'hipotesis'],
   ['d', `${may(K8.errores.exponenteSuma.texto)}: el exponente 12 − k no vale cero con k ≤ 6`, 'BN9-suma-mal-los-exponentes', 'hipotesis']],
   fb:{ b:'¡Bien! Con k pasos a la derecha, x queda con exponente 2(6 − k) − k = 12 − 3k. Vale cero con k = 4: t₅ = C(6, 4) = 15.',
-    a:'Elegiste la A. Es t₅, sí, pero t₅ tiene k = 4: va C(6, 4) = 15, no C(6, 5). La correcta está marcada.',
-    c:'Elegiste la C. El término central, t₄ = 20x³, todavía tiene x. El término sin x lo deciden los exponentes, no el lugar. La correcta está marcada.',
-    d:'Elegiste la D. 1/x es x⁻¹: cada paso a la derecha resta 1 al exponente, no lo suma. Queda 12 − 2k − k = 12 − 3k. La correcta está marcada.' } };
+    a:'Es t₅, sí, pero t₅ tiene k = 4: va C(6, 4) = 15, no C(6, 5).',
+    c:'El término central, t₄ = 20x³, todavía tiene x. El término sin x lo deciden los exponentes, no el lugar.',
+    d:'1/x es x⁻¹: cada paso a la derecha resta 1 al exponente, no lo suma. Queda 12 − 2k − k = 12 − 3k.' } };
 
 // ---------- configuración de cada paso (antes = sin responder; despues = ya respondida y libre) ----------
 const s1 = { n:5, k:3 }, s2 = { k:4 }, s3 = { n:6 }, s4 = { n:7 }, s5 = { k:3 }, s6 = { k:2 }, s7 = { k:3 }, s8 = { k:4 };
@@ -1006,7 +1006,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + `<div class="nav"><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     tramos($('res2'));

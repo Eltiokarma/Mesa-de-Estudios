@@ -116,7 +116,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap:12px; align-items:end}
 select{font:700 .95rem var(--font); padding:9px 12px; border-radius:12px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); min-height:44px; max-width:100%; width:100%; min-width:0}
@@ -602,18 +602,18 @@ const P0 = { id:'enlace-paso2', ok:'b', opts:[
   ['c', `${LW.errores['libres-electrones-como-pares']}: al N le sobran 2 electrones, y cada uno es un par libre.`, 'electrones-como-pares', RES('hipotesis', 'hipótesis nuestra, cercana a EN4 (17 % no sabe que un enlace es un par)')],
   ['d', `${LW.errores['libres-octeto-todo-libre']}: alrededor del N hay 4 pares, y todos cuentan como suyos.`, 'octeto-todo-libre', RES('hipotesis', 'hipótesis nuestra')]],
   fb:{ b:`¡Bien! Hay ${LW.electrones} electrones de valencia: 4 pares. Tres pares forman los enlaces N–H (${En_('pares enlazantes')}) y el que sobra queda en el N sin compartir: ${Li_('un par libre')}.`,
-    a:`Elegiste la 1. «Valencia 3» dice cuántos enlaces forma el N, no cuántos electrones de valencia tiene: tiene 5 (grupo 15). Con 5 + 3 = ${LW.electrones} electrones hay 4 pares; los enlaces usan 3 y sobra ${Li_('un par libre')}. En ${KARONEN}, antes del curso cerca de 1 de cada 4 se equivocó en los electrones de valencia del oxígeno; esta opción es la misma confusión con el N. La correcta está marcada.`,
-    c:`Elegiste la 3. Sí sobran 2 electrones, pero juntos forman un solo par: ${Li_('un par libre')}. Esta opción es una hipótesis nuestra; en ${KARONEN}, cerca de 1 de cada 6 no sabía cuántos electrones forman un enlace. La correcta está marcada.`,
-    d:`Elegiste la 4. Alrededor del N sí hay 4 pares, pero 3 son compartidos con los H: son ${En_('pares enlazantes')}. Solo uno queda sin compartir. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
+    a:`«Valencia 3» dice cuántos enlaces forma el N, no cuántos electrones de valencia tiene: tiene 5 (grupo 15). Con 5 + 3 = ${LW.electrones} electrones hay 4 pares; los enlaces usan 3 y sobra ${Li_('un par libre')}. En ${KARONEN}, antes del curso cerca de 1 de cada 4 se equivocó en los electrones de valencia del oxígeno; esta opción es la misma confusión con el N.`,
+    c:`Sí sobran 2 electrones, pero juntos forman un solo par: ${Li_('un par libre')}.`,
+    d:`Alrededor del N sí hay 4 pares, pero 3 son compartidos con los H: son ${En_('pares enlazantes')}. Solo uno queda sin compartir.` } };
 const P1 = { id:'enlace-paso3', ok:'b', opts:[
   ['a', `Trigonal plana, como en el dibujo: los tres H alrededor del N.`, 'EN8-forma-del-dibujo', RES('documentado', 'Karonen 2021, 6a: 44 % acierta antes del curso')],
   ['b', `Piramidal: los tres H quedan debajo del N y el par libre, arriba.`],
   ['c', `Tetraédrica: hay cuatro pares alrededor del N y cada uno apunta a un vértice.`, 'dominios-en-vez-de-molecular', RES('hipotesis', 'informe, propuesta de geometría: hipótesis')],
   ['d', `Angular: el par libre aplasta la molécula y la dobla.`, 'EN9-solo-pares-libres', RES('parcial', 'Birk y Kurtz 1999, citado por Uyulgan y Akkuzu: 27 %, otra pregunta')]],
   fb:{ b:`¡Bien! El N tiene 4 dominios: 3 ${En_('pares enlazantes')} y ${Li_('un par libre')}. Se separan lo más posible, hacia los vértices de un tetraedro. La forma solo mira a los átomos: los tres H forman la base de una pirámide con el N arriba.`,
-    a:`Elegiste la 1. El dibujo de Lewis es plano porque el papel es plano. El ${Li_('par libre')} también ocupa lugar y empuja a los H hacia abajo: piramidal. En ${KARONEN}, antes del curso solo cerca del 44 % acertó la forma del NH₃. La correcta está marcada.`,
-    c:`Elegiste la 3. Los 4 pares sí apuntan a los vértices de un tetraedro: esa es la forma de los dominios. Pero la forma de la molécula solo mira dónde están los átomos, y uno de los 4 vértices lo ocupa el ${Li_('par libre')}: piramidal. Esta opción es una hipótesis nuestra. La correcta está marcada.`,
-    d:`Elegiste la 4. El ${Li_('par libre')} cuenta, pero no aplasta: es un dominio más, como los 3 enlaces. Los 4 juntos dan el tetraedro y los H quedan en pirámide. «La forma la deciden solo los pares libres» es una idea que un estudio con estudiantes de posgrado encontró en cerca del 27 % (Birk y Kurtz, citado por Uyulgan y Akkuzu), con otra pregunta. La correcta está marcada.` } };
+    a:`El dibujo de Lewis es plano porque el papel es plano. El ${Li_('par libre')} también ocupa lugar y empuja a los H hacia abajo: piramidal. En ${KARONEN}, antes del curso solo cerca del 44 % acertó la forma del NH₃.`,
+    c:`Los 4 pares sí apuntan a los vértices de un tetraedro: esa es la forma de los dominios. Pero la forma de la molécula solo mira dónde están los átomos, y uno de los 4 vértices lo ocupa el ${Li_('par libre')}: piramidal.`,
+    d:`El ${Li_('par libre')} cuenta, pero no aplasta: es un dominio más, como los 3 enlaces. Los 4 juntos dan el tetraedro y los H quedan en pirámide. «La forma la deciden solo los pares libres» es una idea que un estudio con estudiantes de posgrado encontró en cerca del 27 % (Birk y Kurtz, citado por Uyulgan y Akkuzu), con otra pregunta.` } };
 reordenar(P1, ['a', 'c', 'd', 'b']);
 const P2 = { id:'enlace-paso4', ok:'b', opts:[
   ['a', `${hib(VS.errores['hibridacion-solo-ligandos'])}: tiene 3 átomos unidos.`, 'hibridacion-solo-ligandos', RES('hipotesis', 'tabla de lo que no tiene respaldo: NH₃ como sp²')],
@@ -621,18 +621,18 @@ const P2 = { id:'enlace-paso4', ok:'b', opts:[
   ['c', `${hib(VS.errores['hibridacion-por-electrones'])}: un orbital por cada uno de sus 5 electrones de valencia.`, 'hibridacion-por-electrones', RES('hipotesis', 'hipótesis nuestra')],
   ['d', `${hib(VS.errores['hibridacion-por-subcapas'])}: sus electrones de valencia están en las subcapas 2s y 2p.`, 'EN12-por-subcapas', RES('parcial', 'Uyulgan y Akkuzu 2016: 15,9 % definición errónea, no este ítem')]],
   fb:{ b:`¡Bien! Hibridación por dominios: 4 dominios, sp³ (un orbital s y tres p se mezclan en cuatro iguales que apuntan al tetraedro). Uno de los cuatro lo ocupa el ${Li_('par libre')}.`,
-    a:`Elegiste la 1. Si cuentas solo los átomos unidos te olvidas del ${Li_('par libre')}, que también ocupa un orbital híbrido. Son 4 dominios: sp³. Que este error sea frecuente es una hipótesis nuestra. La correcta está marcada.`,
-    c:`Elegiste la 3. La hibridación no cuenta electrones: cuenta direcciones, una por dominio. El N tiene 4 dominios: sp³. Esta opción es una hipótesis nuestra. La correcta está marcada.`,
-    d:`Elegiste la 4. Que los electrones estén en 2s y 2p dice cuáles orbitales se mezclan, no cuántos. Con 4 dominios se mezclan el 2s y los tres 2p: sp³. En ${UYULGAN}, cerca de 1 de cada 6 definió mal la hibridación y casi 1 de cada 3 no respondió; no midieron esta opción. La correcta está marcada.` } };
+    a:`Si cuentas solo los átomos unidos te olvidas del ${Li_('par libre')}, que también ocupa un orbital híbrido. Son 4 dominios: sp³. `,
+    c:`La hibridación no cuenta electrones: cuenta direcciones, una por dominio. El N tiene 4 dominios: sp³.`,
+    d:`Que los electrones estén en 2s y 2p dice cuáles orbitales se mezclan, no cuántos. Con 4 dominios se mezclan el 2s y los tres 2p: sp³. En ${UYULGAN}, cerca de 1 de cada 6 definió mal la hibridación y casi 1 de cada 3 no respondió; no midieron esta opción.` } };
 const P3 = { id:'enlace-paso6', ok:'c', opts:[
   ['a', `Apolar: en el dibujo, los dos Cl quedan opuestos y sus dipolos se anulan.`, 'EN10-dibujo-plano', RES('documentado', 'Karonen 2021, 7c: 56 % antes y 71 % después')],
   ['b', `Apolar: es tetraédrica como el CH₄, y una forma simétrica no tiene dipolo.`, 'EN11-simetrica-apolar', RES('parcial', 'Furió y otros 2000, sin porcentaje')],
   ['c', `Polar: en 3D los dipolos C–Cl y C–H no se anulan.`],
   ['d', `Polar, y lo sería cualquier molécula que tenga átomos distintos.`, 'EN11-atomos-distintos', RES('parcial', 'Uyulgan y Akkuzu 2016, sin porcentaje de esta razón')]],
   fb:{ c:`¡Bien! En el tetraedro, los dos C–Cl quedan abajo y los dos C–H arriba. Sus ${Di_('dipolos')} apuntan los cuatro hacia abajo (al Cl, y desde el H hacia el C), y la suma no es cero: ${Mu_('el dipolo total')} apunta a los Cl.`,
-    a:`Elegiste la 1. En el papel los Cl parecen opuestos, pero en 3D los cuatro enlaces apuntan a los vértices de un tetraedro: los dos Cl quedan del mismo lado. Mira cómo se levanta la molécula. En ${KARONEN}, cerca del 56 % eligió una idea así antes del curso y cerca del 71 % después: el error creció. La correcta está marcada.`,
-    b:`Elegiste la 2. La forma sí es tetraédrica, pero los cuatro ligandos no son iguales: el C–Cl y el C–H tiran distinto, y en el tetraedro no se compensan. Mirar solo la forma, sin los ligandos, está descrito como error en la investigación, pero no tenemos su porcentaje. La correcta está marcada.`,
-    d:`Elegiste la 4. El CH₂Cl₂ sí es polar, pero no por tener átomos distintos: el SF₆ tiene S y F y es apolar: sus seis dipolos se anulan en el octaedro. Lo que decide es la suma en 3D. «Es polar porque tiene átomos distintos» está descrito por la investigación, sin porcentaje. La correcta está marcada.` } };
+    a:`En el papel los Cl parecen opuestos, pero en 3D los cuatro enlaces apuntan a los vértices de un tetraedro: los dos Cl quedan del mismo lado. Mira cómo se levanta la molécula. En ${KARONEN}, cerca del 56 % eligió una idea así antes del curso y cerca del 71 % después: el error creció.`,
+    b:`La forma sí es tetraédrica, pero los cuatro ligandos no son iguales: el C–Cl y el C–H tiran distinto, y en el tetraedro no se compensan. Mirar solo la forma, sin los ligandos, está descrito como error en la investigación, pero no tenemos su porcentaje.`,
+    d:`El CH₂Cl₂ sí es polar, pero no por tener átomos distintos: el SF₆ tiene S y F y es apolar: sus seis dipolos se anulan en el octaedro. Lo que decide es la suma en 3D. «Es polar porque tiene átomos distintos» está descrito por la investigación, sin porcentaje.` } };
 reordenar(P3, ['c', 'a', 'b', 'd']);
 const P4 = { id:'enlace-paso7', ok:'c', opts:[
   ['a', `${RED.errores['pares-como-moleculas']}: cada Na⁺ forma una molécula con un Cl⁻ vecino.`, 'EN1-par-ionico', RES('documentado', 'Kumpha y otros 2014: 92 % de 102 dice moléculas; 39 % par iónico')],
@@ -640,9 +640,9 @@ const P4 = { id:'enlace-paso7', ok:'c', opts:[
   ['c', `Ninguna: no hay moléculas; cada ion atrae a todos sus vecinos de carga opuesta.`],
   ['d', `Depende del tamaño: en un trozo tan pequeño los iones se juntan en pares; en un cristal grande, no.`, 'depende-del-tamano', RES('hipotesis', 'informe, propuesta de red: hipótesis')]],
   fb:{ c:`¡Bien! El ${Na_('Na⁺')} del centro está rodeado por 6 ${Cl_('Cl⁻')}, todos a la misma distancia: no tiene uno «propio». La fórmula NaCl solo dice la proporción, 1 a 1.`,
-    a:`Elegiste la 1. Ningún Na⁺ tiene un Cl⁻ propio: el del centro tiene 6 vecinos ${Cl_('Cl⁻')} a la misma distancia y los atrae a todos por igual. En un estudio con 102 escolares de Tailandia (Kumpha y otros, 2014), más de 9 de cada 10 dijeron que el NaCl existe como moléculas y cerca de 4 de cada 10 hablaron de una molécula de un Na⁺ y un Cl⁻. La correcta está marcada.`,
-    b:`Elegiste la 2. Una molécula es un grupo de átomos con un número fijo, unidos por pares compartidos. Aquí no hay pares compartidos ni número fijo: el trozo puede crecer sin fin y siempre queda 1 a 1. Esta opción es una hipótesis nuestra. La correcta está marcada.`,
-    d:`Elegiste la 4. El trozo pequeño tiene la misma red que el cristal grande: el ${Na_('Na⁺')} del centro ya tiene sus 6 ${Cl_('Cl⁻')} a la misma distancia. El tamaño no cambia cómo se atraen los iones. Esta opción es una hipótesis nuestra. La correcta está marcada.` } };
+    a:`Ningún Na⁺ tiene un Cl⁻ propio: el del centro tiene 6 vecinos ${Cl_('Cl⁻')} a la misma distancia y los atrae a todos por igual. `,
+    b:`Una molécula es un grupo de átomos con un número fijo, unidos por pares compartidos. Aquí no hay pares compartidos ni número fijo: el trozo puede crecer sin fin y siempre queda 1 a 1.`,
+    d:`El trozo pequeño tiene la misma red que el cristal grande: el ${Na_('Na⁺')} del centro ya tiene sus 6 ${Cl_('Cl⁻')} a la misma distancia. El tamaño no cambia cómo se atraen los iones.` } };
 
 // ----- Vistas -----
 const rotNH = r => [[['NH₃', 'ink', 800], ...(r ? [['  ·  ', 'muted'], ['1 par libre', 'libre', 800]] : [])]];
@@ -818,7 +818,7 @@ function prediccion(s){
   const pintar = () => {
     const p = S.pred[P.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
-    const t = p === P.ok ? P.fb[p] : `Elegiste la ${LETRAS.indexOf(p) + 1}. ` + P.fb[p].replace(/^Elegiste la \d\. /, '');
+    const t = p === P.ok ? P.fb[p] : `` + P.fb[p].replace(/^Elegiste la \d\. /, '');
     const fb = $('fb'); fb.innerHTML = t.replace(/ tabindex="0"/g, ''); fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
     const tras = $('tras'); if (tras) tras.hidden = false;
   };
@@ -878,7 +878,7 @@ const EXPS = [
           ['d', `Solo el CO₂: su enlace es más polar que el del SO₂ (ΔEN ${dCO} contra ${dSO}).`, 'EN11-solo-el-enlace', RES('hipotesis', 'hipótesis nuestra')]],
     fb:{ a:`Los dos tienen enlaces polares, pero en el CO₂ los dos ${Di_('dipolos')} quedan en línea, opuestos, y se anulan: apolar. Tener enlaces polares no basta. En ${UYULGAN}, cerca de 4 de cada 10 explicó la polaridad del enlace pero no la de la molécula.`,
       c:`El CO₂ sí es lineal, pero el SO₂ no: su S tiene 3 dominios (dos enlaces dobles y el ${Li_('par libre')}) y queda angular. Leer la forma del dibujo plano es un error documentado en otras moléculas (en ${KARONEN}, con el NH₃); aquí lo aplicamos al SO₂.`,
-      d:`Las dos diferencias son casi iguales; lo que decide es la forma. En el CO₂ lineal los dos ${Di_('dipolos')} se anulan, por grandes que sean. Esta opción es una hipótesis nuestra.` },
+      d:`Las dos diferencias son casi iguales; lo que decide es la forma. En el CO₂ lineal los dos ${Di_('dipolos')} se anulan, por grandes que sean.` },
     antes:() => ({ paneles:[{ tipo:'mol', items:[enPapel(CO2), enPapel(SO2)] }], pie:'Las dos en el papel, como se suelen escribir.', vars:['enl', 'libre'], desc:'Dióxido de carbono y dióxido de azufre dibujados en línea en el papel.' }),
     despues:f => ({ girable:f >= 1, paneles:[{ tipo:'mol', items:[en3D(CO2, f, true), en3D(SO2, f, true)] }],
       pie:'En 3D: el CO₂ sigue en línea y sus flechas se anulan; el par libre dobla al SO₂.', vars:VARS,
@@ -893,8 +893,8 @@ const EXPS = [
           ['b', `BF₃ trigonal plana y NH₃ piramidal: solo el N tiene par libre.`],
           ['c', `Las dos piramidales: los tres átomos se van hacia un lado del átomo central.`, 'piramidal-las-dos', RES('hipotesis', 'hipótesis nuestra')],
           ['d', `BF₃ tetraédrica y NH₃ piramidal: el B completa su octeto con un par libre, como el N.`, 'EN3-octeto-como-ley', RES('parcial', 'Karonen 2021: 27 % acierta octeto expandido; aquí incompleto')]],
-    fb:{ a:`El NH₃ tiene 4 dominios: los 3 enlaces y el ${Li_('par libre')}, que empuja a los H hacia abajo. El BF₃ tiene 3 y sí es plano. En un estudio con futuros profesores de Turquía (Uyulgan y Akkuzu, 2016), algunos dieron el NH₃, el BF₃ y el ICl₃ como trigonales planas los tres; no hay porcentaje.`,
-      c:`El B no tiene pares libres: sus 3 dominios se separan a 120° en un plano, y nada empuja a los F hacia un lado. Esta opción es una hipótesis nuestra.`,
+    fb:{ a:`El NH₃ tiene 4 dominios: los 3 enlaces y el ${Li_('par libre')}, que empuja a los H hacia abajo. El BF₃ tiene 3 y sí es plano. `,
+      c:`El B no tiene pares libres: sus 3 dominios se separan a 120° en un plano, y nada empuja a los F hacia un lado.`,
       d:`El octeto es una guía, no una ley: el B se queda con 6 electrones (octeto incompleto) y no tiene un par libre que agregar. Con 3 dominios, trigonal plana. En ${KARONEN}, solo cerca de 1 de cada 4 acertó la pregunta de octeto expandido antes del curso; el incompleto es la misma idea al revés.` },
     antes:() => ({ paneles:[{ tipo:'mol', items:[enPapel(BF3), enPapel(NH3)] }], pie:'Los dos en el papel.', vars:['enl', 'libre'], desc:'Trifluoruro de boro y amoniaco dibujados en el papel.' }),
     despues:f => ({ girable:f >= 1, paneles:[{ tipo:'mol', items:[en3D(BF3, f, true), en3D(NH3, f, true)] }],
@@ -911,8 +911,8 @@ const EXPS = [
           ['c', `Octaédrica y polar: tiene 6 dominios, y los pares libres la desequilibran.`, 'dominios-y-pares-polares', RES('hipotesis', 'hipótesis nuestra')],
           ['d', `Pirámide cuadrada y polar: los 2 pares libres empujan a los F hacia el mismo lado.`, 'pares-del-mismo-lado', RES('hipotesis', 'hipótesis nuestra')]],
     fb:{ a:`Con 4 átomos unidos y sin pares libres sería tetraédrica, pero el Xe tiene también ${Li_('2 pares libres')}: 6 dominios, como un octaedro. La idea de que los pares libres no cuentan está descrita en la investigación, sin porcentaje.`,
-      c:`Los 6 dominios sí apuntan a un octaedro, pero la forma solo mira a los átomos: los 4 F quedan en un cuadrado. Y los dos ${Li_('pares libres')}, opuestos, no desequilibran nada. Esta opción es una hipótesis nuestra.`,
-      d:`Dos pares libres juntos se repelerían mucho: se van lo más lejos posible, uno arriba y otro abajo. Los 4 F quedan en el plano del medio. Esta opción es una hipótesis nuestra.` },
+      c:`Los 6 dominios sí apuntan a un octaedro, pero la forma solo mira a los átomos: los 4 F quedan en un cuadrado. Y los dos ${Li_('pares libres')}, opuestos, no desequilibran nada.`,
+      d:`Dos pares libres juntos se repelerían mucho: se van lo más lejos posible, uno arriba y otro abajo. Los 4 F quedan en el plano del medio.` },
     antes:() => ({ paneles:[{ tipo:'mol', items:[{ mol:XE, tapa:true, rot:[[['XeF₄', 'ink', 800], ['  ·  forma: ?', 'muted', 700]]] }] }], pie:'La molécula se ve al responder.', vars:[], desc:'El tetrafluoruro de xenón, tapado.' }),
     despues:f => ({ girable:f >= 1, paneles:[{ tipo:'mol', items:[en3D(XE, f, true)] }],
       pie:'Gírala: un par libre arriba y otro abajo; los cuatro F en un cuadrado y sus flechas se anulan de dos en dos.', vars:VARS,
@@ -946,8 +946,8 @@ const EXPS = [
           ['c', `El ion salta muy rápido de una estructura a otra; en cada instante es una de las tres.`, 'alterna-entre-estructuras', RES('hipotesis', 'hipótesis nuestra')],
           ['d', `Son tres iones distintos que existen mezclados en la muestra, cada uno con su enlace doble fijo.`, 'tres-iones-distintos', RES('hipotesis', 'hipótesis nuestra')]],
     fb:{ a:`Los tres O están en el mismo lugar en las tres estructuras: lo único que cambia es dónde se dibuja el ${En_('par enlazante')} extra. En ${UYULGAN}, cerca del 38 % definió la resonancia como tener varias geometrías o átomos en distintas posiciones.`,
-      c:`El ion no salta: es siempre el mismo, un promedio. Sus tres enlaces C–O miden lo mismo, algo entre un simple y un doble. Esta opción es una hipótesis nuestra.`,
-      d:`Si fueran tres iones distintos, habría enlaces C–O de dos largos distintos, y los tres miden igual. Esta opción es una hipótesis nuestra.` },
+      c:`El ion no salta: es siempre el mismo, un promedio. Sus tres enlaces C–O miden lo mismo, algo entre un simple y un doble.`,
+      d:`Si fueran tres iones distintos, habría enlaces C–O de dos largos distintos, y los tres miden igual.` },
     antes:() => ({ paneles:[{ tipo:'res', clave:'CO3^2-', ordenes:RS.estructuras.map(s => s.ordenes) }], pie:'Tres estructuras de Lewis del CO₃²⁻, con la carga formal de cada átomo.', vars:['enl', 'libre'], desc:'Tres estructuras de Lewis del ion carbonato, con el doble enlace en un oxígeno distinto en cada una.' }),
     despues:f => {
       const k = Math.min(RS.cuantas - 1, Math.floor(f*RS.cuantas*0.999)), fin = f >= 1;
@@ -1004,7 +1004,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.innerHTML = (p === x.ok ? '¡Bien pensado! Mira el dibujo y la explicación para ver por qué.' : `Elegiste la ${LETRAS.indexOf(p) + 1}. ${x.fb[p]} La correcta está marcada.`).replace(/ tabindex="0"/g, '');
+    fb.innerHTML = (p === x.ok ? '¡Bien pensado! Mira el dibujo y la explicación para ver por qué.' : `${x.fb[p]}`).replace(/ tabindex="0"/g, '');
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     explicar();
   };

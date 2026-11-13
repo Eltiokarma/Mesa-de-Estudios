@@ -132,7 +132,7 @@ table.formulas th, table.formulas td{border-bottom:1px solid var(--line); paddin
 .opt.wrong{border-color:var(--warn); border-style:dashed; background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -725,72 +725,72 @@ const P1 = { id:'vistas-superior', ok:'c', opts:[
   ['c', vistaOpc(EV.correcta)],
   ['d', vistaOpc(EV.errores.lateral), 'RME5', 'hipotesis']],
   fb:{ c:'¡Bien! Desde arriba se ve la huella del sólido: un cuadradito por cada columna con cubitos, sin importar lo alta que sea. La fila del fondo va arriba en el dibujo.',
-    a:'Elegiste la A. Esa es la vista frontal: tiene pisos (alturas). La superior no tiene alturas: es la huella que el sólido deja en la mesa. La correcta está marcada.',
-    b:'Elegiste la B. Es la huella correcta, pero al revés: la dibujaste con la fila del frente arriba. En la vista superior, el frente queda abajo en el dibujo. La correcta está marcada.',
-    d:'Elegiste la D. Esa es la vista lateral, desde la derecha: también tiene alturas. La superior es la huella, sin alturas. La correcta está marcada.' } };
+    a:'Esa es la vista frontal: tiene pisos (alturas). La superior no tiene alturas: es la huella que el sólido deja en la mesa.',
+    b:'Es la huella correcta, pero al revés: la dibujaste con la fila del frente arriba. En la vista superior, el frente queda abajo en el dibujo.',
+    d:'Esa es la vista lateral, desde la derecha: también tiene alturas. La superior es la huella, sin alturas.' } };
 const P2 = { id:'vistas-maximo', ok:'b', opts:[
   ['a', `${MX.errores.soloFrontal} cubitos`, 'RME5', 'hipotesis'],
   ['b', `${MX.cubitos} cubitos`],
   ['c', `${MX.errores.sumaVistas} cubitos`, 'RME101', 'hipotesis'],
   ['d', `${MX.errores.caja} cubitos`, 'RME102', 'hipotesis']],
   fb:{ b:`¡Bien! En el máximo, cada cubito de la caja se queda si las tres vistas lo permiten: ${MX.cubitos}.`,
-    a:`Elegiste la A. ${MX.errores.soloFrontal} son los cuadraditos de la vista frontal: detrás de cada uno puede haber varios cubitos en fila. La correcta está marcada.`,
-    c:`Elegiste la C. Sumar los cuadraditos de las tres vistas cuenta varias veces el mismo cubito (sale en la frontal, en la superior y en la lateral). La correcta está marcada.`,
-    d:`Elegiste la D. ${MX.errores.caja} es la caja entera de 3 × 3 × 3. La frontal y la lateral borran los cubitos de las esquinas que no tienen altura. La correcta está marcada.` } };
+    a:`${MX.errores.soloFrontal} son los cuadraditos de la vista frontal: detrás de cada uno puede haber varios cubitos en fila.`,
+    c:`Sumar los cuadraditos de las tres vistas cuenta varias veces el mismo cubito (sale en la frontal, en la superior y en la lateral).`,
+    d:`${MX.errores.caja} es la caja entera de 3 × 3 × 3. La frontal y la lateral borran los cubitos de las esquinas que no tienen altura.` } };
 const P3 = { id:'vistas-minimo', ok:'d', opts:[
   ['a', `${MN.errores.unoPorCuadro} cubitos`, 'RME103', 'hipotesis'],
   ['b', `${MN.errores.maximo} cubitos`, 'RME5', 'hipotesis'],
   ['c', `${MN.errores.soloFrontal} cubitos`, 'RME5', 'hipotesis'],
   ['d', `${MN.volumen} cubitos`]],
   fb:{ d:`¡Bien! Basta una torre de 3 en la esquina del fondo a la izquierda y una de 2 en el centro; los demás cuadraditos de la superior llevan 1: ${MN.volumen}.`,
-    a:`Elegiste la A. Con un cubito por cuadradito de la superior (${MN.errores.unoPorCuadro}), la frontal y la lateral quedarían de un solo piso. Faltan las torres que dan sus alturas. La correcta está marcada.`,
-    b:`Elegiste la B. ${MN.errores.maximo} es el máximo del paso anterior. Se pueden quitar cubitos sin que ninguna vista cambie. La correcta está marcada.`,
-    c:`Elegiste la C. ${MN.errores.soloFrontal} cubitos dan la frontal, pero no la superior: la huella pide 9 columnas con al menos un cubito. La correcta está marcada.` } };
+    a:`Con un cubito por cuadradito de la superior (${MN.errores.unoPorCuadro}), la frontal y la lateral quedarían de un solo piso. Faltan las torres que dan sus alturas.`,
+    b:`${MN.errores.maximo} es el máximo del paso anterior. Se pueden quitar cubitos sin que ninguna vista cambie.`,
+    c:`${MN.errores.soloFrontal} cubitos dan la frontal, pero no la superior: la huella pide 9 columnas con al menos un cubito.` } };
 const P4 = { id:'vistas-caras-pintadas', ok:'a', opts:[
   ['a', `${MX.caras} caras`],
   ['b', `${MX.carasEnVistas} caras`, 'RME193', 'hipotesis'],
   ['c', `${MX.cuadraditos} caras`, 'RME104', 'hipotesis'],
   ['d', `${MX.errores.prismaFrontal} caras`, 'RME5', 'hipotesis']],
   fb:{ a:`¡Bien! Al sumergirlo se pintan todas: también las de atrás, la de la izquierda y la de abajo. Son ${MX.caras}.`,
-    b:`Elegiste la B. ${MX.carasEnVistas} son las caras que miran al frente, arriba o a la derecha (las que salen en las vistas). Sumergido, se pintan también las de atrás, la izquierda y la base. La correcta está marcada.`,
-    c:`Elegiste la C. ${MX.cuadraditos} son los cuadraditos de la superficie. Una cara es una región plana entera: varios cuadraditos en un mismo plano y pegados forman una sola cara. La correcta está marcada.`,
-    d:`Elegiste la D. ${MX.errores.prismaFrontal} caras tendría el prisma que sale de la vista frontal sola. La lateral también pone escalones, hacia el fondo. La correcta está marcada.` } };
+    b:`${MX.carasEnVistas} son las caras que miran al frente, arriba o a la derecha (las que salen en las vistas). Sumergido, se pintan también las de atrás, la izquierda y la base.`,
+    c:`${MX.cuadraditos} son los cuadraditos de la superficie. Una cara es una región plana entera: varios cuadraditos en un mismo plano y pegados forman una sola cara.`,
+    d:`${MX.errores.prismaFrontal} caras tendría el prisma que sale de la vista frontal sola. La lateral también pone escalones, hacia el fondo.` } };
 const P5 = { id:'vistas-vertices', ok:'c', opts:[
   ['a', `${MX.errores.verticesPrismaFrontal} vértices`, 'RME5', 'hipotesis'],
   ['b', `${MX.errores.cajaVertices} vértices`, 'RME105', 'hipotesis'],
   ['c', `${MX.vertices} vértices`],
   ['d', `${MX.errores.puntosEnAristas} vértices`, 'RME104', 'hipotesis']],
   fb:{ c:`¡Bien! Son ${MX.vertices}: los puntos donde se juntan tres caras o más. Euler lo confirma: ${MX.vertices} − ${MX.aristas} + ${MX.caras} = 2.`,
-    a:`Elegiste la A. ${MX.errores.verticesPrismaFrontal} tendría el prisma de la vista frontal sola (8 adelante y 8 atrás). Los escalones hacia el fondo agregan vértices. La correcta está marcada.`,
-    b:'Elegiste la B. 8 son los vértices de una caja. Cada escalón tiene sus propias esquinas. La correcta está marcada.',
-    d:`Elegiste la D. ${MX.errores.puntosEnAristas} son todos los puntos de la cuadrícula que caen sobre las aristas. Un punto en medio de una arista recta no es vértice. La correcta está marcada.` } };
+    a:`${MX.errores.verticesPrismaFrontal} tendría el prisma de la vista frontal sola (8 adelante y 8 atrás). Los escalones hacia el fondo agregan vértices.`,
+    b:'8 son los vértices de una caja. Cada escalón tiene sus propias esquinas.',
+    d:`${MX.errores.puntosEnAristas} son todos los puntos de la cuadrícula que caen sobre las aristas. Un punto en medio de una arista recta no es vértice.` } };
 const P6 = { id:'vistas-casa', ok:'b', opts:[
   ['a', `${CASA.errores.prismaFrontal} caras`, 'RME5', 'hipotesis'],
   ['b', `${CASA.caras} caras`],
   ['c', `${CASA.errores.regionesVistas} caras`, 'RME101', 'hipotesis'],
   ['d', `${CASA.errores.carasEnVistas} caras`, 'RME3', 'hipotesis']],
   fb:{ b:`¡Bien! Cuatro paredes, la base y cuatro faldones del techo: ${CASA.caras}.`,
-    a:`Elegiste la A. ${CASA.errores.prismaFrontal} caras tiene la casa de techo a dos aguas: es el prisma de la frontal sola. La lateral también tiene techo, así que el techo baja por los cuatro lados. La correcta está marcada.`,
-    c:`Elegiste la C. Sumaste las regiones de las tres vistas (2 + 4 + 2). Los faldones del frente y de la derecha salen en dos vistas cada uno, y las caras de atrás, de la izquierda y de abajo no salen en ninguna. La correcta está marcada.`,
-    d:`Elegiste la D. ${CASA.errores.carasEnVistas} son las caras que se ven desde el frente, arriba o la derecha. Faltan la pared de atrás, la de la izquierda y la base. La correcta está marcada.` } };
+    a:`${CASA.errores.prismaFrontal} caras tiene la casa de techo a dos aguas: es el prisma de la frontal sola. La lateral también tiene techo, así que el techo baja por los cuatro lados.`,
+    c:`Sumaste las regiones de las tres vistas (2 + 4 + 2). Los faldones del frente y de la derecha salen en dos vistas cada uno, y las caras de atrás, de la izquierda y de abajo no salen en ninguna.`,
+    d:`${CASA.errores.carasEnVistas} son las caras que se ven desde el frente, arriba o la derecha. Faltan la pared de atrás, la de la izquierda y la base.` } };
 const P7 = { id:'vistas-completar-cubo', ok:'a', opts:[
   ['a', `${CO.faltan} cubitos`],
   ['b', `${CO.errores.soloVisibles} cubitos`, 'RME3', 'hipotesis'],
   ['c', `${CO.errores.caja} cubitos`, 'RME106', 'hipotesis'],
   ['d', `${CO.errores.deFrente} cubitos`, 'RME5', 'hipotesis']],
   fb:{ a:`¡Bien! El cubo más pequeño es de 3 × 3 × 3 = 27 y el sólido tiene ${CO.volumen} cubitos, aunque solo se vean ${CO.visibles}: faltan ${CO.faltan}.`,
-    b:`Elegiste la B. Contaste solo los ${CO.visibles} cubitos que se ven. Hay ${CO.volumen - CO.visibles} escondidos debajo y detrás. La correcta está marcada.`,
-    c:`Elegiste la C. Llenaste la caja de 3 × 2 × 2 que lo envuelve. Esa caja no es un cubo: el cubo necesita la medida mayor (3) en las tres direcciones. La correcta está marcada.`,
-    d:`Elegiste la D. Contaste solo los cubitos de la vista frontal (5). Detrás de la fila del frente hay otra. La correcta está marcada.` } };
+    b:`Contaste solo los ${CO.visibles} cubitos que se ven. Hay ${CO.volumen - CO.visibles} escondidos debajo y detrás.`,
+    c:`Llenaste la caja de 3 × 2 × 2 que lo envuelve. Esa caja no es un cubo: el cubo necesita la medida mayor (3) en las tres direcciones.`,
+    d:`Contaste solo los cubitos de la vista frontal (5). Detrás de la fila del frente hay otra.` } };
 const P8 = { id:'vistas-cubrir', ok:'d', opts:[
   ['a', `${CU3.errores.porCara} cubitos`, 'RME192', 'hipotesis'],
   ['b', `${CU3.errores.conMesa} cubitos`, 'RME1', 'hipotesis'],
   ['c', `${CU3.errores.mismoAumento} cubitos`, 'RME107', 'hipotesis'],
   ['d', `${CU3.agregados} cubitos`]],
   fb:{ d:`¡Bien! Se agregan ${CU3.agregados}: el término 3 tiene ${CU3.volumen} cubitos. Un cubito en una esquina entrante tapa dos caras a la vez.`,
-    a:`Elegiste la A. ${CU3.errores.porCara} son las caras al aire del término 2. En las esquinas entrantes, un mismo cubito tapa dos caras: se cuentan cubitos, no caras. La correcta está marcada.`,
-    b:`Elegiste la B. Tapaste también las caras que tocan la mesa (no se pueden tapar: el cubito tendría que ir debajo de la mesa). La correcta está marcada.`,
-    c:`Elegiste la C. ${CU3.errores.mismoAumento} es lo que se agregó del término 1 al 2. Cada término es más grande, así que hay más caras que tapar. La correcta está marcada.` } };
+    a:`${CU3.errores.porCara} son las caras al aire del término 2. En las esquinas entrantes, un mismo cubito tapa dos caras: se cuentan cubitos, no caras.`,
+    b:`Tapaste también las caras que tocan la mesa (no se pueden tapar: el cubito tendría que ir debajo de la mesa).`,
+    c:`${CU3.errores.mismoAumento} es lo que se agregó del término 1 al 2. Cada término es más grande, así que hay más caras que tapar.` } };
 
 // ----- piezas de dibujo -----
 const vistasMax = (dif) => ({ F:D.F, T:D.T, L:D.L, opc:dif ? dif.opc : null, cambio:dif ? dif.cambio : null });
@@ -1255,7 +1255,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     const sig = $('sig2'); if (sig) sig.onclick = () => { if (E.ocupado) return; ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

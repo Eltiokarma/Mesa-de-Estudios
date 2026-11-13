@@ -108,7 +108,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0; outline:none}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 .ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 210px), 1fr)); gap:12px; align-items:end}
 .slider{display:grid; gap:4px}
 .slider label{font-weight:700; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
@@ -550,9 +550,9 @@ const steps = [
      opts:[['a','Mover la mano más rápido','ON1-ON2-mano-mas-rapida','documentado'], ['b','Mover la mano más alto (un pulso más grande)','ON1-ON3-mano-mas-alta','parcial'],
            ['c','Tensar más la cuerda','',''], ['d','Usar una cuerda más pesada, con la misma tensión','ON4-cuerda-mas-pesada','documentado']],
      fb:{ c:'¡Bien! La rapidez la pone la cuerda: más tensión, pulso más rápido. Mira la carrera.',
-          a:'Elegiste la A. Mover la mano más rápido hace un pulso más angosto, pero no más rápido: mira la carrera. La correcta está marcada.',
-          b:'Elegiste la B. Un pulso más alto no viaja más rápido: la amplitud no cambia la rapidez. Mira la carrera. La correcta está marcada.',
-          d:'Elegiste la D. Con la misma tensión, una cuerda más pesada es más lenta, no más rápida: mira la carrera. La correcta está marcada.' } },
+          a:'Mover la mano más rápido hace un pulso más angosto, pero no más rápido: mira la carrera.',
+          b:'Un pulso más alto no viaja más rápido: la amplitud no cambia la rapidez. Mira la carrera.',
+          d:'Con la misma tensión, una cuerda más pesada es más lenta, no más rápida: mira la carrera.' } },
    vista:() => S.pred['ondas-paso2'] ? { tipo:'carrera' } : vistaMano(100, 0, { tipo:'cuerda', y: x => M.pulso({ A:0.05, ancho:0.15, T:TEN, mu:MU, x0:0.3 }).y(x, 0), yMax:0.06, mano:0, cintas:[], frente:{ x:0.75, txt:'v = ?', oculta:true } }),
    anima:() => { S.t = 0; parar = animarTiempo(0, 0.04, t => { S.t = t; draw(); }, null); },
    desc:() => S.pred['ondas-paso2'] ? `Carrera de pulsos, t = ${ms(S.t)} milisegundos. ` + CARR.carriles.filter(c => S.t >= c.llegada - 1e-12).map(c => `${RCARR[c.nombre]} llegó en ${ms(c.llegada)} ms`).join('; ') : 'Un pulso sale de la mano hacia la pared.',
@@ -579,9 +579,9 @@ const steps = [
      opts:[['a','v sube a 200 m/s; λ sigue en 1 m','ON2-mas-frecuencia-mas-rapidez','parcial'], ['b','v sigue en 100 m/s; λ baja a 0,5 m','',''],
            ['c','v sigue en 100 m/s; λ sube a 2 m','lambda-crece-con-f','hipotesis'], ['d','v sube a 200 m/s; λ sube a 2 m','todo-crece-con-f','hipotesis']],
      fb:{ b:'¡Bien! La cuerda es la misma, así que v no cambia; con el doble de oscilaciones en el mismo tramo, λ se reduce a la mitad.',
-          a:'Elegiste la A. Si v se duplicara, el frente llegaría antes a la pared; mira: llega a los mismos 20 ms. Lo que cambia es λ. La correcta está marcada.',
-          c:'Elegiste la C. Con más oscilaciones por segundo, las crestas salen más seguidas y quedan más juntas: λ baja. La correcta está marcada.',
-          d:'Elegiste la D. El frente llega a la pared a los mismos 20 ms: v no cambió. Y las crestas quedan más juntas. La correcta está marcada.' } },
+          a:'Si v se duplicara, el frente llegaría antes a la pared; mira: llega a los mismos 20 ms. Lo que cambia es λ.',
+          c:'Con más oscilaciones por segundo, las crestas salen más seguidas y quedan más juntas: λ baja.',
+          d:'El frente llega a la pared a los mismos 20 ms: v no cambió. Y las crestas quedan más juntas.' } },
    vista:() => {
      const ya = S.pred['ondas-paso4'], f = ya ? 200 : 100, m = onda(f), t = ya ? S.t : LARGO/V0;
      const v = vistaMano(f, t, { tipo:'cuerda', cintas:[] });
@@ -605,9 +605,9 @@ const steps = [
      opts:[['a','Avanza con la onda hacia la pared','ON5-se-va-con-la-onda','parcial'], ['b','Sube y baja en su sitio','',''],
            ['c','Avanza hacia la pared en zigzag, subiendo y bajando','ON5-se-va-en-senoide','parcial'], ['d','Se queda quieta mientras la onda pasa','se-queda-quieta','hipotesis']],
      fb:{ b:'¡Bien! La cinta repite lo que hizo la mano, un poco después: sube y baja, y se queda en su sitio.',
-          a:'Elegiste la A. Lo que avanza es la forma de la onda, no la cuerda: mira la franja que deja la cinta, vertical. La correcta está marcada.',
-          c:'Elegiste la C. La cinta sube y baja, pero no avanza: su franja es vertical y su x no cambia. La correcta está marcada.',
-          d:'Elegiste la D. Cuando la onda la alcanza, la cinta se mueve: sube y baja con la misma frecuencia que la mano. La correcta está marcada.' } },
+          a:'Lo que avanza es la forma de la onda, no la cuerda: mira la franja que deja la cinta, vertical.',
+          c:'La cinta sube y baja, pero no avanza: su franja es vertical y su x no cambia.',
+          d:'Cuando la onda la alcanza, la cinta se mueve: sube y baja con la misma frecuencia que la mano.' } },
    vista:() => {
      const ya = S.pred['ondas-paso5'], m = onda(200), t = ya ? S.t : 0;
      const v = vistaMano(200, t, { tipo:'cuerda', cinta:X_CINTA, mano:m.h(t) });
@@ -625,9 +625,9 @@ const steps = [
    gate:{ id:'ondas-paso6', ok:'b',
      opts:[['a','50 Hz','fn-olvida-el-2','hipotesis'], ['b','25 Hz','',''], ['c','12,5 Hz','fn-cuatro-L','hipotesis'], ['d','200 Hz','fn-v-por-L','hipotesis']],
      fb:{ b:'¡Bien! En el modo más bajo cabe media longitud de onda: λ = 2L = 4 m, y f = v/λ = 25 Hz.',
-          a:'Elegiste la A. Con 50 Hz cabe una longitud de onda entera y salen dos vientres. Para uno solo cabe media λ: f = v/(2L). La correcta está marcada.',
-          c:'Elegiste la C. v/(4L) es el de un tubo cerrado en un extremo; la cuerda está fija en los dos: f = v/(2L). La correcta está marcada.',
-          d:'Elegiste la D. v·L no da una frecuencia (sus unidades son m²/s). La correcta está marcada.' } },
+          a:'Con 50 Hz cabe una longitud de onda entera y salen dos vientres. Para uno solo cabe media λ: f = v/(2L).',
+          c:'v/(4L) es el de un tubo cerrado en un extremo; la cuerda está fija en los dos: f = v/(2L).',
+          d:'v·L no da una frecuencia (sus unidades son m²/s).' } },
    vista:() => {
      const ya = S.pred['ondas-paso6'];
      if (!ya) return { tipo:'cuerda', largo:LARGO, yMax:0.05, y:() => 0, vibrador:true, pared:true, regla:true, frente:{ x:1, txt:'v = 100 m/s' } };
@@ -963,9 +963,9 @@ const EXPS = [
     q:`La cuerda del paso a paso (2 m, 0,01 kg/m) vibra con un vibrador de ${V('f','50 Hz')} y ${V('T','T = 100 N')}: se ve una onda estacionaria con ${V('lam','λ = 2 m')}. El vibrador sigue a ${V('f','50 Hz')} y tensas la cuerda hasta ${V('T','T = 400 N')}. ¿Qué le pasa a ${V('lam','λ')}?`,
     opts:[['a','Sube a 4 m'], ['b','Baja a 1 m','ON8-tension-al-reves','documentado'], ['c','Sigue en 2 m','lambda-solo-depende-de-f','hipotesis'], ['d','Sube a 8 m','lambda-proporcional-a-T','hipotesis']],
     ok:'a',
-    fb:{ b:'Elegiste la B. Más tensión da más rapidez, y con la misma frecuencia, λ = v/f crece. La correcta está marcada.',
-         c:'Elegiste la C. λ = v/f: la frecuencia no cambió, pero v sí, porque cambió la tensión. La correcta está marcada.',
-         d:'Elegiste la D. La tensión está dentro de una raíz: cuatro veces T da el doble de v, no cuatro veces. La correcta está marcada.' },
+    fb:{ b:'Más tensión da más rapidez, y con la misma frecuencia, λ = v/f crece.',
+         c:'λ = v/f: la frecuencia no cambió, pero v sí, porque cambió la tensión.',
+         d:'La tensión está dentro de una raíz: cuatro veces T da el doble de v, no cuatro veces.' },
     antes:() => Object.assign(E, { tipo:'estac', T:100, Tantes:100 }),
     despues:() => { E.T = 400; arrancar(); },
     ctrl:() => `<div class="seg" id="tens" role="group" aria-label="Tensión de la cuerda">${TENS.map(([T]) => `<button type="button" data-ten="${T}" aria-pressed="${Math.abs(T - E.T) < 1e-6}">${N2(T)} N</button>`).join('')}</div>
@@ -978,9 +978,9 @@ const EXPS = [
     q:`Una cuerda delgada (${V('v','v = 100 m/s')}) está unida a otra cuatro veces más pesada por metro, con la misma tensión. La mano agita la delgada a ${V('f','50 Hz')}, y en ella ${V('lam','λ = 2 m')}. Cuando la onda pasa a la cuerda gruesa, ¿qué pasa?`,
     opts:[['a','f sigue en 50 Hz; λ baja a 1 m'], ['b','f baja a 25 Hz; λ sigue en 2 m','f-cambia-con-el-medio','hipotesis'], ['c','f sigue en 50 Hz; λ sigue en 2 m','nada-cambia','hipotesis'], ['d','f sigue en 50 Hz; λ sube a 4 m','ON4-cuerda-mas-pesada','parcial']],
     ok:'a',
-    fb:{ b:'Elegiste la B. El punto de la unión sube y baja al ritmo de la onda que llega: f no puede cambiar. Lo que cambia es v, y con ella λ. La correcta está marcada.',
-         c:'Elegiste la C. La rapidez la pone cada cuerda: en la gruesa la onda va más lenta, y λ = v/f baja. La correcta está marcada.',
-         d:'Elegiste la D. Con la misma tensión, la cuerda más pesada es más lenta, no más rápida: λ baja. La correcta está marcada.' },
+    fb:{ b:'El punto de la unión sube y baja al ritmo de la onda que llega: f no puede cambiar. Lo que cambia es v, y con ella λ.',
+         c:'La rapidez la pone cada cuerda: en la gruesa la onda va más lenta, y λ = v/f baja.',
+         d:'Con la misma tensión, la cuerda más pesada es más lenta, no más rápida: λ baja.' },
     antes:() => Object.assign(E, { tipo:'medio', t:0.04, forma:'onda' }),
     despues:() => { E.forma = 'onda'; arrancar(); },
     ctrl:() => `<p><button type="button" class="btn" id="repetir">Repetir la onda</button> <button type="button" class="btn" id="golpe">Mandar un solo pulso</button></p>`,
@@ -994,9 +994,9 @@ const EXPS = [
     opts:[['a','Los pulsos no reaparecen y la cuerda se queda plana: se anularon','ON7-se-anulan','documentado'], ['b','Los pulsos reaparecen y siguen de largo: se atravesaron'],
           ['c','Los pulsos reaparecen y vuelven por donde vinieron: rebotaron','ON7-rebotan','parcial'], ['d','Los pulsos reaparecen más chicos: perdieron energía al chocar','ON7-salen-mas-chicos','documentado']],
     ok:'b',
-    fb:{ a:'Elegiste la A. En el instante plano la cuerda no está quieta: unos trozos suben y otros bajan. Por eso los pulsos reaparecen. La correcta está marcada.',
-         c:'Elegiste la C. Los pulsos no chocan como carritos: se atraviesan. Mira hacia dónde sigue cada uno. La correcta está marcada.',
-         d:'Elegiste la D. Cada pulso sale con su tamaño de antes: mientras se cruzan, solo se suman punto por punto. La correcta está marcada.' },
+    fb:{ a:'En el instante plano la cuerda no está quieta: unos trozos suben y otros bajan. Por eso los pulsos reaparecen.',
+         c:'Los pulsos no chocan como carritos: se atraviesan. Mira hacia dónde sigue cada uno.',
+         d:'Cada pulso sale con su tamaño de antes: mientras se cruzan, solo se suman punto por punto.' },
     antes:() => Object.assign(E, { tipo:'pulsos', t:1.4 }),
     despues:() => arrancar(),
     ctrl:() => `<div class="slider"><label for="tq"><span>Tiempo (${V('t','t')})</span><output id="tq-o"></output></label><input id="tq" type="range" min="0" max="2.8" step="0.02" value="${E.t}" style="accent-color:var(--c-t)"></div><p><button type="button" class="btn" id="repetir">Repetir</button></p>`,
@@ -1008,9 +1008,9 @@ const EXPS = [
     opts:[['a','Se va alejando del parlante','ON5-se-va','documentado'], ['b','Va y viene hacia el parlante, sin irse'],
           ['c','Sube y baja, sin irse','ON5-sube-y-baja','documentado'], ['d','Se va alejando mientras sube y baja','ON5-se-va-en-senoide','parcial']],
     ok:'b',
-    fb:{ a:'Elegiste la A. El sonido no es un viento: cada capa de aire va y viene alrededor de su lugar, y la pelusa con ella. La correcta está marcada.',
-         c:'Elegiste la C. En el sonido el aire se mueve a lo largo de la dirección en que viaja la onda, no de arriba abajo. La correcta está marcada.',
-         d:'Elegiste la D. La pelusa no se va: oscila alrededor de su lugar, a lo largo de la dirección del sonido. La correcta está marcada.' },
+    fb:{ a:'El sonido no es un viento: cada capa de aire va y viene alrededor de su lugar, y la pelusa con ella.',
+         c:'En el sonido el aire se mueve a lo largo de la dirección en que viaja la onda, no de arriba abajo.',
+         d:'La pelusa no se va: oscila alrededor de su lugar, a lo largo de la dirección del sonido.' },
     antes:() => Object.assign(E, { tipo:'aire', t:0, traza:[] }),
     despues:() => arrancar(),
     ctrl:() => `<p><button type="button" class="btn" id="repetir">Repetir</button></p>`,
@@ -1022,9 +1022,9 @@ const EXPS = [
     q:`Un parlante encendido marca ${V('b','80 dB')} en el medidor. Se prende otro parlante igual, a la misma distancia del medidor, que toca otra canción. ¿Cuánto marca ahora el medidor?`,
     opts:[['a','160 dB','suma-decibeles','hipotesis'], ['b','83 dB'], ['c','80 dB','nivel-no-cambia','hipotesis'], ['d','90 dB','doble-como-diez-veces','hipotesis']],
     ok:'b',
-    fb:{ a:'Elegiste la A. Se suman las intensidades, no los decibeles. 160 dB sería un ruido mucho más fuerte que el de un avión al despegar. La correcta está marcada.',
-         c:'Elegiste la C. Con dos parlantes llega el doble de energía por segundo: la intensidad se duplica y el nivel sube un poco. La correcta está marcada.',
-         d:'Elegiste la D. +10 dB es multiplicar la intensidad por 10; aquí solo se duplica. La correcta está marcada.' },
+    fb:{ a:'Se suman las intensidades, no los decibeles. 160 dB sería un ruido mucho más fuerte que el de un avión al despegar.',
+         c:'Con dos parlantes llega el doble de energía por segundo: la intensidad se duplica y el nivel sube un poco.',
+         d:'+10 dB es multiplicar la intensidad por 10; aquí solo se duplica.' },
     antes:() => Object.assign(E, { tipo:'db', n:2, beta:80, I:1e-4 }),
     despues:() => { const r = M.sumarNiveles({ niveles:Array(E.n).fill(80) }); E.I = r.I; parar(); parar = animarTiempo(0, 1, f => { E.beta = 80 + (r.betaAcademia - 80)*f; draw(); }, null, 0.6); },
     ctrl:() => `<div class="seg" id="npar" role="group" aria-label="Parlantes encendidos">${[1, 2, 4, 10].map(n => `<button type="button" data-n="${n}" aria-pressed="${n === E.n}">${n} parlante${n > 1 ? 's' : ''}</button>`).join('')}</div><div class="eqs" id="vivoDb"></div>`,
@@ -1140,7 +1140,7 @@ function ir(k, enfocar){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : (x.fb && x.fb[p]) || `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira la escena para ver por qué.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : (x.fb && x.fb[p]) || `; mira la escena para ver por qué.`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.ctrl() + x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     controles(x);

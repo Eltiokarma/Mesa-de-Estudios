@@ -115,7 +115,7 @@ canvas.sin-scroll{touch-action:none}
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap:12px; align-items:end}
 .slider{display:grid; gap:4px}
@@ -536,36 +536,36 @@ const P1 = { id:'limitante-paso2', ok:'d', opts:[
   ['c','Los dos a la vez','ES22-se-acaban-los-dos','documentado'],
   ['d','El H₂']],
   fb:{ d:'¡Bien! Cada vuelta de la receta pide 3 H₂: con 9 alcanzan para 3 vueltas, y esas 3 vueltas solo usan 3 de los 4 N₂.',
-    a:'Elegiste la A. Hay menos N₂, pero cada vuelta pide 1 N₂ y 3 H₂: el H₂ se gasta tres veces más rápido. La correcta está marcada.',
-    b:'Elegiste la B. El coeficiente dice cuánto pide la receta, no cuánto hay. Hay que comparar las dos cosas. La correcta está marcada.',
-    c:'Elegiste la C. Solo se acaban los dos si están justo en la proporción de la receta (1 a 3). Aquí hay 4 a 9. La correcta está marcada.' } };
+    a:'Hay menos N₂, pero cada vuelta pide 1 N₂ y 3 H₂: el H₂ se gasta tres veces más rápido.',
+    b:'El coeficiente dice cuánto pide la receta, no cuánto hay. Hay que comparar las dos cosas.',
+    c:'Solo se acaban los dos si están justo en la proporción de la receta (1 a 3). Aquí hay 4 a 9.' } };
 const P2 = { id:'limitante-paso3', ok:'c', opts:[
   ['a','2 NH₃ y nada más, como dice la ecuación','ES8-coeficientes-como-cantidades','documentado'],
   ['b','8 NH₃ y nada más','ES22-se-acaban-los-dos','documentado'],
   ['c','6 NH₃ y 1 N₂'],
   ['d','6 NH₃, 1 N₂ y 3 H₂','no-descuenta-lo-que-reacciona','hipotesis']],
   fb:{ c:'¡Bien! Tres vueltas dan 6 NH₃, y sobra el N₂ que no se usó. Ahora arma tú las moléculas.',
-    a:'Elegiste la A. La ecuación es la receta de una vuelta, no lo que hay en la caja. En la caja caben varias vueltas. La correcta está marcada.',
-    b:'Elegiste la B. Para 8 NH₃ harían falta 12 H₂, y solo hay 9: faltan átomos de H. La correcta está marcada.',
-    d:'Elegiste la D. Los H₂ que reaccionaron ya no están: sus átomos ahora son parte del NH₃. Cuenta los H: 6·3 + 3·2 = 24, y al inicio había 18. La correcta está marcada.' } };
+    a:'La ecuación es la receta de una vuelta, no lo que hay en la caja. En la caja caben varias vueltas.',
+    b:'Para 8 NH₃ harían falta 12 H₂, y solo hay 9: faltan átomos de H.',
+    d:'Los H₂ que reaccionaron ya no están: sus átomos ahora son parte del NH₃. Cuenta los H: 6·3 + 3·2 = 24, y al inicio había 18.' } };
 const P3 = { id:'limitante-paso6', ok:'b', opts:[
   ['a','4 N₂ + 9 H₂ → 6 NH₃ + N₂','ES9-sobrante-en-la-ecuacion','documentado'],
   ['b','N₂ + 3 H₂ → 2 NH₃'],
   ['c','4 N₂ + 9 H₂ → N₈H₁₈','ES11-coeficientes-como-subindices','documentado'],
   ['d','4 N₂ + 9 H₂ → 6 NH₃','ecuacion-sin-balancear','hipotesis']],
   fb:{ b:'¡Bien! La ecuación solo dice qué reacciona y en qué proporción. Lo que sobró es un dato del problema, no de la ecuación.',
-    a:'Elegiste la A. Los átomos sí cuadran (8 N y 18 H a cada lado), pero eso no la hace correcta: el N₂ que sobró no reaccionó y no va en la ecuación. Si quitas el N₂ que aparece a los dos lados, queda 3 N₂ + 9 H₂ → 6 NH₃, que es la receta repetida 3 veces. La ecuación describe la reacción, no lo que hay en esta caja. La correcta está marcada.',
-    c:'Elegiste la C. Los átomos no se juntan todos en una sola molécula gigante: forman NH₃, de 1 N y 3 H. El subíndice dice cuántos átomos hay en una molécula; el coeficiente, cuántas moléculas. La correcta está marcada.',
-    d:'Elegiste la D. Cuenta los N: a la izquierda hay 8 y a la derecha, 6. Esa ecuación no está balanceada. La correcta está marcada.' } };
+    a:'Los átomos sí cuadran (8 N y 18 H a cada lado), pero eso no la hace correcta: el N₂ que sobró no reaccionó y no va en la ecuación. Si quitas el N₂ que aparece a los dos lados, queda 3 N₂ + 9 H₂ → 6 NH₃, que es la receta repetida 3 veces. La ecuación describe la reacción, no lo que hay en esta caja.',
+    c:'Los átomos no se juntan todos en una sola molécula gigante: forman NH₃, de 1 N y 3 H. El subíndice dice cuántos átomos hay en una molécula; el coeficiente, cuántas moléculas.',
+    d:'Cuenta los N: a la izquierda hay 8 y a la derecha, 6. Esa ecuación no está balanceada.' } };
 const P4 = { id:'limitante-paso7', ok:'d', opts:[
   ['a','74 g, la suma de las masas','ES15-suma-de-masas','parcial'],
   ['b','90 g, porque limita el H₂ (tiene menos gramos)','ES20-menor-cantidad','documentado'],
   ['c','36 g, porque la ecuación dice 2 moles de agua','ES8-coeficientes-como-cantidades','hipotesis'],
   ['d','72 g']],
   fb:{ d:'¡Bien! Limita el O₂, aunque tenga más gramos. Ahora lo vemos con moléculas.',
-    a:'Elegiste la A. Solo se convierte en agua lo que reacciona; si algo sobra, no pasa al producto. La correcta está marcada.',
-    b:'Elegiste la B. 10 g de H₂ son 5 mol y 64 g de O₂ son 2 mol. La receta pide 2 H₂ por cada O₂: los 2 mol de O₂ piden 4 mol de H₂, y hay 5. Se acaba primero el O₂. Además, 90 g de agua no pueden salir de 74 g de reactivos. La correcta está marcada.',
-    c:'Elegiste la C. Los 2 moles de agua de la ecuación son de una vuelta de la receta en moles. Aquí los 2 mol de O₂ alcanzan para dos de esas vueltas, que dan 4 mol de agua. La correcta está marcada.' } };
+    a:'Solo se convierte en agua lo que reacciona; si algo sobra, no pasa al producto.',
+    b:'10 g de H₂ son 5 mol y 64 g de O₂ son 2 mol. La receta pide 2 H₂ por cada O₂: los 2 mol de O₂ piden 4 mol de H₂, y hay 5. Se acaba primero el O₂. Además, 90 g de agua no pueden salir de 74 g de reactivos.',
+    c:'Los 2 moles de agua de la ecuación son de una vuelta de la receta en moles. Aquí los 2 mol de O₂ alcanzan para dos de esas vueltas, que dan 4 mol de agua.' } };
 const opciones = P => `<div class="opts">${P.opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="fb"></p>`;
 const A = REAC.amoniaco, H = REAC.agua;
 const steps = [
@@ -598,7 +598,7 @@ const steps = [
    </div>
    <p>En la caja, cada molécula dibujada representa medio mol (3,01 × 10²³ moléculas): hay 10 de ${V('H','H₂')} y 4 de ${V('O','O₂')}. Por eso verás 4 vueltas de moléculas dibujadas: equivalen a las 2 vueltas en moles. Arma las vueltas y mira la balanza: antes marca ${V('g','74 g')} y al final también (72 + 2). La masa se conserva contando lo que sobra.</p>
    <div class="nav" style="justify-content:flex-start"><button type="button" class="btn primary" id="todas">Reaccionar</button></div>
-   <p class="aviso">El ${V('O','O₂')} tiene más gramos y aun así es el limitante: lo que cuenta es cuántas vueltas de la receta alcanzan. Solo el 15,5 % de 97 escolares tailandeses razonó bien el reactivo limitante; su error típico fue "es el que está en menor cantidad" (Dahsah y otros, 2006).</p>
+   <p class="aviso">El ${V('O','O₂')} tiene más gramos y aun así es el limitante: lo que cuenta es cuántas vueltas de la receta alcanzan. </p>
    <p id="estado-armar" class="hint"></p>` },
  { k:'Paso 9', t:'Ahora explora tú', explora:true,
    body:() => `<div class="seg" role="group" aria-label="Reacción">${[['amoniaco', 'Amoníaco'], ['agua', 'Agua'], ['cloruro', 'Cloruro de aluminio']].map(([k, n]) => `<button type="button" data-reac="${k}" aria-pressed="${S.reac === k}">${n}</button>`).join('')}</div>
@@ -895,7 +895,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira la escena para ver por qué.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `; mira la escena para ver por qué.`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = (x.ctrl ? x.ctrl() : '') + x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     $('res2').querySelectorAll('[data-ab]').forEach(b => b.onclick = () => { E.abierto = b.dataset.ab === '1'; $('res2').querySelectorAll('[data-ab]').forEach(y => y.setAttribute('aria-pressed', String(y === b))); draw(); });

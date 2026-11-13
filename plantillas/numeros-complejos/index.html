@@ -111,7 +111,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -485,72 +485,72 @@ const P1 = { id:'numeros-complejos-paso1', ok:'b', opts:[
   ['c', I2.errores.nVeces.texto, 'CX5-exponente-multiplica', 'hipotesis'],
   ['d', I2.errores.sigueI.texto, 'CX6-i-por-i-es-i', 'hipotesis']],
   fb:{ b:'¡Bien! i se define con i² = −1: la flecha de i, girada otro cuarto de vuelta, cae en −1.',
-    a:'Elegiste la A. El cuadrado de un número real nunca es negativo, pero i no es real: se define justo con i² = −1. La correcta está marcada.',
-    c:'Elegiste la C. 2i sería i + i. El exponente 2 dice «multiplicar i por sí misma», no «por 2». La correcta está marcada.',
-    d:'Elegiste la D. Multiplicar por i sí cambia el número: la flecha gira un cuarto de vuelta. i · i no es i. La correcta está marcada.' } };
+    a:'El cuadrado de un número real nunca es negativo, pero i no es real: se define justo con i² = −1.',
+    c:'2i sería i + i. El exponente 2 dice «multiplicar i por sí misma», no «por 2».',
+    d:'Multiplicar por i sí cambia el número: la flecha gira un cuarto de vuelta. i · i no es i.' } };
 const P2 = { id:'numeros-complejos-paso2', ok:'c', opts:[
   ['a', I43.errores.cicloTres.texto, 'CX2-i-cubo-es-i', 'hipotesis'],
   ['b', I43.errores.cociente.texto, 'CX3-usa-el-cociente', 'hipotesis'],
   ['c', I43.texto],
   ['d', I43.errores.corrido.texto, 'CX4-ciclo-corrido', 'hipotesis']],
   fb:{ c:'¡Bien! 43 = 4 · 10 + 3: diez vueltas completas, que no cambian nada, y tres cuartos de vuelta más. i³ = −i.',
-    a:'Elegiste la A. El resto 3 está bien, pero i³ = i² · i = −1 · i = −i, no i. La correcta está marcada.',
-    b:'Elegiste la B. −1 sale de usar el cociente, 10: i¹⁰ = −1. Lo que importa es el resto, 3: las vueltas completas no mueven la flecha. La correcta está marcada.',
-    d:'Elegiste la D. 1 sale de correr el ciclo un lugar (empezar con i⁰ = i). El ciclo empieza en i⁰ = 1: 1, i, −1, −i. La correcta está marcada.' } };
+    a:'El resto 3 está bien, pero i³ = i² · i = −1 · i = −i, no i.',
+    b:'−1 sale de usar el cociente, 10: i¹⁰ = −1. Lo que importa es el resto, 3: las vueltas completas no mueven la flecha.',
+    d:'1 sale de correr el ciclo un lugar (empezar con i⁰ = i). El ciclo empieza en i⁰ = 1: 1, i, −1, −i.' } };
 const P3 = { id:'numeros-complejos-paso3', ok:'d', opts:[
   ['a', M3.errores.partePorParte.texto, 'CX7-parte-por-parte', 'hipotesis'],
   ['b', M3.errores.cuadradoPositivo.texto, 'CX1-i-cuadrado-es-1', 'hipotesis'],
   ['c', M3.errores.sigueI.texto, 'CX6-i-por-i-es-i', 'hipotesis'],
   ['d', M3.texto]],
   fb:{ d:'¡Bien! Son cuatro productos: 2 − 4i + 3i − 6i². Como i² = −1, el último es +6: queda 8 − i.',
-    a:'Elegiste la A. 2 − 6i multiplica solo real con real e imaginaria con imaginaria. Faltan los dos productos cruzados (−4i y 3i), y 3i · (−2i) no es −6i. La correcta está marcada.',
-    b:'Elegiste la B. −4 − i sale de tomar i² = 1: −6i² quedaría −6. Con i² = −1, −6i² = +6. La correcta está marcada.',
-    c:'Elegiste la C. 2 − 7i sale de dejar −6i² como −6i. i · i no es i: es −1. La correcta está marcada.' } };
+    a:'2 − 6i multiplica solo real con real e imaginaria con imaginaria. Faltan los dos productos cruzados (−4i y 3i), y 3i · (−2i) no es −6i.',
+    b:'−4 − i sale de tomar i² = 1: −6i² quedaría −6. Con i² = −1, −6i² = +6.',
+    c:'2 − 7i sale de dejar −6i² como −6i. i · i no es i: es −1.' } };
 const P4 = { id:'numeros-complejos-paso4', ok:'b', opts:[
   ['a', D4.errores.sumaPartes.texto, 'AL9-modulo-suma-partes', 'parcial'],
   ['b', D4.texto],
   ['c', D4.errores.sinRaiz.texto, 'CX11-sin-raiz', 'hipotesis'],
   ['d', D4.errores.raizDeSuma.texto, 'CX10-raiz-de-la-suma', 'hipotesis']],
   fb:{ b:'¡Bien! La flecha es la hipotenusa de un triángulo de catetos 4 y 3: 16 + 9 = 25 cuadritos, y √25 = 5.',
-    a:'Elegiste la A. 7 = 4 + 3 sería el camino por los dos catetos. La flecha va en línea recta: es más corta. La correcta está marcada.',
-    c:'Elegiste la C. 25 es |z|², el área del cuadro sobre la flecha. El largo es su raíz. La correcta está marcada.',
-    d:'Elegiste la D. √7 mezcla la raíz con la suma de las partes: hay que elevar al cuadrado antes de sumar. La correcta está marcada.' } };
+    a:'7 = 4 + 3 sería el camino por los dos catetos. La flecha va en línea recta: es más corta.',
+    c:'25 es |z|², el área del cuadro sobre la flecha. El largo es su raíz.',
+    d:'√7 mezcla la raíz con la suma de las partes: hay que elevar al cuadrado antes de sumar.' } };
 const P5 = { id:'numeros-complejos-paso5', ok:'b', opts:[
   ['a', C5.errores.cambiaReal.texto, 'CX12-cambia-la-real', 'hipotesis'],
   ['b', C5.texto],
   ['c', C5.errores.intercambia.texto, 'CX14-intercambia', 'hipotesis'],
   ['d', C5.errores.opuesto.texto, 'CX13-opuesto', 'hipotesis']],
   fb:{ b:'¡Bien! El conjugado deja la parte real y cambia el signo de la imaginaria: es el reflejo de z en el eje real.',
-    a:'Elegiste la A. 3 + 2i cambia la parte real: es el reflejo en el eje imaginario. El conjugado cambia el signo de la parte imaginaria. La correcta está marcada.',
-    c:'Elegiste la C. 2 + 3i intercambia las partes. El conjugado no mueve las partes de lugar: solo cambia el signo de la imaginaria. La correcta está marcada.',
-    d:'Elegiste la D. 3 − 2i es −z, el opuesto: cambia los dos signos. El conjugado cambia solo uno. La correcta está marcada.' } };
+    a:'3 + 2i cambia la parte real: es el reflejo en el eje imaginario. El conjugado cambia el signo de la parte imaginaria.',
+    c:'2 + 3i intercambia las partes. El conjugado no mueve las partes de lugar: solo cambia el signo de la imaginaria.',
+    d:'3 − 2i es −z, el opuesto: cambia los dos signos. El conjugado cambia solo uno.' } };
 const P6 = { id:'numeros-complejos-paso6', ok:'c', opts:[
   ['a', Q6.errores.partePorParte.texto, 'CX15-divide-parte-por-parte', 'hipotesis'],
   ['b', Q6.errores.porW.texto, 'CX35-multiplica-por-w', 'hipotesis'],
   ['c', Q6.texto],
   ['d', Q6.errores.sinDenominador.texto, 'CX16-sin-denominador', 'hipotesis']],
   fb:{ c:'¡Bien! Arriba y abajo por 1 + i: (5 + i)(1 + i) = 4 + 6i y (1 − i)(1 + i) = 2. Queda 2 + 3i.',
-    a:'Elegiste la A. 5 − i divide 5 entre 1 y 1 entre −1, parte por parte. Comprueba: (5 − i)(1 − i) = 4 − 6i, no 5 + i. La correcta está marcada.',
-    b:'Elegiste la B. 3 − 2i sale de multiplicar arriba por w = 1 − i en vez de por su conjugado w̄ = 1 + i. La correcta está marcada.',
-    d:'Elegiste la D. 4 + 6i es el numerador: falta dividir entre (1 − i)(1 + i) = 2. La correcta está marcada.' } };
+    a:'5 − i divide 5 entre 1 y 1 entre −1, parte por parte. Comprueba: (5 − i)(1 − i) = 4 − 6i, no 5 + i.',
+    b:'3 − 2i sale de multiplicar arriba por w = 1 − i en vez de por su conjugado w̄ = 1 + i.',
+    d:'4 + 6i es el numerador: falta dividir entre (1 − i)(1 + i) = 2.' } };
 const P7 = { id:'numeros-complejos-paso7', ok:'d', opts:[
   ['a', PO7.errores.arctanDirecto.texto, 'CX17-arctan-sin-cuadrante', 'parcial'],
   ['b', PO7.errores.sinRaiz.texto, 'CX11-sin-raiz', 'hipotesis'],
   ['c', PO7.errores.referencia.texto, 'CX18-angulo-de-referencia', 'parcial'],
   ['d', PO7.texto]],
   fb:{ d:'¡Bien! r = √(1 + 3) = 2, y el punto (−1; √3) está en el segundo cuadrante: θ = 180° − 60° = 120°.',
-    a:'Elegiste la A. arctan(√3/(−1)) = −60° apunta al cuarto cuadrante. El punto (−1; √3) está arriba a la izquierda, en el segundo. La correcta está marcada.',
-    b:'Elegiste la B. 4 = 1 + 3 es r². El módulo es su raíz, 2. La correcta está marcada.',
-    c:'Elegiste la C. 60° es el ángulo agudo con el eje real, pero se mide desde el eje real positivo: el punto está a la izquierda, así que es 120°. La correcta está marcada.' } };
+    a:'arctan(√3/(−1)) = −60° apunta al cuarto cuadrante. El punto (−1; √3) está arriba a la izquierda, en el segundo.',
+    b:'4 = 1 + 3 es r². El módulo es su raíz, 2.',
+    c:'60° es el ángulo agudo con el eje real, pero se mide desde el eje real positivo: el punto está a la izquierda, así que es 120°.' } };
 const P8 = { id:'numeros-complejos-paso8', ok:'a', opts:[
   ['a', M8.texto],
   ['b', M8.errores.multiplicaArgumentos.texto, 'CX20-multiplica-argumentos', 'hipotesis'],
   ['c', M8.errores.sumaModulos.texto, 'CX19-suma-modulos', 'hipotesis'],
   ['d', M8.errores.restaArgumentos.texto, 'CX21-resta-argumentos', 'hipotesis']],
   fb:{ a:'¡Bien! Los largos se multiplican (2 · 3 = 6) y los ángulos se suman (10° + 30° = 40°).',
-    b:'Elegiste la B. 300° = 10° · 30°. Al multiplicar, la flecha de z gira el ángulo de w: los ángulos se suman. La correcta está marcada.',
-    c:'Elegiste la C. 5 = 2 + 3. El largo de z se estira tres veces (el largo de w): se multiplica. La correcta está marcada.',
-    d:'Elegiste la D. −20° = 10° − 30° es la regla de la división. Al multiplicar, los ángulos se suman. La correcta está marcada.' } };
+    b:'300° = 10° · 30°. Al multiplicar, la flecha de z gira el ángulo de w: los ángulos se suman.',
+    c:'5 = 2 + 3. El largo de z se estira tres veces (el largo de w): se multiplica.',
+    d:'−20° = 10° − 30° es la regla de la división. Al multiplicar, los ángulos se suman.' } };
 
 const LEY_Z = [['r', 'la flecha de z (su largo es |z|)'], ['re', 'parte real a'], ['im', 'parte imaginaria b']];
 const rej = B => ({ x0:Math.ceil(B.x0), x1:Math.floor(B.x1), y0:Math.ceil(B.y0), y1:Math.floor(B.y1) });
@@ -916,7 +916,7 @@ const R2 = MC.raizNegativa({ a:4, b:9 });
 const Z3 = { r:6, theta:100 }, W3 = { r:2, theta:40 }, Q3 = MC.cocientePolar({ z:Z3, w:W3 });
 const D4 = MC.deMoivre({ z:{ re:1, im:1 }, n:8 });
 const C5 = MC.cuadratica({ a:1, b:-4, c:13 });
-const hip = 'Buscamos este error en estudios publicados y no encontramos datos; es una hipótesis nuestra que se confirma con lo que marquen los alumnos.';
+const hip = '';
 const may = t => t.charAt(0).toUpperCase() + t.slice(1);
 const rej = B => ({ x0:Math.ceil(B.x0), x1:Math.floor(B.x1), y0:Math.ceil(B.y0), y1:Math.floor(B.y1) });
 function base(L, B, paso){ L.rejilla = rej(B); L.ejes = marcas(B, paso, E.angosto()); }
@@ -1089,7 +1089,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + `<div class="nav"><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     tramos($('res2'));

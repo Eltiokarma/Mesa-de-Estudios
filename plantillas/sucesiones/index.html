@@ -119,7 +119,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
@@ -826,45 +826,45 @@ const P_TORRE = { id:'sucesiones-paso1', ok:'c', opts:[
   ['c', `${fmt(TORRE.an, 0)} fichas`],
   ['d', `${fmt(TORRE.errores.aditiva, 0)} fichas`, 'aditiva-suma-las-figuras', 'hipotesis']],
   fb:{ c:'¡Bien! Cada torre tiene 3 fichas por piso y 2 almenas arriba. La torre 20 tiene 3 · 20 = 60 fichas en los pisos y 2 almenas: 62.',
-    a:'Elegiste la A. Así se juntan dos torres 10 enteras, cada una con sus 2 almenas. Al apilarlas, las almenas de la torre de abajo quedarían adentro: sobran 2. Mira la animación. La correcta está marcada.',
-    b:'Elegiste la B. 3 · 20 cuenta las fichas de los pisos, pero se olvida de las 2 almenas, que también son fichas. La correcta está marcada.',
-    d:'Elegiste la D. De la torre 10 a la 20 hay 10 pisos más, y cada piso tiene 3 fichas: se agregan 30, no 10. La correcta está marcada.' } };
+    a:'Así se juntan dos torres 10 enteras, cada una con sus 2 almenas. Al apilarlas, las almenas de la torre de abajo quedarían adentro: sobran 2. Mira la animación.',
+    b:'3 · 20 cuenta las fichas de los pisos, pero se olvida de las 2 almenas, que también son fichas.',
+    d:'De la torre 10 a la 20 hay 10 pisos más, y cada piso tiene 3 fichas: se agregan 30, no 10.' } };
 const P_FILA = { id:'sucesiones-paso3', ok:'b', opts:[
   ['a', fx({ a:0, b:4, c:0 }), 'cuenta-doble-compartidos', 'hipotesis'],
   ['b', fx(FILA.formula)],
   ['c', fx({ a:0, b:3, c:0 }), 'diferencia-como-termino', 'hipotesis'],
   ['d', fx({ a:0, b:3, c:4 }), 'n-en-vez-de-n-menos-1', 'hipotesis']],
   fb:{ b:`¡Bien! Cada cuadrado nuevo pone 3 palitos (arriba, abajo y a la derecha) y usa como lado izquierdo un palito que ya estaba. Falta solo el primer palito de la izquierda: 3n + 1.`,
-    a:'Elegiste la A. 4 palitos por cuadrado cuenta dos veces cada palito que comparten dos cuadrados vecinos. En la figura 3 son 10 palitos, no 12. La correcta está marcada.',
-    c:'Elegiste la C. 3 es lo que se agrega en cada paso, pero la figura 1 no tiene 3 palitos sino 4: falta el palito con que empieza la fila. La correcta está marcada.',
-    d:'Elegiste la D. Esa fórmula empieza con los 4 palitos de la figura 1 y le suma 3 por cada n: en la figura 1 daría 7. Desde la figura 1 hasta la n hay n − 1 pasos, no n. La correcta está marcada.' } };
+    a:'4 palitos por cuadrado cuenta dos veces cada palito que comparten dos cuadrados vecinos. En la figura 3 son 10 palitos, no 12.',
+    c:'3 es lo que se agrega en cada paso, pero la figura 1 no tiene 3 palitos sino 4: falta el palito con que empieza la fila.',
+    d:'Esa fórmula empieza con los 4 palitos de la figura 1 y le suma 3 por cada n: en la figura 1 daría 7. Desde la figura 1 hasta la n hay n − 1 pasos, no n.' } };
 const P_T50 = { id:'sucesiones-paso5', unidad:U_ARIT, ok:'d', opts:[
   ['a', fmt(T50.errores.nEnVezDeNmenos1, 0), 'n-en-vez-de-n-menos-1', 'hipotesis'],
   ['b', fmt(T50.errores.diferenciaComoTermino, 0), 'diferencia-como-termino', 'hipotesis'],
   ['c', fmt(T50.errores.objetoEntero, 0), 'objeto-entero-desde-t1', 'hipotesis'],
   ['d', fmt(T50.an, 0)]],
   fb:{ d:'¡Bien! Del término 1 al término 50 hay 49 saltos de 4: 7 + 49 · 4 = 203.',
-    a:'Elegiste la A. 7 + 50 · 4 cuenta 50 saltos, pero el primer término ya está en el 7 sin saltar: hasta el término 50 hay 49 saltos. La correcta está marcada.',
-    b:'Elegiste la B. 4 · 50 usa solo lo que se agrega; con esa cuenta, el primer término sería 4 y no 7. La correcta está marcada.',
-    c:'Elegiste la C. 7 · 50 trata el término 50 como 50 copias del primero, pero cada término no es «otro 7»: es el anterior más 4. La correcta está marcada.' } };
+    a:'7 + 50 · 4 cuenta 50 saltos, pero el primer término ya está en el 7 sin saltar: hasta el término 50 hay 49 saltos.',
+    b:'4 · 50 usa solo lo que se agrega; con esa cuenta, el primer término sería 4 y no 7.',
+    c:'7 · 50 trata el término 50 como 50 copias del primero, pero cada término no es «otro 7»: es el anterior más 4.' } };
 const P_GAUSS = { id:'sucesiones-paso6', unidad:U_ARIT, ok:'a', opts:[
   ['a', fmt(GAUSS.S, 0)],
   ['b', fmt(GAUSS.errores.sinDividir, 0), 'gauss-sin-dividir', 'hipotesis'],
   ['c', fmt(GAUSS.errores.nCuadradoMedio, 0), 'gauss-n-cuadrado-medio', 'hipotesis'],
   ['d', fmt(GAUSS.errores.nMenosUno, 0), 'gauss-n-menos-1', 'hipotesis']],
   fb:{ a:'¡Bien! 1 + 100, 2 + 99, 3 + 98, …: son 50 parejas que suman 101. 50 · 101 = 5050.',
-    b:'Elegiste la B. 100 · 101 es el rectángulo entero: la escalera más su copia. La suma es la mitad. La correcta está marcada.',
-    c:'Elegiste la C. 100 · 100/2 sería la mitad de un cuadrado, pero la escalera de 100 filas y su copia forman un rectángulo de 100 por 101. La correcta está marcada.',
-    d:'Elegiste la D. 100 · 99/2 es la suma hasta 99: le falta el último sumando, el 100. La correcta está marcada.' } };
+    b:'100 · 101 es el rectángulo entero: la escalera más su copia. La suma es la mitad.',
+    c:'100 · 100/2 sería la mitad de un cuadrado, pero la escalera de 100 filas y su copia forman un rectángulo de 100 por 101.',
+    d:'100 · 99/2 es la suma hasta 99: le falta el último sumando, el 100.' } };
 const P_CUAD = { id:'sucesiones-paso7', unidad:U_ARIT, ok:'c', opts:[
   ['a', `${fmt(CUAD.errores.comoLinealUltima, 0)} palitos`, 'lineal-en-cuadratica', 'hipotesis'],
   ['b', `${fmt(CUAD10.errores.cuentaDoble, 0)} palitos`, 'cuenta-doble-compartidos', 'hipotesis'],
   ['c', `${fmt(CUAD.ak, 0)} palitos`],
   ['d', `${fmt(CUAD.errores.objetoEntero, 0)} palitos`, 'RM2-objeto-entero', 'hipotesis']],
   fb:{ c:'¡Bien! Las diferencias 8, 12, 16, … crecen de 4 en 4: es una sucesión de segundo orden. Con la fórmula 2n² + 2n, la figura 10 tiene 200 + 20 = 220 palitos.',
-    a:'Elegiste la A. Esa cuenta sigue sumando 16 desde el 40, como si la diferencia ya no cambiara. Pero la diferencia crece 4 en cada paso. La correcta está marcada.',
-    b:'Elegiste la B. 4 palitos por cuadrito cuenta dos veces cada palito de adentro, que es lado de dos cuadritos. La correcta está marcada.',
-    d:'Elegiste la D. Esa cuenta duplica la figura 5. Una cuadrícula de 10 × 10 no son dos de 5 × 5: le caben cuatro, y aun así comparten bordes. La correcta está marcada.' } };
+    a:'Esa cuenta sigue sumando 16 desde el 40, como si la diferencia ya no cambiara. Pero la diferencia crece 4 en cada paso.',
+    b:'4 palitos por cuadrito cuenta dos veces cada palito de adentro, que es lado de dos cuadritos.',
+    d:'Esa cuenta duplica la figura 5. Una cuadrícula de 10 × 10 no son dos de 5 × 5: le caben cuatro, y aun así comparten bordes.' } };
 
 const cfgFig = (o, extra) => E.config(Object.assign({ modo:'figura' }, extra || {}, { fig:o }));
 const vistos = clave => (S.vistos[clave] = S.vistos[clave] || new Set());
@@ -1189,7 +1189,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

@@ -118,7 +118,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .fb{font-weight:700; margin:0}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
 .btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
@@ -536,54 +536,54 @@ const P1 = { id:'congruencia-paso1', ok:'a', opts:[
   ['c', `${CU[R_LLL.errores.ordenDeUnion]}: uno por cada orden en que se unen las varillas`, 'LLL-orden-de-union', 'hipotesis'],
   ['d', `${CU[R_LLL.errores.bisagrasLibres]}: las uniones se pueden abrir más o menos`, 'LLL-bisagras-libres', 'hipotesis']],
   fb:{ a:'¡Bien! Con tres varillas fijas, las uniones no tienen juego: el triángulo solo cierra en dos lugares, y esos dos son el mismo triángulo dado vuelta.',
-    b:'Elegiste la B. Sí cierra arriba y abajo, pero el de abajo es el reflejo del de arriba: si lo levantas y lo volteas, encaja exacto. Dos figuras que encajan exacto son congruentes: es un solo triángulo. La correcta está marcada.',
-    c:'Elegiste la C. Si cambias el orden en que unes las varillas, el triángulo sale girado o volteado, pero con los mismos lados y los mismos ángulos: encaja con el primero. La correcta está marcada.',
-    d:'Elegiste la D. Una unión se puede abrir solo si una de las varillas puede alargarse o acortarse. Con los tres largos fijos, cada ángulo queda fijo. La correcta está marcada.' } };
+    b:'Sí cierra arriba y abajo, pero el de abajo es el reflejo del de arriba: si lo levantas y lo volteas, encaja exacto. Dos figuras que encajan exacto son congruentes: es un solo triángulo.',
+    c:'Si cambias el orden en que unes las varillas, el triángulo sale girado o volteado, pero con los mismos lados y los mismos ángulos: encaja con el primero.',
+    d:'Una unión se puede abrir solo si una de las varillas puede alargarse o acortarse. Con los tres largos fijos, cada ángulo queda fijo.' } };
 const P2 = { id:'congruencia-paso3', ok:'c', opts:[
   ['a', 'Sí: dos lados y un ángulo bastan, como en LAL', 'LLA-como-criterio', 'hipotesis'],
   ['b', 'Sí: el ángulo de 37° y las dos varillas fijan la forma', 'LLA-fija-la-forma', 'hipotesis'],
   ['c', 'No: la varilla de 6,5 puede llegar a la base en dos lugares'],
   ['d', 'No: con la base libre, AB puede medir cualquier cosa', 'LLA-infinitos', 'hipotesis']],
   fb:{ c:`¡Bien! La varilla BC gira en C como un compás y corta la base dos veces: AB puede medir ${fmt(R_LLA.terceros[0])} o ${fmt(R_LLA.terceros[1])}. Dos triángulos con los mismos tres datos que no son congruentes.`,
-    a:`Elegiste la A. En LAL el ángulo está entre los dos lados y no deja juego. Aquí el ángulo de 37° está entre AC y la base, no entre AC y BC: BC queda suelta y gira. Puede cerrar en dos lugares, con AB = ${fmt(R_LLA.terceros[0])} o ${fmt(R_LLA.terceros[1])}. La correcta está marcada.`,
-    b:'Elegiste la B. Las tres piezas fijan la cuña y la varilla AC, pero BC queda suelta: gira en C y puede llegar a la base en dos lugares. Con dos lugares hay dos formas distintas. La correcta está marcada.',
-    d:`Elegiste la D. La base es libre, pero B tiene que quedar a 6,5 de C, y eso solo pasa en los puntos donde el compás toca la base: dos, no infinitos. AB mide ${fmt(R_LLA.terceros[0])} o ${fmt(R_LLA.terceros[1])}. La correcta está marcada.` } };
+    a:`En LAL el ángulo está entre los dos lados y no deja juego. Aquí el ángulo de 37° está entre AC y la base, no entre AC y BC: BC queda suelta y gira. Puede cerrar en dos lugares, con AB = ${fmt(R_LLA.terceros[0])} o ${fmt(R_LLA.terceros[1])}.`,
+    b:'Las tres piezas fijan la cuña y la varilla AC, pero BC queda suelta: gira en C y puede llegar a la base en dos lugares. Con dos lugares hay dos formas distintas.',
+    d:`La base es libre, pero B tiene que quedar a 6,5 de C, y eso solo pasa en los puntos donde el compás toca la base: dos, no infinitos. AB mide ${fmt(R_LLA.terceros[0])} o ${fmt(R_LLA.terceros[1])}.` } };
 const P3 = { id:'congruencia-paso4', ok:'b', opts:[
   ['a', 'No: es LLA, y LLA nunca asegura un solo triángulo', 'LLA-nunca-determina', 'hipotesis'],
   ['b', `Sí: el compás da un solo triángulo, con AB&nbsp;=&nbsp;${fmt(R_HC.terceros[0])}`],
   ['c', 'No: a un triángulo rectángulo le falta además un ángulo agudo', 'rectangulo-necesita-angulo', 'hipotesis'],
   ['d', `Sí: un solo triángulo, con AB&nbsp;=&nbsp;√${fmt(R_HC.errores.pitagorasSuma**2, 0)}`, 'GE11-suma-con-cateto', 'parcial']],
   fb:{ b:'¡Bien! El compás de 10 corta la recta de la base dos veces, a 8 a cada lado de A. Pero los dos triángulos son reflejo uno del otro: es uno solo. Hipotenusa y cateto determinan el triángulo rectángulo.',
-    a:'Elegiste la A. LLA a veces deja dos triángulos, pero no siempre. Con el ángulo recto, el compás corta la recta a 8 a cada lado de A, y esos dos triángulos son reflejo uno del otro: encajan. Hay uno solo. La correcta está marcada.',
-    c:'Elegiste la C. El ángulo recto ya es un dato. Con la hipotenusa y un cateto, el otro cateto sale de Pitágoras, y los ángulos agudos quedan fijos. La correcta está marcada.',
-    d:`Elegiste la D. √136 sale de sumar 10² + 6². Pero 10 es la hipotenusa: el cateto que falta se obtiene restando, 10² − 6² = 64, AB = 8. Un cateto no puede medir más que la hipotenusa. La correcta está marcada.` } };
+    a:'LLA a veces deja dos triángulos, pero no siempre. Con el ángulo recto, el compás corta la recta a 8 a cada lado de A, y esos dos triángulos son reflejo uno del otro: encajan. Hay uno solo.',
+    c:'El ángulo recto ya es un dato. Con la hipotenusa y un cateto, el otro cateto sale de Pitágoras, y los ángulos agudos quedan fijos.',
+    d:`√136 sale de sumar 10² + 6². Pero 10 es la hipotenusa: el cateto que falta se obtiene restando, 10² − 6² = 64, AB = 8. Un cateto no puede medir más que la hipotenusa.` } };
 const P4 = { id:'congruencia-paso5', ok:'b', opts:[
   ['a', 'Sí: con los tres ángulos iguales, el triángulo queda fijo', 'AAA-como-criterio', 'hipotesis'],
   ['b', 'No siempre: pueden ser de distinto tamaño, semejantes'],
   ['c', 'Sí: con dos ángulos ya es ALA, y aquí hay tres', 'ALA-sin-lado', 'hipotesis'],
   ['d', 'No: con solo ángulos no se arma ningún triángulo', 'AAA-sin-triangulo', 'hipotesis']],
   fb:{ b:'¡Bien! Los ángulos fijan la forma, pero no el tamaño: el 3-4-5 y el 6-8-10 tienen los mismos ángulos. Son semejantes, no congruentes.',
-    a:'Elegiste la A. Los ángulos fijan la forma, no el tamaño. Si alargas la base, las cuñas no cambian y el triángulo crece: 3-4-5, 6-8-10… La correcta está marcada.',
-    c:'Elegiste la C. ALA pide dos ángulos y el lado entre ellos. Aquí no hay ningún lado, y el tercer ángulo no agrega nada: sale de la suma de 180°. La correcta está marcada.',
-    d:'Elegiste la D. Sí se arma: estas cuñas cierran un triángulo con cualquier base. El problema es el contrario: se arman demasiados, de todos los tamaños. La correcta está marcada.' } };
+    a:'Los ángulos fijan la forma, no el tamaño. Si alargas la base, las cuñas no cambian y el triángulo crece: 3-4-5, 6-8-10…',
+    c:'ALA pide dos ángulos y el lado entre ellos. Aquí no hay ningún lado, y el tercer ángulo no agrega nada: sale de la suma de 180°.',
+    d:'Sí se arma: estas cuñas cierran un triángulo con cualquier base. El problema es el contrario: se arman demasiados, de todos los tamaños.' } };
 const P5 = { id:'congruencia-paso6', ok:'c', opts:[
   ['a', `${CO.errores.ordenEscritura}: en el orden en que se nombran`, 'correspondencia-orden-de-escritura', 'hipotesis'],
   ['b', `${CO.errores.porPosicion}: cada vértice con el que ocupa su lugar`, 'GE22-empareja-por-posicion', 'hipotesis'],
   ['c', `${CO.texto}: cada vértice con el que está entre los mismos lados`],
   ['d', 'No son congruentes: PQR está dado vuelta', 'GE9-volteado-no-congruente', 'parcial']],
   fb:{ c:`¡Bien! A está entre los lados de 5 y 8; en PQR, el que está entre 5 y 8 es Q. B (entre 5 y 7) va con R y C (entre 7 y 8) con P: ${CO.texto}.`,
-    a:`Elegiste la A. ${CO.errores.ordenEscritura} diría que AB = PQ, pero AB = 5 y PQ = 8. El orden de las letras tiene que seguir a los lados y ángulos iguales, no al orden en que se escribieron. La correcta está marcada.`,
-    b:`Elegiste la B. Emparejar por el lugar en el dibujo (abajo a la izquierda con abajo a la izquierda) solo sirve si los dos están igual de girados. Aquí ${CO.errores.porPosicion} diría que AB = PR, y AB = 5 pero PR = 7. La correcta está marcada.`,
-    d:'Elegiste la D. Un triángulo dado vuelta sigue siendo congruente: tiene los mismos lados y ángulos, y encaja si lo levantas y lo volteas. Los dos tienen lados 5, 7 y 8 (LLL). La correcta está marcada.' } };
+    a:`${CO.errores.ordenEscritura} diría que AB = PQ, pero AB = 5 y PQ = 8. El orden de las letras tiene que seguir a los lados y ángulos iguales, no al orden en que se escribieron.`,
+    b:`Emparejar por el lugar en el dibujo (abajo a la izquierda con abajo a la izquierda) solo sirve si los dos están igual de girados. Aquí ${CO.errores.porPosicion} diría que AB = PR, y AB = 5 pero PR = 7.`,
+    d:'Un triángulo dado vuelta sigue siendo congruente: tiene los mismos lados y ángulos, y encaja si lo levantas y lo volteas. Los dos tienen lados 5, 7 y 8 (LLL).' } };
 const P6 = { id:'congruencia-paso7', ok:'a', opts:[
   ['a', `${fmt(MH.mediana)}: la mitad de la hipotenusa`],
   ['b', `${fmt(MH.errores.cateto)}: lo mismo que el cateto AB`, 'mediana-igual-cateto', 'hipotesis'],
   ['c', `≈ ${fmt(MH.errores.altura)}: lo mismo que la altura a AC`, 'GE8-mediana-como-altura', 'parcial'],
   ['d', `${fmt(MH.errores.promedioCatetos)}: el promedio de los catetos`, 'mediana-promedio-catetos', 'hipotesis']],
   fb:{ a:'¡Bien! M está a la misma distancia de A, B y C: la circunferencia de diámetro AC pasa por B. BM = AM = MC = 6,5.',
-    b:'Elegiste la B. BM y AB salen los dos de B, pero van a puntos distintos. BM llega al medio de AC, y M está a 6,5 de los tres vértices. La correcta está marcada.',
-    c:'Elegiste la C. La altura es la perpendicular de B a AC: 5 · 12/13 = 60/13, unos 4,6. La mediana va al punto medio M, que no es el pie de la altura (salvo en el isósceles). La correcta está marcada.',
-    d:'Elegiste la D. La mediana no es un promedio de lados: es la distancia de B al punto medio de AC. Y ese punto medio es el centro de una circunferencia que pasa por A, B y C. La correcta está marcada.' } };
+    b:'BM y AB salen los dos de B, pero van a puntos distintos. BM llega al medio de AC, y M está a 6,5 de los tres vértices.',
+    c:'La altura es la perpendicular de B a AC: 5 · 12/13 = 60/13, unos 4,6. La mediana va al punto medio M, que no es el pie de la altura (salvo en el isósceles).',
+    d:'La mediana no es un promedio de lados: es la distancia de B al punto medio de AC. Y ese punto medio es el centro de una circunferencia que pasa por A, B y C.' } };
 
 // ----- el armador (pasos 2 y 8) -----
 const KITS2 = { LLL:K_LLL, LAL:K_LAL, ALA:K_ALA };
@@ -1129,7 +1129,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]}`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

@@ -111,7 +111,7 @@ b.v-o{color:var(--c-o)} b.v-R{color:var(--c-r)} b.v-h{color:var(--c-h)} b.v-i{co
 .fb{font-weight:700; margin:0}
 .fb:focus{outline:none}
 .step-t:focus{outline:none}
-.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
 .ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap:12px; align-items:end}
 .slider{display:grid; gap:4px}
@@ -855,9 +855,9 @@ const P3 = { id:'espejo-paso3', ok:'c',
   ],
   fb:{
     c:'¡Bien! Con el objeto entre C y F, la imagen cae más allá de C: invertida y más grande. Ahora veamos por qué con los rayos.',
-    a:'Elegiste la A. Es una idea muy común, pero el espejo no es una pantalla: solo desvía la luz. La correcta está marcada; mira dónde se cruzan los rayos.',
-    b:'Elegiste la B. En una lente, la imagen real sale al otro lado; un espejo, en cambio, no deja pasar la luz: la devuelve. La correcta está marcada. En el paso 7 vas a ver por qué.',
-    d:'Elegiste la D. Entre F y C, invertida y más pequeña, queda la imagen cuando la vela está más allá de C. Aquí es al revés: la vela está entre C y F, y la imagen cae más allá. La correcta está marcada.',
+    a:'Es una idea muy común, pero el espejo no es una pantalla: solo desvía la luz.; mira dónde se cruzan los rayos.',
+    b:'En una lente, la imagen real sale al otro lado; un espejo, en cambio, no deja pasar la luz: la devuelve. En el paso 7 vas a ver por qué.',
+    d:'Entre F y C, invertida y más pequeña, queda la imagen cuando la vela está más allá de C. Aquí es al revés: la vela está entre C y F, y la imagen cae más allá.',
   } };
 // Paso 7. Todas las opciones con la misma forma («signo, porque…»): dos positivas y dos negativas.
 const P7 = { id:'espejo-paso7-signo', ok:'a',
@@ -869,9 +869,9 @@ const P7 = { id:'espejo-paso7-signo', ok:'a',
   ],
   fb:{
     a:'¡Bien! i = +30 cm. Positiva quiere decir «del lado hacia donde sale la luz». Mira el doblez: en el espejo, ese lado es el de adelante.',
-    b:'Elegiste la B. En la lente, la imagen del lado de la vela es virtual porque la luz sigue de largo hacia el otro lado. En el espejo la luz vuelve: el lado de la vela es justo hacia donde sale. Aquí i = +30 cm. La correcta está marcada; mira el doblez.',
-    c:'Elegiste la C. El signo de i no es la coordenada del dibujo: no importa si la imagen queda a la izquierda o a la derecha, sino si está hacia donde sale la luz. Aquí i = +30 cm. La correcta está marcada; mira el doblez.',
-    d:'Elegiste la D. El signo de f dice que el espejo es cóncavo; el de i dice otra cosa: si la imagen es real. Un cóncavo también da i negativa cuando la vela está entre F y el espejo. Aquí i = +30 cm. La correcta está marcada; mira el doblez.',
+    b:'En la lente, la imagen del lado de la vela es virtual porque la luz sigue de largo hacia el otro lado. En el espejo la luz vuelve: el lado de la vela es justo hacia donde sale. Aquí i = +30 cm.; mira el doblez.',
+    c:'El signo de i no es la coordenada del dibujo: no importa si la imagen queda a la izquierda o a la derecha, sino si está hacia donde sale la luz. Aquí i = +30 cm.; mira el doblez.',
+    d:'El signo de f dice que el espejo es cóncavo; el de i dice otra cosa: si la imagen es real. Un cóncavo también da i negativa cuando la vela está entre F y el espejo. Aquí i = +30 cm.; mira el doblez.',
   } };
 const opciones = P => `<div class="opts">${P.opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div>
   <p class="fb" id="fb" tabindex="-1"></p><div id="res" class="body"></div>`;
@@ -1216,8 +1216,8 @@ const EXPS = [
           ['c','Desaparece apenas te mueves','S2-imagen-desaparece','hipotesis']],
     ok:'b',
     fb:{ b:'¡Bien! La imagen se queda donde está, 10 cm detrás del espejo. Al moverte solo cambia qué rayo te llega.',
-         a:'Elegiste la A. Parece que la imagen te sigue porque cambia el rayo que llega a tu ojo, pero todos esos rayos, prolongados hacia atrás, salen del mismo punto. La correcta está marcada; arrastra el ojo y mira.',
-         c:'Elegiste la C. Mientras el rayo que te llega rebote dentro del espejo, la sigues viendo, y en el mismo sitio. Solo deja de verse si te pones donde ningún rayo reflejado te alcanza. La correcta está marcada; arrastra el ojo y mira.' },
+         a:'Parece que la imagen te sigue porque cambia el rayo que llega a tu ojo, pero todos esos rayos, prolongados hacia atrás, salen del mismo punto.; arrastra el ojo y mira.',
+         c:'Mientras el rayo que te llega rebote dentro del espejo, la sigues viendo, y en el mismo sitio. Solo deja de verse si te pones donde ningún rayo reflejado te alcanza.; arrastra el ojo y mira.' },
     antes:() => Object.assign(E, { f:10, o:5, h:3, D:22, ojo:{ x:-28, y:1 }, rayos:'ojo' }),
     despues:() => {},
     ctrl:() => `<div class="ctrls">
@@ -1235,8 +1235,8 @@ const EXPS = [
           ['c','Más pequeña',null]],
     ok:'c',
     fb:{ c:'¡Bien! El convexo siempre da una imagen más pequeña. Mira por qué igual se ve tanto en él.',
-         a:'Elegiste la A. En el retrovisor cabe mucho, y eso parece agrandar. Pero el convexo da una imagen más pequeña: lo que crece es el campo de visión. La correcta está marcada; mira las dos vistas.',
-         b:'Elegiste la B. Así sería en un espejo plano, con A = 1. El convexo, curvo hacia afuera, abre los rayos que refleja y achica la imagen. La correcta está marcada; mira las dos vistas.' },
+         a:'En el retrovisor cabe mucho, y eso parece agrandar. Pero el convexo da una imagen más pequeña: lo que crece es el campo de visión.; mira las dos vistas.',
+         b:'Así sería en un espejo plano, con A = 1. El convexo, curvo hacia afuera, abre los rayos que refleja y achica la imagen.; mira las dos vistas.' },
     antes:() => Object.assign(E, { f:-10, o:30, h:4, D:16, obj:'auto', ojo:{ x:-18, y:-8 }, rayos:'ninguno', imagen:false }),
     despues:() => Object.assign(E, { rayos:'principales', imagen:true, campo:true }),
     ctrl:() => `<div class="slider"><label for="oa"><span>Distancia del auto</span><output id="oa-out"></output></label><input id="oa" class="r-o" type="range" min="6" max="43" step="0.5" value="${E.o}"></div>
@@ -1253,9 +1253,9 @@ const EXPS = [
           ['d','Se vuelve borrosa: sin la cartulina, los rayos ya no se juntan en un punto','S3-sin-pantalla-borrosa','hipotesis']],
     ok:'b',
     fb:{ b:'¡Bien! La cartulina no fabrica la imagen: los rayos se siguen cruzando en el mismo punto, en el aire.',
-         a:'Elegiste la A. La cartulina solo esparce la luz para que la veas desde cualquier lado. Sin ella, los rayos se siguen cruzando en el mismo punto, en el aire. La correcta está marcada; mira la escena.',
-         c:'Elegiste la C. El espejo no guarda la luz: la devuelve. Los rayos reflejados se cruzan delante, a 30 cm, con cartulina o sin ella. La correcta está marcada; mira la escena.',
-         d:'Elegiste la D. Los rayos los junta el espejo, no la cartulina: sin ella se siguen cruzando en el mismo punto, en el aire, y la imagen sigue nítida ahí. La correcta está marcada; mira la escena.' },
+         a:'La cartulina solo esparce la luz para que la veas desde cualquier lado. Sin ella, los rayos se siguen cruzando en el mismo punto, en el aire.; mira la escena.',
+         c:'El espejo no guarda la luz: la devuelve. Los rayos reflejados se cruzan delante, a 30 cm, con cartulina o sin ella.; mira la escena.',
+         d:'Los rayos los junta el espejo, no la cartulina: sin ella se siguen cruzando en el mismo punto, en el aire, y la imagen sigue nítida ahí.; mira la escena.' },
     antes:() => Object.assign(E, { f:10, o:15, h:4, D:20, rayos:'abanico', pantalla:true }),
     despues:() => Object.assign(E, { pantalla:false }),
     ctrl:() => `<div class="seg" role="group" aria-label="Cartulina"><button type="button" data-pant="0">Sin cartulina</button><button type="button" data-pant="1">Con cartulina</button></div>`,
@@ -1269,9 +1269,9 @@ const EXPS = [
           ['d','No se forma ninguna imagen','cerca-de-F-sin-imagen','hipotesis']],
     ok:'b',
     fb:{ b:'¡Bien! Entre F y el espejo, los rayos reflejados se abren: la imagen pasa detrás, virtual, derecha y más grande.',
-         a:'Elegiste la A. Al acercar la vela, la imagen crece, pero solo hasta F. Al cruzarlo, los rayos reflejados ya no se cruzan delante: la imagen pasa detrás, virtual y derecha. La correcta está marcada; mira el recorrido.',
-         c:'Elegiste la C. Sí pasa detrás y queda derecha, pero no se achica: entre F y el espejo, el cóncavo agranda (así funciona el espejo de maquillaje). La correcta está marcada; mira el recorrido.',
-         d:'Elegiste la D. No hay imagen solo con la vela justo en F. A 5 cm, los rayos reflejados se abren y sus prolongaciones se cruzan detrás: ahí está la imagen. La correcta está marcada; mira el recorrido.' },
+         a:'Al acercar la vela, la imagen crece, pero solo hasta F. Al cruzarlo, los rayos reflejados ya no se cruzan delante: la imagen pasa detrás, virtual y derecha.; mira el recorrido.',
+         c:'Sí pasa detrás y queda derecha, pero no se achica: entre F y el espejo, el cóncavo agranda (así funciona el espejo de maquillaje).; mira el recorrido.',
+         d:'No hay imagen solo con la vela justo en F. A 5 cm, los rayos reflejados se abren y sus prolongaciones se cruzan detrás: ahí está la imagen.; mira el recorrido.' },
     antes:() => Object.assign(E, { f:10, o:15, h:3, D:22, rayos:'principales' }),
     despues:() => { recorrer(15, 5); },
     ctrl:() => `<div class="slider"><label for="of"><span>Distancia de la vela (o)</span><output id="of-out"></output></label><input id="of" class="r-o" type="range" min="2" max="30" step="0.5" value="${E.o}"></div>
@@ -1288,9 +1288,9 @@ const EXPS = [
           ['d','A 10 cm detrás del espejo, derecha y del mismo tamaño','doblez-como-espejo-plano','hipotesis']],
     ok:'a',
     fb:{ a:'¡Bien! Se dobla toda la hoja de la luz que sale, también las prolongaciones punteadas. La imagen virtual estaba del lado de la vela; al doblar, pasa detrás del espejo. i = −5 cm en los dos: negativa quiere decir «del lado contrario a donde sale la luz».',
-         b:'Elegiste la B. La imagen virtual también está en la hoja de la luz que sale: es donde se cruzan las prolongaciones. Al doblar, gira con todo lo demás y queda detrás. Un convexo nunca da una imagen delante. La correcta está marcada; mira el doblez.',
-         c:'Elegiste la C. La imagen no se pega al espejo: al doblar, cada punto de la hoja conserva su distancia a la línea del doblez. Estaba a 5 cm de la lente y queda a 5 cm del espejo, detrás. La correcta está marcada; mira el doblez.',
-         d:'Elegiste la D. Así sería con un espejo plano: a la misma distancia que la vela y del mismo tamaño. El doblez no cambia distancias ni tamaños: la imagen sigue a 5 cm y con A = 0,5. La correcta está marcada; mira el doblez.' },
+         b:'La imagen virtual también está en la hoja de la luz que sale: es donde se cruzan las prolongaciones. Al doblar, gira con todo lo demás y queda detrás. Un convexo nunca da una imagen delante.; mira el doblez.',
+         c:'La imagen no se pega al espejo: al doblar, cada punto de la hoja conserva su distancia a la línea del doblez. Estaba a 5 cm de la lente y queda a 5 cm del espejo, detrás.; mira el doblez.',
+         d:'Así sería con un espejo plano: a la misma distancia que la vela y del mismo tamaño. El doblez no cambia distancias ni tamaños: la imagen sigue a 5 cm y con A = 0,5.; mira el doblez.' },
     antes:() => Object.assign(E, { f:-10, o:10, h:4, D:22, rayos:'doblez', dob:{ s:0, t:0, anim:false, tinte:0, reglaI:0, rot:'', estela:[], meta:null, cuadro:-1, estado:'' } }),
     despues:() => empezarDoblez(),
     ctrl:() => `<div class="doblez">
