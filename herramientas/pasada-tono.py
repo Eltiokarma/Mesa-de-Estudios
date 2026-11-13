@@ -5,6 +5,7 @@ Quita de las escenas (plantillas/*/index.html):
   - el arranque «Elegiste la X.» / «Elegiste la opción X.» (la opción elegida ya está marcada en pantalla);
   - el cierre «La correcta está marcada.» (también se ve: la correcta queda en verde);
   - las frases «Esta opción es una hipótesis nuestra…» / «Hipótesis nuestra: …» (eso va en docs/investigacion/);
+  - las citas escritas a mano al final de una explicación («… está descrito en la investigación, sin porcentaje.»);
   - el rojo del texto del error (.fb.mal / .msg.mal): el texto va en tinta; el borde de la opción sigue diciendo el estado.
 Lo que queda es la explicación misma. Regla en docs/escena-viva.md (§3, regla 10).
 
@@ -25,6 +26,12 @@ INVESTIGACION = re.compile(r"[ \t]?(?:Esta opción es una hipótesis nuestra[^.'
 # (esos se conservan para el profesor y pegatina.css los oculta al alumno). La frase se quita entera.
 FRASE_INVESTIGACION = re.compile(
     r"(?:(?<=[.!?] )|(?<=['`>]))[^.!?'`<>]*?(?:hipótesis nuestra|\([A-ZÁÉÍÓÚÇ][^()'`<>]{0,60},? (?:19|20)[0-9]{2}\))[^.!?'`<>]*[.!?]\)?[ \t]?")
+# Citas escritas a mano al final de una explicación («Es un error que suponemos, sin estudio que lo mida.»,
+# «… está descrito en la investigación, sin porcentaje.», «En un estudio con 979 escolares…»): se quita desde la frase
+# que la trae hasta el cierre de la cadena, porque la cita siempre va al final. Lo de antes, la explicación, se queda.
+CITA_FINAL = re.compile(
+    r"(?<=[.!?]) [^.!?'`<>]*?(?:[Uu]n estudio|[Oo]tro estudio|lo que leímos|sin porcentaje|que suponemos|"
+    r"está documentad|está descrit|descrit[oa] en la investigación|por la investigación)[^'`<>]*?(?=['`])")
 ROJO = [(".fb.mal{color:var(--warn)}", ".fb.mal{color:inherit}"), (".msg.mal{color:var(--warn)}", ".msg.mal{color:inherit}")]
 
 
@@ -37,6 +44,7 @@ def pasar(texto):
     for i, l in enumerate(lineas):
         if "fuente" not in l:
             lineas[i], k = FRASE_INVESTIGACION.subn("", l); n += k
+            lineas[i], k = CITA_FINAL.subn("", lineas[i]); n += k
     texto = "\n".join(lineas)
     for a, b in ROJO:
         n += texto.count(a)
