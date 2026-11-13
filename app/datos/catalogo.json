@@ -4766,7 +4766,7 @@
    "titulo": "El viaje en tramos",
    "formato": "predicciones",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "fisica.movimiento-rectilineo",
     "fisica.movimiento-parabolico-y-circular"
@@ -5655,7 +5655,7 @@
    "titulo": "Dominio, rango y composición de funciones",
    "formato": "predicciones",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "algebra.funciones",
     "algebra.tipos-de-funciones-e-inversa",
@@ -5856,7 +5856,7 @@
    "titulo": "Lados posibles y ángulos en los puntos notables",
    "formato": "predicciones",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "geometria.triangulos",
     "geometria.puntos-notables"
@@ -5997,7 +5997,7 @@
    "titulo": "La patada en la gráfica",
    "formato": "predicciones",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "fisica.impulso-y-choques"
    ],
