@@ -18,7 +18,7 @@
 const VERSION = 'v168';
 const CACHE = `lab-${VERSION}`;
 const CASCARA = ['/app/', '/app/index.html', '/app/estilos.css', '/app/config.js', '/app/app.js', '/app/manifest.webmanifest',
-  '/app/practica.js', '/app/prueba.js', '/app/lectura.js', '/app/ilustraciones.js', '/app/dibujos/comun.js', '/app/dibujos/trigonometria.js', '/app/dibujos/aritmetica.js', '/app/dibujos/geometria.js', '/app/dibujos/razonamiento-matematico.js', '/app/datos/catalogo.json', '/app/datos/pruebas.json',
+  '/app/practica.js', '/app/prueba.js', '/app/lectura.js', '/app/ilustraciones.js', '/app/dibujos/comun.js', '/app/dibujos/trigonometria.js', '/app/dibujos/aritmetica.js', '/app/dibujos/geometria.js', '/app/dibujos/razonamiento-matematico.js', '/app/dibujos/razonamiento-verbal.js', '/app/datos/catalogo.json', '/app/datos/pruebas.json',
   '/nucleo/azar.js', '/nucleo/predicciones.js', '/nucleo/medicion.js', '/nucleo/sesion.js', '/nucleo/pruebas.js', '/nucleo/lectura.js', '/nucleo/celular.js', '/nucleo/elementos.js', '/nucleo/pegatina.css', '/nucleo/convencion.js', '/nucleo/mascota.js', '/nucleo/mascota.css', '/app/mascotas/registro.json', '/app/mascotas/gato/mascota.json', '/app/mascotas/gato/respaldo.svg', '/nucleo/kit/kit.js', '/nucleo/kit/trazo.js', '/nucleo/kit/linea-tiempo.js', '/nucleo/kit/kit.css', '/nucleo/kit/piezas/barra-porcentaje.js', '/nucleo/kit/piezas/flechas.js', '/nucleo/kit/piezas/triangulo.js', '/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/balanza.js', '/app/iconos/icono.svg', '/app/iconos/icono-192.png', '/app/iconos/icono-512.png'];
 
 // Clave de la caché: la dirección sin «?…» (las respuestas se buscan con ignoreSearch).
