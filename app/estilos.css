@@ -227,7 +227,7 @@ details[open] summary{margin-bottom:8px}
 .resultado{text-align:center}
 .resultado .resultado-taza{width:96px;display:block;margin:0 auto 8px}
 .resultado .stats{text-align:left}
-.practica{position:relative;overflow:hidden}
+.practica{position:relative;overflow:hidden;overflow:clip} /* clip: recorta sin dejar que el foco o el teclado la desplacen (se corría 40 px) */
 .practica::before{content:"";position:absolute;right:-40px;top:-40px;width:120px;height:120px;border-radius:50%;background:var(--brand-soft);opacity:.7}
 .practica>*{position:relative}
 
