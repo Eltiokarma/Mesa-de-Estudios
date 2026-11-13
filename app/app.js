@@ -410,6 +410,106 @@ function vEjercicios(c, u) {
         <a class="btn morado" href="#/unidad/${esc(u.id)}/pregunta">Dejar una pregunta ›</a></div>`}`;
 }
 
+// Exámenes: un simulacro de la unidad con los generadores de sus prácticas, como en el examen de admisión: cinco
+// preguntas, sin pistas ni corrección hasta terminar, con la opción de dejar en blanco. No usa el banco de entrada y
+// salida (catalogo/pruebas/), para no gastar esas preguntas ni mezclar la medición. Cada intento trae preguntas
+// nuevas (semilla: alumno, unidad e intento). Se registra un 'examen-item' por pregunta y un 'examen' al final.
+const textoPlano = (partes, esc) => (partes || []).map(x => (typeof x === 'string' ? esc(x)
+  : x.formula ? `<span class="formula">${esc(x.t)}</span>` : `<b>${esc(x.t)}</b>`)).join('');
+async function vExamen(c, u) {
+  const gens = generadoresDe(u), h = location.hash;
+  if (!gens.length) {
+    $app.innerHTML = `${cabUnidad(c, u, 'Exámenes')}<div class="vacio">${Ilus.gatoDormido('width="140"')}
+      <p>Todavía no hay preguntas tipo examen para esta unidad. Las estamos preparando.</p>
+      ${modulosDe(u).length ? `<a class="btn morado" href="#/unidad/${esc(u.id)}/ejercicios">Ir a los ejercicios ›</a>` : ''}</div>`;
+    return;
+  }
+  $app.innerHTML = `${cabUnidad(c, u, 'Exámenes')}<p class="vacio">Cargando preguntas…</p>`;
+  let fabricas;
+  try {
+    await modulo('examen');
+    fabricas = (await Promise.all(gens.map(p => script(p.archivos[0]).then(() => window.Generadores && window.Generadores[p.id], () => null)))).filter(Boolean);
+    if (!fabricas.length) throw new Error();
+  } catch { if (location.hash === h) $app.querySelector('.vacio').textContent = 'No se pudieron cargar las preguntas. Ábrelas una vez con internet para tenerlas sin conexión.'; return; }
+  if (location.hash !== h) return;
+  est.examenes = est.examenes || {};
+  const reg = est.examenes[u.id] = Object.assign({ intentos: 0, ultimo: null }, est.examenes[u.id] || {});
+  const intento = reg.intentos + 1;
+  // Cinco preguntas repartidas entre los generadores de la unidad; si una semilla no da alternativas, se prueba otra.
+  const preguntas = [];
+  for (let i = 0, k = 0; preguntas.length < N_EXAMEN && k < N_EXAMEN * 4; k++) {
+    const g = fabricas[i % fabricas.length];
+    try { const p = g.generar(`examen-${est.alumno}-${u.id}-${intento}-${k}`); if (p && Array.isArray(p.alternativas) && p.alternativas.length > 1) { preguntas.push({ g, p }); i++; } } catch { /* semilla sin problema válido: otra */ }
+  }
+  if (!preguntas.length) { $app.querySelector('.vacio').textContent = 'No se pudieron armar las preguntas de esta unidad.'; return; }
+  const resp = preguntas.map(() => null), t0 = Date.now(), tiempos = preguntas.map(() => 0);
+  let i = 0, tPreg = Date.now();
+
+  function intro() {
+    $app.innerHTML = `${cabUnidad(c, u, 'Exámenes')}
+      <div class="card ex-intro"><span class="etq-p">Simulacro de la unidad${reg.intentos ? ` · intento ${intento}` : ''}</span>
+        <h2>${preguntas.length} preguntas como las del examen de admisión</h2>
+        <ul class="temas-l"><li>Sin pistas: la corrección llega al final, con la explicación de cada error.</li>
+          <li>Puedes dejar preguntas en blanco y volver a ellas antes de terminar.</li>
+          <li>Si sales de esta pantalla, el simulacro se pierde. Cada intento trae preguntas nuevas.</li></ul>
+        ${reg.ultimo ? `<p class="sub">La última vez: ${reg.ultimo.aciertos} de ${reg.ultimo.total} correctas.</p>` : ''}
+        <button type="button" class="btn morado" id="empezar">Empezar el simulacro</button></div>`;
+    document.getElementById('empezar').onclick = () => { tPreg = Date.now(); pregunta(); };
+  }
+  function pregunta() {
+    const { p } = preguntas[i], ultima = i === preguntas.length - 1;
+    $app.innerHTML = `${cabUnidad(c, u, 'Exámenes')}
+      <div class="ex-puntos" aria-hidden="true">${preguntas.map((_, k) => `<span class="${k === i ? 'aqui' : ''}${resp[k] ? ' resp' : ''}"></span>`).join('')}</div>
+      <article class="card practica ex-preg"><div class="etq-p">Pregunta ${i + 1} de ${preguntas.length}</div>
+        <p class="enun">${textoPlano(p.enunciado, esc)}</p>${p.datos ? `<p class="sub">${esc(p.datos)}</p>` : ''}
+        ${p.figura && typeof p.figura.svg === 'string' && /^<svg[\s>]/.test(p.figura.svg) ? `<figure class="fig-gen" role="img" aria-label="${esc(p.figura.alt || 'Figura del problema')}">${p.figura.svg}</figure>` : ''}
+        <p class="preg">${textoPlano(p.pregunta, esc)}</p>
+        <div class="alts" role="group" aria-label="Alternativas">${p.alternativas.map(a => `<button type="button" class="alt${resp[i] === a.letra ? ' on' : ''}" data-letra="${a.letra}" aria-pressed="${resp[i] === a.letra}"><span class="letra">${a.letra}</span><span>${esc(a.texto)}</span></button>`).join('')}</div>
+        <p class="ex-blanco" role="status">${resp[i] ? `Marcaste la ${resp[i]}. Puedes cambiarla.` : 'Sin marcar: si sigues, queda en blanco.'}</p>
+      </article>
+      <div class="ex-nav"><button type="button" class="btn borde" id="ant"${i ? '' : ' style="visibility:hidden"'}>‹ Anterior</button>
+        <button type="button" class="btn morado" id="sig">${ultima ? 'Terminar ›' : 'Siguiente ›'}</button></div>`;
+    $app.querySelectorAll('.alt').forEach(b => b.onclick = () => {
+      resp[i] = resp[i] === b.dataset.letra ? null : b.dataset.letra; // tocar otra vez la misma la desmarca
+      $app.querySelectorAll('.alt').forEach(x => { const on = x.dataset.letra === resp[i]; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); });
+      $app.querySelector('.ex-blanco').textContent = resp[i] ? `Marcaste la ${resp[i]}. Puedes cambiarla.` : 'Sin marcar: si sigues, queda en blanco.';
+      $app.querySelectorAll('.ex-puntos span')[i].classList.toggle('resp', !!resp[i]);
+    });
+    const mover = d => { tiempos[i] += Date.now() - tPreg; tPreg = Date.now(); i += d; window.scrollTo(0, 0); pregunta(); };
+    document.getElementById('ant').onclick = () => mover(-1);
+    document.getElementById('sig').onclick = () => (ultima ? (tiempos[i] += Date.now() - tPreg, terminar()) : mover(1));
+  }
+  function terminar() {
+    let aciertos = 0, blancos = 0;
+    preguntas.forEach(({ g, p }, k) => {
+      const a = resp[k] && p.alternativas.find(x => x.letra === resp[k]);
+      if (!a) blancos++; else if (a.correcta) aciertos++;
+      registrar(a ? { tipo: 'examen-item', curso: c.id, unidad: u.id, plantilla: g.id, problema: p.id, opcion: a.letra, correcta: !!a.correcta, error: a.correcta ? '' : (a.error || {}).id || '', ms: tiempos[k] }
+        : { tipo: 'examen-item', curso: c.id, unidad: u.id, plantilla: g.id, problema: p.id, opcion: '', correcta: false, error: '', nose: true, ms: tiempos[k] });
+    });
+    registrar({ tipo: 'examen', curso: c.id, unidad: u.id, aciertos, total: preguntas.length, nose: blancos, respuestas: resp.map(x => x || '0').join(''), ms: Date.now() - t0 });
+    reg.intentos = intento; reg.ultimo = { aciertos, total: preguntas.length, blancos, fecha: hoy() }; guardar(); marcarDia();
+    const min = Math.max(1, Math.round((Date.now() - t0) / 60000));
+    $app.innerHTML = `${cabUnidad(c, u, 'Exámenes')}
+      <div class="card ex-nota"><div class="n">${aciertos}<span> de ${preguntas.length}</span></div><div class="l">correctas${blancos ? ` · ${blancos} en blanco` : ''} · ${min} min</div>
+        <div class="acciones-prueba"><a class="btn morado" href="#/unidad/${esc(u.id)}/examen" id="otro">Otro simulacro</a><a class="btn borde" href="#/unidad/${esc(u.id)}">Volver a la unidad</a></div></div>
+      <h2>Revisa cada pregunta</h2>
+      <div class="lista">${preguntas.map(({ p }, k) => {
+        const a = resp[k] && p.alternativas.find(x => x.letra === resp[k]), ok = p.alternativas.find(x => x.correcta);
+        const estado = !a ? ['blanco', 'En blanco'] : a.correcta ? ['bien', 'Correcta'] : ['malo', 'Incorrecta'];
+        return `<article class="card ex-rev"><div class="etq-p">Pregunta ${k + 1} · <span class="ex-${estado[0]}">${estado[1]}</span></div>
+          <p class="enun">${textoPlano(p.enunciado, esc)} <b>${textoPlano(p.pregunta, esc)}</b></p>
+          <p>${a && !a.correcta ? `Marcaste la ${a.letra}: ${esc(a.texto)}. ` : ''}La respuesta es la <b>${ok.letra}: ${esc(ok.texto)}</b>.</p>
+          ${a && !a.correcta && a.error && a.error.explicacion ? `<div class="retro malo"><p style="margin:0">${esc(a.error.explicacion)}</p></div>` : ''}
+          ${Array.isArray(p.solucion) && p.solucion.length ? `<details><summary>Solución paso a paso</summary><ol class="sol">${p.solucion.map(q => `<li>${textoPlano(q, esc)}</li>`).join('')}</ol></details>` : ''}
+        </article>`; }).join('')}</div>`;
+    // El enlace apunta a la misma ruta: se vuelve a pintar a mano, con un intento nuevo.
+    document.getElementById('otro').onclick = e => { e.preventDefault(); window.scrollTo(0, 0); vExamen(c, u); };
+    window.scrollTo(0, 0);
+  }
+  intro();
+}
+
 function vProgreso() {
   const q = cola(est.uni), hechas = q.filter(x => visto(x.u.id)).length, p = q.length ? hechas / q.length : 0;
   const R = 70, L = Math.PI * R; // medio anillo
@@ -856,6 +956,8 @@ const MODULOS = {
   prueba: ['/nucleo/azar.js', '/nucleo/pruebas.js', '/app/prueba.js'],
   practica: ['/nucleo/azar.js', '/nucleo/predicciones.js', '/nucleo/convencion.js', '/app/practica.js'],
   lectura: ['/nucleo/azar.js', '/nucleo/pruebas.js', '/nucleo/lectura.js', '/app/prueba.js', '/app/lectura.js'],
+  // Exámenes de una unidad: lo que necesitan los generadores (después se carga el de cada práctica de la unidad).
+  examen: ['/nucleo/azar.js', '/nucleo/predicciones.js', '/nucleo/convencion.js'],
 };
 const scripts = {};
 // async = false: se bajan en paralelo pero corren en el orden en que se insertan (azar antes que pruebas, etc.).

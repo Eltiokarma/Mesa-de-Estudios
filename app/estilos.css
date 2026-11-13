@@ -629,6 +629,27 @@ input[type=file]{font:inherit;max-width:100%}
 .ej-ir .v{display:none}
 .ej-papel{grid-column:2/-1;position:relative;z-index:1;justify-self:start;display:inline-flex;align-items:center;min-height:44px;padding:0 16px;margin-top:6px;border-radius:999px;border:2px solid var(--line);font-weight:700;font-size:14px;text-decoration:none;color:var(--ink);background:var(--card)}
 
+/* Exámenes: simulacro de la unidad, sin corrección hasta el final. La barra de Anterior y Siguiente queda pegada abajo
+   (sobre la barra de navegación en el celular), así el botón principal no cambia de lugar entre preguntas. */
+.ex-intro h2{display:block;margin:8px 0 6px}
+.ex-intro .etq-p,.ex-rev .etq-p{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.ex-puntos{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.ex-puntos span{width:12px;height:12px;border-radius:50%;border:2px solid var(--ink);background:transparent}
+.ex-puntos span.resp{background:var(--ink)}
+.ex-puntos span.aqui{outline:2px solid var(--brand);outline-offset:2px}
+.alt.on{border-color:var(--brand);background:color-mix(in srgb,var(--brand) 14%,var(--card))}
+.alt.on .letra{background:var(--brand);border-color:var(--brand);color:#fff}
+.ex-blanco{min-height:1.45em;margin:12px 0 0;font-size:14px;color:var(--muted)}
+.ex-nav{position:sticky;bottom:calc(96px + env(safe-area-inset-bottom));display:flex;justify-content:space-between;gap:10px;margin-top:14px;padding:10px 0;background:var(--bg)}
+.ex-nota{text-align:center}
+.ex-nota .n{font-family:var(--font-r);font-size:44px;font-weight:850;font-variant-numeric:tabular-nums}
+.ex-nota .n span{font-size:20px;font-weight:700;color:var(--muted)}
+.ex-nota .l{color:var(--muted)}
+.ex-nota .acciones-prueba{justify-content:center}
+.ex-bien{color:var(--ok)}.ex-malo{color:var(--warn)}.ex-blanco-t,.ex-blanco{color:var(--muted)}
+.ex-rev details{margin-top:10px}.ex-rev summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center}
+@media (min-width:900px){ .ex-nav{bottom:16px} body[data-ruta="unidad"] #app>*{max-width:860px} }
+
 /* Teoría en preparación. */
 .prep-teoria{padding:20px}
 .prep-teoria .prep-gato{float:right;margin:-4px -4px 4px 8px}
