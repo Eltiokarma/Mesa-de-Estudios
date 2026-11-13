@@ -129,3 +129,19 @@ test('papel.json: estructura y respuestas recalculadas', () => {
     }
   }
 });
+
+// ---------- Escena viva (docs/escena-viva.md): la gráfica F-t del kit en «rapidez» y «trabajo» ----------
+const { probarViva } = require('../../nucleo/kit/piezas/probar-viva.js');
+const KitV = require('../../nucleo/kit/kit.js');
+probarViva(gen, {
+  semillas: 300, pieza: 'ejes', presupuestoSoloEscena: true,
+  conEscena: p => p._datos.tipo !== 'rebote',
+  final: (p, fin, s) => {
+    assert.ok(fin.includes(`>${KitV.formatear(p.respuesta.valor)}${p.escena.datos.sufijo} ✓<`), `semilla ${s}: el final no dibuja la respuesta`);
+    // El área rotulada es el impulso de los vértices (recalculado aquí por trapecios) y la curva pasa por ellos.
+    const pts = p._datos.puntos;
+    let J = 0; for (let i = 1; i < pts.length; i++) J += (pts[i][0] - pts[i - 1][0]) * (pts[i][1] + pts[i - 1][1]) / 2;
+    assert.ok(fin.includes(`>J = ${KitV.formatear(J)} N·s<`), `semilla ${s}: el área no rotula J = ${J}`);
+    assert.equal(p.escena.datos.curvas[0].puntos.length, pts.length);
+  },
+});
