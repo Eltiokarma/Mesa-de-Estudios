@@ -282,3 +282,34 @@ test('papel.json: cada respuesta se recalcula', () => {
   const m = mundo([['sub', 'A', 'B'], ['disj', 'B', 'C']]);
   assert.ok(igualSet(evaluaTexto('(A ∪ C) ∩ B', m), evaluaTexto('A', m))); assert.equal(r.p10, 'A.');
 });
+
+// ---------- Escena viva (docs/escena-viva.md): extracciones sucesivas con la barra-porcentaje ----------
+const Kit = require('../../nucleo/kit/kit.js');
+const barra = require('../../nucleo/kit/piezas/barra-porcentaje.js');
+const LT = require('../../nucleo/kit/linea-tiempo.js');
+const palabras = x => Kit.plano(x).split(/\s+/).filter(w => /\p{L}/u.test(w)).length; // como herramientas/validar-ejercicios.js
+
+test('escena viva: las extracciones sucesivas traen la barra; su final dibuja la respuesta y se arrastra', () => {
+  let vistas = 0;
+  for (let s = 0; s < 1500; s++) {
+    const p = gen.generar(s), d = p._datos;
+    if (!(d.tipo === 'extracciones' && d.sub === 'sucesivas')) { assert.ok(!p.escena, `${p.id}: escena inesperada`); continue; }
+    vistas++;
+    assert.equal(p.escena.pieza, 'barra-porcentaje');
+    assert.ok(cerca(barra.controles(p.escena.datos).respuesta, p.respuesta.valor), `${p.id}: la barra no da la respuesta`);
+    const fin = barra.dibujar(p.escena.datos, LT.estado(p.pasos, p.pasos.length));
+    assert.ok(fin.includes(`${Kit.formatear(p.respuesta.valor)} L ✓`), `${p.id}: el final no dibuja la respuesta`);
+    assert.ok(!/NaN|undefined|null|Infinity/.test(fin));
+    for (const q of p.pasos) assert.ok(palabras(q.texto) <= 14 && q.ecuacion.length, `${p.id}: «${Kit.plano(q.texto)}»`);
+    assert.ok(palabras(p.enunciado) + palabras(p.pregunta) <= 40, `${p.id}: enunciado largo`);
+    const r = p.respuesta, c = barra.controles(p.escena.datos).marca;
+    assert.equal(r.tipo, 'arrastrar');
+    for (const a of p.alternativas) {
+      assert.ok(palabras(a.error ? a.error.explicacion : '') <= 20);
+      if (a.error) assert.equal(p.fantasmas[a.error.id].marca, a.valor);
+      const puesto = Kit.respuesta.ajustar(a.valor, r.paso, c.min, c.max);
+      assert.equal(Kit.respuesta.clasificar(puesto, p.alternativas, r.tolerancia), a, `${p.id}: la marca en ${a.texto} no equivale a esa alternativa`);
+    }
+  }
+  assert.ok(vistas > 30, `pocas extracciones sucesivas: ${vistas}`);
+});
