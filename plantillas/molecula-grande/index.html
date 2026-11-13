@@ -790,6 +790,7 @@ addEventListener('modo', () => { if (!listo && !$('m2').hidden){ listo = true; p
 <script>
 /* ================= MODO 3: ¿qué pasa si…? ================= */
 (function(){
+const CV = id => (window.Convencion ? Convencion.html(id) : '');   // la tarjeta de convención (la de MODO 1 no se ve aquí)
 const E = crearLienzo('cv3', 'desc3', 'm3', 'ley3');
 const X = n => MG.experimento(n);
 const H = X('hidrogenar-oleico'), PL = X('piruvico-lactico'), CG = X('ciclar-glucosa'), OA = X('octeto-alicina'), FT = X('fenilalanina-tirosina');
