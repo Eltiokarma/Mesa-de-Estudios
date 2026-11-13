@@ -32,7 +32,7 @@ Si hay que hacer OCR, instala tesseract en español: `apt-get install -y tessera
 Sesión de **planificación**: no se construyó nada de la app. Lo que sigue se construye en conversaciones nuevas.
 
 **Qué hay.**
-- **`docs/pogil-v2-rive.md`:** auditoría de las 99 escenas en pantalla de celular y dirección. Para arrancar basta leer la sección 1 (en corto), la 5 (el modelo), la 6 (Rive) y la 9 (orden de trabajo).
+- **`docs/pogil-v2-rive.md`:** auditoría de las 99 escenas en pantalla de celular y dirección. **Para arrancar basta leer la sección 0 (estrategia final) y la 7.5 (MRU y MRUV, la primera unidad).** El resto es el detalle y el porqué.
 - **`docs/temario-completo.md`:** las 152 unidades con los temas del catálogo, ruta, gesto, tramo y campos abiertos (otras formas de explicarla, desempeño final, prerrequisitos). Es la copia de trabajo de Gerson para investigar y ampliar.
 - **`docs/formato-lectura.md`:** regla corregida de «lo dice» contra «se deduce».
 
@@ -57,6 +57,8 @@ Sesión de **planificación**: no se construyó nada de la app. Lo que sigue se 
 13. **Los archivos de Rive se hacen con un MCP y con IA generativa.** Igual pasan por el contrato, el peso, la prueba de fidelidad y el respaldo SVG.
 14. Gerson revisa la columna «Ruta» del temario. Se probará en celular real. Lo demás queda por verse.
 15. **Presupuesto:** tres planes de IA de 200 USD al mes durante tres meses, hasta el despliegue. El costo no es motivo para recortar (ver «Presupuesto y mentalidad» más abajo).
+16. **Dos avisos que el agente le hace a Gerson** (sección 0 de la auditoría): cuando una unidad necesita un objeto dibujado, pide la lista de vectores con su encargo y Gerson los hace; cuando hace falta Rive de pago, pide la suscripción. No improvisa ninguna de las dos cosas.
+17. **Van a entrar más de 10 000 ejercicios, no 7000.** La filosofía es la de la regla 5: los de academia inspiran y se replican con generadores propios; los de examen oficial se usan tal cual y se citan.
 
 **Lo que sigue, en orden** (detalle en la sección 9 de la auditoría).
 1. **Estrés de Rive:** una página de prueba en el celular de 4 GB para fijar el presupuesto real.

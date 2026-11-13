@@ -1,4 +1,6 @@
-# La tanda de 7000 ejercicios
+# La tanda de ejercicios (más de 10 000)
+
+**Actualización del 13 nov 2026 (Gerson):** van a entrar **más de 10 000 ejercicios**, no 7000. El archivo conserva su nombre. La filosofía es la misma y no se olvida: los de academia inspiran y se replican con generadores propios, nunca se copian; los de examen oficial de universidad pública se usan tal cual y se citan con universidad y periodo, con solución y figura propias. Sobre el costo: hay capital para tres planes de IA de 200 USD al mes durante tres meses (`CLAUDE.md`, «Cómo se trabaja»); los topes por bloque quedan como freno al límite semanal, no como ahorro. Dónde encajan los ejercicios en el formato nuevo: sección 0 de `docs/pogil-v2-rive.md`.
 
 13 de noviembre de 2026. Plan de la rutina «ejercicios-7000». Lo complementan:
 - [`docs/escena-viva.md`](escena-viva.md): el formato al que llega cada ejercicio (secciones 3, 4 y 7);
