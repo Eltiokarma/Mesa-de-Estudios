@@ -49,6 +49,9 @@ Sesión de **planificación**: no se construyó nada de la app. Lo que sigue se 
 5. La regla de lectura cambia: la frontera no es la paráfrasis. **Hecho** en el documento.
 6. Se agrega la pregunta «¿Qué tan seguro estás?» y una regla para ajustar la ayuda (sección 5.8). **Planeado.**
 7. Se empieza a construir, en otras conversaciones.
+8. La pregunta de seguridad va en la **prueba de entrada y en los ejercicios**; en la prueba de salida, no.
+9. La tabla periódica llega hasta el último elemento con información completa en la IUPAC o en fuentes científicas verificables. Donde una propiedad no tiene valor medido, la casilla dice «sin dato»; no se estima.
+10. Al piloto entran 3.º, 4.º y 5.º de secundaria. Por grado, todo el catálogo queda dentro: 73 unidades de 3.º, 40 de 4.º y 39 de 5.º.
 
 **Lo que sigue, en orden** (detalle en la sección 9 de la auditoría).
 1. **Estrés de Rive:** una página de prueba en el celular de 4 GB para fijar el presupuesto real.
@@ -61,11 +64,10 @@ Sesión de **planificación**: no se construyó nada de la app. Lo que sigue se 
 5. **Después:** la pregunta de seguridad, el avance en cuatro niveles y los ocho puentes (una unidad por curso con su ficha completa).
 
 **Preguntas abiertas para Gerson.**
-- La asignación de rutas, unidad por unidad (la columna «Ruta» del temario es una propuesta).
-- Dónde se hace la pregunta de seguridad: solo práctica y repaso, o también en las pruebas de entrada y salida.
-- Hasta qué elemento llega la tabla periódica y con qué fuente se verifican sus valores.
-- Qué entra al piloto de diciembre: la versión A sí cabe; el rediseño completo, no.
-- El plan de Rive: el gratis exporta con su pantalla de inicio; para producción hace falta el de pago (confirmar precio y que incluya el enlace de datos).
+- **La asignación de rutas.** La columna «Ruta» de `docs/temario-completo.md` es una propuesta hecha con el nombre y los temas de cada unidad. Le falta: que Gerson la revise, contrastarla con el informe de ideas erróneas de cada tema (solo se hizo en materia, tabla periódica y enlace) y probarla con alumnos. No hace falta cerrar las 152: basta decidir la ruta de las unidades que se van a construir. Las más dudosas: estructura atómica, hidrocarburos, recursos y ambiente (química); ondas electromagnéticas (física); combinatoria (aritmética); productos notables (álgebra); identidades y arcos compuestos (trigonometría); y todo razonamiento verbal, que no tiene escenas.
+- **Con qué unidad arranca la versión A.** Ácidos y bases es de 5.º. Para que los tres grados del piloto prueben el formato nuevo conviene una de 3.º: materia y energía (ya diseñada, sección 7.2 de la auditoría) o MRU y MRUV.
+- **Cuántas unidades con el formato nuevo entran al piloto.** El rediseño completo no cabe en diciembre; el resto va con las escenas de hoy.
+- **El plan de Rive:** el gratis exporta con su pantalla de inicio; para producción hace falta el de pago (confirmar precio y que incluya el enlace de datos).
 
 **Ramas que no están en `main`.**
 - `prototipo/cual-pesa-mas`: un calentamiento estilo Peak en `juegos/cual-pesa-mas/` (motor con pruebas, animación sin librerías). Sirve de base para la ruta «recordar». No está enlazado desde la app.

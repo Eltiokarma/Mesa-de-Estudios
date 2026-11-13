@@ -367,7 +367,7 @@ Decisión de Gerson (13 nov): se agrega la pregunta de seguridad, para calibrar 
 
 - **Cansa.** Es un toque más en cada problema. Quizá se pregunta en uno de cada dos.
 - **Marcar siempre «Seguro».** La seguridad no puede tener premio ni castigo en puntos; si lo tiene, deja de ser sincera.
-- **Dónde se pregunta.** En la práctica y en el repaso, desde el inicio. En las pruebas de entrada y salida daría el dato más limpio, pero las aleja del examen: por decidir, quizá solo en una parte de los ítems.
+- **Dónde se pregunta.** Decidido por Gerson (13 nov): en la **prueba de entrada** y en los **ejercicios** (la práctica y el repaso). En la **prueba de salida, no.** Dos consecuencias que hay que tener presentes: la entrada y la salida dejan de ser idénticas en su procedimiento (la entrada lleva un toque más por pregunta), así que la ganancia entre las dos se lee con ese cuidado; y la calibración no se puede comparar antes y después con las pruebas, solo con los ejercicios a lo largo del tiempo.
 - **Quién ve la calibración.** El alumno, la suya. El profesor, por salón o por alumno: por decidir. Nunca como tabla de posiciones.
 - **Tres opciones o cuatro,** y el texto exacto de cada una, se prueban con alumnos.
 - Que esta regla mantenga al alumno aprendiendo es una hipótesis: se comprueba con el avance en los cuatro niveles de 5.7.
@@ -543,7 +543,7 @@ Las tríadas de Döbereiner y las octavas de Newlands entran como dos arreglos m
 
 **Dónde va el gasto «sin ahorrar»:**
 
-- **Los datos.** La escena de hoy (`atomo-y-tabla`) llega hasta el elemento 36 y sus valores se contrastaron solo en parte con fuentes secundarias. Hay que decidir hasta dónde llega (lo que pregunta la admisión son los representativos y la primera serie de transición) y verificar cada valor con una fuente primaria.
+- **Los datos.** La escena de hoy (`atomo-y-tabla`) llega hasta el elemento 36 y sus valores se contrastaron solo en parte con fuentes secundarias. **Decidido por Gerson (13 nov):** la tabla llega hasta el último elemento del que haya información completa en la IUPAC o en fuentes científicas verificables. En la práctica son dos reglas. Primera: las casillas son las de la tabla de la IUPAC, con símbolo, nombre, número atómico y masa atómica estándar. Segunda: cada propiedad (radio, energía de ionización, electronegatividad, afinidad) llega hasta donde exista un valor medido y citado; donde no lo hay, la casilla dice «sin dato» y no se pone una estimación. Cada valor guarda su fuente. Desde este entorno no se pudo abrir iupac.org: la verificación se hace en una sesión con acceso.
 - **La carta en tres tamaños:** casilla de 20 px, casilla de 45 px y carta completa.
 - **Las transiciones entre arreglos,** que son la lección de historia.
 
@@ -835,6 +835,8 @@ Una variable por versión, como pide el skill. Cada versión tiene una decisión
 **La hipótesis de fondo y su prueba.** Hipótesis: en una misma unidad, POGIL v2 da mejor resultado en los ítems de transferencia que el paso a paso de hoy. La app ya tiene con qué comprobarlo: pruebas de entrada y salida con formas paralelas y ganancia de Hake. En el piloto, una sección usa la versión de hoy y otra la v2 de la misma unidad. Con un colegio y dos secciones el resultado es una señal, no una prueba.
 
 **Lo que conviene decidir antes del piloto de diciembre.** El rediseño completo no entra. Entra la versión A, quizá la B. Lo demás del piloto va con las escenas de hoy, que funcionan.
+
+**Ojo con la unidad de la versión A.** El piloto es con 3.º, 4.º y 5.º (confirmado por Gerson el 13 nov), y en el catálogo ácidos y bases es de 5.º: solo ese grado la estudiaría como propia. Si se quiere que los tres grados prueben el formato nuevo, la primera unidad debería ser de 3.º. Dos candidatas ya diseñadas aquí: materia y energía (sección 7.2) y, en física, MRU y MRUV con el carrito. Ácidos y bases quedaría como segunda unidad, para 5.º.
 
 ## 10. Riesgos y lo que no se verificó
 
