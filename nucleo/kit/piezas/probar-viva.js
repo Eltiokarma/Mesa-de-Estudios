@@ -38,7 +38,9 @@ function probarViva(gen, o = {}) {
   test(`${gen.id}: presupuesto de texto (enunciado ≤ 40, paso ≤ 14, error ≤ 20)`, () => {
     for (let s = 0; s < N; s++) {
       const p = gen.generar(s);
-      const n = Kit.palabras(p.enunciado) + Kit.palabras(p.pregunta);
+      // Enunciado: palabras con al menos una letra, como herramientas/validar-ejercicios.js (los datos no cuentan).
+      const letras = x => Kit.plano(x).split(/\s+/).filter(w => /\p{L}/u.test(w)).length;
+      const n = letras(p.enunciado) + letras(p.pregunta);
       assert.ok(n <= 40, `semilla ${s}: enunciado de ${n} palabras`);
       for (const a of p.alternativas.filter(x => x.error)) assert.ok(Kit.palabras(a.error.explicacion) <= 20, `semilla ${s}: «${a.error.explicacion}»`);
       const pasos = p.pasos || p.solucion.map(t => ({ texto: t }));

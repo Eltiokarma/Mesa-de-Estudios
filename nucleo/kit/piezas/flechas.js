@@ -50,7 +50,7 @@
     for (const p of d.contorno || []) ps.push(p);
     for (const p of d.puntos || []) ps.push([p.x, p.y]);
     for (const a of d.angulos || []) ps.push(a.en);
-    if (d.ejes) ps.push([0, 0]);
+    if (d.ejes) ps.push([0, 0], [1.8, 0], [0, 1.8]); // lugar para î y ĵ, lejos de los rótulos x e y
     return ps.filter(p => Array.isArray(p) && Number.isFinite(p[0]) && Number.isFinite(p[1]));
   }
 
@@ -178,7 +178,7 @@
       // Los unitarios î y ĵ: flechas de largo 1 en la escala de la figura, desde el origen (fidelidad: miden 1).
       const o = [g.X(0), g.Y(0)];
       s += `<g class="kit-unitarios">${T.flecha(o[0], o[1], g.X(1), o[1], { grosor: 2 })}${T.flecha(o[0], o[1], o[0], g.Y(1), { grosor: 2 })}`
-        + `${T.rotulo(g.X(1) + 2, o[1] + 20, 'î', { peso: 700, ancla: 'middle' })}${T.rotulo(o[0] - 8, g.Y(1) + 6, 'ĵ', { peso: 700, ancla: 'end' })}</g>`;
+        + `${T.rotulo(g.X(0.5), o[1] + 20, 'î', { peso: 700, ancla: 'middle' })}${T.rotulo(o[0] - 8, g.Y(0.5) + 6, 'ĵ', { peso: 700, ancla: 'end' })}</g>`;
     }
     if (d.contorno && d.contorno.length > 2) {
       s += `<path class="kit-tenue" d="M${d.contorno.map(q => `${T.n(g.X(q[0]))} ${T.n(g.Y(q[1]))}`).join('L')}Z" fill="none" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/>`;
