@@ -8,7 +8,7 @@ Actualizado el 13 de noviembre de 2026. La siguiente sesión empieza aquí: lée
 npm test
 ```
 
-Deben pasar 8062 pruebas. El servidor tiene las suyas: `cd servidor && pip install -r requirements.txt -r requirements-dev.txt && python -m pytest -q` (81).
+Deben pasar 8062 pruebas. El servidor tiene las suyas: `cd servidor && pip install -r requirements.txt -r requirements-dev.txt && python -m pytest -q` (82).
 
 ```bash
 npm run dev
@@ -27,7 +27,7 @@ Si hay que hacer OCR, instala tesseract en español: `apt-get install -y tessera
 - **Si el servidor local muere:** se reinicia con `node herramientas/servidor.js`. También hay que reiniciarlo después de cambiar `herramientas/construir-catalogo.js`, porque guarda el módulo en memoria.
 - **Para verificar a mano:** Playwright y Chromium ya vienen instalados en el entorno en la nube (`require('playwright')`). Las capturas *fullPage* pierden la emulación táctil, así que lo que depende de `hover` se revisa con capturas normales.
 
-## Cola de repaso (versión R), 13 nov, en `main` (sw v171)
+## Cola de repaso (versión R), 13 nov, en `main` (sw v172)
 
 **Qué hay.**
 - `nucleo/repaso.js` es la lógica pura, con pruebas en `nucleo/repaso.test.js`. Guarda en `est.repaso[unidad] = { desde, paso, toca, hechos, aciertos, ultimo }` y el tope del día en `est.repasoDia`.
@@ -82,10 +82,12 @@ Si hay que hacer OCR, instala tesseract en español: `apt-get install -y tessera
 - Nada se probó con alumnos.
 
 **Pendientes del repaso.**
-- Repaso de razonamiento verbal con los textos de lectura.
-- `unidadCatalogo` en los generadores mixtos.
-- La pregunta de seguridad (versión S), que también alarga o acorta el intervalo según 5.8.
-- Que el profesor vea el repaso de su sección en su panel.
+- **Repaso de razonamiento verbal: lo decide Gerson.** Un texto de lectura no cabe en uno o dos minutos. Los 15 ejercicios sueltos (analogías, conectores, término excluido) son pocos y se repetirían tal cual. Hay dos caminos: generadores de ejercicios sueltos, o textos muy cortos hechos para el repaso.
+- **Revisar la tabla `nucleo/repaso-tipos.js`.** La clasificó un modelo (ver arriba).
+- **La pregunta de seguridad (versión S).** Según 5.8, también alarga o acorta el intervalo. Necesita diseño aprobado.
+- ~~Que el profesor vea el repaso de su sección en su panel.~~ **Hecho:** `GET /api/secciones/{id}/avance` trae `repaso { unidades, hechos, aciertos, ultimo }` y el panel tiene la columna «Repaso».
+  - Se probó con la API simulada en Playwright, no contra Railway.
+  - En el celular, la tabla se desplaza de costado: la columna queda a la derecha.
 
 ## Estado al 13 nov, tarde: auditoría POGIL v2 y decisiones (léelo primero)
 
