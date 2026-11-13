@@ -106,3 +106,43 @@ test('el banco versionado está unificado: todo subtema es del vocabulario de su
   assert.equal(res.unificado, fichas);
   assert.equal(res['sin-asignar'], 0);
 });
+
+test('la revisión por ficha manda sobre el subtema y deja su marca', () => {
+  const t = { ...tablas, revisado_por: 'modelo', revision: { 'L:propuesto:2': { veredicto: 'dudosa', unidad: 'fisica.dinamica', propuesta: 'fisica.movimiento-parabolico-y-circular', estado: 'por-revisar', nota: 'n' } } };
+  const a = ficha('L:propuesto:2', 'tiro'); U.aplicar(a, t);
+  assert.equal(a.unidad, 'fisica.dinamica');
+  assert.deepEqual(a.banco.revision_unidad, { por: 'modelo', veredicto: 'dudosa', estado: 'por-revisar', propuesta: 'fisica.movimiento-parabolico-y-circular', nota: 'n' });
+  const b = ficha('L:propuesto:3', 'tiro'); b.banco.revision_unidad = { por: 'modelo' }; U.aplicar(b, t);
+  assert.equal(b.unidad, 'fisica.movimiento-parabolico-y-circular');
+  assert.ok(!('revision_unidad' in b.banco));   // si sale de la revisión, la marca se va
+});
+
+test('revision-unidades.json: unidades del catálogo, veredictos válidos y fichas al día', () => {
+  const f = path.join(DIR, 'revision-unidades.json');
+  if (!fs.existsSync(f)) return;
+  const rev = JSON.parse(fs.readFileSync(f, 'utf8'));
+  const cat = new Set();
+  const dirCat = path.join(__dirname, '..', 'catalogo', 'cursos');
+  for (const c of fs.readdirSync(dirCat).filter(x => x.endsWith('.json'))) for (const u of JSON.parse(fs.readFileSync(path.join(dirCat, c), 'utf8')).unidades || []) cat.add(u.id);
+  for (const [uid, r] of Object.entries(rev.fichas)) {
+    assert.ok(cat.has(r.unidad), `${uid}: unidad desconocida ${r.unidad}`);
+    assert.ok(['correcta', 'incorrecta', 'dudosa'].includes(r.veredicto), `${uid}: veredicto ${r.veredicto}`);
+    assert.equal(r.estado, r.veredicto === 'dudosa' ? 'por-revisar' : 'revisada-por-modelo', `${uid}: estado`);
+  }
+  let vistas = 0;
+  for (const curso of fs.readdirSync(DIR)) {
+    const d = path.join(DIR, curso);
+    if (!fs.statSync(d).isDirectory() || curso === 'figuras') continue;
+    for (const a of fs.readdirSync(d).filter(x => x.endsWith('.jsonl'))) {
+      for (const l of fs.readFileSync(path.join(d, a), 'utf8').split('\n')) {
+        if (!l.trim()) continue;
+        const ej = JSON.parse(l); const r = rev.fichas[ej.banco.uid];
+        if (!r) { assert.ok(!ej.banco.revision_unidad, `${ej.id}: marca de revisión sin revisión`); continue; }
+        vistas++;
+        assert.equal(ej.unidad, r.unidad, `${ej.id}: falta aplicar la revisión (node herramientas/unificar-subtemas.js)`);
+        assert.equal(ej.banco.revision_unidad.estado, r.estado);
+      }
+    }
+  }
+  assert.equal(vistas, Object.keys(rev.fichas).length, 'hay fichas en la revisión que no están en el banco');
+});

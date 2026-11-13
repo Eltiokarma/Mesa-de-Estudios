@@ -12,6 +12,8 @@
 //   banco.subtema_fuente  guarda la etiqueta tal como vino (null si no traía);
 //   unidad                es la unidad del subtema, aunque sea de otro curso que la ficha (el curso es el del
 //                         libro; la unidad, donde se estudia); si el subtema no trae, la principal del tema.
+// revision-unidades.json, si existe, trae la unidad revisada ficha por ficha (por uid) y manda sobre la del
+// subtema; la ficha guarda la marca en banco.revision_unidad (quién la revisó, veredicto, estado y la propuesta).
 // Es idempotente: al repetirlo parte siempre de banco.subtema_fuente. La importación (importar-cuzcano.js)
 // llama a `aplicar` con cada ficha, así que volver a importar no deshace la unificación.
 // Una etiqueta que no está en subtemas.json se deja como vino y se informa.
@@ -33,9 +35,13 @@ function normalizar(s) {
 function cargar(dir = DIR) {
   const f = path.join(dir, 'subtemas.json');
   const t = path.join(dir, 'temas.json');
+  const r = path.join(dir, 'revision-unidades.json');
+  const rev = fs.existsSync(r) ? leer(r) : null;
   return {
     subtemas: fs.existsSync(f) ? leer(f).temas || {} : {},
     temas: fs.existsSync(t) ? leer(t).temas || {} : {},
+    revision: rev ? rev.fichas || {} : {},
+    revisado_por: rev ? rev.revisado_por || null : null,
   };
 }
 
@@ -63,7 +69,19 @@ function aplicar(ej, tablas) {
   b.subtema = can.nombre;
   const unidad = can.unidad || principal;
   if (unidad) ej.unidad = unidad;
+  revisar(ej, tablas);
   return 'unificado';
+}
+
+// La unidad revisada ficha por ficha manda sobre la del subtema.
+function revisar(ej, tablas) {
+  const r = (tablas.revision || {})[ej.banco.uid];
+  if (!r) { delete ej.banco.revision_unidad; return; }
+  ej.unidad = r.unidad;
+  const marca = { por: tablas.revisado_por || 'modelo', veredicto: r.veredicto, estado: r.estado };
+  if (r.propuesta && r.propuesta !== r.unidad) marca.propuesta = r.propuesta;
+  if (r.nota) marca.nota = r.nota;
+  ej.banco.revision_unidad = marca;
 }
 
 // Reordena las claves para que `unidad` quede junto a `curso` y `subtema_fuente` junto a `subtema`.
