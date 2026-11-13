@@ -41,7 +41,7 @@ test('escena viva: la pieza existe y su resultado es la respuesta del generador'
     assert.ok(typeof p.escena.alt === 'string' && p.escena.alt.length > 20);
     assert.ok(Math.abs(barra.controles(p.escena.datos).respuesta - p.respuesta.valor) < 1e-9, `semilla ${s}`);
     const fin = barra.dibujar(p.escena.datos, LT.estado(p.pasos, p.pasos.length));
-    assert.ok(fin.includes(`${Kit.formatear(p.respuesta.valor)}${p.respuesta.unidad === '%' ? ' %' : ''} ✓`), `semilla ${s}: el final no dibuja la respuesta`);
+    assert.ok(fin.includes(`${p.escena.datos.prefijo}${Kit.formatear(p.respuesta.valor)}${p.escena.datos.sufijo} ✓`), `semilla ${s}: el final no dibuja la respuesta`);
     assert.ok(!/NaN|undefined|null|Infinity/.test(fin));
   }
 });

@@ -115,7 +115,7 @@
     const fa = tipo === 'aumento-descuento' ? 1 + a / 100 : 1 - a / 100, fb = 1 - b / 100;
     const total = enPct ? 100 : precio, v1 = total * fa, v2 = v1 * fb;
     const tramos = [{ tipo: tipo === 'aumento-descuento' ? 'aumento' : 'descuento', pct: a, color: 'i' }, { tipo: 'descuento', pct: b, color: 'h' }];
-    const datos = { total, prefijo: enPct ? '' : 'S/ ', sufijo: enPct ? ' %' : '', decimales: 2, color: enPct ? null : 'o', tramos, marca: enPct ? 'quita' : 'queda' };
+    const datos = { total, prefijo: enPct ? '' : 'S/ ', sufijo: enPct ? '\u00a0%' : '', decimales: 2, color: enPct ? null : 'o', tramos, marca: enPct ? 'quita' : 'queda' };
     const sol = x => (enPct ? `${f(x)} %` : `S/ ${f(x)}`);
     const inicio = enPct ? '100 %' : v('P', `S/ ${f(precio)}`);
     let pasos;
@@ -123,13 +123,13 @@
       pasos = [
         { estado: { corte: 1 }, texto: ['Primero se quita el ', v('a', `${a} %`), ' del precio: queda el ', `${100 - a} %`, '.'], ecuacion: [inicio, ` × ${f(fa)} = ${sol(v1)}`] },
         { estado: { corte: 2 }, texto: ['El ', v('b', `${b} %`), ' se quita de lo que quedó, no del precio inicial.'], ecuacion: [`${sol(v1)} × ${f(fb)} = ${sol(v2)}`] },
-        { estado: { corte: 2, final: true }, texto: [`Se paga el ${f(100 * fa * fb)} % del precio: los factores se multiplican.`], ecuacion: [`${f(fa)} × ${f(fb)} = ${f(fa * fb)}`] },
+        { estado: { corte: 2, final: true }, texto: [`Se paga el ${f(100 * fa * fb)} % del precio: los factores se multiplican.`], ecuacion: [`${f(fa)} × ${f(fb)} = ${P.formatear(fa * fb, 4)}`] },
       ];
     } else if (tipo === 'aumento-descuento') {
       pasos = [
         { estado: { corte: 1 }, texto: ['Con el aumento del ', v('a', `${a} %`), ' se paga el ', `${100 + a} %`, '.'], ecuacion: [inicio, ` × ${f(fa)} = ${sol(v1)}`] },
         { estado: { corte: 2 }, texto: ['El ', v('b', `${b} %`), ' se descuenta del precio ya aumentado.'], ecuacion: [`${sol(v1)} × ${f(fb)} = ${sol(v2)}`] },
-        { estado: { corte: 2, final: true }, texto: ['En un solo paso, los factores se multiplican.'], ecuacion: [`${f(fa)} × ${f(fb)} = ${f(fa * fb)} del precio inicial`] },
+        { estado: { corte: 2, final: true }, texto: ['En un solo paso, los factores se multiplican.'], ecuacion: [`${f(fa)} × ${f(fb)} = ${P.formatear(fa * fb, 4)} del precio inicial`] },
       ];
     } else {
       pasos = [
@@ -145,6 +145,9 @@
     let hueco = Infinity;
     for (let i = 0; i < vals.length; i++) for (let j = i + 1; j < vals.length; j++) hueco = Math.min(hueco, Math.abs(vals[i] - vals[j]));
     const paso = pasoBonito(Math.min(escala / 150, hueco / 2));
+    // Espacios que no se cortan: «85 %» y «S/ 255» no se parten al final de una línea.
+    const nb = x => (typeof x === 'string' ? x.replace(/ %/g, '\u00a0%').replace(/S\/ /g, 'S/\u00a0') : x);
+    pasos = pasos.map(q => ({ ...q, texto: q.texto.map(nb), ecuacion: q.ecuacion.map(nb) }));
     const fantasmas = {};
     for (const x of alternativas) if (x.error) fantasmas[x.error.id] = { marca: x.valor, rotulo: ROTULOS[x.error.id] || '' };
     const verbo1 = tipo === 'aumento-descuento' ? 'gana' : 'pierde';
