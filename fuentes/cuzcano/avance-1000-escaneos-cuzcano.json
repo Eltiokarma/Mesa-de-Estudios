@@ -3,9 +3,9 @@
   "coleccion": "Cuzcano",
   "origen": "Escaneos cotejados con el OCR local",
   "meta": 1000,
-  "fichas_verificadas": 721,
-  "fichas_pendientes": 279,
-  "temas_completos": 7,
+  "fichas_verificadas": 800,
+  "fichas_pendientes": 200,
+  "temas_completos": 8,
   "temas": [
     {
       "id": "razonamiento-matematico.cronometria-relojes",
@@ -52,7 +52,7 @@
     {
       "id": "fisica.optica",
       "tema": "Óptica",
-      "fichas": 21,
+      "fichas": 100,
       "meta": 100
     },
     {
@@ -68,6 +68,6 @@
       "meta": 100
     }
   ],
-  "fichas_banco_local": 11323,
-  "sha256_fichas_locales": "e5e5abdf70499b376caf2a63617679c9b7164ed22e4bc1ffe98a8cbbf5460897"
+  "fichas_banco_local": 11402,
+  "sha256_fichas_locales": "856a69216fe196a60479d854a87a52bd3b7c0806d33f67866999cc406c3df161"
 }
