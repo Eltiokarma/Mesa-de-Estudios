@@ -3,8 +3,8 @@
   "coleccion": "Cuzcano",
   "origen": "Escaneos cotejados con el OCR local",
   "meta": 1000,
-  "fichas_verificadas": 200,
-  "fichas_pendientes": 800,
+  "fichas_verificadas": 269,
+  "fichas_pendientes": 731,
   "temas_completos": 2,
   "temas": [
     {
@@ -22,7 +22,7 @@
     {
       "id": "aritmetica.regla-de-descuento",
       "tema": "Regla de descuento",
-      "fichas": 0,
+      "fichas": 69,
       "meta": 100
     },
     {
@@ -68,6 +68,6 @@
       "meta": 100
     }
   ],
-  "fichas_banco_local": 11802,
-  "sha256_fichas_locales": "77dca8f14246896596ab9294e7a1760a2f941c0ca58321c1ada8e9b54707ed96"
+  "fichas_banco_local": 11871,
+  "sha256_fichas_locales": "e8bac101e509a59f61f9067d90293b1c6a2e3b127792eb344de0e07c805c66b2"
 }
