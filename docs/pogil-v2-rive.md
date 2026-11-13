@@ -2,7 +2,7 @@
 
 13 de noviembre de 2026. Auditoría pedida por Gerson: «el diseño es hermoso; lo que no es hermoso es la forma de enseñar». Es un documento de evaluación y dirección: no trae código ni cambia nada de la app. Se hizo con los skills `diseno-y-animacion` y `estructura-visual-motion`, leyendo `docs/escena-viva.md`, `docs/pendientes.md` (sección B) y `docs/vision-pisa-agilidad-interaccion.md` (secciones 3 y 4), y midiendo las 99 escenas en una pantalla de celular. Si algo de aquí choca con `CLAUDE.md` o con `docs/escena-viva.md`, mandan ellos.
 
-**Ampliado el mismo día** tres veces. Primero, tres unidades de química rediseñadas a pedido de Gerson: materia, tabla periódica y enlace (secciones 7.2 a 7.4). Tercero, más formas de explicar una misma unidad, empezando por razonamiento matemático (sección 5.6). Segundo, una segunda opinión que trajo Gerson (otra conversación, sobre unir Rive con POGIL y sobre otras formas de enseñar). Lo nuevo está en las secciones 5.3 a 5.5, en la columna «Ruta» del temario y en la fila de repaso de la sección 9. Corrige un error de la primera versión: aplicaba POGIL a las 152 unidades.
+**Ampliado el mismo día** cuatro veces. Cuarto, las progresiones: tramos, prerrequisitos y niveles de dominio, a partir de una tercera opinión (sección 5.7). Primero, tres unidades de química rediseñadas a pedido de Gerson: materia, tabla periódica y enlace (secciones 7.2 a 7.4). Tercero, más formas de explicar una misma unidad, empezando por razonamiento matemático (sección 5.6). Segundo, una segunda opinión que trajo Gerson (otra conversación, sobre unir Rive con POGIL y sobre otras formas de enseñar). Lo nuevo está en las secciones 5.3 a 5.5, en la columna «Ruta» del temario y en la fila de repaso de la sección 9. Corrige un error de la primera versión: aplicaba POGIL a las 152 unidades.
 
 ## 1. En corto
 
@@ -264,6 +264,77 @@ La ruta dice cómo entra el alumno a la unidad. No dice que haya una sola explic
 - **Dónde importa más:** en razonamiento matemático (casi todo problema tiene varios caminos), en álgebra (el mismo ejercicio sale por gráfica, por tabla o por despeje) y en aritmética (barras, tabla o ecuación).
 
 La tabla de formas de razonamiento matemático está en la sección 8, después de la de ese curso. Para los demás cursos queda por investigar: el archivo `docs/temario-completo.md` trae el campo vacío en cada unidad, listo para llenarse. Que variar la representación ayude es una hipótesis razonable, no un dato de este proyecto.
+
+### 5.7 Progresiones: en qué orden, con qué base y cómo se demuestra
+
+Una tercera opinión que trajo Gerson (otra conversación, que sí leyó el catálogo y el fundacional en `main`) mira una capa que esta auditoría no tocaba. Aquí se habla de **cómo se vive cada unidad**; esa opinión habla de **en qué orden van, qué base piden y qué prueba que el alumno puede avanzar**. Las dos capas se necesitan.
+
+**Lo que afirma sobre el repo, comprobado:**
+
+| Afirmación | ¿Es cierta? | Dónde se ve |
+| --- | --- | --- |
+| El avance cuenta unidades estudiadas, no lo que el alumno sabe hacer | Sí | `app/app.js`: el avance es la fracción de unidades marcadas como vistas («unidades estudiadas», «% estudiado») |
+| La ruta se ordena por grado y por el temario de la universidad, sin dependencias entre unidades | Sí | El catálogo trae `grado` y `universidades` por unidad; no hay ningún campo de prerrequisitos |
+| La «confianza calibrada» es en realidad aciertos sobre lo intentado | Sí | `nucleo/medicion.js`: es la tasa de aciertos sin contar los «No sé». No se le pregunta al alumno qué tan seguro está |
+| La regla de lectura trata la paráfrasis como «se deduce» y la cita casi literal como «lo dice» | Sí | `docs/formato-lectura.md`, en las notas del paso `clasificar` |
+
+Las dos últimas son correcciones concretas, no opiniones:
+
+- **Lectura.** Una paráfrasis puede decir algo que el texto dice de forma explícita. La frontera útil es otra: información explícita (literal o reformulada) contra conclusión que obliga a unir dos datos. Cambiar la regla toca los ítems de `clasificar` y el código RV58, así que lo decide Gerson y se revisan solo los ítems afectados.
+- **Medición.** El número sirve, pero el nombre promete otra cosa. O se renombra («acierto sobre lo intentado»), o se agrega la pregunta de seguridad («¿qué tan seguro estás?») y recién ahí se habla de calibración.
+
+**Lo que se toma:**
+
+1. **Cuatro niveles por unidad en vez de un visto bueno.** Encajan con lo que la app ya registra y con la cola de repaso de 5.4:
+
+   | Nivel | Qué quiere decir | Con qué se comprueba |
+   | --- | --- | --- |
+   | La estudié | Pasó por la unidad | La marca de hoy |
+   | La resuelvo con ayuda | Acierta mientras tiene el modelo y las pistas | Los tiempos 1 a 4, o la práctica con pasos |
+   | La resuelvo solo | Acierta un problema de examen sin apoyos | El problema final del tiempo 5 y la prueba de salida |
+   | La recuerdo y la aplico | Acierta días después, mezclada con otras | El repaso de la semana |
+
+   Un porcentaje suelto no declara dominio: hace falta resolver solo y volver a acertar después.
+
+2. **Tramos dentro de cada curso.** Las 152 unidades se agrupan en 54 tramos (entre 6 y 9 por curso) que dicen qué se construye sobre qué. No reemplazan el orden del temario de cada universidad: lo complementan. Cada unidad lleva su tramo en `docs/temario-completo.md`. Un cruce útil: el tramo «Explicar propiedades» de química junta enlace con líquidos y sólidos, y eso coincide con el acto 5 de la sección 7.4.
+
+3. **Prerrequisitos y desvíos cortos.** Dos o tres capacidades concretas por unidad. Si falla una, se ofrece un desvío de uno o dos minutos (un calentamiento de la ruta R o un problema guiado), no repetir una unidad entera. Es una oferta, no una reja: el postulante llega con huecos y con poco tiempo.
+
+4. **Qué hacer según lo que pasó,** sin diagnosticar de más (una respuesta sola no clasifica a nadie; hacen falta dos señales):
+
+   | Lo que se observa | Lo que se ofrece |
+   | --- | --- |
+   | Falla lo que la unidad da por sabido | El desvío corto |
+   | Plantea bien y calcula mal | Práctica localizada de esa cuenta |
+   | Acierta y no puede justificar | Un contraejemplo o una comparación (ruta C) |
+   | Ya lo domina | Paso directo al problema de examen |
+
+5. **Una ficha por unidad** con ocho elementos: desempeño final observable, prerrequisitos, diagnóstico, experiencia central, enseñanza explícita, práctica con apoyo que se retira, transferencia y recuperación posterior. Los seis últimos ya están en los cinco tiempos, las rutas y el repaso. Los dos primeros faltaban y quedan como campos abiertos en el temario.
+
+6. **Práctica mezclada.** El examen no dice de qué capítulo es cada pregunta. La cola de repaso mezcla unidades a propósito, y antes de resolver se pregunta «¿qué tipo de problema es?». Es la idea más valiosa para un examen de admisión.
+
+7. **Una dinámica propia por curso,** que se suma a las rutas de 5.3:
+
+   | Curso | Dinámica central | Ruta a la que corresponde |
+   | --- | --- | --- |
+   | Aritmética | «Elige el modelo antes de calcular» | Comparar, con práctica mezclada |
+   | Álgebra | «Auditor de soluciones»: hallar el primer paso sin justificar | Seguir un ejemplo, con un ejemplo que tiene un error |
+   | Geometría | «Construye un contraejemplo» | Comparar |
+   | Trigonometría | «Predice la gráfica desde el movimiento» | Descubrir |
+   | Física | «¿Qué modelo explica este caso?» | Comparar y argumentar |
+   | Química | «La misma situación en tres lenguajes»: lo que se observa, las partículas y los símbolos | Comparar |
+   | Razonamiento matemático | «¿De verdad es el mínimo?» | Argumentar |
+   | Razonamiento verbal | «Tribunal del resumen» | Argumentar |
+
+   El «auditor de soluciones» es una variante nueva de la ruta E que no estaba: el ejemplo trae un error y el alumno lo encuentra. Va después del ejemplo correcto, nunca antes.
+
+**Lo que no se toma, o se toma con cuidado:**
+
+- **Herramientas externas dentro de la app** (GeoGebra, Desmos, PhET, CODAP). Mesa corre sin conexión en celulares baratos, con motor propio verificado (regla 1), contenido propio (regla 5) y medición propia. Una simulación de fuera no deja nada en la medición. Sirven como referencia de diseño y para el profesor en el laboratorio. Sus licencias para un producto que se vende a colegios hay que revisarlas antes de usarlas.
+- **Ocho unidades de arranque, una por curso.** La selección por «puentes» es buena (fracciones hacia proporcionalidad, partículas hacia mol), porque prueba justo los prerrequisitos. Pero ocho fichas completas no entran antes del piloto. Orden propuesto: primero una unidad entera con su ficha (ácidos y bases, sección 9), después los ocho puentes.
+- **Las dinámicas de pareja** (uno propone y otro comprueba). Son para el modo salón. En el celular a solas se convierten en dos preguntas seguidas, y eso pierde parte de lo que las hace funcionar.
+- **La ficha en las 152 unidades.** Es trabajo editorial grande. Se llena primero donde se va a construir.
+- **Sus fuentes.** Tampoco se pudieron abrir desde aquí. Dos coinciden con lo que el repo ya cita: el estudio de la PUCP con 4535 alumnos (`docs/investigacion/dinamica-ideas-erroneas.md`) y el de ejemplos que se retiran (Reisslein y otros 2006, en el fundacional). El resto queda por verificar.
 
 ## 6. Dónde entra Rive y dónde no
 
@@ -716,6 +787,8 @@ Una variable por versión, como pide el skill. Cada versión tiene una decisión
 | **C. Una unidad de física y una de matemática** | MRUV con el carrito; `triangulo-estira`, que ya se arrastra, solo con registros y regla | Lo mismo que A | ¿El modelo aguanta fuera de la química? |
 | **R. Cola de repaso** (en paralelo, no depende de las otras) | La app programa preguntas cortas de las unidades ya hechas, en días distintos | Aciertos en el repaso de la semana contra los del día | ¿El repaso cambia lo que el alumno recuerda? Se puede probar en el piloto con las escenas de hoy |
 | **T. La tabla viva** (en paralelo) | Primero solo la tabla plegada en el celular y el reordenamiento de las cartas | Que el símbolo se lea a 360 px; cuadros por segundo al reordenar | ¿Se construye la pieza completa? La reutilizan diez unidades de química |
+| **P. Avance en cuatro niveles** (después de R) | La barra del curso deja de contar unidades vistas y muestra los cuatro niveles de 5.7 | Que un alumno pueda decir qué le falta | ¿Los niveles le sirven al alumno y al profesor? |
+| **Los ocho puentes** (después de C) | Una unidad puente por curso con su ficha completa y sus prerrequisitos | Si el desvío corto arregla el fallo de base | El modelo editorial para las 152 |
 | **D. Escalar** | Física y química primero, por utilería compartida: las que usan vaso y mechero, después carrito, después foco | Pruebas de entrada y salida | Con tope de gasto por rutina, como siempre |
 
 **Guion para probar con un alumno** (sin anticiparle nada): se le da el celular con la unidad abierta y al terminar se le pregunta, en este orden: «¿Qué pasó?», «¿Qué hiciste tú?», «¿Cuándo lo entendiste?», «Si ahora tuvieras 1 L, ¿qué pH marcaría?». Se anota lo que intentó tocar y no respondía: eso dice qué gesto esperaba.
@@ -736,12 +809,13 @@ Una variable por versión, como pide el skill. Cada versión tiene una decisión
 - **Tiempo por unidad.** Los cinco tiempos pueden tardar más que el paso a paso. Si una unidad pasa de 10 minutos, se parte.
 - **Apilar técnicas.** Con cinco rutas es fácil querer usar las cinco en cada unidad. La regla es una principal y una de apoyo.
 - **La ruta puede estar mal asignada.** Si en la prueba con alumnos una unidad de ruta D se resuelve mejor con un ejemplo, se cambia la ruta y no se fuerza el gesto.
+- **Dos correcciones pendientes de decisión:** la regla de lectura sobre la paráfrasis y el nombre de la «confianza calibrada» (sección 5.7). Las dos cambian datos que ya se miden.
 - **No verificado:** nada se probó con alumnos, ni en un celular físico, ni con lector de pantalla. La detección de «se arrastra» es automática y aproximada. Las relaciones de la columna «lo que descubre» son propuestas sin contrastar con los informes de ideas erróneas. No se leyó material de pogil.org (sigue pendiente en la visión) ni se pudieron abrir las fuentes de la segunda opinión. Las cifras sobre animación del skill no se rastrearon a su fuente.
 
 ## Reporte de diseño
 
 - **Ficha de tarea:** revisión de algo existente (las 99 escenas) y dirección para un sistema nuevo de lección. No se corrigió nada.
-- **Sistema:** el existente (`docs/diseno.md`, `docs/escena-viva.md`, kit y mascota). Decisiones nuevas que este documento propone y que quedan aquí escritas hasta que Gerson las apruebe: los cinco tiempos, el vocabulario de 13 gestos, las cinco rutas con su asignación por unidad, la cola de repaso, la regla de decisión Rive contra motor y el catálogo de 15 archivos.
+- **Sistema:** el existente (`docs/diseno.md`, `docs/escena-viva.md`, kit y mascota). Decisiones nuevas que este documento propone y que quedan aquí escritas hasta que Gerson las apruebe: los cinco tiempos, el vocabulario de 13 gestos, las cinco rutas con su asignación por unidad, la cola de repaso, los cuatro niveles de dominio, los 54 tramos, la regla de decisión Rive contra motor y el catálogo de 15 archivos.
 - **Carácter:** acogedora, viva y precisa (sin cambios). Firma: el hilo de color, que ahora llega también a los registros.
 - **Movimientos:** ninguno nuevo. La utilería se rige por las clases «gesto» y «simulación» del skill: sigue al dedo uno a uno y el reloj es el del motor.
 - **Verificación:** barrido con Playwright de 99 escenas a 390 × 780 (cifras en la sección 2); dos escenas revisadas a mano.
