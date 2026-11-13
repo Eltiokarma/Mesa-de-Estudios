@@ -1,0 +1,72 @@
+/* Kit de escenas vivas (docs/escena-viva.md): figura, marca arrastrable, línea de tiempo y hueco de la mascota.
+   Lo carga app/practica.js. Dentro de la figura, solo colores de variable (var(--c-*)) y la tinta (currentColor);
+   los controles son de la cáscara y usan la marca. Tiempos: micro 120, corto 200, medio 320, largo 480, paso 900 ms. */
+
+/* ---------- Figura ---------- */
+.kit-escena{margin:12px 0 4px}
+.kit-lienzo{color:var(--ink);max-width:380px;margin:0 auto;border-radius:12px;touch-action:pan-y;
+  -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+.kit-lienzo[role="slider"]{cursor:ew-resize}
+.kit-lienzo:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.kit-svg{display:block;width:100%;height:auto;overflow:visible}
+/* Halo del color de la tarjeta: un rótulo se lee aunque una marca pase por detrás. */
+.kit-svg .kit-txt{paint-order:stroke;stroke:var(--card);stroke-width:4px;stroke-linejoin:round}
+.kit-svg .kit-tenue{opacity:.5}
+.kit-solo-lector{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* Pie de la figura: la pregunta antes de responder, el paso de la solución después. Alto reservado: no salta. */
+.kit-pie{min-height:calc(3 * 1.45em + 4px);margin:8px 0 0;font-size:17px}
+.kit-pie .preg{margin:0}
+.kit-ec{display:block;margin-top:4px;font-weight:600;font-variant-numeric:tabular-nums}
+
+/* ---------- Fila de control: − y + antes de responder; la línea de tiempo después (mismo alto) ---------- */
+.kit-control{min-height:52px;display:flex;align-items:center;justify-content:center;gap:12px;margin-top:6px}
+.kit-btn{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;flex:none;padding:0;
+  background:var(--card);border:2px solid var(--borde);box-shadow:0 3px 0 var(--borde);color:var(--ink);touch-action:manipulation}
+.kit-btn svg{display:block}
+.kit-btn:focus-visible,.kit-play:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.kit-lectura{min-width:9ch;text-align:center;font-weight:700;font-size:18px;font-variant-numeric:tabular-nums}
+
+.kit-tiempo{display:flex;align-items:center;gap:12px;width:100%}
+.kit-play{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;flex:none;padding:0;
+  background:var(--brand);color:var(--brand-ink);border:2px solid var(--borde);box-shadow:0 3px 0 var(--borde)}
+.kit-pista{position:relative;flex:1;min-width:0}
+.kit-cursor{display:block;width:100%;height:44px;margin:0;accent-color:var(--brand);cursor:pointer}
+.kit-cursor:focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:8px}
+.kit-puntos{position:absolute;left:8px;right:8px;bottom:0;display:flex;justify-content:space-between;pointer-events:none}
+.kit-puntos i{width:6px;height:6px;border-radius:50%;background:var(--line)}
+.kit-puntos i.on{background:var(--brand)}
+.kit-cuenta{min-width:3.2ch;text-align:right;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* ---------- Acciones: «No sé» y «Comprobar»; después, «Otro problema» en el mismo lugar ---------- */
+.kit-acciones{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.kit-acciones .btn{justify-content:center;padding:13px 10px;min-height:48px}
+.kit-acciones .alt.nose{grid-column:auto;min-height:48px}
+.kit-acciones .oculto{visibility:hidden}
+
+/* ---------- Retroalimentación con el hueco de la mascota (72 × 72, reservado desde la primera pintura) ---------- */
+.retro-fila{display:flex;gap:12px;align-items:flex-start;margin-top:14px}
+.mascota{width:72px;height:72px;flex:none}
+.retro-fila>#retro{flex:1;min-width:0;min-height:72px}
+.retro-fila .retro{margin-top:0}
+.retro-fila .retro.bien{padding-right:16px;min-height:0}
+.kit-pie .kit-consigna{margin:4px 0 0;color:var(--muted);font-size:15px}
+
+/* ---------- Movimiento: se anima lo nuevo del paso al avanzar (oficio «Explicación») ---------- */
+@media (prefers-reduced-motion:no-preference){
+  /* Un paso dura «paso» (900 ms): lo que cae o crece se mueve en «largo» (480, trasladar) y su rótulo llega
+     después, en «corto» (200, llegar). Lo que se quita cae desde la barra a su fila (--kit-dy, en px del lienzo). */
+  .kit-anima .kit-nuevo.kit-cae{animation:kit-cae 480ms cubic-bezier(.4,0,.2,1) both}
+  .kit-anima .kit-nuevo.kit-crece{animation:kit-barre-der 480ms cubic-bezier(.4,0,.2,1) both}
+  .kit-anima .kit-nuevo.kit-aparece{animation:kit-aparece 200ms cubic-bezier(0,0,.2,1) 480ms both}
+  .kit-btn,.kit-play{transition:transform 120ms linear,box-shadow 120ms linear}
+  .kit-btn:active,.kit-play:active{transform:translateY(3px);box-shadow:0 0 0 var(--borde)}
+}
+/* Movimiento reducido: los mismos estados, sin barridos ni traslados; lo nuevo solo se funde. */
+@media (prefers-reduced-motion:reduce){
+  .kit-anima .kit-nuevo{animation:kit-funde 200ms linear both}
+}
+@keyframes kit-cae{from{transform:translateY(var(--kit-dy,0))}to{transform:none}}
+@keyframes kit-barre-der{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes kit-aparece{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@keyframes kit-funde{from{opacity:0}to{opacity:1}}
