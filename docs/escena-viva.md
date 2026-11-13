@@ -49,8 +49,9 @@ Lo que ya devuelven los generadores (`enunciado`, `pregunta`, `variables`, `alte
     datos: { total: 300, tramos: [...] }, // lo que necesita la pieza; lo calcula el generador (regla 1)
     alt: 'Barra de S/ 300 que pierde primero el 15 % y luego el 30 % de lo que queda'
   },
-  respuesta: {                           // opcional; sin esto se responde con alternativas
-    tipo: 'arrastrar',                   // 'elegir' | 'arrastrar' | 'punto' | 'fichas'
+  respuesta: {                           // el mismo objeto de hoy ({ valor, unidad }) con campos nuevos
+    valor: 40.5,                         // se queda: probarGenerador lo exige
+    tipo: 'arrastrar',                   // sin tipo se responde con alternativas                   // 'elegir' | 'arrastrar' | 'punto' | 'fichas'
     control: 'marca',                    // qué se arrastra dentro de la pieza
     tolerancia: 0.5, unidad: '%'
   },
@@ -64,7 +65,8 @@ Lo que ya devuelven los generadores (`enunciado`, `pregunta`, `variables`, `alte
 
 - `escena.pieza` sale de un catálogo cerrado. Una pieza nueva se agrega al catálogo con sus pruebas; no se dibuja a mano dentro de un generador.
 - `pasos[i].estado` es lo que la pieza dibuja en ese paso: la pieza es una función pura `estado → dibujo`, y así el cursor puede ir adelante y atrás.
-- `fantasmas` usa los mismos `id` de error que las alternativas: la medición no cambia.
+- `fantasmas` usa los mismos `id` de error que las alternativas: la medición no cambia. Un error puede no tener fantasma; el validador lo cuenta.
+- Palabra = trozo con al menos una letra. El enunciado se cuenta junto con la pregunta.
 
 ## 5. El kit (`nucleo/kit/`)
 
