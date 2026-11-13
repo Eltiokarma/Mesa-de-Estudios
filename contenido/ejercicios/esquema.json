@@ -25,7 +25,8 @@
       "properties": {
         "uid": { "description": "Identificador de procedencia del banco; el id del ejercicio se deriva de él.", "type": "string", "minLength": 3 },
         "tema": { "type": "string" },
-        "subtema": { "type": ["string", "null"] },
+        "subtema": { "description": "Subtema. En el banco Cuzcano es el nombre unificado de contenido/ejercicios/cuzcano/subtemas.json.", "type": ["string", "null"] },
+        "subtema_fuente": { "description": "La etiqueta de subtema tal como vino del banco de origen, antes de unificarla (null si no traía).", "type": ["string", "null"] },
         "titulo": { "type": "string" },
         "estado_ficha": { "type": ["string", "null"] },
         "revisar_antes_de_integrar": { "type": ["boolean", "null"] },

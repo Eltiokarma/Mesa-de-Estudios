@@ -247,7 +247,7 @@ function leerCarpeta(dir) {
     for (const f of fs.readdirSync(d).sort()) {
       const p = path.join(d, f);
       if (fs.statSync(p).isDirectory()) { recorrer(p); continue; }
-      if (f === 'esquema.json' || f === 'tipos.json' || f === 'temas.json') continue;
+      if (f === 'esquema.json' || f === 'tipos.json' || f === 'temas.json' || f === 'subtemas.json') continue;
       const rel = path.relative(RAIZ, p);
       try {
         if (f.endsWith('.jsonl')) {

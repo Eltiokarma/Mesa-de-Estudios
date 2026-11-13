@@ -31,6 +31,7 @@ node herramientas/validar-ejercicios.js --validar contenido/ejercicios/cuzcano
 - `banco.revisar_antes_de_integrar` y `banco.requiere_aclaracion` vienen del manifiesto. Lo que se decida al revisarla va en `banco.revision`, que la importación respeta.
 - Los SVG propios de las fichas se copian a `cuzcano/figuras/<id>.svg`.
 - El tema del banco se lleva a una unidad del catálogo con `contenido/ejercicios/cuzcano/temas.json`. Si el tema no está ahí, el ejercicio entra sin `unidad`.
+- **Subtemas unificados (13 nov 2026).** Las etiquetas de subtema del banco venían sin normalizar (3 357 distintas, 1 642 fichas sin ninguna). `contenido/ejercicios/cuzcano/subtemas.json` las reduce a un vocabulario corto por tema (1 004 subtemas en los 123 temas) y dice a qué unidad del catálogo va cada uno. En cada ficha, `banco.subtema` es el nombre unificado y `banco.subtema_fuente` guarda la etiqueta tal como vino. La `unidad` de la ficha es la de su subtema si es del mismo curso; si no, la principal del tema (`temas.json`); si el tema entero pertenece a otro curso, la ficha queda sin `unidad` y la unidad se lee en `subtemas.json`. Lo aplica `node herramientas/unificar-subtemas.js` (repetirlo no cambia nada) y la importación lo hace sola. Una etiqueta nueva que no esté en el vocabulario se deja como vino y el comando la lista.
 
 ## Un archivo, uno o muchos ejercicios
 

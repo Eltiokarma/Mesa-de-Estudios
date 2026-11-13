@@ -11,6 +11,8 @@
 //
 // Idempotente: el id sale del uid de la ficha, así que repetir la importación reemplaza la línea y no
 // duplica. Lo que una persona escribió en banco.revision se conserva. El archivo queda ordenado por id.
+// Si existe cuzcano/subtemas.json, cada ficha entra ya con su subtema unificado y la unidad de ese subtema
+// (herramientas/unificar-subtemas.js); la etiqueta de origen queda en banco.subtema_fuente.
 'use strict';
 const fs = require('node:fs');
 const path = require('node:path');
@@ -21,6 +23,7 @@ const TEMAS = path.join(DESTINO, 'temas.json');
 const DESDE_DEFECTO = 'D:/ChatGPT/Fanservice Historica Económica/fuentes/ocr-local/cuzcano';
 const EDITORIAL = 'Editorial Cuzcano';
 const leer = f => JSON.parse(fs.readFileSync(f, 'utf8'));
+const Subtemas = require('./unificar-subtemas');
 
 // id estable a partir del uid «<libro>:<tipo>:<número>».
 function idDeUid(uid) {
@@ -153,6 +156,7 @@ function importar({ desde, manifiesto, curso, temaId, unidad, libros, limite = I
   const nombre = temaId.includes('.') ? temaId.split('.').slice(1).join('.') : temaId;
   const archivo = path.join(destino, curso, `${nombre}.jsonl`);
   const actuales = leerJsonl(archivo);
+  const tablas = fs.existsSync(path.join(destino, 'subtemas.json')) ? Subtemas.cargar(destino) : null;
   const res = { archivo: path.relative(RAIZ, archivo), leidos: 0, nuevos: 0, actualizados: 0, iguales: 0, figuras: 0, sin_ficha: [], sin_enunciado: [], revisar: 0 };
   for (const e of m.ejercicios.slice(0, limite)) {
     res.leidos++;
@@ -174,7 +178,9 @@ function importar({ desde, manifiesto, curso, temaId, unidad, libros, limite = I
       }
       continue;
     }
-    const ej = convertir(e, ficha, { curso, temaId, unidad, libros, previo: antes });
+    let ej = convertir(e, ficha, { curso, temaId, unidad, libros, previo: antes });
+    // Subtema unificado y unidad por subtema (contenido/ejercicios/cuzcano/subtemas.json), si el tema ya tiene vocabulario.
+    if (tablas) { Subtemas.aplicar(ej, tablas); ej = Subtemas.ordenar(ej); }
     if (ej.banco.revisar_antes_de_integrar) res.revisar++;
     if (!antes) res.nuevos++;
     else if (JSON.stringify(antes) === JSON.stringify(ej)) res.iguales++;
