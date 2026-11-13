@@ -1,0 +1,1 @@
+@rive-app/canvas 2.50.0 (licencia MIT, ver LICENSE), copiado sin cambios de npm el 13 nov 2026 (rive.js, rive.wasm y rive_fallback.wasm; el .map no se copia); solo lo carga `nucleo/mascota.js` cuando una mascota trae su `.riv`.
