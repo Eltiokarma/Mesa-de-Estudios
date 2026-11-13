@@ -1,6 +1,6 @@
 # Pendientes y traspaso
 
-Actualizado el 13 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Estado al 13 nov».
+Actualizado el 13 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Estado al 13 nov, tarde».
 
 ## Cómo arrancar una sesión nueva
 
@@ -27,7 +27,56 @@ Si hay que hacer OCR, instala tesseract en español: `apt-get install -y tessera
 - **Si el servidor local muere:** se reinicia con `node herramientas/servidor.js`. También hay que reiniciarlo después de cambiar `herramientas/construir-catalogo.js`, porque guarda el módulo en memoria.
 - **Para verificar a mano:** Playwright y Chromium ya vienen instalados en el entorno en la nube (`require('playwright')`). Las capturas *fullPage* pierden la emulación táctil, así que lo que depende de `hover` se revisa con capturas normales.
 
-## Estado al 13 nov: rediseño «escena viva» (léelo primero)
+## Estado al 13 nov, tarde: auditoría POGIL v2 y decisiones (léelo primero)
+
+Sesión de **planificación**: no se construyó nada de la app. Lo que sigue se construye en conversaciones nuevas.
+
+**Qué hay.**
+- **`docs/pogil-v2-rive.md`:** auditoría de las 99 escenas en pantalla de celular y dirección. Para arrancar basta leer la sección 1 (en corto), la 5 (el modelo), la 6 (Rive) y la 9 (orden de trabajo).
+- **`docs/temario-completo.md`:** las 152 unidades con los temas del catálogo, ruta, gesto, tramo y campos abiertos (otras formas de explicarla, desempeño final, prerrequisitos). Es la copia de trabajo de Gerson para investigar y ampliar.
+- **`docs/formato-lectura.md`:** regla corregida de «lo dice» contra «se deduce».
+
+**Lo que se midió.**
+- En 72 de las 99 escenas el alumno no toca la figura: pulsa «Siguiente» o jala un deslizador.
+- La figura y el botón «Siguiente» caben juntos en el celular en 1 de 63 escenas.
+- En física y química, solo 5 de 40 unidades tienen algo que se arrastra.
+
+**Decisiones de Gerson (13 nov).**
+1. Rive no se usa por unidad: un catálogo cerrado de unos 15 archivos (mascota, 8 objetos de utilería, 3 personajes y 3 piezas de interfaz). Lo que se mide lo dibuja el motor.
+2. No todo se enseña con POGIL: cinco rutas (descubrir, seguir un ejemplo, comparar, recordar y argumentar), una principal y una de apoyo por unidad.
+3. Materia, tabla periódica y enlace quedan rediseñadas (secciones 7.2 a 7.4 de la auditoría). La tabla periódica es una pieza mayor del kit, no un archivo de Rive.
+4. Razonamiento matemático: más de una forma de explicar cada unidad (sección 5.6).
+5. La regla de lectura cambia: la frontera no es la paráfrasis. **Hecho** en el documento.
+6. Se agrega la pregunta «¿Qué tan seguro estás?» y una regla para ajustar la ayuda (sección 5.8). **Planeado.**
+7. Se empieza a construir, en otras conversaciones.
+
+**Lo que sigue, en orden** (detalle en la sección 9 de la auditoría).
+1. **Estrés de Rive:** una página de prueba en el celular de 4 GB para fijar el presupuesto real.
+2. **Versión A:** ácidos y bases con los cinco tiempos y el gesto de verter, sin Rive (sección 7.1).
+3. **Versión B:** la misma unidad con utilería de Rive, para comparar.
+4. **En paralelo, sin depender de lo anterior:**
+   - la cola de repaso (preguntas cortas de unidades ya hechas, en días distintos y mezcladas);
+   - la tabla plegada en el celular (primer paso de la tabla viva);
+   - revisar las sondas de `clasificar` con la regla nueva (24 textos de `contenido/razonamiento-verbal/textos/`).
+5. **Después:** la pregunta de seguridad, el avance en cuatro niveles y los ocho puentes (una unidad por curso con su ficha completa).
+
+**Preguntas abiertas para Gerson.**
+- La asignación de rutas, unidad por unidad (la columna «Ruta» del temario es una propuesta).
+- Dónde se hace la pregunta de seguridad: solo práctica y repaso, o también en las pruebas de entrada y salida.
+- Hasta qué elemento llega la tabla periódica y con qué fuente se verifican sus valores.
+- Qué entra al piloto de diciembre: la versión A sí cabe; el rediseño completo, no.
+- El plan de Rive: el gratis exporta con su pantalla de inicio; para producción hace falta el de pago (confirmar precio y que incluya el enlace de datos).
+
+**Ramas que no están en `main`.**
+- `prototipo/cual-pesa-mas`: un calentamiento estilo Peak en `juegos/cual-pesa-mas/` (motor con pruebas, animación sin librerías). Sirve de base para la ruta «recordar». No está enlazado desde la app.
+
+**Lo que no se verificó.**
+- Nada se probó con alumnos ni en un celular físico.
+- Las fuentes de las dos opiniones externas (ChatGPT) no se pudieron abrir: quedan por verificar antes de pasar al fundacional.
+- Las relaciones de la columna «lo que descubre» no se contrastaron con los informes de ideas erróneas, salvo en materia, tabla periódica y enlace.
+- Desde el entorno en la nube están bloqueados `rive.app` y `releases.rive.app`: para probar la línea de comandos de Rive hay que permitirlos en la red del entorno.
+
+## Estado al 13 nov: rediseño «escena viva»
 
 Rama `claude/hopeful-planck-h4701c` (no está en `main` todavía; sw v160). Se hizo con tres rutinas en paralelo (el máximo) y la integración del coordinador. `npm test` en verde.
 
