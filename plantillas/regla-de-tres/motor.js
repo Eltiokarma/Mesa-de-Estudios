@@ -9,8 +9,8 @@
  *   cuartaProporcional(a, b, c)                   a/b = c/x → x = b·c/a
  *   mediaProporcional(a, c)                       a/b = b/c → b = √(a·c) (proporción continua)
  *   terceraProporcional(a, b)                     a/b = b/x → x = b²/a
- *   serieRazones({ consecuentes, k | sumaAntecedentes | productoAntecedentes })
- *                                                 a₁/b₁ = a₂/b₂ = … = k; (a₁ + a₂ + …)/(b₁ + b₂ + …) = k
+ *   serieRazones({ consecuentes, k | sumaAntecedentes | productoAntecedentes | diferencia })
+ *                                                 a₁/b₁ = a₂/b₂ = … = k; (a₁ + a₂ + …)/(b₁ + b₂ + …) = k; diferencia: a₁ − a₂
  *   relacion(tabla)                               [[x, y], …] → 'directa' (y/x fijo), 'inversa' (x·y fijo) o 'ninguna'
  *   tabla(tipo, constante, xs)                    filas de una relación directa (y = k·x) o inversa (y = P/x)
  *   curva(tipo, constante, x0, x1, n)             puntos de la gráfica: recta por el origen o hipérbola
@@ -19,6 +19,7 @@
  *   compuesta({ magnitudes, incognita })          regla de tres compuesta por proporciones y por el método de signos
  *   horasHombre({ obreros, dias, horas, eficiencia, dificultad })   el trabajo: obreros·días·horas·eficiencia/dificultad
  *   trabajo(antes, despues)                       (obreros·días·horas·eficiencia)/(obra·dificultad) constante: despeja el dato que falta
+ *   retiro({ obreros, dias, trabajados, seRetiran })  obra que empiezan unos obreros y terminan menos: días en total
  *   rectangulo(trabajo, obreros)                  el rectángulo obreros × días (su área es el trabajo): filas enteras y la última
  *   reparto({ total, directo, inverso })          reparto proporcional directo, inverso o compuesto
  *   engranajes({ dientes, vueltas1 })             engranajes en fila: z·n se conserva; el sentido se alterna
@@ -81,13 +82,17 @@
     numero(a, 'a', { positivo: true }); numero(b, 'b', { positivo: true });
     return { x: limpio(b * b / a) };
   }
-  // a₁/b₁ = a₂/b₂ = … = k. Se da k, la suma de los antecedentes o su producto.
+  // a₁/b₁ = a₂/b₂ = … = k. Se da k, la suma de los antecedentes, su producto o la diferencia de los dos primeros.
   function serieRazones(o) {
     const b = lista(o.consecuentes, 'consecuentes', { positivo: true });
-    const dados = ['k', 'sumaAntecedentes', 'productoAntecedentes'].filter(c => o[c] !== undefined);
-    if (dados.length !== 1) throw new Error('da exactamente uno: k, sumaAntecedentes o productoAntecedentes');
+    const dados = ['k', 'sumaAntecedentes', 'productoAntecedentes', 'diferencia'].filter(c => o[c] !== undefined);
+    if (dados.length !== 1) throw new Error('da exactamente uno: k, sumaAntecedentes, productoAntecedentes o diferencia');
     let k;
     if (o.k !== undefined) k = numero(o.k, 'k');
+    else if (o.diferencia !== undefined) {
+      if (b.length < 2 || b[0] === b[1]) throw new Error('la diferencia necesita dos consecuentes distintos');
+      k = numero(o.diferencia, 'la diferencia') / (b[0] - b[1]);
+    }
     else if (o.sumaAntecedentes !== undefined) k = numero(o.sumaAntecedentes, 'la suma') / b.reduce((s, x) => s + x, 0);
     else {
       const P = numero(o.productoAntecedentes, 'el producto', { positivo: true });
@@ -197,7 +202,8 @@
     const resto = Object.assign({}, despues, { [x]: 1 }), cR = C(resto), c0 = C(antes);
     // C es proporcional a los cuatro primeros e inversamente proporcional a obra y dificultad
     const valor = limpio(['obra', 'dificultad'].includes(x) ? cR / c0 : c0 / cR);
-    const r = { dato: x, valor, constante: limpio(c0) };
+    // el dato despejado también va con su nombre (r.dias, r.obreros…), para pedirlo como campo
+    const r = { dato: x, valor, [x]: valor, constante: limpio(c0) };
     if (x === 'dias') {
       const o1 = v(antes, 'obreros'), o2 = v(despues, 'obreros'), h1 = v(antes, 'horas'), h2 = v(despues, 'horas'), d1 = v(antes, 'dias');
       const w1 = v(antes, 'obra'), w2 = v(despues, 'obra');
@@ -207,6 +213,18 @@
     }
     if (x === 'obra') r.errores = { sinCambio: limpio(v(antes, 'obra')), soloUno: limpio(v(antes, 'obra') * Math.max(v(despues, 'obreros') / v(antes, 'obreros'), v(despues, 'dias') / v(antes, 'dias'))) };
     return r;
+  }
+  // Una obra que 'obreros' harían en 'dias'; trabajan 'trabajados' días y se retiran 'seRetiran'. Días en total.
+  // Errores: dar solo los días que faltan, hacer toda la obra con los que quedan, y tratar los días que faltan como
+  // directos (menos obreros, menos días).
+  function retiro(o) {
+    const n = numero(o.obreros, 'obreros', { positivo: true }), d = numero(o.dias, 'dias', { positivo: true });
+    const t = numero(o.trabajados, 'trabajados', { positivo: true }), r = numero(o.seRetiran, 'seRetiran', { positivo: true });
+    if (!(t < d)) throw new Error('los días trabajados deben ser menos que los de la obra');
+    if (!(r < n)) throw new Error('deben quedar obreros');
+    const faltan = limpio(n * (d - t) / (n - r));
+    return { total: limpio(t + faltan), faltan, errores: { soloFaltan: faltan, todoConMenos: limpio(n * d / (n - r)),
+      comoDirecta: limpio(t + (d - t) * (n - r) / n) } };
   }
   // El rectángulo obreros × días con el trabajo fijo: días = trabajo/obreros; cuántas filas enteras y qué parte de la última.
   function rectangulo(w, obreros) {
@@ -283,6 +301,6 @@
   }
 
   return { fraccion, textoFraccion, razon, cuartaProporcional, mediaProporcional, terceraProporcional, serieRazones,
-    relacion, tabla, curva, reglaDeTres, srAlto, compuesta, horasHombre, trabajo, rectangulo, reparto, engranajes, girosEngranajes,
+    relacion, tabla, curva, reglaDeTres, srAlto, compuesta, horasHombre, trabajo, retiro, rectangulo, reparto, engranajes, girosEngranajes,
     crecimiento, estatura };
 });

@@ -12,7 +12,46 @@
         "La diferencia es 5k − 3k = 2k = 18, así que cada parte vale k = 9.",
         "El mayor es 5 · 9 = 45 y el menor 3 · 9 = 27. Control: 45/27 = 5/3 y 45 − 27 = 18. Ojo: la razón es 5/3, no la diferencia 5 − 3 = 2."
       ],
-      "verificar": [ { "fn": "razon", "args": [45, 27], "espera": { "aritmetica": 18, "geometrica": 1.6666666666666667, "texto": "5/3" } } ]
+      "verificar": [ { "fn": "razon", "args": [45, 27], "espera": { "aritmetica": 18, "geometrica": 1.6666666666666667, "texto": "5/3" } } ],
+      "preguntas": [
+        {
+          "id": "p1a",
+          "enunciado": "Dos números están en la razón de 5 a 3 y se diferencian en 18.",
+          "pregunta": "¿Cuál es el mayor?",
+          "unidad": "",
+          "decimales": 2,
+          "correcta": { "fn": "serieRazones", "args": [{ "consecuentes": [5, 3], "diferencia": 18 }], "campo": "antecedentes.0", "valor": 45 },
+          "errores": [
+            {
+              "id": "AR-diferencia-como-suma",
+              "respaldo": "hipotesis",
+              "explicacion": "Tomaste 18 como la suma, 8 partes. Es la diferencia: 5k − 3k = 2k = 18, así que k = 9.",
+              "fn": "serieRazones",
+              "args": [{ "consecuentes": [5, 3], "sumaAntecedentes": 18 }],
+              "campo": "antecedentes.0",
+              "valor": 11.25
+            },
+            {
+              "id": "AR-responde-la-parte",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese 9 es el valor de una parte, k. El mayor tiene 5 partes: 5 · 9 = 45.",
+              "fn": "serieRazones",
+              "args": [{ "consecuentes": [5, 3], "diferencia": 18 }],
+              "campo": "k",
+              "valor": 9
+            },
+            {
+              "id": "AR-responde-el-menor",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es el menor, 3 partes. El mayor tiene 5 partes: 5 · 9 = 45.",
+              "fn": "serieRazones",
+              "args": [{ "consecuentes": [5, 3], "diferencia": 18 }],
+              "campo": "antecedentes.1",
+              "valor": 27
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p2",
@@ -24,7 +63,65 @@
         "Propiedad de la serie de razones iguales: (a + b + c)/(3 + 4 + 5) = k, es decir, 72/12 = 6.",
         "a = 3 · 6 = 18, b = 4 · 6 = 24 y c = 5 · 6 = 30. Control: 18 + 24 + 30 = 72."
       ],
-      "verificar": [ { "fn": "serieRazones", "args": [{ "consecuentes": [3, 4, 5], "sumaAntecedentes": 72 }], "espera": { "k": 6, "antecedentes": [18, 24, 30] } } ]
+      "verificar": [ { "fn": "serieRazones", "args": [{ "consecuentes": [3, 4, 5], "sumaAntecedentes": 72 }], "espera": { "k": 6, "antecedentes": [18, 24, 30] } } ],
+      "preguntas": [
+        {
+          "id": "p2a",
+          "enunciado": "Se cumple que a/3 = b/4 = c/5 y que a + b + c = 72.",
+          "pregunta": "¿Cuánto vale a?",
+          "unidad": "",
+          "decimales": 0,
+          "correcta": { "fn": "serieRazones", "args": [{ "consecuentes": [3, 4, 5], "sumaAntecedentes": 72 }], "campo": "antecedentes.0", "valor": 18 },
+          "errores": [
+            {
+              "id": "AR-responde-k",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese 6 es la constante k = 72/12. Falta multiplicar: a = 3k = 18.",
+              "fn": "serieRazones",
+              "args": [{ "consecuentes": [3, 4, 5], "sumaAntecedentes": 72 }],
+              "campo": "k",
+              "valor": 6
+            },
+            {
+              "id": "AR-partes-iguales",
+              "respaldo": "hipotesis",
+              "explicacion": "Repartiste 72 en tres partes iguales. Las razones piden partes de 3, 4 y 5: a = 3 · 6 = 18.",
+              "fn": "reparto",
+              "args": [{ "total": 72, "directo": [3, 4, 5] }],
+              "campo": "errores.iguales.0",
+              "valor": 24
+            }
+          ]
+        },
+        {
+          "id": "p2b",
+          "enunciado": "Se cumple que a/3 = b/4 = c/5 y que a + b + c = 72.",
+          "pregunta": "¿Cuánto vale c?",
+          "unidad": "",
+          "decimales": 0,
+          "correcta": { "fn": "serieRazones", "args": [{ "consecuentes": [3, 4, 5], "sumaAntecedentes": 72 }], "campo": "antecedentes.2", "valor": 30 },
+          "errores": [
+            {
+              "id": "AR-responde-k",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese 6 es la constante k = 72/12. Falta multiplicar: c = 5k = 30.",
+              "fn": "serieRazones",
+              "args": [{ "consecuentes": [3, 4, 5], "sumaAntecedentes": 72 }],
+              "campo": "k",
+              "valor": 6
+            },
+            {
+              "id": "AR-partes-iguales",
+              "respaldo": "hipotesis",
+              "explicacion": "Repartiste 72 en tres partes iguales. Las razones piden partes de 3, 4 y 5: c = 5 · 6 = 30.",
+              "fn": "reparto",
+              "args": [{ "total": 72, "directo": [3, 4, 5] }],
+              "campo": "errores.iguales.2",
+              "valor": 24
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p3",
@@ -37,7 +134,65 @@
         "Tercera proporcional de 8 y 12: el número t de 8/12 = 12/t. Entonces t = 12 · 12/8 = 18."
       ],
       "verificar": [ { "fn": "mediaProporcional", "args": [8, 18], "espera": { "b": 12, "errores.promedio": 13 } },
-                     { "fn": "terceraProporcional", "args": [8, 12], "espera": { "x": 18 } } ]
+                     { "fn": "terceraProporcional", "args": [8, 12], "espera": { "x": 18 } } ],
+      "preguntas": [
+        {
+          "id": "p3a",
+          "enunciado": "Busca la media proporcional de 8 y 18.",
+          "pregunta": "¿Cuál es la media proporcional de 8 y 18?",
+          "unidad": "",
+          "decimales": 2,
+          "correcta": { "fn": "mediaProporcional", "args": [8, 18], "campo": "b", "valor": 12 },
+          "errores": [
+            {
+              "id": "AR6-promedio",
+              "respaldo": "parcial",
+              "explicacion": "Sacaste el promedio (8 + 18)/2. La media proporcional cumple 8/m = m/18: m² = 144 y m = 12.",
+              "fn": "mediaProporcional",
+              "args": [8, 18],
+              "campo": "errores.promedio",
+              "valor": 13
+            },
+            {
+              "id": "AR-tercera-por-media",
+              "respaldo": "hipotesis",
+              "explicacion": "Calculaste la tercera proporcional, 18²/8. La media va en medio: 8/m = m/18, y m = √144 = 12.",
+              "fn": "terceraProporcional",
+              "args": [8, 18],
+              "campo": "x",
+              "valor": 40.5
+            }
+          ]
+        },
+        {
+          "id": "p3b",
+          "enunciado": "Busca la tercera proporcional de 8 y 12.",
+          "pregunta": "¿Cuál es la tercera proporcional de 8 y 12?",
+          "unidad": "",
+          "decimales": 2,
+          "correcta": { "fn": "terceraProporcional", "args": [8, 12], "campo": "x", "valor": 18 },
+          "errores": [
+            {
+              "id": "AR-media-por-tercera",
+              "respaldo": "hipotesis",
+              "explicacion": "Calculaste la media proporcional, √(8 · 12). La tercera cumple 8/12 = 12/t: t = 144/8 = 18.",
+              "fn": "mediaProporcional",
+              "args": [8, 12],
+              "campo": "b",
+              "valor": 9.79795897113
+            },
+            {
+              "id": "AR-tercera-al-reves",
+              "respaldo": "hipotesis",
+              "explicacion": "Cambiaste el orden: 12/8 = 8/t. La proporción es 8/12 = 12/t, y t = 12 · 12/8 = 18.",
+              "fn": "terceraProporcional",
+              "args": [12, 8],
+              "campo": "x",
+              "valor": 5.33333333333
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p4",
@@ -49,7 +204,37 @@
         "Panes = 40 · 7,5/3 = 40 · 2,5 = 100.",
         "Control aditivo, que no sirve: «4,5 kg más, 4,5 panes más» daría 44,5. Lo que se mantiene es la razón, no la diferencia."
       ],
-      "verificar": [ { "fn": "reglaDeTres", "args": [{ "tipo": "directa", "a1": 3, "b1": 40, "a2": 7.5 }], "espera": { "b2": 100, "errores.aditiva": 44.5 } } ]
+      "verificar": [ { "fn": "reglaDeTres", "args": [{ "tipo": "directa", "a1": 3, "b1": 40, "a2": 7.5 }], "espera": { "b2": 100, "errores.aditiva": 44.5 } } ],
+      "preguntas": [
+        {
+          "id": "p4a",
+          "enunciado": "Con 3 kg de harina una panadería hace 40 panes.",
+          "pregunta": "¿Cuántos panes iguales hace con 7,5 kg?",
+          "unidad": "panes",
+          "decimales": 1,
+          "correcta": { "fn": "reglaDeTres", "args": [{ "tipo": "directa", "a1": 3, "b1": 40, "a2": 7.5 }], "campo": "b2", "valor": 100 },
+          "errores": [
+            {
+              "id": "AR6-aditiva",
+              "respaldo": "documentado",
+              "explicacion": "Sumaste los 4,5 kg de más como 4,5 panes. Lo que se mantiene es la razón: 40 · 7,5/3 = 100.",
+              "fn": "reglaDeTres",
+              "args": [{ "tipo": "directa", "a1": 3, "b1": 40, "a2": 7.5 }],
+              "campo": "errores.aditiva",
+              "valor": 44.5
+            },
+            {
+              "id": "AR-directa-como-inversa",
+              "respaldo": "hipotesis",
+              "explicacion": "La hiciste inversa, pero más harina da más panes: es directa. Panes = 40 · 7,5/3 = 100.",
+              "fn": "reglaDeTres",
+              "args": [{ "tipo": "directa", "a1": 3, "b1": 40, "a2": 7.5 }],
+              "campo": "errores.comoInversa",
+              "valor": 16
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p5",
@@ -61,7 +246,46 @@
         "Días = 144/12 = 12.",
         "Si multiplicas en cruz como si fuera directa, sale 16 · 12/9 ≈ 21,3 días: más días con más gente. Esa respuesta no tiene sentido."
       ],
-      "verificar": [ { "fn": "reglaDeTres", "args": [{ "tipo": "inversa", "a1": 9, "b1": 16, "a2": 12 }], "espera": { "b2": 12, "constante": 144 } } ]
+      "verificar": [ { "fn": "reglaDeTres", "args": [{ "tipo": "inversa", "a1": 9, "b1": 16, "a2": 12 }], "espera": { "b2": 12, "constante": 144 } } ],
+      "preguntas": [
+        {
+          "id": "p5a",
+          "enunciado": "Nueve pintores terminan de pintar un colegio en 16 días.",
+          "pregunta": "¿En cuántos días lo terminarían 12 pintores del mismo ritmo?",
+          "unidad": "días",
+          "decimales": 2,
+          "correcta": { "fn": "reglaDeTres", "args": [{ "tipo": "inversa", "a1": 9, "b1": 16, "a2": 12 }], "campo": "b2", "valor": 12 },
+          "errores": [
+            {
+              "id": "AR8-inversa-como-directa",
+              "respaldo": "hipotesis",
+              "explicacion": "Multiplicaste en cruz como si fuera directa. Más pintores terminan en menos días: 9 · 16 = 144 y 144/12 = 12.",
+              "fn": "reglaDeTres",
+              "args": [{ "tipo": "inversa", "a1": 9, "b1": 16, "a2": 12 }],
+              "campo": "errores.comoDirecta",
+              "valor": 21.3333333333
+            },
+            {
+              "id": "AR6-aditiva",
+              "respaldo": "parcial",
+              "explicacion": "Restaste 3 días por los 3 pintores de más. Lo que no cambia es el producto: 9 · 16 = 12 · 12.",
+              "fn": "reglaDeTres",
+              "args": [{ "tipo": "inversa", "a1": 9, "b1": 16, "a2": 12 }],
+              "campo": "errores.aditiva",
+              "valor": 13
+            },
+            {
+              "id": "AR-responde-la-constante",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese 144 es el trabajo de un solo pintor en días. Falta repartirlo entre 12: 144/12 = 12 días.",
+              "fn": "reglaDeTres",
+              "args": [{ "tipo": "inversa", "a1": 9, "b1": 16, "a2": 12 }],
+              "campo": "constante",
+              "valor": 144
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p6",
@@ -74,7 +298,46 @@
         "Total: 10 + 25 = 35 días. Lo que no cambia es el rectángulo de lo que falta: 20 obreros × 20 días = 16 obreros × 25 días."
       ],
       "verificar": [ { "fn": "rectangulo", "args": [400, 16], "espera": { "dias": 25 } },
-                     { "fn": "trabajo", "args": [{ "obreros": 20, "dias": 20 }, { "obreros": 16, "dias": null }], "espera": { "valor": 25 } } ]
+                     { "fn": "trabajo", "args": [{ "obreros": 20, "dias": 20 }, { "obreros": 16, "dias": null }], "espera": { "valor": 25 } } ],
+      "preguntas": [
+        {
+          "id": "p6a",
+          "enunciado": "Veinte obreros pueden hacer una obra en 30 días. Después de trabajar 10 días se retiran 4 obreros.",
+          "pregunta": "¿En cuántos días, en total, se termina la obra?",
+          "unidad": "días",
+          "decimales": 1,
+          "correcta": { "fn": "retiro", "args": [{ "obreros": 20, "dias": 30, "trabajados": 10, "seRetiran": 4 }], "campo": "total", "valor": 35 },
+          "errores": [
+            {
+              "id": "AR-solo-lo-que-falta",
+              "respaldo": "hipotesis",
+              "explicacion": "Esos 25 son los días que faltan después del retiro. Suma los 10 que ya trabajaron: 10 + 25 = 35.",
+              "fn": "retiro",
+              "args": [{ "obreros": 20, "dias": 30, "trabajados": 10, "seRetiran": 4 }],
+              "campo": "errores.soloFaltan",
+              "valor": 25
+            },
+            {
+              "id": "AR-olvida-lo-hecho",
+              "respaldo": "hipotesis",
+              "explicacion": "Hiciste toda la obra con 16 obreros: 600/16. Los primeros 10 días trabajaron 20 y ya hicieron 200 obrero-días.",
+              "fn": "retiro",
+              "args": [{ "obreros": 20, "dias": 30, "trabajados": 10, "seRetiran": 4 }],
+              "campo": "errores.todoConMenos",
+              "valor": 37.5
+            },
+            {
+              "id": "AR8-inversa-como-directa",
+              "respaldo": "hipotesis",
+              "explicacion": "Con menos obreros pusiste menos días, como si fuera directa. Con 16 obreros lo que falta tarda más: 400/16 = 25.",
+              "fn": "retiro",
+              "args": [{ "obreros": 20, "dias": 30, "trabajados": 10, "seRetiran": 4 }],
+              "campo": "errores.comoDirecta",
+              "valor": 26
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p7",
@@ -86,7 +349,51 @@
         "Días = 24 · (15/20) · (8/6) · (450/300). Las inversas van con la razón al revés y la directa, derecha.",
         "24 · 0,75 = 18; 18 · 8/6 = 24; 24 · 1,5 = 36 días. Control: 15 · 8 · 24/300 = 9,6 horas-hombre por metro, y 20 · 6 · 36/450 = 9,6 también."
       ],
-      "verificar": [ { "fn": "trabajo", "args": [{ "obreros": 15, "dias": 24, "horas": 8, "obra": 300 }, { "obreros": 20, "horas": 6, "obra": 450, "dias": null }], "espera": { "valor": 36 } } ]
+      "verificar": [ { "fn": "trabajo", "args": [{ "obreros": 15, "dias": 24, "horas": 8, "obra": 300 }, { "obreros": 20, "horas": 6, "obra": 450, "dias": null }], "espera": { "valor": 36 } } ],
+      "preguntas": [
+        {
+          "id": "p7a",
+          "enunciado": "Quince obreros, trabajando 8 horas diarias, cavan 300 m de zanja en 24 días.",
+          "pregunta": "¿Cuántos días necesitan 20 obreros, trabajando 6 horas diarias, para cavar 450 m de la misma zanja?",
+          "unidad": "días",
+          "decimales": 2,
+          "correcta": {
+            "fn": "trabajo",
+            "args": [{ "obreros": 15, "dias": 24, "horas": 8, "obra": 300 }, { "obreros": 20, "horas": 6, "obra": 450, "dias": null }],
+            "campo": "dias",
+            "valor": 36
+          },
+          "errores": [
+            {
+              "id": "AR9-horas-directas",
+              "respaldo": "hipotesis",
+              "explicacion": "Tomaste las horas diarias como directas. Con menos horas por día hacen falta más días: el factor es 8/6, no 6/8.",
+              "fn": "trabajo",
+              "args": [{ "obreros": 15, "dias": 24, "horas": 8, "obra": 300 }, { "obreros": 20, "horas": 6, "obra": 450, "dias": null }],
+              "campo": "errores.horasDirectas",
+              "valor": 20.25
+            },
+            {
+              "id": "AR9-olvida-horas",
+              "respaldo": "hipotesis",
+              "explicacion": "Te faltó el cambio de 8 a 6 horas diarias. Con menos horas por día, multiplica también por 8/6.",
+              "fn": "trabajo",
+              "args": [{ "obreros": 15, "dias": 24, "horas": 8, "obra": 300 }, { "obreros": 20, "horas": 6, "obra": 450, "dias": null }],
+              "campo": "errores.olvidaHoras",
+              "valor": 27
+            },
+            {
+              "id": "AR9-todo-al-reves",
+              "respaldo": "hipotesis",
+              "explicacion": "Invertiste todas las relaciones: obreros y horas como directas y los metros como inversos. Obreros y horas son inversas a los días; los metros, directos.",
+              "fn": "trabajo",
+              "args": [{ "obreros": 15, "dias": 24, "horas": 8, "obra": 300 }, { "obreros": 20, "horas": 6, "obra": 450, "dias": null }],
+              "campo": "errores.todoDirecta",
+              "valor": 16
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p8",
@@ -98,7 +405,111 @@
         "Para quitar las fracciones se multiplica por 12 (el MCM de 4, 6 y 3): las partes son proporcionales a 3, 2 y 4, que suman 9.",
         "Cada parte de las 9 vale 2700/9 = 300: 3 · 300 = 900, 2 · 300 = 600 y 4 · 300 = 1200. El del índice más chico (3) recibe más."
       ],
-      "verificar": [ { "fn": "reparto", "args": [{ "total": 2700, "inverso": [4, 6, 3] }], "espera": { "partes": [900, 600, 1200], "enteros": [3, 2, 4] } } ]
+      "verificar": [ { "fn": "reparto", "args": [{ "total": 2700, "inverso": [4, 6, 3] }], "espera": { "partes": [900, 600, 1200], "enteros": [3, 2, 4] } } ],
+      "preguntas": [
+        {
+          "id": "p8a",
+          "enunciado": "Reparte 2700 soles en forma inversamente proporcional a 4, 6 y 3.",
+          "pregunta": "¿Cuánto recibe el que tiene índice 4?",
+          "unidad": "soles",
+          "decimales": 2,
+          "correcta": { "fn": "reparto", "args": [{ "total": 2700, "inverso": [4, 6, 3] }], "campo": "partes.0", "valor": 900 },
+          "errores": [
+            {
+              "id": "AR10-como-directo",
+              "respaldo": "hipotesis",
+              "explicacion": "Lo hiciste directo a 4, 6 y 3. Inverso es directo a 1/4, 1/6 y 1/3, es decir, a 3, 2 y 4.",
+              "fn": "reparto",
+              "args": [{ "total": 2700, "inverso": [4, 6, 3] }],
+              "campo": "errores.comoDirecto.0",
+              "valor": 830.769230769
+            },
+            {
+              "id": "AR-responde-la-parte",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese 300 es el valor de una parte. Las partes son 3, 2 y 4: multiplica por la que toca.",
+              "fn": "reparto",
+              "args": [{ "total": 2700, "inverso": [4, 6, 3] }],
+              "campo": "kEnteros",
+              "valor": 300
+            }
+          ]
+        },
+        {
+          "id": "p8b",
+          "enunciado": "Reparte 2700 soles en forma inversamente proporcional a 4, 6 y 3.",
+          "pregunta": "¿Cuánto recibe el que tiene índice 6?",
+          "unidad": "soles",
+          "decimales": 2,
+          "correcta": { "fn": "reparto", "args": [{ "total": 2700, "inverso": [4, 6, 3] }], "campo": "partes.1", "valor": 600 },
+          "errores": [
+            {
+              "id": "AR10-como-directo",
+              "respaldo": "hipotesis",
+              "explicacion": "Lo hiciste directo a 4, 6 y 3. Inverso es directo a 1/4, 1/6 y 1/3, es decir, a 3, 2 y 4.",
+              "fn": "reparto",
+              "args": [{ "total": 2700, "inverso": [4, 6, 3] }],
+              "campo": "errores.comoDirecto.1",
+              "valor": 1246.15384615
+            },
+            {
+              "id": "AR-partes-iguales",
+              "respaldo": "hipotesis",
+              "explicacion": "Repartiste en partes iguales. El índice más chico recibe más: las partes van como 3, 2 y 4.",
+              "fn": "reparto",
+              "args": [{ "total": 2700, "inverso": [4, 6, 3] }],
+              "campo": "errores.iguales.1",
+              "valor": 900
+            },
+            {
+              "id": "AR-responde-la-parte",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese 300 es el valor de una parte. Las partes son 3, 2 y 4: multiplica por la que toca.",
+              "fn": "reparto",
+              "args": [{ "total": 2700, "inverso": [4, 6, 3] }],
+              "campo": "kEnteros",
+              "valor": 300
+            }
+          ]
+        },
+        {
+          "id": "p8c",
+          "enunciado": "Reparte 2700 soles en forma inversamente proporcional a 4, 6 y 3.",
+          "pregunta": "¿Cuánto recibe el que tiene índice 3?",
+          "unidad": "soles",
+          "decimales": 2,
+          "correcta": { "fn": "reparto", "args": [{ "total": 2700, "inverso": [4, 6, 3] }], "campo": "partes.2", "valor": 1200 },
+          "errores": [
+            {
+              "id": "AR10-como-directo",
+              "respaldo": "hipotesis",
+              "explicacion": "Lo hiciste directo a 4, 6 y 3. Inverso es directo a 1/4, 1/6 y 1/3, es decir, a 3, 2 y 4.",
+              "fn": "reparto",
+              "args": [{ "total": 2700, "inverso": [4, 6, 3] }],
+              "campo": "errores.comoDirecto.2",
+              "valor": 623.076923077
+            },
+            {
+              "id": "AR-partes-iguales",
+              "respaldo": "hipotesis",
+              "explicacion": "Repartiste en partes iguales. El índice más chico recibe más: las partes van como 3, 2 y 4.",
+              "fn": "reparto",
+              "args": [{ "total": 2700, "inverso": [4, 6, 3] }],
+              "campo": "errores.iguales.2",
+              "valor": 900
+            },
+            {
+              "id": "AR-responde-la-parte",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese 300 es el valor de una parte. Las partes son 3, 2 y 4: multiplica por la que toca.",
+              "fn": "reparto",
+              "args": [{ "total": 2700, "inverso": [4, 6, 3] }],
+              "campo": "kEnteros",
+              "valor": 300
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p9",
@@ -110,7 +521,83 @@
         "Multiplicando por 2: las partes son proporcionales a 3 y 2, que suman 5. Cada parte vale 1500/5 = 300.",
         "El primero recibe 3 · 300 = 900 y el segundo 2 · 300 = 600. Trabajó menos meses, pero faltó mucho menos."
       ],
-      "verificar": [ { "fn": "reparto", "args": [{ "total": 1500, "directo": [3, 5], "inverso": [2, 5] }], "espera": { "partes": [900, 600], "enteros": [3, 2] } } ]
+      "verificar": [ { "fn": "reparto", "args": [{ "total": 1500, "directo": [3, 5], "inverso": [2, 5] }], "espera": { "partes": [900, 600], "enteros": [3, 2] } } ],
+      "preguntas": [
+        {
+          "id": "p9a",
+          "enunciado": "Se reparten 1500 soles entre dos socios en forma directamente proporcional a los meses que trabajaron (3 y 5) e inversamente proporcional a sus faltas (2 y 5).",
+          "pregunta": "¿Cuánto recibe el socio que trabajó 3 meses y tuvo 2 faltas?",
+          "unidad": "soles",
+          "decimales": 2,
+          "correcta": { "fn": "reparto", "args": [{ "total": 1500, "directo": [3, 5], "inverso": [2, 5] }], "campo": "partes.0", "valor": 900 },
+          "errores": [
+            {
+              "id": "AR10-olvida-un-indice",
+              "respaldo": "hipotesis",
+              "explicacion": "Repartiste solo por los meses y te olvidaste de las faltas. Cada parte va como meses entre faltas: 3/2 y 5/5.",
+              "fn": "reparto",
+              "args": [{ "total": 1500, "directo": [3, 5] }],
+              "campo": "partes.0",
+              "valor": 562.5
+            },
+            {
+              "id": "AR10-olvida-un-indice",
+              "respaldo": "hipotesis",
+              "explicacion": "Repartiste solo por las faltas y te olvidaste de los meses. Cada parte va como meses entre faltas: 3/2 y 5/5.",
+              "fn": "reparto",
+              "args": [{ "total": 1500, "inverso": [2, 5] }],
+              "campo": "partes.0",
+              "valor": 1071.42857143
+            },
+            {
+              "id": "AR10-inverso-como-directo",
+              "respaldo": "hipotesis",
+              "explicacion": "Multiplicaste meses por faltas, como si las faltas fueran directas. Las faltas dividen: 3/2 y 5/5, o sea 3 y 2.",
+              "fn": "reparto",
+              "args": [{ "total": 1500, "directo": [6, 25] }],
+              "campo": "partes.0",
+              "valor": 290.322580645
+            }
+          ]
+        },
+        {
+          "id": "p9b",
+          "enunciado": "Se reparten 1500 soles entre dos socios en forma directamente proporcional a los meses que trabajaron (3 y 5) e inversamente proporcional a sus faltas (2 y 5).",
+          "pregunta": "¿Cuánto recibe el socio que trabajó 5 meses y tuvo 5 faltas?",
+          "unidad": "soles",
+          "decimales": 2,
+          "correcta": { "fn": "reparto", "args": [{ "total": 1500, "directo": [3, 5], "inverso": [2, 5] }], "campo": "partes.1", "valor": 600 },
+          "errores": [
+            {
+              "id": "AR10-olvida-un-indice",
+              "respaldo": "hipotesis",
+              "explicacion": "Repartiste solo por los meses y te olvidaste de las faltas. Cada parte va como meses entre faltas: 3/2 y 5/5.",
+              "fn": "reparto",
+              "args": [{ "total": 1500, "directo": [3, 5] }],
+              "campo": "partes.1",
+              "valor": 937.5
+            },
+            {
+              "id": "AR10-olvida-un-indice",
+              "respaldo": "hipotesis",
+              "explicacion": "Repartiste solo por las faltas y te olvidaste de los meses. Cada parte va como meses entre faltas: 3/2 y 5/5.",
+              "fn": "reparto",
+              "args": [{ "total": 1500, "inverso": [2, 5] }],
+              "campo": "partes.1",
+              "valor": 428.571428571
+            },
+            {
+              "id": "AR10-inverso-como-directo",
+              "respaldo": "hipotesis",
+              "explicacion": "Multiplicaste meses por faltas, como si las faltas fueran directas. Las faltas dividen: 3/2 y 5/5, o sea 3 y 2.",
+              "fn": "reparto",
+              "args": [{ "total": 1500, "directo": [6, 25] }],
+              "campo": "partes.1",
+              "valor": 1209.67741935
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p10",
@@ -122,7 +609,46 @@
         "El chico da 1440/24 = 60 vueltas. Más dientes, menos vueltas: dientes y vueltas son inversamente proporcionales.",
         "Dos engranajes que se tocan giran en sentidos contrarios."
       ],
-      "verificar": [ { "fn": "engranajes", "args": [{ "dientes": [36, 24], "vueltas1": 40 }], "espera": { "vueltas": [40, 60], "dientesQuePasan": 1440, "mismoSentidoQueElPrimero": false } } ]
+      "verificar": [ { "fn": "engranajes", "args": [{ "dientes": [36, 24], "vueltas1": 40 }], "espera": { "vueltas": [40, 60], "dientesQuePasan": 1440, "mismoSentidoQueElPrimero": false } } ],
+      "preguntas": [
+        {
+          "id": "p10a",
+          "enunciado": "Un engranaje de 36 dientes engrana con otro de 24 dientes. El grande da 40 vueltas por minuto.",
+          "pregunta": "¿Cuántas vueltas por minuto da el chico?",
+          "unidad": "vueltas por minuto",
+          "decimales": 2,
+          "correcta": { "fn": "engranajes", "args": [{ "dientes": [36, 24], "vueltas1": 40 }], "campo": "vueltas.1", "valor": 60 },
+          "errores": [
+            {
+              "id": "RM5-directa",
+              "respaldo": "hipotesis",
+              "explicacion": "Lo hiciste directo: menos dientes, menos vueltas. Es al revés: por el contacto pasan 36 · 40 = 1440 dientes, y 1440/24 = 60.",
+              "fn": "engranajes",
+              "args": [{ "dientes": [36, 24], "vueltas1": 40 }],
+              "campo": "errores.directa",
+              "valor": 26.6666666667
+            },
+            {
+              "id": "AR6-aditiva",
+              "respaldo": "parcial",
+              "explicacion": "Restaste los 12 dientes de diferencia a las vueltas. Se conserva el producto: 36 · 40 = 24 · 60.",
+              "fn": "engranajes",
+              "args": [{ "dientes": [36, 24], "vueltas1": 40 }],
+              "campo": "errores.aditiva",
+              "valor": 28
+            },
+            {
+              "id": "RM5-mismas-vueltas",
+              "respaldo": "hipotesis",
+              "explicacion": "Dos engranajes que se tocan no dan las mismas vueltas. El chico gira más rápido: 1440/24 = 60.",
+              "fn": "engranajes",
+              "args": [{ "dientes": [36, 24], "vueltas1": 40 }],
+              "campo": "errores.iguales",
+              "valor": 40
+            }
+          ]
+        }
+      ]
     }
   ]
 }

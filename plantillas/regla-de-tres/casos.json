@@ -2,7 +2,7 @@
   "plantilla": "regla-de-tres",
   "unidades": "Cantidades sin unidad fija: obreros, días, horas diarias, botones, clips, soles, dientes y vueltas, como en el problema. La estatura de crecimiento() va en cm; la de estatura() en clips del largo 'clip' (cm).",
   "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.comoDirecta); 'valor' es el resultado si es un número suelto; las listas se comparan completas y los textos exactos. 'tambien' son llamadas extra del mismo caso.",
-  "verificacion": "Verificado por un subagente independiente (6 nov 2026) con aritmética exacta en Python (fractions), sin leer el código del motor. Las reglas de tres simples y compuestas se recalcularon por reducción a la unidad (obra por obrero-hora con eficiencia y dificultad), no por proporciones; los repartos con MCM y MCD; los engranajes con z·n constante y sentido alterno. Los 19 casos coinciden. La estatura (caso 15) sale de un modelo de crecimiento propio y solo se contrastó con tablas de referencia (unos 110 cm a los 5 años y 138 a los 10 en niñas).",
+  "verificacion": "Verificado por un subagente independiente (6 nov 2026) con aritmética exacta en Python (fractions), sin leer el código del motor. Las reglas de tres simples y compuestas se recalcularon por reducción a la unidad (obra por obrero-hora con eficiencia y dificultad), no por proporciones; los repartos con MCM y MCD; los engranajes con z·n constante y sentido alterno. Los 19 casos coinciden. La estatura (caso 15) sale de un modelo de crecimiento propio y solo se contrastó con tablas de referencia (unos 110 cm a los 5 años y 138 a los 10 en niñas). Lo agregado el 14 nov 2026 para las preguntas de papel (la serie con diferencia y retiro) se recalculó aparte con fractions en Python: k = d/(b₁ − b₂) y los días que faltan como obrero-días pendientes entre los obreros que quedan.",
   "tolerancia": 1e-9,
   "casos": [
     { "nombre": "Informe, caso Sr. Alto y predicción del paso 1: el Sr. Bajo mide 4 botones o 6 clips; el Sr. Alto, 6 botones → 9 clips (AR6, aditiva: 8; invierte la razón: 4; dobla: 12)",
@@ -34,11 +34,11 @@
 
     { "nombre": "Informe, regla de tres compuesta: 8 obreros, 6 h/día, 10 días; con 12 obreros y 5 h/día → 8 días",
       "fn": "trabajo", "args": [{ "obreros": 8, "dias": 10, "horas": 6 }, { "obreros": 12, "horas": 5, "dias": null }],
-      "espera": { "valor": 8, "constante": 480 } },
+      "espera": { "valor": 8, "dias": 8, "constante": 480 } },
 
     { "nombre": "Compuesta con obra, eficiencia y dificultad: 10 obreros de eficiencia 1 hacen 2 muros en 18 días; ¿cuántos obreros de eficiencia 3/2 hacen 3 muros el doble de difíciles en 15 días? → 24",
       "fn": "trabajo", "args": [{ "obreros": 10, "dias": 18, "obra": 2 }, { "obreros": null, "dias": 15, "eficiencia": 1.5, "obra": 3, "dificultad": 2 }],
-      "espera": { "dato": "obreros", "valor": 24 } },
+      "espera": { "dato": "obreros", "valor": 24, "obreros": 24 } },
 
     { "nombre": "¿Qué pasa si…? 1: duplicar obreros y días; 6 obreros hacen 1 muro en 10 días → 12 obreros en 20 días hacen 4 muros (se compensan: 1; solo uno: 2)",
       "fn": "trabajo", "args": [{ "obreros": 6, "dias": 10 }, { "obreros": 12, "dias": 20, "obra": null }],
@@ -85,10 +85,17 @@
     { "nombre": "Serie de razones iguales: a/2 = b/3 = c/5 con a + b + c = 40 → k = 4 y 8, 12, 20; con a·b = 54 y consecuentes 2 y 3 → k = 3",
       "fn": "serieRazones", "args": [{ "consecuentes": [2, 3, 5], "sumaAntecedentes": 40 }],
       "espera": { "k": 4, "antecedentes": [8, 12, 20], "razonDeSumas": 4 },
-      "tambien": [ { "args": [{ "consecuentes": [2, 3], "productoAntecedentes": 54 }], "espera": { "k": 3, "antecedentes": [6, 9] } } ] },
+      "tambien": [ { "args": [{ "consecuentes": [2, 3], "productoAntecedentes": 54 }], "espera": { "k": 3, "antecedentes": [6, 9] } },
+                   { "args": [{ "consecuentes": [5, 3], "diferencia": 18 }], "espera": { "k": 9, "antecedentes": [45, 27] } },
+                   { "args": [{ "consecuentes": [7, 4], "diferencia": 21 }], "espera": { "k": 7, "antecedentes": [49, 28] } } ] },
 
     { "nombre": "El rectángulo de la obra: 60 obrero-días con 7 obreros son 60/7 días: 8 filas enteras y 4/7 de otra",
       "fn": "rectangulo", "args": [60, 7],
-      "espera": { "dias": 8.571428571428571, "filasEnteras": 8, "resto": 0.5714285714285714, "area": 60 } }
+      "espera": { "dias": 8.571428571428571, "filasEnteras": 8, "resto": 0.5714285714285714, "area": 60 } },
+
+    { "nombre": "Obreros que se retiran (papel p6, 14 nov 2026): 20 obreros en 30 días, se retiran 4 a los 10 días → faltan 400/16 = 25, total 35; todo con 16: 37,5; como directa: 10 + 20·16/20 = 26",
+      "fn": "retiro", "args": [{ "obreros": 20, "dias": 30, "trabajados": 10, "seRetiran": 4 }],
+      "espera": { "total": 35, "faltan": 25, "errores.soloFaltan": 25, "errores.todoConMenos": 37.5, "errores.comoDirecta": 26 },
+      "tambien": [ { "args": [{ "obreros": 12, "dias": 20, "trabajados": 5, "seRetiran": 3 }], "espera": { "total": 25, "faltan": 20 } } ] }
   ]
 }
