@@ -2496,7 +2496,14 @@
      "grado": 3,
      "plantillas": [
       "segmentos-angulos"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/geometria/segmentos-y-angulos.js",
+      "requiere": [
+       "/nucleo/kit/piezas/geo-figura.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "geometria.triangulos",
