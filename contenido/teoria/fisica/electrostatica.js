@@ -55,6 +55,10 @@
     const e = Math.floor(Math.log10(Math.abs(n))), m = n / 10 ** e;
     return `${f(m, dd)} × 10${String(e).split('').map(c => SUP[c]).join('')}`;
   };
+  // Gesto directo (docs/teoria.md §4b): las manijas viven en las coordenadas de fis-lienzo (sus vistas están en cm);
+  // mover las convierte en valores con Xi, y el lector ajusta cada valor al paso y al rango de su control.
+  const LIENZO = () => Kit.piezas['fis-lienzo'];
+  const diez = e => ({ sup: ['10', e] });   // 10 con exponente, para las ecuaciones
   const carga = (x, y, rad, qq, nombre, paso, hasta) => ({ c: [x, y], r: rad, color: qq === 0 ? undefined : 'o', relleno: qq === 0 ? false : 0.2, rotulo: nombre, paso, hasta });
   const textoQ = (x, y, qq, u, paso, hasta) => ({ en: [x, y], texto: conSigno(qq, u), color: qq === 0 ? undefined : 'o', peso: 700, paso, hasta });
 
@@ -62,6 +66,7 @@
   // Cambia: las cargas de dos esferas iguales · Permanece: la suma total, antes y después de tocarse ·
   // Progresa: la fila de «después» · Se reserva: la cadena de dos contactos con una tercera esfera ·
   // Debe verse: al tocarse, dos esferas idénticas quedan con la mitad del total cada una.
+  // Sin arrastre: lo que se elige es la carga de cada esfera, que no es una posición en la figura.
   const FILAS = [2.2, -0.6, -3.4];
   const VISTA1 = { x0: -2.6, x1: 10.6, y0: -5.2, y1: 3.4 };
   const fila = (y, qs, rotulo, paso, hasta) => {
@@ -115,7 +120,7 @@
     },
     regla: {
       texto: 'La carga total de un sistema aislado no cambia: solo pasa de un cuerpo a otro. Dos esferas conductoras iguales que se tocan quedan con la mitad del total.',
-      ecuacion: [{ sub: [q, '1'] }, "' = ", { sub: [q, '2'] }, "' = ", { frac: [[{ sub: [q, '1'] }, ' + ', { sub: [q, '2'] }], '2'] }],
+      ecuacion: [{ sub: [q, '1'] }, "' = ", { sub: [q, '2'] }, "' = ", { llave: [{ frac: [[{ sub: [q, '1'] }, ' + ', { sub: [q, '2'] }], '2'] }], nota: 'mitad del total', color: 'c-o' }],
       condicion: 'las esferas son conductoras, del mismo tamaño y están aisladas. Si son de distinto tamaño, la grande se lleva más.',
     },
     ahoraTu: {
@@ -130,7 +135,7 @@
             { id: 'ab', valor: ab, error: 'EL8', siFuera: 'Esa es la carga de B tras tocar a A; falta el segundo contacto.' },
             { id: 'suma', valor: ab + c, error: 'EL8', siFuera: 'Esa es la suma de B y C: falta repartirla entre las dos.' },
           ], n => conSigno(n, 'μC')),
-          solucion: { texto: 'Cada contacto reparte en mitades la suma de las dos esferas que se tocan.', ecuacion: [{ sub: [q, 'B'] }, ` = (${pn(a)} + ${pn(b)})/2 = ${f(ab)} · `, { sub: [q, 'C'] }, ` = (${pn(ab)} + ${pn(c)})/2 = ${conSigno(bc, 'μC')}`],
+          solucion: { texto: 'Cada contacto reparte en mitades la suma de las dos esferas que se tocan.', ecuacion: [{ sub: [q, 'B'] }, ` = (${pn(a)} + ${pn(b)})/2 = ${f(ab)}`, '   ·   ', { sub: [q, 'C'] }, ` = (${pn(ab)} + ${pn(c)})/2 = ${conSigno(bc, 'μC')}`],
             dibujo: { datos: juntar(fila(FILAS[0], [a, b, c], 'inicio'), fila(FILAS[1], [ab, ab, c], 'A con B'), fila(FILAS[2], [ab, bc, bc], 'B con C')), estado: {} } },
         };
       },
@@ -141,6 +146,7 @@
   // Cambia: la carga (igual en las dos) y la distancia · Permanece: la escala de las flechas (0,5 px por newton) ·
   // Progresa: el largo de las flechas al acercar o cargar · Se reserva: cargas distintas, que el juego no muestra ·
   // Debe verse: las dos flechas miden lo mismo aunque una carga sea cuatro veces la otra.
+  // Se manipula: la carga de la derecha, que se arrastra de lado (la distancia r; las dos se separan desde el centro).
   const FPX = 0.75;  // px por newton
   const VISTA2 = { x0: -1, x1: 13, y0: -4.4, y1: 1.8 };
   const fCoulomb = (q1, q2, rc) => K * q1 * 1e-6 * q2 * 1e-6 / (rc / 100) ** 2;
@@ -161,6 +167,20 @@
     for (const p of ps) for (const k of Object.keys(o)) if (k !== 'vista') o[k].push(...(p[k] || []));
     return o;
   };
+  // La carga de la derecha está en x = 6 + r/2 (cm): arrastrarla cambia r.
+  const arrastreR = datosDe => ({
+    id: 'distancia', etiqueta: 'carga de la derecha (distancia)', color: 'c-i',
+    donde: val => { const g = LIENZO().geometria(datosDe(val)); return { x: g.X(6 + val.r / 2), y: g.Y(0) }; },
+    mover: (pt, val) => ({ r: 2 * (LIENZO().geometria(datosDe(val)).Xi(pt.x) - 6) }),
+  });
+  // Mesa del laboratorio: cargas con signo; el rótulo de cada disco dice su signo y la flecha cambia de sentido sola.
+  const FPX_LAB = 0.3;
+  const parLibre = val => {
+    const o = lienzo2(par(val.q1, val.q2, val.r));
+    o.discos = o.discos.map((dd, k) => Object.assign({}, dd, { rotulo: [val.q1, val.q2][k] > 0 ? '+' : [val.q1, val.q2][k] < 0 ? '−' : '' }));
+    o.flechas = o.flechas.map(fl => Object.assign({}, fl, { escala: FPX_LAB }));
+    return o;
+  };
   const coulomb = {
     id: 'coulomb',
     titulo: 'La misma fuerza sobre las dos',
@@ -176,6 +196,7 @@
       dibujo: val => ({ datos: lienzo2(par(val.q, val.q, val.r)), estado: {} }),
       lectura: val => [F, ` = ${f(fCoulomb(val.q, val.q, val.r), 1)} N sobre cada carga`],
       minimo: 3,
+      arrastres: [arrastreR(val => lienzo2(par(val.q, val.q, val.r)))],
     },
     predice: {
       pregunta: 'Ahora las cargas son distintas: 1 μC y 4 μC, a 3 cm. ¿Sobre cuál actúa una fuerza eléctrica mayor?',
@@ -196,14 +217,14 @@
       ),
       pasos: [
         { estado: { paso: 0 }, texto: 'En la fórmula entran las dos cargas multiplicadas.', ecuacion: [F, ' = k ', { frac: [[{ sub: [q, '1'] }, { sub: [q, '2'] }], { sup: [r, '2'] }] }] },
-        { estado: { paso: 1 }, texto: 'Con 1 μC, 4 μC y 0,03 m, sale lo mismo para las dos.', ecuacion: [F, ' = 9×10⁹ · ', { frac: ['1×10⁻⁶ · 4×10⁻⁶', '0,03²'] }, ` = ${f(fCoulomb(1, 4, 3), 0)} N`] },
+        { estado: { paso: 1 }, texto: 'Con 1 μC, 4 μC y 0,03 m, sale lo mismo para las dos.', ecuacion: [F, ' = 9 × ', diez('9'), ' · ', { frac: [['1 × ', diez('−6'), ' · 4 × ', diez('−6')], { sup: ['0,03', '2'] }] }, ` = ${f(fCoulomb(1, 4, 3), 0)} N`] },
         { estado: { paso: 1 }, texto: 'Acción y reacción: iguales, opuestas y sobre cuerpos distintos.', ecuacion: [{ sub: [F, '1 sobre 2'] }, ' = −', { sub: [F, '2 sobre 1'] }] },
-        { estado: { paso: 3 }, texto: 'Al doble de distancia, la fuerza es la cuarta parte.', ecuacion: ['(2', r, ')² = 4', { sup: [r, '2'] }, `  →  ${f(fCoulomb(1, 4, 6), 0)} N`] },
+        { estado: { paso: 3 }, texto: 'Al doble de distancia, la fuerza es la cuarta parte.', ecuacion: [{ sup: [['(2', r, ')'], '2'] }, ' = 4', { sup: [r, '2'] }, `  →  ${f(fCoulomb(1, 4, 6), 0)} N`] },
       ],
     },
     regla: {
       texto: 'Dos cargas puntuales se atraen o se repelen con fuerzas iguales y opuestas, proporcionales al producto de las cargas e inversas al cuadrado de la distancia.',
-      ecuacion: [F, ' = k ', { frac: [[{ abs: [{ sub: [q, '1'] }, { sub: [q, '2'] }] }], { sup: [r, '2'] }] }, '   ·   k = 9 × 10⁹ N·m²/C²'],
+      ecuacion: [F, ' = k ', { frac: [[{ abs: [{ sub: [q, '1'] }, { sub: [q, '2'] }] }], { llave: [{ sup: [r, '2'] }], nota: 'distancia al cuadrado', color: 'c-i' }] }, '   ·   ', 'k = 9 × ', diez('9'), ' N·m²/C²'],
       condicion: 'cargas puntuales y quietas, en el aire o el vacío, con q en coulombs y r en metros.',
     },
     ahoraTu: {
@@ -218,7 +239,7 @@
               { id: 'cm', valor: Fv / 1e4, error: 'EL-UNID', siFuera: 'Esa cuenta deja r en centímetros. k pide metros.' },
               { id: 'suma', valor: K * (q1 + q2) * 1e-6 * 1e-6 / (rc / 100) ** 2, error: 'EL1', siFuera: 'Esa cuenta suma las cargas. En Coulomb se multiplican.' },
             ], n => `${n >= 0.1 && n < 1e4 ? f(n, 1) : cien(n, 1)} N`),
-            solucion: { texto: 'Cargas en coulombs, distancia en metros.', ecuacion: [F, ` = 9×10⁹ · ${f(q1)}×10⁻⁶ · ${f(q2)}×10⁻⁶ / ${f(rc / 100)}² = ${Fv >= 0.1 && Fv < 1e4 ? f(Fv, 1) : cien(Fv, 1)} N`] },
+            solucion: { texto: 'Cargas en coulombs, distancia en metros.', ecuacion: [F, ' = 9 × ', diez('9'), ` · ${f(q1)} × `, diez('−6'), ` · ${f(q2)} × `, diez('−6'), ' / ', { sup: [f(rc / 100), '2'] }, ` = ${Fv >= 0.1 && Fv < 1e4 ? f(Fv, 1) : cien(Fv, 1)} N`] },
           };
         }
         const F0 = x.de([8, 12, 18, 36, 90]), k = x.de([2, 3, 1 / 2, 1 / 3]), F1 = F0 / (k * k);
@@ -230,7 +251,7 @@
             { id: 'directa', valor: F0 * k * k, error: 'EL-R2', siFuera: 'Esa cuenta crece con la distancia; Coulomb va al revés.' },
             { id: 'igual', valor: F0, error: 'EL1', siFuera: 'Sería cierto si la distancia no cambiara.' },
           ], n => `${f(n, 2)} N`),
-          solucion: { texto: `La fuerza se divide entre el cuadrado del factor: ${f(k * k, 2)}.`, ecuacion: [F, ` = ${f(F0)} / ${f(k, 2)}² = ${f(F1, 2)} N`] },
+          solucion: { texto: `La fuerza se divide entre el cuadrado del factor: ${f(k * k, 2)}.`, ecuacion: [F, ` = ${f(F0)} / `, { sup: [f(k, 2), '2'] }, ` = ${f(F1, 2)} N`] },
         };
       },
     },
@@ -240,6 +261,7 @@
   // Cambia: dónde está el punto P y el signo de la segunda carga · Permanece: las dos cargas de 2 nC a 10 cm ·
   // Progresa: E₁, E₂ y su suma en P · Se reserva: el potencial en el punto donde E = 0 ·
   // Debe verse: E puede ser cero donde V no lo es.
+  // Se manipula: el punto P, que se arrastra a lo largo de la línea entre las cargas.
   const QN = 2;                          // nC
   const VISTA3 = { x0: -1.6, x1: 11.6, y0: -2.2, y1: 3.4 };
   const S3 = 280 / 13.2;                 // px por cm en esta vista (para dibujar líneas de campo en cm)
@@ -271,6 +293,17 @@
       { en: [xp, 3.0], texto: `V = ${f(Vde(QN, xp), 0)} + ${f(Vde(s2 * QN, 10 - xp), 0)} = ${f(Vde(QN, xp) + Vde(s2 * QN, 10 - xp), 0)} V`, peso: 700, paso: o.v });
     return datos;
   }
+  const arrastreP = datosDe => ({
+    id: 'punto-p', etiqueta: 'punto P',
+    donde: val => { const g = LIENZO().geometria(datosDe(val)); return { x: g.X(val.x), y: g.Y(0) }; },
+    mover: (pt, val) => ({ x: LIENZO().geometria(datosDe(val)).Xi(pt.x) }),
+  });
+  // El rótulo de V va centrado entre las cargas (no sobre P), para que no se salga cuando P está cerca de un borde.
+  const campoLab = val => {
+    const o = campo(val.x, val.s, { valores: true, v: 0 });
+    o.textos = o.textos.map(t => (/^V = /.test(t.texto) ? Object.assign({}, t, { en: [5, 3.0] }) : t));
+    return o;
+  };
   const superposicion = {
     id: 'campo-potencial',
     titulo: 'Campo cero no es potencial cero',
@@ -289,6 +322,7 @@
         return Math.abs(t) < 1e-9 ? [E, ' = 0 en P'] : [E, ` = ${f(Math.abs(t), 1)} kN/C hacia la ${t > 0 ? 'derecha' : 'izquierda'}`];
       },
       minimo: 4,
+      arrastres: [arrastreP(val => campo(val.x, val.s, { valores: false }))],
     },
     predice: {
       pregunta: 'Con las dos cargas positivas, en el punto medio el campo total es cero. ¿Cuánto vale ahí el potencial eléctrico?',
@@ -313,7 +347,7 @@
     },
     regla: {
       texto: 'El campo de varias cargas es la suma de sus flechas. El potencial es la suma de números con signo. Uno puede ser cero sin que el otro lo sea.',
-      ecuacion: [E, ' = k', { frac: [q, { sup: [r, '2'] }] }, ' (flecha)   ·   V = k', { frac: [q, r] }, ' (número con signo)'],
+      ecuacion: [{ llave: [E, ' = k', { frac: [q, { sup: [r, '2'] }] }], nota: 'flecha', color: 'c-d' }, '   ·   ', { llave: ['V = k', { frac: [q, r] }], nota: 'número con signo' }],
       condicion: 'cargas puntuales y V = 0 muy lejos de ellas. Las líneas de campo salen de + y entran a −.',
     },
     ahoraTu: {
@@ -349,6 +383,7 @@
   // Cambia: el voltaje entre placas, su separación y la partícula · Permanece: el campo igual en todo el espacio entre placas ·
   // Progresa: el largo de E y de F · Se reserva: la energía ganada, que no depende de la separación ·
   // Debe verse: E = ΔV/d es el mismo en cualquier punto; la energía ganada es qΔV.
+  // Se manipula: la placa de la derecha, que se arrastra de lado (la separación d).
   const QE = 1.6e-19;
   const VISTA4 = { x0: -2.2, x1: 8.6, y0: -3, y1: 3.2 };
   const EPX4 = 3.2;   // px por kV/m
@@ -376,6 +411,12 @@
       ],
     };
   }
+  // La placa de 0 V está en x = d (cm); la manija va arriba, lejos de la partícula y de las flechas.
+  const arrastrePlaca = datosDe => ({
+    id: 'placa', etiqueta: 'placa de la derecha (separación)', color: 'c-i',
+    donde: val => { const g = LIENZO().geometria(datosDe(val)); return { x: g.X(val.d), y: g.Y(2) }; },
+    mover: (pt, val) => ({ d: LIENZO().geometria(datosDe(val)).Xi(pt.x) }),
+  });
   const uniforme = {
     id: 'campo-uniforme',
     titulo: 'Entre placas, el campo es parejo',
@@ -392,6 +433,7 @@
       dibujo: val => ({ datos: placas(val.dv, val.d, val.p), estado: {} }),
       lectura: val => [E, ` = ${f(val.dv / (val.d / 100), 0)} V/m · `, F, ` = ${cien(QE * val.dv / (val.d / 100), 1)} N`],
       minimo: 4,
+      arrastres: [arrastrePlaca(val => placas(val.dv, val.d, val.p))],
     },
     predice: {
       pregunta: 'Un electrón parte del reposo junto a la placa de 0 V y llega a la de +200 V. ¿Qué energía cinética gana?',
@@ -409,7 +451,7 @@
       datos: placas(200, 4, 'e', { e: 1, f: 2, eq: 3 }),
       pasos: [
         { estado: { paso: 1 }, texto: 'Entre placas el campo es el mismo en todo punto.', ecuacion: [E, ' = ', { frac: ['ΔV', d] }, ' = ', { frac: ['200', '0,04'] }, ' = 5000 V/m'] },
-        { estado: { paso: 2 }, texto: 'La fuerza sobre el electrón es constante y va contra E.', ecuacion: [F, ' = ', q, E, ` = 1,6×10⁻¹⁹ · 5000 = ${cien(QE * 5000, 1)} N`] },
+        { estado: { paso: 2 }, texto: 'La fuerza sobre el electrón es constante y va contra E.', ecuacion: [F, ' = ', q, E, ' = 1,6 × ', diez('−19'), ` · 5000 = ${cien(QE * 5000, 1)} N`] },
         { estado: { paso: 2 }, texto: 'El trabajo es fuerza por distancia: la d se cancela.', ecuacion: ['W = ', F, d, ' = ', q, E, d, ' = ', q, 'ΔV = 200 eV'] },
         { estado: { paso: 3 }, texto: 'Las líneas a trazos son equipotenciales: moverse sobre una no cuesta trabajo.', ecuacion: ['ΔV = 0  →  W = 0'] },
         { estado: { paso: 3 }, texto: 'Cada placa es conductora: dentro del metal E = 0 y V es único.', ecuacion: ['conductor: ', E, ' = 0 adentro'] },
@@ -417,7 +459,7 @@
     },
     regla: {
       texto: 'Entre placas paralelas el campo es uniforme. Una carga gana una energía cinética igual a su carga por la diferencia de potencial que recorre.',
-      ecuacion: [E, ' = ', { frac: ['ΔV', d] }, '   ·   ', F, ' = ', q, E, '   ·   ΔK = |', q, '| ΔV'],
+      ecuacion: [E, ' = ', { frac: ['ΔV', d] }, '   ·   ', F, ' = ', q, E, '   ·   ', 'ΔK = ', { llave: [{ abs: [q] }, ' ΔV'], nota: 'no importa d' }],
       condicion: 'placas grandes y cercanas; solo actúa la fuerza eléctrica. 1 eV = 1,6 × 10⁻¹⁹ J.',
     },
     ahoraTu: {
@@ -450,6 +492,7 @@
   // Cambia: cómo se conectan dos condensadores y la capacidad del primero · Permanece: la pila de 12 V ·
   // Progresa: la carga de cada uno · Se reserva: el reparto del voltaje en serie ·
   // Debe verse: en serie la carga es la misma; en paralelo, el voltaje.
+  // Sin arrastre: la conexión es una opción y la capacidad no se ve en el tamaño del dibujo del circuito.
   const EPS = 12, C2 = 6;
   const conectar = (modo, c1, c2, o = {}) => {
     const ceq = modo === 'serie' ? c1 * c2 / (c1 + c2) : c1 + c2;
@@ -492,13 +535,13 @@
       pasos: [
         { estado: { corte: 0 }, texto: 'En serie se suman las inversas.', ecuacion: [{ frac: ['1', { sub: ['C', 'eq'] }] }, ' = ', { frac: ['1', '2'] }, ' + ', { frac: ['1', '6'] }, '  →  ', { sub: ['C', 'eq'] }, ' = 1,5 μF'] },
         { estado: { corte: 1 }, texto: 'La pila entrega una sola carga, que llega igual a los dos.', ecuacion: [q, ' = ', { sub: ['C', 'eq'] }, ' · 12 = 18 μC'] },
-        { estado: { corte: 2 }, texto: 'Cada voltaje es su carga entre su capacidad.', ecuacion: [{ sub: ['V', '1'] }, ' = 18/2 = 9 V · ', { sub: ['V', '2'] }, ' = 18/6 = 3 V'] },
+        { estado: { corte: 2 }, texto: 'Cada voltaje es su carga entre su capacidad.', ecuacion: [{ sub: ['V', '1'] }, ' = 18/2 = 9 V', '   ·   ', { sub: ['V', '2'] }, ' = 18/6 = 3 V'] },
         { estado: { corte: 2 }, texto: 'En paralelo sería al revés: mismo V y las cargas se suman.', ecuacion: [{ sub: ['C', 'eq'] }, ' = ', { sub: ['C', '1'] }, ' + ', { sub: ['C', '2'] }] },
       ],
     },
     regla: {
       texto: 'En serie, todos guardan la misma carga y los voltajes se suman. En paralelo, todos tienen el mismo voltaje y las cargas se suman.',
-      ecuacion: ['serie: ', { frac: ['1', { sub: ['C', 'eq'] }] }, ' = Σ', { frac: ['1', 'C'] }, '   ·   paralelo: ', { sub: ['C', 'eq'] }, ' = ΣC   ·   ', q, ' = C V'],
+      ecuacion: ['serie: ', { frac: ['1', { sub: ['C', 'eq'] }] }, ' = Σ', { frac: ['1', 'C'] }, '   ·   ', 'paralelo: ', { sub: ['C', 'eq'] }, ' = ΣC', '   ·   ', q, ' = C V'],
       condicion: 'los condensadores empiezan descargados y se conectan a la misma pila.',
     },
     ahoraTu: {
@@ -534,6 +577,7 @@
   // Cambia: cuánto se separan las placas de un condensador conectado · Permanece: la pila (V fijo) ·
   // Progresa: las barras de C, Q y U, como múltiplos de su valor inicial · Se reserva: el condensador desconectado ·
   // Debe verse: conectado o aislado deciden qué se mantiene, y la energía va en sentidos opuestos.
+  // Sin arrastre: la separación no está dibujada; las barras son el resultado, y estirarlas movería la causa al revés.
   const factores = (modo, k) => (modo === 'con'
     ? { C: 1 / k, Q: 1 / k, V: 1, U: 1 / k }
     : { C: 1 / k, Q: 1, V: k, U: k });
@@ -597,7 +641,7 @@
               { id: 'sin-cuad', valor: 0.5 * c * v, error: 'EL-R2', siFuera: 'Esa cuenta no eleva V al cuadrado: esa es Q/2.' },
               { id: 'q', valor: c * v, error: 'EL-CON', siFuera: 'Esa es la carga en μC, no la energía.' },
             ], n => `${f(n, 0)} μJ`),
-            solucion: { texto: 'Con C en μF, la energía sale en μJ.', ecuacion: [`U = ½ · ${f(c)} · ${f(v)}² = ${f(u, 0)} μJ`] },
+            solucion: { texto: 'Con C en μF, la energía sale en μJ.', ecuacion: [`U = ½ · ${f(c)} · `, { sup: [f(v), '2'] }, ` = ${f(u, 0)} μJ`] },
           };
         }
         const k = x.de([2, 3]), con = s % 4 === 0;
@@ -620,6 +664,35 @@
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/fis-lienzo.js', '/nucleo/kit/piezas/fis-circuito.js', '/nucleo/kit/piezas/fis-cuentas.js'],
+    laboratorio: [
+      {
+        // Lo que la idea 2 no deja probar: cargas distintas y de signo contrario (se atraen) y distancias de 2 a 8 cm.
+        // Las flechas van a 0,3 px por newton (en el juego, 0,75) para que las fuerzas grandes quepan.
+        id: 'coulomb-libre', titulo: 'Dos cargas cualesquiera', pieza: 'fis-lienzo',
+        consigna: 'Elige las dos cargas, también con signo distinto, y arrastra la de la derecha. Compara las dos flechas.',
+        controles: [
+          { id: 'q1', etiqueta: 'q₁', color: 'c-o', min: -4, max: 4, paso: 1, inicio: -2, unidad: 'μC', decimales: 0 },
+          { id: 'q2', etiqueta: 'q₂', color: 'c-o', min: 1, max: 4, paso: 1, inicio: 4, unidad: 'μC', decimales: 0 },
+          { id: 'r', etiqueta: 'r', color: 'c-i', min: 2, max: 8, paso: 1, inicio: 4, unidad: 'cm', decimales: 0 },
+        ],
+        dibujo: val => ({ datos: parLibre(val), estado: {} }),
+        lectura: val => { const Fv = fCoulomb(val.q1, val.q2, val.r); return [F, ` = ${f(Math.abs(Fv), 1)}\u00a0N en cada una`, Fv < 0 ? ': se atraen' : Fv > 0 ? ': se repelen' : '']; },
+        arrastres: [arrastreR(parLibre)],
+      },
+      {
+        // Más rica que la idea 3: P recorre casi toda la línea y se ven a la vez el campo y el potencial con números.
+        id: 'campo-y-potencial', titulo: 'Campo y potencial en P', pieza: 'fis-lienzo',
+        consigna: 'Arrastra P entre las cargas y cambia el signo de la segunda. Lee E y V a la vez.',
+        controles: [
+          { id: 'x', etiqueta: 'P en', min: 2, max: 8, paso: 0.5, inicio: 5, unidad: 'cm', decimales: 1 },
+          { id: 's', etiqueta: 'Segunda carga', opciones: [{ valor: 1, texto: 'Positiva' }, { valor: -1, texto: 'Negativa' }], inicio: 1 },
+        ],
+        dibujo: val => ({ datos: campoLab(val), estado: {} }),
+        lectura: val => { const t = Ede(QN, val.x) - val.s * Ede(QN, 10 - val.x); return [`P a ${f(val.x, 1)}\u00a0cm: `, E, ` = ${f(Math.abs(t), 1)}\u00a0kN/C`]; },
+        arrastres: [arrastreP(campoLab)],
+      },
+      Object.assign({ id: 'placas', titulo: 'Las placas paralelas', pieza: 'fis-lienzo' }, uniforme.juega),
+    ],
     historia: {
       texto: 'En el siglo XVIII era fácil sacar chispas y difícil medir una fuerza eléctrica pequeña. Charles-Augustin de Coulomb usó una balanza de torsión: un hilo fino que se retuerce un ángulo según la fuerza. Variando la separación entre dos esferas cargadas, publicó entre 1785 y 1789 que la fuerza cae con el cuadrado de la distancia.',
       pregunta: '¿Cómo medirías una fuerza que no puedes sentir?',
