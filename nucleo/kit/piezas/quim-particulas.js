@@ -145,7 +145,10 @@
         const y = g.y1 + (g.conRotulo ? 24 : 6) + 16, paso = w / cuenta.length;
         cuenta.forEach((q, j) => {
           const cx = x + paso * j + 10;
-          s += `<g class="kit-cuenta${nuevo(q)}">${especieSVG(d, q.e, cx, y - 5, 0.75)}${T.rotulo(cx + 13, y, q.texto, { peso: 700, min: x - 4, max: x + w + 8, clase: 'kit-num' })}</g>`;
+          // El número va después del dibujo de la especie (a su derecha, por ancho que sea la molécula).
+          const forma = (d.especies || {})[q.e] || [[q.e, 0, 0]];
+          const ext = Math.max(...forma.map(([sim, dx]) => dx + atomoDe(d, sim).r)) * 0.75;
+          s += `<g class="kit-cuenta${nuevo(q)}">${especieSVG(d, q.e, cx, y - 5, 0.75)}${T.rotulo(cx + ext + 5, y, q.texto, { peso: 700, min: x - 4, max: x + w + 8, clase: 'kit-num' })}</g>`;
         });
       }
       if (d.flechas && k < g.n - 1) s += T.flecha(x + w + 5, g.y0 + g.alto / 2, x + w + g.gap - 5, g.y0 + g.alto / 2, { grosor: T.GROSOR.contorno });

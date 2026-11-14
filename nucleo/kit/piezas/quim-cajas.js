@@ -28,7 +28,10 @@
   if (nodo) module.exports = api;
 })(typeof self !== 'undefined' ? self : this, function (Kit, T) {
   'use strict';
-  const W = 320, FILA = 40, CAJA = 32, X0 = 64, TOP = 10;
+  const W = 320, FILA = 40, X0 = 64, TOP = 10;
+  // Lado de la caja: 32 px; si alguna fila tiene más de 5 orbitales (4f: 7), todas bajan a 26 para caber en 320.
+  let CAJA = 32;
+  const ladoCaja = d => (Math.max(1, ...(d.filas || []).map(f => f.cajas || (f.flechas ? f.flechas.length : 1))) > 5 ? 26 : 32);
 
   // Hund: primero una flecha hacia arriba en cada caja, después las de abajo.
   function llenar(e, cajas) {
@@ -54,7 +57,7 @@
       if (d.desapareados && enCaja === 1) s += `<rect x="${T.n(x + 3)}" y="${T.n(y + 3)}" width="${CAJA - 6}" height="${CAJA - 6}" rx="3" fill="var(--c-o)" fill-opacity="0.18" stroke="var(--c-o)" stroke-width="1.5" stroke-dasharray="3 2"/>`;
       for (const j of [0, 1]) {
         if (!fl[k][j]) continue;
-        const xx = x + (j ? 21 : 11), arriba = j === 0;
+        const xx = x + Math.round(CAJA * (j ? 0.66 : 0.34)), arriba = j === 0;
         const y1 = arriba ? y + CAJA - 5 : y + 5, y2 = arriba ? y + 5 : y + CAJA - 5;
         const sale = salen.has(`${k}-${j}`);
         const linea = `<line x1="${xx}" y1="${T.n(y1)}" x2="${xx}" y2="${T.n(y2)}" stroke="var(--c-i)" stroke-width="2.5" stroke-linecap="round"${sale ? ' stroke-dasharray="3 3" stroke-opacity="0.6"' : ''}/>`;
@@ -71,6 +74,7 @@
 
   function dibujar(d, estado = {}) {
     const corte = Math.max(0, estado.corte || 0);
+    CAJA = ladoCaja(d);
     let s = '';
     (d.filas || []).forEach((f, i) => { if ((f.desde || 0) <= corte) s += filaSVG(f, TOP + i * FILA, d, corte); });
     if (d.rotulo) s += T.rotulo(X0, alto(d) - 10, d.rotulo, { peso: 700, color: d.desapareados ? 'o' : undefined });

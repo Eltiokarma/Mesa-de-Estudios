@@ -64,7 +64,7 @@
       s += T.linea(152, YA - 14, 152, YA + 14, { grosor: 3 }) + T.linea(166, YA - 8, 166, YA + 8, { grosor: 3 });
       s += T.rotulo(146, YA + 30, '+', { ancla: 'middle', peso: 700 }) + T.rotulo(173, YA + 30, '−', { ancla: 'middle', peso: 700 });
     }
-    if (d.medidor && ve('medidor')) s += `<g class="kit-medidor${nuevo('medidor')}">${T.rotulo(galv ? 160 : 200, galv ? YA + 36 : YA + 30, d.medidor, { ancla: galv ? 'middle' : 'start', peso: 700, color: 'd', clase: 'kit-num' })}</g>`;
+    if (d.medidor && ve('medidor')) s += `<g class="kit-medidor${nuevo('medidor')}">${T.rotulo(galv ? 160 : 208, galv ? YA + 36 : YA + 30, d.medidor, { ancla: galv ? 'middle' : 'start', peso: 700, color: 'd', clase: 'kit-num' })}</g>`;
     // Puente salino.
     if (galv) s += `<path d="M102 ${YV + 36}L102 ${YV - 8}L218 ${YV - 8}L218 ${YV + 36}" fill="none" stroke="currentColor" stroke-width="12" stroke-opacity="0.18" stroke-linejoin="round"/>`
       + `<path d="M102 ${YV + 36}L102 ${YV - 8}L218 ${YV - 8}L218 ${YV + 36}" fill="none" stroke="currentColor" stroke-width="1.5" stroke-opacity="0.6" stroke-linejoin="round"/>`
