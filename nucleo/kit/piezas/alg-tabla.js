@@ -121,8 +121,15 @@
       if (!ve(fl)) continue;
       const [f1, c1] = fl.de, [f2, c2] = fl.a;
       const x1 = g.cx(f1, c1), y1 = g.cy(f1), x2 = g.cx(f2, c2), y2 = g.cy(f2);
-      const L = Math.hypot(x2 - x1, y2 - y1) || 1, ux = (x2 - x1) / L, uy = (y2 - y1) / L, r = 13;
-      s += `<g class="kit-crece${nuevo(fl)}">${T.flecha(x1 + ux * r, y1 + uy * r, x2 - ux * r, y2 - uy * r, { color: fl.color, grosor: T.GROSOR.contorno })}</g>`;
+      // La flecha sale y llega al borde de una caja alrededor del texto de cada celda (no lo pisa).
+      const L = Math.hypot(x2 - x1, y2 - y1) || 1, ux = (x2 - x1) / L, uy = (y2 - y1) / L;
+      const borde = (f, c) => {
+        const w = d.triangular ? g.paso : g.xs[c + 1] - g.xs[c];
+        const hw = Math.max(10, w / 2 - 6), hh = 10;
+        return Math.min(Math.abs(ux) > 1e-9 ? hw / Math.abs(ux) : Infinity, Math.abs(uy) > 1e-9 ? hh / Math.abs(uy) : Infinity);
+      };
+      const r1 = borde(f1, c1), r2 = borde(f2, c2);
+      s += `<g class="kit-crece${nuevo(fl)}">${T.flecha(x1 + ux * r1, y1 + uy * r1, x2 - ux * r2, y2 - uy * r2, { color: fl.color, grosor: T.GROSOR.contorno })}</g>`;
       if (fl.rotulo) s += T.rotulo((x1 + x2) / 2 + 6, (y1 + y2) / 2 - 2, fl.rotulo, { color: fl.color, peso: 700, clase: 'kit-aparece' + nuevo(fl) });
     }
     // Fantasma: el valor de un error, discontinuo, en su casilla; su rótulo va en el pie.
