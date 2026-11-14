@@ -2533,7 +2533,14 @@
      "plantillas": [
       "triangulo-estira",
       "geo-triangulos-notables"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/geometria/triangulos.js",
+      "requiere": [
+       "/nucleo/kit/piezas/geo-figura.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "geometria.congruencia",
