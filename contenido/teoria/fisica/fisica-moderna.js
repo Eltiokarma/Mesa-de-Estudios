@@ -44,6 +44,16 @@
     const pot = '10' + String(e).split('').map(ch => SUP[ch]).join('');
     return m === 1 ? pot : `${f(m, dec)} × ${pot}`;
   }
+  // En las ecuaciones el exponente va con { sup } (en lecturas y rótulos queda el Unicode de cient: cabe en 12 palabras).
+  const diez = e => ({ sup: ['10', String(e).replace('-', '−')] });
+  function cientP(x, dec = 2) {
+    if (x === 0) return ['0'];
+    const e = Math.floor(Math.log10(Math.abs(x)) + 1e-9), m = Math.round(x / Math.pow(10, e) * 100) / 100;
+    if (e === 0) return [f(m, dec)];
+    return m === 1 ? [diez(e)] : [`${f(m, dec)} × `, diez(e)];
+  }
+  // Gesto directo en las gráficas: la manija es un punto de la curva; ejes.geometria da X, Y y sus inversas.
+  const EJ = () => Kit.piezas.ejes;
   function azar(s) {
     let q = (s * 2654435761 + 12345) >>> 0;
     const r = () => { q = (q + 0x6D2B79F5) >>> 0; let z = q; z = Math.imul(z ^ (z >>> 15), z | 1); z ^= z + Math.imul(z ^ (z >>> 7), z | 61); return ((z ^ (z >>> 14)) >>> 0) / 4294967296; };
@@ -70,6 +80,10 @@
   // Cambia: el color (frecuencia) y el brillo de la lámpara · Permanece: la placa de sodio (φ = 2,3 eV) ·
   // Progresa: los paquetes, la placa y los electrones con su flecha · Se reserva: luz roja muy brillante (no saca nada) ·
   // Debe verse: el color fija la energía de cada electrón; el brillo, cuántos salen.
+  // Hallazgo 9: el juego es la lámpara con la placa y «Mira» pasa a la recta Kmáx–f a propósito: cada caso que el
+  // alumno probó es un punto de esa recta (la mesa «Dos metales, dos rectas» del laboratorio las junta con el dedo).
+  // Sin arrastre en el juego: color y brillo son propiedades de la luz, no lugares de la figura; tomar la flecha del
+  // electrón movería la respuesta y no la causa.
   const PHI = 2.3;
   const foto = (f14, brillo, o = {}) => {
     const E = eV(f14), Km = Math.max(0, E - PHI), sale = E > PHI;
@@ -88,7 +102,7 @@
         { id: 'b', etiqueta: 'Brillo', color: 'c-d', min: 1, max: 4, paso: 1, inicio: 2, unidad: '', decimales: 0 },
       ],
       dibujo: val => foto(val.f, val.b),
-      lectura: val => ['hf = ', f(eV(val.f), 2), ' eV · ', K, ` = ${f(eV(val.f) - PHI, 2)} eV`],
+      lectura: val => ['hf = ', f(eV(val.f), 2), ' eV · ', K, ` = ${f(eV(val.f) - PHI, 2)}\u00a0eV`],
       minimo: 3,
     },
     predice: {
@@ -113,14 +127,14 @@
       },
       pasos: [
         { estado: { corte: 1 }, texto: 'Kmáx crece en línea recta con la frecuencia.', ecuacion: [K, ' = h', fr, ' − ', phi] },
-        { estado: { corte: 2 }, texto: 'La pendiente es la constante de Planck, la misma para todo metal.', ecuacion: ['h = 6,63 × 10⁻³⁴ J·s = 4,14 × 10⁻¹⁵ eV·s'] },
-        { estado: { corte: 3 }, texto: 'Por debajo del umbral, hf no alcanza para pagar φ.', ecuacion: [{ sub: [fr, '0'] }, ' = ', { frac: [phi, 'h'] }, ' = 5,6 × 10¹⁴ Hz'] },
+        { estado: { corte: 2 }, texto: 'La pendiente es la constante de Planck, la misma para todo metal.', ecuacion: ['h = 6,63 × ', diez(-34), ' J·s = ', ...cientP(H / EV), ' eV·s'] },
+        { estado: { corte: 3 }, texto: 'Por debajo del umbral, hf no alcanza para pagar φ.', ecuacion: [{ sub: [fr, '0'] }, ' = ', { frac: [phi, 'h'] }, ' = ', ...cientP(PHI / eV(1) * 1e14, 1), ' Hz'] },
         { estado: { corte: 4 }, texto: 'Prolongada, la recta corta el eje vertical en −φ.', ecuacion: [phi, ' = 2,3 eV (sodio)'] },
       ],
     },
     regla: {
       texto: 'Cada electrón absorbe un fotón entero. Paga la función trabajo φ y le queda el resto como energía cinética.',
-      ecuacion: [K, ' = h', fr, ' − ', phi, '   ·   ', { sub: [fr, '0'] }, ' = ', { frac: [phi, 'h'] }],
+      ecuacion: [K, ' = ', { llave: ['h', fr], nota: 'lo que trae', color: 'c-h' }, ' − ', { llave: [phi], nota: 'lo que paga', color: 'c-i' }, '   ·   ', { sub: [fr, '0'] }, ' = ', { frac: [phi, 'h'] }],
       condicion: 'f es mayor que f₀. El brillo cambia cuántos fotones llegan y cuántos electrones salen, no Kmáx.',
     },
     ahoraTu: {
@@ -177,14 +191,14 @@
     mira: {
       datos: haz(650, 10, `rojo: ${f(HC / 650, 2)} eV`).datos,
       pasos: [
-        { estado: {}, texto: 'Cada fotón rojo lleva hc/λ.', ecuacion: ['E = ', { frac: ['1240', '650'] }, ` = ${f(HC / 650, 2)} eV = ${cient(fotJ(650))} J`] },
-        { estado: {}, texto: '1 mW son 10⁻³ J cada segundo, repartidos en fotones.', ecuacion: [N, ' = ', { frac: ['P', 'E'] }, ` = ${cient(1e-3 / fotJ(650))} por segundo`] },
-        { estado: {}, texto: 'El azul lleva más por fotón: le bastan menos.', ecuacion: [N, ` azul = ${cient(1e-3 / fotJ(450))} por segundo`] },
+        { estado: {}, texto: 'Cada fotón rojo lleva hc/λ.', ecuacion: ['E = ', { frac: ['1240', '650'] }, ` = ${f(HC / 650, 2)} eV = `, ...cientP(fotJ(650)), ' J'] },
+        { estado: {}, texto: '1 mW son 10⁻³ J cada segundo, repartidos en fotones.', ecuacion: [N, ' = ', { frac: ['P', 'E'] }, ' = ', ...cientP(1e-3 / fotJ(650)), ' por segundo'] },
+        { estado: {}, texto: 'El azul lleva más por fotón: le bastan menos.', ecuacion: [N, ' azul = ', ...cientP(1e-3 / fotJ(450)), ' por segundo'] },
       ],
     },
     regla: {
       texto: 'La potencia de la luz es el número de fotones por segundo por la energía de cada uno. La intensidad reparte esa potencia en el área.',
-      ecuacion: ['P = ', N, ' h', fr, '   ·   I = ', { frac: ['P', 'A'] }],
+      ecuacion: ['P = ', { llave: [N], nota: 'cuántos', color: 'c-d' }, ' ', { llave: ['h', fr], nota: 'cada fotón', color: 'c-h' }, '   ·   ', 'I = ', { frac: ['P', 'A'] }],
       condicion: 'luz de una sola frecuencia; N cuenta fotones por segundo. Con E en eV, se pasa a joules antes de dividir.',
     },
     ahoraTu: {
@@ -198,7 +212,7 @@
             { id: 'por', valor: P * 1e-3 * E, error: 'FT-SIN-F', siFuera: 'Eso multiplica potencia por energía; se divide.' },
             { id: 'w', valor: P / E, error: 'FT-EV', siFuera: 'Eso usa mW como si fueran W: mil veces de más.' },
           ], x => `${cient(x)} por segundo`),
-          solucion: { texto: 'Potencia entre la energía de un fotón, en joules.', ecuacion: [N, ` = ${cient(P * 1e-3)} / ${cient(E)} = ${cient(n)}`] },
+          solucion: { texto: 'Potencia entre la energía de un fotón, en joules.', ecuacion: [N, ' = ', ...cientP(P * 1e-3), ' / ', ...cientP(E), ' = ', ...cientP(n)] },
         };
       },
     },
@@ -234,8 +248,12 @@
       voz: 'Sigue al punto verde respecto de la franja visible.',
       controles: [{ id: 'T', etiqueta: 'T', color: 'c-h', min: 3000, max: 7000, paso: 1000, inicio: 5000, unidad: 'K', decimales: 0 }],
       dibujo: val => ({ datos: negro([val.T]), estado: {} }),
-      lectura: val => [lmax, ` = 2,9 × 10⁶ / ${f(val.T, 0)} = ${f(WIEN / val.T, 0)} nm`],
+      lectura: val => [lmax, ` = 2,9 × 10⁶ / ${f(val.T, 0)} = ${f(WIEN / val.T, 0)}\u00a0nm`],
       minimo: 3,
+      // Corre el pico a los lados: más a la izquierda (λ corta) pide más temperatura.
+      arrastres: [{ id: 'pico', etiqueta: 'pico de la curva', color: 'c-h',
+        donde: val => { const g = EJ().geometria(negro([val.T])); return { x: g.X(WIEN / val.T), y: g.Y(1) }; },
+        mover: (pt, val) => ({ T: WIEN / Math.max(1, EJ().geometria(negro([val.T])).Xi(pt.x)) }) }],
     },
     predice: {
       pregunta: ['Un horno de cerámica está a ', T, ' = 1000 K. ¿En qué zona del espectro está el pico de su radiación?'],
@@ -253,13 +271,13 @@
       datos: negro([5800], { curvas: negro([5800]).curvas.map((c, i) => Object.assign({}, c, { desde: i < 2 ? 0 : 1 })), puntos: [Object.assign({}, curvaT(5800).punto, { desde: 2 })] }),
       pasos: [
         { estado: { corte: 1 }, texto: 'El Sol se parece a un cuerpo negro a unos 5800 K.', ecuacion: [T, ' = 5800 K'] },
-        { estado: { corte: 2 }, texto: 'Su pico cae en el visible: por eso vemos esa luz.', ecuacion: [lmax, ' = ', { frac: ['2,9 × 10⁶ nm·K', '5800 K'] }, ' = 500 nm'] },
+        { estado: { corte: 2 }, texto: 'Su pico cae en el visible: por eso vemos esa luz.', ecuacion: [lmax, ' = ', { frac: [['2,9 × ', diez(6), ' nm·K'], '5800 K'] }, ` = ${f(WIEN / 5800, 0)} nm`] },
         { estado: { corte: 2 }, texto: 'Planck: la energía va en paquetes hf; los de λ corta son escasos.', ecuacion: ['E = h', fr] },
       ],
     },
     regla: {
       texto: 'Un cuerpo negro más caliente emite con el pico a menor longitud de onda. La curva sale de suponer energía en paquetes hf.',
-      ecuacion: [lmax, ' · ', T, ' = 2,9 × 10⁻³ m·K   ·   E = h', fr],
+      ecuacion: [lmax, ' · ', T, ' = 2,9 × ', diez(-3), ' m·K', '   ·   ', 'E = ', { llave: ['h', fr], nota: 'un paquete', color: 'c-h' }],
       condicion: 'cuerpo ideal que absorbe toda la luz; T en kelvin. Los cuerpos reales se acercan a esta curva.',
     },
     ahoraTu: {
@@ -273,7 +291,7 @@
             { id: 'por', valor: Tk * 2.9, error: 'CN-POR', siFuera: 'Eso multiplica; a más temperatura, el pico es más corto.' },
             { id: 'mil', valor: lm * 1000, error: 'ES-UNIDAD', siFuera: 'Eso tiene mil veces de más: revisa las unidades de b.' },
           ], x => `${f(x, 0)} nm`),
-          solucion: { texto: 'b entre la temperatura absoluta.', ecuacion: [lmax, ` = 2,9 × 10⁶ / ${f(Tk, 0)} = ${f(lm, 0)} nm`] },
+          solucion: { texto: 'b entre la temperatura absoluta.', ecuacion: [lmax, ' = 2,9 × ', diez(6), ` / ${f(Tk, 0)} = ${f(lm, 0)} nm`] },
         };
         return {
           pregunta: ['El pico de la radiación de ', que, ` está en `, lmax, ` = ${f(lm, 0)} nm. ¿A qué temperatura está?`],
@@ -282,7 +300,7 @@
             { id: 'por', valor: lm * 2.9, error: 'CN-POR', siFuera: 'Eso multiplica; T y λmáx son inversos.' },
             { id: 'mil', valor: Tk * 1000, error: 'ES-UNIDAD', siFuera: 'Eso tiene mil veces de más.' },
           ], x => `${f(x, 0)} K`),
-          solucion: { texto: 'b entre λmáx.', ecuacion: [T, ` = 2,9 × 10⁶ / ${f(lm, 0)} = ${f(Tk, 0)} K`] },
+          solucion: { texto: 'b entre λmáx.', ecuacion: [T, ' = 2,9 × ', diez(6), ` / ${f(lm, 0)} = ${f(Tk, 0)} K`] },
         };
       },
     },
@@ -322,8 +340,12 @@
       voz: 'Mira el borde izquierdo de la curva.',
       controles: [{ id: 'V', etiqueta: 'V', color: 'c-i', min: 20, max: 60, paso: 10, inicio: 30, unidad: 'kV', decimales: 0 }],
       dibujo: val => ({ datos: espectroX(val.V), estado: {} }),
-      lectura: val => [lmin, ' = 1240 / ', V, ` = ${f(HC / val.V, 1)} pm`],
+      lectura: val => [lmin, ' = 1240 / ', V, ` = ${f(HC / val.V, 1)}\u00a0pm`],
       minimo: 3,
+      // Corre el borde λmín: más cerca de 0 pide más voltaje.
+      arrastres: [{ id: 'borde', etiqueta: 'borde λ mínima del espectro', color: 'c-i',
+        donde: val => { const g = EJ().geometria(espectroX(val.V)); return { x: g.X(HC / val.V), y: g.Y(0) }; },
+        mover: (pt, val) => ({ V: HC / Math.max(1, EJ().geometria(espectroX(val.V)).Xi(pt.x)) }) }],
     },
     predice: {
       pieza: 'recta',
@@ -341,7 +363,7 @@
     mira: {
       datos: espectroX(40, { desdeMin: 2 }),
       pasos: [
-        { estado: { corte: 1 }, texto: 'Con 40 kV, cada electrón llega con 40 000 eV.', ecuacion: ['E = e', V, ' = 4 × 10⁴ eV'] },
+        { estado: { corte: 1 }, texto: 'Con 40 kV, cada electrón llega con 40 000 eV.', ecuacion: ['E = e', V, ' = 4 × ', diez(4), ' eV'] },
         { estado: { corte: 2 }, texto: 'Como máximo, da toda su energía a un solo fotón: ese es λmín.', ecuacion: [lmin, ' = ', { frac: ['1240 eV·nm', '40 000 eV'] }, ' = 31 pm'] },
         { estado: { corte: 2 }, texto: 'Al frenar de a pocos da fotones de menos energía: espectro continuo.', ecuacion: ['λ > ', lmin] },
         { estado: { corte: 2 }, texto: 'En el láser, el salto E₂ − E₁ fija una sola λ.', ecuacion: ['λ = ', { frac: ['hc', ['E₂ − E₁']] }] },
@@ -349,7 +371,7 @@
     },
     regla: {
       texto: 'Un fotón lleva la energía del salto que lo produce. En rayos X, como máximo eV; en un láser, exactamente E₂ − E₁, copiada por emisión estimulada.',
-      ecuacion: [lmin, ' = ', { frac: ['hc', ['e', V]] }, '   ·   λ láser = ', { frac: ['hc', 'E₂ − E₁'] }],
+      ecuacion: [lmin, ' = ', { frac: ['hc', ['e', V]] }, '   ·   ', 'λ láser = ', { frac: ['hc', 'E₂ − E₁'] }],
       condicion: 'el láser necesita más átomos en E₂ que en E₁ (inversión de población); si no, absorbe más de lo que emite.',
     },
     ahoraTu: {
@@ -407,8 +429,12 @@
       voz: 'Fíjate en lo poco que cambia γ hasta la mitad de c.',
       controles: [{ id: 'b', etiqueta: 'v', color: 'c-h', min: 0, max: 0.9, paso: 0.1, inicio: 0.5, unidad: 'c', decimales: 1 }],
       dibujo: val => ({ datos: curvaG([{ x: val.b, y: gam(val.b), color: 'o', rotulo: `γ = ${f(gam(val.b), 3)}`, guias: true }]), estado: {} }),
-      lectura: val => ['1 s de la nave dura ', f(gam(val.b), 3), ' s para la Tierra'],
+      lectura: val => ['1\u00a0s de la nave dura ', f(gam(val.b), 3), ' s para la Tierra'],
       minimo: 3,
+      // Corre el punto por la curva de γ: a la derecha, más cerca de c.
+      arrastres: [{ id: 'punto', etiqueta: 'punto sobre la curva de γ', color: 'c-h',
+        donde: val => { const g = EJ().geometria(curvaG([])); return { x: g.X(val.b), y: g.Y(gam(val.b)) }; },
+        mover: pt => ({ b: EJ().geometria(curvaG([])).Xi(pt.x) }) }],
     },
     predice: {
       pregunta: 'Una nave pasa a 0,6c. Para la Tierra, sus relojes van 1,25 veces más lento. ¿Qué nota la astronauta al mirar su propio reloj?',
@@ -425,7 +451,7 @@
     mira: {
       datos: curvaG([{ x: 0.6, y: 1.25, color: 'o', rotulo: 'γ = 1,25', guias: true, desde: 1 }]),
       pasos: [
-        { estado: { corte: 1 }, texto: 'A 0,6c, el factor de Lorentz vale 1,25.', ecuacion: ['γ = ', { frac: ['1', { raiz: '1 − 0,6²' }] }, ' = ', { frac: ['1', '0,8'] }, ' = 1,25'] },
+        { estado: { corte: 1 }, texto: 'A 0,6c, el factor de Lorentz vale 1,25.', ecuacion: ['γ = ', { frac: ['1', { raiz: ['1 − ', { sup: ['0,6', '2'] }] }] }, ' = ', { frac: ['1', f(Math.sqrt(1 - 0.36), 1)] }, ` = ${f(gam(0.6), 2)}`] },
         { estado: { corte: 1 }, texto: 'El reloj de la nave marca 4 s: tiempo propio.', ecuacion: [dt0, ' = 4 s'] },
         { estado: { corte: 1 }, texto: 'Para la Tierra ese tramo dura más.', ecuacion: [dt, ' = γ ', dt0, ' = 5 s'] },
         { estado: { corte: 1 }, texto: 'La nave de 10 m se mide más corta en la dirección del viaje.', ecuacion: ['L = ', { frac: [{ sub: ['L', '0'] }, 'γ'] }, ' = 8 m'] },
@@ -433,7 +459,7 @@
     },
     regla: {
       texto: 'Un intervalo que no se mide en reposo con el reloj se alarga en el factor γ; una longitud en la dirección del viaje se acorta en γ.',
-      ecuacion: [dt, ' = γ ', dt0, '   ·   L = ', { frac: [{ sub: ['L', '0'] }, 'γ'] }, '   ·   γ = 1 / ', { raiz: ['1 − ', { sup: [vv, '2'] }, '/c²'] }],
+      ecuacion: [dt, ' = γ ', { llave: [dt0], nota: 'tiempo propio', color: 'c-i' }, '   ·   ', 'L = ', { frac: [{ sub: ['L', '0'] }, 'γ'] }, '   ·   ', 'γ = 1 / ', { raiz: ['1 − ', { sup: [vv, '2'] }, '/', { sup: ['c', '2'] }] }],
       condicion: 'marcos inerciales. Δt₀ y L₀ los mide quien viaja junto al reloj o a la regla.',
     },
     ahoraTu: {
@@ -490,8 +516,12 @@
       voz: 'Mira qué pasa con la curva cuando Δx se acerca a cero.',
       controles: [{ id: 'x', etiqueta: 'Δx', color: 'c-i', min: 0.2, max: 2, paso: 0.2, inicio: 1, unidad: 'nm', decimales: 1 }],
       dibujo: val => ({ datos: curvaI([{ x: val.x, y: dvMin(val.x) / 1000, color: 'o', rotulo: `${f(dvMin(val.x) / 1000, 0)} km/s`, guias: true }]), estado: {} }),
-      lectura: val => [dv, ` mín = ${f(dvMin(val.x) / 1000, 0)} km/s`],
+      lectura: val => [dv, ` mín = ${f(dvMin(val.x) / 1000, 0)}\u00a0km/s`],
       minimo: 3,
+      // Corre el punto por la curva: a la izquierda, el electrón está más encerrado.
+      arrastres: [{ id: 'punto', etiqueta: 'punto sobre la curva (ancho Δx)', color: 'c-i',
+        donde: val => { const g = EJ().geometria(curvaI([])); return { x: g.X(val.x), y: g.Y(dvMin(val.x) / 1000) }; },
+        mover: pt => ({ x: EJ().geometria(curvaI([])).Xi(pt.x) }) }],
     },
     predice: {
       pregunta: 'Ubicas un electrón y una pelota de 0,1 kg, los dos con Δx = 1 nm. ¿En cuál importa la dispersión mínima de su velocidad?',
@@ -508,14 +538,14 @@
     mira: {
       datos: curvaI([{ x: 1, y: dvMin(1) / 1000, color: 'o', rotulo: `${f(dvMin(1) / 1000, 0)} km/s`, guias: true, desde: 2 }]),
       pasos: [
-        { estado: { corte: 1 }, texto: 'El producto de las dos dispersiones tiene un piso.', ecuacion: [dx, ' · Δp ≥ ', { frac: ['ħ', '2'] }, ' = 5,3 × 10⁻³⁵ J·s'] },
-        { estado: { corte: 2 }, texto: 'Con Δx = 1 nm, el menor Δp posible:', ecuacion: ['Δp = ', { frac: ['1,055 × 10⁻³⁴', '2 · 10⁻⁹'] }, ' = 5,3 × 10⁻²⁶ kg·m/s'] },
+        { estado: { corte: 1 }, texto: 'El producto de las dos dispersiones tiene un piso.', ecuacion: [dx, ' · Δp ≥ ', { frac: ['ħ', '2'] }, ' = ', ...cientP(HBAR / 2, 1), ' J·s'] },
+        { estado: { corte: 2 }, texto: 'Con Δx = 1 nm, el menor Δp posible:', ecuacion: ['Δp = ', { frac: [['1,055 × ', diez(-34)], ['2 · ', diez(-9)]] }, ' = ', ...cientP(HBAR / 2e-9, 1), ' kg·m/s'] },
         { estado: { corte: 2 }, texto: 'Para el electrón, eso es una dispersión enorme de velocidad.', ecuacion: [dv, ' = ', { frac: ['Δp', 'mₑ'] }, ` ≈ ${f(dvMin(1) / 1000, 0)} km/s`] },
       ],
     },
     regla: {
       texto: 'No se puede preparar un estado con posición y cantidad de movimiento tan definidas como uno quiera: el producto de sus dispersiones tiene un mínimo.',
-      ecuacion: [dx, ' · Δp ≥ ', { frac: ['ħ', '2'] }, '   ·   ħ = ', { frac: ['h', '2π'] }],
+      ecuacion: [dx, ' · Δp ≥ ', { llave: [{ frac: ['ħ', '2'] }], nota: 'el piso' }, '   ·   ', 'ħ = ', { frac: ['h', '2π'] }],
       condicion: 'Δx y Δp son dispersiones del estado de la partícula. Vale aunque el instrumento sea perfecto.',
     },
     ahoraTu: {
@@ -529,10 +559,33 @@
             { id: 'h', valor: v * 2 * Math.PI, error: 'IN-H', siFuera: 'Eso usa h en vez de ħ = h/2π.' },
             { id: 'p', valor: v * m, error: 'IN-DIRECTA', siFuera: 'Ese es Δp; falta dividir entre la masa.' },
           ], x => `${cient(x)} m/s`),
-          solucion: { texto: 'Δp mínimo entre la masa.', ecuacion: [dv, ` = 1,055 × 10⁻³⁴ / (2 · ${mTxt} · ${cient(xs * 1e-9)} m) = ${cient(v)} m/s`] },
+          solucion: { texto: 'Δp mínimo entre la masa.', ecuacion: [dv, ' = 1,055 × ', diez(-34), ' / (2 · ', ...cientP(m), ' kg · ', ...cientP(xs * 1e-9), ' m) = ', ...cientP(v), ' m/s'] },
         };
       },
     },
+  };
+
+  // Mesas del laboratorio.
+  const METALES = [['cesio', 2.1], ['potasio', 2.2], ['sodio', 2.3], ['calcio', 2.9], ['zinc', 4.3]];
+  const phiDe = m => METALES.find(x => x[0] === m)[1];
+  const dosRectas = val => {
+    const f0 = m => phiDe(m) / eV(1), linea = (m, c, disc) => ({ puntos: [[f0(m), 0], [14, eV(14) - phiDe(m)]], color: c, discontinua: disc, rotulo: m, en: [Math.min(12.2, f0(m) + 0.6), Math.min(3.6, eV(Math.min(12.2, f0(m) + 0.6)) - phiDe(m)) + 0.5] });
+    const ka = eV(val.f) - phiDe(val.a), kb = eV(val.f) - phiDe(val.b);
+    return {
+      x: { min: 0, max: 14, paso: 2, nombre: 'f', unidad: '×10¹⁴ Hz', decimales: 0, color: 'h' },
+      y: { min: 0, max: 4, paso: 1, nombre: 'Kmáx', unidad: 'eV', decimales: 0, color: 'o' },
+      curvas: [linea(val.a, 'o', false), linea(val.b, 'o', true), { puntos: [[val.f, 0], [val.f, 4]], color: 'h', discontinua: true }],
+      puntos: [ka > 0 ? { x: val.f, y: ka, color: 'o' } : null, kb > 0 ? { x: val.f, y: kb, color: 'o' } : null].filter(Boolean),
+    };
+  };
+  const lamparaLibre = val => {
+    const E = eV(val.f), ph = phiDe(val.m), Km = Math.max(0, E - ph), sale = E > ph && val.b > 0;
+    return { datos: { fotones: 3 * val.b, onda: ondaPx(3e8 / (val.f * 1e14) * 1e9), electrones: sale ? val.b : 0, k: Km / 4, rotulos: { foton: `hf = ${f(E, 2)} eV`, placa: `${val.m}: φ = ${f(ph, 1)} eV`, e: `Kmáx = ${f(Km, 2)} eV`, nota: 'no salen electrones' } }, estado: {} };
+  };
+  const hornoSol = Tk => {
+    const d = negro([Tk]), sol = curvaT(5800).curva;
+    d.curvas = d.curvas.concat([Object.assign({}, sol, { color: 'tinta', discontinua: true, rotulo: 'Sol', en: [90, 0.55] })]);
+    return d;
   };
 
   return {
@@ -540,6 +593,45 @@
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/fis-fotones.js', '/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/recta.js'],
+    // Laboratorio: dos metales en la recta Kmáx–f (el umbral de cada uno y la misma pendiente h), la lámpara con el
+    // metal a elección y el brillo en 0, y el horno que se vuelve estrella comparado con el Sol.
+    laboratorio: [
+      {
+        id: 'dos-metales', titulo: 'Dos metales, dos rectas', pieza: 'ejes',
+        consigna: 'Elige dos metales y corre la frecuencia con el punto. ¿De cuál salen electrones primero? Compara las pendientes.',
+        controles: [
+          { id: 'a', etiqueta: 'Metal 1', inicio: 'cesio', opciones: METALES.map(([m]) => ({ valor: m, texto: m })) },
+          { id: 'b', etiqueta: 'Metal 2', inicio: 'zinc', opciones: METALES.map(([m]) => ({ valor: m, texto: m })) },
+          { id: 'f', etiqueta: 'f (× 10¹⁴ Hz)', color: 'c-h', min: 2, max: 14, paso: 0.5, inicio: 8, unidad: '', decimales: 1 },
+        ],
+        dibujo: val => ({ datos: dosRectas(val), estado: {} }),
+        lectura: val => { const k = m => eV(val.f) - phiDe(m); return [`${val.a}: ${k(val.a) > 0 ? f(k(val.a), 2) + ' eV' : 'nada'} · ${val.b}: ${k(val.b) > 0 ? f(k(val.b), 2) + ' eV' : 'nada'}`]; },
+        arrastres: [{ id: 'frecuencia', etiqueta: 'marca de la frecuencia', color: 'c-h',
+          donde: val => { const g = EJ().geometria(dosRectas(val)); return { x: g.X(val.f), y: g.Y(0) }; },
+          mover: (pt, val) => ({ f: EJ().geometria(dosRectas(val)).Xi(pt.x) }) }],
+      },
+      {
+        id: 'lampara-libre', titulo: 'Lámpara, metal y brillo', pieza: 'fis-fotones',
+        consigna: 'Elige el metal, la frecuencia y el brillo, también brillo 0. Busca el color más bajo que todavía arranca electrones.',
+        controles: [
+          { id: 'm', etiqueta: 'Metal', inicio: 'sodio', opciones: METALES.map(([m]) => ({ valor: m, texto: m })) },
+          { id: 'f', etiqueta: 'f (× 10¹⁴ Hz)', color: 'c-h', min: 4, max: 15, paso: 0.5, inicio: 7, unidad: '', decimales: 1 },
+          { id: 'b', etiqueta: 'Brillo', color: 'c-d', min: 0, max: 4, paso: 1, inicio: 2, unidad: '', decimales: 0 },
+        ],
+        dibujo: val => lamparaLibre(val),
+        lectura: val => { const km = eV(val.f) - phiDe(val.m); return [`${val.m}: hf = ${f(eV(val.f), 2)}\u00a0eV · `, K, km > 0 && val.b ? ` = ${f(km, 2)}\u00a0eV` : ': no salen']; },
+      },
+      {
+        id: 'horno-estrella', titulo: 'Del horno a la estrella', pieza: 'ejes',
+        consigna: 'Corre el pico de la curva desde 1000 K hasta 10 000 K. La curva gris es el Sol, para comparar.',
+        controles: [{ id: 'T', etiqueta: 'T', color: 'c-h', min: 1000, max: 10000, paso: 500, inicio: 3000, unidad: 'K', decimales: 0 }],
+        dibujo: val => ({ datos: hornoSol(val.T), estado: {} }),
+        lectura: val => [T, ` = ${f(val.T, 0)}\u00a0K → `, lmax, ` = ${f(WIEN / val.T, 0)}\u00a0nm`],
+        arrastres: [{ id: 'pico', etiqueta: 'pico de la curva', color: 'c-h',
+          donde: val => { const g = EJ().geometria(hornoSol(val.T)); return { x: g.X(WIEN / val.T), y: g.Y(1) }; },
+          mover: (pt, val) => ({ T: WIEN / Math.max(1, EJ().geometria(hornoSol(val.T)).Xi(pt.x)) }) }],
+      },
+    ],
     historia: {
       texto: 'A fines del siglo XIX, medir con precisión la luz de los cuerpos calientes mostró que los modelos fallaban. En 1900, Planck reprodujo las curvas suponiendo energía en paquetes. En 1905, Einstein llevó la idea a la luz misma para explicar el fotoeléctrico, y ese mismo año publicó la relatividad especial.',
       pregunta: '¿Qué experimento mostrarías para convencer a alguien de que la luz llega en paquetes?',
