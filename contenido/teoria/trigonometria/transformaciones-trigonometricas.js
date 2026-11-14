@@ -12,6 +12,10 @@
  * de esta unidad): FLECHA-SEMISUMA (la resultante siempre apunta a la semisuma), FLECHA-ANULA, FLECHA-DIFERENCIA,
  * SP-DISTRIB (sen A + sen B = sen(A + B)), SP-CRUCE, SP-SIGNO, PS-COPIA, PS-SIGNO, PS-CRUCE, PS-PRODUCTO,
  * SUM-MULT, SUM-SIGNO, SUM-SIN-DIV, SUM-MITAD, PROD-SUMA, PROD-EXACTO, PROD-SIGNO, PROD-POTENCIA.
+ * Ronda 2 (14 nov, noche): manijas en tres de las cuatro ideas (las puntas de las dos flechas unitarias A y B; la
+ * punta de la primera flecha de la cadena, que fija el paso x; la punta del rayo x de los dobles). El producto a
+ * suma elige una frecuencia entera m y no tiene qué agarrar. Llaves en las cuatro reglas, separadores «   ·   » y
+ * laboratorio de tres mesas. «Juega» y «Mira» usan la misma figura en las cuatro ideas (hallazgo 9).
  *
  * Ficha de tarea (diseno-y-animacion):
  *   Promesa: una suma de senos o cosenos es la sombra de una suma de flechas; por eso se vuelve producto.
@@ -56,6 +60,12 @@
     return ops.slice(0, 4);
   }
   const semi = { de: -17, a: 197, r: 1, espiral: 0, flecha: false, color: null, grosor: 'contorno' };
+  // Gesto directo (docs/teoria.md §4b): las manijas usan la geometría de la pieza trig-plano.
+  const TP = () => Kit.piezas['trig-plano'];
+  const punta = (d, gr, L = 1) => TP().enPx(d, L * cos(gr), L * sen(gr));
+  // Giro del dedo, con `cerca` para que pasar por 0° no salte a 360°.
+  const giroDe = (d, pt, cerca) => TP().anguloDe(d, pt, { cerca });
+  const LB = 0.68;   // la manija de B va sobre su flecha, más adentro que la de A: así nunca se tapan
 
   // ---------- Idea 1: dos flechas, un rombo (suma a producto) ----------
   // Cambia: las direcciones A y B de dos flechas de largo 1. · Permanece: el origen, el largo 1 y la circunferencia.
@@ -96,6 +106,15 @@
       dibujo: val => ({ datos: rombo(val.a, val.b, VJ), estado: {} }),
       lectura: val => { const R = resultante(val.a, val.b); return ['|', R_, `| = ${f(Math.hypot(R[0], R[1]))} = 2 cos ${f(Math.abs(val.a - val.b) / 2)}°`]; },
       minimo: 3,
+      // Se arrastran las puntas de las dos flechas unitarias; la de B, a media flecha para no tapar a la de A.
+      arrastres: [
+        { id: 'flecha-a', etiqueta: 'punta de la flecha A', color: 'c-o',
+          donde: val => punta(rombo(val.a, val.b, VJ), val.a),
+          mover: (pt, val) => ({ a: giroDe(rombo(val.a, val.b, VJ), pt, val.a) }) },
+        { id: 'flecha-b', etiqueta: 'flecha B', color: 'c-i',
+          donde: val => punta(rombo(val.a, val.b, VJ), val.b, LB),
+          mover: (pt, val) => ({ b: giroDe(rombo(val.a, val.b, VJ), pt, val.b) }) },
+      ],
     },
     predice: {
       pregunta: ['Ahora ', A_, ' = 20° y ', B_, ' = 280°. Su semisuma es 150°. ¿Hacia dónde apunta la flecha suma ', R_, '?'],
@@ -132,7 +151,7 @@
       },
       voz: 'El rombo hace todo el trabajo: dirección y largo.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'Dos flechas de largo 1, a 20° y a 80°.', ecuacion: [A_, ' = 20°;   ', B_, ' = 80°'] },
+        { estado: { corte: 1 }, texto: 'Dos flechas de largo 1, a 20° y a 80°.', ecuacion: [A_, ' = 20°', '   ·   ', B_, ' = 80°'] },
         { estado: { corte: 2 }, texto: 'Su suma es la diagonal del rombo que forman.', ecuacion: [R_, ' = (cos ', A_, ' + cos ', B_, ';  sen ', A_, ' + sen ', B_, ')'] },
         { estado: { corte: 3 }, texto: 'La diagonal parte el ángulo en dos: va a 50°.', ecuacion: ['dirección = ', semis, ' = 50°'] },
         { estado: { corte: 4 }, texto: 'Media diagonal es la sombra de A: cos 30°.', ecuacion: ['|', R_, '| = 2 cos ', semid, ' = 2 cos 30°'] },
@@ -141,7 +160,7 @@
     },
     regla: {
       texto: 'Una suma de senos o de cosenos es la sombra de dos flechas sumadas: largo 2 cos de la semidiferencia, en la dirección de la semisuma.',
-      ecuacion: ['sen ', A_, ' + sen ', B_, ' = 2 sen ', semis, ' cos ', semid, ';   cos ', A_, ' + cos ', B_, ' = 2 cos ', semis, ' cos ', semid],
+      ecuacion: ['sen ', A_, ' + sen ', B_, ' = 2 sen ', { llave: [semis], nota: 'dirección', color: 'c-h' }, ' ', { llave: ['cos ', semid], nota: 'largo y signo', color: 'c-d' }, '   ·   ', 'cos ', A_, ' + cos ', B_, ' = 2 cos ', semis, ' cos ', semid],
       condicion: 'cos(semidiferencia) conserva su signo: si es negativo, R apunta al revés. Restas: sen A − sen B = 2 cos(semisuma) sen(semidiferencia).',
       voz: 'Semisuma para la dirección; semidiferencia para el largo y el signo.',
     },
@@ -195,7 +214,8 @@
         { puntos: pts(x => -2 * cos(x)), color: 'i', discontinua: true },
         { puntos: pts(x => 2 * cos(val.m * x) * cos(x)), color: 'h', rotulo: `2 cos ${val.m}x · cos x`, en: [200, 1.9] },
       ]), estado: {} }),
-      lectura: val => [`ritmo rápido: cos ${val.m}x; ritmo lento: cos x`],
+      // m es una frecuencia entera (cuántas crestas): no hay un objeto que agarrar, se elige con − y +.
+      lectura: val => ['ritmo rápido: cos ', `${val.m}`, x_, '   ·   ', 'ritmo lento: cos ', x_],
       minimo: 3,
     },
     predice: {
@@ -227,7 +247,7 @@
     },
     regla: {
       texto: 'Un producto de dos razones se escribe como suma de dos razones: una del ángulo suma y otra del ángulo diferencia.',
-      ecuacion: ['2 cos ', al, ' cos ', be, ' = cos(', al, ' + ', be, ') + cos(', al, ' − ', be, ');   2 sen ', al, ' cos ', be, ' = sen(', al, ' + ', be, ') + sen(', al, ' − ', be, ')'],
+      ecuacion: ['2 cos ', al, ' cos ', be, ' = ', { llave: ['cos(', al, ' + ', be, ')'], nota: 'ritmo rápido', color: 'c-h' }, ' + ', { llave: ['cos(', al, ' − ', be, ')'], nota: 'ritmo lento', color: 'c-d' }, '   ·   ', '2 sen ', al, ' cos ', be, ' = sen(', al, ' + ', be, ') + sen(', al, ' − ', be, ')'],
       condicion: 'α y β en la misma unidad. Con dos senos: 2 sen α sen β = cos(α − β) − cos(α + β).',
       voz: 'Multiplicar ondas es sumar sus ángulos y restarlos.',
     },
@@ -313,8 +333,12 @@
         { id: 'n', etiqueta: 'n', min: 2, max: 6, paso: 1, inicio: 3, decimales: 0 },
       ],
       dibujo: val => ({ datos: cadena(val.x, val.n, { ventana: VC }), estado: {} }),
-      lectura: val => [`sen x + … + sen ${val.n}x = ${f(sumaSen(val.x, val.n))}; la roja mide ${f(sen(val.n * val.x / 2) / sen(val.x / 2))}`],
+      lectura: val => ['sen ', x_, ' + … + sen ', `${val.n}`, x_, ` = ${f(sumaSen(val.x, val.n))}`, '   ·   ', `la roja mide ${f(sen(val.n * val.x / 2) / sen(val.x / 2))}`],
       minimo: 3,
+      // Se arrastra la punta de la primera flecha: su giro es el paso x, y toda la cadena lo copia.
+      arrastres: [{ id: 'primera', etiqueta: 'punta de la primera flecha: paso x', color: 'c-o',
+        donde: val => punta(cadena(val.x, val.n, { ventana: VC }), val.x),
+        mover: (pt, val) => ({ x: giroDe(cadena(val.x, val.n, { ventana: VC }), pt, val.x) }) }],
     },
     predice: {
       pregunta: ['Con ', x_, ' = 60° y seis flechas, ¿cuánto vale sen 60° + sen 120° + … + sen 360°?'],
@@ -350,7 +374,7 @@
     },
     regla: {
       texto: 'n senos cuyos ángulos avanzan r suman la cuerda del polígono por el seno del ángulo medio entre el primero P y el último U.',
-      ecuacion: ['sen P + … + sen U = ', { frac: [['sen ', { frac: ['n r', '2'] }], ['sen ', { frac: ['r', '2'] }]] }, ' · sen ', { frac: ['P + U', '2'] }],
+      ecuacion: ['sen P + … + sen U = ', { llave: [{ frac: [['sen ', { frac: ['n r', '2'] }], ['sen ', { frac: ['r', '2'] }]] }], nota: 'la cuerda', color: 'c-h' }, ' · ', { llave: ['sen ', { frac: ['P + U', '2'] }], nota: 'ángulo medio', color: 'c-h' }],
       condicion: 'sen(r/2) ≠ 0, es decir, r no es múltiplo de 360°. Con cosenos, el último factor es cos((P + U)/2).',
       voz: 'Cuerda por seno del medio; y nunca dividas entre cero.',
     },
@@ -406,8 +430,12 @@
         { id: 'n', etiqueta: 'factores', min: 1, max: 3, paso: 1, inicio: 2, decimales: 0 },
       ],
       dibujo: val => ({ datos: dobles(val.x, val.n), estado: {} }),
-      lectura: val => [`producto ${f(prodCos(val.x, val.n), 3)}; sen ${potencia(val.n)}x/(${potencia(val.n)} sen x) = ${f(sen(potencia(val.n) * val.x) / (potencia(val.n) * sen(val.x)), 3)}`],
+      lectura: val => [`producto = ${f(prodCos(val.x, val.n), 3)}`, '   ·   ', 'sen ', `${potencia(val.n)}`, x_, ' / (', `${potencia(val.n)} sen `, x_, `) = ${f(sen(potencia(val.n) * val.x) / (potencia(val.n) * sen(val.x)), 3)}`],
       minimo: 3,
+      // Se arrastra la punta del rayo naranja x: los rayos dobles lo siguen.
+      arrastres: [{ id: 'rayo-x', etiqueta: 'punta del rayo x', color: 'c-o',
+        donde: val => punta(dobles(val.x, val.n), val.x),
+        mover: (pt, val) => ({ x: giroDe(dobles(val.x, val.n), pt, val.x) }) }],
     },
     predice: {
       pregunta: '¿Cuánto vale cos 20° · cos 40° · cos 80°?',
@@ -437,7 +465,7 @@
     },
     regla: {
       texto: 'Un producto de cosenos en que cada ángulo dobla al anterior se reduce con sen 2θ = 2 sen θ cos θ, aplicado una vez por factor.',
-      ecuacion: ['cos ', x_, ' · cos 2', x_, ' ⋯ cos ', { sup: ['2', 'n−1'] }, x_, ' = ', { frac: [['sen ', { sup: ['2', 'n'] }, x_], [{ sup: ['2', 'n'] }, ' sen ', x_]] }],
+      ecuacion: ['cos ', x_, ' · cos 2', x_, ' ⋯ cos ', { sup: ['2', 'n−1'] }, x_, ' = ', { frac: [[{ llave: ['sen ', { sup: ['2', 'n'] }, x_], nota: 'último doble', color: 'c-h' }], [{ sup: ['2', 'n'] }, ' sen ', x_]] }],
       condicion: 'sen x ≠ 0. Si sen x = 0, la fórmula divide entre cero: se multiplica directamente.',
       voz: 'Un factor, un doble y una mitad.',
     },
@@ -466,11 +494,81 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Mesa 1: el rombo en la vuelta entera, para encontrar los pares en que R apunta al revés de la semisuma.
+  const VL = { x: [-2.15, 2.15], y: [-2.15, 2.15] };
+  const romboLibre = (a, b) => rombo(a, b, VL, { arcos: [{ de: 0, a: 360, r: 1, espiral: 0, flecha: false, color: null, grosor: 'contorno' }] });
+  const dirTxt = (a, b) => {
+    const R = resultante(a, b);
+    return Math.hypot(R[0], R[1]) < 1e-6 ? 'R se anula' : `apunta a ${f(mod360(deg(Math.atan2(R[1], R[0]))), 0)}°`;
+  };
+  // Mesa 2: cadenas largas que se cierran (x = 60° y n = 6, x = 30° y n = 12…). La ventana contiene todas.
+  const VCL = (() => {
+    const v = { x: [-0.6, 0.6], y: [-0.4, 0.6] };
+    for (let x = 30; x <= 180; x += 5) for (let n = 1; n <= 12; n++) {
+      const w = cadena(x, n).ventana;
+      v.x = [Math.min(v.x[0], w.x[0]), Math.max(v.x[1], w.x[1])]; v.y = [Math.min(v.y[0], w.y[0]), Math.max(v.y[1], w.y[1])];
+    }
+    return v;
+  })();
+  const sumaCos = (x, n) => Array.from({ length: n }, (_, k) => cos((k + 1) * x)).reduce((s2, v) => s2 + v, 0);
+  const cero = v => (Math.abs(v) < 5e-3 ? 0 : v);
+  const laboratorio = [
+    {
+      id: 'rombo-entero', titulo: 'El rombo en toda la vuelta', pieza: 'trig-plano',
+      consigna: 'Gira A y B por toda la vuelta. Busca pares en que R apunte al revés de la semisuma, y el par que la anula.',
+      controles: [
+        { id: 'a', etiqueta: 'A', color: 'c-o', min: 0, max: 360, paso: 5, inicio: 20, unidad: '°', decimales: 0 },
+        { id: 'b', etiqueta: 'B', color: 'c-i', min: 0, max: 360, paso: 5, inicio: 280, unidad: '°', decimales: 0 },
+      ],
+      dibujo: val => ({ datos: romboLibre(val.a, val.b), estado: {} }),
+      lectura: val => [`2 cos(${f((val.a - val.b) / 2)}°) = ${f(cero(2 * cos((val.a - val.b) / 2)))}`, '   ·   ', R_, ` ${dirTxt(val.a, val.b)}; semisuma ${f((val.a + val.b) / 2)}°`],
+      arrastres: [
+        { id: 'flecha-a', etiqueta: 'punta de la flecha A', color: 'c-o',
+          donde: val => punta(romboLibre(val.a, val.b), val.a),
+          mover: (pt, val) => ({ a: giroDe(romboLibre(val.a, val.b), pt, val.a) }) },
+        { id: 'flecha-b', etiqueta: 'flecha B', color: 'c-i',
+          donde: val => punta(romboLibre(val.a, val.b), val.b, LB),
+          mover: (pt, val) => ({ b: giroDe(romboLibre(val.a, val.b), pt, val.b) }) },
+      ],
+    },
+    {
+      id: 'cadena-larga', titulo: 'Cadenas que se cierran', pieza: 'trig-plano',
+      consigna: 'Hasta 12 flechas, con pasos de 30° a 180°. Busca cadenas que vuelvan al origen: ahí senos y cosenos suman 0.',
+      controles: [
+        { id: 'x', etiqueta: 'x', color: 'c-o', min: 30, max: 180, paso: 5, inicio: 60, unidad: '°', decimales: 0 },
+        { id: 'n', etiqueta: 'n', min: 1, max: 12, paso: 1, inicio: 5, decimales: 0 },
+      ],
+      dibujo: val => ({ datos: cadena(val.x, val.n, { ventana: VCL }), estado: {} }),
+      lectura: val => [`n = ${val.n}, `, x_, ` = ${f(val.x)}°: Σ sen = ${f(cero(sumaSen(val.x, val.n)))}`, '   ·   ', `Σ cos = ${f(cero(sumaCos(val.x, val.n)))}`],
+      arrastres: [{ id: 'primera', etiqueta: 'punta de la primera flecha: paso x', color: 'c-o',
+        donde: val => punta(cadena(val.x, val.n, { ventana: VCL }), val.x),
+        mover: (pt, val) => ({ x: giroDe(cadena(val.x, val.n, { ventana: VCL }), pt, val.x) }) }],
+    },
+    {
+      id: 'muchos-dobles', titulo: 'Hasta cinco dobles', pieza: 'trig-plano',
+      consigna: 'Hasta cinco factores y cualquier x de 5° a 175°. El producto siempre coincide con la última altura entre la primera.',
+      controles: [
+        { id: 'x', etiqueta: 'x', color: 'c-o', min: 5, max: 175, paso: 5, inicio: 40, unidad: '°', decimales: 0 },
+        { id: 'n', etiqueta: 'factores', min: 1, max: 5, paso: 1, inicio: 4, decimales: 0 },
+      ],
+      dibujo: val => ({ datos: dobles(val.x, val.n), estado: {} }),
+      lectura: val => [`producto = ${f(cero(prodCos(val.x, val.n)), 4)}`, '   ·   ', 'sen ', `${potencia(val.n)}`, x_, ' / (', `${potencia(val.n)} sen `, x_, `) = ${f(cero(sen(potencia(val.n) * val.x) / (potencia(val.n) * sen(val.x))), 4)}`],
+      arrastres: [{ id: 'rayo-x', etiqueta: 'punta del rayo x', color: 'c-o',
+        donde: val => punta(dobles(val.x, val.n), val.x),
+        mover: (pt, val) => ({ x: giroDe(dobles(val.x, val.n), pt, val.x) }) }],
+    },
+  ];
+
   return {
     unidad: 'trigonometria.transformaciones-trigonometricas',
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/trig-plano.js', '/nucleo/kit/piezas/ejes.js'],
+    // Laboratorio (docs/teoria.md §4b), sin preguntas: «rombo-entero» abre A y B a la vuelta entera, donde R apunta
+    // al revés de la semisuma o se anula (la idea solo lo deja ver en la predicción); «cadena-larga» llega a 12
+    // flechas, para cerrar polígonos y ver Σ = 0; «muchos-dobles» lleva la productoria a cinco factores y a x obtusos.
+    laboratorio,
     historia: {
       texto: 'Antes de las calculadoras, multiplicar números largos era lento. Alrededor del observatorio de Tycho Brahe circuló la prostaféresis: cambiar un producto de cosenos por una suma de dos cosenos que se buscaban en tablas. Varios la usaron y se disputaron la prioridad, así que no tiene un solo inventor. La misma igualdad hoy reorganiza expresiones sin cambiar su valor.',
       pregunta: '¿Por qué sumar sería más fácil que multiplicar?',
