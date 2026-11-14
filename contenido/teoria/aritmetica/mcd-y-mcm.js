@@ -185,7 +185,7 @@
         { id: 'c', texto: '36 minutos', correcta: true },
         { id: 'mcd', texto: '6 minutos', error: 'AR13', siFuera: '6 divide a 12 y a 18, pero a los 6 minutos ninguna alarma suena.' },
         { id: 'producto', texto: '216 minutos', error: 'AR13', siFuera: 'A los 216 también coinciden, pero ya lo hicieron antes, a los 36.' },
-        { id: 'suma', texto: '30 minutos', error: 'AT-SUMA', siFuera: '30 no es múltiplo de 12: a esa hora solo podría sonar si fuera.' },
+        { id: 'suma', texto: '30 minutos', error: 'AT-SUMA-PERIODOS', siFuera: '30 no es múltiplo de 12: a esa hora solo podría sonar si fuera.' },
       ],
       dibujo: { datos: rectaBuses(12, 18, 80, false), estado: {} },
       revelar: { datos: rectaBuses(12, 18, 80), estado: {} },
@@ -218,7 +218,7 @@
           opciones: opciones(c, [
             { id: 'mcd', valor: g, error: 'AR13', siFuera: `${g} es el MCD: divide a los dos, pero no es múltiplo de ellos.` },
             { id: 'producto', valor: a * b, error: 'AR13', siFuera: `En ${a * b} también coinciden, pero ya lo hicieron antes.` },
-            { id: 'suma', valor: a + b, error: 'AT-SUMA', siFuera: 'La suma no tiene por qué ser múltiplo de los dos.' },
+            { id: 'suma', valor: a + b, error: 'AT-SUMA-PERIODOS', siFuera: 'La suma no tiene por qué ser múltiplo de los dos.' },
           ], n2 => `${f(n2)} ${ctx[3]}`),
           solucion: { texto: 'El primer múltiplo común de los dos.', ecuacion: [MCM, `(${a}, ${b}) = ${c}`], dibujo: { datos: rectaBuses(a, b, Math.max(c, a * b > 90 ? 90 : a * b) * 1.1 + 2), estado: {} } },
         };

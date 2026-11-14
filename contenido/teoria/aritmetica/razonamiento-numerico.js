@@ -141,7 +141,7 @@
       pregunta: 'Pensé un número, lo multipliqué por 4, le sumé 6 y obtuve 50. ¿Qué número pensé?',
       opciones: [
         { id: 'c', texto: '11', correcta: true },
-        { id: 'orden', texto: '18,5', error: 'AT-ORDEN', siFuera: 'Eso deshace primero el × 4. Se deshace al revés: primero el + 6.' },
+        { id: 'orden', texto: '18,5', error: 'AT-DESHACER-ORDEN', siFuera: 'Eso deshace primero el × 4. Se deshace al revés: primero el + 6.' },
         { id: 'noinv', texto: '206', error: 'AT-INVERSA', siFuera: 'Eso repite las operaciones; hay que usar las inversas.' },
         { id: 'solo', texto: '12,5', error: 'AT-INVERSA', siFuera: '50 ÷ 4 olvida deshacer el + 6.' },
       ],
@@ -174,7 +174,7 @@
         return {
           pregunta: [`Pensé un número, ${txt} y obtuve `, { v: 'c-d', t: f(v) }, '. ¿Qué número pensé?'],
           opciones: opciones(x0, [
-            { id: 'orden', valor: mal, error: 'AT-ORDEN', siFuera: 'Eso deshace en el mismo orden; se empieza por la última operación.' },
+            { id: 'orden', valor: mal, error: 'AT-DESHACER-ORDEN', siFuera: 'Eso deshace en el mismo orden; se empieza por la última operación.' },
             { id: 'noinv', valor: ops.slice().reverse().reduce((u, o) => aplicar(u, o), v), error: 'AT-INVERSA', siFuera: 'Eso repite las operaciones; van las inversas.' },
             { id: 'falta', valor: aplicar(aplicar(v, [INV[ops[2][0]], ops[2][1]]), [INV[ops[1][0]], ops[1][1]]), error: 'AT-INVERSA', siFuera: 'Falta deshacer la primera operación.' },
           ], z => f(z)),

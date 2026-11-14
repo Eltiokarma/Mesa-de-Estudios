@@ -230,9 +230,9 @@
       pregunta: ['¿Cuál es la raíz cuadrada entera de ', { v: 'c-o', t: '80' }, ' y su residuo?'],
       opciones: [
         { id: 'c', texto: 'Raíz 8, residuo 16', correcta: true },
-        { id: 'exceso', texto: 'Raíz 9, residuo 1', error: 'AT-EXCESO', siFuera: '9 es la raíz por exceso: 9² = 81 se pasa de 80 por 1.' },
-        { id: 'decimal', texto: 'Raíz 8,94, residuo 0', error: 'AT-DECIMAL', siFuera: '8,94 es una aproximación; la raíz entera es un entero.' },
-        { id: 'mitad', texto: 'Raíz 40, residuo 0', error: 'AT-MITAD', siFuera: '40 es la mitad de 80; la raíz es el número que multiplicado por sí mismo cabe.' },
+        { id: 'exceso', texto: 'Raíz 9, residuo 1', error: 'AT-RAIZ-EXCESO', siFuera: '9 es la raíz por exceso: 9² = 81 se pasa de 80 por 1.' },
+        { id: 'decimal', texto: 'Raíz 8,94, residuo 0', error: 'AT-RAIZ-DECIMAL', siFuera: '8,94 es una aproximación; la raíz entera es un entero.' },
+        { id: 'mitad', texto: 'Raíz 40, residuo 0', error: 'AT-RAIZ-MITAD', siFuera: '40 es la mitad de 80; la raíz es el número que multiplicado por sí mismo cabe.' },
       ],
       dibujo: { datos: { altoMax: 150, bloques: [{ n: 80, columnas: 10, color: 'o', rotulo: '80 fichas' }] }, estado: {} },
       revelar: { datos: fichasRaiz(80), estado: { paso: 1 } },
@@ -260,7 +260,7 @@
           return {
             pregunta: ['¿Cuál es la raíz cúbica entera de ', { v: 'c-o', t: f(Nv, 0) }, ' y su residuo?'],
             opciones: opciones(`Raíz ${c}, residuo ${rv}`, [
-              { id: 'exceso', valor: `Raíz ${c + 1}, residuo ${(c + 1) ** 3 - Nv}`, error: 'AT-EXCESO', siFuera: `${c + 1}³ = ${(c + 1) ** 3} se pasa de ${Nv}: esa es por exceso.` },
+              { id: 'exceso', valor: `Raíz ${c + 1}, residuo ${(c + 1) ** 3 - Nv}`, error: 'AT-RAIZ-EXCESO', siFuera: `${c + 1}³ = ${(c + 1) ** 3} se pasa de ${Nv}: esa es por exceso.` },
               { id: 'cuadrada', valor: `Raíz ${isqrt(Nv)}, residuo ${Nv - isqrt(Nv) ** 2}`, error: 'AT-INDICE', siFuera: 'Esa es la raíz cuadrada; se pide la cúbica.' },
               { id: 'falta', valor: `Raíz ${c}, residuo ${(c + 1) ** 3 - Nv}`, error: 'AT-FALTA', siFuera: `Eso es lo que falta para ${(c + 1) ** 3}; el residuo es lo que sobra sobre ${c ** 3}.` },
             ], String),
@@ -273,7 +273,7 @@
           pregunta: ['¿Cuál es la raíz cuadrada entera de ', { v: 'c-o', t: f(Nv, 0) }, ' y su residuo?'],
           dibujo: Nv <= 120 ? { datos: { altoMax: 150, bloques: [{ n: Nv, columnas: c + 1, color: 'o', rotulo: `${Nv} fichas` }] }, estado: {} } : undefined,
           opciones: opciones(`Raíz ${c}, residuo ${rv}`, [
-            { id: 'exceso', valor: `Raíz ${c + 1}, residuo ${(c + 1) ** 2 - Nv}`, error: 'AT-EXCESO', siFuera: `${c + 1}² = ${(c + 1) ** 2} se pasa: esa es la raíz por exceso.` },
+            { id: 'exceso', valor: `Raíz ${c + 1}, residuo ${(c + 1) ** 2 - Nv}`, error: 'AT-RAIZ-EXCESO', siFuera: `${c + 1}² = ${(c + 1) ** 2} se pasa: esa es la raíz por exceso.` },
             { id: 'menos', valor: `Raíz ${c - 1}, residuo ${Nv - (c - 1) ** 2}`, error: 'AT-RESIDUO', siFuera: `Con ese residuo cabe un cuadrado más grande: el residuo pasa de ${2 * (c - 1)}.` },
             { id: 'falta', valor: `Raíz ${c}, residuo ${(c + 1) ** 2 - Nv}`, error: 'AT-FALTA', siFuera: `Eso es lo que falta para ${(c + 1) ** 2}; el residuo es lo que sobra sobre ${c * c}.` },
           ], String),
@@ -348,7 +348,7 @@
             pregunta: `¿Cuánto vale √(${a2} + ${b2})?`,
             opciones: opciones(c, [
               { id: 'reparte', valor: Math.sqrt(a2) + Math.sqrt(b2), error: 'AT-REPARTIR', siFuera: 'La raíz no se reparte en una suma: primero se suma.' },
-              { id: 'mitad', valor: (a2 + b2) / 2, error: 'AT-MITAD', siFuera: 'La mitad no es la raíz.' },
+              { id: 'mitad', valor: (a2 + b2) / 2, error: 'AT-RAIZ-MITAD', siFuera: 'La mitad no es la raíz.' },
               { id: 'suma', valor: a2 + b2, error: 'AT-REPARTIR', siFuera: 'Falta sacar la raíz de la suma.' },
             ], n => f(n)),
             solucion: { texto: 'Primero se suma, después la raíz.', ecuacion: [`√(${a2} + ${b2}) = √${a2 + b2} = ${f(c)}`] },
@@ -364,7 +364,7 @@
         return {
           pregunta: ['¿Entre qué ', porDecima ? 'décimas' : 'enteros consecutivos', ' está ', { raiz: { v: 'c-o', t: String(Nv) } }, '?'],
           opciones: opciones(lo, [
-            { id: 'mitad', valor: porDecima ? Math.floor(Nv / 2 * 10) / 10 : Math.floor(Nv / 2), error: 'AT-MITAD', siFuera: 'La mitad no es la raíz: compruébalo elevando al cuadrado.' },
+            { id: 'mitad', valor: porDecima ? Math.floor(Nv / 2 * 10) / 10 : Math.floor(Nv / 2), error: 'AT-RAIZ-MITAD', siFuera: 'La mitad no es la raíz: compruébalo elevando al cuadrado.' },
             { id: 'arriba', valor: lo + h, error: 'AT-COMPROBAR', siFuera: `${f(lo + h)}² = ${f((lo + h) ** 2)} ya pasa de ${Nv}.` },
             { id: 'abajo', valor: lo - h, error: 'AT-COMPROBAR', siFuera: `${f(lo)}² = ${f(lo * lo)} todavía es menor que ${Nv}: la raíz está más allá.` },
           ].map(o => Object.assign(o, { valor: o.valor > 0 ? o.valor : NaN })), n => t(n)),
