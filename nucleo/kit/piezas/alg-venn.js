@@ -15,6 +15,7 @@
  * estado = { corte, sombra: ['11', …] | null, fantasma: null | { regiones: ['10', …], rotulo } }
  *   sombra del estado se suma a las regiones con sombra: true (y que ya aparecieron).
  * El dibujo es una función pura de (datos, estado): sin ids, sin clipPath, sin azar.
+ * Exporta, para el gesto directo: codigo(d, x, y) (región de un punto) y ficha(d, cod) (dónde va la ficha de esa región).
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -30,11 +31,14 @@
     c: [[124, 124, 74], [196, 124, 74]],
     centro: { '10': [92, 124], '01': [228, 124], '11': [160, 124], '00': [36, 222] },
     nombre: [[70, 52], [250, 52]],
+    // Dónde se pone una ficha (la manija del gesto directo) dentro de cada región, sin tapar su rótulo.
+    ficha: { '10': [92, 148], '01': [228, 148], '11': [160, 148], '00': [36, 192] },
   };
   const TRES = {
     c: [[128, 100, 64], [192, 100, 64], [160, 158, 64]],
     centro: { '100': [100, 86], '010': [220, 86], '001': [160, 200], '110': [160, 74], '101': [122, 150], '011': [198, 150], '111': [160, 120], '000': [34, 226] },
     nombre: [[62, 42], [258, 42], [252, 222]],
+    ficha: { '100': [98, 110], '010': [222, 110], '001': [160, 172], '110': [140, 88], '101': [120, 128], '011': [200, 128], '111': [160, 138], '000': [34, 196] },
   };
   const forma = d => ((d.conjuntos || []).length >= 3 ? TRES : DOS);
   const n = d => ((d.conjuntos || []).length >= 3 ? 3 : 2);
@@ -99,5 +103,10 @@
     return `Diagrama de Venn de ${nombres}${sombra.length ? `; sombreadas las regiones ${sombra.join(', ')}` : ''}`;
   }
 
-  return { id: 'alg-venn', dibujar, alt, codigo: (d, x, y) => codigo(forma(d), x, y), centros: d => forma(d).centro };
+  // ficha(d, cod): punto { x, y } de la región cod donde va la ficha que se arrastra (gesto directo); codigo(d, x, y)
+  // dice en qué región cae un punto, así la manija se convierte en región al soltar.
+  return {
+    id: 'alg-venn', dibujar, alt, codigo: (d, x, y) => codigo(forma(d), x, y), centros: d => forma(d).centro,
+    ficha: (d, cod) => { const p = forma(d).ficha[cod]; return p ? { x: p[0], y: p[1] } : null; },
+  };
 });
