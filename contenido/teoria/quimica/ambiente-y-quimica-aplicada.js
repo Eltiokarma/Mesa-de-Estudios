@@ -55,6 +55,17 @@
     if (Math.abs(+mant.toFixed(d)) >= 10) { e += 1; mant /= 10; }
     return `${f(mant, d)} × 10${String(e).split('').map(c => SUP[c]).join('')}`;
   }
+  // Gesto directo (docs/teoria.md §4b): cada manija usa la geometría que exporta su pieza (quim-cadena, ejes,
+  // quim-molecula) o la de barra-porcentaje, que va de x = 10 a x = 310 con su escala en el total.
+  const PZ = id => Kit.piezas[id];
+  const cercana = (valores, donde, pt, val, id) => {
+    let mejor = valores[0], dm = Infinity;
+    for (const o of valores) { const q = donde(Object.assign({}, val, { [id]: o })), dd = Math.hypot(q.x - pt.x, q.y - pt.y); if (dd < dm - 1e-9) { dm = dd; mejor = o; } }
+    return mejor;
+  };
+  // barra-porcentaje: el pedazo del tramo i (1, 2, …) cae a su fila, en y = 96 + 24 (i − 1), de 14 px de alto.
+  const xBarra = (v, total = 100) => 10 + 300 * v / total;
+  const yFila = i => 96 + 24 * (i - 1) + 7;
   const cadena = (cols, alt) => ({ datos: Object.assign({ columnas: cols }, alt ? { alt } : {}), estado: {} });
 
   // ---------- Idea 1: cada problema del aire es su propia cadena ----------
@@ -78,6 +89,8 @@
       controles: [{ id: 'k', etiqueta: 'Problema', opciones: Object.keys(AIRE).map(k => ({ valor: k, texto: AIRE[k].titulo })) }],
       dibujo: val => cadena([col(val.k)]),
       lectura: val => [AIRE[val.k].lee],
+      // Sin arrastre: cada problema es otra cadena, con otras sustancias; no hay una variable que se deslice de una a
+      // otra (y juntarlas con un gesto sugeriría que comparten eslabones, la idea errónea QA1).
       minimo: 3,
     },
     predice: {
@@ -151,6 +164,11 @@
       dibujo: val => potab(val.e - 1),
       lectura: val => [`Hasta aquí se quitan: ${ETAPAS[val.e - 1].quita}.`],
       minimo: 3,
+      // Se agarra la marca del borde de la última etapa hecha y se baja por la planta: cae en la etapa más cercana.
+      // Responde la lectura con lo que ya se quitó. La desinfección (etapa 4) queda fuera: es la predicción.
+      arrastres: [{ id: 'etapa', etiqueta: 'hasta dónde llegó el agua: bájala por la planta', color: 'c-i',
+        donde: val => { const g = PZ('quim-cadena').geometria(potab(val.e - 1).datos); return { x: g.x(0) + g.ancho, y: g.y(val.e - 1) + g.altoNodo / 2 }; },
+        mover: pt => { const g = PZ('quim-cadena').geometria(potab(0).datos); return { e: 1 + Math.round((pt.y - g.altoNodo / 2 - g.y(0)) / (g.y(1) - g.y(0))) }; } }],
     },
     predice: {
       pregunta: 'Después de filtrar, el agua del río sale transparente. ¿Ya se puede tomar?',
@@ -180,7 +198,7 @@
     },
     regla: {
       texto: 'Potabilizar combina barreras: coagular, sedimentar y filtrar quitan partículas; desinfectar inactiva microbios. Ninguna reemplaza a la otra.',
-      ecuacion: ['filtrar ≠ desinfectar'],
+      ecuacion: [{ llave: ['filtrar'], nota: 'quita partículas' }, ' ≠ ', { llave: ['desinfectar'], nota: 'inactiva microbios' }],
       condicion: 'agua clara no es agua segura; las sales o metales disueltos necesitan otros tratamientos.',
       voz: 'Pregunta qué quita cada etapa.',
     },
@@ -216,6 +234,8 @@
       controles: [{ id: 'n', etiqueta: 'Nutrientes', opciones: [{ valor: 'pocos', texto: 'Pocos' }, { valor: 'muchos', texto: 'Muchos' }] }],
       dibujo: val => cadena([{ titulo: val.n === 'pocos' ? 'Lago sano' : 'Lago eutrofizado', color: val.n === 'pocos' ? 'd' : 'h', nodos: (val.n === 'pocos' ? SANO : EUTRO).map(t => ({ texto: t })) }]),
       lectura: val => [val.n === 'pocos' ? 'Hay oxígeno disuelto de sobra.' : 'El oxígeno disuelto se agota.'],
+      // Sin arrastre: son dos estados del lago (pocos o muchos nutrientes) con cadenas distintas; la figura no tiene
+      // una cantidad dibujada que se pueda deslizar.
       minimo: 2,
     },
     predice: {
@@ -277,12 +297,22 @@
       consigna: 'De 100 kg de botellas usadas, elige qué parte se recolecta y qué parte de lo recolectado recupera la planta.',
       voz: 'Mira sobre qué se aplica el segundo porcentaje.',
       controles: [
-        { id: 'a', etiqueta: 'Recolectado', min: 30, max: 90, paso: 20, inicio: 50, unidad: '%', decimales: 0 },
-        { id: 'b', etiqueta: 'Recuperado', min: 60, max: 90, paso: 10, inicio: 70, unidad: '%', decimales: 0 },
+        { id: 'a', etiqueta: 'Recolectado', color: 'c-o', min: 30, max: 90, paso: 10, inicio: 50, unidad: '%', decimales: 0 },
+        { id: 'b', etiqueta: 'Recuperado', color: 'c-d', min: 60, max: 90, paso: 10, inicio: 70, unidad: '%', decimales: 0 },
       ],
       dibujo: val => barra(val.a, val.b),
       lectura: val => [m, ` que vuelve = ${f(val.a * val.b / 100, 1)} kg de 100 kg`],
       minimo: 3,
+      // Se agarra el borde de cada pedazo: el del primero es lo recolectado (sobre 100 kg); el del segundo, lo
+      // recuperado (sobre lo recolectado). Responde la barra, que se acorta, y los kilos que vuelven.
+      arrastres: [
+        { id: 'recolectado', etiqueta: 'borde de lo recolectado', color: 'c-o',
+          donde: val => ({ x: xBarra(val.a), y: yFila(1) }),
+          mover: pt => ({ a: (pt.x - 10) / 3 }) },
+        { id: 'recuperado', etiqueta: 'borde de lo recuperado', color: 'c-d',
+          donde: val => ({ x: xBarra(val.a * val.b / 100), y: yFila(2) }),
+          mover: (pt, val) => ({ b: 100 * (pt.x - 10) / (3 * val.a) }) },
+      ],
     },
     predice: {
       pregunta: 'Una ciudad recolecta el 40 % de sus botellas y la planta recupera el 85 % de lo recolectado. ¿Qué parte del total vuelve como material?',
@@ -310,7 +340,7 @@
     },
     regla: {
       texto: 'Reciclar se evalúa con flujos de materia: lo que vuelve es el total por la fracción recolectada por la fracción recuperada. No basta una etiqueta.',
-      ecuacion: [{ sub: [m, 'vuelve'] }, ' = ', { sub: [m, 'total'] }, ' · ', { sub: ['f', 'recolectada'] }, ' · ', { sub: ['f', 'recuperada'] }],
+      ecuacion: [{ sub: [m, 'vuelve'] }, ' = ', { sub: [m, 'total'] }, ' · ', { llave: [{ sub: ['f', 'rec'] }], nota: 'lo que llega', color: 'c-o' }, ' · ', { llave: [{ sub: ['f', 'recup'] }], nota: 'lo recuperado', color: 'c-d' }],
       condicion: 'las fracciones se aplican una sobre otra; «reciclable» no dice cuánto se recicla de verdad.',
       voz: 'Sigue los kilos de un paso al siguiente.',
     },
@@ -346,6 +376,8 @@
     return { datos: { escala: 40, alto: 170, atomos, enlaces, textos: [{ x: -0.95, y: 0, t: '–' }, { x: 2.25, y: 2.4, t: `${n} etilenos: ${2 * n} grupos CH₂, sin subproducto` }],
       alt: `Cadena de polietileno formada por ${n} moléculas de etileno: ${2 * n} grupos CH₂ unidos en fila; no se libera ninguna molécula.` }, estado: { corte } };
   }
+  // La manija va 22 px debajo del último CH₂, con el encuadre de la cadena actual.
+  const finPoli = n => { const d = poli(n).datos, g = PZ('quim-molecula').encuadre(d), a = d.atomos[d.atomos.length - 1]; return { x: g.X(a.x), y: g.Y(a.y) + 22 }; };
   const MIRA_POLI = {
     escala: 34, alto: 260,
     atomos: [
@@ -370,6 +402,11 @@
       dibujo: val => poli(val.n),
       lectura: val => [m, ` de la cadena = ${f(val.n, 0)} · 28 = ${f(28 * val.n, 0)} g/mol`],
       minimo: 3,
+      // Se agarra el último CH₂ y se arrastra por la serpentina: cada etileno que se engancha suma dos CH₂. Responde
+      // la masa de la lectura, que sube 28 por etileno sin restar nada.
+      arrastres: [{ id: 'extremo', etiqueta: 'último CH₂: engancha otro etileno', color: 'c-i',
+        donde: val => finPoli(val.n),
+        mover: (pt, val) => ({ n: cercana([2, 3, 4], v => finPoli(v.n), pt, val, 'n') }) }],
     },
     predice: {
       pregunta: 'Al unir muchas moléculas de etileno para formar polietileno, ¿qué molécula pequeña se libera?',
@@ -397,7 +434,7 @@
     },
     regla: {
       texto: 'En la polimerización por adición los monómeros se unen abriendo dobles enlaces y no se libera nada. En la condensación se libera una molécula pequeña, a menudo agua.',
-      ecuacion: ['adición: n CH₂=CH₂ → (–CH₂–CH₂–)ₙ'],
+      ecuacion: [{ llave: ['n CH₂=CH₂'], nota: 'n monómeros', color: 'c-h' }, ' → ', { llave: ['(–CH₂–CH₂–)ₙ'], nota: 'nada sobra', color: 'c-i' }],
       condicion: 'que un polímero sea degradable o reciclable depende de su estructura y de cómo se procesa; no son lo mismo.',
       voz: 'Antes de decir que sale agua, cuenta átomos.',
     },
@@ -451,8 +488,13 @@
       voz: 'Fíjate en qué crece y qué se queda igual.',
       controles: [{ id: 'k', etiqueta: 'k', min: 1, max: 10, paso: 1, inicio: 1, decimales: 0 }],
       dibujo: val => ({ datos: ejesA({ puntos: [{ x: val.k, y: 6 * val.k, color: 'o', rotulo: `${f(6 * val.k, 0)} cm²`, guias: true }] }), estado: {} }),
-      lectura: val => [`${f(val.k ** 3, 0)} cubitos · volumen 1 cm³ · `, A, ` = ${f(6 * val.k, 0)} cm²`],
+      lectura: val => [`${f(val.k ** 3, 0)} cubitos · volumen 1\u00a0cm³`, '   ·   ', A, ` = ${f(6 * val.k, 0)} cm²`],
       minimo: 3,
+      // Se agarra el punto y se desliza por la recta: más a la derecha, más cortes por arista. Responde el área, que
+      // sube 6 cm² por corte, mientras el volumen de la lectura no cambia.
+      arrastres: [{ id: 'cortes', etiqueta: 'punto sobre la recta: más cortes', color: 'c-o',
+        donde: val => { const g = PZ('ejes').geometria(ejesA()); return { x: g.X(val.k), y: g.Y(6 * val.k) }; },
+        mover: pt => { const g = PZ('ejes').geometria(ejesA()); return { k: (pt.x - g.X(0)) / (g.X(1) - g.X(0)) }; } }],
     },
     predice: {
       pieza: 'ejes',
@@ -481,7 +523,7 @@
     },
     regla: {
       texto: 'Al dividir un material su superficie crece con el mismo volumen: en la nanoescala eso cambia propiedades. La corrosión es una redox en la superficie que necesita agua y oxígeno.',
-      ecuacion: [A, ' = 6k (1 cm³ cortado en k partes por arista)'],
+      ecuacion: [A, ' = 6', { llave: ['k'], nota: 'partes por arista' }, '\u00a0cm²', '   ·   ', 'V = 1\u00a0cm³'],
       condicion: 'la nanoescala no garantiza seguridad ni mejor rendimiento; la corrosión depende también del medio, como sal o ácido.',
       voz: 'Pregunta cuánta superficie queda expuesta.',
     },
@@ -502,6 +544,26 @@
     },
   };
 
+
+  // ---------- Laboratorio ----------
+  // Mesa 1: tres filtros sucesivos sobre 100 kg (recolectar, separar en la planta y recuperar), con rangos amplios y
+  // una manija en el borde de cada pedazo. Cada porcentaje muerde lo que dejó el anterior.
+  const barra3 = val => ({ datos: { total: 100, sufijo: ' kg', decimales: 1, color: 'i', tramos: [
+    { tipo: 'descuento', pct: 100 - val.a, color: 'o' }, { tipo: 'descuento', pct: 100 - val.s, color: 'h' }, { tipo: 'descuento', pct: 100 - val.b, color: 'd' }] }, estado: { corte: 3 } });
+  const queda3 = (val, i) => [100, val.a, val.a * val.s / 100, val.a * val.s * val.b / 1e4][i];
+  // Mesa 2: un cubo de arista a (1 a 4 cm) cortado en k partes por arista (1 a 20): A = 6a²k. La escala del eje sigue
+  // a la arista, así la recta se ve entera; el punto gris es el cubo sin cortar.
+  const ejesCubo = (a, extra = {}) => {
+    const tope = 6 * a * a * 20;
+    return Object.assign({
+      x: { min: 0, max: 20, paso: 1, cada: 5, nombre: 'k', decimales: 0 },
+      y: { min: 0, max: tope, paso: tope / 6, cada: 2, nombre: 'A', unidad: 'cm²', decimales: 0, color: 'o' },
+      curvas: [{ puntos: [[1, 6 * a * a], [20, tope]], color: 'o' }],
+      alt: `Área total de un cubo de ${a} cm de arista cortado en k partes por arista: A = 6 · ${a}² · k, una recta; el volumen no cambia.`,
+    }, extra);
+  };
+  const puntoCubo = val => { const g = PZ('ejes').geometria(ejesCubo(val.a)); return { x: g.X(val.k), y: g.Y(6 * val.a * val.a * val.k) }; };
+
   return {
     unidad: 'quimica.ambiente-y-quimica-aplicada',
     version: '0.1.0',
@@ -512,6 +574,51 @@
       pregunta: '¿Dónde buscarías el daño de un gas que no reacciona cerca del suelo?',
       fuente: { titulo: 'NASA, Is the ozone hole causing climate change?', url: 'https://science.nasa.gov/climate-change/faq/is-the-ozone-hole-causing-climate-change/' },
     },
+    // Laboratorio (docs/teoria.md §4b): sin preguntas. La primera mesa es más rica que el juego de reciclaje: tres
+    // filtros con rangos de 10 a 100 % y tres manijas. La segunda junta la arista y los cortes, hasta 20 por arista.
+    // La lectura dice entradas y resultado, para que un caso guardado se entienda solo.
+    laboratorio: [
+      {
+        id: 'tres-filtros', titulo: 'Tres filtros sobre 100 kg', pieza: 'barra-porcentaje',
+        consigna: 'Arrastra el borde de cada pedazo: lo recolectado, lo que la planta separa bien y lo que recupera. Busca qué filtro pesa más.',
+        controles: [
+          { id: 'a', etiqueta: 'Recolectado', color: 'c-o', min: 10, max: 100, paso: 5, inicio: 50, unidad: '%', decimales: 0 },
+          { id: 's', etiqueta: 'Separado', color: 'c-h', min: 10, max: 100, paso: 5, inicio: 80, unidad: '%', decimales: 0 },
+          { id: 'b', etiqueta: 'Recuperado', color: 'c-d', min: 10, max: 100, paso: 5, inicio: 70, unidad: '%', decimales: 0 },
+        ],
+        dibujo: barra3,
+        lectura: val => [`${val.a} % · ${val.s} % · ${val.b} % → `, m, ` = ${f(queda3(val, 3), 1)} kg de 100 kg`],
+        // Cada manija es el borde izquierdo del pedazo que cae en su fila: lo que queda tras ese filtro.
+        arrastres: [
+          { id: 'recolectado', etiqueta: 'borde de lo recolectado', color: 'c-o',
+            donde: val => ({ x: xBarra(queda3(val, 1)), y: yFila(1) }),
+            mover: pt => ({ a: (pt.x - 10) / 3 }) },
+          { id: 'separado', etiqueta: 'borde de lo separado', color: 'c-h',
+            donde: val => ({ x: xBarra(queda3(val, 2)), y: yFila(2) }),
+            mover: (pt, val) => ({ s: 100 * (pt.x - 10) / (3 * queda3(val, 1)) }) },
+          { id: 'recuperado', etiqueta: 'borde de lo recuperado', color: 'c-d',
+            donde: val => ({ x: xBarra(queda3(val, 3)), y: yFila(3) }),
+            mover: (pt, val) => ({ b: 100 * (pt.x - 10) / (3 * queda3(val, 2)) }) },
+        ],
+      },
+      {
+        id: 'cubo-partido', titulo: 'Arista y cortes juntos', pieza: 'ejes',
+        consigna: 'Elige la arista del cubo y desliza el punto para cortarlo en más partes. Compara el área con la del cubo entero.',
+        controles: [
+          { id: 'a', etiqueta: 'Arista', min: 1, max: 4, paso: 1, inicio: 1, unidad: 'cm', decimales: 0 },
+          { id: 'k', etiqueta: 'k', min: 1, max: 20, paso: 1, inicio: 5, unidad: '', decimales: 0 },
+        ],
+        dibujo: val => ({ datos: ejesCubo(val.a, { puntos: [
+          { x: 1, y: 6 * val.a * val.a, rotulo: 'entero' },
+          { x: val.k, y: 6 * val.a * val.a * val.k, color: 'o', rotulo: `${f(6 * val.a * val.a * val.k, 0)} cm²`, guias: true },
+        ] }), estado: {} }),
+        lectura: val => [`a = ${val.a} cm, k = ${val.k} → ${f(val.k ** 3, 0)} cubitos, `, A, ` = ${f(6 * val.a * val.a * val.k, 0)} cm²`],
+        // El punto se desliza por la recta: más a la derecha, más cortes; responde el área (el volumen no cambia).
+        arrastres: [{ id: 'cortes', etiqueta: 'punto sobre la recta: más cortes', color: 'c-o',
+          donde: puntoCubo,
+          mover: (pt, val) => { const g = PZ('ejes').geometria(ejesCubo(val.a)); return { k: (pt.x - g.X(0)) / (g.X(1) - g.X(0)) }; } }],
+      },
+    ],
     ideas: [aire, agua, eutro, reciclaje, polimeros, nano],
   };
 });
