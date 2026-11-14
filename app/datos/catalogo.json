@@ -3991,7 +3991,16 @@
       "cortes-pesadas",
       "rm-cortes",
       "rm-balanzas"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/cortes-y-pesadas.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-plano.js",
+       "/nucleo/kit/piezas/balanza.js",
+       "/nucleo/kit/piezas/rm-fichas.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "razonamiento-matematico.planteo-de-ecuaciones",
