@@ -149,6 +149,8 @@ input[type=range]{width:100%; accent-color:var(--ink); min-height:32px}
 .btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
 .btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
 .btn:disabled{opacity:.45; cursor:not-allowed}
+.juego{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.juego[hidden]{display:none}
 button:focus-visible, .v:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible, canvas:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
 .hint{font-size:.88rem; color:var(--muted)}
 .fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
@@ -187,6 +189,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, select:focus-visibl
     <section class="bench" aria-label="Frascos, ollas y moléculas">
       <div class="lienzo"><canvas id="cv" role="img" aria-label="Frascos cerrados, una olla o moléculas, dibujados como moléculas enteras, con gráficas de presión según el paso"></canvas></div>
       <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="juego" data-juego><button type="button" class="btn" data-tapa aria-pressed="false">Destapar el frasco</button></div>
       <div class="legend" id="ley1"></div>
     </section>
     <section class="guide">
@@ -208,6 +211,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, select:focus-visibl
     <section class="bench" aria-label="Experimentos con líquidos, gases y sólidos">
       <div class="lienzo"><canvas id="cv2" role="img" aria-label="Moléculas, tubos, ollas y diagramas de fases que se completan al responder"></canvas></div>
       <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="juego" data-juego><button type="button" class="btn" data-tapa aria-pressed="false">Destapar el frasco</button></div>
       <div class="legend" id="ley2"></div>
     </section>
     <section class="guide">
@@ -234,6 +238,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'liquidos-y-solidos', unidad: 'quimica.liquidos-y-solidos', version: '0.1.0' };
@@ -504,7 +509,10 @@ function crearEscena(cv, idDesc, modoId, idLey){
       }
       ctx.restore();
       rr(ctx, x0, top, wf, fondo - top, 6); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.stroke();
-      ctx.lineWidth = 4; linea(ctx, x0 - 3, top, x0 + wf + 3, top);
+      // La tapa; en el juego se corre a la derecha cuando el frasco está destapado.
+      const dx = f.abierta ? wf*0.62 : 0;
+      ctx.lineWidth = 4; linea(ctx, x0 - 3 + dx, top - (f.abierta ? 3 : 0), x0 + wf + 3 + dx, top - (f.abierta ? 3 : 0));
+      if (f.tapa) E.tapa = { x0, wf, top };
       ctx.restore();
       if (f.etq) dibujarPiezas(ctx, c, f.etq, cx, P.y + 9, 12, 'center', P.colW - 6);
       (f.bajo || []).forEach((ps, j) => dibujarPiezas(ctx, c, typeof ps === 'function' ? ps() : ps, cx, fondo + 12 + j*15, 12, 'center', P.colW - 4));
@@ -909,6 +917,51 @@ const PRED_EXP = {};
 const DESCUBRE = 'Descúbrelo en «¿Qué pasa si…?»';
 // Datos que usan los dos modos (todos del motor).
 const LIMA = ML.ebullicionAltitud('agua', 150), PUNO = ML.ebullicionAltitud('agua', 3827), PV25 = ML.presionVapor('agua', 25).mmHg;
+
+/* ----- Jugar antes de preguntar (regla 3, decisión 20): un frasco de agua a 25 °C que se tapa y se destapa -----
+   Destapado, el vapor se escapa por arriba; tapado, vuelve a juntarse. La temperatura, el tamaño del frasco y la
+   presión de afuera quedan fijos y no se muestra ninguna presión: lo que después se pregunta (frascos de distinto
+   tamaño, hervir en la altura, qué hay en la burbuja, quién forma puentes, la olla a presión) el juego no lo muestra. */
+function montarJuego(E, cv, alListo){
+  const nueva = () => caja({ T:25, H:0.6, escala:300, semilla:23 });
+  const J = { on:true, abierta:false, cj:nueva(), arr:null };
+  const cajaJ = cv.closest('.bench').querySelector('[data-juego]'), bot = cajaJ.querySelector('[data-tapa]');
+  const vista = () => ({ paneles:['frascos'], frascos:{ items:[{ caja:J.cj, H:0.6, prof:0.28, tapa:true, abierta:J.abierta,
+      etq:[[J.abierta ? 'Frasco destapado' : 'Frasco tapado, sin aire', 'ink', 800]],
+      bajo:[() => [['moléculas de vapor: ', 'ink', 700], [fmt(J.cj.vapor.length), 'ink', 800]], [['agua a ', 'ink', 700], ['25 °C', 'T', 800]]] }] },
+    pie:'Toca la tapa o deslízala para destapar y tapar el frasco. Cada figura es una molécula de agua.', vars:['T'],
+    desc: J.abierta ? 'El frasco destapado: el vapor de agua se escapa por arriba.' : 'El frasco tapado: el vapor de agua se queda arriba del líquido.' });
+  const pintar = () => { if (!J.on) return; E.vista = vista(); E.dibujar(); E.describir(); pedir(); };
+  const tapar = abierta => {
+    if (!J.on || abierta === J.abierta) return;
+    J.abierta = abierta;
+    // Con movimiento reducido la caja no avanza: destapado queda sin vapor; tapado, ya con su vapor.
+    if (RM) J.cj = abierta ? ML.crearCaja({ W:1, liq:'agua', T:25, H:0.6, escala:300, semilla:23 }) : nueva();
+    bot.textContent = abierta ? 'Tapar el frasco' : 'Destapar el frasco'; bot.setAttribute('aria-pressed', String(abierta));
+    pintar();
+  };
+  // Destapado, las moléculas que llegan arriba salen del frasco.
+  E.alAvanzar = () => { if (J.on && J.abierta) J.cj.vapor = J.cj.vapor.filter(q => q.y < J.cj.H*0.9); };
+  bot.addEventListener('click', () => tapar(!J.abierta));
+  cv.tabIndex = 0;
+  cv.addEventListener('keydown', e => {
+    if (!J.on) return; const a = { ArrowUp:true, ArrowRight:true, ArrowDown:false, ArrowLeft:false }[e.key];
+    if (a === undefined) return; e.preventDefault(); tapar(a);
+  });
+  Celular.arrastre(cv, {
+    activo:() => J.on && !!E.tapa,
+    cerca:(p, r) => { const t = E.tapa; return p.x > t.x0 - r && p.x < t.x0 + t.wf*1.62 + r && Math.abs(p.y - t.top) < r + 6; },
+    empezar:p => { J.arr = { x:p.x, y:p.y, movio:false }; },
+    mover:p => { if (!J.arr) return; const d = (p.x - J.arr.x) - (p.y - J.arr.y); if (Math.abs(d) > 12){ J.arr.movio = true; tapar(d > 0); } },
+    soltar:() => { if (J.arr && !J.arr.movio) tapar(!J.abierta); J.arr = null; },
+  });
+  const guia = cv.closest('.mode').querySelector('.guide');
+  JugarPrimero.montar({ escena: cv.closest('.bench'), preguntas:[...guia.children], minimo:2,
+    consigna:'Destapa y tapa el frasco: mira las moléculas de vapor.',
+    alListo:() => { J.on = false; E.alAvanzar = null; E.tapa = null; cajaJ.hidden = true; cv.removeAttribute('tabindex'); alListo(); } });
+  E.compactar(false); pintar();
+  return { activo:() => J.on, pintar };
+}
 </script>
 
 <script>
@@ -1244,6 +1297,7 @@ addEventListener('modo', () => {
   else { E.resize(); E.dibujar(); pedir(); }
 });
 go(0);
+montarJuego(E, $('cv'), () => go(0));
 })();
 </script>
 
@@ -1404,6 +1458,7 @@ function ir(k){
 alRedibujarTema(() => E.dibujar());
 addEventListener('modo', () => { E.resize(); E.dibujar(); pedir(); });
 ir(0);
+montarJuego(E, $('cv2'), () => ir(0));
 })();
 </script>
 
