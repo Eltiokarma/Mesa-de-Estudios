@@ -20,11 +20,20 @@
  * Todo orden que se ve en una opción se calcula aquí a partir del orden correcto y de la vista (regla 1).
  */
 (function (root, fabrica) {
-  const def = fabrica();
+  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
   if (typeof module === 'object' && module.exports) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function () {
+})(typeof self !== 'undefined' ? self : this, function (Kit) {
   'use strict';
+  // Gesto directo (docs/teoria.md §4b): en un plan de redacción lo que se agarra es la oración. Cada oración trae su
+  // manija sobre su número (rv-texto.ancla); al arrastrarla, cae en el renglón más cercano al dedo.
+  const RV = () => Kit.piezas['rv-texto'];
+  // Renglón (0, 1, 2…) más cercano a la altura del dedo, según dónde está cada oración en la figura actual.
+  const renglon = (datos, orden, y) => {
+    const ys = orden.map(j => RV().ancla(datos, `s${j}`).y);
+    return ys.reduce((m, yy, r) => (Math.abs(yy - y) < Math.abs(ys[m] - y) ? r : m), 0);
+  };
+  const mover = (orden, j, r) => { const x = orden.filter(i => i !== j); x.splice(r, 0, j); return x; };
   // Una lectura en vivo no parte línea dentro de un color (.var): si el texto es largo, solo va en color su cabeza.
   const corto = (fn, t) => {
     if (t.length <= 26) return fn(t);
@@ -91,6 +100,17 @@
       dibujo: val => ({ datos: figura('Tema: las abejas', ABEJAS, abrirCon(val.k)), estado: estado(ABEJAS, abrirCon(val.k)) }),
       lectura: val => { const r = rotos(ABEJAS, abrirCon(val.k)).length; return r ? [corto(roto, `${r} oración${r > 1 ? 'es' : ''} sin su referente`)] : [corto(bien, 'Cada oración tiene lo que necesita')]; },
       minimo: 3,
+      // Agarra cualquier oración y súbela al primer renglón: pasa a abrir el texto y las demás siguen en su orden.
+      // Si bajas la que abre, abre la siguiente de las que quedan.
+      arrastres: ABEJAS.map((o, j) => ({
+        id: `oracion-${j + 1}`, etiqueta: `oración «${o.t.split(' ').slice(0, 3).join(' ')}…»`, color: 'c-i',
+        donde: val => RV().ancla(figura('Tema: las abejas', ABEJAS, abrirCon(val.k)), `s${j}`),
+        mover: (pt, val) => {
+          const orden = abrirCon(val.k), r = renglon(figura('Tema: las abejas', ABEJAS, orden), orden, pt.y);
+          if (r === 0) return { k: j };
+          return val.k === j ? { k: orden[1] } : {};
+        },
+      })),
     },
     predice: {
       pregunta: '¿Con qué oración debe empezar este texto sobre el reciclaje?',
@@ -117,7 +137,7 @@
     },
     regla: {
       texto: 'Abre la oración que presenta el tema y no necesita nada antes. Las que retoman algo (ellas, este, por eso) van después de lo que retoman.',
-      ecuacion: [marca('tema'), ' → ', bien('subtemas'), ' → ', pide('lo que retoma'), ' → cierre'],
+      ecuacion: [marca('tema'), ' → ', bien('subtemas'), ' → ', { llave: [pide('lo que retoma')], nota: 'ellas, este…', color: 'c-o' }, ' → cierre'],
       condicion: 'cada palabra que remite a algo ya dicho encuentra su referente en una oración anterior.',
     },
     ahoraTu: {
@@ -180,7 +200,7 @@
     },
     regla: {
       texto: 'En una secuencia cronológica, el orden lo dan el tiempo y sus marcadores (primero, luego, después). En una de causa y efecto, la causa va antes que lo que produce.',
-      ecuacion: [marca('antes'), ' → ', marca('después'), '   ·   ', bien('causa'), ' → ', pide('efecto')],
+      ecuacion: [{ llave: [marca('antes'), ' → ', marca('después')], nota: 'orden del tiempo', color: 'c-d' }, '   ·   ', { llave: [bien('causa'), ' → ', pide('efecto')], nota: 'orden lógico', color: 'c-o' }],
       condicion: 'las fechas, los marcadores y los conectores del texto mandan sobre la costumbre de ir de lo general a lo particular.',
     },
     ahoraTu: {
@@ -243,7 +263,7 @@
     },
     regla: {
       texto: 'Al analizar, se presenta el todo y luego cada parte. Al comparar, se presentan las dos cosas y después sus diferencias (en cambio) o semejanzas (ambas, también).',
-      ecuacion: [marca('todo'), ' → ', bien('partes'), '   ·   ', bien('A'), ' + ', bien('B'), ' → ', pide('comparación')],
+      ecuacion: [{ llave: [marca('todo'), ' → ', bien('partes')], nota: 'analizar', color: 'c-d' }, '   ·   ', { llave: [bien('A'), ' + ', bien('B'), ' → ', pide('comparación')], nota: 'comparar', color: 'c-o' }],
       condicion: '«ambas», «en cambio» o «esta parte» solo van cuando ya se nombró lo que retoman.',
     },
     ahoraTu: {
@@ -260,9 +280,38 @@
     },
   };
 
+  // ---------- Laboratorio: ordena tú ----------
+  // Más que los juegos: las cuatro oraciones se mueven libres (las 24 órdenes posibles) y se elige el texto (abejas,
+  // chuño o flautas). Arrastrar una oración la deja en el renglón donde se suelta; − y + recorren los 24 órdenes uno
+  // por uno. El sello cuenta las oraciones que quedan sin lo que necesitan antes (calculado con `rotos`).
+  const PERMS = (function perm(xs) { return xs.length ? xs.flatMap(x => perm(xs.filter(y => y !== x)).map(p => [x, ...p])) : [[]]; })([0, 1, 2, 3]);
+  const TEXTOS = { abejas: ['Tema: las abejas', ABEJAS], chuno: ['Tema: el chuño', CHUNO], flautas: ['Tema: dos flautas', INSTR] };
+  const figLibre = val => figura(TEXTOS[val.t][0], TEXTOS[val.t][1], PERMS[val.n - 1]);
+  const indice = orden => PERMS.findIndex(p => p.join() === orden.join()) + 1;
+  const mesaLibre = {
+    id: 'ordena-tu', titulo: 'Ordena tú', pieza: 'rv-texto',
+    consigna: 'Elige un texto y arrastra sus oraciones a otro renglón. Busca el orden en que ninguna queda sin lo que necesita.',
+    voz: 'Prueba también órdenes raros.',
+    controles: [
+      { id: 't', etiqueta: 'Texto', opciones: [{ valor: 'abejas', texto: 'abejas' }, { valor: 'chuno', texto: 'chuño' }, { valor: 'flautas', texto: 'flautas' }] },
+      { id: 'n', etiqueta: 'Orden n.º', min: 1, max: 24, paso: 1, inicio: 24, decimales: 0 },
+    ],
+    dibujo: val => ({ datos: figLibre(val), estado: estado(TEXTOS[val.t][1], PERMS[val.n - 1]) }),
+    lectura: val => {
+      const ors = TEXTOS[val.t][1], orden = PERMS[val.n - 1], r = rotos(ors, orden);
+      if (!r.length) return [bien('Orden coherente'), ` · abre «${ors[orden[0]].t.split(' ').slice(0, 2).join(' ')}…»`];
+      return [roto(`${r.length} sin lo que necesita`), ` · abre «${ors[orden[0]].t.split(' ').slice(0, 2).join(' ')}…»`];
+    },
+    arrastres: [0, 1, 2, 3].map(j => ({
+      id: `oracion-${j + 1}`, etiqueta: `oración ${j + 1} del texto`, color: 'c-i',
+      donde: val => RV().ancla(figLibre(val), `s${j}`),
+      mover: (pt, val) => { const orden = PERMS[val.n - 1]; return { n: indice(mover(orden, j, renglon(figLibre(val), orden, pt.y))) }; },
+    })),
+  };
+
   return {
     unidad: 'razonamiento-verbal.plan-de-redaccion',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rv-texto.js'],
     historia: {
@@ -270,6 +319,13 @@
       pregunta: '¿Qué necesita saber el lector antes de leer «ellas»?',
       fuente: { titulo: 'Matriz de teoría de razonamiento verbal (Retórica; Flower y Hayes)', url: 'https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/progresiontematica.htm' },
     },
+    // Las ideas 2 y 3 comparan tres planes fijos (A, B y C): no tienen manija; el reordenamiento libre de esas mismas
+    // oraciones está en la mesa «Ordena tú».
+    laboratorio: [
+      mesaLibre,
+      Object.assign({ id: 'abre-y-retoma', titulo: 'Qué abre y qué retoma', pieza: 'rv-texto' }, temaSubtemas.juega),
+      Object.assign({ id: 'presentar-comparar', titulo: 'Presentar y comparar', pieza: 'rv-texto' }, comparar.juega),
+    ],
     ideas: [temaSubtemas, tiempoCausa, comparar],
   };
 });
