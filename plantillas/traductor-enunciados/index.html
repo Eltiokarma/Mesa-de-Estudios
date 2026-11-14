@@ -241,6 +241,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'traductor-enunciados', unidad: 'razonamiento-matematico.planteo-de-ecuaciones', version: '0.1.0' };
@@ -1061,6 +1062,9 @@ function paso8(){ const b = $('otraMov'); if (!b) return; b.onclick = () => { if
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: el paso 1 ya es el juego libre (el aula donde se ponen y se sacan estudiantes y profesores).
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra estudiantes y profesores al aula, o sácalos.', minimo:2 });
 })();
 </script>
 
@@ -1201,6 +1205,13 @@ function ir(k){
   pintar();
 }
 ir(0);
+// Regla 3: antes del primer experimento, el aula libre del paso 1 (estudiantes y profesores que se ponen y se
+// sacan); sin aulas, ecuaciones ni balanza, que es lo que se pregunta después.
+E.config({ modo:'aula', aula:{ fichas:aulaEnGrupos(1, 'S', 4, 'P', 1).concat([{ tipo:'S', x:.85, y:.8 }]), tipos:['S', 'P'], editable:true, sel:0 },
+  lect:[x => ['S', 'S (estudiantes)', String(x.cuenta('S'))], x => ['P', 'P (profesores)', String(x.cuenta('P'))]], base:'Un aula con estudiantes y profesores.' });
+E.compactar(false);
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Arrastra estudiantes y profesores al aula antes de empezar.', minimo:2, alListo:() => ir(S.k) });
 })();
 </script>
 
