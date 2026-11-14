@@ -133,6 +133,8 @@ input.r-v{accent-color:var(--c-v)} input.r-a{accent-color:var(--c-a)} input.r-t{
 .nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
 .btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
 .btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.juego-panel{display:grid; gap:8px; margin-top:4px}
+.juego-acc{display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px; margin:0}
 .btn:disabled{opacity:.45; cursor:not-allowed}
 button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
 .hint{font-size:.88rem; color:var(--muted)}
@@ -248,6 +250,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'tiro-parabolico', unidad: 'fisica.movimiento-parabolico-y-circular', version: '0.2.0' };
@@ -772,6 +775,97 @@ const fuente = t => `<p class="fuente">${t}</p>`;
 const FASES = { subiendo:'todavía subiendo', cima:'en lo más alto', bajando:'ya bajando' };
 </script>
 <script>
+/* ================= Jugar primero (regla 3, decisión 20 de Gerson, 14 nov 2026) =================
+   Antes de la primera pregunta de cada pestaña, un juego libre en el mismo lienzo (nucleo/jugar.js vela la guía).
+   El juego no dibuja lo que después se pregunta: el cañón solo muestra la trayectoria (sin flechas, sombras ni
+   estroboscopio) y la rotonda solo la velocidad tangente, que ya está en el dibujo antes de su pregunta.
+   J = { activo, alto(W), dibujar(L, c), desc(), cerca(p, r, L), mover(p, L), tecla(e), panel(pfx), enlazar(pfx, draw), parar() } */
+function panelJuego(bench, html){
+  const d = document.createElement('div'); d.className = 'juego-panel'; d.innerHTML = html;
+  const lz = bench.querySelector('.lienzo'); lz.parentNode.insertBefore(d, lz.nextSibling);
+  return d;
+}
+function juegoCanon(){
+  const J = { activo:true, v0:30, ang:45, t:0, previo:null, ultimo:null, sobre:false, cual:false, cancel:() => {} };
+  const datos = () => ({ v0:J.v0, angulo:J.ang, y0:0 });
+  const os = () => [datos(), J.previo].filter(Boolean);
+  J.cfg = () => ({ tiros: J.previo ? [{ o:datos() }, { o:J.previo, trazos:true, fantasma:true }] : [{ o:datos() }], t:J.t,
+    xmin:-10, Xmax:Math.max(80, ...os().map(o => M.proyectil(o).alcance*1.08)), Ymax:Math.max(30, ...os().map(o => M.proyectil(o).H*1.15)),
+    canon:true, asa:true, sobreAsa:J.sobre || J.cual, ver:{ tray:'hasta' } });
+  J.alto = W => altoLienzo(W);
+  J.dibujar = (L, c) => vistaTiro(L, c, J.cfg());
+  J.desc = () => {
+    const p = M.proyectil(datos()), vuela = J.t > 0 && J.t < p.tVuelo - 1e-6, cayo = J.t >= p.tVuelo - 1e-6;
+    return `Cañón en el suelo a ${J.ang} grados, rapidez ${J.v0} metros por segundo.` + (cayo ? ` El proyectil cayó a ${N1(p.alcance)} metros.` : vuela ? ' El proyectil vuela.' : ' Listo para disparar.');
+  };
+  const boca = L => { const m = marco(L.W, L.H, J.cfg()), th = J.ang*Math.PI/180; return { bx:m.X(0), by:m.Y(0), x:m.X(0) + Math.cos(th)*40, y:m.Y(0) - Math.sin(th)*40 }; };
+  J.cerca = (p, r, L) => { const b = boca(L); return Math.hypot(p.x - b.x, p.y - b.y) < r; };
+  const poner = (ang, v0) => { J.cancel(); J.ang = clamp(Math.round(ang), 5, 85); if (v0) J.v0 = v0; J.t = 0; J.sync(); J.draw(); };
+  J.mover = (p, L) => { const b = boca(L); poner(Math.atan2(b.by - p.y, p.x - b.bx)*180/Math.PI); };
+  J.tecla = e => { const d = { ArrowUp:1, ArrowRight:1, ArrowDown:-1, ArrowLeft:-1 }[e.key]; if (!d) return; e.preventDefault(); poner(J.ang + d); };
+  J.panel = pfx => `<div class="ctrls">
+      <div class="slider"><label for="${pfx}-v0"><span>Rapidez</span><output id="${pfx}-v0-o"></output></label><input id="${pfx}-v0" type="range" min="10" max="60" step="1" value="${J.v0}"></div>
+      <div class="slider"><label for="${pfx}-ang"><span>Ángulo del cañón</span><output id="${pfx}-ang-o"></output></label><input id="${pfx}-ang" type="range" min="5" max="85" step="1" value="${J.ang}"></div>
+    </div>
+    <p class="juego-acc"><button type="button" class="btn" id="${pfx}-fuego">Disparar</button> <span class="hint">También puedes arrastrar la boca del cañón.</span></p>`;
+  J.enlazar = (pfx, draw) => {
+    const $ = id => document.getElementById(id);
+    J.draw = draw;
+    J.sync = () => { $(pfx + '-v0-o').textContent = `${J.v0} m/s`; $(pfx + '-ang-o').textContent = `${J.ang}°`; if (+$(pfx + '-ang').value !== J.ang) $(pfx + '-ang').value = J.ang; };
+    $(pfx + '-v0').addEventListener('input', e => poner(J.ang, +e.target.value));
+    $(pfx + '-ang').addEventListener('input', e => poner(+e.target.value));
+    $(pfx + '-fuego').addEventListener('click', () => {
+      const ahora = JSON.stringify(datos());
+      if (J.ultimo && J.ultimo !== ahora) J.previo = JSON.parse(J.ultimo);
+      J.ultimo = ahora; J.cancel();
+      const T = M.proyectil(datos()).tVuelo;
+      J.cancel = animarValor(T*650, f => { J.t = T*f; draw(); });
+    });
+    J.sync();
+  };
+  J.parar = () => { J.cancel(); J.activo = false; };
+  return J;
+}
+function juegoRotonda(){
+  const J = { activo:true, r:50, v:10, theta:30, girando:false, raf:0, sobre:false, cual:false };
+  const circ = () => ({ r:J.r, omega:J.v/J.r, theta:J.theta, auto:true, ver:{ v:true }, pie:`rotonda de ${J.r} m · vista desde arriba` });
+  J.alto = W => altoLienzo(W);
+  J.dibujar = (L, c) => vistaCirculo(L, c, circ());
+  J.desc = () => `Un auto en una rotonda de ${J.r} metros, a ${J.v} metros por segundo, ${J.girando ? 'dando vueltas' : 'quieto en el dibujo'}; su velocidad es tangente.`;
+  const pos = L => { const R = Math.min(L.W, L.H)*0.3, a = J.theta*Math.PI/180; return { cx:L.W/2, cy:L.H/2, x:L.W/2 + R*Math.cos(a), y:L.H/2 - R*Math.sin(a) }; };
+  J.cerca = (p, r, L) => { const q = pos(L); return Math.hypot(p.x - q.x, p.y - q.y) < r + 6; };
+  const detener = () => { J.girando = false; cancelAnimationFrame(J.raf); J.sync && J.sync(); };
+  J.mover = (p, L) => { detener(); const q = pos(L); J.theta = ((Math.atan2(q.cy - p.y, p.x - q.cx)*180/Math.PI) + 360) % 360; J.draw(); };
+  J.tecla = e => { const d = { ArrowUp:15, ArrowLeft:15, ArrowDown:-15, ArrowRight:-15 }[e.key]; if (!d) return; e.preventDefault(); detener(); J.theta = (J.theta + d + 360) % 360; J.draw(); };
+  J.panel = pfx => `<div class="ctrls">
+      <div class="slider"><label for="${pfx}-r"><span>Radio de la rotonda</span><output id="${pfx}-r-o"></output></label><input id="${pfx}-r" type="range" min="10" max="100" step="5" value="${J.r}"></div>
+      <div class="slider"><label for="${pfx}-v"><span>Rapidez</span><output id="${pfx}-v-o"></output></label><input id="${pfx}-v" class="r-v" type="range" min="2" max="15" step="1" value="${J.v}"></div>
+    </div>
+    <p class="juego-acc"><button type="button" class="btn" id="${pfx}-girar" aria-pressed="false">Dar vueltas</button> <span class="hint">También puedes arrastrar el auto por la pista.</span></p>`;
+  J.enlazar = (pfx, draw) => {
+    const $ = id => document.getElementById(id);
+    J.draw = draw;
+    J.sync = () => { $(pfx + '-r-o').textContent = `${J.r} m`; $(pfx + '-v-o').textContent = `${J.v} m/s`;
+      const b = $(pfx + '-girar'); b.textContent = J.girando ? 'Parar' : (RM ? 'Avanzar un trecho' : 'Dar vueltas'); b.setAttribute('aria-pressed', String(J.girando)); };
+    $(pfx + '-r').addEventListener('input', e => { J.r = +e.target.value; J.sync(); draw(); });
+    $(pfx + '-v').addEventListener('input', e => { J.v = +e.target.value; J.sync(); draw(); });
+    $(pfx + '-girar').addEventListener('click', () => {
+      // Con movimiento reducido no hay giro continuo: cada toque avanza el auto 1 s de recorrido.
+      if (RM){ J.theta = (J.theta + J.v/J.r*180/Math.PI) % 360; draw(); return; }
+      if (J.girando){ detener(); draw(); return; }
+      J.girando = true; J.sync();
+      let antes = performance.now();
+      const paso = now => { if (!J.girando) return; const dt = Math.min(0.05, (now - antes)/1000); antes = now;
+        J.theta = (J.theta + dt*J.v/J.r*180/Math.PI) % 360; draw(); J.raf = requestAnimationFrame(paso); };
+      J.raf = requestAnimationFrame(paso);
+    });
+    J.sync();
+  };
+  J.parar = () => { detener(); J.activo = false; };
+  return J;
+}
+</script>
+<script>
 /* ================= MODO 1: paso a paso =================
    Problema guiado de docs/investigacion/cinematica-ideas-erroneas.md: 50 m/s a 37°, g = 10 m/s². */
 (function(){
@@ -779,9 +873,10 @@ const $ = id => document.getElementById(id);
 const cv = $('cv');
 const CANON = { v0:50, angulo:37 }, BOLAS = [{ o:{ vx:0, y0:80 }, nombre:'soltada' }, { o:{ vx:15, y0:80 }, nombre:'lanzada', trazos:true }];
 const S = { step:0, max:0, pred:{}, hl:null, t:0, crece:1, ocupado:false, explora:false,
-  v0:40, ang:53, y0:0, previo:null, sobre:null, cerca:null, cual:null, arrastrando:false, pared:false, dPared:0, altoPared:100 };
+  v0:40, ang:53, y0:0, previo:null, sobre:null, cerca:null, cual:null, arrastrando:false, pared:false, dPared:0, altoPared:100, juego:true };
 let parar = () => {};
-const L = crearLienzo(cv, W => S.explora ? altoLienzo(W) : altoCampo(W, steps[S.step].cfg()), draw);
+const J = juegoCanon();   // juego libre antes del paso 1 (regla 3)
+const L = crearLienzo(cv, W => S.explora || S.juego ? altoLienzo(W) : altoCampo(W, steps[S.step].cfg()), draw);
 // Pared del explorador (opcional): impactoPared del motor; null si no hay pared o el tiro no avanza.
 function impacto(){
   if (!S.pared) return null;
@@ -898,6 +993,7 @@ const datos = () => ({ v0:S.v0, angulo:S.ang, y0:S.y0 });
 
 function draw(){
   if (!L.W) return;
+  if (S.juego){ J.dibujar(L, colores(L.W)); decir($('desc1'), J.desc()); return; }
   const s = steps[S.step], c = colores(L.W), P = s.cfg();
   P.crece = S.crece; P.hl = S.hl;
   vistaTiro(L, c, P);
@@ -921,8 +1017,8 @@ function go(n){
   if (n < 0 || n >= steps.length || n > S.max) return;
   parar(); S.ocupado = false;
   const s = steps[n]; S.step = n; S.hl = null; S.explora = !!s.explora; S.crece = 1;
-  cv.tabIndex = S.explora ? 0 : -1;
-  cv.setAttribute('aria-label', S.explora ? 'Campo de tiro del explorador: con las flechas del teclado cambias el ángulo del cañón' : 'Campo de tiro con un cañón, el proyectil y sus sombras sobre los ejes');
+  cv.tabIndex = S.explora || S.juego ? 0 : -1;
+  cv.setAttribute('aria-label', S.explora || S.juego ? 'Campo de tiro: con las flechas del teclado cambias el ángulo del cañón' : 'Campo de tiro con un cañón, el proyectil y sus sombras sobre los ejes');
   S.t = s.anima && s.gate && S.pred[s.gate.id] ? s.anima.hasta : 0;
   $('stepK').textContent = `${s.k} de ${steps.length}`;
   $('stepT').textContent = s.t;
@@ -1065,6 +1161,7 @@ Celular.arrastre(cv, {
   sobre: s => { S.sobre = s && S.cerca ? S.cerca.id : null; draw(); }
 });
 cv.addEventListener('keydown', e => {
+  if (S.juego){ J.tecla(e); return; }
   if (!S.explora) return;
   const d = { ArrowUp:1, ArrowRight:1, ArrowDown:-1, ArrowLeft:-1 }[e.key]; if (!d) return;
   e.preventDefault(); parar(); S.ang = clamp(S.ang + d, S.y0 > 0 ? 0 : 1, 90); acomodarPared(); S.t = tFinal(); vivo();
@@ -1083,6 +1180,20 @@ document.addEventListener('focusin', e => { const t = e.target.closest && e.targ
 document.addEventListener('focusout', e => { if (e.target.closest && e.target.closest('#m1 [data-var]')) marcar(null); });
 alRedibujarTema(draw);
 addEventListener('modo', () => { if ($('m1').hidden){ parar(); S.ocupado = false; } else go(S.step); });
+// Jugar primero: el cañón se arrastra y dispara; la guía queda velada hasta «Ya jugué: seguir».
+Celular.arrastre(cv, {
+  activo: () => S.juego,
+  cerca: (p, r) => J.cerca(p, r, L),
+  empezar: () => { J.cual = true; draw(); },
+  mover: p => J.mover(p, L),
+  soltar: () => { J.cual = false; draw(); },
+  sobre: s => { J.sobre = s; draw(); }
+});
+const bench1 = $('m1').querySelector('.bench'), panel1 = panelJuego(bench1, J.panel('j1'));
+J.enlazar('j1', draw);
+JugarPrimero.montar({ escena: bench1, preguntas: [$('m1').querySelector('.guide')], minimo: 2,
+  consigna: 'Arrastra el cañón, cambia la rapidez y dispara varias veces.',
+  alListo: () => { J.parar(); S.juego = false; panel1.remove(); go(S.step); } });
 L.resize(); go(0);
 })();
 </script>
@@ -1098,7 +1209,9 @@ function modoExperimentos(cfg){
   const modo = $(cfg.modo), cv = $(cfg.cv), ids = cfg.ids;
   const E = {}, S = { k:0, pred:{}, t0:Date.now() };
   let EXPS = [];
-  const L = crearLienzo(cv, W => { const x = EXPS[S.k]; if (!x) return altoLienzo(W); return x.alto ? x.alto(W) : x.tipo === 'tiro' && E.cfg ? altoCampo(W, E.cfg) : altoLienzo(W); }, draw);
+  // Jugar primero (regla 3): cfg.juego() da el juego libre de la pestaña, que ocupa el lienzo hasta «Ya jugué: seguir».
+  const J = cfg.juego ? cfg.juego() : null, jugando = () => !!(J && J.activo);
+  const L = crearLienzo(cv, W => { if (jugando()) return J.alto(W); const x = EXPS[S.k]; if (!x) return altoLienzo(W); return x.alto ? x.alto(W) : x.tipo === 'tiro' && E.cfg ? altoCampo(W, E.cfg) : altoLienzo(W); }, draw);
   // Un solo bucle por lienzo (nucleo/celular.js): se duerme cuando nada se mueve o el lienzo no se ve.
   const bucle = Celular.bucle(cv, dt => {
     if (!E.mover) return false;
@@ -1120,6 +1233,7 @@ function modoExperimentos(cfg){
   const abierto = k => EXPS.slice(0, k).every(x => S.pred[x.id]);
   function draw(){
     if (!L.W || !EXPS.length) return;
+    if (jugando()){ J.dibujar(L, colores(L.W)); decir($(cfg.desc), J.desc()); return; }
     const x = EXPS[S.k], c = colores(L.W);
     if (x.dibujar) x.dibujar(L, c);
     else if (x.tipo === 'circulo') vistaCirculo(L, c, Object.assign({ crece:E.crece }, E.circ));
@@ -1153,9 +1267,9 @@ function modoExperimentos(cfg){
       // Al volver a un experimento respondido, su animación ya terminó (salvo los giros sin fin).
       if (!x.continuo) terminar(x);
     }
-    L.compactar(!resp);
+    L.compactar(!resp && !jugando());
     botones(); L.resize();
-    leyenda($(cfg.ley), resp ? x.ley : x.leyAntes, cfg.nombres);
+    leyenda($(cfg.ley), jugando() ? J.ley : resp ? x.ley : x.leyAntes, cfg.nombres);
     $(cfg.k).textContent = `${cfg.titulo} · ${k + 1} de ${EXPS.length}`;
     $(cfg.t).textContent = x.corto;
     $(cfg.body).innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, ids.fb)}<div id="${ids.res}" class="body"></div>`;
@@ -1199,6 +1313,23 @@ function modoExperimentos(cfg){
     sobre: s => { E.sobre = s; draw(); }
   });
   EXPS = cfg.crear(api);
+  if (J){
+    Celular.arrastre(cv, {
+      activo: jugando,
+      cerca: (p, r) => J.cerca(p, r, L),
+      empezar: () => { J.cual = true; draw(); },
+      mover: p => J.mover(p, L),
+      soltar: () => { J.cual = false; draw(); },
+      sobre: s => { J.sobre = s; draw(); }
+    });
+    cv.addEventListener('keydown', e => { if (jugando()) J.tecla(e); });
+    cv.tabIndex = 0; cv.setAttribute('aria-label', J.aria);
+    const bench = modo.querySelector('.bench'), panel = panelJuego(bench, J.panel(cfg.cv + '-j'));
+    J.enlazar(cfg.cv + '-j', draw);
+    // Se vela la pregunta (título y cuerpo); la botonera de experimentos queda libre.
+    JugarPrimero.montar({ escena: bench, preguntas: [$(cfg.k).parentNode, $(cfg.body)], minimo: 2, consigna: J.consigna,
+      alListo: () => { J.parar(); panel.remove(); cv.tabIndex = -1; cv.setAttribute('aria-label', 'Dibujo del experimento elegido'); ir(S.k); } });
+  }
   alRedibujarTema(draw);
   addEventListener('modo', () => {
     if (modo.hidden){ terminar(EXPS[S.k]); parar(); }
@@ -1214,6 +1345,8 @@ function modoExperimentos(cfg){
    estática y energía (E8, sumar como números). */
 modoExperimentos({ modo:'m2', cv:'cv2', exps:'exps', ley:'ley2', k:'k2', t:'t2', body:'body2', desc:'desc2', titulo:'¿Qué pasa si…?',
   nombres:NOMBRES, ids:{ fb:'fb2', res:'res2', sig:'sig2', rep:'repetir' },
+  juego: () => Object.assign(juegoCanon(), { ley:[], aria:'Campo de tiro: con las flechas del teclado cambias el ángulo del cañón',
+    consigna:'Arrastra el cañón, cambia la rapidez y dispara varias veces.' }),
   crear: api2 => { const { E, animar, $ } = api2;
   // El tiro vuela hasta E.T (o hasta el impacto) a 650 ms por segundo simulado.
   const volar = () => animar(dt => { E.t = Math.min(E.T, E.t + dt/0.65); return E.t < E.T; });
@@ -1372,6 +1505,8 @@ modoExperimentos({ modo:'m2', cv:'cv2', exps:'exps', ley:'ley2', k:'k2', t:'t2',
    y por eje, MCUV con la gráfica ω-t y encuentros en una pista circular. */
 modoExperimentos({ modo:'m3', cv:'cv3', exps:'exps3', ley:'ley3', k:'k3', t:'t3', body:'body3', desc:'desc3', titulo:'Ruedas',
   nombres:NOMBRES_RUEDAS, ids:{ fb:'fb3', res:'res3', sig:'sig3', rep:'repetir3' },
+  juego: () => Object.assign(juegoRotonda(), { ley:['v'], aria:'Rotonda vista desde arriba: con las flechas del teclado mueves el auto por la pista',
+    consigna:'Mueve el auto por la rotonda y cambia el radio y la rapidez.' }),
   crear: api3 => { const { E, animar, $ } = api3;
   const hasta = (clave, fin, rapidez) => dt => { E[clave] = Math.min(fin, E[clave] + dt*rapidez); return E[clave] < fin; };
   const cadena = () => M.transmision({ r1:E.r1, r2:E.r2, f1:1, tipo:'faja' });
