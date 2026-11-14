@@ -3072,7 +3072,14 @@
      "plantillas": [
       "cinta-radio",
       "geo-areas-circulares"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/trigonometria/longitud-de-arco-y-sector.js",
+      "requiere": [
+       "/nucleo/kit/piezas/trig-plano.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "trigonometria.razones-trigonometricas-agudas",
@@ -3100,7 +3107,14 @@
      "grado": 3,
      "plantillas": [
       "circunferencia-trig"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/trigonometria/razones-trigonometricas-agudas.js",
+      "requiere": [
+       "/nucleo/kit/piezas/triangulo.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "trigonometria.triangulos-rectangulos",
@@ -3128,7 +3142,14 @@
      "plantillas": [
       "circunferencia-trig",
       "trig-angulos-verticales"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/trigonometria/triangulos-rectangulos.js",
+      "requiere": [
+       "/nucleo/kit/piezas/triangulo.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "trigonometria.recta-en-el-plano",
@@ -3152,7 +3173,14 @@
      "grado": 4,
      "plantillas": [
       "geometria-analitica"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/trigonometria/recta-en-el-plano.js",
+      "requiere": [
+       "/nucleo/kit/piezas/trig-plano.js"
+      ],
+      "ideas": 6
+     }
     },
     {
      "id": "trigonometria.angulos-en-posicion-normal",
@@ -3180,7 +3208,14 @@
      "grado": 4,
      "plantillas": [
       "circunferencia-trig"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/trigonometria/angulos-en-posicion-normal.js",
+      "requiere": [
+       "/nucleo/kit/piezas/trig-plano.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "trigonometria.reduccion-al-primer-cuadrante",
@@ -3208,7 +3243,14 @@
      "plantillas": [
       "circunferencia-trig",
       "trig-oblicuangulos"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/trigonometria/reduccion-al-primer-cuadrante.js",
+      "requiere": [
+       "/nucleo/kit/piezas/trig-plano.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "trigonometria.circunferencia-trigonometrica",
@@ -3240,7 +3282,14 @@
      "plantillas": [
       "circunferencia-trig",
       "trig-extremos"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/trigonometria/circunferencia-trigonometrica.js",
+      "requiere": [
+       "/nucleo/kit/piezas/trig-plano.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "trigonometria.identidades-fundamentales",
@@ -3269,7 +3318,15 @@
       "identidades-trig",
       "trig-extremos",
       "trig-identidades"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/trigonometria/identidades-fundamentales.js",
+      "requiere": [
+       "/nucleo/kit/piezas/trig-plano.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "trigonometria.arcos-compuestos",
@@ -3297,7 +3354,16 @@
       "identidades-trig",
       "trig-angulos-verticales",
       "trig-identidades"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/trigonometria/arcos-compuestos.js",
+      "requiere": [
+       "/nucleo/kit/piezas/trig-plano.js",
+       "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/triangulo.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "trigonometria.arcos-multiples",
@@ -3326,7 +3392,15 @@
      "plantillas": [
       "identidades-trig",
       "trig-identidades"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/trigonometria/arcos-multiples.js",
+      "requiere": [
+       "/nucleo/kit/piezas/trig-plano.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "trigonometria.transformaciones-trigonometricas",
@@ -3354,7 +3428,15 @@
      "grado": 5,
      "plantillas": [
       "transformaciones-trig"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/trigonometria/transformaciones-trigonometricas.js",
+      "requiere": [
+       "/nucleo/kit/piezas/trig-plano.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "trigonometria.funciones-trigonometricas",
@@ -3386,7 +3468,14 @@
      "plantillas": [
       "circunferencia-trig",
       "trig-extremos"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/trigonometria/funciones-trigonometricas.js",
+      "requiere": [
+       "/nucleo/kit/piezas/trig-onda.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "trigonometria.funciones-trigonometricas-inversas",
@@ -3416,7 +3505,14 @@
      "plantillas": [
       "funciones-trig-inversas",
       "trig-inversas"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/trigonometria/funciones-trigonometricas-inversas.js",
+      "requiere": [
+       "/nucleo/kit/piezas/trig-plano.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "trigonometria.ecuaciones-trigonometricas",
@@ -3444,7 +3540,15 @@
      "plantillas": [
       "circunferencia-trig",
       "trig-ecuaciones"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/trigonometria/ecuaciones-trigonometricas.js",
+      "requiere": [
+       "/nucleo/kit/piezas/trig-plano.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "trigonometria.triangulos-oblicuangulos",
@@ -3472,7 +3576,15 @@
      "plantillas": [
       "caso-ambiguo",
       "trig-oblicuangulos"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/trigonometria/triangulos-oblicuangulos.js",
+      "requiere": [
+       "/nucleo/kit/piezas/trig-plano.js",
+       "/nucleo/kit/piezas/triangulo.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "trigonometria.areas-y-lineas-notables",
@@ -3502,7 +3614,14 @@
      "plantillas": [
       "caso-ambiguo",
       "trig-oblicuangulos"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/trigonometria/areas-y-lineas-notables.js",
+      "requiere": [
+       "/nucleo/kit/piezas/trig-plano.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "trigonometria.conicas",
@@ -3529,7 +3648,14 @@
      "grado": 5,
      "plantillas": [
       "conicas"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/trigonometria/conicas.js",
+      "requiere": [
+       "/nucleo/kit/piezas/trig-plano.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "trigonometria.coordenadas-polares-y-complejos",
@@ -3552,7 +3678,14 @@
      "plantillas": [
       "coordenadas-polares",
       "trig-polares"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/trigonometria/coordenadas-polares-y-complejos.js",
+      "requiere": [
+       "/nucleo/kit/piezas/trig-plano.js"
+      ],
+      "ideas": 5
+     }
     }
    ]
   },
