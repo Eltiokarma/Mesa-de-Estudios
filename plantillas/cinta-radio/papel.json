@@ -12,7 +12,37 @@
         "De S/180 = C/200: C = 135 · 200/180 = 150ᵍ.",
         "Control: 135° es 3/8 de vuelta; 3/8 de 2π es 3π/4 y 3/8 de 400ᵍ es 150ᵍ."
       ],
-      "verificar": [ { "fn": "convertir", "args": [{ "S": 135 }], "espera": { "textoR": "3π/4", "C": 150 } } ]
+      "verificar": [ { "fn": "convertir", "args": [{ "S": 135 }], "espera": { "textoR": "3π/4", "C": 150 } } ],
+      "preguntas": [
+        {
+          "id": "p1b",
+          "enunciado": "Un ángulo mide 135°.",
+          "pregunta": "¿Cuántos grados centesimales mide?",
+          "unidad": "ᵍ",
+          "decimales": 2,
+          "correcta": { "fn": "convertir", "args": [{ "S": 135 }], "campo": "C", "valor": 150 },
+          "errores": [
+            {
+              "id": "TR-centesimal-igual",
+              "respaldo": "hipotesis",
+              "explicacion": "Dejaste el mismo número. El grado centesimal es más chico: la vuelta tiene 400ᵍ, así que C = 135 · 200/180 = 150ᵍ.",
+              "fn": "convertir",
+              "args": [{ "S": 135 }],
+              "campo": "errores.centesimalIgual",
+              "valor": 135
+            },
+            {
+              "id": "TR-factor-invertido",
+              "respaldo": "hipotesis",
+              "explicacion": "Multiplicaste por 180/200, el factor al revés. De S/180 = C/200 sale C = S · 200/180.",
+              "fn": "convertir",
+              "args": [{ "C": 135 }],
+              "campo": "S",
+              "valor": 121.5
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p2",
@@ -36,7 +66,83 @@
         "Arco: L = θ · r = (5π/9) · 18 = 10π cm. Con 100 en lugar de 5π/9 saldría 1800 cm: un abanico de 18 metros de borde, imposible.",
         "Área: A = θ · r²/2 = (5π/9) · 324/2 = 90π cm². También A = L · r/2 = 10π · 18/2 = 90π cm²."
       ],
-      "verificar": [ { "fn": "sector", "args": [{ "r": 18, "theta": 100, "unidad": "sex" }], "espera": { "thetaTexto": "5π/9", "Lpi": 10, "Api": 90 } } ]
+      "verificar": [ { "fn": "sector", "args": [{ "r": 18, "theta": 100, "unidad": "sex" }], "espera": { "thetaTexto": "5π/9", "Lpi": 10, "Api": 90 } } ],
+      "preguntas": [
+        {
+          "id": "p3a",
+          "enunciado": "Un abanico de 18 cm de radio se abre 100°.",
+          "pregunta": "¿Cuánto mide el arco de su borde?",
+          "unidad": "cm",
+          "decimales": 2,
+          "correcta": { "fn": "sector", "args": [{ "r": 18, "theta": 100, "unidad": "sex" }], "campo": "L", "valor": 31.4159265359 },
+          "errores": [
+            {
+              "id": "TR-arco-con-diametro",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste el diámetro, 36 cm. En L = θ · r va el radio: (5π/9) · 18 = 10π cm.",
+              "fn": "sector",
+              "args": [{ "r": 18, "theta": 100, "unidad": "sex" }],
+              "campo": "errores.arcoConDiametro",
+              "valor": 62.8318530718
+            },
+            {
+              "id": "TR2-olvida-radio",
+              "respaldo": "hipotesis",
+              "explicacion": "Te quedaste en el ángulo, 5π/9 rad. Falta multiplicar por el radio: L = θ · r.",
+              "fn": "sector",
+              "args": [{ "r": 18, "theta": 100, "unidad": "sex" }],
+              "campo": "errores.arcoSinRadio",
+              "valor": 1.74532925199
+            },
+            {
+              "id": "TR2-arco-igual-radio",
+              "respaldo": "parcial",
+              "explicacion": "Tomaste el arco igual al radio. Eso pasa solo con 1 rad, unos 57°; aquí el ángulo es 100°.",
+              "fn": "sector",
+              "args": [{ "r": 18, "theta": 100, "unidad": "sex" }],
+              "campo": "errores.arcoIgualRadio",
+              "valor": 18
+            }
+          ]
+        },
+        {
+          "id": "p3b",
+          "enunciado": "Un abanico de 18 cm de radio se abre 100°. Su tela es un sector circular.",
+          "pregunta": "¿Cuál es el área de la tela?",
+          "unidad": "cm²",
+          "decimales": 2,
+          "correcta": { "fn": "sector", "args": [{ "r": 18, "theta": 100, "unidad": "sex" }], "campo": "A", "valor": 282.743338823 },
+          "errores": [
+            {
+              "id": "TR-area-sin-mitad",
+              "respaldo": "hipotesis",
+              "explicacion": "Olvidaste dividir entre 2. El área del sector es A = θ · r²/2.",
+              "fn": "sector",
+              "args": [{ "r": 18, "theta": 100, "unidad": "sex" }],
+              "campo": "errores.areaSinMitad",
+              "valor": 565.486677646
+            },
+            {
+              "id": "TR-area-con-diametro",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste el diámetro, 36 cm, en lugar del radio. En A = θ · r²/2 va r = 18.",
+              "fn": "sector",
+              "args": [{ "r": 18, "theta": 100, "unidad": "sex" }],
+              "campo": "errores.areaConDiametro",
+              "valor": 1130.97335529
+            },
+            {
+              "id": "TR-area-igual-arco",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es el arco, 10π cm, no el área. El área es A = L · r/2 = 90π cm².",
+              "fn": "sector",
+              "args": [{ "r": 18, "theta": 100, "unidad": "sex" }],
+              "campo": "errores.areaIgualArco",
+              "valor": 31.4159265359
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p4",
@@ -73,7 +179,46 @@
         "Área del trapecio circular: (L₁ + L₂)/2 · ancho = (10π + 30π)/2 · 30 = 600π cm².",
         "Comprobación: sector grande menos sector chico = (2π/3) · (45² − 15²)/2 = (2π/3) · 900 = 600π cm². Con (45 − 15)² en vez de 45² − 15² saldría 300π, que es otra cosa."
       ],
-      "verificar": [ { "fn": "trapecio", "args": [{ "r1": 15, "r2": 45, "theta": 120, "unidad": "sex" }], "espera": { "Api": 600, "Asectores": 1884.9555921538756, "L1": 31.41592653589793 } } ]
+      "verificar": [ { "fn": "trapecio", "args": [{ "r1": 15, "r2": 45, "theta": 120, "unidad": "sex" }], "espera": { "Api": 600, "Asectores": 1884.9555921538756, "L1": 31.41592653589793 } } ],
+      "preguntas": [
+        {
+          "id": "p6a",
+          "enunciado": "La escobilla de un limpiaparabrisas va desde 15 cm hasta 45 cm del eje y gira 120°. Limpia un trapecio circular.",
+          "pregunta": "¿Qué área del vidrio limpia?",
+          "unidad": "cm²",
+          "decimales": 2,
+          "correcta": { "fn": "trapecio", "args": [{ "r1": 15, "r2": 45, "theta": 120, "unidad": "sex" }], "campo": "A", "valor": 1884.95559215 },
+          "errores": [
+            {
+              "id": "TR-trapecio-sin-mitad",
+              "respaldo": "hipotesis",
+              "explicacion": "Olvidaste dividir entre 2. El área es (L₁ + L₂)/2 por el ancho.",
+              "fn": "trapecio",
+              "args": [{ "r1": 15, "r2": 45, "theta": 120, "unidad": "sex" }],
+              "campo": "errores.sinMitad",
+              "valor": 3769.91118431
+            },
+            {
+              "id": "TR-cuadrado-de-la-resta",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste (45 − 15)². Lo que se resta son los dos sectores: 45² − 15², que no es lo mismo.",
+              "fn": "trapecio",
+              "args": [{ "r1": 15, "r2": 45, "theta": 120, "unidad": "sex" }],
+              "campo": "errores.conCuadradoDeLaResta",
+              "valor": 942.477796077
+            },
+            {
+              "id": "TR-solo-sector-grande",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es el sector grande entero. Falta quitarle el sector chico de 15 cm, que la escobilla no toca.",
+              "fn": "trapecio",
+              "args": [{ "r1": 15, "r2": 45, "theta": 120, "unidad": "sex" }],
+              "campo": "errores.soloSectorGrande",
+              "valor": 2120.57504117
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p7",
@@ -85,7 +230,46 @@
         "En cada vuelta la rueda avanza su perímetro: 2π · 30 = 60π cm.",
         "n = 18 000π / 60π = 300 vueltas. Dividir solo entre el radio daría 600π, que es el ángulo girado en radianes, no las vueltas."
       ],
-      "verificar": [ { "fn": "vueltas", "args": [{ "d": 56548.66776461628, "r": 30 }], "espera": { "n": 300, "errores.sinDosPi": 1884.9555921538756 } } ]
+      "verificar": [ { "fn": "vueltas", "args": [{ "d": 56548.66776461628, "r": 30 }], "espera": { "n": 300, "errores.sinDosPi": 1884.9555921538756 } } ],
+      "preguntas": [
+        {
+          "id": "p7a",
+          "enunciado": "Una rueda de 30 cm de radio rueda sin resbalar y avanza 180π m.",
+          "pregunta": "¿Cuántas vueltas da?",
+          "unidad": "vueltas",
+          "decimales": 0,
+          "correcta": { "fn": "vueltas", "args": [{ "d": 56548.66776461628, "r": 30 }], "campo": "n", "valor": 300 },
+          "errores": [
+            {
+              "id": "TR-sin-dos-pi",
+              "respaldo": "hipotesis",
+              "explicacion": "Dividiste la distancia solo entre el radio: eso da el ángulo girado en radianes. Cada vuelta avanza 2πr = 60π cm.",
+              "fn": "vueltas",
+              "args": [{ "d": 56548.66776461628, "r": 30 }],
+              "campo": "errores.sinDosPi",
+              "valor": 1884.95559215
+            },
+            {
+              "id": "TR-perimetro-pi-r",
+              "respaldo": "hipotesis",
+              "explicacion": "Tomaste el perímetro como πr. Una vuelta avanza 2πr = 60π cm.",
+              "fn": "vueltas",
+              "args": [{ "d": 56548.66776461628, "r": 30 }],
+              "campo": "errores.conPiR",
+              "valor": 600
+            },
+            {
+              "id": "AU1-sin-convertir",
+              "respaldo": "hipotesis",
+              "explicacion": "Mezclaste metros y centímetros. Primero todo en cm: 180π m = 18 000π cm.",
+              "fn": "vueltas",
+              "args": [{ "d": 565.4866776461628, "r": 30 }],
+              "campo": "n",
+              "valor": 3
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p8",
@@ -98,7 +282,74 @@
         "Su borde recorre 400 · 2π · 25 = 20 000π cm por minuto, unos 628 m."
       ],
       "verificar": [ { "fn": "transmision", "args": [{ "r1": 5, "r2": 15, "union": "faja", "n1": 1200 }], "espera": { "n2": 400, "errores.proporcional": 3600 } },
-                     { "fn": "transmision", "args": [{ "r1": 15, "r2": 25, "union": "eje", "n1": 400 }], "espera": { "n2": 400, "L2": 62831.853071795864 } } ]
+                     { "fn": "transmision", "args": [{ "r1": 15, "r2": 25, "union": "eje", "n1": 400 }], "espera": { "n2": 400, "L2": 62831.853071795864 } } ],
+      "preguntas": [
+        {
+          "id": "p8a",
+          "enunciado": "La polea de un motor tiene 5 cm de radio y da 1200 vueltas por minuto. Una faja la une a una polea de 15 cm de radio, y en el mismo eje de esta va una rueda de 25 cm de radio.",
+          "pregunta": "¿Cuántas vueltas por minuto da la rueda?",
+          "unidad": "vueltas por minuto",
+          "decimales": 0,
+          "correcta": { "fn": "transmision", "args": [{ "r1": 5, "r2": 15, "union": "faja", "n1": 1200 }], "campo": "n2", "valor": 400 },
+          "errores": [
+            {
+              "id": "TR-faja-proporcional",
+              "respaldo": "hipotesis",
+              "explicacion": "Pensaste que la polea grande da más vueltas. Con faja, los bordes recorren lo mismo: la grande da menos.",
+              "fn": "transmision",
+              "args": [{ "r1": 5, "r2": 15, "union": "faja", "n1": 1200 }],
+              "campo": "errores.proporcional",
+              "valor": 3600
+            },
+            {
+              "id": "TR-faja-mismas-vueltas",
+              "respaldo": "hipotesis",
+              "explicacion": "Con faja no dan las mismas vueltas: los bordes recorren el mismo arco, 1200 · 5 = n · 15.",
+              "fn": "transmision",
+              "args": [{ "r1": 5, "r2": 15, "union": "faja", "n1": 1200 }],
+              "campo": "errores.mismoAngulo",
+              "valor": 1200
+            }
+          ]
+        },
+        {
+          "id": "p8b",
+          "enunciado": "La polea de un motor tiene 5 cm de radio y da 1200 vueltas por minuto. Una faja la une a una polea de 15 cm de radio, y en el mismo eje de esta va una rueda de 25 cm de radio.",
+          "pregunta": "¿Cuánto recorre en un minuto un punto del borde de la rueda?",
+          "unidad": "cm",
+          "decimales": 0,
+          "correcta": { "fn": "transmision", "args": [{ "r1": 15, "r2": 25, "union": "eje", "n1": 400 }], "campo": "L2", "valor": 62831.8530718 },
+          "errores": [
+            {
+              "id": "TR-eje-como-faja",
+              "respaldo": "hipotesis",
+              "explicacion": "Trataste la rueda como si la moviera otra faja: así salen 240 vueltas. En el mismo eje da las mismas 400 vueltas: 400 · 2π · 25.",
+              "fn": "transmision",
+              "args": [{ "r1": 15, "r2": 25, "union": "faja", "n1": 400 }],
+              "campo": "L2",
+              "valor": 37699.1118431
+            },
+            {
+              "id": "TR-faja-mismas-vueltas",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste las 1200 vueltas del motor. Con faja, la polea de 15 cm da menos: 1200 · 5 = n · 15, n = 400.",
+              "fn": "transmision",
+              "args": [{ "r1": 15, "r2": 25, "union": "eje", "n1": 1200 }],
+              "campo": "L2",
+              "valor": 188495.559215
+            },
+            {
+              "id": "TR-faja-proporcional",
+              "respaldo": "hipotesis",
+              "explicacion": "Pensaste que la polea grande da más vueltas, 3600. Con faja, los bordes recorren lo mismo y la grande da 400.",
+              "fn": "transmision",
+              "args": [{ "r1": 15, "r2": 25, "union": "eje", "n1": 3600 }],
+              "campo": "L2",
+              "valor": 565486.677646
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p9",
@@ -111,7 +362,83 @@
         "Por dentro, el centro va a 5 − 1 = 4 cm y recorre 8π cm: 8π / 2π = 4 vueltas."
       ],
       "verificar": [ { "fn": "alrededor", "args": [{ "fijo": 5, "r": 1, "lado": "fuera" }], "espera": { "vueltas": 6, "errores.soloArco": 5 } },
-                     { "fn": "alrededor", "args": [{ "fijo": 5, "r": 1, "lado": "dentro" }], "espera": { "vueltas": 4 } } ]
+                     { "fn": "alrededor", "args": [{ "fijo": 5, "r": 1, "lado": "dentro" }], "espera": { "vueltas": 4 } } ],
+      "preguntas": [
+        {
+          "id": "p9a",
+          "enunciado": "Una moneda de 1 cm de radio rueda sin resbalar alrededor de un disco fijo de 5 cm de radio, por fuera, hasta volver a su lugar.",
+          "pregunta": "¿Cuántas vueltas da sobre sí misma?",
+          "unidad": "vueltas",
+          "decimales": 0,
+          "correcta": { "fn": "alrededor", "args": [{ "fijo": 5, "r": 1, "lado": "fuera" }], "campo": "vueltas", "valor": 6 },
+          "errores": [
+            {
+              "id": "TR-solo-arco",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste solo el borde del disco, 10π. Cuenta el camino del centro de la moneda, a 6 cm: 12π.",
+              "fn": "alrededor",
+              "args": [{ "fijo": 5, "r": 1, "lado": "fuera" }],
+              "campo": "errores.soloArco",
+              "valor": 5
+            },
+            {
+              "id": "TR-con-diametros",
+              "respaldo": "hipotesis",
+              "explicacion": "Dividiste el diámetro del disco entre el radio de la moneda. Lo que cuenta es el camino del centro: 2π · 6.",
+              "fn": "alrededor",
+              "args": [{ "fijo": 5, "r": 1, "lado": "fuera" }],
+              "campo": "errores.conDiametros",
+              "valor": 10
+            },
+            {
+              "id": "TR-lado-contrario",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es el caso por dentro, con el centro a 5 − 1 = 4 cm. Por fuera va a 5 + 1 = 6 cm.",
+              "fn": "alrededor",
+              "args": [{ "fijo": 5, "r": 1, "lado": "fuera" }],
+              "campo": "errores.ladoContrario",
+              "valor": 4
+            }
+          ]
+        },
+        {
+          "id": "p9b",
+          "enunciado": "Una moneda de 1 cm de radio rueda sin resbalar por dentro de un aro de 5 cm de radio, hasta volver a su lugar.",
+          "pregunta": "¿Cuántas vueltas da sobre sí misma?",
+          "unidad": "vueltas",
+          "decimales": 0,
+          "correcta": { "fn": "alrededor", "args": [{ "fijo": 5, "r": 1, "lado": "dentro" }], "campo": "vueltas", "valor": 4 },
+          "errores": [
+            {
+              "id": "TR-solo-arco",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste solo el borde del aro, 10π. Cuenta el camino del centro de la moneda, a 4 cm: 8π.",
+              "fn": "alrededor",
+              "args": [{ "fijo": 5, "r": 1, "lado": "dentro" }],
+              "campo": "errores.soloArco",
+              "valor": 5
+            },
+            {
+              "id": "TR-con-diametros",
+              "respaldo": "hipotesis",
+              "explicacion": "Dividiste el diámetro del aro entre el radio de la moneda. Lo que cuenta es el camino del centro: 2π · 4.",
+              "fn": "alrededor",
+              "args": [{ "fijo": 5, "r": 1, "lado": "dentro" }],
+              "campo": "errores.conDiametros",
+              "valor": 10
+            },
+            {
+              "id": "TR-lado-contrario",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es el caso por fuera, con el centro a 6 cm. Por dentro va a 5 − 1 = 4 cm.",
+              "fn": "alrededor",
+              "args": [{ "fijo": 5, "r": 1, "lado": "dentro" }],
+              "campo": "errores.ladoContrario",
+              "valor": 6
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p10",
@@ -123,7 +450,37 @@
         "S = C · 180/200 = 50,25 · 0,9 = 45,225°.",
         "0,225° · 60 = 13,5' y 0,5' · 60 = 30\". Respuesta: 45°13'30\"."
       ],
-      "verificar": [ { "fn": "desdeCentesimal", "args": [50, 25, 0], "espera": { "S": 45.225, "sexagesimal.grados": 45, "sexagesimal.minutos": 13, "sexagesimal.segundos": 30 } } ]
+      "verificar": [ { "fn": "desdeCentesimal", "args": [50, 25, 0], "espera": { "S": 45.225, "sexagesimal.grados": 45, "sexagesimal.minutos": 13, "sexagesimal.segundos": 30 } } ],
+      "preguntas": [
+        {
+          "id": "p10a",
+          "enunciado": "Un ángulo mide 50ᵍ25ᵐ.",
+          "pregunta": "¿Cuántos grados sexagesimales mide, con decimales?",
+          "unidad": "°",
+          "decimales": 3,
+          "correcta": { "fn": "desdeCentesimal", "args": [50, 25, 0], "campo": "S", "valor": 45.225 },
+          "errores": [
+            {
+              "id": "TR-centesimal-como-sexagesimal",
+              "respaldo": "hipotesis",
+              "explicacion": "Leíste 50,25ᵍ como si fueran grados sexagesimales. Hay que convertir: S = C · 180/200.",
+              "fn": "desdeCentesimal",
+              "args": [50, 25, 0],
+              "campo": "errores.comoSexagesimal",
+              "valor": 50.25
+            },
+            {
+              "id": "TR-factor-invertido",
+              "respaldo": "hipotesis",
+              "explicacion": "Multiplicaste por 200/180, el factor al revés. De S/180 = C/200 sale S = C · 180/200.",
+              "fn": "desdeCentesimal",
+              "args": [50, 25, 0],
+              "campo": "errores.factorInvertido",
+              "valor": 55.8333333333
+            }
+          ]
+        }
+      ]
     }
   ]
 }
