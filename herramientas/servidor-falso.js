@@ -261,6 +261,12 @@ function crear({ ttlAcceso = 15 * 60 * 1000, ttlRenovacion = 30 * 864e5, ahora =
       }
     });
   });
+  // Las pruebas corren el cliente y este servidor en el mismo proceso. Con la máquina cargada, un tramo que bloquea
+  // el bucle más de 5 s (el keep-alive por omisión de Node) hacía que el servidor cerrara la conexión justo cuando el
+  // cliente la reusaba: ECONNRESET y una prueba roja que no era de la app (14 nov 2026). Aquí no se cierran por tiempo;
+  // cerrar() las corta todas. La app real reintenta una vez ese caso (nucleo/sesion.js, red()).
+  servidor.keepAliveTimeout = 10 * 60 * 1000;
+  servidor.headersTimeout = servidor.keepAliveTimeout + 1000;
   f.escuchar = (puerto = 0, host = '127.0.0.1') => new Promise(ok => servidor.listen(puerto, host, () => { f.url = `http://${host}:${servidor.address().port}`; ok(f.url); }));
   f.cerrar = () => new Promise(ok => { servidor.closeAllConnections && servidor.closeAllConnections(); servidor.close(() => ok()); });
   f.eventosDe = usuario => [...d.eventos.values()].filter(e => e.alumno === d.usuarios[usuario].alumno);
