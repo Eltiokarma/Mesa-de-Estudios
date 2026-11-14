@@ -143,6 +143,10 @@ input.r-masa{accent-color:var(--c-masa)}
 select{font:700 .95rem var(--font); padding:9px 12px; border-radius:12px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); min-height:44px; max-width:100%}
 .campo{display:grid; gap:4px; font-weight:700}
 .botones{display:flex; flex-wrap:wrap; gap:6px}
+.juego{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.juego[hidden]{display:none}
+.juego .seg{border-radius:16px}
+.juego .seg button{min-height:44px; color:var(--ink)}
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:999px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
 .seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
@@ -198,6 +202,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, select:focus-visibl
       <p class="sr" id="desc1" aria-live="polite"></p>
       <div class="legend" id="ley1"></div>
       <div class="contar" id="cnt1"></div>
+      <div class="juego" id="juego1"></div>
     </section>
     <section class="guide">
       <ol class="dots" id="dots"></ol>
@@ -220,6 +225,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, select:focus-visibl
       <p class="sr" id="desc2" aria-live="polite"></p>
       <div class="legend" id="ley2"></div>
       <div class="contar" id="cnt2"></div>
+      <div class="juego" id="juego2"></div>
     </section>
     <section class="guide">
       <div class="seg exps" id="exps" role="group" aria-label="Experimentos"></div>
@@ -245,6 +251,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'mol-composicion', unidad: 'quimica.mol-y-composicion', version: '0.1.0' };
@@ -692,6 +699,8 @@ function crearEscena(cv, idDesc, modoId, idLey, idCnt){
     if (v.cuenta && v.cuenta.lineas && v.cuenta.leer) partes.push(v.cuenta.leer);
     const t = partes.join(' '), el = document.getElementById(idDesc); if (el.textContent !== t) el.textContent = t;
   };
+  // Qué platillo hay bajo un punto del lienzo (px CSS): 'izq', 'der' o null.
+  E.ladoEn = (x, y) => Lz && Lz.bal && y >= Lz.bal.y && y <= Lz.bal.y + Lz.bal.h ? (x < Lz.bal.cx ? 'izq' : 'der') : null;
   return E;
 }
 // Leyenda con solo lo que se ve en ese momento.
@@ -751,6 +760,36 @@ function lentesPara(fs, ns, max){
   return { p, exactas, lentes:fs.map((f, k) => ({ figs:[{ f, n:cuentas[k] }], vacio: cuentas[k] === 0 ? 'menos de una figura' : '' })) };
 }
 const textoPorcion = (p, f) => `una porción de ${fmtMol(p)} mol de ${particula(f)} (${sci(p*MM.NA)} ${particula(f)})`;
+// Regla 3 (decisión 20): antes de cualquier pregunta se juega con la balanza: tocar un platillo le pone 5 g (cobre a la
+// izquierda, pesas a la derecha) y los botones hacen lo mismo sin tocar el dibujo. La lupa queda tapada y la cuenta solo
+// dice gramos: todas las predicciones preguntan por partículas, moles, porcentajes o volumen, y eso el juego no lo
+// muestra. El cobre no aparece en ninguna pregunta.
+const JUEGO_PASO = 5, JUEGO_MAX = 100;
+function juegoBalanza(E, cv, caja){
+  const J = { on:true, izq:20, der:10 };
+  const vista = () => ({
+    bal:{ izq: J.izq ? [{ f:'Cu', m:J.izq, etq:[['cobre ', 'ink', 700]] }] : [], der: J.der ? [{ f:'pesa', tipo:'pesa', m:J.der, etq:[['pesas', 'muted', 700], [` · ${J.der} g`, 'masa', 800]] }] : [], u:'g', vacio:{ izq:'cobre: vacío', der:'pesas: vacío' } },
+    lupa:{ tapa:'La lupa se abre al responder' },
+    cuenta:{ lineas:[[['Cobre: ', 'ink'], [`${J.izq} g`, 'masa', 800], ['     pesas: ', 'ink'], [`${J.der} g`, 'masa', 800]],
+      [[J.izq === J.der ? 'La balanza está pareja.' : `Baja el platillo ${J.izq > J.der ? 'del cobre' : 'de las pesas'}.`, 'muted']]], leer:`Cobre ${J.izq} g; pesas ${J.der} g.` },
+    vars:['masa'] });
+  const pintar = () => {
+    caja.querySelectorAll('[data-lado]').forEach(b => { const d = +b.dataset.d, m = J[b.dataset.lado]; b.disabled = d > 0 ? m >= JUEGO_MAX : m <= 0; });
+  };
+  const cambiar = (lado, d) => { if (!J.on) return; J[lado] = clamp(J[lado] + d, 0, JUEGO_MAX); ver(); };
+  const ver = () => { if (!J.on) return; E.vista = vista(); E.dibujar(); pedir(); E.describir(true); pintar(); };
+  caja.innerHTML = `<div class="seg" role="group" aria-label="Cobre"><button type="button" data-lado="izq" data-d="${JUEGO_PASO}">Poner ${JUEGO_PASO} g de cobre</button><button type="button" data-lado="izq" data-d="-${JUEGO_PASO}">Sacar</button></div>
+    <div class="seg" role="group" aria-label="Pesas"><button type="button" data-lado="der" data-d="${JUEGO_PASO}">Poner ${JUEGO_PASO} g de pesas</button><button type="button" data-lado="der" data-d="-${JUEGO_PASO}">Sacar</button></div>`;
+  caja.querySelectorAll('[data-lado]').forEach(b => b.onclick = () => cambiar(b.dataset.lado, +b.dataset.d));
+  cv.addEventListener('click', e => {
+    if (!J.on) return;
+    const r = cv.getBoundingClientRect(), lado = E.ladoEn(e.clientX - r.left, e.clientY - r.top);
+    if (lado) cambiar(lado, J[lado] >= JUEGO_MAX ? -JUEGO_MAX : JUEGO_PASO);
+  });
+  J.ver = ver;
+  J.terminar = () => { J.on = false; caja.hidden = true; caja.innerHTML = ''; };
+  return J;
+}
 </script>
 
 <script>
@@ -1036,6 +1075,10 @@ $('prev').addEventListener('click', () => go(S.step - 1));
 alRedibujarTema(() => E.dibujar());
 addEventListener('modo', () => { E.resize(); E.dibujar(); pedir(); });
 go(0);
+const juego = juegoBalanza(E, $('cv'), $('juego1')); juego.ver();
+JugarPrimero.montar({ escena: $('cv').closest('.bench'), preguntas: [...document.querySelector('#m1 .guide').children], minimo: 2,
+  consigna: 'Toca un platillo o usa los botones: mira cómo se inclina.',
+  alListo: () => { juego.terminar(); go(0); } });
 })();
 </script>
 
@@ -1207,6 +1250,10 @@ function ir(k){
 alRedibujarTema(() => E.dibujar());
 addEventListener('modo', () => { E.resize(); E.dibujar(); pedir(); });
 ir(0);
+const juego = juegoBalanza(E, $('cv2'), $('juego2')); juego.ver();
+JugarPrimero.montar({ escena: $('cv2').closest('.bench'), preguntas: [...document.querySelector('#m2 .guide').children], minimo: 2,
+  consigna: 'Toca un platillo o usa los botones: mira cómo se inclina.',
+  alListo: () => { juego.terminar(); ir(0); } });
 })();
 </script>
 
