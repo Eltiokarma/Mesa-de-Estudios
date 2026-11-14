@@ -578,7 +578,7 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "In a newspaper report about a program that already ended last year."
+              "t": "In a biography of the writer Mario Vargas Llosa."
             },
             {
               "letra": "B",
@@ -586,11 +586,11 @@
             },
             {
               "letra": "C",
-              "t": "On the library's notice board and in the neighborhood."
+              "t": "In a newspaper report about a program that already ended last year."
             },
             {
               "letra": "D",
-              "t": "In a biography of the writer Mario Vargas Llosa."
+              "t": "On the library's notice board and in the neighborhood."
             }
           ]
         },
@@ -608,11 +608,11 @@
             },
             {
               "letra": "C",
-              "t": "To invite adults to join a free reading program."
+              "t": "To tell the life story of a famous writer who was born in Arequipa."
             },
             {
               "letra": "D",
-              "t": "To tell the life story of a famous writer who was born in Arequipa."
+              "t": "To invite adults to join a free reading program."
             }
           ]
         },
@@ -622,19 +622,19 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "currently."
-            },
-            {
-              "letra": "B",
               "t": "finally."
             },
             {
-              "letra": "C",
+              "letra": "B",
               "t": "in fact."
             },
             {
-              "letra": "D",
+              "letra": "C",
               "t": "this week."
+            },
+            {
+              "letra": "D",
+              "t": "currently."
             }
           ]
         },
@@ -644,11 +644,11 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "Because participants must bring their ID card to sign up."
+              "t": "Because the retired teachers are only free at night."
             },
             {
               "letra": "B",
-              "t": "Because the retired teachers are only free at night."
+              "t": "Because participants must bring their ID card to sign up."
             },
             {
               "letra": "C",
@@ -666,35 +666,35 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "How to Get an ID Card in Arequipa"
-            },
-            {
-              "letra": "B",
               "t": "Reading Lessons for Primary School Children"
             },
             {
-              "letra": "C",
-              "t": "The Importance of Reading in the World"
+              "letra": "B",
+              "t": "Mario Vargas Llosa, Arequipa's Nobel Prize Winner"
             },
             {
-              "letra": "D",
+              "letra": "C",
               "t": "A Free Reading Program for Adults"
             },
             {
+              "letra": "D",
+              "t": "How to Get an ID Card in Arequipa"
+            },
+            {
               "letra": "E",
-              "t": "Mario Vargas Llosa, Arequipa's Nobel Prize Winner"
+              "t": "The Importance of Reading in the World"
             }
           ]
         }
       ],
-      "respuesta": "Clave: 1: C · 2: C · 3: C · 4: D · 5: D.",
+      "respuesta": "Clave: 1: D · 2: D · 3: B · 4: D · 5: C.",
       "pasos": [
         "Pregunta 1. Antes de las alternativas: Se deduce del texto. El texto no dice quién lo escribió, pero habla de «our community library» (oración 2), de «our city» (oración 7) y de «we» (oraciones 8 y 10), y pide ir a su mostrador (oración 9): se deduce que lo escribe la propia biblioteca.",
-        "Pregunta 1. Clave C. Es un aviso: la biblioteca habla de sí misma («our community library», oración 2), anuncia un programa que empezará el próximo mes y explica cómo inscribirse en su mostrador (oración 9). Un aviso así se pone donde lo vean los vecinos.",
-        "Pregunta 2. Clave C. El aviso se dirige a adultos (oración 1), anuncia el programa gratuito (oración 2) y explica cómo inscribirse (oraciones 9 y 10): busca que la gente se inscriba.",
-        "Pregunta 3. Clave C. «Actually» quiere decir en realidad, de hecho: la biblioteca esperaba veinte personas, pero de hecho ya llamaron más de cuarenta. Por eso recomienda inscribirse esta semana.",
+        "Pregunta 1. Clave D. Es un aviso: la biblioteca habla de sí misma («our community library», oración 2), anuncia un programa que empezará el próximo mes y explica cómo inscribirse en su mostrador (oración 9). Un aviso así se pone donde lo vean los vecinos.",
+        "Pregunta 2. Clave D. El aviso se dirige a adultos (oración 1), anuncia el programa gratuito (oración 2) y explica cómo inscribirse (oraciones 9 y 10): busca que la gente se inscriba.",
+        "Pregunta 3. Clave B. «Actually» quiere decir en realidad, de hecho: la biblioteca esperaba veinte personas, pero de hecho ya llamaron más de cuarenta. Por eso recomienda inscribirse esta semana.",
         "Pregunta 4. Clave D. La oración 3 lo dice: el grupo se reunirá de siete a ocho y media de la noche «so that people who work during the day can attend».",
-        "Pregunta 5. Clave D. La oración 2 dice lo principal del aviso: la biblioteca ofrecerá un programa de lectura gratuito para adultos. Lo demás da detalles."
+        "Pregunta 5. Clave C. La oración 2 dice lo principal del aviso: la biblioteca ofrecerá un programa de lectura gratuito para adultos. Lo demás da detalles."
       ]
     },
     {

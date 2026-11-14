@@ -1,6 +1,6 @@
 {
   "id": "t126",
-  "version": 1,
+  "version": 2,
   "titulo": "Reading Evenings",
   "tema": "Lectura en inglés · aviso de una biblioteca comunal de Arequipa sobre un programa de lectura para adultos",
   "grado": 5,
@@ -85,7 +85,7 @@
         },
         "explicacion": "El texto no dice quién lo escribió, pero habla de «our community library» (oración 2), de «our city» (oración 7) y de «we» (oraciones 8 y 10), y pide ir a su mostrador (oración 9): se deduce que lo escribe la propia biblioteca.",
         "explicaciones": {
-          "lo-dice": "En ningún lugar dice «this text was written by the library»: se deduce de «our community library» y de «we».",
+          "lo-dice": "Bien visto: «our community library» y «we» apuntan ahí. Pero el texto no afirma quién lo escribe: se deduce.",
           "no-se-sabe": "Sí se puede saber: quien escribe dice «our community library» y «we», y pide que vayan a su mostrador.",
           "lo-contradice": "Nada del texto dice que lo escriba otra persona o institución; al contrario, habla como la biblioteca («our», «we»)."
         }
@@ -278,6 +278,6 @@
     "por": "subagente (revisor a ciegas)",
     "fecha": "2026-11-08",
     "veredicto": "aprobado",
-    "notas": "A ciegas 6 de 6. La sonda del previo pasó a «quién escribe el texto» para que prepare la pregunta del lugar de publicación, y la oración 10 se reescribió para que «actually» se use con naturalidad (contraste con lo esperado)."
+    "notas": "A ciegas 6 de 6. La sonda del previo pasó a «quién escribe el texto» para que prepare la pregunta del lugar de publicación, y la oración 10 se reescribió para que «actually» se use con naturalidad (contraste con lo esperado). 14 nov 2026 (revisión de sondas de clasificar con la regla del 13 nov, por modelo, por revisar por una persona): la clase de la sonda no cambia (tres subagentes a ciegas coincidieron); 1 explicación(es) reescrita(s) para nombrar lo que la sonda agrega, no las palabras; revisión a ciegas de lo corregido por otro subagente. Detalle en docs/investigacion/revision-sondas-clasificar.md."
   }
 }

@@ -1,6 +1,6 @@
 {
   "id": "t133",
-  "version": 1,
+  "version": 2,
   "titulo": "Tres maneras de mirar la helada",
   "tema": "Filosofía · formas del conocimiento",
   "grado": 5,
@@ -131,7 +131,7 @@
         "explicacion": "El texto no habla de una persona que use los dos saberes, pero dice que las formas no se enfrentan (oración 2) y que no se anulan (oración 4). Si no se anulan, no hay que elegir una y dejar la otra. Se deduce.",
         "explicaciones": {
           "lo-dice": "Ninguna oración habla de alguien que use los dos saberes ni de renunciar. Se saca de que las formas «no se anulan».",
-          "no-se-sabe": "Aunque no lo diga así, si las formas no se enfrentan ni se anulan, usar una no obliga a dejar la otra.",
+          "no-se-sabe": "Es prudente no agregar nada, pero si las formas no se anulan (oración 4), usar una no excluye la otra.",
           "lo-contradice": "El texto distingue las formas, pero niega que se opongan (oraciones 2 y 6). Leer la distinción como un enfrentamiento cambia la relación que plantea."
         }
       },
@@ -285,6 +285,6 @@
     "por": "subagente (revisor a ciegas)",
     "fecha": "2026-11-08",
     "veredicto": "aprobado",
-    "notas": "A ciegas coincidió en 6 de 6. Se reforzaron distractores débiles (p2, p4 y p5) y se ajustaron sus códigos (RV7, RV44)."
+    "notas": "A ciegas coincidió en 6 de 6. Se reforzaron distractores débiles (p2, p4 y p5) y se ajustaron sus códigos (RV7, RV44). 14 nov 2026 (revisión de sondas de clasificar con la regla del 13 nov, por modelo, por revisar por una persona): la clase de la sonda no cambia (tres subagentes a ciegas coincidieron); 1 explicación(es) reescrita(s) para nombrar lo que la sonda agrega, no las palabras; revisión a ciegas de lo corregido por otro subagente. Detalle en docs/investigacion/revision-sondas-clasificar.md."
   }
 }

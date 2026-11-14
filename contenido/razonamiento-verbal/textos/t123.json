@@ -1,6 +1,6 @@
 {
   "id": "t123",
-  "version": 1,
+  "version": 2,
   "titulo": "A Cold and Rich Sea",
   "tema": "Lectura en inglés · la corriente de Humboldt y la riqueza del mar peruano",
   "grado": 4,
@@ -221,9 +221,9 @@
           "no-se-sabe": "RV34",
           "lo-contradice": null
         },
-        "explicacion": "La oración 8 dice que la anchoveta es la base de una industria pesquera importante, y las oraciones 10 y 11, que con El Niño escasea y se pesca mucho menos. El texto no lo dice con esas palabras, pero se deduce.",
+        "explicacion": "Se deduce: la industria vive de la anchoveta (oración 8), que con El Niño escasea (oración 10).",
         "explicaciones": {
-          "lo-dice": "El texto no habla de cómo le va a la industria durante El Niño: dice que escasea la anchoveta y que los pescadores pescan menos. Lo demás se deduce juntando las oraciones 8 y 11.",
+          "lo-dice": "Bien visto: el texto dice que escasea la anchoveta y se pesca menos. El daño a la industria se deduce.",
           "no-se-sabe": "Sí se puede saber: si la industria se basa en la anchoveta (oración 8) y con El Niño la anchoveta escasea (oración 10), la industria lo sufre.",
           "lo-contradice": "Nada del texto dice que a la industria le vaya bien con El Niño; al contrario, se pesca mucho menos (oración 11)."
         }
@@ -290,6 +290,6 @@
     "por": "subagente (revisor a ciegas)",
     "fecha": "2026-11-08",
     "veredicto": "aprobado",
-    "notas": "A ciegas 6 de 6. La correcta de la inferencia se reescribió para que exija juntar la cadena (antes estaba casi dicha en la oración 8) y la de «scarce» pasó de «rare» a «hard to find», más exacta."
+    "notas": "A ciegas 6 de 6. La correcta de la inferencia se reescribió para que exija juntar la cadena (antes estaba casi dicha en la oración 8) y la de «scarce» pasó de «rare» a «hard to find», más exacta. 14 nov 2026 (revisión de sondas de clasificar con la regla del 13 nov, por modelo, por revisar por una persona): la clase de la sonda no cambia (tres subagentes a ciegas coincidieron); 2 explicación(es) reescrita(s) para nombrar lo que la sonda agrega, no las palabras; revisión a ciegas de lo corregido por otro subagente. Detalle en docs/investigacion/revision-sondas-clasificar.md."
   }
 }

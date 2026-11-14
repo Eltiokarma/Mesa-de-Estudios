@@ -1,6 +1,6 @@
 {
   "id": "t129",
-  "version": 1,
+  "version": 2,
   "titulo": "Our Rivers Are Not a Trash Can",
   "tema": "Lectura en inglés · carta de una profesora de Iquitos sobre el plástico en los ríos",
   "grado": 4,
@@ -242,7 +242,7 @@
         },
         "explicacion": "La oración 7 dice que limpiar no basta si sigue llegando plástico nuevo, y la 8 propone reducir el plástico que usa la ciudad. De ahí se deduce que, para ella, menos plástico en la ciudad es menos plástico en los ríos.",
         "explicaciones": {
-          "lo-dice": "Ninguna oración lo dice así: se saca de unir la oración 7 (sigue llegando plástico) con la propuesta de la oración 8.",
+          "lo-dice": "Bien visto: las oraciones 7 y 8 apuntan ahí. El efecto en los ríos lo agrega el lector.",
           "no-se-sabe": "Sí se puede saber: por eso la autora propone reducir el plástico (oración 8), para que deje de llegar a los ríos (oración 7).",
           "lo-contradice": "El texto no dice que reducir el plástico no sirva: es justo lo que la autora propone para cuidar los ríos."
         }
@@ -298,5 +298,10 @@
       "fuente": "Texto propio (carta ficticia)."
     }
   ],
-  "revision": {"por": "subagente (revisor a ciegas)", "fecha": "2026-11-08", "veredicto": "aprobado", "notas": "A ciegas coincidí en los 7 ítems. El p4 pasó de «false according to the letter» a «contradicts» para que lo no mencionado no sea defendible, reforcé el distractor absoluto del p5 y alineé los códigos del antónimo (sinónimo RV19, otro término RV21)."}
+  "revision": {
+    "por": "subagente (revisor a ciegas)",
+    "fecha": "2026-11-08",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidí en los 7 ítems. El p4 pasó de «false according to the letter» a «contradicts» para que lo no mencionado no sea defendible, reforcé el distractor absoluto del p5 y alineé los códigos del antónimo (sinónimo RV19, otro término RV21). 14 nov 2026 (revisión de sondas de clasificar con la regla del 13 nov, por modelo, por revisar por una persona): la clase de la sonda no cambia (tres subagentes a ciegas coincidieron); 1 explicación(es) reescrita(s) para nombrar lo que la sonda agrega, no las palabras; revisión a ciegas de lo corregido por otro subagente. Detalle en docs/investigacion/revision-sondas-clasificar.md."
+  }
 }

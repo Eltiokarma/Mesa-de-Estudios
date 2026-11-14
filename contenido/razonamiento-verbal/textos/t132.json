@@ -1,6 +1,6 @@
 {
   "id": "t132",
-  "version": 1,
+  "version": 2,
   "titulo": "Agua segura en casa",
   "tema": "Salud · agua de consumo en el hogar",
   "grado": 4,
@@ -172,8 +172,8 @@
         },
         "explicacion": "La infografía no compara el cloro con el hervido, pero lo permite: el hervido está en el grupo que no protege el agua después, y del cloro dice que sigue actuando contra los microbios que entren. Se deduce.",
         "explicaciones": {
-          "lo-dice": "Ningún recuadro compara el cloro con el hervido ni dice cuál conviene más. Se saca al juntar el título del primer grupo con el recuadro «Clorar».",
-          "no-se-sabe": "Aunque no lo diga así, el primer grupo «no protege después» y el cloro «sigue actuando»: de ahí sale la ventaja del cloro para el agua guardada.",
+          "lo-dice": "Bien visto: el hervido no protege después y el cloro sigue actuando. Pero la comparación la agrega el lector.",
+          "no-se-sabe": "Es prudente no agregar nada, pero el hervido «no protege después» y el cloro «sigue actuando»: de ahí sale.",
           "lo-contradice": "La infografía no dice que el hervido proteja el agua guardada; dice lo contrario, que puede volver a contaminarse."
         }
       },
@@ -276,6 +276,6 @@
     "por": "subagente (revisor a ciegas)",
     "fecha": "2026-11-08",
     "veredicto": "aprobado",
-    "notas": "A ciegas coincidió en 5 de 5. Se confirmaron la dosis del Minsa (dos gotas de lejía al 5 % por litro, 30 minutos) y la regla SODIS (dos días si el cielo está muy nublado), ajustando la infografía; la sonda de p3 pasó a paráfrasis y se reforzaron distractores débiles (p1, p2, p3 y p4)."
+    "notas": "A ciegas coincidió en 5 de 5. Se confirmaron la dosis del Minsa (dos gotas de lejía al 5 % por litro, 30 minutos) y la regla SODIS (dos días si el cielo está muy nublado), ajustando la infografía; la sonda de p3 pasó a paráfrasis y se reforzaron distractores débiles (p1, p2, p3 y p4). 14 nov 2026 (revisión de sondas de clasificar con la regla del 13 nov, por modelo, por revisar por una persona): la clase de la sonda no cambia (tres subagentes a ciegas coincidieron); 2 explicación(es) reescrita(s) para nombrar lo que la sonda agrega, no las palabras; revisión a ciegas de lo corregido por otro subagente. Detalle en docs/investigacion/revision-sondas-clasificar.md."
   }
 }

@@ -681,7 +681,7 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "quedarse dos días seguidos al sol, para mayor seguridad."
+              "t": "ser transparentes y quedar al sol directo."
             },
             {
               "letra": "B",
@@ -689,11 +689,11 @@
             },
             {
               "letra": "C",
-              "t": "ser de vidrio oscuro, que guarda mejor el calor."
+              "t": "quedarse dos días seguidos al sol, para mayor seguridad."
             },
             {
               "letra": "D",
-              "t": "ser transparentes y quedar al sol directo."
+              "t": "ser de vidrio oscuro, que guarda mejor el calor."
             }
           ]
         },
@@ -703,19 +703,19 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "limpian el agua que se va a tomar pronto / la siguen cuidando mientras está guardada"
-            },
-            {
-              "letra": "B",
-              "t": "limpian el agua que se va a tomar pronto / impiden para siempre que vuelva a contaminarse"
-            },
-            {
-              "letra": "C",
               "t": "se usan con agua turbia / se usan con agua clara"
             },
             {
-              "letra": "D",
+              "letra": "B",
               "t": "cuidan el agua mientras está guardada / limpian el agua que se va a tomar pronto"
+            },
+            {
+              "letra": "C",
+              "t": "limpian el agua que se va a tomar pronto / la siguen cuidando mientras está guardada"
+            },
+            {
+              "letra": "D",
+              "t": "limpian el agua que se va a tomar pronto / impiden para siempre que vuelva a contaminarse"
             },
             {
               "letra": "E",
@@ -730,15 +730,15 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "se contaminará toda sin remedio, aunque después se tape."
-            },
-            {
-              "letra": "B",
               "t": "queda protegida, porque el hervor ya mató los microbios."
             },
             {
-              "letra": "C",
+              "letra": "B",
               "t": "se volverá turbia por la tierra que entre al balde."
+            },
+            {
+              "letra": "C",
+              "t": "se contaminará toda sin remedio, aunque después se tape."
             },
             {
               "letra": "D",
@@ -752,30 +752,30 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "guardarla en un recipiente tapado y con caño."
-            },
-            {
-              "letra": "B",
-              "t": "nada, porque la infografía no dice qué hacer cuando el agua del caño sale turbia."
-            },
-            {
-              "letra": "C",
               "t": "dejarla al sol dos días seguidos, como cuando el cielo está muy nublado."
             },
             {
-              "letra": "D",
+              "letra": "B",
+              "t": "guardarla en un recipiente tapado y con caño."
+            },
+            {
+              "letra": "C",
               "t": "pasarla por una tela limpia doblada."
+            },
+            {
+              "letra": "D",
+              "t": "nada, porque la infografía no dice qué hacer cuando el agua del caño sale turbia."
             }
           ]
         }
       ],
-      "respuesta": "Clave: 1: D · 2: A · 3: D · 4: D.",
+      "respuesta": "Clave: 1: A · 2: C · 3: D · 4: C.",
       "pasos": [
-        "Pregunta 1. Clave D. El recuadro «Desinfección solar» pide botellas de plástico transparente, con agua clara, al sol directo al menos seis horas.",
-        "Pregunta 2. Clave A. Las dos mitades salen de los títulos y las explicaciones de los grupos: el primero limpia una porción sin protegerla después; el segundo sigue cuidando el agua en el recipiente.",
+        "Pregunta 1. Clave A. El recuadro «Desinfección solar» pide botellas de plástico transparente, con agua clara, al sol directo al menos seis horas.",
+        "Pregunta 2. Clave C. Las dos mitades salen de los títulos y las explicaciones de los grupos: el primero limpia una porción sin protegerla después; el segundo sigue cuidando el agua en el recipiente.",
         "Pregunta 3. Antes de las alternativas: Se deduce del texto. La infografía no compara el cloro con el hervido, pero lo permite: el hervido está en el grupo que no protege el agua después, y del cloro dice que sigue actuando contra los microbios que entren. Se deduce.",
         "Pregunta 3. Clave D. El primer grupo, donde está hervir, no protege el agua después: si se guarda destapada puede volver a contaminarse, como repite la oración 5.",
-        "Pregunta 4. Clave D. El recuadro «Filtrar» dice que la tela quita la turbidez y que se haga antes de hervir, de clorar o de poner el agua al sol."
+        "Pregunta 4. Clave C. El recuadro «Filtrar» dice que la tela quita la turbidez y que se haga antes de hervir, de clorar o de poner el agua al sol."
       ]
     },
     {
@@ -852,15 +852,15 @@
             },
             {
               "letra": "B",
-              "t": "es la única que llega a verdades definitivas."
+              "t": "busca comprender la realidad y orientar la vida."
             },
             {
               "letra": "C",
-              "t": "trabaja con laboratorios y aparatos modernos."
+              "t": "es la única que llega a verdades definitivas."
             },
             {
               "letra": "D",
-              "t": "busca comprender la realidad y orientar la vida."
+              "t": "trabaja con laboratorios y aparatos modernos."
             },
             {
               "letra": "E",
@@ -875,7 +875,7 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "puede convivir con la explicación del meteorólogo."
+              "t": "queda desmentido cuando el meteorólogo mide el enfriamiento."
             },
             {
               "letra": "B",
@@ -887,7 +887,7 @@
             },
             {
               "letra": "D",
-              "t": "queda desmentido cuando el meteorólogo mide el enfriamiento."
+              "t": "puede convivir con la explicación del meteorólogo."
             }
           ]
         },
@@ -901,7 +901,7 @@
             },
             {
               "letra": "B",
-              "t": "no avanza por experimentos, sino por argumentos."
+              "t": "se enseña en la mayoría de los colegios del país."
             },
             {
               "letra": "C",
@@ -909,7 +909,7 @@
             },
             {
               "letra": "D",
-              "t": "se enseña en la mayoría de los colegios del país."
+              "t": "no avanza por experimentos, sino por argumentos."
             }
           ]
         },
@@ -919,15 +919,15 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "se mezclan hasta confundirse."
-            },
-            {
-              "letra": "B",
               "t": "se dan de comer."
             },
             {
-              "letra": "C",
+              "letra": "B",
               "t": "parten de observaciones comunes."
+            },
+            {
+              "letra": "C",
+              "t": "se mezclan hasta confundirse."
             },
             {
               "letra": "D",
@@ -941,35 +941,35 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "confunde una diferencia de método con una falta de valor."
-            },
-            {
-              "letra": "B",
-              "t": "debería empezar por el saber común, que es la base de todo."
-            },
-            {
-              "letra": "C",
-              "t": "en realidad la filosofía vale más, porque piensa los fundamentos."
-            },
-            {
-              "letra": "D",
               "t": "tiene razón en parte, porque sin experimento no se puede saber nada sobre la helada."
             },
             {
-              "letra": "E",
+              "letra": "B",
+              "t": "en realidad la filosofía vale más, porque piensa los fundamentos."
+            },
+            {
+              "letra": "C",
               "t": "las tres formas sirven para lo mismo, así que da igual cuál se use."
+            },
+            {
+              "letra": "D",
+              "t": "debería empezar por el saber común, que es la base de todo."
+            },
+            {
+              "letra": "E",
+              "t": "confunde una diferencia de método con una falta de valor."
             }
           ]
         }
       ],
-      "respuesta": "Clave: 1: A · 2: A · 3: C · 4: D · 5: A.",
+      "respuesta": "Clave: 1: A · 2: D · 3: C · 4: D · 5: E.",
       "pasos": [
         "Pregunta 1. Clave A. Solo el recuadro del conocimiento científico habla de la observación, la medición y el experimento; el del filosófico aclara que avanza «no con el experimento».",
         "Pregunta 2. Antes de las alternativas: Se deduce del texto. El texto no habla de una persona que use los dos saberes, pero dice que las formas no se enfrentan (oración 2) y que no se anulan (oración 4). Si no se anulan, no hay que elegir una y dejar la otra. Se deduce.",
-        "Pregunta 2. Clave A. La oración 4 dice que las tres respuestas sobre la helada no se anulan: miran el mismo hecho desde preguntas distintas. El saber de ella y la explicación de él caben juntos.",
+        "Pregunta 2. Clave D. La oración 4 dice que las tres respuestas sobre la helada no se anulan: miran el mismo hecho desde preguntas distintas. El saber de ella y la explicación de él caben juntos.",
         "Pregunta 3. Clave C. El recuadro del conocimiento filosófico dice que avanza con la reflexión y el argumento, «no con el experimento».",
         "Pregunta 4. Clave D. La misma oración lo explica: la ciencia toma observaciones comunes y la filosofía examina lo que la ciencia supone. Cada forma recibe algo de otra.",
-        "Pregunta 5. Clave A. Que la filosofía no use el experimento es una de las diferencias del esquema; la oración 6 dice que el esquema muestra en qué se diferencian, no cuál debe desaparecer."
+        "Pregunta 5. Clave E. Que la filosofía no use el experimento es una de las diferencias del esquema; la oración 6 dice que el esquema muestra en qué se diferencian, no cuál debe desaparecer."
       ]
     },
     {
