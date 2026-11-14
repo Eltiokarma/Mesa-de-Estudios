@@ -228,23 +228,35 @@ Pedido de Gerson: que den ganas de tocar los cursos.
 - **Contenido:** cada dibujo dice la idea de su unidad en una frase. Lleva texto solo si es la clave, y de 14 unidades o más. Si un curso no tiene dibujos, va su viñeta.
 - **Receta:** `app/dibujos/comun.js` y un archivo por curso. `app/app.test.js` comprueba que haya un dibujo por unidad, que esté en la caché y que no use colores prohibidos.
 
-## Tabla viva, paso 1 (14 nov 2026): la tabla plegada y el reordenamiento
+## Tabla viva (14 nov 2026): para jugar
 
-Pieza mayor del kit en `nucleo/kit/tabla/` (versión T de la sección 9 de `docs/pogil-v2-rive.md`). Es HTML y no SVG porque son 118 casillas con texto que el lector de pantalla tiene que leer. Página de prueba: `nucleo/kit/tabla/probar.html` (`?tema=oscuro`, `?arreglo=filaMasa`). Medición: `node herramientas/medir-tabla.js` con `npm run dev` corriendo.
+Es una pieza mayor del kit, en `nucleo/kit/tabla/` (versión T de la sección 9 de `docs/pogil-v2-rive.md`), hecha con la regla 3 nueva (decisión 20): sin preguntas, sin bloqueos y sin revelar nada. Es HTML y no SVG porque son 118 cartas con texto que el lector de pantalla tiene que leer. Página de prueba: `nucleo/kit/tabla/probar.html`.
 
 **Decisiones de sistema:**
-- **Casilla** de 36 a 48 px: 37 px en un celular de 360 (ocho columnas, una franja de pliegue de 0,35 casillas y un canal de 16 px para los periodos). El símbolo va a 18 px en 700 y el Z a 12 px en 500, en `--muted`. Borde de 1,5 px en `--borde`, plataforma de 2 px y radio de 6.
-- **Excepción:** la zona táctil de la casilla mide 37 px, no 44. No cabe más sin tapar el símbolo. Las casillas quedan separadas por 2 px y cada una abre su carta, así que un toque errado no hace daño.
-- **Cartas neutras.** La tabla no usa los colores `--el-*` ni colores por bloque: eso llega con «se ilumina». La marca va solo en los controles (el botón del arreglo elegido lleva `--brand-soft` y una raya de `--brand`, más el texto en negrita, para que no dependa del color).
-- **Plegada** (por defecto cuando las 18 columnas no entran con casillas de 36 px): se ven los grupos 1, 2 y 13 a 18. Los grupos 3 a 12 y las series se guardan en una franja punteada con el rótulo «3–12».
-- **Abierta en el celular:** son 18 columnas con scroll de lado, y el marco se corre hasta el bloque d. Lo que queda fijo es el canal de los periodos, no los grupos 1 y 2 (cambio frente al diseño; fijar cartas que se mueven con `transform` costaba más que su valor).
-- **Echado** (740 px): entra la tabla larga completa y el botón del pliegue no aparece.
-- **Fila por masa:** los 84 elementos con peso atómico estándar en orden, y los 34 que no lo tienen en una pila aparte, con su rótulo (decisión del 14 nov).
-- **Carta completa** en una hoja de abajo (`dialog` modal). Muestra el peso abreviado con coma decimal y su incertidumbre, el valor completo de la CIAAW, la ubicación con el grupo IUPAC y el A/B de academia, y el bloque. Las dos series dicen «en la fila aparte» y no inventan grupo ni bloque. La línea de fuente queda oculta para el alumno salvo con `{ fuentes: true }`.
+- **Dos vistas, con dos botones arriba:**
+  - **Tabla:** la de la IUPAC, plegada en el celular.
+  - **Mesa:** una cuadrícula con un punto en el centro de cada celda, para que se vea dónde cabe una carta.
+- **Debajo, una fila de lentes** que se desplaza de lado. Bajo ella va una leyenda de dos líneas reservadas, que dice la unidad, qué significa el rayado y qué significa «—».
+- **Fila de opciones de 44 px**, siempre en el mismo lugar: en la tabla lleva el pliegue; en la mesa, «1 a 20 · 1 a 36 · Todas · Mezclar».
+- **Casilla:**
+  - Mide de 36 a 48 px: 37 en la tabla a 360 px y 41 en la mesa.
+  - Símbolo de 18 px en 700. El Z va a 12 px; con una lente puesta, el valor de la lente ocupa su lugar (12 px, 600).
+  - Borde de 1,5 px en `--borde`, plataforma de 2 px y radio de 6.
+- **Excepción:** la zona táctil mide 37 o 41 px, no 44. Las cartas quedan separadas por 2 px.
+- **Lentes:**
+  - Cada lente numérica tiene su color de variable: masa `--c-o`, ionización `--c-i`, electronegatividad `--c-h` y radio `--c-d`.
+  - La barra va al 42 % sobre la tarjeta y llena la carta desde abajo, desde cero.
+  - Los valores no medidos llevan una barra rayada a 135°. Si no hay dato, la carta muestra «—» y un borde punteado.
+  - La clase y el estado tiñen la carta por familia: metal `--c-o` al 16 %, semimetal `--c-d` al 22 %, no metal `--c-i` al 20 % y gas noble `--c-h` al 18 %. La carta dice además la clase abreviada, para que el color no sea la única señal.
+- **Carta tocada:** borde de 3 px en tinta (la señal es el grosor, no el color). Si se va a mover, contorno punteado de la marca.
+- **Panel de abajo:** alto reservado de tres líneas más una fila de botones («Ver todo», «Mover», «Soltar selección»), que se ocultan con `visibility`, así que nada salta.
+- **Arrastre:**
+  - Con el dedo, la carta se agarra después de 220 ms quieto (hipótesis: hay que verlo en el celular). Antes de eso, el dedo desplaza la página. Con el mouse, al moverlo 4 px.
+  - La carta sigue al dedo uno a uno, por encima de todo, y un marco punteado de la marca señala la celda de destino. Cerca del borde de la pantalla, la página se desplaza sola.
+  - Al soltar, la carta llega a su celda en `corto` con `llegar`, y las que se corren lo hacen en `medio` con `trasladar`.
 - **Movimiento:**
-  - Reordenar es un `paso` (900 ms) con `trasladar`, escalonado 40 ms por renglón de destino, como mucho 5 escalones.
-  - Abrir el pliegue va en `largo` y plegarlo en `medio`.
-  - La hoja sube en `medio` con `llegar` y baja en `corto` con `irse`.
-  - Si se cambia de arreglo a media carrera, la carta parte de donde está pintada.
-  - Con movimiento reducido la tabla se funde fuera (`micro`), cambia y se funde dentro (`corto`), sin traslados.
-- **Rendimiento:** la página nunca lee ni escribe `scrollLeft` si no hace falta, porque eso obliga a recalcular el diseño de las 118 cartas en el acto.
+  - Entre tabla y mesa, y al mezclar: `paso` con `trasladar`, escalonado 40 ms por renglón.
+  - Pliegue: `largo` al abrir y `medio` al plegar. Barras: `medio` con `trasladar`, de un valor real a otro.
+  - Con movimiento reducido, lo que cambia de lugar se funde. El arrastre igual sigue al dedo.
+- **Carta completa** (hoja de abajo): peso o número másico, ubicación con el grupo A/B y las cinco propiedades, cada una con su tipo. La fuente queda oculta para el alumno salvo con `{ fuentes: true }`.
+- **Rendimiento:** la página no lee ni escribe `scrollLeft` si no hace falta, y solo escribe en cada carta lo que cambia.

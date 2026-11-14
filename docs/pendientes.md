@@ -71,51 +71,79 @@ Por qué no vale como presupuesto: el Chromium sin pantalla dibuja el canvas por
 5. En «Probar a mano», poner «2: dedo + chica», arrastrar la pelota y tocar «Medir 5 s» mientras arrastra. Anotar en una línea si se sintió pegada al dedo o con retraso.
 6. Mandar los dos JSON y esa línea. Con eso se fija el presupuesto de la sección 6.3: cuántos lienzos, de qué tamaño, cuántas formas animadas y el umbral para pasar al respaldo SVG.
 
-## Tabla viva, paso 1 (versión T), 14 nov, en `main`
+## Tabla viva (versión T), 14 nov, en `main`: para jugar (decisión 20)
 
-**Qué es.** La tabla plegada en el celular y el reordenamiento de las cartas: es la pieza mayor del kit de `docs/pogil-v2-rive.md` §7.3. Todavía no está enlazada desde la app ni desde ninguna escena. El diseño está en `docs/diseno.md`, «Tabla viva, paso 1».
+**Qué es.** La tabla periódica como lugar para jugar con la información, con la regla 3 nueva: sin preguntas, sin bloqueos y sin revelar nada. Es la pieza mayor del kit de `docs/pogil-v2-rive.md` §7.3. Todavía no está enlazada desde la app ni desde ninguna escena. Se prueba en `nucleo/kit/tabla/probar.html` (`?vista=mesa`, `?lente=ei`, `?tema=oscuro`, `?semilla=7`). El diseño está en `docs/diseno.md`, «Tabla viva».
 
-**Archivos.**
-- `nucleo/kit/tabla/datos.js`: los 118 elementos. Es un archivo generado por `herramientas/tabla-datos.js` a partir de las páginas de la CIAAW. Esas páginas no se versionan: hay que bajarlas a una carpeta y pasarla como argumento.
-- `arreglos.js`: funciones puras para la tabla plegada, la abierta, la fila por Z y la fila por masa.
-- `tabla.js` y `tabla.css`: el componente, `Kit.Tabla.montar`.
-- `probar.html`: la página de prueba.
-- Pruebas en `datos.test.js`, `arreglos.test.js` y `tabla.test.js`, 22 en total.
-- Medición: `herramientas/medir-tabla.js`.
+**Historia.** La primera versión de hoy era 0 % interactiva: tenía tres botones que ordenaban las cartas por el alumno. Gerson la rechazó y de ahí salió la decisión 20.
 
-**Datos (decisión 9).**
-- **Peso atómico estándar:** 84 elementos, de la CIAAW 2024. Se guarda el abreviado con su incertidumbre y el valor completo tal cual.
-- **Los 34 sin peso estándar** (Tc, Pm, Po a Ac y Np a Og): llevan el número másico del isótopo más estable, de NUBASE2020 compilado por la CIAAW. Si la CIAAW no distingue entre dos o tres isótopos, se guardan todos. Pasa con Tc, Lr, Sg, Bh, Hs, Mt, Nh, Fl, Mc y Lv.
-- **Nombres en español: transcritos por un modelo, por verificar con la RSEQ.**
-- **Lo que no se usó todavía:** las propiedades de `atomo-y-tabla` (energía de ionización, radio y electronegatividad, Z de 1 a 36, contrastadas solo en parte con fuentes secundarias). Entran con «se levanta», marcadas así.
-- **Red:** para bajar las fuentes se abrieron en el entorno Default los hosts `ciaaw.org`, `www.ciaaw.org`, `iupac.org` y `physics.nist.gov`.
+**Qué puede hacer el alumno.**
+- **Tabla:** la de la IUPAC. En el celular va plegada (grupos 1, 2 y 13 a 18), con la franja «3–12» que abre los demás. Con el celular echado entra entera.
+- **Mesa:** las cartas sueltas y mezcladas, en tandas de 20, de 36 o las 118, con un botón «Mezclar».
+  - Se arrastran a cualquier celda (con el dedo hay que mantenerlas 220 ms; antes, el dedo desplaza la página).
+  - Soltar una carta sobre otra la mete en ese lugar y corre las demás hasta el primer hueco. Así el alumno arma filas y columnas, y también la fila por masa, a mano.
+  - Sin arrastrar: tocar la carta, «Mover» y tocar el lugar. Con teclado: Enter sobre la carta de destino.
+- **Lentes** (en la tabla y en la mesa): nada, masa, ionización, electronegatividad, radio, clase y estado.
+  - Las cuatro numéricas llenan la carta como una barra desde cero, con un color de variable por lente.
+  - Si el valor no es medido (calculado o extrapolado), la barra va rayada. Si no hay valor, la carta dice «—» y lleva el borde punteado.
+  - La clase y el estado pintan la carta por familia, y el texto de la carta dice la clase exacta.
+- **Comparar:** tocar una carta muestra su valor; tocar otra muestra las dos y la diferencia («Mg tiene 242 kJ/mol más que Na»). «Ver todo» abre la carta completa.
 
-**Lo que se midió** (Playwright con Chromium, 360 × 740; CPU frenada ×4 con `Emulation.setCPUThrottlingRate`):
+**Archivos** (en `nucleo/kit/tabla/`).
+- `datos.js`: generado por `herramientas/tabla-datos.js` a partir de cinco archivos bajados (sus direcciones están en la cabecera; no se versionan).
+- `arreglos.js`: la tabla plegada y la abierta. `filaZ`, `filaMasa` e `inversiones` quedan para el solitario de Mendeléyev; hoy no las usa el componente.
+- `mesa.js`: la mesa, lógica pura.
+- `lentes.js`: qué muestra cada carta, lógica pura.
+- `tabla.js` y `tabla.css`: el componente.
+- Pruebas: `datos.test.js`, `arreglos.test.js`, `mesa.test.js` y `tabla.test.js`, 35 en total.
+- Medición: `herramientas/medir-tabla.js`, con `npm run dev` corriendo.
+
+**Datos (decisión 9)** y lo que falta verificar.
+
+| Propiedad | Fuente | Alcance | Notas |
+| --- | --- | --- | --- |
+| Peso atómico estándar | CIAAW 2024 | 84 elementos | Los otros 34 llevan el número másico entre corchetes (NUBASE2020) y en la lente de masa van sin barra |
+| Energía de ionización | NIST ASD | Z = 1 a 108 | 98 valores medidos. El H, el Rf y el Db son calculados; Pr, Pa, Fm, Md, Sg, Bh y Hs, extrapolados. Del 109 al 118, «sin dato» |
+| Electronegatividad (Pauling) | PubChem | 83 elementos | Compilación sin fuente por valor: **por verificar con Allred (1961)**. Se quitaron las estimadas: el Am al Lr (todos 1,3), y el Fr, el Po y el At, por juicio de un modelo. El Kr sale con 3,0 (en `atomo-y-tabla` no tenía valor) |
+| Radio | PubChem | 99 elementos | **Es el de van der Waals, no el covalente de Cordero (2008)**, que es el que conviene para las tendencias de academia. Por verificar |
+| Clase | PubChem | Z = 1 a 103 | Los semimetales no tienen una lista oficial de la IUPAC; PubChem cuenta al Po y no al At |
+| Estado a 25 °C | PubChem | Z = 1 a 103 | Del 104 al 118 son predicciones, así que van con «sin dato» |
+| Nombres en español | Transcritos por un modelo | 118 | Por verificar con la RSEQ |
+
+La energía de ionización y la electronegatividad coinciden con las de `atomo-y-tabla` en Z = 1 a 36, salvo la electronegatividad del Kr. Para bajar los datos se abrieron en el entorno Default los hosts `ciaaw.org`, `www.ciaaw.org`, `iupac.org`, `physics.nist.gov` y `pubchem.ncbi.nlm.nih.gov`.
+
+**Lo que se midió** (Playwright con Chromium sin GPU, 360 × 740, CPU frenada ×4).
 - **Lectura:**
-  - La casilla mide 37 × 37 px, el símbolo 18 px en 700 y el Z 12 px.
-  - Contraste del símbolo sobre la carta: 14,2:1 en claro y 13,1:1 en oscuro. Del Z: 5,3:1 y 6,0:1.
-- **Cuadros por segundo** (15 corridas: reordenar, abrir y plegar, tres veces cada uno):
-  - Durante el movimiento: mediana de 60, el 95 % de los cuadros en 17 ms y un solo cuadro de 50 ms en todas las corridas.
-  - El primer cuadro después del toque tarda entre 17 y 83 ms (mediana de 50): es el navegador preparando 118 transiciones, antes de que nada se mueva.
-  - Se corrigió una lectura de `scrollLeft` que costaba 43 ms en cada cambio.
-- **Saltos:** los controles y el cuerpo se mueven 0 px al cambiar de arreglo.
-- **Interrupción:** cambiar de arreglo a los 300 ms deja 0 cartas fuera de su sitio.
-- **Movimiento reducido:** el sodio solo pasa por su posición de partida y la de llegada.
-- **Teclado:** Tab llega a una sola carta, las flechas se mueven por posición, Enter abre la carta y Escape la cierra devolviendo el foco.
+  - Casilla de 37 px en la tabla y de 41 px en la mesa.
+  - Símbolo de 18 px en 700. Contraste sobre la carta: 14,2:1 en claro y 13,1:1 en oscuro.
+- **Movimiento:** mediana de 60 cuadros por segundo y ningún cuadro de más de 33 ms. Se midieron 22 corridas: de la tabla a la mesa de 118, mezclar, de la mesa a la tabla, cambiar de lente, abrir y plegar, y un arrastre con el dedo.
+- **Arranque (no cumple): el primer cuadro tras el toque tarda entre 33 y 250 ms (mediana de 117).** El JavaScript cuesta de 6 a 15 ms; el resto es el navegador repintando 118 cartas por software.
+  - Se probó sin sombra, sin recorte, sin capas y sin los puntos de la mesa, y ninguna de esas cosas lo explica sola.
+  - **Hay que medirlo en el celular**, que pinta con GPU. Si allá también pasa de 100 ms, la salida es repartir las barras en dos cuadros o dibujarlas en un solo lienzo.
+- **Arrastre** (dedo simulado por CDP):
+  - La carta queda en la celda soltada.
+  - Un desplazamiento rápido sobre una carta no la agarra.
+  - Con «Mover» y un toque, la carta llega a la celda tocada.
+- **Otros:** saltos de 0 px en los controles; 0 cartas fuera de su sitio si se interrumpe; con movimiento reducido, el sodio solo pasa por su posición de partida y la de llegada.
 
 **Lo que no cumple o no se probó.**
-- **La zona táctil mide 37 px, no 44.** Es una excepción declarada: no cabe más.
-- **En tema oscuro, el borde y la carta se separan del fondo con 1,1:1.** La carta se reconoce por su texto, que está a 13:1. Es el mismo sistema de pegatinas de toda la app: si se cambia, se cambia en la cáscara.
-- **Nada se probó en un celular físico** (ni el de 4 GB ni otro) ni con un lector de pantalla real. La CPU frenada en Chromium de escritorio no reemplaza al celular.
-- Tampoco se probó el gesto de deslizar la hoja para cerrarla: hoy se cierra con el botón, con Escape o tocando fuera.
+- **La zona táctil mide 37 px en la tabla y 41 px en la mesa, no 44.** Es una excepción declarada.
+- **En tema oscuro, el borde de la carta se separa del fondo con 1,1:1.** Es el sistema de pegatinas de toda la app.
+- **El arrastre no deja ver dónde se van a correr las cartas** antes de soltar: solo marca la celda de destino.
+- **Con teclado no se puede llevar una carta a una celda vacía**, solo meterla delante de otra.
+- **Nada se probó en un celular físico ni con un lector de pantalla real.** Lo más dudoso, por orden:
+  1. si mantener 220 ms el dedo se descubre solo;
+  2. el arranque;
+  3. si se lee el valor de 12 px dentro de la carta.
 
 **Lo que sigue.**
-1. **Probarla en un celular real:** ¿se lee el símbolo?, ¿se entiende la franja «3–12»?, ¿se ve fluido el reordenamiento? Con eso se decide si se construye la pieza completa.
-2. Verificar los nombres en español con la RSEQ.
-3. Los siguientes comportamientos, en este orden:
-   - «se levanta», con cada propiedad diciendo de qué tipo es su valor (medido, de escala o calculado) y «sin dato» donde no hay valor;
-   - «se ilumina»;
-   - el solitario de Mendeléyev, que corta la fila con el dedo; las inversiones ya se calculan con `inversiones()`.
+1. **Gerson la prueba en su celular:**
+   - ¿se descubre cómo arrastrar?;
+   - ¿se lee el valor en la carta?;
+   - ¿el arranque se siente lento?;
+   - ¿a qué juega el alumno sin que nadie le diga nada?
+2. Verificar con su fuente la electronegatividad (Allred 1961) y el radio. Para el radio, decidir si se cambia al covalente de Cordero (2008), que pide abrir `pubs.rsc.org` o conseguir el artículo. Verificar también los nombres con la RSEQ.
+3. Rehacer, con la regla 20, el solitario de Mendeléyev de §7.3, que hoy está escrito como predicción y revelación.
 
 ## Cola de repaso (versión R), 13 y 14 nov, en `main` (sw v175)
 
@@ -278,7 +306,7 @@ Sesión de **planificación**: no se construyó nada de la app. Lo que sigue se 
 3. **Versión B:** la misma unidad con utilería de Rive, para comparar.
 4. **En paralelo, sin depender de lo anterior:**
    - ~~la cola de repaso~~ (hecha el 13 nov: ver «Cola de repaso (versión R)» arriba);
-   - ~~la tabla plegada en el celular (primer paso de la tabla viva)~~ (hecha el 14 nov: ver «Tabla viva, paso 1» arriba);
+   - ~~la tabla plegada en el celular (primer paso de la tabla viva)~~ (hecha el 14 nov y rehecha para jugar con la regla 20: ver «Tabla viva (versión T)» arriba);
    - ~~revisar las sondas de `clasificar` con la regla nueva~~ (hecho el 14 nov: eran 54 textos y 56 sondas, no 24. Tres subagentes las clasificaron a ciegas y ninguna cambia de clase. Se reescribieron 29 explicaciones de 18 textos que justificaban por las palabras («no lo dice con esas palabras») o por juntar oraciones, y otro subagente las revisó a ciegas. Todo es por modelo y queda por revisar por una persona. Detalle en `docs/investigacion/revision-sondas-clasificar.md`. Queda por mirar t057/p5, que el revisor leyó como «lo dice» por la oración 10, en figurado);
    - validar con un subagente las fichas del banco Cuzcano (decisión 18): ~~las 894 sin `unidad`, el validador y edades y móviles~~ (hecho el 14 nov); ~~el vocabulario de las 23 unidades de física y química con deslizador~~ (hecho el 13 nov, tarde); MRU y MRUV va en otra conversación.
 5. **Después:** la pregunta de seguridad, el avance en cuatro niveles y los ocho puentes (una unidad por curso con su ficha completa).
