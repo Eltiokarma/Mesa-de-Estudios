@@ -4548,7 +4548,14 @@
      "grado": 3,
      "plantillas": [
       "texto-contexto"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-verbal/texto-y-contexto.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rv-texto.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-verbal.textos-filosoficos-y-cientificos",
