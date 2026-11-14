@@ -79,6 +79,18 @@
     return { puntos: Array.from({ length: n + 1 }, (_, k) => p(k / n)), rotulo: sum(V, por(a, (r + 0.55) * Math.cos(t / 2)), por(w, (r + 0.55) * Math.sin(t / 2))) };
   };
   const TD = { giro: -28, alza: 22 };
+  const SEP = '   ·   ';   // separa dos relaciones en una lectura o ecuación
+  const nb = t => t.replace(/ /g, '\u00a0');   // una relación de la lectura no se parte entre dos líneas
+  // Gesto directo (docs/teoria.md §4b): la manija vive en el viewBox de geo-figura. En 3D aPlano no sirve: cada manija
+  // corre por una recta del espacio (arista, altura, diagonal) y G.sobreRecta da el parámetro t a lo largo de ella;
+  // la recta se elige para que t sea justo el valor del control. El lector ajusta al paso y al rango.
+  const enPantalla = (datos, p) => G.aPantalla(datos, p);
+  const sobre = (datos, A, B, p) => G.sobreRecta(datos, A, B, p);
+  const enPlano = (datos, O, e1, e2, p) => {
+    const g = G.geometria(datos), a = g.S(O), b = g.S(sum(O, e1)), c = g.S(sum(O, e2));
+    const m = [b[0] - a[0], b[1] - a[1], c[0] - a[0], c[1] - a[1]], x = p.x - a[0], y = p.y - a[1], det = m[0] * m[3] - m[2] * m[1];
+    return [(x * m[3] - m[2] * y) / det, (m[0] * y - x * m[1]) / det];
+  };
   // Sólido desde una lista de puntos: ids S0…; color y desde/hasta opcionales.
   const solido = (P, pre, o = {}) => ({
     puntos: P.map((p, i) => pt(pre + i, p, { sinPunto: true, desde: o.desde, hasta: o.hasta })),
@@ -115,7 +127,12 @@
       voz: 'Inclina. La arista se alarga; ¿cambia el volumen?',
       controles: [{ id: 'th', etiqueta: 'arista con la base', min: 45, max: 90, paso: 15, inicio: 60, unidad: '°', decimales: 0, color: 'c-o' }],
       dibujo: v => ({ datos: prismaFig(v.th, { h: '2,5', arista: f(2.5 / Math.sin(U.rad(v.th))) }), estado: {} }),
-      lectura: v => [`arista = ${f(2.5 / Math.sin(U.rad(v.th)))} · V = 4 · 2,5 = 10`],
+      // Se agarra la esquina de arriba T y se corre de lado a la misma altura: la arista se inclina, h no cambia.
+      // T = (1 + dx/2, 1,25, 1) con dx = h / tan θ; la recta de arriba da t = dx/2.
+      arrastres: [{ id: 'esquina-t', etiqueta: 'esquina de arriba del prisma', color: 'c-o',
+        donde: v => enPantalla(prismaFig(v.th), [1 + 1.25 / Math.tan(U.rad(v.th)), 1.25, 1]),
+        mover: (p, v) => ({ th: U.grados(Math.atan2(2.5, 2 * sobre(prismaFig(v.th), [1, 1.25, 1], [2, 1.25, 1], p))) }) }],
+      lectura: v => [nb(`arista = ${f(2.5 / Math.sin(U.rad(v.th)))}`), SEP, nb('V = 4 · 2,5 = 10')],
       minimo: 3,
     },
     predice: {
@@ -143,7 +160,7 @@
     },
     regla: {
       texto: 'El volumen de todo prisma, recto u oblicuo, es el área de la base por la altura perpendicular. En el recto, el área lateral es perímetro por altura.',
-      ecuacion: ['V = ', { v: 'c-d', t: 'B' }, ' · ', { v: 'c-h', t: 'h' }, '   ·   recto: ', { v: 'c-d', t: 'A' }, { sub: ['', 'L'] }, ' = (2p) · ', { v: 'c-h', t: 'h' }],
+      ecuacion: ['V = ', { v: 'c-d', t: 'B' }, ' · ', { llave: [{ v: 'c-h', t: 'h' }], nota: 'no la arista', color: 'c-h' }, '   ·   ', 'recto: ', { v: 'c-d', t: 'A' }, { sub: ['', 'L'] }, ' = (2p) · ', { v: 'c-h', t: 'h' }],
       condicion: 'h es perpendicular a las bases. En un prisma regular, además, la base es un polígono regular y es recto.',
       voz: 'La arista inclinada no es la altura.',
     },
@@ -204,6 +221,17 @@
         { de: 'A', a: 'C', color: 'i', discontinua: true, grosor: 'variable', texto: o.dB, lado: -1, desde: k.d || 0 }, { de: 'A', a: 'G', color: 'h', discontinua: true, grosor: 'variable', texto: o.D, desde: k.D || 0 }],
     };
   };
+  const cajaArrastres = (fig, e = 0.5) => [
+    { id: 'largo', etiqueta: 'esquina del largo', color: 'c-o',
+      donde: v => enPantalla(fig(v), [v.a * e / 2, -v.c * e / 2, v.b * e / 2]),
+      mover: (p, v) => ({ a: sobre(fig(v), [0, -v.c * e / 2, v.b * e / 2], [e / 2, -v.c * e / 2, v.b * e / 2], p) }) },
+    { id: 'ancho', etiqueta: 'esquina del ancho', color: 'c-o',
+      donde: v => enPantalla(fig(v), [v.a * e / 2, -v.c * e / 2, -v.b * e / 2]),
+      mover: (p, v) => ({ b: sobre(fig(v), [v.a * e / 2, -v.c * e / 2, 0], [v.a * e / 2, -v.c * e / 2, -e / 2], p) }) },
+    { id: 'alto', etiqueta: 'esquina G del alto', color: 'c-o',
+      donde: v => enPantalla(fig(v), [v.a * e / 2, v.c * e / 2, -v.b * e / 2]),
+      mover: (p, v) => ({ c: sobre(fig(v), [v.a * e / 2, 0, -v.b * e / 2], [v.a * e / 2, e / 2, -v.b * e / 2], p) }) },
+  ];
   const cajaIdea = {
     id: 'paralelepipedo',
     titulo: 'Pitágoras dos veces',
@@ -218,7 +246,10 @@
         { id: 'c', etiqueta: 'alto', min: 1, max: 6, paso: 1, inicio: 3, unidad: '', decimales: 0, color: 'c-o' },
       ],
       dibujo: v => ({ datos: cajaFig(v.a, v.b, v.c, { dB: f(Math.hypot(v.a, v.b)), D: f(Math.hypot(v.a, v.b, v.c)) }), estado: {} }),
-      lectura: v => [`AC = ${f(Math.hypot(v.a, v.b))} · AG = ${f(Math.hypot(v.a, v.b, v.c))}`, `V = ${v.a * v.b * v.c} · A = ${2 * (v.a * v.b + v.b * v.c + v.a * v.c)}`],
+      // Se agarran tres esquinas, una por medida: el largo por la arista de adelante, el ancho por la de la derecha y
+      // el alto por la esquina G. Cada una corre por su recta desde el centro de la caja.
+      arrastres: cajaArrastres(v => cajaFig(v.a, v.b, v.c)),
+      lectura: v => [nb(`AC = ${f(Math.hypot(v.a, v.b))}`), SEP, nb(`AG = ${f(Math.hypot(v.a, v.b, v.c))}`), SEP, nb(`V = ${v.a * v.b * v.c}`), SEP, nb(`A = ${2 * (v.a * v.b + v.b * v.c + v.a * v.c)}`)],
       minimo: 4,
     },
     predice: {
@@ -245,7 +276,7 @@
     },
     regla: {
       texto: 'En un paralelepípedo rectangular de medidas a, b y c, la diagonal se obtiene con Pitágoras dos veces. En el cubo, a = b = c.',
-      ecuacion: [{ v: 'c-h', t: 'D' }, ' = √(a² + b² + c²)   ·   V = abc   ·   A = 2(ab + bc + ca)   ·   cubo: ', { v: 'c-h', t: 'D' }, ' = a√3'],
+      ecuacion: [{ llave: [{ v: 'c-h', t: 'D' }], nota: 'diagonal', color: 'c-h' }, ' = √(a² + b² + c²)', '   ·   ', 'V = abc', '   ·   ', 'A = 2(ab + bc + ca)', '   ·   ', 'cubo: ', { v: 'c-h', t: 'D' }, ' = a√3'],
       condicion: 'las tres medidas son perpendiculares entre sí (caja recta).',
       voz: 'Cada medida al cuadrado, una sola vez.',
     },
@@ -311,7 +342,11 @@
       voz: 'Sube la punta. Compara la altura con la apotema.',
       controles: [{ id: 'h', etiqueta: 'altura', min: 2, max: 7, paso: 1, inicio: 4, unidad: '', decimales: 0, color: 'c-o' }],
       dibujo: v => ({ datos: pirFig(v.h, { h: `${v.h}`, ap: f(Math.hypot(v.h, 3)) }), estado: {} }),
-      lectura: v => [`VM = √(${v.h}² + 3²) = ${f(Math.hypot(v.h, 3))}`, `V = 36 · ${v.h} / 3 = ${12 * v.h}`],
+      // Se agarra la punta V y se sube o se baja por la altura; la base no cambia.
+      arrastres: [{ id: 'punta-v', etiqueta: 'punta V de la pirámide', color: 'c-o',
+        donde: v => enPantalla(pirFig(v.h), [0, -1.4 + v.h * 0.5, 0]),
+        mover: (p, v) => ({ h: sobre(pirFig(v.h), [0, -1.4, 0], [0, -0.9, 0], p) }) }],
+      lectura: v => [nb(`VM = √(${v.h}² + 3²) = ${f(Math.hypot(v.h, 3))}`), SEP, nb(`V = 36 · ${v.h} / 3 = ${12 * v.h}`)],
       minimo: 3,
     },
     predice: {
@@ -339,7 +374,7 @@
     },
     regla: {
       texto: 'En una pirámide regular, el área lateral es el semiperímetro de la base por la apotema de la pirámide. El volumen es un tercio de la base por la altura.',
-      ecuacion: [{ v: 'c-d', t: 'A' }, { sub: ['', 'L'] }, ' = p · ', { v: 'c-h', t: 'ap' }, '   ·   V = ', frac([{ v: 'c-d', t: 'B' }, ' · ', { v: 'c-o', t: 'h' }], '3'), '   ·   ', { sup: [{ v: 'c-h', t: 'ap' }, '2'] }, ' = ', { sup: [{ v: 'c-o', t: 'h' }, '2'] }, ' + ', { sup: [{ v: 'c-i', t: 'a' }, '2'] }],
+      ecuacion: [{ v: 'c-d', t: 'A' }, { sub: ['', 'L'] }, ' = p · ', { llave: [{ v: 'c-h', t: 'ap' }], nota: 'altura de cara', color: 'c-h' }, '   ·   ', 'V = ', frac([{ v: 'c-d', t: 'B' }, ' · ', { v: 'c-o', t: 'h' }], '3'), '   ·   ', { sup: [{ v: 'c-h', t: 'ap' }, '2'] }, ' = ', { sup: [{ v: 'c-o', t: 'h' }, '2'] }, ' + ', { llave: [{ sup: [{ v: 'c-i', t: 'a' }, '2'] }], nota: 'apotema de base', color: 'c-i' }],
       condicion: 'la base es regular y la punta está sobre su centro; a es la apotema de la base y p su semiperímetro.',
       voz: 'Altura para el volumen; apotema para el área.',
     },
@@ -394,6 +429,10 @@
       voz: 'Cambia la base de arriba. ¿Crece el volumen como esperabas?',
       controles: [{ id: 'b', etiqueta: 'lado menor', min: 1, max: 3.5, paso: 0.5, inicio: 2, unidad: '', decimales: 1, color: 'c-i' }],
       dibujo: v => ({ datos: troncoFig(v.b), estado: {} }),
+      // Se agarra la esquina de la base menor y se abre o se cierra por la diagonal de arriba.
+      arrastres: [{ id: 'esquina-b', etiqueta: 'esquina de la base menor', color: 'c-i',
+        donde: v => enPantalla(troncoFig(v.b), [v.b * 0.18, -1.5 + 6 * 0.36, v.b * 0.18]),
+        mover: (p, v) => ({ b: sobre(troncoFig(v.b), [0, -1.5 + 6 * 0.36, 0], [0.18, -1.5 + 6 * 0.36, 0.18], p) }) }],
       lectura: v => [`V = 6/3 · (16 + ${f(4 * v.b)} + ${f(v.b * v.b)}) = ${f(vt(4, v.b, 6))}`],
       minimo: 3,
     },
@@ -423,7 +462,7 @@
     },
     regla: {
       texto: 'El volumen de un tronco de pirámide de bases B y b y altura h es h/3 por la suma de B, b y su media geométrica.',
-      ecuacion: ['V = ', frac({ v: 'c-h', t: 'h' }, '3'), ' · (', { v: 'c-o', t: 'B' }, ' + ', { v: 'c-i', t: 'b' }, ' + √(', { v: 'c-o', t: 'B' }, { v: 'c-i', t: 'b' }, '))'],
+      ecuacion: ['V = ', frac({ v: 'c-h', t: 'h' }, '3'), ' · (', { v: 'c-o', t: 'B' }, ' + ', { v: 'c-i', t: 'b' }, ' + ', { llave: ['√(', { v: 'c-o', t: 'B' }, { v: 'c-i', t: 'b' }, ')'], nota: 'base media' }, ')'],
       condicion: 'las bases son paralelas y semejantes; h es la distancia perpendicular entre ellas.',
       voz: 'Tres sumandos: las dos bases y su media geométrica.',
     },
@@ -460,6 +499,12 @@
       rotulos: [rot([0, y0, 0.15], 'B = 10', 'd')],
     };
   };
+  const TP = [[-1.5, -1.4, 0.9], [1.5, -1.4, 0.9], [-0.4, -1.4, -1.6]], HS = ['h1', 'h2', 'h3'];
+  const tpArrastres = HS.map((id, i) => ({
+    id: `arista-${i + 1}`, etiqueta: `punta de la arista ${i + 1}`, color: ['c-o', 'c-i', 'c-h'][i],
+    donde: v => enPantalla(tpFig(v.h1, v.h2, v.h3), sum(TP[i], [0, v[id] * 0.45, 0])),
+    mover: (p, v) => ({ [id]: sobre(tpFig(v.h1, v.h2, v.h3), TP[i], sum(TP[i], [0, 0.45, 0]), p) }),
+  }));
   const tpIdea = {
     id: 'tronco-de-prisma',
     titulo: 'Corte oblicuo: el promedio',
@@ -474,6 +519,8 @@
         { id: 'h3', etiqueta: 'arista 3', min: 1, max: 6, paso: 1, inicio: 5, unidad: '', decimales: 0, color: 'c-h' },
       ],
       dibujo: v => ({ datos: tpFig(v.h1, v.h2, v.h3), estado: {} }),
+      // Se agarra la punta de cada arista lateral y se sube o se baja: el corte inclinado cambia.
+      arrastres: tpArrastres,
       lectura: v => [`V = 10 · (${v.h1} + ${v.h2} + ${v.h3}) / 3 = ${f(10 * (v.h1 + v.h2 + v.h3) / 3)}`],
       minimo: 4,
     },
@@ -501,7 +548,7 @@
     },
     regla: {
       texto: 'Un tronco de prisma triangular recto tiene por volumen el área de la base por el promedio de sus tres aristas laterales.',
-      ecuacion: ['V = ', { v: 'c-d', t: 'B' }, ' · ', frac([{ v: 'c-o', t: 'a' }, ' + ', { v: 'c-i', t: 'b' }, ' + ', { v: 'c-h', t: 'c' }], '3')],
+      ecuacion: ['V = ', { v: 'c-d', t: 'B' }, ' · ', { llave: [frac([{ v: 'c-o', t: 'a' }, ' + ', { v: 'c-i', t: 'b' }, ' + ', { v: 'c-h', t: 'c' }], '3')], nota: 'altura promedio' }],
       condicion: 'la base es un triángulo y las aristas son perpendiculares a ella; si el tronco es oblicuo, se usa la sección recta.',
       voz: 'Promedia las tres aristas, no tomes la mayor.',
     },
@@ -545,9 +592,14 @@
     juega: {
       consigna: 'Corta la pirámide con un plano paralelo a la base. La punta es semejante a la pirámide entera. Cambia la razón k de alturas.',
       voz: 'Mueve el corte. Compara alturas, áreas y volúmenes.',
-      controles: [{ id: 't', etiqueta: 'k', min: 0.25, max: 1, paso: 0.25, inicio: 0.75, unidad: '', decimales: 2, color: 'c-h' }],
+      controles: [{ id: 't', etiqueta: 'k', min: 0.25, max: 1, paso: 0.25, inicio: 0.75, unidad: '', decimales: 2, color: 'c-o' }],
       dibujo: v => ({ datos: corteFig(v.t), estado: {} }),
-      lectura: v => [`alturas ×${f(v.t)} · áreas ×${f(v.t ** 2, 4)} · volúmenes ×${f(v.t ** 3, 4)}`],
+      // Se agarra la esquina del corte y se desliza por la arista lateral, desde la punta V hasta la base.
+      // k va en naranja, como en la regla (regla 4).
+      arrastres: [{ id: 'corte', etiqueta: 'esquina del plano de corte', color: 'c-o',
+        donde: v => enPantalla(corteFig(v.t), [1.6 * v.t, 1.9 - 3.4 * v.t, 1.6 * v.t]),
+        mover: (p, v) => ({ t: sobre(corteFig(v.t), [0, 1.9, 0], [1.6, -1.5, 1.6], p) }) }],
+      lectura: v => [nb(`alturas ×${f(v.t)}`), SEP, nb(`áreas ×${f(v.t ** 2, 4)}`), SEP, nb(`volúmenes ×${f(v.t ** 3, 4)}`)],
       minimo: 3,
     },
     predice: {
@@ -574,7 +626,7 @@
     },
     regla: {
       texto: 'Si dos sólidos son semejantes con razón k entre longitudes que se corresponden, sus áreas están en razón k² y sus volúmenes en razón k³.',
-      ecuacion: [frac([{ v: 'c-h', t: 'V' }, '₁'], [{ v: 'c-h', t: 'V' }, '₂']), ' = ', { sup: [{ v: 'c-o', t: 'k' }, '3'] }, '   ·   ', frac('A₁', 'A₂'), ' = ', { sup: [{ v: 'c-o', t: 'k' }, '2'] }],
+      ecuacion: [frac([{ v: 'c-h', t: 'V' }, '₁'], [{ v: 'c-h', t: 'V' }, '₂']), ' = ', { sup: [{ v: 'c-o', t: 'k' }, '3'] }, '   ·   ', frac('A₁', 'A₂'), ' = ', { sup: [{ v: 'c-o', t: 'k' }, '2'] }, '   ·   ', { llave: [{ v: 'c-o', t: 'k' }], nota: 'razón de largos', color: 'c-o' }, ' = ', frac('h₁', 'h₂')],
       condicion: 'las longitudes comparadas se corresponden (altura con altura, arista con arista).',
       voz: 'Longitud k; área k²; volumen k³.',
     },
@@ -596,9 +648,88 @@
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1, más rica que las ideas 1 y 3: la pirámide dentro del prisma de igual base y altura. La cúspide se corre
+  // por la tapa (pirámide oblicua: el volumen no cambia) y se cambian lado y altura. Tres manijas.
+  const EP = 0.5, Y0 = -1.25;
+  const enPrisma = v => {
+    const L = v.a * EP / 2, yT = Y0 + v.h * EP, Vx = v.cx * L, Vz = v.cz * L;
+    const base = [[-L, Y0, L], [L, Y0, L], [L, Y0, -L], [-L, Y0, -L]], tapa = base.map(q => [q[0], yT, q[2]]);
+    const Pr = solido([...base, ...tapa], 'R'), Pi = solido([...base, [Vx, yT, Vz]], 'Q', { color: 'h' });
+    return {
+      alt: `Prisma de base cuadrada de lado ${f(v.a)} y altura ${f(v.h)} con una pirámide de la misma base y altura dentro: volúmenes ${f(v.a * v.a * v.h)} y ${f(v.a * v.a * v.h / 3)}`,
+      tresD: TD, vista: { x: [-2.6, 2.6], y: [-2.1, 2.3] },
+      puntos: [...Pr.puntos, ...Pi.puntos, pt('Vc', [Vx, yT, Vz], { color: 'h' }), pt('Hc', [Vx, Y0, Vz], { sinPunto: true })],
+      solidos: [Pr.solido, Pi.solido],
+      regiones: [{ puntos: base, color: 'd', opacidad: 0.2 }],
+      segmentos: [{ de: 'Vc', a: 'Hc', color: 'i', discontinua: true, texto: f(v.h), lado: 1 }, { de: 'R0', a: 'R1', color: 'd', grosor: 'variable', texto: f(v.a), lado: -1 }],
+    };
+  };
+  const mesaEnPrisma = {
+    id: 'piramide-en-prisma', titulo: 'Pirámide dentro del prisma', pieza: 'geo-figura',
+    consigna: 'Arrastra la cúspide por la tapa, la esquina de la base y la altura. Compara los dos volúmenes.',
+    controles: [
+      { id: 'a', etiqueta: 'lado de la base', min: 2, max: 5, paso: 0.5, inicio: 4, unidad: '', decimales: 1, color: 'c-d' },
+      { id: 'h', etiqueta: 'altura', min: 1, max: 5, paso: 0.5, inicio: 4, unidad: '', decimales: 1, color: 'c-i' },
+      { id: 'cx', etiqueta: 'cúspide a lo ancho', min: -1, max: 1, paso: 0.25, inicio: 0, unidad: '', decimales: 2, color: 'c-h' },
+      { id: 'cz', etiqueta: 'cúspide a lo hondo', min: -1, max: 1, paso: 0.25, inicio: 0, unidad: '', decimales: 2, color: 'c-h' },
+    ],
+    dibujo: v => ({ datos: enPrisma(v), estado: {} }),
+    arrastres: [
+      { id: 'cuspide', etiqueta: 'cúspide de la pirámide', color: 'c-h',
+        donde: v => enPantalla(enPrisma(v), [v.cx * v.a * EP / 2, Y0 + v.h * EP, v.cz * v.a * EP / 2]),
+        mover: (p, v) => { const L = v.a * EP / 2, [u, w] = enPlano(enPrisma(v), [0, Y0 + v.h * EP, 0], [L, 0, 0], [0, 0, L], p); return { cx: u, cz: w }; } },
+      { id: 'esquina', etiqueta: 'esquina de la base', color: 'c-d',
+        donde: v => enPantalla(enPrisma(v), [v.a * EP / 2, Y0, v.a * EP / 2]),
+        mover: (p, v) => ({ a: sobre(enPrisma(v), [0, Y0, 0], [EP / 2, Y0, EP / 2], p) }) },
+      { id: 'tapa', etiqueta: 'esquina de la tapa (altura)', color: 'c-i',
+        donde: v => enPantalla(enPrisma(v), [v.a * EP / 2, Y0 + v.h * EP, v.a * EP / 2]),
+        mover: (p, v) => ({ h: sobre(enPrisma(v), [v.a * EP / 2, Y0, v.a * EP / 2], [v.a * EP / 2, Y0 + EP, v.a * EP / 2], p) }) },
+    ],
+    lectura: v => [nb(`prisma ${f(v.a * v.a * v.h)}`), SEP, nb(`pirámide ${f(v.a * v.a * v.h / 3)}`), SEP, nb('razón 3')],
+  };
+  // Mesa 2, más rica que la idea 4: las dos bases y la altura libres. La base menor llega a 0 (pirámide) y a 3 con la
+  // mayor en 3 (prisma): los dos casos límite. La lectura pone al lado el «promedio de bases por altura», que falla.
+  const ET = 0.3, YT = -1.4, XA = 1.25;
+  const troncoLibre = v => {
+    const A = v.a * ET / 2, Bm = v.b * ET / 2, y1 = YT + v.h * ET;
+    const base = [[-A, YT, A], [A, YT, A], [A, YT, -A], [-A, YT, -A]];
+    const P = v.b > 0 ? [...base, [-Bm, y1, Bm], [Bm, y1, Bm], [Bm, y1, -Bm], [-Bm, y1, -Bm]] : [...base, [0, y1, 0]], S = solido(P, 'S');
+    return {
+      alt: `Tronco de bases cuadradas de lados ${f(v.a)} y ${f(v.b)} y altura ${f(v.h)}: volumen ${f(vt(v.a, v.b, v.h))}; el promedio de bases por la altura daría ${f((v.a * v.a + v.b * v.b) / 2 * v.h)}`,
+      tresD: TD, vista: { x: [-1.8, 1.8], y: [-1.95, 1.6] },
+      puntos: [...S.puntos, pt('h0', [XA, YT, 0], { sinPunto: true }), pt('h1', [XA, y1, 0], { sinPunto: true }), pt('c1', [Bm, y1, Bm], { sinPunto: true })],
+      solidos: [S.solido],
+      segmentos: [{ de: 'S0', a: 'S1', color: 'o', grosor: 'variable', texto: f(v.a), lado: -1 }, { de: 'h0', a: 'h1', color: 'h', grosor: 'variable', texto: f(v.h), lado: -1 }],
+      rotulos: v.b > 0 ? [rot([0, y1 + 0.25, 0], f(v.b), 'i')] : [],
+    };
+  };
+  const mesaTronco = {
+    id: 'tronco-libre', titulo: 'Tronco entre pirámide y prisma', pieza: 'geo-figura',
+    consigna: 'Arrastra las dos esquinas y la altura. Lleva la base menor a 0 y a la mayor. ¿Cuándo acierta el promedio?',
+    controles: [
+      { id: 'a', etiqueta: 'lado mayor', min: 3, max: 6, paso: 0.5, inicio: 4, unidad: '', decimales: 1, color: 'c-o' },
+      { id: 'b', etiqueta: 'lado menor', min: 0, max: 3, paso: 0.5, inicio: 2, unidad: '', decimales: 1, color: 'c-i' },
+      { id: 'h', etiqueta: 'altura', min: 2, max: 8, paso: 1, inicio: 6, unidad: '', decimales: 0, color: 'c-h' },
+    ],
+    dibujo: v => ({ datos: troncoLibre(v), estado: {} }),
+    arrastres: [
+      { id: 'esquina-mayor', etiqueta: 'esquina de la base mayor', color: 'c-o',
+        donde: v => enPantalla(troncoLibre(v), [v.a * ET / 2, YT, v.a * ET / 2]),
+        mover: (p, v) => ({ a: sobre(troncoLibre(v), [0, YT, 0], [ET / 2, YT, ET / 2], p) }) },
+      { id: 'esquina-menor', etiqueta: 'esquina de la base menor', color: 'c-i',
+        donde: v => enPantalla(troncoLibre(v), [v.b * ET / 2, YT + v.h * ET, v.b * ET / 2]),
+        mover: (p, v) => ({ b: sobre(troncoLibre(v), [0, YT + v.h * ET, 0], [ET / 2, YT + v.h * ET, ET / 2], p) }) },
+      { id: 'altura', etiqueta: 'tope de la altura', color: 'c-h',
+        donde: v => enPantalla(troncoLibre(v), [XA, YT + v.h * ET, 0]),
+        mover: (p, v) => ({ h: sobre(troncoLibre(v), [XA, YT, 0], [XA, YT + ET, 0], p) }) },
+    ],
+    lectura: v => [nb(`V = ${f(vt(v.a, v.b, v.h))}`), SEP, nb(`promedio por h = ${f((v.a * v.a + v.b * v.b) / 2 * v.h)}`)],
+  };
+
   return {
     unidad: 'geometria.prisma-y-piramide',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/geo-figura.js'],
     historia: {
@@ -606,6 +737,9 @@
       pregunta: '¿Por qué el volumen no es el promedio de las bases por la altura?',
       fuente: { titulo: 'J. J. O’Connor y E. F. Robertson, «Egyptian papyri», MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/HistTopics/Egyptian_papyri/' },
     },
+    // Laboratorio: la pirámide en su prisma y el tronco libre son más ricas que sus ideas; la tercera mesa es el corte
+    // de la idea 6 con su gesto.
+    laboratorio: [mesaEnPrisma, mesaTronco, Object.assign({ id: 'escala', titulo: 'Escala al cubo', pieza: 'geo-figura' }, semIdea.juega)],
     ideas: [prismaIdea, cajaIdea, pirIdea, troncoIdea, tpIdea, semIdea],
   };
 });
