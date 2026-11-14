@@ -68,7 +68,8 @@
  *       AC (la proyección en el piso) y el ángulo θ de AG con el piso: tan θ = alto / AC. respuestas = { angulo, tan,
  *       sombra, diagonal }; errores.angulo = { conArista: el ángulo de AG con la arista AB (una recta del piso que no es
  *       la proyección), diagonalCara: el de la diagonal AF de la cara del frente con el piso, hipotenusa: atan(alto / AG),
- *       con la diagonal en lugar de la sombra como cateto }.
+ *       con la diagonal en lugar de la sombra como cateto }; errores.tan, la tangente de cada uno: √(ancho² + alto²)/largo,
+ *       alto/largo y alto/AG.
  *   tresPerpendiculares({ h, m, largo })
  *       Teorema de las tres perpendiculares: PA ⊥ plano (PA = h), AB ⊥ L con B en L (AB = m), y L tiene un tramo de
  *       largo 'largo' que empieza en B. Entonces PB ⊥ L y la distancia de P a L es PB = √(h² + m²).
@@ -358,6 +359,10 @@
       conArista: acosG(l / diagonal),
       diagonalCara: Math.atan(h / l) * GR,
       hipotenusa: Math.atan(h / diagonal) * GR,
+    }, tan: { // la tangente que da cada idea errónea (para las preguntas de papel, que piden la tangente)
+      conArista: Math.hypot(w, h) / l,
+      diagonalCara: h / l,
+      hipotenusa: h / diagonal,
     } }));
   }
 

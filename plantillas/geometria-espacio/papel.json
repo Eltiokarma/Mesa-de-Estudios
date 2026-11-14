@@ -14,6 +14,45 @@
       ],
       "verificar": [
         { "fn": "proyeccion", "args": [{ "largo": 13, "h2": 5 }], "espera": { "proyeccion": 12, "angulo": 22.619864948040, "errores.proyeccion.resta": 8 } }
+      ],
+      "preguntas": [
+        {
+          "id": "p1a",
+          "enunciado": "Un poste de 13 m está inclinado y su punta queda a 5 m del suelo. El sol está justo encima.",
+          "pregunta": "¿Cuánto mide la sombra del poste?",
+          "unidad": "m",
+          "decimales": 1,
+          "correcta": { "fn": "proyeccion", "args": [{ "largo": 13, "h2": 5 }], "campo": "respuestas.proyeccion", "valor": 12 },
+          "errores": [
+            {
+              "id": "GE-espacio-proyeccion-resta",
+              "respaldo": "hipotesis",
+              "explicacion": "Restaste 13 − 5. Poste, sombra y altura forman un triángulo rectángulo: la sombra es √(13² − 5²).",
+              "fn": "proyeccion",
+              "args": [{ "largo": 13, "h2": 5 }],
+              "campo": "errores.proyeccion.resta",
+              "valor": 8
+            },
+            {
+              "id": "GE-espacio-proyeccion-igual",
+              "respaldo": "hipotesis",
+              "explicacion": "La sombra no mide lo mismo que el poste: al estar inclinado, su proyección sobre el suelo es más corta.",
+              "fn": "proyeccion",
+              "args": [{ "largo": 13, "h2": 5 }],
+              "campo": "errores.proyeccion.igual",
+              "valor": 13
+            },
+            {
+              "id": "GE-espacio-proyeccion-altura",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese 5 es la altura de la punta, un cateto vertical. La sombra es el otro cateto, el que queda en el suelo.",
+              "fn": "proyeccion",
+              "args": [{ "largo": 13, "h2": 5 }],
+              "campo": "errores.proyeccion.altura",
+              "valor": 5
+            }
+          ]
+        }
       ]
     },
     {
@@ -28,6 +67,45 @@
       ],
       "verificar": [
         { "fn": "anguloDiagonal", "args": [{ "largo": 4, "ancho": 4, "alto": 4 }], "espera": { "tan": 0.707106781187, "sombra": 5.656854249492, "angulo": 35.264389682755 } }
+      ],
+      "preguntas": [
+        {
+          "id": "p2a",
+          "enunciado": "Un cubo ABCD-EFGH tiene arista 4 cm.",
+          "pregunta": "¿Cuánto vale la tangente del ángulo que forma la diagonal AG con la base ABCD?",
+          "unidad": "",
+          "decimales": 2,
+          "correcta": { "fn": "anguloDiagonal", "args": [{ "largo": 4, "ancho": 4, "alto": 4 }], "campo": "respuestas.tan", "valor": 0.707106781187 },
+          "errores": [
+            {
+              "id": "GE-espacio-anguloDiagonal-conArista",
+              "respaldo": "hipotesis",
+              "explicacion": "Mediste con la arista AB: GB/AB = √2. El ángulo con la base se mide con la proyección de AG, la diagonal AC: GC/AC.",
+              "fn": "anguloDiagonal",
+              "args": [{ "largo": 4, "ancho": 4, "alto": 4 }],
+              "campo": "errores.tan.conArista",
+              "valor": 1.41421356237
+            },
+            {
+              "id": "GE-espacio-anguloDiagonal-diagonalCara",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste AF, la diagonal de una cara: FB/AB = 1. La diagonal del cubo es AG, y su sombra es AC.",
+              "fn": "anguloDiagonal",
+              "args": [{ "largo": 4, "ancho": 4, "alto": 4 }],
+              "campo": "errores.tan.diagonalCara",
+              "valor": 1
+            },
+            {
+              "id": "GE-espacio-anguloDiagonal-hipotenusa",
+              "respaldo": "hipotesis",
+              "explicacion": "Tomaste GC/AG = 1/√3 como tangente. Ese cociente es el seno; la tangente es GC/AC = √2/2.",
+              "fn": "anguloDiagonal",
+              "args": [{ "largo": 4, "ancho": 4, "alto": 4 }],
+              "campo": "errores.tan.hipotenusa",
+              "valor": 0.57735026919
+            }
+          ]
+        }
       ]
     },
     {
@@ -42,6 +120,45 @@
       ],
       "verificar": [
         { "fn": "anguloDiagonal", "args": [{ "largo": 3, "ancho": 4, "alto": 12 }], "espera": { "diagonal": 13, "sombra": 5, "tan": 2.4 } }
+      ],
+      "preguntas": [
+        {
+          "id": "p3a",
+          "enunciado": "Una caja tiene base de 3 cm por 4 cm y altura de 12 cm.",
+          "pregunta": "¿Cuánto vale la tangente del ángulo que forma su diagonal con la base?",
+          "unidad": "",
+          "decimales": 2,
+          "correcta": { "fn": "anguloDiagonal", "args": [{ "largo": 3, "ancho": 4, "alto": 12 }], "campo": "respuestas.tan", "valor": 2.4 },
+          "errores": [
+            {
+              "id": "GE-espacio-anguloDiagonal-conArista",
+              "respaldo": "hipotesis",
+              "explicacion": "Mediste con la arista de 3 cm. El ángulo con la base se mide con la proyección de la diagonal: la diagonal de la base, 5 cm.",
+              "fn": "anguloDiagonal",
+              "args": [{ "largo": 3, "ancho": 4, "alto": 12 }],
+              "campo": "errores.tan.conArista",
+              "valor": 4.21637021356
+            },
+            {
+              "id": "GE-espacio-anguloDiagonal-diagonalCara",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste la diagonal de la cara de 3 por 12: 12/3. La diagonal de la caja tiene por sombra la diagonal de la base, 5 cm.",
+              "fn": "anguloDiagonal",
+              "args": [{ "largo": 3, "ancho": 4, "alto": 12 }],
+              "campo": "errores.tan.diagonalCara",
+              "valor": 4
+            },
+            {
+              "id": "GE-espacio-anguloDiagonal-hipotenusa",
+              "respaldo": "hipotesis",
+              "explicacion": "Tomaste 12/13 como tangente. Ese cociente es el seno; la tangente usa los dos catetos: 12/5.",
+              "fn": "anguloDiagonal",
+              "args": [{ "largo": 3, "ancho": 4, "alto": 12 }],
+              "campo": "errores.tan.hipotenusa",
+              "valor": 0.923076923077
+            }
+          ]
+        }
       ]
     },
     {
@@ -56,6 +173,36 @@
       ],
       "verificar": [
         { "fn": "tresPerpendiculares", "args": [{ "h": 8, "m": 6 }], "espera": { "distancia": 10, "errores.distancia.alPlano": 8 } }
+      ],
+      "preguntas": [
+        {
+          "id": "p4a",
+          "enunciado": "Desde un punto P se traza PA perpendicular a un plano, con PA = 8 m. En el plano hay una recta L, y la distancia de A a L es 6 m.",
+          "pregunta": "¿Cuál es la distancia de P a la recta L?",
+          "unidad": "m",
+          "decimales": 1,
+          "correcta": { "fn": "tresPerpendiculares", "args": [{ "h": 8, "m": 6 }], "campo": "respuestas.distancia", "valor": 10 },
+          "errores": [
+            {
+              "id": "GE-espacio-tresPerpendiculares-alPlano",
+              "respaldo": "hipotesis",
+              "explicacion": "PA = 8 es la distancia de P al plano, no a la recta. Por las tres perpendiculares, la distancia a L es PB.",
+              "fn": "tresPerpendiculares",
+              "args": [{ "h": 8, "m": 6 }],
+              "campo": "errores.distancia.alPlano",
+              "valor": 8
+            },
+            {
+              "id": "GE-espacio-tresPerpendiculares-alPie",
+              "respaldo": "hipotesis",
+              "explicacion": "AB = 6 se mide desde A, el pie. P está 8 m más arriba: PB = √(8² + 6²) = 10.",
+              "fn": "tresPerpendiculares",
+              "args": [{ "h": 8, "m": 6 }],
+              "campo": "errores.distancia.alPie",
+              "valor": 6
+            }
+          ]
+        }
       ]
     },
     {
@@ -70,6 +217,45 @@
       ],
       "verificar": [
         { "fn": "distanciaVerticeRecta", "args": [{ "a": 3, "v": "B", "r": "AG" }], "espera": { "distancia": 2.449489742783, "pie": [1, 1, 1], "errores.distancia.alMedio": 2.598076211353 } }
+      ],
+      "preguntas": [
+        {
+          "id": "p5a",
+          "enunciado": "Un cubo ABCD-EFGH tiene arista 3 cm.",
+          "pregunta": "¿Cuál es la distancia del vértice B a la diagonal AG?",
+          "unidad": "cm",
+          "decimales": 2,
+          "correcta": { "fn": "distanciaVerticeRecta", "args": [{ "a": 3, "v": "B", "r": "AG" }], "campo": "respuestas.distancia", "valor": 2.44948974278 },
+          "errores": [
+            {
+              "id": "GE-espacio-distanciaVerticeRecta-alMedio",
+              "respaldo": "hipotesis",
+              "explicacion": "Mediste hasta el centro del cubo. El pie de la perpendicular está a un tercio de AG, no en su punto medio.",
+              "fn": "distanciaVerticeRecta",
+              "args": [{ "a": 3, "v": "B", "r": "AG" }],
+              "campo": "errores.distancia.alMedio",
+              "valor": 2.59807621135
+            },
+            {
+              "id": "GE-espacio-distanciaVerticeRecta-alExtremo",
+              "respaldo": "hipotesis",
+              "explicacion": "Mediste hasta A, un extremo de la diagonal. La distancia a una recta se mide por la perpendicular: la altura del triángulo ABG.",
+              "fn": "distanciaVerticeRecta",
+              "args": [{ "a": 3, "v": "B", "r": "AG" }],
+              "campo": "errores.distancia.alExtremo",
+              "valor": 3
+            },
+            {
+              "id": "GE-espacio-distanciaVerticeRecta-conLaSombra",
+              "respaldo": "hipotesis",
+              "explicacion": "Mediste hasta AC, la sombra de AG en la base. La distancia es a la diagonal misma, que sube hasta G.",
+              "fn": "distanciaVerticeRecta",
+              "args": [{ "a": 3, "v": "B", "r": "AG" }],
+              "campo": "errores.distancia.conLaSombra",
+              "valor": 2.12132034356
+            }
+          ]
+        }
       ]
     },
     {
@@ -84,6 +270,36 @@
       ],
       "verificar": [
         { "fn": "diedro", "args": [[6, 0, 0], [0, 6, 0], [0, 0, 0], [0, 0, 6]], "espera": { "diedro": 54.735610317245, "pieC": [3, 3, 0], "errores.diedro.oblicuas": 45 } }
+      ],
+      "preguntas": [
+        {
+          "id": "p6a",
+          "enunciado": "En un cubo ABCD-EFGH se toman el plano BDE y la base ABCD.",
+          "pregunta": "¿Cuánto mide, en grados, el ángulo diedro que forman?",
+          "unidad": "°",
+          "decimales": 1,
+          "correcta": { "fn": "diedro", "args": [[6, 0, 0], [0, 6, 0], [0, 0, 0], [0, 0, 6]], "campo": "respuestas.diedro", "valor": 54.7356103172 },
+          "errores": [
+            {
+              "id": "GE-espacio-diedro-oblicuas",
+              "respaldo": "hipotesis",
+              "explicacion": "Mediste con AB y EB, que no son perpendiculares a la arista BD. El diedro se mide con AO y EO, con O el centro de la base.",
+              "fn": "diedro",
+              "args": [[6, 0, 0], [0, 6, 0], [0, 0, 0], [0, 0, 6]],
+              "campo": "errores.diedro.oblicuas",
+              "valor": 45
+            },
+            {
+              "id": "GE-espacio-diedro-recto",
+              "respaldo": "hipotesis",
+              "explicacion": "El plano BDE sube, pero inclinado: no es una pared. Su ángulo con la base sale de tan φ = EA/AO = √2.",
+              "fn": "diedro",
+              "args": [[6, 0, 0], [0, 6, 0], [0, 0, 0], [0, 0, 6]],
+              "campo": "errores.diedro.recto",
+              "valor": 90
+            }
+          ]
+        }
       ]
     },
     {
@@ -98,6 +314,36 @@
       ],
       "verificar": [
         { "fn": "rectasCubo", "args": [4, "AE", "BD"], "espera": { "tipo": "cruzadas", "angulo": 90, "distancia": 2.828427124746 } }
+      ],
+      "preguntas": [
+        {
+          "id": "p7a",
+          "enunciado": "En un cubo ABCD-EFGH de arista 4 cm, la arista AE y la diagonal BD de la base son rectas cruzadas.",
+          "pregunta": "¿Cuál es la distancia entre AE y BD?",
+          "unidad": "cm",
+          "decimales": 2,
+          "correcta": { "fn": "distanciaCruzadas", "args": [{ "a": 4, "r1": "AE", "r2": "BD" }], "campo": "respuestas.distancia", "valor": 2.82842712475 },
+          "errores": [
+            {
+              "id": "GE-espacio-distanciaCruzadas-entreExtremos",
+              "respaldo": "hipotesis",
+              "explicacion": "Mediste de A a B, entre dos extremos. La distancia es la perpendicular común: AO, con O el centro de la base.",
+              "fn": "distanciaCruzadas",
+              "args": [{ "a": 4, "r1": "AE", "r2": "BD" }],
+              "campo": "errores.distancia.entreExtremos",
+              "valor": 4
+            },
+            {
+              "id": "GE-espacio-distanciaCruzadas-mitadDeR1",
+              "respaldo": "hipotesis",
+              "explicacion": "Tomaste la mitad de AE. La distancia entre las rectas va por la perpendicular común, AO, que está en la base.",
+              "fn": "distanciaCruzadas",
+              "args": [{ "a": 4, "r1": "AE", "r2": "BD" }],
+              "campo": "errores.distancia.mitadDeR1",
+              "valor": 2
+            }
+          ]
+        }
       ]
     },
     {
@@ -113,6 +359,36 @@
       "verificar": [
         { "fn": "rectasCubo", "args": [6, "AF", "BD"], "espera": { "tipo": "cruzadas", "angulo": 60 } },
         { "fn": "anguloEnVertice", "args": [{ "a": 6, "v": "F", "p": "A", "q": "H" }], "espera": { "respuestas.angulo": 60 } }
+      ],
+      "preguntas": [
+        {
+          "id": "p8a",
+          "enunciado": "En un cubo ABCD-EFGH se toman las rectas cruzadas AF y BD.",
+          "pregunta": "¿Qué ángulo forman?",
+          "unidad": "°",
+          "decimales": 0,
+          "correcta": { "fn": "anguloRectasCubo", "args": [{ "a": 6, "r1": "AF", "r2": "BD" }], "campo": "respuestas.angulo", "valor": 60 },
+          "errores": [
+            {
+              "id": "GE-espacio-anguloRectasCubo-recto",
+              "respaldo": "hipotesis",
+              "explicacion": "No cortarse no las hace perpendiculares. Lleva BD a FH, su paralela: AF, FH y AH forman un triángulo equilátero.",
+              "fn": "anguloRectasCubo",
+              "args": [{ "a": 6, "r1": "AF", "r2": "BD" }],
+              "campo": "errores.angulo.recto",
+              "valor": 90
+            },
+            {
+              "id": "GE-espacio-anguloRectasCubo-medio",
+              "respaldo": "hipotesis",
+              "explicacion": "45° es lo que forma AF con la arista AB. Con BD hay que trasladarla a FH: el triángulo AFH es equilátero.",
+              "fn": "anguloRectasCubo",
+              "args": [{ "a": 6, "r1": "AF", "r2": "BD" }],
+              "campo": "errores.angulo.medio",
+              "valor": 45
+            }
+          ]
+        }
       ]
     },
     {
