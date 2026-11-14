@@ -30,7 +30,7 @@ Son las 19 unidades del catálogo, todas de 3.º. Todas tienen `estado: 'complet
 
 Verificación:
 - `node --test contenido/teoria/teoria.test.js`: 22 de 22 en verde, con 60 semillas por idea.
-- `npm test` completo: resultado en el último commit.
+- `npm test` completo: 8221 de 8221 en verde.
 - Cada unidad se recorrió en Playwright a 360 × 780, en los cinco momentos de cada idea, y se miró la tira de figuras. Las correcciones que salieron de esas capturas están en los commits.
 - Se revisó una unidad en tema oscuro (ruedas) y otra en grises (relojes).
 
