@@ -224,6 +224,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'exponenciales-logaritmos', unidad: 'algebra.exponenciales-y-logaritmos', version: '0.1.0' };
@@ -1036,6 +1037,9 @@ function prediccion(s){
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: antes de cualquier pregunta se juega con la escalera del paso 1 (el triángulo ya se arrastra).
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra el triángulo por la escalera y mira a qué número llegas.', minimo:2 });
 })();
 </script>
 <script>
@@ -1190,8 +1194,7 @@ function ir(k){
   E.parar();
   S.k = k; S.t0 = Date.now();
   const x = EXPS[k], ya = !!S.pred[x.id];
-  x.antes(ya);
-  E.compactar(!ya);
+  if (jugado) { x.antes(ya); E.compactar(!ya); } else juegoLibre();
   botones();
   $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
   $('t2').textContent = x.corto;
@@ -1218,7 +1221,17 @@ function ir(k){
   });
   pintar();
 }
+// Regla 3: antes del primer experimento, juego libre con la escalera de base 2 (saltos que multiplican).
+let jugado = false;
+function juegoLibre(){
+  E.config({ modo:'regla', regla:{ base:2, desde:-2, hasta:6, ptr:1, arrastre:true },
+    lect:[() => ['x', 'saltos x', fmt(E.regla.ptr, 0)], () => ['N', 'N = 2ˣ', ME.potencia({ base:2, exp:E.regla.ptr }).texto]] });
+  E.compactar(false);
+}
 ir(0);
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Arrastra el triángulo por la escalera y mira a qué número llegas.', minimo:2,
+  alListo:() => { jugado = true; ir(S.k); } });
 })();
 </script>
 
