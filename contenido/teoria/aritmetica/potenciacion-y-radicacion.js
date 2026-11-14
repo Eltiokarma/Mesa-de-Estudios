@@ -12,6 +12,8 @@
  *   Estados: juego sin tocar · casos probados · predicción · coincide / no coincide · paso a paso · caso nuevo · «No sé».
  *   Duda que resuelve: «si 2 021 termina en 1, ¿por qué no es un cuadrado?».
  * Colores (regla 4): N naranja (c-o), la raíz q turquesa (c-i), el residuo rojo (c-h), el cuadrado siguiente verde (c-d).
+ * Ronda 2 (14 nov 2026): gesto directo en las ideas 2 a 4 (la fila de la última cifra, el hueco de la ficha siguiente y
+ * el tramo de cuadrados); la idea 1 es una tabla de exponentes que se eligen, sin lugar que agarrar. Llaves y laboratorio.
  */
 (function (root, fabrica) {
   const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
@@ -44,6 +46,9 @@
   const pot = (p, e) => (e === 1 ? String(p) : `${p}${String(e).split('').map(c => SUP[c]).join('')}`);
   const escribir = fs => fs.filter(([, e]) => e > 0).map(([p, e]) => pot(p, e)).join(' · ') || '1';
   const isqrt = n => { let x = Math.floor(Math.sqrt(n)); while (x * x > n) x--; while ((x + 1) * (x + 1) <= n) x++; return x; };
+  // Gesto directo (docs/teoria.md §4b): la manija vive en las coordenadas de la pieza; el lector ajusta al paso y al rango.
+  const TABLA = () => Kit.piezas['arit-tabla'], FICHAS = () => Kit.piezas['arit-fichas'], RECTA = () => Kit.piezas.recta;
+  const inversa = (escala, lo, hi) => px => lo + (px - escala(lo)) * (hi - lo) / (escala(hi) - escala(lo));
   const icbrt = n => { let x = Math.floor(Math.cbrt(n)); while (x * x * x > n) x--; while ((x + 1) ** 3 <= n) x++; return x; };
 
   // ---------- Idea 1: cuadrado o cubo perfecto según los exponentes ----------
@@ -98,7 +103,7 @@
     },
     regla: {
       texto: 'Un entero positivo es cuadrado perfecto si todos los exponentes de sus primos son pares, y cubo perfecto si todos son múltiplos de 3.',
-      ecuacion: [N, ' = ', { sup: ['p', '2a'] }, ' · ', { sup: ['s', '2b'] }, ' = ', { sup: [{ par: [{ sup: ['p', 'a'] }, ' · ', { sup: ['s', 'b'] }] }, '2'] }],
+      ecuacion: [N, ' = ', { llave: [{ sup: ['p', '2a'] }, ' · ', { sup: ['s', '2b'] }], nota: 'exponentes pares' }, ' = ', { sup: [{ par: [{ sup: ['p', 'a'] }, ' · ', { sup: ['s', 'b'] }] }, '2'] }],
       condicion: 'se mira la factorización en primos completa; un solo exponente impar basta para que no sea cuadrado.',
     },
     ahoraTu: {
@@ -141,10 +146,20 @@
     juega: {
       consigna: 'Elige n. Mira en qué cifra termina n². Busca las cifras en que nunca termina un cuadrado.',
       voz: 'Revisa la columna de la derecha completa antes de concluir.',
-      controles: [{ id: 'n', etiqueta: 'n', color: 'c-i', min: 1, max: 30, paso: 1, inicio: 13, unidad: '', decimales: 0 }],
+      controles: [{ id: 'n', etiqueta: 'n', color: 'c-i', min: 1, max: 39, paso: 1, inicio: 13, unidad: '', decimales: 0 }],
       dibujo: v => ({ datos: tablaCifras(v.n), estado: { fila: v.n % 10 } }),
       lectura: v => [`${v.n}² = ${v.n * v.n}: termina en ${(v.n * v.n) % 10}`],
       minimo: 4,
+      // Arrastra la marca por las filas: cambia la última cifra de n y deja la decena (la decena va con − y +).
+      arrastres: [
+        { id: 'ultima-cifra', etiqueta: 'última cifra de n', color: 'c-i',
+          donde: v => TABLA().geometria(tablaCifras(v.n)).celda(v.n % 10, 0),
+          mover: (pt, v) => {
+            const g = TABLA().geometria(tablaCifras(v.n));
+            const fila = Math.min(9, Math.max(0, Math.floor((pt.y - g.filaY(0)) / g.altoFila)));
+            return { n: 10 * Math.floor(v.n / 10) + fila };
+          } },
+      ],
     },
     predice: {
       pregunta: 'El número 2 021 termina en 1, como 1, 81 o 121. ¿Es un cuadrado perfecto?',
@@ -160,7 +175,7 @@
     mira: {
       datos: tablaCifras(null),
       pasos: [
-        { estado: {}, texto: 'La última cifra de n² solo depende de la última de n.', ecuacion: ['13² = 169;   23² = 529'] },
+        { estado: {}, texto: 'La última cifra de n² solo depende de la última de n.', ecuacion: ['13² = 169', '   ·   ', '23² = 529'] },
         { estado: { fila: [2, 3, 7, 8] }, texto: 'Ningún cuadrado termina en 2, 3, 7 u 8: esos se descartan.', ecuacion: ['termina en 2, 3, 7 u 8   ⇒   no es cuadrado'] },
         { estado: { fila: [1, 9] }, texto: 'Terminar en 1 no asegura nada: también 2 021 termina en 1.', ecuacion: [{ sup: ['44', '2'] }, ' = 1 936 < 2 021 < 2 025 = ', { sup: ['45', '2'] }] },
       ],
@@ -183,7 +198,7 @@
               { id: 'si', valor: es ? 'No' : `Sí, porque termina en ${cifra}`, error: 'AT-INCLUSION', siFuera: 'Que la última cifra no descarte no confirma nada.' },
               { id: 'otro', valor: descarta ? `No: está entre ${c}² y ${c + 1}²` : `No: ningún cuadrado termina en ${cifra}`, error: 'AT-INCLUSION', siFuera: descarta ? 'Es cierto, pero la última cifra ya bastaba.' : `Hay cuadrados que terminan en ${cifra}.` },
             ], String),
-            solucion: { texto: descarta ? `Termina en ${cifra}: se descarta.` : `Se comprueba con los cuadrados vecinos.`, ecuacion: [`${c}² = ${f(c * c, 0)};   ${c + 1}² = ${f((c + 1) ** 2, 0)}`] },
+            solucion: { texto: descarta ? `Termina en ${cifra}: se descarta.` : `Se comprueba con los cuadrados vecinos.`, ecuacion: [`${c}² = ${f(c * c, 0)}`, '   ·   ', `${c + 1}² = ${f((c + 1) ** 2, 0)}`] },
           };
         }
         const cifras = [2, 3, 7, 8, 0, 1, 4, 5, 6, 9], cf = rr.de(cifras);
@@ -213,6 +228,19 @@
       ],
     };
   };
+  // La manija es el primer hueco: la ficha siguiente. Arrastrarla por la L de huecos agrega fichas al residuo; llevarla
+  // a la izquierda del bloque quita una ficha (el cuadrado vuelve a ser el anterior).
+  const hueco = (id, minimo) => ({
+    id: 'siguiente-ficha', etiqueta: 'lugar de la ficha siguiente', color: 'c-o',
+    donde: v => { const Nv = v[id], qq = isqrt(Nv); return FICHAS().geometria(fichasRaiz(Nv)).ficha(1, Nv - qq * qq); },
+    mover: (pt, v) => {
+      const Nv = v[id], qq = isqrt(Nv), g = FICHAS().geometria(fichasRaiz(Nv)), c = g.caja(1);
+      if (pt.x < c.x) return { [id]: Math.max(minimo, qq * qq - 1) };
+      const col = Math.min(qq, Math.floor((pt.x - c.x) / g.paso));
+      const fila = Math.min(1, Math.max(0, Math.floor((pt.y - c.y) / g.paso)));
+      return { [id]: qq * qq + Math.min(2 * qq + 1, fila * (qq + 1) + col) };
+    },
+  });
   const raiz = {
     id: 'raiz-entera',
     titulo: 'El cuadrado más grande que cabe',
@@ -225,6 +253,7 @@
       dibujo: v => ({ datos: fichasRaiz(v.N), estado: { paso: 1 } }),
       lectura: v => { const qq = isqrt(v.N); return [q, ` = ${qq}, `, r, ` = ${v.N - qq * qq}, faltan ${(qq + 1) ** 2 - v.N}`]; },
       minimo: 3,
+      arrastres: [hueco('N', 2)],
     },
     predice: {
       pregunta: ['¿Cuál es la raíz cuadrada entera de ', { v: 'c-o', t: '80' }, ' y su residuo?'],
@@ -248,7 +277,7 @@
     },
     regla: {
       texto: 'La raíz cuadrada entera de N es el mayor q con q² ≤ N; el residuo es N − q². La cúbica entera usa q³ ≤ N < (q + 1)³.',
-      ecuacion: [{ sup: [q, '2'] }, ' ≤ ', N, ' < ', { sup: [q1, '2'] }, ';   ', r, ' = ', N, ' − ', { sup: [q, '2'] }, ' ≤ 2', q],
+      ecuacion: [{ sup: [q, '2'] }, ' ≤ ', N, ' < ', { sup: [q1, '2'] }, '   ·   ', r, ' = ', { llave: [N, ' − ', { sup: [q, '2'] }], nota: 'lo que sobra', color: 'c-h' }, ' ≤ 2', q],
       condicion: 'N es entero no negativo. Si el residuo pasara de 2q, cabría un cuadrado más grande.',
     },
     ahoraTu: {
@@ -264,7 +293,7 @@
               { id: 'cuadrada', valor: `Raíz ${isqrt(Nv)}, residuo ${Nv - isqrt(Nv) ** 2}`, error: 'AT-INDICE', siFuera: 'Esa es la raíz cuadrada; se pide la cúbica.' },
               { id: 'falta', valor: `Raíz ${c}, residuo ${(c + 1) ** 3 - Nv}`, error: 'AT-FALTA', siFuera: `Eso es lo que falta para ${(c + 1) ** 3}; el residuo es lo que sobra sobre ${c ** 3}.` },
             ], String),
-            solucion: { texto: `${c}³ cabe y ${c + 1}³ ya no.`, ecuacion: [`${c}³ = ${f(c ** 3, 0)} ≤ ${f(Nv, 0)} < ${f((c + 1) ** 3, 0)} = ${c + 1}³;   r = ${rv}`] },
+            solucion: { texto: `${c}³ cabe y ${c + 1}³ ya no.`, ecuacion: [`${c}³ = ${f(c ** 3, 0)} ≤ ${f(Nv, 0)} < ${f((c + 1) ** 3, 0)} = ${c + 1}³`, '   ·   ', `r = ${rv}`] },
           };
         }
         const k = rr.ent(6, 40), Nv = k * k + rr.ent(1, 2 * k);
@@ -277,7 +306,7 @@
             { id: 'menos', valor: `Raíz ${c - 1}, residuo ${Nv - (c - 1) ** 2}`, error: 'AT-RESIDUO', siFuera: `Con ese residuo cabe un cuadrado más grande: el residuo pasa de ${2 * (c - 1)}.` },
             { id: 'falta', valor: `Raíz ${c}, residuo ${(c + 1) ** 2 - Nv}`, error: 'AT-FALTA', siFuera: `Eso es lo que falta para ${(c + 1) ** 2}; el residuo es lo que sobra sobre ${c * c}.` },
           ], String),
-          solucion: { texto: `${c}² cabe y ${c + 1}² ya no.`, ecuacion: [`${c}² = ${c * c} ≤ ${Nv} < ${(c + 1) ** 2} = ${c + 1}²;   r = ${rv}`], dibujo: Nv <= 120 ? { datos: fichasRaiz(Nv), estado: { paso: 1 } } : undefined },
+          solucion: { texto: `${c}² cabe y ${c + 1}² ya no.`, ecuacion: [`${c}² = ${c * c} ≤ ${Nv} < ${(c + 1) ** 2} = ${c + 1}²`, '   ·   ', `r = ${rv}`], dibujo: Nv <= 120 ? { datos: fichasRaiz(Nv), estado: { paso: 1 } } : undefined },
         };
       },
     },
@@ -293,6 +322,7 @@
       { tipo: 'intervalo', a: x * x, b: (x + h) * (x + h), ca: true, cb: false, color: 'i', fila: 2, rotulo: `${f(x)}² a ${f(x + h)}²`, desde },
     ],
   });
+  const rectaJuego = x => ({ datos: Object.assign(rectaAprox(x, 0.1, 2), { min: 0.8, max: 4.2, paso: 0.2, cada: 5 }), estado: {} });
   const aprox = {
     id: 'aproximadas',
     titulo: 'Encerrar la raíz por pasos',
@@ -302,9 +332,15 @@
       consigna: 'Busca √2 probando décimas: se dibuja el tramo entre x² y el cuadrado de la décima siguiente. Encierra el 2.',
       voz: 'Comprueba elevando al cuadrado, no a ojo.',
       controles: [{ id: 'x', etiqueta: 'x', color: 'c-i', min: 1, max: 1.9, paso: 0.1, inicio: 1.2, unidad: '', decimales: 1 }],
-      dibujo: v => ({ datos: Object.assign(rectaAprox(v.x, 0.1, 2), { min: 0.8, max: 4.2, paso: 0.2, cada: 5 }), estado: {} }),
-      lectura: v => [`${f(v.x)}² = ${f(v.x * v.x)};  ${f(v.x + 0.1)}² = ${f((v.x + 0.1) ** 2)}`],
+      dibujo: v => rectaJuego(v.x),
+      lectura: v => [`${f(v.x)}² = ${f(v.x * v.x)} · ${f(v.x + 0.1)}² = ${f((v.x + 0.1) ** 2)}`],
       minimo: 3,
+      // Arrastra el tramo por la recta de los cuadrados: su borde izquierdo es x², y x es la raíz de donde lo sueltas.
+      arrastres: [
+        { id: 'tramo', etiqueta: 'inicio del tramo de cuadrados', color: 'c-i',
+          donde: v => { const g = RECTA().geometria(rectaJuego(v.x).datos); return { x: g.x(v.x * v.x), y: g.filaY(2) }; },
+          mover: (pt, v) => ({ x: Math.sqrt(Math.max(0, inversa(RECTA().geometria(rectaJuego(v.x).datos).x, 0.8, 4.2)(pt.x))) }) },
+      ],
     },
     predice: {
       pregunta: '√2 está entre 1,4 y 1,5, porque 1,96 < 2 < 2,25. ¿Entre qué centésimas está?',
@@ -335,7 +371,7 @@
     },
     regla: {
       texto: 'Aproximar √N es encerrarla: se busca a con a² ≤ N < (a + h)², con h = 0,1, 0,01… Cada paso se comprueba elevando al cuadrado.',
-      ecuacion: [{ sup: ['a', '2'] }, ' ≤ ', N, ' < ', { sup: [{ par: ['a + h'] }, '2'] }, '   ⇒   a ≤ ', { raiz: N }, ' < a + h'],
+      ecuacion: [{ sup: ['a', '2'] }, ' ≤ ', N, ' < ', { llave: [{ sup: [{ par: ['a + h'] }, '2'] }], nota: 'ya se pasa' }, '   ·   ', '⇒  a ≤ ', { raiz: N }, ' < a + h'],
       condicion: '√N es la raíz no negativa. La raíz no se reparte en una suma: √(9 + 16) = 5, no 7.',
     },
     ahoraTu: {
@@ -374,11 +410,65 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Más rico que los juegos: N hasta 200 fichas; un cuarto primo (7) para ver cuadrados y cubos a la vez; y encerrar
+  // la raíz de cualquier N de 2 a 20, no solo de 2.
+  const PR4 = [2, 3, 5, 7];
+  const tablaExp4 = es => ({
+    columnas: [{ t: 'primo' }, { t: 'exponente', color: 'o' }, { t: '¿par?' }, { t: '¿de a 3?' }],
+    filas: PR4.map((p, i) => [String(p), { t: String(es[i]), color: 'o' },
+      { t: es[i] % 2 === 0 ? 'sí' : 'no', color: es[i] % 2 ? 'h' : undefined }, { t: es[i] % 3 === 0 ? 'sí' : 'no', color: es[i] % 3 ? 'h' : undefined }]),
+    filasMax: 4, cabeza: true,
+  });
+  const rectaN = v => ({ datos: { min: 0, max: 22, paso: 1, cada: 5, decimales: 2, variable: 'cuadrados', filas: 2, elementos: [
+    { tipo: 'punto', x: v.N, color: 'o', fila: 1, rotulo: `N = ${f(v.N, 0)}` },
+    { tipo: 'intervalo', a: v.x * v.x, b: (v.x + 0.1) ** 2, ca: true, cb: false, color: 'i', fila: 2, rotulo: `${f(v.x)}² a ${f(v.x + 0.1)}²` },
+  ] }, estado: {} });
+  const laboratorio = [
+    {
+      id: 'raiz-grande', titulo: 'Raíz entera hasta 200 fichas', pieza: 'arit-fichas',
+      consigna: 'Elige N hasta 200. Arrastra el primer hueco: cada lugar que avanzas es una ficha más en el residuo.',
+      controles: [{ id: 'N', etiqueta: 'N', color: 'c-o', min: 2, max: 200, paso: 1, inicio: 50, unidad: 'fichas', decimales: 0 }],
+      dibujo: v => ({ datos: fichasRaiz(v.N), estado: { paso: 1 } }),
+      lectura: v => { const qq = isqrt(v.N); return [N, ` = ${v.N}: `, q, ` = ${qq}, `, r, ` = ${v.N - qq * qq}, faltan ${(qq + 1) ** 2 - v.N}`]; },
+      arrastres: [hueco('N', 2)],
+    },
+    {
+      // Sin arrastre: los exponentes son números que se eligen, no lugares de la tabla.
+      id: 'cuatro-primos', titulo: 'Cuadrados y cubos con cuatro primos', pieza: 'arit-tabla',
+      consigna: 'Arma un número con los exponentes de 2, 3, 5 y 7. Busca uno que sea cuadrado y cubo a la vez.',
+      controles: PR4.map((p, i) => ({ id: `e${p}`, etiqueta: `exponente de ${p}`, color: 'c-o', min: 0, max: 6, paso: 1, inicio: [2, 3, 0, 1][i], unidad: '', decimales: 0 })),
+      dibujo: v => ({ datos: tablaExp4(PR4.map(p => v[`e${p}`])), estado: {} }),
+      lectura: v => { const es = PR4.map(p => v[`e${p}`]); return [N, ` = ${escribir(PR4.map((p, i) => [p, es[i]]))}: ${clasif(es)}`]; },
+    },
+    {
+      id: 'encerrar', titulo: 'Encerrar la raíz de cualquier N', pieza: 'recta',
+      consigna: 'Arrastra N y el tramo de cuadrados. Busca la décima x con x² ≤ N y el cuadrado siguiente ya pasado.',
+      controles: [
+        { id: 'N', etiqueta: 'N', color: 'c-o', min: 2, max: 20, paso: 1, inicio: 7, unidad: '', decimales: 0 },
+        { id: 'x', etiqueta: 'x', color: 'c-i', min: 1, max: 4.5, paso: 0.1, inicio: 2, unidad: '', decimales: 1 },
+      ],
+      dibujo: rectaN,
+      lectura: v => (v.x * v.x <= v.N + 1e-9 && v.N < (v.x + 0.1) ** 2 - 1e-9
+        ? [{ raiz: { v: 'c-o', t: String(v.N) } }, ` está entre ${f(v.x)} y ${f(v.x + 0.1)}`]
+        : [`${f(v.x)}² = ${f(v.x * v.x)} · `, N, ` = ${v.N} queda fuera`]),
+      arrastres: [
+        { id: 'punto-n', etiqueta: 'el número N', color: 'c-o',
+          donde: v => { const g = RECTA().geometria(rectaN(v).datos); return { x: g.x(v.N), y: g.filaY(1) }; },
+          mover: (pt, v) => ({ N: inversa(RECTA().geometria(rectaN(v).datos).x, 0, 22)(pt.x) }) },
+        { id: 'tramo', etiqueta: 'inicio del tramo de cuadrados', color: 'c-i',
+          donde: v => { const g = RECTA().geometria(rectaN(v).datos); return { x: g.x(v.x * v.x), y: g.filaY(2) }; },
+          mover: (pt, v) => ({ x: Math.sqrt(Math.max(0, inversa(RECTA().geometria(rectaN(v).datos).x, 0, 22)(pt.x))) }) },
+      ],
+    },
+  ];
+
   return {
     unidad: 'aritmetica.potenciacion-y-radicacion',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/arit-tabla.js', '/nucleo/kit/piezas/arit-fichas.js', '/nucleo/kit/piezas/recta.js'],
+    laboratorio,
     historia: {
       texto: 'La tablilla babilónica YBC 7289 muestra un cuadrado con su diagonal y una aproximación de la raíz de dos en base 60, muy precisa. Sabemos qué valor se escribió, pero no cómo se obtuvo: un número no revela el método. Esta unidad une potencias y raíces como operaciones inversas, y separa los valores exactos de las aproximaciones.',
       pregunta: '¿Cómo comprobarías una raíz sin calculadora?',
