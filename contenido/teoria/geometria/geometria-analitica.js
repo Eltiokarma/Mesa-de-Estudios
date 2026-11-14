@@ -53,6 +53,14 @@
   const pt = (id, p, o = {}) => Object.assign({ id, x: p[0], y: p[1] }, o);
   const frac = (a, b) => ({ frac: [a, b] });
   const plano = (x = [-6, 6], y = [-5, 5]) => ({ vista: { x, y }, cuadricula: { paso: 1 }, ejes: true });
+  // Gesto directo (docs/teoria.md §4b): la manija vive en el viewBox de geo-figura; aPlano la vuelve coordenadas del
+  // plano cartesiano y el lector ajusta cada valor al paso y al rango de su control. La vista fija evita saltos.
+  const enPantalla = (datos, p) => G.aPantalla(datos, p);
+  const alPlano = (datos, pt) => G.aPlano(datos, pt);
+  const SEP = '   ·   ';
+  const sq = (b, e = '2') => ({ sup: [b, e] });
+  // Ángulo (en grados, de 0 a 360) del punto q sobre la elipse de semiejes a y b; cerca de 360 vuelve a 0.
+  const vuelta = (q, a, b, paso) => { let g = U.grados(Math.atan2(q[1] / b, q[0] / a)); if (g < 0) g += 360; return g > 360 - paso / 2 ? g - 360 : g; };
 
   // ---------- Idea 1: distancia y punto que divide un segmento ----------
   // Cambia: la razón m : n · Permanece: A y B · Progresa: P se acerca al extremo de menor peso ·
@@ -77,7 +85,8 @@
       voz: 'Cambia la razón. ¿P se acerca a A o a B?',
       controles: [{ id: 'raz', etiqueta: 'AP : PB', opciones: Object.keys(RAZ).map(v => ({ valor: v, texto: v.replace(':', ' : ') })) }],
       dibujo: v => ({ datos: divFig([-4, -2], [4, 4], ...RAZ[v.raz]), estado: {} }),
-      lectura: v => { const [m, k] = RAZ[v.raz]; return [`P = (${k} · A + ${m} · B) / ${m + k} = ${P((k * -4 + m * 4) / (m + k), (k * -2 + m * 4) / (m + k))}`, 'AB = √(8² + 6²) = 10']; },
+      // Sin arrastre: la razón es un control de opciones (1 : 2, 2 : 1…) y A, B están fijos. El laboratorio sí mueve A y B.
+      lectura: v => { const [m, k] = RAZ[v.raz]; return [`P = ${P((k * -4 + m * 4) / (m + k), (k * -2 + m * 4) / (m + k))}`, SEP, `AB = ${f(Math.hypot(8, 6))}`]; },
       minimo: 3,
     },
     predice: {
@@ -93,6 +102,7 @@
       revelar: { datos: divFig([1, 2], [7, 8], 1, 2, { vx: [-1, 9], vy: [-1, 9] }), estado: {} },
       coincide: 'Coincide: un tercio del camino de A a B.',
     },
+    // Hallazgo 9: «Mira» usa el mismo dibujo del juego (divFig), con el caso de la predicción: A(1; 2), B(7; 8), 1 : 2.
     mira: {
       datos: divFig([1, 2], [7, 8], 1, 2, { vx: [-1, 9], vy: [-1, 9], dx: '6', dy: '6', pasos: { p: 2, d: 0 } }),
       voz: 'Avanza la fracción m/(m + n) del camino.',
@@ -105,7 +115,7 @@
     },
     regla: {
       texto: 'La distancia entre dos puntos sale de Pitágoras. El punto que divide AB en razón AP : PB = m : n se obtiene con pesos cruzados.',
-      ecuacion: ['d = √(Δx² + Δy²)   ·   P = ', frac([{ v: 'c-i', t: 'n' }, ' · ', { v: 'c-o', t: 'A' }, ' + ', { v: 'c-o', t: 'm' }, ' · ', { v: 'c-i', t: 'B' }], 'm + n')],
+      ecuacion: ['d = ', { raiz: [sq('Δx'), ' + ', sq('Δy')] }, SEP, 'P = ', frac([{ v: 'c-i', t: 'n' }, ' · ', { v: 'c-o', t: 'A' }, ' + ', { v: 'c-o', t: 'm' }, ' · ', { v: 'c-i', t: 'B' }], { llave: ['m + n'], nota: 'partes en total', color: 'c-h' })],
       condicion: 'P está entre A y B y la razón es AP : PB; con P = punto medio, m = n.',
       voz: 'Cada extremo lleva el número del tramo contrario.',
     },
@@ -172,11 +182,15 @@
         { id: 'by', etiqueta: 'y de B', min: -4, max: 4, paso: 1, inicio: 3, unidad: '', decimales: 0, color: 'c-i' },
       ],
       dibujo: v => ({ datos: rectaFig([-2, -1], [v.bx, v.by === -1 && v.bx === -2 ? 0 : v.by]), estado: {} }),
+      // Se agarra B: A queda fija y la recta gira y se inclina con B (si B cae sobre A, se corre a y = 0).
+      arrastres: [{ id: 'punto-b', etiqueta: 'punto B', color: 'c-i',
+        donde: v => enPantalla(rectaFig([-2, -1], [v.bx, 3]), [v.bx, v.by === -1 && v.bx === -2 ? 0 : v.by]),
+        mover: pt => { const q = alPlano(rectaFig([-2, -1], [2, 3]), pt); return { bx: q[0], by: q[1] }; } }],
       lectura: v => {
         const by = v.by === -1 && v.bx === -2 ? 0 : v.by;
-        if (v.bx === -2) return ['Δx = 0: recta vertical', 'pendiente no definida · x = −2'];
+        if (v.bx === -2) return ['Δx = 0: recta vertical', SEP, 'sin pendiente, x = −2'];
         const m = fr(by + 1, v.bx + 2);
-        return [`m = ${n(by + 1)} / ${n(v.bx + 2)} = ${m}`, by + 1 === 0 ? 'y = −1 (horizontal)' : m === '1' ? 'y + 1 = x + 2' : `y + 1 = ${m} · (x + 2)`];
+        return [`m = ${n(by + 1)} / ${n(v.bx + 2)} = ${m}`, SEP, by + 1 === 0 ? 'y = −1 (horizontal)' : m === '1' ? 'y + 1 = x + 2' : `y + 1 = ${m} · (x + 2)`];
       },
       minimo: 4,
     },
@@ -193,6 +207,7 @@
       revelar: { datos: rectaFig([2, 1], [2, 5]), estado: {} },
       coincide: 'Coincide: Δx = 0 y no se divide entre 0. La recta es x = 2.',
     },
+    // Hallazgo 9: «Mira» parte del mismo dibujo del juego (rectaFig con A(−2; −1)), con B en (2; 1).
     mira: {
       datos: rectaFig([-2, -1], [2, 1]),
       voz: 'Pendiente: lo que sube por cada unidad que avanza.',
@@ -205,7 +220,7 @@
     },
     regla: {
       texto: 'La pendiente es lo que sube la recta por cada unidad que avanza. Con un punto y la pendiente se escribe la ecuación.',
-      ecuacion: ['m = ', frac({ v: 'c-i', t: 'y₂ − y₁' }, { v: 'c-o', t: 'x₂ − x₁' }), '   ·   y − y₁ = m(x − x₁)'],
+      ecuacion: ['m = ', frac({ llave: [{ v: 'c-i', t: 'y₂ − y₁' }], nota: 'lo que sube', color: 'c-i', arriba: true }, { llave: [{ v: 'c-o', t: 'x₂ − x₁' }], nota: 'lo que avanza', color: 'c-o' }), SEP, 'y − y₁ = m(x − x₁)'],
       condicion: 'x₂ ≠ x₁. Si x₂ = x₁, la recta es vertical, x = x₁, y no tiene pendiente.',
       voz: 'Horizontal: pendiente 0. Vertical: sin pendiente.',
     },
@@ -253,7 +268,11 @@
         { id: 'y', etiqueta: 'y de P', min: -4, max: 4, paso: 1, inicio: -2, unidad: '', decimales: 0, color: 'c-o' },
       ],
       dibujo: v => ({ datos: distFig([v.x, v.y], { d: f(Math.abs(3 * v.x + 4 * v.y - 12) / 5) }), estado: {} }),
-      lectura: v => { const e = 3 * v.x + 4 * v.y - 12; return [`3·${n(v.x)} + 4·${n(v.y)} − 12 = ${n(e)}`, `d = |${n(e)}| / 5 = ${f(Math.abs(e) / 5)}`]; },
+      // Se agarra P: la recta no se mueve y la perpendicular la sigue.
+      arrastres: [{ id: 'punto-p', etiqueta: 'punto P', color: 'c-o',
+        donde: v => enPantalla(distFig([v.x, v.y]), [v.x, v.y]),
+        mover: (pt, v) => { const q = alPlano(distFig([v.x, v.y]), pt); return { x: q[0], y: q[1] }; } }],
+      lectura: v => { const e = 3 * v.x + 4 * v.y - 12; return [`3·${n(v.x)} + 4·${n(v.y)} − 12 = ${n(e)}`, SEP, `d = |${n(e)}| / 5 = ${f(Math.abs(e) / 5)}`]; },
       minimo: 4,
     },
     predice: {
@@ -269,18 +288,19 @@
       revelar: { datos: distFig([0, -2], { d: '4' }), estado: {} },
       coincide: 'Coincide: |0 − 8 − 12| / 5 = 20/5 = 4.',
     },
+    // Hallazgo 9: «Mira» usa el dibujo del juego (distFig, la misma recta) con el P de la predicción.
     mira: {
       datos: distFig([0, -2], { d: '4', h: 1 }),
       voz: 'Reemplaza, toma valor absoluto y divide.',
       pasos: [
         { estado: { corte: 0 }, texto: 'Reemplaza P en el lado izquierdo de la ecuación.', ecuacion: ['3 · 0 + 4 · (−2) − 12 = −20'] },
-        { estado: { corte: 1 }, texto: 'El signo solo dice de qué lado está P. La distancia lo quita.', ecuacion: ['|−20| = 20'] },
+        { estado: { corte: 1 }, texto: 'El signo solo dice de qué lado está P. La distancia lo quita.', ecuacion: [{ llave: [{ abs: ['−20'] }], nota: 'sin signo', color: 'c-h' }, ' = 20'] },
         { estado: { corte: 1 }, texto: 'Divide entre el largo de (A; B).', ecuacion: ['d = ', frac('20', '√(3² + 4²)'), ' = 4'] },
       ],
     },
     regla: {
       texto: 'La distancia de P(x₀; y₀) a la recta Ax + By + C = 0 se mide por la perpendicular y vale:',
-      ecuacion: ['d = ', frac(['|A', { v: 'c-o', t: 'x₀' }, ' + B', { v: 'c-o', t: 'y₀' }, ' + C|'], '√(A² + B²)')],
+      ecuacion: [{ v: 'c-h', t: 'd' }, ' = ', frac({ llave: [{ abs: ['A', { v: 'c-o', t: 'x₀' }, ' + B', { v: 'c-o', t: 'y₀' }, ' + C'] }], nota: 'P reemplazado', color: 'c-o', arriba: true }, { raiz: [sq('A'), ' + ', sq('B')] })],
       condicion: 'la recta está escrita como Ax + By + C = 0, con todo a un lado, y A, B no son ambos 0.',
       voz: 'Valor absoluto arriba; raíz de A² + B² abajo.',
     },
@@ -328,6 +348,15 @@
         { id: 'r', etiqueta: 'radio', min: 1, max: 3, paso: 1, inicio: 3, unidad: '', decimales: 0, color: 'c-i' },
       ],
       dibujo: v => ({ datos: circFig(v.h, v.k, v.r), estado: {} }),
+      // Se agarran el centro C (mueve h y k) y la punta del radio (mueve r: su distancia al centro).
+      arrastres: [
+        { id: 'centro', etiqueta: 'centro C', color: 'c-o',
+          donde: v => enPantalla(circFig(v.h, v.k, v.r), [v.h, v.k]),
+          mover: (pt, v) => { const q = alPlano(circFig(v.h, v.k, v.r), pt); return { h: q[0], k: q[1] }; } },
+        { id: 'radio', etiqueta: 'punta del radio', color: 'c-i',
+          donde: v => enPantalla(circFig(v.h, v.k, v.r), [v.h + v.r, v.k]),
+          mover: (pt, v) => { const q = alPlano(circFig(v.h, v.k, v.r), pt); return { r: Math.hypot(q[0] - v.h, q[1] - v.k) }; } },
+      ],
       lectura: v => [ecCirc(v.h, v.k, v.r)],
       minimo: 4,
     },
@@ -344,6 +373,7 @@
       revelar: { datos: circFig(2, -3, 4, { vx: [-4, 8], vy: [-8, 2] }), estado: {} },
       coincide: 'Coincide: (x − 2)² + (y + 3)² = 16.',
     },
+    // Hallazgo 9: «Mira» usa el dibujo del juego (circFig) con la circunferencia de la predicción, C(2; −3) y r = 4.
     mira: {
       datos: circFig(2, -3, 4, { vx: [-4, 8], vy: [-8, 2] }),
       voz: 'Completa cada cuadrado sumando lo mismo a ambos lados.',
@@ -356,7 +386,7 @@
     },
     regla: {
       texto: 'La circunferencia de centro (h; k) y radio r reúne los puntos a distancia r del centro.',
-      ecuacion: ['(x − ', { v: 'c-o', t: 'h' }, ')² + (y − ', { v: 'c-o', t: 'k' }, ')² = ', { sup: [{ v: 'c-i', t: 'r' }, '2'] }],
+      ecuacion: [{ llave: [sq({ par: ['x − ', { v: 'c-o', t: 'h' }] }), ' + ', sq({ par: ['y − ', { v: 'c-o', t: 'k' }] })], nota: 'centro, signo cambiado', color: 'c-o' }, ' = ', { sup: [{ v: 'c-i', t: 'r' }, '2'] }],
       condicion: 'r > 0. En la forma general se completan cuadrados; si el lado derecho sale 0 o negativo, no hay circunferencia.',
       voz: 'Dentro del paréntesis, el centro va con el signo cambiado.',
     },
@@ -413,7 +443,16 @@
         { id: 't', etiqueta: 'x de P', min: -4, max: 4, paso: 1, inicio: 2, unidad: '', decimales: 0, color: 'c-h' },
       ],
       dibujo: v => ({ datos: parFig(v.p, v.t), estado: {} }),
-      lectura: v => { const y = v.t * v.t / (4 * v.p); return [`x² = ${f(4 * v.p)}y · P${P(v.t, y)}`, `PF = PD = ${f(y + v.p)}`]; },
+      // Se agarran P, que corre por la curva (mueve su x), y el foco F, que sube o baja por el eje (mueve p).
+      arrastres: [
+        { id: 'punto-p', etiqueta: 'punto P de la parábola', color: 'c-h',
+          donde: v => enPantalla(parFig(v.p, v.t), [v.t, Math.min(v.t * v.t / (4 * v.p), 5)]),
+          mover: (pt, v) => ({ t: alPlano(parFig(v.p, v.t), pt)[0] }) },
+        { id: 'foco', etiqueta: 'foco F', color: 'c-o',
+          donde: v => enPantalla(parFig(v.p, v.t), [0, v.p]),
+          mover: (pt, v) => ({ p: alPlano(parFig(v.p, v.t), pt)[1] }) },
+      ],
+      lectura: v => { const y = v.t * v.t / (4 * v.p); return [`x² = ${f(4 * v.p)}y`, SEP, `P${P(v.t, y)}`, SEP, `PF = PD = ${f(y + v.p)}`]; },
       minimo: 4,
     },
     predice: {
@@ -429,6 +468,7 @@
       revelar: { datos: parFig(2, 4), estado: {} },
       coincide: 'Coincide: 4p = 8, p = 2. El punto (4; 2) está a 4 del foco y de la directriz.',
     },
+    // Hallazgo 9: «Mira» usa el dibujo del juego (parFig) con la parábola de la predicción, x² = 8y.
     mira: {
       datos: parFig(2, 4),
       voz: 'La condición PF = PD se vuelve ecuación.',
@@ -441,7 +481,7 @@
     },
     regla: {
       texto: 'La parábola reúne los puntos que están a igual distancia del foco y de la directriz. Con vértice en el origen:',
-      ecuacion: ['x² = 4', { v: 'c-o', t: 'p' }, 'y: F(0; ', { v: 'c-o', t: 'p' }, '), directriz y = −', { v: 'c-o', t: 'p' }, '   ·   y² = 4', { v: 'c-o', t: 'p' }, 'x: F(', { v: 'c-o', t: 'p' }, '; 0), directriz x = −', { v: 'c-o', t: 'p' }],
+      ecuacion: [sq('x'), ' = 4', { v: 'c-o', t: 'p' }, 'y: ', { llave: ['F(0; ', { v: 'c-o', t: 'p' }, ')'], nota: 'el foco', color: 'c-o' }, ', ', { llave: ['y = −', { v: 'c-o', t: 'p' }], nota: 'la directriz', color: 'c-i' }, SEP, sq('y'), ' = 4', { v: 'c-o', t: 'p' }, 'x: F(', { v: 'c-o', t: 'p' }, '; 0), x = −', { v: 'c-o', t: 'p' }],
       condicion: 'p ≠ 0. Si p < 0, abre hacia abajo o a la izquierda. Con vértice (h; k), x y y se trasladan.',
       voz: 'El foco está a p del vértice, hacia donde abre.',
     },
@@ -492,7 +532,11 @@
       voz: 'Mueve P. Una distancia crece y la otra baja. ¿Y la suma?',
       controles: [{ id: 't', etiqueta: 'P', min: 0, max: 330, paso: 30, inicio: 60, unidad: '°', decimales: 0, color: 'c-h' }],
       dibujo: v => ({ datos: elFig(5, 3, v.t), estado: {} }),
-      lectura: v => { const Pp = [5 * Math.cos(U.rad(v.t)), 3 * Math.sin(U.rad(v.t))], d1 = Math.hypot(Pp[0] + 4, Pp[1]), d2 = Math.hypot(Pp[0] - 4, Pp[1]); return [`PF₁ = ${f(d1)} · PF₂ = ${f(d2)}`, `suma = ${f(d1 + d2)} = 2a`]; },
+      // Se agarra P y se lleva alrededor de la elipse: su ángulo sale de atan2 con los semiejes 5 y 3.
+      arrastres: [{ id: 'punto-p', etiqueta: 'punto P de la elipse', color: 'c-h',
+        donde: v => enPantalla(elFig(5, 3, v.t), [5 * Math.cos(U.rad(v.t)), 3 * Math.sin(U.rad(v.t))]),
+        mover: (pt, v) => ({ t: vuelta(alPlano(elFig(5, 3, v.t), pt), 5, 3, 30) }) }],
+      lectura: v => { const Pp = [5 * Math.cos(U.rad(v.t)), 3 * Math.sin(U.rad(v.t))], d1 = Math.hypot(Pp[0] + 4, Pp[1]), d2 = Math.hypot(Pp[0] - 4, Pp[1]); return [`PF₁ = ${f(d1)}`, SEP, `PF₂ = ${f(d2)}`, SEP, `suma = ${f(d1 + d2)} = 2a`]; },
       minimo: 4,
     },
     predice: {
@@ -508,6 +552,7 @@
       revelar: { datos: elFig(5, 3, 90, { tri: '5' }), estado: {} },
       coincide: 'Coincide: c = √(25 − 9) = 4.',
     },
+    // Hallazgo 9: «Mira» usa el dibujo del juego (elFig, la misma elipse) con P en el extremo B del eje menor.
     mira: {
       datos: elFig(5, 3, 90, { tri: '5', p: 1 }),
       voz: 'En el extremo B del eje menor, PF₁ = PF₂ = a.',
@@ -520,7 +565,7 @@
     },
     regla: {
       texto: 'La elipse reúne los puntos cuya suma de distancias a dos focos es 2a. Con centro en el origen y eje mayor en x:',
-      ecuacion: [frac('x²', [{ v: 'c-h', t: 'a' }, '²']), ' + ', frac('y²', 'b²'), ' = 1   ·   ', { v: 'c-o', t: 'c' }, '² = ', { v: 'c-h', t: 'a' }, '² − b²   ·   PF₁ + PF₂ = 2', { v: 'c-h', t: 'a' }],
+      ecuacion: [frac(sq('x'), sq({ v: 'c-h', t: 'a' })), ' + ', frac(sq('y'), sq('b')), ' = 1', SEP, { llave: [sq({ v: 'c-o', t: 'c' }), ' = ', sq({ v: 'c-h', t: 'a' }), ' − ', sq('b')], nota: 'c: centro–foco', color: 'c-o' }, SEP, 'PF₁ + PF₂ = ', { llave: ['2', { v: 'c-h', t: 'a' }], nota: 'suma fija', color: 'c-h' }],
       condicion: 'a > b > 0 y los focos están sobre el eje mayor. La excentricidad c/a está entre 0 y 1.',
       voz: 'En la elipse se resta: c² = a² − b².',
     },
@@ -552,9 +597,132 @@
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1, más rica que la idea 1: A y B se arrastran y la razón m : n es libre (de 1 a 5 cada parte), no solo
+  // cinco razones fijas. Deja ver que P siempre queda del lado del extremo con el número más chico de su tramo.
+  const repartoFig = (A, B, m, k) => divFig(A, B, m, k, { ta: `${m}`, tb: `${k}`, alt: `A${P(...A)} y B${P(...B)}; P divide AB en razón ${m} : ${k} y queda en ${P((k * A[0] + m * B[0]) / (m + k), (k * A[1] + m * B[1]) / (m + k))}` });
+  const mesaReparto = {
+    id: 'reparto-libre', titulo: 'Segmento con reparto libre', pieza: 'geo-figura',
+    consigna: 'Arrastra A y B. Cambia m y n. Mira hacia qué extremo se corre P y cuánto mide AB.',
+    controles: [
+      { id: 'ax', etiqueta: 'x de A', min: -5, max: 5, paso: 1, inicio: -4, unidad: '', decimales: 0, color: 'c-o' },
+      { id: 'ay', etiqueta: 'y de A', min: -4, max: 4, paso: 1, inicio: -3, unidad: '', decimales: 0, color: 'c-o' },
+      { id: 'bx', etiqueta: 'x de B', min: -5, max: 5, paso: 1, inicio: 4, unidad: '', decimales: 0, color: 'c-i' },
+      { id: 'by', etiqueta: 'y de B', min: -4, max: 4, paso: 1, inicio: 3, unidad: '', decimales: 0, color: 'c-i' },
+      { id: 'm', etiqueta: 'm (tramo AP)', min: 1, max: 5, paso: 1, inicio: 1, unidad: '', decimales: 0, color: 'c-o' },
+      { id: 'k', etiqueta: 'n (tramo PB)', min: 1, max: 5, paso: 1, inicio: 2, unidad: '', decimales: 0, color: 'c-i' },
+    ],
+    dibujo: v => ({ datos: repartoFig([v.ax, v.ay], [v.bx, v.by], v.m, v.k), estado: {} }),
+    // Se agarran los dos extremos; P se recalcula con los pesos cruzados.
+    arrastres: [
+      { id: 'punto-a', etiqueta: 'extremo A', color: 'c-o',
+        donde: v => enPantalla(repartoFig([v.ax, v.ay], [v.bx, v.by], v.m, v.k), [v.ax, v.ay]),
+        mover: (pt, v) => { const q = alPlano(repartoFig([v.ax, v.ay], [v.bx, v.by], v.m, v.k), pt); return { ax: q[0], ay: q[1] }; } },
+      { id: 'punto-b', etiqueta: 'extremo B', color: 'c-i',
+        donde: v => enPantalla(repartoFig([v.ax, v.ay], [v.bx, v.by], v.m, v.k), [v.bx, v.by]),
+        mover: (pt, v) => { const q = alPlano(repartoFig([v.ax, v.ay], [v.bx, v.by], v.m, v.k), pt); return { bx: q[0], by: q[1] }; } },
+    ],
+    lectura: v => [`${v.m} : ${v.k}`, SEP, `P = ${P((v.k * v.ax + v.m * v.bx) / (v.m + v.k), (v.k * v.ay + v.m * v.by) / (v.m + v.k))}`, SEP, `AB ≈ ${f(Math.hypot(v.bx - v.ax, v.by - v.ay))}`],
+  };
+
+  // Mesa 2: junta las ideas 2 y 3. La recta pasa por A y B, los dos libres (también vertical u horizontal), y P mide
+  // su distancia por la perpendicular. Ninguna idea deja mover la recta y el punto a la vez.
+  const MARCO = { x: [-6, 6], y: [-5, 5] };
+  const recorte = (A, B) => {
+    const dx = B[0] - A[0], dy = B[1] - A[1], dentro = q => q[0] >= MARCO.x[0] - 1e-9 && q[0] <= MARCO.x[1] + 1e-9 && q[1] >= MARCO.y[0] - 1e-9 && q[1] <= MARCO.y[1] + 1e-9;
+    const ts = [];
+    if (dx) for (const x of MARCO.x) ts.push((x - A[0]) / dx);
+    if (dy) for (const y of MARCO.y) ts.push((y - A[1]) / dy);
+    const qs = ts.map(t => [A[0] + t * dx, A[1] + t * dy]).filter(dentro).sort((u, w) => u[0] - w[0] || u[1] - w[1]);
+    return [qs[0], qs[qs.length - 1]];
+  };
+  const rectaPunto = (A, B, Q) => {
+    const dx = B[0] - A[0], dy = B[1] - A[1], L = Math.hypot(dx, dy);
+    if (L === 0) return Object.assign(plano(), {
+      alt: `A y B coinciden en ${P(...A)}: no definen una recta`,
+      puntos: [pt('A', A, { rotulo: 'A = B', color: 'd', lado: 225 }), pt('Q', Q, { rotulo: 'P', color: 'o', lado: 135 })],
+    });
+    const t = ((Q[0] - A[0]) * dx + (Q[1] - A[1]) * dy) / (L * L), H = [A[0] + t * dx, A[1] + t * dy], d = Math.abs(dx * (Q[1] - A[1]) - dy * (Q[0] - A[0])) / L, [e0, e1] = recorte(A, B);
+    const lejos = d > 1e-9;
+    return Object.assign(plano(), {
+      alt: `Recta por A${P(...A)} y B${P(...B)}; el punto P${P(...Q)} está a ${f(d)} de ella, medido por la perpendicular`,
+      puntos: [pt('A', A, { rotulo: 'A', color: 'd', lado: 225 }), pt('B', B, { rotulo: 'B', color: 'd', lado: 45 }), pt('Q', Q, { rotulo: 'P', color: 'o', lado: 135 }),
+        pt('H', H, { color: 'h', sinPunto: !lejos }), pt('e0', e0, { sinPunto: true }), pt('e1', e1, { sinPunto: true })],
+      segmentos: [{ de: 'e0', a: 'e1', color: 'd', grosor: 'variable' }, ...(lejos ? [{ de: 'Q', a: 'H', color: 'h', grosor: 'variable', texto: f(d) }] : [])],
+      angulos: lejos ? [{ en: 'H', de: 'Q', a: U.dist(H, e1) > 0.5 ? 'e1' : 'e0', color: 'h' }] : [],
+    });
+  };
+  const mesaRecta = {
+    id: 'recta-y-punto', titulo: 'Recta y punto libres', pieza: 'geo-figura',
+    consigna: 'Arrastra A y B para mover la recta, y P para alejarlo. Prueba una recta vertical y P sobre la recta.',
+    controles: [
+      { id: 'ax', etiqueta: 'x de A', min: -5, max: 5, paso: 1, inicio: -4, unidad: '', decimales: 0, color: 'c-d' },
+      { id: 'ay', etiqueta: 'y de A', min: -4, max: 4, paso: 1, inicio: -2, unidad: '', decimales: 0, color: 'c-d' },
+      { id: 'bx', etiqueta: 'x de B', min: -5, max: 5, paso: 1, inicio: 4, unidad: '', decimales: 0, color: 'c-d' },
+      { id: 'by', etiqueta: 'y de B', min: -4, max: 4, paso: 1, inicio: 2, unidad: '', decimales: 0, color: 'c-d' },
+      { id: 'px', etiqueta: 'x de P', min: -5, max: 5, paso: 1, inicio: -1, unidad: '', decimales: 0, color: 'c-o' },
+      { id: 'py', etiqueta: 'y de P', min: -4, max: 4, paso: 1, inicio: 3, unidad: '', decimales: 0, color: 'c-o' },
+    ],
+    dibujo: v => ({ datos: rectaPunto([v.ax, v.ay], [v.bx, v.by], [v.px, v.py]), estado: {} }),
+    // Se agarran A y B (la recta) y P (el punto); la vista es fija, así que cualquier dato sirve para convertir.
+    arrastres: [['punto-a', 'punto A de la recta', 'c-d', 'ax', 'ay'], ['punto-b', 'punto B de la recta', 'c-d', 'bx', 'by'], ['punto-p', 'punto P', 'c-o', 'px', 'py']].map(([id, etiqueta, color, cx, cy]) => ({
+      id, etiqueta, color,
+      donde: v => enPantalla(plano(), [v[cx], v[cy]]),
+      mover: pt => { const q = alPlano(plano(), pt); return { [cx]: q[0], [cy]: q[1] }; },
+    })),
+    lectura: v => {
+      const dx = v.bx - v.ax, dy = v.by - v.ay, L = Math.hypot(dx, dy);
+      if (L === 0) return ['A y B coinciden: no hay recta'];
+      const d = Math.abs(dx * (v.py - v.ay) - dy * (v.px - v.ax)) / L;
+      return [dx === 0 ? `vertical, x = ${n(v.ax)}` : `m = ${fr(dy, dx)}`, SEP, { v: 'c-h', t: 'd' }, ` = ${f(d)}${d < 1e-9 ? ': P está en la recta' : ''}`];
+    },
+  };
+
+  // Mesa 3: la elipse con semiejes libres. La idea 6 fija a = 5 y b = 3; aquí, si b pasa a a, los focos saltan al eje y,
+  // y con a = b es una circunferencia (c = 0). El caso raro que la idea no deja probar.
+  const elipseLibre = (a, b, t) => {
+    const M = Math.max(a, b), c = Math.sqrt(Math.abs(a * a - b * b)), enX = a >= b, F1 = enX ? [-c, 0] : [0, -c], F2 = enX ? [c, 0] : [0, c];
+    const Pp = [a * Math.cos(U.rad(t)), b * Math.sin(U.rad(t))];
+    return Object.assign(plano(), {
+      alt: `Elipse de semiejes ${f(a)} en x y ${f(b)} en y, focos a ${f(c)} del centro${c === 0 ? ' (coinciden: es una circunferencia)' : enX ? ' sobre el eje x' : ' sobre el eje y'}; PF₁ + PF₂ = ${f(2 * M)}`,
+      puntos: [pt('F1', F1, { rotulo: c === 0 ? 'F' : 'F₁', color: 'o', lado: enX ? 250 : 200 }), pt('F2', F2, { rotulo: 'F₂', color: 'o', lado: enX ? 290 : 160, sinPunto: c === 0, hueco: false }),
+        pt('P', Pp, { rotulo: 'P', color: 'h', lado: U.grados(Math.atan2(Pp[1], Pp[0])) }), pt('A', [-a, 0], { color: 'h' }), pt('B', [0, -b], { color: 'i' })],
+      curvas: [{ puntos: Array.from({ length: 73 }, (_, i) => [a * Math.cos(2 * Math.PI * i / 72), b * Math.sin(2 * Math.PI * i / 72)]), color: 'd', grosor: 'variable' }],
+      segmentos: [{ de: 'P', a: 'F1', color: 'i', grosor: 'variable' }, ...(c === 0 ? [] : [{ de: 'P', a: 'F2', color: 'd', grosor: 'variable' }])],
+    });
+  };
+  const mesaElipse = {
+    id: 'elipse-libre', titulo: 'Elipse con semiejes libres', pieza: 'geo-figura',
+    consigna: 'Arrastra P por la curva y los vértices para cambiar a y b. Haz b mayor que a, y luego iguales.',
+    controles: [
+      { id: 'a', etiqueta: 'semieje en x', min: 1, max: 5.5, paso: 0.5, inicio: 5, unidad: '', decimales: 1, color: 'c-h' },
+      { id: 'b', etiqueta: 'semieje en y', min: 1, max: 4.5, paso: 0.5, inicio: 3, unidad: '', decimales: 1, color: 'c-i' },
+      { id: 't', etiqueta: 'P', min: 0, max: 345, paso: 15, inicio: 60, unidad: '°', decimales: 0, color: 'c-h' },
+    ],
+    dibujo: v => ({ datos: elipseLibre(v.a, v.b, v.t), estado: {} }),
+    // Se agarran P (corre por la curva), el vértice izquierdo (mueve a) y el de abajo (mueve b): del lado opuesto al
+    // inicio de P, para que las manijas no se encimen.
+    arrastres: [
+      { id: 'punto-p', etiqueta: 'punto P de la elipse', color: 'c-h',
+        donde: v => enPantalla(plano(), [v.a * Math.cos(U.rad(v.t)), v.b * Math.sin(U.rad(v.t))]),
+        mover: (pt, v) => ({ t: vuelta(alPlano(plano(), pt), v.a, v.b, 15) }) },
+      { id: 'vertice-x', etiqueta: 'vértice en el eje x', color: 'c-h',
+        donde: v => enPantalla(plano(), [-v.a, 0]),
+        mover: pt => ({ a: -alPlano(plano(), pt)[0] }) },
+      { id: 'vertice-y', etiqueta: 'vértice en el eje y', color: 'c-i',
+        donde: v => enPantalla(plano(), [0, -v.b]),
+        mover: pt => ({ b: -alPlano(plano(), pt)[1] }) },
+    ],
+    lectura: v => {
+      const Pp = [v.a * Math.cos(U.rad(v.t)), v.b * Math.sin(U.rad(v.t))], c = Math.sqrt(Math.abs(v.a * v.a - v.b * v.b)), enX = v.a >= v.b;
+      const F = enX ? [c, 0] : [0, c], s = Math.hypot(Pp[0] - F[0], Pp[1] - F[1]) + Math.hypot(Pp[0] + F[0], Pp[1] + F[1]);
+      return [{ v: 'c-o', t: 'c' }, ` = ${f(c)}${c === 0 ? ' (circunferencia)' : enX ? ' en x' : ' en y'}`, SEP, `PF₁ + PF₂ = ${f(s)}`];
+    },
+  };
+
   return {
     unidad: 'geometria.geometria-analitica',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/geo-figura.js'],
     historia: {
@@ -562,6 +730,8 @@
       pregunta: '¿Cómo se vuelve ecuación una condición sobre distancias?',
       fuente: { titulo: 'J. J. O’Connor y E. F. Robertson, «René Descartes», MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Descartes/' },
     },
+    // Laboratorio: el reparto libre, la recta con el punto y la elipse con semiejes libres son más ricos que sus ideas.
+    laboratorio: [mesaReparto, mesaRecta, mesaElipse],
     ideas: [divIdea, rectaIdea, distIdea, circIdea, parIdea, elIdea],
   };
 });
