@@ -52,6 +52,7 @@
     }
     return ops.slice(0, 4);
   }
+  const pl = (k, uno, varios) => `${k} ${k === 1 ? uno : varios}`;
   const mol = (datos) => ({ datos: Object.assign({ atomos: [], enlaces: [], escala: 36, alto: 180 }, datos), estado: {} });
 
   // ---------- Cadenas de bloques (monosacáridos o aminoácidos) ----------
@@ -63,6 +64,17 @@
     const textos = aguas ? rotulos.slice(1).map((_, i) => extra({ x: x0 + (i + 0.5) * paso, y: y + 1.05, t: 'H₂O', color: 'h' })) : [];
     return { atomos, enlaces, textos };
   }
+  // Gesto directo (docs/teoria.md §4b). La pieza recentra la figura con todo lo que trae: cada punto se calcula con
+  // el encuadre del dibujo del valor actual. La manija del último bloque va 24 px arriba de él, para no tapar el
+  // rótulo; la opción (o el número) que gana es la de manija más cercana al dedo.
+  const QM = () => Kit.piezas['quim-molecula'];
+  const sobre = (dib, id, dy = -24) => { const d = dib.datos, g = QM().encuadre(d), a = d.atomos.find(x => x.id === id); return { x: g.X(a.x), y: g.Y(a.y) + dy }; };
+  const cercana = (valores, donde, pt, val, id, medida) => {
+    const dist = medida || ((q, p) => Math.hypot(q.x - p.x, q.y - p.y));
+    let mejor = valores[0], dm = Infinity;
+    for (const o of valores) { const dd = dist(donde(Object.assign({}, val, { [id]: o })), pt); if (dd < dm - 1e-9) { dm = dd; mejor = o; } }
+    return mejor;
+  };
   const juntar = (...ps) => ({ atomos: ps.flatMap(p => p.atomos || []), enlaces: ps.flatMap(p => p.enlaces || []), textos: ps.flatMap(p => p.textos || []) });
 
   // ---------- Idea 1: unir azúcares suelta agua ----------
@@ -80,8 +92,13 @@
       voz: 'Cuenta enlaces y aguas; compáralos con el número de glucosas.',
       controles: [{ id: 'n', etiqueta: 'n glucosas', color: 'c-i', min: 1, max: 6, paso: 1, inicio: 2, unidad: '', decimales: 0 }],
       dibujo: val => mol(cadena(Array(val.n).fill('Glc'))),
-      lectura: val => [nV, ` = ${val.n}: ${val.n - 1} enlaces, ${val.n - 1} aguas · `, MV, ` = ${f(masaPoli(val.n))} u`],
+      lectura: val => [nV, ` = ${val.n}: ${pl(val.n - 1, 'enlace', 'enlaces')}, ${pl(val.n - 1, 'agua', 'aguas')}`, '   ·   ', MV, ` = ${f(masaPoli(val.n))} u`],
       minimo: 3,
+      // Se agarra la última glucosa y se tira a la derecha para alargar la cadena. Responden los enlaces verdes, las
+      // aguas bajo cada uno y la masa, que sube 162 u por glucosa (180 menos el agua que sale).
+      arrastres: [{ id: 'ultima', etiqueta: 'última glucosa: tira para alargar la cadena', color: 'c-i',
+        donde: val => sobre(mol(cadena(Array(val.n).fill('Glc'))), `u${val.n - 1}`),
+        mover: (pt, val) => ({ n: cercana([1, 2, 3, 4, 5, 6], v => sobre(mol(cadena(Array(v.n).fill('Glc'))), `u${v.n - 1}`), pt, val, 'n') }) }],
     },
     predice: {
       pregunta: ['La sacarosa (azúcar de mesa) se forma uniendo una glucosa (180 u) con una fructosa (180 u). ¿Cuál es la masa molecular ', MV, ' de la sacarosa?'],
@@ -113,7 +130,7 @@
     },
     regla: {
       texto: 'Al unir n monosacáridos en cadena se forman n − 1 enlaces glucosídicos y salen n − 1 aguas. La masa es la suma menos 18 por cada agua.',
-      ecuacion: [MV, ' = 180 · ', nV, ' − 18 · (', nV, ' − 1)'],
+      ecuacion: [MV, ' = ', { llave: ['180 · ', nV], nota: 'las glucosas', color: 'c-i' }, ' − ', { llave: ['18 · (', nV, ' − 1)'], nota: 'aguas que salen', color: 'c-h' }],
       condicion: 'para glucosas (C₆H₁₂O₆, 180 u) unidas en una cadena. La hidrólisis hace lo inverso: consume una agua por enlace.',
       voz: 'Cada unión, un agua menos.',
     },
@@ -171,6 +188,8 @@
       voz: 'Cuenta las uniones del glicerol.',
       controles: [{ id: 'k', etiqueta: 'Ácido graso', opciones: ['palmitico', 'estearico', 'oleico'].map(k => ({ valor: k, texto: ACIDOS[k].nombre })) }],
       dibujo: val => mol(Object.assign(grasa(val.k), { escala: 32, alto: 240 })),
+      // Sin arrastre: se cambia de ácido graso (otra molécula); el codo cis no está dibujado como geometría que se
+      // pueda doblar, solo nombrado. La mesa «Tres ácidos distintos» del laboratorio los combina.
       lectura: val => [`${ACIDOS[val.k].sat ? 'Saturada: suele ser sólida (grasa)' : 'Insaturada: suele ser líquida (aceite)'} · `, MV, ` = ${f(masaGrasa(val.k))} u`],
       minimo: 3,
     },
@@ -204,7 +223,7 @@
     },
     regla: {
       texto: 'Una grasa o un aceite es un triéster: glicerol unido a tres ácidos grasos, con tres uniones y tres aguas que salen. Los dobles cis suelen volverla líquida.',
-      ecuacion: [MV, ' = 92 + 3 · ', { sub: [MV, 'ácido'] }, ' − 3 · 18'],
+      ecuacion: [MV, ' = ', { llave: ['92'], nota: 'glicerol' }, ' + ', { llave: ['3 · ', { sub: [MV, 'ácido'] }], nota: 'tres ácidos', color: 'c-o' }, ' − ', { llave: ['3 · 18'], nota: 'tres aguas', color: 'c-h' }],
       condicion: 'los lípidos son diversos: ceras, fosfolípidos y colesterol no son triglicéridos. Una grasa no es un polímero.',
       voz: 'Glicerol, tres ácidos, tres aguas.',
     },
@@ -249,8 +268,12 @@
       voz: 'Compara el número de bloques con el de enlaces.',
       controles: [{ id: 'n', etiqueta: 'n aminoácidos', color: 'c-i', min: 2, max: 6, paso: 1, inicio: 2, unidad: '', decimales: 0 }],
       dibujo: val => mol(cadena(SEC.slice(0, val.n), { paso: 1.5 })),
-      lectura: val => [nV, ` = ${val.n} aminoácidos: ${val.n - 1} enlaces peptídicos, ${val.n - 1} aguas`],
+      lectura: val => [nV, ` = ${val.n} aminoácidos: ${pl(val.n - 1, 'enlace peptídico', 'enlaces peptídicos')}, ${pl(val.n - 1, 'agua', 'aguas')}`],
       minimo: 3,
+      // Se agarra el último aminoácido y se tira para alargar la cadena; responden los enlaces verdes y las aguas.
+      arrastres: [{ id: 'ultimo', etiqueta: 'último aminoácido: tira para alargar', color: 'c-i',
+        donde: val => sobre(mol(cadena(SEC.slice(0, val.n), { paso: 1.5 })), `u${val.n - 1}`),
+        mover: (pt, val) => ({ n: cercana([2, 3, 4, 5, 6], v => sobre(mol(cadena(SEC.slice(0, v.n), { paso: 1.5 })), `u${v.n - 1}`), pt, val, 'n') }) }],
     },
     predice: {
       pregunta: 'Al cocinar un huevo, la clara pasa de transparente a blanca porque sus proteínas se desnaturalizan. ¿Qué pasa con sus enlaces peptídicos?',
@@ -283,7 +306,7 @@
     },
     regla: {
       texto: 'n aminoácidos en cadena forman n − 1 enlaces peptídicos y sueltan n − 1 aguas. Desnaturalizar cambia el plegado sin cortar enlaces; hidrolizar los corta y consume agua.',
-      ecuacion: ['enlaces = ', nV, ' − 1   ·   ', MV, ' = suma − 18 · (', nV, ' − 1)'],
+      ecuacion: ['enlaces = ', nV, ' − 1', '   ·   ', MV, ' = ', { llave: ['suma'], nota: 'los aminoácidos' }, ' − ', { llave: ['18 · (', nV, ' − 1)'], nota: 'aguas que salen', color: 'c-h' }],
       condicion: 'una sola cadena lineal; los puentes disulfuro no son enlaces peptídicos. Desnaturalizada no significa digerida ni sin valor.',
       voz: 'Forma y cadena son dos preguntas distintas.',
     },
@@ -343,6 +366,8 @@
       voz: 'La estructura decide dónde se disuelve.',
       controles: [{ id: 'k', etiqueta: 'Vitamina', opciones: ['A', 'D', 'C', 'B12'].map(k => ({ valor: k, texto: VIT[k][0] })) }],
       dibujo: val => columnas(val.k),
+      // Sin arrastre, a propósito: llevar la vitamina a su columna sería responder con el gesto la pregunta de
+      // «Ahora tú». Aquí la columna la marca la figura y el alumno lee por qué.
       lectura: val => [`Vitamina ${VIT[val.k][0]}: se disuelve en ${VIT[val.k][1] === 'lipo' ? 'grasa (liposoluble)' : 'agua (hidrosoluble)'}.`],
       minimo: 3,
     },
@@ -370,7 +395,7 @@
     },
     regla: {
       texto: 'Las vitaminas se clasifican por solubilidad: A, D, E y K en grasa (liposolubles); C y el grupo B en agua (hidrosolubles). Regulan procesos; no son fuente de energía.',
-      ecuacion: ['liposolubles: A, D, E, K   ·   hidrosolubles: C, B'],
+      ecuacion: [{ llave: ['A, D, E, K'], nota: 'en grasa', color: 'c-o' }, '   ·   ', { llave: ['C y grupo B'], nota: 'en agua', color: 'c-i' }],
       condicion: 'la solubilidad sale de la estructura: más zonas polares, más afinidad por el agua. Natural no significa inocuo en exceso.',
       voz: 'Dónde se disuelve dice dónde se guarda.',
     },
@@ -441,6 +466,8 @@
       voz: 'Busca el rasgo que comparten, no de dónde vienen.',
       controles: [{ id: 'k', etiqueta: 'Familia', opciones: [{ valor: 'alcaloide', texto: 'Alcaloide' }, { valor: 'polifenol', texto: 'Polifenol' }, { valor: 'colorante', texto: 'Carotenoide' }] }],
       dibujo: val => RASGO[val.k].fig(),
+      // Sin arrastre: las tres familias son moléculas distintas con rasgos distintos (N en anillo, OH, dobles); se
+      // eligen. La mesa «Dobles alternados y color» del laboratorio sí desliza el punto por la gráfica.
       lectura: val => [RASGO[val.k].lee],
       minimo: 3,
     },
@@ -458,6 +485,8 @@
       coincide: 'Coincide: la cadena larga de dobles alternados da color.',
       noCoincide: 'El eteno absorbe ultravioleta; el β-caroteno, luz azul: se ve naranja.',
     },
+    // Hallazgo 9: dos representaciones a propósito. El juego muestra el rasgo de estructura (quim-molecula); la
+    // predicción y «Mira» pasan a la gráfica λ contra dobles alternados porque el color es una medida, no un dibujo.
     mira: {
       pieza: 'ejes',
       datos: ejesAbs(ABS.map(([k, l, n], i) => ({ x: k, y: l, color: 'd', rotulo: i < 2 ? undefined : `${n}: ${l} nm`, desde: i === 0 ? 1 : i < 3 ? 2 : 3 }))).datos,
@@ -470,7 +499,7 @@
     },
     regla: {
       texto: 'Alcaloide: producto natural con N, casi siempre en un anillo. Polifenol: varios OH sobre anillos aromáticos. Un colorante absorbe luz visible gracias a muchos dobles alternados.',
-      ecuacion: ['más dobles alternados → absorbe luz de mayor longitud de onda'],
+      ecuacion: ['más dobles alternados → mayor ', { llave: [{ v: 'c-d', t: 'λ' }], nota: 'longitud de onda', color: 'c-d' }],
       condicion: 'son familias por estructura, no por origen. Natural no significa inocuo: la nicotina es un alcaloide tóxico.',
       voz: 'Primero el rasgo de estructura; el origen no clasifica.',
     },
@@ -496,6 +525,53 @@
     },
   };
 
+
+  // ---------- Laboratorio ----------
+  // Mesa 1: un polímero de 1 a 8 bloques (glucosas o aminoácidos), abierto o cerrado en anillo. El caso raro que la
+  // idea no deja probar: en anillo hay tantas uniones como bloques (las ciclodextrinas son anillos de 6 a 8 glucosas).
+  // Las masas se suman bloque por bloque y se resta 18 por unión.
+  const BLOQUES = { glc: { nombre: 'glucosas', rot: () => 'Glc', M: () => GLU }, aa: { nombre: 'aminoácidos', rot: i => SEC[i % SEC.length], M: i => AA[SEC[i % SEC.length]] } };
+  function polimero(val) {
+    const b = BLOQUES[val.b], n = val.n, anillo = val.forma === 'anillo' && n >= 3, uniones = anillo ? n : n - 1;
+    const rot = Array.from({ length: n }, (_, i) => b.rot(i)), masa = rot.reduce((acc, _, i) => acc + b.M(i), 0) - AGUA * uniones;
+    let d;
+    if (anillo) {
+      const R = 1.6 / (2 * Math.sin(Math.PI / n));
+      const atomos = rot.map((t, i) => ({ id: `u${i}`, t, x: R * Math.cos(2 * Math.PI * i / n - Math.PI / 2), y: R * Math.sin(2 * Math.PI * i / n - Math.PI / 2), color: 'i' }));
+      const enlaces = rot.map((_, i) => ({ a: `u${i}`, b: `u${(i + 1) % n}`, orden: 1, color: 'd' }));
+      d = { atomos, enlaces, textos: [{ x: 0, y: 0, t: `${uniones} H₂O`, color: 'h' }] };
+    } else d = cadena(rot);
+    const aviso = val.forma === 'anillo' && n < 3 ? [{ x: (n - 1) * 0.8, y: -1.1, t: 'un anillo pide 3 bloques', color: 'h' }] : [];
+    d.textos = d.textos.concat(aviso);
+    return { dib: mol(Object.assign(d, { escala: 25, alto: 230 })), n, uniones, masa, anillo, nombre: b.nombre };
+  }
+  // En la cadena, la manija va arriba del último bloque; en el anillo, 22 px hacia afuera del centro (160, 115).
+  const manijaPol = val => {
+    const c = polimero(val), q = sobre(c.dib, `u${c.n - 1}`, c.anillo ? 0 : -22);
+    if (!c.anillo) return q;
+    const vx = q.x - 160, vy = q.y - 115, L = Math.hypot(vx, vy);
+    return { x: q.x + 22 * vx / L, y: q.y + 22 * vy / L };
+  };
+  // Mesa 2: una grasa con tres ácidos que se eligen por separado (la idea solo deja tres iguales).
+  const grasaMixta = val => {
+    const ks = [val.a1, val.a2, val.a3], m = GLIC + ks.reduce((x, k) => x + ACIDOS[k].M, 0) - 3 * AGUA;
+    const ins = ks.filter(k => !ACIDOS[k].sat).length;
+    return { ks, m, ins };
+  };
+  function dibujoMixta(val) {
+    const { ks } = grasaMixta(val), at = [], en = [], tx = [];
+    ['CH₂', 'CH', 'CH₂'].forEach((t, i) => {
+      const y = i * FILA, a = ACIDOS[ks[i]];
+      at.push({ id: `g${i}`, t, x: 0, y }, { id: `o${i}`, t: 'O', x: 1.15, y, color: 'h' }, { id: `c${i}`, t: 'C', x: 2.3, y }, { id: `k${i}`, t: a.cad, x: 3.9, y }, { id: `d${i}`, t: 'O', x: 2.3, y: y - 0.85, color: 'h' });
+      en.push({ a: `g${i}`, b: `o${i}`, orden: 1 }, { a: `o${i}`, b: `c${i}`, orden: 1, color: 'd' }, { a: `c${i}`, b: `k${i}`, orden: 1 }, { a: `c${i}`, b: `d${i}`, orden: 2 });
+      if (i) en.push({ a: `g${i - 1}`, b: `g${i}`, orden: 1 });
+      tx.push(a.sat ? { x: 6.5, y, t: 'saturado' } : { x: 6.5, y, t: 'doble cis', color: 'd' });
+    });
+    return mol({ atomos: at, enlaces: en, textos: tx, escala: 30, alto: 230 });
+  }
+  // Mesa 3: el punto se desliza por las mediciones de la gráfica λ contra dobles alternados (no se interpola).
+  const puntoAbs = val => { const [k, l] = ABS.find(a => String(a[0]) === val.d); const g = Kit.piezas.ejes.geometria(ejesAbs([]).datos); return { x: g.X(k), y: g.Y(l) }; };
+
   return {
     unidad: 'quimica.biomoleculas-y-productos-naturales',
     version: '0.1.0',
@@ -506,6 +582,50 @@
       pregunta: '¿Cómo sabrías el orden de las piezas de una cadena que no ves?',
       fuente: { titulo: 'F. Sanger, conferencia Nobel (1958)', url: 'https://www.nobelprize.org/prizes/chemistry/1958/sanger/lecture/' },
     },
+    // Laboratorio (docs/teoria.md §4b): sin preguntas. La primera mesa es más rica que los juegos: dos tipos de
+    // bloque, hasta 8 y el anillo. La segunda arma una grasa con tres ácidos distintos; la tercera desliza el punto
+    // por las mediciones de color. La lectura dice entradas y resultado, para que un caso guardado se lea solo.
+    laboratorio: [
+      {
+        id: 'polimero', titulo: 'Cadena o anillo de bloques', pieza: 'quim-molecula',
+        consigna: 'Elige glucosas o aminoácidos y arrastra el último bloque para alargar. Ciérralo en anillo: cuenta uniones y aguas otra vez.',
+        controles: [
+          { id: 'b', etiqueta: 'Bloques', opciones: [{ valor: 'glc', texto: 'Glucosas' }, { valor: 'aa', texto: 'Aminoácidos' }] },
+          { id: 'n', etiqueta: 'n', color: 'c-i', min: 1, max: 8, paso: 1, inicio: 4, unidad: '', decimales: 0 },
+          { id: 'forma', etiqueta: 'Forma', opciones: [{ valor: 'abierta', texto: 'Cadena' }, { valor: 'anillo', texto: 'Anillo' }] },
+        ],
+        dibujo: val => polimero(val).dib,
+        lectura: val => { const c = polimero(val); return [nV, ` = ${c.n} ${c.nombre} · ${c.anillo ? 'anillo' : 'cadena'} → ${pl(c.uniones, 'unión', 'uniones')}, ${c.uniones} H₂O`, '   ·   ', MV, ` = ${f(c.masa)} u`]; },
+        // Se agarra el último bloque: en la cadena, más a la derecha es más largo; en el anillo, más lejos del centro
+        // es un anillo más grande. Responden las uniones, las aguas y la masa.
+        arrastres: [{ id: 'ultimo', etiqueta: 'último bloque: arrástralo para alargar', color: 'c-i',
+          donde: manijaPol,
+          mover: (pt, val) => {
+            const radio = q => Math.hypot(q.x - 160, q.y - 115);
+            if (val.forma === 'anillo' && val.n >= 3) return { n: cercana([3, 4, 5, 6, 7, 8], manijaPol, pt, val, 'n', (q, p) => Math.abs(radio(q) - radio(p))) };
+            return { n: cercana([1, 2, 3, 4, 5, 6, 7, 8], manijaPol, pt, val, 'n') };
+          } }],
+      },
+      {
+        id: 'grasa-mixta', titulo: 'Tres ácidos distintos', pieza: 'quim-molecula',
+        consigna: 'Elige un ácido graso para cada OH del glicerol. Mira la masa y cuántas cadenas llevan un doble cis.',
+        controles: ['a1', 'a2', 'a3'].map((id, i) => ({ id, etiqueta: `Ácido ${i + 1}`, opciones: Object.keys(ACIDOS).map(k => ({ valor: k, texto: ACIDOS[k].nombre })) })),
+        dibujo: dibujoMixta,
+        lectura: val => { const g = grasaMixta(val); return [`${g.ins} de 3 con doble cis`, '   ·   ', MV, ` = ${f(g.m)} u`]; },
+        // Sin arrastre: cada cadena se elige de una lista de ácidos; no hay una variable continua que agarrar.
+      },
+      {
+        id: 'dobles-y-color', titulo: 'Dobles alternados y color', pieza: 'ejes',
+        consigna: 'Desliza el punto por las moléculas medidas. Mira cuándo la luz absorbida entra en la franja visible.',
+        controles: [{ id: 'd', etiqueta: 'Molécula', opciones: ABS.map(([k, , nom]) => ({ valor: String(k), texto: nom })) }],
+        dibujo: val => { const [k, l, nom] = ABS.find(a => String(a[0]) === val.d); return ejesAbs([{ x: k, y: l, color: 'd', rotulo: `${nom}: ${l} nm`, guias: true }]); },
+        lectura: val => { const [k, l, nom] = ABS.find(a => String(a[0]) === val.d); return [`${nom}: ${k} ${k > 1 ? 'dobles' : 'doble'} → `, { v: 'c-d', t: 'λ' }, ` = ${l} nm, ${l >= 400 ? 'visible: tiene color' : 'ultravioleta: incoloro'}`]; },
+        // El punto se desliza por las mediciones: cae en la molécula de número de dobles más cercano (no interpola).
+        arrastres: [{ id: 'medida', etiqueta: 'punto de la medición', color: 'c-d',
+          donde: puntoAbs,
+          mover: (pt, val) => ({ d: cercana(ABS.map(a => String(a[0])), puntoAbs, pt, val, 'd', (q, p) => Math.abs(q.x - p.x)) }) }],
+      },
+    ],
     ideas: [azucares, lipidos, proteinas, vitaminas, naturales],
   };
 });
