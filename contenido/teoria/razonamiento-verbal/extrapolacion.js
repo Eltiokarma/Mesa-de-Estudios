@@ -171,12 +171,12 @@
       pasos: [
         { estado: { marcas: { a: 'i', b: 'i' } }, texto: 'La regla une una condición (crece) con un resultado (cierran).', ecuacion: [cond('si crece'), ' → ', sigue('cierran')] },
         { estado: { marcas: { a: 'h', c: 'o' }, nuevo: ['c'] }, texto: 'Ahora el río no creció: la condición no se cumple.', ecuacion: [cae('no crece')] },
-        { estado: { marcas: { a: 'h', b: 'd', c: 'o' }, sellos: { n: { t: 'No se sabe', c: 'd' } }, nuevo: ['b', 'n'] }, texto: 'Eso no obliga a abrir: podrían cerrarlo por obras. No se sabe.', ecuacion: [cae('no A'), ' ↛ ', cae('no B')] },
+        { estado: { marcas: { a: 'h', b: 'd', c: 'o' }, sellos: { n: { t: 'No se sabe', c: 'd' } }, nuevo: ['b', 'n'] }, texto: 'Eso no obliga a abrir: podrían cerrarlo por obras. No se sabe.', ecuacion: [cae('no A'), ' no asegura ', cae('no B')] },
       ],
     },
     regla: {
       texto: 'De «si A, entonces B» se concluye B cuando ocurre A; si A no ocurre, B queda sin decidir. El condicional en subjuntivo cambia una condición y sigue su cadena.',
-      ecuacion: [{ llave: [cond('A')], nota: 'condición', color: 'c-o' }, ' → ', { llave: [sigue('B')], nota: 'resultado', color: 'c-i' }, '   ·   ', cae('no A'), ' ↛ ', cae('no B')],
+      ecuacion: [{ llave: [cond('A')], nota: 'condición', color: 'c-o' }, ' → ', { llave: [sigue('B')], nota: 'resultado', color: 'c-i' }, '   ·   ', cae('no A'), ' no asegura ', cae('no B')],
       condicion: 'el texto no dice que A sea la única causa de B; si dijera «solo si», sí se daría vuelta.',
     },
     ahoraTu: {

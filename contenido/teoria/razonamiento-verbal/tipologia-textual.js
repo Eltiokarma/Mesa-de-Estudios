@@ -115,7 +115,7 @@
     },
     regla: {
       texto: 'El tipo de texto lo decide el propósito que organiza el conjunto: narrar sucesos, describir cómo es algo, explicar por qué ocurre o defender una postura. El tema no decide.',
-      ecuacion: [{ llave: [prop('propósito dominante')], nota: 'lo que organiza', color: 'c-d' }, ' → tipo', '   ·   ', mal('tema'), ' ↛ tipo'],
+      ecuacion: [{ llave: [prop('propósito dominante')], nota: 'lo que organiza', color: 'c-d' }, ' → tipo', '   ·   ', mal('tema'), ' no decide el tipo'],
       condicion: 'se mira qué organiza todo el texto; un texto puede mezclar tipos y uno domina.',
     },
     ahoraTu: {
