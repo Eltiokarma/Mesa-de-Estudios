@@ -40,6 +40,11 @@
   // Letra F (asimétrica): permite ver si la imagen quedó invertida o solo girada.
   const F = [[0, 0], [0.6, 0], [0.6, 1.4], [1.6, 1.4], [1.6, 2], [0.6, 2], [0.6, 2.6], [2, 2.6], [2, 3.2], [0, 3.2]];
   const mueve = (pts, dx, dy) => pts.map(([x, y]) => [x + dx, y + dy]);
+  // Gesto directo (docs/teoria.md §4b): la manija vive en el viewBox de geo-figura; aPlano la vuelve coordenadas del
+  // problema (sobreRecta, en 3D) y el lector ajusta cada valor al paso y al rango de su control.
+  const enPantalla = (datos, p) => G.aPantalla(datos, p);
+  const alPlano = (datos, pt) => G.aPlano(datos, pt);
+  const SEP = '   ·   ';
   const opcionesTexto = (bien, malos) => {
     const vistos = new Set([bien]), ops = [{ id: 'c', texto: bien, correcta: true }];
     for (const m of malos) if (!vistos.has(m.texto) && ops.length < 4) { vistos.add(m.texto); ops.push(Object.assign({ id: m.id }, m)); }
@@ -83,7 +88,11 @@
       voz: 'Mueve el eje. Fíjate hacia dónde mira la letra reflejada.',
       controles: [{ id: 'k', etiqueta: 'eje x =', min: -1, max: 2, paso: 0.5, inicio: 0, unidad: '', decimales: 1, color: 'c-d' }],
       dibujo: v => ({ datos: axial(v.k), estado: {} }),
-      lectura: v => [`P a ${f(v.k + 2)} del eje · P′ a ${f(v.k + 2)} · F al revés`],
+      // Se agarra el eje (una manija arriba, sobre la recta verde) y se corre a lo ancho.
+      arrastres: [{ id: 'eje', etiqueta: 'eje de simetría', color: 'c-d',
+        donde: v => enPantalla(axial(v.k), [v.k, 1.8]),
+        mover: (pt, v) => ({ k: alPlano(axial(v.k), pt)[0] }) }],
+      lectura: v => [`P a ${f(v.k - axial(v.k).puntos[0].x)} del eje`, SEP, `P′ a ${f(axial(v.k).puntos[1].x - v.k)}`, SEP, 'F al revés'],
       minimo: 3,
     },
     predice: {
@@ -99,18 +108,21 @@
       revelar: { datos: oblicua({ sol: true }), estado: {} },
       coincide: 'Coincide: reflejar en y = x intercambia las coordenadas.',
     },
+    // Hallazgo 9: son dos representaciones a propósito. El juego usa un eje vertical (se mide a lo ancho); «Mira»
+    // resuelve el caso reservado de la predicción, el eje oblicuo y = x, donde ya no basta medir a lo ancho.
+    // El laboratorio («Espejo que gira») junta los dos: la misma F con el eje a cualquier ángulo.
     mira: {
       datos: oblicua({ sol: true, pasos: { m: 1, q: 2 } }),
       voz: 'Perpendicular al eje, misma distancia al otro lado.',
       pasos: [
         { estado: { corte: 1 }, texto: 'Desde P, la perpendicular al eje lo corta en M(3; 3).', ecuacion: ['PM ⟂ eje'] },
         { estado: { corte: 2 }, texto: 'P′ queda a la misma distancia de M, del otro lado.', ecuacion: ["P' = 2M − P = (6 − 5; 6 − 1) = (1; 5)"] },
-        { estado: { corte: 2 }, texto: 'El eje resulta mediatriz de PP′.', ecuacion: ["PM = MP' · PP' ⟂ eje"] },
+        { estado: { corte: 2 }, texto: 'El eje resulta mediatriz de PP′.', ecuacion: ["PM = MP'", SEP, "PP' ⟂ eje"] },
       ],
     },
     regla: {
       texto: 'En la simetría respecto de una recta, el eje es la mediatriz de cada segmento PP′. Se conservan distancias y ángulos, pero la orientación se invierte.',
-      ecuacion: ["eje x: (x; y) → (x; −y) · eje y: (−x; y) · y = x: (y; x)"],
+      ecuacion: ['eje x: (x; y) → (x; −y)', SEP, 'eje y: (−x; y)', SEP, 'y = x: ', { llave: ['(y; x)'], nota: 'se intercambian', color: 'c-o' }],
       condicion: 'P′ está en la perpendicular al eje que pasa por P, a la misma distancia del eje y del otro lado.',
       voz: 'Una figura reflejada no se superpone con solo moverla.',
     },
@@ -166,7 +178,11 @@
         { id: 'oy', etiqueta: 'O a lo alto', min: -1, max: 1, paso: 0.5, inicio: 0, unidad: '', decimales: 1, color: 'c-d' },
       ],
       dibujo: v => ({ datos: central(v.ox, v.oy), estado: {} }),
-      lectura: v => [`O(${f(v.ox)}; ${f(v.oy)}) punto medio de PP′ · F girada`],
+      // Se agarra el centro O: la F imagen gira media vuelta alrededor de donde lo sueltes.
+      arrastres: [{ id: 'centro', etiqueta: 'centro O', color: 'c-d',
+        donde: v => enPantalla(central(v.ox, v.oy), [v.ox, v.oy]),
+        mover: (pt, v) => { const q = alPlano(central(v.ox, v.oy), pt); return { ox: q[0], oy: q[1] }; } }],
+      lectura: v => [`O(${f(v.ox)}; ${f(v.oy)}): punto medio de PP′`, SEP, 'F girada'],
       minimo: 3,
     },
     predice: {
@@ -181,6 +197,9 @@
       revelar: { datos: dos(), estado: {} },
       coincide: 'Coincide: la F final es la original girada media vuelta en O.',
     },
+    // Hallazgo 9: dos representaciones a propósito. El juego muestra la simetría central ya hecha; «Mira» resuelve la
+    // predicción (dos reflexiones seguidas) con la misma letra F y los mismos colores: original turquesa, final naranja.
+    // La mesa «Dos espejos» del laboratorio deja mover los dos espejos y llegar a la media vuelta con 90°.
     mira: {
       datos: dos({ pasos: { r1: 1, r2: 2 } }),
       voz: 'Sigue un punto por los dos reflejos.',
@@ -192,7 +211,7 @@
     },
     regla: {
       texto: 'En la simetría respecto de un punto O, O es el punto medio de cada segmento PP′. Equivale a girar 180° alrededor de O: conserva la orientación.',
-      ecuacion: ["P' = 2O − P   ·   respecto del origen: (x; y) → (−x; −y)"],
+      ecuacion: ["P' = ", { llave: ['2O − P'], nota: 'O al medio', color: 'c-d' }, SEP, 'origen: (x; y) → ', { llave: ['(−x; −y)'], nota: 'ambos cambian', color: 'c-o' }],
       condicion: 'O, P y P′ están alineados con OP = OP′. Dos reflexiones en rectas perpendiculares que se cortan en O dan esta simetría.',
       voz: 'Media vuelta: la figura no queda al revés.',
     },
@@ -271,7 +290,17 @@
         { id: 'x', etiqueta: 'P a lo ancho', min: -1.5, max: 1.5, paso: 0.5, inicio: 0, unidad: '', decimales: 1 },
       ],
       dibujo: v => ({ datos: planoFig(v.h, v.x), estado: {} }),
-      lectura: v => [`P a ${f(v.h)} arriba · P′ a ${f(v.h)} abajo · misma proyección H`],
+      // En 3D: se agarra P y se sube o baja por su perpendicular al plano (mueve la altura), y se agarra su proyección H
+      // para correrla sobre el plano (mueve P a lo ancho). sobreRecta lee el dedo a lo largo de cada dirección.
+      arrastres: [
+        { id: 'punto-p', etiqueta: 'punto P, sube o baja', color: 'c-i',
+          donde: v => enPantalla(planoFig(v.h, v.x), [v.x, v.h, 0.6]),
+          mover: (pt, v) => ({ h: G.sobreRecta(planoFig(v.h, v.x), [v.x, 0, 0.6], [v.x, 1, 0.6], pt) }) },
+        { id: 'pie-h', etiqueta: 'proyección H, sobre el plano', color: 'c-d',
+          donde: v => enPantalla(planoFig(v.h, v.x), [v.x, 0, 0.6]),
+          mover: (pt, v) => ({ x: G.sobreRecta(planoFig(v.h, v.x), [0, 0, 0.6], [1, 0, 0.6], pt) }) },
+      ],
+      lectura: v => [`P a ${f(v.h)} arriba`, SEP, `P′ a ${f(v.h)} abajo`, SEP, 'misma H'],
       minimo: 3,
     },
     predice: {
@@ -287,6 +316,8 @@
       revelar: { datos: cubo({ planos: true }), estado: {} },
       coincide: 'Coincide: 3 paralelos a las caras más 6 por aristas opuestas.',
     },
+    // Hallazgo 9: dos representaciones a propósito. El juego refleja un punto (qué hace la simetría); «Mira» resuelve la
+    // predicción, que pregunta por los planos de simetría de un cubo (qué sólidos coinciden con su reflejo).
     mira: {
       datos: cubo({ planos: true, pasos: { p1: 1, h1: 1, p2: 2 } }),
       voz: 'Primero una clase de planos; después la otra.',
@@ -298,7 +329,7 @@
     },
     regla: {
       texto: 'En la simetría respecto de un plano, P y P′ están en la misma perpendicular al plano, a la misma distancia y en lados opuestos. Comparten su proyección.',
-      ecuacion: ['respecto del plano xy: (x; y; z) → (x; y; −z)'],
+      ecuacion: ['plano xy: (x; y; z) → ', { llave: ['(x; y; −z)'], nota: 'z cambia signo', color: 'c-o' }],
       condicion: 'el plano es el plano mediador de PP′. Un sólido es simétrico si coincide con su reflejo como conjunto.',
       voz: 'La proyección no cambia; cambia el lado del plano.',
     },
@@ -326,9 +357,95 @@
     },
   };
 
+
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Reflejo de q en la recta que pasa por A con dirección de a grados: A + R(q − A), con R la matriz de reflexión.
+  const refleja = (q, A, a) => {
+    const c = Math.cos(U.rad(2 * a)), sn = Math.sin(U.rad(2 * a)), x = q[0] - A[0], y = q[1] - A[1];
+    return [A[0] + c * x + sn * y, A[1] + sn * x - c * y];
+  };
+  // F más chica (tres cuartos), para que la F y su imagen quepan juntas con el eje a cualquier ángulo.
+  const F34 = F.map(([x, y]) => [0.75 * x, 0.75 * y]);
+  // Mesa 1, más rica que la idea 1: el eje pasa por el origen y gira (el caso oblicuo que la idea reserva), y la F se
+  // arrastra a cualquier lado. P es la esquina de arriba a la derecha; la lectura da el ángulo del eje y PM = MP′.
+  const espejoGira = (a, fx, fy) => {
+    const orig = mueve(F34, fx, fy), img = orig.map(q => refleja(q, [0, 0], a)), P = orig[7], Pp = img[7], M = [(P[0] + Pp[0]) / 2, (P[1] + Pp[1]) / 2];
+    const e = [Math.cos(U.rad(a)), Math.sin(U.rad(a))], d = U.dist(P, M), lejos = d > 1e-6;
+    return {
+      alt: `Letra F y su reflejo en una recta por el origen inclinada ${f(a, 0)}°: P y P′ están a ${f(d)} del eje, y la F queda al revés`,
+      vista: { x: [-5, 5], y: [-4.6, 4.6] }, cuadricula: { paso: 1 }, ejes: true,
+      puntos: [pt('P', P, { rotulo: 'P', color: 'i', lado: 90 }), pt('Q', Pp, { rotulo: "P'", color: 'o', lado: 90 }), pt('M', M, { sinPunto: true }),
+        pt('e1', [-e[0], -e[1]], { sinPunto: true }), pt('e2', [e[0], e[1]], { sinPunto: true })],
+      regiones: [{ puntos: orig, color: 'i', opacidad: 0.3, sinBorde: false }, { puntos: img, color: 'o', opacidad: 0.3, sinBorde: false }],
+      segmentos: [{ de: 'e1', a: 'e2', color: 'd', grosor: 'variable', recta: true }, ...(lejos ? [{ de: 'P', a: 'M', discontinua: true, grosor: 'fino', marcas: 1 }, { de: 'M', a: 'Q', discontinua: true, grosor: 'fino', marcas: 1 }] : [])],
+      angulos: lejos ? [{ en: 'M', de: 'P', a: 'e2', color: 'd' }] : [],
+    };
+  };
+  // Ángulo de la recta (0° a 180°) que pasa por el origen y por q; cerca de 180° vuelve a 0°.
+  const direccion = (q, paso) => { let g = U.grados(Math.atan2(q[1], q[0])); if (g < 0) g += 180; if (g >= 180) g -= 180; return g > 180 - paso / 2 ? g - 180 : g; };
+  const mesaEspejo = {
+    id: 'espejo-que-gira', titulo: 'Espejo que gira', pieza: 'geo-figura',
+    consigna: 'Gira el eje desde su manija y arrastra la F. Busca cuándo P′ cae sobre P y cuándo intercambia coordenadas.',
+    controles: [
+      { id: 'a', etiqueta: 'ángulo del eje', min: 0, max: 165, paso: 15, inicio: 45, unidad: '°', decimales: 0, color: 'c-d' },
+      { id: 'fx', etiqueta: 'F a lo ancho', min: -3, max: 1.5, paso: 0.5, inicio: 0.5, unidad: '', decimales: 1, color: 'c-i' },
+      { id: 'fy', etiqueta: 'F a lo alto', min: -3, max: 1, paso: 0.5, inicio: -2.5, unidad: '', decimales: 1, color: 'c-i' },
+    ],
+    dibujo: v => ({ datos: espejoGira(v.a, v.fx, v.fy), estado: {} }),
+    arrastres: [
+      // Se agarra el eje a 3,5 del origen y se gira; el ángulo sale de atan2.
+      { id: 'eje', etiqueta: 'eje, gíralo', color: 'c-d',
+        donde: v => enPantalla(espejoGira(v.a, v.fx, v.fy), [3.5 * Math.cos(U.rad(v.a)), 3.5 * Math.sin(U.rad(v.a))]),
+        mover: (pt, v) => ({ a: direccion(alPlano(espejoGira(v.a, v.fx, v.fy), pt), 15) }) },
+      // Se agarra la esquina de abajo de la F (su punto de anclaje) y se arrastra la letra entera.
+      { id: 'letra', etiqueta: 'letra F', color: 'c-i',
+        donde: v => enPantalla(espejoGira(v.a, v.fx, v.fy), [v.fx, v.fy]),
+        mover: (pt, v) => { const q = alPlano(espejoGira(v.a, v.fx, v.fy), pt); return { fx: q[0], fy: q[1] }; } },
+    ],
+    lectura: v => {
+      const P = mueve(F34, v.fx, v.fy)[7], Pp = refleja(P, [0, 0], v.a);
+      return [`eje a ${f(v.a, 0)}°`, SEP, `P${par(P)} → P′${par(Pp)}`];
+    },
+  };
+  // Mesa 2: dos espejos seguidos. La idea 2 solo predice un caso (dos ejes perpendiculares); aquí se mueve el segundo
+  // espejo: paralelo al primero da una traslación de 2d; si se cortan con ángulo θ, un giro de 2θ (con 90°, media vuelta).
+  const dosEspejos = (modo, d, t) => {
+    const orig = mueve(F34, -3, -1), A2 = modo === 'paralelos' ? [d, 0] : [0, 0], a2 = modo === 'paralelos' ? 90 : 90 + t;
+    const r1 = orig.map(q => refleja(q, [0, 0], 90)), r2 = r1.map(q => refleja(q, A2, a2)), e = [Math.cos(U.rad(a2)), Math.sin(U.rad(a2))];
+    const giro = modo === 'paralelos' ? `una traslación de ${f(2 * d)} a la derecha` : `un giro de ${f(2 * t, 0)}° en el origen`;
+    return {
+      alt: `Letra F reflejada en el eje y y después en un segundo espejo ${modo === 'paralelos' ? `paralelo, a ${f(d)}` : `que lo corta a ${f(t, 0)}°`}: el resultado es ${giro}`,
+      vista: { x: [-5, 5], y: [-4.4, 4.4] }, cuadricula: { paso: 1 }, ejes: true,
+      puntos: [pt('m1a', [0, -4.4], { sinPunto: true }), pt('m1b', [0, 4.4], { sinPunto: true }),
+        pt('m2a', [A2[0] - e[0], A2[1] - e[1]], { sinPunto: true }), pt('m2b', [A2[0] + e[0], A2[1] + e[1]], { sinPunto: true })],
+      regiones: [{ puntos: orig, color: 'i', opacidad: 0.3, sinBorde: false }, { puntos: r1, color: 'd', opacidad: 0.12, discontinua: true }, { puntos: r2, color: 'o', opacidad: 0.3, sinBorde: false }],
+      segmentos: [{ de: 'm1a', a: 'm1b', color: 'd', grosor: 'variable', recta: true }, { de: 'm2a', a: 'm2b', color: 'h', grosor: 'variable', recta: true }],
+    };
+  };
+  const mesaDos = {
+    id: 'dos-espejos', titulo: 'Dos espejos', pieza: 'geo-figura',
+    consigna: 'La F se refleja en el eje y, y luego en el espejo rojo. Muévelo: paralelo o cortando. Mira la F final.',
+    controles: [
+      { id: 'modo', etiqueta: 'Espejos', opciones: [{ valor: 'paralelos', texto: 'paralelos' }, { valor: 'cortan', texto: 'se cortan' }] },
+      { id: 'd', etiqueta: 'separación (paralelos)', min: 0.5, max: 2.5, paso: 0.5, inicio: 1.5, unidad: '', decimales: 1, color: 'c-h' },
+      { id: 't', etiqueta: 'ángulo θ (se cortan)', min: 15, max: 90, paso: 15, inicio: 45, unidad: '°', decimales: 0, color: 'c-h' },
+    ],
+    dibujo: v => ({ datos: dosEspejos(v.modo, v.d, v.t), estado: {} }),
+    // Una sola manija sobre el espejo rojo: si son paralelos, lo corre (d); si se cortan, lo gira en el origen (θ).
+    arrastres: [{ id: 'espejo-2', etiqueta: 'segundo espejo', color: 'c-h',
+      donde: v => enPantalla(dosEspejos(v.modo, v.d, v.t), v.modo === 'paralelos' ? [v.d, 3] : [4 * Math.cos(U.rad(90 + v.t)), 4 * Math.sin(U.rad(90 + v.t))]),
+      mover: (pt, v) => {
+        const q = alPlano(dosEspejos(v.modo, v.d, v.t), pt);
+        return v.modo === 'paralelos' ? { d: q[0] } : { t: U.grados(Math.atan2(q[1], q[0])) - 90 };
+      } }],
+    lectura: v => (v.modo === 'paralelos'
+      ? [`paralelos a ${f(v.d)}`, SEP, `traslación de ${f(2 * v.d)}`]
+      : [`se cortan a ${f(v.t, 0)}°`, SEP, `giro de ${f(2 * v.t, 0)}°`]),
+  };
+
   return {
     unidad: 'geometria.simetria',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/geo-figura.js'],
     historia: {
@@ -336,6 +453,9 @@
       pregunta: '¿Qué conserva una reflexión y qué cambia?',
       fuente: { titulo: 'K. S. Kedlaya, Geometry Unbound, cap. 3 (transformaciones)', url: 'https://kskedlaya.org/geometryunbound/gu-060118.pdf' },
     },
+    // Laboratorio: el espejo que gira y los dos espejos son más ricos que sus ideas; la tercera mesa es el juego del
+    // reflejo en un plano, con sus dos manijas en 3D.
+    laboratorio: [mesaEspejo, mesaDos, Object.assign({ id: 'reflejo-plano', titulo: 'Reflejo en un plano', pieza: 'geo-figura' }, planoIdea.juega)],
     ideas: [axialIdea, centralIdea, planoIdea],
   };
 });
