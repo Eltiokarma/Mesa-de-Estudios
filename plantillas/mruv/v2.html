@@ -79,6 +79,7 @@ header h1{font-size:18px;margin:0;flex:1}
       <div class="opciones" id="opciones" role="radiogroup"></div>
     </div>
     <div class="fila" id="controles"></div>
+    <div id="tiempo" hidden></div>
     <p class="aviso" id="aviso" role="status"></p>
     <ol class="registro" id="registro" hidden></ol>
   </main>
@@ -92,6 +93,8 @@ header h1{font-size:18px;margin:0;flex:1}
 <script src="../../nucleo/kit/trazo.js"></script>
 <script src="../../nucleo/kit/piezas/ejes.js"></script>
 <script src="../../nucleo/kit/piezas/pista.js"></script>
+<script src="../../nucleo/kit/piezas/torre.js"></script>
+<script src="../../nucleo/kit/linea-tiempo.js"></script>
 <script>
 'use strict';
 const L = window.LeccionMRUV, M = window.MotorMRUV, Pista = Kit.piezas.pista, Ejes = Kit.piezas.ejes, F = Kit.formatear;
@@ -127,6 +130,8 @@ function moverCarrito(k, x, cabeceo = 0) {
 const lectura = (t, x, v) => {
   $('lectura').innerHTML = `t = ${F(t, 1)} s · <span class="v-x">x = ${F(x, 1)} m</span>` + (v === undefined ? '' : ` · <span class="v-v">v = ${F(v, 1)} m/s</span>`);
 };
+// Puntos de una gráfica entre t0 y t1, con los dos bordes exactos (para el área de un tramo).
+function tramo(fn, t0, t1) { const n = Math.max(2, Math.ceil((t1 - t0) * 10)), r = []; for (let k = 0; k <= n; k++) { const t = t0 + (t1 - t0) * k / n; r.push([t, fn(t)]); } return r; }
 function curva(fn, t1, color, extra = {}) {
   const pts = []; const n = Math.max(2, Math.ceil(t1 * 10));
   for (let k = 0; k <= n; k++) { const t = t1 * k / n; pts.push([t, fn(t)]); }
@@ -450,7 +455,9 @@ function arrancar2() {
       }
       consigna('Mira cómo cambian las marcas.');
       aviso('Al acelerar, las marcas se abren y v sube. Al frenar, se cierran y v baja: la aceleración apunta hacia atrás.');
-      seguir('Volver a empezar', () => { P1.corridas = []; P1.pred = null; reloj2 = null; parte1(); });
+      // La corrida queda guardada para la sesión 2 (pintar su área), que es otro día.
+      try { localStorage.setItem(CLAVE_CORRIDA, JSON.stringify(P2.eventos)); } catch (e) { /* sin almacenamiento: la sesión 2 usa una de ejemplo */ }
+      seguir('Fin de la sesión 1 · Ir a la sesión 2', () => irSesion(2));
     },
   });
 }
@@ -472,7 +479,207 @@ function parte2Controles() {
   ]);
 }
 
-parte1();
+// =============================== Sesiones: 1 (partes 1, 1b y 2), 2 (parte 3) y 3 (partes 4 y 5) ===============================
+const CLAVE_CORRIDA = 'mruv-v2-corrida';
+function irSesion(n) { const u = new URL(location.href); u.searchParams.set('sesion', n); location.href = u.toString(); }
+function limpiarFigura() {
+  ['lienzo', 'grafica'].forEach(id => { const e = $(id); e.innerHTML = ''; e.classList.remove('agarrable'); e.onpointerdown = e.onpointermove = e.onpointerup = e.onpointercancel = null; });
+  $('registro').hidden = true; $('tiempo').hidden = true; $('tiempo').innerHTML = ''; controles([]); aviso(''); seguir(null);
+}
+
+// =============================== Parte 3: pintar el área (sesión 2) ===============================
+async function parte3() {
+  limpiarFigura(); parte(3, 'Pintar el área');
+  let eventos = null;
+  try { eventos = JSON.parse(localStorage.getItem(CLAVE_CORRIDA) || 'null'); } catch (e) { eventos = null; }
+  let propia = Array.isArray(eventos) && eventos.length > 1;
+  let A;
+  try { A = L.areas(propia ? eventos : L.CORRIDA_DEFECTO); } catch (e) { propia = false; A = L.areas(L.CORRIDA_DEFECTO); }
+  if (!propia) eventos = L.CORRIDA_DEFECTO;
+  const m = A.movil, fin = A.fin, tMax = Math.max(6, Math.ceil(fin));
+  const vPico = Math.max(...A.tramos.flatMap(t => [t.v0, t.v1])), vMax = Math.max(8, 2 * Math.ceil(vPico / 2));
+  // La pista arriba: el carrito avanza lo que se lleva pintado (fidelidad: la misma cifra en la regla y en el área).
+  pista = { largo: L.LARGO, cada: 5, carriles: [{ x: 0, marcas: [] }] };
+  const base = () => ({ compacto: true, x: { min: 0, max: tMax, paso: 1, nombre: 't', unidad: 's' }, y: { min: 0, max: vMax, paso: 2, nombre: 'v', unidad: 'm/s', color: 'h' },
+    curvas: [curva(m.v, fin, 'h')], areas: [] });
+  grafica = base();
+  pintarPista(); pintarGrafica(); lectura(0, 0);
+  consigna(propia ? 'Esta es la gráfica v-t de tu corrida con el pedal.' : 'Esta es la gráfica v-t de una corrida con el pedal.');
+  if (!propia) aviso('No encontramos tu corrida de la sesión 1: usamos una de ejemplo.');
+  const r = await predecir('area', 'v2-area');
+  aviso(r.correcta ? '' : r.explica);
+  consigna('Pasa el dedo por la gráfica: pinta lo que hay debajo.');
+  let hasta = 0;
+  const pintar = t => {
+    hasta = Math.max(hasta, Math.min(fin, Math.max(0, t)));
+    const p = L.pintado(eventos, hasta);
+    grafica.areas = hasta > 0 ? [{ puntos: curva(m.v, hasta, 'h').puntos, color: 'i' }] : [];
+    pintarGrafica();
+    moverCarrito(0, p.area);
+    $('lectura').innerHTML = `${F(p.cuadritos, 1)} cuadritos de 2 m · <span class="v-x">x = ${F(p.area, 1)} m</span>`;
+    if (hasta >= fin - 1e-9) terminar();
+  };
+  const el = $('grafica');
+  const aT = clientX => {
+    const r = el.getBoundingClientRect(), g = Ejes.geometria(grafica);
+    const px = (clientX - r.left) * 320 / r.width;
+    return (px - g.X(0)) / (g.X(tMax) - g.X(0)) * tMax;
+  };
+  el.classList.add('agarrable');
+  el.onpointerdown = ev => { ev.preventDefault(); el.setPointerCapture(ev.pointerId); pintar(aT(ev.clientX)); el.onpointermove = e => pintar(aT(e.clientX)); };
+  el.onpointerup = el.onpointercancel = () => { el.onpointermove = null; };
+  controles([{ texto: 'Pintar 1 s más', alClic: () => pintar(Math.floor(hasta + 1e-9) + 1) }, { texto: 'Pintar todo', alClic: () => pintar(fin) }]);
+  let listo = false;
+  function terminar() {
+    if (listo) return; listo = true;
+    el.classList.remove('agarrable'); el.onpointerdown = el.onpointermove = null; controles([]);
+    // Cada tramo con su área: así se arma la regla (rectángulo v·t, triángulo la mitad).
+    grafica.areas = A.tramos.map(t => ({ puntos: tramo(m.v, t.t0, t.t1), color: 'i', rotulo: `${F(t.area, 1)} m` }));
+    pintarGrafica();
+    pista.carriles[0].marcas = []; pista.encuentro = { x: A.total, rotulo: `${F(A.total, 1)} m` }; pintarPista();
+    const suma = A.tramos.map(t => F(t.area, 1)).join(' + ');
+    consigna('Lo pintado es lo que avanzó.');
+    aviso(`${suma} = ${F(A.total, 1)} m, lo mismo que marca la regla. Rectángulo: v · t. Triángulo: la mitad.`);
+    seguir('Fin de la sesión 2 · Ir a la sesión 3', () => irSesion(3));
+  }
+}
+
+// =============================== Parte 4: parar la pista (sesión 3) ===============================
+const Torre = Kit.piezas.torre;
+let torre = {};
+const pintarTorre = () => { $('lienzo').innerHTML = Torre.dibujar(torre); };
+async function parte4() {
+  limpiarFigura(); parte(4, 'Parar la pista');
+  torre = { alto: L.ALTO, pelotas: [{ y: 0, marcas: [] }] };
+  grafica = { compacto: true, x: { min: 0, max: 4, paso: 1, nombre: 't', unidad: 's' }, y: { min: -20, max: 20, paso: 10, nombre: 'v', unidad: 'm/s', color: 'h' }, curvas: [] };
+  pintarTorre(); pintarGrafica();
+  $('lectura').innerHTML = '';
+  consigna('La pista ahora está parada. Vas a lanzar la pelota hacia arriba.');
+  const r = await predecir('c1', 'v2-c1');
+  aviso(r.correcta ? '' : r.explica);
+  consigna('Lánzala hacia arriba con el dedo, o con un botón.');
+  const lanzarCon = v0 => {
+    const el = $('lienzo'); el.classList.remove('agarrable'); el.onpointerdown = el.onpointermove = el.onpointerup = null; controles([]);
+    const l = L.lanzar(v0);
+    aviso(`Tu lanzamiento: ${F(v0, 0)} m/s hacia arriba. Lo redondeamos a 10, 15 o 20 m/s.`);
+    correr({
+      dur: () => l.dur,
+      cada: t => {
+        const k = Math.floor(t / 0.5 + 1e-9);
+        torre.pelotas[0] = { y: l.y(t), v: l.v(t), marcas: l.marcas.slice(0, k + 1) };
+        pintarTorre();
+        $('lectura').innerHTML = `<span class="v-x">y = ${F(l.y(t), 1)} m</span> · <span class="v-v">v = ${F(l.v(t), 1)} m/s</span> · <span class="v-a">a = −10 m/s²</span>`;
+        grafica.curvas = [curva(l.v, Math.max(t, 0.01), 'h')]; pintarGrafica();
+      },
+      fin: () => {
+        // La cima queda a la vista: pelota arriba, v = 0 y la misma flecha de g.
+        torre.pelotas[0] = { y: l.cima, v: 0, marcas: l.marcas };
+        pintarTorre();
+        $('lectura').innerHTML = `En la cima: <span class="v-v">v = 0</span> · <span class="v-a">a = −10 m/s²</span>`;
+        consigna('Arriba, la velocidad es cero; la aceleración, no.');
+        aviso(`${r.correcta ? '' : r.explica + ' '}La flecha de g no cambió en todo el viaje: 10 m/s² hacia abajo.`);
+        seguir('Siguiente: dos pelotas', parte4b);
+      },
+    });
+  };
+  // Gesto hacia arriba: la rapidez de los últimos 100 ms (en m/s de la torre), ajustada a 10, 15 o 20.
+  const el = $('lienzo'); el.classList.add('agarrable');
+  let muestras = null;
+  const escala = () => { const r = el.getBoundingClientRect(); return (320 / r.width) / ((Torre.constantes.SUELO - Torre.constantes.TECHO) / L.ALTO); };
+  el.onpointerdown = ev => { ev.preventDefault(); el.setPointerCapture(ev.pointerId); muestras = [{ t: ev.timeStamp, x: -ev.clientY }]; };
+  el.onpointermove = ev => { if (muestras) muestras.push({ t: ev.timeStamp, x: -ev.clientY }); };
+  el.onpointerup = ev => {
+    if (!muestras) return;
+    const v = L.rapidezDedo(muestras, ev.timeStamp) * escala() * 4;   // ×4: un dedo no recorre la torre entera; el empujón se amplifica
+    muestras = null;
+    const v0 = v >= 2 ? L.LANZAMIENTOS.reduce((a, b) => (Math.abs(b - v) < Math.abs(a - v) ? b : a)) : null;
+    if (v0 === null) { aviso('Suéltala mientras la mueves hacia arriba.'); return; }
+    lanzarCon(v0);
+  };
+  controles(L.LANZAMIENTOS.map(v => ({ texto: `${v} m/s`, alClic: () => lanzarCon(v) })));
+}
+async function parte4b() {
+  limpiarFigura(); parte(4, 'Dos pelotas');
+  const d = L.soltarDos();
+  torre = { alto: L.ALTO, pelotas: [{ y: L.ALTO, rotulo: '1 kg' }, { y: L.ALTO, rotulo: '5 kg', grande: true }] };
+  pintarTorre(); $('lectura').innerHTML = ''; grafica = null; pintarGrafica();
+  consigna('Dos pelotas a 20 m de altura.');
+  const r = await predecir('c2', 'v2-c2');
+  consigna('Suéltalas a la vez.');
+  seguir('Soltar las dos', () => {
+    correr({
+      dur: () => d.tSuelo,
+      cada: t => { torre.pelotas[0].y = torre.pelotas[1].y = d.y(t); pintarTorre(); $('lectura').innerHTML = `t = ${F(t, 1)} s`; },
+      fin: () => {
+        consigna('Llegan juntas.');
+        aviso(r.correcta ? `Las dos tardan ${F(d.tSuelo, 1)} s: sin aire, la masa no cambia la caída.` : `${r.explica} Las dos tardan ${F(d.tSuelo, 1)} s.`);
+        seguir('Siguiente: un problema de examen', parte5);
+      },
+    });
+  });
+}
+
+// =============================== Parte 5: transferir (sesión 3) ===============================
+function datosProblema(P, conAreas) {
+  const pts = []; for (let k = 0; k <= P.fin * 4; k++) pts.push([k / 4, P.movil.v(k / 4)]);
+  return { compacto: true, x: { min: 0, max: Math.ceil(P.fin), paso: 1, cada: 2, nombre: 't', unidad: 's' }, y: { min: 0, max: P.vmax + 2, paso: 2, nombre: 'v', unidad: 'm/s', color: 'h' },
+    curvas: [{ puntos: pts, color: 'h', desde: 0 }],
+    areas: conAreas ? P.partes.map((q, i) => ({ puntos: pts.filter(p => p[0] >= q.t0 - 1e-9 && p[0] <= q.t1 + 1e-9), color: 'i', rotulo: `${F(q.area, 0)} m`, desde: i + 1 })) : [] };
+}
+async function parte5() {
+  limpiarFigura(); parte(5, 'Examen');
+  const P = L.problema('auto');
+  const datos = datosProblema(P, true);
+  const [a, b, c] = P.partes;
+  const pasos = [
+    { estado: { corte: 0 }, texto: `Acelera ${F(a.t1, 0)} s, sigue ${F(b.t1 - b.t0, 0)} s y frena ${F(c.t1 - c.t0, 0)} s.` },
+    { estado: { corte: 1 }, texto: `Primer tramo, triángulo: ½ · ${F(a.t1 - a.t0, 0)} · ${F(P.vmax, 0)} = ${F(a.area, 0)} m.` },
+    { estado: { corte: 2 }, texto: `Rapidez constante, rectángulo: ${F(P.vmax, 0)} · ${F(b.t1 - b.t0, 0)} = ${F(b.area, 0)} m.` },
+    { estado: { corte: 3 }, texto: `Al frenar, triángulo: ½ · ${F(c.t1 - c.t0, 0)} · ${F(P.vmax, 0)} = ${F(c.area, 0)} m.` },
+    { estado: { corte: 3 }, texto: `Total: ${F(a.area, 0)} + ${F(b.area, 0)} + ${F(c.area, 0)} = ${F(P.total, 0)} m.` },
+  ];
+  consigna(P.texto);
+  $('lienzo').innerHTML = ''; $('lectura').innerHTML = '';
+  $('tiempo').hidden = false;
+  const montar = n => Kit.lineaTiempo.montar($('tiempo'), { pieza: Ejes, datos, pasos: pasos.slice(0, n), figura: $('grafica'), pie: $('aviso') });
+  let lt = montar(2); lt.ir(1, false);
+  // Antes del tercer paso, el alumno elige qué se calcula (un paso por elegir del ejemplo resuelto).
+  seguir('Elegir el paso siguiente', async () => {
+    lt.pausar(); lt.destruir && lt.destruir(); $('tiempo').hidden = true;
+    const r = await predecir('paso', 'v2-paso');
+    $('tiempo').hidden = false;
+    lt = montar(pasos.length); lt.ir(3, true);
+    if (!r.correcta) aviso(`${r.explica} ${pasos[2].texto}`);
+    seguir('Ahora tú, solo', parte5b);
+  });
+}
+async function parte5b() {
+  limpiarFigura(); parte(5, 'Ahora tú');
+  const P = L.problema(Math.random() < 0.5 ? 'bus' : 'moto');
+  grafica = datosProblema(P, false); pintarGrafica();
+  consigna(P.texto); $('lienzo').innerHTML = ''; $('lectura').innerHTML = '';
+  // Alternativas al azar; los valores salen del motor (leccion.problema).
+  const t0 = Date.now(), o = $('opciones'); o.innerHTML = '';
+  $('preg-texto').textContent = 'Lo que avanzó:';
+  for (const op of P.opciones.map(x => [Math.random(), x]).sort((x, y) => x[0] - y[0]).map(x => x[1])) {
+    const btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'btn opcion'; btn.textContent = `${F(op.valor, 0)} m`; btn.setAttribute('role', 'radio'); btn.setAttribute('aria-checked', 'false');
+    btn.addEventListener('click', () => {
+      btn.setAttribute('aria-checked', 'true');
+      registrar('v2-transferir-' + P.id, { opcion: op.id, correcta: !!op.correcta, error: op.error }, t0);
+      $('pregunta').hidden = true; $('controles').hidden = false;
+      grafica = datosProblema(P, true); grafica.areas.forEach(a => { a.desde = 0; }); pintarGrafica();
+      consigna(op.correcta ? `Sí: ${F(P.total, 0)} m.` : `Avanzó ${F(P.total, 0)} m.`);
+      aviso(`${op.correcta ? '' : op.explica + ' '}${P.partes.map(q => F(q.area, 0)).join(' + ')} = ${F(P.total, 0)} m.`);
+      seguir('Terminar', () => { consigna('Terminaste la unidad. Otro día te llega una pregunta de repaso.'); aviso(''); limpiarFigura(); parte(5, 'Fin'); });
+    });
+    o.appendChild(btn);
+  }
+  $('controles').hidden = true; $('pregunta').hidden = false;
+}
+
+// Arranque: ?sesion=2 o 3 abre directo esa sesión (son días distintos).
+({ 2: parte3, 3: parte4 }[new URLSearchParams(location.search).get('sesion')] || parte1)();
 </script>
 </body>
 </html>
