@@ -8,7 +8,7 @@ Actualizado el 14 de noviembre de 2026. La siguiente sesión empieza aquí: lée
 npm test
 ```
 
-Deben pasar 8108 pruebas. El servidor tiene las suyas: `cd servidor && pip install -r requirements.txt -r requirements-dev.txt && python -m pytest -q` (83).
+Deben pasar 8150 pruebas. El servidor tiene las suyas: `cd servidor && pip install -r requirements.txt -r requirements-dev.txt && python -m pytest -q` (83).
 
 ```bash
 npm run dev
@@ -70,6 +70,52 @@ Por qué no vale como presupuesto: el Chromium sin pantalla dibuja el canvas por
 4. Repetir con <https://mesa-de-estudios.vercel.app/app/mascotas/estres.html?runtime=2.43.1> y descargar el segundo JSON.
 5. En «Probar a mano», poner «2: dedo + chica», arrastrar la pelota y tocar «Medir 5 s» mientras arrastra. Anotar en una línea si se sintió pegada al dedo o con retraso.
 6. Mandar los dos JSON y esa línea. Con eso se fija el presupuesto de la sección 6.3: cuántos lienzos, de qué tamaño, cuántas formas animadas y el umbral para pasar al respaldo SVG.
+
+## Tabla viva, paso 1 (versión T), 14 nov, en `main`
+
+**Qué es.** La tabla plegada en el celular y el reordenamiento de las cartas: es la pieza mayor del kit de `docs/pogil-v2-rive.md` §7.3. Todavía no está enlazada desde la app ni desde ninguna escena. El diseño está en `docs/diseno.md`, «Tabla viva, paso 1».
+
+**Archivos.**
+- `nucleo/kit/tabla/datos.js`: los 118 elementos. Es un archivo generado por `herramientas/tabla-datos.js` a partir de las páginas de la CIAAW. Esas páginas no se versionan: hay que bajarlas a una carpeta y pasarla como argumento.
+- `arreglos.js`: funciones puras para la tabla plegada, la abierta, la fila por Z y la fila por masa.
+- `tabla.js` y `tabla.css`: el componente, `Kit.Tabla.montar`.
+- `probar.html`: la página de prueba.
+- Pruebas en `datos.test.js`, `arreglos.test.js` y `tabla.test.js`, 22 en total.
+- Medición: `herramientas/medir-tabla.js`.
+
+**Datos (decisión 9).**
+- **Peso atómico estándar:** 84 elementos, de la CIAAW 2024. Se guarda el abreviado con su incertidumbre y el valor completo tal cual.
+- **Los 34 sin peso estándar** (Tc, Pm, Po a Ac y Np a Og): llevan el número másico del isótopo más estable, de NUBASE2020 compilado por la CIAAW. Si la CIAAW no distingue entre dos o tres isótopos, se guardan todos. Pasa con Tc, Lr, Sg, Bh, Hs, Mt, Nh, Fl, Mc y Lv.
+- **Nombres en español: transcritos por un modelo, por verificar con la RSEQ.**
+- **Lo que no se usó todavía:** las propiedades de `atomo-y-tabla` (energía de ionización, radio y electronegatividad, Z de 1 a 36, contrastadas solo en parte con fuentes secundarias). Entran con «se levanta», marcadas así.
+- **Red:** para bajar las fuentes se abrieron en el entorno Default los hosts `ciaaw.org`, `www.ciaaw.org`, `iupac.org` y `physics.nist.gov`.
+
+**Lo que se midió** (Playwright con Chromium, 360 × 740; CPU frenada ×4 con `Emulation.setCPUThrottlingRate`):
+- **Lectura:**
+  - La casilla mide 37 × 37 px, el símbolo 18 px en 700 y el Z 12 px.
+  - Contraste del símbolo sobre la carta: 14,2:1 en claro y 13,1:1 en oscuro. Del Z: 5,3:1 y 6,0:1.
+- **Cuadros por segundo** (15 corridas: reordenar, abrir y plegar, tres veces cada uno):
+  - Durante el movimiento: mediana de 60, el 95 % de los cuadros en 17 ms y un solo cuadro de 50 ms en todas las corridas.
+  - El primer cuadro después del toque tarda entre 17 y 83 ms (mediana de 50): es el navegador preparando 118 transiciones, antes de que nada se mueva.
+  - Se corrigió una lectura de `scrollLeft` que costaba 43 ms en cada cambio.
+- **Saltos:** los controles y el cuerpo se mueven 0 px al cambiar de arreglo.
+- **Interrupción:** cambiar de arreglo a los 300 ms deja 0 cartas fuera de su sitio.
+- **Movimiento reducido:** el sodio solo pasa por su posición de partida y la de llegada.
+- **Teclado:** Tab llega a una sola carta, las flechas se mueven por posición, Enter abre la carta y Escape la cierra devolviendo el foco.
+
+**Lo que no cumple o no se probó.**
+- **La zona táctil mide 37 px, no 44.** Es una excepción declarada: no cabe más.
+- **En tema oscuro, el borde y la carta se separan del fondo con 1,1:1.** La carta se reconoce por su texto, que está a 13:1. Es el mismo sistema de pegatinas de toda la app: si se cambia, se cambia en la cáscara.
+- **Nada se probó en un celular físico** (ni el de 4 GB ni otro) ni con un lector de pantalla real. La CPU frenada en Chromium de escritorio no reemplaza al celular.
+- Tampoco se probó el gesto de deslizar la hoja para cerrarla: hoy se cierra con el botón, con Escape o tocando fuera.
+
+**Lo que sigue.**
+1. **Probarla en un celular real:** ¿se lee el símbolo?, ¿se entiende la franja «3–12»?, ¿se ve fluido el reordenamiento? Con eso se decide si se construye la pieza completa.
+2. Verificar los nombres en español con la RSEQ.
+3. Los siguientes comportamientos, en este orden:
+   - «se levanta», con cada propiedad diciendo de qué tipo es su valor (medido, de escala o calculado) y «sin dato» donde no hay valor;
+   - «se ilumina»;
+   - el solitario de Mendeléyev, que corta la fila con el dedo; las inversiones ya se calculan con `inversiones()`.
 
 ## Cola de repaso (versión R), 13 y 14 nov, en `main` (sw v175)
 
@@ -221,7 +267,7 @@ Sesión de **planificación**: no se construyó nada de la app. Lo que sigue se 
 3. **Versión B:** la misma unidad con utilería de Rive, para comparar.
 4. **En paralelo, sin depender de lo anterior:**
    - ~~la cola de repaso~~ (hecha el 13 nov: ver «Cola de repaso (versión R)» arriba);
-   - la tabla plegada en el celular (primer paso de la tabla viva);
+   - ~~la tabla plegada en el celular (primer paso de la tabla viva)~~ (hecha el 14 nov: ver «Tabla viva, paso 1» arriba);
    - ~~revisar las sondas de `clasificar` con la regla nueva~~ (hecho el 14 nov: eran 54 textos y 56 sondas, no 24. Tres subagentes las clasificaron a ciegas y ninguna cambia de clase. Se reescribieron 29 explicaciones de 18 textos que justificaban por las palabras («no lo dice con esas palabras») o por juntar oraciones, y otro subagente las revisó a ciegas. Todo es por modelo y queda por revisar por una persona. Detalle en `docs/investigacion/revision-sondas-clasificar.md`. Queda por mirar t057/p5, que el revisor leyó como «lo dice» por la oración 10, en figurado);
    - validar con un subagente las fichas del banco Cuzcano (decisión 18): ~~las 894 sin `unidad`, el validador y edades y móviles~~ (hecho el 14 nov); ~~el vocabulario de las 23 unidades de física y química con deslizador~~ (hecho el 13 nov, tarde); MRU y MRUV va en otra conversación.
 5. **Después:** la pregunta de seguridad, el avance en cuatro niveles y los ocho puentes (una unidad por curso con su ficha completa).

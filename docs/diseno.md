@@ -227,3 +227,24 @@ Pedido de Gerson: que den ganas de tocar los cursos.
 - **Color:** blanco, una mezcla media y un solo acento, la base del curso (`--cb`), encamisada en ciruela cuando es línea. Nunca colores de variables.
 - **Contenido:** cada dibujo dice la idea de su unidad en una frase. Lleva texto solo si es la clave, y de 14 unidades o más. Si un curso no tiene dibujos, va su viñeta.
 - **Receta:** `app/dibujos/comun.js` y un archivo por curso. `app/app.test.js` comprueba que haya un dibujo por unidad, que esté en la caché y que no use colores prohibidos.
+
+## Tabla viva, paso 1 (14 nov 2026): la tabla plegada y el reordenamiento
+
+Pieza mayor del kit en `nucleo/kit/tabla/` (versión T de la sección 9 de `docs/pogil-v2-rive.md`). Es HTML y no SVG porque son 118 casillas con texto que el lector de pantalla tiene que leer. Página de prueba: `nucleo/kit/tabla/probar.html` (`?tema=oscuro`, `?arreglo=filaMasa`). Medición: `node herramientas/medir-tabla.js` con `npm run dev` corriendo.
+
+**Decisiones de sistema:**
+- **Casilla** de 36 a 48 px: 37 px en un celular de 360 (ocho columnas, una franja de pliegue de 0,35 casillas y un canal de 16 px para los periodos). El símbolo va a 18 px en 700 y el Z a 12 px en 500, en `--muted`. Borde de 1,5 px en `--borde`, plataforma de 2 px y radio de 6.
+- **Excepción:** la zona táctil de la casilla mide 37 px, no 44. No cabe más sin tapar el símbolo. Las casillas quedan separadas por 2 px y cada una abre su carta, así que un toque errado no hace daño.
+- **Cartas neutras.** La tabla no usa los colores `--el-*` ni colores por bloque: eso llega con «se ilumina». La marca va solo en los controles (el botón del arreglo elegido lleva `--brand-soft` y una raya de `--brand`, más el texto en negrita, para que no dependa del color).
+- **Plegada** (por defecto cuando las 18 columnas no entran con casillas de 36 px): se ven los grupos 1, 2 y 13 a 18. Los grupos 3 a 12 y las series se guardan en una franja punteada con el rótulo «3–12».
+- **Abierta en el celular:** son 18 columnas con scroll de lado, y el marco se corre hasta el bloque d. Lo que queda fijo es el canal de los periodos, no los grupos 1 y 2 (cambio frente al diseño; fijar cartas que se mueven con `transform` costaba más que su valor).
+- **Echado** (740 px): entra la tabla larga completa y el botón del pliegue no aparece.
+- **Fila por masa:** los 84 elementos con peso atómico estándar en orden, y los 34 que no lo tienen en una pila aparte, con su rótulo (decisión del 14 nov).
+- **Carta completa** en una hoja de abajo (`dialog` modal). Muestra el peso abreviado con coma decimal y su incertidumbre, el valor completo de la CIAAW, la ubicación con el grupo IUPAC y el A/B de academia, y el bloque. Las dos series dicen «en la fila aparte» y no inventan grupo ni bloque. La línea de fuente queda oculta para el alumno salvo con `{ fuentes: true }`.
+- **Movimiento:**
+  - Reordenar es un `paso` (900 ms) con `trasladar`, escalonado 40 ms por renglón de destino, como mucho 5 escalones.
+  - Abrir el pliegue va en `largo` y plegarlo en `medio`.
+  - La hoja sube en `medio` con `llegar` y baja en `corto` con `irse`.
+  - Si se cambia de arreglo a media carrera, la carta parte de donde está pintada.
+  - Con movimiento reducido la tabla se funde fuera (`micro`), cambia y se funde dentro (`corto`), sin traslados.
+- **Rendimiento:** la página nunca lee ni escribe `scrollLeft` si no hace falta, porque eso obliga a recalcular el diseño de las 118 cartas en el acto.
