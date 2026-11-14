@@ -152,6 +152,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
   .top{grid-template-columns:1fr auto; align-items:end}
   .mode{grid-template-columns:minmax(0, 1.2fr) minmax(360px, 1fr)}
   .bench{position:sticky; top:12px}
+  .mode > .jugar-barra{order:-1; grid-column:1 / -1}
 }
 </style>
 <link rel="stylesheet" href="../../nucleo/pegatina.css">
@@ -222,6 +223,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'relojes-calendarios', unidad: 'razonamiento-matematico.cronometria-y-calendarios', version: '0.1.0' };
@@ -931,6 +933,13 @@ $('next').addEventListener('click', () => { if (S.ocupado) return; const s = ste
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
 addEventListener('modo', () => { if (steps[S.step].explora === 'libre') vivoLibre(); });
+// Regla 3: antes de la primera pregunta, juego libre con el minutero (dedo o flechas) entre las 8:50 y las 9:40,
+// sin ángulo: no pasa por las 3, no hay superposición en ese tramo y no se dice ningún ángulo.
+E.compactar(false);
+E.config({ modo:'reloj', drag:true, tmin:530, tmax:580, relojes:[{ t:540 }], lect:[E0 => ['H', 'Hora', relojTxt(E0.relojes[0].t)]],
+  ley:[['H', 'horario'], ['M', 'minutero']], desc:'Un reloj cerca de las 9: arrastra el minutero.' });
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Gira el minutero con el dedo y mira qué hace el horario.', minimo:2, alListo:() => go(S.step) });
 })();
 </script>
 <script>
@@ -1084,6 +1093,14 @@ function ir(k){
   pintar();
 }
 ir(0);
+// Regla 3: antes del primer experimento, juego libre con el minutero entre las 8:50 y las 9:40 (dedo o flechas).
+// No pasa por las 2 (el ángulo recto del experimento 1) ni toca atrasos, campanadas o calendarios.
+E.compactar(false);
+E.config({ modo:'reloj', drag:true, tmin:530, tmax:580, relojes:[{ t:540, arco:'ver' }],
+  lect:[E0 => ['H', 'Hora', relojTxt(E0.relojes[0].t)], E0 => ['al', 'Ángulo α', `${fmt(MR.agujas(E0.relojes[0].t).menor, 1)}°`]],
+  desc:'Un reloj cerca de las 9: arrastra el minutero.' });
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Gira el minutero con el dedo y mira cómo cambia el ángulo.', minimo:2, alListo:() => ir(S.k) });
 })();
 </script>
 

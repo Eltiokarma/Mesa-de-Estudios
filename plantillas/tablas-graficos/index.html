@@ -171,6 +171,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
   .top{grid-template-columns:1fr auto; align-items:end}
   .mode{grid-template-columns:minmax(0, 1.2fr) minmax(360px, 1fr)}
   .bench{position:sticky; top:12px}
+  .mode > .jugar-barra{order:-1; grid-column:1 / -1}
 }
 </style>
 <link rel="stylesheet" href="../../nucleo/pegatina.css">
@@ -241,6 +242,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'tablas-graficos', unidad: 'razonamiento-matematico.tablas-graficos-y-suficiencia', version: '0.1.0' };
@@ -998,6 +1000,14 @@ function prediccion(s){
 $('next').addEventListener('click', () => { if (S.ocupado) return; const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return; desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: antes de la primera pregunta, juego libre con el gráfico circular (dedo o flechas): se mueve el borde
+// entre básquet y ajedrez y solo se ven los grados. No se dibuja el eje cortado del paso 1 ni las cantidades del paso 4.
+E.compactar(false);
+E.config({ modo:'circular', drag:true, cir:{ cantidades:CANT.slice(), nombres:DEP, verGrados:true, verPct:false, verCant:false, arrastrar:2, margen:4 },
+  lect:[E0 => ['th', 'Básquet θ', `${fmt(MG.gradosDeSector({ total:200, cantidad:E0.cir.cantidades[2] }).grados, 1)}°`]],
+  desc:'Gráfico circular de deportes favoritos. Mueve el borde entre básquet y ajedrez.' });
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra el borde entre básquet y ajedrez y mira cómo cambian los grados.', minimo:2, alListo:() => go(S.step) });
 })();
 </script>
 
@@ -1141,6 +1151,15 @@ function ir(k){
   pintar();
 }
 ir(0);
+// Regla 3: antes del primer experimento, juego libre con dos barras y la guía del inicio del eje (dedo o flechas).
+// Ningún experimento pregunta por el eje cortado.
+E.compactar(false);
+E.config({ modo:'barras', drag:true, bar:{ a:30, b:24, nA:'La Esquina', nB:'Don Pepe', inicio:15, tope:35, smin:0, smax:22, verValores:true, marcarInicio:true, deslizador:true },
+  ley:[['R', 'La Esquina', 'sq'], ['So', 'Don Pepe', 'sq'], ['y0', 'y₀ · inicio del eje']],
+  lect:[L('R', 'La Esquina', '30 cajas'), L('So', 'Don Pepe', '24 cajas'), E0 => ['ink', 'El eje empieza en', String(E0.bar.inicio)]],
+  desc:'Barras de dos bodegas. Mueve el inicio del eje con la guía de abajo o con las flechas.' });
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Arrastra el punto de la guía de abajo y mira cómo cambian las barras.', minimo:2, alListo:() => ir(S.k) });
 })();
 </script>
 
