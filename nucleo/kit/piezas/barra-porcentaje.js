@@ -44,7 +44,9 @@
     const n = d.tramos.length;
     const manijaY = FILA0 + FILA * n + 14;
     const fantasmaY = manijaY + 28;
-    return { v, escala, n, manijaY, fantasmaY, alto: fantasmaY + 14, x: val => X0 + (X1 - X0) * Math.max(0, val) / escala };
+    return { v, escala, n, manijaY, fantasmaY, alto: fantasmaY + 14, x: val => X0 + (X1 - X0) * Math.max(0, val) / escala,
+      // Agregado para el gesto directo (docs/teoria.md §4b): la barra, la fila de cada tramo y la inversa de x.
+      barraY: BARRA_Y, barraH: BARRA_H, filaY, deX: px => (px - X0) / (X1 - X0) * escala };
   }
   const filaY = i => FILA0 + FILA * (i - 1);
   const fmt = (d, x) => `${d.prefijo || ''}${Kit.formatear(x, d.decimales === undefined ? 2 : d.decimales)}${d.sufijo || ''}`;
@@ -158,5 +160,5 @@
     return `Barra de ${fmt(d, d.total)} que ${fin}`;
   }
 
-  return { id: 'barra-porcentaje', dibujar, alt, controles, valores };
+  return { id: 'barra-porcentaje', dibujar, alt, controles, valores, geometria };
 });

@@ -44,7 +44,7 @@
     const x = v => X0 + (X1 - X0) * Math.max(0, v) / max;
     const regla = d.regla && d.regla.paso > 0;
     const alto = ARRIBA + FILA * n + (regla ? 30 : 0);
-    return { n, max, x, alto, tiraY: k => ARRIBA + FILA * k + ROT, regla };
+    return { n, max, x, alto, tiraY: k => ARRIBA + FILA * k + ROT, regla, altoTira: ALTO_TIRA, centroY: k => ARRIBA + FILA * k + ROT + ALTO_TIRA / 2, deX: px => Math.max(0, (px - X0) / (X1 - X0) * max) };
   }
 
   // Rótulo de un tramo: adentro si cabe; si no, debajo, centrado y encajado en el lienzo.

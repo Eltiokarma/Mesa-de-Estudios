@@ -45,7 +45,8 @@
     const w = libre >= 0 ? anchos.map(a => a + libre / anchos.length) : anchos.map(a => a * (X1 - X0) / suma);
     const xs = [X0];
     for (const a of w) xs.push(xs[xs.length - 1] + a);
-    return { xs, nf, alto: Y0 + ALTO_CAB + ALTO_FILA * nf + 6, filaY: i => Y0 + ALTO_CAB + ALTO_FILA * i };
+    return { xs, nf, alto: Y0 + ALTO_CAB + ALTO_FILA * nf + 6, filaY: i => Y0 + ALTO_CAB + ALTO_FILA * i, altoFila: ALTO_FILA, cabezaY: Y0 + ALTO_CAB / 2,
+      celda: (i, j) => ({ x: (xs[j] + xs[j + 1]) / 2, y: Y0 + ALTO_CAB + ALTO_FILA * i + ALTO_FILA / 2 }) };
   }
 
   function dibujar(d, estado = {}) {

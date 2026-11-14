@@ -59,7 +59,17 @@
     const anchoTotal = cols.reduce((a, c) => a + c * paso, 0) + SEP_BLOQUE * Math.max(0, bs.length - 1);
     let x = X0 + Math.max(0, ((X1 - X0) - anchoTotal) / 2);
     const xs = cols.map(c => { const r = x; x += c * paso + SEP_BLOQUE; return r; });
-    return { filas, cols, nf, paso, xs, altoMax, alto: Y0 + altoMax + ROT };
+    // Centro de la ficha número `idx` (en orden de lectura) del bloque k, y la caja del bloque: para las manijas del
+    // gesto directo (docs/teoria.md §4b). Los bloques se apoyan abajo, como en dibujar.
+    const y0 = k => Y0 + (altoMax - filas[k].length * paso);
+    const ficha = (k, idx) => {
+      const f = filas[k] || [];
+      let i = 0, resto = Math.max(0, idx | 0);
+      while (i < f.length - 1 && resto >= f[i]) { resto -= f[i]; i++; }
+      return { x: xs[k] + Math.min(resto, Math.max(0, (f[i] || 1) - 1)) * paso + paso / 2, y: y0(k) + i * paso + paso / 2 };
+    };
+    const caja = k => ({ x: xs[k], y: y0(k), ancho: cols[k] * paso, alto: (filas[k] || []).length * paso });
+    return { filas, cols, nf, paso, xs, altoMax, alto: Y0 + altoMax + ROT, ficha, caja, piso: Y0 + altoMax };
   }
 
   function dibujar(d, estado = {}) {

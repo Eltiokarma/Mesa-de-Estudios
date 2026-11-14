@@ -84,3 +84,11 @@ test('alt cuenta la relación, no la coreografía', () => {
   assert.equal(B.alt(AUM), 'Barra de S/ 500 que primero gana el 20 % y luego pierde el 25 % de lo que queda');
   assert.match(B.dibujar(D, {}), /role="img" aria-label="Barra de S\/ 300/);
 });
+
+test('geometria (agregada para el gesto directo): x y deX son inversas y la barra no cambia de lugar', () => {
+  const g = B.geometria(D);
+  for (const v of [0, 100, 255, 300]) assert.ok(Math.abs(g.deX(g.x(v)) - v) < 1e-9);
+  assert.ok(g.barraY > 0 && g.barraH > 0);
+  assert.equal(g.filaY(1), 96);
+  assert.match(B.dibujar(D, {}), new RegExp(`y="${g.barraY}"`));
+});
