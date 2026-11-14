@@ -4,7 +4,11 @@
  * (pp. 82–83) y las «Precisiones de Geometría y Trigonometría» del expediente. Forma: contenido/teoria/fisica/movimiento-rectilineo.js.
  * Compañera: Mara (coneja), cercana y rigurosa: conserva el origen, el sentido y la unidad del ángulo.
  * Colores (regla 4): el ángulo θ y sus tres medidas D, G y R en naranja (c-o: es un mismo giro en tres escalas),
- * el arco s en turquesa (c-i), el radio r en verde (c-d) y las vueltas n en rojo (c-h).
+ * el arco s en turquesa (c-i), el radio r en verde (c-d) y las vueltas n en rojo (c-h). En el laboratorio, el
+ * segundo giro θ₂ va en morado (c-f), para comparar dos giros a la vez.
+ * Ronda 2 (14 nov, noche): manijas en las cuatro ideas (extremo del rayo, borde del sector, fin del arco y radio,
+ * punto de la recta), llaves en las reglas y laboratorio de tres mesas. Las cuatro ideas usan la misma figura
+ * en «Juega» y en «Mira» (hallazgo 9 de docs/auditoria-teoria.md), salvo el radián: ver su comentario.
  * Errores (hipótesis de distractor, docs/investigacion/trigonometria-ideas-erroneas.md no los mide): TRIG-COTERM-IGUAL,
  * TRIG-SIGNO, TRIG-NEGATIVO, TRIG-SIN-SIGNO, TRIG-UNA-VUELTA, TRIG-SENTIDO, CONV-MISMO, CONV-INVERSA, CONV-MITAD,
  * CONV-PI, SEX-SUMA, SEX-REDONDEO, RAD-ENTERO, RAD-GRADOS, RAD-TAMAÑO, RAD-INVERSA, RAD-PRODUCTO, SEX-DECIMAL, SEX-CIEN.
@@ -37,6 +41,10 @@
     return `${sg}${a === 1 ? '' : a}π${den === 1 ? '' : '/' + den}`;
   }
   const mod360 = x => ((x % 360) + 360) % 360;
+  // Gesto directo (docs/teoria.md §4b): las manijas usan la geometría de la pieza.
+  const TP = () => Kit.piezas['trig-plano'], RECTA = () => Kit.piezas.recta;
+  const rad = gr => gr * Math.PI / 180;
+  const punta = (d, gr, L = 1) => TP().enPx(d, L * Math.cos(rad(gr)), L * Math.sin(rad(gr)));
   // Azar con semilla para «Ahora tú» (el de la unidad de referencia).
   function azar(sem) {
     let q = (sem * 2654435761 + 12345) >>> 0;
@@ -87,6 +95,10 @@
       dibujo: val => ({ datos: giro(val.g), estado: {} }),
       lectura: val => [th, ` = ${f(val.g)}° · ${val.g > 0 ? 'antihorario' : val.g < 0 ? 'horario' : 'sin giro'} · ${vueltasTxt(val.g)}`],
       minimo: 3,
+      // Se arrastra la punta del rayo: al dar la vuelta, el giro sigue sumando (no salta al coterminal).
+      arrastres: [{ id: 'punta', etiqueta: 'punta del rayo θ', color: 'c-o',
+        donde: val => punta(giro(val.g), val.g),
+        mover: (pt, val) => ({ g: TP().anguloDe(giro(val.g), pt, { cerca: val.g }) }) }],
     },
     predice: {
       pregunta: 'Un rayo gira 270° y otro gira −90°, los dos desde el mismo lado inicial. Terminan en el mismo lugar. ¿Son el mismo ángulo trigonométrico?',
@@ -115,12 +127,12 @@
         { estado: { corte: 1 }, texto: 'Todo giro parte del lado inicial, sobre el eje x positivo.', ecuacion: [th, ' = 0°'] },
         { estado: { corte: 2 }, texto: 'Contra las agujas del reloj, el giro es positivo.', ecuacion: [th, ' = +270°'] },
         { estado: { corte: 3 }, texto: 'Con las agujas del reloj, el giro es negativo.', ecuacion: [th, ' = −90°'] },
-        { estado: { corte: 4 }, texto: 'Terminan en el mismo lado y difieren en una vuelta.', ecuacion: ['270° − (−90°) = 360° · ', n, ',  ', n, ' = 1'] },
+        { estado: { corte: 4 }, texto: 'Terminan en el mismo lado y difieren en una vuelta.', ecuacion: ['270° − (−90°) = 360° · ', n, '   ·   ', n, ' = 1'] },
       ],
     },
     regla: {
       texto: 'Un ángulo trigonométrico es un giro: antihorario es positivo y horario es negativo. Dos giros que terminan en el mismo lado son coterminales.',
-      ecuacion: [{ sub: [th, '1'] }, ' − ', { sub: [th, '2'] }, ' = 360° · ', n],
+      ecuacion: [{ sub: [th, '1'] }, ' − ', { sub: [th, '2'] }, ' = 360° · ', { llave: [n], nota: 'vueltas enteras', color: 'c-h' }],
       condicion: 'los dos se miden desde el mismo lado inicial, y n es un entero. Coterminales no quiere decir iguales.',
       voz: 'El signo guarda el sentido; las vueltas guardan el recorrido.',
     },
@@ -147,6 +159,15 @@
     },
   };
 
+  // Laboratorio: dos giros a la vez; el segundo, más corto y en morado, para que las dos puntas no se tapen.
+  const dosGiros = (ga, gb) => ({
+    circulos: [{ r: 1 }],
+    // Los rótulos van en la punta de cada rayo (en el arco, dos espirales los ponían uno encima del otro).
+    rayos: [{ ang: 0, largo: 1.15, grosor: 'contorno' }, { ang: ga, largo: 1, color: 'o', rotulo: `${f(ga)}°` }, { ang: gb, largo: 0.7, color: 'f', rotulo: `${f(gb)}°` }],
+    arcos: [{ de: 0, a: ga, r: 0.22, espiral: 7, color: 'o' }, { de: 0, a: gb, r: 0.42, espiral: 7, color: 'f' }],
+    alt: `Dos giros desde el mismo lado inicial: ${f(ga)} grados y ${f(gb)} grados${(ga - gb) % 360 === 0 ? ', que terminan en el mismo lado' : ''}`,
+  });
+
   // ---------- Idea 2: una vuelta, tres escalas ----------
   // Cambia: el giro θ entre 0° y 360°. · Permanece: la circunferencia y el sector que muestra la fracción de vuelta.
   // Progresa: la fracción sombreada. · Se reserva: un giro dado en grados centesimales (la predicción).
@@ -170,6 +191,10 @@
       dibujo: val => ({ datos: sector(val.g, fraccion(val.g)), estado: {} }),
       lectura: val => [`${f(val.g)}° = `, gc(f(val.g * 10 / 9)), ` = ${piTxt(val.g)} rad`],
       minimo: 3,
+      // Se arrastra el borde del sector; pasada la vuelta completa, se queda en 360°.
+      arrastres: [{ id: 'borde', etiqueta: 'borde del sector θ', color: 'c-o',
+        donde: val => punta(sector(val.g, ''), val.g),
+        mover: (pt, val) => { const a = TP().anguloDe(sector(val.g, ''), pt); return { g: a < 9 && val.g > 180 ? 360 : a }; } }],
     },
     predice: {
       pregunta: ['Un giro mide ', gc('40'), '. ¿Cuántos grados sexagesimales mide?'],
@@ -201,7 +226,7 @@
     },
     regla: {
       texto: 'Convertir no cambia el giro: conserva la fracción de vuelta. Por eso las tres medidas, divididas entre su media vuelta, dan lo mismo.',
-      ecuacion: [{ frac: [D, '180'] }, ' = ', { frac: [G, '200'] }, ' = ', { frac: [R, 'π'] }],
+      ecuacion: [{ llave: [{ frac: [D, '180'] }], nota: 'sexagesimal', color: 'c-o' }, ' = ', { llave: [{ frac: [G, '200'] }], nota: 'centesimal', color: 'c-o' }, ' = ', { llave: [{ frac: [R, 'π'] }], nota: 'radial', color: 'c-o' }],
       condicion: 'D, G y R son las medidas del mismo ángulo, con el mismo signo. Media vuelta es 180°, 200ᵍ o π rad.',
       voz: 'Tres escalas, un solo giro.',
     },
@@ -283,6 +308,15 @@
       dibujo: val => ({ datos: arcoRad(val.r, val.s), estado: {} }),
       lectura: val => [th, ' = ', s, '/', r, ` = ${f(val.s)}/${f(val.r)} = ${f(val.s / val.r)} rad`],
       minimo: 3,
+      // Se arrastra el fin del arco (cambia s, con r fijo) y la punta del radio (cambia r, con s fijo).
+      arrastres: [
+        { id: 'fin-arco', etiqueta: 'fin del arco s', color: 'c-i',
+          donde: val => punta(arcoRad(val.r, val.s), val.s / val.r * 180 / Math.PI, val.r),
+          mover: (pt, val) => ({ s: rad(TP().anguloDe(arcoRad(val.r, val.s), pt, { cerca: val.s / val.r * 180 / Math.PI })) * val.r }) },
+        { id: 'radio', etiqueta: 'punta del radio r', color: 'c-d',
+          donde: val => TP().enPx(arcoRad(val.r, val.s), val.r, 0),
+          mover: (pt, val) => ({ r: TP().delPx(arcoRad(val.r, val.s), pt).x }) },
+      ],
     },
     predice: {
       pregunta: 'Si recorres una vuelta completa por el borde, ¿cuántos radios de largo mide ese recorrido? Es la medida de una vuelta en radianes.',
@@ -306,6 +340,8 @@
         rotulos: [{ x: 0, y: 0.35, texto: `π ≈ ${f(Math.PI)}`, color: 'o', desde: 3, hasta: 3 }, { x: -0.5, y: 0.35, texto: `2π ≈ ${f(2 * Math.PI)}`, color: 'o', desde: 4 }],
         alt: 'Radios de arco puestos sobre la circunferencia: tres y un poco en media vuelta, seis y un poco en una vuelta',
       },
+      // Hallazgo 9: el juego usa un círculo de radio libre; «Mira» usa el de radio 1, porque contar radios sobre el
+      // borde se lee mejor a una sola escala. Es la misma relación θ = s/r con r = 1, y el primer paso lo dice.
       voz: 'Cuenta los radios a lo largo del borde.',
       pasos: [
         { estado: { corte: 1 }, texto: 'Un arco del mismo largo que el radio forma un radián.', ecuacion: [s, ' = ', r, '  ⇒  ', th, ' = 1 rad'] },
@@ -316,7 +352,7 @@
     },
     regla: {
       texto: 'La medida en radianes cuenta cuántos radios mide el arco. No depende del tamaño del círculo: si el radio crece, el arco crece igual.',
-      ecuacion: [th, ' = ', { frac: [s, r] }, ';   1 vuelta = 2π rad'],
+      ecuacion: [th, ' = ', { llave: [{ frac: [s, r] }], nota: 'cuántos radios', color: 'c-i' }, '   ·   ', '1 vuelta = 2π rad'],
       condicion: 's y r en la misma unidad de longitud, y θ en radianes.',
       voz: 'El radián compara dos largos; por eso no lleva centímetros.',
     },
@@ -372,6 +408,15 @@
       dibujo: val => ({ datos: rectaGrados([{ tipo: 'punto', x: val.g + val.m / 60, color: 'o', rotulo: gm(val.g, val.m) }]), estado: {} }),
       lectura: val => [th, ` = ${gm(val.g, val.m)} = ${f(val.g + val.m / 60, 4)}°`],
       minimo: 3,
+      // Se arrastra el punto por la recta: cae en la rayita de 12′ más cercana.
+      arrastres: [{ id: 'punto', etiqueta: 'punto θ en la recta', color: 'c-o',
+        donde: val => { const d = rectaGrados([]); const g = RECTA().geometria(d); return { x: g.x(val.g + val.m / 60), y: g.eje }; },
+        mover: pt => {
+          const d = rectaGrados([]), g = RECTA().geometria(d);
+          const v = Math.round(Math.max(0, Math.min(3.8, d.min + (pt.x - g.x(d.min)) * (d.max - d.min) / (g.x(d.max) - g.x(d.min)))) * 5) / 5;
+          const gr = Math.floor(v + 1e-9);
+          return { g: gr, m: Math.round((v - gr) * 60) };
+        } }],
     },
     predice: {
       pregunta: '¿Cuántos grados, con decimales, mide un ángulo de 2° 15′?',
@@ -401,7 +446,7 @@
     },
     regla: {
       texto: 'En el sistema sexagesimal, un grado tiene 60 minutos y un minuto tiene 60 segundos. Para pasar minutos a grados se divide entre 60.',
-      ecuacion: ['1° = 60′;   1′ = 60″;   m′ = ', { frac: ['m', '60'] }, ' grados'],
+      ecuacion: ['1° = 60′', '   ·   ', '1′ = 60″', '   ·   ', 'm′ = ', { llave: [{ frac: ['m', '60'] }], nota: 'parte de grado', color: 'c-o' }, ' grados'],
       condicion: 'los minutos y segundos son sexagesimales. Una coma decimal ya no es sexagesimal: 1,5° = 1° 30′.',
       voz: 'Sesenta partes por grado; no las leas como décimas.',
     },
@@ -439,6 +484,61 @@
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/trig-plano.js', '/nucleo/kit/piezas/recta.js'],
+    // Laboratorio (docs/teoria.md §4b): tres mesas sin preguntas. La primera compara dos giros a la vez (lo que la
+    // idea 1 solo deja ver en la predicción); la segunda abre el rango a giros negativos de 5 en 5; la tercera
+    // invierte el radián: se fija el ángulo y el radio, y el arco sale de ellos.
+    laboratorio: [
+      {
+        id: 'dos-giros', titulo: 'Dos giros, ¿coterminales?', pieza: 'trig-plano',
+        consigna: 'Mueve los dos rayos, hasta tres vueltas en cada sentido. La lectura dice si terminan en el mismo lado y en cuántas vueltas difieren.',
+        controles: [
+          { id: 'a', etiqueta: 'θ₁', color: 'c-o', min: -1080, max: 1080, paso: 15, inicio: 390, unidad: '°', decimales: 0 },
+          { id: 'b', etiqueta: 'θ₂', color: 'c-f', min: -1080, max: 1080, paso: 15, inicio: -330, unidad: '°', decimales: 0 },
+        ],
+        dibujo: val => ({ datos: dosGiros(val.a, val.b), estado: {} }),
+        lectura: val => {
+          const dif = (val.a - val.b) / 360;
+          return [{ sub: [th, '1'] }, ` = ${f(val.a)}° · `, { sub: [{ v: 'c-f', t: 'θ' }, '2'] }, ` = ${f(val.b)}° · `,
+            Number.isInteger(dif) ? (dif ? `coterminales, a ${f(Math.abs(dif))} vuelta${Math.abs(dif) > 1 ? 's' : ''}` : 'el mismo giro') : 'no coterminales'];
+        },
+        arrastres: [
+          { id: 'punta-1', etiqueta: 'punta del rayo θ₁', color: 'c-o',
+            donde: val => punta(dosGiros(val.a, val.b), val.a),
+            mover: (pt, val) => ({ a: TP().anguloDe(dosGiros(val.a, val.b), pt, { cerca: val.a }) }) },
+          { id: 'punta-2', etiqueta: 'punta del rayo θ₂', color: 'c-f',
+            donde: val => punta(dosGiros(val.a, val.b), val.b, 0.7),
+            mover: (pt, val) => ({ b: TP().anguloDe(dosGiros(val.a, val.b), pt, { cerca: val.b }) }) },
+        ],
+      },
+      {
+        id: 'tres-escalas', titulo: 'Tres escalas, de 5 en 5', pieza: 'trig-plano',
+        consigna: 'Gira el borde del sector en cualquier sentido. La lectura escribe el mismo giro en grados, grados centesimales y radianes.',
+        controles: [{ id: 'g', etiqueta: 'θ', color: 'c-o', min: -360, max: 360, paso: 5, inicio: 135, unidad: '°', decimales: 0 }],
+        dibujo: val => ({ datos: sector(val.g, `${f(val.g)}°`), estado: {} }),
+        lectura: val => [th, ` = ${f(val.g)}° = `, gc(f(val.g * 10 / 9, 2)), ` = ${piTxt(val.g)} rad`],
+        arrastres: [{ id: 'borde', etiqueta: 'borde del sector θ', color: 'c-o',
+          donde: val => punta(sector(val.g, ''), val.g),
+          mover: (pt, val) => ({ g: TP().anguloDe(sector(val.g, ''), pt, { cerca: val.g }) }) }],
+      },
+      {
+        id: 'arco-sale', titulo: 'El arco: θ por r', pieza: 'trig-plano',
+        consigna: 'Fija el ángulo en radianes y el radio. Agranda el radio sin tocar el ángulo: el arco crece en la misma proporción.',
+        controles: [
+          { id: 't', etiqueta: 'θ', color: 'c-o', min: 0.25, max: 6, paso: 0.25, inicio: 1, unidad: 'rad', decimales: 2 },
+          { id: 'r', etiqueta: 'r', color: 'c-d', min: 0.5, max: 3, paso: 0.25, inicio: 1.5, unidad: 'cm', decimales: 2 },
+        ],
+        dibujo: val => ({ datos: arcoRad(val.r, val.t * val.r), estado: {} }),
+        lectura: val => [s, ' = ', th, ' · ', r, ` = ${f(val.t)} · ${f(val.r)} = ${f(val.t * val.r)} cm · ${f(val.t * 180 / Math.PI, 1)}°`],
+        arrastres: [
+          { id: 'fin-arco', etiqueta: 'fin del arco: cambia θ', color: 'c-o',
+            donde: val => punta(arcoRad(val.r, val.t * val.r), val.t * 180 / Math.PI, val.r),
+            mover: (pt, val) => ({ t: rad(TP().anguloDe(arcoRad(val.r, val.t * val.r), pt, { cerca: val.t * 180 / Math.PI })) }) },
+          { id: 'radio', etiqueta: 'punta del radio r', color: 'c-d',
+            donde: val => TP().enPx(arcoRad(val.r, val.t * val.r), val.r, 0),
+            mover: (pt, val) => ({ r: TP().delPx(arcoRad(val.r, val.t * val.r), pt).x }) },
+        ],
+      },
+    ],
     historia: {
       texto: 'Los astrónomos babilonios contaban en base sesenta, y la astronomía griega heredó la vuelta de 360 partes; de ahí vienen nuestros grados, minutos y segundos. Mucho después apareció otra idea: medir el giro comparando el arco con el radio. Grados y radianes nombran el mismo giro con escalas distintas.',
       pregunta: '¿Por qué una vuelta tendría 360 partes y no 100?',
