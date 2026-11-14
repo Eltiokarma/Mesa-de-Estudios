@@ -210,6 +210,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'ondas', unidad: 'fisica.ondas-mecanicas', version: '0.1.0' };
@@ -506,7 +507,8 @@ const cv = $('cv');
 const LARGO = 2, TEN = 100, MU = 0.01, AMP = 0.02, X_CINTA = 0.5;
 const V0 = M.cuerda({ T:TEN, mu:MU }).v;
 const S = { step:0, max:0, pred:{}, t:0, hl:null, modo:1, traza:[],
-  ex:{ T:100, f:50, A:0.02, auto:true, tf:0, hist:[], manoY:0, arrastra:false } };
+  ex:{ T:100, f:50, A:0.02, auto:true, tf:0, hist:[], manoY:0, arrastra:false },
+  jugando:true, jg:{ tf:0, hist:[], manoY:0 } };
 let parar = () => {};
 const L = crearLienzo(cv, altoLienzo, draw);
 
@@ -538,10 +540,12 @@ function vistaMano(f, t, extra){
   return Object.assign({ largo:LARGO, yMax:0.03, y: x => m.y(x, tt), mano:m.h(tt), pared:true, regla:true, cintas:[0.25, 0.75, 1, 1.25, 1.5, 1.75] }, extra || {});
 }
 const steps = [
- { k:'Paso 1', t:'El problema', ley:['cuerda', 'T', 'v'],
-   vista:() => ({ tipo:'cuerda', largo:LARGO, yMax:0.03, y:() => 0, mano:0, pared:true, regla:true, tension:'T = 100 N · la pared',
+ { k:'Paso 1', t:'El problema', ley:['cuerda', 'T', 'v'], drag:true,
+   // Regla 3: primero se juega con la mano (sin cinta, sin gráfica y sin rótulo de v, que se preguntan después).
+   anima:() => { if (S.jugando) arrancarJuego(); },
+   vista:() => S.jugando ? vistaJuego() : ({ tipo:'cuerda', largo:LARGO, yMax:0.03, y:() => 0, mano:0, pared:true, regla:true, tension:'T = 100 N · la pared',
      frente:{ x:0.9, txt:'v = ?', oculta:true }, etiquetas:[{ x:1, y:30, txt:'μ = 0,01 kg/m', col:'ink' }] }),
-   desc:() => 'Una cuerda de 2 metros, tensa con 100 newtons, entre una mano y una pared. La rapidez de la onda todavía no se conoce.',
+   desc:() => S.jugando ? 'Cuerda libre: arrastra la mano hacia arriba y abajo, o enfoca el dibujo y usa las flechas ↑ ↓.' : 'Una cuerda de 2 metros, tensa con 100 newtons, entre una mano y una pared. La rapidez de la onda todavía no se conoce.',
    body:() => `<p class="problem">Una cuerda de largo ${V('m','L = 2 m')} y ${V('m','0,01 kg')} por metro (${V('m','μ')}) está tensa con ${V('T','T = 100 N')}, entre una mano y una pared. La mano da un golpe y sale un pulso. ¿Con qué ${V('v','rapidez v')} viaja? ¿Con qué frecuencias forma la cuerda una onda estacionaria, fija en sus dos extremos?</p>
    <p>Todo lo que vas a ver pasa muy rápido, en milésimas de segundo: la escena lo muestra en cámara lenta. Toca o pasa el puntero sobre un dato para ver dónde está en el dibujo.</p>
    <p class="hint">Aquí ${V('T','T')} es la tensión (en newtons). En los exámenes el periodo también se escribe T; aquí lo escribimos 1/f para no confundirlo con la tensión.</p>` },
@@ -689,8 +693,8 @@ function estacionar(nFijo){
 const EXL = 4, EXC = 1;
 function vEx(){ return M.cuerda({ T:S.ex.T, mu:MU }).v; }
 // Historial de la mano: [t, y] cada cuadro. La física (y = h(t − x/v)) la pone el motor.
-function hEx(t){
-  const h = S.ex.hist; if (!h.length || t < h[0][0]) return 0;
+function hEx(t, est){
+  const h = (est || S.ex).hist; if (!h.length || t < h[0][0]) return 0;
   let lo = 0, hi = h.length - 1;
   if (t >= h[hi][0]) return h[hi][1];
   while (hi - lo > 1){ const m = (lo + hi) >> 1; if (h[m][0] <= t) lo = m; else hi = m; }
@@ -706,6 +710,20 @@ function vistaExplorador(){
     if (xc && t >= 0) { P.cotaL = [{ x1:xc - m.lambda, x2:xc, txt:`λ = ${N2(m.lambda)} m` }]; P.cotaA = { x:xc, y:e.A, txt:`A = ${N2(e.A*100)} cm` }; }
   }
   return P;
+}
+// Juego libre del paso 1 (regla 3): la misma cuerda con la mano libre, a 100 N, sin cinta ni gráfica ni rótulo de v.
+function vistaJuego(){
+  const g = S.jg, cu = M.cuerdaConMano({ v1:V0, h: t => hEx(t, g) });
+  return { tipo:'cuerda', largo:EXL, yMax:0.035, y: x => cu.y(x, g.tf), mano:hEx(g.tf, g), manoTxt:'arrástrame', regla:true };
+}
+function arrancarJuego(){
+  const g = S.jg;
+  cv.setAttribute('aria-label', 'Cuerda: arrastra la mano hacia arriba y abajo, o usa las flechas del teclado');
+  parar(); parar = bucle(dt => {
+    g.tf += dt/CAMARA; g.hist.push([g.tf, g.manoY]);
+    const viejo = g.tf - EXL/V0 - 0.01; while (g.hist.length > 2 && g.hist[1][0] < viejo) g.hist.shift();
+    draw();
+  });
 }
 function explorar(){
   const e = S.ex;
@@ -744,17 +762,18 @@ function vivo(){
   draw();
 }
 // Arrastre de la mano (solo en el explorador, con «Agito yo»).
-function geoMano(){ const c = colores(L.W), Hs = Math.round(L.H*(L.compacto ? 0.56 : 0.58)), yc = Math.round(Hs*0.52), aPx = Math.min(Hs*0.30, 78); return { x:(c.chico ? 30 : 40) - 6, yc, aPx }; }
+const manoActiva = () => S.step === 0 ? S.jg : S.ex;
+function geoMano(){ const c = colores(L.W), Hs = S.step === 0 ? L.H : Math.round(L.H*(L.compacto ? 0.56 : 0.58)), yc = Math.round(Hs*0.52), aPx = Math.min(Hs*0.30, 78); return { x:(c.chico ? 30 : 40) - 6, yc, aPx }; }
 Celular.arrastre(cv, {
-  activo: () => !!steps[S.step].drag && !S.ex.auto,
-  cerca: (p, r) => { const g = geoMano(); return Math.hypot(p.x - g.x, p.y - (g.yc - S.ex.manoY/0.035*g.aPx)) < r; },
-  mover: p => { const g = geoMano(); S.ex.manoY = clamp((g.yc - p.y)/g.aPx*0.035, -0.035, 0.035); },
+  activo: () => S.step === 0 ? S.jugando : !!steps[S.step].drag && !S.ex.auto,
+  cerca: (p, r) => { const g = geoMano(); return Math.hypot(p.x - g.x, p.y - (g.yc - manoActiva().manoY/0.035*g.aPx)) < r; },
+  mover: p => { const g = geoMano(); manoActiva().manoY = clamp((g.yc - p.y)/g.aPx*0.035, -0.035, 0.035); },
   soltar: () => {}
 });
 cv.addEventListener('keydown', e => {
-  if (!steps[S.step].drag || S.ex.auto) return;
+  if (S.step === 0 ? !S.jugando : (!steps[S.step].drag || S.ex.auto)) return;
   const d = { ArrowUp:0.005, ArrowDown:-0.005 }[e.key]; if (!d) return;
-  e.preventDefault(); S.ex.manoY = clamp(S.ex.manoY + d, -0.035, 0.035);
+  e.preventDefault(); const m = manoActiva(); m.manoY = clamp(m.manoY + d, -0.035, 0.035);
 });
 
 function draw(){
@@ -850,6 +869,10 @@ alRedibujarTema(draw);
 // Al cambiar de pestaña se para lo que esté corriendo; al volver se rearma el paso (nada queda trabado).
 addEventListener('modo', () => { if ($('m1').hidden){ parar(); parar = () => {}; } else { L.resize(); go(S.step); } });
 L.resize(); go(0);
+// Regla 3: la guía queda velada hasta que se juega con la mano.
+JugarPrimero.montar({ escena: $('m1').querySelector('.bench'), preguntas: [$('m1').querySelector('.guide')],
+  consigna: 'Arrastra la mano arriba y abajo (o usa ↑ ↓) y mira la cuerda.', minimo: 2,
+  alListo: () => { S.jugando = false; steps[0].drag = false; if (S.step === 0) go(0); } });
 })();
 </script>
 
@@ -1057,7 +1080,43 @@ function sincronizar(){
   const tq = $('tq'); if (tq){ tq.value = E.t; $('tq-o').textContent = `${N2(E.t)} s`; }
   draw();
 }
+// Regla 3: antes del primer experimento se juega con una cuerda libre (100 N): la mano se arrastra o se mueve con ↑ ↓.
+const J = { activo:true, tf:0, hist:[], manoY:0 };
+const YJ = 0.035, LJ = 4, VJ = M.cuerda({ T:100, mu:0.01 }).v;
+function hJ(t){
+  const h = J.hist; if (!h.length || t < h[0][0]) return 0;
+  let lo = 0, hi = h.length - 1;
+  if (t >= h[hi][0]) return h[hi][1];
+  while (hi - lo > 1){ const m = (lo + hi) >> 1; if (h[m][0] <= t) lo = m; else hi = m; }
+  const [t0, y0] = h[lo], [t1, y1] = h[hi]; return y0 + (y1 - y0)*(t - t0)/(t1 - t0 || 1);
+}
+function arrancarJ(){
+  cv.tabIndex = 0; cv.setAttribute('aria-label', 'Cuerda libre: arrastra la mano hacia arriba y abajo, o usa las flechas del teclado');
+  parar(); parar = bucle(dt => {
+    J.tf += dt/CAMARA; J.hist.push([J.tf, J.manoY]);
+    const viejo = J.tf - LJ/VJ - 0.01; while (J.hist.length > 2 && J.hist[1][0] < viejo) J.hist.shift();
+    draw();
+  });
+}
+function geoJ(){ const c = colores(L.W), yc = Math.round(L.H*0.52), aPx = Math.min(L.H*0.30, 78); return { x:(c.chico ? 30 : 40) - 6, yc, aPx }; }
+Celular.arrastre(cv, {
+  activo: () => J.activo,
+  cerca: (p, r) => { const g = geoJ(); return Math.hypot(p.x - g.x, p.y - (g.yc - J.manoY/YJ*g.aPx)) < r; },
+  mover: p => { const g = geoJ(); J.manoY = clamp((g.yc - p.y)/g.aPx*YJ, -YJ, YJ); },
+  soltar: () => {}
+});
+cv.addEventListener('keydown', e => {
+  if (!J.activo) return;
+  const d = { ArrowUp:0.005, ArrowDown:-0.005 }[e.key]; if (!d) return;
+  e.preventDefault(); J.manoY = clamp(J.manoY + d, -YJ, YJ);
+});
 function draw(){
+  if (J.activo && L.W){
+    const cu = M.cuerdaConMano({ v1:VJ, h:hJ });
+    vistaCuerda(L, colores(L.W), { tipo:'cuerda', largo:LJ, yMax:YJ, y: x => cu.y(x, J.tf), mano:hJ(J.tf), manoTxt:'arrástrame', regla:true });
+    decir($('desc2'), 'Cuerda libre: arrastra la mano hacia arriba y abajo, o enfoca el dibujo y usa las flechas ↑ ↓.');
+    return;
+  }
   if (!L.W || !E.tipo) return;
   const c = colores(L.W), x = EXPS[S.k];
   if (E.tipo === 'db') vistaDecibeles(c);
@@ -1157,6 +1216,7 @@ function ir(k, enfocar){
     Celular.alResponder(L.cv, () => { x.despues(); draw(); }, () => S.k === k && !$('m2').hidden);
   });
   pintar(); draw();
+  if (J.activo){ L.compactar(false); arrancarJ(); }
   if (enfocar) $('t2').focus({ preventScroll:true });
 }
 function controles(x){
@@ -1174,6 +1234,10 @@ resaltado('#m2', k => { document.querySelectorAll('#m2 .v').forEach(e => e.class
 alRedibujarTema(draw);
 addEventListener('modo', () => { if ($('m2').hidden){ parar(); parar = () => {}; } else { L.resize(); ir(S.k); } });
 L.resize(); ir(0);
+// La botonera también queda velada: el juego es el mismo para los cinco experimentos y va antes del primero.
+JugarPrimero.montar({ escena: $('m2').querySelector('.bench'), preguntas: [$('m2').querySelector('.guide')],
+  consigna: 'Arrastra la mano arriba y abajo (o usa ↑ ↓) y mira la cuerda.', minimo: 2,
+  alListo: () => { J.activo = false; cv.removeAttribute('tabindex'); cv.setAttribute('aria-label', 'Dibujo del experimento elegido'); ir(S.k); } });
 })();
 </script>
 
