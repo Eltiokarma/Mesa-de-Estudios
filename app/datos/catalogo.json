@@ -2680,7 +2680,14 @@
      "plantillas": [
       "ampliadora",
       "geo-proporcionalidad"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/geometria/proporcionalidad-y-semejanza.js",
+      "requiere": [
+       "/nucleo/kit/piezas/geo-figura.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "geometria.puntos-notables",
