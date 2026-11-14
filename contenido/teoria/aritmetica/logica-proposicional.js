@@ -75,6 +75,12 @@
     };
   }
   const fila = (p, q) => FILAS.findIndex(([a, b]) => a === p && b === q);
+  // Gesto directo (docs/teoria.md §4b): en la tabla se agarra la fila por su borde derecho y se arrastra arriba o
+  // abajo; la fila elegida fija los valores de p y q. En la recta se arrastra el último elemento del dominio.
+  const TABLA = () => Kit.piezas['arit-tabla'], RECTA = () => Kit.piezas.recta;
+  const inversa = (escala, a, b) => px => a + (px - escala(a)) * (b - a) / (escala(b) - escala(a));
+  const manijaFila = (datos, i) => { const g = TABLA().geometria(datos); return { x: g.xs[g.xs.length - 1] - 12, y: g.filaY(i) + g.altoFila / 2 }; };
+  const filaEn = (datos, y, hasta = 3) => { const g = TABLA().geometria(datos); return Math.max(0, Math.min(hasta, Math.floor((y - g.filaY(0)) / g.altoFila))); };
   const vfCtl = (id, color) => ({ id, etiqueta: id, color, opciones: [{ valor: 'V', texto: 'V' }, { valor: 'F', texto: 'F' }], inicio: 'V' });
 
   // ---------- Idea 1: los conectivos se definen por su tabla; ∨ es inclusiva ----------
@@ -96,6 +102,10 @@
       dibujo: v => { const i = fila(v.p === 'V', v.q === 'V'); return { datos: tabla([v.c], { solo: i }), estado: { fila: i } }; },
       lectura: v => [v.c, ` es ${FORM[v.c](v.p === 'V', v.q === 'V') ? 'verdadera' : 'falsa'}`],
       minimo: 4,
+      // La fila se arrastra entera: cambia p y q a la vez (por eso la manija no lleva el color de una sola letra).
+      arrastres: [{ id: 'fila', etiqueta: 'fila de la tabla (valores de p y q)',
+        donde: v => { const i = fila(v.p === 'V', v.q === 'V'); return manijaFila(tabla([v.c], { solo: i }), i); },
+        mover: (pt, v) => { const k = filaEn(tabla([v.c]), pt.y); return { p: VF(FILAS[k][0]), q: VF(FILAS[k][1]) }; } }],
     },
     predice: {
       pregunta: ['«Hoy llueve o hace frío». Si hoy llueve (', P, ' = V) y también hace frío (', Q, ' = V), ¿cuánto vale ', P, ' ∨ ', Q, '?'],
@@ -173,6 +183,10 @@
       dibujo: v => { const i = fila(true, v.q === 'V'); return { datos: tabla([v.f], { solo: i, falsaRoja: true }), estado: { fila: i } }; },
       lectura: v => [v.f, ` es ${FORM[v.f](true, v.q === 'V') ? 'verdadera' : 'falsa'}`],
       minimo: 3,
+      // Con p = V solo quedan las dos filas de arriba: arrastrar entre ellas cambia q.
+      arrastres: [{ id: 'fila-q', etiqueta: 'fila de la tabla (valor de q)', color: 'c-i',
+        donde: v => { const i = fila(true, v.q === 'V'); return manijaFila(tabla([v.f], { solo: i }), i); },
+        mover: (pt, v) => ({ q: VF(FILAS[filaEn(tabla([v.f]), pt.y, 1)][1]) }) }],
     },
     predice: {
       pregunta: ['Ahora no apruebas: ', P, ' = F. ¿Cuánto vale ', P, ' → ', Q, '?'],
@@ -196,7 +210,7 @@
     },
     regla: {
       texto: 'p → q solo es falsa cuando p es verdadera y q falsa. Por eso equivale a «no p, o q», y no a su recíproco q → p.',
-      ecuacion: [P, ' → ', Q, ' ≡ ~', P, ' ∨ ', Q],
+      ecuacion: [{ llave: [P, ' → ', Q], nota: 'si p, q', color: 'c-d' }, ' ≡ ', { llave: ['~', P, ' ∨ ', Q], nota: '~p, o q', color: 'c-d' }],
       condicion: 'p y q son proposiciones. La contrarrecíproca ~q → ~p sí tiene la misma tabla que p → q.',
     },
     ahoraTu: {
@@ -256,7 +270,7 @@
     },
     regla: {
       texto: 'Una tautología es V en todas las filas; una contradicción, en ninguna; una contingencia, solo en algunas. Para saberlo se revisan todas.',
-      ecuacion: ['n variables → ', { sup: ['2', 'n'] }, ' filas'],
+      ecuacion: ['n variables → ', { llave: [{ sup: ['2', 'n'] }], nota: 'filas por revisar' }],
       condicion: 'se revisan todas las combinaciones de valores. Que salga V en las primeras filas no basta.',
     },
     ahoraTu: {
@@ -312,7 +326,7 @@
     },
     regla: {
       texto: 'Dos fórmulas son equivalentes si tienen la misma tabla. Leyes de De Morgan: al negar, cada parte se niega y ∧ se cambia por ∨.',
-      ecuacion: ['~(', P, ' ∧ ', Q, ') ≡ ~', P, ' ∨ ~', Q, '   ·   ~(', P, ' ∨ ', Q, ') ≡ ~', P, ' ∧ ~', Q],
+      ecuacion: [{ llave: ['~(', P, ' ∧ ', Q, ')'], nota: 'negar el «y»' }, ' ≡ ', { llave: ['~', P, ' ∨ ~', Q], nota: 'cada parte negada' }, '   ·   ', '~(', P, ' ∨ ', Q, ') ≡ ~', P, ' ∧ ~', Q],
       condicion: 'se comparan todas las filas. Que dos frases suenen parecido no las hace equivalentes.',
     },
     ahoraTu: {
@@ -365,6 +379,10 @@
       dibujo: v => ({ datos: rectaD(v.n, v.pr), estado: {} }),
       lectura: v => { const d = dominio(v.n); return [`∀x: ${VF(d.every(PROP[v.pr]))} · ∃x: ${VF(d.some(PROP[v.pr]))}`]; },
       minimo: 3,
+      // Se arrastra el último elemento del dominio: el dominio crece o se achica.
+      arrastres: [{ id: 'ultimo', etiqueta: 'último elemento del dominio (n)',
+        donde: v => { const dd = rectaD(v.n, v.pr), g = RECTA().geometria(dd); return { x: g.x(v.n), y: g.eje }; },
+        mover: (pt, v) => { const g = RECTA().geometria(rectaD(v.n, v.pr)); return { n: inversa(g.x, 0, 10)(pt.x) }; } }],
     },
     predice: {
       pregunta: 'En el dominio {1, 2, …, 8}, ¿cuál es la negación de «para todo x, x < 6»?',
@@ -388,7 +406,7 @@
     },
     regla: {
       texto: '«Para todo» es falso si un elemento no cumple; «existe» es verdadero si uno cumple. Al negar, ∀ se cambia por ∃ y se niega la propiedad.',
-      ecuacion: ['~∀x P(x) ≡ ∃x ~P(x)   ·   ~∃x P(x) ≡ ∀x ~P(x)'],
+      ecuacion: ['~∀x P(x) ≡ ', { llave: ['∃x ~P(x)'], nota: 'un contraejemplo' }, '   ·   ', '~∃x P(x) ≡ ∀x ~P(x)'],
       condicion: 'el dominio está dicho. La misma frase puede ser V en un dominio y F en otro.',
     },
     ahoraTu: {
@@ -415,11 +433,56 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  const LAB_F = ['p → q', 'q → p', '~q → ~p', '~p ∨ q', 'p ↔ q', '~(p ∧ q)', '~p ∨ ~q', '~p ∧ ~q'];
+  const PROP_LAB = {
+    'x es primo': x => x > 1 && Array.from({ length: x - 2 }, (_, k) => k + 2).every(d => x % d),
+    'x es par': x => x % 2 === 0,
+    'x² ≥ x': x => x * x >= x,
+    'x divide a 12': x => 12 % x === 0,
+    'x < 15': x => x < 15,
+  };
+  const rectaLab = (n, prop) => ({
+    min: 0, max: 21, paso: 1, cada: 5, variable: 'x', decimales: 0, filas: 0,
+    elementos: dominio(n).map(x => ({ tipo: 'punto', x, fila: 0, color: PROP_LAB[prop](x) ? 'd' : 'h', abierto: !PROP_LAB[prop](x) })),
+  });
+
   return {
     unidad: 'aritmetica.logica-proposicional',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/arit-tabla.js', '/nucleo/kit/piezas/recta.js'],
+    // Laboratorio: juego libre, sin preguntas. La primera mesa compara dos fórmulas cualesquiera (más de las que dejan
+    // las ideas); la segunda lleva los cuantificadores a un dominio de hasta 20 elementos, con más propiedades.
+    laboratorio: [
+      {
+        id: 'dos-formulas', titulo: 'Dos fórmulas, una tabla', pieza: 'arit-tabla',
+        consigna: 'Elige dos fórmulas. Las filas resaltadas son donde no coinciden. Arrastra la fila para mirarla de cerca.',
+        controles: [
+          { id: 'a', etiqueta: 'Primera', opciones: LAB_F.map(t => ({ valor: t, texto: t })), inicio: 'p → q' },
+          { id: 'b', etiqueta: 'Segunda', opciones: LAB_F.map(t => ({ valor: t, texto: t })), inicio: 'q → p' },
+          vfCtl('p', 'c-o'), vfCtl('q', 'c-i'),
+        ],
+        dibujo: v => ({ datos: tabla(v.a === v.b ? [v.a] : [v.a, v.b], { distintas: true }), estado: { fila: fila(v.p === 'V', v.q === 'V') } }),
+        lectura: v => [`${v.a}, ${v.b}: ${columna(v.a).filter((x, i) => x === columna(v.b)[i]).length} de 4 iguales`],
+        arrastres: [{ id: 'fila', etiqueta: 'fila de la tabla (valores de p y q)',
+          donde: v => manijaFila(tabla([v.a, v.b]), fila(v.p === 'V', v.q === 'V')),
+          mover: (pt, v) => { const k = filaEn(tabla([v.a, v.b]), pt.y); return { p: VF(FILAS[k][0]), q: VF(FILAS[k][1]) }; } }],
+      },
+      {
+        id: 'dominio-grande', titulo: 'Un dominio más grande', pieza: 'recta',
+        consigna: 'El dominio es {1, 2, …, n}, con n hasta 20. Arrastra el último punto y cambia la propiedad.',
+        controles: [
+          { id: 'n', etiqueta: 'n', min: 1, max: 20, paso: 1, inicio: 12, decimales: 0 },
+          { id: 'pr', etiqueta: 'Propiedad', opciones: Object.keys(PROP_LAB).map(t => ({ valor: t, texto: t })), inicio: 'x es primo' },
+        ],
+        dibujo: v => ({ datos: rectaLab(v.n, v.pr), estado: {} }),
+        lectura: v => { const d = dominio(v.n), c = d.filter(PROP_LAB[v.pr]).length; return [`n = ${f(v.n)}, ${v.pr}: cumplen ${f(c)} · ∀ ${VF(c === d.length)} · ∃ ${VF(c > 0)}`]; },
+        arrastres: [{ id: 'ultimo', etiqueta: 'último elemento del dominio (n)',
+          donde: v => ({ x: RECTA().geometria(rectaLab(v.n, v.pr)).x(v.n), y: RECTA().geometria(rectaLab(v.n, v.pr)).eje }),
+          mover: (pt, v) => { const g = RECTA().geometria(rectaLab(v.n, v.pr)); return { n: inversa(g.x, 0, 20)(pt.x) }; } }],
+      },
+    ],
     historia: {
       texto: 'Los argumentos se estudiaban desde la Antigüedad, pero sin un cálculo de símbolos. En 1854, George Boole publicó Las leyes del pensamiento y trató las combinaciones de condiciones con reglas explícitas, parecidas a las del álgebra. La idea que retomamos es suya: revisar todas las posibilidades en vez de aceptar una conclusión porque suena bien. Las letras y tablas de hoy son una presentación moderna.',
       pregunta: '¿Cómo sabrías que una regla funciona en todos los casos?',
