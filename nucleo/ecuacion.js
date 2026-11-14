@@ -16,6 +16,9 @@
  *   { vec: partes }                 flecha encima (vector)
  *   { abs: partes }                 valor absoluto |…|
  *   { par: partes }                 entre paréntesis que crecen con lo de adentro
+ *   { llave: partes, nota, color? } llave horizontal («}» girada) debajo de un trozo, con su nota: explica qué es cada
+ *                                   símbolo sin depender solo del color. nota es texto (o partes); color, el de la variable.
+ *                                   Con arriba: true, la llave va encima.
  * Los colores salen de las clases .var.c-* de app/estilos.css (y de kit.css en las escenas): nunca un color suelto.
  * Funciona en el navegador (window.Ecuacion) y en Node (pruebas).
  */
@@ -26,6 +29,8 @@
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
   const COLORES = ['c-o', 'c-i', 'c-h', 'c-d', 'c-f'];
+  // Una variable de una sola letra (x, v, θ, P′) va en cursiva, como en los libros: así no se confunde x con ×, ni l con 1.
+  const LETRA = /^[A-Za-zα-ωΑ-Ω][′']?$/;
   const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   const lista = x => (Array.isArray(x) ? x : [x]);
   // Signo menos tipográfico en los números escritos con guion: «-3» → «−3» (no toca los guiones entre letras).
@@ -41,6 +46,12 @@
       if (!String(p.t || '').length) throw new Error(`${donde}: variable sin texto`);
       return;
     }
+    if ('llave' in p) {
+      if (p.nota === undefined || p.nota === null || !String(texto(p.nota)).trim()) throw new Error(`${donde}: llave sin nota`);
+      if (p.color && !COLORES.includes(p.color)) throw new Error(`${donde}: color de llave desconocido «${p.color}»`);
+      lista(p.llave).forEach(x => revisar(x, donde)); lista(p.nota).forEach(x => revisar(x, donde));
+      return;
+    }
     const k = Object.keys(p).find(c => ['frac', 'sup', 'sub', 'raiz', 'vec', 'abs', 'par'].includes(c));
     if (!k) throw new Error(`${donde}: parte desconocida ${JSON.stringify(p)}`);
     if (['frac', 'sup', 'sub'].includes(k) && !(Array.isArray(p[k]) && p[k].length === 2)) throw new Error(`${donde}: ${k} lleva dos partes`);
@@ -53,7 +64,7 @@
       if (typeof p === 'string' && /^\s{2,}[·;]\s{2,}$/.test(p)) return '<span class="ec-sep"> · </span>';
       if (typeof p === 'string' || typeof p === 'number') return esc(menos(p));
       if (Array.isArray(p)) return html(p);
-      if ('v' in p) return `<span class="var ${esc(p.v)} ec-v${p.largo ? ' largo' : ''}">${esc(p.t)}</span>`;
+      if ('v' in p) return `<span class="var ${esc(p.v)} ec-v${p.largo ? ' largo' : ''}${LETRA.test(p.t) ? ' ec-letra' : ''}">${esc(p.t)}</span>`;
       if (p.frac) return `<span class="ec-frac"><span class="ec-num">${html(p.frac[0])}</span><span class="ec-den">${html(p.frac[1])}</span></span>`;
       if (p.sup) return `${html(p.sup[0])}<sup class="ec-sup">${html(p.sup[1])}</sup>`;
       if (p.sub) return `${html(p.sub[0])}<sub class="ec-sub">${html(p.sub[1])}</sub>`;
@@ -61,6 +72,14 @@
       if (p.vec) return `<span class="ec-vec">${html(p.vec)}</span>`;
       if (p.abs) return `<span class="ec-abs">|${html(p.abs)}|</span>`;
       if (p.par) return `<span class="ec-par">(${html(p.par)})</span>`;
+      if ('llave' in p) {
+        // La llave es un trazo de tres piezas (dos tramos y la punta), para que su curva no se deforme al estirarse.
+        const tono = p.color ? ` style="--llave:var(--${esc(p.color)})"` : '';
+        // La llave mide lo que mide su trozo (ec-llave-cuerpo); la nota va centrada debajo y se parte por palabras.
+        return `<span class="ec-llave${p.arriba ? ' arriba' : ''}"${tono}><span class="ec-llave-cuerpo"><span class="ec-llave-sobre">${html(p.llave)}</span>`
+          + '<span class="ec-llave-trazo" aria-hidden="true"><i></i><svg viewBox="0 0 12 10" width="12" height="10"><path d="M0 2.5Q6 2.5 6 9Q6 2.5 12 2.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><i></i></span></span>'
+          + `<span class="ec-llave-nota">${html(p.nota)}</span></span>`;
+      }
       return '';
     }).join('');
   }
@@ -78,6 +97,7 @@
       if (p.vec) return `vector ${texto(p.vec)}`;
       if (p.abs) return `valor absoluto de ${texto(p.abs)}`;
       if (p.par) return `(${texto(p.par)})`;
+      if ('llave' in p) return `${texto(p.llave)} (${texto(p.nota)})`;
       return '';
     }).join('').replace(/\s+/g, ' ').trim();
   }
@@ -88,7 +108,7 @@
       if (!p || typeof p !== 'object') continue;
       if (Array.isArray(p)) { colores(p, acc); continue; }
       if ('v' in p) { acc.add(p.v); continue; }
-      for (const k of ['frac', 'sup', 'sub', 'raiz', 'vec', 'abs', 'par']) if (p[k]) colores(p[k], acc);
+      for (const k of ['frac', 'sup', 'sub', 'raiz', 'vec', 'abs', 'par', 'llave']) if (p[k]) colores(p[k], acc);
     }
     return acc;
   }
