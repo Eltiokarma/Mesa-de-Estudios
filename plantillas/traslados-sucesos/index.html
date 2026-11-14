@@ -152,6 +152,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
   .top{grid-template-columns:1fr auto; align-items:end}
   .mode{grid-template-columns:minmax(0, 1.2fr) minmax(360px, 1fr)}
   .bench{position:sticky; top:12px}
+  .mode > .jugar-barra{order:-1; grid-column:1 / -1}
 }
 
 .v-k{color:var(--c-k); background:color-mix(in srgb, var(--c-k) 8%, transparent)}
@@ -241,6 +242,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'traslados-sucesos', unidad: 'razonamiento-matematico.traslados-y-puntos-cardinales', version: '0.1.0' };
@@ -1008,6 +1010,15 @@ function prediccion(s){
 $('next').addEventListener('click', () => { if (S.ocupado) return; const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return; desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: antes de la primera pregunta, juego libre: una fila de 4 monedas que se arrastran por la mesa
+// (con teclado: Tab al dibujo, flechas y Enter). Sin cuenta de jugadas: no adelanta las diez monedas del paso 6.
+E.compactar(false);
+E.config({ modo:'monedas', tocar:true, mon:{ filas:3, pos:[[0, 0], [1, 0], [2, 0], [3, 0]], puntos:true },
+  lect:[L('ink', 'Monedas', '4')],
+  desc:'Una fila de 4 monedas sobre la mesa. Arrástralas a otros puntos, o entra al dibujo con Tab y usa las flechas y Enter.' });
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra las monedas a otros puntos de la mesa y arma una figura.', minimo:2,
+  alListo:() => go(S.step) });
 })();
 </script>
 <script>
@@ -1166,6 +1177,15 @@ function ir(k){
   pintar();
 }
 ir(0);
+// Regla 3: antes del primer experimento, juego libre: cuatro monedas en rombo que se arrastran por la mesa
+// (con teclado: Tab al dibujo, flechas y Enter). Sin cuenta de jugadas: no adelanta las seis monedas.
+E.compactar(false);
+E.config({ modo:'monedas', tocar:true, mon:{ filas:3, pos:[[0, 0], [1, 0], [0, 1], [1, 1]], puntos:true },
+  lect:[L('ink', 'Monedas', '4')],
+  desc:'Cuatro monedas en rombo sobre la mesa. Arrástralas a otros puntos, o entra al dibujo con Tab y usa las flechas y Enter.' });
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Arrastra las monedas a otros puntos de la mesa y arma una figura.', minimo:2,
+  alListo:() => ir(S.k) });
 })();
 </script>
 

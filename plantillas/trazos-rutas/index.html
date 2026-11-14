@@ -167,7 +167,10 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
   .top{grid-template-columns:1fr auto; align-items:end}
   .mode{grid-template-columns:minmax(0, 1.2fr) minmax(360px, 1fr)}
   .bench{position:sticky; top:12px}
+  .mode > .jugar-barra{order:-1; grid-column:1 / -1}
 }
+/* Regla 3: juego libre en el dibujo antes de la primera pregunta (alternativa de teclado a tocar) */
+.juego{display:grid; gap:6px}
 </style>
 <link rel="stylesheet" href="../../nucleo/pegatina.css">
 </head>
@@ -237,6 +240,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'trazos-rutas', unidad: 'razonamiento-matematico.trazos-y-perimetros', version: '0.1.0' };
@@ -776,6 +780,31 @@ function crearEscena(cv, idDesc, idLect, idLey){
 
 const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
 const L = (k, nombre, valor) => () => [k, nombre, valor];
+// Regla 3: juego libre antes de la primera pregunta de cada modo. Se traza una figura que no se pregunta, tocando sus
+// puntos en orden (o con sus botones). Sin contar líneas por punto ni puntos impares: no adelanta ninguna respuesta.
+function trazoLibre(E, bench, g){
+  const caja = document.createElement('div'); caja.className = 'juego';
+  caja.innerHTML = '<div class="fila" role="group" aria-label="Puntos de la figura"></div><div class="fila"><button type="button" class="btn chico">Borrar</button></div>';
+  bench.appendChild(caja);
+  let trazo = [];
+  const tocar = v => {
+    const prueba = trazo.concat([v]);
+    if (trazo.length && !MT.revisarTrazo(g.f, prueba).valido) return;   // sin línea o ya pasada: no se dibuja
+    trazo = prueba; E.fig.trazo = trazo.slice(); E.dibujar(); E.avisar();
+  };
+  const puntos = caja.querySelector('[role=group]');
+  puntos.innerHTML = g.f.nodos.map((_, v) => `<button type="button" class="btn chico punto" data-v="${v}">P${v + 1}</button>`).join('');
+  puntos.querySelectorAll('[data-v]').forEach(b => b.onclick = () => tocar(+b.dataset.v));
+  caja.querySelector('.fila:last-child button').onclick = () => { trazo = []; E.fig.trazo = []; E.dibujar(); E.avisar(); };
+  E.compactar(false);
+  E.config({ modo:'figura', tocar:true, fig:{ figs:[g], numeros:true, trazo:[] }, lect:[() => ['t', 'Puntos tocados', String(trazo.length)]],
+    ley:[['t', 't · el trazo']], alTocar:tocar, desc:`${g.nombre[0].toUpperCase() + g.nombre.slice(1)}: toca los puntos en orden para trazarla.` });
+  return caja;
+}
+const FIG_JUEGO = {
+  cometa:{ f:{ nodos:[[0, 0], [2, 0], [2, 2], [0, 2]], tramos:[[0, 1], [1, 2], [2, 3], [3, 0], [0, 2]] }, nombre:'el cuadrado con una diagonal' },
+  reloj:{ f:{ nodos:[[0, 0], [2, 0], [1, 1], [0, 2], [2, 2]], tramos:[[0, 1], [1, 2], [2, 0], [2, 3], [3, 4], [4, 2]] }, nombre:'el reloj de arena' },
+};
 </script>
 
 <script>
@@ -1148,6 +1177,11 @@ function prediccion(s){
 $('next').addEventListener('click', () => { if (S.ocupado) return; const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return; desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: antes de la primera pregunta, se traza libremente un cuadrado con una diagonal (no es ninguna de las tres figuras del paso 1).
+const juego1 = trazoLibre(E, document.querySelector('#m1 .bench'), FIG_JUEGO.cometa);
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Toca los puntos en orden para dibujar la figura con el lápiz.', minimo:2,
+  alListo:() => { juego1.remove(); go(S.step); } });
 })();
 </script>
 <script>
@@ -1318,6 +1352,11 @@ function ir(k){
 }
 void pi;
 ir(0);
+// Regla 3: antes del primer experimento, se traza libremente un reloj de arena (no es el ventanal que se pregunta).
+const juego2 = trazoLibre(E, document.querySelector('#m2 .bench'), FIG_JUEGO.reloj);
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Toca los puntos en orden para dibujar la figura con el lápiz.', minimo:2,
+  alListo:() => { juego2.remove(); ir(S.k); } });
 })();
 </script>
 
