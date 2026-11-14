@@ -1,0 +1,2094 @@
+{
+ "curso": "quimica",
+ "fecha": "2026-11-14",
+ "tipo": "Expediente editorial; no es el formato de ejecución de Teoria.vista",
+ "unidades": [
+  {
+   "id": "quimica.materia-y-energia",
+   "curso": "Química",
+   "curso_id": "quimica",
+   "numero": 1,
+   "titulo": "Materia y energía",
+   "grado": 3,
+   "temas_catalogo": [
+    "Qué estudia la química",
+    "Sustancias y mezclas",
+    "Estados de agregación",
+    "Propiedades físicas y químicas",
+    "Fenómenos físicos, químicos y nucleares",
+    "Calor sensible y latente",
+    "Equivalencia masa-energía"
+   ],
+   "modulos_actuales": [
+    "materia-energia",
+    "configuracion-ubicacion",
+    "quimica-conceptos",
+    "conversiones-quimica"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de comparar.",
+   "teoria": [
+    "La química estudia composición, estructura, propiedades y transformaciones de la materia. Elemento, compuesto y mezcla se distinguen por composición; homogéneo/heterogéneo se refiere a uniformidad y fases, no al número de elementos.",
+    "Una propiedad física se observa sin cambiar identidad química; una transformación química produce otras especies. En procesos nucleares cambia el núcleo: no se representan como simple reorganización de enlaces.",
+    "El calentamiento puede variar temperatura (Q=mcΔT) o cambiar fase (Q=mL). La equivalencia ΔE=Δmc² usa la variación de masa del sistema; no autoriza tratar la masa total como calor liberado en cualquier reacción."
+   ],
+   "condiciones": "Definir sistema abierto/cerrado y escala de observación. Una mezcla visualmente uniforme puede contener varias especies. Las bolas de la lupa son representación, no fotografías.",
+   "prerrequisitos": [
+    "Distinguir objeto y material.",
+    "Leer una masa y una temperatura.",
+    "Reconocer razón y unidad."
+   ],
+   "desempeno": "Clasifica una muestra nueva, justifica con composición y fases, y distingue cambio físico, químico y nuclear.",
+   "escena_propuesta": {
+    "accion": "Separar una muestra y calentar otra; mantener a la vista balanza y lupa.",
+    "prediccion": "¿Cambiarán las especies o solo su organización?",
+    "registro": "Conservar tres tarjetas: muestra, partículas y masa antes/después.",
+    "regla": "La clasificación depende de composición y estructura, no solo de apariencia.",
+    "ejemplo": "Completar la clasificación de agua salada frente a agua y aceite.",
+    "transferencia": "Explicar evaporación de una solución sin perder de vista el soluto."
+   },
+   "otra_representacion": [
+    "Árbol de clasificación con contraejemplos.",
+    "Inventario de partículas enlazado a cantidades macroscópicas."
+   ],
+   "ejemplo": null,
+   "error_objetivo": "Confundir mezcla homogénea con sustancia pura.",
+   "transferencia": "Explicar evaporación de una solución sin perder de vista el soluto.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "Q01",
+     "titulo": "Chemistry 2e, §1.2",
+     "url": "https://openstax.org/books/chemistry-2e/pages/1-2-phases-and-classification-of-matter"
+    },
+    {
+     "id": "Q02",
+     "titulo": "Chemistry 2e, §10.3",
+     "url": "https://openstax.org/books/chemistry-2e/pages/10-3-phase-transitions"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "quimica.materia-y-energia",
+    "nombre": "Materia y energía",
+    "historia": "En el siglo XVIII, explicar una combustión exigía decidir qué debía pesarse: el sólido visible o también el aire que intervenía. Los trabajos cuantitativos de Antoine Lavoisier ayudaron a desplazar la explicación del flogisto al papel del oxígeno; su tratado de 1789 presentó una química organizada alrededor de sustancias y mediciones. El cambio fue colectivo y dependió de instrumentos, experimentos y discusión. Para esta unidad, el episodio muestra por qué el límite del sistema importa: una muestra puede ganar masa incorporando gas. La equivalencia moderna entre masa y energía amplía después el marco; no debe atribuirse a Lavoisier ni escribirse como si fuera su formulación.",
+    "puente_escena": "La escena permite pesar un recipiente antes y después de una transformación, primero abierto y luego cerrado. El estudiante predice qué masa cambiará, conserva ambos registros e identifica por dónde entró o salió materia. Después formula una regla para el sistema elegido y la transfiere a una evaporación.",
+    "ecuaciones": [
+     {
+      "latex": "Q=mc\\,\\Delta T",
+      "lectura": "El calor recibido es masa por capacidad calorífica específica por cambio de temperatura.",
+      "condiciones": "Calentamiento sin cambio de fase; c aproximadamente constante y trabajo u otros intercambios despreciables en el modelo."
+     },
+     {
+      "latex": "Q=mL",
+      "lectura": "El calor de cambio de fase es masa transformada por calor latente específico.",
+      "condiciones": "Transición de fase a las condiciones especificadas; indicar signo según absorción o liberación de calor."
+     },
+     {
+      "latex": "\\Delta E=\\Delta m\\,c_0^2",
+      "lectura": "Un cambio en energía del sistema corresponde a un cambio en su masa por el cuadrado de la rapidez de la luz.",
+      "condiciones": "Relación relativista moderna; c₀ es la rapidez de la luz en el vacío, distinta de la capacidad calorífica c. En balances químicos ordinarios, esta variación de masa suele ser despreciable."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "American Chemical Society — Antoine Laurent Lavoisier: The Chemical Revolution",
+      "url": "https://www.acs.org/education/whatischemistry/landmarks/lavoisier.html"
+     }
+    ],
+    "nota_editorial": "Relato histórico original de orientación; las ecuaciones usan notación moderna y no se presentan como transcripción de documentos históricos.",
+    "diagramas_propuestos": []
+   }
+  },
+  {
+   "id": "quimica.estructura-atomica",
+   "curso": "Química",
+   "curso_id": "quimica",
+   "numero": 2,
+   "titulo": "Estructura atómica",
+   "grado": 3,
+   "temas_catalogo": [
+    "Partículas subatómicas",
+    "Número atómico y de masa",
+    "Isótopos",
+    "Modelos atómicos de Dalton a Bohr",
+    "Modelo actual",
+    "Números cuánticos y orbitales",
+    "Configuración electrónica de átomos e iones",
+    "Paramagnetismo y especies isoelectrónicas"
+   ],
+   "modulos_actuales": [
+    "atomo-y-tabla",
+    "configuracion-ubicacion",
+    "quimica-conceptos",
+    "conversiones-quimica"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de recordar.",
+   "teoria": [
+    "Z cuenta protones; A cuenta nucleones; N=A−Z. La carga q/e=Z−Ne distingue ionización de cambio de elemento. Isótopos comparten Z; especies isoelectrónicas comparten Ne, no necesariamente radio.",
+    "Dalton, Thomson, Rutherford y Bohr responden a evidencias distintas; el modelo de Bohr no es una fotografía general del átomo. En el modelo cuántico, orbital es un estado descrito por una distribución espacial, no una órbita.",
+    "Los números n,l,ml,ms tienen valores permitidos. Pauli limita a dos electrones por orbital con espines opuestos; Hund organiza ocupación en orbitales degenerados. Configuraciones de iones se construyen según energías: no basta borrar siempre el último símbolo escrito. Electrones desapareados permiten identificar paramagnetismo en el tratamiento elemental."
+   ],
+   "condiciones": "Mostrar explícitamente estado fundamental o excitado. Regla de Aufbau como guía con excepciones verificadas; en cationes de transición se retiran primero electrones de mayor n.",
+   "prerrequisitos": [
+    "Enteros y signos.",
+    "Carga eléctrica.",
+    "Leer exponentes y subíndices."
+   ],
+   "desempeno": "Obtiene p,n,e de un símbolo nuclear; construye una configuración y explica una comparación de iones.",
+   "escena_propuesta": {
+    "accion": "Completar primero un ejemplo de núcleo y luego cajas de orbitales.",
+    "prediccion": "¿Quitar un electrón cambia Z?",
+    "registro": "Guardar el mismo núcleo y los electrones antes/después.",
+    "regla": "La identidad depende de protones; la carga, de la diferencia con electrones.",
+    "ejemplo": "Completar un ion con Z y A dados, eligiendo un paso.",
+    "transferencia": "Comparar dos especies isoelectrónicas con distinta carga nuclear."
+   },
+   "otra_representacion": [
+    "Símbolo nuclear conectado a contadores.",
+    "Cajas de orbitales y nube probabilística rotulada como modelo."
+   ],
+   "ejemplo": null,
+   "error_objetivo": "Confundir ion con isótopo; dibujar orbital como trayectoria.",
+   "transferencia": "Comparar dos especies isoelectrónicas con distinta carga nuclear.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "Q03",
+     "titulo": "Chemistry 2e, §2.3",
+     "url": "https://openstax.org/books/chemistry-2e/pages/2-3-atomic-structure-and-symbolism"
+    },
+    {
+     "id": "Q04",
+     "titulo": "Chemistry 2e, §6.4",
+     "url": "https://openstax.org/books/chemistry-2e/pages/6-4-electronic-structure-of-atoms-electron-configurations"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "quimica.estructura-atomica",
+    "nombre": "Estructura atómica",
+    "historia": "La teoría atómica de John Dalton, expuesta en su New System of Chemical Philosophy desde 1808, buscó explicar proporciones de combinación mediante partículas y masas relativas. Algunas fórmulas que supuso eran incorrectas: el modelo dependía también de interpretar las mediciones. La evidencia de dispersión llevó al modelo nuclear de Rutherford en 1911. En 1913, Bohr incorporó estados permitidos para abordar la estabilidad y el espectro del hidrógeno. Esta secuencia no convierte cada dibujo en una fotografía del átomo: muestra problemas diferentes y modelos con alcances diferentes. Los orbitales del modelo actual tampoco son trayectorias de electrones dibujadas con mayor precisión.",
+    "puente_escena": "El estudiante compara predicciones de varios modelos con registros de dispersión y espectros simplificados. Cada nueva evidencia obliga a conservar, limitar o reemplazar una explicación. Una segunda escena permite cambiar protones, neutrones y electrones por separado para distinguir elemento, isótopo e ion, y transferir la regla a otra especie.",
+    "ecuaciones": [
+     {
+      "latex": "A=Z+N_{\\mathrm n}",
+      "lectura": "El número de masa es la suma de protones y neutrones.",
+      "condiciones": "A y Z son números enteros de un nucleido; Nₙ cuenta neutrones. A no es la masa atómica promedio de una muestra."
+     },
+     {
+      "latex": "\\frac{q}{e}=Z-N_{\\mathrm e}",
+      "lectura": "La carga en unidades de carga elemental es protones menos electrones.",
+      "condiciones": "Átomo o ion con Z protones y Nₑ electrones; e es positivo."
+     },
+     {
+      "latex": "N_{\\max}(n)=2n^2",
+      "lectura": "Una capa de número cuántico principal n admite como máximo dos n al cuadrado electrones.",
+      "condiciones": "Capacidad de todos los orbitales de la capa bajo el principio de exclusión; no establece por sí sola el orden de llenado de un átomo."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Science History Institute — John Dalton",
+      "url": "https://www.sciencehistory.org/education/scientific-biographies/john-dalton/"
+     },
+     {
+      "titulo": "American Physical Society — March 6, 1913: Bohr Describes His Model of Atom to Rutherford",
+      "url": "https://www.aps.org/apsnews/2012/03/bohr-model-atom-rutherford"
+     }
+    ],
+    "nota_editorial": "Relato histórico original de orientación; las ecuaciones usan notación moderna y no se presentan como transcripción de documentos históricos.",
+    "diagramas_propuestos": []
+   }
+  },
+  {
+   "id": "quimica.tabla-periodica",
+   "curso": "Química",
+   "curso_id": "quimica",
+   "numero": 3,
+   "titulo": "Tabla periódica",
+   "grado": 3,
+   "temas_catalogo": [
+    "Ley periódica",
+    "Periodos, grupos y bloques",
+    "Metales, no metales y semimetales",
+    "Notación de Lewis",
+    "Ubicación de un elemento",
+    "Radio atómico e iónico",
+    "Energía de ionización y afinidad electrónica",
+    "Electronegatividad"
+   ],
+   "modulos_actuales": [
+    "atomo-y-tabla",
+    "configuracion-ubicacion",
+    "quimica-conceptos"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de recordar.",
+   "teoria": [
+    "La tabla ordena por Z; los grupos reúnen patrones de configuración de valencia y los bloques reflejan el subnivel que se completa. Periodo y grupo se deducen con cuidado de la configuración, no de memorizar posiciones sueltas.",
+    "Radio atómico necesita una definición (covalente, metálico, van der Waals); radio iónico depende además de carga y entorno. La energía de ionización se define para arrancar un electrón a una especie gaseosa; afinidad electrónica es otro proceso y admite convenciones de signo.",
+    "Electronegatividad describe atracción en un enlace. Carga nuclear efectiva y apantallamiento explican tendencias, con excepciones: las flechas del mapa no sustituyen datos. Lewis representa electrones de valencia, con alcance especialmente claro para grupos principales."
+   ],
+   "condiciones": "No mezclar distintas definiciones de radio ni escalas de electronegatividad. Cada valor debe llevar fuente, unidad, estado y fecha; datos ausentes se muestran como «sin dato».",
+   "prerrequisitos": [
+    "Z y configuración electrónica.",
+    "Grupos de números y orden.",
+    "Energía y carga eléctrica básicas."
+   ],
+   "desempeno": "Ubica un elemento, compara propiedades justificando estructura y reconoce cuándo necesita un dato medido.",
+   "escena_propuesta": {
+    "accion": "Ordenar tarjetas de elementos y descubrir columnas repetidas.",
+    "prediccion": "¿Qué átomo de un par necesita más energía para perder un electrón?",
+    "registro": "Fijar configuración y dos barras medidas junto al par.",
+    "regla": "La estructura explica tendencias; los datos deciden excepciones.",
+    "ejemplo": "Completar la ubicación y Lewis de un elemento del grupo principal.",
+    "transferencia": "Resolver una comparación que incluye un ion y una excepción."
+   },
+   "otra_representacion": [
+    "Tabla plegable con series de datos reales.",
+    "Configuración electrónica comparada con gráficas por Z."
+   ],
+   "ejemplo": null,
+   "error_objetivo": "Aplicar una flecha periódica como ley sin excepciones.",
+   "transferencia": "Resolver una comparación que incluye un ion y una excepción.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "Q05",
+     "titulo": "Chemistry 2e, §6.5",
+     "url": "https://openstax.org/books/chemistry-2e/pages/6-5-periodic-variations-in-element-properties"
+    },
+    {
+     "id": "Q06",
+     "titulo": "Tabla oficial IUPAC",
+     "url": "https://iupac.org/what-we-do/periodic-table-of-elements/"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "quimica.tabla-periodica",
+    "nombre": "Tabla periódica",
+    "historia": "La clasificación periódica respondió a una dificultad práctica: ordenar muchos elementos y relacionar sus propiedades. En 1869, Mendeléiev publicó una tabla que aprovechaba regularidades y dejaba espacio para elementos desconocidos; otros investigadores, entre ellos Lothar Meyer, también desarrollaban clasificaciones periódicas. El orden por masa presentaba anomalías que no se resolvían moviendo casillas arbitrariamente. En 1913, las mediciones de rayos X de Henry Moseley vincularon una magnitud observable con el número atómico. El criterio de organización cambió así de fundamento. La tabla actual conserva regularidades útiles, pero las tendencias de radio o ionización requieren considerar estructura electrónica y excepciones.",
+    "puente_escena": "Primero se ordenan tarjetas con propiedades y masas, dejando visibles los conflictos. Después se habilita el número atómico y se revisa la organización. El estudiante predice una propiedad de una tarjeta oculta, registra su evidencia y justifica una tendencia con una excepción explícita antes de aplicarla a otro periodo.",
+    "ecuaciones": [
+     {
+      "latex": "\\mathrm{X(g)}\\longrightarrow\\mathrm{X}^{+}\\mathrm{(g)}+e^{-}",
+      "lectura": "La primera ionización retira un electrón de un átomo gaseoso aislado.",
+      "condiciones": "Proceso endotérmico para un átomo en su estado fundamental; la primera energía de ionización se refiere a este proceso, no a retirar un electrón de un sólido."
+     },
+     {
+      "latex": "\\mathrm{X(g)}+e^{-}\\longrightarrow\\mathrm{X}^{-}\\mathrm{(g)}",
+      "lectura": "La captura electrónica forma un anión gaseoso a partir de un átomo gaseoso.",
+      "condiciones": "Declarar la convención de signo: cambio energético de la captura y energía liberada tienen signos opuestos. No asumir que toda captura libera energía."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "NIST — Henry Moseley and the Periodic Table of the Elements",
+      "url": "https://www.nist.gov/news-events/news/2024/02/henry-moseley-and-periodic-table-elements"
+     },
+     {
+      "titulo": "Science History Institute Archives — Mendeleev periodic table, 1869",
+      "url": "https://archives.sciencehistory.org/repositories/3/archival_objects/51085"
+     }
+    ],
+    "nota_editorial": "Relato histórico original de orientación; las ecuaciones usan notación moderna y no se presentan como transcripción de documentos históricos.",
+    "diagramas_propuestos": []
+   }
+  },
+  {
+   "id": "quimica.enlace-quimico",
+   "curso": "Química",
+   "curso_id": "quimica",
+   "numero": 4,
+   "titulo": "Enlace químico y fuerzas intermoleculares",
+   "grado": 3,
+   "temas_catalogo": [
+    "Regla del octeto",
+    "Enlace iónico",
+    "Enlace covalente y estructuras de Lewis",
+    "Resonancia",
+    "Hibridación y geometría molecular",
+    "Polaridad",
+    "Enlace metálico",
+    "Fuerzas intermoleculares"
+   ],
+   "modulos_actuales": [
+    "enlace",
+    "quimica-conceptos"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de comparar.",
+   "teoria": [
+    "Enlace iónico describe una red de cargas; covalente, electrones compartidos y distribución de densidad; metálico, electrones deslocalizados. No todos los sólidos están hechos de moléculas discretas.",
+    "Lewis contabiliza electrones y cargas; el octeto es una regularidad útil con excepciones. Resonancia representa una estructura deslocalizada mediante varias fórmulas, no moléculas que alternan físicamente entre dibujos.",
+    "VSEPR organiza regiones electrónicas; geometría electrónica y molecular difieren si hay pares libres. Hibridación es un modelo de orbitales. La polaridad molecular depende de enlaces y geometría: dipolos pueden cancelarse.",
+    "Dispersión, dipolo-dipolo, puente de hidrógeno e ion-dipolo explican comparaciones de interacción; el puente de H no equivale al enlace covalente X–H."
+   ],
+   "condiciones": "Limitar las analogías de cuerdas y globos: ilustran relaciones y direcciones, no electrones materiales ni escalas reales. Señalar excepciones del octeto.",
+   "prerrequisitos": [
+    "Electrones de valencia.",
+    "Suma de vectores básica.",
+    "Distinguir átomo, ion y molécula."
+   ],
+   "desempeno": "Construye Lewis, obtiene geometría y decide polaridad justificando cada paso.",
+   "escena_propuesta": {
+    "accion": "Armar una molécula y variar su disposición sin cambiar su identidad.",
+    "prediccion": "¿Dos enlaces polares garantizan una molécula polar?",
+    "registro": "Congelar dos geometrías y sus sumas de dipolos.",
+    "regla": "La polaridad resulta de distribución de carga y forma.",
+    "ejemplo": "Completar geometría y polaridad de CO₂ y H₂O.",
+    "transferencia": "Ordenar propiedades de tres sustancias justificando estructura e interacciones."
+   },
+   "otra_representacion": [
+    "Lewis ↔ modelo espacial ↔ flechas de dipolo.",
+    "Red iónica frente a moléculas separadas."
+   ],
+   "ejemplo": null,
+   "error_objetivo": "Confundir enlace polar con molécula polar.",
+   "transferencia": "Ordenar propiedades de tres sustancias justificando estructura e interacciones.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "Q07",
+     "titulo": "Chemistry 2e, §7.6",
+     "url": "https://openstax.org/books/chemistry-2e/pages/7-6-molecular-structure-and-polarity"
+    },
+    {
+     "id": "Q08",
+     "titulo": "Chemistry 2e, §10.1",
+     "url": "https://openstax.org/books/chemistry-2e/pages/10-1-intermolecular-forces"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "quimica.enlace-quimico",
+    "nombre": "Enlace químico y fuerzas intermoleculares",
+    "historia": "Explicar por qué los átomos se combinan en proporciones concretas fue un problema distinto de conocer sus masas. En 1916, Gilbert Newton Lewis publicó The Atom and the Molecule y desarrolló una representación del enlace mediante electrones compartidos. Su propuesta relacionaba valencia y estabilidad con la organización de electrones; no surgió como una descripción completa de todos los enlaces. La teoría evolucionó junto con el conocimiento electrónico y los modelos cuánticos. En clase, las estructuras de Lewis conservan valor como contabilidad y representación de conectividad, mientras geometría, deslocalización y propiedades requieren herramientas adicionales. Un par de puntos no representa dos bolitas inmóviles.",
+    "puente_escena": "La escena comienza con el inventario de electrones y permite ensayar conexiones sin crear ni perder ninguno. Tras predecir una estructura, el estudiante contrasta carga formal, geometría y polaridad con registros. Luego redacta qué explica cada representación y compara dos moléculas con enlaces polares pero distinta polaridad molecular.",
+    "ecuaciones": [
+     {
+      "latex": "N_{\\mathrm{val}}=\\sum_i N_{\\mathrm{val},i}-z",
+      "lectura": "Los electrones de valencia disponibles son la suma de los aportes atómicos menos la carga total expresada con signo.",
+      "condiciones": "z es el número de carga del conjunto: positivo para cationes y negativo para aniones. Es una contabilidad para construir representaciones de Lewis."
+     },
+     {
+      "latex": "\\mathrm{CF}=V-N-\\frac{B}{2}",
+      "lectura": "La carga formal es electrones de valencia del átomo libre menos electrones no enlazantes menos la mitad de los electrones enlazantes.",
+      "condiciones": "V, N y B cuentan electrones, no enlaces. La carga formal es una asignación contable; no equivale necesariamente a la carga parcial real."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "G. N. Lewis (1916) — The Atom and the Molecule, JACS 38, 762–785",
+      "url": "https://pubs.acs.org/doi/10.1021/ja02261a002"
+     },
+     {
+      "titulo": "Science History Institute — Gilbert Newton Lewis",
+      "url": "https://www.sciencehistory.org/education/scientific-biographies/gilbert-newton-lewis/"
+     }
+    ],
+    "nota_editorial": "Relato histórico original de orientación; las ecuaciones usan notación moderna y no se presentan como transcripción de documentos históricos.",
+    "diagramas_propuestos": []
+   }
+  },
+  {
+   "id": "quimica.nomenclatura-inorganica",
+   "curso": "Química",
+   "curso_id": "quimica",
+   "numero": 5,
+   "titulo": "Nomenclatura inorgánica",
+   "grado": 3,
+   "temas_catalogo": [
+    "Estados de oxidación",
+    "Tipos de nomenclatura",
+    "Óxidos e hidruros",
+    "Hidróxidos",
+    "Ácidos oxácidos e hidrácidos",
+    "Sales oxisales y haloideas",
+    "Sales ácidas, básicas e hidratadas",
+    "Peróxidos"
+   ],
+   "modulos_actuales": [
+    "nomenclatura-inorganica",
+    "quimica-conceptos"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de recordar.",
+   "teoria": [
+    "El estado de oxidación es una asignación formal para contabilizar electrones; su suma reproduce la carga de la especie. No equivale siempre a carga física ni a valencia.",
+    "Fórmula y nombre se traducen con una convención declarada: composición con prefijos, estado de oxidación (Stock) y nombres retenidos o tradicionales cuando proceda. No hay una única traducción válida para todo contexto.",
+    "Distinguir óxidos y peróxidos, hidruros, hidróxidos, hidrácidos y oxácidos; después formar sales neutras, ácidas, básicas e hidratadas respetando iones y estequiometría. Los paréntesis agrupan iones poliatómicos; el agua de cristalización no se confunde con OH de un hidróxido."
+   ],
+   "condiciones": "Declarar nomenclatura solicitada y fase cuando importa: HCl(g) y HCl(ac) se nombran según contexto. No aplicar cruce ciego de números a cualquier especie.",
+   "prerrequisitos": [
+    "Carga iónica y fórmula química.",
+    "Mínimos múltiplos y proporciones.",
+    "Estados de oxidación elementales."
+   ],
+   "desempeno": "Convierte nombre a fórmula y fórmula a nombre justificando electroneutralidad y familia.",
+   "escena_propuesta": {
+    "accion": "Seguir un ejemplo y completar casillas de carga, fórmula y nombre.",
+    "prediccion": "¿Esta proporción deja carga neta cero?",
+    "registro": "Mostrar suma de cargas y grupos que permanecen enteros.",
+    "regla": "Primero la especie y su carga; después la proporción y el nombre.",
+    "ejemplo": "Completar Ca(NO₃)₂ sin romper el ion nitrato.",
+    "transferencia": "Distinguir óxido, peróxido y sal hidratada en fórmulas nuevas."
+   },
+   "otra_representacion": [
+    "Fichas de carga conservando iones poliatómicos.",
+    "Árbol de familias enlazado al nombre sistemático."
+   ],
+   "ejemplo": null,
+   "error_objetivo": "Cruzar cargas sin simplificar o alterar un ion poliatómico.",
+   "transferencia": "Distinguir óxido, peróxido y sal hidratada en fórmulas nuevas.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "Q09",
+     "titulo": "IUPAC, Brief Guide to Inorganic Nomenclature (2015, actualización 2017)",
+     "url": "https://iupac.org/what-we-do/nomenclature/brief-guides/"
+    },
+    {
+     "id": "Q10",
+     "titulo": "Texto autorizado de la guía IUPAC",
+     "url": "https://iupac.qmul.ac.uk/BriefGuide/inorganic.html"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "quimica.nomenclatura-inorganica",
+    "nombre": "Nomenclatura inorgánica",
+    "historia": "Los nombres químicos antiguos podían depender del origen, del aspecto o del oficio que utilizaba una sustancia. Esa diversidad dificultaba comunicar composición y comparar experimentos. La Méthode de nomenclature chimique de 1787 fue una obra colectiva asociada a Guyton de Morveau, Lavoisier, Berthollet y Fourcroy, con aportes a los símbolos de Hassenfratz y Adet. Propuso una organización del lenguaje ligada a la química de su época. La nomenclatura continuó cambiando y hoy dispone de recomendaciones internacionales y de varios sistemas válidos. Aprenderla consiste en traducir información entre nombres, fórmulas y modelos; no en suponer que cada sustancia admite un único nombre eterno.",
+    "puente_escena": "Se ofrecen etiquetas históricas y nombres sistemáticos junto a fórmulas y modelos. El estudiante predice qué información permite recuperar cada etiqueta y comprueba su hipótesis con un inventario de iones. El registro conserva las traducciones y termina con una regla de neutralidad aplicada a una sal nueva.",
+    "ecuaciones": [
+     {
+      "latex": "\\sum_i n_i\\,\\omega_i=z",
+      "lectura": "La suma de los estados de oxidación multiplicados por sus cantidades es la carga total.",
+      "condiciones": "ωᵢ es un estado de oxidación formal; z vale cero en una especie neutra. Distinguir estado de oxidación, carga del ion y carga formal."
+     },
+     {
+      "latex": "(+2)+2(-1)=0\\qquad\\mathrm{Ca(NO_3)_2}",
+      "lectura": "Un ion calcio de carga dos positiva requiere dos nitratos de carga uno negativa para dar una fórmula neutra.",
+      "condiciones": "Es una comprobación de proporción y carga, no una ecuación de reacción ni una afirmación de que el sólido contiene moléculas aisladas."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Library of Congress — Méthode de nomenclature chimique (1787), ejemplar original",
+      "url": "https://www.loc.gov/item/15011439/"
+     },
+     {
+      "titulo": "IUPAC — Brief Guides to Nomenclature",
+      "url": "https://iupac.org/what-we-do/nomenclature/brief-guides/"
+     }
+    ],
+    "nota_editorial": "Relato histórico original de orientación; las ecuaciones usan notación moderna y no se presentan como transcripción de documentos históricos.",
+    "diagramas_propuestos": []
+   }
+  },
+  {
+   "id": "quimica.mol-y-composicion",
+   "curso": "Química",
+   "curso_id": "quimica",
+   "numero": 6,
+   "titulo": "Mol, masa molar y composición",
+   "grado": 4,
+   "temas_catalogo": [
+    "Unidad de masa atómica y masa atómica promedio",
+    "Número de Avogadro y mol",
+    "Masa molar",
+    "Relaciones molares en una fórmula",
+    "Composición centesimal",
+    "Fórmula empírica y molecular",
+    "Leyes ponderales"
+   ],
+   "modulos_actuales": [
+    "mol-composicion"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo.",
+   "teoria": [
+    "El mol mide cantidad de sustancia para entidades especificadas; N=nNA y NA=6,02214076×10²³ mol⁻¹ exactamente. Una masa molar M conecta escala contable y balanza: m=nM.",
+    "La masa atómica promedio es ponderada por abundancias isotópicas. Masa de un átomo en u, masa relativa y masa molar son conceptos relacionados pero con unidades distintas.",
+    "La fórmula fija razones de átomos; composición centesimal compara masa del elemento y masa total. Dividir cantidades molares por una común da fórmula empírica; la masa molar permite escalar a fórmula molecular.",
+    "Conservación y proporciones definidas/múltiples se aplican a sustancias y reacciones delimitadas; no convierten mezclas variables en compuestos."
+   ],
+   "condiciones": "Indicar siempre si se cuentan átomos, moléculas, iones o unidades fórmula. No atribuir moléculas discretas a una red iónica.",
+   "prerrequisitos": [
+    "Fórmulas y subíndices.",
+    "Proporciones y porcentajes.",
+    "Notación científica y unidades."
+   ],
+   "desempeno": "Pasa entre masa, moles y entidades y obtiene fórmula empírica/molecular sin mezclar escalas.",
+   "escena_propuesta": {
+    "accion": "Comparar dos paquetes con igual cantidad y distinta masa.",
+    "prediccion": "¿Un mol de cada sustancia pesa lo mismo?",
+    "registro": "Guardar número de entidades, n y masa en columnas enlazadas.",
+    "regla": "Igual cantidad de entidades no implica igual masa.",
+    "ejemplo": "Completar cálculo de masa y átomos de O en 0,5 mol de CO₂.",
+    "transferencia": "Reconstruir fórmula a partir de porcentajes y masa molar."
+   },
+   "otra_representacion": [
+    "Balanza ↔ paquetes contables ↔ fórmula.",
+    "Barras de composición y tabla de razones molares."
+   ],
+   "ejemplo": null,
+   "error_objetivo": "Confundir mol con gramo o número de moléculas con átomos.",
+   "transferencia": "Reconstruir fórmula a partir de porcentajes y masa molar.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "Q11",
+     "titulo": "BIPM, unidad base mol",
+     "url": "https://www.bipm.org/en/si-base-units/mole"
+    },
+    {
+     "id": "Q12",
+     "titulo": "Chemistry 2e, §3.1",
+     "url": "https://openstax.org/books/chemistry-2e/pages/3-1-formula-mass-and-the-mole-concept"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "quimica.mol-y-composicion",
+    "nombre": "Mol, masa molar y composición",
+    "historia": "Contar partículas mediante cantidades macroscópicas exigió separar masa, número de entidades y cantidad de sustancia. La hipótesis de Avogadro de 1811 relacionó volúmenes iguales de gases, bajo iguales condiciones, con iguales números de moléculas; no fue una medición del número que hoy lleva su nombre. La aceptación y aplicación de estas ideas dependió de debates posteriores sobre átomos, moléculas y fórmulas. La redefinición del Sistema Internacional, aprobada en 2018 y efectiva desde el 20 de mayo de 2019, fijó exactamente la constante de Avogadro. El mol se define por un número de entidades especificadas, mientras la masa molar conecta ese conteo con una muestra pesable.",
+    "puente_escena": "Una balanza y un contador representacional muestran muestras de sustancias diferentes. El estudiante predice si igual masa implica igual número de entidades, registra conversiones y contrasta el resultado. Después escribe la relación entre masa, cantidad y conteo, y la transfiere a una fórmula con varios átomos por entidad.",
+    "ecuaciones": [
+     {
+      "latex": "N=nN_{\\mathrm A}",
+      "lectura": "El número de entidades es cantidad de sustancia por constante de Avogadro.",
+      "condiciones": "Especificar la entidad contada: átomos, moléculas, iones o unidades fórmula."
+     },
+     {
+      "latex": "n=\\frac{m}{M}",
+      "lectura": "La cantidad de sustancia es la masa de la muestra dividida entre su masa molar.",
+      "condiciones": "m corresponde a la sustancia de interés; descontar impurezas cuando proceda. Usar unidades compatibles."
+     },
+     {
+      "latex": "N_{\\mathrm A}=6.02214076\\times10^{23}\\ \\mathrm{mol}^{-1}",
+      "lectura": "La constante de Avogadro tiene este valor exacto en el Sistema Internacional actual.",
+      "condiciones": "Definición vigente desde 2019; el valor exacto no convierte en exactas las masas o volúmenes medidos."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "ACS Chemical & Engineering News — Avogadro, the mole, and evidence for atoms (2026)",
+      "url": "https://cen.acs.org/physical-chemistry/theoretical-chemistry/avogadro-mole-atoms-history-brownian-motion-einstein/104/web/2026/11"
+     },
+     {
+      "titulo": "BIPM — Resolution 1 of the 26th CGPM (2018)",
+      "url": "https://www.bipm.org/en/committees/cg/cgpm/26-2018/resolution-1"
+     }
+    ],
+    "nota_editorial": "Relato histórico original de orientación; las ecuaciones usan notación moderna y no se presentan como transcripción de documentos históricos.",
+    "diagramas_propuestos": []
+   }
+  },
+  {
+   "id": "quimica.reacciones-y-balance",
+   "curso": "Química",
+   "curso_id": "quimica",
+   "numero": 7,
+   "titulo": "Reacciones químicas y balance",
+   "grado": 4,
+   "temas_catalogo": [
+    "Evidencias de una reacción",
+    "Clasificación de las reacciones",
+    "Balance por tanteo",
+    "Oxidación, reducción y agentes",
+    "Balance redox por ion-electrón"
+   ],
+   "modulos_actuales": [
+    "balance-reacciones",
+    "clasificar-reacciones"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de descubrir.",
+   "teoria": [
+    "Una ecuación representa especies y proporciones de transformación; los coeficientes cambian cantidades, los subíndices cambian identidad. Balancear exige conservar átomos y carga.",
+    "Precipitación, gas, calor o color aportan indicios, no prueba universal aislada. Clasificaciones como síntesis, descomposición, desplazamiento, ácido-base y redox responden a criterios que pueden solaparse.",
+    "Oxidación aumenta estado de oxidación; reducción lo disminuye. El agente oxidante se reduce y el reductor se oxida. El método ion-electrón iguala electrones intercambiados y conserva masa/carga, ajustando H y O según medio ácido o básico."
+   ],
+   "condiciones": "La ecuación balanceada no prueba que una reacción ocurra ni especifica mecanismo. Declarar medio y estados físicos; no mostrar un choque de todas las moléculas como paso elemental.",
+   "prerrequisitos": [
+    "Conservación de átomos.",
+    "Fórmulas y cargas.",
+    "Estados de oxidación."
+   ],
+   "desempeno": "Balancea una reacción molecular e iónica, verifica carga y identifica agentes.",
+   "escena_propuesta": {
+    "accion": "Completar un ejemplo agregando moléculas enteras a ambos lados.",
+    "prediccion": "¿Qué cambia si tocas un subíndice?",
+    "registro": "Dejar contadores por elemento y carga total.",
+    "regla": "Se conservan átomos y carga; se ajustan cantidades, no sustancias.",
+    "ejemplo": "Completar 4Fe+3O₂→2Fe₂O₃ con un coeficiente oculto.",
+    "transferencia": "Balancear una reacción redox nueva en el medio indicado."
+   },
+   "otra_representacion": [
+    "Mosaico de átomos y matriz de conteo.",
+    "Dos semirreacciones con balance de electrones."
+   ],
+   "ejemplo": null,
+   "error_objetivo": "Balancear modificando fórmulas; intercambiar oxidante y reductor.",
+   "transferencia": "Balancear una reacción redox nueva en el medio indicado.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "Q13",
+     "titulo": "Chemistry 2e, §4.1",
+     "url": "https://openstax.org/books/chemistry-2e/pages/4-1-writing-and-balancing-chemical-equations"
+    },
+    {
+     "id": "Q14",
+     "titulo": "Chemistry 2e, §17.1",
+     "url": "https://openstax.org/books/chemistry-2e/pages/17-1-review-of-redox-chemistry"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "quimica.reacciones-y-balance",
+    "nombre": "Reacciones químicas y balance",
+    "historia": "Representar una transformación de manera compacta requirió desarrollar un lenguaje común. En 1813, Berzelius propuso un sistema de símbolos basado en letras, cuyo uso se difundió gradualmente durante las décadas siguientes. Su notación no era idéntica a la actual: empleó formas de indicar cantidades distintas de nuestros subíndices habituales. La mejora de símbolos, fórmulas y masas relativas permitió comparar relaciones de composición con más claridad. Una ecuación moderna combina esa representación con balances de átomos y, cuando corresponde, de carga. Ajustar coeficientes conserva las sustancias declaradas; alterar los subíndices cambiaría su identidad y dejaría de describir la misma reacción.",
+    "puente_escena": "El estudiante transforma un inventario de fichas atómicas siguiendo fórmulas ya fijadas. Predice coeficientes, comprueba átomos y carga en dos columnas y conserva los intentos fallidos como evidencia. Tras formular la regla, debe explicar por qué cambiar un subíndice resuelve una cuenta a costa de cambiar la sustancia.",
+    "ecuaciones": [
+     {
+      "latex": "4\\,\\mathrm{Fe}+3\\,\\mathrm{O_2}\\longrightarrow2\\,\\mathrm{Fe_2O_3}",
+      "lectura": "Cuatro átomos o moles de hierro reaccionan con tres moléculas o moles de oxígeno para formar dos unidades fórmula o moles de óxido de hierro(III).",
+      "condiciones": "Balance global idealizado con Fe₂O₃ como producto especificado; no pretende representar toda oxidación real del hierro ni sus etapas."
+     },
+     {
+      "latex": "\\mathrm{Zn}\\longrightarrow\\mathrm{Zn}^{2+}+2e^{-}",
+      "lectura": "La oxidación del zinc produce un ion de carga dos positiva y dos electrones.",
+      "condiciones": "Semirreacción: debe acoplarse a una reducción. La carga total es cero a ambos lados."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Purdue University, Chemistry — Jöns Jakob Berzelius",
+      "url": "https://chemed.chem.purdue.edu/genchem/history/berzelius.html"
+     },
+     {
+      "titulo": "Royal Society of Chemistry — Analysing symbolic expressions in secondary school chemistry: their functions and implications for pedagogy (2016)",
+      "url": "https://pubs.rsc.org/en/content/articlehtml/2016/rp/c6rp00013d"
+     }
+    ],
+    "nota_editorial": "Relato histórico original de orientación; las ecuaciones usan notación moderna y no se presentan como transcripción de documentos históricos.",
+    "diagramas_propuestos": []
+   }
+  },
+  {
+   "id": "quimica.estequiometria",
+   "curso": "Química",
+   "curso_id": "quimica",
+   "numero": 8,
+   "titulo": "Estequiometría",
+   "grado": 4,
+   "temas_catalogo": [
+    "Relaciones masa-masa, mol-mol y volumen-volumen",
+    "Reactivo limitante y en exceso",
+    "Rendimiento de una reacción",
+    "Reactivos impuros",
+    "Equivalente químico y masa equivalente"
+   ],
+   "modulos_actuales": [
+    "estequiometria-limitante",
+    "limitante-particulas",
+    "rendimiento-pureza",
+    "soluciones-meq-ppm",
+    "estequiometria-admision"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo.",
+   "teoria": [
+    "Los coeficientes relacionan cantidades de sustancia; las masas se conectan mediante masa molar. Volúmenes de gases guardan razones estequiométricas cuando se comparan a igual presión y temperatura dentro del modelo ideal.",
+    "El avance máximo se obtiene del menor nᵢ/νᵢ entre reactivos: ese reactivo limita. El exceso se calcula después de consumir en proporción, no restando masas directamente.",
+    "Pureza determina masa reactiva disponible; rendimiento compara producto real con teórico. Son factores distintos, y el rendimiento no cambia el balance químico.",
+    "La cantidad equivalente y masa equivalente dependen del proceso y del factor de equivalencia elegido (protones, electrones u otra reacción especificada). Un mismo compuesto no tiene una masa equivalente universal."
+   ],
+   "condiciones": "Definir reacción, conversión y reacciones paralelas. Las relaciones con gases no suponen condiciones normales si el enunciado no las declara.",
+   "prerrequisitos": [
+    "Ecuación balanceada.",
+    "Mol y masa molar.",
+    "Razones y porcentajes."
+   ],
+   "desempeno": "Identifica limitante y calcula producto, exceso y rendimiento por separado.",
+   "escena_propuesta": {
+    "accion": "Agrupar partículas según la receta química hasta agotar un reactivo.",
+    "prediccion": "¿Limita el que tiene menor masa o menor cantidad proporcional?",
+    "registro": "Conservar grupos formados y sobrantes; debajo la razón n/ν.",
+    "regla": "Limita la menor cantidad respecto de lo exigido por la ecuación.",
+    "ejemplo": "Con 2 mol N₂ y 3 mol H₂, completar producto y exceso.",
+    "transferencia": "Resolver el mismo principio con reactivo impuro y rendimiento menor que uno."
+   },
+   "otra_representacion": [
+    "Grupos de partículas ↔ tabla n inicial/cambio/final.",
+    "Cadena dimensional masa–mol–proporción–masa."
+   ],
+   "ejemplo": null,
+   "error_objetivo": "Elegir limitante por menor masa; confundir pureza con rendimiento.",
+   "transferencia": "Resolver el mismo principio con reactivo impuro y rendimiento menor que uno.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "Q15",
+     "titulo": "Chemistry 2e, §4.3",
+     "url": "https://openstax.org/books/chemistry-2e/pages/4-3-reaction-stoichiometry"
+    },
+    {
+     "id": "Q16",
+     "titulo": "Chemistry 2e, §4.4",
+     "url": "https://openstax.org/books/chemistry-2e/pages/4-4-reaction-yields"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "quimica.estequiometria",
+    "nombre": "Estequiometría",
+    "historia": "La estequiometría nació de la necesidad de expresar con números cuánto de una sustancia transforma a otra. En 1792, Jeremias Benjamin Richter utilizó el término en el título de una obra dedicada a las relaciones cuantitativas de las reacciones. Las proporciones de neutralización fueron una parte importante de ese problema histórico. El lenguaje de partículas, moles y ecuaciones que hoy usamos es posterior y permite reinterpretar aquellas relaciones con mayor generalidad. La idea central permanece: una transformación tiene restricciones cuantitativas. El reactivo limitante, la pureza y el rendimiento distinguen lo que permite un modelo de lo que realmente entrega una muestra o un proceso.",
+    "puente_escena": "Con un inventario visible, el estudiante predice cuántos lotes de reacción pueden completarse. Cada lote consume la proporción fijada y deja un registro de sobrantes. Después expresa la regla del limitante, compara rendimiento teórico y real, y transfiere el razonamiento a cantidades molares con una impureza inerte.",
+    "ecuaciones": [
+     {
+      "latex": "\\mathrm{N_2}+3\\,\\mathrm{H_2}\\longrightarrow2\\,\\mathrm{NH_3}",
+      "lectura": "Un mol de nitrógeno consume tres moles de hidrógeno por cada dos moles de amoníaco formados.",
+      "condiciones": "Relación estequiométrica. Usar avance completo solo en el modelo de inventario; la síntesis real tiene equilibrio, cinética y condiciones de proceso."
+     },
+     {
+      "latex": "\\xi_{\\max}=\\min_{i\\in\\mathrm{reactivos}}\\frac{n_{i,0}}{\\lvert\\nu_i\\rvert}",
+      "lectura": "El avance máximo permitido por el inventario es el menor cociente entre cantidad inicial de reactivo y su coeficiente estequiométrico.",
+      "condiciones": "Una única reacción, cantidades iniciales conocidas y coeficientes negativos para reactivos. Es una cota de disponibilidad, no garantía de conversión real."
+     },
+     {
+      "latex": "\\eta=100\\,\\frac{m_{\\mathrm{real}}}{m_{\\mathrm{teorica}}}\\,\\%",
+      "lectura": "El rendimiento porcentual compara la masa de producto obtenida con la masa teórica.",
+      "condiciones": "Comparar el mismo producto y una masa real corregida por pureza, humedad o disolvente. El porcentaje se representa como 100 veces el cociente seguido del símbolo %."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Gary Patterson (2018) — Introduction to Preceptors in Chemistry, ACS Symposium Series 1273, capítulo 1",
+      "url": "https://pubs.acs.org/doi/full/10.1021/bk-2018-1273.ch001"
+     },
+     {
+      "titulo": "OpenStax Chemistry 2e — 4.3 Reaction Stoichiometry",
+      "url": "https://openstax.org/books/chemistry-2e/pages/4-3-reaction-stoichiometry"
+     }
+    ],
+    "nota_editorial": "Relato histórico original de orientación; las ecuaciones usan notación moderna y no se presentan como transcripción de documentos históricos.",
+    "diagramas_propuestos": [
+     {
+      "id": "quimica-diagrama-01",
+      "titulo": "Inventario conservado y reactivo limitante",
+      "tipo": "Esquema vectorial de partículas con tabla accesible",
+      "objetivo": "Demostrar que el reactivo limitante se identifica comparando cantidades con la proporción de la reacción, y que el exceso permanece.",
+      "especificacion": "Dos paneles de igual área. Inicio: exactamente 2 moléculas de N₂ y 3 de H₂. Final del modelo: exactamente 2 moléculas de NH₃ y 1 de N₂ sin reaccionar. En ambos paneles deben contarse 4 átomos de N y 6 de H. Dibujar N con círculo azul rotulado N y H con círculo pequeño blanco contorneado rotulado H; el color nunca será el único identificador. Una fila inferior muestra cantidades iniciales (2,3,0), cambios (-1,-3,+2) y finales (1,0,2), en el orden N₂,H₂,NH₃. Declarar que cada icono es una entidad en un modelo discreto y que también puede interpretarse como un paquete proporcional de entidades si se cambian todas las etiquetas a moles.",
+      "interaccion": "Antes de revelar el final, elegir el número de moléculas de NH₃ y el sobrante. Al avanzar un lote, animar el consumo de 1 N₂ y 3 H₂; persistir los inventarios inicial y final. Después pedir la regla n inicial dividido por coeficiente y un caso nuevo.",
+      "limites": "No muestra un mecanismo elemental: la síntesis real no ocurre por una colisión simultánea de cuatro moléculas ni se supone completa en las condiciones ordinarias. Es un modelo de inventario, no una simulación cinética o de equilibrio.",
+      "texto_alternativo": "Dos moléculas de nitrógeno y tres de hidrógeno permiten un lote estequiométrico: se forman dos moléculas de amoníaco y queda una de nitrógeno. Se conservan cuatro átomos de nitrógeno y seis de hidrógeno; el hidrógeno limita.",
+      "datos": [
+       {
+        "estado": "Inicial",
+        "N2": 2,
+        "H2": 3,
+        "NH3": 0,
+        "atomos_N": 4,
+        "atomos_H": 6
+       },
+       {
+        "estado": "Final del modelo",
+        "N2": 1,
+        "H2": 0,
+        "NH3": 2,
+        "atomos_N": 4,
+        "atomos_H": 6
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "quimica.gases",
+   "curso": "Química",
+   "curso_id": "quimica",
+   "numero": 9,
+   "titulo": "Estado gaseoso",
+   "grado": 4,
+   "temas_catalogo": [
+    "Presión y temperatura",
+    "Leyes de Boyle, Charles y Gay-Lussac",
+    "Ecuación de estado",
+    "Densidad y masa molar de un gas",
+    "Volumen molar y condiciones normales",
+    "Mezclas: Dalton y Amagat",
+    "Difusión y efusión: Graham",
+    "Estequiometría con gases"
+   ],
+   "modulos_actuales": [
+    "gases"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo.",
+   "teoria": [
+    "Presión es fuerza por área; temperatura absoluta gobierna el modelo cinético. PV=nRT conecta estado. Boyle fija n,T; Charles fija n,P; la proporcionalidad P–T fija n,V.",
+    "Densidad ρ=PM/RT y volumen molar Vm=RT/P dependen del estado. «Condiciones normales» debe incluir valores concretos de P y T; 22,4 L/mol no es universal.",
+    "En mezcla ideal, Ptotal=ΣPi y Pi=yiP; volúmenes parciales ideales a igual P,T se suman (Amagat). Graham relaciona tasas de efusión con 1/√M bajo condiciones comparables; difusión real puede depender de otros factores.",
+    "Estequiometría gaseosa une balance, n y estado, separando cantidad consumida y volumen ocupado."
+   ],
+   "condiciones": "Usar kelvin, presión absoluta y R compatible con unidades. Idealidad falla especialmente a alta presión y cerca de condensación. Calentar no obliga a subir P si el recipiente puede expandirse.",
+   "prerrequisitos": [
+    "Mol.",
+    "Proporcionalidad directa/inversa.",
+    "Conversión de presión y temperatura."
+   ],
+   "desempeno": "Selecciona qué permanece fijo y resuelve estado o mezcla con comprobación de unidades.",
+   "escena_propuesta": {
+    "accion": "Comprimir un émbolo con T fijada; luego cambiar una sola condición.",
+    "prediccion": "¿Al reducir V a la mitad, qué cambia si T permanece fija?",
+    "registro": "Tres pares P,V y sus productos, con partículas conservadas.",
+    "regla": "Una ley de gases solo vale bajo sus condiciones de control.",
+    "ejemplo": "Completar un estado desde PV=nRT identificando la incógnita.",
+    "transferencia": "Calcular presión parcial y cantidad de gas producido en reacción."
+   },
+   "otra_representacion": [
+    "Émbolo ↔ colisiones cualitativas ↔ gráfica P–V.",
+    "Tabla de estados con variables fijas resaltadas."
+   ],
+   "ejemplo": null,
+   "error_objetivo": "Usar Celsius o presión manométrica en PV=nRT.",
+   "transferencia": "Calcular presión parcial y cantidad de gas producido en reacción.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "Q17",
+     "titulo": "Chemistry 2e, §9.2",
+     "url": "https://openstax.org/books/chemistry-2e/pages/9-2-relating-pressure-volume-amount-and-temperature-the-ideal-gas-law"
+    },
+    {
+     "id": "Q18",
+     "titulo": "Chemistry 2e, §9.3",
+     "url": "https://openstax.org/books/chemistry-2e/pages/9-3-stoichiometry-of-gaseous-substances-mixtures-and-reactions"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "quimica.gases",
+    "nombre": "Estado gaseoso",
+    "historia": "Comprimir aire ofreció una forma de estudiar algo invisible mediante medidas repetibles. Un manuscrito de Robert Boyle conservado por la Royal Society, fechado el 2 de octubre de 1661, registra cantidades de compresión y presión de mercurio y las compara con valores esperados. Esa relación experimental no era todavía la ecuación general de los gases. El desarrollo posterior reunió dependencias de presión, volumen, temperatura y cantidad. La ley del gas ideal condensa ese trabajo en un modelo útil con supuestos definidos. La historia invita a preguntar qué permaneció constante durante cada ensayo y en qué condiciones dejan de funcionar las aproximaciones.",
+    "puente_escena": "Un pistón permite modificar una sola variable mientras las demás quedan registradas. El estudiante predice la respuesta, reúne pares de datos y prueba qué producto o cociente permanece constante. Formula la relación con sus condiciones y luego observa un caso cercano a condensación para reconocer el límite del modelo.",
+    "ecuaciones": [
+     {
+      "latex": "PV=nRT",
+      "lectura": "Presión por volumen es cantidad de sustancia por constante de los gases por temperatura absoluta.",
+      "condiciones": "Gas ideal o aproximación adecuada; presión absoluta, temperatura en kelvin y unidades coherentes. Las desviaciones aumentan cerca de condensación y a altas densidades."
+     },
+     {
+      "latex": "P_1V_1=P_2V_2",
+      "lectura": "A temperatura y cantidad constantes, presión y volumen mantienen constante su producto.",
+      "condiciones": "Dos estados de equilibrio del mismo gas ideal; no aplicar si cambia la temperatura o escapa gas."
+     },
+     {
+      "latex": "P_{\\mathrm{total}}=\\sum_i P_i",
+      "lectura": "La presión total de una mezcla ideal es la suma de las presiones parciales.",
+      "condiciones": "Cada presión parcial es la que tendría el componente ocupando el volumen total a la temperatura de la mezcla."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Royal Society — An experimentall account of the compression of aire made by Mr Boyle (1661), manuscrito original",
+      "url": "https://makingscience.royalsociety.org/items/rbo_1_22/an-experimentall-account-of-the-compression-of-aire-made-by-mr-boyle"
+     },
+     {
+      "titulo": "OpenStax Chemistry 2e — 9.2 Relating Pressure, Volume, Amount, and Temperature: The Ideal Gas Law",
+      "url": "https://openstax.org/books/chemistry-2e/pages/9-2-relating-pressure-volume-amount-and-temperature-the-ideal-gas-law"
+     }
+    ],
+    "nota_editorial": "Relato histórico original de orientación; las ecuaciones usan notación moderna y no se presentan como transcripción de documentos históricos.",
+    "diagramas_propuestos": []
+   }
+  },
+  {
+   "id": "quimica.liquidos-y-solidos",
+   "curso": "Química",
+   "curso_id": "quimica",
+   "numero": 10,
+   "titulo": "Líquidos, sólidos y cambios de estado",
+   "grado": 4,
+   "temas_catalogo": [
+    "Propiedades de los estados de agregación",
+    "Diagrama de fases",
+    "Tensión superficial, viscosidad y capilaridad",
+    "Presión de vapor y punto de ebullición",
+    "Gases húmedos y humedad relativa",
+    "Sólidos cristalinos y amorfos"
+   ],
+   "modulos_actuales": [
+    "liquidos-y-solidos",
+    "quimica-conceptos",
+    "conversiones-quimica"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de comparar.",
+   "teoria": [
+    "Sólidos, líquidos y gases se comparan por orden, movilidad y respuesta macroscópica. Cristalino implica orden de largo alcance; amorfo no. Viscosidad, tensión superficial y capilaridad dependen de interacciones y condiciones.",
+    "Evaporación y condensación coexisten; en equilibrio tienen igual tasa. La presión de vapor saturado de una sustancia pura depende de T mientras persistan ambas fases.",
+    "La ebullición ocurre cuando la presión de vapor iguala la presión externa. Un diagrama P–T delimita fases, coexistencia, punto triple y crítico. Curva de calentamiento y diagrama de fases responden a preguntas diferentes.",
+    "En gas húmedo ideal, Pseco=Ptotal−Pvapor. Humedad relativa compara presión parcial de vapor con su saturación a la misma temperatura."
+   ],
+   "condiciones": "No fijar 100 °C como ebullición universal. Una meseta de temperatura requiere las condiciones del cambio de fase; no todas las mezclas tienen mesetas puras.",
+   "prerrequisitos": [
+    "Interacciones moleculares.",
+    "Presión y temperatura.",
+    "Porcentajes y lectura de ejes."
+   ],
+   "desempeno": "Predice fase o ebullición a una presión dada e interpreta un gas recogido sobre agua.",
+   "escena_propuesta": {
+    "accion": "Calentar un frasco y cambiar la presión externa en una segunda corrida.",
+    "prediccion": "¿El mismo líquido hierve a la misma temperatura en ambos casos?",
+    "registro": "Fijar dos puntos de intersección Pvapor–Pexterna.",
+    "regla": "La ebullición depende de la presión exterior.",
+    "ejemplo": "Completar presión seca de un gas húmedo.",
+    "transferencia": "Leer una trayectoria nueva en un diagrama de fases."
+   },
+   "otra_representacion": [
+    "Frasco y balance de flujos entre fases.",
+    "Gráfica Pvapor–T y mapa de fases P–T."
+   ],
+   "ejemplo": null,
+   "error_objetivo": "Pensar que el vapor aparece solo al hervir.",
+   "transferencia": "Leer una trayectoria nueva en un diagrama de fases.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "Q02",
+     "titulo": "Chemistry 2e, §10.3",
+     "url": "https://openstax.org/books/chemistry-2e/pages/10-3-phase-transitions"
+    },
+    {
+     "id": "Q19",
+     "titulo": "Chemistry 2e, §10.4",
+     "url": "https://openstax.org/books/chemistry-2e/pages/10-4-phase-diagrams"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "quimica.liquidos-y-solidos",
+    "nombre": "Líquidos, sólidos y cambios de estado",
+    "historia": "Saber cuándo pueden coexistir hielo, agua y vapor exige algo más que nombrar estados de agregación. La termodinámica permitió relacionar esas observaciones con temperatura, presión y composición. El trabajo de Josiah Willard Gibbs sobre equilibrio de sustancias heterogéneas, reconocido por su publicación de 1878, proporcionó una estructura general para estudiar sistemas con varias fases. Su importancia está en conectar casos aparentemente distintos mediante condiciones de equilibrio. Un diagrama de fases actual resume esas relaciones, pero no es una película de calentamiento: describe estados y fronteras de estabilidad. El tiempo, la nucleación y la rapidez de un proceso requieren información adicional.",
+    "puente_escena": "La escena conserva un punto de estado y un recorrido de presión y temperatura. Antes de moverlo, el estudiante predice las fases presentes y registra cada frontera cruzada. Después distingue la regla de equilibrio de la duración de la transformación y la transfiere a una ebullición a menor presión.",
+    "ecuaciones": [
+     {
+      "latex": "F=C-P+2",
+      "lectura": "Los grados de libertad de un sistema en equilibrio son componentes independientes menos fases más dos.",
+      "condiciones": "Regla de fases ordinaria para un sistema sin restricciones adicionales; C ya incorpora las relaciones químicas independientes. P cuenta fases, no sustancias."
+     },
+     {
+      "latex": "P_{\\mathrm{sat}}(T_{\\mathrm b})=P_{\\mathrm{ext}}",
+      "lectura": "La temperatura de ebullición corresponde a igualdad entre presión de vapor de saturación y presión externa.",
+      "condiciones": "Sustancia pura en el modelo de equilibrio; en mezclas la composición modifica el punto de ebullición."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Yale Physics — J. Willard Gibbs's 1878 paper recognized by the American Chemical Society (2021)",
+      "url": "https://physics.yale.edu/news/j-willard-gibbss-1878-paper-recognized-american-chemical-society?page=2"
+     },
+     {
+      "titulo": "OpenStax Chemistry 2e — 10.4 Phase Diagrams",
+      "url": "https://openstax.org/books/chemistry-2e/pages/10-4-phase-diagrams"
+     }
+    ],
+    "nota_editorial": "Relato histórico original de orientación; las ecuaciones usan notación moderna y no se presentan como transcripción de documentos históricos.",
+    "diagramas_propuestos": []
+   }
+  },
+  {
+   "id": "quimica.soluciones",
+   "curso": "Química",
+   "curso_id": "quimica",
+   "numero": 11,
+   "titulo": "Soluciones y coloides",
+   "grado": 4,
+   "temas_catalogo": [
+    "Sistemas dispersos: soluciones, coloides y suspensiones",
+    "Solubilidad y curvas de solubilidad",
+    "Concentración: porcentajes, molaridad, normalidad y molalidad",
+    "Dilución y mezcla de soluciones",
+    "Estequiometría en soluciones"
+   ],
+   "modulos_actuales": [
+    "soluciones",
+    "soluciones-meq-ppm",
+    "quimica-conceptos"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo.",
+   "teoria": [
+    "Solución, coloide y suspensión se distinguen por dispersión, comportamiento y escala; transparente no significa ausencia de soluto. Solubilidad es una condición de equilibrio del par soluto–solvente, distinta de rapidez de disolución.",
+    "Concentración requiere numerador y denominador explícitos: %m/m, %m/V, %V/V; molaridad c=n/Vsolución; molalidad b=n/kgsolvente. Normalidad depende de la reacción y factor equivalente.",
+    "Diluir conserva cantidad de soluto si no hay pérdidas ni reacción: c₁V₁=c₂V₂. Tomar una alícuota homogénea conserva concentración y reduce cantidad. Mezclar exige sumar cantidades; solo se suman volúmenes cuando el modelo lo admite.",
+    "Curvas de solubilidad permiten separar disuelto y precipitado; la estequiometría en solución combina cV y reacción balanceada."
+   ],
+   "condiciones": "No usar volumen de solvente como volumen de solución. Agitar puede acelerar disolución sin aumentar solubilidad de equilibrio. La suma de volúmenes no es universal.",
+   "prerrequisitos": [
+    "Mol y proporciones.",
+    "Masa versus volumen.",
+    "Lectura de gráficas."
+   ],
+   "desempeno": "Distingue cantidad y concentración, prepara una dilución calculada e interpreta precipitado.",
+   "escena_propuesta": {
+    "accion": "Añadir agua y después retirar una alícuota en dos ensayos separados.",
+    "prediccion": "¿Qué operación cambia concentración y cuál cambia cantidad?",
+    "registro": "Mantener contadores n,V,c antes/después.",
+    "regla": "Cantidad y concentración son magnitudes diferentes.",
+    "ejemplo": "Diluir 100 mL de 0,20 mol/L a 250 mL: c=0,080 mol/L.",
+    "transferencia": "Resolver mezcla con reacción y solubilidad indicada."
+   },
+   "otra_representacion": [
+    "Vaso y lupa con densidad de partículas.",
+    "Tabla de conservación de moles y curva de solubilidad."
+   ],
+   "ejemplo": null,
+   "error_objetivo": "Pensar que al retirar media solución se reduce a la mitad su concentración.",
+   "transferencia": "Resolver mezcla con reacción y solubilidad indicada.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "Q20",
+     "titulo": "Chemistry 2e, §3.3",
+     "url": "https://openstax.org/books/chemistry-2e/pages/3-3-molarity"
+    },
+    {
+     "id": "Q21",
+     "titulo": "Chemistry 2e, §11.3",
+     "url": "https://openstax.org/books/chemistry-2e/pages/11-3-solubility"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "quimica.soluciones",
+    "nombre": "Soluciones y coloides",
+    "historia": "Las disoluciones planteaban un problema: sustancias dispersas podían parecer uniformes y, sin embargo, comportarse de modo diferente al atravesar una membrana. En 1861, Thomas Graham presentó a la Royal Society su estudio Liquid diffusion applied to analysis, asociado al desarrollo de la distinción entre coloides y cristaloides. Más adelante, van ’t Hoff relacionó propiedades de disoluciones diluidas con leyes cuantitativas; su conferencia Nobel de 1901 explicó la importancia de la presión osmótica. Estas investigaciones no vuelven idénticos todos los sistemas dispersos. Separar cantidad de soluto, volumen, tamaño de partículas y permeabilidad permite entender por qué diluir, filtrar y dializar son operaciones diferentes.",
+    "puente_escena": "Dos recipientes parten de la misma solución. En uno se añade disolvente y del otro se retira una alícuota homogénea. El estudiante predice cambios en cantidad, volumen y concentración, conserva los tres registros y formula reglas diferentes. La transferencia introduce una membrana y obliga a declarar qué especies pueden cruzarla.",
+    "ecuaciones": [
+     {
+      "latex": "c=\\frac{n}{V}",
+      "lectura": "La concentración molar es cantidad de soluto dividida entre volumen de la solución.",
+      "condiciones": "V es el volumen final de solución, no automáticamente el volumen de disolvente añadido; declarar unidades."
+     },
+     {
+      "latex": "c_1V_1=c_2V_2",
+      "lectura": "Antes y después de una dilución, el producto de concentración por volumen es el mismo.",
+      "condiciones": "Se conserva el mismo soluto y no hay reacción ni pérdidas; añadir disolvente cambia el volumen y la concentración."
+     },
+     {
+      "latex": "\\Pi=i\\,cRT",
+      "lectura": "La presión osmótica ideal es el factor de partículas por concentración de soluto por R por temperatura.",
+      "condiciones": "Solución suficientemente diluida y membrana semipermeable apropiada. i representa el efecto del número efectivo de partículas; no es universalmente igual al número escrito de iones."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Royal Society — Thomas Graham, Liquid diffusion applied to analysis (1861), manuscrito original",
+      "url": "https://makingscience.royalsociety.org/items/pt_63_10/paper-liquid-diffusion-applied-to-analysis-by-thomas-graham"
+     },
+     {
+      "titulo": "J. H. van ’t Hoff — Osmotic Pressure and Chemical Equilibrium, Nobel Lecture (1901)",
+      "url": "https://www.nobelprize.org/uploads/2018/06/hoff-lecture.pdf"
+     }
+    ],
+    "nota_editorial": "Relato histórico original de orientación; las ecuaciones usan notación moderna y no se presentan como transcripción de documentos históricos.",
+    "diagramas_propuestos": [
+     {
+      "id": "quimica-diagrama-02",
+      "titulo": "Diluir y retirar una alícuota conservan magnitudes diferentes",
+      "tipo": "Comparación vectorial de dos operaciones con tabla accesible",
+      "objetivo": "Separar cantidad de soluto, volumen de solución y concentración; impedir que el estudiante use una sola regla para operaciones distintas.",
+      "especificacion": "Estado inicial compartido: solución homogénea de 100 mL a 0.20 mol/L, con 0.020 mol de soluto. Rama A: añadir disolvente hasta volumen final medido de 250 mL; quedan 0.020 mol y 0.080 mol/L. Rama B: retirar una alícuota homogénea de 40 mL; quedan 60 mL, 0.012 mol y 0.20 mol/L. Mostrar el vaso de alícuota con 40 mL, 0.008 mol y 0.20 mol/L. Cada estado tiene etiquetas grandes independientes para n, V y c. Usar marcas de volumen exactas y tabla numérica; si se agregan puntos representacionales, declarar un punto = 0.001 mol para mostrar 20 inicialmente, 20 tras dilución, 12 en el remanente y 8 en la alícuota. No presentarlos como moléculas a escala.",
+      "interaccion": "El estudiante predice por separado las tres magnitudes antes de cada operación. Registrar y superponer el estado inicial y final; solicitar una regla verbal y simbólica. Transferir a una tercera muestra con volumen inicial distinto y alícuota proporcional.",
+      "limites": "Soluto no reactivo, sin evaporación, precipitación ni pérdidas, alícuota representativa y solución homogénea. Volumen final de dilución medido: no se afirma aditividad exacta de volúmenes de mezcla.",
+      "texto_alternativo": "De 100 mililitros a 0.20 molar se parte con 0.020 moles. Diluir hasta 250 mililitros conserva los moles y reduce la concentración a 0.080 molar. Retirar 40 mililitros conserva la concentración de 0.20 molar y deja 60 mililitros con 0.012 moles.",
+      "datos": [
+       {
+        "estado": "Inicial",
+        "volumen_mL": 100,
+        "cantidad_mol": 0.02,
+        "concentracion_mol_L": 0.2
+       },
+       {
+        "estado": "Tras dilución",
+        "volumen_mL": 250,
+        "cantidad_mol": 0.02,
+        "concentracion_mol_L": 0.08
+       },
+       {
+        "estado": "Remanente tras alícuota",
+        "volumen_mL": 60,
+        "cantidad_mol": 0.012,
+        "concentracion_mol_L": 0.2
+       },
+       {
+        "estado": "Alícuota retirada",
+        "volumen_mL": 40,
+        "cantidad_mol": 0.008,
+        "concentracion_mol_L": 0.2
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "quimica.cinetica-quimica",
+   "curso": "Química",
+   "curso_id": "quimica",
+   "numero": 12,
+   "titulo": "Cinética química",
+   "grado": 5,
+   "temas_catalogo": [
+    "Velocidad de reacción",
+    "Teoría de colisiones y complejo activado",
+    "Perfil de energía de una reacción",
+    "Factores que afectan la velocidad",
+    "Leyes de velocidad y orden de reacción",
+    "Vida media"
+   ],
+   "modulos_actuales": [
+    "cinetica"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de comparar.",
+   "teoria": [
+    "Velocidad de reacción mide cambio de cantidad o concentración por tiempo, normalizado con coeficientes cuando corresponde. No es cantidad final ni grado de espontaneidad.",
+    "La ley r=k[A]^m[B]^n se determina experimentalmente; órdenes no son automáticamente coeficientes globales. Las unidades de k dependen del orden. Vida media depende de la ley: solo para primer orden t½=ln2/k no depende de concentración inicial.",
+    "Colisiones eficaces requieren condiciones apropiadas de energía y orientación; un perfil separa energía de activación de diferencia entre productos y reactivos. El complejo activado no es un producto estable.",
+    "Temperatura, concentración, superficie, mezcla y catalizador pueden afectar la rapidez según sistema. Un catalizador proporciona otro mecanismo y acelera alcanzar equilibrio sin cambiar su constante."
+   ],
+   "condiciones": "No hacer que agitar o moler aceleren cualquier reacción. Separar reacción homogénea, interfaz y transporte. La animación de choques representa un modelo, no prueba un mecanismo.",
+   "prerrequisitos": [
+    "Concentración.",
+    "Pendiente y tiempo.",
+    "Energía y potencias."
+   ],
+   "desempeno": "Obtiene orden de una tabla de ensayos, interpreta un perfil y separa rapidez de rendimiento de equilibrio.",
+   "escena_propuesta": {
+    "accion": "Cambiar una variable entre corridas y superponer concentraciones contra tiempo.",
+    "prediccion": "¿Duplicar concentración siempre duplica rapidez?",
+    "registro": "Guardar tasas iniciales y condiciones de cada ensayo.",
+    "regla": "La dependencia de rapidez se determina con datos.",
+    "ejemplo": "Completar el orden cuando duplicar [A] cuadruplica r.",
+    "transferencia": "Comparar dos mecanismos con igual estado final y distinta rapidez."
+   },
+   "otra_representacion": [
+    "Gráficas concentración–tiempo y tasa–concentración.",
+    "Perfil de energía con/sin catalizador."
+   ],
+   "ejemplo": null,
+   "error_objetivo": "Copiar coeficientes de la ecuación global como órdenes.",
+   "transferencia": "Comparar dos mecanismos con igual estado final y distinta rapidez.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "Q22",
+     "titulo": "Chemistry 2e, §12.3",
+     "url": "https://openstax.org/books/chemistry-2e/pages/12-3-rate-laws"
+    },
+    {
+     "id": "Q23",
+     "titulo": "Chemistry 2e, §12.4",
+     "url": "https://openstax.org/books/chemistry-2e/pages/12-4-integrated-rate-laws"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "quimica.cinetica-quimica",
+    "nombre": "Cinética química",
+    "historia": "Una reacción posible puede ser demasiado lenta para observarla durante una clase o demasiado rápida para seguirla con instrumentos comunes. Ese problema separó el estudio de la velocidad del balance de materia y del equilibrio. En 1889, Svante Arrhenius formuló una relación entre la constante de velocidad y la temperatura que permitió interpretar muchas mediciones mediante una energía de activación. La relación no identifica por sí sola el mecanismo de una reacción. El desarrollo posterior de teorías del estado de transición y técnicas de observación amplió la explicación. El perfil energético escolar es una representación de un camino, no una montaña física que atraviesan moléculas conscientes.",
+    "puente_escena": "El estudiante compara curvas de concentración frente al tiempo obtenidas cambiando temperatura, concentración o catalizador de una en una. Predice cuál cambio alterará la rapidez y conserva las curvas superpuestas. A partir de datos formula una ley válida para el ensayo y distingue velocidad, energía liberada y cantidad final.",
+    "ecuaciones": [
+     {
+      "latex": "r=k[\\mathrm A]^m[\\mathrm B]^n",
+      "lectura": "La velocidad depende de la constante cinética y de potencias de concentraciones determinadas experimentalmente.",
+      "condiciones": "Ley de velocidad para una reacción y condiciones especificadas; m y n no se deducen de la ecuación global salvo justificación de una etapa elemental."
+     },
+     {
+      "latex": "k=A_{\\mathrm{Arr}}\\exp\\!\\left(-\\frac{E_{\\mathrm a}}{RT}\\right)",
+      "lectura": "La constante cinética sigue la relación de Arrhenius con energía de activación y temperatura absoluta.",
+      "condiciones": "Ajuste válido en el intervalo y mecanismo considerados; Eₐ está expresada por mol y AArr tiene las unidades de k."
+     },
+     {
+      "latex": "t_{1/2}=\\frac{\\ln 2}{k}",
+      "lectura": "La vida media de una reacción de primer orden es el logaritmo natural de dos dividido entre k.",
+      "condiciones": "Consumo de primer orden con k constante; no generalizar a órdenes diferentes."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Nobel Foundation — The 1999 Nobel Prize in Chemistry: femtochemistry, advanced information",
+      "url": "https://www.nobelprize.org/uploads/2018/06/advanced-chemistryprize1999.pdf"
+     },
+     {
+      "titulo": "Universitetet i Oslo — Arrhenius ligning",
+      "url": "https://www.mn.uio.no/ibv/tjenester/kunnskap/plantefys/leksikon/a/arrheni.html"
+     }
+    ],
+    "nota_editorial": "Relato histórico original de orientación; las ecuaciones usan notación moderna y no se presentan como transcripción de documentos históricos.",
+    "diagramas_propuestos": []
+   }
+  },
+  {
+   "id": "quimica.equilibrio-quimico",
+   "curso": "Química",
+   "curso_id": "quimica",
+   "numero": 13,
+   "titulo": "Equilibrio químico",
+   "grado": 5,
+   "temas_catalogo": [
+    "Reacciones reversibles y equilibrio dinámico",
+    "Kc y Kp",
+    "Grado de reacción",
+    "Principio de Le Chatelier"
+   ],
+   "modulos_actuales": [
+    "equilibrio-quimico",
+    "quimica-conceptos"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de comparar.",
+   "teoria": [
+    "En equilibrio químico las reacciones directa e inversa continúan con tasas iguales; las concentraciones pueden ser distintas. Q evalúa una composición actual y K la condición de equilibrio.",
+    "La expresión termodinámica usa actividades; Kc y Kp escolares usan aproximaciones y convenciones declaradas. Sólidos y líquidos puros se omiten al tener actividad unitaria en el modelo. Para gases ideales, Kp=Kc(RT)^Δn bajo la convención escolar consistente.",
+    "Una tabla inicial–cambio–equilibrio conecta composición con avance o grado de reacción. Añadir, retirar, comprimir o calentar cambia Q o K; comparar Q/K evita interpretar Le Chatelier como voluntad del sistema.",
+    "Para una reacción y estados estándar definidos, K depende de T; el catalizador no desplaza el equilibrio."
+   ],
+   "condiciones": "La presión no siempre desplaza: comprobar especies gaseosas y Δn. Añadir gas inerte a V fijo no cambia las presiones parciales de reactivos ideales; a P fija puede cambiarlas.",
+   "prerrequisitos": [
+    "Estequiometría y concentración.",
+    "Rapidez directa/inversa.",
+    "Potencias y ecuaciones."
+   ],
+   "desempeno": "Calcula Q, predice dirección de cambio y obtiene una composición de equilibrio físicamente admisible.",
+   "escena_propuesta": {
+    "accion": "Perturbar una mezcla reversible y comparar cantidades y flujos.",
+    "prediccion": "¿Igual rapidez obliga a igual cantidad?",
+    "registro": "Congelar composición y dos tasas iguales en el estado final.",
+    "regla": "Equilibrio es igualdad de tasas, no de cantidades.",
+    "ejemplo": "Completar Q y elegir evolución cuando Q<K.",
+    "transferencia": "Resolver una perturbación que no desplaza el equilibrio."
+   },
+   "otra_representacion": [
+    "Dos contadores de flujo junto a inventarios de partículas.",
+    "Gráfica concentración–tiempo y tabla de avance."
+   ],
+   "ejemplo": null,
+   "error_objetivo": "Confundir equilibrio con reacción detenida o cantidades iguales.",
+   "transferencia": "Resolver una perturbación que no desplaza el equilibrio.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "Q24",
+     "titulo": "Chemistry 2e, §13.3",
+     "url": "https://openstax.org/books/chemistry-2e/pages/13-3-shifting-equilibria-le-chateliers-principle"
+    },
+    {
+     "id": "Q25",
+     "titulo": "Chemistry 2e, §13.2",
+     "url": "https://openstax.org/books/chemistry-2e/pages/13-2-equilibrium-constants"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "quimica.equilibrio-quimico",
+    "nombre": "Equilibrio químico",
+    "historia": "Las reacciones reversibles obligaron a explicar por qué una mezcla podía conservar su composición sin que toda transformación hubiese terminado. En 1864, Cato Guldberg y Peter Waage publicaron sus ideas sobre acción de masas; en 1867 desarrollaron otra exposición de su propuesta. La formulación se revisó y discutió antes de adquirir su forma moderna. No basta con recordar que un sistema se opone a un cambio: hacen falta variables, temperatura y una comparación cuantitativa. Hoy el cociente de reacción y la constante de equilibrio permiten expresar esa comparación mediante actividades. La estabilidad macroscópica es compatible con transformaciones microscópicas en ambos sentidos.",
+    "puente_escena": "Dos contadores muestran transformaciones directas e inversas mientras una gráfica conserva las cantidades de cada especie. El estudiante predice qué sucede al añadir un reactivo o comprimir el sistema, registra la respuesta y calcula hacia dónde cambia Q respecto de K. La transferencia incluye una perturbación que no altera Q.",
+    "ecuaciones": [
+     {
+      "latex": "Q=\\prod_i a_i^{\\nu_i}",
+      "lectura": "El cociente de reacción es el producto de actividades elevadas a sus coeficientes estequiométricos con signo.",
+      "condiciones": "νᵢ es positivo para productos y negativo para reactivos; las actividades son adimensionales. Para sólidos y líquidos puros en su estado estándar se usa actividad aproximadamente uno."
+     },
+     {
+      "latex": "\\Delta_{\\mathrm r}G=\\Delta_{\\mathrm r}G^{\\circ}+RT\\ln Q",
+      "lectura": "La energía de Gibbs de reacción depende del valor estándar y de la composición mediante Q.",
+      "condiciones": "Temperatura definida; usar Q adimensional y las mismas convenciones de estado estándar."
+     },
+     {
+      "latex": "Q=K(T)\\quad\\Longleftrightarrow\\quad\\Delta_{\\mathrm r}G=0",
+      "lectura": "En equilibrio químico, Q coincide con K y la energía de Gibbs de reacción es cero.",
+      "condiciones": "Equilibrio respecto de la reacción considerada; K depende de temperatura y de la elección de la ecuación y los estados estándar."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "University of Oxford, CEBM — The laws of life: Guldberg and Waage's law of mass action",
+      "url": "https://www.cebm.ox.ac.uk/news/views/the-laws-of-life-guldberg-and-waages-law-of-mass-action"
+     },
+     {
+      "titulo": "Universitetet i Oslo — Kjemisk likevekt",
+      "url": "https://www.mn.uio.no/ibv/tjenester/kunnskap/plantefys/leksikon/k/kjemisk-likevekt.html"
+     }
+    ],
+    "nota_editorial": "Relato histórico original de orientación; las ecuaciones usan notación moderna y no se presentan como transcripción de documentos históricos.",
+    "diagramas_propuestos": []
+   }
+  },
+  {
+   "id": "quimica.acidos-y-bases",
+   "curso": "Química",
+   "curso_id": "quimica",
+   "numero": 14,
+   "titulo": "Ácidos y bases",
+   "grado": 5,
+   "temas_catalogo": [
+    "Teorías de Arrhenius, Brønsted-Lowry y Lewis",
+    "Pares conjugados y fuerza relativa",
+    "Ka, Kb y Kw",
+    "pH y pOH",
+    "Neutralización y titulación"
+   ],
+   "modulos_actuales": [
+    "acidos-bases",
+    "quimica-conceptos"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo.",
+   "teoria": [
+    "Arrhenius trata ácido/base en medio acuoso; Brønsted–Lowry, transferencia de protones; Lewis, aceptación/donación de pares electrónicos. Pares conjugados difieren en un protón. Fuerza, concentración y capacidad de neutralización son conceptos distintos.",
+    "Ka,Kb y Kw describen equilibrios; para un par conjugado KaKb=Kw. pH se define con actividad de H⁺; pH≈−log[H₃O⁺] en la aproximación diluida. pH+pOH=pKw, que vale aproximadamente 14 a 25 °C.",
+    "Neutralización se resuelve con estequiometría y después equilibrio. Punto de equivalencia no significa siempre pH 7; punto final del indicador es una señal experimental.",
+    "Diluir diez veces aumenta aproximadamente una unidad de pH solo para ácido fuerte monoprotónico, suficientemente lejos de la contribución del agua y bajo la aproximación de actividad."
+   ],
+   "condiciones": "Para ácidos débiles resolver o justificar la aproximación; comprobar porcentaje de ionización. En disoluciones extremadamente diluidas incluir autoionización del agua; el pH no cruza a básico por diluir ácido con agua pura.",
+   "prerrequisitos": [
+    "Equilibrio.",
+    "Molaridad y estequiometría.",
+    "Logaritmos decimales."
+   ],
+   "desempeno": "Distingue fuerza y concentración y justifica el pH antes, durante y después de una titulación.",
+   "escena_propuesta": {
+    "accion": "Diluir primero ácido fuerte y después uno débil con iguales concentraciones iniciales.",
+    "prediccion": "¿Ambos cambian exactamente una unidad de pH?",
+    "registro": "Fijar concentración analítica, especies y pH para cada caso.",
+    "regla": "El pH depende de concentración y equilibrio.",
+    "ejemplo": "Completar neutralización fuerte-fuerte antes de equivalencia.",
+    "transferencia": "Elegir el modelo para un ácido muy diluido o débil."
+   },
+   "otra_representacion": [
+    "Lupa de especies y balance de cargas.",
+    "Curva de titulación enlazada al volumen añadido."
+   ],
+   "ejemplo": null,
+   "error_objetivo": "Identificar ácido fuerte con concentrado; universalizar pH de equivalencia 7.",
+   "transferencia": "Elegir el modelo para un ácido muy diluido o débil.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "Q26",
+     "titulo": "Chemistry 2e, §14.2",
+     "url": "https://openstax.org/books/chemistry-2e/pages/14-2-ph-and-poh"
+    },
+    {
+     "id": "Q27",
+     "titulo": "Chemistry 2e, §14.3",
+     "url": "https://openstax.org/books/chemistry-2e/pages/14-3-relative-strengths-of-acids-and-bases"
+    },
+    {
+     "id": "Q28",
+     "titulo": "IUPAC Gold Book, pH (definición)",
+     "url": "https://goldbook.iupac.org/terms/view/P04524"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "quimica.acidos-y-bases",
+    "nombre": "Ácidos y bases",
+    "historia": "Medir acidez resultó fundamental para comparar procesos químicos y bioquímicos. En 1909, Søren Sørensen, desde el laboratorio Carlsberg, introdujo la escala de pH en el contexto de investigaciones sobre el efecto de la acidez en reacciones. La escala logarítmica convirtió variaciones muy grandes en números manejables. La definición actual de IUPAC utiliza la actividad del ion hidrógeno, de modo que la sustitución por concentración necesita una aproximación declarada. Este episodio permite distinguir intensidad de acidez, cantidad total de ácido y capacidad de neutralización. También recuerda que el intervalo habitual entre cero y catorce no es una frontera universal de los valores posibles.",
+    "puente_escena": "Una escena enfrenta soluciones con igual pH pero distinta cantidad total, y otra compara diluir con neutralizar. Antes de actuar, el estudiante predice pH y cantidad de ácido por separado. El registro exige justificar cada cambio, formular la aproximación utilizada y transferirla a un ácido débil donde falla la regla simplificada.",
+    "ecuaciones": [
+     {
+      "latex": "\\mathrm{pH}=-\\log_{10}a_{\\mathrm{H}^{+}}",
+      "lectura": "El pH es el negativo del logaritmo decimal de la actividad del ion hidrógeno.",
+      "condiciones": "Actividad adimensional referida a un estado estándar. En soluciones suficientemente diluidas puede aproximarse con concentración dividida por la concentración estándar."
+     },
+     {
+      "latex": "\\mathrm{pH}+\\mathrm{pOH}=\\mathrm{p}K_{\\mathrm w}",
+      "lectura": "La suma de pH y pOH es pKw.",
+      "condiciones": "Definiciones y actividades coherentes en el mismo medio y a la misma temperatura; pKw es aproximadamente 14 en agua a 25 °C, no a toda temperatura."
+     },
+     {
+      "latex": "K_{\\mathrm a}K_{\\mathrm b}=K_{\\mathrm w}",
+      "lectura": "El producto de las constantes de un ácido y su base conjugada es Kw.",
+      "condiciones": "Par conjugado en agua, misma temperatura y convenciones de actividad."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Carlsberg Group — The pH scale",
+      "url": "https://carlsberggroup.com/pursuit-of-better/scientific-discoveries/ph-scale/"
+     },
+     {
+      "titulo": "IUPAC Gold Book — pH",
+      "url": "https://goldbook.iupac.org/terms/view/P04524"
+     }
+    ],
+    "nota_editorial": "Relato histórico original de orientación; las ecuaciones usan notación moderna y no se presentan como transcripción de documentos históricos.",
+    "diagramas_propuestos": []
+   }
+  },
+  {
+   "id": "quimica.electroquimica",
+   "curso": "Química",
+   "curso_id": "quimica",
+   "numero": 15,
+   "titulo": "Electroquímica",
+   "grado": 5,
+   "temas_catalogo": [
+    "Semirreacciones y potenciales de reducción",
+    "Celdas galvánicas y fem",
+    "Espontaneidad redox",
+    "Electrólisis",
+    "Leyes de Faraday",
+    "Diagrama de Pourbaix (solo San Marcos)"
+   ],
+   "modulos_actuales": [
+    "celda-galvanica",
+    "quimica-conceptos",
+    "clasificar-reacciones",
+    "estequiometria-admision"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo.",
+   "teoria": [
+    "En toda celda, oxidación ocurre en ánodo y reducción en cátodo. En una celda galvánica la reacción puede suministrar trabajo eléctrico; electrólisis usa energía externa para impulsar el proceso. El signo de los electrodos no es la definición de ánodo/cátodo.",
+    "Electrones circulan por el conductor externo; iones transportan carga en electrolito y puente. E°celda=E°red,cátodo−E°red,ánodo; los potenciales no se multiplican al escalar una semirreacción.",
+    "ΔG=−nFE y Nernst E=E°−(RT/nF)lnQ relacionan dirección y condiciones. Qeléctrica=It y masa depositada m=MIt/(zF), con eficiencia de corriente si se especifica.",
+    "Pourbaix representa regiones termodinámicas en potencial–pH para condiciones definidas; no predice por sí solo velocidad de corrosión."
+   ],
+   "condiciones": "Distinguir potencial estándar y real; declarar electrodo de referencia, T y actividades/concentraciones. En agua, no todo catión se deposita: pueden competir otras reacciones.",
+   "prerrequisitos": [
+    "Redox y balance.",
+    "Mol y carga eléctrica.",
+    "Equilibrio y logaritmos."
+   ],
+   "desempeno": "Identifica procesos y portadores, calcula fem o depósito y lee una región de Pourbaix sin inferir rapidez.",
+   "escena_propuesta": {
+    "accion": "Conectar dos semiceldas y cerrar el circuito iónico.",
+    "prediccion": "¿Qué transporta carga dentro del puente?",
+    "registro": "Guardar rutas de electrones/iones y cambios de masa.",
+    "regla": "El circuito requiere transporte electrónico e iónico.",
+    "ejemplo": "Completar fem desde dos potenciales tabulados.",
+    "transferencia": "Calcular masa de electrólisis y explicar una condición no estándar."
+   },
+   "otra_representacion": [
+    "Celda con rutas diferenciadas y semirreacciones.",
+    "Plano E–pH con condiciones y región seleccionada."
+   ],
+   "ejemplo": null,
+   "error_objetivo": "Hacer circular electrones por el puente salino.",
+   "transferencia": "Calcular masa de electrólisis y explicar una condición no estándar.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "Q29",
+     "titulo": "Chemistry 2e, §17.4",
+     "url": "https://openstax.org/books/chemistry-2e/pages/17-4-potential-free-energy-and-equilibrium"
+    },
+    {
+     "id": "Q30",
+     "titulo": "Chemistry 2e, §17.7",
+     "url": "https://openstax.org/books/chemistry-2e/pages/17-7-electrolysis"
+    },
+    {
+     "id": "Q31",
+     "titulo": "MIT OCW, Lecture 11: Pourbaix Diagram, 2014",
+     "url": "https://ocw.mit.edu/courses/10-626-electrochemical-energy-systems-spring-2014/resources/mit10_626s14_lec11/"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "quimica.electroquimica",
+    "nombre": "Electroquímica",
+    "historia": "La posibilidad de sostener una corriente eléctrica abrió una vía para relacionar electricidad y transformación de sustancias. En una carta fechada el 20 de marzo de 1800, Alessandro Volta describió a la Royal Society experimentos con contactos entre materiales conductores. Décadas después, las investigaciones de Michael Faraday sobre descomposición electroquímica, publicadas en 1834, establecieron relaciones cuantitativas entre electricidad transferida y materia transformada. La explicación escolar mediante electrones e iones usa conceptos y notación modernos; no debe presentarse como transcripción de esos documentos. El problema conserva actualidad: una celda permite obtener corriente de una reacción, mientras una electrólisis utiliza corriente para impulsar una transformación.",
+    "puente_escena": "El estudiante sigue por separado el circuito externo y el transporte iónico, predice cambios de masa en electrodos y registra carga transferida. Luego contrasta una celda galvánica con una electrólisis, formula dónde ocurre oxidación y reducción, y transfiere la regla a electrodos cuyos signos eléctricos se han invertido.",
+    "ecuaciones": [
+     {
+      "latex": "Q_{\\mathrm{el}}=It",
+      "lectura": "La carga eléctrica transferida es corriente por tiempo.",
+      "condiciones": "Corriente constante; si varía, integrar la corriente en el tiempo. Qel no representa calor."
+     },
+     {
+      "latex": "m=\\frac{MIt}{zF}",
+      "lectura": "La masa formada o consumida es masa molar por carga transferida dividida entre electrones por entidad y constante de Faraday.",
+      "condiciones": "Una reacción de electrodo identificada y eficiencia de corriente del 100 %. z es un entero positivo que cuenta electrones intercambiados."
+     },
+     {
+      "latex": "E_{\\mathrm{celda}}=E_{\\mathrm{catodo}}-E_{\\mathrm{anodo}}",
+      "lectura": "La diferencia de potencial de celda se obtiene restando los potenciales de reducción del cátodo y del ánodo.",
+      "condiciones": "Ambos potenciales expresados como reducción y bajo condiciones compatibles; no multiplicar potenciales al ajustar coeficientes."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Royal Society — Alessandro Volta, letter on electricity excited by contact (1800), original",
+      "url": "https://makingscience.royalsociety.org/items/l-and-p_11_137"
+     },
+     {
+      "titulo": "Smithsonian Libraries — Michael Faraday, On electro-chemical decomposition (1834), original",
+      "url": "https://library.si.edu/digital-library/book/onelectrochemic00fara"
+     }
+    ],
+    "nota_editorial": "Relato histórico original de orientación; las ecuaciones usan notación moderna y no se presentan como transcripción de documentos históricos.",
+    "diagramas_propuestos": []
+   }
+  },
+  {
+   "id": "quimica.hidrocarburos",
+   "curso": "Química",
+   "curso_id": "quimica",
+   "numero": 16,
+   "titulo": "Química orgánica: hidrocarburos",
+   "grado": 4,
+   "temas_catalogo": [
+    "El carbono e hibridación",
+    "Tipos de fórmulas y cadenas",
+    "Alcanos, alquenos y alquinos",
+    "Cicloalcanos",
+    "Aromáticos",
+    "Isomería estructural y geométrica",
+    "Isomería óptica (solo San Marcos)",
+    "Tipos de reacciones orgánicas"
+   ],
+   "modulos_actuales": [
+    "hidrocarburos",
+    "molecula-grande",
+    "quimica-conceptos",
+    "nombre-polifuncional"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de comparar.",
+   "teoria": [
+    "El carbono forma estructuras diversas; sp³,sp²,sp son modelos para describir geometrías y enlaces σ/π. Fórmulas molecular, desarrollada, condensada y esquelética codifican distinta información de una misma estructura.",
+    "Alcanos, alquenos, alquinos y cicloalcanos se distinguen por conectividad e insaturación; las fórmulas generales requieren supuestos de estructura. Aromático no significa simplemente «tiene olor» ni todo anillo es aromático.",
+    "Isómeros constitucionales difieren en conectividad; estereoisómeros, en disposición. Rotar la molécula completa no crea isómero. Cis/trans o E/Z y quiralidad necesitan condiciones estructurales.",
+    "Nomenclatura exige elegir progenitor, numeración y sustituyentes según reglas de la familia; «cadena más larga» por sí sola no cubre todas. Adición, sustitución, eliminación y oxidación describen cambios de enlace."
+   ],
+   "condiciones": "La app debe validar valencias y conectividad; giro 3D no debe alterar enlaces. No reducir isomería óptica a «tener un carbono asimétrico» como criterio universal.",
+   "prerrequisitos": [
+    "Enlaces y valencia.",
+    "Lectura de estructuras.",
+    "Simetría espacial básica."
+   ],
+   "desempeno": "Reconstruye una estructura desde su nombre, distingue isómero de otra vista y clasifica una transformación.",
+   "escena_propuesta": {
+    "accion": "Seguir un ejemplo de nombrado y comparar dos estructuras armadas.",
+    "prediccion": "¿La nueva vista cambió molécula o solo orientación?",
+    "registro": "Fijar conexiones y numeración del progenitor.",
+    "regla": "La identidad depende de conectividad y configuración, no del dibujo.",
+    "ejemplo": "Completar nombre de un alcano ramificado.",
+    "transferencia": "Proponer un isómero constitucional y otro ejemplo que solo sea rotación."
+   },
+   "otra_representacion": [
+    "Fórmula esquelética ↔ modelo espacial.",
+    "Tabla de conexiones con átomos numerados."
+   ],
+   "ejemplo": null,
+   "error_objetivo": "Contar rotaciones o conformaciones como isómeros constitucionales.",
+   "transferencia": "Proponer un isómero constitucional y otro ejemplo que solo sea rotación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "Q32",
+     "titulo": "Organic Chemistry, §3.4",
+     "url": "https://openstax.org/books/organic-chemistry/pages/3-4-naming-alkanes"
+    },
+    {
+     "id": "Q33",
+     "titulo": "Organic Chemistry, §5.2",
+     "url": "https://openstax.org/books/organic-chemistry/pages/5-2-the-reason-for-handedness-in-molecules-chirality"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "quimica.hidrocarburos",
+    "nombre": "Química orgánica: hidrocarburos",
+    "historia": "La química orgánica creció al enfrentar una dificultad: conocer la composición no bastaba para explicar todas las propiedades. La preparación de urea por Wöhler en 1828 fue un episodio importante en el debate sobre sustancias orgánicas, aunque no eliminó por sí sola las ideas vitalistas ni inició la disciplina. El estudio de isómeros impulsó preguntas sobre conectividad y disposición espacial. En 1874, van ’t Hoff propuso una organización tetraédrica para los enlaces del carbono, aportando una explicación espacial de ciertos comportamientos. Las representaciones de cadenas y estereoisómeros recogen esa evolución: una fórmula molecular puede corresponder a estructuras diferentes.",
+    "puente_escena": "Con un inventario fijo de carbonos e hidrógenos, el estudiante construye dos conectividades y después compara disposiciones espaciales permitidas. Predice cuáles representan la misma sustancia, conserva modelos y nombres y enuncia el criterio usado. La transferencia exige distinguir rotación de enlaces simples de una restricción asociada al doble enlace.",
+    "ecuaciones": [
+     {
+      "latex": "\\mathrm{C}_n\\mathrm{H}_{2n+2}",
+      "lectura": "Un alcano acíclico saturado tiene esta fórmula general.",
+      "condiciones": "Una sola molécula neutra formada únicamente por carbono e hidrógeno, con cadena abierta y enlaces simples; no sirve para cicloalcanos."
+     },
+     {
+      "latex": "\\mathrm{C_2H_4}+\\mathrm{H_2}\\longrightarrow\\mathrm{C_2H_6}",
+      "lectura": "La hidrogenación del eteno produce etano y conserva todos los átomos.",
+      "condiciones": "Requiere condiciones y catalizador adecuados; representa un balance global de adición, no su mecanismo."
+     },
+     {
+      "latex": "I=\\frac{2C+2+N-H-X}{2}",
+      "lectura": "El índice de insaturación se obtiene del conteo de carbonos, nitrógenos, hidrógenos y halógenos.",
+      "condiciones": "Fórmula molecular de una especie neutra ordinaria de capa cerrada con valencias habituales; X cuenta halógenos. Oxígeno no interviene en esta expresión. No distingue por sí solo ciclos y enlaces múltiples."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Science History Institute — Justus von Liebig and Friedrich Wöhler",
+      "url": "https://www.sciencehistory.org/education/scientific-biographies/justus-von-liebig-and-friedrich-wohler/"
+     },
+     {
+      "titulo": "Nobel Foundation — The Nobel Prize in Chemistry: The Development of Modern Chemistry",
+      "url": "https://www.nobelprize.org/prizes/themes/the-nobel-prize-in-chemistry-the-development-of-modern-chemistry/"
+     }
+    ],
+    "nota_editorial": "Relato histórico original de orientación; las ecuaciones usan notación moderna y no se presentan como transcripción de documentos históricos.",
+    "diagramas_propuestos": []
+   }
+  },
+  {
+   "id": "quimica.funciones-organicas",
+   "curso": "Química",
+   "curso_id": "quimica",
+   "numero": 17,
+   "titulo": "Funciones orgánicas oxigenadas y nitrogenadas",
+   "grado": 4,
+   "temas_catalogo": [
+    "Grupos funcionales",
+    "Alcoholes, fenoles y éteres",
+    "Aldehídos y cetonas",
+    "Ácidos carboxílicos y ésteres",
+    "Aminas, amidas y nitrilos",
+    "Isomería de función",
+    "Nomenclatura de compuestos monofuncionales"
+   ],
+   "modulos_actuales": [
+    "funciones-organicas",
+    "molecula-grande",
+    "quimica-conceptos",
+    "nombre-polifuncional"
+   ],
+   "ruta_propuesta": "comparar, con apoyo de recordar.",
+   "teoria": [
+    "Un grupo funcional es un patrón local de conectividad que ayuda a predecir reactividad. Alcohol y fenol contienen OH en entornos diferentes; éter conecta dos grupos carbonados por O; carbonilo distingue aldehído y cetona.",
+    "Carboxilo, éster, amina, amida y nitrilo deben reconocerse por todos sus átomos y enlaces, no por detectar O o N aislados. Una amida no se comporta igual que una amina porque cambia la distribución electrónica.",
+    "Isomería de función permite misma fórmula molecular con familias diferentes. Nomenclatura monofuncional conecta grupo principal, cadena, locantes y sufijo.",
+    "Interacciones y propiedades dependen de grupo, tamaño, ramificación, posibilidad de donar/aceptar puentes de H y estado físico; el grupo funcional no determina por sí solo toda propiedad."
+   ],
+   "condiciones": "No prometer que cambiar un grupo siempre aumenta solubilidad o ebullición. Las comparaciones requieren controlar el resto de la estructura.",
+   "prerrequisitos": [
+    "Fórmula esquelética y valencia.",
+    "Enlaces/interacciones.",
+    "Nomenclatura de cadenas."
+   ],
+   "desempeno": "Reconoce grupos en una estructura nueva, nombra un compuesto y justifica una comparación controlada.",
+   "escena_propuesta": {
+    "accion": "Comparar pares con esqueleto similar y grupos distintos.",
+    "prediccion": "¿Qué parte de la estructura explica la diferencia?",
+    "registro": "Dejar grupo resaltado y propiedad relevante al lado.",
+    "regla": "Un grupo se reconoce por conectividad completa.",
+    "ejemplo": "Completar identificación de alcohol, éter y carbonilo.",
+    "transferencia": "Detectar varios grupos en una molécula mayor sin confundirlos."
+   },
+   "otra_representacion": [
+    "Estructuras con subgrafos funcionales resaltados.",
+    "Tabla de donadores/aceptores y propiedades comparables."
+   ],
+   "ejemplo": null,
+   "error_objetivo": "Llamar alcohol a cualquier molécula con O o amina a toda molécula con N.",
+   "transferencia": "Detectar varios grupos en una molécula mayor sin confundirlos.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "Q34",
+     "titulo": "Organic Chemistry, §3.1",
+     "url": "https://openstax.org/books/organic-chemistry/pages/3-1-functional-groups"
+    },
+    {
+     "id": "Q35",
+     "titulo": "Organic Chemistry, apéndice de nomenclatura",
+     "url": "https://openstax.org/books/organic-chemistry/pages/a-nomenclature-of-polyfunctional-organic-compounds"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "quimica.funciones-organicas",
+    "nombre": "Funciones orgánicas oxigenadas y nitrogenadas",
+    "historia": "Reconocer regularidades entre sustancias orgánicas exigió mirar más allá de la fórmula molecular completa. En 1832, Liebig y Wöhler estudiaron transformaciones en las que identificaron un grupo al que llamaron benzoilo, dentro de la teoría de radicales de su época. Ese vocabulario histórico no equivale al significado moderno de radical como especie con un electrón desapareado. La búsqueda de porciones que conservaban identidad ayudó a organizar familias y transformaciones. La noción actual de grupo funcional utiliza una base estructural distinta y permite relacionar alcoholes, ácidos, ésteres o amidas con comportamientos característicos, siempre condicionados por el resto de la molécula y el medio.",
+    "puente_escena": "La escena conserva el esqueleto carbonado mientras el estudiante sustituye un grupo funcional y predice propiedades o transformaciones. Un registro enfrenta alcohol, éter y ácido con sus condiciones. Después formula qué parte de la estructura sustenta su predicción y transfiere el criterio a una molécula que contiene dos grupos.",
+    "ecuaciones": [
+     {
+      "latex": "\\mathrm{CH_3COOH}+\\mathrm{CH_3CH_2OH}\\rightleftharpoons\\mathrm{CH_3COOCH_2CH_3}+\\mathrm{H_2O}",
+      "lectura": "Ácido etanoico y etanol pueden formar etanoato de etilo y agua en una esterificación reversible.",
+      "condiciones": "Esterificación de Fischer en condiciones catalizadas por ácido apropiadas; la ecuación es global y balanceada. El equilibrio no implica conversión completa."
+     },
+     {
+      "latex": "\\mathrm{RNH_2}+\\mathrm{H_2O}\\rightleftharpoons\\mathrm{RNH_3}^{+}+\\mathrm{OH}^{-}",
+      "lectura": "Una amina primaria puede aceptar un protón del agua.",
+      "condiciones": "Equilibrio ácido-base acuoso; R representa un sustituyente orgánico. La posición del equilibrio depende de la estructura y la temperatura."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Science History Institute — Justus von Liebig and Friedrich Wöhler",
+      "url": "https://www.sciencehistory.org/education/scientific-biographies/justus-von-liebig-and-friedrich-wohler/"
+     },
+     {
+      "titulo": "OpenStax Organic Chemistry — 3.1 Functional Groups",
+      "url": "https://openstax.org/books/organic-chemistry/pages/3-1-functional-groups"
+     }
+    ],
+    "nota_editorial": "Relato histórico original de orientación; las ecuaciones usan notación moderna y no se presentan como transcripción de documentos históricos.",
+    "diagramas_propuestos": []
+   }
+  },
+  {
+   "id": "quimica.biomoleculas-y-productos-naturales",
+   "curso": "Química",
+   "curso_id": "quimica",
+   "numero": 18,
+   "titulo": "Biomoléculas y productos naturales",
+   "grado": 5,
+   "temas_catalogo": [
+    "Carbohidratos",
+    "Lípidos",
+    "Aminoácidos y proteínas",
+    "Vitaminas",
+    "Alcaloides y polifenoles",
+    "Colorantes naturales"
+   ],
+   "modulos_actuales": [
+    "biomoleculas",
+    "quimica-conceptos",
+    "estequiometria-admision",
+    "molecula-grande",
+    "nombre-polifuncional"
+   ],
+   "ruta_propuesta": "comparar, con apoyo de recordar.",
+   "teoria": [
+    "Carbohidratos incluyen mono-, di- y polisacáridos; la estructura del enlace glucosídico importa. Lípidos son un conjunto diverso: grasas/aceites contienen triacilglicéridos, pero no todo lípido es polímero ni grasa.",
+    "Aminoácidos poseen grupos amino y carboxilo; proteínas son cadenas de residuos unidos por enlaces peptídicos, con organización estructural. Desnaturalizar no equivale necesariamente a hidrolizar enlaces peptídicos.",
+    "Vitaminas se clasifican por solubilidad y función química general, no como fuente calórica principal. Alcaloides y polifenoles son familias estructurales heterogéneas; pigmentos relacionan estructura electrónica y absorción de luz.",
+    "Condensación formal puede liberar agua; hidrólisis la consume al romper ciertos enlaces. «Toda unión suelta agua» es falso: existen adición y otros procesos. Las rutas biosintéticas reales pueden usar intermediarios activados."
+   ],
+   "condiciones": "No enseñar que todos los carbohidratos son dulces ni que natural significa inocuo. La unidad trata estructura y transformaciones químicas, no promesas de salud.",
+   "prerrequisitos": [
+    "Grupos funcionales.",
+    "Enlaces y reacciones.",
+    "Representación molecular."
+   ],
+   "desempeno": "Clasifica biomoléculas por estructura y distingue ensamblaje, hidrólisis y desnaturalización.",
+   "escena_propuesta": {
+    "accion": "Comparar formación/ruptura de un enlace y plegado/desplegado de una cadena.",
+    "prediccion": "¿Desplegar rompe necesariamente la cadena?",
+    "registro": "Conservar inventario de átomos y enlaces antes/después.",
+    "regla": "Cambiar forma y romper enlaces son procesos diferentes.",
+    "ejemplo": "Completar enlace peptídico y balance formal de agua.",
+    "transferencia": "Contrastar condensación con polimerización por adición."
+   },
+   "otra_representacion": [
+    "Estructura química ↔ bloques con grupos explícitos.",
+    "Cadena primaria y plegamiento comparados sin ocultar enlaces."
+   ],
+   "ejemplo": null,
+   "error_objetivo": "Confundir desnaturalización con hidrólisis; universalizar liberación de agua.",
+   "transferencia": "Contrastar condensación con polimerización por adición.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "Q36",
+     "titulo": "Organic Chemistry, §25.1",
+     "url": "https://openstax.org/books/organic-chemistry/pages/25-1-classification-of-carbohydrates"
+    },
+    {
+     "id": "Q37",
+     "titulo": "Organic Chemistry, §26.4",
+     "url": "https://openstax.org/books/organic-chemistry/pages/26-4-peptides-and-proteins"
+    },
+    {
+     "id": "Q38",
+     "titulo": "Organic Chemistry, §27.1",
+     "url": "https://openstax.org/books/organic-chemistry/pages/27-1-waxes-fats-and-oils"
+    },
+    {
+     "id": "Q39",
+     "titulo": "Organic Chemistry, §31.1 (contraejemplo de adición)",
+     "url": "https://openstax.org/books/organic-chemistry/pages/31-1-chain-growth-polymers"
+    },
+    {
+     "id": "Q48",
+     "titulo": "Organic Chemistry, Chemistry Matters cap. 2 (alcaloides)",
+     "url": "https://openstax.org/books/organic-chemistry/pages/2-chemistry-matters-alkaloids-from-cocaine-to-dental-anesthetics"
+    },
+    {
+     "id": "Q49",
+     "titulo": "Organic Chemistry, Chemistry Matters cap. 20 (vitaminas)",
+     "url": "https://openstax.org/books/organic-chemistry/pages/20-chemistry-matters-vitamin-c"
+    },
+    {
+     "id": "Q53",
+     "titulo": "Organic Chemistry, §14.9 (conjugación y color)",
+     "url": "https://openstax.org/books/organic-chemistry/pages/14-9-conjugation-color-and-the-chemistry-of-vision"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "quimica.biomoleculas-y-productos-naturales",
+    "nombre": "Biomoléculas y productos naturales",
+    "historia": "Saber que una proteína contiene aminoácidos no determina cómo están ordenados. En su conferencia Nobel de 1958, Frederick Sanger explicó el trabajo sobre la estructura de la insulina y recordó que, al comenzar en 1943, todavía faltaba establecer la disposición precisa de los residuos. La investigación utilizó transformaciones controladas, separación e identificación de fragmentos para reconstruir una estructura. El episodio muestra cómo el análisis químico conecta composición con secuencia y cómo una molécula biológica puede estudiarse sin reducirla a una lista de nombres. También ayuda a separar preguntas: romper enlaces peptídicos, alterar el plegamiento y medir una función son operaciones diferentes.",
+    "puente_escena": "El estudiante recibe fragmentos solapados de una cadena representacional y propone una secuencia que conserve cada evidencia. Después compara hidrólisis y desnaturalización, registra qué enlaces o interacciones se modifican y redacta una regla. La transferencia aplica la distinción entre composición, estructura y propiedad a un carbohidrato o un colorante natural.",
+    "ecuaciones": [
+     {
+      "latex": "N_{\\mathrm{enlaces\\ peptidicos}}=n-1",
+      "lectura": "Una cadena peptídica lineal de n residuos contiene n menos un enlaces peptídicos en su esqueleto.",
+      "condiciones": "Una sola cadena lineal, sin enlaces cruzados peptídicos adicionales ni estructura cíclica. Los puentes disulfuro no se cuentan como enlaces peptídicos."
+     },
+     {
+      "latex": "\\mathrm{RCONHR'}+\\mathrm{H_2O}\\longrightarrow\\mathrm{RCOOH}+\\mathrm{H_2NR'}",
+      "lectura": "La hidrólisis formal de una amida rompe el enlace carbono-nitrógeno y consume agua.",
+      "condiciones": "Balance global con especies neutras como convención; requiere condiciones químicas o enzimáticas apropiadas. En medios ácido o básico predominan formas protonadas o desprotonadas que deben representarse al detallar el proceso."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Frederick Sanger — The Chemistry of Insulin, Nobel Lecture (1958), documento original",
+      "url": "https://www.nobelprize.org/uploads/2018/06/sanger-lecture.pdf"
+     }
+    ],
+    "nota_editorial": "Relato histórico original de orientación; las ecuaciones usan notación moderna y no se presentan como transcripción de documentos históricos.",
+    "diagramas_propuestos": []
+   }
+  },
+  {
+   "id": "quimica.recursos-naturales",
+   "curso": "Química",
+   "curso_id": "quimica",
+   "numero": 19,
+   "titulo": "Petróleo y recursos naturales",
+   "grado": 4,
+   "temas_catalogo": [
+    "Petróleo y refinación",
+    "Gasolina y octanaje",
+    "Gas natural y carbón",
+    "Combustión completa e incompleta",
+    "Recursos minerales del Perú (solo San Marcos)",
+    "Metalurgia del Fe, Cu, Pb, Zn, Au y Ag (solo San Marcos)"
+   ],
+   "modulos_actuales": [
+    "quimica-ambiente",
+    "quimica-conceptos",
+    "estequiometria-admision"
+   ],
+   "ruta_propuesta": "recordar, con apoyo de comparar.",
+   "teoria": [
+    "Petróleo, gas natural y carbón son recursos de composición variable. Destilación separa fracciones por volatilidad e intervalos de ebullición; craqueo y reformado modifican moléculas. Separar y transformar son operaciones distintas.",
+    "Octanaje expresa resistencia a detonación según método, no porcentaje universal de un componente ni energía por litro. Combustión completa de hidrocarburo forma idealmente CO₂ y H₂O; combustión incompleta puede producir CO, hollín y mezclas.",
+    "Mineral, mena, ley y metal no son sinónimos. La metalurgia combina preparación, concentración y extracción/refinación según mena: rutas térmicas, hidrometalúrgicas o electrolíticas. Fe, Cu, Pb, Zn, Au y Ag necesitan fichas propias de mineral/ruta/reacción.",
+    "Los recursos peruanos se documentan con fuentes oficiales y fecha; producción, reserva y recurso son magnitudes diferentes."
+   ],
+   "condiciones": "No reducir cada fracción a una sustancia o punto de ebullición único. No publicar rankings de producción sin año. Las rutas mineras son modelos de proceso, no protocolos operativos.",
+   "prerrequisitos": [
+    "Mezclas y cambios físicos/químicos.",
+    "Hidrocarburos y combustión.",
+    "Redox y estequiometría."
+   ],
+   "desempeno": "Distingue separación de conversión, balancea una combustión y relaciona mena con principio de extracción.",
+   "escena_propuesta": {
+    "accion": "Recordar pares proceso–función y comparar dos rutas de transformación.",
+    "prediccion": "¿Destilar cambia la identidad de las moléculas?",
+    "registro": "Fijar composición de entrada/salida y rangos de temperatura.",
+    "regla": "Separación cambia distribución; conversión cambia especies.",
+    "ejemplo": "Completar combustión de un hidrocarburo sencillo.",
+    "transferencia": "Elegir una secuencia conceptual para concentrar y obtener un metal."
+   },
+   "otra_representacion": [
+    "Columna de fraccionamiento con bandas de intervalo.",
+    "Diagrama de proceso y tabla mena–metal–reacción."
+   ],
+   "ejemplo": null,
+   "error_objetivo": "Confundir destilación con craqueo o ley mineral con pureza del metal final.",
+   "transferencia": "Elegir una secuencia conceptual para concentrar y obtener un metal.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "Q40",
+     "titulo": "EIA, The refining process",
+     "url": "https://www.eia.gov/energyexplained/oil-and-petroleum-products/refining-crude-oil-the-refining-process.php"
+    },
+    {
+     "id": "Q41",
+     "titulo": "Chemistry 2e, §18.2",
+     "url": "https://openstax.org/books/chemistry-2e/pages/18-2-occurrence-and-preparation-of-the-representative-metals"
+    },
+    {
+     "id": "Q42",
+     "titulo": "BCRP, series anuales, fuente MINEM",
+     "url": "https://estadisticas.bcrp.gob.pe/estadisticas/series/anuales"
+    },
+    {
+     "id": "Q50",
+     "titulo": "Chemistry 2e, §19.1 (Fe, Cu, Ag)",
+     "url": "https://openstax.org/books/chemistry-2e/pages/19-1-occurrence-preparation-and-properties-of-transition-metals-and-their-compounds"
+    },
+    {
+     "id": "Q51",
+     "titulo": "EIA, Octane in depth",
+     "url": "https://www.eia.gov/energyexplained/gasoline/octane-in-depth.php"
+    },
+    {
+     "id": "Q54",
+     "titulo": "EPA AP-42, §12.6, Primary Lead Smelting, 1995",
+     "url": "https://www.epa.gov/sites/default/files/2020-11/documents/c12s06.pdf"
+    },
+    {
+     "id": "Q55",
+     "titulo": "EPA AP-42, §12.7, Zinc Smelting, 1986, reformato 1995",
+     "url": "https://www.epa.gov/sites/default/files/2020-11/documents/c12s07.pdf"
+    },
+    {
+     "id": "Q56",
+     "titulo": "EPA 530-R-94-013, Gold, 1994, §1.4",
+     "url": "https://nepis.epa.gov/Exe/ZyPURL.cgi?Dockey=2000EE9Q.TXT"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "quimica.recursos-naturales",
+    "nombre": "Petróleo y recursos naturales",
+    "historia": "El crecimiento de la demanda de combustibles planteó una pregunta industrial: ¿bastaba separar las fracciones presentes en el petróleo o era necesario transformar sus moléculas? La primera instalación comercial a gran escala del proceso catalítico Houdry comenzó a operar en 1937, resultado de trabajo industrial y experimental colectivo. El craqueo permitió obtener productos diferentes mediante reacciones, mientras la destilación separaba componentes según su volatilidad. La refinación moderna combina separación, conversión y tratamiento. Este origen ayuda a distinguir operaciones que suelen confundirse en un dibujo de torre y a comprender que una fracción es una mezcla, con un intervalo de ebullición, no una sustancia pura.",
+    "puente_escena": "Una escena sigue lotes de hidrocarburos a través de separación y conversión. El estudiante predice dónde cambia solo la distribución y dónde cambia la identidad molecular; el registro conserva átomos y cantidades. Formula la diferencia y la transfiere a un mineral, distinguiendo concentración física de extracción mediante reacción.",
+    "ecuaciones": [
+     {
+      "latex": "\\mathrm{C_{10}H_{22}}\\longrightarrow\\mathrm{C_8H_{18}}+\\mathrm{C_2H_4}",
+      "lectura": "Un balance ilustrativo de craqueo convierte un hidrocarburo en dos moléculas menores.",
+      "condiciones": "Ejemplo estequiométrico posible, no descripción de un producto único ni mecanismo del craqueo industrial. Los productos reales forman mezclas y dependen del proceso."
+     },
+     {
+      "latex": "\\mathrm{CH_4}+2\\,\\mathrm{O_2}\\longrightarrow\\mathrm{CO_2}+2\\,\\mathrm{H_2O}",
+      "lectura": "La combustión completa del metano consume dos moles de oxígeno por mol de metano.",
+      "condiciones": "Modelo de combustión completa; el estado del agua depende de las condiciones. Oxígeno insuficiente o mezcla deficiente pueden generar otros productos."
+     },
+     {
+      "latex": "m_{\\mathrm{metal}}=m_{\\mathrm{mena}}\\,w_{\\mathrm{metal}}\\,r",
+      "lectura": "La masa de metal recuperada es masa de mena por fracción másica del metal por fracción de recuperación.",
+      "condiciones": "wmetal expresa contenido del elemento, no del mineral compuesto; r es una fracción entre cero y uno. Si se pide masa de producto impuro, incorporar su pureza por separado."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "American Chemical Society — The Houdry Process for Catalytic Cracking",
+      "url": "https://www.acs.org/education/whatischemistry/landmarks/houdry.html"
+     },
+     {
+      "titulo": "U.S. Energy Information Administration — Refining crude oil: the refining process",
+      "url": "https://www.eia.gov/energyexplained/oil-and-petroleum-products/refining-crude-oil-the-refining-process.php"
+     }
+    ],
+    "nota_editorial": "Relato histórico original de orientación; las ecuaciones usan notación moderna y no se presentan como transcripción de documentos históricos.",
+    "diagramas_propuestos": []
+   }
+  },
+  {
+   "id": "quimica.ambiente-y-quimica-aplicada",
+   "curso": "Química",
+   "curso_id": "quimica",
+   "numero": 20,
+   "titulo": "Contaminación ambiental y química aplicada",
+   "grado": 4,
+   "temas_catalogo": [
+    "Ecosistemas y contaminantes",
+    "Efecto invernadero",
+    "Smog y lluvia ácida",
+    "Capa de ozono",
+    "Contaminación y potabilización del agua",
+    "Eutrofización",
+    "Reciclaje y tecnologías limpias",
+    "Nanotecnología, polímeros y corrosión (solo UNI)"
+   ],
+   "modulos_actuales": [
+    "quimica-ambiente",
+    "quimica-conceptos"
+   ],
+   "ruta_propuesta": "recordar, con apoyo de comparar.",
+   "teoria": [
+    "Un contaminante se describe por fuente, especie, transformación, transporte y efecto. Efecto invernadero, pérdida de ozono estratosférico, ozono troposférico/smog y lluvia ácida tienen mecanismos distintos, aunque ciertas sustancias participen en más de uno.",
+    "Exceso de nutrientes puede favorecer proliferación algal y descenso de oxígeno; eutrofización no significa solo agua verde. Potabilización combina barreras: separación de partículas y desinfección no cumplen la misma función.",
+    "Reciclaje y tecnologías limpias se comparan mediante flujos de materia/energía y contexto, no por una etiqueta. Polímeros se diferencian por estructura y formación; degradación y reciclabilidad no son equivalentes.",
+    "Corrosión es transformación electroquímica condicionada por medio y material. Nanoescala puede cambiar propiedades por superficie y estructura; no garantiza por sí sola seguridad ni rendimiento."
+   ],
+   "condiciones": "No mostrar una flecha única «gas→problema» como explicación completa. Separar modelos causales cualitativos y predicciones cuantitativas que necesitan datos. Datos ambientales peruanos requieren fuente y fecha.",
+   "prerrequisitos": [
+    "Reacciones y conservación.",
+    "Ácidos/bases y redox básicos.",
+    "Leer relaciones causales y flujos."
+   ],
+   "desempeno": "Relaciona una evidencia con un mecanismo ambiental y elige una intervención justificando su alcance.",
+   "escena_propuesta": {
+    "accion": "Recuperar relaciones básicas y comparar cadenas causales de dos problemas.",
+    "prediccion": "¿Quitar partículas basta para desinfectar agua?",
+    "registro": "Fijar qué retira o transforma cada etapa.",
+    "regla": "Cada proceso actúa sobre un mecanismo específico.",
+    "ejemplo": "Completar fuente–precursor–transformación–efecto para lluvia ácida.",
+    "transferencia": "Explicar un caso que combina nutrientes, oxígeno y tratamiento."
+   },
+   "otra_representacion": [
+    "Mapa causal con especies y procesos rotulados.",
+    "Balance de materia y etapas de tratamiento."
+   ],
+   "ejemplo": null,
+   "error_objetivo": "Confundir agujero de ozono con causa principal del calentamiento; confundir filtrar y desinfectar.",
+   "transferencia": "Explicar un caso que combina nutrientes, oxígeno y tratamiento.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "Q43",
+     "titulo": "EPA, What is Acid Rain?",
+     "url": "https://www.epa.gov/acidrain/what-acid-rain"
+    },
+    {
+     "id": "Q44",
+     "titulo": "EPA, Basic Information on Nutrient Pollution",
+     "url": "https://www.epa.gov/nutrientpollution/basic-information-nutrient-pollution"
+    },
+    {
+     "id": "Q45",
+     "titulo": "NASA, Is the ozone hole causing climate change?",
+     "url": "https://science.nasa.gov/climate-change/faq/is-the-ozone-hole-causing-climate-change/"
+    },
+    {
+     "id": "Q46",
+     "titulo": "WHO, Guidelines for Drinking-water Quality, copia EPA, §7 (tratamiento)",
+     "url": "https://www.epa.gov/sites/default/files/2014-03/documents/guidelines_for_drinking_water_quality_3v.pdf"
+    },
+    {
+     "id": "Q47",
+     "titulo": "Chemistry 2e, §17.6 (corrosión)",
+     "url": "https://openstax.org/books/chemistry-2e/pages/17-6-corrosion"
+    },
+    {
+     "id": "Q52",
+     "titulo": "NNCO, Working at the Nanoscale",
+     "url": "https://www.nano.gov/about-nanotechnology/working-at-nanoscale/"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "quimica.ambiente-y-quimica-aplicada",
+    "nombre": "Contaminación ambiental y química aplicada",
+    "historia": "Una sustancia poco reactiva cerca del suelo no tiene por qué ser inocua en toda la atmósfera. En 1974, Mario Molina y F. Sherwood Rowland publicaron un análisis sobre los clorofluorocarbonos como fuente de átomos de cloro capaces de destruir ozono estratosférico. El problema conectaba emisiones, transporte, radiación ultravioleta y ciclos catalíticos. Su argumento mostró que evaluar un contaminante requiere seguir su destino y sus transformaciones, no solo observar el punto de emisión. La representación escolar de un ciclo de cloro ilustra una parte del mecanismo; no sustituye toda la química atmosférica ni debe confundirse con el efecto invernadero.",
+    "puente_escena": "El estudiante sigue una especie desde su emisión hasta una región con radiación suficiente para transformarla. Predice qué partículas se consumen y cuáles se regeneran, registra varios ciclos y escribe el balance neto. La transferencia compara este mecanismo con otro problema ambiental y exige identificar medio, transformación y consecuencia.",
+    "ecuaciones": [
+     {
+      "latex": "\\mathrm{Cl}^{\\bullet}+\\mathrm{O_3}\\longrightarrow\\mathrm{ClO}^{\\bullet}+\\mathrm{O_2}",
+      "lectura": "Un radical cloro reacciona con ozono y forma radical monóxido de cloro y oxígeno molecular.",
+      "condiciones": "Paso de un ciclo simplificado de destrucción catalítica de ozono; el punto indica electrón desapareado, no carga eléctrica."
+     },
+     {
+      "latex": "\\mathrm{ClO}^{\\bullet}+\\mathrm{O}\\longrightarrow\\mathrm{Cl}^{\\bullet}+\\mathrm{O_2}",
+      "lectura": "El radical monóxido de cloro reacciona con oxígeno atómico y regenera el radical cloro.",
+      "condiciones": "Este ciclo requiere disponibilidad de oxígeno atómico; no resume por sí solo las rutas dominantes del agujero polar de ozono."
+     },
+     {
+      "latex": "\\mathrm{O_3}+\\mathrm{O}\\longrightarrow2\\,\\mathrm{O_2}",
+      "lectura": "El balance neto consume ozono y oxígeno atómico y produce oxígeno molecular.",
+      "condiciones": "Suma de las dos etapas anteriores: el cloro se cancela del balance porque se regenera, aunque participa en el mecanismo."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "M. J. Molina y F. S. Rowland (1974) — Stratospheric sink for chlorofluoromethanes: chlorine atom-catalysed destruction of ozone, Nature",
+      "url": "https://www.nature.com/articles/249810a0"
+     }
+    ],
+    "nota_editorial": "Relato histórico original de orientación; las ecuaciones usan notación moderna y no se presentan como transcripción de documentos históricos.",
+    "diagramas_propuestos": []
+   }
+  }
+ ]
+}

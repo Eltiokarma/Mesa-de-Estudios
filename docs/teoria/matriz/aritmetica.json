@@ -1,0 +1,1509 @@
+{
+ "curso": "aritmetica",
+ "fecha": "2026-11-14",
+ "tipo": "Expediente editorial; no es el formato de ejecución de Teoria.vista",
+ "unidades": [
+  {
+   "id": "aritmetica.logica-proposicional",
+   "curso": "Aritmética",
+   "curso_id": "aritmetica",
+   "numero": 1,
+   "titulo": "Lógica proposicional",
+   "grado": 3,
+   "temas_catalogo": [
+    "Proposiciones simples y compuestas",
+    "Conectivos lógicos",
+    "Tablas de verdad",
+    "Tautología, contradicción y contingencia",
+    "Leyes lógicas",
+    "Cuantificadores"
+   ],
+   "modulos_actuales": [
+    "logica"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de comparar.",
+   "teoria": "Una proposición tiene valor de verdad; una pregunta o una expresión abierta no lo tiene hasta fijar su interpretación. ¬, ∧, ∨, → y ↔ se definen por tablas; la disyunción estándar es inclusiva. p→q solo es falsa cuando p es verdadera y q falsa. Una tautología es verdadera en todas las valuaciones; una contradicción, en ninguna; una contingencia, en algunas. Equivalencia significa misma tabla, no frases parecidas. De Morgan intercambia conjunción/disyunción al negar. ∀ y ∃ requieren dominio; negar ∀x P(x) produce ∃x ¬P(x), y el orden de cuantificadores puede cambiar la afirmación.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Distinguir afirmación de pregunta",
+    "Leer una condición y su negación",
+    "Enumerar dos opciones binarias"
+   ],
+   "desempeno": "Construye una tabla y produce una valuación que refuta una equivalencia falsa.",
+   "escena_propuesta": "Tras un ejemplo, predice una salida y conecta interruptores; la tabla registra entrada/salida. Compara p→q con q→p dejando visible una fila que los distingue. Al final elige una regla equivalente sin circuito.",
+   "otra_representacion": "Tarjetas de casos cotidianos con universo explícito; después traducción simbólica.",
+   "ejemplo": "Con p=verdadero y q=falso, p→q es falso; q→p es verdadero.",
+   "error_objetivo": {
+    "descripcion": "Confundir implicación con su recíproca o tomar ∨ como exclusiva.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "CM-L",
+     "autor": "OpenStax",
+     "titulo": "Contemporary Mathematics (2023)",
+     "localizador": "Cap. 2, §§2.1–2.7: enunciados, cuantificadores, tablas, equivalencia y argumentos",
+     "url": "https://openstax.org/books/contemporary-mathematics/pages/2-introduction",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "DM-L",
+     "autor": "O. Levin",
+     "titulo": "Discrete Mathematics: An Open Introduction, 4th ed.",
+     "localizador": "§1.1 Mathematical Statements y §1.3 Rules of Logic",
+     "url": "https://discrete.openmathbooks.org/dmoi4/sec_logic-rules.html",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "aritmetica",
+    "numero": 1,
+    "historia": "La lógica estudió argumentos mucho antes de disponer de un cálculo simbólico semejante al actual. En 1854, George Boole publicó Laws of Thought y desarrolló una relación entre operaciones algebraicas y formas del razonamiento. Su propuesta permitió tratar combinaciones de condiciones mediante reglas explícitas; las aplicaciones posteriores a circuitos pertenecen a otra etapa. Esta unidad retoma ese cambio de perspectiva: comprobar todas las posibilidades, en lugar de aceptar una conclusión porque suena convincente. Las letras, conectores y tablas de verdad aquí utilizadas son presentación moderna.",
+    "puente_escena": "Una puerta responde a dos condiciones visibles. El estudiante predice qué combinaciones la abren, modifica interruptores y conserva cada ensayo en una tabla. Después compara dos reglas que producen exactamente los mismos estados, con controles equivalentes por teclado.",
+    "ecuaciones": [
+     {
+      "latex": "p\\Rightarrow q\\;\\equiv\\;\\neg p\\lor q",
+      "lectura": "Una implicación equivale a negar su antecedente o afirmar su consecuente.",
+      "condiciones": "Lógica proposicional clásica bivalente; la disyunción es inclusiva."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "O’Connor y Robertson, George Boole — MacTutor, Universidad de St Andrews",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Boole/"
+     }
+    ],
+    "id": "aritmetica.logica-proposicional",
+    "titulo": "Lógica proposicional"
+   }
+  },
+  {
+   "id": "aritmetica.conjuntos",
+   "curso": "Aritmética",
+   "curso_id": "aritmetica",
+   "numero": 2,
+   "titulo": "Conjuntos",
+   "grado": 3,
+   "temas_catalogo": [
+    "Determinación de conjuntos",
+    "Pertenencia e inclusión",
+    "Conjuntos especiales",
+    "Conjunto potencia",
+    "Operaciones con conjuntos",
+    "Diagramas de Venn y Carroll",
+    "Producto cartesiano"
+   ],
+   "modulos_actuales": [
+    "conjuntos",
+    "porcentajes-planteo"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo.",
+   "teoria": "Un conjunto reúne elementos bajo un criterio; a∈A se refiere a un elemento y A⊆B a una relación entre conjuntos. Extensión y comprensión describen el mismo objeto cuando enumeran igual pertenencia. ∅ no es {∅}. Unión, intersección, diferencia y complemento se definen por condiciones de pertenencia; el complemento depende del universo. En conjuntos finitos, |A∪B|=|A|+|B|−|A∩B|. El conjunto potencia contiene todos los subconjuntos y tiene 2^n elementos si |A|=n. A×B contiene pares ordenados, con |A×B|=|A||B|. Venn y Carroll representan criterios, no distancias.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Clasificar por dos atributos",
+    "Contar sin repetir",
+    "Lógica de y/o/no"
+   ],
+   "desempeno": "Traduce entre condición, diagrama y notación; cuenta una unión sin duplicar intersecciones.",
+   "escena_propuesta": "Predice dónde cabe una ficha y clasifica por dos atributos; el motor actualiza aros y tabla Carroll. Retira los rótulos y pide fabricar un elemento del complemento. La regla aparece junto a las zonas.",
+   "otra_representacion": "Tabla de pertenencia de cada elemento y cuadrícula de pares ordenados.",
+   "ejemplo": "A={1,2,3}, B={3,4}: |A∪B|=4; |A×B|=6.",
+   "error_objetivo": {
+    "descripcion": "Confundir pertenencia con inclusión o contar dos veces una intersección.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "CM-S",
+     "autor": "OpenStax",
+     "titulo": "Contemporary Mathematics (2023)",
+     "localizador": "Cap. 1, §§1.1–1.5: conjuntos y operaciones",
+     "url": "https://openstax.org/books/contemporary-mathematics/pages/1-introduction",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "DM-S",
+     "autor": "O. Levin",
+     "titulo": "Discrete Mathematics: An Open Introduction, 4th ed.",
+     "localizador": "Sets",
+     "url": "https://discrete.openmathbooks.org/dmoi4/sec_structures-sets.html",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "aritmetica",
+    "numero": 2,
+    "historia": "Los conjuntos no nacieron como diagramas escolares. Cantor llegó a investigar colecciones infinitas mientras trabajaba en problemas de representación mediante series trigonométricas durante el siglo XIX. Comparar colecciones por correspondencias permitió distinguir tamaños de infinito, rompiendo la intuición procedente de objetos finitos. Las operaciones elementales de esta unidad preparan ese lenguaje: pertenecer, incluir y combinar no significan lo mismo. Los círculos que empleamos son una representación didáctica de relaciones; no reproducen el origen de la teoría ni constituyen por sí solos una demostración.",
+    "puente_escena": "Fichas con dos atributos entran en regiones superpuestas. Antes de moverlas, se pide anticipar cuáles cumplen ambas condiciones. El registro muestra pertenencia y cardinalidad en paralelo; al cambiar el universo, el complemento se actualiza sin alterar los atributos.",
+    "ecuaciones": [
+     {
+      "latex": "|A\\cup B|=|A|+|B|-|A\\cap B|",
+      "lectura": "La unión cuenta cada elemento una vez; se resta la intersección duplicada.",
+      "condiciones": "A y B son conjuntos finitos."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "O’Connor y Robertson, Georg Cantor — MacTutor",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Cantor/"
+     }
+    ],
+    "id": "aritmetica.conjuntos",
+    "titulo": "Conjuntos"
+   }
+  },
+  {
+   "id": "aritmetica.razones-y-proporciones",
+   "curso": "Aritmética",
+   "curso_id": "aritmetica",
+   "numero": 3,
+   "titulo": "Razones y proporciones",
+   "grado": 3,
+   "temas_catalogo": [
+    "Razón aritmética y geométrica",
+    "Proporciones discretas y continuas",
+    "Medias aritmética, geométrica y armónica",
+    "Serie de razones geométricas equivalentes"
+   ],
+   "modulos_actuales": [
+    "regla-de-tres",
+    "porcentajes-planteo"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo.",
+   "teoria": "En el vocabulario de admisión, razón aritmética es diferencia a−b; razón geométrica es cociente a/b con b≠0. Igualar diferencias y cocientes genera dos relaciones distintas. Una proporción geométrica a/b=c/d exige b,d≠0 y equivale a ad=bc; es continua si los medios coinciden. Razones equivalentes permiten escribir cantidades como ka,kb,… . Para positivos, media aritmética A=(a+b)/2, geométrica G=√(ab) y armónica H=2ab/(a+b), con H≤G≤A; coinciden solo si a=b. La media apropiada depende de qué cantidad se suma y qué peso tiene cada dato.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Fracciones equivalentes",
+    "Operaciones con positivos",
+    "Identificar unidades de una razón"
+   ],
+   "desempeno": "Decide si conservar diferencia o cociente y justifica la media que resuelve el caso.",
+   "escena_propuesta": "Estira dos tiras y predice si conserva diferencia o razón. Registra tres pares en tabla; alterna modo aditivo y multiplicativo. Luego un ejemplo de tiempos iguales frente a distancias iguales.",
+   "otra_representacion": "Recta doble y ecuaciones de conservación de total; tabla de valores normalizados.",
+   "ejemplo": "Para 4 y 9: A=6,5, G=6, H=72/13≈5,538.",
+   "error_objetivo": {
+    "descripcion": "Usar promedio simple cuando los pesos o las magnitudes conservadas difieren.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "PA-P",
+     "autor": "OpenStax",
+     "titulo": "Prealgebra, 2e",
+     "localizador": "§6.5, Solve Proportions and their Applications",
+     "url": "https://openstax.org/books/prealgebra-2e/pages/6-5-solve-proportions-and-their-applications",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "CM-F",
+     "autor": "OpenStax",
+     "titulo": "Contemporary Mathematics (2023)",
+     "localizador": "Cap. 6, §§6.1–6.2: porcentajes, descuentos, márgenes e impuestos",
+     "url": "https://openstax.org/books/contemporary-mathematics/pages/6-introduction",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "ST",
+     "autor": "B. Illowsky y S. Dean",
+     "titulo": "Introductory Statistics, 2e (2023)",
+     "localizador": "Cap. 2: estadística descriptiva; media, posición y dispersión",
+     "url": "https://openstax.org/books/introductory-statistics-2e/pages/2-introduction",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "aritmetica",
+    "numero": 3,
+    "historia": "Comparar magnitudes mediante razones planteó una dificultad profunda en la matemática griega: algunas longitudes no admiten una unidad común que las mida un número entero de veces. La teoría asociada a Eudoxo, conservada en el libro V de los Elementos, permitió comparar también esas magnitudes mediante relaciones entre múltiplos. No era todavía el cálculo escolar con fracciones escritas como hoy. La proporción actual resume una igualdad de comparaciones; comprender qué magnitudes se comparan y en qué orden precede a multiplicar términos cruzados.",
+    "puente_escena": "Dos cintas conservan su razón mientras cambia la escala. El estudiante predice una longitud faltante y contrasta parejas equivalentes. Una tabla de múltiplos acompaña la imagen; intercambiar solo un término hace visible por qué cambia la comparación.",
+    "ecuaciones": [
+     {
+      "latex": "\\frac{a}{b}=\\frac{c}{d}\\iff ad=bc",
+      "lectura": "Dos razones son iguales exactamente cuando coinciden sus productos cruzados.",
+      "condiciones": "b y d distintos de cero; magnitudes y unidades comparables en cada razón."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "O’Connor y Robertson, Eudoxus — MacTutor",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Eudoxus/"
+     }
+    ],
+    "id": "aritmetica.razones-y-proporciones",
+    "titulo": "Razones y proporciones"
+   }
+  },
+  {
+   "id": "aritmetica.magnitudes-proporcionales",
+   "curso": "Aritmética",
+   "curso_id": "aritmetica",
+   "numero": 4,
+   "titulo": "Magnitudes proporcionales y reparto",
+   "grado": 3,
+   "temas_catalogo": [
+    "Magnitudes directa e inversamente proporcionales",
+    "Gráficas de proporcionalidad",
+    "Regla de tres simple y compuesta",
+    "Reparto proporcional",
+    "Regla de compañía"
+   ],
+   "modulos_actuales": [
+    "regla-de-tres",
+    "porcentajes-planteo"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo.",
+   "teoria": "Proporcionalidad directa significa y=kx y razón constante; la gráfica pasa por el origen. Proporcionalidad inversa significa xy=k y excluye x=0. Que ambas cantidades crezcan no demuestra proporcionalidad. La regla de tres es resolución de una de estas relaciones, no colocación automática de flechas. En relaciones compuestas se explicitan los factores que se mantienen y las condiciones del modelo, por ejemplo rendimiento constante. Repartir T directamente según pesos w_i da T w_i/Σw; un reparto inverso usa pesos 1/w_i. En compañía, capital×tiempo es el peso solo bajo el acuerdo de proporcionalidad indicado.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Razón y cociente",
+    "Multiplicar fracciones",
+    "Interpretar tabla y ejes"
+   ],
+   "desempeno": "Elige entre razón constante y producto constante, calcula y comprueba un reparto.",
+   "escena_propuesta": "Predice qué lado cambia al mantener fija el área del taller. Deja tres pares medidos; contrasta con una tira que escala ambos lados. Reparte fichas usando pesos visibles y recupera la ecuación.",
+   "otra_representacion": "Tabla de razones/productos y gráfico y=kx frente a xy=k.",
+   "ejemplo": "Repartir 240 inversamente a 2 y 3 usa pesos 1/2 y 1/3: corresponden 144 y 96.",
+   "error_objetivo": {
+    "descripcion": "Aplicar regla directa a una relación inversa o a una relación que no es proporcional.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "PA-P",
+     "autor": "OpenStax",
+     "titulo": "Prealgebra, 2e",
+     "localizador": "§6.5, Solve Proportions and their Applications",
+     "url": "https://openstax.org/books/prealgebra-2e/pages/6-5-solve-proportions-and-their-applications",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "AAT-V",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "5.8 modeling using variation",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/5-8-modeling-using-variation",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "aritmetica",
+    "numero": 4,
+    "historia": "El Liber abaci de Fibonacci, publicado inicialmente en 1202, formó parte de la circulación mediterránea de conocimientos de cálculo. Su autor había aprendido métodos en el norte de África y conoció distintas prácticas durante sus viajes. El libro mostró la utilidad de la numeración y la aritmética para problemas concretos; no creó desde cero la proporcionalidad. Los repartos actuales continúan una necesidad duradera: distribuir un total conforme a criterios explícitos. La escritura con pesos y una suma en el denominador es una formulación moderna de esa estructura.",
+    "puente_escena": "Un total fijo se distribuye entre tres recipientes con pesos editables. Primero se predice quién recibe más; después se ajustan los pesos y se conserva el total. Las barras y una tabla muestran simultáneamente peso, cuota y suma.",
+    "ecuaciones": [
+     {
+      "latex": "x_i=T\\frac{w_i}{\\sum_{j=1}^{n}w_j}",
+      "lectura": "Cada cuota es el total multiplicado por su peso relativo.",
+      "condiciones": "T no negativo, pesos no negativos y suma de pesos positiva; reparto directo."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "O’Connor y Robertson, Fibonacci — MacTutor",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Fibonacci/"
+     }
+    ],
+    "id": "aritmetica.magnitudes-proporcionales",
+    "titulo": "Magnitudes proporcionales y reparto"
+   }
+  },
+  {
+   "id": "aritmetica.porcentajes",
+   "curso": "Aritmética",
+   "curso_id": "aritmetica",
+   "numero": 5,
+   "titulo": "Tanto por ciento y operaciones comerciales",
+   "grado": 3,
+   "temas_catalogo": [
+    "Tanto por cuanto",
+    "Aumentos y descuentos sucesivos",
+    "Variación porcentual",
+    "Precio de costo, de lista y de venta",
+    "Ganancia y pérdida",
+    "IGV"
+   ],
+   "modulos_actuales": [
+    "porcentajes-sucesivos",
+    "porcentajes-planteo"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo.",
+   "teoria": "p% significa p/100 de una base explícita. Un cambio r transforma C en C(1+r); cambios sucesivos multiplican factores porque la base cambia. La variación relativa es (final−inicial)/inicial, con inicial no nulo. Ganancia=venta−costo, pero el porcentaje sobre costo y sobre venta tiene denominadores distintos. Precio de lista, descuentos y venta deben conservar su orden. Un impuesto de tasa τ aplicado a una base B da total B(1+τ); recuperar la base requiere dividir por 1+τ. Para IGV se usa la tasa y el régimen dados por el enunciado; una ficha matemática no fija normativa tributaria.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Fracción decimal",
+    "Razón entre cantidades",
+    "Distinguir parte y base"
+   ],
+   "desempeno": "Calcula cambios encadenados e identifica la base de cada porcentaje sin ayuda.",
+   "escena_propuesta": "Predice el efecto de dos cortes y manipula barra-porcentaje. Congela la base de cada etapa; el fantasma muestra la suma indebida. Un ejemplo retirado pide elegir qué cantidad recibe el segundo porcentaje.",
+   "otra_representacion": "Tabla de factores multiplicativos y ecuación encadenada con los mismos colores.",
+   "ejemplo": "200 con descuentos de 20% y luego 10% queda en 144: descuento total 28%.",
+   "error_objetivo": {
+    "descripcion": "Sumar porcentajes sucesivos o dividir una ganancia por la base incorrecta.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "CM-F",
+     "autor": "OpenStax",
+     "titulo": "Contemporary Mathematics (2023)",
+     "localizador": "Cap. 6, §§6.1–6.2: porcentajes, descuentos, márgenes e impuestos",
+     "url": "https://openstax.org/books/contemporary-mathematics/pages/6-introduction",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "aritmetica",
+    "numero": 5,
+    "historia": "La aritmética comercial necesitó comparar monedas, pesos y medidas que no eran uniformes. La Summa de Luca Pacioli, impresa en 1494, reunió conocimientos de aritmética práctica, proporciones, álgebra y contabilidad; fue una síntesis de tradiciones anteriores, no la invención individual de todas sus técnicas. Este contexto ayuda a entender el porcentaje como una manera de expresar comparaciones sobre una base común. Las fórmulas actuales de aumentos y descuentos hacen explícita la base de cada operación, algo decisivo cuando varias modificaciones se suceden.",
+    "puente_escena": "Una etiqueta de precio mantiene visibles precio inicial, base vigente y variación. Se predice el resultado de un aumento seguido de descuento antes de ejecutarlos. La barra cambia con cada operación y una tabla conserva los valores anteriores.",
+    "ecuaciones": [
+     {
+      "latex": "P_f=P_0(1+r_1)(1+r_2)",
+      "lectura": "Las variaciones sucesivas multiplican factores sobre bases que se actualizan.",
+      "condiciones": "r positivo indica aumento y r negativo descuento; para precios no negativos, cada factor es no negativo."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "O’Connor y Robertson, Luca Pacioli — MacTutor",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Pacioli/"
+     }
+    ],
+    "id": "aritmetica.porcentajes",
+    "titulo": "Tanto por ciento y operaciones comerciales"
+   }
+  },
+  {
+   "id": "aritmetica.interes-y-descuento",
+   "curso": "Aritmética",
+   "curso_id": "aritmetica",
+   "numero": 6,
+   "titulo": "Interés y descuento",
+   "grado": 4,
+   "temas_catalogo": [
+    "Interés simple",
+    "Interés compuesto y continuo",
+    "Tasas nominal, efectiva y equivalentes",
+    "Valor presente y futuro",
+    "Descuento comercial y racional",
+    "Letras de cambio y vencimiento común"
+   ],
+   "modulos_actuales": [
+    "interes"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo.",
+   "teoria": "Interés simple: F=P(1+it), con tasa y tiempo en unidades compatibles. Compuesto: F=P(1+i)^n; capitalización m veces por año con tasa nominal j usa i=j/m. Tasas equivalentes producen igual factor en igual horizonte; i_ef=(1+j/m)^m−1. Capitalización continua: F=Pe^(rt). Valor presente descuenta según el régimen: P=F/(1+i)^n. Descuento comercial simple calcula D=Fdt y P=F(1−dt); el racional simple usa P=F/(1+it). No se intercambian tasas de interés y descuento. Letras y vencimientos se comparan en una fecha focal; t̄=ΣF_i t_i/ΣF_i solo vale bajo el modelo lineal de descuento común que lo produce.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Porcentajes y potencias",
+    "Unidades de tiempo",
+    "Ecuación lineal"
+   ],
+   "desempeno": "Distingue régimen, convierte periodos y compara dos valores en una fecha focal declarada.",
+   "escena_propuesta": "Predice la segunda capa de interés; añade capas sobre capital fijo y capital acumulado. Registra ambos saldos. En la línea de tiempo mueve pagos a una fecha y elige el factor correcto.",
+   "otra_representacion": "Tabla periodo–capital–interés y ecuación de equivalencia financiera.",
+   "ejemplo": "P=1000, 10% por periodo, dos periodos: simple 1200; compuesto 1210.",
+   "error_objetivo": {
+    "descripcion": "Dividir una tasa efectiva anual entre 12 o confundir descuento sobre nominal con interés sobre capital.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "CM-I",
+     "autor": "OpenStax",
+     "titulo": "Contemporary Mathematics (2023)",
+     "localizador": "Cap. 6, §§6.3–6.4: interés simple y compuesto",
+     "url": "https://openstax.org/books/contemporary-mathematics/pages/6-introduction",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "BM",
+     "autor": "C. Kellman, L. Major, D. Mallory, F. Gruen y A. Goldlist; ed. M. Andrews",
+     "titulo": "Business Mathematics (BCIT, 2020)",
+     "localizador": "§3.9 ecuaciones de valor; capítulo 4 para tasas equivalentes. No se atribuye a este capítulo la normativa peruana ni todas las variantes de descuento comercial",
+     "url": "https://pressbooks.bccampus.ca/businessmathematics/chapter/equations-of-value/",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "BM-R",
+     "autor": "C. Kellman et al.",
+     "titulo": "Business Mathematics (BCIT, 2020)",
+     "localizador": "§4.8 Equivalent and Effective Rates",
+     "url": "https://pressbooks.bccampus.ca/businessmathematics/chapter/equivalent-and-effective-rates/",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "aritmetica",
+    "numero": 6,
+    "historia": "El interés compuesto ofreció un camino histórico hacia una idea que excede las finanzas: el límite. En 1683, Jacob Bernoulli estudió qué ocurre al aumentar la frecuencia de capitalización y acotó una expresión que hoy relacionamos con el número e. No disponía todavía de toda la conexión moderna entre exponenciales y logaritmos. Para esta unidad, la lección es distinguir la regla aplicada al capital de la frecuencia con que se aplica. Capital inicial, tasa por período y número de períodos deben quedar definidos antes de calcular.",
+    "puente_escena": "Dos cuentas parten del mismo capital. El estudiante predice cuál crece más al variar la capitalización, manteniendo explícita la tasa utilizada. La escena conserva aportes e intereses separados; tabla y curva permiten distinguir crecimiento aditivo de multiplicativo.",
+    "ecuaciones": [
+     {
+      "latex": "C_n=C_0(1+i)^n",
+      "lectura": "El capital se multiplica por el mismo factor en cada período.",
+      "condiciones": "i es tasa efectiva por período, n entero no negativo; sin aportes, retiros ni cambios de tasa."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "O’Connor y Robertson, The number e — MacTutor",
+      "url": "https://mathshistory.st-andrews.ac.uk/HistTopics/e/"
+     }
+    ],
+    "id": "aritmetica.interes-y-descuento",
+    "titulo": "Interés y descuento"
+   }
+  },
+  {
+   "id": "aritmetica.mezclas-y-aleaciones",
+   "curso": "Aritmética",
+   "curso_id": "aritmetica",
+   "numero": 7,
+   "titulo": "Mezclas y aleaciones",
+   "grado": 4,
+   "temas_catalogo": [
+    "Precio medio",
+    "Mezclas alcohólicas",
+    "Regla del aspa",
+    "Aleaciones y ley del oro en quilates"
+   ],
+   "modulos_actuales": [
+    "mezclas",
+    "porcentajes-planteo"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo.",
+   "teoria": "Una mezcla se resuelve conservando cantidades extensivas: masa, cantidad de soluto o valor total. Si se mezclan masas m_i con fracciones c_i sin reacción ni pérdidas, c_final=Σm_i c_i/Σm_i. El precio medio es Σq_i p_i/Σq_i; las cantidades deben compartir unidad. La regla del aspa es el despeje de ese balance para dos componentes, y requiere un objetivo comprendido entre sus composiciones. Grado alcohólico por volumen exige declarar volumen final: la suma exacta de volúmenes no siempre es físicamente válida. Ley de oro en quilates de pureza es K/24 como fracción másica; no confundir con quilate de masa.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Promedio ponderado",
+    "Porcentaje",
+    "Conservación de totales"
+   ],
+   "desempeno": "Escribe el balance antes de operar y explica si la mezcla objetivo es posible.",
+   "escena_propuesta": "Predice la concentración al verter dos recipientes; representa fichas de soluto y líquido total. El registro conserva ambos totales. El fantasma reparte el mismo peso a recipientes de distinto tamaño.",
+   "otra_representacion": "Balanza de cantidades conservadas y tabla componente–cantidad–aporte.",
+   "ejemplo": "2 kg de aleación 18 K y 1 kg de 12 K contienen 2 kg de oro en 3 kg: 16 K.",
+   "error_objetivo": {
+    "descripcion": "Promediar concentraciones sin ponderar o asumir volúmenes aditivos sin indicarlo.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "AAT-M",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "2.3 models and applications",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/2-3-models-and-applications",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "ST",
+     "autor": "B. Illowsky y S. Dean",
+     "titulo": "Introductory Statistics, 2e (2023)",
+     "localizador": "Cap. 2: estadística descriptiva; media, posición y dispersión",
+     "url": "https://openstax.org/books/introductory-statistics-2e/pages/2-introduction",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "aritmetica",
+    "numero": 7,
+    "historia": "Los problemas de mezclas aparecen en tradiciones matemáticas muy anteriores a la química moderna. En su análisis de los Nueve capítulos, Yang Hui comentó en el siglo XIII problemas donde un objeto combina materiales de pesos distintos. El propósito era recuperar cantidades desconocidas a partir de totales; su tratamiento incluía explicar el método y extenderlo a casos semejantes. La concentración media actual pertenece a esa misma estructura matemática de contribuciones ponderadas. Esto no implica que los autores históricos emplearan porcentajes, densidades o símbolos con los significados exactos de nuestros modelos.",
+    "puente_escena": "Se añaden porciones de dos mezclas a un recipiente y se predice la concentración final. Partículas coloreadas y barras representan cantidad de componente y cantidad total. El registro impide confundir promedio simple de concentraciones con promedio ponderado por masa.",
+    "ecuaciones": [
+     {
+      "latex": "c_f=\\frac{m_1c_1+m_2c_2}{m_1+m_2}",
+      "lectura": "La concentración final divide la masa total del componente entre la masa total.",
+      "condiciones": "Concentraciones másicas, masas positivas y ausencia de pérdidas o reacciones que alteren el componente."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "O’Connor y Robertson, Yang Hui — MacTutor",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Yang_Hui/"
+     }
+    ],
+    "id": "aritmetica.mezclas-y-aleaciones",
+    "titulo": "Mezclas y aleaciones"
+   }
+  },
+  {
+   "id": "aritmetica.estadistica",
+   "curso": "Aritmética",
+   "curso_id": "aritmetica",
+   "numero": 8,
+   "titulo": "Estadística descriptiva",
+   "grado": 4,
+   "temas_catalogo": [
+    "Población, muestra y variables",
+    "Tablas de frecuencias",
+    "Gráficos estadísticos",
+    "Media, mediana y moda",
+    "Medias ponderada, geométrica y armónica",
+    "Cuartiles y percentiles",
+    "Varianza, desviación estándar y coeficiente de variación"
+   ],
+   "modulos_actuales": [
+    "fracciones",
+    "estadistica-datos"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de comparar.",
+   "teoria": "Una variable puede ser categórica o numérica; población y muestra describen el conjunto objetivo y el observado. Frecuencias absolutas suman n; relativas suman 1. Gráfico y escala se eligen según variable. Media=Σx/n, mediana exige ordenar y moda es frecuencia máxima; no responden igual a valores extremos. Media ponderada usa pesos explícitos; geométrica modela factores positivos y armónica tasas bajo ponderaciones adecuadas. Cuartiles y percentiles dependen de una convención de cálculo, que la app declara. Varianza poblacional divide entre N; la muestral usual entre n−1. Desviación estándar conserva unidades; coeficiente de variación requiere escala de razón y media positiva pertinente.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Orden de números",
+    "Fracciones y porcentajes",
+    "Lectura de ejes"
+   ],
+   "desempeno": "Elige un resumen adecuado, calcula centro y dispersión y explica el efecto de un dato extremo.",
+   "escena_propuesta": "Predice qué medida cambia; arrastra un punto y congela antes/después. La media actúa como equilibrio y la mediana conserva posición ordinal. Un ejercicio nuevo obliga a elegir gráfica y resumen.",
+   "otra_representacion": "Tabla de frecuencias; diagrama de cajas con convención explícita; suma de desvíos cuadrados.",
+   "ejemplo": "Para 2,4,9: media 5, mediana 4; varianza poblacional 26/3 y muestral 13.",
+   "error_objetivo": {
+    "descripcion": "Confundir media con mediana o usar n y n−1 indistintamente.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "ST",
+     "autor": "B. Illowsky y S. Dean",
+     "titulo": "Introductory Statistics, 2e (2023)",
+     "localizador": "Cap. 2: estadística descriptiva; media, posición y dispersión",
+     "url": "https://openstax.org/books/introductory-statistics-2e/pages/2-introduction",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "aritmetica",
+    "numero": 8,
+    "historia": "Las listas de nacimientos y defunciones de Londres existían antes de que John Graunt las analizara en sus Observations de 1662. Su trabajo convirtió registros administrativos en preguntas sobre regularidades de una población. La calidad y las categorías de esos registros condicionaban lo que podía inferirse, como ocurre con cualquier conjunto de datos. No conviene atribuirle todas las técnicas descriptivas actuales. Esta unidad conserva el problema central: organizar observaciones, elegir resúmenes pertinentes y reconocer qué información desaparece al reducir una distribución a un solo número.",
+    "puente_escena": "Cada ficha representa una observación de una población ficticia. Al mover un valor extremo, el estudiante anticipa cambios en media y mediana. Histograma, lista ordenada y marcas de resumen se actualizan juntos, manteniendo el número de observaciones visible.",
+    "ecuaciones": [
+     {
+      "latex": "\\bar{x}=\\frac{1}{n}\\sum_{i=1}^{n}x_i",
+      "lectura": "La media reparte por igual la suma observada.",
+      "condiciones": "n positivo; datos cuantitativos expresados en unidades compatibles."
+     },
+     {
+      "latex": "\\sigma^2=\\frac{1}{n}\\sum_{i=1}^{n}(x_i-\\bar{x})^2",
+      "lectura": "La varianza poblacional promedia los cuadrados de las desviaciones.",
+      "condiciones": "Se describe la población completa de n datos; no es el estimador muestral con divisor n−1."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "John Graunt, Natural and political observations… (1662), ejemplar digital — Wellcome Collection",
+      "url": "https://wellcomecollection.org/works/sds578rr"
+     },
+     {
+      "titulo": "Mathematical Treasure: Graunt’s Early Statistics on Mortality — Mathematical Association of America",
+      "url": "https://old.maa.org/node/1887200"
+     }
+    ],
+    "id": "aritmetica.estadistica",
+    "titulo": "Estadística descriptiva"
+   }
+  },
+  {
+   "id": "aritmetica.analisis-combinatorio",
+   "curso": "Aritmética",
+   "curso_id": "aritmetica",
+   "numero": 9,
+   "titulo": "Análisis combinatorio",
+   "grado": 5,
+   "temas_catalogo": [
+    "Principios de adición y multiplicación",
+    "Factorial",
+    "Variaciones",
+    "Permutaciones lineales y circulares",
+    "Permutaciones con repetición",
+    "Combinaciones y números combinatorios"
+   ],
+   "modulos_actuales": [
+    "probabilidad-dados",
+    "probabilidad-conteo"
+   ],
+   "ruta_propuesta": "comparar, con apoyo de seguir un ejemplo.",
+   "teoria": "Principio aditivo suma casos excluyentes; si se solapan, se resta la intersección. Principio multiplicativo cuenta elecciones sucesivas cuando cada etapa tiene el número indicado de posibilidades. n! cuenta órdenes de n objetos distintos; variaciones sin repetición n!/(n−r)! distinguen orden; combinaciones n!/[r!(n−r)!] no. Permutaciones de multiconjuntos dividen por factoriales de multiplicidades. (n−1)! para disposición circular supone objetos distintos y equivalencia por rotaciones, no necesariamente por reflexiones. Si se permite repetir en r puestos con n opciones, hay n^r. Elegir fórmula exige declarar qué hace iguales dos resultados.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Contar casos",
+    "Factorial",
+    "Distinguir orden y selección"
+   ],
+   "desempeno": "Clasifica el tipo de conteo y demuestra por enumeración por qué se divide o no por r!.",
+   "escena_propuesta": "Compara dos tareas con las mismas fichas: elegir equipo y ordenar cargos. Predice cuántos resultados coinciden; el motor agrupa permutaciones equivalentes antes de mostrar la fórmula.",
+   "otra_representacion": "Árbol de posibilidades y clases de equivalencia en tabla.",
+   "ejemplo": "Elegir dos de cinco da 10 equipos; asignar dos cargos distintos da 20 resultados.",
+   "error_objetivo": {
+    "descripcion": "Dividir por r! aunque los puestos tengan roles diferentes.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "AAT-C",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "13.5 counting principles",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/13-5-counting-principles",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "DM-C",
+     "autor": "O. Levin",
+     "titulo": "Discrete Mathematics: An Open Introduction, 4th ed.",
+     "localizador": "Combinations and Permutations",
+     "url": "https://discrete.openmathbooks.org/dmoi4/sec_counting-combperm.html",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "aritmetica",
+    "numero": 9,
+    "historia": "El triángulo aritmético reúne relaciones de conteo que fueron conocidas en distintas tradiciones. Pascal no fue su primer descubridor: su contribución consistió en estudiar sistemáticamente propiedades y aplicaciones de sus coeficientes. Esa estructura permite conectar elecciones, caminos y desarrollos algebraicos sin enumerar cada caso por separado. En la combinatoria escolar, el desafío inicial es definir qué se considera un resultado distinto. El orden y la repetición cambian el conjunto que contamos; la fórmula moderna con factoriales viene después de precisar esas condiciones.",
+    "puente_escena": "Se eligen dos representantes entre cinco fichas. Primero se registran elecciones ordenadas y luego se agrupan las que solo invierten posiciones. Un árbol y una tabla muestran por qué dividir elimina duplicados, conservando visible cada grupo de equivalencia.",
+    "ecuaciones": [
+     {
+      "latex": "\\binom{n}{k}=\\frac{n!}{k!(n-k)!}",
+      "lectura": "Número de subconjuntos de k elementos elegidos entre n elementos distintos.",
+      "condiciones": "n y k enteros; 0≤k≤n; sin repetición y sin importar el orden."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "O’Connor y Robertson, Blaise Pascal — MacTutor",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Pascal/"
+     }
+    ],
+    "id": "aritmetica.analisis-combinatorio",
+    "titulo": "Análisis combinatorio"
+   }
+  },
+  {
+   "id": "aritmetica.probabilidades",
+   "curso": "Aritmética",
+   "curso_id": "aritmetica",
+   "numero": 10,
+   "titulo": "Probabilidades",
+   "grado": 5,
+   "temas_catalogo": [
+    "Experimento aleatorio y espacio muestral",
+    "Eventos y álgebra de eventos",
+    "Probabilidad clásica y frecuencial",
+    "Eventos excluyentes e independientes",
+    "Probabilidad condicional",
+    "Probabilidad total y Bayes",
+    "Variable aleatoria discreta y esperanza"
+   ],
+   "modulos_actuales": [
+    "probabilidad-dados",
+    "probabilidad-conteo"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de comparar.",
+   "teoria": "Un modelo probabilístico fija espacio muestral y probabilidades. Casos favorables/posibles solo funciona con resultados equiprobables. P(A∪B)=P(A)+P(B)−P(A∩B), y P(Aᶜ)=1−P(A). Incompatibles significa intersección vacía; independientes, P(A∩B)=P(A)P(B). P(A|B)=P(A∩B)/P(B), con P(B)>0. Probabilidad total divide el universo en casos excluyentes y exhaustivos; Bayes invierte el condicionamiento usando esas bases. Una variable aleatoria asigna números a resultados y E[X]=ΣxP(X=x); el valor esperado puede no ser un resultado posible. Frecuencia relativa fluctúa y no obliga a compensar una racha.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Fracciones",
+    "Conjuntos",
+    "Conteo sin duplicados"
+   ],
+   "desempeno": "Construye el espacio correcto, condiciona y distingue independencia de incompatibilidad.",
+   "escena_propuesta": "Predice sobre la cuadrícula de dos dados; marca el evento y luego restringe el universo. Deja visibles numerador y denominador nuevos. Compara resultados exactos con frecuencia simulada sin presentar la simulación como prueba.",
+   "otra_representacion": "Árbol ponderado y tabla de contingencia con frecuencias naturales.",
+   "ejemplo": "En un dado justo, P(resultado>3 | resultado par)=2/3.",
+   "error_objetivo": {
+    "descripcion": "Usar 6 como denominador después de restringir a pares o confundir P(A|B) con P(B|A).",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "ST-P",
+     "autor": "B. Illowsky y S. Dean",
+     "titulo": "Introductory Statistics, 2e (2023)",
+     "localizador": "§3.1, Terminology; cap. 3: probabilidad y condicionamiento",
+     "url": "https://openstax.org/books/introductory-statistics-2e/pages/3-1-terminology",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "ST-E",
+     "autor": "B. Illowsky y S. Dean",
+     "titulo": "Introductory Statistics, 2e (2023)",
+     "localizador": "§4.2, Mean or Expected Value and Standard Deviation",
+     "url": "https://openstax.org/books/introductory-statistics-2e/pages/4-2-mean-or-expected-value-and-standard-deviation",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "aritmetica",
+    "numero": 10,
+    "historia": "En las cartas de 1654 entre Pascal y Fermat, un problema importante consistía en repartir la apuesta de una partida interrumpida. El reparto no debía depender únicamente del marcador alcanzado, sino de las posibilidades de victoria si el juego continuaba. Había antecedentes en autores anteriores, por lo que no representa un nacimiento aislado de toda la probabilidad. La situación muestra una idea fértil: construir un espacio de resultados y justificar sus probabilidades. La notación de sucesos y probabilidad condicional utilizada hoy se desarrolló posteriormente.",
+    "puente_escena": "Una partida ficticia se detiene antes de terminar. El estudiante predice un reparto y despliega las continuaciones posibles. Árbol y tabla conservan sus probabilidades; la comparación distingue cantidad de ramas y peso probabilístico cuando las ramas no son equiprobables.",
+    "ecuaciones": [
+     {
+      "latex": "P(A\\mid B)=\\frac{P(A\\cap B)}{P(B)}",
+      "lectura": "Condicionar restringe la comparación al suceso que sabemos ocurrido.",
+      "condiciones": "P(B)>0; los sucesos pertenecen al mismo espacio de probabilidad."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "O’Connor y Robertson, Blaise Pascal — MacTutor",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Pascal/"
+     }
+    ],
+    "id": "aritmetica.probabilidades",
+    "titulo": "Probabilidades"
+   }
+  },
+  {
+   "id": "aritmetica.numeracion",
+   "curso": "Aritmética",
+   "curso_id": "aritmetica",
+   "numero": 11,
+   "titulo": "Sistemas de numeración",
+   "grado": 3,
+   "temas_catalogo": [
+    "Base de un sistema",
+    "Descomposición polinómica",
+    "Cambio de base",
+    "Conteo de números y cifras"
+   ],
+   "modulos_actuales": [
+    "numeracion",
+    "numeros-sucesiones"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de descubrir.",
+   "teoria": "En base entera b≥2, cada dígito d_i cumple 0≤d_i<b y el valor es Σd_i b^i. La primera cifra de un entero de varias cifras no es cero. Cambiar base conserva el número, no sus símbolos: hacia decimal se evalúa la expansión; desde decimal se divide sucesivamente entre b y se leen residuos en orden inverso. Los números positivos de k cifras están entre b^(k−1) y b^k−1. Conteos de cifras se hacen por bloques de longitud fija. Parte fraccionaria usa potencias negativas y multiplicaciones sucesivas por b.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Potencias enteras",
+    "División con resto",
+    "Valor posicional decimal"
+   ],
+   "desempeno": "Convierte entre bases y justifica el valor de un dígito y el número de cifras.",
+   "escena_propuesta": "Tras un ejemplo, agrupa b fichas para cambiarlas por una del siguiente orden. Predice una llevada; el registro muestra cantidad invariante y notación distinta. Transfiere sin fichas.",
+   "otra_representacion": "Expansión polinómica y tabla de cocientes/residuos.",
+   "ejemplo": "132 en base 4 vale 1·16+3·4+2=30 en decimal.",
+   "error_objetivo": {
+    "descripcion": "Admitir la cifra b en base b o interpretar el número escrito como decimal.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "CM-N",
+     "autor": "OpenStax",
+     "titulo": "Contemporary Mathematics (2023)",
+     "localizador": "Cap. 4, §§4.1,4.3–4.5: sistemas posicionales, conversión y operaciones",
+     "url": "https://openstax.org/books/contemporary-mathematics/pages/4-introduction",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "NT",
+     "autor": "W. Raji",
+     "titulo": "An Introductory Course in Elementary Number Theory (2013)",
+     "localizador": "§§1.3–1.6, 2.1–2.5, 3.1, 4.2 y cap. 6; páginas impresas 13–43, 51, 73–78, 123 en adelante",
+     "url": "https://resources.saylor.org/wwwresources/archived/site/wp-content/uploads/2013/05/An-Introductory-in-Elementary-Number-Theory.pdf",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "aritmetica",
+    "numero": 11,
+    "historia": "La numeración decimal posicional que usamos se consolidó mediante desarrollos y transmisiones entre la India, las sociedades de lengua árabe y Europa. La historia incluye coexistencia de sistemas y adaptaciones, no un reemplazo instantáneo ni la invención de todas las cifras por una sola persona. La aportación conceptual decisiva para esta unidad es que un símbolo adquiere valor según su posición. Escribir un número en otra base cambia su representación, no la cantidad representada. Nuestra expresión mediante potencias es una descripción algebraica moderna de ese principio.",
+    "puente_escena": "Una cantidad fija de fichas se agrupa en paquetes de base elegible. El estudiante predice la escritura antes de reagrupar. Columnas posicionales y expansión mediante potencias muestran los canjes, incluido el cero que conserva una posición sin paquetes.",
+    "ecuaciones": [
+     {
+      "latex": "(d_k\\cdots d_1d_0)_b=\\sum_{j=0}^{k}d_jb^j",
+      "lectura": "Cada cifra aporta su valor multiplicado por una potencia de la base.",
+      "condiciones": "b entero mayor o igual que 2; cada cifra d_j es entera y satisface 0≤d_j<b."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "O’Connor y Robertson, Arabic numerals — MacTutor",
+      "url": "https://mathshistory.st-andrews.ac.uk/HistTopics/Arabic_numerals/"
+     }
+    ],
+    "id": "aritmetica.numeracion",
+    "titulo": "Sistemas de numeración"
+   }
+  },
+  {
+   "id": "aritmetica.cuatro-operaciones",
+   "curso": "Aritmética",
+   "curso_id": "aritmetica",
+   "numero": 12,
+   "titulo": "Las cuatro operaciones",
+   "grado": 3,
+   "temas_catalogo": [
+    "Adición y sumatorias",
+    "Sustracción y complemento aritmético",
+    "Multiplicación",
+    "Operaciones en otras bases",
+    "División entera por defecto y por exceso",
+    "Cantidad de cifras de un producto o cociente"
+   ],
+   "modulos_actuales": [
+    "cuatro-operaciones"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de recordar.",
+   "teoria": "Sumar, restar y multiplicar respetan el valor posicional; una llevada intercambia b unidades por una unidad del orden siguiente. Complemento aritmético de N respecto de b^k es b^k−N, con k declarado. División euclídea: a=bq+r, 0≤r<b para b>0. Si r>0, la división por exceso tiene q_e=q+1 y resto por exceso r_e=b−r; si es exacta, ambos cocientes coinciden y resto cero. Cantidad de cifras de un positivo N en base b es el k tal que b^(k−1)≤N<b^k. Las cotas de productos/cocientes evitan confiar solo en una regla memorizada.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Numeración posicional",
+    "Múltiplos pequeños",
+    "Comparar potencias"
+   ],
+   "desempeno": "Explica una llevada o préstamo y verifica una división por su identidad completa.",
+   "escena_propuesta": "Predice la siguiente columna; intercambia fichas en base b y conserva su valor. La línea de pasos muestra préstamo, operación y comprobación. Compara defecto/exceso en una recta de múltiplos.",
+   "otra_representacion": "Algoritmo escrito alineado por órdenes y ecuación a=bq+r.",
+   "ejemplo": "47÷6: por defecto q=7,r=5; por exceso q=8 y faltan 1 para 48.",
+   "error_objetivo": {
+    "descripcion": "Tratar el resto por exceso como otro residuo que se suma al mismo cociente.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "CM-N",
+     "autor": "OpenStax",
+     "titulo": "Contemporary Mathematics (2023)",
+     "localizador": "Cap. 4, §§4.1,4.3–4.5: sistemas posicionales, conversión y operaciones",
+     "url": "https://openstax.org/books/contemporary-mathematics/pages/4-introduction",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "NT",
+     "autor": "W. Raji",
+     "titulo": "An Introductory Course in Elementary Number Theory (2013)",
+     "localizador": "§§1.3–1.6, 2.1–2.5, 3.1, 4.2 y cap. 6; páginas impresas 13–43, 51, 73–78, 123 en adelante",
+     "url": "https://resources.saylor.org/wwwresources/archived/site/wp-content/uploads/2013/05/An-Introductory-in-Elementary-Number-Theory.pdf",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "aritmetica",
+    "numero": 12,
+    "historia": "Los papiros matemáticos egipcios conservan procedimientos de cálculo que no dependen del algoritmo decimal que hoy se enseña. La multiplicación podía descomponerse en duplicaciones y sumas seleccionadas; la división se relacionaba con encontrar qué múltiplos forman una cantidad. Es una evidencia histórica de que una operación y su algoritmo no son lo mismo. Comparar procedimientos permite reconocer propiedades estables, como la distributividad, detrás de escrituras distintas. La tabla binaria y las ecuaciones que proponemos son reconstrucciones didácticas actuales, no reproducciones literales de la notación de los escribas.",
+    "puente_escena": "Se construyen filas de dobles para calcular trece veces siete. Antes de seleccionar filas, se predice cuáles suman trece. La escena conserva 1, 2, 4 y 8 junto a sus productos; un área rectangular ofrece la segunda representación.",
+    "ecuaciones": [
+     {
+      "latex": "13\\cdot7=(8+4+1)\\cdot7=56+28+7=91",
+      "lectura": "La distributividad convierte una multiplicación en suma de múltiplos conocidos.",
+      "condiciones": "La descomposición es exacta; el ejemplo usa números naturales."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "O’Connor y Robertson, Egyptian Papyri — MacTutor",
+      "url": "https://mathshistory.st-andrews.ac.uk/HistTopics/Egyptian_papyri/"
+     }
+    ],
+    "id": "aritmetica.cuatro-operaciones",
+    "titulo": "Las cuatro operaciones"
+   }
+  },
+  {
+   "id": "aritmetica.divisibilidad",
+   "curso": "Aritmética",
+   "curso_id": "aritmetica",
+   "numero": 13,
+   "titulo": "Divisibilidad",
+   "grado": 3,
+   "temas_catalogo": [
+    "Múltiplos y divisores",
+    "Teoremas de la divisibilidad",
+    "Restos potenciales",
+    "Criterios de divisibilidad",
+    "Ecuaciones diofánticas lineales"
+   ],
+   "modulos_actuales": [
+    "divisores",
+    "numeros-sucesiones"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de recordar.",
+   "teoria": "a divide b si b=ak con k entero. Divisibilidad es una relación, no una aproximación decimal. Si d divide a y b, divide cualquier combinación entera ma+nb. a≡r (mod m) resume el resto y permite reducir sumas, productos y potencias; no permite dividir por un factor sin condiciones. Los criterios decimales salen de 10^k módulo el divisor. Restos potenciales se obtienen por ciclos justificados o exponenciación modular. ax+by=c tiene soluciones enteras exactamente cuando mcd(a,b) divide c; soluciones naturales o acotadas exigen restricciones adicionales.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "División euclídea",
+    "Potencias",
+    "Enteros negativos"
+   ],
+   "desempeno": "Justifica un criterio con restos y encuentra o descarta soluciones enteras.",
+   "escena_propuesta": "Coloca fichas en filas de m y predice el sobrante; registra el ciclo de potencias en una rueda de residuos. Luego completa un ejemplo diofántico y prueba los límites del contexto.",
+   "otra_representacion": "Expansión decimal modular y recta de soluciones de ax+by=c.",
+   "ejemplo": "6x+9y=20 no tiene soluciones enteras porque mcd(6,9)=3 no divide 20.",
+   "error_objetivo": {
+    "descripcion": "Aplicar una regla de divisibilidad en una base distinta o dividir una congruencia arbitrariamente.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "NT",
+     "autor": "W. Raji",
+     "titulo": "An Introductory Course in Elementary Number Theory (2013)",
+     "localizador": "§§1.3–1.6, 2.1–2.5, 3.1, 4.2 y cap. 6; páginas impresas 13–43, 51, 73–78, 123 en adelante",
+     "url": "https://resources.saylor.org/wwwresources/archived/site/wp-content/uploads/2013/05/An-Introductory-in-Elementary-Number-Theory.pdf",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "DM-N",
+     "autor": "O. Levin",
+     "titulo": "Discrete Mathematics: An Open Introduction, 4th ed.",
+     "localizador": "§6.2 Introduction to Number Theory",
+     "url": "https://discrete.openmathbooks.org/dmoi4/sec_addtops-numbth.html",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "aritmetica",
+    "numero": 13,
+    "historia": "El estudio de los restos de divisiones adquirió una organización influyente en las Disquisitiones Arithmeticae de Gauss, publicadas en 1801. Su lenguaje de congruencias permitió trabajar con relaciones entre enteros y no solamente con cálculos aislados. Las preguntas sobre divisibilidad tenían una historia mucho más antigua; la contribución fue sistematizar y ampliar una teoría. En esta unidad, los criterios de divisibilidad se explican por el comportamiento de las potencias de la base al tomar restos. La congruencia resume esa relación, no afirma que dos enteros sean iguales.",
+    "puente_escena": "Un número se descompone en tarjetas posicionales. El estudiante predice su resto antes de reemplazar cada potencia por un resto equivalente. Un reloj modular y una tabla de equivalencias conservan la diferencia entre igualdad ordinaria y congruencia.",
+    "ecuaciones": [
+     {
+      "latex": "a\\equiv b\\pmod m\\iff m\\mid(a-b)",
+      "lectura": "Dos enteros tienen el mismo resto módulo m cuando su diferencia es múltiplo de m.",
+      "condiciones": "a y b enteros; m entero positivo."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "O’Connor y Robertson, Carl Friedrich Gauss — MacTutor",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Gauss/"
+     }
+    ],
+    "id": "aritmetica.divisibilidad",
+    "titulo": "Divisibilidad"
+   }
+  },
+  {
+   "id": "aritmetica.numeros-primos-y-divisores",
+   "curso": "Aritmética",
+   "curso_id": "aritmetica",
+   "numero": 14,
+   "titulo": "Números primos y divisores",
+   "grado": 3,
+   "temas_catalogo": [
+    "Primos y compuestos",
+    "Números PESI",
+    "Criba de Eratóstenes",
+    "Teorema fundamental de la aritmética",
+    "Cantidad, suma y producto de divisores",
+    "Función de Euler",
+    "Teoremas de Fermat y Wilson"
+   ],
+   "modulos_actuales": [
+    "divisores",
+    "numeros-sucesiones"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de recordar.",
+   "teoria": "Primo es un entero mayor que 1 con exactamente dos divisores positivos; 1 no es primo ni compuesto. PESI significa mcd=1, no que ambos sean primos. La criba elimina múltiplos de primos. Factorización prima n=∏p_i^α_i es única salvo orden. De elegir cada exponente salen d(n)=∏(α_i+1) y σ(n)=∏(1+p_i+…+p_i^α_i); el producto de divisores positivos es n^(d(n)/2). φ(n) cuenta enteros 1≤k≤n coprimos con n y vale n∏(1−1/p). Euler: a^φ(n)≡1 si mcd(a,n)=1. Fermat: a^(p−1)≡1 para p primo que no divide a. Wilson: (p−1)!≡−1 mod p caracteriza primos p>1.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Divisibilidad",
+    "Exponentes",
+    "Conteo multiplicativo"
+   ],
+   "desempeno": "Descompone un entero, genera divisores sin omitirlos y verifica condiciones antes de usar Euler o Fermat.",
+   "escena_propuesta": "Arma todos los rectángulos con n fichas; predice si existe otro par. Después elige exponentes en columnas y observa cada divisor único. Un ejemplo modular destaca primero la condición de coprimalidad.",
+   "otra_representacion": "Árbol de factores y cuadrícula de elecciones de exponentes.",
+   "ejemplo": "72=2³·3² tiene 12 divisores positivos y suma 15·13=195; φ(12)=4.",
+   "error_objetivo": {
+    "descripcion": "Contar el 1 como primo o usar Euler cuando base y módulo comparten un factor.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "NT",
+     "autor": "W. Raji",
+     "titulo": "An Introductory Course in Elementary Number Theory (2013)",
+     "localizador": "§§1.3–1.6, 2.1–2.5, 3.1, 4.2 y cap. 6; páginas impresas 13–43, 51, 73–78, 123 en adelante",
+     "url": "https://resources.saylor.org/wwwresources/archived/site/wp-content/uploads/2013/05/An-Introductory-in-Elementary-Number-Theory.pdf",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "NT-F",
+     "autor": "W. Raji",
+     "titulo": "An Introductory Course in Elementary Number Theory (2013)",
+     "localizador": "§3.5 Theorems of Fermat, Euler, and Wilson, pp. 64–68; §4.2 funciones aritméticas",
+     "url": "https://resources.saylor.org/wwwresources/archived/site/wp-content/uploads/2013/05/An-Introductory-in-Elementary-Number-Theory.pdf",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "aritmetica",
+    "numero": 14,
+    "historia": "La proposición IX.20 de los Elementos demuestra que ninguna lista finita puede contener todos los números primos. Euclides considera una cantidad construida a partir de los primos de una lista y una unidad adicional; si esa cantidad es compuesta, posee un divisor primo que tampoco estaba en la lista. La prueba no afirma que sumar uno a un producto de primos siempre produzca otro primo. Este ejemplo histórico enlaza clasificación y demostración: conocer divisores permite justificar una conclusión que ninguna enumeración finita podría establecer por sí sola.",
+    "puente_escena": "El estudiante propone una lista de primos y construye su producto más uno. Antes de factorizarlo, predice si será primo. La escena acepta ambos casos y destaca un divisor ausente de la lista; el árbol de factores conserva la explicación.",
+    "ecuaciones": [
+     {
+      "latex": "N=\\prod_{i=1}^{k}p_i+1\\quad\\Longrightarrow\\quad p_i\\nmid N",
+      "lectura": "N deja resto uno al dividirlo por cualquiera de los primos de la lista.",
+      "condiciones": "p_i primos distintos; la conclusión no exige que N sea primo."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Euclides, Elementos IX.20; edición y comentario de David E. Joyce — Clark University",
+      "url": "https://mathcs.clarku.edu/~djoyce/elements/bookIX/propIX20.html"
+     }
+    ],
+    "id": "aritmetica.numeros-primos-y-divisores",
+    "titulo": "Números primos y divisores"
+   }
+  },
+  {
+   "id": "aritmetica.mcd-y-mcm",
+   "curso": "Aritmética",
+   "curso_id": "aritmetica",
+   "numero": 15,
+   "titulo": "MCD y MCM",
+   "grado": 3,
+   "temas_catalogo": [
+    "Máximo común divisor",
+    "Mínimo común múltiplo",
+    "Algoritmo de Euclides",
+    "Relación entre MCD y MCM",
+    "Fracciones continuas",
+    "Problemas de aplicación"
+   ],
+   "modulos_actuales": [
+    "fracciones",
+    "fracciones-problemas"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de descubrir.",
+   "teoria": "El MCD de enteros positivos es su mayor divisor común; el MCM es su menor múltiplo común positivo. En factores primos se toman exponentes mínimos y máximos. Para dos positivos, mcd(a,b)mcm(a,b)=ab; no se generaliza como producto de todos los números sin más. Euclides conserva el MCD al reemplazar (a,b) por (b,a mod b). Cortar en piezas iguales máximas y sincronizar periodos son modelos diferentes. Los cocientes de Euclides producen una fracción continua finita para un racional; sus truncamientos dan convergentes, no valores idénticos salvo el final.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Divisores y múltiplos",
+    "División con resto",
+    "Fracciones"
+   ],
+   "desempeno": "Elige MCD o MCM según la restricción y explica una iteración de Euclides.",
+   "escena_propuesta": "Predice el tamaño del corte de dos cintas; superpone restos hasta agotar. Cambia al caso de dos buses y registra coincidencias en una línea de tiempo. Contrasta qué se maximiza o minimiza.",
+   "otra_representacion": "Factorizaciones alineadas y tabla de Euclides; reconstrucción de fracción continua.",
+   "ejemplo": "mcd(18,30)=6 y mcm=90; 30/18=[1;1,2].",
+   "error_objetivo": {
+    "descripcion": "Escoger MCM por la palabra 'mayor' o extender mcd·mcm=producto a tres números.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "NT",
+     "autor": "W. Raji",
+     "titulo": "An Introductory Course in Elementary Number Theory (2013)",
+     "localizador": "§§1.3–1.6, 2.1–2.5, 3.1, 4.2 y cap. 6; páginas impresas 13–43, 51, 73–78, 123 en adelante",
+     "url": "https://resources.saylor.org/wwwresources/archived/site/wp-content/uploads/2013/05/An-Introductory-in-Elementary-Number-Theory.pdf",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "CF",
+     "autor": "W. F. Hammond",
+     "titulo": "Continued Fractions and the Euclidean Algorithm",
+     "localizador": "Notas de MAT 326, University at Albany; fracciones continuas finitas y Euclides",
+     "url": "https://math.albany.edu/pers/hammond/course/cfrac/confrac.html",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "aritmetica",
+    "numero": 15,
+    "historia": "En el libro VII de los Elementos, el máximo común divisor aparece como la mayor medida común de dos números. El procedimiento conserva los divisores comunes al sustituir una cantidad por lo que queda después de retirar múltiplos de la otra. La formulación histórica usa segmentos y sustracciones, mientras que la versión moderna comprime esas repeticiones en una división con resto. Esta continuidad explica por qué el algoritmo funciona. El mínimo común múltiplo responde a una pregunta complementaria: buscar la primera cantidad que puede formarse íntegramente con ambas medidas.",
+    "puente_escena": "Dos cintas de longitudes enteras se cubren con una misma pieza. El estudiante predice la mayor pieza posible y reduce el problema mediante restos. La escena conserva cada división; una tabla de divisores permite comprobar el resultado por otro camino.",
+    "ecuaciones": [
+     {
+      "latex": "\\gcd(a,b)=\\gcd(b,r),\\qquad a=qb+r",
+      "lectura": "Reemplazar el dividendo por su resto conserva el máximo común divisor.",
+      "condiciones": "a y b enteros positivos; 0≤r<b."
+     },
+     {
+      "latex": "\\gcd(a,b)\\operatorname{mcm}(a,b)=ab",
+      "lectura": "El producto del MCD y el MCM coincide con el producto de los números.",
+      "condiciones": "a y b enteros positivos."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Euclides, Elementos VII.2; edición y comentario de David E. Joyce — Clark University",
+      "url": "https://mathcs.clarku.edu/~djoyce/elements/bookVII/propVII2.html"
+     }
+    ],
+    "id": "aritmetica.mcd-y-mcm",
+    "titulo": "MCD y MCM"
+   }
+  },
+  {
+   "id": "aritmetica.numeros-racionales",
+   "curso": "Aritmética",
+   "curso_id": "aritmetica",
+   "numero": 16,
+   "titulo": "Números racionales, fracciones y decimales",
+   "grado": 3,
+   "temas_catalogo": [
+    "Racionales como clases de equivalencia",
+    "Racionales e irracionales",
+    "Clases de fracciones",
+    "Orden entre fracciones",
+    "Decimales exactos y periódicos",
+    "Fracción generatriz",
+    "Números en otras bases"
+   ],
+   "modulos_actuales": [
+    "fracciones",
+    "fracciones-problemas"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo.",
+   "teoria": "Un racional representa una clase de pares enteros (a,b), b≠0, donde (a,b)~(c,d) si ad=bc. Cambiar representación no cambia la cantidad. Fracciones propias, impropias, aparentes y mixtas son formas de escritura; los signos y la unidad total importan. Comparar puede hacerse con denominador positivo común o ubicación en recta. Un racional tiene expansión decimal finita o periódica; tras reducir, termina en base b si los primos del denominador dividen b. Un irracional no es una fracción de enteros y su decimal es infinito no periódico. La generatriz elimina la repetición multiplicando por potencias y restando.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Partes iguales",
+    "MCD",
+    "Sistema posicional"
+   ],
+   "desempeno": "Reconoce equivalencia, compara magnitudes y convierte un periódico justificando la resta.",
+   "escena_propuesta": "Predice si dos barras representan lo mismo al cambiar la partición. Luego la lupa decimal deja un bloque periódico repetido; al alinear y restar quedan enteros. Se retira la barra para transferir.",
+   "otra_representacion": "Recta numérica y pares equivalentes; ecuación de fracción generatriz.",
+   "ejemplo": "0,2 periódico: x=0,222…; 10x−x=2, por tanto x=2/9.",
+   "error_objetivo": {
+    "descripcion": "Comparar fracciones solo por numerador o llamar irracional a todo decimal infinito.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "PA-F",
+     "autor": "OpenStax",
+     "titulo": "Prealgebra, 2e",
+     "localizador": "4.1 visualize fractions",
+     "url": "https://openstax.org/books/prealgebra-2e/pages/4-1-visualize-fractions",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "NT",
+     "autor": "W. Raji",
+     "titulo": "An Introductory Course in Elementary Number Theory (2013)",
+     "localizador": "§§1.3–1.6, 2.1–2.5, 3.1, 4.2 y cap. 6; páginas impresas 13–43, 51, 73–78, 123 en adelante",
+     "url": "https://resources.saylor.org/wwwresources/archived/site/wp-content/uploads/2013/05/An-Introductory-in-Elementary-Number-Theory.pdf",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "aritmetica",
+    "numero": 16,
+    "historia": "Las fracciones decimales facilitaron que operaciones con partes de una unidad se escribieran de forma semejante a las operaciones con enteros. Simon Stevin defendió ese uso práctico en su publicación de 1585, con aplicaciones a distintas actividades de cálculo. No fue el inventor único de los decimales: existían desarrollos anteriores y su propia notación difería de la actual. Esta unidad distingue el número racional de sus escrituras. Una fracción, un decimal finito o periódico y una posición en la recta pueden representar exactamente el mismo valor.",
+    "puente_escena": "Una unidad se divide en partes y se reagrupa en décimos y centésimos. El estudiante predice si la expansión termina antes de efectuar divisiones. Recta, fracción y división registrada muestran el mismo valor; un resto repetido activa el período.",
+    "ecuaciones": [
+     {
+      "latex": "\\frac{a}{b}\\text{ tiene decimal finito}\\iff b=2^r5^s",
+      "lectura": "Una fracción irreducible termina en base diez cuando su denominador solo tiene factores dos y cinco.",
+      "condiciones": "a/b irreducible, b positivo, r y s enteros no negativos."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "O’Connor y Robertson, Simon Stevin — MacTutor",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Stevin/"
+     }
+    ],
+    "id": "aritmetica.numeros-racionales",
+    "titulo": "Números racionales, fracciones y decimales"
+   }
+  },
+  {
+   "id": "aritmetica.potenciacion-y-radicacion",
+   "curso": "Aritmética",
+   "curso_id": "aritmetica",
+   "numero": 17,
+   "titulo": "Potenciación y radicación",
+   "grado": 3,
+   "temas_catalogo": [
+    "Cuadrados y cubos perfectos",
+    "Criterios de inclusión y exclusión",
+    "Raíz cuadrada y cúbica entera",
+    "Raíces aproximadas"
+   ],
+   "modulos_actuales": [
+    "potenciacion",
+    "numeros-sucesiones"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de recordar.",
+   "teoria": "Un cuadrado o cubo perfecto entero tiene todos los exponentes de su factorización prima múltiplos de 2 o 3. Residuos y última cifra permiten excluir candidatos, pero una condición necesaria no siempre basta para incluirlos. Raíz cuadrada entera de N≥0 es q con q²≤N<(q+1)²; la cúbica entera se define análogamente para el dominio indicado. √N es la raíz principal no negativa, mientras x²=N puede tener dos soluciones reales. Aproximar exige intervalo y precisión declarada; comprobar por elevación controla el error. No se distribuye una raíz sobre una suma.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Factores primos",
+    "Potencias",
+    "Orden e intervalos"
+   ],
+   "desempeno": "Decide si un número es potencia perfecta y acota una raíz con precisión justificada.",
+   "escena_propuesta": "Predice cuántas fichas faltan para el siguiente cuadrado; agrupa factores de a dos o tres. El estado final conserva q², N y (q+1)². Un ejemplo retira la cuadrícula.",
+   "otra_representacion": "Factorización por exponentes y búsqueda por intervalos en recta.",
+   "ejemplo": "√50 está entre 7 y 8; raíz entera 7, resto 50−49=1.",
+   "error_objetivo": {
+    "descripcion": "Concluir que un número es cuadrado solo porque termina en 1, 4, 5, 6 o 9.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "PA-R",
+     "autor": "OpenStax",
+     "titulo": "Prealgebra, 2e",
+     "localizador": "§5.7, Simplify and Use Square Roots",
+     "url": "https://openstax.org/books/prealgebra-2e/pages/5-7-simplify-and-use-square-roots",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "NT",
+     "autor": "W. Raji",
+     "titulo": "An Introductory Course in Elementary Number Theory (2013)",
+     "localizador": "§§1.3–1.6, 2.1–2.5, 3.1, 4.2 y cap. 6; páginas impresas 13–43, 51, 73–78, 123 en adelante",
+     "url": "https://resources.saylor.org/wwwresources/archived/site/wp-content/uploads/2013/05/An-Introductory-in-Elementary-Number-Theory.pdf",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "aritmetica",
+    "numero": 17,
+    "historia": "La tablilla paleobabilónica YBC 7289 muestra un cuadrado y una aproximación sexagesimal muy precisa de la raíz de dos. Su conservación permite afirmar qué valor se escribió, pero no reconstruir con certeza el procedimiento exacto usado para obtenerlo. Ese límite de la evidencia histórica es útil: una respuesta numérica no revela por sí sola un algoritmo. La unidad conecta potencias y raíces mediante operaciones inversas, y distingue valores exactos de aproximaciones. Nuestra expresión decimal y el símbolo de raíz son traducciones matemáticas modernas del contenido.",
+    "puente_escena": "Un cuadrado de área fijada se acompaña de cuadrados de prueba. El estudiante predice entre qué longitudes está su lado y estrecha el intervalo. La figura y una tabla de cuadrados mantienen visibles aproximación, cota inferior y cota superior.",
+    "ecuaciones": [
+     {
+      "latex": "1+\\frac{24}{60}+\\frac{51}{60^2}+\\frac{10}{60^3}\\approx\\sqrt{2}",
+      "lectura": "El valor sexagesimal de la tablilla aproxima la raíz de dos.",
+      "condiciones": "Es una aproximación, no una igualdad; su valor decimal es aproximadamente 1,41421296."
+     },
+     {
+      "latex": "q^2\\le N<(q+1)^2",
+      "lectura": "Estas cotas identifican la parte entera de la raíz cuadrada.",
+      "condiciones": "N no negativo y q entero no negativo."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "MCT 042 YBC 07289, P255048 — Cuneiform Digital Library Initiative",
+      "url": "https://cdli.earth/artifacts/255048"
+     },
+     {
+      "titulo": "The Best Known Old Babylonian Tablet? — Mathematical Association of America",
+      "url": "https://old.maa.org/press/periodicals/convergence/the-best-known-old-babylonian-tablet"
+     }
+    ],
+    "id": "aritmetica.potenciacion-y-radicacion",
+    "titulo": "Potenciación y radicación"
+   }
+  },
+  {
+   "id": "aritmetica.sucesiones-y-series",
+   "curso": "Aritmética",
+   "curso_id": "aritmetica",
+   "numero": 18,
+   "titulo": "Sucesiones y series numéricas",
+   "grado": 4,
+   "temas_catalogo": [
+    "Progresión aritmética y cantidad de términos",
+    "Progresión geométrica",
+    "Sumas notables",
+    "Sucesiones de orden superior",
+    "Sumas infinitas"
+   ],
+   "modulos_actuales": [
+    "sucesiones",
+    "estadistica-datos",
+    "numeros-sucesiones"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo.",
+   "teoria": "Una sucesión asigna un término a cada índice; una lista finita no determina una única regla. En progresión aritmética, a_n=a_1+(n−1)d y S_n=n(a_1+a_n)/2. En geométrica, a_n=a_1r^(n−1); S_n=a_1(1−r^n)/(1−r) para r≠1 y S_n=na_1 si r=1. Sumas de potencias o diferencias se justifican por descomposición o inducción. Diferencias sucesivas constantes sugieren un modelo polinómico, que debe declararse. Una suma geométrica infinita converge a a_1/(1−r) si |r|<1; que los términos decrezcan no basta para toda serie.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Patrones y expresiones",
+    "Potencias",
+    "Sumar términos"
+   ],
+   "desempeno": "Formula el término y la suma del modelo declarado y distingue una suma finita de una infinita.",
+   "escena_propuesta": "Predice la siguiente fila, añade fichas y congela índices y cantidades. Junta dos escaleras para construir el rectángulo de la suma. Compara una sucesión visual con otra que coincide al inicio pero diverge.",
+   "otra_representacion": "Tabla de diferencias y expresión explícita/recursiva.",
+   "ejemplo": "3+7+11+15+19=55; 1+1/2+1/4+…=2.",
+   "error_objetivo": {
+    "descripcion": "Usar n en vez de n−1 o asumir regla única por ver tres términos.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "AAT-S",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "§13.4 Series and Their Notations; §§13.1–13.3 como prerrequisito",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/13-4-series-and-their-notations",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "CAL-S",
+     "autor": "OpenStax",
+     "titulo": "Calculus, Volume 2",
+     "localizador": "5.2 infinite series",
+     "url": "https://openstax.org/books/calculus-volume-2/pages/5-2-infinite-series",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "aritmetica",
+    "numero": 18,
+    "historia": "En el prefacio de la Cuadratura de la parábola, Arquímedes presenta un problema de áreas y distingue la exploración mediante ideas mecánicas de su demostración geométrica. Afirma que el segmento parabólico tiene cuatro tercios del área de un triángulo adecuado. Para enseñar sucesiones, este contexto permite preguntar cómo una acumulación de aportes puede acercarse a un valor determinado. La escritura con términos, razones y sumatorias es posterior: no debe atribuirse a Arquímedes la notación actual ni confundirse una visualización finita con la prueba completa de un resultado límite.",
+    "puente_escena": "Una región se completa con aportes geométricos sucesivos. El estudiante predice el siguiente aporte y compara tamaño del término con total acumulado. Barras y tabla mantienen ambas magnitudes separadas, mostrando qué queda pendiente después de cada número de pasos.",
+    "ecuaciones": [
+     {
+      "latex": "S_n=a\\frac{1-r^n}{1-r}",
+      "lectura": "La suma de n términos geométricos depende del primer término y de la razón.",
+      "condiciones": "n entero positivo; r distinto de 1."
+     },
+     {
+      "latex": "\\lim_{n\\to\\infty}S_n=\\frac{a}{1-r}",
+      "lectura": "La suma acumulada converge a ese valor cuando las potencias de la razón tienden a cero.",
+      "condiciones": "|r|<1; a real."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Arquímedes, prefacio a Quadrature of the parabola, traducción reproducida por MacTutor",
+      "url": "https://mathshistory.st-andrews.ac.uk/Extras/Archimedes_parabola/"
+     }
+    ],
+    "id": "aritmetica.sucesiones-y-series",
+    "titulo": "Sucesiones y series numéricas"
+   }
+  },
+  {
+   "id": "aritmetica.razonamiento-numerico",
+   "curso": "Aritmética",
+   "curso_id": "aritmetica",
+   "numero": 19,
+   "titulo": "Problemas de razonamiento numérico",
+   "grado": 4,
+   "temas_catalogo": [
+    "Falsa suposición",
+    "Método regresivo",
+    "Móviles",
+    "Edades",
+    "Criptoaritmética",
+    "Suficiencia de datos",
+    "Distribuciones numéricas"
+   ],
+   "modulos_actuales": [
+    "razonamiento-numerico"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de comparar.",
+   "teoria": "Los problemas numéricos requieren variables, dominio y restricciones antes del truco. Falsa suposición corrige una solución de referencia mediante un cambio unitario constante, por lo que deriva de una ecuación lineal. Método regresivo invierte operaciones en orden inverso y comprueba que sean invertibles en el dominio. En edades, todas crecen con el mismo tiempo y su diferencia es constante. En móviles se coordinan posición, velocidad, tiempo y origen. Criptoaritmética exige asignación consistente de dígitos, llevadas y prohibición de cero inicial. Suficiencia pregunta unicidad de lo solicitado, no de todas las incógnitas. Una distribución necesita regla declarada o justificación; observar un patrón no prueba unicidad.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Operaciones inversas",
+    "Ecuación lineal",
+    "Restricciones enteras"
+   ],
+   "desempeno": "Elige representación, plantea restricciones y demuestra suficiencia mediante solución única o contraejemplo.",
+   "escena_propuesta": "Resuelve un ejemplo con fichas de dos valores; predice cuántas sustituciones corrigen el total. Luego el alumno completa un paso y resuelve otro solo. Para suficiencia, construye dos casos compatibles con respuestas distintas.",
+   "otra_representacion": "Tabla antes/después, línea temporal de edades y sistema de restricciones.",
+   "ejemplo": "12 entradas de 5 o 8 soles suman 81: todas a 5 darían 60; 21/3=7 entradas de 8.",
+   "error_objetivo": {
+    "descripcion": "Aplicar falsa suposición sin cambio constante o confundir encontrar un caso con demostrar suficiencia.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "AAT-M",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "2.3 models and applications",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/2-3-models-and-applications",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "DM-L",
+     "autor": "O. Levin",
+     "titulo": "Discrete Mathematics: An Open Introduction, 4th ed.",
+     "localizador": "§1.1 Mathematical Statements y §1.3 Rules of Logic",
+     "url": "https://discrete.openmathbooks.org/dmoi4/sec_logic-rules.html",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "aritmetica",
+    "numero": 19,
+    "historia": "En problemas del papiro Rhind se resuelven cantidades desconocidas partiendo de un valor conveniente y ajustándolo según la respuesta obtenida. La Open University explica esta estrategia, conocida posteriormente como falsa posición, y advierte que algunas decisiones del escriba no quedan documentadas. El procedimiento no consiste en adivinar sin criterio: aprovecha una relación proporcional que permite corregir el ensayo. Esta unidad recupera esa lógica de modelar, probar y verificar. La ecuación moderna hace visible la condición que autoriza escalar; otros problemas requieren ajustes aditivos o un modelo diferente.",
+    "puente_escena": "Se prueba una cantidad inicial en un reparto y se observa el total producido. Antes de corregirla, el estudiante predice el factor necesario. El registro conserva ensayo, salida y ajuste; una barra proporcional permite justificar por qué el escalado funciona.",
+    "ecuaciones": [
+     {
+      "latex": "f(x)=kx,\\quad f(x_0)=y_0\\quad\\Longrightarrow\\quad x=x_0\\frac{y}{y_0}",
+      "lectura": "Un ensayo se corrige multiplicando por la razón entre salida deseada y salida obtenida.",
+      "condiciones": "Modelo proporcional sin término independiente; k y y_0 distintos de cero."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Egyptian mathematics, 1.1.2 Egyptian calculation — The Open University",
+      "url": "https://www.open.edu/openlearn/science-maths-technology/mathematics-statistics/egyptian-mathematics/content-section-1.1.2"
+     }
+    ],
+    "id": "aritmetica.razonamiento-numerico",
+    "titulo": "Problemas de razonamiento numérico"
+   }
+  }
+ ]
+}

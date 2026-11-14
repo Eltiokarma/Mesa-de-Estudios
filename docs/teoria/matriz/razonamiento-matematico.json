@@ -1,0 +1,1283 @@
+{
+ "curso": "razonamiento-matematico",
+ "fecha": "2026-11-14",
+ "tipo": "Expediente editorial; no es el formato de ejecución de Teoria.vista",
+ "unidades": [
+  {
+   "id": "razonamiento-matematico.razonamiento-deductivo",
+   "curso": "Razonamiento matemático",
+   "curso_id": "razonamiento-matematico",
+   "numero": 1,
+   "titulo": "Razonamiento deductivo y parentesco",
+   "grado": 3,
+   "temas_catalogo": [
+    "Diagramas lineales y de Venn-Euler",
+    "Deductivo directo e indirecto",
+    "Cuadros de doble entrada",
+    "Parentesco"
+   ],
+   "modulos_actuales": [
+    "orden-informacion",
+    "rm-deduccion",
+    "rm-parentesco"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de argumentar.",
+   "teoria": "Una deducción conserva la verdad desde premisas aceptadas; una conclusión necesaria vale en todos los modelos compatibles. Diagramas de conjuntos expresan inclusión y exclusión; una tabla cruza atributos y un árbol familiar representa relaciones dirigidas. Ser padre e hijo son roles, no personas nuevas.",
+   "condiciones": "No suponer sexo, matrimonio, identidad o unicidad sin una pista. Una disposición que funciona no prueba que sea la única.",
+   "prerrequisitos": [
+    "Conjuntos",
+    "lectura de cuantificadores",
+    "identificar personas y relaciones."
+   ],
+   "desempeno": "Construye todas las configuraciones compatibles y distingue una conclusión necesaria de una posible.",
+   "escena_propuesta": "Conectar personas; predecir un vínculo; registrar qué pista sostiene cada arista; mostrar un segundo árbol como contraejemplo antes de formalizar.",
+   "otra_representacion": "Tabla de doble entrada y frase lógica con si/entonces.",
+   "ejemplo": "Dos padres y dos hijos pueden ser tres personas: abuelo, padre e hijo; el padre cumple dos roles.",
+   "error_objetivo": "Contar roles como personas o afirmar la recíproca de una implicación.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "E. Lehman, F. T. Leighton y A. R. Meyer",
+     "anio": "2015",
+     "titulo": "Mathematics for Computer Science",
+     "url": "https://www.ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-spring-2015/resources/mit6_042js15_textbook_pdf/",
+     "seccion": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia.",
+     "localizador": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia."
+    },
+    {
+     "autor": "OpenStax",
+     "anio": "2023",
+     "titulo": "Contemporary Mathematics",
+     "url": "https://openstax.org/books/contemporary-mathematics/pages/2-7-logical-arguments",
+     "seccion": "2.7 Logical Arguments",
+     "localizador": "2.7 Logical Arguments"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-matematico.razonamiento-deductivo",
+    "historia": "La investigación sistemática de la deducción tiene un antecedente central en la lógica de Aristóteles, del siglo IV a. C. Su pregunta era qué conclusiones siguen necesariamente de ciertas premisas. Los ejercicios actuales de parentesco son una aplicación didáctica distinta; no deben presentarse como una invención aristotélica. El vínculo histórico útil consiste en separar la verdad de las premisas de la validez del paso. Hoy podemos representar relaciones familiares con un grafo dirigido y comprobar qué información autoriza realmente cada conclusión. La escritura simbólica que usamos abajo es moderna.",
+    "puente_escena": "Mostrar una familia inventada con relaciones explícitas. Al elegir una conclusión, iluminar únicamente las dos relaciones que la sostienen. Contrastar padre de, hermano de y antepasado de: no todas permiten la misma composición. Una relación no declarada permanece indeterminada.",
+    "ecuaciones": [
+     {
+      "latex": "(p\\Rightarrow q)\\land p\\;\\Rightarrow\\;q",
+      "lectura": "Modus ponens: si p implica q y ocurre p, se concluye q.",
+      "condiciones": "Es un esquema de lógica clásica; las premisas deben estar admitidas. No autoriza afirmar p a partir de q."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Aristotle’s Logic · Stanford Encyclopedia of Philosophy",
+      "url": "https://plato.stanford.edu/entries/aristotle-logic/"
+     }
+    ]
+   }
+  },
+  {
+   "id": "razonamiento-matematico.trazos-y-perimetros",
+   "curso": "Razonamiento matemático",
+   "curso_id": "razonamiento-matematico",
+   "numero": 2,
+   "titulo": "Trazos de figuras y perímetros",
+   "grado": 3,
+   "temas_catalogo": [
+    "Figuras de un solo trazo",
+    "Longitud mínima de un recorrido",
+    "Perímetros de figuras poligonales",
+    "Perímetros de figuras circulares"
+   ],
+   "modulos_actuales": [
+    "trazos-rutas",
+    "cuadricula-piezas",
+    "rutas-espacio",
+    "papel-doblado"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo.",
+   "teoria": "Un grafo representa cruces con vértices y segmentos con aristas. Un recorrido euleriano usa cada arista exactamente una vez. El perímetro mide la frontera, no todas las líneas dibujadas. Para recorridos mínimos hay que especificar qué aristas deben visitarse y si se permite repetir.",
+   "condiciones": "En un grafo finito no dirigido, los vértices de grado no nulo deben pertenecer a una sola componente conexa: cero vértices impares permite circuito y dos permite recorrido abierto. No basta contar impares. Deslizar lados conserva ciertas sumas, no cualquier curva.",
+   "prerrequisitos": [
+    "Paridad",
+    "suma de longitudes",
+    "reconocer cruces y extremos."
+   ],
+   "desempeno": "Decide si un trazo es posible y justifica con conectividad y grados; calcula el borde sin contar líneas internas.",
+   "escena_propuesta": "Trazar cada arista y dejarla marcada; registrar grados; fabricar un grafo desconectado que refute la regla incompleta.",
+   "otra_representacion": "Lista de grados y descomposición del perímetro en segmentos/arcos.",
+   "ejemplo": "Un cuadrado con una diagonal tiene dos vértices de grado 3: admite trazo abierto empezando en uno y terminando en el otro.",
+   "error_objetivo": "Aplicar cero o dos impares sin conectividad.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "OpenStax",
+     "anio": "2023",
+     "titulo": "Contemporary Mathematics",
+     "url": "https://openstax.org/books/contemporary-mathematics/pages/12-6-euler-trails",
+     "seccion": "12.6 Euler Trails",
+     "localizador": "12.6 Euler Trails"
+    },
+    {
+     "autor": "E. Lehman, F. T. Leighton y A. R. Meyer",
+     "anio": "2015",
+     "titulo": "Mathematics for Computer Science",
+     "url": "https://www.ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-spring-2015/resources/mit6_042js15_textbook_pdf/",
+     "seccion": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia.",
+     "localizador": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia."
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-matematico.trazos-y-perimetros",
+    "historia": "El problema de los puentes de Königsberg llevó a Euler, en la década de 1730, a estudiar conexiones en lugar de longitudes o ángulos. Su trabajo aparece en un volumen fechado en 1736, publicado posteriormente. Para nuestra unidad, importa el cambio de representación: sustituir regiones por vértices y puentes por aristas. Esa pregunta no coincide con medir un perímetro. Separarlas evita que el alumno intente resolver con una suma de longitudes lo que depende de entradas y salidas, o aplique una regla de trazos a la frontera exterior de una figura.",
+    "puente_escena": "Alternar dos capas de una misma figura: aristas que se deben recorrer y frontera que se debe medir. En la primera contar los grados y conservar cada trazo; en la segunda medir todas las fronteras de la región: el contorno exterior y, si existen agujeros, sus bordes internos.",
+    "ecuaciones": [
+     {
+      "latex": "\\sum_{v\\in V}\\deg(v)=2|E|",
+      "lectura": "Cada arista aporta dos incidencias al total de grados.",
+      "condiciones": "Grafo finito no dirigido; un lazo cuenta dos veces."
+     },
+     {
+      "latex": "N_{\\mathrm{impares}}\\in\\{0,2\\}",
+      "lectura": "Un recorrido euleriano usa cada arista exactamente una vez.",
+      "condiciones": "Condición necesaria y suficiente cuando los vértices con grado no nulo forman una componente conexa. Con cero impares puede cerrarse."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Euler, Solutio problematis ad geometriam situs pertinentis · texto original y traducción",
+      "url": "https://www.cantab.net/users/michael.behrend/repubs/maze_maths/pages/euler_en.html"
+     }
+    ]
+   }
+  },
+  {
+   "id": "razonamiento-matematico.ordenamiento-de-informacion",
+   "curso": "Razonamiento matemático",
+   "curso_id": "razonamiento-matematico",
+   "numero": 3,
+   "titulo": "Ordenamiento de información",
+   "grado": 3,
+   "temas_catalogo": [
+    "Ordenamiento lineal",
+    "Ordenamiento circular",
+    "Ordenamiento poligonal"
+   ],
+   "modulos_actuales": [
+    "orden-informacion",
+    "rm-parentesco"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de argumentar.",
+   "teoria": "Ordenar es satisfacer simultáneamente restricciones sobre posiciones. Antes/después no implica adyacencia. En un círculo la posición absoluta puede carecer de significado: se fija una referencia para eliminar rotaciones equivalentes. Una pista reduce el conjunto de configuraciones, no necesariamente a una sola.",
+   "condiciones": "Distinguir izquierda del observador y de la persona; declarar hacia dónde miran. Solo identificar configuraciones por reflexión si el problema lo permite.",
+   "prerrequisitos": [
+    "Relaciones de orden",
+    "izquierda/derecha",
+    "manejo de tablas."
+   ],
+   "desempeno": "Enumera candidatos y encuentra una afirmación verdadera en todos los que quedan.",
+   "escena_propuesta": "Ordenar fichas, predecir qué puesto se elimina, registrar descartes por pista; fantasma muestra una solución que viola una pista concreta.",
+   "otra_representacion": "Cuadro persona–posición y cadena de desigualdades.",
+   "ejemplo": "A está antes de B y B antes de C, en tres puestos: A–B–C. Con cuatro puestos y D libre, la posición exacta de B no queda fijada.",
+   "error_objetivo": "Confundir orden relativo con posiciones consecutivas.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "E. Lehman, F. T. Leighton y A. R. Meyer",
+     "anio": "2015",
+     "titulo": "Mathematics for Computer Science",
+     "url": "https://www.ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-spring-2015/resources/mit6_042js15_textbook_pdf/",
+     "seccion": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia.",
+     "localizador": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia."
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-matematico.ordenamiento-de-informacion",
+    "historia": "La lógica simbólica del siglo XIX ayudó a expresar relaciones y restricciones de forma sistemática. En 1854 Boole publicó Laws of Thought, donde trató el razonamiento mediante un cálculo de clases. Esto es un antecedente conceptual, no el origen documentado de los ejercicios de asientos o edades de admisión. La conexión editorial que proponemos es hacer visible cómo una frase reduce posibilidades. Ordenar información requiere distinguir un orden parcial, que deja alternativas, de un orden total. La cadena de desigualdades de abajo es nuestra formulación actual, no una cita histórica.",
+    "puente_escena": "Colocar fichas sobre tres posiciones. Cada pista elimina disposiciones incompatibles y las conserva atenuadas como registro. Si una pista solo impone anterioridad, mostrar dos órdenes legales: la escena debe permitir reconocer que falta información sin exigir adivinar.",
+    "ecuaciones": [
+     {
+      "latex": "a<b\\;\\land\\;b<c\\quad\\Rightarrow\\quad a<c",
+      "lectura": "La anterioridad transitiva permite deducir una nueva restricción.",
+      "condiciones": "Representar posiciones en un mismo orden lineal; no confundir antes que con inmediatamente antes que."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "George Boole · Stanford Encyclopedia of Philosophy",
+      "url": "https://plato.stanford.edu/archives/sum2021/entries/boole/"
+     }
+    ]
+   }
+  },
+  {
+   "id": "razonamiento-matematico.verdades-y-mentiras",
+   "curso": "Razonamiento matemático",
+   "curso_id": "razonamiento-matematico",
+   "numero": 4,
+   "titulo": "Verdades y mentiras",
+   "grado": 3,
+   "temas_catalogo": [
+    "Método de suposición",
+    "Afirmaciones contradictorias",
+    "Personajes que siempre mienten o dicen la verdad"
+   ],
+   "modulos_actuales": [
+    "orden-informacion"
+   ],
+   "ruta_propuesta": "argumentar, con apoyo de seguir un ejemplo.",
+   "teoria": "Una afirmación es una proposición con valor de verdad dentro de una configuración. Modelar veraz/mentiroso exige vincular identidad y verdad de cada frase. Dos contradictorias no pueden tener el mismo valor; dos frases meramente distintas sí pueden ser ambas verdaderas o falsas.",
+   "condiciones": "La negación de todos es existe al menos uno que no. Las reglas de mentir deben especificar si afectan toda afirmación o solo la situación.",
+   "prerrequisitos": [
+    "Negación",
+    "condicional",
+    "conjunción y disyunción."
+   ],
+   "desempeno": "Resuelve por casos y señala la contradicción exacta que descarta cada hipótesis.",
+   "escena_propuesta": "Voltear tarjetas veraz/mentiroso; predecir consistencia; congelar la primera contradicción, con su frase y su negación juntas.",
+   "otra_representacion": "Tabla de verdad y árbol de casos.",
+   "ejemplo": "A dice que B miente; B dice que ambos mienten. A veraz y B mentiroso es coherente; A mentiroso y B veraz no lo es.",
+   "error_objetivo": "Negar una proposición compuesta cambiando una sola palabra.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "OpenStax",
+     "anio": "2023",
+     "titulo": "Contemporary Mathematics",
+     "url": "https://openstax.org/books/contemporary-mathematics/pages/2-7-logical-arguments",
+     "seccion": "2.7 Logical Arguments",
+     "localizador": "2.7 Logical Arguments"
+    },
+    {
+     "autor": "E. Lehman, F. T. Leighton y A. R. Meyer",
+     "anio": "2015",
+     "titulo": "Mathematics for Computer Science",
+     "url": "https://www.ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-spring-2015/resources/mit6_042js15_textbook_pdf/",
+     "seccion": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia.",
+     "localizador": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia."
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-matematico.verdades-y-mentiras",
+    "historia": "Boole desarrolló en 1847 y 1854 una manera algebraica de estudiar relaciones lógicas. La notación y las tablas de verdad que se emplean hoy son el resultado de una evolución posterior; no conviene atribuirle cada símbolo actual. Los acertijos de personajes que dicen la verdad o mienten aprovechan una distinción esencial: una afirmación tiene un valor en un modelo, y el tipo de personaje impone otra condición sobre ella. La actividad propuesta hace explícitas ambas capas y busca asignaciones coherentes, en lugar de premiar intuiciones sobre las personalidades.",
+    "puente_escena": "Mostrar las afirmaciones por separado de la etiqueta veraz o mentiroso. Permitir cambiar una hipótesis y ver qué frases quedan verdaderas. Conservar una tabla de casos para demostrar que se revisaron todas las asignaciones legales.",
+    "ecuaciones": [
+     {
+      "latex": "t_i\\leftrightarrow s_i",
+      "lectura": "La persona i es veraz exactamente cuando su afirmación s_i es verdadera.",
+      "condiciones": "Modelo de personajes que siempre dicen verdad o siempre mienten, con afirmaciones bivalentes. No aplica automáticamente a ironías, ambigüedades o paradojas autorreferentes."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "George Boole · Stanford Encyclopedia of Philosophy",
+      "url": "https://plato.stanford.edu/archives/sum2021/entries/boole/"
+     }
+    ]
+   }
+  },
+  {
+   "id": "razonamiento-matematico.traslados-y-puntos-cardinales",
+   "curso": "Razonamiento matemático",
+   "curso_id": "razonamiento-matematico",
+   "numero": 5,
+   "titulo": "Traslados y puntos cardinales",
+   "grado": 3,
+   "temas_catalogo": [
+    "Traslado de fichas y figuras",
+    "Traslado de números",
+    "Puntos cardinales y orientación"
+   ],
+   "modulos_actuales": [
+    "traslados-sucesos",
+    "rm-trasvases",
+    "rm-movimientos",
+    "rm-rumbos"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo.",
+   "teoria": "Un traslado conserva la forma y suma un vector a cada punto. En orientación, desplazamiento es posición final menos inicial; longitud recorrida suma todos los tramos. Trasvases y movimientos discretos son transiciones de estado con cantidades conservadas.",
+   "condiciones": "Las reglas de trasvase deben fijar capacidades, pérdidas y acciones permitidas. El mapa es un modelo: un dibujo oblicuo no cambia los ejes cardinales.",
+   "prerrequisitos": [
+    "Enteros con signo",
+    "coordenadas",
+    "conservación de cantidades."
+   ],
+   "desempeno": "Reconstruye la posición o el estado final y separa ruta de desplazamiento.",
+   "escena_propuesta": "Mover una ficha por cuadras; predecir dónde termina; dejar el camino y la flecha entre extremos; justificar la suma de componentes.",
+   "otra_representacion": "Tabla norte/sur/este/oeste o estados de recipientes.",
+   "ejemplo": "3 cuadras al este y 4 al norte: camino 7; desplazamiento de módulo 5 si las cuadras tienen igual longitud y son perpendiculares.",
+   "error_objetivo": "Sumar distancias para obtener módulo del desplazamiento.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "E. Lehman, F. T. Leighton y A. R. Meyer",
+     "anio": "2015",
+     "titulo": "Mathematics for Computer Science",
+     "url": "https://www.ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-spring-2015/resources/mit6_042js15_textbook_pdf/",
+     "seccion": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia.",
+     "localizador": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia."
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-matematico.traslados-y-puntos-cardinales",
+    "historia": "La navegación por estima combinó rumbos, velocidad, tiempo y juicio sobre las corrientes. Las colecciones del Whipple Museum conservan instrumentos y textos que permiten estudiar esa práctica; un manual de Andrew Mackay publicado en 1804 es uno de sus referentes. El ejercicio escolar de desplazamientos sobre una cuadrícula es una simplificación moderna de ese problema de orientación. Podemos aprovechar la historia para preguntar por qué un recorrido largo termina cerca del origen. No convertimos esa cuadrícula en una representación exacta de rutas sobre toda la Tierra.",
+    "puente_escena": "Un recorrido sobre un plano local deja huella. Rotular norte y este antes de mover la ficha. Comparar la longitud caminada con la flecha que une salida y llegada. Introducir una corriente como segundo desplazamiento solo después de entender el modelo básico.",
+    "ecuaciones": [
+     {
+      "latex": "\\Delta\\mathbf r=\\sum_i\\Delta\\mathbf r_i",
+      "lectura": "El desplazamiento total es la suma vectorial de los tramos.",
+      "condiciones": "Plano local, ejes y unidades comunes."
+     },
+     {
+      "latex": "d=\\sum_i\\|\\Delta\\mathbf r_i\\|\\geq\\|\\Delta\\mathbf r\\|",
+      "lectura": "La distancia por tramos rectos no es menor que el módulo del desplazamiento.",
+      "condiciones": "Cada tramo se modela recto; para un trayecto curvo debe emplearse su longitud real."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Navigational Arts · Whipple Museum, Cambridge",
+      "url": "https://www.whipplemuseum.cam.ac.uk/explore-whipple-collections/astronomy-and-empire/navigational-arts"
+     }
+    ]
+   }
+  },
+  {
+   "id": "razonamiento-matematico.arreglos-numericos",
+   "curso": "Razonamiento matemático",
+   "curso_id": "razonamiento-matematico",
+   "numero": 6,
+   "titulo": "Arreglos numéricos y cuadrados mágicos",
+   "grado": 3,
+   "temas_catalogo": [
+    "Arreglos en polígonos",
+    "Cuadrados mágicos",
+    "Distribución de números con condiciones"
+   ],
+   "modulos_actuales": [
+    "arreglos-giros",
+    "rm-arreglos"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo.",
+   "teoria": "Los arreglos combinan restricciones locales y una suma global. En un cuadrado mágico normal de orden n, se usan una vez los enteros 1 a n²; cada fila, columna y diagonal principal suma n(n²+1)/2. Las simetrías producen arreglos equivalentes solo si las restricciones no distinguen orientaciones ni casillas.",
+   "condiciones": "La regla centro = suma mágica/3 corresponde al cuadrado mágico 3×3 con sus diagonales, no a todo arreglo. Los números y restricciones pueden variar.",
+   "prerrequisitos": [
+    "Suma de progresiones",
+    "conteo sin repetición",
+    "simetría."
+   ],
+   "desempeno": "Obtiene la constante por suma total y deduce casillas mediante restricciones, sin tanteo ilimitado.",
+   "escena_propuesta": "Colocar fichas; cada fila deja su suma visible; predecir el centro; mostrar una tabla 4×4 para limitar la regla.",
+   "otra_representacion": "Sistema de ecuaciones por filas y columnas.",
+   "ejemplo": "Con 1 a 9, total 45: cada fila suma 15 y el centro del cuadrado mágico 3×3 es 5.",
+   "error_objetivo": "Generalizar una propiedad de 3×3 a todos los tamaños.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "E. Lehman, F. T. Leighton y A. R. Meyer",
+     "anio": "2015",
+     "titulo": "Mathematics for Computer Science",
+     "url": "https://www.ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-spring-2015/resources/mit6_042js15_textbook_pdf/",
+     "seccion": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia.",
+     "localizador": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia."
+    },
+    {
+     "autor": "NRICH, University of Cambridge",
+     "titulo": "Magic Sums and Products",
+     "url": "https://nrich.maths.org/articles/magic-sums-and-products",
+     "seccion": "Estructura algebraica de un cuadrado mágico 3×3; aplicación propia.",
+     "localizador": "Estructura algebraica de un cuadrado mágico 3×3; aplicación propia."
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-matematico.arreglos-numericos",
+    "historia": "Los cuadrados mágicos circularon por distintas culturas y adquirieron usos recreativos, simbólicos y matemáticos. La exposición de ETH Library documenta esa trayectoria y el interés renovado por construirlos en la Europa del siglo XVII. No hay motivo para convertir esta historia en el relato de un único inventor. La pregunta fértil es qué permanece constante cuando cambiamos la ubicación de los números. Nuestra fórmula actual permite obtener la suma común antes de completar un tablero. Después, un ejemplo debe mostrar que acertar esa suma todavía no garantiza que todas las filas, columnas y diagonales la cumplan.",
+    "puente_escena": "Usar los números del uno al nueve en una cuadrícula. La suma total permanece fija al permutarlos; las sumas de filas y diagonales cambian. Guardar un tablero que cumple solo las filas y compararlo con uno mágico para separar condiciones necesarias y suficientes.",
+    "ecuaciones": [
+     {
+      "latex": "M=\\frac{n(n^2+1)}{2}",
+      "lectura": "M es la suma común de cada fila de un cuadrado mágico normal de orden n.",
+      "condiciones": "Se usan una vez los enteros de 1 a n². El cálculo es una condición necesaria, no una construcción ni prueba de existencia para todo n."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Magic Squares · ETH Library",
+      "url": "https://library.ethz.ch/en/collections-and-archives/platforms/virtual-exhibitions/Its-all-math-and-games/magic-squares.html"
+     }
+    ]
+   }
+  },
+  {
+   "id": "razonamiento-matematico.razonamiento-inductivo",
+   "curso": "Razonamiento matemático",
+   "curso_id": "razonamiento-matematico",
+   "numero": 7,
+   "titulo": "Razonamiento inductivo",
+   "grado": 3,
+   "temas_catalogo": [
+    "Inducción numérica",
+    "Inducción verbal",
+    "Inducción con figuras"
+   ],
+   "modulos_actuales": [
+    "sucesiones",
+    "rm-ciclos",
+    "rm-fichas"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo.",
+   "teoria": "Inducción empírica propone una regla a partir de ejemplos; inducción matemática demuestra una proposición para todos los naturales mediante base y paso. Una sucesión finita admite muchas continuaciones. Una regla de construcción visual puede determinar una recurrencia o fórmula.",
+   "condiciones": "No decir que tres casos prueban la fórmula. Hay que declarar la regla de crecimiento; verificar un cuarto caso solo descarta algunas conjeturas.",
+   "prerrequisitos": [
+    "Conteo",
+    "diferencias",
+    "expresión algebraica."
+   ],
+   "desempeno": "Propone dos reglas compatibles con datos finitos y justifica la elegida por la construcción dada.",
+   "escena_propuesta": "Añadir una fila de fichas; registrar total e incremento; predecir otro caso; descomponer la figura para explicar la fórmula.",
+   "otra_representacion": "Tabla de diferencias y expresión recursiva.",
+   "ejemplo": "Una fila de n cuadrados unidos comparte lados: 4+3(n−1)=3n+1 palitos. Para n=5 hay 16, por la regla de construcción.",
+   "error_objetivo": "Tomar una regularidad numérica observada como demostración.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "E. Lehman, F. T. Leighton y A. R. Meyer",
+     "anio": "2015",
+     "titulo": "Mathematics for Computer Science",
+     "url": "https://www.ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-spring-2015/resources/mit6_042js15_textbook_pdf/",
+     "seccion": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia.",
+     "localizador": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia."
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-matematico.razonamiento-inductivo",
+    "historia": "Hume planteó en 1739 y volvió a tratar en 1748 el problema de justificar el paso desde casos observados hacia lo no observado. Ese debate filosófico no es lo mismo que la inducción matemática, que es un método deductivo de demostración. En una sucesión finita de examen, reconocer regularidad produce una hipótesis; varias reglas pueden ajustarse a los mismos primeros términos. El uso didáctico de la historia consiste en pedir la regla y sus supuestos, no solo el siguiente número. La expresión mostrada es una familia de modelos propuesta hoy.",
+    "puente_escena": "Presentar los mismos cuatro términos y dos reglas que coinciden en ellos pero difieren después. Pedir qué dato o restricción decide entre las reglas. Una segunda fase especifica que la sucesión es aritmética y entonces permite una respuesta determinada.",
+    "ecuaciones": [
+     {
+      "latex": "a_n=a_1+(n-1)d",
+      "lectura": "Una sucesión aritmética suma la misma diferencia d en cada paso.",
+      "condiciones": "Válida si la regla de diferencia constante se establece para todo el dominio, no por observar solamente unos pocos términos."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "The Problem of Induction · Stanford Encyclopedia of Philosophy",
+      "url": "https://plato.stanford.edu/entries/induction-problem/"
+     }
+    ]
+   }
+  },
+  {
+   "id": "razonamiento-matematico.juegos-recreativos",
+   "curso": "Razonamiento matemático",
+   "curso_id": "razonamiento-matematico",
+   "numero": 8,
+   "titulo": "Elementos recreativos",
+   "grado": 3,
+   "temas_catalogo": [
+    "Dominó",
+    "Dados",
+    "Fichas y cerillas"
+   ],
+   "modulos_actuales": [
+    "probabilidad-dados",
+    "dados-caras",
+    "dados-domino",
+    "rm-trasvases",
+    "rm-movimientos"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de comparar.",
+   "teoria": "Los rompecabezas de dados, dominós y cerillas usan restricciones de adyacencia, orientación, conteo e invariantes. Girar en 3D conserva adyacencias y orientación; reflejar puede invertirla. Una búsqueda debe listar operaciones legales y estados alcanzables.",
+   "condiciones": "Opuestas suman 7 solo en el dado convencional numerado así. No es una ley de todo cubo rotulado. Aclarar qué cerillas pueden moverse y qué signos se permiten.",
+   "prerrequisitos": [
+    "Rotación y reflexión",
+    "paridad",
+    "conteo sistemático."
+   ],
+   "desempeno": "Reconoce un desarrollo válido y demuestra si una configuración es alcanzable bajo las reglas.",
+   "escena_propuesta": "Girar un dado con cara marcada; predecir cara oculta; desplegar y registrar adyacencias; contrastar un cubo con etiquetas no convencionales.",
+   "otra_representacion": "Grafo de caras y tabla de estados posibles.",
+   "ejemplo": "En dado convencional, si arriba hay 2, abajo hay 5; la cara frontal no se deduce solo de ese dato.",
+   "error_objetivo": "Inferir una orientación completa de una sola cara.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "E. Lehman, F. T. Leighton y A. R. Meyer",
+     "anio": "2015",
+     "titulo": "Mathematics for Computer Science",
+     "url": "https://www.ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-spring-2015/resources/mit6_042js15_textbook_pdf/",
+     "seccion": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia.",
+     "localizador": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia."
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-matematico.juegos-recreativos",
+    "historia": "Los pasatiempos matemáticos han servido para formular problemas de combinación, movimiento y estrategia. Las colecciones de Dudeney, entre ellas The Canterbury Puzzles de 1907 y Amusements in Mathematics de 1917, muestran esa diversidad. No son prueba de que todos los juegos de cerillas o dominó nacieran con él. Para la app, este antecedente invita a precisar las reglas antes de calcular: qué se mueve, qué puede tocarse y qué cuenta como solución. Una misma imagen con reglas distintas define problemas distintos. La fórmula del dominó que aparece abajo corresponde al conjunto especificado, no a cualquier juego.",
+    "puente_escena": "Antes del primer intento, mostrar un movimiento legal y uno ilegal. Cada estado conserva el inventario de piezas. En dominó, construir pares sin distinguir su orientación; en cerillas, verificar el número de piezas movidas y la condición final por separado.",
+    "ecuaciones": [
+     {
+      "latex": "N=\\frac{(n+1)(n+2)}{2}",
+      "lectura": "Número de fichas de un dominó doble-n, incluyendo los dobles.",
+      "condiciones": "Cada mitad toma un valor entre 0 y n; los pares {a,b} son no ordenados y se permite a=b."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Henry Ernest Dudeney · MacTutor",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Dudeney/"
+     }
+    ]
+   }
+  },
+  {
+   "id": "razonamiento-matematico.cronometria-y-calendarios",
+   "curso": "Razonamiento matemático",
+   "curso_id": "razonamiento-matematico",
+   "numero": 9,
+   "titulo": "Relojes y calendarios",
+   "grado": 3,
+   "temas_catalogo": [
+    "Adelantos y atrasos",
+    "Ángulo entre las agujas del reloj",
+    "Campanadas",
+    "Años normales y bisiestos",
+    "Día de la semana de una fecha"
+   ],
+   "modulos_actuales": [
+    "relojes-calendarios",
+    "rm-relojes"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de descubrir.",
+   "teoria": "Las agujas son movimientos angulares uniformes: minutero 6°/min y horario 0,5°/min. La diferencia angular es 30h−5,5m, reducida módulo 360; el ángulo menor es el mínimo entre el residuo y su complemento. Los calendarios combinan conteo de días y residuos módulo 7.",
+   "condiciones": "Los adelantos se comparan contra tiempo real; las campanadas definen intervalos. En gregoriano un año divisible por 100 solo es bisiesto si también lo es por 400.",
+   "prerrequisitos": [
+    "Proporcionalidad",
+    "unidades de tiempo",
+    "residuos."
+   ],
+   "desempeno": "Calcula un ángulo y un cambio de día, explicando el movimiento de ambas agujas y el calendario usado.",
+   "escena_propuesta": "Girar minutero y seguir horario; predecir separación; dejar dos posiciones; en calendario desplazar una semana sin cambiar el día.",
+   "otra_representacion": "Tabla de velocidades angulares y línea de tiempo.",
+   "ejemplo": "A las 3:20, horario 100° y minutero 120°: ángulo menor 20°. 2100 no es bisiesto.",
+   "error_objetivo": "Dejar inmóvil el horario o usar divisible entre 4 sin excepciones.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "U.S. Naval Observatory",
+     "anio": "s. f.",
+     "titulo": "Leap Years",
+     "url": "https://aa.usno.navy.mil/faq/leap_years",
+     "seccion": "The Rule: calendario gregoriano",
+     "localizador": "The Rule: calendario gregoriano"
+    },
+    {
+     "autor": "E. Lehman, F. T. Leighton y A. R. Meyer",
+     "anio": "2015",
+     "titulo": "Mathematics for Computer Science",
+     "url": "https://www.ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-spring-2015/resources/mit6_042js15_textbook_pdf/",
+     "seccion": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia.",
+     "localizador": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia."
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-matematico.cronometria-y-calendarios",
+    "historia": "Los calendarios intentan coordinar ciclos astronómicos con unidades civiles enteras. La reforma gregoriana de 1582 ajustó la regla de años bisiestos respecto del calendario juliano; su adopción ocurrió en fechas diferentes según el lugar. Esa diferencia importa si se plantea una fecha histórica real. Para practicar residuos podemos declarar un calendario gregoriano proléptico, que extiende la regla hacia el pasado, sin presentarlo como uso universal histórico. La escena debe distinguir el día de la semana, la fecha y el número de días transcurridos: son preguntas relacionadas, pero no idénticas.",
+    "puente_escena": "Un calendario avanza día por día y deja un contador de días transcurridos. Al cruzar febrero, comparar años 1900 y 2000. Declarar el calendario aplicado. Una franja aparte muestra el residuo módulo siete para separar el cómputo de fecha del nombre del día.",
+    "ecuaciones": [
+     {
+      "latex": "d_f\\equiv d_i+N\\pmod 7",
+      "lectura": "Después de N días, el día semanal avanza N posiciones en un ciclo de siete.",
+      "condiciones": "N cuenta días transcurridos; fijar una codificación para los días y no incluir dos veces el día inicial."
+     },
+     {
+      "latex": "B(y)=(4\\mid y)\\land\\big[(100\\nmid y)\\lor(400\\mid y)\\big]",
+      "lectura": "Regla de bisiesto gregoriano.",
+      "condiciones": "Años del calendario gregoriano; para fechas históricas se debe conocer cuándo lo adoptó el lugar."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Introduction to Calendars · US Naval Observatory",
+      "url": "https://aa.usno.navy.mil/faq/calendars"
+     },
+     {
+      "titulo": "Leap Years · US Naval Observatory",
+      "url": "https://aa.usno.navy.mil/faq/leap_years"
+     }
+    ]
+   }
+  },
+  {
+   "id": "razonamiento-matematico.certezas",
+   "curso": "Razonamiento matemático",
+   "curso_id": "razonamiento-matematico",
+   "numero": 10,
+   "titulo": "Certezas",
+   "grado": 3,
+   "temas_catalogo": [
+    "Extracción de objetos",
+    "Peor caso",
+    "Identificación de objetos"
+   ],
+   "modulos_actuales": [
+    "orden-informacion",
+    "rm-deduccion",
+    "rm-certezas"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de argumentar.",
+   "teoria": "Una certeza exige éxito en todas las selecciones permitidas. El principio del palomar limita lo que puede repartirse sin repetir una clase. Hallar el peor caso significa maximizar extracciones todavía sin cumplir el objetivo; el siguiente objeto fuerza el resultado si hay disponibilidad.",
+   "condiciones": "El peor caso más uno es un argumento, no una fórmula universal. Importan reemplazo, cantidades disponibles y si la meta es un color específico o cualquier color.",
+   "prerrequisitos": [
+    "Clasificación",
+    "conteo",
+    "desigualdades."
+   ],
+   "desempeno": "Construye el peor caso y prueba por qué no puede prolongarse.",
+   "escena_propuesta": "Sacar fichas y elegir la peor siguiente; registrar ocupación por casillero; predecir qué extracción obliga la repetición.",
+   "otra_representacion": "Cotas por casilleros y árbol de extracciones.",
+   "ejemplo": "Con tres colores y al menos dos fichas de cada color, cuatro extracciones sin reemplazo garantizan dos del mismo color.",
+   "error_objetivo": "Confundir alta probabilidad con garantía.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "E. Lehman, F. T. Leighton y A. R. Meyer",
+     "anio": "2015",
+     "titulo": "Mathematics for Computer Science",
+     "url": "https://www.ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-spring-2015/resources/mit6_042js15_textbook_pdf/",
+     "seccion": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia.",
+     "localizador": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia."
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-matematico.certezas",
+    "historia": "El principio del palomar se asocia históricamente con Dirichlet, aunque reducir todo argumento de reparto a una sola invención sería inexacto. La idea permite demostrar una certeza sin conocer la distribución concreta: si hay más objetos que casillas, alguna casilla recibe al menos dos. En los problemas de extracción, interesa preparar el caso más desfavorable que todavía evita el objetivo. La historia introduce una diferencia útil para el alumno: garantizar algo no equivale a estimar su probabilidad. La cantidad mínima garantizada debe resistir cualquier distribución admitida por el enunciado.",
+    "puente_escena": "Distribuir fichas libremente entre casillas. Primero construir la configuración que evita una repetición el mayor tiempo posible. La siguiente ficha obliga al resultado. Contrastar este argumento exhaustivo con repetir sorteos: muchas simulaciones no constituyen por sí solas una garantía.",
+    "ecuaciones": [
+     {
+      "latex": "\\max_i n_i\\geq\\left\\lceil\\frac{N}{k}\\right\\rceil",
+      "lectura": "Al repartir N objetos en k casillas, alguna tiene al menos el techo de N/k.",
+      "condiciones": "N y k enteros, N≥0, k≥1, cada objeto pertenece a una casilla."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "The Pigeonhole Principle · University of Lethbridge",
+      "url": "https://opentext.uleth.ca/Ramsey/sec_Pigeon.html"
+     }
+    ]
+   }
+  },
+  {
+   "id": "razonamiento-matematico.frecuencia-de-sucesos",
+   "curso": "Razonamiento matemático",
+   "curso_id": "razonamiento-matematico",
+   "numero": 11,
+   "titulo": "Frecuencia de sucesos",
+   "grado": 3,
+   "temas_catalogo": [
+    "Pastillas y recetas",
+    "Dietas y turnos",
+    "Número de campanadas"
+   ],
+   "modulos_actuales": [
+    "traslados-sucesos",
+    "rm-ciclos"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo.",
+   "teoria": "Sucesos periódicos se describen por origen, periodo y ventana de observación. Si hay evento en ambos extremos y tiempos separados por d, n eventos ocupan (n−1)d. Coincidencias de periodos enteros con mismo origen se resuelven con MCM; con desfases se necesitan congruencias.",
+   "condiciones": "Definir si se cuenta el evento inicial/final. No aplicar MCM a periodos con orígenes distintos sin revisar compatibilidad. Usar contextos de turnos o buses, sin convertir el ejemplo en indicación médica.",
+   "prerrequisitos": [
+    "Intervalos",
+    "múltiplos",
+    "tiempo transcurrido."
+   ],
+   "desempeno": "Cuenta eventos e intervalos y decide cuándo coinciden con los orígenes dados.",
+   "escena_propuesta": "Soltar dos secuencias de marcas; predecir encuentro temporal; registrar los extremos incluidos.",
+   "otra_representacion": "Tabla de múltiplos y recta temporal.",
+   "ejemplo": "Marcas en 0, 4, 8 y 12 min: cuatro eventos y tres intervalos. Periodos 4 y 6 desde 0 vuelven a coincidir a los 12.",
+   "error_objetivo": "Dividir duración entre periodo y olvidar el evento inicial.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "E. Lehman, F. T. Leighton y A. R. Meyer",
+     "anio": "2015",
+     "titulo": "Mathematics for Computer Science",
+     "url": "https://www.ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-spring-2015/resources/mit6_042js15_textbook_pdf/",
+     "seccion": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia.",
+     "localizador": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia."
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-matematico.frecuencia-de-sucesos",
+    "historia": "La medición del tiempo requirió procesos repetibles y formas de contarlos. La historia de los relojes descrita por NIST muestra la búsqueda de reguladores cada vez más estables, desde mecanismos físicos hasta osciladores modernos. El ejercicio de campanadas conserva una pregunta elemental: cuántos intervalos separan cierto número de marcas. No atribuimos la regla a un relojero específico. El contexto histórico sirve para separar un acontecimiento, su duración y el intervalo entre acontecimientos. También obliga a declarar si el primer suceso ocurre al comenzar la observación o después de esperar un período.",
+    "puente_escena": "Marcar los instantes de seis campanadas sobre una línea. El alumno selecciona cada intervalo entre marcas y comprueba que son cinco. Después cambiar la pregunta a sucesos que ocurren cada T segundos dentro de una ventana, especificando si se incluyen los extremos.",
+    "ecuaciones": [
+     {
+      "latex": "\\Delta t=(n-1)T",
+      "lectura": "Entre la primera y la n-ésima marca hay n−1 intervalos de duración T.",
+      "condiciones": "n≥1; sucesos igualmente espaciados y duración de cada marca despreciada."
+     },
+     {
+      "latex": "N=\\left\\lfloor\\frac{L}{T}\\right\\rfloor+1",
+      "lectura": "Número de marcas desde t=0 hasta t=L, incluyendo la inicial.",
+      "condiciones": "Marcas en 0,T,2T,…; L≥0, T>0 e intervalo de observación cerrado."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "A Walk Through Time - Early Clocks · NIST",
+      "url": "https://www.nist.gov/pml/time-and-frequency-division/popular-links/walk-through-time/walk-through-time-early-clocks"
+     }
+    ]
+   }
+  },
+  {
+   "id": "razonamiento-matematico.ruedas-poleas-engranajes",
+   "curso": "Razonamiento matemático",
+   "curso_id": "razonamiento-matematico",
+   "numero": 12,
+   "titulo": "Ruedas, poleas y engranajes",
+   "grado": 3,
+   "temas_catalogo": [
+    "Engranajes en contacto",
+    "Ruedas unidas por faja",
+    "Ruedas en un mismo eje",
+    "Número de vueltas"
+   ],
+   "modulos_actuales": [
+    "regla-de-tres",
+    "poleas-giros"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo.",
+   "teoria": "En ruedas circulares con ejes fijos y contacto periférico sin deslizamiento, las rapideces periféricas coinciden: r₁|ω₁|=r₂|ω₂|. Para engranajes compatibles, z₁n₁=z₂n₂ si n expresa número positivo de vueltas; en contacto externo giran en sentidos opuestos. Ruedas rígidas en un mismo eje comparten velocidad angular, no necesariamente rapidez periférica.",
+   "condiciones": "Distinguir faja abierta/cruzada, contacto interno/externo y eje común. La regla de dientes solo vale cuando engranan con paso compatible. Con velocidades angulares firmadas respecto de una misma orientación, el contacto externo satisface z₁ω₁+z₂ω₂=0; no igualar magnitudes con signos.",
+   "prerrequisitos": [
+    "Proporciones",
+    "circunferencia",
+    "ángulo y vuelta."
+   ],
+   "desempeno": "Determina razones y sentidos de giro identificando cada vínculo.",
+   "escena_propuesta": "Girar rueda y contar dientes que pasan por el contacto; registrar vuelta y arco; variar radio manteniendo el vínculo.",
+   "otra_representacion": "Tabla tipo de unión–invariante y razón inversa.",
+   "ejemplo": "Engranajes externos de 20 y 40 dientes: si el pequeño gira 6 vueltas, el grande da 3 en sentido contrario.",
+   "error_objetivo": "Igualar velocidades angulares de ruedas unidas por faja.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "E. Lehman, F. T. Leighton y A. R. Meyer",
+     "anio": "2015",
+     "titulo": "Mathematics for Computer Science",
+     "url": "https://www.ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-spring-2015/resources/mit6_042js15_textbook_pdf/",
+     "seccion": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia.",
+     "localizador": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia."
+    },
+    {
+     "autor": "W. Moebs, S. J. Ling y J. Sanny / OpenStax",
+     "anio": "2016",
+     "titulo": "University Physics Volume 1",
+     "url": "https://openstax.org/books/university-physics-volume-1/pages/10-1-rotational-variables",
+     "seccion": "10.1: rotación de eje fijo, s=rθ y rapidez tangencial. Las razones de transmisión se derivan aquí de igual rapidez periférica y paso compatible; no se atribuyen como ejemplo literal del libro.",
+     "localizador": "10.1: rotación de eje fijo, s=rθ y rapidez tangencial. Las razones de transmisión se derivan aquí de igual rapidez periférica y paso compatible; no se atribuyen como ejemplo literal del libro."
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-matematico.ruedas-poleas-engranajes",
+    "historia": "El mecanismo de Anticitera, construido aproximadamente hacia finales del siglo II a. C., muestra que los engranajes podían representar ciclos astronómicos. La investigación de Freeth y colaboradores de 2006 utilizó imágenes y tomografía de fragmentos para reconstruir funciones del dispositivo. Es un caso histórico de modelo mecánico, no una excusa para suponer que conservamos todas sus piezas ni conocemos todos sus detalles. La actividad escolar simplifica a dos ruedas ideales y pregunta qué se conserva en el contacto. Luego puede distinguir velocidad angular, velocidad tangencial y sentido de giro.",
+    "puente_escena": "Marcar un diente y el punto de contacto de dos engranajes. Al girar uno, registrar vueltas de ambos y mantener el contacto sin deslizamiento. Cambiar dientes y comprobar la razón. Mostrar por separado una correa abierta: su sentido relativo no es el de engranajes exteriores.",
+    "ecuaciones": [
+     {
+      "latex": "|\\omega_1|r_1=|\\omega_2|r_2",
+      "lectura": "Las magnitudes de las velocidades tangenciales coinciden en contacto sin deslizamiento.",
+      "condiciones": "Ejes fijos, radios efectivos o primitivos y contacto sin deslizamiento; modelo ideal."
+     },
+     {
+      "latex": "\\frac{\\omega_1}{\\omega_2}=-\\frac{z_2}{z_1}",
+      "lectura": "Dos engranajes exteriores giran en sentidos opuestos y con razón inversa a sus dientes.",
+      "condiciones": "Ejes paralelos, dientes compatibles y convención común de signo. No aplicar el signo a una correa abierta."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Freeth et al. (2006), Decoding the Antikythera Mechanism · Nature",
+      "url": "https://www.nature.com/articles/nature05357"
+     }
+    ]
+   }
+  },
+  {
+   "id": "razonamiento-matematico.maximos-y-minimos",
+   "curso": "Razonamiento matemático",
+   "curso_id": "razonamiento-matematico",
+   "numero": 13,
+   "titulo": "Máximos y mínimos",
+   "grado": 3,
+   "temas_catalogo": [
+    "Cantidad mínima de personas u objetos",
+    "Precios máximos y mínimos",
+    "Regiones pintadas",
+    "Recorridos mínimos con reflejos y simetrías"
+   ],
+   "modulos_actuales": [
+    "maximos-minimos",
+    "rm-planteo",
+    "rm-diofanticas",
+    "rm-fichas"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de comparar.",
+   "teoria": "Optimizar exige una función objetivo, dominio y restricciones. Comparar casos sugiere un candidato; una cota, desigualdad, descomposición o enumeración completa prueba el extremo. El reflejo transforma ciertos caminos quebrados mínimos en segmentos rectos.",
+   "condiciones": "Entre rectángulos de perímetro fijo el cuadrado tiene mayor área; entre todas las curvas planas cerradas, no. Revisar enteros, extremos incluidos y existencia del máximo.",
+   "prerrequisitos": [
+    "Áreas",
+    "desigualdades",
+    "completar cuadrados."
+   ],
+   "desempeno": "Encuentra un extremo, verifica que sea factible y demuestra que no puede mejorarse.",
+   "escena_propuesta": "Estirar rectángulo con perímetro fijo; predecir máximo; conservar tabla y completar el cuadrado en la misma figura.",
+   "otra_representacion": "Función cuadrática o prueba por desigualdad.",
+   "ejemplo": "Perímetro 20: lados x y 10−x. Área=25−(x−5)²≤25, con igualdad en x=5.",
+   "error_objetivo": "Confundir máximo entre rectángulos con máximo entre todas las figuras.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "E. Lehman, F. T. Leighton y A. R. Meyer",
+     "anio": "2015",
+     "titulo": "Mathematics for Computer Science",
+     "url": "https://www.ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-spring-2015/resources/mit6_042js15_textbook_pdf/",
+     "seccion": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia.",
+     "localizador": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia."
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-matematico.maximos-y-minimos",
+    "historia": "La optimización tomó una forma general de gran alcance en la programación lineal del siglo XX. Dantzig describió en su historia oral el trabajo iniciado en 1947 para organizar decisiones bajo restricciones. Los problemas escolares de mínimo costo o máximo número de regiones no son todos problemas lineales, pero comparten la necesidad de precisar qué se optimiza y qué se permite. La conexión histórica sirve para reemplazar el ensayo afortunado por una justificación: exhibir una solución posible y explicar por qué ninguna otra admisible la supera. Las restricciones enteras pueden cambiar la respuesta.",
+    "puente_escena": "Mostrar un conjunto pequeño de compras posibles, con presupuesto y requisitos visibles. Marcar soluciones inválidas y comparar costos de las válidas. Registrar el candidato óptimo junto a una cota justificable. Si se permiten solo objetos enteros, impedir que aparezcan soluciones fraccionarias.",
+    "ecuaciones": [
+     {
+      "latex": "x^*\\in\\operatorname*{arg\\,min}_{x\\in S}C(x)",
+      "lectura": "Una solución óptima minimiza el costo C entre las opciones permitidas S.",
+      "condiciones": "S debe incluir todas las restricciones. Para garantizar mínimo basta que S sea finito y no vacío; en conjuntos infinitos no vacíos el ínfimo puede no alcanzarse. Puede haber varias soluciones óptimas."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "George Dantzig · entrevista de historia oral, INFORMS",
+      "url": "https://www.informs.org/Explore/History-of-O.R.-Excellence/Oral-Histories/George-Dantzig"
+     }
+    ]
+   }
+  },
+  {
+   "id": "razonamiento-matematico.cortes-y-pesadas",
+   "curso": "Razonamiento matemático",
+   "curso_id": "razonamiento-matematico",
+   "numero": 14,
+   "titulo": "Cortes, pesadas y balanzas",
+   "grado": 3,
+   "temas_catalogo": [
+    "Cortes rectos de objetos",
+    "Equilibrio de objetos",
+    "Balanzas y pesas",
+    "Número mínimo de pesadas"
+   ],
+   "modulos_actuales": [
+    "cortes-pesadas",
+    "rm-cortes",
+    "rm-balanzas"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo.",
+   "teoria": "Cortes y pesadas son problemas distintos de estructura y decisión. Un corte transversal aislado en una barra agrega una pieza. En una balanza ideal hay tres resultados; un árbol de k pesadas tiene a lo sumo 3^k hojas, lo que da una cota informacional.",
+   "condiciones": "La cota no garantiza que toda estrategia exista. Declarar si el objeto raro es más pesado, más ligero o desconocido; cortes simultáneos, pliegues y anillos alteran el conteo.",
+   "prerrequisitos": [
+    "Árbol de decisiones",
+    "equilibrio",
+    "conteo."
+   ],
+   "desempeno": "Dibuja una estrategia legal que logre la cota o explica por qué la cota no basta.",
+   "escena_propuesta": "Dividir candidatos en grupos; predecir qué deja cada resultado; mostrar árbol con hojas identificables.",
+   "otra_representacion": "Ecuaciones de equilibrio y tabla casos/pesada.",
+   "ejemplo": "Entre 9 monedas de igual apariencia, una pesa más y las otras ocho pesan lo mismo; no se sabe cuál. Pesar 3 contra 3 deja 3 candidatas; otra pesada 1 contra 1 identifica cuál.",
+   "error_objetivo": "Aplicar n−1 cortes o log₃(n) sin comprobar las reglas.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "E. Lehman, F. T. Leighton y A. R. Meyer",
+     "anio": "2015",
+     "titulo": "Mathematics for Computer Science",
+     "url": "https://www.ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-spring-2015/resources/mit6_042js15_textbook_pdf/",
+     "seccion": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia.",
+     "localizador": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia."
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-matematico.cortes-y-pesadas",
+    "historia": "El problema de identificar una moneda anómala mediante una balanza aparece documentado en la literatura matemática de mediados del siglo XX, incluida The Mathematical Gazette. Una de sus dificultades es que el resultado de cada pesada modifica la siguiente decisión. El interés histórico consiste en ver la balanza como instrumento de información, además de medición. No basta citar una potencia de tres: hay que construir un árbol de decisiones realizable. Los problemas de cortes pertenecen a otra familia y necesitan explicitar si se apilan piezas, se dobla material o se permiten cortes curvos.",
+    "puente_escena": "Pesar tres grupos posibles y conservar ramas: izquierda baja, equilibrio, derecha baja. Para cada rama escribir qué hipótesis sobreviven. El alumno elige la próxima pesada antes de revelar el resultado. En cortes, mostrar una vista antes y después para comprobar exactamente qué piezas atraviesa el corte.",
+    "ecuaciones": [
+     {
+      "latex": "M\\leq3^k",
+      "lectura": "Con k pesadas ternarias se distinguen como máximo 3^k historias de resultados.",
+      "condiciones": "M es el número de hipótesis a identificar. Es una cota informativa necesaria, no prueba de que exista una estrategia física para cualquier M."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "The Counterfeit Coin Problem · The Mathematical Gazette",
+      "url": "https://www.cambridge.org/core/journals/mathematical-gazette/article/abs/counterfeit-coin-problem/9492ED055B1AF7EBDDFE6D4A9137363C"
+     }
+    ]
+   }
+  },
+  {
+   "id": "razonamiento-matematico.planteo-de-ecuaciones",
+   "curso": "Razonamiento matemático",
+   "curso_id": "razonamiento-matematico",
+   "numero": 15,
+   "titulo": "Planteo de ecuaciones",
+   "grado": 3,
+   "temas_catalogo": [
+    "Del enunciado a la ecuación",
+    "Ecuaciones lineales",
+    "Ecuaciones cuadráticas",
+    "Sistemas de ecuaciones"
+   ],
+   "modulos_actuales": [
+    "traductor-enunciados",
+    "rm-planteo",
+    "rm-diofanticas"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de descubrir.",
+   "teoria": "Modelar traduce relaciones a ecuaciones con incógnitas y dominio. Una igualdad representa equivalencia de cantidades; resolver conserva el conjunto solución si se aplican operaciones reversibles. En edades, los incrementos de tiempo son iguales y las diferencias permanecen.",
+   "condiciones": "Descartar raíces incompatibles con el contexto. Una frase de comparación exige identificar referente y operación; no traducir palabra a símbolo de forma automática.",
+   "prerrequisitos": [
+    "Igualdad",
+    "unidades",
+    "ecuaciones elementales."
+   ],
+   "desempeno": "Define incógnita, escribe relación, resuelve y sustituye en el texto original.",
+   "escena_propuesta": "Construir barras con los datos; predecir qué relación expresa una frase; retirar una ayuda por vez hasta escribir la ecuación.",
+   "otra_representacion": "Tabla antes/ahora/después o falsa suposición.",
+   "ejemplo": "A tiene 4 años más que B y suman 30: b+(b+4)=30, b=13, a=17; ambas condiciones se verifican.",
+   "error_objetivo": "Invertir una comparación o aceptar raíz numérica sin contexto.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "E. Lehman, F. T. Leighton y A. R. Meyer",
+     "anio": "2015",
+     "titulo": "Mathematics for Computer Science",
+     "url": "https://www.ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-spring-2015/resources/mit6_042js15_textbook_pdf/",
+     "seccion": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia.",
+     "localizador": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia."
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-matematico.planteo-de-ecuaciones",
+    "historia": "El tratado de álgebra de al-Khwarizmi, escrito en el siglo IX, organizó métodos para resolver tipos de ecuaciones y trató problemas prácticos. Su exposición era verbal; nuestra notación literal y el signo igual proceden de desarrollos posteriores. Este contraste permite que el alumno entienda la ecuación como una compresión de relaciones expresadas en palabras. El objetivo de la escena no es fingir que un texto antiguo usaba x como nosotros, sino comparar representaciones: relato, cantidades y relación. Resolver exige también regresar al contexto y descartar valores incompatibles con él.",
+    "puente_escena": "Presentar un reparto original en palabras, seleccionar la cantidad desconocida y dibujar sus relaciones. La ecuación se revela al completar el modelo. Tras resolver, sustituir el resultado en el relato y comprobar unidades, cantidades totales y restricciones del contexto.",
+    "ecuaciones": [
+     {
+      "latex": "ax+b=c\\quad\\Rightarrow\\quad x=\\frac{c-b}{a}",
+      "lectura": "Restar b y dividir entre a aísla la incógnita.",
+      "condiciones": "a≠0; comprobar además el dominio del contexto. Para a=0, decidir compatibilidad sin dividir."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Al-Khwarizmi · MacTutor",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Al-Khwarizmi/"
+     }
+    ]
+   }
+  },
+  {
+   "id": "razonamiento-matematico.transformaciones-de-figuras",
+   "curso": "Razonamiento matemático",
+   "curso_id": "razonamiento-matematico",
+   "numero": 16,
+   "titulo": "Movimiento y comparación de figuras",
+   "grado": 3,
+   "temas_catalogo": [
+    "Congruencia de figuras",
+    "Rotación y traslación",
+    "Rodamiento y recorrido de un punto",
+    "Área de la región generada",
+    "Semejanza de figuras",
+    "Aplicaciones de áreas"
+   ],
+   "modulos_actuales": [
+    "arreglos-giros",
+    "ampliadora",
+    "cuadricula-piezas",
+    "papel-doblado",
+    "rodamientos",
+    "rm-fichas"
+   ],
+   "ruta_propuesta": "comparar, con apoyo de descubrir.",
+   "teoria": "Traslaciones, rotaciones y reflexiones preservan distancias y áreas; una semejanza de factor k multiplica longitudes por |k| y áreas por k². Una rueda circular de radio constante R, sobre una recta fija y sin deslizamiento, recorre con su centro R|Δθ| si no invierte el giro; Δθ se mide en radianes. Un punto del borde tiene trayectoria distinta.",
+   "condiciones": "Para desplazamiento firmado en rodadura se debe declarar la convención de giro; si hay inversión, sumar recorridos absolutos por tramo. Reflexión no equivale siempre a rotación: atender orientación. Área barrida es unión de posiciones; no sumar áreas superpuestas sin corregir doble conteo.",
+   "prerrequisitos": [
+    "Congruencia",
+    "semejanza",
+    "ángulos."
+   ],
+   "desempeno": "Distingue transformaciones y calcula longitudes/áreas conservadas o escaladas.",
+   "escena_propuesta": "Marcar una esquina, girar/reflejar y dejar fantasmas; predecir orientación y área; superponer para verificar.",
+   "otra_representacion": "Coordenadas transformadas y razón de semejanza.",
+   "ejemplo": "Una figura de área 12 cm² ampliada al doble de longitud tiene 48 cm², no 24.",
+   "error_objetivo": "Confundir recorrido del centro y de un punto del borde.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "E. Lehman, F. T. Leighton y A. R. Meyer",
+     "anio": "2015",
+     "titulo": "Mathematics for Computer Science",
+     "url": "https://www.ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-spring-2015/resources/mit6_042js15_textbook_pdf/",
+     "seccion": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia.",
+     "localizador": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia."
+    },
+    {
+     "autor": "W. Moebs, S. J. Ling y J. Sanny / OpenStax",
+     "anio": "2016",
+     "titulo": "University Physics Volume 1",
+     "url": "https://openstax.org/books/university-physics-volume-1/pages/11-1-rolling-motion",
+     "seccion": "11.1: rueda circular en rodadura sin deslizamiento sobre superficie fija; ecuaciones 11.1 y 11.3.",
+     "localizador": "11.1: rueda circular en rodadura sin deslizamiento sobre superficie fija; ecuaciones 11.1 y 11.3."
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-matematico.transformaciones-de-figuras",
+    "historia": "Dudeney mostró en 1905 una disección articulada que podía formar un triángulo equilátero o un cuadrado. Ese ejemplo histórico conecta rompecabezas con geometría: cambiar la disposición puede conservar el área. No implica que toda transformación conserve también perímetro o orientación. Para esta unidad, proponemos distinguir traslación, giro, reflexión y cambio de escala antes de comparar figuras. La fórmula de distancia es nuestra herramienta moderna de verificación; el episodio histórico proporciona una pregunta sobre invariantes, no una demostración automática de cualquier semejanza visual.",
+    "puente_escena": "Mover una figura rígida y dejar su posición anterior como fantasma. Medir un segmento testigo antes y después. En reflexión, conservar distancia pero invertir orientación. En una homotecia, cambiar longitud y área según sus factores, para evitar llamar congruentes a todas las figuras parecidas.",
+    "ecuaciones": [
+     {
+      "latex": "\\|T(P)-T(Q)\\|=\\|P-Q\\|",
+      "lectura": "Una isometría T conserva las distancias entre todos los pares de puntos.",
+      "condiciones": "Traslaciones, giros y reflexiones del plano euclídeo; una ampliación de factor distinto de 1 en magnitud no es isometría."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Henry Ernest Dudeney · MacTutor",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Dudeney/"
+     }
+    ]
+   }
+  },
+  {
+   "id": "razonamiento-matematico.rutas-y-visualizacion-espacial",
+   "curso": "Razonamiento matemático",
+   "curso_id": "razonamiento-matematico",
+   "numero": 17,
+   "titulo": "Rutas y visualización espacial",
+   "grado": 3,
+   "temas_catalogo": [
+    "Rutas en el plano",
+    "Rutas en el espacio",
+    "Proyecciones principales de un sólido"
+   ],
+   "modulos_actuales": [
+    "trazos-rutas",
+    "rutas-tramos",
+    "cubitos-conteo",
+    "vistas-cubitos",
+    "dados-domino",
+    "rutas-espacio",
+    "cubitos-pintados",
+    "rm-lectura-palabras"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de comparar.",
+   "teoria": "Una ruta es una secuencia de conexiones permitidas. En una red dirigida sin ciclos, caminos hasta un nodo se cuentan sumando los que llegan desde sus predecesores. Proyecciones muestran restricciones de un sólido, pero diferentes sólidos pueden compartir vistas.",
+   "condiciones": "Dos o tres vistas no siempre determinan un único sólido. Declarar si son siluetas, alturas, transparencias o cubitos visibles. Para rutas mínimas sobre superficies, respetar el dominio al desplegar.",
+   "prerrequisitos": [
+    "Coordenadas",
+    "conteo aditivo",
+    "lectura de vistas."
+   ],
+   "desempeno": "Construye todos los sólidos compatibles o exhibe dos que prueban ambigüedad; cuenta rutas sin omisiones.",
+   "escena_propuesta": "Armar cubitos bajo vistas fijas; predecir un cubo oculto; guardar dos modelos con las mismas vistas.",
+   "otra_representacion": "Capas, tabla de alturas y desarrollo plano.",
+   "ejemplo": "En cuadrícula sin obstáculos, de (0,0) a (2,2) con solo derecha/arriba hay 6 rutas: elegir dos de cuatro pasos para subir.",
+   "error_objetivo": "Creer que una vista determina todos los cubos ocultos.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "E. Lehman, F. T. Leighton y A. R. Meyer",
+     "anio": "2015",
+     "titulo": "Mathematics for Computer Science",
+     "url": "https://www.ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-spring-2015/resources/mit6_042js15_textbook_pdf/",
+     "seccion": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia.",
+     "localizador": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia."
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-matematico.rutas-y-visualizacion-espacial",
+    "historia": "Hamilton presentó en 1857 su juego icosiano, relacionado con recorridos por las aristas de un dodecaedro. Su interés estaba en visitar cada vértice una vez y regresar al inicio. Es una pregunta distinta de recorrer cada arista una vez, asociada al problema de Euler. La distinción histórica ayuda a leer exactamente qué prohíbe repetir una consigna. Nuestra escena empieza en una red pequeña para que la diferencia sea visible y luego cambia a una representación espacial. El dibujo puede deformarse sin alterar conexiones; las longitudes solo importan cuando el problema las incorpora.",
+    "puente_escena": "Mostrar la misma red como plano y como estructura espacial. Alternar el objetivo visitar vértices y recorrer aristas. El registro indica qué elemento se repitió. Un camino seleccionado no se acepta por verse limpio: debe satisfacer el criterio explícito de la tarea.",
+    "ecuaciones": [
+     {
+      "latex": "v_0,v_1,\\ldots,v_{n-1},v_0",
+      "lectura": "Un ciclo hamiltoniano visita una vez cada vértice antes de volver al inicial.",
+      "condiciones": "n vértices distintos en las n primeras posiciones y adyacencia entre cada par consecutivo, incluido el cierre; no exige usar todas las aristas."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Hamilton, The Icosian Calculus · Trinity College Dublin",
+      "url": "https://www.maths.tcd.ie/pub/HistMath/People/Hamilton/Icosian/"
+     }
+    ]
+   }
+  },
+  {
+   "id": "razonamiento-matematico.tablas-graficos-y-suficiencia",
+   "curso": "Razonamiento matemático",
+   "curso_id": "razonamiento-matematico",
+   "numero": 18,
+   "titulo": "Tablas, gráficos y suficiencia de datos",
+   "grado": 3,
+   "temas_catalogo": [
+    "Lectura de tablas y gráficos",
+    "Situaciones deportivas",
+    "Suficiencia de datos"
+   ],
+   "modulos_actuales": [
+    "tablas-graficos",
+    "rm-planteo"
+   ],
+   "ruta_propuesta": "argumentar, con apoyo de comparar.",
+   "teoria": "Una gráfica codifica cantidades mediante una escala; ejes, unidades, base porcentual y población forman parte del significado. Suficiencia no pide necesariamente calcular: requiere que exista al menos un modelo compatible y que todos los compatibles produzcan el mismo valor de la incógnita. Datos contradictorios no constituyen suficiencia.",
+   "condiciones": "Comparar porcentajes exige denominadores. En deportes, fijar puntos por resultado y reglas del torneo. Un eje truncado puede ser válido si es explícito, pero altera la impresión visual.",
+   "prerrequisitos": [
+    "Porcentajes",
+    "lectura de tablas",
+    "modelos y contraejemplos."
+   ],
+   "desempeno": "Justifica suficiencia por existencia y valor único de la incógnita; demuestra insuficiencia con dos configuraciones compatibles que dan valores distintos de esa incógnita.",
+   "escena_propuesta": "Cambiar escala sin cambiar datos; predecir percepción; congelar tabla y gráfica; en suficiencia mostrar dos casos válidos con resultados diferentes.",
+   "otra_representacion": "Tabla numérica y conjunto de soluciones.",
+   "ejemplo": "Saber x+y=10 no determina x: (4,6) y (7,3). Agregar x−y=2 sí: x=6.",
+   "error_objetivo": "Resolver un caso y declararlo único; leer altura gráfica sin escala.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "E. Lehman, F. T. Leighton y A. R. Meyer",
+     "anio": "2015",
+     "titulo": "Mathematics for Computer Science",
+     "url": "https://www.ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-spring-2015/resources/mit6_042js15_textbook_pdf/",
+     "seccion": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia.",
+     "localizador": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia."
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-matematico.tablas-graficos-y-suficiencia",
+    "historia": "En la década de 1850, Nightingale empleó tablas y diagramas para argumentar sobre mortalidad y condiciones sanitarias. El estudio histórico de Hugh Small también documenta correcciones en la forma de representar esos datos. El episodio permite enseñar que un gráfico es una decisión de representación, no una garantía de interpretación correcta. La suficiencia de datos añade otra pregunta: si toda situación compatible con lo mostrado produce la misma respuesta. Esta formalización es una propuesta didáctica actual. Puede haber información abundante y aun así faltar justo la relación necesaria para responder.",
+    "puente_escena": "Dos tablas compatibles con una pista producen respuestas distintas: el alumno debe construir ese contraejemplo. Al añadir una segunda pista, comparar de nuevo. En gráficos, conservar datos y cambiar escala para discutir qué cambió en la impresión y qué permaneció numéricamente igual.",
+    "ecuaciones": [
+     {
+      "latex": "S\\ne\\varnothing\\quad\\text{y}\\quad|\\{q(s):s\\in S\\}|=1",
+      "lectura": "Los datos bastan para la pregunta q si existe algún caso compatible y todos dan la misma respuesta.",
+      "condiciones": "S reúne los casos permitidos por los datos y el dominio. Un sistema contradictorio no se acepta como información suficiente."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Florence Nightingale’s Statistical Diagrams · Hugh Small, University of York",
+      "url": "https://www.york.ac.uk/depts/maths/histstat/small.htm"
+     }
+    ]
+   }
+  },
+  {
+   "id": "razonamiento-matematico.diagramas-de-flujo",
+   "curso": "Razonamiento matemático",
+   "curso_id": "razonamiento-matematico",
+   "numero": 19,
+   "titulo": "Diagramas de flujo y operadores",
+   "grado": 3,
+   "temas_catalogo": [
+    "Seguir un diagrama con bucles y condiciones",
+    "Contadores y acumuladores",
+    "Operadores definidos por una regla"
+   ],
+   "modulos_actuales": [
+    "rm-diagramas-flujo"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de descubrir.",
+   "teoria": "Un algoritmo transforma un estado mediante reglas ordenadas. Un contador cuenta iteraciones; un acumulador combina valores. Una condición decide el próximo estado. Un operador definido por el problema conserva esa definición aunque su símbolo se parezca a una operación conocida.",
+   "condiciones": "Definir orden de actualización, prueba antes/después, dominio y terminación. Una ejecución que termina para un número no prueba terminación general.",
+   "prerrequisitos": [
+    "Sustitución algebraica",
+    "comparaciones",
+    "tablas."
+   ],
+   "desempeno": "Traza cada iteración y explica por qué se detiene o produce un ciclo.",
+   "escena_propuesta": "Pasar una ficha por el diagrama; predecir siguiente estado; registrar tabla i/suma; congelar estados sin depender de animación.",
+   "otra_representacion": "Pseudocódigo y tabla de trazas.",
+   "ejemplo": "i=1, S=0; mientras i≤3: S←S+i; i←i+1. Estados de S:1,3,6; salida 6 con i=4.",
+   "error_objetivo": "Usar el valor actualizado donde correspondía el anterior.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "E. Lehman, F. T. Leighton y A. R. Meyer",
+     "anio": "2015",
+     "titulo": "Mathematics for Computer Science",
+     "url": "https://www.ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-spring-2015/resources/mit6_042js15_textbook_pdf/",
+     "seccion": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia.",
+     "localizador": "Pruebas, lógica, relaciones, inducción, máquinas de estado, grafos y conteo; la aplicación a problemas de admisión es elaboración propia."
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-matematico.diagramas-de-flujo",
+    "historia": "Los informes de Goldstine y von Neumann de 1947 conservados por el Institute for Advanced Study muestran la representación de procedimientos para computadoras electrónicas. La historia de los algoritmos es mucho más antigua; esos informes no son el nacimiento de toda secuencia de pasos. Su aporte al contexto de esta unidad es hacer explícitos decisiones, repeticiones y cambios de estado. En la app, un diagrama debe poder ejecutarse con un dato concreto. Las flechas no son decoración: especifican qué instrucción sigue, y una condición puede necesitar más de una comprobación.",
+    "puente_escena": "Ejecutar el procedimiento paso a paso con el valor de la variable siempre visible. Antes de recorrer una flecha, predecir la condición. Conservar una tabla de estados y probar casos frontera. Si el algoritmo puede no terminar, mostrarlo como propiedad del ejemplo, no como fallo accidental.",
+    "ecuaciones": [
+     {
+      "latex": "x_{k+1}=f(x_k)",
+      "lectura": "El siguiente estado resulta de aplicar la regla f al estado actual.",
+      "condiciones": "Modelo de un proceso iterativo; no garantiza por sí mismo terminación ni convergencia. En un flujo con ramas, f depende de la condición especificada."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "The Electronic Computer Project · archivo del Institute for Advanced Study",
+      "url": "https://www.ias.edu/ideas/electronic-computer-project"
+     }
+    ]
+   }
+  }
+ ]
+}

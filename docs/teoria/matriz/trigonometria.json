@@ -1,0 +1,1733 @@
+{
+ "curso": "trigonometria",
+ "fecha": "2026-11-14",
+ "tipo": "Expediente editorial; no es el formato de ejecución de Teoria.vista",
+ "unidades": [
+  {
+   "id": "trigonometria.angulo-trigonometrico",
+   "curso": "Trigonometría",
+   "curso_id": "trigonometria",
+   "numero": 1,
+   "titulo": "Ángulo trigonométrico y sistemas de medida",
+   "grado": 3,
+   "temas_catalogo": [
+    "Sentido de giro y signo",
+    "Sistemas sexagesimal, centesimal y radial",
+    "Radián",
+    "Conversión entre sistemas"
+   ],
+   "modulos_actuales": [
+    "cinta-radio"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de recordar.",
+   "teoria": "El ángulo trigonométrico registra un giro orientado: antihorario positivo y horario negativo según convención estándar. Una vuelta equivale a 360°, 400 grados centesimales o 2π rad. El radián se define por θ=s/r, no por un tamaño de dibujo; su medida es adimensional, aunque se rotula rad para evitar confusión. Convertir conserva la fracción de vuelta: D/180=G/200=R/π. Ángulos coterminales difieren en vueltas enteras, pero pueden representar recorridos angulares distintos. Separar minutos/segundos sexagesimales de decimales.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Fracciones",
+    "proporcionalidad",
+    "signo en recta numérica"
+   ],
+   "desempeno": "Convierte un giro firmado entre tres sistemas y distingue coterminalidad de igualdad numérica.",
+   "escena_propuesta": "Girar el rayo después de predecir posición final; registrar vuelta completa y sobrante. Enrollar un arco de longitud r para construir un radián, con botones de fracciones de vuelta.",
+   "otra_representacion": "Tabla de equivalencias; recta de ángulos desenrollada.",
+   "ejemplo": "−90°=−100g=−π/2 rad; 270° es coterminal con −90°, pero no es el mismo giro.",
+   "error_objetivo": "Confundir 1.5° con 1°5′ o eliminar el signo del giro; hipótesis.",
+   "transferencia": "Resolver un caso nuevo con otro cuadrante, intervalo o representación; declarar dominio y medir por separado cada magnitud solicitada.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-O51",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "5.1 Angles",
+     "url": "https://openstax.org/books/precalculus-2e/pages/5-1-angles",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "5.1 Angles"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "trigonometria.angulo-trigonometrico",
+    "curso": "Trigonometría",
+    "numero": 1,
+    "titulo": "Ángulo trigonométrico y sistemas de medida",
+    "historia": "Medir ángulos reúne convenciones históricas y relaciones geométricas. La numeración babilónica de base sesenta heredó elementos de tradiciones sumerias y acadias; la astronomía griega trabajó con divisiones sexagesimales y círculos de trescientos sesenta grados. Esa continuidad no significa que todos usaran nuestras abreviaturas. El radián ofrece otra descripción: comparar la longitud del arco con el radio. En la unidad actual, grados, grados centesimales y radianes nombran una misma rotación mediante escalas diferentes. Convertir entre ellas exige preservar la vuelta y su sentido, no cambiar el fenómeno representado.",
+    "puente_escena": "Usar un mismo giro con tres escalas seleccionables y pedir anticipar sus valores antes de mostrarlos. Enrollar una longitud igual al radio sobre el círculo introduce el radián. El registro incluye vueltas completas y sentido; una entrada numérica permite reproducir el gesto con teclado.",
+    "ecuaciones": [
+     {
+      "latex": "\\frac{D}{180}=\\frac{G}{200}=\\frac{R}{\\pi}",
+      "lectura": "Los grados sexagesimales divididos entre ciento ochenta, los centesimales entre doscientos y los radianes entre pi expresan la misma rotación.",
+      "condiciones": "D, G y R son medidas con el mismo signo del mismo ángulo; no se multiplican entre sí."
+     },
+     {
+      "latex": "\\theta=\\frac{s}{r}",
+      "lectura": "La medida angular en radianes es la longitud del arco dividida entre el radio.",
+      "condiciones": "r positivo; s es longitud dirigida del arco para representar también el sentido del giro."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "J. J. O’Connor y E. F. Robertson, «Babylonian numerals», MacTutor, University of St Andrews",
+      "url": "https://mathshistory.st-andrews.ac.uk/HistTopics/Babylonian_numerals/"
+     },
+     {
+      "titulo": "J. J. O’Connor y E. F. Robertson, «Trigonometric functions», MacTutor, University of St Andrews",
+      "url": "https://mathshistory.st-andrews.ac.uk/HistTopics/Trigonometric_functions/"
+     }
+    ]
+   }
+  },
+  {
+   "id": "trigonometria.longitud-de-arco-y-sector",
+   "curso": "Trigonometría",
+   "curso_id": "trigonometria",
+   "numero": 2,
+   "titulo": "Longitud de arco y sector circular",
+   "grado": 3,
+   "temas_catalogo": [
+    "Longitud de arco",
+    "Área del sector y del trapecio circular",
+    "Número de vueltas de una rueda",
+    "Ruedas, poleas y engranajes"
+   ],
+   "modulos_actuales": [
+    "cinta-radio",
+    "geo-areas-circulares"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo.",
+   "teoria": "Con θ radial, arco s=rθ y sector A=r²θ/2; sector anular θ(R²−r²)/2. La longitud geométrica usa valor absoluto del ángulo; el desplazamiento angular conserva signo. Rodadura sin deslizamiento sobre recta: x=rθ y N=x/(2πr). Correa ideal sin deslizamiento: r₁|ω₁|=r₂|ω₂|; engranajes en contacto externo giran en sentidos opuestos y N₁z₁=N₂z₂ en módulo, con z dientes. Ruedas coaxiales solidarias comparten θ y ω. Sobre trayectorias curvas el giro respecto al suelo no es solo arco/r sin considerar el giro del centro y la orientación del contacto.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Radianes",
+    "circunferencia",
+    "razones"
+   ],
+   "desempeno": "Calcula arco, área o vueltas por separado y declara ausencia de deslizamiento.",
+   "escena_propuesta": "Desenrollar arco o rodar una rueda con un punto marcado; predecir cuántas vueltas. Dejar huellas sobre la recta y el desarrollo del sector. Comparar ruedas coaxiales y ruedas en contacto.",
+   "otra_representacion": "Razones de longitudes de contacto; tabla de vueltas por dientes.",
+   "ejemplo": "Rueda r=0.25 m recorriendo π m sin deslizar da 2 vueltas. Sector r=4,θ=π/2: arco 2π, área 4π.",
+   "error_objetivo": "Aplicar misma velocidad angular a ruedas en contacto de radios diferentes; hipótesis.",
+   "transferencia": "Resolver un caso nuevo con otro cuadrante, intervalo o representación; declarar dominio y medir por separado cada magnitud solicitada.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-O51",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "5.1 Angles",
+     "url": "https://openstax.org/books/precalculus-2e/pages/5-1-angles",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "5.1 Angles"
+    },
+    {
+     "id": "GT-K1",
+     "autor": "Kiran S. Kedlaya",
+     "fecha": "2006",
+     "titulo": "Geometry Unbound",
+     "seccion": "1.1–1.7: coordenadas, polígonos, áreas, arcos y ángulos",
+     "url": "https://kskedlaya.org/geometryunbound/gu-060118.pdf",
+     "tipo": "Libro abierto del autor; GFDL",
+     "verificacion": "PDF del sitio del autor abierto; índice y pasajes relevantes localizados el 14-11-2026",
+     "localizador": "1.1–1.7: coordenadas, polígonos, áreas, arcos y ángulos"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "trigonometria.longitud-de-arco-y-sector",
+    "curso": "Trigonometría",
+    "numero": 2,
+    "titulo": "Longitud de arco y sector circular",
+    "historia": "Comparar una curva con una longitud recta fue parte de los problemas clásicos de medición. Arquímedes estudió el círculo mediante polígonos y relacionó su área con un triángulo cuya altura es el radio y cuya base corresponde a la circunferencia. La expresión actual para un sector traduce esa relación a una fracción de vuelta y utiliza radianes. No es la notación que empleaba el texto antiguo. Esta conexión permite entender por qué el radio interviene una vez al medir un arco y dos veces al medir una región.",
+    "puente_escena": "Elegir un arco y desenrollarlo junto al radio; después mostrar el sector que delimita. Al duplicar el radio, pedir predicciones separadas para longitud y área. La escena conserva el ángulo y revela las razones obtenidas, con etiquetas de unidades y controles numéricos equivalentes.",
+    "ecuaciones": [
+     {
+      "latex": "s=r\\theta",
+      "lectura": "La longitud del arco es el radio por el ángulo en radianes.",
+      "condiciones": "r positivo; para una longitud no dirigida se usa theta no negativa, o el valor absoluto del ángulo dirigido."
+     },
+     {
+      "latex": "A_{\\mathrm{sector}}=\\frac12 r^2\\theta",
+      "lectura": "El área del sector es un medio por el radio al cuadrado por el ángulo en radianes.",
+      "condiciones": "Sector simple de radio r positivo y ángulo theta entre cero y dos pi."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Arquímedes, Medida del círculo, proposición 1; traducción y discusión del seminario de Harvard (2009)",
+      "url": "https://people.math.harvard.edu/archive/archimedes09/pdf/Measurement.of.the.Circle.pdf"
+     }
+    ]
+   }
+  },
+  {
+   "id": "trigonometria.razones-trigonometricas-agudas",
+   "curso": "Trigonometría",
+   "curso_id": "trigonometria",
+   "numero": 3,
+   "titulo": "Razones trigonométricas de ángulos agudos",
+   "grado": 3,
+   "temas_catalogo": [
+    "Definición en el triángulo rectángulo",
+    "Ángulos notables",
+    "Ángulos aproximados (37°, 53°, 16°, 74°)",
+    "Razones recíprocas y complementarias"
+   ],
+   "modulos_actuales": [
+    "circunferencia-trig"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de recordar.",
+   "teoria": "Para 0°<θ<90° en triángulo rectángulo: senθ=opuesto/hipotenusa, cosθ=adyacente/hipotenusa, tanθ=opuesto/adyacente; csc,sec,cot son recíprocas. Las razones son invariantes por semejanza, no longitudes. Cofunciones: senθ=cos(90°−θ) y análogas. 30°,45°,60° se deducen de equilátero bisecado e isósceles rectángulo. Las razones 3–4–5 corresponden a arctan(3/4)≈36.87° y 53.13°, no exactamente 37°/53°; 7–24–25 corresponde a ≈16.26°/73.74°. Si el examen usa 37° o 16° como aproximación convencional, debe decirlo y conservar el modo exacto separado.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Semejanza",
+    "Pitágoras",
+    "fracciones"
+   ],
+   "desempeno": "Obtiene una razón sin depender de tamaño u orientación y reconoce aproximaciones convencionales.",
+   "escena_propuesta": "Estirar un triángulo conservando un ángulo; predecir qué cociente cambia. Registrar tres tamaños y el mismo cociente. Girar el triángulo para que opuesto/adyacente dependan del ángulo elegido.",
+   "otra_representacion": "Circunferencia unitaria; tabla de razones derivada de triángulos exactos.",
+   "ejemplo": "Si catetos son 8 y 15 y θ se opone al 8: senθ=8/17 y tanθ=8/15.",
+   "error_objetivo": "Tomar 37° como igualdad exacta de un triángulo 3–4–5; convención de examen, no identidad.",
+   "transferencia": "Resolver un caso nuevo con otro cuadrante, intervalo o representación; declarar dominio y medir por separado cada magnitud solicitada.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-O54",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "5.4 Right Triangle Trigonometry",
+     "url": "https://openstax.org/books/precalculus-2e/pages/5-4-right-triangle-trigonometry",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "5.4 Right Triangle Trigonometry"
+    },
+    {
+     "id": "GT-O52",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "5.2 Unit Circle: Sine and Cosine Functions",
+     "url": "https://openstax.org/books/precalculus-2e/pages/5-2-unit-circle-sine-and-cosine-functions",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "5.2 Unit Circle: Sine and Cosine Functions"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "trigonometria.razones-trigonometricas-agudas",
+    "curso": "Trigonometría",
+    "numero": 3,
+    "titulo": "Razones trigonométricas de ángulos agudos",
+    "historia": "El Aryabhatiya, compuesto por Aryabhata en 499, contiene procedimientos y tablas vinculados con la astronomía y el cálculo de senos. La tradición india trabajó con la semicuerda, antecedente geométrico del seno, frente a la cuerda completa usada en la tradición griega. Esos cálculos no eran todavía nuestras funciones dibujadas sobre ejes cartesianos. Para llegar a las razones de un triángulo rectángulo se reconoce una estructura común: figuras semejantes conservan cocientes de lados. La historia ayuda a presentar el seno como una relación que puede tabularse, calcularse y justificarse.",
+    "puente_escena": "Construir varios triángulos rectángulos con el mismo ángulo y tamaños distintos; predecir qué cocientes permanecen. Conectar el cateto opuesto con una semicuerda del círculo. Comparar después un valor notable exacto con una aproximación decimal, sin presentar treinta y siete grados como igualdad exacta del triángulo tres-cuatro-cinco.",
+    "ecuaciones": [
+     {
+      "latex": "\\sin\\theta=\\frac{\\text{cateto opuesto}}{\\text{hipotenusa}}",
+      "lectura": "El seno de theta es el cateto opuesto dividido entre la hipotenusa.",
+      "condiciones": "Triángulo rectángulo no degenerado; theta agudo."
+     },
+     {
+      "latex": "\\cos\\theta=\\sin\\left(\\frac\\pi2-\\theta\\right)",
+      "lectura": "El coseno de theta es el seno de su ángulo complementario.",
+      "condiciones": "En esta construcción, theta entre cero y pi medios; el complemento se mide en radianes."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "J. J. O’Connor y E. F. Robertson, «Aryabhata I», MacTutor, University of St Andrews",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Aryabhata_I/"
+     }
+    ]
+   }
+  },
+  {
+   "id": "trigonometria.triangulos-rectangulos",
+   "curso": "Trigonometría",
+   "curso_id": "trigonometria",
+   "numero": 4,
+   "titulo": "Resolución de triángulos rectángulos",
+   "grado": 3,
+   "temas_catalogo": [
+    "Resolver con un lado y un ángulo",
+    "Ángulos de elevación y depresión",
+    "Ángulo de observación"
+   ],
+   "modulos_actuales": [
+    "circunferencia-trig",
+    "trig-angulos-verticales"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de descubrir.",
+   "teoria": "Resolver un triángulo rectángulo exige un lado y un ángulo agudo, o dos lados; solo ángulos no fijan escala. Elegir seno/coseno/tangente depende de las cantidades conocidas, no de la orientación gráfica. Elevación y depresión se miden respecto a horizontales locales; son iguales por alternos internos cuando las horizontales son paralelas. Altura total puede requerir sumar altura del instrumento. Ángulo de observación entre dos visuales es una diferencia o suma según configuración. En medición ideal se asumen terreno/geometría y rectitud de visuales; la figura no puede aportar datos ausentes.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Razones trigonométricas",
+    "paralelas y secante",
+    "ecuación lineal"
+   ],
+   "desempeno": "Dibuja las horizontales, elige razón y calcula una altura o distancia con unidad.",
+   "escena_propuesta": "Seguir ejemplo con visual que gira; predecir si la altura sube al acercarse manteniendo ángulo. Retirar un paso y pedir que seleccione la razón correcta, mostrando fantasma de la base equivocada.",
+   "otra_representacion": "Triángulos semejantes; cálculo por coordenadas.",
+   "ejemplo": "A 12 m de una pared, visual a 45° desde un instrumento de 1.5 m: altura del punto=13.5 m.",
+   "error_objetivo": "Medir depresión desde la vertical o olvidar altura del observador; hipótesis.",
+   "transferencia": "Resolver un caso nuevo con otro cuadrante, intervalo o representación; declarar dominio y medir por separado cada magnitud solicitada.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-O54",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "5.4 Right Triangle Trigonometry",
+     "url": "https://openstax.org/books/precalculus-2e/pages/5-4-right-triangle-trigonometry",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "5.4 Right Triangle Trigonometry"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "trigonometria.triangulos-rectangulos",
+    "curso": "Trigonometría",
+    "numero": 4,
+    "titulo": "Resolución de triángulos rectángulos",
+    "historia": "Medir alturas y distancias inaccesibles convirtió las sombras en instrumentos matemáticos. En su tratado sobre sombras, alrededor de 1021, al-Biruni estudió relaciones que conectan la posición solar, los instrumentos y el cálculo trigonométrico. Sus trabajos de medición y geografía muestran una tradición en la que observar, calcular y discutir la precisión estaban relacionados. La unidad puede recuperar ese problema sin convertir cada ejemplo en una hazaña individual: desde una posición accesible, obtener una longitud exige definir la horizontal, interpretar el ángulo y conocer qué distancia puede medirse directamente.",
+    "puente_escena": "Plantear la altura de una torre observada desde un punto accesible. Permitir variar distancia, inclinación e instrumento; pedir identificar la altura del observador antes de calcular. El resultado se compara con la escena y se revisa cuando el terreno deja de ser horizontal.",
+    "ecuaciones": [
+     {
+      "latex": "H=h_0+d\\tan\\alpha",
+      "lectura": "La altura total es la altura del instrumento más la distancia horizontal por la tangente del ángulo de elevación.",
+      "condiciones": "Base de la torre y observador sobre terreno horizontal; d positiva; alpha agudo; h cero es altura del instrumento."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "J. J. O’Connor y E. F. Robertson, «Abu Rayhan al-Biruni», MacTutor, University of St Andrews",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Al-Biruni/"
+     }
+    ]
+   }
+  },
+  {
+   "id": "trigonometria.recta-en-el-plano",
+   "curso": "Trigonometría",
+   "curso_id": "trigonometria",
+   "numero": 5,
+   "titulo": "Plano cartesiano y la recta",
+   "grado": 4,
+   "temas_catalogo": [
+    "Distancia entre dos puntos",
+    "División de un segmento y punto medio",
+    "Baricentro y área con coordenadas",
+    "Pendiente e inclinación",
+    "Ecuaciones de la recta",
+    "Paralelas, perpendiculares y distancia a una recta"
+   ],
+   "modulos_actuales": [
+    "geometria-analitica"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo.",
+   "teoria": "Distancia entre puntos deriva de Pitágoras; punto medio promedia coordenadas y división m:n usa pesos cruzados. Baricentro promedia tres vértices. Área triangular es medio valor absoluto del determinante de dos vectores de lado. Pendiente m=Δy/Δx=tanθ si la recta no es vertical; inclinación se toma en [0°,180°). Ecuaciones punto–pendiente y general representan la misma recta. Paralelas no coincidentes comparten dirección; perpendiculares de pendientes finitas no nulas cumplen m₁m₂=−1, con tratamiento aparte de horizontal/vertical. Distancia punto–recta usa el módulo de la evaluación normalizada.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Coordenadas",
+    "Pitágoras",
+    "tangente"
+   ],
+   "desempeno": "Convierte una condición geométrica a ecuación y verifica un punto o distancia.",
+   "escena_propuesta": "Girar una recta después de predecir el signo de pendiente. Registrar horizontal, oblicua y vertical sin mostrar infinito como número normal. Arrastrar proyección perpendicular para identificar la distancia mínima.",
+   "otra_representacion": "Vectores normales; triángulos de pendiente con distintas escalas.",
+   "ejemplo": "Recta por (1,2) y (5,4): m=1/2, y=(x+3)/2. Distancia del origen a 3x+4y−10=0: 2.",
+   "error_objetivo": "Usar −1/m para recta horizontal sin tratar la vertical; hipótesis.",
+   "transferencia": "Resolver un caso nuevo con otro cuadrante, intervalo o representación; declarar dominio y medir por separado cada magnitud solicitada.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-O21",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "2.1 Linear Functions",
+     "url": "https://openstax.org/books/precalculus-2e/pages/2-1-linear-functions",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "2.1 Linear Functions"
+    },
+    {
+     "id": "GT-K1",
+     "autor": "Kiran S. Kedlaya",
+     "fecha": "2006",
+     "titulo": "Geometry Unbound",
+     "seccion": "1.1–1.7: coordenadas, polígonos, áreas, arcos y ángulos",
+     "url": "https://kskedlaya.org/geometryunbound/gu-060118.pdf",
+     "tipo": "Libro abierto del autor; GFDL",
+     "verificacion": "PDF del sitio del autor abierto; índice y pasajes relevantes localizados el 14-11-2026",
+     "localizador": "1.1–1.7: coordenadas, polígonos, áreas, arcos y ángulos"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "trigonometria.recta-en-el-plano",
+    "curso": "Trigonometría",
+    "numero": 5,
+    "titulo": "Plano cartesiano y la recta",
+    "historia": "Durante el siglo XVII, Fermat estudió lugares geométricos mediante relaciones algebraicas y compartió resultados a través de correspondencia. Su trabajo recuperaba problemas de Apolonio y convivió con el desarrollo geométrico de Descartes. Esa historia permite evitar la idea de que el plano cartesiano escolar apareció completo por una ocurrencia aislada. Una pregunta sobre todos los puntos de una recta se transforma en una relación entre cantidades variables. La pendiente expresa una de esas relaciones, pero necesita distinguir desplazamiento horizontal, desplazamiento vertical e inclinación, especialmente en el caso de rectas verticales.",
+    "puente_escena": "Situar dos puntos y pedir construir un triángulo de desplazamientos. Cambiar la escala o mover un punto permite comparar pendiente e inclinación. Cuando la recta se vuelve vertical, la escena conserva su ecuación y explica por qué falla el cociente, con tabla y lectura textual.",
+    "ecuaciones": [
+     {
+      "latex": "m=\\frac{y_2-y_1}{x_2-x_1}=\\tan\\theta",
+      "lectura": "La pendiente es el cambio vertical dividido entre el horizontal y coincide con la tangente de la inclinación.",
+      "condiciones": "x dos distinto de x uno; ejes ortonormales con la misma escala geométrica; theta es la inclinación respecto del eje x positivo."
+     },
+     {
+      "latex": "y-y_0=m(x-x_0)",
+      "lectura": "y menos y cero es igual a la pendiente por x menos x cero.",
+      "condiciones": "Recta no vertical que pasa por el punto x cero, y cero."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "J. J. O’Connor y E. F. Robertson, «Pierre de Fermat», MacTutor, University of St Andrews",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Fermat/"
+     }
+    ]
+   }
+  },
+  {
+   "id": "trigonometria.angulos-en-posicion-normal",
+   "curso": "Trigonometría",
+   "curso_id": "trigonometria",
+   "numero": 6,
+   "titulo": "Ángulos en posición normal",
+   "grado": 4,
+   "temas_catalogo": [
+    "Razones de un ángulo en posición normal",
+    "Signos por cuadrante",
+    "Ángulos coterminales",
+    "Ángulos cuadrantales",
+    "Ángulos negativos"
+   ],
+   "modulos_actuales": [
+    "circunferencia-trig"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de recordar.",
+   "teoria": "En posición normal el vértice está en origen y lado inicial sobre +x. Para P(x,y)≠(0,0), r=√(x²+y²)>0: cosθ=x/r, senθ=y/r, tanθ=y/x si x≠0. Los signos proceden de coordenadas, no de una mnemotecnia aislada. Coterminales θ+2kπ conservan razones. Ángulos cuadrantales tienen valores exactos donde definidos; tan y sec no existen en x=0, cot y csc no existen en y=0. Negativos se interpretan como giro horario; cos es par y sen,tan impares en sus dominios.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Coordenadas con signos",
+    "círculo",
+    "razones agudas"
+   ],
+   "desempeno": "Da signos y valores usando coordenadas y distingue cero de no definido.",
+   "escena_propuesta": "Girar el lado final y predecir signos antes de cruzar un eje. Dejar en cada cuadrante un punto con sus proyecciones. En denominador cero, mostrar la condición no definido.",
+   "otra_representacion": "Tabla x,y,r; reflexión entre cuadrantes.",
+   "ejemplo": "Para P(−3,4), senθ=4/5, cosθ=−3/5 y tanθ=−4/3.",
+   "error_objetivo": "Asignar cero a tan90°; hipótesis.",
+   "transferencia": "Resolver un caso nuevo con otro cuadrante, intervalo o representación; declarar dominio y medir por separado cada magnitud solicitada.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-O52",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "5.2 Unit Circle: Sine and Cosine Functions",
+     "url": "https://openstax.org/books/precalculus-2e/pages/5-2-unit-circle-sine-and-cosine-functions",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "5.2 Unit Circle: Sine and Cosine Functions"
+    },
+    {
+     "id": "GT-O53",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "5.3 The Other Trigonometric Functions",
+     "url": "https://openstax.org/books/precalculus-2e/pages/5-3-the-other-trigonometric-functions",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "5.3 The Other Trigonometric Functions"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "trigonometria.angulos-en-posicion-normal",
+    "curso": "Trigonometría",
+    "numero": 6,
+    "titulo": "Ángulos en posición normal",
+    "historia": "La trigonometría pasó de tablas de cuerdas y senos asociadas a problemas astronómicos a un lenguaje de funciones. En ese recorrido intervinieron tradiciones griegas, indias y de lengua árabe, además de desarrollos europeos posteriores. Extender el ángulo más allá de un triángulo agudo cambia la pregunta: los signos y las vueltas completas deben formar parte de la descripción. La posición normal es una organización moderna que conecta ese giro con coordenadas. No conviene proyectarla literalmente sobre tablas antiguas, pero sí mostrar qué problemas de representación ayuda a resolver.",
+    "puente_escena": "El estudiante mueve un radio desde el eje horizontal y predice los signos de sus coordenadas antes de verlos. La escena distingue ángulo acumulado y punto final; comparar treinta grados con trescientos noventa revela coterminalidad. Controles de incremento y lectura hablable reproducen cada giro.",
+    "ecuaciones": [
+     {
+      "latex": "x=r\\cos\\theta,\\qquad y=r\\sin\\theta",
+      "lectura": "La coordenada horizontal es radio por coseno; la vertical, radio por seno.",
+      "condiciones": "r positivo; ángulo dirigido desde el eje x positivo; coordenadas cartesianas ortonormales."
+     },
+     {
+      "latex": "\\sin(-\\theta)=-\\sin\\theta,\\qquad\\cos(-\\theta)=\\cos\\theta",
+      "lectura": "El seno cambia de signo al invertir el ángulo; el coseno conserva su valor.",
+      "condiciones": "Theta real; reflexión respecto del eje horizontal."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "J. J. O’Connor y E. F. Robertson, «Trigonometric functions», MacTutor, University of St Andrews",
+      "url": "https://mathshistory.st-andrews.ac.uk/HistTopics/Trigonometric_functions/"
+     }
+    ]
+   }
+  },
+  {
+   "id": "trigonometria.reduccion-al-primer-cuadrante",
+   "curso": "Trigonometría",
+   "curso_id": "trigonometria",
+   "numero": 7,
+   "titulo": "Reducción al primer cuadrante",
+   "grado": 4,
+   "temas_catalogo": [
+    "Ángulos menores de una vuelta",
+    "Ángulos mayores de una vuelta",
+    "Ángulos negativos",
+    "Ángulos suplementarios y de una vuelta"
+   ],
+   "modulos_actuales": [
+    "circunferencia-trig",
+    "trig-oblicuangulos"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de recordar.",
+   "teoria": "Reducir un ángulo es usar periodicidad, paridad y simetrías para expresarlo mediante un ángulo de referencia agudo, conservando la función o cambiando a cofunción cuando procede. sen(π−α)=senα, cos(π−α)=−cosα; sen(π/2−α)=cosα; tan(π+α)=tanα. Primero quitar vueltas completas; luego identificar cuadrante y referencia. No basta «mismo valor, distinto signo»: algunos desplazamientos intercambian seno/coseno, tangente/cotangente, secante/cosecante. Los cuadrantales requieren su propia evaluación y dominio.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Posición normal",
+    "signos por cuadrante",
+    "cofunciones"
+   ],
+   "desempeno": "Reduce un ángulo negativo o mayor que una vuelta justificando cada transformación.",
+   "escena_propuesta": "Seguir ejemplo: desenrollar vueltas, reflejar el punto, elegir signo y función. Mantener la referencia aguda junto al ángulo original y el rastro algebraico.",
+   "otra_representacion": "Coordenadas del círculo; identidades de suma como comprobación.",
+   "ejemplo": "sen750°=sen30°=1/2. cos(90°+20°)=−sen20°.",
+   "error_objetivo": "Conservar siempre la misma función en giros de 90°; hipótesis.",
+   "transferencia": "Resolver un caso nuevo con otro cuadrante, intervalo o representación; declarar dominio y medir por separado cada magnitud solicitada.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-O52",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "5.2 Unit Circle: Sine and Cosine Functions",
+     "url": "https://openstax.org/books/precalculus-2e/pages/5-2-unit-circle-sine-and-cosine-functions",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "5.2 Unit Circle: Sine and Cosine Functions"
+    },
+    {
+     "id": "GT-O53",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "5.3 The Other Trigonometric Functions",
+     "url": "https://openstax.org/books/precalculus-2e/pages/5-3-the-other-trigonometric-functions",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "5.3 The Other Trigonometric Functions"
+    },
+    {
+     "id": "GT-O72",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "7.2 Sum and Difference Identities",
+     "url": "https://openstax.org/books/precalculus-2e/pages/7-2-sum-and-difference-identities",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "7.2 Sum and Difference Identities"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "trigonometria.reduccion-al-primer-cuadrante",
+    "curso": "Trigonometría",
+    "numero": 7,
+    "titulo": "Reducción al primer cuadrante",
+    "historia": "Las tablas trigonométricas exigían cálculos extensos y controles de precisión. En el siglo XVI, Rheticus trabajó en tablas de las seis razones; colaboradores continuaron el proyecto y Valentin Otho publicó el Opus Palatinum después de su muerte. Esa producción colectiva permite entender el valor de las simetrías: relacionar ángulos reduce el trabajo necesario y ayuda a detectar errores. La reducción escolar al primer cuadrante organiza hoy esas relaciones con signos y complementos. No equivale siempre a conservar el nombre de la función: ciertas transformaciones intercambian seno y coseno.",
+    "puente_escena": "Elegir un ángulo de cualquier vuelta y pedir localizar su referencia antes de revelar el valor. Reflejar el radio permite justificar signos; intercambiar las proyecciones muestra las cofunciones. El estudiante registra ángulo original, referencia, función resultante y signo mediante una tabla accesible.",
+    "ecuaciones": [
+     {
+      "latex": "\\cos(\\pi-\\alpha)=-\\cos\\alpha",
+      "lectura": "El coseno de pi menos alfa es el opuesto del coseno de alfa.",
+      "condiciones": "Alfa real; si se usa como ángulo de referencia del segundo cuadrante, alfa es agudo."
+     },
+     {
+      "latex": "\\sin\\left(\\frac\\pi2-\\alpha\\right)=\\cos\\alpha",
+      "lectura": "El seno de pi medios menos alfa es el coseno de alfa.",
+      "condiciones": "Identidad válida para alfa real; es un cambio de función, no solo de signo."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "J. J. O’Connor y E. F. Robertson, «Georg Joachim Rheticus», MacTutor, University of St Andrews",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Rheticus/"
+     }
+    ]
+   }
+  },
+  {
+   "id": "trigonometria.circunferencia-trigonometrica",
+   "curso": "Trigonometría",
+   "curso_id": "trigonometria",
+   "numero": 8,
+   "titulo": "Circunferencia trigonométrica",
+   "grado": 4,
+   "temas_catalogo": [
+    "Elementos y arcos dirigidos",
+    "Ubicación de números reales",
+    "Líneas seno y coseno",
+    "Líneas tangente y cotangente",
+    "Líneas secante y cosecante",
+    "Variación de las líneas por cuadrante"
+   ],
+   "modulos_actuales": [
+    "circunferencia-trig",
+    "trig-extremos"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de recordar.",
+   "teoria": "La circunferencia unitaria asocia cada real t a (cost,sent) tras un arco dirigido de longitud t. Seno y coseno son coordenadas firmadas, no longitudes siempre positivas. En una construcción con tangentes, tan, cot, sec y csc se leen como segmentos orientados o cocientes; su signo y existencia deben declararse. sen y cos pertenecen a [−1,1]; las otras funciones tienen restricciones por denominador. Variación por cuadrantes se obtiene siguiendo coordenadas: seno no aumenta durante toda una vuelta y sec/csc tienen ramas separadas por asíntotas.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Radianes",
+    "coordenadas",
+    "cocientes y signos"
+   ],
+   "desempeno": "Traduce entre ángulo, punto, razón y rango, incluyendo casos no definidos.",
+   "escena_propuesta": "Girar un punto; predecir qué proyección crece. Trazar solo la línea trigonométrica en estudio y fijar extremos; comparar dos ángulos sin animación simultánea que distraiga.",
+   "otra_representacion": "Tabla de coordenadas; gráfica función–ángulo desenrollada.",
+   "ejemplo": "En t=2π/3: cos=−1/2, sen=√3/2, sec=−2. El seno puede ser igual para dos puntos con distinto coseno.",
+   "error_objetivo": "Tomar una longitud no orientada como valor de una razón negativa; hipótesis.",
+   "transferencia": "Resolver un caso nuevo con otro cuadrante, intervalo o representación; declarar dominio y medir por separado cada magnitud solicitada.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-O52",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "5.2 Unit Circle: Sine and Cosine Functions",
+     "url": "https://openstax.org/books/precalculus-2e/pages/5-2-unit-circle-sine-and-cosine-functions",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "5.2 Unit Circle: Sine and Cosine Functions"
+    },
+    {
+     "id": "GT-O53",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "5.3 The Other Trigonometric Functions",
+     "url": "https://openstax.org/books/precalculus-2e/pages/5-3-the-other-trigonometric-functions",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "5.3 The Other Trigonometric Functions"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "trigonometria.circunferencia-trigonometrica",
+    "curso": "Trigonometría",
+    "numero": 8,
+    "titulo": "Circunferencia trigonométrica",
+    "historia": "De triangulis de Regiomontanus organizó conocimientos sobre triángulos planos y esféricos en el siglo XV, dentro de una historia de transmisión y transformación de resultados astronómicos. Sus tablas y demostraciones buscaban calcular relaciones entre lados y ángulos. La circunferencia de radio uno que usamos actualmente reúne esas relaciones en una representación común: elimina un factor de escala y permite interpretar proyecciones como valores. Conviene distinguir esa elección didáctica moderna de la notación histórica. El problema permanece: representar varias razones del mismo ángulo sin perder sus relaciones ni sus restricciones.",
+    "puente_escena": "Comenzar con un círculo de radio modificable y dividir las proyecciones entre el radio. Después fijarlo en uno y construir las líneas tangente y secante. El estudiante anticipa qué sucede cuando el radio giratorio se hace paralelo a la tangente; se informa la indefinición explícitamente.",
+    "ecuaciones": [
+     {
+      "latex": "P=(\\cos\\theta,\\sin\\theta)",
+      "lectura": "El punto del círculo unitario tiene coordenadas coseno de theta y seno de theta.",
+      "condiciones": "Circunferencia centrada en el origen de radio uno; theta real en posición normal."
+     },
+     {
+      "latex": "\\tan\\theta=\\frac{\\sin\\theta}{\\cos\\theta}",
+      "lectura": "La tangente es el seno dividido entre el coseno.",
+      "condiciones": "Solo cuando coseno de theta es distinto de cero."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "J. J. O’Connor y E. F. Robertson, «Regiomontanus», MacTutor, University of St Andrews",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Regiomontanus/"
+     }
+    ]
+   }
+  },
+  {
+   "id": "trigonometria.identidades-fundamentales",
+   "curso": "Trigonometría",
+   "curso_id": "trigonometria",
+   "numero": 9,
+   "titulo": "Identidades trigonométricas fundamentales",
+   "grado": 4,
+   "temas_catalogo": [
+    "Identidades recíprocas y por división",
+    "Identidades pitagóricas",
+    "Identidades auxiliares",
+    "Simplificación y demostración"
+   ],
+   "modulos_actuales": [
+    "identidades-trig",
+    "trig-extremos",
+    "trig-identidades"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de recordar.",
+   "teoria": "Una identidad vale para todos los valores del dominio común, a diferencia de una ecuación con soluciones particulares. sen²x+cos²x=1 deriva del círculo unitario; al dividir por cos²x o sen²x se obtienen 1+tan²x=sec²x y 1+cot²x=csc²x, excluyendo ceros del divisor. Recíprocas y cocientes se manejan con sus dominios. Simplificar no autoriza reintroducir puntos excluidos. √(sen²x)=|senx|, no siempre senx. Demostrar requiere igualdades válidas, usualmente transformando un miembro; muestrear ángulos es control de errores, no prueba general.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Álgebra de fracciones",
+    "círculo unitario",
+    "dominio"
+   ],
+   "desempeno": "Demuestra una identidad con dominio declarado y detecta una cancelación inválida.",
+   "escena_propuesta": "Seguir ejemplo con áreas sen² y cos²; predecir si el total cambia. Convertir las piezas a ecuación y retirar un paso de transformación. Dibujar huecos del dominio.",
+   "otra_representacion": "Derivación algebraica; contraejemplo numérico para una falsa identidad.",
+   "ejemplo": "(1−cos²x)/senx=senx solo cuando senx≠0. En x=3π/2, √(sen²x)=1, pero senx=−1.",
+   "error_objetivo": "Confundir verificar tres números con demostrar una identidad; hipótesis.",
+   "transferencia": "Resolver un caso nuevo con otro cuadrante, intervalo o representación; declarar dominio y medir por separado cada magnitud solicitada.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-O71",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "7.1 Simplifying and Verifying Trigonometric Identities",
+     "url": "https://openstax.org/books/precalculus-2e/pages/7-1-simplifying-and-verifying-trigonometric-identities",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "7.1 Simplifying and Verifying Trigonometric Identities"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "trigonometria.identidades-fundamentales",
+    "curso": "Trigonometría",
+    "numero": 9,
+    "titulo": "Identidades trigonométricas fundamentales",
+    "historia": "En el siglo X, Abu'l-Wafa produjo tablas trigonométricas y estudió relaciones entre las seis líneas asociadas a un arco dentro de sus investigaciones astronómicas. También escribió para actividades de cálculo y construcción. Su trabajo forma parte de una tradición amplia de lengua árabe que recibió y transformó resultados anteriores. La historia de las identidades no se reduce a asignar todas las fórmulas a un autor: importa reconocer cómo relaciones geométricas se convierten en instrumentos de cálculo. Una transformación válida debe conservar además los valores para los que las expresiones tienen sentido.",
+    "puente_escena": "Partir de un punto del círculo y construir un triángulo de proyecciones que permita justificar la identidad pitagórica. Luego dividir por una expresión elegida y pedir marcar sus ceros. El estudiante conserva un registro del dominio mientras simplifica, con ecuaciones y lectura textual equivalentes.",
+    "ecuaciones": [
+     {
+      "latex": "\\sin^2\\theta+\\cos^2\\theta=1",
+      "lectura": "El seno al cuadrado más el coseno al cuadrado es igual a uno.",
+      "condiciones": "Theta real; cuadrados de los valores de las funciones."
+     },
+     {
+      "latex": "1+\\tan^2\\theta=\\sec^2\\theta",
+      "lectura": "Uno más la tangente al cuadrado es igual a la secante al cuadrado.",
+      "condiciones": "Coseno de theta distinto de cero; se obtiene dividiendo la identidad anterior entre coseno al cuadrado."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "J. J. O’Connor y E. F. Robertson, «Mohammad Abu’l-Wafa al-Buzjani», MacTutor, University of St Andrews",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Abul-Wafa/"
+     }
+    ]
+   }
+  },
+  {
+   "id": "trigonometria.arcos-compuestos",
+   "curso": "Trigonometría",
+   "curso_id": "trigonometria",
+   "numero": 10,
+   "titulo": "Suma y diferencia de ángulos",
+   "grado": 5,
+   "temas_catalogo": [
+    "Seno, coseno y tangente de la suma y la diferencia",
+    "Identidades auxiliares",
+    "Suma de tres ángulos"
+   ],
+   "modulos_actuales": [
+    "identidades-trig",
+    "trig-angulos-verticales",
+    "trig-identidades"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de recordar.",
+   "teoria": "La composición de giros produce cos(a+b)=cosa cosb−sena senb y sen(a+b)=sena cosb+cosa senb. Diferencia se obtiene con paridad. tan(a+b)=(tana+tanb)/(1−tana tanb) requiere que las tangentes y el denominador existan; para casos excluidos se vuelve a seno/coseno. Sumar tres ángulos se hace por composición asociativa, manteniendo términos y signos. No hay linealidad sen(a+b)=sena+senb. Identidades auxiliares se derivan de estas bases y llevan las mismas condiciones.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Identidades fundamentales",
+    "distributividad",
+    "giros"
+   ],
+   "desempeno": "Expande o calcula una razón compuesta justificando signos y restricciones.",
+   "escena_propuesta": "Girar primero a y luego b; predecir altura final. Descomponer proyecciones en dos componentes y congelarlas antes de presentar la suma algebraica. Ejemplo con un término por completar.",
+   "otra_representacion": "Matriz de rotación 2×2 como apoyo del autor; descomposición de triángulos.",
+   "ejemplo": "sen75°=sen(45°+30°)=(√6+√2)/4. sen60°+sen30° no es sen90°.",
+   "error_objetivo": "Distribuir seno sobre una suma; hipótesis.",
+   "transferencia": "Resolver un caso nuevo con otro cuadrante, intervalo o representación; declarar dominio y medir por separado cada magnitud solicitada.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-O72",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "7.2 Sum and Difference Identities",
+     "url": "https://openstax.org/books/precalculus-2e/pages/7-2-sum-and-difference-identities",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "7.2 Sum and Difference Identities"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "trigonometria.arcos-compuestos",
+    "curso": "Trigonometría",
+    "numero": 10,
+    "titulo": "Suma y diferencia de ángulos",
+    "historia": "En el Almagesto, Ptolomeo construyó una tabla de cuerdas utilizando relaciones geométricas que permitían combinar y subdividir arcos. Ese trabajo respondía a necesidades de cálculo astronómico y empleaba una escala distinta del círculo unitario moderno. Las identidades actuales de suma y diferencia expresan relaciones equivalentes con senos y cosenos. La conexión histórica evita presentar las fórmulas como una lista arbitraria: permiten obtener valores nuevos a partir de otros conocidos. También advierte contra un error persistente: sumar ángulos no significa sumar sin más sus senos o sus cosenos.",
+    "puente_escena": "Combinar dos rotaciones y comparar la proyección final con la suma ingenua de proyecciones. El estudiante reconstruye los productos que aparecen al proyectar un vector ya inclinado. Un caso numérico y otro simbólico distinguen contraejemplo y demostración, con controles separados para ambos ángulos.",
+    "ecuaciones": [
+     {
+      "latex": "\\sin(\\alpha+\\beta)=\\sin\\alpha\\cos\\beta+\\cos\\alpha\\sin\\beta",
+      "lectura": "El seno de la suma es seno de alfa por coseno de beta más coseno de alfa por seno de beta.",
+      "condiciones": "Alfa y beta reales, expresados en la misma unidad angular."
+     },
+     {
+      "latex": "\\cos(\\alpha+\\beta)=\\cos\\alpha\\cos\\beta-\\sin\\alpha\\sin\\beta",
+      "lectura": "El coseno de la suma es el producto de cosenos menos el producto de senos.",
+      "condiciones": "Alfa y beta reales; el signo menos es parte de la identidad."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "J. J. O’Connor y E. F. Robertson, «Claudius Ptolemy», MacTutor, University of St Andrews",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Ptolemy/"
+     }
+    ]
+   }
+  },
+  {
+   "id": "trigonometria.arcos-multiples",
+   "curso": "Trigonometría",
+   "curso_id": "trigonometria",
+   "numero": 11,
+   "titulo": "Ángulo doble, mitad y triple",
+   "grado": 5,
+   "temas_catalogo": [
+    "Identidades del ángulo doble",
+    "Degradación de potencias",
+    "Ángulo mitad",
+    "Ángulo triple"
+   ],
+   "modulos_actuales": [
+    "identidades-trig",
+    "trig-identidades"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de recordar.",
+   "teoria": "Doble ángulo: sen2x=2senx cosx y cos2x=cos²x−sen²x=1−2sen²x=2cos²x−1. Reducir potencias: sen²x=(1−cos2x)/2 y cos²x=(1+cos2x)/2. Semiangulo: sen(x/2)=±√((1−cosx)/2), cos(x/2)=±√((1+cosx)/2), con signo del cuadrante de x/2. Triple: sen3x=3senx−4sen³x y cos3x=4cos³x−3cosx. Tangentes derivadas requieren denominadores no nulos. Doble/mitad/triple del ángulo no se traduce a multiplicar/dividir el valor de la función.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Suma de ángulos",
+    "identidades",
+    "signos por cuadrantes"
+   ],
+   "desempeno": "Elige la forma útil, controla el signo de la raíz y comprueba el dominio.",
+   "escena_propuesta": "Girar doble y comparar altura con el fantasma del doble de la altura. Seguir derivación desde x+x y dejar un paso por completar; para mitad mostrar su cuadrante.",
+   "otra_representacion": "Áreas del círculo; expansión algebraica de las fórmulas de suma.",
+   "ejemplo": "cos120°=2cos²60°−1=−1/2. Si x=300°, sen(x/2)=sen150°=1/2, no el signo de senx.",
+   "error_objetivo": "Elegir siempre raíz positiva o copiar el signo del ángulo original; hipótesis.",
+   "transferencia": "Resolver un caso nuevo con otro cuadrante, intervalo o representación; declarar dominio y medir por separado cada magnitud solicitada.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-O73",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "7.3 Double-Angle, Half-Angle, and Reduction Formulas",
+     "url": "https://openstax.org/books/precalculus-2e/pages/7-3-double-angle-half-angle-and-reduction-formulas",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "7.3 Double-Angle, Half-Angle, and Reduction Formulas"
+    },
+    {
+     "id": "GT-O72",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "7.2 Sum and Difference Identities",
+     "url": "https://openstax.org/books/precalculus-2e/pages/7-2-sum-and-difference-identities",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "7.2 Sum and Difference Identities"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "trigonometria.arcos-multiples",
+    "curso": "Trigonometría",
+    "numero": 11,
+    "titulo": "Ángulo doble, mitad y triple",
+    "historia": "En el siglo XV, al-Kashi trabajó en Samarcanda en cálculos astronómicos de gran precisión. Entre sus problemas estuvo obtener el seno de un grado mediante una ecuación relacionada con la identidad del ángulo triple. Ese episodio muestra una colaboración entre álgebra, trigonometría y aproximación numérica: una identidad sirve para producir información nueva, no solo para reescribir expresiones. No implica que todas las fórmulas de ángulos múltiples fueran su invención. En la unidad actual, doblar, partir o triplicar ángulos requiere además controlar signos y escoger la solución compatible con el intervalo.",
+    "puente_escena": "Fijar el valor de un ángulo triple y explorar qué candidatos para el ángulo original lo producen. Después pasar al ángulo mitad y pedir elegir el signo usando su cuadrante. La escena presenta soluciones y descarte por dominio en texto, además de la posición circular.",
+    "ecuaciones": [
+     {
+      "latex": "\\sin(3\\theta)=3\\sin\\theta-4\\sin^3\\theta",
+      "lectura": "El seno del triple es tres veces el seno menos cuatro veces el cubo del seno.",
+      "condiciones": "Theta real; seno al cubo es el cubo del valor de seno."
+     },
+     {
+      "latex": "\\cos^2\\left(\\frac\\theta2\\right)=\\frac{1+\\cos\\theta}{2}",
+      "lectura": "El cuadrado del coseno del ángulo mitad es uno más coseno de theta, dividido entre dos.",
+      "condiciones": "Theta real; al extraer raíz, el signo depende del cuadrante de theta medios."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "J. J. O’Connor y E. F. Robertson, «Ghiyath al-Din Jamshid al-Kashi», MacTutor, University of St Andrews",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Al-Kashi/"
+     }
+    ]
+   }
+  },
+  {
+   "id": "trigonometria.transformaciones-trigonometricas",
+   "curso": "Trigonometría",
+   "curso_id": "trigonometria",
+   "numero": 12,
+   "titulo": "Transformaciones y series trigonométricas",
+   "grado": 5,
+   "temas_catalogo": [
+    "Suma a producto",
+    "Producto a suma",
+    "Sumatorias de senos y cosenos",
+    "Productorias trigonométricas"
+   ],
+   "modulos_actuales": [
+    "transformaciones-trig"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de recordar.",
+   "teoria": "Suma a producto y producto a suma son reagrupaciones de fórmulas de suma: senA+senB=2sen((A+B)/2)cos((A−B)/2); 2cosA cosB=cos(A+B)+cos(A−B), y análogas. En suma de flechas unitarias el factor 2cos((A−B)/2) puede ser negativo o cero: la dirección requiere ese signo, no siempre apunta a la semisuma. Sumatorias con progresión angular se obtienen por telescopaje o suma geométrica compleja; si se divide por sen(d/2), se trata aparte d múltiplo de 2π. Productorias de ángulos doblados se reducen iterando sen2x=2senx cosx, manteniendo ceros que una división podría borrar.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Suma/diferencia",
+    "sucesiones y sumatoria",
+    "factores cero"
+   ],
+   "desempeno": "Transforma una expresión y justifica el caso excepcional de su fórmula cerrada.",
+   "escena_propuesta": "Seguir ejemplo con dos flechas y sus proyecciones; predecir resultante, fijar el caso que se anula y luego completar un telescopaje. Cada término cancelado queda marcado.",
+   "otra_representacion": "Tabla de términos; serie geométrica de e^{ix} para el autor.",
+   "ejemplo": "sen20°+sen40°=2sen30°cos10°=cos10°. cosx cos2x=sen4x/(4senx) si senx≠0; el producto original sigue definido en x=0.",
+   "error_objetivo": "Olvidar signos y casos de denominador cero al usar una suma cerrada; hipótesis.",
+   "transferencia": "Resolver un caso nuevo con otro cuadrante, intervalo o representación; declarar dominio y medir por separado cada magnitud solicitada.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-O74",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "7.4 Sum-to-Product and Product-to-Sum Formulas",
+     "url": "https://openstax.org/books/precalculus-2e/pages/7-4-sum-to-product-and-product-to-sum-formulas",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "7.4 Sum-to-Product and Product-to-Sum Formulas"
+    },
+    {
+     "id": "GT-K2",
+     "autor": "Kiran S. Kedlaya",
+     "fecha": "2006",
+     "titulo": "Geometry Unbound",
+     "seccion": "2.1–2.4: trigonometría, vectores, complejos y coordenadas baricéntricas",
+     "url": "https://kskedlaya.org/geometryunbound/gu-060118.pdf",
+     "tipo": "Libro abierto del autor; GFDL",
+     "verificacion": "PDF del sitio del autor abierto; índice y pasajes relevantes localizados el 14-11-2026",
+     "localizador": "2.1–2.4: trigonometría, vectores, complejos y coordenadas baricéntricas"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "trigonometria.transformaciones-trigonometricas",
+    "curso": "Trigonometría",
+    "numero": 12,
+    "titulo": "Transformaciones y series trigonométricas",
+    "historia": "Antes de disponer de calculadoras, los astrónomos necesitaban multiplicar grandes cantidades de datos. La prostaféresis reemplazaba ciertos productos trigonométricos por sumas y diferencias consultables en tablas. En torno al observatorio de Tycho Brahe circularon métodos asociados con Wittich, Bürgi, Ursus y antecedentes de Werner; hubo disputas de prioridad. El estudio histórico de Cambridge muestra por qué sería engañoso atribuir todo a una sola figura. Las transformaciones trigonométricas tenían así una utilidad computacional concreta. Hoy esa misma equivalencia permite reconocer estructuras y reorganizar expresiones sin cambiar sus valores.",
+    "puente_escena": "Presentar un producto de cosenos y una tabla limitada que favorezca sumar valores conocidos. El estudiante elige los ángulos suma y diferencia, compara ambas rutas de cálculo y explica el factor un medio. Después variar los ángulos permite comprobar resultados antes de justificar la identidad.",
+    "ecuaciones": [
+     {
+      "latex": "2\\cos\\alpha\\cos\\beta=\\cos(\\alpha+\\beta)+\\cos(\\alpha-\\beta)",
+      "lectura": "Dos veces el producto de cosenos es la suma del coseno de la suma y del coseno de la diferencia.",
+      "condiciones": "Alfa y beta reales, con una misma unidad angular."
+     },
+     {
+      "latex": "\\sin\\alpha+\\sin\\beta=2\\sin\\frac{\\alpha+\\beta}{2}\\cos\\frac{\\alpha-\\beta}{2}",
+      "lectura": "La suma de senos es dos veces seno de la semisuma por coseno de la semidiferencia.",
+      "condiciones": "Alfa y beta reales; conservar el signo del coseno de la semidiferencia."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Adam Mosley, Starry Messenger: Tycho Brahe and Mathematical Techniques, University of Cambridge",
+      "url": "https://www.sites.hps.cam.ac.uk/starry/tychomaths.html"
+     }
+    ]
+   }
+  },
+  {
+   "id": "trigonometria.funciones-trigonometricas",
+   "curso": "Trigonometría",
+   "curso_id": "trigonometria",
+   "numero": 13,
+   "titulo": "Funciones trigonométricas",
+   "grado": 5,
+   "temas_catalogo": [
+    "Funciones seno y coseno",
+    "Amplitud, periodo y frecuencia",
+    "Funciones tangente y cotangente",
+    "Funciones secante y cosecante",
+    "Periodo de funciones generalizadas"
+   ],
+   "modulos_actuales": [
+    "circunferencia-trig",
+    "trig-extremos"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de comparar.",
+   "teoria": "Una función periódica cumple f(x+T)=f(x) en todo su dominio para algún T>0; periodo fundamental es el menor positivo cuando existe. Para A sen(Bx+C)+D con A,B≠0: amplitud |A|, periodo 2π/|B|, desplazamiento horizontal −C/B y rango [D−|A|,D+|A|]. Tangente/cotangente tienen periodo π/|B|; secante/cosecante 2π/|B| y asíntotas donde sus denominadores se anulan. Si A=0 o B=0 la función constante no tiene periodo fundamental único. Para combinaciones, comprobar un periodo común y si es mínimo; frecuencias inconmensurables pueden impedir periodicidad.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Funciones y dominio",
+    "círculo",
+    "transformaciones de gráficas"
+   ],
+   "desempeno": "Obtiene dominio, rango y periodo como tres respuestas separadas, y verifica repetición.",
+   "escena_propuesta": "Girar y desenrollar gráfica; predecir qué parámetro cambia altura o separación. Congelar dos ciclos y usar una traslación de prueba, no solo parecido visual.",
+   "otra_representacion": "Tabla; superposición de gráfica con su copia desplazada.",
+   "ejemplo": "y=3sen(2x)−1 tiene amplitud 3, periodo π y rango [−4,2]. tan2x tiene periodo π/2.",
+   "error_objetivo": "Afirmar que toda función trigonométrica tiene periodo 2π o una vuelta; hipótesis.",
+   "transferencia": "Resolver un caso nuevo con otro cuadrante, intervalo o representación; declarar dominio y medir por separado cada magnitud solicitada.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-O61",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "6.1 Graphs of the Sine and Cosine Functions",
+     "url": "https://openstax.org/books/precalculus-2e/pages/6-1-graphs-of-the-sine-and-cosine-functions",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "6.1 Graphs of the Sine and Cosine Functions"
+    },
+    {
+     "id": "GT-O62",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "6.2 Graphs of the Other Trigonometric Functions",
+     "url": "https://openstax.org/books/precalculus-2e/pages/6-2-graphs-of-the-other-trigonometric-functions",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "6.2 Graphs of the Other Trigonometric Functions"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "trigonometria.funciones-trigonometricas",
+    "curso": "Trigonometría",
+    "numero": 13,
+    "titulo": "Funciones trigonométricas",
+    "historia": "La Introductio in analysin infinitorum de Euler, publicada en 1748, dio a las funciones un papel central en el análisis. En ese contexto, seno y coseno podían estudiarse más allá de una tabla para resolver triángulos. Esta reorganización no borró sus antecedentes geométricos y astronómicos: conectó representaciones que antes respondían a problemas diferentes. Para la unidad escolar, la función permite preguntar cómo cambia una salida durante muchas vueltas y qué transformaciones alteran amplitud, desplazamiento o período. Esas propiedades necesitan definiciones precisas, especialmente cuando se comparan seno, tangente y funciones constantes.",
+    "puente_escena": "Vincular un punto que gira con una gráfica que registra su altura. Antes de variar cada parámetro, pedir predecir el cambio y conservar la curva anterior. El estudiante verifica amplitud y período con puntos repetidos; una tabla permite seguir la misma relación sin animación.",
+    "ecuaciones": [
+     {
+      "latex": "f(x)=A\\sin(Bx+C)+D",
+      "lectura": "La función es A por seno de Bx más C, y después se suma D.",
+      "condiciones": "Parámetros reales; x en radianes para esta expresión."
+     },
+     {
+      "latex": "T=\\frac{2\\pi}{|B|}",
+      "lectura": "El período fundamental es dos pi dividido entre el valor absoluto de B.",
+      "condiciones": "Para la función seno transformada, A y B deben ser distintos de cero. La amplitud es el valor absoluto de A."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "J. J. O’Connor y E. F. Robertson, «Leonhard Euler», MacTutor, University of St Andrews",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Euler/"
+     }
+    ]
+   }
+  },
+  {
+   "id": "trigonometria.funciones-trigonometricas-inversas",
+   "curso": "Trigonometría",
+   "curso_id": "trigonometria",
+   "numero": 14,
+   "titulo": "Funciones trigonométricas inversas",
+   "grado": 5,
+   "temas_catalogo": [
+    "Arco seno, arco coseno y arco tangente",
+    "Arco cotangente, arco secante y arco cosecante",
+    "Dominio, rango y gráfica",
+    "Propiedades"
+   ],
+   "modulos_actuales": [
+    "funciones-trig-inversas",
+    "trig-inversas"
+   ],
+   "ruta_propuesta": "comparar, con apoyo de descubrir.",
+   "teoria": "Las funciones trigonométricas no son inyectivas en todo su dominio; su inversa exige restringir una rama. arcsen: dominio [−1,1], rango [−π/2,π/2]; arccos: [−1,1]→[0,π]; arctan: R→(−π/2,π/2). Inversa no es recíproca: arcsenx≠1/senx. Composiciones inversa-directa devuelven el ángulo principal, no cualquier x. Para arccot, arcsec y arccsc existen convenciones de ramas: la app debe fijarlas explícitamente y coherentemente con el examen; sus dominios son R para arccot y |x|≥1 para arcsec/arccsc. Las gráficas inversas reflejan la rama elegida sobre y=x.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Inyectividad e inversa",
+    "dominio/rango",
+    "signos"
+   ],
+   "desempeno": "Evalúa una composición y explica por qué cambia un ángulo fuera de la rama.",
+   "escena_propuesta": "Comparar la función completa con una ventana principal; predecir cuántas intersecciones sobreviven. Reflejar la rama y dejar el intervalo visible junto al resultado.",
+   "otra_representacion": "Tabla entrada–salida; triángulo para composiciones válidas.",
+   "ejemplo": "arcsen(sen150°)=30°. arccos(cos240°)=120°.",
+   "error_objetivo": "Cancelar función e inversa sin comprobar la rama; hipótesis.",
+   "transferencia": "Resolver un caso nuevo con otro cuadrante, intervalo o representación; declarar dominio y medir por separado cada magnitud solicitada.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-O63",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "6.3 Inverse Trigonometric Functions",
+     "url": "https://openstax.org/books/precalculus-2e/pages/6-3-inverse-trigonometric-functions",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "6.3 Inverse Trigonometric Functions"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "trigonometria.funciones-trigonometricas-inversas",
+    "curso": "Trigonometría",
+    "numero": 14,
+    "titulo": "Funciones trigonométricas inversas",
+    "historia": "Buscar un ángulo a partir de una razón llevó a desarrollar notaciones para las funciones inversas. El repertorio histórico de símbolos documenta usos de Daniel Bernoulli, Euler, Lagrange y otros durante el siglo XVIII; Herschel explicó en 1813 la notación con exponente menos uno. Esa escritura convivió con formas que incluyen «arc». La diversidad sigue dejando una ambigüedad pedagógica: inversa funcional y recíproco son operaciones diferentes. La definición moderna necesita restringir el intervalo de la función original para que cada entrada tenga una sola salida elegida.",
+    "puente_escena": "Mostrar varias posiciones del círculo con el mismo seno y pedir cuál devuelve la calculadora. Activar después el intervalo principal y relacionarlo con una gráfica reflejada respecto de y igual a x. El panel textual distingue arco seno de uno dividido entre seno.",
+    "ecuaciones": [
+     {
+      "latex": "\\arcsin:[-1,1]\\longrightarrow\\left[-\\frac\\pi2,\\frac\\pi2\\right]",
+      "lectura": "Arco seno transforma valores entre menos uno y uno en ángulos entre menos pi medios y pi medios.",
+      "condiciones": "Esta es la rama principal adoptada; extremos incluidos."
+     },
+     {
+      "latex": "\\arcsin\\left(\\sin\\frac{5\\pi}{6}\\right)=\\frac\\pi6",
+      "lectura": "El arco seno del seno de cinco pi sextos es pi sextos.",
+      "condiciones": "Cinco pi sextos está fuera del intervalo principal del arco seno; no se cancelan las funciones sin revisar el intervalo."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Jeff Miller, Earliest Uses of Symbols for Trigonometric and Hyperbolic Functions, MacTutor, University of St Andrews",
+      "url": "https://mathshistory.st-andrews.ac.uk/Miller/mathsym/trigonometry/"
+     }
+    ]
+   }
+  },
+  {
+   "id": "trigonometria.ecuaciones-trigonometricas",
+   "curso": "Trigonometría",
+   "curso_id": "trigonometria",
+   "numero": 15,
+   "titulo": "Ecuaciones trigonométricas",
+   "grado": 5,
+   "temas_catalogo": [
+    "Ecuaciones elementales",
+    "Solución general y particular",
+    "Ecuaciones no elementales",
+    "Sistemas de ecuaciones trigonométricas"
+   ],
+   "modulos_actuales": [
+    "circunferencia-trig",
+    "trig-ecuaciones"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de descubrir.",
+   "teoria": "Resolver busca todos los valores permitidos, no una sola lectura de calculadora. senx=k no tiene solución real si |k|>1; para |k|<1 ofrece dos familias por vuelta; para k=±1 una, evitando duplicados; para k=0 también dos puntos en [0,2π). cosx=k se trata análogamente; tanx=k tiene familia arctank+nπ. Se distingue solución general de solución restringida a un intervalo con extremos abiertos/cerrados. Transformaciones con división pueden perder soluciones y elevar al cuadrado puede añadirlas: verificar en la ecuación original. Sistemas exigen intersección de conjuntos solución; inecuaciones, intervalos con el signo y dominio correctos.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Identidades",
+    "ecuaciones y conjuntos",
+    "círculo unitario"
+   ],
+   "desempeno": "Enumera soluciones completas en un intervalo y descarta candidatos inválidos.",
+   "escena_propuesta": "Marcar cortes de una horizontal con el círculo/gráfica tras predecir el número. Seguir ejemplo, retirar una familia y pedir que la recupere. Para sistemas pintar intersección.",
+   "otra_representacion": "Recta de ángulos con vueltas; tabla de verificación en original.",
+   "ejemplo": "senx=1/2 en [0,2π): x=π/6,5π/6. senx=1 tiene solo π/2 en ese intervalo.",
+   "error_objetivo": "Afirmar siempre dos soluciones por vuelta o perder senx=0 al dividir; hipótesis.",
+   "transferencia": "Resolver un caso nuevo con otro cuadrante, intervalo o representación; declarar dominio y medir por separado cada magnitud solicitada.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-O75",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "7.5 Solving Trigonometric Equations",
+     "url": "https://openstax.org/books/precalculus-2e/pages/7-5-solving-trigonometric-equations",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "7.5 Solving Trigonometric Equations"
+    },
+    {
+     "id": "GT-O63",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "6.3 Inverse Trigonometric Functions",
+     "url": "https://openstax.org/books/precalculus-2e/pages/6-3-inverse-trigonometric-functions",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "6.3 Inverse Trigonometric Functions"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "trigonometria.ecuaciones-trigonometricas",
+    "curso": "Trigonometría",
+    "numero": 15,
+    "titulo": "Ecuaciones trigonométricas",
+    "historia": "Una ecuación algebraica puede ocultar una relación trigonométrica. En 1593, Adriaan van Roomen propuso una ecuación de grado cuarenta y cinco; Viète reconoció una estructura trigonométrica y publicó su solución en 1595. El episodio conecta la búsqueda de incógnitas con las fórmulas de ángulos múltiples. Para esta unidad interesa especialmente cómo una representación ayuda a encontrar soluciones que otra oculta. La práctica moderna añade una exigencia explícita: indicar el conjunto de soluciones dentro del dominio solicitado, distinguir familias periódicas y eliminar únicamente valores que realmente incumplen la ecuación.",
+    "puente_escena": "Trazar una recta horizontal sobre la gráfica del seno y pedir todas las intersecciones en un intervalo. Relacionarlas con puntos del círculo y ampliar después a varias vueltas. El estudiante contrasta la respuesta principal de la inversa con las dos familias y revisa extremos incluidos.",
+    "ecuaciones": [
+     {
+      "latex": "\\theta=\\alpha+2k\\pi\\quad\\text{o}\\quad\\theta=\\pi-\\alpha+2k\\pi,\\qquad k\\in\\mathbb Z",
+      "lectura": "Theta es alfa más un múltiplo entero de dos pi, o pi menos alfa más ese múltiplo.",
+      "condiciones": "Soluciones de seno de theta igual a c cuando c está entre menos uno y uno y alfa es arco seno de c. Para c igual a más o menos uno, las familias se duplican."
+     },
+     {
+      "latex": "\\sin\\theta=\\frac12\\;\\Longrightarrow\\;\\theta\\in\\left\\{\\frac\\pi6,\\frac{5\\pi}{6}\\right\\}",
+      "lectura": "Si el seno vale un medio, las soluciones son pi sextos y cinco pi sextos.",
+      "condiciones": "Restricción de este ejemplo: cero menor o igual que theta y theta menor que dos pi."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "J. J. O’Connor y E. F. Robertson, «François Viète», MacTutor, University of St Andrews",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Viete/"
+     }
+    ],
+    "diagrama_svg": {
+     "titulo": "Dos ángulos, un mismo seno",
+     "viewBox": "0 0 700 420",
+     "descripcion_accesible": "El círculo unitario corta la horizontal de altura un medio en dos puntos. En la primera vuelta sus ángulos son pi sextos y cinco pi sextos; sus coordenadas horizontales son más y menos raíz de tres sobre dos.",
+     "transformacion": "x_pantalla=220+140x; y_pantalla=210−140y",
+     "geometria_exacta": {
+      "centro": [
+       0,
+       0
+      ],
+      "radio": 1,
+      "recta": "y=1/2",
+      "puntos": [
+       {
+        "nombre": "P",
+        "x": "sqrt(3)/2",
+        "y": "1/2",
+        "angulo": "pi/6"
+       },
+       {
+        "nombre": "Q",
+        "x": "-sqrt(3)/2",
+        "y": "1/2",
+        "angulo": "5*pi/6"
+       }
+      ]
+     },
+     "trazos": [
+      {
+       "tipo": "circle",
+       "cx": 220,
+       "cy": 210,
+       "r": 140
+      },
+      {
+       "tipo": "line",
+       "x1": 50,
+       "y1": 210,
+       "x2": 390,
+       "y2": 210,
+       "clase": "eje"
+      },
+      {
+       "tipo": "line",
+       "x1": 220,
+       "y1": 40,
+       "x2": 220,
+       "y2": 380,
+       "clase": "eje"
+      },
+      {
+       "tipo": "line",
+       "x1": 50,
+       "y1": 140,
+       "x2": 390,
+       "y2": 140,
+       "clase": "nivel"
+      },
+      {
+       "tipo": "line",
+       "x1": 220,
+       "y1": 210,
+       "x2": 341.2435565298214,
+       "y2": 140,
+       "clase": "radio-P"
+      },
+      {
+       "tipo": "line",
+       "x1": 220,
+       "y1": 210,
+       "x2": 98.7564434701786,
+       "y2": 140,
+       "clase": "radio-Q"
+      }
+     ],
+     "etiquetas": [
+      {
+       "x": 346,
+       "y": 123,
+       "texto": "P: π/6"
+      },
+      {
+       "x": 72,
+       "y": 123,
+       "texto": "Q: 5π/6"
+      },
+      {
+       "x": 405,
+       "y": 145,
+       "texto": "sin θ = 1/2"
+      },
+      {
+       "x": 440,
+       "y": 210,
+       "texto": "0 ≤ θ < 2π"
+      },
+      {
+       "x": 440,
+       "y": 250,
+       "texto": "Dos soluciones"
+      }
+     ],
+     "comprobacion": "Ambos puntos cumplen x²+y²=1 y y=1/2. Sus coordenadas de pantalla son aproximadas, calculadas desde las expresiones exactas; no medir la imagen para deducir valores.",
+     "accesibilidad": "Representar P con disco y Q con cuadrado además de colores; título y descripción, tabla de coordenadas y ángulos. Mostrar las dos familias generales en el texto y distinguir el intervalo de una sola vuelta."
+    }
+   }
+  },
+  {
+   "id": "trigonometria.triangulos-oblicuangulos",
+   "curso": "Trigonometría",
+   "curso_id": "trigonometria",
+   "numero": 16,
+   "titulo": "Resolución de triángulos oblicuángulos",
+   "grado": 5,
+   "temas_catalogo": [
+    "Ley de senos",
+    "Ley de cosenos",
+    "Leyes de proyecciones y de tangentes",
+    "Ángulos horizontales y rumbos"
+   ],
+   "modulos_actuales": [
+    "caso-ambiguo",
+    "trig-oblicuangulos"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo.",
+   "teoria": "Ley de senos: a/senA=b/senB=c/senC=2R; cosenos: a²=b²+c²−2bc cosA. Ley de proyecciones a=b cosC+c cosB. Ley de tangentes (a−b)/(a+b)=tan((A−B)/2)/tan((A+B)/2), con condiciones. Con LLA pueden existir cero, uno o dos triángulos: el arco seno principal no agota la solución; comprobar A+B<180°. LAL o LLL no degenerado se resuelve por cosenos; dos ángulos y lado por senos. Rumbos se traducen primero a una dirección con referencia norte/sur y este/oeste; no confundir giro exterior con ángulo interior.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Razones",
+    "suma de ángulos",
+    "Pitágoras"
+   ],
+   "desempeno": "Selecciona ley según datos, determina número de soluciones y justifica un rumbo.",
+   "escena_propuesta": "Girar compás del lado conocido y predecir número de intersecciones; mantener ambas soluciones LLA. Seguir ejemplo con ángulo interior resaltado y un paso por elegir.",
+   "otra_representacion": "Coordenadas y distancia; alturas como derivación de las leyes.",
+   "ejemplo": "Con lados 5 y 7 y ángulo comprendido 60°, tercer lado √39. Para A=30°, a=5,b=8: B≈53.13° o126.87°, ambos posibles.",
+   "error_objetivo": "Tomar arcoseno como única solución o usar ángulo de rumbo sin convertir; hipótesis.",
+   "transferencia": "Resolver un caso nuevo con otro cuadrante, intervalo o representación; declarar dominio y medir por separado cada magnitud solicitada.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-O81",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "8.1 Non-right Triangles: Law of Sines",
+     "url": "https://openstax.org/books/precalculus-2e/pages/8-1-non-right-triangles-law-of-sines",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "8.1 Non-right Triangles: Law of Sines"
+    },
+    {
+     "id": "GT-O82",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "8.2 Non-right Triangles: Law of Cosines",
+     "url": "https://openstax.org/books/precalculus-2e/pages/8-2-non-right-triangles-law-of-cosines",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "8.2 Non-right Triangles: Law of Cosines"
+    },
+    {
+     "id": "GT-K2",
+     "autor": "Kiran S. Kedlaya",
+     "fecha": "2006",
+     "titulo": "Geometry Unbound",
+     "seccion": "2.1–2.4: trigonometría, vectores, complejos y coordenadas baricéntricas",
+     "url": "https://kskedlaya.org/geometryunbound/gu-060118.pdf",
+     "tipo": "Libro abierto del autor; GFDL",
+     "verificacion": "PDF del sitio del autor abierto; índice y pasajes relevantes localizados el 14-11-2026",
+     "localizador": "2.1–2.4: trigonometría, vectores, complejos y coordenadas baricéntricas"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "trigonometria.triangulos-oblicuangulos",
+    "curso": "Trigonometría",
+    "numero": 16,
+    "titulo": "Resolución de triángulos oblicuángulos",
+    "historia": "El Tratado del cuadrilátero de Nasir al-Din al-Tusi, del siglo XIII, organizó resultados de trigonometría plana y esférica, incluyendo relaciones de senos. Formó parte de una tradición de investigación en lengua árabe alimentada por trabajos anteriores y problemas astronómicos. Su sistematización permitió tratar la trigonometría con mayor autonomía respecto de aplicaciones particulares. El paso al triángulo oblicuángulo conserva esa pregunta: qué datos bastan para reconstruir una figura. Una misma combinación de lado, lado y ángulo puede admitir dos soluciones, una o ninguna; el cálculo debe respetar esa posibilidad geométrica.",
+    "puente_escena": "Fijar un ángulo y dos longitudes; intersectar una circunferencia con un rayo para construir los candidatos del caso ambiguo. El estudiante predice cuántos triángulos aparecerán antes de calcular. Una lista numerada de soluciones y medidas acompaña la figura y evita perder la segunda configuración.",
+    "ecuaciones": [
+     {
+      "latex": "\\frac{a}{\\sin A}=\\frac{b}{\\sin B}=\\frac{c}{\\sin C}",
+      "lectura": "Cada lado dividido entre el seno de su ángulo opuesto tiene el mismo valor.",
+      "condiciones": "Triángulo plano no degenerado; a, b, c se oponen respectivamente a A, B, C."
+     },
+     {
+      "latex": "c^2=a^2+b^2-2ab\\cos C",
+      "lectura": "El lado c al cuadrado es a al cuadrado más b al cuadrado menos dos ab por coseno de C.",
+      "condiciones": "C es el ángulo comprendido entre a y b, opuesto a c; triángulo euclídeo no degenerado."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "J. J. O’Connor y E. F. Robertson, «Nasir al-Din al-Tusi», MacTutor, University of St Andrews",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Al-Tusi_Nasir/"
+     }
+    ]
+   }
+  },
+  {
+   "id": "trigonometria.areas-y-lineas-notables",
+   "curso": "Trigonometría",
+   "curso_id": "trigonometria",
+   "numero": 17,
+   "titulo": "Áreas y líneas notables con trigonometría",
+   "grado": 5,
+   "temas_catalogo": [
+    "Área de un triángulo con dos lados y el ángulo",
+    "Área con inradio, circunradio y exradio",
+    "Fórmula de Herón y semiángulos",
+    "Longitud de cevianas, bisectrices y medianas",
+    "Área de un cuadrilátero"
+   ],
+   "modulos_actuales": [
+    "caso-ambiguo",
+    "trig-oblicuangulos"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de descubrir.",
+   "teoria": "Área triangular Δ=bc senA/2=rs=abc/(4R)=rₐ(s−a); s=(a+b+c)/2. Herón Δ=√[s(s−a)(s−b)(s−c)] exige triángulo válido. Semiangulo: sen(A/2)=√[(s−b)(s−c)/(bc)] y cos(A/2)=√[s(s−a)/(bc)] para ángulos interiores. Stewart calcula cevians; mediana y bisectriz son sus casos especiales con sus razones. Un cuadrilátero convexo se descompone en dos triángulos; Δ=pq|senθ|/2 con diagonales p,q. Fórmulas especiales de cuadriláteros cíclicos o tangenciales requieren declarar esa propiedad antes de sustituir.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Área",
+    "leyes de senos/cosenos",
+    "semiperímetro"
+   ],
+   "desempeno": "Resuelve área o longitud seleccionando la expresión compatible con los datos.",
+   "escena_propuesta": "Seguir ejemplo con altura que se proyecta; predecir área al variar ángulo. Guardar dos derivaciones equivalentes y pedir completar la que usa los datos disponibles.",
+   "otra_representacion": "Herón frente a base-altura; descomposición por inradio.",
+   "ejemplo": "Triángulo 13,14,15: s=21, Δ=84, r=4, R=65/8. Cada magnitud se pregunta y registra aparte.",
+   "error_objetivo": "Usar a,b,c incompatibles o confundir r con R; hipótesis.",
+   "transferencia": "Resolver un caso nuevo con otro cuadrante, intervalo o representación; declarar dominio y medir por separado cada magnitud solicitada.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-O81",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "8.1 Non-right Triangles: Law of Sines",
+     "url": "https://openstax.org/books/precalculus-2e/pages/8-1-non-right-triangles-law-of-sines",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "8.1 Non-right Triangles: Law of Sines"
+    },
+    {
+     "id": "GT-O82",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "8.2 Non-right Triangles: Law of Cosines",
+     "url": "https://openstax.org/books/precalculus-2e/pages/8-2-non-right-triangles-law-of-cosines",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "8.2 Non-right Triangles: Law of Cosines"
+    },
+    {
+     "id": "GT-K7",
+     "autor": "Kiran S. Kedlaya",
+     "fecha": "2006",
+     "titulo": "Geometry Unbound",
+     "seccion": "7.1–7.3 y 7.9: centros, Euler, áreas y Stewart",
+     "url": "https://kskedlaya.org/geometryunbound/gu-060118.pdf",
+     "tipo": "Libro abierto del autor; GFDL",
+     "verificacion": "PDF del sitio del autor abierto; índice y pasajes relevantes localizados el 14-11-2026",
+     "localizador": "7.1–7.3 y 7.9: centros, Euler, áreas y Stewart"
+    },
+    {
+     "id": "GT-K2",
+     "autor": "Kiran S. Kedlaya",
+     "fecha": "2006",
+     "titulo": "Geometry Unbound",
+     "seccion": "2.1–2.4: trigonometría, vectores, complejos y coordenadas baricéntricas",
+     "url": "https://kskedlaya.org/geometryunbound/gu-060118.pdf",
+     "tipo": "Libro abierto del autor; GFDL",
+     "verificacion": "PDF del sitio del autor abierto; índice y pasajes relevantes localizados el 14-11-2026",
+     "localizador": "2.1–2.4: trigonometría, vectores, complejos y coordenadas baricéntricas"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "trigonometria.areas-y-lineas-notables",
+    "curso": "Trigonometría",
+    "numero": 17,
+    "titulo": "Áreas y líneas notables con trigonometría",
+    "historia": "En el Brahmasphutasiddhanta, de 628, Brahmagupta presentó una regla para el área de un cuadrilátero que corresponde, en su formulación válida actual, al caso cíclico. La relación prolonga la fórmula de Herón para triángulos. Este episodio de la tradición india permite discutir un aspecto esencial de la transmisión matemática: las condiciones pueden quedar implícitas o perderse al repetir una fórmula. La app debe hacerlas visibles. Con trigonometría, área y forma se conectan mediante el ángulo comprendido; conocer lados sin atender a su disposición puede resultar insuficiente.",
+    "puente_escena": "Construir dos lados de un triángulo y variar el ángulo entre ellos, pidiendo anticipar cuándo el área es máxima. Luego comparar cuadriláteros cíclicos y no cíclicos con lados fijados. El estudiante selecciona la fórmula y declara sus condiciones antes de sustituir valores.",
+    "ecuaciones": [
+     {
+      "latex": "K=\\frac12 bc\\sin A",
+      "lectura": "El área K es un medio por b por c por seno de A.",
+      "condiciones": "A es el ángulo interior comprendido entre los lados b y c de un triángulo no degenerado."
+     },
+     {
+      "latex": "K=\\sqrt{s(s-a)(s-b)(s-c)},\\qquad s=\\frac{a+b+c}{2}",
+      "lectura": "El área es la raíz del producto del semiperímetro por sus diferencias con cada lado.",
+      "condiciones": "Triángulo de lados positivos a, b, c que cumplen las desigualdades triangulares estrictas."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "J. J. O’Connor y E. F. Robertson, «Brahmagupta», MacTutor, University of St Andrews",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Brahmagupta/"
+     }
+    ]
+   }
+  },
+  {
+   "id": "trigonometria.conicas",
+   "curso": "Trigonometría",
+   "curso_id": "trigonometria",
+   "numero": 18,
+   "titulo": "Lugar geométrico y cónicas",
+   "grado": 5,
+   "temas_catalogo": [
+    "Lugar geométrico",
+    "Parábola",
+    "Elipse",
+    "Hipérbola",
+    "Recta tangente a una cónica",
+    "Rotación de ejes",
+    "Ecuación general de segundo grado"
+   ],
+   "modulos_actuales": [
+    "conicas"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de comparar.",
+   "teoria": "Lugar geométrico es conjunto de todos los puntos que cumplen una condición, y exige ambas inclusiones al justificarlo. Parábola: distancia a foco igual a directriz; elipse: suma de distancias a focos 2a; hipérbola: diferencia absoluta 2a. Formas canónicas y orientación se derivan de estas condiciones. Tangente toca localmente la curva con dirección límite; puede obtenerse algebraicamente imponiendo intersección doble cuando el caso lo permite. Ecuación Ax²+Bxy+Cy²+Dx+Ey+F=0 se reduce por traslación/rotación; B²−4AC orienta el tipo pero no descarta degeneración ni conjunto vacío. En rotación pasiva de ejes, x=x′cosθ−y′senθ, y=x′senθ+y′cosθ.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Distancia punto–recta",
+    "cuadráticas",
+    "identidades de rotación"
+   ],
+   "desempeno": "Clasifica la curva con sus condiciones, la lleva a forma canónica y verifica una tangente.",
+   "escena_propuesta": "Tensar cuerda o mantener diferencia de distancias; predecir qué puntos pertenecen. Girar ejes sin mover la curva y conservar ambas lecturas coordinadas.",
+   "otra_representacion": "Intersección de cono y plano como segunda representación; álgebra completando cuadrados.",
+   "ejemplo": "x²/25+y²/9=1 tiene focos (±4,0). x²+y²=−1 no tiene puntos reales aunque su parte cuadrática sea circular.",
+   "error_objetivo": "Clasificar solo por discriminante sin revisar realidad/degeneración; hipótesis.",
+   "transferencia": "Resolver un caso nuevo con otro cuadrante, intervalo o representación; declarar dominio y medir por separado cada magnitud solicitada.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-O101",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "10.1 The Ellipse",
+     "url": "https://openstax.org/books/precalculus-2e/pages/10-1-the-ellipse",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "10.1 The Ellipse"
+    },
+    {
+     "id": "GT-O102",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "10.2 The Hyperbola",
+     "url": "https://openstax.org/books/precalculus-2e/pages/10-2-the-hyperbola",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "10.2 The Hyperbola"
+    },
+    {
+     "id": "GT-O103",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "10.3 The Parabola",
+     "url": "https://openstax.org/books/precalculus-2e/pages/10-3-the-parabola",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "10.3 The Parabola"
+    },
+    {
+     "id": "GT-O104",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "10.4 Rotation of Axes",
+     "url": "https://openstax.org/books/precalculus-2e/pages/10-4-rotation-of-axes",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "10.4 Rotation of Axes"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "trigonometria.conicas",
+    "curso": "Trigonometría",
+    "numero": 18,
+    "titulo": "Lugar geométrico y cónicas",
+    "historia": "Las Cónicas de Apolonio organizaron un estudio amplio de curvas obtenidas mediante secciones de un cono, dentro de una tradición griega anterior. Su transmisión conservó materiales en griego y en traducciones árabes, de modo que conocer hoy la obra depende también de lectores, traductores y comentaristas. Las ecuaciones cartesianas escolares llegaron mucho después. La unidad puede conectar tres descripciones sin identificarlas: cortar un sólido, definir una condición sobre distancias y representar una ecuación. El objetivo es reconocer cuándo esas descripciones corresponden a la misma curva y con qué restricciones.",
+    "puente_escena": "Construir una elipse mediante dos focos y una suma de distancias fija, registrando puntos que cumplen la condición. Vincular esa construcción con una sección del cono y con su ecuación. El estudiante cambia parámetros y explica el caso límite mediante valores, etiquetas y descripción textual.",
+    "ecuaciones": [
+     {
+      "latex": "\\frac{x^2}{a^2}+\\frac{y^2}{b^2}=1,\\qquad c^2=a^2-b^2",
+      "lectura": "x al cuadrado entre a al cuadrado más y al cuadrado entre b al cuadrado es uno; c al cuadrado es a al cuadrado menos b al cuadrado.",
+      "condiciones": "Elipse centrada en el origen, eje mayor horizontal, a mayor que b mayor que cero; focos en más y menos c sobre el eje x."
+     },
+     {
+      "latex": "PF_1+PF_2=2a",
+      "lectura": "La suma de distancias desde P a los dos focos es dos a.",
+      "condiciones": "a mayor que c no negativa; para una elipse no circular, c positiva; los focos están separados por 2c."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "J. J. O’Connor y E. F. Robertson, «Apollonius of Perga», MacTutor, University of St Andrews",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Apollonius/"
+     }
+    ]
+   }
+  },
+  {
+   "id": "trigonometria.coordenadas-polares-y-complejos",
+   "curso": "Trigonometría",
+   "curso_id": "trigonometria",
+   "numero": 19,
+   "titulo": "Coordenadas polares y números complejos",
+   "grado": 5,
+   "temas_catalogo": [
+    "Coordenadas polares",
+    "Forma trigonométrica de un complejo",
+    "Teorema de De Moivre",
+    "Forma exponencial"
+   ],
+   "modulos_actuales": [
+    "coordenadas-polares",
+    "trig-polares"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo.",
+   "teoria": "Coordenadas polares: x=r cosθ,y=r senθ; el mismo punto admite (r,θ+2kπ) y (−r,θ+(2k+1)π), con ángulo indeterminado en el polo. Complejo z=x+iy tiene módulo |z|≥0 y argumento definido módulo 2π si z≠0. Forma z=|z|(cosθ+i senθ)=|z|e^{iθ}; multiplicar suma argumentos y multiplica módulos; dividir exige denominador no nulo. De Moivre: zⁿ=|z|ⁿ cis(nθ), entero n; raíces n-ésimas de z≠0 tienen argumentos (θ+2kπ)/n, k=0,…,n−1. El radio polar firmado no debe confundirse con módulo complejo, siempre no negativo.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Plano complejo",
+    "radianes",
+    "potencias y raíces"
+   ],
+   "desempeno": "Convierte representaciones y calcula potencias o todas las raíces sin perder argumentos.",
+   "escena_propuesta": "Girar radar y atravesar el polo después de predecir ubicación. Para complejos fijar módulo y mostrar giros sucesivos; conservar raíces como vértices de un polígono.",
+   "otra_representacion": "Forma binómica y multiplicación algebraica; vectores en plano.",
+   "ejemplo": "(−2,π/6) corresponde a (−√3,−1). (1+i)²=2i; raíces cúbicas de 1: argumentos 0,2π/3,4π/3.",
+   "error_objetivo": "Aceptar módulo negativo o devolver una sola raíz compleja; hipótesis.",
+   "transferencia": "Resolver un caso nuevo con otro cuadrante, intervalo o representación; declarar dominio y medir por separado cada magnitud solicitada.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-O83",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "8.3 Polar Coordinates",
+     "url": "https://openstax.org/books/precalculus-2e/pages/8-3-polar-coordinates",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "8.3 Polar Coordinates"
+    },
+    {
+     "id": "GT-O85",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "8.5 Polar Form of Complex Numbers",
+     "url": "https://openstax.org/books/precalculus-2e/pages/8-5-polar-form-of-complex-numbers",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "8.5 Polar Form of Complex Numbers"
+    },
+    {
+     "id": "GT-K2",
+     "autor": "Kiran S. Kedlaya",
+     "fecha": "2006",
+     "titulo": "Geometry Unbound",
+     "seccion": "2.1–2.4: trigonometría, vectores, complejos y coordenadas baricéntricas",
+     "url": "https://kskedlaya.org/geometryunbound/gu-060118.pdf",
+     "tipo": "Libro abierto del autor; GFDL",
+     "verificacion": "PDF del sitio del autor abierto; índice y pasajes relevantes localizados el 14-11-2026",
+     "localizador": "2.1–2.4: trigonometría, vectores, complejos y coordenadas baricéntricas"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "trigonometria.coordenadas-polares-y-complejos",
+    "curso": "Trigonometría",
+    "numero": 19,
+    "titulo": "Coordenadas polares y números complejos",
+    "historia": "En los trabajos de De Moivre del siglo XVIII aparece una relación entre potencias de números complejos y múltiplos de un ángulo. Esa conexión hizo posible interpretar operaciones algebraicas mediante rotaciones y escalas. No surgió aislada: el desarrollo de los complejos y la trigonometría reunió aportes de varios autores y notaciones que siguieron cambiando. La forma polar escolar permite ver lo que la forma rectangular puede ocultar. Multiplicar combina módulos y argumentos; extraer raíces exige recuperar varias direcciones, y recordar que distintos argumentos pueden representar el mismo número.",
+    "puente_escena": "Representar dos complejos como radios dirigidos y pedir predecir su producto antes de calcularlo. Comparar módulos multiplicados y ángulos sumados; después repartir las raíces sobre una circunferencia. La tabla de coordenadas y argumentos acompaña al gesto y distingue el origen, cuyo argumento no es único.",
+    "ecuaciones": [
+     {
+      "latex": "z=r(\\cos\\theta+i\\sin\\theta)",
+      "lectura": "El complejo z es su módulo por coseno de theta más i por seno de theta.",
+      "condiciones": "r es el módulo, no negativo; si r es positivo, theta se determina módulo dos pi; para z cero el argumento no está definido de manera única."
+     },
+     {
+      "latex": "z^n=r^n\\bigl(\\cos(n\\theta)+i\\sin(n\\theta)\\bigr)",
+      "lectura": "La potencia n tiene módulo r elevado a n y argumento n veces theta.",
+      "condiciones": "n entero; si n es negativo, z debe ser distinto de cero; para n cero se excluye z cero."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "J. J. O’Connor y E. F. Robertson, «Abraham de Moivre», MacTutor, University of St Andrews",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/De_Moivre/"
+     }
+    ]
+   }
+  }
+ ]
+}

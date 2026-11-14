@@ -1,0 +1,1694 @@
+{
+ "curso": "geometria",
+ "fecha": "2026-11-14",
+ "tipo": "Expediente editorial; no es el formato de ejecución de Teoria.vista",
+ "unidades": [
+  {
+   "id": "geometria.segmentos-y-angulos",
+   "curso": "Geometría",
+   "curso_id": "geometria",
+   "numero": 1,
+   "titulo": "Segmentos y ángulos",
+   "grado": 3,
+   "temas_catalogo": [
+    "Punto, recta y plano",
+    "Segmentos y su medida",
+    "Clases de ángulos",
+    "Bisectriz",
+    "Ángulos complementarios y suplementarios",
+    "Rectas paralelas y una secante"
+   ],
+   "modulos_actuales": [
+    "segmentos-angulos"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de recordar.",
+   "teoria": "Punto, recta y plano son objetos del modelo euclidiano; el dibujo tiene grosor, los objetos ideales no. Una longitud es no negativa y AB+BC=AC exige B entre A y C. Un ángulo mide abertura: la longitud visible de sus rayos no lo cambia. Bisectriz divide el ángulo en dos iguales; complementarios suman 90° y suplementarios 180°. En paralelas cortadas por una secante, correspondientes y alternos apropiados son iguales; los interiores del mismo lado suman 180°. La igualdad de ángulos también permite justificar paralelismo; no se infiere porque las líneas parezcan paralelas.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Sumar y restar medidas",
+    "reconocer orden sobre una recta",
+    "resolver una ecuación lineal"
+   ],
+   "desempeno": "Calcula un ángulo nuevo y cita la relación y la condición de paralelismo.",
+   "escena_propuesta": "Girar la secante tras predecir qué pares seguirán iguales; fijar tres registros. En una segunda figura romper el paralelismo y comparar con un fantasma de la predicción. Cerrar con la cadena de igualdades sobre los ángulos.",
+   "otra_representacion": "Recortar o superponer ángulos; representar posiciones sobre una recta numérica.",
+   "ejemplo": "Si un ángulo es 68°, su suplemento mide 112°. Un ángulo correspondiente solo mide 68° si las dos rectas son paralelas.",
+   "error_objetivo": "Confundir ángulo grande con rayos largos; hipótesis de distractor que requiere datos locales.",
+   "transferencia": "Resolver un caso nuevo con figura girada, sin colores de ayuda, justificando la propiedad; medir por separado cada longitud, ángulo, área o volumen solicitado.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-E1",
+     "autor": "Euclides; edición digital comentada de David E. Joyce, Clark University",
+     "fecha": "obra antigua; edición web s. f.",
+     "titulo": "Elements, libro I",
+     "seccion": "I",
+     "url": "https://math.clarku.edu/~djoyce/java/elements/bookI/bookI.html",
+     "tipo": "Texto matemático original con comentario universitario",
+     "verificacion": "Página oficial abierta el 14-11-2026",
+     "localizador": "I"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "geometria.segmentos-y-angulos",
+    "curso": "Geometría",
+    "numero": 1,
+    "titulo": "Segmentos y ángulos",
+    "historia": "Los Elementos transmiten una manera de organizar la geometría: distinguir los objetos ideales de sus dibujos y explicitar qué relaciones se aceptan como punto de partida. En la tradición textual conservada, el punto no tiene extensión; una marca de tinta solo lo representa. Las ediciones y comentarios también muestran que el texto cambió durante su transmisión. El aprendizaje de segmentos y ángulos hereda esta separación entre representar, medir y justificar. Una regla ayuda a explorar una figura, pero su precisión física no establece por sí sola una igualdad universal.",
+    "puente_escena": "Comenzar con dos marcas que parecen coincidir; ampliar la vista permite discutir representación y objeto. Después mover un punto entre dos extremos y conservar las tres medidas visibles. El estudiante explica qué igualdad depende de estar entre ellos, con alternativa mediante controles numéricos.",
+    "ecuaciones": [
+     {
+      "latex": "AB+BC=AC",
+      "lectura": "La longitud AB más la longitud BC es igual a la longitud AC.",
+      "condiciones": "A, B y C son colineales y B está entre A y C; longitudes no dirigidas."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Euclides, Elementos I, definición 1 y comentario textual; David E. Joyce, Clark University",
+      "url": "https://math.clarku.edu/~djoyce/java/elements/bookI/defI1.html"
+     }
+    ]
+   }
+  },
+  {
+   "id": "geometria.triangulos",
+   "curso": "Geometría",
+   "curso_id": "geometria",
+   "numero": 2,
+   "titulo": "Triángulos y líneas notables",
+   "grado": 3,
+   "temas_catalogo": [
+    "Clasificación",
+    "Suma de ángulos internos y ángulo externo",
+    "Desigualdad triangular",
+    "Líneas notables",
+    "Ángulos formados por bisectrices"
+   ],
+   "modulos_actuales": [
+    "triangulo-estira",
+    "geo-triangulos-notables"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de comparar.",
+   "teoria": "Un triángulo no degenerado tiene lados positivos que cumplen a+b>c y sus análogas; la igualdad produce alineación. En el plano euclidiano A+B+C=180° y un exterior es la suma de los dos interiores no adyacentes. Clasificar por lados y por ángulos son dos ejes distintos. Altura es perpendicular a la recta del lado opuesto; mediana llega a su punto medio; bisectriz divide el ángulo; mediatriz es perpendicular en el punto medio del lado. En un obtusángulo algunas alturas quedan fuera. Para el incentro I, ∠BIC=90°+A/2; el resultado exige bisectrices interiores.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Ángulos suplementarios",
+    "punto medio",
+    "perpendicularidad"
+   ],
+   "desempeno": "Construye y distingue las cuatro líneas notables en un triángulo girado u obtusángulo.",
+   "escena_propuesta": "Estirar un vértice con base fija: predecir si la altura sigue dentro, fijar casos agudo, recto y obtuso. Pegar el ángulo recto al pie de la altura. Comparar mediana y bisectriz antes de nombrar la regla.",
+   "otra_representacion": "Descomponer la suma angular mediante una paralela; usar coordenadas para comprobar perpendicularidad.",
+   "ejemplo": "Los lados 2,3,5 no forman triángulo no degenerado. Si A=50°, ∠BIC=115°.",
+   "error_objetivo": "Tratar altura, mediana y bisectriz como sinónimos; hipótesis hasta contrastar informe del proyecto.",
+   "transferencia": "Resolver un caso nuevo con figura girada, sin colores de ayuda, justificando la propiedad; medir por separado cada longitud, ángulo, área o volumen solicitado.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-E1",
+     "autor": "Euclides; edición digital comentada de David E. Joyce, Clark University",
+     "fecha": "obra antigua; edición web s. f.",
+     "titulo": "Elements, libro I",
+     "seccion": "I",
+     "url": "https://math.clarku.edu/~djoyce/java/elements/bookI/bookI.html",
+     "tipo": "Texto matemático original con comentario universitario",
+     "verificacion": "Página oficial abierta el 14-11-2026",
+     "localizador": "I"
+    },
+    {
+     "id": "GT-K7",
+     "autor": "Kiran S. Kedlaya",
+     "fecha": "2006",
+     "titulo": "Geometry Unbound",
+     "seccion": "7.1–7.3 y 7.9: centros, Euler, áreas y Stewart",
+     "url": "https://kskedlaya.org/geometryunbound/gu-060118.pdf",
+     "tipo": "Libro abierto del autor; GFDL",
+     "verificacion": "PDF del sitio del autor abierto; índice y pasajes relevantes localizados el 14-11-2026",
+     "localizador": "7.1–7.3 y 7.9: centros, Euler, áreas y Stewart"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "geometria.triangulos",
+    "curso": "Geometría",
+    "numero": 2,
+    "titulo": "Triángulos y líneas notables",
+    "historia": "En la proposición I.32 de los Elementos, la suma de los ángulos de un triángulo se obtiene trazando una paralela y comparando ángulos, no midiendo muchos dibujos. El resultado incluye el ángulo exterior y depende de relaciones anteriores sobre rectas paralelas. Esta organización convierte una figura auxiliar en parte de una demostración. El comentario de la edición de Joyce recuerda que Proclo extendió la discusión a polígonos convexos. La historia de esta unidad permite preguntar qué construcción falta para transformar una regularidad observada en una conclusión necesaria.",
+    "puente_escena": "Dejar que el estudiante prediga la suma y cambie un vértice. Luego permitir construir la paralela por ese vértice y emparejar ángulos mediante etiquetas y patrones. La escena separa la comprobación numérica del argumento que vale para cualquier triángulo no degenerado.",
+    "ecuaciones": [
+     {
+      "latex": "\\alpha+\\beta+\\gamma=180^\\circ",
+      "lectura": "Alfa más beta más gamma es igual a ciento ochenta grados.",
+      "condiciones": "Ángulos interiores de un triángulo no degenerado en el plano euclídeo."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Euclides, Elementos I.32; edición y comentarios de David E. Joyce, Clark University",
+      "url": "https://math.clarku.edu/~djoyce/java/elements/bookI/propI32.html"
+     }
+    ]
+   }
+  },
+  {
+   "id": "geometria.congruencia",
+   "curso": "Geometría",
+   "curso_id": "geometria",
+   "numero": 3,
+   "titulo": "Congruencia de triángulos",
+   "grado": 3,
+   "temas_catalogo": [
+    "Criterios LAL, ALA y LLL",
+    "Teorema de la mediatriz y de la bisectriz",
+    "Teorema de la base media",
+    "Mediana relativa a la hipotenusa",
+    "Triángulos rectángulos notables"
+   ],
+   "modulos_actuales": [
+    "congruencia"
+   ],
+   "ruta_propuesta": "comparar, con apoyo de descubrir.",
+   "teoria": "Congruencia significa correspondencia que conserva todas las distancias y ángulos. LLL, LAL con ángulo comprendido y ALA determinan un triángulo hasta isometría; AAA solo asegura semejanza. Dos lados y un ángulo no comprendido no son criterio general. La mediatriz es el lugar de puntos equidistantes de los extremos; la bisectriz interior, el de puntos interiores al ángulo equidistantes de sus lados. La base media une puntos medios, es paralela y mide la mitad del tercer lado. En triángulo rectángulo la mediana a la hipotenusa mide la mitad de esta. En 30°–60°–90° las longitudes son k,k√3,2k; en 45°–45°–90°, k,k,k√2.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Líneas notables",
+    "correspondencia de vértices",
+    "suma angular"
+   ],
+   "desempeno": "Decide si los datos determinan congruencia y fabrica un caso que refute LLA general.",
+   "escena_propuesta": "Armar triángulos con palitos y un ángulo; predecir unicidad. Superponer por traslación/giro/reflexión, sin deformar; guardar el doble caso LLA. La prueba de LAL se distingue del ajuste numérico.",
+   "otra_representacion": "Construcción con compás; tabla de correspondencia lado–ángulo.",
+   "ejemplo": "Dos triángulos con lados 4,5,6 son congruentes. Dos equiláteros de lados 2 y 7 cumplen AAA, pero no son congruentes.",
+   "error_objetivo": "Confundir semejanza con congruencia; hipótesis de distractor.",
+   "transferencia": "Resolver un caso nuevo con figura girada, sin colores de ayuda, justificando la propiedad; medir por separado cada longitud, ángulo, área o volumen solicitado.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-E1",
+     "autor": "Euclides; edición digital comentada de David E. Joyce, Clark University",
+     "fecha": "obra antigua; edición web s. f.",
+     "titulo": "Elements, libro I",
+     "seccion": "I",
+     "url": "https://math.clarku.edu/~djoyce/java/elements/bookI/bookI.html",
+     "tipo": "Texto matemático original con comentario universitario",
+     "verificacion": "Página oficial abierta el 14-11-2026",
+     "localizador": "I"
+    },
+    {
+     "id": "GT-E6",
+     "autor": "Euclides; edición digital comentada de David E. Joyce, Clark University",
+     "fecha": "obra antigua; edición web s. f.",
+     "titulo": "Elements, libro VI",
+     "seccion": "VI",
+     "url": "https://math.clarku.edu/~djoyce/java/elements/bookVI/bookVI.html",
+     "tipo": "Texto matemático original con comentario universitario",
+     "verificacion": "Página oficial abierta el 14-11-2026",
+     "localizador": "VI"
+    },
+    {
+     "id": "GT-K3",
+     "autor": "Kiran S. Kedlaya",
+     "fecha": "2006",
+     "titulo": "Geometry Unbound",
+     "seccion": "3.1–3.5: isometrías, semejanzas y transformaciones",
+     "url": "https://kskedlaya.org/geometryunbound/gu-060118.pdf",
+     "tipo": "Libro abierto del autor; GFDL",
+     "verificacion": "PDF del sitio del autor abierto; índice y pasajes relevantes localizados el 14-11-2026",
+     "localizador": "3.1–3.5: isometrías, semejanzas y transformaciones"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "geometria.congruencia",
+    "curso": "Geometría",
+    "numero": 3,
+    "titulo": "Congruencia de triángulos",
+    "historia": "La proposición I.4 de los Elementos presenta el antecedente del criterio lado, ángulo, lado mediante superposición. Si coinciden dos lados y el ángulo comprendido, también coinciden las partes restantes. El comentario moderno señala una dificultad histórica: el texto no había formulado expresamente axiomas para ese desplazamiento. Otras fundamentaciones toman una condición de congruencia como axioma. La cuestión no es únicamente que dos piezas encajen; también importa declarar por qué el movimiento preserva lo necesario y cuáles datos garantizan una única forma, incluso cuando aparece una imagen reflejada.",
+    "puente_escena": "Ofrecer dos triángulos con lados fijados y variar primero el ángulo comprendido. El estudiante decide qué dato bloquea la forma; después intenta un caso con ángulo no comprendido. La superposición muestra la correspondencia y un argumento escrito identifica exactamente el criterio utilizado.",
+    "ecuaciones": [
+     {
+      "latex": "AB=DE,\\ AC=DF,\\ \\angle BAC=\\angle EDF\\ \\Longrightarrow\\ \\triangle ABC\\cong\\triangle DEF",
+      "lectura": "Dos lados correspondientes iguales y el ángulo comprendido igual implican triángulos congruentes.",
+      "condiciones": "Triángulos no degenerados; correspondencia A-D, B-E, C-F; el ángulo es el comprendido entre los dos lados."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Euclides, Elementos I.4; edición y comentarios de David E. Joyce, Clark University",
+      "url": "https://math.clarku.edu/~djoyce/java/elements/bookI/propI4.html"
+     }
+    ]
+   }
+  },
+  {
+   "id": "geometria.poligonos-y-cuadrilateros",
+   "curso": "Geometría",
+   "curso_id": "geometria",
+   "numero": 4,
+   "titulo": "Polígonos y cuadriláteros",
+   "grado": 3,
+   "temas_catalogo": [
+    "Suma de ángulos internos y externos",
+    "Número de diagonales",
+    "Paralelogramos",
+    "Trapecios",
+    "Trapezoides"
+   ],
+   "modulos_actuales": [
+    "poligonos",
+    "geo-poligonos"
+   ],
+   "ruta_propuesta": "comparar, con apoyo de descubrir.",
+   "teoria": "Un polígono simple de n lados se triangula en n−2 triángulos: suma interior (n−2)180°. Para convexos, un exterior por vértice con giro coherente suma 360°; diagonales n(n−3)/2. Paralelogramo tiene dos pares de lados paralelos; sus diagonales se bisecan. Rectángulo añade cuatro ángulos rectos; rombo añade cuatro lados iguales; cuadrado cumple ambas. No se enseñan clases disjuntas falsas. Trapecio y trapezoide requieren declarar la convención del sílabo peruano (exactamente un par o ningún par de lados paralelos). Las fórmulas no se trasladan sin ajuste a polígonos cruzados.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Suma angular de triángulos",
+    "paralelismo",
+    "contar pares sin repetir"
+   ],
+   "desempeno": "Clasifica una figura por propiedades y calcula ángulos o diagonales explicando el conteo.",
+   "escena_propuesta": "Estirar vértices manteniendo o liberando restricciones; predecir qué nombre sigue válido. Las marcas de paralelismo e igualdad sobreviven al giro. Trazar diagonales desde un vértice y congelar la triangulación.",
+   "otra_representacion": "Árbol inclusivo de clases; conteo combinatorio C(n,2)−n.",
+   "ejemplo": "Un hexágono tiene 9 diagonales y suma interior 720°. Todo cuadrado es rectángulo y rombo.",
+   "error_objetivo": "Excluir cuadrados de los rectángulos por apariencia; hipótesis.",
+   "transferencia": "Resolver un caso nuevo con figura girada, sin colores de ayuda, justificando la propiedad; medir por separado cada longitud, ángulo, área o volumen solicitado.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-E1",
+     "autor": "Euclides; edición digital comentada de David E. Joyce, Clark University",
+     "fecha": "obra antigua; edición web s. f.",
+     "titulo": "Elements, libro I",
+     "seccion": "I",
+     "url": "https://math.clarku.edu/~djoyce/java/elements/bookI/bookI.html",
+     "tipo": "Texto matemático original con comentario universitario",
+     "verificacion": "Página oficial abierta el 14-11-2026",
+     "localizador": "I"
+    },
+    {
+     "id": "GT-K1",
+     "autor": "Kiran S. Kedlaya",
+     "fecha": "2006",
+     "titulo": "Geometry Unbound",
+     "seccion": "1.1–1.7: coordenadas, polígonos, áreas, arcos y ángulos",
+     "url": "https://kskedlaya.org/geometryunbound/gu-060118.pdf",
+     "tipo": "Libro abierto del autor; GFDL",
+     "verificacion": "PDF del sitio del autor abierto; índice y pasajes relevantes localizados el 14-11-2026",
+     "localizador": "1.1–1.7: coordenadas, polígonos, áreas, arcos y ángulos"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "geometria.poligonos-y-cuadrilateros",
+    "curso": "Geometría",
+    "numero": 4,
+    "titulo": "Polígonos y cuadriláteros",
+    "historia": "El estudio de cuadriláteros en los Elementos enlaza figuras en lugar de tratarlas como listas de fórmulas. En I.34 una diagonal transforma el paralelogramo en dos triángulos: paralelismo y congruencia justifican la igualdad de lados opuestos y la división del área. La misma idea de descomponer permite estudiar polígonos más amplios. Así, una línea auxiliar reduce una pregunta nueva a resultados ya establecidos. Las clasificaciones escolares actuales no coinciden palabra por palabra con la terminología antigua, por lo que conviene declarar las definiciones usadas antes de comparar propiedades.",
+    "puente_escena": "Mostrar un paralelogramo ajustable y pedir elegir una diagonal que permita justificar dos propiedades. Después pasar a un pentágono convexo y construir una triangulación desde un vértice. Cada triángulo queda identificado también por letras; cambiar la figura conserva el argumento, no solo el dibujo.",
+    "ecuaciones": [
+     {
+      "latex": "S_n=(n-2)\\,180^\\circ",
+      "lectura": "La suma de ángulos interiores es n menos dos, multiplicado por ciento ochenta grados.",
+      "condiciones": "Polígono simple de n lados, n entero al menos 3; la triangulación desde un único vértice se ilustra primero en un polígono convexo."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Euclides, Elementos I.34; edición y comentarios de David E. Joyce, Clark University",
+      "url": "https://math.clarku.edu/~djoyce/java/elements/bookI/propI34.html"
+     }
+    ]
+   }
+  },
+  {
+   "id": "geometria.circunferencia",
+   "curso": "Geometría",
+   "curso_id": "geometria",
+   "numero": 5,
+   "titulo": "Circunferencia y ángulos en ella",
+   "grado": 3,
+   "temas_catalogo": [
+    "Elementos y teoremas de tangencia",
+    "Posiciones relativas de dos circunferencias",
+    "Teoremas de Poncelet y Pitot",
+    "Ángulos central, inscrito, semiinscrito, interior y exterior",
+    "Cuadrilátero inscrito e inscriptible"
+   ],
+   "modulos_actuales": [
+    "angulo-inscrito",
+    "geo-circunferencia-metrica"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de recordar.",
+   "teoria": "La tangente es perpendicular al radio de contacto; desde un punto exterior las dos tangentes tienen igual longitud. Dos círculos se comparan mediante distancia d entre centros y r₁+r₂, |r₁−r₂|. Un ángulo inscrito mide la mitad del arco interceptado; el central mide ese arco; tangente–cuerda, la mitad; dos cuerdas interiores, la semisuma de arcos; dos secantes exteriores, la semidiferencia apropiada. Cuadrilátero convexo cíclico: opuestos suplementarios. Pitot: para un cuadrilátero convexo no degenerado, admitir una circunferencia inscrita equivale a a+c=b+d. La relación llamada Poncelet en academias para triángulo rectángulo, a+b=c+2r, se deriva de tangencias; debe identificarse por su enunciado, no solo por el apellido.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Ángulos y arcos",
+    "triángulo isósceles",
+    "comparación de distancias"
+   ],
+   "desempeno": "Calcula un ángulo y verifica si la configuración cumple las hipótesis del teorema.",
+   "escena_propuesta": "Mover el vértice por el mismo arco después de predecir; dejar dos posiciones registradas. Cambiar de arco para ver el suplementario. En tangencias, marcar radios perpendiculares y segmentos iguales.",
+   "otra_representacion": "Demostración dividiendo con radios; tabla de casos según posición del vértice.",
+   "ejemplo": "Un arco interceptado de 110° da un inscrito de 55°. En triángulo 3–4–5, r=(3+4−5)/2=1.",
+   "error_objetivo": "Aplicar mitad del arco a cualquier ángulo o Pitot a cualquier cuadrilátero; hipótesis.",
+   "transferencia": "Resolver un caso nuevo con figura girada, sin colores de ayuda, justificando la propiedad; medir por separado cada longitud, ángulo, área o volumen solicitado.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-E3",
+     "autor": "Euclides; edición digital comentada de David E. Joyce, Clark University",
+     "fecha": "obra antigua; edición web s. f.",
+     "titulo": "Elements, libro III",
+     "seccion": "III",
+     "url": "https://math.clarku.edu/~djoyce/java/elements/bookIII/bookIII.html",
+     "tipo": "Texto matemático original con comentario universitario",
+     "verificacion": "Página oficial abierta el 14-11-2026",
+     "localizador": "III"
+    },
+    {
+     "id": "GT-K8",
+     "autor": "Kiran S. Kedlaya",
+     "fecha": "2006",
+     "titulo": "Geometry Unbound",
+     "seccion": "8.1–8.3: cuadriláteros cíclicos y circunscritos",
+     "url": "https://kskedlaya.org/geometryunbound/gu-060118.pdf",
+     "tipo": "Libro abierto del autor; GFDL",
+     "verificacion": "PDF del sitio del autor abierto; índice y pasajes relevantes localizados el 14-11-2026",
+     "localizador": "8.1–8.3: cuadriláteros cíclicos y circunscritos"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "geometria.circunferencia",
+    "curso": "Geometría",
+    "numero": 5,
+    "titulo": "Circunferencia y ángulos en ella",
+    "historia": "El libro III de los Elementos reúne relaciones entre cuerdas, tangentes y ángulos de una circunferencia. Su proposición 20 compara dos observadores del mismo arco: uno situado en el centro y otro en la circunferencia. La demostración usa radios iguales y relaciones angulares de triángulos, con distintos casos según la posición del centro. Es una muestra temprana de cómo un dibujo aparentemente sencillo necesita controlar configuraciones. La formulación moderna conserva la condición decisiva: los dos ángulos deben apoyarse en el mismo arco, y el vértice inscrito debe quedar fuera de él.",
+    "puente_escena": "Fijar los extremos del arco y permitir desplazar el vértice inscrito por el arco complementario. Tras observar la invariancia, pedir unirlo con el centro y justificar los casos. Cuando cruza un extremo, la escena marca la degeneración y permite comparar el arco que realmente intercepta.",
+    "ecuaciones": [
+     {
+      "latex": "\\angle AOB=2\\angle APB",
+      "lectura": "El ángulo central AOB es el doble del ángulo inscrito APB.",
+      "condiciones": "Ambos interceptan el mismo arco AB; P está en el arco complementario. El ángulo central se toma dirigido sobre el arco elegido, pudiendo ser reflejo."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Euclides, Elementos III, proposición 20; David E. Joyce, Clark University",
+      "url": "https://mathcs.clarku.edu/~djoyce/elements/bookIII/bookIII.html"
+     }
+    ]
+   }
+  },
+  {
+   "id": "geometria.proporcionalidad-y-semejanza",
+   "curso": "Geometría",
+   "curso_id": "geometria",
+   "numero": 6,
+   "titulo": "Proporcionalidad y semejanza",
+   "grado": 4,
+   "temas_catalogo": [
+    "Teorema de Thales",
+    "Teoremas de la bisectriz y del incentro",
+    "Menelao y Ceva",
+    "Criterios de semejanza de triángulos"
+   ],
+   "modulos_actuales": [
+    "ampliadora",
+    "geo-proporcionalidad"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo.",
+   "teoria": "Thales relaciona segmentos determinados por paralelas; semejanza conserva ángulos y razones correspondientes, con criterios AA, LAL proporcional y LLL proporcional. A escala k>0, longitudes cambian por k, áreas por k² y volúmenes por k³. La bisectriz interior AD cumple BD/DC=AB/AC. El incentro combina equidistancia a lados y concurrencia de bisectrices; las razones adicionales se deducen, no se memorizan sin figura. Ceva caracteriza concurrencia por producto de tres razones igual a 1 para cevians interiores; Menelao caracteriza colinealidad y requiere ubicar puntos externos o declarar razones dirigidas. No mezclar versiones con signos distintos.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Fracciones y proporciones",
+    "congruencia",
+    "áreas básicas"
+   ],
+   "desempeno": "Elige correspondencias y determina una medida; distingue prueba de semejanza de parecido visual.",
+   "escena_propuesta": "Ampliar la figura tras predecir el área; conservar original y ampliada. Contar cuadrados antes de escribir k². Para Ceva y Menelao, mover intersecciones y marcar cuáles están en prolongaciones.",
+   "otra_representacion": "Razones en tabla; demostración por cocientes de áreas.",
+   "ejemplo": "Si k=3, perímetro ×3 y área ×9. Una bisectriz con AB=6, AC=9 y BC=10 divide BC en 4 y 6.",
+   "error_objetivo": "Suponer que áreas se escalan por k; hipótesis.",
+   "transferencia": "Resolver un caso nuevo con figura girada, sin colores de ayuda, justificando la propiedad; medir por separado cada longitud, ángulo, área o volumen solicitado.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-E6",
+     "autor": "Euclides; edición digital comentada de David E. Joyce, Clark University",
+     "fecha": "obra antigua; edición web s. f.",
+     "titulo": "Elements, libro VI",
+     "seccion": "VI",
+     "url": "https://math.clarku.edu/~djoyce/java/elements/bookVI/bookVI.html",
+     "tipo": "Texto matemático original con comentario universitario",
+     "verificacion": "Página oficial abierta el 14-11-2026",
+     "localizador": "VI"
+    },
+    {
+     "id": "GT-K3",
+     "autor": "Kiran S. Kedlaya",
+     "fecha": "2006",
+     "titulo": "Geometry Unbound",
+     "seccion": "3.1–3.5: isometrías, semejanzas y transformaciones",
+     "url": "https://kskedlaya.org/geometryunbound/gu-060118.pdf",
+     "tipo": "Libro abierto del autor; GFDL",
+     "verificacion": "PDF del sitio del autor abierto; índice y pasajes relevantes localizados el 14-11-2026",
+     "localizador": "3.1–3.5: isometrías, semejanzas y transformaciones"
+    },
+    {
+     "id": "GT-K5",
+     "autor": "Kiran S. Kedlaya",
+     "fecha": "2006",
+     "titulo": "Geometry Unbound",
+     "seccion": "5.1–5.2: Ceva y Menelao",
+     "url": "https://kskedlaya.org/geometryunbound/gu-060118.pdf",
+     "tipo": "Libro abierto del autor; GFDL",
+     "verificacion": "PDF del sitio del autor abierto; índice y pasajes relevantes localizados el 14-11-2026",
+     "localizador": "5.1–5.2: Ceva y Menelao"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "geometria.proporcionalidad-y-semejanza",
+    "curso": "Geometría",
+    "numero": 6,
+    "titulo": "Proporcionalidad y semejanza",
+    "historia": "El libro VI de los Elementos conecta forma y proporción. En su proposición 2, una paralela a un lado del triángulo corta proporcionalmente los otros dos; el texto demuestra también el recíproco. La prueba pasa por áreas de triángulos con iguales alturas, mostrando que semejanza y medición no son asuntos separados. El nombre escolar «teorema de Thales» no basta para reconstruir quién descubrió cada versión. Lo que la fuente permite estudiar directamente es un argumento conservado, sus hipótesis y la diferencia entre afirmar una implicación y demostrar ambas direcciones.",
+    "puente_escena": "Mover una recta de corte manteniéndola paralela y registrar cocientes correspondientes. Después liberar su inclinación para construir un contraejemplo. El estudiante explica por qué se pierde la proporcionalidad y reconstruye la prueba comparando áreas; el control numérico permite repetirlo sin arrastrar.",
+    "ecuaciones": [
+     {
+      "latex": "\\frac{AD}{DB}=\\frac{AE}{EC}",
+      "lectura": "AD dividido entre DB es igual a AE dividido entre EC.",
+      "condiciones": "D y E son puntos interiores de AB y AC, respectivamente, en un triángulo ABC no degenerado; DE es paralela a BC."
+     },
+     {
+      "latex": "A'=k^2A",
+      "lectura": "El área ampliada es k al cuadrado por el área original.",
+      "condiciones": "Figuras planas semejantes con razón de longitudes k positiva; no basta ampliar una sola dirección."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Euclides, Elementos VI.2; edición y comentarios de David E. Joyce, Clark University",
+      "url": "https://math.clarku.edu/~djoyce/java/elements/bookVI/propVI2.html"
+     }
+    ],
+    "diagrama_svg": {
+     "titulo": "La misma escala lineal produce otra escala de área",
+     "viewBox": "0 0 760 340",
+     "descripcion_accesible": "Un rectángulo de tres por dos unidades y otro de seis por cuatro. Cada longitud se duplica; el perímetro pasa de diez a veinte y el área de seis a veinticuatro. El segundo contiene cuatro copias del primero.",
+     "coordenadas": {
+      "unidad_px": 40,
+      "original": {
+       "x": 80,
+       "y": 140,
+       "width": 120,
+       "height": 80
+      },
+      "ampliado": {
+       "x": 400,
+       "y": 60,
+       "width": 240,
+       "height": 160
+      }
+     },
+     "trazos": [
+      {
+       "tipo": "rect",
+       "x": 80,
+       "y": 140,
+       "width": 120,
+       "height": 80,
+       "clase": "original"
+      },
+      {
+       "tipo": "rect",
+       "x": 400,
+       "y": 60,
+       "width": 240,
+       "height": 160,
+       "clase": "ampliado"
+      },
+      {
+       "tipo": "line",
+       "x1": 520,
+       "y1": 60,
+       "x2": 520,
+       "y2": 220,
+       "clase": "division"
+      },
+      {
+       "tipo": "line",
+       "x1": 400,
+       "y1": 140,
+       "x2": 640,
+       "y2": 140,
+       "clase": "division"
+      }
+     ],
+     "etiquetas": [
+      {
+       "x": 140,
+       "y": 244,
+       "texto": "3 u"
+      },
+      {
+       "x": 50,
+       "y": 184,
+       "texto": "2 u"
+      },
+      {
+       "x": 520,
+       "y": 244,
+       "texto": "6 u"
+      },
+      {
+       "x": 370,
+       "y": 144,
+       "texto": "4 u"
+      },
+      {
+       "x": 140,
+       "y": 280,
+       "texto": "P = 10 u · A = 6 u²"
+      },
+      {
+       "x": 520,
+       "y": 280,
+       "texto": "P′ = 20 u · A′ = 24 u²"
+      },
+      {
+       "x": 310,
+       "y": 110,
+       "texto": "k = 2"
+      }
+     ],
+     "comprobacion": "A′/A = 24/6 = 4 = k²; P′/P = 20/10 = 2 = k. Los cuatro subrectángulos del ampliado tienen ancho120px y alto80px.",
+     "accesibilidad": "Incluir título y descripción, trazos negros además de color, patrones de relleno diferentes, etiquetas legibles; permitir comparar valores en tabla. Esta partición justifica el caso k=2; la prueba general usa k·base por k·altura."
+    }
+   }
+  },
+  {
+   "id": "geometria.puntos-notables",
+   "curso": "Geometría",
+   "curso_id": "geometria",
+   "numero": 7,
+   "titulo": "Puntos notables del triángulo",
+   "grado": 4,
+   "temas_catalogo": [
+    "Baricentro, incentro, circuncentro, ortocentro y excentro",
+    "Propiedades de los puntos notables",
+    "Recta y circunferencia de Euler"
+   ],
+   "modulos_actuales": [
+    "triangulo-estira",
+    "geo-triangulos-notables"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de comparar.",
+   "teoria": "El baricentro G es intersección de medianas y las divide 2:1 desde el vértice. Incentro I equidista de lados; circuncentro O equidista de vértices; ortocentro H reúne alturas. Excentros combinan una bisectriz interior y dos exteriores. I y G están dentro; O y H pueden estar fuera y en un rectángulo están, respectivamente, en punto medio de hipotenusa y vértice recto. En triángulos no equiláteros, O,G,H son colineales y OG:GH=1:2; en el equilátero coinciden. La circunferencia de nueve puntos pasa por puntos medios de lados, pies de alturas y puntos medios entre H y vértices; su centro es punto medio de OH y radio R/2.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Líneas notables",
+    "mediatrices",
+    "semejanza"
+   ],
+   "desempeno": "Ubica cada centro y justifica qué distancias o razones lo definen.",
+   "escena_propuesta": "Estirar un vértice desde agudo a obtuso; predecir qué centros salen. Mostrar un centro por tarea, con distancias iguales pegadas; superponer al final y construir el círculo de nueve puntos.",
+   "otra_representacion": "Coordenadas de G; demostrar Euler mediante homotecia de razón −1/2.",
+   "ejemplo": "En A(0,0), B(6,0), C(0,3): G=(2,1), H=A y O=(3,1.5).",
+   "error_objetivo": "Suponer que todos los centros coinciden o están dentro; hipótesis.",
+   "transferencia": "Resolver un caso nuevo con figura girada, sin colores de ayuda, justificando la propiedad; medir por separado cada longitud, ángulo, área o volumen solicitado.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-K7",
+     "autor": "Kiran S. Kedlaya",
+     "fecha": "2006",
+     "titulo": "Geometry Unbound",
+     "seccion": "7.1–7.3 y 7.9: centros, Euler, áreas y Stewart",
+     "url": "https://kskedlaya.org/geometryunbound/gu-060118.pdf",
+     "tipo": "Libro abierto del autor; GFDL",
+     "verificacion": "PDF del sitio del autor abierto; índice y pasajes relevantes localizados el 14-11-2026",
+     "localizador": "7.1–7.3 y 7.9: centros, Euler, áreas y Stewart"
+    },
+    {
+     "id": "GT-E4",
+     "autor": "Euclides; edición digital comentada de David E. Joyce, Clark University",
+     "fecha": "obra antigua; edición web s. f.",
+     "titulo": "Elements, libro IV",
+     "seccion": "IV",
+     "url": "https://math.clarku.edu/~djoyce/java/elements/bookIV/bookIV.html",
+     "tipo": "Texto matemático original con comentario universitario",
+     "verificacion": "Página oficial abierta el 14-11-2026",
+     "localizador": "IV"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "geometria.puntos-notables",
+    "curso": "Geometría",
+    "numero": 7,
+    "titulo": "Puntos notables del triángulo",
+    "historia": "Los puntos notables del triángulo no llegaron a la enseñanza como un descubrimiento único. Un episodio concreto es la circunferencia de nueve puntos: Brianchon y Poncelet describieron sus propiedades en 1821; Feuerbach publicó en 1822 la tangencia con la circunferencia inscrita y las exinscritas. Los nombres habituales de los teoremas pueden ocultar esa circulación entre autores. Estudiar este episodio ayuda a separar varias afirmaciones: qué puntos pertenecen a una circunferencia, dónde está su centro y con cuáles circunferencias es tangente. Cada afirmación necesita su propia justificación.",
+    "puente_escena": "Construir primero medianas, mediatrices y alturas con etiquetas distintas; permitir que el triángulo pase de agudo a obtuso. Superponer después la circunferencia de nueve puntos y pedir identificar sus puntos antes de comprobar la tangencia. La coincidencia visual inicia una conjetura que requiere argumentación.",
+    "ecuaciones": [
+     {
+      "latex": "G=\\frac{A+B+C}{3}",
+      "lectura": "El vector de posición del baricentro es la suma de los vectores de los tres vértices dividida entre tres.",
+      "condiciones": "A, B y C representan vectores de posición de un triángulo no degenerado; no son sus ángulos."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "J. J. O’Connor y E. F. Robertson, «Karl Wilhelm Feuerbach», MacTutor, University of St Andrews",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Feuerbach/"
+     }
+    ]
+   }
+  },
+  {
+   "id": "geometria.relaciones-metricas",
+   "curso": "Geometría",
+   "curso_id": "geometria",
+   "numero": 8,
+   "titulo": "Relaciones métricas",
+   "grado": 4,
+   "temas_catalogo": [
+    "Teorema de Pitágoras y relaciones en el triángulo rectángulo",
+    "Teorema de Euclides o de la proyección",
+    "Teoremas de Stewart y de la mediana",
+    "Longitud de la bisectriz",
+    "Teorema de Herón",
+    "Cuerdas, secantes y tangente",
+    "Teoremas de Ptolomeo y Viette"
+   ],
+   "modulos_actuales": [
+    "triangulo-estira",
+    "geo-circunferencia-metrica",
+    "geo-relaciones-metricas"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo.",
+   "teoria": "En un rectángulo a²+b²=c². Si p,q son proyecciones de catetos sobre la hipotenusa, a²=cp, b²=cq y h²=pq. Stewart, con a=m+n, lados b,c y ceviana d: b²m+c²n=a(d²+mn), asociando bien m,n a sus extremos. Mediana mₐ²=(2b²+2c²−a²)/4. Bisectriz lₐ²=bc[1−a²/(b+c)²]. Herón: Δ²=s(s−a)(s−b)(s−c). Potencia: productos de segmentos de cuerdas/secantes y tangente² con signos o longitudes según configuración. Ptolomeo para cuadrilátero cíclico: AC·BD=AB·CD+AD·BC. La razón AC/BD=(AB·AD+BC·CD)/(AB·BC+AD·CD), asociada a veces a Viette, exige la misma configuración cíclica y etiquetado.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Semejanza",
+    "cuadráticas y raíces",
+    "áreas"
+   ],
+   "desempeno": "Selecciona una relación métrica por sus hipótesis y calcula una longitud con correspondencias explícitas.",
+   "escena_propuesta": "Arrastrar pie de altura o punto de ceviana; predecir la medida, fijar rectángulos de áreas equivalentes y dejar visible la identidad. Comparar un cuadrilátero cíclico con uno que sale del círculo.",
+   "otra_representacion": "Derivar Stewart por dos leyes de cosenos; resolver con coordenadas como comprobación independiente.",
+   "ejemplo": "En rectángulo con c=10,p=3,q=7: catetos √30 y √70; h=√21. Un rectángulo 3×4 cumple 5·5=3²+4².",
+   "error_objetivo": "Aplicar Ptolomeo como igualdad fuera de cuadriláteros cíclicos; hipótesis.",
+   "transferencia": "Resolver un caso nuevo con figura girada, sin colores de ayuda, justificando la propiedad; medir por separado cada longitud, ángulo, área o volumen solicitado.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-E6",
+     "autor": "Euclides; edición digital comentada de David E. Joyce, Clark University",
+     "fecha": "obra antigua; edición web s. f.",
+     "titulo": "Elements, libro VI",
+     "seccion": "VI",
+     "url": "https://math.clarku.edu/~djoyce/java/elements/bookVI/bookVI.html",
+     "tipo": "Texto matemático original con comentario universitario",
+     "verificacion": "Página oficial abierta el 14-11-2026",
+     "localizador": "VI"
+    },
+    {
+     "id": "GT-E3",
+     "autor": "Euclides; edición digital comentada de David E. Joyce, Clark University",
+     "fecha": "obra antigua; edición web s. f.",
+     "titulo": "Elements, libro III",
+     "seccion": "III",
+     "url": "https://math.clarku.edu/~djoyce/java/elements/bookIII/bookIII.html",
+     "tipo": "Texto matemático original con comentario universitario",
+     "verificacion": "Página oficial abierta el 14-11-2026",
+     "localizador": "III"
+    },
+    {
+     "id": "GT-K2",
+     "autor": "Kiran S. Kedlaya",
+     "fecha": "2006",
+     "titulo": "Geometry Unbound",
+     "seccion": "2.1–2.4: trigonometría, vectores, complejos y coordenadas baricéntricas",
+     "url": "https://kskedlaya.org/geometryunbound/gu-060118.pdf",
+     "tipo": "Libro abierto del autor; GFDL",
+     "verificacion": "PDF del sitio del autor abierto; índice y pasajes relevantes localizados el 14-11-2026",
+     "localizador": "2.1–2.4: trigonometría, vectores, complejos y coordenadas baricéntricas"
+    },
+    {
+     "id": "GT-K6",
+     "autor": "Kiran S. Kedlaya",
+     "fecha": "2006",
+     "titulo": "Geometry Unbound",
+     "seccion": "6.1: potencia de un punto",
+     "url": "https://kskedlaya.org/geometryunbound/gu-060118.pdf",
+     "tipo": "Libro abierto del autor; GFDL",
+     "verificacion": "PDF del sitio del autor abierto; índice y pasajes relevantes localizados el 14-11-2026",
+     "localizador": "6.1: potencia de un punto"
+    },
+    {
+     "id": "GT-K8",
+     "autor": "Kiran S. Kedlaya",
+     "fecha": "2006",
+     "titulo": "Geometry Unbound",
+     "seccion": "8.1–8.3: cuadriláteros cíclicos y circunscritos",
+     "url": "https://kskedlaya.org/geometryunbound/gu-060118.pdf",
+     "tipo": "Libro abierto del autor; GFDL",
+     "verificacion": "PDF del sitio del autor abierto; índice y pasajes relevantes localizados el 14-11-2026",
+     "localizador": "8.1–8.3: cuadriláteros cíclicos y circunscritos"
+    },
+    {
+     "id": "GT-K7",
+     "autor": "Kiran S. Kedlaya",
+     "fecha": "2006",
+     "titulo": "Geometry Unbound",
+     "seccion": "7.1–7.3 y 7.9: centros, Euler, áreas y Stewart",
+     "url": "https://kskedlaya.org/geometryunbound/gu-060118.pdf",
+     "tipo": "Libro abierto del autor; GFDL",
+     "verificacion": "PDF del sitio del autor abierto; índice y pasajes relevantes localizados el 14-11-2026",
+     "localizador": "7.1–7.3 y 7.9: centros, Euler, áreas y Stewart"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "geometria.relaciones-metricas",
+    "curso": "Geometría",
+    "numero": 8,
+    "titulo": "Relaciones métricas",
+    "historia": "La tablilla paleobabilónica YBC 7289, conservada en Yale, dibuja un cuadrado con sus diagonales y registra una aproximación sexagesimal muy precisa de la raíz de dos. Muestra una práctica de cálculo anterior a los textos griegos conservados. Eso no autoriza a atribuirle la demostración general del teorema que hoy llamamos de Pitágoras. En los Elementos aparece una prueba geométrica de la relación entre cuadrados. La comparación permite distinguir tres evidencias: resolver un caso, disponer de una regla de cálculo y justificar un enunciado para todos los triángulos rectángulos.",
+    "puente_escena": "Presentar un cuadrado de lado uno y pedir estimar su diagonal antes de mostrar aproximaciones. Contrastar después un triángulo rectángulo con uno oblicuo. Las áreas de cuadrados permiten argumentar la relación; una tabla registra error numérico y evita confundir precisión con demostración.",
+    "ecuaciones": [
+     {
+      "latex": "a^2+b^2=c^2",
+      "lectura": "El cuadrado de a más el cuadrado de b es igual al cuadrado de c.",
+      "condiciones": "a y b son catetos y c es la hipotenusa de un triángulo rectángulo."
+     },
+     {
+      "latex": "\\sqrt{2}\\approx 1+\\frac{24}{60}+\\frac{51}{60^2}+\\frac{10}{60^3}",
+      "lectura": "Raíz de dos se aproxima a uno más veinticuatro sesentavos, más cincuenta y uno entre sesenta al cuadrado, más diez entre sesenta al cubo.",
+      "condiciones": "Aproximación sexagesimal de YBC 7289; no es igualdad exacta."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Yale Babylonian Collection, Highlights: YBC 7289",
+      "url": "https://babylonian-collection.yale.edu/highlights"
+     },
+     {
+      "titulo": "Euclides, Elementos I.47; edición y comentarios de David E. Joyce, Clark University",
+      "url": "https://math.clarku.edu/~djoyce/java/elements/bookI/propI47.html"
+     }
+    ]
+   }
+  },
+  {
+   "id": "geometria.poligonos-regulares",
+   "curso": "Geometría",
+   "curso_id": "geometria",
+   "numero": 9,
+   "titulo": "Polígonos regulares",
+   "grado": 4,
+   "temas_catalogo": [
+    "Ángulo central y apotema",
+    "Polígonos regulares inscritos notables",
+    "Polígono de 2n lados",
+    "Sección áurea"
+   ],
+   "modulos_actuales": [
+    "poligonos",
+    "geo-poligonos"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de recordar.",
+   "teoria": "Un polígono regular tiene lados y ángulos iguales. Centro, radio R y apotema r forman n triángulos isósceles congruentes: ángulo central 2π/n, lado l=2R sen(π/n), r=R cos(π/n), área A=Pr/2 con perímetro P=nl. Al pasar de n a 2n se bisecan los ángulos centrales; l₂ₙ=√(2R²−2Rrₙ). Triángulo, cuadrado y hexágono regulares proporcionan construcciones exactas. La sección áurea φ=(1+√5)/2 satisface φ²=φ+1 y aparece como razón diagonal/lado en el pentágono regular.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Triángulos isósceles",
+    "semejanza",
+    "Pitágoras"
+   ],
+   "desempeno": "Construye apotema, deduce área y calcula una longitud de un polígono inscrito.",
+   "escena_propuesta": "Aumentar n cortando cada sector en dos; predecir perímetro y apotema. Mantener R fijo y conservar n y 2n juntos. Explicitar que la figura aproxima el círculo y no lo iguala con n finito.",
+   "otra_representacion": "Triangulación radial; derivación por triángulo rectángulo y razones trigonométricas.",
+   "ejemplo": "Hexágono regular de R=4: lado 4, apotema 2√3, área 24√3.",
+   "error_objetivo": "Confundir radio y apotema; hipótesis.",
+   "transferencia": "Resolver un caso nuevo con figura girada, sin colores de ayuda, justificando la propiedad; medir por separado cada longitud, ángulo, área o volumen solicitado.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-E4",
+     "autor": "Euclides; edición digital comentada de David E. Joyce, Clark University",
+     "fecha": "obra antigua; edición web s. f.",
+     "titulo": "Elements, libro IV",
+     "seccion": "IV",
+     "url": "https://math.clarku.edu/~djoyce/java/elements/bookIV/bookIV.html",
+     "tipo": "Texto matemático original con comentario universitario",
+     "verificacion": "Página oficial abierta el 14-11-2026",
+     "localizador": "IV"
+    },
+    {
+     "id": "GT-E13",
+     "autor": "Euclides; edición digital comentada de David E. Joyce, Clark University",
+     "fecha": "obra antigua; edición web s. f.",
+     "titulo": "Elements, libro XIII",
+     "seccion": "XIII",
+     "url": "https://math.clarku.edu/~djoyce/java/elements/bookXIII/bookXIII.html",
+     "tipo": "Texto matemático original con comentario universitario",
+     "verificacion": "Página oficial abierta el 14-11-2026",
+     "localizador": "XIII"
+    },
+    {
+     "id": "GT-O54",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "5.4 Right Triangle Trigonometry",
+     "url": "https://openstax.org/books/precalculus-2e/pages/5-4-right-triangle-trigonometry",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "5.4 Right Triangle Trigonometry"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "geometria.poligonos-regulares",
+    "curso": "Geometría",
+    "numero": 9,
+    "titulo": "Polígonos regulares",
+    "historia": "Los polígonos regulares reúnen dos preguntas distintas: medir una figura y construirla exactamente con instrumentos restringidos. Los Elementos desarrollan construcciones de polígonos inscritos. Muchos siglos después, Gauss relacionó la construcción del polígono regular de diecisiete lados con el álgebra, y trató la división del círculo en Disquisitiones Arithmeticae. Esta conexión amplió un problema geométrico antiguo sin hacer que toda construcción aproximada se volviera exacta. Dibujar un polígono en una pantalla, conocer su ángulo central y demostrar que puede construirse con regla y compás son logros diferentes.",
+    "puente_escena": "Ofrecer un selector del número de lados y mostrar radios, apotema y triángulos centrales. El estudiante deduce el área al sumar triángulos y distingue la construcción digital por coordenadas de una construcción clásica. Para comparar exactitud, conservar un panel con datos simbólicos y otro con aproximaciones.",
+    "ecuaciones": [
+     {
+      "latex": "\\theta_c=\\frac{2\\pi}{n}",
+      "lectura": "El ángulo central es dos pi dividido entre el número de lados.",
+      "condiciones": "Polígono regular de n lados, n entero al menos 3; ángulo en radianes."
+     },
+     {
+      "latex": "A=\\frac{Pa}{2}",
+      "lectura": "El área es el perímetro por la apotema dividido entre dos.",
+      "condiciones": "Polígono regular convexo; P es su perímetro y a su apotema."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "J. J. O’Connor y E. F. Robertson, «Carl Friedrich Gauss», MacTutor, University of St Andrews",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Gauss/"
+     }
+    ]
+   }
+  },
+  {
+   "id": "geometria.simetria",
+   "curso": "Geometría",
+   "curso_id": "geometria",
+   "numero": 10,
+   "titulo": "Simetría en el plano y en el espacio",
+   "grado": 4,
+   "temas_catalogo": [
+    "Simetría respecto de un punto",
+    "Simetría respecto de una recta",
+    "Simetría respecto de un plano"
+   ],
+   "modulos_actuales": [
+    "simetria"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de comparar.",
+   "teoria": "La simetría central manda P a P′ de modo que el centro sea punto medio de PP′; en el plano equivale a girar 180°. Una reflexión axial hace del eje la mediatriz de PP′. En el espacio, la reflexión en un plano conserva la proyección perpendicular y cambia el signo de la distancia orientada al plano. Todas conservan distancias y ángulos; una reflexión plana invierte orientación, una rotación no. Una figura simétrica coincide con su imagen como conjunto, aunque sus puntos se permuten.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Punto medio",
+    "perpendicularidad",
+    "coordenadas"
+   ],
+   "desempeno": "Construye la imagen y explica qué permanece invariante, sin confundir reflexión con traslación.",
+   "escena_propuesta": "Doblar/reflejar una figura asimétrica después de predecir dónde llega un punto; dejar segmento perpendicular y distancias iguales. En 3D alternar vistas sin cambiar las coordenadas.",
+   "otra_representacion": "Reglas (x,y)→(−x,y), (−x,−y); espejo físico y patrón de correspondencia.",
+   "ejemplo": "Reflejo de (3,−2) sobre eje y: (−3,−2); simetría central en origen: (−3,2).",
+   "error_objetivo": "Trasladar al otro lado sin invertir orientación; hipótesis.",
+   "transferencia": "Resolver un caso nuevo con figura girada, sin colores de ayuda, justificando la propiedad; medir por separado cada longitud, ángulo, área o volumen solicitado.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-K3",
+     "autor": "Kiran S. Kedlaya",
+     "fecha": "2006",
+     "titulo": "Geometry Unbound",
+     "seccion": "3.1–3.5: isometrías, semejanzas y transformaciones",
+     "url": "https://kskedlaya.org/geometryunbound/gu-060118.pdf",
+     "tipo": "Libro abierto del autor; GFDL",
+     "verificacion": "PDF del sitio del autor abierto; índice y pasajes relevantes localizados el 14-11-2026",
+     "localizador": "3.1–3.5: isometrías, semejanzas y transformaciones"
+    },
+    {
+     "id": "GT-E11",
+     "autor": "Euclides; edición digital comentada de David E. Joyce, Clark University",
+     "fecha": "obra antigua; edición web s. f.",
+     "titulo": "Elements, libro XI",
+     "seccion": "XI",
+     "url": "https://math.clarku.edu/~djoyce/java/elements/bookXI/bookXI.html",
+     "tipo": "Texto matemático original con comentario universitario",
+     "verificacion": "Página oficial abierta el 14-11-2026",
+     "localizador": "XI"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "geometria.simetria",
+    "curso": "Geometría",
+    "numero": 10,
+    "titulo": "Simetría en el plano y en el espacio",
+    "historia": "La simetría aparece en múltiples prácticas visuales; su estudio matemático no tiene un único inventor. Un cambio conceptual bien documentado es el programa de Erlangen de Felix Klein, de 1872: organizar geometrías según las transformaciones y las propiedades que estas conservan. Desde esa perspectiva, una reflexión importa por lo que hace a puntos, distancias e incidencias. Esta idea permite conectar figuras planas y espaciales sin reducir la simetría a reconocer dibujos agradables. La unidad escolar puede conservar ese problema central: identificar la transformación y declarar exactamente qué permanece invariante.",
+    "puente_escena": "Pedir reflejar un punto sin mostrar inicialmente la solución. Al revelar el eje, comparar distancia perpendicular y punto medio; luego repetir con un plano en el espacio. Mantener coordenadas, marcas y descripción textual, de modo que la corrección no dependa únicamente del color.",
+    "ecuaciones": [
+     {
+      "latex": "R_y(x,y)=(-x,y)",
+      "lectura": "La reflexión respecto del eje y transforma x, y en menos x, y.",
+      "condiciones": "Coordenadas cartesianas ortonormales; el eje de reflexión es x igual a cero."
+     },
+     {
+      "latex": "d(R(P),R(Q))=d(P,Q)",
+      "lectura": "La distancia entre las imágenes de P y Q es igual a la distancia original.",
+      "condiciones": "R es una reflexión euclídea; la afirmación vale en el plano y en el espacio."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "J. J. O’Connor y E. F. Robertson, «Felix Klein», MacTutor, University of St Andrews",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Klein/"
+     }
+    ]
+   }
+  },
+  {
+   "id": "geometria.areas-poligonales",
+   "curso": "Geometría",
+   "curso_id": "geometria",
+   "numero": 11,
+   "titulo": "Áreas de regiones triangulares y cuadrangulares",
+   "grado": 4,
+   "temas_catalogo": [
+    "Área del triángulo con distintos datos",
+    "Relación entre áreas de triángulos",
+    "Área de paralelogramos y rombos",
+    "Área de trapecios y trapezoides",
+    "Relaciones entre áreas de cuadriláteros"
+   ],
+   "modulos_actuales": [
+    "ampliadora",
+    "triangulo-estira",
+    "geo-areas-triangulares"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo.",
+   "teoria": "Área mide región y se expresa en unidades cuadradas; perímetro mide borde. Triángulo A=bh/2 con h perpendicular a la recta base, incluso exterior. Misma altura: razones de áreas iguales a razones de bases; misma base: a alturas; semejantes: a k². Paralelogramo bh; rombo Dd/2 por diagonales perpendiculares; trapecio (B+b)h/2. Un cuadrilátero general se divide en triángulos; con diagonales p,q y ángulo θ entre ellas, área pq|senθ|/2 para el convexo. La fórmula bh no se aplica a cualquier cuadrilátero ni la diagonal inclinada sustituye a la altura.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Unidad cuadrada",
+    "alturas",
+    "proporcionalidad"
+   ],
+   "desempeno": "Calcula área por dos particiones y distingue datos suficientes de datos aparentes.",
+   "escena_propuesta": "Cortar y rearmar un triángulo/paralelogramo preservando piezas; predecir si cambiar vértice entre paralelas altera área. Conservar corte y ecuación al final.",
+   "otra_representacion": "Cuadrícula; determinante con coordenadas; comparación de alturas.",
+   "ejemplo": "Triángulo base 8 y altura 5: área 20. Trapecio bases 8 y 4, altura 5: área 30.",
+   "error_objetivo": "Multiplicar dos lados oblicuos como base y altura; hipótesis.",
+   "transferencia": "Resolver un caso nuevo con figura girada, sin colores de ayuda, justificando la propiedad; medir por separado cada longitud, ángulo, área o volumen solicitado.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-E1",
+     "autor": "Euclides; edición digital comentada de David E. Joyce, Clark University",
+     "fecha": "obra antigua; edición web s. f.",
+     "titulo": "Elements, libro I",
+     "seccion": "I",
+     "url": "https://math.clarku.edu/~djoyce/java/elements/bookI/bookI.html",
+     "tipo": "Texto matemático original con comentario universitario",
+     "verificacion": "Página oficial abierta el 14-11-2026",
+     "localizador": "I"
+    },
+    {
+     "id": "GT-K1",
+     "autor": "Kiran S. Kedlaya",
+     "fecha": "2006",
+     "titulo": "Geometry Unbound",
+     "seccion": "1.1–1.7: coordenadas, polígonos, áreas, arcos y ángulos",
+     "url": "https://kskedlaya.org/geometryunbound/gu-060118.pdf",
+     "tipo": "Libro abierto del autor; GFDL",
+     "verificacion": "PDF del sitio del autor abierto; índice y pasajes relevantes localizados el 14-11-2026",
+     "localizador": "1.1–1.7: coordenadas, polígonos, áreas, arcos y ángulos"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "geometria.areas-poligonales",
+    "curso": "Geometría",
+    "numero": 11,
+    "titulo": "Áreas de regiones triangulares y cuadrangulares",
+    "historia": "El papiro Rhind conserva problemas concretos de cálculo, entre ellos mediciones de áreas y volúmenes vinculadas a necesidades prácticas. OpenLearn señala que estos documentos egipcios presentan procedimientos y ejemplos, no tratados organizados como los manuales modernos. Para el círculo se utilizó una regla equivalente a elevar al cuadrado ocho novenos del diámetro. Comparar ese modo de calcular con descomposiciones exactas de triángulos y cuadriláteros permite distinguir aproximación y equivalencia. La historia no exige suponer que cada dibujo antiguo empleaba nuestras letras, unidades o categorías de figura.",
+    "puente_escena": "Proponer repartir una región en piezas de área conocida y conservarlas al reorganizarla. El estudiante selecciona base y altura perpendicular antes de introducir números. Después compara una regla aproximada con una construcción exacta, explicando qué garantía ofrece cada procedimiento y qué margen de error queda.",
+    "ecuaciones": [
+     {
+      "latex": "A_\\triangle=\\frac{bh}{2}",
+      "lectura": "El área de un triángulo es base por altura dividido entre dos.",
+      "condiciones": "h es la distancia perpendicular del vértice opuesto a la recta que contiene la base b."
+     },
+     {
+      "latex": "A_{\\mathrm{trapecio}}=\\frac{(B+b)h}{2}",
+      "lectura": "El área del trapecio es la suma de sus bases por la altura, dividida entre dos.",
+      "condiciones": "B y b son lados paralelos de un trapecio simple; h es su distancia perpendicular."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "The Open University, Egyptian mathematics: 1.1.3 More information about the Rhind papyrus",
+      "url": "https://www.open.edu/openlearn/science-maths-technology/mathematics-statistics/egyptian-mathematics/content-section-1.1.3"
+     }
+    ]
+   }
+  },
+  {
+   "id": "geometria.longitud-y-areas-circulares",
+   "curso": "Geometría",
+   "curso_id": "geometria",
+   "numero": 12,
+   "titulo": "Longitud de la circunferencia y áreas circulares",
+   "grado": 4,
+   "temas_catalogo": [
+    "Número pi y longitud de la circunferencia",
+    "Longitud de arco",
+    "Área del círculo y sector circular",
+    "Segmento y corona circular",
+    "Trapecio circular, lúnula y otras regiones"
+   ],
+   "modulos_actuales": [
+    "ampliadora",
+    "angulo-inscrito",
+    "geo-areas-circulares"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo.",
+   "teoria": "π es razón circunferencia/diámetro. C=2πr; área de círculo πr². Para ángulo θ en radianes, arco s=rθ y sector A=r²θ/2. Segmento circular menor: sector menos triángulo, A=r²(θ−senθ)/2 con θ correspondiente; el mayor se obtiene por complemento. Corona: π(R²−r²); sector anular o trapecio circular: θ(R²−r²)/2. Lúnulas y regiones compuestas se resuelven por sumas y diferencias justificadas, evitando contar superposiciones dos veces. No usar θ en grados dentro de fórmulas radiales.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Proporciones",
+    "áreas de triángulos",
+    "radianes o fracción de vuelta"
+   ],
+   "desempeno": "Determina área y longitud por separado y justifica una sustracción de regiones.",
+   "escena_propuesta": "Desenrollar circunferencia y cortar sectores; predecir qué cambia al duplicar radio. Pintar y borrar regiones conservando las áreas firmadas en una lista visual.",
+   "otra_representacion": "Fracción de vuelta; límites de polígonos inscritos para fundamentar las fórmulas.",
+   "ejemplo": "Con r=6 y θ=π/3, arco=2π y sector=6π. Corona R=5,r=3: área=16π.",
+   "error_objetivo": "Confundir r²−r₀² con (r−r₀)²; hipótesis.",
+   "transferencia": "Resolver un caso nuevo con figura girada, sin colores de ayuda, justificando la propiedad; medir por separado cada longitud, ángulo, área o volumen solicitado.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-E12",
+     "autor": "Euclides; edición digital comentada de David E. Joyce, Clark University",
+     "fecha": "obra antigua; edición web s. f.",
+     "titulo": "Elements, libro XII",
+     "seccion": "XII",
+     "url": "https://math.clarku.edu/~djoyce/java/elements/bookXII/bookXII.html",
+     "tipo": "Texto matemático original con comentario universitario",
+     "verificacion": "Página oficial abierta el 14-11-2026",
+     "localizador": "XII"
+    },
+    {
+     "id": "GT-K1",
+     "autor": "Kiran S. Kedlaya",
+     "fecha": "2006",
+     "titulo": "Geometry Unbound",
+     "seccion": "1.1–1.7: coordenadas, polígonos, áreas, arcos y ángulos",
+     "url": "https://kskedlaya.org/geometryunbound/gu-060118.pdf",
+     "tipo": "Libro abierto del autor; GFDL",
+     "verificacion": "PDF del sitio del autor abierto; índice y pasajes relevantes localizados el 14-11-2026",
+     "localizador": "1.1–1.7: coordenadas, polígonos, áreas, arcos y ángulos"
+    },
+    {
+     "id": "GT-O51",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "5.1 Angles",
+     "url": "https://openstax.org/books/precalculus-2e/pages/5-1-angles",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "5.1 Angles"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "geometria.longitud-y-areas-circulares",
+    "curso": "Geometría",
+    "numero": 12,
+    "titulo": "Longitud de la circunferencia y áreas circulares",
+    "historia": "Medir una circunferencia plantea una dificultad: una curva no se compara con una regla tan directamente como un segmento. Arquímedes encerró el círculo entre polígonos inscritos y circunscritos y obtuvo cotas para la razón entre longitud y diámetro. Esas cotas muestran que veintidós séptimos es una aproximación superior, no el valor exacto de pi. La historia continuó en distintas tradiciones; por ejemplo, Zu Chongzhi obtuvo la fracción trescientos cincuenta y cinco sobre ciento trece. El progreso consistió en controlar el error, además de producir más cifras.",
+    "puente_escena": "Construir polígonos interiores y exteriores con el mismo número de lados y registrar dos perímetros. Aumentar lados estrecha el intervalo sin convertir la imagen en una prueba de igualdad. El estudiante explica qué cota es superior y usa después el ángulo para seleccionar un sector.",
+    "ecuaciones": [
+     {
+      "latex": "C=2\\pi r,\\qquad A=\\pi r^2",
+      "lectura": "La longitud de la circunferencia es dos pi por el radio; el área del círculo es pi por el radio al cuadrado.",
+      "condiciones": "Círculo euclídeo de radio r positivo; longitud y área usan unidades de distinta dimensión."
+     },
+     {
+      "latex": "\\frac{223}{71}<\\pi<\\frac{22}{7}",
+      "lectura": "Doscientos veintitrés sobre setenta y uno es menor que pi, y pi es menor que veintidós sobre siete.",
+      "condiciones": "Cotas clásicas; ninguna fracción se debe presentar como valor exacto de pi."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "J. J. O’Connor y E. F. Robertson, «A history of Pi», MacTutor, University of St Andrews",
+      "url": "https://mathshistory.st-andrews.ac.uk/HistTopics/Pi_through_the_ages/"
+     }
+    ]
+   }
+  },
+  {
+   "id": "geometria.geometria-del-espacio",
+   "curso": "Geometría",
+   "curso_id": "geometria",
+   "numero": 13,
+   "titulo": "Rectas y planos en el espacio",
+   "grado": 5,
+   "temas_catalogo": [
+    "Recta perpendicular a un plano",
+    "Teorema de las tres perpendiculares",
+    "Distancia entre rectas cruzadas",
+    "Proyección ortogonal",
+    "Ángulo entre recta y plano",
+    "Ángulo diedro",
+    "Ángulo triedro"
+   ],
+   "modulos_actuales": [
+    "geometria-espacio",
+    "geo-proporcionalidad"
+   ],
+   "ruta_propuesta": "comparar, con apoyo de descubrir.",
+   "teoria": "Una recta es perpendicular a un plano si es perpendicular a dos rectas que se cortan en ese plano; mirar una proyección no basta. Proyección ortogonal une puntos por perpendiculares al plano. El ángulo recta–plano es el de la recta con su proyección, entre 0° y 90°; si es normal vale 90°. El diedro se mide con dos perpendiculares a la arista común en un plano normal a ella. Tres perpendiculares conecta una recta del plano, una oblicua y su proyección bajo la hipótesis correspondiente. Rectas cruzadas no son coplanares; su distancia es la longitud del segmento perpendicular común. En un triedro, las caras angulares cumplen desigualdades triangulares y suma menor de 360° para el triedro convexo no degenerado.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Perpendicularidad 2D",
+    "Pitágoras",
+    "visualización de proyecciones"
+   ],
+   "desempeno": "Escoge la sección correcta para medir un ángulo o distancia espacial.",
+   "escena_propuesta": "Girar el objeto y seleccionar una sección; predecir si el ángulo aparente cambia. Congelar proyección y normal y marcar el segmento mínimo, independiente de la cámara.",
+   "otra_representacion": "Coordenadas y producto escalar como verificación; maqueta de planos.",
+   "ejemplo": "Recta de dirección (1,0,1) con plano z=0 forma 45°. Dos rectas paralelas a ejes x e y, en planos z=0 y z=3, separadas como perpendiculares cruzadas, tienen distancia 3.",
+   "error_objetivo": "Medir el ángulo dibujado en perspectiva como ángulo real; hipótesis.",
+   "transferencia": "Resolver un caso nuevo con figura girada, sin colores de ayuda, justificando la propiedad; medir por separado cada longitud, ángulo, área o volumen solicitado.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-E11",
+     "autor": "Euclides; edición digital comentada de David E. Joyce, Clark University",
+     "fecha": "obra antigua; edición web s. f.",
+     "titulo": "Elements, libro XI",
+     "seccion": "XI",
+     "url": "https://math.clarku.edu/~djoyce/java/elements/bookXI/bookXI.html",
+     "tipo": "Texto matemático original con comentario universitario",
+     "verificacion": "Página oficial abierta el 14-11-2026",
+     "localizador": "XI"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "geometria.geometria-del-espacio",
+    "curso": "Geometría",
+    "numero": 13,
+    "titulo": "Rectas y planos en el espacio",
+    "historia": "Representar objetos espaciales sobre una hoja exige decidir qué información conserva cada vista. La geometría descriptiva de Gaspard Monge, publicada en 1799 a partir de su enseñanza, sistematizó métodos de representación mediante proyecciones; su desarrollo estuvo ligado a problemas técnicos y educativos. El reto no era fabricar una perspectiva convincente, sino recuperar relaciones espaciales a partir de dibujos controlados. Esa diferencia sigue siendo útil en la app: dos segmentos pueden parecer perpendiculares en una imagen y no serlo en el espacio, o tener la misma proyección con longitudes distintas.",
+    "puente_escena": "Mostrar simultáneamente un segmento espacial, su proyección y una vista lateral. El estudiante predice qué longitud cambia al inclinarlo y qué dato falta para recuperarlo. Las vistas comparten letras y valores; controles numéricos de posición sustituyen la rotación manual cuando sea necesario.",
+    "ecuaciones": [
+     {
+      "latex": "L_{\\mathrm{proy}}=L\\cos\\theta",
+      "lectura": "La longitud proyectada es la longitud original por el coseno del ángulo con el plano.",
+      "condiciones": "Proyección ortogonal; L no negativa; theta es el ángulo entre segmento y plano, entre cero y pi medios."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "J. J. O’Connor y E. F. Robertson, «Gaspard Monge», MacTutor, University of St Andrews",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Monge/"
+     }
+    ]
+   }
+  },
+  {
+   "id": "geometria.poliedros",
+   "curso": "Geometría",
+   "curso_id": "geometria",
+   "numero": 14,
+   "titulo": "Poliedros",
+   "grado": 5,
+   "temas_catalogo": [
+    "Elementos y clasificación",
+    "Teorema de Euler",
+    "Poliedros regulares"
+   ],
+   "modulos_actuales": [
+    "solidos"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de recordar.",
+   "teoria": "Un poliedro está limitado por caras poligonales planas con aristas y vértices; convexo significa que el segmento entre dos puntos del sólido queda dentro. Para poliedros convexos V−E+F=2; no afirmar que vale para toda superficie con agujeros. En un poliedro regular convexo, caras regulares congruentes y el mismo número en cada vértice; solo existen los cinco sólidos platónicos. Contar incidencias evita duplicación: si hay p aristas por cara, pF=2E; si concurren q aristas por vértice, qV=2E. La figura dibujada oculta caras y aristas que el modelo conserva.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Polígonos",
+    "conteo sin repetición",
+    "ángulos alrededor de un vértice"
+   ],
+   "desempeno": "Cuenta V,E,F y comprueba condiciones antes de usar Euler.",
+   "escena_propuesta": "Armar y desplegar un sólido; predecir conteos, tocar caras para registrarlas y ver aristas ocultas. Contrastar cubo con una superficie con túnel.",
+   "otra_representacion": "Grafo plano del poliedro; tabla de incidencias.",
+   "ejemplo": "Cubo: V=8,E=12,F=6, así 8−12+6=2. Dodecaedro: F=12, E=30, V=20.",
+   "error_objetivo": "Contar solo lo visible o aplicar Euler=2 a cualquier sólido; hipótesis.",
+   "transferencia": "Resolver un caso nuevo con figura girada, sin colores de ayuda, justificando la propiedad; medir por separado cada longitud, ángulo, área o volumen solicitado.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-E13",
+     "autor": "Euclides; edición digital comentada de David E. Joyce, Clark University",
+     "fecha": "obra antigua; edición web s. f.",
+     "titulo": "Elements, libro XIII",
+     "seccion": "XIII",
+     "url": "https://math.clarku.edu/~djoyce/java/elements/bookXIII/bookXIII.html",
+     "tipo": "Texto matemático original con comentario universitario",
+     "verificacion": "Página oficial abierta el 14-11-2026",
+     "localizador": "XIII"
+    },
+    {
+     "id": "GT-EU",
+     "autor": "Lawrence C. Paulson",
+     "fecha": "2025",
+     "titulo": "Euler’s Polyhedron Formula",
+     "seccion": "Resumen y demostración formal para politopos convexos",
+     "url": "https://www.isa-afp.org/browser_info/current/AFP/Euler_Polyhedron_Formula/document.pdf",
+     "tipo": "Formalización original publicada en Archive of Formal Proofs",
+     "verificacion": "PDF oficial recuperado por búsqueda 14-11-2026",
+     "localizador": "Resumen y demostración formal para politopos convexos"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "geometria.poliedros",
+    "curso": "Geometría",
+    "numero": 14,
+    "titulo": "Poliedros",
+    "historia": "En una carta de 1750, Euler formuló una relación entre vértices, aristas y caras de poliedros; su estudio apareció publicado después. La historia mostró que no bastaba mirar unos cuantos sólidos: había que precisar qué objetos satisfacían la relación. Lhuillier examinó en 1813 casos con agujeros, haciendo visible una limitación de la formulación ingenua. El resultado pasó así de contar elementos a estudiar estructura. Para esta unidad, un poliedro convexo ofrece el ámbito seguro de la igualdad escolar; una perforación obliga a revisar las condiciones.",
+    "puente_escena": "Contar vértices, aristas y caras de varios poliedros convexos mediante selección y lista accesible. Después comparar una estructura con túnel sin aplicar automáticamente la misma fórmula. Pedir justificar el recuento compartido de aristas entre caras y explicitar por qué cambia el tipo de superficie.",
+    "ecuaciones": [
+     {
+      "latex": "V-E+F=2",
+      "lectura": "El número de vértices menos el número de aristas más el número de caras es igual a dos.",
+      "condiciones": "Poliedro convexo; también vale para una superficie poliédrica con topología de esfera bajo una descomposición adecuada."
+     },
+     {
+      "latex": "pF=2E",
+      "lectura": "p por el número de caras es igual al doble del número de aristas.",
+      "condiciones": "Poliedro cerrado cuyas caras tienen todas p lados y cada arista pertenece a exactamente dos caras."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "J. J. O’Connor y E. F. Robertson, «A history of Topology», MacTutor, University of St Andrews",
+      "url": "https://mathshistory.st-andrews.ac.uk/HistTopics/Topology_in_mathematics/"
+     }
+    ]
+   }
+  },
+  {
+   "id": "geometria.prisma-y-piramide",
+   "curso": "Geometría",
+   "curso_id": "geometria",
+   "numero": 15,
+   "titulo": "Prisma y pirámide",
+   "grado": 5,
+   "temas_catalogo": [
+    "Prisma recto, oblicuo y regular",
+    "Paralelepípedos y cubo",
+    "Tronco de prisma",
+    "Pirámide regular y apotema",
+    "Tronco de pirámide",
+    "Áreas y volúmenes",
+    "Semejanza de sólidos"
+   ],
+   "modulos_actuales": [
+    "ampliadora",
+    "solidos",
+    "geo-troncos-prismas"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo.",
+   "teoria": "Prisma: dos bases paralelas congruentes y secciones paralelas constantes; volumen Bh, con h perpendicular, aun si es oblicuo. Área lateral de prisma recto Ph; en oblicuos sumar áreas laterales reales o usar perímetro de sección recta por arista lateral bajo sus hipótesis. Pirámide: V=Bh/3; regular añade base regular y vértice sobre centro, área lateral Pa_l/2. Tronco de pirámide entre planos paralelos: V=h(B₁+B₂+√(B₁B₂))/3. En semejanza de sólidos, áreas ×k² y volúmenes ×k³. Un tronco de prisma cortado por plano oblicuo necesita integrar altura afín o descomponer; en prisma triangular, V=B(h₁+h₂+h₃)/3, con alturas compatibles.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Áreas de bases",
+    "semejanza",
+    "altura perpendicular"
+   ],
+   "desempeno": "Calcula volumen y superficie por separado, distinguiendo altura y arista.",
+   "escena_propuesta": "Cortar/armar sólidos y variar inclinación con base y altura fijas; predecir volumen. Mantener secciones paralelas visibles. Desplegar caras para área, sin sugerir que el despliegue calcula volumen.",
+   "otra_representacion": "Capas de área constante; descomposición en prismas y pirámides.",
+   "ejemplo": "Pirámide de base 36 y altura 9: V=108. Tronco con bases 36 y 16, altura 3: V=76.",
+   "error_objetivo": "Usar generatriz o arista oblicua como altura; hipótesis.",
+   "transferencia": "Resolver un caso nuevo con figura girada, sin colores de ayuda, justificando la propiedad; medir por separado cada longitud, ángulo, área o volumen solicitado.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-E11",
+     "autor": "Euclides; edición digital comentada de David E. Joyce, Clark University",
+     "fecha": "obra antigua; edición web s. f.",
+     "titulo": "Elements, libro XI",
+     "seccion": "XI",
+     "url": "https://math.clarku.edu/~djoyce/java/elements/bookXI/bookXI.html",
+     "tipo": "Texto matemático original con comentario universitario",
+     "verificacion": "Página oficial abierta el 14-11-2026",
+     "localizador": "XI"
+    },
+    {
+     "id": "GT-E12",
+     "autor": "Euclides; edición digital comentada de David E. Joyce, Clark University",
+     "fecha": "obra antigua; edición web s. f.",
+     "titulo": "Elements, libro XII",
+     "seccion": "XII",
+     "url": "https://math.clarku.edu/~djoyce/java/elements/bookXII/bookXII.html",
+     "tipo": "Texto matemático original con comentario universitario",
+     "verificacion": "Página oficial abierta el 14-11-2026",
+     "localizador": "XII"
+    },
+    {
+     "id": "GT-PA96",
+     "autor": "Lynn Marecek, MaryAnne Anthony-Smith y Andrea Honeycutt Mathis / OpenStax",
+     "fecha": "2020",
+     "titulo": "Prealgebra 2e",
+     "seccion": "9.6 Volume and Surface Area",
+     "url": "https://openstax.org/books/prealgebra-2e/pages/9-6-solve-geometry-applications-volume-and-surface-area",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página abierta 14-11-2026",
+     "localizador": "9.6 Volume and Surface Area"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "geometria.prisma-y-piramide",
+    "curso": "Geometría",
+    "numero": 15,
+    "titulo": "Prisma y pirámide",
+    "historia": "El problema 14 del papiro de Moscú calcula el volumen de un tronco de pirámide de bases cuadradas. Sus medidas son seis de altura y cuatro y dos para los lados de las bases; el procedimiento produce cincuenta y seis. La regla coincide con la fórmula exacta actual para ese sólido. El documento no conserva una explicación suficiente para decidir con certeza cómo se obtuvo. Esta diferencia entre procedimiento registrado y reconstrucción posterior es una buena entrada para comparar volúmenes, semejanza y descomposición sin inventar una demostración histórica.",
+    "puente_escena": "Construir un tronco de pirámide con los datos del papiro y pedir predecir el volumen. Mostrar la pirámide completa y la parte retirada como una derivación actual claramente identificada. Variar las bases conservando semejanza; la alternativa numérica muestra dimensiones, unidades y diferencia de volúmenes.",
+    "ecuaciones": [
+     {
+      "latex": "V=\\frac{h}{3}(a^2+ab+b^2)",
+      "lectura": "El volumen es la altura dividida entre tres por la suma de a al cuadrado, a por b y b al cuadrado.",
+      "condiciones": "Tronco de pirámide de bases cuadradas paralelas y semejantes, lados a y b positivos y altura perpendicular h."
+     },
+     {
+      "latex": "V=\\frac{6}{3}(4^2+4\\cdot2+2^2)=56",
+      "lectura": "Con altura seis y lados cuatro y dos, el volumen es cincuenta y seis.",
+      "condiciones": "Unidades lineales coherentes; el resultado se expresa en unidades cúbicas."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "J. J. O’Connor y E. F. Robertson, «Egyptian papyri», MacTutor, University of St Andrews",
+      "url": "https://mathshistory.st-andrews.ac.uk/HistTopics/Egyptian_papyri/"
+     }
+    ]
+   }
+  },
+  {
+   "id": "geometria.solidos-de-revolucion",
+   "curso": "Geometría",
+   "curso_id": "geometria",
+   "numero": 16,
+   "titulo": "Cilindro, cono y esfera",
+   "grado": 5,
+   "temas_catalogo": [
+    "Cilindro y tronco de cilindro",
+    "Cono y tronco de cono",
+    "Desarrollos de superficies",
+    "Superficie esférica, zona y casquete",
+    "Esfera y sus partes",
+    "Teorema de Pappus-Guldin"
+   ],
+   "modulos_actuales": [
+    "ampliadora",
+    "solidos",
+    "geo-revolucion"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo.",
+   "teoria": "Cilindro recto V=πr²h y lateral 2πrh; cono recto V=πr²h/3, lateral πrg con g²=r²+h². Tronco de cono paralelo V=πh(R²+Rr+r²)/3 y lateral π(R+r)g. Esfera: A=4πR²,V=4πR³/3; zona de altura h tiene área 2πRh; casquete sólido V=πh²(R−h/3). Separar superficie, casquete sólido y sector esférico. Desarrollar cilindro/conos conserva área; la esfera no tiene desarrollo plano exacto sin distorsión. Troncos de cilindro requieren precisar planos de corte; no asignarles una única fórmula sin datos. Pappus: área de revolución = longitud generatriz·recorrido de su centroide; volumen = área generadora·recorrido del centroide; el eje debe ser externo y coplanar bajo la formulación elemental.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Áreas circulares",
+    "Pitágoras",
+    "semejanza"
+   ],
+   "desempeno": "Identifica qué superficie o volumen se pide y verifica las hipótesis de revolución.",
+   "escena_propuesta": "Desenrollar cilindro o cono, predecir arco del sector y recomponer; para esfera mostrar franjas y alturas. En Pappus girar la región y trazar el centroide, sin usar su figura como prueba.",
+   "otra_representacion": "Secciones; fórmula derivada por sustracción de conos semejantes.",
+   "ejemplo": "Cono r=3,h=4: g=5, V=12π, lateral=15π. Esfera R=3 y casquete h=1: volumen=8π/3.",
+   "error_objetivo": "Confundir altura con generatriz o área lateral con total; hipótesis.",
+   "transferencia": "Resolver un caso nuevo con figura girada, sin colores de ayuda, justificando la propiedad; medir por separado cada longitud, ángulo, área o volumen solicitado.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-E12",
+     "autor": "Euclides; edición digital comentada de David E. Joyce, Clark University",
+     "fecha": "obra antigua; edición web s. f.",
+     "titulo": "Elements, libro XII",
+     "seccion": "XII",
+     "url": "https://math.clarku.edu/~djoyce/java/elements/bookXII/bookXII.html",
+     "tipo": "Texto matemático original con comentario universitario",
+     "verificacion": "Página oficial abierta el 14-11-2026",
+     "localizador": "XII"
+    },
+    {
+     "id": "GT-PA96",
+     "autor": "Lynn Marecek, MaryAnne Anthony-Smith y Andrea Honeycutt Mathis / OpenStax",
+     "fecha": "2020",
+     "titulo": "Prealgebra 2e",
+     "seccion": "9.6 Volume and Surface Area",
+     "url": "https://openstax.org/books/prealgebra-2e/pages/9-6-solve-geometry-applications-volume-and-surface-area",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página abierta 14-11-2026",
+     "localizador": "9.6 Volume and Surface Area"
+    },
+    {
+     "id": "GT-PAPPUS",
+     "autor": "Gilbert Strang y Edwin Herman / OpenStax",
+     "fecha": "2016",
+     "titulo": "Calculus Volume 2",
+     "seccion": "2.6 Moments and Centers of Mass; Theorem of Pappus for Volume",
+     "url": "https://openstax.org/books/calculus-volume-2/pages/2-6-moments-and-centers-of-mass",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Teorema y condiciones abiertos 14-11-2026",
+     "localizador": "2.6 Moments and Centers of Mass; Theorem of Pappus for Volume"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "geometria.solidos-de-revolucion",
+    "curso": "Geometría",
+    "numero": 16,
+    "titulo": "Cilindro, cono y esfera",
+    "historia": "En Sobre la esfera y el cilindro, Arquímedes comparó sólidos curvos mediante relaciones exactas. Una esfera ocupa dos tercios del volumen del cilindro que la circunscribe; su superficie equivale a cuatro círculos máximos. Estas afirmaciones enlazan medidas superficiales y volumétricas, pero no las confunden. La comparación fue obtenida mediante argumentos geométricos, no mediante el simple aspecto de un dibujo. Presentar este problema permite estudiar cilindro, cono y esfera como objetos relacionados y distinguir una animación de llenado de la justificación matemática que explica sus proporciones.",
+    "puente_escena": "Colocar una esfera y su cilindro circunscrito con radio compartido y altura dos radios. Solicitar primero una predicción de volumen y después mostrar secciones a igual altura. Mantener controles de radio, lectura de áreas y unidades; una animación de llenado queda identificada como ilustración.",
+    "ecuaciones": [
+     {
+      "latex": "V_{\\mathrm{esfera}}=\\frac{4}{3}\\pi r^3=\\frac{2}{3}V_{\\mathrm{cilindro}}",
+      "lectura": "El volumen de la esfera es cuatro tercios de pi por r al cubo y equivale a dos tercios del cilindro circunscrito.",
+      "condiciones": "Esfera de radio r positivo; cilindro de radio r y altura 2r."
+     },
+     {
+      "latex": "A_{\\mathrm{esfera}}=4\\pi r^2",
+      "lectura": "El área de la superficie esférica es cuatro pi por r al cuadrado.",
+      "condiciones": "Superficie completa de una esfera; r positivo."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "J. J. O’Connor y E. F. Robertson, «Archimedes», MacTutor, University of St Andrews",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Archimedes/"
+     }
+    ]
+   }
+  },
+  {
+   "id": "geometria.geometria-analitica",
+   "curso": "Geometría",
+   "curso_id": "geometria",
+   "numero": 17,
+   "titulo": "Geometría analítica",
+   "grado": 5,
+   "temas_catalogo": [
+    "Distancia y punto que divide un segmento",
+    "Pendiente y ecuación de la recta",
+    "Distancia de un punto a una recta",
+    "Ecuación de la circunferencia",
+    "Parábola",
+    "Elipse"
+   ],
+   "modulos_actuales": [
+    "geometria-analitica",
+    "conicas",
+    "geo-analitica"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de descubrir.",
+   "teoria": "La geometría analítica traduce condiciones geométricas a ecuaciones. Distancia entre puntos √(Δx²+Δy²); división interna m:n usa P=(nA+mB)/(m+n). Recta Ax+By+C=0, con (A,B)≠(0,0); pendiente −A/B si B≠0; distancia de P a recta |Ax₀+By₀+C|/√(A²+B²). Circunferencia (x−h)²+(y−k)²=r². Parábola: igual distancia a foco y directriz, y²=4px según orientación. Elipse: suma de distancias 2a, x²/a²+y²/b²=1, c²=a²−b². Elegir ejes simplifica sin cambiar la figura; completar cuadrados revela centro o vértice.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Pitágoras",
+    "ecuaciones lineales y cuadráticas",
+    "coordenadas"
+   ],
+   "desempeno": "Construye ecuación desde una propiedad y comprueba puntos y dimensiones.",
+   "escena_propuesta": "Mover un punto sujeto a igualdad de distancias; predecir la curva y registrar posiciones. Vincular condición, trazado y ecuación mediante el mismo color; transferir a ejes trasladados.",
+   "otra_representacion": "Resolución sintética por triángulos; tabla de puntos que cumplen/no cumplen.",
+   "ejemplo": "Punto (3,4) dista 5 del origen. Circunferencia centro (2,−1), radio 3: (x−2)²+(y+1)²=9.",
+   "error_objetivo": "Inferir pendiente finita para recta vertical o olvidar el valor absoluto en distancia; hipótesis.",
+   "transferencia": "Resolver un caso nuevo con figura girada, sin colores de ayuda, justificando la propiedad; medir por separado cada longitud, ángulo, área o volumen solicitado.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-O21",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "2.1 Linear Functions",
+     "url": "https://openstax.org/books/precalculus-2e/pages/2-1-linear-functions",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "2.1 Linear Functions"
+    },
+    {
+     "id": "GT-O101",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "10.1 The Ellipse",
+     "url": "https://openstax.org/books/precalculus-2e/pages/10-1-the-ellipse",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "10.1 The Ellipse"
+    },
+    {
+     "id": "GT-O103",
+     "autor": "Jay Abramson y colaboradores / OpenStax",
+     "fecha": "2021",
+     "titulo": "Precalculus 2e",
+     "seccion": "10.3 The Parabola",
+     "url": "https://openstax.org/books/precalculus-2e/pages/10-3-the-parabola",
+     "tipo": "Texto original abierto del editor",
+     "verificacion": "Página del editor recuperada el 14-11-2026",
+     "localizador": "10.3 The Parabola"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "geometria.geometria-analitica",
+    "curso": "Geometría",
+    "numero": 17,
+    "titulo": "Geometría analítica",
+    "historia": "La Géométrie de Descartes, publicada en 1637, relacionó problemas geométricos con operaciones y ecuaciones algebraicas. No convirtió de golpe toda la geometría en el sistema escolar actual: su notación y su forma de elegir segmentos pertenecían a otro contexto. El cambio decisivo para esta unidad es que una condición sobre distancias o posiciones puede expresarse mediante una ecuación y estudiarse algebraicamente. Así, construir una circunferencia y describir todos sus puntos pasan a ser dos representaciones conectadas de un mismo problema, con condiciones que deben mantenerse al transformar expresiones.",
+    "puente_escena": "Fijar un centro y un radio; el estudiante decide si distintos puntos cumplen la condición de distancia. Después desplazar el centro y anticipar cómo cambia la ecuación. El dibujo y una tabla de sustituciones permanecen vinculados, distinguiendo pertenencia exacta de proximidad visual.",
+    "ecuaciones": [
+     {
+      "latex": "(x-h)^2+(y-k)^2=r^2",
+      "lectura": "x menos h al cuadrado más y menos k al cuadrado es igual al radio al cuadrado.",
+      "condiciones": "Circunferencia de centro h, k y radio r positivo en coordenadas cartesianas ortonormales."
+     },
+     {
+      "latex": "d=\\frac{|Ax_0+By_0+C|}{\\sqrt{A^2+B^2}}",
+      "lectura": "La distancia es el valor absoluto de A por x cero más B por y cero más C, dividido entre raíz de A al cuadrado más B al cuadrado.",
+      "condiciones": "Distancia del punto x cero, y cero a la recta Ax+By+C=0; A y B no son ambos cero."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "J. J. O’Connor y E. F. Robertson, «René Descartes», MacTutor, University of St Andrews",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Descartes/"
+     }
+    ]
+   }
+  },
+  {
+   "id": "geometria.razonamiento-con-figuras",
+   "curso": "Geometría",
+   "curso_id": "geometria",
+   "numero": 18,
+   "titulo": "Razonamiento con figuras",
+   "grado": 3,
+   "temas_catalogo": [
+    "Perímetros de figuras",
+    "Series y analogías de figuras",
+    "Distribución de figuras",
+    "Conteo de figuras, rutas y cubos"
+   ],
+   "modulos_actuales": [
+    "razonamiento-figuras"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de comparar.",
+   "teoria": "Perímetro suma solamente el contorno elegido; bordes interiores no siempre cuentan. Una serie finita admite infinitas reglas: el problema debe declarar un repertorio de transformaciones o justificar la regla más simple esperada. Analogías pueden conservar forma, posición, orientación, cantidad o incidencia. Conteo exige definir qué es una figura válida y clasificar por tamaño/orientación para no omitir compuestas ni duplicar. Rutas en una cuadrícula sin retroceso se cuentan por suma de caminos a cada nodo o combinaciones; con restricciones hay que cambiar el modelo. Cubos pueden ser visibles, ocultos, unitarios o compuestos.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Conteo organizado",
+    "simetrías",
+    "suma de longitudes"
+   ],
+   "desempeno": "Da un conteo con clasificación verificable y reconoce cuándo los datos no fijan una regla única.",
+   "escena_propuesta": "Marcar figuras y guardar su firma (vértices/tamaño/orientación), no solo un contador. Mostrar un fantasma duplicado o una región omitida y volver a contar; en rutas, colocar fichas con subtotales.",
+   "otra_representacion": "Tabla exhaustiva; árbol de casos o cuadrícula de recurrencia.",
+   "ejemplo": "En cuadrícula 2×2 hay 5 cuadrados: cuatro pequeños y uno grande. Caminos mínimos esquina a esquina: C(4,2)=6.",
+   "error_objetivo": "Dar una pauta visual como única conclusión lógica; hipótesis.",
+   "transferencia": "Resolver un caso nuevo con figura girada, sin colores de ayuda, justificando la propiedad; medir por separado cada longitud, ángulo, área o volumen solicitado.",
+   "repaso": "Otro día, recuperar la relación y sus condiciones sin escena; resolver un ítem nuevo mezclado con otra unidad. El calendario concreto conserva la cola de repaso del proyecto.",
+   "fuentes": [
+    {
+     "id": "GT-K1",
+     "autor": "Kiran S. Kedlaya",
+     "fecha": "2006",
+     "titulo": "Geometry Unbound",
+     "seccion": "1.1–1.7: coordenadas, polígonos, áreas, arcos y ángulos",
+     "url": "https://kskedlaya.org/geometryunbound/gu-060118.pdf",
+     "tipo": "Libro abierto del autor; GFDL",
+     "verificacion": "PDF del sitio del autor abierto; índice y pasajes relevantes localizados el 14-11-2026",
+     "localizador": "1.1–1.7: coordenadas, polígonos, áreas, arcos y ángulos"
+    },
+    {
+     "id": "GT-DC",
+     "autor": "Oscar Levin",
+     "fecha": "edición web 2, s. f. en la página consultada",
+     "titulo": "Discrete Mathematics: An Open Introduction",
+     "seccion": "Binomial Coefficients; lattice paths",
+     "url": "https://discrete.openmathbooks.org/dmoi2/sec_counting-binom.html",
+     "tipo": "Texto abierto del autor",
+     "verificacion": "Página abierta 14-11-2026",
+     "localizador": "Binomial Coefficients; lattice paths"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "geometria.razonamiento-con-figuras",
+    "curso": "Geometría",
+    "numero": 18,
+    "titulo": "Razonamiento con figuras",
+    "historia": "El problema de los puentes de Königsberg preguntaba por un recorrido que atravesara cada puente una sola vez. Euler lo reformuló atendiendo a las conexiones entre regiones y puentes, dejando de lado sus medidas exactas. Este paso ayudó a abrir un estudio de estructuras que hoy vinculamos con los grafos y la topología. La lección para el razonamiento con figuras no es memorizar aquel mapa, sino decidir qué información importa para cada pregunta. Contar caminos, piezas o cubos exige fijar reglas y distinguir objetos que el dibujo puede superponer.",
+    "puente_escena": "Convertir una figura de rutas en nodos y conexiones identificados por letras. El estudiante conserva las conexiones al deformar el dibujo y compara recorridos válidos e inválidos. Para una cuadrícula, registra cada ruta como secuencia de movimientos, evitando duplicados y justificando el procedimiento de conteo.",
+    "ecuaciones": [
+     {
+      "latex": "N=\\binom{m+n}{m}",
+      "lectura": "El número de rutas es el coeficiente binomial de m más n sobre m.",
+      "condiciones": "Rutas mínimas de una cuadrícula rectangular sin obstáculos, con m pasos horizontales y n verticales en sentidos fijados; m y n enteros no negativos."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "J. J. O’Connor y E. F. Robertson, «A history of Topology», MacTutor, University of St Andrews",
+      "url": "https://mathshistory.st-andrews.ac.uk/HistTopics/Topology_in_mathematics/"
+     }
+    ]
+   }
+  }
+ ]
+}

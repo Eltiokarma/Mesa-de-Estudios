@@ -1,0 +1,1125 @@
+{
+ "curso": "razonamiento-verbal",
+ "fecha": "2026-11-14",
+ "tipo": "Expediente editorial; no es el formato de ejecución de Teoria.vista",
+ "unidades": [
+  {
+   "id": "razonamiento-verbal.definiciones",
+   "curso": "Razonamiento verbal",
+   "curso_id": "razonamiento-verbal",
+   "numero": 1,
+   "titulo": "Definiciones",
+   "grado": 3,
+   "temas_catalogo": [
+    "Género próximo",
+    "Diferencia específica",
+    "Rasgos mínimos de significado"
+   ],
+   "modulos_actuales": [
+    "lectura-verbal"
+   ],
+   "ruta_propuesta": "comparar, con apoyo de recordar.",
+   "teoria": "Una definición delimita un concepto. Género próximo ubica la clase y diferencia específica distingue los miembros pertinentes. Rasgos necesarios deben estar presentes en todos los casos; un conjunto suficiente permite reconocerlos. Un ejemplo ilustra, pero por sí solo no define.",
+   "condiciones": "No todos los conceptos cotidianos tienen fronteras rígidas. Trabajar primero con categorías explícitas y distinguir definición estipulada de uso contextual.",
+   "prerrequisitos": [
+    "Clase/subclase",
+    "atributos",
+    "lectura literal."
+   ],
+   "desempeno": "Acepta ejemplos y rechaza contraejemplos justificando el rasgo decisivo.",
+   "escena_propuesta": "Clasificar tarjetas y ajustar rasgos de una definición; predecir qué caso entra; registrar un contraejemplo que obliga a precisar.",
+   "otra_representacion": "Diagrama de inclusión y tabla rasgo/caso.",
+   "ejemplo": "Triángulo: polígono de tres lados. “Figura de tres líneas” admite trazos abiertos y por ello no delimita lo mismo.",
+   "error_objetivo": "Confundir rasgo frecuente con necesario o definición con ejemplo.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "OpenStax",
+     "anio": "2023",
+     "titulo": "Contemporary Mathematics",
+     "url": "https://openstax.org/books/contemporary-mathematics/pages/2-7-logical-arguments",
+     "seccion": "2.7 Logical Arguments",
+     "localizador": "2.7 Logical Arguments"
+    },
+    {
+     "autor": "Instituto Cervantes",
+     "anio": "s. f.",
+     "titulo": "Diccionario de términos clave de ELE: comprensión lectora",
+     "url": "https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/comprensionlectora.htm",
+     "seccion": "Comprensión global, específica y crítica",
+     "localizador": "Comprensión global, específica y crítica"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-verbal.definiciones",
+    "historia": "En los Tópicos, escritos en la Grecia del siglo IV a. C., Aristóteles examinó cómo discutir una definición y detectar sus defectos. El problema era distinguir lo que una cosa es de características accidentales: una descripción podía resultar demasiado amplia, demasiado estrecha o poco clara. Su análisis relacionó el género con las diferencias que distinguen una especie. También advirtió contra expresiones ambiguas y detalles innecesarios. Esta tradición proporciona un antecedente del trabajo conceptual de definir; no documenta el nacimiento de las preguntas de admisión actuales. En la aplicación, sirve para comprender por qué enumerar cualidades llamativas no siempre delimita correctamente un concepto.",
+    "puente_escena": "La escena presenta tarjetas con ejemplos y contraejemplos. El estudiante predice qué incluye una definición y modifica un solo rasgo. La figura semántica muestra los casos incluidos por error o excluidos injustificadamente; después explicita género y diferencia sin imponer esa estructura a toda definición.",
+    "esquema": "Esquema didáctico moderno: concepto por definir → clase pertinente → rasgo que distingue → comprobación con ejemplos y contraejemplos. No es una ley cuantitativa ni una transcripción de la notación aristotélica.",
+    "ecuaciones": [],
+    "fuentes": [
+     {
+      "titulo": "Aristóteles, Tópicos, libro VI, especialmente 1–3; traducción de W. A. Pickard-Cambridge, Internet Classics Archive, MIT",
+      "url": "https://classics.mit.edu/Aristotle/topics.6.vi.html"
+     }
+    ]
+   }
+  },
+  {
+   "id": "razonamiento-verbal.analogias",
+   "curso": "Razonamiento verbal",
+   "curso_id": "razonamiento-verbal",
+   "numero": 2,
+   "titulo": "Analogías",
+   "grado": 3,
+   "temas_catalogo": [
+    "Sinonimia y antonimia",
+    "Género y especie",
+    "Causa y efecto",
+    "Parte y todo",
+    "Agente e instrumento"
+   ],
+   "modulos_actuales": [
+    "lectura-verbal"
+   ],
+   "ruta_propuesta": "comparar, con apoyo de argumentar.",
+   "teoria": "Una analogía conserva una relación entre pares: género–especie, parte–todo, agente–instrumento, causa–efecto u oposición contextual. La dirección de la relación importa. La semejanza superficial entre palabras no garantiza equivalencia relacional.",
+   "condiciones": "Precisar el nivel de generalidad. Causa no significa mera sucesión y parte no equivale a miembro de una clase. Si más de una alternativa satisface con igual pertinencia la relación exigida por la consigna, precisar o reescribir el ítem; un par puede compartir varias relaciones sin que todas sean pertinentes.",
+   "prerrequisitos": [
+    "Vocabulario básico",
+    "clases",
+    "relación y dirección."
+   ],
+   "desempeno": "Nombra una relación y aplica la misma frase a ambos pares.",
+   "escena_propuesta": "Conectar pares mediante una etiqueta de relación; predecir antes de alternativas; resaltar el vínculo que se conserva.",
+   "otra_representacion": "Plantilla verbal “X es instrumento de Y” y matriz de tipos de relación.",
+   "ejemplo": "Carpintero–serrucho se corresponde con cirujano–bisturí por agente–instrumento, no por material o lugar.",
+   "error_objetivo": "Elegir por afinidad temática sin conservar la relación.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "Instituto Cervantes",
+     "anio": "s. f.",
+     "titulo": "Diccionario de términos clave de ELE: comprensión lectora",
+     "url": "https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/comprensionlectora.htm",
+     "seccion": "Comprensión global, específica y crítica",
+     "localizador": "Comprensión global, específica y crítica"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-verbal.analogias",
+    "historia": "En la Poética, Aristóteles estudió la metáfora y describió una analogía mediante la relación que dos términos mantienen, comparable con la de otros dos. Su interés era explicar usos expresivos del lenguaje, no diseñar pruebas escolares. El ejemplo histórico importa porque obliga a mirar la relación y su dirección, en lugar de agrupar palabras solo por semejanza superficial. Una comparación puede iluminar un aspecto sin igualar todas las propiedades de sus elementos. Las analogías verbales contemporáneas convierten esa comparación relacional en una tarea de selección y justificación; no deben atribuirse como formato de examen a Aristóteles ni confundirse con una proporción numérica.",
+    "puente_escena": "Dos pares de tarjetas aparecen unidos por flechas con verbos. El estudiante propone la relación antes de elegir otro par. Al invertir una flecha observa qué deja de conservarse. La devolución contrasta relaciones pertinentes y reconoce ambigüedad cuando varias opciones satisfacen igualmente la consigna.",
+    "esquema": "Esquema didáctico moderno: primer par —relación con dirección explícita— segundo par. La semejanza se refiere a esa relación, no a una igualdad matemática entre palabras.",
+    "ecuaciones": [],
+    "fuentes": [
+     {
+      "titulo": "Aristóteles, Poética, capítulo XXI; traducción de S. H. Butcher, Internet Classics Archive, MIT",
+      "url": "https://classics.mit.edu/Aristotle/poetics.3.3.html"
+     }
+    ]
+   }
+  },
+  {
+   "id": "razonamiento-verbal.sentido-contextual",
+   "curso": "Razonamiento verbal",
+   "curso_id": "razonamiento-verbal",
+   "numero": 3,
+   "titulo": "Precisión léxica y sentido contextual",
+   "grado": 3,
+   "temas_catalogo": [
+    "Denotación y connotación",
+    "Precisión léxica",
+    "Sinónimos en contexto",
+    "Antónimos en contexto",
+    "Inferencias léxicas"
+   ],
+   "modulos_actuales": [
+    "lectura-verbal"
+   ],
+   "ruta_propuesta": "comparar, con apoyo de argumentar.",
+   "teoria": "El significado contextual selecciona una acepción compatible con la frase y el propósito. Denotación se refiere al contenido descriptivo; connotación añade asociaciones y valoración. Sinonimia y antonimia dependen de qué rasgo se compara, del registro y del contexto.",
+   "condiciones": "Sustituir una palabra debe preservar información relevante, concordancia y tono. Una asociación subjetiva no basta como evidencia de significado.",
+   "prerrequisitos": [
+    "Identificar referentes",
+    "vocabulario frecuente",
+    "leer oración completa."
+   ],
+   "desempeno": "Escoge una sustitución y explica qué pista descarta la otra.",
+   "escena_propuesta": "Cambiar una ficha léxica dentro de la oración; predecir si se conserva sentido; subrayar la pista que decide la acepción.",
+   "otra_representacion": "Definición contextual breve y dos contextos contrastantes.",
+   "ejemplo": "“La respuesta fue fría” puede significar distante; “el agua estaba fría” alude a temperatura. Una sustitución sirve en uno y no en ambos.",
+   "error_objetivo": "Usar la primera acepción recordada sin revisar contexto.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "Instituto Cervantes",
+     "anio": "s. f.",
+     "titulo": "Diccionario de términos clave de ELE: contexto discursivo",
+     "url": "https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/contextodiscursivo.htm",
+     "seccion": "Contexto espacio-temporal, situacional, sociocultural y cognitivo",
+     "localizador": "Contexto espacio-temporal, situacional, sociocultural y cognitivo"
+    },
+    {
+     "autor": "Instituto Cervantes",
+     "anio": "s. f.",
+     "titulo": "Diccionario de términos clave de ELE: comprensión lectora",
+     "url": "https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/comprensionlectora.htm",
+     "seccion": "Comprensión global, específica y crítica",
+     "localizador": "Comprensión global, específica y crítica"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-verbal.sentido-contextual",
+    "historia": "La lexicografía del español ofrece una historia concreta del problema de explicar significados con usos reales. El Diccionario de autoridades, publicado entre 1726 y 1739, acompañaba las definiciones con citas de autores que ilustraban su empleo. En 1780 apareció una versión de un volumen, sin aquellas citas, que facilitaba la consulta. Mucho después, la RAE planteó en 2005 un diccionario histórico nativo digital para estudiar relaciones entre palabras y cambios de significado mediante documentación. Estas decisiones muestran que una entrada de diccionario y un enunciado cumplen funciones diferentes: conocer acepciones posibles ayuda, pero seleccionar la pertinente exige examinar el contexto del pasaje.",
+    "puente_escena": "La escena conserva una palabra y cambia únicamente la oración que la rodea. El alumno elige una paráfrasis y señala las pistas que la sostienen. Luego compara sustituciones: una equivalencia válida en ese pasaje puede alterar el sentido en otro, aunque ambas palabras compartan una acepción.",
+    "esquema": "Esquema didáctico moderno: acepciones posibles → pistas del pasaje → acepción pertinente → prueba de sustitución. No presupone sinonimia absoluta.",
+    "ecuaciones": [],
+    "fuentes": [
+     {
+      "titulo": "ASALE, Diccionario de la lengua española: historia de Autoridades y de la edición de 1780",
+      "url": "https://www.asale.org/obras-academicas/diccionarios/diccionario-de-la-lengua-espanola"
+     },
+     {
+      "titulo": "RAE, Presentación del Diccionario histórico de la lengua española",
+      "url": "https://temporalraeweb.rae.es/dhle/ayuda/presentacion"
+     }
+    ]
+   }
+  },
+  {
+   "id": "razonamiento-verbal.conectores",
+   "curso": "Razonamiento verbal",
+   "curso_id": "razonamiento-verbal",
+   "numero": 4,
+   "titulo": "Conectores lógico-textuales",
+   "grado": 3,
+   "temas_catalogo": [
+    "Clases de conectores",
+    "Conectores de adición, contraste y causa",
+    "Locuciones conjuntivas"
+   ],
+   "modulos_actuales": [
+    "lectura-verbal"
+   ],
+   "ruta_propuesta": "comparar, con apoyo de seguir un ejemplo.",
+   "teoria": "Conectores orientan relaciones entre ideas: adición, causa, consecuencia, contraste, concesión y orden. La relación conceptual se identifica antes de elegir la forma lingüística. Un mismo marcador puede cumplir funciones distintas según la construcción.",
+   "condiciones": "No todos los marcadores y conjunciones son intercambiables sintácticamente. “Aunque” introduce una dificultad que no impide el resultado; “porque” ofrece una causa.",
+   "prerrequisitos": [
+    "Proposiciones",
+    "causa/efecto",
+    "negación."
+   ],
+   "desempeno": "Elige un conector por relación y construye un contraste donde otro sería correcto.",
+   "escena_propuesta": "Insertar fichas entre dos proposiciones; predecir relación; mantener ambas frases y destacar la expectativa que se cumple o se rompe.",
+   "otra_representacion": "Flechas causa→efecto o comparación de dos versiones completas.",
+   "ejemplo": "“Estudió mucho; sin embargo, no aprobó” expresa contraste con una expectativa; cambiarlo por “por eso” altera la relación.",
+   "error_objetivo": "Resolver por sonido familiar o por palabra vecina.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "Instituto Cervantes",
+     "anio": "s. f.",
+     "titulo": "Diccionario de términos clave de ELE: marcadores del discurso",
+     "url": "https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/marcadoresdiscurso.htm",
+     "seccion": "Relaciones discursivas y carácter polifuncional",
+     "localizador": "Relaciones discursivas y carácter polifuncional"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-verbal.conectores",
+    "historia": "Los estudios del discurso ampliaron la pregunta gramatical sobre cómo se enlazan oraciones: también investigaron cómo ciertas expresiones orientan la interpretación de lo dicho. En español, las propuestas de Portolés de 1998 y de Martín Zorraquino y Portolés de 1999 organizaron los marcadores del discurso y trataron los conectores como un subgrupo. Esta clasificación no fue la única: otros trabajos delimitaron de otra manera los marcadores conversacionales. La evolución relevante consiste en atender a la función interpretativa y a la posición de cada expresión, además de memorizar etiquetas. Una misma forma puede cumplir funciones diferentes; por eso una lista no resuelve por sí sola todos los contextos.",
+    "puente_escena": "Dos enunciados permanecen visibles mientras el alumno cambia el enlace. Antes predice si la relación será adición, causa o contraste. La escena resalta la expectativa confirmada o frustrada y comprueba también puntuación y construcción gramatical, sin presentar todos los conectores como piezas libremente intercambiables.",
+    "esquema": "Esquema didáctico moderno: segmento anterior → relación interpretativa → segmento siguiente; la elección del enlace depende también de su comportamiento gramatical.",
+    "ecuaciones": [],
+    "fuentes": [
+     {
+      "titulo": "Instituto Cervantes, Diccionario de términos clave de ELE: Marcadores del discurso",
+      "url": "https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/marcadoresdiscurso.htm"
+     }
+    ]
+   }
+  },
+  {
+   "id": "razonamiento-verbal.eliminacion-de-oraciones",
+   "curso": "Razonamiento verbal",
+   "curso_id": "razonamiento-verbal",
+   "numero": 5,
+   "titulo": "Eliminación de oraciones",
+   "grado": 3,
+   "temas_catalogo": [
+    "Redundancia",
+    "Impertinencia",
+    "Incompatibilidad"
+   ],
+   "modulos_actuales": [
+    "lectura-verbal"
+   ],
+   "ruta_propuesta": "argumentar, con apoyo de comparar.",
+   "teoria": "Eliminar una oración exige reconstruir el propósito y la estructura del conjunto. Redundancia repite información sin función nueva; impertinencia rompe el desarrollo relevante; incompatibilidad contradice lo establecido bajo el mismo marco. Una oración de contraste no es por ello incompatible.",
+   "condiciones": "No eliminar siempre la más larga ni toda repetición: puede cumplir cohesión, énfasis o aclaración. Si dos supresiones son defendibles, el ejercicio carece de clave única.",
+   "prerrequisitos": [
+    "Tema",
+    "relaciones entre frases",
+    "distinguir negación y contraste."
+   ],
+   "desempeno": "Justifica una supresión mediante lo que el texto conserva y lo que la frase no aporta.",
+   "escena_propuesta": "Tapar una oración y releer el texto completo; predecir pérdida; mostrar dos versiones y evidencias de continuidad.",
+   "otra_representacion": "Mapa oración–función y resumen del conjunto.",
+   "ejemplo": "En un párrafo sobre cómo se prepara una muestra, una frase sobre el precio de una entrada al cine es impertinente si no existe vínculo pertinente.",
+   "error_objetivo": "Eliminar un ejemplo necesario porque no repite las palabras del tema.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "Instituto Cervantes",
+     "anio": "s. f.",
+     "titulo": "Diccionario de términos clave de ELE: coherencia",
+     "url": "https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/coherencia.htm",
+     "seccion": "Entrada coherencia",
+     "localizador": "Entrada coherencia"
+    },
+    {
+     "autor": "Instituto Cervantes",
+     "anio": "s. f.",
+     "titulo": "Diccionario de términos clave de ELE: macrorreglas textuales",
+     "url": "https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/macrorreglastextuales.htm",
+     "seccion": "Selección, supresión, generalización y construcción",
+     "localizador": "Selección, supresión, generalización y construcción"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-verbal.eliminacion-de-oraciones",
+    "historia": "La revisión de textos proporciona un antecedente documentado para preguntar qué conviene conservar, modificar o quitar. Los modelos de composición de finales del siglo XX estudiaron la escritura como una actividad de decisiones, no solo como un producto terminado. Bereiter y Scardamalia, en 1987, describieron la revisión como comparación entre el texto existente y el deseado, diagnóstico del desajuste y operación de cambio. Hayes, en 1996, integró interpretación, reflexión y textualización. Esta historia no identifica un inventor del ejercicio de eliminación de oraciones. Sí explica su condición pedagógica: eliminar debe responder al propósito del texto, porque una repetición puede cumplir una función útil.",
+    "puente_escena": "Un borrador muestra su propósito y sus oraciones numeradas. El alumno anticipa qué cambiará al retirar una de ellas. La escena permite ocultarla y restaurarla: deben verse tanto la redundancia evitada como una posible pérdida de evidencia, referencia o transición necesaria.",
+    "esquema": "Esquema didáctico moderno: propósito del texto → diagnóstico de la oración → retirar provisionalmente → comparar significado y continuidad → conservar o corregir.",
+    "ecuaciones": [],
+    "fuentes": [
+     {
+      "titulo": "Instituto Cervantes, Diccionario de términos clave de ELE: Procedimientos de composición; modelos de Bereiter y Scardamalia (1987) y Hayes (1996)",
+      "url": "https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/procedimientoscompos.htm"
+     }
+    ]
+   }
+  },
+  {
+   "id": "razonamiento-verbal.plan-de-redaccion",
+   "curso": "Razonamiento verbal",
+   "curso_id": "razonamiento-verbal",
+   "numero": 6,
+   "titulo": "Plan de redacción",
+   "grado": 3,
+   "temas_catalogo": [
+    "Tema y subtemas",
+    "Secuencia cronológica",
+    "Secuencia causa-efecto",
+    "Secuencias de análisis y comparación"
+   ],
+   "modulos_actuales": [
+    "lectura-verbal"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de argumentar.",
+   "teoria": "La planificación organiza un tema en subtemas y relaciones: cronología, causa–efecto, descripción, problema–solución o comparación. El orden se justifica por dependencias semánticas y referencias, no solo por general a particular. Un pronombre puede exigir un antecedente ya presentado.",
+   "condiciones": "Puede haber varios órdenes coherentes; la pregunta debe aportar restricciones suficientes o aceptar alternativas. Fechas y conectores prevalecen sobre preferencias estilísticas.",
+   "prerrequisitos": [
+    "Tema/subtema",
+    "referentes",
+    "relaciones temporales."
+   ],
+   "desempeno": "Ordena tarjetas y explica al menos dos vínculos obligatorios entre ellas.",
+   "escena_propuesta": "Ordenar frases; predecir cuál puede abrir; dejar flechas de dependencia y marcar el antecedente de cada referencia.",
+   "otra_representacion": "Esquema de párrafos y grafo de precedencias.",
+   "ejemplo": "En “Se recogieron muestras → estas se secaron → luego se pesaron”, “estas” retoma “muestras” y el orden sigue la cronología descrita. Esto no prohíbe la catáfora en otros textos.",
+   "error_objetivo": "Forzar general→particular aunque el texto sea cronológico.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "Instituto Cervantes",
+     "anio": "s. f.",
+     "titulo": "Diccionario de términos clave de ELE: progresión temática",
+     "url": "https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/progresiontematica.htm",
+     "seccion": "Tema y rema",
+     "localizador": "Tema y rema"
+    },
+    {
+     "autor": "Instituto Cervantes",
+     "anio": "s. f.",
+     "titulo": "Diccionario de términos clave de ELE: coherencia",
+     "url": "https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/coherencia.htm",
+     "seccion": "Entrada coherencia",
+     "localizador": "Entrada coherencia"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-verbal.plan-de-redaccion",
+    "historia": "Organizar lo que se va a decir fue un problema de la retórica clásica. En el libro III de la Retórica, Aristóteles diferenció los recursos de persuasión, el estilo y la disposición de las partes del discurso. En el siglo XX, los modelos de Flower y Hayes de 1980 y 1981 estudiaron planificación, textualización y revisión como procesos que pueden retomarse durante la escritura. El cambio de perspectiva es útil: ordenar una lista de oraciones no equivale a describir un procedimiento mental rígido y siempre lineal. El plan actual debe justificarse por el propósito, las dependencias informativas y las relaciones entre ideas.",
+    "puente_escena": "Las tarjetas de un texto propio muestran referencias y relaciones temporales o causales. El estudiante propone un orden; la escena revela qué información necesita cada tarjeta. Puede revisar el plan y comparar otra secuencia válida, siempre que preserve propósito, referencias y relaciones explícitas.",
+    "esquema": "Esquema didáctico moderno: propósito ↔ selección y organización de ideas ↔ redacción ↔ revisión. Las flechas dobles permiten volver sobre decisiones.",
+    "ecuaciones": [],
+    "fuentes": [
+     {
+      "titulo": "Aristóteles, Retórica, libro III, capítulos 1 y 13; Internet Classics Archive, MIT",
+      "url": "https://classics.mit.edu/Aristotle/rhetoric.3.iii.html"
+     },
+     {
+      "titulo": "Instituto Cervantes, Diccionario de términos clave de ELE: Textualización",
+      "url": "https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/textualizacion.htm"
+     }
+    ]
+   }
+  },
+  {
+   "id": "razonamiento-verbal.cohesion-y-coherencia",
+   "curso": "Razonamiento verbal",
+   "curso_id": "razonamiento-verbal",
+   "numero": 7,
+   "titulo": "Cohesión y coherencia textual",
+   "grado": 3,
+   "temas_catalogo": [
+    "Inclusión de enunciado",
+    "Progresión temática: tópico y comento",
+    "Repetición, sustitución y elipsis",
+    "Anáfora y catáfora",
+    "Principio de no contradicción"
+   ],
+   "modulos_actuales": [
+    "lectura-verbal"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de comparar.",
+   "teoria": "Cohesión describe vínculos expresos entre partes: referencia, sustitución, repetición, elipsis y conexión. Coherencia es la construcción de sentido global compatible con la situación. Tema y rema organizan información conocida y nueva; un texto puede tener conectores y aun ser incoherente.",
+   "condiciones": "Anáfora recupera un referente previo; catáfora lo anticipa. Un referente no siempre es el sustantivo más cercano. La coherencia depende también del mundo que el texto establece.",
+   "prerrequisitos": [
+    "Reconocer pronombres",
+    "identificar entidades",
+    "tópico y comentario."
+   ],
+   "desempeno": "Resuelve referencias y repara un salto de información sin cambiar la tesis.",
+   "escena_propuesta": "Conectar pronombre y referente; predecir antecedente; mantener el enlace visible y contrastar un candidato gramatical pero incoherente.",
+   "otra_representacion": "Reescritura con referentes explícitos y mapa de progresión temática.",
+   "ejemplo": "“Marta habló con Lucía cuando ella llegó” puede ser ambiguo; sin más contexto no imponer una clave única.",
+   "error_objetivo": "Elegir antecedente por proximidad o equiparar cohesión con coherencia.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "Instituto Cervantes",
+     "anio": "s. f.",
+     "titulo": "Diccionario de términos clave de ELE: cohesión",
+     "url": "https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/cohesion.htm",
+     "seccion": "Entrada cohesión",
+     "localizador": "Entrada cohesión"
+    },
+    {
+     "autor": "Instituto Cervantes",
+     "anio": "s. f.",
+     "titulo": "Diccionario de términos clave de ELE: coherencia",
+     "url": "https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/coherencia.htm",
+     "seccion": "Entrada coherencia",
+     "localizador": "Entrada coherencia"
+    },
+    {
+     "autor": "Instituto Cervantes",
+     "anio": "s. f.",
+     "titulo": "Diccionario de términos clave de ELE: progresión temática",
+     "url": "https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/progresiontematica.htm",
+     "seccion": "Tema y rema",
+     "localizador": "Tema y rema"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-verbal.cohesion-y-coherencia",
+    "historia": "La lingüística textual, desarrollada desde comienzos de los años setenta del siglo XX, convirtió las relaciones entre enunciados y el sentido global en objetos centrales de estudio. Trabajos de Beaugrande, Dressler y van Dijk contribuyeron a describir problemas que no se explican observando únicamente oraciones aisladas. Cohesión y coherencia no siempre se distinguieron del mismo modo. Una distinción posterior reserva cohesión para los enlaces visibles y reconoce que interpretar una unidad de sentido implica conocimientos y contexto compartidos. Por ello, abundar en pronombres y conectores no garantiza comprender un texto; también hay textos breves interpretables con escasos enlaces explícitos.",
+    "puente_escena": "El pasaje se convierte en una red de referencias y relaciones. El estudiante predice a qué remite una expresión y señala su apoyo. La escena cambia un referente o un enlace, manteniendo el resto, para separar una conexión superficial correcta de una interpretación global inconsistente.",
+    "esquema": "Esquema didáctico moderno: expresiones y enlaces visibles → relaciones interpretadas ↔ contexto compartido → sentido global. Cohesión y coherencia no son cantidades intercambiables.",
+    "ecuaciones": [],
+    "fuentes": [
+     {
+      "titulo": "Instituto Cervantes, Diccionario de términos clave de ELE: Coherencia",
+      "url": "https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/coherencia.htm"
+     },
+     {
+      "titulo": "Instituto Cervantes, Diccionario de términos clave de ELE: Cohesión",
+      "url": "https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/cohesion.htm"
+     }
+    ]
+   }
+  },
+  {
+   "id": "razonamiento-verbal.tipologia-textual",
+   "curso": "Razonamiento verbal",
+   "curso_id": "razonamiento-verbal",
+   "numero": 8,
+   "titulo": "El texto y sus tipos",
+   "grado": 3,
+   "temas_catalogo": [
+    "Texto y normas de textualidad",
+    "Niveles de comprensión lectora",
+    "Textos expositivos",
+    "Textos narrativos y descriptivos",
+    "Textos argumentativos"
+   ],
+   "modulos_actuales": [
+    "tipologia-textual"
+   ],
+   "ruta_propuesta": "comparar, con apoyo de recordar.",
+   "teoria": "Los tipos textuales se reconocen por propósito y organización dominante: narrar sucesos, describir rasgos, explicar relaciones o sostener una tesis. Un mismo texto puede combinar secuencias. Comprender implica localizar información, integrar relaciones e interpretar o evaluar.",
+   "condiciones": "El tema no determina el tipo: un texto sobre vacunas puede narrar una experiencia o defender una decisión. No exigir pureza de un solo tipo.",
+   "prerrequisitos": [
+    "Reconocer acciones",
+    "información y opinión",
+    "propósito."
+   ],
+   "desempeno": "Clasifica por rasgos de organización y señala una secuencia secundaria.",
+   "escena_propuesta": "Comparar dos textos propios sobre el mismo tema; predecir propósito; marcar evidencias y nombrar la secuencia dominante.",
+   "otra_representacion": "Cuadro propósito–estructura–marcas, con contraejemplo.",
+   "ejemplo": "Un relato de un experimento no es automáticamente una explicación científica; depende de qué organiza el texto.",
+   "error_objetivo": "Clasificar por vocabulario científico o por asunto.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "Instituto Cervantes",
+     "anio": "s. f.",
+     "titulo": "Diccionario de términos clave de ELE: tipología textual",
+     "url": "https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/tipologia.htm",
+     "seccion": "Secuencias textuales y secuencia dominante",
+     "localizador": "Secuencias textuales y secuencia dominante"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-verbal.tipologia-textual",
+    "historia": "La lingüística del texto necesitó explicar tanto qué hace que una emisión funcione como texto como las diferencias entre sus formas de organización. Beaugrande y Dressler propusieron en 1981 siete normas de textualidad que relacionan texto, participantes y situación. En otra línea, las tipologías de Werlich de 1975 y los trabajos de Adam de comienzos de los años noventa buscaron organizar la diversidad textual. Adam destacó la combinación de secuencias dentro de un mismo texto. Son respuestas a problemas distintos: cumplir una función comunicativa no determina automáticamente un tipo único. Estas propuestas son marcos históricos discutibles y revisables, no casilleros universales e inmutables.",
+    "puente_escena": "Un texto propio cambia de propósito o combina una explicación con una narración. El alumno identifica primero qué hace cada fragmento y después propone la organización dominante. La escena muestra evidencias del pasaje y permite reconocer mezclas, sin imponer pureza tipológica ni reducir textualidad a conectores.",
+    "esquema": "Esquema didáctico moderno: situación y propósito ↔ texto como comunicación; dentro del texto, secuencias que se combinan → organización dominante justificada.",
+    "ecuaciones": [],
+    "fuentes": [
+     {
+      "titulo": "Instituto Cervantes, Diccionario de términos clave de ELE: Textualidad; Beaugrande y Dressler (1981)",
+      "url": "https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/textualidad.htm"
+     },
+     {
+      "titulo": "Instituto Cervantes, Diccionario de términos clave de ELE: Tipología textual",
+      "url": "https://cvc.cervantes.es/ensenanza/biblioteca_Ele/diccio_ele/diccionario/tipologia.htm"
+     }
+    ]
+   }
+  },
+  {
+   "id": "razonamiento-verbal.tema-e-idea-principal",
+   "curso": "Razonamiento verbal",
+   "curso_id": "razonamiento-verbal",
+   "numero": 9,
+   "titulo": "Tema central e idea principal",
+   "grado": 3,
+   "temas_catalogo": [
+    "Jerarquía textual",
+    "Tema central",
+    "Idea principal e ideas secundarias",
+    "Subrayado",
+    "Mapas conceptuales"
+   ],
+   "modulos_actuales": [
+    "lectura-verbal"
+   ],
+   "ruta_propuesta": "argumentar, con apoyo de comparar.",
+   "teoria": "Tema nombra el asunto; idea principal expresa qué se sostiene sobre él. Ideas secundarias desarrollan, explican o sustentan. La idea principal puede ser explícita o construirse integrando varias oraciones; un mapa conceptual representa relaciones, no solo palabras recurrentes.",
+   "condiciones": "No afirmar que la principal es siempre la primera frase o una oración que no puede quitarse. Una tesis puede estar distribuida o repetida; probar cobertura y relevancia global.",
+   "prerrequisitos": [
+    "Proposición completa",
+    "propósito",
+    "jerarquía."
+   ],
+   "desempeno": "Formula una oración que cubre el texto sin añadir una conclusión externa.",
+   "escena_propuesta": "Elegir entre títulos y proposiciones; predecir cuál cubre más; marcar evidencias distribuidas y contrastar una opción demasiado amplia.",
+   "otra_representacion": "Mapa tema–tesis–apoyos y síntesis de una frase.",
+   "ejemplo": "“La biblioteca amplió horario y préstamo; ambas medidas facilitaron el acceso” → tema: biblioteca; idea: sus medidas facilitaron el acceso.",
+   "error_objetivo": "Confundir asunto con afirmación o una cifra llamativa con idea principal.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "Instituto Cervantes",
+     "anio": "s. f.",
+     "titulo": "Diccionario de términos clave de ELE: macroestructura textual",
+     "url": "https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/macroestructuratextual.htm",
+     "seccion": "Contenido global y macroproposiciones",
+     "localizador": "Contenido global y macroproposiciones"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-verbal.tema-e-idea-principal",
+    "historia": "En los trabajos de van Dijk de 1977, 1978 y 1980, la macroestructura permitió estudiar el contenido global de un texto, distinto de su organización formal o superestructura. La pregunta era cómo un conjunto de oraciones puede comprenderse como una unidad y cómo se organizan sus asuntos en niveles. El tema puede aparecer anunciado o requerir que el lector lo construya a partir del conjunto. Este desarrollo dio un lenguaje teórico a la diferencia entre información global y detalles locales. No implica que todos los textos contengan una oración que pueda copiarse como respuesta ni que la primera frase sea siempre la principal.",
+    "puente_escena": "La escena muestra un texto y varias propuestas de tema e idea principal. El alumno vincula cada propuesta con los fragmentos que cubre. Al ocultar un detalle observa si cambia el núcleo; al quitar una afirmación central comprueba qué explicación del conjunto se pierde.",
+    "esquema": "Esquema didáctico moderno: fragmentos pertinentes → asunto compartido → afirmación global sustentada → comprobación de cobertura y precisión. Tema y afirmación principal cumplen funciones diferentes.",
+    "ecuaciones": [],
+    "fuentes": [
+     {
+      "titulo": "Instituto Cervantes, Diccionario de términos clave de ELE: Macroestructura textual",
+      "url": "https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/macroestructuratextual.htm"
+     }
+    ]
+   }
+  },
+  {
+   "id": "razonamiento-verbal.resumen-y-sintesis",
+   "curso": "Razonamiento verbal",
+   "curso_id": "razonamiento-verbal",
+   "numero": 10,
+   "titulo": "Resumen y síntesis",
+   "grado": 3,
+   "temas_catalogo": [
+    "Resumen literal",
+    "Paráfrasis",
+    "Resumen interpretativo",
+    "Síntesis"
+   ],
+   "modulos_actuales": [
+    "resumen-sintesis"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de argumentar.",
+   "teoria": "Resumir reduce extensión conservando relaciones y compromisos del original. Selección y supresión quitan detalles; generalización y construcción integran información. Paráfrasis cambia formulación sin alterar lo afirmado. Síntesis puede reunir varias fuentes conservando sus acuerdos y diferencias.",
+   "condiciones": "Mantener negaciones, cuantificadores, autoría, modalidad y causalidad. Resumen interpretativo no autoriza inventar hechos. Una síntesis no debe borrar un desacuerdo real.",
+   "prerrequisitos": [
+    "Idea principal",
+    "cohesión",
+    "equivalencia semántica."
+   ],
+   "desempeno": "Produce o selecciona un resumen que conserva alcance, relaciones y postura.",
+   "escena_propuesta": "Eliminar detalles y agrupar tarjetas; predecir qué puede suprimirse; comparar original con resumen mediante enlaces de respaldo.",
+   "otra_representacion": "Tabla dato esencial/detalle y mapa de coincidencias entre textos.",
+   "ejemplo": "“Algunos alumnos mejoraron” no se resume como “Todos los alumnos mejoraron”: se ampliaría sin respaldo el cuantificador.",
+   "error_objetivo": "Reducir a palabras clave cambiando el alcance de la afirmación.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "Instituto Cervantes",
+     "anio": "s. f.",
+     "titulo": "Diccionario de términos clave de ELE: macrorreglas textuales",
+     "url": "https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/macrorreglastextuales.htm",
+     "seccion": "Selección, supresión, generalización y construcción",
+     "localizador": "Selección, supresión, generalización y construcción"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-verbal.resumen-y-sintesis",
+    "historia": "Van Dijk formuló en 1977 el concepto de macrorreglas para explicar cómo se obtiene una representación global a partir de las proposiciones de un texto. Distinguió operaciones de supresión, selección, generalización y construcción; una formulación de 1980 agrupó de otra manera operaciones estrechamente relacionadas. El problema no era acortar mecánicamente, sino conservar y organizar información pertinente. La interpretación depende también del propósito del lector y de lo que conoce. Estas operaciones influyeron en la enseñanza de la comprensión, pero no constituyen un algoritmo que produzca siempre un único resumen. La síntesis de varias fuentes añade una exigencia editorial: conservar acuerdos, diferencias y atribuciones.",
+    "puente_escena": "El alumno reduce un texto manteniendo visibles sus apoyos. Cada oración del resumen se enlaza con la información original; la escena marca detalles omitibles, generalizaciones excesivas y relaciones perdidas. En una segunda fuente, obliga a conservar una discrepancia relevante en lugar de fabricar un acuerdo.",
+    "esquema": "Esquema didáctico moderno: información de origen → seleccionar y reorganizar según propósito → formulación breve → comprobar fidelidad y atribución. Menor longitud no garantiza mejor resumen.",
+    "ecuaciones": [],
+    "fuentes": [
+     {
+      "titulo": "Instituto Cervantes, Diccionario de términos clave de ELE: Macrorreglas textuales",
+      "url": "https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/macrorreglastextuales.htm"
+     }
+    ]
+   }
+  },
+  {
+   "id": "razonamiento-verbal.textos-discontinuos",
+   "curso": "Razonamiento verbal",
+   "curso_id": "razonamiento-verbal",
+   "numero": 11,
+   "titulo": "Textos discontinuos e infografías",
+   "grado": 3,
+   "temas_catalogo": [
+    "Tablas y cuadros",
+    "Gráficos",
+    "Textos mixtos",
+    "Infografías"
+   ],
+   "modulos_actuales": [
+    "textos-discontinuos"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de argumentar.",
+   "teoria": "Tablas, gráficos e infografías distribuyen información entre texto y codificación visual. Leer exige identificar población, unidad, periodo, leyenda y escala; integrar fuentes requiere asegurar que comparan la misma variable. Una cifra absoluta y un porcentaje responden preguntas distintas.",
+   "condiciones": "No toda respuesta está en un solo cruce de fila/columna; puede requerir una relación entre elementos. Diferenciar dato observado, cálculo e interpretación.",
+   "prerrequisitos": [
+    "Porcentajes",
+    "ejes",
+    "categorías."
+   ],
+   "desempeno": "Marca los elementos exactos de una figura que respaldan una comparación y calcula cuando corresponde.",
+   "escena_propuesta": "Seleccionar fila/barra y predecir diferencia; mostrar lectura puntual, denominador y relación en el mismo plano.",
+   "otra_representacion": "Convertir gráfico a tabla y verbalizar una comparación.",
+   "ejemplo": "20 de 40 equivale a 50%; 30 de 100 equivale a 30%. Mayor cantidad no implica mayor proporción.",
+   "error_objetivo": "Comparar porcentajes ignorando denominadores o escalas.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "Instituto Cervantes",
+     "anio": "s. f.",
+     "titulo": "Diccionario de términos clave de ELE: comprensión lectora",
+     "url": "https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/comprensionlectora.htm",
+     "seccion": "Comprensión global, específica y crítica",
+     "localizador": "Comprensión global, específica y crítica"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-verbal.textos-discontinuos",
+    "historia": "Un antecedente concreto de comunicar mediante texto y gráficos es la campaña sanitaria de Florence Nightingale y Harriet Martineau. En 1859, England and her Soldiers combinó la exposición de Martineau con los estudios estadísticos de Nightingale para informar sobre la atención del ejército durante la guerra de Crimea. Sus diagramas distinguían causas de mortalidad y buscaban hacer comprensibles los datos a públicos no especialistas. Este episodio no es el origen de todas las infografías ni del ejercicio escolar llamado texto discontinuo. Sí muestra que el diseño visual puede sostener un argumento público y que comprenderlo exige leer categorías, convenciones y explicaciones conjuntamente.",
+    "puente_escena": "Una tabla accesible y un gráfico propio representan los mismos datos. El alumno predice qué comparación respalda una afirmación y selecciona sus celdas o categorías. La escena cambia una escala o una leyenda para mostrar cómo una lectura apresurada puede alterar la conclusión.",
+    "esquema": "Esquema didáctico moderno: pregunta de lectura ↔ título, leyenda y unidades ↔ datos pertinentes → afirmación respaldada. La representación debe tener una alternativa tabular accesible.",
+    "ecuaciones": [],
+    "fuentes": [
+     {
+      "titulo": "Science Museum Group Journal, A statistical campaign: Florence Nightingale and Harriet Martineau’s England and her Soldiers",
+      "url": "https://journal.sciencemuseum.ac.uk/article/nightingale-and-martineau/"
+     }
+    ]
+   }
+  },
+  {
+   "id": "razonamiento-verbal.inferencias",
+   "curso": "Razonamiento verbal",
+   "curso_id": "razonamiento-verbal",
+   "numero": 12,
+   "titulo": "Inferencias",
+   "grado": 3,
+   "temas_catalogo": [
+    "Inferencia deductiva e inductiva",
+    "Inferencia de la intención",
+    "Inferencia holística",
+    "Información implícita"
+   ],
+   "modulos_actuales": [
+    "lectura-verbal"
+   ],
+   "ruta_propuesta": "argumentar, con apoyo de seguir un ejemplo.",
+   "teoria": "Una inferencia integra información explícita y conocimiento pertinente para concluir algo no afirmado directamente. La deducción es necesaria dadas las premisas; una inferencia inductiva o de intención puede ser plausible sin ser obligatoria. La inferencia global combina partes del texto.",
+   "condiciones": "Paráfrasis fiel sigue siendo explícita en contenido aunque cambie las palabras. Separar necesario, probable y no sustentado; no convertir una presuposición cultural discutible en clave obligatoria.",
+   "prerrequisitos": [
+    "Proposiciones",
+    "conectores",
+    "distinguir dicho/supuesto."
+   ],
+   "desempeno": "Señala evidencias y el paso inferencial; rechaza una conclusión compatible pero no respaldada.",
+   "escena_propuesta": "Marcar dos evidencias, unirlas y predecir conclusión; contrastar un mundo alternativo que cumple el texto y refuta la inferencia excesiva.",
+   "otra_representacion": "Premisas→conclusión y tabla evidencia/paso añadido.",
+   "ejemplo": "“Todos los inscritos recibieron código; Ana está inscrita” permite concluir que Ana recibió código, sin inventar cuándo lo usó.",
+   "error_objetivo": "Tratar cualquier posibilidad compatible como inferencia correcta.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "Instituto Cervantes",
+     "anio": "s. f.",
+     "titulo": "Diccionario de términos clave de ELE: inferencia",
+     "url": "https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/inferencia.htm",
+     "seccion": "Entrada inferencia",
+     "localizador": "Entrada inferencia"
+    },
+    {
+     "autor": "OpenStax",
+     "anio": "2023",
+     "titulo": "Contemporary Mathematics",
+     "url": "https://openstax.org/books/contemporary-mathematics/pages/2-7-logical-arguments",
+     "seccion": "2.7 Logical Arguments",
+     "localizador": "2.7 Logical Arguments"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-verbal.inferencias",
+    "historia": "La inferencia tiene un antecedente en la lógica, donde se examina qué conclusiones se siguen de unas premisas. La pragmática amplió el problema hacia aquello que una persona comunica sin expresarlo literalmente. En una conferencia de 1967, publicada en 1975, Grice estudió supuestos de cooperación que ayudan a interpretar conversaciones. Posteriormente, la teoría de la relevancia de Sperber y Wilson dio otro tratamiento al papel del contexto y de las pistas comunicativas. Esta evolución obliga a distinguir niveles de respaldo: una consecuencia deductiva y una interpretación de intención no tienen la misma garantía. La lectura debe indicar qué evidencia sostiene la inferencia y qué incertidumbre permanece.",
+    "puente_escena": "Un pasaje permanece fijo mientras se comparan conclusiones. El estudiante señala la evidencia y declara si la conclusión es necesaria o solo plausible. La escena permite añadir una pista contextual y observar qué interpretación cambia; no transforma automáticamente una intención probable en un hecho demostrado.",
+    "esquema": "Esquema didáctico moderno: información explícita y contexto pertinente → interpretación propuesta → prueba del respaldo y de alternativas. Deducción e inferencia pragmática deben identificarse por separado.",
+    "ecuaciones": [],
+    "fuentes": [
+     {
+      "titulo": "Instituto Cervantes, Diccionario de términos clave de ELE: Inferencia",
+      "url": "https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/inferencia.htm"
+     },
+     {
+      "titulo": "Instituto Cervantes, Diccionario de términos clave de ELE: Principio de cooperación; Grice (1967/1975)",
+      "url": "https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/principiocooperacion.htm"
+     }
+    ]
+   }
+  },
+  {
+   "id": "razonamiento-verbal.compatibilidad",
+   "curso": "Razonamiento verbal",
+   "curso_id": "razonamiento-verbal",
+   "numero": 13,
+   "titulo": "Compatibilidad e incompatibilidad",
+   "grado": 3,
+   "temas_catalogo": [
+    "Compatibilidad explícita e implícita",
+    "Incompatibilidad explícita e implícita",
+    "Incompatibilidad con la idea principal"
+   ],
+   "modulos_actuales": [
+    "lectura-verbal"
+   ],
+   "ruta_propuesta": "comparar, con apoyo de argumentar.",
+   "teoria": "Una afirmación puede estar expresada, seguirse del texto, estar contradicha o quedar indeterminada. Compatibilidad significa no entrar en conflicto, pero no equivale necesariamente a respaldo. En preguntas de admisión debe precisarse qué criterio pide el enunciado.",
+   "condiciones": "Lo no mencionado no es automáticamente falso. La negación de todos no es ninguno. Mantener tiempo, grado y atribución al comparar dos afirmaciones.",
+   "prerrequisitos": [
+    "Negación",
+    "cuantificadores",
+    "inferencias."
+   ],
+   "desempeno": "Clasifica afirmaciones y aporta evidencia o un contraejemplo para el caso indeterminado.",
+   "escena_propuesta": "Clasificar tarjetas en cuatro grupos: lo dice, se deduce, lo contradice, no se puede decidir; mostrar las oraciones vinculadas.",
+   "otra_representacion": "Dos mundos compatibles con el texto que difieren en la afirmación.",
+   "ejemplo": "“Al menos un ave migra” contradice “Ninguna ave migra”, pero no decide si todas migran.",
+   "error_objetivo": "Confundir ausencia de información con incompatibilidad.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "Instituto Cervantes",
+     "anio": "s. f.",
+     "titulo": "Diccionario de términos clave de ELE: inferencia",
+     "url": "https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/inferencia.htm",
+     "seccion": "Entrada inferencia",
+     "localizador": "Entrada inferencia"
+    },
+    {
+     "autor": "OpenStax",
+     "anio": "2023",
+     "titulo": "Contemporary Mathematics",
+     "url": "https://openstax.org/books/contemporary-mathematics/pages/2-7-logical-arguments",
+     "seccion": "2.7 Logical Arguments",
+     "localizador": "2.7 Logical Arguments"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-verbal.compatibilidad",
+    "historia": "En Sobre la interpretación, Aristóteles examinó afirmaciones y negaciones, atendiendo a qué se predica, de quién y con qué alcance. Distinguir oposición y contradicción era importante porque dos enunciados aparentemente contrarios no siempre forman la negación exacta uno del otro. También analizó diferencias entre afirmaciones universales y particulares. Este antecedente lógico ayuda a leer expresiones como todos, alguno o no todos, pero no documenta el origen del formato moderno de compatibilidad textual. En una lectura actual hay una distinción adicional indispensable para evaluar opciones: que el texto no descarte una afirmación no significa que la demuestre o siquiera la mencione.",
+    "puente_escena": "La escena alinea una opción con las frases relevantes y destaca sujeto, tiempo y cuantificador. El alumno decide entre respaldada, contradicha o indeterminada. Al cambiar una sola palabra comprueba si el texto exige la opción, exige su negación o permite ambas posibilidades.",
+    "esquema": "Esquema didáctico moderno: texto consistente y opción → respaldo, contradicción o indeterminación. Compatible en sentido lógico significa no descartada; no equivale por sí solo a demostrada por el pasaje.",
+    "ecuaciones": [],
+    "fuentes": [
+     {
+      "titulo": "Aristóteles, Sobre la interpretación, capítulos 6–9; traducción de E. M. Edghill, Internet Classics Archive, MIT",
+      "url": "https://classics.mit.edu/Aristotle/interpretation.1.1.html"
+     }
+    ]
+   }
+  },
+  {
+   "id": "razonamiento-verbal.extrapolacion",
+   "curso": "Razonamiento verbal",
+   "curso_id": "razonamiento-verbal",
+   "numero": 14,
+   "titulo": "Extrapolación y lectura crítica",
+   "grado": 3,
+   "temas_catalogo": [
+    "Extrapolación cognitiva y referencial",
+    "Condicional subjuntivo",
+    "Mundos posibles"
+   ],
+   "modulos_actuales": [
+    "lectura-verbal"
+   ],
+   "ruta_propuesta": "argumentar, con apoyo de comparar.",
+   "teoria": "Extrapolar aplica una relación del texto a un caso nuevo, explicitando qué se conserva. Un contrafactual cambia una condición y examina consecuencias dentro del modelo del autor. Lectura crítica evalúa calidad del apoyo, supuestos, alcance y alternativas.",
+   "condiciones": "No arrastrar automáticamente todas las conclusiones al negar una premisa. P→Q no implica no-P→no-Q. Separar una predicción del autor de una valoración personal.",
+   "prerrequisitos": [
+    "Condicional",
+    "argumento",
+    "condiciones de validez."
+   ],
+   "desempeno": "Explica qué conclusión sigue tras el cambio y cuál deja de estar garantizada.",
+   "escena_propuesta": "Cambiar una condición en tarjeta; predecir conclusión; dejar juntas versiones original y nueva con el vínculo invalidado.",
+   "otra_representacion": "Diagrama premisa–garantía–conclusión y contraejemplo.",
+   "ejemplo": "“Si llueve, se suspende” no permite asegurar “si no llueve, se realiza”: puede suspenderse por otro motivo.",
+   "error_objetivo": "Negar el antecedente o extrapolar fuera del alcance declarado.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "OpenStax",
+     "anio": "2023",
+     "titulo": "Contemporary Mathematics",
+     "url": "https://openstax.org/books/contemporary-mathematics/pages/2-7-logical-arguments",
+     "seccion": "2.7 Logical Arguments",
+     "localizador": "2.7 Logical Arguments"
+    },
+    {
+     "autor": "Instituto Cervantes",
+     "anio": "s. f.",
+     "titulo": "Diccionario de términos clave de ELE: texto argumentativo",
+     "url": "https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/txtargumentativo.htm",
+     "seccion": "Tesis y razones",
+     "localizador": "Tesis y razones"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-verbal.extrapolacion",
+    "historia": "En la Investigación sobre el entendimiento humano, publicada inicialmente en 1748, Hume preguntó qué justifica pasar de lo observado a hechos que todavía no observamos. En la sección IV distinguió las relaciones de ideas de las cuestiones de hecho y examinó el papel de la experiencia en las expectativas causales. El problema histórico muestra por qué prolongar una regularidad no equivale a demostrar una necesidad. No convierte a Hume en inventor de los ejercicios actuales de extrapolación. Para la lectura crítica, su pregunta permite exigir que cada extensión de una conclusión identifique sus supuestos y explique qué ocurre cuando cambian las condiciones.",
+    "puente_escena": "El estudiante lee una conclusión limitada a un contexto y predice si se mantiene al modificar una condición. La escena conserva la evidencia original y separa el supuesto añadido. Después muestra qué conclusión queda apoyada, cuál necesita nuevos datos y cuál contradice el caso planteado.",
+    "esquema": "Esquema didáctico moderno: conclusión en condiciones originales → condición modificada → revisar supuestos → conclusión condicionada o necesidad de evidencia nueva. No es una ley de predicción.",
+    "ecuaciones": [],
+    "fuentes": [
+     {
+      "titulo": "David Hume, An Enquiry concerning Human Understanding, sección IV; Hume Texts Online",
+      "url": "https://davidhume.org/texts/e/4"
+     },
+     {
+      "titulo": "Hume Texts Online, notas editoriales sobre la edición de 1748 y el texto utilizado",
+      "url": "https://davidhume.org/texts/e/notes"
+     }
+    ]
+   }
+  },
+  {
+   "id": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+   "curso": "Razonamiento verbal",
+   "curso_id": "razonamiento-verbal",
+   "numero": 15,
+   "titulo": "Textos argumentativos, dialécticos y debate",
+   "grado": 3,
+   "temas_catalogo": [
+    "Tesis y argumentos",
+    "Tesis, antítesis y síntesis",
+    "La cuestión disputada",
+    "Puntos de vista en un debate"
+   ],
+   "modulos_actuales": [
+    "lectura-verbal",
+    "textos-dialecticos"
+   ],
+   "ruta_propuesta": "argumentar, con apoyo de comparar.",
+   "teoria": "Un argumento vincula tesis, razones y supuestos. Un contraargumento cuestiona una premisa, el vínculo inferencial o el alcance. En textos A/B importa atribuir cada afirmación al autor correcto y distinguir coincidencia factual de acuerdo valorativo. Una síntesis puede integrar sin conciliar.",
+   "condiciones": "No imponer tesis–antítesis–síntesis a todos los debates. Dos autores pueden compartir un dato y oponerse en la recomendación; no evaluar solo por la opinión propia.",
+   "prerrequisitos": [
+    "Proposiciones",
+    "evidencia",
+    "autoría."
+   ],
+   "desempeno": "Identifica controversia, atribuye posturas y formula una objeción pertinente.",
+   "escena_propuesta": "Clasificar tarjetas por autor y función antes de alternativas; registrar dato compartido y conclusiones divergentes.",
+   "otra_representacion": "Mapa de argumentos y tabla A/B: dato, tesis, razón, objeción.",
+   "ejemplo": "A y B aceptan que hay congestión; A propone limitar autos y B ampliar transporte. Coinciden en diagnóstico, no necesariamente en política.",
+   "error_objetivo": "Atribuir al autor una frase citada para refutarla.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "Instituto Cervantes",
+     "anio": "s. f.",
+     "titulo": "Diccionario de términos clave de ELE: texto argumentativo",
+     "url": "https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/txtargumentativo.htm",
+     "seccion": "Tesis y razones",
+     "localizador": "Tesis y razones"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+    "historia": "La Retórica de Aristóteles vinculó el estudio de la persuasión con la discusión de afirmaciones y la defensa de posiciones. Distinguió recursos relacionados con el razonamiento, la presentación del hablante y la disposición del auditorio, en situaciones como la deliberación pública y el juicio. El problema no era solo pronunciar discursos atractivos: también examinar por qué una intervención resulta convincente. Este antecedente permite separar la fuerza persuasiva de la calidad de las razones. Las actividades actuales de debate son adaptaciones pedagógicas; no toda discusión exige terminar en una síntesis, ni la secuencia escolar tesis, antítesis y síntesis describe universalmente la dialéctica.",
+    "puente_escena": "Dos posiciones propias responden a una misma cuestión. El alumno une cada razón con la tesis que pretende apoyar y predice qué objeción la afecta. La escena permite retirar una premisa para mostrar su función; el cierre admite desacuerdo razonado y límites de la evidencia.",
+    "esquema": "Esquema didáctico moderno: cuestión compartida → tesis y razones ↔ objeción y respuesta → conclusión con alcance explícito. No prescribe una síntesis obligatoria.",
+    "ecuaciones": [],
+    "fuentes": [
+     {
+      "titulo": "Aristóteles, Retórica, libro I, capítulos 1–3; traducción de W. Rhys Roberts, Internet Classics Archive, MIT",
+      "url": "https://classics.mit.edu/Aristotle/rhetoric.1.i.html"
+     }
+    ]
+   }
+  },
+  {
+   "id": "razonamiento-verbal.texto-y-contexto",
+   "curso": "Razonamiento verbal",
+   "curso_id": "razonamiento-verbal",
+   "numero": 16,
+   "titulo": "Texto y contexto",
+   "grado": 3,
+   "temas_catalogo": [
+    "Situación comunicativa",
+    "Relación entre emisor y destinatario",
+    "Contexto y situación"
+   ],
+   "modulos_actuales": [
+    "texto-contexto"
+   ],
+   "ruta_propuesta": "argumentar, con apoyo de comparar.",
+   "teoria": "Interpretar contexto implica identificar emisor, destinatario, propósito, canal, momento y conocimientos compartidos. Deícticos como aquí, hoy o nosotros se resuelven desde la situación de enunciación. Una misma frase puede cumplir acciones comunicativas diferentes.",
+   "condiciones": "La intención debe apoyarse en señales disponibles. No inventar biografía o época; usar fichas de contexto suficientes y distinguir información externa de textual.",
+   "prerrequisitos": [
+    "Referencias personales",
+    "tiempo verbal",
+    "propósito."
+   ],
+   "desempeno": "Explica qué cambia al modificar emisor o destinatario y qué contenido permanece.",
+   "escena_propuesta": "Cambiar la tarjeta de contexto; predecir sentido de un deíctico; registrar la referencia en una línea temporal.",
+   "otra_representacion": "Tabla quién/dónde/cuándo/para qué.",
+   "ejemplo": "“Mañana entregamos” necesita fecha de emisión para fijar el día. Sin ella, el día calendario queda indeterminado.",
+   "error_objetivo": "Tomar el momento de lectura como momento del enunciado.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "Instituto Cervantes",
+     "anio": "s. f.",
+     "titulo": "Diccionario de términos clave de ELE: contexto discursivo",
+     "url": "https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/contextodiscursivo.htm",
+     "seccion": "Contexto espacio-temporal, situacional, sociocultural y cognitivo",
+     "localizador": "Contexto espacio-temporal, situacional, sociocultural y cognitivo"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-verbal.texto-y-contexto",
+    "historia": "A comienzos del siglo XX, investigaciones de antropología lingüística asociadas con Boas y Sapir hicieron visible que conocer un código no basta para comprender sus usos. Más tarde, Firth estudió sistemáticamente factores de la situación comunicativa. Los desarrollos de los actos de habla, la cooperación conversacional y el análisis del discurso ampliaron el papel del contexto: además de lugar y momento, importan participantes, conocimientos y expectativas. Esta evolución no significa que cualquier interpretación sea aceptable. El contexto debe poder justificarse con información disponible; atribuir libremente una intención o un escenario puede producir una lectura inventada en lugar de una comprensión del enunciado.",
+    "puente_escena": "La misma oración aparece en dos situaciones descritas, sin cambiar sus palabras. El estudiante predice quién puede ser el referente y qué acción se realiza. La escena muestra qué dato situacional sostiene cada lectura y conserva como indeterminado lo que la información no permite resolver.",
+    "esquema": "Esquema didáctico moderno: enunciado ↔ participantes, tiempo, lugar y conocimientos disponibles → interpretación justificada. Un contexto supuesto debe distinguirse de un contexto proporcionado.",
+    "ecuaciones": [],
+    "fuentes": [
+     {
+      "titulo": "Instituto Cervantes, Diccionario de términos clave de ELE: Contexto discursivo",
+      "url": "https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/contextodiscursivo.htm"
+     }
+    ]
+   }
+  },
+  {
+   "id": "razonamiento-verbal.textos-filosoficos-y-cientificos",
+   "curso": "Razonamiento verbal",
+   "curso_id": "razonamiento-verbal",
+   "numero": 17,
+   "titulo": "Textos filosóficos y científicos",
+   "grado": 3,
+   "temas_catalogo": [
+    "Rasgos del texto filosófico",
+    "Rasgos del texto científico"
+   ],
+   "modulos_actuales": [
+    "textos-filosoficos-cientificos"
+   ],
+   "ruta_propuesta": "argumentar, con apoyo de seguir un ejemplo.",
+   "teoria": "Leer filosofía y ciencia exige reconstruir términos, pregunta, razones y conclusión. En un texto científico se distinguen datos, método, explicación y límites; en uno filosófico, tesis, distinciones, objeciones y argumentos. Ambos pueden contener definiciones, ejemplos y controversia.",
+   "condiciones": "No equiparar científico con verdadero por autoridad ni filosófico con opinión sin razones. Un autor puede estipular un término; la definición se reconstruye desde su uso y sus aclaraciones.",
+   "prerrequisitos": [
+    "Argumento",
+    "definición",
+    "hipótesis frente a evidencia."
+   ],
+   "desempeno": "Distingue observación y explicación e identifica qué evidencia o argumento faltaría para sostener la tesis.",
+   "escena_propuesta": "Marcar término, definición y apoyo; predecir qué conclusión autoriza un resultado; contrastar una generalización excesiva.",
+   "otra_representacion": "Mapa pregunta–método/argumento–resultado–límite.",
+   "ejemplo": "Un estudio que describe asociación no prueba por sí solo causalidad; la lectura debe conservar esa diferencia.",
+   "error_objetivo": "Transformar una hipótesis en hecho o una correlación en causa.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "Instituto Cervantes",
+     "anio": "s. f.",
+     "titulo": "Diccionario de términos clave de ELE: texto argumentativo",
+     "url": "https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/txtargumentativo.htm",
+     "seccion": "Tesis y razones",
+     "localizador": "Tesis y razones"
+    },
+    {
+     "autor": "Instituto Cervantes",
+     "anio": "s. f.",
+     "titulo": "Diccionario de términos clave de ELE: tipología textual",
+     "url": "https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/tipologia.htm",
+     "seccion": "Secuencias textuales y secuencia dominante",
+     "localizador": "Secuencias textuales y secuencia dominante"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-verbal.textos-filosoficos-y-cientificos",
+    "historia": "En 1637, Descartes publicó el Discurso del método para examinar cómo conducir el razonamiento y buscar conocimiento. En marzo de 1665, Henry Oldenburg inició Philosophical Transactions, aprovechando contactos y correspondencia para hacer circular investigaciones. Estos casos muestran necesidades relacionadas pero diferentes: justificar un modo de pensar y comunicar observaciones o resultados a otros lectores. No establecen una frontera absoluta entre filosofía y ciencia, que históricamente se entrelazaron, ni prueban que todos los textos científicos sigan una plantilla única. En la lectura actual conviene reconocer qué pregunta se aborda, cómo se argumenta y qué clase de apoyo ofrece cada fragmento.",
+    "puente_escena": "Dos fragmentos propios plantean preguntas distintas sobre un mismo asunto. El alumno clasifica la función de cada afirmación: definición, supuesto, argumento, observación o conclusión. La escena conecta los apoyos con lo que realmente justifican y señala cuándo una conclusión excede el alcance del procedimiento descrito.",
+    "esquema": "Esquema didáctico moderno: pregunta → tipo de justificación → apoyos del fragmento → conclusión y límites. El género orienta expectativas; no sustituye el análisis del texto concreto.",
+    "ecuaciones": [],
+    "fuentes": [
+     {
+      "titulo": "René Descartes, Discourse on Method (1637), extractos; Internet Modern History Sourcebook, Fordham University",
+      "url": "https://sourcebooks.web.fordham.edu/mod/1637descartes-method-excerpts.asp"
+     },
+     {
+      "titulo": "Royal Society, History of Philosophical Transactions",
+      "url": "https://royalsociety.org/journals/publishing-activities/publishing350/history-philosophical-transactions/"
+     }
+    ]
+   }
+  },
+  {
+   "id": "razonamiento-verbal.lectura-en-ingles",
+   "curso": "Razonamiento verbal",
+   "curso_id": "razonamiento-verbal",
+   "numero": 18,
+   "titulo": "Lectura en inglés",
+   "grado": 3,
+   "temas_catalogo": [
+    "Inglés básico",
+    "Idea principal (main idea)",
+    "Resumen (summary)",
+    "Lo que el texto dice y lo que no"
+   ],
+   "modulos_actuales": [
+    "lectura-ingles"
+   ],
+   "ruta_propuesta": "recordar, con apoyo de argumentar.",
+   "teoria": "Comprender inglés básico requiere vocabulario frecuente, referentes, negación, tiempos verbales y conectores; luego localizar datos e integrar la idea principal. Las pistas de contexto ayudan, pero no sustituyen todo conocimiento léxico y gramatical. Un resumen debe mantener quién hace qué y con qué alcance.",
+   "condiciones": "A1–B1 sirve para graduar apoyos, no establece el nivel oficial del examen. No enseñar solo recordar palabras: incluir explicación, ejemplo y lectura. Las preguntas pueden ir en inglés como prevé el formato del repo.",
+   "prerrequisitos": [
+    "Lectura de oraciones simples",
+    "pronombres",
+    "negación y conectores frecuentes."
+   ],
+   "desempeno": "Identifica main idea, dato y referente; justifica una respuesta con la frase inglesa pertinente.",
+   "escena_propuesta": "Preenseñar dos palabras críticas con ejemplos propios; predecir referente; marcar evidencia y retirar glosas; repetir con texto nuevo.",
+   "otra_representacion": "Paráfrasis sencilla en inglés y contraste de dos sentidos en contexto.",
+   "ejemplo": "“Some students walk to school” no autoriza “All students walk to school”; preservar some en la respuesta.",
+   "error_objetivo": "Traducir palabra a palabra o ignorar cuantificadores y negación.",
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "autor": "British Council",
+     "anio": "s. f.",
+     "titulo": "Practise English reading skills",
+     "url": "https://learnenglish.britishcouncil.org/free-resources/reading",
+     "seccion": "Lecturas A1, A2 y B1; niveles de referencia para graduar apoyos, no equivalencias oficiales con la admisión peruana.",
+     "localizador": "Lecturas A1, A2 y B1; niveles de referencia para graduar apoyos, no equivalencias oficiales con la admisión peruana."
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "razonamiento-verbal.lectura-en-ingles",
+    "historia": "La enseñanza de lenguas necesitó describir lo que una persona puede hacer con textos, además de enumerar contenidos gramaticales. El Consejo de Europa publicó en 2001 el Marco común europeo de referencia para apoyar currículos, enseñanza y evaluación. Su volumen complementario de 2020 amplió y actualizó los descriptores, con mayor detalle sobre lectura y nuevas escalas de mediación, entre otros ámbitos. Esta es una evolución de un marco educativo, no el origen de leer en inglés ni una clasificación exclusiva de esa lengua. Para la aplicación, recuerda que comprender una idea, localizar un dato y resumir son tareas relacionadas, con demandas que deben graduarse.",
+    "puente_escena": "Un texto breve propio en inglés mantiene visibles título y párrafos. El estudiante elige la idea principal y señala la evidencia exacta. Las ayudas léxicas aparecen bajo demanda; al retirarlas se comprueba comprensión del pasaje, incluyendo la diferencia entre información afirmada y datos que no constan.",
+    "esquema": "Esquema didáctico moderno: propósito de lectura → pistas léxicas y discursivas → evidencia del pasaje → respuesta fiel. Esta secuencia no asigna por sí sola un nivel del MCER.",
+    "ecuaciones": [],
+    "fuentes": [
+     {
+      "titulo": "Consejo de Europa, Historical overview of the development of the CEFR",
+      "url": "https://www.coe.int/en/web/common-european-framework-reference-languages/history"
+     },
+     {
+      "titulo": "Consejo de Europa, Common European Framework of Reference for Languages: Learning, Teaching, Assessment — Companion volume (2020)",
+      "url": "https://book.coe.int/en/education-and-modern-languages/8150-common-european-framework-of-reference-for-languages-learning-teaching-assessment-companion-volume.html"
+     }
+    ]
+   }
+  }
+ ]
+}

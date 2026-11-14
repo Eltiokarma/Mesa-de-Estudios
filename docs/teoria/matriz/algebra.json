@@ -1,0 +1,1537 @@
+{
+ "curso": "algebra",
+ "fecha": "2026-11-14",
+ "tipo": "Expediente editorial; no es el formato de ejecución de Teoria.vista",
+ "unidades": [
+  {
+   "id": "algebra.logica-y-conjuntos",
+   "curso": "Álgebra",
+   "curso_id": "algebra",
+   "numero": 1,
+   "titulo": "Lógica, conjuntos y juegos lógicos",
+   "grado": 3,
+   "temas_catalogo": [
+    "Proposiciones y conectores",
+    "Tautología y equivalencias",
+    "Condición necesaria y suficiente",
+    "Conjuntos y operaciones",
+    "Conjunto potencia y cardinalidad",
+    "Cuantificadores",
+    "Juegos lógicos: ordenamientos, parentescos y certezas"
+   ],
+   "modulos_actuales": [
+    "conjuntos",
+    "logica"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de comparar.",
+   "teoria": "Lógica y conjuntos se comparten con aritmética mediante una única base conceptual. p→q hace p suficiente para q y q necesaria para p; no prueba q→p. Equivalencia exige ambas direcciones. Negar cuantificadores cambia ∀ por ∃ y niega el predicado dentro del dominio declarado. Cardinalidad cuenta elementos distintos; el conjunto potencia cuenta subconjuntos. En juegos lógicos, las frases se traducen a restricciones y se examinan todas las configuraciones compatibles. Ordenamientos distinguen 'antes de' de 'inmediatamente antes'; parentescos requieren vínculos explícitos. Una certeza debe cumplirse en todos los casos admitidos, y basta un contraejemplo válido para refutarla.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Lectura de condiciones",
+    "Lógica proposicional básica",
+    "Clasificación en conjuntos"
+   ],
+   "desempeno": "Traduce necesaria/suficiente y justifica una conclusión en todas las configuraciones posibles.",
+   "escena_propuesta": "Ejemplo con interruptores y aros; luego una fila de fichas sujeta a dos pistas. Predice una posición, registra configuraciones válidas y contrasta una afirmación universal con un contraejemplo.",
+   "otra_representacion": "Tabla de verdad y tabla de restricciones; mismos conceptos compartidos con aritmética.",
+   "ejemplo": "Si todo múltiplo de 4 es par, ser par es necesario, pero no suficiente, para ser múltiplo de 4.",
+   "error_objetivo": {
+    "descripcion": "Tratar una condición necesaria como suficiente o añadir supuestos de parentesco no dados.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "CM-L",
+     "autor": "OpenStax",
+     "titulo": "Contemporary Mathematics (2023)",
+     "localizador": "Cap. 2, §§2.1–2.7: enunciados, cuantificadores, tablas, equivalencia y argumentos",
+     "url": "https://openstax.org/books/contemporary-mathematics/pages/2-introduction",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "CM-S",
+     "autor": "OpenStax",
+     "titulo": "Contemporary Mathematics (2023)",
+     "localizador": "Cap. 1, §§1.1–1.5: conjuntos y operaciones",
+     "url": "https://openstax.org/books/contemporary-mathematics/pages/1-introduction",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "DM-L",
+     "autor": "O. Levin",
+     "titulo": "Discrete Mathematics: An Open Introduction, 4th ed.",
+     "localizador": "§1.1 Mathematical Statements y §1.3 Rules of Logic",
+     "url": "https://discrete.openmathbooks.org/dmoi4/sec_logic-rules.html",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "algebra",
+    "numero": 1,
+    "historia": "En el siglo XIX, Boole mostró que el álgebra podía estudiar relaciones lógicas y no únicamente cantidades. Su Laws of Thought de 1854 vinculó reglas simbólicas con formas de razonamiento. La conexión permite pasar entre condiciones expresadas con palabras y operaciones sobre clases de objetos, aunque el formalismo escolar actual no reproduce exactamente su sistema. Los juegos de esta unidad aprovechan esa evolución como problema de consistencia: varias pistas deben cumplirse simultáneamente. Resolver significa justificar qué configuraciones quedan posibles y por qué se descartan las demás.",
+    "puente_escena": "Una cuadrícula conserva personajes, atributos y pistas activas. El estudiante predice qué casillas quedan imposibles al añadir una condición. Tabla lógica y conjuntos muestran la misma restricción; cada descarte conserva su motivo y puede revisarse sin perder los anteriores.",
+    "ecuaciones": [
+     {
+      "latex": "\\neg(p\\land q)\\equiv\\neg p\\lor\\neg q",
+      "lectura": "Negar que ambas condiciones se cumplen equivale a que al menos una falle.",
+      "condiciones": "Lógica clásica; la disyunción admite que fallen ambas."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "O’Connor y Robertson, George Boole — MacTutor, Universidad de St Andrews",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Boole/"
+     }
+    ],
+    "id": "algebra.logica-y-conjuntos",
+    "titulo": "Lógica, conjuntos y juegos lógicos"
+   }
+  },
+  {
+   "id": "algebra.numeros-reales",
+   "curso": "Álgebra",
+   "curso_id": "algebra",
+   "numero": 2,
+   "titulo": "Números reales e intervalos",
+   "grado": 3,
+   "temas_catalogo": [
+    "Axiomas de cuerpo y de orden",
+    "Desigualdades",
+    "Intervalos y sus operaciones",
+    "Conjuntos acotados y densidad",
+    "Operaciones binarias y tablas"
+   ],
+   "modulos_actuales": [
+    "numeros-reales",
+    "inecuaciones-planteo"
+   ],
+   "ruta_propuesta": "comparar, con apoyo de seguir un ejemplo.",
+   "teoria": "Los reales forman un cuerpo ordenado: suma y multiplicación obedecen asociatividad, conmutatividad, distributividad, neutros e inversos cuando corresponden. No existe inverso multiplicativo de cero. El orden se conserva al sumar y al multiplicar por positivo, y se invierte al multiplicar por negativo. Intervalos codifican desigualdades, incluidos extremos abiertos/cerrados y operaciones de unión/intersección. Acotado no significa tener máximo o mínimo; por ejemplo (0,1) carece de ambos. Entre dos reales distintos hay racionales e irracionales. Una operación binaria definida por tabla debe evaluarse según su propia regla; no se supone conmutativa, asociativa o con neutro.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Recta numérica",
+    "Operaciones con signos",
+    "Conjuntos"
+   ],
+   "desempeno": "Representa un conjunto por desigualdad e intervalo y verifica propiedades de una operación.",
+   "escena_propuesta": "Compara intervalos moviendo extremos y predice pertenencias de frontera. Refleja la recta con −1 y conserva el punto imagen. Para operaciones, elige fila y columna de una tabla.",
+   "otra_representacion": "Notación por comprensión y tablas de verdad de pertenencia.",
+   "ejemplo": "(−1,3]∩[2,5)=[2,3]; si a★b=a−2b, 3★1=1 y 1★3=−5.",
+   "error_objetivo": {
+    "descripcion": "Confundir abierto con vacío o dar por hecho a★b=b★a.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "AAT-R",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "1.1 real numbers algebra essentials",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/1-1-real-numbers-algebra-essentials",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "DM-F",
+     "autor": "O. Levin",
+     "titulo": "Discrete Mathematics: An Open Introduction, 4th ed.",
+     "localizador": "Functions",
+     "url": "https://discrete.openmathbooks.org/dmoi4/sec_structures-functions.html",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "algebra",
+    "numero": 2,
+    "historia": "Las cantidades irracionales se utilizaron mucho antes de contar con construcciones rigurosas de los números reales. En el siglo XIX, distintos autores desarrollaron respuestas mediante cortes de racionales o sucesiones; Dedekind publicó su propuesta en 1872 y otros enfoques siguieron caminos relacionados. No se trataba de añadir una cifra misteriosa, sino de fundamentar un sistema donde límites y orden pudieran tratarse coherentemente. La recta y los intervalos de esta unidad usan ese lenguaje moderno: un intervalo representa todos los valores que satisfacen límites precisos, incluidos o excluidos.",
+    "puente_escena": "Una ventana se abre sobre la recta y sus extremos pueden incluirse o excluirse. El estudiante predice la pertenencia de valores de prueba antes de moverlos. Una desigualdad y una lista de ensayos registran exactamente la misma selección.",
+    "ecuaciones": [
+     {
+      "latex": "[a,b)=\\{x\\in\\mathbb{R}:a\\le x<b\\}",
+      "lectura": "El intervalo incluye su extremo izquierdo y excluye el derecho.",
+      "condiciones": "a y b reales con a<b; todos los puntos intermedios están incluidos."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "O’Connor y Robertson, The real numbers: Stevin to Hilbert — MacTutor",
+      "url": "https://mathshistory.st-andrews.ac.uk/HistTopics/Real_numbers_2/"
+     }
+    ],
+    "id": "algebra.numeros-reales",
+    "titulo": "Números reales e intervalos"
+   }
+  },
+  {
+   "id": "algebra.exponentes-y-productos-notables",
+   "curso": "Álgebra",
+   "curso_id": "algebra",
+   "numero": 3,
+   "titulo": "Exponentes, radicales y productos notables",
+   "grado": 3,
+   "temas_catalogo": [
+    "Leyes de exponentes",
+    "Propiedades de radicales",
+    "Productos notables",
+    "Radicales dobles",
+    "Racionalización"
+   ],
+   "modulos_actuales": [
+    "cuadrado-crece",
+    "sistemas-ecuaciones"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de recordar.",
+   "teoria": "Las leyes de potencias dependen del dominio: a^m a^n=a^(m+n); a^(−n)=1/a^n exige a≠0. En reales, raíces de índice par exigen radicando no negativo y se toma raíz principal; √(a²)=|a|. Productos notables son identidades que provienen de distributividad: (a+b)²=a²+2ab+b² y (a−b)(a+b)=a²−b². Una figura de áreas con lados positivos ilustra la identidad, pero no demuestra por sí sola todos los signos. Radicales dobles se descomponen buscando sumas/productos y comprobando condiciones. Racionalizar multiplica por una expresión igual a uno, con denominador no nulo; no cambia el valor ni elimina restricciones.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Distributividad",
+    "Exponentes enteros",
+    "Valor absoluto y signos"
+   ],
+   "desempeno": "Transforma una expresión indicando restricciones y detecta una identidad falsa con un contraejemplo.",
+   "escena_propuesta": "Predice las piezas del cuadrado (a+b); corta y reordena sin cambiar área. Congela dos rectángulos ab y la ecuación. Después compara el caso a<0 mediante álgebra, para mostrar el límite de la metáfora.",
+   "otra_representacion": "Tabla de potencias y desarrollo distributivo; recta para raíz principal.",
+   "ejemplo": "(3+2)²=9+12+4=25; √((-3)²)=3.",
+   "error_objetivo": {
+    "descripcion": "Distribuir raíz o cuadrado sobre suma, o reemplazar √(x²) por x sin condición.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "AAT-X",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "1.3 radicals and rational exponents",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/1-3-radicals-and-rational-exponents",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "AAT-P",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "1.4 polynomials",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/1-4-polynomials",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "algebra",
+    "numero": 3,
+    "historia": "La Géométrie de Descartes, publicada en 1637, fortaleció una relación decisiva: los problemas geométricos podían organizarse y resolverse mediante relaciones algebraicas. Su trabajo formó parte de una evolución con antecedentes y no convierte toda identidad escolar en una invención suya. En esta unidad, las potencias y los productos notables muestran esa traducción entre figuras y expresiones. Una partición de áreas puede explicar una igualdad para longitudes positivas; extenderla a valores negativos exige razones algebraicas. La imagen es un modelo con condiciones, no una licencia para ignorarlas.",
+    "puente_escena": "Un cuadrado se divide al desplazar una separación entre dos longitudes. Antes de revelar etiquetas, el estudiante predice las áreas de sus piezas. La suma y el producto se actualizan juntos; una comprobación numérica separada permite examinar valores negativos.",
+    "ecuaciones": [
+     {
+      "latex": "(a+b)^2=a^2+2ab+b^2",
+      "lectura": "El cuadrado de una suma contiene dos cuadrados y dos productos cruzados.",
+      "condiciones": "Identidad para números reales; el modelo literal de áreas requiere longitudes no negativas."
+     },
+     {
+      "latex": "\\sqrt{x^2}=|x|",
+      "lectura": "La raíz cuadrada principal del cuadrado recupera la magnitud sin signo.",
+      "condiciones": "x real; la raíz principal siempre es no negativa."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "O’Connor y Robertson, René Descartes — MacTutor",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Descartes/"
+     }
+    ],
+    "id": "algebra.exponentes-y-productos-notables",
+    "titulo": "Exponentes, radicales y productos notables"
+   }
+  },
+  {
+   "id": "algebra.ecuaciones-lineales-y-cuadraticas",
+   "curso": "Álgebra",
+   "curso_id": "algebra",
+   "numero": 4,
+   "titulo": "Ecuaciones de primer y segundo grado",
+   "grado": 3,
+   "temas_catalogo": [
+    "Ecuación de primer grado",
+    "Planteo de ecuaciones",
+    "Ecuación cuadrática y discriminante",
+    "Propiedades de las raíces",
+    "Interpretación geométrica"
+   ],
+   "modulos_actuales": [
+    "traductor-enunciados",
+    "sistemas-ecuaciones"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de descubrir.",
+   "teoria": "Resolver es hallar todos los valores del dominio que hacen verdadera una igualdad. Operaciones equivalentes preservan el conjunto solución; multiplicar por una expresión que puede ser cero o elevar al cuadrado puede introducir problemas y exige comprobar. ax+b=0 tiene una solución si a≠0; si a=0, ninguna o todas según b. Para ax²+bx+c=0 con a≠0, completar cuadrado produce la fórmula y Δ=b²−4ac decide el número de raíces reales. Suma y producto son −b/a y c/a. La gráfica cruza o toca el eje en raíces reales; no muestra por sí sola raíces complejas. Plantear exige definir qué representa la incógnita.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Operaciones inversas",
+    "Distributividad",
+    "Raíces cuadradas"
+   ],
+   "desempeno": "Plantea, resuelve y sustituye todas las soluciones, incluidas situaciones degeneradas.",
+   "escena_propuesta": "Ejemplo de balanza con operaciones simétricas y predicción de equilibrio; después mueve coeficientes de una parábola y registra Δ y raíces. Completa el paso de comprobar dominio.",
+   "otra_representacion": "Tabla de valores y completar cuadrado con piezas; ecuación equivalente.",
+   "ejemplo": "x²−5x+6=0 tiene raíces 2 y 3; suma 5=−(−5)/1 y producto 6.",
+   "error_objetivo": {
+    "descripcion": "Dividir por un parámetro sin analizar cero o confundir −b/a con b.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "AAT-E",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "2.2 linear equations in one variable",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/2-2-linear-equations-in-one-variable",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "AAT-Q",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "2.5 quadratic equations",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/2-5-quadratic-equations",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "algebra",
+    "numero": 4,
+    "historia": "Los problemas que hoy expresamos con ecuaciones cuadráticas aparecen en fuentes babilónicas; su formulación no era todavía nuestra ecuación abstracta. Más tarde, al-Juarismi organizó distintos tipos con coeficientes positivos y justificó procedimientos mediante geometría. El reconocimiento progresivo de soluciones negativas y el desarrollo de notación simbólica permitieron reunir casos antes separados en fórmulas generales. Esta unidad conserva esa diferencia histórica: completar un cuadrado explica una transformación, mientras que verificar dominios y soluciones decide qué resultados responden al problema. La fórmula presentada corresponde a nuestra notación moderna.",
+    "puente_escena": "Un cuadrado incompleto recibe dos rectángulos iguales y una pieza de esquina. El estudiante predice la pieza faltante antes de cerrar la figura. La ecuación registra cada adición en ambos lados; la recta muestra todas las soluciones algebraicas admisibles.",
+    "ecuaciones": [
+     {
+      "latex": "x=\\frac{-b\\pm\\sqrt{b^2-4ac}}{2a}",
+      "lectura": "La fórmula cuadrática obtiene las soluciones a partir de los coeficientes.",
+      "condiciones": "ax²+bx+c=0, a≠0; en números reales se requiere b²−4ac≥0."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "O’Connor y Robertson, Quadratic, cubic and quartic equations — MacTutor",
+      "url": "https://mathshistory.st-andrews.ac.uk/HistTopics/Quadratic_etc_equations/"
+     }
+    ],
+    "id": "algebra.ecuaciones-lineales-y-cuadraticas",
+    "titulo": "Ecuaciones de primer y segundo grado"
+   }
+  },
+  {
+   "id": "algebra.inecuaciones",
+   "curso": "Álgebra",
+   "curso_id": "algebra",
+   "numero": 5,
+   "titulo": "Inecuaciones",
+   "grado": 4,
+   "temas_catalogo": [
+    "Inecuaciones lineales",
+    "Inecuaciones cuadráticas",
+    "Método de los puntos críticos",
+    "Inecuaciones de grado superior",
+    "Inecuaciones fraccionarias"
+   ],
+   "modulos_actuales": [
+    "grafica-perillas",
+    "inecuaciones-planteo"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de comparar.",
+   "teoria": "Una inecuación describe un conjunto. Sumar la misma cantidad conserva orden; multiplicar o dividir por negativo lo invierte. En productos y cocientes, puntos críticos son ceros de factores y valores que anulan denominadores; dividen la recta en intervalos de signo constante cuando se factorizan correctamente. Una raíz de multiplicidad par no cambia el signo; una impar sí. En desigualdades no estrictas se incluyen ceros del numerador admisibles, nunca ceros del denominador. Multiplicar por una expresión de signo desconocido exige separar casos; cancelar factores no recupera puntos excluidos del dominio.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Factorización",
+    "Orden real",
+    "Intervalos"
+   ],
+   "desempeno": "Construye un cuadro de signos, conserva el dominio y decide correctamente las fronteras.",
+   "escena_propuesta": "Ejemplo con recta que se refleja al multiplicar por negativo; después marca puntos críticos y predice signos de intervalos. El motor deja visibles agujeros y extremos incluidos. Transferencia sin gráfico móvil.",
+   "otra_representacion": "Tabla de signos por factores y gráfica de función comparada con cero.",
+   "ejemplo": "(x−1)/(x+2)≥0 da (−∞,−2)∪[1,∞).",
+   "error_objetivo": {
+    "descripcion": "Multiplicar por x+2 sin conocer su signo o incluir x=−2.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "AAT-I",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "2.7 linear inequalities and absolute value inequalities",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/2-7-linear-inequalities-and-absolute-value-inequalities",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "AAT-RAT",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "5.6 rational functions",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/5-6-rational-functions",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "algebra",
+    "numero": 5,
+    "historia": "Los signos de desigualdad tienen una historia editorial que conviene contar con cuidado. Los símbolos menor que y mayor que aparecen en la publicación póstuma de la Praxis asociada a Harriot, de 1631, pero la investigación histórica distingue esa edición de sus manuscritos: no deben atribuirse directamente a su escritura personal. La notación compacta permitió expresar comparaciones dentro del álgebra. Esta unidad desarrolla algo más que leer signos: transformar condiciones conservando el conjunto de valores que las satisfacen, y reconocer cuándo una operación cambia el sentido del orden.",
+    "puente_escena": "Dos puntos comparados se desplazan al sumar una cantidad y se reflejan al multiplicar por un número negativo. El estudiante predice el orden final. Recta, desigualdad y ensayos registrados muestran por qué la reflexión invierte la comparación.",
+    "ecuaciones": [
+     {
+      "latex": "a<b,\\quad c<0\\quad\\Longrightarrow\\quad ac>bc",
+      "lectura": "Multiplicar una desigualdad por un número negativo invierte su sentido.",
+      "condiciones": "a, b y c reales; c estrictamente negativo."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "O’Connor y Robertson, Thomas Harriot — MacTutor",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Harriot/"
+     }
+    ],
+    "id": "algebra.inecuaciones",
+    "titulo": "Inecuaciones"
+   }
+  },
+  {
+   "id": "algebra.valor-absoluto-y-radicales",
+   "curso": "Álgebra",
+   "curso_id": "algebra",
+   "numero": 6,
+   "titulo": "Valor absoluto y ecuaciones con radicales",
+   "grado": 4,
+   "temas_catalogo": [
+    "Valor absoluto y distancia",
+    "Ecuaciones e inecuaciones con valor absoluto",
+    "Ecuaciones con radicales",
+    "Inecuaciones con radicales"
+   ],
+   "modulos_actuales": [
+    "grafica-perillas",
+    "sistemas-ecuaciones",
+    "inecuaciones-planteo"
+   ],
+   "ruta_propuesta": "comparar, con apoyo de seguir un ejemplo.",
+   "teoria": "|x−a| es distancia no negativa a a. Para r≥0, |x−a|=r representa dos puntos si r>0 y uno si r=0; |x−a|≤r es intervalo central y ≥r, exterior. Con r<0 cambian posibilidad y conjunto, por lo que no se aplica la receta de dos casos ciegamente. Ecuaciones radicales requieren dominio, aislamiento, transformación y comprobación: elevar al cuadrado pierde información de signo. Para comparar √u con v en reales, primero u≥0 y el signo de v; solo entonces se decide si cuadrar conserva equivalencia. √(x²)=|x|.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Recta y distancia",
+    "Ecuaciones e inecuaciones",
+    "Raíz principal"
+   ],
+   "desempeno": "Resuelve incluyendo dominio y elimina candidatos extraños mediante sustitución.",
+   "escena_propuesta": "Compara puntos a igual distancia de un centro y predice el conjunto al cambiar radio. Para radicales, dos medidores muestran ambos lados antes/después de cuadrar; el fantasma satisface el cuadrado pero no la igualdad original.",
+   "otra_representacion": "Definición por casos y tabla de verificación de candidatos.",
+   "ejemplo": "√(x+2)=x: candidatos 2 y −1 al cuadrar; solo x=2 satisface la original.",
+   "error_objetivo": {
+    "descripcion": "Conservar soluciones extrañas o confundir |x−a|≤r con la unión exterior.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "AAT-ABS",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "3.6 absolute value functions",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/3-6-absolute-value-functions",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "AAT-OTHER",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "2.6 other types of equations",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/2-6-other-types-of-equations",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "algebra",
+    "numero": 6,
+    "historia": "Bombelli escribió su Algebra, publicada parcialmente en 1572, con la intención de ofrecer una exposición más accesible y cuidadosa del álgebra de su tiempo. El tratamiento de radicales y de cantidades entonces problemáticas obligaba a examinar reglas de operación, en un contexto marcado por la solución de ecuaciones cúbicas. Esta historia no atribuye a Bombelli la definición moderna de valor absoluto. Sirve para plantear una necesidad que permanece: distinguir una transformación válida de una inferencia reversible. Elevar al cuadrado puede conservar candidatos que la ecuación original descarta.",
+    "puente_escena": "Una ecuación con raíz se transforma después de que el estudiante predice sus candidatos. Cada candidato vuelve a la expresión inicial para comprobarse. La recta separa dominio y soluciones; el registro conserva tanto candidatos rechazados como aceptados y sus razones.",
+    "ecuaciones": [
+     {
+      "latex": "\\sqrt{x+6}=x\\quad\\Longrightarrow\\quad x^2-x-6=0",
+      "lectura": "Elevar al cuadrado genera candidatos que deben verificarse en la ecuación original.",
+      "condiciones": "La raíz es principal; la ecuación original exige x≥0. Los candidatos 3 y −2 dejan solo x=3."
+     },
+     {
+      "latex": "|x-a|=r\\iff x=a-r\\ \\text{o}\\ x=a+r",
+      "lectura": "Una distancia fija sobre la recta determina dos posiciones, o una si la distancia es cero.",
+      "condiciones": "a real, r≥0; para r<0 no hay soluciones reales."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "O’Connor y Robertson, Rafael Bombelli — MacTutor",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Bombelli/"
+     }
+    ],
+    "id": "algebra.valor-absoluto-y-radicales",
+    "titulo": "Valor absoluto y ecuaciones con radicales"
+   }
+  },
+  {
+   "id": "algebra.polinomios",
+   "curso": "Álgebra",
+   "curso_id": "algebra",
+   "numero": 7,
+   "titulo": "Polinomios",
+   "grado": 3,
+   "temas_catalogo": [
+    "Grado absoluto y relativo",
+    "Valor numérico",
+    "Polinomios especiales",
+    "Igualdad de polinomios",
+    "Operaciones con polinomios"
+   ],
+   "modulos_actuales": [
+    "polinomios"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de recordar.",
+   "teoria": "Un polinomio en una o varias variables es suma finita de monomios con exponentes enteros no negativos y coeficientes del conjunto declarado. El grado de un monomio multivariable es la suma de exponentes; grado relativo mira una variable, y absoluto toma el máximo total. El cero requiere convención de grado aparte. Ordenado y completo describen organización; homogéneo significa mismo grado total en términos no nulos. Evaluar sustituye variables conservando operaciones. Igualdad de polinomios sobre reales equivale a igualdad de coeficientes, no a coincidir en un único valor. Sumar agrupa monomios semejantes; multiplicar distribuye y puede producir cancelaciones.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Exponentes",
+    "Términos semejantes",
+    "Sustitución"
+   ],
+   "desempeno": "Clasifica y opera un polinomio, distinguiendo grado absoluto, relativo y valor numérico.",
+   "escena_propuesta": "Coloca fichas de coeficientes en casillas por potencia e incluye ceros faltantes. Predice qué términos se agrupan; la figura mantiene posición de cada potencia. Luego un ejemplo multivariable muestra exponentes por separado.",
+   "otra_representacion": "Tabla de monomios–coeficientes–exponentes y evaluación en árbol de operaciones.",
+   "ejemplo": "3x²y−2xy³+1 tiene grado absoluto 4, relativo en x 2 y en y 3.",
+   "error_objetivo": {
+    "descripcion": "Sumar coeficientes de términos no semejantes o confundir grado con número de términos.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "AAT-P",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "1.4 polynomials",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/1-4-polynomials",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "algebra",
+    "numero": 7,
+    "historia": "Viète defendió en su In artem analyticam isagoge de 1591 el uso sistemático de letras para cantidades conocidas y desconocidas. Su convención distinguía vocales y consonantes, y mantenía requisitos de homogeneidad ligados a la interpretación geométrica. No era exactamente nuestra escritura de polinomios, pero permitió razonar sobre familias de problemas y no únicamente sobre ejemplos numéricos. La unidad aprovecha esa potencia de generalización: coeficientes, exponentes y variables cumplen papeles distintos. Manipular una expresión significa preservar su valor para las sustituciones permitidas, además de reconocer su estructura.",
+    "puente_escena": "Las tarjetas de términos se agrupan según sus exponentes, sin fusionar términos incompatibles. El estudiante predice qué grupos pueden reducirse. Una tabla de monomios y evaluaciones numéricas acompaña la expresión, mientras un control distingue coeficientes editables de la variable.",
+    "ecuaciones": [
+     {
+      "latex": "P(x)=a_nx^n+\\cdots+a_1x+a_0,\\qquad a_n\\ne0",
+      "lectura": "Un polinomio es una suma finita de potencias enteras no negativas con coeficientes.",
+      "condiciones": "n entero no negativo; los coeficientes pertenecen al campo fijado. El polinomio nulo necesita un convenio especial para el grado."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "O’Connor y Robertson, François Viète — MacTutor",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Viete/"
+     }
+    ],
+    "id": "algebra.polinomios",
+    "titulo": "Polinomios"
+   }
+  },
+  {
+   "id": "algebra.division-de-polinomios",
+   "curso": "Álgebra",
+   "curso_id": "algebra",
+   "numero": 8,
+   "titulo": "División de polinomios y cocientes notables",
+   "grado": 3,
+   "temas_catalogo": [
+    "Algoritmo de la división",
+    "Métodos de Horner y Ruffini",
+    "Teorema del resto",
+    "Divisibilidad de polinomios",
+    "Cocientes notables y término general"
+   ],
+   "modulos_actuales": [
+    "polinomios",
+    "division-polinomios"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de recordar.",
+   "teoria": "Para divisor D≠0 existe identidad P=DQ+R con grado R<grado D. División larga o Horner son algoritmos para obtener la misma identidad; Ruffini estándar corresponde al divisor mónico x−a. Teorema del resto: al dividir por x−a, R=P(a); factor si P(a)=0. Para divisor kx+b, con k≠0, la raíz es −b/k pero el cociente de la división por x+b/k debe dividirse entre k. Cocientes notables provienen de identidades, por ejemplo (x^n−a^n)/(x−a)=Σx^(n−1−j)a^j; como función racional conserva x≠a aunque el polinomio extendido sí admita ese punto.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Operaciones polinómicas",
+    "Coeficiente cero",
+    "Evaluación"
+   ],
+   "desempeno": "Divide y verifica P=DQ+R; adapta Ruffini a un divisor no mónico.",
+   "escena_propuesta": "Tras ejemplo, predice el coeficiente siguiente y coloca fichas; todos los pasos permanecen. Dos carriles comparan divisores x−a y k(x−a) para mostrar escala del cociente.",
+   "otra_representacion": "División larga y gráfico del valor P(a); comprobación por multiplicación.",
+   "ejemplo": "x²+1=(2x−2)(x/2+1/2)+2.",
+   "error_objetivo": {
+    "descripcion": "Usar sin ajuste el cociente de Ruffini para 2x−2 o borrar restricciones al simplificar.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "AAT-D",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "5.4 dividing polynomials",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/5-4-dividing-polynomials",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "algebra",
+    "numero": 8,
+    "historia": "La evaluación y transformación eficiente de polinomios no tuvo un único origen. El nombre método de Horner suele ocultar antecedentes y una diferencia documental: según la revisión recogida por MacTutor, su artículo de 1819 no contiene el procedimiento moderno que sí aparece en un trabajo de 1830; también existen otros desarrollos anteriores. Esta unidad evita convertir el nombre escolar en una afirmación de prioridad. Lo esencial es explicar por qué organizar coeficientes permite reducir operaciones y cómo la división por un factor lineal relaciona cociente, resto y evaluación.",
+    "puente_escena": "Una fila de coeficientes atraviesa pasos de multiplicación y suma. El estudiante predice cada salida antes de revelarla. La reconstrucción del polinomio conserva cociente y resto; una evaluación directa ofrece la segunda comprobación de la misma división.",
+    "ecuaciones": [
+     {
+      "latex": "P(x)=(x-a)Q(x)+P(a)",
+      "lectura": "El resto al dividir por x−a es el valor del polinomio en a.",
+      "condiciones": "P es un polinomio; Q es el cociente y la identidad vale para todo x."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "O’Connor y Robertson, William Horner — MacTutor",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Horner/"
+     }
+    ],
+    "id": "algebra.division-de-polinomios",
+    "titulo": "División de polinomios y cocientes notables"
+   }
+  },
+  {
+   "id": "algebra.factorizacion",
+   "curso": "Álgebra",
+   "curso_id": "algebra",
+   "numero": 9,
+   "titulo": "Factorización",
+   "grado": 3,
+   "temas_catalogo": [
+    "Factor común e identidades",
+    "Aspa simple, doble y doble especial",
+    "Divisores binómicos",
+    "Teorema del factor",
+    "MCD y MCM de polinomios"
+   ],
+   "modulos_actuales": [
+    "cuadrado-crece",
+    "division-polinomios",
+    "ecuaciones-polinomiales"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de comparar.",
+   "teoria": "Factorizar reescribe suma como producto sin cambiar el polinomio. Factor común, agrupación e identidades son manifestaciones de distributividad inversa. Aspa simple/doble son procedimientos de búsqueda de factores cuyos productos cruzados reconstruyen coeficientes; deben verificarse multiplicando. Teorema del factor conecta P(a)=0 con x−a. Factorizable depende del cuerpo: x²−2 es irreducible sobre racionales, no sobre reales. En polinomios sobre un cuerpo, MCD y MCM se fijan hasta constante; se suele elegir representación mónica y tomar multiplicidades mínima/máxima. Las figuras de rectángulos son apoyo inicial para coeficientes compatibles, no una definición universal.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Productos notables",
+    "Operaciones con polinomios",
+    "Factores numéricos"
+   ],
+   "desempeno": "Elige y comprueba una factorización e indica el conjunto de coeficientes.",
+   "escena_propuesta": "Arma un rectángulo con piezas y predice los lados; registra cómo se reconstruyen los términos cruzados. Después contrasta una expresión que no factoriza en el cuerpo elegido.",
+   "otra_representacion": "Árbol de factores con multiplicidades y expansión simbólica inversa.",
+   "ejemplo": "x²+5x+6=(x+2)(x+3); el término medio sale de 3x+2x.",
+   "error_objetivo": {
+    "descripcion": "Factorizar sin comprobar el término medio o decir 'no factoriza' sin indicar sobre qué números.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "AAT-F",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "1.5 factoring polynomials",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/1-5-factoring-polynomials",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "AAT-Z",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "5.5 zeros of polynomial functions",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/5-5-zeros-of-polynomial-functions",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "algebra",
+    "numero": 9,
+    "historia": "La proposición II.4 de los Elementos descompone el cuadrado construido sobre un segmento en dos cuadrados y dos rectángulos. Euclides lo expresa como geometría; escribirlo como identidad algebraica es una interpretación moderna, no una transcripción literal. Leer la relación en ambos sentidos permite pasar de expandir a reconocer una estructura factorizada. Esta unidad utiliza ese puente, con un límite explícito: las longitudes de la figura son no negativas, mientras que una identidad polinomial puede tener validez más amplia. La extensión requiere el argumento algebraico correspondiente.",
+    "puente_escena": "Varias piezas se reordenan para formar un cuadrado sin cambiar su área. El estudiante predice si la expresión puede ser un cuadrado perfecto. Contornos y etiquetas permanecen visibles; la expansión inversa verifica la factorización y detecta el término cruzado ausente.",
+    "ecuaciones": [
+     {
+      "latex": "a^2+2ab+b^2=(a+b)^2",
+      "lectura": "Reconocer los dos cuadrados y el término cruzado permite factorizar.",
+      "condiciones": "Identidad para a y b reales; la interpretación geométrica directa usa longitudes no negativas."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Euclides, Elementos II.4; edición y comentario de David E. Joyce — Clark University",
+      "url": "https://mathcs.clarku.edu/~djoyce/elements/bookII/propII4.html"
+     }
+    ],
+    "id": "algebra.factorizacion",
+    "titulo": "Factorización"
+   }
+  },
+  {
+   "id": "algebra.ecuaciones-polinomiales",
+   "curso": "Álgebra",
+   "curso_id": "algebra",
+   "numero": 10,
+   "titulo": "Ecuaciones polinomiales",
+   "grado": 4,
+   "temas_catalogo": [
+    "Teorema fundamental del álgebra",
+    "Relaciones entre raíces y coeficientes",
+    "Raíces racionales",
+    "Paridad de raíces irracionales y complejas",
+    "Ecuaciones bicuadradas y recíprocas",
+    "Ecuación binómica"
+   ],
+   "modulos_actuales": [
+    "polinomios",
+    "ecuaciones-polinomiales"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de descubrir.",
+   "teoria": "Un polinomio no constante de grado n tiene n raíces complejas contando multiplicidad. Para coeficientes reales, raíces complejas no reales aparecen en pares conjugados. Si los coeficientes son racionales y a+b√d es raíz, con a,b,d racionales y √d irracional, también lo es a−b√d; no se generaliza a cualquier irracional. Viète relaciona sumas/productos con coeficientes normalizados y signos. Raíz racional p/q reducida exige p divisor del término independiente y q del coeficiente principal. Bicuadradas usan u=x² con u≥0 para soluciones reales. En recíprocas se aprovecha simetría tras comprobar x≠0; binómicas z^n=w se resuelven por módulo y argumentos.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Factorización",
+    "Complejos",
+    "Ecuación cuadrática"
+   ],
+   "desempeno": "Encuentra raíces y multiplicidades y explica por qué un candidato racional es posible o imposible.",
+   "escena_propuesta": "Completa ejemplo y predice cómo cambian coeficientes al mover raíces. La gráfica muestra solo raíces reales; una vista del plano complejo conserva las otras. Transfiere resolviendo una bicuadrada sin escena.",
+   "otra_representacion": "Producto de factores, tabla de Viète y sustitución u=x².",
+   "ejemplo": "x⁴−5x²+4=0: u=1,4; x=−2,−1,1,2.",
+   "error_objetivo": {
+    "descripcion": "Olvidar ± al deshacer x² o afirmar conjugación irracional sin hipótesis.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "AAT-Z",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "5.5 zeros of polynomial functions",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/5-5-zeros-of-polynomial-functions",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "AAT-CX",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "10.5 polar form of complex numbers",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/10-5-polar-form-of-complex-numbers",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "algebra",
+    "numero": 10,
+    "historia": "La búsqueda de soluciones de ecuaciones llevó a preguntar si los números disponibles eran suficientes. Con la aceptación gradual de cantidades complejas se pudo formular la idea de que un polinomio tiene tantas raíces como indica su grado, contando repeticiones. La historia del teorema fundamental del álgebra incluye propuestas, contraejemplos fallidos y demostraciones que necesitaron correcciones; no conviene resumirla como un instante de descubrimiento impecable. Esta unidad distingue encontrar raíces concretas de justificar una estructura general. También separa raíces reales visibles en una gráfica de raíces complejas que esa gráfica no muestra.",
+    "puente_escena": "El estudiante predice cuántas raíces reales puede mostrar una curva y después factoriza el polinomio. Una lista paralela registra raíces complejas y multiplicidades. Al cambiar coeficientes, la escena conserva la diferencia entre número de cruces y grado.",
+    "ecuaciones": [
+     {
+      "latex": "P(z)=a_n\\prod_{j=1}^{n}(z-r_j)",
+      "lectura": "Todo polinomio complejo no constante se descompone en factores lineales.",
+      "condiciones": "a_n≠0, n≥1; las n raíces complejas se cuentan con multiplicidad."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "O’Connor y Robertson, The fundamental theorem of algebra — MacTutor",
+      "url": "https://mathshistory.st-andrews.ac.uk/HistTopics/Fund_theorem_of_algebra/"
+     }
+    ],
+    "id": "algebra.ecuaciones-polinomiales",
+    "titulo": "Ecuaciones polinomiales"
+   }
+  },
+  {
+   "id": "algebra.funciones",
+   "curso": "Álgebra",
+   "curso_id": "algebra",
+   "numero": 11,
+   "titulo": "Funciones y sus gráficas",
+   "grado": 4,
+   "temas_catalogo": [
+    "Dominio y rango",
+    "Funciones lineal y cuadrática",
+    "Valor absoluto, raíz cuadrada, signo y máximo entero",
+    "Operaciones y composición de funciones",
+    "Traslaciones y reflexiones de gráficas",
+    "Gráfica de una función polinomial"
+   ],
+   "modulos_actuales": [
+    "grafica-perillas",
+    "funciones-dominio-rango"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de comparar.",
+   "teoria": "Una función asigna a cada entrada del dominio exactamente una salida; rango es el conjunto de salidas obtenidas y no siempre el codominio. Restricciones surgen de denominadores, raíces pares y contexto. Lineal/afín, cuadrática, valor absoluto, raíz, signo y piso son familias distintas: piso es mayor entero ≤x, también para negativos. En composición f∘g, x debe estar en dominio de g y g(x) en dominio de f. Transformaciones y=f(x−h)+k trasladan horizontal y verticalmente; escalas y reflexiones actúan dentro/fuera del argumento. Gráfica y tabla representan la misma correspondencia, pero una ventana limitada no demuestra todo el dominio.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Plano cartesiano",
+    "Expresiones y dominio",
+    "Ecuaciones"
+   ],
+   "desempeno": "Determina dominio/rango y traduce una transformación sin confundir entrada y salida.",
+   "escena_propuesta": "Predice dónde irá un punto al mover un control; se dibujan pares antes/después y se registra la transformación. Para composición pasa una ficha por dos máquinas, indicando restricciones en cada una.",
+   "otra_representacion": "Tabla de pares, diagrama de correspondencia y expresión por tramos.",
+   "ejemplo": "f(x)=√(x−2)+1 tiene dominio [2,∞), rango [1,∞); ⌊−1,2⌋=−2.",
+   "error_objetivo": {
+    "descripcion": "Confundir f(x−2) con desplazamiento a la izquierda o rango con todos los reales.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "AAT-FUN",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "3.1 functions and function notation",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/3-1-functions-and-function-notation",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "AAT-DOM",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "3.2 domain and range",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/3-2-domain-and-range",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "AAT-COMP",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "3.4 composition of functions",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/3-4-composition-of-functions",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "AAT-TRANS",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "3.5 transformation of functions",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/3-5-transformation-of-functions",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "algebra",
+    "numero": 11,
+    "historia": "El concepto de función no surgió completo al dibujar una tabla antigua. Su historia pasó por problemas de curvas y cálculo, expresiones analíticas y formulaciones cada vez más generales de dependencia. Euler desempeñó un papel importante durante el siglo XVIII, pero las definiciones posteriores ampliaron lo que podía aceptarse como función. Por eso esta unidad no reduce una función a una fórmula bonita o una curva continua. Lo decisivo en el lenguaje actual es que cada entrada del dominio tenga una única salida, con dominio y codominio explícitamente establecidos.",
+    "puente_escena": "Una máquina recibe entradas y conserva cada salida en una tabla y un plano. El estudiante predice si una relación admite dos salidas para la misma entrada. Los casos válidos y fallidos permanecen visibles, incluyendo una función definida por tramos.",
+    "ecuaciones": [
+     {
+      "latex": "f:D\\to C,\\qquad \\forall x\\in D\\;\\exists!\\,y\\in C:\\ y=f(x)",
+      "lectura": "Una función asigna exactamente una salida a cada entrada de su dominio.",
+      "condiciones": "D es el dominio y C el codominio; el símbolo existe único exige existencia y unicidad."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "O’Connor y Robertson, The function concept — MacTutor",
+      "url": "https://mathshistory.st-andrews.ac.uk/HistTopics/Functions/"
+     }
+    ],
+    "id": "algebra.funciones",
+    "titulo": "Funciones y sus gráficas"
+   }
+  },
+  {
+   "id": "algebra.tipos-de-funciones-e-inversa",
+   "curso": "Álgebra",
+   "curso_id": "algebra",
+   "numero": 12,
+   "titulo": "Tipos de funciones y función inversa",
+   "grado": 5,
+   "temas_catalogo": [
+    "Funciones par e impar",
+    "Funciones monótonas y acotadas",
+    "Inyectiva, sobreyectiva y biyectiva",
+    "Función inversa",
+    "Modelación con funciones"
+   ],
+   "modulos_actuales": [
+    "grafica-perillas",
+    "exponenciales-logaritmos",
+    "funciones-dominio-rango"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de comparar.",
+   "teoria": "Paridad requiere dominio simétrico: f(−x)=f(x) es par y f(−x)=−f(x) impar. Monotonía compara pares de entradas en un intervalo; acotación fija límites globales o locales indicados. Inyectiva significa que entradas distintas tienen salidas distintas; sobreyectiva depende del codominio y biyectiva combina ambas. La inversa de una biyección deshace la correspondencia y refleja la gráfica en y=x. Una función no inyectiva necesita restringir dominio para admitir una inversa como función. f^−1 y 1/f no son lo mismo. Modelar exige decidir dominio, parámetros y límites antes de extrapolar.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Definición de función",
+    "Dominio/codominio/rango",
+    "Composición"
+   ],
+   "desempeno": "Determina si existe inversa y justifica la restricción de dominio.",
+   "escena_propuesta": "Predice qué ocurre al reflejar la gráfica; dobla por y=x y prueba una recta vertical. Conserva el caso x² completo y el restringido para compararlos.",
+   "otra_representacion": "Diagramas de flechas y comprobación f^−1(f(x))=x en el dominio.",
+   "ejemplo": "f(x)=x² con x≥0 tiene inversa √x; sobre todos los reales no es inyectiva.",
+   "error_objetivo": {
+    "descripcion": "Creer que toda función tiene inversa o que f^−1=1/f.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "AAT-INV",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "3.7 inverse functions",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/3-7-inverse-functions",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "AAT-FUN",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "3.1 functions and function notation",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/3-1-functions-and-function-notation",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "DM-F",
+     "autor": "O. Levin",
+     "titulo": "Discrete Mathematics: An Open Introduction, 4th ed.",
+     "localizador": "Functions",
+     "url": "https://discrete.openmathbooks.org/dmoi4/sec_structures-functions.html",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "algebra",
+    "numero": 12,
+    "historia": "La ampliación histórica del concepto de función permitió separar la relación entre variables de una expresión particular que la describe. Las discusiones sobre qué dependencias admitir muestran que una misma apariencia algebraica no basta para identificar una función completa. Dominio y valores de salida importan, especialmente cuando se intenta invertir una relación. Esta unidad extrae una consecuencia moderna de esa evolución: deshacer una correspondencia requiere que la salida identifique la entrada. La inversa no se obtiene simplemente cambiando un símbolo ni tomando el recíproco de sus valores.",
+    "puente_escena": "Una máquina se invierte y cada salida intenta regresar a su entrada. El estudiante predice dónde aparece ambigüedad. Al restringir el dominio, tabla y gráfica reflejada muestran cuándo la vuelta queda determinada, conservando los pares descartados como referencia.",
+    "ecuaciones": [
+     {
+      "latex": "f^{-1}(f(x))=x,\\qquad x\\in D",
+      "lectura": "La función inversa deshace la asignación de la función original.",
+      "condiciones": "f debe ser biyectiva entre D y el codominio elegido; f⁻¹ no significa 1/f."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "O’Connor y Robertson, The function concept — MacTutor",
+      "url": "https://mathshistory.st-andrews.ac.uk/HistTopics/Functions/"
+     }
+    ],
+    "id": "algebra.tipos-de-funciones-e-inversa",
+    "titulo": "Tipos de funciones y función inversa"
+   }
+  },
+  {
+   "id": "algebra.exponenciales-y-logaritmos",
+   "curso": "Álgebra",
+   "curso_id": "algebra",
+   "numero": 13,
+   "titulo": "Exponenciales y logaritmos",
+   "grado": 5,
+   "temas_catalogo": [
+    "Función exponencial",
+    "Logaritmo y propiedades",
+    "El número e",
+    "Función logarítmica",
+    "Ecuaciones exponenciales y logarítmicas",
+    "Inecuaciones exponenciales y logarítmicas"
+   ],
+   "modulos_actuales": [
+    "exponenciales-logaritmos",
+    "funciones-dominio-rango"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de recordar.",
+   "teoria": "Para base b>0, b≠1, b^x es positiva y estrictamente monótona: creciente si b>1, decreciente si 0<b<1. log_b(x) es su inversa y exige x>0. Propiedades logarítmicas se deducen de potencias y conservan dominios: log(xy)=log x+log y solo dentro de las hipótesis reales apropiadas. e puede definirse por el límite de capitalización (1+1/n)^n. Ecuaciones se resuelven igualando exponentes o aplicando logaritmos y verificando argumentos. En inecuaciones, la base menor que 1 invierte orden. Modelos exponenciales suponen factor multiplicativo constante y no se extrapolan sin examinar el contexto.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Potencias",
+    "Funciones inversas",
+    "Inecuaciones"
+   ],
+   "desempeno": "Resuelve una ecuación o desigualdad comprobando base, dominio y sentido del orden.",
+   "escena_propuesta": "Predice la siguiente escala multiplicativa y coloca fichas. Alterna crecimiento/decrecimiento y compara con traslación lineal. La regla logarítmica nace al invertir la escalera; luego completa un ejemplo.",
+   "otra_representacion": "Tabla de factores, gráfica semilogarítmica para autores y transformación simbólica.",
+   "ejemplo": "log₂(x−1)=3 da x=9; (1/2)^x>1/8 da x<3.",
+   "error_objetivo": {
+    "descripcion": "Distribuir logaritmo sobre una suma o ignorar que base entre 0 y 1 invierte orden.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "AAT-EXP",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "6.1 exponential functions",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/6-1-exponential-functions",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "AAT-LOG",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "6.5 logarithmic properties",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/6-5-logarithmic-properties",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "AAT-LOGEQ",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "6.6 exponential and logarithmic equations",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/6-6-exponential-and-logarithmic-equations",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "algebra",
+    "numero": 13,
+    "historia": "Los logaritmos de Napier, publicados en 1614, respondían a la dificultad y al riesgo de error de multiplicaciones, divisiones y extracciones de raíces extensas. Su construcción y escala no coinciden directamente con los logaritmos escolares actuales. Las conversaciones con Briggs ayudaron a desarrollar formas más convenientes para el cálculo. Esta historia explica el interés de convertir productos en sumas, pero la definición moderna mediante una función exponencial corresponde a una formulación posterior. La unidad debe conectar ambas miradas sin ocultar las condiciones que hacen válidas sus reglas.",
+    "puente_escena": "Dos escalas muestran cómo multiplicar factores equivale a sumar desplazamientos logarítmicos. El estudiante predice la posición final antes de moverlos. Una tabla conserva valor y logaritmo; al invertir el proceso se recupera el producto con la exponencial.",
+    "ecuaciones": [
+     {
+      "latex": "\\log_b(xy)=\\log_b x+\\log_b y",
+      "lectura": "El logaritmo transforma un producto de números positivos en una suma.",
+      "condiciones": "b>0, b≠1, x>0 e y>0."
+     },
+     {
+      "latex": "y=\\log_b x\\iff b^y=x",
+      "lectura": "El logaritmo indica el exponente necesario para obtener un número.",
+      "condiciones": "b>0, b≠1, x>0; y real."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "O’Connor y Robertson, John Napier — MacTutor",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Napier/"
+     }
+    ],
+    "id": "algebra.exponenciales-y-logaritmos",
+    "titulo": "Exponenciales y logaritmos"
+   }
+  },
+  {
+   "id": "algebra.numeros-complejos",
+   "curso": "Álgebra",
+   "curso_id": "algebra",
+   "numero": 14,
+   "titulo": "Números complejos",
+   "grado": 5,
+   "temas_catalogo": [
+    "Unidad imaginaria",
+    "Forma binómica y operaciones",
+    "Conjugado y módulo",
+    "Forma polar y exponencial",
+    "Fórmula de De Moivre y raíces",
+    "Regiones en el plano complejo"
+   ],
+   "modulos_actuales": [
+    "numeros-complejos",
+    "ecuaciones-polinomiales"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo.",
+   "teoria": "Complejo z=a+bi usa i²=−1. Suma combina componentes y producto distribuye; división por z≠0 usa conjugado. |z|=√(a²+b²), conjugado a−bi y z·z̄=|z|². Para z≠0, forma polar r(cosθ+i sinθ)=re^(iθ), con argumento definido módulo 2π; el cero no tiene argumento único. Multiplicar suma argumentos y multiplica módulos; De Moivre eleva módulo y multiplica ángulo. Las n raíces de w≠0 se separan 2π/n; no se obtienen con una sola rama de argumento. Regiones como |z−z₀|≤r son discos y Re/Im describen semiplanos.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Pares coordenados",
+    "Trigonometría básica",
+    "Potencias"
+   ],
+   "desempeno": "Conecta operaciones con giro/escala y obtiene todas las raíces con sus argumentos.",
+   "escena_propuesta": "Predice el resultado de multiplicar por i; gira una flecha y congela cuatro posiciones. Después modifica módulo y ángulo por separado. Un ejemplo de raíces conserva todos los puntos del polígono.",
+   "otra_representacion": "Operación binómica y producto polar; región de distancias en plano.",
+   "ejemplo": "(1+i)²=2i; las raíces cúbicas de 8 son 2, −1+i√3 y −1−i√3.",
+   "error_objetivo": {
+    "descripcion": "Sumar módulos al multiplicar o omitir raíces por usar solo el argumento principal.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "AAT-CX",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "10.5 polar form of complex numbers",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/10-5-polar-form-of-complex-numbers",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "AAT-CX0",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "2.4 complex numbers",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/2-4-complex-numbers",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "algebra",
+    "numero": 14,
+    "historia": "Los complejos no aparecieron únicamente para resolver una ecuación cuadrática sin raíces reales. En el siglo XVI, las fórmulas para ciertas cúbicas con soluciones reales hicieron surgir radicales de cantidades negativas. Bombelli desarrolló reglas para operar con esas expresiones. Más tarde, interpretaciones geométricas como la de Argand dieron otra forma de comprenderlas; su trabajo circulaba en 1806, con una historia de difusión que no se reduce a una fecha segura de publicación. La unidad reúne cálculo y geometría mediante una notación moderna, sin adjudicar a una persona toda la construcción.",
+    "puente_escena": "Un punto del plano representa un complejo. El estudiante predice el efecto de multiplicarlo por i y después observa un giro de un cuarto de vuelta. Coordenadas, módulo y argumento quedan registrados; los botones sustituyen al arrastre cuando sea necesario.",
+    "ecuaciones": [
+     {
+      "latex": "(a+bi)i=-b+ai",
+      "lectura": "Multiplicar por i gira el punto noventa grados en sentido antihorario.",
+      "condiciones": "a y b reales; i²=−1; orientación usual del plano complejo."
+     },
+     {
+      "latex": "z=r(\\cos\\theta+i\\sin\\theta)",
+      "lectura": "La forma polar describe distancia al origen y orientación.",
+      "condiciones": "r=|z|≥0; si r=0 el argumento no está determinado."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "O’Connor y Robertson, Rafael Bombelli — MacTutor",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Bombelli/"
+     },
+     {
+      "titulo": "O’Connor y Robertson, Argand — MacTutor",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Argand/"
+     }
+    ],
+    "id": "algebra.numeros-complejos",
+    "titulo": "Números complejos"
+   }
+  },
+  {
+   "id": "algebra.matrices-y-determinantes",
+   "curso": "Álgebra",
+   "curso_id": "algebra",
+   "numero": 15,
+   "titulo": "Matrices y determinantes",
+   "grado": 5,
+   "temas_catalogo": [
+    "Tipos de matrices",
+    "Operaciones con matrices",
+    "Traza y transpuesta",
+    "Determinantes y propiedades",
+    "Matriz inversa y adjunta",
+    "Rango de una matriz"
+   ],
+   "modulos_actuales": [
+    "matrices",
+    "sistemas-ecuaciones"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de descubrir.",
+   "teoria": "Una matriz tiene dimensiones; suma exige igual tamaño y AB exige columnas de A=filas de B. El producto usual combina fila por columna y generalmente AB≠BA. Transpuesta intercambia índices y traza suma diagonal de una matriz cuadrada. Determinante solo corresponde a matrices cuadradas y detecta invertibilidad; en 2D mide factor de área con signo, en 3D volumen orientado. Inversa exige det≠0; A^−1=adj(A)/det(A), donde adj es la adjunta clásica, no la transpuesta sola. Rango es número de pivotes/columnas independientes, no necesariamente dimensión de la matriz. Cada propiedad de determinantes debe conservar operaciones y escala.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Operaciones algebraicas",
+    "Vectores coordenados",
+    "Sistemas lineales"
+   ],
+   "desempeno": "Multiplica matrices compatibles, interpreta determinante y decide invertibilidad/rango.",
+   "escena_propuesta": "Tras ejemplo, predice la imagen de dos vectores base y mueve columnas; el paralelogramo muestra área orientada. Congela un caso con columnas dependientes y enlázalo con det=0.",
+   "otra_representacion": "Tabla fila–columna y reducción por filas; comparación AB frente a BA.",
+   "ejemplo": "A=[[2,0],[0,3]] tiene det=6, inversa diag(1/2,1/3), rango 2.",
+   "error_objetivo": {
+    "descripcion": "Multiplicar entrada a entrada o confundir det=0 con matriz necesariamente nula.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "AAT-MAT",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "§11.5 Matrices and Matrix Operations",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/11-5-matrices-and-matrix-operations",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "ILA",
+     "autor": "D. Margalit y J. Rabinoff",
+     "titulo": "Interactive Linear Algebra",
+     "localizador": "§4.3 Determinants and Volumes; capítulos 3–4 para matrices",
+     "url": "https://textbooks.math.gatech.edu/ila/determinants-volumes.html",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "algebra",
+    "numero": 15,
+    "historia": "Los determinantes y las matrices no se desarrollaron simultáneamente como un sistema terminado. Procedimientos relacionados con determinantes aparecieron en trabajos de Seki y Leibniz antes de que las matrices fueran estudiadas como objetos algebraicos propios. Durante el siglo XIX, Sylvester introdujo el término matriz y Cayley desarrolló operaciones y propiedades generales. La evolución importa porque una tabla de números no explica por sí misma qué operación representa. Esta unidad conecta entradas ordenadas, transformaciones y determinantes, y distingue el papel del determinante de una supuesta medida universal del tamaño de cualquier matriz.",
+    "puente_escena": "Una cuadrícula registra una transformación de dos vectores base y del cuadrado que forman. El estudiante predice orientación y área final. La matriz y el paralelogramo se actualizan juntos, manteniendo visible el caso de colapso cuando el determinante es cero.",
+    "ecuaciones": [
+     {
+      "latex": "\\det\\begin{pmatrix}a&b\\\\c&d\\end{pmatrix}=ad-bc",
+      "lectura": "El determinante indica el factor de área orientada de una transformación plana.",
+      "condiciones": "Matriz real de orden dos; su valor absoluto escala áreas y su signo indica orientación."
+     },
+     {
+      "latex": "A^{-1}=\\frac{1}{ad-bc}\\begin{pmatrix}d&-b\\\\-c&a\\end{pmatrix}",
+      "lectura": "La matriz inversa deshace la transformación.",
+      "condiciones": "A es la matriz anterior y ad−bc≠0."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "O’Connor y Robertson, Matrices and determinants — MacTutor",
+      "url": "https://mathshistory.st-andrews.ac.uk/HistTopics/Matrices_and_determinants/"
+     }
+    ],
+    "id": "algebra.matrices-y-determinantes",
+    "titulo": "Matrices y determinantes"
+   }
+  },
+  {
+   "id": "algebra.sistemas-de-ecuaciones",
+   "curso": "Álgebra",
+   "curso_id": "algebra",
+   "numero": 16,
+   "titulo": "Sistemas de ecuaciones",
+   "grado": 4,
+   "temas_catalogo": [
+    "Sistemas lineales 2x2 e interpretación gráfica",
+    "Sistemas 3x3",
+    "Regla de Cramer",
+    "Método de Gauss",
+    "Compatibilidad: Rouché-Frobenius",
+    "Sistemas no lineales"
+   ],
+   "modulos_actuales": [
+    "traductor-enunciados",
+    "matrices",
+    "sistemas-ecuaciones"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de descubrir.",
+   "teoria": "Un sistema exige satisfacer todas las ecuaciones simultáneamente. En 2×2, rectas que se cortan, paralelas distintas o coincidentes representan una, ninguna o infinitas soluciones. Eliminación y Gauss usan operaciones por filas reversibles. Para Ax=b, compatibilidad equivale a rango(A)=rango([A|b]); hay solución única si ese rango es el número de incógnitas e infinitas si es menor. Cramer solo se aplica directamente a sistemas cuadrados con determinante no nulo. Sistemas no lineales pueden tener varios puntos aislados; sustitución y transformación requieren verificar dominio y soluciones extrañas.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Ecuaciones",
+    "Matrices y rango",
+    "Gráficas"
+   ],
+   "desempeno": "Clasifica compatibilidad, resuelve y verifica cada ecuación.",
+   "escena_propuesta": "Ejemplo de dos rectas y predicción de intersección; después la tabla de eliminación se sincroniza con ecuaciones equivalentes. En 3×3 se trabaja con filas y parámetros, evitando una falsa promesa de ver siempre todo en 3D.",
+   "otra_representacion": "Tabla de restricciones, matriz ampliada y solución parametrizada.",
+   "ejemplo": "x+y=3 y 2x+2y=6 tienen infinitas soluciones (t,3−t); si la segunda fuera 7, ninguna.",
+   "error_objetivo": {
+    "descripcion": "Interpretar una fila de ceros como solución única o aplicar Cramer con det=0.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "AAT-SYS",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "§11.6 Solving Systems with Gaussian Elimination; capítulo 11 completo",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/11-6-solving-systems-with-gaussian-elimination",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "ILA-R",
+     "autor": "D. Margalit y J. Rabinoff",
+     "titulo": "Interactive Linear Algebra",
+     "localizador": "§2.9 The Rank Theorem; §1.2 Row Reduction",
+     "url": "https://textbooks.math.gatech.edu/ila/rank-thm.html",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "algebra",
+    "numero": 16,
+    "historia": "Los Nueve capítulos chinos presentan problemas de cantidades desconocidas mediante tablas de coeficientes y operaciones que eliminan términos. Este antecedente permite reconocer que el procedimiento hoy llamado eliminación gaussiana tiene una historia mucho más larga que su nombre. La organización antigua por columnas difiere de convenciones habituales actuales, aunque la idea de transformar el problema conservando sus soluciones permanece. La unidad hace explícita esa conservación. Resolver un sistema no consiste siempre en obtener una pareja: también hay condiciones incompatibles y familias de soluciones, según la relación entre las ecuaciones.",
+    "puente_escena": "Dos restricciones se representan mediante rectas y una tabla de coeficientes. El estudiante predice qué operación elimina una incógnita. Cada transformación conserva un registro verificable; la escena muestra si las rectas se cruzan, coinciden o permanecen paralelas.",
+    "ecuaciones": [
+     {
+      "latex": "R_2\\leftarrow R_2-\\lambda R_1",
+      "lectura": "Restar a una ecuación un múltiplo de otra conserva las soluciones del sistema.",
+      "condiciones": "Operación sobre la fila completa, incluido el término independiente; λ real."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "O’Connor y Robertson, Matrices and determinants — MacTutor",
+      "url": "https://mathshistory.st-andrews.ac.uk/HistTopics/Matrices_and_determinants/"
+     }
+    ],
+    "id": "algebra.sistemas-de-ecuaciones",
+    "titulo": "Sistemas de ecuaciones"
+   }
+  },
+  {
+   "id": "algebra.programacion-lineal",
+   "curso": "Álgebra",
+   "curso_id": "algebra",
+   "numero": 17,
+   "titulo": "Inecuaciones con dos variables y programación lineal",
+   "grado": 5,
+   "temas_catalogo": [
+    "Inecuaciones con dos variables",
+    "Sistemas de inecuaciones",
+    "Región factible",
+    "Función objetivo",
+    "Método gráfico de optimización"
+   ],
+   "modulos_actuales": [
+    "programacion-lineal",
+    "inecuaciones-planteo"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo.",
+   "teoria": "Cada inecuación lineal de dos variables define un semiplano; igualdad dibuja frontera y el signo estricto decide inclusión. Región factible es la intersección con restricciones del contexto, incluidos x,y≥0 cuando corresponden. La función objetivo lineal tiene rectas de nivel paralelas. En un polígono factible cerrado y acotado no vacío existe un óptimo en al menos un vértice; también puede ser óptimo todo un lado. Si la región es vacía no hay solución; si no es acotada, el objetivo puede ser acotado o no. Restricciones enteras exigen examinar puntos enteros, no redondear sin comprobar.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Ecuación de recta",
+    "Inecuaciones",
+    "Sistemas 2×2"
+   ],
+   "desempeno": "Construye región factible y justifica existencia y localización del óptimo.",
+   "escena_propuesta": "Predice qué zona sobrevive a una restricción y superpone semiplanos. Desliza recta objetivo hasta el borde, congelando los valores en vértices. Compara óptimo único, lado óptimo y caso inviable.",
+   "otra_representacion": "Tabla de vértices y evaluación objetiva; lista explícita de restricciones.",
+   "ejemplo": "Maximizar 3x+2y con x,y≥0, x+y≤4, x≤2 da máximo 10 en (2,2).",
+   "error_objetivo": {
+    "descripcion": "Afirmar siempre 'el óptimo es un vértice' sin existencia, o redondear una solución continua.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "CM-LP",
+     "autor": "OpenStax",
+     "titulo": "Contemporary Mathematics (2023)",
+     "localizador": "§5.11, Linear Programming",
+     "url": "https://openstax.org/books/contemporary-mathematics/pages/5-11-linear-programming",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "algebra",
+    "numero": 17,
+    "historia": "La programación lineal surgió de problemas de planificación con recursos limitados, entre otros desarrollos de optimización. Dantzig formuló el método símplex en 1947 dentro de ese contexto; programación se refería a planes y horarios, no originalmente a escribir software. El problema combinaba restricciones numerosas con una medida que se deseaba mejorar. La representación escolar en dos variables permite hacer visible esa estructura sin reproducir toda la complejidad histórica. La unidad distingue cumplir restricciones de optimizar, y verifica si existe una región factible y si el objetivo tiene un máximo finito.",
+    "puente_escena": "Un taller ficticio combina dos productos con recursos limitados. El estudiante predice qué planes son factibles antes de sombrear su región. Una recta de beneficio se desplaza sobre ella; tabla de vértices y restricciones explica dónde se alcanza el mejor valor.",
+    "ecuaciones": [
+     {
+      "latex": "\\max\\;3x+2y\\quad\\text{sujeto a}\\quad x+y\\le4,\\;2x+y\\le6,\\;x,y\\ge0",
+      "lectura": "Un objetivo lineal se maximiza entre los puntos que cumplen todas las restricciones.",
+      "condiciones": "Variables reales; ejemplo didáctico continuo. El máximo es 10 en (2,2)."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "O’Connor y Robertson, George Dantzig — MacTutor",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Dantzig_George/"
+     }
+    ],
+    "id": "algebra.programacion-lineal",
+    "titulo": "Inecuaciones con dos variables y programación lineal"
+   }
+  },
+  {
+   "id": "algebra.sucesiones-y-series",
+   "curso": "Álgebra",
+   "curso_id": "algebra",
+   "numero": 18,
+   "titulo": "Sucesiones y series",
+   "grado": 5,
+   "temas_catalogo": [
+    "Sucesiones monótonas y acotadas",
+    "Límite de sucesiones",
+    "Sucesiones recurrentes y Fibonacci",
+    "Sumas notables y series telescópicas",
+    "Serie geométrica y convergencia",
+    "Progresiones aritméticas y geométricas"
+   ],
+   "modulos_actuales": [
+    "sucesiones"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo.",
+   "teoria": "Sucesión es función de índices naturales; una recurrencia requiere condiciones iniciales. Monótona no implica convergente sin más, pero monótona y acotada converge en reales. Límite describe proximidad eventual, no que la sucesión alcance el valor. Progresiones aritméticas y geométricas distinguen diferencia y razón constante. Fibonacci requiere dos términos iniciales. Una serie suma términos y se estudia mediante sumas parciales; que a_n→0 es necesario, no suficiente, para convergencia. Series telescópicas cancelan términos internos y conservan fronteras. Σa_1r^(n−1)=a_1/(1−r) si |r|<1. El modelo de fichas no sustituye las condiciones del resultado infinito.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Funciones e índices",
+    "Potencias",
+    "Sumas finitas"
+   ],
+   "desempeno": "Relaciona recurrencia y fórmula, calcula sumas parciales y distingue convergencia de sucesión y serie.",
+   "escena_propuesta": "Predice siguiente fila y acumulado por separado. La línea de tiempo deja ambos registros; al cancelar piezas en una telescópica permanecen extremos. Después un contraejemplo compara 1/n con su suma.",
+   "otra_representacion": "Tabla n–a_n–S_n y recta de intervalos alrededor del límite.",
+   "ejemplo": "Σ desde k=1 hasta n de 1/[k(k+1)]=1−1/(n+1); límite 1.",
+   "error_objetivo": {
+    "descripcion": "Concluir que una serie converge solo porque sus términos tienden a cero.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "AAT-S",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "§13.4 Series and Their Notations; §§13.1–13.3 como prerrequisito",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/13-4-series-and-their-notations",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "CAL-S",
+     "autor": "OpenStax",
+     "titulo": "Calculus, Volume 2",
+     "localizador": "5.2 infinite series",
+     "url": "https://openstax.org/books/calculus-volume-2/pages/5-2-infinite-series",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "algebra",
+    "numero": 18,
+    "historia": "Las series infinitas resultaron poderosas para calcular y representar funciones, pero aplicarles reglas de sumas finitas sin condiciones podía conducir a errores. En su Cours d’analyse de 1821, Cauchy impulsó el estudio explícito de la convergencia y la fundamentación del análisis. Esa historia no supone que una sola obra resolviera definitivamente todas las dificultades. Para esta unidad, el cambio esencial es preguntar qué significa la suma: se estudia una sucesión de sumas parciales y su límite. Que los términos se hagan pequeños es necesario, pero no basta para garantizar convergencia.",
+    "puente_escena": "Se alternan una sucesión de términos y sus sumas parciales. El estudiante predice cuál se estabiliza antes de añadir pasos. Gráfica y tabla conservan ambas columnas; un ejemplo con términos decrecientes pero suma creciente pone a prueba la primera intuición.",
+    "ecuaciones": [
+     {
+      "latex": "S_n=\\sum_{k=1}^{n}\\frac{1}{k(k+1)}=1-\\frac{1}{n+1}",
+      "lectura": "Una suma telescópica conserva solo los términos que no se cancelan.",
+      "condiciones": "n entero positivo; se usa 1/[k(k+1)]=1/k−1/(k+1)."
+     },
+     {
+      "latex": "\\sum_{k=1}^{\\infty}\\frac{1}{k(k+1)}=1",
+      "lectura": "La serie vale el límite de sus sumas parciales.",
+      "condiciones": "La igualdad infinita se justifica porque 1/(n+1) tiende a cero."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "O’Connor y Robertson, Augustin-Louis Cauchy — MacTutor",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Cauchy/"
+     }
+    ],
+    "id": "algebra.sucesiones-y-series",
+    "titulo": "Sucesiones y series"
+   }
+  },
+  {
+   "id": "algebra.binomio-de-newton",
+   "curso": "Álgebra",
+   "curso_id": "algebra",
+   "numero": 19,
+   "titulo": "Binomio de Newton",
+   "grado": 5,
+   "temas_catalogo": [
+    "Desarrollo del binomio",
+    "Término general",
+    "Binomio con exponente no natural",
+    "Potencia de un polinomio"
+   ],
+   "modulos_actuales": [
+    "binomio-newton"
+   ],
+   "ruta_propuesta": "seguir un ejemplo, con apoyo de recordar.",
+   "teoria": "Para n entero no negativo, (a+b)^n=Σ_{k=0}^n C(n,k)a^(n−k)b^k. Coeficientes cuentan elecciones de los factores que aportan b; el término k+1 tiene exponente k de b. Un término independiente se obtiene resolviendo la ecuación del exponente, con k entero entre 0 y n. Potencia de un polinomio usa coeficientes multinomiales n!/(k₁!…k_m!) con suma de k_i=n. Para exponente real no natural, (1+x)^α se representa por una serie infinita con coeficientes α(α−1)…/k!, garantizada para |x|<1; extremos requieren análisis aparte. No es un desarrollo finito ni identidad polinómica.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Combinaciones",
+    "Potencias y exponentes",
+    "Sucesiones/series"
+   ],
+   "desempeno": "Encuentra un término sin expandir todo y distingue binomio finito de serie generalizada.",
+   "escena_propuesta": "Predice cuántos caminos llegan a una casilla y suelta fichas en tablero. Registra coeficientes y elecciones; completa un término con exponente total visible. Compara truncamiento infinito con valor exacto y error.",
+   "otra_representacion": "Triángulo de Pascal, selección combinatoria de factores y cálculo simbólico del término.",
+   "ejemplo": "Coeficiente de x² en (1+2x)^4: C(4,2)·2²=24.",
+   "error_objetivo": {
+    "descripcion": "Usar k como número de término en lugar de k+1 o truncar un binomio no natural como si fuera exacto.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "AAT-B",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "13.6 binomial theorem",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/13-6-binomial-theorem",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "CAL-B",
+     "autor": "OpenStax",
+     "titulo": "Calculus, Volume 2",
+     "localizador": "6.4 working with taylor series",
+     "url": "https://openstax.org/books/calculus-volume-2/pages/6-4-working-with-taylor-series",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "algebra",
+    "numero": 19,
+    "historia": "Los coeficientes del desarrollo de potencias enteras de un binomio tienen una historia anterior a Newton. Los textos de Yang Hui documentan el triángulo aritmético en la tradición china. Newton extendió la relación hacia exponentes más generales y series infinitas; en un manuscrito retrospectivo situó ese trabajo en 1665. Conviene distinguir el desarrollo finito escolar de esa extensión, que requiere condiciones de convergencia. Esta unidad conecta elección combinatoria y coeficientes algebraicos, y presenta su notación como moderna: el nombre del teorema no resume toda la historia de sus componentes.",
+    "puente_escena": "Cada factor ofrece elegir a o b. El estudiante predice cuántos caminos producen el mismo monomio antes de agruparlos. Árbol, triángulo de coeficientes y expansión conservan las elecciones, mostrando por qué los exponentes de cada término suman n.",
+    "ecuaciones": [
+     {
+      "latex": "(a+b)^n=\\sum_{k=0}^{n}\\binom{n}{k}a^{n-k}b^k",
+      "lectura": "Cada coeficiente cuenta las formas de elegir k factores que aportan b.",
+      "condiciones": "n entero no negativo; a y b reales o complejos."
+     },
+     {
+      "latex": "(1+x)^\\alpha=\\sum_{k=0}^{\\infty}\\binom{\\alpha}{k}x^k",
+      "lectura": "La extensión admite exponentes generales mediante una serie.",
+      "condiciones": "α real y |x|<1; coeficiente generalizado α(α−1)…(α−k+1)/k!, y coeficiente de k=0 igual a 1."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Isaac Newton, History of the Method of Fluxions, transcripción diplomática — The Newton Project, Universidad de Oxford",
+      "url": "https://newtonproject.ox.ac.uk/view/texts/diplomatic/NATP00356"
+     },
+     {
+      "titulo": "O’Connor y Robertson, Yang Hui — MacTutor",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Yang_Hui/"
+     }
+    ],
+    "id": "algebra.binomio-de-newton",
+    "titulo": "Binomio de Newton"
+   }
+  }
+ ]
+}

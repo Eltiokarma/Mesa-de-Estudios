@@ -1,0 +1,973 @@
+Ocho compañeros de estudio:
+guía de personalidad, expresión
+y movimiento
+Documento de diseño para las hojas de personaje y su posterior construcción vectorial en Rive. No
+modifica la app ni convierte la asignación de cursos en una decisión definitiva.
+
+
+
+Propósito y límites del marco de
+personalidad
+Los ocho personajes son adultos emocionalmente: pueden sostener una duda, admitir una corrección y
+acompañar una tarea exigente sin infantilizar al estudiante. Su simpatía procede de cómo atienden y
+reaccionan, no de un flujo constante de celebraciones.
+
+Los códigos MBTI y las secuencias de funciones se emplean como herramientas de ficción para
+mantener diferencias de voz y conducta. No son un diagnóstico del estudiante, una medida de
+inteligencia, una predicción de capacidad académica ni un sistema para asignar cursos a personas. Las
+dos facetas de cada función que se describen abajo son decisiones de escritura propias, no
+subdivisiones psicológicas validadas. Ni no significa adivinar; Si no significa memorizar sin pensar; Ti
+no excluye afecto; Te no confiere autoridad; Fe no equivale a agradar siempre; Fi no vuelve infalibles
+los valores; Se no implica impulsividad; Ne no exige dispersión.
+
+La secuencia dominante–auxiliar–terciaria–inferior organiza una tensión narrativa: recurso habitual,
+apoyo, recurso menos habitual y zona de esfuerzo. No autoriza que el personaje solo use cuatro
+recursos o permanezca incapaz de desarrollar los demás. En situaciones difíciles, su madurez se
+aprecia cuando cambia de estrategia de manera consciente.
+
+
+  Curso provisional            Personaje   Animal    Código de   Secuencia   Aporte pedagógico provisional
+                                                     ficción
+
+  Aritmética                   Luma        Tortuga   ISTJ        Si–Te–Fi–   Mantener la unidad, verificar
+                                                                 Ne          cantidades y examinar excepciones.
+
+  Álgebra                      Nox         Cuervo    INTJ        Ni–Te–Fi–   Reconocer estructura y contrastarla
+                                                                 Se          con casos concretos.
+
+  Física                       Tilo        Gato      INTP        Ti–Ne–Si–   Hacer explícito un modelo y someter
+                                           bicolor               Fe          sus predicciones a evidencia.
+
+  Química                      Bruna       Castora   ENTJ        Te–Ni–Se–   Coordinar inventarios, procedimientos
+                                                                 Fi          y explicaciones.
+
+  Geometría                    Neri        Nutria    ESTP        Se–Ti–Fe–   Explorar transformaciones y distinguir
+                                                                 Ni          observación de demostración.
+
+
+
+
+Mesa de Estudios · Diseño de personajes                                                                               1
+  Curso provisional            Personaje   Animal    Código de   Secuencia   Aporte pedagógico provisional
+                                                     ficción
+
+  Trigonometría                Mara        Coneja    ISFJ        Si–Fe–Ti–   Fijar convenciones y acompañar
+                                                                 Ne          cambios entre representaciones.
+
+  Razonamiento                 Faro        Zorro     ENTP        Ne–Ti–Fe–   Proponer casos y cerrar la exploración
+  matemático                                                     Si          con una justificación.
+
+  Razonamiento                 Iris        Lechuza   INFJ        Ni–Fe–Ti–   Construir sentido global y volver a la
+  verbal                                                         Se          evidencia exacta del texto.
+
+
+
+La asignación se revisa según qué conducta mejora una escena concreta; no supone que cierto tipo de
+personalidad sea especialmente apto para una disciplina. Los personajes pueden colaborar entre
+cursos.
+
+
+
+Dirección visual compartida
+Animales antropomorfos 2D de cuerpo completo, de unas tres cabezas de altura, siluetas legibles,
+formas amplias y pocos detalles interiores. Dirección editorial madura, plana y de textura mínima.
+Mezclar la economía de forma del dibujo folk plano, prendas de bloques de color y la expresividad de
+cejas, párpados, mejillas y boca de un rostro humano. Mantener anatomía animal reconocible y ojos
+pequeños que permitan leer la dirección de mirada. No pegar una cara humana realista sobre un
+animal.
+
+Los referentes se traducen en decisiones: orejas de coneja largas pero móviles por segmentos; masas
+negras legibles sobre fondo claro; pecheras de gato bicolor; párpados y cejas expresivos en ojos
+pequeños; bufandas de dos o tres pliegues; punto sugerido mediante pocas franjas; impermeables de
+contorno sencillo; cuervo oscuro con amarillo mostaza. Los patrones geométricos son originales, sin
+atribuirlos a una tradición cultural concreta.
+
+La forma debe sobrevivir al tamaño pequeño: una prenda principal, un acento y un accesorio opcional
+por personaje. Ningún instrumento se vuelve parte inseparable de la mano. El personaje puede señalar
+una escena sin tapar la evidencia ni ocupar el lugar de la figura semántica. Mantener la cabeza
+suficientemente grande para leer el gesto, sin convertir el conjunto en bebé.
+
+Los colores distinguen personajes, pero no codifican por sí solos acierto, error, emoción o función. La
+apariencia de una reacción nunca sustituye el texto breve que informa del resultado.
+
+
+
+Repertorio común y reglas de conducta
+Todos comparten diez estados expresivos: E0 disposición, E1 atención, E2 curiosidad, E3 hipótesis, E4
+análisis, E5 detección de desajuste, E6 comprensión, E7 confirmación, E8 reconsideración y E9 pausa.
+Cada perfil los interpreta visualmente de manera distinta. Así se pueden intercambiar personajes sin
+cambiar el significado de la interacción.
+
+
+
+
+Mesa de Estudios · Diseño de personajes                                                                               2
+E5 significa «esta relación merece revisión», nunca «eres incapaz». E6 significa «ahora se ve la
+relación», no «por fin». E7 reconoce una acción verificable y no la rapidez, el talento supuesto ni la
+comparación con otros estudiantes. E9 ofrece descanso sin tristeza, abandono o presión afectiva.
+
+         No usar vergüenza, asco, desprecio, ojos en blanco, golpes en la frente ni llanto ante un error del
+         alumno.
+
+         No imitar acentos, identidades culturales o dificultades del habla para producir humor.
+
+         Un error repetido cambia la ayuda: señalar la condición, ofrecer un contraste o revisar un paso.
+         No incrementa el enfado del personaje.
+         Si la propia guía se equivoca, lo reconoce de forma directa y corrige el modelo. No hace al
+         estudiante responsable de su malestar.
+
+         El silencio es legítimo. Una pausa o una lectura larga no requieren insistencia, aplausos ni
+         movimientos de espera que llamen la atención.
+
+         La predicción se registra antes de revelar el resultado. Una hipótesis incorrecta no activa una
+         animación de castigo.
+
+         No asignar personalidad al estudiante ni cambiar su acceso al contenido según un supuesto tipo
+         MBTI.
+
+
+
+
+Mesa de Estudios · Diseño de personajes                                                                     3
+Luma — tortuga de Aritmética
+Presencia. Tortuga oliva gris de caparazón reconocible y tres placas grandes, cara clara y cárdigan
+crema. Cuerpo estable; las manos pueden salir claramente de la silueta. Ojos pequeños y cejas legibles.
+El caparazón no funciona como escondite de vergüenza. Su ritmo es atento, no cómicamente lento.
+
+Conflicto maduro. Ha aprendido que revisar bien protege a quienes dependen de un resultado. Su
+dificultad aparece cuando confunde un procedimiento familiar con una garantía universal. Quiere ser
+fiable sin volverse rígida; aprende a preguntar cuándo cambió la unidad o dejó de cumplirse una
+condición.
+
+Fortaleza y límite. Conserva referencias, inventarios y pasos reproducibles. Puede insistir
+demasiado en una secuencia conocida. Su desarrollo consiste en aceptar una estrategia distinta cuando
+el estudiante demuestra que preserva las relaciones necesarias.
+
+
+  Función             Faceta práctica 1                                  Faceta práctica 2
+
+  Si                  Recupera una unidad o convención ya                Compara el caso actual con uno anterior e identifica
+  dominante           establecida.                                       exactamente qué cambió.
+
+  Te auxiliar         Organiza la comprobación en pocos pasos            Revisa totales y unidades antes de aceptar un
+                      visibles.                                          resultado.
+
+  Fi terciaria        Explica por qué la exactitud importa en un         Mantiene el respeto aunque la respuesta no esté
+                      reparto justo.                                     resuelta.
+
+  Ne inferior         Ensaya una alternativa cuando el método            Tolera dejar dos posibilidades abiertas hasta recibir el
+                      habitual no alcanza.                               dato necesario.
+
+
+
+Voz. Precisa, tranquila y concreta. Usa «esta unidad», «este reparto», «comprueba»; evita «es fácil»,
+«siempre se hace así».
+
+         «La cuenta coincide; revisemos qué unidad representa cada parte».
+         «Cambió la base del porcentaje. Conservemos ese cambio en el siguiente paso».
+
+
+  Expresión                         Diseño y función
+
+  E0 Disposición                    Boca pequeña relajada, párpados neutros; recibe al estudiante sin impaciencia.
+
+  E1 Atención                       Cabeza un poco adelantada, cejas paralelas; mira el dato pertinente.
+
+  E2 Curiosidad                     Una ceja sube y la cabeza gira pocos grados; reconoce una variante.
+
+  E3 Hipótesis                      Labio leve hacia un lado, mano abierta; propone sin asegurar.
+
+  E4 Análisis                       Mirada alterna entre dos posiciones; cejas próximas sin fruncimiento hostil.
+
+  E5 Desajuste                      Boca se abre levemente, mirada baja hacia la cuenta; localiza una diferencia.
+
+
+
+
+Mesa de Estudios · Diseño de personajes                                                                                             4
+  Expresión                         Diseño y función
+
+  E6 Comprensión                    Párpados se abren y boca se suaviza; reconoce la unidad conservada.
+
+  E7 Confirmación                   Sonrisa breve y un asentimiento; valida la comprobación.
+
+  E8 Reconsideración                Suelta tensión de hombros y vuelve a mirar; acepta otro procedimiento.
+
+  E9 Pausa                          Manos descansan, mirada serena; no se encierra en el caparazón.
+
+
+
+Cinco gestos. G1 coloca una mano bajo la unidad de referencia; G2 recorre con el índice una
+agrupación; G3 abre ambas manos para comparar dos cantidades; G4 reúne las manos sin palmada al
+cerrar una verificación; G5 retira la mano del procedimiento anterior para dar paso a otro.
+
+Transiciones. E0→E1 al aparecer un dato; E1→E3 antes de una predicción; E3→E5 si la
+comparación no coincide; E5→E4 con G2 para revisar; E4→E6 cuando se conserva la unidad; E6→E7
+y regreso a E0. Una estrategia alternativa válida usa E4→E8→E7, sin gesto de derrota.
+
+Error sin humillación. Mira la relación que falló, no al estudiante con reproche. Si el reparto usa
+unidades distintas: «Estas partes no miden lo mismo. Igualemos la unidad y vuelve a comparar».
+
+Separación vectorial específica. Cabeza, cuello, torso/cárdigan, caparazón trasero, dos brazos,
+dos manos, dos piernas y pies. Las placas no requieren animación independiente.
+
+
+
+
+Mesa de Estudios · Diseño de personajes                                                                      5
+Nox — cuervo de Álgebra
+Presencia. Plumaje negro grafito, pico corto y ojos pequeños con cejas independientes legibles.
+Impermeable mostaza con cierre simple y capucha baja. Alas convertidas en brazos de silueta clara; la
+punta del ala sirve para señalar. Patas de dos formas grandes, sin dedos minuciosos.
+
+Conflicto maduro. Le atrae encontrar una estructura que ordene muchos casos. A veces ve el patrón
+antes de explicarlo y supone que otros también lo ven. Su madurez consiste en hacer visible el camino y
+abandonar una idea elegante cuando un caso válido la contradice.
+
+Fortaleza y límite. Detecta relaciones entre expresiones y anticipa consecuencias. Puede condensar
+demasiado pronto. Aprende a sostener una instancia concreta y a declarar el dominio antes de
+generalizar.
+
+
+  Función             Faceta práctica 1                                       Faceta práctica 2
+
+  Ni                  Busca una estructura común en expresiones               Anticipa qué transformación podría simplificar el
+  dominante           diferentes.                                             problema.
+
+  Te auxiliar         Convierte la intuición en una secuencia                 Contrasta el resultado con las restricciones explícitas.
+                      comprobable.
+
+  Fi terciaria        Prefiere reconocer una laguna a fingir                  Respeta que una explicación necesite más de una
+                      certeza.                                                representación.
+
+  Se inferior         Vuelve a un valor concreto para poner a                 Observa un cambio pequeño que su visión global pudo
+                      prueba el patrón.                                       pasar por alto.
+
+
+
+Voz. Breve, reflexiva y directa. Se permite «creo que», seguido por una comprobación. Nunca habla
+como oráculo.
+
+         «Las formas cambiaron; la igualdad debe conservarse en cada paso».
+
+         «Ese valor queda fuera del dominio. Revisemos cuándo apareció».
+
+
+  Expresión                               Diseño y función
+
+  E0 Disposición                          Pico cerrado y ojos descansados; presencia sobria.
+
+  E1 Atención                             Mirada enfocada y cabeza casi inmóvil; sigue una transformación.
+
+  E2 Curiosidad                           Cabeza ladeada, una ceja alta; percibe estructura posible.
+
+  E3 Hipótesis                            Pico entreabierto y ala suspendida; presenta una vía tentativa.
+
+  E4 Análisis                             Ojos alternan expresión y condición; párpados se estrechan ligeramente.
+
+  E5 Desajuste                            Ceja asimétrica y pico apenas abierto; reconoce un caso que no encaja.
+
+  E6 Comprensión                          Cabeza se endereza y cejas se alinean; ve la equivalencia.
+
+
+
+
+Mesa de Estudios · Diseño de personajes                                                                                                  6
+  Expresión                               Diseño y función
+
+  E7 Confirmación                         Pequeño arco en el borde del pico y asentimiento; calma satisfecha.
+
+  E8 Reconsideración                      Baja el ala y afloja los hombros; devuelve atención al dato.
+
+  E9 Pausa                                Alas relajadas a los lados; mirada disponible, no distante.
+
+
+
+Cinco gestos. G1 traza un arco corto entre dos formas equivalentes; G2 encuadra una condición con
+ambas alas; G3 señala un caso concreto bajo la expresión; G4 detiene su propio gesto antes de una
+división no permitida; G5 abre un ala para ceder espacio a una solución alternativa.
+
+Transiciones. E2→E3 introduce una conjetura; E3→E4 comprueba; un contraejemplo activa
+E4→E5→E8 y G3; una equivalencia válida activa E4→E6→E7. Nunca pasa directamente de
+«intuición» a «certeza» sin el estado de comprobación.
+
+Error sin humillación. Su reacción expresa revisión del modelo. «Yo había comprimido ese paso.
+Abrámoslo: dividir entre esta expresión exige que no sea cero».
+
+Separación vectorial específica. Pico superior e inferior, párpados, cejas, cabeza, torso, dos alas-
+brazos con extremo articulado, faldones del impermeable, capucha y dos patas. Plumas exteriores
+limitadas a tres puntas por ala.
+
+
+
+
+Mesa de Estudios · Diseño de personajes                                                                         7
+Tilo — gato bicolor de Física
+Presencia. Gato negro de pecho y hocico blancos, ojos pequeños cálidos, orejas triangulares, jersey
+azul polvo y bufanda ocre. Prendas de contorno simple. Cola expresiva pero de amplitud limitada; las
+manchas siguen siendo legibles en perfil y tres cuartos.
+
+Conflicto maduro. Disfruta encontrar explicaciones consistentes y podría seguir examinándolas
+indefinidamente. Le cuesta decidir cuándo un modelo es suficiente para la pregunta concreta. Aprende
+a comunicar una aproximación con sus límites y a distinguir una duda productiva de otra que solo
+posterga la prueba.
+
+Fortaleza y límite. Separa magnitudes y examina supuestos. Puede abrir demasiadas posibilidades o
+esconderse en una explicación abstracta. Recupera el foco preguntando qué se puede observar o medir
+en esta escena.
+
+
+  Función             Faceta práctica 1                                      Faceta práctica 2
+
+  Ti                  Comprueba que las definiciones no se                   Separa magnitudes próximas: posición, distancia y
+  dominante           contradigan.                                           desplazamiento.
+
+  Ne auxiliar         Propone una variación capaz de distinguir              Considera una explicación alternativa sin adoptarla
+                      modelos.                                               como hecho.
+
+  Si terciaria        Recupera ejes, signos y unidades ya fijados.           Compara la nueva medición con una referencia
+                                                                             conocida.
+
+  Fe inferior         Hace comprensible una duda sin transferir              Pregunta qué parte necesita hacerse visible y ajusta
+                      angustia al alumno.                                    la explicación.
+
+
+
+Voz. Curiosa, concreta y ligeramente seca, con humor sobre la situación, nunca sobre la persona. No
+usa tecnicismos para marcar superioridad.
+
+         «La flecha cambió de sentido; el valor de la rapidez sigue siendo positivo».
+         «Nuestra predicción no coincide. Cambiemos una condición y observemos qué ocurre».
+
+
+  Expresión                          Diseño y función
+
+  E0 Disposición                     Orejas relajadas y boca recta suave; calma despierta.
+
+  E1 Atención                        Pupilas orientadas al objeto y bigotes quietos; observa.
+
+  E2 Curiosidad                      Orejas avanzan ligeramente, cabeza ladeada; surge una pregunta.
+
+  E3 Hipótesis                       Sonrisa mínima de un lado y pata abierta; ofrece una posibilidad.
+
+  E4 Análisis                        Párpados bajan un poco y mira dos referencias; no mira al vacío.
+
+  E5 Desajuste                       Ojos se abren y orejas cambian hacia el dato, nunca hacia atrás en hostilidad.
+
+
+
+
+Mesa de Estudios · Diseño de personajes                                                                                             8
+  Expresión                          Diseño y función
+
+  E6 Comprensión                     Boca se abre en una sonrisa pequeña; conecta escena y representación.
+
+  E7 Confirmación                    Asentimiento corto y cola quieta; valida evidencia suficiente.
+
+  E8 Reconsideración                 Respira, baja la pata y mira de nuevo; acepta corregirse.
+
+  E9 Pausa                           Párpados suaves, manos apoyadas; disponible sin dormirse sobre el ejercicio.
+
+
+
+Cinco gestos. G1 señala sucesivamente objeto, flecha y gráfica; G2 separa dos manos para distinguir
+magnitudes; G3 sigue con el índice una trayectoria; G4 sostiene una mano quieta mientras la otra
+modifica una condición; G5 gira la palma hacia arriba para reconocer una predicción fallida.
+
+Transiciones. E1→E3 antes de mover la escena; E3→E1 durante la observación; coincidencia
+E1→E6→E7; discrepancia E1→E5→E8→E4. El carácter cambia de opinión con normalidad; no
+celebra que el alumno haya «vencido» al modelo.
+
+Error sin humillación. «Aquí contamos cuánto camino recorrió, pero la pregunta pide el cambio de
+posición. Comparemos ambas medidas en la misma escena».
+
+Separación vectorial específica. Cabeza, hocico blanco, ojos, párpados, cejas, boca, orejas con
+base y punta, torso con pechera, brazos/manos, piernas, cola de tres segmentos y dos extremos de
+bufanda. Bigotes en grupos, sin física individual.
+
+
+
+
+Mesa de Estudios · Diseño de personajes                                                                             9
+Bruna — castora de Química
+Presencia. Castora castaña, hocico claro, ojos pequeños, dos incisivos discretos y cola ancha con solo
+tres líneas interiores. Delantal verde botella sobre camisa crema. Las gafas de protección son accesorio
+opcional para una escena de laboratorio, no disfraz permanente.
+
+Conflicto maduro. Le importa que una tarea salga bien y suele asumir la coordinación. A veces
+interpreta la vacilación como falta de organización y adelanta demasiado la solución. Aprende a dejar
+que una predicción del alumno exista antes de intervenir y a escuchar una observación que cambia el
+plan.
+
+Fortaleza y límite. Ordena condiciones, inventarios y procedimientos. Puede confundir eficiencia
+con comprensión. Su madurez se reconoce cuando detiene una ejecución correcta para preguntar qué
+relación la justifica.
+
+
+  Función             Faceta práctica 1                                           Faceta práctica 2
+
+  Te                  Organiza cantidades, restricciones y pasos de               Comprueba si el procedimiento produjo el
+  dominante           trabajo.                                                    resultado anunciado.
+
+  Ni auxiliar         Relaciona pasos concretos con una explicación               Anticipa qué dato será decisivo antes de recoger
+                      global.                                                     información de más.
+
+  Se terciaria        Atiende a un cambio observable sin convertirlo en           Ajusta una manipulación al estado realmente
+                      interpretación inmediata.                                   visible.
+
+  Fi inferior         Reconoce cuándo su prisa limita la participación del        Expresa responsabilidad por sus decisiones sin
+                      otro.                                                       culpar al estudiante.
+
+
+
+Voz. Resolutiva y cálida. Utiliza instrucciones cortas que dejan margen a la predicción. No convierte la
+escena en una orden de obediencia.
+
+         «El inventario de átomos debe coincidir antes y después; comparemos cada elemento».
+         «La mezcla cambió de aspecto. Eso es una observación; aún debemos explicar qué significa».
+
+
+  Expresión                         Diseño y función
+
+  E0 Disposición                    Mandíbula relajada, manos disponibles; confianza sin desafío.
+
+  E1 Atención                       Cabeza orientada al inventario y mirada firme; seguimiento.
+
+  E2 Curiosidad                     Cejas arqueadas y boca pequeña abierta; atiende una observación inesperada.
+
+  E3 Hipótesis                      Mano suspendida antes de actuar; mirada pregunta, no ordena.
+
+  E4 Análisis                       Recorre filas con la mirada; labios juntos sin apretarlos.
+
+  E5 Desajuste                      Baja las cejas centrales apenas y mira las cantidades, sin fruncir hacia el alumno.
+
+
+
+
+Mesa de Estudios · Diseño de personajes                                                                                              10
+  Expresión                         Diseño y función
+
+  E6 Comprensión                    Hocico se suaviza y levanta la mirada; conecta inventario y proceso.
+
+  E7 Confirmación                   Sonrisa moderada y pulgar opcional; reconoce una comprobación concreta.
+
+  E8 Reconsideración                Relaja ambos brazos y cede espacio; cambia el plan.
+
+  E9 Pausa                          Manos juntas en reposo, postura abierta; no cruza brazos con impaciencia.
+
+
+
+Cinco gestos. G1 enumera hasta tres pasos con dedos simplificados; G2 enfrenta dos palmas como
+«antes/después»; G3 señala una especie sin tocar su subíndice; G4 detiene su propia intervención y
+abre la mano hacia el estudiante; G5 recoge imaginariamente el inventario en una zona de
+comprobación.
+
+Transiciones. E0→E1→E3 al planificar; E3 se mantiene hasta registrar la predicción. E1→E5 activa
+una comprobación por elemento, no un resultado final inmediato. E8 con G4 permite devolver la
+iniciativa. E6→E7 solo tras verificar la relación pertinente.
+
+Error sin humillación. «Ese cambio modifica la sustancia escrita. Conservemos la fórmula y
+ajustemos cuántas unidades participan».
+
+Separación vectorial específica. Cabeza, hocico, mandíbula, dientes unidos en una pieza, torso,
+dos brazos/manos, piernas, cola trasera, delantal y tirantes. Las gafas usan una pieza independiente
+que no tapa las cejas.
+
+
+
+
+Mesa de Estudios · Diseño de personajes                                                                         11
+Neri — nutria de Geometría
+Presencia. Nutria marrón medio de hocico redondo, barriga crema y ojos pequeños. Chaleco
+terracota de contorno sencillo. Cuerpo flexible con una cola gruesa que ayuda a equilibrar poses. Nada
+de acrobacias permanentes.
+
+Conflicto maduro. Entiende mucho al tocar, girar y probar. Su riesgo es dar por demostrado lo que
+un dibujo parece confirmar. Aprende a disfrutar una prueba que limita la intuición y a reconocer
+cuándo la escena engaña por escala, perspectiva o posición.
+
+Fortaleza y límite. Explora cambios e identifica invariantes visibles. Puede saltar de un ejemplo a
+una afirmación universal. Se desarrolla al separar «lo observamos aquí» de «vale para todos estos
+casos por esta razón».
+
+
+  Función             Faceta práctica 1                                             Faceta práctica 2
+
+  Se                  Observa posición, orientación y contacto en la                Prueba una transformación controlada y atiende
+  dominante           figura presente.                                              al resultado.
+
+  Ti auxiliar         Identifica la propiedad que explica el efecto                 Comprueba si una conclusión usa alguna
+                      observado.                                                    hipótesis no declarada.
+
+  Fe terciaria        Invita a manipular sin convertir la rapidez en                Hace visible una dificultad compartida con humor
+                      competición.                                                  amable.
+
+  Ni inferior         Anticipa qué propiedad podría conservarse antes               Mantiene una pregunta global mientras examina
+                      de mover la figura.                                           varios casos.
+
+
+
+Voz. Activa y clara. Verbos de acción y pausas para razonar. No dice «se ve» como sustituto de
+demostrar.
+
+         «Al girarla cambia la posición. Comprueba qué longitudes permanecen».
+
+         «El dibujo sugiere un ángulo recto; necesitamos la condición que lo garantiza».
+
+
+  Expresión                               Diseño y función
+
+  E0 Disposición                          Postura equilibrada y boca suave; preparada sin agitación.
+
+  E1 Atención                             Ojos siguen un punto testigo; cabeza acompaña levemente.
+
+  E2 Curiosidad                           Cejas altas y hocico inclinado; ve una variante de la figura.
+
+  E3 Hipótesis                            Mano preparada pero quieta; predice antes de girar.
+
+  E4 Análisis                             Inmoviliza el cuerpo y compara referencias; pausa visible.
+
+  E5 Desajuste                            Detiene el gesto y abre los ojos; reconoce que la apariencia no bastó.
+
+  E6 Comprensión                          Endereza postura y señala la propiedad; entusiasmo contenido.
+
+
+
+
+Mesa de Estudios · Diseño de personajes                                                                                                12
+  Expresión                               Diseño y función
+
+  E7 Confirmación                         Sonrisa corta, ambas manos descansan; cierre sin salto.
+
+  E8 Reconsideración                      Retira la mano de la figura y gira la palma; vuelve a examinar.
+
+  E9 Pausa                                Peso repartido y cola apoyada; no se desploma de aburrimiento.
+
+
+
+Cinco gestos. G1 rota una mano alrededor de un centro visible; G2 traslada ambas manos
+manteniendo separación; G3 enfrenta las palmas como imagen y reflejo; G4 señala un segmento
+testigo antes y después; G5 se aparta un paso para revelar la figura completa.
+
+Transiciones. E3 debe preceder a G1–G3. Durante el movimiento usa E1; al terminar pasa a E4,
+aunque la transformación parezca convincente. E4→E6 requiere una relación identificada.
+E5→E8→E4 devuelve la discusión a las hipótesis.
+
+Error sin humillación. «Esta figura parecía conservar el área. Probemos una medida que permita
+comprobarlo, sin depender del aspecto».
+
+Separación vectorial específica. Cabeza, hocico, párpados, cejas, torso, hombros, brazos/manos,
+piernas/pies y cola en dos segmentos. Los giros de mano no deforman todo el brazo como una cinta.
+
+
+
+
+Mesa de Estudios · Diseño de personajes                                                                     13
+Mara — coneja de Trigonometría
+Presencia. Coneja crema rosada, orejas largas de interior blush y ojos pequeños oscuros. Suéter oliva
+de silueta sencilla. El punto se sugiere con pocos trazos; no se dibuja una textura densa. Las orejas
+expresan atención sin doblarse como signos de puntuación exagerados.
+
+Conflicto maduro. Le importa que nadie pierda el hilo y prepara referencias claras. Puede proteger
+demasiado, repitiendo ayudas que el alumno ya no necesita. Aprende a retirar apoyos de forma
+acordada y a dejar que una diferencia de enfoque sea una oportunidad de comprensión.
+
+Fortaleza y límite. Mantiene ejes, unidades angulares y convenciones. Puede asociar seguridad con
+repetición del mismo procedimiento. Crece al aceptar varias representaciones y explicar por qué
+concuerdan.
+
+
+  Función             Faceta práctica 1                                            Faceta práctica 2
+
+  Si                  Recupera el origen angular, el sentido y la unidad           Compara el caso nuevo con una posición de
+  dominante           elegidos.                                                    referencia conocida.
+
+  Fe auxiliar         Comprueba que las referencias estén disponibles              Ofrece una ayuda concreta y la retira cuando
+                      para el lector.                                              deja de ser necesaria.
+
+  Ti terciaria        Explica por qué cambian signo y razón, más allá de           Distingue identidad, ecuación e intervalo de
+                      una tabla.                                                   solución.
+
+  Ne inferior         Explora otro cuadrante o representación sin asumir           Admite varias soluciones cuando la periodicidad
+                      que es excepción.                                            las permite.
+
+
+
+Voz. Cercana y rigurosa. No habla como madre sustituta ni usa diminutivos para la tarea.
+
+         «Conservemos el origen y el sentido del ángulo antes de cambiar de cuadrante».
+
+         «La calculadora muestra un valor principal; revisemos las soluciones del intervalo».
+
+
+  Expresión                               Diseño y función
+
+  E0 Disposición                          Orejas en V suave y rostro neutro; acogida tranquila.
+
+  E1 Atención                             Una oreja gira hacia la referencia y los ojos siguen el ángulo.
+
+  E2 Curiosidad                           Orejas ligeramente desiguales y ceja alta; reconoce otra solución.
+
+  E3 Hipótesis                            Boca pequeña abierta, mano suspendida; espera la predicción.
+
+  E4 Análisis                             Orejas quietas y mirada entre círculo y gráfica; concentración.
+
+  E5 Desajuste                            Cejas se elevan en el centro apenas; mira la convención, sin pena.
+
+  E6 Comprensión                          Orejas recuperan simetría y aparece una sonrisa ligera.
+
+
+
+
+Mesa de Estudios · Diseño de personajes                                                                                              14
+  Expresión                               Diseño y función
+
+  E7 Confirmación                         Asentimiento breve; reconoce la relación, no la obediencia.
+
+  E8 Reconsideración                      Inclina la cabeza y baja la ayuda visual que estaba ofreciendo.
+
+  E9 Pausa                                Orejas relajadas, postura erguida; descanso sin abatimiento.
+
+
+
+Cinco gestos. G1 marca el radio inicial; G2 dibuja un arco corto en el sentido definido; G3 proyecta
+con una mano horizontal y otra vertical; G4 enlaza un punto del círculo con su posición en la gráfica;
+G5 recoge una tarjeta de ayuda para dejar el problema visible.
+
+Transiciones. E0→E1 fija la convención; E3 antecede al cambio de ángulo; E4 compara
+representaciones. E5 activa G1, no una repetición de toda la explicación. E8→G5 permite retirar apoyo.
+E6→E7 vuelve a reposo sin premio infantil.
+
+Error sin humillación. «Usamos grados en este dato y radianes en esa expresión. Pongamos ambos
+en una unidad común».
+
+Separación vectorial específica. Orejas con dos articulaciones cada una, cabeza, hocico, ojos,
+cejas, torso/suéter, brazos/manos y piernas. El cuello del suéter no debe tapar el giro de la cabeza.
+
+
+
+
+Mesa de Estudios · Diseño de personajes                                                                     15
+Faro — zorro de Razonamiento matemático
+Presencia. Zorro naranja apagado, pecho crema, patas oscuras, ojos pequeños y cola grande de punta
+clara. Cuello alto crema y chaqueta azul pizarra. Silueta de orejas grandes y hombros compactos.
+Sonrisa abierta, sin mueca de superioridad ni ceja permanentemente «astuta».
+
+Conflicto maduro. Genera alternativas con facilidad y disfruta encontrar una salida inesperada. Su
+dificultad es seguir abriendo posibilidades cuando ya hace falta cerrar un argumento. Aprende a
+hacerse responsable de sus propuestas: declarar supuestos, buscar un contraejemplo y concluir cuándo
+la información no basta.
+
+Fortaleza y límite. Explora casos y detecta premisas ocultas. Puede convertir un reto en exhibición
+de ingenio. Crece al hacer que el razonamiento sea reproducible por otra persona, aunque pierda
+espectacularidad.
+
+
+  Función              Faceta práctica 1                                     Faceta práctica 2
+
+  Ne                   Propone dos interpretaciones o reglas que             Busca un caso que permita distinguirlas.
+  dominante            compiten.
+
+  Ti auxiliar          Examina la consistencia de cada                       Establece qué condición basta y cuál solo es necesaria.
+                       alternativa.
+
+  Fe terciaria         Invita a discrepar sin transformar el diálogo         Usa humor sobre una suposición compartida, nunca
+                       en duelo.                                             sobre el error ajeno.
+
+  Si inferior          Conserva un registro de casos ya                      Vuelve al enunciado para comprobar que no cambió las
+                       examinados.                                           reglas.
+
+
+
+Voz. Ágil, franca y juguetona en dosis pequeñas. Evita «truco», «obvio» y «te pillé» cuando el objetivo
+es comprender.
+
+         «Esa regla funciona en estos casos. Busquemos uno que pudiera hacerla fallar».
+         «Hay dos soluciones legales. La información todavía no decide entre ellas».
+
+
+  Expresión                               Diseño y función
+
+  E0 Disposición                          Boca relajada y cola quieta; energía contenida.
+
+  E1 Atención                             Orejas orientadas al enunciado; escucha las reglas.
+
+  E2 Curiosidad                           Una ceja alta y sonrisa leve; surge una alternativa.
+
+  E3 Hipótesis                            Ambas manos abiertas con separación; presenta dos caminos posibles.
+
+  E4 Análisis                             Desaparece la sonrisa y sigue el registro; seriedad sin enfado.
+
+  E5 Desajuste                            Boca breve en «ah», ojos al caso; acepta un contraejemplo.
+
+
+
+
+Mesa de Estudios · Diseño de personajes                                                                                                16
+  Expresión                               Diseño y función
+
+  E6 Comprensión                          Sonrisa pequeña y cejas suaves; reconoce la condición decisiva.
+
+  E7 Confirmación                         Asentimiento y manos juntas sin aplauso; cierra la justificación.
+
+  E8 Reconsideración                      Baja una mano y deja la otra abierta; descarta una idea con normalidad.
+
+  E9 Pausa                                Cola apoyada y postura cómoda; no insiste en otro reto.
+
+
+
+Cinco gestos. G1 abre dos palmas como alternativas; G2 coloca un dedo sobre la regla relevante; G3
+retira una tarjeta hipotética refutada; G4 marca en una lista los casos revisados; G5 cierra ambas
+manos suavemente para indicar que la justificación ya está completa.
+
+Transiciones. E2→E3 puede generar opciones; siempre sigue E4 con registro. E5→E8→E4 elimina
+o corrige una propuesta. E6→G5→E7 cierra el razonamiento. La indeterminación justificada también
+recibe E7: no hace falta fingir una solución única.
+
+Error sin humillación. «Ese movimiento resolvería el tablero, pero cambia dos piezas y solo se
+permite una. Conservemos tu idea y revisemos la regla».
+
+Separación vectorial específica. Orejas, cabeza, hocico, mandíbula, cejas, torso, chaqueta,
+brazos/manos, piernas y cola de tres segmentos. El cuello alto se ancla al torso sin ocultar toda la
+mandíbula.
+
+
+
+
+Mesa de Estudios · Diseño de personajes                                                                             17
+Iris — lechuza de Razonamiento verbal
+Presencia. Lechuza crema y marrón con disco facial claro, ojos pequeños oscuros y pico pequeño.
+Vestuario en capas color carbón y pañuelo ocre. La expresividad nace de párpados y arcos de ceja
+independientes; el disco facial permanece estable. Alas-manos de tres puntas grandes.
+
+Conflicto maduro. Comprende bien una dirección global y se interesa por lo que una persona
+intenta comunicar. A veces encuentra un sentido coherente antes de comprobar que el pasaje
+realmente lo sostiene. Aprende a separar empatía de atribución, y a decir «no podemos saberlo con
+este texto» sin perder cercanía.
+
+Fortaleza y límite. Integra fragmentos y reconoce cambios de perspectiva. Puede sobreinterpretar
+intenciones o suavizar una contradicción por buscar acuerdo. Su madurez combina escucha, evidencia
+y desacuerdo respetuoso.
+
+
+  Función             Faceta práctica 1                                 Faceta práctica 2
+
+  Ni                  Construye una hipótesis de sentido global.        Observa cómo un detalle modifica la interpretación del
+  dominante                                                             conjunto.
+
+  Fe auxiliar         Atiende al destinatario y al propósito            Expresa desacuerdo sin atribuir defectos personales al
+                      comunicativo.                                     autor o al lector.
+
+  Ti terciaria        Distingue lo explícito, lo inferido y lo no       Comprueba el alcance de cuantificadores, negaciones y
+                      determinado.                                      conectores.
+
+  Se inferior         Regresa a las palabras exactas antes de           Señala una pista concreta que su primera lectura había
+                      concluir.                                         omitido.
+
+
+
+Voz. Reflexiva, llana y respetuosa. No es misteriosa ni habla en aforismos. Puede sostener una
+afirmación clara sin convertir toda respuesta en «depende».
+
+         «Esa lectura es posible; señala qué frase permite sostenerla».
+         «El texto no afirma lo contrario, pero tampoco confirma esta opción».
+
+
+  Expresión                         Diseño y función
+
+  E0 Disposición                    Disco facial abierto y ojos neutrales; disponibilidad sin solemnidad.
+
+  E1 Atención                       Mirada orientada a una línea, cabeza estable; lectura focalizada.
+
+  E2 Curiosidad                     Una ceja asciende y cabeza se inclina un poco; percibe un matiz.
+
+  E3 Hipótesis                      Pico entreabierto y ala abierta; propone una lectura tentativa.
+
+  E4 Análisis                       Párpados más bajos y mirada entre dos fragmentos; compara.
+
+  E5 Desajuste                      Cejas se separan y pico cierra suavemente; identifica evidencia que contradice.
+
+
+
+
+Mesa de Estudios · Diseño de personajes                                                                                          18
+  Expresión                         Diseño y función
+
+  E6 Comprensión                    Ojos recuperan apertura y pico sugiere sonrisa; integra los apoyos.
+
+  E7 Confirmación                   Asentimiento pequeño; valida una inferencia bien sustentada.
+
+  E8 Reconsideración                Baja el ala y vuelve a la línea exacta; corrige la interpretación.
+
+  E9 Pausa                          Alas en reposo, ojos disponibles; no acompaña una lectura larga con insistencia.
+
+
+
+Cinco gestos. G1 subraya en el aire un fragmento sin ocultarlo; G2 enlaza dos párrafos con un arco
+corto; G3 separa tres zonas para explícito, inferido e indeterminado; G4 abre un ala para incorporar un
+punto de vista; G5 devuelve el índice a una palabra cuyo alcance importa.
+
+Transiciones. E1→E3 propone sentido; E3→E4 busca apoyos; evidencia suficiente E4→E6→E7;
+evidencia contraria E4→E5→E8→G5. La ambigüedad real se expresa con E3 suave y una explicación,
+no con una cara incapaz de decidir.
+
+Error sin humillación. «Hemos añadido una intención que el pasaje no proporciona. Conservemos
+lo que sí podemos justificar y dejemos lo demás abierto».
+
+Separación vectorial específica. Disco facial, pico, ojos, párpados, arcos de ceja, cabeza, torso,
+alas-brazos, extremos de ala, abrigo, pañuelo y patas. Evitar girar la cabeza más de lo que necesita una
+conversación; ninguna rotación inquietante como chiste recurrente.
+
+
+
+
+Transiciones y movimiento para construir en
+Rive
+Esta sección describe un contrato de actuación, no una implementación de la app ni nombres de APIs.
+Los parámetros finales dependen del rig que se construya.
+
+Separar tres capas. La expresión facial comunica el estado; la mirada apunta a una evidencia; el
+gesto corporal realiza una acción. No crear una animación completa distinta para cada combinación.
+Una confirmación puede mirar a la gráfica o al texto sin duplicar todo el personaje.
+
+
+  Dimensión                  Estados o valores de diseño                    Regla
+
+  Expresión                  E0–E9                                          Diez estados con la misma semántica en los ocho
+                                                                            personajes.
+
+  Mirada                     lector, escena izquierda, escena               No dirigir la mirada a un objetivo que esté fuera de la
+                             derecha, dato bajo                             composición real.
+
+  Gesto                      reposo, G1–G5                                  Un gesto principal por intervención; volver a una pose
+                                                                            neutra compatible.
+
+  Intensidad                 suave, media                                   No hace falta una intensidad punitiva o exagerada.
+
+
+
+
+Mesa de Estudios · Diseño de personajes                                                                                               19
+  Dimensión                  Estados o valores de diseño                 Regla
+
+  Movimiento                 completo, reducido                          El modo reducido usa poses estáticas y cambios
+  permitido                                                              discretos.
+
+  Accesorio                  ausente, presente                           No debe cambiar el significado del feedback.
+
+
+
+Duración orientativa de actuación. Para pasar de una expresión a otra bastan aproximadamente
+150–250 ms; un gesto breve puede durar 350–700 ms. Son puntos de partida de producción, no
+límites de la app ni tiempos impuestos al alumno. La lectura y la respuesta siguen el ritmo del usuario.
+La pausa no activa un temporizador de insistencia.
+
+Interrupciones. Si se cambia de escena o se solicita ayuda, el personaje debe poder detener el gesto
+sin quedarse con una mano o un pico en una posición imposible. Todas las acciones vuelven a un
+reposo estable. No acumular confirmaciones mientras se navega.
+
+Acierto y descubrimiento. Diferenciar comprensión de celebración. Una evidencia nueva que
+refuta la primera predicción puede producir E6 aunque la respuesta inicial fuese incorrecta. El objetivo
+es mostrar que revisar una idea forma parte del trabajo.
+
+Movimiento reducido. Mantener la expresión final, la dirección de mirada y el texto de feedback.
+No perder una condición esencial porque se eliminó un movimiento. El personaje es acompañamiento;
+la información necesaria para resolver sigue presente en el texto o en la figura de la actividad.
+
+Legibilidad. Comprobar silueta, mirada y expresión en tamaño real de uso, en escala de grises y con
+accesorios ocultos. No depender de pestañas, brillo de pupilas o pequeñas líneas de ceja que
+desaparezcan al reducir.
+
+
+
+Contrato propuesto entre la actividad y Rive
+Especificación para los archivos nuevos, sin implementación de runtime. La documentación oficial de
+Rive recomienda Data Binding y propiedades de View Model para trabajo nuevo; los inputs y eventos
+anteriores siguen funcionando y no exigen una migración inmediata. La versión elegida del runtime
+debe comprobarse antes de conectar el contrato. Fuente: Rive — Migration Guide.
+
+
+  Propiedad                 Tipo lógico          Semántica de diseño
+  propuesta
+
+  action                    Enumeración          idle, point, compare, trace, review, acknowledge o pause. Selecciona una
+                                                 acción semántica; cada personaje la interpreta con sus gestos disponibles.
+
+  playAction                Disparador           Solicita ejecutar una vez la acción actual. Permite repetir la misma acción sin
+                                                 fingir un cambio de estado.
+
+  mood                      Enumeración          Expresión de acompañamiento del personaje. No representa ni diagnostica el
+                            E0–E9                estado emocional del estudiante.
+
+
+
+
+Mesa de Estudios · Diseño de personajes                                                                                            20
+  Propiedad                 Tipo lógico   Semántica de diseño
+  propuesta
+
+  lookTarget                Enumeración   reader, sceneLeft, sceneRight o dataBelow. Se resuelve contra los
+                                          objetivos presentes en la composición; si no existe un objetivo, vuelve a
+                                          reader.
+
+  prefersReduce             Booleano      Recibe la preferencia de movimiento reducido y selecciona una ruta de
+  dMotion                                 actuación estática o discreta.
+
+
+
+El estado pedagógico y el criterio de corrección pertenecen a la actividad. El personaje recibe cómo
+acompañarlos; no deduce si el estudiante sabe o merece avanzar. Una acción terminada no dispara por
+sí misma la siguiente pregunta. El cambio de escena cancela una actuación pendiente y restaura un
+estado visual definido. El mapeo de cada acción a los gestos G1–G5 se fija por personaje: no debe
+improvisarse aleatoriamente en cada repetición.
+
+En la aplicación, reducedMotion puede ser el nombre de la preferencia resuelta; al archivo se envía como
+prefersReducedMotion. Rive no detecta ni decide automáticamente qué movimiento suprimir. La app o
+plataforma obtiene la preferencia y el archivo define la alternativa. Para estos personajes, mantener
+mirada, expresión final y feedback textual, eliminando desplazamientos decorativos. No congelar una
+acción a mitad si su postura oculta una señal necesaria. Fuente: Rive — Reduced Motion.
+
+Rendimiento pendiente de medir. Ser 2D no garantiza fluidez. Reconstruir contornos con pocos
+vértices y revisar especialmente cualquier autotrace o vector procedente de una imagen generada.
+Reducir activos y efectos innecesarios, evitar bucles permanentes de reposo y probar el archivo real en
+los dispositivos objetivo. La cantidad de capas propuesta es una guía de edición, no un presupuesto de
+rendimiento validado. Fuente: Rive — Performance.
+
+
+
+Entrega de las ocho hojas visuales
+Cada hoja debe representar un único personaje coherente, con proporciones y prendas constantes.
+Priorizar una vista frontal y otra de tres cuartos, una pose neutra de cuerpo completo, diez cabezas
+E0–E9 y cinco gestos G1–G5. Los rótulos se añaden después con texto real para evitar errores
+tipográficos de la imagen generada.
+
+Las hojas son referencias de forma y actuación, no archivos Rive listos. Antes de vectorizar: fijar
+contorno, paleta y proporciones; simplificar detalles; separar capas y pivotes; reconstruir ojos, cejas,
+boca y extremidades; comprobar que todas las expresiones pertenecen al mismo rostro. La generación
+de una imagen no garantiza continuidad anatómica entre las quince poses.
+
+Para evaluar el resultado no basta con preguntar si resulta simpático. Revisar si E5 mira el problema y
+no reprende, si E8 permite cambiar de idea con dignidad, si E9 deja descansar, y si cada personaje
+puede acompañar una escena rigurosa sin distraer de ella.
+
+
+
+
+Mesa de Estudios · Diseño de personajes                                                                               21
+Ejemplo de actuación compartida ante una
+predicción fallida
+El estudiante predice que una cantidad aumentará; el resultado observado permanece constante. El
+personaje conserva la calma: E3 durante la predicción, E1 al observar, E5 breve al detectar la
+diferencia, E8 al revisar, E4 al señalar la condición y E6 cuando se comprende el invariante. El texto
+dice qué relación no coincidió. No hay pérdida de afecto, regaño ni reacción de decepción.
+
+La personalidad cambia la manera de acompañar: Luma vuelve a la unidad; Nox comprueba la
+estructura; Tilo explicita el supuesto; Bruna revisa el inventario; Neri contrasta el dibujo con una
+medida; Mara recupera la convención; Faro busca un contraejemplo; Iris regresa a la frase. Ninguno
+cambia el criterio de corrección ni la evidencia exigida.
+
+
+
+
+Mesa de Estudios · Diseño de personajes                                                                  22
+

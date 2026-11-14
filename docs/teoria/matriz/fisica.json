@@ -1,0 +1,1881 @@
+{
+ "curso": "fisica",
+ "fecha": "2026-11-14",
+ "tipo": "Expediente editorial; no es el formato de ejecución de Teoria.vista",
+ "unidades": [
+  {
+   "id": "fisica.magnitudes-y-vectores",
+   "curso": "Física",
+   "curso_id": "fisica",
+   "numero": 1,
+   "titulo": "Magnitudes y vectores",
+   "grado": 3,
+   "temas_catalogo": [
+    "Magnitudes fundamentales y derivadas",
+    "Sistema Internacional",
+    "Análisis dimensional",
+    "Suma de vectores por el método gráfico",
+    "Componentes y vector unitario",
+    "Producto escalar y vectorial"
+   ],
+   "modulos_actuales": [
+    "vectores",
+    "vectores-ley-cosenos",
+    "vectores-componentes",
+    "vectores-productos",
+    "vectores-unitario",
+    "vectores-combinacion",
+    "vectores-division",
+    "vectores-poligono",
+    "velocidad-relativa",
+    "analisis-dimensional"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de recordar",
+   "teoria": [
+    "Magnitud, dimensión y unidad son distintas: una ecuación debe ser dimensionalmente homogénea, pero eso no basta para probarla.",
+    "Un vector conserva módulo, dirección y sentido al trasladarlo; suma por componentes y por cola-punta.",
+    "A·B=AB cosθ es escalar; A×B tiene módulo AB senθ y dirección perpendicular; el unitario es A/|A| para A≠0."
+   ],
+   "condiciones": "Elegir base y unidades antes de operar. No sumar magnitudes de distinta dimensión. Un vector nulo no tiene unitario definido.",
+   "prerrequisitos": [
+    "Operar fracciones y potencias de diez",
+    "Leer ejes cartesianos y ángulos",
+    "Usar seno, coseno y Pitágoras en un triángulo"
+   ],
+   "desempeno": "Dibujar y calcular una resultante nueva por dos métodos y justificar su unidad y sentido.",
+   "escena_propuesta": "Estirar dos flechas; predecir el intervalo posible de la resultante; unirlas cola-punta. El resultado conserva los catetos, la diagonal y su ecuación.",
+   "otra_representacion": "Tabla de componentes y cuadrícula estática; introducir Ax y Ay con botones o teclado.",
+   "ejemplo": null,
+   "error_objetivo": [
+    "Sumar módulos ignorando el ángulo",
+    "Confundir dimensiones con unidades",
+    "Aplicar el producto escalar donde se pide el vectorial"
+   ],
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "obra": "University Physics 1",
+     "capitulos": "1.2–1.4 y 2.1–2.4",
+     "url": "https://openstax.org/books/university-physics-volume-1/pages/2-introduction",
+     "titulo": "University Physics 1",
+     "localizador": "1.2–1.4 y 2.1–2.4"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "fisica.magnitudes-y-vectores",
+    "numero": 1,
+    "titulo": "Magnitudes y vectores",
+    "historia": "Medir y calcular direcciones resolvieron problemas distintos que terminaron compartiendo un lenguaje. El sistema métrico buscó comparar medidas sin depender de patrones locales; la reforma del SI de 2019 culminó el paso a definiciones apoyadas en constantes físicas. Mientras tanto, durante el siglo XIX, Hamilton, Grassmann, Gibbs y otros desarrollaron distintas herramientas para operar con magnitudes orientadas. El libro de Wilson de 1901 difundió una notación vectorial influyente basada en las lecciones de Gibbs. Las flechas y letras actuales son convenciones construidas históricamente: no objetos que existan dentro de la naturaleza. Distinguir magnitud, unidad y representación evita confundir un cambio de lenguaje con un cambio físico.",
+    "puente_escena": "Mostrar una misma flecha medida en metros y centímetros: cambia el número, no el desplazamiento. Después, unir dos flechas cola con punta y conservar sus componentes. El alumno predice primero la resultante; la ecuación aparece junto a la construcción, con los mismos colores y unidades.",
+    "ecuaciones": [
+     {
+      "latex": "\\vec A=A_x\\,\\hat{e}_x+A_y\\,\\hat{e}_y",
+      "lectura": "Un vector se expresa con componentes Aₓ y Aᵧ sobre los vectores unitarios êₓ y êᵧ.",
+      "condiciones": "Base cartesiana ortonormal; las componentes conservan signo y unidad."
+     },
+     {
+      "latex": "|\\vec A+\\vec B|^2=A^2+B^2+2AB\\cos\\theta",
+      "lectura": "El tamaño de la resultante depende de los dos módulos y del ángulo entre ellos.",
+      "condiciones": "A y B designan módulos; θ es el ángulo entre los vectores situados en un mismo origen."
+     },
+     {
+      "latex": "[F]=M\\,L\\,T^{-2}",
+      "lectura": "La dimensión de fuerza combina masa, longitud y tiempo.",
+      "condiciones": "M, L y T representan dimensiones; no símbolos de unidades concretas."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "NIST — A Turning Point for Humanity: Redefining the World’s Measurement System",
+      "url": "https://www.nist.gov/si-redefinition/turning-point-humanity-redefining-worlds-measurement-system"
+     },
+     {
+      "titulo": "Universidad de St Andrews, MacTutor — Earliest Uses of Symbols for Matrices and Vectors",
+      "url": "https://mathshistory.st-andrews.ac.uk/Miller/mathsym/matrices/"
+     }
+    ],
+    "notacion": "Las ecuaciones emplean notación moderna; no reproducen la escritura de los documentos históricos."
+   }
+  },
+  {
+   "id": "fisica.movimiento-rectilineo",
+   "curso": "Física",
+   "curso_id": "fisica",
+   "numero": 2,
+   "titulo": "MRU, MRUV y caída libre",
+   "grado": 3,
+   "temas_catalogo": [
+    "Posición, desplazamiento y distancia",
+    "Velocidad y rapidez media",
+    "MRU y velocidad relativa",
+    "MRUV",
+    "Caída libre",
+    "Gráficas x-t, v-t y a-t",
+    "La recta y la parábola como gráficas"
+   ],
+   "modulos_actuales": [
+    "mruv",
+    "cinematica-medias",
+    "velocidad-relativa"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo",
+   "teoria": [
+    "Posición x depende del origen; desplazamiento Δx=xf−xi y distancia recorrida no son equivalentes.",
+    "Velocidad media=Δx/Δt; rapidez media=distancia/Δt. MRU: x=x0+vΔt. MRUV: v=v0+aΔt y x=x0+v0Δt+aΔt²/2.",
+    "Pendiente de x–t da v; pendiente de v–t da a; área firmada de v–t da Δx; área firmada de a–t da Δv.",
+    "Encuentro significa posiciones iguales, no velocidades iguales; vA/B=vA/S−vB/S. Caída libre ideal: ay=−g con eje hacia arriba, incluso en la cima."
+   ],
+   "condiciones": "Las fórmulas MRUV exigen aceleración constante en el tramo. Distancia exige separar los cambios de sentido. Dos masas caen igual con mismas condiciones iniciales y resistencia despreciable.",
+   "prerrequisitos": [
+    "Restar números con signo y leer un eje",
+    "Interpretar razón y unidades m/s",
+    "Calcular áreas de rectángulo y triángulo"
+   ],
+   "desempeno": "Ante una v–t inédita, obtener por separado desplazamiento, distancia y aceleración de cada tramo, justificando signos.",
+   "escena_propuesta": "Soltar carrito, guardar marcas iguales en tiempo, comparar corridas; superponer un fantasma del error. Pintar primero áreas positivas y luego una negativa; conservar una regla de desplazamiento y un contador de distancia.",
+   "otra_representacion": "Tiras de posiciones, tabla t/x/v y gráfica quieta; botones suave/medio/fuerte y controles de intervalo.",
+   "ejemplo": null,
+   "error_objetivo": [
+    "Leer la gráfica como camino",
+    "Confundir altura con pendiente",
+    "Usar v/t sin restar v0",
+    "Confundir v=0 con a=0"
+   ],
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "obra": "University Physics 1",
+     "capitulos": "3.1–3.5; 4.5",
+     "url": "https://openstax.org/books/university-physics-volume-1/pages/3-4-motion-with-constant-acceleration",
+     "titulo": "University Physics 1",
+     "localizador": "3.1–3.5; 4.5"
+    },
+    {
+     "obra": "University Physics 1",
+     "capitulos": "3.1",
+     "url": "https://openstax.org/books/university-physics-volume-1/pages/3-1-position-displacement-and-average-velocity",
+     "titulo": "University Physics 1",
+     "localizador": "3.1"
+    },
+    {
+     "obra": "University Physics 1",
+     "capitulos": "4.5",
+     "url": "https://openstax.org/books/university-physics-volume-1/pages/4-5-relative-motion-in-one-and-two-dimensions",
+     "titulo": "University Physics 1",
+     "localizador": "4.5"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "fisica.movimiento-rectilineo",
+    "numero": 2,
+    "titulo": "MRU, MRUV y caída libre",
+    "historia": "La caída de un objeto ocurre demasiado rápido para medirla cómodamente con los instrumentos del siglo XVII. Los planos inclinados permitieron estudiar movimientos más lentos y comparar recorridos con intervalos de tiempo. Galileo reunió su investigación del movimiento en los Discorsi de 1638, combinando razonamiento matemático y experimentación. La relación entre distancia recorrida desde el reposo y tiempo al cuadrado sustituyó explicaciones que no separaban claramente duración, rapidez y aceleración. Los aparatos históricos que hoy exhiben los museos también incluyen reconstrucciones posteriores: no deben presentarse automáticamente como instrumentos originales de Galileo. Nuestra gráfica con ejes y nuestras ecuaciones son traducciones modernas de aquellas preguntas sobre cómo cambia el movimiento.",
+    "puente_escena": "Recuperar el problema de medir intervalos iguales: el carrito deja marcas cada segundo. Se conservan dos corridas y se pide anticipar la siguiente marca. Después se vincula cada intervalo con una porción de la gráfica, distinguiendo la posición final, el desplazamiento y todo el camino recorrido.",
+    "ecuaciones": [
+     {
+      "latex": "\\bar v=\\frac{x_f-x_i}{t_f-t_i}",
+      "lectura": "La velocidad media compara cambio de posición con tiempo transcurrido.",
+      "condiciones": "Intervalo de duración positiva y un mismo sistema de referencia."
+     },
+     {
+      "latex": "x=x_0+v_0\\,\\Delta t+\\frac12a(\\Delta t)^2",
+      "lectura": "La posición suma el aporte inicial y el cambio producido por una aceleración constante.",
+      "condiciones": "Aceleración constante durante el tramo; Δt se cuenta desde su estado inicial."
+     },
+     {
+      "latex": "\\Delta x=A_+-A_-,\\qquad d=A_++A_-",
+      "lectura": "En velocidad frente a tiempo, las áreas con signo dan desplazamiento y sus magnitudes dan distancia.",
+      "condiciones": "A+ y A− son magnitudes de las áreas por encima y debajo del eje; separar cada cambio de signo."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Museo Galileo — Science of Motion",
+      "url": "https://catalogue.museogalileo.it/section/ScienceOfMotion.html"
+     },
+     {
+      "titulo": "Museo Galileo — Inclined plane, demostración de la ley de caída",
+      "url": "https://catalogue.museogalileo.it/multimedia/InclinedPlaneBis.html"
+     }
+    ],
+    "notacion": "Las ecuaciones emplean notación moderna; no reproducen la escritura de los documentos históricos."
+   }
+  },
+  {
+   "id": "fisica.movimiento-parabolico-y-circular",
+   "curso": "Física",
+   "curso_id": "fisica",
+   "numero": 3,
+   "titulo": "Movimiento parabólico y circular",
+   "grado": 4,
+   "temas_catalogo": [
+    "Movimiento en dos dimensiones",
+    "Tiro parabólico",
+    "Magnitudes angulares",
+    "MCU",
+    "MCUV",
+    "Aceleración tangencial y centrípeta"
+   ],
+   "modulos_actuales": [
+    "tiro-parabolico",
+    "movimiento-circular",
+    "circular-transmision",
+    "circular-mcuv",
+    "circular-enesimo-segundo",
+    "circular-encuentros",
+    "circular-mcu",
+    "circular-horaria",
+    "circular-grafica",
+    "circular-aceleracion-total",
+    "circular-giro-combinado",
+    "cinematica-medias"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo",
+   "teoria": [
+    "El tiro ideal combina x=x0+v0x t e y=y0+v0y t−gt²/2 con un solo reloj.",
+    "En giro: s=rθ, v=rω, at=rα y ac=v²/r; las aceleraciones tangencial y radial son perpendiculares.",
+    "MCU mantiene rapidez, pero cambia dirección de v; MCUV mantiene α, no el vector aceleración total."
+   ],
+   "condiciones": "Ángulos complementarios dan igual alcance solo con misma rapidez inicial, misma altura de salida/llegada y sin aire. Ac=v²/r vale para el componente radial; no sustituye toda a si cambia rapidez.",
+   "prerrequisitos": [
+    "Descomponer vectores",
+    "Resolver MRU y MRUV",
+    "Convertir grados, radianes y revoluciones"
+   ],
+   "desempeno": "Elegir y coordinar dos componentes para predecir posición e identificar la aceleración correcta en una situación nueva.",
+   "escena_propuesta": "Lanzar y congelar estroboscopio con sombras en ambos ejes; girar la rueda y trasladar dos flechas v al mismo origen para construir Δv.",
+   "otra_representacion": "Tabla sincronizada x/y y triángulo de aceleraciones; cambiar ángulo con botones.",
+   "ejemplo": null,
+   "error_objetivo": [
+    "Atribuir aceleración horizontal al proyectil ideal",
+    "Creer que rapidez constante implica a=0",
+    "Usar grados en s=rθ"
+   ],
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "obra": "University Physics 1",
+     "capitulos": "4.3–4.4; 10.1–10.2",
+     "url": "https://openstax.org/books/university-physics-volume-1/pages/4-3-projectile-motion",
+     "titulo": "University Physics 1",
+     "localizador": "4.3–4.4; 10.1–10.2"
+    },
+    {
+     "obra": "University Physics 1",
+     "capitulos": "4.4",
+     "url": "https://openstax.org/books/university-physics-volume-1/pages/4-4-uniform-and-nonuniform-circular-motion",
+     "titulo": "University Physics 1",
+     "localizador": "4.4"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "fisica.movimiento-parabolico-y-circular",
+    "numero": 3,
+    "titulo": "Movimiento parabólico y circular",
+    "historia": "Predecir la trayectoria de un proyectil exigía explicar simultáneamente su avance y su caída. En los Discorsi de 1638, Galileo presentó la trayectoria parabólica como composición de movimiento horizontal y caída acelerada bajo condiciones ideales. El movimiento circular planteaba otra dificultad: podía conservar la rapidez y, sin embargo, cambiar continuamente de dirección. Los estudios de Huygens sobre péndulos y giros, expuestos en su Horologium Oscillatorium de 1673, ayudaron a cuantificar esas relaciones. No eran dos trucos aislados, sino problemas que impulsaban una descripción matemática común del movimiento. La descomposición vectorial que usamos hoy permite comparar ambos casos sin atribuir a sus autores nuestra notación moderna.",
+    "puente_escena": "Al soltar una pelota, mantener visibles sus sombras sobre dos ejes y un único reloj. Luego comparar dos instantes de una rueda: trasladar las flechas de velocidad al mismo origen revela su diferencia. El alumno predice la dirección del cambio antes de ver la aceleración.",
+    "ecuaciones": [
+     {
+      "latex": "\\begin{aligned}x(t)&=x_0+v_{0x}t\\\\y(t)&=y_0+v_{0y}t-\\frac12gt^2\\end{aligned}",
+      "lectura": "La trayectoria combina avance horizontal uniforme y movimiento vertical acelerado.",
+      "condiciones": "Gravedad uniforme hacia abajo, aire despreciable y ejes horizontal/vertical."
+     },
+     {
+      "latex": "a_t=r\\alpha,\\qquad a_c=\\frac{v^2}{r}",
+      "lectura": "La aceleración tangencial cambia la rapidez; la centrípeta cambia la dirección.",
+      "condiciones": "Movimiento sobre circunferencia de radio r; componentes perpendiculares."
+     },
+     {
+      "latex": "\\omega=\\omega_0+\\alpha t",
+      "lectura": "La velocidad angular cambia linealmente cuando la aceleración angular es constante.",
+      "condiciones": "α constante; ángulos y unidades coherentes en radianes."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Museo Galileo — Apparatus to demonstrate the parabolic trajectory of projectiles",
+      "url": "https://catalogue.museogalileo.it/object/ApparatusToDemonstrateParabolicTrajectoryProjectiles.html"
+     },
+     {
+      "titulo": "Universidad de St Andrews, MacTutor — Christiaan Huygens",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Huygens/"
+     }
+    ],
+    "notacion": "Las ecuaciones emplean notación moderna; no reproducen la escritura de los documentos históricos."
+   }
+  },
+  {
+   "id": "fisica.estatica",
+   "curso": "Física",
+   "curso_id": "fisica",
+   "numero": 4,
+   "titulo": "Estática: equilibrio y torque",
+   "grado": 4,
+   "temas_catalogo": [
+    "Primera y tercera ley de Newton",
+    "Diagrama de cuerpo libre",
+    "Rozamiento estático y cinético",
+    "Fuerza elástica",
+    "Equilibrio de una partícula",
+    "Torque",
+    "Equilibrio del cuerpo rígido",
+    "Máquinas simples"
+   ],
+   "modulos_actuales": [
+    "estatica",
+    "dinamica-fuerzas"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo",
+   "teoria": [
+    "Equilibrio requiere ΣF=0 y, para un rígido, Στ=0; τ=r×F y su módulo usa el brazo perpendicular.",
+    "Las fuerzas de acción-reacción actúan sobre cuerpos distintos. Rozamiento estático se ajusta hasta |fs|≤μs N; no vale siempre μs N.",
+    "Resorte ideal: F=−kx. Poleas ideales transmiten tensión bajo supuestos de cuerda sin masa y polea sin rozamiento."
+   ],
+   "condiciones": "Peso por distancia solo es suficiente si se usa la distancia perpendicular. Equilibrio estático exige reposo inicial; ΣF=0 por sí solo permite MRU.",
+   "prerrequisitos": [
+    "Sumar fuerzas vectorialmente",
+    "Identificar sistema y fuerzas externas",
+    "Calcular distancias perpendiculares"
+   ],
+   "desempeno": "Construir el DCL de un caso nuevo, predecir giro y hallar un apoyo o carga que satisfaga ambas condiciones.",
+   "escena_propuesta": "Colgar pesas y mover el apoyo; mostrar brazos perpendiculares y torques de ambos sentidos. Separar la pregunta de fuerza de la pregunta de torque.",
+   "otra_representacion": "Polígono de fuerzas y tabla de momentos con signo; botones para posición de cada carga.",
+   "ejemplo": null,
+   "error_objetivo": [
+    "Tomar cualquier distancia como brazo",
+    "Cancelar acción y reacción en un solo cuerpo",
+    "Fijar siempre fs=μsN"
+   ],
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "obra": "University Physics 1",
+     "capitulos": "5.2, 5.5; 6.2; 12.1–12.2",
+     "url": "https://openstax.org/books/university-physics-volume-1/pages/12-1-conditions-for-static-equilibrium",
+     "titulo": "University Physics 1",
+     "localizador": "5.2, 5.5; 6.2; 12.1–12.2"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "fisica.estatica",
+    "numero": 4,
+    "titulo": "Estática: equilibrio y torque",
+    "historia": "Equilibrar cargas fue un problema práctico mucho antes de la formulación de la mecánica moderna. En la tradición de la estática antigua, Sobre el equilibrio de los planos, de Arquímedes, organizó relaciones entre pesos, distancias y centros de gravedad mediante argumentos geométricos. La interpretación exacta de sus demostraciones sigue siendo materia de estudio histórico; no hace falta convertirlas en una leyenda sobre un inventor solitario de la palanca. Siglos después, planos inclinados, poleas y contrapesos sirvieron como instrumentos de demostración y comparación. El lenguaje actual de fuerzas, brazos perpendiculares y torque reúne esas relaciones y permite precisar cuándo una estructura permanece en equilibrio.",
+    "puente_escena": "Colgar dos pesos en una barra y pedir dónde debe ir el apoyo. Al moverlo, quedan dibujados los brazos perpendiculares y los giros posibles. La solución conserva ambas contribuciones: el alumno distingue equilibrar fuerzas de equilibrar torques, con botones equivalentes al arrastre.",
+    "ecuaciones": [
+     {
+      "latex": "\\sum\\vec F=\\vec 0,\\qquad\\sum\\vec\\tau=\\vec 0",
+      "lectura": "Un cuerpo rígido en equilibrio necesita equilibrio de fuerzas y de torques.",
+      "condiciones": "Marco inercial; para equilibrio estático, además está inicialmente en reposo."
+     },
+     {
+      "latex": "|\\tau|=F\\,d_\\perp",
+      "lectura": "El efecto de giro depende de la fuerza y de su brazo perpendicular.",
+      "condiciones": "Problema plano; d⊥ es la distancia perpendicular desde el pivote hasta la línea de acción de la fuerza."
+     },
+     {
+      "latex": "|f_s|\\leq\\mu_s N",
+      "lectura": "El rozamiento estático se ajusta hasta un máximo.",
+      "condiciones": "Modelo de rozamiento seco; la igualdad corresponde al umbral de deslizamiento."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "New York University — Archimedes’ Law of the Lever",
+      "url": "https://math.nyu.edu/Archimedes/Lever/LeverLaw.html"
+     },
+     {
+      "titulo": "Museo Galileo — Equilibrium on inclined planes",
+      "url": "https://catalogue.museogalileo.it/multimedia/EquilibriumOnInclinedPlanesBis.html"
+     }
+    ],
+    "notacion": "Las ecuaciones emplean notación moderna; no reproducen la escritura de los documentos históricos."
+   }
+  },
+  {
+   "id": "fisica.dinamica",
+   "curso": "Física",
+   "curso_id": "fisica",
+   "numero": 5,
+   "titulo": "Dinámica",
+   "grado": 4,
+   "temas_catalogo": [
+    "Segunda ley de Newton",
+    "Masa y peso",
+    "Rozamiento en movimiento",
+    "Bloques, poleas y planos inclinados",
+    "Dinámica circular",
+    "Movimiento relativo y sistemas inerciales"
+   ],
+   "modulos_actuales": [
+    "dinamica",
+    "dinamica-fuerzas"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo",
+   "teoria": [
+    "Para masa constante en un marco inercial, ΣFexternas=ma.",
+    "Peso mg es fuerza; masa mide inercia. Normal y tensión dependen de las restricciones: no equivalen siempre al peso.",
+    "Rozamiento cinético ideal μkN se opone al deslizamiento relativo. En movimiento circular ΣFr=mv²/r; centrípeta nombra una resultante radial."
+   ],
+   "condiciones": "No inventar una fuerza centrípeta adicional. En marcos acelerados se necesita tratamiento explícito; no mezclar fuerzas reales y ficticias sin declarar marco.",
+   "prerrequisitos": [
+    "Construir DCL",
+    "Usar componentes",
+    "Distinguir velocidad de aceleración"
+   ],
+   "desempeno": "Explicar el signo y valor de a desde un DCL, y predecir qué cambia si se modifica masa o interacción.",
+   "escena_propuesta": "Colgar y soltar bloque; congelar fuerza neta y Δv para dos masas bajo la misma fuerza; rastros de v quedan visibles.",
+   "otra_representacion": "Diagrama de interacciones, DCL y ecuación por ejes; controles discretos de masa/fuerza.",
+   "ejemplo": null,
+   "error_objetivo": [
+    "Fuerza neta en dirección de velocidad",
+    "Normal siempre igual a mg",
+    "Objeto pesado cae más rápido por tener más peso"
+   ],
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "obra": "University Physics 1",
+     "capitulos": "5.3–5.7; 6.1–6.3",
+     "url": "https://openstax.org/books/university-physics-volume-1/pages/5-3-newtons-second-law",
+     "titulo": "University Physics 1",
+     "localizador": "5.3–5.7; 6.1–6.3"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "fisica.dinamica",
+    "numero": 5,
+    "titulo": "Dinámica",
+    "historia": "Durante el siglo XVII, explicar el movimiento significó conectar experiencias terrestres, choques y trayectorias celestes. Las conversaciones entre Halley, Hooke, Wren y Newton sobre órbitas forman parte del contexto de los Principia, publicados en 1687. Newton articuló leyes de movimiento y métodos matemáticos para estudiar fuerzas, pero no escribió en ese libro la habitual fórmula escolar F igual a ma con nuestra notación. Esa expresión es una formulación moderna especialmente cómoda para masa constante. La evolución importante consiste en distinguir el movimiento que un cuerpo ya tiene del cambio que producen sus interacciones: una fuerza neta explica aceleración, no la mera presencia de velocidad.",
+    "puente_escena": "Elegir un cuerpo y construir su diagrama de fuerzas antes de soltarlo. Comparar después dos ensayos con igual fuerza neta y distinta masa. Las flechas de velocidad inicial permanecen: así se observa que la fuerza modifica el movimiento en lugar de reemplazarlo por una dirección automática.",
+    "ecuaciones": [
+     {
+      "latex": "\\sum\\vec F_{\\mathrm{ext}}=m\\vec a",
+      "lectura": "La aceleración resulta de la fuerza exterior neta dividida entre la masa.",
+      "condiciones": "Masa constante y marco inercial; elegir primero el cuerpo o sistema."
+     },
+     {
+      "latex": "N-mg=ma_y",
+      "lectura": "La lectura de una balanza en un ascensor depende de la aceleración vertical.",
+      "condiciones": "Eje positivo hacia arriba y solo normal y peso en esa dirección."
+     },
+     {
+      "latex": "\\sum F_r=\\frac{mv^2}{r}",
+      "lectura": "La resultante radial necesaria para girar apunta hacia el centro.",
+      "condiciones": "Eje radial positivo hacia dentro; no añadir una fuerza centrípeta extra al diagrama."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "University of Oxford, The Newton Project — Introduction to the Texts",
+      "url": "https://newtonproject.ox.ac.uk/texts/introduction"
+     },
+     {
+      "titulo": "Stanford Encyclopedia of Philosophy — Newton’s Philosophiae Naturalis Principia Mathematica",
+      "url": "https://plato.stanford.edu/entries/newton-principia/"
+     }
+    ],
+    "notacion": "Las ecuaciones emplean notación moderna; no reproducen la escritura de los documentos históricos."
+   }
+  },
+  {
+   "id": "fisica.gravitacion",
+   "curso": "Física",
+   "curso_id": "fisica",
+   "numero": 6,
+   "titulo": "Gravitación universal",
+   "grado": 4,
+   "temas_catalogo": [
+    "Leyes de Kepler",
+    "Ley de gravitación universal",
+    "Campo gravitatorio",
+    "Variación de g con la altura"
+   ],
+   "modulos_actuales": [
+    "gravitacion",
+    "dinamica-fuerzas"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de recordar",
+   "teoria": [
+    "F=GMm/r² y g=GM/r² fuera de una masa esférica; r se mide desde el centro.",
+    "Órbita circular: v=√(GM/r), T²=4π²r³/(GM). Kepler relaciona período con semieje mayor en órbitas elípticas.",
+    "U=−GMm/r con cero en infinito; una órbita ligada tiene energía mecánica negativa; escape ideal vesc=√(2GM/r)."
+   ],
+   "condiciones": "A radio dado hay una rapidez circular, no una única rapidez para una órbita cerrada. g cambia con r; mg h es aproximación local de cambios de energía.",
+   "prerrequisitos": [
+    "Ley de Newton y aceleración radial",
+    "Potencias e inversas cuadráticas",
+    "Energía cinética y potencial"
+   ],
+   "desempeno": "Comparar g, rapidez y período de dos órbitas y justificar el modelo circular o elíptico empleado.",
+   "escena_propuesta": "Lanzar satélite con velocidad tangencial; comparar círculo, elipse y escape; mantener r y flecha g visibles.",
+   "otra_representacion": "Gráficas g(r), v(r), energía y tabla de razones; seleccionar velocidades con botones.",
+   "ejemplo": null,
+   "error_objetivo": [
+    "Ausencia de gravedad en órbita",
+    "Medir r desde la superficie",
+    "Confundir más altura con mayor rapidez circular"
+   ],
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "obra": "University Physics 1",
+     "capitulos": "13.1–13.5",
+     "url": "https://openstax.org/books/university-physics-volume-1/pages/13-4-satellite-orbits-and-energy",
+     "titulo": "University Physics 1",
+     "localizador": "13.1–13.5"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "fisica.gravitacion",
+    "numero": 6,
+    "titulo": "Gravitación universal",
+    "historia": "Las órbitas se comprendieron combinando observaciones prolongadas con modelos que podían fallar ante los datos. Kepler trabajó con los registros de Tycho Brahe y publicó sus dos primeras leyes planetarias en 1609; la relación entre período y tamaño orbital apareció en 1619. Estas regularidades describían el movimiento sin proporcionar todavía la explicación gravitatoria newtoniana. Los Principia de 1687 conectaron las trayectorias celestes con una atracción que también explica fenómenos terrestres. La historia permite separar descripción y explicación: ajustar una elipse no equivale a conocer la fuerza. Hoy, el modelo de dos cuerpos conserva utilidad precisamente porque declara qué interacciones y aproximaciones deja fuera.",
+    "puente_escena": "Comparar primero dos sectores orbitales recorridos en tiempos iguales, conservando sus áreas. Después variar la velocidad inicial de un satélite y distinguir círculo, elipse y escape. La predicción se contrasta con la trayectoria calculada; ninguna animación debe insinuar que toda órbita cerrada exige la rapidez circular.",
+    "ecuaciones": [
+     {
+      "latex": "F=G\\frac{Mm}{r^2}",
+      "lectura": "La atracción gravitatoria aumenta con las masas y disminuye con el cuadrado de su separación.",
+      "condiciones": "Masas puntuales o cuerpos esféricos vistos desde fuera; r se mide entre centros."
+     },
+     {
+      "latex": "T^2=\\frac{4\\pi^2a_{\\mathrm{orb}}^3}{G(M+m)}",
+      "lectura": "El período depende del semieje mayor de la órbita relativa y de la suma de masas.",
+      "condiciones": "Modelo kepleriano aislado de dos cuerpos; aorb no representa aceleración."
+     },
+     {
+      "latex": "g(h)=g_0\\left(\\frac{R}{R+h}\\right)^2",
+      "lectura": "La gravedad disminuye al aumentar la altura sobre una esfera.",
+      "condiciones": "Exterior de cuerpo esférico; se desprecia rotación y variación local de densidad."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "NASA Science — Orbits and Kepler’s Laws",
+      "url": "https://science.nasa.gov/solar-system/orbits-and-keplers-laws/"
+     },
+     {
+      "titulo": "Cambridge University Library — Gravity and glory: the Principia",
+      "url": "https://wwwe.lib.cam.ac.uk/CUL/exhibitions/Footprints_of_the_Lion/gravity_glory.html"
+     }
+    ],
+    "notacion": "Las ecuaciones emplean notación moderna; no reproducen la escritura de los documentos históricos."
+   }
+  },
+  {
+   "id": "fisica.trabajo-y-energia",
+   "curso": "Física",
+   "curso_id": "fisica",
+   "numero": 7,
+   "titulo": "Trabajo, energía y potencia",
+   "grado": 4,
+   "temas_catalogo": [
+    "Trabajo de fuerzas constantes y variables",
+    "Teorema trabajo-energía cinética",
+    "Energía potencial gravitatoria y elástica",
+    "Conservación de la energía mecánica",
+    "Potencia y eficiencia"
+   ],
+   "modulos_actuales": [
+    "energia",
+    "energia-potencia"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo",
+   "teoria": [
+    "W=F·Δr para fuerza constante; el área firmada de F paralela–x da trabajo variable.",
+    "Wneto=ΔK, con K=mv²/2. Ug=mgh localmente y Ue=kx²/2 para resorte ideal.",
+    "Δ(K+U)=Wno conservativas bajo la partición declarada; potencia P=W/Δt media y P=F·v instantánea; eficiencia=salida útil/entrada."
+   ],
+   "condiciones": "Misma rapidez final para caminos de igual altura requiere condiciones iniciales equivalentes y ausencia de pérdidas; si hay rodadura, incluir energía rotacional.",
+   "prerrequisitos": [
+    "Producto escalar",
+    "Distinguir fuerza y desplazamiento",
+    "Leer áreas en una gráfica"
+   ],
+   "desempeno": "Elegir sistema y balance, obtener rapidez y evaluar dónde se transfiere energía en un problema nuevo.",
+   "escena_propuesta": "Soltar carrito por dos rampas y congelar barras K/U/pérdidas; cada término aparece junto al cambio que representa.",
+   "otra_representacion": "Diagrama de transferencia y gráfica F–x; resolver por barras antes de sustituir en ecuaciones.",
+   "ejemplo": null,
+   "error_objetivo": [
+    "Toda fuerza hace trabajo",
+    "Energía conservada implica energía mecánica constante",
+    "Potencia y trabajo son equivalentes"
+   ],
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "obra": "University Physics 1",
+     "capitulos": "7.1–7.4; 8.1–8.3",
+     "url": "https://openstax.org/books/university-physics-volume-1/pages/8-3-conservation-of-energy",
+     "titulo": "University Physics 1",
+     "localizador": "7.1–7.4; 8.1–8.3"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "fisica.trabajo-y-energia",
+    "numero": 7,
+    "titulo": "Trabajo, energía y potencia",
+    "historia": "Comparar máquinas obligó a preguntar cuánto efecto útil se obtenía y qué ocurría con lo que parecía perderse por rozamiento. En la década de 1840, Joule investigó distintas maneras de accionar bombas y agitadores, y relacionó trabajo mecánico con calentamiento. Sus experimentos de paletas y calorímetro, asociados a mediciones de 1845, convirtieron el aumento de temperatura en una evidencia cuantificable de transferencia. Ese trabajo fue parte del desarrollo colectivo del concepto de energía, no una razón para atribuir toda la termodinámica a una sola persona. La distinción moderna entre trabajo, energía y potencia permite separar cantidad transferida, estado del sistema y rapidez de transferencia.",
+    "puente_escena": "Soltar el mismo carrito desde igual altura por dos rampas y conservar barras de energía. Después incorporar una pérdida controlada y mostrar dónde se transfiere. La comparación plantea dos preguntas separadas: cuánta energía cambia y cuánto tarda; así la potencia no se confunde con el trabajo.",
+    "ecuaciones": [
+     {
+      "latex": "W=F\\,\\Delta r\\cos\\theta",
+      "lectura": "Solo la componente de fuerza paralela al desplazamiento contribuye al trabajo.",
+      "condiciones": "Fuerza constante durante el desplazamiento considerado."
+     },
+     {
+      "latex": "W_{\\mathrm{neto}}=\\Delta K,\\qquad K=\\frac12mv^2",
+      "lectura": "El trabajo neto modifica la energía cinética.",
+      "condiciones": "Partícula de masa constante en mecánica clásica; contabilizar todas las fuerzas."
+     },
+     {
+      "latex": "\\bar P=\\frac{W}{\\Delta t}",
+      "lectura": "La potencia media indica qué trabajo se realiza por unidad de tiempo.",
+      "condiciones": "Intervalo de duración positiva; definir trabajo y sistema considerados."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Science Museum Group — Replica of calorimeter used by James Joule",
+      "url": "https://collection.sciencemuseumgroup.org.uk/objects/co8404682/replica-of-calorimeter-used-by-james-joule"
+     },
+     {
+      "titulo": "OpenStax — University Physics 1, Conservation of Energy",
+      "url": "https://openstax.org/books/university-physics-volume-1/pages/8-3-conservation-of-energy"
+     }
+    ],
+    "notacion": "Las ecuaciones emplean notación moderna; no reproducen la escritura de los documentos históricos."
+   }
+  },
+  {
+   "id": "fisica.impulso-y-choques",
+   "curso": "Física",
+   "curso_id": "fisica",
+   "numero": 8,
+   "titulo": "Impulso, cantidad de movimiento y choques",
+   "grado": 4,
+   "temas_catalogo": [
+    "Impulso",
+    "Cantidad de movimiento",
+    "Conservación de la cantidad de movimiento",
+    "Centro de masa",
+    "Choques elásticos e inelásticos",
+    "Coeficiente de restitución"
+   ],
+   "modulos_actuales": [
+    "choques",
+    "velocidad-relativa",
+    "impulso-grafica"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo",
+   "teoria": [
+    "p=mv; impulso externo J=Δp y corresponde al área firmada de F–t.",
+    "La cantidad de movimiento total se conserva si el impulso externo es nulo o despreciable durante el intervalo.",
+    "Choque elástico conserva K; inelástico no la conserva, aunque la energía total se conserva. Centro de masa R=Σmr/Σm; restitución compara velocidades relativas de separación y aproximación."
+   ],
+   "condiciones": "Sistema completo y escala temporal deben explicitarse. Un choque perfectamente inelástico hace que los cuerpos salgan juntos, no necesariamente en reposo.",
+   "prerrequisitos": [
+    "Vectores con signo",
+    "Newton y fuerzas externas",
+    "Energía cinética"
+   ],
+   "desempeno": "Elegir sistema, comprobar conservación de p y distinguirla de la variación de K en un choque nuevo.",
+   "escena_propuesta": "Lanzar dos carritos; detener antes/después con flechas m·v y barras K; fantasma muestra la predicción del alumno.",
+   "otra_representacion": "Tabla de momento por cuerpo y área F–t; calcular p y K como preguntas separadas.",
+   "ejemplo": null,
+   "error_objetivo": [
+    "Conservar K en todos los choques",
+    "Igual fuerza implica igual cambio de velocidad",
+    "Sumar módulos de p en sentidos opuestos"
+   ],
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "obra": "University Physics 1",
+     "capitulos": "9.1–9.6",
+     "url": "https://openstax.org/books/university-physics-volume-1/pages/9-3-conservation-of-linear-momentum",
+     "titulo": "University Physics 1",
+     "localizador": "9.1–9.6"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "fisica.impulso-y-choques",
+    "numero": 8,
+    "titulo": "Impulso, cantidad de movimiento y choques",
+    "historia": "Los choques pusieron a prueba distintas respuestas a una pregunta difícil: ¿qué permanece cuando dos cuerpos cambian bruscamente de movimiento? En 1668 y 1669, la Royal Society recibió y discutió trabajos sobre impactos, entre ellos los de Wren y Huygens, acompañados por ensayos y diagramas. No todos los choques se comportaban igual, por lo que identificar una cantidad conservada exigía distinguir rebote, unión y deformación. La formulación moderna separa cantidad de movimiento total de energía cinética: ambas se conservan en un choque elástico ideal, pero solo la primera puede conservarse cuando parte de la energía cinética pasa a deformación y calentamiento dentro de un sistema aislado.",
+    "puente_escena": "Lanzar dos carritos y congelar el estado anterior y posterior al impacto. Conservar flechas de cantidad de movimiento y barras de energía cinética por separado. El alumno anticipa ambas comparaciones; un fantasma muestra su predicción sin convertir la energía perdida del movimiento en energía desaparecida.",
+    "ecuaciones": [
+     {
+      "latex": "\\vec J_{\\mathrm{ext}}=\\Delta\\vec p",
+      "lectura": "El impulso exterior cambia la cantidad de movimiento.",
+      "condiciones": "Definir el sistema y el intervalo del impacto."
+     },
+     {
+      "latex": "\\sum m_i\\vec v_{i,\\mathrm{antes}}=\\sum m_i\\vec v_{i,\\mathrm{despues}}",
+      "lectura": "La cantidad de movimiento total se conserva durante un choque aislado.",
+      "condiciones": "Impulso externo nulo o despreciable durante el intervalo."
+     },
+     {
+      "latex": "e=\\frac{v_{2f}-v_{1f}}{v_{1i}-v_{2i}}",
+      "lectura": "La restitución compara rapidez relativa de separación con la de aproximación.",
+      "condiciones": "Choque frontal con eje orientado de 1 hacia 2 e inicialmente v1i>v2i; velocidades con signo."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "The Royal Society — The motion of bodies resulting from impact, manuscritos de 1668–1669",
+      "url": "https://pictures.royalsociety.org/image-rs-16018"
+     },
+     {
+      "titulo": "MIT OpenCourseWare — Classical Mechanics, Chapter 15: Collision Theory",
+      "url": "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/16d5d8cf5fff4f115d83a034261fbed3_MIT8_01F16_chapter15.pdf"
+     }
+    ],
+    "notacion": "Las ecuaciones emplean notación moderna; no reproducen la escritura de los documentos históricos."
+   }
+  },
+  {
+   "id": "fisica.oscilaciones",
+   "curso": "Física",
+   "curso_id": "fisica",
+   "numero": 9,
+   "titulo": "Movimiento armónico simple",
+   "grado": 5,
+   "temas_catalogo": [
+    "Movimiento periódico y oscilatorio",
+    "Ecuaciones y gráficas del MAS",
+    "Masa-resorte horizontal y vertical",
+    "Péndulo simple",
+    "Energía en el MAS"
+   ],
+   "modulos_actuales": [
+    "mas",
+    "mas-horaria"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de recordar",
+   "teoria": [
+    "MAS: a=−ω²x, x=A cos(ωt+φ), v=−Aω sen(ωt+φ); posición se mide desde equilibrio.",
+    "Resorte ideal T=2π√(m/k); péndulo de ángulo pequeño T≈2π√(L/g).",
+    "La energía pasa entre K y U; en extremos v=0 pero |a| es máxima, en equilibrio a=0 y rapidez máxima."
+   ],
+   "condiciones": "Independencia del período respecto de A exige MAS ideal. El péndulo real de gran amplitud no tiene exactamente ese período. Sin rozamiento ni excitación para amplitud constante.",
+   "prerrequisitos": [
+    "Funciones seno/coseno",
+    "Fuerza de resorte y Newton",
+    "Conservación de energía"
+   ],
+   "desempeno": "Relacionar x, v, a y energía en una fase inédita y anticipar el efecto de cambiar m, k o L.",
+   "escena_propuesta": "Estirar y soltar; comparar dos amplitudes con mismo reloj; congelar extremos y centro con flechas y barras.",
+   "otra_representacion": "Círculo de referencia y tres gráficas sincronizadas; elegir fase en cuatro botones.",
+   "ejemplo": null,
+   "error_objetivo": [
+    "Aceleración máxima donde la rapidez es máxima",
+    "Estirar más siempre aumenta período",
+    "Confundir posición natural del resorte con equilibrio vertical"
+   ],
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "obra": "University Physics 1",
+     "capitulos": "15.1–15.4",
+     "url": "https://openstax.org/books/university-physics-volume-1/pages/15-1-simple-harmonic-motion",
+     "titulo": "University Physics 1",
+     "localizador": "15.1–15.4"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "fisica.oscilaciones",
+    "numero": 9,
+    "titulo": "Movimiento armónico simple",
+    "historia": "Los relojes transformaron la regularidad de una oscilación en una herramienta para medir el mundo. Huygens desarrolló relojes de péndulo durante la década de 1650 y reunió su estudio matemático en el Horologium Oscillatorium de 1673. La precisión exigía reconocer que un péndulo de gran amplitud no repite exactamente el período de uno de pequeña amplitud. Al mismo tiempo, los cuerpos elásticos y los mecanismos de resorte planteaban problemas relacionados; Hooke publicó su tratado sobre restitución elástica en 1678. El movimiento armónico simple es la idealización moderna que reúne ciertos casos de restauración lineal, no una descripción exacta de cualquier objeto que vaya y venga.",
+    "puente_escena": "Comparar dos resortes idénticos soltados desde amplitudes distintas y conservar su reloj. Luego contrastar un péndulo de pequeña amplitud con uno mayor, declarando el modelo. La regla aparece junto al equilibrio y a la fuerza restauradora: antes de memorizar períodos, se identifica qué condición permite igualarlos.",
+    "ecuaciones": [
+     {
+      "latex": "x(t)=A\\cos(\\omega t+\\varphi)",
+      "lectura": "La posición se repite con amplitud y fase definidas.",
+      "condiciones": "MAS ideal sin amortiguamiento; x se mide desde el equilibrio."
+     },
+     {
+      "latex": "a=-\\omega^2x",
+      "lectura": "La aceleración apunta hacia el equilibrio y crece con la separación.",
+      "condiciones": "Restauración lineal; no describe cualquier oscilación."
+     },
+     {
+      "latex": "T_{\\mathrm{resorte}}=2\\pi\\sqrt{\\frac{m}{k}},\\qquad T_{\\mathrm{pendulo}}\\approx2\\pi\\sqrt{\\frac{L}{g}}",
+      "lectura": "Resorte y péndulo relacionan el período con parámetros distintos.",
+      "condiciones": "Resorte ideal; péndulo simple de pequeña amplitud, cuerda ideal y gravedad uniforme."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "American Physical Society — Huygens Patents the First Pendulum Clock",
+      "url": "https://www.aps.org/apsnews/2017/06/huygens-patents-first-pendulum-clock"
+     },
+     {
+      "titulo": "The Huntington — Hooke, Lectures de potentia restitutiva (1678)",
+      "url": "https://www.huntington.org/collections/lib-492038"
+     }
+    ],
+    "notacion": "Las ecuaciones emplean notación moderna; no reproducen la escritura de los documentos históricos."
+   }
+  },
+  {
+   "id": "fisica.ondas-mecanicas",
+   "curso": "Física",
+   "curso_id": "fisica",
+   "numero": 10,
+   "titulo": "Ondas mecánicas y sonido",
+   "grado": 5,
+   "temas_catalogo": [
+    "Ondas transversales y longitudinales",
+    "Función de onda",
+    "Rapidez de una onda en una cuerda",
+    "Reflexión y ondas estacionarias",
+    "Energía transportada por una onda",
+    "Intensidad y nivel de intensidad sonora"
+   ],
+   "modulos_actuales": [
+    "ondas",
+    "ondas-llegadas"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de recordar",
+   "teoria": [
+    "Onda transporta perturbación y energía; los puntos del medio no viajan con la cresta. v=λf y y=A sen(kx−ωt+φ) para onda armónica.",
+    "En cuerda ideal v=√(T/μ); fuente fija f y el medio determina v bajo ese modelo.",
+    "Superposición produce reflexión y ondas estacionarias; condiciones de extremos fijan modos. I=P/área y β=10 log10(I/I0)."
+   ],
+   "condiciones": "La rapidez independiente de amplitud/frecuencia corresponde a régimen lineal y medio no dispersivo. Intensidad no equivale a la percepción subjetiva de sonoridad.",
+   "prerrequisitos": [
+    "Período y frecuencia",
+    "Leer seno y fase",
+    "Razones y logaritmos para dB"
+   ],
+   "desempeno": "Predecir qué pasa a λ cuando cambia tensión o frecuencia y localizar nodos/antinodos de un modo.",
+   "escena_propuesta": "Sacudir extremo, fijar una partícula marcada y comparar su movimiento con una cresta; después congelar dos ondas y su suma.",
+   "otra_representacion": "Gráfica espacial frente a gráfica temporal; fichas de energía y escala logarítmica para intensidades.",
+   "ejemplo": null,
+   "error_objetivo": [
+    "La cresta transporta la materia",
+    "Agitar más rápido siempre aumenta rapidez",
+    "Sumar decibelios directamente"
+   ],
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "obra": "University Physics 1",
+     "capitulos": "16.1–16.6; 17.1–17.4",
+     "url": "https://openstax.org/books/university-physics-volume-1/pages/16-3-wave-speed-on-a-stretched-string",
+     "titulo": "University Physics 1",
+     "localizador": "16.1–16.6; 17.1–17.4"
+    },
+    {
+     "obra": "University Physics 1",
+     "capitulos": "17.1–17.4",
+     "url": "https://openstax.org/books/university-physics-volume-1/pages/17-introduction",
+     "titulo": "University Physics 1",
+     "localizador": "17.1–17.4"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "fisica.ondas-mecanicas",
+    "numero": 10,
+    "titulo": "Ondas mecánicas y sonido",
+    "historia": "Las cuerdas musicales ofrecieron un problema concreto: explicar por qué una misma cuerda produce diferentes formas de vibrar y distintos sonidos. En el siglo XVIII, esa pregunta impulsó una discusión matemática sobre cómo representar una cuerda que cambia de forma. El trabajo de d’Alembert asociado a 1747 y las respuestas de Euler, Daniel Bernoulli y otros enfrentaron distintas descripciones de las soluciones y de las formas iniciales admisibles. La controversia contribuyó al desarrollo de las funciones y las series trigonométricas. En la enseñanza actual, esta historia ayuda a separar el movimiento local de cada punto del medio de la propagación colectiva de una perturbación.",
+    "puente_escena": "Marcar un punto de la cuerda y seguirlo mientras una cresta avanza. Congelar ambos registros para comparar sus direcciones. Después se superponen dos ondas y permanece su suma; el alumno anticipa nodos y vientres antes de que la escena revele el patrón estacionario.",
+    "ecuaciones": [
+     {
+      "latex": "v=\\lambda f",
+      "lectura": "La rapidez de propagación relaciona separación entre ciclos y ciclos por segundo.",
+      "condiciones": "Onda periódica; distinguir rapidez de la onda y movimiento de partículas del medio."
+     },
+     {
+      "latex": "v=\\sqrt{\\frac{\\mathcal T}{\\mu}}",
+      "lectura": "En una cuerda ideal, la tensión y la masa por longitud determinan la rapidez.",
+      "condiciones": "Cuerda uniforme, tensión aproximadamente constante y perturbaciones transversales pequeñas."
+     },
+     {
+      "latex": "\\beta=10\\log_{10}\\left(\\frac{I}{I_0}\\right)",
+      "lectura": "El nivel sonoro compara intensidades mediante una escala logarítmica.",
+      "condiciones": "I e I0 son intensidades expresadas en la misma unidad; β se expresa en decibelios."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Universidad de St Andrews, MacTutor — Mathematicians and Music",
+      "url": "https://mathshistory.st-andrews.ac.uk/Extras/Archibald_music/"
+     },
+     {
+      "titulo": "OpenStax — University Physics 1, Wave Speed on a Stretched String",
+      "url": "https://openstax.org/books/university-physics-volume-1/pages/16-3-wave-speed-on-a-stretched-string"
+     }
+    ],
+    "notacion": "Las ecuaciones emplean notación moderna; no reproducen la escritura de los documentos históricos."
+   }
+  },
+  {
+   "id": "fisica.fluidos",
+   "curso": "Física",
+   "curso_id": "fisica",
+   "numero": 11,
+   "titulo": "Fluidos",
+   "grado": 4,
+   "temas_catalogo": [
+    "Densidad y presión",
+    "Presión hidrostática y atmosférica",
+    "Manómetro, barómetro y vasos comunicantes",
+    "Principio de Pascal",
+    "Principio de Arquímedes",
+    "Tensión superficial",
+    "Caudal, continuidad y Bernoulli (solo San Marcos)"
+   ],
+   "modulos_actuales": [
+    "fluidos",
+    "fluidos-hidrodinamica"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo",
+   "teoria": [
+    "ρ=m/V y presión p=Fn/A; en fluido homogéneo en reposo p=p0+ρgh. Presión absoluta y manométrica difieren en la referencia.",
+    "Pascal transmite cambios de presión; Arquímedes da empuje ρfluido g Vdesplazado.",
+    "Continuidad: ρAv constante; para incompresible Av constante. Bernoulli conserva p+ρv²/2+ρgh en flujo ideal. Tensión superficial γ es fuerza/longitud o energía/área."
+   ],
+   "condiciones": "Bernoulli exige flujo estacionario, incompresible, viscosidad despreciable y comparación a lo largo de una corriente; bombas/pérdidas requieren términos propios. Empuje depende del volumen desplazado y densidad, no solo de profundidad.",
+   "prerrequisitos": [
+    "Densidad, volumen y fuerza",
+    "Área y razones",
+    "Balance de energía"
+   ],
+   "desempeno": "Elegir hidrostática, empuje o flujo; calcular una magnitud y comprobar que las unidades y fuerzas cierran.",
+   "escena_propuesta": "Verter en vasos de distintas formas; comparar puntos de igual profundidad; hundir bloque y dejar volumen desplazado y fuerza visibles.",
+   "otra_representacion": "DCL de bloque, columnas de presión y balance por secciones de tubo.",
+   "ejemplo": null,
+   "error_objetivo": [
+    "Recipiente más ancho implica mayor presión a igual profundidad",
+    "Sumergido más profundo siempre recibe más empuje",
+    "Presión igual a fuerza"
+   ],
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "obra": "University Physics 1",
+     "capitulos": "14.1–14.6",
+     "url": "https://openstax.org/books/university-physics-volume-1/pages/14-introduction",
+     "titulo": "University Physics 1",
+     "localizador": "14.1–14.6"
+    },
+    {
+     "obra": "University Physics 1",
+     "capitulos": "14.6",
+     "url": "https://openstax.org/books/university-physics-volume-1/pages/14-6-bernoullis-equation",
+     "titulo": "University Physics 1",
+     "localizador": "14.6"
+    },
+    {
+     "obra": "College Physics 2e",
+     "capitulos": "11.8",
+     "url": "https://openstax.org/books/college-physics-2e/pages/11-8-cohesion-and-adhesion-in-liquids-surface-tension-and-capillary-action",
+     "titulo": "College Physics 2e",
+     "localizador": "11.8"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "numero": 11,
+    "titulo": "Fluidos",
+    "historia": "La presión atmosférica se volvió un problema experimental cuando se comparó el comportamiento de líquidos en tubos y recipientes. En 1644, Torricelli describió una columna de mercurio sostenida en un tubo invertido: la interpretó mediante el peso del aire exterior, no mediante una supuesta resistencia universal de la naturaleza al vacío. En 1648, Pascal organizó la comparación de un barómetro a distintas alturas del Puy de Dôme; la columna descendió al ascender. La repetición y comparación de estas observaciones convirtió el barómetro en instrumento de medida. Esta historia conecta equilibrio de fluidos, presión y altura; no explica por sí sola toda la hidrodinámica.",
+    "fuentes": [
+     {
+      "titulo": "Museo Galileo — Barometer",
+      "url": "https://catalogue.museogalileo.it/indepth/Barometer.html"
+     },
+     {
+      "titulo": "Museo Galileo — Pascal’s barometric experiment",
+      "url": "https://catalogue.museogalileo.it/multimedia/PascalsBarometricExperimentBis.html"
+     }
+    ],
+    "puente_escena": "Comparar dos columnas del mismo líquido mientras cambia la presión aplicada a una de ellas. El alumno predice cuál subirá y conserva su primera marca. Después aparecen diferencias de altura y flechas de presión; una segunda escena cambia la densidad para comprobar que igual presión no exige igual altura.",
+    "ecuaciones": [
+     {
+      "latex": "P=P_0+\\rho gh",
+      "lectura": "La presión aumenta con la profundidad dentro de un líquido en reposo.",
+      "condiciones": "Densidad y gravedad aproximadamente constantes; h se mide verticalmente hacia abajo desde la superficie de presión P0."
+     },
+     {
+      "latex": "F_B=\\rho_{\\mathrm{fluido}}gV_{\\mathrm{desplazado}}",
+      "lectura": "El empuje equivale al peso del fluido desplazado.",
+      "condiciones": "Fluido en reposo con gravedad uniforme; el volumen desplazado es la parte sumergida."
+     },
+     {
+      "latex": "P+\\frac12\\rho v^2+\\rho gy=\\mathrm{constante}",
+      "lectura": "Presión, rapidez y altura intercambian aportes a lo largo de una corriente ideal.",
+      "condiciones": "Bernoulli: flujo estacionario, incompresible y sin viscosidad, siguiendo una línea de corriente; sin bombas ni pérdidas entre los puntos. Subtema San Marcos."
+     }
+    ],
+    "id": "fisica.fluidos",
+    "notacion": "Las ecuaciones emplean notación moderna; no reproducen la escritura de los documentos históricos."
+   }
+  },
+  {
+   "id": "fisica.temperatura-y-calor",
+   "curso": "Física",
+   "curso_id": "fisica",
+   "numero": 12,
+   "titulo": "Temperatura y calor",
+   "grado": 4,
+   "temas_catalogo": [
+    "Temperatura, equilibrio térmico y ley cero",
+    "Escalas termométricas",
+    "Dilatación",
+    "Calor específico y capacidad calorífica",
+    "Calorimetría",
+    "Cambios de fase y calor latente",
+    "Conducción, convección y radiación"
+   ],
+   "modulos_actuales": [
+    "calorimetria",
+    "calor-escalas"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo",
+   "teoria": [
+    "Temperatura describe estado térmico; calor es energía transferida por diferencia de temperatura. Ley cero fundamenta equilibrio y medición.",
+    "Sin cambio de fase Q=mcΔT; durante transición ideal Q=mL; capacidad térmica C=mc. Calorimetría aislada: ΣQ=0 incluyendo recipiente.",
+    "Dilatación lineal ΔL≈αL0ΔT; conducción, convección y radiación son mecanismos distintos. Kelvin es temperatura absoluta."
+   ],
+   "condiciones": "La temperatura de mezcla solo es promedio aritmético para capacidades térmicas iguales y sin otras transferencias. Meseta de transición supone sustancia y presión dadas; ebullición depende de presión.",
+   "prerrequisitos": [
+    "Balance y signos de transferencia",
+    "Proporcionalidad y unidades",
+    "Masa y cambios de estado"
+   ],
+   "desempeno": "Predecir fase y temperatura final con balance de energía, incluyendo un cambio de fase cuando corresponda.",
+   "escena_propuesta": "Mezclar vasos y calentar hielo; línea de tiempo conserva cada tramo Q y el estado material con termómetro pegado.",
+   "otra_representacion": "Curva energía–temperatura y barras de energía intercambiada; tabla de etapas para papel.",
+   "ejemplo": null,
+   "error_objetivo": [
+    "Temperatura es calor contenido",
+    "Toda entrada de energía aumenta T",
+    "Un metal frío necesariamente tiene menor T que madera"
+   ],
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "obra": "University Physics 2",
+     "capitulos": "1.1–1.6",
+     "url": "https://openstax.org/books/university-physics-volume-2/pages/1-introduction",
+     "titulo": "University Physics 2",
+     "localizador": "1.1–1.6"
+    },
+    {
+     "obra": "University Physics 2",
+     "capitulos": "1.4",
+     "url": "https://openstax.org/books/university-physics-volume-2/pages/1-4-heat-transfer-specific-heat-and-calorimetry",
+     "titulo": "University Physics 2",
+     "localizador": "1.4"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "numero": 12,
+    "titulo": "Temperatura y calor",
+    "historia": "Comparar sensaciones de frío y calor no bastaba para comunicar mediciones entre laboratorios. Los termoscopios de comienzos del siglo XVII mostraban cambios, pero algunos respondían también a la presión del aire y carecían de una escala común. Durante el XVIII, diferentes constructores adoptaron referencias reproducibles y escalas como las de Fahrenheit y Celsius. La búsqueda de una temperatura independiente del instrumento condujo después a propuestas de escala absoluta, incluida la de Thomson en 1848. Otro problema era explicar el calentamiento por fricción: los experimentos mecánicos asociados a Joule relacionaron trabajo y aumento de temperatura. Medir temperatura y determinar energía transferida se consolidaron como tareas diferentes.",
+    "fuentes": [
+     {
+      "titulo": "NIST — Kelvin: History",
+      "url": "https://www.nist.gov/si-redefinition/kelvin/kelvin-history"
+     },
+     {
+      "titulo": "Science Museum Group — Mechanical equivalent of heat apparatus",
+      "url": "https://collection.sciencemuseumgroup.org.uk/objects/co2526/mechanical-equivalent-of-heat-apparatus"
+     }
+    ],
+    "puente_escena": "Entregar pulsos iguales de energía a dos muestras y conservar sus curvas de temperatura. El alumno anticipa qué cambia al duplicar la masa. Luego calentar una muestra durante un cambio de fase: la temperatura permanece constante bajo las condiciones elegidas, mientras sigue aumentando la energía transferida.",
+    "ecuaciones": [
+     {
+      "latex": "\\frac{T}{\\mathrm K}=\\frac{t_C}{^{\\circ}\\mathrm C}+273.15",
+      "lectura": "La escala kelvin y la escala Celsius tienen igual tamaño de intervalo y distinto origen.",
+      "condiciones": "T es temperatura termodinámica y tC temperatura Celsius; la ecuación relaciona sus valores numéricos."
+     },
+     {
+      "latex": "Q=mc\\,\\Delta T",
+      "lectura": "El calor necesario para cambiar la temperatura depende de masa y calor específico.",
+      "condiciones": "Sin cambio de fase; calor específico aproximadamente constante en el intervalo y proceso definido."
+     },
+     {
+      "latex": "|Q|=mL",
+      "lectura": "Durante un cambio de fase, la energía intercambiada es proporcional a la masa transformada.",
+      "condiciones": "Transición a presión especificada; L es el calor latente correspondiente. El signo de Q depende de si el sistema absorbe o cede calor."
+     }
+    ],
+    "id": "fisica.temperatura-y-calor",
+    "notacion": "Las ecuaciones emplean notación moderna; no reproducen la escritura de los documentos históricos."
+   }
+  },
+  {
+   "id": "fisica.termodinamica",
+   "curso": "Física",
+   "curso_id": "fisica",
+   "numero": 13,
+   "titulo": "Termodinámica",
+   "grado": 5,
+   "temas_catalogo": [
+    "Leyes de los gases y ecuación de estado",
+    "Modelo cinético y energía interna",
+    "Primera ley",
+    "Procesos y diagrama P-V",
+    "cp y cv",
+    "Máquinas térmicas y ciclo de Carnot",
+    "Segunda ley"
+   ],
+   "modulos_actuales": [
+    "termodinamica"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo",
+   "teoria": [
+    "Estado ideal: pV=nRT; U es función de estado, Q y W son transferencias dependientes del proceso.",
+    "Con W hecho por el gas, ΔU=Q−W. Trabajo cuasiestático W=∫p dV; expansión positiva y compresión negativa.",
+    "Procesos isotérmico, isobárico, isocórico y adiabático imponen condiciones diferentes. Para gas ideal dU=nCv dT y Cp−Cv=R molar.",
+    "Motor: η=Wneto/Qcaliente. Carnot reversible: ηmáx=1−Tfría/Tcaliente; segunda ley restringe dirección y conversión."
+   ],
+   "condiciones": "Apretar rápido no prueba por sí solo adiabaticidad; la transferencia depende del aislamiento y escala temporal. En proceso irreversible W usa presión externa y no basta el área de una curva arbitraria de estado.",
+   "prerrequisitos": [
+    "Calor, temperatura y energía",
+    "Áreas y lectura de P–V",
+    "Kelvin y proporcionalidad"
+   ],
+   "desempeno": "Seleccionar proceso y convenio, obtener W, Q y ΔU en preguntas separadas y cerrar el balance.",
+   "escena_propuesta": "Apretar émbolo con condiciones térmicas explícitas; dibujar camino P–V y conservar área junto a barras Q/W/ΔU.",
+   "otra_representacion": "Tabla de estados y balance energético; comparar dos caminos con iguales extremos.",
+   "ejemplo": null,
+   "error_objetivo": [
+    "Isotérmico significa Q=0",
+    "Adiabático significa T constante",
+    "Área P–V siempre representa cualquier trabajo"
+   ],
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "obra": "University Physics 2",
+     "capitulos": "2.1–2.3; 3.1–3.6; 4.1–4.5",
+     "url": "https://openstax.org/books/university-physics-volume-2/pages/3-3-first-law-of-thermodynamics",
+     "titulo": "University Physics 2",
+     "localizador": "2.1–2.3; 3.1–3.6; 4.1–4.5"
+    },
+    {
+     "obra": "University Physics 2",
+     "capitulos": "4.1–4.5",
+     "url": "https://openstax.org/books/university-physics-volume-2/pages/4-introduction",
+     "titulo": "University Physics 2",
+     "localizador": "4.1–4.5"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "numero": 13,
+    "titulo": "Termodinámica",
+    "historia": "Las máquinas de vapor funcionaban antes de que existiera una teoría general de sus límites. En 1824, Carnot preguntó cuánto trabajo podía obtenerse del intercambio térmico y estudió una máquina ideal reversible. Trabajaba todavía dentro de la teoría del calórico; no conviene atribuirle directamente la formulación actual de conservación de la energía. Durante las décadas siguientes, mediciones eléctricas y mecánicas relacionaron cantidades de trabajo con calentamiento. El informe de Joule leído en 1849 reúne resultados y reconoce antecedentes como los experimentos de Rumford. La termodinámica surgió así de problemas de máquinas, mediciones y revisión de modelos: conservar energía no equivale a poder convertirla íntegramente en trabajo.",
+    "fuentes": [
+     {
+      "titulo": "American Physical Society — June 12, 1824: Sadi Carnot Publishes Treatise on Heat Engines",
+      "url": "https://www.aps.org/apsnews/2009/05/sadi-carnot-heat-engines"
+     },
+     {
+      "titulo": "James Prescott Joule — On the Mechanical Equivalent of Heat (1849), reproducción de Princeton University",
+      "url": "https://commons.princeton.edu/josephhenry/wp-content/uploads/sites/71/2021/02/Joule.pdf"
+     }
+    ],
+    "puente_escena": "Un pistón mantiene visibles el gas, el diagrama presión-volumen y los intercambios de energía. Antes de ejecutar dos procesos entre estados escogidos, el alumno compara el trabajo esperado. La escena conserva cada trayectoria y su área, y distingue qué depende del camino y qué depende del estado.",
+    "ecuaciones": [
+     {
+      "latex": "PV=nRT",
+      "lectura": "La ecuación del gas ideal relaciona presión, volumen, cantidad de sustancia y temperatura.",
+      "condiciones": "Gas aproximadamente ideal en equilibrio; P absoluta y T en kelvin."
+     },
+     {
+      "latex": "\\Delta U=Q-W",
+      "lectura": "La energía interna cambia por calor recibido menos trabajo realizado por el sistema.",
+      "condiciones": "Convención Q positivo al entrar y W positivo al salir como trabajo; sistema cerrado, sin cambios relevantes de energía cinética o potencial global."
+     },
+     {
+      "latex": "\\eta_{\\mathrm{Carnot}}=1-\\frac{T_c}{T_h}",
+      "lectura": "Dos temperaturas fijan el máximo rendimiento de una máquina térmica reversible.",
+      "condiciones": "Ciclo reversible entre dos depósitos térmicos, con 0<Tc<Th; temperaturas en kelvin. Es un límite, no el rendimiento de toda máquina real."
+     }
+    ],
+    "id": "fisica.termodinamica",
+    "notacion": "Las ecuaciones emplean notación moderna; no reproducen la escritura de los documentos históricos."
+   }
+  },
+  {
+   "id": "fisica.electrostatica",
+   "curso": "Física",
+   "curso_id": "fisica",
+   "numero": 14,
+   "titulo": "Electrostática",
+   "grado": 5,
+   "temas_catalogo": [
+    "Carga y electrización",
+    "Ley de Coulomb",
+    "Campo eléctrico y líneas de fuerza",
+    "Carga en campo uniforme",
+    "Energía potencial y potencial eléctrico",
+    "Superficies equipotenciales y conductores",
+    "Condensadores en serie y en paralelo",
+    "Energía de un condensador"
+   ],
+   "modulos_actuales": [
+    "electrostatica",
+    "condensadores",
+    "cargas-sistema"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo",
+   "teoria": [
+    "Carga se conserva; Coulomb F=k|q1q2|/r² para cargas puntuales. E=F/qprueba y se suma vectorialmente.",
+    "Potencial V=U/q es escalar; diferencia de potencial determina cambio de U. Líneas de campo no son trayectorias de toda carga.",
+    "Conductor en equilibrio electrostático tiene E=0 en su interior material y superficie equipotencial. Capacitancia C=Q/ΔV; energía UC=QΔV/2."
+   ],
+   "condiciones": "Iguales y opuestas son las fuerzas mutuas, no necesariamente aceleraciones. En condensadores declarar batería conectada o carga aislada antes de cambiar geometría o dieléctrico.",
+   "prerrequisitos": [
+    "Vectores y superposición",
+    "Trabajo y energía potencial",
+    "Razones inversas cuadráticas"
+   ],
+   "desempeno": "Distinguir fuerza, campo y potencial en un punto y resolver una red de condensadores indicando la condición eléctrica.",
+   "escena_propuesta": "Acercar cargas con flechas de igual interacción; mover una carga de prueba entre equipotenciales y conservar la variación de energía.",
+   "otra_representacion": "Mapa E/V con preguntas separadas y tabla Q/C/V para condensadores.",
+   "ejemplo": null,
+   "error_objetivo": [
+    "Mayor carga siente mayor fuerza mutua",
+    "E=0 implica V=0",
+    "Sumar potenciales como vectores"
+   ],
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "obra": "University Physics 2",
+     "capitulos": "5.1–5.6; 6.4; 7.1–7.5; 8.1–8.4",
+     "url": "https://openstax.org/books/university-physics-volume-2/pages/5-3-coulombs-law",
+     "titulo": "University Physics 2",
+     "localizador": "5.1–5.6; 6.4; 7.1–7.5; 8.1–8.4"
+    },
+    {
+     "obra": "University Physics 2",
+     "capitulos": "8.1–8.4",
+     "url": "https://openstax.org/books/university-physics-volume-2/pages/8-introduction",
+     "titulo": "University Physics 2",
+     "localizador": "8.1–8.4"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "numero": 14,
+    "titulo": "Electrostática",
+    "historia": "En el siglo XVIII, producir chispas y detectar atracciones eléctricas resultaba más fácil que medir una fuerza pequeña con precisión. La balanza de torsión convirtió la desviación angular de un hilo en una medida cuantitativa. Coulomb la utilizó en la década de 1780 para estudiar la interacción entre cuerpos cargados, variando su separación. Sus memorias de 1785 a 1789 contribuyeron a establecer la dependencia inversa con el cuadrado de la distancia. El instrumento tenía antecedentes, entre ellos trabajos de John Michell: no apareció aislado. El avance conceptual consistió en pasar de describir atracciones y repulsiones a contrastar una relación matemática mediante condiciones experimentales controladas.",
+    "fuentes": [
+     {
+      "titulo": "National High Magnetic Field Laboratory — Torsion Balance – 1785",
+      "url": "https://nationalmaglab.org/magnet-academy/history-of-electricity-magnetism/museum/torsion-balance-1785/"
+     },
+     {
+      "titulo": "Smithsonian Libraries — Heralds of Science: Electricity and Magnetism",
+      "url": "https://www.sil.si.edu/ondisplay/heraldsofscience/heralds_books.cfm?category=electricity+and+magnetism"
+     }
+    ],
+    "puente_escena": "Dos cuerpos cargados conservan flechas de fuerza y una regla de separación. El alumno anticipa qué sucederá al duplicar la distancia; la escena deja ambas mediciones superpuestas. Después cambia una carga de prueba y separa visualmente el campo que existe en el punto de la fuerza que experimenta esa carga.",
+    "ecuaciones": [
+     {
+      "latex": "F=k\\frac{|q_1q_2|}{r^2}",
+      "lectura": "La magnitud de la fuerza electrostática disminuye con el cuadrado de la separación.",
+      "condiciones": "Cargas puntuales en reposo, en vacío; en un medio homogéneo adecuado se modifica la constante. La dirección y el sentido se resuelven aparte."
+     },
+     {
+      "latex": "\\vec F=q\\vec E",
+      "lectura": "El campo determina la fuerza sobre una carga, incluido su sentido.",
+      "condiciones": "Campo externo evaluado en la posición de la carga; una carga negativa invierte el sentido respecto de E."
+     },
+     {
+      "latex": "C=\\frac{|Q|}{|\\Delta V|},\\qquad U=\\frac12C(\\Delta V)^2",
+      "lectura": "La capacitancia relaciona carga y voltaje; la energía almacenada depende del voltaje al cuadrado.",
+      "condiciones": "Condensador lineal de capacitancia constante; |Q| es la carga de una placa y ΔV la diferencia entre placas."
+     }
+    ],
+    "id": "fisica.electrostatica",
+    "notacion": "Las ecuaciones emplean notación moderna; no reproducen la escritura de los documentos históricos."
+   }
+  },
+  {
+   "id": "fisica.corriente-y-circuitos",
+   "curso": "Física",
+   "curso_id": "fisica",
+   "numero": 15,
+   "titulo": "Corriente eléctrica y circuitos",
+   "grado": 5,
+   "temas_catalogo": [
+    "Intensidad y densidad de corriente",
+    "Resistencia, resistividad y ley de Ohm",
+    "Modelo de Drude",
+    "Fuerza electromotriz",
+    "Resistencias en serie y en paralelo",
+    "Leyes de Kirchhoff",
+    "Potencia y efecto Joule",
+    "Amperímetro y voltímetro"
+   ],
+   "modulos_actuales": [
+    "circuitos-cc",
+    "circuitos-mallas",
+    "circuitos-joule"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo",
+   "teoria": [
+    "I=ΔQ/Δt y densidad J=I/A en sección uniforme; corriente convencional es distinta del movimiento de electrones.",
+    "R=ρL/A y V=IR bajo modelo óhmico; resistividad depende del material y condiciones. Drude conecta transporte con portadores y colisiones.",
+    "Kirchhoff: suma de corrientes en nodo cero y suma algebraica de cambios de potencial en malla cero; potencia P=VI.",
+    "Amperímetro ideal va en serie y voltímetro ideal en paralelo; fem no es fuerza mecánica y la resistencia interna modifica tensión terminal."
+   ],
+   "condiciones": "Igual brillo en paralelo requiere focos iguales alimentados con igual tensión bajo modelo elegido. Foco real no es necesariamente óhmico; brillo se aproxima por potencia, no por corriente sola.",
+   "prerrequisitos": [
+    "Diferencia de potencial",
+    "Conservación de carga/energía",
+    "Resolver ecuaciones lineales"
+   ],
+   "desempeno": "Reconstruir conexiones, predecir cambios al abrir una rama y verificar corriente y potencia por separado.",
+   "escena_propuesta": "Conectar y retirar foco; fijar nodos con igual potencial y marcar energía por carga que cae en cada componente.",
+   "otra_representacion": "Esquema topológico y tabla de nodos/mallas; medir mediante controles seleccionables.",
+   "ejemplo": null,
+   "error_objetivo": [
+    "La corriente se gasta en la resistencia",
+    "Serie significa igual voltaje",
+    "Conectar amperímetro en paralelo"
+   ],
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "obra": "University Physics 2",
+     "capitulos": "9.1–9.6; 10.1–10.4",
+     "url": "https://openstax.org/books/university-physics-volume-2/pages/10-3-kirchhoffs-rules",
+     "titulo": "University Physics 2",
+     "localizador": "9.1–9.6; 10.1–10.4"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "numero": 15,
+    "titulo": "Corriente eléctrica y circuitos",
+    "historia": "Los experimentos con electricidad necesitaban fuentes capaces de mantener una corriente, además de producir descargas breves. La pila que Volta comunicó en 1800 apilaba materiales conductores diferentes separados por capas húmedas y permitió nuevas investigaciones sobre circuitos. Su desarrollo se relacionaba con discusiones anteriores acerca de los fenómenos observados por Galvani. En 1827, Ohm publicó un tratamiento matemático de la conducción que vinculaba la corriente con la diferencia de potencial y la resistencia. De las fuentes y los instrumentos se pasó a modelos cuantitativos de circuitos. La escritura escolar actual de esa relación usa notación moderna y requiere condiciones materiales estables; no describe de igual modo cualquier dispositivo.",
+    "fuentes": [
+     {
+      "titulo": "Museo Galileo — Pila: desarrollo de la batería eléctrica",
+      "url": "https://catalogo.museogalileo.it/approfondimento/Pila.html"
+     },
+     {
+      "titulo": "Georg Simon Ohm — Die galvanische Kette (1827), Smithsonian Libraries",
+      "url": "https://library.si.edu/digital-library/book/diegalvanischeke00ohmg"
+     }
+    ],
+    "puente_escena": "Construir un circuito y predecir las lecturas antes de cerrar el interruptor. Mostrar corriente en cada rama y diferencia de potencial junto a cada resistencia, sin dibujar electrones consumidos. Al cambiar una conexión, conservar las lecturas anteriores y pedir una explicación basada en los nodos y recorridos.",
+    "ecuaciones": [
+     {
+      "latex": "V=IR,\\qquad R=\\rho\\frac{L}{A}",
+      "lectura": "Un conductor óhmico relaciona voltaje y corriente; su geometría y material fijan la resistencia.",
+      "condiciones": "Material óhmico a temperatura estable; segunda relación para conductor uniforme de sección constante."
+     },
+     {
+      "latex": "\\sum I_{\\mathrm{entra}}=\\sum I_{\\mathrm{sale}}",
+      "lectura": "En un nodo de un circuito estacionario se conserva la carga.",
+      "condiciones": "Modelo de circuito concentrado, sin acumulación apreciable de carga en el nodo; sentidos elegidos explícitamente."
+     },
+     {
+      "latex": "P=VI=I^2R=\\frac{V^2}{R}",
+      "lectura": "La potencia eléctrica indica la rapidez de transferencia de energía.",
+      "condiciones": "Convención receptora para P=VI; las dos últimas igualdades describen una resistencia óhmica. En corriente continua, valores constantes."
+     }
+    ],
+    "id": "fisica.corriente-y-circuitos",
+    "notacion": "Las ecuaciones emplean notación moderna; no reproducen la escritura de los documentos históricos."
+   }
+  },
+  {
+   "id": "fisica.magnetismo",
+   "curso": "Física",
+   "curso_id": "fisica",
+   "numero": 16,
+   "titulo": "Campo y fuerza magnética",
+   "grado": 5,
+   "temas_catalogo": [
+    "Imanes y experimento de Oersted",
+    "Campo de un conductor recto, una espira y un solenoide",
+    "Fuerza magnética sobre una carga",
+    "Fuerza sobre un conductor",
+    "Fuerza entre cables paralelos"
+   ],
+   "modulos_actuales": [
+    "magnetismo",
+    "carga-en-campo"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de comparar",
+   "teoria": [
+    "Campo magnético se representa con dirección local; corrientes e imanes lo producen.",
+    "F=q v×B para partícula y F=I L×B para tramo recto en campo uniforme. Una carga en reposo tiene fuerza magnética cero.",
+    "B de hilo largo es μ0I/(2πr); una espira y un solenoide tienen geometrías diferentes. Corrientes paralelas en el mismo sentido se atraen."
+   ],
+   "condiciones": "La fuerza magnética sola no cambia la rapidez de una carga puntual; trayectoria circular exige v perpendicular a B uniforme. Si hay componente paralela, aparece hélice. Regla de mano se invierte para q negativa.",
+   "prerrequisitos": [
+    "Producto vectorial",
+    "Movimiento circular",
+    "Corriente y campo"
+   ],
+   "desempeno": "Deducir dirección de F con signos correctos y distinguir trayectorias para v paralela, perpendicular u oblicua.",
+   "escena_propuesta": "Girar y pasear brújula junto al cable; lanzar carga y congelar v, B y F en el mismo punto.",
+   "otra_representacion": "Triada vectorial y proyecciones 2D con símbolos dentro/fuera de pantalla.",
+   "ejemplo": null,
+   "error_objetivo": [
+    "Campo B empuja siempre en su dirección",
+    "Carga quieta siente qB",
+    "La fuerza magnética aumenta energía cinética"
+   ],
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "obra": "University Physics 2",
+     "capitulos": "11.1–11.5; 12.1–12.7",
+     "url": "https://openstax.org/books/university-physics-volume-2/pages/11-3-motion-of-a-charged-particle-in-a-magnetic-field",
+     "titulo": "University Physics 2",
+     "localizador": "11.1–11.5; 12.1–12.7"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "numero": 16,
+    "titulo": "Campo y fuerza magnética",
+    "historia": "La brújula permitía reconocer efectos magnéticos mucho antes de relacionarlos experimentalmente con corrientes eléctricas. En 1820, Ørsted comunicó que una corriente desviaba una aguja imantada. La orientación del efecto exigía algo más que imaginar una atracción dirigida hacia el alambre. La noticia circuló rápidamente y estimuló nuevas mediciones: Ampère estudió fuerzas entre conductores con corriente, mientras otros investigadores exploraron cómo variaban los efectos con la geometría. Ese trabajo colectivo amplió el magnetismo desde los imanes hacia las corrientes y sus interacciones. Los vectores y líneas de campo que utilizamos hoy organizan estos resultados con lenguaje posterior; no son dibujos literales de sustancias que rodeen al conductor.",
+    "fuentes": [
+     {
+      "titulo": "NASA Goddard Space Flight Center — Oersted and Ampere",
+      "url": "https://pwg.gsfc.nasa.gov/earthmag/oersted.htm"
+     },
+     {
+      "titulo": "National High Magnetic Field Laboratory — Timeline: 1820–1829",
+      "url": "https://nationalmaglab.org/magnet-academy/history-of-electricity-magnetism/timeline/1820-1829/"
+     }
+    ],
+    "puente_escena": "Comparar la trayectoria de una carga positiva y otra negativa con la misma velocidad inicial en un campo uniforme. El alumno coloca primero la flecha de fuerza; después la escena conserva velocidad y fuerza en varios puntos. La curvatura cambia de sentido, mientras la rapidez permanece constante en el modelo.",
+    "ecuaciones": [
+     {
+      "latex": "\\vec F_B=q\\,\\vec v\\times\\vec B",
+      "lectura": "La fuerza magnética depende de la carga y de la orientación entre velocidad y campo.",
+      "condiciones": "Fuerza magnética sobre una carga puntual; usar producto vectorial y signo de q. Por sí sola no realiza trabajo sobre la partícula."
+     },
+     {
+      "latex": "B=\\frac{\\mu_0 I}{2\\pi r}",
+      "lectura": "El campo de un cable recto disminuye al alejarse del cable.",
+      "condiciones": "Conductor idealmente infinito, corriente estacionaria y medio vacío; r es distancia perpendicular al eje."
+     },
+     {
+      "latex": "\\vec F=I\\,\\vec L\\times\\vec B",
+      "lectura": "Un tramo de conductor con corriente recibe una fuerza magnética.",
+      "condiciones": "Tramo recto en campo externo uniforme; L apunta en el sentido de la corriente convencional."
+     }
+    ],
+    "id": "fisica.magnetismo",
+    "notacion": "Las ecuaciones emplean notación moderna; no reproducen la escritura de los documentos históricos."
+   }
+  },
+  {
+   "id": "fisica.induccion-electromagnetica",
+   "curso": "Física",
+   "curso_id": "fisica",
+   "numero": 17,
+   "titulo": "Inducción electromagnética",
+   "grado": 5,
+   "temas_catalogo": [
+    "Flujo magnético",
+    "Ley de Faraday",
+    "Ley de Lenz",
+    "Fem en un conductor móvil",
+    "Generador de corriente alterna y valores eficaces",
+    "Transformador"
+   ],
+   "modulos_actuales": [
+    "induccion",
+    "induccion-flujo"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de comparar",
+   "teoria": [
+    "Flujo uniforme ΦB=BA cosθ, con θ respecto de la normal al área; fem ε=−N dΦB/dt.",
+    "Lenz fija polaridad para oponerse al cambio de flujo, no al campo en todo caso.",
+    "Fem motriz Bℓv exige geometría perpendicular adecuada. Generador sinusoidal produce valores eficaces Vmax/√2 e Imax/√2.",
+    "Transformador ideal: Vs/Vp=Ns/Np y potencia de entrada=salida; necesita flujo variable."
+   ],
+   "condiciones": "Puede existir fem con circuito abierto sin corriente. El foquito exige circuito cerrado y potencia suficiente. Movimiento del imán sin cambio de flujo no garantiza inducción.",
+   "prerrequisitos": [
+    "Campo magnético y producto escalar",
+    "Circuitos y energía",
+    "Pendiente y variación temporal"
+   ],
+   "desempeno": "Predecir polaridad y comparar magnitud de fem de dos cambios de flujo, justificando la variable que cambia.",
+   "escena_propuesta": "Meter/sacar imán; congelar Φ y su variación; conectar/desconectar circuito para distinguir fem y corriente.",
+   "otra_representacion": "Gráficas Φ–t y ε–t alineadas; tabla de signos y bobinas de un transformador.",
+   "ejemplo": null,
+   "error_objetivo": [
+    "Campo grande implica fem grande aunque sea constante",
+    "Lenz siempre crea campo contrario al original",
+    "Valor eficaz igual a promedio algebraico de una sinusoidal"
+   ],
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "obra": "University Physics 2",
+     "capitulos": "13.1–13.3; 13.6; 15.1–15.6",
+     "url": "https://openstax.org/books/university-physics-volume-2/pages/13-1-faradays-law",
+     "titulo": "University Physics 2",
+     "localizador": "13.1–13.3; 13.6; 15.1–15.6"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "numero": 17,
+    "titulo": "Inducción electromagnética",
+    "historia": "Después de comprobar que una corriente producía efectos magnéticos, surgió una pregunta experimental: cómo obtener electricidad mediante magnetismo. En agosto de 1831, Faraday ensayó dos bobinas aisladas enrolladas sobre un anillo de hierro. Al conectar o desconectar la corriente de una bobina, observó una respuesta transitoria en la otra; mantener la situación sin cambios no producía la misma señal. Ese contraste fue decisivo para estudiar la inducción. Otros montajes de ese año, como un disco conductor en rotación junto a un imán, exploraron la generación continua. La historia enlaza experimentación e instrumentos: la ley moderna se expresa con flujo y variación temporal, no con la simple presencia de un imán.",
+    "fuentes": [
+     {
+      "titulo": "Royal Institution — Michael Faraday’s ring-coil apparatus",
+      "url": "https://www.rigb.org/explore-science/explore/collection/michael-faradays-ring-coil-apparatus"
+     },
+     {
+      "titulo": "Royal Institution — Michael Faraday’s generator",
+      "url": "https://www.rigb.org/explore-science/explore/collection/michael-faradays-generator"
+     }
+    ],
+    "puente_escena": "Acercar, detener y alejar un imán respecto de una espira, dejando un registro del galvanómetro y del flujo. El alumno predice la señal en cada intervalo. El estado congelado permite comprobar que un campo presente puede coexistir con fem nula y que invertir el cambio invierte la respuesta.",
+    "ecuaciones": [
+     {
+      "latex": "\\Phi_B=BA\\cos\\theta",
+      "lectura": "El flujo mide cuánto campo atraviesa una superficie orientada.",
+      "condiciones": "Campo uniforme y superficie plana; θ es el ángulo entre B y la normal a la superficie, no con su plano."
+     },
+     {
+      "latex": "\\mathcal E=-N\\frac{d\\Phi_B}{dt}",
+      "lectura": "La fem inducida depende de la rapidez de cambio del flujo enlazado.",
+      "condiciones": "N espiras equivalentes con igual flujo; orientación compatible del contorno y normal. El signo expresa la ley de Lenz."
+     },
+     {
+      "latex": "\\frac{V_s}{V_p}=\\frac{N_s}{N_p}",
+      "lectura": "Un transformador ideal cambia el voltaje según la proporción de espiras.",
+      "condiciones": "Régimen alterno con flujo común; transformador ideal, sin pérdidas ni fuga apreciable. Usar valores eficaces o amplitudes de forma consistente."
+     }
+    ],
+    "id": "fisica.induccion-electromagnetica",
+    "notacion": "Las ecuaciones emplean notación moderna; no reproducen la escritura de los documentos históricos."
+   }
+  },
+  {
+   "id": "fisica.ondas-electromagneticas",
+   "curso": "Física",
+   "curso_id": "fisica",
+   "numero": 18,
+   "titulo": "Ondas electromagnéticas",
+   "grado": 5,
+   "temas_catalogo": [
+    "Características de las ondas electromagnéticas",
+    "Rapidez de la luz",
+    "Espectro electromagnético",
+    "Luz visible"
+   ],
+   "modulos_actuales": [
+    "ondas-electromagneticas",
+    "refraccion-snell"
+   ],
+   "ruta_propuesta": "comparar, con apoyo de recordar",
+   "teoria": [
+    "Una onda electromagnética transporta energía sin requerir medio material; en vacío su rapidez es c.",
+    "En onda plana ideal E, B y dirección de propagación son perpendiculares y E/B=c en vacío.",
+    "El espectro organiza frecuencias/longitudes de onda; radio no es sonido. En una interfaz estacionaria la frecuencia se conserva y cambia λ cuando cambia rapidez."
+   ],
+   "condiciones": "Todas viajan a c debe llevar en vacío. En medios la rapidez y absorción dependen de propiedades y frecuencia. La imagen ondulada representa campos, no la trayectoria sinuosa del fotón.",
+   "prerrequisitos": [
+    "Relación v=λf",
+    "Campos eléctrico y magnético",
+    "Potencias de diez"
+   ],
+   "desempeno": "Ordenar bandas, calcular λ/f y explicar qué cambia al pasar a otro medio.",
+   "escena_propuesta": "Ordenar espectro y comparar dos señales con igual tiempo de llegada en vacío; cruzar interfaz con marcas de períodos.",
+   "otra_representacion": "Escala logarítmica y tarjetas f/λ/uso; comparación estática de ondas mecánicas y EM.",
+   "ejemplo": null,
+   "error_objetivo": [
+    "Radio necesita aire como sonido",
+    "Mayor frecuencia implica mayor rapidez en vacío",
+    "Al refractarse cambia necesariamente frecuencia"
+   ],
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "obra": "University Physics 2",
+     "capitulos": "16.1–16.5",
+     "url": "https://openstax.org/books/university-physics-volume-2/pages/16-2-plane-electromagnetic-waves",
+     "titulo": "University Physics 2",
+     "localizador": "16.1–16.5"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "numero": 18,
+    "titulo": "Ondas electromagnéticas",
+    "historia": "Los experimentos sobre electricidad, magnetismo e inducción plantearon si estos fenómenos podían describirse dentro de una misma teoría. En su trabajo presentado en 1864 y publicado extensamente en 1865, Maxwell desarrolló una descripción dinámica del campo electromagnético y relacionó la propagación electromagnética con la luz. No debe confundirse ese texto con la forma compacta de cuatro ecuaciones vectoriales que se enseña actualmente. La teoría hizo posible buscar ondas fuera de la luz visible. Los experimentos de Hertz desde 1887 produjeron y detectaron ondas y examinaron propiedades como reflexión e interferencia. El episodio conecta síntesis matemática con comprobación experimental; no fue simplemente la invención repentina de la radio.",
+    "fuentes": [
+     {
+      "titulo": "James Clerk Maxwell — A dynamical theory of the electromagnetic field (1865), Royal Society",
+      "url": "https://doi.org/10.1098/rstl.1865.0008"
+     },
+     {
+      "titulo": "OpenStax — Maxwell’s Equations and Electromagnetic Waves",
+      "url": "https://openstax.org/books/university-physics-volume-2/pages/16-1-maxwells-equations-and-electromagnetic-waves"
+     }
+    ],
+    "puente_escena": "Mostrar campos eléctrico y magnético perpendiculares y una dirección de propagación común. Un punto fijo registra oscilaciones mientras una cresta avanza. El alumno compara dos frecuencias en vacío y predice qué cambia en su longitud de onda; ambas señales mantienen la misma rapidez dentro del modelo.",
+    "ecuaciones": [
+     {
+      "latex": "c=\\frac{1}{\\sqrt{\\mu_0\\varepsilon_0}}",
+      "lectura": "Las propiedades electromagnéticas del vacío se relacionan con la rapidez de la luz.",
+      "condiciones": "Propagación electromagnética en vacío. En el SI actual c es exacta; μ0 ya no tiene un valor definido exacto."
+     },
+     {
+      "latex": "c=\\lambda f",
+      "lectura": "En vacío, longitud de onda y frecuencia cambian inversamente.",
+      "condiciones": "Onda periódica en vacío; en un medio se sustituye c por la rapidez de fase apropiada."
+     },
+     {
+      "latex": "E_0=cB_0",
+      "lectura": "Las amplitudes eléctrica y magnética están relacionadas en una onda plana.",
+      "condiciones": "Onda electromagnética plana en vacío; E y B son perpendiculares entre sí y a la propagación."
+     }
+    ],
+    "id": "fisica.ondas-electromagneticas",
+    "notacion": "Las ecuaciones emplean notación moderna; no reproducen la escritura de los documentos históricos."
+   }
+  },
+  {
+   "id": "fisica.optica-geometrica",
+   "curso": "Física",
+   "curso_id": "fisica",
+   "numero": 19,
+   "titulo": "Óptica geométrica",
+   "grado": 5,
+   "temas_catalogo": [
+    "Reflexión y refracción",
+    "Reflexión total",
+    "Espejos planos",
+    "Espejos esféricos",
+    "Lentes delgadas",
+    "Ecuación del fabricante y potencia de una lente"
+   ],
+   "modulos_actuales": [
+    "optica-lente-delgada",
+    "optica-espejo-esferico",
+    "refraccion-snell",
+    "ondas-electromagneticas"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo",
+   "teoria": [
+    "Reflexión iguala ángulos respecto de la normal; Snell: n1 senθ1=n2 senθ2.",
+    "Reflexión total requiere paso de mayor a menor índice y ángulo mayor que el crítico.",
+    "Espejos esféricos y lentes delgadas paraxiales: 1/f=1/do+1/di bajo un convenio declarado; aumento m=−di/do. Imagen real converge rayos; virtual converge prolongaciones.",
+    "Potencia de lente 1/f con f en metros; fabricante relaciona f con índice relativo y radios."
+   ],
+   "condiciones": "Cruzar el foco cambia de lado la imagen para una lente convergente con objeto real; no es ley de toda lente/espejo. En el foco ideal no hay imagen a distancia finita. Aproximación de rayos falla cuando difracción importa.",
+   "prerrequisitos": [
+    "Ángulos respecto de una normal",
+    "Triángulos semejantes",
+    "Fracciones y signos algebraicos"
+   ],
+   "desempeno": "Predecir naturaleza, ubicación y tamaño de una imagen con rayos y ecuación concordantes.",
+   "escena_propuesta": "Mover objeto/lente y mantener dos rayos y prolongaciones; comparar predicción fantasma con intersección calculada.",
+   "otra_representacion": "Construcción estática de rayos y tabla de signos; botones de posiciones d=2f, f y entre ellas.",
+   "ejemplo": null,
+   "error_objetivo": [
+    "Imagen virtual no puede verse",
+    "Cada rayo crea una parte distinta de imagen",
+    "Ángulos de Snell medidos respecto de la superficie"
+   ],
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "obra": "University Physics 3",
+     "capitulos": "1.2–1.4; 2.1–2.4",
+     "url": "https://openstax.org/books/university-physics-volume-3/pages/2-4-thin-lenses",
+     "titulo": "University Physics 3",
+     "localizador": "1.2–1.4; 2.1–2.4"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "numero": 19,
+    "titulo": "Óptica geométrica",
+    "historia": "Explicar la visión exigía distinguir lo que hace el ojo de lo que hace la luz. La óptica se desarrolló mediante tradiciones griegas, investigaciones en lengua árabe y posteriores traducciones latinas. En el siglo XI, Ibn al-Haytham combinó razonamiento geométrico y pruebas experimentales para estudiar luz, visión, reflexión y refracción, dialogando críticamente con autores anteriores. Su tratado de siete libros circuló después en latín durante los siglos XII y XIII. Esta historia permite presentar el rayo como una herramienta de representación que debe contrastarse con observaciones. Las convenciones y ecuaciones escolares actuales son una exposición moderna; no deben atribuirse completas al tratado medieval ni a un único inventor de la óptica.",
+    "fuentes": [
+     {
+      "titulo": "UNESCO — Ibn al-Haytham’s scientific method",
+      "url": "https://www.unesco.org/en/articles/ibn-al-haythams-scientific-method"
+     }
+    ],
+    "puente_escena": "Colocar objeto, lente y pantalla; el alumno dibuja primero dos rayos y predice la posición de la imagen. Al mover el objeto, conservar el trazado anterior como referencia. La escena distingue rayos reales de prolongaciones y exige explicar cuándo una imagen puede recogerse físicamente en la pantalla.",
+    "ecuaciones": [
+     {
+      "latex": "n_1\\sin\\theta_1=n_2\\sin\\theta_2",
+      "lectura": "Los índices de los medios relacionan los ángulos de incidencia y refracción.",
+      "condiciones": "Interfaz entre medios homogéneos e isótropos; ángulos medidos respecto de la normal; óptica geométrica."
+     },
+     {
+      "latex": "\\frac1f=\\frac1{s_o}+\\frac1{s_i}",
+      "lectura": "La distancia focal relaciona las posiciones del objeto y de la imagen.",
+      "condiciones": "Lente delgada en aproximación paraxial: objeto real so positivo, imagen real si positivo, lente convergente f positivo; conservar esta convención."
+     },
+     {
+      "latex": "\\sin\\theta_c=\\frac{n_2}{n_1}",
+      "lectura": "Existe un ángulo límite para la transmisión hacia el medio de menor índice.",
+      "condiciones": "n1>n2; incidencia desde el medio 1. Reflexión total para θ1>θc en el modelo ideal."
+     }
+    ],
+    "id": "fisica.optica-geometrica",
+    "notacion": "Las ecuaciones emplean notación moderna; no reproducen la escritura de los documentos históricos."
+   }
+  },
+  {
+   "id": "fisica.fisica-moderna",
+   "curso": "Física",
+   "curso_id": "fisica",
+   "numero": 20,
+   "titulo": "Física moderna",
+   "grado": 5,
+   "temas_catalogo": [
+    "Relatividad especial (solo San Marcos)",
+    "Radiación del cuerpo negro y Planck",
+    "Efecto fotoeléctrico",
+    "Fotones: potencia e intensidad",
+    "Rayos X",
+    "Láser",
+    "Principio de incertidumbre"
+   ],
+   "modulos_actuales": [
+    "fisica-moderna",
+    "relatividad"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de recordar",
+   "teoria": [
+    "Fotón E=hf; fotoeléctrico Kmax=hf−φ y frecuencia umbral φ/h. Intensidad cambia flujo de fotones a frecuencia fija.",
+    "Planck modela espectro térmico; rayos X pueden producirse por frenado y transiciones; láser requiere emisión estimulada y preparación del medio.",
+    "Relatividad: leyes físicas y c invariantes en marcos inerciales; tiempo y longitud propios deben distinguirse antes de aplicar γ.",
+    "Incertidumbre ΔxΔp≥ℏ/2 refiere a dispersión de observables del estado, no solo a instrumentos defectuosos."
+   ],
+   "condiciones": "Más brillo no emite electrones si hf<φ en el modelo fotoeléctrico elemental; la corriente depende también de recolección/saturación. No presentar órbitas de Bohr como modelo universal ni fotones como pelotas clásicas.",
+   "prerrequisitos": [
+    "Frecuencia y energía",
+    "Potencial eléctrico y unidades eV/J",
+    "Modelos y marcos de referencia"
+   ],
+   "desempeno": "Distinguir predicciones clásica/cuántica en un experimento y calcular por separado umbral, energía y flujo de fotones.",
+   "escena_propuesta": "Girar perillas color/brillo; congelar conteo y Kmax en dos ensayos; etiquetar qué magnitud controla cada perilla.",
+   "otra_representacion": "Gráfica Kmax–f y tabla de fotones por segundo; para relatividad diagramas de eventos/relojes y para incertidumbre distribuciones.",
+   "ejemplo": null,
+   "error_objetivo": [
+    "Intensidad determina Kmax",
+    "Esperar suficiente tiempo supera cualquier umbral",
+    "Relatividad equivale a que todo depende de opinión"
+   ],
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "obra": "University Physics 3",
+     "capitulos": "5.1–5.9; 6.1–6.6; 7.2; 8.5–8.6",
+     "url": "https://openstax.org/books/university-physics-volume-3/pages/6-2-photoelectric-effect",
+     "titulo": "University Physics 3",
+     "localizador": "5.1–5.9; 6.1–6.6; 7.2; 8.5–8.6"
+    },
+    {
+     "obra": "University Physics 3",
+     "capitulos": "5.1–5.9",
+     "url": "https://openstax.org/books/university-physics-volume-3/pages/5-introduction",
+     "titulo": "University Physics 3",
+     "localizador": "5.1–5.9"
+    },
+    {
+     "obra": "University Physics 3",
+     "capitulos": "7.2",
+     "url": "https://openstax.org/books/university-physics-volume-3/pages/7-introduction",
+     "titulo": "University Physics 3",
+     "localizador": "7.2"
+    },
+    {
+     "obra": "University Physics 3",
+     "capitulos": "8.6",
+     "url": "https://openstax.org/books/university-physics-volume-3/pages/8-6-lasers",
+     "titulo": "University Physics 3",
+     "localizador": "8.6"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "numero": 20,
+    "titulo": "Física moderna",
+    "historia": "A finales del siglo XIX, medir con precisión la radiación de cuerpos calientes reveló límites de los modelos disponibles. Los experimentos de cavidades realizados en la década de 1890 y los nuevos resultados de 1900 impulsaron a Planck a formular su ley de radiación y a introducir elementos discretos de energía en el tratamiento estadístico. En 1905, Einstein propuso extender la idea cuántica a la propia luz para explicar, entre otros fenómenos, la emisión fotoeléctrica. Son pasos distintos: no debe atribuirse a Planck en 1900 toda la interpretación posterior de los fotones. Mediciones, ajustes teóricos y controversias abrieron así un programa colectivo, cuyo desarrollo continuó durante décadas.",
+    "fuentes": [
+     {
+      "titulo": "Max Planck Society — Energy in packets: What did Max Planck discover?",
+      "url": "https://www.mpg.de/19252749/what-did-max-planck-discover"
+     },
+     {
+      "titulo": "American Physical Society — Quantum Milestones, 1905: Einstein and the Photoelectric Effect",
+      "url": "https://physics.aps.org/articles/v18/15"
+     }
+    ],
+    "puente_escena": "Iluminar un metal variando frecuencia e intensidad por separado. El alumno predice si habrá emisión y compara la energía máxima de los electrones. La escena conserva un caso bajo el umbral y otro sobre él; las representaciones de fotones son un modelo, no fotografías de pequeñas bolas luminosas.",
+    "ecuaciones": [
+     {
+      "latex": "E_\\gamma=hf=\\frac{hc}{\\lambda}",
+      "lectura": "La energía de un fotón es proporcional a su frecuencia.",
+      "condiciones": "Segunda igualdad para la longitud de onda en vacío; h es la constante de Planck."
+     },
+     {
+      "latex": "K_{\\max}=hf-\\phi",
+      "lectura": "En fotoemisión, la energía del fotón cubre el trabajo de extracción y la energía cinética máxima.",
+      "condiciones": "Modelo fotoeléctrico de un fotón; solo hay emisión si hf alcanza el umbral φ. No asignar energía cinética negativa cuando falta emisión."
+     },
+     {
+      "latex": "\\sigma_x\\sigma_{p_x}\\geq\\frac{\\hbar}{2}",
+      "lectura": "La dispersión de posición y momento tiene un límite cuántico conjunto.",
+      "condiciones": "Desviaciones estándar en un mismo estado cuántico normalizado, para la misma componente espacial; no describe solo torpeza instrumental."
+     }
+    ],
+    "id": "fisica.fisica-moderna",
+    "notacion": "Las ecuaciones emplean notación moderna; no reproducen la escritura de los documentos históricos."
+   }
+  }
+ ]
+}
