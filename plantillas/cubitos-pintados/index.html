@@ -171,6 +171,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible, input:focus-visible{out
   .top{grid-template-columns:1fr auto; align-items:end}
   .mode{grid-template-columns:minmax(0, 1.3fr) minmax(360px, 1fr)}
   .bench{position:sticky; top:12px}
+  .mode > .jugar-barra{order:-1; grid-column:1 / -1}
 }
 .opt .m.t{font-family:inherit}
 </style>
@@ -259,6 +260,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'cubitos-pintados', unidad: 'razonamiento-matematico.rutas-y-visualizacion-espacial', version: '0.1.0' };
@@ -971,6 +973,9 @@ function prediccion(s){
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: antes de la primera pregunta, el alumno gira el bloque del paso 1 y lo abre por pisos (dedo, flechas o deslizador).
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Gira el bloque con el dedo y ábrelo por pisos con el control.', minimo:2 });
 })();
 </script>
 
@@ -1238,6 +1243,16 @@ function botonesOcupado(on){
   const sig = $('sig2'); if (sig) sig.disabled = on;
 }
 ir(0);
+// Regla 3: antes del primer experimento, juego libre con un bloque de 4 × 3 × 2 pintado entero (no es ningún experimento).
+const LIBRE = MC.pintado({ dims:[4, 3, 2] });
+E.compactar(false);
+E.config({ vista:{ az:-32, el:28 }, prog:{ abre:0 }, caja:'auto',
+  desc:'Un bloque de 4 × 3 × 2 cubitos pintado por fuera, para girarlo y abrirlo.',
+  dibujo:(L, E) => dibSolido(L, LIBRE, { abre:E.prog.abre, modo:'pisos' }),
+  control:manijaAbrir('abre', 'Abrir por pisos'),
+  ley:[['pin', 'caras pintadas'], ['cubo', 'caras sin pintar']] });
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Gira el bloque y ábrelo por pisos antes de los experimentos.', minimo:2, alListo:() => ir(S.k) });
 })();
 </script>
 

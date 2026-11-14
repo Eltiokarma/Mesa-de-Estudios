@@ -164,6 +164,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible, input:focus-visible{out
   .top{grid-template-columns:1fr auto; align-items:end}
   .mode{grid-template-columns:minmax(0, 1.25fr) minmax(360px, 1fr)}
   .bench{position:sticky; top:12px}
+  .mode > .jugar-barra{order:-1; grid-column:1 / -1}
 }
 </style>
 <link rel="stylesheet" href="../../nucleo/pegatina.css">
@@ -241,6 +242,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'vistas-cubitos', unidad: 'razonamiento-matematico.rutas-y-visualizacion-espacial', version: '0.1.0' };
@@ -1113,6 +1115,9 @@ function prediccion(s){
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: antes de la primera pregunta, el alumno gira el sólido del paso 1 (dedo o flechas); ese paso no pregunta.
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra el sólido hacia los lados para girarlo y compara sus vistas.', minimo:2 });
 })();
 </script>
 
@@ -1278,6 +1283,16 @@ function botonesOcupado(on){
   const sig = $('sig2'); if (sig) sig.disabled = on;
 }
 ir(0);
+// Regla 3: antes del primer experimento, juego libre: girar un sólido de siete cubitos que no sale en ningún
+// experimento, con sus tres vistas al lado. (Antes de responder, los experimentos no dejan girar.)
+const JUEGO = [['##.', '###'], ['...', '#..'], ['...', '#..']], VJ = MV.vistas(JUEGO);
+E.compactar(false);
+E.config({ desc:'Un sólido de siete cubitos sobre la mesa, para girarlo. Al lado, sus tres vistas.',
+  marco:[[-0.6, 3.6], [-0.6, 2.6], [0, 3]], vistas:{ F:VJ.frontal, T:VJ.superior, L:VJ.lateral },
+  escena:() => ({ cubos:cubosDe(celdasDe(JUEGO), { tinte:true }), mesa:mesaDe(3, 2) }),
+  ley:[['F', 'vista frontal'], ['T', 'vista superior'], ['L', 'vista lateral']] });
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Arrastra el sólido hacia los lados para girarlo y compara sus vistas.', minimo:2, alListo:() => ir(S.k) });
 })();
 </script>
 
