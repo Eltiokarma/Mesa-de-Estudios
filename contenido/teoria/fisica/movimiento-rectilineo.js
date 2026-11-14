@@ -46,7 +46,7 @@
   // Gesto directo (docs/teoria.md §4): la manija vive en las coordenadas de la figura; mover la convierte en valores
   // con la inversa lineal de la escala de la pieza, y el lector los ajusta al paso y al rango de su control.
   const inversa = (escala, a, b) => px => a + (px - escala(a)) * (b - a) / (escala(b) - escala(a));
-  const PISTA = () => Kit.piezas.pista, EJES = () => Kit.piezas.ejes;
+  const PISTA = () => Kit.piezas.pista, EJES = () => Kit.piezas.ejes, TORRE = () => Kit.piezas.torre;
   const MARCA_Y = 56;   // las marcas de la pista van 6 px bajo el piso del primer carril (pista.js)
 
   // ---------- Idea 1: marcas iguales, rapidez constante (MRU) ----------
@@ -93,6 +93,8 @@
       revelar: { datos: { largo: LARGO, cada: 10, carriles: [{ x: 22, marcas: marcasMRU(2, 4) }], encuentro: { x: 22, rotulo: 't = 5 s' } }, estado: {} },
       coincide: 'Coincide: 2 m de salida más 4 m por cada uno de los 5 segundos.',
     },
+    // Hallazgo 9: el juego deja marcas en la pista y «Mira» las pasa a la gráfica x–t: cada marca es un punto (mismo
+    // color de x); la recta deja leer la pendiente, que en la pista solo se ve como marcas igual de separadas.
     mira: {
       pieza: 'ejes',
       datos: {
@@ -197,7 +199,7 @@
         { estado: { corte: 2 }, texto: 'Área bajo el eje: retrocedió 2 · 3 = 6 m.', ecuacion: [{ sub: ['A', '−'] }, ' = 6 m'] },
         { estado: { corte: 2 }, texto: 'Desplazamiento: lo de arriba menos lo de abajo.', ecuacion: [dx, ' = 12 − 6 = 6 m'] },
         { estado: { corte: 2 }, texto: 'Distancia recorrida: todo el camino, sumado.', ecuacion: ['d = 12 + 6 = 18 m'] },
-        { estado: { corte: 2 }, texto: 'En 6 s: velocidad media 1 m/s; rapidez media 3 m/s.', ecuacion: [{ frac: [dx, dt] }, ' = 1 m/s   ·   ', { frac: ['d', dt] }, ' = 3 m/s'] },
+        { estado: { corte: 2 }, texto: 'En 6 s: velocidad media 1 m/s; rapidez media 3 m/s.', ecuacion: [{ frac: [dx, dt] }, ' = 1 m/s', '   ·   ', { frac: ['d', dt] }, ' = 3 m/s'] },
       ],
     },
     regla: {
@@ -345,6 +347,23 @@
         return tt >= tv ? ['En el suelo · ', g, ' = 10 m/s² hacia abajo'] : [v, ` = ${f(val.v0 - G * tt, 1)} m/s · `, g, ' = 10 m/s² hacia abajo'];
       },
       minimo: 3,
+      // Arrastra la pelota: el reloj salta al instante del medio segundo cuya altura queda más cerca del dedo. La
+      // misma altura sale dos veces (al subir y al bajar): gana el instante más cercano al de ahora y, si empatan,
+      // el siguiente. Así arrastrar hacia arriba lleva a la cima y, desde ahí, hacia abajo, a la caída.
+      arrastres: [
+        { id: 'pelota', etiqueta: 'pelota', color: 'c-h',
+          donde: val => ({ x: TORRE().constantes.COLUMNAS[0], y: TORRE().escala(torreEn(val.v0, val.t).datos, alturaEn(val.v0, Math.min(val.t, 2 * val.v0 / G))) - 8 }),
+          mover: (pt, val) => {
+            const d = torreEn(val.v0, val.t).datos, py = pt.y + 8, tv = 2 * val.v0 / G;
+            let mejor = val.t, dm = Infinity;
+            for (let k = 0; k <= 8; k++) {
+              const tk = k * 0.5, dy = Math.abs(TORRE().escala(d, alturaEn(val.v0, Math.min(tk, tv))) - py);
+              const peor = dy > dm + 1e-6 || (Math.abs(dy - dm) <= 1e-6 && (Math.abs(tk - val.t) > Math.abs(mejor - val.t) + 1e-9 || (Math.abs(Math.abs(tk - val.t) - Math.abs(mejor - val.t)) <= 1e-9 && tk < mejor)));
+              if (!peor) { mejor = tk; dm = dy; }
+            }
+            return { t: mejor };
+          } },
+      ],
     },
     predice: {
       pregunta: ['Una pelota sube con ', v0, ' = 20 m/s y llega a su punto más alto. Justo ahí, ¿cuánto vale su aceleración?'],
@@ -358,6 +377,8 @@
       revelar: torreEn(20, 2),
       coincide: 'Coincide: en la cima v = 0, pero la velocidad sigue cambiando 10 m/s cada segundo.',
     },
+    // Hallazgo 9: el juego muestra la torre y «Mira» pasa a v–t a propósito: la flecha de v que se vio achicarse es la
+    // altura de la recta, y la flecha de g, que no cambia, es su pendiente, la misma también en la cima.
     mira: {
       pieza: 'ejes',
       datos: {
@@ -377,7 +398,7 @@
     },
     regla: {
       texto: 'En caída libre la única aceleración es g, hacia abajo, al subir, en la cima y al bajar. Con el eje hacia arriba:',
-      ecuacion: [v, ' = ', v0, ' − ', g, t, '   ·   ', y, ' = ', v0, t, ' − ½ ', g, { sup: [t, '2'] }],
+      ecuacion: [v, ' = ', v0, ' − ', { llave: [g, t], nota: 'lo que pierde', color: 'c-d' }, '   ·   ', y, ' = ', v0, t, ' − ½ ', g, { sup: [t, '2'] }],
       condicion: 'sin resistencia del aire y cerca del suelo. Aquí g = 10 m/s²; el valor medido es cercano a 9,8 m/s².',
     },
     ahoraTu: {
@@ -459,6 +480,15 @@
         return vr > 0 ? [`Se acercan ${f(vr)} m cada segundo`] : ['No se acercan: B no es alcanzado'];
       },
       minimo: 3,
+      // Arrastra la marca de 1 s de cada carrito: lo que avanzó en ese segundo es su velocidad.
+      arrastres: [
+        { id: 'marca-a', etiqueta: 'marca de 1 s de A', color: 'c-o',
+          donde: val => ({ x: PISTA().escala(pistaEnc(val.va, val.vb).datos, val.va), y: PISTA().geometria(pistaEnc(val.va, val.vb).datos).piso(0) + 6 }),
+          mover: (pt, val) => ({ va: inversa(m => PISTA().escala(pistaEnc(val.va, val.vb).datos, m), 0, LARGO_E)(pt.x) }) },
+        { id: 'marca-b', etiqueta: 'marca de 1 s de B',
+          donde: val => ({ x: PISTA().escala(pistaEnc(val.va, val.vb).datos, SEP + val.vb), y: PISTA().geometria(pistaEnc(val.va, val.vb).datos).piso(1) + 6 }),
+          mover: (pt, val) => ({ vb: inversa(m => PISTA().escala(pistaEnc(val.va, val.vb).datos, m), 0, LARGO_E)(pt.x) - SEP }) },
+      ],
     },
     predice: {
       pregunta: 'A sale de x = 0 a 4 m/s hacia la derecha. B sale a la vez de x = 18 m a 2 m/s hacia la izquierda. ¿En qué instante se encuentran?',
@@ -472,6 +502,8 @@
       revelar: pistaEnc(4, -2, true, 18, 20),
       coincide: 'Coincide: se acercan 4 + 2 = 6 m cada segundo, y había 18 m entre ellos.',
     },
+    // Hallazgo 9: el juego usa la pista y «Mira» la gráfica x–t: cada carrito es una recta y el encuentro de la pista es
+    // el cruce; lo que en la pista se ve como marcas que se acercan, aquí se ve como la brecha entre las rectas.
     mira: {
       pieza: 'ejes',
       datos: {
@@ -483,13 +515,13 @@
       pasos: [
         { estado: { corte: 1 }, texto: 'Cada recta es la posición de un carrito en el tiempo.', ecuacion: [{ sub: [x, 'A'] }, ' = 4', t, '   ·   ', { sub: [x, 'B'] }, ' = 18 − 2', t] },
         { estado: { corte: 2 }, texto: 'Cada segundo la brecha baja 4 + 2 = 6 m.', ecuacion: [{ sub: [v, 'A/B'] }, ' = 4 − (−2) = 6 m/s'] },
-        { estado: { corte: 3 }, texto: 'Se encuentran donde las rectas se cruzan: misma x, mismo t.', ecuacion: [t, ' = ', { frac: ['18', '6'] }, ' = 3 s   ·   ', x, ' = 12 m'] },
+        { estado: { corte: 3 }, texto: 'Se encuentran donde las rectas se cruzan: misma x, mismo t.', ecuacion: [t, ' = ', { frac: ['18', '6'] }, ' = 3 s', '   ·   ', x, ' = 12 m'] },
         { estado: { corte: 3 }, texto: 'En el cruce las pendientes son distintas: sus velocidades no son iguales.', ecuacion: [{ sub: [v, 'A'] }, ' = 4 m/s ≠ ', { sub: [v, 'B'] }, ' = −2 m/s'] },
       ],
     },
     regla: {
       texto: 'Dos móviles se encuentran cuando están en la misma posición en el mismo instante. La brecha se cierra con la velocidad relativa.',
-      ecuacion: [{ sub: [t, 'e'] }, ' = ', { frac: ['d', { sub: [v, 'A/B'] }] }, '   ·   ', { sub: [v, 'A/B'] }, ' = ', { sub: [v, 'A'] }, ' − ', { sub: [v, 'B'] }],
+      ecuacion: [{ sub: [t, 'e'] }, ' = ', { frac: ['d', { sub: [v, 'A/B'] }] }, '   ·   ', { sub: [v, 'A/B'] }, ' = ', { llave: [{ sub: [v, 'A'] }, ' − ', { sub: [v, 'B'] }], nota: 'con su signo', color: 'c-o' }],
       condicion: 'los dos salen a la vez, en MRU y sobre el mismo eje. Si la brecha no se achica, no se encuentran.',
     },
     ahoraTu: {
@@ -543,6 +575,32 @@
       },
       Object.assign({ id: 'ida-vuelta', titulo: 'Ida y vuelta en v–t', pieza: 'ejes' }, distancia.juega),
       Object.assign({ id: 'recta-vt', titulo: 'La recta v–t', pieza: 'ejes' }, mruv.juega),
+      {
+        // Encuentro libre: además de las dos velocidades, la brecha inicial; las tres se arrastran sobre la pista.
+        id: 'encuentro-libre', titulo: 'Encuentro con brecha libre', pieza: 'pista',
+        consigna: 'Arrastra la salida de B (sobre la regla) y la marca de 1 s de cada carrito. Busca un encuentro a los 4 s.',
+        controles: [
+          { id: 'd', etiqueta: 'B sale de', min: 12, max: 26, paso: 2, inicio: 24, unidad: 'm', decimales: 0 },
+          { id: 'va', etiqueta: 'v de A', color: 'c-o', min: 1, max: 6, paso: 1, inicio: 3, unidad: 'm/s', decimales: 0 },
+          { id: 'vb', etiqueta: 'v de B', min: -4, max: 4, paso: 1, inicio: -1, unidad: 'm/s', decimales: 0 },
+        ],
+        dibujo: val => pistaEnc(val.va, val.vb, true, val.d),
+        lectura: val => {
+          const vr = val.va - val.vb;
+          return vr > 0 ? [`Brecha ${f(val.d)}\u00a0m, cierra ${f(vr)}\u00a0m/s: ${f(val.d / vr, 2)}\u00a0s, `, x, ` = ${f(val.va * val.d / vr, 2)}\u00a0m`] : [`Brecha ${f(val.d)}\u00a0m: no se acercan`];
+        },
+        arrastres: [
+          { id: 'salida-b', etiqueta: 'salida de B', color: 'c-i',
+            donde: val => ({ x: PISTA().escala(pistaEnc(val.va, val.vb, true, val.d).datos, val.d), y: PISTA().geometria(pistaEnc(val.va, val.vb, true, val.d).datos).regla }),
+            mover: (pt, val) => ({ d: inversa(m => PISTA().escala(pistaEnc(val.va, val.vb, true, val.d).datos, m), 0, LARGO_E)(pt.x) }) },
+          { id: 'marca-a', etiqueta: 'marca de 1 s de A', color: 'c-o',
+            donde: val => ({ x: PISTA().escala(pistaEnc(val.va, val.vb, true, val.d).datos, val.va), y: PISTA().geometria(pistaEnc(val.va, val.vb, true, val.d).datos).piso(0) + 6 }),
+            mover: (pt, val) => ({ va: inversa(m => PISTA().escala(pistaEnc(val.va, val.vb, true, val.d).datos, m), 0, LARGO_E)(pt.x) }) },
+          { id: 'marca-b', etiqueta: 'marca de 1 s de B',
+            donde: val => ({ x: PISTA().escala(pistaEnc(val.va, val.vb, true, val.d).datos, val.d + val.vb), y: PISTA().geometria(pistaEnc(val.va, val.vb, true, val.d).datos).piso(1) + 6 }),
+            mover: (pt, val) => ({ vb: inversa(m => PISTA().escala(pistaEnc(val.va, val.vb, true, val.d).datos, m), 0, LARGO_E)(pt.x) - val.d }) },
+        ],
+      },
     ],
     historia: {
       texto: 'Una caída es demasiado rápida para medirla con relojes de agua. En el siglo XVII, Galileo usó planos inclinados para frenar el movimiento y comparar distancias con tiempos iguales. Nuestras gráficas y ecuaciones son la forma moderna de escribir esas comparaciones.',
