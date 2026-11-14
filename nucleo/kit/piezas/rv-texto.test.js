@@ -71,3 +71,11 @@ test('el texto alternativo es el texto entero, con el hueco nombrado', () => {
   assert.match(a, /espacio en blanco/);
   assert.match(a, /1\. Primera oración/);
 });
+
+test('en una lista, «junto» sigue en el mismo renglón y no lleva número', () => {
+  const L = P.disponer({ secciones: [{ id: 'm', modo: 'lista', fragmentos: [{ id: 'a', t: 'plantas → usan → luz' }, { id: 'b', t: 'plantas →' }, { id: 'c', hueco: true, junto: true, reserva: 'liberan' }, { id: 'd', junto: true, t: '→ oxígeno' }] }] });
+  const tr = L.secciones[0].trozos;
+  assert.deepEqual(tr.filter(t => t.num).map(t => t.texto), ['1', '2']);
+  const y = id => tr.find(t => t.id === id).y;
+  assert.equal(y('c'), y('b')); assert.equal(y('d'), y('b')); assert.ok(y('b') > y('a'));
+});

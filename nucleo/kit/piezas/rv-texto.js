@@ -10,6 +10,7 @@
  *     id: 's1',                       // para los sellos
  *     titulo: 'Texto A',              // opcional: cabecera en negrita
  *     modo: 'parrafo' | 'lista' | 'tarjeta',   // párrafo corrido · una oración por renglón, numerada · tarjeta con borde
+ *                                     // en una lista, un fragmento con junto: true sigue en el renglón del anterior
  *     fragmentos: [{ id: 'f1', t: 'La biblioteca amplió su horario.' } | { id: 'f2', hueco: true, reserva: 'sin embargo,' }],
  *                                     // reserva: el texto más largo que puede entrar en el hueco (fija su ancho);
  *                                     // caja: false lo deja sin recuadro y en letra normal (texto que cambia, no hueco)
@@ -46,13 +47,14 @@
   // Reparte las palabras de cada fragmento en renglones de ancho `ancho`. Devuelve trozos { id, x, y, texto, w }.
   function componer(sec, x0, ancho, y0, numerar, num0) {
     const trozos = [], cajas = [];
-    let x = x0, y = y0, k = num0;
+    let x = x0, y = y0, k = num0, izq = x0;
     const esp = T.ancho(' ', TAM);
     const lista = sec.modo === 'lista';
     for (const fr of sec.fragmentos || []) {
       k++;
-      let izq = x0;
-      if (lista) {
+      // En una lista, cada fragmento abre renglón con su número, salvo los que siguen en el mismo (junto: true).
+      if (lista && fr.junto) k--;
+      if (lista && !fr.junto) {
         if (x > x0) y += LH;
         trozos.push({ num: true, x: x0, y, texto: `${k}`, w: NUM - 6 });
         izq = x0 + NUM; x = izq;
@@ -74,7 +76,6 @@
         // El número entre paréntesis va solo: no se marca con el fragmento.
         if (numerar && !lista && j === 0) actual = null;
       }
-      if (lista) { x = x0 + ancho + 1; }
       cajas.push(fr.id);
     }
     return { trozos, alto: y - y0 + LH, k };
