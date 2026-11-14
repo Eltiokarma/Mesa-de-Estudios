@@ -5,14 +5,19 @@
  * historia-ecuaciones (pp. 57–68). Errores: AL29 (f⁻¹ = 1/f) de docs/investigacion/algebra-funciones-ideas-erroneas.md
  * y TAL-* nuevos (hipótesis de diseño, rutinas/teoria-algebra.md).
  * Colores (regla 4): x entrada naranja (c-o), y salida turquesa (c-i), la recta horizontal o f⁻¹ rojo (c-h),
- * parámetros m y b verde (c-d). Intervalos: [a; b] cerrado, ⟨a; b⟩ abierto.
+ * parámetros m y b verde (c-d). Intervalos: [a; b] cerrado, ⟨a; b⟩ abierto. En el laboratorio, el tanque B va en
+ * violeta (c-f) para distinguirlo del A.
+ * Ronda 2 (14 nov 2026): gesto directo en las cinco ideas (el punto de x = a, los bordes del intervalo, la recta
+ * horizontal, el corte y el punto de x = 1 de f, el inicio y el vaciado del tanque), llaves en las reglas y un
+ * laboratorio de tres mesas (reflejo con dominio recortable, recta horizontal con dominio, dos tanques).
+ * Las cinco ideas usan la pieza «ejes» en el juego y en «Mira» (hallazgo 9: misma representación).
  *
  * Ficha de tarea (diseno-y-animacion):
  * Promesa · reconocer en la gráfica qué tipo de función es y cuándo se puede deshacer.
  * Persona y condiciones · 5.º de secundaria, celular de gama baja a 360 px, sin audio, en el aula o en casa.
  * Resultado observable · decide paridad con dominio simétrico, halla extremos en un intervalo, clasifica inyectiva,
  *   sobreyectiva o biyectiva, calcula f⁻¹(c) y fija el dominio de un modelo.
- * Orden de atención · 1.º la curva · 2.º los puntos espejo o la recta de prueba · acción: «Comprobar» · fondo: Nox.
+ * Orden de atención · 1.º la curva · 2.º la manija: el punto espejo o la recta de prueba · acción: «Comprobar» · fondo: Nox.
  * Estados · juego sin tocar · casos probados · predicción elegida · revelado · paso a paso · caso nuevo · «No sé».
  * Duda que resuelve · por qué x² no tiene inversa en ℝ y sí en [0; +∞⟩, y por qué f⁻¹ no es 1/f.
  */
@@ -54,9 +59,15 @@
     x: { min: xm, max: xM, paso: 1, cada: 1, nombre: 'x', color: 'o', decimales: 0 },
     y: { min: ym, max: yM, paso: 1, cada: 2, nombre: 'y', color: 'i', decimales: 0 },
   }, extra);
+  // Gesto directo (docs/teoria.md §4b): manijas en coordenadas de la pieza «ejes», con la inversa lineal de su escala.
+  // Los juegos con arrastre usan ejes de rango fijo, para que la manija no se escape.
+  const invLineal = (escala, p, q) => px => p + (px - escala(p)) * (q - p) / (escala(q) - escala(p));
+  const EJES = () => Kit.piezas.ejes;
+  const lienzoDe = datos => { const g = EJES().geometria(datos); return { X: g.X, Y: g.Y, aX: invLineal(g.X, datos.x.min, datos.x.max), aY: invLineal(g.Y, datos.y.min, datos.y.max) }; };
+  const lienzo = (xm, xM, ym, yM) => lienzoDe(ejesBase(xm, xM, ym, yM));
 
   // ---------- Idea 1: par e impar piden dominio simétrico ----------
-  // Cambia: la función y la entrada a · Permanece: los ejes · Progresa: el par de puntos x = a y x = −a · Se reserva:
+  // Cambia: la función y la entrada a (se arrastra el punto de x = a) · Permanece: los ejes · Progresa: el par de puntos x = a y x = −a · Se reserva:
   // el dominio que no es simétrico · Debe verse: par es espejo en el eje y; impar, giro de media vuelta en el origen.
   const PARES = { 'x²': v => v * v, 'x³': v => v ** 3, 'x³ − 3x': v => v ** 3 - 3 * v, '|x|': v => Math.abs(v), 'x² + x': v => v * v + v, 'x + 1': v => v + 1 };
   const clase = fn => {
@@ -86,6 +97,10 @@
       },
       lectura: v => { const g = PARES[v.fn]; return [`f(−${f(v.a, 1)}) = ${f(g(-v.a))} · f(${f(v.a, 1)}) = ${f(g(v.a))} · ${clase(g)}`]; },
       minimo: 4,
+      // Arrastra el punto de x = a por la curva: su espejo en x = −a se mueve solo.
+      arrastres: [{ id: 'punto-a', etiqueta: 'punto de x = a', color: 'c-o',
+        donde: v => { const g = lienzo(-3, 3, -8, 8); return { x: g.X(v.a), y: g.Y(PARES[v.fn](v.a)) }; },
+        mover: pt => ({ a: lienzo(-3, 3, -8, 8).aX(pt.x) }) }],
     },
     predice: {
       pregunta: ['f(', x, ') = ', x, '² con dominio [−1; 3]. ¿Es una función par?'],
@@ -119,7 +134,7 @@
     },
     regla: {
       texto: 'f es par si f(−x) = f(x): su gráfica es simétrica respecto al eje y. Es impar si f(−x) = −f(x): simétrica respecto al origen.',
-      ecuacion: ['f(−', x, ') = f(', x, ')  o  −f(', x, ')'],
+      ecuacion: ['f(−', x, ') = ', { llave: ['f(', x, ')'], nota: 'par' }, '  o  ', { llave: ['−f(', x, ')'], nota: 'impar' }],
       condicion: 'el dominio es simétrico: si x está en el dominio, −x también. Sin eso no es par ni impar.',
     },
     ahoraTu: {
@@ -144,14 +159,14 @@
           pregunta: [`f(x) = ${F.t}, con dominio ${dom}. ¿Qué tipo de función es?`],
           opciones: ['par', 'impar', 'ninguna'].map(id => (id === verdad ? { id, texto: TX[id], correcta: true }
             : { id, texto: TX[id], error: asim && id !== 'ninguna' ? 'TAL-PAR-DOMINIO' : 'TAL-PARIDAD', siFuera: asim ? `La fórmula importa, pero ${porque}.` : `Compara f(−1) = ${f(F.fn(-1))} con f(1) = ${f(F.fn(1))}.` })),
-          solucion: { texto: `${DICE[verdad]}: ${porque}.`, ecuacion: [`f(−1) = ${f(F.fn(-1))}   ·   f(1) = ${f(F.fn(1))}`] },
+          solucion: { texto: `${DICE[verdad]}: ${porque}.`, ecuacion: [`f(−1) = ${f(F.fn(-1))}`, '   ·   ', `f(1) = ${f(F.fn(1))}`] },
         };
       },
     },
   };
 
   // ---------- Idea 2: monotonía y cotas en un intervalo ----------
-  // Cambia: los bordes a y b del intervalo · Permanece: la parábola y = x² · Progresa: el tramo resaltado y sus
+  // Cambia: los bordes a y b del intervalo, que se arrastran por la curva · Permanece: la parábola y = x² · Progresa: el tramo resaltado y sus
   // extremos · Se reserva: el mínimo que cae adentro, no en un borde · Debe verse: si no es monótona, mira el vértice.
   const cuadr = v => v * v;
   const tramo = (a, bb, fn = cuadr) => {
@@ -183,6 +198,10 @@
         return [`[${f(a)}; ${f(bb)}]: ${tipo} · entre ${f(t.min)} y ${f(t.max)}`];
       },
       minimo: 4,
+      // Arrastra cada borde por la parábola: a lo ancho mueve a o b.
+      arrastres: ['a', 'b'].map(id => ({ id: `borde-${id}`, etiqueta: `borde ${id} del intervalo`, color: 'c-o',
+        donde: v => { const g = lienzo(-4, 4, -1, 10); return { x: g.X(v[id]), y: g.Y(v[id] * v[id]) }; },
+        mover: pt => ({ [id]: lienzo(-4, 4, -1, 10).aX(pt.x) }) })),
     },
     predice: {
       pregunta: ['¿Cuál es el valor más pequeño de ', y, ' = ', x, '² cuando ', x, ' recorre [−2; 3]?'],
@@ -207,13 +226,13 @@
       pasos: [
         { estado: { corte: 1 }, texto: 'De −2 a 0, x² baja: es decreciente en [−2; 0].', ecuacion: ['4 > 1 > 0'] },
         { estado: { corte: 2 }, texto: 'De 0 a 3, x² sube: es creciente en [0; 3].', ecuacion: ['0 < 1 < 4 < 9'] },
-        { estado: { corte: 3 }, texto: 'El cambio de sentido deja el mínimo adentro, en x = 0.', ecuacion: ['mín = f(0) = 0   ·   máx = f(3) = 9'] },
+        { estado: { corte: 3 }, texto: 'El cambio de sentido deja el mínimo adentro, en x = 0.', ecuacion: ['mín = f(0) = 0', '   ·   ', 'máx = f(3) = 9'] },
         { estado: { corte: 3 }, texto: 'Todos los valores quedan entre 0 y 9: está acotada.', ecuacion: ['0 ≤ ', y, ' ≤ 9'] },
       ],
     },
     regla: {
       texto: 'f es creciente en un intervalo si a mayor x da mayor f(x); decreciente si da menor. Está acotada si sus valores quedan entre dos números fijos.',
-      ecuacion: [{ sub: [x, '1'] }, ' < ', { sub: [x, '2'] }, '  ⇒  f(', { sub: [x, '1'] }, ') < f(', { sub: [x, '2'] }, ')'],
+      ecuacion: [{ sub: [x, '1'] }, ' < ', { sub: [x, '2'] }, '  ⇒  ', { llave: ['f(', { sub: [x, '1'] }, ') < f(', { sub: [x, '2'] }, ')'], nota: 'creciente', color: 'c-i' }],
       condicion: 'se dice en qué intervalo. Si ahí no es monótona, el mínimo o el máximo puede quedar adentro, no en un borde.',
     },
     ahoraTu: {
@@ -242,7 +261,7 @@
   };
 
   // ---------- Idea 3: una recta horizontal decide ----------
-  // Cambia: la función y la altura c · Permanece: los ejes · Progresa: los cortes de y = c con la gráfica · Se
+  // Cambia: la función y la altura c (se arrastra la recta) · Permanece: los ejes · Progresa: los cortes de y = c con la gráfica · Se
   // reserva: x² con dominio y codominio [0; +∞⟩ · Debe verse: inyectiva = cada altura se toca a lo más una vez.
   const FUNS = { '2x + 1': v => 2 * v + 1, 'x²': v => v * v, 'x³': v => v ** 3, '|x| − 1': v => Math.abs(v) - 1 };
   const cortes = (fn, c, x0 = -4, x1 = 4) => {
@@ -275,6 +294,10 @@
       },
       lectura: v => { const n = cortes(FUNS[v.fn], v.c).length; return [`y = ${f(v.c)} la toca ${n} ${n === 1 ? 'vez' : 'veces'}`]; },
       minimo: 4,
+      // Arrastra la recta horizontal desde su extremo derecho: a lo alto mueve c.
+      arrastres: [{ id: 'recta', etiqueta: 'recta horizontal y = c', color: 'c-h',
+        donde: v => { const g = lienzo(-4, 4, -4, 6); return { x: g.X(3.5), y: g.Y(v.c) }; },
+        mover: pt => ({ c: lienzo(-4, 4, -4, 6).aY(pt.y) }) }],
     },
     predice: {
       pregunta: ['f(', x, ') = ', x, '² va de [0; +∞⟩ a [0; +∞⟩: dominio y codominio son los no negativos. ¿Es biyectiva?'],
@@ -308,7 +331,7 @@
     },
     regla: {
       texto: 'Inyectiva: entradas distintas dan salidas distintas. Sobreyectiva: toda salida del codominio se alcanza. Biyectiva: las dos a la vez.',
-      ecuacion: [{ sub: [x, '1'] }, ' ≠ ', { sub: [x, '2'] }, '  ⇒  f(', { sub: [x, '1'] }, ') ≠ f(', { sub: [x, '2'] }, ')'],
+      ecuacion: [{ sub: [x, '1'] }, ' ≠ ', { sub: [x, '2'] }, '  ⇒  ', { llave: ['f(', { sub: [x, '1'] }, ') ≠ f(', { sub: [x, '2'] }, ')'], nota: 'salidas distintas', color: 'c-i' }],
       condicion: 'se dicen el dominio y el codominio: la misma fórmula puede ser biyectiva con unos y no con otros.',
     },
     ahoraTu: {
@@ -350,7 +373,7 @@
   };
 
   // ---------- Idea 4: la inversa deshace ----------
-  // Cambia: la pendiente m y el corte b · Permanece: la recta y = x · Progresa: f, su reflejo f⁻¹ y el par de puntos
+  // Cambia: la pendiente m y el corte b, arrastrando dos puntos de f · Permanece: la recta y = x · Progresa: f, su reflejo f⁻¹ y el par de puntos
   // · Se reserva: f⁻¹(10) frente a 1/f(10) · Debe verse: (a; b) en f se vuelve (b; a) en f⁻¹.
   const inversa = {
     id: 'inversa',
@@ -374,6 +397,16 @@
       },
       lectura: v => [finv, '(', x, ') = ', ...(v.b ? ['(', x, ` ${signo(-v.b)})`] : [x]), `/${f(v.m)}`],
       minimo: 3,
+      // Arrastra el corte de f con el eje y (mueve b) o su punto de x = 1 (inclina la recta: mueve m). El reflejo
+      // rojo y el punto (m + b; 1) responden solos.
+      arrastres: [
+        { id: 'corte', etiqueta: 'corte de f con el eje y', color: 'c-d',
+          donde: v => { const g = lienzo(-4, 6, -4, 6); return { x: g.X(0), y: g.Y(v.b) }; },
+          mover: pt => ({ b: lienzo(-4, 6, -4, 6).aY(pt.y) }) },
+        { id: 'pendiente', etiqueta: 'punto de f en x = 1', color: 'c-d',
+          donde: v => { const g = lienzo(-4, 6, -4, 6); return { x: g.X(1), y: g.Y(v.m + v.b) }; },
+          mover: (pt, v) => ({ m: lienzo(-4, 6, -4, 6).aY(pt.y) - v.b }) },
+      ],
     },
     predice: {
       pregunta: ['f(', x, ') = 2', x, ' + 6. ¿Cuánto vale ', finv, '(10)?'],
@@ -404,7 +437,7 @@
     },
     regla: {
       texto: 'La inversa deshace a f: si f(a) = b, entonces f⁻¹(b) = a. Su gráfica es el reflejo de la de f en la recta y = x.',
-      ecuacion: ['f(a) = b  ⇔  ', finv, '(b) = a'],
+      ecuacion: ['f(a) = b  ⇔  ', { llave: [finv], nota: 'deshace f', color: 'c-h' }, '(b) = a'],
       condicion: 'f es biyectiva entre el dominio y el codominio elegidos. f⁻¹ no es 1/f: el −1 no es exponente.',
     },
     ahoraTu: {
@@ -441,8 +474,19 @@
   };
 
   // ---------- Idea 5: el modelo tiene dominio ----------
-  // Cambia: el volumen inicial y el caudal · Permanece: la forma V(t) = V₀ − rt · Progresa: la recta y su corte con
+  // Cambia: el volumen inicial y el caudal (se arrastran el inicio y el punto de vaciado) · Permanece: la forma V(t) = V₀ − rt · Progresa: la recta y su corte con
   // el eje t · Se reserva: los t después de vaciarse · Debe verse: más allá de ese t la fórmula sigue, el tanque no.
+  const EJE_TANQUE = { x: { min: 0, max: 30, paso: 5, nombre: 't', unidad: 'min', color: 'o', decimales: 0 }, y: { min: -200, max: 600, paso: 100, cada: 2, nombre: 'V', unidad: 'L', color: 'i', decimales: 0 } };
+  // Manijas de un tanque: el punto de partida (0; V₀) a lo alto y el punto de vaciado (V₀/r; 0) a lo ancho.
+  const tanqueArrastres = (iv, ir, cv, cr, rot = '') => {
+    const g = () => lienzoDe(EJE_TANQUE);
+    return [
+      { id: `inicio${rot}`, etiqueta: `volumen inicial${rot ? ' de ' + rot : ''}`, color: cv,
+        donde: v => ({ x: g().X(0), y: g().Y(v[iv]) }), mover: pt => ({ [iv]: g().aY(pt.y) }) },
+      { id: `vacio${rot}`, etiqueta: `instante en que se vacía${rot ? ' ' + rot : ''}`, color: cr,
+        donde: v => ({ x: g().X(v[iv] / v[ir]), y: g().Y(0) }), mover: (pt, v) => ({ [ir]: v[iv] / Math.max(0.5, g().aX(pt.x)) }) },
+    ];
+  };
   const modelacion = {
     id: 'modelacion',
     titulo: 'Un modelo tiene su dominio',
@@ -458,14 +502,15 @@
       dibujo: v => {
         const T = v.v0 / v.r;
         return { datos: {
-          x: { min: 0, max: 30, paso: 5, nombre: 't', unidad: 'min', color: 'o', decimales: 0 },
-          y: { min: -200, max: 600, paso: 100, cada: 2, nombre: 'V', unidad: 'L', color: 'i', decimales: 0 },
+          ...EJE_TANQUE,
           curvas: [{ puntos: [[0, v.v0], [T, 0]], color: 'i' }, { puntos: [[T, 0], [Math.min(30, (v.v0 + 200) / v.r), Math.max(-200, v.v0 - 30 * v.r)]], color: 'h', discontinua: true }],
           puntos: [{ x: T, y: 0, color: 'd', rotulo: `${f(T)} min` }],
         }, estado: {} };
       },
       lectura: v => [`Se vacía en t = ${f(v.v0 / v.r)} min`],
       minimo: 3,
+      // Arrastra el punto de partida (V₀) o el punto donde se vacía (su t fija el caudal r = V₀/t).
+      arrastres: tanqueArrastres('v0', 'r', 'c-i', 'c-d'),
     },
     predice: {
       pregunta: ['Un tanque de 600 L pierde 40 L por minuto: V(', x, ') = 600 − 40', x, ', con ', x, ' en minutos. ¿Qué valores de ', x, ' tienen sentido?'],
@@ -498,7 +543,7 @@
     },
     regla: {
       texto: 'Modelar es elegir la variable, la fórmula y el dominio que tiene sentido en la situación. Fuera de ese dominio la fórmula da números, pero no describen nada.',
-      ecuacion: ['V(', x, ') = ', { sub: ['V', '0'] }, ' − r', x, ',   0 ≤ ', x, ' ≤ ', { frac: [{ sub: ['V', '0'] }, 'r'] }],
+      ecuacion: ['V(', x, ') = ', { llave: [{ sub: ['V', '0'] }], nota: 'al inicio', color: 'c-i' }, ' − r', x, '   ·   ', '0 ≤ ', x, ' ≤ ', { llave: [{ frac: [{ sub: ['V', '0'] }, 'r'] }], nota: 'se vacía', color: 'c-d' }],
       condicion: 'el modelo supone un cambio constante en todo el dominio; no se extrapola sin revisar la situación.',
     },
     ahoraTu: {
@@ -546,11 +591,95 @@
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1: el espejo en y = x con curvas que no son inyectivas y un dominio que se puede recortar (lo que la idea 4
+  // deja fuera: el reflejo de x² en ℝ no es función; en [0; +∞⟩, sí).
+  const ESPEJO = { 'x³ / 4': u => u ** 3 / 4, 'x²': u => u * u, '2ˣ': u => 2 ** u, '|x| − 1': u => Math.abs(u) - 1, 'x/2 + 1': u => u / 2 + 1 };
+  const DOMS = { 'ℝ': -4, 'x ≥ 0': 0 };
+  const inyectivaEn = (fn, x0) => { const v = Array.from({ length: 81 }, (_, i) => fn(x0 + (4 - x0) * i / 80)); return v.every((z, i) => !i || z > v[i - 1]) || v.every((z, i) => !i || z < v[i - 1]); };
+  const mesaEspejo = {
+    id: 'espejo', titulo: 'El reflejo en y = x', pieza: 'ejes',
+    consigna: 'Elige f y su dominio. Arrastra el punto turquesa por f: su reflejo rojo cambia x por y. ¿El reflejo es una función?',
+    controles: [
+      { id: 'fn', etiqueta: 'f(x)', opciones: Object.keys(ESPEJO).map(t => ({ valor: t, texto: t })), inicio: 'x²' },
+      { id: 'dom', etiqueta: 'Dominio', opciones: Object.keys(DOMS).map(t => ({ valor: t, texto: t })) },
+      { id: 'a', etiqueta: 'x del punto', color: 'c-o', min: -2, max: 2, paso: 0.5, inicio: 1.5, decimales: 1 },
+    ],
+    dibujo: v => {
+      const g = ESPEJO[v.fn], x0 = DOMS[v.dom], a = Math.max(v.a, x0), P = [a, g(a)];
+      const tramo = muestra(g, x0, 4, -4, 4), refl = tramo.map(p => (p ? [p[1], p[0]] : null));
+      return { datos: ejesBase(-4, 4, -4, 4, {
+        curvas: [{ puntos: [[-4, -4], [4, 4]], color: 'o', discontinua: true }, { puntos: tramo, color: 'i' }, { puntos: refl, color: 'h' }],
+        // Sin rótulos en los puntos: la lectura da las dos coordenadas y los rótulos se tapaban entre sí.
+        puntos: [{ x: P[0], y: P[1], color: 'i', guias: true }, { x: P[1], y: P[0], color: 'h', guias: true }],
+        alt: `f(x) = ${v.fn} con dominio ${v.dom}, su reflejo en y = x y el punto ${par(...P)} reflejado en ${par(P[1], P[0])}`,
+      }), estado: {} };
+    },
+    lectura: v => {
+      const g = ESPEJO[v.fn], a = Math.max(v.a, DOMS[v.dom]);
+      return [`${par(a, g(a))} → ${par(g(a), a)} · el reflejo ${inyectivaEn(g, DOMS[v.dom]) ? 'es' : 'no es'} función`];
+    },
+    arrastres: [{ id: 'punto', etiqueta: 'punto de f', color: 'c-o',
+      donde: v => { const g = lienzo(-4, 4, -4, 4), a = Math.max(v.a, DOMS[v.dom]), yy = ESPEJO[v.fn](a); return { x: g.X(a), y: g.Y(Math.max(-4, Math.min(4, yy))) }; },
+      mover: pt => ({ a: lienzo(-4, 4, -4, 4).aX(pt.x) }) }],
+  };
+  // Mesa 2: la recta horizontal con el dominio que se recorta y más funciones (x³ − 3x sube, baja y vuelve a subir).
+  const FUNS2 = Object.assign({}, FUNS, { 'x³ − 3x': u => u ** 3 - 3 * u });
+  const mesaRecta = {
+    id: 'recta-horizontal', titulo: 'Recta horizontal y dominio', pieza: 'ejes',
+    consigna: 'Arrastra la recta y = c y recorta el dominio. Busca una altura que toque dos veces y mira si el recorte la arregla.',
+    controles: [
+      { id: 'fn', etiqueta: 'f(x)', opciones: Object.keys(FUNS2).map(t => ({ valor: t, texto: t })), inicio: 'x²' },
+      { id: 'dom', etiqueta: 'Dominio', opciones: Object.keys(DOMS).map(t => ({ valor: t, texto: t })) },
+      { id: 'c', etiqueta: 'c', color: 'c-h', min: -3, max: 5, paso: 0.5, inicio: 2, decimales: 1 },
+    ],
+    dibujo: v => {
+      const g = FUNS2[v.fn], x0 = DOMS[v.dom], cs = cortes(g, v.c, x0, 4);
+      return { datos: ejesBase(-4, 4, -4, 6, {
+        curvas: [...(x0 > -4 ? [{ puntos: muestra(g, -4, x0, -4, 6), color: 'o', discontinua: true }] : []), { puntos: muestra(g, x0, 4, -4, 6), color: 'i' }, { puntos: [[-4, v.c], [4, v.c]], color: 'h', discontinua: true }],
+        puntos: cs.map(z => ({ x: z, y: v.c, color: 'h' })),
+      }), estado: {} };
+    },
+    lectura: v => {
+      const n = cortes(FUNS2[v.fn], v.c, DOMS[v.dom], 4).length;
+      return [`y = ${f(v.c, 1)}: ${n} ${n === 1 ? 'corte' : 'cortes'} · en ${v.dom} ${inyectivaEn(FUNS2[v.fn], DOMS[v.dom]) ? 'es' : 'no es'} inyectiva`];
+    },
+    arrastres: [{ id: 'recta', etiqueta: 'recta horizontal y = c', color: 'c-h',
+      donde: v => { const g = lienzo(-4, 4, -4, 6); return { x: g.X(3.5), y: g.Y(v.c) }; },
+      mover: pt => ({ c: lienzo(-4, 4, -4, 6).aY(pt.y) }) }],
+  };
+  // Mesa 3: dos tanques juntos, para comparar cuál se vacía antes (dos modelos con su dominio).
+  const mesaTanques = {
+    id: 'dos-tanques', titulo: 'Dos tanques que se vacían', pieza: 'ejes',
+    consigna: 'Arrastra el inicio y el punto de vaciado de cada tanque. ¿Cuál se vacía antes? ¿Cuándo tienen lo mismo?',
+    controles: [
+      { id: 'v0', etiqueta: 'V₀ de A', color: 'c-i', min: 200, max: 600, paso: 100, inicio: 600, unidad: 'L', decimales: 0 },
+      { id: 'r', etiqueta: 'r de A', color: 'c-i', min: 20, max: 80, paso: 10, inicio: 40, unidad: 'L/min', decimales: 0 },
+      { id: 'v0b', etiqueta: 'V₀ de B', color: 'c-f', min: 200, max: 600, paso: 100, inicio: 300, unidad: 'L', decimales: 0 },
+      { id: 'rb', etiqueta: 'r de B', color: 'c-f', min: 20, max: 80, paso: 10, inicio: 20, unidad: 'L/min', decimales: 0 },
+    ],
+    dibujo: v => {
+      const TA = v.v0 / v.r, TB = v.v0b / v.rb;
+      const tc = v.r !== v.rb ? (v.v0 - v.v0b) / (v.r - v.rb) : -1;
+      const igual = tc > 0 && tc < Math.min(TA, TB) ? [{ x: tc, y: v.v0 - v.r * tc, color: 'o', guias: true, rotulo: `${f(tc)} min` }] : [];
+      return { datos: {
+        ...EJE_TANQUE,
+        curvas: [{ puntos: [[0, v.v0], [TA, 0]], color: 'i', rotulo: 'A', en: [TA / 2, v.v0 / 2] }, { puntos: [[0, v.v0b], [TB, 0]], color: 'f', rotulo: 'B', en: [TB / 2, v.v0b / 2] }],
+        puntos: [{ x: TA, y: 0, color: 'i' }, { x: TB, y: 0, color: 'f' }, ...igual],
+        alt: `Tanque A: ${f(v.v0)} L a ${f(v.r)} L/min; tanque B: ${f(v.v0b)} L a ${f(v.rb)} L/min`,
+      }, estado: {} };
+    },
+    lectura: v => [`A se vacía en ${f(v.v0 / v.r)} min · B en ${f(v.v0b / v.rb)} min`],
+    arrastres: [...tanqueArrastres('v0', 'r', 'c-i', 'c-i', 'A'), ...tanqueArrastres('v0b', 'rb', 'c-f', 'c-f', 'B')],
+  };
+
   return {
     unidad: 'algebra.tipos-de-funciones-e-inversa',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/ejes.js'],
+    // Laboratorio: tres mesas propias con gesto directo; todas suman el dominio como control (o un segundo modelo).
+    laboratorio: [mesaEspejo, mesaRecta, mesaTanques],
     historia: {
       texto: 'Al ampliarse la idea de función, se separó la relación entre variables de la fórmula que la describe. Las discusiones sobre qué dependencias admitir mostraron que una misma apariencia algebraica no basta: importan el dominio y las salidas. Para invertir una relación hace falta que cada salida identifique a su entrada. La inversa no sale de cambiar un símbolo ni de tomar el recíproco.',
       pregunta: '¿Se puede deshacer toda correspondencia?',
