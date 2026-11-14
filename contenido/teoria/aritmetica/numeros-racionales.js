@@ -13,6 +13,8 @@
  *   Duda que resuelve: «¿por qué 0,999… o 0,2424… son fracciones y π no?».
  * Colores (regla 4): numerador naranja (c-o), denominador turquesa (c-i), el resto de la división rojo (c-h),
  * las cifras que salen verde (c-d).
+ * Ronda 2 (14 nov 2026): gesto directo en las ideas 1 y 2 (tiras y recta); las ideas 3 a 5 son tablas de la cuenta
+ * misma, sin nada que agarrar. Llaves en las reglas y laboratorio con tres mesas.
  */
 (function (root, fabrica) {
   const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
@@ -46,6 +48,11 @@
   const txtFr = (x, y) => (y === 1 ? String(x) : `${x}/${y}`);
   const primos = n => { const out = []; for (let p = 2; p <= n; p++) if (n % p === 0) { out.push(p); while (n % p === 0) n /= p; } return out; };
   const DIG = '0123456789ABCDEF';
+  // Gesto directo (docs/teoria.md §4b): la manija vive en las coordenadas de la pieza; mover la convierte en valores
+  // con la inversa de su escala, y el lector ajusta al paso y al rango de cada control.
+  const TIRAS = () => Kit.piezas['arit-tiras'], RECTA = () => Kit.piezas.recta;
+  const inversa = (escala, lo, hi) => px => lo + (px - escala(lo)) * (hi - lo) / (escala(hi) - escala(lo));
+  const diferencia = (x, y, z, w) => red(Math.abs(x * w - y * z), y * w);
   const cola = per => per.repeat(Math.ceil(4 / per.length));   // el período escrito hasta tener 4 cifras o más
   // División larga de x/y en base B: parte entera, cifras, dónde empieza el período (−1 si es exacto) y los restos.
   function division(x, y, B = 10, tope = 12) {
@@ -74,6 +81,15 @@
     rotulo: rot, color, paso, sinContorno: false,
     tramos: [{ valor: x / y, partes: x, color }, ...(x < y ? [{ valor: (y - x) / y, partes: y - x, color: 'i', relleno: 0.04 }] : [])],
   });
+  // El juego acepta fracciones mayores que 1: la escala común llega al entero siguiente y la regla marca las unidades.
+  const unidadM = (x, y, M, rot, color = 'o') => ({
+    rotulo: rot, color,
+    tramos: [{ valor: x / y, partes: x, color }, ...(x < M * y ? [{ valor: M - x / y, partes: M * y - x, color: 'i', relleno: 0.04 }] : [])],
+  });
+  const tirasEq = v => {
+    const M = Math.max(1, Math.ceil(v.a / v.b));
+    return { datos: { max: M, regla: { paso: 1, cada: 1 }, filas: 2, tiras: [unidadM(v.a, v.b, M, `${v.a}/${v.b}`), unidadM(v.a * v.k, v.b * v.k, M, `${v.a * v.k}/${v.b * v.k}`)] }, estado: {} };
+  };
   const equivalentes = {
     id: 'equivalentes',
     titulo: 'Partir distinto, misma cantidad',
@@ -87,9 +103,18 @@
         { id: 'b', etiqueta: 'b', color: 'c-i', min: 2, max: 6, paso: 1, inicio: 3, unidad: '', decimales: 0 },
         { id: 'k', etiqueta: 'Cortar cada pedazo en', min: 1, max: 4, paso: 1, inicio: 2, unidad: '', decimales: 0 },
       ],
-      dibujo: v => { const x = Math.min(v.a, v.b); return { datos: { max: 1, tiras: [unidad(x, v.b, `${x}/${v.b}`), unidad(x * v.k, v.b * v.k, `${x * v.k}/${v.b * v.k}`)], filas: 2 }, estado: {} }; },
-      lectura: v => { const x = Math.min(v.a, v.b); return [fr(x, v.b), ' = ', fr(x * v.k, v.b * v.k), ': mismo largo pintado']; },
+      dibujo: tirasEq,
+      lectura: v => [fr(v.a, v.b), ' = ', fr(v.a * v.k, v.b * v.k), ': mismo largo pintado'],
       minimo: 3,
+      // Arrastra el borde de lo pintado (a) o el primer corte de la tira de abajo (en cuántas se parte cada pedazo).
+      arrastres: [
+        { id: 'borde', etiqueta: 'borde de lo pintado', color: 'c-o',
+          donde: v => { const g = TIRAS().geometria(tirasEq(v).datos); return { x: g.x(v.a / v.b), y: g.centroY(0) }; },
+          mover: (pt, v) => ({ a: TIRAS().geometria(tirasEq(v).datos).deX(pt.x) * v.b }) },
+        { id: 'corte', etiqueta: 'primer corte de la tira de abajo',
+          donde: v => { const g = TIRAS().geometria(tirasEq(v).datos); return { x: g.x(1 / (v.b * v.k)), y: g.centroY(1) }; },
+          mover: (pt, v) => ({ k: 1 / (Math.max(TIRAS().geometria(tirasEq(v).datos).deX(pt.x), 1e-3) * v.b) }) },
+      ],
     },
     predice: {
       pregunta: ['¿Cuál de estas fracciones representa la misma cantidad que ', fr(6, 8), '?'],
@@ -114,7 +139,7 @@
     },
     regla: {
       texto: 'Dos fracciones son el mismo racional si los productos cruzados son iguales. Multiplicar o dividir arriba y abajo por lo mismo no cambia la cantidad.',
-      ecuacion: [{ frac: [a, b] }, ' = ', { frac: [c, d] }, '   ⇔   ', a, ' · ', d, ' = ', b, ' · ', c],
+      ecuacion: [{ frac: [a, b] }, ' = ', { frac: [c, d] }, '   ⇔   ', { llave: [a, ' · ', d, ' = ', b, ' · ', c], nota: 'productos cruzados' }],
       condicion: 'b y d no son cero. Sumar o restar lo mismo arriba y abajo sí cambia la cantidad.',
     },
     ahoraTu: {
@@ -140,7 +165,7 @@
           opciones: opciones(iguales ? 'Sí' : 'No', [
             { id: 'contrario', valor: iguales ? 'No' : 'Sí', error: iguales ? 'AT-ESCRITURA' : 'AT-SUMA-AMBOS', siFuera: iguales ? 'Se escriben distinto, pero los productos cruzados coinciden.' : 'Se parecen, pero los productos cruzados no coinciden.' },
           ], String),
-          solucion: { texto: 'Se comparan los productos cruzados.', ecuacion: [`${p} · ${der[1]} = ${p * der[1]};   ${q} · ${der[0]} = ${q * der[0]}`] },
+          solucion: { texto: 'Se comparan los productos cruzados.', ecuacion: [`${p} · ${der[1]} = ${p * der[1]}`, '   ·   ', `${q} · ${der[0]} = ${q * der[0]}`] },
         };
       },
     },
@@ -155,6 +180,7 @@
   // Recta con números en los enteros y, sobre ella, un punto turquesa en cada 1/partes: la unidad partida (el denominador).
   const rectaFr = (els, extra = {}, partes = 0) => Object.assign({ min: 0, max: 3, paso: 1, cada: 1, decimales: 2, variable: '', filas: 2,
     elementos: [...(partes ? [{ tipo: 'enteros', a: 0, b: extra.max || 3, cada: 1 / partes, color: 'i', fila: 0 }] : []), ...els] }, extra);
+  const rectaOrden = v => ({ datos: rectaFr([{ tipo: 'punto', x: v.a / v.b, color: 'o', fila: 1, rotulo: `${v.a}/${v.b}` }], { max: 4 }, v.b), estado: {} });
   const clases = {
     id: 'orden-recta',
     titulo: 'Dónde cae la fracción',
@@ -164,12 +190,21 @@
       consigna: 'Elige numerador y denominador. Mira dónde cae la fracción en la recta y qué clase es.',
       voz: 'Prueba un numerador mayor que el denominador, y uno que sea múltiplo.',
       controles: [
-        { id: 'a', etiqueta: 'a', color: 'c-o', min: 1, max: 12, paso: 1, inicio: 2, unidad: '', decimales: 0 },
+        { id: 'a', etiqueta: 'a', color: 'c-o', min: 1, max: 8, paso: 1, inicio: 2, unidad: '', decimales: 0 },
         { id: 'b', etiqueta: 'b', color: 'c-i', min: 2, max: 6, paso: 1, inicio: 3, unidad: '', decimales: 0 },
       ],
-      dibujo: v => ({ datos: rectaFr([{ tipo: 'punto', x: v.a / v.b, color: 'o', fila: 1, rotulo: `${v.a}/${v.b}` }], {}, v.b), estado: {} }),
+      dibujo: rectaOrden,
       lectura: v => [fr(v.a, v.b), `: ${clase(v.a, v.b)}${mixta(v.a, v.b) ? ` · ${mixta(v.a, v.b)}` : ''}`],
       minimo: 3,
+      // Arrastra el punto por la recta (el numerador) o la primera parte de la unidad (el denominador).
+      arrastres: [
+        { id: 'punto', etiqueta: 'punto de la fracción', color: 'c-o',
+          donde: v => { const g = RECTA().geometria(rectaOrden(v).datos); return { x: g.x(v.a / v.b), y: g.filaY(1) }; },
+          mover: (pt, v) => ({ a: inversa(RECTA().geometria(rectaOrden(v).datos).x, 0, 4)(pt.x) * v.b }) },
+        { id: 'parte', etiqueta: 'primera parte de la unidad', color: 'c-i',
+          donde: v => { const g = RECTA().geometria(rectaOrden(v).datos); return { x: g.x(1 / v.b), y: g.filaY(0) }; },
+          mover: (pt, v) => ({ b: 1 / Math.max(inversa(RECTA().geometria(rectaOrden(v).datos).x, 0, 4)(pt.x), 1e-3) }) },
+      ],
     },
     predice: {
       pregunta: ['¿Cuál es mayor: ', fr(3, 5), ' o ', fr(4, 7), '?'],
@@ -215,7 +250,7 @@
             { id: 'num', valor: txtFr(...menor), error: 'AT-NUMERADOR', siFuera: 'Tiene el numerador mayor, pero sus partes son más chicas.' },
             { id: 'igual', valor: 'Son iguales', error: 'AT-DIFERENCIA', siFuera: 'Los productos cruzados no coinciden: no son iguales.' },
           ], String),
-          solucion: { texto: 'Productos cruzados: gana el lado mayor.', ecuacion: [`${x1} · ${y2} = ${x1 * y2};   ${y1} · ${x2} = ${y1 * x2}`], dibujo: { datos: rectaFr([{ tipo: 'punto', x: x1 / y1, color: 'o', fila: 1, rotulo: `${x1}/${y1}` }, { tipo: 'punto', x: x2 / y2, color: 'i', fila: 2, rotulo: `${x2}/${y2}` }], { max: 1, paso: 0.1, cada: 5 }), estado: {} } },
+          solucion: { texto: 'Productos cruzados: gana el lado mayor.', ecuacion: [`${x1} · ${y2} = ${x1 * y2}`, '   ·   ', `${y1} · ${x2} = ${y1 * x2}`], dibujo: { datos: rectaFr([{ tipo: 'punto', x: x1 / y1, color: 'o', fila: 1, rotulo: `${x1}/${y1}` }, { tipo: 'punto', x: x2 / y2, color: 'i', fila: 2, rotulo: `${x2}/${y2}` }], { max: 1, paso: 0.1, cada: 5 }), estado: {} } },
         };
       },
     },
@@ -269,7 +304,7 @@
     },
     regla: {
       texto: 'Toda fracción da un decimal exacto o periódico. Es exacto si, ya simplificada, su denominador solo tiene los primos 2 y 5. Un decimal infinito sin período es irracional.',
-      ecuacion: [{ frac: [a, b] }, ' exacto   ⇔   ', b, ' = ', { sup: ['2', 'm'] }, ' · ', { sup: ['5', 'n'] }],
+      ecuacion: [{ frac: [a, b] }, ' exacto   ⇔   ', b, ' = ', { llave: [{ sup: ['2', 'm'] }, ' · ', { sup: ['5', 'n'] }], nota: 'solo 2 y 5', color: 'c-i' }],
       condicion: 'la fracción está simplificada. Irracionales como √2 o π no son cociente de enteros.',
     },
     ahoraTu: {
@@ -356,7 +391,7 @@
     },
     regla: {
       texto: 'Periódico puro: el período sobre tantos 9 como cifras tiene. Mixto: lo que hay hasta el período, menos lo de antes, sobre tantos 9 y tantos 0.',
-      ecuacion: ['0,1666… = ', { frac: ['16 − 1', '90'] }, ' = ', { frac: ['15', '90'] }, ' = ', { frac: ['1', '6'] }],
+      ecuacion: ['0,1666… = ', { llave: [{ frac: ['16 − 1', '90'] }], nota: 'nueves y ceros' }, ' = ', { frac: ['1', '6'] }],
       condicion: 'el decimal es periódico. Un período de 9 da un número exacto: 0,999… = 1.',
     },
     ahoraTu: {
@@ -424,7 +459,7 @@
     },
     regla: {
       texto: 'Una fracción simplificada tiene expansión exacta en base B si cada primo de su denominador divide a B. Las cifras salen multiplicando el resto por B.',
-      ecuacion: [{ sub: ['0,xy', 'B'] }, ' = ', { frac: ['x', 'B'] }, ' + ', { frac: ['y', { sup: ['B', '2'] }] }],
+      ecuacion: [{ sub: ['0,xy', 'B'] }, ' = ', { llave: [{ frac: ['x', 'B'] }], nota: 'cifra 1' }, ' + ', { llave: [{ frac: ['y', { sup: ['B', '2'] }] }], nota: 'cifra 2' }],
       condicion: 'la fracción está simplificada y B es un entero mayor que 1. En base 10 los primos son 2 y 5.',
     },
     ahoraTu: {
@@ -459,11 +494,79 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Las ideas 1 y 2 muestran una fracción; aquí se ponen dos juntas para compararlas (en tiras y en la recta, con
+  // fracciones mayores que 1). La división junta numerador, denominador y base, que las ideas 3 y 5 mueven por separado.
+  const signo = v => (v.a * v.d === v.b * v.c ? '=' : v.a * v.d < v.b * v.c ? '<' : '>');
+  const dosTiras = v => {
+    const M = Math.max(1, Math.ceil(v.a / v.b), Math.ceil(v.c / v.d));
+    return { datos: { max: M, regla: { paso: 1, cada: 1 }, filas: 2, tiras: [unidadM(v.a, v.b, M, `${v.a}/${v.b}`), unidadM(v.c, v.d, M, `${v.c}/${v.d}`)] }, estado: {} };
+  };
+  const dosPuntos = v => ({ datos: rectaFr([
+    { tipo: 'punto', x: v.a / v.b, color: 'o', fila: 1, rotulo: `${v.a}/${v.b}` },
+    { tipo: 'punto', x: v.c / v.d, color: 'o', fila: 2, rotulo: `${v.c}/${v.d}` },
+  ], { max: 4 }), estado: {} });
+  const laboratorio = [
+    {
+      id: 'dos-tiras', titulo: 'Dos fracciones en tiras', pieza: 'arit-tiras',
+      consigna: 'Elige dos fracciones, también mayores que 1. Arrastra el borde pintado de cada tira y compara los largos.',
+      controles: [
+        { id: 'a', etiqueta: 'a', color: 'c-o', min: 1, max: 9, paso: 1, inicio: 3, unidad: '', decimales: 0 },
+        { id: 'b', etiqueta: 'b', color: 'c-i', min: 2, max: 9, paso: 1, inicio: 4, unidad: '', decimales: 0 },
+        { id: 'c', etiqueta: 'c', color: 'c-o', min: 1, max: 9, paso: 1, inicio: 2, unidad: '', decimales: 0 },
+        { id: 'd', etiqueta: 'd', color: 'c-i', min: 2, max: 9, paso: 1, inicio: 3, unidad: '', decimales: 0 },
+      ],
+      dibujo: dosTiras,
+      lectura: v => [fr(v.a, v.b), ` ${signo(v)} `, fr(v.c, v.d), ` · cruzados ${v.a * v.d} y ${v.b * v.c}`],
+      arrastres: [
+        { id: 'borde-1', etiqueta: 'borde pintado de la primera tira', color: 'c-o',
+          donde: v => { const g = TIRAS().geometria(dosTiras(v).datos); return { x: g.x(v.a / v.b), y: g.centroY(0) }; },
+          mover: (pt, v) => ({ a: TIRAS().geometria(dosTiras(v).datos).deX(pt.x) * v.b }) },
+        { id: 'borde-2', etiqueta: 'borde pintado de la segunda tira', color: 'c-o',
+          donde: v => { const g = TIRAS().geometria(dosTiras(v).datos); return { x: g.x(v.c / v.d), y: g.centroY(1) }; },
+          mover: (pt, v) => ({ c: TIRAS().geometria(dosTiras(v).datos).deX(pt.x) * v.d }) },
+      ],
+    },
+    {
+      id: 'dos-puntos', titulo: 'Dos fracciones en la recta', pieza: 'recta',
+      consigna: 'Ubica dos fracciones en la recta de 0 a 4. Arrastra cada punto y mira cuánto las separa.',
+      controles: [
+        { id: 'a', etiqueta: 'a', color: 'c-o', min: 1, max: 16, paso: 1, inicio: 3, unidad: '', decimales: 0 },
+        { id: 'b', etiqueta: 'b', color: 'c-i', min: 2, max: 8, paso: 1, inicio: 5, unidad: '', decimales: 0 },
+        { id: 'c', etiqueta: 'c', color: 'c-o', min: 1, max: 16, paso: 1, inicio: 4, unidad: '', decimales: 0 },
+        { id: 'd', etiqueta: 'd', color: 'c-i', min: 2, max: 8, paso: 1, inicio: 7, unidad: '', decimales: 0 },
+      ],
+      dibujo: dosPuntos,
+      lectura: v => [fr(v.a, v.b), ` ${signo(v)} `, fr(v.c, v.d), ` · las separa ${txtFr(...diferencia(v.a, v.b, v.c, v.d))}`],
+      arrastres: [
+        { id: 'punto-1', etiqueta: 'punto de la primera fracción', color: 'c-o',
+          donde: v => { const g = RECTA().geometria(dosPuntos(v).datos); return { x: g.x(v.a / v.b), y: g.filaY(1) }; },
+          mover: (pt, v) => ({ a: inversa(RECTA().geometria(dosPuntos(v).datos).x, 0, 4)(pt.x) * v.b }) },
+        { id: 'punto-2', etiqueta: 'punto de la segunda fracción', color: 'c-o',
+          donde: v => { const g = RECTA().geometria(dosPuntos(v).datos); return { x: g.x(v.c / v.d), y: g.filaY(2) }; },
+          mover: (pt, v) => ({ c: inversa(RECTA().geometria(dosPuntos(v).datos).x, 0, 4)(pt.x) * v.d }) },
+      ],
+    },
+    {
+      // Sin arrastre: la tabla es la cuenta misma (resto por base); lo que se elige son números, no lugares.
+      id: 'division-base', titulo: 'La división en cualquier base', pieza: 'arit-tabla',
+      consigna: 'Elige la fracción y la base. Cada resto se multiplica por la base: mira si sale 0 o si un resto vuelve.',
+      controles: [
+        { id: 'a', etiqueta: 'a', color: 'c-o', min: 1, max: 30, paso: 1, inicio: 5, unidad: '', decimales: 0 },
+        { id: 'b', etiqueta: 'b', color: 'c-i', min: 2, max: 30, paso: 1, inicio: 12, unidad: '', decimales: 0 },
+        { id: 'B', etiqueta: 'Base', min: 2, max: 16, paso: 1, inicio: 10, unidad: '', decimales: 0 },
+      ],
+      dibujo: v => ({ datos: tablaDiv(v.a, v.b, v.B), estado: {} }),
+      lectura: v => [fr(v.a, v.b), ` en base ${v.B} = ${decimal(v.a, v.b, v.B)}`],
+    },
+  ];
+
   return {
     unidad: 'aritmetica.numeros-racionales',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/arit-tiras.js', '/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/arit-tabla.js'],
+    laboratorio,
     historia: {
       texto: 'Las fracciones decimales permitieron calcular con partes de la unidad casi como con enteros. Simon Stevin defendió su uso práctico en 1585. No fue el único inventor de los decimales y su notación era distinta de la nuestra. Esta unidad separa el número de sus escrituras: una fracción, un decimal exacto o periódico y un punto de la recta pueden ser el mismo valor.',
       pregunta: '¿Es 0,999… lo mismo que 1?',
