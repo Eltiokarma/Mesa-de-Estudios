@@ -2897,7 +2897,14 @@
       "ampliadora",
       "angulo-inscrito",
       "geo-areas-circulares"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/geometria/longitud-y-areas-circulares.js",
+      "requiere": [
+       "/nucleo/kit/piezas/geo-figura.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "geometria.geometria-del-espacio",
