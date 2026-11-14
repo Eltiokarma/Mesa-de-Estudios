@@ -2608,7 +2608,16 @@
      "grado": 4,
      "plantillas": [
       "razonamiento-numerico"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/razonamiento-numerico.js",
+      "requiere": [
+       "/nucleo/kit/piezas/arit-tiras.js",
+       "/nucleo/kit/piezas/arit-tabla.js",
+       "/nucleo/kit/piezas/recta.js"
+      ],
+      "ideas": 6
+     }
     }
    ]
   },
