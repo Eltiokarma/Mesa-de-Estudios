@@ -150,6 +150,15 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
 .fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
 .pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
 .pie a{color:var(--ink); font-weight:700}
+/* Juego libre antes de las preguntas (regla 3; nucleo/jugar.js) */
+.juego{display:grid; gap:8px; padding:4px 2px}
+.juego[hidden]{display:none}
+.paso-ctrl{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+.paso-ctrl > span{font-weight:700; flex:1 1 150px}
+.paso-ctrl output{font-family:var(--mono); min-width:64px; text-align:center}
+.paso-ctrl .btn{padding:8px 0; width:44px}
+.jugar-barra{color:var(--ink)}
+.jugar-seguir{background:var(--ink); color:var(--card); border:0}
 .sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
 .volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
   font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
@@ -204,6 +213,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
         <span><i style="background:var(--c-k)"></i>k · constante del resorte</span>
         <span><i style="background:var(--c-f)"></i>roce y calor</span>
       </div>
+      <div class="juego" id="juego1"></div>
     </section>
     <section class="guide">
       <ol class="dots" id="dots"></ol>
@@ -231,6 +241,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
         <span><i style="background:var(--c-h)"></i>h · altura</span>
         <span><i style="background:var(--c-P)"></i>P · potencia</span>
       </div>
+      <div class="juego" id="juego2"></div>
     </section>
     <section class="guide">
       <div class="seg exps" id="exps" role="group" aria-label="Experimentos"></div>
@@ -256,6 +267,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
         <span><i style="background:var(--c-k)"></i>k · constante del resorte</span>
         <span><i style="background:var(--c-Ee)"></i><span>E<sub>e</sub> · elástica</span></span>
       </div>
+      <div class="juego" id="juego3"></div>
     </section>
     <section class="guide">
       <ol class="dots" id="dots3"></ol>
@@ -285,6 +297,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'energia', unidad: 'fisica.trabajo-y-energia', version: '0.2.0' };
@@ -496,7 +509,7 @@ function pista(ctx, c, b, mv, est, op){
   } else { px = X(est.X); }
   bloque(ctx, c, px, py, s, ang, op.etiquetaM, op.hl === 'm');
   // Compresión
-  if (est.comp > 1e-4) cota(ctx, c, X(mv.X0) + s/2, Y(0) + 24, X(mv.X0 + est.comp) + s/2, Y(0) + 24, c.x, `x = ${fmt(est.comp, 2)} m`, op.hl === 'x');
+  if (est.comp > 1e-4 && !op.sinCifras) cota(ctx, c, X(mv.X0) + s/2, Y(0) + 24, X(mv.X0 + est.comp) + s/2, Y(0) + 24, c.x, `x = ${fmt(est.comp, 2)} m`, op.hl === 'x');
   // Velocidad
   if (est.v > 0.05 && op.flechaV !== false){
     const dir = est.fase === 'rampa' ? ang : 0, l = clamp(est.v*sc*0.16, 12, 90);
@@ -514,6 +527,50 @@ function zonasPista(W, H){
   return { pista:{ x:2, y:2, w:W - 4, h:H*0.58 }, barras:{ x:8, y:H*0.58 + 6, w:W - 16, h:H*0.42 - 10 } };
 }
 const altoPista = W => W >= 560 ? clamp(W*0.44, 280, 380) : 440;
+/* ---------- Jugar antes de preguntar (regla 3, decisión 20) ----------
+   Antes de la primera pregunta de cada modo se juega: en el paso a paso y en «¿Qué pasa si…?», con la rampa y el
+   resorte (altura, masa y forma, y soltar el bloque); en «Fuerza variable», arrastrando los puntos de la gráfica y
+   soltando el carrito. El juego no muestra lo que después se pregunta: ni la rapidez ni la compresión (sin flecha ni
+   cifras de v y x), ni el área ni el trabajo. Basta jugar en un modo: los otros ya no lo piden. */
+const JUEGOS = [];
+function montarJuego(o){
+  const j = JugarPrimero.montar({ escena:o.escena, preguntas:o.preguntas, minimo:2, consigna:o.consigna,
+    alListo:() => { JUEGOS.forEach(x => { if (x !== j) x.saltar(); }); o.alListo(); } });
+  JUEGOS.push(j); return j;
+}
+// Filas con − y + (alternativa sin arrastrar). lista: [[clave, etiqueta, paso]]; alCambiar(clave, delta).
+function filasPaso(lista){
+  return lista.map(([k, et, d]) => `<div class="paso-ctrl"><span>${et}</span>
+      <button type="button" class="btn" data-k="${k}" data-d="${-d}" aria-label="Bajar ${et.toLowerCase()}">−</button>
+      <output data-o="${k}"></output>
+      <button type="button" class="btn" data-k="${k}" data-d="${d}" aria-label="Subir ${et.toLowerCase()}">+</button></div>`).join('');
+}
+const JG = { m:2, h:1.4, forma:'recta' };
+function panelRampa(el, alCambiar, alSoltar){
+  el.innerHTML = filasPaso([['h', 'Altura de la rampa', 0.2], ['m', 'Masa del bloque', 0.5]])
+    + `<div class="seg" role="group" aria-label="Forma de la rampa">${[['recta', 'Recta'], ['curva', 'Curva'], ['lomas', 'Con loma']].map(([f, t]) => `<button type="button" data-forma="${f}">${t}</button>`).join('')}</div>
+      <p><button type="button" class="btn primary" data-soltar>Soltar el bloque</button></p>`;
+  const LIM = { h:[0.4, 2.4], m:[0.5, 5] };
+  el.querySelectorAll('[data-d]').forEach(b => b.addEventListener('click', () => {
+    const k = b.dataset.k; JG[k] = clamp(Math.round((JG[k] + +b.dataset.d)*10)/10, LIM[k][0], LIM[k][1]); pintar(); alCambiar();
+  }));
+  el.querySelectorAll('[data-forma]').forEach(b => b.addEventListener('click', () => { JG.forma = b.dataset.forma; pintar(); alCambiar(); }));
+  el.querySelector('[data-soltar]').addEventListener('click', alSoltar);
+  function pintar(){
+    el.querySelector('[data-o="h"]').textContent = `${fmt(JG.h, 1)} m`;
+    el.querySelector('[data-o="m"]').textContent = `${fmt(JG.m, 1)} kg`;
+    el.querySelectorAll('[data-forma]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.forma === JG.forma)));
+  }
+  pintar();
+}
+const movJuego = () => M.movimiento({ m:JG.m, h:JG.h, k:1000, mu:0, d:0, forma:JG.forma, piso:2.2 });
+// Dibujo del juego de la rampa: sin flecha ni cifras de rapidez y sin la cota de la compresión.
+function dibujarRampa(ctx, c, W, H, mv, t){
+  const z = zonasPista(W, H), e = mv.en(t);
+  pista(ctx, c, z.pista, mv, e, { hMax:2.4, m:JG.m, d:0, mu:0, cotaH:true, etiquetaM:`${fmt(JG.m, 1)} kg`, flechaV:false, sinCifras:true });
+  barras(ctx, c, z.barras, e, Math.max(mv.E, 1), mv.E);
+  return `Juego libre: bloque de ${fmt(JG.m, 1)} kilogramos en una rampa ${JG.forma === 'lomas' ? 'con loma' : JG.forma} de ${fmt(JG.h, 1)} metros, ${e.fase === 'rampa' ? (t > 0 ? 'bajando' : 'arriba, quieto') : e.fase === 'resorte' ? 'comprimiendo el resorte' : 'en el piso'}.`;
+}
 function tiraHTML(lista){ // [[clase, valor, texto]]
   const tot = lista.reduce((s, x) => s + Math.abs(x[1]), 0) || 1;
   return `<div class="tiras">${lista.map(([k, v, t]) => { const w = Math.abs(v)/tot*100; return `<span class="tira ${k}" style="width:${w}%" title="${t}">${w > 14 ? t : ''}</span>`; }).join('')}</div>`;
@@ -532,6 +589,7 @@ let anim = null, mv = null;
 const L = crearLienzo(cv, altoPista, draw);
 function calcular(){ mv = M.movimiento({ m:S.m, h:S.h, k:S.k, mu:S.mu, d:S.d, forma:S.forma, piso: Math.max(2.2, S.d + 0.6) }); }
 function draw(){
+  if (L.W && S.jugando){ L.ctx.clearRect(0, 0, L.W, L.H); $('desc1').textContent = dibujarRampa(L.ctx, colores(), L.W, L.H, S.mj, S.t); return; }
   if (!L.W || !mv) return;
   const c = colores(), { ctx, W, H } = L, z = zonasPista(W, H), e = mv.en(S.t);
   ctx.clearRect(0, 0, W, H);
@@ -711,7 +769,14 @@ document.addEventListener('focusin', e => { const t = e.target.closest && e.targ
 document.addEventListener('focusout', e => { if (e.target.closest && e.target.closest('#m1 [data-var]')) marcar(null); });
 alRedibujarTema(draw);
 addEventListener('modo', () => L.resize());
-calcular(); L.resize(); go(0);
+// Jugar antes de preguntar: la rampa abre en juego libre; la guía queda velada hasta «Ya jugué: seguir».
+S.jugando = true; S.mj = movJuego();
+panelRampa($('juego1'), () => { cancelAnimationFrame(anim); S.mj = movJuego(); S.t = 0; draw(); },
+  () => { S.mj = movJuego(); animar(0, S.mj.duracion); });
+montarJuego({ escena: cv.closest('.bench'), preguntas: [cv.closest('.mode').querySelector('.guide')],
+  consigna: 'Cambia la rampa y suelta el bloque varias veces. Mira cómo baja.',
+  alListo: () => { cancelAnimationFrame(anim); S.jugando = false; $('juego1').hidden = true; go(S.step); } });
+calcular(); L.resize(); go(0); S.t = 0; draw();
 })();
 </script>
 <script>
@@ -724,6 +789,7 @@ const cv = $('cv2');
 const L = crearLienzo(cv, W => W >= 560 ? clamp(W*0.56, 300, 440) : 460, draw);
 let anim = null;
 const E = {};
+const J = { on:true, mv:movJuego(), t:0 }; // juego libre antes de preguntar (ver el final)
 const FORMAS = [['recta', 'Recta'], ['curva', 'Curva'], ['lomas', 'Con loma']];
 const EXPS = [
   { id:'formas', corto:'Cambio la rampa',
@@ -814,6 +880,7 @@ function draw(){
   if (!L.W) return;
   const c = colores(), { ctx, W, H } = L;
   ctx.clearRect(0, 0, W, H);
+  if (J.on){ $('desc2').textContent = dibujarRampa(ctx, c, W, H, J.mv, J.t); return; }
   ({ formas:drawFormas, arrastre:drawArrastre, plano:drawPlano, grua:drawGrua, pelotas:drawPelotas })[E.tipo](ctx, c, W, H);
 }
 function drawFormas(ctx, c, W, H){
@@ -1030,7 +1097,20 @@ function controles(x){
 }
 alRedibujarTema(draw);
 addEventListener('modo', () => L.resize());
+// Jugar antes de preguntar: si se entra directo aquí, la rampa libre va primero (la botonera queda libre).
+function soltarJuego(){
+  cancelAnimationFrame(anim); J.mv = movJuego();
+  if (RM){ J.t = J.mv.duracion; draw(); return; }
+  const ini = performance.now(), dur = Math.max(600, J.mv.duracion*1000*1.6);
+  const tick = now => { const f = Math.min(1, (now - ini)/dur); J.t = J.mv.duracion*f; draw(); if (f < 1) anim = requestAnimationFrame(tick); };
+  anim = requestAnimationFrame(tick);
+}
+panelRampa($('juego2'), () => { cancelAnimationFrame(anim); J.mv = movJuego(); J.t = 0; draw(); }, soltarJuego);
+montarJuego({ escena: cv.closest('.bench'), preguntas: [$('t2').parentNode, $('body2')],
+  consigna: 'Cambia la rampa y suelta el bloque varias veces. Mira cómo baja.',
+  alListo: () => { cancelAnimationFrame(anim); J.on = false; $('juego2').hidden = true; ir(S.k); } });
 L.resize(); ir(0);
+L.compactar(false); // mientras se juega, el dibujo no se pega arriba (taparía la consigna)
 })();
 </script>
 
@@ -1326,7 +1406,7 @@ const ptsX = () => XS.map((x, i) => [x, S.ex.F[i]]);
 const rX = () => M.fuerzaVariable({ puntos:ptsX(), m:S.ex.m, v0:S.ex.v0 });
 function draw(){
   if (!L.W) return;
-  const c = colores(), { ctx, W, H } = L, z = zonas(W, H), s = steps[S.step], esc = ESC[s.esc], rev = revelado(), f = S.f;
+  const c = colores(), { ctx, W, H } = L, z = zonas(W, H), s = S.jugando ? { esc:'X' } : steps[S.step], esc = ESC[s.esc], rev = revelado(), f = S.f;
   ctx.clearRect(0, 0, W, H);
   const B = z.graf, X = x => B.x + (x - esc.R.x0)/(esc.R.x1 - esc.R.x0)*B.w;
   GEO = null;
@@ -1370,6 +1450,13 @@ function draw(){
     rielResorte(ctx, c, z.riel, x, true);
     if (z.barras) barras3(ctx, c, z.barras, [{ nombre:'Ee', sub:'resorte', col:c.Ee, hl:'Ee', v:rev ? 0.5*K*x*x : null, ini:rk.chico }], 30,
       final ? `W = ΔEe = ${J(rk.W)}` : '');
+  } else if (S.jugando){
+    // Juego libre: la gráfica con sus puntos y el carrito, sin área, sin trabajo y sin cifras de rapidez.
+    const pts = ptsX(), rec = S.ex.rec, e = rec ? rec.en(S.ex.tAnim) : null, aqui = e ? e.x : 0;
+    const ej = graficaFx(ctx, c, B, { puntos:pts, R:esc.R, pasoX:esc.pasoX, hasta:null, nodos:true, cursor:e ? aqui : null });
+    GEO = { X:ej.X, Y:ej.Y, Finv: py => esc.R.y0 + (B.y + B.h - py)/B.h*(esc.R.y1 - esc.R.y0), nodos:pts.map(([x, F]) => ({ x:ej.X(x), y:ej.Y(F) })) };
+    const Fa = M.fuerzaEn(pts, aqui);
+    riel(ctx, c, z.riel, X, [{ x:aqui, m:S.ex.m, F:Fa, etqF:`F = ${fmt(Fa, 0)} N` }], { Fmax:40, kv:6 });
   } else {
     const pts = ptsX(), r = rX(), Pg = M.areaPartes(pts), rec = S.ex.rec, e = rec ? rec.en(S.ex.tAnim) : null;
     const aqui = e ? e.x : 0, v = e ? e.v : S.ex.v0, Ec = e ? e.Ec : r.Ec0;
@@ -1480,6 +1567,11 @@ let descPrevio = '';
 function describir(){
   const s = steps[S.step], rev = revelado();
   let t;
+  if (S.jugando){
+    t = `Juego libre. Punto en x = ${XS[S.ex.foco]} m: ${fmt(S.ex.F[S.ex.foco], 0)} N. ` + (S.ex.rec ? 'El carrito ya se soltó.' : 'El carrito espera en x = 0.');
+    if (t !== descPrevio){ descPrevio = t; $('desc3').textContent = t; }
+    return;
+  }
   if (s.esc === 'A') t = rev ? `Gráfica: la fuerza crece de 10 N en x = 0 a 40 N en x = 4 m. El área bajo la gráfica, un trapecio, es el trabajo: ${J(rA.W)}; la fuerza media es ${fmt(rA.Fmedia, 0)} N.` : 'Gráfica: una recta que va de 10 N en x = 0 a 40 N en x = 4 m. El carrito está quieto en x = 0.';
   else if (s.esc === 'B') t = rev ? `Los dos carritos reciben ${J(rA.W)}: el de 2 kg llega a ${fmt(rA.v, 0)} m/s en ${fmt(recA.tiempo, 2)} s y el de 8 kg a ${fmt(rA8.v, 0)} m/s en ${fmt(recA8.tiempo, 2)} s; los dos terminan con ${J(rA.Ec)} de energía cinética.` : 'Dos rieles con un carrito de 2 kg y otro de 8 kg, quietos en x = 0, y la misma gráfica de fuerza.';
   else if (s.esc === 'C') t = rev ? `De 0 a 4 m la fuerza es negativa y su área, bajo el eje, vale ${J(rC.negativa)}; la energía cinética baja de ${J(rC.Ec0)} a ${J(rC.Ecmin)} y la rapidez a ${fmt(rC.vmin, 0)} m/s. De 4 a 8 m el área vale ${J(rC.positiva)}: termina con ${J(rC.Ec)} y ${fmt(rC.v, 0)} m/s.` : 'Gráfica: una recta de −8 N en x = 0 a 0 N en x = 4 m, y otra de 0 N a 20 N en x = 8 m. El carrito pasa por x = 0 a 5 m/s.';
@@ -1513,7 +1605,7 @@ function explorar(){
   $('soltar3').addEventListener('click', soltar);
   vivo();
 }
-function quieto(){ parar(); S.ex.rec = null; S.ex.tAnim = 0; vivo(); }
+function quieto(){ parar(); S.ex.rec = null; S.ex.tAnim = 0; vivo(); if (S.jugando){ draw(); describir(); } }
 function soltar(){
   const rec = M.recorridoFuerza({ puntos:ptsX(), m:S.ex.m, v0:S.ex.v0 });
   S.ex.rec = rec;
@@ -1547,7 +1639,7 @@ function ponerF(i, F){
   quieto();
 }
 Celular.arrastre(cv, {
-  activo: () => S.explora,
+  activo: () => S.explora || S.jugando,
   cerca: (p, r) => nodoMasCercano(p, r) >= 0,
   empezar: p => { cual = nodoMasCercano(p, Celular.RADIO_DEDO); if (cual >= 0){ S.ex.foco = cual; cv.classList.add('agarrando'); quieto(); } },
   mover: p => { if (cual >= 0 && GEO) ponerF(cual, GEO.Finv(p.y)); },
@@ -1555,7 +1647,7 @@ Celular.arrastre(cv, {
   sobre: s => { S.sobre = s; draw(); },
 });
 cv.addEventListener('keydown', e => {
-  if (!S.explora) return;
+  if (!S.explora && !S.jugando) return;
   const i = S.ex.foco;
   if (e.key === 'ArrowLeft' || e.key === 'ArrowRight'){ e.preventDefault(); S.ex.foco = clamp(i + (e.key === 'ArrowRight' ? 1 : -1), 0, XS.length - 1); draw(); describir(); }
   else if (e.key === 'ArrowUp' || e.key === 'ArrowDown'){ e.preventDefault(); ponerF(i, S.ex.F[i] + (e.key === 'ArrowUp' ? 5 : -5)); }
@@ -1580,7 +1672,24 @@ addEventListener('modo', () => {
   if ($('m3').hidden && S.anim){ if (S.anim.tipo === 'ex') S.ex.tAnim = S.ex.rec.tiempo; else S.f = 1; S.anim = null; describir(); }
   L.resize();
 });
+// Jugar antes de preguntar: la gráfica abre en juego libre (arrastrar sus puntos, o las gráficas de partida, y
+// soltar el carrito); la guía queda velada hasta «Ya jugué: seguir».
+S.jugando = true; S.ex.F = PRESETS[1][2].slice();
+$('juego3').innerHTML = `<div class="seg" role="group" aria-label="Gráficas de partida">${PRESETS.map(([id, t]) => `<button type="button" data-pj="${id}" aria-pressed="${id === 'crece'}">${t}</button>`).join('')}</div>
+  <p class="hint" style="margin:0">Arrastra los puntos de la gráfica (o enfócala y usa las flechas).</p>
+  <p><button type="button" class="btn primary" data-soltar>Soltar el carrito</button></p>`;
+$('juego3').querySelectorAll('[data-pj]').forEach(b => b.addEventListener('click', () => {
+  S.ex.F = PRESETS.find(q => q[0] === b.dataset.pj)[2].slice();
+  $('juego3').querySelectorAll('[data-pj]').forEach(x => x.setAttribute('aria-pressed', String(x === b))); quieto();
+}));
+$('juego3').querySelector('[data-soltar]').addEventListener('click', soltar);
+montarJuego({ escena: cv.closest('.bench'), preguntas: [cv.closest('.mode').querySelector('.guide')],
+  consigna: 'Mueve los puntos de la gráfica y suelta el carrito. Mira qué hace.',
+  alListo: () => { parar(); S.jugando = false; S.ex.F = PRESETS[2][2].slice(); S.ex.rec = null; S.ex.tAnim = 0; $('juego3').hidden = true; go(S.step); } });
 L.resize(); go(0);
+cv.tabIndex = 0; cv.classList.add('arrastrable'); L.compactar(false);
+cv.setAttribute('aria-label', 'Juego libre: gráfica de fuerza contra posición con 5 puntos. Flechas izquierda y derecha: elegir el punto. Arriba y abajo: cambiar su fuerza en 5 N.');
+draw(); describir();
 })();
 </script>
 
