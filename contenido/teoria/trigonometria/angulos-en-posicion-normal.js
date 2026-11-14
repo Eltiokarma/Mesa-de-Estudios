@@ -472,7 +472,7 @@
     ahoraTu: {
       voz: 'Quita las vueltas; después, mira el signo del giro.',
       generar(sem) {
-        const rr = azar(sem), base = rr.uno([30, 45, 60]), k = rr.ent(0, 3), neg = sem % 2 === 1;
+        const rr = azar(sem), base = rr.uno([30, 45, 60]), neg = sem % 2 === 1, k = neg ? rr.ent(0, 3) : rr.ent(1, 3);
         const g = (neg ? -1 : 1) * (base + 360 * k), fn = sem % 4 < 2 ? 'sen' : 'cos';
         const [sv, cv] = EXACTO[base];
         const mag = fn === 'sen' ? sv : cv, otro = fn === 'sen' ? cv : sv;
