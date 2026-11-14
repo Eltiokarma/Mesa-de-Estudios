@@ -37,6 +37,13 @@
     return ops;
   }
 
+  const plural = (n, uno, varios) => `${f(n, 0)} ${n === 1 ? uno : varios}`;
+  // Gesto directo (docs/teoria.md §4b): las manijas viven en la geometría que exporta rm-plano.
+  const PLANO = () => Kit.piezas['rm-plano'];
+  const Y0_G = 5.2, ALTO_G = 4.4;   // piso y alto de las barras de grafico(), en unidades del plano
+  // Valor que marca el dedo según la escala del gráfico (piso = base, techo = tope).
+  const valorEn = (datos, base, tope, py) => { const g = PLANO().geometria(datos); return base + (g.Y(Y0_G) - py) / (g.k * ALTO_G) * (tope - base); };
+
   // ---------- Idea 1: leer con la escala ----------
   // Cambia: dónde empieza el eje vertical · Permanece: las ventas (90 y 100) · Progresa: cuánto más alta se ve la barra ·
   // Se reserva: crecer más en soles contra crecer más en porcentaje · Debe verse: la altura dibujada depende del eje.
@@ -49,6 +56,7 @@
       .concat([{ x: 1.3, y: y0, t: String(base), color: base ? 'h' : undefined, ancla: 'end' }, { x: 1.3, y: Y(tope), t: String(tope), ancla: 'end' }]);
     return { ancho: 10, alto: 6, lineas: [{ de: [1.6, y0 + 0.05], a: [1.6, 0.4], flecha: true, grosor: 'contorno', color: base ? 'h' : undefined }, { de: [1.5, y0], a: [9.6, y0], grosor: 'contorno' }], poligonos, textos, pie: extra.pie };
   }
+  const datosLeer = val => grafico([{ v: 90, color: 'i', rotulo: 'Marzo' }, { v: 100, color: 'o', rotulo: 'Abril' }], val.b, 100);
   const leer = {
     id: 'leer-con-escala',
     titulo: 'La altura depende del eje',
@@ -58,9 +66,13 @@
       consigna: 'Una tienda vendió 90 cajas en marzo y 100 en abril. Cambia dónde empieza el eje vertical y compara las barras.',
       voz: 'Los datos no cambian; solo cambia el dibujo.',
       controles: [{ id: 'b', etiqueta: 'El eje empieza en', opciones: [0, 50, 80, 85].map(v => ({ valor: v, texto: String(v) })) }],
-      dibujo: val => ({ datos: grafico([{ v: 90, color: 'i', rotulo: 'Marzo' }, { v: 100, color: 'o', rotulo: 'Abril' }], val.b, 100), estado: {} }),
+      dibujo: val => ({ datos: datosLeer(val), estado: {} }),
       lectura: val => [`Aumento real: 11 % · la barra se ve ${f((100 - val.b) / (90 - val.b), 1)} veces`],
       minimo: 3,
+      // Se arrastra el piso del eje hacia arriba: el valor que marca el dedo es donde empieza el eje (el más cercano).
+      arrastres: [{ id: 'piso', etiqueta: 'dónde empieza el eje vertical', color: 'c-h',
+        donde: val => { const g = PLANO().geometria(datosLeer(val)); return { x: g.X(1.6), y: g.Y(Y0_G) }; },
+        mover: (pt, val) => { const v = valorEn(datosLeer(val), val.b, 100, pt.y); return { b: [0, 50, 80, 85].reduce((m, o) => (Math.abs(o - v) < Math.abs(m - v) ? o : m), val.b) }; } }],
     },
     predice: {
       pregunta: 'La tienda A pasó de vender 200 a 250 cajas; la tienda B, de 50 a 80. ¿Cuál creció más en porcentaje?',
@@ -83,7 +95,7 @@
     },
     regla: {
       texto: 'Un gráfico se lee con su escala: dónde empieza el eje y qué unidad usa. Un crecimiento en porcentaje se compara con el valor inicial, no con la altura.',
-      ecuacion: ['crecimiento % = ', { frac: ['después − antes', 'antes'] }, ' · 100'],
+      ecuacion: ['crecimiento % = ', { frac: ['después − antes', { llave: ['antes'], nota: 'el inicio', color: 'c-i' }] }, ' · 100'],
       condicion: 'el eje está rotulado; si no empieza en 0, las alturas no son proporcionales a los valores.',
     },
     ahoraTu: {
@@ -118,6 +130,7 @@
       notas: [{ t: extra.nota || `3 · ${G} − ${emp} = ${3 * G - emp} puntos` }, { t: 'Gana 3, empata 1, pierde 0' }],
     };
   }
+  // Sin arrastre: la tabla solo trae conteos (partidos, empates, puntos); no hay un objeto que agarrar.
   const deportes = {
     id: 'puntos-de-una-liga',
     titulo: 'Cuántos puntos reparte una liga',
@@ -153,7 +166,7 @@
     },
     regla: {
       texto: 'En una liga de n equipos, todos contra todos una vez, se juegan n(n − 1)/2 partidos. Cada partido con ganador reparte 3 puntos; cada empate, 2.',
-      ecuacion: [Pn, ' = 3 · ', { frac: ['n(n − 1)', '2'] }, ' − ', E],
+      ecuacion: [Pn, ' = 3 · ', { llave: [{ frac: ['n(n − 1)', '2'] }], nota: 'partidos', color: 'c-i' }, ' − ', { llave: [E], nota: 'empates', color: 'c-h' }],
       condicion: 'se juega una sola vuelta y el sistema es 3, 1 y 0; con ida y vuelta, los partidos se duplican.',
     },
     ahoraTu: {
@@ -201,6 +214,8 @@
       notas: [{ t: extra.nota || 'Dato: x + y = 10' }],
     };
   }
+  // Sin arrastre en la idea: los casos son filas de una tabla. En el laboratorio, los casos son puntos del plano y el
+  // punto sí se arrastra sobre las rectas de los datos.
   const suficiencia = {
     id: 'suficiencia',
     titulo: 'Bastan si todos coinciden',
@@ -229,13 +244,13 @@
       datos: casos([[4, 6, false], [7, 3, false], [6, 4, true]], { columna: 'x − y = 2', nota: 'Los tres cumplen x + y = 10' }),
       pasos: [
         { estado: { corte: 0 }, texto: 'Con x + y = 10, hay casos que dan x distinto: no basta.' },
-        { estado: { corte: 0 }, texto: 'Si en cambio se sabe x − y = 2, solo (6, 4) cumple los dos.', ecuacion: [x, ' + ', y, ' = 10 y ', x, ' − ', y, ' = 2'] },
+        { estado: { corte: 0 }, texto: 'Si en cambio se sabe x − y = 2, solo (6, 4) cumple los dos.', ecuacion: [x, ' + ', y, ' = 10', '   ·   ', x, ' − ', y, ' = 2'] },
         { estado: { corte: 0 }, texto: 'Un solo valor de x: ahí los datos sí bastan.', ecuacion: [x, ' = 6'] },
       ],
     },
     regla: {
       texto: 'Los datos bastan si existe al menos un caso que los cumple y todos los casos que los cumplen dan el mismo valor de lo pedido.',
-      ecuacion: ['bastan ⇔ casos ≠ ∅ y lo pedido tiene un solo valor'],
+      ecuacion: ['bastan  ⇔  ', { llave: ['casos ≠ ∅'], nota: 'hay alguno', color: 'c-d' }, ' y ', { llave: ['un solo valor'], nota: 'todos coinciden', color: 'c-i' }],
       condicion: 'se buscan todos los casos compatibles, no solo uno; y se compara solo la cantidad pedida, no todo el caso.',
     },
     ahoraTu: {
@@ -259,11 +274,98 @@
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1: dos barras y el piso del eje, todo arrastrable: el caso raro es un piso tan alto que una barra «crece» varias veces.
+  const TOPE = 150;
+  const datosEje = val => grafico([{ v: val.a, color: 'i', rotulo: 'Marzo' }, { v: val.c, color: 'o', rotulo: 'Abril' }], val.b, TOPE);
+  const mesaEje = {
+    id: 'eje-libre', titulo: 'Barras y eje a tu gusto', pieza: 'rm-plano',
+    consigna: 'Arrastra el techo de cada barra y el piso del eje. Compara el aumento real con lo que muestra el dibujo.',
+    controles: [
+      { id: 'a', etiqueta: 'Marzo', min: 85, max: 150, paso: 5, inicio: 90, decimales: 0, color: 'c-i' },
+      { id: 'c', etiqueta: 'Abril', min: 85, max: 150, paso: 5, inicio: 100, decimales: 0, color: 'c-o' },
+      { id: 'b', etiqueta: 'El eje empieza en', min: 0, max: 80, paso: 5, inicio: 0, decimales: 0, color: 'c-h' },
+    ],
+    dibujo: val => ({ datos: datosEje(val), estado: {} }),
+    lectura: val => [`Real: ×${f(val.c / val.a, 2)} · dibujo: ×${f((val.c - val.b) / (val.a - val.b), 2)}`],
+    arrastres: [
+      { id: 'piso', etiqueta: 'dónde empieza el eje vertical', color: 'c-h',
+        donde: val => { const g = PLANO().geometria(datosEje(val)); return { x: g.X(1.6), y: g.Y(Y0_G) }; },
+        mover: (pt, val) => ({ b: valorEn(datosEje(val), val.b, TOPE, pt.y) }) },
+      ...[['a', 0, 'marzo', 'c-i'], ['c', 1, 'abril', 'c-o']].map(([id, k, mes, color]) => ({ id: `techo-${mes}`, etiqueta: `ventas de ${mes}`, color,
+        // La manija va justo bajo el techo, dentro de la barra, para no tapar el número que está encima.
+        donde: val => { const g = PLANO().geometria(datosEje(val)); return { x: g.X(3.1 + 2.2 * k), y: g.Y(Y0_G - ALTO_G * (val[id] - val.b) / (TOPE - val.b) + 0.45) }; },
+        mover: (pt, val) => { const g = PLANO().geometria(datosEje(val)); return { [id]: valorEn(datosEje(val), val.b, TOPE, pt.y - 0.45 * g.k) }; } })),
+    ],
+  };
+  // Mesa 2: ligas de 3 a 8 equipos, a una o dos vueltas. Sin arrastre: la tabla son solo conteos.
+  const ligaLibre = val => {
+    const G = val.n * (val.n - 1) / 2 * val.v, e = Math.min(val.e, G);
+    return {
+      columnas: ['Partidos', 'Empates', 'Puntos'], filas: [`${val.n} equipos`], ancho: 84,
+      celdas: [[{ t: String(G) }, { t: String(e), color: 'h' }, { t: String(3 * G - e), color: 'd', resalto: 'd' }]],
+      notas: [{ t: `${val.v === 2 ? 'Ida y vuelta' : 'Una vuelta'}: 3 · ${G} − ${e} = ${3 * G - e}` }, { t: val.e > G ? `Solo hay ${G} partidos para empatar` : 'Gana 3, empata 1, pierde 0' }],
+    };
+  };
+  const mesaLiga = {
+    id: 'liga-libre', titulo: 'Arma tu liga', pieza: 'rm-tablero',
+    consigna: 'Elige cuántos equipos, si se juega ida y vuelta y cuántos empates hubo. Mira cuántos puntos se reparten.',
+    controles: [
+      { id: 'n', etiqueta: 'Equipos', min: 3, max: 8, paso: 1, inicio: 4, decimales: 0, color: 'c-i' },
+      { id: 'v', etiqueta: 'Vueltas', opciones: [{ valor: 1, texto: 'Una' }, { valor: 2, texto: 'Ida y vuelta' }] },
+      { id: 'e', etiqueta: 'Empates', min: 0, max: 20, paso: 1, inicio: 2, decimales: 0, color: 'c-h' },
+    ],
+    dibujo: val => ({ datos: ligaLibre(val), estado: {} }),
+    lectura: val => { const G = val.n * (val.n - 1) / 2 * val.v, e = Math.min(val.e, G); return [plural(G, 'partido', 'partidos'), ', ', plural(e, 'empate', 'empates'), ': ', Pn, ` = ${3 * G - e}`]; },
+  };
+  // Mesa 3: los casos como puntos del plano. El dato I es la recta x + y = 10; el dato II, otra recta o la misma.
+  // Se arrastra el punto (x, y) y se cuentan los casos enteros que cumplen los dos.
+  const DATO2 = [
+    { valor: 0, texto: 'Sin dato II', ok: () => true },
+    { valor: 1, texto: '2x + 2y = 20', ok: (a, b) => 2 * a + 2 * b === 20, de: [0, 10], a: [10, 0] },
+    { valor: 2, texto: 'x − y = 2', ok: (a, b) => a - b === 2, de: [2, 0], a: [10, 8] },
+    { valor: 3, texto: 'y = 3', ok: (a, b) => b === 3, de: [0, 3], a: [10, 3] },
+  ];
+  const casosDe = d2 => { const xs = []; for (let a = 0; a <= 10; a++) if (DATO2[d2].ok(a, 10 - a)) xs.push(a); return xs; };
+  const datosPlano = val => {
+    const d2 = DATO2[val.d2], P = (a, b) => [a, 10 - b];   // y matemática hacia arriba
+    const lineas = [{ de: P(0, 10), a: P(10, 0), color: 'i', grosor: 'variable', rotulo: 'I', en: P(1, 9.6) }];
+    if (d2.de) lineas.push({ de: P(...d2.de), a: P(...d2.a), color: 'o', discontinua: true, rotulo: 'II', en: P(d2.a[0] - 0.6, d2.a[1] + 0.6) });
+    const casos = casosDe(val.d2);
+    const ok1 = val.x + val.y === 10, ok2 = d2.ok(val.x, val.y);
+    return {
+      ancho: 10, alto: 10, cuadricula: 1, lineas,
+      nodos: casos.map(a => ({ id: `c${a}`, x: a, y: 10 - (10 - a), r: 5, color: 'd', relleno: 0.9 }))
+        .concat([{ id: 'p', x: val.x, y: 10 - val.y, r: 8, color: ok1 && ok2 ? 'd' : 'h', relleno: 0.3 }]),
+      pie: `${plural(casos.length, 'caso cumple', 'casos cumplen')}: ${casos.length === 1 ? 'basta' : 'no basta'}`,
+    };
+  };
+  const mesaPlano = {
+    id: 'casos-en-el-plano', titulo: 'Los casos en el plano', pieza: 'rm-plano',
+    consigna: 'Dato I: x + y = 10, con x e y enteros de 0 a 10. Elige el dato II y arrastra el punto. ¿Cuántos casos quedan?',
+    controles: [
+      { id: 'd2', etiqueta: 'Dato II', opciones: DATO2.map(d => ({ valor: d.valor, texto: d.texto })) },
+      { id: 'x', etiqueta: 'x', min: 0, max: 10, paso: 1, inicio: 4, decimales: 0, color: 'c-i' },
+      { id: 'y', etiqueta: 'y', min: 0, max: 10, paso: 1, inicio: 6, decimales: 0, color: 'c-o' },
+    ],
+    dibujo: val => ({ datos: datosPlano(val), estado: {} }),
+    lectura: val => {
+      const ok1 = val.x + val.y === 10, ok2 = DATO2[val.d2].ok(val.x, val.y);
+      return [`(${val.x}, ${val.y}): `, ok1 && ok2 ? 'cumple los datos' : ok1 ? 'cumple I, no II' : 'no cumple I'];
+    },
+    arrastres: [{ id: 'punto', etiqueta: 'el caso (x, y)', color: 'c-i',
+      donde: val => { const g = PLANO().geometria(datosPlano(val)); return { x: g.X(val.x), y: g.Y(10 - val.y) }; },
+      mover: (pt, val) => { const g = PLANO().geometria(datosPlano(val)); return { x: (pt.x - g.X(0)) / g.k, y: 10 - (pt.y - g.Y(0)) / g.k }; } }],
+  };
+
   return {
     unidad: 'razonamiento-matematico.tablas-graficos-y-suficiencia',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rm-plano.js', '/nucleo/kit/piezas/rm-tablero.js'],
+    // Laboratorio: barras y piso del eje arrastrables, ligas de una o dos vueltas, y los casos de suficiencia como
+    // puntos del plano.
+    laboratorio: [mesaEje, mesaLiga, mesaPlano],
     historia: {
       texto: 'En la década de 1850, Florence Nightingale usó tablas y diagramas para argumentar sobre la mortalidad y las condiciones sanitarias. El historiador Hugh Small mostró también cómo se corrigió la forma de representar esos datos. Un gráfico es una decisión: hay que leer su escala antes de creerle a la altura.',
       pregunta: '¿Puede un gráfico decir la verdad y aun así engañar?',
