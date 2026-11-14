@@ -19,11 +19,19 @@
  * contradicción) es hipótesis nueva.
  */
 (function (root, fabrica) {
-  const def = fabrica();
+  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
   if (typeof module === 'object' && module.exports) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function () {
+})(typeof self !== 'undefined' ? self : this, function (Kit) {
   'use strict';
+  // Gesto directo (docs/teoria.md §4b): la cinta que tapa se arrastra a la oración. La manija va sobre el número de la
+  // oración tapada (rv-texto.ancla) y salta a la oración más cercana al dedo (rv-texto.cercana).
+  const RV = () => Kit.piezas['rv-texto'];
+  const cinta = (datos, n, id = 'k') => ({
+    id: 'cinta', etiqueta: 'cinta que tapa una oración', color: 'c-o',
+    donde: val => RV().ancla(datos, `o${val[id]}`),
+    mover: pt => ({ [id]: +RV().cercana(datos, pt, Array.from({ length: n }, (_, k) => `o${k + 1}`)).slice(1) }),
+  });
   // Una lectura en vivo no parte línea dentro de un color (.var): si el texto es largo, solo va en color su cabeza.
   const corto = (fn, t) => {
     if (t.length <= 26) return fn(t);
@@ -73,6 +81,8 @@
       dibujo: val => ({ datos: lista('Tema: el cuy como alimento', CUY), estado: tapar(val.k, val.k === 4, PIERDE_CUY[val.k][1]) }),
       lectura: val => [val.k === 4 ? corto(queda, PIERDE_CUY[val.k][0]) : corto(sobra, PIERDE_CUY[val.k][0])],
       minimo: 3,
+      // Arrastra la cinta a otra oración: la tapa y el texto se relee sin ella.
+      arrastres: [cinta(lista('Tema: el cuy como alimento', CUY), 5)],
     },
     predice: {
       pregunta: 'En este texto sobre el colibrí, ¿qué oración se elimina por redundante?',
@@ -98,7 +108,7 @@
     },
     regla: {
       texto: 'Una oración es redundante si repite, aunque sea con otras palabras, lo que otra ya dijo. Al quitarla, el texto no pierde información ni enlaces.',
-      ecuacion: [prueba('oración'), ' redundante si ', queda('texto sin ella'), ' = ', queda('texto con ella')],
+      ecuacion: [prueba('oración'), ' redundante si ', { llave: [queda('texto sin ella')], nota: 'tapándola', color: 'c-i' }, ' = ', { llave: [queda('texto con ella')], nota: 'el original', color: 'c-i' }],
       condicion: 'se quita la que repite, no la que otra necesita (la razón de un «por eso» o la que presenta el tema).',
     },
     ahoraTu: {
@@ -135,6 +145,7 @@
       dibujo: val => ({ datos: lista('Tema: la quena', QUENA), estado: tapar(val.k, val.k === 4, PIERDE_QUENA[val.k][1]) }),
       lectura: val => [val.k === 4 ? corto(queda, PIERDE_QUENA[val.k][0]) : corto(sobra, PIERDE_QUENA[val.k][0])],
       minimo: 3,
+      arrastres: [cinta(lista('Tema: la quena', QUENA), 5)],
     },
     predice: {
       pregunta: 'En este texto sobre el puente de Q’eswachaka, ¿qué oración se elimina por impertinente?',
@@ -158,7 +169,7 @@
     },
     regla: {
       texto: 'Una oración es impertinente si se aparta del tema del texto, aunque repita alguna de sus palabras. Las demás desarrollan el tema; ella habla de otra cosa.',
-      ecuacion: [prueba('oración'), ' impertinente si no habla de ', tema('el tema')],
+      ecuacion: [prueba('oración'), ' impertinente si no habla de ', { llave: [tema('el tema')], nota: 'del conjunto', color: 'c-d' }],
       condicion: 'primero se nombra el tema del conjunto; un dato nuevo que sí habla del tema no es impertinente.',
     },
     ahoraTu: {
@@ -195,6 +206,7 @@
       dibujo: val => ({ datos: lista('Tema: la laguna seca', LAGUNA), estado: tapar(val.k, val.k === 4, PIERDE_LAG[val.k][1]) }),
       lectura: val => [val.k === 4 ? corto(queda, PIERDE_LAG[val.k][0]) : corto(sobra, PIERDE_LAG[val.k][0])],
       minimo: 3,
+      arrastres: [cinta(lista('Tema: la laguna seca', LAGUNA), 5)],
     },
     predice: {
       pregunta: 'Texto sobre la feria escolar. ¿Qué oración se elimina por incompatible?',
@@ -219,7 +231,7 @@
     },
     regla: {
       texto: 'Una oración es incompatible si contradice lo que el texto ya afirmó, sobre lo mismo y en el mismo momento. Un contraste con «sin embargo» puede ser compatible.',
-      ecuacion: [queda('A'), ' y ', sobra('no A'), ' no pueden ser verdaderas a la vez'],
+      ecuacion: [{ llave: [queda('A')], nota: 'ya afirmado', color: 'c-i' }, ' y ', { llave: [sobra('no A')], nota: 'lo niega', color: 'c-h' }, ' no pueden ser verdaderas a la vez'],
       condicion: 'las dos oraciones hablan de lo mismo, en el mismo tiempo y lugar; si no, quizá solo contrastan.',
     },
     ahoraTu: {
@@ -236,9 +248,61 @@
     },
   };
 
+  // ---------- Laboratorio: tres cintas, tres criterios ----------
+  // Más que los juegos: un texto con los tres defectos a la vez (dos oraciones gemelas, una ajena y una que choca) y
+  // tres cintas. El caso raro: tapar las dos gemelas a la vez sí hace perder algo. Lo que se pierde y lo que sigue
+  // sobrando se calcula con las reglas de abajo (regla 1); la lectura lo dice en palabras para el caso guardado.
+  const LLAMA = [
+    'La llama es un animal de carga de los Andes.',
+    'Puede llevar hasta treinta kilos en caminatas largas.',
+    'En viajes largos, carga unos treinta kilos.',
+    'La llama nunca se usó para transportar nada.',
+    'La carga de un camión pasa las diez toneladas.',
+    'Por eso, los arrieros la eligen para cruzar la puna.',
+  ];
+  const figLlama = () => ({ secciones: [
+    lista('Tema: la llama', LLAMA).secciones[0],
+    { id: 'bandeja', titulo: 'Cintas', modo: 'parrafo', fragmentos: [1, 2, 3].map(c => ({ id: `c${c}`, t: `cinta ${c}` })) },
+  ] });
+  function revisaLlama(val) {
+    const fuera = new Set([val.a, val.b, val.c].filter(Boolean)), esta = k => !fuera.has(k);
+    const pierde = [], sobran = [];
+    if (!esta(1)) pierde.push(['de qué animal se habla', 1]);
+    if (!esta(2) && !esta(3)) pierde.push(['cuánto carga', 2]);
+    if (!esta(6)) pierde.push(['la conclusión', 6]);
+    if (esta(2) && esta(3)) sobran.push(['la 3 repite la 2', 3]);
+    if (esta(4)) sobran.push(['la 4 choca con la 1', 4]);
+    if (esta(5)) sobran.push(['la 5 habla de camiones', 5]);
+    return { fuera, pierde, sobran };
+  }
+  const mesaLlama = {
+    id: 'tres-cintas', titulo: 'Tres cintas', pieza: 'rv-texto',
+    consigna: 'Arrastra las tres cintas a las oraciones que sobran. Busca el texto que no repite, no se va del tema y no se contradice.',
+    voz: 'De dos gemelas, se quita solo una.',
+    controles: ['a', 'b', 'c'].map((id, k) => ({ id, etiqueta: `Cinta ${k + 1}`, opciones: [0, 1, 2, 3, 4, 5, 6].map(n => ({ valor: n, texto: n ? `${n}` : 'sin usar' })), inicio: 0 })),
+    dibujo: val => {
+      const r = revisaLlama(val), marcas = {};
+      for (const [, k] of r.sobran) marcas[`o${k}`] = 'h';
+      if (!r.fuera.has(6) && r.pierde.some(p => p[1] === 2)) marcas.o6 = 'h';
+      const n = r.pierde.length + r.sobran.length;
+      return { datos: figLlama(), estado: { tapar: [...r.fuera].map(k => `o${k}`).concat(['a', 'b', 'c'].filter(id => val[id]).map((id, k) => `c${['a', 'b', 'c'].indexOf(id) + 1}`)), marcas, sellos: { bandeja: n ? { t: `${n} por arreglar`, c: 'h' } : { t: 'Texto limpio', c: 'i' } } } };
+    },
+    lectura: val => {
+      const r = revisaLlama(val);
+      if (r.pierde.length) return [sobra('Se pierde'), ` ${r.pierde.map(p => p[0]).join(' y ')}`];
+      if (r.sobran.length) return [prueba(`Sobra${r.sobran.length > 1 ? 'n' : ''} ${r.sobran.length}`), `: ${r.sobran[0][0]}`];
+      return [queda('Texto limpio'), ': nada se pierde'];
+    },
+    arrastres: ['a', 'b', 'c'].map((id, k) => ({
+      id: `cinta-${k + 1}`, etiqueta: `cinta ${k + 1}`, color: 'c-o',
+      donde: val => RV().ancla(figLlama(), val[id] ? `o${val[id]}` : `c${k + 1}`),
+      mover: pt => { const f = RV().cercana(figLlama(), pt, LLAMA.map((_, j) => `o${j + 1}`).concat([`c${k + 1}`])); return { [id]: f[0] === 'o' ? +f.slice(1) : 0 }; },
+    })),
+  };
+
   return {
     unidad: 'razonamiento-verbal.eliminacion-de-oraciones',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rv-texto.js'],
     historia: {
@@ -246,6 +310,11 @@
       pregunta: '¿Cómo sabes que una oración sobra?',
       fuente: { titulo: 'Matriz de teoría de razonamiento verbal (revisión de textos)', url: 'https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/coherencia.htm' },
     },
+    laboratorio: [
+      mesaLlama,
+      Object.assign({ id: 'redundancia', titulo: 'Lo que repite', pieza: 'rv-texto' }, redundancia.juega),
+      Object.assign({ id: 'contradice', titulo: 'Lo que contradice', pieza: 'rv-texto' }, incompatibilidad.juega),
+    ],
     ideas: [redundancia, impertinencia, incompatibilidad],
   };
 });
