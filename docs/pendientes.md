@@ -8,7 +8,7 @@ Actualizado el 14 de noviembre de 2026. La siguiente sesión empieza aquí: lée
 npm test
 ```
 
-Deben pasar 8156 pruebas. El servidor tiene las suyas: `cd servidor && pip install -r requirements.txt -r requirements-dev.txt && python -m pytest -q` (83).
+Deben pasar 8178 pruebas. El servidor tiene las suyas: `cd servidor && pip install -r requirements.txt -r requirements-dev.txt && python -m pytest -q` (83).
 
 ```bash
 npm run dev
