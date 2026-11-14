@@ -11,8 +11,12 @@
  *   altos:  [{ t: 'a', v: 3, color: 'o' }, { t: 'b', v: 2, color: 'i' }],   // tramos de la izquierda (arriba → abajo)
  *   celdas: [[{ t: 'a²', color: 'o', desde }, …], …],   // [fila][columna]; sin celda: casilla vacía (solo contorno)
  *   total:  { t: '(a + b)²', desde },                    // rótulo debajo del rectángulo
+ *   escala: 19,                                          // opcional: px por unidad, fija (tope: la que cabe), para
+ *                                                        // que el rectángulo crezca de verdad al subir a o b (gesto)
  *   alt
  * }
+ * geometria(datos, estado) → { esc, A, H, x0, y0, xs, ys }: xs e ys son los tramos [inicio, fin] en px de cada ancho
+ *   y cada alto; con ellos la teoría pone una manija en una esquina y la convierte en valor (esc px por unidad).
  * estado = { corte, separar: false, fantasma: null | { celdas: [[f, c], …], rotulo } }
  *   separar: las piezas se apartan unas de otras (se cuentan una por una); la escala no cambia.
  *   fantasma: casillas que un error olvida, con borde discontinuo y su rótulo en el pie.
@@ -31,11 +35,13 @@
 
   const suma = l => (l || []).reduce((a, x) => a + Math.max(0, +x.v || 0), 0);
   // Escala única: el lado mayor mide LADO px (con huecos incluidos, para que separar no cambie la escala).
-  function geometria(d) {
+  function geometria(d, estado = {}) {
     const A = suma(d.anchos) || 1, H = suma(d.altos) || 1;
     const na = (d.anchos || []).length, nh = (d.altos || []).length;
-    const esc = Math.min((LADO - HUECO * (na - 1)) / A, (LADO - HUECO * (nh - 1)) / H);
-    return { esc, A, H };
+    const cabe = Math.min((LADO - HUECO * (na - 1)) / A, (LADO - HUECO * (nh - 1)) / H);
+    const esc = d.escala > 0 ? Math.min(d.escala, cabe) : cabe;
+    const sep = !!estado.separar;
+    return { esc, A, H, x0: X0, y0: Y0, xs: cortes(d.anchos, esc, X0, sep), ys: cortes(d.altos, esc, Y0, sep) };
   }
   function cortes(lista, esc, origen, separar) {
     const out = []; let p = origen;
@@ -44,11 +50,11 @@
   }
 
   function dibujar(d, estado = {}) {
-    const g = geometria(d), sep = !!estado.separar;
+    const g = geometria(d, estado);
     const corte = Math.max(0, estado.corte || 0);
     const ve = e => (e.desde || 0) <= corte;
     const nuevo = e => ((e.desde || 0) === corte && corte > 0 ? ' kit-nuevo' : '');
-    const xs = cortes(d.anchos, g.esc, X0, sep), ys = cortes(d.altos, g.esc, Y0, sep);
+    const xs = g.xs, ys = g.ys;
     let s = '';
     // Cotas de los tramos: arriba los anchos, a la izquierda los altos, en el color de su variable.
     xs.forEach(([a, b], k) => { const x = d.anchos[k]; s += T.cota(a + 1, b - 1, Y0 - 14, { color: x.color, texto: x.t, grosor: T.GROSOR.contorno }); });
@@ -67,7 +73,8 @@
         s += `<rect x="${T.n(x1)}" y="${T.n(y1)}" width="${T.n(x2 - x1)}" height="${T.n(y2 - y1)}" rx="4" fill="none" stroke="currentColor" stroke-width="${T.GROSOR.cuadricula}" stroke-opacity="0.45"/>`;
       }
     }));
-    const bajo = Y0 + LADO + 26;
+    // Con escala fija, el rótulo del total sigue al borde de abajo del rectángulo (crece con él).
+    const bajo = (d.escala > 0 && ys.length ? ys[ys.length - 1][1] : Y0 + LADO) + 26;
     if (d.total && ve(d.total)) s += T.rotulo(X0 + LADO / 2, bajo, d.total.t, { ancla: 'middle', peso: 700, clase: 'kit-aparece' + nuevo(d.total) });
     const fa = estado.fantasma;
     if (fa && Array.isArray(fa.celdas)) {
