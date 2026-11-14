@@ -221,9 +221,13 @@
   }
   // Regla de academia (Van 't Hoff): por cada 10 °C la velocidad se multiplica por 'q' (2 si no se dice). Error típico:
   // multiplicar por q una sola vez, o por q·(ΔT/10) en vez de q^(ΔT/10).
-  function regla10(dT, q) {
-    const d = num(dT, 'ΔT'), qq = q === undefined ? 2 : positivo(q, 'factor');
-    return { valor: Math.pow(qq, d / 10), lineal: qq * d / 10 };
+  // Con t0 (lo que tarda la reacción a la temperatura de partida), también cuánto tarda después: tiempo = t0/valor, y lo
+  // que dan los dos errores: tiempoLineal = t0/lineal y tiempoUnaVez = t0/q (multiplicar por q una sola vez).
+  function regla10(dT, q, t0) {
+    const d = num(dT, 'ΔT'), qq = q === undefined || q === null ? 2 : positivo(q, 'factor');
+    const r = { valor: Math.pow(qq, d / 10), lineal: qq * d / 10 };
+    if (t0 !== undefined) { const t = positivo(t0, 'tiempo inicial'); Object.assign(r, { tiempo: t / r.valor, tiempoLineal: t / r.lineal, tiempoUnaVez: t / qq }); }
+    return r;
   }
   // Fracción de choques con energía suficiente (a lo largo de la línea de centros): e^(−Ea/RT).
   const fraccionEficaz = (Ea, T) => Math.exp(-noNegativo(Ea, 'Ea') / (R * positivo(T, 'temperatura')));

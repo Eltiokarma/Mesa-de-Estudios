@@ -1135,6 +1135,23 @@
         "valor": 0.001,
         "dc": 0.12
       }
+    },
+    {
+      "nombre": "Regla de 10 °C con tiempo: a 20 °C tarda 40 min; a 50 °C va 8 veces más rápido y tarda 5 min (sumando, ×6: 6,67 min; una sola vez, ×2: 20 min)",
+      "fn": "regla10",
+      "args": [
+        30,
+        null,
+        40
+      ],
+      "espera": {
+        "valor": 8,
+        "tiempo": 5,
+        "tiempoLineal": 6.666666666666667,
+        "tiempoUnaVez": 20
+      },
+      "nuevo": "papel",
+      "verificacion": "Agregado el 14 nov 2026 para las alternativas del papel (p6). Recalculado a mano por un subagente que no leyó el motor: 40/2³, 40/(2·3) y 40/2."
     }
   ]
 }

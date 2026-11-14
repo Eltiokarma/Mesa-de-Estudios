@@ -110,6 +110,77 @@
             "k": 0.3
           }
         }
+      ],
+      "preguntas": [
+        {
+          "id": "p3a",
+          "enunciado": "Para la reacción A + 2 B → C se midieron velocidades iniciales: con [A] = 0,1 M y [B] = 0,1 M, v = 3 × 10⁻⁴ M/s; con [A] = 0,3 M y [B] = 0,1 M, v = 2,7 × 10⁻³ M/s; con [A] = 0,1 M y [B] = 0,2 M, v = 6 × 10⁻⁴ M/s.",
+          "pregunta": "¿Cuál es el orden de la reacción respecto de A?",
+          "decimales": 2,
+          "correcta": {
+            "fn": "ordenes",
+            "args": [
+              [
+                { "conc": { "A": 0.1, "B": 0.1 }, "v": 0.0003 },
+                { "conc": { "A": 0.3, "B": 0.1 }, "v": 0.0027 },
+                { "conc": { "A": 0.1, "B": 0.2 }, "v": 0.0006 }
+              ],
+              { "A": 1, "B": 2 }
+            ],
+            "campo": "ordenes.A",
+            "valor": 2
+          },
+          "errores": [
+            {
+              "id": "CI-orden-lineal",
+              "respaldo": "hipotesis",
+              "explicacion": "Dividiste 9 entre 3. El orden es el exponente: la concentración se triplica y la velocidad sale ×9 = 3².",
+              "fn": "ordenes",
+              "args": [
+                [
+                  { "conc": { "A": 0.1, "B": 0.1 }, "v": 0.0003 },
+                  { "conc": { "A": 0.3, "B": 0.1 }, "v": 0.0027 },
+                  { "conc": { "A": 0.1, "B": 0.2 }, "v": 0.0006 }
+                ],
+                { "A": 1, "B": 2 }
+              ],
+              "campo": "proporcion.A",
+              "valor": 3
+            },
+            {
+              "id": "CI-orden-como-cociente",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es el factor de la velocidad. El orden es el exponente: ×9 = 3², así que el orden es 2.",
+              "fn": "ordenes",
+              "args": [
+                [
+                  { "conc": { "A": 0.1, "B": 0.1 }, "v": 0.0003 },
+                  { "conc": { "A": 0.3, "B": 0.1 }, "v": 0.0027 },
+                  { "conc": { "A": 0.1, "B": 0.2 }, "v": 0.0006 }
+                ],
+                { "A": 1, "B": 2 }
+              ],
+              "campo": "pares.A.fv",
+              "valor": 9
+            },
+            {
+              "id": "CI9-orden-del-coeficiente",
+              "respaldo": "parcial",
+              "explicacion": "Usaste el coeficiente de A en la ecuación. Los órdenes salen de los experimentos, no de la ecuación.",
+              "fn": "ordenes",
+              "args": [
+                [
+                  { "conc": { "A": 0.1, "B": 0.1 }, "v": 0.0003 },
+                  { "conc": { "A": 0.3, "B": 0.1 }, "v": 0.0027 },
+                  { "conc": { "A": 0.1, "B": 0.2 }, "v": 0.0006 }
+                ],
+                { "A": 1, "B": 2 }
+              ],
+              "campo": "errores.coeficientes.A",
+              "valor": 1
+            }
+          ]
+        }
       ]
     },
     {
@@ -210,6 +281,64 @@
             "valor": 43842.54032633597
           }
         }
+      ],
+      "preguntas": [
+        {
+          "id": "p6a",
+          "enunciado": "Según la regla práctica, la velocidad de una reacción se duplica por cada 10 °C de aumento. A 20 °C la reacción tarda 40 minutos.",
+          "pregunta": "¿Cuánto tarda a 50 °C?",
+          "unidad": "min",
+          "decimales": 2,
+          "correcta": { "fn": "regla10", "args": [30, null, 40], "campo": "tiempo", "valor": 5 },
+          "errores": [
+            {
+              "id": "CI-regla-sumando",
+              "respaldo": "hipotesis",
+              "explicacion": "Multiplicaste por 2 · 3 = 6. Son tres aumentos de 10 °C seguidos: la velocidad se multiplica por 2 · 2 · 2 = 8.",
+              "fn": "regla10",
+              "args": [30, null, 40],
+              "campo": "tiempoLineal",
+              "valor": 6.66666666667
+            },
+            {
+              "id": "CI-regla-una-vez",
+              "respaldo": "hipotesis",
+              "explicacion": "Duplicaste una sola vez. De 20 °C a 50 °C hay tres aumentos de 10 °C: la velocidad se multiplica por 2³ = 8.",
+              "fn": "regla10",
+              "args": [30, null, 40],
+              "campo": "tiempoUnaVez",
+              "valor": 20
+            }
+          ]
+        },
+        {
+          "id": "p6b",
+          "enunciado": "La constante de velocidad de una reacción se triplica al pasar de 27 °C a 47 °C. Usa R = 8,314 J/(mol·K) y ln 3 ≈ 1,098612.",
+          "pregunta": "¿Cuál es su energía de activación?",
+          "unidad": "J/mol",
+          "decimales": 0,
+          "correcta": { "fn": "energiaActivacion", "args": [1, 300, 3, 320], "campo": "valor", "valor": 43842.5403263 },
+          "errores": [
+            {
+              "id": "QU3-celsius",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste 27 y 47 °C. En Arrhenius la temperatura va en kelvin: 300 K y 320 K.",
+              "fn": "energiaActivacion",
+              "args": [1, 27, 3, 47],
+              "campo": "valor",
+              "valor": 579.543579939
+            },
+            {
+              "id": "CI-razon-invertida",
+              "respaldo": "hipotesis",
+              "explicacion": "Pusiste k₁/k₂. Va ln(k₂/k₁) = ln 3, positivo: al calentar, k crece.",
+              "fn": "energiaActivacion",
+              "args": [3, 300, 1, 320],
+              "campo": "valor",
+              "valor": -43842.5403263
+            }
+          ]
+        }
       ]
     },
     {
@@ -239,6 +368,64 @@
             "dHCat": 40,
             "baja": 50
           }
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "p8a",
+          "enunciado": "Una reacción tiene energía de activación de 120 kJ/mol y ΔH = +40 kJ/mol.",
+          "pregunta": "¿Cuál es la energía de activación de la reacción inversa?",
+          "unidad": "kJ/mol",
+          "decimales": 0,
+          "correcta": { "fn": "perfil", "args": [{ "Ea": 120, "dH": 40 }], "campo": "EaVuelta", "valor": 80 },
+          "errores": [
+            {
+              "id": "CI-misma-Ea-inversa",
+              "respaldo": "hipotesis",
+              "explicacion": "La inversa no tiene la misma barrera. Desde los productos, que están 40 kJ/mol más arriba, faltan 120 − 40 hasta la cima.",
+              "fn": "perfil",
+              "args": [{ "Ea": 120, "dH": 40 }],
+              "campo": "Ea",
+              "valor": 120
+            },
+            {
+              "id": "CI-signo-de-dH",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste ΔH, como si los productos estuvieran más abajo. Con ΔH = +40 están más arriba: 120 − 40.",
+              "fn": "perfil",
+              "args": [{ "Ea": 120, "dH": -40 }],
+              "campo": "EaVuelta",
+              "valor": 160
+            }
+          ]
+        },
+        {
+          "id": "p8b",
+          "enunciado": "Una reacción tiene energía de activación de 120 kJ/mol y ΔH = +40 kJ/mol. Un catalizador baja la energía de activación directa a 70 kJ/mol.",
+          "pregunta": "¿Cuánto vale ahora la energía de activación inversa?",
+          "unidad": "kJ/mol",
+          "decimales": 0,
+          "correcta": { "fn": "perfil", "args": [{ "Ea": 120, "dH": 40, "EaCat": 70 }], "campo": "EaVueltaCat", "valor": 30 },
+          "errores": [
+            {
+              "id": "CI-catalizador-solo-directa",
+              "respaldo": "hipotesis",
+              "explicacion": "El catalizador baja las dos barreras en lo mismo, 50 kJ/mol. La inversa también baja: 70 − 40.",
+              "fn": "perfil",
+              "args": [{ "Ea": 120, "dH": 40, "EaCat": 70 }],
+              "campo": "EaVuelta",
+              "valor": 80
+            },
+            {
+              "id": "CI-misma-Ea-inversa",
+              "respaldo": "hipotesis",
+              "explicacion": "Esa es la barrera directa. Desde los productos, 40 kJ/mol más arriba, faltan 70 − 40 hasta la nueva cima.",
+              "fn": "perfil",
+              "args": [{ "Ea": 120, "dH": 40, "EaCat": 70 }],
+              "campo": "EaCat",
+              "valor": 70
+            }
+          ]
         }
       ]
     },
@@ -287,6 +474,36 @@
           "espera": {
             "valor": 20
           }
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "p9c",
+          "enunciado": "La descomposición 2 NO₂(g) → 2 NO(g) + O₂(g) es de segundo orden: −Δ[NO₂]/Δt = k·[NO₂]², con k = 0,5 L/(mol·s). La [NO₂] inicial es 0,2 M y la primera vida media dura 10 s.",
+          "pregunta": "¿Cuánto dura la segunda vida media?",
+          "unidad": "s",
+          "decimales": 2,
+          "correcta": { "fn": "vidaMedia", "args": [2, 0.5, 0.1], "campo": "valor", "valor": 20 },
+          "errores": [
+            {
+              "id": "CI-vida-media-fija",
+              "respaldo": "hipotesis",
+              "explicacion": "En segundo orden la vida media depende de la concentración: la segunda empieza con 0,1 M, así que dura 1/(0,5 · 0,1).",
+              "fn": "vidaMedia",
+              "args": [2, 0.5, 0.2],
+              "campo": "valor",
+              "valor": 10
+            },
+            {
+              "id": "CI-formula-de-primer-orden",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste ln 2/k, que es de primer orden. En segundo orden, t½ = 1/(k·[A]₀).",
+              "fn": "vidaMedia",
+              "args": [1, 0.5],
+              "campo": "valor",
+              "valor": 1.38629436112
+            }
+          ]
         }
       ]
     },
@@ -473,6 +690,73 @@
             "errores.coeficientes.ordenes.O3": 1,
             "errores.coeficientes.ordenes.O": 1
           }
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "p11a",
+          "enunciado": "En la alta atmósfera, el NO acelera la destrucción del ozono en dos etapas. Etapa 1: NO + O₃ → NO₂ + O₂. Etapa 2: NO₂ + O → NO + O₂. En el perfil de energía, los niveles son (en kJ/mol): reactivos 30, primera cima 95, valle 10, segunda cima 55, productos −60.",
+          "pregunta": "¿Cuál es la energía de activación de la etapa 1?",
+          "unidad": "kJ/mol",
+          "decimales": 0,
+          "correcta": { "fn": "perfilDosEtapas", "args": [{ "R": 30, "TS1": 95, "I": 10, "TS2": 55, "P": -60 }], "campo": "Ea1", "valor": 65 },
+          "errores": [
+            {
+              "id": "CI-Ea-desde-cero",
+              "respaldo": "hipotesis",
+              "explicacion": "Leíste la altura de la cima desde el cero del eje. La barrera se mide desde donde empieza la etapa: 95 − 30.",
+              "fn": "perfilDosEtapas",
+              "args": [{ "R": 30, "TS1": 95, "I": 10, "TS2": 55, "P": -60 }],
+              "campo": "errores.desdeCero.Ea1",
+              "valor": 95
+            },
+            {
+              "id": "CI-Ea-desde-el-valle",
+              "respaldo": "hipotesis",
+              "explicacion": "Mediste desde el valle, que es donde termina la etapa 1. Su barrera empieza en los reactivos: 95 − 30.",
+              "fn": "perfilDosEtapas",
+              "args": [{ "R": 30, "TS1": 95, "I": 10, "TS2": 55, "P": -60 }],
+              "campo": "errores.inversa.Ea1",
+              "valor": 85
+            }
+          ]
+        },
+        {
+          "id": "p11b",
+          "enunciado": "En la alta atmósfera, el NO acelera la destrucción del ozono en dos etapas. Etapa 1: NO + O₃ → NO₂ + O₂. Etapa 2: NO₂ + O → NO + O₂. En el perfil de energía, los niveles son (en kJ/mol): reactivos 30, primera cima 95, valle 10, segunda cima 55, productos −60.",
+          "pregunta": "¿Cuál es la energía de activación de la etapa 2?",
+          "unidad": "kJ/mol",
+          "decimales": 0,
+          "correcta": { "fn": "perfilDosEtapas", "args": [{ "R": 30, "TS1": 95, "I": 10, "TS2": 55, "P": -60 }], "campo": "Ea2", "valor": 45 },
+          "errores": [
+            {
+              "id": "CI-Ea-desde-cero",
+              "respaldo": "hipotesis",
+              "explicacion": "Leíste la altura de la cima desde el cero del eje. La etapa 2 empieza en el valle: 55 − 10.",
+              "fn": "perfilDosEtapas",
+              "args": [{ "R": 30, "TS1": 95, "I": 10, "TS2": 55, "P": -60 }],
+              "campo": "errores.desdeCero.Ea2",
+              "valor": 55
+            },
+            {
+              "id": "CI-Ea-desde-reactivos",
+              "respaldo": "hipotesis",
+              "explicacion": "Mediste desde los reactivos. Cada barrera empieza en su propio valle: la etapa 2 parte de 10 kJ/mol.",
+              "fn": "perfilDosEtapas",
+              "args": [{ "R": 30, "TS1": 95, "I": 10, "TS2": 55, "P": -60 }],
+              "campo": "errores.desdeReactivos.Ea2",
+              "valor": 25
+            },
+            {
+              "id": "CI-Ea-desde-productos",
+              "respaldo": "hipotesis",
+              "explicacion": "Mediste desde los productos, como si fuera la inversa. La etapa 2 va del valle a la cima: 55 − 10.",
+              "fn": "perfilDosEtapas",
+              "args": [{ "R": 30, "TS1": 95, "I": 10, "TS2": 55, "P": -60 }],
+              "campo": "errores.inversa.Ea2",
+              "valor": 115
+            }
+          ]
         }
       ]
     },
@@ -769,6 +1053,41 @@
           "espera": {
             "rapidez": 0.021
           }
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "p13b",
+          "enunciado": "Un colorante se decolora en un tanque. Su concentración, en mg/mL, se midió a los 0, 5, 10, 15 y 20 minutos: 0,50; 0,38; 0,29; 0,22 y 0,17. Entre los 5 y los 15 minutos se gasta a 0,016 kg/(m³·min).",
+          "pregunta": "¿Cuánto es esa velocidad en g/(L·s)?",
+          "unidad": "g/(L·s)",
+          "decimales": 5,
+          "correcta": {
+            "fn": "velocidadMedia",
+            "args": [[[0, 0.5], [5, 0.38], [10, 0.29], [15, 0.22], [20, 0.17]], 5, 15, { "de": "mg/mL", "a": "g/L", "tiempo": "min", "tiempoA": "s" }],
+            "campo": "rapidez",
+            "valor": 0.000266666666667
+          },
+          "errores": [
+            {
+              "id": "U6-minutos-por-segundos",
+              "respaldo": "hipotesis",
+              "explicacion": "Pasaste las unidades de masa y volumen, pero no el tiempo. Un minuto son 60 s: 0,016/60.",
+              "fn": "velocidadMedia",
+              "args": [[[0, 0.5], [5, 0.38], [10, 0.29], [15, 0.22], [20, 0.17]], 5, 15, { "de": "mg/mL", "a": "g/L", "tiempo": "min" }],
+              "campo": "rapidez",
+              "valor": 0.016
+            },
+            {
+              "id": "QU2-L-sin-convertir",
+              "respaldo": "hipotesis",
+              "explicacion": "Pasaste kg a g (×1000), pero no m³ a L. 1 kg/m³ = 1000 g / 1000 L = 1 g/L.",
+              "fn": "velocidadMedia",
+              "args": [[[0, 0.5], [5, 0.38], [10, 0.29], [15, 0.22], [20, 0.17]], 5, 15, { "de": "mg/mL", "a": "mg/L", "tiempo": "min", "tiempoA": "s" }],
+              "campo": "rapidez",
+              "valor": 0.266666666667
+            }
+          ]
         }
       ]
     }
