@@ -45,6 +45,11 @@ La contraseña se imprime una sola vez (12 caracteres para los administradores) 
 | `CORS_ORIGENES` | orígenes de la app separados por coma, exactos, sin `*` | `https://mesa-de-estudios.vercel.app` |
 | `CONFIAR_PROXY` | `1` detrás del proxy de Railway: la IP del límite de intentos sale de `X-Forwarded-For` | `1` |
 | `APP_URL` | dirección de la app; se imprime en las tarjetas | `https://mesa-de-estudios.vercel.app` |
+| `WEB_CONCURRENCY` | procesos de uvicorn (1 si falta). Cada uno abre hasta `DB_POOL` + `DB_POOL_EXTRA` conexiones | `2` |
+| `DB_POOL`, `DB_POOL_EXTRA` | pool de conexiones por proceso (5 y 10 si faltan) | `5`, `10` |
+| `INTENTOS_IP_MAX` | fallos de ingreso por IP en 10 minutos antes del 429 (5 si falta; un colegio entero sale por una IP) | `100` |
+| `ARGON2_T`, `ARGON2_M_KIB`, `ARGON2_P` | parámetros de argon2 (los de argon2-cffi si faltan: 3, 65536, 4). Los hashes se rehacen al entrar | `2`, `19456`, `1` |
+| `ARGON2_A_LA_VEZ` | argon2 simultáneos por proceso (4 si falta): acota la memoria en un pico de ingresos | `4` |
 
 Para generar las tres claves:
 
@@ -62,7 +67,7 @@ python3 -c "import secrets; print(secrets.token_urlsafe(48))"                   
 2. En el servicio, **Settings**:
    - **Root Directory:** `servidor`. Si Railway dice «Railpack detected a Node project but found no start script», es que está construyendo desde la raíz del repo: falta este campo (Settings → Source → Root Directory).
    - **Config as code → Railway config file:** `/servidor/railway.json`. Railway no busca ese archivo dentro de la carpeta raíz del servicio, así que se le da la ruta completa.
-   - El archivo ya trae el comando de arranque (`uvicorn app.main:app --host 0.0.0.0 --port $PORT --workers 1`) y el chequeo de salud (`/api/salud`). Arranca un solo proceso a propósito: el límite de intentos de ingreso vive en memoria, y con varios procesos cada uno contaría sus propios fallos. Para un colegio alcanza; antes de escalar hay que pasar ese conteo a la base de datos. Si no se configura, el `Procfile` arranca lo mismo.
+   - El archivo ya trae el comando de arranque (`uvicorn app.main:app --host 0.0.0.0 --port $PORT --workers ${WEB_CONCURRENCY:-1}`) y el chequeo de salud (`/api/salud`). El límite de intentos vive en la base (`intentos_fallidos`), así que varios procesos cuentan lo mismo. Cuántos workers y con qué pool: `docs/carga.md`. Si no se configura, el `Procfile` arranca lo mismo.
 3. **+ New → Database → PostgreSQL** en el mismo proyecto.
 4. En el servicio, **Variables**, pon las ocho de la tabla. `DATABASE_URL` va como referencia: `${{Postgres.DATABASE_URL}}`.
 5. **Settings → Networking → Generate Domain** (o un dominio propio, por ejemplo `api.<dominio>`). Pon el dominio de la app en `CORS_ORIGENES`.

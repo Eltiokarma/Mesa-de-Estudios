@@ -2,6 +2,7 @@
 import json
 
 from fastapi import APIRouter, Depends
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
@@ -58,8 +59,10 @@ def ver_estado(s: Session = Depends(db), u: Usuario = Depends(solo_alumno)):
     hab = habilitaciones(s, al.seccion_id)
     est = dict(f.est) if f else {"alumno": al.seudonimo}
     est["alumno"] = al.seudonimo
-    return {"est": _con_habilitaciones(est, hab), "actualizado": f.actualizado.isoformat() + "Z" if f else None,
-            "habilitaciones": hab}
+    # JSONResponse directo: el est ya es JSON puro y así FastAPI no lo recorre entero con jsonable_encoder
+    # (10 % del GIL en la prueba de carga).
+    return JSONResponse({"est": _con_habilitaciones(est, hab),
+                         "actualizado": f.actualizado.isoformat() + "Z" if f else None, "habilitaciones": hab})
 
 
 @r.put("/estado")
@@ -76,8 +79,8 @@ def guardar_estado(datos: PutEstado, s: Session = Depends(db), u: Usuario = Depe
     f.est = unido
     f.actualizado = ahora()
     s.commit()
-    return {"est": _con_habilitaciones(unido, hab), "actualizado": f.actualizado.isoformat() + "Z",
-            "habilitaciones": hab}
+    return JSONResponse({"est": _con_habilitaciones(unido, hab), "actualizado": f.actualizado.isoformat() + "Z",
+                         "habilitaciones": hab})
 
 
 def limpiar(ev: dict, seudonimo: str) -> dict:
@@ -98,6 +101,16 @@ def subir_eventos(datos: PostEventos, s: Session = Depends(db), u: Usuario = Dep
         if len(json.dumps(ev)) > MAX_EVENTO_BYTES:
             continue
         validos.setdefault(ev["t"], limpiar(ev, al.seudonimo))  # repetidos dentro del lote: el primero
+    if s.bind.dialect.name == "postgresql" and validos:
+        # Una sola sentencia: INSERT … ON CONFLICT DO NOTHING. Es idempotente por alumno + t aunque lleguen dos
+        # envíos del mismo lote a la vez, y cuenta solo las filas que entraron.
+        from sqlalchemy.dialects.postgresql import insert as pg_insert
+        filas = [{"alumno": al.seudonimo, "colegio_id": al.colegio_id, "t": t, "datos": d, "recibido": ahora()}
+                 for t, d in validos.items()]
+        q = pg_insert(Evento).values(filas).on_conflict_do_nothing(index_elements=["alumno", "t"]).returning(Evento.id)
+        n = len(s.execute(q).all())
+        s.commit()
+        return {"recibidos": len(datos.eventos), "nuevos": n}
     ya = set(s.scalars(select(Evento.t).where(Evento.alumno == al.seudonimo, Evento.t.in_(list(validos))))) if validos else set()
     nuevos = [Evento(alumno=al.seudonimo, colegio_id=al.colegio_id, t=t, datos=d) for t, d in validos.items() if t not in ya]
     s.add_all(nuevos)

@@ -35,6 +35,9 @@ class Config:
     acceso_minutos: int = 15
     renovacion_dias: int = 30
     intentos_max: int = 5
+    intentos_ip_max: int = 5
+    db_pool: int = 5
+    db_pool_extra: int = 10
     intentos_ventana_min: int = 10
 
     @property
@@ -83,4 +86,7 @@ def desde_entorno() -> Config:
         c.cors_origenes = _lista(e("CORS_ORIGENES", ""))
     c.confiar_proxy = e("CONFIAR_PROXY", "0") in ("1", "true", "si", "sí")
     c.app_url = e("APP_URL", c.app_url)
+    c.intentos_ip_max = int(e("INTENTOS_IP_MAX", c.intentos_ip_max))
+    c.db_pool = int(e("DB_POOL", c.db_pool))
+    c.db_pool_extra = int(e("DB_POOL_EXTRA", c.db_pool_extra))
     return c

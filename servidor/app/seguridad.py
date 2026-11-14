@@ -1,8 +1,10 @@
 """Contraseñas (argon2), tokens (JWT de acceso y renovación opaca), DNI cifrado y nombres de usuario."""
 import hashlib
 import hmac
+import os
 import re
 import secrets
+import threading
 import unicodedata
 from datetime import timedelta
 
@@ -13,22 +15,43 @@ from cryptography.fernet import Fernet
 
 from .db import ahora
 
-_ph = PasswordHasher()
+def _hasher() -> PasswordHasher:
+    """Por defecto, los parámetros de argon2-cffi (t=3, 64 MiB, p=4). ARGON2_T, ARGON2_M_KIB y ARGON2_P los cambian;
+    los hashes viejos se siguen verificando y se rehacen al entrar (necesita_rehash). Ver docs/carga.md."""
+    base = PasswordHasher()
+    e = os.environ.get
+    return PasswordHasher(time_cost=int(e("ARGON2_T", base.time_cost)), memory_cost=int(e("ARGON2_M_KIB", base.memory_cost)),
+                          parallelism=int(e("ARGON2_P", base.parallelism)))
+
+
+_ph = _hasher()
 # Un hash fijo para gastar el mismo tiempo cuando el usuario no existe (no revela qué usuarios hay).
 _HASH_FALSO = _ph.hash("contrasena-que-nadie-tiene")
+# Cuántos argon2 a la vez por proceso: cada uno pide memory_cost (64 MiB por defecto). Sin tope, 40 hilos en un pico
+# de ingresos pedían hasta 2,5 GB por proceso; con el tope la cola espera sin conexión a la base tomada.
+_A_LA_VEZ = threading.BoundedSemaphore(int(os.environ.get("ARGON2_A_LA_VEZ", "4")))
 
 # Sin 0, O, 1, l ni I; tampoco i ni o, para que se dicten sin dudas. Solo minúsculas.
 ALFABETO = "abcdefghjkmnpqrstuvwxyz23456789"
 
 
 def hash_contrasena(c: str) -> str:
-    return _ph.hash(c)
+    with _A_LA_VEZ:
+        return _ph.hash(c)
 
 
 def verificar_contrasena(h: str | None, c: str) -> bool:
     try:
-        return _ph.verify(h or _HASH_FALSO, c) and h is not None
+        with _A_LA_VEZ:
+            return _ph.verify(h or _HASH_FALSO, c) and h is not None
     except (VerifyMismatchError, VerificationError, InvalidHashError):
+        return False
+
+
+def necesita_rehash(h: str) -> bool:
+    try:
+        return _ph.check_needs_rehash(h)
+    except InvalidHashError:
         return False
 
 

@@ -77,3 +77,11 @@ def test_salud():
     c = TestClient(crear_app(Config(database_url="sqlite://")))
     r = c.get("/api/salud")
     assert r.json() == {"ok": True} and r.headers["cache-control"] == "no-store"
+
+
+def test_pool_y_limite_por_ip_desde_el_entorno(monkeypatch):
+    monkeypatch.setenv("DB_POOL", "20")
+    monkeypatch.setenv("DB_POOL_EXTRA", "5")
+    monkeypatch.setenv("INTENTOS_IP_MAX", "100")
+    c = desde_entorno()
+    assert (c.db_pool, c.db_pool_extra, c.intentos_ip_max, c.intentos_max) == (20, 5, 100, 5)

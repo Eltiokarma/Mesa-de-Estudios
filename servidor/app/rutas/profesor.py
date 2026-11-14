@@ -4,7 +4,7 @@ from typing import Literal
 from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel, Field
 from sqlalchemy import func, select, update
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from ..auditoria import anotar
 from ..db import ahora
@@ -70,11 +70,11 @@ def resumen_alumno(al: Alumno, est: dict) -> dict:
 @r.get("/secciones/{seccion_id}/avance")
 def avance(seccion_id: int, s: Session = Depends(db), u: Usuario = Depends(docente)):
     sec = seccion_permitida(s, u, seccion_id)
-    alumnos = s.scalars(select(Alumno).where(Alumno.seccion_id == sec.id).order_by(Alumno.apellidos, Alumno.nombres))
-    out = []
-    for al in alumnos:
-        f = s.get(EstadoAlumno, al.id)
-        out.append(resumen_alumno(al, f.est if f else {}))
+    # Una sola consulta para la sección entera (antes eran dos por alumno: el estado y la cuenta).
+    filas = s.execute(select(Alumno, EstadoAlumno.est).options(joinedload(Alumno.cuenta))
+                      .outerjoin(EstadoAlumno, EstadoAlumno.alumno_id == Alumno.id)
+                      .where(Alumno.seccion_id == sec.id).order_by(Alumno.apellidos, Alumno.nombres))
+    out = [resumen_alumno(al, est or {}) for al, est in filas]
     hab = s.scalars(select(Habilitacion).where(Habilitacion.seccion_id == sec.id))
     return {"seccion": {"id": sec.id, "grado": sec.grado, "letra": sec.letra},
             "habilitaciones": [{"curso": h.curso, "que": h.que, "abierto": h.abierto,
