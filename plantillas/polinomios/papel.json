@@ -40,15 +40,6 @@
               "args": [{ "coefs": [4, -1, 2, -9] }],
               "campo": "errores.principal.texto",
               "valor": "4"
-            },
-            {
-              "id": "PO34-cero",
-              "respaldo": "hipotesis",
-              "explicacion": "P(0) no siempre es 0: el término independiente no lleva x, así que no se anula. Aquí queda −9.",
-              "fn": "pDeCero",
-              "args": [{ "coefs": [4, -1, 2, -9] }],
-              "campo": "errores.cero.texto",
-              "valor": "0"
             }
           ]
         },
@@ -411,15 +402,6 @@
               "args": [{ "coefs": [3, 0, -5, 2, -1], "divisor": [1, 1] }],
               "campo": "errores.signo.restoTexto",
               "valor": "−1"
-            },
-            {
-              "id": "PO18-toda-la-fila",
-              "respaldo": "hipotesis",
-              "explicacion": "El último número de la fila no es parte del cociente: es el resto, −5.",
-              "fn": "ruffini",
-              "args": [{ "coefs": [3, 0, -5, 2, -1], "divisor": [1, 1] }],
-              "campo": "errores.todaLaFila.restoTexto",
-              "valor": "0"
             }
           ]
         }
