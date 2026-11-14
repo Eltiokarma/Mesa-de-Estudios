@@ -33,6 +33,36 @@
             "lambda": 3.33333333333
           }
         }
+      ],
+      "preguntas": [
+        {
+          "id": "p1a",
+          "enunciado": "Una emisora de radio AM transmite en 750 kHz. Usa c = 3 × 10⁸ m/s.",
+          "pregunta": "¿Cuál es la longitud de onda de sus ondas?",
+          "unidad": "m",
+          "decimales": 2,
+          "correcta": { "fn": "onda", "args": [750, "kHz"], "campo": "lambda", "valor": 400 },
+          "errores": [
+            {
+              "id": "U2-sin-pasar-kHz",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste 750 como si fueran hertz. Primero pasa el prefijo: 750 kHz = 7,5 × 10⁵ Hz.",
+              "fn": "onda",
+              "args": [750, "kHz"],
+              "campo": "errores.sinPrefijo",
+              "valor": 400000
+            },
+            {
+              "id": "OE-exponente",
+              "respaldo": "hipotesis",
+              "explicacion": "Te salió diez veces menos: al dividir se restan los exponentes, 10⁸/10⁵ = 10³, y 3/7,5 = 0,4. Da 400 m.",
+              "fn": "onda",
+              "args": [750, "kHz"],
+              "campo": "errores.exponente",
+              "valor": 40
+            }
+          ]
+        }
       ]
     },
     {
@@ -181,6 +211,64 @@
             "color": "rojo"
           }
         }
+      ],
+      "preguntas": [
+        {
+          "id": "p8a",
+          "enunciado": "Una luz roja de 660 nm (medida en el aire) entra a un vidrio de índice n = 3/2. Usa c = 3 × 10⁸ m/s.",
+          "pregunta": "¿Con qué rapidez viaja la luz dentro del vidrio?",
+          "unidad": "m/s",
+          "decimales": 0,
+          "correcta": { "fn": "medio", "args": [660, 1.5], "campo": "v", "valor": 200000000 },
+          "errores": [
+            {
+              "id": "OE-luz-siempre-a-c",
+              "respaldo": "hipotesis",
+              "explicacion": "Pusiste 3 × 10⁸ m/s, la rapidez en el vacío. En el vidrio va más lento: v = c/n.",
+              "fn": "medio",
+              "args": [660, 1.5],
+              "campo": "errores.nadaCambia.v",
+              "valor": 300000000
+            },
+            {
+              "id": "OE-medio-acelera",
+              "respaldo": "hipotesis",
+              "explicacion": "Multiplicaste por el índice. El vidrio frena a la luz: v = c/n = 3 × 10⁸ / 1,5.",
+              "fn": "medio",
+              "args": [660, 1.5],
+              "campo": "errores.alReves.v",
+              "valor": 450000000
+            }
+          ]
+        },
+        {
+          "id": "p8b",
+          "enunciado": "Una luz roja de 660 nm (medida en el aire) entra a un vidrio de índice n = 3/2. Usa c = 3 × 10⁸ m/s.",
+          "pregunta": "¿Cuál es su longitud de onda dentro del vidrio?",
+          "unidad": "nm",
+          "decimales": 0,
+          "correcta": { "fn": "medio", "args": [660, 1.5], "campo": "lambdaNm", "valor": 440 },
+          "errores": [
+            {
+              "id": "OE12-cambia-la-frecuencia",
+              "respaldo": "hipotesis",
+              "explicacion": "Al cambiar de medio, la frecuencia no cambia: lo que se acorta es la longitud de onda, λ′ = λ/n.",
+              "fn": "medio",
+              "args": [660, 1.5],
+              "campo": "errores.cambiaF.lambdaNm",
+              "valor": 660
+            },
+            {
+              "id": "OE-medio-acelera",
+              "respaldo": "hipotesis",
+              "explicacion": "Multiplicaste por el índice. En el vidrio la luz va más lento y la onda se acorta: λ′ = 660/1,5.",
+              "fn": "medio",
+              "args": [660, 1.5],
+              "campo": "errores.alReves.lambdaNm",
+              "valor": 990
+            }
+          ]
+        }
       ]
     },
     {
@@ -280,6 +368,36 @@
             "total": false
           }
         }
+      ],
+      "preguntas": [
+        {
+          "id": "p11a",
+          "enunciado": "Un rayo de luz sale del agua (n = 4/3) hacia el aire con 37° respecto a la normal. Usa sen 37° = 3/5 y sen 53° = 4/5.",
+          "pregunta": "¿Qué ángulo forma con la normal el rayo que sale al aire?",
+          "unidad": "°",
+          "decimales": 0,
+          "correcta": { "fn": "snell", "args": [1.3333333333333333, 1, 36.8698976458], "campo": "r", "valor": 53.1301023541 },
+          "errores": [
+            {
+              "id": "R5-no-se-desvia",
+              "respaldo": "documentado",
+              "explicacion": "El rayo sí se desvía al salir del agua: pasa a un medio de menor índice y se aleja de la normal.",
+              "fn": "snell",
+              "args": [1.3333333333333333, 1, 36.8698976458],
+              "campo": "errores.noSeDesvia.r",
+              "valor": 36.8698976458
+            },
+            {
+              "id": "R3-indices-al-reves",
+              "respaldo": "parcial",
+              "explicacion": "Pusiste los índices al revés. Va n₁·sen i = n₂·sen r: (4/3) · (3/5) = sen r.",
+              "fn": "snell",
+              "args": [1.3333333333333333, 1, 36.8698976458],
+              "campo": "errores.alReves.r",
+              "valor": 26.7436839504
+            }
+          ]
+        }
       ]
     },
     {
@@ -328,6 +446,36 @@
             "total": true,
             "r": null
           }
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "p12a",
+          "enunciado": "Un bloque de vidrio de índice 5/3 está rodeado de aire. Usa sen 37° = 3/5 y sen 53° = 4/5.",
+          "pregunta": "¿Cuál es su ángulo límite?",
+          "unidad": "°",
+          "decimales": 0,
+          "correcta": { "fn": "anguloLimite", "args": [1.6666666666666667, 1], "campo": "L", "valor": 36.8698976458 },
+          "errores": [
+            {
+              "id": "R-angulo-desde-la-superficie",
+              "respaldo": "hipotesis",
+              "explicacion": "Mediste desde la superficie. Los ángulos de Snell van desde la normal: sen L = 3/5, así que L = 37°.",
+              "fn": "anguloLimite",
+              "args": [1.6666666666666667, 1],
+              "campo": "errores.desdeSuperficie.L",
+              "valor": 53.1301023542
+            },
+            {
+              "id": "R-angulo-del-que-sale",
+              "respaldo": "hipotesis",
+              "explicacion": "Los 90° son del rayo que sale rozando. El ángulo límite es el de incidencia dentro del vidrio: sen L = 1/(5/3).",
+              "fn": "anguloLimite",
+              "args": [1.6666666666666667, 1],
+              "campo": "errores.rozando.L",
+              "valor": 90
+            }
+          ]
         }
       ]
     }
