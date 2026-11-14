@@ -194,6 +194,8 @@ Lo que hicimos hasta ahora es eso mismo llevado a pantalla: figura, texto corto 
 
 ### 5.1 Los cinco tiempos de una unidad que se descubre
 
+> **Cambió el 14 nov (decisión 20 de `docs/pendientes.md`):** la regla 3 ahora es «Jugar, después predecir, después ver». Antes del tiempo 2 va un juego libre, sin preguntas y obligatorio; la predicción sigue después, sobre algo que el juego todavía no mostró. Donde esta sección dice que predecir es lo primero que bloquea, manda la regla nueva.
+
 Es la secuencia del problema guiado de `docs/fundacional.md`, reordenada para que la mano vaya antes que el texto. La regla 3 no cambia: predecir es el único punto que bloquea. Los cinco tiempos, su duración y el número de ensayos son una adaptación propia del ciclo de tres fases de POGIL: ninguna de esas cifras sale de un estudio.
 
 | Tiempo | Qué hace el alumno | Qué pone la app | Texto en pantalla | Mascota |
