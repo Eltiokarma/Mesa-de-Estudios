@@ -165,6 +165,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
   .top{grid-template-columns:1fr auto; align-items:end}
   .mode{grid-template-columns:minmax(0, 1.25fr) minmax(360px, 1fr)}
   .bench{position:sticky; top:12px}
+  .mode > .jugar-barra{order:-1; grid-column:1 / -1}
 }
 .stepper{display:flex; flex-wrap:wrap; gap:8px}
 .stepper > div{display:inline-flex; align-items:center; gap:6px; background:var(--paper); border:1px solid var(--line); border-radius:999px; padding:4px 6px 4px 12px; flex-wrap:wrap}
@@ -244,6 +245,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'cuatro-operaciones', unidad: 'aritmetica.cuatro-operaciones', version: '0.1.0' };
@@ -735,6 +737,21 @@ const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `
 const leyTablero = (b, K) => [['o0', 'fichas sueltas'], ['o1', `paquetes de ${b}`], ['o2', `cajas de ${b*b}`], ['o3', `cajones de ${b*b*b}`]].slice(0, Math.min(K, 4)).concat(b === 10 ? [] : [['b', 'la base']]);
 const LEY_ESCRITO = [['o0', 'unidades'], ['o1', 'decenas'], ['o2', 'centenas'], ['o3', 'millares']];
 const lectNum = (que, t, b) => ['ink', que, numH(t, b)];
+// Regla 3 (jugar antes de preguntar): una suma a mano en el tablero, sin preguntas. Se arrastra una pieza a la izquierda
+// para juntar b o a la derecha para abrirla; con teclado, ← y →, Enter y J. El motor (aMano, abrirMano, juntarMano) hace la cuenta.
+function juegoMano(E, A, B, b){
+  let m = M.aMano('suma', A, B, b);
+  const K = m.K, cero = Array(K).fill(0);
+  const st = () => ({ b, K, filas:[{ signo:'', cuentas:cero, cifras:porColumna(A, K), estilo:'lleno' }, { signo:'+', cuentas:cero, cifras:porColumna(B, K), estilo:'lleno' }],
+    resultado:m.cuentas.slice(), llevada:cero, marcas:cero, mostrarRes:true, mano:{ fila:'res', cuentas:m.cuentas } });
+  const desc = () => `Suma a mano de ${A} y ${B}: en el resultado hay ${m.cuentas.map((x, k) => cuenta(k, b, x)).reverse().join(', ')}.`;
+  E.config({ modo:'tablero', st:st(), ley:leyTablero(b, K), desc:desc(), lect:[() => ['ink', 'total', String(m.valor)]],
+    alSoltar:(que, k) => {
+      if (E.anim) return;
+      try { m = que === 'abrir' ? M.abrirMano(m, k) : M.juntarMano(m, k); } catch (e) { return; }
+      const sel = E.sel; E.st = st(); E.sel = sel; E.desc = desc(); E.dibujar(); E.avisar();
+    } });
+}
 // Un numeral como celdas de la cuenta escrita: cada cifra en el color de su orden.
 const celdas = t => { const cs = String(t).split(''), L = cs.length; return cs.map((d, i) => (d === '?' ? { t:'?', c:ko(L - 1 - i), hueco:true } : { t:d, c:ko(L - 1 - i) })); };
 </script>
@@ -1160,6 +1177,10 @@ function prediccion(s){
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: antes de leer el paso 1, el alumno junta y abre piezas a mano en una suma que no se pregunta.
+juegoMano(E, '267', '185', 10);
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra piezas entre columnas: diez de una columna se juntan en una.', minimo:2, alListo:() => go(S.step) });
 })();
 </script>
 
@@ -1316,6 +1337,11 @@ function ir(k){
   pintar();
 }
 ir(0);
+// Regla 3: antes del primer experimento, juego libre con una suma a mano en base 10 (no adelanta ninguna respuesta).
+E.compactar(false);
+juegoMano(E, '386', '247', 10);
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Arrastra piezas entre columnas antes de empezar los experimentos.', minimo:2, alListo:() => ir(S.k) });
 })();
 </script>
 

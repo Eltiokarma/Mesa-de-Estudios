@@ -150,6 +150,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
   .top{grid-template-columns:1fr auto; align-items:end}
   .mode{grid-template-columns:minmax(0, 1.25fr) minmax(360px, 1fr)}
   .bench{position:sticky; top:12px}
+  .mode > .jugar-barra{order:-1; grid-column:1 / -1}
 }
 .stepper{display:flex; flex-wrap:wrap; gap:8px}
 .stepper > div{display:inline-flex; align-items:center; gap:6px; background:var(--paper); border:1px solid var(--line); border-radius:999px; padding:4px 6px 4px 12px}
@@ -229,6 +230,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'numeracion', unidad: 'aritmetica.numeracion', version: '0.1.0' };
@@ -690,6 +692,23 @@ const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `
 const lectN = n => ['n', 'fichas (base 10)', String(n)];
 const lectB = b => ['b', 'base', String(b)];
 const lectNum = (t, b) => ['ink', `numeral en base ${b}`, t === '—' ? '—' : numH(t, b)];
+// Regla 3 (jugar antes de preguntar): n fichas sueltas que se juntan de b en b a mano, sin preguntas. Se arrastra una
+// pieza a la izquierda para juntar b o a la derecha para abrirla; con teclado, ← y →, Enter y J. El motor hace la cuenta.
+function juegoFichas(E, n, b){
+  const A = M.agrupar(n, b), nc = A.cuentas.length;
+  let cu = [n].concat(Array(nc - 1).fill(0));
+  const desc = () => `${n} fichas en base ${b}: ${cu.map((x, k) => `${x} ${pieza(k, b, x)}`).reverse().join(', ')}.`;
+  E.config({ modo:'fichas', st:{ b, cuentas:cu.slice(), max:maximos([A]), ncols:nc, cifras:true, avisoLleno:true, arrastrable:true },
+    ley:[['o0', 'fichas sueltas'], ['o1', `paquetes de ${b}`], ['o2', `cajas de ${b*b}`], ['o3', `cajones de ${b*b*b}`]].slice(0, nc).concat([['b', 'la base']]), desc:desc(), lect:[() => lectN(n), () => lectB(b)],
+    alSoltar:(que, k) => {
+      if (E.anim) return;
+      let R; try { R = que === 'abrir' ? M.abrir(cu, b, k) : M.juntar(cu, b, k); } catch (e) { return; }
+      if (R.cuentas.length > nc && R.cuentas[nc]) return;
+      cu = R.cuentas.concat(Array(nc).fill(0)).slice(0, nc);
+      E.st.cuentas = cu.slice(); E.st.max = E.st.max.map((x, j) => Math.max(x || 0, cu[j] || 0));
+      E.desc = desc(); E.dibujar(); E.avisar();
+    } });
+}
 </script>
 
 <script>
@@ -1080,6 +1099,10 @@ function prediccion(s){
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: antes de leer el paso 1, el alumno junta a mano las 23 fichas de 5 en 5 (el paso 1 no pregunta nada).
+juegoFichas(E, 23, 5);
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra fichas a la izquierda: cinco sueltas se juntan en un paquete.', minimo:2, alListo:() => go(S.step) });
 })();
 </script>
 
@@ -1242,6 +1265,11 @@ function ir(k){
   pintar();
 }
 ir(0);
+// Regla 3: antes del primer experimento, juego libre con 20 fichas en base 6 (no adelanta ninguna respuesta).
+E.compactar(false);
+juegoFichas(E, 20, 6);
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Arrastra fichas a la izquierda: seis sueltas se juntan en un paquete.', minimo:2, alListo:() => ir(S.k) });
 })();
 </script>
 
