@@ -99,7 +99,7 @@ Decisiones que vienen de la revisión:
   - **Los códigos no cambian de sentido.** RV58 es marcar «lo dice» ante una conclusión que el texto no expresa; RV34 es marcar «no lo dice ni se deduce» ante algo que sí se deduce.
   - **Quedan sin efecto dos reglas anteriores:** «paráfrasis clara, se deduce; cita casi literal, lo dice» (le ponía RV58 a quien reconocía bien una paráfrasis) y la prueba de «una oración contra dos datos», que duró unas horas el 13 nov: hay información explícita repartida en varias oraciones e inferencias que salen de una sola.
   - **Otro marco, que aquí no se sigue:** PIRLS clasifica la paráfrasis de oraciones como inferencia directa. Es un marco para 4.º de primaria; el del Minedu para secundaria y el de PISA (15 años) cuentan la paráfrasis como información explícita.
-  - **Pendiente:** revisar con esta regla las sondas de `clasificar` ya publicadas. Están en 24 textos de `contenido/razonamiento-verbal/textos/`; se corrigen solo las que cambien de clase.
+  - **Revisadas el 14 nov 2026** las 56 sondas ya publicadas, en 54 textos: ninguna cambia de clase, y se reescribieron 29 explicaciones que razonaban con la regla vieja (`docs/investigacion/revision-sondas-clasificar.md`). Las explicaciones de una sonda nombran lo que agrega, no las palabras que faltan.
 
 ## 4. La explicación: que se vea en el texto (regla 4)
 

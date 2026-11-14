@@ -8,7 +8,7 @@ Actualizado el 13 de noviembre de 2026. La siguiente sesión empieza aquí: lée
 npm test
 ```
 
-Deben pasar 8081 pruebas. El servidor tiene las suyas: `cd servidor && pip install -r requirements.txt -r requirements-dev.txt && python -m pytest -q` (83).
+Deben pasar 8089 pruebas. El servidor tiene las suyas: `cd servidor && pip install -r requirements.txt -r requirements-dev.txt && python -m pytest -q` (83).
 
 ```bash
 npm run dev
@@ -122,7 +122,7 @@ Sesión de **planificación**: no se construyó nada de la app. Lo que sigue se 
 **Qué hay.**
 - **`docs/pogil-v2-rive.md`:** auditoría de las 99 escenas en pantalla de celular y dirección. **Para arrancar basta leer la sección 0 (estrategia final) y la 7.5 (MRU y MRUV, la primera unidad).** El resto es el detalle y el porqué.
 - **`docs/temario-completo.md`:** las 152 unidades con los temas del catálogo, ruta, gesto, tramo y campos abiertos (otras formas de explicarla, desempeño final, prerrequisitos). Es la copia de trabajo de Gerson para investigar y ampliar.
-- **`docs/formato-lectura.md`:** regla corregida de «lo dice» contra «se deduce».
+- **`docs/formato-lectura.md`:** regla corregida de «lo dice» contra «se deduce». Las sondas ya publicadas se revisaron con ella el 14 nov (`docs/investigacion/revision-sondas-clasificar.md`).
 
 **Lo que se midió.**
 - En 72 de las 99 escenas el alumno no toca la figura: pulsa «Siguiente» o jala un deslizador.
@@ -157,7 +157,7 @@ Sesión de **planificación**: no se construyó nada de la app. Lo que sigue se 
 4. **En paralelo, sin depender de lo anterior:**
    - ~~la cola de repaso~~ (hecha el 13 nov: ver «Cola de repaso (versión R)» arriba);
    - la tabla plegada en el celular (primer paso de la tabla viva);
-   - revisar las sondas de `clasificar` con la regla nueva (24 textos de `contenido/razonamiento-verbal/textos/`);
+   - ~~revisar las sondas de `clasificar` con la regla nueva~~ (hecho el 14 nov: eran 54 textos y 56 sondas, no 24. Tres subagentes las clasificaron a ciegas y ninguna cambia de clase. Se reescribieron 29 explicaciones de 18 textos que justificaban por las palabras («no lo dice con esas palabras») o por juntar oraciones, y otro subagente las revisó a ciegas. Todo es por modelo y queda por revisar por una persona. Detalle en `docs/investigacion/revision-sondas-clasificar.md`. Queda por mirar t057/p5, que el revisor leyó como «lo dice» por la oración 10, en figurado);
    - validar con un subagente las fichas del banco Cuzcano (decisión 18): ~~las 894 sin `unidad`, el validador y edades y móviles~~ (hecho el 14 nov); ~~el vocabulario de las 23 unidades de física y química con deslizador~~ (hecho el 13 nov, tarde); MRU y MRUV va en otra conversación.
 5. **Después:** la pregunta de seguridad, el avance en cuatro niveles y los ocho puentes (una unidad por curso con su ficha completa).
 

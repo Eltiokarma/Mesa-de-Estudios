@@ -1,6 +1,6 @@
 # Revisión de las sondas de «clasificar» con la regla del 13 nov
 
-14 nov 2026 · Revisión por modelo (tres subagentes a ciegas), **por aprobar por Gerson**. Regla: `docs/formato-lectura.md`, sección 3.
+14 nov 2026 · Revisión por modelo (tres subagentes a ciegas). **Aprobada por Gerson y aplicada el mismo día** (versión nueva en los 18 textos tocados); falta que una persona del proyecto la revise. Regla: `docs/formato-lectura.md`, sección 3.
 
 ## Resumen
 
@@ -10,20 +10,24 @@
 - **Lo que sí cambia: 29 explicaciones en 18 textos**, que justifican la clase con la regla vieja:
   - **«No lo dice con esas palabras, pero se deduce»** y «nunca dice "X"»: enseñan que la frontera está en las palabras. La regla nueva dice lo contrario.
   - **«Se llega a eso juntando las oraciones 9, 10 y 11»**: con la regla nueva, juntar oraciones sin agregar nada es «lo dice». La explicación tiene que nombrar lo que la sonda agrega.
-- Las propuestas empiezan por lo que el alumno pensó bien (regla 10 de `docs/escena-viva.md`) y no pasan de 20 palabras.
+- Las explicaciones nuevas empiezan por lo que el alumno pensó bien (regla 10 de `docs/escena-viva.md`) y no pasan de 20 palabras.
 - No cambia la clase, así que no cambian los códigos ni la calificación. Al corregir, cada texto sube `version` y anota la revisión en `revision`.
 
-## Cambios propuestos en las explicaciones
+## Revisión a ciegas de lo corregido
 
-| Sonda | Campo | Ahora | Propuesta |
+Otro subagente revisó las 29 explicaciones sin ver las anteriores: aprobó 24 y marcó 5. Se aplicaron sus sugerencias en t028 (dos: el relato sí expresa un sentimiento de Carla, «se sentía más liviana»; lo que no expresa es la responsabilidad), t056 y t129. En t057 propuso pasar la sonda a «lo dice» por la oración 10; no se cambió la clase, porque esa oración lo dice en figurado («dos historias distintas») e interpretar una figura es inferir, como coincidieron los tres clasificadores. Su explicación sí se reescribió para reconocer la pista. La tabla de abajo trae los textos finales.
+
+## Cambios en las explicaciones
+
+| Sonda | Campo | Antes | Ahora |
 | --- | --- | --- | --- |
 | t010/p2 | si eligió «lo dice» | El relato nunca dice "la abuela estaba segura"; eso se saca de lo que hace. | Bien visto: el relato cuenta que probó la balanza en público. Que estaba segura lo agrega el lector. |
 | t013/p2 | la correcta | El texto no lo dice así, pero se deduce: entre los restos de la ciudad hay anchovetas y conchas (oración 4), y se intercambiaba pescado (oración 5). | Se deduce: el texto da los restos de anchovetas y conchas (oración 4); que se comían lo agrega el lector. |
 | t013/p2 | si eligió «lo dice» | El texto nunca dice "comían productos del mar"; dice que se encontraron anchovetas y conchas, y de ahí se saca. | Bien visto: el texto habla de anchovetas y conchas entre los restos. Que se las comían lo agrega el lector. |
 | t022/p2 | la correcta | El relato no lo dice con esas palabras, pero se deduce: Lucía no se burla y arregla las paredes con cuidado (oración 6). | Se deduce: el relato cuenta lo que hace Lucía (oración 6); la intención de ayudar la agrega el lector. |
 | t022/p2 | si eligió «lo dice» | El relato nunca dice "quería ayudar"; eso se saca de lo que Lucía hace. | Bien visto: el relato cuenta que Lucía arregla las paredes. La intención de ayudar no está expresada: se deduce. |
-| t028/p2 | la correcta | El relato no lo dice con esas palabras, pero se deduce: no salió al recreo y fue a contarle a la profesora (oraciones 5 y 6). | Se deduce: el relato cuenta lo que hace Carla (oraciones 5 y 6); lo que siente lo agrega el lector. |
-| t028/p2 | si eligió «lo dice» | El relato nunca dice "se sintió responsable"; eso se saca de lo que hace Carla. | Bien visto: el relato cuenta que Carla dejó el recreo para avisar. Lo que sentía no está expresado: se deduce. |
+| t028/p2 | la correcta | El relato no lo dice con esas palabras, pero se deduce: no salió al recreo y fue a contarle a la profesora (oraciones 5 y 6). | Se deduce: Carla causó la mancha (oración 3) y fue a contarlo (oración 6); la culpa la agrega el lector. |
+| t028/p2 | si eligió «lo dice» | El relato nunca dice "se sintió responsable"; eso se saca de lo que hace Carla. | Bien visto: Carla dejó el recreo para contarlo. Que se sintiera responsable no está expresado: se deduce. |
 | t034/p4 | la correcta | El texto no lo dice con esas palabras, pero se deduce: el autor defiende la reparación porque «da trabajo cerca de casa» (oración 6) y lamenta que el oficio de los técnicos «se vuelve imposible» cuando no hay repuestos (oración 7). | Se deduce: el autor usa el trabajo de los técnicos como razón (oraciones 6 y 7), sin expresar su preocupación. |
 | t041/p2 | la correcta | La infografía no usa la palabra "peligroso", pero pide alejarse de las ventanas durante el sismo: si hay que alejarse, es porque cerca de ellas se corre más riesgo. Se deduce. | Se deduce: la infografía pide alejarse de las ventanas; la comparación de riesgo la agrega el lector. |
 | t041/p2 | si eligió «lo dice» | El recuadro «Durante» dice que hay que alejarse de las ventanas, pero no dice con esas palabras que estar cerca sea más peligroso: eso se saca del consejo. | Bien visto: el recuadro «Durante» pide alejarse de las ventanas. La comparación de riesgo no está expresada: se deduce. |
@@ -34,13 +38,13 @@
 | t048/p2 | si eligió «lo dice» | El texto nunca dice con esas palabras que los seis tengan razón; se llega a eso juntando las oraciones 6, 7 y 10. | Bien visto: las oraciones 6, 7 y 10 llevan ahí. El juicio de que tienen razón lo agrega el lector. |
 | t055/p4 | si eligió «lo dice» | El texto no lo dice con esas palabras; se llega a eso juntando las oraciones 9, 10 y 11. | Bien visto: las oraciones 9 a 11 llevan ahí. Pero ese caso hipotético no está expresado: lo arma el lector. |
 | t055/p4 | si eligió «no se sabe» | No está escrito así, pero se deduce: si «habría bastado con gastar honradamente» es lo que el autor rechaza (oración 9), es porque el problema seguía aunque no se robara. | Es prudente no agregar nada, pero la oración 9 rechaza que bastara con gastar honradamente: de ahí sale. |
-| t056/p5 | si eligió «lo dice» | El texto no habla de pescar con moderación ni dice esa frase; se llega a ella juntando las oraciones 9, 10 y 11. | Bien visto: las oraciones 9 a 11 llevan ahí. La pesca moderada no aparece: esa consecuencia la agrega el lector. |
+| t056/p5 | si eligió «lo dice» | El texto no habla de pescar con moderación ni dice esa frase; se llega a ella juntando las oraciones 9, 10 y 11. | Bien visto: el texto culpa a la pesca excesiva (oración 9). El efecto de pescar poco lo agrega el lector. |
 | t056/p5 | si eligió «no se sabe» | No está dicho con esas palabras, pero se deduce: si la pesca excesiva fue lo que llevó a la población al colapso en 1972 (oración 9), pescar con moderación deja a la especie en condiciones de reponerse (oración 10). | Es prudente no agregar nada, pero si la pesca excesiva la debilitó (oración 9), pescar menos la deja reponerse. |
-| t057/p5 | si eligió «lo dice» | La carta no lo dice con esas palabras; se llega a eso comparando la promesa de la oración 5 con lo que pasó en las oraciones 3, 7 y 8. | Bien visto: la promesa y la cola están en la carta. Que no se cumplía lo concluye quien las compara. |
+| t057/p5 | si eligió «lo dice» | La carta no lo dice con esas palabras; se llega a eso comparando la promesa de la oración 5 con lo que pasó en las oraciones 3, 7 y 8. | Bien visto: la oración 10 lo insinúa con «dos historias distintas». Pero es figurado: la conclusión la saca el lector. |
 | t123/p5 | la correcta | La oración 8 dice que la anchoveta es la base de una industria pesquera importante, y las oraciones 10 y 11, que con El Niño escasea y se pesca mucho menos. El texto no lo dice con esas palabras, pero se deduce. | Se deduce: la industria vive de la anchoveta (oración 8), que con El Niño escasea (oración 10). |
 | t123/p5 | si eligió «lo dice» | El texto no habla de cómo le va a la industria durante El Niño: dice que escasea la anchoveta y que los pescadores pescan menos. Lo demás se deduce juntando las oraciones 8 y 11. | Bien visto: el texto dice que escasea la anchoveta y se pesca menos. El daño a la industria se deduce. |
 | t126/p1 | si eligió «lo dice» | En ningún lugar dice «this text was written by the library»: se deduce de «our community library» y de «we». | Bien visto: «our community library» y «we» apuntan ahí. Pero el texto no afirma quién lo escribe: se deduce. |
-| t129/p5 | si eligió «lo dice» | Ninguna oración lo dice así: se saca de unir la oración 7 (sigue llegando plástico) con la propuesta de la oración 8. | Bien visto: las oraciones 7 y 8 llevan ahí. Que menos plástico sea menos en los ríos se deduce. |
+| t129/p5 | si eligió «lo dice» | Ninguna oración lo dice así: se saca de unir la oración 7 (sigue llegando plástico) con la propuesta de la oración 8. | Bien visto: las oraciones 7 y 8 apuntan ahí. El efecto en los ríos lo agrega el lector. |
 | t132/p3 | si eligió «lo dice» | Ningún recuadro compara el cloro con el hervido ni dice cuál conviene más. Se saca al juntar el título del primer grupo con el recuadro «Clorar». | Bien visto: el hervido no protege después y el cloro sigue actuando. Pero la comparación la agrega el lector. |
 | t132/p3 | si eligió «no se sabe» | Aunque no lo diga así, el primer grupo «no protege después» y el cloro «sigue actuando»: de ahí sale la ventaja del cloro para el agua guardada. | Es prudente no agregar nada, pero el hervido «no protege después» y el cloro «sigue actuando»: de ahí sale. |
 | t133/p2 | si eligió «no se sabe» | Aunque no lo diga así, si las formas no se enfrentan ni se anulan, usar una no obliga a dejar la otra. | Es prudente no agregar nada, pero si las formas no se anulan (oración 4), usar una no excluye la otra. |
