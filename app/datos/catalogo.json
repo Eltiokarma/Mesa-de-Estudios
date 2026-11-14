@@ -1482,7 +1482,15 @@
      "plantillas": [
       "grafica-perillas",
       "inecuaciones-planteo"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/inecuaciones.js",
+      "requiere": [
+       "/nucleo/kit/piezas/recta.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "algebra.valor-absoluto-y-radicales",
