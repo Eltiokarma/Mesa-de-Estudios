@@ -63,7 +63,7 @@
       consigna: 'Elige la base y el porcentaje. Mira qué pedazo de la barra se separa.',
       voz: 'Cambia la base sin tocar el porcentaje, y mira el pedazo.',
       controles: [
-        { id: 'B', etiqueta: 'B', color: 'c-o', min: 100, max: 400, paso: 50, inicio: 200, unidad: 'soles', decimales: 0 },
+        { id: 'B', etiqueta: 'B', color: 'c-o', min: 100, max: 400, paso: 50, inicio: 200, decimales: 0 },
         { id: 'p', etiqueta: 'p', color: 'c-i', min: 5, max: 50, paso: 5, inicio: 20, unidad: '%', decimales: 0 },
       ],
       dibujo: v => ({ datos: barra(v.B, [des(v.p)]), estado: { corte: 1 } }),
@@ -374,7 +374,7 @@
       consigna: 'Elige la base sin impuesto y la tasa que da el problema. Mira cuánto se agrega y el total.',
       voz: 'La tasa siempre se toma de la base, no del total.',
       controles: [
-        { id: 'B', etiqueta: 'B', color: 'c-o', min: 100, max: 500, paso: 50, inicio: 200, unidad: 'soles', decimales: 0 },
+        { id: 'B', etiqueta: 'B', color: 'c-o', min: 100, max: 500, paso: 50, inicio: 200, decimales: 0 },
         { id: 't', etiqueta: 'τ', color: 'c-i', min: 10, max: 20, paso: 2, inicio: 18, unidad: '%', decimales: 0 },
       ],
       dibujo: v => ({ datos: barra(v.B, [aum(v.t)]), estado: { corte: 1 } }),
