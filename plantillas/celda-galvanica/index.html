@@ -135,6 +135,10 @@ canvas{display:block; width:100%; touch-action:pan-y; -webkit-user-select:none; 
 .fb{font-weight:700; margin:0}
 .fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
+.juego{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.juego[hidden]{display:none}
+.juego .seg{border-radius:16px}
+.juego .seg button{min-height:44px}
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:999px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
 .seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
@@ -197,6 +201,9 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
     <section class="bench" aria-label="Pila con dos vasos, alambre con voltímetro y puente salino">
       <div class="lienzo"><canvas id="cv" role="img" aria-label="Dos vasos con una lámina de metal cada uno, unidos arriba por un alambre con un voltímetro y por un tubo en U, el puente salino. Los puntos son electrones e iones"></canvas></div>
       <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="juego" id="juego1">
+        <div class="seg" role="group" aria-label="Láminas"><button type="button" data-lado="izq">Cambiar la lámina izquierda</button><button type="button" data-lado="der">Cambiar la lámina derecha</button></div>
+      </div>
       <div class="legend" id="leyenda1"></div>
     </section>
     <section class="guide">
@@ -218,6 +225,9 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
     <section class="bench" aria-label="Experimentos con pilas y celdas electrolíticas">
       <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
       <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="juego" id="juego2">
+        <div class="seg" role="group" aria-label="Láminas"><button type="button" data-lado="izq">Cambiar la lámina izquierda</button><button type="button" data-lado="der">Cambiar la lámina derecha</button></div>
+      </div>
       <div class="legend" id="leyenda2"></div>
     </section>
     <section class="guide">
@@ -244,6 +254,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'celda-galvanica', unidad: 'quimica.electroquimica', version: '0.1.0' };
@@ -581,7 +592,7 @@ function crearEscena(cv, idDesc, idLey){
     }
     // avisos
     const ya = l.yW + (MC.voltimetro(E.celda, { puente:k.puente }) === null ? 48 : 36);
-    if (k.pausa) rotulo(ctx, c, l.cx, ya, 'Pausa: responde para ver el movimiento', c.muted, 'center', 800, 11.5);
+    if (k.pausa) rotulo(ctx, c, l.cx, ya, k.pausaTxt || 'Pausa: responde para ver el movimiento', c.muted, 'center', 800, 11.5);
     else if (est.frenada && k.puente !== 'sal') rotulo(ctx, c, l.cx, ya, '⚠ La reacción se detuvo', c.ink, 'center', 800, 11.5);
     else if (E.fin) rotulo(ctx, c, l.cx, ya, l.ancho ? 'En el dibujo se acabaron los iones: vuelve a empezar' : 'Se acabaron los iones: vuelve a empezar', c.muted, 'center', 700, 11);
     if (E.cfg.grande) rotulo(ctx, c, l.cx, H - 10, 'láminas y vasos más grandes, los mismos metales', c.muted, 'center', 700, 11);
@@ -869,6 +880,31 @@ function crearEscena(cv, idDesc, idLey){
   addEventListener('modo', () => L.resize());
   return E;
 }
+
+/* Regla 3 (decisión 20): antes de cualquier pregunta se juega a armar la pila: se cambia la lámina de cada vaso
+   (zinc, hierro, cobre o plata, con su disolución) tocando el vaso, con los botones o con las flechas. El alambre
+   queda abierto, sin ánodo ni cátodo rotulados y con el voltímetro tapado: lo que después se pregunta es por dónde van
+   los electrones, qué lleva el puente, cuánto marca el voltímetro y qué sale en la electrólisis, y eso el juego no lo
+   muestra. */
+function jugarPila(E, idJuego, preguntas, volver){
+  const cv = E.L.cv, caja = document.getElementById(idJuego), J = { on:true, izq:'Zn', der:'Cu', sem:40 };
+  const armar = () => E.config({ izq:J.izq, der:J.der, puente:'sal', pausa:true, pausaTxt:'Alambre abierto: no pasa corriente', roles:false, ocultarV:true, semilla:J.sem });
+  armar(); E.L.compactar(false);   // mientras se juega no hay predicción pendiente: el dibujo a su tamaño y con leyenda
+  function cambiar(lado){
+    if (!J.on) return;
+    const otro = lado === 'izq' ? J.der : J.izq;
+    let k = METALES.indexOf(J[lado]);
+    do k = (k + 1) % METALES.length; while (METALES[k] === otro);
+    J[lado] = METALES[k]; J.sem++; armar();
+  }
+  caja.querySelectorAll('[data-lado]').forEach(b => b.addEventListener('click', () => cambiar(b.dataset.lado)));
+  cv.tabIndex = 0;
+  cv.addEventListener('click', e => { if (!J.on) return; const bb = cv.getBoundingClientRect(); cambiar(e.clientX - bb.left < bb.width/2 ? 'izq' : 'der'); });
+  cv.addEventListener('keydown', e => { const l = { ArrowLeft:'izq', ArrowRight:'der' }[e.key]; if (J.on && l){ e.preventDefault(); cambiar(l); } });
+  return JugarPrimero.montar({ escena: cv.closest('.bench'), preguntas, minimo: 2,
+    consigna: 'Toca un vaso para cambiar su lámina de metal.',
+    alListo: () => { J.on = false; caja.hidden = true; cv.removeAttribute('tabindex'); volver(); } });
+}
 </script>
 <script>
 /* ================= MODO 1: paso a paso =================
@@ -1093,6 +1129,7 @@ function pintarX(){
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+jugarPila(E, 'juego1', [...document.querySelectorAll('#m1 .guide > *')], () => go(0));
 })();
 </script>
 <script>
@@ -1276,6 +1313,7 @@ function ir(k){
   pintar(); E.dibujar();
 }
 ir(0);
+jugarPila(E, 'juego2', [...document.querySelectorAll('#m2 .guide > *')], () => ir(0));
 })();
 </script>
 
