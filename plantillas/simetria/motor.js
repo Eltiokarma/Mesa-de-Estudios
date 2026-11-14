@@ -25,6 +25,8 @@
  *                                                    null si r es vertical
  *                                 errores.horizontal lo mismo en horizontal; null si r es horizontal
  *                                 errores.intercambia cambia x por y (lo que vale solo para y = x)
+ *                                 errores.alReves    se aleja de la recta en vez de acercarse (suma la normal en vez de
+ *                                                    restarla): 2P − P′
  *   reflejarFigura(pts, r)      la lista de puntos reflejada
  *   pliegue(P, r, t)            el punto a la fracción t ∈ [0, 1] del doblez: H + (P − H)·cos(π·t). En t = 1 es P′.
  *                               Sirve para animar el espejo que dobla la figura.
@@ -110,6 +112,14 @@
  *                               y errores.giroLaVuelve = la original. La mano derecha de la escena: pulgar (0; 0; 1)
  *                               hacia arriba, índice (0; 1; 0) hacia el espejo y medio (−1; 0; 0) hacia la izquierda.
  *
+ * PARA LAS PREGUNTAS DE PAPEL (nucleo/papel-opciones.js)
+ *   escrito(fn, ...args)        reflejar, central, girar, trasladar o aplicarDos con cada punto escrito «(−1; −2)»
+ *   sumaEjes(lista, error)      { suma } de los ejes de figuras dadas como ['rectangulo', 6, 4]; con error, lo que da
+ *                               ese error de prediccionEjes en cada figura
+ *   cuentaLetras(letras)        { m (con centro), n (con un solo eje), diferencia, errores: { alMenosUnEje,
+ *                               centroSoloConEje, centroPorEje } }
+ *   prediccionEjes y prediccionPlanos aceptan también la figura o el poliedro como lista: ['regular', 9].
+ *
  * Cada resultado de predicción trae 'errores' con lo que da cada idea errónea. Ninguna sale del informe
  * docs/investigacion/geometria-ideas-erroneas.md salvo soloRectos (GE9, figura prototípica, parcial): las demás
  * son hipótesis nuestras.
@@ -175,7 +185,7 @@
   function reflejar(P, ro) {
     P = pto(P); const r = R(ro);
     const H = pie(P, r), Pp = { x: 2 * H.x - P.x, y: 2 * H.y - P.y };
-    const err = { pie: L(H), intercambia: L({ x: P.y, y: P.x }), vertical: null, horizontal: null };
+    const err = { pie: L(H), intercambia: L({ x: P.y, y: P.x }), vertical: null, horizontal: null, alReves: L({ x: 2 * P.x - Pp.x, y: 2 * P.y - Pp.y }) };
     if (Math.abs(r.b) > 1e-12) { const yr = -(r.a * P.x + r.c) / r.b; err.vertical = L({ x: P.x, y: 2 * yr - P.y }); }
     if (Math.abs(r.a) > 1e-12) { const xr = -(r.b * P.y + r.c) / r.a; err.horizontal = L({ x: 2 * xr - P.x, y: P.y }); }
     return { P: L(Pp), H: L(H), d: limpio(Math.abs(distanciaFirmada(P, r))), errores: err };
@@ -376,6 +386,7 @@
     return { ejes, numEjes: ejes.length, centro: tieneCentro ? L(G) : null, tieneCentro, G: L(G) };
   }
   function prediccionEjes(fig) {
+    if (Array.isArray(fig)) fig = figura(...fig);
     const s = simetrias(fig);
     const errores = { dobleCuenta: s.numEjes === 'infinitos' ? 'infinitos' : 2 * s.numEjes };
     if (!fig.circunferencia) {
@@ -475,6 +486,7 @@
     return { planos: hallados, numPlanos: hallados.length, G: L3(G) };
   }
   function prediccionPlanos(poli) {
+    if (Array.isArray(poli)) poli = poliedro(...poli);
     const r = planos(poli);
     // paralelos a alguna cara: la normal del plano es paralela a la normal de una cara de la caja (ejes x, y, z)
     const soloCaras = r.planos.filter(p => [p.normal.x, p.normal.y, p.normal.z].filter(c => Math.abs(c) > 1e-9).length === 1).length;
@@ -523,6 +535,43 @@
     };
   }
 
+  // ================= Para las preguntas de papel (alternativas que el motor escribe) =================
+  // Un punto como lo escribe el alumno: (−1; −2), con coma decimal y hasta dos decimales.
+  const numTexto = x => { const r = Math.round(x * 100) / 100; return (r < 0 ? '−' : '') + String(Math.abs(r)).replace('.', ','); };
+  const textoPunto = P => `(${numTexto(P.x)}; ${numTexto(P.y)})`;
+  const esPunto = o => o && typeof o === 'object' && !Array.isArray(o) && Object.keys(o).length === 2 && typeof o.x === 'number' && typeof o.y === 'number';
+  const aTexto = o => (esPunto(o) ? textoPunto(o) : Array.isArray(o) ? o.map(aTexto)
+    : o && typeof o === 'object' ? Object.fromEntries(Object.entries(o).map(([k, v]) => [k, aTexto(v)])) : o);
+  // escrito('reflejar', P, r): el resultado de la función con cada punto del plano escrito como texto.
+  function escrito(fn, ...args) {
+    const f = { reflejar, central, girar, trasladar, aplicarDos }[fn];
+    if (!f) throw new Error(`escrito no sabe escribir ${fn}`);
+    return aTexto(f(...args));
+  }
+  // sumaEjes([['rectangulo', 6, 4], …], error): la suma de los ejes de las figuras; con error, cada figura aporta lo
+  // que da ese error de prediccionEjes (o sus ejes verdaderos si ese error no aplica a la figura).
+  function sumaEjes(lista, error) {
+    let suma = 0;
+    for (const d of lista) {
+      const p = prediccionEjes(d), v = error && p.errores[error] !== undefined ? p.errores[error] : p.ejes;
+      if (typeof v !== 'number') throw new Error('sumaEjes necesita figuras con un número finito de ejes');
+      suma += v;
+    }
+    return { suma };
+  }
+  // cuentaLetras(['A', 'E', …]): m = letras con centro de simetría, n = letras con exactamente un eje, m − n.
+  // errores: alMenosUnEje (n cuenta toda letra con algún eje), centroSoloConEje (m cuenta solo las que además tienen
+  // eje) y centroPorEje (m cuenta toda letra con alguna simetría, eje o centro).
+  function cuentaLetras(letras) {
+    const s = letras.map(L => simetrias(figura('letra', L)));
+    const m = s.filter(x => x.tieneCentro).length, n = s.filter(x => x.numEjes === 1).length;
+    const algun = s.filter(x => x.numEjes > 0).length;
+    return { m, n, diferencia: m - n, errores: {
+      alMenosUnEje: m - algun,
+      centroSoloConEje: s.filter(x => x.tieneCentro && x.numEjes > 0).length - n,
+      centroPorEje: s.filter(x => x.tieneCentro || x.numEjes > 0).length - n } };
+  }
+
   // azar con semilla para las pruebas (mulberry32)
   function azar(semilla) {
     let a = semilla >>> 0;
@@ -535,6 +584,6 @@
     componer, aplicarDos,
     figura, poligono, girarFigura, simetrias, coincide, prediccionEjes, LETRAS: Object.keys(LETRAS),
     poliedro, reflejarEnPlano, planos, prediccionPlanos, quiralidad, manoEnEspejo,
-    azar
+    escrito, sumaEjes, cuentaLetras, azar
   };
 });

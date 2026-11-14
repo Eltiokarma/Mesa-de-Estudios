@@ -2,7 +2,7 @@
   "plantilla": "simetria",
   "unidades": "Coordenadas en las unidades del problema (cm o u), con el eje y hacia arriba; puntos como { x, y } y, en el espacio, { x, y, z }. Ángulos en grados desde el eje x, en sentido antihorario. Una recta va como { m, n } (y = m·x + n), { x: k } (vertical), { y: k } (horizontal), { a, b, c } (a·x + b·y + c = 0), { A, B } (dos puntos) o { punto, angulo }. Un plano va como { normal, d } con normal·P = d.",
   "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (P.x, errores.vertical.y, ejes.1.angulo); las listas se comparan completas; los textos se comparan exactos. En componer, la primera recta es el primer espejo y el ángulo θ se mide del primero al segundo; el giro resultante es 2θ (positivo = antihorario). numEjes = 'infinitos' para la circunferencia. Un argumento { fig: [nombre, …] } es la figura motor.figura(nombre, …), girada 'girar' grados alrededor de su centro de puntos si lo trae; { poli: [nombre, …] } es motor.poliedro(nombre, …). Los ejes de una figura pasan todos por su centro de puntos G y se dan por su ángulo, de menor a mayor, en [0°, 180°).",
-  "verificacion": "Verificador independiente (subagente, 7 nov 2026, dos pasadas), sin leer el motor salvo su cabecera: reflexiones con fracciones exactas por proyección y por matriz de reflexión; composiciones siguiendo puntos de prueba por las dos reflexiones; ejes y centros por fuerza bruta propia sobre rectas y mediatrices de puntos notables, con los segmentos de la cabecera; planos enumerando planos por ternas de puntos notables, con la matriz de Householder. Coinciden los 22 casos (bordes incluidos: punto en la recta, P = O, identidad, espejos perpendiculares, paralelos oblicuos, cubo como caja y prismas regulares de 3 y 6 lados, X en caja cuadrada) y los 10 problemas de papel.json.",
+  "verificacion": "Verificador independiente (subagente, 7 nov 2026, dos pasadas), sin leer el motor salvo su cabecera: reflexiones con fracciones exactas por proyección y por matriz de reflexión; composiciones siguiendo puntos de prueba por las dos reflexiones; ejes y centros por fuerza bruta propia sobre rectas y mediatrices de puntos notables, con los segmentos de la cabecera; planos enumerando planos por ternas de puntos notables, con la matriz de Householder. Coinciden los 22 casos (bordes incluidos: punto en la recta, P = O, identidad, espejos perpendiculares, paralelos oblicuos, cubo como caja y prismas regulares de 3 y 6 lados, X en caja cuadrada) y los 10 problemas de papel.json. Los tres casos «Papel» (14 nov 2026) se comprobaron aparte en Python: reflexión por la fórmula a·x + b·y + c = 0 (y el error de sumar la normal: P + 2·(3; 4) = (11; 13)), y ejes y centros por fuerza bruta propia con rectas por el centroide cada 0,05°.",
   "tolerancia": 1e-9,
   "casos": [
     { "nombre": "Predicción 2 (paso 3): P(5; 1) respecto de y = x + 2 → H(2; 4), P′(−1; 7), d = 3√2 (errores: se queda en el pie H(2; 4); en vertical (5; 13); en horizontal (−7; 1); intercambia x e y (1; 5))",
@@ -150,6 +150,23 @@
       "espera": { "P.x": 2, "P.y": 3, "P.z": -4, "H.z": 0, "d": 4, "errores.pie.z": 0, "errores.centralOrigen.x": -2, "errores.centralOrigen.y": -3, "errores.centralOrigen.z": -4,
                   "errores.ejeNormal.x": -2, "errores.ejeNormal.y": -3, "errores.ejeNormal.z": 4 },
       "tambien": [ { "fn": "manoEnEspejo", "args": [{ "pulgar": { "x": 1, "y": 0, "z": 0 }, "indice": { "x": 0, "y": 1, "z": 0 }, "medio": { "x": 0, "y": 0, "z": 1 } }, { "normal": { "x": 0, "y": 1, "z": 0 }, "d": 3 }],
-                     "espera": { "original": "derecha", "imagen": "izquierda", "trasGiro": "izquierda", "errores.copia": "derecha" } } ] }
+                     "espera": { "original": "derecha", "imagen": "izquierda", "trasGiro": "izquierda", "errores.copia": "derecha" } } ] },
+
+    { "nombre": "Papel p4 escrito: el simétrico de P(5; 5) respecto de 3x + 4y − 10 = 0 se escribe (−1; −3), el pie (2; 1), en vertical (5; −7,5) y en horizontal (−11,67; 5), y alejándose de la recta (11; 13); y el de A(−4; 5) respecto de O(1; 2), (6; −1), con el giro de 90° (−2; −3)",
+      "fn": "escrito", "args": ["reflejar", { "x": 5, "y": 5 }, { "a": 3, "b": 4, "c": -10 }],
+      "espera": { "P": "(−1; −3)", "errores.pie": "(2; 1)", "errores.vertical": "(5; −7,5)", "errores.horizontal": "(−11,67; 5)", "errores.alReves": "(11; 13)", "d": 5 },
+      "tambien": [ { "args": ["central", { "x": -4, "y": 5 }, { "x": 1, "y": 2 }], "espera": { "P": "(6; −1)", "errores.reflejoVertical": "(6; 5)", "errores.reflejoHorizontal": "(−4; −1)", "errores.giro90": "(−2; −3)" } },
+                   { "args": ["reflejar", { "x": 3, "y": -2 }, { "y": 1 }], "espera": { "P": "(3; 4)" } } ] },
+
+    { "nombre": "Papel p5: rectángulo 6 × 4, rombo 6-4, cuadrado, equilátero y romboide suman 2 + 2 + 4 + 3 + 0 = 11 ejes; con las diagonales que no son ejes, 15; solo los horizontales y verticales, 7",
+      "fn": "sumaEjes", "args": [[["rectangulo", 6, 4], ["rombo", 6, 4], ["cuadrado", 3], ["equilatero", 3], ["romboide", 5, 3, 2]]],
+      "espera": { "suma": 11 },
+      "tambien": [ { "args": [[["rectangulo", 6, 4], ["rombo", 6, 4], ["cuadrado", 3], ["equilatero", 3], ["romboide", 5, 3, 2]], "conDiagonales"], "espera": { "suma": 15 } },
+                   { "args": [[["rectangulo", 6, 4], ["rombo", 6, 4], ["cuadrado", 3], ["equilatero", 3], ["romboide", 5, 3, 2]], "soloRectos"], "espera": { "suma": 7 } },
+                   { "fn": "prediccionEjes", "args": [["regular", 9]], "espera": { "ejes": 9, "errores.dobleCuenta": 18, "errores.soloRectos": 1 } } ] },
+
+    { "nombre": "Papel p6: entre A, E, H, N, S, T, X y Z hay 5 con centro (H, N, S, X, Z) y 3 con un solo eje (A, E, T): m − n = 2; si n cuenta toda letra con eje, 0; si el centro exige eje, −1; si toda simetría cuenta como centro, 5",
+      "fn": "cuentaLetras", "args": [["A", "E", "H", "N", "S", "T", "X", "Z"]],
+      "espera": { "m": 5, "n": 3, "diferencia": 2, "errores.alMenosUnEje": 0, "errores.centroSoloConEje": -1, "errores.centroPorEje": 5 } }
   ]
 }

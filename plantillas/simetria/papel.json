@@ -12,7 +12,53 @@
         "El pie es H(1; −2), y P está 2 unidades a su derecha.",
         "P′ queda 2 unidades a la izquierda de H: P′(1 − 2; −2) = (−1; −2). Comprobación: H es el punto medio de PP′."
       ],
-      "verificar": [ { "fn": "reflejar", "args": [{ "x": 3, "y": -2 }, { "x": 1 }], "espera": { "P.x": -1, "P.y": -2, "H.x": 1, "d": 2 } } ]
+      "verificar": [ { "fn": "reflejar", "args": [{ "x": 3, "y": -2 }, { "x": 1 }], "espera": { "P.x": -1, "P.y": -2, "H.x": 1, "d": 2 } } ],
+      "preguntas": [
+        {
+          "id": "p1a",
+          "enunciado": "Se refleja el punto P(3; −2) en la recta x = 1 (simetría axial: la recta es el eje de simetría).",
+          "pregunta": "¿Cuál es el simétrico P′?",
+          "correcta": { "fn": "escrito", "args": ["reflejar", { "x": 3, "y": -2 }, { "x": 1 }], "campo": "P", "valor": "(−1; −2)" },
+          "errores": [
+            {
+              "id": "GE-se-queda-en-el-pie",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es el pie H, la mitad del camino. Desde H hay que seguir otro tanto: P′ = 2H − P.",
+              "fn": "escrito",
+              "args": ["reflejar", { "x": 3, "y": -2 }, { "x": 1 }],
+              "campo": "errores.pie",
+              "valor": "(1; −2)"
+            },
+            {
+              "id": "GE-cambia-x-por-y",
+              "respaldo": "hipotesis",
+              "explicacion": "Cambiar x por y solo sirve para el espejo y = x. Aquí el espejo es la recta vertical x = 1.",
+              "fn": "escrito",
+              "args": ["reflejar", { "x": 3, "y": -2 }, { "x": 1 }],
+              "campo": "errores.intercambia",
+              "valor": "(−2; 3)"
+            },
+            {
+              "id": "GE-recta-horizontal",
+              "respaldo": "hipotesis",
+              "explicacion": "Reflejaste en y = 1, una recta horizontal. La recta x = 1 es vertical: P se mueve en horizontal y conserva y = −2.",
+              "fn": "escrito",
+              "args": ["reflejar", { "x": 3, "y": -2 }, { "y": 1 }],
+              "campo": "P",
+              "valor": "(3; 4)"
+            },
+            {
+              "id": "GE-eje-y",
+              "respaldo": "hipotesis",
+              "explicacion": "Reflejaste en el eje y (x = 0). El espejo es x = 1: P está a 2 unidades de él, no a 3.",
+              "fn": "escrito",
+              "args": ["reflejar", { "x": 3, "y": -2 }, { "x": 0 }],
+              "campo": "P",
+              "valor": "(−3; −2)"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p2",
@@ -24,7 +70,44 @@
         "A′ = (2·1 − (−4); 2·2 − 5) = (6; −1).",
         "Comprobación: el punto medio de A(−4; 5) y A′(6; −1) es (1; 2), que es O."
       ],
-      "verificar": [ { "fn": "central", "args": [{ "x": -4, "y": 5 }, { "x": 1, "y": 2 }], "espera": { "P.x": 6, "P.y": -1 } } ]
+      "verificar": [ { "fn": "central", "args": [{ "x": -4, "y": 5 }, { "x": 1, "y": 2 }], "espera": { "P.x": 6, "P.y": -1 } } ],
+      "preguntas": [
+        {
+          "id": "p2a",
+          "enunciado": "Se refleja el punto A(−4; 5) respecto del punto O(1; 2) (simetría central o respecto de un punto).",
+          "pregunta": "¿Cuál es el simétrico A′?",
+          "correcta": { "fn": "escrito", "args": ["central", { "x": -4, "y": 5 }, { "x": 1, "y": 2 }], "campo": "P", "valor": "(6; −1)" },
+          "errores": [
+            {
+              "id": "RME24-reflejo-vertical",
+              "respaldo": "hipotesis",
+              "explicacion": "Reflejaste en la recta vertical que pasa por O. La simetría central es media vuelta: O queda en el punto medio de AA′.",
+              "fn": "escrito",
+              "args": ["central", { "x": -4, "y": 5 }, { "x": 1, "y": 2 }],
+              "campo": "errores.reflejoVertical",
+              "valor": "(6; 5)"
+            },
+            {
+              "id": "RME24-reflejo-horizontal",
+              "respaldo": "hipotesis",
+              "explicacion": "Reflejaste en la recta horizontal que pasa por O. Respecto de un punto, cambian las dos coordenadas: A′ = 2O − A.",
+              "fn": "escrito",
+              "args": ["central", { "x": -4, "y": 5 }, { "x": 1, "y": 2 }],
+              "campo": "errores.reflejoHorizontal",
+              "valor": "(−4; −1)"
+            },
+            {
+              "id": "RME-cuarto-de-vuelta",
+              "respaldo": "hipotesis",
+              "explicacion": "Giraste un cuarto de vuelta alrededor de O. La simetría central es un giro de 180°, media vuelta.",
+              "fn": "escrito",
+              "args": ["central", { "x": -4, "y": 5 }, { "x": 1, "y": 2 }],
+              "campo": "errores.giro90",
+              "valor": "(−2; −3)"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p3",
@@ -37,7 +120,53 @@
         "P′ = 2H − P = (2·3 − 6; 2·5 − 2) = (0; 8).",
         "Comprobación: P′(0; 8) también está en y = −x + 8, y H es el punto medio de PP′."
       ],
-      "verificar": [ { "fn": "reflejar", "args": [{ "x": 6, "y": 2 }, { "m": 1, "n": 2 }], "espera": { "P.x": 0, "P.y": 8, "H.x": 3, "H.y": 5 } } ]
+      "verificar": [ { "fn": "reflejar", "args": [{ "x": 6, "y": 2 }, { "m": 1, "n": 2 }], "espera": { "P.x": 0, "P.y": 8, "H.x": 3, "H.y": 5 } } ],
+      "preguntas": [
+        {
+          "id": "p3a",
+          "enunciado": "Se refleja el punto P(6; 2) en la recta L: y = x + 2.",
+          "pregunta": "¿Cuál es el simétrico P′?",
+          "correcta": { "fn": "escrito", "args": ["reflejar", { "x": 6, "y": 2 }, { "m": 1, "n": 2 }], "campo": "P", "valor": "(0; 8)" },
+          "errores": [
+            {
+              "id": "GE-se-queda-en-el-pie",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es el pie H(3; 5), la mitad del camino. Falta seguir otro tanto: P′ = 2H − P.",
+              "fn": "escrito",
+              "args": ["reflejar", { "x": 6, "y": 2 }, { "m": 1, "n": 2 }],
+              "campo": "errores.pie",
+              "valor": "(3; 5)"
+            },
+            {
+              "id": "GE-camino-vertical",
+              "respaldo": "hipotesis",
+              "explicacion": "Fuiste en vertical hasta L y seguiste otro tanto. Hay que ir por la perpendicular a L, de pendiente −1.",
+              "fn": "escrito",
+              "args": ["reflejar", { "x": 6, "y": 2 }, { "m": 1, "n": 2 }],
+              "campo": "errores.vertical",
+              "valor": "(6; 14)"
+            },
+            {
+              "id": "GE-camino-horizontal",
+              "respaldo": "hipotesis",
+              "explicacion": "Fuiste en horizontal hasta L y seguiste otro tanto. Hay que ir por la perpendicular a L, de pendiente −1.",
+              "fn": "escrito",
+              "args": ["reflejar", { "x": 6, "y": 2 }, { "m": 1, "n": 2 }],
+              "campo": "errores.horizontal",
+              "valor": "(−6; 2)"
+            },
+            {
+              "id": "GE-cambia-x-por-y",
+              "respaldo": "hipotesis",
+              "explicacion": "Cambiar x por y solo sirve para el espejo y = x. Esta recta es y = x + 2: está corrida 2 hacia arriba.",
+              "fn": "escrito",
+              "args": ["reflejar", { "x": 6, "y": 2 }, { "m": 1, "n": 2 }],
+              "campo": "errores.intercambia",
+              "valor": "(2; 6)"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p4",
@@ -50,7 +179,35 @@
         "Como 3·5 + 4·5 − 10 es positivo, P está del lado hacia donde apunta (3; 4); para llegar a L se resta: H = (5 − 3; 5 − 4) = (2; 1). Comprobación: 3·2 + 4·1 − 10 = 0.",
         "P′ = 2H − P = (4 − 5; 2 − 5) = (−1; −3)."
       ],
-      "verificar": [ { "fn": "reflejar", "args": [{ "x": 5, "y": 5 }, { "a": 3, "b": 4, "c": -10 }], "espera": { "P.x": -1, "P.y": -3, "H.x": 2, "H.y": 1, "d": 5 } } ]
+      "verificar": [ { "fn": "reflejar", "args": [{ "x": 5, "y": 5 }, { "a": 3, "b": 4, "c": -10 }], "espera": { "P.x": -1, "P.y": -3, "H.x": 2, "H.y": 1, "d": 5 } } ],
+      "preguntas": [
+        {
+          "id": "p4a",
+          "enunciado": "Se refleja el punto P(5; 5) en la recta L: 3x + 4y − 10 = 0.",
+          "pregunta": "¿Cuál es el simétrico P′?",
+          "correcta": { "fn": "escrito", "args": ["reflejar", { "x": 5, "y": 5 }, { "a": 3, "b": 4, "c": -10 }], "campo": "P", "valor": "(−1; −3)" },
+          "errores": [
+            {
+              "id": "GE-se-queda-en-el-pie",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es el pie H(2; 1), sobre la recta. Desde H hay que seguir otro tanto: P′ = 2H − P.",
+              "fn": "escrito",
+              "args": ["reflejar", { "x": 5, "y": 5 }, { "a": 3, "b": 4, "c": -10 }],
+              "campo": "errores.pie",
+              "valor": "(2; 1)"
+            },
+            {
+              "id": "GE-normal-al-reves",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste el vector (3; 4) en vez de restarlo y te alejaste de la recta. Como 3·5 + 4·5 − 10 > 0, para llegar a L se resta.",
+              "fn": "escrito",
+              "args": ["reflejar", { "x": 5, "y": 5 }, { "a": 3, "b": 4, "c": -10 }],
+              "campo": "errores.alReves",
+              "valor": "(11; 13)"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p5",
@@ -67,7 +224,51 @@
                      { "fn": "prediccionEjes", "args": [{ "fig": ["rombo", 6, 4] }], "espera": { "ejes": 2 } },
                      { "fn": "prediccionEjes", "args": [{ "fig": ["cuadrado", 3] }], "espera": { "ejes": 4 } },
                      { "fn": "prediccionEjes", "args": [{ "fig": ["equilatero", 3] }], "espera": { "ejes": 3 } },
-                     { "fn": "prediccionEjes", "args": [{ "fig": ["romboide", 5, 3, 2] }], "espera": { "ejes": 0, "centro": true } } ]
+                     { "fn": "prediccionEjes", "args": [{ "fig": ["romboide", 5, 3, 2] }], "espera": { "ejes": 0, "centro": true } } ],
+      "preguntas": [
+        {
+          "id": "p5a",
+          "enunciado": "Sean a, b, c, d y e los números de ejes de simetría de un rectángulo (no cuadrado), un rombo (no cuadrado), un cuadrado, un triángulo equilátero y un romboide, en ese orden.",
+          "pregunta": "¿Cuánto vale a + b + c + d + e?",
+          "unidad": "",
+          "decimales": 0,
+          "correcta": {
+            "fn": "sumaEjes",
+            "args": [[["rectangulo", 6, 4], ["rombo", 6, 4], ["cuadrado", 3], ["equilatero", 3], ["romboide", 5, 3, 2]]],
+            "campo": "suma",
+            "valor": 11
+          },
+          "errores": [
+            {
+              "id": "GE-diagonal-como-eje",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste diagonales como ejes. Al doblar un rectángulo o un romboide por su diagonal, las esquinas no caen una sobre otra.",
+              "fn": "sumaEjes",
+              "args": [[["rectangulo", 6, 4], ["rombo", 6, 4], ["cuadrado", 3], ["equilatero", 3], ["romboide", 5, 3, 2]], "conDiagonales"],
+              "campo": "suma",
+              "valor": 15
+            },
+            {
+              "id": "GE9-solo-rectos",
+              "respaldo": "parcial",
+              "explicacion": "Contaste solo los ejes horizontales y verticales. El cuadrado también tiene sus dos diagonales, y el equilátero, dos alturas inclinadas.",
+              "fn": "sumaEjes",
+              "args": [[["rectangulo", 6, 4], ["rombo", 6, 4], ["cuadrado", 3], ["equilatero", 3], ["romboide", 5, 3, 2]], "soloRectos"],
+              "campo": "suma",
+              "valor": 7
+            },
+            {
+              "id": "GE-un-eje-por-lado",
+              "respaldo": "hipotesis",
+              "explicacion": "Pusiste un eje por lado. Eso vale para los polígonos regulares; el rectángulo, el rombo y el romboide tienen menos.",
+              "fn": "sumaEjes",
+              "args": [[["rectangulo", 6, 4], ["rombo", 6, 4], ["cuadrado", 3], ["equilatero", 3], ["romboide", 5, 3, 2]], "unoPorLado"],
+              "campo": "suma",
+              "valor": 19
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p6",
@@ -86,7 +287,37 @@
                      { "fn": "simetrias", "args": [{ "fig": ["letra", "Z"] }], "espera": { "numEjes": 0, "tieneCentro": true } },
                      { "fn": "simetrias", "args": [{ "fig": ["letra", "A"] }], "espera": { "numEjes": 1, "tieneCentro": false } },
                      { "fn": "simetrias", "args": [{ "fig": ["letra", "T"] }], "espera": { "numEjes": 1, "tieneCentro": false } },
-                     { "fn": "simetrias", "args": [{ "fig": ["letra", "E"] }], "espera": { "numEjes": 1, "tieneCentro": false } } ]
+                     { "fn": "simetrias", "args": [{ "fig": ["letra", "E"] }], "espera": { "numEjes": 1, "tieneCentro": false } } ],
+      "preguntas": [
+        {
+          "id": "p6a",
+          "enunciado": "Con las letras A, E, H, N, S, T, X y Z escritas en imprenta mayúscula de trazos rectos, sea m el número de letras con centro de simetría y n el número de letras con exactamente un eje.",
+          "pregunta": "¿Cuánto vale m − n?",
+          "unidad": "",
+          "decimales": 0,
+          "correcta": { "fn": "cuentaLetras", "args": [["A", "E", "H", "N", "S", "T", "X", "Z"]], "campo": "diferencia", "valor": 2 },
+          "errores": [
+            {
+              "id": "GE-centro-pide-eje",
+              "respaldo": "hipotesis",
+              "explicacion": "Dejaste fuera N, S y Z. Una letra puede tener centro sin ningún eje: basta que quede igual al girarla media vuelta.",
+              "fn": "cuentaLetras",
+              "args": [["A", "E", "H", "N", "S", "T", "X", "Z"]],
+              "campo": "errores.centroSoloConEje",
+              "valor": -1
+            },
+            {
+              "id": "RME24-eje-como-centro",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste A, E y T como letras con centro. Tienen eje, pero al girarlas media vuelta quedan de cabeza.",
+              "fn": "cuentaLetras",
+              "args": [["A", "E", "H", "N", "S", "T", "X", "Z"]],
+              "campo": "errores.centroPorEje",
+              "valor": 5
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p7",
@@ -99,7 +330,65 @@
         "Centro: al girar media vuelta, cada vértice debe caer sobre otro. Con 12 lados, cada vértice tiene uno opuesto; con 9, frente a un vértice queda un lado. Solo el de 12 lados tiene centro."
       ],
       "verificar": [ { "fn": "prediccionEjes", "args": [{ "fig": ["regular", 12] }], "espera": { "ejes": 12, "centro": true } },
-                     { "fn": "prediccionEjes", "args": [{ "fig": ["regular", 9] }], "espera": { "ejes": 9, "centro": false } } ]
+                     { "fn": "prediccionEjes", "args": [{ "fig": ["regular", 9] }], "espera": { "ejes": 9, "centro": false } } ],
+      "preguntas": [
+        {
+          "id": "p7a",
+          "enunciado": "Un polígono regular de 12 lados.",
+          "pregunta": "¿Cuántos ejes de simetría tiene?",
+          "unidad": "",
+          "decimales": 0,
+          "correcta": { "fn": "prediccionEjes", "args": [["regular", 12]], "campo": "ejes", "valor": 12 },
+          "errores": [
+            {
+              "id": "GE-eje-contado-dos-veces",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste cada eje dos veces, una por cada extremo. Un eje que une dos vértices opuestos es uno solo.",
+              "fn": "prediccionEjes",
+              "args": [["regular", 12]],
+              "campo": "errores.dobleCuenta",
+              "valor": 24
+            },
+            {
+              "id": "GE9-solo-rectos",
+              "respaldo": "parcial",
+              "explicacion": "Contaste solo el eje horizontal y el vertical. Un polígono regular de n lados tiene n ejes, también los inclinados.",
+              "fn": "prediccionEjes",
+              "args": [["regular", 12]],
+              "campo": "errores.soloRectos",
+              "valor": 2
+            }
+          ]
+        },
+        {
+          "id": "p7b",
+          "enunciado": "Un polígono regular de 9 lados.",
+          "pregunta": "¿Cuántos ejes de simetría tiene?",
+          "unidad": "",
+          "decimales": 0,
+          "correcta": { "fn": "prediccionEjes", "args": [["regular", 9]], "campo": "ejes", "valor": 9 },
+          "errores": [
+            {
+              "id": "GE-eje-contado-dos-veces",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste cada eje dos veces. Con 9 lados, cada eje va de un vértice al punto medio del lado de enfrente: es uno solo.",
+              "fn": "prediccionEjes",
+              "args": [["regular", 9]],
+              "campo": "errores.dobleCuenta",
+              "valor": 18
+            },
+            {
+              "id": "GE9-solo-rectos",
+              "respaldo": "parcial",
+              "explicacion": "Contaste solo el eje vertical. Un polígono regular de n lados tiene n ejes, también los inclinados.",
+              "fn": "prediccionEjes",
+              "args": [["regular", 9]],
+              "campo": "errores.soloRectos",
+              "valor": 1
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p8",
@@ -124,7 +413,37 @@
         "Si el punto forma un ángulo α con L₁, su reflejo forma −α; al reflejarlo en L₂ (a 35°) pasa a 70° + α. Avanzó 70°.",
         "El ángulo de giro es el doble del ángulo entre los espejos: 2·35° = 70°."
       ],
-      "verificar": [ { "fn": "componer", "args": [{ "y": 0 }, { "punto": { "x": 0, "y": 0 }, "angulo": 35 }], "espera": { "tipo": "giro", "angulo": 70 } } ]
+      "verificar": [ { "fn": "componer", "args": [{ "y": 0 }, { "punto": { "x": 0, "y": 0 }, "angulo": 35 }], "espera": { "tipo": "giro", "angulo": 70 } } ],
+      "preguntas": [
+        {
+          "id": "p9a",
+          "enunciado": "Las rectas L₁ y L₂ se cortan en Q y forman un ángulo de 35°. Un punto se refleja primero en L₁ y luego en L₂. El resultado es un giro alrededor de Q.",
+          "pregunta": "¿Cuánto mide el ángulo de ese giro?",
+          "unidad": "°",
+          "decimales": 1,
+          "correcta": { "fn": "componer", "args": [{ "y": 0 }, { "punto": { "x": 0, "y": 0 }, "angulo": 35 }], "campo": "angulo", "valor": 70 },
+          "errores": [
+            {
+              "id": "GE-giro-sin-duplicar",
+              "respaldo": "hipotesis",
+              "explicacion": "El giro no es el ángulo entre los espejos: es el doble. Un punto a α de L₁ termina a 70° + α.",
+              "fn": "componer",
+              "args": [{ "y": 0 }, { "punto": { "x": 0, "y": 0 }, "angulo": 35 }],
+              "campo": "errores.sinDuplicar",
+              "valor": 35
+            },
+            {
+              "id": "GE-giro-mitad",
+              "respaldo": "hipotesis",
+              "explicacion": "Dividiste entre 2 en lugar de multiplicar. Cada reflexión suma un tramo: el giro es 2 · 35°.",
+              "fn": "componer",
+              "args": [{ "y": 0 }, { "punto": { "x": 0, "y": 0 }, "angulo": 35 }],
+              "campo": "errores.mitad",
+              "valor": 17.5
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p10",
@@ -137,7 +456,83 @@
         "En el cubo, cualquiera de las tres direcciones puede hacer de «altura»: 3 planos paralelos a las caras y 6 que contienen dos aristas opuestas. Total: 9."
       ],
       "verificar": [ { "fn": "prediccionPlanos", "args": [{ "poli": ["prismaCuadrado", 2, 4] }], "espera": { "planos": 5 } },
-                     { "fn": "prediccionPlanos", "args": [{ "poli": ["cubo", 2] }], "espera": { "planos": 9 } } ]
+                     { "fn": "prediccionPlanos", "args": [{ "poli": ["cubo", 2] }], "espera": { "planos": 9 } } ],
+      "preguntas": [
+        {
+          "id": "p10a",
+          "enunciado": "Un prisma recto de base cuadrada cuya altura es el doble del lado de la base.",
+          "pregunta": "¿Cuántos planos de simetría tiene?",
+          "unidad": "",
+          "decimales": 0,
+          "correcta": { "fn": "prediccionPlanos", "args": [["prismaCuadrado", 2, 4]], "campo": "planos", "valor": 5 },
+          "errores": [
+            {
+              "id": "GE-como-cubo",
+              "respaldo": "hipotesis",
+              "explicacion": "Lo contaste como un cubo. Con la altura distinta del lado, ya no sirven los 4 planos inclinados que pasan por dos aristas opuestas: 9 − 4 = 5.",
+              "fn": "prediccionPlanos",
+              "args": [["prismaCuadrado", 2, 4]],
+              "campo": "errores.comoCubo",
+              "valor": 9
+            },
+            {
+              "id": "GE-solo-paralelos-caras",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste solo los planos paralelos a las caras. Faltan los dos verticales que contienen las diagonales de la base.",
+              "fn": "prediccionPlanos",
+              "args": [["prismaCuadrado", 2, 4]],
+              "campo": "errores.soloCaras",
+              "valor": 3
+            },
+            {
+              "id": "GE-un-plano-por-cara",
+              "respaldo": "hipotesis",
+              "explicacion": "Pusiste un plano por cara. Los planos se buscan doblando el sólido: 1 horizontal y 4 verticales.",
+              "fn": "prediccionPlanos",
+              "args": [["prismaCuadrado", 2, 4]],
+              "campo": "errores.unoPorCara",
+              "valor": 6
+            }
+          ]
+        },
+        {
+          "id": "p10b",
+          "enunciado": "Un cubo.",
+          "pregunta": "¿Cuántos planos de simetría tiene?",
+          "unidad": "",
+          "decimales": 0,
+          "correcta": { "fn": "prediccionPlanos", "args": [["cubo", 2]], "campo": "planos", "valor": 9 },
+          "errores": [
+            {
+              "id": "GE-como-prisma",
+              "respaldo": "hipotesis",
+              "explicacion": "Lo contaste como un prisma alto. En el cubo cualquier dirección puede hacer de altura: 3 planos paralelos a las caras y 6 diagonales.",
+              "fn": "prediccionPlanos",
+              "args": [["cubo", 2]],
+              "campo": "errores.comoPrisma",
+              "valor": 5
+            },
+            {
+              "id": "GE-solo-paralelos-caras",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste solo los 3 paralelos a las caras. Faltan los 6 que contienen dos aristas opuestas.",
+              "fn": "prediccionPlanos",
+              "args": [["cubo", 2]],
+              "campo": "errores.soloCaras",
+              "valor": 3
+            },
+            {
+              "id": "GE-un-plano-por-arista",
+              "respaldo": "hipotesis",
+              "explicacion": "Pusiste un plano por arista. Cada plano diagonal contiene dos aristas opuestas: son 6, no 12, más los 3 paralelos a las caras.",
+              "fn": "prediccionPlanos",
+              "args": [["cubo", 2]],
+              "campo": "errores.unoPorArista",
+              "valor": 12
+            }
+          ]
+        }
+      ]
     }
   ]
 }
