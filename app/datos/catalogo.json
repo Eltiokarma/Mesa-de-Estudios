@@ -1846,7 +1846,15 @@
      "plantillas": [
       "matrices",
       "sistemas-ecuaciones"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/matrices-y-determinantes.js",
+      "requiere": [
+       "/nucleo/kit/piezas/alg-tabla.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "algebra.sistemas-de-ecuaciones",
