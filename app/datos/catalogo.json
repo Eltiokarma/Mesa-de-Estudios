@@ -2534,7 +2534,16 @@
      "plantillas": [
       "potenciacion",
       "numeros-sucesiones"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/potenciacion-y-radicacion.js",
+      "requiere": [
+       "/nucleo/kit/piezas/arit-tabla.js",
+       "/nucleo/kit/piezas/arit-fichas.js",
+       "/nucleo/kit/piezas/recta.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "aritmetica.sucesiones-y-series",
