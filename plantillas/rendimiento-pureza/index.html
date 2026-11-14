@@ -119,6 +119,10 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .fb{font-weight:700; margin:0}
 .fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
+.juego{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.juego[hidden]{display:none}
+.juego .seg{border-radius:16px}
+.juego .seg button{min-height:44px; color:var(--ink)}
 .ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap:12px; align-items:end}
 select{font:700 .95rem var(--font); padding:9px 12px; border-radius:12px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); min-height:44px; max-width:100%; width:100%; min-width:0}
 .campo{display:grid; gap:4px; font-weight:700; min-width:0}
@@ -179,6 +183,7 @@ input[type=range]{width:100%; accent-color:var(--ink); min-height:32px}
     <section class="bench" aria-label="Los montones del problema">
       <div class="lienzo"><canvas id="cv" role="img" aria-label="Montones de la muestra y del producto, con barras de masa"></canvas></div>
       <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="juego" id="juego1"></div>
       <div class="legend" id="ley1"></div>
     </section>
     <section class="guide">
@@ -200,6 +205,7 @@ input[type=range]{width:100%; accent-color:var(--ink); min-height:32px}
     <section class="bench" aria-label="Experimentos">
       <div class="lienzo"><canvas id="cv2" role="img" aria-label="Montones, barras o equivalentes del experimento, que se completan al responder"></canvas></div>
       <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="juego" id="juego2"></div>
       <div class="legend" id="ley2"></div>
     </section>
     <section class="guide">
@@ -226,6 +232,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'rendimiento-pureza', unidad: 'quimica.estequiometria', version: '0.1.0' };
@@ -583,6 +590,28 @@ function vistaMuestra(o){
     { tipo:'barras', max:mmax, filas, casillasDe:o.muestra/10 }],
     vars:['imp', 'pur', ...(tapaR ? [] : completo ? ['real'] : ['teo', 'real']), ...(gas && !tapaR && !o.tapaV && o.V !== false ? ['vol'] : []), ...(otro ? ['otro'] : []), ...(lupa ? ['Fe', 'O'] : [])] };
 }
+// Regla 3 (decisión 20): antes de cualquier pregunta se juega con el montón de zinc impuro: tocarlo le echa 20 g y los
+// botones echan o quitan sin tocar el dibujo. Nada reacciona y el producto queda tapado: las predicciones preguntan
+// cuánto producto sale con pureza y rendimiento, y eso el juego no lo muestra. El zinc no aparece en ninguna pregunta.
+const JUEGO_PASO = 20, JUEGO_MAX = 300;
+function juegoMonton(E, cv, caja){
+  const J = { on:true, m:100 };
+  const ver = () => {
+    if (!J.on) return;
+    E.vista = { ...vistaMuestra({ reac:'zinc', muestra:J.m, p:70, eta:100, antes:true, mmax:JUEGO_MAX }),
+      pie:'Un montón de zinc impuro sin separar. Toca el montón para echar más.', desc:`Un montón de ${g(J.m)} gramos de zinc impuro y una caja oculta para el gas.` };
+    E.dibujar(); E.describir(); pintar();
+  };
+  const cambiar = d => { if (!J.on) return; J.m = clamp(J.m + d, JUEGO_PASO, JUEGO_MAX); ver(); };
+  const pintar = () => { caja.querySelector('[data-d="1"]').disabled = J.m >= JUEGO_MAX; caja.querySelector('[data-d="-1"]').disabled = J.m <= JUEGO_PASO; };
+  caja.innerHTML = `<div class="seg" role="group" aria-label="Zinc impuro"><button type="button" data-d="1">Echar ${JUEGO_PASO} g</button><button type="button" data-d="-1">Quitar ${JUEGO_PASO} g</button></div>`;
+  caja.querySelectorAll('button').forEach(b => b.onclick = () => cambiar(+b.dataset.d*JUEGO_PASO));
+  // El montón está en la mitad izquierda del dibujo.
+  cv.addEventListener('click', e => { if (!J.on) return; const r = cv.getBoundingClientRect(); if (e.clientX - r.left < r.width*0.55) cambiar(J.m >= JUEGO_MAX ? JUEGO_PASO - JUEGO_MAX : JUEGO_PASO); });
+  J.ver = ver;
+  J.terminar = () => { J.on = false; caja.hidden = true; caja.innerHTML = ''; };
+  return J;
+}
 </script>
 
 <script>
@@ -850,6 +879,10 @@ addEventListener('modo', () => {
   else { E.resize(); E.dibujar(); }
 });
 go(0);
+const juego = juegoMonton(E, $('cv'), $('juego1')); juego.ver();
+JugarPrimero.montar({ escena: $('cv').closest('.bench'), preguntas: [...document.querySelector('#m1 .guide').children], minimo: 2,
+  consigna: 'Toca el montón o usa los botones: echa y quita muestra.',
+  alListo: () => { juego.terminar(); go(0); } });
 })();
 </script>
 
@@ -995,6 +1028,10 @@ function ir(k){
 alRedibujarTema(() => E.dibujar());
 addEventListener('modo', () => { E.resize(); E.dibujar(); });
 ir(0);
+const juego = juegoMonton(E, $('cv2'), $('juego2')); E.compactar(false); juego.ver();
+JugarPrimero.montar({ escena: $('cv2').closest('.bench'), preguntas: [...document.querySelector('#m2 .guide').children], minimo: 2,
+  consigna: 'Toca el montón o usa los botones: echa y quita muestra.',
+  alListo: () => { juego.terminar(); ir(0); } });
 })();
 </script>
 
