@@ -1953,7 +1953,15 @@
      "plantillas": [
       "conjuntos",
       "porcentajes-planteo"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/conjuntos.js",
+      "requiere": [
+       "/nucleo/kit/piezas/arit-venn.js",
+       "/nucleo/kit/piezas/arit-tabla.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "aritmetica.razones-y-proporciones",
