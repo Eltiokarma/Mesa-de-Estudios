@@ -165,6 +165,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
   .top{grid-template-columns:1fr auto; align-items:end}
   .mode{grid-template-columns:minmax(0, 1.2fr) minmax(360px, 1fr)}
   .bench{position:sticky; top:12px}
+  .mode > .jugar-barra{order:-1; grid-column:1 / -1}
 }
 </style>
 <link rel="stylesheet" href="../../nucleo/pegatina.css">
@@ -239,6 +240,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'orden-informacion', unidad: 'razonamiento-matematico.ordenamiento-de-informacion', version: '0.1.0' };
@@ -1015,6 +1017,12 @@ function prediccion(s){
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: antes de la primera pregunta, la fila del cine sin pistas: se arrastra a los amigos a las butacas
+// (dedo, ratón o teclado). Sin pistas no hay nada que resolver, así que no adelanta la respuesta del paso 1.
+E.compactar(false);
+E.config({ modo:'fila', p:{ forma:'lineal', personas:PER, pistas:[] }, drag:true });
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra a los amigos a las butacas y cámbialos de lugar.', minimo:2, alListo:() => go(S.step) });
 })();
 </script>
 <script>
@@ -1177,6 +1185,12 @@ function ir(k){
   pintar();
 }
 ir(0);
+// Regla 3: antes del primer experimento, la mesa redonda sin pistas: se sienta y se cambia de silla a los amigos.
+// No cuenta maneras ni muestra giros, así que no adelanta ninguna respuesta.
+E.compactar(false);
+E.config({ modo:'mesa', p:{ forma:'circular', personas:PER, pistas:[] }, drag:true });
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Arrastra a los amigos a las sillas de la mesa redonda.', minimo:2, alListo:() => ir(S.k) });
 })();
 </script>
 

@@ -164,6 +164,7 @@ table.tramos caption{text-align:left; font-weight:800; padding-bottom:4px}
   .top{grid-template-columns:1fr auto; align-items:end}
   .mode{grid-template-columns:minmax(0, 1.2fr) minmax(360px, 1fr)}
   .bench{position:sticky; top:12px}
+  .mode > .jugar-barra{order:-1; grid-column:1 / -1}
 }
 </style>
 <link rel="stylesheet" href="../../nucleo/pegatina.css">
@@ -234,6 +235,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'rodamientos', unidad: 'razonamiento-matematico.transformaciones-de-figuras', version: '0.1.0' };
@@ -326,7 +328,7 @@ const nombreCeldas = cs => cs.map(([c, f]) => `fila ${f + 1} columna ${c + 1}`).
    Antes de responder no se dibuja nada de lo que se pregunta. */
 function crearEscena(cv, idDesc, idLect, idLey){
   const E = { modo:'camino', lect:[], ley:null, hl:null, alCambiar:null, tok:0, anim:false, compacto:false, desc:'',
-    cam:null, vol:null, bar:null, lam:null, mar:null, pla:null, az:35 };
+    cam:null, vol:null, bar:null, lam:null, mar:null, pla:null, az:35, juego:null, obj:null, esc:1 };
   ESCENAS.push(E);
   const ctx = cv.getContext('2d');
   let W = 0, Hh = 0;
@@ -353,7 +355,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
 
   E.config = o => {
     E.tok++; E.anim = false;
-    Object.assign(E, { modo:'camino', lect:[], ley:null, alCambiar:null, desc:'', cam:null, vol:null, bar:null, lam:null, mar:null, pla:null }, o);
+    Object.assign(E, { modo:'camino', lect:[], ley:null, alCambiar:null, desc:'', cam:null, vol:null, bar:null, lam:null, mar:null, pla:null, juego:null }, o);
     if (E.cam) E.cam = Object.assign({ s:0, traza:false, cerrado:false, clavo:null }, E.cam);
     if (E.vol) E.vol = Object.assign({ t:0, traza:false, radios:false, punto:0, piso:'recta', marcarPunto:true }, E.vol);
     if (E.bar) E.bar = Object.assign({ prog:0, ver:false, lado:null, sentido:'antihorario' }, E.bar);
@@ -422,6 +424,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     }
     // la rueda
     const q = MR.puntoEnTrazo({ trazo:R.trazo, s:Math.min(U.s, R.longitud) }), C = P(q.x, q.y), rr = U.r*s, phi = U.s/U.r;
+    E.obj = [C.x - rr, C.y - rr, C.x + rr, C.y + rr]; E.esc = s;
     ctx.save(); ctx.globalAlpha = atenuar('r');
     punto(ctx, C.x, C.y, rr, c.paper, c.r, grosor('r', 3));
     ctx.strokeStyle = c.r; ctx.lineWidth = 1.5; ctx.globalAlpha *= .5;
@@ -478,6 +481,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     }
     // la cara de atrás (prisma o cubo)
     const pts = ahora.vertices.map(p => P(p[0], p[1]));
+    E.obj = [Math.min(...pts.map(q => q.x)), Math.min(...pts.map(q => q.y)), Math.max(...pts.map(q => q.x)), Math.max(...pts.map(q => q.y))]; E.esc = s;
     E.caja = prof ? [Math.min(...pts.map(q => q.x), ...pts.map(q => q.x + D.x)), Math.min(...pts.map(q => q.y), ...pts.map(q => q.y + D.y)), Math.max(...pts.map(q => q.x), ...pts.map(q => q.x + D.x)), Math.max(...pts.map(q => q.y), ...pts.map(q => q.y + D.y))] : null;
     if (prof){
       ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.5;
@@ -695,6 +699,19 @@ function crearEscena(cv, idDesc, idLect, idLey){
     mover: p => { if (x0Arr === null) return; E.az = Math.max(10, Math.min(80, az0 + (p.x - x0Arr)*.4)); E.dibujar(); },
     soltar: () => { x0Arr = null; },
   });
+  // Regla 3 (juego libre antes de preguntar): con E.juego = { max, lado }, la ficha rueda o el polígono vuelca
+  // arrastrándolo de lado (o con las flechas). Mueve E.cam.s o E.vol.t sin dibujar caminos ni números.
+  const valorJuego = v => { if (v === undefined) return E.modo === 'camino' ? E.cam.s : E.vol.t; v = Math.max(0, Math.min(E.juego.max, v)); if (E.modo === 'camino') E.cam.s = v; else E.vol.t = v; E.dibujar(); };
+  let xJ = null, vJ = 0;
+  Celular.arrastre(cv, {
+    activo: () => !!E.juego && !E.anim,
+    cerca: (p, r) => !!E.obj && p.x > E.obj[0] - r && p.x < E.obj[2] + r && p.y > E.obj[1] - r && p.y < E.obj[3] + r,
+    empezar: p => { xJ = p.x; vJ = valorJuego(); },
+    mover: p => { if (xJ === null) return; valorJuego(vJ + (p.x - xJ)/(E.esc*(E.juego.lado || 1))); },
+    soltar: () => { xJ = null; E.avisar(); },
+  });
+  cv.addEventListener('keydown', e => { if (!E.juego || (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight')) return; e.preventDefault();
+    const paso = E.modo === 'camino' ? 1 : .25; valorJuego(valorJuego() + (e.key === 'ArrowRight' ? paso : -paso)); E.avisar(); });
   cv.addEventListener('keydown', e => { if (!conProfundidad()) return; if (e.key === 'ArrowLeft' || e.key === 'ArrowRight'){ e.preventDefault(); E.az = Math.max(10, Math.min(80, E.az + (e.key === 'ArrowRight' ? 5 : -5))); E.dibujar(); } });
   return E;
 }
@@ -1062,6 +1079,15 @@ function prediccion(s){
 $('next').addEventListener('click', () => { if (S.ocupado) return; const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return; desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: antes de la primera pregunta, la ficha rueda libre por una canaleta (no es el bloque del paso 1)
+// arrastrándola o con las flechas; no se dibuja el camino del centro ni se mide nada.
+const RJ = MR.recorridoCentro({ r:1, camino:C.canaleta });
+E.compactar(false);
+E.config({ modo:'camino', cam:{ R:RJ, r:1, s:0, traza:false }, juego:{ max:RJ.longitud },
+  lect:[L('r', 'Radio r', '1 cm')], ley:[['r', 'r · la ficha']],
+  desc:'Una ficha de 1 cm de radio al borde de una canaleta. Arrástrala de lado o usa las flechas para que ruede.' });
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra la ficha de lado para que ruede por la canaleta.', minimo:2, alListo:() => go(S.step) });
 })();
 </script>
 <script>
@@ -1198,6 +1224,13 @@ function ir(k){
   pintar();
 }
 ir(0);
+// Regla 3: antes del primer experimento, un triángulo vuelca libre sobre la mesa arrastrándolo (o con las flechas);
+// no es ninguna figura de los experimentos y no traza caminos ni radios.
+E.compactar(false);
+E.config({ modo:'vuelco', vol:{ fig:{ regular:3, lado:2 }, vuelcos:3, t:0, punto:0, traza:false, marcarPunto:false }, juego:{ max:3, lado:2 },
+  lect:[L('l', 'Lado l', '2 cm')], ley:[], desc:'Un triángulo apoyado en la mesa. Arrástralo de lado o usa las flechas para que vuelque.' });
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Arrastra el triángulo de lado para que vuelque sobre la mesa.', minimo:2, alListo:() => ir(S.k) });
 })();
 </script>
 
