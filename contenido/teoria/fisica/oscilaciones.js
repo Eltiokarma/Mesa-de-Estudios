@@ -44,6 +44,12 @@
     }
     return ops.slice(0, 4);
   }
+  // Gesto directo (docs/teoria.md §4b): la manija vive en las coordenadas de la figura (geometria o escala de la
+  // pieza) y su inversa da los valores; el lector los ajusta al paso y al rango de cada control.
+  const PZ = id => Kit.piezas[id];
+  const inversa = (escala, a, b) => px => a + (px - escala(a)) * (b - a) / (escala(b) - escala(a));
+  // Manija sobre un punto de una gráfica de la pieza ejes, con los mismos datos que dibuja el juego.
+  const enEjes = (datos, xx, yy) => { const g = PZ('ejes').geometria(datos); return { x: g.X(xx), y: g.Y(yy) }; };
   const muestras = (fn, x0, x1, n = 61) => Array.from({ length: n }, (_, i) => { const u = x0 + (x1 - x0) * i / (n - 1); return [u, fn(u)]; });
 
   // ---------- Idea 1: la aceleración apunta al centro ----------
@@ -68,6 +74,12 @@
       dibujo: val => ({ datos: bloque(val.x), estado: {} }),
       lectura: val => [a, ` = ${f(-W1 * W1 * val.x, 0)} m/s² · rapidez ${f(W1 * Math.sqrt(A1 * A1 - val.x * val.x), 2)} m/s`],
       minimo: 3,
+      // Arrastra el bloque: su lugar es x; las flechas de v y a responden.
+      arrastres: [
+        { id: 'bloque', etiqueta: 'bloque', color: 'c-i',
+          donde: val => ({ x: PZ('fis-resorte').escala(bloque(val.x), val.x), y: PZ('fis-resorte').constantes.centroY }),
+          mover: (pt, val) => ({ x: inversa(q => PZ('fis-resorte').escala(bloque(val.x), q), -A1, A1)(pt.x) }) },
+      ],
     },
     predice: {
       pregunta: 'El bloque llega al extremo derecho, x = +0,2 m, y se detiene un instante antes de volver. Justo ahí, su aceleración es…',
@@ -81,6 +93,8 @@
       revelar: { datos: Object.assign(bloque(0.2), { v: 0, textoV: 'v = 0' }), estado: {} },
       coincide: 'Coincide: en el extremo el resorte tira más fuerte: a = −100 · 0,2 = −20 m/s².',
     },
+    // Hallazgo 9: el juego mueve el bloque y «Mira» pasa a la gráfica a–x a propósito: cada flecha verde que se vio
+    // es un punto de esa recta (mismo x, mismo color); la recta deja ver la proporción que las flechas solo sugieren.
     mira: {
       pieza: 'ejes',
       datos: {
@@ -98,7 +112,7 @@
     },
     regla: {
       texto: 'En un movimiento armónico simple la aceleración apunta siempre al equilibrio y es proporcional a la distancia a él.',
-      ecuacion: [a, ' = −', { sup: ['ω', '2'] }, ' ', x, '   ·   ', { sup: ['ω', '2'] }, ' = ', { frac: ['k', 'm'] }],
+      ecuacion: [a, ' = ', { llave: ['−', { sup: ['ω', '2'] }, ' ', x], nota: 'hacia el centro', color: 'c-d' }, '   ·   ', { sup: ['ω', '2'] }, ' = ', { frac: ['k', 'm'] }],
       condicion: 'x se mide desde el equilibrio; resorte ideal y sin rozamiento.',
     },
     ahoraTu: {
@@ -129,6 +143,7 @@
     y: { min: -0.3, max: 0.3, paso: 0.1, nombre: 'x', unidad: 'm', decimales: 1, color: 'i' },
     curvas: [{ puntos: muestras(tt => A * Math.cos(2 * PI * tt / P), 0, 4, 81), color: 'i' }],
   }, extra);
+  const xtJuego = val => ejeXt(val.A, val.P, { puntos: [{ x: val.P, y: val.A, color: 'h', rotulo: `T = ${f(val.P, 1)} s`, guias: true }] });
   const graficas = {
     id: 'graficas-mas',
     titulo: 'La posición sigue un coseno',
@@ -141,9 +156,15 @@
         { id: 'A', etiqueta: 'A', color: 'c-i', min: 0.1, max: 0.3, paso: 0.05, inicio: 0.2, unidad: 'm', decimales: 2 },
         { id: 'P', etiqueta: 'T', color: 'c-h', min: 1, max: 4, paso: 0.5, inicio: 2, unidad: 's', decimales: 1 },
       ],
-      dibujo: val => ({ datos: ejeXt(val.A, val.P, { puntos: [{ x: val.P, y: val.A, color: 'h', rotulo: `T = ${f(val.P, 1)} s`, guias: true }] }), estado: {} }),
+      dibujo: val => ({ datos: xtJuego(val), estado: {} }),
       lectura: val => [{ sub: [v, 'máx'] }, ` = Aω = ${f(val.A * 2 * PI / val.P)} m/s`],
       minimo: 3,
+      // Arrastra la cresta marcada: hacia el lado cambia el período; hacia arriba, la amplitud.
+      arrastres: [
+        { id: 'cresta', etiqueta: 'cresta de la curva', color: 'c-h',
+          donde: val => enEjes(xtJuego(val), val.P, val.A),
+          mover: (pt, val) => { const g = PZ('ejes').geometria(xtJuego(val)); return { P: g.Xi(pt.x), A: g.Yi(pt.y) }; } },
+      ],
     },
     predice: {
       pregunta: ['Con ', x, ' = A cos(ω', t, '), el bloque sale del extremo +A. Un cuarto de período después, en ', t, ' = T/4, ¿dónde está y cómo se mueve?'],
@@ -168,7 +189,7 @@
     },
     regla: {
       texto: 'En el MAS la posición es un coseno del tiempo. La rapidez es máxima en el centro y la aceleración, en los extremos.',
-      ecuacion: [x, ' = A cos(ω', t, ' + φ)   ·   ', { sub: [v, 'máx'] }, ' = Aω   ·   ', { sub: [a, 'máx'] }, ' = A', { sup: ['ω', '2'] }, '   ·   ω = ', { frac: ['2π', T] }],
+      ecuacion: [x, ' = A cos(ω', t, ' + φ)', '   ·   ', { sub: [v, 'máx'] }, ' = ', { llave: ['Aω'], nota: 'en el centro', color: 'c-o' }, '   ·   ', { sub: [a, 'máx'] }, ' = ', { llave: ['A', { sup: ['ω', '2'] }], nota: 'en los extremos', color: 'c-d' }, '   ·   ', 'ω = ', { frac: ['2π', T] }],
       condicion: 'φ fija dónde empieza; con φ = 0 sale del extremo +A en t = 0.',
     },
     ahoraTu: {
@@ -189,7 +210,7 @@
             { id: 'sin-2pi', valor: A / (P * P), error: 'OS-OMEGA', siFuera: 'Eso usa 1/T en vez de ω = 2π/T.' },
             { id: 'sin-cuad', valor: A * w * 2, error: 'OS-SIN-RAIZ', siFuera: 'ω va al cuadrado, no multiplicado por 2.' },
           ], n => `${f(n)} ${pide === 'v' ? 'm/s' : 'm/s²'}`),
-          solucion: { texto: pide === 'v' ? 'Primero ω = 2π/T; la rapidez máxima es Aω.' : 'Primero ω = 2π/T; la aceleración máxima es Aω².', ecuacion: ['ω = ', f(w), ' rad/s   ·   ', pide === 'v' ? `${f(A)} · ${f(w)} = ${f(val)} m/s` : `${f(A)} · ${f(w)}² = ${f(val)} m/s²`] },
+          solucion: { texto: pide === 'v' ? 'Primero ω = 2π/T; la rapidez máxima es Aω.' : 'Primero ω = 2π/T; la aceleración máxima es Aω².', ecuacion: ['ω = ', f(w), ' rad/s', '   ·   ', pide === 'v' ? `${f(A)} · ${f(w)} = ${f(val)} m/s` : `${f(A)} · ${f(w)}² = ${f(val)} m/s²`] },
         };
       },
     },
@@ -205,6 +226,7 @@
     y: { min: 0, max: 2, paso: 0.5, nombre: 'T', unidad: 's', decimales: 1, color: 'h' },
     curvas: [{ puntos: muestras(m => periodoR(m, k), 0, 2, 41), color: 'h', rotulo: `k = ${f(k)} N/m`, en: [0.15, 1.75] }],
   }, extra);
+  const tmJuego = val => ejeTm(val.k, { puntos: [{ x: val.m, y: periodoR(val.m, val.k), color: 'h', rotulo: `${f(periodoR(val.m, val.k))} s`, guias: true }] });
   const resorteT = {
     id: 'periodo-resorte',
     titulo: 'El período no depende de A',
@@ -217,9 +239,15 @@
         { id: 'm', etiqueta: 'm', min: 0.25, max: 2, paso: 0.25, inicio: 0.5, unidad: 'kg', decimales: 2 },
         { id: 'k', etiqueta: 'Resorte', opciones: [{ valor: 20, texto: 'k = 20 N/m' }, { valor: 80, texto: 'k = 80 N/m' }], inicio: 20 },
       ],
-      dibujo: val => ({ datos: ejeTm(val.k, { puntos: [{ x: val.m, y: periodoR(val.m, val.k), color: 'h', rotulo: `${f(periodoR(val.m, val.k))} s`, guias: true }] }), estado: {} }),
+      dibujo: val => ({ datos: tmJuego(val), estado: {} }),
       lectura: val => [T, ` = 2π √(${f(val.m)}/${f(val.k)}) = ${f(periodoR(val.m, val.k))} s`],
       minimo: 3,
+      // Arrastra el punto por la curva: su lugar en el eje horizontal es la masa.
+      arrastres: [
+        { id: 'masa', etiqueta: 'masa colgada', color: 'c-h',
+          donde: val => enEjes(tmJuego(val), val.m, periodoR(val.m, val.k)),
+          mover: (pt, val) => ({ m: PZ('ejes').geometria(tmJuego(val)).Xi(pt.x) }) },
+      ],
     },
     predice: {
       pregunta: 'Un bloque unido a un resorte oscila con período de 1 s si se suelta desde 5 cm. Si se suelta desde 10 cm, ¿cuánto dura cada oscilación?',
@@ -246,7 +274,7 @@
     },
     regla: {
       texto: 'El período de un bloque unido a un resorte depende de la masa y de la rigidez del resorte, no de la amplitud ni de si está horizontal o colgado.',
-      ecuacion: [T, ' = 2π ', { raiz: [{ frac: ['m', 'k'] }] }, '   ·   colgado: el equilibrio baja ', { frac: ['m g', 'k'] }],
+      ecuacion: [T, ' = 2π ', { raiz: [{ frac: ['m', 'k'] }] }, '   ·   ', 'colgado: el equilibrio baja ', { frac: ['m g', 'k'] }],
       condicion: 'resorte ideal, sin masa propia y sin rozamiento. Colgado, x se mide desde el nuevo equilibrio.',
     },
     ahoraTu: {
@@ -288,6 +316,7 @@
     y: { min: 0, max: 8, paso: 2, nombre: 'T', unidad: 's', decimales: 0, color: 'h' },
     curvas: [{ puntos: muestras(L => periodoP(L, g), 0, 2, 41), color: 'h', rotulo: g === 10 ? 'Tierra' : 'Luna', en: [0.3, periodoP(0.3, g) + 0.4] }],
   }, extra);
+  const tlJuego = val => ejeTL(val.g, { puntos: [{ x: val.L, y: periodoP(val.L, val.g), color: 'h', rotulo: `${f(periodoP(val.L, val.g))} s`, guias: true }] });
   const pendulo = {
     id: 'pendulo',
     titulo: 'El péndulo no mira la masa',
@@ -300,9 +329,15 @@
         { id: 'L', etiqueta: 'L', min: 0.25, max: 2, paso: 0.25, inicio: 1, unidad: 'm', decimales: 2 },
         { id: 'g', etiqueta: 'Lugar', opciones: [{ valor: 10, texto: 'Tierra' }, { valor: 1.6, texto: 'Luna' }], inicio: 10 },
       ],
-      dibujo: val => ({ datos: ejeTL(val.g, { puntos: [{ x: val.L, y: periodoP(val.L, val.g), color: 'h', rotulo: `${f(periodoP(val.L, val.g))} s`, guias: true }] }), estado: {} }),
+      dibujo: val => ({ datos: tlJuego(val), estado: {} }),
       lectura: val => [T, ` = 2π √(${f(val.L)}/${f(val.g)}) = ${f(periodoP(val.L, val.g))} s`],
       minimo: 3,
+      // Arrastra el punto por la curva: su lugar en el eje horizontal es el largo del hilo.
+      arrastres: [
+        { id: 'largo', etiqueta: 'largo del hilo', color: 'c-h',
+          donde: val => enEjes(tlJuego(val), val.L, periodoP(val.L, val.g)),
+          mover: (pt, val) => ({ L: PZ('ejes').geometria(tlJuego(val)).Xi(pt.x) }) },
+      ],
     },
     predice: {
       pregunta: 'Un péndulo de 1 m con una bolita de 50 g tarda 2 s en ir y volver. Se cambia la bolita por una de 100 g, con el mismo hilo. ¿Cuánto tarda ahora?',
@@ -371,6 +406,7 @@
       { puntos: [[-0.2, E5], [0.2, E5]], rotulo: 'E = 1 J', en: [-0.19, 1.1] },
     ],
   }, extra);
+  const eJuego = val => { const U = 0.5 * K5 * val.x * val.x; return ejeE({ puntos: [{ x: val.x, y: U, rotulo: `U = ${f(U, 2)}`, guias: true }, { x: val.x, y: E5 - U, rotulo: `K = ${f(E5 - U, 2)}` }] }); };
   const energia = {
     id: 'energia-mas',
     titulo: 'La energía se reparte, no cambia',
@@ -380,9 +416,15 @@
       consigna: 'Un resorte de k = 50 N/m oscila con amplitud 0,2 m: su energía es 1 J. Mueve el bloque y mira el reparto.',
       voz: 'Lee las dos energías y súmalas en cada posición.',
       controles: [{ id: 'x', etiqueta: 'x', color: 'c-i', min: -0.2, max: 0.2, paso: 0.05, inicio: 0.1, unidad: 'm', decimales: 2 }],
-      dibujo: val => { const U = 0.5 * K5 * val.x * val.x; return { datos: ejeE({ puntos: [{ x: val.x, y: U, rotulo: `U = ${f(U, 2)}`, guias: true }, { x: val.x, y: E5 - U, rotulo: `K = ${f(E5 - U, 2)}` }] }), estado: {} }; },
+      dibujo: val => ({ datos: eJuego(val), estado: {} }),
       lectura: val => { const U = 0.5 * K5 * val.x * val.x; return [`U = ${f(U, 2)} J · K = ${f(E5 - U, 2)} J · suma 1 J`]; },
       minimo: 3,
+      // Arrastra el punto de U por la parábola: su lugar en el eje horizontal es la posición del bloque.
+      arrastres: [
+        { id: 'posicion', etiqueta: 'posición del bloque', color: 'c-i',
+          donde: val => enEjes(eJuego(val), val.x, 0.5 * K5 * val.x * val.x),
+          mover: (pt, val) => ({ x: PZ('ejes').geometria(eJuego(val)).Xi(pt.x) }) },
+      ],
     },
     predice: {
       pregunta: ['El mismo bloque oscila entre −0,2 m y +0,2 m. ¿En qué posición su energía cinética es igual a su energía potencial?'],
@@ -399,14 +441,14 @@
     mira: {
       datos: ejeE({ puntos: [{ x: 0.2, y: 1, rotulo: 'U', desde: 1 }, { x: 0, y: 1, rotulo: 'todo K', desde: 2 }, { x: 0.1414, y: 0.5, rotulo: 'mitad y mitad', guias: true, desde: 3 }] }),
       pasos: [
-        { estado: { corte: 1 }, texto: 'En el extremo el bloque está quieto: toda la energía es del resorte.', ecuacion: ['E = ½ k ', { sup: ['A', '2'] }, ' = ½ · 50 · 0,2² = 1 J'] },
+        { estado: { corte: 1 }, texto: 'En el extremo el bloque está quieto: toda la energía es del resorte.', ecuacion: ['E = ½ k ', { sup: ['A', '2'] }, ' = ½ · 50 · ', { sup: ['0,2', '2'] }, ' = 1 J'] },
         { estado: { corte: 2 }, texto: 'En el centro el resorte no está estirado: toda es cinética.', ecuacion: ['½ m ', { sup: [{ sub: [v, 'máx'] }, '2'] }, ' = 1 J'] },
         { estado: { corte: 3 }, texto: 'U crece con x²: la mitad de la energía está a 0,14 m.', ecuacion: ['½ · 50 · ', { sup: [x, '2'] }, ' = 0,5   →   ', x, ' = ', { frac: ['A', '√2'] }] },
       ],
     },
     regla: {
       texto: 'En el MAS la energía total no cambia: se reparte entre la del resorte, que crece con x², y la cinética del bloque.',
-      ecuacion: ['½ k ', { sup: ['A', '2'] }, ' = ½ k ', { sup: [x, '2'] }, ' + ½ m ', { sup: [v, '2'] }],
+      ecuacion: [{ llave: ['½ k ', { sup: ['A', '2'] }], nota: 'total' }, ' = ', { llave: ['½ k ', { sup: [x, '2'] }], nota: 'del resorte', color: 'c-i' }, ' + ', { llave: ['½ m ', { sup: [v, '2'] }], nota: 'del bloque', color: 'c-o' }],
       condicion: 'sin rozamiento ni ayuda externa; x desde el equilibrio. Con roce, la amplitud se apaga.',
     },
     ahoraTu: {
@@ -426,11 +468,64 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Resorte libre: el mismo bloque con otro resorte u otra masa. Las flechas usan una escala fija en todas las
+  // combinaciones, para que dos casos guardados se comparen a ojo.
+  const resLibre = val => {
+    const w = Math.sqrt(val.k / val.m), ac = -w * w * val.x;
+    return { A: A1, unidad: 'm', x: val.x, v: -w * Math.sqrt(Math.max(0, A1 * A1 - val.x * val.x)), a: ac,
+      escalaV: 20, escalaA: 1.2, colores: { x: 'i', v: 'o', a: 'd' }, textoA: `a = ${f(ac, 0)} m/s²` };
+  };
+  // Péndulo en tres lugares: las tres curvas a la vez y el punto en la del lugar elegido.
+  const LUGARES = [{ g: 10, n: 'Tierra' }, { g: 3.7, n: 'Marte' }, { g: 1.6, n: 'Luna' }];
+  const penLibre = val => ({
+    x: { min: 0, max: 2, paso: 0.5, nombre: 'L', unidad: 'm', decimales: 1 },
+    y: { min: 0, max: 8, paso: 2, nombre: 'T', unidad: 's', decimales: 0, color: 'h' },
+    curvas: LUGARES.map(q => ({ puntos: muestras(L => periodoP(L, q.g), 0, 2, 41), color: 'h', discontinua: q.g !== val.g, rotulo: q.n, en: [0.45, periodoP(0.45, q.g) + 0.6] })),
+    puntos: [{ x: val.L, y: periodoP(val.L, val.g), color: 'h', rotulo: `${f(periodoP(val.L, val.g))} s`, guias: true }],
+  });
+
   return {
     unidad: 'fisica.oscilaciones',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/fis-resorte.js', '/nucleo/kit/piezas/ejes.js'],
+    // Laboratorio: juego libre, sin preguntas. El resorte libre suelta k y m (la idea los deja fijos); el péndulo pone
+    // tres lugares juntos; la tercera mesa es el juego de la gráfica x–t con su cresta arrastrable.
+    laboratorio: [
+      {
+        id: 'resorte-libre', titulo: 'Otro resorte, otra masa', pieza: 'fis-resorte',
+        consigna: 'Arrastra el bloque y cambia el resorte y la masa. Guarda el mismo lugar con dos resortes y compara las flechas.',
+        controles: [
+          { id: 'x', etiqueta: 'x', color: 'c-i', min: -0.2, max: 0.2, paso: 0.05, inicio: 0.1, unidad: 'm', decimales: 2 },
+          { id: 'k', etiqueta: 'k', min: 20, max: 80, paso: 10, inicio: 50, unidad: 'N/m', decimales: 0 },
+          { id: 'm', etiqueta: 'm', min: 0.25, max: 1, paso: 0.25, inicio: 0.5, unidad: 'kg', decimales: 2 },
+        ],
+        dibujo: val => ({ datos: resLibre(val), estado: {} }),
+        lectura: val => { const w = Math.sqrt(val.k / val.m); return [`k = ${f(val.k)}, m = ${f(val.m)}: `, a, ` = ${f(-w * w * val.x, 0)}\u00a0m/s² · ω = ${f(w, 1)}\u00a0rad/s`]; },
+        arrastres: [
+          { id: 'bloque', etiqueta: 'bloque', color: 'c-i',
+            donde: val => ({ x: PZ('fis-resorte').escala(resLibre(val), val.x), y: PZ('fis-resorte').constantes.centroY }),
+            mover: (pt, val) => ({ x: inversa(q => PZ('fis-resorte').escala(resLibre(val), q), -A1, A1)(pt.x) }) },
+        ],
+      },
+      {
+        id: 'pendulo-libre', titulo: 'Péndulo en tres lugares', pieza: 'ejes',
+        consigna: 'Arrastra el punto para cambiar el largo y elige el lugar. Busca un péndulo de Marte que tarde como uno de la Tierra.',
+        controles: [
+          { id: 'L', etiqueta: 'L', min: 0.25, max: 2, paso: 0.25, inicio: 1, unidad: 'm', decimales: 2 },
+          { id: 'g', etiqueta: 'Lugar', opciones: LUGARES.map(q => ({ valor: q.g, texto: q.n })), inicio: 10 },
+        ],
+        dibujo: val => ({ datos: penLibre(val), estado: {} }),
+        lectura: val => [`${LUGARES.find(q => q.g === val.g).n}, L = ${f(val.L)}\u00a0m → `, T, ` = ${f(periodoP(val.L, val.g))}\u00a0s`],
+        arrastres: [
+          { id: 'largo', etiqueta: 'largo del hilo', color: 'c-h',
+            donde: val => enEjes(penLibre(val), val.L, periodoP(val.L, val.g)),
+            mover: (pt, val) => ({ L: PZ('ejes').geometria(penLibre(val)).Xi(pt.x) }) },
+        ],
+      },
+      Object.assign({ id: 'coseno', titulo: 'La curva x–t', pieza: 'ejes' }, graficas.juega),
+    ],
     historia: {
       texto: 'Huygens construyó relojes de péndulo en la década de 1650 y publicó su estudio matemático en 1673. Para medir bien había que reconocer un límite: un péndulo que se abre mucho no repite exactamente el período de uno que se abre poco. Un vaivén regular se volvió una forma de medir el tiempo.',
       pregunta: '¿Por qué un reloj de péndulo puede contar segundos?',

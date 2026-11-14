@@ -93,5 +93,6 @@
     return `Bloque unido a un resorte, en x = ${Kit.formatear(d.x || 0, 2)} ${d.unidad || 'm'} (amplitud ${Kit.formatear(A(d), 2)}); velocidad ${sen(d.v)}, aceleración ${sen(d.a)}.`;
   }
 
-  return { id: 'fis-resorte', dibujar, alt, escala: X, constantes: { W, ALTO, X0, MEDIO, BW } };
+  // centroY: altura del centro del bloque, para poner ahí la manija del gesto directo (docs/teoria.md §4b).
+  return { id: 'fis-resorte', dibujar, alt, escala: X, constantes: { W, ALTO, X0, MEDIO, BW, BH, MESA, centroY: MESA - BH / 2 } };
 });

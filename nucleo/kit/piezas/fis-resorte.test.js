@@ -40,3 +40,11 @@ test('sin NaN ni colores fijos, alto fijo y puro', () => {
   }
   assert.equal(altos.size, 1);
 });
+
+test('constantes.centroY: el centro del bloque, donde va la manija del gesto directo', () => {
+  const s = P.dibujar({ A: 0.2, x: 0.1 });
+  const y = +s.match(/class="kit-bloque" x="[\d.-]+" y="([\d.-]+)"/)[1];
+  const h = +s.match(/class="kit-bloque"[^>]*height="([\d.-]+)"/)[1];
+  assert.equal(P.constantes.centroY, y + h / 2);
+  assert.equal(P.escala({ A: 0.2 }, 0.1), +s.match(/class="kit-bloque" x="([\d.-]+)"/)[1] + P.constantes.BW / 2);
+});
