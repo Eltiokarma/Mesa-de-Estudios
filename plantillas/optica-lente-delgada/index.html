@@ -113,6 +113,8 @@ b.v-o{ color:var(--c-o) } b.v-f{ color:var(--c-f) } b.v-h{ color:var(--c-h) }
 .slider{ display:grid; gap:6px }
 .slider label{ font-weight:700; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap }
 .slider output{ font-family:var(--mono); color:var(--muted) }
+/* Juego libre antes de preguntar (regla 3): el deslizador del banco se va al pulsar «Ya jugué: seguir». */
+.slider.juego[hidden]{ display:none }
 input[type=range]{ width:100%; accent-color:var(--muted) }
 input.r-o{ accent-color:var(--c-o) } input.r-f{ accent-color:var(--c-f) } input.r-d{ accent-color:var(--c-d) }
 .chips{ display:flex; flex-wrap:wrap; gap:6px }
@@ -157,6 +159,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible, ca
   <div id="m1" class="mode">
     <section class="bench" aria-label="Simulación de una lente">
       <canvas id="cv" aria-label="Lente convergente con objeto, focos y rayos"></canvas>
+      <div class="slider juego" id="jg1"><label for="jg1-o"><span>Distancia del objeto</span><output id="jg1-out"></output></label><input id="jg1-o" class="r-o" type="range" min="12" max="19" step="0.5" value="16"></div>
       <div class="legend">
         <span data-var="o"><i style="background:var(--c-o)"></i>o · distancia del objeto</span>
         <span data-var="f"><i style="background:var(--c-f)"></i>f · distancia focal</span>
@@ -185,6 +188,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible, ca
   <div id="m2" class="mode" hidden>
     <section class="bench" aria-label="Simulación de un sistema de lentes">
       <canvas id="cv2" aria-label="Dos o tres lentes en fila con sus rayos e imágenes intermedias"></canvas>
+      <div class="slider juego" id="jg2"><label for="jg2-o"><span>Distancia del objeto a L₁</span><output id="jg2-out"></output></label><input id="jg2-o" class="r-o" type="range" min="13" max="40" step="0.5" value="20"></div>
       <div class="legend">
         <span><i style="background:var(--c-o)"></i>o · distancia del objeto a cada lente</span>
         <span><i style="background:var(--c-f)"></i>F · focos</span>
@@ -214,6 +218,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible, ca
   <div id="m3" class="mode" hidden>
     <section class="bench" aria-label="Lente con un abanico de rayos que salen de la punta del objeto">
       <canvas id="cv3" aria-label="Lente convergente, objeto, abanico de rayos y pantalla con la imagen"></canvas>
+      <div class="slider juego" id="jg3"><label for="jg3-o"><span>Distancia del objeto</span><output id="jg3-out"></output></label><input id="jg3-o" class="r-o" type="range" min="14" max="38" step="0.5" value="22"></div>
       <div class="legend">
         <span><i style="background:var(--c-h)"></i>objeto e imagen</span>
         <span><i style="background:var(--ray)"></i>rayos que salen de la punta del objeto</span>
@@ -222,7 +227,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible, ca
       </div>
     </section>
     <section class="guide">
-      <div class="seg" id="exps3" role="group" aria-label="Experimentos"></div>
+      <div class="seg exps" id="exps3" role="group" aria-label="Experimentos"></div>
       <div aria-live="polite">
         <p class="step-k" id="k3"></p>
         <h2 class="step-t" id="t3" tabindex="-1"></h2>
@@ -246,6 +251,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'optica-lente-delgada', unidad: 'fisica.optica-geometrica', version: '0.3.0' };
@@ -592,8 +598,8 @@ function setupExplore(){
   sl.addEventListener('input', upd); upd();
 }
 function ponerD(d){
-  const sl = $('do-slider'); if (!sl) return;
-  sl.value = String(Math.max(4, Math.min(40, Math.round(d*2)/2)));
+  const sl = $(S.juego ? 'jg1-o' : 'do-slider'); if (!sl) return;
+  sl.value = String(Math.max(+sl.min, Math.min(+sl.max, Math.round(d*2)/2)));
   sl.dispatchEvent(new Event('input'));
 }
 function resumen(){
@@ -657,6 +663,22 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', draw);
 new MutationObserver(draw).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
 document.fonts && document.fonts.ready.then(draw);
 resize(); go(0);
+
+// Regla 3 (decisión 20): antes de preguntar, el alumno juega. Juego libre: mueve el objeto entre F y 2F
+// (12 a 19 cm) y ve rayos e imagen. La predicción del paso 3 es con el objeto más allá de 2F: el juego no la muestra.
+function vistaJuego(){
+  S.explore = true; S.show = {obj:true, f:true, img:true, i:true}; S.rays = [1,1,1]; S.active = -1;
+  cv.classList.add('arrastrable');
+  cv.setAttribute('aria-label', 'Lente convergente con objeto, focos, rayos e imagen. Arrastra el objeto o usa el deslizador de abajo.');
+}
+const jg = $('jg1-o');
+jg.addEventListener('input', () => { S.d = parseFloat(jg.value); $('jg1-out').textContent = `${fmt(S.d)} cm`; draw(); });
+S.juego = true; vistaJuego(); S.d = parseFloat(jg.value); $('jg1-out').textContent = `${fmt(S.d)} cm`; draw();
+JugarPrimero.montar({
+  escena: cv.closest('.bench'), preguntas: [cv.closest('.mode').querySelector('.guide')],
+  consigna: 'Arrastra el objeto y mira cómo cambia la imagen.', minimo: 2,
+  alListo: () => { S.juego = false; $('jg1').hidden = true; S.explore = false; go(0); },
+});
 })();
 
 /* ================= MODO 2: sistema de 2 o 3 lentes ================= */
@@ -1057,9 +1079,9 @@ Celular.arrastre(cv, {
   cerca: cercaObjeto,
   empezar: () => { agarra = true; marco = { xmin: -47, xmax: XMAX }; cv.classList.add('agarrando'); draw(); },
   mover: p => {
-    const sl = $('e-o1'); if (!sl) return;
+    const sl = $(S.juego ? 'jg2-o' : 'e-o1'); if (!sl) return;
     const x = Math.max(marco.xmin + 1, XMIN + p.x/sx);
-    sl.value = String(Math.max(4, Math.min(40, Math.round(-x*2)/2)));
+    sl.value = String(Math.max(+sl.min, Math.min(+sl.max, Math.round(-x*2)/2)));
     sl.dispatchEvent(new Event('input'));
   },
   soltar: () => {
@@ -1086,6 +1108,22 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', draw);
 new MutationObserver(draw).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
 document.fonts && document.fonts.ready.then(draw);
 resize(); go(0);
+
+// Regla 3 (decisión 20): antes de preguntar, el alumno juega. Juego libre: mueve el objeto y ve solo lo que hace
+// la primera lente (los rayos se cortan en L₂ y no se dibuja la imagen final, que es lo que pregunta el paso 3).
+function vistaJuego(){
+  S.explore = true; S.imgs = 1; S.dims = ['o1','i1']; S.reveal = EXP.d[0];
+  cv.classList.add('arrastrable');
+  cv.setAttribute('aria-label', 'Dos lentes en fila: los rayos llegan hasta la segunda. Arrastra el objeto O o usa el deslizador de abajo.');
+}
+const jg = $('jg2-o');
+jg.addEventListener('input', () => { EXP.o1 = parseFloat(jg.value); $('jg2-out').textContent = `${fmt(EXP.o1)} cm`; draw(); });
+S.juego = true; vistaJuego(); EXP.o1 = parseFloat(jg.value); $('jg2-out').textContent = `${fmt(EXP.o1)} cm`; draw();
+JugarPrimero.montar({
+  escena: cv.closest('.bench'), preguntas: [cv.closest('.mode').querySelector('.guide')],
+  consigna: 'Arrastra el objeto y mira la imagen que forma la primera lente.', minimo: 2,
+  alListo: () => { S.juego = false; $('jg2').hidden = true; EXP.o1 = PROBP.o1; go(0); },
+});
 })();
 
 /* ================= MODO 3: ¿qué pasa si…? =================
@@ -1095,7 +1133,8 @@ resize(); go(0);
 (function(){
 const cv = document.getElementById('cv3'), ctx = cv.getContext('2d');
 const $ = id => document.getElementById(id);
-const O = 30, F = 10, HO = 4, XR = 40, YL = 10, NR = 9, D0 = 8;
+let O = 30; // en el juego libre se mueve; en los experimentos vale 30
+const F = 10, HO = 4, XR = 40, YL = 10, NR = 9, D0 = 8;
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const IMG = MotorLente.imagen(O, F, HO); // i = 15, altura −2
 let W = 0, H = 0, sx = 1, sy = 1;
@@ -1204,8 +1243,9 @@ function draw(){
   // Focos
   ctx.font = `700 12px ${css('--mono')}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillStyle = c.f;
   [[-F,'F'],[F,'F′']].forEach(([x,l]) => { ctx.beginPath(); ctx.arc(X(x), Y(0), 3.5, 0, Math.PI*2); ctx.fill(); ctx.fillText(l, X(x), Y(0) + 7); });
-  // Objeto
-  arrow(-O, HO, c.h, 2.4);
+  // Objeto (en el juego libre se arrastra)
+  const manoO = S.juego && (S.sobre || agarra);
+  arrow(-O, HO, c.h, manoO ? 3.4 : 2.4);
   // Abanico de rayos desde la punta del objeto
   const xFin = E.pantalla ? E.xp : XR;
   for (const r of MotorLente.abanico(O, F, HO, E.D, NR, E.tapa)){
@@ -1272,13 +1312,13 @@ function botones(){
     : `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
   $('exps3').querySelectorAll('button').forEach(b => b.onclick = () => { ir(+b.dataset.k); $('t3').focus({ preventScroll:true }); });
 }
-function reiniciar(){ E.tapa = null; E.pantalla = true; E.xp = IMG.i; E.D = D0; }
+function reiniciar(){ E.tapa = null; E.pantalla = true; E.xp = S.juego ? MotorLente.imagen(O, F, HO).i : IMG.i; E.D = D0; }
 function ir(k){
   if (k > primeraLibre()) return;
   S.k = k; S.t0 = Date.now(); reiniciar();
   const x = EXPS[k], p = S.pred[x.id];
   if (p) x.aplicar();
-  compactar(!p);
+  compactar(!p && !S.juego);
   botones(); lienzo();
   $('k3').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
   $('t3').textContent = x.corto;
@@ -1325,16 +1365,24 @@ function infoD(){
 // La pantalla se arrastra en «Correr la pantalla», después de responder.
 function puedeCorrer(){ return EXPS[S.k].id === 'correr' && !!S.pred.correr && E.pantalla; }
 function lienzo(){
+  if (S.juego){ cv.classList.add('arrastrable'); cv.setAttribute('aria-label', 'Lente, objeto, abanico de rayos y pantalla. Arrastra el objeto o usa el deslizador de abajo: la pantalla se acomoda donde la imagen sale nítida.'); return; }
   const on = puedeCorrer();
   cv.classList.toggle('arrastrable', on);
   cv.setAttribute('aria-label', on ? 'Lente, objeto, abanico de rayos y pantalla. Arrastra la pantalla o usa el deslizador de abajo.' : 'Lente convergente, objeto, abanico de rayos y pantalla con la imagen');
 }
 Celular.arrastre(cv, {
-  activo: puedeCorrer,
-  cerca: (p, r) => Math.abs(p.x - X(E.xp)) < r && p.y > Y(9.5) - r && p.y < Y(-9.5) + r,
+  activo: () => S.juego || puedeCorrer(),
+  cerca: (p, r) => S.juego
+    ? Math.abs(p.x - X(-O)) < r && p.y > Y(HO) - r && p.y < Y(0) + r
+    : Math.abs(p.x - X(E.xp)) < r && p.y > Y(9.5) - r && p.y < Y(-9.5) + r,
   empezar: () => { agarra = true; cv.classList.add('agarrando'); draw(); },
-  mover: p => { E.xp = Math.max(6, Math.min(36, Math.round(((p.x - W*0.5)/sx)*2)/2)); sincronizar(); draw(); },
-  soltar: () => { agarra = false; cv.classList.remove('agarrando'); draw(); decir('vivo3', 'Pantalla a ' + fmt(E.xp) + ' cm. ' + $('xp3-info').textContent); },
+  mover: p => {
+    if (S.juego){ const jg = $('jg3-o'); jg.value = String(Math.max(+jg.min, Math.min(+jg.max, Math.round(-((p.x - W*0.5)/sx)*2)/2))); jg.dispatchEvent(new Event('input')); return; }
+    E.xp = Math.max(6, Math.min(36, Math.round(((p.x - W*0.5)/sx)*2)/2)); sincronizar(); draw();
+  },
+  soltar: () => { agarra = false; cv.classList.remove('agarrando'); draw();
+    if (S.juego) decir('vivo3', `Objeto a ${fmt(O)} cm. La imagen nítida queda a ${fmt(E.xp)} cm de la lente.`);
+    else decir('vivo3', 'Pantalla a ' + fmt(E.xp) + ' cm. ' + $('xp3-info').textContent); },
   sobre: on => { S.sobre = on; draw(); },
 });
 function controles(){
@@ -1353,7 +1401,20 @@ new ResizeObserver(resize).observe(cv);
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', draw);
 new MutationObserver(draw).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
 document.fonts && document.fonts.ready.then(draw);
-resize(); ir(0);
+resize();
+
+// Regla 3 (decisión 20): antes de preguntar, el alumno juega. Juego libre: mueve el objeto y la pantalla se acomoda
+// sola donde la imagen sale nítida. No muestra lo que preguntan los experimentos (tapar, quitar o correr la
+// pantalla, lente más ancha). Se juega una vez al abrir el modo; los experimentos siguientes ya no lo piden.
+const jg = $('jg3-o');
+function ponerO(){ O = parseFloat(jg.value); E.xp = MotorLente.imagen(O, F, HO).i; $('jg3-out').textContent = `${fmt(O)} cm`; draw(); }
+jg.addEventListener('input', ponerO);
+S.juego = true; ir(0); ponerO();
+JugarPrimero.montar({
+  escena: cv.closest('.bench'), preguntas: [$('body3'), $('papel3').closest('p')],
+  consigna: 'Arrastra el objeto y mira la imagen en la pantalla.', minimo: 2,
+  alListo: () => { S.juego = false; $('jg3').hidden = true; O = 30; ir(S.k); },
+});
 })();
 
 /* ================= Pestañas ================= */
