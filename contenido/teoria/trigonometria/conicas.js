@@ -6,6 +6,9 @@
  * Colores (regla 4): la distancia al foco PF (y PF₁) en turquesa (c-i); la otra distancia de la condición, PD a la
  * directriz o PF₂ al segundo foco, en verde (c-d); los parámetros de forma p, a, b, c y el ángulo de giro θ de los
  * ejes en naranja (c-o: no salen juntos); la curva, el lugar que se busca, en rojo (c-h).
+ * Ronda 2 (14 nov, noche): manijas en las cinco ideas (el punto P, el lápiz P y el foco F₂, P sobre la rama, la recta
+ * por su corte con el eje y, el eje x′), llaves en las reglas, separadores «   ·   » y laboratorio de tres mesas. Las
+ * cinco ideas usan la misma figura en «Juega» y en «Mira» (hallazgo 9 de docs/auditoria-teoria.md).
  * Errores (hipótesis de aula; docs/investigacion/trigonometria-ideas-erroneas.md deja fuera las cónicas): LUGAR-CIRCULO,
  * PAR-SIN-4P, PAR-2P, PAR-EJE, ELI-RESTA, ELI-HIP, ELI-C, ELI-EJE, HIP-ELIPSE, TAN-ORIGEN, TAN-SIGNO, TAN-NUNCA,
  * TAN-UN-CORTE, TAN-P, CON-DISCRIMINANTE, CON-PUNTO, ROT-DOBLE, ROT-TAN.
@@ -31,6 +34,10 @@
   const RAD = Math.PI / 180;
   const sen = g => Math.sin(g * RAD), cos = g => Math.cos(g * RAD);
   const sq = x => ({ sup: [x, '2'] });
+  const SEP = '   ·   ';
+  // Gesto directo (docs/teoria.md §4b): las manijas usan la geometría de la pieza.
+  const TP = () => Kit.piezas['trig-plano'];
+  const gr = r => r / RAD;
   // Azar con semilla para «Ahora tú» (el de la unidad de referencia).
   function azar(sem) {
     let q = (sem * 2654435761 + 12345) >>> 0;
@@ -88,9 +95,13 @@
       dibujo: val => ({ datos: lugar(val.x, val.y), estado: {} }),
       lectura: val => {
         const dF = Math.hypot(val.x, val.y - 1), dD = val.y + 1;
-        return [PF, ` ≈ ${f(dF)};  `, PD, ` = ${f(dD)}: ${Math.abs(dF - dD) < 1e-9 ? 'cumple' : 'no cumple'}`];
+        return [PF, ` ≈ ${f(dF)}`, SEP, PD, ` = ${f(dD)}`, SEP, Math.abs(dF - dD) < 1e-9 ? 'cumple' : 'no cumple'];
       },
       minimo: 4,
+      // Se arrastra el punto P por la cuadrícula; sus dos distancias lo siguen.
+      arrastres: [{ id: 'punto-p', etiqueta: 'punto P', color: 'c-h',
+        donde: val => TP().enPx(lugar(val.x, val.y), val.x, val.y),
+        mover: (pt, val) => TP().delPx(lugar(val.x, val.y), pt) }],
     },
     predice: {
       pregunta: 'Todos los puntos con PF = PD forman una curva. Con el foco F(0; 1) y la directriz y = −1, ¿cuál es su ecuación?',
@@ -114,16 +125,16 @@
       }),
       voz: 'Dos distancias iguales; se elevan al cuadrado y se ordenan.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'La condición usa un foco y una recta.', ecuacion: ['F(0; 1);  directriz y = −1'] },
+        { estado: { corte: 1 }, texto: 'La condición usa un foco y una recta.', ecuacion: ['F(0; 1)', SEP, 'directriz y = −1'] },
         { estado: { corte: 2 }, texto: 'La distancia de P al foco.', ecuacion: [PF, ' = ', { raiz: [sq('x'), ' + ', sq('(y − 1)')] }] },
         { estado: { corte: 3 }, texto: 'La distancia de P a la directriz es vertical.', ecuacion: [PD, ' = y + 1'] },
         { estado: { corte: 4 }, texto: 'Se igualan y se elevan al cuadrado: −2y y +2y se juntan.', ecuacion: [sq('x'), ' + ', sq('(y − 1)'), ' = ', sq('(y + 1)'), '  ⇒  ', sq('x'), ' = 4y'] },
-        { estado: { corte: 5 }, texto: 'El vértice queda a mitad de camino entre F y la directriz.', ecuacion: ['V(0; 0);  ', p, ' = VF = 1'] },
+        { estado: { corte: 5 }, texto: 'El vértice queda a mitad de camino entre F y la directriz.', ecuacion: ['V(0; 0)', SEP, p, ' = VF = 1'] },
       ],
     },
     regla: {
       texto: 'La parábola es el lugar de los puntos que están a la misma distancia del foco que de la directriz. Con F(0; p) y directriz y = −p:',
-      ecuacion: [PF, ' = ', PD, ';   ', sq('x'), ' = 4', p, 'y'],
+      ecuacion: [{ llave: [PF], nota: 'al foco', color: 'c-i' }, ' = ', { llave: [PD], nota: 'a la directriz', color: 'c-d' }, SEP, sq('x'), ' = 4', p, 'y'],
       condicion: 'lugar geométrico: todo punto que cumple está en la curva, y todo punto de la curva cumple. p ≠ 0.',
       voz: 'Una ecuación de lugar se prueba en los dos sentidos.',
     },
@@ -151,7 +162,7 @@
             { id: '2p', valor: vert ? par(0, N / 2) : par(N / 2, 0), error: 'PAR-2P', siFuera: 'Eso divide entre 2. El coeficiente es 4p: se divide entre 4.' },
             { id: 'eje', valor: vert ? par(pv, 0) : par(0, pv), error: 'PAR-EJE', siFuera: 'El foco está sobre el eje de la variable que no va al cuadrado.' },
           ], v => `F${v}`),
-          solucion: { texto: `4p = ${f(N)}, así que p = ${f(pv)}.`, ecuacion: [p, ` = ${f(N)}/4 = ${f(pv)};  F${bien}`] },
+          solucion: { texto: `4p = ${f(N)}, así que p = ${f(pv)}.`, ecuacion: [p, ` = ${f(N)}/4 = ${f(pv)}`, SEP, `F${bien}`] },
         };
       },
     },
@@ -171,6 +182,8 @@
       alt: `Elipse con focos en más y menos ${f(cv)} y cuerda 2a = 10; P en la curva`,
     }, extra);
   }
+  // Ángulo (0° a 360°) del punto (u, v) del círculo auxiliar: el parámetro t del lápiz.
+  const angExc = (u, v) => { const g = gr(Math.atan2(v, u)); return g < 0 ? g + 360 : g; };
   const elipseIdea = {
     id: 'elipse',
     titulo: 'La cuerda del jardinero',
@@ -189,6 +202,15 @@
         return [PF1, ' + ', PF2, ` ≈ ${f(d1)} + ${f(10 - d1)} = 10`];
       },
       minimo: 4,
+      // Se arrastra el lápiz P por la curva (su ángulo excéntrico) y el foco F₂ por el eje (la separación c).
+      arrastres: [
+        { id: 'lapiz-p', etiqueta: 'lápiz P sobre la curva', color: 'c-h',
+          donde: val => TP().enPx(elipse(val.c, val.t), 5 * cos(val.t), Math.sqrt(25 - val.c * val.c) * sen(val.t)),
+          mover: (pt, val) => { const q = TP().delPx(elipse(val.c, val.t), pt); return { t: angExc(q.x / 5, q.y / Math.sqrt(25 - val.c * val.c)) }; } },
+        { id: 'foco-2', etiqueta: 'foco F₂: cambia c', color: 'c-o',
+          donde: val => TP().enPx(elipse(val.c, val.t), val.c, 0),
+          mover: (pt, val) => ({ c: TP().delPx(elipse(val.c, val.t), pt).x }) },
+      ],
     },
     predice: {
       pregunta: 'La cuerda sigue midiendo 2a = 10, pero ahora los focos están en (−4; 0) y (4; 0). ¿Cuánto mide b, la altura del punto más alto de la curva?',
@@ -227,7 +249,7 @@
     },
     regla: {
       texto: 'La elipse es el lugar de los puntos cuya suma de distancias a dos focos es 2a. Centrada en el origen, con focos en el eje x:',
-      ecuacion: [PF1, ' + ', PF2, ' = 2', a, ';   ', { frac: [sq('x'), sq(a)] }, ' + ', { frac: [sq('y'), sq(b)] }, ' = 1,  ', sq(a), ' = ', sq(b), ' + ', sq(c)],
+      ecuacion: [PF1, ' + ', PF2, ' = ', { llave: ['2', a], nota: 'la cuerda', color: 'c-o' }, SEP, { frac: [sq('x'), sq(a)] }, ' + ', { frac: [sq('y'), sq(b)] }, ' = 1', SEP, { llave: [sq(a)], nota: 'el mayor', color: 'c-o' }, ' = ', sq(b), ' + ', sq(c)],
       condicion: 'a > c ≥ 0. Con c = 0 es una circunferencia; con a = c, el lugar es el segmento entre los focos.',
       voz: 'En la elipse, a es el mayor de los tres.',
     },
@@ -245,7 +267,7 @@
             { id: 'resta', valor: av - bv, error: 'ELI-RESTA', siFuera: 'Se restan los cuadrados, no los semiejes: c² = a² − b².' },
             { id: 'eje', valor: -cv, error: 'ELI-EJE', siFuera: 'Bien c. Pero los focos van sobre el eje del denominador mayor.' },
           ], v => (v < 0 ? (enY ? `(±${f(-v)}; 0)` : `(0; ±${f(-v)})`) : fx(v))),
-          solucion: { texto: `El denominador mayor es a² = ${f(av * av)}, en ${enY ? 'y' : 'x'}.`, ecuacion: [sq(c), ` = ${f(av * av)} − ${f(bv * bv)} = ${f(cv * cv)};  `, c, ` = ${f(cv)}`] },
+          solucion: { texto: `El denominador mayor es a² = ${f(av * av)}, en ${enY ? 'y' : 'x'}.`, ecuacion: [sq(c), ` = ${f(av * av)} − ${f(bv * bv)} = ${f(cv * cv)}`, SEP, c, ` = ${f(cv)}`] },
         };
       },
     },
@@ -289,6 +311,14 @@
         return [PF1, ' − ', PF2, ` ≈ ${f(d1)} − ${f(d1 - 2 * val.a)} = ${f(2 * val.a)}`];
       },
       minimo: 4,
+      // Se arrastra P por la rama derecha. Si el control pasa del borde de la figura, P se queda en el borde: en ese
+      // punto, la manija devuelve el valor del control (no lo recorta).
+      arrastres: [{ id: 'punto-p', etiqueta: 'punto P sobre la rama', color: 'c-h',
+        donde: val => { const bv = Math.sqrt(25 - val.a * val.a), u = uCtl(val); return TP().enPx(hiperbola(val.a, u), val.a * Math.cosh(u), bv * Math.sinh(u)); },
+        mover: (pt, val) => {
+          const u = uCtl(val), q = TP().delPx(hiperbola(val.a, u), pt), w = Math.asinh(q.y / Math.sqrt(25 - val.a * val.a));
+          return { u: Math.abs(w - u) < 1e-9 ? val.u : w };
+        } }],
     },
     predice: {
       pregunta: 'Con focos en (±5; 0) y diferencia 2a = 6, la ecuación es x²/a² − y²/b² = 1. ¿Cuánto vale b?',
@@ -331,7 +361,7 @@
     },
     regla: {
       texto: 'La hipérbola es el lugar de los puntos cuya diferencia de distancias a dos focos, en valor absoluto, es 2a. Ahora c es el mayor:',
-      ecuacion: ['|', PF1, ' − ', PF2, '| = 2', a, ';   ', { frac: [sq('x'), sq(a)] }, ' − ', { frac: [sq('y'), sq(b)] }, ' = 1,  ', sq(c), ' = ', sq(a), ' + ', sq(b)],
+      ecuacion: ['|', PF1, ' − ', PF2, '| = ', { llave: ['2', a], nota: 'la diferencia', color: 'c-o' }, SEP, { frac: [sq('x'), sq(a)] }, ' − ', { frac: [sq('y'), sq(b)] }, ' = 1', SEP, { llave: [sq(c)], nota: 'el mayor', color: 'c-o' }, ' = ', sq(a), ' + ', sq(b)],
       condicion: '0 < a < c. Las asíntotas y = ±(b/a)x guían las ramas, que nunca las tocan.',
       voz: 'Suma en la elipse, diferencia en la hipérbola; y cambia quién es el mayor.',
     },
@@ -358,7 +388,7 @@
             { id: 'eje', valor: `(0; ±${f(cv)})`, error: 'ELI-EJE', siFuera: 'Bien c. Los focos van sobre el eje del término positivo: aquí, x.' },
             { id: 'resta', valor: `(±${f(av + bv)}; 0)`, error: 'ELI-RESTA', siFuera: 'Se suman los cuadrados, no los semiejes.' },
           ], v => `F${v}`),
-          solucion: { texto: 'En la hipérbola se suman los cuadrados.', ecuacion: [sq(c), ` = ${f(av * av)} + ${f(bv * bv)} = ${f(cv * cv)};  `, c, ` = ${f(cv)}`] },
+          solucion: { texto: 'En la hipérbola se suman los cuadrados.', ecuacion: [sq(c), ` = ${f(av * av)} + ${f(bv * bv)} = ${f(cv * cv)}`, SEP, c, ` = ${f(cv)}`] },
         };
       },
     },
@@ -392,9 +422,13 @@
       dibujo: val => ({ datos: tangente(val.k), estado: {} }),
       lectura: val => {
         const D = 16 + 16 * val.k;
-        return [`Δ = 16 + 16k = ${f(D)}: ${D > 1e-9 ? 'dos cortes' : D < -1e-9 ? 'ningún corte' : 'un corte'}`];
+        return [{ v: 'c-o', t: 'k' }, ` = ${f(val.k)}`, SEP, `Δ = ${f(D)}: ${D > 1e-9 ? 'dos cortes' : D < -1e-9 ? 'ningún corte' : 'un corte'}`];
       },
       minimo: 3,
+      // Se arrastra la recta por su corte con el eje y: la recta pasa por el dedo y conserva su inclinación.
+      arrastres: [{ id: 'recta', etiqueta: 'recta y = x + k', color: 'c-o',
+        donde: val => TP().enPx(tangente(val.k), 0, val.k),
+        mover: (pt, val) => { const q = TP().delPx(tangente(val.k), pt); return { k: q.y - q.x }; } }],
     },
     predice: {
       pregunta: '¿Para qué valor de k la recta y = x + k toca a la parábola x² = 4y en un solo punto?',
@@ -422,7 +456,7 @@
     },
     regla: {
       texto: 'Una recta es tangente a una cónica si, al sustituirla, la ecuación de segundo grado tiene discriminante cero: una raíz doble, un solo punto de contacto.',
-      ecuacion: ['Δ = 0'],
+      ecuacion: [{ llave: ['Δ = 0'], nota: 'raíz doble' }],
       condicion: 'la recta no es paralela al eje de la parábola: una vertical corta x² = 4y una sola vez sin ser tangente.',
       voz: 'Un solo corte no basta; hace falta la raíz doble.',
     },
@@ -495,8 +529,12 @@
       voz: 'Busca el giro en que el término cruzado desaparece.',
       controles: [{ id: 't', etiqueta: 'θ', color: 'c-o', min: 0, max: 90, paso: 15, inicio: 15, unidad: '°', decimales: 0 }],
       dibujo: val => ({ datos: ejes(val.t), estado: {} }),
-      lectura: val => [th, ` = ${f(val.t)}°: B′ = ${f(Bp(val.t))}${Math.abs(Bp(val.t)) < 1e-9 ? ', sin término x′y′' : ''}`],
+      lectura: val => [th, ` = ${f(val.t)}°`, SEP, `B′ = ${f(Bp(val.t))}${Math.abs(Bp(val.t)) < 1e-9 ? ', sin término x′y′' : ''}`],
       minimo: 3,
+      // Se arrastra el eje x′ (un punto suyo, antes de su rótulo): los dos ejes giran juntos.
+      arrastres: [{ id: 'eje-x', etiqueta: 'eje x′: gira θ', color: 'c-o',
+        donde: val => TP().enPx(ejes(val.t), 2.1 * cos(val.t), 2.1 * sen(val.t)),
+        mover: (pt, val) => ({ t: TP().anguloDe(ejes(val.t), pt, { cerca: val.t }) }) }],
     },
     predice: {
       pregunta: 'La ecuación x² + 2y² + 4 = 0 tiene B² − 4AC = −8, negativo como el de una elipse. ¿Qué curva dibuja?',
@@ -520,16 +558,16 @@
       }),
       voz: 'Un giro bien elegido deja la ecuación conocida.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'El término xy avisa que los ejes de la curva están girados.', ecuacion: ['A = 5;  B = −6;  C = 5'] },
+        { estado: { corte: 1 }, texto: 'El término xy avisa que los ejes de la curva están girados.', ecuacion: ['A = 5', SEP, 'B = −6', SEP, 'C = 5'] },
         { estado: { corte: 2 }, texto: 'El giro que lo elimina cumple cot 2θ = (A − C)/B.', ecuacion: ['cot 2', th, ' = 0  ⇒  ', th, ' = 45°'] },
-        { estado: { corte: 3 }, texto: 'Se cambian x e y por las coordenadas nuevas.', ecuacion: ['x = x′cos ', th, ' − y′sen ', th, ';  y = x′sen ', th, ' + y′cos ', th] },
+        { estado: { corte: 3 }, texto: 'Se cambian x e y por las coordenadas nuevas.', ecuacion: ['x = x′cos ', th, ' − y′sen ', th, SEP, 'y = x′sen ', th, ' + y′cos ', th] },
         { estado: { corte: 4 }, texto: 'Queda una elipse de semiejes 2 y 1.', ecuacion: ['2x′² + 8y′² = 8  ⇒  ', { frac: ['x′²', '4'] }, ' + y′² = 1'] },
         { estado: { corte: 4 }, texto: 'B² − 4AC = −64 lo anunciaba, y aquí sí hay puntos.', ecuacion: ['36 − 100 = −64 < 0'] },
       ],
     },
     regla: {
       texto: 'Girar los ejes un ángulo θ con cot 2θ = (A − C)/B quita el término xy. B² − 4AC orienta: negativo, elipse; cero, parábola; positivo, hipérbola.',
-      ecuacion: ['cot 2', th, ' = ', { frac: ['A − C', 'B'] }, ';   x = x′cos ', th, ' − y′sen ', th, ',  y = x′sen ', th, ' + y′cos ', th],
+      ecuacion: ['cot 2', { llave: [th], nota: 'giro de ejes', color: 'c-o' }, ' = ', { frac: ['A − C', 'B'] }, SEP, 'x = x′cos ', th, ' − y′sen ', th, SEP, 'y = x′sen ', th, ' + y′cos ', th],
       condicion: 'B ≠ 0 para girar. El discriminante no asegura puntos: puede salir una recta, un punto o nada.',
       voz: 'El signo orienta; un punto que cumpla lo confirma.',
     },
@@ -578,11 +616,142 @@
     },
   };
 
+  // ---------- Laboratorio: figuras propias de las mesas ----------
+  // Mesa 1: el foco F(0; p) y la directriz y = −p se mueven juntos; P se mueve libre, también bajo la directriz.
+  const VL1 = { x: [-4, 4], y: [-2.8, 5.2] };
+  function focoLibre(val) {
+    const pv = val.p, dF = Math.hypot(val.x, val.y - pv), dD = Math.abs(val.y + pv), ok = Math.abs(dF - dD) < 1e-9, X = 2 * Math.sqrt(pv * 5.2);
+    return {
+      ventana: VL1, numeros: 1,
+      curvas: [{ puntos: curva(x => [x, x * x / (4 * pv)], -Math.min(4, X), Math.min(4, X)), color: 'h', discontinua: true }],
+      rectas: [{ y: -pv, color: 'd' }],
+      segmentos: [{ de: [val.x, val.y], a: [0, pv], color: 'i' }, { de: [val.x, val.y], a: [val.x, -pv], color: 'd' }],
+      // El nombre del foco se aparta de su manija.
+      puntos: [{ x: 0, y: pv }, { x: val.x, y: val.y, color: ok ? 'h' : undefined, rotulo: 'P', lado: val.x >= 0 ? 'e' : 'o' }],
+      rotulos: [{ x: -0.35, y: pv + 0.3, texto: 'F', ancla: 'end' }],
+      alt: `Foco F(0; ${f(pv)}), directriz y = ${f(-pv)} y P${par(val.x, val.y)}: PF = ${f(dF)}, PD = ${f(dD)}`,
+    };
+  }
+  // Mesa 2: la cuerda 2a y la separación 2c, libres. Si c = a, la curva se aplana en el segmento F₁F₂; si c > a,
+  // la cuerda no alcanza el otro foco: se dibuja tendida desde F₁ y su punta estira a.
+  const VL2 = { x: [-6.6, 6.6], y: [-6, 6] };
+  const bDe = val => Math.sqrt(Math.max(0, val.a * val.a - val.c * val.c));
+  const puntaCuerda = val => (val.c > val.a + 1e-9 ? [2 * val.a - val.c, 0] : [val.a * cos(val.t), bDe(val) * sen(val.t)]);
+  function cuerdaLibre(val) {
+    const bv = bDe(val), P = puntaCuerda(val), corta = val.c > val.a + 1e-9;
+    const F = [{ x: -val.c, y: 0, rotulo: 'F₁', lado: 's' }, { x: val.c, y: 0, rotulo: 'F₂', lado: 's' }];
+    return {
+      ventana: VL2, numeros: 1,
+      curvas: corta ? [] : [{ puntos: curva(t => [val.a * Math.cos(t), bv * Math.sin(t)], 0, 2 * Math.PI), color: 'h' }],
+      segmentos: corta ? [{ de: [-val.c, 0], a: P, color: 'i' }] : [{ de: P, a: [-val.c, 0], color: 'i' }, { de: P, a: [val.c, 0], color: 'd' }],
+      puntos: F.concat([{ x: P[0], y: P[1], rotulo: 'P', lado: P[1] >= 0 ? 'n' : 's' }]),
+      alt: corta ? `Cuerda de ${f(2 * val.a)} y focos a ${f(2 * val.c)}: la cuerda no alcanza, no hay curva`
+        : `Elipse de cuerda 2a = ${f(2 * val.a)} y focos en más y menos ${f(val.c)}; semieje menor ${f(bv)}`,
+    };
+  }
+  // Mesa 3: la recta y = mx + k contra la parábola x² = 4y, con pasos finos para atrapar la tangente (k = −m²).
+  const VL3 = { x: [-4, 6], y: [-4.4, 7.6] };
+  function rectaLibre(val) {
+    const D = 16 * val.m * val.m + 16 * val.k, xs = D < -1e-9 ? [] : Math.abs(D) < 1e-9 ? [2 * val.m] : [2 * val.m - Math.sqrt(D) / 2, 2 * val.m + Math.sqrt(D) / 2];
+    // La recta se recorta a la ventana: entre los x donde y sale por arriba o por abajo.
+    let x0 = VL3.x[0], x1 = VL3.x[1];
+    if (Math.abs(val.m) > 1e-9) {
+      const ya = (VL3.y[0] - val.k) / val.m, yb = (VL3.y[1] - val.k) / val.m;
+      x0 = Math.max(x0, Math.min(ya, yb)); x1 = Math.min(x1, Math.max(ya, yb));
+    }
+    return {
+      ventana: VL3, numeros: 1,
+      curvas: [Object.assign({ rotulo: 'x² = 4y', en: [-3.5, 3.06], lado: 'o' }, PX)],
+      segmentos: [{ de: [x0, val.m * x0 + val.k], a: [x1, val.m * x1 + val.k], color: 'o' }],
+      puntos: xs.map(x => ({ x, y: x * x / 4, color: 'i' })),
+      alt: `Parábola x² = 4y y recta de pendiente ${f(val.m)} y corte ${f(val.k)}: ${xs.length === 0 ? 'no se cortan' : xs.length === 1 ? 'se tocan en un punto' : 'se cortan en dos puntos'}`,
+    };
+  }
+
   return {
     unidad: 'trigonometria.conicas',
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/trig-plano.js'],
+    // Laboratorio (docs/teoria.md §4b): tres mesas sin preguntas. La primera mueve también el foco (p) y deja a P ir
+    // bajo la directriz, con la parábola punteada como guía; la segunda suelta la cuerda y los focos hasta los casos
+    // raros (c = a: un segmento; c > a: ningún punto); la tercera suma la pendiente y pasos finos para atrapar la tangente.
+    laboratorio: [
+      {
+        id: 'foco-y-directriz', titulo: 'Foco y directriz libres', pieza: 'trig-plano',
+        consigna: 'Arrastra P y también el foco F: la directriz se aleja con él. Sobre la curva punteada, las dos distancias coinciden.',
+        controles: [
+          { id: 'x', etiqueta: 'x de P', min: -3.5, max: 3.5, paso: 0.25, inicio: 2, decimales: 2 },
+          { id: 'y', etiqueta: 'y de P', min: -2, max: 4.5, paso: 0.25, inicio: 1, decimales: 2 },
+          { id: 'p', etiqueta: 'p', color: 'c-o', min: 0.5, max: 2, paso: 0.25, inicio: 1, decimales: 2 },
+        ],
+        dibujo: val => ({ datos: focoLibre(val), estado: {} }),
+        lectura: val => {
+          const dF = Math.hypot(val.x, val.y - val.p), dD = Math.abs(val.y + val.p);
+          return [p, ` = ${f(val.p)}`, SEP, PF, ` ≈ ${f(dF)}`, SEP, PD, ` = ${f(dD)}`, SEP, Math.abs(dF - dD) < 1e-9 ? 'cumple' : 'no cumple'];
+        },
+        arrastres: [
+          { id: 'punto-p', etiqueta: 'punto P', color: 'c-h',
+            donde: val => TP().enPx(focoLibre(val), val.x, val.y),
+            mover: (pt, val) => TP().delPx(focoLibre(val), pt) },
+          { id: 'foco', etiqueta: 'foco F: cambia p', color: 'c-o',
+            donde: val => TP().enPx(focoLibre(val), 0, val.p),
+            mover: (pt, val) => ({ p: TP().delPx(focoLibre(val), pt).y }) },
+        ],
+      },
+      {
+        id: 'cuerda-libre', titulo: 'Cuerda y focos libres', pieza: 'trig-plano',
+        consigna: 'Cambia el largo de la cuerda 2a y separa los focos. ¿Qué pasa cuando c llega a a? ¿Y si la cuerda no alcanza?',
+        controles: [
+          { id: 'a', etiqueta: 'a', color: 'c-o', min: 2, max: 6, paso: 0.5, inicio: 5, decimales: 1 },
+          { id: 'c', etiqueta: 'c', color: 'c-o', min: 0, max: 6, paso: 0.5, inicio: 3, decimales: 1 },
+          { id: 't', etiqueta: 'lápiz P', min: 0, max: 350, paso: 10, inicio: 60, unidad: '°', decimales: 0 },
+        ],
+        dibujo: val => ({ datos: cuerdaLibre(val), estado: {} }),
+        lectura: val => {
+          if (val.c > val.a + 1e-9) return [`2a = ${f(2 * val.a)} < 2c = ${f(2 * val.c)}: ningún punto`];
+          if (Math.abs(val.c - val.a) < 1e-9) return [`a = c = ${f(val.a)}: el segmento F₁F₂`];
+          const P = puntaCuerda(val), d1 = Math.hypot(P[0] + val.c, P[1]);
+          return [PF1, ' + ', PF2, ` ≈ ${f(d1)} + ${f(2 * val.a - d1)}`, SEP, b, ` ≈ ${f(bDe(val))}`];
+        },
+        // P recorre la curva (en el segmento, conserva su mitad, arriba o abajo); si la cuerda no alcanza, su punta estira a.
+        arrastres: [
+          { id: 'lapiz-p', etiqueta: 'lápiz P: recorre la curva o estira la cuerda', color: 'c-h',
+            donde: val => { const P = puntaCuerda(val); return TP().enPx(cuerdaLibre(val), P[0], P[1]); },
+            mover: (pt, val) => {
+              const q = TP().delPx(cuerdaLibre(val), pt);
+              if (val.c > val.a + 1e-9) return { a: (q.x + val.c) / 2 };
+              const bv = bDe(val);
+              if (bv < 1e-9) { const g = gr(Math.acos(Math.max(-1, Math.min(1, q.x / val.a)))); return { t: sen(val.t) >= -1e-9 ? g : 360 - g }; }
+              return { t: angExc(q.x / val.a, q.y / bv) };
+            } },
+          { id: 'foco-2', etiqueta: 'foco F₂: cambia c', color: 'c-o',
+            donde: val => TP().enPx(cuerdaLibre(val), val.c, 0),
+            mover: (pt, val) => ({ c: TP().delPx(cuerdaLibre(val), pt).x }) },
+        ],
+      },
+      {
+        id: 'recta-y-parabola', titulo: 'Recta contra parábola', pieza: 'trig-plano',
+        consigna: 'Mueve la recta por su corte con el eje y; inclínala con su otro punto. Busca la posición exacta en que toca una sola vez.',
+        controles: [
+          { id: 'm', etiqueta: 'm', color: 'c-o', min: -1, max: 1.5, paso: 0.25, inicio: 0.5, decimales: 2 },
+          { id: 'k', etiqueta: 'k', color: 'c-o', min: -2.5, max: 2, paso: 0.0625, inicio: 0.5, decimales: 4 },
+        ],
+        dibujo: val => ({ datos: rectaLibre(val), estado: {} }),
+        lectura: val => {
+          const D = 16 * val.m * val.m + 16 * val.k;
+          return [`Δ = ${f(D, 3)}`, SEP, D > 1e-9 ? 'dos cortes' : D < -1e-9 ? 'ningún corte' : `tangente: k = −m² = ${f(val.k, 4)}`];
+        },
+        arrastres: [
+          { id: 'corte-k', etiqueta: 'corte con el eje y: cambia k', color: 'c-o',
+            donde: val => TP().enPx(rectaLibre(val), 0, val.k),
+            mover: (pt, val) => { const q = TP().delPx(rectaLibre(val), pt); return { k: q.y - val.m * q.x }; } },
+          { id: 'inclinacion', etiqueta: 'otro punto de la recta: cambia m', color: 'c-o',
+            donde: val => TP().enPx(rectaLibre(val), 1.5, 1.5 * val.m + val.k),
+            mover: (pt, val) => { const q = TP().delPx(rectaLibre(val), pt); return { m: (q.y - val.k) / Math.max(0.5, q.x) }; } },
+        ],
+      },
+    ],
     historia: {
       texto: 'Apolonio de Perga estudió las curvas que salen de cortar un cono con un plano, y su obra nos llegó en griego y en traducciones árabes. Las ecuaciones cartesianas llegaron siglos después. Hoy hay tres maneras de describir la misma curva: cortar un sólido, poner una condición sobre distancias y escribir una ecuación. La tarea es reconocer cuándo coinciden.',
       pregunta: '¿Cómo saber que una condición y una ecuación describen la misma curva?',
