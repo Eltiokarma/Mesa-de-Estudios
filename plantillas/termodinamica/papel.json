@@ -17,6 +17,73 @@
         { "fn": "proceso", "args": [{ "tipo": "isobarico", "P1": 300000, "V1": 0.002, "V2": 0.005 }], "espera": { "W": 900, "dU": 1350, "Q": 2250 } },
         { "fn": "proceso", "args": [{ "tipo": "isobarico", "P1": 300000, "V1": 0.002, "Q": 2250 }], "espera": { "final.V": 0.005 } },
         { "fn": "primeraLey", "args": [{ "Q": 2250, "W": 900 }], "espera": { "dU": 1350 } }
+      ],
+      "preguntas": [
+        {
+          "id": "p1a",
+          "enunciado": "Un gas ideal monoatómico está en un cilindro con un émbolo que se mueve libre, a 3 × 10⁵ Pa. Recibe 2250 J de calor y su volumen pasa de 0,002 m³ a 0,005 m³ a presión constante.",
+          "pregunta": "¿Cuánto trabajo hace el gas?",
+          "unidad": "J",
+          "decimales": 0,
+          "correcta": { "fn": "proceso", "args": [{ "tipo": "isobarico", "P1": 300000, "V1": 0.002, "V2": 0.005 }], "campo": "W", "valor": 900 },
+          "errores": [
+            {
+              "id": "T5-trabajo-PV-final",
+              "respaldo": "parcial",
+              "explicacion": "Multiplicaste la presión por el volumen final. El trabajo usa el cambio de volumen: 3 × 10⁵ · 0,003.",
+              "fn": "proceso",
+              "args": [{ "tipo": "isobarico", "P1": 300000, "V1": 0.002, "V2": 0.005 }],
+              "campo": "errores.trabajoPV",
+              "valor": 1500
+            },
+            {
+              "id": "T9-signo-del-trabajo",
+              "respaldo": "parcial",
+              "explicacion": "El gas se expande: el trabajo que hace es positivo. El signo menos sería el trabajo hecho sobre el gas.",
+              "fn": "proceso",
+              "args": [{ "tipo": "isobarico", "P1": 300000, "V1": 0.002, "V2": 0.005 }],
+              "campo": "errores.trabajoSigno",
+              "valor": -900
+            }
+          ]
+        },
+        {
+          "id": "p1b",
+          "enunciado": "Un gas ideal monoatómico está en un cilindro con un émbolo que se mueve libre, a 3 × 10⁵ Pa. Recibe 2250 J de calor y su volumen pasa de 0,002 m³ a 0,005 m³ a presión constante.",
+          "pregunta": "¿Cuánto cambia su energía interna?",
+          "unidad": "J",
+          "decimales": 0,
+          "correcta": { "fn": "proceso", "args": [{ "tipo": "isobarico", "P1": 300000, "V1": 0.002, "V2": 0.005 }], "campo": "dU", "valor": 1350 },
+          "errores": [
+            {
+              "id": "T8-todo-el-calor-a-U",
+              "respaldo": "documentado",
+              "explicacion": "Parte del calor se va como trabajo al expandirse: ΔU = Q − W = 2250 − 900.",
+              "fn": "proceso",
+              "args": [{ "tipo": "isobarico", "P1": 300000, "V1": 0.002, "V2": 0.005 }],
+              "campo": "errores.dUigualQ",
+              "valor": 2250
+            },
+            {
+              "id": "T9-signo-del-trabajo",
+              "respaldo": "parcial",
+              "explicacion": "Sumaste el trabajo. Con la convención de las academias, ΔU = Q − W, y aquí W es positivo.",
+              "fn": "proceso",
+              "args": [{ "tipo": "isobarico", "P1": 300000, "V1": 0.002, "V2": 0.005 }],
+              "campo": "errores.dUsumaW",
+              "valor": 3150
+            },
+            {
+              "id": "T5-trabajo-PV-final",
+              "respaldo": "parcial",
+              "explicacion": "Tomaste W = P·V final = 1500 J. El trabajo es P·ΔV = 900 J, y ΔU = 2250 − 900.",
+              "fn": "primeraLey",
+              "args": [{ "Q": 2250, "W": 1500 }],
+              "campo": "dU",
+              "valor": 750
+            }
+          ]
+        }
       ]
     },
     {
@@ -46,6 +113,45 @@
       ],
       "verificar": [
         { "fn": "primeraLey", "args": [{ "Q": -300, "W": -800 }], "espera": { "dU": 500 } }
+      ],
+      "preguntas": [
+        {
+          "id": "p3a",
+          "enunciado": "Se comprime un gas: el émbolo hace 800 J de trabajo sobre él y, mientras tanto, el gas cede 300 J de calor al ambiente.",
+          "pregunta": "¿Cuánto cambia la energía interna del gas?",
+          "unidad": "J",
+          "decimales": 0,
+          "correcta": { "fn": "primeraLey", "args": [{ "Q": -300, "W": -800 }], "campo": "dU", "valor": 500 },
+          "errores": [
+            {
+              "id": "T9-trabajo-sobre-el-gas",
+              "respaldo": "documentado",
+              "explicacion": "Pusiste W = +800 J. Al comprimirlo, el gas no hace trabajo, lo recibe: W = −800 J, y ΔU = −300 − (−800).",
+              "fn": "primeraLey",
+              "args": [{ "Q": -300, "W": -800 }],
+              "campo": "errores.signoCambiado",
+              "valor": -1100
+            },
+            {
+              "id": "T-signo-del-calor",
+              "respaldo": "hipotesis",
+              "explicacion": "Pusiste el calor como positivo. El gas cede calor: Q = −300 J.",
+              "fn": "primeraLey",
+              "args": [{ "Q": 300, "W": -800 }],
+              "campo": "dU",
+              "valor": 1100
+            },
+            {
+              "id": "T-signos-al-reves",
+              "respaldo": "hipotesis",
+              "explicacion": "Cambiaste los dos signos. El gas cede calor (Q = −300 J) y recibe trabajo (W = −800 J).",
+              "fn": "primeraLey",
+              "args": [{ "Q": 300, "W": 800 }],
+              "campo": "dU",
+              "valor": -500
+            }
+          ]
+        }
       ]
     },
     {
@@ -62,6 +168,207 @@
       "verificar": [
         { "fn": "camino", "args": [{ "P1": 100000, "V1": 0.002, "tramos": [{ "tipo": "isobarico", "V2": 0.006 }, { "tipo": "isocorico", "P2": 300000 }] }], "espera": { "W": 400, "dU": 2400, "Q": 2800 } },
         { "fn": "camino", "args": [{ "P1": 100000, "V1": 0.002, "tramos": [{ "tipo": "isocorico", "P2": 300000 }, { "tipo": "isobarico", "V2": 0.006 }] }], "espera": { "W": 1200, "dU": 2400, "Q": 3600 } }
+      ],
+      "preguntas": [
+        {
+          "id": "p4a",
+          "enunciado": "Un gas ideal monoatómico va del estado A (1 × 10⁵ Pa; 0,002 m³) al estado B (3 × 10⁵ Pa; 0,006 m³) por dos caminos. Camino 1: primero a presión constante hasta 0,006 m³ y luego a volumen constante hasta 3 × 10⁵ Pa. Camino 2: primero a volumen constante hasta 3 × 10⁵ Pa y luego a presión constante hasta 0,006 m³.",
+          "pregunta": "¿Cuánto trabajo hace el gas por el camino 1?",
+          "unidad": "J",
+          "decimales": 0,
+          "correcta": {
+            "fn": "camino",
+            "args": [{ "P1": 100000, "V1": 0.002, "tramos": [{ "tipo": "isobarico", "V2": 0.006 }, { "tipo": "isocorico", "P2": 300000 }] }],
+            "campo": "W",
+            "valor": 400
+          },
+          "errores": [
+            {
+              "id": "T5-trabajo-del-otro-camino",
+              "respaldo": "parcial",
+              "explicacion": "Ese es el trabajo del camino 2. En el camino 1 el tramo a presión constante va a 1 × 10⁵ Pa.",
+              "fn": "camino",
+              "args": [{ "P1": 100000, "V1": 0.002, "tramos": [{ "tipo": "isocorico", "P2": 300000 }, { "tipo": "isobarico", "V2": 0.006 }] }],
+              "campo": "W",
+              "valor": 1200
+            },
+            {
+              "id": "T9-signo-del-trabajo",
+              "respaldo": "parcial",
+              "explicacion": "El gas se expande: el trabajo que hace es positivo.",
+              "fn": "camino",
+              "args": [{ "P1": 100000, "V1": 0.002, "tramos": [{ "tipo": "isobarico", "V2": 0.006 }, { "tipo": "isocorico", "P2": 300000 }] }],
+              "campo": "errores.trabajoSigno",
+              "valor": -400
+            }
+          ]
+        },
+        {
+          "id": "p4b",
+          "enunciado": "Un gas ideal monoatómico va del estado A (1 × 10⁵ Pa; 0,002 m³) al estado B (3 × 10⁵ Pa; 0,006 m³) por dos caminos. Camino 1: primero a presión constante hasta 0,006 m³ y luego a volumen constante hasta 3 × 10⁵ Pa. Camino 2: primero a volumen constante hasta 3 × 10⁵ Pa y luego a presión constante hasta 0,006 m³.",
+          "pregunta": "¿Cuánto trabajo hace el gas por el camino 2?",
+          "unidad": "J",
+          "decimales": 0,
+          "correcta": {
+            "fn": "camino",
+            "args": [{ "P1": 100000, "V1": 0.002, "tramos": [{ "tipo": "isocorico", "P2": 300000 }, { "tipo": "isobarico", "V2": 0.006 }] }],
+            "campo": "W",
+            "valor": 1200
+          },
+          "errores": [
+            {
+              "id": "T5-trabajo-del-otro-camino",
+              "respaldo": "parcial",
+              "explicacion": "Ese es el trabajo del camino 1. El trabajo depende del camino: aquí el tramo a presión constante va a 3 × 10⁵ Pa.",
+              "fn": "camino",
+              "args": [{ "P1": 100000, "V1": 0.002, "tramos": [{ "tipo": "isobarico", "V2": 0.006 }, { "tipo": "isocorico", "P2": 300000 }] }],
+              "campo": "W",
+              "valor": 400
+            },
+            {
+              "id": "T9-signo-del-trabajo",
+              "respaldo": "parcial",
+              "explicacion": "El gas se expande: el trabajo que hace es positivo.",
+              "fn": "camino",
+              "args": [{ "P1": 100000, "V1": 0.002, "tramos": [{ "tipo": "isocorico", "P2": 300000 }, { "tipo": "isobarico", "V2": 0.006 }] }],
+              "campo": "errores.trabajoSigno",
+              "valor": -1200
+            }
+          ]
+        },
+        {
+          "id": "p4c",
+          "enunciado": "Un gas ideal monoatómico va del estado A (1 × 10⁵ Pa; 0,002 m³) al estado B (3 × 10⁵ Pa; 0,006 m³) por dos caminos. Camino 1: primero a presión constante hasta 0,006 m³ y luego a volumen constante hasta 3 × 10⁵ Pa. Camino 2: primero a volumen constante hasta 3 × 10⁵ Pa y luego a presión constante hasta 0,006 m³.",
+          "pregunta": "¿Cuánto cambia la energía interna del gas de A a B?",
+          "unidad": "J",
+          "decimales": 0,
+          "correcta": {
+            "fn": "camino",
+            "args": [{ "P1": 100000, "V1": 0.002, "tramos": [{ "tipo": "isobarico", "V2": 0.006 }, { "tipo": "isocorico", "P2": 300000 }] }],
+            "campo": "dU",
+            "valor": 2400
+          },
+          "errores": [
+            {
+              "id": "T-sin-tres-medios",
+              "respaldo": "hipotesis",
+              "explicacion": "Te faltó el 3/2. Para el gas monoatómico, ΔU = (3/2)·Δ(P·V) = 1,5 · 1600.",
+              "fn": "camino",
+              "args": [{ "P1": 100000, "V1": 0.002, "tramos": [{ "tipo": "isobarico", "V2": 0.006 }, { "tipo": "isocorico", "P2": 300000 }], "gamma": 2 }],
+              "campo": "dU",
+              "valor": 1600
+            },
+            {
+              "id": "T-cinco-medios",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste 5/2, que es del gas diatómico. Este gas es monoatómico: ΔU = (3/2)·Δ(P·V).",
+              "fn": "camino",
+              "args": [
+                {
+                  "P1": 100000,
+                  "V1": 0.002,
+                  "tramos": [{ "tipo": "isobarico", "V2": 0.006 }, { "tipo": "isocorico", "P2": 300000 }],
+                  "gas": "diatomico"
+                }
+              ],
+              "campo": "dU",
+              "valor": 4000
+            },
+            {
+              "id": "T8-calor-como-U",
+              "respaldo": "parcial",
+              "explicacion": "Ese es el calor del camino 1. Parte de ese calor se va como trabajo: ΔU = Q − W = 2800 − 400.",
+              "fn": "camino",
+              "args": [{ "P1": 100000, "V1": 0.002, "tramos": [{ "tipo": "isobarico", "V2": 0.006 }, { "tipo": "isocorico", "P2": 300000 }] }],
+              "campo": "Q",
+              "valor": 2800
+            }
+          ]
+        },
+        {
+          "id": "p4d",
+          "enunciado": "Un gas ideal monoatómico va del estado A (1 × 10⁵ Pa; 0,002 m³) al estado B (3 × 10⁵ Pa; 0,006 m³) por dos caminos. Camino 1: primero a presión constante hasta 0,006 m³ y luego a volumen constante hasta 3 × 10⁵ Pa. Camino 2: primero a volumen constante hasta 3 × 10⁵ Pa y luego a presión constante hasta 0,006 m³.",
+          "pregunta": "¿Cuánto calor recibe el gas por el camino 1?",
+          "unidad": "J",
+          "decimales": 0,
+          "correcta": {
+            "fn": "camino",
+            "args": [{ "P1": 100000, "V1": 0.002, "tramos": [{ "tipo": "isobarico", "V2": 0.006 }, { "tipo": "isocorico", "P2": 300000 }] }],
+            "campo": "Q",
+            "valor": 2800
+          },
+          "errores": [
+            {
+              "id": "T6-calor-del-otro-camino",
+              "respaldo": "parcial",
+              "explicacion": "Ese es el calor del camino 2. El calor depende del camino, como el trabajo: Q₁ = 2400 + 400.",
+              "fn": "camino",
+              "args": [{ "P1": 100000, "V1": 0.002, "tramos": [{ "tipo": "isocorico", "P2": 300000 }, { "tipo": "isobarico", "V2": 0.006 }] }],
+              "campo": "Q",
+              "valor": 3600
+            },
+            {
+              "id": "T9-signo-del-trabajo",
+              "respaldo": "parcial",
+              "explicacion": "Restaste el trabajo. Con la convención de las academias, Q = ΔU + W = 2400 + 400.",
+              "fn": "primeraLey",
+              "args": [{ "dU": 2400, "W": 400 }],
+              "campo": "errores.signoCambiado",
+              "valor": 2000
+            },
+            {
+              "id": "T-calor-sin-trabajo",
+              "respaldo": "hipotesis",
+              "explicacion": "Dejaste solo ΔU. El gas se expande y hace trabajo, así que recibe más calor: Q = ΔU + W.",
+              "fn": "primeraLey",
+              "args": [{ "dU": 2400, "W": 400 }],
+              "campo": "errores.olvidaTrabajo",
+              "valor": 2400
+            }
+          ]
+        },
+        {
+          "id": "p4e",
+          "enunciado": "Un gas ideal monoatómico va del estado A (1 × 10⁵ Pa; 0,002 m³) al estado B (3 × 10⁵ Pa; 0,006 m³) por dos caminos. Camino 1: primero a presión constante hasta 0,006 m³ y luego a volumen constante hasta 3 × 10⁵ Pa. Camino 2: primero a volumen constante hasta 3 × 10⁵ Pa y luego a presión constante hasta 0,006 m³.",
+          "pregunta": "¿Cuánto calor recibe el gas por el camino 2?",
+          "unidad": "J",
+          "decimales": 0,
+          "correcta": {
+            "fn": "camino",
+            "args": [{ "P1": 100000, "V1": 0.002, "tramos": [{ "tipo": "isocorico", "P2": 300000 }, { "tipo": "isobarico", "V2": 0.006 }] }],
+            "campo": "Q",
+            "valor": 3600
+          },
+          "errores": [
+            {
+              "id": "T6-calor-del-otro-camino",
+              "respaldo": "parcial",
+              "explicacion": "Ese es el calor del camino 1. El calor depende del camino: Q₂ = 2400 + 1200.",
+              "fn": "camino",
+              "args": [{ "P1": 100000, "V1": 0.002, "tramos": [{ "tipo": "isobarico", "V2": 0.006 }, { "tipo": "isocorico", "P2": 300000 }] }],
+              "campo": "Q",
+              "valor": 2800
+            },
+            {
+              "id": "T9-signo-del-trabajo",
+              "respaldo": "parcial",
+              "explicacion": "Restaste el trabajo. Con la convención de las academias, Q = ΔU + W = 2400 + 1200.",
+              "fn": "primeraLey",
+              "args": [{ "dU": 2400, "W": 1200 }],
+              "campo": "errores.signoCambiado",
+              "valor": 1200
+            },
+            {
+              "id": "T-calor-sin-trabajo",
+              "respaldo": "hipotesis",
+              "explicacion": "Dejaste solo ΔU. El gas se expande y hace trabajo, así que recibe más calor: Q = ΔU + W.",
+              "fn": "primeraLey",
+              "args": [{ "dU": 2400, "W": 1200 }],
+              "campo": "errores.olvidaTrabajo",
+              "valor": 2400
+            }
+          ]
+        }
       ]
     },
     {
@@ -78,6 +385,73 @@
       "verificar": [
         { "fn": "rectangulo", "args": [{ "Pa": 200000, "Pb": 500000, "Va": 0.01, "Vb": 0.04 }], "espera": { "W": 9000, "Q": 9000, "dU": 0, "sentido": "horario" } },
         { "fn": "rectangulo", "args": [{ "Pa": 200000, "Pb": 500000, "Va": 0.01, "Vb": 0.04, "sentido": "antihorario" }], "espera": { "W": -9000, "Q": -9000, "tipo": "refrigerador" } }
+      ],
+      "preguntas": [
+        {
+          "id": "p5a",
+          "enunciado": "En el diagrama P-V, un gas ideal monoatómico recorre en sentido horario un ciclo rectangular con presiones de 2 × 10⁵ Pa y 5 × 10⁵ Pa y volúmenes de 0,01 m³ y 0,04 m³.",
+          "pregunta": "¿Cuál es el trabajo neto por ciclo?",
+          "unidad": "J",
+          "decimales": 0,
+          "correcta": { "fn": "rectangulo", "args": [{ "Pa": 200000, "Pb": 500000, "Va": 0.01, "Vb": 0.04 }], "campo": "W", "valor": 9000 },
+          "errores": [
+            {
+              "id": "T-suma-de-areas",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste las dos áreas bajo los tramos. En la compresión el gas recibe trabajo: se restan, y queda el área encerrada.",
+              "fn": "rectangulo",
+              "args": [{ "Pa": 200000, "Pb": 500000, "Va": 0.01, "Vb": 0.04 }],
+              "campo": "errores.sumaAreas",
+              "valor": 21000
+            },
+            {
+              "id": "T-solo-la-expansion",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste solo la expansión. Falta restar el trabajo que recibe el gas al comprimirse a la presión baja.",
+              "fn": "rectangulo",
+              "args": [{ "Pa": 200000, "Pb": 500000, "Va": 0.01, "Vb": 0.04 }],
+              "campo": "errores.trabajoTramoMayor",
+              "valor": 15000
+            },
+            {
+              "id": "T9-signo-del-ciclo",
+              "respaldo": "parcial",
+              "explicacion": "En sentido horario el gas hace más trabajo del que recibe: el neto es positivo.",
+              "fn": "rectangulo",
+              "args": [{ "Pa": 200000, "Pb": 500000, "Va": 0.01, "Vb": 0.04 }],
+              "campo": "errores.trabajoSigno",
+              "valor": -9000
+            }
+          ]
+        },
+        {
+          "id": "p5b",
+          "enunciado": "En el diagrama P-V, un gas ideal monoatómico recorre en sentido horario un ciclo rectangular con presiones de 2 × 10⁵ Pa y 5 × 10⁵ Pa y volúmenes de 0,01 m³ y 0,04 m³.",
+          "pregunta": "¿Cuánto vale el calor neto por ciclo?",
+          "unidad": "J",
+          "decimales": 0,
+          "correcta": { "fn": "rectangulo", "args": [{ "Pa": 200000, "Pb": 500000, "Va": 0.01, "Vb": 0.04 }], "campo": "Q", "valor": 9000 },
+          "errores": [
+            {
+              "id": "T-calor-absorbido",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es solo el calor que entra. El neto resta el que sale; como ΔU = 0, el calor neto es igual al trabajo neto.",
+              "fn": "rectangulo",
+              "args": [{ "Pa": 200000, "Pb": 500000, "Va": 0.01, "Vb": 0.04 }],
+              "campo": "Qabs",
+              "valor": 42000
+            },
+            {
+              "id": "T9-signo-del-ciclo",
+              "respaldo": "parcial",
+              "explicacion": "En un ciclo, Q neto = W neto, y en sentido horario el trabajo neto es positivo.",
+              "fn": "rectangulo",
+              "args": [{ "Pa": 200000, "Pb": 500000, "Va": 0.01, "Vb": 0.04 }],
+              "campo": "errores.trabajoSigno",
+              "valor": -9000
+            }
+          ]
+        }
       ]
     },
     {
@@ -93,6 +467,35 @@
       ],
       "verificar": [
         { "fn": "carnot", "args": [{ "Tc": 327, "Tf": 27, "Qc": 800, "unidad": "C" }], "espera": { "eta": 0.5, "W": 400, "Qf": 400 } }
+      ],
+      "preguntas": [
+        {
+          "id": "p6a",
+          "enunciado": "Una máquina de Carnot trabaja entre 327 °C y 27 °C y recibe 800 J del foco caliente en cada ciclo.",
+          "pregunta": "¿Cuál es su eficiencia, como fracción?",
+          "decimales": 2,
+          "correcta": { "fn": "carnot", "args": [{ "Tc": 327, "Tf": 27, "Qc": 800, "unidad": "C" }], "campo": "eta", "valor": 0.5 },
+          "errores": [
+            {
+              "id": "U8-celsius",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste grados Celsius: 1 − 27/327. En Carnot las temperaturas van en kelvin: 600 K y 300 K.",
+              "fn": "carnot",
+              "args": [{ "Tc": 327, "Tf": 27, "Qc": 800, "unidad": "C" }],
+              "campo": "errores.celsius",
+              "valor": 0.917431192661
+            },
+            {
+              "id": "T-entre-el-foco-frio",
+              "respaldo": "hipotesis",
+              "explicacion": "Dividiste la diferencia entre el foco frío. La eficiencia es 1 − Tf/Tc: la diferencia va entre el foco caliente.",
+              "fn": "carnot",
+              "args": [{ "Tc": 327, "Tf": 27, "Qc": 800, "unidad": "C" }],
+              "campo": "errores.diferenciaSobreFrio",
+              "valor": 1
+            }
+          ]
+        }
       ]
     },
     {
@@ -109,6 +512,36 @@
       "verificar": [
         { "fn": "juzgar", "args": [{ "Tc": 500, "Tf": 300, "Qc": 1200, "W": 600 }], "espera": { "eta": 0.5, "etaCarnot": 0.4, "viola": "segunda" } },
         { "fn": "carnot", "args": [{ "Tc": 500, "Tf": 300, "Qc": 1200 }], "espera": { "W": 480 } }
+      ],
+      "preguntas": [
+        {
+          "id": "p7a",
+          "enunciado": "Un inventor dice que su máquina, entre focos a 500 K y 300 K, recibe 1200 J por ciclo y da 600 J de trabajo.",
+          "pregunta": "¿Cuál es el trabajo máximo que podría dar con ese calor?",
+          "unidad": "J",
+          "decimales": 0,
+          "correcta": { "fn": "carnot", "args": [{ "Tc": 500, "Tf": 300, "Qc": 1200 }], "campo": "W", "valor": 480 },
+          "errores": [
+            {
+              "id": "T-eficiencia-invertida",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste Tf/Tc como eficiencia. La de Carnot es 1 − Tf/Tc = 0,4; 720 J es el calor que va al foco frío.",
+              "fn": "carnot",
+              "args": [{ "Tc": 500, "Tf": 300, "Qc": 1200 }],
+              "campo": "errores.Winvertida",
+              "valor": 720
+            },
+            {
+              "id": "T15-cree-al-inventor",
+              "respaldo": "parcial",
+              "explicacion": "Tomaste los 600 J del inventor. Ninguna máquina entre esos focos supera a la de Carnot: 0,4 · 1200.",
+              "fn": "juzgar",
+              "args": [{ "Tc": 500, "Tf": 300, "Qc": 1200, "W": 600 }],
+              "campo": "W",
+              "valor": 600
+            }
+          ]
+        }
       ]
     },
     {
@@ -139,6 +572,41 @@
       "verificar": [
         { "fn": "estado", "args": [{ "n": 2, "T": 300, "V": 0.02 }], "espera": { "P": 249300 } },
         { "fn": "proceso", "args": [{ "tipo": "isotermico", "P1": 249300, "V1": 0.02, "V2": 0.04, "T1": 300 }], "espera": { "dU": 0, "Q": 3456.0318422718874, "final.P": 124650 } }
+      ],
+      "preguntas": [
+        {
+          "id": "p9a",
+          "enunciado": "Dos moles de un gas ideal ocupan 0,02 m³ a 300 K, con una presión de 249 300 Pa. Se expanden a temperatura constante hasta 0,04 m³. Usa ln 2 ≈ 0,6931.",
+          "pregunta": "¿Cuánto calor reciben?",
+          "unidad": "J",
+          "decimales": 0,
+          "correcta": {
+            "fn": "proceso",
+            "args": [{ "tipo": "isotermico", "P1": 249300, "V1": 0.02, "V2": 0.04, "T1": 300 }],
+            "campo": "Q",
+            "valor": 3456.03184227
+          },
+          "errores": [
+            {
+              "id": "T-isoterma-como-isobara",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste P·ΔV con la presión inicial. En la isoterma la presión baja: W = n·R·T·ln(V₂/V₁), y Q = W.",
+              "fn": "proceso",
+              "args": [{ "tipo": "isotermico", "P1": 249300, "V1": 0.02, "V2": 0.04, "T1": 300 }],
+              "campo": "errores.trabajoComoIsobarico",
+              "valor": 4986
+            },
+            {
+              "id": "T-cociente-invertido",
+              "respaldo": "hipotesis",
+              "explicacion": "Pusiste ln(V₁/V₂). El gas se expande: el cociente es V₂/V₁ = 2 y el calor que recibe es positivo.",
+              "fn": "proceso",
+              "args": [{ "tipo": "isotermico", "P1": 249300, "V1": 0.02, "V2": 0.01, "T1": 300 }],
+              "campo": "Q",
+              "valor": -3456.03184227
+            }
+          ]
+        }
       ]
     },
     {
@@ -154,6 +622,35 @@
       ],
       "verificar": [
         { "fn": "refrigerador", "args": [{ "Qf": 600, "W": 200, "Tc": 27, "Tf": -3, "unidad": "C" }], "espera": { "Qc": 800, "cop": 3, "copCarnot": 9, "posible": true } }
+      ],
+      "preguntas": [
+        {
+          "id": "p10a",
+          "enunciado": "Una refrigeradora saca 600 J por ciclo de su interior, a −3 °C, y para eso usa 200 J de trabajo. La cocina está a 27 °C.",
+          "pregunta": "¿Cuál es su coeficiente de rendimiento (COP)?",
+          "decimales": 2,
+          "correcta": { "fn": "refrigerador", "args": [{ "Qf": 600, "W": 200, "Tc": 27, "Tf": -3, "unidad": "C" }], "campo": "cop", "valor": 3 },
+          "errores": [
+            {
+              "id": "T-cop-invertido",
+              "respaldo": "hipotesis",
+              "explicacion": "Dividiste al revés. El COP es el calor sacado del interior entre el trabajo: 600/200.",
+              "fn": "refrigerador",
+              "args": [{ "Qf": 600, "W": 200, "Tc": 27, "Tf": -3, "unidad": "C" }],
+              "campo": "errores.copInvertido",
+              "valor": 0.333333333333
+            },
+            {
+              "id": "T-cop-con-Qc",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste el calor que va a la cocina (800 J). El COP de la refrigeradora usa el que saca del interior: 600 J.",
+              "fn": "refrigerador",
+              "args": [{ "Qf": 600, "W": 200, "Tc": 27, "Tf": -3, "unidad": "C" }],
+              "campo": "errores.copConQc",
+              "valor": 4
+            }
+          ]
+        }
       ]
     }
   ]
