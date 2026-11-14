@@ -210,6 +210,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'numeros-complejos', unidad: 'algebra.numeros-complejos', version: '0.1.0' };
@@ -461,6 +462,22 @@ function flechaZ(L, p, o){
     { p:pt(p.x, 0), q:p, color:'im', ancho:4, texto:o.tb, dx: p.x >= 0 ? -8 : 8, align: p.x >= 0 ? 'right' : 'left' }); }
   L.segs.push({ p:O, q:p, color:o.color || 'r', ancho:o.ancho || 3, flecha:true, dash:o.dash, f:o.f });
   if (o.texto) L.puntos.push({ p, color:o.color || 'r', r:3.5, texto:o.texto, dx:o.dx || 0, dy:o.dy === undefined ? (p.y >= 0 ? -14 : 15) : o.dy, align:o.align, f:o.f });
+}
+// Regla 3: juego libre antes de la primera pregunta de cada modo. Solo la flecha de z con sus partes, que se
+// arrastra: no muestra giros, productos, módulo ni conjugado, que es lo que se pregunta después.
+function configJuego(E, base){
+  const B = { x0:-4.6, x1:4.6, y0:-3.6, y1:3.6 };
+  const lim = (q, prev) => { const p = pt(clamp(Math.round(q.x), -4, 4), clamp(Math.round(q.y), -3, 3)); return p.x || p.y ? p : prev; };
+  E.config({ L:{ caja:B, estado:{ z:pt(2, 1) },
+    rehacer:L => { const z = L.estado.z; base(L, B);
+      flechaZ(L, z, { partes:true, texto:[['z', 'r']], dx:12 });
+      L.manijas = [{ id:'z', p:z, color:'r' }]; },
+    mover:(id, q, L) => { L.estado.z = lim(q, L.estado.z); },
+    tecla:(id, dx, dy, L) => { const z = L.estado.z; L.estado.z = lim(pt(z.x + dx, z.y + dy), z); } },
+    lect:[E => ['r', 'z', MC.texto(zz(E.L.estado.z))]],
+    ley:[['r', 'la flecha de z'], ['re', 'parte real a'], ['im', 'parte imaginaria b']],
+    desc:'El plano complejo con la flecha de z, que se arrastra por la punta.' });
+  E.compactar(false);
 }
 </script>
 <script>
@@ -901,6 +918,9 @@ $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step +
 $('prev').addEventListener('click', () => go(S.step - 1));
 addEventListener('modo', () => { if (!$('m1').hidden) E.redimensionar(); });
 go(0);
+configJuego(E, base);
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra la punta de z y mira cómo cambian a y b.', minimo:2, alListo:() => go(S.step) });
 })();
 </script>
 <script>
@@ -1108,6 +1128,9 @@ function ir(k){
 }
 addEventListener('modo', () => { if (!$('m2').hidden) E.redimensionar(); });
 ir(0);
+configJuego(E, base);
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Arrastra la punta de z por el plano antes de empezar.', minimo:2, alListo:() => ir(S.k) });
 })();
 </script>
 <script>
