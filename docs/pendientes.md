@@ -1,6 +1,6 @@
 # Pendientes y traspaso
 
-Actualizado el 14 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Estado al 13 nov, tarde». Justo antes van lo recién hecho: la prueba de estrés de Rive (versión 0, a la espera de la cifra del celular de Gerson) y la cola de repaso.
+Actualizado el 14 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Para la próxima sesión: la teoría interactiva» y después «Estado al 13 nov, tarde». Justo antes van lo recién hecho: la prueba de estrés de Rive (versión 0, a la espera de la cifra del celular de Gerson) y la cola de repaso.
 
 ## Cómo arrancar una sesión nueva
 
@@ -26,6 +26,19 @@ Si hay que hacer OCR, instala tesseract en español: `apt-get install -y tessera
 
 - **Si el servidor local muere:** se reinicia con `node herramientas/servidor.js`. También hay que reiniciarlo después de cambiar `herramientas/construir-catalogo.js`, porque guarda el módulo en memoria.
 - **Para verificar a mano:** Playwright y Chromium ya vienen instalados en el entorno en la nube (`require('playwright')`). Las capturas *fullPage* pierden la emulación táctil, así que lo que depende de `hover` se revisa con capturas normales.
+
+## Para la próxima sesión (Gerson, 14 nov): la teoría interactiva — empieza aquí
+
+**Pedido de Gerson:** hacer la teoría. Si hay teoría, los alumnos llegan con más conocimiento a los ejercicios. **La teoría tiene que ser interactiva**, no una página para leer. Se dejó para esta sesión porque la del 14 nov ya estaba llena.
+
+Lo que hay que decidir al empezar (proponer a Gerson antes de construir):
+- **Dónde va en la unidad.** Hoy la versión A de MRU tiene juego, predicción, descubrimiento, ejemplo resuelto y transferencia (sección 7.5 de `docs/pogil-v2-rive.md`). Hay que decidir si la teoría es el cierre de lo descubierto, antes de los ejercicios de práctica y del repaso, o una ficha que se consulta en cualquier momento. La regla 3 sigue: si la teoría pregunta algo, antes se juega.
+- **Qué la hace interactiva.** Cada idea con su figura manipulable del kit (por ejemplo, en MRU, la pendiente de x-t que se arrastra, el área bajo v-t que se pinta y la tabla de fórmulas que se arma con fichas), con los mismos colores por variable (regla 4) y los topes de texto de `docs/escena-viva.md`.
+- **El formato común.** Un molde para las 152 unidades, como se hizo con la versión A, que después se escala con rutinas. Empezar por MRU y MRUV.
+- **De dónde sale el contenido.** Los informes de `docs/investigacion/` (ideas erróneas por tema), el temario del catálogo y los subtemas validados del banco Cuzcano (qué se pregunta). Nada copiado de academias (regla 5).
+- **Cómo se mide** que llegan mejor a los ejercicios: acierto en la práctica y en el repaso, con teoría y sin ella.
+
+**Pendiente de la versión A de MRU (14 nov):** los umbrales del empujón con el dedo (suave, medio y fuerte; `UMBRALES_DEDO` en `plantillas/mruv/leccion.js`) son hipótesis: calibrarlos en el celular de Gerson. Con su visto bueno, `v2.html` reemplaza a la escena vieja en la app y `mruv` sale de `herramientas/jugar-primero-pendientes.json`.
 
 ## Prueba de estrés de Rive (versión 0), 14 nov, en `main`
 
