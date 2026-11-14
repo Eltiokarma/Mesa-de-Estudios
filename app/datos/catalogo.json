@@ -4340,7 +4340,14 @@
      "grado": 3,
      "plantillas": [
       "resumen-sintesis"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-verbal/resumen-y-sintesis.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rv-texto.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-verbal.textos-discontinuos",
