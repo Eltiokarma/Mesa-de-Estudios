@@ -17,11 +17,27 @@
  * la dificultad y no por dónde está la respuesta) son hipótesis nuevas.
  */
 (function (root, fabrica) {
-  const def = fabrica();
+  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
   if (typeof module === 'object' && module.exports) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function () {
+})(typeof self !== 'undefined' ? self : this, function (Kit) {
   'use strict';
+  // Gesto directo (docs/teoria.md §4b): un marcador que se arrastra por el texto y se suelta en un trozo; la manija va
+  // sobre ese trozo (rv-texto.ancla) y salta al más cercano al dedo (rv-texto.cercana). Los trozos se eligen por
+  // posición (p0, p1…), porque cada versión del texto tiene sus propios ids; el control con botones es la alternativa.
+  const RV = () => Kit.piezas['rv-texto'];
+  const posiciones = n => Array.from({ length: n }, (_, k) => ({ valor: `p${k}`, texto: `${k + 1}` }));
+  const idEn = (d, p) => (d.secciones[0].fragmentos[+p.slice(1)] || d.secciones[0].fragmentos[0]).id;
+  const marcador = (datosDe, etiqueta) => ({
+    id: 'frase', etiqueta, color: 'c-i',
+    donde: val => RV().ancla(datosDe(val), idEn(datosDe(val), val.p)),
+    mover: (pt, val) => {
+      const d = datosDe(val), id = RV().cercana(d, pt, d.secciones[0].fragmentos.map(f => f.id));
+      return { p: `p${d.secciones[0].fragmentos.findIndex(f => f.id === id)}` };
+    },
+  });
+  // Cita corta de un trozo para la lectura en vivo (cabe en 12 palabras con lo demás).
+  const cita = t => { const ps = t.replace(/[.,:;]+$/, '').split(' '); return `«${ps.slice(0, 3).join(' ')}${ps.length > 3 ? '…' : ''}»`; };
   const corto = (fn, t) => {
     if (t.length <= 26) return fn(t);
     const k = [t.indexOf(': '), t.indexOf(', ')].filter(i => i > 0).sort((a, b) => a - b)[0];
@@ -58,12 +74,23 @@
     temas: ['Textos expositivos', 'Textos narrativos y descriptivos', 'Textos argumentativos'],
     pieza: 'rv-texto',
     juega: {
-      consigna: 'El tema es siempre la helada. Cambia la versión del texto y mira qué palabras delatan lo que busca.',
-      voz: 'Fíjate en lo marcado: es la evidencia del propósito.',
-      controles: [{ id: 'v', etiqueta: 'Versión', opciones: [{ valor: 'narra', texto: 'A' }, { valor: 'describe', texto: 'B' }, { valor: 'explica', texto: 'C' }, { valor: 'argumenta', texto: 'D' }] }],
-      dibujo: val => ({ datos: figVer(val.v), estado: estVer(val.v) }),
-      lectura: val => [corto(prop, VERS[val.v].tipo)],
+      consigna: 'El tema es siempre la helada. Cambia la versión y arrastra el marcador a las palabras que delatan lo que busca.',
+      voz: 'Busca la palabra que delata el propósito.',
+      controles: [
+        { id: 'v', etiqueta: 'Versión', opciones: [{ valor: 'narra', texto: 'A' }, { valor: 'describe', texto: 'B' }, { valor: 'explica', texto: 'C' }, { valor: 'argumenta', texto: 'D' }] },
+        { id: 'p', etiqueta: 'Trozo', opciones: posiciones(7) },
+      ],
+      dibujo: val => {
+        const d = figVer(val.v), id = idEn(d, val.p);
+        // Si el trozo es evidencia del propósito, se marca y aparece el sello del tipo; si no, queda punteado.
+        return { datos: d, estado: /^e/.test(id) ? estVer(val.v, { marcas: { [id]: 'i' }, nuevo: ['o'] }) : { marcas: { [id]: 'd' } } };
+      },
+      lectura: val => {
+        const d = figVer(val.v), f = d.secciones[0].fragmentos.find(x => x.id === idEn(d, val.p));
+        return /^e/.test(f.id) ? [ev(cita(f.t)), ' delata: ', prop(VERS[val.v].tipo.split(':')[0].toLowerCase())] : [prop(cita(f.t)), ' no delata el tipo'];
+      },
       minimo: 4,
+      arrastres: [marcador(val => figVer(val.v), 'marcador de las palabras')],
     },
     predice: {
       pregunta: 'Este texto sobre el agua trae cifras y datos. ¿Qué tipo de texto domina?',
@@ -88,7 +115,7 @@
     },
     regla: {
       texto: 'El tipo de texto lo decide el propósito que organiza el conjunto: narrar sucesos, describir cómo es algo, explicar por qué ocurre o defender una postura. El tema no decide.',
-      ecuacion: [prop('propósito dominante'), ' → tipo · ', mal('tema'), ' ↛ tipo'],
+      ecuacion: [{ llave: [prop('propósito dominante')], nota: 'lo que organiza', color: 'c-d' }, ' → tipo', '   ·   ', mal('tema'), ' ↛ tipo'],
       condicion: 'se mira qué organiza todo el texto; un texto puede mezclar tipos y uno domina.',
     },
     ahoraTu: {
@@ -116,10 +143,14 @@
   // Cambia: la versión del aviso (completo, oraciones sueltas, sin destinatario). Permanece: el tema del aviso.
   // Progresa: la norma de textualidad que falla. Se reserva: el texto de una sola palabra (predicción).
   // Debe verse: que una lista de oraciones correctas puede no ser un texto.
+  // aporta: qué norma cumple (o qué le falta) cada trozo, en el orden de sus partes.
   const AVISO = {
-    completo: { partes: [['Vecinos de la calle Lima:', 'e'], ['el sábado cortarán el agua de 8 a 14 h'], ['por arreglo de tuberías.', 'e'], ['Llenen sus baldes el viernes.', 'e']], dice: 'Es un texto: tiene sentido y propósito', ok: true },
-    sueltas: { partes: [['El sábado es un día.'], ['Las tuberías son de plástico.'], ['Los baldes tienen asa.'], ['La calle Lima es larga.']], dice: 'Falla la coherencia: no forman un todo', ok: false },
-    sinquien: { partes: [['Cortarán el agua.'], ['Llenen sus baldes.']], dice: 'Falla la situación: ¿cuándo?, ¿a quién?', ok: false },
+    completo: { partes: [['Vecinos de la calle Lima:', 'e'], ['el sábado cortarán el agua de 8 a 14 h'], ['por arreglo de tuberías.', 'e'], ['Llenen sus baldes el viernes.', 'e']], dice: 'Es un texto: tiene sentido y propósito', ok: true,
+      aporta: ['Situación: a quién va', 'Información nueva: qué y cuándo', 'Sentido: dice por qué', 'Propósito: qué hacer'] },
+    sueltas: { partes: [['El sábado es un día.'], ['Las tuberías son de plástico.'], ['Los baldes tienen asa.'], ['La calle Lima es larga.']], dice: 'Falla la coherencia: no forman un todo', ok: false,
+      aporta: ['Bien escrita, pero suelta', 'No se une con las otras', 'No se une con las otras', 'No dice para qué'] },
+    sinquien: { partes: [['Cortarán el agua.'], ['Llenen sus baldes.']], dice: 'Falla la situación: ¿cuándo?, ¿a quién?', ok: false,
+      aporta: ['Falta: ¿cuándo?, ¿dónde?', 'Falta: ¿quién lo pide?'] },
   };
   const figAv = k => texto('Aviso', AVISO[k].partes);
   const textualidad = {
@@ -128,12 +159,22 @@
     temas: ['Texto y normas de textualidad'],
     pieza: 'rv-texto',
     juega: {
-      consigna: 'Compara tres versiones del aviso del agua. Mira cuál funciona como texto y qué le falta a las otras.',
+      consigna: 'Compara tres versiones del aviso del agua. Arrastra el marcador por cada trozo: mira qué aporta o qué le falta.',
       voz: 'Que cada oración esté bien escrita no basta.',
-      controles: [{ id: 'k', etiqueta: 'Versión', opciones: [{ valor: 'completo', texto: 'A' }, { valor: 'sueltas', texto: 'B' }, { valor: 'sinquien', texto: 'C' }] }],
-      dibujo: val => ({ datos: figAv(val.k), estado: { marcas: AVISO[val.k].ok ? evid(figAv(val.k)) : Object.fromEntries(figAv(val.k).secciones[0].fragmentos.map(f => [f.id, 'h'])), sellos: { o: AVISO[val.k].ok ? { t: 'Texto', c: 'i' } : { t: 'No funciona', c: 'h' } } } }),
-      lectura: val => [corto(AVISO[val.k].ok ? ev : mal, AVISO[val.k].dice)],
+      controles: [
+        { id: 'k', etiqueta: 'Versión', opciones: [{ valor: 'completo', texto: 'A' }, { valor: 'sueltas', texto: 'B' }, { valor: 'sinquien', texto: 'C' }] },
+        { id: 'p', etiqueta: 'Trozo', opciones: posiciones(4) },
+      ],
+      dibujo: val => {
+        const d = figAv(val.k), id = idEn(d, val.p), a = AVISO[val.k];
+        return { datos: d, estado: { marcas: { [id]: a.ok ? 'i' : 'h' }, sellos: { o: a.ok ? { t: 'Texto', c: 'i' } : { t: 'No funciona', c: 'h' } } } };
+      },
+      lectura: val => {
+        const d = figAv(val.k), k = d.secciones[0].fragmentos.findIndex(f => f.id === idEn(d, val.p)), a = AVISO[val.k];
+        return [corto(a.ok ? ev : mal, a.aporta[k])];
+      },
       minimo: 3,
+      arrastres: [marcador(val => figAv(val.k), 'marcador del trozo')],
     },
     predice: {
       pregunta: 'En un cruce de calles hay un letrero que solo dice «PARE». ¿Es un texto?',
@@ -156,7 +197,7 @@
     },
     regla: {
       texto: 'Un texto es una unidad de sentido con un propósito, en una situación. Se reconoce por sus normas: cohesión, coherencia, intención, aceptabilidad, información, situación y relación con otros textos.',
-      ecuacion: [ev('sentido'), ' + ', prop('propósito'), ' + ', op('situación'), ' → texto'],
+      ecuacion: [ev('sentido'), ' + ', prop('propósito'), ' + ', { llave: [op('situación')], nota: 'quién y dónde', color: 'c-o' }, ' → texto'],
       condicion: 'se juzga el conjunto en su situación; el largo o la corrección de cada oración no deciden.',
     },
     ahoraTu: {
@@ -223,7 +264,7 @@
     },
     regla: {
       texto: 'En el nivel literal, la respuesta está escrita. En el inferencial, se deduce uniendo partes del texto. En el crítico, se evalúa el texto con razones.',
-      ecuacion: [prop('literal'), ' → ', prop('inferencial'), ' → ', prop('crítico')],
+      ecuacion: [{ llave: [prop('literal')], nota: 'está escrito', color: 'c-d' }, ' → ', { llave: [prop('inferencial')], nota: 'se une', color: 'c-d' }, ' → ', { llave: [prop('crítico')], nota: 'se juzga', color: 'c-d' }],
       condicion: 'el nivel lo fija dónde está la respuesta, no qué tan difícil parece la pregunta.',
     },
     ahoraTu: {
@@ -247,9 +288,42 @@
     },
   };
 
+  // ---------- Laboratorio: arma un texto con tres oraciones y mira qué tipo domina ----------
+  // Cada oración se elige entre cuatro secuencias sobre la helada. El tipo dominante lo calcula el código con la
+  // jerarquía de secuencias que engloban a otras (Adam): una postura organiza a las demás como apoyo; una explicación
+  // usa sucesos y rasgos como ejemplos; un relato incluye descripciones. Las demás quedan como apoyo.
+  // Sin arrastre: lo que cambia es qué hace cada oración (un botón por secuencia), no un lugar de la figura.
+  const SEC = {
+    narra: { n: 'Narrativo', f: ['Aquella noche, Rosa despertó por el frío.', 'Salió con una linterna a la chacra.', 'Encontró las hojas cubiertas de escarcha.'] },
+    describe: { n: 'Descriptivo', f: ['La chacra amaneció blanca y dura.', 'Las hojas lucen rígidas y quemadas.', 'El suelo cruje bajo los pies.'] },
+    explica: { n: 'Expositivo', f: ['La helada ocurre en noches sin nubes.', 'Sin nubes, el suelo pierde calor rápido.', 'El agua de las hojas se congela y rompe sus células.'] },
+    argumenta: { n: 'Argumentativo', f: ['Las comunidades deberían recibir alertas por radio.', 'Con aviso, cubrirían sus cultivos a tiempo.', 'Es injusto enterarse cuando ya se perdió todo.'] },
+  };
+  const JERARQUIA = ['argumenta', 'explica', 'narra', 'describe'];
+  const OPS_SEC = [{ valor: 'narra', texto: 'Narra' }, { valor: 'describe', texto: 'Describe' }, { valor: 'explica', texto: 'Explica' }, { valor: 'argumenta', texto: 'Argumenta' }];
+  const dominante = val => JERARQUIA.find(t => [val.s1, val.s2, val.s3].includes(t));
+  const mesaMezcla = {
+    id: 'mezcla', titulo: 'Arma el texto de la helada', pieza: 'rv-texto',
+    consigna: 'Elige qué hace cada una de las tres oraciones. Mira qué tipo domina y cuáles quedan de apoyo.',
+    voz: 'Un texto mezcla secuencias; una organiza a las demás.',
+    controles: ['s1', 's2', 's3'].map((id, k) => ({ id, etiqueta: `Oración ${k + 1}`, opciones: OPS_SEC, inicio: ['narra', 'describe', 'argumenta'][k] })),
+    dibujo: val => {
+      const dom = dominante(val), ts = [val.s1, val.s2, val.s3];
+      return {
+        datos: { secciones: [{ id: 'o', titulo: 'Tema: la helada', modo: 'lista', fragmentos: ts.map((t, k) => ({ id: `o${k + 1}`, t: SEC[t].f[k] })) }] },
+        estado: { marcas: Object.fromEntries(ts.map((t, k) => [`o${k + 1}`, t === dom ? 'i' : 'd'])), sellos: { o: { t: SEC[dom].n, c: 'i' } } },
+      };
+    },
+    lectura: val => {
+      const dom = dominante(val), sec = [...new Set([val.s1, val.s2, val.s3].filter(t => t !== dom))].map(t => SEC[t].n.toLowerCase());
+      // Solo el nombre va de color: así se parte por palabras y cabe en la miniatura del caso guardado.
+      return [ev(SEC[dom].n), ' domina', sec.length ? ` · apoyo: ${sec.join(', ')}` : ' · sin apoyo de otro tipo'];
+    },
+  };
+
   return {
     unidad: 'razonamiento-verbal.tipologia-textual',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rv-texto.js'],
     historia: {
@@ -257,6 +331,11 @@
       pregunta: '¿Un texto sobre vacunas tiene que ser científico?',
       fuente: { titulo: 'Matriz de teoría de razonamiento verbal (tipología textual)', url: 'https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/tipologia.htm' },
     },
+    laboratorio: [
+      mesaMezcla,
+      Object.assign({ id: 'proposito', titulo: 'Las cuatro versiones', pieza: 'rv-texto' }, proposito.juega),
+      Object.assign({ id: 'aviso', titulo: 'El aviso del agua', pieza: 'rv-texto' }, textualidad.juega),
+    ],
     ideas: [proposito, textualidad, niveles],
   };
 });
