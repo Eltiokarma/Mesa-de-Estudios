@@ -46,16 +46,27 @@
     return ops.slice(0, 4);
   }
 
+  // Gesto directo (docs/teoria.md §4b): todas las figuras son ejes; las manijas usan su geometría (X, Y, Xi, Yi) con
+  // los mismos datos que dibuja el juego, y el lector ajusta cada valor al paso y al rango de su control.
+  const EJES = () => Kit.piezas.ejes;
+  const puntoEnX = (id, etiqueta, color, datosDe, ctl, yDe) => ({
+    id, etiqueta, color,
+    donde: val => { const g = EJES().geometria(datosDe(val)); return { x: g.X(val[ctl]), y: g.Y(yDe(val)) }; },
+    mover: (pt, val) => ({ [ctl]: EJES().geometria(datosDe(val)).Xi(pt.x) }),
+  });
+
   // ---------- Idea 1: las escalas son reglas distintas ----------
   // Cambia: la temperatura en °C · Permanece: la recta que une dos puntos fijos (hielo y agua hirviendo) ·
   // Progresa: el punto que recorre la recta · Se reserva: un cambio de temperatura en vez de un valor ·
   // Debe verse: un grado Celsius vale 1,8 grados Fahrenheit; el 32 solo corre el cero.
+  // Se manipula: el punto, que se arrastra por la recta (la lectura en °C).
   const aF = c => 1.8 * c + 32;
   const ejeCF = (extra = {}) => Object.assign({
     x: { min: -40, max: 100, paso: 20, nombre: 'T', unidad: '°C', decimales: 0, color: 'h' },
     y: { min: -40, max: 220, paso: 40, nombre: 'T', unidad: '°F', decimales: 0, color: 'h' },
     curvas: [{ puntos: [[-40, -40], [100, 212]], color: 'h' }],
   }, extra);
+  const datosCF = val => ejeCF({ puntos: [{ x: val.c, y: aF(val.c), color: 'h', rotulo: `${f(aF(val.c), 0)} °F`, guias: true }] });
   const escalas = {
     id: 'escalas',
     titulo: 'Dos reglas para lo mismo',
@@ -65,9 +76,10 @@
       consigna: 'Elige una temperatura en grados Celsius y lee cuánto marca un termómetro Fahrenheit y la escala Kelvin.',
       voz: 'Mira cuánto sube la recta por cada grado Celsius.',
       controles: [{ id: 'c', etiqueta: 'T', color: 'c-h', min: -40, max: 100, paso: 10, inicio: 20, unidad: '°C', decimales: 0 }],
-      dibujo: val => ({ datos: ejeCF({ puntos: [{ x: val.c, y: aF(val.c), color: 'h', rotulo: `${f(aF(val.c), 0)} °F`, guias: true }] }), estado: {} }),
+      dibujo: val => ({ datos: datosCF(val), estado: {} }),
       lectura: val => [T, ` = ${f(val.c)} °C = ${f(aF(val.c))} °F = ${f(val.c + 273)} K`],
       minimo: 3,
+      arrastres: [puntoEnX('lectura-c', 'temperatura en Celsius', 'c-h', val => datosCF(val), 'c', val => aF(val.c))],
     },
     predice: {
       pregunta: 'Durante la mañana, la temperatura del aire sube 10 °C. ¿Cuántos grados Fahrenheit subió?',
@@ -92,7 +104,7 @@
     },
     regla: {
       texto: 'Las escalas son reglas con distinto cero y distinto tamaño de grado. Para lecturas se usa la fórmula completa; para cambios, solo el tamaño del grado.',
-      ecuacion: [{ sub: [T, 'F'] }, ' = 1,8 ', { sub: [T, 'C'] }, ' + 32   ·   ', { sub: [T, 'K'] }, ' = ', { sub: [T, 'C'] }, ' + 273   ·   Δ', { sub: [T, 'F'] }, ' = 1,8 Δ', { sub: [T, 'C'] }],
+      ecuacion: [{ sub: [T, 'F'] }, ' = 1,8 ', { sub: [T, 'C'] }, ' + ', { llave: ['32'], nota: 'corre el cero' }, '   ·   ', { sub: [T, 'K'] }, ' = ', { sub: [T, 'C'] }, ' + 273', '   ·   ', 'Δ', { sub: [T, 'F'] }, ' = 1,8 Δ', { sub: [T, 'C'] }],
       condicion: 'Kelvin empieza en el cero absoluto y su grado es igual al Celsius: un cambio en K es igual que en °C.',
     },
     ahoraTu: {
@@ -119,7 +131,7 @@
               { id: 'igual', valor: dc, error: 'ES-INV', siFuera: 'El mismo número valdría en Kelvin; el grado Fahrenheit es más chico.' },
               { id: 'div', valor: dc / 1.8, error: 'ES-INV', siFuera: 'Eso divide entre 1,8; cada °C son 1,8 °F, más grados, no menos.' },
             ], n => `${f(n, 1)} °F`),
-            solucion: { texto: 'En un cambio solo cuenta el tamaño del grado.', ecuacion: ['Δ', { sub: [T, 'F'] }, ` = 1,8 · ${f(dc)} = ${f(1.8 * dc, 1)} °F   ·   Δ`, { sub: [T, 'K'] }, ` = ${f(dc)} K`] },
+            solucion: { texto: 'En un cambio solo cuenta el tamaño del grado.', ecuacion: ['Δ', { sub: [T, 'F'] }, ` = 1,8 · ${f(dc)} = ${f(1.8 * dc, 1)} °F`, '   ·   ', 'Δ', { sub: [T, 'K'] }, ` = ${f(dc)} K`] },
           };
         }
         const k = r.de([233, 253, 263, 300, 310, 350, 373]);
@@ -140,6 +152,8 @@
   // Cambia: la masa de agua caliente · Permanece: 100 g de agua fría a 20 °C y el agua caliente a 80 °C ·
   // Progresa: las dos curvas, que se acercan hasta tocarse · Se reserva: masas distintas en la predicción ·
   // Debe verse: el calor que pierde el caliente lo gana el frío; al final, una sola temperatura.
+  // Sin arrastre en el juego: lo que se elige es una masa, y la masa no está en la gráfica T–t. En el laboratorio
+  // («Mezcla libre») se arrastran los dos puntos de partida, que sí son temperaturas.
   const curvaHacia = (T0, Tf, tau, tmax = 10, n = 21) => Array.from({ length: n }, (_, i) => { const tt = tmax * i / (n - 1); return [tt, Tf + (T0 - Tf) * Math.exp(-tt / tau)]; });
   const ejeTt = (m1, T1, m2, T2, extra = {}) => {
     const Tf = (m1 * T1 + m2 * T2) / (m1 + m2);
@@ -188,7 +202,7 @@
     },
     regla: {
       texto: 'Dos cuerpos en contacto intercambian calor hasta tener la misma temperatura: el equilibrio térmico. En un recipiente aislado, el calor que uno cede lo gana el otro.',
-      ecuacion: [{ sub: ['m', '1'] }, { sub: ['c', '1'] }, '(', { sub: [T, '1'] }, ' − ', { sub: [T, 'f'] }, ') = ', { sub: ['m', '2'] }, { sub: ['c', '2'] }, '(', { sub: [T, 'f'] }, ' − ', { sub: [T, '2'] }, ')'],
+      ecuacion: [{ llave: [{ sub: ['m', '1'] }, { sub: ['c', '1'] }, '(', { sub: [T, '1'] }, ' − ', { sub: [T, 'f'] }, ')'], nota: 'lo que cede', color: 'c-o' }, ' = ', { llave: [{ sub: ['m', '2'] }, { sub: ['c', '2'] }, '(', { sub: [T, 'f'] }, ' − ', { sub: [T, '2'] }, ')'], nota: 'lo que gana', color: 'c-o' }],
       condicion: 'sin pérdidas al ambiente, sin cambio de fase, y contando el recipiente si absorbe calor.',
     },
     ahoraTu: {
@@ -213,12 +227,17 @@
   // Cambia: el calor dado y el material · Permanece: 100 g de cada uno, desde 20 °C ·
   // Progresa: el punto que sube por la recta T–Q · Se reserva: el doble de masa ·
   // Debe verse: con el mismo calor, lo de menor c se calienta más; la pendiente es 1/(mc).
+  // Se manipula: el punto, que se arrastra por la recta del material (el calor Q).
   const MAT = { 1: 'agua', 0.2: 'arena', 0.11: 'hierro' };
   const ejeTQ = (lineas, extra = {}) => Object.assign({
     x: { min: 0, max: 2, paso: 0.5, nombre: 'Q', unidad: 'kcal', decimales: 1, color: 'o' },
     y: { min: 0, max: 100, paso: 20, nombre: 'T', unidad: '°C', decimales: 0, color: 'h' },
     curvas: lineas.map(([m, c, rot, disc]) => { const qmax = Math.min(2, (100 - 20) * m * c / 1000); return { puntos: [[0, 20], [qmax, 20 + qmax * 1000 / (m * c)]], color: 'h', rotulo: rot, discontinua: disc }; }),
   }, extra);
+  const datosTQ = val => {
+    const Tq = 20 + val.q * 1000 / (100 * val.c);
+    return ejeTQ([[100, val.c, MAT[val.c]]], { puntos: Tq <= 100 ? [{ x: val.q, y: Tq, color: 'h', rotulo: `${f(Tq, 0)} °C`, guias: true }] : [] });
+  };
   const especifico = {
     id: 'calor-especifico',
     titulo: 'Mismo calor, distinto ΔT',
@@ -231,12 +250,10 @@
         { id: 'q', etiqueta: 'Q', color: 'c-o', min: 0.1, max: 0.8, paso: 0.1, inicio: 0.4, unidad: 'kcal', decimales: 1 },
         { id: 'c', etiqueta: 'Material', opciones: [{ valor: 1, texto: 'agua' }, { valor: 0.2, texto: 'arena' }, { valor: 0.11, texto: 'hierro' }], inicio: 1 },
       ],
-      dibujo: val => {
-        const Tq = 20 + val.q * 1000 / (100 * val.c);
-        return { datos: ejeTQ([[100, val.c, MAT[val.c]]], { puntos: Tq <= 100 ? [{ x: val.q, y: Tq, color: 'h', rotulo: `${f(Tq, 0)} °C`, guias: true }] : [] }), estado: {} };
-      },
+      dibujo: val => ({ datos: datosTQ(val), estado: {} }),
       lectura: val => { const dT2 = val.q * 1000 / (100 * val.c); return [dT, ` = ${f(dT2, 1)} °C`, dT2 > 80 ? ' (pasa de 100 °C)' : '']; },
       minimo: 3,
+      arrastres: [puntoEnX('calor', 'calor dado', 'c-o', datosTQ, 'q', val => Math.min(100, 20 + val.q * 1000 / (100 * val.c)))],
     },
     predice: {
       pregunta: 'Para subir 10 °C, 100 g de agua necesitan 1000 cal. ¿Cuánto calor necesitan 200 g de agua para subir los mismos 10 °C?',
@@ -261,7 +278,7 @@
     },
     regla: {
       texto: 'El calor necesario para cambiar la temperatura crece con la masa, con el calor específico c del material y con el cambio de temperatura.',
-      ecuacion: [Q, ' = m c ', dT, '   ·   C = m c'],
+      ecuacion: [Q, ' = m ', { llave: ['c'], nota: 'material' }, ' ', dT, '   ·   ', 'C = m c'],
       condicion: 'no hay cambio de fase en el tramo y c se toma constante. Agua: 1 cal/(g·°C).',
     },
     ahoraTu: {
@@ -285,6 +302,7 @@
   // Cambia: el calor dado a 100 g de hielo a −20 °C · Permanece: la curva de calentamiento completa ·
   // Progresa: el punto que la recorre · Se reserva: la olla que hierve con más fuego ·
   // Debe verse: en las mesetas el calor entra y la temperatura no sube: cambia la fase.
+  // Se manipula: el punto, que se arrastra por la curva de calentamiento (el calor Q).
   const M4 = 100;
   const tramos = [[0, -20], [1, 0], [9, 0], [19, 100], [24, 100]];   // kcal y °C para 100 g de hielo desde −20 °C
   const estadoFase = q => {
@@ -298,6 +316,7 @@
     y: { min: -20, max: 120, paso: 20, nombre: 'T', unidad: '°C', decimales: 0, color: 'h' },
     curvas: [{ puntos: tramos, color: 'h' }],
   }, extra);
+  const datosFase = val => { const e = estadoFase(val.q); return ejeFase({ puntos: [{ x: val.q, y: e.T, color: 'h', rotulo: `${f(e.T, 0)} °C`, guias: true }] }); };
   const fase = {
     id: 'cambio-de-fase',
     titulo: 'En la meseta, T no sube',
@@ -307,9 +326,10 @@
       consigna: 'Le das calor a 100 g de hielo que empieza a −20 °C, a nivel del mar. Avanza el calor y mira la temperatura.',
       voz: 'Hay tramos donde el calor entra y la temperatura no cambia.',
       controles: [{ id: 'q', etiqueta: 'Q', color: 'c-o', min: 0, max: 24, paso: 1, inicio: 0, unidad: 'kcal', decimales: 0 }],
-      dibujo: val => { const e = estadoFase(val.q); return { datos: ejeFase({ puntos: [{ x: val.q, y: e.T, color: 'h', rotulo: `${f(e.T, 0)} °C`, guias: true }] }), estado: {} }; },
+      dibujo: val => ({ datos: datosFase(val), estado: {} }),
       lectura: val => { const e = estadoFase(val.q); return [T, ` = ${f(e.T, 0)} °C · ${e.que}`]; },
       minimo: 3,
+      arrastres: [puntoEnX('calor', 'calor dado', 'c-o', datosFase, 'q', val => estadoFase(val.q).T)],
     },
     predice: {
       pregunta: 'Una olla con agua ya hierve a 100 °C. Se sube el fuego al doble. Mientras siga habiendo agua, ¿qué pasa con su temperatura?',
@@ -334,7 +354,7 @@
     },
     regla: {
       texto: 'Durante un cambio de fase, el calor que entra cambia el estado y no la temperatura. Cada gramo pide un calor latente L.',
-      ecuacion: [Q, ' = m L   ·   agua: ', { sub: ['L', 'f'] }, ' = 80 cal/g, ', { sub: ['L', 'v'] }, ' = 540 cal/g'],
+      ecuacion: [Q, ' = m ', { llave: ['L'], nota: 'por gramo' }, '   ·   ', 'agua: ', { sub: ['L', 'f'] }, ' = 80 cal/g, ', { sub: ['L', 'v'] }, ' = 540 cal/g'],
       condicion: 'la presión no cambia. A nivel del mar el agua hierve a 100 °C; en Juliaca, cerca de 87 °C.',
     },
     ahoraTu: {
@@ -357,12 +377,14 @@
   // ---------- Idea 5: dilatación ----------
   // Cambia: el largo inicial, el material y cuánto se calienta · Permanece: el origen de la gráfica (sin calentar, no se estira) ·
   // Progresa: la recta ΔL–ΔT · Se reserva: el agujero de una placa · Debe verse: todo largo crece en proporción a sí mismo.
+  // Se manipula: el punto, que se arrastra por la recta (cuánto se calienta, ΔT).
   const ALFA = { 12: 'acero', 24: 'aluminio' };
   const ejeDil = (L0, a, extra = {}) => Object.assign({
     x: { min: 0, max: 100, paso: 20, nombre: 'ΔT', unidad: '°C', decimales: 0, color: 'h' },
     y: { min: 0, max: 10, paso: 2, nombre: 'ΔL', unidad: 'mm', decimales: 0, color: 'i' },
     curvas: [{ puntos: [[0, 0], [100, a * L0 * 100 / 1000]], color: 'i', rotulo: `${ALFA[a] || ''} de ${f(L0)} m` }],
   }, extra);
+  const datosDil = val => { const dl = val.a * val.L0 * val.dt / 1000; return ejeDil(val.L0, val.a, { puntos: [{ x: val.dt, y: dl, color: 'i', rotulo: `${f(dl, 2)} mm`, guias: true }] }); };
   const dilatacion = {
     id: 'dilatacion',
     titulo: 'Al calentarse, todo largo crece',
@@ -376,9 +398,10 @@
         { id: 'dt', etiqueta: 'ΔT', color: 'c-h', min: 20, max: 100, paso: 20, inicio: 60, unidad: '°C', decimales: 0 },
         { id: 'a', etiqueta: 'Material', opciones: [{ valor: 12, texto: 'acero' }, { valor: 24, texto: 'aluminio' }], inicio: 12 },
       ],
-      dibujo: val => { const dl = val.a * val.L0 * val.dt / 1000; return { datos: ejeDil(val.L0, val.a, { puntos: [{ x: val.dt, y: dl, color: 'i', rotulo: `${f(dl, 2)} mm`, guias: true }] }), estado: {} }; },
+      dibujo: val => ({ datos: datosDil(val), estado: {} }),
       lectura: val => [dL, ` = ${f(val.a * val.L0 * val.dt / 1000, 2)} mm`],
       minimo: 3,
+      arrastres: [puntoEnX('calentar', 'cuánto se calienta', 'c-h', datosDil, 'dt', val => val.a * val.L0 * val.dt / 1000)],
     },
     predice: {
       pregunta: 'Una placa de acero tiene un agujero redondo en el centro. Se calienta toda la placa. ¿Qué pasa con el diámetro del agujero?',
@@ -401,7 +424,7 @@
     },
     regla: {
       texto: 'Al calentarse, cada largo de un sólido crece en proporción a sí mismo y al cambio de temperatura: también los huecos y los bordes.',
-      ecuacion: [dL, ' = α ', { sub: [L, '0'] }, ' ', dT, '   ·   área: β = 2α   ·   volumen: γ = 3α'],
+      ecuacion: [dL, ' = α ', { llave: [{ sub: [L, '0'] }], nota: 'largo inicial', color: 'c-i' }, ' ', dT, '   ·   ', 'área: β = 2α', '   ·   ', 'volumen: γ = 3α'],
       condicion: 'cambios de temperatura moderados, sin cambio de fase; α depende del material.',
     },
     ahoraTu: {
@@ -415,7 +438,7 @@
             { id: 'cm', valor: dl / 10, error: 'DI-MM', siFuera: 'Hay un error de unidades: revisa el paso de metros a milímetros.' },
             { id: 'cuad', valor: a * L0 * d * d / 1000, error: 'DI-CUAD', siFuera: 'El cambio de temperatura entra una vez, no al cuadrado.' },
           ], n => `${f(n, 3)} mm`),
-          solucion: { texto: 'α por largo inicial por cambio de temperatura.', ecuacion: [dL, ` = ${f(a)} · 10⁻⁶ · ${f(L0)} · ${f(d)} m = ${f(dl, 3)} mm`] },
+          solucion: { texto: 'α por largo inicial por cambio de temperatura.', ecuacion: [dL, ` = ${f(a)} · `, { sup: ['10', '−6'] }, ` · ${f(L0)} · ${f(d)} m = ${f(dl, 3)} mm`] },
         };
       },
     },
@@ -425,12 +448,14 @@
   // Cambia: el espesor de la pared y la diferencia de temperatura · Permanece: el ladrillo y el área de la pared ·
   // Progresa: el punto en la curva P–L · Se reserva: el calor del Sol, que cruza el vacío ·
   // Debe verse: por conducción pasa más calor con más ΔT y con menos espesor; sin materia, solo radiación.
+  // Se manipula: el punto, que se arrastra por la curva P–espesor (el espesor de la pared).
   const KL = 0.6, AP = 10;
   const ejePL = (dt, extra = {}) => Object.assign({
     x: { min: 0, max: 40, paso: 10, nombre: 'espesor', unidad: 'cm', decimales: 0, color: 'i' },
     y: { min: 0, max: 1200, paso: 300, nombre: 'P', unidad: 'W', decimales: 0 },
     curvas: [{ puntos: Array.from({ length: 31 }, (_, i) => { const e = 10 + i; return [e, KL * AP * dt / (e / 100)]; }), color: 'h', rotulo: `ΔT = ${f(dt)} °C` }],
   }, extra);
+  const datosPL = val => { const P = KL * AP * val.dt / (val.e / 100); return ejePL(val.dt, { puntos: [{ x: val.e, y: P, color: 'h', rotulo: `${f(P, 0)} W`, guias: true }] }); };
   const SITUACIONES = [
     ['El mango metálico de una cuchara en el té se calienta.', 'conducción'],
     ['El aire caliente de una estufa sube y calienta el cuarto.', 'convección'],
@@ -452,9 +477,10 @@
         { id: 'e', etiqueta: 'espesor', color: 'c-i', min: 10, max: 40, paso: 5, inicio: 20, unidad: 'cm', decimales: 0 },
         { id: 'dt', etiqueta: 'ΔT', color: 'c-h', min: 5, max: 20, paso: 5, inicio: 10, unidad: '°C', decimales: 0 },
       ],
-      dibujo: val => { const P = KL * AP * val.dt / (val.e / 100); return { datos: ejePL(val.dt, { puntos: [{ x: val.e, y: P, color: 'h', rotulo: `${f(P, 0)} W`, guias: true }] }), estado: {} }; },
+      dibujo: val => ({ datos: datosPL(val), estado: {} }),
       lectura: val => [`Cruzan ${f(KL * AP * val.dt / (val.e / 100), 0)} J cada segundo por conducción`],
       minimo: 3,
+      arrastres: [puntoEnX('espesor', 'espesor de la pared', 'c-i', datosPL, 'e', val => KL * AP * val.dt / (val.e / 100))],
     },
     predice: {
       pregunta: 'Entre el Sol y la Tierra casi no hay materia: es vacío. ¿Cómo llega el calor del Sol hasta nosotros?',
@@ -517,6 +543,29 @@
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/ejes.js'],
+    laboratorio: [
+      {
+        // Más rica que la idea 2: las dos masas y las dos temperaturas se eligen, y los puntos de partida se arrastran.
+        id: 'mezcla-libre', titulo: 'Mezcla libre', pieza: 'ejes',
+        consigna: 'Arrastra los dos puntos de partida y cambia las masas. ¿Dónde se juntan las curvas?',
+        controles: [
+          { id: 'T1', etiqueta: 'caliente', color: 'c-h', min: 45, max: 100, paso: 5, inicio: 80, unidad: '°C', decimales: 0 },
+          { id: 'm1', etiqueta: 'masa caliente', min: 50, max: 400, paso: 50, inicio: 100, unidad: 'g', decimales: 0 },
+          { id: 'T2', etiqueta: 'fría', color: 'c-h', min: 0, max: 40, paso: 5, inicio: 20, unidad: '°C', decimales: 0 },
+          { id: 'm2', etiqueta: 'masa fría', min: 50, max: 400, paso: 50, inicio: 300, unidad: 'g', decimales: 0 },
+        ],
+        dibujo: val => ({ datos: ejeTt(val.m1, val.T1, val.m2, val.T2), estado: {} }),
+        // Las masas se leen en los rótulos de las curvas; la lectura dice las dos temperaturas y la final.
+        lectura: val => [`${f(val.T1)}\u00a0°C y ${f(val.T2)}\u00a0°C → `, { sub: [T, 'f'] }, ` = ${f((val.m1 * val.T1 + val.m2 * val.T2) / (val.m1 + val.m2), 1)}\u00a0°C`],
+        arrastres: [['1', 'agua caliente'], ['2', 'agua fría']].map(([k, nom]) => ({
+          id: 'inicio-' + k, etiqueta: `temperatura inicial del ${nom}`, color: 'c-h',
+          donde: val => { const g = EJES().geometria(ejeTt(val.m1, val.T1, val.m2, val.T2)); return { x: g.X(0), y: g.Y(val['T' + k]) }; },
+          mover: (pt, val) => ({ ['T' + k]: EJES().geometria(ejeTt(val.m1, val.T1, val.m2, val.T2)).Yi(pt.y) }),
+        })),
+      },
+      Object.assign({ id: 'curva-calentamiento', titulo: 'La curva del hielo', pieza: 'ejes' }, fase.juega),
+      Object.assign({ id: 'varilla', titulo: 'La varilla que se estira', pieza: 'ejes' }, dilatacion.juega),
+    ],
     historia: {
       texto: 'Los termoscopios de inicios del siglo XVII mostraban que algo se calentaba, pero sin una escala común; algunos respondían también a la presión del aire. En el siglo XVIII, Fahrenheit y Celsius fijaron puntos que cualquiera podía reproducir, como el hielo que se funde. Medir temperatura se volvió comparable entre laboratorios.',
       pregunta: '¿Cómo acordarían dos personas lejanas qué es «20 grados»?',
