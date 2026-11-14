@@ -1604,7 +1604,15 @@
      "plantillas": [
       "polinomios",
       "division-polinomios"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/division-de-polinomios.js",
+      "requiere": [
+       "/nucleo/kit/piezas/alg-tabla.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "algebra.factorizacion",
