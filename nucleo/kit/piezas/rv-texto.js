@@ -155,5 +155,31 @@
     return `Texto para leer. ${secs.join(' · ')}`;
   }
 
-  return { id: 'rv-texto', dibujar, alt, disponer, constantes: { W, PAD, TAM, LH } };
+  // Gesto directo (docs/teoria.md §4b): la manija de un fragmento. En una lista va sobre su número (no tapa palabras);
+  // en párrafo o tarjeta, sobre el subrayado de su primer renglón, al centro. Coordenadas del viewBox.
+  function ancla(d, id) {
+    const L = disponer(d);
+    for (const s of L.secciones) {
+      const k = s.trozos.findIndex(t => !t.num && t.id === id);
+      if (k < 0) continue;
+      const tr = s.trozos[k], num = s.sec.modo === 'lista' && s.trozos.slice(0, k).reverse().find(t => t.num);
+      if (num && Math.abs(num.y - tr.y) < 1) return { x: num.x + 5, y: tr.y - 5 };
+      return { x: tr.x + Math.min(tr.w / 2, 40), y: tr.y + 5 };
+    }
+    return null;
+  }
+  // El fragmento (de los `ids` dados) más cercano a un punto: distancia a la caja de cada renglón suyo.
+  function cercana(d, punto, ids) {
+    const L = disponer(d), ok = new Set(ids);
+    let mejor = null, dm = Infinity;
+    for (const s of L.secciones) for (const t of s.trozos) {
+      if (t.num || !ok.has(t.id)) continue;
+      const dx = Math.max(t.x - punto.x, 0, punto.x - (t.x + t.w)), dy = Math.max(t.y - 16 - punto.y, 0, punto.y - (t.y + 6));
+      const dist = Math.hypot(dx, dy);
+      if (dist < dm) { dm = dist; mejor = t.id; }
+    }
+    return mejor;
+  }
+
+  return { id: 'rv-texto', dibujar, alt, disponer, ancla, cercana, constantes: { W, PAD, TAM, LH } };
 });

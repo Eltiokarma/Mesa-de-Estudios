@@ -79,3 +79,19 @@ test('en una lista, «junto» sigue en el mismo renglón y no lleva número', ()
   const y = id => tr.find(t => t.id === id).y;
   assert.equal(y('c'), y('b')); assert.equal(y('d'), y('b')); assert.ok(y('b') > y('a'));
 });
+
+test('ancla y cercana: la manija de cada fragmento cae en el lienzo y la frase más cercana a su manija es ella misma', () => {
+  const L = P.disponer(datos);
+  const ids = ['a', 'b', 'd', 'e', 'f', 'g'];
+  for (const id of ids) {
+    const p = P.ancla(datos, id);
+    assert.ok(p && p.x >= 0 && p.x <= P.constantes.W && p.y >= 0 && p.y <= L.alto, `${id} fuera`);
+    assert.equal(P.cercana(datos, p, ids), id);
+  }
+  // En una lista, la manija va sobre el número de la oración (no tapa sus palabras).
+  const num = L.secciones[1].trozos.find(t => t.num && t.texto === '1');
+  assert.ok(Math.abs(P.ancla(datos, 'e').x - num.x - 5) < 0.01);
+  assert.equal(P.ancla(datos, 'nada'), null);
+  // Lejos de todo, igual elige una de las pedidas.
+  assert.ok(['e', 'f'].includes(P.cercana(datos, { x: 0, y: 1000 }, ['e', 'f'])));
+});

@@ -17,11 +17,21 @@
  * mencionado tomado como incompatible). Sin códigos nuevos.
  */
 (function (root, fabrica) {
-  const def = fabrica();
+  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
   if (typeof module === 'object' && module.exports) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function () {
+})(typeof self !== 'undefined' ? self : this, function (Kit) {
   'use strict';
+  // Gesto directo (docs/teoria.md §4b): el alumno arrastra el marcador por el texto y lo suelta en la frase que quiere
+  // revisar. La manija se pone sobre el número de esa frase (rv-texto.ancla) y salta a la más cercana al dedo
+  // (rv-texto.cercana): el control «Frase» con sus botones es la alternativa sin arrastre.
+  const RV = () => Kit.piezas['rv-texto'];
+  const frases = n => Array.from({ length: n }, (_, k) => ({ valor: `o${k + 1}`, texto: `${k + 1}` }));
+  const marcador = (datosDe, ids, etiqueta = 'marcador de la frase') => ({
+    id: 'frase', etiqueta, color: 'c-i',
+    donde: val => RV().ancla(datosDe(val), val.f),
+    mover: (pt, val) => ({ f: RV().cercana(datosDe(val), pt, ids) }),
+  });
   const corto = (fn, t) => {
     if (t.length <= 26) return fn(t);
     const k = [t.indexOf(': '), t.indexOf(', ')].filter(i => i > 0).sort((a, b) => a - b)[0];
@@ -51,6 +61,19 @@
     nose: { t: 'La escuela tiene computadoras.', marcas: { o3: 'd' }, c: 'nose', por: 'El texto no lo dice ni lo niega' },
   };
   const estAf = (k, extra = {}) => Object.assign({ marcas: Object.assign({ a1: CASILLA[AF[k].c][1] === 'h' ? 'h' : 'o' }, AF[k].marcas), sellos: { a: { t: CASILLA[AF[k].c][0], c: CASILLA[AF[k].c][1] } } }, extra);
+  // La frase que el alumno revisa: si es de las que deciden, se marca con su color y aparece la casilla; si no, queda
+  // con trazo punteado (no habla de lo mismo) y la afirmación espera su sello.
+  const decide = (k, f) => Object.prototype.hasOwnProperty.call(AF[k].marcas, f) && AF[k].c !== 'nose';
+  function revisaFrase(k, f) {
+    if (decide(k, f)) return estAf(k, { nuevo: ['a'] });
+    return { marcas: { a1: 'o', [f]: 'd' } };
+  }
+  function leeFrase(k, f) {
+    const n = f.slice(1), c = CASILLA[AF[k].c];
+    if (AF[k].c === 'nose') return [nose(`La ${n} no lo decide`), ' · ninguna lo decide'];
+    if (!decide(k, f)) return [nose(`La ${n} no habla de esto`), ' · busca otra'];
+    return [corto(c[1] === 'h' ? contra : resp, AF[k].por)];
+  }
   const casillas = {
     id: 'cuatro-casillas',
     titulo: 'Dice, deduce, contradice o no sabe',
@@ -59,10 +82,15 @@
     juega: {
       consigna: 'Pon cada afirmación junto al texto de Ccota. Mira qué frase la decide y en qué casilla cae.',
       voz: 'No mencionar algo no es contradecirlo.',
-      controles: [{ id: 'k', etiqueta: 'Afirmación', opciones: [{ valor: 'dice', texto: '1' }, { valor: 'deduce', texto: '2' }, { valor: 'contradice', texto: '3' }, { valor: 'impl', texto: '4' }, { valor: 'nose', texto: '5' }] }],
-      dibujo: val => ({ datos: figura(CCOTA, AF[val.k].t), estado: estAf(val.k) }),
-      lectura: val => [corto(CASILLA[AF[val.k].c][1] === 'h' ? contra : CASILLA[AF[val.k].c][1] === 'd' ? nose : resp, AF[val.k].por)],
+      controles: [
+        { id: 'k', etiqueta: 'Afirmación', opciones: [{ valor: 'dice', texto: '1' }, { valor: 'deduce', texto: '2' }, { valor: 'contradice', texto: '3' }, { valor: 'impl', texto: '4' }, { valor: 'nose', texto: '5' }] },
+        { id: 'f', etiqueta: 'Frase', opciones: frases(3), inicio: 'o3' },
+      ],
+      dibujo: val => ({ datos: figura(CCOTA, AF[val.k].t), estado: revisaFrase(val.k, val.f) }),
+      lectura: val => leeFrase(val.k, val.f),
       minimo: 4,
+      // Arrastra el marcador por el texto: la casilla aparece cuando lo sueltas en una frase que decide.
+      arrastres: [marcador(val => figura(CCOTA, AF[val.k].t), ['o1', 'o2', 'o3'])],
     },
     predice: {
       pregunta: 'El texto dice que al menos un ave de la reserva migra. ¿Qué pasa con la afirmación de la tarjeta?',
@@ -86,7 +114,7 @@
     },
     regla: {
       texto: 'Una afirmación es compatible si el texto la dice o se deduce de él; incompatible si la contradice, con sus palabras o deduciendo. Si no, no se sabe.',
-      ecuacion: [resp('dice | deduce'), ' · ', contra('contradice'), ' · ', nose('no se sabe')],
+      ecuacion: [{ llave: [resp('dice | deduce')], nota: 'compatible', color: 'c-i' }, '   ·   ', { llave: [contra('contradice')], nota: 'incompatible', color: 'c-h' }, '   ·   ', nose('no se sabe')],
       condicion: 'se compara sujeto, tiempo y cantidad (todos, algunos, ninguno); lo no mencionado no es incompatible.',
     },
     ahoraTu: {
@@ -128,10 +156,22 @@
     juega: {
       consigna: 'Prueba tres afirmaciones con el texto de la bicicleta. Mira si chocan con una frase o con la idea de todo el texto.',
       voz: 'La idea principal se lee en el conjunto.',
-      controles: [{ id: 'k', etiqueta: 'Afirmación', opciones: [{ valor: 'global', texto: 'A' }, { valor: 'frase', texto: 'B' }, { valor: 'nose', texto: 'C' }] }],
-      dibujo: val => ({ datos: figura(BICI, AF2[val.k].t), estado: { marcas: Object.assign({ a1: AF2[val.k].sello[1] === 'h' ? 'h' : 'o' }, AF2[val.k].marcas), sellos: { a: { t: AF2[val.k].sello[0], c: AF2[val.k].sello[1] } } } }),
-      lectura: val => [corto(AF2[val.k].sello[1] === 'h' ? contra : nose, AF2[val.k].dice)],
+      controles: [
+        { id: 'k', etiqueta: 'Afirmación', opciones: [{ valor: 'global', texto: 'A' }, { valor: 'frase', texto: 'B' }, { valor: 'nose', texto: 'C' }] },
+        { id: 'f', etiqueta: 'Oración', opciones: frases(3) },
+      ],
+      dibujo: val => {
+        const a = AF2[val.k], choca = a.marcas[val.f] === 'h';
+        return { datos: figura(BICI, a.t), estado: { marcas: { a1: a.sello[1] === 'h' ? 'h' : 'o', [val.f]: choca ? 'h' : 'd' }, sellos: { a: { t: a.sello[0], c: a.sello[1] } } } };
+      },
+      lectura: val => {
+        const a = AF2[val.k], n = val.f.slice(1), chocan = Object.keys(a.marcas).length;
+        if (a.marcas[val.f] !== 'h') return [nose(`No choca con la ${n}`), ` · choca con ${chocan} de 3`];
+        return [contra(`Choca con la ${n}`), ` · choca con ${chocan} de 3`];
+      },
       minimo: 3,
+      // Pasa el marcador por las tres oraciones: la afirmación global choca con todas; la de un detalle, con una.
+      arrastres: [marcador(val => figura(BICI, AF2[val.k].t), ['o1', 'o2', 'o3'], 'marcador de la oración')],
     },
     predice: {
       pregunta: '¿Qué afirmación es incompatible con la idea principal del texto sobre la lectura?',
@@ -154,7 +194,7 @@
     },
     regla: {
       texto: 'Una afirmación es incompatible con la idea principal si niega lo que sostiene el texto completo, no solo un detalle. Para verlo, primero se reconstruye la idea principal.',
-      ecuacion: [contra('afirmación'), ' ≠ ', resp('idea principal')],
+      ecuacion: [{ llave: [contra('afirmación')], nota: 'niega todo', color: 'c-h' }, ' ≠ ', { llave: [resp('idea principal')], nota: 'lo que sostiene', color: 'c-i' }],
       condicion: 'la afirmación habla del mismo asunto que la idea principal; si habla de otra cosa, no se puede saber.',
     },
     ahoraTu: {
@@ -177,9 +217,58 @@
     },
   };
 
+  // ---------- Laboratorio: la mesa de los cuantificadores ----------
+  // Lo que la idea 1 reserva para la predicción: «todas», «al menos una», «alguna no» y «ninguna», todas contra todas.
+  // La casilla la calcula el código (regla 1): se recorren los tres mundos posibles (migran todas, migran solo algunas,
+  // no migra ninguna) y se ve si la afirmación es verdadera en todos los mundos donde el texto lo es, en ninguno o en
+  // unos sí y otros no. Se supone que la reserva tiene aves (si no, «todas» y «ninguna» serían verdad a la vez).
+  const CUANT = [
+    { valor: 'todas', texto: 'Todas', frase: 'Todas las aves de la reserva migran.', mundos: ['todas'] },
+    { valor: 'alguna', texto: 'Al menos una', frase: 'Al menos un ave de la reserva migra.', mundos: ['todas', 'parte'] },
+    { valor: 'algunaNo', texto: 'Alguna no', frase: 'Al menos un ave de la reserva no migra.', mundos: ['parte', 'ninguna'] },
+    { valor: 'ninguna', texto: 'Ninguna', frase: 'Ninguna ave de la reserva migra.', mundos: ['ninguna'] },
+  ];
+  const MUNDOS = ['todas', 'parte', 'ninguna'];
+  function casillaCuant(tv, av) {
+    const T = CUANT.find(q => q.valor === tv), A = CUANT.find(q => q.valor === av);
+    const posibles = MUNDOS.filter(m => T.mundos.includes(m));
+    const si = posibles.filter(m => A.mundos.includes(m)).length;
+    if (tv === av) return 'dice';
+    if (si === posibles.length) return 'deduce';
+    if (si === 0) return 'contradice';
+    return 'nose';
+  }
+  const figCuant = () => ({ secciones: [
+    { id: 't', titulo: 'El texto dice una de estas', modo: 'lista', fragmentos: CUANT.map(q => ({ id: q.valor, t: q.frase })) },
+  ] });
+  const figCuantAf = av => ({ secciones: figCuant().secciones.concat([{ id: 'a', titulo: 'Afirmación', modo: 'tarjeta', fragmentos: [{ id: 'a1', t: CUANT.find(q => q.valor === av).frase }] }]) });
+  const mesaCuant = {
+    id: 'cuantificadores', titulo: 'Todas, alguna, ninguna', pieza: 'rv-texto',
+    consigna: 'Arrastra el marcador a lo que dice el texto y elige la afirmación. Mira en qué casilla cae cada par.',
+    voz: '«Al menos una» deja abierto si son todas.',
+    controles: [
+      { id: 't', etiqueta: 'Texto', opciones: CUANT.map(q => ({ valor: q.valor, texto: q.texto })) },
+      { id: 'a', etiqueta: 'Afirmación', opciones: CUANT.map(q => ({ valor: q.valor, texto: q.texto })) },
+    ],
+    dibujo: val => {
+      const c = CASILLA[casillaCuant(val.t, val.a)];
+      return { datos: figCuantAf(val.a), estado: { marcas: { [val.t]: 'i', a1: c[1] === 'h' ? 'h' : c[1] === 'd' ? 'd' : 'o' }, sellos: { a: { t: c[0], c: c[1] } } } };
+    },
+    lectura: val => {
+      const c = casillaCuant(val.t, val.a), fn = c === 'contradice' ? contra : c === 'nose' ? nose : resp;
+      const T = CUANT.find(q => q.valor === val.t), A = CUANT.find(q => q.valor === val.a);
+      return [resp(T.texto), ' → ', afir(A.texto), ': ', fn(CASILLA[c][0])];
+    },
+    arrastres: [{
+      id: 'texto', etiqueta: 'lo que dice el texto', color: 'c-i',
+      donde: val => RV().ancla(figCuantAf(val.a), val.t),
+      mover: (pt, val) => ({ t: RV().cercana(figCuantAf(val.a), pt, CUANT.map(q => q.valor)) }),
+    }],
+  };
+
   return {
     unidad: 'razonamiento-verbal.compatibilidad',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rv-texto.js'],
     historia: {
@@ -187,6 +276,11 @@
       pregunta: '¿«Alguno no» es lo contrario de «todos»?',
       fuente: { titulo: 'Matriz de teoría de razonamiento verbal (Aristóteles, Sobre la interpretación)', url: 'https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/inferencia.htm' },
     },
+    laboratorio: [
+      mesaCuant,
+      Object.assign({ id: 'casillas', titulo: 'Las cuatro casillas', pieza: 'rv-texto' }, casillas.juega),
+      Object.assign({ id: 'idea-principal', titulo: 'Contra la idea principal', pieza: 'rv-texto' }, ideaPrincipal.juega),
+    ],
     ideas: [casillas, ideaPrincipal],
   };
 });
