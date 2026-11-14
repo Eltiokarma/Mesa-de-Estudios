@@ -53,3 +53,38 @@ test('las fuentes están escritas', () => {
   assert.match(FUENTES.masico, /NUBASE2020/);
   assert.match(FUENTES.nombre, /modelo/);
 });
+
+test('energía de ionización (NIST): 108 valores, cada uno con su tipo, y nada del 109 al 118', () => {
+  const con = ELEMENTOS.filter(e => e.ei);
+  assert.equal(con.length, 108);
+  for (const e of con) {
+    assert.ok(['medido', 'calculado', 'extrapolado'].includes(e.ei.tipo), e.simbolo);
+    assert.equal(e.ei.kj, Math.round(e.ei.ev * 96.48533212));
+  }
+  for (let z = 109; z <= 118; z++) assert.equal(ELEMENTOS[z - 1].ei, undefined);
+  const noMedidos = con.filter(e => e.ei.tipo !== 'medido').map(e => e.simbolo);
+  assert.deepEqual(noMedidos, ['H', 'Pr', 'Pa', 'Fm', 'Md', 'Rf', 'Db', 'Sg', 'Bh', 'Hs']);
+  assert.equal(ELEMENTOS[102].ei.tipo, 'medido');   // el lawrencio, el último medido (Sato y otros 2015)
+});
+
+test('energía de ionización y electronegatividad iguales a las de atomo-y-tabla (Z = 1 a 36)', () => {
+  for (let z = 1; z <= 36; z++) {
+    const e = ELEMENTOS[z - 1];
+    assert.equal(e.ei.kj, Motor.EI[z], `EI de ${e.simbolo}`);
+    // Única diferencia: PubChem le da 3,0 al Kr en la escala de Pauling; atomo-y-tabla no le ponía valor.
+    if (z !== 36) assert.equal(e.en ?? null, Motor.EN[z] ?? null, `EN de ${e.simbolo}`);
+  }
+  assert.equal(ELEMENTOS[35].en, 3);
+});
+
+test('PubChem: sin las electronegatividades estimadas ni lo predicho de Z = 104 a 118', () => {
+  for (const s of ['Fr', 'Po', 'At', 'Am', 'Lr', 'He', 'Ne', 'Ar']) assert.equal(ELEMENTOS.find(e => e.simbolo === s).en, undefined, s);
+  for (let z = 104; z <= 118; z++) { assert.equal(ELEMENTOS[z - 1].estado, undefined); assert.equal(ELEMENTOS[z - 1].clase, undefined); }
+  const clases = new Set(ELEMENTOS.filter(e => e.clase).map(e => e.clase));
+  assert.equal(clases.size, 10);
+  assert.deepEqual(ELEMENTOS.filter(e => e.clase === 'semimetal').map(e => e.simbolo), ['B', 'Si', 'Ge', 'As', 'Sb', 'Te', 'Po']);
+  assert.deepEqual(ELEMENTOS.filter(e => e.estado === 'líquido').map(e => e.simbolo), ['Br', 'Hg']);
+  assert.equal(ELEMENTOS.filter(e => e.radio !== undefined).length, 99);
+  assert.match(FUENTES.en, /Pauling/);
+  assert.match(FUENTES.radio, /van der Waals/);
+});

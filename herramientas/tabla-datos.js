@@ -4,10 +4,14 @@
  *
  *   node herramientas/tabla-datos.js <carpeta>
  *
- * <carpeta> trae tres páginas bajadas tal cual (no se versionan: son de la CIAAW):
+ * <carpeta> trae cinco archivos bajados tal cual (no se versionan):
  *   atomic-weights.htm            https://www.ciaaw.org/atomic-weights.htm            (Standard Atomic Weights 2024)
  *   abridged-atomic-weights.htm   https://www.ciaaw.org/abridged-atomic-weights.htm   (Abridged Standard Atomic Weights 2024)
  *   radioactive-elements.htm      https://www.ciaaw.org/radioactive-elements.htm      (isótopos más estables, NUBASE2020)
+ *   nist-ie.txt                   https://physics.nist.gov/cgi-bin/ASD/ie.pl?spectra=H-Og&units=1&format=2&order=0&at_num_out=on
+ *                                 &sp_name_out=on&ion_charge_out=on&el_name_out=on&seq_out=on&shells_out=on&level_out=on
+ *                                 &ion_conf_out=on&e_out=0&unc_out=on&biblio=on
+ *   pubchem.json                  https://pubchem.ncbi.nlm.nih.gov/rest/pug/periodictable/JSON
  *
  * Lo que sale de cada fuente (decisión 9 de docs/pendientes.md: nada se estima):
  *   - Z, símbolo y nombre en inglés: tabla de la CIAAW (la misma de la IUPAC).
@@ -68,6 +72,53 @@ function filas(t, finDeFila) {
 function notas(s) { const m = s.match(/((?:\s[gmr])+)\s*$/); return m ? m[1].trim().split(/\s+/) : []; }
 function sinNotas(s) { return s.replace(/((?:\s[gmr])+)\s*$/, '').trim(); }
 
+// NIST ASD, Ionization Energies (formato CSV, format=2): solo el átomo neutro. Prefijo «(»: valor teórico; «[»:
+// interpolado o extrapolado por un método semiempírico; sin prefijo: medido (notas de NIST ASD).
+const EV_A_KJMOL = 96.48533212;   // e·NA en kJ/(mol·eV), CODATA 2018
+function leerNist(archivo) {
+  const ei = {};
+  const lineas = fs.readFileSync(archivo, 'utf8').split(/\r?\n/).slice(1);
+  for (const l of lineas) {
+    // Cada campo va como "=""…""" y puede traer comas adentro (el nivel del ion: «(9/2,1/2)»).
+    const c = [...l.matchAll(/"=""(.*?)"""/g)].map(m => m[1]);
+    if (c.length < 13 || c[2] !== '0') continue;
+    const Z = Number(c[0]), ev = Number(c[9]);
+    if (!Number.isFinite(ev)) continue;
+    const tipo = c[8] === '(' ? 'calculado' : c[8] === '[' ? 'extrapolado' : 'medido';
+    ei[Z] = { ev, kj: Math.round(ev * EV_A_KJMOL), tipo, inc: c[11], ref: c[12] };
+  }
+  return ei;
+}
+
+// PubChem, Periodic Table (https://pubchem.ncbi.nlm.nih.gov/rest/pug/periodictable/JSON). Es una compilación: no da
+// la fuente de cada valor. Lo que se sabe estimado o predicho NO entra (decisión 9):
+//   - Electronegatividad: PubChem da 1,3 a todos los actínidos de Am a Lr (la estimación de Pauling), y Fr, Po y At
+//     tampoco tienen valor termoquímico: quedan sin dato. Juicio de un modelo, por verificar con Allred (1961).
+//   - Estado y clase de Z = 104 a 118: PubChem los predice («Expected to be…» o por la posición): sin dato.
+const EN_ESTIMADA = new Set([84, 85, 87, 95, 96, 97, 98, 99, 100, 101, 102, 103]);
+const CLASE = { 'Alkali metal': 'alcalino', 'Alkaline earth metal': 'alcalinotérreo', 'Transition metal': 'de transición',
+  'Post-transition metal': 'metal del bloque p', 'Lanthanide': 'lantánido', 'Actinide': 'actínido', 'Metalloid': 'semimetal',
+  'Nonmetal': 'no metal', 'Halogen': 'halógeno', 'Noble gas': 'gas noble' };
+const ESTADO = { Gas: 'gas', Liquid: 'líquido', Solid: 'sólido' };
+function leerPubchem(archivo) {
+  const t = JSON.parse(fs.readFileSync(archivo, 'utf8')).Table;
+  const col = t.Columns.Column;
+  const r = {};
+  for (const fila of t.Row) {
+    const d = Object.fromEntries(col.map((k, i) => [k, fila.Cell[i]]));
+    const Z = Number(d.AtomicNumber), x = {};
+    if (d.Electronegativity !== '' && !EN_ESTIMADA.has(Z)) x.en = Number(d.Electronegativity);
+    if (d.AtomicRadius !== '') x.radio = Number(d.AtomicRadius);
+    if (Z < 104 && ESTADO[d.StandardState]) x.estado = ESTADO[d.StandardState];
+    if (Z < 104) {
+      if (!CLASE[d.GroupBlock]) throw new Error(`clase desconocida en PubChem: ${d.GroupBlock}`);
+      x.clase = CLASE[d.GroupBlock];
+    }
+    r[Z] = { simbolo: d.Symbol, ...x };
+  }
+  return r;
+}
+
 function leer(carpeta) {
   const completo = filas(texto(path.join(carpeta, 'atomic-weights.htm')), ' Z Symbol');
   const abreviado = filas(texto(path.join(carpeta, 'abridged-atomic-weights.htm')), ' Z Symbol');
@@ -83,6 +134,8 @@ function leer(carpeta) {
     masicos[Number(m[1])] = [...m[4].matchAll(/(\d{2,3}) (?:approx\. )?[\d.]+(?:\([\d.]+\))? (?:Ma|ka|a|d|h|min|ms|s)/g)].map(x => Number(x[1]));
   }
 
+  const nist = leerNist(path.join(carpeta, 'nist-ie.txt'));
+  const pub = leerPubchem(path.join(carpeta, 'pubchem.json'));
   return completo.map((c, i) => {
     const a = abreviado[i];
     if (a.simbolo !== c.simbolo) throw new Error(`Z = ${c.Z}: ${a.simbolo} contra ${c.simbolo}`);
@@ -102,6 +155,10 @@ function leer(carpeta) {
       const n = notas(c.resto);
       if (n.length) e.notas = n;
     }
+    if (nist[c.Z]) e.ei = nist[c.Z];
+    const pc = pub[c.Z];
+    if (pc.simbolo !== c.simbolo) throw new Error(`PubChem, Z = ${c.Z}: ${pc.simbolo}`);
+    for (const k of ['en', 'radio', 'estado', 'clase']) if (pc[k] !== undefined) e[k] = pc[k];
     return e;
   });
 }
@@ -119,6 +176,11 @@ function escribir(datos, destino) {
  *     (NUBASE2020, compilado por la CIAAW en radioactive-elements.htm). Varios si la CIAAW no los distingue.
  *     No es un peso atómico: se muestra entre corchetes y con su rótulo.
  *   - \`nombre\` y \`otros\` en español: transcritos por un modelo, POR VERIFICAR con la nomenclatura de la RSEQ.
+ *   - \`ei\`: primera energía de ionización del átomo neutro, NIST Atomic Spectra Database (Ionization Energies), en eV
+ *     y en kJ/mol (× 96,485 33). \`tipo\`: medido, calculado (entre paréntesis en NIST) o extrapolado (entre corchetes).
+ *   - \`en\` (escala de Pauling), \`radio\` (de van der Waals, en pm), \`estado\` a 25 °C y \`clase\`: PubChem, Periodic
+ *     Table. Es una compilación sin fuente por valor: POR VERIFICAR. Sin las electronegatividades estimadas (Fr, Po,
+ *     At, Am a Lr) ni el estado y la clase predichos de Z = 104 a 118.
  * Ninguna propiedad se estima (decisión 9): lo que no está aquí no existe para la tabla.
  */
 (function (root, fabrica) {
@@ -134,7 +196,12 @@ ${lineas.join(',\n')}
   const FUENTES = Object.freeze({
     peso: 'CIAAW, Standard Atomic Weights 2024 (abreviado)',
     masico: 'NUBASE2020 (Kondev y otros, Chinese Physics C 45, 030001), compilado por la CIAAW',
-    nombre: 'Transcrito por modelo; por verificar con la RSEQ'
+    nombre: 'Transcrito por modelo; por verificar con la RSEQ',
+    ei: 'NIST Atomic Spectra Database, Ionization Energies',
+    en: 'PubChem (compilación), escala de Pauling; por verificar',
+    radio: 'PubChem (compilación), radio de van der Waals; por verificar',
+    estado: 'PubChem (compilación); por verificar',
+    clase: 'PubChem (compilación); los semimetales no tienen una lista oficial de la IUPAC'
   });
   return Object.freeze({ ELEMENTOS: Object.freeze(ELEMENTOS), FUENTES });
 });
