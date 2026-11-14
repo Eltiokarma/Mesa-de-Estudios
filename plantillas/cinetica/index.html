@@ -168,6 +168,10 @@ sup{font-size:.72em; line-height:0}
 input[type=range]{width:100%; accent-color:var(--ink); min-height:28px}
 .botones{display:flex; flex-wrap:wrap; gap:6px}
 .botones .btn{padding:9px 14px; min-width:64px}
+.juego{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.juego[hidden]{display:none}
+.juego .seg{border-radius:16px}
+.juego .seg button{min-height:44px}
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:999px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
 .seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
@@ -220,6 +224,10 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
     <section class="bench" aria-label="Caja con porciones de A, B y C, contadores de choques y gráficas">
       <div class="lienzo"><canvas id="cv" role="img" aria-label="Una caja con porciones de A (círculos con una marca), de B (cuadrados) y de C (A y B unidos); al lado, contadores de choques, un histograma de energía, una gráfica en el tiempo y un perfil de energía"></canvas></div>
       <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="juego" id="juego1">
+        <div class="seg" role="group" aria-label="Qué se pone al tocar la caja"><button type="button" data-pon="A" aria-pressed="true">Poner A</button><button type="button" data-pon="B" aria-pressed="false">Poner B</button></div>
+        <div class="seg" role="group" aria-label="Caja"><button type="button" data-pon="vaciar">Vaciar la caja</button></div>
+      </div>
       <div class="legend" id="ley1"></div>
       <div class="pelicula" id="vel1"></div>
     </section>
@@ -243,6 +251,10 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
       <div class="lienzo" id="lz2"><canvas id="cv2" role="img" aria-label="Una caja con porciones de A, B y C y, al responder, contadores de choques, un histograma de energía y una gráfica en el tiempo"></canvas></div>
       <div class="lienzo" id="lz3" hidden><canvas id="cv3" role="img" aria-label="Datos de otra reacción: barras o una gráfica de concentración contra tiempo"></canvas></div>
       <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="juego" id="juego2">
+        <div class="seg" role="group" aria-label="Qué se pone al tocar la caja"><button type="button" data-pon="A" aria-pressed="true">Poner A</button><button type="button" data-pon="B" aria-pressed="false">Poner B</button></div>
+        <div class="seg" role="group" aria-label="Caja"><button type="button" data-pon="vaciar">Vaciar la caja</button></div>
+      </div>
       <div class="legend" id="ley2"></div>
       <div class="pelicula" id="vel2"></div>
     </section>
@@ -259,8 +271,15 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
   <!-- ===== MODO 3: mecanismos (0.3.0) ===== -->
   <div id="m3" class="mode" hidden>
     <section class="bench" aria-label="Etapas de un mecanismo, perfil de energía de dos etapas y curva de concentración">
-      <div class="lienzo" id="lz4"><canvas id="cv4" role="img" aria-label="Fichas con las etapas de un mecanismo, un perfil de energía con dos lomas o una curva de concentración contra el tiempo, según el paso"></canvas></div>
+      <div class="lienzo" id="lzJ3"><canvas id="cvJ3" role="img" aria-label="Una caja vacía donde se ponen porciones de A (círculos con una marca) y de B (cuadrados)"></canvas></div>
+      <div class="lienzo" id="lz4" hidden><canvas id="cv4" role="img" aria-label="Fichas con las etapas de un mecanismo, un perfil de energía con dos lomas o una curva de concentración contra el tiempo, según el paso"></canvas></div>
       <p class="sr" id="desc3" aria-live="polite"></p>
+      <p class="sr" id="descJ3" aria-live="polite"></p>
+      <div class="juego" id="juego3">
+        <div class="seg" role="group" aria-label="Qué se pone al tocar la caja"><button type="button" data-pon="A" aria-pressed="true">Poner A</button><button type="button" data-pon="B" aria-pressed="false">Poner B</button></div>
+        <div class="seg" role="group" aria-label="Caja"><button type="button" data-pon="vaciar">Vaciar la caja</button></div>
+        <div class="legend" id="leyJ3"></div><div class="pelicula" id="velJ3" hidden></div>
+      </div>
       <div class="legend" id="ley3"></div>
     </section>
     <section class="guide">
@@ -291,6 +310,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script src="../../nucleo/convencion.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
@@ -504,6 +524,7 @@ function crearEscena(cv, idDesc, modoId, idLey, idVel){
     if (w !== W || h !== H){ W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); ctx.setTransform(dpr,0,0,dpr,0,0); }
   };
   new ResizeObserver(() => { E.resize(); E.dibujar(); }).observe(cv);
+  E.rectCaja = () => Lz && Lz.box;
 
   function ecuacion(c, p){
     const s = E.sim, v = E.vista; let x = p.x;
@@ -832,6 +853,41 @@ function gradual(E, dur, paso, fin){
   if (E.B) E.B.despertar();
 }
 function marcarBase(E){ E.base = { ...E.sim.cuenta }; }
+/* Regla 3 (decisión 20): antes de cualquier pregunta se juega a llenar la caja: se ponen porciones de A y de B
+   tocando la caja (donde se toca), con los botones o con las flechas. La caja queda detenida y sin contadores,
+   histograma, gráfica ni perfil: lo que después se pregunta es cómo cambia la rapidez con el tiempo, la cantidad, la
+   temperatura, el catalizador o la barrera, y eso el juego no lo muestra. */
+function jugarCaja(E, cv, idJuego, preguntas, volver){
+  const caja = document.getElementById(idJuego), J = { on:true, tipo:'A' }, TOPE = 40;
+  const vista = { congelada:true, cont:false, hist:false, graf:null, perfil:false, phPerfil:'', termo:false, destellos:'eficaz', aviso:'caja detenida',
+    phCont:'Los contadores aparecen después', phHist:'El histograma aparece después', phGraf:'La gráfica aparece después' };
+  const vaciar = () => { E.anima = null; E.oculta = false; E.casa = new WeakMap(); E.marcas = []; E.sim = MC.caja({ ...BASE, nA:0, nB:0, semilla:5 }); E.vista = vista; marcarBase(E); E.dibujar(); E.describir(true); };
+  function poner(t, x, y){
+    if (!J.on || E.sim.contar()[t] >= TOPE) return;
+    E.sim.agregar(t, 1);
+    const p = E.sim.parts[E.sim.parts.length - 1];
+    p.x = x === undefined ? 0.06 + Math.random()*0.88 : clamp(x, 0.04, 0.96); p.y = y === undefined ? 0.06 + Math.random()*0.88 : clamp(y, 0.04, 0.96);
+    if (RM) E.casa.set(p, { x:p.x, y:p.y, a:p.ang });
+    marcarBase(E); E.dibujar(); E.describir(true);
+  }
+  const elegir = t => { J.tipo = t; caja.querySelectorAll('[aria-pressed]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.pon === t))); };
+  caja.querySelectorAll('[data-pon]').forEach(b => b.addEventListener('click', () => {
+    if (!J.on) return;
+    if (b.dataset.pon === 'vaciar') vaciar(); else { elegir(b.dataset.pon); poner(b.dataset.pon); }
+  }));
+  cv.tabIndex = 0;
+  cv.addEventListener('click', e => {
+    const r = E.rectCaja(); if (!J.on || !r) return;
+    const bb = cv.getBoundingClientRect(), x = e.clientX - bb.left, y = e.clientY - bb.top;
+    if (x < r.x || x > r.x + r.s || y < r.y || y > r.y + r.s) return;
+    poner(J.tipo, (x - r.x)/r.s, (y - r.y)/r.s);
+  });
+  cv.addEventListener('keydown', e => { const t = { ArrowLeft:'A', ArrowRight:'B' }[e.key]; if (J.on && t){ e.preventDefault(); elegir(t); poner(t); } });
+  vaciar();
+  return JugarPrimero.montar({ escena: cv.closest('.bench'), preguntas, minimo: 2,
+    consigna: 'Toca la caja para poner porciones de A y de B.',
+    alListo: () => { J.on = false; caja.hidden = true; cv.removeAttribute('tabindex'); volver(); } });
+}
 const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}" aria-label="Opción ${'abcd'.indexOf(k) + 1}: ${t}"><span class="l">${'abcd'.indexOf(k) + 1}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
 const otraVez = `<button type="button" class="btn" data-repetir>Ver de nuevo</button>`;
 </script>
@@ -1069,6 +1125,7 @@ $('prev').addEventListener('click', () => go(S.step - 1));
 alRedibujarTema(() => E.dibujar());
 addEventListener('modo', () => { E.resize(); E.dibujar(); if (S.step === 8) explorar(); });
 go(0);
+jugarCaja(E, $('cv'), 'juego1', [...document.querySelectorAll('#m1 .guide > *')], () => go(0));
 })();
 </script>
 
@@ -1443,6 +1500,7 @@ function ir(k){
 alRedibujarTema(() => E.dibujar());
 addEventListener('modo', () => { if (!E.oculta) E.resize(); E.dibujar(); D.dibujar(); });
 ir(0);
+jugarCaja(E, $('cv2'), 'juego2', [...document.querySelectorAll('#m2 .guide > *')], () => ir(0));
 })();
 </script>
 
@@ -1892,6 +1950,13 @@ $('next3').addEventListener('click', () => { if (S.max < S.step + 1) S.max = S.s
 $('prev3').addEventListener('click', () => go(S.step - 1));
 addEventListener('modo', () => { if (!modo.hidden){ W = 0; D3.dibujar(); } });
 go(0);
+// Antes de las preguntas de mecanismos, la misma caja de juego en un lienzo aparte; al terminar, vuelven las fichas.
+const EJ = crearEscena($('cvJ3'), 'descJ3', 'm3', 'leyJ3', 'velJ3');
+$('ley3').hidden = true;
+jugarCaja(EJ, $('cvJ3'), 'juego3', [...document.querySelectorAll('#m3 .guide > *')], () => {
+  EJ.oculta = true; $('lzJ3').hidden = true; $('leyJ3').hidden = true; $('ley3').hidden = false; $('lz4').hidden = false;
+  W = 0; go(0);
+});
 })();
 </script>
 
