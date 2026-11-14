@@ -43,6 +43,12 @@
     return ops;
   }
 
+  // Gesto directo (docs/teoria.md §4): la manija vive en las coordenadas de la figura; mover la convierte en valores
+  // con la inversa lineal de la escala de la pieza, y el lector los ajusta al paso y al rango de su control.
+  const inversa = (escala, a, b) => px => a + (px - escala(a)) * (b - a) / (escala(b) - escala(a));
+  const PISTA = () => Kit.piezas.pista, EJES = () => Kit.piezas.ejes;
+  const MARCA_Y = 56;   // las marcas de la pista van 6 px bajo el piso del primer carril (pista.js)
+
   // ---------- Idea 1: marcas iguales, rapidez constante (MRU) ----------
   const LARGO = 40;
   const marcasMRU = (xi, vi, n = 5) => Array.from({ length: n + 1 }, (_, k) => xi + vi * k).filter(m => m <= LARGO);
@@ -65,6 +71,15 @@
       dibujo: val => pistaMRU(val.x0, val.v),
       lectura: val => [v, ` = ${f(val.v)} m/s · marcas cada ${f(val.v)} m`],
       minimo: 3,
+      // Arrastra la primera marca (de dónde sale) o la de los 5 s (qué tan rápido va).
+      arrastres: [
+        { id: 'salida', etiqueta: 'punto de salida', color: 'c-i',
+          donde: val => ({ x: PISTA().escala(pistaMRU(val.x0, val.v).datos, val.x0), y: MARCA_Y }),
+          mover: (pt, val) => ({ x0: inversa(m => PISTA().escala(pistaMRU(val.x0, val.v).datos, m), 0, LARGO)(pt.x) }) },
+        { id: 'marca-5', etiqueta: 'marca de los 5 segundos', color: 'c-o',
+          donde: val => ({ x: PISTA().escala(pistaMRU(val.x0, val.v).datos, val.x0 + 5 * val.v), y: MARCA_Y }),
+          mover: (pt, val) => ({ v: (inversa(m => PISTA().escala(pistaMRU(val.x0, val.v).datos, m), 0, LARGO)(pt.x) - val.x0) / 5 }) },
+      ],
     },
     predice: {
       pregunta: ['Un carrito sale de ', x, ' = 2 m con ', v, ' = 4 m/s. ¿Dónde queda su marca de ', t, ' = 5 s?'],
@@ -98,7 +113,7 @@
     },
     regla: {
       texto: 'Con velocidad constante, la posición cambia lo mismo cada segundo: la gráfica x–t es una recta y su pendiente es v.',
-      ecuacion: [x, ' = ', x0, ' + ', v, ' · ', t],
+      ecuacion: [x, ' = ', { llave: [x0], nota: 'dónde empezó', color: 'c-i' }, ' + ', { llave: [v, ' · ', t], nota: 'lo que avanzó', color: 'c-o' }],
       condicion: 'la velocidad no cambia en todo el tramo y t se cuenta desde que el carrito estaba en x₀.',
     },
     ahoraTu: {
@@ -153,6 +168,15 @@
       dibujo: val => ({ datos: idaVuelta(4, 3, val.v2, val.t2), estado: {} }),
       lectura: val => [`Avanza 12 m · retrocede ${f(val.v2 * val.t2)} m`],
       minimo: 3,
+      // Arrastra el tramo de abajo hacia arriba o abajo (qué tan rápido retrocede) y su borde derecho (cuánto tiempo).
+      arrastres: [
+        { id: 'retroceso', etiqueta: 'rapidez de retroceso', color: 'c-o',
+          donde: val => { const g = EJES().geometria(idaVuelta(4, 3, val.v2, val.t2)); return { x: g.X(3 + val.t2 / 2), y: g.Y(-val.v2) }; },
+          mover: (pt, val) => { const g = EJES().geometria(idaVuelta(4, 3, val.v2, val.t2)); return { v2: -inversa(g.Y, -6, 6)(pt.y) }; } },
+        { id: 'duracion', etiqueta: 'fin del retroceso', color: 'c-h',
+          donde: val => { const g = EJES().geometria(idaVuelta(4, 3, val.v2, val.t2)); return { x: g.X(3 + val.t2), y: g.Y(-val.v2) }; },
+          mover: (pt, val) => { const g = EJES().geometria(idaVuelta(4, 3, val.v2, val.t2)); return { t2: inversa(g.X, 0, 6)(pt.x) - 3 }; } },
+      ],
     },
     predice: {
       pregunta: 'Un carrito avanza 12 m en 3 s y regresa los mismos 12 m en otros 3 s. ¿Cuál es su velocidad media en los 6 s?',
@@ -178,7 +202,7 @@
     },
     regla: {
       texto: 'En la gráfica v–t, el área sobre el eje suma y la de abajo resta: eso es el desplazamiento. La distancia suma ambas.',
-      ecuacion: [dx, ' = ', { sub: ['A', '+'] }, ' − ', { sub: ['A', '−'] }, '   ·   d = ', { sub: ['A', '+'] }, ' + ', { sub: ['A', '−'] }],
+      ecuacion: [dx, ' = ', { llave: [{ sub: ['A', '+'] }], nota: 'sobre el eje', color: 'c-i' }, ' − ', { llave: [{ sub: ['A', '−'] }], nota: 'bajo el eje', color: 'c-i' }, '   ·   ', 'd = ', { sub: ['A', '+'] }, ' + ', { sub: ['A', '−'] }],
       condicion: 'se separa el área en cada cambio de sentido. Velocidad media = Δx/Δt; rapidez media = d/Δt.',
     },
     ahoraTu: {
@@ -231,6 +255,15 @@
       },
       lectura: val => [v, ` cambia ${val.a > 0 ? '+' : val.a < 0 ? '−' : ''}${f(Math.abs(val.a))} m/s cada segundo`],
       minimo: 3,
+      // Arrastra el punto de partida (v₀) o el punto de t = 1 s, que inclina la recta (a).
+      arrastres: [
+        { id: 'inicio', etiqueta: 'velocidad inicial', color: 'c-o',
+          donde: val => { const g = EJES().geometria(rectaVT(val.v0, val.a, 4)); return { x: g.X(0), y: g.Y(val.v0) }; },
+          mover: (pt, val) => { const g = EJES().geometria(rectaVT(val.v0, val.a, 4)); return { v0: inversa(g.Y, 0, 16)(pt.y) }; } },
+        { id: 'pendiente', etiqueta: 'inclinación de la recta', color: 'c-d',
+          donde: val => { const g = EJES().geometria(rectaVT(val.v0, val.a, 4)); return { x: g.X(1), y: g.Y(val.v0 + val.a) }; },
+          mover: (pt, val) => { const g = EJES().geometria(rectaVT(val.v0, val.a, 4)); return { a: inversa(g.Y, 0, 16)(pt.y) - val.v0 }; } },
+      ],
     },
     predice: {
       pregunta: 'Un carrito avanza hacia la derecha y frena: pasa de 8 m/s a 2 m/s en 3 s. ¿Hacia dónde apunta su aceleración?',
@@ -258,7 +291,7 @@
     },
     regla: {
       texto: 'Con aceleración constante, la gráfica v–t es una recta: su pendiente es la aceleración y su área, el desplazamiento.',
-      ecuacion: [v, ' = ', v0, ' + ', a, ' · ', t, '   ·   ', x, ' = ', x0, ' + ', v0, t, ' + ½ ', a, { sup: [t, '2'] }],
+      ecuacion: [v, ' = ', { llave: [v0], nota: 'al empezar', color: 'c-o' }, ' + ', { llave: [a, ' · ', t], nota: 'lo que cambió', color: 'c-d' }, '   ·   ', x, ' = ', x0, ' + ', v0, t, ' + ½ ', a, { sup: [t, '2'] }],
       condicion: 'la aceleración no cambia en el tramo. Frenar mientras se avanza da a con signo contrario a v.',
     },
     ahoraTu: {
@@ -490,6 +523,27 @@
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/pista.js', '/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/torre.js'],
+    // Laboratorio: juego libre, sin preguntas. La pista con acelerador junta MRU y MRUV; las otras dos son los juegos
+    // de las ideas con su gesto directo.
+    laboratorio: [
+      {
+        id: 'pista-libre', titulo: 'Pista con acelerador', pieza: 'pista',
+        consigna: 'Elige la velocidad de salida y la aceleración. Mira cómo se abren o se cierran las marcas de cada segundo.',
+        controles: [
+          { id: 'v0', etiqueta: 'v₀', color: 'c-o', min: 0, max: 6, paso: 1, inicio: 2, unidad: 'm/s', decimales: 0 },
+          { id: 'a', etiqueta: 'a', color: 'c-d', min: -2, max: 2, paso: 1, inicio: 1, unidad: 'm/s²', decimales: 0 },
+        ],
+        dibujo: val => {
+          // Frena hasta detenerse, sin retroceder: después de parar, las marcas se quedan en el mismo sitio.
+          const alto = val.a < 0 ? val.v0 / -val.a : Infinity;
+          const ms = [0, 1, 2, 3, 4, 5].map(k => { const tk = Math.min(k, alto); return val.v0 * tk + val.a * tk * tk / 2; });
+          return { datos: { largo: 60, cada: 10, carriles: [{ x: ms[ms.length - 1], marcas: ms, flecha: val.a ? { a: val.a } : undefined }] }, estado: {} };
+        },
+        lectura: val => [v0, ` = ${f(val.v0)} m/s · `, a, ` = ${f(val.a)} m/s²`],
+      },
+      Object.assign({ id: 'ida-vuelta', titulo: 'Ida y vuelta en v–t', pieza: 'ejes' }, distancia.juega),
+      Object.assign({ id: 'recta-vt', titulo: 'La recta v–t', pieza: 'ejes' }, mruv.juega),
+    ],
     historia: {
       texto: 'Una caída es demasiado rápida para medirla con relojes de agua. En el siglo XVII, Galileo usó planos inclinados para frenar el movimiento y comparar distancias con tiempos iguales. Nuestras gráficas y ecuaciones son la forma moderna de escribir esas comparaciones.',
       pregunta: '¿Cómo medirías algo que pasa demasiado rápido?',
