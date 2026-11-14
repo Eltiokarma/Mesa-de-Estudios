@@ -413,7 +413,7 @@
     },
     regla: {
       texto: 'En (a + b + c)ⁿ, el coeficiente de aⁱbʲcᵏ cuenta los órdenes de las letras: n! entre el factorial de cada exponente.',
-      ecuacion: [{ llave: [{ frac: ['n!', 'i! · j! · k!'] }], nota: 'órdenes distintos', color: 'c-d' }, '   ·   i + j + k = n'],
+      ecuacion: [{ llave: [{ frac: ['n!', 'i! · j! · k!'] }], nota: 'órdenes distintos', color: 'c-d' }, '   ·   ', 'i + j + k = n'],
       condicion: 'i, j y k son enteros no negativos que suman n. Si una letra lleva un número delante, también se eleva.',
     },
     ahoraTu: {

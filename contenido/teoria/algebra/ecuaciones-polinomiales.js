@@ -187,7 +187,7 @@
             { id: 'todas', texto: f(grado), error: 'TAL-SOLO-REAL', siFuera: `Eso es el grado; x² + ${cc} = 0 no tiene raíces reales.` },
             { id: 'cuatro', texto: '4', error: 'TAL-SOLO-REAL', siFuera: `Las raíces de x² + ${cc} = 0 son ±${Math.sqrt(cc)}i: no son reales.` },
           ]),
-          solucion: { texto: `Las reales son ${a} y −${bq}; x² + ${cc} solo da raíces no reales.`, ecuacion: [x, ` = ${a}   ·   `, x, ` = −${bq}`] },
+          solucion: { texto: `Las reales son ${a} y −${bq}; x² + ${cc} solo da raíces no reales.`, ecuacion: [x, ` = ${a}`, '   ·   ', x, ` = −${bq}`] },
         };
         return {
           pregunta: [...preg, '¿cuántas raíces no reales hay?'],
@@ -245,7 +245,7 @@
         { id: 'r3', etiqueta: 'r₃', color: 'c-d', min: -3, max: 3, paso: 1, inicio: -1, decimales: 0 },
       ],
       dibujo: v => ({ datos: graficaRaices([v.r1, v.r2, v.r3]), estado: {} }),
-      lectura: v => { const V = vieteFila([v.r1, v.r2, v.r3]); return [`suma ${f(V.S1)}   ·   de a dos ${f(V.S2)}   ·   producto ${f(V.S3)}`]; },
+      lectura: v => { const V = vieteFila([v.r1, v.r2, v.r3]); return [`suma ${f(V.S1)}`, '   ·   ', `de a dos ${f(V.S2)}`, '   ·   ', `producto ${f(V.S3)}`]; },
       arrastres: manijasRaices(v => graficaRaices([v.r1, v.r2, v.r3])),
       minimo: 3,
     },
@@ -275,8 +275,8 @@
         { estado: { corte: 1 }, texto: 'Partimos de tres raíces conocidas: 1, 2 y 3.', ecuacion: ['(', x, ' − 1)(', x, ' − 2)(', x, ' − 3)'] },
         { estado: { corte: 2 }, texto: 'Desarrollado, da un polinomio con a = 1.', ecuacion: poli([1, -6, 11, -6]) },
         { estado: { corte: 3 }, texto: 'El 6 de b es la suma de las raíces, con signo cambiado.', ecuacion: ['1 + 2 + 3 = 6 = −b'] },
-        { estado: { corte: 4 }, texto: 'c suma los productos de a dos; −d es el producto.', ecuacion: ['2 + 3 + 6 = 11   ·   1 · 2 · 3 = 6'] },
-        { estado: { corte: 5 }, texto: 'Si todo se multiplica por 2, las raíces no cambian: se divide entre a.', ecuacion: [{ frac: ['12', '2'] }, ' = 6   ·   ', { frac: ['22', '2'] }, ' = 11'] },
+        { estado: { corte: 4 }, texto: 'c suma los productos de a dos; −d es el producto.', ecuacion: ['2 + 3 + 6 = 11', '   ·   ', '1 · 2 · 3 = 6'] },
+        { estado: { corte: 5 }, texto: 'Si todo se multiplica por 2, las raíces no cambian: se divide entre a.', ecuacion: [{ frac: ['12', '2'] }, ' = 6', '   ·   ', { frac: ['22', '2'] }, ' = 11'] },
       ],
     },
     regla: {
@@ -377,15 +377,15 @@
         pie: '', alt: 'Candidatas ±1, ±2, ±1/2 de 2x³ − 3x² − 3x + 2: son raíces −1, 2 y 1/2',
       },
       pasos: [
-        { estado: { corte: 1 }, texto: 'p divide al término independiente 2; q, al coeficiente principal 2.', ecuacion: ['p ∈ {1, 2}   ·   q ∈ {1, 2}'] },
-        { estado: { corte: 2 }, texto: 'Se prueban las enteras: −1 y 2 dan cero.', ecuacion: ['P(−1) = 0   ·   P(2) = 0'] },
+        { estado: { corte: 1 }, texto: 'p divide al término independiente 2; q, al coeficiente principal 2.', ecuacion: ['p ∈ {1, 2}', '   ·   ', 'q ∈ {1, 2}'] },
+        { estado: { corte: 2 }, texto: 'Se prueban las enteras: −1 y 2 dan cero.', ecuacion: ['P(−1) = 0', '   ·   ', 'P(2) = 0'] },
         { estado: { corte: 3 }, texto: 'Se prueban las fracciones: 1/2 también da cero.', ecuacion: ['P(1/2) = 2/8 − 3/4 − 3/2 + 2 = 0'] },
         { estado: { corte: 3 }, texto: 'Tres raíces para un polinomio de grado 3: no hay más.', ecuacion: ['P(', x, ') = (', x, ' + 1)(', x, ' − 2)(2', x, ' − 1)'] },
       ],
     },
     regla: {
       texto: 'Si p/q, reducida, es raíz de un polinomio de coeficientes enteros, p divide al término independiente y q divide al coeficiente principal.',
-      ecuacion: [{ frac: ['p', 'q'] }, ':  p | ', { llave: [{ sub: ['a', '0'] }], nota: 'el independiente' }, '   ·   q | ', { llave: [{ sub: ['a', 'n'] }], nota: 'el principal' }],
+      ecuacion: [{ frac: ['p', 'q'] }, ':  p | ', { llave: [{ sub: ['a', '0'] }], nota: 'el independiente' }, '   ·   ', 'q | ', { llave: [{ sub: ['a', 'n'] }], nota: 'el principal' }],
       condicion: 'coeficientes enteros. La lista da candidatas, no raíces: cada una se comprueba en el polinomio.',
     },
     ahoraTu: {
@@ -417,7 +417,7 @@
         return {
           pregunta: ['Por el criterio p/q, ¿cuál NO puede ser raíz racional de ', ...poli(coefs), ' = 0?'],
           opciones: distintas([{ id: 'c', texto: fr(...imposible), correcta: true }, ...dist.map(([pp, qq], i) => ({ id: `d${i}`, texto: fr(pp, qq), error: 'TAL-PQ-INVERTIDO', siFuera: `${fr(pp, qq)} sí puede: ${Math.abs(pp)} divide a ${f(Math.abs(a0))} y ${qq} divide a ${f(an)}.` }))]),
-          solucion: { texto: `p debe dividir a ${f(Math.abs(a0))} y q a ${f(an)}; ${fr(...imposible)} no cumple.`, ecuacion: [`p | ${f(Math.abs(a0))}   ·   q | ${f(an)}`] },
+          solucion: { texto: `p debe dividir a ${f(Math.abs(a0))} y q a ${f(an)}; ${fr(...imposible)} no cumple.`, ecuacion: [`p | ${f(Math.abs(a0))}`, '   ·   ', `q | ${f(an)}`] },
         };
       },
     },
@@ -483,9 +483,9 @@
       }),
       pasos: [
         { estado: { corte: 1 }, texto: 'Si 2 + 3i es raíz, x − (2 + 3i) es factor.', ecuacion: [x, ' − (2 + 3i)'] },
-        { estado: { corte: 2 }, texto: 'Junto con su conjugado, la suma y el producto salen reales.', ecuacion: ['suma 4   ·   producto 4 + 9 = 13'] },
+        { estado: { corte: 2 }, texto: 'Junto con su conjugado, la suma y el producto salen reales.', ecuacion: ['suma 4', '   ·   ', 'producto 4 + 9 = 13'] },
         { estado: { corte: 3 }, texto: 'Por eso el factor de grado 2 tiene coeficientes reales.', ecuacion: [x, '² − 4', x, ' + 13'] },
-        { estado: { corte: 4 }, texto: 'Con coeficientes racionales pasa igual con raíces como 1 + √2.', ecuacion: ['(1 + √2) + (1 − √2) = 2   ·   producto −1'] },
+        { estado: { corte: 4 }, texto: 'Con coeficientes racionales pasa igual con raíces como 1 + √2.', ecuacion: ['(1 + √2) + (1 − √2) = 2', '   ·   ', 'producto −1'] },
         { estado: { corte: 4 }, texto: 'Ese factor es x² − 2x − 1: coeficientes racionales.', ecuacion: [x, '² − 2', x, ' − 1'] },
       ],
     },
@@ -591,11 +591,11 @@
       voz: 'Las formas cambiaron; la igualdad se conserva en cada paso.',
       pasos: [
         { estado: { corte: 1 }, texto: 'En x⁴ − 5x² + 4 = 0 solo hay x⁴ y x².', ecuacion: [u, ' = ', x, '²  ⇒  ', u, '² − 5', u, ' + 4 = 0'] },
-        { estado: { corte: 2 }, texto: 'La cuadrática en u da dos valores.', ecuacion: [u, ' = 1   ·   ', u, ' = 4'] },
-        { estado: { corte: 3 }, texto: 'Cada u positiva da dos x: ±√u.', ecuacion: [x, ' = ±1   ·   ', x, ' = ±2'] },
+        { estado: { corte: 2 }, texto: 'La cuadrática en u da dos valores.', ecuacion: [u, ' = 1', '   ·   ', u, ' = 4'] },
+        { estado: { corte: 3 }, texto: 'Cada u positiva da dos x: ±√u.', ecuacion: [x, ' = ±1', '   ·   ', x, ' = ±2'] },
         { estado: { corte: 4 }, texto: 'Recíproca: x⁴ − 5x³ + 8x² − 5x + 1 = 0. Coeficientes simétricos.', ecuacion: ['1, −5, 8, −5, 1'] },
         { estado: { corte: 5 }, texto: 'x = 0 no es raíz: se divide entre x² con t = x + 1/x.', ecuacion: [t, '² − 5', t, ' + 6 = 0  ⇒  ', t, ' = 2  o  ', t, ' = 3'] },
-        { estado: { corte: 6 }, texto: 't = 2 da x = 1 (doble); t = 3 da dos raíces más.', ecuacion: [x, ' = 1 (doble)   ·   ', x, ' = ', { frac: ['3 ± √5', '2'] }] },
+        { estado: { corte: 6 }, texto: 't = 2 da x = 1 (doble); t = 3 da dos raíces más.', ecuacion: [x, ' = 1 (doble)', '   ·   ', x, ' = ', { frac: ['3 ± √5', '2'] }] },
       ],
     },
     regla: {
@@ -788,7 +788,7 @@
         { id: 'a', etiqueta: 'a', opciones: [{ valor: 1, texto: '1' }, { valor: 2, texto: '2' }, { valor: -1, texto: '−1' }] },
       ],
       dibujo: v => ({ datos: cubicaLibre(v), estado: {} }),
-      lectura: v => { const c = desdeRaices([v.r1, v.r2, v.r3], v.a); return [{ frac: ['−b', 'a'] }, ` = ${f(-c[1] / v.a)}   ·   `, { frac: ['c', 'a'] }, ` = ${f(c[2] / v.a)}   ·   `, { frac: ['−d', 'a'] }, ` = ${f(-c[3] / v.a)}`]; },
+      lectura: v => { const c = desdeRaices([v.r1, v.r2, v.r3], v.a); return [{ frac: ['−b', 'a'] }, ` = ${f(-c[1] / v.a)}`, '   ·   ', { frac: ['c', 'a'] }, ` = ${f(c[2] / v.a)}`, '   ·   ', { frac: ['−d', 'a'] }, ` = ${f(-c[3] / v.a)}`]; },
       arrastres: manijasRaices(cubicaLibre),
     },
     {

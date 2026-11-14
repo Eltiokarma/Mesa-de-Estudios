@@ -172,7 +172,7 @@
         { estado: { vista: 1, nuevo: ['t'] }, texto: 'Se quita una x de cada lado: sigue en equilibrio.', ecuacion: igualdad(2, 4, 0, 12) },
         { estado: { vista: 2, nuevo: ['t'] }, texto: 'Se quitan 4 kg de cada lado.', ecuacion: igualdad(2, 0, 0, 8) },
         { estado: { vista: 3, nuevo: ['t'] }, texto: 'Se deja la mitad en cada platillo.', ecuacion: [x, ' = 8 ÷ 2 = 4'] },
-        { estado: { vista: 3, final: true }, texto: 'Se comprueba en la ecuación original.', ecuacion: ['3 · 4 + 4 = 16   ·   4 + 12 = 16'] },
+        { estado: { vista: 3, final: true }, texto: 'Se comprueba en la ecuación original.', ecuacion: ['3 · 4 + 4 = 16', '   ·   ', '4 + 12 = 16'] },
       ],
     },
     regla: {
@@ -462,9 +462,9 @@
       pasos: [
         { estado: { corte: 1 }, texto: 'Con raíces 2 y 3, la ecuación es (x − 2)(x − 3) = 0.', ecuacion: ['(', x, ' − 2)(', x, ' − 3) = ', x, '² − 5', x, ' + 6'] },
         { estado: { corte: 2 }, texto: 'Al multiplicar, el término en x lleva la suma con signo menos.', ecuacion: [x, '² − (2 + 3)', x, ' + 2 · 3'] },
-        { estado: { corte: 3 }, texto: 'Por eso la suma es −b y el producto es c, cuando a = 1.', ecuacion: [S, ' = 5   ·   ', P, ' = 6'] },
+        { estado: { corte: 3 }, texto: 'Por eso la suma es −b y el producto es c, cuando a = 1.', ecuacion: [S, ' = 5', '   ·   ', P, ' = 6'] },
         { estado: { corte: 4 }, texto: 'Multiplicar todo por 2 no cambia las raíces, pero sí a, b y c.', ecuacion: ['2', x, '² − 10', x, ' + 12 = 0'] },
-        { estado: { corte: 5 }, texto: 'Dividiendo entre a se recuperan la suma y el producto.', ecuacion: [S, ' = ', { frac: ['10', '2'] }, ' = 5   ·   ', P, ' = ', { frac: ['12', '2'] }, ' = 6'] },
+        { estado: { corte: 5 }, texto: 'Dividiendo entre a se recuperan la suma y el producto.', ecuacion: [S, ' = ', { frac: ['10', '2'] }, ' = 5', '   ·   ', P, ' = ', { frac: ['12', '2'] }, ' = 6'] },
       ],
     },
     regla: {
@@ -560,8 +560,8 @@
       },
       voz: 'Primero digo qué número es x. Después escribo.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'La madre tiene el triple de años que su hijo; x: años del hijo.', ecuacion: ['hijo: ', x, '   ·   madre: 3', x] },
-        { estado: { corte: 2 }, texto: 'En 12 años, los dos suman 12.', ecuacion: [x, ' + 12   ·   3', x, ' + 12'] },
+        { estado: { corte: 1 }, texto: 'La madre tiene el triple de años que su hijo; x: años del hijo.', ecuacion: ['hijo: ', x, '   ·   ', 'madre: 3', x] },
+        { estado: { corte: 2 }, texto: 'En 12 años, los dos suman 12.', ecuacion: [x, ' + 12', '   ·   ', '3', x, ' + 12'] },
         { estado: { corte: 2 }, texto: 'Entonces la madre tendrá el doble que el hijo.', ecuacion: ['3', x, ' + 12 = 2(', x, ' + 12)'] },
         { estado: { corte: 3 }, texto: 'Se resuelve: 3x + 12 = 2x + 24.', ecuacion: [x, ' = 12'] },
         { estado: { corte: 4 }, texto: 'Se comprueba en el enunciado: hoy 12 y 36; luego 24 y 48.', ecuacion: ['48 = 2 · 24 ✓'] },

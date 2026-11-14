@@ -281,7 +281,7 @@
         { id: 'b', etiqueta: 'b', min: -4, max: 4, paso: 1, inicio: 4, decimales: 0, color: 'c-o' },
       ],
       dibujo: dibujoConj,
-      lectura: val => [{ abs: [z] }, ` = ${raizTxt(val.a ** 2 + val.b ** 2)}   ·   `, z, '·z̄', ` = ${val.a ** 2 + val.b ** 2}`],
+      lectura: val => [{ abs: [z] }, ` = ${raizTxt(val.a ** 2 + val.b ** 2)}`, '   ·   ', z, '·z̄', ` = ${val.a ** 2 + val.b ** 2}`],
       minimo: 3,
       arrastres: [puntaZ(dibujoConj, 'a', 'b')],
     },

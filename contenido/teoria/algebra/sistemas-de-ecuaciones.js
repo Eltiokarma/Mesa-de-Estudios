@@ -142,7 +142,7 @@
         { estado: { corte: 1 }, texto: 'x + y = 3 es una recta: cada punto suyo la cumple.', ecuacion: lineal(1, 1, 3) },
         { estado: { corte: 2 }, texto: '2x + 2y = 6 es la misma ecuación por 2: la misma recta.', ecuacion: [...lineal(2, 2, 6), '  ⇔  ', ...lineal(1, 1, 3)] },
         { estado: { corte: 3 }, texto: 'Cada punto (t; 3 − t) cumple las dos: infinitas soluciones.', ecuacion: ['(', x, '; ', y, ') = (t; 3 − t)'] },
-        { estado: { corte: 4 }, texto: 'Con 2x + 2y = 7 la recta se corre: paralelas, sin punto común.', ecuacion: [...lineal(1, 1, 3.5), '   ·   ninguna'] },
+        { estado: { corte: 4 }, texto: 'Con 2x + 2y = 7 la recta se corre: paralelas, sin punto común.', ecuacion: [...lineal(1, 1, 3.5), '   ·   ', 'ninguna'] },
       ],
     },
     regla: {
@@ -333,7 +333,7 @@
         { estado: { corte: 1 }, texto: 'Sistema 2x + y = 7 y x − y = −1. Δ usa los coeficientes.', ecuacion: ['Δ = 2(−1) − 1 · 1 = −3'] },
         { estado: { corte: 2 }, texto: 'Δx cambia la columna de x por los términos independientes.', ecuacion: ['Δ', x, ' = 7(−1) − 1(−1) = −6'] },
         { estado: { corte: 3 }, texto: 'Δy cambia la columna de y.', ecuacion: ['Δ', y, ' = 2(−1) − 7 · 1 = −9'] },
-        { estado: { corte: 4 }, texto: 'Como Δ ≠ 0, se divide.', ecuacion: [x, ' = ', { frac: ['−6', '−3'] }, ' = 2   ·   ', y, ' = ', { frac: ['−9', '−3'] }, ' = 3'] },
+        { estado: { corte: 4 }, texto: 'Como Δ ≠ 0, se divide.', ecuacion: [x, ' = ', { frac: ['−6', '−3'] }, ' = 2', '   ·   ', y, ' = ', { frac: ['−9', '−3'] }, ' = 3'] },
       ],
     },
     regla: {
@@ -503,8 +503,8 @@
       pasos: [
         { estado: { corte: 1 }, texto: 'De la recta: y = 7 − x. Se reemplaza en la otra.', ecuacion: [x, '² + (7 − ', x, ')² = 25'] },
         { estado: { corte: 2 }, texto: 'Queda una cuadrática en x.', ecuacion: ['2', x, '² − 14', x, ' + 24 = 0  ⇒  ', x, '² − 7', x, ' + 12 = 0'] },
-        { estado: { corte: 3 }, texto: 'x = 3 o x = 4; cada x da su y con la recta.', ecuacion: ['(3; 4)   ·   (4; 3)'] },
-        { estado: { corte: 3 }, texto: 'Se comprueba cada par en las dos ecuaciones.', ecuacion: ['9 + 16 = 25 ✓   ·   16 + 9 = 25 ✓'] },
+        { estado: { corte: 3 }, texto: 'x = 3 o x = 4; cada x da su y con la recta.', ecuacion: ['(3; 4)', '   ·   ', '(4; 3)'] },
+        { estado: { corte: 3 }, texto: 'Se comprueba cada par en las dos ecuaciones.', ecuacion: ['9 + 16 = 25 ✓', '   ·   ', '16 + 9 = 25 ✓'] },
       ],
     },
     regla: {
