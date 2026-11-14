@@ -39,3 +39,15 @@ test('comunes: sana, pura y alt', () => {
   sana(s); assert.equal(s, P.dibujar(D, { corte: 2 }));
   assert.match(P.alt(D), /antes: H₂ 4 g, O₂ 32 g/);
 });
+test('geometría: xDe y valorEn son inversas y caen en el borde de cada tramo', () => {
+  const g = P.geometria(D), s = P.dibujar(D, { corte: 5 });
+  for (let i = 0; i < D.filas.length; i++) {
+    let acum = 0;
+    for (const t of D.filas[i].tramos) {
+      const x = g.xDe(i, acum);
+      assert.ok(s.includes(`<rect x="${Kit.trazo.n(x)}" y="${g.y(i)}"`), `fila ${i} acumulado ${acum}`);
+      assert.ok(Math.abs(g.valorEn(i, x) - acum) < 1e-9);
+      acum += t.valor;
+    }
+  }
+});

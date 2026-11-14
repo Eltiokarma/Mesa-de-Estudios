@@ -54,6 +54,23 @@
   const xCol = c => X0 + c * CW, yPer = p => Y0 + (p - 1) * CH;
   const alto = d => Y0 + (d.periodos || 4) * CH + (d.rotulo ? 30 : 8);
 
+  // Geometría para el gesto directo (docs/teoria.md §4b). casilla(Z): la caja del elemento (los de transición
+  // comparten la casilla «d» de su periodo). celda(pt, periodos): columna y periodo bajo un punto, o null.
+  // zDe(col, per): el Z de grupo principal de esa casilla (null en la columna «d» o si no hay elemento).
+  function casilla(Z) {
+    const l = lugar(Z); if (!l) return null;
+    const x = xCol(l.col), y = yPer(l.per);
+    return { x, y, w: CW, h: CH, cx: x + CW / 2, cy: y + CH / 2, col: l.col, per: l.per };
+  }
+  function celda(pt, periodos = 4) {
+    const col = Math.floor((pt.x - X0) / CW), per = Math.floor((pt.y - Y0) / CH) + 1;
+    return col < 0 || col > 8 || per < 1 || per > periodos ? null : { col, per };
+  }
+  function zDe(col, per) {
+    for (let Z = 1; Z <= 36; Z++) { const l = lugar(Z); if (l && !l.transicion && l.col === col && l.per === per) return Z; }
+    return null;
+  }
+
   function dibujar(d, estado = {}) {
     const corte = Math.max(0, estado.corte || 0), P = d.periodos || 4, sim = d.simbolos || {};
     const ve = x => (x.desde || 0) <= corte;
@@ -120,5 +137,5 @@
     return txt + '.';
   }
 
-  return { id: 'quim-tabla', dibujar, alt, lugar, bloque };
+  return { id: 'quim-tabla', dibujar, alt, lugar, bloque, casilla, celda, zDe };
 });

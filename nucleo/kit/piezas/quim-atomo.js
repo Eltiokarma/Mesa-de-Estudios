@@ -76,6 +76,20 @@
     return `<g class="kit-atomo${nuevo(a)}">${s}</g>`;
   }
 
+  // Geometría para el gesto directo (docs/teoria.md §4b): centro del átomo k, radio del núcleo y de cada capa i
+  // (0 = la más interna), con el mismo cálculo que el dibujo.
+  function geometria(d) {
+    const as = (d.atomos || []).slice(0, 2), n = Math.max(1, as.length), ancho = W / n;
+    const atomo = k => {
+      const a = as[k] || {}, cx = ancho * (k + 0.5);
+      const capas = (a.capas || []).filter((m, i, l) => m > 0 || i < l.length - 1);
+      const nc = Math.max(1, capas.length + ((a.sale && a.sale.n > 0 && !capas.length) ? 1 : 0));
+      const paso = (Math.min(ancho / 2 - 14, 84) - RN - 6) / nc;
+      return { cx, cy: CY, rn: RN, capas: capas.length, radio: i => RN + 6 + paso * (i + 1) };
+    };
+    return { alto: ALTO, atomo };
+  }
+
   function dibujar(d, estado = {}) {
     const corte = Math.max(0, estado.corte || 0);
     const as = (d.atomos || []).slice(0, 2), n = Math.max(1, as.length), ancho = W / n;
@@ -94,5 +108,5 @@
     return `Modelo de capas (niveles, no trayectorias; no a escala). ${as.join('. ')}.`;
   }
 
-  return { id: 'quim-atomo', dibujar, alt };
+  return { id: 'quim-atomo', dibujar, alt, geometria };
 });

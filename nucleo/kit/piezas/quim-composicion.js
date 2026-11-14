@@ -52,6 +52,16 @@
     return `<g class="kit-fila${nuevo}">${s}</g>`;
   }
 
+  // Geometría para el gesto directo (docs/teoria.md §4b): la barra de la fila i empieza en x0, mide largo(i) y su
+  // borde de arriba está en y(i). xDe(i, v) es el x donde termina un acumulado v; valorEn(i, x) es la inversa.
+  function geometria(d) {
+    const filas = d.filas || [], maximo = Math.max(0, ...filas.map(total));
+    const largo = i => { const tot = total(filas[i] || {}); return d.escala === 'comun' ? LARGO * tot / (maximo || 1) : LARGO; };
+    const xDe = (i, v) => { const tot = total(filas[i] || {}); return X0 + (tot > 0 ? largo(i) * v / tot : 0); };
+    const valorEn = (i, x) => { const tot = total(filas[i] || {}), L = largo(i); return L > 0 ? (x - X0) * tot / L : 0; };
+    return { x0: X0, alto: alto(d), hb: HB, y: i => TOP + i * FILA + 24, largo, xDe, valorEn };
+  }
+
   function dibujar(d, estado = {}) {
     const corte = Math.max(0, estado.corte || 0), filas = d.filas || [];
     const maximo = Math.max(0, ...filas.map(total));
@@ -68,5 +78,5 @@
     return (d.filas || []).map(f => `${f.titulo || 'barra'}: ${(f.tramos || []).map(t => t.texto || Kit.formatear(t.valor, 2)).join(', ')}`).join('. ') + '.';
   }
 
-  return { id: 'quim-composicion', dibujar, alt };
+  return { id: 'quim-composicion', dibujar, alt, geometria };
 });

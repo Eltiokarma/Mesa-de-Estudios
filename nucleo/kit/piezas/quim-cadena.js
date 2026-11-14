@@ -81,5 +81,5 @@
     return (d.columnas || []).map(c => `${c.titulo ? c.titulo + ': ' : ''}${(c.nodos || []).map(n => n.texto).join(' → ')}`).join('. ') + '.';
   }
 
-  return { id: 'quim-cadena', dibujar, alt, lineas };
+  return { id: 'quim-cadena', dibujar, alt, lineas, geometria };
 });

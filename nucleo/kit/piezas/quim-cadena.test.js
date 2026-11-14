@@ -31,3 +31,9 @@ test('comunes: sana, pura, alto fijo y alt', () => {
   const s0 = P.dibujar(D, { corte: 0 }), s1 = P.dibujar(D, { corte: 1 });
   sana(s0); sana(s1); assert.equal(alto(s0), alto(s1)); assert.match(P.alt(D), /agua turbia → filtro/);
 });
+test('geometría: exporta la misma que usa el dibujo', () => {
+  const d = { columnas: [{ titulo: 'a', nodos: [{ texto: 'uno' }, { texto: 'dos' }] }] };
+  const g = P.geometria(d), s = P.dibujar(d);
+  assert.equal(svgAlto(s), String(g.alto));
+});
+function svgAlto(s) { return s.match(/viewBox="0 0 320 ([\d.]+)"/)[1]; }

@@ -28,3 +28,11 @@ test('comunes: sana, pura, alto fijo y alt que dice que es un modelo', () => {
   sana(s0); sana(s1); assert.equal(alto(s0), alto(s1)); assert.equal(s0, P.dibujar(NA, { corte: 0 }));
   assert.match(P.alt(NA), /no trayectorias/);
 });
+test('geometría: el centro y los radios de capa son los del dibujo', () => {
+  const s = P.dibujar(NA), g = P.geometria(NA);
+  for (const k of [0, 1]) {
+    const a = g.atomo(k);
+    assert.ok(s.includes(`<circle cx="${Kit.trazo.n(a.cx)}" cy="${a.cy}" r="${a.rn}"`));
+    for (let i = 0; i < a.capas; i++) assert.ok(s.includes(`<circle cx="${Kit.trazo.n(a.cx)}" cy="${a.cy}" r="${Kit.trazo.n(a.radio(i))}"`), `capa ${i}`);
+  }
+});
