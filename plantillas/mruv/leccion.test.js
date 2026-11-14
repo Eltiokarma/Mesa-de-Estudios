@@ -94,3 +94,37 @@ test('MRU desde donde se soltó: la corrida termina al final de la pista', () =>
   assert.equal(c.dur, 4.5);                    // (30 − 3) / 6
   assert.deepEqual(c.marcas, [3, 9, 15, 21, 27]);
 });
+
+test('sesión 2: el área bajo v-t de la corrida por defecto, tramo por tramo (calculada a mano)', () => {
+  // Acelera 2 m/s² 3 s: triángulo ½·3·6 = 9. Sigue 1 s a 6 m/s: rectángulo 6. Frena 3 m/s² hasta parar en 2 s: ½·2·6 = 6.
+  const r = L.areas(L.CORRIDA_DEFECTO);
+  assert.deepEqual(r.tramos.map(t => [t.forma, t.area]), [['triangulo', 9], ['rectangulo', 6], ['triangulo', 6]]);
+  assert.equal(r.total, 21); assert.equal(r.fin, 6);
+  // Pintado hasta 3 s: 9 m, que son 4,5 cuadritos de 2 m (1 s × 2 m/s).
+  assert.deepEqual(L.pintado(L.CORRIDA_DEFECTO, 3), { area: 9, cuadritos: 4.5 });
+  assert.deepEqual(L.pintado(L.CORRIDA_DEFECTO, 99), { area: 21, cuadritos: 10.5 });
+});
+
+test('sesión 3: lanzamiento hacia arriba y dos pelotas (g = 10)', () => {
+  // v0 = 20: sube 2 s hasta 20 m (v²/2g) y vuelve al suelo a los 4 s. A los 0,5 s: 20·0,5 − 5·0,25 = 8,75 m.
+  const l = L.lanzar(20);
+  assert.equal(l.tCima, 2); assert.equal(l.cima, 20); assert.equal(l.dur, 4);
+  assert.deepEqual(l.marcas, [0, 8.75, 15, 18.75, 20, 18.75, 15, 8.75, 0]);
+  assert.equal(l.v(2), 0); assert.equal(l.a(), -10);   // en la cima: v = 0, a = −10
+  for (const v0 of L.LANZAMIENTOS) assert.ok(L.lanzar(v0).cima <= L.ALTO + 1e-9, 'no se sale de la torre');
+  // Desde 20 m: t = √(2·20/10) = 2 s, para las dos.
+  assert.equal(L.soltarDos().tSuelo, 2);
+});
+
+test('sesión 3: problemas de transferencia, áreas a mano y alternativas distintas', () => {
+  // auto: ½·4·12 = 24, 12·6 = 72, ½·3·12 = 18 → 114 m. bus: 25 + 40 + 10 = 75. moto: 18 + 60 + 24 = 102.
+  const esperado = { auto: [24, 72, 18, 114], bus: [25, 40, 10, 75], moto: [18, 60, 24, 102] };
+  for (const p of L.PROBLEMAS) {
+    const r = L.problema(p.id), e = esperado[p.id];
+    assert.deepEqual([...r.partes.map(q => q.area), r.total], e, p.id);
+    assert.equal(r.opciones.filter(o => o.correcta).length, 1);
+    assert.equal(new Set(r.opciones.map(o => o.valor)).size, r.opciones.length);
+    for (const o of r.opciones.filter(o => !o.correcta)) assert.ok(o.explica.split(/\s+/).length <= 20, `${p.id}/${o.id}`);
+    assert.ok(p.texto.split(/\s+/).length <= 40, 'enunciado de 40 palabras como máximo');
+  }
+});

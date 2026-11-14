@@ -160,6 +160,46 @@
       ],
     },
   };
+  // Sesiones 2 y 3.
+  Object.assign(PREDICCIONES, {
+    // Parte 3, antes de pintar.
+    area: {
+      pregunta: 'Lo que hay debajo de tu gráfica v-t, ¿qué mide?',
+      opciones: [
+        { id: 'avance', texto: 'Cuánto avanzó', correcta: true },
+        { id: 'aceleracion', texto: 'Cuánto aceleró', error: 'G4', explica: 'La aceleración se lee en la inclinación de la gráfica, no en lo que hay debajo.' },
+        { id: 'rapidez', texto: 'Qué tan rápido iba', error: 'G2', explica: 'La rapidez se lee en la altura de la gráfica en cada instante.' },
+      ],
+    },
+    // Parte 4, antes de lanzar.
+    c1: {
+      pregunta: 'En el punto más alto, la aceleración de la pelota…',
+      opciones: [
+        { id: 'g-abajo', texto: 'es g, hacia abajo', correcta: true },
+        { id: 'cero', texto: 'es cero', error: 'C1', explica: 'Ahí la velocidad es cero, no la aceleración. Si fuera cero, se quedaría flotando.' },
+        { id: 'arriba', texto: 'apunta hacia arriba', error: 'K3', explica: 'Arriba sería cierto si la rapidez de subida aumentara. Disminuye.' },
+      ],
+    },
+    // Parte 4, antes de soltar las dos pelotas.
+    c2: {
+      pregunta: 'Sueltas a la vez una pelota de 1 kg y otra de 5 kg. ¿Cuál llega primero al suelo?',
+      opciones: [
+        { id: 'juntas', texto: 'Llegan juntas', correcta: true },
+        { id: 'pesada', texto: 'La de 5 kg', error: 'C2', explica: 'Sería cierto con mucho aire. Sin aire, las dos caen con la misma aceleración.' },
+        { id: 'liviana', texto: 'La de 1 kg', error: 'C2-inversa', explica: 'Sin aire, la masa no cambia la aceleración de caída.' },
+      ],
+    },
+    // Parte 5, el paso por elegir del ejemplo resuelto.
+    paso: {
+      pregunta: 'Del tramo en que va a rapidez constante, ¿qué calculas?',
+      opciones: [
+        { id: 'rectangulo', texto: 'El área del rectángulo', correcta: true },
+        { id: 'pendiente', texto: 'La pendiente del tramo', error: 'G4', explica: 'La pendiente ahí es cero: diría que no avanzó, y sí avanzó.' },
+        { id: 'triangulo', texto: 'La mitad de base por altura', error: 'sin-mitad-inversa', explica: 'La mitad es para los tramos inclinados. Este es un rectángulo.' },
+      ],
+    },
+  });
+
   function responder(id, opcion) {
     const p = PREDICCIONES[id];
     if (!p) throw new Error(`predicción desconocida: ${id}`);
@@ -168,6 +208,88 @@
     return { correcta: !!o.correcta, error: o.error || null, explica: o.explica || null };
   }
 
+  // ======================= Sesión 2: pintar el área (parte 3) =======================
+  // Si el alumno no trae su corrida del pedal (otro día, otro celular), se usa esta: acelera 3 s, sigue 1 s y frena.
+  const CORRIDA_DEFECTO = [{ t: 0, pedal: 'acelera' }, { t: 3, pedal: 'suelto' }, { t: 4, pedal: 'frena' }];
+  const CUADRITO = { t: 1, v: 2 };          // cada cuadrito de la gráfica v-t: 1 s × 2 m/s = 2 m
+  /*
+   * Tramos de la corrida, hasta que se detiene (o hasta tFin): por cada tramo, su inicio, su fin, las velocidades
+   * y lo que avanzó (el área bajo v-t, que el motor da como desplazamiento). La suma es lo que marca la regla.
+   */
+  function areas(eventos, tFin) {
+    const { movil } = corridaPedal(eventos);
+    const fin = movil.tParada !== null ? movil.tParada : tFin;
+    if (!(fin > 0)) throw new Error('la corrida no avanzó');
+    const r = [];
+    for (const s of movil.segmentos) {
+      const t0 = s.t0, t1 = Math.min(s.t0 + s.dur, fin);
+      if (t1 - t0 <= 1e-9) continue;
+      r.push({ t0: redondo(t0), t1: redondo(t1), v0: redondo(movil.v(t0)), v1: redondo(movil.v(t1)), a: s.a,
+        area: redondo(movil.desplazamiento(t0, t1)), forma: s.a === 0 ? 'rectangulo' : Math.abs(movil.v(t0)) < 1e-9 || Math.abs(movil.v(t1)) < 1e-9 ? 'triangulo' : 'trapecio' });
+      if (t1 >= fin - 1e-9) break;
+    }
+    return { tramos: r, total: redondo(movil.x(fin) - movil.x(0)), fin: redondo(fin), movil };
+  }
+  // Área pintada hasta el instante t (lo que avanzó hasta ahí) y cuántos cuadritos son.
+  function pintado(eventos, t) {
+    const { movil } = corridaPedal(eventos);
+    const a = redondo(movil.x(Math.max(0, t)) - movil.x(0));
+    return { area: a, cuadritos: redondo(a / (CUADRITO.t * CUADRITO.v)) };
+  }
+
+  // ======================= Sesión 3: la pista parada (parte 4) =======================
+  const ALTO = 20;                           // metros de la torre: con 20 m/s hacia arriba sube justo 20 m
+  const LANZAMIENTOS = [10, 15, 20];         // m/s hacia arriba (el empujón se ajusta a uno de estos)
+  // Marcas cada medio segundo (en caída libre, un segundo es poco: hay pocas marcas).
+  function lanzar(v0) {
+    const L = M.lanzamientoVertical({ y0: 0, v0 });
+    const m = M.movil(L.movil);
+    const dur = L.tSuelo;
+    const marcas = [];
+    for (let k = 0; k * 0.5 <= dur + 1e-9; k++) marcas.push(redondo(m.x(k * 0.5)));
+    return { v0, dur: redondo(dur), tCima: redondo(L.tSubida), cima: redondo(L.H), marcas, y: t => Math.max(0, m.x(Math.min(t, dur))), v: t => m.v(Math.min(t, dur)), a: () => -M.G };
+  }
+  // Dos pelotas soltadas desde la misma altura: el motor no recibe la masa, porque sin aire la aceleración es g para las dos.
+  function soltarDos(alto = ALTO) {
+    const L = M.lanzamientoVertical({ y0: alto, v0: 0 });
+    const m = M.movil(L.movil);
+    return { tSuelo: redondo(L.tSuelo), y: t => Math.max(0, m.x(Math.min(t, L.tSuelo))) };
+  }
+
+  // ======================= Sesión 3: transferir (parte 5) =======================
+  // Problemas propios con la forma de los de admisión: parte del reposo, acelera, sigue y frena hasta parar.
+  const PROBLEMAS = [
+    { id: 'auto', texto: 'Un auto parte del reposo y su velocidad cambia como muestra la gráfica. ¿Cuánto avanzó hasta detenerse?', tramos: [{ dur: 4, a: 3 }, { dur: 6, a: 0 }, { dur: 3, a: -4 }] },
+    { id: 'bus', texto: 'Un bus parte del reposo y su velocidad cambia como muestra la gráfica. ¿Cuánto avanzó hasta detenerse?', tramos: [{ dur: 5, a: 2 }, { dur: 4, a: 0 }, { dur: 2, a: -5 }] },
+    { id: 'moto', texto: 'Una moto parte del reposo y su velocidad cambia como muestra la gráfica. ¿Cuánto avanzó hasta detenerse?', tramos: [{ dur: 3, a: 4 }, { dur: 5, a: 0 }, { dur: 4, a: -3 }] },
+  ];
+  /*
+   * El problema resuelto por el motor y sus alternativas. Cada distractor es un error con nombre:
+   *   G4 (pendiente cuando se pide área), sin-mitad (los triángulos como rectángulos; da lo mismo que vmax × tiempo total)
+ *   y solo-constante (solo el tramo de rapidez constante).
+   */
+  function problema(id) {
+    const p = PROBLEMAS.find(x => x.id === id);
+    if (!p) throw new Error(`problema desconocido: ${id}`);
+    const m = M.movil({ x0: 0, v0: 0, tramos: p.tramos.map(t => ({ ...t })) });
+    const fin = p.tramos.reduce((a, t) => a + t.dur, 0);
+    const vmax = Math.max(...p.tramos.map((_, k) => m.v(p.tramos.slice(0, k + 1).reduce((a, t) => a + t.dur, 0))));
+    let t0 = 0; const partes = [];
+    for (const tr of p.tramos) { partes.push({ t0, t1: t0 + tr.dur, area: redondo(m.desplazamiento(t0, t0 + tr.dur)), a: tr.a }); t0 += tr.dur; }
+    const total = redondo(m.x(fin));
+    const sinMitad = redondo(partes.reduce((a, q) => a + (q.a === 0 ? q.area : 2 * q.area), 0));
+    const pendientes = redondo(p.tramos.reduce((a, t) => a + Math.abs(t.a), 0));
+    const opciones = [
+      { id: 'area', valor: total, correcta: true },
+      { id: 'sin-mitad', valor: sinMitad, error: 'sin-mitad', explica: 'Eso sería cierto si los tramos inclinados fueran rectángulos. Son triángulos: la mitad.' },
+      { id: 'solo-constante', valor: redondo(partes.filter(q => q.a === 0).reduce((a, q) => a + q.area, 0)), error: 'solo-constante', explica: 'Eso sería cierto si al arrancar y al frenar no avanzara. También avanza.' },
+      { id: 'pendiente', valor: pendientes, error: 'G4', explica: 'Sumaste pendientes, que son aceleraciones. Lo que avanzó es el área bajo la gráfica.' },
+    ];
+    if (new Set(opciones.map(o => o.valor)).size !== opciones.length) throw new Error(`${id}: dos alternativas valen lo mismo`);
+    return { ...p, movil: m, fin, vmax: redondo(vmax), partes, total, opciones };
+  }
+
   return { LARGO, TMAX, RAPIDECES, BOTONES, VENTANA, PEDAL, CASOS, PREDICCIONES,
+    CORRIDA_DEFECTO, CUADRITO, areas, pintado, ALTO, LANZAMIENTOS, lanzar, soltarDos, PROBLEMAS, problema,
     rapidezDedo, ajustarRapidez, marcas, corridaMRU, dosCarritos, leerBandera, tramosDe, corridaPedal, responder };
 });
