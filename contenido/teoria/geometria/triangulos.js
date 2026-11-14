@@ -128,7 +128,7 @@
     regla: {
       texto: 'En todo triángulo los tres ángulos interiores suman 180°. Un ángulo exterior es igual a la suma de los dos interiores que no están a su lado.',
       ecuacion: [cA, ' + ', cB, ' + ', cC, ' = 180°   ·   exterior en C = ', cA, ' + ', cB],
-      condicion: 'triángulo del plano. Por ángulos es acutángulo, rectángulo u obtusángulo; por lados, escaleno, isósceles o equilátero.',
+      condicion: 'el triángulo está en un plano. Por ángulos es acutángulo, rectángulo u obtusángulo; por lados, escaleno, isósceles o equilátero.',
       voz: 'La paralela es la condición que garantiza los 180°.',
     },
     ahoraTu: {
@@ -303,7 +303,7 @@
     },
     regla: {
       texto: 'Altura: perpendicular a la recta del lado opuesto. Mediana: llega a su punto medio. Bisectriz: parte el ángulo en dos iguales. Mediatriz: perpendicular en el punto medio.',
-      condicion: 'en el obtusángulo, dos alturas caen fuera. Desde el vértice de un isósceles, altura, mediana y bisectriz coinciden.',
+      condicion: 'cada altura llega a la recta de su lado: en el obtusángulo, dos caen fuera del triángulo.',
       voz: 'Nombra cada línea por su marca, no por cómo luce.',
     },
     ahoraTu: {
@@ -401,7 +401,7 @@
     regla: {
       texto: 'Las bisectrices interiores de B y C forman 90° + A/2. Si una es interior y la otra exterior, forman A/2.',
       ecuacion: ['∠BIC = 90° + ', { frac: [cA, '2'] }, '   ·   ∠BEC = ', { frac: [cA, '2'] }],
-      condicion: 'I: corte de las bisectrices interiores de B y C. E: corte de la interior de B con la exterior de C.',
+      condicion: 'I está en las bisectrices interiores de B y C; E, en la interior de B y la exterior de C.',
       voz: 'Antes de aplicar, revisa qué bisectrices se cortan.',
     },
     ahoraTu: {

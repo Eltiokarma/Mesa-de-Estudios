@@ -131,7 +131,7 @@
     regla: {
       texto: 'Una recta es perpendicular a un plano si es perpendicular a dos rectas del plano que se cortan. Entonces es perpendicular a todas las rectas del plano.',
       ecuacion: [{ v: 'c-o', t: 'L' }, ' ⊥ ', { v: 'c-i', t: 'a' }, '  y  ', { v: 'c-o', t: 'L' }, ' ⊥ ', { v: 'c-d', t: 'b' }, '  ⇒  ', { v: 'c-o', t: 'L' }, ' ⊥ plano'],
-      condicion: 'a y b deben cortarse. Dos rectas paralelas del plano no bastan.',
+      condicion: 'a y b se cortan. Dos rectas paralelas del plano no bastan.',
       voz: 'Dos rectas que se cortan. Una sola no alcanza.',
     },
     ahoraTu: {
@@ -472,7 +472,7 @@
     regla: {
       texto: 'Dos rectas cruzadas no se cortan ni son paralelas. Su distancia es la longitud del único segmento perpendicular a las dos.',
       ecuacion: ['d = ', { v: 'c-h', t: 'MN' }, ',  con  ', { v: 'c-h', t: 'MN' }, ' ⊥ ', { v: 'c-o', t: 'L₁' }, '  y  ', { v: 'c-h', t: 'MN' }, ' ⊥ ', { v: 'c-d', t: 'L₂' }],
-      condicion: 'cualquier otro segmento entre las dos rectas es más largo que MN.',
+      condicion: 'las rectas no se cortan ni son paralelas; cualquier otro segmento entre ellas es más largo que MN.',
       voz: 'Busca el segmento que hace 90° con las dos.',
     },
     ahoraTu: {
@@ -554,7 +554,7 @@
     regla: {
       texto: 'En un triedro, cada cara es menor que la suma de las otras dos, y las tres juntas suman menos de 360°.',
       ecuacion: [{ v: 'c-o', t: 'α' }, ' < ', { v: 'c-i', t: 'β' }, ' + ', { v: 'c-d', t: 'γ' }, '   ·   ', { v: 'c-o', t: 'α' }, ' + ', { v: 'c-i', t: 'β' }, ' + ', { v: 'c-d', t: 'γ' }, ' < 360°'],
-      condicion: 'la desigualdad vale para cada cara; basta revisarla con la mayor.',
+      condicion: 'las tres caras son de un mismo vértice; basta revisar la desigualdad con la cara mayor.',
       voz: 'Mayor contra la suma de las otras; y total contra 360°.',
     },
     ahoraTu: {

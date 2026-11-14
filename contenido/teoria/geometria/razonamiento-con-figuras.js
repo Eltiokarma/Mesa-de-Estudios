@@ -210,7 +210,7 @@
     },
     regla: {
       texto: 'En una serie o analogía, separa las características (orientación, cantidad, posición) y halla la regla de cada una. Comprueba cada regla con todos los términos dados.',
-      condicion: 'pocos términos pueden admitir varias reglas: se elige la que funciona en todos y es la más simple.',
+      condicion: 'la regla funciona en todos los términos y es la más simple; pocos términos pueden admitir varias.',
       voz: 'Una regla que falla en un término no sirve.',
     },
     ahoraTu: {

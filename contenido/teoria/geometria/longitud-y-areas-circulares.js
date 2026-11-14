@@ -468,7 +468,7 @@
     regla: {
       texto: 'El trapecio circular es la fracción α/360 de una corona. Las regiones compuestas se calculan sumando y restando regiones conocidas, sin contar dos veces lo que se superpone.',
       ecuacion: ['trapecio circular = ', frac('α', '360°'), ' · π(', { sup: [cR, '2'] }, ' − ', { sup: [cr, '2'] }, ')'],
-      condicion: 'las lúnulas de un triángulo rectángulo suman su área: los semicírculos de los catetos suman el de la hipotenusa.',
+      condicion: 'las lúnulas salen de semicírculos sobre los lados de un triángulo rectángulo: entonces suman su área.',
       voz: 'Antes de sumar, marca qué región se superpone.',
     },
     ahoraTu: {

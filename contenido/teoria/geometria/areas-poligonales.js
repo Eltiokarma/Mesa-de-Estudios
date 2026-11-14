@@ -498,7 +498,7 @@
     regla: {
       texto: 'Con P dentro de un paralelogramo, PAB y PCD suman la mitad del área. El paralelogramo de los puntos medios de un cuadrilátero tiene la mitad de su área.',
       ecuacion: ['[PAB] + [PCD] = ', frac('S', '2'), '   ·   [puntos medios] = ', frac('S', '2')],
-      condicion: 'la primera pide un paralelogramo y P interior; la segunda vale para cualquier cuadrilátero convexo.',
+      condicion: 'en la primera, ABCD es un paralelogramo y P es interior; la segunda vale para todo cuadrilátero convexo.',
       voz: 'Una diagonal parte el problema en triángulos conocidos.',
     },
     ahoraTu: {

@@ -108,7 +108,7 @@
     regla: {
       texto: 'Un polígono regular de n lados son n triángulos isósceles iguales: ángulo central 360°/n, lado 2R·sen(180°/n), apotema R·cos(180°/n) y área P · a / 2.',
       ecuacion: [cL, ' = 2', cR, ' sen ', frac('180°', 'n'), '   ·   ', cA, ' = ', cR, ' cos ', frac('180°', 'n'), '   ·   S = ', frac(['P · ', cA], '2')],
-      condicion: 'lados y ángulos iguales. R llega al vértice y a llega perpendicular al punto medio del lado.',
+      condicion: 'el polígono tiene lados y ángulos iguales. R llega al vértice y a llega perpendicular al punto medio del lado.',
       voz: 'Radio al vértice, apotema al medio del lado.',
     },
     ahoraTu: {
@@ -363,7 +363,7 @@
     regla: {
       texto: 'Hay sección áurea si el total es a la parte mayor como esta a la menor. Esa razón es φ = (1 + √5)/2; cumple φ² = φ + 1.',
       ecuacion: ['φ = ', frac('1 + √5', '2'), ' ≈ 1,618   ·   ', { sup: ['φ', '2'] }, ' = φ + 1   ·   ', frac('diagonal', 'lado'), ' = φ'],
-      condicion: 'en el pentágono regular, la razón entre diagonal y lado es exactamente φ, para cualquier tamaño.',
+      condicion: 'el pentágono es regular: entonces diagonal entre lado da exactamente φ, para cualquier tamaño.',
       voz: 'φ no es una medida: es una razón. Úsala con su lado.',
     },
     ahoraTu: {

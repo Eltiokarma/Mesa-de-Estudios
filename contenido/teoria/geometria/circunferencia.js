@@ -350,7 +350,7 @@
     regla: {
       texto: 'Con el vértice dentro, el ángulo mide la semisuma de los arcos que abarcan él y su opuesto. Con el vértice fuera, la semidiferencia: arco lejano menos arco cercano.',
       ecuacion: ['dentro: ', { frac: [[{ v: 'c-o', t: 'a' }, ' + ', { v: 'c-i', t: 'b' }], '2'] }, '   ·   fuera: ', { frac: [[{ v: 'c-o', t: 'a' }, ' − ', { v: 'c-i', t: 'b' }], '2'] }],
-      condicion: 'fuera valen secantes o tangentes desde Q; a es el arco lejano y b el cercano, ambos entre los lados del ángulo.',
+      condicion: 'Q es el vértice del ángulo; fuera, sus lados son secantes o tangentes; a es el arco lejano y b el cercano.',
       voz: 'Dentro se suma; fuera se resta. Siempre entre 2.',
     },
     ahoraTu: {
@@ -448,7 +448,7 @@
     regla: {
       texto: 'Pitot: si un cuadrilátero tiene circunferencia inscrita, sus lados opuestos suman lo mismo. Poncelet: en un triángulo rectángulo, los catetos suman la hipotenusa más el diámetro inscrito.',
       ecuacion: [{ v: 'c-o', t: 'AB + CD' }, ' = ', { v: 'c-i', t: 'BC + DA' }, '   ·   a + b = c + 2r'],
-      condicion: 'Pitot pide un cuadrilátero convexo con circunferencia inscrita; Poncelet, un triángulo rectángulo con c la hipotenusa.',
+      condicion: 'para Pitot, el cuadrilátero es convexo y tiene circunferencia inscrita; para Poncelet, el triángulo es rectángulo y c es la hipotenusa.',
       voz: 'Los dos teoremas son tangentes iguales, nada más.',
     },
     ahoraTu: {

@@ -231,7 +231,7 @@
     },
     regla: {
       texto: 'Incentro: bisectrices; equidista de los lados. Circuncentro: mediatrices; equidista de los vértices. Ortocentro: alturas. Baricentro: medianas. Excentro: una bisectriz interior y dos exteriores.',
-      condicion: 'I y G quedan dentro. O y H: dentro en el acutángulo, en el borde en el rectángulo, fuera en el obtusángulo.',
+      condicion: 'el triángulo es cualquiera. O y H quedan dentro solo si es acutángulo; I y G, siempre.',
       voz: 'Nombra el centro por sus líneas, no por su lugar.',
     },
     ahoraTu: {

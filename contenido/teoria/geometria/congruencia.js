@@ -115,7 +115,7 @@
     },
     regla: {
       texto: 'Dos triángulos son congruentes si coinciden en LAL (ángulo entre los dos lados), ALA (lado entre los dos ángulos) o LLL. Con LLA o AAA no basta.',
-      condicion: 'los elementos iguales deben corresponderse en el mismo orden. AAA solo asegura la misma forma, no el tamaño.',
+      condicion: 'los elementos iguales se corresponden en el mismo orden. AAA solo asegura la misma forma, no el tamaño.',
       voz: 'Antes de nombrar el criterio, ubica dónde está el ángulo.',
     },
     ahoraTu: {

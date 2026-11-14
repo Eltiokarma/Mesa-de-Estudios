@@ -120,7 +120,7 @@
     regla: {
       texto: 'Un polígono de n lados se parte en n − 2 triángulos: sus ángulos interiores suman (n − 2) · 180°. Un exterior por vértice suma siempre 360°.',
       ecuacion: [{ sub: ['S', 'i'] }, ' = (', n_, ' − 2) · 180°   ·   ', { sub: ['S', 'e'] }, ' = 360°'],
-      condicion: 'polígono convexo, con un solo ángulo exterior en cada vértice.',
+      condicion: 'el polígono es convexo y se toma un solo ángulo exterior en cada vértice.',
       voz: 'Los triángulos explican el número; no hace falta memorizarlo.',
     },
     ahoraTu: {
@@ -405,7 +405,7 @@
     regla: {
       texto: 'La mediana de un trapecio es paralela a las bases y mide su semisuma. El tramo entre los puntos medios de las diagonales mide su semidiferencia.',
       ecuacion: [{ v: 'c-o', t: 'MN' }, ' = ', { frac: [[{ v: 'c-d', t: 'B' }, ' + ', { v: 'c-i', t: 'b' }], '2'] }, '   ·   ', { v: 'c-h', t: 'PQ' }, ' = ', { frac: [[{ v: 'c-d', t: 'B' }, ' − ', { v: 'c-i', t: 'b' }], '2'] }],
-      condicion: 'trapecio: exactamente un par de lados paralelos (las bases). M y N son puntos medios de los lados no paralelos.',
+      condicion: 'el trapecio tiene exactamente un par de lados paralelos (las bases) y M, N son puntos medios de los otros dos.',
       voz: 'Todo sale de la base media del triángulo.',
     },
     ahoraTu: {
@@ -507,7 +507,7 @@
     regla: {
       texto: 'En cualquier cuadrilátero, los puntos medios de los lados forman un paralelogramo cuyo perímetro es la suma de las diagonales. Sus ángulos interiores suman 360°.',
       ecuacion: ['perímetro = AC + BD   ·   A + B + C + D = 360°'],
-      condicion: 'vale para trapezoides, trapecios y paralelogramos: solo usa la base media de los triángulos que forma cada diagonal.',
+      condicion: 'el cuadrilátero es trapezoide, trapecio o paralelogramo: solo se usa la base media de los triángulos de cada diagonal.',
       voz: 'Una diagonal convierte el problema en dos triángulos conocidos.',
     },
     ahoraTu: {

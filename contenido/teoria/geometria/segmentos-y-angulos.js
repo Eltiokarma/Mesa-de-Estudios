@@ -121,7 +121,7 @@
     regla: {
       texto: 'Por dos puntos pasa una sola recta. Si B está en el segmento AC, las medidas se suman exacto; si no, AB + BC es mayor que AC.',
       ecuacion: [AB, ' + ', BC, ' ≥ ', AC],
-      condicion: 'la igualdad AB + BC = AC exige que B esté en la recta AC y entre A y C.',
+      condicion: 'B está en la recta AC, entre A y C.',
       voz: 'El dibujo sugiere; la condición «entre A y C» lo garantiza.',
     },
     ahoraTu: {
