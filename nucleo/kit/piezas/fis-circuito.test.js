@@ -41,3 +41,24 @@ test('sin NaN ni colores fijos; texto de 14 o más; dos altos (malla simple o co
   for (const d of [SERIE, PAR]) assert.equal(P.dibujar(d, { corte: 0 }).match(/viewBox="0 0 320 ([\d.]+)"/)[1], P.dibujar(d, {}).match(/viewBox="0 0 320 ([\d.]+)"/)[1]);
   assert.match(P.alt(PAR), /en paralelo/);
 });
+
+test('geometria: cada elemento donde se dibuja; el cursor del reóstato y su inversa', () => {
+  const g = P.geometria(PAR);
+  assert.equal(g.serie.length, 1); assert.equal(g.ramas.length, 3);
+  assert.match(P.dibujar(PAR), new RegExp(`cx="${g.ramas[2].x}"`), 'el nudo de la rama está en su x');
+  assert.equal(g.serie[0].cursor, undefined, 'una R común no trae cursor');
+  const RS = { fuente: { rotulo: '12 V' }, serie: [{ tipo: 'A' }, { tipo: 'R', rotulo: 'R', color: 'i', reostato: 0.25 }],
+    ramas: [] };
+  const RR = { fuente: { rotulo: '12 V' }, ramas: [{ tipo: 'R', reostato: 0.5 }, { tipo: 'R', reostato: 0.75 }] };
+  for (const d of [RS, RR]) {
+    const ge = P.geometria(d), el = d.serie ? ge.serie[1] : ge.ramas[1], k = d.serie ? 0.25 : 0.75;
+    const c = el.cursor(k);
+    assert.ok(Math.abs(el.k(c) - k) < 1e-9, 'k(cursor(k)) = k');
+    assert.ok(c.x >= 0 && c.x <= 320 && c.y >= 0 && c.y <= ge.alto);
+    const s = P.dibujar(d);
+    assert.match(s, /stroke-opacity="0.35"/, 'el tramo después del cursor va tenue');
+    assert.ok(!/NaN|undefined/.test(s));
+  }
+  // Sin reóstato, el dibujo no cambia (el dato es opcional).
+  assert.equal(P.dibujar(SERIE), P.dibujar(JSON.parse(JSON.stringify(SERIE))));
+});

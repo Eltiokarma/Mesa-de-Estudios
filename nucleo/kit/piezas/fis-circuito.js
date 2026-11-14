@@ -11,7 +11,10 @@
  * (el radio del halo crece con la potencia, en una escala que fija quien llama con brillo 0..1).
  *
  * elemento = { tipo: 'R' | 'foco' | 'C' | 'A', rotulo: 'R₁ = 2 Ω', lectura: '3 A', color: 'o', brillo: 0..1,
- *              voltimetro: '6 V' | null, corriente: { texto: '2 A', color: 'h' } | null, desde }
+ *              voltimetro: '6 V' | null, corriente: { texto: '2 A', color: 'h' } | null, desde,
+ *              reostato: 0..1 }   // opcional, solo en R: alambre largo con cursor; la parte después del cursor
+ *                                 // queda en tenue porque la corriente sale por el cursor (R en el circuito ∝ k)
+ * Afirmación del reóstato: cuanto más alambre recorre la corriente antes del cursor, más resistencia hay.
  * datos = {
  *   fuente: { rotulo: 'ε = 12 V', r: 'r = 1 Ω' | null, voltimetro: '10 V' | null, color },
  *   serie: [elemento, …],          // 0 a 3, en el cable de arriba
@@ -39,10 +42,36 @@
   const G = T.GROSOR;
 
   // Símbolo de un elemento centrado en (x, y), horizontal (h = true) o vertical. Devuelve el SVG y su semiancho.
+  // Reóstato: semilargo del alambre y distancia del cursor al alambre. En horizontal el cursor va debajo (arriba
+  // quedan el rótulo y la flecha de corriente); en vertical, a la izquierda.
+  const RM = 40, RCUR = 22;
+  const lado = h => (h ? 1 : -1);
   function simbolo(e, x, y, h) {
     const c = e.color, tinta = undefined;
     const rot = (dx, dy) => (h ? [x + dx, y + dy] : [x + dy, y + dx]);
     const p = (dx, dy) => rot(dx, dy).map(T.n).join(' ');
+    if (e.tipo === 'R' && typeof e.reostato === 'number') {
+      // Zigzag de −RM a RM partido en el cursor: antes, en color; después, tenue (la corriente no pasa por ahí).
+      const k = Math.max(0, Math.min(1, e.reostato)), xc = -RM + 2 * RM * k;
+      const pts = [[-RM - 4, 0], [-RM, 0]];
+      for (let j = 0; j < 10; j++) pts.push([-RM + 4 + 8 * j, j % 2 ? 7 : -7]);
+      pts.push([RM, 0], [RM + 4, 0]);
+      const antes = [], despues = [];
+      for (let j = 0; j < pts.length; j++) {
+        const q = pts[j];
+        if (q[0] <= xc) antes.push(q); else {
+          const a = pts[j - 1];
+          if (a && a[0] <= xc) { const u = (xc - a[0]) / (q[0] - a[0]), m = [xc, a[1] + u * (q[1] - a[1])]; antes.push(m); despues.push(m); }
+          despues.push(q);
+        }
+      }
+      const traza = (qs, op) => (qs.length > 1 ? `<path d="M${qs.map(q => p(q[0], q[1])).join('L')}" fill="none" stroke="${T.color(c)}" stroke-width="${G.variable}" stroke-linejoin="round" stroke-linecap="round"${op ? ` stroke-opacity="${op}"` : ''}/>` : '');
+      const sg = lado(h), [ax, ay] = rot(xc, sg * RCUR), [bx, by] = rot(xc, sg * 9);
+      const sv = traza(antes) + traza(despues, 0.35)
+        + `<path d="M${p(xc, sg * RCUR)}L${p(RM + 4, sg * RCUR)}L${p(RM + 4, 0)}" fill="none" stroke="currentColor" stroke-width="${G.contorno}" stroke-linejoin="round"/>`
+        + T.flecha(ax, ay, bx, by, { grosor: G.contorno });
+      return { svg: sv, m: RM + 4 };
+    }
     if (e.tipo === 'R') {
       const pts = [[-18, 0], [-14, -7], [-7, 7], [0, -7], [7, 7], [14, -7], [18, 0]];
       return { svg: `<path d="M${pts.map(q => p(q[0], q[1])).join('L')}" fill="none" stroke="${T.color(c)}" stroke-width="${G.variable}" stroke-linejoin="round" stroke-linecap="round"/>`, m: 18 };
@@ -110,8 +139,10 @@
       const sb = simbolo(e, xsS[k], YT, true);
       s += cable(x, YT, xsS[k] - sb.m, YT) + sb.svg;
       x = xsS[k] + sb.m;
+      // El reóstato lleva su cursor debajo: su lectura baja bajo el cursor.
+      const reo = typeof e.reostato === 'number';
       if (e.rotulo) s += T.rotulo(xsS[k], YT - 16, e.rotulo, { ancla: 'middle', color: e.color, peso: 700, clase: 'kit-txt kit-num' });
-      if (ve(e) && e.lectura) s += T.rotulo(xsS[k], YT + (e.voltimetro ? 76 : 32), e.lectura, { ancla: 'middle', peso: 700, clase: 'kit-txt kit-num' });
+      if (ve(e) && e.lectura) s += T.rotulo(xsS[k], YT + (e.voltimetro ? 76 : reo ? 46 : 32), e.lectura, { ancla: 'middle', peso: 700, clase: 'kit-txt kit-num' });
       if (ve(e) && e.voltimetro) s += voltimetro(xsS[k], YT, sb.m, true, e.voltimetro, -1);
       if (ve(e) && e.corriente) s += T.flecha(xsS[k] - 14, YT - 36, xsS[k] + 14, YT - 36, { color: e.corriente.color, grosor: G.variable }) + T.rotulo(xsS[k] + 20, YT - 31, e.corriente.texto, { color: e.corriente.color, peso: 700, clase: 'kit-txt kit-num' });
     });
@@ -129,8 +160,10 @@
       const xr = xRam[k], sb = simbolo(e, xr, yM, false);
       s += cable(xr, YT, xr, yM - sb.m) + sb.svg + cable(xr, yM + sb.m, xr, YB);
       if (k > 0 || serie.length || true) s += `<circle cx="${T.n(xr)}" cy="${YT}" r="3.5" fill="currentColor"/><circle cx="${T.n(xr)}" cy="${YB}" r="3.5" fill="currentColor"/>`;
-      if (e.rotulo) s += T.rotulo(xr, yM - sb.m - 10, e.rotulo, { ancla: 'middle', color: e.color, peso: 700, clase: 'kit-txt kit-num', max: W });
-      if (ve(e) && e.lectura) s += T.rotulo(xr, yM + sb.m + 22, e.lectura, { ancla: 'middle', peso: 700, clase: 'kit-txt kit-num', max: W });
+      // En un reóstato vertical, rótulo y lectura cambian de lugar: arriba quedan las flechas de corriente.
+      const reo = typeof e.reostato === 'number';
+      if (e.rotulo) s += T.rotulo(xr, reo ? yM + sb.m + 18 : yM - sb.m - 10, e.rotulo, { ancla: 'middle', color: e.color, peso: 700, clase: 'kit-txt kit-num', max: W });
+      if (ve(e) && e.lectura) s += T.rotulo(xr, reo ? yM - sb.m - 10 : yM + sb.m + 22, e.lectura, { ancla: 'middle', peso: 700, clase: 'kit-txt kit-num', max: W });
       if (ve(e) && e.voltimetro) s += voltimetro(xr, yM, sb.m, false, e.voltimetro, 1);
       if (ve(e) && e.corriente) s += T.flecha(xr - 10, YT + 14, xr - 10, YT + 38, { color: e.corriente.color, grosor: G.variable }) + T.rotulo(xr - 16, YT + 32, e.corriente.texto, { ancla: 'end', color: e.corriente.color, peso: 700, clase: 'kit-txt kit-num', max: W });
     });
@@ -148,5 +181,27 @@
     return t + '.';
   }
 
-  return { id: 'fis-circuito', dibujar, alt, constantes: { W } };
+  // Geometría para el gesto directo: dónde cae cada elemento con estos datos (la misma cuenta que dibujar).
+  // Cada elemento: { x, y, m (semiancho), h (horizontal) }; los reóstatos traen además cursor(k) → { x, y }, el
+  // punto del cursor, y k(punto) → la fracción del alambre (0..1, sin recortar) que marca ese punto.
+  function geometria(d) {
+    const serie = (d.serie || []).slice(0, 3), ramas = (d.ramas || []).slice(0, 3);
+    const sep = ramas.length > 2 ? 72 : 96, xp0 = ramas.length ? XR - sep * (ramas.length - 1) - 10 : XR;
+    const xS0 = XL + 30, xS1 = (ramas.length ? xp0 : XR) - 24, YB = YBde(d), yM = (YT + YB) / 2;
+    const ubicar = (e, x, y, h) => {
+      const g = { x, y, h, m: simbolo(e, x, y, h).m };
+      if (e.tipo === 'R' && typeof e.reostato === 'number') {
+        g.cursor = k => (h ? { x: x - RM + 2 * RM * k, y: y + RCUR } : { x: x - RCUR, y: y - RM + 2 * RM * k });
+        g.k = pt => ((h ? pt.x - x : pt.y - y) + RM) / (2 * RM);
+      }
+      return g;
+    };
+    return {
+      W, alto: altoDe(d), YT, YB, fuente: { x: XL, y: 116 },
+      serie: serie.map((e, k) => ubicar(e, xS0 + (xS1 - xS0) * (k + 0.5) / serie.length, YT, true)),
+      ramas: ramas.map((e, k) => ubicar(e, xp0 + sep * k, yM, false)),
+    };
+  }
+
+  return { id: 'fis-circuito', dibujar, alt, geometria, constantes: { W } };
 });

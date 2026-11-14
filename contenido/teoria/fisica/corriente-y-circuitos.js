@@ -48,6 +48,15 @@
   const resist = (rot, extra = {}) => Object.assign({ tipo: 'R', rotulo: rot, color: 'i' }, extra);
   const foco = (rot, brillo, extra = {}) => Object.assign({ tipo: 'foco', rotulo: rot, brillo, color: 'd' }, extra);
   const pila = (eps, extra = {}) => Object.assign({ rotulo: `${f(eps)} V`, color: 'o' }, extra);
+  const diez = e => ({ sup: ['10', e] });
+  // Reóstato (dato opcional de fis-circuito): alambre de RMAX ohmios con cursor; en el circuito queda k = R/RMAX.
+  const reostato = (rot, rr, rmax, extra = {}) => resist(rot, Object.assign({ reostato: rr / rmax }, extra));
+  // Gesto directo: la manija es el cursor del reóstato; geometria(datos) de la pieza da dónde cae y qué fracción marca.
+  const CIR = () => Kit.piezas['fis-circuito'];
+  const cursor = (datos, lugar, k, rmax) => {
+    const el = CIR().geometria(datos)[lugar][k];
+    return { donde: rr => el.cursor(rr / rmax), mover: pt => el.k(pt) * rmax };
+  };
 
   // ---------- Idea 1: la corriente no se gasta ----------
   // Cambia: el voltaje de la pila y la resistencia del foco · Permanece: dos amperímetros, antes y después del foco ·
@@ -72,7 +81,7 @@
         { id: 'r', etiqueta: 'R', color: 'c-i', min: 2, max: 6, paso: 1, inicio: 3, unidad: 'Ω', decimales: 0 },
       ],
       dibujo: val => conAmperimetros(val.e, val.r),
-      lectura: val => [I, ` = ${f(val.e / val.r, 2)} A antes y después del foco`],
+      lectura: val => [I, ` = ${f(val.e / val.r, 2)}\u00a0A antes y después del foco`],
       minimo: 3,
     },
     predice: {
@@ -97,7 +106,7 @@
     },
     regla: {
       texto: 'En un circuito de una sola malla, la misma corriente pasa por todos los puntos. El foco transforma energía; la carga sigue de largo.',
-      ecuacion: [I, ' = ', { frac: ['Δq', 'Δt'] }, '   ·   J = ', { frac: [I, 'A'] }, '   ·   ', I, ' = n e A ', { sub: ['v', 'd'] }],
+      ecuacion: [I, ' = ', { frac: ['Δq', 'Δt'] }, '   ·   ', 'J = ', { frac: [I, 'A'] }, '   ·   ', I, ' = ', { llave: ['n e'], nota: 'carga por m³' }, ' A ', { llave: [{ sub: ['v', 'd'] }], nota: 'rapidez media' }],
       condicion: 'corriente estable, sin ramas ni carga que se acumule. La corriente convencional va al revés que los electrones.',
     },
     ahoraTu: {
@@ -130,13 +139,13 @@
         }
         const i = x.de([1, 2, 4, 5]), amm = x.de([1, 2, 4]), vd = vDeriva(i, amm);
         return {
-          pregunta: `Un cable de cobre de ${f(amm)} mm² lleva ${f(i)} A. Con n = 8,5 × 10²⁸ electrones/m³ y e = 1,6 × 10⁻¹⁹ C, ¿qué rapidez media tienen los electrones?`,
+          pregunta: [`Un cable de cobre de ${f(amm)} mm² lleva ${f(i)} A. Con n = 8,5 × `, diez('28'), ' electrones/m³ y e = 1,6 × ', diez('−19'), ' C, ¿qué rapidez media tienen los electrones?'],
           opciones: opciones(vd, [
             { id: 'unid', valor: vd / 1e6, error: 'CI-UNID', siFuera: 'Esa cuenta deja el área en mm². Hay que pasarla a m².' },
             { id: 'sin-i', valor: vd / i, error: 'C2', siFuera: 'Esa sería con 1 A; aquí la corriente es otra.' },
             { id: 'luz', valor: vd * 1000, error: 'CI-RAPIDO', siFuera: 'Esa cuenta da metros en lugar de milímetros por segundo.' },
           ], n => `${f(n, 3)} mm/s`),
-          solucion: { texto: 'Se despeja v de I = n e A v, con el área en m².', ecuacion: [{ sub: ['v', 'd'] }, ` = ${f(i)} / (8,5×10²⁸ · 1,6×10⁻¹⁹ · ${f(amm)}×10⁻⁶) = ${f(vd, 3)} mm/s`] },
+          solucion: { texto: 'Se despeja v de I = n e A v, con el área en m².', ecuacion: [{ sub: ['v', 'd'] }, ` = ${f(i)} / (8,5×`, diez('28'), ' · 1,6×', diez('−19'), ` · ${f(amm)}×`, diez('−6'), `) = ${f(vd, 3)} mm/s`] },
         };
       },
     },
@@ -169,8 +178,12 @@
         { id: 'L', etiqueta: 'Largo', min: 1, max: 4, paso: 1, inicio: 2, unidad: 'm', decimales: 0 },
       ],
       dibujo: val => ({ datos: Object.assign(EJE_VI(), { curvas: [rectaVI(resistencia(val.m, val.L, 1), `R = ${f(resistencia(val.m, val.L, 1), 2)} Ω`)] }), estado: {} }),
-      lectura: val => [R, ` = ${f(resistencia(val.m, val.L, 1), 2)} Ω con 1 mm² de sección`],
+      lectura: val => [R, ` = ${f(resistencia(val.m, val.L, 1), 2)}\u00a0Ω con 1\u00a0mm² de sección`],
       minimo: 3,
+      // Arrastra la punta de la recta hacia arriba o abajo: más largo, más empinada (la pendiente es R).
+      arrastres: [{ id: 'pendiente', etiqueta: 'punta de la recta V–I (largo del alambre)', color: 'c-i',
+        donde: val => { const g = Kit.piezas.ejes.geometria(EJE_VI()), rr = resistencia(val.m, val.L, 1); return { x: g.X(4), y: g.Y(4 * rr) }; },
+        mover: (pt, val) => ({ L: Kit.piezas.ejes.geometria(EJE_VI()).Yi(pt.y) / 4 / resistencia(val.m, 1, 1) }) }],
     },
     predice: {
       pregunta: 'Un alambre de nicromo de 2 m y 1 mm² se cambia por otro de nicromo de 4 m y 2 mm². ¿Qué pasa con su resistencia?',
@@ -191,14 +204,14 @@
       }),
       pasos: [
         { estado: { corte: 0 }, texto: 'La resistencia depende del material, del largo y del área.', ecuacion: [R, ' = ρ ', { frac: ['L', 'A'] }] },
-        { estado: { corte: 1 }, texto: 'Nicromo, 2 m y 1 mm²: el área se pasa a m².', ecuacion: [R, ' = 1,1×10⁻⁶ · ', { frac: ['2', '1×10⁻⁶'] }, ` = ${f(resistencia('nicromo', 2, 1), 2)} Ω`] },
+        { estado: { corte: 1 }, texto: 'Nicromo, 2 m y 1 mm²: el área se pasa a m².', ecuacion: [R, ' = 1,1×', diez('−6'), ' · ', { frac: ['2', ['1×', diez('−6')]] }, ` = ${f(resistencia('nicromo', 2, 1), 2)} Ω`] },
         { estado: { corte: 2 }, texto: 'En este alambre, V es proporcional a I: la recta pasa por el origen.', ecuacion: [V, ' = ', I, R, ` = 3 · ${f(resistencia('nicromo', 2, 1), 1)} = ${f(3 * resistencia('nicromo', 2, 1), 1)} V`] },
         { estado: { corte: 2 }, texto: 'Doble de largo multiplica por 2; doble de área divide entre 2.', ecuacion: [{ frac: ['2L', '2A'] }, ' = ', { frac: ['L', 'A'] }] },
       ],
     },
     regla: {
       texto: 'La resistencia crece con el largo y baja con el área. En un conductor óhmico, el voltaje es proporcional a la corriente: R es la pendiente.',
-      ecuacion: [R, ' = ρ ', { frac: ['L', 'A'] }, '   ·   ', V, ' = ', I, R],
+      ecuacion: [R, ' = ', { llave: ['ρ'], nota: 'el material' }, ' ', { frac: ['L', 'A'] }, '   ·   ', V, ' = ', I, R],
       condicion: 'conductor óhmico a temperatura fija. Un foco caliente no es óhmico: su R sube al calentarse.',
     },
     ahoraTu: {
@@ -223,28 +236,29 @@
         }
         const L = x.de([1, 2, 3, 5]), amm = x.de([0.5, 1, 2]), m = x.de(['nicromo', 'constantan']), rr = resistencia(m, L, amm);
         return {
-          pregunta: ['¿Qué resistencia tiene un alambre de ', m === 'nicromo' ? 'nicromo (ρ = 1,1 × 10⁻⁶ Ω·m)' : 'constantán (ρ = 4,9 × 10⁻⁷ Ω·m)', ` de ${f(L)} m de largo y ${f(amm, 1)} mm² de sección?`],
+          pregunta: ['¿Qué resistencia tiene un alambre de ', m === 'nicromo' ? 'nicromo (ρ = 1,1 × ' : 'constantán (ρ = 4,9 × ', diez(m === 'nicromo' ? '−6' : '−7'), ` Ω·m) de ${f(L)} m de largo y ${f(amm, 1)} mm² de sección?`],
           opciones: opciones(rr, [
             { id: 'unid', valor: rr * 1e-6, error: 'CI-UNID', siFuera: 'Esa cuenta deja el área en mm². Hay que pasarla a m².' },
             { id: 'inv', valor: RHO[m] * amm * 1e-6 / L * 1e12, error: 'CI-RHO', siFuera: 'Esa cuenta pone el área arriba y el largo abajo.' },
             { id: 'sin-l', valor: rr / L, error: 'CI-RHO', siFuera: 'Esa sería la resistencia de un metro.' },
           ], n => `${f(n, 2)} Ω`),
-          solucion: { texto: 'ρ por largo entre área, con el área en m².', ecuacion: [R, ` = ${m === 'nicromo' ? '1,1×10⁻⁶' : '4,9×10⁻⁷'} · ${f(L)} / ${f(amm, 1)}×10⁻⁶ = ${f(rr, 2)} Ω`] },
+          solucion: { texto: 'ρ por largo entre área, con el área en m².', ecuacion: [R, ` = ${m === 'nicromo' ? '1,1' : '4,9'}×`, diez(m === 'nicromo' ? '−6' : '−7'), ` · ${f(L)} / ${f(amm, 1)}×`, diez('−6'), ` = ${f(rr, 2)} Ω`] },
         };
       },
     },
   };
 
   // ---------- Idea 3: fem, resistencia interna y aparatos de medida ----------
-  // Cambia: la resistencia que conecta la pila · Permanece: la pila (12 V y 1 Ω adentro) y un voltímetro en sus bornes ·
+  // Cambia: la resistencia que conecta la pila (el cursor de un reóstato) · Permanece: la pila (12 V y 1 Ω adentro) y un voltímetro en sus bornes ·
   // Progresa: la corriente y lo que marca el voltímetro · Se reserva: el circuito abierto, sin corriente ·
   // Debe verse: el voltímetro marca menos que ε solo cuando hay corriente, por lo que se pierde adentro.
-  const FEM = 12, RINT = 1;
+  // La R de afuera es un reóstato de 12 Ω: el alumno corre su cursor (gesto directo) o usa − y +.
+  const FEM = 12, RINT = 1, RMAX3 = 12;
   const pilaReal = (rx, o = {}) => {
     const abierto = rx === Infinity, i = abierto ? 0 : FEM / (rx + RINT), vt = FEM - i * RINT;
     return { datos: {
       fuente: { rotulo: `ε = ${FEM} V`, r: `r = ${RINT} Ω`, voltimetro: o.leer === false ? '?' : `${f(vt, 2)} V`, color: 'o' },
-      serie: [A(o.leer === false ? '?' : `${f(i, 2)} A`), ...(abierto ? [] : [resist(`R = ${f(rx)} Ω`)])],
+      serie: [A(o.leer === false ? '?' : `${f(i, 2)} A`), ...(abierto ? [] : [reostato(`R = ${f(rx)} Ω`, rx, RMAX3)])],
       abierto,
     }, estado: {} };
   };
@@ -258,8 +272,12 @@
       voz: 'Mira qué pasa con el voltímetro cuando la corriente crece.',
       controles: [{ id: 'r', etiqueta: 'R', color: 'c-i', min: 1, max: 11, paso: 1, inicio: 5, unidad: 'Ω', decimales: 0 }],
       dibujo: val => pilaReal(val.r),
-      lectura: val => [I, ` = ${f(FEM / (val.r + RINT), 2)} A · `, V, ` en bornes = ${f(FEM - FEM / (val.r + RINT) * RINT, 2)} V`],
+      lectura: val => [I, ` = ${f(FEM / (val.r + RINT), 2)}\u00a0A · `, V, ` en bornes = ${f(FEM - FEM / (val.r + RINT) * RINT, 2)}\u00a0V`],
       minimo: 3,
+      // Corre el cursor del reóstato: más alambre en el circuito, más R, menos corriente.
+      arrastres: [{ id: 'cursor', etiqueta: 'cursor del reóstato', color: 'c-i',
+        donde: val => cursor(pilaReal(val.r).datos, 'serie', 1, RMAX3).donde(val.r),
+        mover: (pt, val) => ({ r: cursor(pilaReal(val.r).datos, 'serie', 1, RMAX3).mover(pt) }) }],
     },
     predice: {
       pregunta: 'Si ahora abres el interruptor y no pasa corriente, ¿qué marca el voltímetro en los bornes de la pila?',
@@ -283,7 +301,7 @@
     },
     regla: {
       texto: 'La fem es la energía que la pila da a cada coulomb. Con corriente, parte se pierde en su resistencia interna y el voltaje en bornes baja.',
-      ecuacion: [V, ' = ', EPS, ' − ', I, ' r   ·   ', I, ' = ', { frac: [EPS, [R, ' + r']] }],
+      ecuacion: [{ llave: [V], nota: 'en bornes', color: 'c-o' }, ' = ', EPS, ' − ', { llave: [I, ' r'], nota: 'se pierde', color: 'c-o' }, '   ·   ', I, ' = ', { frac: [EPS, [R, ' + r']] }],
       condicion: 'pila con r constante. Amperímetro ideal en serie y voltímetro ideal en paralelo: así no cambian lo que miden.',
     },
     ahoraTu: {
@@ -317,11 +335,11 @@
   const RF = 4, PMAX = 36;
   const enSerie = (n, e) => {
     const i = e / (n * RF), p = i * i * RF;
-    return { datos: { fuente: pila(e), serie: Array.from({ length: n }, () => foco(`${RF} Ω`, p / PMAX, { lectura: `${f(p, 2)} W` })) }, estado: {} };
+    return { datos: { fuente: pila(e), serie: Array.from({ length: n }, () => foco(`${RF}\u00a0Ω`, p / PMAX, { lectura: `${f(p, 2)}\u00a0W` })) }, estado: {} };
   };
   const enParalelo = (n, e, o = {}) => {
     const p = e * e / RF;
-    return { datos: { fuente: pila(e), ramas: Array.from({ length: n }, () => foco(`${RF} Ω`, o.apagado ? 0 : p / PMAX, { lectura: o.leer === false ? '' : `${f(p, 2)} W` })) }, estado: {} };
+    return { datos: { fuente: pila(e), ramas: Array.from({ length: n }, () => foco(`${RF}\u00a0Ω`, o.apagado ? 0 : p / PMAX, { lectura: o.leer === false ? '' : `${f(p, 2)}\u00a0W` })) }, estado: {} };
   };
   const reqDe = (modo, rs) => (modo === 'serie' ? rs.reduce((a, b) => a + b, 0) : 1 / rs.reduce((a, b) => a + 1 / b, 0));
   const seriePar = {
@@ -337,7 +355,7 @@
         { id: 'e', etiqueta: 'ε', color: 'c-o', min: 6, max: 12, paso: 6, inicio: 12, unidad: 'V', decimales: 0 },
       ],
       dibujo: val => enSerie(val.n, val.e),
-      lectura: val => [R, ` total = ${f(val.n * RF)} Ω · `, I, ` = ${f(val.e / (val.n * RF), 2)} A`],
+      lectura: val => [R, ` total = ${f(val.n * RF)}\u00a0Ω · `, I, ` = ${f(val.e / (val.n * RF), 2)}\u00a0A`],
       minimo: 3,
     },
     predice: {
@@ -349,7 +367,7 @@
         { id: 'apaga', texto: 'Se apagan todos', error: 'C5', siFuera: 'Se apagarían en serie, con un solo camino. Aquí cada foco tiene su propio camino.' },
       ],
       dibujo: enParalelo(3, 12, { leer: false }),
-      revelar: { datos: { fuente: pila(12), ramas: [foco('4 Ω', 1, { lectura: '36 W' }), foco('4 Ω', 1, { lectura: '36 W' }), foco('vacío', 0)] }, estado: {} },
+      revelar: { datos: { fuente: pila(12), ramas: [foco('4\u00a0Ω', 1, { lectura: '36\u00a0W' }), foco('4\u00a0Ω', 1, { lectura: '36\u00a0W' }), foco('vacío', 0)] }, estado: {} },
       coincide: 'Coincide: cada foco recibe los 12 V de la pila, haya dos o tres.',
     },
     mira: {
@@ -363,7 +381,7 @@
     },
     regla: {
       texto: 'En serie, la corriente es la misma y los voltajes se suman. En paralelo, el voltaje es el mismo y las corrientes se suman.',
-      ecuacion: ['serie: ', { sub: [R, 'eq'] }, ' = Σ', R, '   ·   paralelo: ', { frac: ['1', { sub: [R, 'eq'] }] }, ' = Σ', { frac: ['1', R] }],
+      ecuacion: ['serie: ', { sub: [R, 'eq'] }, ' = Σ', R, '   ·   ', 'paralelo: ', { frac: ['1', { sub: [R, 'eq'] }] }, ' = Σ', { frac: ['1', R] }],
       condicion: 'pila ideal (sin resistencia interna) y focos que se comportan como resistencias fijas.',
     },
     ahoraTu: {
@@ -386,18 +404,22 @@
   };
 
   // ---------- Idea 5: Kirchhoff, nudos y mallas ----------
-  // Cambia: la resistencia de una de las dos ramas · Permanece: la pila (12 V) y R₁ = 2 Ω en serie ·
+  // Cambia: la resistencia de una de las dos ramas (el cursor de su reóstato) · Permanece: la pila (12 V) y R₁ = 2 Ω en serie ·
   // Progresa: la corriente que entra al nudo y el voltaje de las ramas · Se reserva: cómo se reparte en el nudo ·
   // Debe verse: por la rama de menor resistencia pasa más corriente; lo que entra al nudo sale.
-  const R1 = 2, R2K = 3;
+  // R₃ es un reóstato de 6 Ω (su cursor se arrastra); con r2 se pide también R₂ como reóstato (mesa del laboratorio).
+  const R1 = 2, R2K = 3, RMAX5 = 6;
   const kirchhoff = (r3, o = {}) => {
-    const rp = R2K * r3 / (R2K + r3), it = 12 / (R1 + rp), vp = it * rp;
-    const i2 = vp / R2K, i3 = vp / r3;
+    const r2 = o.r2 || R2K, rmax = o.rmax || RMAX5;
+    const rp = r2 * r3 / (r2 + r3), it = 12 / (R1 + rp), vp = it * rp;
+    const i2 = vp / r2, i3 = vp / r3;
+    const rama2 = o.r2 ? reostato : (rot, rr, m, ex) => resist(rot, ex), dc = o.r2 ? 1 : 2;   // la mesa usa 1 decimal en la figura
     return { datos: {
       fuente: pila(12),
-      serie: [A(`${f(it, 2)} A`), resist(`R₁ = ${R1} Ω`)],
-      ramas: [resist(`R₂ = ${R2K} Ω`, { voltimetro: o.v === false ? null : `${f(vp, 2)} V`, corriente: o.ramas ? { texto: `${f(i2, 2)} A`, color: 'h' } : null, desde: o.desde }),
-        resist(`R₃ = ${f(r3)} Ω`, { corriente: o.ramas ? { texto: `${f(i3, 2)} A`, color: 'h' } : null, desde: o.desde })],
+      // En la mesa, la flecha sobre R₁ da la corriente que llega al nudo (sin amperímetro, para que no se encimen).
+      serie: o.r2 ? [resist(`R₁ = ${R1} Ω`, { corriente: { texto: `${f(it, dc)} A`, color: 'h' } })] : [A(`${f(it, dc)} A`), resist(`R₁ = ${R1} Ω`)],
+      ramas: [rama2(`R₂ = ${f(r2)} Ω`, r2, rmax, { voltimetro: o.v === false ? null : `${f(vp, 2)} V`, corriente: o.ramas ? { texto: `${f(i2, dc)} A`, color: 'h' } : null, desde: o.desde }),
+        reostato(`R₃ = ${f(r3)} Ω`, r3, rmax, { corriente: o.ramas ? { texto: `${f(i3, dc)} A`, color: 'h' } : null, desde: o.desde })],
     }, estado: {} };
   };
   const nudos = {
@@ -410,8 +432,11 @@
       voz: 'Las dos ramas comparten el mismo voltaje. Fíjate en eso.',
       controles: [{ id: 'r3', etiqueta: 'R₃', color: 'c-i', min: 2, max: 6, paso: 1, inicio: 6, unidad: 'Ω', decimales: 0 }],
       dibujo: val => kirchhoff(val.r3),
-      lectura: val => { const rp = R2K * val.r3 / (R2K + val.r3), it = 12 / (R1 + rp); return [I, ` = ${f(it, 2)} A · `, V, ` ramas = ${f(it * rp, 2)} V`]; },
+      lectura: val => { const rp = R2K * val.r3 / (R2K + val.r3), it = 12 / (R1 + rp); return [I, ` = ${f(it, 2)}\u00a0A · `, V, ` ramas = ${f(it * rp, 2)}\u00a0V`]; },
       minimo: 3,
+      arrastres: [{ id: 'cursor-r3', etiqueta: 'cursor del reóstato R₃', color: 'c-i',
+        donde: val => cursor(kirchhoff(val.r3).datos, 'ramas', 1, RMAX5).donde(val.r3),
+        mover: (pt, val) => ({ r3: cursor(kirchhoff(val.r3).datos, 'ramas', 1, RMAX5).mover(pt) }) }],
     },
     predice: {
       pregunta: 'En un nudo entran 6 A y se reparten entre dos ramas en paralelo: una de 2 Ω y otra de 4 Ω. ¿Cuánta corriente va por la de 2 Ω?',
@@ -430,13 +455,13 @@
       pasos: [
         { estado: { corte: 0 }, texto: 'Ramas de 3 Ω y 6 Ω en paralelo equivalen a 2 Ω.', ecuacion: [{ sub: [R, '23'] }, ' = ', { frac: ['3 · 6', '3 + 6'] }, ' = 2 Ω'] },
         { estado: { corte: 1 }, texto: 'Malla: la fem se reparte entre R₁ y las ramas.', ecuacion: ['12 = ', I, ' · 2 + ', I, ' · 2  →  ', I, ' = 3 A'] },
-        { estado: { corte: 2 }, texto: 'Las dos ramas tienen 6 V. Cada una lleva V/R.', ecuacion: [{ sub: [I, '2'] }, ' = 6/3 = 2 A · ', { sub: [I, '3'] }, ' = 6/6 = 1 A'] },
+        { estado: { corte: 2 }, texto: 'Las dos ramas tienen 6 V. Cada una lleva V/R.', ecuacion: [{ sub: [I, '2'] }, ' = 6/3 = 2 A', '   ·   ', { sub: [I, '3'] }, ' = 6/6 = 1 A'] },
         { estado: { corte: 2 }, texto: 'Nudo: lo que entra es lo que sale.', ecuacion: ['3 A = 2 A + 1 A'] },
       ],
     },
     regla: {
       texto: 'En un nudo, la suma de corrientes que entran es igual a la que sale. En una malla cerrada, las subidas y bajadas de voltaje suman cero.',
-      ecuacion: ['Σ', { sub: [I, 'entran'] }, ' = Σ', { sub: [I, 'salen'] }, '   ·   Σ', EPS, ' = Σ', I, R],
+      ecuacion: ['Σ', { sub: [I, 'entran'] }, ' = Σ', { sub: [I, 'salen'] }, '   ·   ', { llave: ['Σ', EPS], nota: 'lo que sube', color: 'c-o' }, ' = ', { llave: ['Σ', I, R], nota: 'lo que baja', color: 'c-o' }],
       condicion: 'corrientes estables; los signos se fijan con un sentido de recorrido elegido antes de empezar.',
     },
     ahoraTu: {
@@ -452,7 +477,7 @@
             { id: 'inv', valor: it - ia, error: 'CI-INV', siFuera: 'Esa es la corriente de la otra rama.' },
             { id: 'todo', valor: it, error: 'C11', siFuera: 'La corriente no va toda por una rama: las dos tienen el mismo voltaje.' },
           ], n => `${f(n, 2)} A`),
-          solucion: { texto: 'Las dos ramas tienen el mismo voltaje; se reparte al revés que R.', ecuacion: [V, ` = ${f(it)} · ${f(rp, 2)} = ${f(v, 2)} V · `, I, ` = ${f(v, 2)}/${f(ra)} = ${f(ia, 2)} A`] },
+          solucion: { texto: 'Las dos ramas tienen el mismo voltaje; se reparte al revés que R.', ecuacion: [V, ` = ${f(it)} · ${f(rp, 2)} = ${f(v, 2)} V`, '   ·   ', I, ` = ${f(v, 2)}/${f(ra)} = ${f(ia, 2)} A`] },
         };
       },
     },
@@ -462,11 +487,13 @@
   // Cambia: la resistencia del primer foco, en paralelo con otro de 6 Ω · Permanece: la pila de 12 V ·
   // Progresa: el brillo de cada uno · Se reserva: los mismos focos en serie, donde el orden se invierte ·
   // Debe verse: «el de menos R brilla más» vale en paralelo; en serie, brilla más el de más R.
+  // Hallazgo 9: el juego muestra los focos en paralelo y «Mira» los mismos dos focos en serie, a propósito: la
+  // predicción pregunta por la serie y el paso 3 vuelve al paralelo que el alumno movió para contrastar V²/R con I²R.
   const RB = 6, PM6 = 72;
-  const dosPar = (ra, o = {}) => ({ datos: { fuente: pila(12), ramas: [foco(`${f(ra)} Ω`, (144 / ra) / PM6, { lectura: `${f(144 / ra, 1)} W` }), foco(`${RB} Ω`, (144 / RB) / PM6, { lectura: `${f(144 / RB, 1)} W` })] }, estado: {} });
+  const dosPar = (ra, o = {}) => ({ datos: { fuente: pila(12), ramas: [foco(`${f(ra)}\u00a0Ω`, (144 / ra) / PM6, { lectura: `${f(144 / ra, 1)}\u00a0W` }), foco(`${RB}\u00a0Ω`, (144 / RB) / PM6, { lectura: `${f(144 / RB, 1)}\u00a0W` })] }, estado: {} });
   const dosSerie = (ra, o = {}) => {
     const i = 12 / (ra + RB), pa = i * i * ra, pb = i * i * RB;
-    return { datos: { fuente: pila(12), serie: [foco(`${f(ra)} Ω`, o.apagado ? 0 : pa / PM6 * 4, { lectura: o.leer === false ? '' : `${f(pa, 1)} W`, desde: o.desde }), foco(`${RB} Ω`, o.apagado ? 0 : pb / PM6 * 4, { lectura: o.leer === false ? '' : `${f(pb, 1)} W`, desde: o.desde })] }, estado: {} };
+    return { datos: { fuente: pila(12), serie: [foco(`${f(ra)}\u00a0Ω`, o.apagado ? 0 : pa / PM6 * 4, { lectura: o.leer === false ? '' : `${f(pa, 1)}\u00a0W`, desde: o.desde }), foco(`${RB}\u00a0Ω`, o.apagado ? 0 : pb / PM6 * 4, { lectura: o.leer === false ? '' : `${f(pb, 1)}\u00a0W`, desde: o.desde })] }, estado: {} };
   };
   const potencia = {
     id: 'potencia-joule',
@@ -478,7 +505,7 @@
       voz: 'En paralelo, ¿brilla más el de menos o el de más resistencia?',
       controles: [{ id: 'ra', etiqueta: 'R del primero', color: 'c-i', min: 2, max: 12, paso: 2, inicio: 2, unidad: 'Ω', decimales: 0 }],
       dibujo: val => dosPar(val.ra),
-      lectura: val => [P, ` = ${f(144 / val.ra, 1)} W y ${f(144 / RB, 1)} W`],
+      lectura: val => [P, ` = ${f(144 / val.ra, 1)}\u00a0W y ${f(144 / RB, 1)}\u00a0W`],
       minimo: 3,
     },
     predice: {
@@ -496,14 +523,14 @@
       datos: dosSerie(2, { desde: 1 }).datos,
       pasos: [
         { estado: { corte: 0 }, texto: 'En serie la corriente es una sola.', ecuacion: [I, ' = ', { frac: ['12', '2 + 6'] }, ' = 1,5 A'] },
-        { estado: { corte: 1 }, texto: 'Con la misma corriente, la potencia crece con R.', ecuacion: [P, ' = ', { sup: [I, '2'] }, R, ` = 2,25 · 2 = 4,5 W · 2,25 · 6 = 13,5 W`] },
+        { estado: { corte: 1 }, texto: 'Con la misma corriente, la potencia crece con R.', ecuacion: [P, ' = ', { sup: [I, '2'] }, R, ` = 2,25 · 2 = 4,5 W`, '   ·   ', `2,25 · 6 = 13,5 W`] },
         { estado: { corte: 1 }, texto: 'En paralelo era al revés: mismo V, y P = V²/R.', ecuacion: [P, ' = ', { frac: [{ sup: [V, '2'] }, R] }] },
         { estado: { corte: 1 }, texto: 'Efecto Joule: esa energía sale como calor y luz cada segundo.', ecuacion: ['E = ', P, ' t'] },
       ],
     },
     regla: {
       texto: 'La potencia eléctrica es voltaje por corriente. Con la misma corriente (serie) rinde más la R mayor; con el mismo voltaje (paralelo), la menor.',
-      ecuacion: [P, ' = ', V, I, ' = ', { sup: [I, '2'] }, R, ' = ', { frac: [{ sup: [V, '2'] }, R] }, '   ·   E = ', P, ' t'],
+      ecuacion: [P, ' = ', V, I, ' = ', { llave: [{ sup: [I, '2'] }, R], nota: 'misma I', color: 'c-h' }, ' = ', { llave: [{ frac: [{ sup: [V, '2'] }, R] }], nota: 'mismo V', color: 'c-o' }, '   ·   ', 'E = ', P, ' t'],
       condicion: 'resistencias fijas. El brillo de un foco sigue a su potencia, no a su corriente sola.',
     },
     ahoraTu: {
@@ -518,7 +545,7 @@
               { id: 'vxr', valor: v * rr, error: 'C14', siFuera: 'Esa cuenta multiplica por R; con V fijo, R divide.' },
               { id: 'sin2', valor: v * v / rr / 2, error: 'C14', siFuera: 'Esa cuenta divide entre 2 sin razón.' },
             ], n => `${f(n, 1)} W`),
-            solucion: { texto: 'Con el voltaje fijo, P = V²/R.', ecuacion: [P, ` = ${f(v)}² / ${f(rr)} = ${f(p, 1)} W`] },
+            solucion: { texto: 'Con el voltaje fijo, P = V²/R.', ecuacion: [P, ' = ', { sup: [f(v), '2'] }, ` / ${f(rr)} = ${f(p, 1)} W`] },
           };
         }
         if (tipo === 1) {
@@ -542,10 +569,20 @@
             { id: 'ir', valor: i * rb, error: 'C7', siFuera: 'Ese es su voltaje, I·R, no su potencia.' },
             { id: 'otra', valor: i * i * ra, error: 'C14', siFuera: 'Esa es la potencia de la otra resistencia.' },
           ], n => `${f(n, 2)} W`),
-          solucion: { texto: 'Primero la corriente común; luego I²R.', ecuacion: [I, ` = ${f(e)}/${f(ra + rb)} = ${f(i, 2)} A · `, P, ` = ${f(i, 2)}² · ${f(rb)} = ${f(pb, 2)} W`] },
+          solucion: { texto: 'Primero la corriente común; luego I²R.', ecuacion: [I, ` = ${f(e)}/${f(ra + rb)} = ${f(i, 2)} A`, '   ·   ', P, ' = ', { sup: [f(i, 2), '2'] }, ` · ${f(rb)} = ${f(pb, 2)} W`] },
         };
       },
     },
+  };
+
+  // Mesa «pila real con reóstato»: con R = 0 es un cortocircuito (toda la fem se pierde adentro).
+  const cuentaPila = val => { const i = val.e / (val.r + val.ri); return { i, v: val.e - i * val.ri, p: i * i * val.r }; };
+  const labPila = val => {
+    const c = cuentaPila(val);
+    return { datos: {
+      fuente: { rotulo: `ε = ${f(val.e)} V`, r: `r = ${f(val.ri, 1)} Ω`, voltimetro: `${f(c.v, 2)} V`, color: 'o' },
+      serie: [A(`${f(c.i, 2)}\u00a0A`), reostato(`R = ${f(val.r)}\u00a0Ω`, val.r, 20, { lectura: `${f(c.p, 1)}\u00a0W` })],
+    }, estado: {} };
   };
 
   return {
@@ -553,6 +590,38 @@
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/fis-circuito.js', '/nucleo/kit/piezas/ejes.js'],
+    // Laboratorio: la pila real con todo suelto (incluido el cortocircuito y la potencia que llega a R), las dos
+    // ramas con sus dos cursores y la recta V–I de la idea 2.
+    laboratorio: [
+      {
+        id: 'pila-reostato', titulo: 'Pila real con reóstato', pieza: 'fis-circuito',
+        consigna: 'Elige la fem y la resistencia interna, y corre el cursor. ¿Con qué R recibe más potencia el reóstato? Prueba también R = 0.',
+        controles: [
+          { id: 'e', etiqueta: 'ε', color: 'c-o', min: 3, max: 24, paso: 3, inicio: 12, unidad: 'V', decimales: 0 },
+          { id: 'ri', etiqueta: 'r interna', min: 0.5, max: 4, paso: 0.5, inicio: 2, unidad: 'Ω', decimales: 1 },
+          { id: 'r', etiqueta: 'R', color: 'c-i', min: 0, max: 20, paso: 1, inicio: 6, unidad: 'Ω', decimales: 0 },
+        ],
+        dibujo: val => labPila(val),
+        lectura: val => { const c = cuentaPila(val); return [R, ` = ${f(val.r)}\u00a0Ω: `, I, ` = ${f(c.i, 2)}\u00a0A · `, V, ` = ${f(c.v, 2)}\u00a0V · `, P, ` = ${f(c.p, 1)}\u00a0W`]; },
+        arrastres: [{ id: 'cursor', etiqueta: 'cursor del reóstato', color: 'c-i',
+          donde: val => cursor(labPila(val).datos, 'serie', 1, 20).donde(val.r),
+          mover: (pt, val) => ({ r: cursor(labPila(val).datos, 'serie', 1, 20).mover(pt) }) }],
+      },
+      {
+        id: 'dos-ramas', titulo: 'Dos ramas, dos cursores', pieza: 'fis-circuito',
+        consigna: 'R₁ = 2 Ω en serie y dos reóstatos en paralelo. Corre los dos cursores y mira cómo se reparte la corriente en el nudo.',
+        controles: [
+          { id: 'r2', etiqueta: 'R₂', color: 'c-i', min: 1, max: 12, paso: 1, inicio: 3, unidad: 'Ω', decimales: 0 },
+          { id: 'r3', etiqueta: 'R₃', color: 'c-i', min: 1, max: 12, paso: 1, inicio: 6, unidad: 'Ω', decimales: 0 },
+        ],
+        dibujo: val => kirchhoff(val.r3, { r2: val.r2, rmax: 12, ramas: true, v: false }),
+        lectura: val => { const rp = val.r2 * val.r3 / (val.r2 + val.r3), it = 12 / (R1 + rp), vp = it * rp; return [I, ` = ${f(it, 2)}\u00a0A = ${f(vp / val.r2, 2)}\u00a0A + ${f(vp / val.r3, 2)}\u00a0A`]; },
+        arrastres: ['r2', 'r3'].map((id, k) => ({ id: `cursor-${id}`, etiqueta: `cursor del reóstato ${id === 'r2' ? 'R₂' : 'R₃'}`, color: 'c-i',
+          donde: val => cursor(kirchhoff(val.r3, { r2: val.r2, rmax: 12, ramas: true, v: false }).datos, 'ramas', k, 12).donde(val[id]),
+          mover: (pt, val) => ({ [id]: cursor(kirchhoff(val.r3, { r2: val.r2, rmax: 12, ramas: true, v: false }).datos, 'ramas', k, 12).mover(pt) }) })),
+      },
+      Object.assign({ id: 'recta-vi', titulo: 'La recta V contra I', pieza: 'ejes' }, ohm.juega),
+    ],
     historia: {
       texto: 'Antes de 1800 la electricidad se veía en chispas y descargas breves. Ese año, Alessandro Volta apiló discos de dos metales separados por cartón húmedo y obtuvo, por primera vez, una corriente que duraba. Con fuentes así, Georg Ohm midió en 1827 cómo la corriente dependía del largo y del grosor del alambre.',
       pregunta: '¿Qué cambió cuando la electricidad pudo durar?',
