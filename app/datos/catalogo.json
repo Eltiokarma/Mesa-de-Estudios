@@ -3925,7 +3925,14 @@
      "plantillas": [
       "regla-de-tres",
       "poleas-giros"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/ruedas-poleas-engranajes.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-plano.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-matematico.maximos-y-minimos",
