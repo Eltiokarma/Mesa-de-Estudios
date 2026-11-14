@@ -73,9 +73,9 @@ Por qué no vale como presupuesto: el Chromium sin pantalla dibuja el canvas por
 
 ## Tabla viva (versión T), 14 nov, en `main`: para jugar (decisión 20)
 
-**Qué es.** La tabla periódica como lugar para jugar con la información, con la regla 3 nueva: sin preguntas, sin bloqueos y sin revelar nada. Es la pieza mayor del kit de `docs/pogil-v2-rive.md` §7.3. Todavía no está enlazada desde la app ni desde ninguna escena. Se prueba en `nucleo/kit/tabla/probar.html` (`?vista=mesa`, `?lente=ei`, `?tema=oscuro`, `?semilla=7`). El diseño está en `docs/diseno.md`, «Tabla viva».
+**Qué es.** La tabla periódica como lugar para jugar con la información: es el juego libre que pide la regla 3 nueva («Jugar, después predecir, después ver»). La pieza no trae preguntas ni bloqueos; las predicciones de una lección (por ejemplo, el solitario de Mendeléyev) van después del juego, en la lección. Es la pieza mayor del kit de `docs/pogil-v2-rive.md` §7.3. Todavía no está enlazada desde la app ni desde ninguna escena. Se prueba en `nucleo/kit/tabla/probar.html` (`?vista=mesa`, `?lente=ei`, `?tema=oscuro`, `?semilla=7`). El diseño está en `docs/diseno.md`, «Tabla viva».
 
-**Historia.** La primera versión de hoy era 0 % interactiva: tenía tres botones que ordenaban las cartas por el alumno. Gerson la rechazó y de ahí salió la decisión 20.
+**Historia.** La primera versión de hoy era 0 % interactiva: tenía tres botones que ordenaban las cartas por el alumno. Gerson la rechazó con la decisión 20 (en esta conversación se entendió primero como «sin predicción nunca»; se corrigió al integrar con la versión de `main`, que deja la predicción después del juego).
 
 **Qué puede hacer el alumno.**
 - **Tabla:** la de la IUPAC. En el celular va plegada (grupos 1, 2 y 13 a 18), con la franja «3–12» que abre los demás. Con el celular echado entra entera.
@@ -143,7 +143,7 @@ La energía de ionización y la electronegatividad coinciden con las de `atomo-y
    - ¿el arranque se siente lento?;
    - ¿a qué juega el alumno sin que nadie le diga nada?
 2. Verificar con su fuente la electronegatividad (Allred 1961) y el radio. Para el radio, decidir si se cambia al covalente de Cordero (2008), que pide abrir `pubs.rsc.org` o conseguir el artículo. Verificar también los nombres con la RSEQ.
-3. Rehacer, con la regla 20, el solitario de Mendeléyev de §7.3, que hoy está escrito como predicción y revelación.
+3. Rehacer el solitario de Mendeléyev de §7.3 con la regla 3 nueva: primero el juego libre en la mesa y después la predicción, sobre algo que el juego todavía no mostró.
 
 ## Cola de repaso (versión R), 13 y 14 nov, en `main` (sw v175)
 

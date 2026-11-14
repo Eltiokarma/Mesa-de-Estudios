@@ -1,6 +1,7 @@
 /*
- * Tabla viva (docs/pogil-v2-rive.md §7.3; decisión 20: primero se juega con la información). Pieza mayor del kit en
- * HTML: 118 cartas con texto que el lector de pantalla lee. No pregunta, no bloquea y no revela nada: el alumno juega.
+ * Tabla viva (docs/pogil-v2-rive.md §7.3). Es el juego libre de la regla 3 (decisión 20: «Jugar, después predecir,
+ * después ver»). Pieza mayor del kit en HTML: 118 cartas con texto que el lector de pantalla lee. No pregunta ni
+ * bloquea: las predicciones de una lección van después del juego, fuera de la pieza.
  *
  *   const t = Kit.Tabla.montar(contenedor, { vista: 'tabla' | 'mesa', lente: 'nada', cartas: '20', fuentes: false, semilla });
  *   t.poner('mesa')            // 'tabla' (la de la IUPAC, para consultar) | 'mesa' (cartas sueltas para armar)

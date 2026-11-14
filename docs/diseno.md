@@ -230,7 +230,7 @@ Pedido de Gerson: que den ganas de tocar los cursos.
 
 ## Tabla viva (14 nov 2026): para jugar
 
-Es una pieza mayor del kit, en `nucleo/kit/tabla/` (versión T de la sección 9 de `docs/pogil-v2-rive.md`), hecha con la regla 3 nueva (decisión 20): sin preguntas, sin bloqueos y sin revelar nada. Es HTML y no SVG porque son 118 cartas con texto que el lector de pantalla tiene que leer. Página de prueba: `nucleo/kit/tabla/probar.html`.
+Es una pieza mayor del kit, en `nucleo/kit/tabla/` (versión T de la sección 9 de `docs/pogil-v2-rive.md`), hecha para el juego libre de la regla 3 nueva (decisión 20: «Jugar, después predecir, después ver»): la pieza no trae preguntas ni bloqueos; las predicciones van después, en la lección. Es HTML y no SVG porque son 118 cartas con texto que el lector de pantalla tiene que leer. Página de prueba: `nucleo/kit/tabla/probar.html`.
 
 **Decisiones de sistema:**
 - **Dos vistas, con dos botones arriba:**
