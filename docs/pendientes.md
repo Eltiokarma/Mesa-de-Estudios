@@ -38,6 +38,8 @@ Lo que hay que decidir al empezar (proponer a Gerson antes de construir):
 - **De dónde sale el contenido.** Los informes de `docs/investigacion/` (ideas erróneas por tema), el temario del catálogo y los subtemas validados del banco Cuzcano (qué se pregunta). Nada copiado de academias (regla 5).
 - **Cómo se mide** que llegan mejor a los ejercicios: acierto en la práctica y en el repaso, con teoría y sin ella.
 
+**Servidor, integrado a `main` el 14 nov (rama `carga-mejoras`, decisión de Gerson):** el arreglo del interbloqueo que trababa el servidor con unos 450 alumnos entrando a la vez y siete mejoras de rendimiento (`docs/carga.md`). Valores por defecto sin cambios. **Falta, en Railway (lo hace Gerson):** comprobar que el despliegue salió bien (`/api/salud`), `INTENTOS_IP_MAX=100` (con 5, un colegio detrás de una sola IP se bloquea entero) y `WEB_CONCURRENCY=3` si la memoria del plan alcanza. **Antes de miles de alumnos:** argon2 con el perfil OWASP (`ARGON2_T=2`, `ARGON2_M_KIB=19456`, `ARGON2_P=1`) y la tolerancia a una renovación cortada en el camino (no está hecha).
+
 **Pendiente de la versión A de MRU (14 nov):** los umbrales del empujón con el dedo (suave, medio y fuerte; `UMBRALES_DEDO` en `plantillas/mruv/leccion.js`) son hipótesis: calibrarlos en el celular de Gerson. Con su visto bueno, `v2.html` reemplaza a la escena vieja en la app y `mruv` sale de `herramientas/jugar-primero-pendientes.json`.
 
 ## Prueba de estrés de Rive (versión 0), 14 nov, en `main`
