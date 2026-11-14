@@ -4099,7 +4099,15 @@
       "rutas-espacio",
       "cubitos-pintados",
       "rm-lectura-palabras"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/rutas-y-visualizacion-espacial.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-tablero.js",
+       "/nucleo/kit/piezas/rm-plano.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-matematico.tablas-graficos-y-suficiencia",
