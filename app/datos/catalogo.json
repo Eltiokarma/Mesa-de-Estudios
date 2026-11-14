@@ -3088,7 +3088,14 @@
       "geometria-analitica",
       "conicas",
       "geo-analitica"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/geometria/geometria-analitica.js",
+      "requiere": [
+       "/nucleo/kit/piezas/geo-figura.js"
+      ],
+      "ideas": 6
+     }
     },
     {
      "id": "geometria.razonamiento-con-figuras",
