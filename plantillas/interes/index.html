@@ -906,9 +906,10 @@ function prediccion(s){
 $('next').addEventListener('click', () => { if (S.ocupado) return; const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return; desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
-// Regla 3: antes de la primera pregunta (meses con tasa anual), juego libre con la torre de S/ 1000 al 10 % simple, año por año.
+// Regla 3: antes de la primera pregunta (meses con tasa anual), juego libre con la torre de S/ 1000 al 4 % simple, año por año.
+// No usa el 10 % del paso 2 (que se recorre después) ni el 15 % del paso 1: el juego no adelanta ninguna cifra que se ve luego.
 E.compactar(false);
-E.config(torreExplora('simple', 10, 10, 1100, null));
+E.config(torreExplora('simple', 4, 10, 450, null));
 JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
   consigna:'Arrastra el punto rojo de la gráfica y mira cómo crece la torre.', minimo:2, alListo:() => go(S.step) });
 })();
