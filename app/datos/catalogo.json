@@ -2715,7 +2715,14 @@
      "plantillas": [
       "triangulo-estira",
       "geo-triangulos-notables"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/geometria/puntos-notables.js",
+      "requiere": [
+       "/nucleo/kit/piezas/geo-figura.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "geometria.relaciones-metricas",
