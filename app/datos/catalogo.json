@@ -3798,7 +3798,15 @@
       "dados-domino",
       "rm-trasvases",
       "rm-movimientos"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/juegos-recreativos.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-fichas.js",
+       "/nucleo/kit/piezas/rm-plano.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-matematico.cronometria-y-calendarios",
