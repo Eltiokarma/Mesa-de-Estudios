@@ -1423,7 +1423,16 @@
      "plantillas": [
       "cuadrado-crece",
       "sistemas-ecuaciones"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/exponentes-y-productos-notables.js",
+      "requiere": [
+       "/nucleo/kit/piezas/alg-tabla.js",
+       "/nucleo/kit/piezas/alg-baldosas.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "algebra.ecuaciones-lineales-y-cuadraticas",
