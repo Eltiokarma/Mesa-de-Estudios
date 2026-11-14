@@ -57,7 +57,16 @@
       "vectores-poligono",
       "velocidad-relativa",
       "analisis-dimensional"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/fisica/magnitudes-y-vectores.js",
+      "requiere": [
+       "/nucleo/kit/piezas/recta.js",
+       "/nucleo/kit/piezas/fis-dimensiones.js",
+       "/nucleo/kit/piezas/flechas.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "fisica.movimiento-rectilineo",
@@ -96,9 +105,10 @@
       "archivo": "/contenido/teoria/fisica/movimiento-rectilineo.js",
       "requiere": [
        "/nucleo/kit/piezas/pista.js",
-       "/nucleo/kit/piezas/ejes.js"
+       "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/torre.js"
       ],
-      "ideas": 3
+      "ideas": 5
      }
     },
     {
@@ -139,7 +149,15 @@
       "circular-aceleracion-total",
       "circular-giro-combinado",
       "cinematica-medias"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/fisica/movimiento-parabolico-y-circular.js",
+      "requiere": [
+       "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/fis-lienzo.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "fisica.estatica",
@@ -171,7 +189,15 @@
      "plantillas": [
       "estatica",
       "dinamica-fuerzas"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/fisica/estatica.js",
+      "requiere": [
+       "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/fis-lienzo.js"
+      ],
+      "ideas": 6
+     }
     },
     {
      "id": "fisica.dinamica",
@@ -201,7 +227,15 @@
      "plantillas": [
       "dinamica",
       "dinamica-fuerzas"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/fisica/dinamica.js",
+      "requiere": [
+       "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/fis-lienzo.js"
+      ],
+      "ideas": 6
+     }
     },
     {
      "id": "fisica.gravitacion",
@@ -229,7 +263,14 @@
      "plantillas": [
       "gravitacion",
       "dinamica-fuerzas"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/fisica/gravitacion.js",
+      "requiere": [
+       "/nucleo/kit/piezas/fis-lienzo.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "fisica.trabajo-y-energia",
@@ -258,7 +299,15 @@
      "plantillas": [
       "energia",
       "energia-potencia"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/fisica/trabajo-y-energia.js",
+      "requiere": [
+       "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/fis-lienzo.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "fisica.impulso-y-choques",
@@ -289,7 +338,17 @@
       "choques",
       "velocidad-relativa",
       "impulso-grafica"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/fisica/impulso-y-choques.js",
+      "requiere": [
+       "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/fis-riel.js",
+       "/nucleo/kit/piezas/torre.js",
+       "/nucleo/kit/piezas/recta.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "fisica.oscilaciones",
@@ -318,7 +377,15 @@
      "plantillas": [
       "mas",
       "mas-horaria"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/fisica/oscilaciones.js",
+      "requiere": [
+       "/nucleo/kit/piezas/fis-resorte.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "fisica.ondas-mecanicas",
@@ -348,7 +415,14 @@
      "plantillas": [
       "ondas",
       "ondas-llegadas"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/fisica/ondas-mecanicas.js",
+      "requiere": [
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "fisica.fluidos",
@@ -379,7 +453,15 @@
      "plantillas": [
       "fluidos",
       "fluidos-hidrodinamica"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/fisica/fluidos.js",
+      "requiere": [
+       "/nucleo/kit/piezas/fis-vasos.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 6
+     }
     },
     {
      "id": "fisica.temperatura-y-calor",
@@ -410,7 +492,14 @@
      "plantillas": [
       "calorimetria",
       "calor-escalas"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/fisica/temperatura-y-calor.js",
+      "requiere": [
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 6
+     }
     },
     {
      "id": "fisica.termodinamica",
@@ -436,7 +525,15 @@
      "grado": 5,
      "plantillas": [
       "termodinamica"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/fisica/termodinamica.js",
+      "requiere": [
+       "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/fis-cuentas.js"
+      ],
+      "ideas": 6
+     }
     },
     {
      "id": "fisica.electrostatica",
@@ -472,7 +569,16 @@
       "electrostatica",
       "condensadores",
       "cargas-sistema"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/fisica/electrostatica.js",
+      "requiere": [
+       "/nucleo/kit/piezas/fis-lienzo.js",
+       "/nucleo/kit/piezas/fis-circuito.js",
+       "/nucleo/kit/piezas/fis-cuentas.js"
+      ],
+      "ideas": 6
+     }
     },
     {
      "id": "fisica.corriente-y-circuitos",
@@ -506,7 +612,15 @@
       "circuitos-cc",
       "circuitos-mallas",
       "circuitos-joule"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/fisica/corriente-y-circuitos.js",
+      "requiere": [
+       "/nucleo/kit/piezas/fis-circuito.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 6
+     }
     },
     {
      "id": "fisica.magnetismo",
@@ -535,7 +649,14 @@
      "plantillas": [
       "magnetismo",
       "carga-en-campo"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/fisica/magnetismo.js",
+      "requiere": [
+       "/nucleo/kit/piezas/fis-lienzo.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "fisica.induccion-electromagnetica",
@@ -565,7 +686,16 @@
      "plantillas": [
       "induccion",
       "induccion-flujo"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/fisica/induccion-electromagnetica.js",
+      "requiere": [
+       "/nucleo/kit/piezas/flechas.js",
+       "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/fis-espira.js"
+      ],
+      "ideas": 6
+     }
     },
     {
      "id": "fisica.ondas-electromagneticas",
@@ -593,7 +723,16 @@
      "plantillas": [
       "ondas-electromagneticas",
       "refraccion-snell"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/fisica/ondas-electromagneticas.js",
+      "requiere": [
+       "/nucleo/kit/piezas/fis-onda-em.js",
+       "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/recta.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "fisica.optica-geometrica",
@@ -625,7 +764,15 @@
       "optica-espejo-esferico",
       "refraccion-snell",
       "ondas-electromagneticas"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/fisica/optica-geometrica.js",
+      "requiere": [
+       "/nucleo/kit/piezas/fis-interfaz.js",
+       "/nucleo/kit/piezas/fis-banco-optico.js"
+      ],
+      "ideas": 6
+     }
     },
     {
      "id": "fisica.fisica-moderna",
@@ -656,7 +803,16 @@
      "plantillas": [
       "fisica-moderna",
       "relatividad"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/fisica/fisica-moderna.js",
+      "requiere": [
+       "/nucleo/kit/piezas/fis-fotones.js",
+       "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/recta.js"
+      ],
+      "ideas": 6
+     }
     }
    ]
   },
