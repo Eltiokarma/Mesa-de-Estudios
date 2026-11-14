@@ -56,6 +56,20 @@
     ir(pal, '');
     return [...out].sort();
   }
+  // Gesto directo (docs/teoria.md §4b) sobre arit-tabla: se tira del borde de la tabla (abajo, una fila más; a la
+  // derecha, una columna más). La manija va en el borde para no tapar los rótulos; el lector ajusta al paso y al rango.
+  const TABLA = () => Kit.piezas['arit-tabla'];
+  // Cuántas columnas de datos (después de la de encabezado) caben hasta x, si hay `k` ahora: en el borde derecho de la
+  // columna j da exactamente j, y entre bordes se interpola (más allá del último, con el ancho de la última columna).
+  const columnasHasta = (g, x, k) => {
+    const borde = j => g.xs[j + 1];
+    if (x >= borde(k)) return k + (x - borde(k)) / Math.max(1, borde(k) - borde(k - 1));
+    for (let j = k - 1; j >= 0; j--) if (x >= borde(j)) return j + (x - borde(j)) / (borde(j + 1) - borde(j));
+    return 0;
+  };
+  // Filas hasta el punto y: en el borde de abajo de la fila i (contada desde 1) da exactamente i.
+  const filasHasta = (g, y) => (y - g.filaY(0)) / g.altoFila;
+  const bordeDerecho = (g, k) => ({ x: g.xs[k + 1], y: g.celda(0, 0).y });
   const repes = pal => { const c = {}; for (const x of pal) c[x] = (c[x] || 0) + 1; return Object.values(c).filter(k => k > 1); };
 
   // Dos grupos de fichas, uno al lado del otro (sin multiplicar: eso es lo que se pregunta).
@@ -64,6 +78,8 @@
   // ---------- Idea 1: «y» multiplica, «o» suma ----------
   // Cambia: cuántas entradas y cuántos segundos. Permanece: una casilla por menú. Progresa: el rectángulo de casillas.
   // Se reserva: una elección con «o» (una sola cosa). Debe verse: «y» llena un rectángulo; «o» pone bloques lado a lado.
+  // Dos representaciones a propósito (auditoría, hallazgo 9): la tabla es el rectángulo del «y»; el «o» no forma
+  // rectángulo, así que «Mira» pone las opciones en fichas lado a lado y su segundo paso arma el 3 · 2 como la tabla.
   const ENT = ['sopa', 'ceviche', 'papa', 'tamal'], SEG = ['lomo', 'ají', 'trucha', 'cuy'];
   const menu = (e, s) => ({ columnas: ['', ...SEG.slice(0, s).map(t => ({ t, color: 'i' }))], cabeza: true, filasMax: 4,
     filas: ENT.slice(0, e).map(t => [{ t, color: 'o' }, ...SEG.slice(0, s).map(() => ({ t: '●', color: 'd' }))]) });
@@ -80,8 +96,17 @@
         { id: 's', etiqueta: 'Segundos', color: 'c-i', min: 1, max: 4, paso: 1, inicio: 3, decimales: 0 },
       ],
       dibujo: v => ({ datos: menu(v.e, v.s), estado: {} }),
-      lectura: v => [`${v.e} entradas y ${v.s} segundos: ${v.e * v.s} menús`],
+      lectura: v => [`${v.e} ${v.e === 1 ? 'entrada' : 'entradas'} y ${v.s} ${v.s === 1 ? 'segundo' : 'segundos'}: ${v.e * v.s} ${v.e * v.s === 1 ? 'menú' : 'menús'}`],
       minimo: 3,
+      // Se tira del borde de abajo (una entrada más) y del borde derecho (un segundo más).
+      arrastres: [
+        { id: 'entradas', etiqueta: 'última entrada', color: 'c-o',
+          donde: v => { const g = TABLA().geometria(menu(v.e, v.s)); return { x: g.celda(0, 0).x, y: g.filaY(v.e) }; },
+          mover: (pt, v) => ({ e: filasHasta(TABLA().geometria(menu(v.e, v.s)), pt.y) }) },
+        { id: 'segundos', etiqueta: 'último segundo', color: 'c-i',
+          donde: v => bordeDerecho(TABLA().geometria(menu(v.e, v.s)), v.s),
+          mover: (pt, v) => ({ s: columnasHasta(TABLA().geometria(menu(v.e, v.s)), pt.x, v.s) }) },
+      ],
     },
     predice: {
       pregunta: 'De Juliaca a Puno puedes ir en una de 3 combis o en uno de 2 buses. ¿De cuántas formas puedes viajar?',
@@ -109,7 +134,7 @@
     },
     regla: {
       texto: 'Si se hace una etapa y después otra, las formas se multiplican. Si se elige una sola opción entre grupos que no se mezclan, se suman.',
-      ecuacion: ['«y»: m · k   ·   «o»: m + k'],
+      ecuacion: ['«y»: m · k', '   ·   ', '«o»: m + k'],
       condicion: 'en «o», ninguna opción está en los dos grupos; si alguna se repite, se resta. En «y», las etapas son independientes.',
     },
     ahoraTu: {
@@ -147,6 +172,11 @@
     columnas: ['puesto', ...Array.from({ length: r }, (_, k) => ({ t: `${k + 1}.º`, color: 'i' }))], cabeza: true, filasMax: 1,
     filas: [[{ t: 'opciones', color: 'o' }, ...Array.from({ length: r }, (_, k) => ({ t: String(rep ? n : Math.max(0, n - k)), color: 'd', paso: k + 1 }))]],
   });
+  const manijaPuestos = datosDe => ({
+    id: 'puestos', etiqueta: 'último puesto', color: 'c-i',
+    donde: v => bordeDerecho(TABLA().geometria(datosDe(v)), v.r),
+    mover: (pt, v) => ({ r: columnasHasta(TABLA().geometria(datosDe(v)), pt.x, v.r) }),
+  });
   const variaciones = {
     id: 'variaciones',
     titulo: 'Cada puesto, una opción menos',
@@ -160,8 +190,10 @@
         { id: 'r', etiqueta: 'r', color: 'c-i', min: 1, max: 6, paso: 1, inicio: 2, decimales: 0 },
       ],
       dibujo: v => ({ datos: casilleros(v.n, v.r), estado: { paso: v.r } }),
-      lectura: v => [`${Array.from({ length: v.r }, (_, k) => Math.max(0, v.n - k)).join(' · ')} = ${f(V(v.n, v.r))} filas`],
+      lectura: v => [`${Array.from({ length: v.r }, (_, k) => Math.max(0, v.n - k)).join(' · ')} = ${f(V(v.n, v.r))} órdenes`],
       minimo: 3,
+      // Se tira del borde derecho: un puesto más, con una opción menos.
+      arrastres: [manijaPuestos(v => casilleros(v.n, v.r))],
     },
     predice: {
       pregunta: '¿De cuántas formas se pueden ordenar 5 libros distintos en un estante?',
@@ -185,7 +217,7 @@
     },
     regla: {
       texto: 'Ordenar r de n objetos distintos da n(n − 1)… con r factores: es la variación. Si se ordenan todos, es n factorial.',
-      ecuacion: [{ sub: ['V', [N, ',', R]] }, ' = ', { frac: [[N, '!'], ['(', N, ' − ', R, ')!']] }, '   ·   ', { sub: ['P', N] }, ' = ', N, '!'],
+      ecuacion: [{ sub: ['V', [N, ',', R]] }, ' = ', { frac: [[N, '!'], [{ llave: ['(', N, ' − ', R, ')!'], nota: 'los que sobran' }]] }, '   ·   ', { sub: ['P', N] }, ' = ', N, '!'],
       condicion: 'objetos distintos, sin repetir y el orden importa. 0! = 1. Si se puede repetir, cada puesto tiene n opciones: nʳ.',
     },
     ahoraTu: {
@@ -238,6 +270,10 @@
       dibujo: v => ({ datos: giros(v.n), estado: {} }),
       lectura: v => [`${v.n} órdenes en fila, una sola ronda`],
       minimo: 2,
+      // Se tira del borde de abajo: un amigo más es una fila (y una silla) más.
+      arrastres: [{ id: 'amigos', etiqueta: 'último giro', color: 'c-o',
+        donde: v => { const g = TABLA().geometria(giros(v.n)); return { x: g.celda(0, 0).x, y: g.filaY(v.n) }; },
+        mover: (pt, v) => ({ n: filasHasta(TABLA().geometria(giros(v.n)), pt.y) }) }],
     },
     predice: {
       pregunta: '¿De cuántas formas distintas se pueden sentar 5 personas en una mesa redonda?',
@@ -261,7 +297,7 @@
     },
     regla: {
       texto: 'En una ronda, girar a todos no cambia la disposición. Se fija a una persona y se ordenan las demás en fila.',
-      ecuacion: [{ sub: ['P', ['c', '(', N, ')']] }, ' = (', N, ' − 1)!'],
+      ecuacion: [{ sub: ['P', ['c', '(', N, ')']] }, ' = ', { llave: ['(', N, ' − 1)!'], nota: 'resto en fila', color: 'c-o' }],
       condicion: 'personas distintas y solo los giros se toman como iguales. Si también reflejar es igual (un collar), se divide entre 2.',
     },
     ahoraTu: {
@@ -327,7 +363,7 @@
     },
     regla: {
       texto: 'Si de n objetos hay a iguales de un tipo, b de otro…, cada orden se repite a!·b!… veces. Se divide entre eso.',
-      ecuacion: [{ frac: [[N, '!'], 'a! · b! ⋯'] }],
+      ecuacion: [{ frac: [[N, '!'], [{ llave: ['a! · b! ⋯'], nota: 'órdenes repetidos', color: 'c-h' }]] }],
       condicion: 'se usan todos los objetos y los iguales no se distinguen. Si todos son distintos, queda n!.',
     },
     ahoraTu: {
@@ -394,7 +430,7 @@
     },
     regla: {
       texto: 'Una combinación es un grupo sin orden. Se cuentan los órdenes y se divide entre los r! órdenes de cada grupo.',
-      ecuacion: [{ sub: ['C', [N, ',', R]] }, ' = ', { frac: [[N, '!'], [R, '! (', N, ' − ', R, ')!']] }, ' = ', { sub: ['C', [N, ',', N, ' − ', R]] }],
+      ecuacion: [{ sub: ['C', [N, ',', R]] }, ' = ', { frac: [[N, '!'], [{ llave: [R, '!'], nota: 'por grupo', color: 'c-h' }, ' (', N, ' − ', R, ')!']] }, '   ·   ', { sub: ['C', [N, ',', R]] }, ' = ', { sub: ['C', [N, ',', N, ' − ', R]] }],
       condicion: 'objetos distintos y el orden no importa. Si los puestos tienen roles distintos, no se divide: es una variación.',
     },
     ahoraTu: {
@@ -417,11 +453,53 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Grupos contra órdenes: una fila por cada r de 0 a 8; la de r y la de n − r tienen los mismos grupos. Con r > n no
+  // hay forma de elegir: esas filas dan 0 y se ven atenuadas.
+  const tablaGrupos = (n, r) => ({
+    columnas: [{ t: 'r', color: 'i' }, { t: 'órdenes', color: 'd' }, { t: 'r!', color: 'h' }, { t: 'grupos', color: 'd' }], filasMax: 9,
+    filas: Array.from({ length: 9 }, (_, k) => [{ t: String(k), color: 'i', tenue: k > n }, { t: f(V(n, k)), tenue: k > n }, { t: f(fact(k)), tenue: k > n }, { t: f(C(n, k)), color: 'd', resalta: k <= n && (k === r || k === n - r), tenue: k > n }]),
+  });
+
   return {
     unidad: 'aritmetica.analisis-combinatorio',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/arit-tabla.js', '/nucleo/kit/piezas/arit-fichas.js'],
+    // Laboratorio: juego libre, sin preguntas. Los casilleros libres juntan con y sin repetición y el caso de más puestos
+    // que personas; la tabla de grupos compara órdenes y grupos para todo r a la vez; la tercera es el menú de la idea 1.
+    laboratorio: [
+      {
+        id: 'casilleros-libres', titulo: 'Casilleros con y sin repetir', pieza: 'arit-tabla',
+        consigna: 'Llena r puestos con n objetos. Elige si un objeto puede repetirse. Prueba más puestos que objetos.',
+        controles: [
+          { id: 'n', etiqueta: 'n', color: 'c-o', min: 2, max: 10, paso: 1, inicio: 4, decimales: 0 },
+          { id: 'r', etiqueta: 'r', color: 'c-i', min: 1, max: 6, paso: 1, inicio: 3, decimales: 0 },
+          { id: 'rep', etiqueta: 'Repetir', opciones: [{ valor: 'no', texto: 'sin repetir' }, { valor: 'si', texto: 'se puede repetir' }] },
+        ],
+        dibujo: v => ({ datos: casilleros(v.n, v.r, v.rep === 'si'), estado: { paso: v.r } }),
+        lectura: v => {
+          const xs = Array.from({ length: v.r }, (_, k) => (v.rep === 'si' ? v.n : Math.max(0, v.n - k)));
+          return [`${v.rep === 'si' ? 'repitiendo' : 'sin repetir'}: ${xs.join(' · ')} = ${f(xs.reduce((a, b) => a * b, 1))}`];
+        },
+        arrastres: [manijaPuestos(v => casilleros(v.n, v.r, v.rep === 'si'))],
+      },
+      {
+        id: 'grupos-ordenes', titulo: 'Órdenes contra grupos', pieza: 'arit-tabla',
+        consigna: 'Cada fila elige r de n. Compara los órdenes con los grupos. ¿Qué otra fila tiene los mismos grupos? Prueba r mayor que n.',
+        controles: [
+          { id: 'n', etiqueta: 'n', color: 'c-o', min: 1, max: 8, paso: 1, inicio: 5, decimales: 0 },
+          { id: 'r', etiqueta: 'r', color: 'c-i', min: 0, max: 8, paso: 1, inicio: 2, decimales: 0 },
+        ],
+        dibujo: v => ({ datos: tablaGrupos(v.n, v.r), estado: { fila: v.r } }),
+        lectura: v => [`n = ${v.n}, r = ${v.r}: ${f(V(v.n, v.r))} órdenes ÷ ${f(fact(v.r))} = ${f(C(v.n, v.r))} grupos`],
+        // Se baja por la tabla: la fila tocada es r (la manija va en el borde de la columna r, sin tapar el número).
+        arrastres: [{ id: 'fila-r', etiqueta: 'fila de r', color: 'c-i',
+          donde: v => { const g = TABLA().geometria(tablaGrupos(v.n, v.r)); return { x: g.xs[1], y: g.celda(v.r, 0).y }; },
+          mover: (pt, v) => ({ r: filasHasta(TABLA().geometria(tablaGrupos(v.n, v.r)), pt.y) - 0.5 }) }],
+      },
+      Object.assign({ id: 'menu', titulo: 'El menú', pieza: 'arit-tabla' }, principios.juega),
+    ],
     historia: {
       texto: 'El triángulo aritmético, que reúne las cuentas de esta unidad, se conocía en varias tradiciones antes de Pascal. Su aporte fue estudiar con orden sus propiedades y usos. La dificultad de entonces es la de hoy: decidir qué resultados cuentan como distintos. El orden y la repetición cambian lo que se cuenta; la fórmula viene después.',
       pregunta: '¿Cuándo dos resultados son en realidad el mismo?',
