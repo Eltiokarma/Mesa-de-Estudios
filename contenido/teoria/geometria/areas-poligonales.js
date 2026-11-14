@@ -116,7 +116,7 @@
     },
     regla: {
       texto: 'El área de un triángulo es base por altura sobre dos. Con dos lados y el ángulo entre ellos, es la mitad de a · b · sen C.',
-      ecuacion: ['S = ', frac([{ llave: [cb], nota: 'base', color: 'c-d' }, ' · ', { llave: [ch], nota: 'altura ⟂', color: 'c-h' }], '2'), '   ·   S = ', frac(['a · b · ', { llave: ['sen C'], nota: 'C entre a y b', color: 'c-i' }], '2')],
+      ecuacion: ['S = ', frac([{ llave: [cb], nota: 'base', color: 'c-d' }, ' · ', { llave: [ch], nota: 'altura ⟂', color: 'c-h' }], '2'), '   ·   S = ', frac(['a · b · ', { llave: ['sen C'], nota: 'ángulo entre ambos', color: 'c-i' }], '2')],
       condicion: 'la altura es perpendicular a la recta de la base, aunque caiga fuera; C es el ángulo entre a y b.',
       voz: 'La altura no es un lado inclinado: búscala en perpendicular.',
     },
