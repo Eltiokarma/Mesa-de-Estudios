@@ -1,6 +1,6 @@
 # Pendientes y traspaso
 
-Actualizado el 13 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Estado al 13 nov, tarde» (la cola de repaso, recién hecha, va justo antes).
+Actualizado el 14 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Estado al 13 nov, tarde». Justo antes van lo recién hecho: la prueba de estrés de Rive (versión 0, a la espera de la cifra del celular de Gerson) y la cola de repaso.
 
 ## Cómo arrancar una sesión nueva
 
@@ -8,7 +8,7 @@ Actualizado el 13 de noviembre de 2026. La siguiente sesión empieza aquí: lée
 npm test
 ```
 
-Deben pasar 8089 pruebas. El servidor tiene las suyas: `cd servidor && pip install -r requirements.txt -r requirements-dev.txt && python -m pytest -q` (83).
+Deben pasar 8108 pruebas. El servidor tiene las suyas: `cd servidor && pip install -r requirements.txt -r requirements-dev.txt && python -m pytest -q` (83).
 
 ```bash
 npm run dev
@@ -26,6 +26,50 @@ Si hay que hacer OCR, instala tesseract en español: `apt-get install -y tessera
 
 - **Si el servidor local muere:** se reinicia con `node herramientas/servidor.js`. También hay que reiniciarlo después de cambiar `herramientas/construir-catalogo.js`, porque guarda el módulo en memoria.
 - **Para verificar a mano:** Playwright y Chromium ya vienen instalados en el entorno en la nube (`require('playwright')`). Las capturas *fullPage* pierden la emulación táctil, así que lo que depende de `hover` se revisa con capturas normales.
+
+## Prueba de estrés de Rive (versión 0), 14 nov, en `main`
+
+**Qué hay.** Nada de la app cambió: es una página de prueba aparte.
+- `app/mascotas/estres.html` y `estres.js`, junto a `probar.html`. Se abre en <https://mesa-de-estudios.vercel.app/app/mascotas/estres.html>; en local, `npm run dev` y <http://localhost:4173/app/mascotas/estres.html>. Todo se sirve desde el repo: no pide nada a la nube ni a rive.app.
+- Nueve escenarios: sin Rive (línea base), 1 chica, 1 grande, 1 grande que sigue el dedo, grande + chica (el tope de la sección 6.3), dedo + chica, 2 grandes, grande + dedo + chica y 3 grandes. La chica mide 72 px, como la mascota; la grande, el ancho de la figura (hasta 320 px). Cada escenario calienta 1,5 s y mide dos ventanas de 5 s. La prueba completa dura unos dos minutos.
+- **Qué mide**, por ventana: los cuadros por segundo (la media y el percentil 5), los cuadros perdidos, la peor pausa y las tareas largas. También la memoria de JavaScript, si el navegador la da (`performance.memory`). `measureUserAgentSpecificMemory` solo funciona con la página aislada (COOP/COEP), y Vercel no la sirve así.
+  - Ojo con la memoria: Chrome redondea esa cifra y la actualiza poco, y no cuenta el wasm de Rive. Sirve para notar un salto grande, no para fijar el presupuesto.
+- En la prueba completa, la página mueve la pelota del dedo sola, siguiendo una curva fija, para que la cifra no dependa de cómo se mueva la mano. «Probar a mano» deja arrastrarla de verdad y «Medir 5 s» agrega una fila.
+- El resultado se copia o se descarga en JSON. Trae el celular que escribió Gerson, los datos del navegador (núcleos, `deviceMemory`, pantalla, `devicePixelRatio`) y los Hz de la pantalla.
+- **Los `.riv` de prueba son propios.** Están en `app/mascotas/estres/`: `chica.riv` (un gatito de 10 formas, 1,6 KB), `grande.riv` (128 estrellas animadas, 98 KB, al borde del tope de 100 KB) y `dedo.riv` (una pelota con las entradas numéricas `x` e `y`, 17 KB).
+  - Salen de `herramientas/estres-rive/generar.js`, que usa un escritor mínimo del formato hecho aquí (`riv.js`, con las claves públicas de rive-runtime). No hay licencia de terceros de por medio. `riv.test.js` comprueba que los archivos subidos sean los que da el generador.
+  - Todos animan en bucle sin descanso: es el peor caso. En la app, Rive se pausa cuando nada se mueve.
+- Para comparar runtimes, `?runtime=2.43.1` carga `app/vendor/rive-2.43.1/` (MIT, solo para esta prueba; la app sigue con la 2.50.0). Si no hay diferencia en el celular, esa carpeta se borra.
+
+**Primera cifra, emulada (no vale como presupuesto).** Playwright con Chromium sin pantalla, como Pixel 5 (`devicePixelRatio` 2,75) y la CPU frenada por CDP. Media de cuadros por segundo; entre paréntesis, el percentil 5.
+
+| Escenario | 2.50.0, CPU ×4 | 2.50.0, CPU ×6 | 2.43.1, CPU ×4 | 2.43.1, CPU ×6 |
+| --- | --- | --- | --- | --- |
+| Sin Rive | 59,8 (59,9) | 59,8 (59,5) | 59,8 (59,9) | 59,9 (59,9) |
+| 1 chica | 59,8 (59,5) | 59,8 (59,8) | 59,8 (59,5) | 59,8 (59,9) |
+| 1 grande | 14,2 (12) | 9 (7,7) | 13,7 (12) | 8,7 (6,1) |
+| 1 dedo | 57,7 (59,5) | 31,5 (20) | 54,4 (29,9) | 31,8 (20) |
+| Grande + chica | 13,2 (12) | 8,8 (6,8) | 13,2 (10) | 8,4 (7,5) |
+| Dedo + chica | 48 (29,9) | 30,8 (20) | 46,3 (29,9) | 29,3 (20) |
+| 2 grandes | 6,7 (6) | 4,3 (3,7) | 6,6 (5,3) | 4,2 (3,4) |
+| Grande + dedo + chica | 10,3 (7,5) | 6,8 (5,5) | 10,1 (8,6) | 6,3 (5,5) |
+| 3 grandes | 5,9 (4,8) | 3,9 (3,3) | 5,7 (4,7) | 3,5 (2,7) |
+
+Lo que sugiere, como hipótesis:
+- La mascota sola no cuesta nada.
+- Un lienzo de unas 40 formas (el dedo) aguanta con la CPU ×4.
+- Uno de 128 formas animadas a la vez se cae a 14 cuadros/s.
+- 2.43.1 y 2.50.0 dan lo mismo aquí.
+
+Por qué no vale como presupuesto: el Chromium sin pantalla dibuja el canvas por software, y frenar la CPU no imita la GPU ni la memoria de un celular. **La cifra que vale es la del celular de Gerson.** Si la grande también se cae allá, la regla 6.3 se escribe en formas animadas a la vez, no en número de lienzos.
+
+**Qué tiene que hacer Gerson** (en su celular de 4 GB, con Chrome):
+1. Abrir <https://mesa-de-estudios.vercel.app/app/mascotas/estres.html>. Cerrar las otras apps; batería por encima del 30 % y sin ahorro de energía.
+2. Escribir en «Celular»: marca y modelo, memoria, versión de Chrome y batería. Si está enchufado, también anotarlo.
+3. Tocar «Correr la prueba completa» y no tocar nada durante unos dos minutos. Descargar el JSON.
+4. Repetir con <https://mesa-de-estudios.vercel.app/app/mascotas/estres.html?runtime=2.43.1> y descargar el segundo JSON.
+5. En «Probar a mano», poner «2: dedo + chica», arrastrar la pelota y tocar «Medir 5 s» mientras arrastra. Anotar en una línea si se sintió pegada al dedo o con retraso.
+6. Mandar los dos JSON y esa línea. Con eso se fija el presupuesto de la sección 6.3: cuántos lienzos, de qué tamaño, cuántas formas animadas y el umbral para pasar al respaldo SVG.
 
 ## Cola de repaso (versión R), 13 y 14 nov, en `main` (sw v175)
 
