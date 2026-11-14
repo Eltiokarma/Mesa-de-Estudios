@@ -3894,7 +3894,15 @@
      "plantillas": [
       "traslados-sucesos",
       "rm-ciclos"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/frecuencia-de-sucesos.js",
+      "requiere": [
+       "/nucleo/kit/piezas/recta.js",
+       "/nucleo/kit/piezas/rm-tablero.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-matematico.ruedas-poleas-engranajes",
