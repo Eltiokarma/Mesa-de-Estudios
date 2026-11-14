@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Prueba de estrés de Rive · Laboratorio de Admisión</title>
+<style>
+  :root { --crema: #fbf3ec; --tarjeta: #fffaf5; --tinta: #2d2340; --suave: #5e5270; --borde: #3b2a52; --marca: #7f5ae0; color-scheme: light; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--crema); color: var(--tinta); font: 16px/1.5 system-ui, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 12px 16px 32px; }
+  h1 { font-size: 1.4rem; line-height: 1.2; margin: 8px 0 4px; }
+  h2 { font-size: 1.1rem; margin: 0 0 8px; }
+  p { margin: 0 0 8px; }
+  ol { margin: 0 0 8px; padding-left: 20px; }
+  .chico { color: var(--suave); font-size: .9rem; }
+  .tarjeta { background: var(--tarjeta); border: 2px solid var(--borde); border-radius: 16px; box-shadow: 0 4px 0 #e6d9cc; padding: 14px; margin: 14px 0; }
+  .fila { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 8px; }
+  button, select, input[type=text] { min-height: 44px; font: inherit; color: var(--tinta); background: #fff; border: 2px solid var(--borde); border-radius: 12px; padding: 6px 10px; }
+  button { font-weight: 600; cursor: pointer; box-shadow: 0 3px 0 #d8cbe8; }
+  button.principal { background: var(--marca); color: #fff; }
+  button:disabled { opacity: .45; cursor: default; }
+  button:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid var(--marca); outline-offset: 2px; }
+  input[type=text] { flex: 1 1 220px; }
+  select { max-width: 100%; }
+  #barra { position: sticky; top: 0; z-index: 2; background: var(--crema); padding: 6px 0; border-bottom: 2px solid #e6d9cc; }
+  #estado { font-weight: 600; margin: 0; }
+  #vivo { font-variant-numeric: tabular-nums; }
+  /* El escenario cabe en pantalla: los lienzos se encaballan para que ninguno quede fuera de la vista. */
+  #escenario { position: relative; height: min(440px, 62vh); background: #fff; border: 2px dashed #cbbfd9; border-radius: 12px; overflow: hidden; margin-top: 8px; }
+  .lienzo { position: absolute; border-radius: 8px; box-shadow: 0 0 0 1px #cbbfd9; background: #fffaf5; }
+  .lienzo.dedo { touch-action: none; cursor: grab; }
+  table { border-collapse: collapse; width: 100%; font-size: .9rem; font-variant-numeric: tabular-nums; }
+  th, td { border-bottom: 1px solid #e6d9cc; padding: 4px 6px; text-align: right; }
+  th[scope=row], thead th:first-child { text-align: left; font-weight: 500; }
+  .tabla { overflow-x: auto; }
+  textarea { width: 100%; min-height: 140px; font: 12px/1.4 ui-monospace, monospace; border: 2px solid var(--borde); border-radius: 12px; padding: 8px; }
+  code { background: #f1e9f9; border-radius: 6px; padding: 0 4px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Prueba de estrés de Rive</h1>
+  <p class="chico">Página de prueba, no es parte de la app. Mide cuántas animaciones de Rive aguanta este celular a la vez (versión 0 de <code>docs/pogil-v2-rive.md</code>). Runtime <strong id="runtime"></strong> · <a id="otro-runtime" href="#"></a></p>
+
+  <section class="tarjeta" aria-labelledby="t-como">
+    <h2 id="t-como">Cómo se corre</h2>
+    <ol>
+      <li>Cierra las otras apps y deja el celular con más de 30 % de batería, sin ahorro de energía.</li>
+      <li>Escribe abajo qué celular es. Ejemplo: «Samsung A14, 4 GB, Chrome 131, batería 70 %».</li>
+      <li>Toca «Correr la prueba completa» y no toques la pantalla. Dura unos dos minutos. No cambies de app: si la página se oculta, esa medición no vale.</li>
+      <li>Al final, toca «Descargar» o «Copiar» y manda el resultado.</li>
+    </ol>
+    <div class="fila"><label for="nota" class="chico">Celular</label><input type="text" id="nota" placeholder="Marca, modelo, memoria, navegador"></div>
+    <div class="fila">
+      <button type="button" class="principal" id="correr">Correr la prueba completa</button>
+      <button type="button" id="detener">Detener</button>
+    </div>
+    <p class="chico" id="memoria-aviso"></p>
+  </section>
+
+  <div id="barra" role="status" aria-live="polite">
+    <p id="estado">Listo para empezar.</p>
+    <p class="chico">En vivo: <span id="vivo">—</span></p>
+  </div>
+  <div id="escenario" aria-label="Escenario de la prueba"></div>
+
+  <section class="tarjeta" aria-labelledby="t-mano">
+    <h2 id="t-mano">Probar a mano</h2>
+    <p class="chico">Para sentirlo con el dedo: elige un escenario, ponlo y arrastra la pelota. «Medir 5 s» agrega una fila al resultado.</p>
+    <div class="fila">
+      <select id="mano" aria-label="Escenario"></select>
+      <button type="button" id="montar">Poner</button>
+      <button type="button" id="medir">Medir 5 s</button>
+    </div>
+  </section>
+
+  <section class="tarjeta" id="salida" hidden aria-labelledby="t-res">
+    <h2 id="t-res">Resultado</h2>
+    <div class="tabla" id="tabla"></div>
+    <div class="fila">
+      <button type="button" class="principal" id="descargar">Descargar (.json)</button>
+      <button type="button" id="copiar">Copiar</button>
+    </div>
+    <p class="chico">Media: cuadros por segundo en cada ventana de 5 s. Percentil 5: el ritmo del 5 % de cuadros más lentos (la peor ventana). Perdidos: cuadros que la pantalla esperaba y no llegaron.</p>
+    <label for="json" class="chico">El mismo resultado, en texto</label>
+    <textarea id="json" readonly></textarea>
+  </section>
+</main>
+<script src="estres.js"></script>
+</body>
+</html>
