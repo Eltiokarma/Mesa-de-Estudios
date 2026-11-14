@@ -44,6 +44,10 @@
     }
     return ops.slice(0, 4);
   }
+  // Gesto directo (docs/teoria.md §4b): la manija vive en las coordenadas de ejes.geometria, con los mismos datos que
+  // dibuja el juego; su inversa (Xi, Yi) da los valores y el lector los ajusta al paso y al rango de cada control.
+  const EJ = () => Kit.piezas.ejes;
+  const enEjes = (datos, xx, yy) => { const g = EJ().geometria(datos); return { x: g.X(xx), y: g.Y(yy) }; };
   const muestras = (fn, x0, x1, n = 81) => Array.from({ length: n }, (_, i) => { const u = x0 + (x1 - x0) * i / (n - 1); return [u, fn(u)]; });
 
   // ---------- Idea 1: la cresta avanza, la cuerda no ----------
@@ -73,6 +77,12 @@
       dibujo: val => ({ datos: cuerda(val.t), estado: {} }),
       lectura: val => ['Cresta: x = ', f(crestaEn(val.t), 2), ' m · P: ', y, ` = ${f(onda(val.t)(XP), 1)} cm`],
       minimo: 3,
+      // Arrastra la cresta hacia la derecha: el reloj avanza lo que ella tarda en llegar ahí (2 m cada segundo).
+      arrastres: [
+        { id: 'cresta', etiqueta: 'cresta de la onda', color: 'c-h',
+          donde: val => enEjes(cuerda(val.t), crestaEn(val.t), A1),
+          mover: (pt, val) => ({ t: (EJ().geometria(cuerda(val.t)).Xi(pt.x) - L1 / 4) / V1 }) },
+      ],
     },
     predice: {
       pregunta: 'Durante un período completo la cresta avanza 2 m hacia la derecha. En ese tiempo, ¿qué camino hace el punto P de la cuerda?',
@@ -102,7 +112,7 @@
     },
     regla: {
       texto: 'Una onda transporta energía y forma, no materia: cada punto del medio oscila en su lugar. Si oscila perpendicular al avance es transversal; si a lo largo, longitudinal.',
-      ecuacion: ['transversal: cuerda, ola   ·   longitudinal: sonido, resorte comprimido'],
+      ecuacion: ['transversal: cuerda, ola', '   ·   ', 'longitudinal: sonido, resorte comprimido'],
       condicion: 'onda mecánica en un medio elástico: necesita materia que oscile.',
     },
     ahoraTu: {
@@ -134,6 +144,7 @@
   // Cambia: la frecuencia con que se agita la cuerda · Permanece: la cuerda, que decide v = 2 m/s ·
   // Progresa: λ, que se acorta · Se reserva: leer v, λ y f desde la ecuación y = A sen(kx − ωt) ·
   // Debe verse: en un mismo medio, más frecuencia da crestas más juntas, no una onda más rápida.
+  const agita = fq => { const L = V1 / fq; return ejeYx({ curvas: [{ puntos: muestras(xx => A1 * Math.sin(2 * PI * xx / L), 0, 4, 161), color: 'i' }], puntos: [{ x: L / 4, y: A1, color: 'd', rotulo: '' }, { x: L / 4 + L, y: A1, color: 'd', rotulo: `λ = ${f(L, 2)} m` }] }); };
   const funcion = {
     id: 'funcion-de-onda',
     titulo: 'v = λf: el medio manda',
@@ -143,9 +154,15 @@
       consigna: 'En la misma cuerda, la onda viaja a 2 m/s. Agita su extremo con distinta frecuencia y mira la distancia entre crestas.',
       voz: 'Mira qué cambia en la cuerda cuando agitas más rápido.',
       controles: [{ id: 'f', etiqueta: 'f', color: 'c-h', min: 0.5, max: 4, paso: 0.5, inicio: 1, unidad: 'Hz', decimales: 1 }],
-      dibujo: val => { const L = V1 / val.f; return { datos: ejeYx({ curvas: [{ puntos: muestras(xx => A1 * Math.sin(2 * PI * xx / L), 0, 4, 161), color: 'i' }], puntos: [{ x: L / 4, y: A1, color: 'd', rotulo: '' }, { x: L / 4 + L, y: A1, color: 'd', rotulo: `λ = ${f(L, 2)} m` }] }), estado: {} }; },
+      dibujo: val => ({ datos: agita(val.f), estado: {} }),
       lectura: val => [lam, ` = `, v, `/`, fr, ` = 2/${f(val.f, 1)} = ${f(V1 / val.f, 2)} m`],
       minimo: 3,
+      // Arrastra la primera cresta: está a λ/4 del extremo; como v = 2 m/s no cambia, eso fija f = v/λ.
+      arrastres: [
+        { id: 'primera-cresta', etiqueta: 'primera cresta', color: 'c-h',
+          donde: val => enEjes(agita(val.f), V1 / val.f / 4, A1),
+          mover: (pt, val) => ({ f: V1 / (4 * Math.max(0.05, EJ().geometria(agita(val.f)).Xi(pt.x))) }) },
+      ],
     },
     predice: {
       pregunta: ['Una onda en una cuerda sigue la ecuación ', y, ' = 3 sen(2π x − 4π ', t, '), con x en m y ', t, ' en s. ¿Con qué rapidez avanza?'],
@@ -170,7 +187,7 @@
     },
     regla: {
       texto: 'Una onda armónica cumple y = A sen(kx − ωt). Su rapidez es v = λf = ω/k, y la decide el medio: la fuente solo fija la frecuencia.',
-      ecuacion: [y, ' = A sen(kx − ω', t, ')   ·   k = ', { frac: ['2π', lam] }, '   ·   ω = 2π', fr, '   ·   ', v, ' = ', lam, fr],
+      ecuacion: [y, ' = A sen(kx − ω', t, ')', '   ·   ', 'k = ', { llave: [{ frac: ['2π', lam] }], nota: 'fase por metro', color: 'c-d' }, '   ·   ', 'ω = ', { llave: ['2π', fr], nota: 'fase por segundo', color: 'c-h' }, '   ·   ', v, ' = ', lam, fr],
       condicion: 'medio no dispersivo y amplitud pequeña; con (kx + ωt) la onda va hacia −x.',
     },
     ahoraTu: {
@@ -212,6 +229,7 @@
     y: { min: 0, max: 100, paso: 20, nombre: 'v', unidad: 'm/s', decimales: 0, color: 'o' },
     curvas: [{ puntos: muestras(T => velC(T, mu), 0, 100, 51), color: 'o', rotulo: mu === 0.01 ? 'delgada' : 'gruesa', en: [70, velC(70, mu) + 8] }],
   }, extra);
+  const vtJuego = val => ejeVT(val.mu, { puntos: [{ x: val.T, y: velC(val.T, val.mu), color: 'o', rotulo: `${f(velC(val.T, val.mu), 1)} m/s`, guias: true }] });
   const rapidez = {
     id: 'rapidez-cuerda',
     titulo: 'Tensión y masa deciden v',
@@ -224,9 +242,15 @@
         { id: 'T', etiqueta: 'tensión', min: 10, max: 90, paso: 10, inicio: 40, unidad: 'N', decimales: 0 },
         { id: 'mu', etiqueta: 'Cuerda', opciones: [{ valor: 0.01, texto: 'delgada' }, { valor: 0.04, texto: 'gruesa' }], inicio: 0.01 },
       ],
-      dibujo: val => ({ datos: ejeVT(val.mu, { puntos: [{ x: val.T, y: velC(val.T, val.mu), color: 'o', rotulo: `${f(velC(val.T, val.mu), 1)} m/s`, guias: true }] }), estado: {} }),
+      dibujo: val => ({ datos: vtJuego(val), estado: {} }),
       lectura: val => [v, ` = √(${f(val.T)}/${f(val.mu)}) = ${f(velC(val.T, val.mu), 1)} m/s`],
       minimo: 3,
+      // Arrastra el punto por la curva: su lugar en el eje horizontal es la tensión.
+      arrastres: [
+        { id: 'tension', etiqueta: 'tensión de la cuerda', color: 'c-o',
+          donde: val => enEjes(vtJuego(val), val.T, velC(val.T, val.mu)),
+          mover: (pt, val) => ({ T: EJ().geometria(vtJuego(val)).Xi(pt.x) }) },
+      ],
     },
     predice: {
       pregunta: 'Una cuerda tensa lleva pulsos a 40 m/s. Se cambia por otra cuatro veces más pesada por metro, con la misma tensión. ¿A qué rapidez van los pulsos?',
@@ -250,7 +274,7 @@
     },
     regla: {
       texto: 'En una cuerda, la rapidez de la onda depende solo de la tensión y de la masa por metro, no de la amplitud ni de la frecuencia.',
-      ecuacion: [v, ' = ', { raiz: [{ frac: ['T', 'μ'] }] }, '   ·   μ = ', { frac: ['m', 'L'] }],
+      ecuacion: [v, ' = ', { raiz: [{ frac: ['T', 'μ'] }] }, '   ·   ', 'μ = ', { llave: [{ frac: ['m', 'L'] }], nota: 'masa por metro' }],
       condicion: 'cuerda flexible y uniforme, amplitud pequeña. T es la tensión en newtons; μ, en kg/m.',
     },
     ahoraTu: {
@@ -327,7 +351,7 @@
     },
     regla: {
       texto: 'Una onda que se refleja en extremos fijos se superpone consigo misma. Solo persisten los modos en que caben medias longitudes de onda enteras.',
-      ecuacion: ['L = n ', { frac: [lam, '2'] }, '   ·   ', { sub: [fr, 'n'] }, ' = ', { frac: [['n ', v], '2L'] }],
+      ecuacion: ['L = n ', { llave: [{ frac: [lam, '2'] }], nota: 'media onda', color: 'c-d' }, '   ·   ', { sub: [fr, 'n'] }, ' = ', { frac: [['n ', v], '2L'] }],
       condicion: 'cuerda con los dos extremos fijos; n = 1, 2, 3… es el número de vientres.',
     },
     ahoraTu: {
@@ -358,6 +382,7 @@
     y: { min: 50, max: 90, paso: 10, nombre: 'β', unidad: 'dB', decimales: 0 },
     curvas: [{ puntos: muestras(r => beta(Ir(r)), 1, 10, 46) }],
   }, extra);
+  const bJuego = val => ejeB({ puntos: [{ x: val.r, y: beta(Ir(val.r)), rotulo: `${f(beta(Ir(val.r)), 1)} dB`, guias: true }] });
   const sonido = {
     id: 'intensidad-decibeles',
     titulo: 'Los decibeles no se suman',
@@ -367,9 +392,15 @@
       consigna: 'Un parlante emite sonido por igual en todas direcciones. Aléjate y mira cómo bajan la intensidad y el nivel en decibeles.',
       voz: 'Mira cuánto baja el nivel cada vez que la distancia se duplica.',
       controles: [{ id: 'r', etiqueta: 'distancia', min: 1, max: 10, paso: 1, inicio: 1, unidad: 'm', decimales: 0 }],
-      dibujo: val => ({ datos: ejeB({ puntos: [{ x: val.r, y: beta(Ir(val.r)), rotulo: `${f(beta(Ir(val.r)), 1)} dB`, guias: true }] }), estado: {} }),
+      dibujo: val => ({ datos: bJuego(val), estado: {} }),
       lectura: val => [`I = ${f(Ir(val.r) * 1e6, 2)} µW/m² · β = ${f(beta(Ir(val.r)), 1)} dB`],
       minimo: 3,
+      // Arrastra el punto por la curva: su lugar en el eje horizontal es tu distancia al parlante.
+      arrastres: [
+        { id: 'distancia', etiqueta: 'distancia al parlante',
+          donde: val => enEjes(bJuego(val), val.r, beta(Ir(val.r))),
+          mover: (pt, val) => ({ r: EJ().geometria(bJuego(val)).Xi(pt.x) }) },
+      ],
     },
     predice: {
       pregunta: 'Donde estás, un parlante da 60 dB. Se enciende a su lado otro parlante igual. ¿Qué nivel oyes ahora?',
@@ -386,7 +417,7 @@
     mira: {
       datos: ejeB({ puntos: [{ x: 1, y: 80, rotulo: '80 dB', guias: true, desde: 1 }, { x: 2, y: beta(Ir(2)), rotulo: `${f(beta(Ir(2)), 0)} dB`, guias: true, desde: 2 }, { x: 10, y: 60, rotulo: '60 dB', guias: true, desde: 3 }] }),
       pasos: [
-        { estado: { corte: 1 }, texto: 'La energía de cada segundo se reparte en una esfera de área 4πr².', ecuacion: ['I = ', { frac: ['P', '4π r²'] }, ' = 100 µW/m² a 1 m'] },
+        { estado: { corte: 1 }, texto: 'La energía de cada segundo se reparte en una esfera de área 4πr².', ecuacion: ['I = ', { frac: ['P', ['4π ', { sup: ['r', '2'] }]] }, ' = 100 µW/m² a 1 m'] },
         { estado: { corte: 1 }, texto: 'El nivel compara I con el sonido más débil que se oye.', ecuacion: ['β = 10 log ', { frac: ['I', { sub: ['I', '0'] }] }, ' = 10 log ', { sup: ['10', '8'] }, ' = 80 dB'] },
         { estado: { corte: 2 }, texto: 'Al doble de distancia, I es la cuarta parte: unos 6 dB menos.', ecuacion: ['10 log 4 ≈ 6 dB'] },
         { estado: { corte: 3 }, texto: 'A 10 m, I es cien veces menor: 20 dB menos.', ecuacion: ['10 log 100 = 20 dB'] },
@@ -394,7 +425,7 @@
     },
     regla: {
       texto: 'La onda transporta energía; la intensidad es la potencia por unidad de área. El nivel en decibeles es el logaritmo de la intensidad: multiplicar I por 10 suma 10 dB.',
-      ecuacion: ['I = ', { frac: ['P', 'A'] }, '   ·   β = 10 log ', { frac: ['I', { sub: ['I', '0'] }] }, ',   ', { sub: ['I', '0'] }, ' = ', { sup: ['10', '−12'] }, ' W/m²'],
+      ecuacion: ['I = ', { frac: ['P', 'A'] }, '   ·   ', 'β = 10 log ', { frac: ['I', { sub: ['I', '0'] }] }, '   ·   ', { llave: [{ sub: ['I', '0'] }, ' = ', { sup: ['10', '−12'] }, ' W/m²'], nota: 'apenas se oye' }],
       condicion: 'fuente pequeña que emite igual en todas direcciones y sin absorción (A = 4πr²). El oído no percibe en proporción a I.',
     },
     ahoraTu: {
@@ -426,11 +457,94 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Cuerda de guitarra: la tensión y la cuerda fijan v (idea 3); la frecuencia, λ = v/f (idea 2). Juntas en una mesa.
+  const MUS = [{ valor: 0.01, texto: 'delgada' }, { valor: 0.04, texto: 'gruesa' }];
+  const guitarra = val => {
+    const vv = velC(val.T, val.mu), L = vv / val.f;
+    return {
+      x: { min: 0, max: 2, paso: 0.5, nombre: 'x', unidad: 'm', decimales: 1 },
+      y: { min: -3, max: 3, paso: 1, nombre: 'y', unidad: 'cm', decimales: 0, color: 'i' },
+      curvas: [{ puntos: muestras(xx => A1 * Math.sin(2 * PI * xx / L), 0, 2, 481), color: 'i' }],
+      puntos: [{ x: L / 4, y: A1, color: 'd', rotulo: `λ/4 = ${f(L / 4, 2)} m` }],
+    };
+  };
+  // Cuerda fija en los dos extremos, de largo variable (el extremo derecho se arrastra), con v = 100 m/s.
+  const modoLibre = val => {
+    const fn = xx => (xx <= val.L ? 2 * Math.sin(val.n * PI * xx / val.L) : 0);
+    return {
+      x: { min: 0, max: 2, paso: 0.5, nombre: 'x', unidad: 'm', decimales: 1 },
+      y: { min: -3, max: 3, paso: 1, nombre: 'y', unidad: 'cm', decimales: 0, color: 'i' },
+      curvas: [{ puntos: muestras(fn, 0, val.L, 121), color: 'i' }, { puntos: muestras(xx => -fn(xx), 0, val.L, 121), color: 'i', discontinua: true }],
+      puntos: Array.from({ length: val.n + 1 }, (_, k) => ({ x: k * val.L / val.n, y: 0, rotulo: k === val.n ? `L = ${f(val.L, 2)} m` : undefined })),
+    };
+  };
+  // Varios parlantes iguales juntos: la intensidad se multiplica por N; el nivel sube 10 log N.
+  const NP = [{ valor: 1, texto: '1 parlante' }, { valor: 2, texto: '2 parlantes' }, { valor: 10, texto: '10 parlantes' }];
+  const parlantes = val => ejeB({
+    y: { min: 50, max: 100, paso: 10, nombre: 'β', unidad: 'dB', decimales: 0 },
+    curvas: [
+      { puntos: muestras(r => beta(Ir(r)), 1, 10, 46), discontinua: val.N !== 1, rotulo: val.N !== 1 ? '1' : undefined, en: [8, beta(Ir(8)) - 4] },
+      ...(val.N !== 1 ? [{ puntos: muestras(r => beta(val.N * Ir(r)), 1, 10, 46), rotulo: String(val.N), en: [8, beta(val.N * Ir(8)) + 4] }] : []),
+    ],
+    puntos: [{ x: val.r, y: beta(val.N * Ir(val.r)), rotulo: `${f(beta(val.N * Ir(val.r)), 1)} dB`, guias: true }],
+  });
+
   return {
     unidad: 'fisica.ondas-mecanicas',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/ejes.js'],
+    // Laboratorio: juego libre, sin preguntas. La guitarra junta las ideas 2 y 3 (tensión, cuerda y frecuencia); la
+    // cuerda fija suelta el largo y llega al modo 6; los parlantes prueban lo que la idea 5 solo pregunta.
+    laboratorio: [
+      {
+        id: 'guitarra', titulo: 'Tensión, cuerda y frecuencia', pieza: 'ejes',
+        consigna: 'Tensa la cuerda, elige su grosor y su frecuencia. Arrastra la primera cresta. ¿Qué cambia λ sin cambiar v?',
+        controles: [
+          { id: 'T', etiqueta: 'tensión', min: 10, max: 90, paso: 10, inicio: 40, unidad: 'N', decimales: 0 },
+          { id: 'mu', etiqueta: 'Cuerda', opciones: MUS, inicio: 0.01 },
+          { id: 'f', etiqueta: 'f', color: 'c-h', min: 25, max: 200, paso: 25, inicio: 50, unidad: 'Hz', decimales: 0 },
+        ],
+        dibujo: val => ({ datos: guitarra(val), estado: {} }),
+        lectura: val => { const vv = velC(val.T, val.mu); return [`${f(val.T)}\u00a0N y ${f(val.f)}\u00a0Hz: `, v, ` = ${f(vv, 1)}\u00a0m/s, `, lam, ` = ${f(vv / val.f, 2)}\u00a0m`]; },
+        arrastres: [
+          { id: 'primera-cresta', etiqueta: 'primera cresta', color: 'c-h',
+            donde: val => enEjes(guitarra(val), velC(val.T, val.mu) / val.f / 4, A1),
+            mover: (pt, val) => ({ f: velC(val.T, val.mu) / (4 * Math.max(0.02, EJ().geometria(guitarra(val)).Xi(pt.x))) }) },
+        ],
+      },
+      {
+        id: 'cuerda-fija', titulo: 'Cuerda fija de largo libre', pieza: 'ejes',
+        consigna: 'Arrastra el extremo derecho para cambiar el largo y elige el modo. Las ondas van a 100 m/s.',
+        controles: [
+          { id: 'L', etiqueta: 'L', min: 0.5, max: 2, paso: 0.25, inicio: 1, unidad: 'm', decimales: 2 },
+          { id: 'n', etiqueta: 'modo n', min: 1, max: 6, paso: 1, inicio: 2, decimales: 0 },
+        ],
+        dibujo: val => ({ datos: modoLibre(val), estado: {} }),
+        lectura: val => [`L = ${f(val.L, 2)}\u00a0m, n = ${f(val.n)}: `, lam, ` = ${f(2 * val.L / val.n, 2)}\u00a0m, `, fr, ` = ${f(val.n * VC / (2 * val.L), 1)}\u00a0Hz`],
+        arrastres: [
+          { id: 'extremo', etiqueta: 'extremo derecho de la cuerda',
+            donde: val => enEjes(modoLibre(val), val.L, 0),
+            mover: (pt, val) => ({ L: EJ().geometria(modoLibre(val)).Xi(pt.x) }) },
+        ],
+      },
+      {
+        id: 'parlantes', titulo: 'Más parlantes, más decibeles', pieza: 'ejes',
+        consigna: 'Elige cuántos parlantes iguales suenan juntos y arrastra tu distancia. Compara con la curva de uno solo.',
+        controles: [
+          { id: 'r', etiqueta: 'distancia', min: 1, max: 10, paso: 1, inicio: 2, unidad: 'm', decimales: 0 },
+          { id: 'N', etiqueta: 'Parlantes', opciones: NP, inicio: 2 },
+        ],
+        dibujo: val => ({ datos: parlantes(val), estado: {} }),
+        lectura: val => [`${NP.find(q => q.valor === val.N).texto} a ${f(val.r)}\u00a0m: β = ${f(beta(val.N * Ir(val.r)), 1)}\u00a0dB`],
+        arrastres: [
+          { id: 'distancia', etiqueta: 'distancia a los parlantes',
+            donde: val => enEjes(parlantes(val), val.r, beta(val.N * Ir(val.r))),
+            mover: (pt, val) => ({ r: EJ().geometria(parlantes(val)).Xi(pt.x) }) },
+        ],
+      },
+    ],
     historia: {
       texto: 'Una misma cuerda puede vibrar de varias formas y sonar distinto. En el siglo XVIII, d’Alembert, Euler y Daniel Bernoulli discutieron cómo describir con matemáticas una cuerda que cambia de forma en el tiempo. De esa discusión salen la función de onda y la idea de sumar modos.',
       pregunta: '¿Por qué una guitarra suena distinto si pisas la cuerda?',
