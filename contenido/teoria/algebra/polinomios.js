@@ -13,6 +13,11 @@
  * Orden de atención · 1.º la tabla de casillas o la curva · 2.º la casilla o el punto que cambia · acción: «Comprobar» · fondo: Nox.
  * Estados · juego sin tocar · casos probados · predicción elegida · revelado · paso a paso · caso nuevo · «No sé».
  * Duda que resuelve · por qué dos polinomios que valen lo mismo en un punto no son, por eso, el mismo polinomio.
+ *
+ * Ronda 2 (14 nov 2026): gesto directo en «Evaluar es reemplazar cada x» (el punto (x; P(x)) se arrastra por la curva),
+ * llaves en las reglas, separador «   ·   » y laboratorio de tres mesas: un cúbico que se arma y se evalúa con el
+ * punto, P contra Q en curvas con sus casillas contadas y la cuadrícula del producto con tres controles. Las ideas 1,
+ * 3, 4 y 5 juegan con tablas que se reacomodan con el valor: se quedan con − y +.
  */
 (function (root, fabrica) {
   const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
@@ -56,6 +61,9 @@
   }
   const par = v => (v < 0 ? `(${f(v)})` : f(v));
   const evaluar = (cs, a) => cs.reduce((acc, c) => acc * a + c, 0);
+  // Gesto directo: la manija vive en el viewBox de la pieza; la inversa lineal de su escala da el valor.
+  const EJES = () => Kit.piezas.ejes;
+  const inversa = (escala, p, q) => px => p + (px - escala(p)) * (q - p) / (escala(q) - escala(p));
   const multiplicar = (A, B) => { const out = Array(A.length + B.length - 1).fill(0); A.forEach((a, i) => B.forEach((b, j) => { out[i + j] += a * b; })); return out; };
 
   // ---------- Idea 1: el grado se suma dentro del término ----------
@@ -86,7 +94,7 @@
       dibujo: val => ({ datos: tablaGrados([[3, val.a, val.b], [-2, 1, 3], [5, 2, 0]]), estado: {} }),
       lectura: val => {
         const t = [[val.a, val.b], [1, 3], [2, 0]];
-        return [`GR(x) = ${Math.max(...t.map(z => z[0]))} · GR(y) = ${Math.max(...t.map(z => z[1]))} · GA = ${Math.max(...t.map(z => z[0] + z[1]))}`];
+        return [`GR(x) = ${Math.max(...t.map(z => z[0]))}`, '   ·   ', `GR(y) = ${Math.max(...t.map(z => z[1]))}`, '   ·   ', `GA = ${Math.max(...t.map(z => z[0] + z[1]))}`];
       },
       minimo: 3,
     },
@@ -113,13 +121,13 @@
       pasos: [
         { estado: { corte: 1 }, texto: 'Exponentes de x en cada término. El mayor, 2, es GR(x).', ecuacion: ['GR(', x, ') = 2'] },
         { estado: { corte: 2 }, texto: 'Exponentes de y. El mayor, 3, es GR(y).', ecuacion: ['GR(', { v: 'c-i', t: 'y' }, ') = 3'] },
-        { estado: { corte: 3 }, texto: 'Grado de cada término: sus exponentes sumados.', ecuacion: ['2 + 1 = 3   ·   1 + 3 = 4   ·   0 + 0 = 0'] },
+        { estado: { corte: 3 }, texto: 'Grado de cada término: sus exponentes sumados.', ecuacion: ['2 + 1 = 3', '   ·   ', '1 + 3 = 4', '   ·   ', '0 + 0 = 0'] },
         { estado: { corte: 4 }, texto: 'El grado absoluto es el mayor de esos grados.', ecuacion: ['GA = máx(3; 4; 0) = 4'] },
       ],
     },
     regla: {
       texto: 'El grado de un término es la suma de sus exponentes. El grado absoluto es el mayor de esos grados; el relativo a x, el mayor exponente de x.',
-      ecuacion: ['GA = máx(grados de los términos)'],
+      ecuacion: ['GA = máx(', { llave: [{ sub: ['g', '1'] }, '; ', { sub: ['g', '2'] }, '; …'], nota: 'grado por término', color: 'c-d' }, ')'],
       condicion: 'los exponentes son enteros no negativos; el polinomio cero no tiene grado y se trata por convención aparte.',
     },
     ahoraTu: {
@@ -161,6 +169,7 @@
   // ---------- Idea 2: evaluar es reemplazar en cada x ----------
   // Cambia: el valor de x · Permanece: la curva de P · Progresa: el punto (a; P(a)) y su altura · Se reserva:
   // x = 1 y x = 0 como valores especiales · Debe verse: P(a) es una altura de la curva, no un coeficiente.
+  // Gesto: el alumno lleva el punto por la curva; x lo pone el dedo y P(x) lo pone la curva.
   const muestra = (cs, a, b) => Array.from({ length: Math.round((b - a) * 10) + 1 }, (_, k) => { const t = a + k / 10; return [Math.round(t * 10) / 10, evaluar(cs, t)]; });
   const rango = (cs, a, b, extra = []) => {
     const ys = [...muestra(cs, a, b).map(p => p[1]), ...extra, 0];
@@ -177,6 +186,7 @@
     };
   };
   const J2 = [1, 0, -3, 1];          // x³ − 3x + 1
+  const dibujoJ2 = a => curvaP(J2, -2, 2, [{ x: a, y: evaluar(J2, a), color: 'd', guias: true, rotulo: `P(${f(a)}) = ${f(evaluar(J2, a))}` }], 'P');
   const PRED2 = [2, -1, 3, -5];      // 2x³ − x² + 3x − 5
   const valor = {
     id: 'valor-numerico',
@@ -187,9 +197,13 @@
       consigna: 'P(x) = x³ − 3x + 1. Elige un valor de x: el punto marca su altura, que es P(x).',
       voz: 'Prueba también valores negativos de x.',
       controles: [{ id: 'a', etiqueta: 'x', min: -2, max: 2, paso: 1, inicio: 0, decimales: 0, color: 'c-o' }],
-      dibujo: val => ({ datos: curvaP(J2, -2, 2, [{ x: val.a, y: evaluar(J2, val.a), color: 'd', guias: true, rotulo: `P(${f(val.a)}) = ${f(evaluar(J2, val.a))}` }], 'P'), estado: {} }),
+      dibujo: val => ({ datos: dibujoJ2(val.a), estado: {} }),
       lectura: val => [P, `(${f(val.a)}) = ${f(evaluar(J2, val.a))}`],
       minimo: 3,
+      // Se arrastra el punto (x; P(x)) por la curva: el dedo elige x y la altura responde.
+      arrastres: [{ id: 'punto', etiqueta: 'punto de la curva', color: 'c-o',
+        donde: val => { const g = EJES().geometria(dibujoJ2(val.a)); return { x: g.X(val.a), y: g.Y(evaluar(J2, val.a)) }; },
+        mover: (pt, val) => { const g = EJES().geometria(dibujoJ2(val.a)); return { a: inversa(g.X, -2, 2)(pt.x) }; } }],
     },
     predice: (() => {
       const v1 = evaluar(PRED2, 1), sinSigno = PRED2.reduce((s, c) => s + Math.abs(c), 0);
@@ -220,7 +234,7 @@
     },
     regla: {
       texto: 'Evaluar es reemplazar x por el número en cada término y operar. P(1) es la suma de los coeficientes y P(0), el término independiente.',
-      ecuacion: [P, '(1) = suma de los coeficientes'],
+      ecuacion: [P, '(x) = ax³ + bx² + cx + d', '   ·   ', P, '(1) = ', { llave: ['a + b + c + d'], nota: 'suma de coeficientes', color: 'c-d' }, '   ·   ', P, '(0) = ', { llave: ['d'], nota: 'independiente', color: 'c-d' }],
       condicion: 'se respeta cada signo y cada potencia: (−2)² = 4, pero (−2)³ = −8.',
     },
     ahoraTu: {
@@ -287,7 +301,7 @@
       dibujo: val => ({ datos: tablaCasillas(POLS[val.p]), estado: {} }),
       lectura: val => {
         const ts = POLS[val.p], g = Math.max(...ts.map(t => t[1])), faltan = g + 1 - ts.length;
-        return [`Completo: ${faltan ? `no, faltan ${faltan}` : 'sí'} · ordenado: ${ordenado(ts) ? 'sí' : 'no'}`];
+        return [`Completo: ${faltan ? `no, faltan ${faltan}` : 'sí'}`, '   ·   ', `ordenado: ${ordenado(ts) ? 'sí' : 'no'}`];
       },
       minimo: 3,
     },
@@ -313,7 +327,7 @@
     },
     regla: {
       texto: 'Completo: tiene todas las potencias, del grado hasta x⁰. Ordenado: los exponentes solo bajan o solo suben. Homogéneo: todos sus términos tienen el mismo grado.',
-      ecuacion: ['grado n → n + 1 casillas'],
+      ecuacion: ['grado n → ', { llave: ['n + 1'], nota: 'con x⁰', color: 'c-d' }, ' casillas'],
       condicion: 'las casillas de coeficiente 0 cuentan al completar; la homogeneidad mira el grado de cada término no nulo.',
     },
     ahoraTu: {
@@ -354,6 +368,9 @@
   // ---------- Idea 4: iguales casilla por casilla ----------
   // Cambia: los coeficientes a y b · Permanece: Q y el término independiente · Progresa: las casillas que
   // coinciden · Se reserva: el punto donde dos polinomios distintos valen igual · Debe verse: igualdad = cada casilla.
+  // Dos representaciones a propósito (hallazgo 9): el juego ajusta casillas en la tabla; la predicción y «Mira» pasan a
+  // las curvas, porque lo reservado (dos polinomios distintos que valen igual en un punto) solo se ve en la gráfica.
+  // El último paso de «Mira» vuelve a las casillas. La mesa «Dos curvas, tres casillas» junta las dos vistas.
   const Qcs = [2, 5, 3];
   const tablaIgualdad = (pc, qc, marcar = true) => ({
     columnas: ['x²', 'x¹', 'x⁰'], rotulosFila: ['P', 'Q'], colorFila: ['o', 'i'],
@@ -414,7 +431,7 @@
     },
     regla: {
       texto: 'Dos polinomios son idénticos si tienen el mismo coeficiente en cada potencia: a = m, b = n y c = p. Entonces valen lo mismo para todo x.',
-      ecuacion: ['ax² + bx + c ≡ mx² + nx + p'],
+      ecuacion: ['ax² + bx + c ≡ mx² + nx + p', '   ·   ', { llave: ['a = m, b = n, c = p'], nota: 'casilla por casilla', color: 'c-d' }],
       condicion: 'coincidir en uno o en dos valores de x no basta; los coeficientes deben ser iguales en todas las casillas.',
     },
     ahoraTu: {
@@ -433,7 +450,7 @@
             { id: 'coef', texto: f(val(A, B)), error: 'TAL-COEF', siFuera: 'Esos son los coeficientes de Q, no los valores de m y n.' },
             { id: 'solo-n', texto: f(val(A, n)), error: 'TAL-COEF', siFuera: `m − ${p} es el coeficiente; m vale ${A} + ${p}.` },
           ]).slice(0, 4),
-          solucion: { texto: 'Se iguala cada casilla: la de x² y la de x.', ecuacion: [`m − ${p} = ${f(A)} → m = ${f(m)}   ·   n + ${q} = ${f(B)} → n = ${f(n)}`] },
+          solucion: { texto: 'Se iguala cada casilla: la de x² y la de x.', ecuacion: [`m − ${p} = ${f(A)} → m = ${f(m)}`, '   ·   ', `n + ${q} = ${f(B)} → n = ${f(n)}`] },
         };
       },
     },
@@ -498,7 +515,7 @@
     })(),
     regla: {
       texto: 'Multiplicar es multiplicar cada término por cada término y luego juntar los semejantes. Sumar solo junta términos con la misma parte literal.',
-      ecuacion: ['grado(', P, '·', Q, ') = grado ', P, ' + grado ', Q],
+      ecuacion: ['grado(', P, '·', Q, ') = ', { llave: ['grado ', P, ' + grado ', Q], nota: 'se suman', color: 'c-d' }],
       condicion: 'solo se suman coeficientes de términos semejantes; al juntarlos algún término puede cancelarse.',
     },
     ahoraTu: {
@@ -537,11 +554,76 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Mesa 1: un polinomio cúbico que el alumno arma, con el punto que recorre la curva en pasos de medio.
+  const cubica = v => [1, v.b, v.c, v.d];
+  const dibujoCub = v => curvaP(cubica(v), -3, 3, [{ x: v.x, y: evaluar(cubica(v), v.x), color: 'd', guias: true, rotulo: f(evaluar(cubica(v), v.x)) }], 'P');
+  const mesaCubica = {
+    id: 'curva-cubica', titulo: 'Arma tu polinomio y evalúalo', pieza: 'ejes',
+    consigna: 'P(x) = x³ + bx² + cx + d. Elige coeficientes y arrastra el punto por la curva: ¿qué altura tiene en x = 0 y en x = 1?',
+    controles: [
+      { id: 'x', etiqueta: 'x', min: -3, max: 3, paso: 0.5, inicio: 1, decimales: 1, color: 'c-o' },
+      { id: 'b', etiqueta: 'b', min: -3, max: 3, paso: 1, inicio: 0, decimales: 0 },
+      { id: 'c', etiqueta: 'c', min: -6, max: 6, paso: 1, inicio: -3, decimales: 0 },
+      { id: 'd', etiqueta: 'd', min: -5, max: 5, paso: 1, inicio: 1, decimales: 0 },
+    ],
+    dibujo: v => ({ datos: dibujoCub(v), estado: {} }),
+    lectura: v => [P, `(x) = ${poli(cubica(v))}:  `, P, `(${f(v.x, 1)}) = ${f(evaluar(cubica(v), v.x), 3)}`],
+    arrastres: [{ id: 'punto', etiqueta: 'punto de la curva', color: 'c-o',
+      donde: v => { const g = EJES().geometria(dibujoCub(v)); return { x: g.X(v.x), y: g.Y(evaluar(cubica(v), v.x)) }; },
+      mover: (pt, v) => { const g = EJES().geometria(dibujoCub(v)); return { x: inversa(g.X, -3, 3)(pt.x) }; } }],
+  };
+  // Mesa 2: P contra Q en curvas y en casillas a la vez; el cursor x mide las dos alturas.
+  const QL = [1, 2, -1];   // Q(x) = x² + 2x − 1
+  const dosLab = v => {
+    const pc = [v.a, v.b, v.c], yp = evaluar(pc, v.t), yq = evaluar(QL, v.t);
+    const ys = [...muestra(pc, -3, 2), ...muestra(QL, -3, 2)].map(z => z[1]);
+    const lo = Math.floor(Math.min(0, ...ys) / 4) * 4, hi = Math.ceil(Math.max(0, ...ys) / 4) * 4;
+    return {
+      x: { min: -3, max: 2, paso: 1, nombre: 'x', decimales: 0, color: 'o' },
+      y: { min: lo, max: hi, paso: hi - lo > 24 ? 8 : 4, nombre: 'y', decimales: 0 },
+      curvas: [{ puntos: muestra(QL, -3, 2), color: 'i', rotulo: 'Q', en: [-3, evaluar(QL, -3)] }, { puntos: muestra(pc, -3, 2), color: 'o', rotulo: 'P', en: [2, evaluar(pc, 2)] }],
+      puntos: [{ x: v.t, y: yq, color: 'i' }, { x: v.t, y: yp, color: 'o', guias: true }],
+      alt: `P(x) = ${poli(pc)} y Q(x) = x² + 2x − 1; en x = ${f(v.t)}, P vale ${f(yp)} y Q vale ${f(yq)}`,
+    };
+  };
+  const mesaDos = {
+    id: 'dos-curvas', titulo: 'Dos curvas, tres casillas', pieza: 'ejes',
+    consigna: 'P(x) = ax² + bx + c y Q(x) = x² + 2x − 1. Busca un x donde valgan igual sin que las casillas coincidan.',
+    controles: [
+      { id: 't', etiqueta: 'x', min: -3, max: 2, paso: 1, inicio: 1, decimales: 0, color: 'c-o' },
+      { id: 'a', etiqueta: 'a', min: -1, max: 2, paso: 1, inicio: 0, decimales: 0 },
+      { id: 'b', etiqueta: 'b', min: -2, max: 4, paso: 1, inicio: 2, decimales: 0 },
+      { id: 'c', etiqueta: 'c', min: -3, max: 3, paso: 1, inicio: 0, decimales: 0 },
+    ],
+    dibujo: v => ({ datos: dosLab(v), estado: {} }),
+    lectura: v => {
+      const k = [v.a, v.b, v.c].filter((c, i) => c === QL[i]).length;
+      return [P, ` = ${f(evaluar([v.a, v.b, v.c], v.t))}, `, Q, ` = ${f(evaluar(QL, v.t))}`, '   ·   ', `casillas: ${k} de 3`];
+    },
+    arrastres: [{ id: 'cursor', etiqueta: 'punto de P en la curva', color: 'c-o',
+      donde: v => { const g = EJES().geometria(dosLab(v)); return { x: g.X(v.t), y: g.Y(evaluar([v.a, v.b, v.c], v.t)) }; },
+      mover: (pt, v) => { const g = EJES().geometria(dosLab(v)); return { t: inversa(g.X, -3, 2)(pt.x) }; } }],
+  };
+  // Mesa 3: el producto con un control más (el término independiente de Q).
+  const mesaProducto = {
+    id: 'producto-libre', titulo: 'La cuadrícula del producto', pieza: 'alg-tabla',
+    consigna: 'P = x + a y Q = x² + bx + c. ¿Con qué valores se cancela el término en x² o el término en x?',
+    controles: [
+      { id: 'a', etiqueta: 'a', min: -4, max: 4, paso: 1, inicio: 2, decimales: 0, color: 'c-o' },
+      { id: 'b', etiqueta: 'b', min: -4, max: 4, paso: 1, inicio: -2, decimales: 0, color: 'c-i' },
+      { id: 'c', etiqueta: 'c', min: -4, max: 4, paso: 1, inicio: 4, decimales: 0, color: 'c-i' },
+    ],
+    dibujo: v => ({ datos: tablaProducto([1, v.a], [1, v.b, v.c]), estado: {} }),
+    lectura: v => [P, '·', Q, ` = ${poli(multiplicar([1, v.a], [1, v.b, v.c]))}`],
+  };
+
   return {
     unidad: 'algebra.polinomios',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/alg-tabla.js', '/nucleo/kit/piezas/ejes.js'],
+    laboratorio: [mesaCubica, mesaDos, mesaProducto],
     historia: {
       texto: 'En 1591, François Viète defendió usar letras para las cantidades conocidas y para las desconocidas. No era todavía nuestra escritura de polinomios, pero permitió razonar sobre familias enteras de problemas y no solo sobre ejemplos con números. Esa es la idea de esta unidad: coeficientes, exponentes y variables cumplen papeles distintos, y operar debe conservar el valor de la expresión.',
       pregunta: '¿Qué ganas al escribir una letra en vez de un número?',
