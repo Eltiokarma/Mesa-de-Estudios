@@ -198,3 +198,16 @@ def test_limite_por_ip_configurable(e):
     for i in range(5):
         assert e.login(f"inventado{i}", "x").status_code == 401
     assert e.login("admin1").status_code == 200
+
+
+def test_login_rehace_el_hash_si_cambiaron_los_parametros(e, monkeypatch):
+    from argon2 import PasswordHasher
+    from app import seguridad
+    from app.modelos import Usuario
+    e.colegio()
+    monkeypatch.setattr(seguridad, "_ph", PasswordHasher(time_cost=2, memory_cost=19456, parallelism=1))
+    assert e.login("admin1").status_code == 200
+    with e.db() as s:
+        h = s.query(Usuario).filter_by(usuario="admin1").one().hash
+    assert "m=19456,t=2,p=1" in h
+    assert e.login("admin1").status_code == 200

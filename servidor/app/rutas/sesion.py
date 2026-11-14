@@ -11,7 +11,7 @@ from ..db import ahora
 from ..dependencias import cfg as dep_cfg, db, ip_de, usuario_actual
 from ..errores import ErrorApi
 from ..modelos import Colegio, IntentoFallido, Renovacion, Usuario
-from ..seguridad import hash_contrasena, hash_token, token_acceso, token_renovacion, verificar_contrasena
+from ..seguridad import hash_contrasena, hash_token, necesita_rehash, token_acceso, token_renovacion, verificar_contrasena
 
 r = APIRouter(prefix="/api")
 
@@ -68,6 +68,8 @@ def login(datos: Login, request: Request, s: Session = Depends(db), c=Depends(de
         s.execute(delete(IntentoFallido).where(IntentoFallido.cuando < ahora() - timedelta(days=1)))
         s.commit()
         raise ErrorApi(401, "credenciales", "El usuario o la contraseña no coinciden.")
+    if necesita_rehash(u.hash):  # cambiaron los parámetros de argon2: se rehace con los nuevos
+        u.hash = hash_contrasena(datos.contrasena)
     s.execute(delete(IntentoFallido).where(IntentoFallido.usuario == nombre))
     out = emitir(s, c, u)
     s.commit()
