@@ -7,14 +7,15 @@
     "luma",
     "nox",
     "tilo",
-    "bruna"
+    "bruna",
+    "neri"
   ],
   "cursos": {
     "fisica": "tilo",
     "quimica": "bruna",
     "aritmetica": "luma",
     "algebra": "nox",
-    "geometria": "gato",
+    "geometria": "neri",
     "trigonometria": "gato",
     "razonamiento-matematico": "gato",
     "razonamiento-verbal": "gato"
