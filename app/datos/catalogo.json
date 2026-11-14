@@ -4129,7 +4129,15 @@
      "plantillas": [
       "tablas-graficos",
       "rm-planteo"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/tablas-graficos-y-suficiencia.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-plano.js",
+       "/nucleo/kit/piezas/rm-tablero.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-matematico.diagramas-de-flujo",
