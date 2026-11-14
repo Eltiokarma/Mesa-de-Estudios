@@ -140,6 +140,9 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
 .btn:disabled{opacity:.45; cursor:not-allowed}
 .btns{display:flex; flex-wrap:wrap; gap:8px}
+.juego{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.juego[hidden]{display:none}
+.juego .btn{padding:9px 14px}
 button:focus-visible, .v:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible, canvas:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
 .hint{font-size:.88rem; color:var(--muted)}
 .fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
@@ -178,6 +181,9 @@ button:focus-visible, .v:focus-visible, input:focus-visible, select:focus-visibl
     <section class="bench" aria-label="El taller de las piezas">
       <div class="lienzo"><canvas id="cv" role="img" aria-label="Piezas dibujadas como bloques con su nombre, cada una una molécula entera, sobre una mesa con una balanza, según el paso"></canvas></div>
       <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="juego btns" data-juego>
+        <button type="button" class="btn" data-poner="azucar">Poner un azúcar</button><button type="button" class="btn" data-poner="aminoacido">Poner un aminoácido</button><button type="button" class="btn" data-quitar>Quitar una pieza</button>
+      </div>
       <div class="legend" id="ley1"></div>
     </section>
     <section class="guide">
@@ -199,6 +205,9 @@ button:focus-visible, .v:focus-visible, input:focus-visible, select:focus-visibl
     <section class="bench" aria-label="Experimentos con azúcares, grasas y vitaminas">
       <div class="lienzo"><canvas id="cv2" role="img" aria-label="Piezas, cadenas, grasas y barras que se completan al responder"></canvas></div>
       <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="juego btns" data-juego>
+        <button type="button" class="btn" data-poner="azucar">Poner un azúcar</button><button type="button" class="btn" data-poner="aminoacido">Poner un aminoácido</button><button type="button" class="btn" data-quitar>Quitar una pieza</button>
+      </div>
       <div class="legend" id="ley2"></div>
     </section>
     <section class="guide">
@@ -225,6 +234,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'biomoleculas', unidad: 'quimica.biomoleculas-y-productos-naturales', version: '0.1.0' };
@@ -398,7 +408,7 @@ function crearEscena(cv, idDesc, modoId, idLey){
     const ancho = n*s + gaps.reduce((a, b) => a + b, 0);
     let x = (W - ancho)/2 + s/2; const xs = [];
     for (let i = 0; i < n; i++){ xs.push(x); x += s + (gaps[i] || 0); }
-    E.finCadena = { x: xs[n - 1] + s/2, y: yc, s };
+    E.finCadena = { x: xs[n - 1] + s/2, y: yc, s }; E.posPiezas = { xs, yc, s };
     // Vaso (abajo a la derecha) y balanza (abajo, al centro).
     const yb = yc + s/2 + 30, vw = 34, vh = 40, vx = W - vw - 26, vy = yb - 6;
     // Uniones: el conector naranja cuando las piezas ya se tocan; antes, un «+».
@@ -661,6 +671,50 @@ const DESCUBRE = 'Descúbrelo en «¿Qué pasa si…?», experimento 1';
 const g_ = (x, d) => `${fmt(x, d || 0)} g`;
 const pl = (x, uno, varios) => (x === 1 ? uno : varios);
 const masasDe = ids => ids.map(id => [[fmt(MB.PIEZAS[id].M), 'Mp', 800]]);
+
+/* ----- Jugar antes de preguntar (regla 3, decisión 20): piezas sueltas en la mesa -----
+   Se ponen y se quitan piezas, y se cambian de lugar arrastrándolas (o con las flechas sobre el dibujo). Las piezas
+   nunca se unen: lo que después se pregunta (qué pesa lo armado, cuántas aguas salen, qué rompe el calor, qué entra
+   al separar) el juego no lo muestra. */
+function montarJuego(E, cv, modo, alListo){
+  const J = { on:true, ids:['glucosa', 'fructosa', 'Gly'], i:null }, MAXJ = 5;
+  const CICLO = { azucar:['glucosa', 'fructosa', 'galactosa'], aminoacido:['Gly', 'Ala', 'Ser', 'Val', 'Cys'] }, va = { azucar:0, aminoacido:0 };
+  const cajaJ = cv.closest('.bench').querySelector('[data-juego]');
+  const vista = () => { const n = J.ids.length; return { paneles:['taller'], taller:{ piezas:J.ids, u:sueltas(n), masas:masasDe(J.ids), sinMas:true,
+      cuenta:[[`n = ${n}`, 'n', 800], [` ${pl(n, 'pieza', 'piezas')} en la mesa`, 'ink', 700]] },
+    pie:'Arrastra una pieza para cambiarla de lugar. Debajo, su masa molar (g/mol).', vars:['n', 'Mp'],
+    desc:`En la mesa, ${n} ${pl(n, 'pieza suelta', 'piezas sueltas')}: ${J.ids.map(nombre).join(', ')}.` }; };
+  const pintar = () => {
+    if (!J.on) return;
+    E.vista = vista(); E.dibujar(); E.describir();
+    cajaJ.querySelectorAll('[data-poner]').forEach(b => { b.disabled = J.ids.length >= MAXJ; });
+    cajaJ.querySelector('[data-quitar]').disabled = J.ids.length <= 1;
+  };
+  cajaJ.querySelectorAll('[data-poner]').forEach(b => b.addEventListener('click', () => {
+    const f = b.dataset.poner; if (J.ids.length >= MAXJ) return;
+    J.ids.push(CICLO[f][va[f]++ % CICLO[f].length]); pintar();
+  }));
+  cajaJ.querySelector('[data-quitar]').addEventListener('click', () => { if (J.ids.length > 1){ J.ids.pop(); pintar(); } });
+  const mover = (de, a) => { if (a === de || a < 0 || a >= J.ids.length) return; const [x] = J.ids.splice(de, 1); J.ids.splice(a, 0, x); };
+  const cercana = p => { const P = E.posPiezas; if (!P) return -1; let k = -1, d = Infinity; P.xs.forEach((x, i) => { const di = Math.abs(x - p.x); if (di < d){ d = di; k = i; } }); return k; };
+  cv.tabIndex = 0;
+  cv.addEventListener('keydown', e => {
+    if (!J.on) return; const d = { ArrowLeft:-1, ArrowRight:1 }[e.key]; if (!d) return;
+    e.preventDefault(); const n = J.ids.length; mover(d > 0 ? n - 1 : 0, d > 0 ? 0 : n - 1); pintar();
+  });
+  Celular.arrastre(cv, {
+    activo:() => J.on,
+    cerca:(p, r) => { const P = E.posPiezas; return !!P && Math.abs(p.y - P.yc) < P.s/2 + r && P.xs.some(x => Math.abs(x - p.x) < P.s/2 + r/2); },
+    empezar:p => { J.i = cercana(p); },
+    mover:p => { if (J.i === null || J.i < 0) return; const k = cercana(p); if (k >= 0 && k !== J.i){ mover(J.i, k); J.i = k; pintar(); } },
+    soltar:() => { J.i = null; },
+  });
+  const guia = cv.closest('.mode').querySelector('.guide');
+  JugarPrimero.montar({ escena: cv.closest('.bench'), preguntas:[...guia.children], minimo:2,
+    consigna:'Pon piezas en la mesa y cámbialas de lugar: mira sus masas.',
+    alListo:() => { J.on = false; cajaJ.hidden = true; cv.removeAttribute('tabindex'); alListo(); } });
+  return { activo:() => J.on, pintar };
+}
 </script>
 
 <script>
@@ -984,6 +1038,8 @@ addEventListener('modo', () => {
   else { E.resize(); E.dibujar(); }
 });
 go(0);
+const JG = montarJuego(E, $('cv'), 'm1', () => go(0));
+E.compactar(false); JG.pintar();
 })();
 </script>
 
@@ -1164,13 +1220,17 @@ function ir(k){
   pintar(); E.dibujar(); pedir(); E.describir();
 }
 alRedibujarTema(() => E.dibujar());
+let JG = null;
 addEventListener('modo', () => {
   if (document.getElementById('m2').hidden) return;
+  if (JG && JG.activo()){ E.resize(); JG.pintar(); return; }
   // Al entrar, lo respondido en el paso a paso puede abrir experimentos.
   if (!S.ocupado){ if (abierto(S.k)) ir(S.k); else bloqueado(S.k); }
   E.resize(); E.dibujar(); pedir();
 });
 if (abierto(0)) ir(0); else bloqueado(0);
+JG = montarJuego(E, $('cv2'), 'm2', () => { if (abierto(S.k)) ir(S.k); else bloqueado(S.k); });
+E.compactar(false); JG.pintar();
 })();
 </script>
 
