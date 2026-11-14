@@ -1247,7 +1247,7 @@ function montarExperimentos(o){
       const p = S.pred[x.id]; if (!p) return;
       btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
       const fb = $('fb' + suf);
-      fb.textContent = x.fb ? x.fb[p] : p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `; mira la escena para ver por qué.`;
+      fb.textContent = x.fb ? x.fb[p] : p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : (x.fb && x.fb[p]) || 'Mira la escena: ahí se ve qué pasa de verdad.';
       fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
       const res = $('res' + suf);
       res.innerHTML = x.ctrl() + x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig${suf}">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');

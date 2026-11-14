@@ -89,3 +89,12 @@ test('los veredictos de la práctica y la lectura no dicen «Elegiste la X»', (
 test('las escenas ocultan al alumno los párrafos de fuentes (nucleo/pegatina.css)', () => {
   assert.match(fs.readFileSync(path.join(RAIZ, 'nucleo/pegatina.css'), 'utf8'), /\.fuente\{display:none/);
 });
+
+test('ninguna retroalimentación empieza con «; mira…» (resto de la pasada de tono, 14 nov 2026)', () => {
+  // Al quitar «Elegiste la X» quedaba solo «; mira la escena para ver por qué.» en el error de «¿Qué pasa si…?».
+  for (const f of fs.readdirSync(path.join(RAIZ, 'plantillas'))) {
+    const html = path.join(RAIZ, 'plantillas', f, 'index.html');
+    if (!fs.existsSync(html)) continue;
+    assert.ok(!/[`'"];\s*mira /.test(fs.readFileSync(html, 'utf8')), `${f}: hay un mensaje que empieza con «; mira…»`);
+  }
+});
