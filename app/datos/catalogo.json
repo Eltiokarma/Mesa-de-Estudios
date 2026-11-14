@@ -3765,7 +3765,15 @@
       "sucesiones",
       "rm-ciclos",
       "rm-fichas"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/razonamiento-inductivo.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-plano.js",
+       "/nucleo/kit/piezas/rm-tablero.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-matematico.juegos-recreativos",
