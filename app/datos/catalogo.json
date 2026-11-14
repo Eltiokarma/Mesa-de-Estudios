@@ -1812,7 +1812,15 @@
      "plantillas": [
       "exponenciales-logaritmos",
       "funciones-dominio-rango"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/exponenciales-y-logaritmos.js",
+      "requiere": [
+       "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/alg-tabla.js"
+      ],
+      "ideas": 6
+     }
     },
     {
      "id": "algebra.numeros-complejos",
