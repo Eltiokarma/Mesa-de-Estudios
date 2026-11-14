@@ -4158,7 +4158,14 @@
      "grado": 3,
      "plantillas": [
       "rm-diagramas-flujo"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/diagramas-de-flujo.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-tablero.js"
+      ],
+      "ideas": 3
+     }
     }
    ]
   },
