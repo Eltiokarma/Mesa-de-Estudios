@@ -51,6 +51,18 @@
   const en = (r, deg) => [r * Math.cos(rad(deg)), r * Math.sin(rad(deg))];
   const VISTA = { x0: -1.3, x1: 4.2, y0: -1.3, y1: 3.2 }, VISTA_C = { x0: -3.4, x1: 3.4, y0: -3.2, y1: 3.4 }, VISTA_O = { x0: -4.4, x1: 4.4, y0: -4.4, y1: 4.7 };
   const tierra = (rot = 'Tierra') => ({ c: [0, 0], r: 1, color: 'i', relleno: 0.12, rotulo: rot });
+  const cuad = n => ({ sup: [n, '2'] });
+
+  // Gesto directo (docs/teoria.md §4b): la manija vive en las coordenadas del lienzo (fis-lienzo.geometria, con los
+  // mismos datos que dibuja la idea). El objeto se arrastra a lo largo de su radio: mover proyecta el dedo sobre él.
+  const LZ = datos => Kit.piezas['fis-lienzo'].geometria(datos);
+  const radial = (datos, deg) => {
+    const g = LZ(datos);
+    return {
+      donde: rr => { const q = en(rr, deg); return { x: g.X(q[0]), y: g.Y(q[1]) }; },
+      r: pt => g.Xi(pt.x) * Math.cos(rad(deg)) + g.Yi(pt.y) * Math.sin(rad(deg)),
+    };
+  };
 
   // ---------- Idea 1: la fuerza cae con el cuadrado de la distancia ----------
   // Cambia: la distancia al centro y la masa del objeto · Permanece: la Tierra · Progresa: la flecha de F, que se
@@ -82,6 +94,10 @@
       dibujo: val => ({ datos: atraccion(val.r, val.m), estado: {} }),
       lectura: val => [F, ` = ${f(val.m * G0 / (val.r * val.r), 1)} N · `, g, ` = ${f(G0 / (val.r * val.r), 2)} m/s²`],
       minimo: 3,
+      // Arrastra el objeto a lo largo de la línea discontinua: r cambia y la flecha F responde.
+      arrastres: [{ id: 'objeto', etiqueta: 'distancia al centro de la Tierra', color: 'c-i',
+        donde: val => radial(atraccion(val.r, val.m), ANG1).donde(val.r),
+        mover: (pt, val) => ({ r: radial(atraccion(val.r, val.m), ANG1).r(pt) }) }],
     },
     predice: {
       pregunta: 'Un objeto pesa 800 N en la superficie. ¿Cuánto pesa a una altura igual al radio de la Tierra?',
@@ -105,13 +121,13 @@
       },
       pasos: [
         { estado: { paso: 1 }, texto: 'En la superficie, a 1 R del centro, 100 kg pesan 1000 N.', ecuacion: [F, ' = ', { frac: ['G M m', { sup: ['R', '2'] }] }, ' = 1000 N'] },
-        { estado: { paso: 2 }, texto: 'A 2 R del centro, r² es 4 veces mayor.', ecuacion: [F, ' = ', { frac: ['1000', '2²'] }, ' = 250 N'] },
-        { estado: { paso: 3 }, texto: 'A 3 R, la novena parte. Se cuenta desde el centro.', ecuacion: [F, ' = ', { frac: ['1000', '3²'] }, ' ≈ 111 N'] },
+        { estado: { paso: 2 }, texto: 'A 2 R del centro, r² es 4 veces mayor.', ecuacion: [F, ' = ', { frac: ['1000', cuad('2')] }, ' = 250 N'] },
+        { estado: { paso: 3 }, texto: 'A 3 R, la novena parte. Se cuenta desde el centro.', ecuacion: [F, ' = ', { frac: ['1000', cuad('3')] }, ' ≈ 111 N'] },
       ],
     },
     regla: {
       texto: 'Dos masas se atraen con una fuerza proporcional a sus masas e inversa al cuadrado de la distancia entre sus centros.',
-      ecuacion: [F, ' = G ', { frac: ['M m', { sup: [r_, '2'] }] }, '   ·   G = 6,67 × 10⁻¹¹ N·m²/kg²'],
+      ecuacion: [F, ' = G ', { frac: ['M m', { llave: [{ sup: [r_, '2'] }], nota: 'centro a centro', color: 'c-i' }] }, '   ·   ', 'G = 6,67 × ', { sup: ['10', '−11'] }, ' N·m²/kg²'],
       condicion: 'r va de centro a centro, fuera de un cuerpo esférico. Altura h sobre la superficie: r = R + h.',
     },
     ahoraTu: {
@@ -124,7 +140,7 @@
             { id: 'lineal', valor: P0 / rr, error: 'G3', siFuera: 'Eso divide una vez; la distancia va al cuadrado.' },
             { id: 'cero', valor: 0, error: 'G1', siFuera: 'Lejos de la Tierra igual la atrae: la gravedad no se apaga.' },
           ], n => `${f(n, 2)} N`),
-          solucion: { texto: `Está a ${f(rr, 1)} R del centro.`, ecuacion: [F, ` = ${P0} / ${f(rr, 1)}² = ${f(Ph, 2)} N`] },
+          solucion: { texto: `Está a ${f(rr, 1)} R del centro.`, ecuacion: [F, ` = ${P0} / `, cuad(f(rr, 1)), ` = ${f(Ph, 2)} N`] },
         };
       },
     },
@@ -174,6 +190,10 @@
       dibujo: val => ({ datos: campo(val.r, val.m), estado: {} }),
       lectura: val => [g, ` = ${f(G0 / (val.r * val.r), 2)} m/s² · `, F, ` = ${f(val.m * G0 / (val.r * val.r), 1)} N`],
       minimo: 3,
+      // Arrastra el objeto hacia afuera o hacia adentro, en su radio: su flecha g se ajusta a las del mapa.
+      arrastres: [{ id: 'objeto', etiqueta: 'distancia al centro de la Tierra', color: 'c-i',
+        donde: val => radial(campo(val.r, val.m), 60).donde(val.r),
+        mover: (pt, val) => ({ r: radial(campo(val.r, val.m), 60).r(pt) }) }],
     },
     predice: {
       pregunta: 'La estación espacial gira a unos 400 km de altura, donde g vale cerca de 8,9 m/s². ¿Por qué los astronautas flotan dentro de ella?',
@@ -192,13 +212,13 @@
       pasos: [
         { estado: {}, texto: 'En cada punto alrededor de la Tierra, la flecha verde apunta al centro.', ecuacion: [g, ' = ', { frac: [F, 'm'] }] },
         { estado: {}, texto: 'Depende de la masa de la Tierra y de r, no de quién cae.', ecuacion: [g, ' = ', { frac: ['G M', { sup: [r_, '2'] }] }] },
-        { estado: {}, texto: 'A 2 R del centro, g es la cuarta parte del suelo.', ecuacion: [g, ' = ', { frac: ['10', '2²'] }, ' = 2,5 m/s²'] },
+        { estado: {}, texto: 'A 2 R del centro, g es la cuarta parte del suelo.', ecuacion: [g, ' = ', { frac: ['10', cuad('2')] }, ' = 2,5 m/s²'] },
         { estado: {}, texto: 'Sobre 50 kg allí, la fuerza es m por g.', ecuacion: [F, ' = 50 · 2,5 = 125 N'] },
       ],
     },
     regla: {
       texto: 'El campo gravitatorio es la fuerza por cada kilogramo en un punto. Lo crea la masa que atrae y no depende del objeto que se pone allí.',
-      ecuacion: [g, ' = ', { frac: [F, 'm'] }, ' = ', { frac: ['G M', { sup: [r_, '2'] }] }],
+      ecuacion: [g, ' = ', { llave: [{ frac: [F, 'm'] }], nota: 'fuerza por kilogramo', color: 'c-d' }, ' = ', { frac: ['G M', { sup: [r_, '2'] }] }],
       condicion: 'fuera de un planeta esférico, con r desde su centro. En la superficie terrestre, g ≈ 10 m/s².',
     },
     ahoraTu: {
@@ -211,7 +231,7 @@
             { id: 'solo-m', valor: G0 * kM, error: 'GR-MASA', siFuera: 'Eso olvida que la superficie está más lejos o más cerca del centro.' },
             { id: 'por', valor: G0 * kM * kR * kR, error: 'GR-CUAD', siFuera: 'Más radio aleja la superficie del centro: g baja, no sube.' },
           ], n => `${f(n, 2)} m/s²`),
-          solucion: { texto: 'g crece con la masa y baja con el cuadrado del radio.', ecuacion: [g, ` = 10 · ${f(kM, 1)} / ${f(kR, 1)}² = ${f(gp, 2)} m/s²`] },
+          solucion: { texto: 'g crece con la masa y baja con el cuadrado del radio.', ecuacion: [g, ` = 10 · ${f(kM, 1)} / `, cuad(f(kR, 1)), ` = ${f(gp, 2)} m/s²`] },
         };
       },
     },
@@ -243,6 +263,10 @@
       dibujo: val => ({ datos: orbita(val.r), estado: {} }),
       lectura: val => [v, ` = ${f(V0 / Math.sqrt(val.r), 2)} km/s · una vuelta en ${f(1.4 * val.r ** 1.5, 1)} h`],
       minimo: 3,
+      // Arrastra el satélite hacia arriba o abajo: la órbita crece o se achica y la flecha v responde.
+      arrastres: [{ id: 'satelite', etiqueta: 'radio de la órbita', color: 'c-i',
+        donde: val => radial(orbita(val.r), 90).donde(val.r),
+        mover: (pt, val) => ({ r: radial(orbita(val.r), 90).r(pt) }) }],
     },
     predice: {
       pregunta: 'Un satélite pasa de una órbita circular de 2 R a otra de 4 R del centro de la Tierra. ¿Qué pasa con su rapidez?',
@@ -260,13 +284,13 @@
       pasos: [
         { estado: {}, texto: 'En órbita solo actúa la gravedad: su aceleración es el g del lugar.', ecuacion: [g, ' = ', { frac: ['G M', { sup: [r_, '2'] }] }] },
         { estado: {}, texto: 'Para girar en círculo, esa aceleración debe ser v²/r.', ecuacion: [{ frac: [{ sup: [v, '2'] }, r_] }, ' = ', { frac: ['G M', { sup: [r_, '2'] }] }] },
-        { estado: {}, texto: 'Despejando, la rapidez baja con la raíz de r.', ecuacion: [v, ' = √(G M / ', r_, ')'] },
-        { estado: {}, texto: 'A 4 R va a la mitad de la rapidez rasante.', ecuacion: [v, ' = 8 / √4 = 4 km/s'] },
+        { estado: {}, texto: 'Despejando, la rapidez baja con la raíz de r.', ecuacion: [v, ' = ', { raiz: ['G M / ', r_] }] },
+        { estado: {}, texto: 'A 4 R va a la mitad de la rapidez rasante.', ecuacion: [v, ' = 8 / ', { raiz: ['4'] }, ' = 4 km/s'] },
       ],
     },
     regla: {
       texto: 'En una órbita circular, la gravedad hace de fuerza centrípeta. Cuanto más lejos, menor rapidez y vuelta más larga.',
-      ecuacion: [v, ' = ', '√(G M / ', r_, ')', '   ·   T = ', { frac: ['2π', r_] }, '/', v],
+      ecuacion: [{ llave: [v], nota: 'en órbita', color: 'c-h' }, ' = ', { raiz: ['G M / ', r_] }, '   ·   ', 'T = ', { frac: [['2π ', r_], v] }],
       condicion: 'órbita circular alrededor de un planeta esférico. Con otra rapidez la órbita es una elipse, también cerrada.',
     },
     ahoraTu: {
@@ -310,6 +334,7 @@
       textos: o.textos || [],
     };
   }
+  const afelio = e => { const g = LZ(elipse(e)); return { x: g.X(-A4 * (1 + e)), y: g.Y(0) }; };
   const keplerIdea = {
     id: 'leyes-de-kepler',
     titulo: 'Las tres leyes de Kepler',
@@ -322,6 +347,14 @@
       dibujo: val => ({ datos: elipse(val.e), estado: {} }),
       lectura: val => [val.e === 0 ? 'Marcas parejas: rapidez constante' : 'Lejos del Sol las marcas se juntan: va más lento'],
       minimo: 3,
+      // Arrastra el punto más lejano del Sol hacia la izquierda: la órbita se estira (la forma más cercana).
+      arrastres: [{ id: 'afelio', etiqueta: 'punto más lejano del Sol (forma de la órbita)',
+        donde: val => afelio(val.e),
+        mover: (pt, val) => {
+          let mejor = val.e, dist = Infinity;
+          for (const o of keplerIdea.juega.controles[0].opciones) { const dd = Math.abs(afelio(o.valor).x - pt.x); if (dd < dist - 1e-9) { dist = dd; mejor = o.valor; } }
+          return { e: mejor };
+        } }],
     },
     predice: {
       pregunta: 'La Tierra da una vuelta al Sol en 1 año a 1 UA (unidad astronómica). Otro planeta orbita a 4 UA. ¿Cuánto dura su año?',
@@ -346,7 +379,7 @@
     },
     regla: {
       texto: 'Los planetas giran en elipses con el Sol en un foco, barren áreas iguales en tiempos iguales, y T² crece como el cubo del semieje.',
-      ecuacion: [{ frac: [{ sup: ['T', '2'] }, { sup: [a_, '3'] }] }, ' = ', { frac: ['4π²', 'G M'] }],
+      ecuacion: [{ frac: [{ sup: ['T', '2'] }, { llave: [{ sup: [a_, '3'] }], nota: 'semieje al cubo', color: 'c-i' }] }, ' = ', { frac: [['4', { sup: ['π', '2'] }], 'G M'] }],
       condicion: 'a es el semieje mayor; la constante vale para cuerpos que giran alrededor del mismo astro.',
     },
     ahoraTu: {
@@ -361,7 +394,7 @@
               { id: 'cuad', valor: aa * aa, error: 'KP-CUAD', siFuera: 'Eso eleva a al cuadrado; T² = a³.' },
               { id: 'cubo', valor: aa ** 3, error: 'KP-CUBO', siFuera: 'Eso es a³, que es T²; falta sacar la raíz.' },
             ], n => `${f(n, 3)} años`),
-            solucion: { texto: 'Con años y UA, la constante vale 1: T² = a³.', ecuacion: ['T = √(', f(aa, 2), '³) = ', f(T, 3), ' años'] },
+            solucion: { texto: 'Con años y UA, la constante vale 1: T² = a³.', ecuacion: ['T = ', { raiz: [{ sup: [f(aa, 2), '3'] }] }, ` = ${f(T, 3)} años`] },
           };
         }
         const T = r.de([8, 27, 64, 125]), aa = Math.cbrt(T * T);
@@ -372,17 +405,66 @@
             { id: 'cuad', valor: Math.sqrt(T), error: 'KP-CUAD', siFuera: 'Eso saca raíz cuadrada; a³ = T², así que va raíz cúbica de T².' },
             { id: 'cubo', valor: Math.cbrt(T), error: 'KP-CUBO', siFuera: 'Eso saca raíz cúbica de T; la ley usa T².' },
           ], n => `${f(n, 2)} UA`),
-          solucion: { texto: 'Con años y UA: a³ = T².', ecuacion: [a_, ` = ∛(${T}²) = ${f(aa, 2)} UA`] },
+          solucion: { texto: 'Con años y UA: a³ = T².', ecuacion: [a_, ' = ', { raiz: [{ sup: [`${T}`, '2'] }], indice: '3' }, ` = ${f(aa, 2)} UA`] },
         };
       },
     },
   };
 
+  // Laboratorio: dos satélites en órbitas circulares, para comparar rapidez y período al mismo tiempo.
+  function dosOrbitas(r1, r2) {
+    const P1 = en(r1, 90), P2 = en(r2, 20), v1 = V0 / Math.sqrt(r1), v2 = V0 / Math.sqrt(r2);
+    return {
+      vista: VISTA_O, escalaF: KG3,
+      alt: `Dos satélites: A a ${f(r1, 1)} R va a ${f(v1, 2)} km/s; B a ${f(r2, 1)} R va a ${f(v2, 2)} km/s.`,
+      discos: [tierra(), { c: P1, r: 0.13 }, { c: P2, r: 0.13 }],
+      textos: [{ en: en(r1 + 0.45, 75), texto: 'A' }, { en: en(r2 + 0.45, 5), texto: 'B' }],
+      arcos: [{ c: [0, 0], r: r1, de: 0, a: 360, grosor: 'fino', discontinua: true }, { c: [0, 0], r: r2, de: 0, a: 360, grosor: 'fino', discontinua: true }],
+      flechas: [{ de: P1, d: [-v1, 0], escala: KV3, color: 'h', rotulo: `${f(v1, 1)} km/s` },
+        { de: P2, d: [-Math.sin(rad(20)) * v2, Math.cos(rad(20)) * v2], escala: KV3, color: 'h', rotulo: `${f(v2, 1)} km/s`, lado: -1 }],
+    };
+  }
+  const DOS = [
+    { id: 'r1', etiqueta: 'r de A', color: 'c-i', min: 1, max: 4, paso: 0.25, inicio: 1, unidad: 'R', decimales: 2 },
+    { id: 'r2', etiqueta: 'r de B', color: 'c-i', min: 1, max: 4, paso: 0.25, inicio: 4, unidad: 'R', decimales: 2 },
+  ];
+  const ELIPSE_LIBRE = { id: 'e', etiqueta: 'e', min: 0, max: 0.75, paso: 0.05, inicio: 0.5, unidad: '', decimales: 2 };
+
   return {
     unidad: 'fisica.gravitacion',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/fis-lienzo.js'],
+    // Laboratorio: juego libre, sin preguntas. Dos órbitas a la vez para comparar (la idea muestra una sola); la
+    // elipse libre deja cualquier excentricidad de 0 a 0,75 y cuenta cuánto más lento va lejos del Sol.
+    laboratorio: [
+      {
+        id: 'dos-orbitas', titulo: 'Dos satélites lado a lado', pieza: 'fis-lienzo',
+        consigna: 'Arrastra los satélites A y B a órbitas distintas. Compara sus rapideces y cuánto tarda cada vuelta.',
+        controles: DOS,
+        dibujo: val => ({ datos: dosOrbitas(val.r1, val.r2), estado: {} }),
+        lectura: val => [`A: ${f(V0 / Math.sqrt(val.r1), 2)} km/s, ${f(1.4 * val.r1 ** 1.5, 1)} h · B: ${f(V0 / Math.sqrt(val.r2), 2)} km/s, ${f(1.4 * val.r2 ** 1.5, 1)} h`],
+        arrastres: [
+          { id: 'sat-a', etiqueta: 'radio de la órbita de A', color: 'c-i',
+            donde: val => radial(dosOrbitas(val.r1, val.r2), 90).donde(val.r1),
+            mover: (pt, val) => ({ r1: radial(dosOrbitas(val.r1, val.r2), 90).r(pt) }) },
+          { id: 'sat-b', etiqueta: 'radio de la órbita de B', color: 'c-i',
+            donde: val => radial(dosOrbitas(val.r1, val.r2), 20).donde(val.r2),
+            mover: (pt, val) => ({ r2: radial(dosOrbitas(val.r1, val.r2), 20).r(pt) }) },
+        ],
+      },
+      {
+        id: 'elipse-libre', titulo: 'Elipse de cualquier forma', pieza: 'fis-lienzo',
+        consigna: 'Estira la órbita arrastrando su punto más lejano del Sol. Las marcas rojas van a tiempos iguales.',
+        controles: [ELIPSE_LIBRE],
+        dibujo: val => ({ datos: elipse(val.e), estado: {} }),
+        lectura: val => [val.e === 0 ? 'e = 0: la misma rapidez en toda la vuelta' : `e = ${f(val.e, 2)}: cerca del Sol va ${f((1 + val.e) / (1 - val.e), 2)} veces más rápido que lejos`],
+        arrastres: [{ id: 'afelio', etiqueta: 'punto más lejano del Sol (forma de la órbita)',
+          donde: val => afelio(val.e),
+          mover: (pt, val) => { const g = LZ(elipse(val.e)); return { e: -g.Xi(pt.x) / A4 - 1 }; } }],
+      },
+      Object.assign({ id: 'atraccion', titulo: 'Atracción y distancia', pieza: 'fis-lienzo' }, inversa.juega),
+    ],
     historia: {
       texto: 'Kepler trabajó con años de registros de Tycho Brahe y publicó sus dos primeras leyes en 1609; la tercera, en 1619. Describían cómo se mueven los planetas sin explicar por qué. En 1687, Newton mostró que una sola atracción, que se debilita con el cuadrado de la distancia, explicaba las tres.',
       pregunta: '¿Por qué la Luna no se cae a la Tierra?',
