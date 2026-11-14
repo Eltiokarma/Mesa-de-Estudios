@@ -219,6 +219,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'mas', unidad: 'fisica.oscilaciones', version: '0.1.0' };
@@ -633,14 +634,18 @@ const $ = id => document.getElementById(id);
 const cv = $('cv');
 // El paso de la energía no tiene gráficas: el lienzo es más bajo. (steps se define más abajo; el ResizeObserver llama después.)
 const sinGraficas = () => { try { return !steps[S.step].vista().graficas.length; } catch (e) { return false; } };
-const altoLienzo = W => W >= 560 ? (sinGraficas() ? 300 : clamp(W*0.8, 430, 580)) : (sinGraficas() ? 380 : clamp(W*1.38, 470, 560));
+const jugandoAun = () => { try { return enJuego(); } catch (e) { return false; } };
+const altoLienzo = W => jugandoAun() ? 220 : W >= 560 ? (sinGraficas() ? 300 : clamp(W*0.8, 430, 580)) : (sinGraficas() ? 380 : clamp(W*1.38, 470, 560));
 const L = crearLienzo(cv, altoLienzo, () => draw());
 const BASE = { m:0.4, k:40, A:0.1 };
 const rB = M.resorte(BASE), T0 = rB.T;
 const cmp1 = M.comparar('resorte', BASE, { m:0.4, k:40, A:0.2 });
 const cmp2 = M.comparar('resorte', BASE, { m:1.6, k:40, A:0.1 });
 const MEDIO = M.resorte({ m:0.4, k:40, A:0.1, phi:30 }), enMedio = rB.enPosicion(0.05);
-const S = { step:0, max:0, pred:{}, hl:null, t:0, corre:false, ex:{ m:0.4, k:40, A:0.1, phi:90, vert:false, circ:true }, arrastra:null };
+const S = { step:0, max:0, pred:{}, hl:null, t:0, corre:false, ex:{ m:0.4, k:40, A:0.1, phi:90, vert:false, circ:true }, arrastra:null, jugando:true };
+// Regla 3: el paso 1 abre en juego libre (el bloque se arrastra y se suelta), sin gráficas, flechas ni rótulos de T.
+const enJuego = () => S.step === 0 && S.jugando;
+const arrastrable = () => !!steps[S.step].explora || enJuego();
 let parar = () => {};
 
 const T2x = tPi(T0*cmp1.errores.TproporcionalA);
@@ -688,10 +693,11 @@ const cel = (o, nombre, extra) => Object.assign({ tipo:'h', r:M.resorte(o), m:o.
 const base = s => Object.assign({ disp:'filas', graficas:['x','v','a'], rango:{ x:0.1, v:1, a:10 }, ventana:2*T0, ux:100, Aref:0.1, curvas:false, lento:null }, s);
 const steps = [
  { k:'Paso 1', t:'El problema', ley:['x','v','a','t','eq'],
-   vista:() => base({ osc:[cel(BASE, '400 g')], cotaA:true, incog:[['T = ?','T'], ['v máx = ?','v']] }),
+   vista:() => enJuego() ? base({ osc:[{ tipo:'h', r:rEx(), m:S.ex.m, nombre:'400 g' }], graficas:[], flechas:false, curvas:false })
+     : base({ osc:[cel(BASE, '400 g')], cotaA:true, incog:[['T = ?','T'], ['v máx = ?','v']] }),
    body:() => `<p class="problem">Un bloque de ${V('m','400 g')} está unido a un resorte de constante ${V('k','40 N/m')}, sobre una mesa sin roce. Se lo jala ${V('A','10 cm')} desde su posición de equilibrio y se lo suelta. ¿Cuánto tarda en ir y volver, es decir, cuál es su ${V('T','período')}? ¿Cuál es su ${V('v','rapidez máxima')} y su ${V('a','aceleración máxima')}?</p>
    <p>Arriba está el bloque, todavía sujeto. Debajo se van a dibujar su ${V('x','posición')}, su ${V('v','velocidad')} y su ${V('a','aceleración')} contra el ${V('t','tiempo')}. Toca o pasa el puntero sobre un dato para ver dónde está.</p>`,
-   lect:() => [], desc:() => 'Un bloque de 400 gramos con un resorte, jalado 10 centímetros a la derecha del equilibrio y sujeto. Las gráficas están vacías.' },
+   lect:() => [], desc:() => enJuego() ? `Bloque con resorte sobre la mesa, soltado desde ${N(S.ex.A*100)} centímetros ${S.ex.phi === 270 ? 'a la izquierda' : 'a la derecha'} del equilibrio.` : 'Un bloque de 400 gramos con un resorte, jalado 10 centímetros a la derecha del equilibrio y sujeto. Las gráficas están vacías.' },
  { k:'Paso 2', t:'Antes de calcular, predice', gate:P1, ley:['x','v','t','trazos'], leyDespues:['x','v','t','T','trazos'],
    vista:() => { const ya = S.pred[P1.id]; return base({ osc:[cel(BASE, '10 cm'), cel({ m:0.4, k:40, A:0.2 }, '20 cm')], Aref:0.2, graficas:['x','v'], rango:{ x:0.2, v:2 },
      curvas:!!ya, revelaT:!!ya, incog: ya ? [] : [['T = ?','T']], lento: ya ? TXT_LENTO : null }); },
@@ -792,8 +798,8 @@ function go(n){
   if (n < 0 || n >= steps.length || n > S.max) return;
   parar();
   const s = steps[n]; S.step = n; S.hl = null; S.t = 0; S.arrastra = null;
-  cv.tabIndex = s.explora ? 0 : -1;
-  cv.setAttribute('aria-label', s.explora ? 'Bloque del explorador: con las flechas del teclado cambias desde dónde se suelta' : 'Un bloque unido a un resorte; debajo, sus gráficas contra el tiempo');
+  cv.tabIndex = arrastrable() ? 0 : -1;
+  cv.setAttribute('aria-label', arrastrable() ? 'Bloque con resorte: arrástralo y suéltalo; con las flechas del teclado cambias desde dónde se suelta' : 'Un bloque unido a un resorte; debajo, sus gráficas contra el tiempo');
   $('stepK').textContent = `${s.k} de ${steps.length}`;
   $('stepT').textContent = s.t;
   $('stepBody').innerHTML = s.body();
@@ -805,7 +811,7 @@ function go(n){
   nav(); L.resize();
   if (s.anima || s.explora || (s.gate && S.pred[s.gate.id] && s.gate !== P4)) correr();
 }
-function ponerLeyenda(){ const s = steps[S.step]; leyenda($('ley1'), s.gate && S.pred[s.gate.id] && s.leyDespues ? s.leyDespues : s.ley); }
+function ponerLeyenda(){ const s = steps[S.step]; leyenda($('ley1'), enJuego() ? [] : s.gate && S.pred[s.gate.id] && s.leyDespues ? s.leyDespues : s.ley); }
 function nav(){
   const s = steps[S.step];
   $('prev').disabled = S.step === 0;
@@ -871,7 +877,9 @@ function geoBloque(){
   const q = P.osc[0], e = q.r.estado(S.t), lb = ladoBloque(q.m);
   if (q.tipo === 'h'){
     const X0 = 8 + 12 + RESORTE_MIN + P.lbMax/2 + P.Aref*P.escPista;
-    const hb = clamp(L.H*(P.fBanco || 0.42), 150, 300), piso = 4 + (hb - 8) - 20;
+    // Mismo alto de banco que vista(): sin gráficas (el juego del paso 1), el banco ocupa todo el lienzo.
+    const conG = P.graficas.length > 0 && !(L.compacto && L.W < 900 && L.H < 300);
+    const hb = conG ? clamp(L.H*(P.fBanco || 0.42), 150, 300) : L.H, piso = 4 + (hb - 8) - 20;
     return { vert:false, X0, esc:P.esc, x: X0 + e.x*P.esc, y: piso - lb*0.41 };
   }
   const g = geoV(P.celdas[0], q, P), top = g.yEq - e.x*g.esc;
@@ -880,10 +888,10 @@ function geoBloque(){
 function soltarDesde(x0){
   const A = Math.min(Math.abs(x0), S.ex.vert ? 0.1 : 0.2);
   S.ex.A = Math.round(A*100)/100; S.ex.phi = x0 >= 0 ? 90 : 270; S.t = 0; S.arrastra = null;
-  if (S.pintarEx) S.pintarEx(); correr();
+  if (S.pintarEx && steps[S.step].explora) S.pintarEx(); correr();
 }
 Celular.arrastre(cv, {
-  activo: () => steps[S.step].explora,
+  activo: arrastrable,
   // El bloque se mueve: se lo toma en cualquier punto de su carril (la franja por donde va y viene), no solo encima.
   cerca: (p, r) => { const g = geoBloque(), lim = (S.ex.vert ? 0.1 : 0.2)*g.esc + 30;
     return g.vert ? Math.abs(p.x - g.x) < r && Math.abs(p.y - g.Y0 - g.off) < lim : Math.abs(p.y - g.y) < r && Math.abs(p.x - g.X0) < lim; },
@@ -897,7 +905,7 @@ Celular.arrastre(cv, {
   soltar: () => { if (S.arrastra) soltarDesde(S.arrastra.x); },
 });
 cv.addEventListener('keydown', e => {
-  if (!steps[S.step].explora) return;
+  if (!arrastrable()) return;
   const d = { ArrowRight:0.01, ArrowUp:0.01, ArrowLeft:-0.01, ArrowDown:-0.01 }[e.key]; if (!d) return;
   e.preventDefault();
   const x0 = (S.ex.phi === 270 ? -S.ex.A : S.ex.A) + d;
@@ -922,6 +930,9 @@ addEventListener('modo', () => {
   else { L.resize(); const s = steps[S.step]; if (s.anima || s.explora || (s.gate && S.pred[s.gate.id] && s.gate !== P4)) correr(); }
 });
 L.resize(); go(0);
+JugarPrimero.montar({ escena: $('m1').querySelector('.bench'), preguntas: [$('m1').querySelector('.guide')],
+  consigna: 'Arrastra el bloque, suéltalo y mira cómo se mueve. Prueba varias veces.', minimo: 2,
+  alListo: () => { S.jugando = false; S.ex.A = 0.1; S.ex.phi = 90; if (S.step === 0) go(0); } });
 })();
 </script>
 <script>
@@ -1057,7 +1068,37 @@ function vistaAct(){
     marcas:E.marcas, contar:E.contar && ya, reservaContar:!!E.contar, lento: ya && x.lento ? TXT_LENTO : null, fBanco:0.62, aviso:'se dibuja al soltarlos',
     incog: ya ? [] : [['T = ?','T']] };
 }
+// Regla 3: antes del primer experimento se juega con un péndulo de 2,5 m: se arrastra la esfera y se suelta
+// (o ← → con el dibujo enfocado). Sin gráfica ni período: lo que se pregunta después es la masa, el largo y la gravedad.
+const J = { activo:true, th:10, t:0, suelto:false };
+const rJ = () => M.pendulo({ L:2.5, m:0.1, theta0:Math.abs(J.th), phi: J.th >= 0 ? 90 : 270 });
+const vistaJ = () => ({ osc:[{ tipo:'p', r:rJ(), m:0.1, nombre:'' }], disp:'filas', t: J.suelto ? J.t : 0, graficas:[], rango:{ x:0.5 }, ventana:2*Tp, ux:1, Aref:0.5, curvas:false });
+function geoJ(){ const cx = 8 + (L.W - 16)/2, py = 18, Lpx = L.H - 52, th = rJ().estado(J.suelto ? J.t : 0).theta*Math.PI/180;
+  return { cx, py, bx: cx + Lpx*Math.sin(th), by: py + Lpx*Math.cos(th) }; }
+function soltarJ(){
+  parar(); J.suelto = true; J.t = 0;
+  if (RM){ J.t = 0.8*2*Tp; draw(); return; }
+  parar = reloj(1, dt => { J.t += dt; draw(); });
+}
+function ponerJ(th){ parar(); J.th = clamp(Math.round(th), -25, 25); J.suelto = false; J.t = 0; draw(); }
+Celular.arrastre(cv, {
+  activo: () => J.activo,
+  cerca: (p, r) => { const g = geoJ(); return Math.hypot(p.x - g.bx, p.y - g.by) < r + 16; },
+  empezar: () => { const g = geoJ(); ponerJ(Math.atan2(g.bx - g.cx, g.by - g.py)*180/Math.PI); },
+  mover: p => { const g = geoJ(); ponerJ(Math.atan2(p.x - g.cx, Math.max(1, p.y - g.py))*180/Math.PI); },
+  soltar: () => soltarJ(),
+});
+cv.addEventListener('keydown', e => {
+  if (!J.activo) return;
+  const d = { ArrowRight:2, ArrowUp:2, ArrowLeft:-2, ArrowDown:-2 }[e.key]; if (!d) return;
+  e.preventDefault(); ponerJ(J.th + d); soltarJ();
+});
 function draw(){
+  if (J.activo && L.W){
+    vista(L, colores(L.W), vistaJ()); lecturas($('lect2'), [], null); leyenda($('ley2'), []);
+    decir($('desc2'), `Péndulo de 2,5 metros, ${J.suelto ? 'soltado' : 'apartado'} ${N(Math.abs(J.th))} grados ${J.th < 0 ? 'a la izquierda' : 'a la derecha'}.`);
+    return;
+  }
   if (!L.W || !E.osc) return;
   const x = EXPS[S.k], ya = !!S.pred[x.id];
   const P = vistaAct(); vista(L, colores(L.W), P);
@@ -1118,11 +1159,16 @@ function ir(k){
     Celular.alResponder(L.cv, () => correr(), () => S.k === k && !$('m2').hidden);
   });
   pintar(); draw();
+  if (J.activo){ parar(); L.compactar(false); cv.tabIndex = 0; cv.setAttribute('aria-label', 'Péndulo: arrastra la esfera y suéltala; con ← → cambias desde dónde se suelta'); if (J.suelto) soltarJ(); return; }
   if (ya) correr();
 }
 alRedibujarTema(draw);
 addEventListener('modo', () => { if ($('m2').hidden) parar(); else { L.resize(); if (E.osc && S.pred[EXPS[S.k].id]) correr(); } });
 L.resize(); ir(0);
+// La botonera también queda velada: el péndulo libre es el juego común y va antes del primer experimento.
+JugarPrimero.montar({ escena: $('m2').querySelector('.bench'), preguntas: [$('m2').querySelector('.guide')],
+  consigna: 'Arrastra la esfera del péndulo, suéltala y mira cómo oscila.', minimo: 2,
+  alListo: () => { J.activo = false; parar(); cv.tabIndex = -1; cv.setAttribute('aria-label', 'Dibujo del experimento elegido'); ir(S.k); } });
 })();
 </script>
 
