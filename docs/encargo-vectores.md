@@ -141,3 +141,44 @@ Para todos: solo los colores de marca y de la cáscara (`docs/diseno.md`), nunca
 - Los cuatro grupos van separados, con esos `id`, para que la página los mueva sin tocar el dibujo.
 - La silueta se entiende sola, en un color.
 - Va en `app/utileria/carrito-a.svg` y `app/utileria/carrito-b.svg`. Después, si la versión B lo pide, en Rive con entradas `x`, `v` y `a` (sección 0 de la auditoría).
+
+## 10. Magnetismo y calorimetría: objetos para mirar antes de que se pregunte
+
+14 de noviembre de 2026. Pedido de Gerson. La rutina que aplicó «jugar antes de preguntar» dejó flojos cuatro juegos porque no tenían con qué mostrar el fenómeno: magnetismo (solo se ubican v y B en 3D) y, en calorimetría, «Toco el metal», «Hiervo en Juliaca» y el paso 1 de Transferencia («Dos cubos de hielo»). Las reglas generales son las de la sección 9: SVG propio, sin degradados, filtros ni texto, grupos con `id` para lo que se mueve y paleta propia sin los colores de las variables.
+
+**La filosofía.** El objeto existe para que el alumno, jugando, **mire el fenómeno antes de que se le pregunte**: que vea pasar el calor, que vea la mano acomodarse a v y B, que vea la columna de aire que se achica. Lo que después se pregunta no se muestra en el juego: si la pregunta es qué marca el termómetro, el termómetro no está en el juego. Todo lo que se mide (flechas de calor, cifras, la flecha de F, las alturas) lo sigue dibujando el kit encima del objeto, con los colores de las variables.
+
+### Magnetismo (`plantillas/magnetismo/`)
+
+**El juego:** el alumno gira la velocidad de la carga y mueve el imán; la mano derecha se acomoda sola, con el pulgar en v y los dedos en B, y la palma empuja hacia donde va F. Después se le pregunta por otro caso sin la mano: una carga negativa, la carga quieta u otra orientación.
+
+| Objeto | Para qué | Partes que se mueven (`id`) | Tamaño en pantalla |
+| --- | --- | --- | --- |
+| **Mano derecha** | Que la regla se vea hecha con una mano, no leída | `pulgar`, `dedos` (los cuatro juntos), `palma`. En 8 vistas, cada 45° alrededor del eje vertical; la página elige la vista más cercana a la cámara y gira el pulgar y los dedos hacia v y B, que da el motor | Unos 90 × 90 px |
+| **Imán de dos polos** | Que B tenga de dónde salir y a dónde llegar | `polo-n` y `polo-s` (la N y la S las rotula el kit). Dos formas: barra y herradura | 120 × 60 px |
+| **Carga** | Distinguir protón y electrón de un vistazo | Protón más grande, con un «+» dibujado como forma; electrón más chico, con un «−». Sin brillo ni estela (la trayectoria la dibuja el kit) | 18 y 12 px de diámetro |
+
+### Calorimetría (`plantillas/calorimetria/`)
+
+| Juego | Qué mira el alumno antes de la pregunta | Qué no se muestra hasta después | Objetos |
+| --- | --- | --- | --- |
+| **Toco el metal** | Toca con la mano el aluminio, la madera y la lana. El kit dibuja el calor que sale de la mano: mucho hacia el aluminio, poco hacia la lana | La lectura del termómetro: es lo que se pregunta | Placa de aluminio, tabla de madera, chompa de lana, mano |
+| **Hiervo en Juliaca** | Calienta la olla en Lima hasta que hierve (ahí sí ve los 100 °C) y la lleva cerro arriba: la columna de aire sobre la olla, que dibuja el kit, se hace más baja | A qué temperatura hierve arriba | Olla con agua, cocina, perfil de la costa al altiplano |
+| **Dos cubos de hielo** | Toca con la mano la placa de aluminio y la de madera y mira cuánto calor pasa en cada una | Cuál cubo se derrite primero | Placa de aluminio y tabla de madera (las mismas de arriba), mano, cubo de hielo |
+
+**Los objetos:**
+
+| Objeto | Partes y estados (`id`) | Tamaño en pantalla | Cuidado |
+| --- | --- | --- | --- |
+| **Placa de aluminio** | `cuerpo` y `contacto` (el punto donde apoya la mano o el hielo) | 96 × 56 px | Se reconoce como metal sin brillo animado: un reflejo fijo en dos tonos |
+| **Tabla de madera** | `cuerpo` y `contacto`. Vetas | 96 × 56 px, igual que el aluminio | Mismo tamaño que el aluminio: la pregunta depende de que sean iguales |
+| **Chompa de lana** | `cuerpo` y `contacto`. Tejido, doblada | 96 × 56 px | |
+| **Mano** | Dos poses: `acercando` y `apoyada`, con la palma hacia abajo | 72 × 56 px | Neutra, sin gesto de frío ni de dolor: lo que siente lo dice el kit |
+| **Cubo de hielo** | Cuatro estados: `entero`, `dos-tercios`, `un-tercio` y `charco`. La página elige el estado según la fracción derretida que da el motor | 40 × 40 px | El charco no puede crecer más que lo que el cubo perdió |
+| **Olla con agua** | `cuerpo` y `agua` (la superficie). Sin tapa. Las burbujas las pone el kit | 80 × 64 px | |
+| **Cocina** | `llama` en tres tamaños: `apagada`, `baja` y `alta` | 80 × 24 px | La llama no usa naranja ni rojo de variable: un tono propio |
+| **Perfil de la costa al altiplano** | Silueta de cerros, solo marco | 320 × 120 px | **Fidelidad:** las cinco ciudades (Lima 150 m, Arequipa 2335, Cusco 3400, Juliaca 3825 y La Rinconada 5100) las ubica el kit a escala sobre una regla de altura. El dibujo solo decora entre ellas y no se usa para leer alturas |
+
+**Dónde va:** `plantillas/magnetismo/utileria/` y `plantillas/calorimetria/utileria/`, un SVG por objeto (y por vista o estado), menos de 4 KB cada uno. Mientras no llegue, la escena usa el trazo provisional del kit y lo dice en el reporte.
+
+**Orden sugerido:** la mano derecha primero, que es la que más cambia el juego, y después los tres objetos de calorimetría que comparten «Toco el metal» y «Dos cubos de hielo».
