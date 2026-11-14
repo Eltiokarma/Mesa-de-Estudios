@@ -1677,7 +1677,16 @@
      "plantillas": [
       "conjuntos",
       "logica"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/logica-y-conjuntos.js",
+      "requiere": [
+       "/nucleo/kit/piezas/alg-tabla.js",
+       "/nucleo/kit/piezas/alg-venn.js",
+       "/nucleo/kit/piezas/recta.js"
+      ],
+      "ideas": 6
+     }
     },
     {
      "id": "algebra.numeros-reales",
@@ -1707,7 +1716,15 @@
      "plantillas": [
       "numeros-reales",
       "inecuaciones-planteo"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/numeros-reales.js",
+      "requiere": [
+       "/nucleo/kit/piezas/recta.js",
+       "/nucleo/kit/piezas/alg-tabla.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "algebra.exponentes-y-productos-notables",
@@ -1738,7 +1755,16 @@
      "plantillas": [
       "cuadrado-crece",
       "sistemas-ecuaciones"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/exponentes-y-productos-notables.js",
+      "requiere": [
+       "/nucleo/kit/piezas/alg-tabla.js",
+       "/nucleo/kit/piezas/alg-baldosas.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "algebra.ecuaciones-lineales-y-cuadraticas",
@@ -1767,7 +1793,17 @@
      "plantillas": [
       "traductor-enunciados",
       "sistemas-ecuaciones"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/ecuaciones-lineales-y-cuadraticas.js",
+      "requiere": [
+       "/nucleo/kit/piezas/balanza.js",
+       "/nucleo/kit/piezas/recta.js",
+       "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/alg-tabla.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "algebra.inecuaciones",
@@ -1797,7 +1833,15 @@
      "plantillas": [
       "grafica-perillas",
       "inecuaciones-planteo"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/inecuaciones.js",
+      "requiere": [
+       "/nucleo/kit/piezas/recta.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "algebra.valor-absoluto-y-radicales",
@@ -1828,7 +1872,15 @@
       "grafica-perillas",
       "sistemas-ecuaciones",
       "inecuaciones-planteo"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/valor-absoluto-y-radicales.js",
+      "requiere": [
+       "/nucleo/kit/piezas/recta.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "algebra.polinomios",
@@ -1856,7 +1908,15 @@
      "grado": 3,
      "plantillas": [
       "polinomios"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/polinomios.js",
+      "requiere": [
+       "/nucleo/kit/piezas/alg-tabla.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "algebra.division-de-polinomios",
@@ -1886,7 +1946,15 @@
      "plantillas": [
       "polinomios",
       "division-polinomios"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/division-de-polinomios.js",
+      "requiere": [
+       "/nucleo/kit/piezas/alg-tabla.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "algebra.factorizacion",
@@ -1916,7 +1984,16 @@
       "cuadrado-crece",
       "division-polinomios",
       "ecuaciones-polinomiales"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/factorizacion.js",
+      "requiere": [
+       "/nucleo/kit/piezas/alg-tabla.js",
+       "/nucleo/kit/piezas/alg-baldosas.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "algebra.ecuaciones-polinomiales",
@@ -1948,7 +2025,17 @@
      "plantillas": [
       "polinomios",
       "ecuaciones-polinomiales"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/ecuaciones-polinomiales.js",
+      "requiere": [
+       "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/alg-tabla.js",
+       "/nucleo/kit/piezas/recta.js",
+       "/nucleo/kit/piezas/flechas.js"
+      ],
+      "ideas": 6
+     }
     },
     {
      "id": "algebra.funciones",
@@ -1980,7 +2067,16 @@
      "plantillas": [
       "grafica-perillas",
       "funciones-dominio-rango"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/funciones.js",
+      "requiere": [
+       "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/recta.js",
+       "/nucleo/kit/piezas/alg-tabla.js"
+      ],
+      "ideas": 6
+     }
     },
     {
      "id": "algebra.tipos-de-funciones-e-inversa",
@@ -2011,7 +2107,14 @@
       "grafica-perillas",
       "exponenciales-logaritmos",
       "funciones-dominio-rango"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/tipos-de-funciones-e-inversa.js",
+      "requiere": [
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "algebra.exponenciales-y-logaritmos",
@@ -2041,7 +2144,15 @@
      "plantillas": [
       "exponenciales-logaritmos",
       "funciones-dominio-rango"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/exponenciales-y-logaritmos.js",
+      "requiere": [
+       "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/alg-tabla.js"
+      ],
+      "ideas": 6
+     }
     },
     {
      "id": "algebra.numeros-complejos",
@@ -2071,7 +2182,15 @@
      "plantillas": [
       "numeros-complejos",
       "ecuaciones-polinomiales"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/numeros-complejos.js",
+      "requiere": [
+       "/nucleo/kit/piezas/flechas.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 6
+     }
     },
     {
      "id": "algebra.matrices-y-determinantes",
@@ -2103,7 +2222,15 @@
      "plantillas": [
       "matrices",
       "sistemas-ecuaciones"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/matrices-y-determinantes.js",
+      "requiere": [
+       "/nucleo/kit/piezas/alg-tabla.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "algebra.sistemas-de-ecuaciones",
@@ -2135,7 +2262,15 @@
       "traductor-enunciados",
       "matrices",
       "sistemas-ecuaciones"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/sistemas-de-ecuaciones.js",
+      "requiere": [
+       "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/alg-tabla.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "algebra.programacion-lineal",
@@ -2165,7 +2300,14 @@
      "plantillas": [
       "programacion-lineal",
       "inecuaciones-planteo"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/programacion-lineal.js",
+      "requiere": [
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "algebra.sucesiones-y-series",
@@ -2191,7 +2333,15 @@
      "grado": 5,
      "plantillas": [
       "sucesiones"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/sucesiones-y-series.js",
+      "requiere": [
+       "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/alg-tabla.js"
+      ],
+      "ideas": 6
+     }
     },
     {
      "id": "algebra.binomio-de-newton",
@@ -2218,7 +2368,15 @@
      "grado": 5,
      "plantillas": [
       "binomio-newton"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/binomio-de-newton.js",
+      "requiere": [
+       "/nucleo/kit/piezas/alg-tabla.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 4
+     }
     }
    ]
   },
