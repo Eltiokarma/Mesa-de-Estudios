@@ -43,14 +43,35 @@
     }
     return ops.slice(0, 4);
   }
+  // Gesto directo (docs/teoria.md §4b): en la cuadrícula de los dados se arrastra un marcador de casilla en casilla; en
+  // la fábrica se estira la parte roja de cada máquina. La geometría sale de las piezas (arit-tabla y arit-tiras).
+  const TABLA = () => Kit.piezas['arit-tabla'], TIRAS = () => Kit.piezas['arit-tiras'];
+  const NB = '\u00a0';   // espacio duro: «62,5 %» no se parte
+  // El marcador va en la esquina de arriba a la izquierda de su casilla, para no tapar la suma.
+  const ESQ = { x: -11, y: -8 };
+  // Casilla (i, j) bajo el punto, con i el primer dado (fila) y j el segundo (columna), de 1 a 6.
+  const casillaEn = (g, pt) => {
+    const x = pt.x - ESQ.x, y = pt.y - ESQ.y;
+    const i = Math.max(1, Math.min(6, 6 - Math.floor((y - g.filaY(0)) / g.altoFila)));
+    let j = 1; for (let k = 1; k <= 6; k++) if (x >= g.xs[k]) j = k;
+    return { i, j };
+  };
+  // La casilla que representa a la suma s: la del medio de su diagonal.
+  const casillaDeSuma = s => { const i = Math.max(1, Math.min(6, Math.ceil(s / 2))); return { i, j: s - i }; };
+  const marcadorSuma = datosDe => ({
+    id: 'casilla', etiqueta: 'casilla elegida: su suma', color: 'c-d',
+    donde: v => { const c = casillaDeSuma(v.s), p = TABLA().geometria(datosDe(v)).celda(6 - c.i, c.j); return { x: p.x + ESQ.x, y: p.y + ESQ.y }; },
+    mover: (pt, v) => { const c = casillaEn(TABLA().geometria(datosDe(v)), pt); return { s: c.i + c.j }; },
+  });
   const PARES = []; for (let i = 1; i <= 6; i++) for (let j = 1; j <= 6; j++) PARES.push([i, j]);
   const cuenta = fn => PARES.filter(([i, j]) => fn(i, j)).length;
-  // Cuadrícula de dos dados: fila = primer dado, columna = segundo; en cada casilla, la suma.
+  // Cuadrícula de dos dados: fila = primer dado (de 6 arriba a 1 abajo, como un eje y), columna = segundo; en cada
+  // casilla, la suma. Así las casillas de igual suma forman la diagonal que baja hacia la derecha.
   // color(i, j) → 'o' | 'i' | 'd' | 'h' para resaltar, null para dejarla normal; tenue(i, j) → fuera del universo.
   function dados(color = () => null, tenue = () => false) {
     return {
       columnas: ['',  ...[1, 2, 3, 4, 5, 6].map(String)], cabeza: true, filasMax: 6,
-      filas: [1, 2, 3, 4, 5, 6].map(i => [String(i), ...[1, 2, 3, 4, 5, 6].map(j => {
+      filas: [6, 5, 4, 3, 2, 1].map(i => [String(i), ...[1, 2, 3, 4, 5, 6].map(j => {
         const c = color(i, j);
         return { t: String(i + j), color: c || undefined, resalta: !!c, tenue: tenue(i, j) };
       })]),
@@ -73,6 +94,8 @@
       dibujo: v => ({ datos: dados((i, j) => (i + j === v.s ? 'd' : null)), estado: {} }),
       lectura: v => [`suma ${v.s}: ${cuenta((i, j) => i + j === v.s)} de 36 casillas`],
       minimo: 3,
+      // Se lleva el marcador a cualquier casilla: se encienden todas las que tienen su misma suma.
+      arrastres: [marcadorSuma(v => dados((i, j) => (i + j === v.s ? 'd' : null)))],
     },
     predice: {
       pregunta: '¿Qué es más probable al lanzar dos dados: sacar un 5 y un 6, o sacar dos 6?',
@@ -89,13 +112,13 @@
       datos: dados((i, j) => ((i === 5 && j === 6) || (i === 6 && j === 5) ? 'd' : i === 6 && j === 6 ? 'h' : null)),
       pasos: [
         { estado: {}, texto: 'El espacio muestral tiene 6 · 6 = 36 resultados igual de probables.', ecuacion: ['n(Ω) = 36'] },
-        { estado: { fila: [4, 5] }, texto: '«Un 5 y un 6» son dos casillas: (5, 6) y (6, 5).', ecuacion: [P('5 y 6'), ' = ', { frac: ['2', '36'] }] },
-        { estado: { fila: 5 }, texto: '«Dos 6» es una sola casilla.', ecuacion: [P('6 y 6'), ' = ', { frac: ['1', '36'] }] },
+        { estado: { fila: [1, 0] }, texto: '«Un 5 y un 6» son dos casillas: (5, 6) y (6, 5).', ecuacion: [P('5 y 6'), ' = ', { frac: ['2', '36'] }] },
+        { estado: { fila: 0 }, texto: '«Dos 6» es una sola casilla.', ecuacion: [P('6 y 6'), ' = ', { frac: ['1', '36'] }] },
       ],
     },
     regla: {
       texto: 'Si todos los resultados son igual de probables, la probabilidad es casos favorables entre casos posibles.',
-      ecuacion: [P(A), ' = ', { frac: [['n(', A, ')'], 'n(Ω)'] }],
+      ecuacion: [P(A), ' = ', { frac: [[{ llave: ['n(', A, ')'], nota: 'favorables', color: 'c-o' }], [{ llave: ['n(Ω)'], nota: 'posibles' }]] }],
       condicion: 'los resultados del espacio son equiprobables. La frecuencia relativa de muchos ensayos se acerca a P, pero no la demuestra.',
     },
     ahoraTu: {
@@ -174,14 +197,14 @@
     mira: {
       datos: dados((i, j) => (i === 6 && j === 6 ? 'd' : i === 6 || j === 6 ? 'o' : null), (i, j) => i !== 6 && j !== 6),
       pasos: [
-        { estado: { fila: 5 }, texto: 'Primer dado 6: una fila de 6 casillas.', ecuacion: [P('1.º = 6'), ' = ', { frac: ['6', '36'] }] },
+        { estado: { fila: 0 }, texto: 'Primer dado 6: una fila de 6 casillas.', ecuacion: [P('1.º = 6'), ' = ', { frac: ['6', '36'] }] },
         { estado: { columna: 6 }, texto: 'Segundo dado 6: otra columna de 6. (6, 6) está en las dos.', ecuacion: ['6 + 6 − 1 = 11'] },
         { estado: {}, texto: 'O por complemento: las tenues no tienen ningún 6.', ecuacion: ['1 − ', { frac: ['25', '36'] }, ' = ', { frac: ['11', '36'] }] },
       ],
     },
     regla: {
       texto: 'La probabilidad de la unión suma las dos y resta lo común, que se contó dos veces. El complemento es lo que falta para 1.',
-      ecuacion: [P([A, ' ∪ ', B]), ' = ', P(A), ' + ', P(B), ' − ', P([A, ' ∩ ', B]), '   ·   ', P([A, '′']), ' = 1 − ', P(A)],
+      ecuacion: [P([A, ' ∪ ', B]), ' = ', P(A), ' + ', P(B), ' − ', { llave: P([A, ' ∩ ', B]), nota: 'lo común', color: 'c-d' }, '   ·   ', P([A, '′']), ' = 1 − ', P(A)],
       condicion: 'si A y B son excluyentes (A ∩ B = ∅), no hay nada que restar y P(A ∪ B) = P(A) + P(B).',
     },
     ahoraTu: {
@@ -246,7 +269,7 @@
     },
     regla: {
       texto: 'Saber que pasó B achica el universo a B. Se cuenta lo de A que está dentro de B y se divide entre B.',
-      ecuacion: [P([A, ' | ', B]), ' = ', { frac: [P([A, ' ∩ ', B]), P(B)] }],
+      ecuacion: [P([A, ' | ', B]), ' = ', { frac: [P([A, ' ∩ ', B]), [{ llave: P(B), nota: 'nuevo universo', color: 'c-i' }]] }],
       condicion: 'P(B) > 0. Si saber B no cambia nada, A y B son independientes: P(A ∩ B) = P(A)·P(B).',
     },
     ahoraTu: {
@@ -304,6 +327,16 @@
       ],
     };
   };
+  // Se estira la parte roja de cada máquina: su largo es cuántos fallados hace, así que fija su porcentaje de falla.
+  // La escala depende solo de cuánto hace A, que no se arrastra: la tira no cambia de tamaño bajo el dedo.
+  const manijasFallados = [
+    { id: 'falla-a', etiqueta: 'fallados de la máquina A', color: 'c-o',
+      donde: v => { const g = TIRAS().geometria(fabrica(v.pa, v.da, v.db)); return { x: g.x(v.pa * v.da / 100), y: g.centroY(0) }; },
+      mover: (pt, v) => ({ da: TIRAS().geometria(fabrica(v.pa, v.da, v.db)).deX(pt.x) * 100 / v.pa }) },
+    { id: 'falla-b', etiqueta: 'fallados de la máquina B', color: 'c-i',
+      donde: v => { const g = TIRAS().geometria(fabrica(v.pa, v.da, v.db)); return { x: g.x((100 - v.pa) * v.db / 100), y: g.centroY(1) }; },
+      mover: (pt, v) => ({ db: TIRAS().geometria(fabrica(v.pa, v.da, v.db)).deX(pt.x) * 100 / (100 - v.pa) }) },
+  ];
   const bayes = {
     id: 'bayes',
     titulo: 'De dónde viene un fallado',
@@ -320,6 +353,7 @@
       dibujo: v => ({ datos: fabrica(v.pa, v.da, v.db), estado: { paso: 3 } }),
       lectura: v => [`fallados: ${f(v.pa * v.da / 100 + (100 - v.pa) * v.db / 100)} de 100`],
       minimo: 3,
+      arrastres: manijasFallados,
     },
     predice: {
       pregunta: 'A hace 60 % de los artículos y falla 10 %; B hace 40 % y falla 25 %. Un artículo salió fallado. ¿Qué probabilidad hay de que venga de B?',
@@ -336,14 +370,14 @@
     mira: {
       datos: fabrica(60, 10, 25),
       pasos: [
-        { estado: { paso: 1 }, texto: 'De 100: A hace 60 y falla 6; B hace 40 y falla 10.', ecuacion: ['60 · 0,10 = 6   ·   40 · 0,25 = 10'] },
+        { estado: { paso: 1 }, texto: 'De 100: A hace 60 y falla 6; B hace 40 y falla 10.', ecuacion: ['60 · 0,10 = 6', '   ·   ', '40 · 0,25 = 10'] },
         { estado: { paso: 3 }, texto: 'Fallados en total: se suman los de cada máquina.', ecuacion: [P('F'), ' = 0,6 · 0,1 + 0,4 · 0,25 = 0,16'] },
         { estado: { paso: 3 }, texto: 'De esos 16, los de B son 10.', ecuacion: [P([B, ' | F']), ' = ', { frac: ['10', '16'] }, ' = 62,5 %'] },
       ],
     },
     regla: {
       texto: 'La probabilidad total suma lo que aporta cada caso. Bayes mira al revés: de lo que salió, qué parte vino de cada caso.',
-      ecuacion: [P('F'), ' = Σ ', P({ sub: ['A', 'i'] }), ' P(F | ', { sub: ['A', 'i'] }, ')   ·   ', P([{ sub: ['A', 'i'] }, ' | F']), ' = ', { frac: [[P({ sub: ['A', 'i'] }), ' P(F | ', { sub: ['A', 'i'] }, ')'], P('F')] }],
+      ecuacion: [P('F'), ' = Σ ', P({ sub: ['A', 'i'] }), ' P(F | ', { sub: ['A', 'i'] }, ')', '   ·   ', P([{ sub: ['A', 'i'] }, ' | F']), ' = ', { frac: [[P({ sub: ['A', 'i'] }), ' P(F | ', { sub: ['A', 'i'] }, ')'], [{ llave: P('F'), nota: 'todos los fallados', color: 'c-h' }]] }],
       condicion: 'los casos Aᵢ no se solapan y juntos cubren todo. P(F | B) y P(B | F) son preguntas distintas.',
     },
     ahoraTu: {
@@ -420,7 +454,7 @@
     },
     regla: {
       texto: 'Una variable aleatoria da un número a cada resultado. Su esperanza suma cada valor por su probabilidad: es el promedio a la larga.',
-      ecuacion: ['E[X] = Σ x · P(X = x)'],
+      ecuacion: ['E[X] = Σ x · ', { llave: ['P(X = x)'], nota: 'su peso' }],
       condicion: 'las probabilidades suman 1. E[X] puede no ser un valor posible, y no obliga a que salga lo que «falta».',
     },
     ahoraTu: {
@@ -457,11 +491,61 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Dos dados con condición: el evento «la suma es igual, al menos o a lo más s» y lo que se sabe, «el primer dado
+  // salió k o más» (k = 1 es no saber nada). Lo que ya no puede ser se apaga y cambia el denominador.
+  const CMP = { igual: (x, s) => x === s, 'al menos': (x, s) => x >= s, 'a lo más': (x, s) => x <= s };
+  const dadosLab = v => dados((i, j) => (i >= v.k && CMP[v.cmp](i + j, v.s) ? 'd' : null), i => i < v.k);
+  // La fábrica libre: rangos amplios, también máquinas que nunca fallan.
+  const fabricaLab = v => fabrica(v.pa, v.da, v.db);
+
   return {
     unidad: 'aritmetica.probabilidades',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/arit-tabla.js', '/nucleo/kit/piezas/arit-tiras.js'],
+    // Laboratorio: juego libre, sin preguntas. Los dados con condición juntan las ideas 1 y 3 (evento y universo a la
+    // vez); la fábrica libre deja probar porcentajes de 0 a 50 y una máquina que no falla; la tercera es la ruleta.
+    laboratorio: [
+      {
+        id: 'dados-condicion', titulo: 'Dos dados y lo que sabes', pieza: 'arit-tabla',
+        consigna: 'Elige el evento con la suma y lo que sabes del primer dado. Lleva el marcador a una casilla o la flecha a una fila.',
+        controles: [
+          { id: 'cmp', etiqueta: 'La suma es', opciones: Object.keys(CMP).map(t => ({ valor: t, texto: t })) },
+          { id: 's', etiqueta: 's', color: 'c-d', min: 2, max: 12, paso: 1, inicio: 9, decimales: 0 },
+          { id: 'k', etiqueta: 'Primer dado desde', color: 'c-i', min: 1, max: 6, paso: 1, inicio: 1, decimales: 0 },
+        ],
+        dibujo: v => ({ datos: dadosLab(v), estado: {} }),
+        lectura: v => {
+          const fav = cuenta((i, j) => i >= v.k && CMP[v.cmp](i + j, v.s)), uni = 6 * (7 - v.k);
+          return [`suma ${v.cmp} ${v.s}, primer dado ≥ ${v.k}: ${fav} de ${uni}`];
+        },
+        arrastres: [
+          marcadorSuma(dadosLab),
+          // En el borde izquierdo de la fila k: lo que está debajo de esa fila ya no puede ser.
+          { id: 'sabes', etiqueta: 'primera fila que puede ser', color: 'c-i',
+            donde: v => { const g = TABLA().geometria(dadosLab(v)); return { x: g.xs[1], y: g.celda(6 - v.k, 0).y }; },
+            mover: (pt, v) => { const g = TABLA().geometria(dadosLab(v)); return { k: 6 - Math.floor((pt.y - g.filaY(0)) / g.altoFila) }; } },
+        ],
+      },
+      {
+        id: 'fabrica-libre', titulo: 'La fábrica sin topes', pieza: 'arit-tiras',
+        consigna: 'Como en la idea 4, con más rango: prueba que una máquina no falle nunca, o que la chica falle mucho.',
+        controles: [
+          { id: 'pa', etiqueta: 'Hace A', color: 'c-o', min: 10, max: 90, paso: 10, inicio: 70, unidad: '', decimales: 0 },
+          { id: 'da', etiqueta: 'Falla A', color: 'c-o', min: 0, max: 50, paso: 5, inicio: 10, unidad: '%', decimales: 0 },
+          { id: 'db', etiqueta: 'Falla B', color: 'c-i', min: 0, max: 50, paso: 5, inicio: 30, unidad: '%', decimales: 0 },
+        ],
+        dibujo: v => ({ datos: fabricaLab(v), estado: { paso: 3 } }),
+        lectura: v => {
+          const fa = v.pa * v.da / 100, fb = (100 - v.pa) * v.db / 100;
+          const pb = fa + fb > 0 ? `${f(100 * fb / (fa + fb), 1)}${NB}%` : 'sin fallados';
+          return [`A hace ${v.pa}, falla ${v.da}${NB}% · B falla ${v.db}${NB}%: `, P([B, ' | F']), ` = ${pb}`];
+        },
+        arrastres: manijasFallados,
+      },
+      Object.assign({ id: 'ruleta', titulo: 'La ruleta y su promedio', pieza: 'arit-tiras' }, esperanza.juega),
+    ],
     historia: {
       texto: 'En 1654, Pascal y Fermat se escribieron cartas sobre cómo repartir lo apostado en una partida interrumpida. El reparto no podía depender solo del marcador: había que pensar en todo lo que aún podía pasar. Hubo autores antes que ellos, pero la idea quedó: armar el espacio de resultados y justificar cada probabilidad. La notación de eventos vino después.',
       pregunta: '¿Cómo repartirías un premio si el juego se corta a la mitad?',
