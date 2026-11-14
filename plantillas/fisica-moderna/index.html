@@ -216,7 +216,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
       <div class="legend" id="leyenda2"></div>
     </section>
     <section class="guide">
-      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div class="seg exps" id="exps" role="group" aria-label="Experimentos"></div>
       <div aria-live="polite">
         <p class="step-k" id="k2"></p>
         <h2 class="step-t" id="t2"></h2>
@@ -239,6 +239,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'fisica-moderna', unidad: 'fisica.fisica-moderna', version: '0.1.0' };
@@ -1064,6 +1065,21 @@ function prediccion(s){
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+
+// Regla 3 (decisión 20): antes de preguntar, el alumno juega. Juego libre: el fototubo con la pila en 0 V y un
+// deslizador de λ solo entre 250 y 480 nm (luces que sí arrancan electrones con φ = 2,5 eV); se leen λ y la corriente.
+// No se muestran la luz roja de los pasos 1 y 2, ni Kmax ni V₀ (paso 3), ni la intensidad (paso 4).
+E.compacto = false; Celular.compactar($('m1'), false);
+E.config(tubo({ lambda:400, P:1e-3, V:0 }, { ver:{ I:true }, ctl:{}, lect: lectP(['lam', 'I']) }));
+$('ctl1').innerHTML = `<label class="ctl" style="--k:var(--c-lam)" for="jg-lam"><span>Longitud de onda <b class="v v-lam" data-var="lam">λ</b></span><output data-o="lambda"></output>
+  <input id="jg-lam" type="range" min="250" max="480" step="1" value="400" data-k="lambda"></label>`;
+$('jg-lam').addEventListener('input', e => { E.t.lambda = +e.target.value; E.cambio(); clearTimeout(E.tAvisar); E.tAvisar = setTimeout(() => E.avisar(), 400); });
+E.lecturas();
+JugarPrimero.montar({
+  escena: $('cv').closest('.bench'), preguntas: [$('m1').querySelector('.guide')],
+  consigna: 'Cambia la longitud de onda de la luz y mira el amperímetro.', minimo: 2,
+  alListo: () => go(0),
+});
 })();
 </script>
 
@@ -1076,7 +1092,7 @@ go(0);
    mientras tanto, el tubo queda quieto, sin fotones ni electrones, y el amperímetro con «?». */
 (function(){
 const $ = id => document.getElementById(id);
-const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2', null);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2', 'ctl2'); // ctl2: solo el juego libre lo usa
 const Z1 = MF.fotoelectrico(310, 4.3), R2 = MF.fototubo({ lambda:620, phi:PHI0, P:0.1, V:2 }), A2 = MF.fototubo({ lambda:460, phi:PHI0, P:2e-4, V:2 });
 const C3 = MF.cambioFototubo({ lambda:310, phi:PHI0, P:1e-3, V:0 }, { lambda:310, phi:PHI0, P:1e-3, V:-1 });
 const L4 = MF.cambioLambda(310, 155, PHI0), X5 = MF.cambioRayosX(31000, 62000);
@@ -1210,6 +1226,18 @@ function ir(k){
   pintar();
 }
 ir(0);
+
+// Regla 3 (decisión 20): antes de preguntar, el alumno juega. Juego libre: el fototubo con luz violeta de 400 nm,
+// la pila en 0 V y solo el deslizador de intensidad; se leen λ, P y la corriente. Los experimentos preguntan por otro
+// metal, la luz roja contra la azul, la pila al revés, la mitad de λ y el tubo de rayos X: el juego no muestra ninguno.
+// Se juega una vez al abrir el modo.
+E.compacto = false; Celular.compactar($('m2'), false);
+E.config({ t:{ lambda:400, phi:PHI0, P:1e-3, V:0 }, ver:{ I:true }, ctl:{ P:true }, lect: () => lecturaTubo(E, ['lam', 'P', 'I']), desc: () => descTubo('metal') });
+JugarPrimero.montar({
+  escena: $('cv2').closest('.bench'), preguntas: [$('body2')],
+  consigna: 'Cambia la intensidad de la luz y mira el amperímetro.', minimo: 2,
+  alListo: () => ir(S.k),
+});
 })();
 </script>
 
