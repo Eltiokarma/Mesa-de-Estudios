@@ -12,6 +12,10 @@
  * DEG-SIGNO, DEG-MITAD, DEG-DOBLE (cos² x = cos 2x), DEG-UNO, MITAD-SIGNO (raíz siempre positiva),
  * MITAD-SIGNO-THETA (copiar el signo de θ), MITAD-RAIZ, MITAD-DOBLE (±), TRIPLE-SEN (sen 3θ = 3 sen θ),
  * TRIPLE-CUBO, TRIPLE-SIGNO, TRIPLE-CRUCE.
+ * Ronda 2 (14 nov, noche): manijas en tres de las cuatro ideas (punta del rayo θ en el doble y en la mitad, el punto
+ * verde de la curva del triple); la degradación elige una función de una lista y no tiene qué agarrar, pero su mesa
+ * del laboratorio sí. Llaves en las cuatro reglas, separadores «   ·   » y laboratorio de tres mesas. «Juega» y
+ * «Mira» usan la misma figura en las cuatro ideas (hallazgo 9 de docs/auditoria-teoria.md).
  *
  * Ficha de tarea (diseno-y-animacion):
  *   Promesa: doblar, partir o triplicar un ángulo cambia su seno con una regla propia, nunca multiplicando el valor.
@@ -62,6 +66,13 @@
   // Cuadrante de un ángulo (0 a 3) o null si cae sobre un eje.
   const cuadrante = g => { const m = ((g % 360) + 360) % 360; return m % 90 === 0 ? null : Math.floor(m / 90); };
   const ROMANO = ['I', 'II', 'III', 'IV'];
+  // Gesto directo (docs/teoria.md §4b): las manijas usan la geometría de la pieza; la de «ejes» no trae inversa,
+  // así que se invierte con una función lineal, como en fisica/movimiento-rectilineo.js.
+  const TP = () => Kit.piezas['trig-plano'], EJES = () => Kit.piezas.ejes;
+  const punta = (d, gr, L = 1) => TP().enPx(d, L * cos(gr), L * sen(gr));
+  const inversa = (escala, a, b) => px => a + (px - escala(a)) * (b - a) / (escala(b) - escala(a));
+  const lim = (v, a, b) => Math.min(b, Math.max(a, v));
+  const deg = r => r * 180 / Math.PI;
 
   // ---------- Idea 1: doblar el ángulo no dobla el seno ----------
   // Cambia: θ, de 20° en 20°. · Permanece: la circunferencia de radio 1 y el lado inicial.
@@ -91,8 +102,12 @@
       voz: 'Conservemos el origen: el segundo θ sale del rayo naranja.',
       controles: [{ id: 't', etiqueta: 'θ', color: 'c-o', min: 20, max: 80, paso: 20, inicio: 20, unidad: '°', decimales: 0 }],
       dibujo: val => ({ datos: doble(val.t), estado: {} }),
-      lectura: val => ['sen ', dos, ` = ${f(sen(2 * val.t))}; 2 sen `, th, ` = ${f(2 * sen(val.t))}`],
+      lectura: val => ['sen ', dos, ` = ${f(sen(2 * val.t))}`, '   ·   ', '2 sen ', th, ` = ${f(2 * sen(val.t))}`],
       minimo: 3,
+      // Se arrastra la punta del rayo naranja θ: el rayo rojo 2θ la sigue al doble de giro.
+      arrastres: [{ id: 'punta', etiqueta: 'punta del rayo θ', color: 'c-o',
+        donde: val => punta(doble(val.t), val.t),
+        mover: (pt, val) => ({ t: TP().anguloDe(doble(val.t), pt, { cerca: val.t }) }) }],
     },
     predice: {
       pregunta: ['Con ', th, ' = 30°, un caso que no probaste, ¿cuánto vale sen 60°, la altura del rayo rojo?'],
@@ -108,6 +123,7 @@
       coincide: 'Coincide: la altura real es 0,87; el doble de sen 30° da 1.',
       noCoincide: 'Revisemos las dos alturas: la torre y la línea roja están dibujadas.',
     },
+    // «Mira» es la figura del juego detenida en θ = 30°, con la ventana más cerca y las dos piezas de la altura.
     mira: {
       datos: {
         ventana: V1m,
@@ -132,7 +148,7 @@
       voz: 'Cuenta las piezas de la altura: son dos, y miden lo mismo.',
       pasos: [
         { estado: { corte: 1 }, texto: 'La altura de P es el seno del ángulo doble.', ecuacion: ['sen ', dos, ' = sen(', th, ' + ', th, ')'] },
-        { estado: { corte: 2 }, texto: 'Bajamos de P al rayo θ: OQ = cos θ y QP = sen θ.', ecuacion: ['OQ = cos ', th, ';  QP = sen ', th] },
+        { estado: { corte: 2 }, texto: 'Bajamos de P al rayo θ: OQ = cos θ y QP = sen θ.', ecuacion: ['OQ = ', { llave: ['cos ', th], nota: 'lo que avanza', color: 'c-o' }, '   ·   ', 'QP = ', { llave: ['sen ', th], nota: 'lo que sube', color: 'c-o' }] },
         { estado: { corte: 3 }, texto: 'La altura de Q y la subida de Q a P son iguales.', ecuacion: ['sen ', th, ' cos ', th, ' + cos ', th, ' sen ', th, ' = 2 sen ', th, ' cos ', th] },
         { estado: { corte: 3 }, texto: 'Con θ = 30°, las dos piezas suman la altura roja.', ecuacion: [`2 · ${f(sen(30))} · ${f(cos(30))} = ${f(sen(60))}`] },
         { estado: { corte: 3 }, texto: 'El coseno doble resta las proyecciones al cuadrado.', ecuacion: ['cos ', dos, ' = ', { sup: ['cos', '2'] }, ' ', th, ' − ', { sup: ['sen', '2'] }, ' ', th, ' = 1 − 2', { sup: ['sen', '2'] }, ' ', th] },
@@ -140,7 +156,7 @@
     },
     regla: {
       texto: 'El doble de un ángulo se calcula con las razones de ese ángulo; no se dobla el valor.',
-      ecuacion: ['sen ', dos, ' = 2 sen ', th, ' cos ', th, ';   cos ', dos, ' = ', { sup: ['cos', '2'] }, th, ' − ', { sup: ['sen', '2'] }, th, ';   tan ', dos, ' = ', { frac: [['2 tan ', th], ['1 − ', { sup: ['tan', '2'] }, th]] }],
+      ecuacion: ['sen ', dos, ' = ', { llave: ['2 sen ', th, ' cos ', th], nota: 'dos piezas iguales', color: 'c-h' }, '   ·   ', 'cos ', dos, ' = ', { sup: ['cos', '2'] }, th, ' − ', { sup: ['sen', '2'] }, th, '   ·   ', 'tan ', dos, ' = ', { frac: [['2 tan ', th], ['1 − ', { sup: ['tan', '2'] }, th]] }],
       condicion: 'θ real. En la tangente, tan θ debe existir y tan² θ ≠ 1.',
       voz: 'Un solo ángulo, dos razones: las dos entran en el doble.',
     },
@@ -196,10 +212,10 @@
   // · Se reserva: la fórmula de cos² x (la predicción). · Debe verse: centro 1/2, amplitud 1/2 y periodo 180°.
   const pts = (fn, desde = 0, hasta = 360) => Array.from({ length: (hasta - desde) / 5 + 1 }, (_, i) => [desde + i * 5, fn(desde + i * 5)]);
   const FUN = {
-    sen: { fn: sen, txt: 'sen x', rango: 'entre −1 y 1', per: 360 },
-    cos: { fn: cos, txt: 'cos x', rango: 'entre −1 y 1', per: 360 },
-    sen2: { fn: x => sen(x) ** 2, txt: 'sen² x', rango: 'entre 0 y 1', per: 180 },
-    cos2: { fn: x => cos(x) ** 2, txt: 'cos² x', rango: 'entre 0 y 1', per: 180 },
+    sen: { fn: sen, txt: 'sen x', partes: ['sen ', x_], rango: 'entre −1 y 1', per: 360 },
+    cos: { fn: cos, txt: 'cos x', partes: ['cos ', x_], rango: 'entre −1 y 1', per: 360 },
+    sen2: { fn: x => sen(x) ** 2, txt: 'sen² x', partes: [{ sup: ['sen', '2'] }, ' ', x_], rango: 'entre 0 y 1', per: 180 },
+    cos2: { fn: x => cos(x) ** 2, txt: 'cos² x', partes: [{ sup: ['cos', '2'] }, ' ', x_], rango: 'entre 0 y 1', per: 180 },
   };
   const ejesOnda = (curvas, puntos = []) => ({
     x: { min: 0, max: 360, paso: 90, nombre: 'x', unidad: '°', decimales: 0, color: 'o' },
@@ -220,7 +236,8 @@
         return { datos: ejesOnda([{ puntos: pts(sen), color: 'o', discontinua: true, rotulo: 'sen x', en: [300, sen(300)] },
           ...(val.g === 'sen' ? [] : [{ puntos: pts(F.fn), color: F.per === 180 ? 'h' : 'o', rotulo: F.txt, en: [F.per === 180 ? 225 : 160, F.fn(F.per === 180 ? 225 : 160)] }])]), estado: {} };
       },
-      lectura: val => [`${FUN[val.g].txt}: ${FUN[val.g].rango}; se repite cada ${FUN[val.g].per}°`],
+      // La función se elige de una lista: no hay un objeto que agarrar (la mesa «punto a punto» del laboratorio sí lo tiene).
+      lectura: val => [...FUN[val.g].partes, `: ${FUN[val.g].rango}`, '   ·   ', `se repite cada ${FUN[val.g].per}°`],
       minimo: 3,
     },
     predice: {
@@ -252,7 +269,7 @@
     },
     regla: {
       texto: 'Un cuadrado de seno o de coseno se escribe sin potencia con el coseno del doble. La potencia baja y el ángulo se duplica.',
-      ecuacion: [{ sup: ['sen', '2'] }, ' ', x_, ' = ', { frac: [['1 − cos ', dosx], '2'] }, ';   ', { sup: ['cos', '2'] }, ' ', x_, ' = ', { frac: [['1 + cos ', dosx], '2'] }],
+      ecuacion: [{ sup: ['sen', '2'] }, ' ', x_, ' = ', { llave: [{ frac: [['1 − cos ', dosx], '2'] }], nota: 'sin potencia', color: 'c-h' }, '   ·   ', { sup: ['cos', '2'] }, ' ', x_, ' = ', { frac: [['1 + cos ', dosx], '2'] }],
       condicion: 'x real. A la derecha va el ángulo doble, 2x, no x.',
       voz: 'Menos potencia, más ángulo; el valor no cambia.',
     },
@@ -302,8 +319,12 @@
       voz: 'Conservemos el giro completo: la mitad de 315° no es la mitad de −45°.',
       controles: [{ id: 't', etiqueta: 'θ', color: 'c-o', min: 0, max: 720, paso: 45, inicio: 135, unidad: '°', decimales: 0 }],
       dibujo: val => ({ datos: mitad(val.t), estado: {} }),
-      lectura: val => [mit, ` = ${f(val.t / 2, 1)}°, ${cuadTxt(val.t / 2)}; sen `, mit, ` = ${f(sen(val.t / 2))}`],
+      lectura: val => [mit, ` = ${f(val.t / 2, 1)}°, ${cuadTxt(val.t / 2)}`, '   ·   ', 'sen ', mit, ` = ${f(sen(val.t / 2))}`],
       minimo: 3,
+      // Se arrastra la punta del rayo naranja θ, con sus vueltas: el turquesa θ/2 avanza a la mitad.
+      arrastres: [{ id: 'punta', etiqueta: 'punta del rayo θ', color: 'c-o',
+        donde: val => punta(mitad(val.t), val.t),
+        mover: (pt, val) => ({ t: TP().anguloDe(mitad(val.t), pt, { cerca: val.t }) }) }],
     },
     predice: {
       pregunta: ['Si ', th, ' = 300°, sen ', th, ' es negativo. ¿Cuánto vale sen(', mit, ')?'],
@@ -338,7 +359,7 @@
     },
     regla: {
       texto: 'Las fórmulas de la mitad salen de bajar la potencia y sacar raíz. El signo de la raíz lo decide el cuadrante de θ/2.',
-      ecuacion: ['sen ', mit, ' = ±', { raiz: ['(1 − cos ', th, ')/2'] }, ';   cos ', mit, ' = ±', { raiz: ['(1 + cos ', th, ')/2'] }],
+      ecuacion: ['sen ', mit, ' = ', { llave: ['±', { raiz: ['(1 − cos ', th, ')/2'] }], nota: 'signo de θ/2', color: 'c-i' }, '   ·   ', 'cos ', mit, ' = ±', { raiz: ['(1 + cos ', th, ')/2'] }],
       condicion: 'se elige un solo signo: el del cuadrante de θ/2, no el de θ. Hay que conocer el giro θ.',
       voz: 'La raíz da dos candidatos; el cuadrante de la mitad decide.',
     },
@@ -391,8 +412,12 @@
       voz: 'Sigue el punto: ¿se queda en la recta o en la curva?',
       controles: [{ id: 't', etiqueta: 'θ', color: 'c-o', min: 0, max: 90, paso: 10, inicio: 10, unidad: '°', decimales: 0 }],
       dibujo: val => ({ datos: ejesTriple([{ x: sen(val.t), y: sen(3 * val.t), color: 'd', guias: true }]), estado: {} }),
-      lectura: val => ['sen ', th, ` = ${f(sen(val.t))}; sen `, tri, ` = ${f(sen(3 * val.t))}; 3 sen `, th, ` = ${f(3 * sen(val.t))}`],
+      lectura: val => ['sen ', th, ` = ${f(sen(val.t))}`, '   ·   ', 'sen ', tri, ` = ${f(sen(3 * val.t))}`, '   ·   ', '3 sen ', th, ` = ${f(3 * sen(val.t))}`],
       minimo: 3,
+      // Se arrastra el punto verde a lo largo de la curva: su abscisa es sen θ, y de ella sale θ.
+      arrastres: [{ id: 'punto', etiqueta: 'punto (sen θ, sen 3θ)', color: 'c-o',
+        donde: val => { const g = EJES().geometria(ejesTriple([])); return { x: g.X(sen(val.t)), y: g.Y(sen(3 * val.t)) }; },
+        mover: pt => { const g = EJES().geometria(ejesTriple([])); return { t: deg(Math.asin(lim(inversa(g.X, -1, 1)(pt.x), 0, 1))) }; } }],
     },
     predice: {
       pregunta: ['Si sen ', th, ' = 1/3, ¿cuánto vale sen ', tri, '?'],
@@ -415,14 +440,14 @@
       voz: 'Triple es doble más uno; después todo en senos.',
       pasos: [
         { estado: { corte: 1 }, texto: 'El triple se arma sumando el doble y el simple.', ecuacion: ['sen ', tri, ' = sen ', dos, ' cos ', th, ' + cos ', dos, ' sen ', th] },
-        { estado: { corte: 2 }, texto: 'Con cos² θ = 1 − sen² θ, todo queda en senos.', ecuacion: ['= 2 sen ', th, ' (1 − ', { sup: ['sen', '2'] }, th, ') + (1 − 2', { sup: ['sen', '2'] }, th, ') sen ', th, ' = 3 sen ', th, ' − 4', { sup: ['sen', '3'] }, th] },
+        { estado: { corte: 2 }, texto: ['Con ', { sup: ['cos', '2'] }, ' ', th, ' = 1 − ', { sup: ['sen', '2'] }, ' ', th, ', todo queda en senos.'], ecuacion: ['= 2 sen ', th, ' (1 − ', { sup: ['sen', '2'] }, th, ') + (1 − 2', { sup: ['sen', '2'] }, th, ') sen ', th, ' = 3 sen ', th, ' − 4', { sup: ['sen', '3'] }, th] },
         { estado: { corte: 3 }, texto: 'Con sen θ = 1/3, el punto cae en la curva a 23/27.', ecuacion: ['3 · ', { frac: ['1', '3'] }, ' − 4 · ', { frac: ['1', '27'] }, ' = ', { frac: ['23', '27'] }] },
         { estado: { corte: 4 }, texto: 'Al revés, una altura de la curva tiene tres candidatos para sen θ.', ecuacion: [`sen 3θ = 1/2 ⇒ sen θ ≈ ${f(sen(10), 3)}; ${f(sen(50), 3)}; ${f(sen(-70), 3)}`] },
       ],
     },
     regla: {
       texto: 'El seno y el coseno del triple son polinomios de grado tres en la razón del ángulo. Triplicar el ángulo no triplica el valor.',
-      ecuacion: ['sen ', tri, ' = 3 sen ', th, ' − 4', { sup: ['sen', '3'] }, th, ';   cos ', tri, ' = 4', { sup: ['cos', '3'] }, th, ' − 3 cos ', th],
+      ecuacion: ['sen ', tri, ' = 3 sen ', th, { llave: [' − 4', { sup: ['sen', '3'] }, th], nota: 'el cubo resta', color: 'c-d' }, '   ·   ', 'cos ', tri, ' = 4', { sup: ['cos', '3'] }, th, ' − 3 cos ', th],
       condicion: 'θ real; sen³ θ es (sen θ)³. Conocido sen 3θ, hay hasta tres valores de sen θ: el intervalo elige.',
       voz: 'Tres veces el ángulo; un cubo en la fórmula.',
     },
@@ -451,11 +476,97 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Mesa 1: θ, su doble y su mitad sobre la misma circunferencia, hasta dos vueltas y de 5° en 5°.
+  const tresRayos = t => ({
+    circulos: [{ r: 1 }],
+    rayos: [{ ang: 0, largo: 1, grosor: 'contorno' }, { ang: t, color: 'o' }, { ang: 2 * t, largo: 0.85, color: 'h' }, { ang: t / 2, largo: 0.62, color: 'i' }],
+    arcos: [{ de: 0, a: t, r: 0.16, color: 'o', espiral: 5 }],
+    segmentos: [
+      { de: [cos(t), 0], a: [cos(t), sen(t)], color: 'o' },
+      { de: [0.85 * cos(2 * t), 0], a: [0.85 * cos(2 * t), 0.85 * sen(2 * t)], color: 'h' },
+      { de: [0.62 * cos(t / 2), 0], a: [0.62 * cos(t / 2), 0.62 * sen(t / 2)], color: 'i' },
+    ],
+    alt: `Giro de ${f(t)}°, su doble de ${f(2 * t)}° y su mitad de ${f(t / 2)}°`,
+  });
+  // Mesa 2: bajar la potencia punto a punto; el punto recorre la onda al cuadrado y su par cos 2x.
+  const ondaPunto = (g, x) => {
+    const F = FUN[g], c2 = cos(2 * x);
+    return ejesOnda([
+      { puntos: pts(() => 0.5), color: 'h', discontinua: true },
+      { puntos: pts(x2 => cos(2 * x2)), color: 'h', discontinua: true, rotulo: 'cos 2x', en: [270, -1] },
+      { puntos: pts(F.fn), color: 'h', rotulo: F.txt, en: [g === 'sen2' ? 280 : 350, F.fn(g === 'sen2' ? 280 : 350)] },
+    ], [{ x, y: F.fn(x), color: 'h', guias: true }, { x, y: c2, color: 'h', abierto: true }]);
+  };
+  // Mesa 3: al revés del triple. Una altura h de la curva tiene hasta tres razones que la producen.
+  const raices = (esSen, h) => {
+    const a = esSen ? deg(Math.asin(h)) : deg(Math.acos(h));
+    return [0, 1, 2].map(k => (esSen ? sen((a + 360 * k) / 3) : cos((a + 360 * k) / 3)));
+  };
+  const curvaTriple = (esSen, h, rs) => ({
+    x: { min: -1.2, max: 1.2, paso: 0.5, nombre: esSen ? 'sen θ' : 'cos θ', decimales: 1, color: 'o' },
+    y: { min: -1.2, max: 1.2, paso: 0.5, nombre: esSen ? 'sen 3θ' : 'cos 3θ', decimales: 1, color: 'd' },
+    curvas: [{ puntos: Array.from({ length: 81 }, (_, i) => { const u = -1 + i / 40; return [u, esSen ? cubica(u) : 4 * u ** 3 - 3 * u]; }), color: 'd', rotulo: esSen ? '3s − 4s³' : '4c³ − 3c', en: [esSen ? -0.75 : 0.75, esSen ? cubica(-0.75) : 4 * 0.75 ** 3 - 2.25] },
+      { puntos: [[-1.2, h], [1.2, h]], color: 'd', discontinua: true }],
+    puntos: rs.map(u => ({ x: u, y: h, color: 'o', guias: true })),
+  });
+  const unicos = rs => { const v = []; for (const u of rs) if (!v.some(w => Math.abs(w - u) < 1e-6)) v.push(u); return v.sort((p, q) => p - q); };
+  const laboratorio = [
+    {
+      id: 'doble-y-mitad', titulo: 'El doble y la mitad', pieza: 'trig-plano',
+      consigna: 'Gira θ hasta dos vueltas, o arrastra la mitad. El rojo gira el doble y el turquesa la mitad. Compara las tres alturas.',
+      controles: [{ id: 't', etiqueta: 'θ', color: 'c-o', min: 0, max: 720, paso: 5, inicio: 100, unidad: '°', decimales: 0 }],
+      dibujo: val => ({ datos: tresRayos(val.t), estado: {} }),
+      lectura: val => [th, ` = ${f(val.t)}°: sen `, th, ', ', dos, ', ', mit, ` = ${f(sen(val.t))}; ${f(sen(2 * val.t))}; ${f(sen(val.t / 2))}`],
+      arrastres: [
+        { id: 'punta', etiqueta: 'punta del rayo θ', color: 'c-o',
+          donde: val => punta(tresRayos(val.t), val.t),
+          mover: (pt, val) => ({ t: TP().anguloDe(tresRayos(val.t), pt, { cerca: val.t }) }) },
+        { id: 'mitad', etiqueta: 'punta del rayo θ/2: cambia θ', color: 'c-i',
+          donde: val => punta(tresRayos(val.t), val.t / 2, 0.62),
+          mover: (pt, val) => ({ t: 2 * TP().anguloDe(tresRayos(val.t), pt, { cerca: val.t / 2 }) }) },
+      ],
+    },
+    {
+      id: 'punto-a-punto', titulo: 'Bajar la potencia, punto a punto', pieza: 'ejes',
+      consigna: 'Arrastra el punto lleno por la onda al cuadrado. El hueco marca cos 2x en el mismo x. Compáralos con la línea de 1/2.',
+      controles: [
+        { id: 'g', etiqueta: 'Función', opciones: [{ valor: 'sen2', texto: 'sen² x' }, { valor: 'cos2', texto: 'cos² x' }], inicio: 'sen2' },
+        { id: 'x', etiqueta: 'x', color: 'c-o', min: 0, max: 360, paso: 5, inicio: 60, unidad: '°', decimales: 0 },
+      ],
+      dibujo: val => ({ datos: ondaPunto(val.g, val.x), estado: {} }),
+      lectura: val => [x_, ` = ${f(val.x)}°: `, ...FUN[val.g].partes, ` = ${f(FUN[val.g].fn(val.x))}`, '   ·   ', 'cos ', dosx, ` = ${f(cos(2 * val.x))}`],
+      arrastres: [{ id: 'punto', etiqueta: 'punto de la onda al cuadrado', color: 'c-o',
+        donde: val => { const g = EJES().geometria(ondaPunto(val.g, val.x)); return { x: g.X(val.x), y: g.Y(FUN[val.g].fn(val.x)) }; },
+        mover: (pt, val) => ({ x: inversa(EJES().geometria(ondaPunto(val.g, val.x)).X, 0, 360)(pt.x) }) }],
+    },
+    {
+      id: 'tres-candidatos', titulo: 'Una altura, tres candidatos', pieza: 'ejes',
+      consigna: 'Sube o baja la línea. Los puntos naranjas son las razones de θ que dan esa altura en el triple. Prueba también el coseno.',
+      controles: [
+        { id: 'fn', etiqueta: 'Razón', opciones: [{ valor: 'sen', texto: 'seno' }, { valor: 'cos', texto: 'coseno' }], inicio: 'sen' },
+        { id: 'h', etiqueta: 'altura', color: 'c-d', min: -1, max: 1, paso: 0.05, inicio: 0.5, decimales: 2 },
+      ],
+      dibujo: val => ({ datos: curvaTriple(val.fn === 'sen', val.h, unicos(raices(val.fn === 'sen', val.h))), estado: {} }),
+      lectura: val => {
+        const rs = unicos(raices(val.fn === 'sen', val.h));
+        return [`${val.fn} `, tri, ` = ${f(val.h)} ⇒ ${val.fn} `, th, ` ≈ ${rs.map(u => f(u)).join('; ')}`];
+      },
+      arrastres: [{ id: 'altura', etiqueta: 'línea de altura', color: 'c-d',
+        donde: val => { const g = EJES().geometria(curvaTriple(true, val.h, [])); return { x: g.X(1.12), y: g.Y(val.h) }; },
+        mover: pt => ({ h: inversa(EJES().geometria(curvaTriple(true, 0, [])).Y, -1, 1)(pt.y) }) }],
+    },
+  ];
+
   return {
     unidad: 'trigonometria.arcos-multiples',
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/trig-plano.js', '/nucleo/kit/piezas/ejes.js'],
+    // Laboratorio (docs/teoria.md §4b), sin preguntas: «doble-y-mitad» junta los dos rayos de las ideas 1 y 3 hasta
+    // dos vueltas de 5° en 5°; «punto-a-punto» da a la degradación el punto que su idea no tiene; «tres-candidatos»
+    // es el caso inverso del triple (una altura, tres razones), con seno y coseno.
+    laboratorio,
     historia: {
       texto: 'En el siglo XV, al-Kashi calculaba en Samarcanda con una precisión enorme para la astronomía. Para obtener el seno de un grado partió del seno de tres grados y de la relación del ángulo triple: una ecuación de tercer grado que resolvió por aproximaciones sucesivas. Una identidad le sirvió para producir un número nuevo, no solo para reescribir.',
       pregunta: 'Si conoces sen 3°, ¿cómo encontrarías sen 1°?',
