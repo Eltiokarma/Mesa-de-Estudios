@@ -91,6 +91,8 @@
       coincide: 'Coincide: Ag⁺ y Cl⁻ se juntan en un sólido nuevo, AgCl.',
       noCoincide: 'Los iones Ag⁺ y Cl⁻ forman AgCl, que no se disuelve y cae.',
     },
+    // Hallazgo 9 de la auditoría: son dos representaciones a propósito. La lupa muestra un caso a la vez; la cadena
+    // pone cada indicio junto al cambio físico que lo imita, una comparación que la lupa no cabe en una sola figura.
     mira: {
       pieza: 'quim-cadena',
       datos: { columnas: [
@@ -181,7 +183,7 @@
     },
     regla: {
       texto: 'Síntesis: varias sustancias forman una. Descomposición: una forma varias. Desplazamiento: un elemento reemplaza a otro. Doble desplazamiento: dos compuestos intercambian iones.',
-      ecuacion: ['A + B → AB · AB → A + B · X + AB → XB + A · AB + XY → AY + XB'],
+      ecuacion: ['A + B → AB', '   ·   ', 'AB → A + B', '   ·   ', 'X + AB → XB + A', '   ·   ', 'AB + XY → AY + XB'],
       condicion: 'los criterios se solapan: una síntesis o un desplazamiento pueden ser también redox; combustión y ácido-base son otras etiquetas.',
       voz: 'Una reacción puede llevar dos etiquetas.',
     },
@@ -225,7 +227,7 @@
         { id: 'b', etiqueta: 'H₂O', color: 'c-o', min: 1, max: 4, paso: 1, inicio: 1, decimales: 0 },
       ],
       dibujo: val => metano(val.a, val.b),
-      lectura: val => [`H: 4 | ${2 * val.b} · O: ${2 * val.a} | ${2 + val.b}${val.b === 2 && val.a === 2 ? ' · balanceada ✓' : ''}`],
+      lectura: val => [`H: 4 | ${2 * val.b}`, '   ·   ', `O: ${2 * val.a} | ${2 + val.b}${val.b === 2 && val.a === 2 ? ' · balanceada ✓' : ''}`],
       minimo: 4,
     },
     predice: {
@@ -250,15 +252,15 @@
       ], { alto: 130 }).datos,
       voz: 'Igualemos elemento por elemento.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'Fe + O₂ → Fe₂O₃: no cuadra ni el hierro ni el oxígeno.', ecuacion: ['Fe: 1 | 2 · O: 2 | 3'] },
+        { estado: { corte: 1 }, texto: 'Fe + O₂ → Fe₂O₃: no cuadra ni el hierro ni el oxígeno.', ecuacion: ['Fe: 1 | 2', '   ·   ', 'O: 2 | 3'] },
         { estado: { corte: 2 }, texto: 'Oxígeno: el mínimo común de 2 y 3 es 6.', ecuacion: [cf(3), ' O₂ → ', cf(2), ' Fe₂O₃'] },
         { estado: { corte: 3 }, texto: 'Hierro: a la derecha hay 4; ponemos 4 Fe.', ecuacion: [cf(4), ' Fe + ', cf(3), ' O₂ → ', cf(2), ' Fe₂O₃'] },
-        { estado: { corte: 3 }, texto: 'Inventario igual: 4 Fe y 6 O a cada lado.', ecuacion: ['Fe: 4 = 4 · O: 6 = 6'] },
+        { estado: { corte: 3 }, texto: 'Inventario igual: 4 Fe y 6 O a cada lado.', ecuacion: ['Fe: 4 = 4', '   ·   ', 'O: 6 = 6'] },
       ],
     },
     regla: {
       texto: 'Se ajustan los coeficientes (cuántas moléculas), nunca los subíndices (qué sustancia), hasta que cada elemento tenga los mismos átomos a los dos lados.',
-      ecuacion: [cf(4), ' Fe + ', cf(3), ' O₂ → ', cf(2), ' Fe₂O₃'],
+      ecuacion: [cf(4), ' Fe + ', cf(3), ' O₂ → ', cf(2), ' ', { llave: ['Fe₂O₃'], nota: 'fija' }],
       condicion: 'se usan los enteros más pequeños. Una ecuación balanceada no prueba que la reacción ocurra ni muestra sus pasos.',
       voz: 'Inventario igual antes y después; elemento por elemento.',
     },
@@ -344,7 +346,7 @@
     },
     regla: {
       texto: 'Oxidarse es subir de estado de oxidación (perder electrones); reducirse es bajar (ganarlos). El agente oxidante se reduce y el agente reductor se oxida.',
-      ecuacion: ['Zn → Zn²⁺ + 2 ', el, '   ·   Cu²⁺ + 2 ', el, ' → Cu'],
+      ecuacion: ['Zn → Zn²⁺ + ', { llave: ['2 ', el], nota: 'perdidos', color: 'c-i' }, '   ·   ', 'Cu²⁺ + ', { llave: ['2 ', el], nota: 'ganados', color: 'c-i' }, ' → Cu'],
       condicion: 'los electrones perdidos por uno son los ganados por otro. Oxidar no es solo agregar oxígeno: también hay redox sin oxígeno.',
       voz: 'El nombre del agente es lo que le hace al otro.',
     },
@@ -365,7 +367,7 @@
             { id: 'cruce', texto: otro, error: 'QM-AGENTE', siFuera: `${otro} ${pideOx ? 'se oxida: es el reductor' : 'se reduce: es el oxidante'}. El nombre del agente es lo que provoca en el otro.` },
             { id: 'prod', texto: ec.split('→ ')[1].split(' + ')[0].replace(/^\d+ /, ''), error: 'QM-AGENTE', siFuera: 'Ese es un producto. Los agentes son reactivos.' },
           ],
-          solucion: { texto: pideOx ? `${ox} contiene al que baja: se reduce, es el oxidante.` : `${red} contiene al que sube: se oxida, es el reductor.`, ecuacion: [sal.map(([x, a, b]) => `${x}: ${sg(a)} → ${sg(b)}`).join('   ·   ')], dibujo: recta(saltos(sal)) },
+          solucion: { texto: pideOx ? `${ox} contiene al que baja: se reduce, es el oxidante.` : `${red} contiene al que sube: se oxida, es el reductor.`, ecuacion: sal.map(([x, a, b]) => `${x}: ${sg(a)} → ${sg(b)}`).flatMap((t, i) => (i ? ['   ·   ', t] : [t])), dibujo: recta(saltos(sal)) },
         };
       },
     },
@@ -376,6 +378,9 @@
   // · Progresa: la carga de la izquierda baja hasta igualar · Se reserva: la suma final, donde los electrones se
   // cancelan · Debe verse: carga izquierda = carga derecha.
   const media = n => ({ datos: { fichas: [{ t: 'MnO₄⁻', carga: -1, color: 'd' }, { t: '8 H⁺', carga: 8, color: 'h' }, { t: 'e⁻', carga: -1, n, color: 'i' }], neta: 'carga a la izquierda' }, estado: {} });
+  // Geometría de quim-fichas: el cuadrito k de la fila de negativas está en x = 47 + 17k (cuadrito(k, '−')).
+  // finFila da el último de k cargas negativas; su inversa es k = (x − 47)/17 + 1.
+  const finFila = (dib, k) => Kit.piezas['quim-fichas'].geometria(dib.datos).cuadrito(k - 1, '−');
   const ionE = {
     id: 'ion-electron',
     titulo: 'La carga también se balancea',
@@ -386,7 +391,12 @@
       voz: 'Compara las dos cargas, no solo los átomos.',
       controles: [{ id: 'n', etiqueta: 'e⁻', color: 'c-i', min: 0, max: 8, paso: 1, inicio: 0, decimales: 0 }],
       dibujo: val => media(val.n),
-      lectura: val => [`Izquierda: ${sg(7 - val.n)} · derecha (Mn²⁺ + 4 H₂O): +2${7 - val.n === 2 ? ' ✓' : ''}`],
+      lectura: val => [`izquierda: ${sg(7 - val.n)}`, '   ·   ', `derecha: +2${7 - val.n === 2 ? ' ✓' : ''}`],
+      // Se agarra el final de la fila de cargas negativas y se estira: cada cuadrito nuevo es un electrón que llega a
+      // la izquierda; la carga sin pareja baja hasta dejar solo los +2 de la derecha.
+      arrastres: [{ id: 'electrones', etiqueta: 'final de la fila de cargas negativas', color: 'c-i',
+        donde: val => finFila(media(val.n), 1 + val.n),
+        mover: pt => ({ n: (pt.x - 47) / 17 }) }],
       minimo: 4,
     },
     predice: {
@@ -415,7 +425,7 @@
     },
     regla: {
       texto: 'Separa oxidación y reducción. En cada una, balancea el átomo central, el O con H₂O, el H con H⁺ y la carga con electrones. Iguala electrones y suma.',
-      ecuacion: ['MnO₄⁻ + 8 H⁺ + 5 ', el, ' → Mn²⁺ + 4 H₂O'],
+      ecuacion: ['MnO₄⁻ + 8 H⁺ + ', { llave: ['5 ', el], nota: 'cierra la carga', color: 'c-i' }, ' → Mn²⁺ + 4 H₂O'],
       condicion: 'así se hace en medio ácido; en medio básico, al final los H⁺ se neutralizan con OH⁻. La suma no lleva electrones.',
       voz: 'Átomos primero; la carga cierra con electrones.',
     },
@@ -442,6 +452,29 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Mesa 1: la combustión del metano con los cuatro coeficientes libres (la idea 3 deja fijos el CH₄ y el CO₂).
+  // Así aparece el caso que la idea no deja probar: 2, 4, 2, 4 también cuadra, pero no son los enteros mínimos.
+  const comb = v => lupa([
+    { titulo: `${v.a} CH₄ + ${v.b} O₂`, forma: 'caja', particulas: [{ e: 'CH4', n: v.a }, { e: 'O2', n: v.b }], cuenta: cuenta([['C', v.a], ['H', 4 * v.a], ['O', 2 * v.b]]) },
+    { titulo: `${v.c} CO₂ + ${v.d} H₂O`, forma: 'caja', particulas: [{ e: 'CO2', n: v.c }, { e: 'H2O', n: v.d }], cuenta: cuenta([['C', v.c], ['H', 2 * v.d], ['O', 2 * v.c + v.d]]) },
+  ], { alto: 130, alt: `${v.a} CH₄ + ${v.b} O₂ → ${v.c} CO₂ + ${v.d} H₂O: C ${v.a} y ${v.c}, H ${4 * v.a} y ${2 * v.d}, O ${2 * v.b} y ${2 * v.c + v.d}.` });
+  const mcd = (a, b) => (b ? mcd(b, a % b) : a);
+  const estadoComb = v => {
+    const ok = v.a === v.c && 4 * v.a === 2 * v.d && 2 * v.b === 2 * v.c + v.d;
+    return !ok ? 'no cuadra' : [v.a, v.b, v.c, v.d].reduce(mcd) > 1 ? 'cuadra, sin enteros mínimos' : 'balanceada ✓';
+  };
+  // Mesa 2: varias semirreacciones en medio ácido; los electrones van en una sola ficha «n e⁻» para que quepan.
+  const SEMI = {
+    mn: { t: 'MnO₄⁻ → Mn²⁺', ion: 'MnO₄⁻', q: -1, h: 8, der: 'Mn²⁺ + 4 H₂O', qd: 2 },
+    cr: { t: 'Cr₂O₇²⁻ → Cr³⁺', ion: 'Cr₂O₇²⁻', q: -2, h: 14, der: '2 Cr³⁺ + 7 H₂O', qd: 6 },
+    no: { t: 'NO₃⁻ → NO', ion: 'NO₃⁻', q: -1, h: 4, der: 'NO + 2 H₂O', qd: 0 },
+    so: { t: 'SO₄²⁻ → SO₂', ion: 'SO₄²⁻', q: -2, h: 4, der: 'SO₂ + 2 H₂O', qd: 0 },
+    o2: { t: 'O₂ → H₂O', ion: 'O₂', q: 0, h: 4, der: '2 H₂O', qd: 0 },
+  };
+  const semi = v => { const S = SEMI[v.k]; return { datos: { fichas: [{ t: S.ion, carga: S.q, color: 'd' }, { t: `${S.h} H⁺`, carga: S.h, color: 'h' }, { t: `${v.n} e⁻`, carga: -v.n, color: 'i' }], neta: 'carga a la izquierda',
+    alt: `${S.ion} + ${S.h} H⁺ + ${v.n} e⁻: carga ${sg(S.q + S.h - v.n)} a la izquierda; a la derecha, ${S.der}, carga ${sg(S.qd)}.` }, estado: {} }; };
+
   return {
     unidad: 'quimica.reacciones-y-balance',
     version: '0.1.0',
@@ -452,6 +485,36 @@
       pregunta: '¿Qué tendría que conservarse para que una ecuación sea creíble?',
       fuente: { titulo: 'OpenStax, Chemistry 2e, §4.1', url: 'https://openstax.org/books/chemistry-2e/pages/4-1-writing-and-balancing-chemical-equations' },
     },
+    // Laboratorio (docs/teoria.md §4b), sin preguntas. La primera mesa suelta los cuatro coeficientes (más controles y el
+    // caso de los múltiplos); la segunda trae cinco semirreacciones, hasta 12 electrones, con la fila estirable.
+    laboratorio: [
+      {
+        id: 'metano-libre', titulo: 'El metano con todo', pieza: 'quim-particulas',
+        consigna: 'Ahora puedes cambiar los cuatro coeficientes. Busca la ecuación balanceada y después otra que también cuadre con números más grandes.',
+        controles: [
+          { id: 'a', etiqueta: 'CH₄', color: 'c-o', min: 1, max: 3, paso: 1, inicio: 1, decimales: 0 },
+          { id: 'b', etiqueta: 'O₂', color: 'c-o', min: 1, max: 6, paso: 1, inicio: 1, decimales: 0 },
+          { id: 'c', etiqueta: 'CO₂', color: 'c-o', min: 1, max: 3, paso: 1, inicio: 1, decimales: 0 },
+          { id: 'd', etiqueta: 'H₂O', color: 'c-o', min: 1, max: 6, paso: 1, inicio: 1, decimales: 0 },
+        ],
+        dibujo: v => comb(v),
+        lectura: v => [`${v.a} : ${v.b} : ${v.c} : ${v.d} → ${estadoComb(v)}`],
+      },
+      {
+        id: 'semirreacciones', titulo: 'Cinco semirreacciones', pieza: 'quim-fichas',
+        consigna: 'Elige una semirreacción en medio ácido. Estira la fila de cargas negativas hasta que la izquierda tenga la carga de la derecha.',
+        controles: [
+          { id: 'k', etiqueta: 'Semirreacción', opciones: Object.keys(SEMI).map(k => ({ valor: k, texto: SEMI[k].t })) },
+          { id: 'n', etiqueta: 'e⁻', color: 'c-i', min: 0, max: 12, paso: 1, inicio: 0, decimales: 0 },
+        ],
+        dibujo: v => semi(v),
+        lectura: v => { const S = SEMI[v.k], qi = S.q + S.h - v.n; return [`${v.n} e⁻: izquierda ${sg(qi)}, derecha ${sg(S.qd)}${qi === S.qd ? ' ✓' : ''}`]; },
+        // El final de la fila de negativas: la carga del ion ocupa los primeros cuadritos; después vienen los electrones.
+        arrastres: [{ id: 'electrones', etiqueta: 'final de la fila de cargas negativas', color: 'c-i',
+          donde: v => finFila(semi(v), -SEMI[v.k].q + v.n),
+          mover: (pt, v) => ({ n: (pt.x - 47) / 17 + 1 + SEMI[v.k].q }) }],
+      },
+    ],
     ideas: [evidencias, clasif, tanteo, redox, ionE],
   };
 });
