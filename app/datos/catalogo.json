@@ -2304,7 +2304,15 @@
      "plantillas": [
       "divisores",
       "numeros-sucesiones"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/divisibilidad.js",
+      "requiere": [
+       "/nucleo/kit/piezas/arit-fichas.js",
+       "/nucleo/kit/piezas/arit-tabla.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "aritmetica.numeros-primos-y-divisores",
