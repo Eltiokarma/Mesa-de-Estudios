@@ -50,7 +50,8 @@
     const s = Math.min((W - 2 * M) / sx, (ALTO_MAX - 2 * M) / sy);
     const alto = Math.round(sy * s + 2 * M);
     const ox = (W - sx * s) / 2;
-    return { s, alto, X: x => ox + (x - v.x0) * s, Y: y => M + (v.y1 - y) * s };
+    // Xi, Yi: las inversas (de píxel a metro), para que el gesto directo convierta el dedo en valores.
+    return { s, alto, X: x => ox + (x - v.x0) * s, Y: y => M + (v.y1 - y) * s, Xi: px => v.x0 + (px - ox) / s, Yi: py => v.y1 - (py - M) / s };
   }
 
   // Se ve en este estado: desde su paso y hasta su «hasta» (lo que se va, se va a propósito).

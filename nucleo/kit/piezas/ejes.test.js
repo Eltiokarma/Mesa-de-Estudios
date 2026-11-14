@@ -131,3 +131,9 @@ test('compacto: sin marca, el plano es más bajo y la figura no reserva lugar pa
   assert.equal(alto({ ...ENCUENTRO, compacto: true }), alto(ENCUENTRO), 'con marca, compacto no cambia nada');
   assert.ok(!/NaN|undefined/.test(E.dibujar({ ...XT, compacto: true })));
 });
+
+test('geometria trae las inversas: Xi(X(v)) = v e Yi(Y(v)) = v (gesto directo)', () => {
+  const d = { x: { min: -2, max: 8 }, y: { min: -5, max: 15 } }, g = E.geometria(d);
+  for (const v of [-2, 0, 3.5, 8]) assert.ok(Math.abs(g.Xi(g.X(v)) - v) < 1e-9);
+  for (const v of [-5, 0, 7.25, 15]) assert.ok(Math.abs(g.Yi(g.Y(v)) - v) < 1e-9);
+});

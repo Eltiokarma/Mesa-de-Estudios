@@ -137,3 +137,11 @@ test('alt cuenta la relación y dice que está a escala', () => {
   assert.equal(F.alt(SUMA), 'Flechas a escala, con el largo proporcional al módulo: A de 6 N y B de 8 N; ángulos de 60°. Debajo, una regla con la misma escala para medir R');
   assert.match(F.dibujar(SUMA, {}), /role="img" aria-label="Flechas a escala/);
 });
+
+test('geometria trae las inversas: Xi(X(x)) = x e Yi(Y(y)) = y (gesto directo)', () => {
+  const g = F.geometria(SUMA);
+  for (const v of [-3, 0, 1.5, 4]) {
+    assert.ok(Math.abs(g.Xi(g.X(v)) - v) < 1e-9);
+    assert.ok(Math.abs(g.Yi(g.Y(v)) - v) < 1e-9);
+  }
+});

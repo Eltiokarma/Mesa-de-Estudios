@@ -53,7 +53,9 @@
     const m = d.marca || {};
     const RX = v => PX0 + (PX1 - PX0) * (v - m.min) / ((m.max - m.min) || 1);
     const ceroY = Y(Math.min(d.y.max, Math.max(d.y.min, 0)));
-    return { PY1, X, Y, ceroY, regla, reglaY, manija, fantasma, alto: esCompacto(d) ? PY1 + 48 : fantasma + 16, RX };
+    // Xi, Yi: las inversas de X e Y (de píxel a valor), para el gesto directo de la teoría.
+    const Xi = px => d.x.min + (px - PX0) * sx / (PX1 - PX0), Yi = py => d.y.min + (PY1 - py) * sy / (PY1 - PY0);
+    return { PY1, X, Y, Xi, Yi, ceroY, regla, reglaY, manija, fantasma, alto: esCompacto(d) ? PY1 + 48 : fantasma + 16, RX };
   }
   const fmt = (d, v) => `${d.prefijo || ''}${Kit.formatear(v, d.decimales === undefined ? 2 : d.decimales)}${d.sufijo || ''}`;
   const lim = (v, a, b) => Math.min(b, Math.max(a, v));

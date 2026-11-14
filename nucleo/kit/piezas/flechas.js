@@ -66,7 +66,8 @@
     const ox = (W - sx * s) / 2 - x0 * s, oy = MARGEN + y1 * s + (figH - 2 * MARGEN - sy * s) / 2;
     const X = x => ox + x * s, Y = y => oy - y * s;
     const centro = [X((x0 + x1) / 2), Y((y0 + y1) / 2)];
-    const g = { s, X, Y, centro, figH };
+    // Xi, Yi: las inversas (de píxel a unidades), para el gesto directo de la teoría.
+    const g = { s, X, Y, Xi: px => (px - ox) / s, Yi: py => (oy - py) / s, centro, figH };
     if (d.regla) {
       g.copiaY = figH + 26; g.reglaY = g.copiaY + 14; g.manijaY = g.reglaY + 46;
       g.fantasmaY = g.manijaY + 30; g.xr = m => R0 + Math.max(0, m) * s;

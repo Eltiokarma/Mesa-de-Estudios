@@ -49,3 +49,11 @@ test('puro, alto fijo, sin NaN ni colores fijos, texto de 14 o más', () => {
   assert.ok(P.alt(DCL).length >= 15);
   assert.ok(P.alt({ flechas: [{ de: [0, 0], d: [1, 0], rotulo: 'F' }] }).length >= 15);
 });
+
+test('geometria trae las inversas: Xi(X(x)) = x e Yi(Y(y)) = y (gesto directo)', () => {
+  const g = P.geometria(DCL);
+  for (const v of [-4, -1.5, 0, 2.25, 4]) {
+    assert.ok(Math.abs(g.Xi(g.X(v)) - v) < 1e-9);
+    assert.ok(Math.abs(g.Yi(g.Y(v)) - v) < 1e-9);
+  }
+});
