@@ -2859,7 +2859,14 @@
       "ampliadora",
       "triangulo-estira",
       "geo-areas-triangulares"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/geometria/areas-poligonales.js",
+      "requiere": [
+       "/nucleo/kit/piezas/geo-figura.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "geometria.longitud-y-areas-circulares",
