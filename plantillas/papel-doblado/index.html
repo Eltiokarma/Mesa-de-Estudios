@@ -293,9 +293,14 @@ function juegoDoblar(o){
     o.describir(v.prog <= 0 ? `${o.nombre[0].toUpperCase() + o.nombre.slice(1)} abierta, sin cortes.` : v.prog >= n ? `${o.nombre[0].toUpperCase() + o.nombre.slice(1)} doblada del todo.` : `${o.nombre[0].toUpperCase() + o.nombre.slice(1)} a medio doblar.`); };
   r.addEventListener('input', () => mover(r.value/100));
   const tab0 = cv.tabIndex; cv.tabIndex = 0;
-  // arrastrar a la izquierda dobla; a la derecha, abre (media lámina por doblez)
-  Celular.arrastre(cv, { activo:() => activo, cerca:() => true,
-    empezar:p => { x0 = p.x; p0 = v.prog; }, mover:p => { if (x0 !== null) mover(p0 + (x0 - p.x)/(L.W/2)); }, soltar:() => { x0 = null; } });
+  // arrastrar a la izquierda dobla; a la derecha, abre (media lámina por doblez).
+  // Sin Celular.arrastre: aquel toma todo toque cercano (aquí, toda la hoja) y el dedo ya no desplazaba la página.
+  // Con touch-action: pan-y, el gesto vertical lo maneja el navegador (desplaza la página y cancela el arrastre)
+  // y el horizontal llega como pointermove: el dedo dobla sin atrapar la página.
+  const enX = e => { const r = cv.getBoundingClientRect(); return (e.clientX - r.left) * L.W / r.width; };
+  cv.addEventListener('pointerdown', e => { if (!activo) return; x0 = enX(e); p0 = v.prog; });
+  cv.addEventListener('pointermove', e => { if (activo && x0 !== null) mover(p0 + (x0 - enX(e))/(L.W/2)); });
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach(t => cv.addEventListener(t, () => { x0 = null; }));
   cv.addEventListener('keydown', e => { if (!activo || (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight')) return; e.preventDefault(); mover(v.prog + (e.key === 'ArrowLeft' ? .25 : -.25)); });
   mover(0);
   return () => { activo = false; caja.remove(); cv.tabIndex = tab0; };
