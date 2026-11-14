@@ -12,7 +12,55 @@
         "Para que el perímetro sea el mayor, el corte tiene que ser el más largo posible. Las piezas iguales salen al cortar de forma simétrica respecto del centro del tablero.",
         "El corte recto por la mitad mide 3 lados y da piezas de 7 + 3 = 10. El corte más largo que deja piezas iguales mide 7 lados, en escalera alrededor del centro: cada pieza mide 7 + 7 = 14."
       ],
-      "verificar": [ { "fn": "partirDos", "args": [3, 4], "espera": { "maximo": 14, "recto": 10, "lista.0.corte": 7 } } ]
+      "verificar": [ { "fn": "partirDos", "args": [3, 4], "espera": { "maximo": 14, "recto": 10, "lista.0.corte": 7 } } ],
+      "preguntas": [
+        {
+          "id": "p1a",
+          "enunciado": "Un tablero de 3 filas y 4 columnas de casillas se corta por las líneas de la cuadrícula en dos piezas congruentes (iguales en forma y tamaño, aunque haya que girar o voltear una).",
+          "pregunta": "¿Cuál es el mayor perímetro que puede tener cada pieza, en lados de casilla?",
+          "unidad": "lados",
+          "decimales": 0,
+          "correcta": { "fn": "partirDos", "args": [3, 4], "campo": "maximo", "valor": 14 },
+          "errores": [
+            {
+              "id": "RME42-corte-recto",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es el corte recto por la mitad, el más corto. Un corte en escalera alrededor del centro también deja piezas iguales y es más largo.",
+              "fn": "partirDos",
+              "args": [3, 4],
+              "campo": "errores.corteRecto",
+              "valor": 10
+            },
+            {
+              "id": "RME165-reparte-el-borde",
+              "respaldo": "hipotesis",
+              "explicacion": "Esa es la mitad del borde del tablero. El corte también queda en el borde de cada pieza: hay que sumarlo.",
+              "fn": "partirDos",
+              "args": [3, 4],
+              "campo": "errores.mitadTablero",
+              "valor": 7
+            },
+            {
+              "id": "RME-suma-las-dos-piezas",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste las dos piezas. Se pregunta el perímetro de cada una: 7 de borde más 7 de corte.",
+              "fn": "partirDos",
+              "args": [3, 4],
+              "campo": "errores.dosPiezas",
+              "valor": 28
+            },
+            {
+              "id": "AR18-mejor-de-unos-pocos",
+              "respaldo": "parcial",
+              "explicacion": "Ese corte de 5 lados deja piezas iguales (7 + 5 = 12), pero hay uno más largo, de 7 lados. Revisa todos los cortes simétricos.",
+              "fn": "partirDos",
+              "args": [3, 4],
+              "campo": "errores.segundo",
+              "valor": 12
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p2",
@@ -36,7 +84,37 @@
         "Con un solo trozo no se puede: el tablero no es cuadrado. Con dos sí: un corte en escalera de 2 escalones de 3 de ancho y 2 de alto.",
         "Se corre el trozo de arriba un escalón (3 a la izquierda y 2 hacia arriba) y queda el cuadrado de 6 × 6."
       ],
-      "verificar": [ { "fn": "escalera", "args": [9, 4], "espera": { "lado": 6, "trozos": 2, "k": 2, "w": 3, "h": 2, "encaja": true } } ]
+      "verificar": [ { "fn": "escalera", "args": [9, 4], "espera": { "lado": 6, "trozos": 2, "k": 2, "w": 3, "h": 2, "encaja": true } } ],
+      "preguntas": [
+        {
+          "id": "p3a",
+          "enunciado": "Un tablero de 9 columnas por 4 filas de casillas se corta por las líneas de la cuadrícula y, sin que sobre ni falte nada, se rearma como un cuadrado.",
+          "pregunta": "¿Cuánto mide el lado del cuadrado, en casillas?",
+          "unidad": "casillas",
+          "decimales": 1,
+          "correcta": { "fn": "escalera", "args": [9, 4], "campo": "lado", "valor": 6 },
+          "errores": [
+            {
+              "id": "RME160-conserva-perimetro",
+              "respaldo": "hipotesis",
+              "explicacion": "Así el cuadrado tendría el mismo perímetro que el tablero. Al rearmar se conserva el área: 36 casillas, lado √36.",
+              "fn": "escalera",
+              "args": [9, 4],
+              "campo": "errores.mismoPerimetro",
+              "valor": 6.5
+            },
+            {
+              "id": "RME160-cuarto-del-area",
+              "respaldo": "hipotesis",
+              "explicacion": "Dividiste 36 entre 4, como si fuera el perímetro. 36 es el área: el lado es el número que por sí mismo da 36.",
+              "fn": "escalera",
+              "args": [9, 4],
+              "campo": "errores.cuartoDelArea",
+              "valor": 9
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p4",
@@ -48,7 +126,55 @@
         "Cada costado es escalonado: columnas de 0,30 de ancho y de 0,18, 0,36 y 0,54 de alto. Área: 0,30 · 0,18 · (1 + 2 + 3) = 0,324 m². Son dos costados: 0,648 m².",
         "Total: 0,81 + 0,486 + 0,648 = 1,944 m². Costo: 1,944 · 40 = S/ 77,76."
       ],
-      "verificar": [ { "fn": "escaleraEnchape", "args": [3, 0.3, 0.18, 0.9, 40], "espera": { "total": 1.944, "costo": 77.76 } } ]
+      "verificar": [ { "fn": "escaleraEnchape", "args": [3, 0.3, 0.18, 0.9, 40], "espera": { "total": 1.944, "costo": 77.76 } } ],
+      "preguntas": [
+        {
+          "id": "p4a",
+          "enunciado": "Una escalera maciza de 3 peldaños está pegada a una pared. Cada peldaño tiene 30 cm de huella (fondo), 18 cm de contrahuella (alto) y 90 cm de ancho. Se enchapan las huellas, las contrahuellas y los dos costados a S/ 40 el metro cuadrado.",
+          "pregunta": "¿Cuánto cuesta el enchape, en soles?",
+          "unidad": "soles",
+          "decimales": 2,
+          "correcta": { "fn": "escaleraEnchape", "args": [3, 0.3, 0.18, 0.9, 40], "campo": "costo", "valor": 77.76 },
+          "errores": [
+            {
+              "id": "RME162-sin-costados",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste huellas y contrahuellas, pero los dos costados también se enchapan.",
+              "fn": "escaleraEnchape",
+              "args": [3, 0.3, 0.18, 0.9, 40],
+              "campo": "errores.sinCostados",
+              "valor": 51.84
+            },
+            {
+              "id": "RME162-un-costado",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste un solo costado. La escalera tiene dos: el que se ve y el del otro lado.",
+              "fn": "escaleraEnchape",
+              "args": [3, 0.3, 0.18, 0.9, 40],
+              "campo": "errores.unCostado",
+              "valor": 64.8
+            },
+            {
+              "id": "RME163-costado-rectangulo",
+              "respaldo": "hipotesis",
+              "explicacion": "Tomaste cada costado como un rectángulo lleno. Es escalonado: columnas de 18, 36 y 54 cm de alto.",
+              "fn": "escaleraEnchape",
+              "args": [3, 0.3, 0.18, 0.9, 40],
+              "campo": "errores.costadoRectangulo",
+              "valor": 90.72
+            },
+            {
+              "id": "RME162-sin-contrahuellas",
+              "respaldo": "hipotesis",
+              "explicacion": "Olvidaste las contrahuellas, los frentes verticales de cada peldaño: 3 · 0,18 · 0,90 m².",
+              "fn": "escaleraEnchape",
+              "args": [3, 0.3, 0.18, 0.9, 40],
+              "campo": "errores.sinContrahuellas",
+              "valor": 58.32
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p5",
@@ -72,7 +198,57 @@
         "MBN y NCP miden cada uno 1/8 del rectángulo (medio ancho por medio alto, entre 2). El rectángulo AMPD es la mitad izquierda: 1/2.",
         "1 − 1/8 − 1/8 − 1/2 = 1/4. No depende de los lados del rectángulo."
       ],
-      "verificar": [ { "fn": "fraccionTriangulo", "args": ["AB", "BC", "CD"], "espera": { "num": 1, "den": 4 } } ]
+      "verificar": [ { "fn": "fraccionTriangulo", "args": ["AB", "BC", "CD"], "espera": { "num": 1, "den": 4 } } ],
+      "preguntas": [
+        {
+          "id": "p6a",
+          "enunciado": "En el rectángulo ABCD, M, N y P son los puntos medios de AB, BC y CD.",
+          "pregunta": "¿Qué fracción del rectángulo es el triángulo MNP? Escríbela en decimales.",
+          "decimales": 3,
+          "correcta": { "fn": "fraccionTriangulo", "args": ["AB", "BC", "CD"], "campo": "valor", "valor": 0.25 },
+          "errores": [
+            {
+              "id": "RME168-mitad",
+              "respaldo": "hipotesis",
+              "explicacion": "El triángulo no es la mitad. Resta lo que queda fuera: dos triángulos de 1/8 y el rectángulo AMPD, que es 1/2.",
+              "fn": "fraccionTriangulo",
+              "args": [
+                "AB",
+                "BC",
+                "CD"
+              ],
+              "campo": "errores.mitad.valor",
+              "valor": 0.5
+            },
+            {
+              "id": "RME168-olvida-una-esquina",
+              "respaldo": "hipotesis",
+              "explicacion": "Restaste solo una de las dos esquinas de 1/8. Fuera quedan MBN, NCP y el rectángulo AMPD.",
+              "fn": "fraccionTriangulo",
+              "args": [
+                "AB",
+                "BC",
+                "CD"
+              ],
+              "campo": "errores.olvidaUna.valor",
+              "valor": 0.375
+            },
+            {
+              "id": "RME168-lo-que-sobra",
+              "respaldo": "hipotesis",
+              "explicacion": "Esa es la parte que queda fuera del triángulo. El triángulo es el resto: 1 − 3/4.",
+              "fn": "fraccionTriangulo",
+              "args": [
+                "AB",
+                "BC",
+                "CD"
+              ],
+              "campo": "errores.loQueSobra.valor",
+              "valor": 0.75
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p7",
@@ -84,7 +260,37 @@
         "En el tablero hay 2 · 3 = 6 cuadrados de 2 × 2, y en cada uno la L puede quedar de 4 maneras (falta una de sus 4 casillas). Voltearla da una de esas mismas 4.",
         "6 · 4 = 24."
       ],
-      "verificar": [ { "fn": "ubicaciones", "args": [[[0,0],[1,0],[1,1]], [3, 4]], "espera": { "total": 24, "orientaciones": 4 } } ]
+      "verificar": [ { "fn": "ubicaciones", "args": [[[0,0],[1,0],[1,1]], [3, 4]], "espera": { "total": 24, "orientaciones": 4 } } ],
+      "preguntas": [
+        {
+          "id": "p7a",
+          "enunciado": "Una pieza en forma de L de 3 casillas se coloca sobre un tablero de 3 filas y 4 columnas, cubriendo casillas enteras, y se puede girar o voltear.",
+          "pregunta": "¿En cuántas ubicaciones distintas puede quedar?",
+          "unidad": "ubicaciones",
+          "decimales": 0,
+          "correcta": { "fn": "ubicaciones", "args": [[[0, 0], [1, 0], [1, 1]], [3, 4]], "campo": "total", "valor": 24 },
+          "errores": [
+            {
+              "id": "RME45-solo-como-el-dibujo",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste la L solo como está dibujada. Se puede girar: en cada cuadrado de 2 × 2 cabe de 4 maneras.",
+              "fn": "ubicaciones",
+              "args": [[[0, 0], [1, 0], [1, 1]], [3, 4]],
+              "campo": "errores.comoDibujo",
+              "valor": 6
+            },
+            {
+              "id": "RME164-ocho-posiciones",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste 8 posiciones, 4 giros y 4 volteos. Al voltear la L sale una de las mismas 4: no hay más.",
+              "fn": "ubicaciones",
+              "args": [[[0, 0], [1, 0], [1, 1]], [3, 4]],
+              "campo": "errores.ochoVeces",
+              "valor": 48
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p8",
@@ -96,7 +302,37 @@
         "4 · 10 = 40 cuenta las 4 esquinas dos veces: 40 − 4 = 36.",
         "Otra forma: todo el tablero menos el cuadrado de adentro, 100 − 8 · 8 = 36."
       ],
-      "verificar": [ { "fn": "casillasBorde", "args": [10, 10], "espera": { "total": 36, "errores.esquinasDosVeces": 40 } } ]
+      "verificar": [ { "fn": "casillasBorde", "args": [10, 10], "espera": { "total": 36, "errores.esquinasDosVeces": 40 } } ],
+      "preguntas": [
+        {
+          "id": "p8a",
+          "enunciado": "En un tablero de 10 × 10 se pintan todas las casillas que están en los cuatro lados.",
+          "pregunta": "¿Cuántas casillas se pintan?",
+          "unidad": "casillas",
+          "decimales": 0,
+          "correcta": { "fn": "casillasBorde", "args": [10, 10], "campo": "total", "valor": 36 },
+          "errores": [
+            {
+              "id": "RME44-esquinas-dos-veces",
+              "respaldo": "hipotesis",
+              "explicacion": "Con 4 · 10 cada esquina quedó contada dos veces, porque está en dos lados. Resta las 4.",
+              "fn": "casillasBorde",
+              "args": [10, 10],
+              "campo": "errores.esquinasDosVeces",
+              "valor": 40
+            },
+            {
+              "id": "RME44-sin-esquinas",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste cada lado sin sus esquinas: 4 · 8 = 32. Las 4 esquinas también se pintan; cuéntalas una vez: 32 + 4 = 36.",
+              "fn": "casillasBorde",
+              "args": [10, 10],
+              "campo": "errores.sinEsquinas",
+              "valor": 32
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p9",
@@ -108,7 +344,51 @@
         "No forman triángulo las ternas de una misma recta: C(5, 3) = 10 en la primera y C(4, 3) = 4 en la segunda.",
         "84 − 10 − 4 = 70. Otra forma: 2 puntos de una recta y 1 de la otra, C(5, 2) · 4 + C(4, 2) · 5 = 40 + 30 = 70."
       ],
-      "verificar": [ { "fn": "triangulosPuntos", "args": [[[0,0],[2,0],[4,0],[6,0],[8,0],[1,3],[3,3],[5,3],[7,3]]], "espera": { "total": 70, "ternas": 84 } } ]
+      "verificar": [ { "fn": "triangulosPuntos", "args": [[[0,0],[2,0],[4,0],[6,0],[8,0],[1,3],[3,3],[5,3],[7,3]]], "espera": { "total": 70, "ternas": 84 } } ],
+      "preguntas": [
+        {
+          "id": "p9a",
+          "enunciado": "En una recta se marcan 5 puntos y en otra recta paralela, 4 puntos.",
+          "pregunta": "¿Cuántos triángulos tienen sus tres vértices entre esos 9 puntos?",
+          "unidad": "triángulos",
+          "decimales": 0,
+          "correcta": {
+            "fn": "triangulosPuntos",
+            "args": [[[0, 0], [2, 0], [4, 0], [6, 0], [8, 0], [1, 3], [3, 3], [5, 3], [7, 3]]],
+            "campo": "total",
+            "valor": 70
+          },
+          "errores": [
+            {
+              "id": "RME169-no-resta-alineadas",
+              "respaldo": "hipotesis",
+              "explicacion": "Esas son todas las ternas de puntos. Tres puntos de una misma recta no forman triángulo: resta C(5, 3) y C(4, 3).",
+              "fn": "triangulosPuntos",
+              "args": [[[0, 0], [2, 0], [4, 0], [6, 0], [8, 0], [1, 3], [3, 3], [5, 3], [7, 3]]],
+              "campo": "errores.sinRestar",
+              "valor": 84
+            },
+            {
+              "id": "RME169-una-por-recta",
+              "respaldo": "hipotesis",
+              "explicacion": "Restaste una terna por recta. En la de 5 puntos hay C(5, 3) = 10 ternas alineadas y en la de 4, otras 4.",
+              "fn": "triangulosPuntos",
+              "args": [[[0, 0], [2, 0], [4, 0], [6, 0], [8, 0], [1, 3], [3, 3], [5, 3], [7, 3]]],
+              "campo": "errores.unaPorRecta",
+              "valor": 82
+            },
+            {
+              "id": "AR17-cuenta-con-orden",
+              "respaldo": "parcial",
+              "explicacion": "Contaste cada triángulo una vez por cada orden de sus vértices. ABC y BCA son el mismo triángulo.",
+              "fn": "triangulosPuntos",
+              "args": [[[0, 0], [2, 0], [4, 0], [6, 0], [8, 0], [1, 3], [3, 3], [5, 3], [7, 3]]],
+              "campo": "errores.conOrden",
+              "valor": 420
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p10",
@@ -120,7 +400,37 @@
         "De 2 × 2 hay 16; la casilla del centro está en 4 de ellos, así que quedan 12. De 3 × 3 hay 9 y todos tienen el centro. Los de 4 × 4 y el de 5 × 5 también.",
         "24 + 12 = 36."
       ],
-      "verificar": [ { "fn": "cuadradosLibres", "args": [5, 5, [[2, 2]]], "espera": { "total": 36, "porLado.1": 24, "porLado.2": 12 } } ]
+      "verificar": [ { "fn": "cuadradosLibres", "args": [5, 5, [[2, 2]]], "espera": { "total": 36, "porLado.1": 24, "porLado.2": 12 } } ],
+      "preguntas": [
+        {
+          "id": "p10a",
+          "enunciado": "En un tablero de 5 × 5 se sombrea solo la casilla del centro.",
+          "pregunta": "¿Cuántos cuadrados, de cualquier tamaño y por las líneas del tablero, no tienen ninguna casilla sombreada?",
+          "unidad": "cuadrados",
+          "decimales": 0,
+          "correcta": { "fn": "cuadradosLibres", "args": [5, 5, [[2, 2]]], "campo": "total", "valor": 36 },
+          "errores": [
+            {
+              "id": "RME166-cuenta-los-que-tienen-sombra",
+              "respaldo": "hipotesis",
+              "explicacion": "Esos son todos los cuadrados del tablero, también los que tocan el centro. Quita los que tienen la casilla sombreada.",
+              "fn": "cuadradosLibres",
+              "args": [5, 5, [[2, 2]]],
+              "campo": "errores.todos",
+              "valor": 55
+            },
+            {
+              "id": "AR18-solo-casillas",
+              "respaldo": "parcial",
+              "explicacion": "Contaste solo los cuadrados de 1 × 1. También hay de 2 × 2 que no tocan el centro: 12 más.",
+              "fn": "cuadradosLibres",
+              "args": [5, 5, [[2, 2]]],
+              "campo": "errores.soloCasillas",
+              "valor": 24
+            }
+          ]
+        }
+      ]
     }
   ]
 }
