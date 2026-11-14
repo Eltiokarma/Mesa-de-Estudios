@@ -2260,7 +2260,15 @@
      "plantillas": [
       "probabilidad-dados",
       "probabilidad-conteo"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/probabilidades.js",
+      "requiere": [
+       "/nucleo/kit/piezas/arit-tabla.js",
+       "/nucleo/kit/piezas/arit-tiras.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "aritmetica.numeracion",
