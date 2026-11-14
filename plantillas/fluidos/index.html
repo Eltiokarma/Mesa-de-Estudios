@@ -181,6 +181,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
     <section class="bench" aria-label="Dibujo del paso">
       <div class="lienzo"><canvas id="cv" tabindex="-1" role="img" aria-label="Tres recipientes con agua"></canvas></div>
       <div class="lecturas" id="lect1" aria-hidden="true"></div>
+      <div class="slider jugar-ctrl" id="j1"><label for="j1-r"><span>Altura del sensor sobre el fondo</span><output id="j1-o"></output></label><input id="j1-r" type="range" min="0.05" max="1.9" step="0.05" value="1"></div>
       <p class="sr" id="desc1" aria-live="polite"></p>
       <div class="legend" id="ley1"></div>
     </section>
@@ -203,11 +204,12 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
     <section class="bench" aria-label="Experimento elegido">
       <div class="lienzo"><canvas id="cv2" tabindex="-1" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
       <div class="lecturas" id="lect2" aria-hidden="true"></div>
+      <div class="slider jugar-ctrl" id="j2" hidden><label for="j2-r"><span id="j2-et"></span><output id="j2-o"></output></label><input id="j2-r" type="range"></div>
       <p class="sr" id="desc2" aria-live="polite"></p>
       <div class="legend" id="ley2"></div>
     </section>
     <section class="guide">
-      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div class="seg exps" id="exps" role="group" aria-label="Experimentos"></div>
       <div aria-live="polite">
         <p class="step-k" id="k2"></p>
         <h2 class="step-t" id="t2" tabindex="-1"></h2>
@@ -221,6 +223,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
     <section class="bench" aria-label="Tubo horizontal con un estrechamiento">
       <div class="lienzo"><canvas id="cv3" tabindex="-1" role="img" aria-label="Tubo horizontal con un estrechamiento y dos tubitos verticales"></canvas></div>
       <div class="lecturas" id="lect3" aria-hidden="true"></div>
+      <div class="slider jugar-ctrl" id="j3"><label for="j3-r"><span>Radio de la parte angosta</span><output id="j3-o"></output></label><input id="j3-r" type="range" min="0.8" max="2" step="0.05" value="1"></div>
       <p class="sr" id="desc3" aria-live="polite"></p>
       <div class="legend" id="ley3"></div>
     </section>
@@ -252,6 +255,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'fluidos', unidad: 'fisica.fluidos', version: '0.2.0' };
@@ -558,8 +562,9 @@ function vistaBalanza(L, c, P){
 const VASOS = { areas:[0.001, 0.002], alto:1.2 };
 function vistaVasos(L, c, P){
   const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
-  const r = M.vasosComunicantes({ areas:VASOS.areas, volumen:P.V }), s = Math.min((H - 70)/VASOS.alto, W*0.5);
-  const yF = H - 40, w1 = Math.max(16, W*0.09), w2 = 2*w1, xa = W*0.3, xb = W*0.66, canal = 16;
+  // P.igual: las dos ramas del mismo ancho (juego antes de la pregunta).
+  const r = M.vasosComunicantes({ areas: P.igual ? [VASOS.areas[0], VASOS.areas[0]] : VASOS.areas, volumen:P.V }), s = Math.min((H - 70)/VASOS.alto, W*0.5);
+  const yF = H - 40, w1 = Math.max(16, W*0.09), w2 = P.igual ? w1 : 2*w1, xa = W*0.3, xb = W*0.66, canal = 16;
   const ts = (x, w) => [{ x0: x - w/2, x1: x + w/2, y0: yF, y1: yF - VASOS.alto*s }];
   const h = r.nivel*(P.ver === 'antes' ? 0 : suave(P.lleno)), yN = yF - canal - h*s;
   // Canal de abajo y agua
@@ -571,7 +576,7 @@ function vistaVasos(L, c, P){
   ctx.beginPath(); ctx.moveTo(xa - w1/2, yF - VASOS.alto*s); ctx.lineTo(xa - w1/2, yF); ctx.lineTo(xb + w2/2, yF); ctx.lineTo(xb + w2/2, yF - VASOS.alto*s); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(xa + w1/2, yF - VASOS.alto*s); ctx.lineTo(xa + w1/2, yF - canal); ctx.lineTo(xb - w2/2, yF - canal); ctx.lineTo(xb - w2/2, yF - VASOS.alto*s); ctx.stroke();
   ctx.restore();
-  rotulo(ctx, c, xa, 14, 'angosta', c.ink, 'center', 800, W, H); rotulo(ctx, c, xb, 14, 'ancha (el doble)', c.ink, 'center', 800, W, H);
+  rotulo(ctx, c, xa, 14, P.igual ? 'rama 1' : 'angosta', c.ink, 'center', 800, W, H); rotulo(ctx, c, xb, 14, P.igual ? 'rama 2, igual' : 'ancha (el doble)', c.ink, 'center', 800, W, H);
   if (P.ver === 'antes'){
     // Una jarra echa agua por la rama angosta; la rama ancha, con "?".
     ctx.save(); ctx.fillStyle = c.agua; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4;
@@ -673,7 +678,8 @@ function vistaTuboU(L, c, P){
    P = { b: resultado de M.bloques, masas, f (0 a 1: se mueven a su destino), ver: 'antes' | 'despues' } */
 function vistaBloques(L, c, P){
   const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
-  const n = P.masas.length, x0 = 12, x1 = W - 12, yS = 40, yF = H - 30, lado = Math.min((x1 - x0)/n*0.5, 38), ymid = (yS + yF)/2;
+  // P.alt: a qué fracción de la altura del tanque se sueltan (juego antes de la pregunta); por omisión, a media altura.
+  const n = P.masas.length, x0 = 12, x1 = W - 12, yS = 40, yF = H - 30, lado = Math.min((x1 - x0)/n*0.5, 38), ymid = yS + (yF - yS)*(P.alt === undefined ? 0.5 : P.alt);
   ctx.save(); ctx.fillStyle = c.agua; ctx.fillRect(x0, yS, x1 - x0, yF - yS); ctx.restore();
   superficie(ctx, c, x0, x1, yS);
   paredes(ctx, c, [{ x0, x1, y0: yF, y1: yS - 18 }]);
@@ -733,7 +739,7 @@ const B1 = bal({ bajada:ENTERO }), BH = bal({ bajada:HONDO }), B1k = bal({ m:1, 
 const S1 = M.sumergido({ m:1, V:BAL.V, mRef:2 });
 const SENSOR0 = { i:2, x:0.3, y:0.5 };
 const S = { step:0, max:0, pred:{}, hl:null, crece:1, ocupado:false, sensor:Object.assign({}, SENSOR0), sobre:false,
-  ex:{ m:2, liq:'agua', y:-0.04 } };
+  ex:{ m:2, liq:'agua', y:-0.04 }, js:{ i:0, x:0, y:1 } };
 const LIQ = { agua:1000, aceite:800, salmuera:1200 };
 let parar = () => {};
 const L = crearLienzo(cv, altoLienzo, draw);
@@ -792,13 +798,14 @@ const P6 = { id:'fluidos-otro-bloque', ok:'c',
 const LIQNOM = { agua:'agua', aceite:'aceite', salmuera:'salmuera' };
 const verBal = (T, E, N) => ({ T, E, N });
 const steps = [
- { k:'Paso 1', t:'Tres recipientes', ley:['P','h'],
-   vista:() => ({ tipo:'rec', man:'oculta' }),
+ { k:'Paso 1', t:'Tres recipientes', ley:['P','h'], juego:true,
+   // Juego libre (regla 3): un sensor que se arrastra solo dentro del recipiente ancho; los manómetros siguen en «?».
+   vista:() => ({ tipo:'rec', man:'oculta', sensor:S.js, verSensor:'si', arrastrable:true }),
    body:() => `<p class="problem">Tres recipientes abiertos, de formas distintas, tienen agua hasta 2 m de altura: uno ancho, uno angosto y una botella, ancha abajo, con un techo y un cuello angosto. En el fondo de cada uno hay un manómetro: un aparato que mide la ${V('P','presión')} del agua.</p>
    <p>La ${V('P','presión')} es la fuerza que el agua hace sobre cada metro cuadrado de lo que toca. Se mide en pascales: 1 Pa = 1 N/m². Los manómetros marcan cuánto agrega el agua a la presión del aire de arriba (la manométrica).</p>
    <p>La ${V('h','profundidad h')} de un punto se mide en vertical, hacia abajo, desde el nivel de la superficie libre del agua. Toca o pasa el puntero sobre un dato para ver dónde está.</p>`,
-   lect:() => [],
-   desc:() => 'Tres recipientes con agua hasta 2 metros: ancho, angosto y una botella con techo y cuello angosto. Un manómetro en cada fondo, todavía sin lectura.' },
+   lect:() => { const q = REC[0].presionEn(S.js.x, S.js.y); return [['h', `h = ${N2(q.h)} m`], ['P', `P = ${Pa(q.P)}`]]; },
+   desc:() => { const q = REC[0].presionEn(S.js.x, S.js.y); return `Tres recipientes con agua hasta 2 metros: ancho, angosto y una botella con techo y cuello angosto. Un manómetro en cada fondo, todavía sin lectura. Un sensor en el ancho, a ${N2(S.js.y)} metros del fondo, marca ${fmt(q.P, 0)} pascales.`; } },
  { k:'Paso 2', t:'¿En qué fondo hay más presión?', gate:P1, ley:['P','h'], leyDespues:['P','Nw'],
    vista:() => S.pred[P1.id] ? { tipo:'rec', man:'nueva', paredes:true } : { tipo:'rec', man:'oculta' },
    body:() => `<p>¿En cuál de los tres fondos es mayor la ${V('P','presión')} del agua?</p>${opcionesHTML(P1.opts, 'fb')}<div id="res" class="body"></div>`,
@@ -907,7 +914,8 @@ function go(n, enfocar){
   const s = steps[n]; S.step = n; S.hl = null; S.crece = 1; S.sobre = false;
   const arrastra = puedeArrastrar();
   cv.tabIndex = arrastra ? 0 : -1;
-  cv.setAttribute('aria-label', s.explora ? 'Bloque colgado del dinamómetro sobre el vaso: con las flechas ↑ ↓ lo subes o lo bajas'
+  $('j1').hidden = !s.juego; vivoJuego();
+  cv.setAttribute('aria-label', s.juego ? 'Tres recipientes y un sensor en el ancho: con las flechas del teclado lo mueves' : s.explora ? 'Bloque colgado del dinamómetro sobre el vaso: con las flechas ↑ ↓ lo subes o lo bajas'
     : s.drag ? 'Tres recipientes con un sensor de presión: con las flechas del teclado lo mueves' : 'Dibujo del paso');
   $('stepK').textContent = `${s.k} de ${steps.length}`;
   $('stepT').textContent = s.t;
@@ -991,14 +999,20 @@ function vivo(){
   draw();
 }
 // Arrastre: solo cerca del sensor (paso 3, ya respondido) o del bloque (paso 8). Lo demás deja desplazar la página.
-function puedeArrastrar(){ const s = steps[S.step]; return !!(s.explora || (s.drag && S.pred[s.gate.id])); }
+function puedeArrastrar(){ const s = steps[S.step]; return !!(s.juego || s.explora || (s.drag && S.pred[s.gate.id])); }
+// Juego del paso 1: el sensor no sale del recipiente ancho.
+function vivoJuego(){ $('j1-r').value = S.js.y; $('j1-o').textContent = `${N2(S.js.y)} m`; }
+function ponerJs(n){ if (n.i !== 0) return; if (n.x !== S.js.x || n.y !== S.js.y){ S.js = n; vivoJuego(); draw(); } }
+$('j1-r').addEventListener('input', e => { const y = clamp(+e.target.value, 0.05, 1.9), m = Math.max(0, REC[0].ancho(y + 1e-6)/2 - 0.05); ponerJs({ i:0, x:clamp(S.js.x, -m, m), y }); });
 function asa(){
   const s = steps[S.step], v = verActual();
+  if (s.juego){ const g = geoRec(L.W, L.H); return g.slots[0].pt(S.js.x, S.js.y); }
   if (v.tipo === 'rec'){ const g = geoRec(L.W, L.H), sl = g.slots[S.sensor.i]; return sl.pt(S.sensor.x, S.sensor.y); }
   const g = geoBal(L.W, L.H, v.r); return { x:g.x0, y:g.yS0 + (v.r.fondoBloque - v.r.a/2)*g.s };
 }
 function mover(p){
   const s = steps[S.step];
+  if (s.juego){ ponerJs(sensorDesdePantalla(L.W, L.H, Math.min(p.x, L.W/3 - 1), p.y)); return; }
   if (!s.explora){ const n = sensorDesdePantalla(L.W, L.H, p.x, p.y);
     if (n.i !== S.sensor.i || n.x !== S.sensor.x || n.y !== S.sensor.y){ S.sensor = n; vivoSensor(); draw(); } return; }
   const v = verActual(), g = geoBal(L.W, L.H, v.r);
@@ -1019,6 +1033,8 @@ cv.addEventListener('keydown', e => {
   const d = { ArrowUp:1, ArrowDown:-1, ArrowLeft:0, ArrowRight:0 }[e.key]; if (d === undefined) return;
   e.preventDefault();
   if (s.explora){ if (!d) return; S.ex.y = clamp(Math.round((S.ex.y - d*0.005)*200)/200, -0.06, 0.13); vivo(); return; }
+  if (s.juego){ const g = geoRec(L.W, L.H), q = g.slots[0].pt(S.js.x, S.js.y);
+    ponerJs(sensorDesdePantalla(L.W, L.H, Math.min(q.x + (e.key === 'ArrowRight' ? 0.05*g.s + 0.5 : e.key === 'ArrowLeft' ? -0.05*g.s - 0.5 : 0), L.W/3 - 1), q.y - d*0.05*g.s)); return; }
   // Sensor: ↑ ↓ cambian la altura; ← → lo pasan de costado (y de un recipiente a otro).
   const g = geoRec(L.W, L.H), p = g.slots[S.sensor.i].pt(S.sensor.x, S.sensor.y);
   const n = sensorDesdePantalla(L.W, L.H, p.x + (e.key === 'ArrowRight' ? 0.05*g.s + 0.5 : e.key === 'ArrowLeft' ? -0.05*g.s - 0.5 : 0), p.y - d*0.05*g.s);
@@ -1041,6 +1057,9 @@ document.addEventListener('focusout', e => { if (e.target.closest && e.target.cl
 alRedibujarTema(draw);
 addEventListener('modo', () => { if ($('m1').hidden) detener(); else L.resize(); });
 L.resize(); go(0);
+// Regla 3: antes de la primera pregunta, se juega con el sensor.
+JugarPrimero.montar({ escena: document.querySelector('#m1 .bench'), preguntas: [document.querySelector('#m1 .guide')],
+  consigna: 'Arrastra el sensor dentro del recipiente ancho y mira la presión.', minimo: 2 });
 })();
 </script>
 <script>
@@ -1060,7 +1079,7 @@ const TUBO = { rho1:1000, h1:0.272, rho2:13600 };
 const pr0 = M.prensa(PRENSA), tu0 = M.tuboU(TUBO), bl0 = M.bloques({ masas:MASAS, V:0.0005 }), fa = M.flotacion({ rhoC:600, V:0.002 }), fo = M.flotacion({ rhoC:600, V:0.002, rhoF:800 });
 
 const EXPS = [
-  { id:'vasos', corto:'Las dos ramas', ley:['P','h'],
+  { id:'vasos', juego:{ et:'Agua echada', min:0.6, max:2.2, step:0.1, val:0.6, f:v => `${N1(v)} L`, c:'Echa agua en un tubo de ramas iguales y mira los niveles.' }, corto:'Las dos ramas', ley:['P','h'],
     q:'Un tubo tiene dos ramas abiertas unidas por abajo: la izquierda es angosta y la derecha, el doble de ancha. Se echa agua por la rama angosta y se espera a que quede quieta. ¿Dónde queda el nivel del agua en la rama ancha?',
     opts:[['a','Más abajo que en la angosta, porque el agua de la rama ancha pesa más.','F1-ancha-mas-baja','documentado'],
           ['b','Más arriba que en la angosta, porque en la rama ancha cabe más agua.','ancha-mas-alta','hipotesis'],
@@ -1080,7 +1099,7 @@ const EXPS = [
     exp:`<p>El agua se mueve mientras la ${V('P','presión')} abajo no sea la misma en las dos ramas. En el fondo, la presión solo depende de la ${V('h','profundidad')}: ρ·g·${V('h','h')}. Se iguala cuando las dos superficies quedan a la misma altura, sean como sean de anchas las ramas.</p>
       <p>La rama ancha sí tiene el doble de agua y pesa el doble, pero ese peso se reparte en un fondo del doble de área. Mueve el agua echada: los dos niveles suben juntos.</p>
       ${fuente('Es el error más frecuente que encontramos en fluidos: en varios grupos de universitarios de Estados Unidos, después de estudiar el tema, entre el 50 % y el 70 % de los de primer año dibujó el agua más baja en la rama ancha, y en una sección de segundo año el 10 % lo siguió diciendo justo después de ver la demostración (Loverude, 1999). Las opciones B y D son errores que suponemos.')}` },
-  { id:'prensa', corto:'La prensa hidráulica', ley:['F','W','P'],
+  { id:'prensa', juego:{ et:'Fuerza de la mano, émbolos iguales', min:50, max:400, step:10, val:200, f:v => `${N1(v)} N`, c:'Empuja con émbolos iguales y mira la carga que sostiene.' }, corto:'La prensa hidráulica', ley:['F','W','P'],
     q:`En una prensa hidráulica, el émbolo chico tiene 0,01 m² y el grande, 0,5 m². Una mano empuja el chico hacia abajo con ${V('F','F = 200 N')}. ¿Qué ${V('W','peso W')} de carga puede sostener el émbolo grande? Desprecia el peso de los émbolos y del aceite.`,
     opts:[['a','200 N','fuerza-se-transmite-igual','hipotesis'], ['b','10 000 N',null], ['c','4 N','razon-de-areas-invertida','hipotesis'], ['d','1414 N','razon-de-diametros','hipotesis']],
     ok:'b',
@@ -1102,7 +1121,7 @@ const EXPS = [
       <p>La mano aumenta la ${V('P','presión')} del aceite, y ese aumento llega igual a todas partes: es el principio de Pascal. Sobre el émbolo grande, la misma presión actúa en un área 50 veces mayor y da una fuerza 50 veces mayor.</p>
       <p>Pero la prensa no regala energía: para subir la carga 1 cm, la mano tiene que bajar 50 cm. El trabajo es el mismo en los dos lados (las dos barras de abajo).</p>
       ${fuente('No encontramos un estudio que mida errores con la prensa hidráulica, aunque es un problema clásico de admisión. Las tres opciones incorrectas son errores que suponemos. La de 200 N sale de leer el principio de Pascal como "todo es igual en el líquido", una idea documentada pero poco frecuente: cerca del 5 % de los universitarios (Loverude, 1999).')}` },
-  { id:'tubo-u', corto:'Agua sobre mercurio', ley:['h','P'],
+  { id:'tubo-u', juego:{ et:'Columna de agua', min:0.05, max:0.4, step:0.01, val:0.272, f:v => cm(v), c:'Cambia la columna de agua y mira el tubo.' }, corto:'Agua sobre mercurio', ley:['h','P'],
     q:`Un tubo en U de sección pareja tiene mercurio (13 600 kg/m³). Por la rama izquierda se echa agua hasta formar una columna de ${V('h','h = 27,2 cm')} sobre el mercurio. ¿Cuánto más arriba queda el mercurio de la rama derecha que la frontera entre el agua y el mercurio de la izquierda?`,
     opts:[['a','0 cm','sin-desnivel','hipotesis'], ['b','2 cm',null], ['c','27,2 cm','superficies-parejas','hipotesis'], ['d','370 cm','densidades-invertidas','hipotesis']],
     ok:'b',
@@ -1121,7 +1140,7 @@ const EXPS = [
       <p>Toma la altura de la frontera agua-mercurio (la línea a trazos). A esa altura, en las dos ramas hay mercurio conectado por abajo: la ${V('P','presión')} tiene que ser la misma. A la izquierda la pone la columna de agua; a la derecha, el mercurio que sobresale, x. Como el mercurio es 13,6 veces más denso, le basta una columna 13,6 veces más baja: 27,2 / 13,6 = 2 cm.</p>
       <p>Mueve la columna de agua: el desnivel x siempre es h / 13,6. Así funciona un manómetro de tubo en U.</p>
       ${fuente('Con dos líquidos, en cuatro grupos de universitarios, entre el 20 % y el 60 % dijo que a la misma altura hay más presión en el líquido más denso, y solo entre el 15 % y el 40 % comparó bien (Loverude, 1999). Las tres opciones incorrectas, entre ellas la de las superficies parejas, son errores que suponemos.')}` },
-  { id:'bloques', corto:'Cinco bloques bajo el agua', ley:['W','E','Nf'],
+  { id:'bloques', juego:{ et:'Altura donde se sueltan', min:0.25, max:0.75, step:0.05, val:0.5, f:v => `${fmt((1 - v)*100, 0)} % de la altura`, c:'Cambia la altura donde se sueltan los bloques.' }, corto:'Cinco bloques bajo el agua', ley:['W','E','Nf'],
     q:'Cinco bloques del mismo tamaño (0,5 L) y masas de 0,2; 0,4; 0,5; 1 y 2 kg se sueltan juntos, a media altura, dentro de un tanque con agua. ¿Dónde queda cada uno cuando todo se calma?',
     opts:[['a','Escalonados: cada uno a una profundidad distinta, el más pesado más abajo.','F11-escalonados','documentado'],
           ['b','Los dos más livianos flotan, el de 0,5 kg queda a media agua y los dos más pesados van al fondo.',null],
@@ -1140,7 +1159,7 @@ const EXPS = [
     exp:`<p>Bajo el agua, los cinco reciben el mismo ${V('E','empuje')}: 5 N, lo que pesan 0,5 L de agua. Lo que cambia es su ${V('W','peso')}. Los de 0,2 y 0,4 kg pesan menos de 5 N: suben y flotan con una parte afuera, la justa para que el empuje iguale su peso (40 % y 80 % bajo el agua). El de 0,5 kg pesa justo 5 N: queda quieto donde lo sueltes. Los de 1 y 2 kg pesan más: bajan hasta el fondo, que los sostiene con lo que falta (${V('N','N')} = 5 N y 15 N).</p>
       <p>Solo hay tres destinos, según la densidad del bloque comparada con la del agua: menor, igual o mayor que 1000 kg/m³.</p>
       ${fuente('Con este experimento, solo el 20 % de 371 universitarios de primer año de Estados Unidos acertó; casi todos los demás dibujaron los bloques escalonados. El resultado fue prácticamente el mismo con o sin enseñanza previa (Loverude, 1999). Las opciones C y D son errores que suponemos.')}` },
-  { id:'dos-liquidos', corto:'Un cubo en dos líquidos', ley:['W','E'],
+  { id:'dos-liquidos', juego:{ et:'Densidad del aceite', min:650, max:950, step:10, val:800, f:v => `${fmt(v, 0)} kg/m³`, c:'Cambia la densidad del aceite y mira el cubo.' }, corto:'Un cubo en dos líquidos', ley:['W','E'],
     q:'El mismo cubo de madera (1,2 kg, 2 L) flota en agua y en aceite (800 kg/m³). En el agua sobresale más; en el aceite queda más hundido. ¿En cuál de los dos recibe más empuje?',
     opts:[['a','En el agua, porque flota más alto: el agua lo empuja más.','F13-flota-mas-alto','documentado'],
           ['b','En el aceite, porque tiene más volumen bajo el líquido.','F13-mas-sumergido','documentado'],
@@ -1168,6 +1187,7 @@ function mover(dur, paso){ parar(); const k = S.k; parar = animarValor(dur, f =>
 function draw(){
   if (!L.W || !E.tipo) return;
   const c = colores(L.W), x = EXPS[S.k], ya = !!S.pred[x.id];
+  if (!ya && E.jv !== undefined){ dibujarJuego(c); return; }
   if (E.tipo === 'vasos'){
     vistaVasos(L, c, E);
     const r = M.vasosComunicantes({ areas:VASOS.areas, volumen:E.V });
@@ -1193,6 +1213,34 @@ function draw(){
     lecturas($('lect2'), ya && E.crece > 0.98 ? [['W', 'W = 12 N'], ['E', 'E = 12 N en los dos']] : []);
     decir($('desc2'), ya ? `El empuje es de 12 newtons en el agua y en el aceite. En el aceite queda ${fmt(r.fraccion*100, 0)} por ciento hundido.` : 'El mismo cubo de madera flota en agua, con el 60 por ciento hundido, y en aceite, con el 75 por ciento. El empuje todavía no se muestra.');
   }
+}
+// Juego antes de cada pregunta (regla 3): un control en el banco mueve la escena sin mostrar lo que se pregunta.
+// Vasos y prensa juegan con el caso simple (ramas iguales, émbolos iguales); los demás, con el montaje de la pregunta
+// y la respuesta tapada.
+function dibujarJuego(c){
+  const v = E.jv;
+  if (E.tipo === 'vasos'){ vistaVasos(L, c, { V:v/1000, lleno:1, ver:'despues', igual:true }); lecturas($('lect2'), []);
+    decir($('desc2'), `Un tubo de dos ramas iguales, unidas por abajo, con ${N1(v)} litros de agua.`); return; }
+  if (E.tipo === 'prensa'){ const r = M.prensa({ A1:0.01, A2:0.01, F1:v, d1:0.5 }); vistaPrensa(L, c, { r, ver:'despues', mov:1 });
+    lecturas($('lect2'), [['F', `F = ${N1(r.F1)} N`], ['W', `W = ${fmt(r.F2, 0)} N`]]);
+    decir($('desc2'), `Una prensa con los dos émbolos iguales: la mano empuja con ${N1(v)} newtons y la carga es de ${fmt(r.F2, 0)}.`); return; }
+  if (E.tipo === 'tubo'){ vistaTuboU(L, c, { r:M.tuboU(Object.assign({}, TUBO, { h1:v })), ver:'antes', crece:0 }); lecturas($('lect2'), []);
+    decir($('desc2'), `Un tubo en U con mercurio y una columna de ${cm(v)} de agua a la izquierda. La rama derecha, tapada.`); return; }
+  if (E.tipo === 'bloques'){ vistaBloques(L, c, { b:bl0, masas:MASAS, f:0, ver:'antes', alt:v }); lecturas($('lect2'), []);
+    decir($('desc2'), 'Cinco bloques iguales de distinta masa, sostenidos dentro de un tanque con agua.'); return; }
+  if (E.tipo === 'dos'){ vistaDosLiquidos(L, c, { rhoAc:v, ver:'antes', crece:0 }); lecturas($('lect2'), []);
+    decir($('desc2'), `El mismo cubo de madera flota en agua y en un aceite de ${fmt(v, 0)} kilogramos por metro cúbico.`); }
+}
+let juego = null;
+function jugarAntes(x, ya){
+  if (juego){ const j = juego; juego = null; j.saltar(); }
+  const c = $('j2'), r = $('j2-r'), J = x.juego;
+  c.hidden = ya;
+  if (ya) return;
+  $('j2-et').textContent = J.et; r.min = J.min; r.max = J.max; r.step = J.step; r.value = J.val; E.jv = J.val;
+  const poner = () => { $('j2-o').textContent = J.f(E.jv); };
+  r.oninput = () => { E.jv = +r.value; poner(); draw(); }; poner();
+  juego = JugarPrimero.montar({ escena: document.querySelector('#m2 .bench'), preguntas: [$('body2')], consigna: J.c, minimo: 2 });
 }
 // Pastillas: la k solo se abre si todos los experimentos anteriores ya tienen respuesta;
 // las respondidas se revisitan libres (misma regla que los puntos del paso a paso).
@@ -1223,6 +1271,7 @@ function ir(k, enfocar){
   $('t2').textContent = x.corto;
   $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
   sinParada($('body2'));
+  jugarAntes(x, ya);
   L.compactar(!ya);
   const btns = [...$('body2').querySelectorAll('.opt')];
   const pintar = () => {
@@ -1240,7 +1289,7 @@ function ir(k, enfocar){
   btns.forEach(b => b.onclick = () => {
     if (S.pred[x.id]) return;
     const o = x.opts.find(q => q[0] === b.dataset.k);
-    S.pred[x.id] = o[0]; botones();
+    S.pred[x.id] = o[0]; delete E.jv; $('j2').hidden = true; botones();
     registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
     pintar();
     // El botón elegido queda desactivado: el foco pasa a la respuesta para no perderse.
@@ -1271,7 +1320,8 @@ const cv = $('cv3');
 const TUBO = { r1:0.02, v1:0.5, P1:6000 }, R2_0 = 0.01, R2_MIN = 0.008, R2_MAX = 0.02;
 const est = r2 => M.estrechamiento(Object.assign({ r2 }, TUBO));
 const E0 = est(R2_0);
-const S = { step:0, max:0, pred:{}, r2:R2_0, crece:1, ocupado:false, sobre:false, hl:null };
+// jugando: antes de la primera pregunta (regla 3) se cambia el ancho de lo angosto; el agua no corre y no hay rapideces.
+const S = { step:0, max:0, pred:{}, r2:R2_0, crece:1, ocupado:false, sobre:false, hl:null, jugando:true };
 let parar = () => {};
 const L = crearLienzo(cv, W => W >= 560 ? clamp(W*0.58, 320, 430) : clamp(W*0.95, 320, 400), draw);
 const cm = m => `${N2(m*100)} cm`;
@@ -1403,8 +1453,8 @@ function draw(){
     rotulo(ctx, c, g.xa*0.55, g.y0 + g.R1 + 32, `P₁ = ${Pa(e.P1)}`, c.P, 'center', S.hl === 'P' ? 900 : 800, W, H);
     rotulo(ctx, c, (g.xb + g.xc)/2, g.y0 + g.R1 + 32, verH2 && cr > 0.98 ? `P₂ = ${Pa(e.P2)}` : 'P₂ = ?', c.P, 'center', S.hl === 'P' ? 900 : 800, W, H);
   }
-  // Asa para arrastrar el borde de lo angosto (paso 3)
-  if (steps[S.step].explora){
+  // Asa para arrastrar el borde de lo angosto (paso 3 y juego del principio)
+  if (steps[S.step].explora || S.jugando){
     const ax = (g.xb + g.xc)/2 + (g.xc - g.xb)*0.28, ay = g.y0 - g.R2;
     ctx.save(); ctx.beginPath(); ctx.arc(ax, ay, S.sobre ? 9 : 7.5, 0, Math.PI*2); ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.stroke();
     ctx.setLineDash([3, 2]); ctx.lineWidth = 1.3; ctx.beginPath(); ctx.arc(ax, ay, 13, 0, Math.PI*2); ctx.stroke(); ctx.restore();
@@ -1452,8 +1502,8 @@ function go(n, enfocar){
   if (n < 0 || n >= steps.length || n > S.max) return;
   detener();
   const s = steps[n]; S.step = n; S.crece = 1; S.sobre = false; S.hl = null;
-  cv.tabIndex = s.explora ? 0 : -1;
-  cv.setAttribute('aria-label', s.explora ? 'Tubo con un estrechamiento: con las flechas ↑ ↓ cambias el radio de la parte angosta' : 'Tubo horizontal con un estrechamiento y dos tubitos verticales');
+  cv.tabIndex = s.explora || S.jugando ? 0 : -1;
+  cv.setAttribute('aria-label', s.explora || S.jugando ? 'Tubo con un estrechamiento: con las flechas ↑ ↓ cambias el radio de la parte angosta' : 'Tubo horizontal con un estrechamiento y dos tubitos verticales');
   $('k3').textContent = `${s.k} de ${steps.length}`;
   $('t3').textContent = s.t;
   $('body3').innerHTML = s.body();
@@ -1493,7 +1543,8 @@ function prediccion(s){
   pintar();
 }
 function vivo(){
-  const e = est(S.r2), o = $('r2-3-o'); if (!o) return;
+  if (S.jugando){ $('j3-r').value = String(Math.round(S.r2*2000)/20); $('j3-o').textContent = cm(S.r2); }
+  const e = est(S.r2), o = $('r2-3-o'); if (!o){ draw(); return; }
   o.textContent = cm(S.r2); $('r2-3').value = String(Math.round(S.r2*2000)/20);
   $('vivo3').innerHTML = `<div class="eq">${V('v','v₂')} = ${V('v','0,5')} · (2/${N2(S.r2*100)})² = ${V('v', ms(e.v2))}<span class="note">el mismo caudal</span></div>
     <div class="eq">${V('P','P₂')} = 6000 − 500 · (${V('v', N2(e.v2))}² − ${V('v','0,5')}²) = ${V('P', Pa(e.P2))}</div>
@@ -1504,7 +1555,7 @@ function explorar(){ $('r2-3').addEventListener('input', () => { S.r2 = clamp(+$
 const fijar = r => { const n = clamp(Math.round(r*2000)/2000, R2_MIN, R2_MAX); if (n !== S.r2){ S.r2 = n; vivo(); bucle.despertar(); } };
 function asa(){ const g = geo(L.W, L.H, S.r2); return { x:(g.xb + g.xc)/2 + (g.xc - g.xb)*0.28, y:g.y0 - g.R2 }; }
 Celular.arrastre(cv, {
-  activo: () => !!steps[S.step].explora && !$('m3').hidden,
+  activo: () => !!(steps[S.step].explora || S.jugando) && !$('m3').hidden,
   cerca: (p, r) => { const a = asa(); return Math.hypot(p.x - a.x, p.y - a.y) < r + 6; },
   empezar: () => { S.sobre = true; draw(); },
   mover: p => { const g = geo(L.W, L.H, S.r2); fijar((g.y0 - p.y)/g.kr); },
@@ -1512,7 +1563,7 @@ Celular.arrastre(cv, {
   sobre: b => { S.sobre = b; draw(); }
 });
 cv.addEventListener('keydown', e => {
-  if (!steps[S.step].explora) return;
+  if (!steps[S.step].explora && !S.jugando) return;
   const d = { ArrowUp:1, ArrowRight:1, ArrowDown:-1, ArrowLeft:-1 }[e.key]; if (d === undefined) return;
   e.preventDefault(); fijar(S.r2 + d*0.0005);
 });
@@ -1526,6 +1577,11 @@ document.addEventListener('focusout', e => { if (e.target.closest && e.target.cl
 alRedibujarTema(draw);
 addEventListener('modo', () => { if ($('m3').hidden) detener(); else { L.resize(); bucle.despertar(); } });
 L.resize(); go(0);
+// Regla 3: antes de la primera pregunta, se juega con el ancho del tubo. Al seguir, r₂ vuelve a 1 cm, el dato de la pregunta.
+$('j3-r').addEventListener('input', e => fijar(+e.target.value/100)); vivo();
+JugarPrimero.montar({ escena: document.querySelector('#m3 .bench'), preguntas: [document.querySelector('#m3 .guide')],
+  consigna: 'Arrastra el borde de la parte angosta y cambia el ancho del tubo.', minimo: 2,
+  alListo: () => { S.jugando = false; S.sobre = false; S.r2 = R2_0; $('j3').hidden = true; go(S.step); } });
 })();
 </script>
 
