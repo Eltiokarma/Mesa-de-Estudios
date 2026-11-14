@@ -19,14 +19,19 @@
 .mascota.m-con-rive > svg { visibility: hidden; }
 .mascota[data-mira="izquierda"] > svg, .mascota[data-mira="izquierda"] > canvas { transform: scaleX(-1); }
 
-/* Centros de giro, en unidades del viewBox (0 0 120 120). */
+/* Centros de giro, en unidades del viewBox (0 0 120 120). Cada respaldo puede traer los suyos como variables
+   CSS en su <svg> (los ocho compañeros, herramientas/personajes.js); sin ellas quedan los del gato. */
 .mascota .m-svg g { transform-box: view-box; }
-.mascota .m-salto, .mascota .m-todo { transform-origin: 60px 108px; }
-.mascota .m-cola, .mascota .m-cola > .m-g { transform-origin: 88px 100px; }
-.mascota .m-cabeza, .mascota .m-cabeza > .m-g { transform-origin: 60px 74px; }
-.mascota .m-oreja-i, .mascota .m-oreja-i > .m-g { transform-origin: 44px 34px; }
-.mascota .m-oreja-d, .mascota .m-oreja-d > .m-g { transform-origin: 76px 34px; }
-.mascota .m-ojos-abiertos, .mascota .m-ojos-abiertos > .m-g { transform-origin: 60px 50px; }
+.mascota .m-salto, .mascota .m-todo { transform-origin: var(--m-salto, 60px 108px); }
+.mascota .m-cola, .mascota .m-cola > .m-g { transform-origin: var(--m-cola, 88px 100px); }
+.mascota .m-cabeza, .mascota .m-cabeza > .m-g { transform-origin: var(--m-cabeza, 60px 74px); }
+.mascota .m-oreja-i, .mascota .m-oreja-i > .m-g { transform-origin: var(--m-oreja-i, 44px 34px); }
+.mascota .m-oreja-d, .mascota .m-oreja-d > .m-g { transform-origin: var(--m-oreja-d, 76px 34px); }
+.mascota .m-ojos-abiertos, .mascota .m-ojos-abiertos > .m-g { transform-origin: var(--m-ojos, 60px 50px); }
+/* Capas que solo traen los compañeros: cejas (giran en su centro) y el brazo del lado del mensaje (gira en el hombro). */
+.mascota .m-ceja-i, .mascota .m-ceja-i > .m-g { transform-origin: var(--m-ceja-i, 52px 29px); }
+.mascota .m-ceja-d, .mascota .m-ceja-d > .m-g { transform-origin: var(--m-ceja-d, 68px 29px); }
+.mascota .m-brazo, .mascota .m-brazo > .m-g { transform-origin: var(--m-brazo, 73px 61px); }
 
 /* Ojos: felices (cerrados) en reposo, celebra e hito; abiertos en las poses que miran. */
 .mascota .m-ojos-abiertos { opacity: 0; }
@@ -73,6 +78,24 @@
 .mascota[data-pose="hito"] .m-oreja-i { transform: rotate(8deg); }
 .mascota[data-pose="hito"] .m-oreja-d { transform: rotate(-8deg); }
 
+/* Cejas y brazo (solo los compañeros; el gato no tiene estas capas). Cejas: arriba al saludar, celebrar y en el hito;
+   una sola arriba al esperar la predicción (hipótesis); el centro arriba al acompañar y ayudar (revisar, sin pena).
+   Brazo: se levanta al saludar, apunta al mensaje al señalar, se abre al esperar, acompañar y ayudar. */
+.mascota:is([data-pose="saluda"], [data-pose="celebra"]) :is(.m-ceja-i, .m-ceja-d) { transform: translateY(-1.6px); }
+.mascota[data-pose="hito"] :is(.m-ceja-i, .m-ceja-d) { transform: translateY(-2.2px); }
+.mascota[data-pose="espera"] .m-ceja-d { transform: translateY(-2.2px) rotate(-6deg); }
+.mascota[data-pose="acompana"] .m-ceja-i { transform: rotate(-12deg); }
+.mascota[data-pose="acompana"] .m-ceja-d { transform: rotate(12deg); }
+.mascota[data-pose="ayuda"] .m-ceja-i { transform: rotate(-7deg); }
+.mascota[data-pose="ayuda"] .m-ceja-d { transform: rotate(7deg); }
+.mascota[data-pose="saluda"] .m-brazo { transform: rotate(-130deg); }
+.mascota[data-pose="senala"] .m-brazo { transform: rotate(-78deg); }
+.mascota[data-pose="espera"] .m-brazo { transform: rotate(-34deg); }
+.mascota[data-pose="celebra"] .m-brazo { transform: rotate(-140deg); }
+.mascota[data-pose="acompana"] .m-brazo { transform: rotate(-24deg); }
+.mascota[data-pose="ayuda"] .m-brazo { transform: rotate(-52deg); }
+.mascota[data-pose="hito"] .m-brazo { transform: rotate(-146deg); }
+
 @media (prefers-reduced-motion: no-preference) {
   /* Acción: el cuerpo llega después de la anticipación (micro); cola y orejas, 40 ms más tarde. */
   .mascota .m-todo, .mascota .m-cabeza, .mascota .m-ojos-abiertos {
@@ -80,7 +103,8 @@
   }
   /* Los ojos se cambian de golpe al terminar la anticipación: un fundido cruzado dejaba cuatro ojos a la vez. */
   .mascota .m-ojos-felices { transition: opacity 0s linear 120ms; }
-  .mascota .m-cola, .mascota .m-oreja-i, .mascota .m-oreja-d {
+  .mascota .m-ceja-i, .mascota .m-ceja-d { transition: transform 200ms cubic-bezier(0, 0, .2, 1) 120ms; }
+  .mascota .m-cola, .mascota .m-oreja-i, .mascota .m-oreja-d, .mascota .m-brazo {
     transition: transform 200ms cubic-bezier(0, 0, .2, 1) 160ms;
   }
 
@@ -90,7 +114,7 @@
   .mascota.m-actua[data-pose="hito"] .m-salto { animation: m-hito 840ms both; }
   .mascota.m-actua[data-pose="acompana"] .m-salto { animation: m-suave 640ms both; }
 
-  .mascota.m-actua[data-pose="saluda"] .m-cola > .m-g { animation: m-ola 640ms 40ms both; }
+  .mascota.m-actua[data-pose="saluda"] :is(.m-cola, .m-brazo) > .m-g { animation: m-ola 640ms 40ms both; }
   .mascota.m-actua:is([data-pose="celebra"], [data-pose="hito"]) .m-oreja-i > .m-g { animation: m-oreja-i 640ms 40ms both; }
   .mascota.m-actua:is([data-pose="celebra"], [data-pose="hito"]) .m-oreja-d > .m-g,
   .mascota.m-actua[data-pose="senala"] .m-oreja-d > .m-g { animation: m-oreja-d 640ms 40ms both; }
