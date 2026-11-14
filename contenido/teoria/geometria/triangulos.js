@@ -52,6 +52,10 @@
     const A = U.corte([0, 0], U.polar([0, 0], 1, b), [base, 0], U.polar([base, 0], 1, 180 - c));
     return { A, B: [0, 0], C: [base, 0] };
   };
+  // Gesto directo (docs/teoria.md §4b): la manija vive en el viewBox de geo-figura; aPlano la vuelve coordenadas del
+  // problema y el lector ajusta cada valor al paso y al rango de su control.
+  const enPantalla = (datos, p) => G.aPantalla(datos, p);
+  const alPlano = (datos, pt) => G.aPlano(datos, pt);
   const nombreAng = (a, b, c) => { const m = Math.max(a, b, c); return Math.abs(m - 90) < 0.5 ? 'rectángulo' : m > 90 ? 'obtusángulo' : 'acutángulo'; };
   const nombreLad = (x, y, z) => { const e = (p, q) => Math.abs(p - q) < 0.05; return e(x, y) && e(y, z) ? 'equilátero' : e(x, y) || e(y, z) || e(x, z) ? 'isósceles' : 'escaleno'; };
 
@@ -95,6 +99,10 @@
         { id: 'ay', etiqueta: 'A a lo alto', min: 1, max: 5, paso: 1, inicio: 4, unidad: '', decimales: 0 },
       ],
       dibujo: v => ({ datos: triA(v.ax, v.ay), estado: {} }),
+      // Se agarra el vértice A: la base BC no se mueve.
+      arrastres: [{ id: 'vertice-a', etiqueta: 'vértice A', color: 'c-o',
+        donde: v => enPantalla(triA(v.ax, v.ay), [v.ax, v.ay]),
+        mover: (pt, v) => { const q = alPlano(triA(v.ax, v.ay), pt); return { ax: q[0], ay: q[1] }; } }],
       lectura: v => {
         const A = [v.ax, v.ay], a = U.angulo(A, [0, 0], [6, 0]), b = U.angulo([0, 0], A, [6, 0]), c = 180 - a - b;
         return [cA, ' + ', cB, ' + ', cC, ` = 180° · ${nombreAng(a, b, c)} ${nombreLad(U.dist(A, [0, 0]), U.dist(A, [6, 0]), 6)}`];
@@ -127,7 +135,7 @@
     },
     regla: {
       texto: 'En todo triángulo los tres ángulos interiores suman 180°. Un ángulo exterior es igual a la suma de los dos interiores que no están a su lado.',
-      ecuacion: [cA, ' + ', cB, ' + ', cC, ' = 180°   ·   exterior en C = ', cA, ' + ', cB],
+      ecuacion: [cA, ' + ', cB, ' + ', cC, ' = 180°   ·   exterior en C = ', { llave: [cA, ' + ', cB], nota: 'los dos lejanos', color: 'c-h' }],
       condicion: 'el triángulo está en un plano. Por ángulos es acutángulo, rectángulo u obtusángulo; por lados, escaleno, isósceles o equilátero.',
       voz: 'La paralela es la condición que garantiza los 180°.',
     },
@@ -183,6 +191,10 @@
       voz: 'Abre y cierra la bisagra. Fíjate en el x más corto y el más largo.',
       controles: [{ id: 'g', etiqueta: 'Ángulo en B', min: 15, max: 165, paso: 15, inicio: 60, unidad: '°', decimales: 0, color: 'c-o' }],
       dibujo: v => ({ datos: bisagra(v.g), estado: {} }),
+      // Se agarra la punta A del lado de 5: gira alrededor de B, como la bisagra.
+      arrastres: [{ id: 'punta-a', etiqueta: 'punta A de la bisagra', color: 'c-o',
+        donde: v => enPantalla(bisagra(v.g), U.polar([0, 0], 5, v.g)),
+        mover: (pt, v) => { const q = alPlano(bisagra(v.g), pt); return { g: U.grados(Math.atan2(q[1], q[0])) }; } }],
       lectura: v => [{ v: 'c-h', t: 'x' }, ` ≈ ${f(U.dist(U.polar([0, 0], 5, v.g), [8, 0]))}`],
       minimo: 4,
     },
@@ -210,7 +222,7 @@
     },
     regla: {
       texto: 'Cada lado de un triángulo es menor que la suma de los otros dos y mayor que su diferencia.',
-      ecuacion: [{ abs: ['a − b'] }, ' < ', { v: 'c-h', t: 'x' }, ' < a + b'],
+      ecuacion: [{ llave: [{ abs: ['a − b'] }], nota: 'la diferencia', color: 'c-i' }, ' < ', { v: 'c-h', t: 'x' }, ' < ', { llave: ['a + b'], nota: 'la suma', color: 'c-o' }],
       condicion: 'las desigualdades son estrictas: con igualdad, los tres puntos quedan alineados y no hay triángulo.',
       voz: 'Los extremos no cuentan: ahí la figura es un segmento.',
     },
@@ -275,7 +287,11 @@
       voz: 'Mueve A. Busca cuándo las tres líneas coinciden.',
       controles: [{ id: 'ax', etiqueta: 'A a lo ancho', min: 1, max: 5, paso: 0.5, inicio: 1.5, unidad: '', decimales: 1 }],
       dibujo: v => ({ datos: notables(v.ax, 3.6), estado: {} }),
-      lectura: v => [`Pies: H en ${f(v.ax)} · M en 3 · D en ${f(6 * U.dist([v.ax, 3.6], [0, 0]) / (U.dist([v.ax, 3.6], [0, 0]) + U.dist([v.ax, 3.6], [6, 0])))}`],
+      // Se agarra A, que corre en una paralela a BC: la altura del triángulo no cambia.
+      arrastres: [{ id: 'vertice-a', etiqueta: 'vértice A', color: 'c-o',
+        donde: v => enPantalla(notables(v.ax, 3.6), [v.ax, 3.6]),
+        mover: (pt, v) => ({ ax: alPlano(notables(v.ax, 3.6), pt)[0] }) }],
+      lectura: v => [`Pies: H en ${f(v.ax)}   ·   M en 3   ·   D en ${f(6 * U.dist([v.ax, 3.6], [0, 0]) / (U.dist([v.ax, 3.6], [0, 0]) + U.dist([v.ax, 3.6], [6, 0])))}`],
       minimo: 4,
     },
     predice: {
@@ -372,6 +388,10 @@
         { id: 'c', etiqueta: 'C', min: 40, max: 70, paso: 10, inicio: 50, unidad: '°', decimales: 0, color: 'c-d' },
       ],
       dibujo: v => ({ datos: bis(v.b, v.c), estado: {} }),
+      // Se agarra A: su posición decide los ángulos B y C (de 10° en 10°).
+      arrastres: [{ id: 'vertice-a', etiqueta: 'vértice A', color: 'c-o',
+        donde: v => enPantalla(bis(v.b, v.c), porAngulos(v.b, v.c, 6).A),
+        mover: (pt, v) => { const q = alPlano(bis(v.b, v.c), pt); return { b: U.angulo([0, 0], [6, 0], q), c: U.angulo([6, 0], [0, 0], q) }; } }],
       lectura: v => [cA, ` = ${180 - v.b - v.c}° · ∠BIC = ${90 + (180 - v.b - v.c) / 2}°`],
       minimo: 4,
     },
@@ -400,7 +420,7 @@
     },
     regla: {
       texto: 'Las bisectrices interiores de B y C forman 90° + A/2. Si una es interior y la otra exterior, forman A/2.',
-      ecuacion: ['∠BIC = 90° + ', { frac: [cA, '2'] }, '   ·   ∠BEC = ', { frac: [cA, '2'] }],
+      ecuacion: ['∠BIC = 90° + ', { llave: [{ frac: [cA, '2'] }], nota: 'mitad de A', color: 'c-o' }, '   ·   ∠BEC = ', { frac: [cA, '2'] }],
       condicion: 'I está en las bisectrices interiores de B y C; E, en la interior de B y la exterior de C.',
       voz: 'Antes de aplicar, revisa qué bisectrices se cortan.',
     },
@@ -427,9 +447,101 @@
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1, más rica que la idea 1 y la 3: se mueven A y C (la base cambia), y se elige qué línea notable sale de A.
+  // Deja probar lo que las ideas no: el obtuso en C, el rectángulo exacto y el isósceles donde las líneas coinciden.
+  const LIN = { h: 'altura', m: 'mediana', b: 'bisectriz', z: 'mediatriz' };
+  const libre = (ax, ay, cx, linea) => {
+    const A = [ax, ay], B = [0, 0], C = [cx, 0];
+    const a = U.angulo(A, B, C), b = U.angulo(B, A, C), c = 180 - a - b;
+    const lb = U.dist(A, C), lc = U.dist(A, B);
+    const H = [ax, 0], M = [cx / 2, 0], D = [cx * lc / (lb + lc), 0];
+    const todas = linea === 'todas', ve = k => todas || linea === k;
+    const fuera = ax < 0 || ax > cx;
+    return {
+      alt: `Triángulo de ángulos A = ${f(a, 0)}°, B = ${f(b, 0)}° y C = ${f(c, 0)}°${ve('h') && fuera ? '; la altura desde A cae fuera del lado BC' : ''}`,
+      vista: { x: [-2.6, 8.6], y: [-1, 6.4] },
+      puntos: [{ id: 'A', x: ax, y: ay, rotulo: 'A', lado: 90 }, { id: 'B', x: 0, y: 0, rotulo: 'B', lado: -120 }, { id: 'C', x: cx, y: 0, rotulo: 'C', lado: -60 },
+        { id: 'H', x: H[0], y: 0, sinPunto: !ve('h'), color: 'h' }, { id: 'M', x: M[0], y: 0, sinPunto: !(ve('m') || ve('z')), color: 'i' },
+        { id: 'D', x: D[0], y: 0, sinPunto: !ve('b'), color: 'o' }, { id: 'Mz', x: M[0], y: 6, sinPunto: true }],
+      regiones: [{ puntos: ['A', 'B', 'C'], color: 'i', opacidad: 0.06 }],
+      segmentos: [{ de: 'A', a: 'B' }, { de: 'B', a: 'C' }, { de: 'C', a: 'A' },
+        ...(ve('h') && fuera ? [{ de: ax < 0 ? 'B' : 'C', a: 'H', discontinua: true, grosor: 'fino' }] : []),
+        ...(ve('h') ? [{ de: 'A', a: 'H', color: 'h', grosor: 'variable' }] : []),
+        ...(ve('m') ? [{ de: 'A', a: 'M', color: 'i', grosor: 'variable' }, { de: 'B', a: 'M', marcas: 1, color: 'i' }, { de: 'M', a: 'C', marcas: 1, color: 'i' }] : []),
+        ...(ve('b') ? [{ de: 'A', a: 'D', color: 'o', grosor: 'variable' }] : []),
+        ...(ve('z') ? [{ de: 'M', a: 'Mz', color: 'd', discontinua: true }] : [])],
+      angulos: [
+        ...(linea === 'ninguna' ? [{ en: 'A', de: 'B', a: 'C', color: 'o', texto: gr(Math.round(a)) }, { en: 'B', de: 'C', a: 'A', color: 'i', texto: gr(Math.round(b)) }, { en: 'C', de: 'A', a: 'B', color: 'd', texto: gr(Math.round(c)) }] : []),
+        ...(ve('h') && Math.abs(ay) > 0 ? [{ en: 'H', de: ax > cx ? 'B' : 'C', a: 'A', color: 'h' }] : []),
+        ...(ve('b') ? [{ en: 'A', de: 'B', a: 'D', color: 'o', rayita: 1, radio: 30 }, { en: 'A', de: 'D', a: 'C', color: 'o', rayita: 1, radio: 30 }] : []),
+        ...(ve('z') ? [{ en: 'M', de: 'C', a: 'Mz', color: 'd' }] : []),
+      ],
+    };
+  };
+  const mesaLibre = {
+    id: 'triangulo-libre', titulo: 'Triángulo libre', pieza: 'geo-figura',
+    consigna: 'Arrastra A y C. Elige qué línea sale de A. Busca un obtuso en C, un rectángulo y un isósceles.',
+    controles: [
+      { id: 'ax', etiqueta: 'A a lo ancho', min: -2, max: 8, paso: 0.5, inicio: 2, unidad: '', decimales: 1 },
+      { id: 'ay', etiqueta: 'A a lo alto', min: 0.5, max: 6, paso: 0.5, inicio: 4, unidad: '', decimales: 1 },
+      { id: 'cx', etiqueta: 'C a lo ancho', min: 2, max: 8, paso: 0.5, inicio: 6, unidad: '', decimales: 1 },
+      { id: 'linea', etiqueta: 'Desde A', opciones: [{ valor: 'ninguna', texto: 'ángulos' }, { valor: 'h', texto: 'altura' }, { valor: 'm', texto: 'mediana' }, { valor: 'b', texto: 'bisectriz' }, { valor: 'todas', texto: 'todas' }] },
+    ],
+    dibujo: v => ({ datos: libre(v.ax, v.ay, v.cx, v.linea), estado: {} }),
+    arrastres: [
+      { id: 'vertice-a', etiqueta: 'vértice A', color: 'c-o',
+        donde: v => enPantalla(libre(v.ax, v.ay, v.cx, v.linea), [v.ax, v.ay]),
+        mover: (pt, v) => { const q = alPlano(libre(v.ax, v.ay, v.cx, v.linea), pt); return { ax: q[0], ay: q[1] }; } },
+      { id: 'vertice-c', etiqueta: 'vértice C', color: 'c-d',
+        donde: v => enPantalla(libre(v.ax, v.ay, v.cx, v.linea), [v.cx, 0]),
+        mover: (pt, v) => ({ cx: alPlano(libre(v.ax, v.ay, v.cx, v.linea), pt)[0] }) },
+    ],
+    lectura: v => {
+      const A = [v.ax, v.ay], C = [v.cx, 0], a = U.angulo(A, [0, 0], C), b = U.angulo([0, 0], A, C), c = 180 - a - b;
+      return [cA, ` ${gr(Math.round(a))}   ·   `, cB, ` ${gr(Math.round(b))}   ·   `, cC, ` ${gr(Math.round(c))}   ·   ${nombreAng(a, b, c)}`];
+    },
+  };
+  // Mesa 2: la bisagra con los dos lados libres. La idea 2 fija 5 y 8; aquí se cambian, y el rango se lee en vivo.
+  const bisagraLibre = (g, c, a) => {
+    const B = [0, 0], C = [a, 0], A = U.polar(B, c, g), x = U.dist(A, C);
+    return {
+      alt: `Lados de ${f(c)} y ${f(a)} con ${f(g, 0)}° entre ellos: el tercer lado mide ${f(x)}, entre ${f(Math.abs(a - c))} y ${f(a + c)}`,
+      vista: { x: [-6.6, 8.6], y: [-0.8, 6.6] },
+      puntos: [{ id: 'B', x: 0, y: 0, rotulo: 'B', lado: -90 }, { id: 'C', x: a, y: 0, rotulo: 'C', lado: -90 }, { id: 'A', x: A[0], y: A[1], rotulo: 'A', color: 'o', lado: 90 },
+        { id: 'P0', x: c, y: 0, sinPunto: true }, { id: 'P1', x: -c, y: 0, sinPunto: true }],
+      arcos: [{ centro: [0, 0], r: c, de: 0, a: 180, color: 'o', grosor: 'fino' }],
+      segmentos: [{ de: 'B', a: 'C', texto: f(a), grosor: 'variable', color: 'i' }, { de: 'B', a: 'A', texto: f(c), grosor: 'variable', color: 'o' },
+        { de: 'A', a: 'C', color: 'h', texto: `x ≈ ${f(x)}` }],
+    };
+  };
+  const mesaBisagra = {
+    id: 'bisagra-libre', titulo: 'Bisagra con lados libres', pieza: 'geo-figura',
+    consigna: 'Arrastra A por su arco y C por la base. Cambia los dos lados y mira cuándo x roza sus límites.',
+    controles: [
+      { id: 'g', etiqueta: 'Ángulo en B', min: 0, max: 180, paso: 5, inicio: 60, unidad: '°', decimales: 0, color: 'c-o' },
+      { id: 'c', etiqueta: 'Lado AB', min: 1, max: 6, paso: 0.5, inicio: 5, unidad: '', decimales: 1, color: 'c-o' },
+      { id: 'a', etiqueta: 'Lado BC', min: 1, max: 8, paso: 0.5, inicio: 8, unidad: '', decimales: 1, color: 'c-i' },
+    ],
+    dibujo: v => ({ datos: bisagraLibre(v.g, v.c, v.a), estado: {} }),
+    arrastres: [
+      { id: 'punta-a', etiqueta: 'punta A', color: 'c-o',
+        donde: v => enPantalla(bisagraLibre(v.g, v.c, v.a), U.polar([0, 0], v.c, v.g)),
+        mover: (pt, v) => { const q = alPlano(bisagraLibre(v.g, v.c, v.a), pt), g = U.grados(Math.atan2(q[1], q[0])); return { g: g < -90 ? 180 : g < 0 ? 0 : g, c: Math.hypot(q[0], q[1]) }; } },
+      { id: 'vertice-c', etiqueta: 'vértice C', color: 'c-i',
+        donde: v => enPantalla(bisagraLibre(v.g, v.c, v.a), [v.a, 0]),
+        mover: (pt, v) => ({ a: alPlano(bisagraLibre(v.g, v.c, v.a), pt)[0] }) },
+    ],
+    lectura: v => {
+      const x = U.dist(U.polar([0, 0], v.c, v.g), [v.a, 0]), lo = Math.abs(v.a - v.c), hi = v.a + v.c;
+      const plano = v.g === 0 || v.g === 180;
+      return [`${f(lo)} < `, { v: 'c-h', t: 'x' }, ` < ${f(hi)}   ·   `, { v: 'c-h', t: 'x' }, ` ≈ ${f(x)}${plano ? ': segmento, sin triángulo' : ''}`];
+    },
+  };
+
   return {
     unidad: 'geometria.triangulos',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/geo-figura.js'],
     historia: {
@@ -437,6 +549,9 @@
       pregunta: '¿Qué línea convierte una regularidad en una prueba?',
       fuente: { titulo: 'Euclides, Elementos I.32 (edición de D. E. Joyce)', url: 'https://math.clarku.edu/~djoyce/java/elements/bookI/propI32.html' },
     },
+    // Laboratorio: el triángulo libre (A y C) y la bisagra con lados libres son más ricos que sus ideas; la tercera mesa
+    // es el juego de las bisectrices con su gesto.
+    laboratorio: [mesaLibre, mesaBisagra, Object.assign({ id: 'bisectrices', titulo: 'Ángulo entre bisectrices', pieza: 'geo-figura' }, bisectrices.juega)],
     ideas: [suma, desigualdad, lineas, bisectrices],
   };
 });
