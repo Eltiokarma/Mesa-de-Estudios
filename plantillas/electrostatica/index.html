@@ -223,6 +223,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'electrostatica', unidad: 'fisica.electrostatica', version: '0.2.0' };
@@ -897,6 +898,21 @@ function crearEscena(cv, idDesc, idLect, idLey){
 const sinCorte = t => String(t).replace(/ = /g, '&nbsp;=&nbsp;').replace(/(\d) (?=µ|nC|pF|mm|kV|V\b|N\b|J\b)/g, '$1&nbsp;');
 const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${sinCorte(t)}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
 const NC = 'N/C';
+
+/* Jugar antes de preguntar (regla 3, decisión 20 de Gerson, 14 nov 2026): antes de la primera pregunta de cada modo,
+   el alumno arrastra una carga de prueba positiva alrededor de una carga fija, con el campo dibujado y la fuerza que
+   siente. No muestra lo que después se pregunta: no hay dos cargas que se empujen entre sí, ni carga de prueba
+   negativa, ni dos fuentes, ni placas ni condensadores. Al pulsar «Ya jugué: seguir» se vuelve al paso o experimento. */
+function jugarCampo(E, modo, volver){
+  const Q = [{ q:4, x:0, y:0, n:'Q' }];
+  E.compacto = false; Celular.compactar(modo, false);
+  E.config({ caja:{ x0:-.55, x1:.65, y0:-.42, y1:.42 }, cargas:Q, prueba:{ q:1, x:.3, y:.15 }, mPorN: modo.querySelector('canvas').clientWidth < 560 ? .4 : .25,
+    ver:{ campo:1, Fp:true }, arr:{ prueba:true, min:.12 },
+    lect: () => { const r = ME.prueba(Q, E.prueba, 1); return [['r', 'Distancia a Q', `${fmt(Math.hypot(E.prueba.x, E.prueba.y), 2)} m`], ['F', 'Fuerza sobre q₀', `${fmt(r.F.modulo, 3)} N`]]; },
+    desc: () => 'Juego libre: una carga fija Q = +4 µC con su campo y una carga de prueba q₀ = +1 µC que se arrastra (o se mueve con las flechas del teclado), con la fuerza que siente.' });
+  return JugarPrimero.montar({ escena: modo.querySelector('.bench'), preguntas: [modo.querySelector('.guide')], minimo: 2,
+    consigna: 'Arrastra la carga de prueba cerca y lejos de Q: mira su fuerza.', alListo: volver });
+}
 // Fuentes (cifras de resúmenes, por verificar con los PDF: docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md)
 const fuenteBP = 'Un estudio con 133 estudiantes de ingeniería de Barcelona, que ya habían aprobado la física del bachillerato y del primer año, encontró que cerca del 46 % cree que la carga mayor empuja más a la menor, cerca del 32 % cree que sobre la mayor actúa más fuerza y solo un 15 % responde que las dos fuerzas son iguales (Bohigas y Periago, 2010).';
 </script>
@@ -1229,6 +1245,7 @@ function prediccion(s){
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+jugarCampo(E, $('m1'), () => go(0));
 })();
 </script>
 <script>
@@ -1415,6 +1432,7 @@ function ir(k){
   pintar();
 }
 ir(0);
+jugarCampo(E, $('m2'), () => ir(0));
 })();
 </script>
 
