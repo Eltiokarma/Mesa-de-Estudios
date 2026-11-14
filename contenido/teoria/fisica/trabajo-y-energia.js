@@ -53,6 +53,11 @@
     return ops.slice(0, 4);
   }
   const caja = (cx, y0, w, hh) => ({ puntos: [[cx - w / 2, y0], [cx + w / 2, y0], [cx + w / 2, y0 + hh], [cx - w / 2, y0 + hh]], cerrado: true });
+  // Gesto directo (docs/teoria.md §4b): la manija vive en las coordenadas de la figura (fis-lienzo.geometria o
+  // ejes.geometria, con los mismos datos que dibuja la idea).
+  const LZ = datos => Kit.piezas['fis-lienzo'].geometria(datos);
+  const EJ = datos => Kit.piezas.ejes.geometria(datos);
+  const v0 = { sub: ['v', '0'] };
   // Barras de energía: una por concepto, a la misma escala (px por joule), con su valor arriba y su nombre abajo.
   function barras(lista, x0, y0, ancho, kJ, o = {}) {
     const pol = [], tex = [];
@@ -69,18 +74,27 @@
   // del camino, que se achica · Se reserva: 90°, donde W = 0 aunque haya fuerza · Debe verse: W = F d cos θ, con signo.
   const KF1 = 4;
   function jalar(ang, o = {}) {
-    const Fv = 20, dd = 5, W = Fv * dd * Math.cos(rad(ang)), c = Math.cos(rad(ang)), s = Math.sin(rad(ang));
+    const Fv = o.F || 20, dd = 5, W = Fv * dd * Math.cos(rad(ang)), c = Math.cos(rad(ang)), s = Math.sin(rad(ang));
     const P = [0.45, 0.35];
     return {
       vista: { x0: -2.2, x1: 2.6, y0: -0.7, y1: 1.9 }, escalaF: KF1,
-      alt: o.alt || `Caja jalada con 20 N a ${ang}° de la horizontal a lo largo de 5 m: el trabajo de la cuerda es ${f(W, 1)} J.`,
+      alt: o.alt || `Caja jalada con ${f(Fv, 0)} N a ${ang}° de la horizontal a lo largo de 5 m: el trabajo de la cuerda es ${f(W, 1)} J.`,
       poligonos: [{ puntos: [[-2.1, 0], [2.5, 0]], rayado: true }, caja(0, 0, 0.9, 0.7)],
       segmentos: [{ de: [-0.45, -0.35], a: [2.2, -0.35], color: 'i', grosor: 'variable', texto: 'recorre 5 m', lado: -1 }],
-      flechas: [{ de: P, d: [Fv * c, Fv * s], color: 'o', rotulo: 'F = 20 N' },
+      flechas: [{ de: P, d: [Fv * c, Fv * s], color: 'o', rotulo: `F = ${f(Fv, 0)} N` },
         ...(o.comp ? [{ de: P, d: [Fv * c, 0], color: 'o', discontinua: true, rotulo: `${f(Fv * c, 1)} N`, paso: o.comp }] : [])],
       arcos: ang > 0 && ang < 180 ? [{ c: P, rpx: 28, de: 0, a: ang, rotulo: `${ang}°` }] : [],
     };
   }
+  // La punta de F gira alrededor de su cola (la caja): ángulo desde la horizontal, de 0° a 180°; su largo es F.
+  const PUNTA = [0.45, 0.35];
+  const puntaF = (ang, Fv) => { const g = LZ(jalar(ang, { F: Fv })); return { x: g.X(PUNTA[0]) + Fv * KF1 * Math.cos(rad(ang)), y: g.Y(PUNTA[1]) - Fv * KF1 * Math.sin(rad(ang)) }; };
+  const anguloDe = (pt, ang, Fv) => {
+    const g = LZ(jalar(ang, { F: Fv })), dx = pt.x - g.X(PUNTA[0]), dy = g.Y(PUNTA[1]) - pt.y;
+    let th = Math.atan2(dy, dx) * 180 / Math.PI;
+    if (th < 0) th = th < -90 ? 180 : 0;   // bajo el piso, se queda en el extremo más cercano
+    return { th, largo: Math.hypot(dx, dy) };
+  };
   const trabajo = {
     id: 'trabajo-y-angulo',
     titulo: 'Solo trabaja lo que acompaña',
@@ -93,6 +107,10 @@
       dibujo: val => ({ datos: jalar(val.ang), estado: {} }),
       lectura: val => [`W = 20 · 5 · cos ${val.ang}° = ${f(100 * Math.cos(rad(val.ang)), 1)} J`],
       minimo: 4,
+      // Arrastra la punta de la cuerda (F) alrededor de la caja: el ángulo sigue al dedo.
+      arrastres: [{ id: 'cuerda', etiqueta: 'ángulo de la cuerda (punta de F)', color: 'c-o',
+        donde: val => puntaF(val.ang, 20),
+        mover: (pt, val) => ({ ang: anguloDe(pt, val.ang, 20).th }) }],
     },
     predice: {
       pregunta: 'Caminas 10 m en horizontal, a velocidad constante, sosteniendo una mochila de 50 N. ¿Cuánto trabajo hace sobre la mochila la fuerza hacia arriba de tu mano?',
@@ -105,6 +123,8 @@
       revelar: { datos: jalar(90, { comp: 0, alt: 'La fuerza vertical no tiene parte a lo largo del camino horizontal: su trabajo es cero.' }), estado: {} },
       coincide: 'Coincide: una fuerza perpendicular al camino no hace trabajo, aunque sea grande.',
     },
+    // Hallazgo 9: «Mira» pasa de la caja a la gráfica F–x a propósito: lleva el trabajo al caso que el juego no muestra
+    // (una fuerza que cambia en el camino), donde W ya no es un producto sino un área.
     mira: {
       pieza: 'ejes',
       datos: {
@@ -121,7 +141,7 @@
     },
     regla: {
       texto: 'Una fuerza hace trabajo solo con la parte que va a lo largo del camino. Si la fuerza cambia, el trabajo es el área bajo F–x.',
-      ecuacion: ['W = ', F, ' ', d, ' cos θ   ·   W = área bajo ', F, '–', x],
+      ecuacion: ['W = ', { llave: [F, ' cos θ'], nota: 'parte que acompaña', color: 'c-o' }, ' ', d, '   ·   ', 'W = área bajo ', F, '–', x],
       condicion: 'θ es el ángulo entre F y el desplazamiento. Contra el avance (θ > 90°), el trabajo es negativo.',
     },
     ahoraTu: {
@@ -174,6 +194,15 @@
       dibujo: val => ({ datos: empujon(val.F, val.d), estado: {} }),
       lectura: val => [`W = `, K, ` = ${f(val.F * val.d, 0)} J · v = ${f(Math.sqrt(val.F * val.d), 2)} m/s`],
       minimo: 4,
+      // Arrastra la punta de F (más fuerza) o el final de la cota turquesa (más distancia). Las barras responden.
+      arrastres: [
+        { id: 'fuerza', etiqueta: 'fuerza (punta de F)', color: 'c-o',
+          donde: val => { const g = LZ(empujon(val.F, val.d)); return { x: g.X(-1.2) + val.F * 4, y: g.Y(0.32) }; },
+          mover: (pt, val) => ({ F: (pt.x - LZ(empujon(val.F, val.d)).X(-1.2)) / 4 }) },
+        { id: 'distancia', etiqueta: 'distancia empujada (fin de la cota)', color: 'c-i',
+          donde: val => { const g = LZ(empujon(val.F, val.d)); return { x: g.X(-1.8 + val.d * 0.35), y: g.Y(-0.3) }; },
+          mover: (pt, val) => ({ d: (LZ(empujon(val.F, val.d)).Xi(pt.x) + 1.8) / 0.35 }) },
+      ],
     },
     predice: {
       pregunta: 'Para llevar un carrito del reposo a 3 m/s hace falta un trabajo W. Desde el reposo, ¿cuánto trabajo hace falta para llevarlo a 6 m/s?',
@@ -189,15 +218,15 @@
     mira: {
       datos: empujon(8, 2, { alt: 'Carrito de 2 kg que va de 3 a 5 m/s con un trabajo neto de 16 J.' }),
       pasos: [
-        { estado: {}, texto: 'Un carrito de 2 kg va a 3 m/s.', ecuacion: [K0, ' = ½ · 2 · 3² = 9 J'] },
+        { estado: {}, texto: 'Un carrito de 2 kg va a 3 m/s.', ecuacion: [K0, ' = ½ · 2 · ', { sup: ['3', '2'] }, ' = 9 J'] },
         { estado: {}, texto: 'Una fuerza neta de 8 N lo empuja 2 m.', ecuacion: ['W = 8 · 2 = 16 J'] },
         { estado: {}, texto: 'Ese trabajo se suma a su energía cinética.', ecuacion: [K, ' = 9 + 16 = 25 J'] },
-        { estado: {}, texto: 'De ahí sale su nueva rapidez.', ecuacion: ['½ · 2 · v² = 25   →   v = 5 m/s'] },
+        { estado: {}, texto: 'De ahí sale su nueva rapidez.', ecuacion: ['½ · 2 · ', { sup: ['v', '2'] }, ' = 25   →   v = 5 m/s'] },
       ],
     },
     regla: {
       texto: 'El trabajo de la fuerza neta es lo que cambia la energía cinética. La energía cinética crece con el cuadrado de la rapidez.',
-      ecuacion: [{ sub: ['W', 'neto'] }, ' = Δ', K, ' = ½ m v² − ½ m ', { sup: [{ sub: ['v', '0'] }, '2'] }],
+      ecuacion: [{ sub: ['W', 'neto'] }, ' = ', { llave: ['Δ', K], nota: 'cambio de cinética', color: 'c-h' }, '   ·   ', 'Δ', K, ' = ½ m ', { sup: ['v', '2'] }, ' − ½ m ', { sup: [v0, '2'] }],
       condicion: 'W es el trabajo de todas las fuerzas sobre el cuerpo (la neta), no el de una sola.',
     },
     ahoraTu: {
@@ -211,7 +240,7 @@
             { id: 'resta-v', valor: m * (vv - v0) ** 2 / 2, error: 'TE-RESTA-V', siFuera: 'Eso resta rapideces antes de elevar. Se restan energías: v² − v₀².' },
             { id: 'sin-medio', valor: m * (vv * vv - v0 * v0), error: 'TE-SIN-MEDIO', siFuera: 'Falta el ½ de la energía cinética.' },
           ], n => `${f(n, 2)} J`),
-          solucion: { texto: 'El trabajo neto es el cambio de energía cinética.', ecuacion: [`W = ½ · ${m} · (${vv}² − ${v0}²) = ${f(W, 2)} J`] },
+          solucion: { texto: 'El trabajo neto es el cambio de energía cinética.', ecuacion: [`W = ½ · ${m} · (`, { sup: [`${vv}`, '2'] }, ' − ', { sup: [`${v0}`, '2'] }, `) = ${f(W, 2)} J`] },
         };
       },
     },
@@ -240,6 +269,10 @@
       dibujo: val => ({ datos: resorteEjes(val.x), estado: {} }),
       lectura: val => [Ue, ` = ${f(K3 * val.x * val.x / 2, 2)} J · `, F, ` = ${f(K3 * val.x, 0)} N`],
       minimo: 3,
+      // Arrastra el punto de la recta hacia la derecha: más compresión. El triángulo verde responde.
+      arrastres: [{ id: 'compresion', etiqueta: 'compresión del resorte', color: 'c-i',
+        donde: val => { const g = EJ(resorteEjes(val.x)); return { x: g.X(val.x), y: g.Y(K3 * val.x) }; },
+        mover: (pt, val) => ({ x: EJ(resorteEjes(val.x)).Xi(pt.x) }) }],
     },
     predice: {
       pregunta: 'Un resorte comprimido 0,1 m guarda 1 J. ¿Cuánta energía guarda si se comprime 0,3 m?',
@@ -252,6 +285,8 @@
       revelar: { datos: resorteEjes(0.3), estado: {} },
       coincide: 'Coincide: con el triple de x, el triángulo tiene triple base y triple altura: 9 veces el área.',
     },
+    // Hallazgo 9: «Mira» cambia de la recta F–x del resorte al libro sobre la mesa a propósito: la idea tiene dos
+    // energías de posición; el juego mide la elástica y «Mira» enseña la gravitatoria y su referencia.
     mira: {
       pieza: 'fis-lienzo',
       datos: {
@@ -269,7 +304,7 @@
     },
     regla: {
       texto: 'La energía potencial depende de la posición: la altura sobre una referencia o la deformación del resorte. Lo físico es su cambio.',
-      ecuacion: [Ug, ' = m g ', h, '   ·   ', Ue, ' = ½ k ', { sup: [x, '2'] }],
+      ecuacion: [Ug, ' = m g ', { llave: [h], nota: 'sobre la referencia', color: 'c-i' }, '   ·   ', Ue, ' = ½ k ', { sup: [x, '2'] }],
       condicion: 'mgh vale cerca del suelo (g constante); x es la deformación desde el largo natural del resorte.',
     },
     ahoraTu: {
@@ -284,7 +319,7 @@
               { id: 'sin-medio', valor: k * xv * xv, error: 'EP-SIN-MEDIO', siFuera: 'Falta el ½: el área es un triángulo.' },
               { id: 'fuerza', valor: k * xv, error: 'EP-LINEAL', siFuera: 'Ese es el valor de la fuerza, en N, no la energía.' },
             ], n => `${f(n, 3)} J`),
-            solucion: { texto: 'Es el área bajo la recta F–x hasta x.', ecuacion: [Ue, ` = ½ · ${k} · ${f(xv, 2)}² = ${f(E, 3)} J`] },
+            solucion: { texto: 'Es el área bajo la recta F–x hasta x.', ecuacion: [Ue, ` = ½ · ${k} · `, { sup: [`${f(xv, 2)}`, '2'] }, ` = ${f(E, 3)} J`] },
           };
         }
         const m = r.de([2, 3, 5, 10]), h1 = r.de([2, 4, 5, 8]), h0 = r.de([1, 0.5]), E = m * G * (h1 - h0);
@@ -319,6 +354,7 @@
       textos: [...b.tex, ...(frac > 0 ? [{ en: [-0.9, 2.3], texto: `v = ${f(vv, 2)} m/s`, color: 'h' }] : [])],
     };
   }
+  const bolita = (h0, frac) => { const g = LZ(rampa(h0, false, frac)), t = Math.round(frac * 20) / 20; return { x: g.X(-2 + 2.4 * t), y: g.Y(h0 * 0.36 * (1 - t) * (1 - t) + 0.12) }; };
   const conservacion = {
     id: 'conservacion-energia',
     titulo: 'La suma no cambia sin roce',
@@ -333,7 +369,15 @@
         { id: 'frac', etiqueta: 'Avance', min: 0, max: 1, paso: 0.25, inicio: 0.5, unidad: '', decimales: 2 },
       ],
       dibujo: val => ({ datos: rampa(val.h, val.roce === 1, val.frac), estado: {} }),
-      lectura: val => { const E = 20 * val.h, Uv = E * (1 - val.frac), perd = val.roce ? 0.25 * E * val.frac : 0; return [U, ' + ', K, ` = ${f(E - perd, 0)} J`]; },
+      lectura: val => { const E = 20 * val.h, perd = val.roce ? 0.25 * E * val.frac : 0; return [U, ' + ', K, ` = ${f(E - perd, 0)} J`]; },
+      // Arrastra la bolita por la rampa: el avance sigue al dedo; las barras responden. La altura va con − y +.
+      arrastres: [{ id: 'bolita', etiqueta: 'avance de la bolita en la rampa',
+        donde: val => bolita(val.h, val.frac),
+        mover: (pt, val) => {
+          let mejor = val.frac, dist = Infinity;
+          for (let k = 0; k <= 4; k++) { const q = bolita(val.h, k / 4), dd = Math.hypot(q.x - pt.x, q.y - pt.y); if (dd < dist - 1e-9) { dist = dd; mejor = k / 4; } }
+          return { frac: mejor };
+        } }],
       minimo: 4,
     },
     predice: {
@@ -351,14 +395,14 @@
       datos: rampa(5, true, 1, { alt: 'Con rozamiento, de 100 J llegan abajo 75 J de energía cinética y 25 J se vuelven calor.' }),
       pasos: [
         { estado: {}, texto: 'Arriba, 5 m: toda la energía es potencial.', ecuacion: [Ug, ' = 2 · 10 · 5 = 100 J'] },
-        { estado: {}, texto: 'Sin roce, abajo sería toda cinética.', ecuacion: ['½ · 2 · v² = 100   →   v = 10 m/s'] },
+        { estado: {}, texto: 'Sin roce, abajo sería toda cinética.', ecuacion: ['½ · 2 · ', { sup: ['v', '2'] }, ' = 100   →   v = 10 m/s'] },
         { estado: {}, texto: 'Con roce, una parte se vuelve calor: la energía no desaparece.', ecuacion: [K, ' = 100 − 25 = 75 J'] },
-        { estado: {}, texto: 'Llega más lento.', ecuacion: ['v = √75 ≈ 8,66 m/s'] },
+        { estado: {}, texto: 'Llega más lento.', ecuacion: ['v = ', { raiz: ['75'] }, ' ≈ 8,66 m/s'] },
       ],
     },
     regla: {
       texto: 'Sin rozamiento, la energía potencial que se pierde se gana como cinética: la suma no cambia. Con rozamiento, la diferencia se vuelve calor.',
-      ecuacion: [K0, ' + ', { sub: [U, '0'] }, ' = ', K, ' + ', U, ' + calor   ·   v = √(2 g ', h, ')'],
+      ecuacion: [{ llave: [K0, ' + ', { sub: [U, '0'] }], nota: 'al salir', color: 'c-d' }, ' = ', K, ' + ', U, ' + calor', '   ·   ', 'v = ', { raiz: ['2 g ', h] }],
       condicion: 'v = √(2gh) supone partir del reposo, sin roce ni aire y un cuerpo que desliza, sin rodar.',
     },
     ahoraTu: {
@@ -383,7 +427,7 @@
             { id: 'gh', valor: Math.sqrt(G * h0), error: 'TE-SIN-MEDIO', siFuera: 'Eso olvida el 2 que sale de despejar el ½ de K.' },
             { id: 'masa', valor: Math.sqrt(2 * G * h0 / m), error: 'CE-MASA', siFuera: 'La masa se simplifica: está en U y en K.' },
           ], n => `${f(n, 2)} m/s`),
-          solucion: { texto: 'mgh = ½mv²: la masa se simplifica.', ecuacion: [`v = √(2 · 10 · ${f(h0, 2)}) = ${f(vv, 2)} m/s`] },
+          solucion: { texto: 'mgh = ½mv²: la masa se simplifica.', ecuacion: ['v = ', { raiz: [`2 · 10 · ${f(h0, 2)}`] }, ` = ${f(vv, 2)} m/s`] },
         };
       },
     },
@@ -442,7 +486,7 @@
     },
     regla: {
       texto: 'Potencia es el trabajo hecho en cada segundo. La eficiencia es la fracción de la energía que entra que sale como útil.',
-      ecuacion: ['P = ', { frac: ['W', 't'] }, ' = ', F, ' v   ·   η = ', { frac: [{ sub: ['P', 'útil'] }, { sub: ['P', 'entra'] }] }],
+      ecuacion: ['P = ', { frac: ['W', 't'] }, ' = ', F, ' v', '   ·   ', { llave: ['η'], nota: 'eficiencia', color: 'c-d' }, ' = ', { frac: [{ sub: ['P', 'útil'] }, { sub: ['P', 'entra'] }] }],
       condicion: 'P = Fv con F en la dirección de v. η nunca pasa de 1: ninguna máquina entrega más de lo que recibe.',
     },
     ahoraTu: {
@@ -472,9 +516,28 @@
 
   return {
     unidad: 'fisica.trabajo-y-energia',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/fis-lienzo.js'],
+    // Laboratorio: juego libre, sin preguntas. La cuerda libre mueve fuerza y ángulo con una sola manija (en la idea,
+    // F está fija y el ángulo va de 30 en 30); la rampa y el empujón son los juegos de las ideas 4 y 2.
+    laboratorio: [
+      {
+        id: 'cuerda-libre', titulo: 'Cuerda con fuerza y ángulo', pieza: 'fis-lienzo',
+        consigna: 'Arrastra la punta de F: su largo es la fuerza y su giro, el ángulo. La caja avanza 5 m.',
+        controles: [
+          { id: 'F', etiqueta: 'F', color: 'c-o', min: 5, max: 20, paso: 5, inicio: 15, unidad: 'N', decimales: 0 },
+          { id: 'ang', etiqueta: 'Ángulo', min: 0, max: 180, paso: 15, inicio: 45, unidad: '°', decimales: 0 },
+        ],
+        dibujo: val => ({ datos: jalar(val.ang, { F: val.F }), estado: {} }),
+        lectura: val => [`W = ${f(val.F, 0)} · 5 · cos ${val.ang}° = ${f(val.F * 5 * Math.cos(rad(val.ang)), 1)} J`],
+        arrastres: [{ id: 'cuerda', etiqueta: 'fuerza y ángulo de la cuerda (punta de F)', color: 'c-o',
+          donde: val => puntaF(val.ang, val.F),
+          mover: (pt, val) => { const q = anguloDe(pt, val.ang, val.F); return { ang: q.th, F: q.largo / KF1 }; } }],
+      },
+      Object.assign({ id: 'rampa', titulo: 'La rampa con y sin roce', pieza: 'fis-lienzo' }, conservacion.juega),
+      Object.assign({ id: 'empujon', titulo: 'El empujón y las barras', pieza: 'fis-lienzo' }, teorema.juega),
+    ],
     historia: {
       texto: 'Comparar máquinas obligó a preguntar cuánto efecto útil daban y adónde iba lo que parecía perderse. En la década de 1840, Joule agitó agua con paletas movidas por pesas que bajaban y midió cómo subía su temperatura: el trabajo mecánico se volvía calor. Así se armó la idea de una energía que cambia de forma.',
       pregunta: '¿Adónde se va la energía que «se pierde» por rozamiento?',
