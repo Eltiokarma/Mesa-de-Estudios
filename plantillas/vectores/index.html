@@ -234,7 +234,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
       <div class="legend" id="leyenda2"></div>
     </section>
     <section class="guide">
-      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div class="seg exps" id="exps" role="group" aria-label="Experimentos"></div>
       <div aria-live="polite">
         <p class="step-k" id="k2"></p>
         <h2 class="step-t" id="t2"></h2>
@@ -302,6 +302,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'vectores', unidad: 'fisica.magnitudes-y-vectores', version: '0.2.0' };
@@ -1125,6 +1126,9 @@ function prediccion(s){
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Jugar primero (regla 3): el paso 1 ya trae las dos flechas que se arrastran; la guía queda velada hasta jugar.
+JugarPrimero.montar({ escena: $('m1').querySelector('.bench'), preguntas: [$('m1').querySelector('.guide')], minimo: 2,
+  consigna: 'Arrastra las puntas de las dos flechas y mira cómo cambian.' });
 })();
 </script>
 <script>
@@ -1294,12 +1298,15 @@ function botones(){
   $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
 }
 function pendiente(x){ return !S.pred[x.id] || (x.q2 && S.abierto[x.id] && !S.pred[x.id + '-2']); }
+// Jugar primero (regla 3): hasta «Ya jugué: seguir», el lienzo trae dos flechas libres (sin resultante ni ángulos de la pregunta).
+const JUEGO = { a:{ x:4, y:1 }, b:{ x:1, y:3 }, caja:{ x0:-1.5, x1:6.5, y0:-1.2, y1:4.8 }, arr:{ a:true, b:true }, ver:{ th:true }, lect:['a','b','th'] };
+let jugando = true;
 function ir(k){
   if (k > primeraLibre()) return;
   S.k = k; S.t0 = Date.now();
   const x = EXPS[k], ya = !!S.pred[x.id], en2 = !!(x.q2 && S.abierto[x.id]);
-  E.compacto = pendiente(x); Celular.compactar($('m2'), E.compacto);
-  if (en2) x.q2.antes(!!S.pred[x.id + '-2']); else x.antes(ya);
+  E.compacto = pendiente(x) && !jugando; Celular.compactar($('m2'), E.compacto);
+  if (jugando) E.config(JUEGO); else if (en2) x.q2.antes(!!S.pred[x.id + '-2']); else x.antes(ya);
   botones();
   $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
   $('t2').textContent = x.corto;
@@ -1350,6 +1357,9 @@ function ir(k){
   pintar();
 }
 ir(0);
+JugarPrimero.montar({ escena: $('m2').querySelector('.bench'), preguntas: [$('k2').parentNode, $('body2')], minimo: 2,
+  consigna: 'Arrastra las puntas de las dos flechas y mira cómo cambian.',
+  alListo: () => { jugando = false; ir(S.k); } });
 })();
 </script>
 
@@ -1546,6 +1556,19 @@ function crearPasos(n, pasos){
   const modo = $('m' + n), cv = $('cv' + n);
   const L = crearLienzo(cv, 'desc' + n, 'lect' + n, 'leyenda' + n);
   const S = { step:0, max:0, pred:{}, abierto:{}, ocupado:false, t0:{} };
+  // Jugar primero (regla 3): dos flechas libres sobre los ejes, con sus componentes; ni resultante ni figura de la pregunta.
+  const J = { activo:true, a:{ x:3, y:2 }, b:{ x:-2, y:3 } };
+  function jugar(){
+    L.config({ caja:{ x0:-5.6, x1:5.6, y0:-3.6, y1:4.6 }, st:{},
+      ley:[['a', 'a'], ['b', 'b']], desc:'Ejes con dos flechas, a y b, que salen del origen; sus puntas se arrastran.',
+      lect:() => [['a', 'a', `(${fmt(J.a.x, 0)}; ${fmt(J.a.y, 0)})`], ['b', 'b', `(${fmt(J.b.x, 0)}; ${fmt(J.b.y, 0)})`]],
+      arr:{ puntos:() => [{ id:'a', x:J.a.x, y:J.a.y }, { id:'b', x:J.b.x, y:J.b.y }],
+        mover:(id, w) => { const x = clamp(Math.round(w.x), -5, 5), y = clamp(Math.round(w.y), -3, 4); if (x || y) J[id] = { x, y }; } } });
+    L.dibujo = g => { const c = g.c, O = { x:0, y:0 }; g.ejes();
+      g.flecha(O, J.a, c.a, g.ancho('a', 3.6)); g.flecha(O, J.b, c.b, g.ancho('b', 3.6));
+      g.rotF(O, J.a, 'a', c.a, 1, .82); g.rotF(O, J.b, 'b', c.b, -1, .82); };
+    L.dibujar();
+  }
   const ya = id => !!S.pred[id];
   const abierta = (p, i) => i === 0 || (ya(p.preds[i - 1].id) && (!p.preds[i].boton || !!S.abierto[p.preds[i].id]));
   const pendiente = p => p.preds.some((q, i) => abierta(p, i) && !ya(q.id));
@@ -1583,7 +1606,7 @@ function crearPasos(n, pasos){
     B.querySelectorAll('.opt').forEach(b => b.addEventListener('click', () => responder(b.dataset.p, b.dataset.k)));
     B.querySelectorAll('[data-abrir]').forEach(b => b.addEventListener('click', () => abrir(b.dataset.abrir)));
     bloquearOpciones();
-    if (p.montar) p.montar(L, S);
+    if (p.montar && !J.activo) p.montar(L, S);
   }
   function marcar(P){
     const r = S.pred[P.id]; if (!r) return;
@@ -1623,13 +1646,16 @@ function crearPasos(n, pasos){
     $('stepK' + n).textContent = `${p.k} de ${pasos.length}`;
     $('stepT' + n).textContent = p.t;
     p.preds.forEach(P => { if (!S.t0[P.id]) S.t0[P.id] = Date.now(); });
-    L.compacto = pendiente(p); Celular.compactar(modo, L.compacto);
-    p.prep(L, S);
+    L.compacto = pendiente(p) && !J.activo; Celular.compactar(modo, L.compacto);
+    if (J.activo) jugar(); else p.prep(L, S);
     render(); nav();
   }
   $('next' + n).addEventListener('click', () => go(S.step + 1));
   $('prev' + n).addEventListener('click', () => go(S.step - 1));
   go(0);
+  JugarPrimero.montar({ escena: modo.querySelector('.bench'), preguntas: [modo.querySelector('.guide')], minimo: 2,
+    consigna: 'Arrastra las puntas de a y b y mira sus componentes.',
+    alListo: () => { J.activo = false; go(S.step); } });
   return { L, S, ya };
 }
 </script>
