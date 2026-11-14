@@ -85,6 +85,12 @@
     aceite: { titulo: 'Agua y aceite', caja: { forma: 'vaso', nivel: 0.9, particulas: [...rejilla('aceite', 6, 3, 0.18, 0.82, 0.1, 0.3), ...rejilla('H2O', 9, 3, 0.15, 0.85, 0.55, 0.92)] }, lee: 'Agua y aceite: 2 especies, dos fases. Mezcla heterogénea.' },
   };
   const muestra = k => lupa([Object.assign({ titulo: MUESTRAS[k].titulo }, MUESTRAS[k].caja)]);
+  // Gesto directo (docs/teoria.md §4b): en las ideas con ejes, la manija es el punto del gráfico. Se ubica con
+  // ejes.geometria y se lee con su inversa lineal (como en fisica/movimiento-rectilineo.js).
+  const EJES = () => Kit.piezas.ejes;
+  const inversa = (escala, a, b) => px => a + (px - escala(a)) * (b - a) / (escala(b) - escala(a));
+
+  // Sin arrastre: el control elige entre muestras distintas; no hay una magnitud que agarrar en la lupa.
   const sustancia = {
     id: 'sustancia-mezcla',
     titulo: 'Sustancia o mezcla: mira dentro',
@@ -128,7 +134,7 @@
     },
     regla: {
       texto: 'Una sustancia tiene una sola especie de partícula: elemento si es un tipo de átomo, compuesto si son varios unidos. Una mezcla tiene varias especies.',
-      ecuacion: ['mezcla homogénea: una fase   ·   heterogénea: dos o más fases'],
+      ecuacion: ['homogénea: una fase', '   ·   ', 'heterogénea: varias fases'],
       condicion: 'se decide por las partículas y las fases, no por el aspecto: algo transparente y uniforme puede ser una mezcla.',
       voz: 'Cuenta especies, después fases. En ese orden.',
     },
@@ -176,6 +182,7 @@
     decae: { texto: 'Carbono-14 que decae', antes: { titulo: 'Carbono-14', forma: 'caja', particulas: [{ e: 'C', n: 6 }] }, despues: { titulo: 'Después', forma: 'caja', particulas: [{ e: 'C', n: 3 }, { e: 'N', n: 3, resalta: true }] }, lee: 'Cambia el núcleo: el átomo pasa a otro elemento. Nuclear.' },
   };
   const proceso = k => lupa([PROCESOS[k].antes, PROCESOS[k].despues], { flechas: true });
+  // Sin arrastre: el control elige entre procesos distintos (antes y después); no hay una perilla natural.
   const cambios = {
     id: 'fisico-quimico-nuclear',
     titulo: '¿Qué partícula cambia?',
@@ -212,7 +219,7 @@
       pasos: [
         { estado: { corte: 1 }, texto: 'Antes: hidrógeno y oxígeno, dos especies distintas.', ecuacion: ['4 H₂ + 2 O₂'] },
         { estado: { corte: 2 }, texto: 'Después: una especie nueva, agua. Eso es un cambio químico.', ecuacion: ['→ 4 H₂O'] },
-        { estado: { corte: 3 }, texto: 'Los átomos no cambian: 8 de H y 4 de O, solo reordenados.', ecuacion: ['H: 8 = 8   ·   O: 4 = 4'] },
+        { estado: { corte: 3 }, texto: 'Los átomos no cambian: 8 de H y 4 de O, solo reordenados.', ecuacion: ['H: 8 = 8', '   ·   ', 'O: 4 = 4'] },
         { estado: { corte: 3 }, texto: 'Al fundir o hervir, en cambio, las moléculas siguen siendo las mismas.' },
       ],
     },
@@ -264,6 +271,7 @@
     curvas: [{ puntos: CURVA, color: 'h' }],
     alt: 'Curva de calentamiento de 10 g de hielo desde −20 °C: sube hasta 0 °C, se queda plana mientras se funde y después sube hasta 100 °C.',
   }, extra);
+  const dibCalor = val => { const e = estadoCalor(val.q); return { datos: ejesCalor({ puntos: [{ x: val.q, y: e.T, color: 'h', rotulo: `${f(e.T, 0)} °C` }] }), estado: {} }; };
   const calor = {
     id: 'calor-sensible-latente',
     titulo: 'Calor que no sube temperatura',
@@ -273,9 +281,13 @@
       consigna: 'Entrega calor a 10 g de hielo que empiezan a −20 °C. Mira dónde queda el punto en la curva.',
       voz: 'Fíjate en el tramo donde el punto avanza sin subir.',
       controles: [{ id: 'q', etiqueta: 'Q', color: 'c-o', min: 0, max: 8, paso: 0.5, inicio: 0, unidad: 'kJ', decimales: 1 }],
-      dibujo: val => { const e = estadoCalor(val.q); return { datos: ejesCalor({ puntos: [{ x: val.q, y: e.T, color: 'h', rotulo: `${f(e.T, 0)} °C` }] }), estado: {} }; },
+      dibujo: val => dibCalor(val),
       lectura: val => { const e = estadoCalor(val.q); return [Tm, ` = ${f(e.T, 1)} °C · ${e.fase === 'fundiendo' ? `fundido ${f(100 * e.frac, 0)} %` : e.fase}`]; },
       minimo: 3,
+      // Se agarra el punto y se lo empuja a lo largo de la curva: la manija mueve Q y la temperatura responde (o no, en la meseta).
+      arrastres: [{ id: 'calor', etiqueta: 'punto de la curva: calor entregado', color: 'c-o',
+        donde: val => { const g = EJES().geometria(dibCalor(val).datos); return { x: g.X(val.q), y: g.Y(estadoCalor(val.q).T) }; },
+        mover: (pt, val) => ({ q: inversa(EJES().geometria(dibCalor(val).datos).X, 0, 8)(pt.x) }) }],
     },
     predice: {
       pregunta: ['Un cubo de 10 g de hielo a 0 °C recibe 1 kJ y todavía no termina de fundirse. ¿Cuánto subió su ', Tm, '?'],
@@ -307,7 +319,7 @@
     },
     regla: {
       texto: 'Sin cambio de fase, el calor sube la temperatura (calor sensible). Durante un cambio de fase, la temperatura no cambia y el calor va al cambio (calor latente).',
-      ecuacion: [Q, ' = ', m, 'c', dT, '   ·   ', Q, ' = ', m, 'L'],
+      ecuacion: [Q, ' = ', m, { llave: ['c'], nota: 'específico' }, ...dT, '   ·   ', Q, ' = ', m, { llave: ['L'], nota: 'latente' }],
       condicion: 'solo para una sustancia pura a presión fija. A 1 atm el agua hierve a 100 °C; en Juliaca, a 87 °C.',
       voz: 'Antes de usar una fórmula, pregunta en qué tramo estás.',
     },
@@ -352,6 +364,7 @@
     curvas: [{ puntos: [[0, 0], [max, max * 0.09]], color: 'd' }],
     alt: `Recta de la energía contra la masa que desaparece: E = Δm·c². Cada miligramo da 90 000 millones de joules (0,09 TJ).`,
   }, extra);
+  const dibMasa = val => ({ datos: ejesMasa(100, { puntos: [{ x: val.mg, y: val.mg * 0.09, color: 'd', rotulo: `${f(val.mg * 0.09, 1)} TJ`, guias: true }] }), estado: {} });
   const energia = {
     id: 'masa-energia',
     titulo: 'La energía nuclear pierde masa',
@@ -361,9 +374,13 @@
       consigna: 'Elige cuántos miligramos de masa desaparecen en un proceso nuclear y lee cuánta energía sale.',
       voz: 'Mira qué tan empinada es esta recta.',
       controles: [{ id: 'mg', etiqueta: 'Δm', color: 'c-i', min: 10, max: 100, paso: 10, inicio: 10, unidad: 'mg', decimales: 0 }],
-      dibujo: val => ({ datos: ejesMasa(100, { puntos: [{ x: val.mg, y: val.mg * 0.09, color: 'd', rotulo: `${f(val.mg * 0.09, 1)} TJ`, guias: true }] }), estado: {} }),
+      dibujo: val => dibMasa(val),
       lectura: val => [E, ` = ${cien(val.mg * 1e-6 * C2)} J`],
       minimo: 3,
+      // Se agarra el punto y se lo sube por la recta: la manija mueve Δm y la energía responde en el eje vertical.
+      arrastres: [{ id: 'masa', etiqueta: 'punto de la recta: masa que desaparece', color: 'c-i',
+        donde: val => { const g = EJES().geometria(dibMasa(val).datos); return { x: g.X(val.mg), y: g.Y(val.mg * 0.09) }; },
+        mover: (pt, val) => ({ mg: inversa(EJES().geometria(dibMasa(val).datos).X, 0, 100)(pt.x) }) }],
     },
     predice: {
       pregunta: ['En un reactor desaparece 1 g de masa. Con c = 3 × 10⁸ m/s, ¿cuánta energía ', E, ' se libera?'],
@@ -396,7 +413,7 @@
     },
     regla: {
       texto: 'Cuando un sistema libera energía, su masa disminuye un poco. En lo químico la diferencia no se mide; en lo nuclear, sí.',
-      ecuacion: [E, ' = ', dm, ' · ', { sup: ['c', '2'] }],
+      ecuacion: [E, ' = ', { llave: dm, nota: 'masa perdida', color: 'c-i' }, ' · ', { llave: [{ sup: ['c', '2'] }], nota: 'c: la luz' }],
       condicion: 'Δm es la diferencia de masa del sistema antes y después, en kg, no la masa total; c = 3 × 10⁸ m/s.',
       voz: 'La masa no se vuelve calor entera: solo la diferencia.',
     },
@@ -417,6 +434,38 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Mesa 1: 10 g de hielo desde la temperatura que se elija, hasta pasar los 100 °C: aparece la segunda meseta
+  // (hervir), que la idea 3 no alcanza. Vaporización 2260 J/g y vapor 2,0 J/(g·°C).
+  const LV = 2260, C_VAPOR = 2.0;
+  function tramos(t0) {
+    const a = MASA * C_HIELO * -t0 / 1000, b = a + MASA * LF / 1000, c = b + MASA * C_AGUA * 100 / 1000, d = c + MASA * LV / 1000;
+    return { a, b, c, d };
+  }
+  function estadoLab(t0, q) {
+    const k = tramos(t0);
+    if (q <= k.a) return { T: t0 + q * 1000 / (MASA * C_HIELO), lee: 'hielo' };
+    if (q <= k.b) return { T: 0, lee: `fundido ${f(100 * (q - k.a) / (k.b - k.a), 0)} %` };
+    if (q <= k.c) return { T: (q - k.b) * 1000 / (MASA * C_AGUA), lee: 'agua líquida' };
+    if (q <= k.d) return { T: 100, lee: `hervido ${f(100 * (q - k.c) / (k.d - k.c), 0)} %` };
+    return { T: 100 + (q - k.d) * 1000 / (MASA * C_VAPOR), lee: 'vapor' };
+  }
+  const QMAX = 32;
+  const dibLab = val => {
+    const k = tramos(val.t0), e = estadoLab(val.t0, val.q);
+    const curva = [[0, val.t0], [k.a, 0], [k.b, 0], [k.c, 100], [k.d, 100], [QMAX, estadoLab(val.t0, QMAX).T]];
+    return { datos: ejesCalor({
+      x: { min: 0, max: QMAX, paso: 4, nombre: 'Q', unidad: 'kJ', decimales: 0, color: 'o' },
+      y: { min: -40, max: 200, paso: 40, nombre: 'T', unidad: '°C', decimales: 0, color: 'h' },
+      curvas: [{ puntos: curva, color: 'h' }],
+      puntos: [{ x: val.q, y: e.T, color: 'h', rotulo: `${f(e.T, 0)} °C` }],
+      alt: `Curva de calentamiento de 10 g de agua desde ${f(val.t0, 0)} °C hasta ${f(QMAX, 0)} kJ: meseta corta a 0 °C (fundir) y meseta larga a 100 °C (hervir). Con ${f(val.q, 1)} kJ está a ${f(e.T, 0)} °C.`,
+    }), estado: {} };
+  };
+  // Mesa 2: hasta un gramo que desaparece, comparado con el carbón que habría que quemar (3,3 × 10⁷ J por kg).
+  const E_CARBON = 3.3e7;
+  const dibGramo = val => ({ datos: ejesMasa(1000, { puntos: [{ x: val.mg, y: val.mg * 0.09, color: 'd', rotulo: `${f(val.mg * 0.09, 1)} TJ`, guias: true }] }), estado: {} });
+
   return {
     unidad: 'quimica.materia-y-energia',
     version: '0.1.0',
@@ -427,6 +476,34 @@
       pregunta: '¿Qué pesarías para saber si algo pierde masa al quemarse?',
       fuente: { titulo: 'OpenStax, Chemistry 2e, §1.2', url: 'https://openstax.org/books/chemistry-2e/pages/1-2-phases-and-classification-of-matter' },
     },
+    // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La primera lleva el hielo hasta vapor, con la meseta de
+    // hervir que la idea 3 no alcanza; la segunda llega a un gramo y lo traduce a carbón quemado. Las lecturas dicen
+    // entradas y resultado, para que un caso guardado se lea solo.
+    laboratorio: [
+      {
+        id: 'hielo-a-vapor', titulo: 'Del hielo al vapor', pieza: 'ejes',
+        consigna: 'Elige dónde empieza el hielo y empuja el punto por la curva. Compara el largo de las dos mesetas.',
+        controles: [
+          { id: 't0', etiqueta: 'T inicial', color: 'c-h', min: -40, max: 0, paso: 5, inicio: -20, unidad: '°C', decimales: 0 },
+          { id: 'q', etiqueta: 'Q', color: 'c-o', min: 0, max: QMAX, paso: 0.5, inicio: 2, unidad: 'kJ', decimales: 1 },
+        ],
+        dibujo: val => dibLab(val),
+        lectura: val => { const e = estadoLab(val.t0, val.q); return [`${f(val.t0, 0)} °C + ${f(val.q, 1)} kJ → `, Tm, ` = ${f(e.T, 0)} °C, ${e.lee}`]; },
+        arrastres: [{ id: 'calor', etiqueta: 'punto de la curva: calor entregado', color: 'c-o',
+          donde: val => { const g = EJES().geometria(dibLab(val).datos); return { x: g.X(val.q), y: g.Y(estadoLab(val.t0, val.q).T) }; },
+          mover: (pt, val) => ({ q: inversa(EJES().geometria(dibLab(val).datos).X, 0, QMAX)(pt.x) }) }],
+      },
+      {
+        id: 'gramo-carbon', titulo: 'Un gramo contra el carbón', pieza: 'ejes',
+        consigna: 'Sube el punto por la recta hasta un gramo. La lectura dice cuánto carbón habría que quemar para igualarlo.',
+        controles: [{ id: 'mg', etiqueta: 'Δm', color: 'c-i', min: 10, max: 1000, paso: 10, inicio: 100, unidad: 'mg', decimales: 0 }],
+        dibujo: val => dibGramo(val),
+        lectura: val => [`${f(val.mg, 0)} mg → `, E, ` = ${cien(val.mg * 1e-6 * C2)} J = ${f(val.mg * 1e-6 * C2 / E_CARBON / 1000, 0)} t de carbón`],
+        arrastres: [{ id: 'masa', etiqueta: 'punto de la recta: masa que desaparece', color: 'c-i',
+          donde: val => { const g = EJES().geometria(dibGramo(val).datos); return { x: g.X(val.mg), y: g.Y(val.mg * 0.09) }; },
+          mover: (pt, val) => ({ mg: inversa(EJES().geometria(dibGramo(val).datos).X, 0, 1000)(pt.x) }) }],
+      },
+    ],
     ideas: [sustancia, cambios, calor, energia],
   };
 });
