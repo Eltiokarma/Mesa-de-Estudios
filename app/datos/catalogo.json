@@ -4270,7 +4270,14 @@
      "grado": 3,
      "plantillas": [
       "tipologia-textual"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-verbal/tipologia-textual.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rv-texto.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-verbal.tema-e-idea-principal",
