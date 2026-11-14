@@ -145,6 +145,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
   .top{grid-template-columns:1fr auto; align-items:end}
   .mode{grid-template-columns:minmax(0, 1.25fr) minmax(360px, 1fr)}
   .bench{position:sticky; top:12px}
+  .mode > .jugar-barra{order:-1; grid-column:1 / -1}
 }
 /* Mover una ficha sin arrastrar: elegirla y marcar en qué aros está */
 .mover{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
@@ -225,6 +226,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'conjuntos', unidad: 'aritmetica.conjuntos', version: '0.1.0' };
@@ -947,6 +949,9 @@ const quitarSimple = t => String(t).replace(/<[^>]+>/g, '');
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: antes de la primera pregunta, el alumno mueve las fichas del paso 1 (con el dedo o con las flechas y las teclas A y B).
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra los alumnos entre los aros y mira cómo cambian las cuentas.', minimo:2 });
 })();
 </script>
 <script>
@@ -1113,6 +1118,14 @@ function ir(k){
   pintar();
 }
 ir(0);
+// Regla 3: antes del primer experimento, juego libre con ocho fichas en dos aros (no adelanta ninguna respuesta).
+const libre = conNombre(['A', 'AB', 'B', '', 'A', 'B', '', 'AB']);
+E.compactar(false);
+E.config({ modo:'venn', st:{ n:2, banca:44, fichas:libre, mover:true, cuentas:true, nombres:{ A:'A', B:'B' } },
+  ley:[['A', 'A'], ['B', 'B'], ['ink', 'cuenta de cada región']], lect:[() => ['ink', 'fichas', String(libre.length)]],
+  desc:() => `Universo U con los aros A y B. ${quienes(libre, 2)}` });
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Arrastra las fichas entre los aros antes de empezar los experimentos.', minimo:2, alListo:() => ir(S.k) });
 })();
 </script>
 
