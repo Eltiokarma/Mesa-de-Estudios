@@ -35,6 +35,11 @@
     for (const x of distractores) { if (vistos.has(x.texto) || ops.length >= 4) continue; vistos.add(x.texto); ops.push(x); }
     return ops;
   }
+  // Gesto directo (docs/teoria.md §4b): manijas sobre rm-plano (X, Y en unidades) y rm-fichas (centro de cada ficha).
+  const PLANO = () => Kit.piezas['rm-plano'], FICHAS = () => Kit.piezas['rm-fichas'];
+  const aFig = (datos, x, y) => { const g = PLANO().geometria(datos); return { x: g.X(x), y: g.Y(y) }; };
+  const aUnid = (datos, pt) => { const g = PLANO().geometria(datos); return [(pt.x - g.X(0)) / g.k, (pt.y - g.Y(0)) / g.k]; };
+  const plural = (n, uno, varios) => `${f(n)} ${n === 1 ? uno : varios}`;
   // Distancia en cuadras: entera si el cuadrado es perfecto; si no, como raíz.
   const raizTxt = k => { const q = Math.round(Math.sqrt(k)); return q * q === k ? `${f(q)}` : `√${k}`; };
 
@@ -45,17 +50,18 @@
   const SAL = [1.5, 5.5];
   const DIR = { E: [1, 0], O: [-1, 0], N: [0, -1], S: [0, 1] };
   function ruta(tramos, extra = {}) {
-    let p = SAL.slice();
+    const S0 = extra.sal || SAL;
+    let p = S0.slice();
     const lineas = tramos.map(([dir, n], k) => {
       const q = [p[0] + DIR[dir][0] * n, p[1] + DIR[dir][1] * n];
       const l = { de: p, a: q, color: 'o', flecha: true, rotulo: `${n} ${dir}`, en: [(p[0] + q[0]) / 2 + (dir === 'N' || dir === 'S' ? 0.55 : 0), (p[1] + q[1]) / 2 + (dir === 'E' || dir === 'O' ? 0.55 : 0)], desde: extra.pasoTramo ? k + 1 : 0 };
       p = q; return l;
     });
-    if (extra.recta !== false && (p[0] !== SAL[0] || p[1] !== SAL[1])) lineas.push({ de: SAL, a: p, color: 'i', flecha: true, desde: extra.desdeRecta || 0 });
+    if (extra.recta !== false && (p[0] !== S0[0] || p[1] !== S0[1])) lineas.push({ de: S0, a: p, color: 'i', flecha: true, desde: extra.desdeRecta || 0 });
     return {
       ancho: 9, alto: 6, cuadricula: 1, norte: true,
-      nodos: [{ id: 'sal', x: SAL[0], y: SAL[1], r: 8, relleno: 1, color: 'i' }],
-      lineas,
+      nodos: [{ id: 'sal', x: S0[0], y: S0[1], r: 8, relleno: 1, color: 'i' }],
+      lineas: lineas.filter(l => l.de[0] !== l.a[0] || l.de[1] !== l.a[1]),
       pie: extra.pie,
     };
   }
@@ -72,8 +78,12 @@
         { id: 'n', etiqueta: 'Norte', min: 1, max: 5, paso: 1, inicio: 4, unidad: 'cuadras', decimales: 0, color: 'c-o' },
       ],
       dibujo: val => ({ datos: ruta([['E', val.e], ['N', val.n]]), estado: {} }),
-      lectura: val => [cam, ` = ${val.e + val.n} · `, d, ` = ${raizTxt(val.e ** 2 + val.n ** 2)} cuadras`],
+      lectura: val => [cam, ` = ${val.e + val.n}`, '   ·   ', d, ` = ${raizTxt(val.e ** 2 + val.n ** 2)} cuadras`],
       minimo: 3,
+      // Se lleva el final del camino: lo horizontal da las cuadras al este; lo vertical, al norte.
+      arrastres: [{ id: 'final', etiqueta: 'final del camino', color: 'c-o',
+        donde: val => aFig(ruta([['E', val.e], ['N', val.n]]), SAL[0] + val.e, SAL[1] - val.n),
+        mover: (pt, val) => { const [x, y] = aUnid(ruta([['E', val.e], ['N', val.n]]), pt); return { e: x - SAL[0], n: SAL[1] - y }; } }],
     },
     predice: {
       pregunta: 'Ahora camina 3 cuadras al este, 4 al norte y 3 al oeste. ¿A cuántas cuadras de la salida termina, en línea recta?',
@@ -92,13 +102,13 @@
       pasos: [
         { estado: { corte: 1 }, texto: '6 cuadras al este.' },
         { estado: { corte: 2 }, texto: '4 al norte.' },
-        { estado: { corte: 3 }, texto: '3 al oeste: el este neto queda en 6 − 3 = 3.', ecuacion: ['este neto = 6 − 3 = 3 · norte = 4'] },
-        { estado: { corte: 4 }, texto: 'La flecha es la hipotenusa de 3 y 4.', ecuacion: [d, ' = ', { raiz: '3² + 4²' }, ' = 5 cuadras · ', cam, ' = 13'] },
+        { estado: { corte: 3 }, texto: '3 al oeste: el este neto queda en 6 − 3 = 3.', ecuacion: ['este neto = 6 − 3 = 3', '   ·   ', 'norte = 4'] },
+        { estado: { corte: 4 }, texto: 'La flecha es la hipotenusa de 3 y 4.', ecuacion: [d, ' = ', { raiz: [{ sup: ['3', '2'] }, ' + ', { sup: ['4', '2'] }] }, ' = 5 cuadras', '   ·   ', cam, ' = 13'] },
       ],
     },
     regla: {
       texto: 'Para saber dónde terminas, se suman por separado los tramos este-oeste (con signo) y norte-sur. La distancia en línea recta sale de esos dos netos.',
-      ecuacion: [d, ' = ', { raiz: ['(este neto)² + (norte neto)²'] }, '  ≤  ', cam],
+      ecuacion: [d, ' = ', { raiz: [{ llave: [{ sup: ['x', '2'] }], nota: 'este neto', color: 'c-i' }, ' + ', { llave: [{ sup: ['y', '2'] }], nota: 'norte neto', color: 'c-i' }] }, '  ≤  ', { llave: [cam], nota: 'lo caminado', color: 'c-o' }],
       condicion: 'las cuadras miden lo mismo y las calles se cruzan en ángulo recto.',
     },
     ahoraTu: {
@@ -121,7 +131,7 @@
             { id: 'dos', texto: txt(raizTxt(a * a + b * b)), error: 'RMT-TRS-2', siFuera: 'Esa es la distancia tras dos tramos; falta el tercero.' },
             { id: 'resta', texto: txt(f(Math.abs(Math.abs(x) - Math.abs(y)) || camino + 1)), error: 'RMT-TRS-3', siFuera: 'Eso resta tramos de direcciones distintas.' },
           ]),
-          solucion: { texto: `Netos: ${Math.abs(x)} al ${x >= 0 ? 'este' : 'oeste'} y ${Math.abs(y)} al ${y >= 0 ? 'norte' : 'sur'}.`, ecuacion: [d, ` = `, { raiz: `${Math.abs(x)}² + ${Math.abs(y)}²` }, ` = ${raizTxt(k)}`], dibujo: { datos: ruta(tramos), estado: {} } },
+          solucion: { texto: `Netos: ${Math.abs(x)} al ${x >= 0 ? 'este' : 'oeste'} y ${Math.abs(y)} al ${y >= 0 ? 'norte' : 'sur'}.`, ecuacion: [d, ` = `, { raiz: [{ sup: [String(Math.abs(x)), '2'] }, ' + ', { sup: [String(Math.abs(y)), '2'] }] }, ` = ${raizTxt(k)}`], dibujo: { datos: ruta(tramos), estado: {} } },
         };
       },
     },
@@ -156,8 +166,12 @@
       voz: 'Compara cada mínimo con el anterior.',
       controles: [{ id: 'n', etiqueta: 'Discos', min: 1, max: 5, paso: 1, inicio: 1, decimales: 0, color: 'c-h' }],
       dibujo: val => ({ datos: torre([Array.from({ length: val.n }, (_, k) => val.n - k), [], []], { grande: val.n }), estado: {} }),
-      lectura: val => [T(val.n), ` = ${minMov(val.n)} movimientos`],
+      lectura: val => [T(val.n), ` = ${plural(minMov(val.n), 'movimiento', 'movimientos')}`],
       minimo: 4,
+      // Se sube o se baja la cima de la torre en A: cada piso es un disco.
+      arrastres: [{ id: 'cima', etiqueta: 'cima de la torre', color: 'c-h',
+        donde: val => aFig(torre([[1], [], []]), PALO[0], 5.4 - val.n * 0.5),
+        mover: (pt, val) => ({ n: (5.4 - aUnid(torre([[1], [], []]), pt)[1]) / 0.5 }) }],
     },
     predice: {
       pregunta: 'Con 3 discos el mínimo es 7 movimientos. ¿Cuántos son con 6 discos?',
@@ -182,7 +196,7 @@
     },
     regla: {
       texto: 'Para mudar n discos, primero se mudan los n − 1 de encima, luego el grande y otra vez los n − 1. Por eso cada disco más duplica y suma uno.',
-      ecuacion: [T('n'), ' = 2 · ', T('n − 1'), ' + 1 = ', { sup: ['2', 'n'] }, ' − 1'],
+      ecuacion: [T('n'), ' = 2 · ', { llave: [T('n − 1')], nota: 'los de encima', color: 'c-d' }, ' + ', { llave: ['1'], nota: 'el grande', color: 'c-h' }, '   ·   ', T('n'), ' = ', { sup: ['2', 'n'] }, ' − 1'],
       condicion: 'se mueve un disco por vez, nunca uno grande sobre uno chico, y hay solo tres palos.',
     },
     ahoraTu: {
@@ -229,6 +243,20 @@
     };
   }
   const D = { v: 'c-o', t: 'D' }, x = { v: 'c-i', t: 'x' };
+  // Manija de la ficha que pasó a B: en la fila B se queda; sobre la fila A elige la ficha más cercana (de las que
+  // se pueden pasar), medida en el dibujo con A completo.
+  function manijaPasa(datosDe, ctl, valores, posEnB, id = 'ficha-que-pasa', A = GA) {
+    return { id, etiqueta: 'número que pasa de A a B', color: 'c-i',
+      donde: val => { const q = FICHAS().geometria(datosDe(val)).filas[1].fichas[posEnB(val)]; return { x: q.cx, y: q.cy }; },
+      mover: (pt, val) => {
+        const g = FICHAS().geometria(datosDe(val)), yA = g.filas[0].fichas[0].cy, yB = g.filas[1].fichas[0].cy;
+        if (pt.y > (yA + yB) / 2) return { [ctl]: val[ctl] };
+        const fa = FICHAS().geometria(grupos(A, [])).filas[0].fichas;
+        let mejor = val[ctl], dmin = Infinity;
+        A.forEach((v, k) => { if (!valores.includes(v)) return; const dd = Math.abs(fa[k].cx - pt.x); if (dd < dmin) { dmin = dd; mejor = v; } });
+        return { [ctl]: mejor };
+      } };
+  }
   const numeros = {
     id: 'pasar-un-numero',
     titulo: 'Pasar un número, mover el doble',
@@ -241,6 +269,8 @@
       dibujo: val => ({ datos: grupos(GA, GB, val.p), estado: {} }),
       lectura: val => [D, ` = 12 − 2 · ${val.p} = ${12 - 2 * val.p}`],
       minimo: 3,
+      // La ficha que pasó (en B) se lleva de vuelta sobre otra ficha de A: pasa esa.
+      arrastres: [manijaPasa(val => grupos(GA, GB, val.p), 'p', [3, 5, 7, 9], val => GB.length)],
     },
     predice: {
       pregunta: '¿Qué número de A hay que pasar a B para que los dos grupos sumen lo mismo?',
@@ -294,11 +324,102 @@
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1: paseo de cuatro tramos (este, norte, oeste, sur) que se estiran desde sus puntas. El caso raro: un camino
+  // largo que vuelve justo a la salida.
+  const S4 = [4.5, 3];
+  const tramos4 = val => [['E', val.e], ['N', val.n], ['O', val.o], ['S', val.s]];
+  const datosPaseo = val => ruta(tramos4(val), { sal: S4 });
+  const puntas = val => {
+    const p1 = [S4[0] + val.e, S4[1]], p2 = [p1[0], p1[1] - val.n], p3 = [p2[0] - val.o, p2[1]], p4 = [p3[0], p3[1] + val.s];
+    return [p1, p2, p3, p4];
+  };
+  const manijaTramo = (k, ctl, eje, signo, nombre) => ({ id: `tramo-${ctl}`, etiqueta: `fin del tramo al ${nombre}`, color: 'c-o',
+    donde: val => { const q = puntas(val)[k]; return aFig(datosPaseo(val), q[0], q[1]); },
+    mover: (pt, val) => {
+      const u = aUnid(datosPaseo(val), pt), prev = k ? puntas(val)[k - 1] : S4;
+      return { [ctl]: signo * (u[eje] - prev[eje]) };
+    } });
+  const mesaPaseo = {
+    id: 'paseo-de-cuatro-tramos', titulo: 'Paseo de cuatro tramos', pieza: 'rm-plano',
+    consigna: 'Camina al este, al norte, al oeste y al sur. Estira cada tramo desde su punta y busca volver a la salida.',
+    controles: [
+      { id: 'e', etiqueta: 'Este', min: 0, max: 4, paso: 1, inicio: 3, unidad: 'cuadras', decimales: 0, color: 'c-o' },
+      { id: 'n', etiqueta: 'Norte', min: 0, max: 3, paso: 1, inicio: 2, unidad: 'cuadras', decimales: 0, color: 'c-o' },
+      { id: 'o', etiqueta: 'Oeste', min: 0, max: 4, paso: 1, inicio: 1, unidad: 'cuadras', decimales: 0, color: 'c-o' },
+      { id: 's', etiqueta: 'Sur', min: 0, max: 3, paso: 1, inicio: 0, unidad: 'cuadras', decimales: 0, color: 'c-o' },
+    ],
+    dibujo: val => ({ datos: datosPaseo(val), estado: {} }),
+    lectura: val => {
+      const c = val.e + val.n + val.o + val.s, k = (val.e - val.o) ** 2 + (val.n - val.s) ** 2;
+      return [cam, ` = ${c}`, '   ·   ', d, ` = ${raizTxt(k)} ${k === 1 ? 'cuadra' : 'cuadras'}`];
+    },
+    arrastres: [manijaTramo(0, 'e', 0, 1, 'este'), manijaTramo(1, 'n', 1, -1, 'norte'), manijaTramo(2, 'o', 0, -1, 'oeste'), manijaTramo(3, 's', 1, 1, 'sur')],
+  };
+  // Mesa 2: la mudanza paso a paso. Se elige la torre (arrastrando su cima) y el paso de la solución mínima: se ve
+  // que el disco grande se mueve una sola vez, justo a la mitad.
+  function movidas(n, de = 0, a = 2, por = 1, acc = []) {
+    if (n === 0) return acc;
+    movidas(n - 1, de, por, a, acc); acc.push([n, de, a]); movidas(n - 1, por, a, de, acc);
+    return acc;
+  }
+  const estadoTorre = (n, k) => {
+    const palos = [Array.from({ length: n }, (_, i) => n - i), [], []], ms = movidas(n);
+    for (const [, de, a] of ms.slice(0, Math.min(k, ms.length))) palos[a].push(palos[de].pop());
+    return palos;
+  };
+  const datosMudanza = val => {
+    const k = Math.min(val.k, minMov(val.n)), ms = movidas(val.n), ult = k ? ms[k - 1] : null;
+    return torre(estadoTorre(val.n, k), { grande: val.n, pie: ult ? `Movida ${k}: disco ${ult[0]} de ${'ABC'[ult[1]]} a ${'ABC'[ult[2]]}` : 'Torre en A, sin mover' });
+  };
+  const mesaMudanza = {
+    id: 'mudanza-paso-a-paso', titulo: 'La mudanza paso a paso', pieza: 'rm-plano',
+    consigna: 'Elige cuántos discos y avanza por la solución mínima. Fíjate en qué movida pasa el disco grande.',
+    controles: [
+      { id: 'n', etiqueta: 'Discos', min: 1, max: 5, paso: 1, inicio: 3, decimales: 0, color: 'c-h' },
+      { id: 'k', etiqueta: 'Movida', min: 0, max: 31, paso: 1, inicio: 0, decimales: 0, color: 'c-d' },
+    ],
+    dibujo: val => ({ datos: datosMudanza(val), estado: {} }),
+    lectura: val => [`${plural(val.n, 'disco', 'discos')} · movida ${Math.min(val.k, minMov(val.n))} de ${minMov(val.n)}`, '   ·   ', `el grande pasa en la ${minMov(val.n - 1) + 1}`],
+    // La cima de la torre se arrastra solo antes de empezar (movida 0); después, la torre está repartida.
+    arrastres: [{ id: 'cima', etiqueta: 'cima de la torre', color: 'c-h',
+      donde: val => aFig(datosMudanza(val), PALO[0], 5.4 - estadoTorre(val.n, Math.min(val.k, minMov(val.n)))[0].length * 0.5),
+      mover: (pt, val) => (val.k > 0 ? {} : { n: (5.4 - aUnid(datosMudanza(val), pt)[1]) / 0.5 }) }],
+  };
+  // Mesa 3: pasar dos números de A a B (la idea pasa uno). La diferencia cambia en el doble de la suma de los dos.
+  const datosDos = val => {
+    const pasan = [val.p1].concat(val.p2 && val.p2 !== val.p1 ? [val.p2] : []);
+    const a2 = GA.filter(v => !pasan.includes(v)), b2 = GB.concat(pasan);
+    const ficha = (v, nuevo) => ({ t: String(v), forma: 'cuadrado', color: nuevo ? 'i' : undefined });
+    return { filas: [
+      { rotulo: `A suma ${suma(a2)}`, caja: true, fichas: a2.map(v => ficha(v)) },
+      { rotulo: `B suma ${suma(b2)}`, caja: true, fichas: GB.map(v => ficha(v)).concat(pasan.map(v => ficha(v, true))) },
+    ], tam: 30, pie: `Diferencia A − B: ${suma(a2) - suma(b2)}` };
+  };
+  const mesaDos = {
+    id: 'pasar-dos-numeros', titulo: 'Pasar dos números', pieza: 'rm-fichas',
+    consigna: 'A suma 30 y B suma 18. Pasa uno o dos números de A a B. ¿Qué parejas igualan las sumas?',
+    controles: [
+      { id: 'p1', etiqueta: 'Primero', opciones: GA.map(v => ({ valor: v, texto: String(v) })) },
+      { id: 'p2', etiqueta: 'Segundo', opciones: [{ valor: 0, texto: 'Ninguno' }].concat(GA.map(v => ({ valor: v, texto: String(v) }))) },
+    ],
+    dibujo: val => ({ datos: datosDos(val), estado: {} }),
+    lectura: val => {
+      const s2 = val.p1 + (val.p2 && val.p2 !== val.p1 ? val.p2 : 0);
+      return [`Pasan ${s2 === val.p1 ? val.p1 : `${val.p1} y ${val.p2}`}: `, D, ` = 12 − 2 · ${s2} = ${12 - 2 * s2}`];
+    },
+    arrastres: [
+      manijaPasa(datosDos, 'p1', GA, () => GB.length, 'primero'),
+    ],
+  };
+
   return {
     unidad: 'razonamiento-matematico.traslados-y-puntos-cardinales',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rm-plano.js', '/nucleo/kit/piezas/rm-fichas.js'],
+    // Laboratorio: el paseo de cuatro tramos que puede volver a la salida, la mudanza paso a paso y pasar dos números.
+    laboratorio: [mesaPaseo, mesaMudanza, mesaDos],
     historia: {
       texto: 'Los navegantes calculaban su posición «por estima»: sumaban rumbos, rapidez y tiempo, y corregían por las corrientes. Un manual de Andrew Mackay de 1804 enseñaba ese cálculo. Caminar cuadras en una cuadrícula es una versión sencilla del mismo problema: un recorrido largo puede terminar cerca del punto de partida.',
       pregunta: '¿Por qué un viaje largo puede acabar cerca de casa?',
