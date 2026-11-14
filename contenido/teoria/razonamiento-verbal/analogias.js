@@ -18,11 +18,24 @@
  * RV21 (contrario de otro rasgo o solo distinto); RVA1 (sucesión tomada por causa) es hipótesis nueva.
  */
 (function (root, fabrica) {
-  const def = fabrica();
+  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
   if (typeof module === 'object' && module.exports) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function () {
+})(typeof self !== 'undefined' ? self : this, function (Kit) {
   'use strict';
+  // Gesto directo (docs/teoria.md §4b): bajo la oración puente hay una bandeja con los pares (o palabras) para probar.
+  // El alumno arrastra la ficha por la bandeja y la suelta en el par que quiere poner en los huecos; la manija va
+  // sobre el número del par (rv-texto.ancla) y salta al más cercano al dedo (rv-texto.cercana). Los botones del
+  // control «p» son la alternativa sin arrastre.
+  const RV = () => Kit.piezas['rv-texto'];
+  const conBandeja = (datos, items, titulo = 'Pares para probar') => ({ secciones: datos.secciones.concat([{ id: 'bandeja', titulo, modo: 'lista', fragmentos: items }]) });
+  const ficha = (datosDe, ids, etiqueta = 'ficha del par que se prueba') => ({
+    id: 'ficha', etiqueta, color: 'c-o',
+    donde: val => RV().ancla(datosDe(val), val.p),
+    mover: (pt, val) => ({ p: RV().cercana(datosDe(val), pt, ids) }),
+  });
+  // El estado marca, además, la ficha elegida en la bandeja.
+  const conFicha = (estado, id) => Object.assign({}, estado, { marcas: Object.assign({}, estado.marcas, { [id]: 'o' }) });
   // Una lectura en vivo no parte línea dentro de un color (.var): si el texto es largo, solo va en color su cabeza.
   const corto = (fn, t) => {
     if (t.length <= 26) return fn(t);
@@ -66,6 +79,8 @@
     reves: { a: 'serrucho', b: 'carpintero', cumple: false, dice: 'No: está al revés' },
   };
   const figCarp = () => figura(['carpintero', 'serrucho'], CARP, ['carpintero', 'carpintero']);
+  // El juego usa la misma figura que «Mira», con la bandeja debajo (hallazgo 9: es el mismo dibujo, más las fichas).
+  const figCarpB = () => conBandeja(figCarp(), Object.entries(CANDIDATOS).map(([id, c]) => ({ id, t: `${c.a} : ${c.b}` })));
   const relacionNoTema = {
     id: 'relacion-no-tema',
     titulo: 'La relación, no el tema',
@@ -75,9 +90,11 @@
       consigna: 'El par base es «carpintero : serrucho». Pon otro par en la oración puente y mira si sigue siendo verdadera.',
       voz: 'La oración tiene que valer igual para los dos pares.',
       controles: [{ id: 'p', etiqueta: 'Par', opciones: Object.entries(CANDIDATOS).map(([valor, c]) => ({ valor, texto: `${c.a} : ${c.b}` })) }],
-      dibujo: val => { const c = CANDIDATOS[val.p]; return { datos: figCarp(), estado: probar(c.a, c.b, c.cumple) }; },
+      dibujo: val => { const c = CANDIDATOS[val.p]; return { datos: figCarpB(), estado: conFicha(probar(c.a, c.b, c.cumple), val.p) }; },
       lectura: val => { const c = CANDIDATOS[val.p]; return [c.cumple ? corto(base, c.dice) : corto(mal, c.dice)]; },
       minimo: 3,
+      // Arrastra la ficha por la bandeja: el par que sueltas entra en los huecos de la oración puente.
+      arrastres: [ficha(figCarpB, Object.keys(CANDIDATOS))],
     },
     predice: {
       pregunta: 'Par base: «dedo : mano». ¿Qué par guarda la misma relación?',
@@ -103,7 +120,7 @@
     },
     regla: {
       texto: 'Una analogía conserva la relación del par base, en el mismo orden. Se comprueba con una oración puente que sea verdadera para los dos pares.',
-      ecuacion: [base('A'), ' : ', base('B'), ' :: ', prueba('C'), ' : ', prueba('D'), ' si ', rel('A rel B'), ' y ', rel('C rel D')],
+      ecuacion: [{ llave: [base('A'), ' : ', base('B')], nota: 'par base', color: 'c-i' }, ' :: ', { llave: [prueba('C'), ' : ', prueba('D')], nota: 'par probado', color: 'c-o' }, '   ·   ', { llave: [rel('misma oración')], nota: 'vale para ambos', color: 'c-d' }],
       condicion: 'la oración puente es precisa (herramienta, parte, material) y no basta que los pares sean del mismo tema.',
     },
     ahoraTu: {
@@ -146,6 +163,9 @@
       { id: `${pre}1`, hueco: true, caja: false, reserva: 'producen el' }, { id: `${pre}b`, hueco: true, reserva: 'mamífero' }];
     return { secciones: [{ id: 'ida', titulo: 'En este orden', modo: 'tarjeta', fragmentos: fr('i') }, { id: 'vuelta', titulo: 'Al revés', modo: 'tarjeta', fragmentos: fr('v') }] };
   }
+  // La bandeja va arriba: así el sello de la primera tarjeta no queda bajo el botón de la lupa. «Mira» usa esta misma
+  // figura (hallazgo 9): el alumno ve el dibujo que movió.
+  const figDosB = () => ({ secciones: [{ id: 'bandeja', titulo: 'Pares base', modo: 'lista', fragmentos: Object.entries(PARES).map(([id, p]) => ({ id, t: `${p.par[0]} : ${p.par[1]}` })) }].concat(figDos().secciones) });
   const estadoDos = (p, extra = {}) => Object.assign({
     huecos: { i0: p.partes[0], ia: p.ida[0], i1: p.partes[1], ib: p.ida[1], v0: (p.partesV || p.partes)[0], va: p.vuelta[0], v1: (p.partesV || p.partes)[1], vb: p.vuelta[1] },
     marcas: { ia: 'i', ib: 'i', i0: 'd', i1: 'd', va: 'h', vb: 'h' },
@@ -161,9 +181,11 @@
       consigna: 'Elige un par base. Mira su oración puente en el orden del par y al revés.',
       voz: 'Fíjate qué oración deja de ser verdadera al dar vuelta el par.',
       controles: [{ id: 'p', etiqueta: 'Par base', opciones: Object.entries(PARES).map(([valor, p]) => ({ valor, texto: `${p.par[0]} : ${p.par[1]}` })) }],
-      dibujo: val => ({ datos: figDos(), estado: estadoDos(PARES[val.p]) }),
+      dibujo: val => ({ datos: figDosB(), estado: conFicha(estadoDos(PARES[val.p]), val.p) }),
       lectura: val => [corto(rel, PARES[val.p].tipo), ': solo vale en un sentido'],
       minimo: 3,
+      // Arrastra la ficha a otro par base: las dos tarjetas lo leen en el orden del par y al revés.
+      arrastres: [ficha(figDosB, Object.keys(PARES), 'ficha del par base')],
     },
     predice: {
       pregunta: 'Par base: «incendio : cenizas». ¿Qué par guarda la misma relación?',
@@ -177,7 +199,7 @@
       coincide: 'Coincide: el golpe produce el moretón, como el incendio produce las cenizas.',
     },
     mira: {
-      datos: figDos(),
+      datos: figDosB(),
       voz: 'Dos relaciones, la misma prueba de dirección.',
       pasos: [
         { estado: { huecos: { i0: 'Todo', ia: 'perro', i1: 'es un', ib: 'mamífero' }, marcas: { ia: 'i', ib: 'i', i0: 'd', i1: 'd' }, sellos: { ida: { t: 'Verdadera', c: 'i' } }, tapar: ['v0', 'va', 'v1', 'vb'], nuevo: ['ida'] }, texto: 'Todo perro es un mamífero: el perro es una clase dentro de otra.', ecuacion: [base('especie'), ' ⊂ ', base('género')] },
@@ -188,7 +210,7 @@
     },
     regla: {
       texto: 'En género y especie, todo miembro pertenece a la clase, pero no al revés. En causa y efecto, el primero produce el segundo; venir antes no basta.',
-      ecuacion: [base('especie'), ' es un ', base('género'), '   ·   ', base('causa'), ' ', rel('produce'), ' ', base('efecto')],
+      ecuacion: [{ llave: [base('especie'), ' es un ', base('género')], nota: 'no al revés', color: 'c-i' }, '   ·   ', base('causa'), ' ', { llave: [rel('produce')], nota: 'no solo antes', color: 'c-d' }, ' ', base('efecto')],
       condicion: 'el par de la opción va en el mismo orden que el par base y la oración puente es verdadera así.',
     },
     ahoraTu: {
@@ -223,6 +245,7 @@
     risa: { b: 'risa', rel: 'Ninguna: otra clase de palabra', puente: ['', 'significa casi lo mismo que', ''], ok: false },
   };
   const figAleg = (p, otra = '?') => figura(['alegre', otra], p, ['alegre', 'contento']);
+  const figAlegB = k => conBandeja(figAleg(ALEGRE[k].puente, ALEGRE[k].b), Object.entries(ALEGRE).map(([id, c]) => ({ id, t: c.b })), 'Palabras para comparar');
   const estAleg = (k, extra = {}) => { const c = ALEGRE[k]; return probar('alegre', c.b, c.ok, 'o', Object.assign({ marcas: { pb: 'i', a: 'i', b: c.ok ? 'o' : 'h', p0: 'd', p1: 'd', p2: 'd' } }, extra)); };
   const sinAnt = {
     id: 'sinonimo-antonimo',
@@ -233,7 +256,9 @@
       consigna: 'Compara «alegre» con otras palabras. Mira qué oración puente queda verdadera y qué rasgo comparan.',
       voz: 'Lo contrario se mide siempre en el mismo rasgo.',
       controles: [{ id: 'p', etiqueta: 'Palabra', opciones: Object.entries(ALEGRE).map(([valor, c]) => ({ valor, texto: c.b })) }],
-      dibujo: val => ({ datos: figAleg(ALEGRE[val.p].puente, ALEGRE[val.p].b), estado: estAleg(val.p, { huecos: { a: 'alegre', b: ALEGRE[val.p].b } }) }),
+      dibujo: val => ({ datos: figAlegB(val.p), estado: conFicha(estAleg(val.p, { huecos: { a: 'alegre', b: ALEGRE[val.p].b } }), val.p) }),
+      // Arrastra la ficha a otra palabra: entra en la oración puente junto a «alegre».
+      arrastres: [ficha(val => figAlegB(val.p), Object.keys(ALEGRE), 'ficha de la palabra')],
       lectura: val => ['Relación: ', ALEGRE[val.p].ok ? corto(rel, ALEGRE[val.p].rel) : corto(mal, ALEGRE[val.p].rel)],
       minimo: 3,
     },
@@ -258,7 +283,7 @@
     },
     regla: {
       texto: 'Los sinónimos comparten un rasgo de significado; los antónimos se oponen dentro del mismo rasgo. Ser distintas no hace contrarias a dos palabras.',
-      ecuacion: [base('A'), ' ≈ ', prueba('B'), ' (mismo rasgo) · ', base('A'), ' ↔ ', prueba('B'), ' (rasgo opuesto)'],
+      ecuacion: [{ llave: [base('A'), ' ≈ ', prueba('B')], nota: 'mismo rasgo', color: 'c-i' }, '   ·   ', { llave: [base('A'), ' ↔ ', prueba('B')], nota: 'rasgo opuesto', color: 'c-o' }],
       condicion: 'se nombra el rasgo que se compara (ánimo, temperatura, tamaño) y las dos palabras hablan de él.',
     },
     ahoraTu: {
@@ -282,9 +307,59 @@
     },
   };
 
+  // ---------- Laboratorio: el taller de la oración puente ----------
+  // Más rico que los juegos: seis relaciones a la vez y ocho fichas, entre ellas una invertida (flor : pétalo) y una
+  // sucesión sin causa (lunes : martes). Si se cumple lo decide el código (regla 1) con la relación y el orden de cada
+  // ficha; «cumplen n de 8» cuenta, para la relación elegida, cuántas fichas la cumplen en ese orden.
+  const RELS = {
+    herramienta: { texto: 'Herramienta', partes: ['', 'trabaja con', ''] },
+    parte: { texto: 'Parte y todo', partes: ['', 'es una parte de', ''] },
+    especie: { texto: 'Especie y clase', partes: ['', 'es un tipo de', ''] },
+    causa: { texto: 'Causa', partes: ['', 'produce', ''] },
+    sinonimo: { texto: 'Sinónimos', partes: ['', 'significa casi lo mismo que', ''] },
+    antonimo: { texto: 'Antónimos', partes: ['', 'es lo contrario de', ''] },
+  };
+  const FICHAS = {
+    cirujano: { a: 'cirujano', b: 'bisturí', rel: 'herramienta' },
+    petalo: { a: 'pétalo', b: 'flor', rel: 'parte' },
+    flor: { a: 'flor', b: 'pétalo', rel: 'parte', alReves: true },
+    condor: { a: 'cóndor', b: 'ave', rel: 'especie' },
+    chispa: { a: 'chispa', b: 'incendio', rel: 'causa' },
+    lunes: { a: 'lunes', b: 'martes', rel: null },
+    alegre: { a: 'alegre', b: 'contento', rel: 'sinonimo' },
+    frio: { a: 'frío', b: 'caliente', rel: 'antonimo' },
+  };
+  const veredicto = (r, k) => { const f = FICHAS[k]; return f.rel !== r ? 'no' : f.alReves ? 'reves' : 'si'; };
+  // Las fichas van arriba y la oración debajo: el sello de la oración no choca con el botón de la lupa.
+  const figTaller = r => ({ secciones: [
+    { id: 'bandeja', titulo: 'Fichas', modo: 'lista', fragmentos: Object.entries(FICHAS).map(([id, f]) => ({ id, t: `${f.a} : ${f.b}` })) },
+    { id: 'puente', titulo: 'Oración puente', modo: 'tarjeta', fragmentos: [
+      { id: 'a', hueco: true, reserva: 'cirujano' }, { id: 'p1', t: RELS[r].partes[1] }, { id: 'b', hueco: true, reserva: 'incendio' }] },
+  ] });
+  const SELLO = { si: { t: 'Se cumple', c: 'i' }, reves: { t: 'Solo al revés', c: 'h' }, no: { t: 'No se cumple', c: 'h' } };
+  const mesaTaller = {
+    id: 'taller', titulo: 'El taller de la oración puente', pieza: 'rv-texto',
+    consigna: 'Elige una relación y arrastra la ficha por la bandeja. Mira con qué pares la oración queda verdadera.',
+    voz: 'Una ficha puede cumplir otra relación, o la misma al revés.',
+    controles: [
+      { id: 'r', etiqueta: 'Relación', opciones: Object.entries(RELS).map(([valor, x]) => ({ valor, texto: x.texto })) },
+      { id: 'p', etiqueta: 'Ficha', opciones: Object.entries(FICHAS).map(([valor, f]) => ({ valor, texto: `${f.a} : ${f.b}` })) },
+    ],
+    dibujo: val => {
+      const f = FICHAS[val.p], v = veredicto(val.r, val.p), ok = v === 'si';
+      const marcas = { a: ok ? 'o' : 'h', b: ok ? 'o' : 'h', p1: 'd', p2: 'd', [val.p]: 'o' };
+      return { datos: figTaller(val.r), estado: { huecos: { a: f.a, b: f.b }, marcas, sellos: { puente: SELLO[v] } } };
+    },
+    lectura: val => {
+      const v = veredicto(val.r, val.p), n = Object.keys(FICHAS).filter(k => veredicto(val.r, k) === 'si').length;
+      return [rel(RELS[val.r].texto), ': ', v === 'si' ? base(SELLO[v].t) : mal(SELLO[v].t), ` · cumplen ${n} de 8`];
+    },
+    arrastres: [ficha(val => figTaller(val.r), Object.keys(FICHAS), 'ficha que entra en la oración')],
+  };
+
   return {
     unidad: 'razonamiento-verbal.analogias',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rv-texto.js'],
     historia: {
@@ -292,6 +367,11 @@
       pregunta: '¿Qué tienen en común un carpintero y un cirujano?',
       fuente: { titulo: 'Matriz de teoría de razonamiento verbal (Aristóteles, Poética)', url: 'https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/comprensionlectora.htm' },
     },
+    laboratorio: [
+      mesaTaller,
+      Object.assign({ id: 'en-dos-sentidos', titulo: 'En los dos sentidos', pieza: 'rv-texto' }, claseCausa.juega),
+      Object.assign({ id: 'un-rasgo', titulo: 'Sinónimos y antónimos', pieza: 'rv-texto' }, sinAnt.juega),
+    ],
     ideas: [relacionNoTema, claseCausa, sinAnt],
   };
 });
