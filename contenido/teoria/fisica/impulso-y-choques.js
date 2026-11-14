@@ -43,6 +43,10 @@
     }
     return ops.slice(0, 4);
   }
+  // Gesto directo (docs/teoria.md §4b): la manija vive en las coordenadas de la figura y mover la convierte en valores
+  // con la inversa lineal de la escala de la pieza; el lector ajusta cada valor al paso y al rango de su control.
+  const inversa = (escala, a, b) => px => a + (px - escala(a)) * (b - a) / (escala(b) - escala(a));
+  const PZ = id => Kit.piezas[id];
 
   // ---------- Idea 1: el área de F–t es el impulso ----------
   // Cambia: el pico de la fuerza y su duración · Permanece: la pelota de 0,5 kg, en reposo al inicio ·
@@ -54,6 +58,12 @@
     y: { min: 0, max: fmax, paso: 10, nombre: 'F', unidad: 'N', decimales: 0, color: 'h' },
   });
   const pulso = (Fm, T, t0 = 0) => [[t0, 0], [t0 + T / 2, Fm], [t0 + T, 0]];
+  // El golpe del juego: triángulo de pico Fm y duración T, con su área (el impulso) rotulada.
+  const golpe = (Fm, T, forma = 'tri', fmax = 50) => {
+    const pts = forma === 'rect' ? [[0, 0], [0, Fm], [T, Fm], [T, 0]] : pulso(Fm, T);
+    const J = forma === 'rect' ? Fm * T : Fm * T / 2;
+    return Object.assign(ejeFt(0.6, fmax), { curvas: [{ puntos: pts, color: 'h' }], areas: [{ puntos: pts, color: 'i', rotulo: `${f(J)} N·s` }] });
+  };
   const impulso = {
     id: 'impulso',
     titulo: 'El área de F–t empuja',
@@ -66,9 +76,18 @@
         { id: 'F', etiqueta: 'F máx', color: 'c-h', min: 10, max: 50, paso: 10, inicio: 30, unidad: 'N', decimales: 0 },
         { id: 'T', etiqueta: 'Δt', color: 'c-d', min: 0.1, max: 0.5, paso: 0.1, inicio: 0.2, unidad: 's', decimales: 1 },
       ],
-      dibujo: val => ({ datos: Object.assign(ejeFt(0.6, 50), { curvas: [{ puntos: pulso(val.F, val.T), color: 'h' }], areas: [{ puntos: pulso(val.F, val.T), color: 'i', rotulo: `${f(val.F * val.T / 2)} N·s` }] }), estado: {} }),
+      dibujo: val => ({ datos: golpe(val.F, val.T), estado: {} }),
       lectura: val => ['Impulso ', f(val.F * val.T / 2), ' N·s · sale a ', v, ` = ${f(val.F * val.T / 2 / M1)} m/s`],
       minimo: 3,
+      // Arrastra el pico (qué tan fuerte) o el final del golpe (cuánto dura); el área responde.
+      arrastres: [
+        { id: 'pico', etiqueta: 'pico de la fuerza', color: 'c-h',
+          donde: val => { const g = PZ('ejes').geometria(golpe(val.F, val.T)); return { x: g.X(val.T / 2), y: g.Y(val.F) }; },
+          mover: (pt, val) => ({ F: PZ('ejes').geometria(golpe(val.F, val.T)).Yi(pt.y) }) },
+        { id: 'fin', etiqueta: 'final del golpe', color: 'c-d',
+          donde: val => { const g = PZ('ejes').geometria(golpe(val.F, val.T)); return { x: g.X(val.T), y: g.Y(0) }; },
+          mover: (pt, val) => ({ T: PZ('ejes').geometria(golpe(val.F, val.T)).Xi(pt.x) }) },
+      ],
     },
     predice: {
       pregunta: 'La misma pelota llega igual de rápido y se detiene contra una pared dura o contra un colchón, que tarda más en frenarla. Con el colchón, la fuerza máxima…',
@@ -92,7 +111,7 @@
         areas: [{ puntos: pulso(40, 0.3), color: 'i', rotulo: '6 N·s', desde: 2 }],
       }),
       pasos: [
-        { estado: { corte: 1 }, texto: 'El golpe sube hasta 40 N y dura 0,3 s.', ecuacion: [{ sub: [F, 'máx'] }, ' = 40 N   ·   ', dt, ' = 0,3 s'] },
+        { estado: { corte: 1 }, texto: 'El golpe sube hasta 40 N y dura 0,3 s.', ecuacion: [{ sub: [F, 'máx'] }, ' = 40 N', '   ·   ', dt, ' = 0,3 s'] },
         { estado: { corte: 2 }, texto: 'El impulso es el área del triángulo.', ecuacion: ['J = ½ · 40 · 0,3 = 6 N·s'] },
         { estado: { corte: 2 }, texto: 'Ese impulso es el cambio de la cantidad de movimiento.', ecuacion: [dp, ' = J = 6 kg·m/s'] },
         { estado: { corte: 2 }, texto: 'La pelota de 0,5 kg estaba quieta: sale a 12 m/s.', ecuacion: [v, ' = ', { frac: [dp, 'm'] }, ' = ', { frac: ['6', '0,5'] }, ' = 12 m/s'] },
@@ -100,7 +119,7 @@
     },
     regla: {
       texto: 'La cantidad de movimiento es p = m·v. El impulso de la fuerza neta es el área bajo F–t, y es igual al cambio de p.',
-      ecuacion: [p, ' = m', v, '   ·   J = ', F, ' · ', dt, ' = ', dp],
+      ecuacion: [p, ' = m', v, '   ·   ', 'J = ', { llave: [F, ' · ', dt], nota: 'área bajo F–t', color: 'c-h' }, ' = ', { llave: [dp], nota: 'cambio de p', color: 'c-i' }],
       condicion: 'F es la fuerza neta. Si F cambia en el tiempo, se usa el área con signo, no el pico.',
     },
     ahoraTu: {
@@ -119,7 +138,7 @@
           ], n => `${f(n)} m/s`),
           solucion: {
             texto: tri ? 'El área es un triángulo; luego se divide entre la masa.' : 'El área es un rectángulo; luego se divide entre la masa.',
-            ecuacion: ['J = ', tri ? `½ · ${f(Fm)} · ${f(T, 1)}` : `${f(Fm)} · ${f(T, 1)}`, ` = ${f(J)} N·s   ·   `, v, ` = ${f(J)} / ${f(m)} = ${f(vf)} m/s`],
+            ecuacion: ['J = ', tri ? `½ · ${f(Fm)} · ${f(T, 1)}` : `${f(Fm)} · ${f(T, 1)}`, ` = ${f(J)} N·s`, '   ·   ', v, ` = ${f(J)} / ${f(m)} = ${f(vf)} m/s`],
             dibujo: { datos: Object.assign({}, datos, { areas: [{ puntos: forma, color: 'i', rotulo: `${f(J)} N·s` }] }), estado: {} },
           },
         };
@@ -176,14 +195,14 @@
       datos: explosion(3, 1),
       pasos: [
         { estado: { corte: 0 }, texto: 'Antes, los dos están quietos: la cantidad de movimiento total es 0.', ecuacion: [{ sub: [p, 'total'] }, ' = 0'] },
-        { estado: { corte: 1 }, texto: 'El resorte empuja a cada uno con el mismo impulso, en sentidos opuestos.', ecuacion: [{ sub: [p, 'A'] }, ' = −6   ·   ', { sub: [p, 'B'] }, ' = +6 kg·m/s'] },
-        { estado: { corte: 1 }, texto: 'Cada velocidad sale de dividir entre su masa.', ecuacion: [{ sub: [v, 'A'] }, ' = −6/3 = −2 m/s   ·   ', { sub: [v, 'B'] }, ' = 6/1 = 6 m/s'] },
+        { estado: { corte: 1 }, texto: 'El resorte empuja a cada uno con el mismo impulso, en sentidos opuestos.', ecuacion: [{ sub: [p, 'A'] }, ' = −6', '   ·   ', { sub: [p, 'B'] }, ' = +6 kg·m/s'] },
+        { estado: { corte: 1 }, texto: 'Cada velocidad sale de dividir entre su masa.', ecuacion: [{ sub: [v, 'A'] }, ' = −6/3 = −2 m/s', '   ·   ', { sub: [v, 'B'] }, ' = 6/1 = 6 m/s'] },
         { estado: { corte: 1 }, texto: 'La suma con signo sigue siendo 0.', ecuacion: ['3 · (−2) + 1 · 6 = 0'] },
       ],
     },
     regla: {
       texto: 'Si sobre el sistema no actúa impulso externo, la cantidad de movimiento total se conserva: la suma de m·v, con signo, es la misma antes y después.',
-      ecuacion: [{ sub: ['m', 'A'] }, { sub: [v, 'A'] }, ' + ', { sub: ['m', 'B'] }, { sub: [v, 'B'] }, ' = ', { sub: ['m', 'A'] }, { sub: [v, "A'"] }, ' + ', { sub: ['m', 'B'] }, { sub: [v, "B'"] }],
+      ecuacion: [{ llave: [{ sub: ['m', 'A'] }, { sub: [v, 'A'] }, ' + ', { sub: ['m', 'B'] }, { sub: [v, 'B'] }], nota: 'antes', color: 'c-i' }, ' = ', { llave: [{ sub: ['m', 'A'] }, { sub: [v, "A'"] }, ' + ', { sub: ['m', 'B'] }, { sub: [v, "B'"] }], nota: 'después', color: 'c-i' }],
       condicion: 'el impulso de las fuerzas externas es nulo o despreciable en ese intervalo. Las velocidades llevan signo.',
     },
     ahoraTu: {
@@ -266,10 +285,10 @@
       pieza: 'fis-riel',
       datos: rielChoque(0, 2),
       pasos: [
-        { estado: { corte: 0 }, texto: 'Antes: 2 kg a 4 m/s.', ecuacion: [p, ' = 2 · 4 = 8 kg·m/s   ·   K = ½ · 2 · 4² = 16 J'] },
+        { estado: { corte: 0 }, texto: 'Antes: 2 kg a 4 m/s.', ecuacion: [p, ' = 2 · 4 = 8 kg·m/s', '   ·   ', 'K = ½ · 2 · ', { sup: ['4', '2'] }, ' = 16 J'] },
         { estado: { corte: 1 }, texto: 'Salen pegados: los 4 kg comparten la cantidad de movimiento.', ecuacion: [v, ' = 8 / 4 = 2 m/s'] },
-        { estado: { corte: 1 }, texto: 'La energía cinética después es la mitad.', ecuacion: ['K = ½ · 4 · 2² = 8 J'] },
-        { estado: { corte: 1 }, texto: 'Elástico (e = 1): A se detiene y B sale con los 16 J.', ecuacion: ['e = 1:   ', { sub: [v, "A'"] }, ' = 0   ·   ', { sub: [v, "B'"] }, ' = 4 m/s'] },
+        { estado: { corte: 1 }, texto: 'La energía cinética después es la mitad.', ecuacion: ['K = ½ · 4 · ', { sup: ['2', '2'] }, ' = 8 J'] },
+        { estado: { corte: 1 }, texto: 'Elástico (e = 1): A se detiene y B sale con los 16 J.', ecuacion: ['e = 1:   ', { sub: [v, "A'"] }, ' = 0', '   ·   ', { sub: [v, "B'"] }, ' = 4 m/s'] },
       ],
     },
     regla: {
@@ -292,7 +311,7 @@
           ], n => `${f(n)} J`),
           solucion: {
             texto: 'Primero la velocidad común con p; luego se restan las energías.',
-            ecuacion: [v, ` = ${f(mA * vA)}/${f(mA + mB)} = ${f(vf)} m/s   ·   ${f(K0)} − ${f(K1)} = ${f(K0 - K1)} J`],
+            ecuacion: [v, ` = ${f(mA * vA)}/${f(mA + mB)} = ${f(vf)} m/s`, '   ·   ', `${f(K0)} − ${f(K1)} = ${f(K0 - K1)} J`],
           },
         };
       },
@@ -320,8 +339,17 @@
       voz: 'Compara las dos flechas de velocidad: la de llegada y la de salida.',
       controles: [{ id: 'e', etiqueta: 'e', min: 0.2, max: 1, paso: 0.1, inicio: 0.6, decimales: 1 }],
       dibujo: val => torreRebote(val.e),
-      lectura: val => ['Llega: 20 m/s · sale: ', f(val.e * VH, 1), ' m/s · sube: ', f(val.e * val.e * H, 1), ' m'],
+      lectura: val => ['Llega: 20\u00a0m/s · sale: ', f(val.e * VH, 1), '\u00a0m/s · sube: ', f(val.e * val.e * H, 1), '\u00a0m'],
       minimo: 3,
+      // Arrastra la pelota que sube: su altura es e²·20 m, así que la manija da e = √(h / 20).
+      arrastres: [
+        { id: 'rebote', etiqueta: 'altura del rebote', color: 'c-i',
+          donde: val => ({ x: PZ('torre').constantes.COLUMNAS[1], y: PZ('torre').escala(torreRebote(val.e).datos, val.e * val.e * H) - 8 }),
+          mover: (pt, val) => {
+            const h = inversa(y => PZ('torre').escala(torreRebote(val.e).datos, y), 0, 20)(pt.y + 8);
+            return { e: Math.sqrt(Math.max(0, h) / H) };
+          } },
+      ],
     },
     predice: {
       pregunta: 'Una pelota cae desde 20 m y, después del rebote, sube solo hasta 5 m. ¿Cuál es su coeficiente de restitución e?',
@@ -335,6 +363,8 @@
       revelar: { datos: { alto: 20, colores: { y: 'i', v: 'o', a: 'd' }, g: false, pelotas: [{ y: H, v: -VH, marcas: [H], rotulo: 'llega' }, { y: 5, v: 10, marcas: [5], rotulo: 'sale' }] }, estado: {} },
       coincide: 'Coincide: llega a 20 m/s y sale a 10 m/s. La mitad de la rapidez da la cuarta parte de la altura.',
     },
+    // Hallazgo 9: el juego muestra la torre (alturas) y «Mira» pasa a v–t a propósito: e compara rapideces, que la
+    // torre no deja leer; el área del triángulo devuelve la altura del rebote que se vio en la torre.
     mira: {
       pieza: 'ejes',
       datos: {
@@ -431,7 +461,7 @@
       pieza: 'recta',
       datos: rectaCM([{ x: 0, m: 3 }, { x: 8, m: 1 }], 2, { desdeC: 3, rot: '2 m' }),
       pasos: [
-        { estado: { corte: 1 }, texto: 'Cada masa cuenta según cuánto pesa y dónde está.', ecuacion: ['3 · 0 = 0   ·   1 · 8 = 8'] },
+        { estado: { corte: 1 }, texto: 'Cada masa cuenta según cuánto pesa y dónde está.', ecuacion: ['3 · 0 = 0', '   ·   ', '1 · 8 = 8'] },
         { estado: { corte: 2 }, texto: 'Se suman los productos y se divide entre la masa total.', ecuacion: [{ sub: ['x', 'cm'] }, ' = ', { frac: ['0 + 8', '3 + 1'] }] },
         { estado: { corte: 3 }, texto: 'El centro queda en 2 m: más cerca de la masa mayor.', ecuacion: [{ sub: ['x', 'cm'] }, ' = 2 m'] },
         { estado: { corte: 3 }, texto: 'El resorte es una fuerza interna: los carritos se mueven, el centro no.', ecuacion: [{ sub: [p, 'total'] }, ' = 0   →   ', { sub: [v, 'cm'] }, ' = 0'] },
@@ -439,7 +469,7 @@
     },
     regla: {
       texto: 'El centro de masa es el promedio de las posiciones pesado por las masas. Sin impulso externo, se mueve con velocidad constante, o sigue quieto.',
-      ecuacion: [{ sub: ['x', 'cm'] }, ' = ', { frac: [[{ sub: ['m', '1'] }, { sub: ['x', '1'] }, ' + ', { sub: ['m', '2'] }, { sub: ['x', '2'] }], [{ sub: ['m', '1'] }, ' + ', { sub: ['m', '2'] }]] }],
+      ecuacion: [{ sub: ['x', 'cm'] }, ' = ', { frac: [{ llave: [{ sub: ['m', '1'] }, { sub: ['x', '1'] }, ' + ', { sub: ['m', '2'] }, { sub: ['x', '2'] }], nota: 'masa por posición', arriba: true }, { llave: [{ sub: ['m', '1'] }, ' + ', { sub: ['m', '2'] }], nota: 'masa total' }] }],
       condicion: 'todas las posiciones se miden desde el mismo origen; cada cuerpo se ubica en su propio centro.',
     },
     ahoraTu: {
@@ -467,11 +497,100 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Choque libre: A y B con masa y velocidad propias (B puede venir de frente) y cualquier e. Las velocidades de
+  // después salen de conservar p y de la definición de e (choque frontal en una recta).
+  const choqueLibre = val => {
+    const M = val.mA + val.mB, P0 = val.mA * val.vA + val.mB * val.vB, ac = val.vA - val.vB;
+    if (ac <= 0) return { choca: false, vA2: val.vA, vB2: val.vB, P0, K0: 0, K1: 0 };
+    const vA2 = (P0 - val.mB * val.e * ac) / M, vB2 = (P0 + val.mA * val.e * ac) / M;
+    const K = (a, b) => (val.mA * a * a + val.mB * b * b) / 2;
+    return { choca: true, vA2, vB2, P0, K0: K(val.vA, val.vB), K1: K(vA2, vB2) };
+  };
+  const XA0 = 2, XB0 = 6;
+  const rielLibre = val => {
+    const c = choqueLibre(val), d0 = { largo: 10, escalaV: 5, colores: { v: 'o' } };
+    const pegados = c.choca && val.e === 0;
+    const xa = Math.max(1.5, Math.min(5, 3.5 + 0.3 * c.vA2));
+    const xb = pegados ? PZ('fis-riel').pegado(d0, xa) : Math.max(PZ('fis-riel').pegado(d0, xa) + 0.3, Math.min(8.5, 6.5 + 0.3 * c.vB2));
+    return Object.assign(d0, { filas: [
+      { rotulo: 'Antes', nota: `p = ${f(c.P0)}`, carros: [{ x: XA0, m: val.mA, v: val.vA, rotulo: 'A' }, { x: XB0, m: val.mB, v: val.vB, rotulo: 'B', variante: 'b' }] },
+      { rotulo: 'Después', nota: c.choca ? `p = ${f(c.vA2 * val.mA + c.vB2 * val.mB)}` : 'no chocan', carros: [{ x: xa, m: val.mA, v: c.vA2, rotulo: 'A' }, { x: xb, m: val.mB, v: c.vB2, rotulo: 'B', variante: 'b' }] },
+    ] });
+  };
+  // Centro de masa libre: las dos masas se arrastran por la regla.
+  const cmLibre = val => { const cs = [{ x: val.x1, m: val.m1 }, { x: val.x2, m: val.m2 }]; return rectaCM(cs, xcm(cs), { min: -2, max: 12 }); };
+
   return {
     unidad: 'fisica.impulso-y-choques',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/fis-riel.js', '/nucleo/kit/piezas/torre.js', '/nucleo/kit/piezas/recta.js'],
+    // Laboratorio: juego libre, sin preguntas. Cada mesa suelta lo que su idea deja fijo: la masa y la forma del
+    // golpe, la velocidad de los dos carritos (también de frente) y el lugar de cada masa.
+    laboratorio: [
+      {
+        id: 'golpe-libre', titulo: 'Golpes de dos formas', pieza: 'ejes',
+        consigna: 'Elige la forma del golpe, su pico, su duración y la masa. Busca dos golpes distintos con el mismo impulso.',
+        controles: [
+          { id: 'forma', etiqueta: 'Forma', opciones: [{ valor: 'tri', texto: 'triángulo' }, { valor: 'rect', texto: 'rectángulo' }] },
+          { id: 'F', etiqueta: 'F máx', color: 'c-h', min: 10, max: 50, paso: 5, inicio: 30, unidad: 'N', decimales: 0 },
+          { id: 'T', etiqueta: 'Δt', color: 'c-d', min: 0.1, max: 0.5, paso: 0.05, inicio: 0.2, unidad: 's', decimales: 2 },
+          { id: 'm', etiqueta: 'masa', min: 0.25, max: 2, paso: 0.25, inicio: 0.5, unidad: 'kg', decimales: 2 },
+        ],
+        dibujo: val => ({ datos: golpe(val.F, val.T, val.forma), estado: {} }),
+        lectura: val => { const J = val.forma === 'rect' ? val.F * val.T : val.F * val.T / 2; return [`J = ${f(J)}\u00a0N·s con ${f(val.m)}\u00a0kg → `, v, ` = ${f(J / val.m)}\u00a0m/s`]; },
+        arrastres: [
+          { id: 'pico', etiqueta: 'altura de la fuerza', color: 'c-h',
+            donde: val => { const g = PZ('ejes').geometria(golpe(val.F, val.T, val.forma)); return { x: g.X(val.T / 2), y: g.Y(val.F) }; },
+            mover: (pt, val) => ({ F: PZ('ejes').geometria(golpe(val.F, val.T, val.forma)).Yi(pt.y) }) },
+          { id: 'fin', etiqueta: 'final del golpe', color: 'c-d',
+            donde: val => { const g = PZ('ejes').geometria(golpe(val.F, val.T, val.forma)); return { x: g.X(val.T), y: g.Y(0) }; },
+            mover: (pt, val) => ({ T: PZ('ejes').geometria(golpe(val.F, val.T, val.forma)).Xi(pt.x) }) },
+        ],
+      },
+      {
+        id: 'choque-libre', titulo: 'Choque frontal libre', pieza: 'fis-riel',
+        consigna: 'Arrastra las flechas de velocidad de A y B (B puede venir de frente). Elige masas y qué tan elástico es.',
+        controles: [
+          { id: 'vA', etiqueta: 'v de A', color: 'c-o', min: 1, max: 6, paso: 1, inicio: 4, unidad: 'm/s', decimales: 0 },
+          { id: 'vB', etiqueta: 'v de B', color: 'c-o', min: -3, max: 3, paso: 1, inicio: -2, unidad: 'm/s', decimales: 0 },
+          { id: 'mA', etiqueta: 'masa de A', min: 1, max: 4, paso: 1, inicio: 2, unidad: 'kg', decimales: 0 },
+          { id: 'mB', etiqueta: 'masa de B', min: 1, max: 4, paso: 1, inicio: 1, unidad: 'kg', decimales: 0 },
+          { id: 'e', etiqueta: 'elástico (e)', min: 0, max: 1, paso: 0.25, inicio: 1, decimales: 2 },
+        ],
+        dibujo: val => ({ datos: rielLibre(val), estado: {} }),
+        lectura: val => {
+          const c = choqueLibre(val);
+          return c.choca ? [`e = ${f(val.e)}: `, p, ` = ${f(c.P0)} antes y después · K: ${f(c.K0)} → ${f(c.K1)}\u00a0J`] : ['B va más rápido que A: no chocan'];
+        },
+        arrastres: [
+          { id: 'flecha-a', etiqueta: 'velocidad de A', color: 'c-o',
+            donde: val => PZ('fis-riel').punta(rielLibre(val), 0, { x: XA0, v: val.vA }),
+            mover: (pt, val) => ({ vA: PZ('fis-riel').velocidadDe(rielLibre(val), XA0, pt.x) }) },
+          { id: 'flecha-b', etiqueta: 'velocidad de B', color: 'c-o',
+            donde: val => PZ('fis-riel').punta(rielLibre(val), 0, { x: XB0, v: val.vB }),
+            mover: (pt, val) => ({ vB: PZ('fis-riel').velocidadDe(rielLibre(val), XB0, pt.x) }) },
+        ],
+      },
+      {
+        id: 'centro-libre', titulo: 'Masas que se mueven', pieza: 'recta',
+        consigna: 'Arrastra cada masa por la regla y cambia cuánto pesa. Mira hacia dónde se corre el centro de masa.',
+        controles: [
+          { id: 'x1', etiqueta: 'lugar de 1', min: -2, max: 4, paso: 1, inicio: 0, unidad: 'm', decimales: 0 },
+          { id: 'm1', etiqueta: 'masa 1', min: 1, max: 6, paso: 1, inicio: 3, unidad: 'kg', decimales: 0 },
+          { id: 'x2', etiqueta: 'lugar de 2', min: 5, max: 12, paso: 1, inicio: 8, unidad: 'm', decimales: 0 },
+          { id: 'm2', etiqueta: 'masa 2', min: 1, max: 6, paso: 1, inicio: 1, unidad: 'kg', decimales: 0 },
+        ],
+        dibujo: val => ({ datos: cmLibre(val), estado: {} }),
+        lectura: val => [`${f(val.m1)} kg en ${f(val.x1)} · ${f(val.m2)} kg en ${f(val.x2)} → centro ${f(xcm([{ x: val.x1, m: val.m1 }, { x: val.x2, m: val.m2 }]))}\u00a0m`],
+        arrastres: ['1', '2'].map(n => ({
+          id: `masa-${n}`, etiqueta: `masa ${n}`,
+          donde: val => { const g = PZ('recta').geometria(cmLibre(val)); return { x: g.x(val['x' + n]), y: g.filaY(1) }; },
+          mover: (pt, val) => ({ ['x' + n]: inversa(PZ('recta').geometria(cmLibre(val)).x, -2, 12)(pt.x) }),
+        })),
+      },
+    ],
     historia: {
       texto: 'En 1668 y 1669, la Royal Society de Londres recibió trabajos sobre choques de Wren y de Huygens. No todos los choques se comportaban igual, y había que separar lo que siempre se conserva de lo que a veces se pierde. Esa distinción es la de esta unidad.',
       pregunta: '¿Qué queda igual cuando dos cosas chocan?',

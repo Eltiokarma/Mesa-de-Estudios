@@ -98,5 +98,17 @@
 
   // x del carrito que toca por la derecha al que está en x (para dibujar dos carritos pegados).
   const pegado = (d, x) => x + (CW + 2) * largo(d) / (PX1 - PX0);
-  return { id: 'fis-riel', dibujar, alt, escala: X, pegado, constantes: { W, PX0, PX1, FILA, CW } };
+  // Gesto directo (docs/teoria.md §4b): dónde queda la punta de la flecha de v de un carrito solo (no pegado) en la
+  // fila k, con las mismas cuentas que velocidad(); con v = 0, el centro del carrito a la altura de la flecha.
+  const punta = (d, k, c) => {
+    const cx = X(d, c.x || 0), e = d.escalaV > 0 ? d.escalaV : 10, vv = Number.isFinite(c.v) ? c.v : 0;
+    const L = Math.abs(vv) * e, sg = Math.sign(vv);
+    return { x: cx - sg * Math.min(L, 14) / 2 + sg * L, y: pisoDe(k) - CH - RR - 14 };
+  };
+  // La inversa: la v que deja la punta de la flecha del carrito en x en el píxel px (la cola se corre con v chica).
+  const velocidadDe = (d, x, px) => {
+    const e = d.escalaV > 0 ? d.escalaV : 10, u = px - X(d, x), sg = Math.sign(u), a = Math.abs(u);
+    return sg * (a < 7 ? 2 * a / e : (a + 7) / e);
+  };
+  return { id: 'fis-riel', dibujar, alt, escala: X, pegado, punta, velocidadDe, constantes: { W, PX0, PX1, FILA, CW } };
 });

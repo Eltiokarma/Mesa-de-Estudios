@@ -47,3 +47,20 @@ test('sin NaN ni colores fijos, alto que no cambia con el estado, texto alternat
   assert.match(P.alt(D), /A de 2 kg a 4 m\/s/);
   assert.ok(P.dibujar({}).includes('<svg'));
 });
+
+test('punta y velocidadDe: la punta de la flecha cae donde la dibuja la pieza, y la inversa devuelve la v', () => {
+  for (const v of [-6, -1, -0.5, 0, 0.5, 1, 4, 6]) {
+    const d = { largo: 10, escalaV: 12, filas: [{ carros: [{ x: 5, m: 2, v }] }, { carros: [{ x: 3, m: 1, v }] }] };
+    for (const k of [0, 1]) {
+      const c = d.filas[k].carros[0], q = P.punta(d, k, c);
+      assert.ok(Math.abs(P.velocidadDe(d, c.x, q.x) - v) < 1e-9, `v = ${v}`);
+      if (v) {
+        const s = P.dibujar(d, {});
+        const ys = [...s.matchAll(/<line x1="[\d.-]+" y1="([\d.-]+)"/g)].map(m => +m[1]);
+        assert.ok(ys.some(y => Math.abs(y - q.y) < 0.6), `la flecha va a la altura y = ${q.y}`);
+        const puntas = [...s.matchAll(/<path d="M([\d.-]+) ([\d.-]+)L/g)].map(m => [+m[1], +m[2]]);
+        assert.ok(puntas.some(([x, y]) => Math.abs(x - q.x) < 0.6 && Math.abs(y - q.y) < 0.6), `punta en (${q.x}; ${q.y})`);
+      }
+    }
+  }
+});
