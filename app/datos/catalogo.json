@@ -2087,7 +2087,15 @@
      "grado": 4,
      "plantillas": [
       "interes"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/interes-y-descuento.js",
+      "requiere": [
+       "/nucleo/kit/piezas/arit-tiras.js",
+       "/nucleo/kit/piezas/recta.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "aritmetica.mezclas-y-aleaciones",
