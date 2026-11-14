@@ -83,7 +83,7 @@
             {
               "id": "TT5-signo",
               "respaldo": "hipotesis",
-              "explicacion": "Olvidaste el signo menos de la fórmula: cos A − cos B = −2 sen M sen D. Además, cos 15° es mayor que cos 75°: F es positivo.",
+              "explicacion": "Olvidaste el signo menos: cos A − cos B = −2 sen 45° sen(−30°). Además, cos 15° es mayor que cos 75°, así que F es positivo.",
               "fn": "sumaAProducto",
               "args": [{ "fn": "cos", "op": "−", "A": 15, "B": 75 }],
               "campo": "errores.signo.texto",
@@ -151,7 +151,7 @@
             {
               "id": "TT7-otra-formula",
               "respaldo": "hipotesis",
-              "explicacion": "Usaste la fórmula de otro producto, con cosenos. Para 2 sen x cos y salen senos: sen 120° + sen 90°.",
+              "explicacion": "Usaste cos 120° + cos 90°, la fórmula de otro producto. Para 2 sen x cos y salen senos: sen 120° + sen 90°.",
               "fn": "productoASuma",
               "args": [{ "tipo": "sencos", "x": 105, "y": 15 }],
               "campo": "errores.funcion.texto",
@@ -456,7 +456,7 @@
             {
               "id": "TT2-intercambia",
               "respaldo": "hipotesis",
-              "explicacion": "Contaste los ceros de cos 10t, que viene de la semisuma: es la onda rápida. La envolvente es 2 cos 2t.",
+              "explicacion": "Usaste 10t, la semisuma, que es la de la onda rápida, sen 10t. La envolvente es 2 cos 2t y se anula 4 veces.",
               "fn": "pulsos",
               "args": [{ "p": 12, "q": 8, "n": 2 }],
               "campo": "errores.intercambia.texto",
