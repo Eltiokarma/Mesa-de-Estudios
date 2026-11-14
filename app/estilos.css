@@ -850,3 +850,13 @@ body.con-lupa{overflow:hidden}
 /* Casos guardados: la «×» va fuera de la miniatura, para no tapar su encabezado. */
 .te-caso{padding-top:40px}
 .te-quitar{top:0;right:0}
+
+/* ---------- Avance honesto (nucleo/avance.js): nivel de la unidad con lo que falta ---------- */
+.nivel-u .tag{font-size:14px;padding:4px 12px}
+.nivel-u{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:10px 0 4px}
+.nivel-u .sub{margin:0}
+.tag.nivel-0{background:var(--line);color:var(--ink)}
+.tag.nivel-1,.tag.nivel-2{background:var(--brand-soft);color:var(--ink)}
+.tag.nivel-3,.tag.nivel-4{background:color-mix(in srgb,var(--ok) 18%,var(--card));color:var(--ink)}
+.niveles-resumen{list-style:none;display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:center;margin:12px 0 0;padding:0;font-size:14px;color:var(--muted)}
+.niveles-resumen b{color:var(--ink)}

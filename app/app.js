@@ -21,6 +21,8 @@ function cargarEstado() {
 }
 const BASE_EST = () => ({ nombre: '', uni: '', grado: '', colegio: '', alumno: '', vistas: {}, dias: [], tema: '', practica: {}, pruebas: {}, salidaHabilitada: [], solucionesHabilitadas: [] });
 let est = Object.assign(BASE_EST(), cargarEstado());
+// Avance honesto (nucleo/avance.js): est.vistas son visitas; estudiar se acredita con evidencia. Migra una sola vez.
+if (window.Avance && Avance.migrar(est)) { try { localStorage.setItem(CLAVE, JSON.stringify(est)); } catch { /* sin almacenamiento */ } }
 // ---------- Cuentas (docs/cuentas.md, fase C2) ----------
 // Con window.MESA_API (app/config.js) hay servidor: el alumno entra con usuario y contraseña, y nucleo/sesion.js sube
 // la cola de eventos y su est. Sin servidor, o si elige «Probar sin cuenta», la app queda en modo demostración.
@@ -95,7 +97,12 @@ const unidadesDe = (c, uni) => c.unidades.filter(u => !uni || u.universidades[un
 const ubic = (u, uni) => { const k = cat.universidades[uni]?.ubicacion; return k && u.universidades[uni] ? u.universidades[uni][k] : null; };
 const etiquetaUbic = (u, k) => { const v = ubic(u, k); if (!v) return ''; const pal = cat.universidades[k].ubicacion === 'semanas' ? 'sem.' : 'tema';
   return `${UNI_CORTA[k] || k} · ${pal} ${v.length > 2 ? `${v[0]}–${v[v.length - 1]}` : v.join(', ')}`; };
-const visto = id => !!est.vistas[id];
+const visto = id => !!est.vistas[id];   // visitada (abrió algo): no es lo mismo que estudiada
+// Nivel de una unidad (nucleo/avance.js). El índice de eventos se arma una vez por pantalla.
+let ixAvance = null;
+const indiceAvance = () => ixAvance || (ixAvance = window.Avance ? Avance.indice(eventos(), est.alumno) : {});
+const nivelDe = u => (window.Avance ? Avance.nivel(est, u, indiceAvance()) : { nivel: visto(u.id) ? 0 : -1, nombre: '', falta: '' });
+const estudiada = u => nivelDe(u).nivel >= 1;
 const cursoDeUnidad = id => cat.cursos.find(c => c.unidades.some(u => u.id === id));
 // Módulo de lectura del curso con prueba de entrada y salida propias (razonamiento verbal: textos t000a y t000b).
 // Sus pruebas siguen las reglas de las demás: la entrada va al entrar al curso y la salida la abre el profesor (?salida=).
@@ -111,7 +118,7 @@ const salidaAbierta = curso => (est.salidaHabilitada || []).some(x => x === curs
 const enlace = (p, unidad) => p.formato === 'escena' ? `${p.url}?desde=app` : p.formato === 'lectura' && unidad ? `${p.url}/${encodeURIComponent(unidad)}` : p.url;
 const VERBO = { escena: 'Abrir escena', predicciones: 'Practicar', lectura: 'Leer' };
 const ETIQUETA = { escena: 'Escena', predicciones: 'Práctica', lectura: 'Lectura' };
-function avance(c, uni) { const us = unidadesDe(c, uni); return us.length ? us.filter(u => visto(u.id)).length / us.length : 0; }
+function avance(c, uni) { const us = unidadesDe(c, uni); return us.length ? us.filter(estudiada).length / us.length : 0; }
 // Grado: una unidad de un grado mayor al del alumno es un "adelanto". No se oculta, pero va al final.
 const adelanto = u => u.grado > (Number(est.grado) || 99);
 const tagAdelanto = u => adelanto(u) ? `<span class="tag gris" title="Normalmente se ve en ${u.grado}.º de secundaria">Adelanto · ${u.grado}.º</span>` : '';
@@ -206,7 +213,7 @@ function tarjetaRepaso() {
 
 function vInicio() {
   sembrarRepaso();
-  const q = cola(est.uni), pend = q.filter(x => !visto(x.u.id));
+  const q = cola(est.uni), pend = q.filter(x => !estudiada(x.u));
   const conEscena = pend.find(x => !x.a && x.u.plantillas.length) || pend[0];
   const totalU = q.length, hechas = q.length - pend.length;
   const reto = conEscena ? `<div class="reto tinte" style="${Ilus.tinte(conEscena.c.id)}">${Ilus.viñeta(conEscena.c.id, 'class="reto-vineta vineta-flota"')}${Ilus.gato('class="reto-gato-mini"')}
@@ -216,7 +223,7 @@ function vInicio() {
       ${conEscena.u.plantillas.length
         ? `<a class="btn tinta" href="${esc(enlace(cat.plantillas[conEscena.u.plantillas[0]], conEscena.u.id))}" data-abrir="${esc(conEscena.u.id)}">${VERBO[cat.plantillas[conEscena.u.plantillas[0]].formato] || 'Abrir'} ›</a>`
         : `<a class="btn tinta" href="#/unidad/${esc(conEscena.u.id)}">Ver unidad ›</a>`}
-    </div>` : `<div class="reto">${Ilus.gatoDormido('class="reto-gato"')}<h3>¡Terminaste todo el temario!</h3><p>Repasa lo que más te costó.</p></div>`;
+    </div>` : `<div class="reto">${Ilus.gatoDormido('class="reto-gato"')}<h3>Estudiaste todas las unidades</h3><p>Ahora toca recordarlas: el repaso de hoy te espera.</p></div>`;
   // Lo que sigue: solo unidades con módulo (las demás no tienen nada que abrir todavía), una por curso primero
   // para que no salgan cuatro del mismo curso, y luego el resto en el orden del temario.
   const conModulo = pend.filter(x => x !== conEscena && cat.plantillas[x.u.plantillas[0]]);
@@ -298,8 +305,8 @@ function vCurso(id) {
   // Orden de las filas: su grado primero; luego los anteriores, del más cercano (repaso); al final los adelantos.
   const mio = Number(est.grado) || 0, peso = g => (!mio ? g : g === mio ? 0 : g < mio ? 10 - g : 20 + g);
   const grados = [...new Set(ord.map(u => u.grado))].sort((a, b) => peso(a) - peso(b));
-  const tarjeta = u => `<a class="unidad-t${visto(u.id) ? ' hecha' : ''}" href="#/unidad/${esc(u.id)}" data-unidad="${esc(u.id)}">
-      <span class="lamina">${dibujo(c, u)}${visto(u.id) ? '<span class="hecho" title="Ya la estudiaste">✓<span class="lector"> Estudiada</span></span>' : ''}</span>
+  const tarjeta = u => `<a class="unidad-t${estudiada(u) ? ' hecha' : ''}" href="#/unidad/${esc(u.id)}" data-unidad="${esc(u.id)}">
+      <span class="lamina">${dibujo(c, u)}${estudiada(u) ? `<span class="hecho" title="${esc(nivelDe(u).nombre)}">✓<span class="lector"> ${esc(nivelDe(u).nombre)}</span></span>` : ''}</span>
       <span class="t">${esc(u.nombre)}</span><span class="d">${textoEjercicios(modulosDe(u).length)}</span></a>`;
   const filas = grados.map(g => { const del = ord.filter(u => u.grado === g);
     const marca = g === mio ? '<span class="tag acento">Tu grado</span>' : mio && g > mio ? '<span class="tag gris">Adelanto</span>' : mio ? '<span class="tag gris">Repaso</span>' : '';
@@ -385,13 +392,16 @@ function vUnidad(id, sub) {
   if (sub === 'examen') return vExamen(c, u);
   if (sub === 'pregunta') return vPregunta(c, u);
   const n = modulosDe(u).length, gens = generadoresDe(u).length, ex = (est.examenes || {})[id];
+  est.vistas[id] = est.vistas[id] || hoy();   // abrir la unidad es una visita (no la acredita como estudiada)
+  const nv = nivelDe(u), marcada = !!(est.marcadas || {})[id];
   const puerta = (k, d, principal) => `<a class="puerta${principal ? ' principal' : ''}" href="#/unidad/${esc(id)}/${k}">${iconoPuerta(k)}<span class="t">${SUB_UNIDAD[k]}</span><span class="d">${d}</span></a>`;
   $app.innerHTML = `<header class="unidad-hero tinte" style="${Ilus.tinte(c.id)}">
       <a class="volver" href="#/curso/${esc(c.id)}" aria-label="Volver a ${esc(c.nombre)}">‹</a>
       <div class="uh-cuerpo"><span class="lamina">${dibujo(c, u)}</span>
         <div><p class="sub">${esc(c.nombre)} · ${u.grado}.º de secundaria</p><h1>${esc(u.nombre)}</h1></div></div>
       <p class="sub temas">${esc(u.temas.join(' · '))}</p>
-      <button type="button" class="marca-vista${visto(id) ? ' on' : ''}" data-ver aria-pressed="${visto(id)}"><span class="caja-v" aria-hidden="true">${visto(id) ? '✓' : ''}</span>${visto(id) ? 'Ya la estudié' : 'Marcar como estudiada'}</button>
+      <div class="nivel-u"><span class="tag nivel-${nv.nivel}">${esc(nv.nivel >= 0 ? nv.nombre : 'Sin empezar')}</span>${nv.falta ? `<span class="sub">${esc(nv.falta)}</span>` : ''}</div>
+      <button type="button" class="marca-vista${marcada ? ' on' : ''}" data-ver aria-pressed="${marcada}"><span class="caja-v" aria-hidden="true">${marcada ? '✓' : ''}</span>${marcada ? 'La marqué como estudiada' : 'Ya la estudié por mi cuenta'}</button>
     </header>
     <nav class="puertas aparece" aria-label="Qué hacer en esta unidad">
       ${puerta('teoria', u.teoria ? textoTeoria(u) : 'En preparación', false)}
@@ -401,8 +411,9 @@ function vUnidad(id, sub) {
       ${puerta('pregunta', 'Para tu profesor')}
     </nav>`;
   $app.querySelector('[data-ver]').onclick = () => {
-    if (est.vistas[id]) delete est.vistas[id]; else { est.vistas[id] = hoy(); marcarDia(); }
-    guardar(); vUnidad(id);
+    est.marcadas = est.marcadas || {};
+    if (est.marcadas[id]) delete est.marcadas[id]; else { est.marcadas[id] = hoy(); marcarDia(); }
+    ixAvance = null; guardar(); vUnidad(id);
   };
 }
 
@@ -602,7 +613,8 @@ function vPregunta(c, u) {
 
 function vProgreso() {
   sembrarRepaso();
-  const q = cola(est.uni), hechas = q.filter(x => visto(x.u.id)).length, p = q.length ? hechas / q.length : 0;
+  const q = cola(est.uni), hechas = q.filter(x => estudiada(x.u)).length, p = q.length ? hechas / q.length : 0;
+  const porNivel = [0, 1, 2, 3, 4].map(k => q.filter(x => nivelDe(x.u).nivel === k).length);
   const R = 70, L = Math.PI * R; // medio anillo
   const dias = [...Array(7)].map((_, i) => { const d = new Date(); d.setDate(d.getDate() - 6 + i); const f = d.toLocaleDateString('en-CA');
     return { l: d.toLocaleDateString('es-PE', { weekday: 'narrow' }), on: est.dias.includes(f), n: Object.values(est.vistas).filter(v => v === f).length }; });
@@ -613,7 +625,8 @@ function vProgreso() {
       <div class="anillo"><svg width="180" height="100" viewBox="0 0 180 100" role="img" aria-label="${Math.round(p * 100)} % del temario">
         <path d="M20 90a70 70 0 0 1 140 0" fill="none" stroke="var(--brand-soft)" stroke-width="18" stroke-linecap="round"/>
         <path d="M20 90a70 70 0 0 1 140 0" fill="none" stroke="var(--brand)" stroke-width="18" stroke-linecap="round" stroke-dasharray="${L}" stroke-dashoffset="${L * (1 - p)}"/></svg>
-        <div style="margin-top:-46px;text-align:center"><div class="n">${Math.round(p * 100)}<span style="font-size:20px">%</span></div><div class="l">${hechas} de ${q.length} unidades</div></div></div>
+        <div style="margin-top:-46px;text-align:center"><div class="n">${Math.round(p * 100)}<span style="font-size:20px">%</span></div><div class="l">${hechas} de ${q.length} unidades estudiadas</div></div></div>
+      <ul class="niveles-resumen">${['Visitadas', 'La estudié', 'Con ayuda', 'Sin ayuda', 'La recuerdo'].map((t, k) => `<li><b>${porNivel[k]}</b> ${t}</li>`).join('')}</ul>
       ${q.length - hechas ? `<div class="aviso">🍫 Te faltan ${q.length - hechas} unidades. Una por día también cuenta.</div>` : ''}
     </div>
     ${repasoProgreso()}
@@ -1091,6 +1104,8 @@ function cuandoListo(promesa, fn) {
 // ---------- Rutas ----------
 function ir(h) { if (location.hash === h) render(); else location.hash = h; }
 function render() {
+  ixAvance = null;                                  // los niveles se recalculan con los eventos de ahora
+  if (window.Avance) Avance.migrar(est);
   const [, ruta = 'inicio', arg] = location.hash.split('/');
   // Con servidor: sin sesión (y sin «Probar sin cuenta») va el ingreso; el primer ingreso pide la contraseña nueva;
   // el profesor y el administrador van a su panel.
