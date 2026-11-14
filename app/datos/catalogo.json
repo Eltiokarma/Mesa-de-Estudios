@@ -4196,7 +4196,14 @@
      "grado": 3,
      "plantillas": [
       "lectura-verbal"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-verbal/plan-de-redaccion.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rv-texto.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-verbal.cohesion-y-coherencia",
