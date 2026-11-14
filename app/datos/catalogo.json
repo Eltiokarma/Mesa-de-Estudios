@@ -2937,7 +2937,14 @@
      "plantillas": [
       "geometria-espacio",
       "geo-proporcionalidad"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/geometria/geometria-del-espacio.js",
+      "requiere": [
+       "/nucleo/kit/piezas/geo-figura.js"
+      ],
+      "ideas": 6
+     }
     },
     {
      "id": "geometria.poliedros",
