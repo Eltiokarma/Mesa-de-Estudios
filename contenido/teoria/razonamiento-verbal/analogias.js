@@ -23,6 +23,15 @@
   else root.Teoria.unidad(def);
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
+  // Una lectura en vivo no parte línea dentro de un color (.var): si el texto es largo, solo va en color su cabeza.
+  const corto = (fn, t) => {
+    if (t.length <= 26) return fn(t);
+    const k = [t.indexOf(': '), t.indexOf(', ')].filter(i => i > 0).sort((a, b) => a - b)[0];
+    if (k && k <= 24) return [fn(t.slice(0, k)), t.slice(k)];
+    const ps = t.split(' '); let n = 1;
+    while (n < ps.length && ps.slice(0, n + 1).join(' ').length <= 18) n++;
+    return [fn(ps.slice(0, n).join(' ')), ' ' + ps.slice(n).join(' ')];
+  };
   const base = t => ({ v: 'c-i', t }), prueba = t => ({ v: 'c-o', t }), rel = t => ({ v: 'c-d', t }), mal = t => ({ v: 'c-h', t });
   const opciones = (c, malas) => [{ id: 'c', texto: c, correcta: true }, ...malas.map(([texto, error, siFuera], k) => ({ id: `e${k}`, texto, error, siFuera }))];
   const voltear = (arr, s) => (s % 2 ? arr.slice().reverse() : arr.slice());
@@ -67,7 +76,7 @@
       voz: 'La oración tiene que valer igual para los dos pares.',
       controles: [{ id: 'p', etiqueta: 'Par', opciones: Object.entries(CANDIDATOS).map(([valor, c]) => ({ valor, texto: `${c.a} : ${c.b}` })) }],
       dibujo: val => { const c = CANDIDATOS[val.p]; return { datos: figCarp(), estado: probar(c.a, c.b, c.cumple) }; },
-      lectura: val => { const c = CANDIDATOS[val.p]; return [c.cumple ? base(c.dice) : mal(c.dice)]; },
+      lectura: val => { const c = CANDIDATOS[val.p]; return [c.cumple ? corto(base, c.dice) : corto(mal, c.dice)]; },
       minimo: 3,
     },
     predice: {
@@ -153,7 +162,7 @@
       voz: 'Fíjate qué oración deja de ser verdadera al dar vuelta el par.',
       controles: [{ id: 'p', etiqueta: 'Par base', opciones: Object.entries(PARES).map(([valor, p]) => ({ valor, texto: `${p.par[0]} : ${p.par[1]}` })) }],
       dibujo: val => ({ datos: figDos(), estado: estadoDos(PARES[val.p]) }),
-      lectura: val => [rel(PARES[val.p].tipo), ': solo vale en un sentido'],
+      lectura: val => [corto(rel, PARES[val.p].tipo), ': solo vale en un sentido'],
       minimo: 3,
     },
     predice: {
@@ -225,7 +234,7 @@
       voz: 'Lo contrario se mide siempre en el mismo rasgo.',
       controles: [{ id: 'p', etiqueta: 'Palabra', opciones: Object.entries(ALEGRE).map(([valor, c]) => ({ valor, texto: c.b })) }],
       dibujo: val => ({ datos: figAleg(ALEGRE[val.p].puente, ALEGRE[val.p].b), estado: estAleg(val.p, { huecos: { a: 'alegre', b: ALEGRE[val.p].b } }) }),
-      lectura: val => ['Relación: ', ALEGRE[val.p].ok ? rel(ALEGRE[val.p].rel) : mal(ALEGRE[val.p].rel)],
+      lectura: val => ['Relación: ', ALEGRE[val.p].ok ? corto(rel, ALEGRE[val.p].rel) : corto(mal, ALEGRE[val.p].rel)],
       minimo: 3,
     },
     predice: {

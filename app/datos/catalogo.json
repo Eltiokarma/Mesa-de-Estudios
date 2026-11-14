@@ -4233,7 +4233,14 @@
      "grado": 3,
      "plantillas": [
       "lectura-verbal"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-verbal/cohesion-y-coherencia.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rv-texto.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "razonamiento-verbal.tipologia-textual",

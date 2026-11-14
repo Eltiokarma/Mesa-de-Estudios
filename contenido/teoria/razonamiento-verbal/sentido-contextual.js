@@ -22,6 +22,15 @@
   else root.Teoria.unidad(def);
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
+  // Una lectura en vivo no parte línea dentro de un color (.var): si el texto es largo, solo va en color su cabeza.
+  const corto = (fn, t) => {
+    if (t.length <= 26) return fn(t);
+    const k = [t.indexOf(': '), t.indexOf(', ')].filter(i => i > 0).sort((a, b) => a - b)[0];
+    if (k && k <= 24) return [fn(t.slice(0, k)), t.slice(k)];
+    const ps = t.split(' '); let n = 1;
+    while (n < ps.length && ps.slice(0, n + 1).join(' ').length <= 18) n++;
+    return [fn(ps.slice(0, n).join(' ')), ' ' + ps.slice(n).join(' ')];
+  };
   const pista = t => ({ v: 'c-i', t }), palabra = t => ({ v: 'c-o', t }), rasgo = t => ({ v: 'c-d', t }), mal = t => ({ v: 'c-h', t });
   const opciones = (c, malas) => [{ id: 'c', texto: c, correcta: true }, ...malas.map(([texto, error, siFuera], k) => ({ id: `e${k}`, texto, error, siFuera }))];
   const voltear = (arr, s) => (s % 2 ? arr.slice().reverse() : arr.slice());
@@ -67,7 +76,7 @@
         { id: 'r', etiqueta: 'Reemplazo', opciones: REEMPLAZOS.map(r => ({ valor: r, texto: r })) },
       ],
       dibujo: val => ({ datos: figFria(val.o), estado: estFria(val.o, val.r) }),
-      lectura: val => (FRIA[val.o].ok === val.r ? [palabra(val.r), ': encaja, habla de ', rasgo(FRIA[val.o].sentido)] : [mal(val.r), ': aquí «fría» habla de ', rasgo(FRIA[val.o].sentido)]),
+      lectura: val => (FRIA[val.o].ok === val.r ? [corto(palabra, val.r), ': encaja, habla de ', corto(rasgo, FRIA[val.o].sentido)] : [corto(mal, val.r), ': aquí «fría» habla de ', corto(rasgo, FRIA[val.o].sentido)]),
       minimo: 4,
     },
     predice: {
@@ -145,7 +154,7 @@
       voz: 'Compara las dos tarjetas de abajo.',
       controles: [{ id: 'w', etiqueta: 'Palabra', opciones: Object.keys(PESO).map(w => ({ valor: w, texto: w })) }],
       dibujo: val => ({ datos: figPeso(), estado: estPeso(val.w) }),
-      lectura: val => ['Dice lo mismo; la valoración es ', rasgo(PESO[val.w].val)],
+      lectura: val => ['Dice lo mismo; la valoración es ', corto(rasgo, PESO[val.w].val)],
       minimo: 3,
     },
     predice: {
@@ -223,7 +232,7 @@
         { id: 'v', etiqueta: 'Verbo', opciones: VERBOS.map(v => ({ valor: v, texto: v })) },
       ],
       dibujo: val => ({ datos: figPrec(val.k), estado: estPrec(val.k, val.v) }),
-      lectura: val => { const j = juicio(val.k, val.v); return [j === 'preciso' ? palabra(val.v) : j === 'vago' ? rasgo(val.v) : mal(val.v), j === 'vago' ? ': sirve para todo, no precisa' : j === 'preciso' ? ': nombra esta acción' : ': no encaja con el objeto']; },
+      lectura: val => { const j = juicio(val.k, val.v); return [j === 'preciso' ? corto(palabra, val.v) : j === 'vago' ? corto(rasgo, val.v) : corto(mal, val.v), j === 'vago' ? ': sirve para todo, no precisa' : j === 'preciso' ? ': nombra esta acción' : ': no encaja con el objeto']; },
       minimo: 4,
     },
     predice: {
@@ -291,7 +300,7 @@
       voz: 'No todas las frases cercanas ayudan igual.',
       controles: [{ id: 'p', etiqueta: 'Marca', opciones: [{ valor: 'b', texto: 'aunque un niño…' }, { valor: 'c', texto: 'no le hará…' }, { valor: 'd', texto: 'Viene en…' }] }],
       dibujo: val => ({ datos: figIno(), estado: { marcas: { w: 'o', [val.p]: val.p === 'c' ? 'i' : val.p === 'b' ? 'd' : 'h' } } }),
-      lectura: val => ['Esta parte ', val.p === 'c' ? pista(QUE_DICE[val.p]) : val.p === 'b' ? rasgo(QUE_DICE[val.p]) : mal(QUE_DICE[val.p])],
+      lectura: val => ['Esta parte ', val.p === 'c' ? corto(pista, QUE_DICE[val.p]) : val.p === 'b' ? corto(rasgo, QUE_DICE[val.p]) : corto(mal, QUE_DICE[val.p])],
       minimo: 3,
     },
     predice: {

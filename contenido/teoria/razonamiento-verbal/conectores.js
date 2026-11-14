@@ -23,6 +23,15 @@
   else root.Teoria.unidad(def);
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
+  // Una lectura en vivo no parte línea dentro de un color (.var): si el texto es largo, solo va en color su cabeza.
+  const corto = (fn, t) => {
+    if (t.length <= 26) return fn(t);
+    const k = [t.indexOf(': '), t.indexOf(', ')].filter(i => i > 0).sort((a, b) => a - b)[0];
+    if (k && k <= 24) return [fn(t.slice(0, k)), t.slice(k)];
+    const ps = t.split(' '); let n = 1;
+    while (n < ps.length && ps.slice(0, n + 1).join(' ').length <= 18) n++;
+    return [fn(ps.slice(0, n).join(' ')), ' ' + ps.slice(n).join(' ')];
+  };
   const idea = t => ({ v: 'c-i', t }), con = t => ({ v: 'c-o', t }), rel = t => ({ v: 'c-d', t }), mal = t => ({ v: 'c-h', t });
   const opciones = (c, malas) => [{ id: 'c', texto: c, correcta: true }, ...malas.map(([texto, error, siFuera], k) => ({ id: `e${k}`, texto, error, siFuera }))];
   const voltear = (arr, s) => (s % 2 ? arr.slice().reverse() : arr.slice());
@@ -62,7 +71,7 @@
         { id: 'c', etiqueta: 'Conector', opciones: Object.entries(CON).map(([valor, c]) => ({ valor, texto: c.t.replace(',', '') })) },
       ],
       dibujo: val => ({ datos: figRel(val.r), estado: estRel(val.r, val.c) }),
-      lectura: val => (encaja(val.r, val.c) ? [con(CON[val.c].t.replace(',', '')), ' marca ', rel(CON[val.c].clase)] : [mal(CON[val.c].t.replace(',', '')), ' no marca esta relación']),
+      lectura: val => (encaja(val.r, val.c) ? [corto(con, CON[val.c].t.replace(',', '')), ' marca ', corto(rel, CON[val.c].clase)] : [corto(mal, CON[val.c].t.replace(',', '')), ' no marca esta relación']),
       minimo: 4,
     },
     predice: {
@@ -141,7 +150,7 @@
         { id: 'c', etiqueta: 'Conector', opciones: ['por ejemplo', 'además', 'en conclusión'].map(c => ({ valor: c, texto: c })) },
       ],
       dibujo: val => ({ datos: figQ(), estado: estQ(val.h, val.c) }),
-      lectura: val => ['Este hueco pide ', rel(HUECOS[val.h].clase.split(':')[0])],
+      lectura: val => ['Este hueco pide ', corto(rel, HUECOS[val.h].clase.split(':')[0])],
       minimo: 4,
     },
     predice: {
@@ -212,7 +221,7 @@
         { id: 'l', etiqueta: 'Locución', opciones: Object.keys(LOC).map(l => ({ valor: l, texto: l })) },
       ],
       dibujo: val => ({ datos: figLoc(val.k), estado: estLoc(val.k, val.l) }),
-      lectura: val => [PASAJE[val.k].ok === val.l ? con(val.l) : mal(val.l), ' = ', rel(LOC[val.l])],
+      lectura: val => [PASAJE[val.k].ok === val.l ? corto(con, val.l) : corto(mal, val.l), ' = ', corto(rel, LOC[val.l])],
       minimo: 4,
     },
     predice: {

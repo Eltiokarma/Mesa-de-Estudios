@@ -64,9 +64,10 @@
       for (const [j, p] of palabras.entries()) {
         const caja = fr.hueco && fr.caja !== false;
         const w = T.ancho(p, TAM, caja ? 700 : 400) + (caja ? 12 : 0);   // el hueco con caja lleva aire a cada lado
-        const lugar = x > izq ? esp : 0;
-        if (x + lugar + w > x0 + ancho && x > izq) { y += LH; x = izq; actual = null; }
-        const sep = x > izq ? esp : 0;
+        const pegado = /^[.,;:!?)»]/.test(p);   // la puntuación va pegada a lo anterior
+        const lugar = x > izq && !pegado ? esp : 0;
+        if (x + lugar + w > x0 + ancho && x > izq && !pegado) { y += LH; x = izq; actual = null; }
+        const sep = x > izq && !pegado ? esp : 0;
         if (!actual) { actual = { id: fr.id, x: x + sep, y, texto: p, w, hueco: fr.hueco, caja, n: numerar && !lista && j === 0 }; trozos.push(actual); }
         else { actual.texto += ' ' + p; actual.w = x + sep + w - actual.x; }
         x += sep + w;

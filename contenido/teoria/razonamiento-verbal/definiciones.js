@@ -24,6 +24,15 @@
   else root.Teoria.unidad(def);
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
+  // Una lectura en vivo no parte línea dentro de un color (.var): si el texto es largo, solo va en color su cabeza.
+  const corto = (fn, t) => {
+    if (t.length <= 26) return fn(t);
+    const k = [t.indexOf(': '), t.indexOf(', ')].filter(i => i > 0).sort((a, b) => a - b)[0];
+    if (k && k <= 24) return [fn(t.slice(0, k)), t.slice(k)];
+    const ps = t.split(' '); let n = 1;
+    while (n < ps.length && ps.slice(0, n + 1).join(' ').length <= 18) n++;
+    return [fn(ps.slice(0, n).join(' ')), ' ' + ps.slice(n).join(' ')];
+  };
   const gen = t => ({ v: 'c-d', t }), dif = t => ({ v: 'c-o', t }), bien = t => ({ v: 'c-i', t }), mal = t => ({ v: 'c-h', t });
   // Figura: una tarjeta con la definición (huecos para género y diferencia) y la lista numerada de casos.
   const figura = (concepto, casos, reserva = ['mueble para sentarse', 'con respaldo, para una persona']) => ({

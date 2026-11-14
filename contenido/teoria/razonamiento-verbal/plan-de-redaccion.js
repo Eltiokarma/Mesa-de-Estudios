@@ -25,6 +25,15 @@
   else root.Teoria.unidad(def);
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
+  // Una lectura en vivo no parte línea dentro de un color (.var): si el texto es largo, solo va en color su cabeza.
+  const corto = (fn, t) => {
+    if (t.length <= 26) return fn(t);
+    const k = [t.indexOf(': '), t.indexOf(', ')].filter(i => i > 0).sort((a, b) => a - b)[0];
+    if (k && k <= 24) return [fn(t.slice(0, k)), t.slice(k)];
+    const ps = t.split(' '); let n = 1;
+    while (n < ps.length && ps.slice(0, n + 1).join(' ').length <= 18) n++;
+    return [fn(ps.slice(0, n).join(' ')), ' ' + ps.slice(n).join(' ')];
+  };
   const bien = t => ({ v: 'c-i', t }), pide = t => ({ v: 'c-o', t }), marca = t => ({ v: 'c-d', t }), roto = t => ({ v: 'c-h', t });
   // Oraciones con lo que necesitan antes: { t, necesita: [índices] }. Un orden es una lista de índices.
   const rotos = (ors, orden) => orden.filter((j, k) => (ors[j].necesita || []).some(n => !orden.slice(0, k).includes(n)));
@@ -80,7 +89,7 @@
       voz: 'Busca palabras como «ellas» o «por eso»: piden algo antes.',
       controles: [{ id: 'k', etiqueta: 'Empieza con', opciones: ABEJAS.map((o, k) => ({ valor: k, texto: o.t.split(' ').slice(0, 2).join(' ') + '…' })) }],
       dibujo: val => ({ datos: figura('Tema: las abejas', ABEJAS, abrirCon(val.k)), estado: estado(ABEJAS, abrirCon(val.k)) }),
-      lectura: val => { const r = rotos(ABEJAS, abrirCon(val.k)).length; return r ? [roto(`${r} oración${r > 1 ? 'es' : ''} sin su referente`)] : [bien('Cada oración tiene lo que necesita')]; },
+      lectura: val => { const r = rotos(ABEJAS, abrirCon(val.k)).length; return r ? [corto(roto, `${r} oración${r > 1 ? 'es' : ''} sin su referente`)] : [corto(bien, 'Cada oración tiene lo que necesita')]; },
       minimo: 3,
     },
     predice: {
@@ -146,7 +155,7 @@
       voz: 'Los marcadores de tiempo son pistas de orden.',
       controles: [{ id: 'p', etiqueta: 'Plan', opciones: [{ valor: 'a', texto: 'Plan A' }, { valor: 'b', texto: 'Plan B' }, { valor: 'c', texto: 'Plan C' }] }],
       dibujo: val => ({ datos: figura('Tema: cómo se hace el chuño', CHUNO, PLANES[val.p]), estado: estado(CHUNO, PLANES[val.p]) }),
-      lectura: val => { const r = rotos(CHUNO, PLANES[val.p]).length; return r ? [roto(`${r} paso${r > 1 ? 's' : ''} fuera de su tiempo o sin su causa`)] : [bien('Cada paso sigue al anterior')]; },
+      lectura: val => { const r = rotos(CHUNO, PLANES[val.p]).length; return r ? [corto(roto, `${r} paso${r > 1 ? 's' : ''} fuera de su tiempo o sin su causa`)] : [corto(bien, 'Cada paso sigue al anterior')]; },
       minimo: 3,
     },
     predice: {
@@ -209,7 +218,7 @@
       voz: 'Para comparar, primero deben estar las dos cosas.',
       controles: [{ id: 'p', etiqueta: 'Plan', opciones: [{ valor: 'a', texto: 'Plan A' }, { valor: 'b', texto: 'Plan B' }, { valor: 'c', texto: 'Plan C' }] }],
       dibujo: val => ({ datos: figura('Tema: dos flautas andinas', INSTR, PLANES3[val.p]), estado: estado(INSTR, PLANES3[val.p]) }),
-      lectura: val => { const r = rotos(INSTR, PLANES3[val.p]).length; return r ? [roto(`${r} comparación${r > 1 ? 'es' : ''} antes de tiempo`)] : [bien('Se presentan las dos y luego se comparan')]; },
+      lectura: val => { const r = rotos(INSTR, PLANES3[val.p]).length; return r ? [corto(roto, `${r} comparación${r > 1 ? 'es' : ''} antes de tiempo`)] : [corto(bien, 'Se presentan las dos y luego se comparan')]; },
       minimo: 3,
     },
     predice: {

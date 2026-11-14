@@ -24,6 +24,15 @@
   else root.Teoria.unidad(def);
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
+  // Una lectura en vivo no parte línea dentro de un color (.var): si el texto es largo, solo va en color su cabeza.
+  const corto = (fn, t) => {
+    if (t.length <= 26) return fn(t);
+    const k = [t.indexOf(': '), t.indexOf(', ')].filter(i => i > 0).sort((a, b) => a - b)[0];
+    if (k && k <= 24) return [fn(t.slice(0, k)), t.slice(k)];
+    const ps = t.split(' '); let n = 1;
+    while (n < ps.length && ps.slice(0, n + 1).join(' ').length <= 18) n++;
+    return [fn(ps.slice(0, n).join(' ')), ' ' + ps.slice(n).join(' ')];
+  };
   const queda = t => ({ v: 'c-i', t }), prueba = t => ({ v: 'c-o', t }), tema = t => ({ v: 'c-d', t }), sobra = t => ({ v: 'c-h', t });
   const voltear = (arr, s) => (s % 2 ? arr.slice().reverse() : arr.slice());
   // Texto: el tema como título y las oraciones numeradas, una por renglón.
@@ -62,7 +71,7 @@
       voz: 'Relee todo el texto después de tapar.',
       controles: [{ id: 'k', etiqueta: 'Tapar', opciones: [1, 2, 3, 4, 5].map(k => ({ valor: k, texto: `${k}` })) }],
       dibujo: val => ({ datos: lista('Tema: el cuy como alimento', CUY), estado: tapar(val.k, val.k === 4, PIERDE_CUY[val.k][1]) }),
-      lectura: val => [val.k === 4 ? queda(PIERDE_CUY[val.k][0]) : sobra(PIERDE_CUY[val.k][0])],
+      lectura: val => [val.k === 4 ? corto(queda, PIERDE_CUY[val.k][0]) : corto(sobra, PIERDE_CUY[val.k][0])],
       minimo: 3,
     },
     predice: {
@@ -124,7 +133,7 @@
       voz: 'Compartir una palabra no es hablar del mismo tema.',
       controles: [{ id: 'k', etiqueta: 'Tapar', opciones: [1, 2, 3, 4, 5].map(k => ({ valor: k, texto: `${k}` })) }],
       dibujo: val => ({ datos: lista('Tema: la quena', QUENA), estado: tapar(val.k, val.k === 4, PIERDE_QUENA[val.k][1]) }),
-      lectura: val => [val.k === 4 ? queda(PIERDE_QUENA[val.k][0]) : sobra(PIERDE_QUENA[val.k][0])],
+      lectura: val => [val.k === 4 ? corto(queda, PIERDE_QUENA[val.k][0]) : corto(sobra, PIERDE_QUENA[val.k][0])],
       minimo: 3,
     },
     predice: {
@@ -184,7 +193,7 @@
       voz: 'Un «sin embargo» no siempre es una contradicción.',
       controles: [{ id: 'k', etiqueta: 'Tapar', opciones: [1, 2, 3, 4, 5].map(k => ({ valor: k, texto: `${k}` })) }],
       dibujo: val => ({ datos: lista('Tema: la laguna seca', LAGUNA), estado: tapar(val.k, val.k === 4, PIERDE_LAG[val.k][1]) }),
-      lectura: val => [val.k === 4 ? queda(PIERDE_LAG[val.k][0]) : sobra(PIERDE_LAG[val.k][0])],
+      lectura: val => [val.k === 4 ? corto(queda, PIERDE_LAG[val.k][0]) : corto(sobra, PIERDE_LAG[val.k][0])],
       minimo: 3,
     },
     predice: {
