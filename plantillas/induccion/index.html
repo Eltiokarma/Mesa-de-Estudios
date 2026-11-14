@@ -229,6 +229,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'induccion', unidad: 'fisica.induccion-electromagnetica', version: '0.1.0' };
@@ -846,7 +847,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
       if (Math.abs(V.v) < 1e-4 && V.obj === 0) V.v = 0;
       if (E.vista === 'iman'){
         const o = { polo:E.im.polo }, r = MI.femIman(E.im.d, V.v, o, BOB.N, BOB.R);
-        E.ver.I = r.I; E.im.vel = 0;
+        if (!E.ver.tapada) E.ver.I = r.I; E.im.vel = 0;
         if (E.ver.lenzVivo && V.v){ const lz = MI.lenz(MI.flujoIman(E.im.d, o), MI.flujoIman(Math.max(0, E.im.d + V.v*1e-3), o)); E.ver.Bi = lz.Binducido; E.ver.sentido = lz.sentido; }
         if (E.ver.lenzVivo) E.ver.BiAlfa = clamp(Math.abs(r.I)*1000/0.15, 0, 1);
       } else {
@@ -906,6 +907,19 @@ const sinCorte = t => String(t).replace(/ = /g, '&nbsp;=&nbsp;');
 const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${sinCorte(t)}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
 // Lecturas comunes
 const mA = I => `${fmt(Math.abs(I)*1000, 2)} mA`;
+
+/* Jugar antes de preguntar (regla 3, decisión 20 de Gerson, 14 nov 2026): antes de la primera pregunta de cada modo,
+   el alumno acerca y aleja el imán de la bobina (arrastrándolo o con ← →) y ve cómo cambian las líneas de campo que la
+   cruzan y el flujo por vuelta. La aguja del amperímetro queda tapada con «?» (ver.tapada): cuándo y hacia dónde se
+   mueve es justo lo que se pregunta después. */
+function jugarIman(E, modo, volver){
+  E.compacto = false; Celular.compactar(modo, false);
+  E.config({ vista:'iman', im:{ d:0.1 }, ver:{ I:null, tapada:true, d:true }, arr:{ iman:{} },
+    lect: () => [['L', 'Distancia d', `${fmt(E.im.d*100, 1)} cm`], ['phi', 'Flujo Φ por vuelta', `${fmt(MI.flujoIman(E.im.d, { polo:E.im.polo })*1e6, 1)} µWb`]],
+    desc: () => 'Juego libre: de costado, un imán de barra sobre el eje de una bobina, con el polo norte hacia ella; el amperímetro está tapado. Arrastra el imán o usa las flechas del teclado.' });
+  return JugarPrimero.montar({ escena: modo.querySelector('.bench'), preguntas: [modo.querySelector('.guide')], minimo: 2,
+    consigna: 'Acerca y aleja el imán: mira las líneas que cruzan la bobina.', alListo: volver });
+}
 </script>
 
 <script>
@@ -1203,6 +1217,7 @@ function prediccion(s){
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+jugarIman(E, $('m1'), () => go(0));
 })();
 </script>
 
@@ -1360,6 +1375,7 @@ function ir(k){
   pintar();
 }
 ir(0);
+jugarIman(E, $('m2'), () => ir(0));
 })();
 </script>
 
