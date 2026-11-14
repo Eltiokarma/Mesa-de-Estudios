@@ -239,6 +239,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'conicas', unidad: 'trigonometria.conicas', version: '0.1.0' };
@@ -908,6 +909,9 @@ function prediccion(s){
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: antes de cualquier pregunta, se juega con la figura del paso 1.
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra el lápiz P y mira los dos tramos de la cuerda.', minimo:2 });
 })();
 </script>
 <script>
@@ -1065,8 +1069,8 @@ function ir(k){
   E.parar();
   S.k = k; S.t0 = Date.now();
   const x = EXPS[k], ya = !!S.pred[x.id];
-  E.compactar(!ya);
-  x.antes(ya);
+  E.compactar(jugado && !ya);
+  if (jugado) x.antes(ya); else juegoLibre();
   botones();
   $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
   $('t2').textContent = x.corto;
@@ -1095,7 +1099,23 @@ function ir(k){
   });
   pintar();
 }
+// Regla 3: antes del primer experimento, juego libre (sin lo que se pregunta después).
+let jugado = false;
+const LIBRE = (() => { const q = MC.puntoEn(E53, 1.1); return { t:1.1, P:{ x:q.x, y:q.y } }; })();
+function juegoLibre(){
+  const F1 = deLista(E53.num.focos[0]), F2 = deLista(E53.num.focos[1]), d = () => MC.distancias(E53, LIBRE.P);
+  E.config({ modo:'plano', pl:{ caja:{ x0:-6.5, x1:6.5, y0:-5, y1:5 }, manijas:[lapiz(LIBRE, E53.num, { paso:.06 })],
+    rehacer:L => { L.curvas = [curva(E53.num, { ancho:1.6 })];
+      L.segs = [seg(F1, LIBRE.P, 'f1', { ancho:2.6 }), seg(F2, LIBRE.P, 'f2', { ancho:2.6 })];
+      L.puntos = [pun(F1, 'f1', 'F₁', { r:5, dx:-6, dy:-14, align:'right' }), pun(F2, 'f2', 'F₂', { r:5, dx:6, dy:-14 })]; } },
+    lect:[() => ['f1', 'PF₁', fmt(d().PF1)], () => ['f2', 'PF₂', fmt(d().PF2)], () => ['a', 'PF₁ + PF₂', fmt(d().suma)]],
+    ley:[['f1', 'PF₁ y la estaca F₁'], ['f2', 'PF₂ y la estaca F₂'], ['ink', 'el camino del lápiz']],
+    desc:'Dos estacas, F₁ y F₂, y una cuerda atada a ellas; el lápiz P la mantiene tensa y se arrastra.' });
+}
 ir(0);
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Arrastra el lápiz P y mira los dos tramos de la cuerda.', minimo:2,
+  alListo:() => { jugado = true; ir(S.k); } });
 })();
 </script>
 
