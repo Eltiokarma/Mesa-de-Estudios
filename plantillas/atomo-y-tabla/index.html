@@ -134,6 +134,7 @@ canvas.tocable{cursor:pointer}
 select{font:700 .95rem var(--font); padding:9px 12px; border-radius:12px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); min-height:44px; max-width:100%}
 .campo{display:grid; gap:4px; font-weight:700}
 .botones{display:flex; flex-wrap:wrap; gap:6px}
+.juego[hidden]{display:none}
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
 .seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
@@ -183,6 +184,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, select:focus-visibl
     <section class="bench" aria-label="El átomo, sus cajas y la tabla">
       <div class="lienzo"><canvas id="cv" role="img" aria-label="El átomo con su núcleo y sus niveles, el diagrama de cajas, barras de energía de ionización y la tabla periódica de Z = 1 a 36, según el paso"></canvas></div>
       <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="botones juego" id="juego1" role="group" aria-label="Elegir elemento"><button type="button" class="btn" data-d="-1">Elemento anterior</button><button type="button" class="btn" data-d="1">Elemento siguiente</button></div>
       <div class="legend" id="ley1"></div>
     </section>
     <section class="guide">
@@ -204,6 +206,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, select:focus-visibl
     <section class="bench" aria-label="Experimentos con átomos, iones y la tabla">
       <div class="lienzo"><canvas id="cv2" role="img" aria-label="Átomos e iones, sus cajas, barras y la tabla periódica, que se completan al responder"></canvas></div>
       <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="botones juego" id="juego2" role="group" aria-label="Elegir elemento"><button type="button" class="btn" data-d="-1">Elemento anterior</button><button type="button" class="btn" data-d="1">Elemento siguiente</button></div>
       <div class="legend" id="ley2"></div>
     </section>
     <section class="guide">
@@ -230,6 +233,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 // La unidad principal es la estructura atómica; las predicciones de tabla periódica pasan su propia unidad.
@@ -705,6 +709,24 @@ const ESTUDIO_SG = 'un estudio con 979 escolares de Singapur (Tan y otros, 2005)
 // para no regalar el Mg contra Al (experimento 1) ni el Cr, Cu y Ni (experimento 4) antes de responderlos.
 const PRED_EXP = {};
 const DESCUBRE = 'Descúbrelo en «¿Qué pasa si…?»';
+// Regla 3 (decisión 20): antes de cualquier pregunta se juega con la tabla: se toca una casilla (o se cambia de
+// elemento con los botones o las flechas) y se ve su átomo neutro, con su núcleo y sus niveles. El juego no muestra
+// iones, cajas ni el mapa de propiedades (es lo que se pregunta) y tapa los electrones del Cr, el Ni y el Cu.
+function jugarConLaTabla(E, cv, idJuego){
+  const caja = document.getElementById(idJuego), J = { Z:6 };
+  const vista = () => ({ paneles:['atomos', 'tabla'],
+    atomos:{ items:[{ Z:J.Z, carga:0, ocultaE:[24, 28, 29].includes(J.Z),
+      rot:[[[`${MA.SIMBOLOS[J.Z]} · ${MA.NOMBRES[J.Z]}`, 'ink', 800]], [[`${J.Z}+`, 'Z', 800], [' · ', 'muted'], [`${J.Z} e⁻`, 'e', 800]]] }] },
+    tabla:{ prop:null, sel:J.Z }, pie:'El tamaño del átomo en el dibujo no es a escala.', vars:['Z', 'e', 'n'],
+    desc:`${MA.NOMBRES[J.Z]}: núcleo con ${J.Z} protones y ${J.Z} electrones alrededor, en ${MA.niveles(J.Z, 0).length} niveles.` });
+  const poner = z => { J.Z = clamp(z, 1, MA.ZTABLA); cortar(E); E.vista = vista(); E.compactar(false); E.dibujar(); E.describir(); };
+  E.alTocar = poner; cv.classList.add('tocable'); cv.tabIndex = 0;
+  caja.querySelectorAll('button').forEach(b => b.addEventListener('click', () => poner(J.Z + +b.dataset.d)));
+  const tecla = e => { const d = { ArrowLeft:-1, ArrowRight:1, ArrowUp:-1, ArrowDown:1 }[e.key]; if (d){ e.preventDefault(); poner(J.Z + d); } };
+  cv.addEventListener('keydown', tecla);
+  poner(J.Z);
+  return { terminar(){ caja.hidden = true; E.alTocar = null; cv.classList.remove('tocable'); cv.removeAttribute('tabindex'); cv.removeEventListener('keydown', tecla); } };
+}
 </script>
 
 <script>
@@ -1007,6 +1029,10 @@ addEventListener('modo', () => {
   else { E.resize(); E.dibujar(); pedir(); }
 });
 go(0);
+const juego = jugarConLaTabla(E, $('cv'), 'juego1');
+JugarPrimero.montar({ escena: $('cv').closest('.bench'), preguntas: [...document.querySelectorAll('#m1 .guide > *')], minimo: 2,
+  consigna: 'Toca casillas de la tabla y mira cómo cambia el átomo.',
+  alListo: () => { juego.terminar(); go(0); } });
 })();
 </script>
 
@@ -1187,7 +1213,11 @@ function ir(k){
 }
 alRedibujarTema(() => E.dibujar());
 addEventListener('modo', () => { E.resize(); E.dibujar(); pedir(); });
-ir(0);
+const juego = jugarConLaTabla(E, $('cv2'), 'juego2');
+botones();
+JugarPrimero.montar({ escena: $('cv2').closest('.bench'), preguntas: [...document.querySelectorAll('#m2 .guide > *')], minimo: 2,
+  consigna: 'Toca casillas de la tabla y mira cómo cambia el átomo.',
+  alListo: () => { juego.terminar(); ir(0); } });
 })();
 </script>
 

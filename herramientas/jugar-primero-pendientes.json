@@ -1,7 +1,6 @@
 {
  "descripcion": "Escenas que todavía preguntan antes de dejar jugar (regla 3, decisión 20 de Gerson, 14 nov 2026). Cada una sale de la lista cuando carga nucleo/jugar.js y monta JugarPrimero antes de su primera pregunta; herramientas/jugar-primero.test.js lo vigila. mruv sale cuando v2.html reemplace a index.html.",
  "pendientes": [
-  "atomo-y-tabla",
   "enlace",
   "funciones-organicas",
   "hidrocarburos",
