@@ -713,7 +713,7 @@ input[type=file]{font:inherit;max-width:100%}
    la acción principal siempre en el mismo sitio. Los colores de la figura y de las ecuaciones son los de las variables. */
 .te-ideas{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px 2px 8px;margin:0 -2px;scrollbar-width:none}
 .te-ideas::-webkit-scrollbar{display:none}
-.te-chip{flex:none;scroll-snap-align:start;display:flex;align-items:center;gap:8px;min-height:44px;max-width:220px;padding:6px 14px 6px 6px;border:2px solid var(--line);border-radius:999px;background:var(--card);text-decoration:none;font-size:14px;font-weight:600;line-height:1.2}
+.te-chip{position:relative;flex:none;scroll-snap-align:start;display:flex;align-items:center;gap:8px;min-height:44px;max-width:220px;padding:6px 14px 6px 6px;border:2px solid var(--line);border-radius:999px;background:var(--card);text-decoration:none;font-size:14px;font-weight:600;line-height:1.2}
 .te-chip.on{border-color:var(--brand);background:var(--brand-soft)}
 .te-num{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;border:2px solid var(--line);background:var(--bg);font-size:14px;font-weight:700}
 .te-chip.hecha .te-num{background:var(--ok);border-color:var(--ok);color:#fff}
@@ -732,15 +732,15 @@ input[type=file]{font:inherit;max-width:100%}
 .te-figcaja:has(.te-fig:empty){display:none}
 /* En el celular la figura se queda a la vista mientras se mueven los controles o se leen los pasos (contigüidad).
    Al predecir y en «Ahora tú» no: ahí se lee la pregunta y las opciones, y la figura fija las taparía. */
-@media (max-width:899px) and (min-height:600px){.te-idea:is([data-m=juega],[data-m=mira]) .te-figcaja{position:sticky;top:0;z-index:1;background:var(--card);padding-top:6px;box-shadow:0 8px 8px -8px rgba(45,35,64,.18)}}
+@media (max-width:899px) and (min-height:600px){.te-idea:is([data-m=juega],[data-m=mira]) .te-figcaja:not(.alta){position:sticky;top:0;z-index:1;background:var(--card);padding-top:6px;box-shadow:0 8px 8px -8px rgba(45,35,64,.18)}}
 .te-fig svg{width:100%;height:auto;max-width:520px}
 .te-lectura{min-height:24px;font-variant-numeric:tabular-nums;font-weight:600;text-align:center}
 .te-zona{display:flex;flex-direction:column;gap:10px;min-height:120px}
 .te-zona h3{margin:0;font-size:17px;line-height:1.4}
 .te-consigna{margin:0}
 .te-controles{display:flex;flex-direction:column;gap:10px}
-.te-control{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;grid-template-areas:"etq etq val" "menos barra mas";align-items:center;gap:2px 8px}
-.te-control .te-etq{grid-area:etq}.te-control output{grid-area:val;font-variant-numeric:tabular-nums;font-weight:700;text-align:right;white-space:nowrap}
+.te-control{display:grid;grid-template-columns:44px minmax(0,1fr) auto 44px;grid-template-areas:"etq etq val val" "menos barra barra mas";align-items:center;gap:2px 8px}
+.te-control .te-etq{grid-area:etq;min-width:0}.te-control output{grid-area:val;font-variant-numeric:tabular-nums;font-weight:700;text-align:right;white-space:nowrap;max-width:60vw;overflow-wrap:anywhere;white-space:normal}
 .te-control [data-paso="-1"]{grid-area:menos}.te-control [data-paso="1"]{grid-area:mas}.te-control input{grid-area:barra}
 .te-control input[type=range]{width:100%;accent-color:var(--brand);min-height:44px}
 .te-etq{font-weight:700;font-size:15px}
@@ -750,7 +750,9 @@ input[type=file]{font:inherit;max-width:100%}
 .te-ficha-op[aria-pressed=true]{border-color:var(--brand);background:var(--brand-soft)}
 .te-casos{margin:0;min-height:20px}
 .te-fb{min-height:24px;scroll-margin-bottom:calc(168px + env(safe-area-inset-bottom))}
-.te-ec-grande .ec-sep{display:block;height:6px;overflow:hidden;color:transparent}
+.te-ec-grande .ec-sep{display:block;height:6px;overflow:hidden;color:transparent;border:0;margin:0;width:auto}
+/* Fuera de la regla grande, el separador de dos relaciones es una raya vertical con aire, no un «·» que parece producto. */
+.ec-sep{display:inline-block;width:0;height:1.1em;margin:0 .75em;border-left:2px solid var(--line);vertical-align:-.2em;color:transparent;overflow:hidden}
 .te-ec-grande .ec-frac,.te-ec-grande .ec-raiz{white-space:nowrap}
 /* Revelar: la figura cambia a lo que pasa de verdad; un fundido corto marca dónde mirar (oficio: atención). */
 @media (prefers-reduced-motion:no-preference){.te-fig.te-revela svg{animation:te-revela 320ms cubic-bezier(0,0,.2,1)}}
@@ -781,7 +783,7 @@ input[type=file]{font:inherit;max-width:100%}
 .ec-num{border-bottom:2px solid currentColor;padding:0 3px}
 .ec-den{padding:0 3px}
 .ec-sup,.ec-sub{font-size:.75em;line-height:0}
-.ec-raiz{white-space:nowrap}.ec-bajo{border-top:2px solid currentColor;padding:0 2px}
+.ec-raiz{display:inline-flex;align-items:stretch;white-space:nowrap;vertical-align:middle}.ec-rad{display:flex;align-items:flex-end;font-size:1.15em;line-height:1}.ec-bajo{display:inline-flex;align-items:center;border-top:2px solid currentColor;padding:2px 2px 0}.ec-ind{align-self:flex-start}
 .ec-vec{display:inline-block;position:relative}.ec-vec::before{content:'→';position:absolute;left:0;right:0;top:-.85em;font-size:.7em;text-align:center}
 .ec-v{border-radius:4px;padding:0 2px}
 @media (min-width:900px){.te-idea{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:12px 24px}
@@ -790,7 +792,8 @@ input[type=file]{font:inherit;max-width:100%}
 /* ---------- Teoría, segunda tanda (14 nov, pedido de Gerson): gesto directo, lupa, llaves, tipografía y laboratorio ---------- */
 /* La figura llega al borde de la tarjeta: a 360 px el texto del SVG (14 en un lienzo de 320) se ve a ~14 px, no a 12,6. */
 .te-figcaja{position:relative;margin:0 -14px}
-.te-zoom{position:absolute;top:4px;right:6px;z-index:2;width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:var(--card);color:var(--ink);display:grid;place-items:center;opacity:.92}
+.te-figbarra{display:flex;justify-content:flex-end;margin:-6px 8px 0;height:36px}
+.te-zoom{position:relative;z-index:2;width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:var(--card);color:var(--ink);display:grid;place-items:center;opacity:.92}
 .te-zoom:focus-visible,.te-mm:focus-visible,.te-ficha-op:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
 /* Manijas: anillo visible, halo del color de la variable y zona de toque de 44 px. Encima de la figura, nunca la tapan. */
 .te-fig.con-manijas .te-manija{cursor:grab;touch-action:none}
@@ -826,6 +829,7 @@ body.con-lupa{overflow:hidden}
    cifras tabulares y signos con aire. El texto corriente sigue en la fuente de la app. */
 .te-ec,.te-lectura,.te-zona .alt .ec-frac{font-family:"Cambria Math",Cambria,"Noto Serif","Source Serif Pro",Georgia,serif;font-variant-numeric:tabular-nums lining-nums}
 .ec-letra{font-style:italic}
+.ec-op{font-family:var(--font);font-style:normal}
 .te-ec{font-size:20px;line-height:1.6}
 .te-ec-grande{font-size:24px;line-height:1.5}
 .te-lectura{font-size:18px}
@@ -842,3 +846,7 @@ body.con-lupa{overflow:hidden}
 .te-caso figcaption{font-size:14px;font-weight:600;text-align:center;font-variant-numeric:tabular-nums}
 .te-quitar{position:absolute;top:2px;right:2px;width:44px;height:44px;border:0;background:transparent;font-size:22px;color:var(--muted)}
 .te-guardar{align-self:flex-start}
+
+/* Casos guardados: la «×» va fuera de la miniatura, para no tapar su encabezado. */
+.te-caso{padding-top:40px}
+.te-quitar{top:0;right:0}

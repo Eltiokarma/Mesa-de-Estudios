@@ -33,6 +33,9 @@
   const LETRA = /^[A-Za-zα-ωΑ-Ω][′']?$/;
   const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   const lista = x => (Array.isArray(x) ? x : [x]);
+  // Flechas y signos lógicos en la fuente de la app: varias serif del sistema no los traen y sale un guion o un hueco.
+  const SIGNOS = /[→←↔⇒⇐⇔⇌↑↓∧∨¬⊂⊆∈∉∪∩∅≤≥≠≈∞]/g;
+  const signos = t => t.replace(SIGNOS, c => `<span class="ec-op">${c}</span>`);
   // Signo menos tipográfico en los números escritos con guion: «-3» → «−3» (no toca los guiones entre letras).
   const menos = t => String(t).replace(/(^|[\s(=+×·÷/])-(?=[\d.,])/g, '$1−');
 
@@ -62,7 +65,7 @@
     return lista(partes).map(p => {
       // Un separador suelto con espacios a los dos lados ('   ·   ') junta dos relaciones: en la regla grande, cada una va en su línea.
       if (typeof p === 'string' && /^\s{2,}[·;]\s{2,}$/.test(p)) return '<span class="ec-sep"> · </span>';
-      if (typeof p === 'string' || typeof p === 'number') return esc(menos(p));
+      if (typeof p === 'string' || typeof p === 'number') return signos(esc(menos(p)));
       if (Array.isArray(p)) return html(p);
       if ('v' in p) return `<span class="var ${esc(p.v)} ec-v${p.largo ? ' largo' : ''}${LETRA.test(p.t) ? ' ec-letra' : ''}">${esc(p.t)}</span>`;
       if (p.frac) return `<span class="ec-frac"><span class="ec-num">${html(p.frac[0])}</span><span class="ec-den">${html(p.frac[1])}</span></span>`;

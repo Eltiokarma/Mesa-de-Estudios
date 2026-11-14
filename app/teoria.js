@@ -151,7 +151,7 @@
       <p class="sub te-avance">${n} de ${ideas.length} ideas terminadas</p>`;
 
     const figuraHTML = `<div class="te-figcaja"><figure class="te-fig kit-figura" aria-describedby="te-alt"></figure>
-        <button type="button" class="te-zoom" aria-label="Ampliar la figura">${ICONO_LUPA}</button></div>
+        <div class="te-figbarra"><button type="button" class="te-zoom" aria-label="Ampliar la figura">${ICONO_LUPA}</button></div></div>
         <p class="lector" id="te-alt"></p>`;
     const vozHTML = `<div class="te-voz">
           <div class="mascota" data-mascota data-curso="${esc(c.id)}" aria-hidden="true"></div>
@@ -377,7 +377,7 @@
       return `<section class="te-fichas">${ideas.map((i, k) => hecha(st, i.id)
         ? `<article class="card te-fic"><h2>${k + 1}. ${esc(i.titulo)}</h2>
             <div class="te-figcaja"><figure class="kit-figura te-fig te-fig-chica">${Kit.piezas[i.mira.pieza || i.pieza].dibujar(i.mira.datos, Object.assign({}, i.mira.base || {}, i.mira.pasos[i.mira.pasos.length - 1].estado || {}))}</figure>
-            <button type="button" class="te-zoom" aria-label="Ampliar la figura de ${esc(i.titulo)}">${ICONO_LUPA}</button></div>
+            <div class="te-figbarra"><button type="button" class="te-zoom" aria-label="Ampliar la figura de ${esc(i.titulo)}">${ICONO_LUPA}</button></div></div>
             ${reglaHTML(i.regla)}</article>`
         : `<article class="card te-fic pendiente"><h2>${k + 1}. ${esc(i.titulo)}</h2>
             <p class="sub">Se abre al terminar esta idea: primero juegas y predices.</p>
@@ -440,6 +440,9 @@
         f.innerHTML = P.dibujar(dib.datos, dib.estado || {});
         if (o.alt) o.alt.textContent = P.alt(dib.datos);
         f.classList.toggle('con-manijas', arr.length > 0);
+        // Una figura muy alta no se queda fija al bajar: taparía la consigna y los controles.
+        const caja = f.closest('.te-figcaja');
+        if (caja) requestAnimationFrame(() => caja.classList.toggle('alta', f.getBoundingClientRect().height > innerHeight * 0.42));
         ponerManijas();
         if (j.lectura) lec.innerHTML = E.html(j.lectura(vals));
         if (contar) probados.add(JSON.stringify(vals));
