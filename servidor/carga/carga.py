@@ -60,7 +60,11 @@ class Cliente:
             async with self.http.request(metodo, self.url + ruta, json=cuerpo, headers=h) as r:
                 cuerpo_r = await r.read()
                 self.m.anotar(etiqueta, r.status, time.perf_counter() - t0)
-                return r.status, (json.loads(cuerpo_r) if cuerpo_r else None)
+                try:
+                    datos = json.loads(cuerpo_r) if cuerpo_r else None
+                except ValueError:  # un 500 de Starlette viene en texto plano
+                    datos = None
+                return r.status, datos
         except asyncio.TimeoutError:
             self.m.anotar(etiqueta, "timeout", time.perf_counter() - t0)
             raise ErrorRed("timeout")
