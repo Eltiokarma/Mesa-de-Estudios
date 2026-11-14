@@ -53,6 +53,15 @@
   }
   const MEDIOS = { agua: 1.33, vidrio: 1.5, diamante: 2.42 };
   const refracta = (na, nb, a) => { const s = na * Math.sin(rad(a)) / nb; return s > 1 ? null : grad(Math.asin(s)); };
+  // Gesto directo. Frontera: la manija es el comienzo del rayo incidente (pto de fis-interfaz) y el ángulo sale del
+  // punto del dedo respecto del punto de incidencia. Banco: la manija es la punta del objeto (geometria del banco).
+  const INT = () => Kit.piezas['fis-interfaz'], BANCO = () => Kit.piezas['fis-banco-optico'];
+  const LR = 104;   // largo de los rayos en fis-interfaz
+  const manijaRayo = a => { const p = INT().pto(a, LR, 'ai'); return { x: p[0], y: p[1] }; };
+  const anguloDe = pt => { const { CX, CY } = INT().constantes; return grad(Math.atan2(CX - pt.x, CY - pt.y)); };
+  const puntaObjeto = datos => { const g = BANCO().geometria(datos), o = datos.objeto; return { x: g.X(-o.d), y: g.Y(o.h) }; };
+  const dDe = (datos, pt) => -(pt.x - BANCO().geometria(datos).XE) / BANCO().geometria(datos).sx;
+  const hDe = (datos, pt) => (BANCO().constantes.EJE - pt.y) / BANCO().geometria(datos).sy;
 
   // ---------- Idea 1: Snell, ángulos desde la normal ----------
   // Cambia: el ángulo de incidencia y el medio de abajo · Permanece: el aire arriba y la normal punteada ·
@@ -77,6 +86,8 @@
       dibujo: val => interfaz(MEDIOS[val.m], val.m, val.a),
       lectura: val => [t2, ` = ${f(refracta(1, MEDIOS[val.m], val.a), 1)}° (n = ${f(MEDIOS[val.m], 2)})`],
       minimo: 3,
+      // Gira el rayo que llega tomándolo por su comienzo.
+      arrastres: [{ id: 'rayo', etiqueta: 'comienzo del rayo incidente', color: 'c-o', donde: val => manijaRayo(val.a), mover: pt => ({ a: anguloDe(pt) }) }],
     },
     predice: {
       pregunta: 'Además de entrar al vidrio, una parte de la luz rebota en la superficie. Si el rayo llega a 40° de la normal, ¿con qué ángulo rebota?',
@@ -101,7 +112,7 @@
     },
     regla: {
       texto: 'El rayo reflejado sale con el mismo ángulo que llega. El refractado cumple la ley de Snell; los ángulos se miden desde la normal.',
-      ecuacion: [n1, ' sen ', t1, ' = ', n2, ' sen ', t2],
+      ecuacion: [{ llave: [n1, ' sen ', t1], nota: 'al llegar', color: 'c-o' }, ' = ', { llave: [n2, ' sen ', t2], nota: 'al salir', color: 'c-i' }],
       condicion: 'la frontera es lisa. Al entrar a un medio de mayor n, se acerca a la normal; a 0°, no se desvía.',
     },
     ahoraTu: {
@@ -146,6 +157,7 @@
       dibujo: val => total(val.m, MEDIOS[val.m], val.a),
       lectura: val => { const b = refracta(MEDIOS[val.m], 1, val.a); return b === null ? ['No sale: se refleja toda'] : [t2, ` = ${f(b, 1)}°: se aleja de la normal`]; },
       minimo: 3,
+      arrastres: [{ id: 'rayo', etiqueta: 'comienzo del rayo incidente', color: 'c-o', donde: val => manijaRayo(val.a), mover: pt => ({ a: anguloDe(pt) }) }],
     },
     predice: {
       pregunta: 'En el fondo de una piscina, una linterna apunta hacia arriba con 60° desde la normal de la superficie. El ángulo crítico del agua es 48,8°. ¿Sale la luz al aire?',
@@ -170,7 +182,7 @@
     },
     regla: {
       texto: 'Cuando la luz va hacia un medio de menor índice, pasado el ángulo crítico no sale: se refleja toda.',
-      ecuacion: ['sen ', tc, ' = ', { frac: [n2, n1] }],
+      ecuacion: ['sen ', tc, ' = ', { llave: [{ frac: [n2, n1] }], nota: 'menor entre mayor' }],
       condicion: 'la luz va de mayor a menor índice (n₁ > n₂) y el ángulo de incidencia supera θc.',
     },
     ahoraTu: {
@@ -220,8 +232,10 @@
       voz: 'Compara la distancia de la vela con la de su imagen.',
       controles: [{ id: 'd', etiqueta: 'dₒ', color: 'c-h', min: 2, max: 10, paso: 2, inicio: 6, unidad: 'cm', decimales: 0 }],
       dibujo: val => plano(val.d),
-      lectura: val => [dI, ` = ${f(val.d, 0)} cm detrás · vela–imagen = ${f(2 * val.d, 0)} cm`],
+      lectura: val => [dI, ` = ${f(val.d, 0)}\u00a0cm detrás · vela–imagen = ${f(2 * val.d, 0)}\u00a0cm`],
       minimo: 3,
+      // Arrastra la vela (la punta del objeto) hacia el espejo o lejos de él.
+      arrastres: [{ id: 'vela', etiqueta: 'la vela', color: 'c-h', donde: val => puntaObjeto(plano(val.d).datos), mover: (pt, val) => ({ d: dDe(plano(val.d).datos, pt) }) }],
     },
     predice: {
       pregunta: 'Una vela está a 6 cm de un espejo plano. La alejas 4 cm más del espejo. ¿Cuánto aumenta la distancia entre la vela y su imagen?',
@@ -245,7 +259,7 @@
     },
     regla: {
       texto: 'Un espejo plano forma una imagen virtual, derecha y del mismo tamaño, tan detrás del espejo como el objeto está delante.',
-      ecuacion: [dI, ' = ', dO, '   ·   tamaño de la imagen = tamaño del objeto'],
+      ecuacion: [{ llave: [dI], nota: 'detrás', color: 'c-d' }, ' = ', { llave: [dO], nota: 'delante', color: 'c-h' }, '   ·   ', 'tamaño de la imagen = tamaño del objeto'],
       condicion: 'las distancias se miden perpendiculares al espejo. La imagen es virtual: la forman prolongaciones, y el ojo la ve.',
     },
     ahoraTu: {
@@ -312,8 +326,9 @@
       voz: 'Acércalo al foco y mira el tamaño de la imagen.',
       controles: [{ id: 'd', etiqueta: 'dₒ', color: 'c-h', min: 12, max: 36, paso: 6, inicio: 24, unidad: 'cm', decimales: 0 }],
       dibujo: val => espejo(FC, val.d),
-      lectura: val => { const im = imgEsp(FC, val.d, 2); return [dI, ` = ${f(im.d, 1)} cm · m = ${f(-im.d / val.d, 2)}`]; },
+      lectura: val => { const im = imgEsp(FC, val.d, 2); return [dI, ` = ${f(im.d, 1)}\u00a0cm · m = ${f(-im.d / val.d, 2)}`]; },
       minimo: 3,
+      arrastres: [{ id: 'objeto', etiqueta: 'punta del objeto', color: 'c-h', donde: val => puntaObjeto(espejo(FC, val.d).datos), mover: (pt, val) => ({ d: dDe(espejo(FC, val.d).datos, pt) }) }],
     },
     predice: {
       pregunta: 'Ahora el objeto está a 4 cm del mismo espejo cóncavo (f = 8 cm), más cerca que el foco. ¿Cómo es su imagen?',
@@ -333,12 +348,12 @@
         { estado: { paso: 1 }, texto: 'El rayo paralelo al eje rebota pasando por el foco.', ecuacion: [fF, ' = 8 cm'] },
         { estado: { paso: 2 }, texto: 'El que llega al vértice rebota simétrico respecto del eje.', ecuacion: [dO, ' = 24 cm'] },
         { estado: { paso: 3 }, texto: 'El que pasa por el foco vuelve paralelo. Se cruzan en la imagen.', ecuacion: [{ frac: ['1', fF] }, ' = ', { frac: ['1', dO] }, ' + ', { frac: ['1', dI] }] },
-        { estado: { paso: 3 }, texto: 'La imagen queda a 12 cm, real, invertida y de la mitad.', ecuacion: [dI, ' = 12 cm   ·   m = −', { frac: ['12', '24'] }, ' = −0,5'] },
+        { estado: { paso: 3 }, texto: 'La imagen queda a 12 cm, real, invertida y de la mitad.', ecuacion: [dI, ' = 12 cm', '   ·   ', 'm = −', { frac: ['12', '24'] }, ' = −0,5'] },
       ],
     },
     regla: {
       texto: 'En un espejo esférico, objeto, imagen y foco cumplen la ecuación de espejos; el aumento compara tamaños.',
-      ecuacion: [{ frac: ['1', fF] }, ' = ', { frac: ['1', dO] }, ' + ', { frac: ['1', dI] }, '   ·   m = −', { frac: [dI, dO] }, '   ·   ', fF, ' = R/2'],
+      ecuacion: [{ frac: ['1', fF] }, ' = ', { frac: ['1', dO] }, ' + ', { frac: ['1', dI] }, '   ·   ', { llave: ['m'], nota: 'aumento' }, ' = −', { frac: [dI, dO] }, '   ·   ', fF, ' = R/2'],
       condicion: 'rayos cerca del eje. dᵢ > 0: real, delante; dᵢ < 0: virtual, detrás. Cóncavo f > 0, convexo f < 0.',
     },
     ahoraTu: {
@@ -383,8 +398,9 @@
       voz: 'Mira qué pasa con la imagen al acercar el objeto al foco.',
       controles: [{ id: 'd', etiqueta: 'dₒ', color: 'c-h', min: 15, max: 40, paso: 5, inicio: 30, unidad: 'cm', decimales: 0 }],
       dibujo: val => lente(FL, val.d),
-      lectura: val => { const im = imgEsp(FL, val.d, 3); return [dI, ` = ${f(im.d, 1)} cm · m = ${f(-im.d / val.d, 2)}`]; },
+      lectura: val => { const im = imgEsp(FL, val.d, 3); return [dI, ` = ${f(im.d, 1)}\u00a0cm · m = ${f(-im.d / val.d, 2)}`]; },
       minimo: 3,
+      arrastres: [{ id: 'objeto', etiqueta: 'punta del objeto', color: 'c-h', donde: val => puntaObjeto(lente(FL, val.d).datos), mover: (pt, val) => ({ d: dDe(lente(FL, val.d).datos, pt) }) }],
     },
     predice: {
       pregunta: 'Con el objeto a 25 cm, tapas con un cartón la mitad de arriba de la lente. ¿Qué pasa con la imagen en la pantalla?',
@@ -409,7 +425,7 @@
     },
     regla: {
       texto: 'En una lente delgada, objeto, imagen y foco cumplen la misma ecuación que los espejos. Todos los rayos de un punto llegan al mismo punto de la imagen.',
-      ecuacion: [{ frac: ['1', fF] }, ' = ', { frac: ['1', dO] }, ' + ', { frac: ['1', dI] }, '   ·   m = −', { frac: [dI, dO] }],
+      ecuacion: [{ frac: ['1', fF] }, ' = ', { frac: ['1', dO] }, ' + ', { frac: ['1', dI] }, '   ·   ', { llave: ['m'], nota: 'aumento' }, ' = −', { frac: [dI, dO] }],
       condicion: 'lente delgada y rayos cerca del eje. Convergente f > 0; divergente f < 0. dᵢ < 0: imagen virtual, del lado del objeto.',
     },
     ahoraTu: {
@@ -465,7 +481,7 @@
         { id: 'n', etiqueta: 'n', min: 1.4, max: 1.8, paso: 0.1, inicio: 1.5, unidad: '', decimales: 1 },
       ],
       dibujo: val => haz(fFab(val.n, val.R), val.R, 45),
-      lectura: val => { const fv = fFab(val.n, val.R); return [fF, ` = ${f(fv, 1)} cm · P = ${f(100 / fv, 1)} D`]; },
+      lectura: val => { const fv = fFab(val.n, val.R); return [fF, ` = ${f(fv, 1)}\u00a0cm · P = ${f(100 / fv, 1)}\u00a0D`]; },
       minimo: 3,
     },
     predice: {
@@ -483,14 +499,14 @@
     mira: {
       datos: haz(20, 20, 45).datos,
       pasos: [
-        { estado: { paso: 1 }, texto: 'Vidrio de n = 1,5 con caras de radio 20 cm, en el aire.', ecuacion: [{ sub: ['R', '1'] }, ' = 20 cm   ·   ', { sub: ['R', '2'] }, ' = −20 cm'] },
+        { estado: { paso: 1 }, texto: 'Vidrio de n = 1,5 con caras de radio 20 cm, en el aire.', ecuacion: [{ sub: ['R', '1'] }, ' = 20 cm', '   ·   ', { sub: ['R', '2'] }, ' = −20 cm'] },
         { estado: { paso: 1 }, texto: 'La ecuación del fabricante da el foco.', ecuacion: [{ frac: ['1', fF] }, ' = (1,5 − 1)(', { frac: ['1', '20'] }, ' + ', { frac: ['1', '20'] }, ') = ', { frac: ['1', '20'] }] },
         { estado: { paso: 1 }, texto: 'La potencia usa f en metros: 0,2 m.', ecuacion: ['P = ', { frac: ['1', '0,2 m'] }, ' = 5 D'] },
       ],
     },
     regla: {
       texto: 'La distancia focal sale del índice y de los radios de las caras. La potencia es su inversa, en dioptrías.',
-      ecuacion: [{ frac: ['1', fF] }, ' = (n − 1)(', { frac: ['1', { sub: ['R', '1'] }] }, ' − ', { frac: ['1', { sub: ['R', '2'] }] }, ')   ·   P = ', { frac: ['1', fF] }],
+      ecuacion: [{ frac: ['1', fF] }, ' = ', { llave: ['(n − 1)'], nota: 'el vidrio' }, '(', { frac: ['1', { sub: ['R', '1'] }] }, ' − ', { frac: ['1', { sub: ['R', '2'] }] }, ')', '   ·   ', { llave: ['P'], nota: 'dioptrías' }, ' = ', { frac: ['1', fF] }],
       condicion: 'lente delgada en el aire (en otro medio, n es el índice relativo). f en metros para P en dioptrías.',
     },
     ahoraTu: {
@@ -523,11 +539,72 @@
     },
   };
 
+  // Mesas del laboratorio.
+  const MEDIOS_LAB = { aire: 1, agua: 1.33, vidrio: 1.5, diamante: 2.42 };
+  const frontera = val => {
+    const na = MEDIOS_LAB[val.m1], nb = MEDIOS_LAB[val.m2], b = refracta(na, nb, val.a);
+    const c = na > nb ? grad(Math.asin(nb / na)) : null;
+    return { datos: { n1: na, n2: nb, nombre1: val.m1, nombre2: val.m2, t1: val.a, t2: b, reflejado: true, critico: c,
+      rotulos: { t1: `θ₁ = ${f(val.a, 0)}°`, t2: b === null ? undefined : `θ₂ = ${f(b, 1)}°` } }, estado: {} };
+  };
+  const bancoLibre = val => {
+    const lenteSi = val.e.startsWith('lente'), fv = (val.e.endsWith('-') ? -1 : 1) * val.f;
+    const enFoco = Math.abs(val.d - fv) < 1e-9;
+    let im = enFoco ? null : imgEsp(fv, val.d, val.h);
+    const rayos = fv > 0 ? ['paralelo', 'centro', 'foco'] : ['paralelo', 'centro'];
+    const datos = { tipo: lenteSi ? 'lente' : 'espejo', f: fv, alcance: 40, alto: 6, colores: COL, objeto: { d: val.d, h: val.h }, imagen: null, rayos: enFoco ? rayos.filter(r => r !== 'foco') : rayos, rotulos: { o: 'objeto' } };
+    // La imagen se dibuja solo si cae dentro de la figura (cerca del foco se va lejos y crece); la lectura la da igual.
+    const g = BANCO().geometria(datos), xi = im && (lenteSi ? im.d : -im.d);
+    if (im && xi >= g.xmin && xi <= g.xmax && Math.abs(im.h) <= datos.alto) Object.assign(datos, { imagen: im, rotulos: { o: 'objeto', i: 'imagen' } });
+    else im = null;
+    return { datos, estado: {} };
+  };
+
   return {
     unidad: 'fisica.optica-geometrica',
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/fis-interfaz.js', '/nucleo/kit/piezas/fis-banco-optico.js'],
+    // Laboratorio: la frontera con los dos medios a elegir (entra, sale o queda atrapada en una sola mesa), el banco
+    // con los cuatro elementos y el objeto que se arrastra en las dos direcciones, y el fabricante de la idea 6.
+    laboratorio: [
+      {
+        id: 'frontera-libre', titulo: 'Dos medios a elección', pieza: 'fis-interfaz',
+        consigna: 'Elige el medio de arriba y el de abajo, y gira el rayo. ¿En qué casos queda atrapado?',
+        controles: [
+          { id: 'a', etiqueta: 'θ₁', color: 'c-o', min: 0, max: 85, paso: 1, inicio: 50, unidad: '°', decimales: 0 },
+          { id: 'm1', etiqueta: 'Arriba', inicio: 'vidrio', opciones: Object.keys(MEDIOS_LAB).map(k => ({ valor: k, texto: k })) },
+          { id: 'm2', etiqueta: 'Abajo', opciones: Object.keys(MEDIOS_LAB).map(k => ({ valor: k, texto: k })) },
+        ],
+        dibujo: val => frontera(val),
+        lectura: val => {
+          const na = MEDIOS_LAB[val.m1], nb = MEDIOS_LAB[val.m2], b = refracta(na, nb, val.a);
+          return b === null ? [t1, ` = ${f(val.a, 0)}°: reflexión total (`, tc, ` = ${f(grad(Math.asin(nb / na)), 1)}°)`] : [t1, ` = ${f(val.a, 0)}°: `, t2, ` = ${f(b, 1)}°`];
+        },
+        arrastres: [{ id: 'rayo', etiqueta: 'comienzo del rayo incidente', color: 'c-o', donde: val => manijaRayo(val.a), mover: pt => ({ a: anguloDe(pt) }) }],
+      },
+      {
+        id: 'banco-libre', titulo: 'Lentes y espejos', pieza: 'fis-banco-optico',
+        consigna: 'Elige lente o espejo, convergente o divergente. Arrastra la punta del objeto: cambia su distancia y su altura. Prueba ponerlo justo en el foco.',
+        controles: [
+          { id: 'e', etiqueta: 'Elemento', opciones: [{ valor: 'lente+', texto: 'lente convergente' }, { valor: 'lente-', texto: 'lente divergente' }, { valor: 'espejo+', texto: 'espejo cóncavo' }, { valor: 'espejo-', texto: 'espejo convexo' }] },
+          { id: 'f', etiqueta: '|f|', color: 'c-i', min: 5, max: 15, paso: 5, inicio: 10, unidad: 'cm', decimales: 0 },
+          { id: 'd', etiqueta: 'dₒ', color: 'c-h', min: 2, max: 36, paso: 1, inicio: 25, unidad: 'cm', decimales: 0 },
+          { id: 'h', etiqueta: 'alto', min: 1, max: 4, paso: 0.5, inicio: 2, unidad: 'cm', decimales: 1 },
+        ],
+        dibujo: val => bancoLibre(val),
+        lectura: val => {
+          const fv = (val.e.endsWith('-') ? -1 : 1) * val.f;
+          if (Math.abs(val.d - fv) < 1e-9) return [dO, ' = ', fF, `: los rayos salen paralelos`];
+          const im = imgEsp(fv, val.d, val.h);
+          return [dO, ` = ${f(val.d, 0)} cm: `, dI, ` = ${f(im.d, 1)} cm · m = ${f(-im.d / val.d, 2)}`];
+        },
+        arrastres: [{ id: 'objeto', etiqueta: 'punta del objeto (distancia y altura)', color: 'c-h',
+          donde: val => puntaObjeto(bancoLibre(val).datos),
+          mover: (pt, val) => ({ d: dDe(bancoLibre(val).datos, pt), h: hDe(bancoLibre(val).datos, pt) }) }],
+      },
+      Object.assign({ id: 'fabricante', titulo: 'Curvatura, índice y foco', pieza: 'fis-banco-optico' }, fab.juega),
+    ],
     historia: {
       texto: 'Explicar la visión obligaba a separar lo que hace el ojo de lo que hace la luz. En el siglo XI, Ibn al-Haytham combinó geometría y experimentos para estudiar reflexión y refracción, discutiendo a los autores griegos. Su Libro de óptica se tradujo al latín y siguió leyéndose siglos después.',
       pregunta: '¿Cómo probarías que la luz va del objeto al ojo y no al revés?',
