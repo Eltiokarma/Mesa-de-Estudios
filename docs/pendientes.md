@@ -393,6 +393,8 @@ Rama `claude/hopeful-planck-h4701c` (no está en `main` todavía; sw v160). Se h
 - `article.card.practica` puede correrse 40 px tras usar el teclado: probar `overflow: clip` en `app/estilos.css`. Va después de la rutina de la página del curso, que tiene ese archivo.
 
 **Pendientes chicos.**
+- **`nucleo/sesion.test.js`, «tandas de 500»: falló una vez con la máquina muy cargada, sin causa confirmada (14 nov).** Error en la línea 153: llegaron 0 eventos en vez de 500 en la primera tanda, con 6 a 15 s de duración, mientras corrían unas seis suites completas y Playwright a la vez. No se reproduce sola, con 8 copias en paralelo más la CPU cargada, con dos `npm test` a la vez ni con el bucle bloqueado 5,5 s antes del primer envío (se descartó el cierre por keep-alive del servidor falso). Si vuelve a pasar, guardar la salida completa.
+- **Retirado (14 nov):** el aviso de que binomio, polares, inversas, transformaciones y cónicas animaban 1 a 2,5 s con movimiento reducido. Medido con Playwright a 360 y 1280 px: ningún cuadro de animación después de responder y «Siguiente» en menos de 0,6 s. Venía de un verificador que esperaba solo 80 ms entre clics.
 - La línea de la marca cruza el rótulo de un pedazo cuando caen en la misma columna.
 - `app/lectura.js` todavía tiene `PREMIOS` con emoji y el gato en la retroalimentación: pasarlo a la mascota.
 - La figura se redibuja entera en cada cuadro del arrastre: medirlo en gama baja.
