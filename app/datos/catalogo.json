@@ -4063,7 +4063,14 @@
       "papel-doblado",
       "rodamientos",
       "rm-fichas"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/transformaciones-de-figuras.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-plano.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "razonamiento-matematico.rutas-y-visualizacion-espacial",
