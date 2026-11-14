@@ -393,7 +393,7 @@ Rama `claude/hopeful-planck-h4701c` (no está en `main` todavía; sw v160). Se h
 - `article.card.practica` puede correrse 40 px tras usar el teclado: probar `overflow: clip` en `app/estilos.css`. Va después de la rutina de la página del curso, que tiene ese archivo.
 
 **Pendientes chicos.**
-- **`nucleo/sesion.test.js`, «tandas de 500»: resuelto (14 nov).** Causa: con la máquina cargada, el servidor cerraba la conexión quieta (keep-alive de 5 s) justo cuando el cliente la reusaba (ECONNRESET). Reproducido 40 de 40. El servidor falso ya no cierra por tiempo y la app repite una vez lo que se puede repetir (eventos y estado): sin el reintento, 9 de 20 fallaban con el servidor cerrando a 5 s; con él, 0 de 20. Falta medir el servidor real con miles de alumnos a la vez (prueba de carga).
+- **`nucleo/sesion.test.js`, «tandas de 500»: resuelto (14 nov).** Causa: con la máquina cargada, el servidor cerraba la conexión quieta (keep-alive de 5 s) justo cuando el cliente la reusaba (ECONNRESET). Reproducido 40 de 40. El servidor falso ya no cierra por tiempo y la app repite una vez lo que se puede repetir (eventos y estado): sin el reintento, 9 de 20 fallaban con el servidor cerrando a 5 s; con él, 0 de 20. Prueba de carga hecha: `docs/carga.md`.
 - **Retirado (14 nov):** el aviso de que binomio, polares, inversas, transformaciones y cónicas animaban 1 a 2,5 s con movimiento reducido. Medido con Playwright a 360 y 1280 px: ningún cuadro de animación después de responder y «Siguiente» en menos de 0,6 s. Venía de un verificador que esperaba solo 80 ms entre clics.
 - La línea de la marca cruza el rótulo de un pedazo cuando caen en la misma columna.
 - `app/lectura.js` todavía tiene `PREMIOS` con emoji y el gato en la retroalimentación: pasarlo a la mascota.
@@ -498,7 +498,7 @@ La regla 1 sigue: lo que sale del cálculo (rayos, trayectorias, circuitos) lo d
 - **C4:** resultados en el servidor (`/api/resultados`) y panel del administrador más completo.
 - Migraciones con Alembic: hoy las tablas se crean al arrancar.
 - Paginar `GET /api/colegio/eventos` y poder desactivar cuentas.
-- El límite de intentos vive en memoria: un solo proceso (`--workers 1`). Antes de escalar, pasarlo a la base de datos.
+- **Prueba de carga (14 nov): `docs/carga.md`.** El servidor de `main` se traba para siempre con unos 450 alumnos entrando a la vez (interbloqueo entre los hilos de FastAPI y el pool). El arreglo y los demás cambios están en la rama `carga-mejoras`, sin integrar: lo decide Gerson, porque Railway despliega desde `main`. El límite de intentos ya vive en la base (`intentos_fallidos`), no en memoria: varios workers son seguros. Pero el límite de 5 fallos por IP bloquea a todo un colegio detrás de una sola IP: hay que decidirlo antes del piloto.
 - Tras un reinicio de contraseña, si el acceso de 15 minutos sigue vigente, el alumno ve «cambia tu contraseña» en vez del ingreso. Funciona igual, porque necesita la clave temporal.
 - `CORS_ORIGENES` y `APP_URL` en Railway apuntan a `https://mesa-de-estudios.vercel.app`. Si cambia el dominio, se cambian ahí.
 

@@ -23,6 +23,7 @@ docs/arquitectura.md           capas (catálogo, módulos, núcleo, app, datos),
 docs/metodo/                   cómo se construye una plantilla con subagentes (briefs del constructor, verificador y revisor)
 docs/pendientes.md             traspaso: qué hay hecho, cómo arrancar y pendientes en orden (léelo al empezar)
 docs/cuentas.md                diseño de cuentas, login, progreso y servidor, con el contrato de la API
+docs/carga.md                  prueba de carga del servidor (14 nov 2026): dónde se rompe y qué cambiar; herramientas en servidor/carga/
 servidor/                      API de cuentas y progreso (FastAPI + PostgreSQL, para Railway; ver servidor/LEEME.md); pruebas con pytest
 docs/publicar.md               cómo publicar la app en Vercel (vercel.json, .vercelignore) y cómo comprobarla
 docs/guia-profesores.md        guía para el profesor del colegio piloto (enlaces, pruebas, laboratorio, datos)
