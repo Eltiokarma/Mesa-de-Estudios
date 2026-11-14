@@ -2791,7 +2791,14 @@
      "plantillas": [
       "poligonos",
       "geo-poligonos"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/geometria/poligonos-regulares.js",
+      "requiere": [
+       "/nucleo/kit/piezas/geo-figura.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "geometria.simetria",
