@@ -255,7 +255,7 @@
       voz: 'La última opción no se prueba: se deduce.',
       controles: [{ id: 'n', etiqueta: 'Llaves', min: 2, max: 6, paso: 1, inicio: 2, decimales: 0, color: 'c-o' }],
       dibujo: val => ({ datos: llaves(val.n), estado: {} }),
-      lectura: val => [`Pruebas = ${Array.from({ length: val.n - 1 }, (_, i) => val.n - 1 - i).join(' + ')} = ${val.n * (val.n - 1) / 2}`],
+      lectura: val => [val.n > 2 ? `Pruebas = ${Array.from({ length: val.n - 1 }, (_, i) => val.n - 1 - i).join(' + ')} = ${val.n * (val.n - 1) / 2}` : `Pruebas = ${val.n * (val.n - 1) / 2}`],
       minimo: 3,
       // Arrastra la esquina de la tabla hacia abajo: una llave y un candado más.
       arrastres: [Object.assign({ id: 'llaves', etiqueta: 'cuántas llaves y candados', color: 'c-o' }, manijaLlaves(n => llaves(n), 'n'))],
