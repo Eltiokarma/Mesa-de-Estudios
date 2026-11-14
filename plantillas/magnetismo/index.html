@@ -223,6 +223,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'magnetismo', unidad: 'fisica.magnetismo', version: '0.1.0' };
@@ -767,7 +768,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     let a = Math.round(phi); a = ((a % 360) + 360) % 360;
     if (lim) a = clamp(a > 270 ? a - 360 : a, lim[0], lim[1]);
     if (a === E.p3.phi) return;
-    E.p3.phi = a; E.p3.alfa = false; E.cambio();
+    E.p3.phi = a; E.p3.alfa = !!E.p3.alfaFijo; E.cambio();
   }
   function poner(k, p){
     if (k === 'giro'){
@@ -817,6 +818,25 @@ const sinCorte = t => String(t).replace(/ = /g, '&nbsp;=&nbsp;');
 const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${sinCorte(t)}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
 // Fuentes (cifras de resúmenes, por verificar con los PDF: docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md)
 const fuenteSingh = 'Singh, 2017';
+
+/* Jugar antes de preguntar (regla 3, decisión 20 de Gerson, 14 nov 2026): antes de la primera pregunta de cada modo,
+   el alumno gira la velocidad de un protón en la vista en perspectiva (arrastrando la punta de v o con ← →) y gira la
+   vista, para ubicarse en los tres ejes con B vertical. Solo se ve el ángulo de v con la horizontal: no se dibuja la
+   fuerza ni el ángulo θ entre v y B, que es lo que se pregunta después (pasos 2 a 5 y el cable girado del modo 2). */
+function jugarEjes(E, modo, volver){
+  E.compacto = false; Celular.compactar(modo, false);
+  E.config({ vista:'p3d', p3:{ modo:'carga', q:QP, v:5e6, B:.5, phi:60, alfa:true, alfaFijo:true, theta:false, verF:false, yaw:-35 }, arr:{ giro:true },
+    lect: () => [['v', 'v con la horizontal', `${fmt(E.p3.phi, 0)}°`], ['B', 'Campo B', 'vertical, hacia arriba']],
+    desc: () => `Juego libre: vista en perspectiva con los ejes x, y, z; el campo B es vertical, hacia arriba, y la velocidad del protón forma ${fmt(E.p3.phi, 0)}° con la horizontal. Arrastra la punta de v o usa las flechas del teclado.` });
+  const caja = document.createElement('div');
+  caja.className = 'acciones'; caja.setAttribute('data-jugar', '');
+  caja.innerHTML = '<button type="button" class="btn">Girar la vista ◀</button><button type="button" class="btn">Girar la vista ▶</button>';
+  const bench = modo.querySelector('.bench');
+  bench.appendChild(caja);
+  caja.querySelectorAll('button').forEach((b, j) => b.onclick = () => { if (E.ocupado) return; E.ocupado = true; E.girarVista(j ? 40 : -40, () => { E.ocupado = false; }); });
+  return JugarPrimero.montar({ escena: bench, preguntas: [modo.querySelector('.guide')], minimo: 2,
+    consigna: 'Gira la velocidad del protón y la vista: ubica v y B.', alListo: () => { caja.remove(); volver(); } });
+}
 </script>
 
 <script>
@@ -1117,6 +1137,7 @@ function prediccion(s){
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+jugarEjes(E, $('m1'), () => go(0));
 })();
 </script>
 
@@ -1268,6 +1289,7 @@ function ir(k){
   pintar();
 }
 ir(0);
+jugarEjes(E, $('m2'), () => ir(0));
 })();
 </script>
 
