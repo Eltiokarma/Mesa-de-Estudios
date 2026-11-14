@@ -1,0 +1,147 @@
+/*
+ * Datos de la tabla viva: los 118 elementos. ARCHIVO GENERADO por herramientas/tabla-datos.js: no se edita a mano.
+ *
+ * Fuentes (bajadas el 2026-11-14):
+ *   - Z, símbolo, peso atómico estándar (`estandar`, tal cual) y abreviado (`peso` ± `incertidumbre`, con su texto
+ *     en `pesoTexto` para no perder los ceros): CIAAW, Standard Atomic Weights 2024 y Abridged Standard Atomic Weights
+ *     2024 (https://www.ciaaw.org/atomic-weights.htm y abridged-atomic-weights.htm). Notas g, m y r de la CIAAW.
+ *   - `masico`: solo en los elementos SIN peso atómico estándar; números másicos del isótopo más estable conocido
+ *     (NUBASE2020, compilado por la CIAAW en radioactive-elements.htm). Varios si la CIAAW no los distingue.
+ *     No es un peso atómico: se muestra entre corchetes y con su rótulo.
+ *   - `nombre` y `otros` en español: transcritos por un modelo, POR VERIFICAR con la nomenclatura de la RSEQ.
+ * Ninguna propiedad se estima (decisión 9): lo que no está aquí no existe para la tabla.
+ */
+(function (root, fabrica) {
+  const api = fabrica();
+  if (typeof module === 'object' && module.exports) module.exports = api;
+  else (root.Kit = root.Kit || {}).tablaDatos = api;
+})(typeof self !== 'undefined' ? self : this, function () {
+  'use strict';
+  const ELEMENTOS = [
+    {"Z":1,"simbolo":"H","nombre":"hidrógeno","peso":1.008,"pesoTexto":"1.0080","incertidumbre":0.0002,"estandar":"[1.007 84, 1.008 11]","notas":["m"]},
+    {"Z":2,"simbolo":"He","nombre":"helio","peso":4.0026,"pesoTexto":"4.0026","incertidumbre":0.0001,"estandar":"4.002 602(2)","notas":["g","r"]},
+    {"Z":3,"simbolo":"Li","nombre":"litio","peso":6.94,"pesoTexto":"6.94","incertidumbre":0.06,"estandar":"[6.938, 6.997]","notas":["m"]},
+    {"Z":4,"simbolo":"Be","nombre":"berilio","peso":9.0122,"pesoTexto":"9.0122","incertidumbre":0.0001,"estandar":"9.012 1831(5)"},
+    {"Z":5,"simbolo":"B","nombre":"boro","peso":10.81,"pesoTexto":"10.81","incertidumbre":0.02,"estandar":"[10.806, 10.821]","notas":["m"]},
+    {"Z":6,"simbolo":"C","nombre":"carbono","peso":12.011,"pesoTexto":"12.011","incertidumbre":0.002,"estandar":"[12.0096, 12.0116]"},
+    {"Z":7,"simbolo":"N","nombre":"nitrógeno","peso":14.007,"pesoTexto":"14.007","incertidumbre":0.001,"estandar":"[14.006 43, 14.007 28]","notas":["m"]},
+    {"Z":8,"simbolo":"O","nombre":"oxígeno","peso":15.999,"pesoTexto":"15.999","incertidumbre":0.001,"estandar":"[15.999 03, 15.999 77]","notas":["m"]},
+    {"Z":9,"simbolo":"F","nombre":"flúor","peso":18.998,"pesoTexto":"18.998","incertidumbre":0.001,"estandar":"18.998 403 162(5)"},
+    {"Z":10,"simbolo":"Ne","nombre":"neón","peso":20.18,"pesoTexto":"20.180","incertidumbre":0.001,"estandar":"20.1797(6)","notas":["g","m"]},
+    {"Z":11,"simbolo":"Na","nombre":"sodio","peso":22.99,"pesoTexto":"22.990","incertidumbre":0.001,"estandar":"22.989 769 28(2)"},
+    {"Z":12,"simbolo":"Mg","nombre":"magnesio","peso":24.305,"pesoTexto":"24.305","incertidumbre":0.002,"estandar":"[24.304, 24.307]"},
+    {"Z":13,"simbolo":"Al","nombre":"aluminio","peso":26.982,"pesoTexto":"26.982","incertidumbre":0.001,"estandar":"26.981 5384(3)"},
+    {"Z":14,"simbolo":"Si","nombre":"silicio","peso":28.085,"pesoTexto":"28.085","incertidumbre":0.001,"estandar":"[28.084, 28.086]"},
+    {"Z":15,"simbolo":"P","nombre":"fósforo","peso":30.974,"pesoTexto":"30.974","incertidumbre":0.001,"estandar":"30.973 761 998(5)"},
+    {"Z":16,"simbolo":"S","nombre":"azufre","peso":32.06,"pesoTexto":"32.06","incertidumbre":0.02,"estandar":"[32.059, 32.076]"},
+    {"Z":17,"simbolo":"Cl","nombre":"cloro","peso":35.45,"pesoTexto":"35.45","incertidumbre":0.01,"estandar":"[35.446, 35.457]","notas":["m"]},
+    {"Z":18,"simbolo":"Ar","nombre":"argón","peso":39.95,"pesoTexto":"39.95","incertidumbre":0.16,"estandar":"[39.792, 39.963]"},
+    {"Z":19,"simbolo":"K","nombre":"potasio","peso":39.098,"pesoTexto":"39.098","incertidumbre":0.001,"estandar":"39.0983(1)"},
+    {"Z":20,"simbolo":"Ca","nombre":"calcio","peso":40.078,"pesoTexto":"40.078","incertidumbre":0.004,"estandar":"40.078(4)","notas":["g"]},
+    {"Z":21,"simbolo":"Sc","nombre":"escandio","peso":44.956,"pesoTexto":"44.956","incertidumbre":0.001,"estandar":"44.955 907(4)"},
+    {"Z":22,"simbolo":"Ti","nombre":"titanio","peso":47.867,"pesoTexto":"47.867","incertidumbre":0.001,"estandar":"47.867(1)"},
+    {"Z":23,"simbolo":"V","nombre":"vanadio","peso":50.942,"pesoTexto":"50.942","incertidumbre":0.001,"estandar":"50.9415(1)"},
+    {"Z":24,"simbolo":"Cr","nombre":"cromo","peso":51.996,"pesoTexto":"51.996","incertidumbre":0.001,"estandar":"51.9961(6)"},
+    {"Z":25,"simbolo":"Mn","nombre":"manganeso","peso":54.938,"pesoTexto":"54.938","incertidumbre":0.001,"estandar":"54.938 043(2)"},
+    {"Z":26,"simbolo":"Fe","nombre":"hierro","peso":55.845,"pesoTexto":"55.845","incertidumbre":0.002,"estandar":"55.845(2)"},
+    {"Z":27,"simbolo":"Co","nombre":"cobalto","peso":58.933,"pesoTexto":"58.933","incertidumbre":0.001,"estandar":"58.933 194(3)"},
+    {"Z":28,"simbolo":"Ni","nombre":"níquel","peso":58.693,"pesoTexto":"58.693","incertidumbre":0.001,"estandar":"58.6934(4)","notas":["r"]},
+    {"Z":29,"simbolo":"Cu","nombre":"cobre","peso":63.546,"pesoTexto":"63.546","incertidumbre":0.003,"estandar":"63.546(3)","notas":["r"]},
+    {"Z":30,"simbolo":"Zn","nombre":"zinc","otros":["cinc"],"peso":65.38,"pesoTexto":"65.38","incertidumbre":0.02,"estandar":"65.38(2)","notas":["r"]},
+    {"Z":31,"simbolo":"Ga","nombre":"galio","peso":69.723,"pesoTexto":"69.723","incertidumbre":0.001,"estandar":"69.723(1)"},
+    {"Z":32,"simbolo":"Ge","nombre":"germanio","peso":72.63,"pesoTexto":"72.630","incertidumbre":0.008,"estandar":"72.630(8)"},
+    {"Z":33,"simbolo":"As","nombre":"arsénico","peso":74.922,"pesoTexto":"74.922","incertidumbre":0.001,"estandar":"74.921 595(6)"},
+    {"Z":34,"simbolo":"Se","nombre":"selenio","peso":78.971,"pesoTexto":"78.971","incertidumbre":0.008,"estandar":"78.971(8)","notas":["r"]},
+    {"Z":35,"simbolo":"Br","nombre":"bromo","peso":79.904,"pesoTexto":"79.904","incertidumbre":0.003,"estandar":"[79.901, 79.907]"},
+    {"Z":36,"simbolo":"Kr","nombre":"kriptón","peso":83.798,"pesoTexto":"83.798","incertidumbre":0.002,"estandar":"83.798(2)","notas":["g","m"]},
+    {"Z":37,"simbolo":"Rb","nombre":"rubidio","peso":85.468,"pesoTexto":"85.468","incertidumbre":0.001,"estandar":"85.4678(3)","notas":["g"]},
+    {"Z":38,"simbolo":"Sr","nombre":"estroncio","peso":87.62,"pesoTexto":"87.62","incertidumbre":0.01,"estandar":"87.62(1)","notas":["g","r"]},
+    {"Z":39,"simbolo":"Y","nombre":"itrio","peso":88.906,"pesoTexto":"88.906","incertidumbre":0.001,"estandar":"88.905 838(2)"},
+    {"Z":40,"simbolo":"Zr","nombre":"circonio","peso":91.222,"pesoTexto":"91.222","incertidumbre":0.003,"estandar":"91.222(3)","notas":["g"]},
+    {"Z":41,"simbolo":"Nb","nombre":"niobio","peso":92.906,"pesoTexto":"92.906","incertidumbre":0.001,"estandar":"92.906 37(1)"},
+    {"Z":42,"simbolo":"Mo","nombre":"molibdeno","peso":95.95,"pesoTexto":"95.95","incertidumbre":0.01,"estandar":"95.95(1)","notas":["g"]},
+    {"Z":43,"simbolo":"Tc","nombre":"tecnecio","masico":[97,98]},
+    {"Z":44,"simbolo":"Ru","nombre":"rutenio","peso":101.07,"pesoTexto":"101.07","incertidumbre":0.02,"estandar":"101.07(2)","notas":["g"]},
+    {"Z":45,"simbolo":"Rh","nombre":"rodio","peso":102.91,"pesoTexto":"102.91","incertidumbre":0.01,"estandar":"102.905 49(2)"},
+    {"Z":46,"simbolo":"Pd","nombre":"paladio","peso":106.42,"pesoTexto":"106.42","incertidumbre":0.01,"estandar":"106.42(1)","notas":["g"]},
+    {"Z":47,"simbolo":"Ag","nombre":"plata","peso":107.87,"pesoTexto":"107.87","incertidumbre":0.01,"estandar":"107.8682(2)","notas":["g"]},
+    {"Z":48,"simbolo":"Cd","nombre":"cadmio","peso":112.41,"pesoTexto":"112.41","incertidumbre":0.01,"estandar":"112.414(4)","notas":["g"]},
+    {"Z":49,"simbolo":"In","nombre":"indio","peso":114.82,"pesoTexto":"114.82","incertidumbre":0.01,"estandar":"114.818(1)"},
+    {"Z":50,"simbolo":"Sn","nombre":"estaño","peso":118.71,"pesoTexto":"118.71","incertidumbre":0.01,"estandar":"118.710(7)","notas":["g"]},
+    {"Z":51,"simbolo":"Sb","nombre":"antimonio","peso":121.76,"pesoTexto":"121.76","incertidumbre":0.01,"estandar":"121.760(1)","notas":["g"]},
+    {"Z":52,"simbolo":"Te","nombre":"telurio","peso":127.6,"pesoTexto":"127.60","incertidumbre":0.03,"estandar":"127.60(3)","notas":["g"]},
+    {"Z":53,"simbolo":"I","nombre":"yodo","peso":126.9,"pesoTexto":"126.90","incertidumbre":0.01,"estandar":"126.904 47(3)"},
+    {"Z":54,"simbolo":"Xe","nombre":"xenón","peso":131.29,"pesoTexto":"131.29","incertidumbre":0.01,"estandar":"131.293(6)","notas":["g","m"]},
+    {"Z":55,"simbolo":"Cs","nombre":"cesio","peso":132.91,"pesoTexto":"132.91","incertidumbre":0.01,"estandar":"132.905 451 96(6)"},
+    {"Z":56,"simbolo":"Ba","nombre":"bario","peso":137.33,"pesoTexto":"137.33","incertidumbre":0.01,"estandar":"137.327(7)"},
+    {"Z":57,"simbolo":"La","nombre":"lantano","peso":138.91,"pesoTexto":"138.91","incertidumbre":0.01,"estandar":"138.905 47(7)","notas":["g"]},
+    {"Z":58,"simbolo":"Ce","nombre":"cerio","peso":140.12,"pesoTexto":"140.12","incertidumbre":0.01,"estandar":"140.116(1)","notas":["g"]},
+    {"Z":59,"simbolo":"Pr","nombre":"praseodimio","peso":140.91,"pesoTexto":"140.91","incertidumbre":0.01,"estandar":"140.907 66(1)"},
+    {"Z":60,"simbolo":"Nd","nombre":"neodimio","peso":144.24,"pesoTexto":"144.24","incertidumbre":0.01,"estandar":"144.242(3)","notas":["g"]},
+    {"Z":61,"simbolo":"Pm","nombre":"prometio","masico":[145]},
+    {"Z":62,"simbolo":"Sm","nombre":"samario","peso":150.36,"pesoTexto":"150.36","incertidumbre":0.02,"estandar":"150.36(2)","notas":["g"]},
+    {"Z":63,"simbolo":"Eu","nombre":"europio","peso":151.96,"pesoTexto":"151.96","incertidumbre":0.01,"estandar":"151.964(1)","notas":["g"]},
+    {"Z":64,"simbolo":"Gd","nombre":"gadolinio","peso":157.25,"pesoTexto":"157.25","incertidumbre":0.01,"estandar":"157.249(2)","notas":["g"]},
+    {"Z":65,"simbolo":"Tb","nombre":"terbio","peso":158.93,"pesoTexto":"158.93","incertidumbre":0.01,"estandar":"158.925 354(7)"},
+    {"Z":66,"simbolo":"Dy","nombre":"disprosio","peso":162.5,"pesoTexto":"162.50","incertidumbre":0.01,"estandar":"162.500(1)","notas":["g"]},
+    {"Z":67,"simbolo":"Ho","nombre":"holmio","peso":164.93,"pesoTexto":"164.93","incertidumbre":0.01,"estandar":"164.930 329(5)"},
+    {"Z":68,"simbolo":"Er","nombre":"erbio","peso":167.26,"pesoTexto":"167.26","incertidumbre":0.01,"estandar":"167.259(3)","notas":["g"]},
+    {"Z":69,"simbolo":"Tm","nombre":"tulio","peso":168.93,"pesoTexto":"168.93","incertidumbre":0.01,"estandar":"168.934 219(5)"},
+    {"Z":70,"simbolo":"Yb","nombre":"iterbio","peso":173.05,"pesoTexto":"173.05","incertidumbre":0.02,"estandar":"173.045(10)","notas":["g"]},
+    {"Z":71,"simbolo":"Lu","nombre":"lutecio","peso":174.97,"pesoTexto":"174.97","incertidumbre":0.01,"estandar":"174.966 69(5)","notas":["g"]},
+    {"Z":72,"simbolo":"Hf","nombre":"hafnio","peso":178.49,"pesoTexto":"178.49","incertidumbre":0.01,"estandar":"178.486(6)","notas":["g"]},
+    {"Z":73,"simbolo":"Ta","nombre":"tantalio","peso":180.95,"pesoTexto":"180.95","incertidumbre":0.01,"estandar":"180.947 88(2)"},
+    {"Z":74,"simbolo":"W","nombre":"wolframio","otros":["tungsteno"],"peso":183.84,"pesoTexto":"183.84","incertidumbre":0.01,"estandar":"183.84(1)"},
+    {"Z":75,"simbolo":"Re","nombre":"renio","peso":186.21,"pesoTexto":"186.21","incertidumbre":0.01,"estandar":"186.207(1)"},
+    {"Z":76,"simbolo":"Os","nombre":"osmio","peso":190.23,"pesoTexto":"190.23","incertidumbre":0.03,"estandar":"190.23(3)","notas":["g"]},
+    {"Z":77,"simbolo":"Ir","nombre":"iridio","peso":192.22,"pesoTexto":"192.22","incertidumbre":0.01,"estandar":"192.217(2)"},
+    {"Z":78,"simbolo":"Pt","nombre":"platino","peso":195.08,"pesoTexto":"195.08","incertidumbre":0.02,"estandar":"195.084(9)"},
+    {"Z":79,"simbolo":"Au","nombre":"oro","peso":196.97,"pesoTexto":"196.97","incertidumbre":0.01,"estandar":"196.966 570(4)"},
+    {"Z":80,"simbolo":"Hg","nombre":"mercurio","peso":200.59,"pesoTexto":"200.59","incertidumbre":0.01,"estandar":"200.592(3)"},
+    {"Z":81,"simbolo":"Tl","nombre":"talio","peso":204.38,"pesoTexto":"204.38","incertidumbre":0.01,"estandar":"[204.382, 204.385]"},
+    {"Z":82,"simbolo":"Pb","nombre":"plomo","peso":207.2,"pesoTexto":"207.2","incertidumbre":1.1,"estandar":"[206.14, 207.94]"},
+    {"Z":83,"simbolo":"Bi","nombre":"bismuto","peso":208.98,"pesoTexto":"208.98","incertidumbre":0.01,"estandar":"208.980 40(1)"},
+    {"Z":84,"simbolo":"Po","nombre":"polonio","masico":[209]},
+    {"Z":85,"simbolo":"At","nombre":"astato","masico":[210]},
+    {"Z":86,"simbolo":"Rn","nombre":"radón","masico":[222]},
+    {"Z":87,"simbolo":"Fr","nombre":"francio","masico":[223]},
+    {"Z":88,"simbolo":"Ra","nombre":"radio","masico":[226]},
+    {"Z":89,"simbolo":"Ac","nombre":"actinio","masico":[227]},
+    {"Z":90,"simbolo":"Th","nombre":"torio","peso":232.04,"pesoTexto":"232.04","incertidumbre":0.01,"estandar":"232.0377(4)","notas":["g"]},
+    {"Z":91,"simbolo":"Pa","nombre":"protactinio","peso":231.04,"pesoTexto":"231.04","incertidumbre":0.01,"estandar":"231.035 88(1)"},
+    {"Z":92,"simbolo":"U","nombre":"uranio","peso":238.03,"pesoTexto":"238.03","incertidumbre":0.01,"estandar":"238.028 91(3)","notas":["g","m"]},
+    {"Z":93,"simbolo":"Np","nombre":"neptunio","masico":[237]},
+    {"Z":94,"simbolo":"Pu","nombre":"plutonio","masico":[244]},
+    {"Z":95,"simbolo":"Am","nombre":"americio","masico":[243]},
+    {"Z":96,"simbolo":"Cm","nombre":"curio","masico":[247]},
+    {"Z":97,"simbolo":"Bk","nombre":"berkelio","masico":[247]},
+    {"Z":98,"simbolo":"Cf","nombre":"californio","masico":[251]},
+    {"Z":99,"simbolo":"Es","nombre":"einstenio","masico":[252]},
+    {"Z":100,"simbolo":"Fm","nombre":"fermio","masico":[257]},
+    {"Z":101,"simbolo":"Md","nombre":"mendelevio","masico":[258]},
+    {"Z":102,"simbolo":"No","nombre":"nobelio","masico":[259]},
+    {"Z":103,"simbolo":"Lr","nombre":"laurencio","masico":[262,266]},
+    {"Z":104,"simbolo":"Rf","nombre":"rutherfordio","masico":[267]},
+    {"Z":105,"simbolo":"Db","nombre":"dubnio","masico":[268]},
+    {"Z":106,"simbolo":"Sg","nombre":"seaborgio","masico":[269,271]},
+    {"Z":107,"simbolo":"Bh","nombre":"bohrio","masico":[270,274]},
+    {"Z":108,"simbolo":"Hs","nombre":"hasio","masico":[269,270]},
+    {"Z":109,"simbolo":"Mt","nombre":"meitnerio","masico":[277,278]},
+    {"Z":110,"simbolo":"Ds","nombre":"darmstatio","masico":[281]},
+    {"Z":111,"simbolo":"Rg","nombre":"roentgenio","masico":[282]},
+    {"Z":112,"simbolo":"Cn","nombre":"copernicio","masico":[285]},
+    {"Z":113,"simbolo":"Nh","nombre":"nihonio","masico":[285,286]},
+    {"Z":114,"simbolo":"Fl","nombre":"flerovio","masico":[289,290]},
+    {"Z":115,"simbolo":"Mc","nombre":"moscovio","masico":[288,289,290]},
+    {"Z":116,"simbolo":"Lv","nombre":"livermorio","masico":[291,292,293]},
+    {"Z":117,"simbolo":"Ts","nombre":"teneso","masico":[294]},
+    {"Z":118,"simbolo":"Og","nombre":"oganesón","masico":[294]}
+  ];
+  ELEMENTOS.forEach(Object.freeze);
+  const FUENTES = Object.freeze({
+    peso: 'CIAAW, Standard Atomic Weights 2024 (abreviado)',
+    masico: 'NUBASE2020 (Kondev y otros, Chinese Physics C 45, 030001), compilado por la CIAAW',
+    nombre: 'Transcrito por modelo; por verificar con la RSEQ'
+  });
+  return Object.freeze({ ELEMENTOS: Object.freeze(ELEMENTOS), FUENTES });
+});
