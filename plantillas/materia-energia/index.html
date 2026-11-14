@@ -138,6 +138,8 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
 .btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
 .btn:disabled{opacity:.45; cursor:not-allowed}
+.juego{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.juego[hidden]{display:none}
 button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
 .hint{font-size:.88rem; color:var(--muted)}
 .fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
@@ -175,6 +177,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
     <section class="bench" aria-label="La lupa y la balanza">
       <div class="lienzo"><canvas id="cv" role="img" aria-label="Lo que se ve a simple vista y, en círculos, lo que muestra la lupa: las partículas"></canvas></div>
       <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="juego" data-juego><button type="button" class="btn" data-agua="25">Echar agua</button><button type="button" class="btn" data-agua="-25">Sacar agua</button></div>
       <div class="legend" id="ley1"></div>
     </section>
     <section class="guide">
@@ -196,6 +199,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
     <section class="bench" aria-label="Experimentos con la lupa y la balanza">
       <div class="lienzo"><canvas id="cv2" role="img" aria-label="El experimento: la balanza, la olla o la caja, y la lupa con las partículas"></canvas></div>
       <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="juego" data-juego><button type="button" class="btn" data-agua="25">Echar agua</button><button type="button" class="btn" data-agua="-25">Sacar agua</button></div>
       <div class="legend" id="ley2"></div>
     </section>
     <section class="guide">
@@ -223,6 +227,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="../../nucleo/elementos.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'materia-energia', unidad: 'quimica.materia-y-energia', version: '0.1.0' };
@@ -552,7 +557,7 @@ PINTA.frasco = {
     if (v.tapa){ ctx.save(); rr(ctx, cx - fw*0.32, yT - 14, fw*0.64, 16, 5); ctx.fillStyle = c.vidrio; ctx.fill(); ctx.restore(); }
     else { ctx.save(); ctx.fillStyle = c.paper; ctx.fillRect(cx - fw*0.3, yT - 3, fw*0.6, 7); ctx.restore(); }
     // Líquido que baja y moléculas: abajo juntas (líquido), arriba sueltas (vapor).
-    const nTot = 12, nVap = Math.round(nTot*p), nSale = Math.round(nVap*q), hLiq = (fh - 24)*0.36*(1 - p);
+    const nv = v.nivel || 1, nTot = Math.max(3, Math.round(12*nv)), nVap = Math.round(nTot*p), nSale = Math.round(nVap*q), hLiq = (fh - 24)*0.36*(1 - p)*nv;
     if (hLiq > 1){ ctx.fillStyle = c.agua; rr(ctx, cx - fw/2 + 5, yb - 5 - hLiq, fw - 10, hLiq, 8); ctx.fill(); }
     const R = chico ? 3.4 : 4, liq = lugares(nTot, { x:cx - fw/2 + 10, y:yb - 4 - (fh - 24)*0.36, w:fw - 20, h:(fh - 24)*0.36 }, 41, 0), gas = lugares(nTot, { x:cx - fw/2 + 10, y:yT + 10, w:fw - 20, h:fh*0.55 }, 43, 0);
     for (let i = 0; i < nTot; i++){
@@ -724,6 +729,39 @@ function cortar(E){ E.anims = []; }
 const LETRAS = 'abcd';
 const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}" aria-label="Opción ${LETRAS.indexOf(k) + 1}: ${t.replace(/<[^>]+>/g, '')}"><span class="l">${LETRAS.indexOf(k) + 1}</span><span>${t.replace(/ tabindex="0"/g, '')}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
 const otraVez = `<button type="button" class="btn" data-repetir>Ver de nuevo</button>`;
+
+/* ----- Jugar antes de preguntar (regla 3, decisión 20): echar y sacar agua de un frasco sobre la balanza -----
+   Se echa o se saca agua (con botones, arrastrando la superficie del agua o con las flechas) y la balanza lo marca.
+   Nada se evapora, se quema ni reacciona: lo que después se pregunta (qué marca la balanza cuando el líquido se
+   evapora en el frasco cerrado o cuando arde la lana de acero, qué partículas hay, qué hay en la burbuja) el juego
+   no lo muestra. */
+function montarJuego(E, cv, alListo){
+  const J = { on:true, masa:100 }, MIN = 25, MAX = 175;
+  const cajaJ = cv.closest('.bench').querySelector('[data-juego]');
+  const vista = () => ({ tipo:'frasco', recipiente:250, masa:J.masa, nivel:J.masa/100, sust:'H2O', tapa:false, p:0, q:0 });
+  const pintar = () => {
+    if (!J.on) return;
+    E.vista = vista(); E.dibujar(); E.describir();
+    cajaJ.querySelector('[data-agua="25"]').disabled = J.masa >= MAX; cajaJ.querySelector('[data-agua="-25"]').disabled = J.masa <= MIN;
+  };
+  const poner = m => { m = clamp(Math.round(m/5)*5, MIN, MAX); if (m === J.masa) return; J.masa = m; pintar(); };
+  cajaJ.querySelectorAll('[data-agua]').forEach(b => b.addEventListener('click', () => poner(J.masa + +b.dataset.agua)));
+  cv.tabIndex = 0;
+  cv.addEventListener('keydown', e => { if (!J.on) return; const d = { ArrowUp:5, ArrowRight:5, ArrowDown:-5, ArrowLeft:-5 }[e.key]; if (d){ e.preventDefault(); poner(J.masa + d); } });
+  // La misma geometría que PINTA.frasco, en coordenadas del dibujo (el lienzo puede ir a escala).
+  const geo = () => { const W = E.W, chico = W < 560; return { cx:W*0.36, fw: chico ? W*0.5 : Math.min(W*0.4, 240), yb: chico ? 238 : 252, fh: chico ? 170 : 186 }; };
+  const local = p => ({ x:(p.x - (E.W - E.W*E.esc)/2)/E.esc, y:p.y/E.esc });
+  Celular.arrastre(cv, {
+    activo:() => J.on,
+    cerca:(p, r) => { const g = geo(), q = local(p); return Math.abs(q.x - g.cx) < g.fw/2 + r/2 && q.y > g.yb - g.fh - r/2 && q.y < g.yb + r/2; },
+    mover:p => { const g = geo(), q = local(p); poner((g.yb - 5 - q.y)/((g.fh - 24)*0.36)*100); },
+  });
+  const guia = cv.closest('.mode').querySelector('.guide');
+  JugarPrimero.montar({ escena: cv.closest('.bench'), preguntas:[...guia.children], minimo:2,
+    consigna:'Echa y saca agua del frasco: mira lo que marca la balanza.',
+    alListo:() => { J.on = false; cajaJ.hidden = true; cv.removeAttribute('tabindex'); alListo(); } });
+  E.compactar(false); pintar();
+}
 </script>
 
 <script>
@@ -966,6 +1004,7 @@ $('prev').addEventListener('click', () => go(S.step - 1));
 alRedibujarTema(() => E.dibujar());
 addEventListener('modo', () => { E.resize(); E.dibujar(); pedir(); if (S.step === 3) burbujear(); });
 go(0);
+montarJuego(E, $('cv'), () => go(0));
 })();
 </script>
 
@@ -1221,6 +1260,7 @@ function ir(k){
 alRedibujarTema(() => E.dibujar());
 addEventListener('modo', () => { E.resize(); E.dibujar(); pedir(); });
 ir(0);
+montarJuego(E, $('cv2'), () => ir(0));
 })();
 </script>
 
