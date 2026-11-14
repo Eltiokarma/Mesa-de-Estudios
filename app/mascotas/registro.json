@@ -6,11 +6,12 @@
     "gato",
     "luma",
     "nox",
-    "tilo"
+    "tilo",
+    "bruna"
   ],
   "cursos": {
     "fisica": "tilo",
-    "quimica": "gato",
+    "quimica": "bruna",
     "aritmetica": "luma",
     "algebra": "nox",
     "geometria": "gato",
