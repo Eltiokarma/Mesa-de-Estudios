@@ -2569,7 +2569,14 @@
      "grado": 3,
      "plantillas": [
       "congruencia"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/geometria/congruencia.js",
+      "requiere": [
+       "/nucleo/kit/piezas/geo-figura.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "geometria.poligonos-y-cuadrilateros",
