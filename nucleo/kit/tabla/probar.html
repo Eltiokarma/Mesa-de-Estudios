@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>Probar la tabla viva · Laboratorio de Admisión</title>
-<!-- Página de prueba de la tabla viva, paso 1 (no está enlazada desde la app). ?tema=oscuro|claro fuerza el tema. -->
+<!-- Página de prueba de la tabla viva, paso 1 (no está enlazada desde la app). ?tema=oscuro|claro fuerza el tema; ?vista=mesa, ?lente=ei, ?semilla=7. -->
 <link rel="stylesheet" href="../../../app/estilos.css">
 <link rel="stylesheet" href="tabla.css">
 <style>
@@ -27,10 +27,13 @@
 </main>
 <script src="datos.js"></script>
 <script src="arreglos.js"></script>
+<script src="mesa.js"></script>
+<script src="lentes.js"></script>
 <script src="tabla.js"></script>
 <script>
   const q = new URLSearchParams(location.search);
-  window.tabla = Kit.Tabla.montar(document.getElementById('tabla'), { arreglo: q.get('arreglo') || 'tabla', fuentes: true });
+  window.tabla = Kit.Tabla.montar(document.getElementById('tabla'), { vista: q.get('vista') || 'tabla', lente: q.get('lente') || 'nada', fuentes: true,
+    semilla: q.get('semilla') ? Number(q.get('semilla')) : undefined });
 </script>
 </body>
 </html>

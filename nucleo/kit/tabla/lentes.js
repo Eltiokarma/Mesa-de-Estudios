@@ -39,7 +39,7 @@
   const FAMILIA = { alcalino: 'metal', alcalinotérreo: 'metal', 'de transición': 'metal', 'metal del bloque p': 'metal',
     lantánido: 'metal', actínido: 'metal', semimetal: 'semimetal', 'no metal': 'no-metal', halógeno: 'no-metal', 'gas noble': 'noble' };
   const CORTO_CLASE = { alcalino: 'alc', alcalinotérreo: 'alc-t', 'de transición': 'trans', 'metal del bloque p': 'met p',
-    lantánido: 'lant', actínido: 'act', semimetal: 'semi', 'no metal': 'no met', halógeno: 'halóg', 'gas noble': 'noble' };
+    lantánido: 'lant', actínido: 'act', semimetal: 'semi', 'no metal': 'no m.', halógeno: 'halóg', 'gas noble': 'noble' };
   const CORTO_ESTADO = { gas: 'gas', líquido: 'líq', sólido: 'sól' };
 
   const maximo = {};

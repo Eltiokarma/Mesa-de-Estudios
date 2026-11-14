@@ -1,40 +1,91 @@
-/* Tabla viva, paso 1 (nucleo/kit/tabla/tabla.js). Usa los tokens de la cáscara (app/estilos.css): --card, --ink,
-   --muted, --borde, --plataforma y --brand solo en los controles. Las cartas son contenido: tinta sobre tarjeta,
-   sin colores de bloque todavía (eso es «se ilumina», un paso después).
-   Tiempos: micro 120, corto 200, medio 320, largo 480, paso 900 ms (los pone tabla.js). */
+/* Tabla viva (nucleo/kit/tabla/tabla.js). Usa los tokens de la cáscara (app/estilos.css): --card, --ink, --muted,
+   --borde, --plataforma y --brand solo en los controles. Las cartas son contenido: tinta sobre tarjeta. Cada lente
+   numérica tiene un color de variable (regla 4): masa --c-o, ionización --c-i, electronegatividad --c-h, radio --c-d.
+   Tiempos: micro 120, corto 200, medio 320, largo 480, paso 900 ms. */
 
 .tv{--tv-paso:40px;position:relative;color:var(--ink)}
+.tv-solo-lector{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
 /* ---------- Controles ---------- */
-.tv-barra{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.tv-barra{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
 .tv-opcion{min-height:44px;padding:8px 6px;border-radius:12px;border:2px solid var(--borde);background:var(--card);
   color:var(--ink);font-size:15px;font-weight:500;box-shadow:0 3px 0 var(--plataforma);touch-action:manipulation}
-.tv-opcion[aria-pressed="true"]{background:var(--brand-soft);font-weight:700;box-shadow:inset 0 -3px 0 var(--brand)}
-.tv-fila-pliega{min-height:44px;margin:6px 0 2px;display:flex;justify-content:flex-start}
-.tv-pliega{min-height:44px;padding:8px 12px;border:0;background:none;color:var(--ink);font-size:15px;font-weight:600;
+.tv-opcion[aria-pressed="true"],.tv-chip[aria-pressed="true"]{background:var(--brand-soft);font-weight:700;box-shadow:inset 0 -3px 0 var(--brand)}
+.tv-lentes{display:flex;gap:6px;overflow-x:auto;margin:8px -8px 0;padding:2px 8px 4px;scrollbar-width:none}
+.tv-lentes::-webkit-scrollbar{display:none}
+.tv-chip{flex:none;min-height:44px;padding:8px 12px;border-radius:999px;border:1.5px solid var(--borde);background:var(--card);
+  color:var(--ink);font-size:14px;font-weight:500;touch-action:manipulation;white-space:nowrap}
+.tv-leyenda{min-height:calc(2 * 1.35em);margin:4px 0 0;font-size:14px;line-height:1.35;color:var(--muted)}
+.tv-fila-opc{display:grid;min-height:44px;margin:4px 0 2px}
+.tv-fila-opc>*{grid-area:1/1}
+.tv-opc-mesa{display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+.tv-opc-mesa[hidden]{display:none}
+.tv-mezclar{margin-left:auto}
+.tv-pliega{justify-self:start;min-height:44px;padding:8px 12px;border:0;background:none;color:var(--ink);font-size:15px;font-weight:600;
   text-decoration:underline;text-underline-offset:3px;touch-action:manipulation}
-.tv-opcion:focus-visible,.tv-pliega:focus-visible,.tv-cerrar:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
-@media (hover:hover){.tv-opcion:hover{background:color-mix(in oklab,var(--card),var(--ink) 5%)}}
-.tv-opcion:active{background:color-mix(in oklab,var(--card),var(--ink) 10%)}
+.tv-opcion:focus-visible,.tv-chip:focus-visible,.tv-pliega:focus-visible,.tv-cerrar:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+@media (hover:hover){.tv-opcion:hover,.tv-chip:hover{background:color-mix(in oklab,var(--card),var(--ink) 5%)}}
+.tv-opcion:active,.tv-chip:active{background:color-mix(in oklab,var(--card),var(--ink) 10%)}
 
 /* ---------- Cuerpo: canal de periodos fijo + marco que se corre de lado ---------- */
 .tv-cuerpo{display:flex;align-items:flex-start}
 .tv-canal{position:relative;flex:none;width:16px}
+.tv[data-vista="mesa"] .tv-canal{width:0}
 .tv-periodo{position:absolute;left:0;top:0;width:16px;display:flex;align-items:center;justify-content:flex-start;
   font-size:12px;font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums}
 .tv-marco{flex:1;min-width:0;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;padding:2px 0 6px}
 .tv-lienzo{position:relative;contain:layout style}
+/* En la mesa, un punto en el centro de cada celda: se ve dónde cabe una carta. */
+.tv[data-vista="mesa"] .tv-lienzo{background-image:radial-gradient(circle,var(--muted) 1.5px,transparent 2px);
+  background-size:var(--tv-paso) var(--tv-paso);background-position:calc(var(--tv-paso) / 2 - 2px) calc(var(--tv-paso) / 2 - 2px);
+  background-repeat:repeat}
 
 /* ---------- Cartas ---------- */
 .tv-carta{position:absolute;left:0;top:0;width:calc(var(--tv-paso) - 2px);height:calc(var(--tv-paso) - 2px);
   margin:1px;padding:2px 3px;border-radius:6px;border:1.5px solid var(--borde);background:var(--card);color:var(--ink);
   box-shadow:0 2px 0 var(--plataforma);display:flex;flex-direction:column;align-items:center;justify-content:center;
-  line-height:1;will-change:transform;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transform-origin:50% 50%}
-.tv-z{position:absolute;left:3px;top:2px;font-size:12px;font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums}
-.tv-s{font-size:18px;font-weight:700;margin-top:9px;letter-spacing:-.01em}
+  line-height:1;will-change:transform;touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+  transform-origin:50% 50%;overflow:hidden;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.tv[data-vista="mesa"] .tv-carta{touch-action:pan-y;cursor:grab}
+.tv-z,.tv-v{position:absolute;left:3px;top:2px;font-size:12px;font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums;z-index:1}
+.tv-v{display:none;color:var(--ink);font-weight:600;right:2px;white-space:nowrap}
+.tv:not([data-lente="nada"]) .tv-z{display:none}
+.tv:not([data-lente="nada"]) .tv-v{display:block}
+.tv-s{position:relative;z-index:1;font-size:18px;font-weight:700;margin-top:9px;letter-spacing:-.01em}
 .tv-carta.tv-guardada{pointer-events:none}
-.tv-carta:focus-visible{outline:2px solid var(--brand);outline-offset:2px;z-index:2}
+.tv-carta:focus-visible{outline:2px solid var(--brand);outline-offset:2px;z-index:3}
 .tv-carta:active{background:color-mix(in oklab,var(--card),var(--ink) 10%)}
+
+/* Barra de la lente: llena la carta desde abajo, desde cero (fidelidad). Cambia de un valor real a otro en «medio». */
+.tv-bar{position:absolute;left:0;right:0;bottom:0;height:100%;transform:scaleY(0);transform-origin:50% 100%;
+  background:color-mix(in oklab,var(--tv-c,transparent) 42%,var(--card))}
+@media (prefers-reduced-motion:no-preference){.tv-bar{transition:transform 320ms cubic-bezier(.4,0,.2,1)}}
+.tv[data-lente="masa"]{--tv-c:var(--c-o)}
+.tv[data-lente="ei"]{--tv-c:var(--c-i)}
+.tv[data-lente="en"]{--tv-c:var(--c-h)}
+.tv[data-lente="radio"]{--tv-c:var(--c-d)}
+/* Valor calculado o extrapolado (no medido): barra rayada; la leyenda lo dice. */
+.tv-carta[data-tipo="calculado"] .tv-bar,.tv-carta[data-tipo="extrapolado"] .tv-bar{
+  background:repeating-linear-gradient(135deg,color-mix(in oklab,var(--tv-c) 50%,var(--card)) 0 3px,var(--card) 3px 6px)}
+/* Sin dato: borde punteado y «—». */
+.tv-carta.tv-sd{border-style:dashed}
+/* Lentes de categoría: tinte por familia (el texto de la carta dice la clase exacta: el color no es la única señal). */
+.tv-carta[data-grupo="metal"]{background:color-mix(in oklab,var(--c-o) 16%,var(--card))}
+.tv-carta[data-grupo="semimetal"]{background:color-mix(in oklab,var(--c-d) 22%,var(--card))}
+.tv-carta[data-grupo="no-metal"]{background:color-mix(in oklab,var(--c-i) 20%,var(--card))}
+.tv-carta[data-grupo="noble"]{background:color-mix(in oklab,var(--c-h) 18%,var(--card))}
+.tv-carta[data-grupo="gas"]{background:color-mix(in oklab,var(--c-i) 20%,var(--card))}
+.tv-carta[data-grupo="líquido"]{background:color-mix(in oklab,var(--c-h) 20%,var(--card))}
+
+/* Tocada (para ver o comparar): borde más grueso en tinta. Mover: contorno de la marca. */
+.tv-carta[aria-pressed="true"]{border-width:3px;border-color:var(--ink);padding:1px 2px}
+.tv-carta.tv-moviendo{outline:2px dashed var(--brand);outline-offset:2px;z-index:3}
+/* Arrastre: la carta lista para agarrar y la que viaja con el dedo, por encima de todo. */
+.tv-carta.tv-lista{box-shadow:0 4px 12px rgba(0,0,0,.14)}
+.tv-carta.tv-arrastrada{z-index:5;box-shadow:0 12px 32px rgba(0,0,0,.18);cursor:grabbing}
+.tv-destino{position:absolute;left:0;top:0;width:calc(var(--tv-paso) - 2px);height:calc(var(--tv-paso) - 2px);margin:1px;
+  border:2px dashed var(--brand);border-radius:6px;pointer-events:none;z-index:4}
+.tv-destino[hidden]{display:none}
 
 /* Pliegue: la franja que guarda los grupos 3 a 12 (atajo: abre; el control de verdad es el botón de arriba). */
 .tv-franja{position:absolute;left:0;top:0;margin:1px 0;border:1.5px dashed var(--muted);border-radius:6px;
@@ -42,18 +93,20 @@
 .tv-franja[hidden]{display:none}
 .tv-franja span{writing-mode:vertical-rl;font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.04em}
 
-/* Rótulos: grupos arriba, huecos 57–71 y 89–103, y el título de la pila aparte. */
+/* Rótulos: grupos arriba y huecos 57–71 y 89–103. */
 .tv-rotulos{position:absolute;inset:0;pointer-events:none}
 .tv-col{position:absolute;left:0;top:0;height:18px;display:flex;align-items:center;justify-content:center;
   font-size:12px;font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums}
 .tv-hueco{position:absolute;left:0;top:0;width:calc(var(--tv-paso) - 2px);height:calc(var(--tv-paso) - 2px);margin:1px;
   border:1.5px dashed var(--muted);border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;
   font-size:12px;font-weight:500;color:var(--muted);line-height:1.1;box-sizing:border-box}
-.tv-tramo{position:absolute;left:0;top:0;height:calc(var(--tv-paso) * .7);display:flex;align-items:flex-end;
-  font-size:14px;font-weight:600;color:var(--ink)}
 
-/* Estado: una línea reservada desde la primera pintura (nada salta al cambiar). */
-.tv-estado{min-height:calc(2 * 1.4em);margin:8px 0 0;font-size:14px;line-height:1.4;color:var(--muted)}
+/* ---------- Panel: lo que el alumno tocó (alto reservado: nada salta) ---------- */
+.tv-panel{margin-top:8px;padding:10px 12px;border-radius:14px;border:1.5px solid var(--borde);background:var(--card)}
+.tv-panel-texto{min-height:calc(3 * 1.4em)}
+.tv-panel-texto p{margin:0;font-size:15px;line-height:1.4;font-variant-numeric:tabular-nums}
+.tv-panel-texto p+p{margin-top:2px}
+.tv-panel-botones{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
 
 /* ---------- Carta completa: hoja de abajo ---------- */
 .tv-hoja{position:fixed;inset:auto 0 0 0;margin:0 auto;width:100%;max-width:560px;max-height:85dvh;padding:0;border:0;
@@ -61,10 +114,10 @@
 .tv-hoja::backdrop{background:rgba(20,12,28,.45)}
 .tv-hoja-caja{padding:20px 16px calc(16px + env(safe-area-inset-bottom))}
 .tv-hoja-titulo{margin:0;font-size:24px;line-height:1.2}
-.tv-hoja-z{margin:4px 0 12px;color:var(--muted);font-size:16px}
-.tv-hoja-lista{margin:0;display:grid;gap:2px 0}
-.tv-hoja-lista dt{font-size:14px;color:var(--muted);margin-top:10px}
-.tv-hoja-lista dd{margin:0;font-size:17px;font-weight:600;font-variant-numeric:tabular-nums}
+.tv-hoja-z{margin:4px 0 8px;color:var(--muted);font-size:16px}
+.tv-hoja-lista{margin:0;display:grid;gap:0}
+.tv-hoja-lista dt{font-size:14px;color:var(--muted);margin-top:8px}
+.tv-hoja-lista dd{margin:0;font-size:16px;font-weight:600;font-variant-numeric:tabular-nums}
 .tv-fuente{margin:14px 0 0;font-size:14px;color:var(--muted)}
 .tv-cerrar{margin-top:16px;width:100%;min-height:48px;border-radius:14px;border:2px solid var(--borde);background:var(--card);
   color:var(--ink);font-size:16px;font-weight:600;box-shadow:0 3px 0 var(--plataforma)}
