@@ -13,6 +13,11 @@
  * suma), COMP-CRUCE (usar la fórmula del seno en el coseno), TANS-DISTRIB, TANS-SIGNO, TANS-CERO (dividir entre cero
  * da 0), AUX-SUMA (amplitud a + b), AUX-CUADRADO (a² + b² sin raíz), AUX-MAYOR, AUX-SIN-K, AUX-SIGNO,
  * TRES-SUPLE (olvidar el signo de 180° − (A + B)), TRES-CERO, TRES-FALTA, TRES-SUMA, TRES-PROD.
+ * Ronda 2 (14 nov, noche): manijas en las cuatro ideas (el rayo α y la punta del rayo rojo α + β, que fija β, en las
+ * ideas 1 y 2; las crestas de a sen x y b cos x en la 3; el vértice C, que fija A y B, en la 4), llaves en las
+ * reglas (las dos piezas de la altura, el denominador, la onda de amplitud R, la suma y el producto), separadores
+ * «   ·   » donde había «;» y laboratorio de tres mesas. Hallazgo 9: cada idea usa la misma pieza y la misma escena
+ * en «Juega» y en «Mira»; en la idea 1, «Mira» fija α = 45° y β = 30° y descompone la altura del mismo rayo rojo.
  *
  * Ficha de tarea (diseno-y-animacion):
  *   Promesa: la razón de una suma de ángulos se arma con proyecciones; nunca es la suma de las razones.
@@ -34,6 +39,21 @@
   const a_ = { v: 'c-o', t: 'a' }, b_ = { v: 'c-i', t: 'b' }, R_ = { v: 'c-h', t: 'R' };
   const rad = g => g * Math.PI / 180, deg = r => r * 180 / Math.PI;
   const sen = g => Math.sin(rad(g)), cos = g => Math.cos(rad(g)), tan = g => Math.tan(rad(g));
+  // Gesto directo (docs/teoria.md §4b): las manijas usan la geometría de las piezas. ejes y triangulo no traen
+  // inversa: se invierte su escala lineal aquí (como `inversa` en fisica/movimiento-rectilineo.js).
+  const TP = () => Kit.piezas['trig-plano'], EJES = () => Kit.piezas.ejes, TRI = () => Kit.piezas.triangulo;
+  const inversa = (escala, a, b) => px => a + (px - escala(a)) * (b - a) / (escala(b) - escala(a));
+  const punta = (d, gr, L = 1) => TP().enPx(d, L * Math.cos(rad(gr)), L * Math.sin(rad(gr)));
+  // Las dos manijas de un giro compuesto: la de α va a 0,6 del centro sobre su rayo y la de β en la punta del rayo
+  // α + β (a 1), para que no se tapen aunque β valga 0. Mover la punta de α + β cambia β; α queda quieto.
+  const manijasSuma = (datos, A = 'a', B = 'b') => [
+    { id: 'rayo-alfa', etiqueta: 'rayo α', color: 'c-o',
+      donde: v => punta(datos(v), v[A], 0.6),
+      mover: (pt, v) => ({ [A]: TP().anguloDe(datos(v), pt, { cerca: v[A] }) }) },
+    { id: 'rayo-suma', etiqueta: 'punta del rayo α + β: cambia β', color: 'c-i',
+      donde: v => punta(datos(v), v[A] + v[B]),
+      mover: (pt, v) => ({ [B]: TP().anguloDe(datos(v), pt, { cerca: v[A] + v[B] }) - v[A] }) },
+  ];
   // Azar con semilla para «Ahora tú» (el de la unidad de referencia).
   function azar(sem) {
     let q = (sem * 2654435761 + 12345) >>> 0;
@@ -103,8 +123,10 @@
         { id: 'b', etiqueta: 'β', color: 'c-i', min: 20, max: 80, paso: 20, inicio: 40, unidad: '°', decimales: 0 },
       ],
       dibujo: val => ({ datos: suma(val.a, val.b), estado: {} }),
-      lectura: val => ['sen(', su, `) = ${f(sen(val.a + val.b))}; sen `, al, ' + sen ', be, ` = ${f(sen(val.a) + sen(val.b))}`],
+      lectura: val => ['sen(', su, `) = ${f(sen(val.a + val.b))} · sen `, al, ' + sen ', be, ` = ${f(sen(val.a) + sen(val.b))}`],
       minimo: 3,
+      // Se arrastran el rayo α y la punta del rayo rojo α + β (que fija β): la torre y la línea roja responden.
+      arrastres: manijasSuma(val => suma(val.a, val.b)),
     },
     predice: {
       pregunta: ['Ahora ', al, ' = 45° y ', be, ' = 30°, un par que no probaste. ¿Cuánto vale sen 75°, la altura del rayo rojo?'],
@@ -145,7 +167,7 @@
       voz: 'Cada término de la fórmula es un pedazo de altura que se ve.',
       pasos: [
         { estado: { corte: 1 }, texto: 'La altura de P es el seno del ángulo suma.', ecuacion: ['sen(', su, ') = altura de P'] },
-        { estado: { corte: 2 }, texto: 'Bajamos de P al rayo α: un triángulo con hipotenusa 1.', ecuacion: ['OQ = cos ', be, ';  QP = sen ', be] },
+        { estado: { corte: 2 }, texto: 'Bajamos de P al rayo α: un triángulo con hipotenusa 1.', ecuacion: ['OQ = cos ', be, '   ·   ', 'QP = sen ', be] },
         { estado: { corte: 3 }, texto: 'Q está sobre el rayo α: su altura es OQ por sen α.', ecuacion: ['altura de Q = sen ', al, ' · cos ', be] },
         { estado: { corte: 4 }, texto: 'QP está inclinado α respecto de la vertical: sube QP por cos α.', ecuacion: ['subida = cos ', al, ' · sen ', be] },
         { estado: { corte: 5 }, texto: 'Las dos piezas apiladas llegan justo a la línea roja.', ecuacion: [`sen 75° = ${f(M1.h1)} + ${f(M1.h2)} = ${f(M1.P[1])}`] },
@@ -153,7 +175,9 @@
     },
     regla: {
       texto: 'El seno y el coseno de una suma mezclan las razones de los dos ángulos. Para la diferencia se cambia el signo de β.',
-      ecuacion: ['sen(', al, ' ± ', be, ') = sen ', al, ' cos ', be, ' ± cos ', al, ' sen ', be, ';   cos(', al, ' ± ', be, ') = cos ', al, ' cos ', be, ' ∓ sen ', al, ' sen ', be],
+      ecuacion: ['sen(', al, ' ± ', be, ') = ', { llave: ['sen ', al, ' cos ', be], nota: 'altura de Q', color: 'c-d' }, ' ± ', { llave: ['cos ', al, ' sen ', be], nota: 'subida de Q a P', color: 'c-d' },
+        // Espacios duros (\u00a0): el segundo miembro del coseno no se parte; si no cabe, baja entero.
+        '   ·   ', 'cos(', al, ' ± ', be, ') = ', ['cos\u00a0', al, '\u00a0cos\u00a0', be, '\u00a0∓\u00a0sen\u00a0', al, '\u00a0sen\u00a0', be]],
       condicion: 'α y β en la misma unidad. En el coseno el signo se invierte: la suma lleva menos.',
       voz: 'Dos ángulos, cuatro razones; ninguna sobra.',
     },
@@ -236,8 +260,10 @@
         { id: 'b', etiqueta: 'β', color: 'c-i', min: 0, max: 60, paso: 20, inicio: 20, unidad: '°', decimales: 0 },
       ],
       dibujo: val => ({ datos: tangente(val.a, val.b), estado: {} }),
-      lectura: val => ['tan(', su, `) = ${f(tan(val.a + val.b))}; tan `, al, ' + tan ', be, ` = ${f(tan(val.a) + tan(val.b))}`],
+      lectura: val => ['tan(', su, `) = ${f(tan(val.a + val.b))} · tan `, al, ' + tan ', be, ` = ${f(tan(val.a) + tan(val.b))}`],
       minimo: 3,
+      // Se arrastran el rayo α y la punta del rayo rojo α + β: el punto rojo sube por la recta x = 1.
+      arrastres: manijasSuma(val => tangente(val.a, val.b)),
     },
     predice: {
       pregunta: ['Ahora tan ', al, ' = 2 y tan ', be, ' = 1/2. ¿Cuánto vale tan(', su, ')?'],
@@ -265,7 +291,7 @@
       },
       voz: 'La tangente viene del seno y del coseno; su fórmula también.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'Cada tangente es la altura donde su rayo corta x = 1.', ecuacion: ['tan ', al, ' = 1;   tan ', be, ' = 1/3'] },
+        { estado: { corte: 1 }, texto: 'Cada tangente es la altura donde su rayo corta x = 1.', ecuacion: ['tan ', al, ' = 1', '   ·   ', 'tan ', be, ' = 1/3'] },
         { estado: { corte: 2 }, texto: 'La tangente de la suma es seno sobre coseno de la suma.', ecuacion: ['tan(', su, ') = ', { frac: [['sen ', al, ' cos ', be, ' + cos ', al, ' sen ', be], ['cos ', al, ' cos ', be, ' − sen ', al, ' sen ', be]] }] },
         { estado: { corte: 3 }, texto: 'Se divide arriba y abajo entre cos α · cos β.', ecuacion: ['tan(', su, ') = ', { frac: [['tan ', al, ' + tan ', be], ['1 − tan ', al, ' tan ', be]] }] },
         { estado: { corte: 4 }, texto: 'Con estos valores sale 2: el rayo rojo corta x = 1 a altura 2.', ecuacion: [{ frac: ['1 + 1/3', '1 − 1 · 1/3'] }, ' = ', { frac: ['4/3', '2/3'] }, ' = 2'] },
@@ -274,7 +300,7 @@
     },
     regla: {
       texto: 'La tangente de una suma o diferencia se arma con las dos tangentes. Si el denominador se anula, no existe: el ángulo resultante mide 90° más vueltas de 180°.',
-      ecuacion: ['tan(', al, ' ± ', be, ') = ', { frac: [['tan ', al, ' ± tan ', be], ['1 ∓ tan ', al, ' tan ', be]] }],
+      ecuacion: ['tan(', al, ' ± ', be, ') = ', { frac: [['tan ', al, ' ± tan ', be], [{ llave: ['1 ∓ tan ', al, ' tan ', be], nota: 'nunca cero', color: 'c-h' }]] }],
       condicion: 'existen tan α y tan β, y 1 ∓ tan α tan β ≠ 0. Si no, se vuelve a seno y coseno.',
       voz: 'Antes de dividir, revisemos que el denominador no sea cero.',
     },
@@ -331,6 +357,15 @@
       puntos: [{ x: xm, y: R, color: 'h', rotulo: `máx ${f(R)}`, guias: true }],
     }, extra);
   };
+  // Manijas de las crestas: la de a sen x en x = 90° (altura a) y la de b cos x en x = 0° (altura b).
+  const crestas = ymax => [
+    { id: 'cresta-a', etiqueta: 'cresta de a sen x', color: 'c-o',
+      donde: v => { const g = EJES().geometria(ondas(v.a, v.b, ymax)); return { x: g.X(90), y: g.Y(v.a) }; },
+      mover: (pt, v) => ({ a: inversa(y => EJES().geometria(ondas(v.a, v.b, ymax)).Y(y), -ymax, ymax)(pt.y) }) },
+    { id: 'cresta-b', etiqueta: 'cresta de b cos x', color: 'c-i',
+      donde: v => { const g = EJES().geometria(ondas(v.a, v.b, ymax)); return { x: g.X(0), y: g.Y(v.b) }; },
+      mover: (pt, v) => ({ b: inversa(y => EJES().geometria(ondas(v.a, v.b, ymax)).Y(y), -ymax, ymax)(pt.y) }) },
+  ];
   const aux = {
     id: 'una-sola-onda',
     titulo: 'Dos ondas, una sola cresta',
@@ -344,8 +379,10 @@
         { id: 'b', etiqueta: 'b', color: 'c-i', min: -2, max: 2, paso: 1, inicio: 1, decimales: 0 },
       ],
       dibujo: val => ({ datos: ondas(val.a, val.b, 3), estado: {} }),
-      lectura: val => ['cresta ', R_, ` = ${f(Math.hypot(val.a, val.b))}; `, a_, ' + ', b_, ` = ${f(val.a + val.b)}`],
+      lectura: val => ['cresta ', R_, ` = ${f(Math.hypot(val.a, val.b))} · `, a_, ' + ', b_, ` = ${f(val.a + val.b)}`],
       minimo: 3,
+      // Se arrastran las crestas de las dos ondas punteadas (a en x = 90°, b en x = 0°): la onda roja responde.
+      arrastres: crestas(3),
     },
     predice: {
       pregunta: '¿Cuál es el mayor valor que toma 3 sen x + 4 cos x, cuando x recorre todos los ángulos?',
@@ -373,12 +410,12 @@
         { estado: { corte: 1 }, texto: 'Las dos ondas tienen su cresta en x distintos.', ecuacion: [a_, ' sen x + ', b_, ' cos x = 3 sen x + 4 cos x'] },
         { estado: { corte: 2 }, texto: 'Se saca de factor común la raíz de a² + b².', ecuacion: ['= 5', { par: [{ frac: ['3', '5'] }, ' sen x + ', { frac: ['4', '5'] }, ' cos x'] }] },
         { estado: { corte: 3 }, texto: '3/5 y 4/5 son el coseno y el seno de φ.', ecuacion: ['= 5(sen x cos φ + cos x sen φ) = 5 sen(x + φ)'] },
-        { estado: { corte: 4 }, texto: 'El seno va de −1 a 1: la onda, de −5 a 5.', ecuacion: [`φ ≈ ${f(deg(Math.atan2(4, 3)), 2)}°;   −5 ≤ 3 sen x + 4 cos x ≤ 5`] },
+        { estado: { corte: 4 }, texto: 'El seno va de −1 a 1: la onda, de −5 a 5.', ecuacion: [`φ ≈ ${f(deg(Math.atan2(4, 3)), 2)}°`, '   ·   ', '−5 ≤ 3 sen x + 4 cos x ≤ 5'] },
       ],
     },
     regla: {
       texto: 'Una suma a sen x + b cos x es una sola onda de amplitud R. Por eso su máximo es R y su mínimo es −R.',
-      ecuacion: [a_, ' sen x + ', b_, ' cos x = ', R_, ' sen(x + φ);   ', R_, ' = ', { raiz: [{ sup: [a_, '2'] }, ' + ', { sup: [b_, '2'] }] }],
+      ecuacion: [a_, ' sen x + ', b_, ' cos x = ', { llave: [R_, '\u00a0sen(x\u00a0+\u00a0φ)'], nota: 'una sola onda', color: 'c-h' }, '   ·   ', R_, ' = ', { raiz: [{ sup: [a_, '2'] }, ' + ', { sup: [b_, '2'] }] }],
       condicion: 'el mismo x en los dos términos; cos φ = a/R y sen φ = b/R. Una constante mueve los dos extremos.',
       voz: 'La raíz junta las dos ondas; el seno decide hasta dónde llega.',
     },
@@ -400,7 +437,7 @@
           ], v => f(v)),
           solucion: {
             texto: `La amplitud es ${f(r)}; la constante ${f(k)} se suma al extremo.`,
-            ecuacion: [R_, ` = √(${f(a * a)} + ${f(b * b)}) = ${f(r)};   y = ${pideMax ? '' : '−'}${f(r)} ${k < 0 ? '−' : '+'} ${f(Math.abs(k))} = ${f(bien)}`],
+            ecuacion: [R_, ` = √(${f(a * a)} + ${f(b * b)}) = ${f(r)}`, '   ·   ', `y = ${pideMax ? '' : '−'}${f(r)} ${k < 0 ? '−' : '+'} ${f(Math.abs(k))} = ${f(bien)}`],
           },
         };
       },
@@ -425,6 +462,15 @@
     }, extra);
   }
   const T1 = 45, T2 = deg(Math.atan(2));
+  // Manija del vértice C: del dedo al punto del problema (inversa de la escala única de la pieza) y de ahí a A y B.
+  const verticeC = (datos, A = 'a', B = 'b') => ({
+    id: 'vertice-c', etiqueta: 'vértice C: cambia A y B', color: 'c-h',
+    donde: v => { const d = datos(v), c = d.puntos[2]; return { x: TRI().geometria(d).X(c.x), y: TRI().geometria(d).Y(c.y) }; },
+    mover: (pt, v) => {
+      const g = TRI().geometria(datos(v)), x = (pt.x - g.X(0)) / g.s, y = (g.Y(0) - pt.y) / g.s;
+      return { [A]: deg(Math.atan2(y, x)), [B]: deg(Math.atan2(y, 1 - x)) };
+    },
+  });
   const tres = {
     id: 'tres-angulos',
     titulo: 'Tres ángulos que suman 180°',
@@ -440,9 +486,11 @@
       dibujo: val => ({ datos: triangulo(val.a, val.b), estado: {} }),
       lectura: val => {
         const ts = [val.a, val.b, 180 - val.a - val.b].map(tan);
-        return [C, ` = ${f(180 - val.a - val.b)}°; suma de tangentes ${f(ts[0] + ts[1] + ts[2])}; producto ${f(ts[0] * ts[1] * ts[2])}`];
+        return [C, ` = ${f(180 - val.a - val.b)}° · suma de tangentes ${f(ts[0] + ts[1] + ts[2])} · producto ${f(ts[0] * ts[1] * ts[2])}`];
       },
       minimo: 3,
+      // Se arrastra el vértice C: fija A y B a la vez (la base AB queda quieta).
+      arrastres: [verticeC(val => triangulo(val.a, val.b))],
     },
     predice: {
       pregunta: ['En un triángulo, tan ', A, ' = 1 y tan ', B, ' = 2. ¿Cuánto vale tan ', C, '?'],
@@ -461,7 +509,7 @@
       datos: triangulo(T1, T2, { A: 'tan 1', B: 'tan 2', C: 'C', Cfinal: 'tan 3' }),
       voz: 'Sumemos de dos en dos: primero A + B, después C.',
       pasos: [
-        { estado: { paso: 0 }, texto: 'C es lo que les falta a A y B para 180°.', ecuacion: [C, ' = 180° − (', A, ' + ', B, ');   tan ', C, ' = −tan(', A, ' + ', B, ')'] },
+        { estado: { paso: 0 }, texto: 'C es lo que les falta a A y B para 180°.', ecuacion: [C, ' = 180° − (', A, ' + ', B, ')', '   ·   ', 'tan ', C, ' = −tan(', A, ' + ', B, ')'] },
         { estado: { paso: 0 }, texto: 'La tangente de A + B, con la fórmula de dos ángulos.', ecuacion: ['tan(', A, ' + ', B, ') = ', { frac: ['1 + 2', '1 − 1 · 2'] }, ' = −3'] },
         { estado: { paso: 0, final: true }, texto: 'Cambia el signo por el suplemento: tan C = 3.', ecuacion: ['tan ', C, ' = −(−3) = 3'] },
         { estado: { paso: 0, final: true }, texto: 'Con tres ángulos que suman 180°, la suma de tangentes iguala al producto.', ecuacion: ['1 + 2 + 3 = 6 = 1 · 2 · 3'] },
@@ -469,7 +517,8 @@
     },
     regla: {
       texto: 'Tres ángulos se suman de dos en dos. Si suman 180°, la tangente del total es 0, y la suma de las tres tangentes iguala su producto.',
-      ecuacion: ['tan ', A, ' + tan ', B, ' + tan ', C, ' = tan ', A, ' · tan ', B, ' · tan ', C],
+      // Con espacios duros (\u00a0) cada miembro queda entero: si no cabe, la línea se parte en el «=».
+      ecuacion: [{ llave: ['tan\u00a0', A, '\u00a0+\u00a0tan\u00a0', B, '\u00a0+\u00a0tan\u00a0', C], nota: 'la suma' }, ' = ', { llave: ['tan\u00a0', A, '\u00a0·\u00a0tan\u00a0', B, '\u00a0·\u00a0tan\u00a0', C], nota: 'el producto' }],
       condicion: 'A + B + C = 180° y ninguno mide 90°: si uno mide 90°, su tangente no existe.',
       voz: 'Sumar de dos en dos conserva cada signo.',
     },
@@ -501,11 +550,79 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Mesa 1: suma y diferencia con giros libres (β negativo resta), para seno o coseno: la línea roja es el valor
+  // real y la torre apila los dos valores sueltos (vertical para el seno, horizontal para el coseno).
+  const VL = { x: [-2.1, 2.1], y: [-2.1, 2.1] };
+  function sumaLibre(a, b, fn) {
+    const s = a + b, esSen = fn === 'sen', F = esSen ? sen : cos, v1 = F(a), v2 = F(b);
+    const torre = esSen
+      ? [{ de: [1.6, 0], a: [1.6, v1], color: 'o', rotulo: 'sen α' }, { de: [1.6, v1], a: [1.6, v1 + v2], color: 'i', rotulo: 'sen β' }]
+      : [{ de: [0, -1.6], a: [v1, -1.6], color: 'o' }, { de: [v1, -1.6], a: [v1 + v2, -1.6], color: 'i' }];
+    // En la torre horizontal, los rótulos van uno abajo y otro arriba, para que no se pisen si un tramo es corto.
+    const rot = esSen ? [] : [{ x: v1 / 2, y: -1.95, texto: 'cos α', color: 'o' }, { x: v1 + v2 / 2, y: -1.38, texto: 'cos β', color: 'i' }];
+    return {
+      ventana: VL, circulos: [{ r: 1 }],
+      rayos: [{ ang: 0, largo: 1, grosor: 'contorno' }, { ang: a, color: 'o' }, { ang: s, color: 'h' }],
+      arcos: [{ de: 0, a, r: 0.22, color: 'o', espiral: 0 }, { de: a, a: s, r: 0.36, color: 'i', espiral: 0 }],
+      rectas: [esSen ? { y: sen(s), color: 'h' } : { x: cos(s), color: 'h' }],
+      segmentos: torre.filter(t => Math.abs(t.a[0] - t.de[0]) + Math.abs(t.a[1] - t.de[1]) > 1e-9), rotulos: rot,
+      alt: `Giro de ${f(a)}° y después ${f(b)}°: ${fn} de la suma ${f(F(s))}; ${fn} α + ${fn} β = ${f(v1 + v2)}`,
+    };
+  }
+
   return {
     unidad: 'trigonometria.arcos-compuestos',
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/trig-plano.js', '/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/triangulo.js'],
+    // Laboratorio (docs/teoria.md §4b): tres mesas sin preguntas. La primera abre los giros a la diferencia (β
+    // negativo) y al coseno, que la idea 1 no deja probar; la segunda mueve la tangente de grado en grado, hasta el
+    // caso exacto α + β = 90° (la idea 2 va de 20° en 20°) con el denominador a la vista; la tercera suelta a y b,
+    // con negativos y medios, para comparar la cresta R con a + b.
+    laboratorio: [
+      {
+        id: 'suma-diferencia', titulo: 'Suma o diferencia, seno o coseno', pieza: 'trig-plano',
+        consigna: 'Arrastra el rayo α y la punta roja; con β negativo, restas. Compara la línea roja con la torre de los dos valores.',
+        controles: [
+          { id: 'a', etiqueta: 'α', color: 'c-o', min: 0, max: 180, paso: 5, inicio: 50, unidad: '°', decimales: 0 },
+          { id: 'b', etiqueta: 'β', color: 'c-i', min: -90, max: 180, paso: 5, inicio: 60, unidad: '°', decimales: 0 },
+          { id: 'fn', etiqueta: 'Razón', opciones: [{ valor: 'sen', texto: 'seno' }, { valor: 'cos', texto: 'coseno' }] },
+        ],
+        dibujo: v => ({ datos: sumaLibre(v.a, v.b, v.fn), estado: {} }),
+        lectura: v => {
+          const F = v.fn === 'sen' ? sen : cos, s = v.a + v.b;
+          return [`${v.fn}(${f(s)}°) = ${f(F(s))} · ${v.fn} `, al, ` + ${v.fn} `, be, ` = ${f(F(v.a) + F(v.b))}`];
+        },
+        arrastres: manijasSuma(v => sumaLibre(v.a, v.b, v.fn)),
+      },
+      {
+        id: 'tangente-fina', titulo: 'La tangente, grado a grado', pieza: 'trig-plano',
+        consigna: 'Arrastra los rayos de grado en grado hasta que α + β llegue a 90°. Mira el denominador de la fórmula.',
+        controles: [
+          { id: 'a', etiqueta: 'α', color: 'c-o', min: 0, max: 80, paso: 1, inicio: 55, unidad: '°', decimales: 0 },
+          { id: 'b', etiqueta: 'β', color: 'c-i', min: 0, max: 80, paso: 1, inicio: 10, unidad: '°', decimales: 0 },
+        ],
+        dibujo: v => ({ datos: tangente(v.a, v.b), estado: {} }),
+        lectura: v => {
+          const den = 1 - tan(v.a) * tan(v.b), s = v.a + v.b;
+          const t = Math.abs(cos(s)) < 1e-9 ? 'no existe' : f(tan(s));
+          return [`α + β = ${f(s)}° · tan = ${t} · denominador ${f(Math.abs(den) < 5e-3 ? 0 : den)}`];
+        },
+        arrastres: manijasSuma(v => tangente(v.a, v.b)),
+      },
+      {
+        id: 'ondas-libres', titulo: 'Dos ondas, cualquier par', pieza: 'ejes',
+        consigna: 'Arrastra las crestas punteadas, también hacia abajo. La lectura compara la cresta roja R con a + b.',
+        controles: [
+          { id: 'a', etiqueta: 'a', color: 'c-o', min: -5, max: 5, paso: 0.5, inicio: 3, decimales: 1 },
+          { id: 'b', etiqueta: 'b', color: 'c-i', min: -5, max: 5, paso: 0.5, inicio: 4, decimales: 1 },
+        ],
+        dibujo: v => ({ datos: ondas(v.a, v.b, 8), estado: {} }),
+        lectura: v => [a_, ` = ${f(v.a)} · `, b_, ` = ${f(v.b)} · `, R_, ` = ${f(Math.hypot(v.a, v.b))} · `, a_, ' + ', b_, ` = ${f(v.a + v.b)}`],
+        arrastres: crestas(8),
+      },
+    ],
     historia: {
       texto: 'En el Almagesto, Ptolomeo armó una tabla de cuerdas para la astronomía combinando y partiendo arcos ya conocidos. Usaba cuerdas en un círculo grande, no senos en uno de radio 1, pero la idea era la misma: con los valores de dos arcos se obtiene el de su suma. Y nunca sumando sin más las dos cuerdas.',
       pregunta: '¿Cómo sacar un valor nuevo de dos que ya conoces?',
