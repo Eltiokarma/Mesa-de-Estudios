@@ -1775,7 +1775,14 @@
       "grafica-perillas",
       "exponenciales-logaritmos",
       "funciones-dominio-rango"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/tipos-de-funciones-e-inversa.js",
+      "requiere": [
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "algebra.exponenciales-y-logaritmos",
