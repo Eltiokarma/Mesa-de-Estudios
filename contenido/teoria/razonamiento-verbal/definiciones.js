@@ -19,11 +19,22 @@
  * rutinas/teoria-razonamiento-verbal.md).
  */
 (function (root, fabrica) {
-  const def = fabrica();
+  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
   if (typeof module === 'object' && module.exports) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function () {
+})(typeof self !== 'undefined' ? self : this, function (Kit) {
   'use strict';
+  // Gesto directo (docs/teoria.md §4b): entre la definición y los casos hay una bandeja con los rasgos; el alumno
+  // arrastra la ficha al rasgo que quiere poner en la definición. La manija va sobre el número del rasgo
+  // (rv-texto.ancla) y salta al más cercano al dedo (rv-texto.cercana); los botones del control son la alternativa.
+  const RV = () => Kit.piezas['rv-texto'];
+  const manija = (id, control, datosDe, ids, etiqueta, color = 'c-o') => ({
+    id, etiqueta, color,
+    donde: val => RV().ancla(datosDe(val), val[control]),
+    mover: (pt, val) => ({ [control]: RV().cercana(datosDe(val), pt, ids) }),
+  });
+  // La bandeja va entre la tarjeta de la definición y los casos (el sello de los casos no queda bajo la lupa).
+  const conBandeja = (datos, titulo, items) => ({ secciones: [datos.secciones[0], { id: 'bandeja', titulo, modo: 'lista', fragmentos: items }, ...datos.secciones.slice(1)] });
   // Una lectura en vivo no parte línea dentro de un color (.var): si el texto es largo, solo va en color su cabeza.
   const corto = (fn, t) => {
     if (t.length <= 26) return fn(t);
@@ -84,10 +95,12 @@
       datos: figura('silla', SILLAS),
       estado: Object.assign({
         huecos: { g: GENEROS[g].texto, d: DIFS[d].texto }, marcas: Object.assign({ g: 'd', d: d === 'nada' ? undefined : 'o' }, r.marcas), tachar: r.tachar,
-        sellos: { casos: r.errores ? { t: `${r.errores} mal ubicados`, c: 'h' } : { t: '6 de 6 bien', c: 'i' } },
+        sellos: { casos: r.errores ? { t: `${r.errores} mal ${r.errores === 1 ? 'ubicado' : 'ubicados'}`, c: 'h' } : { t: '6 de 6 bien', c: 'i' } },
       }, extra),
     };
   };
+  // El juego dibuja la misma figura que «Mira» con la bandeja de rasgos en medio (hallazgo 9: mismo dibujo, más fichas).
+  const figSillaB = () => conBandeja(figura('silla', SILLAS), 'Rasgos', Object.entries(DIFS).map(([id, d]) => ({ id, t: d.texto })));
   const generoDiferencia = {
     id: 'genero-diferencia',
     titulo: 'Clase cercana y rasgo que separa',
@@ -100,12 +113,14 @@
         { id: 'g', etiqueta: 'Clase', opciones: [{ valor: 'mueble', texto: 'mueble' }, { valor: 'asiento', texto: 'mueble para sentarse' }] },
         { id: 'd', etiqueta: 'Rasgo', opciones: [{ valor: 'nada', texto: 'ninguno' }, { valor: 'respaldo', texto: 'con respaldo' }, { valor: 'completa', texto: 'con respaldo, para una persona' }] },
       ],
-      dibujo: val => dibujoSilla(val.g, val.d),
+      dibujo: val => { const d = dibujoSilla(val.g, val.d); return { datos: figSillaB(), estado: Object.assign(d.estado, { marcas: Object.assign(d.estado.marcas, { [val.d]: 'o' }) }) }; },
       lectura: val => {
         const r = clasificar(SILLAS, [...GENEROS[val.g].rasgos, ...DIFS[val.d].rasgos]);
-        return r.errores ? [`Entran ${r.dentro} casos · `, mal(`${r.errores} mal ubicados`)] : [bien('Entran justo las 3 sillas')];
+        return r.errores ? [`Entran ${r.dentro} casos · `, mal(`${r.errores} mal ${r.errores === 1 ? 'ubicado' : 'ubicados'}`)] : [bien('Entran justo las 3 sillas')];
       },
       minimo: 3,
+      // Arrastra la ficha por la bandeja: el rasgo donde la sueltas entra en la definición.
+      arrastres: [manija('rasgo', 'd', figSillaB, Object.keys(DIFS), 'ficha del rasgo')],
     },
     predice: {
       pregunta: 'Ahora el concepto es «taburete». ¿Qué definición deja dentro solo al taburete de la lista?',
@@ -134,7 +149,7 @@
     },
     regla: {
       texto: 'Una definición ubica el concepto en su clase más cercana (género próximo) y agrega los rasgos que lo separan de sus vecinos (diferencia específica).',
-      ecuacion: ['definición = ', gen('género próximo'), ' + ', dif('diferencia específica')],
+      ecuacion: ['definición = ', { llave: [gen('género próximo')], nota: 'su clase', color: 'c-d' }, ' + ', { llave: [dif('diferencia específica')], nota: 'lo que separa', color: 'c-o' }],
       condicion: 'la clase es la más cercana que lo contiene, y los rasgos están en todos sus casos y en ningún vecino.',
       voz: 'Comprueba siempre con un vecino: si se cuela, falta un rasgo.',
     },
@@ -181,9 +196,11 @@
       { id: 'casos', titulo: 'Casos', modo: 'lista', fragmentos: AVES.map((c, k) => ({ id: `c${k}`, t: c.nombre })) },
     ],
   });
+  const RASGOS_J = ['vuela', 'pico', 'plumas'];
+  const figAveB = () => conBandeja(figAve(), 'Rasgos', RASGOS_J.map(id => ({ id, t: RASGOS[id] })));
   const dibujoAve = (rasgo, extra = {}) => {
     const r = clasificar(AVES, [rasgo]);
-    return { datos: figAve(), estado: Object.assign({ huecos: { r: RASGOS[rasgo] }, marcas: Object.assign({ r: 'o' }, r.marcas), tachar: r.tachar, sellos: { casos: r.errores ? { t: `${r.errores} mal ubicados`, c: 'h' } : { t: '6 de 6 bien', c: 'i' } } }, extra) };
+    return { datos: figAve(), estado: Object.assign({ huecos: { r: RASGOS[rasgo] }, marcas: Object.assign({ r: 'o' }, r.marcas), tachar: r.tachar, sellos: { casos: r.errores ? { t: `${r.errores} mal ${r.errores === 1 ? 'ubicado' : 'ubicados'}`, c: 'h' } : { t: '6 de 6 bien', c: 'i' } } }, extra) };
   };
   const cuentaAve = rasgo => {
     const fuera = AVES.filter(c => c.es && !admite(c, [rasgo])).length, colados = AVES.filter(c => !c.es && admite(c, [rasgo])).length;
@@ -198,8 +215,10 @@
       consigna: 'Define «ave» con un solo rasgo. Prueba cada uno y mira qué aves quedan fuera y qué animales se cuelan.',
       voz: 'Un rasgo puede ser común y aun así fallar.',
       controles: [{ id: 'r', etiqueta: 'Rasgo', opciones: [{ valor: 'vuela', texto: 'vuela' }, { valor: 'pico', texto: 'tiene pico' }, { valor: 'plumas', texto: 'tiene plumas' }] }],
-      dibujo: val => dibujoAve(val.r),
-      lectura: val => { const c = cuentaAve(val.r), tono = n => (n ? mal : bien); return [tono(c.fuera)(`${c.fuera} aves fuera`), ' · ', tono(c.colados)(`${c.colados} colados`)]; },
+      dibujo: val => { const d = dibujoAve(val.r); return { datos: figAveB(), estado: Object.assign(d.estado, { marcas: Object.assign(d.estado.marcas, { [val.r]: 'o' }) }) }; },
+      // Arrastra la ficha a otro rasgo: la definición cambia y los casos se reclasifican.
+      arrastres: [manija('rasgo', 'r', figAveB, RASGOS_J, 'ficha del rasgo')],
+      lectura: val => { const c = cuentaAve(val.r), tono = n => (n ? mal : bien); return [tono(c.fuera)(`${c.fuera} ${c.fuera === 1 ? 'ave' : 'aves'} fuera`), ' · ', tono(c.colados)(`${c.colados} ${c.colados === 1 ? 'colado' : 'colados'}`)]; },
       minimo: 3,
     },
     predice: {
@@ -224,7 +243,7 @@
     },
     regla: {
       texto: 'Un rasgo mínimo está en todos los casos del concepto (necesario). Los rasgos elegidos, juntos, dejan fuera a todo lo demás (suficiente). Lo frecuente y el ejemplo no definen.',
-      ecuacion: [bien('todos los casos'), ' tienen el rasgo · ', mal('ningún vecino'), ' lo tiene'],
+      ecuacion: [{ llave: [bien('todos los casos'), ' lo tienen'], nota: 'necesario', color: 'c-i' }, '   ·   ', { llave: [mal('ningún vecino'), ' lo tiene'], nota: 'suficiente', color: 'c-h' }],
       condicion: 'se prueba contra un caso raro del concepto (el pingüino) y contra un vecino parecido (la tortuga).',
     },
     ahoraTu: {
@@ -250,9 +269,46 @@
     },
   };
 
+  // ---------- Laboratorio: dos rasgos a la vez ----------
+  // Más rico que la idea 2: la definición junta dos rasgos (o uno, con «ninguno») y la lista suma el ornitorrinco,
+  // un mamífero con pico que pone huevos: el caso raro que la idea no deja probar. El código cuenta, con los rasgos
+  // de cada animal (regla 1), cuántas aves entran y cuántos vecinos se cuelan.
+  const ANIMALES = AVES.concat([{ nombre: 'ornitorrinco', es: false, rasgos: ['huevos', 'pico'] }]);
+  const PIEZAS = { ninguno: 'ninguno', vuela: 'vuela', pico: 'tiene pico', plumas: 'tiene plumas', huevos: 'pone huevos' };
+  const rasgosDe = val => [...new Set([val.a, val.b].filter(x => x !== 'ninguno'))];
+  const figDos = () => ({ secciones: [
+    { id: 'def', titulo: 'Definición de «ave»', modo: 'tarjeta', fragmentos: [{ id: 'r', hueco: true, reserva: 'tiene plumas y pone huevos' }] },
+    { id: 'bandeja', titulo: 'Rasgos', modo: 'lista', fragmentos: Object.entries(PIEZAS).map(([id, t]) => ({ id, t })) },
+    { id: 'casos', titulo: 'Casos', modo: 'lista', fragmentos: ANIMALES.map((c, k) => ({ id: `c${k}`, t: c.nombre })) },
+  ] });
+  const textoDef = val => { const rs = rasgosDe(val); return rs.length ? rs.map(r => PIEZAS[r]).join(' y ') : 'animal'; };
+  const mesaDos = {
+    id: 'dos-rasgos', titulo: 'Dos rasgos a la vez', pieza: 'rv-texto',
+    consigna: 'Arrastra las dos fichas a los rasgos de la definición de «ave». Busca la que deja dentro las cuatro aves y fuera a los demás.',
+    voz: 'Mira qué hace el ornitorrinco con cada par.',
+    controles: [
+      { id: 'a', etiqueta: 'Rasgo 1', opciones: Object.entries(PIEZAS).map(([valor, texto]) => ({ valor, texto })), inicio: 'huevos' },
+      { id: 'b', etiqueta: 'Rasgo 2', opciones: Object.entries(PIEZAS).map(([valor, texto]) => ({ valor, texto })), inicio: 'pico' },
+    ],
+    dibujo: val => {
+      const r = clasificar(ANIMALES, rasgosDe(val)), n = ANIMALES.length;
+      return { datos: figDos(), estado: { huecos: { r: textoDef(val) }, marcas: Object.assign({ r: 'o', [val.a]: 'o', [val.b]: 'd' }, r.marcas), tachar: r.tachar, sellos: { casos: r.errores ? { t: `${r.errores} mal ${r.errores === 1 ? 'ubicado' : 'ubicados'}`, c: 'h' } : { t: `${n} de ${n} bien`, c: 'i' } } } };
+    },
+    lectura: val => {
+      const rs = rasgosDe(val), dentro = ANIMALES.filter(c => c.es && admite(c, rs)).length, colados = ANIMALES.filter(c => !c.es && admite(c, rs)).length;
+      const tono = (n, ok) => (ok ? bien : mal)(n);
+      // La definición va sin color: un trozo de color no se parte y, largo, desborda la miniatura del caso guardado.
+      return [`${textoDef(val)}: `, tono(`${dentro} de ${ANIMALES.filter(c => c.es).length} aves`, dentro === ANIMALES.filter(c => c.es).length), ' · ', tono(`${colados} ${colados === 1 ? 'colado' : 'colados'}`, colados === 0)];
+    },
+    arrastres: [
+      manija('rasgo-1', 'a', figDos, Object.keys(PIEZAS), 'primera ficha de rasgo'),
+      manija('rasgo-2', 'b', figDos, Object.keys(PIEZAS), 'segunda ficha de rasgo', 'c-d'),
+    ],
+  };
+
   return {
     unidad: 'razonamiento-verbal.definiciones',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rv-texto.js'],
     historia: {
@@ -260,6 +316,11 @@
       pregunta: '¿Cómo sabrías si una definición se queda corta?',
       fuente: { titulo: 'Matriz de teoría de razonamiento verbal (Aristóteles, Tópicos)', url: 'https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/comprensionlectora.htm' },
     },
+    laboratorio: [
+      mesaDos,
+      Object.assign({ id: 'silla', titulo: 'Arma la silla', pieza: 'rv-texto' }, generoDiferencia.juega),
+      Object.assign({ id: 'un-rasgo', titulo: 'Un solo rasgo', pieza: 'rv-texto' }, rasgoNecesario.juega),
+    ],
     ideas: [generoDiferencia, rasgoNecesario],
   };
 });
