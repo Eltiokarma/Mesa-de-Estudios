@@ -2606,7 +2606,14 @@
      "plantillas": [
       "poligonos",
       "geo-poligonos"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/geometria/poligonos-y-cuadrilateros.js",
+      "requiere": [
+       "/nucleo/kit/piezas/geo-figura.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "geometria.circunferencia",
