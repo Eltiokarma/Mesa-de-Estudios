@@ -19,14 +19,23 @@ const ORDEN_AREAS = ['ciencias', 'matematica', 'razonamiento', 'letras'];
 // Teoría interactiva (docs/teoria.md): si existe contenido/teoria/<curso>/<unidad>.js, la unidad trae
 // teoria: { archivo, requiere, ideas }. requiere son las piezas del kit que pide el archivo (las lee en Node, sin DOM),
 // para que el service worker las guarde y la teoría abra sin conexión.
+// El servidor local arma el catálogo en cada pedido: se guarda lo leído por fecha de modificación, y el módulo se
+// suelta de module.children (si no, cada recarga dejaba 152 módulos vivos y Node se quedaba sin memoria).
+const teoriaLeida = new Map();
 function teoriaDe(u) {
   const [curso, slug] = u.id.split('.');
   const rel = `contenido/teoria/${curso}/${slug}.js`;
   const abs = path.join(RAIZ, rel);
   if (!fs.existsSync(abs)) return {};
+  const t = fs.statSync(abs).mtimeMs, previo = teoriaLeida.get(abs);
+  if (previo && previo.t === t) return previo.r;
   delete require.cache[require.resolve(abs)];
   const def = require(abs);
-  return { teoria: { archivo: `/${rel}`, requiere: def.requiere || [], ideas: (def.ideas || []).length } };
+  delete require.cache[require.resolve(abs)];
+  module.children = module.children.filter(m => m.id !== abs);
+  const r = { teoria: { archivo: `/${rel}`, requiere: def.requiere || [], ideas: (def.ideas || []).length } };
+  teoriaLeida.set(abs, { t, r });
+  return r;
 }
 
 function construir() {
