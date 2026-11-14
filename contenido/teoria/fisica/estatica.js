@@ -54,6 +54,18 @@
   const caja = (cx, y0, w, h) => ({ puntos: [[cx - w / 2, y0], [cx + w / 2, y0], [cx + w / 2, y0 + h], [cx - w / 2, y0 + h]], cerrado: true });
   const SEN = { 30: 0.5, 37: 0.6, 53: 0.8, 60: Math.sqrt(3) / 2 }, COS = { 30: Math.sqrt(3) / 2, 37: 0.8, 53: 0.6, 60: 0.5 };
 
+  // Gesto directo (docs/teoria.md §4b): la manija vive en las coordenadas del lienzo (fis-lienzo.geometria, con los
+  // mismos datos que dibuja la idea). Si la relación es lineal, mover usa la inversa; si no (la barra que se inclina,
+  // el nudo que sube con el ángulo), elige el valor del control cuya manija queda más cerca del dedo.
+  const LZ = datos => Kit.piezas['fis-lienzo'].geometria(datos);
+  const inversa = (fn, a, b) => px => a + (px - fn(a)) * (b - a) / (fn(b) - fn(a));
+  const valoresDe = c => c.opciones ? c.opciones.map(o => o.valor) : Array.from({ length: Math.round((c.max - c.min) / c.paso) + 1 }, (_, k) => c.min + k * c.paso);
+  const cercano = (c, donde, pt) => {
+    let mejor = null, dist = Infinity;
+    for (const v of valoresDe(c)) { const q = donde(v), dd = Math.hypot(q.x - pt.x, q.y - pt.y); if (dd < dist - 1e-9) { dist = dd; mejor = v; } }
+    return mejor;
+  };
+
   // ---------- Idea 1: el diagrama de cuerpo libre y las parejas ----------
   // Cambia: la masa del libro y el empujón de la mano · Permanece: el libro quieto (ΣF = 0) · Progresa: el DCL, una
   // fuerza por paso · Se reserva: la pareja de cada fuerza, que vive en otro cuerpo · Debe verse: N = P + F, no N = P.
@@ -87,6 +99,10 @@
       dibujo: val => ({ datos: libro(val.m, val.F), estado: {} }),
       lectura: val => [N, ` = ${f(val.m * G + val.F, 0)} N · `, P, ` = ${f(val.m * G, 0)} N`],
       minimo: 3,
+      // Arrastra la mano (la cola de la flecha F): más larga, más empujón. La normal responde sola.
+      arrastres: [{ id: 'mano', etiqueta: 'empujón de la mano', color: 'c-o',
+        donde: val => { const g = LZ(libro(val.m, val.F)); return { x: g.X(0.45), y: g.Y(0.45 + val.F * K1 / 59.1) }; },
+        mover: (pt, val) => ({ F: (LZ(libro(val.m, val.F)).Yi(pt.y) - 0.45) * 59.1 / K1 }) }],
     },
     predice: {
       pregunta: 'Un libro de 2 kg está quieto sobre la mesa. Según la tercera ley, ¿cuál es la pareja de su peso?',
@@ -112,7 +128,7 @@
     },
     regla: {
       texto: 'Si un cuerpo está en reposo o en MRU, sus fuerzas suman cero. Cada fuerza tiene una pareja igual y opuesta, en el otro cuerpo.',
-      ecuacion: ['Σ', F, ' = 0   ·   ', { sub: [F, 'A sobre B'] }, ' = −', { sub: [F, 'B sobre A'] }],
+      ecuacion: ['Σ', F, ' = 0', '   ·   ', { sub: [F, 'A sobre B'] }, ' = −', { sub: [F, 'B sobre A'] }],
       condicion: 'el DCL lleva solo las fuerzas sobre el cuerpo aislado; las parejas nunca se cancelan entre sí.',
     },
     ahoraTu: {
@@ -177,6 +193,15 @@
       dibujo: val => ({ datos: lampara(val.P, val.ang), estado: {} }),
       lectura: val => ['Cada cuerda: ', T, ` = ${f(val.P / (2 * SEN[val.ang]), 1)} N`],
       minimo: 3,
+      // Arrastra el nudo hacia arriba (aplana las cuerdas: el ángulo baja) o la punta del peso hacia abajo.
+      arrastres: [
+        { id: 'nudo', etiqueta: 'altura del nudo (ángulo de las cuerdas)', color: 'c-i',
+          donde: val => { const g = LZ(lampara(val.P, val.ang)); return { x: g.X(0), y: g.Y(2 - 2.2 * Math.tan(rad(val.ang))) }; },
+          mover: (pt, val) => ({ ang: cercano(nudo.juega.controles[1], ang => { const g = LZ(lampara(val.P, ang)); return { x: g.X(0), y: g.Y(2 - 2.2 * Math.tan(rad(ang))) }; }, pt) }) },
+        { id: 'peso', etiqueta: 'peso de la lámpara', color: 'c-d',
+          donde: val => { const g = LZ(lampara(val.P, val.ang)), yn = 2 - 2.2 * Math.tan(rad(val.ang)); return { x: g.X(0), y: g.Y(yn - 0.85) + val.P * K2 }; },
+          mover: (pt, val) => { const g = LZ(lampara(val.P, val.ang)), yn = 2 - 2.2 * Math.tan(rad(val.ang)); return { P: (pt.y - g.Y(yn - 0.85)) / K2 }; } },
+      ],
     },
     predice: {
       pregunta: 'Una lámpara de 40 N cuelga de dos cuerdas iguales a 60° del techo. Si las cuerdas se ponen a 30°, ¿qué pasa con la tensión de cada una?',
@@ -200,7 +225,7 @@
     },
     regla: {
       texto: 'Un punto está en equilibrio si las fuerzas se cancelan en cada eje. Con cuerdas inclinadas, solo su parte vertical sostiene el peso.',
-      ecuacion: ['Σ', { sub: [F, 'x'] }, ' = 0   ·   Σ', { sub: [F, 'y'] }, ' = 0   ·   2 ', T, ' sen θ = ', P],
+      ecuacion: ['Σ', { sub: [F, 'x'] }, ' = 0', '   ·   ', 'Σ', { sub: [F, 'y'] }, ' = 0', '   ·   ', '2 ', { llave: [T, ' sen θ'], nota: 'parte vertical', color: 'c-i' }, ' = ', P],
       condicion: 'cuerdas iguales y simétricas; θ medido desde la horizontal. Por eso, cuerda casi horizontal, tensión enorme.',
     },
     ahoraTu: {
@@ -250,6 +275,10 @@
       dibujo: val => ({ datos: cajaRoce(4, val.F), estado: {} }),
       lectura: val => { const fv = val.F > 20 ? 12 : val.F; return [fr, ` = ${f(fv, 0)} N · máximo estático 20 N`]; },
       minimo: 4,
+      // Arrastra la mano (la cola de F) hacia la izquierda: más larga, más empuje. La flecha roja responde.
+      arrastres: [{ id: 'empuje', etiqueta: 'empuje de la mano', color: 'c-o',
+        donde: val => ({ x: LZ(cajaRoce(4, val.F)).X(-0.55 - val.F * K3 / 82.35), y: LZ(cajaRoce(4, val.F)).Y(0.5) }),
+        mover: (pt, val) => ({ F: (-0.55 - LZ(cajaRoce(4, val.F)).Xi(pt.x)) * 82.35 / K3 }) }],
     },
     predice: {
       pregunta: 'Otra caja tiene N = 60 N y μs = 0,5. La empujas con 12 N y no se mueve. ¿Cuánto vale el rozamiento?',
@@ -262,6 +291,8 @@
       revelar: { datos: cajaRoce(6, 12), estado: {} },
       coincide: 'Coincide: la caja está quieta, así que el rozamiento cancela justo los 12 N.',
     },
+    // Hallazgo 9: «Mira» cambia de la caja a la gráfica f–F a propósito. Cada punto de la gráfica es un empuje que el
+    // alumno ya probó en el juego (con la misma caja de 40 N de normal); la gráfica los junta para que se vea el tope.
     mira: {
       pieza: 'ejes',
       datos: {
@@ -278,7 +309,7 @@
     },
     regla: {
       texto: 'Quieta, el rozamiento vale lo justo para cancelar, hasta un tope. Deslizando, vale un valor fijo menor.',
-      ecuacion: [fs, ' ≤ ', { sub: ['μ', 's'] }, N, '   ·   ', fk, ' = ', { sub: ['μ', 'k'] }, N],
+      ecuacion: [fs, ' ≤ ', { llave: [{ sub: ['μ', 's'] }, N], nota: 'tope estático', color: 'c-h' }, '   ·   ', fk, ' = ', { sub: ['μ', 'k'] }, N],
       condicion: 'superficies secas; f se opone al deslizamiento (o a su tendencia). En general μk < μs.',
     },
     ahoraTu: {
@@ -336,6 +367,13 @@
       dibujo: val => ({ datos: resorte(val.k, val.m), estado: {} }),
       lectura: val => [x, ` = ${f(val.m * G / val.k * 100, 1)} cm · `, Fe, ` = ${f(val.m * G, 0)} N`],
       minimo: 3,
+      // Arrastra la punta del peso hacia abajo (la manija va en tinta, como m): cuelgas más masa y el resorte se estira (la punta baja por las dos cosas).
+      arrastres: [{ id: 'peso', etiqueta: 'masa colgada (punta del peso)',
+        donde: val => { const g = LZ(resorte(val.k, val.m)), bajo = 0.3 - val.m * G / val.k; return { x: g.X(0.02), y: g.Y(bajo - 0.06) + val.m * G * K4 }; },
+        mover: (pt, val) => {
+          const punta = m => { const g = LZ(resorte(val.k, m)); return g.Y(0.3 - m * G / val.k - 0.06) + m * G * K4; };
+          return { m: inversa(punta, 0.5, 2)(pt.y) };
+        } }],
     },
     predice: {
       pregunta: 'Un resorte se estira 4 cm con 2 kg colgados. ¿Cuánto se estira con 3 kg?',
@@ -349,6 +387,8 @@
       revelar: { datos: resorte(500, 3), estado: {} },
       coincide: 'Coincide: 1,5 veces la masa, 1,5 veces el estiramiento.',
     },
+    // Hallazgo 9: «Mira» pasa del resorte a la recta F–x a propósito: cada masa que el alumno colgó es un punto de esa
+    // recta, y la pendiente (k) solo se ve cuando se juntan varios.
     mira: {
       pieza: 'ejes',
       datos: {
@@ -358,14 +398,14 @@
         puntos: [{ x: 4, y: 20, color: 'o', rotulo: '2 kg', guias: true, desde: 1 }, { x: 6, y: 30, color: 'o', rotulo: '3 kg', guias: true, desde: 3 }],
       },
       pasos: [
-        { estado: { corte: 1 }, texto: 'Con 2 kg, el resorte sostiene 20 N estirado 4 cm.', ecuacion: [Fe, ' = 20 N   ·   ', x, ' = 0,04 m'] },
+        { estado: { corte: 1 }, texto: 'Con 2 kg, el resorte sostiene 20 N estirado 4 cm.', ecuacion: [Fe, ' = 20 N', '   ·   ', x, ' = 0,04 m'] },
         { estado: { corte: 2 }, texto: 'Fuerza y estiramiento van en proporción: la gráfica es una recta por el origen.', ecuacion: ['k = ', { frac: ['20', '0,04'] }, ' = 500 N/m'] },
         { estado: { corte: 3 }, texto: 'Con 30 N, la misma recta da 6 cm.', ecuacion: [x, ' = ', { frac: ['30', '500'] }, ' = 0,06 m = 6 cm'] },
       ],
     },
     regla: {
       texto: 'Un resorte ideal hace una fuerza proporcional a cuánto se deforma, y en contra de esa deformación.',
-      ecuacion: [Fe, ' = k ', x],
+      ecuacion: [Fe, ' = k ', { llave: [x], nota: 'desde el largo natural', color: 'c-i' }],
       condicion: 'x se mide desde el largo natural (sin carga) y el resorte no pasa su límite elástico.',
     },
     ahoraTu: {
@@ -397,10 +437,10 @@
     const A = en(-d1), B = en(d2);
     return {
       vista: { x0: -2.6, x1: 2.6, y0: -0.8, y1: 2.2 }, escalaF: K5,
-      alt: o.alt || `Barra apoyada al centro: ${m1} kg a ${f(d1, 1)} m a la izquierda y ${m2} kg a ${f(d2, 1)} m a la derecha; ${Math.abs(t1 - t2) < 1e-9 ? 'queda horizontal' : `baja el lado ${t1 > t2 ? 'izquierdo' : 'derecho'}`}.`,
+      alt: o.alt || `Barra apoyada al centro: ${m1} kg a ${f(d1, 2)} m a la izquierda y ${m2} kg a ${f(d2, 2)} m a la derecha; ${Math.abs(t1 - t2) < 1e-9 ? 'queda horizontal' : `baja el lado ${t1 > t2 ? 'izquierdo' : 'derecho'}`}.`,
       poligonos: [{ puntos: [[-2.5, 0], [2.5, 0]], rayado: true }, { puntos: [[-0.25, 0], [0.25, 0], [0, 1]], cerrado: true }, { puntos: [en(-2.3), en(2.3)], grosor: 'variable' },
         { puntos: [A, [A[0], A[1] - 0.4]] }, caja(A[0], A[1] - 0.75, 0.4, 0.35), { puntos: [B, [B[0], B[1] - 0.4]] }, caja(B[0], B[1] - 0.75, 0.4, 0.35)],
-      segmentos: [{ de: [0, 1.25], a: [-d1 * c, 1.25 - d1 * s], color: 'i', grosor: 'variable', texto: `${f(d1, 1)} m`, paso: o.pd || 0 },
+      segmentos: [{ de: [0, 1.25], a: [-d1 * c, 1.25 - d1 * s], color: 'i', grosor: 'variable', texto: `${f(d1, 2)} m`, paso: o.pd || 0 },
         { de: [0, 1.25], a: [d2 * c, 1.25 + d2 * s], color: 'i', grosor: 'variable', texto: o.sinD2 ? 'd = ?' : `${f(d2, 2)} m`, paso: o.pd || 0 }],
       flechas: [{ de: [A[0], A[1] - 0.75], d: [0, -m1 * G], color: 'd', rotulo: `${m1 * G} N`, paso: o.pP || 0 }, { de: [B[0], B[1] - 0.75], d: [0, -m2 * G], color: 'd', rotulo: `${m2 * G} N`, paso: o.pP || 0 },
         ...(o.pR ? [{ de: [0, 0.5], d: [0, (m1 + m2) * G], color: 'i', rotulo: `R = ${(m1 + m2) * G} N`, paso: o.pR }] : [])],
@@ -422,6 +462,26 @@
       arcos: [{ c: punta, rpx: 26, de: 180 - ang, a: 180, rotulo: '30°' }],
     };
   }
+  // Manijas de la palanca: el gancho (dónde cuelga, d) y la punta del peso (cuánta masa, m) de cada lado. La barra se
+  // inclina con la diferencia de torques, así que la manija se busca entre los valores del control.
+  // args(val) → [m1, d1, m2, d2]; ids dice qué control mueve cada cosa (índice en controles()); lados: 'izq', 'der' o ambos.
+  function arrastresPalanca(args, ids, controles, lados) {
+    const gancho = (a, lado) => { const [m1, d1, m2, d2] = a, g = LZ(palanca(...a)), inc = Math.max(-8, Math.min(8, (m1 * G * d1 - m2 * G * d2) / 3));
+      const dd = lado === 'izq' ? -d1 : d2; return { x: g.X(dd * Math.cos(rad(inc))), y: g.Y(1 + dd * Math.sin(rad(inc))) }; };
+    const punta = (a, lado) => { const q = gancho(a, lado), g = LZ(palanca(...a)), m = lado === 'izq' ? a[0] : a[2]; return { x: q.x, y: q.y + 0.75 * g.s + m * G * K5 }; };
+    const out = [];
+    for (const lado of lados.split(' ')) {
+      const id_ = lado === 'izq' ? ['m1', 'd1'] : ['m2', 'd2'];
+      const conVal = (val, k, v) => args(Object.assign({}, val, { [id_[k]]: v }));
+      out.push({ id: `gancho-${lado}`, etiqueta: `dónde cuelga la masa de la ${lado === 'izq' ? 'izquierda' : 'derecha'}`, color: 'c-i',
+        donde: val => gancho(args(val), lado),
+        mover: (pt, val) => ({ [id_[1]]: cercano(controles()[ids[id_[1]]], v => gancho(conVal(val, 1, v), lado), pt) }) });
+      out.push({ id: `peso-${lado}`, etiqueta: `masa de la ${lado === 'izq' ? 'izquierda' : 'derecha'} (punta del peso)`,
+        donde: val => punta(args(val), lado),
+        mover: (pt, val) => ({ [id_[0]]: cercano(controles()[ids[id_[0]]], v => punta(conVal(val, 0, v), lado), pt) }) });
+    }
+    return out;
+  }
   const torque = {
     id: 'torque-y-brazo',
     titulo: 'El brazo decide el giro',
@@ -437,6 +497,7 @@
       dibujo: val => ({ datos: palanca(3, 1, val.m2, val.d2), estado: {} }),
       lectura: val => [`τ izquierda = 30 N·m · τ derecha = ${f(val.m2 * G * val.d2, 1)} N·m`],
       minimo: 4,
+      arrastres: arrastresPalanca(val => [3, 1, val.m2, val.d2], { m2: 0, d2: 1 }, () => torque.juega.controles, 'der'),
     },
     predice: {
       pregunta: 'Con una llave de 0,4 m aprietas un perno: aplicas 50 N en la punta, a 30° de la llave. ¿Qué torque haces?',
@@ -461,7 +522,7 @@
     },
     regla: {
       texto: 'El giro que produce una fuerza es su valor por el brazo perpendicular. Un cuerpo rígido en equilibrio cumple dos condiciones a la vez.',
-      ecuacion: ['τ = ', F, ' · ', { sub: [d, '⊥'] }, '   ·   Σ', F, ' = 0   ·   Στ = 0'],
+      ecuacion: ['τ = ', F, ' · ', { llave: [{ sub: [d, '⊥'] }], nota: 'brazo perpendicular', color: 'c-i' }, '   ·   ', 'Σ', F, ' = 0', '   ·   ', 'Στ = 0'],
       condicion: 'd⊥ es la distancia perpendicular del eje a la línea de acción de la fuerza, no cualquier distancia.',
     },
     ahoraTu: {
@@ -524,6 +585,10 @@
       dibujo: val => ({ datos: polea(val.P, val.movil === 1), estado: {} }),
       lectura: val => [F, ` = ${f(val.movil ? val.P / 2 : val.P, 0)} N · `, val.movil ? 'dos tramos sostienen' : 'un tramo sostiene'],
       minimo: 3,
+      // Arrastra la punta del peso hacia abajo (más carga). Fija o móvil se elige con los botones: son dos montajes.
+      arrastres: [{ id: 'carga', etiqueta: 'peso de la carga', color: 'c-d',
+        donde: val => { const g = LZ(polea(val.P, val.movil === 1)); return { x: g.X(val.movil === 1 ? 0 : -0.3), y: g.Y(0.4) + val.P * K6 }; },
+        mover: (pt, val) => ({ P: (pt.y - LZ(polea(val.P, val.movil === 1)).Y(0.4)) / K6 }) }],
     },
     predice: {
       pregunta: 'Con una polea móvil sostienes 80 N con solo 40 N. Para subir la carga 1 m, ¿cuánta cuerda tienes que jalar?',
@@ -547,7 +612,7 @@
     },
     regla: {
       texto: 'Una máquina ideal cambia fuerza por distancia: si reduce la fuerza, la mano recorre más. Fuerza por distancia se conserva.',
-      ecuacion: [F, ' · ', { sub: [d, 'mano'] }, ' = ', P, ' · ', { sub: [d, 'carga'] }],
+      ecuacion: [F, ' · ', { llave: [{ sub: [d, 'mano'] }], nota: 'cuerda jalada', color: 'c-i' }, ' = ', P, ' · ', { llave: [{ sub: [d, 'carga'] }], nota: 'lo que sube', color: 'c-i' }],
       condicion: 'poleas y cuerdas sin masa ni rozamiento. Cada polea móvil reparte la carga entre dos tramos.',
     },
     ahoraTu: {
@@ -562,7 +627,7 @@
             { id: 'todo', valor: Pv, error: 'MS-CUERDA', siFuera: 'Eso sería con polea fija: no reparte la carga.' },
             { id: 'una', valor: Pv / 2, error: 'MS-MITAD', siFuera: 'Esa es la fuerza con una sola polea móvil.' },
           ], v => `${f(v, 2)} N`),
-          solucion: { texto: `Cada polea divide entre dos: ${n} veces.`, ecuacion: [F, ` = ${Pv} / 2${n > 1 ? `^${n}` : ''} = ${f(Fv, 2)} N`] },
+          solucion: { texto: `Cada polea divide entre dos: ${n} veces.`, ecuacion: [F, ` = ${Pv} / `, n > 1 ? { sup: ['2', `${n}`] } : '2', ` = ${f(Fv, 2)} N`] },
         } : {
           pregunta: `${pre} una altura de ${h} m. Sin rozamiento, ¿cuánta cuerda hay que jalar?`,
           opciones: opciones(cu, [
@@ -576,11 +641,50 @@
     },
   };
 
+  const PALANCA_LIBRE = [
+    { id: 'm1', etiqueta: 'm izq.', min: 1, max: 4, paso: 1, inicio: 3, unidad: 'kg', decimales: 0 },
+    { id: 'd1', etiqueta: 'd izq.', color: 'c-i', min: 0.5, max: 2, paso: 0.25, inicio: 1, unidad: 'm', decimales: 2 },
+    { id: 'm2', etiqueta: 'm der.', min: 1, max: 4, paso: 1, inicio: 2, unidad: 'kg', decimales: 0 },
+    { id: 'd2', etiqueta: 'd der.', color: 'c-i', min: 0.5, max: 2, paso: 0.25, inicio: 1, unidad: 'm', decimales: 2 },
+  ];
+
   return {
     unidad: 'fisica.estatica',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/fis-lienzo.js'],
+    // Laboratorio: juego libre, sin preguntas. La palanca libre suelta los dos lados (en la idea, la izquierda está
+    // fija); la caja con masa deja cambiar la normal y empujar hasta 36 N; el nudo es el juego de la idea 2.
+    laboratorio: [
+      {
+        id: 'palanca-libre', titulo: 'Palanca con los dos lados libres', pieza: 'fis-lienzo',
+        consigna: 'Elige masa y distancia de cada lado. Arrastra los ganchos o las puntas de los pesos hasta dejar la barra horizontal.',
+        controles: PALANCA_LIBRE,
+        dibujo: val => ({ datos: palanca(val.m1, val.d1, val.m2, val.d2), estado: {} }),
+        lectura: val => {
+          const t1 = val.m1 * G * val.d1, t2 = val.m2 * G * val.d2;
+          return [`τ: ${f(t1, 1)} N·m contra ${f(t2, 1)} N·m · ${Math.abs(t1 - t2) < 1e-9 ? 'horizontal' : `baja la ${t1 > t2 ? 'izquierda' : 'derecha'}`}`];
+        },
+        arrastres: arrastresPalanca(val => [val.m1, val.d1, val.m2, val.d2], { m1: 0, d1: 1, m2: 2, d2: 3 }, () => PALANCA_LIBRE, 'izq der'),
+      },
+      {
+        id: 'caja-con-masa', titulo: 'Caja de masa variable', pieza: 'fis-lienzo',
+        consigna: 'Cambia la masa de la caja (μs = 0,5 y μk = 0,3) y empújala. ¿Dónde está el tope ahora?',
+        controles: [
+          { id: 'm', etiqueta: 'm', min: 2, max: 6, paso: 1, inicio: 4, unidad: 'kg', decimales: 0 },
+          { id: 'F', etiqueta: 'F', color: 'c-o', min: 0, max: 36, paso: 2, inicio: 10, unidad: 'N', decimales: 0 },
+        ],
+        dibujo: val => ({ datos: cajaRoce(val.m, val.F), estado: {} }),
+        lectura: val => {
+          const Nv = val.m * G, desl = val.F > MS * Nv + 1e-9, fv = desl ? MK * Nv : val.F;
+          return [`${f(val.m, 0)} kg, `, F, ` = ${f(val.F, 0)} N: `, fr, ` = ${f(fv, 0)} N, ${desl ? 'desliza' : 'quieta'}`];
+        },
+        arrastres: [{ id: 'empuje', etiqueta: 'empuje de la mano', color: 'c-o',
+          donde: val => ({ x: LZ(cajaRoce(val.m, val.F)).X(-0.55 - val.F * K3 / 82.35), y: LZ(cajaRoce(val.m, val.F)).Y(0.5) }),
+          mover: (pt, val) => ({ F: (-0.55 - LZ(cajaRoce(val.m, val.F)).Xi(pt.x)) * 82.35 / K3 }) }],
+      },
+      Object.assign({ id: 'nudo-libre', titulo: 'El nudo y sus cuerdas', pieza: 'fis-lienzo' }, nudo.juega),
+    ],
     historia: {
       texto: 'Equilibrar cargas fue un problema práctico mucho antes de la mecánica moderna. Arquímedes relacionó pesos y distancias en la palanca con argumentos geométricos. Siglos después, Stevin estudió cuerpos en planos inclinados. Hoy esas ideas se escriben como dos condiciones: que las fuerzas y los giros se cancelen.',
       pregunta: '¿Por qué una puerta se abre más fácil empujando lejos de las bisagras?',
