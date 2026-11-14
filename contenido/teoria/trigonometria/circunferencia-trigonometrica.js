@@ -6,7 +6,11 @@
  * Compañera: Mara (coneja), cercana y rigurosa: cada línea es un número con signo, no un largo.
  * Colores (regla 4): el arco t o θ en naranja (c-o). Cada razón comparte color con su recíproca, porque las dos salen
  * de la misma coordenada: seno y cosecante en rojo (c-h, la ordenada), coseno y secante en turquesa (c-i, la
- * abscisa), tangente y cotangente en verde (c-d).
+ * abscisa), tangente y cotangente en verde (c-d). En el laboratorio, el segundo arco θ₂ va en morado (c-f).
+ * Ronda 2 (14 nov, noche): manijas en las ideas 1 a 4 (el extremo P del arco, arrastrado sobre la circunferencia;
+ * la idea 5 elige cuadrante y línea, que son opciones), llaves en las reglas (abscisa, ordenada, altura de T,
+ * cortes en los ejes), separadores «   ·   » donde había «;» y laboratorio de tres mesas. «Juega» y «Mira» usan la
+ * misma C.T. en las ideas 1 a 4 (hallazgo 9); la idea 5 se explica en su «Mira».
  * Errores: TR3 (lee el número real como grados), TR10 (la razón crece con el ángulo), TR11 (cruza x e y), TR12 (la
  * línea como largo sin signo; es el error objetivo de la matriz) de docs/investigacion/trigonometria-ideas-erroneas.md;
  * hipótesis nuevas: TRCT-CUADRANTE (cuenta un cuadrante por unidad de arco), TRCT-RANGO (sec o csc entre −1 y 1),
@@ -32,6 +36,11 @@
   const rad = g => g * Math.PI / 180;
   const mod360 = x => ((x % 360) + 360) % 360;
   const ROM = ['', 'I', 'II', 'III', 'IV'];
+  // Gesto directo (docs/teoria.md §4b): las manijas usan la geometría de la pieza.
+  const TP = () => Kit.piezas['trig-plano'];
+  const punta = (d, gr, L = 1) => TP().enPx(d, L * Math.cos(rad(gr)), L * Math.sin(rad(gr)));
+  // El ángulo del dedo entre 0° y 360°; cerca de 0° desde arriba de 180°, se queda en 360° (atan2 da 0 en la vuelta).
+  const giroDe = (d, pt, actual, tope = 360) => { const a = TP().anguloDe(d, pt); return a < 8 && actual > 180 && tope >= 360 ? 360 : a; };
   const cuadDeg = g => { const m = mod360(g); return m % 90 === 0 ? 0 : Math.ceil(m / 90); };
   const EXACTOS = [[0, '0'], [0.5, '1/2'], [Math.SQRT2 / 2, '√2/2'], [Math.sqrt(3) / 2, '√3/2'], [1, '1'], [Math.sqrt(3) / 3, '√3/3'], [Math.sqrt(3), '√3']];
   function exacto(v) {
@@ -99,6 +108,10 @@
         return [t_, ` = ${f(val.t)} · ${val.t >= 0 ? 'antihorario' : 'horario'} · ${q ? 'cuadrante ' + ROM[q] : 'en A'}`];
       },
       minimo: 3,
+      // Se arrastra el extremo P del arco sobre la circunferencia: el largo t sigue el giro (con signo).
+      arrastres: [{ id: 'extremo', etiqueta: 'extremo P del arco t', color: 'c-o',
+        donde: val => TP().enPx(arcoT(val.t), Math.cos(val.t), Math.sin(val.t)),
+        mover: (pt, val) => ({ t: rad(TP().anguloDe(arcoT(val.t), pt, { cerca: val.t * 180 / Math.PI })) }) }],
     },
     predice: {
       pregunta: 'Si enrollas un arco de largo t = 4 desde A, en sentido antihorario, ¿en qué cuadrante termina?',
@@ -124,7 +137,7 @@
       },
       voz: 'Mide cada cuarto de vuelta en radios.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'Radio 1, centro O y origen de arcos A(1, 0).', ecuacion: ['A(1, 0);  B(0, 1);  A′(−1, 0);  B′(0, −1)'] },
+        { estado: { corte: 1 }, texto: 'Radio 1, centro O y origen de arcos A(1, 0).', ecuacion: ['A(1, 0)', '   ·   ', 'B(0, 1)', '   ·   ', 'A′(−1, 0)', '   ·   ', 'B′(0, −1)'] },
         { estado: { corte: 2 }, texto: 'Un cuarto de vuelta mide π/2 radios.', ecuacion: [{ frac: ['π', '2'] }, ' ≈ 1,57'] },
         { estado: { corte: 3 }, texto: 'Media vuelta mide π: el arco llega a A′.', ecuacion: ['π ≈ 3,14'] },
         { estado: { corte: 4 }, texto: '4 está entre π y 3π/2: termina en el III.', ecuacion: ['3,14 < 4 < 4,71'] },
@@ -132,7 +145,7 @@
     },
     regla: {
       texto: 'Cada número real t es un arco de largo t medido desde A: antihorario si t > 0, horario si t < 0. Su extremo P tiene coordenadas (cos t, sen t).',
-      ecuacion: ['P = (cos ', t_, ', sen ', t_, ')'],
+      ecuacion: ['P = (', { llave: ['cos ', t_], nota: 'abscisa de P', color: 'c-i' }, ', ', { llave: ['sen ', t_], nota: 'ordenada de P', color: 'c-h' }, ')'],
       condicion: 'radio 1 y centro en el origen; t es un largo de arco, igual a su medida en radianes.',
       voz: 'Un número, un arco; el signo dice hacia dónde se enrolla.',
     },
@@ -186,8 +199,12 @@
       voz: 'Mira hacia dónde apunta cada flecha, no solo cuánto mide.',
       controles: [{ id: 'g', etiqueta: 'θ', color: 'c-o', min: 0, max: 360, paso: 15, inicio: 60, unidad: '°', decimales: 0 }],
       dibujo: val => ({ datos: senCos(val.g), estado: {} }),
-      lectura: val => ['sen ', th, ` = ${f(Math.sin(rad(val.g)))}; cos `, th, ` = ${f(Math.cos(rad(val.g)))}`],
+      lectura: val => ['sen ', th, ` = ${f(Math.sin(rad(val.g)))} · cos `, th, ` = ${f(Math.cos(rad(val.g)))}`],
       minimo: 4,
+      // Se arrastra P sobre la circunferencia; las dos flechas responden.
+      arrastres: [{ id: 'punto-p', etiqueta: 'punto P del arco θ', color: 'c-o',
+        donde: val => punta(senCos(val.g), val.g),
+        mover: (pt, val) => ({ g: giroDe(senCos(val.g), pt, val.g) }) }],
     },
     predice: {
       pregunta: '¿Cuál es mayor: cos 100° o cos 170°?',
@@ -221,7 +238,7 @@
     },
     regla: {
       texto: 'En la C.T., la línea seno es la ordenada de P y la línea coseno es su abscisa, con signo. Se comparan como números, no como largos.',
-      ecuacion: ['−1 ≤ sen ', th, ' ≤ 1;  −1 ≤ cos ', th, ' ≤ 1'],
+      ecuacion: ['−1 ≤ ', { llave: ['sen ', th], nota: 'ordenada de P', color: 'c-h' }, ' ≤ 1', '   ·   ', '−1 ≤ ', { llave: ['cos ', th], nota: 'abscisa de P', color: 'c-i' }, ' ≤ 1'],
       condicion: 'circunferencia de radio 1 con centro en el origen. Hacia arriba o a la derecha, positivo.',
       voz: 'Un largo dice cuánto; la flecha dice el signo.',
     },
@@ -248,7 +265,7 @@
           opciones: opciones(bien, ops, v => (v === 'iguales' ? 'Son iguales' : v)),
           solucion: {
             texto: iguales ? 'Las dos líneas tienen el mismo largo y el mismo signo.' : 'Con signo, el mayor queda más arriba o más a la derecha.',
-            ecuacion: [`${fn} ${a}° ≈ ${f(va)};  ${fn} ${b}° ≈ ${f(vb)}`],
+            ecuacion: [`${fn} ${a}° ≈ ${f(va)}`, '   ·   ', `${fn} ${b}° ≈ ${f(vb)}`],
           },
         };
       },
@@ -294,6 +311,10 @@
       dibujo: val => ({ datos: lineaTan(val.g, false), estado: {} }),
       lectura: v => ['tan ', th, ` = ${val(tanD(v.g))}`],
       minimo: 4,
+      // Se arrastra P sobre la circunferencia; el corte T responde sobre la recta x = 1.
+      arrastres: [{ id: 'punto-p', etiqueta: 'punto P del arco θ', color: 'c-o',
+        donde: v => punta(lineaTan(v.g, false), v.g),
+        mover: (pt, v) => ({ g: giroDe(lineaTan(v.g, false), pt, v.g) }) }],
     },
     predice: {
       pregunta: 'Ahora la recta OP se prolonga hasta la recta horizontal y = 1, que toca la circunferencia en B. Para θ = 120°, ¿dónde la corta?',
@@ -326,14 +347,14 @@
       voz: 'Dos rectas fijas, un mismo radio prolongado.',
       pasos: [
         { estado: { corte: 1 }, texto: 'La recta x = 1 toca la circunferencia en A.', ecuacion: ['x = 1'] },
-        { estado: { corte: 2 }, texto: 'OP prolongada corta esa recta en T: su altura es tan θ.', ecuacion: ['T = (1, tan ', th, ');  ', { frac: ['sen θ', 'cos θ'] }, ' = ', { frac: ['tan θ', '1'] }] },
+        { estado: { corte: 2 }, texto: 'OP prolongada corta esa recta en T: su altura es tan θ.', ecuacion: ['T = (1, tan ', th, ')', '   ·   ', { frac: ['sen θ', 'cos θ'] }, ' = ', { frac: ['tan θ', '1'] }] },
         { estado: { corte: 3 }, texto: 'La recta y = 1 toca la circunferencia en B.', ecuacion: ['y = 1'] },
         { estado: { corte: 4 }, texto: 'OP corta esa recta en C: su abscisa es cot θ.', ecuacion: ['C = (cot ', th, ', 1)'] },
       ],
     },
     regla: {
       texto: 'La línea tangente es la ordenada del corte de OP con x = 1. La cotangente es la abscisa del corte de OP con y = 1. Las dos llevan signo.',
-      ecuacion: ['T = (1, tan ', th, ');  C = (cot ', th, ', 1)'],
+      ecuacion: ['T = (1, ', { llave: ['tan ', th], nota: 'altura de T', color: 'c-d' }, ')', '   ·   ', 'C = (', { llave: ['cot ', th], nota: 'abscisa de C', color: 'c-d' }, ', 1)'],
       condicion: 'tan no existe si OP es vertical (90°, 270°); cot no existe si OP es horizontal (0°, 180°).',
       voz: 'Cuando OP es paralela a la recta, no hay corte: no hay valor.',
     },
@@ -392,8 +413,12 @@
       voz: 'Fíjate si algún corte cae dentro de la circunferencia.',
       controles: [{ id: 'g', etiqueta: 'θ', color: 'c-o', min: 30, max: 330, paso: 30, inicio: 60, unidad: '°', decimales: 0 }],
       dibujo: val => ({ datos: lineaSec(val.g), estado: {} }),
-      lectura: v => ['sec ', th, ` = ${val(secD(v.g))}; csc `, th, ` = ${val(cscD(v.g))}`],
+      lectura: v => ['sec ', th, ` = ${val(secD(v.g))} · csc `, th, ` = ${val(cscD(v.g))}`],
       minimo: 4,
+      // Se arrastra P sobre la circunferencia; la recta que toca en P y sus dos cortes responden.
+      arrastres: [{ id: 'punto-p', etiqueta: 'punto P del arco θ', color: 'c-o',
+        donde: v => punta(lineaSec(v.g), v.g),
+        mover: (pt, v) => ({ g: TP().anguloDe(lineaSec(v.g), pt) }) }],
     },
     predice: {
       pregunta: '¿Existe algún ángulo θ con sec θ = 0,5?',
@@ -429,7 +454,7 @@
     },
     regla: {
       texto: 'La recta que toca la circunferencia en P corta el eje x en sec θ y el eje y en csc θ. Esos cortes nunca caen dentro de la circunferencia.',
-      ecuacion: ['sec ', th, ' = ', { frac: ['1', 'cos θ'] }, ';  csc ', th, ' = ', { frac: ['1', 'sen θ'] }, ';  |sec ', th, '| ≥ 1;  |csc ', th, '| ≥ 1'],
+      ecuacion: [{ llave: ['sec ', th], nota: 'corte en x', color: 'c-i' }, ' = ', { frac: ['1', 'cos θ'] }, '   ·   ', { llave: ['csc ', th], nota: 'corte en y', color: 'c-h' }, ' = ', { frac: ['1', 'sen θ'] }, '   ·   ', '|sec ', th, '| ≥ 1', '   ·   ', '|csc ', th, '| ≥ 1'],
       condicion: 'sec no existe si cos θ = 0 (la recta es horizontal); csc no existe si sen θ = 0 (es vertical).',
       voz: 'Recíproca de un número entre −1 y 1: queda fuera de ese tramo.',
     },
@@ -516,6 +541,8 @@
       coincide: 'Coincide: el corte T sube desde muy abajo hasta A.',
       noCoincide: 'Revisemos: los puntos T van subiendo hacia A.',
     },
+    // Hallazgo 9: el juego mueve seno y coseno, y «Mira» sigue la tangente. Es a propósito: es la línea que el alumno
+    // acaba de predecir, en la misma C.T., y la que más engaña (se acorta mientras crece).
     mira: {
       datos: {
         ventana: { x: [-1.3, 1.5], y: [-3, 1.3] }, circulos: [{ r: 1 }], rectas: [{ x: 1, color: 'd' }],
@@ -533,7 +560,7 @@
     },
     regla: {
       texto: 'Una línea crece si su extremo sube o va a la derecha, aunque se acorte. En el II, el seno decrece, el coseno decrece y la tangente crece.',
-      ecuacion: ['II: sen 1 → 0;  cos 0 → −1;  tan −∞ → 0'],
+      ecuacion: ['II: sen 1 → 0', '   ·   ', 'cos 0 → −1', '   ·   ', 'tan −∞ → 0'],
       condicion: 'θ avanza en sentido antihorario. ∞ indica que la línea crece sin tope: no es un valor.',
       voz: 'Leamos el número con su signo, no el largo de la flecha.',
     },
@@ -559,11 +586,137 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Mesa 1: las seis líneas de un mismo P, por pares o todas juntas. Lo que sale de la ventana no se dibuja.
+  const VL = { x: [-2.2, 2.2], y: [-2.2, 2.2] };
+  const LADO = (x, y) => (y >= 0 ? (x >= 0 ? 'ne' : 'no') : (x >= 0 ? 'se' : 'so'));
+  function seis(g, ver) {
+    const x = Math.cos(rad(g)), y = Math.sin(rad(g)), tn = tanD(g), ct = cotD(g), sc = secD(g), cs = cscD(g);
+    const enV = v => Number.isFinite(v) && Math.abs(v) <= 2.1;
+    const todo = ver === 'seis', seg = [], pts = [], rectas = [];
+    if (todo || ver === 'sc') {
+      seg.push({ de: [x, 0], a: [x, y], color: 'h', punta: Math.abs(y) > 0.05, rotulo: Math.abs(y) > 0.2 ? 'sen' : undefined },
+        { de: [0, y], a: [x, y], color: 'i', punta: Math.abs(x) > 0.05, rotulo: Math.abs(x) > 0.2 ? 'cos' : undefined });
+    }
+    if (todo || ver === 'tc') {
+      rectas.push({ x: 1, color: 'd' }, { y: 1, color: 'd' });
+      if (enV(tn)) { seg.push({ de: [0, 0], a: [1, tn], grosor: 'cuadricula', discontinua: true }, { de: [1, 0], a: [1, tn], color: 'd', punta: Math.abs(tn) > 0.05 }); pts.push({ x: 1, y: tn, color: 'd', rotulo: 'tan', lado: 'e' }); }
+      if (enV(ct)) { seg.push({ de: [0, 0], a: [ct, 1], grosor: 'cuadricula', discontinua: true }, { de: [0, 1], a: [ct, 1], color: 'd', punta: Math.abs(ct) > 0.05 }); pts.push({ x: ct, y: 1, color: 'd', rotulo: 'cot', lado: 'n' }); }
+    }
+    if (todo || ver === 'scc') {
+      seg.push({ de: [x - 1.2 * y, y + 1.2 * x], a: [x + 1.2 * y, y - 1.2 * x], grosor: 'contorno' });
+      if (enV(sc)) { seg.push({ de: [0, 0], a: [sc, 0], color: 'i', punta: true }); pts.push({ x: sc, y: 0, color: 'i', rotulo: 'sec', lado: y >= 0 ? 's' : 'n' }); }
+      if (enV(cs)) { seg.push({ de: [0, 0], a: [0, cs], color: 'h', punta: true }); pts.push({ x: 0, y: cs, color: 'h', rotulo: 'csc', lado: x >= 0 ? 'o' : 'e' }); }
+    }
+    pts.push({ x, y, rotulo: 'P', lado: LADO(x, y) });
+    return {
+      ventana: ver === 'sc' ? { x: [-1.3, 1.3], y: [-1.3, 1.3] } : VL, circulos: [{ r: 1 }], rectas,
+      rayos: [{ ang: g, color: 'o', grosor: 'contorno', punta: false }],
+      arcos: g ? [{ de: 0, a: g, r: 0.25, color: 'o' }] : [],
+      segmentos: seg, puntos: pts,
+      alt: `Arco de ${f(g)} grados en la circunferencia trigonométrica con sus líneas: seno ${f(y)}, coseno ${f(x)}, tangente ${val(tn)}`,
+    };
+  }
+  const POSITIVAS = ['', 'las seis', 'sen y csc', 'tan y cot', 'cos y sec'];
+  // Mesa 2: dos arcos y una misma línea, para comparar con signo. θ₂ va en morado y su manija, a 0,65 del centro.
+  const th2 = { v: 'c-f', t: 'θ₂' }, th1 = { v: 'c-o', t: 'θ₁' };
+  const FN = { sen: g => Math.sin(rad(g)), cos: g => Math.cos(rad(g)), tan: tanD };
+  function dosArcos(a, b, fn) {
+    const col = { sen: 'h', cos: 'i', tan: 'd' }[fn], seg = [], pts = [], rectas = fn === 'tan' ? [{ x: 1, color: 'd' }] : [];
+    for (const [g, c, k] of [[a, 'o', '1'], [b, 'f', '2']]) {
+      const x = Math.cos(rad(g)), y = Math.sin(rad(g)), v = FN[fn](g);
+      if (fn === 'sen') seg.push({ de: [x, 0], a: [x, y], color: col, punta: Math.abs(y) > 0.05 });
+      if (fn === 'cos') seg.push({ de: [0, y], a: [x, y], color: col, punta: Math.abs(x) > 0.05 });
+      if (fn === 'tan' && Number.isFinite(v) && Math.abs(v) <= 2.1) {
+        seg.push({ de: [0, 0], a: [1, v], grosor: 'cuadricula', discontinua: true });
+        pts.push({ x: 1, y: v, color: col, rotulo: `T${k === '1' ? '₁' : '₂'}`, lado: 'e' });
+      }
+      pts.push({ x, y, color: c, rotulo: `P${k === '1' ? '₁' : '₂'}`, lado: LADO(x, y) });
+    }
+    return {
+      ventana: fn === 'tan' ? VL : { x: [-1.3, 1.3], y: [-1.3, 1.3] }, circulos: [{ r: 1 }], rectas,
+      rayos: [{ ang: a, color: 'o', grosor: 'contorno', punta: false }, { ang: b, color: 'f', grosor: 'contorno', punta: false }],
+      segmentos: seg, puntos: pts,
+      alt: `Dos arcos, ${f(a)} y ${f(b)} grados, con su línea ${fn}: ${val(FN[fn](a))} y ${val(FN[fn](b))}`,
+    };
+  }
+  // Mesa 3: el número real sin tope, con varias vueltas; el arco se abre en espiral para que se cuenten.
+  function arcoLargo(t) {
+    const x = Math.cos(t), y = Math.sin(t);
+    return {
+      circulos: [{ r: 1 }],
+      arcos: t ? [{ de: 0, a: t * 180 / Math.PI, r: 0.78, espiral: 7, color: 'o' }] : [],
+      puntos: extremos().concat([{ x, y, color: 'o', rotulo: `t = ${f(t)}`, lado: LADO(x, y) }]),
+      alt: `Arco dirigido de largo ${f(t)} desde A, ${t >= 0 ? 'antihorario' : 'horario'}, que da ${f(Math.floor(Math.abs(t) / (2 * Math.PI)))} vueltas completas`,
+    };
+  }
+
   return {
     unidad: 'trigonometria.circunferencia-trigonometrica',
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/trig-plano.js'],
+    // Laboratorio (docs/teoria.md §4b): tres mesas sin preguntas. La primera junta las seis líneas de un mismo P (las
+    // ideas las muestran por pares), con la lista de las positivas para comparar cuadrantes; la segunda compara una
+    // línea en dos arcos a la vez, con signo (lo que la idea 2 solo deja en la predicción); la tercera suelta el
+    // número real hasta casi dos vueltas en cada sentido (la idea 1 llega a ±3).
+    laboratorio: [
+      {
+        id: 'seis-lineas', titulo: 'Las seis líneas de P', pieza: 'trig-plano',
+        consigna: 'Arrastra P por la circunferencia y elige qué líneas ver. La lectura dice en qué cuadrante estás y qué líneas son positivas.',
+        controles: [
+          { id: 'g', etiqueta: 'θ', color: 'c-o', min: 0, max: 360, paso: 5, inicio: 135, unidad: '°', decimales: 0 },
+          { id: 'ver', etiqueta: 'Líneas', opciones: [{ valor: 'sc', texto: 'sen y cos' }, { valor: 'tc', texto: 'tan y cot' }, { valor: 'scc', texto: 'sec y csc' }, { valor: 'seis', texto: 'las seis' }] },
+        ],
+        dibujo: v => ({ datos: seis(v.g, v.ver), estado: {} }),
+        lectura: v => {
+          const q = cuadDeg(v.g);
+          if (v.ver === 'seis') return [th, ` = ${f(v.g)}° · `, q ? `cuadrante ${ROM[q]} · positivas: ${POSITIVAS[q]}` : 'sobre un eje'];
+          const [a, b] = { sc: ['sen', 'cos'], tc: ['tan', 'cot'], scc: ['sec', 'csc'] }[v.ver];
+          const F = { sen: g => Math.sin(rad(g)), cos: g => Math.cos(rad(g)), tan: tanD, cot: cotD, sec: secD, csc: cscD };
+          return [th, ` = ${f(v.g)}° · ${a} ${val(F[a](v.g))} · ${b} ${val(F[b](v.g))}`];
+        },
+        arrastres: [{ id: 'punto-p', etiqueta: 'punto P del arco θ', color: 'c-o',
+          donde: v => punta(seis(v.g, v.ver), v.g),
+          mover: (pt, v) => ({ g: giroDe(seis(v.g, v.ver), pt, v.g) }) }],
+      },
+      {
+        id: 'dos-arcos', titulo: 'Dos arcos, una línea', pieza: 'trig-plano',
+        consigna: 'Arrastra P₁ y la manija morada de θ₂, y elige la línea. Compara los dos valores con su signo, no por el largo.',
+        controles: [
+          { id: 'a', etiqueta: 'θ₁', color: 'c-o', min: 0, max: 360, paso: 5, inicio: 100, unidad: '°', decimales: 0 },
+          { id: 'b', etiqueta: 'θ₂', color: 'c-f', min: 0, max: 360, paso: 5, inicio: 170, unidad: '°', decimales: 0 },
+          { id: 'fn', etiqueta: 'Línea', opciones: [{ valor: 'cos', texto: 'coseno' }, { valor: 'sen', texto: 'seno' }, { valor: 'tan', texto: 'tangente' }] },
+        ],
+        dibujo: v => ({ datos: dosArcos(v.a, v.b, v.fn), estado: {} }),
+        lectura: v => {
+          const p = FN[v.fn](v.a), q = FN[v.fn](v.b);
+          const rel = !Number.isFinite(p) || !Number.isFinite(q) ? '   ' : Math.abs(p - q) < 5e-3 ? ' = ' : p > q ? ' > ' : ' < ';
+          return [`${v.fn} `, th1, ` = ${val(p)}`, rel, `${v.fn} `, th2, ` = ${val(q)}`];
+        },
+        arrastres: [
+          { id: 'punto-1', etiqueta: 'punto P₁ del arco θ₁', color: 'c-o',
+            donde: v => punta(dosArcos(v.a, v.b, v.fn), v.a),
+            mover: (pt, v) => ({ a: giroDe(dosArcos(v.a, v.b, v.fn), pt, v.a) }) },
+          { id: 'rayo-2', etiqueta: 'rayo del arco θ₂', color: 'c-f',
+            donde: v => punta(dosArcos(v.a, v.b, v.fn), v.b, 0.65),
+            mover: (pt, v) => ({ b: giroDe(dosArcos(v.a, v.b, v.fn), pt, v.b) }) },
+        ],
+      },
+      {
+        id: 'numero-sin-tope', titulo: 'El número real, sin tope', pieza: 'trig-plano',
+        consigna: 'Arrastra el extremo del arco y da más de una vuelta, en cualquier sentido. La lectura descuenta las vueltas completas de 2π.',
+        controles: [{ id: 't', etiqueta: 't', color: 'c-o', min: -12, max: 12, paso: 0.1, inicio: 7.5, decimales: 1 }],
+        dibujo: v => ({ datos: arcoLargo(v.t), estado: {} }),
+        lectura: v => {
+          const k = Math.floor(v.t / (2 * Math.PI)), resto = v.t - 2 * Math.PI * k, q = cuadT(v.t);
+          return [t_, ` = ${f(v.t)} = ${k < 0 ? `(${f(k)})` : f(k)} · 2π + ${f(resto)} · ${q ? 'cuadrante ' + ROM[q] : 'sobre un eje'}`];
+        },
+        arrastres: [{ id: 'extremo', etiqueta: 'extremo P del arco t', color: 'c-o',
+          donde: v => TP().enPx(arcoLargo(v.t), Math.cos(v.t), Math.sin(v.t)),
+          mover: (pt, v) => ({ t: rad(TP().anguloDe(arcoLargo(v.t), pt, { cerca: v.t * 180 / Math.PI })) }) }],
+      },
+    ],
     historia: {
       texto: 'En el siglo XV, Regiomontanus escribió De triangulis, que ordenó lo que se sabía de triángulos planos y esféricos para la astronomía. Sus tablas relacionaban lados y ángulos con muchos cálculos. La circunferencia de radio 1 es una elección moderna: quita el factor de escala y deja leer cada razón como un segmento. El problema sigue siendo el mismo: ver las seis razones juntas sin perder sus signos.',
       pregunta: '¿Qué gana una tabla si el radio vale exactamente 1?',
