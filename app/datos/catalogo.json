@@ -3012,7 +3012,14 @@
       "ampliadora",
       "solidos",
       "geo-troncos-prismas"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/geometria/prisma-y-piramide.js",
+      "requiere": [
+       "/nucleo/kit/piezas/geo-figura.js"
+      ],
+      "ideas": 6
+     }
     },
     {
      "id": "geometria.solidos-de-revolucion",
