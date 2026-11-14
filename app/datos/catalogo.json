@@ -1926,7 +1926,15 @@
      "grado": 5,
      "plantillas": [
       "sucesiones"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/sucesiones-y-series.js",
+      "requiere": [
+       "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/alg-tabla.js"
+      ],
+      "ideas": 6
+     }
     },
     {
      "id": "algebra.binomio-de-newton",
