@@ -12,7 +12,40 @@
         "Cada variable puede ser V o F, y cada una duplica las combinaciones: 2 × 2 × 2 × 2 = 2⁴.",
         "2⁴ = 16 filas."
       ],
-      "verificar": [ { "fn": "filasDe", "args": ["[(p ∨ s) ∧ ~q] ↔ (r → p)"], "espera": { "variables": 4, "filas": 16 } } ]
+      "verificar": [ { "fn": "filasDe", "args": ["[(p ∨ s) ∧ ~q] ↔ (r → p)"], "espera": { "variables": 4, "filas": 16 } } ],
+      "preguntas": [
+        {
+          "id": "p1a",
+          "enunciado": "Se arma la tabla de verdad de la fórmula [(p ∨ s) ∧ ~q] ↔ (r → p).",
+          "pregunta": "¿Cuántas filas tiene?",
+          "decimales": 0,
+          "correcta": { "fn": "filasDe", "args": ["[(p ∨ s) ∧ ~q] ↔ (r → p)"], "campo": "filas", "valor": 16 },
+          "errores": [
+            {
+              "id": "LG-doble-de-variables",
+              "respaldo": "hipotesis",
+              "explicacion": "Multiplicaste 2 · 4. Cada variable duplica las combinaciones: 2 × 2 × 2 × 2 = 2⁴.",
+              "fn": "filasDe",
+              "args": [
+                "[(p ∨ s) ∧ ~q] ↔ (r → p)"
+              ],
+              "campo": "errores.dobleDeVariables",
+              "valor": 8
+            },
+            {
+              "id": "LG-igual-a-variables",
+              "respaldo": "hipotesis",
+              "explicacion": "Esas son las variables (p, q, r y s). Las filas son las combinaciones de V y F: 2⁴.",
+              "fn": "filasDe",
+              "args": [
+                "[(p ∨ s) ∧ ~q] ↔ (r → p)"
+              ],
+              "campo": "errores.igualAVariables",
+              "valor": 4
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p2",
@@ -36,7 +69,40 @@
         "Entonces ~p es V, así que p es F; y q es F.",
         "Control: ~F → F es V → F, que es F."
       ],
-      "verificar": [ { "fn": "filasFalsas", "args": ["~p → q"], "espera": { "falsas": ["F F"] } } ]
+      "verificar": [ { "fn": "filasFalsas", "args": ["~p → q"], "espera": { "falsas": ["F F"] } } ],
+      "preguntas": [
+        {
+          "id": "p3a",
+          "enunciado": "Se sabe que la proposición ~p → q es falsa. Responde con el valor de p y luego el de q.",
+          "pregunta": "¿Cuáles son los valores de p y de q?",
+          "decimales": 2,
+          "correcta": { "fn": "filasFalsas", "args": ["~p → q"], "campo": "falsas.0", "valor": "F F" },
+          "errores": [
+            {
+              "id": "LG-condicional-al-reves",
+              "respaldo": "hipotesis",
+              "explicacion": "Pusiste el antecedente en F y el consecuente en V. Un condicional es falso solo con V → F: ~p = V y q = F.",
+              "fn": "filasFalsas",
+              "args": [
+                "~p → q"
+              ],
+              "campo": "errores.alReves.0",
+              "valor": "V V"
+            },
+            {
+              "id": "LG-antecedente-sin-negar",
+              "respaldo": "hipotesis",
+              "explicacion": "Tomaste p → q sin la negación. Para que ~p → q sea falsa, ~p debe ser V: p es F.",
+              "fn": "filasFalsas",
+              "args": [
+                "~p → q"
+              ],
+              "campo": "errores.ambasFalsas.0",
+              "valor": "V F"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p4",
@@ -61,7 +127,40 @@
         "[(p → q) ∧ p] → q: V → V = V; F → F = V; F → V = V; F → F = V.",
         "Todas las filas son V: es una tautología (es la regla que en lógica se llama modus ponens)."
       ],
-      "verificar": [ { "fn": "clasificar", "args": ["((p → q) ∧ p) → q"], "espera": { "tipo": "tautologia", "matriz": "VVVV" } } ]
+      "verificar": [ { "fn": "clasificar", "args": ["((p → q) ∧ p) → q"], "espera": { "tipo": "tautologia", "matriz": "VVVV" } } ],
+      "preguntas": [
+        {
+          "id": "p5a",
+          "enunciado": "Se arma la tabla de verdad de [(p → q) ∧ p] → q.",
+          "pregunta": "¿Es tautología, contradicción o contingencia?",
+          "decimales": 2,
+          "correcta": { "fn": "clasificar", "args": ["((p → q) ∧ p) → q"], "campo": "nombre", "valor": "tautología" },
+          "errores": [
+            {
+              "id": "LG-condicional-como-y",
+              "respaldo": "hipotesis",
+              "explicacion": "Leíste el → como un ∧. En el condicional, F → algo es V: con eso, las cuatro filas salen V.",
+              "fn": "clasificar",
+              "args": [
+                "((p → q) ∧ p) → q"
+              ],
+              "campo": "errores.condicionalComoY.nombre",
+              "valor": "contingencia"
+            },
+            {
+              "id": "LG-tipo-opuesto",
+              "respaldo": "hipotesis",
+              "explicacion": "Es al revés: todas las filas salen V. Una contradicción tendría todas F.",
+              "fn": "clasificar",
+              "args": [
+                "((p → q) ∧ p) → q"
+              ],
+              "campo": "errores.tipoOpuesto.nombre",
+              "valor": "contradicción"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p6",
@@ -74,7 +173,51 @@
         "En palabras: Luis no juega fútbol y no va al cine."
       ],
       "verificar": [ { "fn": "negar", "args": ["p ∨ q"], "espera": { "texto": "~p ∧ ~q" } },
-                     { "fn": "equivalentes", "args": ["~(p ∨ q)", "~p ∧ ~q"], "espera": { "equivalentes": true } } ]
+                     { "fn": "equivalentes", "args": ["~(p ∨ q)", "~p ∧ ~q"], "espera": { "equivalentes": true } } ],
+      "preguntas": [
+        {
+          "id": "p6a",
+          "enunciado": "Sean p: Luis juega fútbol y q: Luis va al cine. La frase «Luis juega fútbol o va al cine» es p ∨ q.",
+          "pregunta": "¿Cuál es su negación?",
+          "decimales": 2,
+          "correcta": { "fn": "negar", "args": ["p ∨ q"], "campo": "texto", "valor": "~p ∧ ~q" },
+          "errores": [
+            {
+              "id": "LG-niega-partes",
+              "respaldo": "hipotesis",
+              "explicacion": "Negaste cada parte pero dejaste el «o». Al negar una disyunción, el ∨ pasa a ser ∧: ~p ∧ ~q.",
+              "fn": "negar",
+              "args": [
+                "p ∨ q"
+              ],
+              "campo": "errores.negaPartes",
+              "valor": "~p ∨ ~q"
+            },
+            {
+              "id": "LG-niega-solo-la-primera",
+              "respaldo": "hipotesis",
+              "explicacion": "Faltó negar q. Por De Morgan se niegan las dos partes: ~p ∧ ~q.",
+              "fn": "negar",
+              "args": [
+                "p ∨ q"
+              ],
+              "campo": "errores.niegaSoloPrimera",
+              "valor": "~p ∧ q"
+            },
+            {
+              "id": "LG-niega-primera-sin-cambiar",
+              "respaldo": "hipotesis",
+              "explicacion": "Negaste solo p y dejaste el «o». Se niegan las dos partes y el ∨ pasa a ∧.",
+              "fn": "negar",
+              "args": [
+                "p ∨ q"
+              ],
+              "campo": "errores.niegaPrimeraSinCambiar",
+              "valor": "~p ∨ q"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p7",
@@ -86,7 +229,51 @@
         "p → q solo es falsa cuando p es V y q es F. Su negación es verdadera justo en ese caso: p ∧ ~q.",
         "En palabras: hace frío y no me pongo la chompa."
       ],
-      "verificar": [ { "fn": "negar", "args": ["p → q"], "espera": { "texto": "p ∧ ~q" } } ]
+      "verificar": [ { "fn": "negar", "args": ["p → q"], "espera": { "texto": "p ∧ ~q" } } ],
+      "preguntas": [
+        {
+          "id": "p7a",
+          "enunciado": "Sean p: hace frío y q: me pongo la chompa. La frase «Si hace frío, me pongo la chompa» es p → q.",
+          "pregunta": "¿Cuál es su negación?",
+          "decimales": 2,
+          "correcta": { "fn": "negar", "args": ["p → q"], "campo": "texto", "valor": "p ∧ ~q" },
+          "errores": [
+            {
+              "id": "LG-niega-partes",
+              "respaldo": "hipotesis",
+              "explicacion": "Negar un condicional no es negar sus partes. p → q es falsa solo si p es V y q es F: su negación es p ∧ ~q.",
+              "fn": "negar",
+              "args": [
+                "p → q"
+              ],
+              "campo": "errores.negaPartes",
+              "valor": "~p → ~q"
+            },
+            {
+              "id": "LG-niega-consecuente",
+              "respaldo": "hipotesis",
+              "explicacion": "Negaste solo q y dejaste el condicional. p → q solo falla cuando hace frío y no te pones la chompa: p ∧ ~q.",
+              "fn": "negar",
+              "args": [
+                "p → q"
+              ],
+              "campo": "errores.niegaConsecuente",
+              "valor": "p → ~q"
+            },
+            {
+              "id": "LG-cambia-sin-negar-bien",
+              "respaldo": "hipotesis",
+              "explicacion": "Negaste la parte equivocada. p → q falla cuando p es V y q es F: la negación es p ∧ ~q.",
+              "fn": "negar",
+              "args": [
+                "p → q"
+              ],
+              "campo": "errores.cambiaSinNegarBien",
+              "valor": "~p ∧ q"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p8",
